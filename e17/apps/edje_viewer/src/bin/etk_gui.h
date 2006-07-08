@@ -21,3 +21,5 @@ struct _Gui
 };
 
 void main_window_show(char *file);
+int gui_part_col_sort_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
+      Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);

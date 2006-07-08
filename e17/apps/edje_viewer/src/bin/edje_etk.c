@@ -124,6 +124,7 @@ void list_entries(const char *file, Etk_Tree *tree, Etk_Tree *output,
    Evas_List *collections = NULL;
    Etk_Tree_Col *col1;
    Etk_Tree_Row *row;
+   Etk_Bool sort_parts;
 
    entries = edje_file_collection_list(file);
    col1 = etk_tree_nth_col_get(tree, 0);
@@ -152,11 +153,15 @@ void list_entries(const char *file, Etk_Tree *tree, Etk_Tree *output,
 	  }
 	edje_file_collection_list_free(entries);
 	edje_viewer_config_recent_set(file);
+	edje_viewer_config_last_set(file);
+	sort_parts = edje_viewer_config_sort_parts_get();
+	if (sort_parts)
+	  etk_tree_sort(tree, gui_part_col_sort_cb, ETK_TRUE, col1, NULL);
      }
 }
 
 Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas, 
-      char *file, char *name)
+      const char *file, char *name)
 {
    Evas_Object *o;
    Demo_Edje *de;

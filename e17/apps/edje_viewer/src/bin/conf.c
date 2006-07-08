@@ -15,6 +15,8 @@ void edje_viewer_config_init(void)
 void edje_viewer_config_load(void)
 {
    ecore_config_int_default("/recent/count", 0);
+   ecore_config_int_default("/startup/open_last", 1);
+   ecore_config_int_default("/startup/sort_parts", 1);
    ecore_config_load();
 }
 
@@ -80,10 +82,10 @@ void edje_viewer_config_recent_set(const char *path)
 	  {
 	     FREE(key);
 	     FREE(new_path);
-	     if (val) FREE(val);
+	     FREE(val);
 	     return;
 	  }
-	if (val) FREE(val);
+	FREE(val);
      }
    count++;
    i = count;
@@ -100,4 +102,59 @@ void edje_viewer_config_recent_set(const char *path)
 
    FREE(key);
    FREE(new_path);
+}
+
+char *edje_viewer_config_last_get(void)
+{
+   return ecore_config_string_get("/recent/last");
+}
+
+void edje_viewer_config_last_set(const char *path)
+{
+   char *cwd, *new_path;
+
+   if (!path) return;
+
+   new_path = malloc(PATH_MAX);
+   if (!(path[0] == '/')) {
+	cwd = malloc(PATH_MAX);
+	getcwd(cwd, PATH_MAX);
+
+	snprintf(new_path, PATH_MAX, "%s/%s", cwd, path);
+
+	FREE(cwd);
+   } else {
+	new_path = strdup(path);
+   }
+
+
+   ecore_config_string_set("/recent/last", new_path);
+
+   FREE(new_path);
+}
+
+Etk_Bool edje_viewer_config_open_last_get(void)
+{
+   Etk_Bool check;
+   check = ecore_config_int_get("/startup/open_last");
+
+   return check;
+}
+
+void edje_viewer_config_open_last_set(Etk_Bool check)
+{
+   ecore_config_int_set("/startup/open_last", check);
+}
+
+Etk_Bool edje_viewer_config_sort_parts_get(void)
+{
+   Etk_Bool check;
+   check = ecore_config_int_get("/startup/sort_parts");
+
+   return check;
+}
+
+void edje_viewer_config_sort_parts_set(Etk_Bool check)
+{
+   ecore_config_int_set("/startup/sort_parts", check);
 }

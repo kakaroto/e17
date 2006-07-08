@@ -41,7 +41,7 @@ void canvas_resize_cb(Etk_Object *canvas, const char *property_name,
 void list_entries(const char *file, Etk_Tree *tree, Etk_Tree *output, 
 	Etk_Canvas *canvas);
 Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
-	char *file, char *name);
+	const char *file, char *name);
 void edje_part_show(Etk_Widget *canvas, Demo_Edje *de);
 void edje_part_hide(Demo_Edje *de);
 void edje_part_resize(Demo_Edje *de);

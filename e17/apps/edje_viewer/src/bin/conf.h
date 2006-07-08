@@ -7,3 +7,11 @@ void edje_viewer_config_count_set(int count);
 
 char *edje_viewer_config_recent_get(int number);
 void edje_viewer_config_recent_set(const char *path);
+
+char *edje_viewer_config_last_get(void);
+void edje_viewer_config_last_set(const char *path);
+
+Etk_Bool edje_viewer_config_open_last_get(void);
+void edje_viewer_config_open_last_set(Etk_Bool check);
+Etk_Bool edje_viewer_config_sort_parts_get(void);
+void edje_viewer_config_sort_parts_set(Etk_Bool check);

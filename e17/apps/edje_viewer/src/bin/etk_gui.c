@@ -13,6 +13,8 @@ static Etk_Widget *_gui_menu_item_new(Gui *gui, const char *label,
 static void _gui_menu_item_selected_cb(Etk_Object *obj, void *data);
 static void _gui_menu_item_deselected_cb(Etk_Object *obj, void *data);
 static void _gui_menu_item_clicked_cb(Etk_Object *obj, void *data);
+static void _gui_open_last_clicked_cb(Etk_Object *obj, void *data);
+static void _gui_sort_parts_clicked_cb(Etk_Object *obj, void *data);
 static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data);
 static void _gui_fm_cancel_clicked_cb(Etk_Object *obj, void *data);
 static Etk_Bool _gui_main_window_deleted_cb(void *data);
@@ -20,8 +22,6 @@ static void _gui_open_edje_file_cb(Gui *gui);
 static void _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree_Row *row,
       void *data);
 static void _gui_send_clicked_cb(Etk_Object *obj, void *data);
-static int _gui_part_col_sort_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
-      Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 
 void main_window_show(char *file)
 {
@@ -39,6 +39,7 @@ void main_window_show(char *file)
    Etk_Widget *source_label, *source_entry;
    Etk_Widget *send_button;
    Etk_Widget *separator;
+   Etk_Bool check;
 
    int count, i;
    const char *recent;
@@ -82,6 +83,25 @@ void main_window_show(char *file)
    if (count == 0)
      _gui_menu_item_new(gui, _("No recent files"), ETK_MENU_SHELL(menu));
 
+   /* Settings menu */
+   menuitem = _gui_menubar_item_new(gui, _("Settings"),
+	 ETK_MENU_SHELL(menubar));
+   menu = etk_menu_new();
+   etk_menu_item_submenu_set(ETK_MENU_ITEM(menuitem), ETK_MENU(menu));
+   menuitem = etk_menu_item_check_new_with_label(_("Open Last"));
+   etk_menu_shell_append(ETK_MENU_SHELL(menu), ETK_MENU_ITEM(menuitem));
+   etk_signal_connect("activated", ETK_OBJECT(menuitem),
+	   ETK_CALLBACK(_gui_open_last_clicked_cb), gui);
+   check = edje_viewer_config_open_last_get();
+   etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menuitem), check);
+
+   menuitem = etk_menu_item_check_new_with_label(_("Sort parts"));
+   etk_menu_shell_append(ETK_MENU_SHELL(menu), ETK_MENU_ITEM(menuitem));
+   etk_signal_connect("activated", ETK_OBJECT(menuitem),
+	   ETK_CALLBACK(_gui_sort_parts_clicked_cb), gui);
+   check = edje_viewer_config_sort_parts_get();
+   etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menuitem), check);
+
    paned = etk_hpaned_new();
    vpaned = etk_vpaned_new();
    etk_box_pack_start(ETK_BOX(vbox), vpaned, ETK_TRUE, ETK_TRUE, 0);
@@ -92,7 +112,7 @@ void main_window_show(char *file)
    col = etk_tree_col_new(ETK_TREE(gui->tree), _("Part"),
 	 etk_tree_model_text_new(ETK_TREE(gui->tree)), 100);
    etk_tree_col_expand_set(col, ETK_TRUE);
-   etk_tree_col_sort_func_set(col, _gui_part_col_sort_cb, NULL);
+   etk_tree_col_sort_func_set(col, gui_part_col_sort_cb, NULL);
    col2 = etk_tree_col_new(ETK_TREE(gui->tree), _("Visibility"),
 	 etk_tree_model_checkbox_new(ETK_TREE(gui->tree)), 30);
    etk_tree_build(ETK_TREE(gui->tree));
@@ -146,8 +166,15 @@ void main_window_show(char *file)
    bg_setup(ETK_CANVAS(gui->canvas));
    etk_widget_show_all(gui->win);
 
+   check = edje_viewer_config_open_last_get();
    if (file) list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
 	 ETK_CANVAS(gui->canvas));
+   else if (check) 
+     {
+	file = edje_viewer_config_last_get();
+	list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+	      ETK_CANVAS(gui->canvas));
+     }
    etk_signal_connect("delete_event", ETK_OBJECT(gui->win), 
 	   ETK_CALLBACK(_gui_main_window_deleted_cb), NULL);
    etk_signal_connect("cell_value_changed", ETK_OBJECT(col2),
@@ -261,6 +288,32 @@ static void _gui_menu_item_clicked_cb(Etk_Object *obj, void *data)
    else if (strstr(label, ".edj"))
      list_entries(label, ETK_TREE(gui->tree), ETK_TREE(gui->output),
 	   ETK_CANVAS(gui->canvas));
+}
+
+static void _gui_open_last_clicked_cb(Etk_Object *obj, void *data)
+{
+   Etk_Menu_Item_Check *item;
+   Gui *gui;
+   Etk_Bool check;
+
+   if (!(item = ETK_MENU_ITEM_CHECK(obj)))
+     return;
+   if (!(gui = data)) return;
+   check = etk_menu_item_check_active_get(item);
+   edje_viewer_config_open_last_set(check);
+}
+
+static void _gui_sort_parts_clicked_cb(Etk_Object *obj, void *data)
+{
+   Etk_Menu_Item_Check *item;
+   Gui *gui;
+   Etk_Bool check;
+
+   if (!(item = ETK_MENU_ITEM_CHECK(obj)))
+     return;
+   if (!(gui = data)) return;
+   check = etk_menu_item_check_active_get(item);
+   edje_viewer_config_sort_parts_set(check);
 }
 
 static Etk_Bool _gui_main_window_deleted_cb(void *data) 
@@ -378,7 +431,7 @@ static void _gui_send_clicked_cb(Etk_Object *obj, void *data)
   }
 }
 
-static int _gui_part_col_sort_cb
+int gui_part_col_sort_cb
 (Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col,
  void *data)
 {
