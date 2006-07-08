@@ -1,0 +1,13 @@
+Source: emphasis
+Section: x11
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: debhelper (>= 4.0.0), libecore-dev, libetk-dev, libmpd-dev (>= 0.12.0)
+Standards-Version: 3.6.2.2
+
+Package: emphasis
+Architecture: any
+Depends: ${shlibs:Depends}, libetk, libecore, libmpd0 (>= 0.12.0)
+Suggests: enlightenment
+Description: An Etk based MPD client
+ Emphasis is an MPD client based on Etk.
