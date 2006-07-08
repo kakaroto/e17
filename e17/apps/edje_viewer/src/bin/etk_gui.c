@@ -20,6 +20,8 @@ static void _gui_open_edje_file_cb(Gui *gui);
 static void _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree_Row *row,
       void *data);
 static void _gui_send_clicked_cb(Etk_Object *obj, void *data);
+static int _gui_part_col_sort_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
+      Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 
 void main_window_show(char *file)
 {
@@ -90,6 +92,7 @@ void main_window_show(char *file)
    col = etk_tree_col_new(ETK_TREE(gui->tree), _("Part"),
 	 etk_tree_model_text_new(ETK_TREE(gui->tree)), 100);
    etk_tree_col_expand_set(col, ETK_TRUE);
+   etk_tree_col_sort_func_set(col, _gui_part_col_sort_cb, NULL);
    col2 = etk_tree_col_new(ETK_TREE(gui->tree), _("Visibility"),
 	 etk_tree_model_checkbox_new(ETK_TREE(gui->tree)), 30);
    etk_tree_build(ETK_TREE(gui->tree));
@@ -373,4 +376,24 @@ static void _gui_send_clicked_cb(Etk_Object *obj, void *data)
     if (!de) continue;
     edje_object_signal_emit(de->edje, sig, src);
   }
+}
+
+static int _gui_part_col_sort_cb
+(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col,
+ void *data)
+{
+   char *row1_value, *row2_value;
+
+   if (!tree || !row1 || !row2 || !col)
+      return 0;
+
+   etk_tree_row_fields_get(row1, col, &row1_value, NULL);
+   etk_tree_row_fields_get(row2, col, &row2_value, NULL);
+
+   if (strcmp(row1_value, row2_value) < 0)
+      return -1;
+   else if (strcmp(row1_value, row2_value) > 0)
+      return 1;
+   else
+      return 0;
 }
