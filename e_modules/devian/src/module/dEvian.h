@@ -3,7 +3,7 @@
 
 #include <e.h>
 #include <config.h>
-#include <E_Lib.h>
+//#include <E_Lib.h>
 
 /* Changes in all the source, depend wich module we are building */
 #ifdef HAVE_ALL
