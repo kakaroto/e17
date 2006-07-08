@@ -6,4 +6,4 @@ int edje_viewer_config_count_get(void);
 void edje_viewer_config_count_set(int count);
 
 char *edje_viewer_config_recent_get(int number);
-void edje_viewer_config_recent_set(char *path);
+void edje_viewer_config_recent_set(const char *path);

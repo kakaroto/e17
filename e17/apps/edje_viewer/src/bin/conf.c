@@ -50,7 +50,7 @@ char *edje_viewer_config_recent_get(int number)
    return val;
 }
 
-void edje_viewer_config_recent_set(char *path)
+void edje_viewer_config_recent_set(const char *path)
 {
    int count, key_length, i;
    char *key, *val, *cwd, *new_path;
@@ -59,16 +59,18 @@ void edje_viewer_config_recent_set(char *path)
    count = edje_viewer_config_count_get();
 
    new_path = malloc(PATH_MAX);
-   if (strcmp(path, "/")) {
+   if (!(path[0] == '/')) {
 	cwd = malloc(PATH_MAX);
 	getcwd(cwd, PATH_MAX);
 
 	snprintf(new_path, PATH_MAX, "%s/%s", cwd, path);
 
 	FREE(cwd);
+   } else {
+	new_path = strdup(path);
    }
 
-   key_length = strlen("/recent/") + 4;
+   key_length = strlen("/recent/") + 8;
    key = malloc(key_length * sizeof(key));
    for (i = 0; i < count; i++)
      {

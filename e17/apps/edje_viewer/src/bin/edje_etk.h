@@ -38,7 +38,7 @@ Evas_List *visible_elements_get(void);
 void bg_setup(Etk_Canvas *canvas);
 void canvas_resize_cb(Etk_Object *canvas, const char *property_name, 
 	void *data);
-void list_entries(char *file, Etk_Tree *tree, Etk_Tree *output, 
+void list_entries(const char *file, Etk_Tree *tree, Etk_Tree *output, 
 	Etk_Canvas *canvas);
 Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
 	char *file, char *name);

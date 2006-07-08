@@ -93,7 +93,8 @@ void main_window_show(char *file)
    col2 = etk_tree_col_new(ETK_TREE(gui->tree), _("Visibility"),
 	 etk_tree_model_checkbox_new(ETK_TREE(gui->tree)), 30);
    etk_tree_build(ETK_TREE(gui->tree));
-   etk_paned_child1_set(ETK_PANED(paned), gui->tree, ETK_TRUE);
+   etk_widget_size_request_set(gui->tree, 300, 0);
+   etk_paned_child1_set(ETK_PANED(paned), gui->tree, ETK_FALSE);
 
    scrollview = etk_scrolled_view_new();
    etk_paned_child2_set(ETK_PANED(paned), scrollview, ETK_TRUE);
@@ -110,6 +111,7 @@ void main_window_show(char *file)
 	 etk_tree_model_text_new(ETK_TREE(gui->output)), 200);
    etk_tree_col_expand_set(col, ETK_TRUE);
    etk_tree_build(ETK_TREE(gui->output));
+   etk_widget_size_request_set(gui->output, 0, 100);
    etk_paned_child2_set(ETK_PANED(vpaned), gui->output, ETK_FALSE);
 
    hbox = etk_hbox_new(ETK_FALSE, 0);
@@ -318,8 +320,6 @@ static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
    gui->path = strdup(dir);
    gui->path = strcat(gui->path, "/");
    gui->path = strcat(gui->path, file);
-   FREE(dir);
-   FREE(file);
    list_entries(gui->path, ETK_TREE(gui->tree), ETK_TREE(gui->output),
 	 ETK_CANVAS(gui->canvas));
    etk_window_hide_on_delete(ETK_OBJECT(gui->fm_dialog), NULL);
