@@ -15,7 +15,6 @@ xgettext \
 --language=C \
 --add-location \
 --keyword=D_ \
---indent \
 --sort-by-file \
 --copyright-holder="Pavel Boldin" \
 --foreign-user \
