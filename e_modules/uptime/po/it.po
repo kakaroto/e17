@@ -6,43 +6,57 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Uptime\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-10 13:00+0200\n"
-"PO-Revision-Date: 2006-06-10 13:44+0200\n"
+"POT-Creation-Date: 2006-07-08 13:59+0200\n"
+"PO-Revision-Date: 2006-07-08 14:14+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: e_mod_config.c:32
+#: e_mod_config.c:48
 msgid "Uptime Configuration"
 msgstr "Configurazione modulo Uptime"
 
-#: e_mod_config.c:69
+#: e_mod_config.c:97
 msgid "Uptime Settings"
 msgstr "Impostazioni di Uptime"
 
-#: e_mod_config.c:70
+#: e_mod_config.c:99
+msgid "Update Interval:"
+msgstr "Frequenza di aggiornamento:"
+
+#: e_mod_config.c:106
 msgid "Check Interval:"
 msgstr "Frequenza di aggiornamento:"
 
-#: e_mod_main.c:108
+#: e_mod_main.c:153
 msgid "Uptime"
 msgstr "Uptime"
 
-#: e_mod_main.c:144
+#: e_mod_main.c:192
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: e_mod_main.c:319
+#: e_mod_main.c:393
 msgid "Enlightenment Uptime Monitor Module"
 msgstr "Modulo Uptime di Enlightenment"
 
-#: e_mod_main.c:320
+#: e_mod_main.c:394
 msgid "This module is used to monitor uptime."
 msgstr "Questo modulo viene usato per monitorare il tempo di servizio."
 
-#: e_mod_main.c:362
+#: e_mod_main.c:559
 #, c-format
-msgid "uptime: %ld days, %ld:%02ld:%02ld"
+msgid "up: %ld days, %ld:%02ld:%02ld"
 msgstr "tempo di servizio: %ld giorni, %ld:%02ld:%02ld"
+
+#: e_mod_main.c:566
+#, c-format
+msgid "la: %.2f %.2f %.2f"
+msgstr "carico medio: %.2f %.2f %.2f"
+
+#: e_mod_main.c:571
+#, c-format
+msgid "users: %d"
+msgstr "utenti: %d"
