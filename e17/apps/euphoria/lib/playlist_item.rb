@@ -25,7 +25,7 @@ class PlaylistItem
 	def method_missing(method)
 		tmp = @props[method]
 
-		tmp || @props[:server][method] || "default"
+		tmp || @props[method] || "default"
 	end
 
 	def duration
