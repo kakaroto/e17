@@ -14,7 +14,6 @@ Usage:
 
 #####################################
 State:
-	MoOm is currently rewriting the Etk_Textblock, so it has been desactivated.
 	Etk_Spinner has been remove frome etk cvs so the config panel isn't usable.
 
 #####################################

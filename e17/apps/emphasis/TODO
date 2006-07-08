@@ -1,4 +1,3 @@
-*Use ecore_config instead of eet
 *Add utf-8 support
 *Use Table in config frames
 *Put callback's on the spin button

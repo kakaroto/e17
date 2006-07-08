@@ -1,115 +1,70 @@
 #include "emphasis.h"
 #include "emphasis_config.h"
 
-
-void 
-config_write(Emphasis_Config *config)
+void
+set_defaults (void)
 {
-	char *str_port, *str_x, *str_y, *str_w, *str_h;
-	char *config_dir;
-	Eet_File *ef;
-	
-	config_dir = ecore_file_get_dir(config->file_path);
-	if (!ecore_file_exists(config_dir))
-		ecore_file_mkdir(config_dir);
-	else if (!ecore_file_is_dir(config_dir))
-	{
-		printf("Error %s is not a directory\n", config_dir);
-		return;
-	}
+	ecore_config_string_default(MPD_HOSTNAME_KEY, "localhost");
+	ecore_config_int_default(MPD_PORT_KEY, 6600);
+	ecore_config_string_default(MPD_PASSWORD_KEY, NULL);
+	ecore_config_int_default(MPD_CROSSFADE_KEY, 0);
 
-	asprintf(&str_port, "%i", config->port);
-	asprintf(&str_x, "%i", config->geometry.x);
-	asprintf(&str_y, "%i", config->geometry.y);
-	asprintf(&str_w, "%i", config->geometry.w);
-	asprintf(&str_h, "%i", config->geometry.h);
-	ef = eet_open(config->file_path, EET_FILE_MODE_WRITE);
-	if (ef)
-	{
-		eet_write(ef, "Hostname", config->hostname, strlen(config->hostname)+1, 0);
-		eet_write(ef, "Port", str_port, strlen(str_port)+1, 0);
-		if (config->password)
-			eet_write(ef, "Password", config->password, strlen(config->password)+1, 0);
-		eet_write(ef, "x", str_x, sizeof(int), 0);
-		eet_write(ef, "y", str_y, sizeof(int), 0);
-		eet_write(ef, "w", str_w, sizeof(int), 0);
-		eet_write(ef, "h", str_h, sizeof(int), 0);
-		eet_close(ef);
-	}
-	free(str_port);
-	free(str_x);
-	free(str_y);
-	free(str_w);
-	free(str_h);
+	ecore_config_int_default(EMP_GEOMETRY_X_KEY, 0);
+	ecore_config_int_default(EMP_GEOMETRY_Y_KEY, 0);
+	ecore_config_int_default(EMP_GEOMETRY_W_KEY, 500);
+	ecore_config_int_default(EMP_GEOMETRY_H_KEY, 400);
+
+	ecore_config_int_default(EMP_MODE_KEY, EMPHASIS_FULL);
 }
 
-/**
- * @brief Load the config file
- * @return The data set into the config file or the default parameters for a mpd connection
- */
 Emphasis_Config *
 config_load(void)
 {
 	Emphasis_Config *config;
-	Eet_File *ef;
-	char *hostname, *password, *file_path;
-	
-	config = config_new();
-	
-	ef = eet_open(config->file_path, EET_FILE_MODE_READ);
-	if (ef)
-	{
-		hostname = eet_read(ef, "Hostname", 0);
-		config->port = atoi(eet_read(ef, "Port", 0));
-		password = eet_read(ef, "Password", 0);
-		config->geometry.x = atoi(eet_read(ef, "x", 0));
-		config->geometry.y = atoi(eet_read(ef, "y", 0));
-		config->geometry.w = atoi(eet_read(ef, "w", 0));
-		config->geometry.h = atoi(eet_read(ef, "h", 0));
-		eet_close(ef);
-		
-		config_str_change(config, &(config->hostname), hostname);
-		config_str_change(config, &(config->password), password);
-	}
-	
-	return config;
-}
 
-Emphasis_Config *
-config_new(void)
-{
-	Emphasis_Config *config;
-	char *hostname, *password, *file_path;
-	
 	config = malloc(sizeof(Emphasis_Config));
-	
-	config_str_change(config, &(config->user_home_path), strdup(getenv("HOME")));
-	asprintf(&file_path, "%s/.e/emphasis/emphasis.cfg", config->user_home_path); 
-	config->file_path = strdup(file_path);
-	config->hostname = strdup("localhost");
-	config->port = 6600;
-	config->password = NULL;
-	config->crossfade = 0;
-	config->geometry.x = 0;
-	config->geometry.y = 0;
-	config->geometry.w = 500;
-	config->geometry.h = 400;
-	
+	set_defaults();
+	ecore_config_load();
+
+	config->hostname   = ecore_config_string_get(MPD_HOSTNAME_KEY);
+	config->port       = ecore_config_int_get(MPD_PORT_KEY);
+	config->password   = ecore_config_string_get(MPD_PASSWORD_KEY);
+	config->crossfade  = ecore_config_int_get(MPD_CROSSFADE_KEY);
+
+	config->geometry.x = ecore_config_int_get(EMP_GEOMETRY_X_KEY);
+	config->geometry.y = ecore_config_int_get(EMP_GEOMETRY_Y_KEY);
+	config->geometry.w = ecore_config_int_get(EMP_GEOMETRY_W_KEY);
+	config->geometry.h = ecore_config_int_get(EMP_GEOMETRY_H_KEY);
+
+	config->mode       = ecore_config_int_get(EMP_MODE_KEY);
+
 	return config;
 }
-	
-void
-config_str_change(Emphasis_Config *config, const char **str, const char *value)
-{
-	if (!value)
-		return;
 
-	*str = strdup(value);
+void
+config_save(Emphasis_Config *config)
+{
+	ecore_config_string_set(MPD_HOSTNAME_KEY, config->hostname);
+	ecore_config_int_set(MPD_PORT_KEY, config->port);
+	ecore_config_string_set(MPD_PASSWORD_KEY, config->password);
+	ecore_config_int_set(MPD_CROSSFADE_KEY, config->crossfade);
+	                                          
+	ecore_config_int_set(EMP_GEOMETRY_X_KEY, config->geometry.x);
+	ecore_config_int_set(EMP_GEOMETRY_Y_KEY, config->geometry.y);
+	ecore_config_int_set(EMP_GEOMETRY_W_KEY, config->geometry.w);
+	ecore_config_int_set(EMP_GEOMETRY_H_KEY, config->geometry.h);
+
+	ecore_config_int_set(EMP_MODE_KEY, config->mode);
+
+	ecore_config_save();
 }
 
-void
-config_gui_init(Emphasis_Config_Gui *gui)
+Emphasis_Config_Gui *
+config_gui_init(void)
 {
+	Emphasis_Config_Gui *gui;
+	gui = malloc(sizeof(Emphasis_Config_Gui));
+
 	gui->window = etk_window_new();
 	etk_window_title_set(ETK_WINDOW(gui->window),"Emphasis Configuration");
 	etk_window_wmclass_set(ETK_WINDOW(gui->window), "Emphasis Configuration", "emphasis");
@@ -135,7 +90,7 @@ config_gui_init(Emphasis_Config_Gui *gui)
 	gui->port_label = etk_label_new("Port :");
 //	gui->port_spin = etk_spin_button_new(0, 65536, 1);
 	etk_box_pack_start(ETK_BOX(gui->port_hbox), gui->port_label, ETK_TRUE, ETK_TRUE, 0);
-	etk_box_pack_start(ETK_BOX(gui->port_hbox), gui->port_spin, ETK_TRUE, ETK_TRUE, 0);
+//	etk_box_pack_start(ETK_BOX(gui->port_hbox), gui->port_spin, ETK_TRUE, ETK_TRUE, 0);
 	etk_box_pack_start(ETK_BOX(gui->connection_vbox), gui->port_hbox, ETK_TRUE, ETK_TRUE, 5);
 	
 	gui->password_hbox = etk_hbox_new(ETK_TRUE, 0);
@@ -157,7 +112,7 @@ config_gui_init(Emphasis_Config_Gui *gui)
 	gui->rowheight_label = etk_label_new("Row Height :");
 //	gui->rowheight_spin = etk_spin_button_new(0, 50, 1);
 	etk_box_pack_start(ETK_BOX(gui->rowheight_hbox), gui->rowheight_label, ETK_TRUE, ETK_TRUE, 0);
-	etk_box_pack_start(ETK_BOX(gui->rowheight_hbox), gui->rowheight_spin, ETK_TRUE, ETK_TRUE, 0);
+//	etk_box_pack_start(ETK_BOX(gui->rowheight_hbox), gui->rowheight_spin, ETK_TRUE, ETK_TRUE, 0);
 	etk_box_pack_start(ETK_BOX(gui->interface_vbox), gui->rowheight_hbox, ETK_TRUE, ETK_TRUE, 5);
 	/**/
 	
@@ -169,15 +124,25 @@ config_gui_init(Emphasis_Config_Gui *gui)
 	etk_box_pack_start(ETK_BOX(gui->buttons_box_hbox), gui->buttons_box_apply, ETK_TRUE, ETK_FALSE, 0);
 	etk_box_pack_start(ETK_BOX(gui->buttons_box_hbox), gui->buttons_box_cancel, ETK_TRUE, ETK_FALSE, 0);
 	etk_box_pack_start(ETK_BOX(gui->vbox), gui->buttons_box_hbox, ETK_FALSE, ETK_FALSE, 0);
+
+	return gui;
 }
 
 void
 config_gui_set(Emphasis_Config_Gui *gui, Emphasis_Config *config)
 {
-	char *port;
+//	char *port;
 	etk_entry_text_set(ETK_ENTRY(gui->hostname_entry), config->hostname);
-	asprintf(&port, "%d", config->port);
-	etk_entry_text_set(ETK_ENTRY(gui->port_spin), port);
-	if (config->password)
+//	asprintf(&port, "%d", config->port);
+//	etk_entry_text_set(ETK_ENTRY(gui->port_spin), port);
+	if (config->password != NULL && strlen(config->password) != 0)
 		etk_entry_text_set(ETK_ENTRY(gui->password_entry), config->password);
+}
+
+void
+config_free(Emphasis_Config *config)
+{
+	if (config->hostname) { free(config->hostname); }
+	if (config->password) { free(config->password); }
+	free(config);
 }

@@ -5,12 +5,30 @@
  * @{
  */
 
-typedef struct _Emphasis_Config {
-	const char *user_home_path;
-	const char *file_path;
-	const char *hostname;
+#include <Ecore_Config.h>
+
+#define MPD_HOSTNAME_KEY  "/mpd/hostname"
+#define MPD_PORT_KEY      "/mpd/port"
+#define MPD_PASSWORD_KEY  "/mpd/password"
+#define MPD_CROSSFADE_KEY "/mpd/crossfade" /*TODO handle the crossfade */
+
+#define EMP_GEOMETRY_X_KEY  "/geometry/x"
+#define EMP_GEOMETRY_Y_KEY  "/geometry/y"
+#define EMP_GEOMETRY_W_KEY  "/geometry/w"
+#define EMP_GEOMETRY_H_KEY  "/geometry/h"
+#define EMP_MODE_KEY      "/emphasis/mode"
+
+typedef enum 
+{
+	EMPHASIS_SMALL=0,
+	EMPHASIS_FULL=1
+} Emphasis_Mode;
+
+typedef struct _Emphasis_Config 
+{
+	char *hostname;
 	int port;
-	const char *password;
+	char *password;
 	int crossfade;
 	
 	struct {
@@ -20,12 +38,7 @@ typedef struct _Emphasis_Config {
 		int h;
 	} geometry;
 
-	enum {
-		EMPHASIS_PLAYER,
-		EMPHASIS_PLAYLIST,
-		EMPHASIS_FULL
-	} display_mode;
-		
+	Emphasis_Mode mode;
 } Emphasis_Config;
 
 struct _Emphasis_Config_Gui {
@@ -62,11 +75,12 @@ struct _Emphasis_Config_Gui {
 
 typedef struct _Emphasis_Config_Gui Emphasis_Config_Gui;
 	
-void config_write(Emphasis_Config *config);
+void config_save(Emphasis_Config *config);
 Emphasis_Config *config_load(void);
 void config_str_change(Emphasis_Config *config, const char **str, const char *value);
-void config_gui_init(Emphasis_Config_Gui *gui);
+Emphasis_Config_Gui *config_gui_init(void);
 void config_gui_set(Emphasis_Config_Gui *gui, Emphasis_Config *config);
 Emphasis_Config *config_new(void);
+void config_free(Emphasis_Config *config);
  /** @} */
 #endif /*_CONFIG_H_*/

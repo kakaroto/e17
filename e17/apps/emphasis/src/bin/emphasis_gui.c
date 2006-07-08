@@ -225,7 +225,7 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	emphasis_menu_append(gui->menu, "clear", ETK_STOCK_EDIT_CLEAR, cb_playlist_clear, NULL,
 	                                "delete", ETK_STOCK_EDIT_DELETE, cb_playlist_delete, gui,
 	                                "update", ETK_STOCK_VIEW_REFRESH, cb_database_update, gui,
-	                            /*  "config", ETK_STOCK_PREFERENCES_SYSTEM, cb_config_show, gui, */
+	                                "config", ETK_STOCK_PREFERENCES_SYSTEM, cb_config_show, gui,
 	                                NULL);
 	separator = etk_menu_item_separator_new();
 	etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(separator));
@@ -508,25 +508,31 @@ emphasis_player_info_set(mpd_Song *song, char *msg, Emphasis_Gui *gui)
 {
 	char *info;	
 	
+	etk_textblock_clear(ETK_TEXT_VIEW(gui->song_info)->textblock);
 	if (song)
 	{
 		char **table[] = {&(song->artist), &(song->title), &(song->album), NULL};
 		emphasis_unknow_if_null(table);
 		
-		asprintf(&info, "<p><font_size=11> %s  -  %s</p><br> %s", song->artist, song->title, song->album);
+		asprintf(&info, "<b><font size=12>%s</font></b>\n \n"
+		         "<i>by</i>  <font size=11>%s</font>  "
+		         "<i>in</i>  <font size=11>%s</font>  ", 
+		         song->title, song->artist, song->album);
 		if (msg)
 		{
 			asprintf(&info, "%s (%s)", info, msg);
 		}
-//		etk_textblock_text_set(ETK_TEXT_VIEW(gui->song_info)->textblock, info);
+		etk_textblock_text_set(ETK_TEXT_VIEW(gui->song_info)->textblock, info,
+		                       ETK_TRUE);
 		free(info);
 	}
 	else
 	{
 		if (msg)
 		{
-			asprintf(&info, "<center><font_size=11>%s</></center>", msg);
-//			etk_textblock_text_set(ETK_TEXT_VIEW(gui->song_info)->textblock, info);
+			asprintf(&info, "%s", msg);
+			etk_textblock_text_set(ETK_TEXT_VIEW(gui->song_info)->textblock, info,
+			                       ETK_TRUE);
 			free(info);
 		}
 	}

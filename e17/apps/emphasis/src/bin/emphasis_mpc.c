@@ -18,12 +18,10 @@ mpc_init(const char *hostname, int port, const char *password)
 	if (!mpd_connect(mo))
 	{
 		mpd_send_password(mo);
-		printf("MPD daemon found at %s:%d\n", hostname, port);
 		timer = ecore_timer_add(0.2, mpc_update, NULL);
 	}
 	else
 	{
-		printf("MPD daemon not found at %s:%d \n", hostname, port);
 		timer = NULL;
 	}
 
@@ -157,14 +155,9 @@ mpc_connection_changed(MpdObj *mo, int connect, void *data)
 {
 	if (!connect)
 	{
-		emphasis_player_info_set(NULL, "Not connected to MPD daemon", data);
-	//	emphasis_clear(data);
+		emphasis_player_info_set(NULL, "Not connected to MPD", data);
 		ecore_timer_del(((Emphasis_Gui*)data)->timer);
 		((Emphasis_Gui*)data)->timer = ecore_timer_add(0.2, emphasis_try_connect, data);
-	}
-	if (connect)
-	{
-		printf("platypus\n");
 	}
 }
 

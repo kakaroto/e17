@@ -21,4 +21,4 @@ emphasis_gui.c \
 emphasis_callbacks.c \
 emphasis_misc.c 
 
-emphasis_LDADD = @my_libs@ -lmpd
+emphasis_LDADD = @my_libs@

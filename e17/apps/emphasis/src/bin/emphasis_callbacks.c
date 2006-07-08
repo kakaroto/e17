@@ -13,14 +13,16 @@ cb_quit(Etk_Object *object, void *data)
 	Etk_Widget *window;
 	Emphasis_Config *config;
 
-	config = etk_object_data_get(object, "config");
-	etk_widget_geometry_get(ETK_WIDGET(object), &(config->geometry.x), 
-	                        &(config->geometry.y), &(config->geometry.w), 
-	                        &(config->geometry.h));
-	config_write(config);
+	window = ETK_WIDGET(object);
+	config = config_load();
+	etk_widget_geometry_get(ETK_WIDGET(window), 
+	                        &(config->geometry.x), &(config->geometry.y), 
+	                        &(config->geometry.w), &(config->geometry.h));
+	config_save(config);
 
+	config_free(config);
 	mpc_disconnect();
-	eet_shutdown();
+	ecore_config_shutdown();
 	etk_main_quit();
 }
 
@@ -534,12 +536,6 @@ cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void 
 	gui = data;
 	if (event->button == 3)
 		{
-			if (etk_tree_selected_rows_get(ETK_TREE(gui->tree_pls)) == NULL)
-				{
-					printf("coin\n");
-					event->button = 1;
-					etk_signal_emit_by_name("row_clicked", ETK_OBJECT(gui->tree_pls), NULL, gui, event);
-				}
 			etk_menu_popup(ETK_MENU(gui->menu));
 		}
 }
@@ -649,13 +645,17 @@ cb_config_show(Etk_Object *object, void *data)
 	Emphasis_Config *config;
 
 	gui = data;
-	config_gui_init(gui->config_gui);
+	gui->config_gui = config_gui_init();
 	config = config_load();
 	config_gui_set(gui->config_gui, config);
 	etk_widget_show_all(gui->config_gui->window);
-	etk_signal_connect("clicked", ETK_OBJECT(gui->config_gui->buttons_box_ok), ETK_CALLBACK(cb_config_write), gui);
-	etk_signal_connect("clicked", ETK_OBJECT(gui->config_gui->buttons_box_apply), ETK_CALLBACK(cb_config_write), gui);
-	etk_signal_connect("clicked", ETK_OBJECT(gui->config_gui->buttons_box_cancel), ETK_CALLBACK(cb_config_hide), gui);
+
+	etk_signal_connect("clicked", ETK_OBJECT(gui->config_gui->buttons_box_ok), 
+	                   ETK_CALLBACK(cb_config_write), gui);
+	etk_signal_connect("clicked", ETK_OBJECT(gui->config_gui->buttons_box_apply), 
+	                   ETK_CALLBACK(cb_config_write), gui);
+	etk_signal_connect("clicked", ETK_OBJECT(gui->config_gui->buttons_box_cancel), 
+	                   ETK_CALLBACK(cb_config_hide), gui->config_gui);
 }
 
 void
@@ -664,7 +664,7 @@ cb_config_hide(Etk_Object *object, void *data)
 	Emphasis_Config_Gui *gui;
 	
 	gui = data;
-	etk_object_destroy(ETK_OBJECT(gui->window));
+	etk_widget_hide(ETK_WIDGET(gui->window));
 }
 
 void
@@ -672,17 +672,17 @@ cb_config_write(Etk_Object *object, void *data)
 {
 	Emphasis_Config *config;
 	Emphasis_Gui *gui;
-	const char *port;
+//	const char *port; 
 	
-	config = config_new();
+	config = config_load();
 	gui = data;
 	
-	config->hostname = etk_entry_text_get(ETK_ENTRY(gui->config_gui->hostname_entry));
-	port = etk_entry_text_get(ETK_ENTRY(gui->config_gui->port_spin));
-	config->port = atoi(port);
-	config->password = etk_entry_text_get(ETK_ENTRY(gui->config_gui->password_entry));
+	config->hostname = (char *)etk_entry_text_get(ETK_ENTRY(gui->config_gui->hostname_entry));
+//	port = etk_entry_text_get(ETK_ENTRY(gui->config_gui->port_spin));
+//	config->port = atoi(port);
+	config->password = (char *)etk_entry_text_get(ETK_ENTRY(gui->config_gui->password_entry));
 	
-	config_write(config);
+	config_save(config);
 	cb_config_hide(NULL, gui->config_gui);
 	emphasis_try_connect(gui);
 }
@@ -695,11 +695,14 @@ cb_switch_full(Etk_Object *object, void *data)
 	
 	gui=data;
 	
-	config = etk_object_data_get(ETK_OBJECT(gui->window), "config");
+//	config = etk_object_data_get(ETK_OBJECT(gui->window), "config");
+	config = config_load();
 
 	etk_container_border_width_set(ETK_CONTAINER(gui->window), 6);
 	etk_widget_show_all(gui->vpaned);
 	etk_window_resize(ETK_WINDOW(gui->window), config->geometry.w, config->geometry.h);
+
+	config_free(config);
 }
 
 void
@@ -710,13 +713,21 @@ cb_switch_small(Etk_Object *object, void *data)
 	int w,h;
 	
 	gui=data;
+
+	if (etk_widget_is_visible(gui->tree_pls) == ETK_FALSE)
+		{
+			return;
+		}
 	
 	etk_widget_geometry_get(gui->window, NULL, NULL, &w, &h);
-	config = etk_object_data_get(ETK_OBJECT(gui->window), "config");
+	config = config_load();
 	config->geometry.w = w;
 	config->geometry.h = h;
 
 	etk_container_border_width_set(ETK_CONTAINER(gui->window), 0);
 	etk_widget_hide_all(gui->vpaned);
 	etk_window_resize(ETK_WINDOW(gui->window), 0, 0);
+
+	config_save(config);
+	config_free(config);
 }

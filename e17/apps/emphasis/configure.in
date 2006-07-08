@@ -74,23 +74,6 @@ AC_PATH_EFL(
    ]
 )
 
-#check for EVAS
-AC_PATH_EFL(
-   evas,
-   0.9.9.022,
-   [
-     AC_DEFINE(HAVE_EVAS, 1, have EVAS)
-     evas="EVAS "
-     AM_CONDITIONAL(HAVE_EVAS, true)
-     have_evas="yes"
-     evas_libs=`evas-config --libs`
-     evas_cflags=`evas-config --cflags`
-   ],
-   [
-     AC_MSG_ERROR([No Evas, can't build.])
-   ]
-)
-
 #check for ETK
 AC_PATH_EFL(
    etk,
@@ -108,32 +91,22 @@ AC_PATH_EFL(
    ]
 )
 
-#check for EET
-AC_PATH_EFL(
-   eet,
-   0.9.10.026,
-   [
-     AC_DEFINE(HAVE_EET, 1, have EET)
-     eet="EET "
-     AM_CONDITIONAL(HAVE_EET, true)
-     have_eet="yes"
-     eet_libs=`eet-config --libs`
-     eet_cflags=`eet-config --cflags`     
-   ],
-   [
-     AC_DEFINE(HAVE_EET, 0, no EET)
-     AM_CONDITIONAL(HAVE_EET, false)
-     AC_MSG_WARN([No EET, can't build EET desktop support.])
-     have_eet="no"
-     eet_libs=""
-     eet_cflags=""
-   ]
-)
-
 #check for libmpd
 PKG_CHECK_MODULES(
    [libmpd], 
-	libmpd >= 0.12.0)
+	libmpd >= 0.12.0,
+	[
+	 AC_DEFINE(HAVE_LIBMPD, 1, have LIBMPD)
+	 libmpd="libmpd"
+	 AM_CONDITIONAL(HAVE_LIBMPD, true)
+	 have_libmpd="yes"
+	 libmpd_libs=`pkg-config --libs libmpd`
+	 libmpd_cflags=`pkg-config --cflags libmpd`
+	],
+	[
+	 AC_MSG_ERROR([libmpd not found.])
+	]
+)
 
 dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
 etk_prefix="\"`etk-config --prefix`/share/etk\""
@@ -142,16 +115,14 @@ AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
 
 ecore_libs=`ecore-config --libs`
 ecore_cflags=`ecore-config --cflags`
-evas_libs=`evas-config --libs`
-evas_cflags=`evas-config --cflags`
 etk_libs=`etk-config --libs`
 etk_cflags=`etk-config --cflags`
-eet_libs=`eet-config --libs`
-eet_cflags=`eet-config --cflags`
+libmpd_libs=`pkg-config --libs libmpd`
+libmpd_cflags=`pkg-config --cflags libmpd`
 
 # add your required libs / include here
-my_includes="$ecore_cflags $evas_cflags $etk_cflags $eet_cflags"
-my_libs="$ecore_libs $evas_libs $etk_libs $eet_lib"
+my_includes="$ecore_cflags $etk_cflags $libmpd_cflags"
+my_libs="$ecore_libs $etk_libs $libmpd_libs"
 AC_SUBST(my_includes)
 AC_SUBST(my_libs)
 

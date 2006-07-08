@@ -9,9 +9,7 @@
 #include <libmpd/libmpd.h>
 
 #include <Ecore.h>
-#include <Ecore_File.h>
 #include <Evas.h>
-#include <Eet.h>
 #include <etk/Etk.h>
 
 #include "emphasis_mpc.h"
@@ -22,6 +20,7 @@
 
 extern MpdObj *mo;
 
+void emphasis_pref_init(void *data);
 void emphasis_init_connect(Emphasis_Gui *gui);
 int emphasis_try_connect(void *data);
 

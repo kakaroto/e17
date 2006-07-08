@@ -10,15 +10,10 @@ main (int argc, char **argv)
 		printf("Unable to init etk\n");
 		return 1;
 	}
-	if (!eet_init())
+	if (ecore_config_init(strdup("emphasis")))
 	{
-		printf("Unable to init eet\n");
+		printf("Unable to init ecore_config\n");
 		return 1;
-	}
-	if (!ecore_file_init())
-	{
-		printf("Unable to init ecore_file\n");
-		return 3;
 	}
 	
 	gui = malloc(sizeof(Emphasis_Gui));
@@ -30,12 +25,27 @@ main (int argc, char **argv)
 	
 	emphasis_init_gui(gui);
 	
+	emphasis_pref_init(gui);
 	emphasis_init_connect(gui);
 	emphasis_try_connect(gui);
 	
 	etk_main();
 
 	return 0;
+}
+
+void
+emphasis_pref_init(void *data)
+{
+	Emphasis_Gui *gui;
+	Emphasis_Config *config;
+
+	gui = data;
+	config = config_load();
+	etk_window_resize(ETK_WINDOW(gui->window), config->geometry.w, config->geometry.h);
+	emphasis_player_info_set(NULL, "Not connected to MPD", gui);
+
+	config_free(config);
 }
 
 void
@@ -54,10 +64,11 @@ emphasis_try_connect(void *data)
 	
 	gui = data;
 	config = config_load();
-	etk_window_resize(ETK_WINDOW(gui->window), config->geometry.w, config->geometry.h);
-	etk_object_data_set(ETK_OBJECT(gui->window), "config", config);
+	
+//	etk_object_data_set(ETK_OBJECT(gui->window), "config", config);
 	
 	timer = mpc_init(config->hostname, config->port, config->password);
+	config_free(config);
 	
 	if (!timer)
 	{
