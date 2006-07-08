@@ -3,12 +3,12 @@ Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0), libetk-dev, libepsilon-dev, enlightenment-dev
-Standards-Version: 3.6.2
+Standards-Version: 3.6.2.2
 
 Package: exhibit
 Architecture: any
 Depends: ${shlibs:Depends}, libetk, libepsilon
-Suggests: libe
+Suggests: enlightenment
 Description: the Etk image viewer
  Exhibit is an image viewer that uses Etk as its toolkit.
  Exhibit supports  image previews for image types supported
