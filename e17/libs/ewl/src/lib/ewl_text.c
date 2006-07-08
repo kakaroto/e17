@@ -468,6 +468,12 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 
 	if (text) len = strlen(text);
 
+	/* Limit the index to be within safe boundaries */
+	if (idx > t->length + 1)
+		idx = t->length + 1;
+	if (idx < 0)
+		idx = 0;
+
 	/* setup the cursor position to begin with. If this is the same
 	 * position as before nothing will change (we'll keep our current
 	 * pointer */
@@ -477,37 +483,28 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	{
 		ewl_text_clear(t);
 	}
-	else if (!t->text)
-	{
-		t->text = strdup(text);
-		t->length = len;
-		t->total_size = t->length + 1;
-
-		ewl_text_cursor_position_set(t, 0);
-		ewl_text_tree_insert(t, t->cursor_position, t->length);
-		ewl_text_cursor_position_set(t, t->length);
-	}
 	else
 	{
-		if ((t->length + len + 1) >= t->total_size)
+		int newlen;
+
+		newlen = t->length + len;
+		if ((newlen + 1) >= t->total_size)
 		{
 			int extend;
 
-			extend = len;
-			if (extend < EWL_TEXT_EXTEND_VAL)
-				extend = EWL_TEXT_EXTEND_VAL;
+			/*
+			 * Determine the size in blocks of EWL_TEXT_EXTEND_VAL
+			 */
+			extend = ((newlen + 1) / EWL_TEXT_EXTEND_VAL);
+			extend = (extend + 1) * EWL_TEXT_EXTEND_VAL;
 
-			t->text = realloc(t->text, (t->length + extend + 1) * sizeof(char));
-			t->total_size += extend + 1;
+			t->text = realloc(t->text, extend * sizeof(char));
+			t->total_size = extend;
 		}
 
-		if (idx == t->length)
-			strncat(t->text, text, len);
-		else
-		{
+		if (idx < t->length)
 			memmove(t->text + idx + len, t->text + idx, t->length - idx);
-			memcpy(t->text + idx, text, len);
-		}
+		memcpy(t->text + idx, text, len);
 		t->length += len;
 		t->text[t->length] = '\0';
 
@@ -559,6 +556,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 	else
 	{
 		IF_FREE(t->text);
+		t->total_size = 0;
 		ewl_text_triggers_remove(t);
 	}
 
