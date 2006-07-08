@@ -606,7 +606,7 @@ static void signal_cb
 	etk_tree_row_select(row);
      }
 
-   free(str);
+   FREE(str);
 }
 
 
@@ -654,5 +654,5 @@ static void message_cb
      }
    edje_object_message_send(obj, EDJE_MESSAGE_NONE, 12345, NULL);
 
-   free(str);
+   FREE(str);
 }

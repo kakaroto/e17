@@ -287,7 +287,7 @@ static void _gui_open_edje_file_cb(Gui *gui)
    if (cwd)
      etk_filechooser_widget_current_folder_set(
 	     ETK_FILECHOOSER_WIDGET(gui->fm_chooser), cwd);
-   free(cwd);
+   FREE(cwd);
    etk_dialog_pack_in_main_area(ETK_DIALOG(gui->fm_dialog), gui->fm_chooser,
 	   ETK_TRUE, ETK_TRUE, 0, ETK_FALSE);
 
@@ -318,8 +318,8 @@ static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
    gui->path = strdup(dir);
    gui->path = strcat(gui->path, "/");
    gui->path = strcat(gui->path, file);
-   free((char *)dir);
-   free((char *)file);
+   FREE(dir);
+   FREE(file);
    list_entries(gui->path, ETK_TREE(gui->tree), ETK_TREE(gui->output),
 	 ETK_CANVAS(gui->canvas));
    etk_window_hide_on_delete(ETK_OBJECT(gui->fm_dialog), NULL);

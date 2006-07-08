@@ -33,6 +33,12 @@
 #include <alloca.h>
 #endif
 
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
+#define FREE(ptr) do { if(ptr) { free(ptr); ptr = NULL; }} while (0);
+
 #include "edje_etk.h"
 #include "etk_gui.h"
 #include "conf.h"
