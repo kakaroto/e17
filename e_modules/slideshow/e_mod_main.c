@@ -305,8 +305,6 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m)
 {
-   e_lib_shutdown();
-
    slide_config->module = NULL;
    e_gadcon_provider_unregister(&_gc_class);
 
