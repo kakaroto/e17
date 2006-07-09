@@ -105,8 +105,9 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	ewl_callback_append(next_button, EWL_CALLBACK_MOUSE_DOWN, ewl_calendar_next_month_cb, ib);
 	ewl_widget_show(next_button);
 
-	ib->grid = ewl_grid_new(7, 7);
-	ewl_container_child_append(EWL_CONTAINER(vbox), ib->grid);
+	ib->grid = ewl_grid_new();
+	ewl_grid_dimension_set(EWL_GRID(ib->grid), 7, 7);
+	ewl_container_child_append(EWL_CONTAINER(vbox), EWL_WIDGET(ib->grid));
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->grid), EWL_FLAG_FILL_FILL);
 	ewl_object_minimum_h_set(EWL_OBJECT(ib->grid), 100);
 	ewl_widget_show(ib->grid);
@@ -214,7 +215,7 @@ ewl_calendar_grid_setup(Ewl_Calendar *cal)
 	DCHECK_PARAM_PTR("cal", cal);
 	DCHECK_TYPE("cal", cal, EWL_CALENDAR_TYPE);
 
-	ewl_grid_reset(EWL_GRID(cal->grid), 7, 7);
+	ewl_container_reset(EWL_CONTAINER(cal->grid));
 	ewl_calendar_add_day_labels(cal);
 
 	/* Make the initial display.. */
@@ -268,9 +269,11 @@ ewl_calendar_grid_setup(Ewl_Calendar *cal)
 		ewl_callback_append(EWL_WIDGET(day_label), 
 					EWL_CALLBACK_CLICKED,
 					ewl_calendar_day_pick, cal);
-
-		ewl_grid_add(EWL_GRID(cal->grid), day_label, cur_col, cur_col,
-							cur_row, cur_row);
+		
+		ewl_container_child_append(EWL_CONTAINER(cal->grid), day_label);
+		ewl_grid_child_position_set(EWL_GRID(cal->grid), 
+						day_label, cur_col, cur_col,
+						cur_row, cur_row);
 		ewl_calendar_highlight_today(now, EWL_LABEL(day_label), cal);
 		ewl_widget_show(day_label);
 
@@ -416,37 +419,44 @@ ewl_calendar_add_day_labels(Ewl_Calendar *ib)
 	/* Add the days*/
 	day_label = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(day_label), "M");
-	ewl_grid_add(EWL_GRID(ib->grid), day_label, 1, 1, 1, 1);
+	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
+	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 1, 1, 1, 1);
 	ewl_widget_show(day_label);
 
 	day_label = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(day_label), "T");
-	ewl_grid_add(EWL_GRID(ib->grid), day_label, 2, 2, 1, 1);
+	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
+	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 2, 2, 1, 1);
 	ewl_widget_show(day_label);
 
 	day_label = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(day_label), "W");
-	ewl_grid_add(EWL_GRID(ib->grid), day_label, 3, 3, 1, 1);
+	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
+	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 3, 3, 1, 1);
 	ewl_widget_show(day_label);
 
 	day_label = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(day_label), "T");
-	ewl_grid_add(EWL_GRID(ib->grid), day_label, 4, 4, 1, 1);
+	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
+	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 4, 4, 1, 1);
 	ewl_widget_show(day_label);
 
 	day_label = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(day_label), "F");
-	ewl_grid_add(EWL_GRID(ib->grid), day_label, 5, 5, 1, 1);
+	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
+	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 5, 5, 1, 1);
 	ewl_widget_show(day_label);
 
 	day_label = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(day_label), "S");
-	ewl_grid_add(EWL_GRID(ib->grid), day_label, 6, 6, 1, 1);
+	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
+	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 6, 6, 1, 1);
 	ewl_widget_show(day_label);
 
 	day_label = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(day_label), "S");
-	ewl_grid_add(EWL_GRID(ib->grid), day_label, 7, 7, 1, 1);
+	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
+	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 7, 7, 1, 1);
 	ewl_widget_show(day_label);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

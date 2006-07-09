@@ -65,10 +65,11 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	/*
 	 * Create a new grid
 	 */
+	t->grid = (Ewl_Grid *)ewl_grid_new();
 	if (col_headers)
-	        t->grid = (Ewl_Grid *) ewl_grid_new(cols, rows + 1);
+		ewl_grid_dimension_set(t->grid, cols, rows + 1);
 	else
-	        t->grid = (Ewl_Grid *) ewl_grid_new(cols, rows);
+		ewl_grid_dimension_set(t->grid, cols, rows);
 	ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->grid));
 	ewl_widget_show(EWL_WIDGET(t->grid));
 
@@ -85,7 +86,10 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 			ewl_container_child_append(EWL_CONTAINER(cell), button);
 			ewl_object_fill_policy_set(EWL_OBJECT(cell),
 						EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-			ewl_grid_add(t->grid, EWL_WIDGET(cell), i, i, 1, 1);
+			ewl_container_child_append(EWL_CONTAINER(t->grid), 
+							EWL_WIDGET(cell));
+			ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell),
+								i, i, 1, 1);
 			ewl_widget_show(EWL_WIDGET(button));
 			ewl_widget_show(EWL_WIDGET(cell));
 		}
@@ -140,11 +144,13 @@ ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
 	 * FIXME: one must verify that other functions that
 	 * ewl_table_add need this test
 	*/
+	ewl_container_child_append(EWL_CONTAINER(table->grid), 
+							EWL_WIDGET(cell));
 	if (table->col_headers)
-	        ewl_grid_add(table->grid, EWL_WIDGET(cell),
+	        ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
 			     start_col, end_col, start_row + 1, end_row + 1);
 	else
-	        ewl_grid_add(table->grid, EWL_WIDGET(cell),
+	        ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
 			     start_col, end_col, start_row, end_row);
 
 	ewl_callback_prepend(EWL_WIDGET(cell), EWL_CALLBACK_MOUSE_UP,
@@ -272,7 +278,7 @@ ewl_table_col_w_set(Ewl_Table *table, int col, int width)
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_col_w_set(table->grid, col, width);
+	ewl_grid_col_w_set(table->grid, col, 0.0,width);
 	ewl_widget_configure(EWL_WIDGET(table));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -292,7 +298,7 @@ ewl_table_col_w_get(Ewl_Table *table, int col, int *width)
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_col_w_get(table->grid, col, width);
+	ewl_grid_col_w_get(table->grid, col, NULL, width);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -311,7 +317,7 @@ ewl_table_row_h_set(Ewl_Table *table, int row, int height)
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_row_h_set(table->grid, row, height);
+	ewl_grid_row_h_set(table->grid, row, 0.0, height);
 	ewl_widget_configure(EWL_WIDGET(table));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -331,7 +337,7 @@ ewl_table_row_h_get(Ewl_Table *table, int row, int *height)
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_row_h_get(table->grid, row, height);
+	ewl_grid_row_h_get(table->grid, row, NULL, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -355,10 +361,11 @@ ewl_table_reset(Ewl_Table *t, int cols, int rows, char **col_headers)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TABLE_TYPE);
 
+	ewl_container_reset(EWL_CONTAINER(t->grid));
 	if (col_headers != NULL)
-		ewl_grid_reset(EWL_GRID(t->grid), cols, rows+1);
+		ewl_grid_dimension_set(EWL_GRID(t->grid), cols, rows+1);
 	else
-		ewl_grid_reset(EWL_GRID(t->grid), cols, rows);
+		ewl_grid_dimension_set(EWL_GRID(t->grid), cols, rows);
 
 	if (col_headers != NULL) {
 
@@ -368,7 +375,10 @@ ewl_table_reset(Ewl_Table *t, int cols, int rows, char **col_headers)
 			ewl_button_label_set(EWL_BUTTON(button), col_headers[i - 1]);
 			ewl_widget_disable(button);
 			ewl_container_child_append(EWL_CONTAINER(cell), button);
-			ewl_grid_add(t->grid, EWL_WIDGET(cell), i, i, 1, 1);
+			ewl_container_child_append(EWL_CONTAINER(t->grid), 
+							EWL_WIDGET(cell));
+			ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell), 
+								i, i, 1, 1);
 			ewl_widget_show(button);
 			ewl_widget_show(EWL_WIDGET(cell));
 		}
@@ -514,7 +524,8 @@ ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 	DCHECK_TYPE("p", p, EWL_CONTAINER_TYPE);
 
 	table = EWL_TABLE (p); 
-	ewl_object_preferred_inner_size_get (EWL_OBJECT (table->grid), &width_g, &height_g); 
+	ewl_object_preferred_inner_size_get (EWL_OBJECT (table->grid),
+							&width_g, &height_g); 
 	ewl_object_preferred_inner_size_set (EWL_OBJECT (table), width_g, height_g);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
