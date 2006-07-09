@@ -359,12 +359,12 @@ draw_ewl(Mode draw_mode)
    count /= sizeof(equate_button);
    Ewl_Widget     *table;
    Ewl_Widget     *button[count];
-   Ewl_Widget     *cell[count];
    Ewl_Widget     *displaycell;
 
    disp[0] = '\0';
    
-   table = ewl_grid_new(cols, rows);
+   table = ewl_grid_new();
+   ewl_grid_dimension_set(EWL_GRID(table), cols, rows);
    ewl_container_child_append(EWL_CONTAINER(main_box), table);
    ewl_widget_show(table);
    displaycell = ewl_cell_new();
@@ -376,10 +376,11 @@ draw_ewl(Mode draw_mode)
    Ewl_Widget     *disp_table;
    Ewl_Widget     *disp_cell[2];
 
+   disp_table = ewl_grid_new();
    if (calc_mode == SCI)
-      disp_table = ewl_grid_new(1, 2);
+      ewl_grid_dimension_set(EWL_GRID(disp_table), 1, 2);
    else
-      disp_table = ewl_grid_new(1, 1);
+      ewl_grid_dimension_set(EWL_GRID(disp_table), 1, 1);
    disp_cell[1] = ewl_cell_new();
    eqn_disp = ewl_text_new();
    if (calc_mode == SCI) {
@@ -393,35 +394,35 @@ draw_ewl(Mode draw_mode)
    ewl_widget_show(display);
    ewl_container_child_append(EWL_CONTAINER(displaycell), disp_table);
    ewl_widget_show(disp_cell[1]);
-   ewl_grid_add(EWL_GRID(disp_table), disp_cell[1], 1, 1, 1, 1);
+   ewl_container_child_append(EWL_CONTAINER(disp_table), disp_cell[1]);
+   ewl_grid_child_position_set(EWL_GRID(disp_table), disp_cell[1], 1, 1, 1, 1);
    if (calc_mode == SCI) {
       ewl_widget_show(disp_cell[2]);
-      ewl_grid_add(EWL_GRID(disp_table), disp_cell[2], 1, 1, 2, 2);
+      ewl_container_child_append(EWL_CONTAINER(disp_table), disp_cell[2]);
+      ewl_grid_child_position_set(EWL_GRID(disp_table), disp_cell[2], 1, 1, 2, 2);
    }
    ewl_widget_configure(disp_table);
    ewl_widget_show(disp_table);
    /* end display layout */
-   ewl_grid_add(EWL_GRID(table), displaycell, 1, 4, 1, 1);
+   ewl_container_child_append(EWL_CONTAINER(table), displaycell);
+   ewl_grid_child_position_set(EWL_GRID(table), displaycell, 1, 4, 1, 1);
    ewl_widget_show(displaycell);
    bc = count;
    equate_button  *but = buttons;
 
    while (bc-- > 0) {
-      cell[bc] = ewl_cell_new();
       button[bc] = ewl_button_new();
       ewl_button_label_set(EWL_BUTTON(button[bc]), but->text);
       but->button = button[bc];
       ewl_callback_append(button[bc], EWL_CALLBACK_MOUSE_DOWN,
                           but->callback, but->cmd);
-      ewl_container_child_append(EWL_CONTAINER(cell[bc]), button[bc]);
-      ewl_box_homogeneous_set(EWL_BOX(button[bc]), TRUE);
       ewl_object_alignment_set(EWL_OBJECT(EWL_BUTTON(button[bc])->label_object),
                                EWL_FLAG_ALIGN_CENTER);
-      ewl_grid_add(EWL_GRID(table), cell[bc], but->col,
+      ewl_container_child_append(EWL_CONTAINER(table), button[bc]);
+      ewl_grid_child_position_set(EWL_GRID(table), button[bc], but->col,
                    but->col + but->height - 1, but->row,
                    but->row + but->width - 1);
       ewl_widget_show(button[bc]);
-      ewl_widget_show(cell[bc]);
       but++;
    }
 
