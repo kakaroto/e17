@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-05 19:33+0200\n"
+"POT-Creation-Date: 2006-06-21 23:40+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -27,17 +27,17 @@ msgid "%u references remain\n"
 msgstr "pozostaje %u odwo³añ\n"
 
 #: src/aclass.c:289 src/backgrounds.c:1105 src/borders.c:1080
-#: src/borders.c:1203 src/buttons.c:730 src/cmclass.c:201 src/config.c:260
-#: src/cursors.c:177 src/iclass.c:518 src/iconify.c:2387 src/menus.c:1728
-#: src/menus.c:1838 src/slideout.c:425 src/tclass.c:260 src/tooltips.c:165
+#: src/borders.c:1203 src/buttons.c:729 src/cmclass.c:201 src/config.c:260
+#: src/cursors.c:177 src/iclass.c:518 src/iconify.c:2387 src/menus.c:1731
+#: src/menus.c:1841 src/slideout.c:425 src/tclass.c:260 src/tooltips.c:165
 #: src/windowmatch.c:159
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "Konfiguracja : pomijam nadmiarowe dane w \"%s\"\n"
 
 #: src/aclass.c:297 src/backgrounds.c:1113 src/borders.c:1086
-#: src/borders.c:1209 src/buttons.c:738 src/cmclass.c:209 src/config.c:268
-#: src/cursors.c:183 src/iclass.c:523 src/menus.c:1733 src/menus.c:1844
+#: src/borders.c:1209 src/buttons.c:737 src/cmclass.c:209 src/config.c:268
+#: src/cursors.c:183 src/iclass.c:523 src/menus.c:1736 src/menus.c:1847
 #: src/slideout.c:431 src/tclass.c:266 src/tooltips.c:171
 #: src/windowmatch.c:164
 #, c-format
@@ -463,7 +463,7 @@ msgstr "B³±d sekcji TextClass"
 msgid "Menu style"
 msgstr "Styl Obramowania"
 
-#: src/config.c:330 src/menus.c:1951
+#: src/config.c:330 src/menus.c:1954
 msgid "Menu"
 msgstr ""
 
@@ -1581,12 +1581,12 @@ msgstr ""
 "zaistalowany poprawnie.\n"
 "\n"
 
-#: src/menus.c:2050
+#: src/menus.c:2053
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Ustawienia ró¿ne"
 
-#: src/menus.c:2057
+#: src/menus.c:2060
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1595,15 +1595,15 @@ msgstr ""
 "Aktywacja Enlightenment\n"
 "Okno ustawieñ\n"
 
-#: src/menus.c:2061
+#: src/menus.c:2064
 msgid "Animated display of menus"
 msgstr "Animowane wy¶wietlanie menu"
 
-#: src/menus.c:2066
+#: src/menus.c:2069
 msgid "Always pop up menus on screen"
 msgstr "Zawsze pokazuj menu w ca³o¶ci na ekranie"
 
-#: src/menus.c:2071
+#: src/menus.c:2074
 msgid "Warp pointer after moving menus"
 msgstr "Przeno¶ wska¼nik myszy razem z menu"
 

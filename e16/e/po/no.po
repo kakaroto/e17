@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-05 19:33+0200\n"
+"POT-Creation-Date: 2006-06-21 23:40+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -27,17 +27,17 @@ msgid "%u references remain\n"
 msgstr "%u referanser er igjen\n"
 
 #: src/aclass.c:289 src/backgrounds.c:1105 src/borders.c:1080
-#: src/borders.c:1203 src/buttons.c:730 src/cmclass.c:201 src/config.c:260
-#: src/cursors.c:177 src/iclass.c:518 src/iconify.c:2387 src/menus.c:1728
-#: src/menus.c:1838 src/slideout.c:425 src/tclass.c:260 src/tooltips.c:165
+#: src/borders.c:1203 src/buttons.c:729 src/cmclass.c:201 src/config.c:260
+#: src/cursors.c:177 src/iclass.c:518 src/iconify.c:2387 src/menus.c:1731
+#: src/menus.c:1841 src/slideout.c:425 src/tclass.c:260 src/tooltips.c:165
 #: src/windowmatch.c:159
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: overser ekstra informasjon i \"%s\"\n"
 
 #: src/aclass.c:297 src/backgrounds.c:1113 src/borders.c:1086
-#: src/borders.c:1209 src/buttons.c:738 src/cmclass.c:209 src/config.c:268
-#: src/cursors.c:183 src/iclass.c:523 src/menus.c:1733 src/menus.c:1844
+#: src/borders.c:1209 src/buttons.c:737 src/cmclass.c:209 src/config.c:268
+#: src/cursors.c:183 src/iclass.c:523 src/menus.c:1736 src/menus.c:1847
 #: src/slideout.c:431 src/tclass.c:266 src/tooltips.c:171
 #: src/windowmatch.c:164
 #, c-format
@@ -461,7 +461,7 @@ msgstr "Tekstklasse feil!"
 msgid "Menu style"
 msgstr "Rammestil"
 
-#: src/config.c:330 src/menus.c:1951
+#: src/config.c:330 src/menus.c:1954
 msgid "Menu"
 msgstr ""
 
@@ -1572,12 +1572,12 @@ msgstr ""
 "Dette er en fatal feil og Enlightenment vil nekte og starte opp.\n"
 "Vær vennlig og sjekk at dox er til stede og på rett plass.\n"
 
-#: src/menus.c:2050
+#: src/menus.c:2053
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Forskjellige innstillinger"
 
-#: src/menus.c:2057
+#: src/menus.c:2060
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1586,15 +1586,15 @@ msgstr ""
 "Dialog for innstilling \n"
 "av fokus i Enlightenment\n"
 
-#: src/menus.c:2061
+#: src/menus.c:2064
 msgid "Animated display of menus"
 msgstr "La menyer være animerte"
 
-#: src/menus.c:2066
+#: src/menus.c:2069
 msgid "Always pop up menus on screen"
 msgstr "La menyer alltid opptre innenfor skjermen"
 
-#: src/menus.c:2071
+#: src/menus.c:2074
 msgid "Warp pointer after moving menus"
 msgstr "Send muspeker tilbake etter flytting av meny"
 
