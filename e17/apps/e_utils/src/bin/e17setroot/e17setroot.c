@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <limits.h>
 #include <Imlib2.h>
-#include <E_Lib.h>
 #include <Engrave.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
@@ -51,12 +50,11 @@ void _e_bg_bg_help() {
    printf(" -h                         Show this help screen.\n");
 }
 
-static int _e_bg_bg_get(void *data, int type, void *event) {
-   E_Response_Background_Get *bg;
-   bg = event;
-   printf("Current bg file: %s\n", bg->file);
-   ecore_main_loop_quit();
-   return 0;
+void _e_bg_bg_get() {
+   char buf[4096];
+   
+   snprintf(buf, sizeof(buf), "enlightenment_remote -default-bg-get");
+   system(buf);
 }
 
 /* parse command line options */
@@ -158,8 +156,10 @@ char *_e_bg_bg_file_stripext(char *path) {
 }
 
 int _e_bg_bg_set(char *filename) {
-
-   e_lib_background_set(filename);
+   char buf[4096];
+   
+   snprintf(buf, sizeof(buf), "enlightenment_remote -default-bg-set %s", filename);
+   system(buf);
    return 1;
 }
 
@@ -204,7 +204,6 @@ void _e_bg_bg_edj_gen(char *filename) {
 	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, filename_s);
 	   system(esetroot_s);
 	}
-      ecore_main_loop_quit();
       return;
    }
 
@@ -302,24 +301,10 @@ int main(int argc, char **argv)
    
    _e_bg_bg_parseargs(argc, argv);
 
-   if (!e_bg_no_load) {
-      if (!e_lib_init(getenv("DISPLAY"))) {
-         printf("Can't connect to enlightenment, perhaps we are not on :0.0!\n");
-         return 0;
-      }
-   }
-
    if (e_bg_type == E_BG_GET) {
-      ecore_init();
-      ecore_event_handler_add(E_RESPONSE_BACKGROUND_GET, _e_bg_bg_get, NULL);
-      e_lib_background_get();
-      ecore_main_loop_begin();
-      ecore_shutdown();
+      _e_bg_bg_get();
    } else
      _e_bg_bg_edj_gen(e_bg_img_file);
-
-   if (!e_bg_no_load)
-      e_lib_shutdown();
 
    return 0;
 }
