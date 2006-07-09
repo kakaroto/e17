@@ -42,7 +42,14 @@ emphasis_pref_init(void *data)
 
 	gui = data;
 	config = config_load();
+	/* Set the last size of the window */
 	etk_window_resize(ETK_WINDOW(gui->window), config->geometry.w, config->geometry.h);
+	/* Set the last width of the playlist's columns */
+	etk_tree_col_width_set(etk_tree_nth_col_get(ETK_TREE(gui->tree_pls), 0), config->colwidth.title);
+	etk_tree_col_width_set(etk_tree_nth_col_get(ETK_TREE(gui->tree_pls), 1), config->colwidth.time);
+	etk_tree_col_width_set(etk_tree_nth_col_get(ETK_TREE(gui->tree_pls), 2), config->colwidth.artist);
+	etk_tree_col_width_set(etk_tree_nth_col_get(ETK_TREE(gui->tree_pls), 3), config->colwidth.album);
+
 	emphasis_player_info_set(NULL, "Not connected to MPD", gui);
 
 	config_free(config);

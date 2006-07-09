@@ -16,7 +16,12 @@
 #define EMP_GEOMETRY_Y_KEY  "/geometry/y"
 #define EMP_GEOMETRY_W_KEY  "/geometry/w"
 #define EMP_GEOMETRY_H_KEY  "/geometry/h"
-#define EMP_MODE_KEY      "/emphasis/mode"
+#define EMP_MODE_KEY        "/emphasis/mode"
+
+#define EMP_COLWIDTH_TITLE_KEY      "/emphasis/colwidth/title"
+#define EMP_COLWIDTH_TIME_KEY       "/emphasis/colwidth/time"
+#define EMP_COLWIDTH_ARTIST_KEY     "/emphasis/colwidth/artist"
+#define EMP_COLWIDTH_ALBUM_KEY      "/emphasis/colwidth/album"
 
 typedef enum 
 {
@@ -37,6 +42,13 @@ typedef struct _Emphasis_Config
 		int w;
 		int h;
 	} geometry;
+
+	struct {
+		int title;
+		int time;
+		int artist;
+		int album;
+	} colwidth;
 
 	Emphasis_Mode mode;
 } Emphasis_Config;

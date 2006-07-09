@@ -236,12 +236,18 @@ emphasis_init_gui(Emphasis_Gui *gui)
 	radio_item = etk_menu_item_radio_new_with_label_from_widget("small", ETK_MENU_ITEM_RADIO(radio_item));
 	etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(radio_item));
 	etk_signal_connect("activated", ETK_OBJECT(radio_item), ETK_CALLBACK(cb_switch_small), gui);
-	
+
+	/* Do we need all this connect ? */
 	etk_signal_connect("mouse_down", ETK_OBJECT(gui->window), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
 	etk_signal_connect("mouse_down", ETK_OBJECT(gui->tree_pls), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
-	                   
+	etk_signal_connect("mouse_down", ETK_OBJECT(gui->tree_artist), 
+	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
+	etk_signal_connect("mouse_down", ETK_OBJECT(gui->tree_album), 
+	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
+	etk_signal_connect("mouse_down", ETK_OBJECT(gui->tree_track), 
+	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
 //	etk_signal_connect("key_down", ETK_OBJECT(gui->window),
 //	                   ETK_CALLBACK(cb_emphasis_bindings_key), gui);
 	
@@ -508,15 +514,14 @@ emphasis_player_info_set(mpd_Song *song, char *msg, Emphasis_Gui *gui)
 {
 	char *info;	
 	
-	etk_textblock_clear(ETK_TEXT_VIEW(gui->song_info)->textblock);
 	if (song)
 	{
 		char **table[] = {&(song->artist), &(song->title), &(song->album), NULL};
 		emphasis_unknow_if_null(table);
 		
-		asprintf(&info, "<b><font size=12>%s</font></b>\n \n"
+		asprintf(&info, "\n<b><font size=12>%s</font></b> \n \n"
 		         "<i>by</i>  <font size=11>%s</font>  "
-		         "<i>in</i>  <font size=11>%s</font>  ", 
+		         "<i>in</i>  <font size=11>%s</font> \n \n", 
 		         song->title, song->artist, song->album);
 		if (msg)
 		{
@@ -524,6 +529,7 @@ emphasis_player_info_set(mpd_Song *song, char *msg, Emphasis_Gui *gui)
 		}
 		etk_textblock_text_set(ETK_TEXT_VIEW(gui->song_info)->textblock, info,
 		                       ETK_TRUE);
+		
 		free(info);
 	}
 	else

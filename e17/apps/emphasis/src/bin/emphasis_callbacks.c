@@ -10,14 +10,22 @@
 void
 cb_quit(Etk_Object *object, void *data)
 {
+	Emphasis_Gui *gui;
 	Etk_Widget *window;
 	Emphasis_Config *config;
 
+	gui = data;
 	window = ETK_WIDGET(object);
 	config = config_load();
+
 	etk_widget_geometry_get(ETK_WIDGET(window), 
 	                        &(config->geometry.x), &(config->geometry.y), 
 	                        &(config->geometry.w), &(config->geometry.h));
+	config->colwidth.title = etk_tree_col_width_get(etk_tree_nth_col_get(ETK_TREE(gui->tree_pls), 0));
+	config->colwidth.time = etk_tree_col_width_get(etk_tree_nth_col_get(ETK_TREE(gui->tree_pls), 1));
+	config->colwidth.artist = etk_tree_col_width_get(etk_tree_nth_col_get(ETK_TREE(gui->tree_pls), 2));
+	config->colwidth.album = etk_tree_col_width_get(etk_tree_nth_col_get(ETK_TREE(gui->tree_pls), 3));
+
 	config_save(config);
 
 	config_free(config);
@@ -198,7 +206,7 @@ cb_drag_artist(Etk_Object *object, void *data)
 	
 	types = calloc(1, sizeof(char));
 	num_types = 1;
-	types[0] = strdup("Evas_List");
+	types[0] = strdup("Emphasis_Playlist");
 	
 	etk_drag_types_set(drag, types, num_types);
 	etk_drag_data_set(drag, playlist, 1);
@@ -256,7 +264,7 @@ cb_drag_album(Etk_Object *object, void *data)
 	
 	types = calloc(1, sizeof(char));
 	num_types = 1;
-	types[0] = strdup("Evas_List");
+	types[0] = strdup("Emphasis_Playlist");
 	
 	etk_drag_types_set(drag, types, num_types);
 	etk_drag_data_set(drag, playlist, 1);
@@ -302,7 +310,7 @@ cb_drag_track(Etk_Object *object, void *data)
 	
 	types = calloc(1, sizeof(char));
 	num_types = 1;
-	types[0] = strdup("Evas_List");
+	types[0] = strdup("Emphasis_Playlist");
 	
 	etk_drag_types_set(drag, types, num_types);
 	etk_drag_data_set(drag, playlist, 1);
@@ -331,6 +339,13 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
 	tree = ETK_TREE(object);
 	
 	drag = ETK_DRAG((ETK_WIDGET(data))->drag);	
+	if (drag == NULL || 
+	    drag->types == NULL || 
+		 drag->types[0] == NULL ||
+	    strcmp("Emphasis_Playlist", drag->types[0]))
+		{
+			return;
+		}
 	list = drag->data;
 	mpc_playlist_add(list);
 	
