@@ -28,4 +28,4 @@ if BUILD_ETHEMES
 ethemes_subdir = ethemes
 endif
 
-SUBDIRS = $(e17genmenu_subdir) $(eapp_edit_subdir) $(entangle_subdir) $(exige_subdir)
+SUBDIRS = $(e17genmenu_subdir) $(eapp_edit_subdir) $(entangle_subdir) $(exige_subdir) $(e17setroot_subdir)
