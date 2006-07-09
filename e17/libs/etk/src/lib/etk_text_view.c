@@ -156,14 +156,17 @@ static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data)
 static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data)
 {
    Etk_Text_View *text_view;
-
-   if (!(text_view = ETK_TEXT_VIEW(object)) || !event)
+   Etk_Textblock_Iter *cursor;
+   
+   if (!(text_view = ETK_TEXT_VIEW(object)) || !event || !text_view->textblock_object)
       return;
-   /*
+   
+   cursor = etk_textblock_object_cursor_get(text_view->textblock_object);
+   
    if (strcmp(event->key, "Left") == 0)
-      etk_textblock_iter_goto_prev_char(text_view->textblock->cursor);
+      etk_textblock_iter_backward_char(cursor);
    else if (strcmp(event->key, "Right") == 0)
-      etk_textblock_iter_goto_next_char(text_view->textblock->cursor);*/
+      etk_textblock_iter_forward_char(cursor);
 }
 
 /** @} */

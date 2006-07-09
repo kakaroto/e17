@@ -23,7 +23,7 @@
 typedef enum Etk_Textblock_Wrap
 {
    ETK_TEXTBLOCK_WRAP_NONE,     /**< The text is not wrapped */
-   ETK_TEXTBLOCK_WRAP_DEFAULT,   /**< TODOC */
+   ETK_TEXTBLOCK_WRAP_DEFAULT,  /**< TODOC */
    ETK_TEXTBLOCK_WRAP_WORD,     /**< The text is wrapped between the words (or between the chars if it's not sufficient) */
    ETK_TEXTBLOCK_WRAP_CHAR      /**< The text is wrapped between the chars */
 } Etk_Textblock_Wrap;
@@ -167,6 +167,7 @@ struct Etk_Textblock_Node
    Etk_Textblock_Node *prev;
    Etk_Textblock_Node *next;
    Etk_Textblock_Node *children;
+   Etk_Textblock_Node *last_child;
 };
 
 /**
@@ -222,6 +223,8 @@ Etk_Textblock_Gravity etk_textblock_iter_gravity_get(Etk_Textblock_Iter *iter);
 
 void etk_textblock_iter_backward_start(Etk_Textblock_Iter *iter);
 void etk_textblock_iter_forward_end(Etk_Textblock_Iter *iter);
+Etk_Bool etk_textblock_iter_backward_char(Etk_Textblock_Iter *iter);
+Etk_Bool etk_textblock_iter_forward_char(Etk_Textblock_Iter *iter);
 
 void etk_textblock_iter_copy(Etk_Textblock_Iter *dest, const Etk_Textblock_Iter *src);
 int etk_textblock_iter_compare(Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2);
@@ -231,6 +234,9 @@ Evas_Object *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas);
 
 void etk_textblock_object_wrap_set(Evas_Object *tbo, Etk_Textblock_Wrap wrap);
 Etk_Textblock_Wrap etk_textblock_object_wrap_get(Evas_Object *tbo);
+
+Etk_Textblock_Iter *etk_textblock_object_cursor_get(Evas_Object *tbo);
+Etk_Textblock_Iter *etk_textblock_object_selection_bound_get(Evas_Object *tbo);
 
 /* Misc funcs */
 int etk_textblock_unicode_length_get(const char *unicode_string);
