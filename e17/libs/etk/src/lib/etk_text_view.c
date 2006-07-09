@@ -167,6 +167,8 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down
       etk_textblock_iter_backward_char(cursor);
    else if (strcmp(event->key, "Right") == 0)
       etk_textblock_iter_forward_char(cursor);
+   else
+      etk_textblock_text_insert(text_view->textblock, cursor, event->string, -1);
 }
 
 /** @} */
