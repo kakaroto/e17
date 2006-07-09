@@ -1,5 +1,4 @@
 #include <e.h>
-#include <E_Lib.h>
 #include <Ecore.h>
 #include <Ecore_File.h>
 #include "e_mod_main.h"
@@ -39,7 +38,6 @@ static Config_Item *_slide_config_item_get(const char *id);
 static Slideshow *_slide_new(Evas *evas);
 static void _slide_free(Slideshow * ss);
 static int _slide_cb_check(void *data);
-static void _slide_get_display(Instance *inst);
 static void _slide_get_bg_count(void *data);
 static void _slide_set_bg(void *data, const char *bg);
 static void _slide_set_preview(void *data);
@@ -78,9 +76,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    gcc->data = inst;
    inst->gcc = gcc;
    inst->slide_obj = o;
-
-   _slide_get_display(inst);
-   if (inst->display) e_lib_init(inst->display);
 
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _slide_cb_mouse_down, inst);
    slide_config->instances = evas_list_append(slide_config->instances, inst);
@@ -429,42 +424,6 @@ _slide_cb_check(void *data)
 }
 
 static void
-_slide_get_display(Instance *inst)
-{
-   if (!inst) return;
-   if (inst->display) evas_stringshare_del(inst->display);
-
-   char *tmp = getenv("DISPLAY");
-
-   if (tmp) inst->display = evas_stringshare_add(tmp);
-   if (inst->display)
-     {
-        char *p;
-        char buf[1024];
-
-        p = strrchr(inst->display, ':');
-        if (!p)
-          {
-             snprintf(buf, sizeof(buf), "%s:0.0", inst->display);
-             evas_stringshare_del(inst->display);
-             inst->display = evas_stringshare_add(buf);
-          }
-        else
-          {
-             p = strrchr(p, '.');
-             if (!p)
-               {
-                  snprintf(buf, sizeof(buf), "%s.0", inst->display);
-                  evas_stringshare_del(inst->display);
-                  inst->display = evas_stringshare_add(buf);
-               }
-          }
-     }
-   else
-      inst->display = evas_stringshare_add(":0.0");
-}
-
-static void
 _slide_get_bg_count(void *data)
 {
    Instance *inst;
@@ -492,8 +451,8 @@ _slide_set_bg(void *data, const char *bg)
 
    inst = data;
    ci = _slide_config_item_get(inst->gcc->id);
-   snprintf(buf, sizeof(buf), "%s/%s", ci->dir, bg);
-   e_lib_background_set(buf);
+   snprintf(buf, sizeof(buf), "enlightenment_remote -default-bg-set %s/%s", ci->dir, bg);
+   system(buf);
 }
 
 static void
