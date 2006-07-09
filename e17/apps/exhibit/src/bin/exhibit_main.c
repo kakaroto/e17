@@ -1,6 +1,6 @@
 #include "exhibit.h"
 #include <Ecore_File.h>
-
+#include <Ecore_Evas.h>
 extern pid_t pid;
 extern Evas_List *thumb_list;
 
@@ -994,7 +994,8 @@ main(int argc, char *argv[])
 	fprintf(stderr, "Could not init etk. Exiting...\n");
 	return 0;
      };
-
+   
+   ecore_file_init();
    event_handlers = evas_list_append(event_handlers,
 				     ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
 							     _ex_thumb_exe_exit,
@@ -1007,6 +1008,7 @@ main(int argc, char *argv[])
      _ex_main_window_show(NULL);   
      
    etk_main();
+   ecore_file_shutdown();
    etk_shutdown();
 
    return 0;

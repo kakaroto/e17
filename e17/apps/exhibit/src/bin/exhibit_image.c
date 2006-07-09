@@ -1,6 +1,6 @@
 #include "exhibit.h"
 #include <Ecore_File.h>
-
+#include <Ecore_Evas.h>
 #define R_CMOD(r) \
    red_mapping[(int)(r)]
 #define G_CMOD(g) \
@@ -650,8 +650,8 @@ _ex_image_wallpaper_set(Etk_Image *im)
    if(!pid)
      {	
 #if HAVE_E   
-	if (!e_lib_init(getenv("DISPLAY")))
-	  goto PSEUDO;
+	if (!ecore_file_app_installed("enlightenment_remote"))
+	  goto PSEUDO;	  
 	/* make sure we got a file name */
 	if (!im->filename) exit(0);
 	if(strlen(im->filename) <= 4) exit(0);
@@ -666,6 +666,7 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	   int w, h, num;
 	   char static_bg[PATH_MAX];
 	   char esetroot_s[PATH_MAX*2];
+	   char e_bg_set[PATH_MAX*2];	   
 	   char filename_s[PATH_MAX];
 	   Ecore_X_Window *roots = NULL;
 	   
@@ -677,10 +678,10 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	   ecore_x_window_size_get(roots[0], &w, &h);
 	   snprintf(filename_s, PATH_MAX, "/tmp/%s.png", filenoext);
 	   snprintf(static_bg, PATH_MAX, "edje_thumb %s desktop/background %s -g %dx%d -og %dx%d", im->filename, filename_s, w, h, w, h);
+	   snprintf(e_bg_set, PATH_MAX, "enlightenment_remote -default-bg-set %s", im->filename);
+	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, filename_s);	   
 	   system(static_bg);
-	   e_lib_background_set(im->filename);
-	   
-	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, filename_s);
+	   system(e_bg_set);	   
 	   system(esetroot_s);
 	   exit(0);
 	}
@@ -762,10 +763,15 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	engrave_file_free(edj);   
 	
 	/* set the background */
-	e_lib_background_set(edj_file);
+	  {
+	     char e_bg_set[PATH_MAX*2];
+	     
+	     snprintf(e_bg_set, PATH_MAX, "enlightenment_remote -default-bg-set %s", edj_file);
+	     system(e_bg_set);
+	  }
 	
 #endif
-	e_lib_shutdown();
+
 #endif
 	
 PSEUDO:
