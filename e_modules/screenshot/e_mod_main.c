@@ -114,6 +114,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    
    _ss_free(ss);
    free(inst);
+   inst = NULL;
 }
 
 static void
@@ -374,6 +375,7 @@ e_modapi_shutdown(E_Module *m)
         if (ci->app) evas_stringshare_del(ci->app);
         ss_config->items = evas_list_remove_list(ss_config->items, ss_config->items);
         free(ci);
+	ci = NULL;
      }
    free(ss_config);
    ss_config = NULL;
@@ -430,6 +432,7 @@ _ss_free(Screenshot *ss)
 {
    evas_object_del(ss->ss_obj);
    free(ss);
+   ss = NULL;
 }
 
 static void
@@ -638,6 +641,7 @@ _ss_take_shot(void *data)
         msg->val[0] = ci->delay_time - 1;
         edje_object_message_send(inst->ss->ss_obj, EDJE_MESSAGE_INT_SET, 1, msg);
         free(msg);
+	msg = NULL;
      }
    inst->exe = ecore_exe_run(buf, inst);   
 }
