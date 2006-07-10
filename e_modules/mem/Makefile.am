@@ -4,6 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in e_modules-mem.spec
 SUBDIRS = po
 
 EDJE_CC = @edje_cc@
+EDJE_FLAGS = -v \
 -id $(top_srcdir) \
 -fd $(top_srcdir)
 
