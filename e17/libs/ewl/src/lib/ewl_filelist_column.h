@@ -21,12 +21,12 @@
 #define EWL_FILELIST_COLUMN(fl) ((Ewl_Filelist_Column *)fl)
 
 /**
- * The Ewl_Filelist_Icon provides an icon view of the files
+ * The Ewl_Filelist_Column provides an expanding/retracting column view of the files
  */
 typedef struct Ewl_Filelist_Column Ewl_Filelist_Column;
 
 /**
- * Inherits from Ewl_Filelist and extends to provide a column view
+ * Inherits from Ewl_Filelist and extends/retracts to provide a column view
  */
 struct Ewl_Filelist_Column
 {
