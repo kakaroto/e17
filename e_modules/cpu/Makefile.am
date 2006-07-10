@@ -3,7 +3,9 @@ MAINTAINERCLEANFILES = Makefile.in e_modules-cpu.spec
 SUBDIRS = po
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v
+EDJE_FLAGS = -v \
+-id $(top_srcdir) \
+-fd $(top_srcdir)
 
 EXTRA_DIST = $(files_DATA) \
 cpu.edc \
@@ -39,8 +41,8 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 cpu.edj: Makefile cpu.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 cpu.edc \
-	 cpu.edj
+	 $(top_srcdir)/cpu.edc \
+	 $(top_builddir)/cpu.edj
 
 clean-local:
 	 rm -rf *.edj *~
