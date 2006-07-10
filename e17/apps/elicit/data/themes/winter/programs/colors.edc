@@ -17,7 +17,7 @@ program {
 program {
   name, "hex-pulse";
   action, STATE_SET "off" 0.0;
-  target, "hex-clip";
+  target, "hex-val";
   after, "hex-pulse-2";
 }
 
@@ -25,5 +25,5 @@ program {
   name, "hex-pulse-2";
   action, STATE_SET "default" 0.0;
   transition, DECELERATE 0.5;
-  target, "hex-clip";
+  target, "hex-val";
 }

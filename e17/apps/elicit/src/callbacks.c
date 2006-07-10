@@ -3,6 +3,7 @@
 
 #include <string.h>
 
+void _elicit_color_signal_process(Elicit *el);
 static int elicit_timer_color(void *data);
 
 void
@@ -101,6 +102,7 @@ void elicit_cb_move(void *data, Evas_Object *o, const char *sig, const char *src
 
     w = sw * (1 / el->zoom);
     h = sh * (1 / el->zoom);
+
     elicit_util_shoot(el->shot, (int)w, (int)h);
   }
 }
@@ -125,6 +127,13 @@ elicit_cb_colors(void *data, Evas_Object *o, const char *sig, const char *src)
       free(el->change_sig);
       el->change_sig = NULL;
     }
+  }
+  else if (elicit_glob_match(sig, "*,up") || elicit_glob_match(sig, "*,down"))
+  {
+    el->flags.changing = 1;
+    el->change_sig = (char *)sig;
+    _elicit_color_signal_process(data);
+    el->change_sig = NULL;
   }
 }
 
@@ -358,7 +367,7 @@ elicit_timer_color(void *data)
   Elicit *el = data;
   static double start = 0.0;
   double duration = 2.0;
-  double r, d, dir;
+  double r, d;
 
   /* we're done */
   if (!el->flags.changing)
@@ -382,13 +391,27 @@ elicit_timer_color(void *data)
   if (d > 1) d = 1.0;
   r = sin(d * .5 * M_PI);
 
-  if (elicit_glob_match(el->change_sig, "*,up,*")) dir = 1;
-  else if (elicit_glob_match(el->change_sig, "*,down,*")) dir = -1;
+  _elicit_color_signal_process(el);
+  
+  /* we want the time to wait to depend on how far along it is... */
+  el->change_timer = ecore_timer_add(.16 - .15*r, elicit_timer_color, el);
+
+  return 0;
+}
+
+void _elicit_color_signal_process(Elicit *el)
+{
+  int dir;
+
+  if (!el->change_sig) return;
+
+  if (elicit_glob_match(el->change_sig, "*,up*")) dir = 1;
+  else if (elicit_glob_match(el->change_sig, "*,down*")) dir = -1;
   else dir = 0; /* this shouldn't happen */
 
   if (elicit_glob_match(el->change_sig, "*,r,*"))
   {
-    el->color.r += dir * 1;
+    el->color.r += dir;
     if (el->color.r > 255) el->color.r = 255;
     if (el->color.r < 0) el->color.r = 0;
 
@@ -397,7 +420,7 @@ elicit_timer_color(void *data)
 
   else if (elicit_glob_match(el->change_sig, "*,g,*"))
   {
-    el->color.g += dir * 1;
+    el->color.g += dir;
     if (el->color.g > 255) el->color.g = 255;
     if (el->color.g < 0) el->color.g = 0;
     
@@ -406,7 +429,7 @@ elicit_timer_color(void *data)
 
   else if (elicit_glob_match(el->change_sig, "*,b,*"))
   {
-    el->color.b += dir * 1;
+    el->color.b += dir;
     if (el->color.b > 255) el->color.b = 255;
     if (el->color.b < 0) el->color.b = 0;
     
@@ -415,7 +438,7 @@ elicit_timer_color(void *data)
 
   else if (elicit_glob_match(el->change_sig, "*,h,*"))
   {
-    el->color.h += dir * 1;
+    el->color.h += dir;
     if (el->color.h > 360) el->color.h = 360;
     if (el->color.h < 0) el->color.h = 0;
 
@@ -450,10 +473,4 @@ elicit_timer_color(void *data)
   evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
 
   el->flags.changed = 1;
-  
-  /* we want the time to wait to depend on how far along it is... */
-  el->change_timer = ecore_timer_add(.16 - .15*r, elicit_timer_color, el);
-
-  return 0;
 }
-
