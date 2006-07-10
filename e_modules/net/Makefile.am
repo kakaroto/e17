@@ -3,7 +3,9 @@ MAINTAINERCLEANFILES = Makefile.in e_modules-net.spec
 SUBDIRS = po
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v
+EDJE_FLAGS = -v \
+-id $(top_srcdir) \
+-fd $(top_srcdir)
 
 # data files for the module
 filesdir = $(datadir)
@@ -31,8 +33,8 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 net.edj: Makefile net.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 net.edc \
-	 net.edj
+	 $(top_srcdir)/net.edc \
+	 $(top_builddir)/net.edj
 
 clean-local:
 	 rm -rf *.edj *~

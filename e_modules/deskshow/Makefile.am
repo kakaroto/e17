@@ -1,7 +1,9 @@
 MAINTAINERCLEANFILES = Makefile.in mkinstalldirs
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v
+EDJE_FLAGS = -v \
+-id $(top_srcdir) \
+-fd $(top_srcdir)
 
 # data files for the module
 filesdir =  $(datadir)
@@ -27,8 +29,8 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 deskshow.edj: Makefile deskshow.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 deskshow.edc \
-	 deskshow.edj
+	 $(top_srcdir)/deskshow.edc \
+	 $(top_builddir)deskshow.edj
 
 clean-local:
 	 rm -rf *.edj *~
