@@ -72,13 +72,14 @@ ewl_spinner_init(Ewl_Spinner *s)
 
 	ewl_widget_internal_set(EWL_WIDGET(s->entry), TRUE);
 	ewl_callback_del(s->entry, EWL_CALLBACK_KEY_DOWN,
-			    ewl_entry_cb_key_down);
-	ewl_callback_append(s->entry, EWL_CALLBACK_KEY_DOWN,
-			    ewl_spinner_key_down_cb, s);
-	ewl_callback_append(s->entry, EWL_CALLBACK_FOCUS_OUT,
-			    ewl_spinner_focus_out_cb, s);
-	ewl_callback_append(s->entry, EWL_CALLBACK_MOUSE_WHEEL,
-			    ewl_spinner_wheel_cb, s);
+				ewl_entry_cb_key_down);
+
+	ewl_callback_append(EWL_WIDGET(s), EWL_CALLBACK_KEY_DOWN,
+				ewl_spinner_key_down_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(s), EWL_CALLBACK_FOCUS_OUT,
+				ewl_spinner_focus_out_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(s), EWL_CALLBACK_MOUSE_WHEEL,
+				ewl_spinner_wheel_cb, NULL);
 
 	ewl_widget_show(s->entry);
 
@@ -98,11 +99,11 @@ ewl_spinner_init(Ewl_Spinner *s)
 				   EWL_FLAG_FILL_NONE);
 	ewl_widget_internal_set(s->increment, TRUE);
 	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_spinner_increase_value_cb, w);
+				ewl_spinner_increase_value_cb, w);
 	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_UP,
-			    ewl_spinner_value_stop_cb, w);
+				ewl_spinner_value_stop_cb, w);
 	ewl_callback_append(s->increment, EWL_CALLBACK_KEY_DOWN,
-			    ewl_spinner_key_down_cb, s);
+				ewl_spinner_key_down_cb, s);
 	ewl_widget_show(s->increment);
 
 	s->decrement = ewl_button_new();
@@ -114,11 +115,11 @@ ewl_spinner_init(Ewl_Spinner *s)
 				   EWL_FLAG_FILL_NONE);
 	ewl_widget_internal_set(s->decrement, TRUE);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_spinner_decrease_value_cb, w);
+				ewl_spinner_decrease_value_cb, w);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_UP,
-			    ewl_spinner_value_stop_cb, w);
+				ewl_spinner_value_stop_cb, w);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_KEY_DOWN,
-			    ewl_spinner_key_down_cb, s);
+				ewl_spinner_key_down_cb, s);
 	ewl_widget_show(s->decrement);
 
 	s->min_val = INT_MIN;
@@ -313,7 +314,7 @@ ewl_spinner_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_spinner_key_down_cb(Ewl_Widget *w, void *ev_data,
-				void *user_data)
+				void *user_data __UNUSED__)
 {
 	Ewl_Entry *e;
 	Ewl_Spinner *s;
@@ -321,11 +322,11 @@ ewl_spinner_key_down_cb(Ewl_Widget *w, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_PARAM_PTR("ev_data", ev_data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	e = EWL_ENTRY(w);
-	s = EWL_SPINNER(user_data);
+	s = EWL_SPINNER(w);
+	e = EWL_ENTRY(s->entry);
 
 	ev = ev_data;
 
@@ -374,17 +375,18 @@ ewl_spinner_key_down_cb(Ewl_Widget *w, void *ev_data,
  * @brief The focus out callback
  */
 void
-ewl_spinner_focus_out_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-				void *user_data)
+ewl_spinner_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
 {
 	Ewl_Spinner *s;
 	char *str;
 	float val;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	s = EWL_SPINNER(user_data);
+	s = EWL_SPINNER(w);
 	str = ewl_text_text_get(EWL_TEXT(s->entry));
 
 	if (str && strlen(str)) {
@@ -406,16 +408,18 @@ ewl_spinner_focus_out_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
  * @brief The mouse wheel callback
  */
 void
-ewl_spinner_wheel_cb(Ewl_Widget *w __UNUSED__, void *ev_data,
-			void *user_data)
+ewl_spinner_wheel_cb(Ewl_Widget *w, void *ev_data,
+			void *user_data __UNUSED__)
 {
 	Ewl_Spinner *s;
 	Ewl_Event_Mouse_Wheel *wheel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev_data", ev_data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	s = EWL_SPINNER(user_data);
+	s = EWL_SPINNER(w);
 	wheel = (Ewl_Event_Mouse_Wheel *)ev_data;
 
 	ewl_spinner_calc_value(s, s->value - (wheel->z * s->step), TRUE);
@@ -477,7 +481,7 @@ ewl_spinner_increase_value_cb(Ewl_Widget *w, void *ev_data,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	s = EWL_SPINNER(user_data);
-	ewl_spinner_focus_out_cb(w, NULL, s);
+	ewl_spinner_focus_out_cb(EWL_WIDGET(s), NULL, NULL);
 
 	ewl_spinner_calc_value(s, s->value + s->step, TRUE);
 
@@ -544,7 +548,7 @@ ewl_spinner_decrease_value_cb(Ewl_Widget *w, void *ev_data,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	s = EWL_SPINNER(user_data);
-	ewl_spinner_focus_out_cb(w, NULL, s);
+	ewl_spinner_focus_out_cb(EWL_WIDGET(s), NULL, NULL);
 
 	ewl_spinner_calc_value(s, s->value - s->step, TRUE);
 	if (ev_data) {

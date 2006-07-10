@@ -53,8 +53,6 @@
 
 - text cursor disappears on the end of entrybox case.
 
-- text entry on the spinner seems to be broken for manual entry
-
 - The column view of the filepicker needs to blank out the preview when you
   have multiple files selected.
 
