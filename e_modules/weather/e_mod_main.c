@@ -130,6 +130,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    
    _weather_free(w);
    free(inst);
+   inst = NULL;
 }
 
 static void
@@ -321,6 +322,7 @@ e_modapi_shutdown(E_Module *m)
         if (ci->proxy.host) evas_stringshare_del(ci->proxy.host);
         weather_config->items = evas_list_remove_list(weather_config->items, weather_config->items);
         free(ci);
+	ci = NULL;
      }
 
    free(weather_config);
@@ -388,6 +390,7 @@ _weather_free(Weather *w)
    evas_object_del(w->weather_obj);
    evas_object_del(w->icon_obj);
    free(w);
+   w = NULL;
 }
 
 static void
