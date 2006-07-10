@@ -3,6 +3,7 @@ SUBDIRS = po
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
+EDJE_FLAGS = -v \
 -id $(top_srcdir) \
 -fd $(top_srcdir)
 
