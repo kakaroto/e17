@@ -3,3 +3,5 @@
 ewl_engine_evas_gl_x11.loT
 Makefile
 Makefile.in
+*.la
+*.lo
