@@ -44,6 +44,7 @@ _mail_mbox_del_mailbox(void *data)
 	  ecore_file_monitor_del(mb->monitor);
 	mboxes = evas_list_remove(mboxes, mb);
 	free(mb);
+	mb = NULL;
 	break;
      }
 }
@@ -61,6 +62,7 @@ _mail_mbox_shutdown()
 	  ecore_file_monitor_del(mb->monitor);
 	mboxes = evas_list_remove_list(mboxes, mboxes);
 	free(mb);
+	mb = NULL;
      }
 }
 

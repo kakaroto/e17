@@ -43,6 +43,7 @@ _mail_mdir_del_mailbox(void *data)
 	if (mc->config != cb) continue;
 	mdirs = evas_list_remove(mdirs, mc);
 	free(mc);
+	mc = NULL;
 	break;
      }
 }
@@ -60,6 +61,7 @@ _mail_mdir_shutdown()
 	  ecore_file_monitor_del(mc->monitor);
 	mdirs = evas_list_remove_list(mdirs, mdirs);
 	free(mc);
+	mc = NULL;
      }
 }
 

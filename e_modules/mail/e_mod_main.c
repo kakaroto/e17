@@ -143,6 +143,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    mail_config->instances = evas_list_remove(mail_config->instances, inst);
    _mail_free(inst->mail);
    free(inst);
+   inst = NULL;
 }
 
 static void
@@ -415,10 +416,12 @@ e_modapi_shutdown(E_Module *m)
 	     if (cb->exec) evas_stringshare_del(cb->exec);
 	     ci->boxes = evas_list_remove_list(ci->boxes, ci->boxes);
 	     free(cb);
+	     cb = NULL;
 	  }
 	if (ci->id) evas_stringshare_del(ci->id);
 	mail_config->items = evas_list_remove_list(mail_config->items, mail_config->items);
 	free(ci);
+	ci = NULL;
      }
    _mail_imap_shutdown();
    _mail_pop_shutdown();
@@ -481,6 +484,7 @@ _mail_free(Mail *mail)
 {
    evas_object_del(mail->mail_obj);
    free(mail);
+   mail = NULL;
 }
 
 static int 

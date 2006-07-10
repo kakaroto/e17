@@ -101,6 +101,7 @@ _mail_pop_shutdown()
 	  ecore_event_handler_del(pc->data_handler);
 	pclients = evas_list_remove_list(pclients, pclients);
 	free(pc);
+	pc = NULL;
      }
 }
 

@@ -78,7 +78,6 @@ _mail_imap_del_mailbox(void *data)
 void
 _mail_imap_shutdown() 
 {
-
    if (!iservers) return;
    while (iservers) 
      {
@@ -93,6 +92,7 @@ _mail_imap_shutdown()
 	  ecore_event_handler_del(is->data_handler);	
 	iservers = evas_list_remove_list(iservers, iservers);
 	free(is);
+	is = NULL;
      }
 }
 

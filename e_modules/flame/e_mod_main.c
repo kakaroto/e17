@@ -198,10 +198,12 @@ static void
 _flame_shutdown(Flame *f)
 {
    free(f->conf);
+   f->conf = NULL;
    E_CONFIG_DD_FREE(f->conf_edd);
    _flame_face_free(f->face);
    f->module = NULL;   
    free(f);
+   f = NULL;
 }
 
 static E_Menu *
@@ -323,6 +325,7 @@ _flame_face_free(Flame_Face *ff)
    if (ff->palette)
       free(ff->palette);
    free(ff);
+   ff = NULL;
 }
 
 static void

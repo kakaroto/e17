@@ -120,6 +120,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    mem_config->instances = evas_list_remove(mem_config->instances, inst);
    _mem_free(inst->mem);
    free(inst);
+   inst = NULL;
 }
 
 static void
@@ -309,6 +310,7 @@ e_modapi_shutdown(E_Module *m)
         mem_config->items = evas_list_remove_list(mem_config->items, mem_config->items);
         if (ci->id) evas_stringshare_del(ci->id);
         free(ci);
+	ci = NULL;
      }
    free(mem_config);
    mem_config = NULL;
@@ -366,6 +368,7 @@ _mem_free(Mem *m)
 {
    evas_object_del(m->mem_obj);
    free(m);
+   m = NULL;
 }
 
 static void

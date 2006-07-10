@@ -136,6 +136,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
    _net_free(net);
    free(inst);
+   inst = NULL;
 }
 
 static void
@@ -316,6 +317,7 @@ e_modapi_shutdown(E_Module *m)
         net_config->items = evas_list_remove_list(net_config->items, net_config->items);
         if (ci->id) evas_stringshare_del(ci->id);
         free(ci);
+	ci = NULL;
      }
    free(net_config);
    net_config = NULL;
@@ -370,6 +372,7 @@ _net_free(Net *n)
 {
    evas_object_del(n->net_obj);
    free(n);
+   n = NULL;
 }
 
 static void
@@ -384,6 +387,7 @@ _net_update_rx(void *data, int value)
    val->val[0] = value;
    edje_object_message_send(inst->net_obj, EDJE_MESSAGE_INT_SET, 1, val);
    free(val);
+   val = NULL;
 }
 
 static void
@@ -398,6 +402,7 @@ _net_update_tx(void *data, int value)
    val->val[0] = value;
    edje_object_message_send(inst->net_obj, EDJE_MESSAGE_INT_SET, 2, val);
    free(val);
+   val = NULL;
 }
 
 static void
