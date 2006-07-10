@@ -244,6 +244,8 @@ _etk_fe_gui_menu_item_new(E_Gui_Menu_Item_Type item_type, const char *label,
 void
 _etk_fe_gui_encoder_combo_changed_cb(Etk_Object *object, void *data)
 {
+   Evas_List *l;
+   Ex_Config_Encode *ece;   
    Ex_Config_Exe *ecx;
    E_Gui_Etk *gui;   
    Etk_Combobox *combobox;
@@ -261,17 +263,26 @@ _etk_fe_gui_encoder_combo_changed_cb(Etk_Object *object, void *data)
    if(!ex_command_encode_set(gui->ex, label))
      return;
 	
+   ece = gui->ex->config.encode;         
+   for(l = ece->encoders; l; l=l->next)
+     {	
+	ecx = (Ex_Config_Exe *)l->data;
+	ecx->def = 0;
+     }   
+      
    ecx = gui->ex->encode.encoder;
+   ecx->def = 1;
    etk_entry_text_set(ETK_ENTRY(gui->encoder_executable_entry),ecx->exe);
    etk_entry_text_set(ETK_ENTRY(gui->encoder_command_line_entry),ecx->command_line_opts);
-   etk_entry_text_set(ETK_ENTRY(gui->encoder_file_format_entry),ecx->file_format);
+   etk_entry_text_set(ETK_ENTRY(gui->encoder_file_format_entry),ecx->file_format);   	
 }
 
 void
 _etk_fe_gui_ripper_combo_changed_cb(Etk_Object *object, void *data)
 {
-   
-   Ex_Config_Exe *ecx;
+   Evas_List *l;
+   Ex_Config_Encode *ece;   
+   Ex_Config_Exe *ecx;   
    E_Gui_Etk *gui;   
    Etk_Combobox *combobox;
    Etk_Combobox_Item *active_item;
@@ -287,8 +298,16 @@ _etk_fe_gui_ripper_combo_changed_cb(Etk_Object *object, void *data)
    gui = data;
    if(!ex_command_rip_set(gui->ex, label))
      return;
-	
+   
+   ece = gui->ex->config.encode;         
+   for(l = ece->encoders; l; l=l->next)
+     {	
+	ecx = (Ex_Config_Exe *)l->data;
+	ecx->def = 0;
+     }
+   
    ecx = gui->ex->rip.ripper;
+   ecx->def = 1;
    etk_entry_text_set(ETK_ENTRY(gui->ripper_executable_entry),ecx->exe);
    etk_entry_text_set(ETK_ENTRY(gui->ripper_command_line_entry),ecx->command_line_opts);
    etk_entry_text_set(ETK_ENTRY(gui->ripper_file_format_entry),ecx->file_format);
@@ -649,15 +668,14 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 	     ecx = (Ex_Config_Exe *)l->data;
 	     item = etk_combobox_item_append(ETK_COMBOBOX(gui->encoder_combo), _(ecx->name));
 	     etk_combobox_item_data_set_full(item, strdup(_(ecx->name)), free);
-	     if(!l->prev)
-	       etk_combobox_active_item_set(ETK_COMBOBOX(gui->encoder_combo), item);
+	     if(ecx->def)
+	       {
+		  etk_combobox_active_item_set(ETK_COMBOBOX(gui->encoder_combo), item);
+		  etk_entry_text_set(ETK_ENTRY(gui->encoder_executable_entry), ecx->exe);
+		  etk_entry_text_set(ETK_ENTRY(gui->encoder_command_line_entry), ecx->command_line_opts);
+		  etk_entry_text_set(ETK_ENTRY(gui->encoder_file_format_entry), ecx->file_format);
+	       }
 	  }
-	/* FIXME we should save the last selected 
-	 * fill the values for the first */
-	ecx = gui->ex->config.encode->encoders->data;
-	etk_entry_text_set(ETK_ENTRY(gui->encoder_executable_entry),ecx->exe);
-	etk_entry_text_set(ETK_ENTRY(gui->encoder_command_line_entry),ecx->command_line_opts);
-	etk_entry_text_set(ETK_ENTRY(gui->encoder_file_format_entry),ecx->file_format);
      }
    
    /* ripper tab */
@@ -673,15 +691,14 @@ _etk_fe_config_load(E_Gui_Etk *gui)
 	     ecx = (Ex_Config_Exe *)l->data;	     
 	     item = etk_combobox_item_append(ETK_COMBOBOX(gui->ripper_combo), _(ecx->name));
 	     etk_combobox_item_data_set_full(item, strdup(_(ecx->name)), free);
-	     if(!l->prev)
-	       etk_combobox_active_item_set(ETK_COMBOBOX(gui->ripper_combo), item);
+	     if(ecx->def)
+	       {
+		  etk_combobox_active_item_set(ETK_COMBOBOX(gui->ripper_combo), item);
+		  etk_entry_text_set(ETK_ENTRY(gui->ripper_executable_entry),ecx->exe);
+		  etk_entry_text_set(ETK_ENTRY(gui->ripper_command_line_entry),ecx->command_line_opts);
+		  etk_entry_text_set(ETK_ENTRY(gui->ripper_file_format_entry),ecx->file_format);
+	       }
 	  }
-	/* FIXME we should save the last selected 
-	 * fill the values for the first */
-	ecx = gui->ex->config.rippers->data;
-	etk_entry_text_set(ETK_ENTRY(gui->ripper_executable_entry),ecx->exe);
-	etk_entry_text_set(ETK_ENTRY(gui->ripper_command_line_entry),ecx->command_line_opts);
-	etk_entry_text_set(ETK_ENTRY(gui->ripper_file_format_entry),ecx->file_format);
      }
 
    /* discdb tab */
