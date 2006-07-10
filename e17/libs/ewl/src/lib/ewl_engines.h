@@ -70,7 +70,6 @@ enum Ewl_Engine_Hook
 	EWL_ENGINE_THEME_OBJECT_PART_TEXT_SET,
 	EWL_ENGINE_THEME_OBJECT_COLOR_CLASS_SET,
 
-
 	EWL_ENGINE_THEME_CLIP_ADD,
 	EWL_ENGINE_THEME_CLIP_DEL,
 	EWL_ENGINE_THEME_CLIP_CLIPEES_GET,
@@ -185,13 +184,12 @@ typedef int  (*Ewl_Engine_Cb_Keyboard_Grab)(Ewl_Window *win);	/**< Set the keybo
 typedef void  (*Ewl_Engine_Cb_Keyboard_Ungrab)(Ewl_Window *win); /**< Set the keyboard 
 							ungrab */
 typedef int  (*Ewl_Engine_Cb_Pointer_Grab)(Ewl_Window *win);	/**< Set the pointer grab */
-typedef void  (*Ewl_Engine_Cb_Pointer_Ungrab)(Ewl_Window *win); /**< Set the pointer 
-							ungrab */
+typedef void  (*Ewl_Engine_Cb_Pointer_Ungrab)(Ewl_Window *win); /**< Set the pointer ungrab */
 typedef void (*Ewl_Engine_Cb_Window_Selection_Text_Set)(Ewl_Window *win, 
-					const char *txt); /**< Set the 
-							   selection text */
+							const char *txt); /**< Set the 
+									   selection text */
 typedef void (*Ewl_Engine_Cb_Window_Geometry_Get)(Ewl_Window *win, 
-				int *width, int *height); /**< Get the window 
+						int *width, int *height); /**< Get the window 
 								geometry */
 typedef void (*Ewl_Engine_Cb_Window_Dnd_Aware_Set)(Ewl_Window *win);	 /**< Set the window 
 								dnd aware */
@@ -213,17 +211,24 @@ typedef void *(*Ewl_Engine_Cb_Theme_Object_Clip_Set)(void *obj, void *clip);
 typedef void *(*Ewl_Engine_Cb_Theme_Object_Clip_Unset)(void *obj);
 typedef void (*Ewl_Engine_Cb_Theme_Object_Stack_Add)(Ewl_Widget *w);
 typedef void (*Ewl_Engine_Cb_Theme_Object_Layer_Update)(Ewl_Widget *w);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_File_Set)(void *obj, char *path, char *group);
+typedef void  (*Ewl_Engine_Cb_Theme_Object_File_Set)(void *obj, char *path, 
+								char *group);
 typedef void *(*Ewl_Engine_Cb_Theme_Object_Load_Error)(void *obj);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Min_Size_Get)(void *obj, int *w, int *h);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Max_Size_Get)(void *obj, int *w, int *h);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Signal_Send)(void *obj, char *state, char *source);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Part_Text_Set)(void *obj, char *part, char *text);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Color_Class_Set)(char *name, int r, int g, int b, int r2, int g2, int b2, int r3, int g3, int b3);
+typedef void  (*Ewl_Engine_Cb_Theme_Object_Signal_Send)(void *obj, 
+							char *state, char *source);
+typedef void  (*Ewl_Engine_Cb_Theme_Object_Part_Text_Set)(void *obj, 
+							char *part, char *text);
+typedef void  (*Ewl_Engine_Cb_Theme_Object_Color_Class_Set)(char *name, int r, 
+							int g, int b, int r2, 
+							int g2, int b2, int r3, 
+							int g3, int b3);
 typedef void *(*Ewl_Engine_Cb_Theme_Clip_Add)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Theme_Clip_Del)(void *clip);
 typedef void *(*Ewl_Engine_Cb_Theme_Clip_Clipees_Get)(void *clip);
-typedef void  (*Ewl_Engine_Cb_Theme_Clip_Color_Set)(void *clip, int r, int g, int b, int a);
+typedef void  (*Ewl_Engine_Cb_Theme_Clip_Color_Set)(void *clip, int r, int g, 
+								int b, int a);
 
 #endif
 

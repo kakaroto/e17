@@ -503,7 +503,9 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 		}
 
 		if (idx < t->length)
-			memmove(t->text + idx + len, t->text + idx, t->length - idx);
+			memmove(t->text + idx + len, t->text + idx, 
+							t->length - idx);
+
 		memcpy(t->text + idx, text, len);
 		t->length += len;
 		t->text[t->length] = '\0';
