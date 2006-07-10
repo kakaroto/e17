@@ -3,7 +3,9 @@ MAINTAINERCLEANFILES = Makefile.in e_modules-wlan.spec
 SUBDIRS = po
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v
+EDJE_FLAGS = -v \
+-id $(top_srcdir) \
+-fd $(top_srcdir)
 
 # data files for the module
 filesdir = $(datadir)
@@ -36,8 +38,8 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 wlan.edj: Makefile wlan.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 wlan.edc \
-	 wlan.edj
+	 $(top_srcdir)/wlan.edc \
+	 $(top_builddir)/wlan.edj
 
 clean-local:
 	 rm -rf *.edj *~

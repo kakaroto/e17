@@ -3,7 +3,8 @@ SUBDIRS = po
 MAINTAINERCLEANFILES = Makefile.in mkinstalldirs
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v
+-id $(top_srcdir) \
+-fd $(top_srcdir)
 
 # data files for the module
 filesdir =  $(datadir)
@@ -30,8 +31,8 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 screenshot.edj: Makefile screenshot.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 screenshot.edc \
-	 screenshot.edj
+	 $(top_srcdir)/screenshot.edc \
+	 $(top_builddir)/screenshot.edj
 
 clean-local:
 	 rm -rf *.edj *~

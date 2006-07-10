@@ -3,7 +3,8 @@ SUBDIRS = po
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v
+-id $(top_srcdir) \
+-fd $(top_srcdir)
 
 # data files for the module
 filesdir =  $(datadir)
@@ -33,8 +34,8 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 slideshow.edj: Makefile slideshow.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 slideshow.edc \
-	 slideshow.edj
+	 $(top_srcdir)/slideshow.edc \
+	 $(top_builddir)/slideshow.edj
 
 clean-local:
 	 rm -rf *.edj *~

@@ -3,7 +3,9 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = images po
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -v -id images -fd fonts
+EDJE_FLAGS = -v \
+-id $(top_srcdir)/images \
+-fd $(top_srcdir)/fonts
 
 # data files for the module
 filesdir = $(datadir)
@@ -36,8 +38,8 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 weather.edj: Makefile weather.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 weather.edc \
-	 weather.edj
+	 $(top_srcdir)/weather.edc \
+	 $(top_builddir)/weather.edj
 
 clean-local:
 	 rm -rf *.edj *~
