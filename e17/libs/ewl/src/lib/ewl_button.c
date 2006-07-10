@@ -233,14 +233,8 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 	DCHECK_PARAM_PTR("file", file);
 	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
 
-	/* FIXME: Is this necessary?
-	if (b->image_object)
-		ewl_widget_destroy(b->image_object);
-		*/
-
 	if (!b->image_object) {
 		Ewl_Container *redir;
-
 
 		/*
 		 * Save the current redirection and focus on the point where our
