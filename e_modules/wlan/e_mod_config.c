@@ -103,6 +103,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (cfdata->devs)
       ecore_list_destroy(cfdata->devs);
    free(cfdata);
+   cfdata = NULL;
 }
 
 static Evas_Object *
