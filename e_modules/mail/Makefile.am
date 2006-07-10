@@ -10,7 +10,7 @@ filesdir =  $(datadir)
 
 files_DATA = newmail.png module_icon.png module.eap mail.edj
 
-EXTRA_DIST = $(files_DATA) mount.edc VeraBd.ttf
+EXTRA_DIST = $(files_DATA) mail.edc VeraBd.ttf
 
 # the module .so file
 INCLUDES = -I. \
