@@ -1120,10 +1120,10 @@ _taskbar_cb_window_property(void *data, int type, void *event)
 	       label = "?";
 	     edje_object_part_text_set(ic->o_holder, "label", label);
 	     edje_object_part_text_set(ic->o_holder2, "label", label);
+	     _gc_orient(inst->gcc);
 
 	}
      }
-
 }
 
 static int
