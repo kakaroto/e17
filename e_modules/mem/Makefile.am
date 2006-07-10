@@ -35,16 +35,9 @@ module_la_SOURCES	=	e_mod_main.c \
 				machdep_linux.c \
 				e_mod_config.c
 endif
-if BUILD_NETBSD
-module_la_SOURCES	=	e_mod_main.c \
-				e_mod_main.h \
-				machdep_netbsd.c \
-				e_mod_config.c
-endif
 
 EXTRA_module_la_SOURCES	=	machdep_linux.c \
-				machdep_freebsd.c \
-				machdep_netbsd.c
+				machdep_freebsd.c
 
 		       
 module_la_LIBADD       = @e_libs@ @machdep_libs@
