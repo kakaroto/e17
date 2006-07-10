@@ -208,7 +208,7 @@ ewl_password_text_insert(Ewl_Password *e, const char *s)
  * @param ev_data: The Ewl_Event_Key_Down data
  * @param user_data: UNUSED
  * @return Returns no value
- * @brief Handle key events to modify the text of the password widget.. 
+ * @brief Handle key events to modify the text of the password widget.
  */
 void
 ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
