@@ -106,7 +106,7 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	ewl_widget_show(next_button);
 
 	ib->grid = ewl_grid_new();
-	ewl_grid_dimension_set(EWL_GRID(ib->grid), 7, 7);
+	ewl_grid_dimensions_set(EWL_GRID(ib->grid), 7, 7);
 	ewl_container_child_append(EWL_CONTAINER(vbox), EWL_WIDGET(ib->grid));
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->grid), EWL_FLAG_FILL_FILL);
 	ewl_object_minimum_h_set(EWL_OBJECT(ib->grid), 100);

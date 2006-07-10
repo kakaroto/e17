@@ -67,9 +67,9 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	 */
 	t->grid = (Ewl_Grid *)ewl_grid_new();
 	if (col_headers)
-		ewl_grid_dimension_set(t->grid, cols, rows + 1);
+		ewl_grid_dimensions_set(t->grid, cols, rows + 1);
 	else
-		ewl_grid_dimension_set(t->grid, cols, rows);
+		ewl_grid_dimensions_set(t->grid, cols, rows);
 	ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->grid));
 	ewl_widget_show(EWL_WIDGET(t->grid));
 
@@ -272,13 +272,13 @@ ewl_table_find(Ewl_Table *t, int start_col, int end_col,
  * @brief Set the width of a table column
  */
 void
-ewl_table_col_w_set(Ewl_Table *table, int col, int width)
+ewl_table_column_w_set(Ewl_Table *table, int col, int width)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_col_w_set(table->grid, col, 0.0,width);
+	ewl_grid_column_w_set(table->grid, col, 0.0,width);
 	ewl_widget_configure(EWL_WIDGET(table));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -292,13 +292,13 @@ ewl_table_col_w_set(Ewl_Table *table, int col, int width)
  * @brief Get the width of a table column
  */
 void
-ewl_table_col_w_get(Ewl_Table *table, int col, int *width)
+ewl_table_column_w_get(Ewl_Table *table, int col, int *width)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_col_w_get(table->grid, col, NULL, width);
+	ewl_grid_column_w_get(table->grid, col, NULL, width);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -363,9 +363,9 @@ ewl_table_reset(Ewl_Table *t, int cols, int rows, char **col_headers)
 
 	ewl_container_reset(EWL_CONTAINER(t->grid));
 	if (col_headers != NULL)
-		ewl_grid_dimension_set(EWL_GRID(t->grid), cols, rows+1);
+		ewl_grid_dimensions_set(EWL_GRID(t->grid), cols, rows+1);
 	else
-		ewl_grid_dimension_set(EWL_GRID(t->grid), cols, rows);
+		ewl_grid_dimensions_set(EWL_GRID(t->grid), cols, rows);
 
 	if (col_headers != NULL) {
 

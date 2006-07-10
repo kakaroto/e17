@@ -64,10 +64,10 @@ void            ewl_table_add(Ewl_Table *table, Ewl_Widget *w, int start_col,
 void            ewl_table_reset(Ewl_Table *t, int cols, int rows,
 							char **c_headers);
 
-void            ewl_table_col_w_set(Ewl_Table *table, int col, int width);
+void            ewl_table_column_w_set(Ewl_Table *table, int col, int width);
 void            ewl_table_row_h_set(Ewl_Table *table, int row, int height);
 
-void            ewl_table_col_w_get(Ewl_Table *table, int col, int *width);
+void            ewl_table_column_w_get(Ewl_Table *table, int col, int *width);
 void            ewl_table_row_h_get(Ewl_Table *table, int row, int *height);
 
 void            ewl_table_col_row_get(Ewl_Table *table, Ewl_Cell *cell,
