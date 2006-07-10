@@ -140,10 +140,6 @@ ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
 	cell = (Ewl_Cell *)ewl_cell_new ();
 	ewl_container_child_append(EWL_CONTAINER (cell), w);
 
-	/*
-	 * FIXME: one must verify that other functions that
-	 * ewl_table_add need this test
-	*/
 	ewl_container_child_append(EWL_CONTAINER(table->grid), 
 							EWL_WIDGET(cell));
 	if (table->col_headers)
