@@ -81,6 +81,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    sn = cfd->data;
    sn->config_dialog = NULL;
    free(cfdata);
+   cfdata = NULL;
 }
 
 static Evas_Object *

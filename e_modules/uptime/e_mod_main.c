@@ -138,6 +138,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
    _ut_free(ut);
    free(inst);
+   inst = NULL;
 }
 
 static void
@@ -355,6 +356,7 @@ e_modapi_shutdown(E_Module *m)
 	  evas_stringshare_del(ci->id);
 
 	free(ci);
+	ci = NULL;
      }
 
    free(ut_config);
@@ -417,6 +419,7 @@ _ut_free(Uptime *ut)
 {
    evas_object_del(ut->ut_obj);
    free(ut);
+   ut = NULL;
 }
 
 static void

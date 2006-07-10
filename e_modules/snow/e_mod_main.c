@@ -186,6 +186,7 @@ _snow_flakes_free(Snow *snow)
         evas_object_del(flake->flake);
         snow->flakes = evas_list_remove_list(snow->flakes, snow->flakes);
         free(flake);
+	flake = NULL;
      }
 }
 
@@ -193,6 +194,7 @@ static void
 _snow_shutdown(Snow *snow)
 {
    free(snow->conf);
+   snow->conf = NULL;
    E_CONFIG_DD_FREE(snow->conf_edd);
    while (snow->cons)
      {
@@ -206,6 +208,7 @@ _snow_shutdown(Snow *snow)
    if (snow->animator)
       ecore_animator_del(snow->animator);
    free(snow);
+   snow = NULL;
 }
 
 static E_Menu *

@@ -183,6 +183,7 @@ _rain_drops_free(Rain *rain)
         evas_object_del(drop->drop);
         rain->drops = evas_list_remove_list(rain->drops, rain->drops);
         free(drop);
+	drop = NULL;
      }
 }
 
@@ -204,6 +205,7 @@ _rain_shutdown(Rain *rain)
    if (rain->animator)
       ecore_animator_del(rain->animator);
    free(rain);
+   rain = NULL;
 }
 
 static E_Menu *

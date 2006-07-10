@@ -91,6 +91,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 
    evas_object_del(inst->tclock);
    free(inst);
+   inst = NULL;
 }
 
 static void
@@ -359,6 +360,7 @@ e_modapi_shutdown(E_Module *m)
 	if (ci->time_format) evas_stringshare_del(ci->time_format);
 	if (ci->date_format) evas_stringshare_del(ci->date_format);
         free(ci);
+	ci = NULL;
      }
 
    free(tclock_config);
