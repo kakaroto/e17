@@ -364,7 +364,7 @@ draw_ewl(Mode draw_mode)
    disp[0] = '\0';
    
    table = ewl_grid_new();
-   ewl_grid_dimension_set(EWL_GRID(table), cols, rows);
+   ewl_grid_dimensions_set(EWL_GRID(table), cols, rows);
    ewl_container_child_append(EWL_CONTAINER(main_box), table);
    ewl_widget_show(table);
    displaycell = ewl_cell_new();
@@ -378,9 +378,9 @@ draw_ewl(Mode draw_mode)
 
    disp_table = ewl_grid_new();
    if (calc_mode == SCI)
-      ewl_grid_dimension_set(EWL_GRID(disp_table), 1, 2);
+      ewl_grid_dimensions_set(EWL_GRID(disp_table), 1, 2);
    else
-      ewl_grid_dimension_set(EWL_GRID(disp_table), 1, 1);
+      ewl_grid_dimensions_set(EWL_GRID(disp_table), 1, 1);
    disp_cell[1] = ewl_cell_new();
    eqn_disp = ewl_text_new();
    if (calc_mode == SCI) {
