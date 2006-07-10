@@ -61,7 +61,7 @@ struct Ewl_Grid
 	unsigned char homogeneous_h:1;  	/**< Horizontal homogeneous flag */
 	unsigned char homogeneous_v:1;   	/**< Vertical homogeneous flag */
 	
-	Ewl_Orientation orientation;
+	Ewl_Orientation orientation;		/**< The grid orientation */
 
 	int rows;				/**< Row count */
 	int cols;				/**< Column count */
@@ -116,15 +116,12 @@ unsigned int 	ewl_grid_vhomogeneous_get(Ewl_Grid *g);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_grid_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_grid_destroy_cb(Ewl_Widget *w, void *ev_data , void *user_data);
 void ewl_grid_child_add_cb(Ewl_Container *p, Ewl_Widget *c);
 void ewl_grid_child_remove_cb(Ewl_Container *p, Ewl_Widget *c, int idx);
-void ewl_grid_child_show_cb(Ewl_Container *p, Ewl_Widget *c);
 void ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child,
 						int size, Ewl_Orientation o);
-void ewl_grid_child_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

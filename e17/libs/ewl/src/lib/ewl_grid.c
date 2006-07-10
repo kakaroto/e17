@@ -11,8 +11,6 @@ static void ewl_grid_vmap_position_next(Ewl_Grid *g, int *c, int *r);
 static void ewl_grid_map_start_position_get(Ewl_Grid *g, int *c, int *r);
 
 /**
- * @param cols: number of columns
- * @param rows: number of rows
  * @return Returns a pointer to a grid on success or NULL on failure.
  * @brief Create a new Ewl_Grid widget
  */
@@ -37,8 +35,6 @@ ewl_grid_new(void)
 
 /**
  * @param g: the grid
- * @param cols: number of columns
- * @param rows: number of rows
  * @return Returns no value. Responsible for setting up default values and
  * callbacks within a grid structure
  * @brief Initializes an Ewl_Grid widget to default values
@@ -157,7 +153,7 @@ ewl_grid_dimensions_set(Ewl_Grid *g, int cols, int rows)
 
 /**
  * @param g: the grid to change the fill orientation 
- * @param h: the Ewl_Orientation value
+ * @param orientation: the Ewl_Orientation value
  * @return Returns no value.
  * @brief Change the fill orientation
  */
@@ -1116,8 +1112,8 @@ ewl_grid_child_add_cb(Ewl_Container *p, Ewl_Widget *c)
 /**
  * @internal
  * @param c: The Container
- * @param p: The chil to be deleted
- * @param idx: the index of the removed widget
+ * @param w: The child to be deleted
+ * @param idx: UNUSED
  * @return Returns no value
  * @brief The child del callback
  */

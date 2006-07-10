@@ -88,7 +88,7 @@ typedef struct Ewl_Engine Ewl_Engine;
 typedef struct Ewl_Engine_Info Ewl_Engine_Info;
 struct Ewl_Engine_Info
 {
-	void *engine_hooks[EWL_ENGINE_MAX];
+	void *engine_hooks[EWL_ENGINE_MAX];	/**< The engine hooks */
 };
 
 struct Ewl_Engine
