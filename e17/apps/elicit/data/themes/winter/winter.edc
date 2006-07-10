@@ -19,47 +19,49 @@
 
 fonts
 {
-  font, "Vera.ttf" "Vera";
+  font, "VeraMono.ttf" "Vera";
 }
 
 images
 {
-  image, "base.png" LOSSY 98;
-  image, "grad-top.png" LOSSY 98;
-  image, "grad-bot.png" LOSSY 98;
-  image, "grad-left.png" LOSSY 98;
+  image, "base.png" COMP;
+  image, "grad-top.png" COMP;
+  image, "grad-bot.png" COMP;
+  image, "grad-left.png" COMP;
 
-  image, "left-border.png" LOSSY 98;
-  image, "left-panel.png" LOSSY 98;
-  image, "left-shadow.png" LOSSY 98;
-  image, "left-deco-left.png" LOSSY 98;
-  image, "left-deco-right.png" LOSSY 98;
+  image, "left-border.png" COMP;
+  image, "left-panel.png" COMP;
+  image, "left-shadow.png" COMP;
+  image, "left-deco-left.png" COMP;
+  image, "left-deco-right.png" COMP;
 
-  image, "roundedbox.png" LOSSY 98;
-  image, "dropper.png" LOSSY 98;
-  image, "dropper2.png" LOSSY 98;
-  image, "target.png" LOSSY 98;
-  image, "target2.png" LOSSY 98;
-  image, "x.png" LOSSY 98;
-  image, "x2.png" LOSSY 98;
-  image, "arrow-up.png" LOSSY 98;
-  image, "arrow-dn.png" LOSSY 98;
+  image, "roundedbox.png" COMP;
+  image, "inset-bd.png" COMP;
+  image, "dropper.png" COMP;
+  image, "dropper2.png" COMP;
+  image, "target.png" COMP;
+  image, "target2.png" COMP;
+  image, "x.png" COMP;
+  image, "x2.png" COMP;
+  image, "arrow-up.png" COMP;
+  image, "arrow-dn.png" COMP;
 
-  image, "tab-base.png" LOSSY 98;
-  image, "tab-sel.png" LOSSY 98;
-  image, "tab-unsel.png" LOSSY 98;
-  image, "tab-theme.png" LOSSY 98;
-  image, "tab-swatch.png" LOSSY 98;
-  image, "tab-shot.png" LOSSY 98;
-  image, "tab-data.png" LOSSY 98;
+  image, "tab-base.png" COMP;
+  image, "tab-sel.png" COMP;
+  image, "tab-unsel.png" COMP;
+  image, "tab-theme.png" COMP;
+  image, "tab-swatch.png" COMP;
+  image, "tab-shot.png" COMP;
+  image, "tab-data.png" COMP;
 
-  image, "panel-textbox.png" LOSSY 98;
+  image, "panel-textbox.png" COMP;
 
-  image, "scroll-trough.png" LOSSY 98;
-  image, "scroll-box.png" LOSSY 98;
+  image, "scroll-trough.png" COMP;
+  image, "scroll-box.png" COMP;
 
-  image, "swatch-shadow.png" LOSSY 98;
+  image, "swatch-shadow.png" COMP;
 
+  image: "help.png" COMP;
 }
 
 collections {

@@ -1,5 +1,5 @@
-Elicit 0.9  (swatches & shots)
---------------------------------
+Elicit 0.9.1
+------------
 
 Elicit is a screen zoomer / color picker written with the Enlightenment Foundation Libraries (http://www.enlightnement.org). It depends on a large number of libraries that are only available in CVS at the moment, see http://rephorm.com/rephorm/code/efl for installation instructions.
 
@@ -11,13 +11,47 @@ sudo make install
 
 to run, just type: elicit
 
-To change themes, edit ~/.e/apps/elicit/config.db (using edb_gtk_ed) and change the /settings/theme key to the basename of the theme (e.g. if the theme is named "spring.edj", change the value to "spring"). Elicit will look in /install_prefix/share/elicit/themes/ and ~/.e/apps/elicit/themes.
+==============
+ Using Elicit
+==============
 
-Currently only two themes are included: winter (the default) and spring.
+Winter Theme
+------------
 
-Note
-----
-As of 0.9, Elicit can now save swatches and screen shots and load them back up later. To do so, simply click on the main swatch/shot. They will then be saved into the left panel. Click on the mini-swatch/shot in the panel to reload it. Right click to delete. At this moment, only the Winter theme implements this added functionality. 
+Click on the scope target and drag around to zoom in on the section of the screen under the mouse.
+Click and drag the eye dropper to select the color under the mouse.
+
+Click on the left border to open up a panel of tools.
+In the first tab, the Red, Green, Blue, Hue, Saturation, and Value values of the current color will be shown, along with the Hex (rgb) representation and the current Zoom level.
+
+Click and hold down on the small up and down arrows to modify the color values. Alternatively, scroll the mouse wheel while over a color value.
+
+To copy the hex value, click on it.
+
+Changing the Zoom value will affect any subsequent zooms.
+
+The second tab stores any saved swatches. To save a swatch, left click on the swatch in the pain section of the gui. To load a saved swatch, left click on it in the panel. To delete a saved swatch, right click on it in the panel.
+
+The third tab is for stored zooms. These function similarly to the swatches. Click on the main zoom area to save.
+
+The fourth tab show all currently available themes (Winter and Summer are provided).
+
+Summer Theme
+------------
+The summer theme functions similarly to the Winter one, except that the swatch and shot tabs are combined into a single one. To access the panel, click the small plus sign.
+
+Scrolling on color values to change them is not yet implemented in Summer.
 
 
 Enjoy :)
+
+Other features
+--------------
+
+Middle click on the main zoom area to load the current shot in the Gimp.
+Middle click on the swatch to color elicit's borders the currently selected color.
+
+
+Known Issues
+------------
+After changing themes, elicit no longer resizes properly. (It will function correctly after quitting and reloading it).

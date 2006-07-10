@@ -1,7 +1,7 @@
       // center panel
       part {
         name, "center";
-	type: IMAGE;
+        type: IMAGE;
         mouse_events, 0;
         description {
           state, "default" 0.0;
@@ -17,7 +17,7 @@
           }
           image {
             normal, "base.png";
-            border, 7 8 7 8;
+            border, 7 8 7 9;
           }
         }
       }
@@ -26,7 +26,7 @@
 
       part {
         name, "grad-top";
-	type: IMAGE;
+        type: IMAGE;
         mouse_events, 0;
         description {
           state, "default" 0.0;
@@ -45,7 +45,7 @@
           }
           image {
             normal, "grad-top.png";
-	    border, 7 8 0 0;
+            border, 7 8 0 0;
           }
         }
         description {
@@ -66,13 +66,13 @@
           }
           image {
             normal, "grad-top.png";
-	    border, 7 8 0 0;
+            border, 7 8 0 0;
           }
         }
       }
       part {
         name, "grad-bot";
-	type: IMAGE;
+        type: IMAGE;
         mouse_events, 0;
         description {
           state, "default" 0.0;
@@ -91,7 +91,7 @@
           }
           image {
             normal, "grad-bot.png";
-	    border, 7 8 0 0;
+            border, 7 8 0 0;
           }
         }
         description {
@@ -112,15 +112,37 @@
           }
           image {
             normal, "grad-bot.png";
-	    border, 7 8 0 0;
+            border, 7 8 0 0;
           }
         }
       }
 
     //-- shot --//
       part {
+        name: "shot_bg";
+        type: RECT;
+        description {
+          state: "default" 0.0;
+          rel1.to: "shot";
+          rel2.to: "shot";
+        }
+      }
+      part {
+        name: "help";
+        type: IMAGE;
+        description {
+          state: "default" 0.0;
+          min: 99 70;
+          max: 99 70;
+          fixed: 1 1;
+          rel1.to: "shot";
+          rel2.to: "shot";
+          image.normal: "help.png";
+        }
+      }
+      part {
         name, "shot";
-	type, SWALLOW;
+        type, SWALLOW;
         description {
           state, "default" 0.0;
           min, 0 0;
@@ -128,18 +150,18 @@
           rel1 {
             to, "shot-border";
             relative, 0.0 0.0;
-            offset, 1 1;
+            offset, 2 2;
           }
           rel2 {
             to, "shot-border";
             relative, 1.0 1.0;
-            offset, -2 -2;
+            offset, -3 -3;
           }
         }
       }
       part {
         name, "shot-border";
-	type: IMAGE;
+        type: IMAGE;
         description {
           state, "default" 0.0;
           min, 0 0;
@@ -155,36 +177,21 @@
             offset, -6 -39;
           }
           image {
-            normal, "roundedbox.png";
-	    border, 7 8 7 8;
+            normal, "inset-bd.png";
+            border, 7 8 7 8;
           }
         }
         description {
           state, "hidden" 0.0;
-          min, 0 0;
-          max, 9999 9999;
+          inherit: "default" 0.0;
           color, 0 0 0 0;
-          rel1 {
-            to, "center";
-            relative, 0.0 0.0;
-            offset, 6 13;
-          }
-          rel2 {
-            to, "center";
-            relative, 1.0 1.0;
-            offset, -6 -39;
-          }
-          image {
-            normal, "roundedbox.png";
-	    border, 7 8 7 8;
-          }
         }
       }
       
   //-- swatch --//
       part {
         name, "swatch";
-	type, SWALLOW;
+        type, SWALLOW;
         description {
           state, "default" 0.0;
           min, 0 0;
@@ -192,18 +199,18 @@
           rel1 {
             to, "swatch-border";
             relative, 0.0 0.0;
-            offset, 1 1;
+            offset, 2 2;
           }
           rel2 {
             to, "swatch-border";
             relative, 1.0 1.0;
-            offset, -2 -2;
+            offset, -3 -3;
           }
         }
       }
       part {
         name, "swatch-border";
-	type: IMAGE;
+        type: IMAGE;
         description {
           state, "default" 0.0;
           min, 22 22;
@@ -219,29 +226,14 @@
             offset, 28 -12;
           }
           image {
-            normal, "roundedbox.png";
-	    border, 7 8 7 8;
+            normal, "inset-bd.png";
+            border, 7 8 7 8;
           }
         }
         description {
           state, "hidden" 0.0;
-          min, 22 22;
-          max, 22 22;
+          inherit: "default" 0.0;
           color, 0 0 0 0;
-          rel1 {
-            to, "center";
-            relative, 0.0 1.0;
-            offset, 6 -34;
-          }
-          rel2 {
-            to, "center";
-            relative, 0.0 1.0;
-            offset, 28 -12;
-          }
-          image {
-            normal, "roundedbox.png";
-	    border, 7 8 7 8;
-          }
         }
 
       }
@@ -250,7 +242,7 @@
 
       part {
         name, "left-panel";
-	type: IMAGE;
+        type: IMAGE;
         description {
           state, "default" 0.0;
           min, 0 99;
@@ -267,7 +259,7 @@
           }
           image {
             normal, "left-panel.png";
-	    border, 0 0 7 8;
+            border, 0 0 7 8;
           }
         }
       }
@@ -275,7 +267,7 @@
 
       part {
         name, "left-border";
-	type: IMAGE;
+        type: IMAGE;
         description {
           state, "default" 0.0;
           min, 7 99;
@@ -292,7 +284,7 @@
           }
           image {
             normal, "left-border.png";
-	    border, 0 0 7 8;
+            border, 0 0 7 8;
           }
         }
         description {
@@ -311,7 +303,7 @@
           }
           image {
             normal, "left-border.png";
-	    border, 0 0 7 8;
+            border, 0 0 7 8;
           }
         }
       }
@@ -356,11 +348,11 @@
 
       part {
         name, "left-border-close";
-	type, RECT;
+        type, RECT;
         description {
           state, "default" 0.0;
           visible, 0;
-	  color, 0 0 0 0;
+          color, 0 0 0 0;
           min, 0 97;
           max, 9999 9999;
           rel1 {
@@ -379,7 +371,7 @@
           visible, 1;
           min, 0 97;
           max, 9999 9999;
-	  color, 0 0 0 0;
+          color, 0 0 0 0;
           rel1 {
             to, "left-border";
             relative, 0.0 0.0;
@@ -441,7 +433,7 @@
       
       part {
         name, "left-deco-clip";
-	type, RECT;
+        type, RECT;
         mouse_events, 0;
         description {
           state, "default" 0.0;
@@ -523,4 +515,3 @@
           }
         }
       }
-

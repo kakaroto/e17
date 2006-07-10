@@ -34,30 +34,17 @@
   }
 
 
-COLOR("red", "R:", 14 5, 50 15)
-COLOR("green", "G:", 14 15, 50 25)
-COLOR("blue", "B:", 14 25, 50 35)
-COLOR("hue", "H:", 14 43, 50 53)
-COLOR("sat", "S:", 14 53, 50 63)
-COLOR("val", "V:", 14 63, 50 73)
-COLOR("zoom", "Z:", 14 93, 50 103)
+COLOR("red", "R:", 14 5, -1 15)
+COLOR("green", "G:", 14 15, -1 25)
+COLOR("blue", "B:", 14 25, -1 35)
+COLOR("hue", "H:", 14 43, -1 53)
+COLOR("sat", "S:", 14 53, -1 63)
+COLOR("val", "V:", 14 63, -1 73)
+COLOR("zoom", "Z:", 14 93, -1 103)
 
       part {
-        name, "hex-clip";
-        clip_to, "color-clip";
-        type, RECT;
-        description {
-          state, "default" 0.0;
-          color, 0 0 0 255;
-        }
-        description {
-          state, "off" 0.0;
-          color, 0 0 0 0;
-        }
-      }
-      part {
         name, "hex-val";
-        clip_to, "hex-clip";
+        clip_to, "color-clip";
         type, TEXT;
         effect, NONE;
         description {
@@ -75,7 +62,7 @@ COLOR("zoom", "Z:", 14 93, 50 103)
             relative, 1.0 1.0;
             offset, 0 12;
           }
-          color, 0 0 0 200;
+          color, 140 140 140 255;
           text {
             text, "#000000";
             font, "Vera";
@@ -84,6 +71,11 @@ COLOR("zoom", "Z:", 14 93, 50 103)
             min, 0 0;
             align, 0.0 0.5;
           }
+        }
+        description {
+          state: "off" 0.0;
+          inherit: "default" 0.0;
+          color: 0 0 0 0;
         }
       }
 
