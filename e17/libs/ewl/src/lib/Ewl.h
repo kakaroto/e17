@@ -220,23 +220,14 @@
  * inside of a container are above the container's background, or the user
  * would be unable to view the placed widgets.
  *
- * The current scheme to accomplish this is that each widget has a layer
- * field. This field is an integer that indicates an offset relative to it's
- * parent containers layer. The default value is 5, which raises any widgets
- * inside of a container 5 layers above the container. This use of offsets
- * allows for children that have the same level of nesting to be at the same
- * layer in the Evas.
+ * EWL handles the layering so the programmer dosen't need to worry about
+ * it. In some cases it is necessary for a widget to overlap another widget
+ * with the same parent. In this case you set the layer priority of the
+ * widget to a higher value (negitive values are possible.
  *
- * Unfortunately, this also means that if two containers overlap, the children
- * may seem to intermingle as they are above the layers of their containers.
- * So far this has not become an issue, but it may in the future. See the
- * diagram below for further information.
- *
- * @image html layer-problem.png
- *
- * One issue that did occur was with the imenu's popup portion. It was placed
- * at the first level above the window, so the contents of the menu were
- * overlapped by items placed in nested containers in the window.
+ * If you want a widget to be placed over top of all other widgets, like
+ * imenu for example, you can set the widget to be 'top layered'. This
+ * setting will also effect the children of that widget.
  */
 
 /**
