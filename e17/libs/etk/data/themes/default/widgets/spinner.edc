@@ -133,7 +133,7 @@ group {
       }  
       program {  
 	 name: "up_arrow_down";  
-	 signal: "mouse,down,1";  
+	 signal: "mouse,down,1*";  
 	 source: "up_arrow";  
 	 action: STATE_SET "down" 0.0;  
 	 target: "up_arrow";
@@ -147,7 +147,7 @@ group {
       }  
       program {  
 	 name: "down_arrow_down";  
-	 signal: "mouse,down,1";  
+	 signal: "mouse,down,1*";  
 	 source: "down_arrow";  
 	 action: STATE_SET "down" 0.0;  
 	 target: "down_arrow";
@@ -155,7 +155,7 @@ group {
       program {       
 	 name: "up_arrow_pressed"; 
 	 source: "up_arrow";
-	 signal: "mouse,down,1"; 
+	 signal: "mouse,down,1*"; 
 	 action: SIGNAL_EMIT "scroll_up_start" ""; 
       } 
       program {
@@ -167,7 +167,7 @@ group {
       program {       
 	 name: "down_arrow_pressed"; 
 	 source: "down_arrow";
-	 signal: "mouse,down,1"; 
+	 signal: "mouse,down,1*"; 
 	 action: SIGNAL_EMIT "scroll_down_start" ""; 
       } 
       program {

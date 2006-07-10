@@ -352,7 +352,7 @@ group {
       }
       program {
          name: "tree_checkbox_down";
-         signal: "mouse,down,1";
+         signal: "mouse,down,1*";
          source: "checkbox";
          action: STATE_SET "down" 0.0;
          target: "checkbox_down";

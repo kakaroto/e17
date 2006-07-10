@@ -1,8 +1,9 @@
 #define SCROLLBAR_BUTTON_SIZE 15
 
-#define SCROLLBAR_DRAG(part_name, minw, minh, xdir, ydir, image_up, image_down, image_thumb) \
+#define SCROLLBAR_DRAG(part_name, minw, minh, xdir, ydir, image_up, image_down, image_thumb, clip) \
 part { \
    name: part_name; \
+   clip_to: clip; \
    dragable { \
       confine: "confine"; \
       x: xdir xdir xdir; \
@@ -41,6 +42,7 @@ part { \
 part { \
    name: part_name"_thumb"; \
    mouse_events: 0; \
+   clip_to: clip; \
    description { \
       state: "default" 0.0; \
       rel1 { \
@@ -72,15 +74,16 @@ program { \
 } \
 program { \
    name: part_name"_down"; \
-   signal: "mouse,down,1"; \
+   signal: "mouse,down,1*"; \
    source: part_name; \
    action: STATE_SET "down" 0.0; \
    target: part_name; \
 }
 
-#define SCROLLBAR_BUTTON(button_name, rx1, ry1, ox1, oy1, image_up, image_down) \
+#define SCROLLBAR_BUTTON(button_name, rx1, ry1, ox1, oy1, image_up, image_down, clip) \
 part { \
    name: button_name; \
+   clip_to: clip; \
    description { \
       state: "default" 0.0; \
       rel1 { \
@@ -118,20 +121,20 @@ program { \
 } \
 program { \
    name: button_name"_down"; \
-   signal: "mouse,down,1"; \
+   signal: "mouse,down,1*"; \
    source: button_name; \
    action: STATE_SET "down" 0.0; \
    target: button_name; \
 } \
 program { \
    name: button_name"_pressed"; \
+   signal: "mouse,down,1*"; \
    source: button_name; \
-   signal: "mouse,down,1"; \
    action: SIGNAL_EMIT "scroll_"dir"_start" ""; \
 } \
 program { \
    name: button_name"_released"; \
-   source: button_name; \
    signal: "mouse,up,1"; \
+   source: button_name; \
    action: SIGNAL_EMIT "scroll_stop" ""; \
 }

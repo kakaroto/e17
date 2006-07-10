@@ -3,6 +3,23 @@ group {
    min: 68 18;
    parts {
       part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+               to: "trough";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+               to: "trough";
+            }
+         }
+      }
+      part {
          name: "trough";
          description {
             state: "default" 0.0;
@@ -36,10 +53,10 @@ group {
             }
          }
       }
-      SCROLLBAR_DRAG("drag", 20, 16, 1, 0, "scrollbar_hdrag1.png", "scrollbar_hdrag2.png", "scrollbar_hdrag_thumb.png")
-      SCROLLBAR_BUTTON("left_left_arrow", 0.0, 0.5, 0, -8, "scrollbar_button_left1.png", "scrollbar_button_left2.png")
-      SCROLLBAR_BUTTON("right_left_arrow", 1.0, 0.5, -33, -8, "scrollbar_button_left1.png", "scrollbar_button_left2.png")
-      SCROLLBAR_BUTTON("right_right_arrow", 1.0, 0.5, -17, -8, "scrollbar_button_right1.png", "scrollbar_button_right2.png")
+      SCROLLBAR_DRAG("drag", 20, 16, 1, 0, "scrollbar_hdrag1.png", "scrollbar_hdrag2.png", "scrollbar_hdrag_thumb.png", "clip")
+      SCROLLBAR_BUTTON("left_left_arrow", 0.0, 0.5, 0, -8, "scrollbar_button_left1.png", "scrollbar_button_left2.png", "clip")
+      SCROLLBAR_BUTTON("right_left_arrow", 1.0, 0.5, -33, -8, "scrollbar_button_left1.png", "scrollbar_button_left2.png", "clip")
+      SCROLLBAR_BUTTON("right_right_arrow", 1.0, 0.5, -17, -8, "scrollbar_button_right1.png", "scrollbar_button_right2.png", "clip")
    }
    programs {
       SCROLLBAR_DRAG_PROG("drag")
@@ -53,6 +70,23 @@ group {
    name: "vscrollbar";
    min: 18 68;
    parts {
+      part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+               to: "trough";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+               to: "trough";
+            }
+         }
+      }
       part {
          name: "trough";
          description {
@@ -87,10 +121,10 @@ group {
             }
          }
       }
-      SCROLLBAR_DRAG("drag", 16, 20, 0, 1, "scrollbar_vdrag1.png", "scrollbar_vdrag2.png", "scrollbar_vdrag_thumb.png")
-      SCROLLBAR_BUTTON("up_up_arrow", 0.5, 0.0, -8, 0, "scrollbar_button_up1.png", "scrollbar_button_up2.png")
-      SCROLLBAR_BUTTON("down_up_arrow", 0.5, 1.0, -8, -33, "scrollbar_button_up1.png", "scrollbar_button_up2.png")
-      SCROLLBAR_BUTTON("down_down_arrow", 0.5, 1.0, -8, -17, "scrollbar_button_down1.png", "scrollbar_button_down2.png")
+      SCROLLBAR_DRAG("drag", 16, 20, 0, 1, "scrollbar_vdrag1.png", "scrollbar_vdrag2.png", "scrollbar_vdrag_thumb.png", "clip")
+      SCROLLBAR_BUTTON("up_up_arrow", 0.5, 0.0, -8, 0, "scrollbar_button_up1.png", "scrollbar_button_up2.png", "clip")
+      SCROLLBAR_BUTTON("down_up_arrow", 0.5, 1.0, -8, -33, "scrollbar_button_up1.png", "scrollbar_button_up2.png", "clip")
+      SCROLLBAR_BUTTON("down_down_arrow", 0.5, 1.0, -8, -17, "scrollbar_button_down1.png", "scrollbar_button_down2.png", "clip")
    }
    programs {
       SCROLLBAR_DRAG_PROG("drag")

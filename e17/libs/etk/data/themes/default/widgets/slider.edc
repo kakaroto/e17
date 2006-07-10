@@ -106,7 +106,7 @@ group {
    programs {
       program {
          name: "hslider_drag_down";
-         signal: "mouse,down,1";
+         signal: "mouse,down,1*";
          source: "drag";
          action: STATE_SET "down" 0.0;
          target: "drag";
@@ -245,7 +245,7 @@ group {
    programs {
       program {
          name: "vslider_drag_down";
-         signal: "mouse,down,1";
+         signal: "mouse,down,1*";
          source: "drag";
          action: STATE_SET "down" 0.0;
          target: "drag";

@@ -133,6 +133,7 @@ static void _etk_text_view_realize_cb(Etk_Object *object, void *data)
 
    text_view->textblock_object = etk_textblock_object_add(text_view->textblock, evas);
    etk_widget_member_object_add(ETK_WIDGET(text_view), text_view->textblock_object);
+   evas_object_repeat_events_set(text_view->textblock_object, 1);
    evas_object_show(text_view->textblock_object);
 }
 
@@ -167,7 +168,9 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down
       etk_textblock_iter_backward_char(cursor);
    else if (strcmp(event->key, "Right") == 0)
       etk_textblock_iter_forward_char(cursor);
-   else
+   else if (strcmp(event->key, "Return") == 0 || strcmp(event->key, "KP_Enter") == 0)
+      etk_textblock_text_insert(text_view->textblock, cursor, "\n", -1);
+   else if (event->string && !(strlen(event->string) == 1 && event->string[0] < 0x20))
       etk_textblock_text_insert(text_view->textblock, cursor, event->string, -1);
 }
 
