@@ -2,6 +2,7 @@
 
 static E_Widget *_e_widget_new(Enhance *en, EXML_Node *node, Etk_Widget *etk_widget, char *id);
 static E_Widget *_e_widget_window_handle(Enhance *en, EXML_Node *node);
+static E_Widget *_e_widget_dialog_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_scrolled_view_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_viewport_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_vbox_handle(Enhance *en, EXML_Node *node);
@@ -30,6 +31,33 @@ static E_Widget *_e_widget_hseparator_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_vseparator_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_hslider_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_vslider_handle(Enhance *en, EXML_Node *node);
+
+static EXML_Node *find_node(EXML_Node *node, char *key, char *value)
+{
+   Ecore_List *props;
+   EXML_Node  *prop;
+   
+   props = node->children;
+   ecore_list_goto_first(props);
+   prop = ecore_list_current(props);
+   while(prop != NULL)
+     {
+	if(ecore_hash_get(prop->attributes, key))
+	  {
+	     if(!strcmp(ecore_hash_get(prop->attributes, key), value))
+		  return prop;	     
+	  }
+	if(prop->children)
+	  {
+	     EXML_Node *ret;
+	     if((ret = find_node(prop, key, value)))
+	       return ret;
+	  }
+		
+	prop = ecore_list_next(props);	
+     }   
+   return NULL;
+}
 
 static E_Widget *
 _e_widget_new(Enhance *en, EXML_Node *node, Etk_Widget *etk_widget, char *id)
@@ -60,6 +88,119 @@ _e_widget_window_handle(Enhance *en, EXML_Node *node)
      etk_widget_show_all(win->wid);
    
    return win;
+}
+
+static E_Widget *
+_e_widget_dialog_handle(Enhance *en, EXML_Node *node)
+{
+   E_Widget  *dia;
+   char      *id;
+   EXML_Node  *prop;   
+   
+   id = ecore_hash_get(node->attributes, "id");
+   if(!id) return NULL;
+
+   dia = _e_widget_new(en, node, etk_dialog_new(), id);
+   
+   if((prop = find_node(node, "internal-child", "action_area")))
+     {
+	if((prop = find_node(prop, "class", "GtkHButtonBox")))
+	  {
+	     EXML_Node *button_box_child;
+	     	     
+	     exml_goto_node(en->xml, prop); /* go to button box */	     
+	     exml_down(en->xml); /* go to first property */
+	     button_box_child = exml_get(en->xml);
+	     while(button_box_child)
+	       {		 
+		  char *tmp;
+		  if(!strcmp(button_box_child->tag, "child"))
+		    {
+		       /* we found the <child> tag, we need to go deeper */
+		       EXML_Node *widget;
+		       
+		       exml_down(en->xml);
+		       widget = exml_get(en->xml);
+		       while(widget)
+			 {
+			    if(!strcmp(widget->tag, "widget"))
+			      {
+				 /* we found the <widget> tag to add into the
+				  * action area */
+				 E_Widget *e_widget;
+				 
+				 e_widget = _e_traverse_widget_xml(en);
+				 
+				 if(ETK_IS_BUTTON(e_widget->wid))
+				   {
+				      char *response_id_str;
+				      
+				      response_id_str = etk_object_data_get(
+				       ETK_OBJECT(e_widget->wid), 
+				       "response_id");
+				      
+				      if(response_id_str)
+					{
+					   int response_id;
+					   
+					   response_id = atoi(response_id_str);
+					   etk_dialog_pack_button_in_action_area(
+                                            ETK_DIALOG(dia->wid), ETK_BUTTON(e_widget->wid),
+					    response_id, ETK_FALSE, ETK_FALSE,
+					    0, ETK_FALSE);
+					}
+				      else
+					etk_dialog_pack_widget_in_action_area(
+				         ETK_DIALOG(dia->wid), e_widget->wid,
+				         ETK_FALSE, ETK_FALSE, 0, ETK_FALSE);
+				   }
+				 else
+				   etk_dialog_pack_widget_in_action_area(
+				       ETK_DIALOG(dia->wid), e_widget->wid,
+				       ETK_FALSE, ETK_FALSE, 0, ETK_FALSE);
+			      }			    
+			    exml_goto_node(en->xml, widget);
+			    if(exml_next(en->xml))
+			      widget = exml_get(en->xml);
+			    else
+			      widget = NULL;			      
+			 }
+		    }
+		  exml_goto_node(en->xml, button_box_child);
+		  if((tmp = exml_next_nomove(en->xml)))		    
+		    button_box_child = exml_get(en->xml);		    
+		  else
+		    button_box_child = NULL;		   		  
+	       }
+	  }
+     }
+   
+   prop = find_node(node, "internal-child", "action_area");
+   exml_goto_node(en->xml, prop);
+   exml_next_nomove(en->xml);
+     {
+	EXML_Node  *child;
+	EXML_Node  *widget;	
+	
+	child = exml_get(en->xml); /* go to next <child>, content here */
+	exml_down(en->xml); /* go widget */
+	widget = exml_get(en->xml);
+	if(!strcmp(widget->tag, "widget"))
+	  {
+	     E_Widget *wid;
+	     
+	     wid = _e_traverse_widget_xml(en);
+	     etk_dialog_pack_in_main_area(
+			   ETK_DIALOG(dia->wid), wid->wid,
+			   ETK_FALSE, ETK_FALSE, 0, ETK_FALSE);	     
+	  }
+
+     }
+   
+   exml_goto_node(en->xml, node);
+   exml_next(en->xml);
+      
+   return dia;
 }
 
 static E_Widget *
@@ -625,6 +766,8 @@ _e_widget_handle(Enhance *en, EXML_Node *node)
    
    if(!strcmp(class, "GtkWindow"))     
      return _e_widget_window_handle(en, node);        
+   else if(!strcmp(class, "GtkDialog"))
+     return _e_widget_dialog_handle(en, node);
    else if(!strcmp(class, "GtkVBox"))
      return _e_widget_vbox_handle(en, node);
    else if(!strcmp(class, "GtkVButtonBox"))
@@ -705,6 +848,14 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
    if(!strcmp(parent_class, "GtkWindow"))
      {
 	etk_container_add(ETK_CONTAINER(parent->wid), child->wid);
+     }
+   if(!strcmp(parent_class, "GtkDialog"))
+     {
+	char *c_parent_class;
+	
+	c_parent_class = ecore_hash_get(child->node->attributes, "internal-child");
+	printf("packing into dialog %s!\n", c_parent_class);
+	etk_dialog_pack_in_main_area(ETK_DIALOG(parent->wid), child->wid, ETK_TRUE, ETK_TRUE, 0, ETK_FALSE);
      }
    if(!strcmp(parent_class, "GtkFrame"))
      {
@@ -791,11 +942,18 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 			      ETK_MENU_ITEM(child->wid));
      }   
    else if(!strcmp(parent_class, "GtkVBox") || !strcmp(parent_class, "GtkHBox") ||
-	   !strcmp(parent_class, "GtkVButtonBox") || !strcmp(parent_class, "GtkButtonHBox"))
+	   !strcmp(parent_class, "GtkVButtonBox") || !strcmp(parent_class, "GtkHButtonBox"))
      {
 	Etk_Bool expand  = ETK_TRUE;
 	Etk_Bool fill    = ETK_TRUE;
 	int      padding = 0;
+	
+	char *c_parent_class;	
+	
+	c_parent_class = ecore_hash_get(child->node->attributes, "class");
+	printf("packing into vbox %s!\n", c_parent_class);
+	
+	
 	
 	if(child->packing)
 	  {

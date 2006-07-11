@@ -1,15 +1,6 @@
 #include "enhance_private.h"
 
-static void      _e_property_handle(Enhance *en, EXML_Node *node);
-static void      _e_signal_handle(Enhance *en, EXML_Node *node);
-static void      _e_traverse_packing_xml(Enhance *en, E_Widget *widget);
-static void      _e_traverse_property_xml(Enhance *en);
-static void      _e_traverse_signal_xml(Enhance *en);
-static void      _e_traverse_child_xml(Enhance *en);
-static E_Widget *_e_traverse_widget_xml(Enhance *en);
-static void      _e_traverse_xml(Enhance *en);
-static Ecore_Hash*_en_stock_items_hash=NULL;
-static void      _en_stock_items_hash_init(void);
+static Ecore_Hash *_en_stock_items_hash = NULL;
 
 typedef struct _En_Stock_Item
 {
@@ -367,7 +358,7 @@ strdup2(const char *str, char *file, int line)
 
 #endif
 
-static void
+void
 _e_property_handle(Enhance *en, EXML_Node *node)
 {
    char *name;
@@ -423,7 +414,13 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    \
    value = node->value;
 
-   if(!strcmp(name, "visible"))
+   if(!strcmp(name, "response_id"))
+     {
+	PROPERTY_STR;	
+	etk_object_data_set(ETK_OBJECT(wid->wid), "response_id", strdup(value));
+     }
+   
+   else if(!strcmp(name, "visible"))
      {		
 	PROPERTY_BOOL;
 	etk_object_properties_set(ETK_OBJECT(wid->wid), "visible", value, NULL);
@@ -483,8 +480,10 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    
    else if(!strcmp(name, "title"))
      {
-	IF_PARENT_CLASS("GtkWindow")	  
+	IF_PARENT_CLASS("GtkWindow")
 	  etk_window_title_set(ETK_WINDOW(wid->wid), node->value);	  
+	IF_PARENT_CLASS("GtkDialog")
+	  etk_window_title_set(ETK_WINDOW(wid->wid), node->value);
      }
 
    else if(!strcmp(name, "decorated"))
@@ -627,7 +626,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
      }
 }
 
-static void
+void
 _e_signal_handle(Enhance *en, EXML_Node *node)
 {
    E_Widget *wid;
@@ -669,7 +668,7 @@ _e_signal_handle(Enhance *en, EXML_Node *node)
 		      ETK_CALLBACK(func), data);
 }   
 
-static void
+void
 _e_traverse_packing_xml(Enhance *en, E_Widget *widget)
 {
    EXML *xml;
@@ -752,7 +751,7 @@ _e_traverse_packing_xml(Enhance *en, E_Widget *widget)
    exml_up(xml);   
 }
 
-static void   
+ void   
 _e_traverse_property_xml(Enhance *en)
 {
    EXML *xml;  
@@ -764,7 +763,7 @@ _e_traverse_property_xml(Enhance *en)
    _e_property_handle(en, node);
 }
 
-static void   
+void   
 _e_traverse_signal_xml(Enhance *en)
 {
    EXML *xml;
@@ -777,7 +776,7 @@ _e_traverse_signal_xml(Enhance *en)
 }
 
 
-static void
+void
 _e_traverse_child_xml(Enhance *en)
 {
    EXML *xml;  
@@ -835,7 +834,7 @@ _e_traverse_child_xml(Enhance *en)
    exml_up(xml);      
 }
   
-static E_Widget *
+E_Widget *
 _e_traverse_widget_xml(Enhance *en)
 {
    EXML *xml;
@@ -877,7 +876,7 @@ _e_traverse_widget_xml(Enhance *en)
    return widget;
 }
 
-static void
+void
 _e_traverse_xml(Enhance *en)
 {
    EXML *xml;
@@ -952,11 +951,10 @@ enhance_callback_data_get(Enhance *en, char *cb_name)
 
 Enhance *
 enhance_new()
-{
-   Enhance *en;
+{   
+   Enhance *en = NULL;
    
-   en = E_NEW(1, Enhance);
-   
+   en = E_NEW(1, Enhance);   
    return en;
 }
 
@@ -1010,19 +1008,19 @@ enhance_shutdown()
 #endif  
 }
 
-static void
+void
 _en_stock_items_hash_init(void)
 {
-	int size, i;
-
-	/* the hash table is build only once */
-	if (!_en_stock_items_hash)
-	{
-		_en_stock_items_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-		size = sizeof(en_stock_items)/sizeof(en_stock_items[0]);
-		for (i=0; i<size; i++)
-		{
-			ecore_hash_set(_en_stock_items_hash, en_stock_items[i].str, (Etk_Stock_Id *)en_stock_items[i].id);
-		}
-	}
+   int size, i;
+   
+   /* the hash table is build only once */
+   if (!_en_stock_items_hash)
+     {
+	_en_stock_items_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	size = sizeof(en_stock_items)/sizeof(en_stock_items[0]);
+	for (i=0; i<size; i++)
+	  {
+	     ecore_hash_set(_en_stock_items_hash, en_stock_items[i].str, (Etk_Stock_Id *)en_stock_items[i].id);
+	  }
+     }
 }

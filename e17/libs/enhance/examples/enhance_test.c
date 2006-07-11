@@ -37,8 +37,9 @@ int main(void)
    
    en = enhance_new();      
    enhance_callback_data_set(en, "rip_only_clicked", &data);
-   
-   enhance_file_load(en, "window1", "stock.glade");
+
+   /* if you're trying the dialog test, show it explicitly! */
+   enhance_file_load(en, "window1", "dialog.glade");
    
    data2 = enhance_callback_data_get(en, "rip_only_clicked");
    *data2 = string2;
