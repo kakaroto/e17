@@ -3,12 +3,15 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = po
 
 EDJE_CC = @edje_cc@
-EDJE_FLAGS = -id . -fd $(srcdir)/fonts
+EDJE_FLAGS = -v \
+-id $(top_srcdir) \
+-fd $(top_srcdir)/fonts
 
 filesdir = $(datadir)
 files_DATA = module.eap \
 			$(wildcard eveil.ed?) \
-			$(wildcard fonts/*.ttf)
+			$(wildcard fonts/*.ttf) \
+			$(wildcard images/*.png)
 
 EXTRA_DIST = $(files_DATA) e_modules-eveil.spec
 CONFIG_CLEAN_FILES = e_modules-eveil.spec eveil.edj
@@ -29,5 +32,11 @@ module_la_LIBADD       = @e_libs@
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/eveil.edj
 
-%.edj:  %.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+eveil.edj: Makefile eveil.edc
+	   $(EDJE_CC) $(EDJE_FLAGS) \
+	   $(top_srcdir)/eveil.edc \
+	   $(top_builddir)/eveil.edj
+	   
+clean-local:
+	    rm -rf *.edj *~
+	    
