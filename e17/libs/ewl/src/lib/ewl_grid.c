@@ -1158,8 +1158,9 @@ ewl_grid_child_remove_cb(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
  * @brief Catch notification of child resizes.
  */
 void
-ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child, int size,
-		        Ewl_Orientation o)
+ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child, 
+				int size __UNUSED__,
+			        Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
