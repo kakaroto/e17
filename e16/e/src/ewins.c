@@ -191,19 +191,30 @@ EwinManage(EWin * ewin)
    if (ewin->state.docked)
       ewin->inh_wm.b.border = 1;
 
-   frame =
-      ECreateObjectWindow(VRoot.win, ewin->client.x, ewin->client.y,
-			  ewin->client.w, ewin->client.h, 0, 1,
-			  _EwinGetClientWin(ewin), &argb);
-   ewin->o.argb = argb;
-   ewin->win_container =
-      ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);
+   frame = EoGetWin(ewin);
+   if (!frame)
+     {
+	frame =
+	   ECreateObjectWindow(VRoot.win, ewin->client.x, ewin->client.y,
+			       ewin->client.w, ewin->client.h, 0, 1,
+			       _EwinGetClientWin(ewin), &argb);
+	ewin->o.argb = argb;
+	ewin->win_container =
+	   ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);
 
-   EoInit(ewin, EOBJ_TYPE_EWIN, frame, ewin->client.x, ewin->client.y,
-	  ewin->client.w, ewin->client.h, 1, ewin->icccm.wm_name);
+	EoInit(ewin, EOBJ_TYPE_EWIN, frame, ewin->client.x, ewin->client.y,
+	       ewin->client.w, ewin->client.h, 1, ewin->icccm.wm_name);
 
-   EobjListFocusAdd(&ewin->o, 1);
-   EobjListOrderAdd(&ewin->o);
+	EobjListFocusAdd(&ewin->o, 1);
+	EobjListOrderAdd(&ewin->o);
+
+	EventCallbackRegister(EoGetWin(ewin), 0,
+			      EwinHandleEventsToplevel, ewin);
+	EventCallbackRegister(ewin->win_container, 0,
+			      EwinHandleEventsContainer, ewin);
+	EventCallbackRegister(_EwinGetClientWin(ewin), 0,
+			      EwinHandleEventsClient, ewin);
+     }
 
    att.event_mask = EWIN_CONTAINER_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
@@ -221,12 +232,6 @@ EwinManage(EWin * ewin)
       Eprintf("EwinManage %#lx frame=%#lx cont=%#lx st=%d\n",
 	      _EwinGetClientXwin(ewin), EoGetXwin(ewin),
 	      _EwinGetContainerXwin(ewin), ewin->state.state);
-
-   EventCallbackRegister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
-   EventCallbackRegister(ewin->win_container, 0, EwinHandleEventsContainer,
-			 ewin);
-   EventCallbackRegister(_EwinGetClientWin(ewin), 0, EwinHandleEventsClient,
-			 ewin);
 
    if (!EwinIsInternal(ewin))
      {
