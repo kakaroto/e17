@@ -544,7 +544,7 @@ ewl_init_parse_options(int *argc, char **argv)
 			matched ++;
 		}
 		else if (!strncmp(argv[i], "--ewl-", 6)) {
-			int len;
+			unsigned int len;
 
 			len = strlen("--ewl-");
 			if (strlen(argv[i]) > len)

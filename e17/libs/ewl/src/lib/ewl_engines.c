@@ -98,8 +98,7 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook type)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
-	DCHECK_PARAM_PTR_RET("valid type", 
-				(type >= 0 && type < EWL_ENGINE_MAX), NULL);
+	DCHECK_PARAM_PTR_RET("valid type", type < EWL_ENGINE_MAX, NULL);
 	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
 
 	caller = EWL_ENGINE(embed->engine);
@@ -136,8 +135,7 @@ ewl_engine_hook_chain_get(Ewl_Embed *embed, Ewl_Engine_Hook type)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
-	DCHECK_PARAM_PTR_RET("valid type", 
-				(type >= 0 && type < EWL_ENGINE_MAX), NULL);
+	DCHECK_PARAM_PTR_RET("valid type", type < EWL_ENGINE_MAX, NULL);
 	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
 
 	matches = ecore_list_new();
