@@ -892,7 +892,7 @@ ewl_container_child_iterator_set(Ewl_Container *c, Ewl_Container_Iterator i)
  * triggered on the container @a c, and not propagated to the receiving child.
  */
 void
-ewl_container_callback_intercept(Ewl_Container *c, Ewl_Callback_Type t)
+ewl_container_callback_intercept(Ewl_Container *c, unsigned int t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -913,7 +913,7 @@ ewl_container_callback_intercept(Ewl_Container *c, Ewl_Callback_Type t)
  * propagated to the receiving child.
  */
 void
-ewl_container_callback_nointercept(Ewl_Container *c, Ewl_Callback_Type t)
+ewl_container_callback_nointercept(Ewl_Container *c, unsigned int t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -934,7 +934,7 @@ ewl_container_callback_nointercept(Ewl_Container *c, Ewl_Callback_Type t)
  * triggered on the container @a c, and propagated to the receiving child.
  */
 void
-ewl_container_callback_notify(Ewl_Container *c, Ewl_Callback_Type t)
+ewl_container_callback_notify(Ewl_Container *c, unsigned int t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);

@@ -18,9 +18,9 @@ static int ewl_callback_compare(void *key1, void *key2);
 static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb);
 static void ewl_callback_unregister(Ewl_Callback * cb);
 
-static void ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, 
+static void ewl_callback_rm(Ewl_Widget *w, unsigned int t, 
 						unsigned int pos);
-static int ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t, 
+static int ewl_callback_insert(Ewl_Widget *w, unsigned int t, 
 				Ewl_Callback *cb, unsigned int pos);
 
 static int callback_id = 0;
@@ -131,7 +131,7 @@ ewl_callback_unregister(Ewl_Callback *cb)
 }
 
 static void
-ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, unsigned int pos)
+ewl_callback_rm(Ewl_Widget *w, unsigned int t, unsigned int pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -181,7 +181,7 @@ ewl_callback_rm(Ewl_Widget *w, Ewl_Callback_Type t, unsigned int pos)
 }
 
 static int
-ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t, 
+ewl_callback_insert(Ewl_Widget *w, unsigned int t, 
 				Ewl_Callback *cb, unsigned int pos)
 {
 	Ewl_Callback *old = NULL;
@@ -192,7 +192,8 @@ ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t,
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	if (EWL_CALLBACK_LEN(w, t) == 255) {
-		DERROR("Maximum number of callbacks of one type exceeded on a widget\n");
+		DERROR("Maximum number of callbacks of one type "
+			"exceeded on a widget\n");
 		DRETURN_INT(0, DLEVEL_STABLE);
 	}
 
@@ -258,7 +259,7 @@ ewl_callback_insert(Ewl_Widget *w, Ewl_Callback_Type t,
  * placed at the end of the callback chain.
  */
 int
-ewl_callback_append(Ewl_Widget *w, Ewl_Callback_Type t,
+ewl_callback_append(Ewl_Widget *w, unsigned int t,
 		    Ewl_Callback_Function f, void *user_data)
 {
 	Ewl_Callback cb;
@@ -293,7 +294,7 @@ ewl_callback_append(Ewl_Widget *w, Ewl_Callback_Type t,
  * beginning of the callback chain.
  */
 int
-ewl_callback_prepend(Ewl_Widget *w, Ewl_Callback_Type t,
+ewl_callback_prepend(Ewl_Widget *w, unsigned int t,
 		     Ewl_Callback_Function f, void *user_data)
 {
 	Ewl_Callback cb;
@@ -330,7 +331,7 @@ ewl_callback_prepend(Ewl_Widget *w, Ewl_Callback_Type t,
  * the specified callback on the callback chain.
  */
 int
-ewl_callback_insert_after(Ewl_Widget *w, Ewl_Callback_Type t,
+ewl_callback_insert_after(Ewl_Widget *w, unsigned int t,
 			  Ewl_Callback_Function f, void *user_data,
 			  Ewl_Callback_Function after, void *after_data)
 {
@@ -377,7 +378,7 @@ ewl_callback_insert_after(Ewl_Widget *w, Ewl_Callback_Type t,
  * Executes the callback chain for the specified widget @a w, with event @a t.
  */
 void
-ewl_callback_call(Ewl_Widget *w, Ewl_Callback_Type t)
+ewl_callback_call(Ewl_Widget *w, unsigned int t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -399,7 +400,7 @@ ewl_callback_call(Ewl_Widget *w, Ewl_Callback_Type t)
  * ev_data.
  */
 void
-ewl_callback_call_with_event_data(Ewl_Widget *w, Ewl_Callback_Type t,
+ewl_callback_call_with_event_data(Ewl_Widget *w, unsigned int t,
 				  void *ev_data)
 {
 	Ewl_Callback *cb, *oldcb;
@@ -472,7 +473,7 @@ ewl_callback_call_with_event_data(Ewl_Widget *w, Ewl_Callback_Type t,
  * Delete all callbacks of type @a t from widget @a w.
  */
 void
-ewl_callback_del_type(Ewl_Widget *w, Ewl_Callback_Type t)
+ewl_callback_del_type(Ewl_Widget *w, unsigned int t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -499,7 +500,7 @@ ewl_callback_del_type(Ewl_Widget *w, Ewl_Callback_Type t)
  * Delete the specified callback id from the widget @a w.
  */
 void
-ewl_callback_del_cb_id(Ewl_Widget *w, Ewl_Callback_Type t, int cb_id)
+ewl_callback_del_cb_id(Ewl_Widget *w, unsigned int t, int cb_id)
 {
 	Ewl_Callback *cb;
 	int i;
@@ -558,7 +559,7 @@ ewl_callback_clear(Ewl_Widget *w)
  * to widget @a w.
  */
 void
-ewl_callback_del(Ewl_Widget *w, Ewl_Callback_Type t, Ewl_Callback_Function f)
+ewl_callback_del(Ewl_Widget *w, unsigned int t, Ewl_Callback_Function f)
 {
 	Ewl_Callback *cb;
 	int i;
@@ -594,7 +595,7 @@ ewl_callback_del(Ewl_Widget *w, Ewl_Callback_Type t, Ewl_Callback_Function f)
  * to widget @a w.
  */
 void
-ewl_callback_del_with_data(Ewl_Widget *w, Ewl_Callback_Type t,
+ewl_callback_del_with_data(Ewl_Widget *w, unsigned int t,
 			   Ewl_Callback_Function f, void *d)
 {
 	Ewl_Callback *cb;

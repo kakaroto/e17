@@ -135,11 +135,11 @@ int             ewl_container_child_count_internal_get(Ewl_Container *c);
 void            ewl_container_destroy(Ewl_Container *c);
 void            ewl_container_reset(Ewl_Container *c);
 void            ewl_container_callback_notify(Ewl_Container *c,
-					      Ewl_Callback_Type t);
+					      unsigned int t);
 void            ewl_container_callback_intercept(Ewl_Container *c,
-					      Ewl_Callback_Type t);
+					      unsigned int t);
 void            ewl_container_callback_nointercept(Ewl_Container *c,
-					      Ewl_Callback_Type t);
+					      unsigned int t);
 Ewl_Widget     *ewl_container_child_at_get(Ewl_Container *widget, int x,
 								int y);
 Ewl_Widget     *ewl_container_child_at_recursive_get(Ewl_Container *widget,
