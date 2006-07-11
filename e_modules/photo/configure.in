@@ -154,6 +154,7 @@ AC_OUTPUT([
 e_modules-photo.spec
 Makefile
 data/Makefile
+data/images/Makefile
 data/theme/Makefile
 src/Makefile
 src/module/Makefile

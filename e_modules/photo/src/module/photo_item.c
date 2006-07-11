@@ -352,7 +352,8 @@ int  photo_item_action_setbg(Photo_Item *pi)
 {
   Picture *p;
    E_Zone *zone;
-   const char *file = NULL;
+   Ecore_Exe *exe;
+   const char *file;
    const char *name;
    char buf[4096];
 
@@ -382,8 +383,6 @@ int  photo_item_action_setbg(Photo_Item *pi)
      {
         if (ecore_file_app_installed("e17setroot"))
           {
-             Ecore_Exe *exe;
-
              snprintf(buf, 4096, "e17setroot -s \"%s\"", file);
              DITEM(("Set background with %s", buf));
 	     exe = ecore_exe_pipe_run(buf, ECORE_EXE_USE_SH, NULL);
@@ -409,25 +408,20 @@ int  photo_item_action_setbg(Photo_Item *pi)
      {
         DITEM(("Set edje background %s", file));
 
-        if ((zone->container->num == 0) && (zone->num == 0) &&
-	    (zone->desk_x_current == 0) && (zone->desk_y_current == 0))
-          {
-             e_lib_background_set(strdup(file));
-          }
-        else
-          {
-             e_lib_desktop_background_del(zone->container->num, zone->num,
-					  zone->desk_x_current, zone->desk_y_current);
-             e_lib_desktop_background_add(zone->container->num, zone->num,
-					  zone->desk_x_current, zone->desk_y_current,
-                                          strdup(file));
-          }
+	snprintf(buf, 4096, "enlightenment_remote -default-bg-set \"%s\"", file);
+	exe = ecore_exe_pipe_run(buf, ECORE_EXE_USE_SH, NULL);
+	if (exe > 0)
+	  {
+	    ecore_exe_free(exe);
+	    if (photo->config->pictures_set_bg_purge)
+	      photo_picture_setbg_add(name);
+	  }
      }
 
    return 1;
 }
 
-int  photo_item_action_viewer(Photo_Item *pi)
+int photo_item_action_viewer(Photo_Item *pi)
 {
   Picture *p;
    const char *file = NULL;

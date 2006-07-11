@@ -1,8 +1,5 @@
 #include "Photo.h"
 
-static char *_display_init(void);
-static void  _display_shutdown(void);
-
 /*
  * Public functions
  */
@@ -19,9 +16,6 @@ int photo_picture_init(void)
    //if (!photo_picture_net_init())
    // return 0;
 
-   if (!_display_init())
-     return 0;
-
    return 1;
 }
 
@@ -29,12 +23,76 @@ void photo_picture_shutdown(void)
 {
    photo_picture_setbg_purge(1);
 
-   _display_shutdown();
-
    photo_picture_local_shutdown();
    //photo_picture_net_shutdown();
 }
 
+Picture *photo_picture_new(char *path, char *name, int thumb_it, void (*func_done) (void *data, Evas_Object *obj, void *event_info))
+{
+   Picture *picture;
+   int th_w, th_h;
+   char *ext;
+
+   th_w = photo->config->pictures_thumb_size;
+   th_h = photo->config->pictures_thumb_size;
+      
+   ext = strrchr(name, '.');
+   if (!ext)
+     return NULL;
+   if (strcasecmp(ext, ".jpg") && strcasecmp(ext, ".JPG") &&
+       strcasecmp(ext, ".jpeg") && strcasecmp(ext, ".JPEG") &&
+       strcasecmp(ext, ".png") && strcasecmp(ext, ".PNG"))
+     return NULL;
+      
+   DPICL(("New picture :  file %s", name));
+      
+   picture = E_NEW(Picture, 1);
+   picture->path = evas_stringshare_add(path);
+   picture->infos.name = photo_picture_name_get(name);
+   picture->from = PICTURE_LOCAL;
+
+   if (thumb_it)
+     {
+        Evas_Object *im;
+
+        picture->thumb = PICTURE_THUMB_WAITING;
+        im = e_thumb_icon_add(photo->e_evas);
+        DPICL(("THUMB of %s wanted at %dx%d", picture->path, th_w, th_h));
+        e_thumb_icon_file_set(im, (char *)picture->path, NULL);
+        evas_object_smart_callback_add(im, "e_thumb_gen", func_done, picture);
+        picture->picture = im;
+        e_thumb_icon_begin(im);
+     }
+
+   return picture;
+}
+
+int photo_picture_free(Picture *p, int force, int force_now)
+{
+   if (p->pi)
+     {
+        if (!force) return 0;
+        if (!force_now)
+          {
+             p->delete_me = 1;
+             return 0;
+          }
+     }
+
+   if (p->path) evas_stringshare_del(p->path);
+   if (p->picture) evas_object_del(p->picture);
+
+   if (p->infos.name) evas_stringshare_del(p->infos.name);
+   if (p->infos.author) evas_stringshare_del(p->infos.author);
+   if (p->infos.where_from) evas_stringshare_del(p->infos.where_from);
+   if (p->infos.date) evas_stringshare_del(p->infos.date);
+   if (p->infos.comments) evas_stringshare_del(p->infos.comments);
+
+   photo_picture_histo_picture_del(p);
+
+   free(p);
+   return 1;
+}
 
 int photo_picture_load(Picture *pic, Evas *evas)
 {
@@ -61,82 +119,28 @@ void photo_picture_unload(Picture *pic)
    pic->picture = NULL;
 }
 
-
-int photo_picture_free(Picture *p, int force, int force_now)
-{
-   if (p->pi)
-     {
-        if (!force) return 0;
-        if (!force_now)
-          {
-             p->delete = 1;
-             return 0;
-          }
-     }
-
-   if (p->path) evas_stringshare_del(p->path);
-   if (p->thumb_path) evas_stringshare_del(p->thumb_path);
-   if (p->picture) evas_object_del(p->picture);
-
-   if (p->infos.name) evas_stringshare_del(p->infos.name);
-   if (p->infos.author) evas_stringshare_del(p->infos.author);
-   if (p->infos.where_from) evas_stringshare_del(p->infos.where_from);
-   if (p->infos.date) evas_stringshare_del(p->infos.date);
-   if (p->infos.comments) evas_stringshare_del(p->infos.comments);
-
-   photo_picture_histo_picture_del(p);
-
-   free(p);
-   return 1;
-}
-
 Evas_Object *photo_picture_object_get(Picture *pic, Evas *evas)
 {
    Evas_Object *im = NULL;
-   Eet_File *ef;
-   Evas_Coord sw, sh;
+   int th_w, th_h;
+
+   th_w = photo->config->pictures_thumb_size;
+   th_h = photo->config->pictures_thumb_size;
 
    if (!pic) return NULL;
 
-   if (pic->thumb_path)
+   if (pic->thumb)
      {
         /* load picture thumb */
-        ef = eet_open(pic->thumb_path, EET_FILE_MODE_READ);
-        if (!ef)
-          {
-             eet_close(ef);
-             return 0;
-          }
-
-        im = e_icon_add(evas);
-        e_icon_file_key_set(im, pic->thumb_path, "/thumbnail/data");
-
-        e_icon_size_get(im, &sw, &sh);
-        evas_object_resize(im, sw, sh);
-        e_icon_fill_inside_set(im, 1);
-
-        /* debug : modify e_icon */
-        /*
-        im = e_icon_add(evas);
-        e_icon_file_key_set(im, pic->thumb_path, "/thumbnail/data");
-        e_icon_size_get(im, &sw, &sh);
-        evas_object_resize(im, pic->original_w, pic->original_h);
-        e_icon_fill_inside_set(im, 1);
-        */
-
-        /* debug : try without e_icon */
-        /*
-        im = evas_object_image_add(evas);
-        evas_object_image_file_set(im, pic->thumb_path, "/thumbnail/data");
-	evas_object_image_fill_set(im, 0, 0, pic->original_w, pic->original_h);
-        evas_object_resize(im, pic->original_w, pic->original_h);
-        evas_object_move(im, 0, 0);
-        */
-
-        eet_close(ef);
+        im = e_thumb_icon_add(evas);
+        e_thumb_icon_file_set(im, (char *)pic->path, NULL);
+        e_thumb_icon_size_set(im, th_w, th_h);
+        e_thumb_icon_begin(im);
      }
    else
      {
+       int sw, sh;
+
         /* load picture */
         im = e_icon_add(evas);
         e_icon_file_set(im, pic->path);
@@ -254,64 +258,3 @@ void photo_picture_setbg_purge(int shutdown)
  * Private functions
  *
  */
-
-static char *
-_display_init(void)
-{
-   char *display = NULL;
-   char *tmp;
-
-   tmp = getenv("DISPLAY");
-   if (tmp)
-     display = strdup(tmp);
-
-   /* make sure the display var is of the form name:0.0 or :0.0 */
-   if (display)
-     {
-        char *p;
-        char buf[1024];
-
-        p = strrchr(display, ':');
-        if (!p)
-          {
-             snprintf(buf, sizeof(buf), "%s:0.0", display);
-             free(display);
-             display = strdup(buf);
-          }
-        else
-          {
-             p = strrchr(p, '.');
-             if (!p)
-               {
-                  snprintf(buf, sizeof(buf), "%s.0", display);
-                  free(display);
-                  display = strdup(buf);
-               }
-          }
-     }
-   else
-     display = strdup(":0.0");
-
-   /* init e Lib */
-   if (display)
-     e_lib_init(display);
-   else
-     {
-        display = strdup(":0.0");
-        e_lib_init(display);
-     }
-
-   photo->display = display;
-
-   return display;
-}
-
-static void
-_display_shutdown(void)
-{
-   if (!photo->display)
-     return;
-
-   E_FREE(photo->display);
-   e_lib_shutdown();
-}

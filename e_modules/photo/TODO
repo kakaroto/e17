@@ -10,6 +10,13 @@ BUGS
 NEEDED
 ----------------------------------------------------
 
+* histo menu pre and post callbacks with evas mouse events on menu item (event object)
+* fix thumbnailing messages : too much !
+
+* find a way to have the path of a generated thumb, to load it direcly
+  instead of always using e_thumb (delay)
+  the other solution would be a cache, and its not a good one =)
+
 * add some borders between different item categories
   in config panels
 * change item action setbg with

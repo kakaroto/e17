@@ -4,7 +4,6 @@
 /* Enlightenment includes */
 #include <config.h>
 #include <e.h>
-#include <E_Lib.h>
 
 /* Photo includes */
 #define E_MOD_PHOTO_TYPEDEFS 1

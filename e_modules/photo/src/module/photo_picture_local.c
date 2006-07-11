@@ -1,7 +1,5 @@
 #include "Photo.h"
 
-#define CACHE_SIZE() (2 + evas_list_count(DEVIANM->devians)*2)
-
 #define POPUP_LOADING(list, buf, dtime)                                \
 if (list->loader.popup)                                                \
   photo_popup_warn_del(list->loader.popup);                            \
@@ -30,7 +28,7 @@ struct _Picture_Local_List
    /* thumb */
   struct
   {
-    Evas_List  *pictures;
+     int nb;
     Popup_Warn *popup;
     int         popup_show;
   } thumb;
@@ -58,14 +56,13 @@ struct _Picture_Local_List
 static Picture_Local_List *pictures_local;
 
 
-static int  _picture_new(char *name);
 static void _pictures_old_del(int force, int force_now);
 
 static int  _load_idler(void *data);
 static void _load_idler_stop(void);
 static int  _load_cb_ev_fill(void *data, int type, void *event);
 
-static void _thumb_generate_cb(Evas_Object *obj, void *data);
+static void _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info);
 static void _thumb_generate_stop(void);
 
 static int  _popup_loader_close(Popup_Warn *popw, void *data);
@@ -118,7 +115,12 @@ void photo_picture_local_load_start(void)
         d->state = PICTURE_LOCAL_DIR_NOT_LOADED;
      }
 
-   /* load pictures */
+   /* initialise thumbnailer */
+   pictures_local->thumb.nb = 0;
+   pictures_local->thumb.popup_show = 1;
+   pictures_local->thumb.popup = NULL;
+
+   /* initialise and launch loader */
    pictures_local->loader.idler = ecore_idler_add(_load_idler, NULL);
 
    if (photo->config_dialog)
@@ -140,7 +142,7 @@ void photo_picture_local_load_stop(void)
 
 int photo_picture_local_load_state_get(void)
 {
-   if (pictures_local->thumb.pictures ||
+   if (pictures_local->thumb.nb ||
        pictures_local->loader.idler)
      return 1;
 
@@ -176,7 +178,8 @@ Picture *photo_picture_local_get(int position)
           {
              DD(("- Search -"));
              picture = evas_list_data(l);
-             if (!picture->pi && !picture->delete)
+             if (!picture->pi && !picture->delete_me &&
+		 (picture->thumb != PICTURE_THUMB_WAITING))
                return picture;
              l = evas_list_next(l);
              if (!l) l = pl->pictures;
@@ -189,12 +192,13 @@ Picture *photo_picture_local_get(int position)
 
 int photo_picture_local_loaded_nb_get(void)
 {
-   return evas_list_count(pictures_local->pictures);
+  return (evas_list_count(pictures_local->pictures) -
+	  pictures_local->thumb.nb);
 }
 
 int photo_picture_local_tothumb_nb_get(void)
 {
-   return evas_list_count(pictures_local->thumb.pictures);
+   return pictures_local->thumb.nb;
 }
 
 void photo_picture_local_ev_set(Photo_Item *pi)
@@ -266,111 +270,6 @@ void photo_picture_local_dir_free(Picture_Local_Dir *dir, int del_dialog)
  * Private functions
  */
 
-static int
-_picture_new(char *name)
-{
-   Picture_Local_List *pl;
-   Picture *picture;
-   char file[4096];
-   int th_w, th_h;
-   char *file_tmp, *ext;
-
-   pl = pictures_local;
-
-   file_tmp = evas_list_data(pl->loader.dirs);
-   snprintf(file, sizeof(file),
-            "%s/%s", file_tmp, name);
-
-   DD(("File %s", file));
-
-   if (!pl->loader.current_dir->read_hidden && (file[0] == '.'))
-     return 0;
-
-   th_w = photo->config->pictures_thumb_size;
-   th_h = photo->config->pictures_thumb_size;
-   
-   if ((file_tmp = ecore_file_readlink(file)))
-     {
-        name = strdup(ecore_file_get_file(file_tmp));
-        strncpy(file, file_tmp, sizeof(file));
-     }
-      
-   if (pl->loader.current_dir->recursive &&
-       ecore_file_is_dir(file))
-     {
-        pl->loader.dirs = evas_list_append(pl->loader.dirs, strdup(file));
-        DPICL(("added %s to loader dirs", file));
-        return 0;
-     }
-      
-   ext = strrchr(name, '.');
-   if (!ext)
-     return 0;
-   if (strcasecmp(ext, ".jpg") && strcasecmp(ext, ".JPG") &&
-       strcasecmp(ext, ".jpeg") && strcasecmp(ext, ".JPEG") &&
-       strcasecmp(ext, ".png") && strcasecmp(ext, ".PNG"))
-     return 0;
-      
-   DPICL(("File %s loading ...", file));
-      
-   picture = E_NEW(Picture, 1);
-   picture->path = evas_stringshare_add(file);
-   file_tmp = e_thumb_file_get((char *)picture->path);
-   picture->thumb_path = evas_stringshare_add(file_tmp);
-   free(file_tmp);
-   picture->infos.name = photo_picture_name_get(name);
-   picture->from = PICTURE_LOCAL;
-
-   DPICL(("Thumb %s of %s exists ?", picture->thumb_path, picture->path));
-   if (e_thumb_exists((char *)picture->path))
-     {
-        int w, h;
-
-        e_thumb_geometry_get((char *)picture->thumb_path, &w, &h, 1);
-        DPICL(("THUMB %dx%d (wanted %dx%d)", w, h, th_w, th_h));
-        if ((th_w > w) && (th_h > h))
-          {
-             /* thumb exists, but regen to new size */
-             int i;
-
-             i = ecore_file_unlink(picture->thumb_path);
-             DPICL(("File %s thumb exists (%dx%d),  but regen to %dx%d (del old %d)", file, w, h, th_w, th_h, i));
-             pl->thumb.pictures = evas_list_append(pl->thumb.pictures,
-                                                   picture);
-             e_thumb_generate_begin((char *)picture->path, th_w, th_h,
-                                    photo->e_evas,
-                                    &picture->picture, _thumb_generate_cb,
-                                    picture);
-          }
-        else
-          {
-             /* thumb exists and good size */
-             DPICL(("File %s thumb exists and good size, add (%de)", file, evas_list_count(pl->pictures)));
-             picture->original_w = w;
-             picture->original_h = h;
-             pl->pictures = evas_list_append(pl->pictures, picture);
-             if (pl->loader_ev.nb_clients)
-               photo_picture_local_ev_raise(1);
-             if (photo->config_dialog &&
-                 !(evas_list_count(pl->pictures)%100))
-               photo_config_dialog_refresh_local_infos();
-          }
-     }
-   else
-     {
-        /* thumb doesnt exists so generate it */
-        DPICL(("File %s thumb doesnt exist, gen %dx%d", file, th_w, th_h));
-        pl->thumb.pictures = evas_list_append(pl->thumb.pictures,
-                                              picture);
-        e_thumb_generate_begin((char *)picture->path, th_w, th_h,
-                               photo->e_evas,
-                               &picture->picture, _thumb_generate_cb,
-                               picture);
-     }
-
-   return 1;
-}
-
 static void
 _pictures_old_del(int force, int force_now)
 {
@@ -392,7 +291,9 @@ _load_idler(void *data)
    Picture_Local_List *pl;
    Picture_Local_Dir *d;
    Evas_List *l;
-   char *name;
+   Picture *picture;
+   char *name, *file_tmp;
+   char file[200];
 
    pl = pictures_local;
 
@@ -445,15 +346,15 @@ _load_idler(void *data)
              if (photo->config->local.popup >= PICTURE_LOCAL_POPUP_SUM)
                {
 		 char buf[50];
-		 int thumb_nb = evas_list_count(pl->thumb.pictures);
+
 		 snprintf(buf, sizeof(buf), "Scan finished : %d pictures found",
-			  evas_list_count(pl->pictures) + thumb_nb);
+			  evas_list_count(pl->pictures) + pl->thumb.nb);
 		 POPUP_LOADING(pl, buf, 3);
 		 /* tell how much pictures to thumb */
-		 if (thumb_nb)
+		 if (pl->thumb.nb)
 		   {
 		     snprintf(buf, sizeof(buf), "Still %d pictures to thumbnail",
-			      thumb_nb);
+			      pl->thumb.nb);
 		     POPUP_THUMBNAILING(pl, buf, 3);
 		   }
                }
@@ -482,46 +383,48 @@ _load_idler(void *data)
         return 1;
      }
 
-   /* create the picture */
-   if (_picture_new(name))
+   snprintf(file, sizeof(file),
+            "%s/%s", (char *)evas_list_data(pl->loader.dirs), name);
+
+   if (!pl->loader.current_dir->read_hidden && (name[0] == '.'))
+     return 1;
+   if ((file_tmp = ecore_file_readlink(file)))
      {
-        /* popups */
-        if (photo->config->local.popup == PICTURE_LOCAL_POPUP_ALWAYS)
-          {
-             int nb;
-             
-             /* loading popup message */        
-             nb = evas_list_count(pl->pictures) + evas_list_count(pl->thumb.pictures);
-             if (nb && ((nb == 1) || !(nb%PICTURE_LOCAL_POPUP_LOADER_MOD)))
-               {
-                  char buf[50];
-                  
-                  if (nb == 1)
-                    snprintf(buf, sizeof(buf), "Scanning for pictures");
-                  else
-                    snprintf(buf, sizeof(buf), "%d pictures found", nb);
-                  POPUP_LOADING(pl, buf, 0);
-               }
-             
-             /* thumbnailing popup message */
-             if (pl->thumb.popup_show && (evas_list_count(pl->thumb.pictures) == 1))
-               {
-                  POPUP_THUMBNAILING(pl, "Thumbnailing some pictures", 0);
-                  pl->thumb.popup_show = 0;
-               }
-          }
+        name = strdup(ecore_file_get_file(file_tmp));
+        strncpy(file, file_tmp, sizeof(file));
+     }
+   if (pl->loader.current_dir->recursive &&
+       ecore_file_is_dir(file))
+     {
+        pl->loader.dirs = evas_list_append(pl->loader.dirs, strdup(file));
+        DPICL(("added %s to loader dirs", file));
+        return 1;
+     }
+
+   /* create the picture */
+   picture = photo_picture_new(file, name, 1, _thumb_generate_cb);
+   if (!picture)
+     return 1;
+
+   pl->thumb.nb++;
+   pl->pictures = evas_list_append(pl->pictures, picture);
+
+   /* loader popups */
+   if (photo->config->local.popup == PICTURE_LOCAL_POPUP_ALWAYS)
+     {
+        int nb;
         
-        /* thumbnailing message */
-        if (photo->config->local.thumb_msg &&
-            (evas_list_count(pl->thumb.pictures) > 2))
+        /* loading popup message */        
+        nb = evas_list_count(pl->pictures) + pl->thumb.nb;
+        if (nb && ((nb == 1) || !(nb%PICTURE_LOCAL_POPUP_LOADER_MOD)))
           {
-             photo->config->local.thumb_msg = 0;
-             e_module_dialog_show(photo->module, _("Photo Module Information"),
-                                  _("<hilight>Creating thumbs</hilight><br><br>"
-                                    "Some pictures are being thumbed in a <hilight>background task</hilight>.<br>"
-                                    "It can take a while, but after, loading will be faster :)<br><br>"
-                                    "Each time wou will load pictures that haven't been loaded in devian before,<br>"
-                                    "they will be thumbed"));
+             char buf[50];
+             
+             if (nb == 1)
+               snprintf(buf, sizeof(buf), "Scanning for pictures");
+             else
+               snprintf(buf, sizeof(buf), "%d pictures found", nb);
+             POPUP_LOADING(pl, buf, 0);
           }
      }
 
@@ -601,61 +504,63 @@ _load_cb_ev_fill(void *data, int type, void *event)
 }
 
 static void
-_thumb_generate_cb(Evas_Object *obj, void *data)
+_thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Picture *picture;
    Picture_Local_List *pl;
 
-   if (!photo || !data)
-     return;
-   if (!e_module_enabled_get(photo->module))
+   if (!photo || !e_module_enabled_get(photo->module))
      return;
 
    pl = pictures_local;
-
-   if (!evas_list_count(pl->thumb.pictures))
-     return;
-
    picture = data;
-
-   pl->thumb.pictures = evas_list_remove(pl->thumb.pictures, picture);
-   if (!evas_list_count(pl->thumb.pictures))
-     {
-        pl->thumb.pictures = NULL;
-        if (photo->config_dialog)
-          photo_config_dialog_refresh_local_load();
-     }
 
    DPICL(("back from thumb generation of %s", picture->infos.name));
 
-   if (ecore_file_exists(picture->thumb_path))
+   if (!obj)
      {
-        e_thumb_geometry_get((char *)picture->thumb_path,
-                             &picture->original_w, &picture->original_h, 1);
-        DPICL(("thumb generated %dx%d", picture->original_w, picture->original_h));
-
-        pl->pictures = evas_list_append(pl->pictures, picture);
-
-        /* if the pic is loaded, remove it, we dont want it !
-         * moreover it does memleak */
-        if (picture->picture)
-          {
-             evas_object_del(picture->picture);
-             picture->picture = NULL;
-          }
-
-        if (photo->config_dialog)
-          photo_config_dialog_refresh_local_infos();
-     }
-   else
-     {
+        DPICL(("generated object is NULL !!"));
         photo_picture_free(picture, 1, 1);
+        return;
      }
 
+   evas_object_geometry_get(obj, NULL, NULL,
+			    &picture->original_w, &picture->original_h);
+   DPICL(("thumb generated %dx%d", picture->original_w, picture->original_h));
+
+   picture->thumb = PICTURE_THUMB_READY;
+
+   pl->thumb.nb--;
+   pl->pictures = evas_list_append(pl->pictures, picture);
+
+   /* popups about thumbnailing */
+
+   /* first thumbnailing popup message */
+   if (photo->config->local.popup &&
+       pl->thumb.popup_show && (pl->thumb.nb == 1))
+     {
+        pl->thumb.popup_show = 0;
+        POPUP_THUMBNAILING(pl, "Thumbnailing some pictures", 0);
+     }
+   
+   /* thumbnailing message, only one time */
+   if (photo->config->local.thumb_msg)
+     {
+        photo->config->local.thumb_msg = 0;
+	photo_config_save();
+        e_module_dialog_show(photo->module, _("Photo Module Information"),
+                             _("<hilight>Creating thumbs</hilight><br><br>"
+                               "Some pictures are being thumbed in a <hilight>background task</hilight>.<br>"
+                               "It can take a while, but after, loading will be faster :)<br><br>"
+                               "Each time wou will load pictures that haven't been loaded in Photo module before,<br>"
+                               "they will be thumbed"));
+     }
+
+   /* when still thumbnailing after loading */
    if ((photo->config->local.popup >= PICTURE_LOCAL_POPUP_SUM) &&
        !pl->loader.idler)
      {
-        if (!evas_list_count(pl->thumb.pictures))
+        if (!pl->thumb.nb)
           {
              /* Last thumbnailing popup message */
              POPUP_THUMBNAILING(pl, "Thumbnailing finished :)", 2);
@@ -665,20 +570,37 @@ _thumb_generate_cb(Evas_Object *obj, void *data)
              if (photo->config->local.popup == PICTURE_LOCAL_POPUP_ALWAYS)
                {
                   /* thumbnailing popup message */
-                  if (!(evas_list_count(pl->thumb.pictures)%PICTURE_LOCAL_POPUP_THUMB_MOD))
+                  if (!(pl->thumb.nb%PICTURE_LOCAL_POPUP_THUMB_MOD))
                     {
                        char buf[50];
                        
                        snprintf(buf, sizeof(buf), "Still %d pictures to thumbnail",
-                                evas_list_count(pl->thumb.pictures));
+                                pl->thumb.nb);
                        POPUP_THUMBNAILING(pl, buf, 0);
                     }
                }
           }
      }
 
+   /* refreshes */
+
+   if (!pl->thumb.nb && photo->config_dialog)
+     photo_config_dialog_refresh_local_load();
+
    if (pl->loader_ev.nb_clients)
      photo_picture_local_ev_raise(1);
+
+   if (photo->config_dialog &&
+       !(evas_list_count(pl->pictures)%100))
+     photo_config_dialog_refresh_local_infos();
+
+   /* if the pic is loaded, remove it, we dont want it */
+
+   if (picture->picture)
+     {
+        evas_object_del(picture->picture);
+        picture->picture = NULL;
+     }
 }
 
 static void
@@ -690,26 +612,25 @@ _thumb_generate_stop(void)
 
    pl = pictures_local;
 
-   if (pl->thumb.pictures)
+   if (pl->thumb.nb)
      {
-        for (l=pl->thumb.pictures; l; l=evas_list_next(l))
+        for (l=pl->pictures; l; l=evas_list_next(l))
           {
              picture = evas_list_data(l);
-             e_thumb_generate_end((char *)picture->path);
+             if (picture->thumb != PICTURE_THUMB_WAITING)
+               continue;
+
+             e_thumb_icon_end(picture->picture);
              photo_picture_free(picture, 1, 1);
           }
-        evas_list_free(pl->thumb.pictures);
+        pl->thumb.nb = 0;
      }
-
-   pl->thumb.pictures = NULL;
 
    if (pl->thumb.popup)
      {
         photo_popup_warn_del(pl->thumb.popup);
         pl->thumb.popup = NULL;
      }
-
-   pl->thumb.popup_show = 1;
 }
 
 static int
