@@ -412,53 +412,21 @@ static void
 ewl_calendar_add_day_labels(Ewl_Calendar *ib) 
 {
 	Ewl_Widget* day_label;
+	char *days[] = {"M", "T", "W", "T", "F", "S", "S", NULL};
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ib", ib);
 	DCHECK_TYPE("ib", ib, EWL_CALENDAR_TYPE);
 
-	/* Add the days*/
-	day_label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(day_label), "M");
-	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
-	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 0, 0, 0, 0);
-	ewl_widget_show(day_label);
-
-	day_label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(day_label), "T");
-	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
-	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 1, 1, 0, 0);
-	ewl_widget_show(day_label);
-
-	day_label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(day_label), "W");
-	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
-	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 2, 2, 0, 0);
-	ewl_widget_show(day_label);
-
-	day_label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(day_label), "T");
-	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
-	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 3, 3, 0, 0);
-	ewl_widget_show(day_label);
-
-	day_label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(day_label), "F");
-	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
-	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 4, 4, 0, 0);
-	ewl_widget_show(day_label);
-
-	day_label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(day_label), "S");
-	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
-	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 5, 5, 0, 0);
-	ewl_widget_show(day_label);
-
-	day_label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(day_label), "S");
-	ewl_container_child_append(EWL_CONTAINER(ib->grid), day_label);
-	ewl_grid_child_position_set(EWL_GRID(ib->grid), day_label, 6, 6, 0, 0);
-	ewl_widget_show(day_label);
+	for (i = 0; days[i] != NULL; i++)
+	{
+		day_label = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(day_label), days[i]);
+		ewl_container_child_append(EWL_CONTAINER(ib->grid),
+							day_label);
+		ewl_widget_show(day_label);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
