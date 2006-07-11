@@ -500,6 +500,7 @@ typedef struct
       char                restart;
       char                xselect;
       char                exiting;
+      char                in_signal_handler;
       char                save_ok;
       char                coredump;
       int                 exit_mode;

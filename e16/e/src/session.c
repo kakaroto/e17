@@ -673,7 +673,7 @@ SessionExit(int mode, const char *param)
       Eprintf("SessionExit: mode=%d(%d) prm=%s\n", mode, Mode.wm.exit_mode,
 	      param);
 
-   if (Mode.wm.startup)
+   if (Mode.wm.startup || Mode.wm.in_signal_handler)
       goto done;
 
    switch (mode)

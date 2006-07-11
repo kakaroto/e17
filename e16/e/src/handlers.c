@@ -34,6 +34,8 @@ SignalHandler(int sig)
    static int          loop_count = 0;
    int                 status;
 
+   Mode.wm.in_signal_handler = 1;
+
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("SignalHandler signal=%d\n", sig);
 
@@ -121,6 +123,8 @@ SignalHandler(int sig)
 	   ;
 	break;
      }
+
+   Mode.wm.in_signal_handler = 0;
 }
 
 static void
