@@ -330,23 +330,23 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 	/*
 	 * check bounds
 	 */
-	if (start_col < 1) {
+	if (start_col < 0) {
 		DWARNING("start_col out of bounds. min is 1\n");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 
-	if (end_col > g->cols)
-		new_cols = end_col;
+	if (end_col >= g->cols)
+		new_cols = end_col + 1;
 	else
 		new_cols = g->cols;
 	
-	if (start_row < 1) {
+	if (start_row < 0) {
 		DWARNING("start_row out of bounds. min is 1\n");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 
-	if (end_row > g->rows)
-		new_rows = end_row;
+	if (end_row >= g->rows)
+		new_rows = end_row + 1;
 	else
 		new_rows = g->rows;
 
@@ -401,17 +401,17 @@ ewl_grid_column_w_set(Ewl_Grid *g, int col, float relw, int width)
 	/*
 	 * check bounds
 	 */
-	if (col < 1) {
+	if (col < 0) {
 		DWARNING("parameter 'col' is out of bounds\n");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (col > g->cols) {
-		ewl_grid_dimensions_set(g, col, g->rows);
+	else if (col >= g->cols) {
+		ewl_grid_dimensions_set(g, col + 1, g->rows);
 	}
 
-	g->col_size[col - 1].override = 1;
-	g->col_size[col - 1].size = width;
-	g->col_size[col - 1].rel_size = relw;
+	g->col_size[col].override = 1;
+	g->col_size[col].size = width;
+	g->col_size[col].rel_size = relw;
 	g->data_dirty = TRUE;
 
 	ewl_widget_configure(EWL_WIDGET(g));
@@ -437,13 +437,13 @@ ewl_grid_column_w_get(Ewl_Grid *g, int col, float *relw,  int *width)
 	DCHECK_PARAM_PTR("width", width);
 	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
 
-	if ((col > g->cols) || (col < 1)) {
+	if ((col >= g->cols) || (col < 0)) {
 		if (width) *width = 0;
 		if (relw) *relw = 0.0;
 	}
 	else {
-		if (width) *width = g->col_size[col-1].size;
-		if (relw) *relw = g->col_size[col-1].rel_size;
+		if (width) *width = g->col_size[col].size;
+		if (relw) *relw = g->col_size[col].rel_size;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -465,16 +465,16 @@ ewl_grid_row_h_set(Ewl_Grid *g, int row, float relh, int height)
 	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
 
 	/* check bounds */
-	if (row < 1) {
+	if (row < 0) {
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (row > g->rows) {
-		ewl_grid_dimensions_set(g, g->cols, row);
+	else if (row >= g->rows) {
+		ewl_grid_dimensions_set(g, g->cols, row + 1);
 	}
 
-	g->row_size[row - 1].override = 1;
-	g->row_size[row - 1].size = height;
-	g->row_size[row - 1].rel_size = relh;
+	g->row_size[row].override = 1;
+	g->row_size[row].size = height;
+	g->row_size[row].rel_size = relh;
 
 	ewl_widget_configure(EWL_WIDGET(g));
 
@@ -499,13 +499,13 @@ ewl_grid_row_h_get(Ewl_Grid *g, int row, float *relh, int *height)
 	DCHECK_PARAM_PTR("height", height);
 	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
 
-	if ((row > g->rows) || (row < 1)) {
+	if ((row >= g->rows) || (row < 0)) {
 		if (height) *height = 0;
 		if (relh) *relh = 0.0;
 	}
 	else {
-		if (height) *height = g->row_size[row - 1].size;
-		if (relh) *relh = g->row_size[row - 1].rel_size;
+		if (height) *height = g->row_size[row].size;
+		if (relh) *relh = g->row_size[row].rel_size;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -573,19 +573,19 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			 */
 			
 			/* calculate child widgets width */
-			for (i = (c->start_col - 1); i < c->end_col; i++)
+			for (i = c->start_col; i <= c->end_col; i++)
 				c_w += g->col_size[i].current_size;
 
 			/* calculate child widgets height */
-			for (i = (c->start_row - 1); i < c->end_row; i++)
+			for (i = c->start_row; i <= c->end_row; i++)
 				c_h += g->row_size[i].current_size;
 
 			/* calculate child widgets x coordinate */
-			for (i = 0; i < (c->start_col - 1); i++)
+			for (i = 0; i < c->start_col; i++)
 				c_x += g->col_size[i].current_size;
 
 			/* calculate child widgets y coordinate */
-			for (i = 0; i < (c->start_row - 1); i++)
+			for (i = 0; i < c->start_row; i++)
 				c_y += g->row_size[i].current_size;
 		}
 		else {
@@ -671,8 +671,9 @@ ewl_grid_map_recalc(Ewl_Grid *g)
 		/* 
 		 * mark all positions that content a  positioned widget 
 		 */
-		for (l = (c->start_col - 1); l < c->end_col && l < g->cols; l++)
-			for (k = c->start_row - 1; k < c->end_row && k < g->rows; k++)
+		for (l = c->start_col; l <= c->end_col && l < g->cols; l++)
+			for (k = c->start_row; k <= c->end_row 
+							&& k < g->rows; k++)
 				g->map[g->cols * k + l]  = 1;
 	}
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -746,10 +747,10 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 		 * first calculate the current preferred size 
 		 * of the cells 
 		 */
-		for (i = (c->start_col - 1); i < c->end_col; i++)
+		for (i = c->start_col; i <= c->end_col; i++)
 			pref_w += g->col_size[i].preferred_size;
 
-		for (i = (c->start_row - 1); i < c->end_row; i++)
+		for (i = c->start_row; i <= c->end_row; i++)
 			pref_h += g->row_size[i].preferred_size;
 			
 		pref_w = ewl_object_preferred_w_get(EWL_OBJECT(child)) - pref_w;
@@ -757,13 +758,13 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 			
 		if (pref_w > 0) {
 			pref_w /= c->end_col - c->start_col + 1;
-			for (i = (c->start_col - 1); i < c->end_col; i++)
+			for (i = c->start_col; i <= c->end_col; i++)
 				g->col_size[i].preferred_size += pref_w;
 		}
 
 		if (pref_h > 0) {
 			pref_h /= c->end_row - c->start_row + 1;
-			for (i = (c->start_row - 1); i < c->end_row; i++)
+			for (i = c->start_row; i <= c->end_row; i++)
 				g->row_size[i].preferred_size += pref_h;
 		}
 	}

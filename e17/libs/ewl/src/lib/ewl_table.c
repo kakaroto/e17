@@ -119,7 +119,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
  * @param table: the table
  * @param w: the cell to add
  * @param start_col: the start column
- * @param end_col: the end columnt
+ * @param end_col: the end column
  * @param start_row: the start row
  * @param end_row: the end row
  * @return Returns no value.
