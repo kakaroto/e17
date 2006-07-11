@@ -111,7 +111,6 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook type)
 		ecore_list_goto_first(deps);
 		while ((caller = ecore_dlist_next(deps)))
 		{
-			printf("Checking engine %s\n", caller->name);
 			if (caller->functions->engine_hooks[type])
 				break;
 		}
