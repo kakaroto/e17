@@ -114,6 +114,8 @@ struct Ewl_Callback
 
 int             ewl_callbacks_init(void);
 void            ewl_callbacks_shutdown(void);
+unsigned int	ewl_callback_type_add(void);
+
 int             ewl_callback_append(Ewl_Widget * widget, unsigned int type,
 				    Ewl_Callback_Function func,
 				    void *user_data);

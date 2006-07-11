@@ -23,6 +23,7 @@ static void ewl_callback_rm(Ewl_Widget *w, unsigned int t,
 static int ewl_callback_insert(Ewl_Widget *w, unsigned int t, 
 				Ewl_Callback *cb, unsigned int pos);
 
+static int callback_type_count = EWL_CALLBACK_MAX + 1;;
 static int callback_id = 0;
 static Ecore_Hash *cb_registration = NULL;
 
@@ -244,6 +245,18 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
 		EWL_CALLBACK_POS(w, t)++;
 
 	DRETURN_INT(cb->id, DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a new callback identifier
+ * @brief Creates and returns a new callback identifier
+ */
+unsigned int
+ewl_callback_type_add(void)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DRETURN_INT(++callback_type_count, DLEVEL_STABLE);
 }
 
 /**
