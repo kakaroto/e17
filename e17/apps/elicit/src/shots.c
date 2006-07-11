@@ -392,6 +392,7 @@ elicit_shot_save_cb(void *data, Evas_Object *o, const char *emission, const char
   double length;
   Evas_Coord w, h;
   char *theme;
+  void *imdata;
 
   /* don't save an empty shot */
   if (!el->flags.shot_taken) return;
@@ -422,9 +423,9 @@ elicit_shot_save_cb(void *data, Evas_Object *o, const char *emission, const char
   edje_object_signal_callback_add(sh->obj, "elicit,shot,del", "", elicit_shot_del_cb, sh);
   edje_object_signal_callback_add(sh->obj, "elicit,shot,name,show", "", elicit_shot_name_show_cb, sh);
 
-  evas_object_image_size_get(el->shot, &iw, &ih);
+  elicit_zoom_data_get(el->shot, &imdata, &iw, &ih);
   evas_object_image_size_set(sh->shot, iw, ih);
-  evas_object_image_data_copy_set(sh->shot, evas_object_image_data_get(el->shot, 1));
+  evas_object_image_data_copy_set(sh->shot, imdata);
   evas_object_pass_events_set(sh->shot, 1);
   evas_object_show(sh->shot);
   edje_object_part_swallow(sh->obj, "shot", sh->shot);
@@ -462,12 +463,8 @@ elicit_shot_load_cb(void *data, Evas_Object *o, const char *emission, const char
   sh = evas_object_data_get(o, "shot");
 
   evas_object_image_size_get(sh->shot, &iw, &ih);
-  evas_object_image_size_set(el->shot, iw, ih);
-  evas_object_image_data_copy_set(el->shot, evas_object_image_data_get(sh->shot, 1));
-  evas_object_image_smooth_scale_set(el->shot, 0);
-  evas_object_image_data_update_add(el->shot, 0, 0, iw, ih);
 
-  /* FIXME: does the image data need to be deleted somehow with all this copying? */
+  elicit_zoom_data_set(el->shot, evas_object_image_data_get(sh->shot, 1), iw, ih);
   elicit_ui_update(el);
 }
 

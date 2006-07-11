@@ -37,6 +37,7 @@ typedef struct _Elicit_Shot Elicit_Shot;
 #include "swatches.h"
 #include "shots.h"
 #include "themes.h"
+#include "zoom.h"
 
 
 struct _Elicit

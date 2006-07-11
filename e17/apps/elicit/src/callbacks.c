@@ -93,17 +93,7 @@ void elicit_cb_move(void *data, Evas_Object *o, const char *sig, const char *src
 
   if (el->flags.shooting == 1)
   {
-    Evas_Coord sw, sh;
-    double w, h;
-
-    evas_object_geometry_get(el->shot, NULL, NULL, &sw, &sh);
-
-    if (el->zoom < 1.0) el->zoom = 1.0;
-
-    w = sw * (1 / el->zoom);
-    h = sh * (1 / el->zoom);
-
-    elicit_util_shoot(el->shot, (int)w, (int)h);
+    elicit_zoom(el->shot);
   }
 }
 
@@ -342,10 +332,7 @@ elicit_cb_edit(void *data, Evas_Object *o, const char *sig, const char *src)
       ecore_exe_run(buf, NULL);
     }
   }
-  
-  
 }
-
 
 void
 elicit_cb_freeze(void *data, Evas_Object *o, const char *sig, const char *src)
@@ -359,6 +346,22 @@ elicit_cb_thaw(void *data, Evas_Object *o, const char *sig, const char *src)
   Elicit *el = data;
 
   edje_object_thaw(el->gui);
+}
+
+void
+elicit_cb_grid(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+
+  if (!strcmp(sig, "elicit,grid,toggle")) {
+    elicit_zoom_grid_visible_set(el->shot, !elicit_config_grid_visible_get());
+  }
+  else if (!strcmp(sig, "elicit,grid,show")) {
+    elicit_zoom_grid_visible_set(el->shot, 1);
+  }
+  else if (!strcmp(sig, "elicit,grid,show")) {
+    elicit_zoom_grid_visible_set(el->shot, 0);
+  }
 }
 
 static int
@@ -465,7 +468,7 @@ void _elicit_color_signal_process(Elicit *el)
 
   else if (elicit_glob_match(el->change_sig, "*,zoom,*"))
   {
-    el->zoom += dir * .1;
+    el->zoom += dir * 1;
     if (el->zoom < 1) el->zoom = 1;
   }
 

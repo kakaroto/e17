@@ -75,6 +75,13 @@
       }
 
       program {
+        name, "shot.grid";
+        signal, "mouse,down,3*";
+        source, "shot-border";
+        action, SIGNAL_EMIT "elicit,grid,toggle" "";
+      }
+
+      program {
         name, "shot.ani";
         action, STATE_SET "hidden" 0.0;
         transition, LINEAR 0.0;

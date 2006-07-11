@@ -129,7 +129,8 @@ setup(int argc, char **argv, Elicit *el)
   el->zoom_max = elicit_config_zoom_max_get();
 
   /* create the swatch and shot objects */
-  el->shot = evas_object_image_add(el->evas);
+  //el->shot = evas_object_image_add(el->evas);
+  el->shot = elicit_zoom_add(el->evas);
   evas_object_name_set(el->shot, "shot");
   evas_object_show(el->shot);
   
@@ -200,6 +201,7 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
   edje_object_signal_callback_add(el->gui, "elicit,size,min,*", "*", elicit_cb_size_min, el);
   edje_object_signal_callback_add(el->gui, "elicit,colorclass", "*", elicit_cb_colorclass, el);
   edje_object_signal_callback_add(el->gui, "elicit,shot,edit", "*", elicit_cb_edit, el);
+  edje_object_signal_callback_add(el->gui, "elicit,grid,*", "*", elicit_cb_grid, el);
 
   edje_object_signal_callback_add(el->gui, "elicit,swatch,save", "*", elicit_swatch_save_cb, el);
   edje_object_signal_callback_add(el->gui, "elicit,shot,save", "*", elicit_shot_save_cb, el);
@@ -257,7 +259,7 @@ elicit_ui_update_text(Elicit *el)
   edje_object_part_text_set(el->gui, "hex-val", buf); 
   edje_object_part_text_set(el->gui, "hex-val2", buf); 
 
-  snprintf(buf, sizeof(buf)-1, "%.2f", el->zoom);
+  snprintf(buf, sizeof(buf)-1, "%d", (int)el->zoom);
   edje_object_part_text_set(el->gui, "zoom-val", buf); 
   edje_object_part_text_set(el->gui, "zoom-val2", buf); 
 
@@ -292,6 +294,7 @@ elicit_ui_update(Elicit *el)
 {
   elicit_ui_update_text(el);
   elicit_ui_update_sliders(el);
+  elicit_zoom_zoom_set(el->shot, el->zoom);
   
   evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
 }

@@ -32,5 +32,7 @@ void elicit_config_colorclass_set(int r, int g, int b);
 char *elicit_config_editor_get(void);
 void elicit_config_editor_set(char *ed);
 
-#endif
+int elicit_config_grid_visible_get(void);
+void elicit_config_grid_visible_set(int visible);
 
+#endif

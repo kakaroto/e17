@@ -12,7 +12,8 @@ elicit_SOURCES = \
         conf.c conf.h \
         swatches.c swatches.h \
         shots.c shots.h \
-        themes.c themes.h 
+        themes.c themes.h \
+				zoom.c zoom.h
 
 elicit_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
 @esmart_libs@ @imlib2_libs@ @eet_libs@ -lesmart_draggies -lesmart_container

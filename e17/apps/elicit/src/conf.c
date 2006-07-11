@@ -133,6 +133,18 @@ elicit_config_editor_set(char *ed)
    ecore_config_string_set("/editor", ed);
 }
 
+int
+elicit_config_grid_visible_get(void)
+{
+  return ecore_config_int_get("/show_grid");
+}
+
+void
+elicit_config_grid_visible_set(int visible)
+{
+  ecore_config_int_set("/show_grid", visible);
+}
+
 static int
 elicit_config_listener(const char *key, const Ecore_Config_Type type, const int tag, void *data)
 {

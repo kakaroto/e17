@@ -294,8 +294,7 @@ elicit_util_shot_save(Elicit *el, const char *filename)
   int iw, ih;
   DATA32 *data;
 
-  evas_object_image_size_get(el->shot, &iw, &ih);
-  data = evas_object_image_data_get(el->shot, 1);
+  elicit_zoom_data_get(el->shot, (void **)&data, &iw, &ih);
 
   im = imlib_create_image_using_copied_data(iw, ih, data);
   imlib_context_set_image(im);
