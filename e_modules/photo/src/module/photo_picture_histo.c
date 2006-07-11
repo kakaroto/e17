@@ -82,8 +82,14 @@ Picture *photo_picture_histo_change(Photo_Item *pi, int offset)
 
    picture = evas_list_nth(pi->histo.list, new_pos);
    if (picture)
-     pi->histo.pos = new_pos;
-   else
+     {
+       if (!picture->pi && !picture->delete_me)
+	 pi->histo.pos = new_pos;
+       else
+	 picture = NULL;
+     }
+
+   if (!picture)
      DPIC(("HISTO change FAILED !!"));
 
    return picture;
