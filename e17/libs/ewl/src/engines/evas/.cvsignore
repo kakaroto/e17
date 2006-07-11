@@ -1,0 +1,6 @@
+.deps
+.libs
+evas.la
+ewl_engine_evas.lo
+Makefile
+Makefile.in
