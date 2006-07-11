@@ -36,25 +36,25 @@ static int      basic_height = 138;
 static int      basic_cols = 4;
 static int      basic_rows = 6;
 static equate_button basic_buttons[] = {
-   {2, 1, 1, 1, "c", "c", (void *) calc_clear_cb, NULL},
-   {2, 2, 1, 1, "/", "/", (void *) calc_append, NULL},
-   {2, 3, 1, 1, "*", "*", (void *) calc_append, NULL},
-   {2, 4, 1, 1, "-", "-", (void *) calc_append, NULL},
-   {3, 1, 1, 1, "7", "7", (void *) calc_append, NULL},
-   {3, 2, 1, 1, "8", "8", (void *) calc_append, NULL},
-   {3, 3, 1, 1, "9", "9", (void *) calc_append, NULL},
-   {3, 4, 2, 1, "+", "+", (void *) calc_append, NULL},
-   {4, 1, 1, 1, "4", "4", (void *) calc_append, NULL},
-   {4, 2, 1, 1, "5", "5", (void *) calc_append, NULL},
-   {4, 3, 1, 1, "6", "6", (void *) calc_append, NULL},
+   {1, 0, 1, 1, "c", "c", (void *) calc_clear_cb, NULL},
+   {1, 1, 1, 1, "/", "/", (void *) calc_append, NULL},
+   {1, 2, 1, 1, "*", "*", (void *) calc_append, NULL},
+   {1, 3, 1, 1, "-", "-", (void *) calc_append, NULL},
+   {2, 0, 1, 1, "7", "7", (void *) calc_append, NULL},
+   {2, 1, 1, 1, "8", "8", (void *) calc_append, NULL},
+   {2, 2, 1, 1, "9", "9", (void *) calc_append, NULL},
+   {2, 3, 2, 1, "+", "+", (void *) calc_append, NULL},
+   {3, 0, 1, 1, "4", "4", (void *) calc_append, NULL},
+   {3, 1, 1, 1, "5", "5", (void *) calc_append, NULL},
+   {3, 2, 1, 1, "6", "6", (void *) calc_append, NULL},
 
-   {5, 1, 1, 1, "1", "1", (void *) calc_append, NULL},
-   {5, 2, 1, 1, "2", "2", (void *) calc_append, NULL},
-   {5, 3, 1, 1, "3", "3", (void *) calc_append, NULL},
-   {5, 4, 2, 1, "=", "=", (void *) calc_exec, NULL},
+   {4, 0, 1, 1, "1", "1", (void *) calc_append, NULL},
+   {4, 1, 1, 1, "2", "2", (void *) calc_append, NULL},
+   {4, 2, 1, 1, "3", "3", (void *) calc_append, NULL},
+   {4, 3, 2, 1, "=", "=", (void *) calc_exec, NULL},
 
-   {6, 1, 1, 2, "0", "0", (void *) calc_append, NULL},
-   {6, 3, 1, 1, ".", ".", (void *) calc_append, NULL},
+   {5, 0, 1, 2, "0", "0", (void *) calc_append, NULL},
+   {5, 2, 1, 1, ".", ".", (void *) calc_append, NULL},
 };
 
 static int      sci_width = 130;
@@ -62,29 +62,29 @@ static int      sci_height = 175;
 static int      sci_cols = 4;
 static int      sci_rows = 7;
 static equate_button sci_buttons[] = {
-   {2, 1, 1, 1, "^", "^", (void *) calc_append, NULL},
-   {2, 2, 1, 1, "sin", "sin(", (void *) calc_append, NULL},
-   {2, 3, 1, 1, "cos", "cos(", (void *) calc_append, NULL},
-   {2, 4, 1, 1, "tan", "tan(", (void *) calc_append, NULL},
-   {3, 1, 1, 1, "/", "/", (void *) calc_append, NULL},
-   {3, 2, 1, 1, "*", "*", (void *) calc_append, NULL},
-   {3, 3, 1, 1, "-", "-", (void *) calc_append, NULL},
-   {3, 4, 1, 1, "+", "+", (void *) calc_append, NULL},
-   {4, 1, 1, 1, "7", "7", (void *) calc_append, NULL},
-   {4, 2, 1, 1, "8", "8", (void *) calc_append, NULL},
-   {4, 3, 1, 1, "9", "9", (void *) calc_append, NULL},
-   {4, 4, 1, 1, "(", "(", (void *) calc_append, NULL},
-   {5, 1, 1, 1, "4", "4", (void *) calc_append, NULL},
-   {5, 2, 1, 1, "5", "5", (void *) calc_append, NULL},
-   {5, 3, 1, 1, "6", "6", (void *) calc_append, NULL},
-   {5, 4, 1, 1, ")", ")", (void *) calc_append, NULL},
-   {6, 1, 1, 1, "1", "1", (void *) calc_append, NULL},
-   {6, 2, 1, 1, "2", "2", (void *) calc_append, NULL},
-   {6, 3, 1, 1, "3", "3", (void *) calc_append, NULL},
-   {6, 4, 2, 1, "=", "=", (void *) calc_exec, NULL},
-   {7, 1, 1, 1, "c", "c", (void *) calc_clear_cb, NULL},
-   {7, 2, 1, 1, "0", "0", (void *) calc_append, NULL},
-   {7, 3, 1, 1, ".", ".", (void *) calc_append, NULL},
+   {1, 0, 1, 1, "^", "^", (void *) calc_append, NULL},
+   {1, 1, 1, 1, "sin", "sin(", (void *) calc_append, NULL},
+   {1, 2, 1, 1, "cos", "cos(", (void *) calc_append, NULL},
+   {1, 3, 1, 1, "tan", "tan(", (void *) calc_append, NULL},
+   {2, 0, 1, 1, "/", "/", (void *) calc_append, NULL},
+   {2, 1, 1, 1, "*", "*", (void *) calc_append, NULL},
+   {2, 2, 1, 1, "-", "-", (void *) calc_append, NULL},
+   {2, 3, 1, 1, "+", "+", (void *) calc_append, NULL},
+   {3, 0, 1, 1, "7", "7", (void *) calc_append, NULL},
+   {3, 1, 1, 1, "8", "8", (void *) calc_append, NULL},
+   {3, 2, 1, 1, "9", "9", (void *) calc_append, NULL},
+   {3, 3, 1, 1, "(", "(", (void *) calc_append, NULL},
+   {4, 0, 1, 1, "4", "4", (void *) calc_append, NULL},
+   {4, 1, 1, 1, "5", "5", (void *) calc_append, NULL},
+   {4, 2, 1, 1, "6", "6", (void *) calc_append, NULL},
+   {4, 3, 1, 1, ")", ")", (void *) calc_append, NULL},
+   {5, 0, 1, 1, "1", "1", (void *) calc_append, NULL},
+   {5, 1, 1, 1, "2", "2", (void *) calc_append, NULL},
+   {5, 2, 1, 1, "3", "3", (void *) calc_append, NULL},
+   {5, 3, 2, 1, "=", "=", (void *) calc_exec, NULL},
+   {6, 0, 1, 1, "c", "c", (void *) calc_clear_cb, NULL},
+   {6, 1, 1, 1, "0", "0", (void *) calc_append, NULL},
+   {6, 2, 1, 1, ".", ".", (void *) calc_append, NULL},
 };
 
 static equate_button *buttons;
@@ -395,17 +395,17 @@ draw_ewl(Mode draw_mode)
    ewl_container_child_append(EWL_CONTAINER(displaycell), disp_table);
    ewl_widget_show(disp_cell[1]);
    ewl_container_child_append(EWL_CONTAINER(disp_table), disp_cell[1]);
-   ewl_grid_child_position_set(EWL_GRID(disp_table), disp_cell[1], 1, 1, 1, 1);
+   ewl_grid_child_position_set(EWL_GRID(disp_table), disp_cell[1], 0, 0, 0, 0);
    if (calc_mode == SCI) {
       ewl_widget_show(disp_cell[2]);
       ewl_container_child_append(EWL_CONTAINER(disp_table), disp_cell[2]);
-      ewl_grid_child_position_set(EWL_GRID(disp_table), disp_cell[2], 1, 1, 2, 2);
+      ewl_grid_child_position_set(EWL_GRID(disp_table), disp_cell[2], 0, 0, 1, 1);
    }
    ewl_widget_configure(disp_table);
    ewl_widget_show(disp_table);
    /* end display layout */
    ewl_container_child_append(EWL_CONTAINER(table), displaycell);
-   ewl_grid_child_position_set(EWL_GRID(table), displaycell, 1, 4, 1, 1);
+   ewl_grid_child_position_set(EWL_GRID(table), displaycell, 0, 3, 0, 0);
    ewl_widget_show(displaycell);
    bc = count;
    equate_button  *but = buttons;
