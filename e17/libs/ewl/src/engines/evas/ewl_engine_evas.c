@@ -213,14 +213,16 @@ ee_canvas_layer_update(Ewl_Widget *w)
 		Evas_Object *above;
 		
 		if (!(above = ewl_widget_layer_neighbor_find_above(w)))
-			DWARNING("Have not found an object above");
+			DWARNING("No object above.");
+
 		evas_object_stack_above(w->smart_object, above);
 	}
 	else {
 		Evas_Object *below;
 
 		if (!(below = ewl_widget_layer_neighbor_find_below(w)))
-			DWARNING("Have not found an object below");
+			DWARNING("No object below.");
+
 		evas_object_stack_below(w->smart_object, below);
 	}
 
