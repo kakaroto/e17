@@ -471,8 +471,6 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	/* Limit the index to be within safe boundaries */
 	if (idx > t->length + 1)
 		idx = t->length + 1;
-	if (idx < 0)
-		idx = 0;
 
 	/* setup the cursor position to begin with. If this is the same
 	 * position as before nothing will change (we'll keep our current
@@ -485,7 +483,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 	}
 	else
 	{
-		int newlen;
+		unsigned int newlen;
 
 		newlen = t->length + len;
 		if ((newlen + 1) >= t->total_size)
@@ -2197,7 +2195,7 @@ unsigned int
 ewl_text_utf_char_position_next(const char *text, unsigned int pos)
 {
 	const unsigned char *t;
-	int len;
+	unsigned int len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("text", text, 0);
@@ -2225,7 +2223,7 @@ unsigned int
 ewl_text_utf_char_position_prev(const char *text, unsigned int pos)
 {
 	const unsigned char *t;
-	int len;
+	unsigned int len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("text", text, 0);
