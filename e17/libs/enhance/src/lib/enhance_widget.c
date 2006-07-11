@@ -851,10 +851,6 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
      }
    if(!strcmp(parent_class, "GtkDialog"))
      {
-	char *c_parent_class;
-	
-	c_parent_class = ecore_hash_get(child->node->attributes, "internal-child");
-	printf("packing into dialog %s!\n", c_parent_class);
 	etk_dialog_pack_in_main_area(ETK_DIALOG(parent->wid), child->wid, ETK_TRUE, ETK_TRUE, 0, ETK_FALSE);
      }
    if(!strcmp(parent_class, "GtkFrame"))
