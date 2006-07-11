@@ -943,14 +943,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 	Etk_Bool expand  = ETK_TRUE;
 	Etk_Bool fill    = ETK_TRUE;
 	int      padding = 0;
-	
-	char *c_parent_class;	
-	
-	c_parent_class = ecore_hash_get(child->node->attributes, "class");
-	printf("packing into vbox %s!\n", c_parent_class);
-	
-	
-	
+		
 	if(child->packing)
 	  {
 	     expand = child->packing->expand;
