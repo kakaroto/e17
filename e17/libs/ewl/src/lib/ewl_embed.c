@@ -1515,8 +1515,7 @@ ewl_embed_freeze(Ewl_Embed *e)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
-	if (REALIZED(e) && e->evas && evas_event_freeze_get(e->evas) < 1)
-		evas_event_freeze(e->evas);
+	ewl_engine_canvas_freeze(e);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1533,8 +1532,7 @@ ewl_embed_thaw(Ewl_Embed *e)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
-	if (REALIZED(e) && e->evas && evas_event_freeze_get(e->evas) > 0)
-		evas_event_thaw(e->evas);
+	ewl_engine_canvas_thaw(e);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1559,7 +1557,7 @@ ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	emb = EWL_EMBED(w);
 
-	evas_event_freeze(emb->evas);
+	ewl_embed_freeze(emb);
 
 	if (!emb->ev_clip) {
 		/*

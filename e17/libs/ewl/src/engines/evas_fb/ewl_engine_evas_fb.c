@@ -43,12 +43,17 @@ static Ewl_Engine_Info engine_funcs = {
 	}
 };
 
-Ecore_List *
+Ecore_DList *
 ewl_engine_dependancies(void)
 {
+	Ecore_DList *d;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        DRETURN_PTR(NULL, DLEVEL_STABLE);
+	d = ecore_dlist_new();
+	ecore_dlist_append(d, strdup("evas"));
+
+        DRETURN_PTR(d, DLEVEL_STABLE);
 }
 
 Ewl_Engine *

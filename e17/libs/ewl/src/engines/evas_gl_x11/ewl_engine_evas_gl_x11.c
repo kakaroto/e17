@@ -21,15 +21,16 @@ static Ewl_Engine_Info engine_funcs = {
 	}
 };
 
-Ecore_List *
+Ecore_DList *
 ewl_engine_dependancies(void)
 {
-	Ecore_List *d;
+	Ecore_DList *d;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	d = ecore_list_new();
-	ecore_list_append(d, strdup("x11"));
+	d = ecore_dlist_new();
+	ecore_dlist_append(d, strdup("x11"));
+	ecore_dlist_append(d, strdup("evas"));
 
 	DRETURN_PTR(d, DLEVEL_STABLE);
 }

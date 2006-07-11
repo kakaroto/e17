@@ -108,9 +108,10 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook type)
 		Ecore_List *deps;
 
 		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
+		ecore_list_goto_first(deps);
+		while ((caller = ecore_dlist_next(deps)))
 		{
+			printf("Checking engine %s\n", caller->name);
 			if (caller->functions->engine_hooks[type])
 				break;
 		}
@@ -151,8 +152,8 @@ ewl_engine_hook_chain_get(Ewl_Embed *embed, Ewl_Engine_Hook type)
 		Ecore_List *deps;
 
 		deps = caller->dependancies;
-		ecore_list_goto_last(deps);
-		while ((caller = ecore_dlist_previous(deps)))
+		ecore_list_goto_first(deps);
+		while ((caller = ecore_dlist_next(deps)))
 		{
 			if (caller->functions->engine_hooks[type])
 				ecore_list_append(matches,

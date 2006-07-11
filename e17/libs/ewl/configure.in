@@ -233,6 +233,7 @@ src/bin/tests/Makefile
 src/lib/Makefile
 src/engines/Makefile
 src/engines/x11/Makefile
+src/engines/evas/Makefile
 src/engines/evas_software_x11/Makefile
 src/engines/evas_gl_x11/Makefile
 src/engines/evas_fb/Makefile

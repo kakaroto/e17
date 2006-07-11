@@ -105,7 +105,7 @@ static Ewl_Engine_Info engine_funcs = {
 	}
 };
 
-Ecore_List *
+Ecore_DList *
 ewl_engine_dependancies(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

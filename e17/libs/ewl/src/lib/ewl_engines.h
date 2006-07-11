@@ -149,6 +149,8 @@ void		 ewl_engine_window_geometry_get(Ewl_Window *win, int root,
 void		 ewl_engine_window_dnd_aware_set(Ewl_Window *win);
 
 void		 ewl_engine_canvas_setup(Ewl_Window *win, int debug);
+void		 ewl_engine_canvas_freeze(Ewl_Embed *embed);
+void		 ewl_engine_canvas_thaw(Ewl_Embed *embed);
 
 /**
  * Internal engine hook typedefs, you only need these if you're writing an
