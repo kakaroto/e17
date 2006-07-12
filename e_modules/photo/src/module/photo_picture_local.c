@@ -158,9 +158,10 @@ Picture *photo_picture_local_get(int position)
 
    pl = pictures_local;
 
-   DPICL(("Trying to get a picture, position = %d", position));
+   DPICL(("Trying to get a picture (%d), position = %d",
+          evas_list_count(pl->pictures), position));
 
-   if (!evas_list_count(pl->pictures) - pl->pictures_waiting_delete)
+   if (!(evas_list_count(pl->pictures) - pl->pictures_waiting_delete))
      return NULL;
 
    if (position != PICTURE_LOCAL_GET_RANDOM)
