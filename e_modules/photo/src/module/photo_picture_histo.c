@@ -259,12 +259,10 @@ _cb_menu_post_select(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 static void
 _cb_menu_deactivate_post(void *data, E_Menu *m)
 {
-  /*
   Photo_Item *pi;
 
   pi = data;
   pi->menu_histo = NULL;
-  */
   
   DD(("deactivate cb post"));
 
