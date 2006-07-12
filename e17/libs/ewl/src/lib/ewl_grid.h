@@ -25,15 +25,18 @@
 typedef struct Ewl_Grid_Info Ewl_Grid_Info;
 
 /**
- * Contains information about the Ewl_Grid
+ * Contains information about a row or column of Ewl_Grid
  */
 struct Ewl_Grid_Info
 {
-	int		 current_size;		/**< the current size */
-	int		 size;			/**< The size set by the user */
-	float		 rel_size;		/**< The relative size */
-	int		 preferred_size;	/**< The greatest preferred size of a widget inside */
-	char		 override;		/**< Are there values set by the user */
+	int			 current_size;		/**< the current size */
+	int			 preferred_size;	/**< The greatest preferred size of a widget inside */
+	union {
+		int		 size;			/**< The size set by the user */
+		float		 rel_size;		/**< The relative size */
+	} user;
+	
+	Ewl_Grid_Resize_Type	 resize_type;		/**< Are there values set by the user */
 };
 
 /**
@@ -95,12 +98,23 @@ void            ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *child,
 				int end_row);
 
 void            ewl_grid_dimensions_set(Ewl_Grid *g, int col, int row);
+void            ewl_grid_dimensions_get(Ewl_Grid *g, int *col, int *row);
 
-void            ewl_grid_column_w_set(Ewl_Grid *g, int col, float relw, int width);
-void            ewl_grid_column_w_get(Ewl_Grid *g, int col, float *relw, int *width);
+int             ewl_grid_column_current_w_get(Ewl_Grid *g, int col);
+void            ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width);
+int             ewl_grid_column_fixed_w_get(Ewl_Grid *g, int col);
+void            ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw);
+float           ewl_grid_column_relative_w_get(Ewl_Grid *g, int col);
+void            ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col);
+void            ewl_grid_column_w_remove(Ewl_Grid *g, int col);
 
-void            ewl_grid_row_h_set(Ewl_Grid *g, int row, float relh, int height);
-void            ewl_grid_row_h_get(Ewl_Grid *g, int row, float *relh, int *height);
+int             ewl_grid_row_current_h_get(Ewl_Grid *g, int row);
+void            ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height);
+int             ewl_grid_row_fixed_h_get(Ewl_Grid *g, int row);
+void            ewl_grid_row_relative_h_set(Ewl_Grid *g, int col, float relh);
+float           ewl_grid_row_relative_h_get(Ewl_Grid *g, int col);
+void            ewl_grid_row_preferred_h_use(Ewl_Grid *g, int col);
+void            ewl_grid_row_h_remove(Ewl_Grid *g, int row);
 
 void		ewl_grid_orientation_set(Ewl_Grid *g, Ewl_Orientation orientation);
 Ewl_Orientation	ewl_grid_orientation_get(Ewl_Grid *g);

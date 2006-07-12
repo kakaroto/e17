@@ -151,7 +151,8 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	hbox = ewl_grid_new();
 	ewl_widget_internal_set(hbox, TRUE);
 	ewl_grid_dimensions_set(EWL_GRID(hbox), 2, 2);
-	ewl_grid_homogeneous_set(EWL_GRID(hbox), TRUE);
+	ewl_grid_vhomogeneous_set(EWL_GRID(hbox), TRUE);
+	ewl_grid_column_preferred_w_use(EWL_GRID(hbox), 0);
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), 
 				EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_HFILL);

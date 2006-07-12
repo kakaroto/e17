@@ -88,7 +88,7 @@ ewl_grid_init(Ewl_Grid *g)
  * @param cols: the new number of columns
  * @param rows: the new number of rows
  * @return Returns no value
- * @brief Clears the grid and sets new geometry
+ * @brief  sets the new dimensions
  */
 void
 ewl_grid_dimensions_set(Ewl_Grid *g, int cols, int rows)
@@ -148,6 +148,26 @@ ewl_grid_dimensions_set(Ewl_Grid *g, int cols, int rows)
 
 	ewl_widget_configure(w);
 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param cols: a pointer where the number of columns will be saved
+ * @param rows: a pointer where the number of rows will be saved
+ * @return Returns no value
+ * @brief  get the number of columns and rows
+ */
+void
+ewl_grid_dimensions_get(Ewl_Grid *g, int *cols, int *rows)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+
+	if (cols) *cols = g->cols;
+	if (rows) *rows = g->rows;
+	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -331,7 +351,7 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 	 * check bounds
 	 */
 	if (start_col < 0) {
-		DWARNING("start_col out of bounds. min is 1\n");
+		DWARNING("start_col out of bounds. min is 0\n");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 
@@ -341,7 +361,7 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 		new_cols = g->cols;
 	
 	if (start_row < 0) {
-		DWARNING("start_row out of bounds. min is 1\n");
+		DWARNING("start_row out of bounds. min is 0\n");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 
@@ -386,13 +406,33 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 /**
  * @param g: the grid
  * @param col: the column
- * @param relw: width relative to the grid width
+ * @return Returns the current width
+ * @brief Get the current width of a column
+ *
+ * This function returns current width of the column.
+ */
+int
+ewl_grid_column_current_w_get(Ewl_Grid *g, int col)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, 0);
+	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+
+	if ((col >= g->cols) || (col < 0)) 
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	DRETURN_INT(g->col_size[col].current_size, DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param col: the column
  * @param width: the new width
  * @return Returns no value.
- * @brief Set the widget of a column
+ * @brief Set the fixed size of a column
  */
 void
-ewl_grid_column_w_set(Ewl_Grid *g, int col, float relw, int width)
+ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
@@ -409,9 +449,8 @@ ewl_grid_column_w_set(Ewl_Grid *g, int col, float relw, int width)
 		ewl_grid_dimensions_set(g, col + 1, g->rows);
 	}
 
-	g->col_size[col].override = 1;
-	g->col_size[col].size = width;
-	g->col_size[col].rel_size = relw;
+	g->col_size[col].resize_type = EWL_GRID_RESIZE_FIXED;
+	g->col_size[col].user.size = width;
 	g->data_dirty = TRUE;
 
 	ewl_widget_configure(EWL_WIDGET(g));
@@ -422,59 +461,139 @@ ewl_grid_column_w_set(Ewl_Grid *g, int col, float relw, int width)
 /**
  * @param g: the grid
  * @param col: the column
- * @param relw: the width relative to the grid width
- * @param width: integer pointer to store the width in
- * @return Returns no value.
+ * @return Returns the user set width
  * @brief Get the user set width of a column
  *
  * This function returns only the size set by the user.
  */
+int
+ewl_grid_column_fixed_w_get(Ewl_Grid *g, int col)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, 0);
+	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+
+	if ((col >= g->cols) || (col < 0)) 
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	DRETURN_INT(g->col_size[col].user.size, DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param col: the column
+ * @param width: the new relative width
+ * @return Returns no value.
+ * @brief Set the relative width of a column
+ */
 void
-ewl_grid_column_w_get(Ewl_Grid *g, int col, float *relw,  int *width)
+ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
-	DCHECK_PARAM_PTR("width", width);
 	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
 
-	if ((col >= g->cols) || (col < 0)) {
-		if (width) *width = 0;
-		if (relw) *relw = 0.0;
+	/*
+	 * check bounds
+	 */
+	if (col < 0) {
+		DWARNING("parameter 'col' is out of bounds\n");
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else {
-		if (width) *width = g->col_size[col].size;
-		if (relw) *relw = g->col_size[col].rel_size;
+	else if (col >= g->cols) {
+		ewl_grid_dimensions_set(g, col + 1, g->rows);
 	}
+
+	g->col_size[col].resize_type = EWL_GRID_RESIZE_RELATIVE;
+	g->col_size[col].user.rel_size = relw;
+	g->data_dirty = TRUE;
+
+	ewl_widget_configure(EWL_WIDGET(g));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * @param g: the grid
- * @param row: the row
- * @param relh: the height relative to the size of the grid
- * @param height: the new height
+ * @param col: the column
+ * @return Returns the user set relative width
+ * @brief Get the user set relative width of a column
+ *
+ * This function returns only the relative size set by the user.
+ */
+float
+ewl_grid_column_relative_w_get(Ewl_Grid *g, int col)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, 0.0);
+	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0.0);
+
+	if ((col >= g->cols) || (col < 0)) 
+		DRETURN_FLOAT(0.0, DLEVEL_STABLE);
+
+	DRETURN_FLOAT(g->col_size[col].user.rel_size, DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param col: the column
  * @return Returns no value.
- * @brief Set the user set height of a row
+ * @brief use the preferred size of the column 
  */
 void
-ewl_grid_row_h_set(Ewl_Grid *g, int row, float relh, int height)
+ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
 	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
 
-	/* check bounds */
-	if (row < 0) {
+	/*
+	 * check bounds
+	 */
+	if (col < 0) {
+		DWARNING("parameter 'col' is out of bounds\n");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (row >= g->rows) {
-		ewl_grid_dimensions_set(g, g->cols, row + 1);
+	else if (col >= g->cols) {
+		ewl_grid_dimensions_set(g, col + 1, g->rows);
 	}
 
-	g->row_size[row].override = 1;
-	g->row_size[row].size = height;
-	g->row_size[row].rel_size = relh;
+	g->col_size[col].resize_type = EWL_GRID_RESIZE_NONE;
+	g->col_size[col].user.size = 0;
+	g->data_dirty = TRUE;
+
+	ewl_widget_configure(EWL_WIDGET(g));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param col: the column
+ * @return Returns no value.
+ * @brief remove the user set size 
+ */
+void
+ewl_grid_column_w_remove(Ewl_Grid *g, int col)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+
+	/*
+	 * check bounds
+	 */
+	if (col < 0) {
+		DWARNING("parameter 'col' is out of bounds\n");
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+	}
+	else if (col >= g->cols) {
+		ewl_grid_dimensions_set(g, col + 1, g->rows);
+	}
+
+	g->col_size[col].resize_type = EWL_GRID_RESIZE_NORMAL;
+	g->col_size[col].user.size = 0;
+	g->data_dirty = TRUE;
 
 	ewl_widget_configure(EWL_WIDGET(g));
 
@@ -484,32 +603,202 @@ ewl_grid_row_h_set(Ewl_Grid *g, int row, float relh, int height)
 /**
  * @param g: the grid
  * @param row: the row
- * @param relh: the height relative to the size of the grid
- * @param height: integer pointer to store the height in
+ * @return Returns the current height
+ * @brief Get the current height of a column
+ *
+ * This function returns current width of the column.
+ */
+int
+ewl_grid_row_current_h_get(Ewl_Grid *g, int row)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, 0);
+	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+
+	if ((row >= g->rows) || (row < 0)) 
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	DRETURN_INT(g->row_size[row].current_size, DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param row: the row
+ * @param height: the new height
  * @return Returns no value.
- * @brief Get the user set height of a row
- * 
- * This function returns only the size set by the user.
+ * @brief Set the fixed size of a column
  */
 void
-ewl_grid_row_h_get(Ewl_Grid *g, int row, float *relh, int *height)
+ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
-	DCHECK_PARAM_PTR("height", height);
 	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
 
-	if ((row >= g->rows) || (row < 0)) {
-		if (height) *height = 0;
-		if (relh) *relh = 0.0;
+	/*
+	 * check bounds
+	 */
+	if (row < 0) {
+		DWARNING("parameter 'row' is out of bounds\n");
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else {
-		if (height) *height = g->row_size[row].size;
-		if (relh) *relh = g->row_size[row].rel_size;
+	else if (row >= g->rows) {
+		ewl_grid_dimensions_set(g, g->cols, row + 1);
 	}
+
+	g->row_size[row].resize_type = EWL_GRID_RESIZE_FIXED;
+	g->row_size[row].user.size = height;
+	g->data_dirty = TRUE;
+
+	ewl_widget_configure(EWL_WIDGET(g));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @param g: the grid
+ * @param row: the row
+ * @return Returns the user set height
+ * @brief Get the user set height of a row
+ *
+ * This function returns only the size set by the user.
+ */
+int
+ewl_grid_row_fixed_h_get(Ewl_Grid *g, int row)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, 0);
+	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+
+	if ((row >= g->rows) || (row < 0)) 
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	DRETURN_INT(g->row_size[row].user.size, DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param row: the row
+ * @param height: the new relative height
+ * @return Returns no value.
+ * @brief Set the relative height of a row
+ */
+void
+ewl_grid_row_relative_h_set(Ewl_Grid *g, int row, float relh)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+
+	/*
+	 * check bounds
+	 */
+	if (row < 0) {
+		DWARNING("parameter 'row' is out of bounds\n");
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+	}
+	else if (row >= g->rows) {
+		ewl_grid_dimensions_set(g, g->cols, row + 1);
+	}
+
+	g->row_size[row].resize_type = EWL_GRID_RESIZE_RELATIVE;
+	g->row_size[row].user.rel_size = relh;
+	g->data_dirty = TRUE;
+
+	ewl_widget_configure(EWL_WIDGET(g));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param row: the row
+ * @return Returns the user set relative height
+ * @brief Get the user set relative height of a row
+ *
+ * This function returns only the relative size set by the user.
+ */
+float
+ewl_grid_row_relative_h_get(Ewl_Grid *g, int row)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("g", g, 0.0);
+	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0.0);
+
+	if ((row >= g->rows) || (row < 0)) 
+		DRETURN_FLOAT(0.0, DLEVEL_STABLE);
+
+	DRETURN_FLOAT(g->row_size[row].user.rel_size, DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param row: the row
+ * @return Returns no value.
+ * @brief use the preferred size of the row
+ */
+void
+ewl_grid_row_preferred_h_use(Ewl_Grid *g, int row)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+
+	/*
+	 * check bounds
+	 */
+	if (row < 0) {
+		DWARNING("parameter 'row' is out of bounds\n");
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+	}
+	else if (row >= g->rows) {
+		ewl_grid_dimensions_set(g, g->cols, row + 1);
+	}
+
+	g->row_size[row].resize_type = EWL_GRID_RESIZE_NONE;
+	g->row_size[row].user.size = 0;
+	g->data_dirty = TRUE;
+
+	ewl_widget_configure(EWL_WIDGET(g));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param row: the row
+ * @return Returns no value.
+ * @brief remove the user set size 
+ */
+void
+ewl_grid_row_h_remove(Ewl_Grid *g, int row)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+
+	/*
+	 * check bounds
+	 */
+	if (row < 0) {
+		DWARNING("parameter 'row' is out of bounds\n");
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+	}
+	else if (row >= g->rows) {
+		ewl_grid_dimensions_set(g, g->cols, row + 1);
+	}
+
+	g->row_size[row].resize_type = EWL_GRID_RESIZE_NORMAL;
+	g->row_size[row].user.size = 0;
+	g->data_dirty = TRUE;
+
+	ewl_widget_configure(EWL_WIDGET(g));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+
 
 /**
  * @internal
@@ -788,12 +1077,16 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 		rel = 0.0;
 		fixed = 0;
 		for (i = 0; i < g->cols; i++) {
-			if (g->col_size[i].override) {
-				rel += g->col_size[i].rel_size;
-				fixed += g->col_size[i].size;
+			switch (g->col_size[i].resize_type) {
+				case EWL_GRID_RESIZE_RELATIVE:
+					rel += g->col_size[i].user.rel_size;
+					break;
+				case EWL_GRID_RESIZE_FIXED:
+					fixed += g->col_size[i].user.size;
+					break;
+				default:
+					fixed += g->col_size[i].preferred_size;
 			}
-			else
-				fixed += g->col_size[i].preferred_size;
 		}
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(g), 
 						(int)(fixed / (1.0 - rel)));
@@ -814,12 +1107,16 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 		rel = 0.0;
 		fixed = 0;
 		for (i = 0; i < g->rows; i++) {
-			if (g->row_size[i].override) {
-				rel += g->row_size[i].rel_size;
-				fixed += g->row_size[i].size;
+			switch (g->col_size[i].resize_type) {
+				case EWL_GRID_RESIZE_RELATIVE:
+					rel += g->row_size[i].user.rel_size;
+					break;
+				case EWL_GRID_RESIZE_FIXED:
+					fixed += g->row_size[i].user.size;
+					break;
+				default:
+					fixed += g->row_size[i].preferred_size;
 			}
-			else
-				fixed += g->row_size[i].preferred_size;
 		}
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(g), 
 						(int)(fixed / (1.0 - rel)));
@@ -857,35 +1154,49 @@ ewl_grid_resize(Ewl_Grid *g)
 			g->col_size[i].current_size = new_w / g->cols;
 	}
 	else {
-		int pref_size, fixed_size;
+		int var;	/* the variable size part */
+		int fixed;	/* the fixed size part */
 		double rel;
 
-		pref_size = fixed_size = 0;
+		var = fixed = 0;
 		/* 
-		 * first we calculate the preferred size 
+		 * first we calculate the different parts of the size 
 		 */
 		for (i = 0; i < g->cols; i++) {
-			if (!g->col_size[i].override)
-				pref_size += 
-					g->col_size[i].current_size 
-					= g->col_size[i].preferred_size;
-			else 
-				fixed_size += 
-					g->col_size[i].current_size
-					= g->col_size[i].size
-					+ g->col_size[i].rel_size 
-					* new_w;
+			switch (g->col_size[i].resize_type) {
+				case EWL_GRID_RESIZE_RELATIVE:
+					fixed += g->col_size[i].user.rel_size
+								* new_w;
+					g->col_size[i].current_size =
+						g->col_size[i].user.rel_size
+								* new_w;
+					break;
+				case EWL_GRID_RESIZE_FIXED:
+					fixed += g->col_size[i].user.size;
+					g->col_size[i].current_size =
+						g->col_size[i].user.size;
+					break;
+				case EWL_GRID_RESIZE_NONE:
+					fixed += g->col_size[i].preferred_size;
+					g->col_size[i].current_size =
+						g->col_size[i].preferred_size;
+					break;
+				default:
+					var += g->col_size[i].preferred_size;
+					
+			}
 		}
 
 		/*
 		 * we can only distribute the rest size to the 
 		 * non-fixed ones
 		 */
-		rel = (double)(new_w - fixed_size) / (double)pref_size;
+		rel = (double)(new_w - fixed) / (double)var;
 		for (i = 0; i < g->cols; i++)
-			if (!g->col_size[i].override)
+			if (g->col_size[i].resize_type == EWL_GRID_RESIZE_NORMAL)
 				g->col_size[i].current_size = 
-					(int)g->col_size[i].current_size * rel;
+					(int)(g->col_size[i].preferred_size
+					      			* rel);
 	}
 
 	/*
@@ -896,34 +1207,49 @@ ewl_grid_resize(Ewl_Grid *g)
 			g->row_size[i].current_size = new_h / g->rows;
 	}
 	else {
-		int pref_size, fixed_size;
+		int var;	/* the variable size part */
+		int fixed;	/* the fixed size part */
 		double rel;
 
-		pref_size = fixed_size = 0;
+		var = fixed = 0;
 		/* 
-		 * first we calculate the preferred size 
+		 * first we calculate the different parts of the size 
 		 */
 		for (i = 0; i < g->rows; i++) {
-			if (!g->row_size[i].override)
-				pref_size += 
-					g->row_size[i].current_size 
-					= g->row_size[i].preferred_size;
-			else 
-				fixed_size += 
-					g->row_size[i].current_size
-					= g->row_size[i].size
-					+ g->row_size[i].rel_size 
-					* new_h;
+			switch (g->row_size[i].resize_type) {
+				case EWL_GRID_RESIZE_RELATIVE:
+					fixed += g->row_size[i].user.rel_size
+								* new_h;
+					g->row_size[i].current_size =
+						g->row_size[i].user.rel_size
+								* new_h;
+					break;
+				case EWL_GRID_RESIZE_FIXED:
+					fixed += g->row_size[i].user.size;
+					g->row_size[i].current_size =
+						g->row_size[i].user.size;
+					break;
+				case EWL_GRID_RESIZE_NONE:
+					fixed += g->row_size[i].preferred_size;
+					g->row_size[i].current_size =
+						g->row_size[i].preferred_size;
+					break;
+				default:
+					var += g->row_size[i].preferred_size;
+					
+			}
 		}
+
 		/*
-		 * we can only distribute the rest size 
-		 * to the non-fixed ones
+		 * we can only distribute the rest size to the 
+		 * non-fixed ones
 		 */
-		rel = (double)(new_h - fixed_size) / (double)pref_size;
+		rel = (double)(new_h - fixed) / (double)var;
 		for (i = 0; i < g->rows; i++)
-			if (!g->row_size[i].override)
+			if (g->row_size[i].resize_type == EWL_GRID_RESIZE_NORMAL)
 				g->row_size[i].current_size = 
-					g->row_size[i].current_size * rel;
+					(int)(g->row_size[i].preferred_size
+					      			* rel);
 	}
 
 	/*

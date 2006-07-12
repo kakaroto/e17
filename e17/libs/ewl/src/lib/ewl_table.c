@@ -274,7 +274,7 @@ ewl_table_column_w_set(Ewl_Table *table, int col, int width)
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_column_w_set(table->grid, col, 0.0,width);
+	ewl_grid_column_fixed_w_set(table->grid, col, width);
 	ewl_widget_configure(EWL_WIDGET(table));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -294,7 +294,7 @@ ewl_table_column_w_get(Ewl_Table *table, int col, int *width)
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_column_w_get(table->grid, col, NULL, width);
+	if (width) *width = ewl_grid_column_fixed_w_get(table->grid, col);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -313,7 +313,8 @@ ewl_table_row_h_set(Ewl_Table *table, int row, int height)
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_row_h_set(table->grid, row, 0.0, height);
+	ewl_grid_row_fixed_h_set(table->grid, row, height);
+
 	ewl_widget_configure(EWL_WIDGET(table));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -333,7 +334,7 @@ ewl_table_row_h_get(Ewl_Table *table, int row, int *height)
 	DCHECK_PARAM_PTR("table", table);
 	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
 
-	ewl_grid_row_h_get(table->grid, row, NULL, height);
+	if (height) *height = ewl_grid_row_fixed_h_get(table->grid, row);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -587,6 +587,23 @@ enum Ewl_Filelist_Event_Type
 typedef enum Ewl_Filelist_Event_Type Ewl_Filelist_Event_Type;
 
 /**
+ * @enum Ewl_Grid_Resize_Type
+ * The different ways of resizing a column or a row
+ */
+enum Ewl_Grid_Resize_Type
+{
+	EWL_GRID_RESIZE_NORMAL,		/**< use the standard resize methode */
+	EWL_GRID_RESIZE_FIXED,		/**< use the user set size */
+	EWL_GRID_RESIZE_RELATIVE,	/**< use the user set relative size */
+	EWL_GRID_RESIZE_NONE		/**< use the preferred size of the row */
+};
+
+/**
+ * The Ewl_Grid_Resize_Type
+ */
+typedef enum Ewl_Grid_Resize_Type Ewl_Grid_Resize_Type;
+
+/**
  * @enum Ewl_Mouse_Cursor_Type
  * The possible mouse cursor settings
  */
