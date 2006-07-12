@@ -13,7 +13,3 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in debian/changelog elicit.spec
 
-dist-hook:
-	if test -d data; then \
-	  (cd $(srcdir); tar -cf - data) | (cd $(distdir); tar -xf -; rm -rf `find . -name CVS`) \
-	fi

@@ -4,7 +4,6 @@ EET = $(EDC:%.edc=%.edj)
 SUFFIXES = .edc .edj
 
 CLEANFILES = $(EET)
-EXTRA_DIST = $(EDC)
 
 themedir = $(pkgdatadir)/themes
 theme_DATA = $(EET)
@@ -17,3 +16,15 @@ all: $(EDC)
 preview: $(EET)
 	edje $(EET)
 
+EXTRA_DIST = \
+winter.edc \
+Makefile \
+fonts \
+groups \
+img \
+macros \
+parts \
+programs 
+
+dist-hook:
+	rm -rf `find $(distdir) -name CVS`
