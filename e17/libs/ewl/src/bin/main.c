@@ -67,6 +67,14 @@ main(int argc, char **argv)
 			ewl_test_print_tests();
 			exit(0);
 		}
+		else if (!strncmp(argv[i], "-all", 4))
+		{
+			Ewl_Test *t;
+
+			ecore_list_goto_first(tests);
+			while ((t = ecore_list_next(tests)))
+				run_window_test(t, 0, 0);
+		}
 		else if (!strncmp(argv[i], "-unit", 5))
 			unit_test = 1;
 
