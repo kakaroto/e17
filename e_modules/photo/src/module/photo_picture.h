@@ -42,7 +42,7 @@ struct _Picture
       const char *comments;
    } infos;
    int original_w, original_h;
-   unsigned char from;
+  unsigned char from : 2;
 
    unsigned char delete_me : 1;
 

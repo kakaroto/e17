@@ -175,12 +175,14 @@ _cb_menu_activate(void *data, E_Menu *m, E_Menu_Item *mi)
   pi = data;
   mn = pi->menu_histo;
 
+  if (!mn) return;
+
   for (l=mn->items; l; l=evas_list_next(l))
     {
       E_Menu_Item *mi;
 
       mi = evas_list_data(l);
-      if (mi->separator) continue;
+      if (!mi || mi->separator) continue;
       evas_object_event_callback_add(mi->event_object, EVAS_CALLBACK_MOUSE_IN,
 				     _cb_menu_pre_select, mi);
       evas_object_event_callback_add(mi->event_object, EVAS_CALLBACK_MOUSE_OUT,
@@ -212,7 +214,9 @@ _cb_menu_pre_select(void *data, Evas *evas, Evas_Object *obj, void *event_info)
    int number;
 
    mi = data;
+   if (!mi) return;
    pi = mi->cb.data;
+   if (!pi) return;
 
    number = (evas_list_count(pi->histo.list) - (e_menu_item_num_get(mi)+1));
 
@@ -241,7 +245,9 @@ _cb_menu_post_select(void *data, Evas *evas, Evas_Object *obj, void *event_info)
    Photo_Item *pi;
 
    mi = data;
+   if (!mi) return;
    pi = mi->cb.data;
+   if (!pi) return;
    
    DPIC(("Histo menu : Post select callback"));
 

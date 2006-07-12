@@ -75,9 +75,20 @@ int photo_picture_free(Picture *p, int force, int force_now)
         if (!force) return 0;
         if (!force_now)
           {
-             p->delete_me = 1;
+	    if (!p->delete_me)
+	      {
+		if (p->from == PICTURE_LOCAL)
+		  photo_picture_local_picture_deleteme_nb_update(+1);
+		p->delete_me = 1;
+	      }
              return 0;
           }
+     }
+
+   if (p->delete_me)
+     {
+       if (p->from == PICTURE_LOCAL)
+	 photo_picture_local_picture_deleteme_nb_update(-1);
      }
 
    DD(("Picture Free : %s", p->path));

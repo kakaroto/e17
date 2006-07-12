@@ -61,5 +61,7 @@ void               photo_picture_local_ev_raise(int nb);
 Picture_Local_Dir *photo_picture_local_dir_new(char *path, int recursive, int read_hidden);
 void               photo_picture_local_dir_free(Picture_Local_Dir *dir, int del_dialog);
 
+void               photo_picture_local_picture_deleteme_nb_update(int how_much);
+
 #endif
 #endif

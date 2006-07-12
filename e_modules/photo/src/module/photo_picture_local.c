@@ -24,6 +24,7 @@ typedef struct _Picture_Local_List Picture_Local_List;
 struct _Picture_Local_List
 {
    Evas_List *pictures;
+  int pictures_waiting_delete;
 
    /* thumb */
   struct
@@ -159,7 +160,7 @@ Picture *photo_picture_local_get(int position)
 
    DPICL(("Trying to get a picture, position = %d", position));
 
-   if (!evas_list_count(pl->pictures))
+   if (!evas_list_count(pl->pictures) - pl->pictures_waiting_delete)
      return NULL;
 
    if (position != PICTURE_LOCAL_GET_RANDOM)
@@ -192,8 +193,9 @@ Picture *photo_picture_local_get(int position)
 
 int photo_picture_local_loaded_nb_get(void)
 {
-  return (evas_list_count(pictures_local->pictures) -
-	  pictures_local->thumb.nb);
+  return ((evas_list_count(pictures_local->pictures) -
+	  pictures_local->thumb.nb) -
+	  pictures_local->pictures_waiting_delete);
 }
 
 int photo_picture_local_tothumb_nb_get(void)
@@ -226,6 +228,11 @@ void photo_picture_local_ev_raise(int nb)
    /* raise event to warn clients : a picture is here for you ! */
    ecore_event_add(pictures_local->loader_ev.id, ev, NULL, NULL);
    DPICL(("Loader event RAISED !"));
+}
+
+void photo_picture_local_picture_deleteme_nb_update(int how_much)
+{
+  pictures_local->pictures_waiting_delete += how_much;
 }
 
 Picture_Local_Dir *photo_picture_local_dir_new(char *path, int recursive, int read_hidden)
@@ -281,7 +288,7 @@ _pictures_old_del(int force, int force_now)
         if (photo_picture_free(p, force, force_now))
           pictures_local->pictures = evas_list_remove(pictures_local->pictures, p);
         else
-          no++;
+	  no++;
      }
 }
 
@@ -348,15 +355,8 @@ _load_idler(void *data)
 		 char buf[50];
 
 		 snprintf(buf, sizeof(buf), "Scan finished : %d pictures found",
-			  evas_list_count(pl->pictures) + pl->thumb.nb);
+			  evas_list_count(pl->pictures) - pl->pictures_waiting_delete);
 		 POPUP_LOADING(pl, buf, 3);
-		 /* tell how much pictures to thumb */
-		 if (pl->thumb.nb)
-		   {
-		     snprintf(buf, sizeof(buf), "Still %d pictures to thumbnail",
-			      pl->thumb.nb);
-		     POPUP_THUMBNAILING(pl, buf, 3);
-		   }
                }
              return 0;
           }
@@ -415,7 +415,7 @@ _load_idler(void *data)
         int nb;
         
         /* loading popup message */        
-        nb = evas_list_count(pl->pictures) + pl->thumb.nb;
+        nb = evas_list_count(pl->pictures) - pl->pictures_waiting_delete;
         if (nb && ((nb == 1) || !(nb%PICTURE_LOCAL_POPUP_LOADER_MOD)))
           {
              char buf[50];
@@ -517,9 +517,12 @@ _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
 
    DPICL(("back from thumb generation of %s", picture->infos.name));
 
+   pl->thumb.nb--;
+
    if (!obj)
      {
         DPICL(("generated object is NULL !!"));
+	pl->pictures = evas_list_remove(pl->pictures, picture);
         photo_picture_free(picture, 1, 1);
         return;
      }
@@ -530,18 +533,8 @@ _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
 
    picture->thumb = PICTURE_THUMB_READY;
 
-   pl->thumb.nb--;
-
    /* popups about thumbnailing */
 
-   /* first thumbnailing popup message */
-   if (photo->config->local.popup &&
-       pl->thumb.popup_show && (pl->thumb.nb == 1))
-     {
-        pl->thumb.popup_show = 0;
-        POPUP_THUMBNAILING(pl, "Thumbnailing some pictures", 0);
-     }
-   
    /* thumbnailing message, only one time */
    if (photo->config->local.thumb_msg)
      {
@@ -583,15 +576,21 @@ _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
 
    /* refreshes */
 
-   if (!pl->thumb.nb && photo->config_dialog)
-     photo_config_dialog_refresh_local_load();
+   if (photo->config_dialog)
+     {
+       if (!pl->thumb.nb)
+	 {
+	   photo_config_dialog_refresh_local_load();
+	   photo_config_dialog_refresh_local_infos();
+	 }
+       if ( !(pl->thumb.nb%100) )
+	 photo_config_dialog_refresh_local_infos();
+     }
+
+   /* new picture event */
 
    if (pl->loader_ev.nb_clients)
      photo_picture_local_ev_raise(1);
-
-   if (photo->config_dialog &&
-       !(evas_list_count(pl->pictures)%100))
-     photo_config_dialog_refresh_local_infos();
 
    /* if the pic is loaded, remove it, we dont want it */
 
