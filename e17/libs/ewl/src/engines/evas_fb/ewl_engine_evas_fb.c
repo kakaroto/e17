@@ -31,15 +31,15 @@ static void ee_shutdown(Ewl_Engine *engine);
 
 static Ewl_Engine_Info engine_funcs = {
 	{
-                ee_init,
-                ee_shutdown,
-                NULL, NULL, NULL, NULL,
-                NULL, NULL, NULL, NULL,
-                NULL, NULL, NULL, NULL,
-                NULL, NULL, NULL, NULL,
-                NULL, NULL, NULL, NULL,
-                NULL, NULL, NULL,
-                ee_canvas_setup
+		ee_init,
+		ee_shutdown,
+		NULL, NULL, NULL, NULL,
+		NULL, NULL, NULL, NULL,
+		NULL, NULL, NULL, NULL,
+		NULL, NULL, NULL, NULL,
+		NULL, NULL, NULL, NULL,
+		NULL, NULL, NULL,
+		ee_canvas_setup
 	}
 };
 
@@ -48,32 +48,32 @@ ewl_engine_dependancies(void)
 {
 	Ecore_DList *d;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	d = ecore_dlist_new();
 	ecore_dlist_append(d, strdup("evas"));
 
-        DRETURN_PTR(d, DLEVEL_STABLE);
+	DRETURN_PTR(d, DLEVEL_STABLE);
 }
 
 Ewl_Engine *
 ewl_engine_create(void)
 {
-        Ewl_Engine_Evas_Fb *engine;
+	Ewl_Engine_Evas_Fb *engine;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-        engine = NEW(Ewl_Engine_Evas_Fb, 1);
-        if (!engine)
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
+	engine = NEW(Ewl_Engine_Evas_Fb, 1);
+	if (!engine)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-        if (!ee_init(EWL_ENGINE(engine)))
-        {
-                FREE(engine);
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
-        }
+	if (!ee_init(EWL_ENGINE(engine)))
+	{
+		FREE(engine);
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
 
-        DRETURN_PTR(EWL_ENGINE(engine), DLEVEL_STABLE);
+	DRETURN_PTR(EWL_ENGINE(engine), DLEVEL_STABLE);
 }
 
 static int
@@ -112,8 +112,8 @@ ee_init(Ewl_Engine *engine)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-        engine->name = strdup("evas_software_x11");
-        engine->functions = &engine_funcs;
+	engine->name = strdup("evas_software_x11");
+	engine->functions = &engine_funcs;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -189,7 +189,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 					ewl_object_current_y_get(o),
 					ewl_object_current_w_get(o),
 					ewl_object_current_h_get(o));
-        ewl_embed_evas_set(EWL_EMBED(win), evas, win->window);
+	ewl_embed_evas_set(EWL_EMBED(win), evas, win->window);
 
 	EWL_ENGINE_EVAS_FB(EWL_EMBED(win)->engine)->window = win;
 
@@ -199,123 +199,123 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 static int
 ewl_ev_fb_key_down(void *data, int type __UNUSED__, void *e)
 {
-        Ewl_Embed *embed;
+	Ewl_Embed *embed;
 	Ewl_Engine_Evas_Fb *engine;
-        Ecore_Fb_Event_Key_Down *ev;
+	Ecore_Fb_Event_Key_Down *ev;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-        ev = e;
+	ev = e;
 	engine = data;
 
-        embed = EWL_EMBED(engine->window);
-        if (!embed)
-                DRETURN_INT(TRUE, DLEVEL_STABLE);
+	embed = EWL_EMBED(engine->window);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-        ewl_embed_key_down_feed(embed, ev->keyname, ewl_ev_modifiers_get());
+	ewl_embed_key_down_feed(embed, ev->keyname, ewl_ev_modifiers_get());
 
-        DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 static int
 ewl_ev_fb_key_up(void *data, int type __UNUSED__, void *e)
 {
-        Ewl_Embed *embed;
+	Ewl_Embed *embed;
 	Ewl_Engine_Evas_Fb *engine;
-        Ecore_Fb_Event_Key_Up *ev;
+	Ecore_Fb_Event_Key_Up *ev;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-        ev = e;
+	ev = e;
 	engine = data;
 
-        embed = EWL_EMBED(engine->window);
-        if (!embed)
-                DRETURN_INT(TRUE, DLEVEL_STABLE);
+	embed = EWL_EMBED(engine->window);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-        ewl_embed_key_down_feed(embed, ev->keyname, ewl_ev_modifiers_get());
+	ewl_embed_key_down_feed(embed, ev->keyname, ewl_ev_modifiers_get());
 
-        DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 static int
 ewl_ev_fb_mouse_down(void *data, int type __UNUSED__, void *e)
 {
-        int clicks = 1;
-        Ewl_Embed *embed;
+	int clicks = 1;
+	Ewl_Embed *embed;
 	Ewl_Engine_Evas_Fb *engine;
-        Ecore_Fb_Event_Mouse_Button_Down *ev;
+	Ecore_Fb_Event_Mouse_Button_Down *ev;
 	unsigned int key_modifiers;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-        ev = e;
+	ev = e;
 	engine = data;
 
-        embed = EWL_EMBED(engine->window);
-        if (!embed)
-                DRETURN_INT(TRUE, DLEVEL_STABLE);
+	embed = EWL_EMBED(engine->window);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-        if (ev->double_click)
-                clicks = 2;
-        if (ev->triple_click)
-                clicks = 3;
+	if (ev->double_click)
+		clicks = 2;
+	if (ev->triple_click)
+		clicks = 3;
 
 	key_modifiers = ewl_ev_modifiers_get();
 
-        /* Feed a mouse move, since they don't occur prior to mouse down on a
-         * touchscreen */
-        ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
+	/* Feed a mouse move, since they don't occur prior to mouse down on a
+	 * touchscreen */
+	ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
 
-        ewl_embed_mouse_down_feed(embed, ev->button, clicks, ev->x, ev->y,
-                                  key_modifiers);
+	ewl_embed_mouse_down_feed(embed, ev->button, clicks, ev->x, ev->y,
+				  key_modifiers);
 
-        DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 static int
 ewl_ev_fb_mouse_up(void *data, int type __UNUSED__, void *e)
 {
-        Ewl_Embed *embed;
+	Ewl_Embed *embed;
 	Ewl_Engine_Evas_Fb *engine;
-        Ecore_Fb_Event_Mouse_Button_Up *ev;
+	Ecore_Fb_Event_Mouse_Button_Up *ev;
 	unsigned int key_modifiers;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-        ev = e;
+	ev = e;
 	engine = data;
 
-        embed = EWL_EMBED(engine->window);
-        if (!embed)
-                DRETURN_INT(TRUE, DLEVEL_STABLE);
+	embed = EWL_EMBED(engine->window);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	key_modifiers = ewl_ev_modifiers_get();
-        ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
-        ewl_embed_mouse_up_feed(embed, ev->button, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
+	ewl_embed_mouse_up_feed(embed, ev->button, ev->x, ev->y, key_modifiers);
 
-        DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 static int
 ewl_ev_fb_mouse_move(void *data, int type __UNUSED__, void *e)
 {
-        Ewl_Embed *embed;
+	Ewl_Embed *embed;
 	Ewl_Engine_Evas_Fb *engine;
-        Ecore_Fb_Event_Mouse_Move *ev;
+	Ecore_Fb_Event_Mouse_Move *ev;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-        ev = e;
+	ev = e;
 	engine = data;
 
-        embed = EWL_EMBED(engine->window);
-        if (!embed)
-                DRETURN_INT(TRUE, DLEVEL_STABLE);
+	embed = EWL_EMBED(engine->window);
+	if (!embed)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-        ewl_embed_mouse_move_feed(embed, ev->x, ev->y,
+	ewl_embed_mouse_move_feed(embed, ev->x, ev->y,
 					ewl_ev_modifiers_get());
 
-        DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
