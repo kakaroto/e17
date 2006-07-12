@@ -438,7 +438,7 @@ ewl_idle_render(void *data __UNUSED__)
 				render_time = ecore_time_get();
 			}
 
-			evas_render(emb->evas);
+			ewl_engine_canvas_render(emb);
 
 			if (ewl_config.evas.render_debug) {
 				printf("Render time: %f seconds\n",

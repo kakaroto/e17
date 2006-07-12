@@ -7,6 +7,7 @@
 static Evas_Smart *widget_smart = NULL;
 
 static int ee_init(Ewl_Engine *engine);
+static void ee_canvas_render(Ewl_Embed *embed);
 static void ee_canvas_freeze(Ewl_Embed *embed);
 static void ee_canvas_thaw(Ewl_Embed *embed);
 static void *ee_canvas_smart_new(Ewl_Embed *embed);
@@ -27,6 +28,7 @@ static Ewl_Engine_Info engine_funcs = {
 		NULL, NULL, NULL, NULL,
 		NULL, NULL, NULL, NULL,
 		NULL, NULL, NULL,
+		ee_canvas_render,
 		ee_canvas_freeze,
 		ee_canvas_thaw,
 		NULL, NULL, NULL,
@@ -89,6 +91,19 @@ ee_init(Ewl_Engine *engine)
 	engine->functions = &engine_funcs;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+static void
+ee_canvas_render(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+
+	if (embed->evas) {
+		evas_render(embed->evas);
+	}
+
+	DRETURN(DLEVEL_STABLE);
 }
 
 static void
