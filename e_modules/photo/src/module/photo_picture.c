@@ -59,6 +59,7 @@ Picture *photo_picture_new(char *path, char *name, int thumb_it, void (*func_don
         im = e_thumb_icon_add(photo->e_evas);
         DPICL(("THUMB of %s wanted at %dx%d", picture->path, th_w, th_h));
         e_thumb_icon_file_set(im, (char *)picture->path, NULL);
+        e_thumb_icon_size_set(im, 128, 128);
         evas_object_smart_callback_add(im, "e_thumb_gen", func_done, picture);
         picture->picture = im;
         e_thumb_icon_begin(im);
@@ -79,6 +80,7 @@ int photo_picture_free(Picture *p, int force, int force_now)
           }
      }
 
+   DD(("Picture Free : %s", p->path));
    if (p->path) evas_stringshare_del(p->path);
    if (p->picture) evas_object_del(p->picture);
 

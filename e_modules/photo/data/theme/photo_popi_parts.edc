@@ -18,7 +18,7 @@ part
 		image
 		{
 			normal: "popup_info_background.png";
-			border: 5 5 5 5;
+			border: 10 10 10 10;
 		}
 	}
 }

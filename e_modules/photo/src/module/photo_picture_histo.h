@@ -20,7 +20,7 @@ Picture *photo_picture_histo_change(Photo_Item *pi, int offset);
 
 void     photo_picture_histo_picture_del(Picture *picture);
 
-void     photo_picture_histo_menu_populate(Photo_Item *pi, E_Menu *mn);
+void     photo_picture_histo_menu_append(Photo_Item *pi, E_Menu *mn_main);
 
 #endif
 #endif

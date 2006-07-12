@@ -531,7 +531,6 @@ _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
    picture->thumb = PICTURE_THUMB_READY;
 
    pl->thumb.nb--;
-   pl->pictures = evas_list_append(pl->pictures, picture);
 
    /* popups about thumbnailing */
 

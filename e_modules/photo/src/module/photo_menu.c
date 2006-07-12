@@ -48,11 +48,7 @@ int photo_menu_show(Photo_Item *pi)
      }
    e_menu_item_callback_set(mi, _cb_pause_toggle, pi);
 
-   mn2 = e_menu_new();
-   photo_picture_histo_menu_populate(pi, mn2);
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Historic"));
-   e_menu_item_submenu_set(mi, mn2);
+   photo_picture_histo_menu_append(pi, mn);
 
    mi = e_menu_item_new(mn);
    e_menu_item_separator_set(mi, 1);

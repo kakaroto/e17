@@ -1,9 +1,11 @@
 #include "Photo.h"
 
-static void _cb_menu_deactivate_post(void *data, E_Menu *m);
-static void _cb_menu_pre_select(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _cb_menu_post_select(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _cb_menu_populate(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _cb_menu_activate(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _cb_menu_select(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _cb_menu_pre_select(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+static void _cb_menu_post_select(void *data, Evas *evas, Evas_Object *obj, void *event_info);
+static void _cb_menu_deactivate_post(void *data, E_Menu *m);
 static void _cb_popi_close(void *data);
 
 /*
@@ -110,13 +112,38 @@ void photo_picture_histo_picture_del(Picture *picture)
    evas_list_free(picture->items_histo);
 }
 
-void photo_picture_histo_menu_populate(Photo_Item *pi, E_Menu *mn)
+void photo_picture_histo_menu_append(Photo_Item *pi, E_Menu *mn_main)
 {
-   E_Menu_Item *mi;
+  E_Menu_Item *mi;
+
+   mi = e_menu_item_new(mn_main);
+   e_menu_item_label_set(mi, _("Historic"));
+   e_menu_item_submenu_pre_callback_set(mi,
+					_cb_menu_populate, pi);
+   e_menu_item_submenu_post_callback_set(mi,
+					 _cb_menu_activate, pi);
+}
+
+
+/*
+ * Private functions
+ *
+ */
+
+static void
+_cb_menu_populate(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+  Photo_Item *pi;
+  E_Menu *mn;
    Picture *p;
    int pos;
 
+   pi = data;
+
+   mn = e_menu_new();
+   pi->menu_histo = mn;
    e_menu_post_deactivate_callback_set(mn, _cb_menu_deactivate_post, pi);
+   e_menu_item_submenu_set(mi, mn);
 
    pos = evas_list_count(pi->histo.list) - 1;
    while ( (p=evas_list_nth(pi->histo.list, pos)) )
@@ -128,39 +155,68 @@ void photo_picture_histo_menu_populate(Photo_Item *pi, E_Menu *mn)
         if (pi->histo.pos == pos)
           e_menu_item_toggle_set(mi, 1);
 
-        e_menu_item_submenu_pre_callback_set(mi, _cb_menu_pre_select, pi);
-        e_menu_item_submenu_post_callback_set(mi, _cb_menu_post_select, pi);
         e_menu_item_callback_set(mi, _cb_menu_select, pi);
+        evas_object_event_callback_add(mi->event_object, EVAS_CALLBACK_MOUSE_IN,
+                                       _cb_menu_pre_select, mi);
+        evas_object_event_callback_add(mi->event_object, EVAS_CALLBACK_MOUSE_OUT,
+                                       _cb_menu_post_select, mi);
 
         pos--;
      }
 }
 
-
-/*
- * Private functions
- *
- */
-
 static void
-_cb_menu_deactivate_post(void *data, E_Menu *m)
+_cb_menu_activate(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   e_object_del(E_OBJECT(m));
+  Photo_Item *pi;
+  E_Menu *mn;
+  Evas_List *l;
+
+  pi = data;
+  mn = pi->menu_histo;
+
+  for (l=mn->items; l; l=evas_list_next(l))
+    {
+      E_Menu_Item *mi;
+
+      mi = evas_list_data(l);
+      if (mi->separator) continue;
+      evas_object_event_callback_add(mi->event_object, EVAS_CALLBACK_MOUSE_IN,
+				     _cb_menu_pre_select, mi);
+      evas_object_event_callback_add(mi->event_object, EVAS_CALLBACK_MOUSE_OUT,
+				     _cb_menu_post_select, mi);
+    }
 }
 
 static void
-_cb_menu_pre_select(void *data, E_Menu *m, E_Menu_Item *mi)
+_cb_menu_select(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   Picture *p;
    Photo_Item *pi;
-   char *text;
-   int number;
+   int no;
 
    pi = data;
 
+   no = e_menu_item_num_get(mi);
+   photo_item_action_change(pi,
+                            pi->histo.pos -
+                            (evas_list_count(pi->histo.list) - (no+1)));
+}
+
+static void
+_cb_menu_pre_select(void *data, Evas *evas, Evas_Object *obj, void *event_info)
+{
+   E_Menu_Item *mi;
+   Photo_Item *pi;
+   Picture *p;
+   char *text;
+   int number;
+
+   mi = data;
+   pi = mi->cb.data;
+
    number = (evas_list_count(pi->histo.list) - (e_menu_item_num_get(mi)+1));
 
-   DPIC(("Select %d in histo list", number));
+   DPIC(("Histo menu : Select %d in histo list", number));
 
    p = evas_list_nth(pi->histo.list, number);
    if (!p) return;
@@ -179,11 +235,13 @@ _cb_menu_pre_select(void *data, E_Menu *m, E_Menu_Item *mi)
 }
 
 static void
-_cb_menu_post_select(void *data, E_Menu *m, E_Menu_Item *mi)
+_cb_menu_post_select(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
+   E_Menu_Item *mi;
    Photo_Item *pi;
 
-   pi = data;
+   mi = data;
+   pi = mi->cb.data;
    
    DPIC(("Histo menu : Post select callback"));
 
@@ -192,19 +250,19 @@ _cb_menu_post_select(void *data, E_Menu *m, E_Menu_Item *mi)
    pi->histo.popi = NULL;
 }
 
-
 static void
-_cb_menu_select(void *data, E_Menu *m, E_Menu_Item *mi)
+_cb_menu_deactivate_post(void *data, E_Menu *m)
 {
-   Photo_Item *pi;
-   int no;
+  /*
+  Photo_Item *pi;
 
-   pi = data;
+  pi = data;
+  pi->menu_histo = NULL;
+  */
+  
+  DD(("deactivate cb post"));
 
-   no = e_menu_item_num_get(mi);
-   photo_item_action_change(pi,
-                            pi->histo.pos -
-                            (evas_list_count(pi->histo.list) - (no+1)));
+  e_object_del(E_OBJECT(m));
 }
 
 static void

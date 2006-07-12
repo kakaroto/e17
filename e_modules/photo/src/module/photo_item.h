@@ -48,6 +48,7 @@ struct _Photo_Item
    Photo_Config_Item *config;
    E_Config_Dialog *config_dialog;
    E_Menu *menu;
+  E_Menu *menu_histo;
 
    Ecore_Timer *timer;
 

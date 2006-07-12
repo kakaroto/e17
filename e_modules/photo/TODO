@@ -10,8 +10,8 @@ BUGS
 NEEDED
 ----------------------------------------------------
 
-* histo menu pre and post callbacks with evas mouse events on menu item (event object)
 * fix thumbnailing messages : too much !
+* option to set the thumb size, and no thumb mode
 
 * find a way to have the path of a generated thumb, to load it direcly
   instead of always using e_thumb (delay)
