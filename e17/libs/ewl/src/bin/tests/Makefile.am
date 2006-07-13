@@ -350,7 +350,8 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_media_la_SOURCES) $(ewl_menu_la_SOURCES) \
 	$(ewl_imenu_la_SOURCES) $(ewl_widget_la_SOURCES) \
 	$(ewl_image_thumbnail_la_SOURCES) $(fullscreen_la_SOURCES) \
-	$(modal_la_SOURCES) $(ewl_layer_la_SOURCES)
+	$(modal_la_SOURCES) $(ewl_layer_la_SOURCES) \
+	$(ewl_dnd_snoop_la_SOURCES)
 
 EXTRA_DIST = $(FILES)
 
