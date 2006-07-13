@@ -109,7 +109,7 @@ ewl_dnd_snoop_cb_enter(void *data, int type, void *ev)
 	Ecore_X_Event_Xdnd_Enter *event = ev;
 
 	printf("\nXdnd Enter\n");
-	printf("\tWindow: %d\nSource: %d\n", event->win, event->source);
+	printf("\tWindow: %d\n\tSource: %d\n", event->win, event->source);
 	for (i = 0; i < event->num_types; i++) {
 		printf("\tType: %s\n", event->types[i]);
 	}
@@ -122,7 +122,7 @@ ewl_dnd_snoop_cb_position(void *data, int type, void *ev)
 	Ecore_X_Event_Xdnd_Position *event = ev;
 
 	printf("\nXdnd Position\n");
-	printf("\tWindow: %d\nSource: %d\n", event->win, event->source);
+	printf("\tWindow: %d\n\tSource: %d\n", event->win, event->source);
 	printf("\tPosition: %d,%d\n", event->position.x, event->position.y);
 	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), 
 							event->action));
@@ -135,7 +135,7 @@ ewl_dnd_snoop_cb_status(void *data, int type, void *ev)
 	Ecore_X_Event_Xdnd_Status *event = ev;
 
 	printf("\nXdnd Status\n");
-	printf("\tWindow: %d\nTarget: %d\n", event->win, event->target);
+	printf("\tWindow: %d\n\tTarget: %d\n", event->win, event->target);
 	printf("\tAccepts: %d\n", event->will_accept);
 	printf("\tRegion: %d,%d %dx%d\n", event->rectangle.x, 
 						event->rectangle.y,
@@ -152,7 +152,7 @@ ewl_dnd_snoop_cb_leave(void *data, int type, void *ev)
 	Ecore_X_Event_Xdnd_Leave *event = ev;
 
 	printf("\nXdnd Leave\n");
-	printf("\tWindow: %d\nSource: %d\n", event->win, event->source);
+	printf("\tWindow: %d\n\tSource: %d\n", event->win, event->source);
 	return 1;
 }
 
@@ -162,7 +162,7 @@ ewl_dnd_snoop_cb_drop(void *data, int type, void *ev)
 	Ecore_X_Event_Xdnd_Drop *event = ev;
 
 	printf("\nXdnd Drop\n");
-	printf("\tWindow: %d\nSource: %d\n", event->win, event->source);
+	printf("\tWindow: %d\n\tSource: %d\n", event->win, event->source);
 	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), 
 							event->action));
 	printf("\tPosition: %d,%d\n", event->position.x, event->position.y);
@@ -175,7 +175,7 @@ ewl_dnd_snoop_cb_finished(void *data, int type, void *ev)
 	Ecore_X_Event_Xdnd_Finished *event = ev;
 
 	printf("\nXdnd Finished\n");
-	printf("\tWindow: %d\nTarget: %d\n", event->win, event->target);
+	printf("\tWindow: %d\n\tTarget: %d\n", event->win, event->target);
 	printf("\tCompleted: %d\n", event->completed);
 	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), 
 							event->action));
