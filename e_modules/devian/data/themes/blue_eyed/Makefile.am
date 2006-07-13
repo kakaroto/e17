@@ -1,15 +1,16 @@
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
-	-id images \
-	-fd fonts
+	-id $(top_srcdir)/data/themes/blue_eyed \
+	-fd $(top_srcdir)/data/themes/blue_eyed
 
 EXTRA_DIST =    ./blue_eyed.edc \
 		./readme.edc \
-		./fonts/VeraBd.ttf \
-		./fonts/Vera.ttf \
-		$(wildcard ./edjes/*.ed?) \
-		$(wildcard ./edjes/*/*.ed?) \
-		$(wildcard ./images/*.png)
+		$(wildcard fonts/*.ttf) \
+		$(wildcard edjes/*.ed?) \
+		$(wildcard edjes/parts/*.ed?) \
+		$(wildcard edjes/programs/*.ed?) \
+		$(wildcard edjes/scripts/*.ed?) \
+		$(wildcard images/*.png)
 
 filesdir = $(datadir)/themes/
 
@@ -20,5 +21,5 @@ blue_eyed.edj: Makefile $(EXTRA_DIST)
 	$(top_srcdir)/data/themes/blue_eyed/blue_eyed.edc \
 	$(top_builddir)/data/themes/blue_eyed/blue_eyed.edj
 
-clean:
-	rm -f blue_eyed.edj
+clean-local:
+	rm -f ./blue_eyed.edj *~

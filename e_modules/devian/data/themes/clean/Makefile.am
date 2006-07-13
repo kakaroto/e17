@@ -1,7 +1,7 @@
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
-	-id images \
-	-fd fonts
+	-id $(top_srcdir)/data/themes/clean/images \
+	-fd $(top_srcdir)/data/themes/clean/fonts
 
 EXTRA_DIST =    ./clean.edc \
 		./clean_popup/clean_popup.edc \
@@ -13,9 +13,9 @@ EXTRA_DIST =    ./clean.edc \
 		./clean_box/clean_box.edc \
 		./clean_box/clean_box_parts.edc \
 		./clean_box/clean_box_programs.edc \
-		./fonts/VeraBd.ttf \
-		./fonts/Vera.ttf \
-		$(wildcard ./images/*.png)
+		$(wildcard fonts/*.ttf) \
+		$(wildcard images/*.png) \
+		$(wildcard clean_*/*.ed?)
 
 filesdir = $(datadir)/themes/
 
@@ -26,5 +26,5 @@ clean.edj: Makefile $(EXTRA_DIST)
 	$(top_srcdir)/data/themes/clean/clean.edc \
 	$(top_builddir)/data/themes/clean/clean.edj
 
-clean:
-	rm -f clean.edj
+clean-local:
+	rm -f ./clean.edj *~
