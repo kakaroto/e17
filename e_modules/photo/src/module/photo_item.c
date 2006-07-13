@@ -338,6 +338,11 @@ int photo_item_action_change(Photo_Item *pi, int position)
         ITEM_TRANSITION_GO(1_0);
      }
 
+   /* 5. if there were a popup info, update it */
+
+   if (pi->popi)
+     photo_item_action_infos(pi);
+
    return 1;
 }
 
