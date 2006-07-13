@@ -17,7 +17,8 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_freebox.la ewl_paned.la ewl_text.la \
 			  ewl_calendar.la ewl_combo.la ewl_colorpicker.la \
 			  ewl_dialog.la ewl_entry.la ewl_filedialog.la \
-			  ewl_text_editor.la ewl_filepicker.la \
+			  ewl_text_editor.la ewl_dnd_snoop.la \
+			  ewl_filepicker.la \
 			  ewl_floater.la ewl_icon.la ewl_iconbox.la  \
 			  ewl_tooltip.la ewl_seeker.la ewl_statusbar.la \
 			  ewl_scrollbar.la ewl_password.la ewl_menubar.la \
@@ -96,6 +97,13 @@ ewl_text_editor_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_text_editor_la_DEPENDENCIES = 
+
+ewl_dnd_snoop_la_SOURCES   = ewl_dnd_snoop.c
+ewl_dnd_snoop_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_dnd_snoop_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_dnd_snoop_la_DEPENDENCIES = 
 
 ewl_calendar_la_SOURCES   = ewl_calendar.c
 ewl_calendar_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
