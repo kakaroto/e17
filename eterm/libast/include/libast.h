@@ -107,10 +107,13 @@ extern int re_exec();
 #  endif
 #endif
 
+/* Type and object headers that must go first. */
 #include <libast/types.h>
 #include <libast/obj.h>
 
+/* Basic objects */
 #include <libast/mbuff.h>
+#include <libast/module.h>
 #include <libast/objpair.h>
 #include <libast/regexp.h>
 #include <libast/socket.h>
@@ -119,14 +122,22 @@ extern int re_exec();
 #include <libast/url.h>
 #include <libast/ustr.h>
 
+/* Interface classes */
+#include <libast/condition_if.h>
 #include <libast/iterator_if.h>
 #include <libast/list_if.h>
 #include <libast/map_if.h>
+#include <libast/mutex_if.h>
+#include <libast/thread_if.h>
 #include <libast/vector_if.h>
 
+/* List/vector/map implementations */
 #include <libast/array.h>
 #include <libast/linked_list.h>
 #include <libast/dlinked_list.h>
+
+/* Thread/condition/mutex implementations */
+#include <libast/pthreads.h>
 
 #include <libast/avl_tree.h>
 
@@ -2690,6 +2701,7 @@ typedef spif_uint32_t (*spifhash_func_t)(spif_uint8_t *, spif_uint32_t, spif_uin
 /* msgs.c */
 extern void libast_set_program_name(const char *);
 extern void libast_set_program_version(const char *);
+extern spif_bool_t libast_set_silent(spif_bool_t);
 extern int libast_dprintf(const char *, ...);
 extern void libast_print_error(const char *fmt, ...);
 extern void libast_print_warning(const char *fmt, ...);

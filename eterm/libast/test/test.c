@@ -35,7 +35,6 @@ unsigned short tnum = 0;
 int test_macros(void);
 int test_mem(void);
 int test_strings(void);
-int test_hash_functions(void);
 int test_snprintf(void);
 int test_options(void);
 int test_obj(void);
@@ -49,6 +48,8 @@ int test_vector(void);
 int test_map(void);
 int test_socket(void);
 int test_regexp(void);
+int test_module(void);
+int test_hash_functions(void);
 
 int
 test_macros(void)
@@ -260,227 +261,6 @@ test_strings(void)
     TEST_PASS();
 
     TEST_PASSED("string");
-    return 0;
-}
-
-#define MAXPAIR 80
-#define MAXLEN 80
-int
-test_hash_functions(void)
-{
-    spif_uint8_t i;
-
-    for (i = 0; i < 6; i++) {
-        spifhash_func_t hash_func;
-        spif_uint32_t key_length, input_byte, trials, successes = 0, hash, ref_hash;
-        spif_uint8_t buff[MAXLEN + 20], *pbuff;
-        spif_uint8_t align1[] = "This has got the amazing aroma of bovine fecal matter...";
-        spif_uint8_t align2[] = "xThis has got the amazing aroma of bovine fecal matter...";
-        spif_uint8_t align3[] = "xxThis has got the amazing aroma of bovine fecal matter...";
-        spif_uint8_t align4[] = "xxxThis has got the amazing aroma of bovine fecal matter...";
-        spif_uint32_t j;
-
-        if (i == 0) {
-            TEST_NOTICE("*** Testing Jenkins hash:");
-            hash_func = spifhash_jenkins;
-        } else if (i == 1) {
-            TEST_NOTICE("*** Testing Jenkins32 hash:");
-            hash_func = spifhash_jenkins32;
-        } else if (i == 2) {
-#if WORDS_BIGENDIAN
-            continue;
-#else
-            TEST_NOTICE("*** Testing JenkinsLE hash:");
-            hash_func = spifhash_jenkinsLE;
-#endif
-        } else if (i == 3) {
-            TEST_NOTICE("*** Testing rotating hash:");
-            hash_func = spifhash_rotating;
-        } else if (i == 4) {
-            TEST_NOTICE("*** Testing one-at-a-time hash:");
-            hash_func = spifhash_one_at_a_time;
-        } else if (i == 5) {
-            TEST_NOTICE("*** Testing FNV hash:");
-            hash_func = spifhash_fnv;
-        }
-
-        TEST_BEGIN("effect of every input bit on every output bit");
-        for (key_length = 0; key_length < MAXLEN; key_length++) {
-            /* For each key length up to 70 bytes... */
-
-            if ((hash_func == spifhash_jenkins32)
-                && (key_length % 4)) {
-                successes++;
-                continue;
-            }
-            trials = 0;
-            for (input_byte = 0; input_byte < key_length; input_byte++) {
-                /* ...for each input byte... */
-                spif_uint32_t input_bit;
-
-                for (input_bit = 0; input_bit < 8; input_bit++) {
-                    /* ...for each input bit... */
-                    spif_uint32_t seed;
-
-                    for (seed = 1; seed < 8; seed++) {
-                        /* ...use several possible seeds... */
-                        spif_uint32_t e, f, g, h, x, y;
-                        spif_uint32_t bit_pair;
-
-                        /* Initialize to ~0 (0xffffffff). */
-                        e = f = g = h = x = y = ~(SPIF_CAST(uint32) 0);
-
-                        /* ...to make sure every output bit is affected by every input bit. */
-                        for (bit_pair = 0; bit_pair < MAXPAIR; bit_pair += 2) {
-                            spif_uint8_t buff1[MAXLEN + 1], buff2[MAXLEN + 2];
-                            spif_uint8_t *pbuff1 = &buff1[0], *pbuff2 = &buff2[1];
-                            spif_uint32_t hash1, hash2;
-
-                            for (j = 0; j < key_length + 1; j++) {
-                                /* Initialize keys to all zeros. */
-                                pbuff1[j] = pbuff2[j] = (spif_uint8_t) 0;
-                            }
-
-                            /* Then make them differ by exactly one bit, the input_bit.
-                               bit_pair will always end in 0, so bit_pair + 1 will always
-                               end in 1.  It's then shifted by input_bit to test the
-                               current bit to test all 8 of the lowest bits in sequence. */
-                            pbuff1[input_byte] ^= (bit_pair << input_bit);
-                            pbuff1[input_byte] ^= (bit_pair >> (8 - input_bit));
-                            pbuff2[input_byte] ^= ((bit_pair + 1) << input_bit);
-                            pbuff2[input_byte] ^= ((bit_pair + 1) >> (8 - input_bit));
-
-                            /* Hash them. */
-                            if (hash_func == spifhash_jenkins32) {
-                                hash1 = hash_func(pbuff1, key_length / 4, seed);
-                                hash2 = hash_func(pbuff2, key_length / 4, seed);
-                            } else {
-                                hash1 = hash_func(pbuff1, key_length, seed);
-                                hash2 = hash_func(pbuff2, key_length, seed);
-                            }
-
-                            /* Make sure every bit is 1 or 0 at least once. */
-                            e &= (hash1 ^ hash2);     f &= ~(hash1 ^ hash2);
-                            g &= hash1;               h &= ~hash1;
-                            x &= hash2;               y &= ~hash2;
-                            if (!(e | f | g | h | x | y)) {
-                                /* They're all 0.  That means they've all changed at least once. */
-                                break;
-                            }
-                        }
-                        if (bit_pair > trials) {
-                            trials = bit_pair;
-                        }
-                        if (bit_pair == MAXPAIR) {
-#if UNUSED_BLOCK
-                            printf("Some bit didn't change: ");
-                            printf("%.8lx %.8lx %.8lx %.8lx %.8lx %.8lx  ",
-                                   SPIF_CAST_C(unsigned long) e,
-                                   SPIF_CAST_C(unsigned long) f,
-                                   SPIF_CAST_C(unsigned long) g,
-                                   SPIF_CAST_C(unsigned long) h,
-                                   SPIF_CAST_C(unsigned long) x,
-                                   SPIF_CAST_C(unsigned long) y);
-                            printf("input_byte %lu  input_bit %lu  seed %lu  key length %lu\n",
-                                   SPIF_CAST_C(unsigned long) input_byte,
-                                   SPIF_CAST_C(unsigned long) input_bit,
-                                   SPIF_CAST_C(unsigned long) seed,
-                                   SPIF_CAST_C(unsigned long) key_length);
-#endif
-                        }
-                        if (trials == MAXPAIR) {
-                            /* Easy way to break out of a crapload of for loops. */
-                            goto done;
-                        }
-                    }
-                }
-            }
-        done:
-            if (trials < MAXPAIR) {
-                successes++;
-#if UNUSED_BLOCK
-                printf("Mix success:  %2lu-byte key required %2lu trials (%lu so far).\n",
-                       SPIF_CAST_C(unsigned long) input_byte,
-                       SPIF_CAST_C(unsigned long) trials / 2,
-                       SPIF_CAST_C(unsigned long) successes);
-#endif
-            }
-        }
-        printf("%.2f%% mix success rate in %d key lengths...",
-               (100.0 * successes / key_length), key_length);
-        TEST_FAIL_IF(successes == 0);
-        TEST_PASS();
-
-        /* Make sure nothing but the key is hashed, regardless of alignment. */
-        TEST_BEGIN("endian cleanliness");
-        key_length = CONST_STRLEN(align1);
-        if (hash_func == spifhash_jenkins32) {
-            if (key_length % 4) {
-                TEST_FAIL_IF(key_length);
-            } else {
-                key_length /= 4;
-            }
-        }
-        ref_hash = hash_func(align1, key_length, 0);
-        hash = hash_func(align2 + 1, key_length, 0);
-        /*printf("Reference hash 0x%08x, hash 0x%08x for length %lu\n", ref_hash, hash, key_length);*/
-        TEST_FAIL_IF(hash != ref_hash);
-        hash = hash_func(align3 + 2, key_length, 0);
-        TEST_FAIL_IF(hash != ref_hash);
-        hash = hash_func(align4 + 3, key_length, 0);
-        TEST_FAIL_IF(hash != ref_hash);
-
-        for (j = 0, pbuff = buff + 1; j < 8; j++, pbuff++) {
-            for (key_length = 0; key_length < MAXLEN; key_length++) {
-                if ((hash_func == spifhash_jenkins32)
-                    && (key_length % 4)) {
-                    continue;
-                }
-                MEMSET(buff, 0, sizeof(buff));
-
-                if (hash_func == spifhash_jenkins32) {
-                    ref_hash = hash_func(pbuff, key_length / 4, 1);
-                } else {
-                    ref_hash = hash_func(pbuff, key_length, 1);
-                }
-                *(pbuff + key_length) = ~(SPIF_CAST(uint8) 0);
-                *(pbuff - 1) = ~(SPIF_CAST(uint8) 0);
-                if (hash_func == spifhash_jenkins32) {
-                    hash = hash_func(pbuff, key_length / 4, 1);
-                } else {
-                    hash = hash_func(pbuff, key_length, 1);
-                }
-                /*printf("Reference hash 0x%08x, hash 0x%08x for length %lu\n", ref_hash, hash, key_length);*/
-                TEST_FAIL_IF(hash != ref_hash);
-            }
-        }
-        TEST_PASS();
-
-        /* We cannot test the rotating hash or the FNV hash here.  The
-           rotating hash repeats after 4 zero-length keys.  The FNV
-           hash generates constant hash values for zero-length keys. */
-        if ((hash_func != spifhash_rotating)
-            && (hash_func != spifhash_fnv)) {
-            spif_uint32_t null_hashes[8];
-            spif_uint8_t one_byte;
-
-            TEST_BEGIN("hashes of empty strings");
-            one_byte = ~0;
-            for (j = 0, hash = 0; j < 8; j++) {
-                spif_uint32_t k;
-
-                hash = hash_func(&one_byte, SPIF_CAST(uint32) 0, hash);
-                null_hashes[j] = hash;
-                /*printf("Empty string hash %lu is 0x%08x\n", j, hash);*/
-                for (k = j - 1; k < 8; k--) {
-                    TEST_FAIL_IF(null_hashes[j] == null_hashes[k]);
-                }
-            }
-            TEST_PASS();
-        }
-    }
-
-    TEST_PASSED("hash functions");
     return 0;
 }
 
@@ -2715,6 +2495,269 @@ test_regexp(void)
 }
 
 int
+test_module(void)
+{
+    spif_module_t test_mod;
+    double (*dynamic_tan)(double);
+
+    TEST_BEGIN("spif_module_new() function");
+    test_mod = spif_module_new();
+    TEST_FAIL_IF(SPIF_MODULE_ISNULL(test_mod));
+    TEST_PASS();
+
+    TEST_BEGIN("spif_module_t properties");
+    spif_module_set_name(test_mod, spif_str_new_from_ptr("math library"));
+    spif_module_set_path(test_mod, spif_str_new_from_ptr("libm.so"));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(test_mod->name, "math library")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(test_mod->path, "libm.so")));
+    TEST_PASS();
+
+    libast_set_silent(1);
+    TEST_BEGIN("spif_module_load() function");
+    TEST_FAIL_IF(!spif_module_load(test_mod));
+    TEST_PASS();
+
+    TEST_BEGIN("spif_module_getsym() function");
+    TEST_FAIL_IF(SPIF_PTR_ISNULL(spif_module_getsym(test_mod, "sqrt")));
+    TEST_FAIL_IF(!SPIF_PTR_ISNULL(spif_module_getsym(test_mod, "lkjweoiclkjsdfoihwerbglkjsdf")));
+    dynamic_tan = spif_module_getsym(test_mod, "tan");
+    TEST_FAIL_IF((*dynamic_tan)(2.0) - tan(2.0) > 0.00001);
+    TEST_PASS();
+
+    TEST_BEGIN("spif_module_call() function");
+    TEST_PASS();
+
+    TEST_BEGIN("spif_module_unload() function");
+    TEST_FAIL_IF(!spif_module_unload(test_mod));
+    TEST_PASS();
+    libast_set_silent(0);
+
+    TEST_PASSED("spif_module_t");
+    return 0;
+}
+
+#define MAXPAIR 80
+#define MAXLEN 80
+int
+test_hash_functions(void)
+{
+    spif_uint8_t i;
+
+    for (i = 0; i < 6; i++) {
+        spifhash_func_t hash_func;
+        spif_uint32_t key_length, input_byte, trials, successes = 0, hash, ref_hash;
+        spif_uint8_t buff[MAXLEN + 20], *pbuff;
+        spif_uint8_t align1[] = "This has got the amazing aroma of bovine fecal matter...";
+        spif_uint8_t align2[] = "xThis has got the amazing aroma of bovine fecal matter...";
+        spif_uint8_t align3[] = "xxThis has got the amazing aroma of bovine fecal matter...";
+        spif_uint8_t align4[] = "xxxThis has got the amazing aroma of bovine fecal matter...";
+        spif_uint32_t j;
+
+        if (i == 0) {
+            TEST_NOTICE("*** Testing Jenkins hash:");
+            hash_func = spifhash_jenkins;
+        } else if (i == 1) {
+            TEST_NOTICE("*** Testing Jenkins32 hash:");
+            hash_func = spifhash_jenkins32;
+        } else if (i == 2) {
+#if WORDS_BIGENDIAN
+            continue;
+#else
+            TEST_NOTICE("*** Testing JenkinsLE hash:");
+            hash_func = spifhash_jenkinsLE;
+#endif
+        } else if (i == 3) {
+            TEST_NOTICE("*** Testing rotating hash:");
+            hash_func = spifhash_rotating;
+        } else if (i == 4) {
+            TEST_NOTICE("*** Testing one-at-a-time hash:");
+            hash_func = spifhash_one_at_a_time;
+        } else if (i == 5) {
+            TEST_NOTICE("*** Testing FNV hash:");
+            hash_func = spifhash_fnv;
+        }
+
+        TEST_BEGIN("effect of every input bit on every output bit");
+        for (key_length = 0; key_length < MAXLEN; key_length++) {
+            /* For each key length up to 70 bytes... */
+
+            if ((hash_func == spifhash_jenkins32)
+                && (key_length % 4)) {
+                successes++;
+                continue;
+            }
+            trials = 0;
+            for (input_byte = 0; input_byte < key_length; input_byte++) {
+                /* ...for each input byte... */
+                spif_uint32_t input_bit;
+
+                for (input_bit = 0; input_bit < 8; input_bit++) {
+                    /* ...for each input bit... */
+                    spif_uint32_t seed;
+
+                    for (seed = 1; seed < 8; seed++) {
+                        /* ...use several possible seeds... */
+                        spif_uint32_t e, f, g, h, x, y;
+                        spif_uint32_t bit_pair;
+
+                        /* Initialize to ~0 (0xffffffff). */
+                        e = f = g = h = x = y = ~(SPIF_CAST(uint32) 0);
+
+                        /* ...to make sure every output bit is affected by every input bit. */
+                        for (bit_pair = 0; bit_pair < MAXPAIR; bit_pair += 2) {
+                            spif_uint8_t buff1[MAXLEN + 1], buff2[MAXLEN + 2];
+                            spif_uint8_t *pbuff1 = &buff1[0], *pbuff2 = &buff2[1];
+                            spif_uint32_t hash1, hash2;
+
+                            for (j = 0; j < key_length + 1; j++) {
+                                /* Initialize keys to all zeros. */
+                                pbuff1[j] = pbuff2[j] = (spif_uint8_t) 0;
+                            }
+
+                            /* Then make them differ by exactly one bit, the input_bit.
+                               bit_pair will always end in 0, so bit_pair + 1 will always
+                               end in 1.  It's then shifted by input_bit to test the
+                               current bit to test all 8 of the lowest bits in sequence. */
+                            pbuff1[input_byte] ^= (bit_pair << input_bit);
+                            pbuff1[input_byte] ^= (bit_pair >> (8 - input_bit));
+                            pbuff2[input_byte] ^= ((bit_pair + 1) << input_bit);
+                            pbuff2[input_byte] ^= ((bit_pair + 1) >> (8 - input_bit));
+
+                            /* Hash them. */
+                            if (hash_func == spifhash_jenkins32) {
+                                hash1 = hash_func(pbuff1, key_length / 4, seed);
+                                hash2 = hash_func(pbuff2, key_length / 4, seed);
+                            } else {
+                                hash1 = hash_func(pbuff1, key_length, seed);
+                                hash2 = hash_func(pbuff2, key_length, seed);
+                            }
+
+                            /* Make sure every bit is 1 or 0 at least once. */
+                            e &= (hash1 ^ hash2);     f &= ~(hash1 ^ hash2);
+                            g &= hash1;               h &= ~hash1;
+                            x &= hash2;               y &= ~hash2;
+                            if (!(e | f | g | h | x | y)) {
+                                /* They're all 0.  That means they've all changed at least once. */
+                                break;
+                            }
+                        }
+                        if (bit_pair > trials) {
+                            trials = bit_pair;
+                        }
+                        if (bit_pair == MAXPAIR) {
+#if UNUSED_BLOCK
+                            printf("Some bit didn't change: ");
+                            printf("%.8lx %.8lx %.8lx %.8lx %.8lx %.8lx  ",
+                                   SPIF_CAST_C(unsigned long) e,
+                                   SPIF_CAST_C(unsigned long) f,
+                                   SPIF_CAST_C(unsigned long) g,
+                                   SPIF_CAST_C(unsigned long) h,
+                                   SPIF_CAST_C(unsigned long) x,
+                                   SPIF_CAST_C(unsigned long) y);
+                            printf("input_byte %lu  input_bit %lu  seed %lu  key length %lu\n",
+                                   SPIF_CAST_C(unsigned long) input_byte,
+                                   SPIF_CAST_C(unsigned long) input_bit,
+                                   SPIF_CAST_C(unsigned long) seed,
+                                   SPIF_CAST_C(unsigned long) key_length);
+#endif
+                        }
+                        if (trials == MAXPAIR) {
+                            /* Easy way to break out of a crapload of for loops. */
+                            goto done;
+                        }
+                    }
+                }
+            }
+        done:
+            if (trials < MAXPAIR) {
+                successes++;
+#if UNUSED_BLOCK
+                printf("Mix success:  %2lu-byte key required %2lu trials (%lu so far).\n",
+                       SPIF_CAST_C(unsigned long) input_byte,
+                       SPIF_CAST_C(unsigned long) trials / 2,
+                       SPIF_CAST_C(unsigned long) successes);
+#endif
+            }
+        }
+        printf("%.2f%% mix success rate in %d key lengths...",
+               (100.0 * successes / key_length), key_length);
+        TEST_FAIL_IF(successes == 0);
+        TEST_PASS();
+
+        /* Make sure nothing but the key is hashed, regardless of alignment. */
+        TEST_BEGIN("endian cleanliness");
+        key_length = CONST_STRLEN(align1);
+        if (hash_func == spifhash_jenkins32) {
+            if (key_length % 4) {
+                TEST_FAIL_IF(key_length);
+            } else {
+                key_length /= 4;
+            }
+        }
+        ref_hash = hash_func(align1, key_length, 0);
+        hash = hash_func(align2 + 1, key_length, 0);
+        /*printf("Reference hash 0x%08x, hash 0x%08x for length %lu\n", ref_hash, hash, key_length);*/
+        TEST_FAIL_IF(hash != ref_hash);
+        hash = hash_func(align3 + 2, key_length, 0);
+        TEST_FAIL_IF(hash != ref_hash);
+        hash = hash_func(align4 + 3, key_length, 0);
+        TEST_FAIL_IF(hash != ref_hash);
+
+        for (j = 0, pbuff = buff + 1; j < 8; j++, pbuff++) {
+            for (key_length = 0; key_length < MAXLEN; key_length++) {
+                if ((hash_func == spifhash_jenkins32)
+                    && (key_length % 4)) {
+                    continue;
+                }
+                MEMSET(buff, 0, sizeof(buff));
+
+                if (hash_func == spifhash_jenkins32) {
+                    ref_hash = hash_func(pbuff, key_length / 4, 1);
+                } else {
+                    ref_hash = hash_func(pbuff, key_length, 1);
+                }
+                *(pbuff + key_length) = ~(SPIF_CAST(uint8) 0);
+                *(pbuff - 1) = ~(SPIF_CAST(uint8) 0);
+                if (hash_func == spifhash_jenkins32) {
+                    hash = hash_func(pbuff, key_length / 4, 1);
+                } else {
+                    hash = hash_func(pbuff, key_length, 1);
+                }
+                /*printf("Reference hash 0x%08x, hash 0x%08x for length %lu\n", ref_hash, hash, key_length);*/
+                TEST_FAIL_IF(hash != ref_hash);
+            }
+        }
+        TEST_PASS();
+
+        /* We cannot test the rotating hash or the FNV hash here.  The
+           rotating hash repeats after 4 zero-length keys.  The FNV
+           hash generates constant hash values for zero-length keys. */
+        if ((hash_func != spifhash_rotating)
+            && (hash_func != spifhash_fnv)) {
+            spif_uint32_t null_hashes[8];
+            spif_uint8_t one_byte;
+
+            TEST_BEGIN("hashes of empty strings");
+            one_byte = ~0;
+            for (j = 0, hash = 0; j < 8; j++) {
+                spif_uint32_t k;
+
+                hash = hash_func(&one_byte, SPIF_CAST(uint32) 0, hash);
+                null_hashes[j] = hash;
+                /*printf("Empty string hash %lu is 0x%08x\n", j, hash);*/
+                for (k = j - 1; k < 8; k--) {
+                    TEST_FAIL_IF(null_hashes[j] == null_hashes[k]);
+                }
+            }
+            TEST_PASS();
+        }
+    }
+
+    TEST_PASSED("hash functions");
+    return 0;
+}
+
+int
 main(int argc, char *argv[])
 {
     int ret = 0;
@@ -2770,6 +2813,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_regexp()) != 0) {
+        return ret;
+    }
+    if ((ret = test_module()) != 0) {
         return ret;
     }
     if ((ret = test_hash_functions()) != 0) {

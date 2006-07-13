@@ -787,3 +787,12 @@ Added sprintf() routines for string classes.
 
 Began work on UTF-8/Unicode strings.
 ----------------------------------------------------------------------
+Thu Jul 13 14:02:08 2006                        Michael Jennings (mej)
+
+Added thread, mutex, and condition interfaces along with their
+corresponding pthreads-based implementations.  Not quite done yet, and
+not tested.
+
+Added dynamically-loadable module object class along with
+corresponding unit tests.  Appears to work fine.
+----------------------------------------------------------------------

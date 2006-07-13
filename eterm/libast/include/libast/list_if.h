@@ -56,10 +56,10 @@
 
 #define SPIF_LIST_APPEND(o, item)                       SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), append))(o, item))
 #define SPIF_LIST_CONTAINS(o, item)                     SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), contains))(o, item))
-#define SPIF_LIST_COUNT(o)                              SPIF_CAST_C(size_t) ((SPIF_LIST_CALL_METHOD((o), count))(o))
+#define SPIF_LIST_COUNT(o)                              SPIF_CAST(listidx) ((SPIF_LIST_CALL_METHOD((o), count))(o))
 #define SPIF_LIST_FIND(o, item)                         SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), find))(o, item))
 #define SPIF_LIST_GET(o, index)                         SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), get))(o, index))
-#define SPIF_LIST_INDEX(o, item)                        SPIF_CAST_C(size_t) ((SPIF_LIST_CALL_METHOD((o), index))(o, item))
+#define SPIF_LIST_INDEX(o, item)                        SPIF_CAST(listidx) ((SPIF_LIST_CALL_METHOD((o), index))(o, item))
 #define SPIF_LIST_INSERT(o, item)                       SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), insert))(o, item))
 #define SPIF_LIST_INSERT_AT(o, item, index)             SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), insert_at))(o, item, index))
 #define SPIF_LIST_ITERATOR(o)                           SPIF_CAST(iterator) ((SPIF_LIST_CALL_METHOD((o), iterator))(o))

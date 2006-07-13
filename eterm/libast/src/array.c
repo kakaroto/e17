@@ -728,7 +728,6 @@ spif_array_remove(spif_array_t self, spif_obj_t item)
     }
 
     left = self->len - i - 1;
-    printf("%d %d %d\n", i, left, self->len);
     tmp = self->items[i];
     memmove(self->items + i, self->items + i + 1, sizeof(spif_obj_t) * left);
     self->len--;

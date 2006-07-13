@@ -61,6 +61,14 @@ spif_charptr_t libast_program_name = SPIF_CAST(charptr) PACKAGE;
 spif_charptr_t libast_program_version = SPIF_CAST(charptr) VERSION;
 
 /**
+ * Silence mode
+ *
+ * This variable determines whether or not error, warning, and
+ * debugging messages may be printed.
+ */
+static spif_bool_t silent = FALSE;
+
+/**
  * Sets the program name.
  *
  * This function is provided for safe and sane setting of the
@@ -119,6 +127,22 @@ libast_set_program_version(const char *progversion)
 }
 
 /**
+ * Sets silent mode.
+ *
+ * This function turns on/off error, warning, and debugging output.
+ *
+ * @param flag Boolean value to set silent flag
+ * @return     The new value
+ *
+ * @see silent
+ */
+spif_bool_t
+libast_set_silent(spif_bool_t flag)
+{
+    return (silent = flag);
+}
+
+/**
  * Prints debugging output.
  *
  * This function is the guts behing the D_*() and DPRINTF() families of
@@ -140,6 +164,7 @@ libast_dprintf(const char *format, ...)
     int n;
 
     ASSERT_RVAL(!SPIF_PTR_ISNULL(format), SPIF_CAST_C(int) -1);
+    REQUIRE_RVAL(!silent, 0);
     REQUIRE_RVAL(libast_program_name != NULL, 0);
     va_start(args, format);
     n = vfprintf(LIBAST_DEBUG_FD, format, args);
@@ -168,6 +193,7 @@ libast_print_error(const char *fmt, ...)
     va_list arg_ptr;
 
     ASSERT(!SPIF_PTR_ISNULL(fmt));
+    REQUIRE(!silent);
     REQUIRE(libast_program_name != NULL);
     va_start(arg_ptr, fmt);
     fprintf(stderr, "%s:  Error:  ", libast_program_name);
@@ -195,6 +221,7 @@ libast_print_warning(const char *fmt, ...)
     va_list arg_ptr;
 
     ASSERT(!SPIF_PTR_ISNULL(fmt));
+    REQUIRE(!silent);
     REQUIRE(libast_program_name != NULL);
     va_start(arg_ptr, fmt);
     fprintf(stderr, "%s:  Warning:  ", libast_program_name);
@@ -222,7 +249,7 @@ libast_fatal_error(const char *fmt, ...)
     va_list arg_ptr;
 
     ASSERT(!SPIF_PTR_ISNULL(fmt));
-    if (libast_program_name != NULL) {
+    if ((!silent) && (libast_program_name != NULL)) {
         va_start(arg_ptr, fmt);
         fprintf(stderr, "%s:  FATAL:  ", libast_program_name);
         vfprintf(stderr, fmt, arg_ptr);
@@ -230,3 +257,4 @@ libast_fatal_error(const char *fmt, ...)
     }
     exit(-1);
 }
+
