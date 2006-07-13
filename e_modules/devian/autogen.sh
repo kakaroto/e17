@@ -14,7 +14,6 @@ touch README
 echo
 echo "Options : (see INSTALL file)"
 echo "   No arguments : Build dEvian module (Picture & Rss feature)"
-echo "   --enable-modular=photo : Build dEphoto module (Picture feature only)"
 echo "   --enable-modular=rss : Build dErss module (Rss feature only)"
 echo "   --enable-modular=log : Build dElog module (Log feature only)"
 echo

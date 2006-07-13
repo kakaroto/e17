@@ -61,10 +61,8 @@ else
   version="0.1.8"
   AC_DEFINE_UNQUOTED(MODULE_VERSION, "$version", [Module name])
   AC_DEFINE(HAVE_ALL, 1, [Compil with all support])
-  AC_DEFINE(HAVE_PICTURE, 1, [Compil Picture support])
   AC_DEFINE(HAVE_RSS, 1, [Compil RSS support])
   AC_DEFINE(HAVE_FILE, 1, [Compil File log support])
-  have_picture="yes"
   have_rss="yes"
   have_file="yes"
   module_name="dEvian"
@@ -193,7 +191,6 @@ echo "Configuration Options Summary:"
 echo
 echo "Modular compil ...........: $have_modular"
 echo "Module name ..............: $module_name"
-echo "  Picture support ........: $have_picture"
 echo "  Rss support ............: $have_rss"
 echo "  File log support .......: $have_file"
 echo
@@ -201,5 +198,4 @@ echo "Installation Path.........: $datadir"
 echo
 echo "Compilation...............: make"
 echo "Installation..............: make install"
-echo "Do both of these operations as NORMAL USER"
 echo
