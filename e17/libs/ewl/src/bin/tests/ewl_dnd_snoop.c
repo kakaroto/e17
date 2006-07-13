@@ -29,7 +29,8 @@ void
 test_info(Ewl_Test *test)
 {
 	test->name = "DND Snoop";
-	test->tip = "Watches for Xdnd events and prints information to the console.";
+	test->tip = "Watches for Xdnd events and prints information "
+			"to the console.";
 	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_ADVANCED;
@@ -42,12 +43,24 @@ create_test(Ewl_Container *box)
 	Ewl_Widget *hbox, *scroll, *o;
 
 	/* Register DND handlers */
-	ewl_dnd_enter_handler = ecore_event_handler_add(ECORE_X_EVENT_XDND_ENTER, ewl_dnd_snoop_cb_enter, NULL);
-	ewl_dnd_position_handler = ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, ewl_dnd_snoop_cb_position, NULL);
-	ewl_dnd_status_handler = ecore_event_handler_add(ECORE_X_EVENT_XDND_STATUS, ewl_dnd_snoop_cb_status, NULL);
-	ewl_dnd_leave_handler = ecore_event_handler_add(ECORE_X_EVENT_XDND_LEAVE, ewl_dnd_snoop_cb_leave, NULL);
-	ewl_dnd_drop_handler = ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, ewl_dnd_snoop_cb_drop, NULL);
-	ewl_dnd_finished_handler = ecore_event_handler_add(ECORE_X_EVENT_XDND_FINISHED, ewl_dnd_snoop_cb_finished, NULL);
+	ewl_dnd_enter_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_XDND_ENTER, 
+					ewl_dnd_snoop_cb_enter, NULL);
+	ewl_dnd_position_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_XDND_POSITION, 
+					ewl_dnd_snoop_cb_position, NULL);
+	ewl_dnd_status_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_XDND_STATUS, 
+					ewl_dnd_snoop_cb_status, NULL);
+	ewl_dnd_leave_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_XDND_LEAVE, 
+					ewl_dnd_snoop_cb_leave, NULL);
+	ewl_dnd_drop_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_XDND_DROP, 
+					ewl_dnd_snoop_cb_drop, NULL);
+	ewl_dnd_finished_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_XDND_FINISHED, 
+					ewl_dnd_snoop_cb_finished, NULL);
 
 	scroll = ewl_scrollpane_new();
 	ewl_container_child_append(EWL_CONTAINER(box), scroll);
@@ -111,7 +124,8 @@ ewl_dnd_snoop_cb_position(void *data, int type, void *ev)
 	printf("\nXdnd Position\n");
 	printf("\tWindow: %d\nSource: %d\n", event->win, event->source);
 	printf("\tPosition: %d,%d\n", event->position.x, event->position.y);
-	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), event->action));
+	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), 
+							event->action));
 	return 1;
 }
 
@@ -123,9 +137,12 @@ ewl_dnd_snoop_cb_status(void *data, int type, void *ev)
 	printf("\nXdnd Status\n");
 	printf("\tWindow: %d\nTarget: %d\n", event->win, event->target);
 	printf("\tAccepts: %d\n", event->will_accept);
-	printf("\tRegion: %d,%d %dx%d\n", event->rectangle.x, event->rectangle.y,
-			event->rectangle.width, event->rectangle.height);
-	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), event->action));
+	printf("\tRegion: %d,%d %dx%d\n", event->rectangle.x, 
+						event->rectangle.y,
+						event->rectangle.width, 
+						event->rectangle.height);
+	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), 
+							event->action));
 	return 1;
 }
 
@@ -146,7 +163,8 @@ ewl_dnd_snoop_cb_drop(void *data, int type, void *ev)
 
 	printf("\nXdnd Drop\n");
 	printf("\tWindow: %d\nSource: %d\n", event->win, event->source);
-	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), event->action));
+	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), 
+							event->action));
 	printf("\tPosition: %d,%d\n", event->position.x, event->position.y);
 	return 1;
 }
@@ -159,6 +177,8 @@ ewl_dnd_snoop_cb_finished(void *data, int type, void *ev)
 	printf("\nXdnd Finished\n");
 	printf("\tWindow: %d\nTarget: %d\n", event->win, event->target);
 	printf("\tCompleted: %d\n", event->completed);
-	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), event->action));
+	printf("\tAction: %s\n", XGetAtomName(ecore_x_display_get(), 
+							event->action));
 	return 1;
 }
+
