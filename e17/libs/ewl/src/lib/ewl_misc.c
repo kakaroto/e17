@@ -1048,7 +1048,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 	
 		ewl_callback_call(w, EWL_CALLBACK_DESTROY);
 		ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
-		FREE(w);
+		ewl_widget_free(w);
 		cleanup++;
 	}
 

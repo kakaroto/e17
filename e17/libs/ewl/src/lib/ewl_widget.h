@@ -127,7 +127,8 @@ struct Ewl_Widget
 	Ewl_Object       object; /**< Inherit the base Object class */
 	Ewl_Widget      *parent; /**< The parent widget, actually a container */
 
-	Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX]; /**< Callback chain array */
+	Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX + 1]; 
+						/**< Callback chain array */
 	Ewl_Attach_List *attach;       /**< List of attachments on the widget */
 
 	Evas_Object     *smart_object; /**< Smart Object for the layer stuff */
@@ -149,6 +150,7 @@ struct Ewl_Widget
 };
 
 int             ewl_widget_init(Ewl_Widget * w);
+void		ewl_widget_free(Ewl_Widget *w);
 
 void            ewl_widget_name_set(Ewl_Widget * w, const char *name);
 const char *    ewl_widget_name_get(Ewl_Widget * w);
@@ -248,7 +250,6 @@ void ewl_widget_obscure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_reparent_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_enable_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_widget_disable_cb(Ewl_Widget *w, void *ev_data, void *user_data);

@@ -92,8 +92,6 @@ ewl_widget_init(Ewl_Widget *w)
 				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_widget_configure_cb,
 				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_widget_destroy_cb,
-				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_widget_reparent_cb,
 				NULL);
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE, ewl_widget_enable_cb,
@@ -439,7 +437,7 @@ ewl_widget_destroy(Ewl_Widget *w)
 	 * We delete these now so that we can't possibly get any callbacks before the 
 	 * idler kicks in
 	 */
-	for (i = 0; i < EWL_CALLBACK_MAX; i++)
+	for (i = 0; i < (EWL_CALLBACK_MAX + 1); i++)
 	{
 		if (i == EWL_CALLBACK_DESTROY) continue;
 		ewl_callback_del_type(w, i);
@@ -2024,16 +2022,11 @@ ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
 /**
  * @internal
  * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param data: UNUSED
  * @return Returns no value
- * @brief Perform the series of operations common to every widget when
- * they are destroyed. This should ALWAYS be the the last callback
- * in the chain.
+ * @brief Free all the widget data
  */
 void
-ewl_widget_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-			void *data __UNUSED__)
+ewl_widget_free(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -2091,7 +2084,9 @@ ewl_widget_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ecore_hash_destroy(w->data);
 		w->data = NULL;
 	}
-
+	
+	FREE(w);
+	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
