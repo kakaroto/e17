@@ -12,7 +12,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Colordialog";
 	test->tip = "Defines a dialog with a colour picker.";
-	test->filename = "ewl_colordialog.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_ADVANCED;
 }

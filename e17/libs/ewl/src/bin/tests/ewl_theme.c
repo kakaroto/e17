@@ -16,7 +16,7 @@ test_info(Ewl_Test *test)
 	test->name = "Theme";
 	test->tip = "Shows the utilization of themes\n"
 			"inside a EWL application.";
-	test->filename = "ewl_theme.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_ADVANCED;
 }

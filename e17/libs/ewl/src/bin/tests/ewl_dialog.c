@@ -12,7 +12,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Dialog";
 	test->tip = "Defines a dialog window.";
-	test->filename = "ewl_dialog.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_ADVANCED;
 }

@@ -12,7 +12,7 @@ test_info(Ewl_Test *test)
 			"widgets in EWL's drawing area, with\n"
 			"the ability to follow the movement of\n"
 			"another widget.";
-	test->filename = "ewl_floater.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 }

@@ -23,7 +23,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Widget";
 	test->tip = "The base widget type.";
-	test->filename = "ewl_widget.c";
+	test->filename = __FILE__;
 	test->type = EWL_TEST_TYPE_MISC;
 	test->func = create_test;
 	test->unit_tests = widget_unit_tests;

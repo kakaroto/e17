@@ -13,7 +13,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Statusbar";
 	test->tip = "Provides a status bar.";
-	test->filename = "ewl_statusbar.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 }

@@ -20,7 +20,7 @@ test_info(Ewl_Test *test)
 	test->name = "Image Thumbnail";
 	test->tip = "Provides a widget for displaying\n"
 				"thumbnails of images.";
-	test->filename = "ewl_image_thumbnail.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 	test->unit_tests = image_thumb_unit_tests;

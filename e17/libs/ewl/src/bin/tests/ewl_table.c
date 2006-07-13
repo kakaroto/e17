@@ -10,7 +10,7 @@ test_info(Ewl_Test *test)
 	test->name = "Table";
 	test->tip = "Defines the Ewl_Table class used for\n"
 			"laying out Ewl_Widget's in an array.";
-	test->filename = "ewl_table.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

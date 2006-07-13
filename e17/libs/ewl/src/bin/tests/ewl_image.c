@@ -104,7 +104,7 @@ test_info(Ewl_Test *test)
 	test->name = "Image";
 	test->tip = "Provides a widget for displaying evas\n"
 				"loadable images, and edjes.";
-	test->filename = "ewl_image.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 	test->unit_tests = image_unit_tests;

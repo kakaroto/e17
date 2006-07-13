@@ -22,7 +22,7 @@ test_info(Ewl_Test *test)
 	test->tip = "Provides a container whose children\n"
 			"are pages that can be switched\n"
 			"between using tab labels along one\nedge";
-	test->filename = "ewl_notebook.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

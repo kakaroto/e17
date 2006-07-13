@@ -95,7 +95,7 @@ test_info(Ewl_Test *test)
 	test->tip = "Defines a combo box used internally.\n"
 		"The contents of the box are not drawn\n"
 		"outside of the evas.";
-	test->filename = "ewl_combo.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_MISC;
 }

@@ -9,7 +9,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Datepicker";
 	test->tip = "Defines a datepicker widget.";
-	test->filename = "ewl_datepicker.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_MISC;
 }

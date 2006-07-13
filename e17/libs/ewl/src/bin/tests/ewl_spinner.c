@@ -14,7 +14,7 @@ test_info(Ewl_Test *test)
 	test->tip = "Provides a field for entering numerical\n"
 			"values, along with buttons to increment\n"
 			"and decrement the value.";
-	test->filename = "ewl_spinner.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 }

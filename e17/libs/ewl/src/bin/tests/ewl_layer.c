@@ -12,7 +12,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Layer";
 	test->tip = "sets the layer of a widget";
-	test->filename = "ewl_layer.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_MISC;
 }

@@ -12,7 +12,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Fullscreen";
 	test->tip = "Testing fullscreen.";
-	test->filename = "fullscreen.c";
+	test->filename = __FILE__;
 	test->type = EWL_TEST_TYPE_MISC;
 	test->func = create_test;
 }

@@ -54,7 +54,7 @@ test_info(Ewl_Test *test)
 	test->name = "Entry";
 	test->tip = "Defines the Ewl_Entry class to allow\n"
 		"for single line editable text.";
-	test->filename = "ewl_entry.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 }

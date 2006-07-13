@@ -15,7 +15,7 @@ test_info(Ewl_Test *test)
 	test->tip = "Defines the Ewl_Box class used for\n"
 		"laying out Ewl_Widget's in a horizontal\n"
 		"or vertical line.";
-	test->filename = "ewl_box.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

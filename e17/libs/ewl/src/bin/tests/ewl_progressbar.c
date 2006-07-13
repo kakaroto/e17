@@ -18,7 +18,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Progressbar";
 	test->tip = "Provides a progress bar from a given value.";
-	test->filename = "ewl_progressbar.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 }

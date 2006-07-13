@@ -12,7 +12,7 @@ test_info(Ewl_Test *test)
 		"with a label. This class inherits from\n"
 		"the Ewl_Box to allow for placing any\n"
 		"other widgets inside the button.";
-	test->filename = "ewl_button.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 }

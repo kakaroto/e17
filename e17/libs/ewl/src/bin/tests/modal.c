@@ -14,7 +14,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Modal";
 	test->tip = "Testing modal windows.";
-	test->filename = "modal.c";
+	test->filename = __FILE__;
 	test->type = EWL_TEST_TYPE_MISC;
 	test->func = create_test;
 }

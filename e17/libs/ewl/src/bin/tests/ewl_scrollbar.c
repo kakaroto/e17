@@ -9,7 +9,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Scrollbar";
 	test->tip = "A scrollbar.";
-	test->filename = "ewl_scrollbar.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 }

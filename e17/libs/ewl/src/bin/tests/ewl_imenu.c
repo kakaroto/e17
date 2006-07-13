@@ -12,7 +12,7 @@ test_info(Ewl_Test *test)
 	test->tip = "Defines a menu used internally. The\n"
 			"contents on the menu are not drawn\n"
 			"outside of the Evas.";
-	test->filename = "ewl_imenu.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

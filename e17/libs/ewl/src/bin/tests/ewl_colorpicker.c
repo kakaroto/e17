@@ -44,7 +44,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Colorpicker";
 	test->tip = "Defines a colour picker.";
-	test->filename = "ewl_colorpicker.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_MISC;
 }

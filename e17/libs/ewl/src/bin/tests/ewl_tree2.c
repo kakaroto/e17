@@ -35,7 +35,7 @@ test_info(Ewl_Test *test)
 	test->name = "Tree2";
 	test->tip = "Defines a widget for laying out other\n"
 			"widgets in a tree or list like manner.";
-	test->filename = "ewl_tree2.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

@@ -15,7 +15,7 @@ test_info(Ewl_Test *test)
 	test->name = "Filedialog";
 	test->tip = "The filedialog is intended to be used for a\n"
 			"single or multi-file chooser.";
-	test->filename = "ewl_filedialog.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_ADVANCED;
 }

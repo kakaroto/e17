@@ -9,7 +9,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Menubar";
 	test->tip = "Defines a menubar that can be used to hold menus.";
-	test->filename = "ewl_menubar.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

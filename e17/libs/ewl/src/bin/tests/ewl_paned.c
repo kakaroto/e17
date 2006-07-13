@@ -29,7 +29,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Paned";
 	test->tip = "Defines the Ewl_Paned to hold two resizable panes.";
-	test->filename = "ewl_paned.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

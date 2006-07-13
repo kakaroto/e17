@@ -82,7 +82,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Filepicker";
 	test->tip = "A simple file picking widget";
-	test->filename = "ewl_filepicker.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_ADVANCED;
 	test->unit_tests = filepicker_unit_tests;

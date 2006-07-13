@@ -15,7 +15,7 @@ test_info(Ewl_Test *test)
 	test->name = "Border";
 	test->tip = "Defines the Ewl_Border class for displaying\n"
 			"a container with a label.";
-	test->filename = "ewl_border.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

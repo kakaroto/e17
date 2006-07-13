@@ -26,7 +26,7 @@ test_info(Ewl_Test *test)
 	test->name = "Freebox";
 	test->tip = "The freebox is used for a more free layout system\n"
 					"then the other containers",
-	test->filename = "ewl_freebox.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

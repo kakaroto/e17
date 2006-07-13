@@ -56,7 +56,7 @@ test_info(Ewl_Test *test)
 	test->name = "Text Editor";
 	test->tip = "Defines a class for multi-line text layout\n"
 			"and formatting.";
-	test->filename = "ewl_text_editor.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_ADVANCED;
 }

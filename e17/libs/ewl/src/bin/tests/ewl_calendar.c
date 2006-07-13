@@ -11,7 +11,7 @@ test_info(Ewl_Test *test)
 {
 	test->name = "Calendar";
 	test->tip = "Defines a calendar widget.";
-	test->filename = "ewl_calendar.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_MISC;
 }

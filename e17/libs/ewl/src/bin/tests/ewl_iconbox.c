@@ -13,7 +13,7 @@ test_info(Ewl_Test *test)
 	test->tip = "Provides a widget for displaying icons\n"
 			"in an arranged grid, or freeform,\n"
 	                "with callback and label editing facilities.";
-	test->filename = "ewl_iconbox.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
 }

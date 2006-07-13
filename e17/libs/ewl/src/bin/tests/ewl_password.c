@@ -49,7 +49,7 @@ test_info(Ewl_Test *test)
 	test->name = "Password";
 	test->tip = "Defines the Ewl_Password class to allow\n"
 			"for single line obscured text.";
-	test->filename = "ewl_password.c";
+	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
 }
