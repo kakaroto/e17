@@ -1,18 +1,18 @@
 #! /bin/sh
 
-rm -f buttons.cfg
+#rm -f buttons.cfg
 
-if test ! -d ~/.enlightenment; then
-  (mkdir ~/.enlightenment)
+if test ! -d ~/.e16; then
+  (mkdir ~/.e16)
 fi
 
-cat > ~/.enlightenment/buttons.cfg << EOF
+cat > ~/.e16/buttons.cfg << EOF
 #include <definitions>
 __E_CFG_VERSION 0
 
 #include <buttons/buttons.cfg>
 EOF
 
-cp --backup --suffix .old Pulldowns/* ~/.enlightenment
+cp --backup --suffix .old Pulldowns/* ~/.e16
 
 eesh -e restart
