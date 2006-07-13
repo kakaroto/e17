@@ -1051,10 +1051,16 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 				Ecore_X_Selection_Data_Files* files = ev->data;
 				printf("We've got some files! - '%s'\n", files->files[0]);
 			} 
+			else if (ev->content == ECORE_X_SELECTION_CONTENT_TEXT) 
+			{
+				Ecore_X_Selection_Data_Text* text = ev->data;
+				printf("We've got some text! - '%s'\n", text->text);
+			} 
 			else 
 			{
-				Ecore_X_Selection_Data_Files* files = ev->data;
-				printf("We've got some files! - '%s'\n", files->files[0]);
+				Ecore_X_Selection_Data *data = ev->data;
+				printf("\nUnknown DND selection received, type: %d target: %s\n", ev->content, ev->target);
+				printf("\tData length: %d\n", data->length);
 			}
 		}
 
