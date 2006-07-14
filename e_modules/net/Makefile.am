@@ -10,10 +10,11 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir = $(datadir)
 
-files_DATA = module_icon.png module.eap net.edj net.edc VeraMono.ttf \
-             $(wildcard tx*.png) $(wildcard rx*.png)
+files_DATA = module_icon.png \
+			module.eap \
+			net.edj
 
-EXTRA_DIST=$(files_DATA) eth_dev.png module_icon.png e_modules-net.spec e_modules-net.spec.in
+EXTRA_DIST=$(files_DATA) e_modules-net.spec
 
 # the module .so file
 INCLUDES = -I. \
@@ -29,12 +30,10 @@ module_la_SOURCES      = e_mod_main.c \
 		       
 module_la_LIBADD       = @e_libs@
 module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h
+module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/net.edj
 
-net.edj: Makefile net.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 $(top_srcdir)/net.edc \
-	 $(top_builddir)/net.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	 rm -rf *.edj *~
