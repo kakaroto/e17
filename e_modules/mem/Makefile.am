@@ -15,7 +15,31 @@ files_DATA = module_icon.png \
 			mem.edj
 
 EXTRA_DIST= e_modules-mem.spec \
-			$(files_DATA)
+			$(files_DATA) \
+			mem.edc \
+			autogen.sh \
+			real_00.png \
+			real_01.png \
+			real_02.png \
+			real_03.png \
+			real_04.png \
+			real_05.png \
+			real_06.png \
+			real_07.png \
+			real_08.png \
+			real_09.png \
+			real_10.png \
+			swap_00.png \
+			swap_01.png \
+			swap_02.png \
+			swap_03.png \
+			swap_04.png \
+			swap_05.png \
+			swap_06.png \
+			swap_07.png \
+			swap_08.png \
+			swap_09.png \
+			swap_10.png
 
 # the module .so file
 INCLUDES = -I. \
