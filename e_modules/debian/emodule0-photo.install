@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/photo/images/*.png
+debian/tmp/usr/lib/enlightenment/modules/photo/*.eap
+debian/tmp/usr/lib/enlightenment/modules/photo/*.edj
+debian/tmp/usr/lib/enlightenment/modules/photo/*/*.so
