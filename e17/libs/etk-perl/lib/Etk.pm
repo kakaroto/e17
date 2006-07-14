@@ -10,6 +10,9 @@ use AutoLoader;
 
 our @ISA = qw(Exporter);
 
+use Etk::Main;
+use Etk::Window;
+
 # Items to export into callers namespace by default. Note: do not export
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
@@ -50,6 +53,14 @@ sub AUTOLOAD {
 
 require XSLoader;
 XSLoader::load('Etk', $VERSION);
+
+
+# initialize Etk
+Etk::Init();
+
+END {
+	Etk::Shutdown();
+}
 
 # Preloaded methods go here.
 

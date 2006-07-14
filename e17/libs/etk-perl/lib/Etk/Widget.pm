@@ -66,6 +66,18 @@ sub Lower
     Etk::etk_widget_lower($self->{WIDGET});
 }
 
+sub SizeRecalcQueue
+{
+    my $self = shift;
+    Etk::etk_widget_size_recalc_queue($self->{WIDGET});
+}
+
+sub RedrawQueue
+{
+    my $self = shift;
+    Etk::etk_widget_redraw_queue($self->{WIDGET});
+}
+
 sub SizeRequestSet
 {
     my $self = shift;
@@ -102,6 +114,12 @@ sub PassMouseEventsSet
 {
     my $self = shift;
     Etk::etk_widget_pass_mouse_events_set($self->{WIDGET}, shift);
+}
+
+sub PassMouseEventsGet
+{
+    my $self = shift;
+    return Etk::etk_widget_pass_mouse_events_get($self->{WIDGET});
 }
 
 sub DndDestSet
@@ -193,11 +211,143 @@ sub DndInternalSet
     Etk::etk_widget_dnd_internal_set($self->{WIDGET}, $on);
 }
 
+# TODO drag_*
+
 sub ThemeFileSet
 {
     my $self = shift;
     my $theme_file = shift;
     Etk::etk_widget_theme_file_set($self->{WIDGET}, $theme_file);
+
 }
 
+sub ThemeFileGet
+{
+    my $self = shift;
+    return Etk::etk_widget_theme_file_get($self->{WIDGET});
+
+}
+
+sub ThemeGroupSet
+{
+    my $self = shift;
+    my $theme_group = shift;
+    Etk::etk_widget_theme_group_set($self->{WIDGET}, $theme_group);
+}
+
+sub ThemeGroupGet
+{
+    my $self = shift;
+    return Etk::etk_widget_theme_group_get($self->{WIDGET});
+}
+
+sub ThemeParentSet
+{
+    my $self = shift;
+    my $parent = shift;
+    Etk::etk_widget_theme_parent_set($self->{WIDGET}, $parent->{WIDGET});
+}
+
+sub ThemeParentGet
+{
+    my $self = shift;
+    return Etk::etk_widget_theme_parent_get($self->{WIDGET});
+}
+
+sub GeometryGet
+{
+    my $self = shift;
+    return Etk::etk_widget_geometry_get($self->{WIDGET});
+}
+
+sub InnerGeometryGet
+{
+    my $self = shift;
+    return Etk::etk_widget_inner_geometry_get($self->{WIDGET});
+}
+
+sub HasEventObjectSet
+{
+    my $self = shift;
+    my $has = shift;
+    Etk::etk_widget_has_event_object_set($self->{WIDGET}, $has);
+}
+
+sub HasEventObjectGet
+{
+    my $self = shift;
+    return Etk::etk_widget_has_event_object_get($self->{WIDGET});
+}
+
+sub RepeatMouseEventsSet
+{
+    my $self = shift;
+    my $repeat = shift;
+    Etk::etk_widget_repeat_mouse_events_set($self->{WIDGET}, $repeat);
+}
+
+sub RepeatMouseEventsGet
+{
+    my $self = shift;
+    return Etk::etk_widget_repeat_mouse_events_get($self->{WIDGET});
+}
+
+sub KeyEventPropagationStop
+{
+    Etk::etk_widget_key_event_propagation_stop();
+}
+
+
+sub SwallowWidget
+{
+    my $self = shift;
+    my $part = shift;
+    my $widget = shift;
+    return Etk::etk_widget_swallow_widget($self->{WIDGET}, $part, $widget->{WIDGET});
+}
+
+sub UnswallowWidget
+{
+    my $self = shift;
+    my $widget = shift;
+    Etk::etk_widget_unswallow_widget($self->{WIDGET}, $widget->{WIDGET});
+}
+
+sub IsSwallowingWidget
+{
+    my $self = shift;
+    my $widget = shift;
+    return Etk::etk_widget_is_swallowing_widget($self->{WIDGET}, $widget->{WIDGET});
+}
+
+sub IsSwallowed
+{
+    my $self = shift;
+    return Etk::etk_widget_is_swallowed($self->{WIDGET});
+}
+
+sub ThemeObjectMinSizeCalc
+{
+    my $self = shift;
+    return Etk::etk_widget_theme_object_min_size_calc($self->{WIDGET});
+}
+
+sub ThemeObjectSignalEmit
+{
+    my $self = shift;
+    my $signal = shift;
+    Etk::etk_widget_theme_object_signal_emit($self->{WIDGET}, $signal);
+}
+
+sub ThemeObjectPartTextSet
+{
+    my $self = shift;
+    my $part = shift;
+    my $text = shift;
+    Etk::etk_widget_theme_object_part_text_set($self->{WIDGET}, $part, $text);
+}
+
+
 1;
+
+

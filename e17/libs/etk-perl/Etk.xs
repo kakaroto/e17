@@ -4969,12 +4969,35 @@ etk_widget_focus(widget)
 	Etk_Widget *	widget
 
 void
-etk_widget_geometry_get(widget, x, y, w, h)
+etk_widget_geometry_get(widget)
 	Etk_Widget *	widget
-	int *	x
-	int *	y
-	int *	w
-	int *	h
+	PPCODE:
+	int 	x;
+	int 	y;
+	int 	w;
+	int 	h;
+
+	etk_widget_geometry_get(widget, &x, &y, &w, &h);
+	EXTEND(SP, 4);
+	PUSHs(sv_2mortal(newSViv(x)));
+	PUSHs(sv_2mortal(newSViv(y)));
+	PUSHs(sv_2mortal(newSViv(w)));
+	PUSHs(sv_2mortal(newSViv(h)));
+
+void
+etk_widget_inner_geometry_get(widget)
+	Etk_Widget *	widget
+	PPCODE:
+	int 	x;
+	int 	y;
+	int 	w;
+	int 	h;
+	etk_widget_inner_geometry_get(widget, &x, &y, &w, &h);
+	EXTEND(SP, 4);
+	PUSHs(sv_2mortal(newSViv(x)));
+	PUSHs(sv_2mortal(newSViv(y)));
+	PUSHs(sv_2mortal(newSViv(w)));
+	PUSHs(sv_2mortal(newSViv(h)));
 
 Etk_Bool
 etk_widget_has_event_object_get(widget)
@@ -4992,14 +5015,6 @@ etk_widget_hide(widget)
 void
 etk_widget_hide_all(widget)
 	Etk_Widget *	widget
-
-void
-etk_widget_inner_geometry_get(widget, x, y, w, h)
-	Etk_Widget *	widget
-	int *	x
-	int *	y
-	int *	w
-	int *	h
 
 Etk_Bool
 etk_widget_is_swallowed(widget)
@@ -5187,10 +5202,16 @@ etk_widget_theme_object_data_get(widget, data_name, format, ...)
 	char * format	
 
 void
-etk_widget_theme_object_min_size_calc(widget, w, h)
+etk_widget_theme_object_min_size_calc(widget)
 	Etk_Widget *	widget
-	int *	w
-	int *	h
+	PPCODE:
+	int 	w;
+	int 	h;
+
+	etk_widget_theme_object_min_size_calc(widget, &w, &h);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSViv(w)));
+	PUSHs(sv_2mortal(newSViv(h)));
 
 void
 etk_widget_theme_object_part_text_set(widget, part_name, text)
