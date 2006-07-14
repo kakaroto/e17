@@ -16,7 +16,6 @@ files_DATA = module_icon.png \
 
 EXTRA_DIST=$(files_DATA) \
 			e_modules-net.spec \
-			autogen.sh \
 			net.edc \
 			rx_00.png \
 			rx_01.png \
