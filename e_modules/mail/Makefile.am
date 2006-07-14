@@ -12,7 +12,12 @@ files_DATA = module_icon.png \
 			module.eap \
 			mail.edj
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) \
+			mail.edc \
+			checking.png \
+			newmail.png \
+			VeraBd.ttf \
+			autogen.sh
 
 # the module .so file
 INCLUDES = -I. \
