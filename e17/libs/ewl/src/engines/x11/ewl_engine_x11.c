@@ -1046,12 +1046,12 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
                 window = ewl_window_window_find((void *)ev->win);
 		if (window) 
 		{
-			if (ev->content == ECORE_X_SELECTION_CONTENT_FILES) 
+			if (ev->selection == ECORE_X_SELECTION_CONTENT_FILES) 
 			{
 				Ecore_X_Selection_Data_Files* files = ev->data;
 				printf("We've got some files! - '%s'\n", files->files[0]);
 			} 
-			else if (ev->content == ECORE_X_SELECTION_CONTENT_TEXT) 
+			else if (ev->selection == ECORE_X_SELECTION_CONTENT_TEXT) 
 			{
 				Ecore_X_Selection_Data_Text* text = ev->data;
 				printf("We've got some text! - '%s'\n", text->text);
@@ -1059,7 +1059,7 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 			else 
 			{
 				Ecore_X_Selection_Data *data = ev->data;
-				printf("\nUnknown DND selection received, type: %d target: %s\n", ev->content, ev->target);
+				printf("\nUnknown DND selection received, type: %d target: %s\n", ev->selection, ev->target);
 				printf("\tData length: %d\n", data->length);
 			}
 		}
