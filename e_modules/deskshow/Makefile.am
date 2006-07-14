@@ -8,7 +8,9 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = module_icon.png module.eap deskshow.edj
+files_DATA = module_icon.png \
+			module.eap \
+			deskshow.edj
 
 EXTRA_DIST = $(files_DATA)
 
@@ -25,12 +27,10 @@ module_la_SOURCES      = e_mod_main.c \
 			 
 module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h
+module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/deskshow.edj
 
-deskshow.edj: Makefile deskshow.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 $(top_srcdir)/deskshow.edc \
-	 $(top_builddir)/deskshow.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	 rm -rf *.edj *~
