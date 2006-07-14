@@ -20,10 +20,6 @@
 
 #include "config.h"
 
-#if HAVE_E
-#include <E_Lib.h>
-#endif
-
 #if HAVE_ENGRAVE
 #include <Engrave.h>
 #endif
