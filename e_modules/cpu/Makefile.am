@@ -7,20 +7,21 @@ EDJE_FLAGS = -v \
 -id $(top_srcdir) \
 -fd $(top_srcdir)
 
+files_DATA = \
+module_icon.png \
+module.eap \
+cpu.edj
+
 EXTRA_DIST = $(files_DATA) \
 cpu.edc \
 VeraMono.ttf \
 cpu.png \
 module.eap \
-e_modules-cpu.spec e_modules-cpu.spec.in 
+e_modules-cpu.spec \
+e_modules-cpu.spec.in 
 
 # data files for the module
 filesdir = $(datadir)
-
-files_DATA = \
-module_icon.png \
-module.eap \
-cpu.edj
 
 # the module .so file
 INCLUDES = -I. \
@@ -39,10 +40,8 @@ module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
-cpu.edj: Makefile cpu.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 $(top_srcdir)/cpu.edc \
-	 $(top_builddir)/cpu.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	 rm -rf *.edj *~
