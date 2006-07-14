@@ -14,7 +14,33 @@ files_DATA = module_icon.png \
 			module.eap \
 			net.edj
 
-EXTRA_DIST=$(files_DATA) e_modules-net.spec
+EXTRA_DIST=$(files_DATA) \
+			e_modules-net.spec \
+			autogen.sh \
+			net.edc \
+			rx_00.png \
+			rx_01.png \
+			rx_02.png \
+			rx_03.png \
+			rx_04.png \
+			rx_05.png \
+			rx_06.png \
+			rx_07.png \
+			rx_08.png \
+			rx_09.png \
+			rx_10.png \
+			tx_00.png \
+			tx_01.png \
+			tx_02.png \
+			tx_03.png \
+			tx_04.png \
+			tx_05.png \
+			tx_06.png \
+			tx_07.png \
+			tx_08.png \
+			tx_09.png \
+			tx_10.png \
+			VeraMono.ttf
 
 # the module .so file
 INCLUDES = -I. \
