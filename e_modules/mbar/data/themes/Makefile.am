@@ -5,16 +5,15 @@ EDJE_FLAGS = -v -id images -fd fonts
 
 filesdir = $(datadir)
 files_DATA = \
-fonts/VeraBd.ttf \
-mbar.edj \
-mbar.edc
+mbar.edj
 
-EXTRA_DIST = $(files_DATA) $(wildcard images/*.png)
+EXTRA_DIST = $(files_DATA) \
+				$(wildcard images/*.png) \
+				fonts/VeraBd.ttf \
+				mbar.edc
 
-mbar.edj: Makefile mbar.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 mbar.edc \
-	 mbar.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	rm -f *.edj

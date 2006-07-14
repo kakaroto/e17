@@ -15,6 +15,7 @@ INCLUDES               = -I. \
 			 -I$(top_srcdir) \
 			 -I$(includedir) \
 			 @e_cflags@
+
 pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
