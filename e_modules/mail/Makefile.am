@@ -8,9 +8,11 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = newmail.png module_icon.png module.eap mail.edj
+files_DATA = module_icon.png \
+			module.eap \
+			mail.edj
 
-EXTRA_DIST = $(files_DATA) mail.edc VeraBd.ttf
+EXTRA_DIST = $(files_DATA)
 
 # the module .so file
 INCLUDES = -I. \
@@ -32,12 +34,10 @@ module_la_SOURCES      = e_mod_main.c \
 			 
 module_la_LIBADD       = @e_libs@
 module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h
+module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/mail.edj
 
-mail.edj: Makefile mail.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 $(top_srcdir)/mail.edc \
-	 $(top_builddir)/mail.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	 rm -rf *.edj *~
