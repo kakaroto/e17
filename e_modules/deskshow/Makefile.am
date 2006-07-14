@@ -12,7 +12,14 @@ files_DATA = module_icon.png \
 			module.eap \
 			deskshow.edj
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) \
+				deskshow.edc \
+				e17_titlebar.png \
+				e17_titlebar_glint1.png \
+				e17_titlebar_glint2.png \
+				e17_titlebar_glint3.png \
+				e17_titlebar_shadow1.png \
+				e17_titlebar_shadow2.png
 
 # the module .so file
 INCLUDES = -I. \
