@@ -13,7 +13,7 @@ group {
 	 mouse_events:  1;
 	 description {
 	    state:    "default" 0.0;
-	    min:      56 16;
+	    min:      16 16;
 	    image {
 	       normal: "e17_button_sm.png";
 	       border: 8 8 8 8;
