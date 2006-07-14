@@ -416,8 +416,7 @@ draw_ewl(Mode draw_mode)
       but->button = button[bc];
       ewl_callback_append(button[bc], EWL_CALLBACK_MOUSE_DOWN,
                           but->callback, but->cmd);
-      ewl_object_alignment_set(EWL_OBJECT(EWL_BUTTON(button[bc])->label_object),
-                               EWL_FLAG_ALIGN_CENTER);
+      ewl_button_alignment_set(EWL_BUTTON(button[bc]), EWL_FLAG_ALIGN_CENTER);
       ewl_container_child_append(EWL_CONTAINER(table), button[bc]);
       ewl_grid_child_position_set(EWL_GRID(table), button[bc], but->col,
                    but->col + but->height - 1, but->row,
