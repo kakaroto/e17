@@ -14,7 +14,10 @@ files_DATA = module_icon.png \
 			module.eap \
 			screenshot.edj
 
-EXTRA_DIST = $(files_DATA) e_modules-screenshot.spec
+EXTRA_DIST = $(files_DATA) \
+				e_modules-screenshot.spec \
+				screenshot.edc \
+				VeraBd.ttf
 
 # the module .so file
 INCLUDES = -I. \
