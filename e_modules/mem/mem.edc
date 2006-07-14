@@ -1,6 +1,6 @@
 images
 {
-   image: "mem.png" COMP;
+   image: "module_icon.png" COMP;
    image: "real_00.png" COMP;
    image: "real_01.png" COMP;
    image: "real_02.png" COMP;
@@ -101,7 +101,7 @@ collections
 			 }
 		       image
 			 {
-			    normal: "mem.png";
+			    normal: "module_icon.png";
 			 }
 		       color: 255 255 255 192;
 		    }

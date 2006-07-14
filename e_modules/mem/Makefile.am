@@ -1,6 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in e_modules-mem.spec
 
-
 SUBDIRS = po
 
 EDJE_CC = @edje_cc@
@@ -11,10 +10,12 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir = $(datadir)
 
-files_DATA = module_icon.png module.eap mem.edj mem.edc \
-             DejaVuSansMono.ttf $(wildcard real*.png) $(wildcard swap*.png)
+files_DATA = module_icon.png \
+			module.eap \
+			mem.edj
 
-EXTRA_DIST=e_modules-mem.spec.in e_modules-mem.spec autogen.sh mem.png module_icon.png $(files_DATA)
+EXTRA_DIST= e_modules-mem.spec \
+			$(files_DATA)
 
 # the module .so file
 INCLUDES = -I. \
@@ -43,12 +44,10 @@ EXTRA_module_la_SOURCES	=	machdep_linux.c \
 		       
 module_la_LIBADD       = @e_libs@ @machdep_libs@
 module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h
+module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/mem.edj
 
-mem.edj: Makefile mem.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 $(top_srcdir)/mem.edc \
-	 $(top_builddir)/mem.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	 rm -rf *.edj *~
