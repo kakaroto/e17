@@ -8,7 +8,7 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = module_icon.png module.eap deskshow.edj $(wildcard e17*.png)
+files_DATA = module_icon.png module.eap $(wildcard e17*.png)
 
 EXTRA_DIST = $(files_DATA) deskshow.edc VeraBd.ttf
 
