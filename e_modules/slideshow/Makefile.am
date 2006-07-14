@@ -15,7 +15,8 @@ module_icon.png \
 module.eap \
 slideshow.edj
 
-EXTRA_DIST = $(files_DATA) slideshow.edc
+EXTRA_DIST = $(files_DATA) \
+			slideshow.edc
 
 # the module .so file
 INCLUDES = -I. \
@@ -31,12 +32,10 @@ module_la_SOURCES      = e_mod_main.c \
 
 module_la_LIBADD       = @e_libs@
 module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h
+module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/slideshow.edj
 
-slideshow.edj: Makefile slideshow.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 $(top_srcdir)/slideshow.edc \
-	 $(top_builddir)/slideshow.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	 rm -rf *.edj *~
