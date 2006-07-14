@@ -1042,16 +1042,17 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 	else if (ev->selection == ECORE_X_SELECTION_XDND)
 	{
 		Ewl_Window *window;
+		Ecore_X_Selection_Data *data = ev->data;
 
                 window = ewl_window_window_find((void *)ev->win);
 		if (window) 
 		{
-			if (ev->selection == ECORE_X_SELECTION_CONTENT_FILES) 
+			if (data->content == ECORE_X_SELECTION_CONTENT_FILES) 
 			{
 				Ecore_X_Selection_Data_Files* files = ev->data;
 				printf("We've got some files! - '%s'\n", files->files[0]);
 			} 
-			else if (ev->selection == ECORE_X_SELECTION_CONTENT_TEXT) 
+			else if (data->content == ECORE_X_SELECTION_CONTENT_TEXT)
 			{
 				Ecore_X_Selection_Data_Text* text = ev->data;
 				printf("We've got some text! - '%s'\n", text->text);
@@ -1059,7 +1060,7 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 			else 
 			{
 				Ecore_X_Selection_Data *data = ev->data;
-				printf("\nUnknown DND selection received, type: %d target: %s\n", ev->selection, ev->target);
+				printf("\nUnknown DND selection received, type: %d target: %s\n", data->content, ev->target);
 				printf("\tData length: %d\n", data->length);
 			}
 		}
@@ -1186,20 +1187,25 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	window = ewl_window_window_find((void *)ev->win);
 	if (window) {
+		int i;
 		int x,y,wx,wy;
 		Ewl_Embed *embed= ewl_embed_evas_window_find((void *)ev->win);
 		ewl_embed_window_position_get(EWL_EMBED(window), &wx, &wy);
 
 		/* Request a DND data request */
-		/* TODO this only supports retrieval of the first type 
-		 * in the request */
-		if (window->dnd_types.num_types > 0)
-			ecore_x_selection_xdnd_request(ev->win,
-				window->dnd_types.types[0]);
+		for (i = 0; i < window->dnd_types.num_types; i++) {
+			if (ewl_dnd_type_supported(window->dnd_types.types[i])) {
+				ecore_x_selection_xdnd_request(ev->win,
+					window->dnd_types.types[i]);
+				break;
+			}
+		}
+		if (i == window->dnd_types.num_types)
+			printf("No matching type found\n");
 
 		printf("Drop!\n");
 
-		if (ev->win == (Ecore_X_Window)window->window) {
+		if (ev->source == (Ecore_X_Window)window->window) {
 			printf("Source is dest! - Retrieving local data\n");
 			internal = 1;
 		} else {
