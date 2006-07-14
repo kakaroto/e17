@@ -16,8 +16,7 @@ EXTRA_DIST = $(files_DATA) \
 			mail.edc \
 			checking.png \
 			newmail.png \
-			VeraBd.ttf \
-			autogen.sh
+			VeraBd.ttf
 
 # the module .so file
 INCLUDES = -I. \
