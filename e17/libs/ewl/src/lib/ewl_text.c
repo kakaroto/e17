@@ -3898,20 +3898,12 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 	base = ewl_text_trigger_base_get(s);
 	start_pos = ewl_text_trigger_start_pos_get(s);
 				
-	if (idx <= start_pos)
+	if (idx < base)
 	{
-		if (idx < base)
-		{
-			ewl_text_trigger_start_pos_set(s, idx);
-			ewl_text_trigger_length_set(s, base - idx);
-		}
-		else	
-		{
-			ewl_text_trigger_start_pos_set(s, base);
-			ewl_text_trigger_length_set(s, idx - base);
-		}
+		ewl_text_trigger_start_pos_set(s, idx);
+		ewl_text_trigger_length_set(s, base - idx);
 	}
-	else
+	else	
 	{
 		ewl_text_trigger_start_pos_set(s, base);
 		ewl_text_trigger_length_set(s, idx - base);
