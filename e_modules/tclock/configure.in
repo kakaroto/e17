@@ -29,60 +29,6 @@ MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
-if test "x${bindir}" = 'x${exec_prefix}/bin'; then
-  if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      bindir="${ac_default_prefix}/bin";
-    else
-      bindir="${prefix}/bin";
-    fi
-  else
-    if test "x${prefix}" = "xNONE"; then
-      bindir="${ac_default_prefix}/bin";
-    else
-      bindir="${prefix}/bin";
-    fi
-  fi
-fi
-
-if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      libdir="${ac_default_prefix}/lib";
-    else
-      libdir="${prefix}/lib";
-    fi
-  else
-    if test "x${prefix}" = "xNONE"; then
-      libdir="${ac_default_prefix}/lib";
-    else
-      libdir="${prefix}/lib";
-    fi
-  fi
-fi
-
-dnl Set PACKAGE_BIN_DIR in config.h.
-if test "x${bindir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", "Package installed binaries destination")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", "Package installed binaries destination")
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", "Package installed binaries destination")
-fi
-
-dnl Set PACKAGE_LIB_DIR in config.h.
-if test "x${libdir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", "Package installed libraries destination")
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", "Package installed libraries destination")
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", "Package installed libraries destination")
-fi
-
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
     AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${HOME}/.e/e/modules/${PACKAGE}", "Package installed data destination")

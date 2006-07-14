@@ -1,3 +1,7 @@
+fonts {
+	font: "VeraMono.ttf" "VeraMono";
+}
+
 collections
 {
    group

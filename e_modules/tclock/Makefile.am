@@ -5,14 +5,13 @@ SUBDIRS = po
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
 -id $(top_srcdir) \
--fd $(top_srcdir)/fonts
+-fd $(top_srcdir)
 
 filesdir = $(datadir)
 files_DATA = module_icon.png \
-			module.eap \
-			$(wildcard tclock.ed?) \
-    			$(wildcard fonts/*.ttf)
-			
+	     module.eap \
+	     tclock.edj
+
 EXTRA_DIST = $(files_DATA) e_modules-tclock.spec
 CONFIG_CLEAN_FILES = e_modules-tclock.spec tclock.edj
 
