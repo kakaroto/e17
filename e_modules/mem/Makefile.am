@@ -17,7 +17,6 @@ files_DATA = module_icon.png \
 EXTRA_DIST= e_modules-mem.spec \
 			$(files_DATA) \
 			mem.edc \
-			autogen.sh \
 			real_00.png \
 			real_01.png \
 			real_02.png \
