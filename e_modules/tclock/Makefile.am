@@ -12,7 +12,11 @@ files_DATA = module_icon.png \
 	     module.eap \
 	     tclock.edj
 
-EXTRA_DIST = $(files_DATA) e_modules-tclock.spec
+EXTRA_DIST = $(files_DATA) \
+			e_modules-tclock.spec \
+			tclock.edc \
+			VeraMono.ttf
+
 CONFIG_CLEAN_FILES = e_modules-tclock.spec tclock.edj
 
 # the module .so file
