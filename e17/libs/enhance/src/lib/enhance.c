@@ -576,12 +576,30 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	PROPERTY_INT;
 	etk_object_properties_set(ETK_OBJECT(wid->wid), "width_request", value, NULL);
      }     
+
+   else if(!strcmp(name, "default_width"))
+     {
+	IF_PARENT_CLASS("GtkWindow")
+          {
+	     PROPERTY_INT;
+	     etk_window_resize(ETK_WINDOW(wid->wid),  value, ETK_WINDOW(wid->wid)->height);
+          }
+     }
+   
+   else if(!strcmp(name, "default_height"))
+     {
+	IF_PARENT_CLASS("GtkWindow")
+          {
+	     PROPERTY_INT;
+	     etk_window_resize(ETK_WINDOW(wid->wid), ETK_WINDOW(wid->wid)->width, value);
+          }
+     }     
    
    else if(!strcmp(name, "stock"))
      {
 	Etk_Stock_Id id;
 	PROPERTY_STR;
-
+	
 	_en_stock_items_hash_init();      
 	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
 	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", (Etk_Stock_Id)id, NULL);
