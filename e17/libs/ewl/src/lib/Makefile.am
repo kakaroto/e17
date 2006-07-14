@@ -48,6 +48,7 @@ EWLHEADERS = \
 	ewl_iconbox.h \
 	ewl_image.h \
 	ewl_imenu.h \
+	ewl_list.h \
 	ewl_macros.h \
 	ewl_media.h \
 	ewl_menu.h \
@@ -116,6 +117,7 @@ EWLSOURCES= \
 	ewl_icon.c \
 	ewl_iconbox.c \
 	ewl_image.c \
+	ewl_list.c \
 	ewl_media.c \
 	ewl_imenu.c \
 	ewl_menu.c \

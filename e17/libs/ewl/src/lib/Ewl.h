@@ -334,6 +334,7 @@ extern"C" {
 
 #include <ewl_tree.h>
 #include <ewl_tree2.h>
+#include <ewl_list.h>
 
 #ifdef __cplusplus
 }
