@@ -37,10 +37,8 @@ module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
-uptime.edj: Makefile uptime.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 $(top_srcdir)/uptime.edc \
-	 $(top_builddir)/uptime.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	 rm -rf *.edj *~
