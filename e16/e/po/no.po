@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-21 23:40+0200\n"
+"POT-Creation-Date: 2006-07-11 20:22+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -182,7 +182,7 @@ msgid ""
 msgstr ""
 
 #: src/actions.c:322 src/dialog.c:876 src/dialog.c:2066 src/dialog.c:2093
-#: src/events.c:78 src/handlers.c:190 src/sound.c:308
+#: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Ok"
 
@@ -1159,7 +1159,7 @@ msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
 msgid "  Select the group to break  "
 msgstr " Velg gruppa som skal brytes opp "
 
-#: src/handlers.c:64
+#: src/handlers.c:66
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1180,7 +1180,7 @@ msgstr ""
 "eller kompiler opp Enlightenment selv.\n"
 "Tilsvarende gjelder for alle støtte bibliotekene Enlightenment trenger.\n"
 
-#: src/handlers.c:78
+#: src/handlers.c:80
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1204,7 +1204,7 @@ msgstr ""
 "finne hvor programmet stoppet/døde og kan sende en verdifull\n"
 "bug-report med backtrace informasjon, variable verdier etc.\n"
 
-#: src/handlers.c:97
+#: src/handlers.c:99
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1229,7 +1229,7 @@ msgstr ""
 "programmet stoppet/døde og kan sende en verdifull\n"
 "bug-report med backtrace informasjon, variable verdier etc.\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:115
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1242,11 +1242,11 @@ msgstr ""
 "Det foreslås at du sjekker din maskinvare og OS installsjon.\n"
 "Det er uhyre uvanlig med med bussfeil på feilfri maskinevare.\n"
 
-#: src/handlers.c:189
+#: src/handlers.c:193
 msgid "Another Window Manager is already running"
 msgstr "En annen vindussjef kjører allerede"
 
-#: src/handlers.c:191
+#: src/handlers.c:195
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"

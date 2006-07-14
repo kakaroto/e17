@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-21 23:40+0200\n"
+"POT-Creation-Date: 2006-07-11 20:22+0200\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -182,7 +182,7 @@ msgid ""
 msgstr ""
 
 #: src/actions.c:322 src/dialog.c:876 src/dialog.c:2066 src/dialog.c:2093
-#: src/events.c:78 src/handlers.c:190 src/sound.c:308
+#: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Ok"
 
@@ -1162,7 +1162,7 @@ msgstr "  Välj den grupp som fönstret skall tas bort ifrån.  "
 msgid "  Select the group to break  "
 msgstr "  Välj den grupp som skall brytas upp  "
 
-#: src/handlers.c:64
+#: src/handlers.c:66
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1182,7 +1182,7 @@ msgstr ""
 "för ditt system, eller kompilera om Enlightenment och\n"
 "eventuella bibliotek som Enlightenment är beroende av.\n"
 
-#: src/handlers.c:78
+#: src/handlers.c:80
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1207,7 +1207,7 @@ msgstr ""
 "buggrapport som möjligt med info om bakåtspårnings data och variabel\n"
 "dumpar etc.\n"
 
-#: src/handlers.c:97
+#: src/handlers.c:99
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1232,7 +1232,7 @@ msgstr ""
 "buggrapport som möjligt med info om bakåtspårnings data och variabel\n"
 "dumpar etc.\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:115
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1246,11 +1246,11 @@ msgstr ""
 "och OS installation. Det är mycket ovanligt med bussfel på\n"
 "fungerande hårdvara.\n"
 
-#: src/handlers.c:189
+#: src/handlers.c:193
 msgid "Another Window Manager is already running"
 msgstr "En annan fönsterhanterare körs redan"
 
-#: src/handlers.c:191
+#: src/handlers.c:195
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"

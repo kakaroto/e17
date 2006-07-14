@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-21 23:40+0200\n"
+"POT-Creation-Date: 2006-07-11 20:22+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -200,7 +200,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/actions.c:322 src/dialog.c:876 src/dialog.c:2066 src/dialog.c:2093
-#: src/events.c:78 src/handlers.c:190 src/sound.c:308
+#: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Uredu"
 
@@ -1177,7 +1177,7 @@ msgstr "   Oznaīite grupu iz koje ŵelite pomjeriti prozor.  "
 msgid "  Select the group to break  "
 msgstr "  Oznaīite grupu za slamanje  "
 
-#: src/handlers.c:64
+#: src/handlers.c:66
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1198,7 +1198,7 @@ msgstr ""
 "re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
 
-#: src/handlers.c:78
+#: src/handlers.c:80
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1222,7 +1222,7 @@ msgstr ""
 "send in a useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 
-#: src/handlers.c:97
+#: src/handlers.c:99
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1246,7 +1246,7 @@ msgstr ""
 "useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:115
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1260,11 +1260,11 @@ msgstr ""
 "Nije uop�e uobiīajno da se Bus greŷke javljaju na upotrebljivom\n"
 "hardveru.\n"
 
-#: src/handlers.c:189
+#: src/handlers.c:193
 msgid "Another Window Manager is already running"
 msgstr "Neki drugi upravitelj prozora je ve� pokrenut"
 
-#: src/handlers.c:191
+#: src/handlers.c:195
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"

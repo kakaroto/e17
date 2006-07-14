@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-21 23:40+0200\n"
+"POT-Creation-Date: 2006-07-11 20:22+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -195,7 +195,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/actions.c:322 src/dialog.c:876 src/dialog.c:2066 src/dialog.c:2093
-#: src/events.c:78 src/handlers.c:190 src/sound.c:308
+#: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Да"
 
@@ -1158,7 +1158,7 @@ msgstr "   Изберете групата, от която да махнете прозореца.  "
 msgid "  Select the group to break  "
 msgstr "  Изберете групата, която да разтрогнете  "
 
-#: src/handlers.c:64
+#: src/handlers.c:66
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1178,7 +1178,7 @@ msgstr ""
 "за вашата система, или прекомпилирайте Е и по възможност\n"
 "всички поддържащи библиотеки които сте взели във двоичен формат.\n"
 
-#: src/handlers.c:78
+#: src/handlers.c:80
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1204,7 +1204,7 @@ msgstr ""
 "кога е умрял и да изпратите полезна информация с информация за  "
 "проследяването.\n"
 
-#: src/handlers.c:97
+#: src/handlers.c:99
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1230,7 +1230,7 @@ msgstr ""
 "кога е умрял и да изпратите полезна информация с информация за  "
 "проследяването.\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:115
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1244,11 +1244,11 @@ msgstr ""
 "Прекалено странно е Е да причини Bus грешка на работещо\n"
 "оборудване.\n"
 
-#: src/handlers.c:189
+#: src/handlers.c:193
 msgid "Another Window Manager is already running"
 msgstr "Друг Администратор на Прозорци вече работи"
 
-#: src/handlers.c:191
+#: src/handlers.c:195
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"

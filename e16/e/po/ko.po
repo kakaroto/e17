@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-21 23:40+0200\n"
+"POT-Creation-Date: 2006-07-11 20:22+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -199,7 +199,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/actions.c:322 src/dialog.c:876 src/dialog.c:2066 src/dialog.c:2093
-#: src/events.c:78 src/handlers.c:190 src/sound.c:308
+#: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "확인"
 
@@ -1173,7 +1173,7 @@ msgstr "   창을 삭제할 그룹을 선택하십시오.   "
 msgid "  Select the group to break  "
 msgstr "  없앨 그룹을 선택하십시오  "
 
-#: src/handlers.c:64
+#: src/handlers.c:66
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1194,7 +1194,7 @@ msgstr ""
 "인라이튼먼트와 인라이튼먼트를 실행하는 데\n"
 "필요한 라이브러리를 다시 컴파일하시기 바랍니다.\n"
 
-#: src/handlers.c:78
+#: src/handlers.c:80
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1217,7 +1217,7 @@ msgstr ""
 "튼먼트를 다시 실행하신 후 어디에서 죽는 지를 백트레이스\n"
 "하셔서 백트레이스와 변수들의 값에 대한 정보를 보내주십시오.\n"
 
-#: src/handlers.c:97
+#: src/handlers.c:99
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1240,7 +1240,7 @@ msgstr ""
 "튼먼트를 다시 실행하신 후 어디에서 죽는 지를 백트레이스\n"
 "하셔서 백트레이스와 변수들의 값에 대한 정보를 보내주십시오.\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:115
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1254,11 +1254,11 @@ msgstr ""
 "동작중인 하드웨어에서 버스오류가 생기는 것은\n"
 "일반적인 일은 아닙니다.\n"
 
-#: src/handlers.c:189
+#: src/handlers.c:193
 msgid "Another Window Manager is already running"
 msgstr "다른 창 관리자기 이미 수행중입니다"
 
-#: src/handlers.c:191
+#: src/handlers.c:195
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-21 23:40+0200\n"
+"POT-Creation-Date: 2006-07-11 20:22+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -181,7 +181,7 @@ msgid ""
 msgstr ""
 
 #: src/actions.c:322 src/dialog.c:876 src/dialog.c:2066 src/dialog.c:2093
-#: src/events.c:78 src/handlers.c:190 src/sound.c:308
+#: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "OK"
 
@@ -1164,7 +1164,7 @@ msgstr "   Wybierz grupê, z której mam usun±æ okno.  "
 msgid "  Select the group to break  "
 msgstr "  Wybierz grupê, któr± mam rozbiæ  "
 
-#: src/handlers.c:64
+#: src/handlers.c:66
 #, fuzzy, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1185,7 +1185,7 @@ msgstr ""
 "i byæ mo¿e równie¿ wszystke biblioteki pomocnicze, które\n"
 "zainstalowano w formie binarnej\n"
 
-#: src/handlers.c:78
+#: src/handlers.c:80
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1209,7 +1209,7 @@ msgstr ""
 "gdzie powstaje b³±d i wy¶lij nam u¿yteczny 'Bug Report' z informacj±\n"
 "¶ledz±c± i zrzutem warto¶ci zmiennych\n"
 
-#: src/handlers.c:97
+#: src/handlers.c:99
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1233,7 +1233,7 @@ msgstr ""
 "gdzie powstaje b³±d i wy¶lij nam u¿yteczny 'Bug Report' z informacj±\n"
 "¶ledz±c± i zrzutem warto¶ci zmiennych\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:115
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1247,11 +1247,11 @@ msgstr ""
 "Spowodowanie b³êdu szyny jest bardzo ma³o prawodpodobne przy\n"
 "dobrze dzia³aj±cym sprzêcie\n"
 
-#: src/handlers.c:189
+#: src/handlers.c:193
 msgid "Another Window Manager is already running"
 msgstr "Inny Menad¼er Okien jest ju¿ uruchomiony"
 
-#: src/handlers.c:191
+#: src/handlers.c:195
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"

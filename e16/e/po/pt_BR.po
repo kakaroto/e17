@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-21 23:40+0200\n"
+"POT-Creation-Date: 2006-07-11 20:22+0200\n"
 "PO-Revision-Date: 2000-02-24 16:22+0100\n"
 "Last-Translator: Roberto S. Teixeira <robteix@zaz.com.br>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -180,7 +180,7 @@ msgid ""
 msgstr ""
 
 #: src/actions.c:322 src/dialog.c:876 src/dialog.c:2066 src/dialog.c:2093
-#: src/events.c:78 src/handlers.c:190 src/sound.c:308
+#: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "OK"
 
@@ -1159,7 +1159,7 @@ msgstr "   Selecione o grupo do qual esta janela será removida.  "
 msgid "  Select the group to break  "
 msgstr "  Selecione o grupo a dividir "
 
-#: src/handlers.c:64
+#: src/handlers.c:66
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1180,7 +1180,7 @@ msgstr ""
 "possivelmente, qualquer biblioteca de apoio que você tenha\n"
 "em formato binário para executar o Enlightenment.\n"
 
-#: src/handlers.c:78
+#: src/handlers.c:80
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1204,7 +1204,7 @@ msgstr ""
 "possa encontrar o ponto onde ele morreu e enviar um relatório de\n"
 "bug com informações de backtracing e dumps de variáveis, etc...\n"
 
-#: src/handlers.c:97
+#: src/handlers.c:99
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1228,7 +1228,7 @@ msgstr ""
 "possa encontrar o ponto onde ele morreu e enviar um relatório de\n"
 "bug com informações de backtracing e dumps de variáveis, etc...\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:115
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1242,11 +1242,11 @@ msgstr ""
 "operacional. É muito pouco comum causar Erros de Barramento em\n"
 "hardware operacional.\n"
 
-#: src/handlers.c:189
+#: src/handlers.c:193
 msgid "Another Window Manager is already running"
 msgstr "Um outro Gerenciador de Janelas já está sendo executado"
 
-#: src/handlers.c:191
+#: src/handlers.c:195
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"

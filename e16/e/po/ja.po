@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-21 23:40+0200\n"
+"POT-Creation-Date: 2006-07-11 20:22+0200\n"
 "PO-Revision-Date: 2005-12-20 10:26+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -189,7 +189,7 @@ msgid ""
 msgstr ""
 
 #: src/actions.c:322 src/dialog.c:876 src/dialog.c:2066 src/dialog.c:2093
-#: src/events.c:78 src/handlers.c:190 src/sound.c:308
+#: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "了解"
 
@@ -1160,7 +1160,7 @@ msgstr "  削除するウィンドウが属しているグループを選択してください。"
 msgid "  Select the group to break  "
 msgstr " 破棄するグループを選択してください。 "
 
-#: src/handlers.c:64
+#: src/handlers.c:66
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1181,7 +1181,7 @@ msgstr ""
 "ためにバイナリフォーマットで入手したサポートライブラリも再コンパイルが必要\n"
 "になる場合があります。\n"
 
-#: src/handlers.c:78
+#: src/handlers.c:80
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1205,7 +1205,7 @@ msgstr ""
 "それから、バックトレース情報や変数ダンプなどを添付した詳細なバグ報告\n"
 "にして送付して下さい。\n"
 
-#: src/handlers.c:97
+#: src/handlers.c:99
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1229,7 +1229,7 @@ msgstr ""
 "ます。それから、バックトレース情報や変数ダンプなどを添付した詳細な\n"
 "バグ報告にして送付して下さい。\n"
 
-#: src/handlers.c:113
+#: src/handlers.c:115
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1242,11 +1242,11 @@ msgstr ""
 "お使いのハードウェアと OS のインストール状況を確認した方がいいと思います。\n"
 "正常なハードウェアでバスエラーが起きることはめったにありません。\n"
 
-#: src/handlers.c:189
+#: src/handlers.c:193
 msgid "Another Window Manager is already running"
 msgstr "他のウィンドウマネージャがすでに稼働中です"
 
-#: src/handlers.c:191
+#: src/handlers.c:195
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
