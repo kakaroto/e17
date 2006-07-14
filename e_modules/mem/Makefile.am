@@ -39,7 +39,8 @@ EXTRA_DIST= e_modules-mem.spec \
 			swap_07.png \
 			swap_08.png \
 			swap_09.png \
-			swap_10.png
+			swap_10.png \
+			DejaVuSansMono.ttf
 
 # the module .so file
 INCLUDES = -I. \
