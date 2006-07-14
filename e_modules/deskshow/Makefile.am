@@ -8,7 +8,7 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = module_icon.png module.eap $(wildcard e17*.png)
+files_DATA = module_icon.png module.eap deskshow.edj $(wildcard e17*.png)
 
 EXTRA_DIST = $(files_DATA) deskshow.edc VeraBd.ttf
 
@@ -30,7 +30,7 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 deskshow.edj: Makefile deskshow.edc
 	 $(EDJE_CC) $(EDJE_FLAGS) \
 	 $(top_srcdir)/deskshow.edc \
-	 $(top_builddir)deskshow.edj
+	 $(top_builddir)/deskshow.edj
 
 clean-local:
 	 rm -rf *.edj *~
