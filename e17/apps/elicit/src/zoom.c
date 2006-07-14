@@ -192,6 +192,12 @@ _smart_del(Evas_Object *o)
   Elicit_Zoom *z;
 
   z = evas_object_smart_data_get(o);
+
+  if (z->shot) evas_object_del(z->shot);
+  if (z->grid) evas_object_del(z->grid);
+
+  free(z);
+  evas_object_smart_data_set(o, NULL);
 }
 
 static void
