@@ -37,8 +37,10 @@ module_la_LIBADD       = @e_libs@
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
-%.edj:  %.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+weather.edj: Makefile weather.edc
+	 $(EDJE_CC) $(EDJE_FLAGS) \
+	 weather.edc \
+	 weather.edj
 
 clean-local:
 	 rm -rf *.edj *~
