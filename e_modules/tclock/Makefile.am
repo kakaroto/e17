@@ -36,3 +36,6 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/tclock.edj
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+
+clean-local:
+	 rm -rf *.edj *~
