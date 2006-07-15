@@ -37,10 +37,8 @@ module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/deskshow.edj
 
-deskshow.edj: Makefile deskshow.edc
-	 $(EDJE_CC) $(EDJE_FLAGS) \
-	 deskshow.edc \
-	 deskshow.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	 rm -rf *.edj *~
