@@ -11,6 +11,7 @@
 #include "const-c.inc"
 
 typedef struct _Callback_Signal_Data Callback_Signal_Data;
+typedef struct _Notification_Callback_Data Notification_Callback_Data;
 typedef struct _Callback_Tree_Compare_Data Callback_Tree_Compare_Data;
 typedef struct _Callback_Timer_Data Callback_Timer_Data;
 
@@ -21,6 +22,15 @@ struct _Callback_Signal_Data
    Etk_Object *object;        /* object signal is connected to */
    SV         *perl_callback; /* perl callback to be called */
    void       *perl_data;     /* perl data to pass to the perl callback */
+};
+
+/* Carries info for the notification callback */
+struct _Notification_Callback_Data
+{
+   char		*property_name;
+   Etk_Object	*object;
+   SV		*perl_callback;
+   void		*perl_data;
 };
 
 /* Carries info for tree (column) compare callback */
@@ -37,6 +47,21 @@ struct _Callback_Timer_Data
    SV *perl_callback; /* the perl callback to call per timer tick */
    SV *perl_data;     /* data to pass to the perl callback */
 };
+
+static void
+notification_callback(Etk_Object * object, const char * property_name, void * data)
+{
+   dSP;
+   Notification_Callback_Data * ncb = NULL;
+
+   ncb = data;
+
+   PUSHMARK(SP);
+   XPUSHs(sv_2mortal(newSVsv(ncb->perl_data)));
+   PUTBACK;
+
+   call_sv(ncb->perl_callback, G_DISCARD);
+}
 
 static void
 callback_VOID__VOID(Etk_Object *object, void *data)
@@ -230,6 +255,55 @@ callback_BOOL__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
       
    /* Call the Perl sub */
    call_sv(cbd->perl_callback, G_DISCARD);
+}
+
+static void
+__etk_signal_connect_full(char *signal_name, Etk_Widget *object, SV *callback, SV *data, Etk_Bool swapped, Etk_Bool after)
+{
+	dSP;
+
+	Etk_Object *	obj;
+	Callback_Signal_Data *cbd = NULL;
+	Etk_Signal *sig = NULL;
+	Etk_Marshaller marsh;
+
+	obj = ETK_OBJECT(object);
+	
+	ENTER;
+	SAVETMPS;
+
+	cbd = calloc(1, sizeof(Callback_Signal_Data));
+	cbd->signal_name = strdup(signal_name);
+	cbd->object = ETK_OBJECT(object);
+	cbd->perl_data = newSVsv(data);
+	cbd->perl_callback = newSVsv(callback);	
+	
+	sig = etk_signal_lookup(signal_name, ETK_OBJECT(object)->type);
+	if(!sig) printf("CANT GET SIG!\n");
+	marsh = etk_signal_marshaller_get(sig);
+	
+	if(marsh == etk_marshaller_VOID__VOID)
+	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_VOID__VOID), cbd, swapped, after);
+	else if(marsh == etk_marshaller_VOID__INT)
+	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_VOID__INT), cbd, swapped, after);
+	else if(marsh == etk_marshaller_VOID__DOUBLE)
+	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_VOID__DOUBLE), cbd, swapped, after);
+	else if(marsh == etk_marshaller_VOID__POINTER)
+	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_VOID__POINTER), cbd, swapped, after);
+	else if(marsh == etk_marshaller_VOID__INT_POINTER)
+	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_VOID__INT_POINTER), cbd, swapped, after);
+	else if(marsh == etk_marshaller_BOOL__VOID)
+	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_BOOL__VOID), cbd, swapped, after);
+	else if(marsh == etk_marshaller_BOOL__DOUBLE)
+	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_BOOL__DOUBLE), cbd, swapped, after);
+	else if(marsh == etk_marshaller_BOOL__POINTER_POINTER)
+	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_BOOL__POINTER_POINTER), cbd, swapped, after);
+	else
+	etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_VOID__VOID), cbd, swapped, after);
+
+	PUTBACK;
+	FREETMPS;
+	LEAVE;
 }
 
 int
@@ -557,30 +631,6 @@ MODULE = Etk		PACKAGE = Etk
 INCLUDE: const-xs.inc
 
 void
-etk_accumulator_bool_and(return_value, value_to_accum, data)
-	void *	return_value
-	 void *	value_to_accum
-	void *	data
-
-void
-etk_accumulator_bool_or(return_value, value_to_accum, data)
-	void *	return_value
-	 void *	value_to_accum
-	void *	data
-
-void
-etk_accumulator_stopping_bool_and(return_value, value_to_accum, data)
-	void *	return_value
-	 void *	value_to_accum
-	void *	data
-
-void
-etk_accumulator_stopping_bool_or(return_value, value_to_accum, data)
-	void *	return_value
-	 void *	value_to_accum
-	void *	data
-
-void
 etk_alignment_get(alignment)
 	Etk_Widget *	alignment
       PPCODE:
@@ -614,29 +664,6 @@ etk_alignment_set(alignment, xalign, yalign, xscale, yscale)
 	CODE:
 	etk_alignment_set(ETK_ALIGNMENT(alignment), xalign, yalign, xscale, yscale);
 
-Etk_Type *
-etk_alignment_type_get()
-
-Evas_List *
-etk_argument_extra_find(key)
-	char *	key
-
-void
-etk_argument_help_show(args)
-	Etk_Argument *	args
-
-Etk_Bool
-etk_argument_is_set(args, long_name, short_name)
-	Etk_Argument *	args
-	char *	long_name
-	char	short_name
-
-int
-etk_arguments_parse(args, argc, argv)
-	Etk_Argument *	args
-	int	argc
-	char **	argv
-
 Etk_Widget *
 etk_bin_child_get(bin)
 	Etk_Widget *	bin
@@ -652,9 +679,6 @@ etk_bin_child_set(bin, child)
 	CODE:
 	etk_bin_child_set(ETK_BIN(bin), child);
 
-Etk_Type *
-etk_bin_type_get()
-       
 void
 etk_box_child_packing_get(box, child)
 	Etk_Widget *	box
@@ -734,9 +758,6 @@ etk_box_spacing_set(box, spacing)
 	CODE:
 	etk_box_spacing_set(ETK_BOX(box), spacing);
 
-Etk_Type *
-etk_box_type_get()
-
 void
 etk_button_alignment_get(button)
 	Etk_Widget *	button
@@ -763,13 +784,13 @@ etk_button_click(button)
 	CODE:
 	etk_button_click(ETK_BUTTON(button));
 
-Etk_Image *
+Etk_Widget *
 etk_button_image_get(button)
 	Etk_Widget *	button
 	CODE:
 	Etk_Image * var;
 	var = etk_button_image_get(ETK_BUTTON(button));
-	RETVAL = var;
+	RETVAL = ETK_WIDGET(var);
 	OUTPUT:
 	RETVAL
 
@@ -825,73 +846,6 @@ etk_button_set_from_stock(button, stock_id)
 	CODE:
 	etk_button_set_from_stock(ETK_BUTTON(button), stock_id);
 
-Etk_Type *
-etk_button_type_get()
-
-void
-etk_cache_edje_object_add(edje_object)
-	Evas_Object *	edje_object
-
-void
-etk_cache_edje_object_add_with_state(edje_object, state)
-	Evas_Object *	edje_object
-	int	state
-
-Evas_Object *
-etk_cache_edje_object_find(evas, filename, group)
-	Evas *	evas
-	char *	filename
-	char *	group
-
-Evas_Object *
-etk_cache_edje_object_find_with_state(evas, filename, group, state)
-	Evas *	evas
-	char *	filename
-	char *	group
-	int	state
-
-void
-etk_cache_edje_object_remove(edje_object)
-	Evas_Object *	edje_object
-
-int
-etk_cache_edje_object_size_get(evas)
-	Evas *	evas
-
-void
-etk_cache_edje_object_size_set(evas, size)
-	Evas *	evas
-	int	size
-
-void
-etk_cache_empty(evas)
-	Evas *	evas
-
-void
-etk_cache_image_object_add(image_object)
-	Evas_Object *	image_object
-
-Evas_Object *
-etk_cache_image_object_find(evas, filename)
-	Evas *	evas
-	char *	filename
-
-void
-etk_cache_image_object_remove(image_object)
-	Evas_Object *	image_object
-
-int
-etk_cache_image_object_size_get(evas)
-	Evas *	evas
-
-void
-etk_cache_image_object_size_set(evas, size)
-	Evas *	evas
-	int	size
-
-void
-etk_cache_shutdown()
-
 Etk_Widget *
 etk_canvas_new()
 
@@ -913,18 +867,12 @@ etk_canvas_object_remove(canvas, object)
 	CODE:
 	etk_canvas_object_remove(ETK_CANVAS(canvas), object);
 
-Etk_Type *
-etk_canvas_type_get()
-
 Etk_Widget *
 etk_check_button_new()
 
 Etk_Widget *
 etk_check_button_new_with_label(label)
 	char *	label
-
-Etk_Type *
-etk_check_button_type_get()
 
 void
 etk_clipboard_text_request(widget)
@@ -979,9 +927,6 @@ etk_colorpicker_mode_set(cp, mode)
 
 Etk_Widget *
 etk_colorpicker_new()
-
-Etk_Type *
-etk_colorpicker_type_get()
 
 Etk_Combobox_Item *
 etk_combobox_active_item_get(combobox)
@@ -1390,9 +1335,7 @@ int
 etk_combobox_item_height_get(combobox)
 	Etk_Widget *	combobox
 	CODE:
-	int var;
-	var = etk_combobox_item_height_get(ETK_COMBOBOX(combobox));
-	RETVAL = var;
+	RETVAL = etk_combobox_item_height_get(ETK_COMBOBOX(combobox));
 	OUTPUT:
 	RETVAL
 
@@ -1410,9 +1353,6 @@ etk_combobox_item_remove(combobox, item)
 	CODE:
 	etk_combobox_item_remove(ETK_COMBOBOX(combobox), item);
 
-Etk_Type *
-etk_combobox_item_type_get()
-
 Etk_Widget *
 etk_combobox_new()
 
@@ -1424,14 +1364,9 @@ etk_combobox_nth_item_get(combobox, index)
 	Etk_Widget *	combobox
 	int	index
 	CODE:
-	Etk_Combobox_Item * var;
-	var = etk_combobox_nth_item_get(ETK_COMBOBOX(combobox), index);
-	RETVAL = var;
+	RETVAL = etk_combobox_nth_item_get(ETK_COMBOBOX(combobox), index);
 	OUTPUT:
 	RETVAL
-
-Etk_Type *
-etk_combobox_type_get()
 
 void
 etk_container_add(container, widget)
@@ -1444,9 +1379,7 @@ int
 etk_container_border_width_get(container)
 	Etk_Widget *	container
 	CODE:
-	int var;
-	var = etk_container_border_width_get(ETK_CONTAINER(container));
-	RETVAL = var;
+	RETVAL = etk_container_border_width_get(ETK_CONTAINER(container));
 	OUTPUT:
 	RETVAL
 
@@ -1471,51 +1404,12 @@ etk_container_child_space_fill(child, child_space, hfill, vfill, xalign, yalign)
 	etk_container_child_space_fill(child, &sp, hfill, vfill, xalign, yalign);
 	
 
-Evas_List *
-etk_container_children_get(container)
-	Etk_Widget *	container
-	CODE:
-	Evas_List * var;
-	var = etk_container_children_get(ETK_CONTAINER(container));
-	RETVAL = var;
-	OUTPUT:
-	RETVAL
-
-void
-etk_container_for_each(container, for_each_cb)
-	Etk_Widget *	container
-	void ( * ) ( Etk_Widget * child ) for_each_cb
-	CODE:
-	etk_container_for_each(ETK_CONTAINER(container), for_each_cb);
-
-void
-etk_container_for_each_data(container, for_each_cb, data)
-	Etk_Widget *	container
-	void ( * ) ( Etk_Widget * child, void * data ) for_each_cb
-	void *	data
-	CODE:
-	etk_container_for_each_data(ETK_CONTAINER(container), for_each_cb, data);
-
-Etk_Bool
-etk_container_is_child(container, widget)
-	Etk_Widget *	container
-	Etk_Widget *	widget
-	CODE:
-	Etk_Bool var;
-	var = etk_container_is_child(ETK_CONTAINER(container), widget);
-	RETVAL = var;
-	OUTPUT:
-	RETVAL
-
 void
 etk_container_remove(container, widget)
 	Etk_Widget *	container
 	Etk_Widget *	widget
 	CODE:
 	etk_container_remove(ETK_CONTAINER(container), widget);
-
-Etk_Type *
-etk_container_type_get()
 
 Etk_Widget *
 etk_dialog_button_add(dialog, label, response_id)
@@ -1590,9 +1484,6 @@ etk_dialog_pack_widget_in_action_area(dialog, widget, expand, fill, padding, pac
 	CODE:
 	etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog), widget, expand, fill, padding, pack_at_end);
 
-Etk_Type *
-etk_dialog_type_get()
-
 Etk_Bool
 etk_dnd_init()
 
@@ -1607,9 +1498,10 @@ etk_drag_begin(drag)
 
 void
 etk_drag_data_set(drag, data, size)
-	Etk_Drag *	drag
-	void *	data
-	int	size
+	Etk_Widget *	drag
+	SV *	data
+	CODE:
+	etk_drag_data_set(ETK_DRAG(drag), newSVsv(data), sizeof(SV));
 
 Etk_Widget *
 etk_drag_new(widget)
@@ -1627,9 +1519,6 @@ etk_drag_parent_widget_set(drag, widget)
 	Etk_Widget *	widget
 	CODE:
 	etk_drag_parent_widget_set(ETK_DRAG(drag), widget);
-
-Etk_Type *
-etk_drag_type_get()
 
 void
 etk_drag_types_set(drag, types)
@@ -1711,9 +1600,7 @@ Etk_Bool
 etk_entry_password_get(entry)
 	Etk_Widget *	entry
 	CODE:
-	Etk_Bool var;
-	var = etk_entry_password_get(ETK_ENTRY(entry));
-	RETVAL = var;
+	RETVAL = etk_entry_password_get(ETK_ENTRY(entry));
 	OUTPUT:
 	RETVAL
 
@@ -1728,9 +1615,7 @@ const char *
 etk_entry_text_get(entry)
 	Etk_Widget *	entry
 	CODE:
-	const char * var;
-	var = etk_entry_text_get(ETK_ENTRY(entry));
-	RETVAL = var;
+	RETVAL = etk_entry_text_get(ETK_ENTRY(entry));
 	OUTPUT:
 	RETVAL
 
@@ -1740,9 +1625,6 @@ etk_entry_text_set(entry, text)
 	char *	text
 	CODE:
 	etk_entry_text_set(ETK_ENTRY(entry), text);
-
-Etk_Type *
-etk_entry_type_get()
 
 const char *
 etk_filechooser_widget_current_folder_get(filechooser_widget)
@@ -1831,9 +1713,6 @@ etk_filechooser_widget_show_hidden_set(filechooser_widget, show_hidden)
 	etk_filechooser_widget_show_hidden_set(ETK_FILECHOOSER_WIDGET(filechooser_widget), show_hidden);
 	
 
-Etk_Type *
-etk_filechooser_widget_type_get()
-
 const char *
 etk_frame_label_get(frame)
 	Etk_Widget *	frame
@@ -1855,22 +1734,13 @@ Etk_Widget *
 etk_frame_new(label)
 	char *	label
 
-Etk_Type *
-etk_frame_type_get()
-
 Etk_Widget *
 etk_hbox_new(homogeneous, spacing)
 	Etk_Bool	homogeneous
 	int	spacing
 
-Etk_Type *
-etk_hbox_type_get()
-
 Etk_Widget *
 etk_hpaned_new()
-
-Etk_Type *
-etk_hpaned_type_get()
 
 Etk_Widget *
 etk_hscrollbar_new(lower, upper, value, step_increment, page_increment, page_size)
@@ -1881,14 +1751,8 @@ etk_hscrollbar_new(lower, upper, value, step_increment, page_increment, page_siz
 	double	page_increment
 	double	page_size
 
-Etk_Type *
-etk_hscrollbar_type_get()
-
 Etk_Widget *
 etk_hseparator_new()
-
-Etk_Type *
-etk_hseparator_type_get()
 
 Etk_Widget *
 etk_hslider_new(lower, upper, value, step_increment, page_increment)
@@ -1898,9 +1762,6 @@ etk_hslider_new(lower, upper, value, step_increment, page_increment)
 	double	step_increment
 	double	page_increment
 
-Etk_Type *
-etk_hslider_type_get()
-
 Etk_Iconbox_Icon *
 etk_iconbox_append(iconbox, filename, edje_group, label)
 	Etk_Widget *	iconbox
@@ -1908,9 +1769,7 @@ etk_iconbox_append(iconbox, filename, edje_group, label)
 	char *	edje_group
 	char *	label
 	CODE:
-	Etk_Iconbox_Icon * var;
-	var = etk_iconbox_append(ETK_ICONBOX(iconbox), filename, edje_group, label);
-	RETVAL = var;
+	RETVAL = etk_iconbox_append(ETK_ICONBOX(iconbox), filename, edje_group, label);
 	OUTPUT:
 	RETVAL
 
@@ -1924,9 +1783,7 @@ Etk_Iconbox_Model *
 etk_iconbox_current_model_get(iconbox)
 	Etk_Widget *	iconbox
 	CODE:
-	Etk_Iconbox_Model * var;
-	var = etk_iconbox_current_model_get(ETK_ICONBOX(iconbox));
-	RETVAL = var;
+	RETVAL = etk_iconbox_current_model_get(ETK_ICONBOX(iconbox));
 	OUTPUT:
 	RETVAL
 
@@ -1951,12 +1808,6 @@ void
 etk_iconbox_icon_data_set(icon, data)
 	Etk_Iconbox_Icon *	icon
 	SV *	data
-
-void
-etk_iconbox_icon_data_set_full(icon, data, free_cb)
-	Etk_Iconbox_Icon *	icon
-	void *	data
-	void ( * ) ( void * data ) free_cb
 
 void
 etk_iconbox_icon_del(icon)
@@ -1990,9 +1841,7 @@ etk_iconbox_icon_get_at_xy(iconbox, x, y, over_cell, over_icon, over_label)
 	Etk_Bool	over_icon
 	Etk_Bool	over_label
 	CODE:
-	Etk_Iconbox_Icon * var;
-	var = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(iconbox), x, y, over_cell, over_icon, over_label);
-	RETVAL = var;
+	RETVAL = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(iconbox), x, y, over_cell, over_icon, over_label);
 	OUTPUT:
 	RETVAL
 
@@ -2114,9 +1963,7 @@ Etk_Iconbox_Model *
 etk_iconbox_model_new(iconbox)
 	Etk_Widget *	iconbox
 	CODE:
-	Etk_Iconbox_Model * var;
-	var = etk_iconbox_model_new(ETK_ICONBOX(iconbox));
-	RETVAL = var;
+	RETVAL = etk_iconbox_model_new(ETK_ICONBOX(iconbox));
 	OUTPUT:
 	RETVAL
 
@@ -2135,9 +1982,6 @@ etk_iconbox_thaw(iconbox)
 	CODE:
 	etk_iconbox_thaw(ETK_ICONBOX(iconbox));
 
-Etk_Type *
-etk_iconbox_type_get()
-
 void
 etk_iconbox_unselect_all(iconbox)
 	Etk_Widget *	iconbox
@@ -2154,18 +1998,19 @@ etk_image_copy(dest_image, src_image)
 void
 etk_image_edje_get(image, edje_filename, edje_group)
 	Etk_Widget *	image
-	char **	edje_filename
-	char **	edje_group
-	CODE:
-	etk_image_edje_get(ETK_IMAGE(image), edje_filename, edje_group);
+	PPCODE:
+	char *	edje_filename;
+	char *	edje_group;
+	etk_image_edje_get(ETK_IMAGE(image), &edje_filename, &edje_group);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSVpv(edje_filename, strlen(edje_filename))));
+	PUSHs(sv_2mortal(newSVpv(edje_group, strlen(edje_group))));
 
 const char *
 etk_image_file_get(image)
 	Etk_Widget *	image
 	CODE:
-	const char * var;
-	var = etk_image_file_get(ETK_IMAGE(image));
-	RETVAL = var;
+	RETVAL = etk_image_file_get(ETK_IMAGE(image));
 	OUTPUT:
 	RETVAL
 
@@ -2173,9 +2018,7 @@ Etk_Bool
 etk_image_keep_aspect_get(image)
 	Etk_Widget *	image
 	CODE:
-	Etk_Bool var;
-	var = etk_image_keep_aspect_get(ETK_IMAGE(image));
-	RETVAL = var;
+	RETVAL = etk_image_keep_aspect_get(ETK_IMAGE(image));
 	OUTPUT:
 	RETVAL
 
@@ -2229,10 +2072,13 @@ etk_image_set_from_stock(image, stock_id, stock_size)
 void
 etk_image_size_get(image, width, height)
 	Etk_Widget *	image
-	int *	width
-	int *	height
-	CODE:
-	etk_image_size_get(ETK_IMAGE(image), width, height);
+	PPCODE:
+	int 	width;
+	int 	height;
+	etk_image_size_get(ETK_IMAGE(image), &width, &height);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSViv(width)));
+	PUSHs(sv_2mortal(newSViv(height)));
 
 void
 etk_image_stock_get(image, stock_id, stock_size)
@@ -2242,18 +2088,8 @@ etk_image_stock_get(image, stock_id, stock_size)
 	CODE:
 	etk_image_stock_get(ETK_IMAGE(image), stock_id, stock_size);
 
-Etk_Type *
-etk_image_type_get()
-
 Etk_Bool
 etk_init()
-
-Etk_Bool
-Init()
-      CODE:
-        RETVAL = etk_init();
-      OUTPUT:
-        RETVAL	
 
 void
 etk_label_alignment_get(label)
@@ -2278,9 +2114,7 @@ const char *
 etk_label_get(label)
 	Etk_Widget *	label
 	CODE:
-	const char * var;
-	var = etk_label_get(ETK_LABEL(label));
-	RETVAL = var;
+	RETVAL = etk_label_get(ETK_LABEL(label));
 	OUTPUT:
 	RETVAL
 
@@ -2294,9 +2128,6 @@ etk_label_set(label, text)
 	char *	text
 	CODE:
 	etk_label_set(ETK_LABEL(label), text);
-
-Etk_Type *
-etk_label_type_get()
 
 void
 etk_main()
@@ -2345,9 +2176,6 @@ etk_main_toplevel_widgets_get()
 Etk_Widget *
 etk_menu_bar_new()
 
-Etk_Type *
-etk_menu_bar_type_get()
-
 void
 etk_menu_item_activate(menu_item)
 	Etk_Widget *	menu_item
@@ -2376,9 +2204,6 @@ Etk_Widget *
 etk_menu_item_check_new_with_label(label)
 	char *	label
 
-Etk_Type *
-etk_menu_item_check_type_get()
-
 void
 etk_menu_item_deselect(menu_item)
 	Etk_Widget *	menu_item
@@ -2403,16 +2228,11 @@ etk_menu_item_image_set(image_item, image)
 	CODE:
 	etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(image_item), ETK_IMAGE(image));
 
-Etk_Type *
-etk_menu_item_image_type_get()
-
 const char *
 etk_menu_item_label_get(menu_item)
 	Etk_Widget *	menu_item
 	CODE:
-	const char * var;
-	var = etk_menu_item_label_get(ETK_MENU_ITEM(menu_item));
-	RETVAL = var;
+	RETVAL = etk_menu_item_label_get(ETK_MENU_ITEM(menu_item));
 	OUTPUT:
 	RETVAL
 
@@ -2431,19 +2251,6 @@ etk_menu_item_new_from_stock(stock_id)
 Etk_Widget *
 etk_menu_item_new_with_label(label)
 	char *	label
-
-Evas_List **
-etk_menu_item_radio_group_get(radio_item)
-	Etk_Menu_Item_Radio *	radio_item
-
-void
-etk_menu_item_radio_group_set(radio_item, group)
-	Etk_Menu_Item_Radio *	radio_item
-	Evas_List **	group
-
-Etk_Widget *
-etk_menu_item_radio_new(group)
-	Evas_List **	group
 
 Etk_Widget *
 etk_menu_item_radio_new_from_widget(radio_item)
@@ -2470,9 +2277,6 @@ etk_menu_item_radio_new_with_label_from_widget(label, radio_item)
 	OUTPUT:
 	RETVAL
 
-Etk_Type *
-etk_menu_item_radio_type_get()
-
 void
 etk_menu_item_select(menu_item)
 	Etk_Widget *	menu_item
@@ -2481,9 +2285,6 @@ etk_menu_item_select(menu_item)
 
 Etk_Widget *
 etk_menu_item_separator_new()
-
-Etk_Type *
-etk_menu_item_separator_type_get()
 
 void
 etk_menu_item_set_from_stock(menu_item, stock_id)
@@ -2498,9 +2299,6 @@ etk_menu_item_submenu_set(menu_item, submenu)
 	Etk_Widget *	submenu
 	CODE:
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
-
-Etk_Type *
-etk_menu_item_type_get()
 
 Etk_Widget *
 etk_menu_new()
@@ -2592,12 +2390,6 @@ etk_menu_shell_remove(menu_shell, item)
 	etk_menu_shell_remove(ETK_MENU_SHELL(menu_shell), ETK_MENU_ITEM(item));
 	
 
-Etk_Type *
-etk_menu_shell_type_get()
-
-Etk_Type *
-etk_menu_type_get()
-
 Etk_Message_Dialog_Buttons
 etk_message_dialog_buttons_get(dialog)
 	Etk_Widget *	dialog
@@ -2612,14 +2404,6 @@ etk_message_dialog_buttons_set(dialog, buttons)
 	Etk_Message_Dialog_Buttons	buttons
 	CODE:
 	etk_message_dialog_buttons_set(ETK_MESSAGE_DIALOG(dialog), buttons);
-
-Etk_Message_Dialog_Type
-etk_message_dialog_message_type_get(dialog)
-	Etk_Message_Dialog *	dialog
-	CODE:
-	RETVAL = etk_message_dialog_message_type_get(ETK_MESSAGE_DIALOG(dialog));
-	OUTPUT:
-	RETVAL
 
 void
 etk_message_dialog_message_type_set(dialog, type)
@@ -2638,9 +2422,7 @@ const char *
 etk_message_dialog_text_get(dialog)
 	Etk_Widget *	dialog
 	CODE:
-	const char * var;
-	var = etk_message_dialog_text_get(ETK_MESSAGE_DIALOG(dialog));
-	RETVAL = var;
+	RETVAL = etk_message_dialog_text_get(ETK_MESSAGE_DIALOG(dialog));
 	OUTPUT:
 	RETVAL
 
@@ -2651,16 +2433,11 @@ etk_message_dialog_text_set(dialog, text)
 	CODE:
 	etk_message_dialog_text_set(ETK_MESSAGE_DIALOG(dialog), text);
 
-Etk_Type *
-etk_message_dialog_type_get()
-
 int
 etk_notebook_current_page_get(notebook)
 	Etk_Widget *	notebook
 	CODE:
-	int var;
-	var = etk_notebook_current_page_get(ETK_NOTEBOOK(notebook));
-	RETVAL = var;
+	RETVAL = etk_notebook_current_page_get(ETK_NOTEBOOK(notebook));
 	OUTPUT:
 	RETVAL
 
@@ -2678,9 +2455,7 @@ int
 etk_notebook_num_pages_get(notebook)
 	Etk_Widget *	notebook
 	CODE:
-	int var;
-	var = etk_notebook_num_pages_get(ETK_NOTEBOOK(notebook));
-	RETVAL = var;
+	RETVAL = etk_notebook_num_pages_get(ETK_NOTEBOOK(notebook));
 	OUTPUT:
 	RETVAL
 
@@ -2690,9 +2465,7 @@ etk_notebook_page_append(notebook, tab_label, page_child)
 	char *	tab_label
 	Etk_Widget *	page_child
 	CODE:
-	int var;
-	var = etk_notebook_page_append(ETK_NOTEBOOK(notebook), tab_label, page_child);
-	RETVAL = var;
+	RETVAL = etk_notebook_page_append(ETK_NOTEBOOK(notebook), tab_label, page_child);
 	OUTPUT:
 	RETVAL
 
@@ -2701,9 +2474,7 @@ etk_notebook_page_child_get(notebook, page_num)
 	Etk_Widget *	notebook
 	int	page_num
 	CODE:
-	Etk_Widget * var;
-	var = etk_notebook_page_child_get(ETK_NOTEBOOK(notebook), page_num);
-	RETVAL = var;
+	RETVAL = etk_notebook_page_child_get(ETK_NOTEBOOK(notebook), page_num);
 	OUTPUT:
 	RETVAL
 
@@ -2720,9 +2491,7 @@ etk_notebook_page_index_get(notebook, child)
 	Etk_Widget *	notebook
 	Etk_Widget *	child
 	CODE:
-	int var;
-	var = etk_notebook_page_index_get(ETK_NOTEBOOK(notebook), child);
-	RETVAL = var;
+	RETVAL = etk_notebook_page_index_get(ETK_NOTEBOOK(notebook), child);
 	OUTPUT:
 	RETVAL
 
@@ -2733,9 +2502,7 @@ etk_notebook_page_insert(notebook, tab_label, page_child, position)
 	Etk_Widget *	page_child
 	int	position
 	CODE:
-	int var;
-	var = etk_notebook_page_insert(ETK_NOTEBOOK(notebook), tab_label, page_child, position);
-	RETVAL = var;
+	RETVAL = etk_notebook_page_insert(ETK_NOTEBOOK(notebook), tab_label, page_child, position);
 	OUTPUT:
 	RETVAL
 
@@ -2743,9 +2510,7 @@ int
 etk_notebook_page_next(notebook)
 	Etk_Widget *	notebook
 	CODE:
-	int var;
-	var = etk_notebook_page_next(ETK_NOTEBOOK(notebook));
-	RETVAL = var;
+	RETVAL = etk_notebook_page_next(ETK_NOTEBOOK(notebook));
 	OUTPUT:
 	RETVAL
 
@@ -2755,9 +2520,7 @@ etk_notebook_page_prepend(notebook, tab_label, page_child)
 	char *	tab_label
 	Etk_Widget *	page_child
 	CODE:
-	int var;
-	var = etk_notebook_page_prepend(ETK_NOTEBOOK(notebook), tab_label, page_child);
-	RETVAL = var;
+	RETVAL = etk_notebook_page_prepend(ETK_NOTEBOOK(notebook), tab_label, page_child);
 	OUTPUT:
 	RETVAL
 
@@ -2765,9 +2528,7 @@ int
 etk_notebook_page_prev(notebook)
 	Etk_Widget *	notebook
 	CODE:
-	int var;
-	var = etk_notebook_page_prev(ETK_NOTEBOOK(notebook));
-	RETVAL = var;
+	RETVAL = etk_notebook_page_prev(ETK_NOTEBOOK(notebook));
 	OUTPUT:
 	RETVAL
 
@@ -2783,9 +2544,7 @@ etk_notebook_page_tab_label_get(notebook, page_num)
 	Etk_Widget *	notebook
 	int	page_num
 	CODE:
-	const char * var;
-	var = etk_notebook_page_tab_label_get(ETK_NOTEBOOK(notebook), page_num);
-	RETVAL = var;
+	RETVAL = etk_notebook_page_tab_label_get(ETK_NOTEBOOK(notebook), page_num);
 	OUTPUT:
 	RETVAL
 
@@ -2802,9 +2561,7 @@ etk_notebook_page_tab_widget_get(notebook, page_num)
 	Etk_Widget *	notebook
 	int	page_num
 	CODE:
-	Etk_Widget * var;
-	var = etk_notebook_page_tab_widget_get(ETK_NOTEBOOK(notebook), page_num);
-	RETVAL = var;
+	RETVAL = etk_notebook_page_tab_widget_get(ETK_NOTEBOOK(notebook), page_num);
 	OUTPUT:
 	RETVAL
 
@@ -2816,119 +2573,60 @@ etk_notebook_page_tab_widget_set(notebook, page_num, tab_widget)
 	CODE:
 	etk_notebook_page_tab_widget_set(ETK_NOTEBOOK(notebook), page_num, tab_widget);
 
-Etk_Type *
-etk_notebook_type_get()
-
-Etk_Object *
-etk_object_check_cast(object, type)
-	Etk_Object *	object
-	Etk_Type *	type
-
 SV *
 etk_object_data_get(object, key)
-	Etk_Object *	object
+	Etk_Widget *	object
 	char *	key
+	CODE:
+	RETVAL = etk_object_data_get(ETK_OBJECT(object), key);
+	OUTPUT:
+	RETVAL
 
 void
 etk_object_data_set(object, key, value)
-	Etk_Object *	object
+	Etk_Widget *	object
 	char *	key
 	SV *	value
-
-void
-etk_object_data_set_full(object, key, value, free_cb)
-	Etk_Object *	object
-	char *	key
-	void *	value
-	void ( * ) ( void * data ) free_cb
-
-void
-etk_object_destroy(object)
-	Etk_Object *	object
-
-void
-etk_object_destroy_all_objects()
-
-Etk_Object *
-etk_object_new(object_type, first_property, ...)
-	Etk_Type *	object_type
-	char *	first_property
+	CODE:
+	etk_object_data_set(ETK_OBJECT(object), key, value);
 
 void
 etk_object_notification_callback_add(object, property_name, callback, data)
-	Etk_Object *	object
+	Etk_Widget *	object
 	char *	property_name
-	void ( * ) ( Etk_Object * object, char * property_name, void * data ) callback
-	void *	data
+	SV *	callback
+	SV *	data
+
+	CODE:
+	Notification_Callback_Data *ncb = NULL;
+
+	ncb = calloc(1, sizeof(Notification_Callback_Data));
+	ncb->property_name = strdup(property_name);
+	ncb->object = ETK_OBJECT(object);
+	ncb->perl_data = newSVsv(data);
+	ncb->perl_callback = newSVsv(callback);
+
+	etk_object_notification_callback_add(ETK_OBJECT(object), property_name, notification_callback, ncb);
 
 void
 etk_object_notification_callback_remove(object, property_name, callback)
-	Etk_Object *	object
+	Etk_Widget *	object
 	char *	property_name
-	void ( * ) ( Etk_Object * object, char * property_name, void * data ) callback
+	CODE:
+	etk_object_notification_callback_remove(ETK_OBJECT(object), property_name, notification_callback);
 
 void
 etk_object_notify(object, property_name)
-	Etk_Object *	object
+	Etk_Widget *	object
 	char *	property_name
-
-Etk_Type *
-etk_object_object_type_get(object)
-	Etk_Object *	object
-
-void
-etk_object_properties_get(object, first_property, ...)
-	Etk_Object *	object
-	char *	first_property
-
-void
-etk_object_properties_set(object, first_property, ...)
-	Etk_Object *	object
-	char *	first_property
-
-void
-etk_object_property_reset(object, property_name)
-	Etk_Object *	object
-	char *	property_name
-
-void
-etk_object_signal_callback_add(object, signal_callback, after)
-	Etk_Object *	object
-	Etk_Signal_Callback *	signal_callback
-	Etk_Bool	after
-
-void
-etk_object_signal_callback_remove(object, signal_callback)
-	Etk_Object *	object
-	Etk_Signal_Callback *	signal_callback
-
-void
-etk_object_signal_callbacks_get(object, signal, callbacks, after)
-	Etk_Object *	object
-	Etk_Signal *	signal
-	Evas_List **	callbacks
-	Etk_Bool	after
-
-Etk_Type *
-etk_object_type_get()
-
-void
-etk_object_weak_pointer_add(object, pointer_location)
-	Etk_Object *	object
-	void **	pointer_location
-
-void
-etk_object_weak_pointer_remove(object, pointer_location)
-	Etk_Object *	object
-	void **	pointer_location
+	CODE:
+	etk_object_notify(ETK_OBJECT(object), property_name);
 
 Etk_Widget *
 etk_paned_child1_get(paned)
 	Etk_Widget *	paned
 	CODE:
-	Etk_Widget * var;
-	var = etk_paned_child1_get(ETK_PANED(paned));
-	RETVAL = var;
+	RETVAL = etk_paned_child1_get(ETK_PANED(paned));
 	OUTPUT:
 	RETVAL
 
@@ -2944,9 +2642,7 @@ Etk_Widget *
 etk_paned_child2_get(paned)
 	Etk_Widget *	paned
 	CODE:
-	Etk_Widget * var;
-	var = etk_paned_child2_get(ETK_PANED(paned));
-	RETVAL = var;
+	RETVAL = etk_paned_child2_get(ETK_PANED(paned));
 	OUTPUT:
 	RETVAL
 
@@ -2962,9 +2658,7 @@ int
 etk_paned_position_get(paned)
 	Etk_Widget *	paned
 	CODE:
-	int var;
-	var = etk_paned_position_get(ETK_PANED(paned));
-	RETVAL = var;
+	RETVAL = etk_paned_position_get(ETK_PANED(paned));
 	OUTPUT:
 	RETVAL
 
@@ -2974,9 +2668,6 @@ etk_paned_position_set(paned, position)
 	int	position
 	CODE:
 	etk_paned_position_set(ETK_PANED(paned), position);
-
-Etk_Type *
-etk_paned_type_get()
 
 Etk_Popup_Window *
 etk_popup_window_focused_window_get()
@@ -2991,9 +2682,7 @@ Etk_Bool
 etk_popup_window_is_popped_up(popup_window)
 	Etk_Widget *	popup_window
 	CODE:
-	Etk_Bool var;
-	var = etk_popup_window_is_popped_up(ETK_POPUP_WINDOW(popup_window));
-	RETVAL = var;
+	RETVAL = etk_popup_window_is_popped_up(ETK_POPUP_WINDOW(popup_window));
 	OUTPUT:
 	RETVAL
 
@@ -3020,16 +2709,11 @@ etk_popup_window_popup_at_xy(popup_window, x, y)
 	CODE:
 	etk_popup_window_popup_at_xy(ETK_POPUP_WINDOW(popup_window), x, y);
 
-Etk_Type *
-etk_popup_window_type_get()
-
 double
 etk_progress_bar_fraction_get(progress_bar)
 	Etk_Widget *	progress_bar
 	CODE:
-	double var;
-	var = etk_progress_bar_fraction_get(ETK_PROGRESS_BAR(progress_bar));
-	RETVAL = var;
+	RETVAL = etk_progress_bar_fraction_get(ETK_PROGRESS_BAR(progress_bar));
 	OUTPUT:
 	RETVAL
 
@@ -3057,9 +2741,7 @@ double
 etk_progress_bar_pulse_step_get(progress_bar)
 	Etk_Widget *	progress_bar
 	CODE:
-	double var;
-	var = etk_progress_bar_pulse_step_get(ETK_PROGRESS_BAR(progress_bar));
-	RETVAL = var;
+	RETVAL = etk_progress_bar_pulse_step_get(ETK_PROGRESS_BAR(progress_bar));
 	OUTPUT:
 	RETVAL
 
@@ -3074,9 +2756,7 @@ const char *
 etk_progress_bar_text_get(progress_bar)
 	Etk_Widget *	progress_bar
 	CODE:
-	const char * var;
-	var = etk_progress_bar_text_get(ETK_PROGRESS_BAR(progress_bar));
-	RETVAL = var;
+	RETVAL = etk_progress_bar_text_get(ETK_PROGRESS_BAR(progress_bar));
 	OUTPUT:
 	RETVAL
 
@@ -3086,9 +2766,6 @@ etk_progress_bar_text_set(progress_bar, label)
 	char *	label
 	CODE:
 	etk_progress_bar_text_set(ETK_PROGRESS_BAR(progress_bar), label);
-
-Etk_Type *
-etk_progress_bar_type_get()
 
 Etk_Bool
 etk_property_default_value_set(property, default_value)
@@ -3106,10 +2783,6 @@ etk_property_new(name, property_id, type, flags, default_value)
 	Etk_Property_Type	type
 	Etk_Property_Flags	flags
 	Etk_Property_Value *	default_value
-
-Etk_Property_Type
-etk_property_type_get(property)
-	Etk_Property *	property
 
 Etk_Property_Value *
 etk_property_value_bool(value)
@@ -3250,18 +2923,6 @@ etk_property_value_string_set(property_value, value)
 	Etk_Property_Value *	property_value
 	char *	value
 
-Etk_Property_Type
-etk_property_value_type_get(value)
-	Etk_Property_Value *	value
-
-Evas_List **
-etk_radio_button_group_get(radio_button)
-	Etk_Radio_Button *	radio_button
-
-void
-etk_radio_button_group_set(radio_button, group)
-	Etk_Radio_Button *	radio_button
-	Evas_List **	group
 
 Etk_Widget *
 etk_radio_button_new(group)
@@ -3292,44 +2953,51 @@ etk_radio_button_new_with_label_from_widget(label, radio_button)
 	OUTPUT:
 	RETVAL
 
-Etk_Type *
-etk_radio_button_type_get()
-
 void
 etk_range_increments_set(range, step, page)
-	Etk_Range *	range
+	Etk_Widget *	range
 	double	step
 	double	page
+	CODE:
+	etk_range_increments_set(ETK_RANGE(range), step, page);
 
 double
 etk_range_page_size_get(range)
-	Etk_Range *	range
+	Etk_Widget *	range
+	CODE:
+	RETVAL = etk_range_page_size_get(ETK_RANGE(range));
+	OUTPUT:
+	RETVAL
 
 void
 etk_range_page_size_set(range, page_size)
-	Etk_Range *	range
+	Etk_Widget *	range
 	double	page_size
+	CODE:
+	etk_range_page_size_set(ETK_RANGE(range), page_size);
 
 void
 etk_range_range_set(range, lower, upper)
-	Etk_Range *	range
+	Etk_Widget *	range
 	double	lower
 	double	upper
-
-Etk_Type *
-etk_range_type_get()
+	CODE:
+	etk_range_range_set(ETK_RANGE(range), lower, upper);
 
 double
 etk_range_value_get(range)
-	Etk_Range *	range
+	Etk_Widget *	range
+	CODE:
+	RETVAL = etk_range_value_get(ETK_RANGE(range));
+	OUTPUT:
+	RETVAL
 
 void
 etk_range_value_set(range, value)
-	Etk_Range *	range
+	Etk_Widget *	range
 	double	value
-
-Etk_Type *
-etk_scrollbar_type_get()
+	CODE:
+	etk_range_value_set(ETK_RANGE(range), value);
 
 void
 etk_scrolled_view_add_with_viewport(scrolled_view, child)
@@ -3372,9 +3040,6 @@ etk_scrolled_view_policy_set(scrolled_view, hpolicy, vpolicy)
 	etk_scrolled_view_policy_set(ETK_SCROLLED_VIEW(scrolled_view), hpolicy, vpolicy);
 	
 
-Etk_Type *
-etk_scrolled_view_type_get()
-
 double
 etk_scrolled_view_vscrollbar_get(scrolled_view)
 	Etk_Widget *	scrolled_view
@@ -3399,11 +3064,6 @@ void
 etk_shutdown()
 
 void
-Shutdown()
-      CODE:
-        etk_shutdown();
-
-void
 etk_signal_callback_call(callback, object, return_value, ...)
 	Etk_Signal_Callback *	callback
 	Etk_Object *	object
@@ -3413,12 +3073,13 @@ void
 etk_signal_callback_del(signal_callback)
 	Etk_Signal_Callback *	signal_callback
 
-Etk_Signal_Callback *
-etk_signal_callback_new(signal, callback, data, swapped)
-	Etk_Signal *	signal
-	Etk_Signal_Callback_Function	callback
-	void *	data
-	Etk_Bool	swapped
+# 
+# Etk_Signal_Callback *
+# etk_signal_callback_new(signal, callback, data, swapped)
+#	Etk_Signal *	signal
+#	Etk_Signal_Callback_Function	callback
+#	void *	data
+#	Etk_Bool	swapped
 
 void
 etk_signal_connect(signal_name, object, callback, data)
@@ -3428,65 +3089,38 @@ etk_signal_connect(signal_name, object, callback, data)
 	SV *            data
 	
 	CODE:	
-	Callback_Signal_Data *cbd = NULL;
-	Etk_Signal *sig = NULL;
-	Etk_Marshaller marsh;
-	
-	cbd = calloc(1, sizeof(Callback_Signal_Data));
-	cbd->signal_name = strdup(signal_name);
-	cbd->object = ETK_OBJECT(object);
-	cbd->perl_data = newSVsv(data);
-	cbd->perl_callback = newSVsv(callback);	
-	
-	sig = etk_signal_lookup(signal_name, ETK_OBJECT(object)->type);
-	if(!sig) printf("CANT GET SIG!\n");
-	marsh = etk_signal_marshaller_get(sig);
-	
-	if(marsh == etk_marshaller_VOID__VOID)
-	  etk_signal_connect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__VOID), cbd);
-	else if(marsh == etk_marshaller_VOID__INT)
-	  etk_signal_connect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__INT), cbd);
-	else if(marsh == etk_marshaller_VOID__DOUBLE)
-	  etk_signal_connect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__DOUBLE), cbd);
-	else if(marsh == etk_marshaller_VOID__POINTER)
-	  etk_signal_connect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__POINTER), cbd);
-	else if(marsh == etk_marshaller_VOID__INT_POINTER)
-	  etk_signal_connect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__INT_POINTER), cbd);
-	else if(marsh == etk_marshaller_BOOL__VOID)
-	  etk_signal_connect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_BOOL__VOID), cbd);
-	else if(marsh == etk_marshaller_BOOL__DOUBLE)
-	  etk_signal_connect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_BOOL__DOUBLE), cbd);
-	else if(marsh == etk_marshaller_BOOL__POINTER_POINTER)
-	  etk_signal_connect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_BOOL__POINTER_POINTER), cbd);
-	else
-	etk_signal_connect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__VOID), cbd);
+	__etk_signal_connect_full(signal_name, object, callback, data, ETK_FALSE, ETK_FALSE);
 
 void
 etk_signal_connect_after(signal_name, object, callback, data)
-	char *	signal_name
+	char *	        signal_name
 	Etk_Widget *	object
-	Etk_Signal_Callback_Function	callback
-	void *	data
-	CODE:
-	etk_signal_connect_after(signal_name, ETK_OBJECT(object), callback, data);
+	SV *	        callback
+	SV *            data
+	
+	CODE:	
+	__etk_signal_connect_full(signal_name, object, callback, data, ETK_FALSE, ETK_TRUE);
 
-void
-etk_signal_connect_full(signal, object, callback, data, swapped, after)
-	Etk_Signal *	signal
-	Etk_Object *	object
-	Etk_Signal_Callback_Function	callback
-	void *	data
+void etk_signal_connect_full(signal_name, object, callback, data, swapped, after)
+	char *	        signal_name
+	Etk_Widget *	object
+	SV *	        callback
+	SV *            data
 	Etk_Bool	swapped
 	Etk_Bool	after
+	CODE:
+	__etk_signal_connect_full(signal_name, object, callback, data, swapped, after);
 
+	
 void
 etk_signal_connect_swapped(signal_name, object, callback, data)
-	char *	signal_name
+	char *	        signal_name
 	Etk_Widget *	object
-	Etk_Signal_Callback_Function	callback
-	void *	data
-	CODE:
-	etk_signal_connect_swapped(signal_name, ETK_OBJECT(object), callback, data);
+	SV *	        callback
+	SV *            data
+	
+	CODE:	
+	__etk_signal_connect_full(signal_name, object, callback, data, ETK_TRUE, ETK_FALSE);
 
 void
 etk_signal_delete(signal)
@@ -3494,11 +3128,36 @@ etk_signal_delete(signal)
 
 void
 etk_signal_disconnect(signal_name, object, callback)
-	char *	signal_name
+	char *	        signal_name
 	Etk_Widget *	object
-	Etk_Signal_Callback_Function	callback
-	CODE:
-	etk_signal_disconnect(signal_name, ETK_OBJECT(object), callback);
+	SV *	        callback
+	
+	CODE:	
+	Etk_Signal *sig = NULL;
+	Etk_Marshaller marsh;
+	
+	sig = etk_signal_lookup(signal_name, ETK_OBJECT(object)->type);
+	if(!sig) printf("CANT GET SIG!\n");
+	marsh = etk_signal_marshaller_get(sig);
+	
+	if(marsh == etk_marshaller_VOID__VOID)
+	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__VOID));
+	else if(marsh == etk_marshaller_VOID__INT)
+	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__INT));
+	else if(marsh == etk_marshaller_VOID__DOUBLE)
+	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__DOUBLE));
+	else if(marsh == etk_marshaller_VOID__POINTER)
+	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__POINTER));
+	else if(marsh == etk_marshaller_VOID__INT_POINTER)
+	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__INT_POINTER));
+	else if(marsh == etk_marshaller_BOOL__VOID)
+	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_BOOL__VOID));
+	else if(marsh == etk_marshaller_BOOL__DOUBLE)
+	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_BOOL__DOUBLE));
+	else if(marsh == etk_marshaller_BOOL__POINTER_POINTER)
+	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_BOOL__POINTER_POINTER));
+	else
+ 	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__VOID));
 
 void
 etk_signal_emit(signal, object, return_value, ...)
@@ -3540,31 +3199,29 @@ etk_signal_shutdown()
 void
 etk_signal_stop()
 
-Etk_Type *
-etk_slider_type_get()
-
-Etk_Widget *
-etk_spin_button_new(min, max, step)
-	double	min
-	double	max
-	double	step
-
-Etk_Type *
-etk_spin_button_type_get()
-
 int
 etk_statusbar_context_id_get(statusbar, context)
-	Etk_Statusbar *	statusbar
+	Etk_Widget *	statusbar
 	char *	context
+	CODE:
+	RETVAL = etk_statusbar_context_id_get(ETK_STATUSBAR(statusbar), context);
+	OUTPUT:
+	RETVAL
 
 Etk_Bool
 etk_statusbar_has_resize_grip_get(statusbar)
-	Etk_Statusbar *	statusbar
+	Etk_Widget *	statusbar
+	CODE:
+	RETVAL = etk_statusbar_has_resize_grip_get(ETK_STATUSBAR(statusbar));
+	OUTPUT:
+	RETVAL
 
 void
 etk_statusbar_has_resize_grip_set(statusbar, has_resize_grip)
-	Etk_Statusbar *	statusbar
+	Etk_Widget *	statusbar
 	Etk_Bool	has_resize_grip
+	CODE:
+	etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(statusbar), has_resize_grip);
 
 Etk_Widget *
 etk_statusbar_new()
@@ -3582,19 +3239,16 @@ etk_statusbar_push(statusbar, message, context_id)
 	char *	message
 	int	context_id
 	CODE:
-	int var;
-	var = etk_statusbar_push(ETK_STATUSBAR(statusbar), message, context_id);
-	RETVAL = var;
+	RETVAL = etk_statusbar_push(ETK_STATUSBAR(statusbar), message, context_id);
 	OUTPUT:
 	RETVAL
 
 void
 etk_statusbar_remove(statusbar, message_id)
-	Etk_Statusbar *	statusbar
+	Etk_Widget *	statusbar
 	int	message_id
-
-Etk_Type *
-etk_statusbar_type_get()
+	CODE:
+	etk_statusbar_remove(ETK_STATUSBAR(statusbar), message_id);
 
 const char *
 etk_stock_key_get(stock_id, size)
@@ -3604,122 +3258,6 @@ etk_stock_key_get(stock_id, size)
 const char *
 etk_stock_label_get(stock_id)
 	Etk_Stock_Id	stock_id
-
-Etk_String *
-etk_string_append(string, text)
-	Etk_String *	string
-	char *	text
-
-Etk_String *
-etk_string_append_char(string, c)
-	Etk_String *	string
-	char	c
-
-Etk_String *
-etk_string_append_printf(string, format, ...)
-	Etk_String *	string
-	char * format	
-
-Etk_String *
-etk_string_append_sized(string, text, length)
-	Etk_String *	string
-	char *	text
-	int	length
-
-Etk_String *
-etk_string_copy(string)
-	 Etk_String *	string
-
-const char *
-etk_string_get(string)
-	Etk_String *	string
-
-Etk_String *
-etk_string_insert(string, pos, text)
-	Etk_String *	string
-	int	pos
-	char *	text
-
-Etk_String *
-etk_string_insert_char(string, pos, c)
-	Etk_String *	string
-	int	pos
-	char	c
-
-Etk_String *
-etk_string_insert_printf(string, pos, format, ...)
-	Etk_String *	string
-	int	pos
-	char * format	
-
-Etk_String *
-etk_string_insert_sized(string, pos, text, length)
-	Etk_String *	string
-	int	pos
-	char *	text
-	int	length
-
-int
-etk_string_length_get(string)
-	Etk_String *	string
-
-Etk_String *
-etk_string_new(value)
-	char *	value
-
-Etk_String *
-etk_string_new_printf(format, ...)
-	char * format	
-
-Etk_String *
-etk_string_new_sized(value, size)
-	char *	value
-	int	size
-
-Etk_String *
-etk_string_prepend(string, text)
-	Etk_String *	string
-	char *	text
-
-Etk_String *
-etk_string_prepend_char(string, c)
-	Etk_String *	string
-	char	c
-
-Etk_String *
-etk_string_prepend_printf(string, format, ...)
-	Etk_String *	string
-	char * format	
-
-Etk_String *
-etk_string_prepend_sized(string, text, length)
-	Etk_String *	string
-	char *	text
-	int	length
-
-Etk_String *
-etk_string_set(string, value)
-	Etk_String *	string
-	char *	value
-
-Etk_String *
-etk_string_set_printf(string, format, ...)
-	Etk_String *	string
-	char * format	
-
-Etk_String *
-etk_string_set_sized(string, value, length)
-	Etk_String *	string
-	char *	value
-	int	length
-
-Etk_String *
-etk_string_truncate(string, length)
-	Etk_String *	string
-	int	length
-
-Etk_Type *
-etk_string_type_get()
 
 void
 etk_table_attach(table, child, left_attach, right_attach, top_attach, bottom_attach, x_padding, y_padding, fill_policy)
@@ -3758,9 +3296,7 @@ Etk_Bool
 etk_table_homogeneous_get(table)
 	Etk_Widget *	table
 	CODE:
-	Etk_Bool var;
-	var = etk_table_homogeneous_get(ETK_TABLE(table));
-	RETVAL = var;
+	RETVAL = etk_table_homogeneous_get(ETK_TABLE(table));
 	OUTPUT:
 	RETVAL
 
@@ -3785,14 +3321,8 @@ etk_table_resize(table, num_cols, num_rows)
 	CODE:
 	etk_table_resize(ETK_TABLE(table), num_cols, num_rows);
 
-Etk_Type *
-etk_table_type_get()
-
 Etk_Widget *
 etk_text_view_new()
-
-Etk_Type *
-etk_text_view_type_get()
 
 Etk_Textblock *
 etk_text_view_textblock_get(text_view)
@@ -3856,9 +3386,6 @@ etk_textblock_text_get(tb, markup)
 	OUTPUT:
 	RETVAL
 
-Etk_Type *
-etk_textblock_type_get()
-
 void
 etk_textblock_unrealize(textblock)
 	Etk_Textblock *	textblock
@@ -3906,9 +3433,7 @@ Etk_Bool
 etk_toggle_button_active_get(toggle_button)
 	Etk_Widget *	toggle_button
 	CODE:
-	Etk_Bool var;
-	var = etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(toggle_button));
-	RETVAL = var;
+	RETVAL = etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(toggle_button));
 	OUTPUT:
 	RETVAL
 
@@ -3931,9 +3456,6 @@ etk_toggle_button_toggle(toggle_button)
 	Etk_Widget *	toggle_button
 	CODE:
 	etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(toggle_button));
-
-Etk_Type *
-etk_toggle_button_type_get()
 
 void
 etk_tooltips_disable()
@@ -4031,9 +3553,6 @@ etk_toplevel_widget_pointer_push(toplevel_widget, pointer_type)
 	CODE:
 	etk_toplevel_widget_pointer_push(ETK_TOPLEVEL_WIDGET(toplevel_widget), pointer_type);
 
-Etk_Type *
-etk_toplevel_widget_type_get()
-
 Etk_Tree_Row *
 etk_tree_append(tree)
 	Etk_Widget *	tree
@@ -4083,9 +3602,7 @@ etk_tree_col_new(tree, title, model, width)
 	Etk_Tree_Model *	model
 	int	width
 	CODE:
-	Etk_Tree_Col * var;
-	var = etk_tree_col_new(ETK_TREE(tree), title, model, width);
-	RETVAL = var;
+	RETVAL = etk_tree_col_new(ETK_TREE(tree), title, model, width);
 	OUTPUT:
 	RETVAL
 
@@ -4136,9 +3653,6 @@ etk_tree_col_title_set(col, title)
 	Etk_Tree_Col *	col
 	char *	title
 
-Etk_Type *
-etk_tree_col_type_get()
-
 Etk_Bool
 etk_tree_col_visible_get(col)
 	Etk_Tree_Col *	col
@@ -4161,9 +3675,7 @@ Etk_Tree_Row *
 etk_tree_first_row_get(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Tree_Row * var;
-	var = etk_tree_first_row_get(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_first_row_get(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4177,9 +3689,7 @@ Etk_Bool
 etk_tree_headers_visible_get(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Bool var;
-	var = etk_tree_headers_visible_get(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_headers_visible_get(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4196,9 +3706,7 @@ etk_tree_last_row_get(tree, walking_through_hierarchy, include_collapsed_childre
 	Etk_Bool	walking_through_hierarchy
 	Etk_Bool	include_collapsed_children
 	CODE:
-	Etk_Tree_Row * var;
-	var = etk_tree_last_row_get(ETK_TREE(tree), walking_through_hierarchy, include_collapsed_children);
-	RETVAL = var;
+	RETVAL = etk_tree_last_row_get(ETK_TREE(tree), walking_through_hierarchy, include_collapsed_children);
 	OUTPUT:
 	RETVAL
 
@@ -4206,9 +3714,7 @@ Etk_Tree_Mode
 etk_tree_mode_get(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Tree_Mode var;
-	var = etk_tree_mode_get(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_mode_get(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4220,10 +3726,16 @@ etk_tree_mode_set(tree, mode)
 	etk_tree_mode_set(ETK_TREE(tree), mode);
 
 void
-etk_tree_model_alignment_get(model, xalign, yalign)
+etk_tree_model_alignment_get(model)
 	Etk_Tree_Model *	model
-	float *	xalign
-	float *	yalign
+	PPCODE:
+	
+	float xalign;
+	float yalign;
+	etk_tree_model_alignment_get(model, &xalign, &yalign);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSVnv(xalign)));
+	PUSHs(sv_2mortal(newSVnv(yalign)));
 
 void
 etk_tree_model_alignment_set(model, xalign, yalign)
@@ -4235,9 +3747,7 @@ Etk_Tree_Model *
 etk_tree_model_checkbox_new(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Tree_Model * var;
-	var = etk_tree_model_checkbox_new(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_model_checkbox_new(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4245,9 +3755,7 @@ Etk_Tree_Model *
 etk_tree_model_double_new(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Tree_Model * var;
-	var = etk_tree_model_double_new(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_model_double_new(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4269,9 +3777,7 @@ etk_tree_model_icon_text_new(tree, icon_type)
 	Etk_Widget *	tree
 	Etk_Tree_Model_Image_Type	icon_type
 	CODE:
-	Etk_Tree_Model * var;
-	var = etk_tree_model_icon_text_new(ETK_TREE(tree), icon_type);
-	RETVAL = var;
+	RETVAL = etk_tree_model_icon_text_new(ETK_TREE(tree), icon_type);
 	OUTPUT:
 	RETVAL
 
@@ -4280,9 +3786,7 @@ etk_tree_model_image_new(tree, image_type)
 	Etk_Widget *	tree
 	Etk_Tree_Model_Image_Type	image_type
 	CODE:
-	Etk_Tree_Model * var;
-	var = etk_tree_model_image_new(ETK_TREE(tree), image_type);
-	RETVAL = var;
+	RETVAL = etk_tree_model_image_new(ETK_TREE(tree), image_type);
 	OUTPUT:
 	RETVAL
 
@@ -4290,9 +3794,7 @@ Etk_Tree_Model *
 etk_tree_model_int_new(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Tree_Model * var;
-	var = etk_tree_model_int_new(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_model_int_new(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4300,9 +3802,7 @@ Etk_Tree_Model *
 etk_tree_model_progress_bar_new(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Tree_Model * var;
-	var = etk_tree_model_progress_bar_new(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_model_progress_bar_new(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4310,9 +3810,7 @@ Etk_Tree_Model *
 etk_tree_model_text_new(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Tree_Model * var;
-	var = etk_tree_model_text_new(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_model_text_new(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4320,9 +3818,7 @@ Etk_Bool
 etk_tree_multiple_select_get(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Bool var;
-	var = etk_tree_multiple_select_get(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_multiple_select_get(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4347,9 +3843,7 @@ etk_tree_nth_col_get(tree, nth)
 	Etk_Widget *	tree
 	int	nth
 	CODE:
-	Etk_Tree_Col * var;
-	var = etk_tree_nth_col_get(ETK_TREE(tree), nth);
-	RETVAL = var;
+	RETVAL = etk_tree_nth_col_get(ETK_TREE(tree), nth);
 	OUTPUT:
 	RETVAL
 
@@ -4357,9 +3851,7 @@ int
 etk_tree_num_cols_get(tree)
 	Etk_Widget *	tree
 	CODE:
-	int var;
-	var = etk_tree_num_cols_get(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_num_cols_get(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4383,12 +3875,6 @@ etk_tree_row_data_set(row, data)
 	SV *	data
         CODE:
         etk_tree_row_data_set(row, newSVsv(data));
-
-void
-etk_tree_row_data_set_full(row, data, free_cb)
-	Etk_Tree_Row *	row
-	void *	data
-	void ( * ) ( void * data ) free_cb
 
 void
 etk_tree_row_del(row)
@@ -4515,6 +4001,9 @@ etk_tree_row_field_image_file_get(row, col)
       CODE:
 	char *image;
         etk_tree_row_fields_get(row, col, &image, NULL);
+	RETVAL = image;
+      OUTPUT:
+	RETVAL
 
 void
 etk_tree_row_field_image_edje_get(row, col)
@@ -4594,9 +4083,7 @@ int
 etk_tree_row_height_get(tree)
 	Etk_Widget *	tree
 	CODE:
-	int var;
-	var = etk_tree_row_height_get(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_row_height_get(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4636,9 +4123,7 @@ Etk_Tree_Row *
 etk_tree_selected_row_get(tree)
 	Etk_Widget *	tree
 	CODE:
-	Etk_Tree_Row * var;
-	var = etk_tree_selected_row_get(ETK_TREE(tree));
-	RETVAL = var;
+	RETVAL = etk_tree_selected_row_get(ETK_TREE(tree));
 	OUTPUT:
 	RETVAL
 
@@ -4647,6 +4132,7 @@ etk_tree_selected_rows_get(tree)
 	Etk_Widget *	tree
 	CODE:
 	Evas_List * var;
+	/* FIXME */
 	var = etk_tree_selected_rows_get(ETK_TREE(tree));
 	RETVAL = var;
 	OUTPUT:
@@ -4673,9 +4159,6 @@ etk_tree_thaw(tree)
 	Etk_Widget *	tree
 	CODE:
 	etk_tree_thaw(ETK_TREE(tree));
-
-Etk_Type *
-etk_tree_type_get()
 
 void
 etk_tree_unselect_all(tree)
@@ -4714,9 +4197,6 @@ etk_type_object_construct(type, object)
 	Etk_Type *	type
 	Etk_Object *	object
 
-Etk_Type *
-etk_type_parent_type_get(type)
-	Etk_Type *	type
 
 Etk_Property *
 etk_type_property_add(type, name, property_id, property_type, flags, default_value)
@@ -4762,20 +4242,11 @@ etk_vbox_new(homogeneous, spacing)
 	Etk_Bool	homogeneous
 	int	spacing
 
-Etk_Type *
-etk_vbox_type_get()
-
 Etk_Widget *
 etk_viewport_new()
 
-Etk_Type *
-etk_viewport_type_get()
-
 Etk_Widget *
 etk_vpaned_new()
-
-Etk_Type *
-etk_vpaned_type_get()
 
 Etk_Widget *
 etk_vscrollbar_new(lower, upper, value, step_increment, page_increment, page_size)
@@ -4786,14 +4257,8 @@ etk_vscrollbar_new(lower, upper, value, step_increment, page_increment, page_siz
 	double	page_increment
 	double	page_size
 
-Etk_Type *
-etk_vscrollbar_type_get()
-
 Etk_Widget *
 etk_vseparator_new()
-
-Etk_Type *
-etk_vseparator_type_get()
 
 Etk_Widget *
 etk_vslider_new(lower, upper, value, step_increment, page_increment)
@@ -4802,9 +4267,6 @@ etk_vslider_new(lower, upper, value, step_increment, page_increment)
 	double	value
 	double	step_increment
 	double	page_increment
-
-Etk_Type *
-etk_vslider_type_get()
 
 Evas_Object *
 etk_widget_clip_get(widget)
@@ -5252,9 +4714,6 @@ Etk_Toplevel_Widget *
 etk_widget_toplevel_parent_get(widget)
 	Etk_Widget *	widget
 
-Etk_Type *
-etk_widget_type_get()
-
 void
 etk_widget_unfocus(widget)
 	Etk_Widget *	widget
@@ -5352,9 +4811,7 @@ Etk_Bool
 etk_window_is_focused(window)
 	Etk_Widget *	window
 	CODE:
-	Etk_Bool var;
-	var = etk_window_is_focused(ETK_WINDOW(window));
-	RETVAL = var;
+	RETVAL = etk_window_is_focused(ETK_WINDOW(window));
 	OUTPUT:
 	RETVAL
 
@@ -5362,9 +4819,7 @@ Etk_Bool
 etk_window_is_fullscreen(window)
 	Etk_Widget *	window
 	CODE:
-	Etk_Bool var;
-	var = etk_window_is_fullscreen(ETK_WINDOW(window));
-	RETVAL = var;
+	RETVAL = etk_window_is_fullscreen(ETK_WINDOW(window));
 	OUTPUT:
 	RETVAL
 
@@ -5372,9 +4827,7 @@ Etk_Bool
 etk_window_is_iconified(window)
 	Etk_Widget *	window
 	CODE:
-	Etk_Bool var;
-	var = etk_window_is_iconified(ETK_WINDOW(window));
-	RETVAL = var;
+	RETVAL = etk_window_is_iconified(ETK_WINDOW(window));
 	OUTPUT:
 	RETVAL
 
@@ -5382,9 +4835,7 @@ Etk_Bool
 etk_window_is_maximized(window)
 	Etk_Widget *	window
 	CODE:
-	Etk_Bool var;
-	var = etk_window_is_maximized(ETK_WINDOW(window));
-	RETVAL = var;
+	RETVAL = etk_window_is_maximized(ETK_WINDOW(window));
 	OUTPUT:
 	RETVAL
 
@@ -5392,9 +4843,7 @@ Etk_Bool
 etk_window_is_sticky(window)
 	Etk_Widget *	window
 	CODE:
-	Etk_Bool var;
-	var = etk_window_is_sticky(ETK_WINDOW(window));
-	RETVAL = var;
+	RETVAL = etk_window_is_sticky(ETK_WINDOW(window));
 	OUTPUT:
 	RETVAL
 
@@ -5433,9 +4882,7 @@ Etk_Bool
 etk_window_shaped_get(window)
 	Etk_Widget *	window
 	CODE:
-	Etk_Bool var;
-	var = etk_window_shaped_get(ETK_WINDOW(window));
-	RETVAL = var;
+	RETVAL = etk_window_shaped_get(ETK_WINDOW(window));
 	OUTPUT:
 	RETVAL
 
@@ -5450,9 +4897,7 @@ Etk_Bool
 etk_window_skip_pager_hint_get(window)
 	Etk_Widget *	window
 	CODE:
-	Etk_Bool var;
-	var = etk_window_skip_pager_hint_get(ETK_WINDOW(window));
-	RETVAL = var;
+	RETVAL = etk_window_skip_pager_hint_get(ETK_WINDOW(window));
 	OUTPUT:
 	RETVAL
 
@@ -5467,9 +4912,7 @@ Etk_Bool
 etk_window_skip_taskbar_hint_get(window)
 	Etk_Widget *	window
 	CODE:
-	Etk_Bool var;
-	var = etk_window_skip_taskbar_hint_get(ETK_WINDOW(window));
-	RETVAL = var;
+	RETVAL = etk_window_skip_taskbar_hint_get(ETK_WINDOW(window));
 	OUTPUT:
 	RETVAL
 
@@ -5490,9 +4933,7 @@ const char *
 etk_window_title_get(window)
 	Etk_Widget *	window
 	CODE:
-	const char * var;
-	var = etk_window_title_get(ETK_WINDOW(window));
-	RETVAL = var;
+	RETVAL = etk_window_title_get(ETK_WINDOW(window));
 	OUTPUT:
 	RETVAL
 
@@ -5502,9 +4943,6 @@ etk_window_title_set(window, title)
 	char *	title
 	CODE:
 	etk_window_title_set(ETK_WINDOW(window), title);
-
-Etk_Type *
-etk_window_type_get()
 
 void
 etk_window_unfocus(window)

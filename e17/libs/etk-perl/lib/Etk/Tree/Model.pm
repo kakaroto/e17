@@ -29,7 +29,7 @@ sub AlignmentSet
 sub AlignmentGet
 {
     my $self = shift;
-    Etk::etk_tree_model_alignment_get($self->{WIDGE}, shift, shift);
+    return Etk::etk_tree_model_alignment_get($self->{WIDGE});
 }
 
 1;

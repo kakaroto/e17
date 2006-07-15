@@ -172,8 +172,7 @@ sub FieldImageFileGet
     my $self = shift;
     my $col = shift;
     # RETURNS
-    # icon
-    # text
+    # image
     return Etk::etk_tree_row_field_image_file_get($self->{WIDGET}, 
 	$col->{WIDGET});
 }

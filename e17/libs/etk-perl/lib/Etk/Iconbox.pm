@@ -51,13 +51,6 @@ sub Append
     return $icon;
 }
 
-sub IconDel
-{
-    my $self = shift;
-    my $icon = shift;
-    Etk::etk_iconbox_icon_del($icon->{WIDGET});
-}
-
 sub Clear
 {
     my $self = shift;

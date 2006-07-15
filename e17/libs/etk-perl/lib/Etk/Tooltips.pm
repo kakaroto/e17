@@ -2,12 +2,8 @@ package Etk::Tooltips;
 use strict;
 require Etk;
 
-sub Init
-{
-    Etk::etk_tooltips_init();
-}
 
-sub Shutdown
+sub unimport
 {
     Etk::etk_tooltips_shutdown();
 }
@@ -46,5 +42,12 @@ sub Popdown
     my $widget = shift;
     Etk::etk_tooltips_pop_down($widget->{WIDGET});
 }
+
+sub TipVisible
+{
+    return Etk::etk_tooltips_tip_visible();
+}
+
+Etk::etk_tooltips_init();
 
 1;

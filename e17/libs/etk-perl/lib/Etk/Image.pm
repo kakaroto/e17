@@ -19,6 +19,15 @@ sub new
     return $self;
 }
 
+sub new_no_create
+{
+    my $class = shift;
+    my $self = $class->SUPER::new();
+    $self->{WIDGET} = undef;
+    bless($self, $class);
+    return $self;
+}
+
 sub new_from_edje
 {
     my $class = shift;
@@ -66,7 +75,10 @@ sub SetFromEdje
 sub EdjeGet
 {
     my $self = shift;
-    Etk::etk_image_edje_get($self->{WIDGET}, shift, shift);
+    # returns
+    # edje_filename
+    # edje_group
+    return Etk::etk_image_edje_get($self->{WIDGET});
 }
 
 sub SetFromStock
@@ -93,7 +105,7 @@ sub CopyFrom
 sub SizeGet
 {
     my $self = shift;
-    Etk::etk_image_size_get($self->{WIDGET}, shift, shift);
+    return Etk::etk_image_size_get($self->{WIDGET});
 }
 
 sub KeepAspectSet
@@ -106,7 +118,7 @@ sub KeepAspectSet
 sub KeepAspectGet
 {
     my $self = shift;
-    Etk::etk_image_keep_aspect_get($self->{WIDGET}, shift);
+    return Etk::etk_image_keep_aspect_get($self->{WIDGET});
 }
 
 1;

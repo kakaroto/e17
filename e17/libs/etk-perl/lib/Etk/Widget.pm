@@ -3,6 +3,9 @@ use strict;
 use vars qw(@ISA);
 require Etk::Object;
 @ISA = ("Etk::Object");
+
+use AutoLoader;
+
 sub new
 {
     my $class = shift;
@@ -347,7 +350,28 @@ sub ThemeObjectPartTextSet
     Etk::etk_widget_theme_object_part_text_set($self->{WIDGET}, $part, $text);
 }
 
+# This is just a start.
+sub AUTOLOAD
+{
+    our $AUTOLOAD;
+
+    my $package;
+    ($package = $AUTOLOAD) =~ s/.*:://;
+
+    if ($package =~ /^Add(.*)/) 
+    {
+	shift;
+	my $p = $1;
+    	my $return;
+
+    	eval("use Etk::$p");
+	die("Cannot load package Etk::$p - $@") if $@;
+    	eval("\$return = Etk::${p}->new(\@_);");
+    	return $return;
+    }
+}
 
 1;
 
+__END__
 

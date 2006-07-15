@@ -25,7 +25,9 @@ sub TypesSet
 
 sub DataSet
 {
-    # TODO
+    my $self = shift;
+    my $data = shift;
+    Etk::etk_drag_data_set($self->{WIDGET}, $data);
 }
 
 sub Begin

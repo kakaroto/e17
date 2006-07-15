@@ -36,4 +36,9 @@ sub WidgetDefaultThemeGet
 
 Etk::etk_theme_init();
 
+sub unimport
+{
+    Etk::etk_theme_shutdown();
+}
+
 1;

@@ -28,6 +28,17 @@ our @EXPORT = qw( );
 
 our $VERSION = '0.01';
 
+
+sub Init
+{
+    Etk::etk_init();
+}
+
+sub Shutdown
+{
+    Etk::etk_shutdown();
+}
+
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
     # XS function.
@@ -78,15 +89,13 @@ Etk - Perl bindings for the Enlightened ToolKit (Etk)
 
 use Etk;
 
-Etk::etk_init();
-
 my $win = Etk::Window->new();
 my $button = Etk::Button->new("Click me!");
 
 $win->Add($button);
 $win->ShowAll();
 
-$button->SignalAttach("clicked", \&clicked_cb);
+$button->SignalConnect("clicked", \&clicked_cb);
 
 sub clicked_cb
 {

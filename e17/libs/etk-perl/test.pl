@@ -1,21 +1,14 @@
 use strict;
 use Etk;
-use Etk::Main;
-use Etk::Window;
-use Etk::Button;
-use Etk::VBox;
-use Etk::Tree;
 use Etk::Tree::Model::Text;
 use Etk::Tree::Model::ProgressBar;
 use Etk::Tree::Col;
 
-Etk::Init();
-
 my $win = Etk::Window->new();
-my $button1 = Etk::Button->new("click me!");
-my $button2 = Etk::Button->new("click me too!");
-my $vbox = Etk::VBox->new(0, 0);
-my $tree = Etk::Tree->new();
+my $button1 = $win->AddButton("click me!"); 
+my $button2 = $win->AddButton("click me too!");
+my $vbox = $win->AddVBox(0, 0);
+my $tree = $win->AddTree();
 my $col1 = Etk::Tree::Col->new($tree, "Col 1",
     Etk::Tree::Model::Text->new($tree), 90);
 my $col2 = Etk::Tree::Col->new($tree, "Col 2",

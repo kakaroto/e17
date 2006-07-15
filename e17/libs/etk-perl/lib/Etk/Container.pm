@@ -7,7 +7,7 @@ sub new
 {
     my $class = shift;
     my $self = $class->SUPER::new();
-    $self->{CHILDREN} = ();
+    $self->{CHILDREN} = [];
     bless($self, $class);
     return $self;
 }
@@ -26,6 +26,9 @@ sub Remove
     my $self = shift;
     my $widget = shift;
     Etk::etk_container_remove($self->{WIDGET}, $widget->{WIDGET});
+    my @children = @{$self->{CHILDREN}};
+    $self->{CHILDREN} = [];
+    push @{$self->{CHILDREN}}, grep { $_ != $widget } @children;
 }
 
 sub BorderWidthSet
@@ -51,7 +54,11 @@ sub IsChild
 {
     my $self = shift;
     my $widget = shift;
-    return Etk::etk_container_is_child($self->{WIDGET}, $widget->{WIDGET});
+    foreach (@{$self->{CHILDREN}}) 
+    {
+	return 1 if $_ == $widget;
+    }
+    return 0;
 }
 
 sub ChildSpaceFill

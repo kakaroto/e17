@@ -10,6 +10,12 @@ sub new
     return $self;
 }
 
+sub Delete
+{
+    my $self = shift;
+    Etk::etk_iconbox_icon_del($self->{WIDGET});
+}
+
 sub FileSet
 {
     my $self = shift;

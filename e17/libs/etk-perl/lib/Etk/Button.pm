@@ -3,6 +3,8 @@ use strict;
 use vars qw(@ISA);
 require Etk::Bin;
 @ISA = ("Etk::Bin");
+use Etk::Image;
+
 sub new
 {
     my $class = shift;
@@ -63,7 +65,9 @@ sub ImageSet
 sub ImageGet
 {
     my $self = shift;
-    return Etk::etk_button_image_get($self->{WIDGET});
+    my $image = Etk::Image->new_no_create();
+    $image->{WIDGET} = Etk::etk_button_image_get($self->{WIDGET});
+    return $image;
 }
 
 sub SetFromStock

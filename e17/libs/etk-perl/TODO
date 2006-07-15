@@ -6,17 +6,15 @@ General TODO:
   perl -> c -> perl ... loop when sorting trees.
 - finish porting etk_test from C to perl
 - callback system needs to convert structs to perl equivalents
-- all functions that use use references to change multiple values need
-  to return a list of values to the perl caller
-- finish remaining signal_connect functions (swapped etc.)
+- finish signal callback functions
 - perldoc everything
 - go over all enums and structs and port as needed
+- etk_property.h ?
 - etk_editable_text_object.h
 - etk_text_buffer.h
 - etk_text_iter.h
 - etk_text_view.h
 - etk_textblock.h
-- etk_theme.h
 - etk_type.h
 - etk_types.h
 - etk_utils.h
@@ -32,6 +30,10 @@ General TODO:
 - etk_cache.h [NOT NEEDED]
 - etk_string.h [NOT NEEDED]
 - etk_propery.h [NOT NEEDED]
+- all functions that use use references to change multiple values need
+  to return a list of values to the perl caller [DONE]
+- finish remaining signal_connect functions (swapped etc.) [DONE]
+- etk_theme.h [DONE]
 
 Pending:
 ========
