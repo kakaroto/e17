@@ -264,7 +264,7 @@ evfs_handle_file_stat_command(evfs_client * client, evfs_command * command)
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
                                                  command->file_command.
                                                  files[0]->plugin_uri);
-   if (plugin)
+   if (plugin && EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_stat )
      {
         (*(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_stat)) (command, &file_stat, 0);
 
