@@ -53,6 +53,23 @@ group {
 		    smooth : 0;
 		}
 	    }
+            description {
+                state:  "nobg" 0.0;
+                rel1 {
+                    to:         "background2";
+                }
+                rel2 {
+                    to:         "background2";
+                }
+                image {
+                    normal:     "e17_tranny.png";
+                    border:     13 13 13 13;
+                }
+                fill {
+                    smooth : 0;
+                }
+            }
+
 	}    
 	part {
 	    name: "focus";
@@ -101,6 +118,7 @@ group {
 		action:    STATE_SET "nobg" 0.0;
 		transition: LINEAR 0.0;
 		target:    "background2";
+                target:    "over";
 	}
     }    
 }
