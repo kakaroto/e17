@@ -3934,3 +3934,18 @@ Fix shape update when client resizes after changing shape.
 Fix incorrect damage region when raise actually lowers and vice versa.
 Change default session script to run scripts in foreground.
 
+
+-------------------------------------------------------------------------------
+
+Sat Jul 15 17:31:44 CEST 2006
+(Kim)
+
+--- 0.16.8.2 ---
+Fix pager zoom window shape bug.
+Fix initial menu rendering in certain situations.
+Update winter theme (localized font configuration files).
+Fix window stack getting messed up due to bug in handling of particular case
+of misbehaving clients (yet another variant of unmap/map without waiting for
+withdrawal).
+Fix exit/restart from GSOD.
+
