@@ -7,7 +7,7 @@
 #include <Eet.h>
 #include <stdarg.h>
 
-#define ENTROPY_CONFIG_VERSION 13
+#define ENTROPY_CONFIG_VERSION 14
 
 static Entropy_Config* _Entropy_Config = NULL;
 
@@ -566,8 +566,12 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 		config->structures = evas_list_append(config->structures, 
 				entropy_config_structure_new("Computer", "file:///")
 				);
+
 		config->structures = evas_list_append(config->structures, 
 				entropy_config_structure_new("Home", buf)
+				);
+		config->structures = evas_list_append(config->structures, 
+				entropy_config_structure_new("Virtual Folders", "vfolder:///")
 				);
 
 		

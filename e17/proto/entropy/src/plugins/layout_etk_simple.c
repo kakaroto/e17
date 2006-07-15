@@ -63,6 +63,7 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entr
 void entropy_plugin_layout_main ();
 char* entropy_plugin_toolkit_get();
 entropy_gui_component_instance* entropy_plugin_layout_create (entropy_core * core);
+void entropy_etk_layout_trackback_cb(Etk_Object* obj, void* data);
 
 
 
@@ -261,6 +262,18 @@ void etk_layout_simple_exit_cb(Etk_Object* obj, void* data)
 void etk_mime_dialog_cb(Etk_Object* obj, void* data)
 {
 	etk_mime_dialog_create();
+}
+
+void entropy_etk_layout_trackback_cb(Etk_Object* obj, void* data)
+{
+	entropy_gui_component_instance* instance = data;
+	entropy_layout_gui* gui = instance->data;
+
+	if (!etk_widget_is_visible(gui->trackback->gui_object)) {
+		etk_widget_show_all(gui->trackback->gui_object);
+	} else {
+		etk_widget_hide(gui->trackback->gui_object);
+	}
 }
 
 void entropy_etk_layout_tree_cb(Etk_Object* obj, void* data)
@@ -666,12 +679,15 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*Menu setup*/
   menubar = etk_menu_bar_new();
+
+  /*File menu*/
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("File"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Exit"), ETK_STOCK_SYSTEM_SHUTDOWN, ETK_MENU_SHELL(menu), NULL);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_layout_simple_exit_cb), layout);
   
+  /*Edit menu*/
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Edit"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
@@ -680,6 +696,7 @@ entropy_plugin_layout_create (entropy_core * core)
   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu), NULL);
   
   
+  /*Tools menu*/
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Tools"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
@@ -691,14 +708,20 @@ entropy_plugin_layout_create (entropy_core * core)
 		  ETK_STOCK_EMBLEM_SYMBOLIC_LINK, ETK_MENU_SHELL(menu), NULL);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_mime_dialog_cb), layout);
   
+  /*View menu*/
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("View"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
+  
   menu_item = _entropy_etk_menu_check_item_new(_("Tree View"), ETK_MENU_SHELL(menu));
   etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item),1 );
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_layout_tree_cb), layout);
 
-  
+  menu_item = _entropy_etk_menu_check_item_new(_("Trackback view"), ETK_MENU_SHELL(menu));
+  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item),1 );
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_layout_trackback_cb), layout);
+
+
   _entropy_etk_menu_item_new(ETK_MENU_ITEM_SEPARATOR, NULL, 
 		  ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL);
 
@@ -712,13 +735,14 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
 
 
-  
+  /*Debug menu*/
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Debug"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL); 
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("File Cache"), ETK_STOCK_PLACES_FOLDER_SAVED_SEARCH, ETK_MENU_SHELL(menu), NULL);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_file_cache_dialog_cb), layout);
   
+  /*Help menu*/
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Help"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));

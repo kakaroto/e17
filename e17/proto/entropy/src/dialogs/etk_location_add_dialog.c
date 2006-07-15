@@ -151,6 +151,7 @@ static void location_add_initialise() {
 	filesystem_init_and_add("Local Filesystem", "file", 0);
 	filesystem_init_and_add("Windows File Share", "smb", REQUIRES_AUTH | REQUIRES_HOST);
 	filesystem_init_and_add("Secure FTP Host", "sftp", REQUIRES_HOST);
+	filesystem_init_and_add("Virtual Folder", "vfolder", 0);
 
 	location_add_init = 1;
 }
