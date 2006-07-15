@@ -4,6 +4,10 @@
 
 #include "ppport.h"
 
+#ifdef _
+#undef _
+#endif
+
 #include <Etk.h>
 #include <Ecore.h>
 #include <Ecore_Data.h>
