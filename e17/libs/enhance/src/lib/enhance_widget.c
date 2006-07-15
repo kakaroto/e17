@@ -31,6 +31,7 @@ static E_Widget *_e_widget_hseparator_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_vseparator_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_hslider_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_vslider_handle(Enhance *en, EXML_Node *node);
+static E_Widget *_e_widget_textview_handle(Enhance *en, EXML_Node *node);
 
 static EXML_Node *find_node(EXML_Node *node, char *key, char *value)
 {
@@ -752,6 +753,20 @@ _e_widget_vslider_handle(Enhance *en, EXML_Node *node)
    return slider;
 }
 
+static E_Widget *
+_e_widget_textview_handle(Enhance *en, EXML_Node *node)
+{
+   E_Widget *tview;
+   char     *id;
+
+   id = ecore_hash_get(node->attributes, "id");
+   if(!id) return NULL;
+
+   tview = _e_widget_new(en, node, etk_text_view_new(), id);
+
+   return tview;
+}
+
 E_Widget *
 _e_widget_handle(Enhance *en, EXML_Node *node)
 {
@@ -829,7 +844,9 @@ _e_widget_handle(Enhance *en, EXML_Node *node)
    else if(!strcmp(class, "GtkHScale"))
      return _e_widget_hslider_handle(en, node);
    else if(!strcmp(class, "GtkVScale"))
-     return _e_widget_vslider_handle(en, node);   
+     return _e_widget_vslider_handle(en, node);
+   else if(!strcmp(class, "GtkTextView"))
+     return _e_widget_textview_handle(en, node);
    return NULL;
 }
 
@@ -889,7 +906,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 	if((w = etk_paned_child1_get(ETK_PANED(parent->wid))) != NULL)	  
 	  etk_paned_child2_set(ETK_PANED(parent->wid), child->wid, expand);
 	else
-	  etk_paned_child1_set(ETK_PANED(parent->wid), child->wid, expand);	
+	  etk_paned_child1_set(ETK_PANED(parent->wid), child->wid, expand);
      }
    if(!strcmp(parent_class, "GtkNotebook"))
      {
@@ -1031,5 +1048,12 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 	etk_table_attach(ETK_TABLE(parent->wid), child->wid, left_attach,
 			 right_attach, top_attach, bottom_attach, 
 			 x_padding, y_padding, fill_policy);
+     }
+   else if(!strcmp(parent_class, "GtkButton") ||
+           !strcmp(parent_class, "GtkToggleButton") ||
+           !strcmp(parent_class, "GtkCheckButton"))
+     {
+        if(ETK_IS_IMAGE(child->wid))
+          etk_button_image_set(ETK_BUTTON(parent->wid), ETK_IMAGE(child->wid));
      }
 }

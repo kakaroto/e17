@@ -280,6 +280,7 @@ static const En_Stock_Item en_stock_items[] =
    { "gtk-media-forward", ETK_STOCK_MEDIA_SEEK_FORWARD},
    { "gtk-media-previous", ETK_STOCK_MEDIA_SKIP_BACKWARD},
    { "gtk-media-next", ETK_STOCK_MEDIA_SKIP_FORWARD},
+   { "gtk-media-stop", ETK_STOCK_MEDIA_PLAYBACK_STOP},
    { "gtk-stop", ETK_STOCK_PROCESS_STOP},
    { "gtk-quit", ETK_STOCK_SYSTEM_LOG_OUT},
    { "gtk-refresh", ETK_STOCK_VIEW_REFRESH},
@@ -447,6 +448,9 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    else if(!strcmp(name, "text"))
      {
 	PROPERTY_STR;
+
+        IF_PARENT_CLASS("GtkTextView")
+          return;
 	etk_object_properties_set(ETK_OBJECT(wid->wid), "text", value, NULL);
      }   
    
@@ -540,12 +544,6 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	etk_window_skip_pager_hint_set(ETK_WINDOW(wid-wid), value);
      }   
 
-   else if(!strcmp(name, "label"))
-     {
-	IF_PARENT_CLASS("GtkButton")
-	  etk_button_label_set(ETK_BUTTON(wid->wid), node->value);	  
-     }
-   
    else if(!strcmp(name, "items"))
      {
 	IF_PARENT_CLASS("GtkComboBox")
@@ -638,9 +636,22 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 		  label = (char *)etk_menu_item_label_get(ETK_MENU_ITEM(wid->wid));
 		  id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, label);
 		  if (id != ETK_STOCK_NO_STOCK)
-		    etk_menu_item_set_from_stock(ETK_MENU_ITEM_IMAGE(wid->wid), (Etk_Stock_Id)id);
+		    etk_menu_item_set_from_stock(ETK_MENU_ITEM(wid->wid), (Etk_Stock_Id)id);
 	       }
 	  }
+     }
+
+   else if(!strcmp(name, "pixbuf"))
+     {
+        PROPERTY_STR;
+        /* TODO : edj? */
+
+        etk_image_set_from_file(ETK_IMAGE(wid->wid), value);
+     }
+   else if(!strcmp(name, "active"))
+     {
+        PROPERTY_BOOL
+        etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(wid->wid), value);
      }
 }
 
