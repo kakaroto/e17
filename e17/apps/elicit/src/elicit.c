@@ -146,6 +146,7 @@ setup(int argc, char **argv, Elicit *el)
   elicit_swatches_init(el);
   elicit_shots_init(el);
   elicit_themes_init(el);
+  elicit_spectra_init(el);
 
   elicit_ui_update(el);
   return 0;
@@ -295,6 +296,7 @@ elicit_ui_update(Elicit *el)
   elicit_ui_update_text(el);
   elicit_ui_update_sliders(el);
   elicit_zoom_zoom_set(el->shot, el->zoom);
+  elicit_spectra_update(el);
   
   evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
 }

@@ -13,6 +13,7 @@ elicit_SOURCES = \
         swatches.c swatches.h \
         shots.c shots.h \
         themes.c themes.h \
+				spectrum.c spectrum.h \
 				zoom.c zoom.h
 
 elicit_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \

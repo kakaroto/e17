@@ -39,15 +39,10 @@ elicit_cb_resize(Ecore_Evas *ee)
   ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
 
   gui = evas_object_name_find(ecore_evas_get(ee), "gui");
-  shot = evas_object_name_find(ecore_evas_get(ee), "shot");
   draggie = evas_object_name_find(ecore_evas_get(ee), "draggie");
 
   evas_object_resize(gui, w, h);
   evas_object_resize(draggie, w, h);
-
-  /* keep the shot filling its bounds */
-  evas_object_geometry_get(shot, NULL, NULL, &sw, &sh);
-  evas_object_image_fill_set(shot, 0, 0, sw, sh);
 }
 
 void elicit_cb_pick(void *data, Evas_Object *o, const char *sig, const char *src)

@@ -94,10 +94,10 @@ elicit_theme_load_cb(void *data, Evas_Object *o, const char *emission, const cha
   esmart_container_element_remove(el->themes.cont, o);
   evas_object_del(o);
 
-#if 1
   elicit_shots_shutdown(el);
   elicit_swatches_shutdown(el);
   elicit_themes_shutdown(el);
+  elicit_spectra_shutdown(el);
 
   evas_object_del(el->gui);
   
@@ -111,7 +111,7 @@ elicit_theme_load_cb(void *data, Evas_Object *o, const char *emission, const cha
   elicit_shots_init(el);
   elicit_swatches_init(el);
   elicit_themes_init(el);
-#endif
+  elicit_spectra_init(el);
 }
 
 
