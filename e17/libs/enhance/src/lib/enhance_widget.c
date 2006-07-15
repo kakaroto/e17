@@ -96,13 +96,29 @@ _e_widget_dialog_handle(Enhance *en, EXML_Node *node)
 {
    E_Widget  *dia;
    char      *id;
+   char      *tag;
    EXML_Node  *prop;   
    
    id = ecore_hash_get(node->attributes, "id");
    if(!id) return NULL;
 
    dia = _e_widget_new(en, node, etk_dialog_new(), id);
-   
+   if((tag = exml_down(en->xml)) != NULL)
+     {
+       do
+         {
+           if(!strcmp(tag, "property"))
+             {
+                _e_traverse_property_xml(en);
+             }
+           else if(!strcmp(tag, "signal"))
+             {
+                _e_traverse_signal_xml(en);
+             }
+         }
+       while((tag = exml_next_nomove(en->xml)) != NULL);
+     }
+
    if((prop = find_node(node, "internal-child", "action_area")))
      {
 	if((prop = find_node(prop, "class", "GtkHButtonBox")))
@@ -981,7 +997,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 	int x_padding     = 0;
 	int y_padding     = 0;
 	int flags_set     = 0;	
-	Etk_Fill_Policy_Flags fill_policy;
+	Etk_Fill_Policy_Flags fill_policy = ETK_FILL_POLICY_NONE;
 	
 	if(child->packing)
 	  {
