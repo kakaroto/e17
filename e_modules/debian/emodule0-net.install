@@ -1,5 +1,4 @@
 debian/tmp/usr/lib/enlightenment/modules/net/*.png
 debian/tmp/usr/lib/enlightenment/modules/net/*.eap
 debian/tmp/usr/lib/enlightenment/modules/net/*.edj
-debian/tmp/usr/lib/enlightenment/modules/net/*.ttf
 debian/tmp/usr/lib/enlightenment/modules/net/*/*.so

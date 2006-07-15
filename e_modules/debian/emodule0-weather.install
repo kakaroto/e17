@@ -2,5 +2,4 @@ debian/tmp/usr/lib/enlightenment/modules/weather/*.png
 debian/tmp/usr/lib/enlightenment/modules/weather/images/*.png
 debian/tmp/usr/lib/enlightenment/modules/weather/*.eap
 debian/tmp/usr/lib/enlightenment/modules/weather/*.edj
-debian/tmp/usr/lib/enlightenment/modules/weather/*.ttf
 debian/tmp/usr/lib/enlightenment/modules/weather/*/*.so
