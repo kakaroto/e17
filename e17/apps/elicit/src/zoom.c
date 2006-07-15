@@ -34,7 +34,7 @@ elicit_zoom_add(Evas *evas)
 }
 
 void
-elicit_zoom_zoom_set(Evas_Object *o, double zoom)
+elicit_zoom_zoom_set(Evas_Object *o, int zoom)
 {
   Elicit_Zoom *z;
   int iw, ih;
