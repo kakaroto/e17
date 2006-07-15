@@ -15,7 +15,8 @@
 #include <Evas.h>
 #include <limits.h>
 
-#define EVFS_GROUP_LIST "/evfs/group/list"
+#define EVFS_METADATA_GROUP_LIST "/evfs/group/list"
+#define EVFS_METADATA_BASE_DATA "block"
 
 /*
  * TODO
@@ -177,8 +178,10 @@ void evfs_metadata_initialise()
 	char* data;
 	int size;
 	int ret;
-	evfs_filereference ref;
+	evfs_filereference* ref;
 	evfs_metadata_file_groups* groups;
+	char** ret_list;
+	int i;
 	
 	if (!evfs_metadata_state) {
 		evfs_metadata_state++;
@@ -240,7 +243,7 @@ void evfs_metadata_initialise()
 				evfs_metadata_group_header_new("Audio", "Audio"));
 
 		data = eet_data_descriptor_encode(Evfs_Metadata_Root_Edd, metadata_root, &size);
-		ret = eet_write(_evfs_metadata_eet, EVFS_GROUP_LIST, data, size, 0);
+		ret = eet_write(_evfs_metadata_eet, EVFS_METADATA_GROUP_LIST, data, size, 0);
 
 		free(data);
 
@@ -250,7 +253,7 @@ void evfs_metadata_initialise()
 			printf("Loading pre-existing metadata root..\n");
 		
 			_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);	
-			data = eet_read(_evfs_metadata_eet, EVFS_GROUP_LIST, &size);
+			data = eet_read(_evfs_metadata_eet, EVFS_METADATA_GROUP_LIST, &size);
 			if (data) {
 				metadata_root = 
 					eet_data_descriptor_decode(Evfs_Metadata_Root_Edd, data, size);
@@ -265,15 +268,22 @@ void evfs_metadata_initialise()
 			eet_close(_evfs_metadata_eet);
 	}
 
-	/*ref.plugin_uri= strdup("file");
-	ref.path = strdup("/home/chaos/respite3x3840.jpg");
-	evfs_metadata_group_header_file_add(&ref, "Pictures");
+	/*ref = calloc(1, sizeof(evfs_filereference));
+	ref->plugin_uri= strdup("file");
+	ref->path = strdup("/home/chaos/respite3x3840.jpg");
+	evfs_metadata_group_header_file_add(ref, "Pictures");
 
 	printf("\n*****\nFile groups are now:\n");
 
-	groups = evfs_metadata_file_groups_get(&ref);
+	groups = evfs_metadata_file_groups_get(ref);
 	evfs_metadata_debug_file_groups_print(groups);
-	evfs_metadata_file_groups_free(groups);*/
+	evfs_metadata_file_groups_free(groups);
+
+	ret_list = evfs_metadata_file_group_list("Pictures", &size);
+	for (i=0;i<size;i++) {
+		printf("In group: %s\n", ret_list[i]);
+	}*/
+	
 
 
 }
@@ -284,6 +294,29 @@ void evfs_metadata_file_set_key_value_edd(evfs_filereference* ref, char* key,
 
 }
 
+char**
+evfs_metadata_file_group_list(char* group, int* num) 
+{
+	char** ret_list;
+	char group_base[PATH_MAX];
+	int i;
+	char* j;
+
+	snprintf(group_base, sizeof(group_base), "/groups/%s:*", group);
+
+	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);
+	ret_list = eet_list(_evfs_metadata_eet, group_base, num);
+
+	if (*num>0) {
+		for(i=0;i<*num;i++) {
+			j = index(ret_list[i], ':');
+			if (j) ret_list[i] = j+1;
+		}
+	}
+
+	return ret_list;
+}
+
 evfs_metadata_file_groups* evfs_metadata_file_groups_get(evfs_filereference* ref)
 {
 	evfs_metadata_file_groups* groups = NULL;
@@ -292,17 +325,21 @@ evfs_metadata_file_groups* evfs_metadata_file_groups_get(evfs_filereference* ref
 	int size;
 	int ret = 0;
 	char path[PATH_MAX];
+	char* file_path;
 
-	snprintf(path, PATH_MAX, "/%s/%s/groups", ref->plugin_uri, ref->path);
+	/*Build a path*/
+	file_path = evfs_filereference_to_string(ref);
+
+	snprintf(path, PATH_MAX, "/filedata/%s/groups", file_path);
 
 	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);
 	data = eet_read(_evfs_metadata_eet, path, &size);
 	if (data) {
-		printf("Found group data for file in eet..\n");
-		
 		groups = eet_data_descriptor_decode(Evfs_Metadata_File_Groups_Edd, data, size);
 		free(data);
 	}
+
+	free(file_path);
 
 	return groups;
 
@@ -312,6 +349,7 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 {
 	evfs_metadata_file_groups* groups;
 	char path[PATH_MAX];
+	char* file_path;
 	char* data;
 	int size;
 	int ret = 0;
@@ -327,9 +365,13 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 		return;
 	}
 
+	/*Build a path*/
+	file_path = evfs_filereference_to_string(ref);
+	printf("File path is: %s\n", file_path);
+
 
 	/*Add to file groups*/
-	snprintf(path, PATH_MAX, "/%s/%s/groups", ref->plugin_uri, ref->path);
+	snprintf(path, PATH_MAX, "/filedata/%s/groups", file_path);
 
 	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);
 	data = eet_read(_evfs_metadata_eet, path, &size);
@@ -361,9 +403,14 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 			ret = eet_write(_evfs_metadata_eet, path, data, size, 0);
 		}
 		if (ret) {
-			printf("Wrote %d for %s\n", size, path);
+			//printf("Wrote %d for %s\n", size, path);
 		}
 		free(data);
+
+		
+		/*Add to the group itself*/
+		snprintf(path, sizeof(path), "/groups/%s:%s", group, file_path);
+		eet_write(_evfs_metadata_eet, path, EVFS_METADATA_BASE_DATA, strlen(EVFS_METADATA_BASE_DATA), 0);
 
 		eet_close(_evfs_metadata_eet);
 	} else {
@@ -371,20 +418,27 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 	}
 	/*Free groups*/
 	evfs_metadata_file_groups_free(groups);
-
+	
+	free(file_path);
 	
 }
+
+
 
 void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
 		char* value) 
 {
 	evfs_metadata_object obj;
 	char path[PATH_MAX];
+	char* file_path;
 	char* data;
 	int size;
 	int ret;
 
-	snprintf(path, PATH_MAX, "/%s/%s/custommeta/string/%s", ref->plugin_uri, ref->path, key);
+	/*Build a path*/
+	file_path = evfs_filereference_to_string(ref);
+
+	snprintf(path, PATH_MAX, "/filedata/%s/custommeta/string/%s", file_path, key);
 	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ_WRITE);
 	ret = 0;
 
@@ -401,6 +455,7 @@ void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
 		printf("Wrote %s for %s\n", value, path);
 	}
 	free(data);
+	free(file_path);
 
 	eet_close(_evfs_metadata_eet);
 }
@@ -411,11 +466,14 @@ void evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key,
 	evfs_metadata_object* obj = NULL;
 	char path[PATH_MAX];
 	char* data;
+	char* file_path;
 	int size;
 	int ret;
 
+	/*Build a path*/
+	file_path = evfs_filereference_to_string(ref);
 
-	snprintf(path, PATH_MAX, "/%s/%s/custommeta/string/%s", ref->plugin_uri, ref->path, key);
+	snprintf(path, PATH_MAX, "/filedata/%s/custommeta/string/%s", file_path, key);
 	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);
 	ret = 0;
 
@@ -432,4 +490,6 @@ void evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key,
 		}
 	}	
 	eet_close(_evfs_metadata_eet);
+
+	free(file_path);
 }
