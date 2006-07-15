@@ -126,6 +126,9 @@ elicit_zoom_data_set(Evas_Object *o, void *data, int w, int h)
   z = evas_object_smart_data_get(o);
   if (!z) return;
 
+  z->iw = w;
+  z->ih = h;
+
   /* get the object ready, copy the data in */
   evas_object_image_alpha_set(z->shot, 0);
   evas_object_image_size_set(z->shot, z->iw, z->ih);
