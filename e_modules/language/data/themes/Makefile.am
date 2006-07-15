@@ -7,15 +7,14 @@ EDJE_FLAGS = -v -id ./images
 
 filesdir = $(datadir)
 files_DATA = \
-language.edc \
 language.edj
 
-EXTRA_DIST = $(files_DATA) $(wildcard images/*.png)
+EXTRA_DIST = $(files_DATA) \
+			language.edc \
+			$(wildcard images/*.png)
 
-language.edj: Makefile language.edc
-	$(EDJE_CC) $(EDJE_FLAGS) \
-	language.edc \
-	language.edj
+%.edj:  %.edc
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	rm -f *.edj
