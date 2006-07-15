@@ -40,8 +40,10 @@ module_la_LIBADD       = @e_libs@ -lm
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
-%.edj:  %.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+cpu.edj: Makefile cpu.edc
+	 $(EDJE_CC) $(EDJE_FLAGS) \
+	 cpu.edc \
+	 cpu.edj
 
 clean-local:
 	 rm -rf *.edj *~
