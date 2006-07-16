@@ -9,6 +9,8 @@
 #ifndef EPBB_H
 #define EPBB_H
 
+#define EPBB_IPCNAME "epbb"
+
 struct _Epbb
 {
    Ecore_Evas *ee;

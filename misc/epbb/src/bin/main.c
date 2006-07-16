@@ -199,7 +199,8 @@ main(int argc, const char *argv[])
 {
    int rc = -1;
 
-   if ((rc = ipc_init(LIBMODE_CLIENT, 1)) != 0)
+   init_libpbb();
+   if ((rc = ipc_init(EPBB_IPCNAME, LIBMODE_CLIENT, 1)) != 0)
    {
       switch (rc)
       {
@@ -247,5 +248,6 @@ main(int argc, const char *argv[])
    edje_shutdown();
    ecore_evas_shutdown();
    ecore_shutdown();
+   exit_libpbb();
    return (0);
 }
