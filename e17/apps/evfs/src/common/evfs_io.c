@@ -279,7 +279,7 @@ evfs_write_list_event(evfs_client * client, evfs_event * event)
         /*memcpy(block, &ref->file_type, sizeof(evfs_file_type));
          * memcpy(block+sizeof(evfs_file_type), ref->path, strlen(ref->path)+1); */
 
-        //printf("Encoding filename: %d %s '%s'\n", ref->file_type, ref->plugin_uri, ref->path);        
+        /*printf("Encoding filename: %d %s '%s'\n", ref->file_type, ref->plugin_uri, ref->path);        */
         data =
            eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
 

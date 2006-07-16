@@ -268,12 +268,12 @@ void evfs_metadata_initialise()
 			eet_close(_evfs_metadata_eet);
 	}
 
-	/*ref = calloc(1, sizeof(evfs_filereference));
+	ref = calloc(1, sizeof(evfs_filereference));
 	ref->plugin_uri= strdup("file");
-	ref->path = strdup("/home/chaos/respite3x3840.jpg");
+	ref->path = strdup("/home/chaos/sakura3x3840.jpg");
 	evfs_metadata_group_header_file_add(ref, "Pictures");
 
-	printf("\n*****\nFile groups are now:\n");
+	/*printf("\n*****\nFile groups are now:\n");
 
 	groups = evfs_metadata_file_groups_get(ref);
 	evfs_metadata_debug_file_groups_print(groups);

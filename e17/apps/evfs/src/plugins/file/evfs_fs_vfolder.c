@@ -124,9 +124,21 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 		   }
 	   } else {
 		   char* group_name;
+		   char** list;
+		   int count;
+		   int i;
 		   group_name = strstr(path + 1, "/") + 1;
+		   evfs_file_uri_path* path;
 
 		   printf("Group name: %s\n", group_name);
+
+		   list = evfs_metadata_file_group_list(group_name, &count);
+
+		   for (i=0;i<count;i++) {
+			   path = evfs_parse_uri(list[i]);
+
+			   ecore_list_append(files, path->files[0]);
+		   }
 	   }
    }
 		   
