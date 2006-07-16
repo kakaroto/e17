@@ -241,7 +241,7 @@ callback (evfs_event * data, void *obj)
 	      
 	      ecore_list_append(file_list, calling_request);
 	      
-	      folder = data->resp_command.file_command.files[0]->path;
+	      /*folder = data->resp_command.file_command.files[0]->path;*/
 
 	      if (data->file_list.list) {
 		      ecore_list_goto_first (data->file_list.list);
@@ -249,6 +249,11 @@ callback (evfs_event * data, void *obj)
 			/*printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type); */
 
 			pos = rindex (ref->path, '/');
+			if (pos - ref->path == 0 && ref->path[0] == '/') 
+				folder = strdup("/");
+			else
+				folder = strndup(ref->path, pos - ref->path);
+
 			filename = strdup (pos + 1);
 
 			/*Look for an existing file we have cached */
@@ -312,6 +317,9 @@ callback (evfs_event * data, void *obj)
 	
 			/*Add this file to our list */
 			ecore_list_append (file_list, file);
+
+			/*Free folder*/
+			free(folder);
 		      }
 		}
 
