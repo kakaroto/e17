@@ -75,12 +75,15 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 {
    Ecore_List *files = ecore_list_new();
    evfs_filereference* ref;
+   char* path;
+
+   path = command->file_command.files[0]->path;
 
    /*We should make this generic - perhaps a plugin system*/
    /*FIXME - but this will do for testing*/
    printf("Vfolder listing '%s'..\n", command->file_command.files[0]->path);
    
-   if (!strcmp(command->file_command.files[0]->path, "/")) {
+   if (!strcmp(path, "/")) {
 
 	   /*Metadata groups ref*/
 	   ref = NEW(evfs_filereference);
@@ -95,8 +98,36 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 	   ref->path = strdup(EVFS_PLUGIN_VFOLDER_QUERIES_ID);
 	   ref->file_type = EVFS_FILE_DIRECTORY;
 	   ecore_list_append(files, ref);
-   } else if (!strncmp(command->file_command.files[0]->path, "/Groups", strlen("/Groups"))) {
-	  printf("User requested a metagroup listing\n"); 
+   } else if (!strncmp(path, EVFS_PLUGIN_VFOLDER_GROUPS_ID, strlen(EVFS_PLUGIN_VFOLDER_GROUPS_ID))) {
+	   if (!strcmp(path, EVFS_PLUGIN_VFOLDER_GROUPS_ID)) {
+		   Evas_List* group_list;
+		   Evas_List* iter;
+		   char assemble[PATH_MAX];
+		   evfs_metadata_group_header* g;
+		   
+		   /*Get group list, and return*/
+		   group_list = evfs_metadata_groups_get();
+		   
+		   for (iter = group_list; iter; ) {
+			   g = iter->data;
+			   
+			   snprintf(assemble, sizeof(assemble), "%s/%s", 
+					   EVFS_PLUGIN_VFOLDER_GROUPS_ID, g->name);
+			   
+		   	   ref = NEW(evfs_filereference);
+			   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
+			   ref->path = strdup(assemble);
+			   ref->file_type = EVFS_FILE_DIRECTORY;
+			   ecore_list_append(files, ref);
+
+			   iter = iter->next;
+		   }
+	   } else {
+		   char* group_name;
+		   group_name = strstr(path + 1, "/") + 1;
+
+		   printf("Group name: %s\n", group_name);
+	   }
    }
 		   
    *directory_list = evfs_file_list_sort(files);

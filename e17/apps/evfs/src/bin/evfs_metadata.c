@@ -288,6 +288,10 @@ void evfs_metadata_initialise()
 
 }
 
+Evas_List* evfs_metadata_groups_get() {
+	return metadata_root->group_list;	
+}
+
 void evfs_metadata_file_set_key_value_edd(evfs_filereference* ref, char* key, 
 		void* value, Eet_Data_Descriptor* edd) 
 {
