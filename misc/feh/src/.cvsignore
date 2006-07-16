@@ -24,6 +24,7 @@ stamp-h
 stamp-h.in 
 feh*.tar.gz
 macros
+stamp-h1
 *.o
 *~
 _test*
