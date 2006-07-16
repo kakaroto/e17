@@ -1,0 +1,14 @@
+
+The dependancies are:
+
+* T1lib (http://www.foolabs.com/xpdf/download.html)
+
+* kpathsea (http://www.tug.org/web2c/)
+
+* VFlib3 (http://www-masu.ist.osaka-u.ac.jp/~kakugawa/VFlib/dl.html)
+  (disable the freetype backend, as it seems that it does not compile)
+
+* TeX Guy project (http://www-masu.ist.osaka-u.ac.jp/~kakugawa/TeX-Guy/)
+
+The TeX Guy project contains the library DVIlib, which is  the dvi
+interpreter and renderer.
