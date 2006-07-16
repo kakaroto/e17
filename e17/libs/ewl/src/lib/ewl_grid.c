@@ -482,7 +482,7 @@ ewl_grid_column_fixed_w_get(Ewl_Grid *g, int col)
 /**
  * @param g: the grid
  * @param col: the column
- * @param width: the new relative width
+ * @param relw: the new relative width
  * @return Returns no value.
  * @brief Set the relative width of a column
  */
@@ -679,7 +679,7 @@ ewl_grid_row_fixed_h_get(Ewl_Grid *g, int row)
 /**
  * @param g: the grid
  * @param row: the row
- * @param height: the new relative height
+ * @param relh: the new relative height
  * @return Returns no value.
  * @brief Set the relative height of a row
  */

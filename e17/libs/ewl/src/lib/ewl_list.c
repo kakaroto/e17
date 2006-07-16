@@ -3,6 +3,10 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/**
+ * @return Returns a new Ewl_Widget on success or NULL on failure
+ * @brief Creates and initializes a new Ewl_List widget
+ */
 Ewl_Widget *
 ewl_list_new(void)
 {
@@ -23,6 +27,11 @@ ewl_list_new(void)
 	DRETURN_PTR(list, DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The list to initialize
+ * @return Returns TRUE on success or FALSE on failure
+ * @brief Initialises an Ewl_List widget to default values
+ */
 int
 ewl_list_init(Ewl_List *list)
 {
@@ -43,6 +52,12 @@ ewl_list_init(Ewl_List *list)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The Ewl_List to set the model into
+ * @param model: The model to set into the list
+ * @return Returns no value
+ * @brief Sets the model to be used for the list
+ */
 void
 ewl_list_model_set(Ewl_List *list, Ewl_Model *model)
 {
@@ -57,6 +72,11 @@ ewl_list_model_set(Ewl_List *list, Ewl_Model *model)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The list to retrieve the model from
+ * @return Returns the Ewl_Model associated with the list or NULL if none set
+ * @brief Retrieves the Ewl_Model associated with the list or NULL if none set
+ */
 Ewl_Model *
 ewl_list_model_get(Ewl_List *list)
 {
@@ -67,6 +87,12 @@ ewl_list_model_get(Ewl_List *list)
 	DRETURN_PTR(list->model, DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The list to set the view on
+ * @param view: The view to set into the list
+ * @return Returns no value
+ * @brief Sets the view @a view into the list @a list
+ */
 void
 ewl_list_view_set(Ewl_List *list, Ewl_View *view)
 {
@@ -80,6 +106,11 @@ ewl_list_view_set(Ewl_List *list, Ewl_View *view)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The list to get the view from
+ * @return Returns the Ewl_View set on the list or NULL if none set
+ * @brief Retrieves the Ewl_View set on the list or NULL if none set
+ */
 Ewl_View *
 ewl_list_view_get(Ewl_List *list)
 {
@@ -90,6 +121,12 @@ ewl_list_view_get(Ewl_List *list)
 	DRETURN_PTR(list->view, DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The list to set the data into
+ * @param data: The data to set into the list
+ * @return Returns no value
+ * @brief Sets the given data into the list
+ */
 void
 ewl_list_data_set(Ewl_List *list, void *data)
 {
@@ -103,6 +140,11 @@ ewl_list_data_set(Ewl_List *list, void *data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The list to get the data from
+ * @return Returns the data set into the list or NULL if none set
+ * @brief Retrieves the data set into the list or NULL if none set
+ */
 void *
 ewl_list_data_get(Ewl_List *list)
 {
@@ -113,6 +155,12 @@ ewl_list_data_get(Ewl_List *list)
 	DRETURN_PTR(list->data, DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The list to set the dirty flag of
+ * @param dirty: The dirty flag to set
+ * @return Returns no value
+ * @brief Sets the dirty status of the list @a list to @a dirty
+ */
 void
 ewl_list_dirty_set(Ewl_List *list, unsigned int dirty)
 {
@@ -126,6 +174,11 @@ ewl_list_dirty_set(Ewl_List *list, unsigned int dirty)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param list: The list to retrieve the dirty flag from
+ * @return Returns the dirty flag of the list
+ * @brief Retrieves the dirty flag from the list
+ */
 unsigned int
 ewl_list_dirty_get(Ewl_List *list)
 {
@@ -136,6 +189,14 @@ ewl_list_dirty_get(Ewl_List *list)
 	DRETURN_INT(list->dirty, DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The list to be configured
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief Configures the given list 
+ */
 void
 ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)

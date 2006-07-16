@@ -51,10 +51,13 @@ typedef struct Ewl_Callback_Custom Ewl_Callback_Custom;
  */
 #define EWL_CALLBACK_CUSTOM(cb) ((Ewl_Callback_Custom *)cb)
 
+/**
+ * The Ewl_Callback_Custom structure 
+ */
 struct Ewl_Callback_Custom
 {
-	Ewl_Callback cb;
-	unsigned int event_id;
+	Ewl_Callback cb;		/**< Inherit from Ewl_Callback */
+	unsigned int event_id;		/**< Add an event id */
 };
 
 /**

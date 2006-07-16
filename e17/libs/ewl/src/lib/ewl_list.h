@@ -30,13 +30,13 @@ typedef struct Ewl_List Ewl_List;
  */
 struct Ewl_List
 {
-	Ewl_Box box;
+	Ewl_Box box;		/**< The box parent */
 
-	Ewl_Model *model;
-	Ewl_View *view;
-	void *data;
+	Ewl_Model *model;	/**< The model for the list */
+	Ewl_View *view;		/**< The view for the list */
+	void *data;		/**< The data for the list */
 
-	unsigned char dirty:1;
+	unsigned char dirty:1;	/**< Has the model changed? */
 };
 
 Ewl_Widget 	*ewl_list_new(void);

@@ -34,7 +34,7 @@ struct Ewl_Grid_Info
 	union {
 		int		 size;			/**< The size set by the user */
 		float		 rel_size;		/**< The relative size */
-	} user;
+	} user;						/**< The user set values for the grid */
 	
 	Ewl_Grid_Resize_Type	 resize_type;		/**< Are there values set by the user */
 };
