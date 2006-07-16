@@ -17,7 +17,9 @@ images {
     image, "brightness.png" LOSSY 95;
     image, "sleep.png" LOSSY 95;
     image, "battery.png" LOSSY 95;
+#if DEBUG
     image, "metalsphere.png" LOSSY 95;
+#endif
 }
 
 collections {
