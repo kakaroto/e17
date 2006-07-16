@@ -1366,7 +1366,18 @@ char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int dril
 
 	/*Do we have login information*/
 	if (!source_file->username) {
-		snprintf(uri, 512, "%s://%s/%s",  source_file->uri_base, source_file->path, source_file->filename);
+		
+		/*Handle root path*/
+		if (strlen(source_file->path) > 0) { 
+			if (!strcmp(source_file->path, "/")) {
+					snprintf(uri, 512, "%s:///%s",  source_file->uri_base, 
+					source_file->filename);						
+			} else {
+					snprintf(uri, 512, "%s://%s/%s",  source_file->uri_base, 
+					source_file->path, source_file->filename);			
+			}
+		} else
+			snprintf(uri, 512, "%s://%s",  source_file->uri_base, source_file->filename);
 	} else {
 		snprintf(uri, 512, "%s://%s:%s@%s/%s",  source_file->uri_base, 
 		source_file->username, source_file->password, 
