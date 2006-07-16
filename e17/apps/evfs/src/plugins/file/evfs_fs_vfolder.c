@@ -76,7 +76,11 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
    Ecore_List *files = ecore_list_new();
    evfs_filereference* ref;
 
-   if (!strcmp(command->file_command.files[0]->path, "//")) {
+   /*We should make this generic - perhaps a plugin system*/
+   /*FIXME - but this will do for testing*/
+   printf("Vfolder listing '%s'..\n", command->file_command.files[0]->path);
+   
+   if (!strcmp(command->file_command.files[0]->path, "/")) {
 
 	   /*Metadata groups ref*/
 	   ref = NEW(evfs_filereference);
@@ -91,6 +95,8 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 	   ref->path = strdup(EVFS_PLUGIN_VFOLDER_QUERIES_ID);
 	   ref->file_type = EVFS_FILE_DIRECTORY;
 	   ecore_list_append(files, ref);
+   } else if (!strncmp(command->file_command.files[0]->path, "/Groups", strlen("/Groups"))) {
+	  printf("User requested a metagroup listing\n"); 
    }
 		   
    *directory_list = evfs_file_list_sort(files);

@@ -263,6 +263,10 @@ AC_SUBST(DB_STYLESHEETS)
 AC_PATH_PROG(JADE, jade)
 AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
 
+dnl Volume monitor stuff                             
+AC_CHECK_FUNCS(setmntent endmntent hasmntopt getmntinfo)
+AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h sys/mntctl.h sys/vfs.h sys/vmount.h sys/sysctl.h fstab.h fnmatch.h)
+
 
 
 dnl Various conditionals
