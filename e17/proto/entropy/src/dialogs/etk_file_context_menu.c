@@ -20,6 +20,8 @@ Etk_Widget* _entropy_etk_context_menu_groups_remove_from_item = NULL;
 
 entropy_generic_file* _entropy_etk_context_menu_current_folder = NULL;
 entropy_generic_file* _entropy_etk_context_menu_current_file = NULL;
+Ecore_List* _entropy_etk_context_menu_selected_files = NULL;
+
 entropy_gui_component_instance* _entropy_etk_context_menu_current_instance = NULL;
 
 int check= 0;

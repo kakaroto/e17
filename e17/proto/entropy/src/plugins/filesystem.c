@@ -259,8 +259,10 @@ callback (evfs_event * data, void *obj)
 			pos = rindex (ref->path, '/');
 			if (pos - ref->path == 0 && ref->path[0] == '/') 
 				folder = strdup("/");
-			else
-				folder = strndup(ref->path, pos - ref->path);
+			else {
+				folder = calloc(pos - ref->path +1, 1 );
+				strncpy(folder, ref->path, pos - ref->path);
+			}
 
 			filename = strdup (pos + 1);
 

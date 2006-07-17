@@ -219,6 +219,8 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
 
    }
 
+   evas_list_free(row_list);
+
 }
 
 
@@ -404,8 +406,6 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
    instance = file->instance;
    viewer = instance->data;
 	
-
-	  
    if (event->flags & EVAS_BUTTON_DOUBLE_CLICK && event->button == 1) {
 	   printf("Row clicked, file is: %s\n", file->file->filename); 
 
@@ -424,11 +424,22 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 	  gui_event->data = file->file;
 	  entropy_core_layout_notify_event (file->instance, gui_event, ENTROPY_EVENT_GLOBAL);
    } else if (event->button == 3) {
-	etk_tree_row_select(row);
+	Evas_List* rows;
 
-	file = ecore_hash_get(etk_list_viewer_row_hash, row);
+	rows = etk_tree_selected_rows_get(ETK_TREE(viewer->tree));
+	if (evas_list_count(rows) <= 1) {
+		etk_tree_row_select(row);
+		file = ecore_hash_get(etk_list_viewer_row_hash, row);
+		entropy_etk_context_menu_popup(instance, file->file);
+	} else {
+		/*Multi select popup*/
+		Ecore_List* files = ecore_list_new();
 
-	entropy_etk_context_menu_popup(instance, file->file);
+
+
+		ecore_list_destroy(files);
+	}
+	evas_list_free(rows);
    }
 }
 
