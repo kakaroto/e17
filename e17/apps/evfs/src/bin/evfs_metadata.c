@@ -191,65 +191,66 @@ void evfs_metadata_initialise()
 
 	printf(". EVFS metadata initialise..\n");
 
-	/*String edd*/
-	Evfs_Metadata_String_Edd = _evfs_metadata_edd_create("evfs_metadata_string", sizeof(evfs_metadata_object));
-	EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_String_Edd, evfs_metadata_object,
-                                 "description", description, EET_T_STRING);
-	EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_String_Edd, evfs_metadata_object,
+	if (!evfs_object_client_is_get()) {
+		/*String edd*/
+		Evfs_Metadata_String_Edd = _evfs_metadata_edd_create("evfs_metadata_string", sizeof(evfs_metadata_object));
+		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_String_Edd, evfs_metadata_object,
+	                                 "description", description, EET_T_STRING);
+		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_String_Edd, evfs_metadata_object,
                                  "key", key, EET_T_STRING);
-	EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_String_Edd, evfs_metadata_object,
+		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_String_Edd, evfs_metadata_object,
                                  "value", value, EET_T_STRING);
 
-	/*Group edd*/
-	Evfs_Metadata_Group_Edd = _evfs_metadata_edd_create("evfs_metadata_group_header", sizeof(evfs_metadata_group_header));
-	EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_Group_Edd, evfs_metadata_group_header,
-                                 "description", description, EET_T_STRING);
-	EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_Group_Edd, evfs_metadata_group_header,
-                                 "name", name, EET_T_STRING);
+		/*Group edd*/
+		Evfs_Metadata_Group_Edd = _evfs_metadata_edd_create("evfs_metadata_group_header", sizeof(evfs_metadata_group_header));
+		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_Group_Edd, evfs_metadata_group_header,
+	                                 "description", description, EET_T_STRING);
+		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_Group_Edd, evfs_metadata_group_header,
+	                                 "name", name, EET_T_STRING);
 
-	/*Metadata group root*/
-	Evfs_Metadata_Root_Edd = _evfs_metadata_edd_create("evfs_metadata_root", sizeof(evfs_metadata_root));
-	EET_DATA_DESCRIPTOR_ADD_LIST(Evfs_Metadata_Root_Edd, evfs_metadata_root,
-                                 "group_list", group_list, Evfs_Metadata_Group_Edd);
+		/*Metadata group root*/
+		Evfs_Metadata_Root_Edd = _evfs_metadata_edd_create("evfs_metadata_root", sizeof(evfs_metadata_root));
+		EET_DATA_DESCRIPTOR_ADD_LIST(Evfs_Metadata_Root_Edd, evfs_metadata_root,
+	                                 "group_list", group_list, Evfs_Metadata_Group_Edd);
 
-	/*Metadata group root*/
-	Evfs_Metadata_File_Groups_Edd = _evfs_metadata_edd_create("evfs_metadata_file_groups", sizeof(evfs_metadata_file_groups));
-	EET_DATA_DESCRIPTOR_ADD_LIST(Evfs_Metadata_File_Groups_Edd, evfs_metadata_file_groups,
-                                 "groups", groups, Evfs_Metadata_Group_Edd);
+		/*Metadata group root*/
+		Evfs_Metadata_File_Groups_Edd = _evfs_metadata_edd_create("evfs_metadata_file_groups", sizeof(evfs_metadata_file_groups));
+		EET_DATA_DESCRIPTOR_ADD_LIST(Evfs_Metadata_File_Groups_Edd, evfs_metadata_file_groups,
+	                                 "groups", groups, Evfs_Metadata_Group_Edd);
 
-	homedir = strdup(getenv("HOME"));
-	snprintf(metadata_file, PATH_MAX, "%s/.e/evfs", homedir);
+		homedir = strdup(getenv("HOME"));
+		snprintf(metadata_file, PATH_MAX, "%s/.e/evfs", homedir);
+	
+		if (stat(metadata_file, &config_dir_stat)) {
+			mkdir(metadata_file, 0700);
+		}
 
-	if (stat(metadata_file, &config_dir_stat)) {
-		mkdir(metadata_file, 0700);
-	}
+		snprintf(metadata_file, PATH_MAX, "%s/.e/evfs/evfs_metadata.eet", homedir);
 
-	snprintf(metadata_file, PATH_MAX, "%s/.e/evfs/evfs_metadata.eet", homedir);
+		if (stat(metadata_file, &config_dir_stat)) {
+			printf("Making new metadata file..\n");
+				
+			/*Open/close the file*/
+			_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_WRITE);
+	
+			metadata_root = calloc(1, sizeof(evfs_metadata_root));
+	
+			/*Create a starting 'group' list*/
+			metadata_root->group_list = evas_list_append(metadata_root->group_list, 
+					evfs_metadata_group_header_new("Pictures", "Pictures"));
+			metadata_root->group_list = evas_list_append(metadata_root->group_list, 
+					evfs_metadata_group_header_new("Video", "Video"));
+			metadata_root->group_list = evas_list_append(metadata_root->group_list, 
+					evfs_metadata_group_header_new("Audio", "Audio"));
 
-	if (stat(metadata_file, &config_dir_stat)) {
-		printf("Making new metadata file..\n");
+			data = eet_data_descriptor_encode(Evfs_Metadata_Root_Edd, metadata_root, &size);
+			ret = eet_write(_evfs_metadata_eet, EVFS_METADATA_GROUP_LIST, data, size, 0);
+	
+			free(data);
+	
+			eet_close(_evfs_metadata_eet);
 			
-		/*Open/close the file*/
-		_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_WRITE);
-
-		metadata_root = calloc(1, sizeof(evfs_metadata_root));
-
-		/*Create a starting 'group' list*/
-		metadata_root->group_list = evas_list_append(metadata_root->group_list, 
-				evfs_metadata_group_header_new("Pictures", "Pictures"));
-		metadata_root->group_list = evas_list_append(metadata_root->group_list, 
-				evfs_metadata_group_header_new("Video", "Video"));
-		metadata_root->group_list = evas_list_append(metadata_root->group_list, 
-				evfs_metadata_group_header_new("Audio", "Audio"));
-
-		data = eet_data_descriptor_encode(Evfs_Metadata_Root_Edd, metadata_root, &size);
-		ret = eet_write(_evfs_metadata_eet, EVFS_METADATA_GROUP_LIST, data, size, 0);
-
-		free(data);
-
-		eet_close(_evfs_metadata_eet);
-		
-	} else {
+		} else {
 			printf("Loading pre-existing metadata root..\n");
 		
 			_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);	
@@ -266,25 +267,24 @@ void evfs_metadata_initialise()
 				printf("Error loading group list..\n");
 			}
 			eet_close(_evfs_metadata_eet);
-	}
+		}
 
-	/*ref = calloc(1, sizeof(evfs_filereference));
-	ref->plugin_uri= strdup("file");
-	ref->path = strdup("/home/chaos/sakura3x3840.jpg");
-	evfs_metadata_group_header_file_add(ref, "Pictures");
-
-	printf("\n*****\nFile groups are now:\n");
-
-	groups = evfs_metadata_file_groups_get(ref);
-	evfs_metadata_debug_file_groups_print(groups);
-	evfs_metadata_file_groups_free(groups);
-
-	ret_list = evfs_metadata_file_group_list("Pictures", &size);
-	for (i=0;i<size;i++) {
-		printf("In group: %s\n", ret_list[i]);
-	}*/
+		/*ref = calloc(1, sizeof(evfs_filereference));
+		ref->plugin_uri= strdup("file");
+		ref->path = strdup("/home/chaos/sakura3x3840.jpg");
+		evfs_metadata_group_header_file_add(ref, "Pictures");
 	
-
+		printf("\n*****\nFile groups are now:\n");
+	
+		groups = evfs_metadata_file_groups_get(ref);
+		evfs_metadata_debug_file_groups_print(groups);
+			evfs_metadata_file_groups_free(groups);
+	
+		ret_list = evfs_metadata_file_group_list("Pictures", &size);
+		for (i=0;i<size;i++) {
+			printf("In group: %s\n", ret_list[i]);
+		}*/
+	}
 
 }
 
