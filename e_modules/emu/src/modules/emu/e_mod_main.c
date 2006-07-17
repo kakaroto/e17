@@ -733,7 +733,7 @@ _emu_cb_exe_data(void *data, int type, void *ev)
                               {
                                  if (strncasecmp(emu_face->lines[i].line, _commands[j], strlen(_commands[j])) == 0)
                                    {    /* Found the beginning of a command. */
-                                      unsigned char *s;
+                                      char *s;
 
                                       s = &(emu_face->lines[i].line[strlen(_commands[j])]);
                                       if ((s[0] == '\0') || isspace(s[0]))
