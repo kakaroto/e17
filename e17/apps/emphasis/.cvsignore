@@ -5,6 +5,7 @@ autom4te.cache
 config.*
 configure
 depcomp
+doc
 install-sh
 ltmain.sh
 missing

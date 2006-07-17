@@ -21,3 +21,4 @@ ltmain.sh
 missing
 stamp-h1
 etk.pc
+gendoc_warnings.log

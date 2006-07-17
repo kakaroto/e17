@@ -10,6 +10,7 @@ config.status
 config.sub
 configure
 exhibit_docs.tar.gz
+exhibit.c
 depcomp
 install-sh
 libtool

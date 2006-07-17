@@ -11,6 +11,7 @@ config.sub
 configure
 depcomp
 etk_server.spec
+etk_server.c
 install-sh
 libtool
 ltmain.sh
