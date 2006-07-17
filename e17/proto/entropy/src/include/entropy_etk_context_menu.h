@@ -10,6 +10,9 @@ void _entropy_etk_list_viewer_properties_cb(Etk_Object *object, void *data);
 void entropy_etk_context_menu_stat_cb_register(
 	void (*cb)(void*, entropy_generic_file*), void* data);
 
+void
+entropy_etk_context_menu_metadata_groups_populate();
+
 
 
 #endif

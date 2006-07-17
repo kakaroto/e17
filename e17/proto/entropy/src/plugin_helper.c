@@ -271,6 +271,28 @@ void entropy_plugin_filesystem_file_rename(entropy_generic_file* file, char* des
 
 }
 
+void entropy_plugin_filesystem_metadata_groups_get(entropy_gui_component_instance* instance) 
+{
+    Entropy_Plugin_File* plugin =
+    ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
+				    ENTROPY_PLUGIN_SUB_TYPE_ALL));
+
+  if (plugin) {
+  	(*plugin->misc_functions.groups_get) (instance);
+   }
+}
+
+Ecore_List* entropy_plugin_filesystem_metadata_groups_retrieve() 
+{
+    Entropy_Plugin_File* plugin =
+    ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
+				    ENTROPY_PLUGIN_SUB_TYPE_ALL));
+
+  if (plugin) {
+  	return (*plugin->misc_functions.groups_retrieve) ();
+   }
+}
+
 void entropy_event_stat_request(Entropy_Generic_File* file, entropy_gui_component_instance* instance)
 {
     entropy_gui_event *gui_event;
@@ -313,3 +335,4 @@ entropy_generic_file* entropy_layout_current_folder_get(entropy_gui_component_in
 {
 	return layout->current_folder;
 }
+

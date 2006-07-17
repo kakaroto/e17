@@ -74,6 +74,11 @@ struct Entropy_Plugin_File {
 		void (*file_remove) (entropy_generic_file * file, entropy_gui_component_instance* instance);
 
 	} file_functions;
+
+	struct {
+		void (*groups_get)(entropy_gui_component_instance* instance);
+		 Ecore_List* (*groups_retrieve)();
+	} misc_functions;
 };
 #define ENTROPY_PLUGIN_FILE(plugin) ((Entropy_Plugin_File *) plugin)
 

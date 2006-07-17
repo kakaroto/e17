@@ -492,3 +492,32 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_extended_stat_ins
 }
 
 
+/*----------------------------*/
+
+/*Metadata groups */
+Entropy_Gui_Event_Handler* entropy_event_handler_metadata_groups_handler()
+{
+	return entropy_gui_event_handler_new(
+			entropy_event_handler_metadata_groups_instance_data,
+			entropy_event_handler_instance_data_generic_cleanup);
+	
+}
+
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_metadata_groups_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) 
+{
+	Entropy_Gui_Event_Handler_Instance_Data* data = NULL;
+	entropy_notify_event* ev = NULL;
+	
+	data = entropy_malloc(sizeof(Entropy_Gui_Event_Handler_Instance_Data));
+
+	ev = entropy_notify_event_new();
+	ev->event_type = ENTROPY_NOTIFY_METADATA_GROUPS; 
+	ev->return_struct = event->data;
+	ev->processed = 1;
+
+	data->notify = ev;
+	
+
+	return data;
+}

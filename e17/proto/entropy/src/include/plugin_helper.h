@@ -20,10 +20,13 @@ void entropy_plugin_operation_respond(long operation, int response);
 void entropy_plugin_filesystem_file_rename(entropy_generic_file* file, char* dest);
 void entropy_event_extended_stat_expect(Entropy_Generic_File* file, entropy_gui_component_instance* instance);
 
+void entropy_plugin_filesystem_metadata_groups_get(entropy_gui_component_instance* instance) ;
+
 entropy_plugin* entropy_plugin_gui_get_by_name_toolkit(char* toolkit, char* name);
 
 void entropy_event_stat_request(Entropy_Generic_File* file, entropy_gui_component_instance* instance);
 void entropy_event_action_file(Entropy_Generic_File* file, entropy_gui_component_instance* instance);
 entropy_generic_file* entropy_layout_current_folder_get(entropy_gui_component_instance_layout* layout);
+Ecore_List* entropy_plugin_filesystem_metadata_groups_retrieve() ;
 
 #endif

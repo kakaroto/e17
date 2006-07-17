@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include "plugin.h"
 #include <stdio.h>
 #include "plugin_base.h"
@@ -9,6 +11,7 @@
 #include <dirent.h>
 #include <strings.h>
 #include <limits.h>
+#include <string.h>
 
 #define NO_HIDDEN 1
 #define URI_POSIX "file"
@@ -18,6 +21,7 @@
 Ecore_Hash *folder_monitor_hash;
 Ecore_Hash *evfs_dir_requests;
 entropy_core *filesystem_core;	/*A reference to the core */
+Ecore_List* metadata_groups = NULL;
 
 Ecore_List *structurelist_get (char *base);
 struct stat *filestat_get (entropy_file_request * request);
@@ -30,8 +34,11 @@ void entropy_filesystem_file_rename (entropy_generic_file * file_from, entropy_g
 void entropy_filesystem_operation_respond(long id, int response);
 void entropy_filesystem_directory_create (entropy_generic_file * parent, char* child_name);
 void entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_component_instance* instance);
+void entropy_filesystem_metadata_groups_get(entropy_gui_component_instance* instance);
 
-evfs_connection *con;
+Ecore_List* entropy_filesystem_metadata_groups_retrieve();
+
+static evfs_connection *con;
 
 void
 callback (evfs_event * data, void *obj)
@@ -413,6 +420,8 @@ callback (evfs_event * data, void *obj)
 	evfs_filereference_to_string (data->resp_command.file_command.
 				      files[0]);
       instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+      ecore_hash_remove (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+
 
 
       if (instance) {
@@ -440,6 +449,42 @@ callback (evfs_event * data, void *obj)
 	//free (gui_event);
       }
 
+  }
+  break;
+
+  case EVFS_EV_METADATA_GROUPS: {
+	
+					
+	Evas_List* l;
+	/*entropy_gui_event* gui_event;
+	entropy_gui_component_instance* instance;
+
+	instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+        ecore_hash_remove (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+
+
+        gui_event = entropy_malloc (sizeof (entropy_gui_event));
+        gui_event->event_type =
+	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_METADATA_GROUPS);
+
+	gui_event->data = data->misc.string_list;
+	
+	      
+	entropy_core_layout_notify_event (instance, gui_event,
+					  ENTROPY_EVENT_LOCAL);*/
+
+	if (metadata_groups) {
+		char* obj;
+		while ((obj = ecore_list_remove_first(metadata_groups))) {
+			free(obj);
+		}
+	}
+	for (l = data->misc.string_list; l; ) {
+		ecore_list_append(metadata_groups, strdup(l->data));
+
+		l=l->next;
+	}
+	
   }
   break;
 
@@ -530,6 +575,9 @@ entropy_plugin_init (entropy_core * core)
   /*Save a core reference to avoid lookups*/
   filesystem_core = core;
 
+  /*Somewhere to store metadata groups */
+  metadata_groups = ecore_list_new();
+
   plugin = entropy_malloc(sizeof(Entropy_Plugin_File));
   base = ENTROPY_PLUGIN(plugin);
 
@@ -543,6 +591,8 @@ entropy_plugin_init (entropy_core * core)
   plugin->file_functions.operation_respond = &entropy_filesystem_operation_respond;
   plugin->file_functions.directory_create = &entropy_filesystem_directory_create;
   plugin->file_functions.file_remove = &entropy_filesystem_file_remove;
+  plugin->misc_functions.groups_get = &entropy_filesystem_metadata_groups_get;
+  plugin->misc_functions.groups_retrieve = &entropy_filesystem_metadata_groups_retrieve;
 
   return base; 
 
@@ -778,9 +828,6 @@ filelist_get (entropy_file_request * request)
       new_request->set_parent = 1;
     }
 
-
-
-
     new_request->core = request->core;
     new_request->drill_down = request->drill_down;
     new_request->requester = request->requester;
@@ -958,4 +1005,19 @@ void entropy_filesystem_operation_respond(long id, int response)
 {
 	printf("Received response for %ld -> %d\n", id, response);
 	evfs_client_operation_respond(con, id, response);
+}
+
+
+/*Metadata file groups get*/
+void 
+entropy_filesystem_metadata_groups_get(entropy_gui_component_instance* instance)
+{
+	long id = evfs_client_metadata_groups_get(con);
+	ecore_hash_set (evfs_dir_requests, (long*)id, instance);
+}
+
+Ecore_List*
+entropy_filesystem_metadata_groups_retrieve()
+{
+	return metadata_groups;
 }

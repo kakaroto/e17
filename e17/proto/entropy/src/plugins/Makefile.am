@@ -103,6 +103,7 @@ layout_etk_simple_la_SOURCES  =  layout_etk_simple.c $(top_srcdir)/src/entropy_d
                                 $(top_srcdir)/src/dialogs/etk_progress_dialog.c \
                                 $(top_srcdir)/src/dialogs/etk_interaction_dialog.c \
 				$(top_srcdir)/src/dialogs/etk_location_add_dialog.c \
+				$(top_srcdir)/src/dialogs/etk_file_context_menu.c \
 				$(top_srcdir)/src/dialogs/etk_mime_dialog_main.c \
                                 $(top_srcdir)/src/dialogs/etk_properties_dialog.c \
 				$(top_srcdir)/src/dialogs/etk_file_cache_debug_dialog.c

@@ -5,12 +5,24 @@
 #include "etk_properties_dialog.h"
 #include "etk_file_rename_dialog.h"
 
-static Etk_Widget* _entropy_etk_context_menu = NULL;
-static Etk_Widget* _entropy_etk_context_menu_open_with = NULL;
-static Etk_Widget* _entropy_etk_context_menu_open_with_item = NULL;
-static entropy_generic_file* _entropy_etk_context_menu_current_folder = NULL;
-static entropy_generic_file* _entropy_etk_context_menu_current_file = NULL;
-static entropy_gui_component_instance* _entropy_etk_context_menu_current_instance = NULL;
+Etk_Widget* _entropy_etk_context_menu = NULL;
+Etk_Widget* _entropy_etk_context_menu_open_with = NULL;
+Etk_Widget* _entropy_etk_context_menu_open_with_item = NULL;
+
+Etk_Widget* _entropy_etk_context_menu_groups = NULL;
+Etk_Widget* _entropy_etk_context_menu_groups_item = NULL;
+
+Etk_Widget* _entropy_etk_context_menu_groups_add_to = NULL;
+Etk_Widget* _entropy_etk_context_menu_groups_add_to_item = NULL;
+
+Etk_Widget* _entropy_etk_context_menu_groups_remove_from = NULL;
+Etk_Widget* _entropy_etk_context_menu_groups_remove_from_item = NULL;
+
+entropy_generic_file* _entropy_etk_context_menu_current_folder = NULL;
+entropy_generic_file* _entropy_etk_context_menu_current_file = NULL;
+entropy_gui_component_instance* _entropy_etk_context_menu_current_instance = NULL;
+
+int check= 0;
 
 typedef enum _Etk_Menu_Item_Type
 {
@@ -132,6 +144,57 @@ _entropy_etk_context_menu_file_rename_cb(Etk_Object *object, void *data)
 	etk_file_rename_dialog_create(_entropy_etk_context_menu_current_file);
 }
 
+void
+entropy_etk_context_menu_metadata_groups_populate()
+{
+	Etk_Widget* w;
+	Ecore_List* l;
+	char* str;
+
+	if (!_entropy_etk_context_menu) 
+		entropy_etk_context_menu_init();
+
+	/*Empty groups menus*/
+	if (ETK_MENU_ITEM(_entropy_etk_context_menu_groups_add_to_item)->submenu) {
+	   etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_add_to_item), NULL);
+	   etk_object_destroy(ETK_OBJECT(_entropy_etk_context_menu_groups_add_to));
+	   _entropy_etk_context_menu_groups_add_to = NULL;
+        }
+
+       _entropy_etk_context_menu_groups_add_to = etk_menu_new();
+       etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_add_to_item), 
+             ETK_MENU(_entropy_etk_context_menu_groups_add_to)); 
+       /*---*/
+
+	/*Empty groups menus*/
+        if (ETK_MENU_ITEM(_entropy_etk_context_menu_groups_remove_from_item)->submenu) {
+           etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_remove_from_item), NULL);
+           etk_object_destroy(ETK_OBJECT(_entropy_etk_context_menu_groups_remove_from));
+           _entropy_etk_context_menu_groups_remove_from = NULL;
+        }
+
+       _entropy_etk_context_menu_groups_remove_from = etk_menu_new();
+       etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_remove_from_item),
+             ETK_MENU(_entropy_etk_context_menu_groups_remove_from));
+       /*---*/
+       
+
+       l = entropy_plugin_filesystem_metadata_groups_retrieve();
+       ecore_list_goto_first(l);
+       while ( (str = ecore_list_next(l))) {
+	       printf("Adding %s\n", str);
+
+	       w = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, str, 
+		    ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(_entropy_etk_context_menu_groups_add_to),NULL);
+
+	       w = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, str, 
+		    ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(_entropy_etk_context_menu_groups_remove_from),NULL);
+
+       }
+
+}
+
+
 static void
 _entropy_etk_context_menu_popup_cb(Etk_Object *object, void *data)
 {
@@ -203,6 +266,11 @@ void entropy_etk_context_menu_init()
 	
 	
    	if (!_entropy_etk_context_menu) {
+		printf("Value of check: %d\n",check);
+		
+		printf("Making new menu..\n");
+		check = 1;
+		
 		menu = etk_menu_new();
 		_entropy_etk_context_menu = menu;
 		
@@ -212,7 +280,27 @@ void entropy_etk_context_menu_init()
 		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Open With"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
 		_entropy_etk_context_menu_open_with = etk_menu_new();
 		etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_open_with_item), ETK_MENU(_entropy_etk_context_menu_open_with)); 
- 
+
+		_entropy_etk_context_menu_groups_item =  
+		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Groups"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		_entropy_etk_context_menu_groups = etk_menu_new();
+		etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_item), ETK_MENU(_entropy_etk_context_menu_groups)); 
+
+		_entropy_etk_context_menu_groups_add_to_item =  
+		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Add to.."), ETK_STOCK_EDIT_COPY, 
+				   ETK_MENU_SHELL(_entropy_etk_context_menu_groups),NULL);
+		_entropy_etk_context_menu_groups_add_to = etk_menu_new();
+		etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_add_to_item), 
+				ETK_MENU(_entropy_etk_context_menu_groups_add_to)); 
+
+                _entropy_etk_context_menu_groups_remove_from_item =
+                   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Remove from.."), ETK_STOCK_EDIT_COPY, 
+                                   ETK_MENU_SHELL(_entropy_etk_context_menu_groups),NULL);
+                _entropy_etk_context_menu_groups_remove_from = etk_menu_new();
+                etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_remove_from_item),
+                                ETK_MENU(_entropy_etk_context_menu_groups_remove_from));
+
+
 		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
 		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu),NULL);
 		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu),NULL);
@@ -229,7 +317,10 @@ void entropy_etk_context_menu_init()
 
 		menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Folder.."), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(new_menu),NULL);
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_directory_add_cb), NULL);
+
 	}
+
+	entropy_etk_context_menu_metadata_groups_populate();
 
 }
 

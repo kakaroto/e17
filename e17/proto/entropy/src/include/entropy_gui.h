@@ -17,6 +17,7 @@
 #define ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE "entropy_gui_event_file_metadata_available"
 #define ENTROPY_GUI_EVENT_EXTENDED_STAT	"entropy_gui_event_extended_stat"	//Register that the next incoming stat for a file
 										// is an extended stat - e.g. a properties dialog request
+#define ENTROPY_GUI_EVENT_METADATA_GROUPS "entropy_gui_event_metadata_groups"   //Metadata groups available from file client
 
 
 #define ENTROPY_TOOLKIT_EWL "ewl"

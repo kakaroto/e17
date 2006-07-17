@@ -7,6 +7,7 @@
 #include "etk_user_interaction_dialog.h"
 #include "etk_mime_dialog.h"
 #include "etk_file_cache_dialog.h"
+#include "entropy_etk_context_menu.h"
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
@@ -495,6 +496,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	     }
 	     break;
 
+	     case ENTROPY_NOTIFY_METADATA_GROUPS: {
+		/*entropy_etk_context_menu_metadata_groups_populate((Evas_List*)eevent->return_struct);*/
+	     }
+	     break;
+
      }
 }
 
@@ -532,14 +538,6 @@ entropy_plugin_layout_create (entropy_core * core)
   Entropy_Config_Structure* structure;
 
 
-  /*Global init for all layouts*/
-  if (!_etk_layout_global_init) {
-	  _etk_layout_row_reference = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-	  _etk_layout_structure_plugin_reference = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-	  
-	  _etk_layout_global_init = 1;
-  }
-
   /*Entropy related init */
   layout = (entropy_gui_component_instance*)entropy_gui_component_instance_layout_new(); /*Create a component instance */
   gui = entropy_malloc (sizeof (entropy_layout_gui));
@@ -547,6 +545,18 @@ entropy_plugin_layout_create (entropy_core * core)
   layout->core = core;
   gui->progress_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
   gui->properties_request_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+
+  /*Global init for all layouts*/
+  if (!_etk_layout_global_init) {
+	  /*Request metadata groups from evfs*/
+	entropy_plugin_filesystem_metadata_groups_get(layout);
+	  
+	  _etk_layout_row_reference = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	  _etk_layout_structure_plugin_reference = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	  
+	  _etk_layout_global_init = 1;
+  }
+
 
   /*Register this layout container with the core, so our children can get events */
   entropy_core_layout_register (core, layout);
@@ -577,6 +587,10 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_core_component_event_register (layout,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE));
+
+  entropy_core_component_event_register (layout,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_METADATA_GROUPS));
 
 
   /*Etk related init */
