@@ -72,10 +72,9 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *ob;
+   Evas_Object *o;
 
    o = e_widget_list_add(evas, 0, 0);
-
 
    return o;
 }
@@ -99,10 +98,9 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *of, *ob;
+   Evas_Object *o;
 
    o = e_widget_list_add(evas, 0, 0);
-
 
    return o;
 }
