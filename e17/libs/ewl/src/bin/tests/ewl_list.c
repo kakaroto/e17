@@ -21,6 +21,7 @@ struct List_Test_Data
 static int create_test(Ewl_Container *win);
 
 static void *list_test_data_setup(void);
+static void list_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 
 static void list_test_assign_set(Ewl_Widget *w, void *data);
 static void *list_test_data_fetch(void *data, unsigned int row, 
@@ -73,6 +74,8 @@ create_test(Ewl_Container *box)
 	ewl_list_model_set(EWL_LIST(list), model);
 	ewl_list_view_set(EWL_LIST(list), view);
 	ewl_list_data_set(EWL_LIST(list), str_data);
+	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED, 
+					list_cb_value_changed, NULL);
 	ewl_widget_show(list);
 
 
@@ -186,4 +189,19 @@ list_test_data_count_get(void *data)
 
 	return d->count;
 }
+
+static void
+list_cb_value_changed(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_List *list;
+	Ecore_List *el;
+
+	list = EWL_LIST(w);
+	el = ewl_list_data_get(list);
+
+	ecore_list_goto_index(el, ewl_list_selected_index_get(list));
+	printf("Selected (%s)\n", (char *)ecore_list_current(el));
+
+}
+
 
