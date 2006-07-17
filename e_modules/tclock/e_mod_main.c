@@ -222,7 +222,6 @@ _tclock_cb_check(void *data)
 {
    Instance *inst;
    Config_Item *ci;
-   Evas_List *l;
    time_t current_time;
    struct tm *local_time;
    char buf[1024];
@@ -332,7 +331,7 @@ e_modapi_init(E_Module *m)
    tclock_config->module = m;
 
    e_gadcon_provider_register(&_gc_class);
-   return 1;
+   return m;
 }
 
 EAPI int

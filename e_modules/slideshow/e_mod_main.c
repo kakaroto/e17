@@ -60,7 +60,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Instance *inst;
    Config_Item *ci;
    Slideshow *slide;
-   char buf[4096];
 
    inst = E_NEW(Instance, 1);
 
@@ -299,7 +298,7 @@ e_modapi_init(E_Module *m)
      }
    slide_config->module = m;
    e_gadcon_provider_register(&_gc_class);
-   return 1;
+   return m;
 }
 
 EAPI int

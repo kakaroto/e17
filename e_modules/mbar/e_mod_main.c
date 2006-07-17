@@ -769,8 +769,6 @@ _mbar_icon_new(MBar_Bar *mbb, E_App *a)
    Evas_Object *o;
    Evas_Coord w, h;
    char buf[4096];
-   Evas_Object *obj;
-   int ow, oh;
 
    ic = E_NEW(MBar_Icon, 1);
 
@@ -1325,7 +1323,7 @@ _mbar_icon_cb_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Up *ev;
    MBar_Icon *ic;
-   int ret, mounted;
+   int mounted;
 
    ev = event_info;
    ic = data;

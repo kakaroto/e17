@@ -21,6 +21,7 @@
 #ifdef __linux__
 # include <linux/kernel.h>
 # include <linux/unistd.h>
+# include <sys/sysinfo.h>
 #endif
 
 #ifdef __FreeBSD__
@@ -85,7 +86,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Instance *inst;
    Config_Item *ci;
    Uptime *ut;
-   char buf[4096];
 
    inst = E_NEW(Instance, 1);
    ci = _ut_config_item_get(id);
@@ -234,7 +234,6 @@ _ut_config_item_get(const char *id)
 {
    Evas_List *l;
    Config_Item *ci;
-   char buf[4096];
 
    for (l = ut_config->items; l; l = l->next)
      {
@@ -315,7 +314,6 @@ e_modapi_init(E_Module *m)
    if (ut_config == NULL)
      {
 	Config_Item *ci;
-	char buf[4096];
 
 	ut_config = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
@@ -559,7 +557,7 @@ _ut_cb_check(void *data)
 	uptime %= 60;
 
 	snprintf(u_date_time, sizeof(u_date_time), 
-		 D_("up: %ld days, %ld:%02ld:%02ld"), 
+		 D_("up: %d days, %d:%02d:%02ld"), 
 		 days, hours, minutes, uptime);
      }
 

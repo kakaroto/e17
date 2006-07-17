@@ -75,7 +75,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Instance *inst;
    Config_Item *ci;
    Screenshot *ss;
-   char buf[4096];
 
    inst = E_NEW(Instance, 1);
 
@@ -343,7 +342,7 @@ e_modapi_init(E_Module *m)
 
    ss_config->module = m;
    e_gadcon_provider_register(&_gc_class);
-   return 1;
+   return m;
 }
 
 EAPI int
@@ -439,8 +438,7 @@ static void
 _ss_handle_mouse_down(Instance *inst)
 {
    Config_Item *ci;
-   char buf[4096];
-   
+
    if (inst->exe) return;
    ci = _ss_config_item_get(inst->gcc->id);
 
@@ -659,9 +657,8 @@ _cb_entry_ok(char *text, void *data)
 {
    Instance *inst;
    Config_Item *ci;   
-   char buf[4096];
    char *t;
-   
+
    inst = data;
    if (!inst) return;
 

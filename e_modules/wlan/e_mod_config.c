@@ -198,7 +198,7 @@ _wlan_config_get_devices(Ecore_List *devs)
            if (buf[i] == ':' || buf[i] == '.')
               buf[i] = ' ';
 
-        if (sscanf(buf, "%s %u %u %u %u %u %u %u %u %u %u",
+        if (sscanf(buf, "%s %u %u %u %u %lu %lu %lu %lu %lu %lu",
                    iface, &wlan_status, &wlan_link, &wlan_level, &wlan_noise, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 11)
            continue;
         ecore_list_append(devs, strdup(iface));

@@ -29,7 +29,8 @@ _config_taskbar_module(Config_Item *ci)
 
    con = e_container_current_get(e_manager_current_get());
    cfd = e_config_dialog_new(con, D_("Taskbar Configuration"), NULL, 0, v, ci);
-   taskbar_config->config_dialog = evas_list_append(taskbar_config->config_dialog, cfd);
+   if (taskbar_config->config_dialog) e_object_del(E_OBJECT(taskbar_config->config_dialog));
+   taskbar_config->config_dialog = cfd;
 }
 
 static void
@@ -57,7 +58,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (!taskbar_config)
       return;
-   taskbar_config->config_dialog = evas_list_remove(taskbar_config->config_dialog, cfd);
+   taskbar_config->config_dialog = NULL;
    free(cfdata);
 }
 

@@ -455,7 +455,6 @@ static int
 _wlan_face_update_values(void *data)
 {
    Wlan_Face *nf;
-   int new_status, new_link, new_level, new_noise;
    unsigned int dummy;
    char iface[64];
    char buf[256];

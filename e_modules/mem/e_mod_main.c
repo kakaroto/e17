@@ -285,7 +285,7 @@ e_modapi_init(E_Module *m)
      }
    mem_config->module = m;
    e_gadcon_provider_register(&_gc_class);
-   return 1;   
+   return m;   
 }
 
 EAPI int

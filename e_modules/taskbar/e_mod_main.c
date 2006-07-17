@@ -437,7 +437,6 @@ _taskbar_orient_set(Taskbar *b, int horizontal)
 static void
 _taskbar_resize_handle(Taskbar *b)
 {
-   Evas_List *l;
    Taskbar_Icon *ic;
    Evas_Coord w, h, wmin, hmin;
    int wnum, wnum2, hnum;
@@ -885,7 +884,6 @@ static int
 _taskbar_cb_event_border_add(void *data, int type, void *event)
 {
    E_Event_Border_Add *ev;
-   Taskbar *b;
    Evas_List *l;
 
    ev = event;
@@ -907,7 +905,6 @@ static int
 _taskbar_cb_event_border_remove(void *data, int type, void *event)
 {
    E_Event_Border_Remove *ev;
-   Taskbar *b;
    Evas_List *l;
 
    ev = event;
@@ -992,7 +989,6 @@ static int
 _taskbar_cb_event_border_zone_set(void *data, int type, void *event)
 {
    E_Event_Border_Zone_Set *ev;
-   Taskbar_Icon *ic;
    Config_Item *ci;
    Evas_List *l;
 
@@ -1124,6 +1120,7 @@ _taskbar_cb_window_property(void *data, int type, void *event)
 
 	}
      }
+   return 1;
 }
 
 static int
@@ -1254,6 +1251,7 @@ e_modapi_init(E_Module *m)
        (E_EVENT_DESK_SHOW, _taskbar_cb_event_desk_show, NULL));
 
    e_gadcon_provider_register(&_gadcon_class);
+   return m;
 }
 
 EAPI int

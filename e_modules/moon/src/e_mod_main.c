@@ -13,7 +13,7 @@
  * Gadcon requirements
  */
 
-static E_Gadcon_Client *_gc_init(E_Gadcon *gc, char *name, char *id, char *style);
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void             _gc_shutdown(E_Gadcon_Client *gcc);
 static void             _gc_orient(E_Gadcon_Client *gcc);
 static char            *_gc_label(void);
@@ -102,7 +102,7 @@ e_modapi_init(E_Module *module)
    _moon_timer_init();
    _module = module;
    e_gadcon_provider_register(&_gadcon_class);
-   return 1;            // dummy return to keep the API happy
+   return module;            // dummy return to keep the API happy
 }
 
 EAPI int
@@ -132,7 +132,7 @@ e_modapi_about(E_Module *module)
 
 
 static E_Gadcon_Client *
-_gc_init(E_Gadcon *gc, char *name, char *id, char *style)
+_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Evas_Object *o;
    E_Gadcon_Client *gcc;

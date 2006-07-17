@@ -59,7 +59,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Instance *inst;
    Config_Item *ci;
    Net *net;
-   char buf[4096];
 
    inst = E_NEW(Instance, 1);
 
@@ -292,7 +291,7 @@ e_modapi_init(E_Module *m)
      }
    net_config->module = m;
    e_gadcon_provider_register(&_gc_class);
-   return 1;
+   return m;
 }
 
 EAPI int
@@ -438,8 +437,6 @@ _net_cb_check(void *data)
    unsigned long out = 0;
    unsigned long dummy = 0;
    int found;
-   long max_in = 171008;
-   long max_out = 28672;
    long bytes_in, bytes_out;
    char in_str[100];
    char out_str[100];
@@ -492,11 +489,11 @@ _net_cb_check(void *data)
    else
      {
         if (bytes_in > 1048576)
-           snprintf(in_str, sizeof(in_str), "Rx: %d Mb", (bytes_in / 1048576));
+           snprintf(in_str, sizeof(in_str), "Rx: %ld Mb", (bytes_in / 1048576));
         else if (bytes_in > 1024 && bytes_in < 1048576)
-           snprintf(in_str, sizeof(in_str), "Rx: %d Kb", (bytes_in / 1024));
+           snprintf(in_str, sizeof(in_str), "Rx: %ld Kb", (bytes_in / 1024));
         else
-           snprintf(in_str, sizeof(in_str), "Rx: %d B", bytes_in);
+           snprintf(in_str, sizeof(in_str), "Rx: %ld B", bytes_in);
 
         edje_object_part_text_set(inst->net_obj, "rx_label", in_str);
      }
@@ -506,11 +503,11 @@ _net_cb_check(void *data)
    else
      {
         if (bytes_out > 1048576)
-           snprintf(out_str, sizeof(out_str), "Tx: %d Mb", (bytes_out / 1048576));
+           snprintf(out_str, sizeof(out_str), "Tx: %ld Mb", (bytes_out / 1048576));
         else if (bytes_out > 1024 && bytes_out < 1048576)
-           snprintf(out_str, sizeof(out_str), "Tx: %d Kb", (bytes_out / 1024));
+           snprintf(out_str, sizeof(out_str), "Tx: %ld Kb", (bytes_out / 1024));
         else
-           snprintf(out_str, sizeof(out_str), "Tx: %d B", bytes_out);
+           snprintf(out_str, sizeof(out_str), "Tx: %ld B", bytes_out);
 
         edje_object_part_text_set(inst->net_obj, "tx_label", out_str);
      }

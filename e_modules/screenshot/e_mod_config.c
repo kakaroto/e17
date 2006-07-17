@@ -126,7 +126,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *of, *ob, *ot;
+   Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
