@@ -236,6 +236,13 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
 	evfs_handle_metadata_groups_request_command(client,command);
 	break;
 
+     case EVFS_CMD_METADATA_FILE_GROUP_ADD:
+	evfs_handle_metadata_file_group_add(client,command);
+	break;
+     case EVFS_CMD_METADATA_FILE_GROUP_REMOVE:
+        evfs_handle_metadata_file_group_add(client,command);
+	break;
+
      default:
         printf("Warning - unhandled command %d\n", command->type);
         break;

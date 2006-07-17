@@ -594,10 +594,21 @@ void evfs_handle_metadata_string_file_get_command(evfs_client* client,
 }
 
 
-void evfs_handle_metadata_groups_request_command(evfs_client* client, evfs_command* command) {
+void evfs_handle_metadata_groups_request_command(evfs_client* client, evfs_command* command) 
+{
 	Evas_List* group_list;
 
 	group_list = evfs_metadata_groups_get();
 	evfs_group_list_event_create(client, command, group_list);
-	
+}
+
+void evfs_handle_metadata_file_group_add(evfs_client* client, evfs_command* command)
+{
+	if (command->file_command.num_files > 0) {
+		evfs_metadata_group_header_file_add(command->file_command.files[0], command->file_command.ref);
+	}
+}
+
+void evfs_handle_metadata_file_group_remove(evfs_client* client, evfs_command* command)
+{
 }
