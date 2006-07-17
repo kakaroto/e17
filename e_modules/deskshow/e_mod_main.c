@@ -160,7 +160,7 @@ e_modapi_init(E_Module *m)
 {
    desk_module = m;
    e_gadcon_provider_register(&_gadcon_class);
-   return 1;
+   return desk_module;
 }
 
 EAPI int
