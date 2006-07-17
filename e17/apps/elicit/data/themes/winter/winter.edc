@@ -62,12 +62,15 @@ images
   image, "swatch-shadow.png" COMP;
 
   image: "help.png" COMP;
+
+  image: "trough.png" COMP;
+  image: "slider.png" COMP;
 }
 
 collections {
   group {
     name, "elicit";
-    min, 200 125;
+    min, 220 125;
     parts {
 #include "parts/main.edc"
 #include "parts/buttons.edc"

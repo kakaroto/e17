@@ -33,7 +33,6 @@
     }
   }
 
-
 COLOR("red", "R:", 14 5, -1 15)
 COLOR("green", "G:", 14 15, -1 25)
 COLOR("blue", "B:", 14 25, -1 35)
@@ -49,16 +48,16 @@ COLOR("zoom", "Z:", 14 93, -1 103)
         effect, NONE;
         description {
           state, "default" 0.0;
-          align, 0.0 0.5;
+          align, 0.5 0.5;
           min, 30 0;
           max, 9999 9999;
           rel1 {
-            to, "val-label";
+            to, "val-box";
             relative, 0.0 1.0;
             offset, 0 8;
           }
           rel2 {
-            to, "val-dn";
+            to, "val-box";
             relative, 1.0 1.0;
             offset, 0 12;
           }
@@ -69,7 +68,7 @@ COLOR("zoom", "Z:", 14 93, -1 103)
             size, TEXT_SIZE;
             fit, 0 0;
             min, 0 0;
-            align, 0.0 0.5;
+            align, 0.5 0.5;
           }
         }
         description {
@@ -78,5 +77,4 @@ COLOR("zoom", "Z:", 14 93, -1 103)
           color: 0 0 0 0;
         }
       }
-
 

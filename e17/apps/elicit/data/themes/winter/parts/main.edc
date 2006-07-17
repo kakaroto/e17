@@ -9,7 +9,7 @@
           max, 9999 9999;
           rel1 {
             relative, 0.0 0.0;
-            offset, 86 0;
+            offset, 106 0;
           }
           rel2 {
             relative, 1.0 1.0;
@@ -292,14 +292,14 @@
           min, 7 99;
           max, 7 9999;
           rel1 {
-            to, "center";
+            to_y, "center";
             relative, 0.0 0.0;
-            offset, -86 7;
+            offset, 0 7;
           }
           rel2 {
-            to, "center";
+            to_y, "center";
             relative, 0.0 1.0;
-            offset, -79 -7;
+            offset, 7 -7;
           }
           image {
             normal, "left-border.png";
