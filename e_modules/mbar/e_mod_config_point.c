@@ -31,21 +31,15 @@ struct _E_Config_Dialog_Data
    int is_new;
 };
 
-/* local subsystem functions */
-
 static void _e_eap_edit_fill_data(E_Config_Dialog_Data *cdfata);
 static void *_e_eap_edit_create_data(E_Config_Dialog *cfd);
 static void _e_eap_edit_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
 static int _e_eap_edit_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
-//static int _e_eap_edit_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
 static Evas_Object *_e_eap_edit_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data);
-//static Evas_Object *_e_eap_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data);
 static void _e_eap_edit_select_cb(Evas_Object *obj, char *file, void *data);
 static void _e_eap_edit_hilite_cb(Evas_Object *obj, char *file, void *data);
 
 #define IFDUP(src, dst) if (src) dst = strdup(src); else dst = NULL
-
-/* externally accessible functions */
 
 void
 point_edit_show(E_Container *con, E_App *a, E_App *apps, Evas_Object *il)
@@ -69,23 +63,19 @@ point_edit_show(E_Container *con, E_App *a, E_App *apps, Evas_Object *il)
    v = E_NEW(E_Config_Dialog_View, 1);
    if (v)
      {
-        /* methods */
         v->create_cfdata = _e_eap_edit_create_data;
         v->free_cfdata = _e_eap_edit_free_data;
         v->basic.apply_cfdata = _e_eap_edit_basic_apply_data;
         v->basic.create_widgets = _e_eap_edit_basic_create_widgets;
         v->override_auto_apply = 1;
-        /* create config diaolg for NULL object/data */
+
         cfd = e_config_dialog_new(con, _("Mount Point Editor"), NULL, 0, v, editor);
      }
 }
 
-/* local subsystem functions */
-
 static void
 _e_eap_edit_fill_data(E_Config_Dialog_Data *cfdata)
 {
-   /*- BASIC -*/
    IFDUP(cfdata->editor->eap->name, cfdata->name);
    if (cfdata->editor->eap->exe) 
      {
@@ -97,7 +87,6 @@ _e_eap_edit_fill_data(E_Config_Dialog_Data *cfdata)
         
    IFDUP(cfdata->editor->eap->generic, cfdata->generic);
    IFDUP(cfdata->editor->eap->comment, cfdata->comment);
-   //IFDUP(cfdata->editor->eap->icon_class, cfdata->iclass);   
    IFDUP(cfdata->editor->eap->path, cfdata->path);
    cfdata->startup_notify = cfdata->editor->eap->startup_notify;
    cfdata->wait_exit = cfdata->editor->eap->wait_exit;
@@ -214,7 +203,6 @@ _e_eap_edit_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dial
    editor = data->editor;
    eap = editor->eap;
 
-   //ol = e_widget_list_add(evas, 0, 1);
    ol = e_widget_table_add(evas, 0);
 
    o = e_widget_frametable_add(evas, _("Icon"), 0);
@@ -266,7 +254,6 @@ _e_eap_edit_select_cb(Evas_Object *obj, char *file, void *data)
 
    editor = data;
    editor->img_set = 1;
-   printf("selected: %s\n", file);
 }
 
 void
@@ -276,5 +263,4 @@ _e_eap_edit_hilite_cb(Evas_Object *obj, char *file, void *data)
 
    editor = data;
    editor->img_set = 1;
-   printf("hilited: %s\n", file);
 }
