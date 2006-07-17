@@ -219,7 +219,7 @@ m_open(Mixer *mixer, Mixer_System *ms, Mixer_Name *mixer_name)
    snd_mixer_elem_t *elem;
    Alsa_Mixer *amixer;
 
-   int count, i;
+   int i;
 
    snd_mixer_selem_id_alloca(&sid);
    snd_ctl_card_info_alloca(&hw_info);
