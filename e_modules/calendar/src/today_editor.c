@@ -1,9 +1,7 @@
 #include "e.h"
 #include "e_mod_main.h"
 
-typedef struct _calendar_cfdata CFData;
-
-struct _calendar_cfdata
+struct _E_Config_Dialog_Data
 {
    int temp_ImageYes;
    int temp_UserCS;
@@ -13,11 +11,11 @@ struct _calendar_cfdata
 
 //static Evas_Object      *_create_widgets(E_Config_Dialog *cfd, Evas *evas, Config *cfdata);
 static void *_create_data(E_Config_Dialog *cfd);
-static void _free_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
-static int _basic_apply_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object *_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
-static int _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
+static Evas_Object *_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data);
+static int _color_edit_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
 
 /***************************************************
 / Function: 
@@ -58,9 +56,9 @@ e_int_config_calendar_today(void *con, void *calendar)
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
-   CFData *cfdata;
+   E_Config_Dialog_Data *cfdata;
 
-   cfdata = E_NEW(CFData, 1);
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
 
    cfdata->calendar = cfd->data;
    cfdata->temp_ImageYes = cfdata->calendar->conf->ImageYes;
@@ -76,7 +74,7 @@ _create_data(E_Config_Dialog *cfd)
 /
 *****************************************************/
 static void
-_free_data(E_Config_Dialog *cfd, void *data)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data)
 {
    free(data);
 }
@@ -88,19 +86,15 @@ _free_data(E_Config_Dialog *cfd, void *data)
 /
 *****************************************************/
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data)
 {
    /* generate the core widget layout for a basic dialog */
    Evas_Object *o, *today;
    Evas_Object *slider_red, *slider_green, *slider_alpha, *slider_blue;
    Evas_Object *s_r_tf, *s_g_tf, *s_a_tf, *s_b_tf, *today_f;
 
-   CFData *cfdata;
-
-   cfdata = data;
-
-   c_array *TBC_Ptr = cfdata->calendar->conf->Today_s_back_colors->data;
-   c_array *TTC_Ptr = cfdata->calendar->conf->Today_s_text_colors->data;
+   c_array *TBC_Ptr = data->calendar->conf->Today_s_back_colors->data;
+   c_array *TTC_Ptr = data->calendar->conf->Today_s_text_colors->data;
 
    o = e_widget_table_add(evas, 0);
 
@@ -155,11 +149,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 ****************************************************/
 /**--APPLY--**/
 static int
-_basic_apply_data(E_Config_Dialog *cfd, void *data)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data)
 {
-   CFData *cfdata;
-
-   cfdata = data;
    /* Actually take our cfdata settings and apply them in real life */
    e_border_button_bindings_ungrab_all();
    Calendar *calendar;
@@ -179,11 +170,8 @@ _basic_apply_data(E_Config_Dialog *cfd, void *data)
 /           after "advanced" apply button presesed.
 *****************************************************/
 static int
-_color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
+_color_edit_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data)
 {
-   CFData *cfdata;
-
-   cfdata = data;
    /* Actually take our cfdata settings and apply them in real life */
    e_border_button_bindings_ungrab_all();
    Calendar *calendar;
@@ -203,7 +191,7 @@ _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
 /
 *****************************************************/
 static Evas_Object *
-_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
+_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data)
 {
    /* generate the core widget layout for a basic dialog */
    Evas_Object *o, *today;
@@ -211,12 +199,8 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
    Evas_Object *s_r_tf, *s_g_tf, *s_a_tf, *s_b_tf, *s_r_tf_o, *s_b_tf_o,
       *s_g_tf_o, *s_a_tf_o, *s_r_tf_s, *s_b_tf_s, *s_g_tf_s, *s_a_tf_s, *today_f;
 
-   CFData *cfdata;
-
-   cfdata = data;
-
-   c_array *TBC_Ptr = cfdata->calendar->conf->Today_s_back_colors->data;
-   c_array *TTC_Ptr = cfdata->calendar->conf->Today_s_text_colors->data;
+   c_array *TBC_Ptr = data->calendar->conf->Today_s_back_colors->data;
+   c_array *TTC_Ptr = data->calendar->conf->Today_s_text_colors->data;
 
    o = e_widget_table_add(evas, 0);
 

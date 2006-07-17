@@ -1,9 +1,7 @@
 #include "e.h"
 #include "e_mod_main.h"
 
-typedef struct _calendar_cfdata CFData;
-
-struct _calendar_cfdata
+struct _E_Config_Dialog_Data
 {
    char *size;
    char *size1;
@@ -15,11 +13,11 @@ struct _calendar_cfdata
 
 //static Evas_Object      *_create_widgets(E_Config_Dialog *cfd, Evas *evas, Config *cfdata);
 static void *_create_data(E_Config_Dialog *cfd);
-static void _free_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
-static int _basic_apply_data(E_Config_Dialog *cfd, void *data);
-static Evas_Object *_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data);
-static int _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
+static Evas_Object *_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data);
+static int _color_edit_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data);
 
 /***************************************************
 / Function: 
@@ -52,6 +50,7 @@ e_int_config_calendar(void *con, void *calendar)
         cfd = e_config_dialog_new(con, D_("Calendar Settings"), NULL, 0, v, calendar);
      }
 }
+
 /***************************************************
 / Function: 
 / Purpose:  
@@ -64,9 +63,9 @@ e_int_config_calendar(void *con, void *calendar)
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
-   CFData *cfdata;
+   E_Config_Dialog_Data *cfdata;
 
-   cfdata = E_NEW(CFData, 1);
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
 
    cfdata->calendar = cfd->data;
    cfdata->temp_ImageYes = cfdata->calendar->conf->ImageYes;
@@ -74,6 +73,7 @@ _create_data(E_Config_Dialog *cfd)
 
    return cfdata;
 }
+
 /***************************************************
 / Function: 
 / Purpose:  
@@ -84,11 +84,12 @@ _create_data(E_Config_Dialog *cfd)
 /
 *****************************************************/
 static void
-_free_data(E_Config_Dialog *cfd, void *data)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data)
 {
    /* Free the cfdata */
    free(data);
 }
+
 /***************************************************
 / Function: 
 / Purpose:  
@@ -99,25 +100,21 @@ _free_data(E_Config_Dialog *cfd, void *data)
 /
 *****************************************************/
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data)
 {
    /* generate the core widget layout for a basic dialog */
    Evas_Object *o, *of, *ob, *of2, *of1, *check;
    E_Radio_Group *rg;
 
-   CFData *cfdata;
-
-   cfdata = data;
-
    o = e_widget_table_add(evas, 0);
 
    of1 = e_widget_framelist_add(evas, D_("Color/Text Scheme"), 0);
-   check = e_widget_check_add(evas, D_("User"), &(cfdata->temp_UserCS));
+   check = e_widget_check_add(evas, D_("User"), &(data->temp_UserCS));
    e_widget_framelist_object_append(of1, check);
    e_widget_table_object_append(o, of1, 0, 0, 1, 1, 1, 1, 1, 1);
 
    of2 = e_widget_framelist_add(evas, D_("Backgroud Image"), 0);
-   rg = e_widget_radio_group_new(&(cfdata->calendar->conf->ImageYes));
+   rg = e_widget_radio_group_new(&(data->calendar->conf->ImageYes));
    ob = e_widget_radio_add(evas, D_("With Top Image"), 0, rg);
    e_widget_framelist_object_append(of2, ob);
    ob = e_widget_radio_add(evas, D_("Without Top Image"), 1, rg);
@@ -125,7 +122,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
    e_widget_table_object_append(o, of2, 0, 1, 1, 1, 1, 1, 1, 1);
 
    of = e_widget_framelist_add(evas, D_("First Day of Week"), 0);
-   rg = e_widget_radio_group_new(&(cfdata->calendar->conf->DayofWeek_Start));
+   rg = e_widget_radio_group_new(&(data->calendar->conf->DayofWeek_Start));
    ob = e_widget_radio_add(evas, D_("Sunday"), 0, rg);
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, D_("Monday"), 1, rg);
@@ -144,6 +141,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 
    return o;
 }
+
 /***************************************************
 / Function: 
 / Purpose:  
@@ -153,11 +151,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
 *****************************************************/
 /**--APPLY--**/
 static int
-_basic_apply_data(E_Config_Dialog *cfd, void *data)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data)
 {
-   CFData *cfdata;
-
-   cfdata = data;
    /* Actually take our cfdata settings and apply them in real life */
    e_border_button_bindings_ungrab_all();
    Calendar *calendar;
@@ -165,24 +160,24 @@ _basic_apply_data(E_Config_Dialog *cfd, void *data)
    calendar = cfd->data;
    int SwitchImage = 0;
 
-   if ((calendar->conf->ImageYes != cfdata->temp_ImageYes) || (calendar->conf->UserCS != cfdata->temp_UserCS))
+   if ((calendar->conf->ImageYes != data->temp_ImageYes) || (calendar->conf->UserCS != data->temp_UserCS))
      {
         SwitchImage = 1;
-        calendar->conf->ImageYes = cfdata->calendar->conf->ImageYes;
-        if (calendar->conf->ImageYes != cfdata->temp_ImageYes)
+        calendar->conf->ImageYes = data->calendar->conf->ImageYes;
+        if (calendar->conf->ImageYes != data->temp_ImageYes)
           {
-             if (cfdata->temp_ImageYes == 0)
-                cfdata->temp_ImageYes = 1;
+             if (data->temp_ImageYes == 0)
+                data->temp_ImageYes = 1;
              else
-                cfdata->temp_ImageYes = 0;
+                data->temp_ImageYes = 0;
           }
-        if (calendar->conf->UserCS != cfdata->temp_UserCS)
+        if (calendar->conf->UserCS != data->temp_UserCS)
           {
-             calendar->conf->UserCS = cfdata->temp_UserCS;
-             if (cfdata->temp_UserCS)
-                cfdata->temp_UserCS = TRUE;
+             calendar->conf->UserCS = data->temp_UserCS;
+             if (data->temp_UserCS)
+                data->temp_UserCS = TRUE;
              else
-                cfdata->temp_UserCS = FALSE;
+                data->temp_UserCS = FALSE;
           }
      }
 
@@ -192,6 +187,7 @@ _basic_apply_data(E_Config_Dialog *cfd, void *data)
 
    return 1;                    /* Apply was OK */
 }
+
 /***************************************************
 / Function: 
 / Purpose:  Move data from dialog to config object 
@@ -199,11 +195,8 @@ _basic_apply_data(E_Config_Dialog *cfd, void *data)
 /
 *****************************************************/
 static int
-_color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
+_color_edit_advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *data)
 {
-   CFData *cfdata;
-
-   cfdata = data;
    /* Actually take our cfdata settings and apply them in real life */
    e_border_button_bindings_ungrab_all();
    Calendar *calendar;
@@ -211,23 +204,23 @@ _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
    calendar = cfd->data;
    int SwitchImage = 0;
 
-   if ((calendar->conf->ImageYes != cfdata->temp_ImageYes) || (calendar->conf->UserCS != cfdata->temp_UserCS))
+   if ((calendar->conf->ImageYes != data->temp_ImageYes) || (calendar->conf->UserCS != data->temp_UserCS))
      {
         SwitchImage = 1;
-        calendar->conf->ImageYes = cfdata->calendar->conf->ImageYes;
-        if (calendar->conf->ImageYes != cfdata->temp_ImageYes)
+        calendar->conf->ImageYes = data->calendar->conf->ImageYes;
+        if (calendar->conf->ImageYes != data->temp_ImageYes)
           {
-             if (cfdata->temp_ImageYes == 0)
-                cfdata->temp_ImageYes = 1;
+             if (data->temp_ImageYes == 0)
+                data->temp_ImageYes = 1;
              else
-                cfdata->temp_ImageYes = 0;
+                data->temp_ImageYes = 0;
           }
-        if (calendar->conf->UserCS != cfdata->temp_UserCS)
+        if (calendar->conf->UserCS != data->temp_UserCS)
           {
-             if (cfdata->temp_UserCS)
-                cfdata->temp_UserCS = FALSE;
+             if (data->temp_UserCS)
+                data->temp_UserCS = FALSE;
              else
-                cfdata->temp_UserCS = TRUE;
+                data->temp_UserCS = TRUE;
           }
      }
 
@@ -237,6 +230,7 @@ _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
 
    return 1;                    /* Apply was OK */
 }
+
 /***************************************************
 / Function: 
 / Purpose:  create widgets for advanced dialog
@@ -244,7 +238,7 @@ _color_edit_advanced_apply_data(E_Config_Dialog *cfd, void *data)
 /
 *****************************************************/
 static Evas_Object *
-_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data)
+_color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *data)
 {
    /* generate the core widget layout for a basic dialog */
    Evas_Object *o, *of, *ob, *of2, *of_y;
@@ -258,15 +252,12 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
    Config *conf;
    Calendar *calendar;
 
-   CFData *cfdata;
+   conf = data->calendar->conf;
+   calendar = data->calendar;
 
-   cfdata = data;
-   conf = cfdata->calendar->conf;
-   calendar = cfdata->calendar;
-
-   CalFonts *YTC_Ptr = cfdata->calendar->conf->YM_text_class->data;
-   CalFonts *DTCs_Ptr = cfdata->calendar->conf->Day_text_class->data;
-   CalFonts *TC_Ptr = cfdata->calendar->conf->text_class->data;
+   CalFonts *YTC_Ptr = data->calendar->conf->YM_text_class->data;
+   CalFonts *DTCs_Ptr = data->calendar->conf->Day_text_class->data;
+   CalFonts *TC_Ptr = data->calendar->conf->text_class->data;
 
    man = e_manager_current_get();
    if (!man)
@@ -277,9 +268,9 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
    if (con == NULL)
       return NULL;
 
-   if (cfdata->temp_UserCS != cfdata->calendar->conf->UserCS)
+   if (data->temp_UserCS != data->calendar->conf->UserCS)
      {
-        calendar->conf->UserCS = cfdata->temp_UserCS;
+        calendar->conf->UserCS = data->temp_UserCS;
         redraw_calendar(calendar, 1);
      }
 
@@ -287,7 +278,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
    s_table = e_widget_table_add(evas, 0);
 
    of2 = e_widget_framelist_add(evas, D_("Top Image"), 1);
-   rg = e_widget_radio_group_new(&(cfdata->calendar->conf->ImageYes));
+   rg = e_widget_radio_group_new(&(data->calendar->conf->ImageYes));
    ob = e_widget_radio_add(evas, D_("With"), 0, rg);
    e_widget_framelist_object_append(of2, ob);
    ob = e_widget_radio_add(evas, D_("Without"), 1, rg);
@@ -298,7 +289,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
 
    start_table = e_widget_table_add(evas, 0);
    of = e_widget_framelist_add(evas, D_("First Day of Week"), 0);
-   rg = e_widget_radio_group_new(&(cfdata->calendar->conf->DayofWeek_Start));
+   rg = e_widget_radio_group_new(&(data->calendar->conf->DayofWeek_Start));
    ob = e_widget_radio_add(evas, D_("Sunday"), 0, rg);
    e_widget_table_object_append(start_table, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    ob = e_widget_radio_add(evas, D_("Monday"), 1, rg);
@@ -316,7 +307,7 @@ _color_edit_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, void *data
    e_widget_framelist_object_append(of, start_table);
    e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 1);
 
-   if (cfdata->calendar->conf->UserCS)
+   if (data->calendar->conf->UserCS)
      {
 
      /*************  Other Fonts  *************/
