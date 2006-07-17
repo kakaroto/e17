@@ -18,7 +18,7 @@
 #include "e_mod_volume.h"
 #include "e_mod_cdialog.h"
 
-char *module_root = NULL;
+const char *module_root = NULL;
 char *module_theme = NULL;
 
 E_Module_Api e_modapi = {

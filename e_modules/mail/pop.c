@@ -24,8 +24,7 @@ _mail_pop_check_mail(void *data)
    for (l = pclients; l; l = l->next) 
      {
 	PopClient *pc;
-	Config_Box *cb;
-	
+
 	pc = l->data;
 	if (!pc) continue;
 	pc->data = inst;
@@ -128,7 +127,7 @@ _mail_pop_server_del(void *data, int type, void *event)
    pc = _mail_pop_client_get_from_server(ev->server);
    if (!pc) return 1;
 
-   if (pc->state = POP_STATE_DISCONNECTED)
+   if (pc->state == POP_STATE_DISCONNECTED)
      printf("Pop Server Disconnected\n");
    
    ecore_con_server_del(ev->server);

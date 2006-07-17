@@ -11,7 +11,6 @@ int
 e_volume_pack_pack_nth(Volume_Face *face, Mixer_Slider *slider, int nth)
 {
    Evas_Object *after = NULL;
-   Evas_List *l;
 
    if (nth <= evas_list_count(face->sliders))
       after = e_box_pack_object_nth(face->box_object, nth);
@@ -102,7 +101,6 @@ int
 e_volume_pack_swap(Volume_Face *face, Mixer_Slider *src, Mixer_Slider *dest)
 {
    int weight;
-   Evas_List *l;
 
    weight = src->conf->weight;
    src->conf->weight = dest->conf->weight;

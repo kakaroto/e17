@@ -61,8 +61,7 @@ static void
 _fill_data(Config_Box *cb, E_Config_Dialog_Data *cfdata) 
 {
    char buf[1024];
-   char *ptr;
-   
+
    if (!cb) 
      {
 	cfdata->type = 0;

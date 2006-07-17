@@ -1,14 +1,12 @@
-
 #include <e_mod_volume.h>
 #include <e_mod_main.h>
 #include <e_mod_face.h>
 #include <e_mod_cdialog.h>
 #include <e.h>
 
-typedef struct _cfdata CFData;
 typedef struct _elemdata Elem_CFData;
 
-struct _cfdata
+struct _E_Config_Dialog_Data
 {
    Evas_List *elems;
    Config_Mixer *mixer_conf;
@@ -28,9 +26,9 @@ struct _cfg
 };
 
 static void *_create_data(E_Config_Dialog *cfd);
-static void _free_data(E_Config_Dialog *cfd, CFData *cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata);
-static int _basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata);
+static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
 void
 e_volume_config_mixer(void *data, void *data2)
@@ -60,9 +58,9 @@ e_volume_config_mixer(void *data, void *data2)
 }
 
 static void
-_fill_data(Config_Mixer *mixer_conf, CFData *cfdata)
+_fill_data(Config_Mixer *mixer_conf, E_Config_Dialog_Data *cfdata)
 {
-   Evas_List *l, *l1;
+   Evas_List *l;
 
    cfdata->elems = NULL;
    cfdata->mixer_conf = mixer_conf;
@@ -81,15 +79,15 @@ _fill_data(Config_Mixer *mixer_conf, CFData *cfdata)
 static void *
 _create_data(E_Config_Dialog *cfd)
 {
-   CFData *cfdata;
+   E_Config_Dialog_Data *cfdata;
 
-   cfdata = E_NEW(CFData, 1);
+   cfdata = E_NEW(E_Config_Dialog_Data, 1);
 
    return cfdata;
 }
 
 static void
-_free_data(E_Config_Dialog *cfd, CFData *cfdata)
+_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Evas_List *l;
 
@@ -107,9 +105,9 @@ _free_data(E_Config_Dialog *cfd, CFData *cfdata)
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *of, *ob, *ot;
+   Evas_Object *o, *of, *ot;
    int i;
    Evas_List *l;
    Config_Mixer *mixer_conf;
@@ -145,7 +143,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, CFData *cfdata)
 }
 
 static int
-_basic_apply_data(E_Config_Dialog *cfd, CFData *cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Evas_List *l;
    struct _cfg *c;

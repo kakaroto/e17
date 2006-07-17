@@ -117,7 +117,6 @@ Mixer_Elem *
 e_util_melem_get(Config_Mixer_Elem *conf, Evas_List *melems)
 {
    Mixer_Elem *melem;
-   char fullname[1024];
 
    for (; melems; melems = evas_list_next(melems))
      {
@@ -132,9 +131,4 @@ e_util_melem_get(Config_Mixer_Elem *conf, Evas_List *melems)
      }
 
    return NULL;
-}
-
-Mixer *
-e_util_mixer_get(Config_Mixer *mixer_conf, Volume *volume)
-{
 }

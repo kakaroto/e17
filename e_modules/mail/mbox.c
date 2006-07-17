@@ -74,7 +74,6 @@ _mail_mbox_check_mail(void *data, Ecore_File_Monitor *monitor, Ecore_File_Event 
    Config_Box *cb;
    FILE *f;
    char buf[1024];
-   int total = 0, unread = 0;
    int header;
    
    mb = data;

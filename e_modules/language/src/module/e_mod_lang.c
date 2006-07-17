@@ -66,7 +66,6 @@ lang_language_switch_to(Config *cfg, unsigned int n)
      }
    else if (cfg->lang_policy == LS_WINDOW_POLICY)
      { 
-	Evas_List *l; 
 	E_Border *bd = NULL;
 
 	if (n >= evas_list_count(cfg->languages)) 
@@ -275,8 +274,6 @@ lang_load_xfree_language_kbd_layouts(Config *cfg)
 void 
 lang_free_xfree_language_kbd_layouts(Config *cfg)
 {
-   Language_Predef   *lp;
-
    if (!cfg) return;
 
    while (cfg->language_predef_list)
@@ -593,7 +590,6 @@ _lang_load_xfree_language_register_language(Config *cfg,
    Language_Predef   *lp;
    Evas_List	     *l;
    int		     found = 0;
-   int		     i;
 
    if (!lang_name || !lang_shortcut || !kbd_layout) return;
 

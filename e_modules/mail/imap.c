@@ -123,7 +123,7 @@ _mail_imap_client_get(void *data)
    int found = 0;
 
    cb = data;
-   if (!cb) return;
+   if (!cb) return NULL;
    
    if ((!iservers) || (evas_list_count(iservers) <= 0)) 
      {
@@ -218,7 +218,7 @@ _mail_imap_server_data(void *data, int type, void *event)
    memcpy(in, ev->data, len);
    in[len] = 0;
 
-   if (spc = strchr(in, ' ')) 
+   if ((spc = strchr(in, ' ')))
      {
 	slen = strlen(spc);
 	if ((slen > 5) && (!strncmp(spc + 1, "NO ", 3))) 

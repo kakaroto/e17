@@ -197,7 +197,6 @@ e_volume_config_melem_get(Mixer_Elem *melem, Config_Face *conf)
    Config_Mixer_Elem *elem;
    Evas_List *l;
    int hash;
-   char fullname[1024];
 
    //      DBG( stderr, "fullname = %s\n", fullname);
 

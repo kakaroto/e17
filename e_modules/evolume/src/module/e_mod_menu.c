@@ -1,14 +1,14 @@
 
 #include <e.h>
-#include <e_mod_main.h>
-#include <e_mod_volume.h>
-#include <e_mod_face.h>
-#include <e_mod_menu.h>
-#include <e_mod_util.h>
-#include <e_mod_slider.h>
+#include "e_mod_main.h"
+#include "e_mod_volume.h"
+#include "e_mod_face.h"
+#include "e_mod_menu.h"
+#include "e_mod_util.h"
+#include "e_mod_slider.h"
 
 #include <e_mixer.h>
-#include <e_mod_mixer.h>
+#include "e_mod_mixer.h"
 
 /* Additional faces function: new face or remove */
 static void
@@ -129,8 +129,7 @@ void
 e_volume_face_menu_new(Volume_Face *face)
 {
    char buf[1024];
-   Evas_List *l;
-   E_Menu *mn, *sm, *om;
+   E_Menu *mn, *sm;
    E_Menu_Item *mi;
 
    mn = e_menu_new();

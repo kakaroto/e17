@@ -362,7 +362,7 @@ e_modapi_init(E_Module *m)
      }
    mail_config->module = m;
    e_gadcon_provider_register(&_gc_class);
-   return 1;
+   return m;
 }
 
 EAPI int
@@ -580,9 +580,10 @@ _mail_cb_exe_exit(void *data, int type, void *event)
    Config_Box *cb;
    
    cb = data;
-   if (!cb) return;
+   if (!cb) return 0;
    cb->exe = NULL;
    ecore_event_handler_del(exit_handler);
+   return 0;
 }
 
 void
@@ -632,7 +633,7 @@ _mail_box_added(const char *ci_name, const char *box_name)
 void 
 _mail_box_deleted(const char *ci_name, const char *box_name)
 {
-   Evas_List *l, *d, *i;
+   Evas_List *d, *i;
    Config_Box *cb;
    int found = 0;
    

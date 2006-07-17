@@ -14,7 +14,7 @@ extern E_Config_DD *conf_edd;
 
 struct _Config_Mixer_Elem
 {
-   char *name;
+   const char *name;
    int active;
    int balance;
    int weight;
@@ -25,13 +25,13 @@ struct _Config_Mixer_Elem
 struct _Config_Mixer
 {
    /* Nice name of mixer */
-   char *real;
+   const char *real;
 
    /* Card (e.g. local) name of mixer */
-   char *card;
+   const char *card;
 
    /* Name of mixer system, this is to avoid back referencing */
-   char *system;
+   const char *system;
    /* If mixer is active */
    int active;
    /* List of Config_Mixer_Elem */
@@ -47,9 +47,9 @@ struct _Config_Mixer
 struct _Config_Mixer_System
 {
    /* Real name of Mixer System */
-   char *name;
+   const char *name;
    /* System name of mixer system (used to match soname) */
-   char *system;
+   const char *system;
    /* Mixers by this System */
    Evas_List *mixers;
    /* If this mixer system is active */

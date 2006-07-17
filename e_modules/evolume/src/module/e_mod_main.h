@@ -1,3 +1,4 @@
+#define D_(str) dgettext(PACKAGE, str)
 
 #ifndef E_MOD_MAIN_H_INCLUDED
 #define E_MOD_MAIN_H_INCLUDED
@@ -15,13 +16,7 @@
 # endif
 #endif
 
-static char *
-D_(char *str)
-{
-   return dgettext(PACKAGE, str);
-}
-
-extern char *module_root;
+extern const char *module_root;
 extern char *module_theme;
 
 EAPI extern E_Module_Api e_modapi;

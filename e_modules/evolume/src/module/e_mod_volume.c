@@ -213,7 +213,6 @@ e_volume_init(void *data __UNUSED__)
    for (l = volume->mixer_system_names; l; l = evas_list_next(l))
      {
         Mixer_System_Name *msn;
-        Mixer *mixer;
         Evas_List *active;
 
         msn = evas_list_data(l);

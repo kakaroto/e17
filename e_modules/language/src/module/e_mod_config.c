@@ -329,7 +329,7 @@ static int
 _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    Evas_List *l;
-   Language    *lang, *lang2;
+   Language    *lang;
 
    cfdata->conf->lang_policy = cfdata->lang_policy;
 
@@ -490,7 +490,6 @@ _conf_fill_kbd_model(E_Config_Dialog_Data *cfdata)
 static void
 _conf_fill_kbd_variant(E_Config_Dialog_Data *cfdata)
 {
-   Language  *slang;
    Evas_List *l;
    int kbdv_i = 0;
 
