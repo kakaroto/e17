@@ -7,24 +7,14 @@ sub new
 {
     my $class = shift;
     my $self = $class->SUPER::new();
-    if(@_ == 1)
-    {	
-	$self->{WIDGET} = Etk::etk_menu_item_new_with_label(shift);
-    }
-    else
-    {
+    if(@_ == 1) {	
+	my $arg = shift;
+        $self->{WIDGET} = $arg + 0 eq $arg ?
+		Etk::etk_menu_item_new_from_stock($arg) :
+		Etk::etk_menu_item_new_with_label($arg);
+    } else {
 	$self->{WIDGET} = Etk::etk_menu_item_new();
     }
-    bless($self, $class);
-    return $self;
-}
-
-sub new_from_stock
-{
-    my $class = shift;
-    my $self = $class->SUPER::new();
-    my $stock_id = shift;
-    $self->{WIDGET} = Etk::etk_menu_item_new_from_stock($stock_id);
     bless($self, $class);
     return $self;
 }

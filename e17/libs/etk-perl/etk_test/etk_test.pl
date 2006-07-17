@@ -744,7 +744,7 @@ sub _menu_test_stock_item_new
     my ($label, $stockid, $menubar, $statusbar) = @_;
 
     my $menu_item = Etk::Menu::Item::Image->new($label);
-    my $image = Etk::Image->new_from_stock($stockid, Etk::Stock::SizeSmall);
+    my $image = Etk::Image->new($stockid, Etk::Stock::SizeSmall);
     $menu_item->ImageSet($image);
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
@@ -821,7 +821,7 @@ sub combobox_window_show
     my $vbox2 = Etk::VBox->new(0, 3);
     $frame->Add($vbox2);
     
-    my $image = Etk::Image->new_from_stock(Etk::Stock::DocumentNew,
+    my $image = Etk::Image->new(Etk::Stock::DocumentNew,
 	Etk::Stock::SizeBig);
     $vbox2->PackStart($image, 0, 0, 0);
     
@@ -835,7 +835,7 @@ sub combobox_window_show
     for( my $i = Etk::Stock::DocumentNew; 
 	$i <= Etk::Stock::FormatTextUnderline; $i++)
     {
-	my $image2 = Etk::Image->new_from_stock($i, Etk::Stock::SizeSmall);
+	my $image2 = Etk::Image->new($i, Etk::Stock::SizeSmall);
 	my $item = $combobox->ItemAppend($image2, Etk::Stock::LabelGet($i));
 	$item->DataSet($i);
     }

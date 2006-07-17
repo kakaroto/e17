@@ -1,7 +1,6 @@
 
 General TODO:
 =============
-- finish up etk_widget.h
 - add some commonly used internal tree sorters to avoid the entire
   perl -> c -> perl ... loop when sorting trees.
 - finish porting etk_test from C to perl
@@ -19,6 +18,9 @@ General TODO:
 - etk_types.h
 - etk_utils.h
 - create Test cases
+
+Done:
+=====
 - etk_main.h [DONE]
 - wrap up functions that use (...): important ones are combo for now [DONE]
 - etk_marshallers.h [DONE]
@@ -34,6 +36,7 @@ General TODO:
   to return a list of values to the perl caller [DONE]
 - finish remaining signal_connect functions (swapped etc.) [DONE]
 - etk_theme.h [DONE]
+- finish up etk_widget.h [DONE]
 
 Pending:
 ========

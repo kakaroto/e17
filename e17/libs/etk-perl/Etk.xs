@@ -4614,7 +4614,11 @@ etk_widget_show_all(widget)
 void
 etk_widget_size_allocate(widget, geometry)
 	Etk_Widget *	widget
-	Etk_Geometry	geometry
+	SV *	geometry
+	CODE:
+	Etk_Geometry	g;
+	g = perl_hash_to_geometry(geometry);
+	etk_widget_size_allocate(widget, g);
 
 void
 etk_widget_size_recalc_queue(widget)
@@ -4714,9 +4718,13 @@ Evas *
 etk_widget_toplevel_evas_get(widget)
 	Etk_Widget *	widget
 
-Etk_Toplevel_Widget *
+Etk_Widget *
 etk_widget_toplevel_parent_get(widget)
 	Etk_Widget *	widget
+	CODE:
+	RETVAL = ETK_WIDGET(etk_widget_toplevel_parent_get(widget));
+	OUTPUT:
+	RETVAL
 
 void
 etk_widget_unfocus(widget)

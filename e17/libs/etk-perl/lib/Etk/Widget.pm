@@ -15,6 +15,43 @@ sub new
     return $self;
 }
 
+sub NameSet
+{
+    my $self = shift;
+    my $name = shift;
+    Etk::etk_widget_name_set($self->{WIDGET}, $name);
+}
+
+sub NameGet
+{
+    my $self = shift;
+    return Etk::etk_widget_name_get($self->{WIDGET});
+}
+
+sub ToplevelParentGet
+{
+    my $self = shift;
+    use Etk::ToplevelWidget;
+    my $return = Etk::ToplevelWidget->new();
+    $return->{WIDGET} = Etk::etk_widget_toplevel_parent_get($self->{WIDGET});
+    return $return;
+}
+
+sub ParentSet
+{
+    my $self = shift;
+    my $parent = shift;
+    Etk::etk_widget_parent_set($self->{WIDGET}, $parent->{WIDGET});
+}
+
+sub ParentGet 
+{
+    my $self = shift;
+    my $parent = Etk::Widget->new();
+    $parent->{WIDGET} = Etk::etk_widget_parent_get($self->{WIDGET});
+    return $parent;
+}
+
 sub Show
 {
     my $self = shift;
@@ -87,6 +124,13 @@ sub SizeRequestSet
     my $width = shift;
     my $height = shift;
     Etk::etk_widget_size_request_set($self->{WIDGET}, $width, $height);
+}
+
+sub SizeAllocate
+{
+    my $self = shift;
+    my $geometry = shift; # hashref
+    Etk::etk_widget_size_allocate($self->{WIDGET}, $geometry);
 }
 
 sub Enter
@@ -214,7 +258,44 @@ sub DndInternalSet
     Etk::etk_widget_dnd_internal_set($self->{WIDGET}, $on);
 }
 
-# TODO drag_*
+sub DragDrop
+{
+    my $self = shift;
+    my $type = shift;
+    my $data = shift;
+    # TODO check what dnd has to offer and fix this
+#    Etk::etk_widget_drag_drop($self->{WIDGET}, $type, $data);
+}
+
+sub DragMotion
+{
+    my $self = shift;
+    Etk::etk_widget_drag_motion($self->{WIDGET});
+}
+
+sub DragEnter
+{
+    my $self = shift;
+    Etk::etk_widget_drag_enter($self->{WIDGET});
+}
+
+sub DragLeave
+{
+    my $self = shift;
+    Etk::etk_widget_drag_leave($self->{WIDGET});
+}
+
+sub DragBegin
+{
+    my $self = shift;
+    Etk::etk_widget_drag_begin($self->{WIDGET});
+}
+
+sub DragEnd
+{
+    my $self = shift;
+    Etk::etk_widget_drag_end($self->{WIDGET});
+}
 
 sub ThemeFileSet
 {

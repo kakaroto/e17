@@ -7,12 +7,13 @@ sub new
 {
     my $class = shift;
     my $self = $class->SUPER::new();
-    if(@_ == 1)
-    {
+    if(@_ == 2) {
+	my ($arg1, $arg2) = @_;
+	$self->{WIDGET} = -e $arg1 ? Etk::etk_image_new_from_edje($arg1, $arg2):
+	    Etk::etk_image_new_from_stock($arg1, $arg2);
+    } elsif (@_ == 1) {
 	$self->{WIDGET} = Etk::etk_image_new_from_file(shift);
-    }
-    else
-    {
+    } else {
 	$self->{WIDGET} = Etk::etk_image_new();
     }
     bless($self, $class);
@@ -24,29 +25,6 @@ sub new_no_create
     my $class = shift;
     my $self = $class->SUPER::new();
     $self->{WIDGET} = undef;
-    bless($self, $class);
-    return $self;
-}
-
-sub new_from_edje
-{
-    my $class = shift;
-    my $self = $class->SUPER::new();
-    my $edje_filename = shift;
-    my $edje_group = shift;
-    $self->{WIDGET} = Etk::etk_image_new_from_edje($edje_filename, 
-	$edje_group);
-    bless($self, $class);
-    return $self;
-}
-
-sub new_from_stock
-{
-    my $class = shift;
-    my $self = $class->SUPER::new();
-    my $stock_id = shift;
-    my $stock_size = shift;
-    $self->{WIDGET} = Etk::etk_image_new_from_stock($stock_id, $stock_size);
     bless($self, $class);
     return $self;
 }

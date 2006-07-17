@@ -5,29 +5,10 @@ use strict;
 use warnings;
 use Carp;
 
-require Exporter;
-use AutoLoader;
-
-our @ISA = qw(Exporter);
-
 use Etk::Main;
 use Etk::Window;
 
-# Items to export into callers namespace by default. Note: do not export
-# names by default without a very good reason. Use EXPORT_OK instead.
-# Do not simply export all your public functions/methods/constants.
-
-# This allows declaration	use Etk ':all';
-# If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
-# will save memory.
-our %EXPORT_TAGS = ( 'all' => [ qw() ] );
-
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-
-our @EXPORT = qw( );
-
 our $VERSION = '0.01';
-
 
 sub Init
 {
@@ -37,29 +18,6 @@ sub Init
 sub Shutdown
 {
     Etk::etk_shutdown();
-}
-
-sub AUTOLOAD {
-    # This AUTOLOAD is used to 'autoload' constants from the constant()
-    # XS function.
-
-    my $constname;
-    our $AUTOLOAD;
-    ($constname = $AUTOLOAD) =~ s/.*:://;
-    croak "&Etk::constant not defined" if $constname eq 'constant';
-    my ($error, $val) = constant($constname);
-    if ($error) { croak $error; }
-    {
-	no strict 'refs';
-	# Fixed between 5.005_53 and 5.005_61
-#XXX	if ($] >= 5.00561) {
-#XXX	    *$AUTOLOAD = sub () { $val };
-#XXX	}
-#XXX	else {
-	    *$AUTOLOAD = sub { $val };
-#XXX	}
-    }
-    goto &$AUTOLOAD;
 }
 
 require XSLoader;
@@ -73,13 +31,9 @@ END {
 	Etk::Shutdown();
 }
 
-# Preloaded methods go here.
-
-# Autoload methods go after =cut, and are processed by the autosplit program.
 
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
@@ -87,20 +41,27 @@ Etk - Perl bindings for the Enlightened ToolKit (Etk)
 
 =head1 SYNOPSIS
 
-use Etk;
+  use Etk;
 
-my $win = Etk::Window->new();
-my $button = Etk::Button->new("Click me!");
+  my $win = Etk::Window->new();
+  my $button = Etk::Button->new("Click me!");
 
-$win->Add($button);
-$win->ShowAll();
+  # or
 
-$button->SignalConnect("clicked", \&clicked_cb);
+  my $win = Etk::Window->new();
+  my $button = $win->AddButton("Click me!");
 
-sub clicked_cb
-{
-   print "button clicked!\n";
-}
+
+  $win->Add($button);
+  $win->ShowAll();
+
+  $button->SignalConnect("clicked", \&clicked_cb);
+
+  sub clicked_cb
+  {
+     print "button clicked!\n";
+  }
+
 
 =head1 DESCRIPTION
 
