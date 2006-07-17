@@ -297,6 +297,25 @@ evfs_write_list_event(evfs_client * client, evfs_event * event)
 
 }
 
+void evfs_write_metadata_groups_event(evfs_client* client, evfs_event* event)
+{
+	Evas_List* l;
+	evfs_metadata_group_header* g;
+
+	for (l = event->misc.string_list; l; ) {
+		g = l->data;
+		
+		evfs_write_ecore_ipc_client_message(client->client,
+                                            ecore_ipc_message_new(EVFS_EV_REPLY,
+                                                                  EVFS_EV_PART_CHAR_PTR,
+                                                                  client->id, 0,
+                                                                  0, (char*)g->name,
+                                                                  strlen((char*)g->name)+1));
+		
+		l = l->next;
+	}
+}
+
 void
 evfs_write_file_read_event(evfs_client * client, evfs_event * event)
 {
@@ -438,6 +457,10 @@ evfs_write_event(evfs_client * client, evfs_command * command,
         evfs_write_operation_event(client, event);
         break;
 
+     case EVFS_EV_METADATA_GROUPS:
+	evfs_write_metadata_groups_event(client,event);
+	break;
+
      default:
         printf("Event type not handled in switch\n");
         break;
@@ -470,6 +493,10 @@ evfs_read_event(evfs_event * event, ecore_ipc_message * msg)
 
 	free(fmev);
      }
+     break;
+
+     case EVFS_EV_PART_CHAR_PTR:
+     	event->misc.string_list = evas_list_append(event->misc.string_list, strdup(msg->data));
      break;
 
      case EVFS_EV_PART_STAT_SIZE:
@@ -676,6 +703,7 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
      case EVFS_CMD_METADATA_FILE_GET:
      case EVFS_CMD_METADATA_FILE_SET:
      case EVFS_CMD_PING:
+     case EVFS_CMD_METADATA_GROUPS_GET:
         evfs_write_file_command(conn, command);
         break;
      case EVFS_CMD_OPERATION_RESPONSE:
@@ -738,6 +766,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
      case EVFS_CMD_METADATA_FILE_GET:
      case EVFS_CMD_METADATA_FILE_SET:
      case EVFS_CMD_PING:
+     case EVFS_CMD_METADATA_GROUPS_GET:
         evfs_write_file_command_client(client, command);
         break;
      default:

@@ -29,4 +29,7 @@ evfs_client_metadata_string_file_set(evfs_connection * conn, evfs_filereference*
 long 
 evfs_client_metadata_string_file_get(evfs_connection * conn, evfs_filereference* file, char* key );
 
+long 
+evfs_client_metadata_groups_get(evfs_connection * conn);
+
 #endif

@@ -231,6 +231,11 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
 			command->file_command.ref);	
 	break;
 
+     case EVFS_CMD_METADATA_GROUPS_GET:
+	printf("Request for metadata groups\n");
+	evfs_handle_metadata_groups_request_command(client,command);
+	break;
+
      default:
         printf("Warning - unhandled command %d\n", command->type);
         break;

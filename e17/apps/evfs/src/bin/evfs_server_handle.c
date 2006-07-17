@@ -592,3 +592,12 @@ void evfs_handle_metadata_string_file_get_command(evfs_client* client,
 		evfs_metadata_file_get_key_value_string(command->file_command.files[0], key);
 	}
 }
+
+
+void evfs_handle_metadata_groups_request_command(evfs_client* client, evfs_command* command) {
+	Evas_List* group_list;
+
+	group_list = evfs_metadata_groups_get();
+	evfs_group_list_event_create(client, command, group_list);
+	
+}

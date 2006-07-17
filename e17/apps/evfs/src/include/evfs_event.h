@@ -16,6 +16,7 @@ typedef enum evfs_eventtype
    EVFS_EV_OPERATION = 9,
    EVFS_EV_METADATA = 10,
    EVFS_EV_METADATA_FILE_GET = 11,
+   EVFS_EV_METADATA_GROUPS = 12,
 
    EVFS_EV_ERROR = 100,
    EVFS_EV_NOT_SUPPORTED = 101
@@ -37,6 +38,7 @@ typedef enum evfs_eventpart
    EVFS_EV_PART_STAT_SIZE = 7,
    EVFS_EV_PART_FILE_REFERENCE = 8,
    EVFS_EV_PART_METALIST = 9,
+   EVFS_EV_PART_CHAR_PTR = 10,
 
    EVFS_EV_PART_PROGRESS = 11,
 
@@ -140,9 +142,10 @@ typedef struct evfs_event_meta
    Ecore_Hash* meta_hash;
 } evfs_event_meta;
 
-/*typedef struct evfs_event_operation {
-	evfs_operation* op;
-} evfs_event_operation;*/
+typedef struct evfs_event_misc
+{
+	Evas_List* string_list;
+} evfs_event_misc;
 
 //Would be good if this could be a union -> but evfs_command changes size :( */
 typedef struct evfs_event
@@ -154,8 +157,11 @@ typedef struct evfs_event
    evfs_event_id_notify id_notify;
    evfs_event_file_monitor file_monitor;
    evfs_event_stat stat;
+   evfs_event_misc misc;
+   
    evfs_event_progress *progress;
    struct evfs_operation *op;
+
   
    /*This is just a hack until we separate out 
     * the different evfs_event types into a struct

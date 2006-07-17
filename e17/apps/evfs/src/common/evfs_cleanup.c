@@ -164,6 +164,20 @@ evfs_cleanup_metadata_event(evfs_event* event)
 	free(event->meta);	
 }
 
+evfs_cleanup_metadata_groups_event(evfs_event* event) 
+{
+	if (evfs_object_client_is_get()) {
+		Evas_List* l;
+
+		for (l=event->misc.string_list; l;) {
+			free(l->data);
+
+			l = l->next;
+		}
+		evas_list_free(event->misc.string_list);
+	}
+}
+
 void
 evfs_cleanup_event(evfs_event * event)
 {
@@ -188,6 +202,11 @@ evfs_cleanup_event(evfs_event * event)
         break;
      case EVFS_EV_METADATA:
 	evfs_cleanup_metadata_event(event);
+	break;
+
+     case EVFS_EV_METADATA_GROUPS:
+	evfs_cleanup_metadata_groups_event(event);
+	break;
      }
 
    free(event);

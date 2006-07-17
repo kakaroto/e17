@@ -329,3 +329,18 @@ evfs_client_metadata_string_file_get(evfs_connection * conn, evfs_filereference*
 
 }
 
+long 
+evfs_client_metadata_groups_get(evfs_connection * conn)
+{
+   evfs_command *command = evfs_client_command_new();
+   long id = command->client_identifier;
+   
+   command->type = EVFS_CMD_METADATA_GROUPS_GET;
+
+   evfs_write_command(conn, command);
+
+   free(command);
+
+   return id;
+
+}
