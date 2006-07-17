@@ -144,6 +144,18 @@ _entropy_etk_context_menu_file_rename_cb(Etk_Object *object, void *data)
 	etk_file_rename_dialog_create(_entropy_etk_context_menu_current_file);
 }
 
+static void
+_entropy_etk_context_menu_group_file_add_cb(Etk_Object *object, void *data)
+{
+	const char* label;
+
+	label = etk_menu_item_label_get(ETK_MENU_ITEM(object));
+
+	printf("Add to group '%s'\n", label);
+
+	entropy_plugin_filesystem_file_group_add(_entropy_etk_context_menu_current_file, label);
+}
+
 void
 entropy_etk_context_menu_metadata_groups_populate()
 {
@@ -186,6 +198,7 @@ entropy_etk_context_menu_metadata_groups_populate()
 
 	       w = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, str, 
 		    ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(_entropy_etk_context_menu_groups_add_to),NULL);
+	      etk_signal_connect("activated", ETK_OBJECT(w), ETK_CALLBACK(_entropy_etk_context_menu_group_file_add_cb), NULL);
 
 	       w = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, str, 
 		    ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(_entropy_etk_context_menu_groups_remove_from),NULL);

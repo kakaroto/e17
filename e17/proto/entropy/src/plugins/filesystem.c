@@ -35,6 +35,7 @@ void entropy_filesystem_operation_respond(long id, int response);
 void entropy_filesystem_directory_create (entropy_generic_file * parent, char* child_name);
 void entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_component_instance* instance);
 void entropy_filesystem_metadata_groups_get(entropy_gui_component_instance* instance);
+void entropy_filesystem_file_group_add(entropy_generic_file* file, char* group);
 
 Ecore_List* entropy_filesystem_metadata_groups_retrieve();
 
@@ -593,7 +594,8 @@ entropy_plugin_init (entropy_core * core)
   plugin->file_functions.file_remove = &entropy_filesystem_file_remove;
   plugin->misc_functions.groups_get = &entropy_filesystem_metadata_groups_get;
   plugin->misc_functions.groups_retrieve = &entropy_filesystem_metadata_groups_retrieve;
-
+  plugin->file_functions.group_file_add = &entropy_filesystem_file_group_add;
+  
   return base; 
 
   
@@ -999,6 +1001,21 @@ entropy_filesystem_file_rename (entropy_generic_file * file_from,
   free (uri_path_from);
   free (uri_path_to);
 
+}
+
+void entropy_filesystem_file_group_add(entropy_generic_file* file, char* group)
+{
+  evfs_file_uri_path *uri_path_from;
+  char* uri_from;
+  
+  uri_from = entropy_core_generic_file_uri_create (file, 0);
+  uri_path_from = evfs_parse_uri (uri_from);
+
+  evfs_client_metadata_group_file_add(con, uri_path_from->files[0], group);
+
+  free(uri_from);
+  free(uri_path_from);
+  
 }
 
 void entropy_filesystem_operation_respond(long id, int response) 
