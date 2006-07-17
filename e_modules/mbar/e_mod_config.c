@@ -33,7 +33,6 @@ _config_mbar_module(E_Container *con, MBar *mbar)
    
    v = E_NEW(E_Config_Dialog_View, 1);
 
-   /* Dialog Methods */
    v->create_cfdata = _create_data;
    v->free_cfdata = _free_data;
    v->basic.apply_cfdata = _basic_apply_data;
@@ -41,7 +40,6 @@ _config_mbar_module(E_Container *con, MBar *mbar)
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
-   /* Create The Dialog */
    snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(mbar->module));
    cfd = e_config_dialog_new(con, _("Mount Bar Configuration"), buf, 0, v, mbar);
    mbar->config_dialog = cfd;
@@ -177,7 +175,6 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   /* allow overlap checkbox */
    of = e_widget_framelist_add(evas, _("Extras"), 0);
    ob = e_widget_check_add(evas, _("Allow windows to overlap this gadget"), &(cfdata->allow_overlap));
    e_widget_framelist_object_append(of, ob);
@@ -197,7 +194,6 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    else if (!(cfdata->follower) && (mb->conf->follower))
       mb->conf->follower = 0;
 
-   /* allow overlap check box */
    if (cfdata->allow_overlap && !mb->conf->allow_overlap)
       mb->conf->allow_overlap = 1;
    else if (!cfdata->allow_overlap && mb->conf->allow_overlap)
