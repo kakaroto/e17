@@ -135,7 +135,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    
    ob = e_widget_label_add(evas, _("Shadow Size"));
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%d pixels"), 1, 40, 1, 0, NULL, &(cfdata->shadow_size), 150);
+   ob = e_widget_slider_add(evas, 1, 0, _("%.0f pixels"), 1, 40, 1, 0, NULL, &(cfdata->shadow_size), 150);
    e_widget_slider_value_double_set(ob, cfdata->shadow_size);
    e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
    i++;
@@ -148,13 +148,13 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    ob = e_widget_label_add(evas, _("Horizontal Offset"));
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%d pixels"), 1, 40, 1, 0, NULL, &(cfdata->shadow_horz_offset), 150);
+   ob = e_widget_slider_add(evas, 1, 0, _("%.0f pixels"), 1, 40, 1, 0, NULL, &(cfdata->shadow_horz_offset), 150);
    e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
    i++;
 
    ob = e_widget_label_add(evas, _("Vertical Offset"));
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%d pixels"), 1, 40, 1, 0, NULL, &(cfdata->shadow_vert_offset), 150);
+   ob = e_widget_slider_add(evas, 1, 0, _("%.0f pixels"), 1, 40, 1, 0, NULL, &(cfdata->shadow_vert_offset), 150);
    e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
@@ -169,13 +169,13 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ot = e_widget_table_add(evas, 0);
    ob = e_widget_label_add(evas, _("Fade In Speed"));
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%d"), 1.0, 100.0, 1, 0, &(cfdata->fade_in_step), NULL, 150);
+   ob = e_widget_slider_add(evas, 1, 0, _("%.0f"), 1.0, 100.0, 1, 0, &(cfdata->fade_in_step), NULL, 150);
    e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
    i++;
 
    ob = e_widget_label_add(evas, _("Fade Out Speed"));
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%d"), 1.0, 100.0, 1, 0, &(cfdata->fade_out_step), NULL, 150);
+   ob = e_widget_slider_add(evas, 1, 0, _("%.0f"), 1.0, 100.0, 1, 0, &(cfdata->fade_out_step), NULL, 150);
    e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
