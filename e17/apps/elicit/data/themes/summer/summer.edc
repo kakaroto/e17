@@ -18,40 +18,40 @@ fonts
 
 images
 {
-  image, "base-left.png" LOSSY 98;
-  image, "base-right.png" LOSSY 98;
-  image, "dropper1.png" LOSSY 98;
-  image, "dropper2.png" LOSSY 98;
-  image, "inset.png" LOSSY 98;
-  image, "mag1.png" LOSSY 98;
-  image, "mag2.png" LOSSY 98;
-  image, "minus1.png" LOSSY 98;
-  image, "minus2.png" LOSSY 98;
-  image, "panel.png" LOSSY 98;
-  image, "plus1.png" LOSSY 98;
-  image, "plus2.png" LOSSY 98;
-  image, "x1.png" LOSSY 98;
-  image, "x2.png" LOSSY 98;
+  image, "base-left.png" COMP;
+  image, "base-right.png" COMP;
+  image, "dropper1.png" COMP;
+  image, "dropper2.png" COMP;
+  image, "inset.png" COMP;
+  image, "mag1.png" COMP;
+  image, "mag2.png" COMP;
+  image, "minus1.png" COMP;
+  image, "minus2.png" COMP;
+  image, "panel.png" COMP;
+  image, "plus1.png" COMP;
+  image, "plus2.png" COMP;
+  image, "x1.png" COMP;
+  image, "x2.png" COMP;
 
-  image, "tabs-trough.png" LOSSY 98;
-  image, "cont-trough.png" LOSSY 98;
-  image, "tab-about.png" LOSSY 98;
-  image, "tab-color.png" LOSSY 98;
-  image, "tab-shots.png" LOSSY 98;
-  image, "tab-theme.png" LOSSY 98;
-  image, "tab-unsel.png" LOSSY 98;
-  image, "tab-sel.png" LOSSY 98;
+  image, "tabs-trough.png" COMP;
+  image, "cont-trough.png" COMP;
+  image, "tab-about.png" COMP;
+  image, "tab-color.png" COMP;
+  image, "tab-shots.png" COMP;
+  image, "tab-theme.png" COMP;
+  image, "tab-unsel.png" COMP;
+  image, "tab-sel.png" COMP;
 
-  image, "sun.png" LOSSY 98;
+  image, "sun.png" COMP;
 
-  image, "swatch-shadow.png" LOSSY 98;
-  image, "roundedbox.png" LOSSY 98;
+  image, "swatch-shadow.png" COMP;
+  image, "roundedbox.png" COMP;
 
-  image, "sep.png" LOSSY 98;
-  image, "scrollbox.png" LOSSY 98;
+  image, "sep.png" COMP;
+  image, "scrollbox.png" COMP;
 
-  image, "arrow-up.png" LOSSY 98;
-  image, "arrow-dn.png" LOSSY 98;
+  image, "arrow-up.png" COMP;
+  image, "arrow-dn.png" COMP;
 
 }
 
