@@ -434,8 +434,18 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
 	} else {
 		/*Multi select popup*/
 		Ecore_List* files = ecore_list_new();
+		Evas_List* l;
 
+		printf("Preparing multi-select popup..\n");
 
+		for (l = rows; l; ) {
+			gui_file* file = ecore_hash_get(etk_list_viewer_row_hash, l->data);
+			if (file) ecore_list_append(files, file->file);
+			
+			l=l->next;
+		}
+
+		entropy_etk_context_menu_popup_multi(instance, files);
 
 		ecore_list_destroy(files);
 	}

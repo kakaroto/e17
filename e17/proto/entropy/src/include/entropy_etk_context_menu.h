@@ -13,6 +13,7 @@ void entropy_etk_context_menu_stat_cb_register(
 void
 entropy_etk_context_menu_metadata_groups_populate();
 
-
+void entropy_etk_context_menu_popup_multi(entropy_gui_component_instance* instance, 
+		Ecore_List* current_files);
 
 #endif

@@ -15,8 +15,11 @@ Etk_Widget* _entropy_etk_context_menu_groups_item = NULL;
 Etk_Widget* _entropy_etk_context_menu_groups_add_to = NULL;
 Etk_Widget* _entropy_etk_context_menu_groups_add_to_item = NULL;
 
+
 Etk_Widget* _entropy_etk_context_menu_groups_remove_from = NULL;
 Etk_Widget* _entropy_etk_context_menu_groups_remove_from_item = NULL;
+
+Etk_Widget* _entropy_etk_context_menu_rename_menu_item = NULL;
 
 entropy_generic_file* _entropy_etk_context_menu_current_folder = NULL;
 entropy_generic_file* _entropy_etk_context_menu_current_file = NULL;
@@ -24,7 +27,8 @@ Ecore_List* _entropy_etk_context_menu_selected_files = NULL;
 
 entropy_gui_component_instance* _entropy_etk_context_menu_current_instance = NULL;
 
-int check= 0;
+static int _entropy_etk_context_menu_mode = 0;
+
 
 typedef enum _Etk_Menu_Item_Type
 {
@@ -152,10 +156,19 @@ _entropy_etk_context_menu_group_file_add_cb(Etk_Object *object, void *data)
 	const char* label;
 
 	label = etk_menu_item_label_get(ETK_MENU_ITEM(object));
-
 	printf("Add to group '%s'\n", label);
 
-	entropy_plugin_filesystem_file_group_add(_entropy_etk_context_menu_current_file, label);
+	/*Check for multi, or single, selection*/
+	if (_entropy_etk_context_menu_mode == 0) {
+		entropy_plugin_filesystem_file_group_add(_entropy_etk_context_menu_current_file, (char*)label);
+	} else {
+		entropy_generic_file* file;
+
+		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
+			entropy_plugin_filesystem_file_group_add(file, (char*)label);
+		}
+	}
 }
 
 void
@@ -281,11 +294,6 @@ void entropy_etk_context_menu_init()
 	
 	
    	if (!_entropy_etk_context_menu) {
-		printf("Value of check: %d\n",check);
-		
-		printf("Making new menu..\n");
-		check = 1;
-		
 		menu = etk_menu_new();
 		_entropy_etk_context_menu = menu;
 		
@@ -321,8 +329,13 @@ void entropy_etk_context_menu_init()
 		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu),NULL);
 		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_file_delete_cb), NULL);
-		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Rename"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
-		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_file_rename_cb), NULL);
+		
+		_entropy_etk_context_menu_rename_menu_item = 
+			_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Rename"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		
+		etk_signal_connect("activated", ETK_OBJECT(_entropy_etk_context_menu_rename_menu_item), 
+				ETK_CALLBACK(_entropy_etk_context_menu_file_rename_cb), NULL);
+
 		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Properties"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_properties_cb), NULL);
 
@@ -347,6 +360,42 @@ void entropy_etk_context_menu_popup(entropy_gui_component_instance* instance, en
 	
 	if (!_entropy_etk_context_menu) 
 		entropy_etk_context_menu_init();
+
+	/*Show*/
+	etk_widget_show_all(_entropy_etk_context_menu_open_with_item);
+	etk_widget_show_all(_entropy_etk_context_menu_rename_menu_item);
+
+	/*Mode = single*/
+	_entropy_etk_context_menu_mode = 0;	
+
+	etk_menu_popup(ETK_MENU(_entropy_etk_context_menu));
+}
+
+void entropy_etk_context_menu_popup_multi(entropy_gui_component_instance* instance, Ecore_List* current_files)
+{
+	_entropy_etk_context_menu_current_instance = instance;
+	entropy_generic_file* file;
+
+
+	/*Hide*/
+	etk_widget_hide(_entropy_etk_context_menu_open_with_item);
+	etk_widget_hide(_entropy_etk_context_menu_rename_menu_item);
+
+	if (_entropy_etk_context_menu_selected_files)
+		ecore_list_destroy(_entropy_etk_context_menu_selected_files);
+	_entropy_etk_context_menu_selected_files = NULL;
+
+	_entropy_etk_context_menu_selected_files = ecore_list_new();
+	ecore_list_goto_first(current_files);
+	while ( (file = ecore_list_next(current_files))) {
+		ecore_list_append(_entropy_etk_context_menu_selected_files, file);
+	}
+	
+	if (!_entropy_etk_context_menu) 
+		entropy_etk_context_menu_init();
+
+	/*Mode = multi*/
+	_entropy_etk_context_menu_mode = 1;
 
 	etk_menu_popup(ETK_MENU(_entropy_etk_context_menu));
 }
