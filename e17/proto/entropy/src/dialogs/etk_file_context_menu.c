@@ -324,10 +324,10 @@ void entropy_etk_context_menu_init()
                                 ETK_MENU(_entropy_etk_context_menu_groups_remove_from));
 
 
-		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
-		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu),NULL);
-		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu),NULL);
-		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy (Ctrl-c)"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut (Ctrl-x)"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu),NULL);
+		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste (Ctrl-v)"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu),NULL);
+		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete (Del)"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_file_delete_cb), NULL);
 		
 		_entropy_etk_context_menu_rename_menu_item = 

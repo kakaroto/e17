@@ -66,6 +66,8 @@ char* entropy_plugin_toolkit_get();
 entropy_gui_component_instance* entropy_plugin_layout_create (entropy_core * core);
 void entropy_etk_layout_trackback_cb(Etk_Object* obj, void* data);
 
+void entropy_layout_etk_simple_local_view_set(entropy_gui_component_instance* instance,
+		entropy_gui_component_instance* local);
 
 
 
@@ -294,46 +296,51 @@ void entropy_etk_layout_tree_cb(Etk_Object* obj, void* data)
 void etk_local_viewer_cb(Etk_Object* obj, void* data)
 {
 	entropy_gui_component_instance* local;
-	Evas_List* children;
 	entropy_gui_component_instance* instance = data;
-	entropy_layout_gui* gui = instance->data;
-	Etk_Widget* widget;
-	entropy_generic_file* file;
 	
 	/*Get the local viewer they want..*/
 	local = etk_object_data_get(ETK_OBJECT(obj), "VISUAL");
 
 	if (local) {
-		/*FIXME - disable plugins - this should be cleaner*/
-		gui->iconbox_viewer->active = 0;
-		gui->list_viewer->active = 0;
-
-		for (children = etk_container_children_get(ETK_CONTAINER(gui->localshell)); children; ) {
-			widget = children->data;
-			etk_container_remove(ETK_CONTAINER(gui->localshell), widget);
-			
-			children = children->next;
-		}
-
-		if (local->gui_object) {
-			local->active = 1;
-
-			/*Update the visual current_folder*/
-			if ( (file = ((entropy_gui_component_instance_layout*)instance)->current_folder) ) {
-				entropy_event_action_file(file, instance);
-			} else {
-				printf("No current folder!\n");
-			}
-			etk_box_pack_start(ETK_BOX(gui->localshell), local->gui_object, ETK_TRUE,ETK_TRUE,0);
-		} else {
-			printf("Selected instance has no GUI_OBJECT\n");
-		}
+		entropy_layout_etk_simple_local_view_set(instance, local);
 	} else {
 		printf("Local is null!\n");
 	}
 }
 
+void entropy_layout_etk_simple_local_view_set(entropy_gui_component_instance* instance,
+		entropy_gui_component_instance* local)
+{
+	Evas_List* children;
+	entropy_layout_gui* gui = instance->data;
+	Etk_Widget* widget;
+	entropy_generic_file* file;
 
+	/*FIXME - disable plugins - this should be cleaner*/
+	gui->iconbox_viewer->active = 0;
+	gui->list_viewer->active = 0;
+
+	for (children = etk_container_children_get(ETK_CONTAINER(gui->localshell)); children; ) {
+		widget = children->data;
+		etk_container_remove(ETK_CONTAINER(gui->localshell), widget);
+			
+		children = children->next;
+	}
+
+	if (local->gui_object) {
+		local->active = 1;
+		
+		/*Update the visual current_folder*/
+		if ( (file = ((entropy_gui_component_instance_layout*)instance)->current_folder) ) {
+			entropy_event_action_file(file, instance);
+		} else {
+			printf("No current folder!\n");
+		}
+		etk_box_pack_start(ETK_BOX(gui->localshell), local->gui_object, ETK_TRUE,ETK_TRUE,0);
+	} else {
+		printf("Selected instance has no GUI_OBJECT\n");
+	}	
+}
 
 
 void etk_file_cache_dialog_cb(Etk_Object *obj, void *data)
@@ -353,16 +360,26 @@ _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Up_Down *ev;
    entropy_gui_component_instance* instance = data;
+   entropy_layout_gui* gui = instance->data;
 
    ev = event;
 
    if(evas_key_modifier_is_set(ev->modifiers, "Control"))
    {
-	   if (!strcmp(ev->key, "q"))
-	   {
+	   if (!strcmp(ev->key, "q")) {
 		   layout_etk_simple_quit(instance->core);
 	   }
+   } else if (evas_key_modifier_is_set(ev->modifiers, "Alt")) {
+ 	   if (!strcmp(ev->key, "i")) {
+		entropy_layout_etk_simple_local_view_set(instance, gui->iconbox_viewer);
+	   }
+ 	   if (!strcmp(ev->key, "l")) {
+		entropy_layout_etk_simple_local_view_set(instance, gui->list_viewer);
+	   }
+
+  
    }
+   
 }
 
 void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entropy_Config_Structure* structure_obj)
@@ -739,12 +756,12 @@ entropy_plugin_layout_create (entropy_core * core)
   _entropy_etk_menu_item_new(ETK_MENU_ITEM_SEPARATOR, NULL, 
 		  ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL);
 
-  menu_item = _entropy_etk_radio_item_new(_("List View"), NULL, ETK_MENU_SHELL(menu));
+  menu_item = _entropy_etk_radio_item_new(_("List View (Alt-l)"), NULL, ETK_MENU_SHELL(menu));
   etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->list_viewer);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
 
   
-  menu_item = _entropy_etk_radio_item_new(_("Icon View"), menu_item, ETK_MENU_SHELL(menu));
+  menu_item = _entropy_etk_radio_item_new(_("Icon View (Alt-i)"), menu_item, ETK_MENU_SHELL(menu));
   etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->iconbox_viewer);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
 
