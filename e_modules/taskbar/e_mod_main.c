@@ -613,8 +613,6 @@ _taskbar_icon_fill(Taskbar_Icon *ic)
 
    label = ic->border->client.netwm.name;
    if (!label)
-      label = ic->border->client.icccm.title;
-   if (!label)
       label = "?";
    edje_object_part_text_set(ic->o_holder, "label", label);
    edje_object_part_text_set(ic->o_holder2, "label", label);
@@ -1110,9 +1108,7 @@ _taskbar_cb_window_property(void *data, int type, void *event)
         inst = l->data;
         ic = _taskbar_icon_find(inst->taskbar, bd);
         if (ic) {
-	     label = ic->border->client.netwm.name;
-	     if (!label)
-	       label = ic->border->client.icccm.title;
+	     ecore_x_netwm_name_get(ic->border->client.win, &label);
 	     if (!label)
 	       label = "?";
 	     edje_object_part_text_set(ic->o_holder, "label", label);
