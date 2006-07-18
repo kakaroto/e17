@@ -35,7 +35,7 @@
 #include <time.h>
 
 const char          e_wm_name[] = "Enlightenment";
-const char          e_wm_version[] = ENLIGHTENMENT_VERSION;
+const char          e_wm_version[] = ENLIGHTENMENT_REVNAME;
 const char          e_wm_date[] = E_CHECKOUT_DATE;
 
 Display            *disp;
