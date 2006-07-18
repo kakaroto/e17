@@ -12,65 +12,55 @@ sub new
 sub SignalConnect
 {
     my $self = shift;
-    my ($type, $mem) = split /=/, $self->{WIDGET};
     my $signal_name = shift;
     my $callback = shift;
     my $data = undef;
     $data = shift if (@_ > 0);
-    Etk::etk_signal_connect($signal_name, 
-    	bless($self->{WIDGET}, "Etk_WidgetPtr"), $callback, $data);
-    bless($self->{WIDGET}, $type);
+    Etk::etk_signal_connect($signal_name, $self, $callback, $data);
+    return $self;
 }
 
 sub SignalConnectAfter
 {
     my $self = shift;
-    my ($type, $mem) = split /=/, $self->{WIDGET};
     my $signal_name = shift;
     my $callback = shift;
     my $data = undef;
     $data = shift if (@_ > 0);
-    Etk::etk_signal_connect_after($signal_name, 
-    	bless($self->{WIDGET}, "Etk_WidgetPtr"), $callback, $data);
-    bless($self->{WIDGET}, $type);
+    Etk::etk_signal_connect_after($signal_name, $self, $callback, $data);
+    return $self;
 }
 
 sub SignalConnectSwapped
 {
     my $self = shift;
-    my ($type, $mem) = split /=/, $self->{WIDGET};
     my $signal_name = shift;
     my $callback = shift;
     my $data = undef;
     $data = shift if (@_ > 0);
-    Etk::etk_signal_connect_swapped($signal_name, 
-    	bless($self->{WIDGET}, "Etk_WidgetPtr"), $callback, $data);
-    bless($self->{WIDGET}, $type);
+    Etk::etk_signal_connect_swapped($signal_name, $self, $callback, $data);
+    return $self;
 }
 
 sub SignalConnectFull
 {
     my $self = shift;
-    my ($type, $mem) = split /=/, $self->{WIDGET};
     my $signal_name = shift;
     my $callback = shift;
     my $data = shift;
     my $swapped = shift;
     my $after = shift;
-    Etk::etk_signal_connect_full($signal_name, 
-    	bless($self->{WIDGET}, "Etk_WidgetPtr"), $callback, $data, $swapped, $after);
-    bless($self->{WIDGET}, $type);
+    Etk::etk_signal_connect_full($signal_name, $self, $callback, $data, $swapped, $after);
+    return $self;
 }
 
 sub SignalDisconnect
 {
     my $self = shift;
-    my ($type, $mem) = split /=/, $self->{WIDGET};
     my $signal_name = shift;
     my $callback = shift;
-    Etk::etk_signal_disconnect($signal_name, 
-    	bless($self->{WIDGET}, "Etk_WidgetPtr"), $callback);
-    bless($self->{WIDGET}, $type);
+    Etk::etk_signal_disconnect($signal_name, $self, $callback);
+    return $self;
 }
 
 sub NotificationCallbackAdd

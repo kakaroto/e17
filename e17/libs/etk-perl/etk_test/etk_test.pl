@@ -6,7 +6,6 @@ use Etk::CheckButton;
 use Etk::RadioButton;
 use Etk::Colorpicker;
 use Etk::Combobox;
-use Etk::Combobox::Item;
 use Etk::Entry;
 use Etk::FillPolicy;
 use Etk::Dialog;
@@ -17,18 +16,10 @@ use Etk::HPaned;
 use Etk::HSlider;
 use Etk::HSeparator;
 use Etk::Iconbox;
-use Etk::Iconbox::Icon;
-use Etk::Iconbox::Model;
 use Etk::Image;
 use Etk::Label;
 use Etk::Main;
 use Etk::Menu;
-use Etk::Menu::Bar;
-use Etk::Menu::Item;
-use Etk::Menu::Item::Image;
-use Etk::Menu::Item::Check;
-use Etk::Menu::Item::Radio;
-use Etk::Menu::Item::Separator;
 use Etk::ProgressBar;
 use Etk::VBox;
 use Etk::VPaned;
@@ -42,13 +33,6 @@ use Etk::Timer;
 use Etk::Theme;
 use Etk::ToggleButton;
 use Etk::Tree;
-use Etk::Tree::Col;
-use Etk::Tree::Model::Int;
-use Etk::Tree::Model::ProgressBar;
-use Etk::Tree::Model::Image;
-use Etk::Tree::Model::Double;
-use Etk::Tree::Model::IconText;
-use Etk::Tree::Model::Checkbox;
 use Etk::Alignment;
 use Etk::Notebook;
 use Etk::TextView;
@@ -57,7 +41,7 @@ Etk::Init();
 
 my $NUM_COLS = 2;
 my $win = Etk::Window->new("Etk-Perl Test");
-my $vbox_frames = Etk::VBox->new(0, 0);
+my $vbox_frames = $win->AddVBox(0, 0);
 
 # our frames, each frame is a category for examples
 my %frames = (
@@ -261,7 +245,6 @@ while (my ($key, $value) = each %buttons)
 }
 
 $win->SignalConnect("delete_event", \&main_window_delete);
-$win->Add($vbox_frames);
 $win->BorderWidthSet(5);
 $win->ShowAll();
 
@@ -271,37 +254,18 @@ Etk::Shutdown();
 sub button_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Button Test");
-    my $vbox = Etk::VBox->new(0, 0);
-    
-    my $button = Etk::Button->new("Normal Button");
-    $vbox->PackStart($button);
-    
-    $button = Etk::Button->new("Button with an image");    
-    $button->ImageSet(Etk::Image->new("images/e_icon.png"));
-    $vbox->PackStart($button);
-    
-    $button = Etk::Button->new();
-    $vbox->PackStart($button);
-    
-    $button = Etk::CheckButton->new("Check Button");
-    $vbox->PackStart($button);
-    
-    $button = Etk::CheckButton->new();
-    $vbox->PackStart($button);
-    
-    $button = Etk::RadioButton->new("Radio button");
-    $vbox->PackStart($button);
+    my $vbox = $win->AddVBox(0, 0);
 
-    my $button2 = Etk::RadioButton->new($button);
-    $vbox->PackStart($button2);
-
-    $button = Etk::ToggleButton->new("Toggle Button");
-    $vbox->PackStart($button);
+    $vbox->AddButton("Normal Button")->PackStart();
+    $vbox->AddButton("Button with an image")->ImageSet("images/e_icon.png")->PackStart();
+    $vbox->AddButton()->PackStart();
+    $vbox->AddCheckButton("Check Button")->PackStart();
+    $vbox->AddCheckButton()->PackStart();
+    my $radio = $vbox->AddRadioButton("Radio button")->PackStart();
+    $vbox->AddRadioButton($radio)->PackStart();
+    $vbox->AddToggleButton("Toggle Button")->PackStart();
+    $vbox->AddToggleButton()->PackStart();
     
-    $button = Etk::ToggleButton->new();
-    $vbox->PackStart($button);
-    
-    $win->Add($vbox);
     $win->ShowAll();
 }
 
@@ -329,33 +293,24 @@ sub image_window_show
 sub entry_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Entry Test");
-    my $vbox = Etk::VBox->new(0, 0);    
-    my $hbox = Etk::HBox->new(0, 0);
-    my $entry = Etk::Entry->new();
-    my $print_button = Etk::Button->new("Print text");
-    my $toggle_button = Etk::ToggleButton->new("Toggle password");
-    my $label = Etk::Label->new("");
-    
-    $print_button->SignalConnect("clicked", 
-	sub {
-	    $label->Set($entry->TextGet());
+    my $vbox = $win->AddVBox(0, 0);    
+    my $hbox = $vbox->AddHBox(0, 0)->PackStart();
+    my $label = $vbox->AddLabel("")->PackStart();
+
+    my $entry = $hbox->AddEntry()->PackStart();
+
+    $hbox->AddButton("Print text")->SignalConnect("clicked",
+    	sub {
+		$label->Set($entry->TextGet());
 	}
-    );
-    
-    $toggle_button->SignalConnect("clicked",
-	sub {
-	    $entry->PasswordSet(!$entry->PasswordGet());
+	)->PackStart();
+
+    $hbox->AddToggleButton("Toggle password")->SignalConnect("clicked",
+    	sub {
+		$entry->PasswordSet(!$entry->PasswordGet());
 	}
-    );
-    
-    $hbox->PackStart($entry);
-    $hbox->PackStart($print_button);
-    $hbox->PackStart($toggle_button);    
-    
-    $vbox->PackStart($hbox);
-    $vbox->PackStart($label);
-    
-    $win->Add($vbox);
+	)->PackStart();
+
     $win->ShowAll();
 }
 
@@ -373,6 +328,7 @@ sub slider_window_show
     $table->Attach($label1, 0, 0, 1, 1, 0, 0, Etk::FillPolicy::None);
     $slider1->SignalConnect("value_changed",
 	sub {
+	    my $self = shift;
 	    my $value = shift;
 	    $label1->Set( sprintf("%.2f", $value));
 	}
@@ -384,6 +340,7 @@ sub slider_window_show
     $table->Attach($label2, 1, 1, 1, 1, 0, 0, Etk::FillPolicy::None);
     $slider2->SignalConnect("value_changed",
 	sub {
+	    my $self = shift;
 	    my $value = shift;
 	    $label2->Set( sprintf("%.2f", $value));
 	}
@@ -397,14 +354,8 @@ sub slider_window_show
 sub progbar_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Progress Bar Test");
-    my $vbox = Etk::VBox->new(1, 5);
-    my $pbar1 = Etk::ProgressBar->new("0% done");
-    my $pbar2 = Etk::ProgressBar->new("Loading...");
-    
-    $pbar2->PulseStepSet(0.015);
-    
-    $vbox->PackStart($pbar1);
-    $vbox->PackStart($pbar2);
+    my $vbox = $win->AddVBox(1, 5);
+    my ($pbar1, $pbar2);
 
     my $timer1 = Etk::Timer->new(0.05, 
 	sub {
@@ -420,35 +371,32 @@ sub progbar_window_show
 	}
     );
     
-    $pbar1->SignalConnect("destroyed", 
-	sub {
-	    $timer1->Delete();
-	}
-    );
-    
     my $timer2 = Etk::Timer->new(0.025,
 	sub {
 	    $pbar2->Pulse();
 	    return 1;
 	}
     );
+
+    $pbar1 = $vbox->AddProgressBar("0% done")->SignalConnect("destroyed",
+    	sub {
+		$timer1->Delete();
+	})->PackStart();
+    $pbar2 = $vbox->AddProgressBar("Loading...")->PulseStepSet(0.015)
+    	->SignalConnect("destroyed",
+    	sub {
+		$timer2->Delete();
+	})->PackStart();
     
-    $pbar2->SignalConnect("destroyed", 
-	sub {
-	    $timer2->Delete();
-	}
-    );    
     
-    $win->Add($vbox);
     $win->ShowAll();    
 }
 
 sub canvas_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Canvas Test");
-    my $label = Etk::Label->new("<b>Etk::Canvas is not implemented yet.</b>");
+    $win->AddLabel("<b>Etk::Canvas is not implemented yet.</b>");
     
-    $win->Add($label);
     $win->BorderWidthSet(10);
     $win->ShowAll();
 }
@@ -866,6 +814,7 @@ sub iconbox_window_show
     
     $iconbox->SignalConnect("mouse_up", 
 	sub {
+	    my $self = shift;
 	    my $event = shift;
 	    my $icon = $iconbox->IconGetAtXY($event->{canvas_x},
 		$event->{canvas_y}, 0, 1, 1);

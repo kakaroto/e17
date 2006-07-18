@@ -439,18 +439,33 @@ sub AUTOLOAD
     my $package;
     ($package = $AUTOLOAD) =~ s/.*:://;
 
-    if ($package =~ /^Add(.*)/) 
+    if ($package =~ /^Add(.+)/) 
     {
-	shift;
+	my $self = shift;
 	my $p = $1;
     	my $return;
 
     	eval("use Etk::$p");
 	die("Cannot load package Etk::$p - $@") if $@;
     	eval("\$return = Etk::${p}->new(\@_);");
+
+	$self->Add($return);
+	
     	return $return;
     }
 }
+
+sub PackStart
+{
+    my $self = shift;
+    if ($self->{PARENT}->isa("Etk::Box")) {
+	    $self->{PARENT}->PackStart($self, @_);
+    } else {
+	    warn("Parent is not a Box\n");
+    }
+    return $self;
+}
+
 
 1;
 

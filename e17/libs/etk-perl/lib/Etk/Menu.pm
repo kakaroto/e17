@@ -1,8 +1,17 @@
 package Etk::Menu;
 use strict;
 use vars qw(@ISA);
-require Etk::Menu;
+require Etk::Menu::Shell;
 @ISA = ("Etk::Menu::Shell");
+
+use Etk::Menu::Bar;
+use Etk::Menu::Item;
+
+use Etk::Menu::Item::Check;
+use Etk::Menu::Item::Image;
+use Etk::Menu::Item::Radio;
+use Etk::Menu::Item::Separator;
+
 sub new
 {
     my $class = shift;

@@ -24,6 +24,7 @@ struct _Callback_Signal_Data
 {
    char       *signal_name;   /* etk signal name */
    Etk_Object *object;        /* object signal is connected to */
+   SV         *perl_object;   /* reference to the perl object */
    SV         *perl_callback; /* perl callback to be called */
    void       *perl_data;     /* perl data to pass to the perl callback */
 };
@@ -76,6 +77,7 @@ callback_VOID__VOID(Etk_Object *object, void *data)
    cbd = data;
    
    PUSHMARK(SP);
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));
    PUTBACK ;
       
@@ -92,6 +94,7 @@ callback_VOID__INT(Etk_Object *object, int value, void *data)
    cbd = data;
 
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
    XPUSHs(sv_2mortal(newSViv(value)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
@@ -109,6 +112,7 @@ callback_VOID__DOUBLE(Etk_Object *object, double value, void *data)
    cbd = data;
 
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
    XPUSHs(sv_2mortal(newSVnv(value)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
@@ -169,6 +173,7 @@ callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
      }
    
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
    XPUSHs(sv_2mortal(event_rv));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
@@ -186,6 +191,7 @@ callback_VOID__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
    cbd = data;
 
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
    //XPUSHs(sv_2mortal(newSViv(value)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
@@ -203,6 +209,7 @@ callback_VOID__INT_POINTER(Etk_Object *object, int val1, void *val2, void *data)
    cbd = data;
 
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
    XPUSHs(sv_2mortal(newSViv(val1)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
@@ -220,6 +227,7 @@ callback_BOOL__VOID(Etk_Object *object, void *data)
    cbd = data;
 
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
@@ -236,6 +244,7 @@ callback_BOOL__DOUBLE(Etk_Object *object, double value, void *data)
    cbd = data;
 
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
    XPUSHs(sv_2mortal(newSVnv(value)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
@@ -253,6 +262,7 @@ callback_BOOL__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
    cbd = data;
 
    PUSHMARK(SP) ;
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
    //XPUSHs(sv_2mortal(newSViv(value)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
@@ -262,7 +272,7 @@ callback_BOOL__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
 }
 
 static void
-__etk_signal_connect_full(char *signal_name, Etk_Widget *object, SV *callback, SV *data, Etk_Bool swapped, Etk_Bool after)
+__etk_signal_connect_full(char *signal_name, SV *object, SV *callback, SV *data, Etk_Bool swapped, Etk_Bool after)
 {
 	dSP;
 
@@ -271,18 +281,25 @@ __etk_signal_connect_full(char *signal_name, Etk_Widget *object, SV *callback, S
 	Etk_Signal *sig = NULL;
 	Etk_Marshaller marsh;
 
-	obj = ETK_OBJECT(object);
-	
+	HV * ref;
+	SV ** o;
+
 	ENTER;
 	SAVETMPS;
 
+	ref = (HV *)SvRV(object);
+	o = hv_fetch( ref, "WIDGET", strlen("WIDGET"), 0);
+
+	obj = ETK_OBJECT( (void *) SvIV(SvRV(*o)) );
+
 	cbd = calloc(1, sizeof(Callback_Signal_Data));
 	cbd->signal_name = strdup(signal_name);
-	cbd->object = ETK_OBJECT(object);
+	cbd->object = obj;
+	cbd->perl_object = newSVsv(object);
 	cbd->perl_data = newSVsv(data);
 	cbd->perl_callback = newSVsv(callback);	
 	
-	sig = etk_signal_lookup(signal_name, ETK_OBJECT(object)->type);
+	sig = etk_signal_lookup(signal_name, obj->type);
 	if(!sig) printf("CANT GET SIG!\n");
 	marsh = etk_signal_marshaller_get(sig);
 	
@@ -3088,7 +3105,7 @@ etk_signal_callback_del(signal_callback)
 void
 etk_signal_connect(signal_name, object, callback, data)
 	char *	        signal_name
-	Etk_Widget *	object
+	SV *		object
 	SV *	        callback
 	SV *            data
 	
@@ -3098,7 +3115,7 @@ etk_signal_connect(signal_name, object, callback, data)
 void
 etk_signal_connect_after(signal_name, object, callback, data)
 	char *	        signal_name
-	Etk_Widget *	object
+	SV *		object
 	SV *	        callback
 	SV *            data
 	
@@ -3107,7 +3124,7 @@ etk_signal_connect_after(signal_name, object, callback, data)
 
 void etk_signal_connect_full(signal_name, object, callback, data, swapped, after)
 	char *	        signal_name
-	Etk_Widget *	object
+	SV *		object
 	SV *	        callback
 	SV *            data
 	Etk_Bool	swapped
@@ -3119,7 +3136,7 @@ void etk_signal_connect_full(signal_name, object, callback, data, swapped, after
 void
 etk_signal_connect_swapped(signal_name, object, callback, data)
 	char *	        signal_name
-	Etk_Widget *	object
+	SV *		object
 	SV *	        callback
 	SV *            data
 	
@@ -3133,35 +3150,43 @@ etk_signal_delete(signal)
 void
 etk_signal_disconnect(signal_name, object, callback)
 	char *	        signal_name
-	Etk_Widget *	object
+	SV *		object
 	SV *	        callback
 	
 	CODE:	
 	Etk_Signal *sig = NULL;
 	Etk_Marshaller marsh;
+	Etk_Object * obj;
+	HV * ref;
+	SV ** o;
 	
-	sig = etk_signal_lookup(signal_name, ETK_OBJECT(object)->type);
+	ref = (HV *)SvRV(object);
+	o = hv_fetch( ref, "WIDGET", strlen("WIDGET"), 0);
+
+	obj = ETK_OBJECT( (void *) SvIV(SvRV(*o)) );
+
+	sig = etk_signal_lookup(signal_name, obj->type);
 	if(!sig) printf("CANT GET SIG!\n");
 	marsh = etk_signal_marshaller_get(sig);
 	
 	if(marsh == etk_marshaller_VOID__VOID)
-	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__VOID));
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
 	else if(marsh == etk_marshaller_VOID__INT)
-	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__INT));
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__INT));
 	else if(marsh == etk_marshaller_VOID__DOUBLE)
-	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__DOUBLE));
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__DOUBLE));
 	else if(marsh == etk_marshaller_VOID__POINTER)
-	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__POINTER));
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__POINTER));
 	else if(marsh == etk_marshaller_VOID__INT_POINTER)
-	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__INT_POINTER));
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__INT_POINTER));
 	else if(marsh == etk_marshaller_BOOL__VOID)
-	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_BOOL__VOID));
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__VOID));
 	else if(marsh == etk_marshaller_BOOL__DOUBLE)
-	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_BOOL__DOUBLE));
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__DOUBLE));
 	else if(marsh == etk_marshaller_BOOL__POINTER_POINTER)
-	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_BOOL__POINTER_POINTER));
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__POINTER_POINTER));
 	else
- 	  etk_signal_disconnect(signal_name, ETK_OBJECT(object), ETK_CALLBACK(callback_VOID__VOID));
+ 	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
 
 void
 etk_signal_emit(signal, object, return_value, ...)

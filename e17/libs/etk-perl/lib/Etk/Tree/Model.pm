@@ -7,7 +7,7 @@ sub new
 {
     my $class = shift;
     my $self = {};
-    $self->{WIDGET} = unref;
+    $self->{WIDGET} = undef;
     bless($self, $class);
     return $self;
 }

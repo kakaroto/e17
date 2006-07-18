@@ -54,12 +54,26 @@ sub LabelGet
     my $self = shift;
     return Etk::etk_button_label_get($self->{WIDGET});
 }
+	
+=item ImageSet($image)
+
+Set the image of a button.
+If $image is a string, a new Etk::Image object is created.
+
+=cut 
 
 sub ImageSet
 {
     my $self = shift;
-    my $image = shift;
+    my $im = shift;
+    my $image;
+    if (ref $im && $im->isa("Etk::Image")) {
+	    $image = $im;
+    } else {
+	    $image = Etk::Image->new($im);
+    }
     Etk::etk_button_image_set($self->{WIDGET}, $image->{WIDGET});
+    return $self;
 }
 
 sub ImageGet

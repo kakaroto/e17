@@ -63,6 +63,7 @@ sub PulseStepSet
     my $self = shift;
     my $pulse_step = shift;
     Etk::etk_progress_bar_pulse_step_set($self->{WIDGET}, $pulse_step);
+    return $self;
 }
 
 sub PulseStepGet

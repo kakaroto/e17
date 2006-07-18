@@ -4,6 +4,8 @@ use vars qw(@ISA);
 require Etk::Widget;
 @ISA = ("Etk::Widget");
 
+use Etk::Combobox::Item;
+
 use constant
 {
     ColumnTypeLabel => 0,

@@ -1,9 +1,20 @@
 package Etk::Tree;
 use strict;
 use vars qw(@ISA);
-use Etk::Tree::Row;
 require Etk::Widget;
 @ISA = ("Etk::Widget");
+
+use Etk::Tree::Col;
+use Etk::Tree::Row;
+use Etk::Tree::Model;
+
+use Etk::Tree::Model::Checkbox;
+use Etk::Tree::Model::Double;
+use Etk::Tree::Model::IconText;
+use Etk::Tree::Model::Image;
+use Etk::Tree::Model::Int;
+use Etk::Tree::Model::ProgressBar;
+use Etk::Tree::Model::Text;
 
 use constant
 {
@@ -207,6 +218,64 @@ sub SelectedRowsGet
 {
    my $self = shift;
    # TODO: pending list implementation
-}					     
+}
+
+sub AddCol
+{
+    my $self = shift;
+    my ($title, $model, $width) = @_;
+
+    my $model_widget;
+    if ($model eq "Text") { 
+	    $model_widget = Etk::Tree::Model::Text->new($self);
+    } elsif ($model eq "ProgressBar") {
+	    $model_widget = Etk::Tree::Model::ProgressBar->new($self);
+    } # etc...
+
+    my $widget = Etk::Tree::Col->new($self, $title, $model_widget, $width);
+    $widget->{MODEL} = $model;
+    
+    push @{$self->{COLS}}, $widget;
+    return $widget;
+
+}
+
+sub AddCols
+{
+    my $self = shift;
+    my @cols = @_;
+    foreach (@cols) {
+	    $self->AddCol(@$_);
+    }
+    return $self;
+}
+
+sub AddRow
+{
+    my $self = shift;
+    my @data = @_;
+    my @cols = @{$self->{COLS}};
+    my $row = $self->Append();
+    foreach my $col (@cols) {
+	if ($col->{MODEL} eq "Text") {
+		my $text = shift @data;
+		$row->FieldTextSet($col, $text);
+	} elsif ($col->{MODEL} eq "ProgressBar") {
+		my $prog = shift @data;
+		$row->FieldProgressBarSet($col, $prog->[0], $prog->[1]);
+	}
+    }
+    return $row;
+}
+   
+sub AddRows
+{
+    my $self = shift;
+    my @rows = @_;
+    foreach (@rows) {
+	    $self->AddRow(@$_);
+    }
+    return $self;
+}
    
 1;

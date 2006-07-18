@@ -3,6 +3,10 @@ use strict;
 use vars qw(@ISA);
 require Etk::Widget;
 @ISA = ("Etk::Widget");
+
+use Etk::Iconbox::Icon;
+use Etk::Iconbox::Model;
+
 sub new
 {
     my $class = shift;
