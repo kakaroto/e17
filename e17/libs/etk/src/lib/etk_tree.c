@@ -2860,10 +2860,12 @@ static void _etk_tree_row_select_all(Etk_Tree_Row *row)
    
    if (!row)
       return;
-   
+      
+   row->tree->num_selected_rows = 0;
    for (r = row->first_child; r; r = r->next)
    {
       r->selected = ETK_TRUE;
+      ++row->tree->num_selected_rows;
       if (r->expanded)
          _etk_tree_row_select_all(r);
    }
@@ -2986,14 +2988,14 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
 	 {
 	    etk_tree_unselect_all(tree);
 	    tree->num_selected_rows = 1;
+	    row->selected = ETK_TRUE;
+	    tree->last_selected = row;
 	    if(tree->dnd_event)      
 	      etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "row_selected");
 	    else
 	      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);	    
 	 }
-	 
-         row->selected = ETK_TRUE;
-         tree->last_selected = row;
+	 tree->last_selected = row;
       }
    }
 
