@@ -3,125 +3,135 @@
 
 struct _E_Config_Dialog_Data
 {
-   int disable_timer;
-   double poll_time;
-   char *dir;
+  int disable_timer;
+  double poll_time;
+  char *dir;
 };
 
 /* Protos */
-static void *_create_data(E_Config_Dialog *cfd);
-static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
-static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
-static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+static void *_create_data (E_Config_Dialog * cfd);
+static void _free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata);
+static Evas_Object *_basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
+					   E_Config_Dialog_Data * cfdata);
+static int _basic_apply_data (E_Config_Dialog * cfd,
+			      E_Config_Dialog_Data * cfdata);
 
 void
-_config_slideshow_module(Config_Item *ci)
+_config_slideshow_module (Config_Item * ci)
 {
-   E_Config_Dialog *cfd;
-   E_Config_Dialog_View *v;
-   E_Container *con;
-   char buf[4096];
-   
-   v = E_NEW(E_Config_Dialog_View, 1);
+  E_Config_Dialog *cfd;
+  E_Config_Dialog_View *v;
+  E_Container *con;
+  char buf[4096];
 
-   v->create_cfdata = _create_data;
-   v->free_cfdata = _free_data;
-   v->basic.apply_cfdata = _basic_apply_data;
-   v->basic.create_widgets = _basic_create_widgets;
+  v = E_NEW (E_Config_Dialog_View, 1);
 
-   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(slide_config->module));
-   con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, D_("Slideshow Configuration"), buf, 0, v, ci);
-   slide_config->config_dialog = cfd;
+  v->create_cfdata = _create_data;
+  v->free_cfdata = _free_data;
+  v->basic.apply_cfdata = _basic_apply_data;
+  v->basic.create_widgets = _basic_create_widgets;
+
+  snprintf (buf, sizeof (buf), "%s/module.eap",
+	    e_module_dir_get (slide_config->module));
+  con = e_container_current_get (e_manager_current_get ());
+  cfd =
+    e_config_dialog_new (con, D_ ("Slideshow Configuration"), buf, 0, v, ci);
+  slide_config->config_dialog = cfd;
 }
 
 static void
-_fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
+_fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 {
-   char buf[PATH_MAX];
+  char buf[PATH_MAX];
 
-   cfdata->poll_time = ci->poll_time;
-   cfdata->disable_timer = ci->disable_timer;
-   if (ci->dir)
-      cfdata->dir = strdup(ci->dir);
-   else
-     {
-        snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
-        cfdata->dir = strdup(buf);
-     }
+  cfdata->poll_time = ci->poll_time;
+  cfdata->disable_timer = ci->disable_timer;
+  if (ci->dir)
+    cfdata->dir = strdup (ci->dir);
+  else
+    {
+      snprintf (buf, sizeof (buf), "%s/.e/e/backgrounds",
+		e_user_homedir_get ());
+      cfdata->dir = strdup (buf);
+    }
 }
 
 static void *
-_create_data(E_Config_Dialog *cfd)
+_create_data (E_Config_Dialog * cfd)
 {
-   E_Config_Dialog_Data *cfdata;
-   Config_Item *ci;
+  E_Config_Dialog_Data *cfdata;
+  Config_Item *ci;
 
-   ci = cfd->data;
-   cfdata = E_NEW(E_Config_Dialog_Data, 1);
+  ci = cfd->data;
+  cfdata = E_NEW (E_Config_Dialog_Data, 1);
 
-   _fill_data(ci, cfdata);
-   return cfdata;
+  _fill_data (ci, cfdata);
+  return cfdata;
 }
 
 static void
-_free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+_free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 {
-   if (!slide_config)
-      return;
+  if (!slide_config)
+    return;
 
-   slide_config->config_dialog = NULL;
-   free(cfdata);
+  slide_config->config_dialog = NULL;
+  free (cfdata);
 }
 
 static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
+_basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
+		       E_Config_Dialog_Data * cfdata)
 {
-   Evas_Object *o, *ob, *of, *ot;
+  Evas_Object *o, *ob, *of, *ot;
 
-   o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, D_("Cycle Time"), 0);
-   ob = e_widget_check_add(evas, D_("Disable Timer"), &(cfdata->disable_timer));
-   e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, D_("%3.0f seconds"), 5.0, 60.0, 1.0, 0, &(cfdata->poll_time), NULL, 200);
-   e_widget_framelist_object_append(of, ob);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+  o = e_widget_list_add (evas, 0, 0);
+  of = e_widget_framelist_add (evas, D_ ("Cycle Time"), 0);
+  ob =
+    e_widget_check_add (evas, D_ ("Disable Timer"), &(cfdata->disable_timer));
+  e_widget_framelist_object_append (of, ob);
+  ob =
+    e_widget_slider_add (evas, 1, 0, D_ ("%3.0f seconds"), 5.0, 60.0, 1.0, 0,
+			 &(cfdata->poll_time), NULL, 200);
+  e_widget_framelist_object_append (of, ob);
+  e_widget_list_object_append (o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, D_("Directory"), 0);
-   ot = e_widget_table_add(evas, 1);
-   ob = e_widget_label_add(evas, D_("Sub-directory to use for backgrounds"));
-   e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->dir);
-   e_widget_table_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-   e_widget_framelist_object_append(of, ot);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+  of = e_widget_framelist_add (evas, D_ ("Directory"), 0);
+  ot = e_widget_table_add (evas, 1);
+  ob = e_widget_label_add (evas, D_ ("Sub-directory to use for backgrounds"));
+  e_widget_table_object_append (ot, ob, 0, 0, 1, 1, 0, 0, 1, 0);
+  ob = e_widget_entry_add (evas, &cfdata->dir);
+  e_widget_table_object_append (ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+  e_widget_framelist_object_append (of, ot);
+  e_widget_list_object_append (o, of, 1, 1, 0.5);
 
-   return o;
+  return o;
 }
 
 static int
-_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+_basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 {
-   Config_Item *ci;
-   char buf[4096];
+  Config_Item *ci;
+  char buf[4096];
 
-   ci = cfd->data;
-   ci->poll_time = cfdata->poll_time;
-   ci->disable_timer = cfdata->disable_timer;
+  ci = cfd->data;
+  ci->poll_time = cfdata->poll_time;
+  ci->disable_timer = cfdata->disable_timer;
 
-   if (ci->dir)
-      evas_stringshare_del(ci->dir);
+  if (ci->dir)
+    evas_stringshare_del (ci->dir);
 
-   if (cfdata->dir != NULL)
-      ci->dir = evas_stringshare_add(cfdata->dir);
-   else
-     {
-        snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds", e_user_homedir_get());
-        ci->dir = evas_stringshare_add(buf);
-     }
+  if (cfdata->dir != NULL)
+    ci->dir = evas_stringshare_add (cfdata->dir);
+  else
+    {
+      snprintf (buf, sizeof (buf), "%s/.e/e/backgrounds",
+		e_user_homedir_get ());
+      ci->dir = evas_stringshare_add (buf);
+    }
 
-   e_config_save_queue();
+  e_config_save_queue ();
 
-   _slide_config_updated(ci->id);
-   return 1;
+  _slide_config_updated (ci->id);
+  return 1;
 }
