@@ -175,7 +175,6 @@ _gc_orient(E_Gadcon_Client *gcc)
      case E_GADCON_ORIENT_CORNER_BL:
      case E_GADCON_ORIENT_CORNER_BR:
         _taskbar_orient_set(inst->taskbar, 1);
-        //e_gadcon_client_aspect_set(gcc, evas_list_count(inst->taskbar->borders) * 16 * 3, 16);
 	w =evas_list_count(inst->taskbar->borders);
 
 	e_gadcon_client_aspect_set(gcc, w * inst->taskbar->bwmin, inst->taskbar->bheight);
@@ -188,7 +187,9 @@ _gc_orient(E_Gadcon_Client *gcc)
      case E_GADCON_ORIENT_CORNER_LB:
      case E_GADCON_ORIENT_CORNER_RB:
         _taskbar_orient_set(inst->taskbar, 0);
-        e_gadcon_client_aspect_set(gcc, 16, evas_list_count(inst->taskbar->borders) * 16 * 3);
+	w =evas_list_count(inst->taskbar->borders);
+
+        e_gadcon_client_aspect_set(gcc, inst->taskbar->bwmin, w * inst->taskbar->bhmin);
         break;
      default:
         break;
@@ -335,7 +336,7 @@ _taskbar_fill(Taskbar *b)
            continue;
         if (bd->client.netwm.state.skip_taskbar)
            continue;
-        if (((bd->desk == e_desk_current_get(b->zone)) && (bd->zone == b->zone)) || (bd->sticky) || (ci->show_all))
+        if ((((bd->desk == e_desk_current_get(b->zone))||(bd->sticky)) && (bd->zone == b->zone)) || (ci->show_all))
           {
 	     b->borders = evas_list_append(b->borders, bd);
              ic = _taskbar_icon_new(b, bd);
@@ -545,11 +546,11 @@ _taskbar_icon_check_add(Taskbar *b, E_Border *bd)
      return 1;
    if (_taskbar_icon_find(b, bd))
      return 1;
-   if (!(bd->sticky || ci->show_all))
+   if (!(ci->show_all))
      {
 	if (bd->zone != b->zone)
 	  return 1;
-	if (bd->desk != e_desk_current_get(bd->zone))
+	if ((bd->desk != e_desk_current_get(bd->zone))||bd->sticky)
 	  return 1;
      }
 
