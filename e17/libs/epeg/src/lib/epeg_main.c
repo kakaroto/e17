@@ -1153,7 +1153,7 @@ _epeg_encode(Epeg_Image *im)
 	im->error = 1;
 	goto done;
      }
-   
+
    jpeg_create_compress(&(im->out.jinfo));
    if (im->out.f)
      jpeg_stdio_dest(&(im->out.jinfo), im->out.f);
@@ -1171,12 +1171,12 @@ _epeg_encode(Epeg_Image *im)
 	dst_mgr->buf = malloc(65536);
    	im->out.jinfo.dest = (struct jpeg_destination_mgr *)dst_mgr;
      }
-   jpeg_set_defaults(&(im->out.jinfo));
    im->out.jinfo.image_width      = im->out.w;
    im->out.jinfo.image_height     = im->out.h;
    im->out.jinfo.input_components = im->in.jinfo.output_components;
    im->out.jinfo.in_color_space   = im->in.jinfo.out_color_space;
    im->out.jinfo.dct_method	  = im->in.jinfo.dct_method;
+   jpeg_set_defaults(&(im->out.jinfo));
    jpeg_set_quality(&(im->out.jinfo), im->out.quality, TRUE);   
    
    if (im->out.quality >= 90)
@@ -1214,9 +1214,9 @@ _epeg_encode(Epeg_Image *im)
    
    while (im->out.jinfo.next_scanline < im->out.h)
      jpeg_write_scanlines(&(im->out.jinfo), &(im->lines[im->out.jinfo.next_scanline]), 1);
+   jpeg_finish_compress(&(im->out.jinfo));
 
    done:
-   jpeg_finish_compress(&(im->out.jinfo));
    if ((im->in.f) || (im->in.mem.data != NULL)) jpeg_destroy_decompress(&(im->in.jinfo));
    if ((im->in.f) && (im->in.file))         fclose(im->in.f);
    if (dst_mgr)
