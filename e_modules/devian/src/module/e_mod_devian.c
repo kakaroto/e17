@@ -31,7 +31,9 @@ int DEVIANF(devian_main_init) (E_Module *m)
    DEVIANM->dialog_conf_theme = NULL;
 
    /* libs */
+#ifdef HAVE_PICTURE
    DEVIANM->display = DEVIANF(display_init) ();
+#endif
 
    /* config */
    DEVIANM->conf = DEVIANF(config_init) ();
@@ -76,7 +78,9 @@ void DEVIANF(devian_main_shutdown) (void)
    /* config */
    DEVIANF(config_shutdown) ();
    /* libs */
+#ifdef HAVE_PICTURE
    DEVIANF(display_shutdown) ();
+#endif
 
    E_FREE(DEVIANM);
    DEVIANM = NULL;
@@ -335,6 +339,8 @@ void DEVIANF(devian_set_id) (DEVIANN *devian, int source, char *extra)
    return;
 }
 
+#ifdef HAVE_PICTURE
+
 /**
  * Initialise the e_lib
  * 
@@ -397,6 +403,8 @@ void DEVIANF(display_shutdown) (void)
    DEVIANM->display = NULL;
    e_lib_shutdown();
 }
+
+#endif
 
 /**
  * Loads a specific part of the current theme to an edje object
