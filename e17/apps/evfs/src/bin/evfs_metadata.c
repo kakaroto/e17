@@ -354,29 +354,67 @@ void evfs_metadata_initialise()
 			eet_close(_evfs_metadata_eet);
 		}
 
+		/*Check if we need to seed the DB*/
+		if (stat(metadata_db, &config_dir_stat)) {
+			char* errMsg = 0;
+			
+			ret = sqlite3_open(metadata_db, &db);
+			if( ret ){
+			    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(db));
+			    sqlite3_close(db);
+			    exit(1);
+			}
 
-		ret = sqlite3_open(metadata_db, &db);
-		if( ret ){
-		    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(db));
-		    sqlite3_close(db);
-		    exit(1);
+			/*Seed statements*/
+			ret = sqlite3_exec(db, 
+			"CREATE TABLE File (id integer primary key AUTOINCREMENT, filename varchar(1024));", 
+			NULL, 0,&errMsg);
+			if( ret ){
+			    fprintf(stderr, "Create error: %s\n", sqlite3_errmsg(db));
+			    sqlite3_close(db);
+			    exit(1);
+			}
+
+			ret = sqlite3_exec(db, 
+			"CREATE TABLE FileGroup (id integer primary key AUTOINCREMENT, File int, MetaGroup int);", 
+			NULL, 0,&errMsg);
+
+			ret = sqlite3_exec(db, 
+			"CREATE TABLE MetaGroup (id integer primary key AUTOINCREMENT, name varchar(255), parent int);", 
+			NULL, 0,&errMsg);
+
+			ret = sqlite3_exec(db, 
+			"CREATE TABLE CustomValues (id integer primary key AUTOINCREMENT, name varchar(255), value varchar(255));", 
+			NULL, 0,&errMsg);
+
+			/*Inserts*/
+			ret = sqlite3_exec(db, 
+			"INSERT INTO \"MetaGroup\" VALUES(NULL, 'Pictures', 0);", 
+			NULL, 0,&errMsg);
+
+			ret = sqlite3_exec(db, 
+			"INSERT INTO \"MetaGroup\" VALUES(NULL, 'Video', 0);", 
+			NULL, 0,&errMsg);
+
+			ret = sqlite3_exec(db, 
+			"INSERT INTO \"MetaGroup\" VALUES(NULL, 'Audio', 0);", 
+			NULL, 0,&errMsg);
+
+			ret = sqlite3_exec(db, 
+			"INSERT INTO \"CustomValues\" VALUES(NULL, 'ConfigVersion', '1');", 
+			NULL, 0,&errMsg);
+
+
+		} else {
+
+			ret = sqlite3_open(metadata_db, &db);
+			if( ret ){
+			    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(db));
+			    sqlite3_close(db);
+			    exit(1);
+	
+			}
 		}
-
-		/*ref = calloc(1, sizeof(evfs_filereference));
-		ref->plugin_uri= strdup("file");
-		ref->path = strdup("/home/chaos/sakura3x3840.jpg");
-		evfs_metadata_group_header_file_add(ref, "Pictures");
-	
-		printf("\n*****\nFile groups are now:\n");
-	
-		groups = evfs_metadata_file_groups_get(ref);
-		evfs_metadata_debug_file_groups_print(groups);
-			evfs_metadata_file_groups_free(groups);
-	
-		ret_list = evfs_metadata_file_group_list("Pictures", &size);
-		for (i=0;i<size;i++) {
-			printf("In group: %s\n", ret_list[i]);
-		}*/
 	}
 
 }
