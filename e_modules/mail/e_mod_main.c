@@ -590,16 +590,20 @@ _mail_set_text (void *data)
   ci = _mail_config_item_get (inst->gcc->id);
   if (!ci)
     return;
-  for (l = ci->boxes; l; l = l->next)
-    {
-      Config_Box *cb;
 
-      cb = l->data;
-      if (!cb)
-	continue;
-      count += cb->num_new;
-    }
-
+   if (ci->boxes) 
+     {
+	for (l = ci->boxes; l; l = l->next)
+	  {
+	     Config_Box *cb;
+	     
+	     cb = l->data;
+	     if (!cb)
+	       continue;
+	     count += cb->num_new;
+	  }
+     }
+   
   if (count > 0)
     {
       snprintf (buf, sizeof (buf), "%d", count);
@@ -608,8 +612,8 @@ _mail_set_text (void *data)
     }
   else
     {
-      edje_object_signal_emit (inst->mail->mail_obj, "no_mail", "");
-      edje_object_part_text_set (inst->mail->mail_obj, "new_label", "");
+       edje_object_part_text_set (inst->mail->mail_obj, "new_label", "");
+       edje_object_signal_emit (inst->mail->mail_obj, "no_mail", "");
     }
 }
 
