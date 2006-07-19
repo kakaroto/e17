@@ -158,6 +158,11 @@ AC_CHECK_HEADERS(bzlib.h,
         )
 AC_SUBST(BZ2_LIBS)
 
+AC_CHECK_HEADERS(sqlite3.h,
+        SQLITE_LIBS="$SQLITE_LIBS -lsqlite3",
+        AC_MSG_ERROR([evfs requires sqlite3 to compile.])
+        )
+AC_SUBST(SQLITE_LIBS)
 
 AC_ARG_WITH(eet-config,
 [  --with-eet-config=EET_CONFIG      use eet-config specified ],
