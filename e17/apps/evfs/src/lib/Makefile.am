@@ -39,6 +39,7 @@ libevfs_la_SOURCES   = \
 
 libevfs_la_LIBADD = \
 	@ecore_libs@ \
-	@eet_libs@
+	@eet_libs@ \
+	@SQLITE_LIBS@
 
 libevfs_la_CFLAGS = -DLIB $(AM_CFLAGS)

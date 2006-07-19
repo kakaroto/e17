@@ -300,7 +300,7 @@ evfs_write_list_event(evfs_client * client, evfs_event * event)
 void evfs_write_metadata_groups_event(evfs_client* client, evfs_event* event)
 {
 	Evas_List* l;
-	evfs_metadata_group_header* g;
+	char* g;
 
 	for (l = event->misc.string_list; l; ) {
 		g = l->data;
@@ -309,8 +309,8 @@ void evfs_write_metadata_groups_event(evfs_client* client, evfs_event* event)
                                             ecore_ipc_message_new(EVFS_EV_REPLY,
                                                                   EVFS_EV_PART_CHAR_PTR,
                                                                   client->id, 0,
-                                                                  0, (char*)g->name,
-                                                                  strlen((char*)g->name)+1));
+                                                                  0, (char*)g,
+                                                                  strlen((char*)g)+1));
 		
 		l = l->next;
 	}

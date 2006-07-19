@@ -15,6 +15,8 @@
 #include <Evas.h>
 #include <limits.h>
 
+#include <sqlite3.h>
+
 #define EVFS_METADATA_GROUP_LIST "/evfs/group/list"
 #define EVFS_METADATA_BASE_DATA "block"
 
@@ -22,6 +24,7 @@
  * TODO
  *
  * * Handle recursive (i.e. nested) files
+ * * Make db access async - use callback properly, and don't block
  */
 
 static int evfs_metadata_state = 0;
@@ -35,7 +38,94 @@ static evfs_metadata_root* metadata_root;
 
 static char* homedir;
 static char metadata_file[PATH_MAX];
+static char metadata_db[PATH_MAX];
 static Eet_File* _evfs_metadata_eet;
+
+static sqlite3 *db;
+static int _evfs_metadata_db_wait = 0;
+static Ecore_DList* evfs_metdata_db_results = NULL;
+
+/*DB Helper types*/
+typedef struct {
+	char* name;
+	char* value;
+} evfs_metadata_db_item;
+
+typedef struct {
+	int fieldcount;
+	evfs_metadata_db_item** fields;
+} evfs_metadata_db_result;
+
+
+
+
+/*DB Helper functions*/
+void evfs_metadata_db_results_init()
+{
+	if (evfs_metdata_db_results) {
+		ecore_dlist_destroy(evfs_metdata_db_results);
+		evfs_metdata_db_results = NULL;
+	}
+
+	evfs_metdata_db_results = ecore_dlist_new();
+}
+
+void evfs_metadata_db_results_free()
+{
+	evfs_metadata_db_result* result;
+	ecore_dlist_goto_first(evfs_metdata_db_results);
+
+	while ( (result = ecore_dlist_remove_first(evfs_metdata_db_results))) {
+		int i;
+		evfs_metadata_db_item* item;
+		
+		for (i=0;i<result->fieldcount;i++) {
+			item = result->fields[i];
+			if (item->name) free(item->name);
+			if (item->value) free(item->value);
+			free(item);
+		}
+		free(result->fields);
+		free(result);
+	}
+	ecore_dlist_destroy(evfs_metdata_db_results);
+	evfs_metdata_db_results = NULL;
+	
+}
+
+void evfs_metadata_db_response_block()
+{
+	while (_evfs_metadata_db_wait) {
+		usleep(2000);
+	}
+}
+
+void evfs_metadata_db_response_setup()
+{
+	_evfs_metadata_db_wait = 1;
+}
+
+static int evfs_metadata_db_callback(void *NotUsed, int argc, char **argv, char **azColName){
+  int i;
+  evfs_metadata_db_result* result;
+
+  result = calloc(1, sizeof(evfs_metadata_db_result));
+  result->fields = calloc(argc, sizeof(evfs_metadata_db_item*));
+  result->fieldcount = argc;
+  
+  for(i=0; i<argc; i++){
+	evfs_metadata_db_item* item = calloc(1, sizeof(evfs_metadata_db_item));
+	item->name = strdup(azColName[i]);
+	item->value = strdup(argv[i]);
+	result->fields[i] = item;
+  }
+
+  ecore_dlist_append(evfs_metdata_db_results, result);
+
+   _evfs_metadata_db_wait = 0;
+  return 0;
+}
+/*-------------*/
 
 Eet_Data_Descriptor* _evfs_metadata_edd_create(char* desc, int size) 
 {
@@ -62,7 +152,6 @@ void evfs_metadata_debug_group_list_print()
 {
 	Evas_List* l;
 	evfs_metadata_group_header* g;
-	int ret;
 
 	printf("Printing group list:\n");
 	for (l = metadata_root->group_list; l; ) {
@@ -80,7 +169,6 @@ void evfs_metadata_debug_file_groups_print(evfs_metadata_file_groups* groups)
 {
 	Evas_List* l;
 	evfs_metadata_group_header* g;
-	int ret;
 
 	printf("Printing group list:\n");
 	for (l = groups->groups; l; ) {
@@ -178,10 +266,6 @@ void evfs_metadata_initialise()
 	char* data;
 	int size;
 	int ret;
-	evfs_filereference* ref;
-	evfs_metadata_file_groups* groups;
-	char** ret_list;
-	int i;
 	
 	if (!evfs_metadata_state) {
 		evfs_metadata_state++;
@@ -226,6 +310,7 @@ void evfs_metadata_initialise()
 		}
 
 		snprintf(metadata_file, PATH_MAX, "%s/.e/evfs/evfs_metadata.eet", homedir);
+		snprintf(metadata_db, PATH_MAX, "%s/.e/evfs/evfs_metadata.db", homedir);
 
 		if (stat(metadata_file, &config_dir_stat)) {
 			printf("Making new metadata file..\n");
@@ -269,6 +354,14 @@ void evfs_metadata_initialise()
 			eet_close(_evfs_metadata_eet);
 		}
 
+
+		ret = sqlite3_open(metadata_db, &db);
+		if( ret ){
+		    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(db));
+		    sqlite3_close(db);
+		    exit(1);
+		}
+
 		/*ref = calloc(1, sizeof(evfs_filereference));
 		ref->plugin_uri= strdup("file");
 		ref->path = strdup("/home/chaos/sakura3x3840.jpg");
@@ -289,7 +382,32 @@ void evfs_metadata_initialise()
 }
 
 Evas_List* evfs_metadata_groups_get() {
-	return metadata_root->group_list;	
+	int ret;
+	char* errMsg = 0;
+	evfs_metadata_db_result* result;
+	Evas_List* ret_list = NULL;
+
+	evfs_metadata_db_response_setup();
+	evfs_metadata_db_results_init();
+
+	ret = sqlite3_exec(db, "select name from MetaGroup where parent = 0", 
+			evfs_metadata_db_callback, 0,&errMsg);
+
+	evfs_metadata_db_response_block();
+
+	/*Print results*/
+	ecore_dlist_goto_first(evfs_metdata_db_results);
+
+	while ( (result = ecore_dlist_remove_first(evfs_metdata_db_results))) {
+		int i;
+		evfs_metadata_db_item* item;
+		item = result->fields[0];
+		ret_list = evas_list_append(ret_list, strdup(item->value));
+	}
+
+	evfs_metadata_db_results_free();
+	
+	return ret_list;
 }
 
 void evfs_metadata_file_set_key_value_edd(evfs_filereference* ref, char* key, 

@@ -103,7 +103,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 		   Evas_List* group_list;
 		   Evas_List* iter;
 		   char assemble[PATH_MAX];
-		   evfs_metadata_group_header* g;
+		   char* g;
 		   
 		   /*Get group list, and return*/
 		   group_list = evfs_metadata_groups_get();
@@ -112,7 +112,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 			   g = iter->data;
 			   
 			   snprintf(assemble, sizeof(assemble), "%s/%s", 
-					   EVFS_PLUGIN_VFOLDER_GROUPS_ID, g->name);
+					   EVFS_PLUGIN_VFOLDER_GROUPS_ID, g);
 			   
 		   	   ref = NEW(evfs_filereference);
 			   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);

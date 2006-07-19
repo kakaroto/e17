@@ -166,16 +166,14 @@ evfs_cleanup_metadata_event(evfs_event* event)
 
 evfs_cleanup_metadata_groups_event(evfs_event* event) 
 {
-	if (evfs_object_client_is_get()) {
-		Evas_List* l;
+	Evas_List* l;
 
-		for (l=event->misc.string_list; l;) {
-			free(l->data);
+	for (l=event->misc.string_list; l;) {
+		free(l->data);
 
-			l = l->next;
-		}
-		evas_list_free(event->misc.string_list);
+		l = l->next;
 	}
+	evas_list_free(event->misc.string_list);
 }
 
 void

@@ -598,8 +598,9 @@ void evfs_handle_metadata_groups_request_command(evfs_client* client, evfs_comma
 {
 	Evas_List* group_list;
 
-	group_list = evfs_metadata_groups_get();
-	evfs_group_list_event_create(client, command, group_list);
+	if ( (group_list = evfs_metadata_groups_get())) {
+		evfs_group_list_event_create(client, command, group_list);
+	}
 }
 
 void evfs_handle_metadata_file_group_add(evfs_client* client, evfs_command* command)
