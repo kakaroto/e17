@@ -545,8 +545,6 @@ _mail_cb_check (void *data)
   if (!ci->boxes)
     return 1;
 
-  edje_object_signal_emit (inst->mail->mail_obj, "check_mail", "");
-
   for (l = ci->boxes; l; l = l->next)
     {
       Config_Box *cb;
@@ -568,11 +566,15 @@ _mail_cb_check (void *data)
 	  break;
 	}
     }
-  if (have_imap)
-    _mail_imap_check_mail (inst);
-  if (have_pop)
-    _mail_pop_check_mail (inst);
-  return 1;
+
+   if ((have_imap) || (have_pop))
+     edje_object_signal_emit (inst->mail->mail_obj, "check_mail", "");
+     
+   if (have_imap)
+     _mail_imap_check_mail (inst);
+   if (have_pop)
+     _mail_pop_check_mail (inst);
+   return 1;
 }
 
 void
