@@ -36,7 +36,7 @@ void ok_album(Ewl_Widget *w, void *event, void *data)
   if (entry_text)
   {
    sqlite3_open(database, &db);
-   sqlite3_exec(db, "insert into albums (name) values ('hello');", NULL, 0, 0);
+   sqlite3_exec(db, "INSERT OR IGNORE INTO albums (name) VALUES ('hello');", NULL, NULL, NULL);
    sqlite3_close(db);
 
    m->icon = ewl_icon_new();
@@ -128,7 +128,7 @@ void ok_slideshow(Ewl_Widget *w, void *event, void *data)
   if (entry_text)
   {
    sqlite3_open(database, &db);
-   sqlite3_exec(db, "insert into albums (name) values ('hello');", NULL, 0, 0);
+   sqlite3_exec(db, "INSERT OR IGNORE INTO albums (name) VALUES ('hello');", NULL, NULL, NULL);
    sqlite3_close(db);
  
    m->icon = ewl_icon_new();
