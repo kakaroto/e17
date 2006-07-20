@@ -538,6 +538,64 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 }
 
 
+void evfs_metadata_group_header_file_remove(evfs_filereference* ref, char* group)
+{
+	char* file_path;
+	int ret = 0;
+
+	char* errMsg = 0;
+	char query[1024];
+
+	int groupid = 0;
+	int file = 0;
+	sqlite3_stmt *pStmt;
+
+	/*First make sure this group exists*/
+
+	if ( (groupid = evfs_metadata_group_header_exists(group))) {
+		printf("Group exists - proceed\n");
+	} else {
+		printf("Alert - group not found\n");
+		return;
+	}
+
+	/*Build a path*/
+	file_path = evfs_filereference_to_string(ref);
+	printf("File path is: %s\n", file_path);
+
+
+	snprintf(query, sizeof(query), "select id from File where filename ='%s'", file_path);
+	ret = sqlite3_prepare(db, query, 
+			-1, &pStmt, 0);
+
+	if (ret == SQLITE_OK) {
+		ret = sqlite3_step(pStmt);
+		if (ret == SQLITE_ROW)  {
+			file = sqlite3_column_int(pStmt,0);
+		} else {
+			printf("File does not exist - cannot remove from group\n");
+			return;
+		}
+	} else {
+		printf("header_file_add: sqlite error\n");
+	}
+	sqlite3_reset(pStmt);
+	sqlite3_finalize(pStmt);
+
+	if (file && groupid) {
+		printf("File id: %d - Group id: %d\n", file, groupid);
+
+		snprintf(query, sizeof(query), "delete from FileGroup where file = %d and metaGroup = %d",
+				file, groupid);
+		ret = sqlite3_exec (db, query, NULL, 0, &errMsg);
+	}
+
+	evfs_metadata_db_results_free();
+	
+}
+
+
+
 
 void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
 		char* value) 
