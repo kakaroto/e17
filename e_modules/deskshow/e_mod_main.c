@@ -119,7 +119,10 @@ _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       zone = e_util_zone_current_get (e_manager_current_get ());
       if (zone)
 	{
-	  edje_object_signal_emit (inst->o_button, "active", "");
+	   if (zone->deskshow_toggle)
+	     edje_object_signal_emit(inst->o_button, "passive", "");
+	   else
+	     edje_object_signal_emit(inst->o_button, "active", "");
 
 	  bl = e_container_border_list_first (zone->container);
 	  while ((bd = e_container_border_list_next (bl)))
@@ -148,7 +151,6 @@ _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 	  zone->deskshow_toggle = zone->deskshow_toggle ? 0 : 1;
 	  e_container_border_list_free (bl);
 	}
-      edje_object_signal_emit (inst->o_button, "passive", "");
 
 //      evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
 //                               EVAS_BUTTON_NONE, ev->timestamp, NULL);
