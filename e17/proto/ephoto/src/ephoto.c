@@ -7,10 +7,7 @@ main(int argc, char **argv)
  char *home;
  char *name;
  char ephoto_path[PATH_MAX];
- char album_path[PATH_MAX];
- char slideshow_path[PATH_MAX];
- char album_library[PATH_MAX];
- char slideshow_library[PATH_MAX];
+ char database[PATH_MAX];
  int argint = 1;
  Ecore_List *files; 
  sqlite3 *db;
@@ -28,10 +25,8 @@ main(int argc, char **argv)
 
  home = getenv("HOME");
  snprintf(ephoto_path, PATH_MAX, "%s/.ephoto", home);
- snprintf(album_path, PATH_MAX, "%s/.ephoto/albums", home);
- snprintf(slideshow_path, PATH_MAX, "%s/.ephoto/slideshows", home);
- snprintf(album_library, PATH_MAX, "%s/Complete Library", album_path);
- snprintf(slideshow_library, PATH_MAX, "%s/Complete Library Slideshow", slideshow_path);
+ snprintf(database, PATH_MAX, "%s/ephoto_database", ephoto_path);
+ 
  m = calloc(1, sizeof(Main));
  
  if (!ecore_file_exists(ephoto_path))
@@ -39,27 +34,25 @@ main(int argc, char **argv)
   ecore_file_mkdir(ephoto_path);
  }
 
- if (!ecore_file_exists(album_path))
+ if (!ecore_file_exists(database))
  {
-  ecore_file_mkdir(album_path);
- }
-
- if (!ecore_file_exists(slideshow_path))
- {
-  ecore_file_mkdir(slideshow_path);
- }
-
- if (!ecore_file_exists(album_library))
- {
-  sqlite3_open(album_library, &db);
-  sqlite3_exec(db, "create table images(images varchar(255));", NULL, 0, 0);
-  sqlite3_close(db);
- }
-
- if (!ecore_file_exists(slideshow_library))
- {
-  sqlite3_open(slideshow_library, &db);
-  sqlite3_exec(db, "create table slideshows(images varchar(255), settings varchar(255));", NULL, 0, 0);
+  sqlite3_open(database, &db);
+  sqlite3_exec(db, "create table albums(id int AUTOINCREMENT primary key,"
+					"name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create table a_images(id int AUTOINCREMENT primary key,"
+					"name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create table albums_full(id int AUTOINCREMENT primary key," 
+				"alubm_id int, image_id int);", NULL, 0, 0);
+  sqlite3_exec(db, "create table slideshows(id int AUTOINCREMENT primary key," 
+					"name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create table s_images(id int AUTOINCREMENT primary key,"
+					"name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create_table slideshows_images_full(id int AUTOINCREMENT primary key," 
+					"slideshows_id int, images_id int);", NULL, 0, 0);
+  sqlite3_exec(db, "create table s_settings(id int AUTOINCREMENT primary key,"
+					"name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create table slideshows_settings_full(id int AUTOINCREMENT primary key," 
+					"slideshows_id int, settings_id int);", NULL, 0, 0);
   sqlite3_close(db);
  }
 
@@ -168,33 +161,6 @@ main(int argc, char **argv)
  ewl_object_fill_policy_set(EWL_OBJECT(m->albums), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->albums);
 
- files = ecore_list_new();
- files = ecore_file_ls(album_path);
-
- m->icon = ewl_icon_new();
- ewl_icon_label_set(EWL_ICON(m->icon), "Complete Library");
- ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
- ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, album_clicked_cb, NULL);
- ewl_container_child_append(EWL_CONTAINER(m->albums), m->icon);
- ewl_widget_show(m->icon);
-
- while (!ecore_list_is_empty(files))
- { 
-  name = ecore_list_remove_first(files);
-
-  if (strcmp(name, "Complete Library") != 0)
-  {
-   m->icon = ewl_icon_new();
-   ewl_icon_label_set(EWL_ICON(m->icon), name);
-   ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
-   ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, album_clicked_cb, NULL);
-   ewl_container_child_append(EWL_CONTAINER(m->albums), m->icon);
-   ewl_widget_show(m->icon);
-  }
- }
-
- ecore_list_destroy(files);
-
  m->slideshows_border = ewl_border_new();
  ewl_border_text_set(EWL_BORDER(m->slideshows_border), "Slideshows");
  ewl_border_label_alignment_set(EWL_BORDER(m->slideshows_border), EWL_FLAG_ALIGN_CENTER);
@@ -208,33 +174,6 @@ main(int argc, char **argv)
  ewl_container_child_append(EWL_CONTAINER(m->slideshows_border), m->slideshows);
  ewl_object_fill_policy_set(EWL_OBJECT(m->slideshows), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->slideshows);
-
- files = ecore_list_new();
- files = ecore_file_ls(slideshow_path);
-
- m->icon = ewl_icon_new();
- ewl_icon_label_set(EWL_ICON(m->icon), "Complete Library Slideshow");
- ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
- ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, slideshow_clicked_cb, NULL);
- ewl_container_child_append(EWL_CONTAINER(m->slideshows), m->icon);
- ewl_widget_show(m->icon);
-
- while (!ecore_list_is_empty(files))
- {
-  name = ecore_list_remove_first(files);
-  
-  if (strcmp(name, "Complete Library Slideshow") != 0)
-  {
-   m->icon = ewl_icon_new();
-   ewl_icon_label_set(EWL_ICON(m->icon), name);
-   ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
-   ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, slideshow_clicked_cb, NULL);
-   ewl_container_child_append(EWL_CONTAINER(m->slideshows), m->icon);
-   ewl_widget_show(m->icon);
-  }
- }
-
- ecore_list_destroy(files);
 
  m->viewer_border = ewl_border_new();
  ewl_border_text_set(EWL_BORDER(m->viewer_border), "Viewer");

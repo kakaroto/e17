@@ -29,16 +29,12 @@ void ok_album(Ewl_Widget *w, void *event, void *data)
  home = getenv("HOME");
  entry_text = ewl_text_text_get(EWL_TEXT(data));
 
- snprintf(album_path, PATH_MAX, "%s/.ephoto/albums/%s", home, entry_text);
+ snprintf(album_path, PATH_MAX, "%s/.ephoto/database", home);
  
  if (strcmp(entry_text, " ") != 0)
  {
   if (!ecore_file_exists(album_path))
   {
-   sqlite3_open(album_path, &db);
-   sqlite3_exec(db, "create table images(images varchar(255));", NULL, 0, 0);
-   sqlite3_close(db);
-
    m->icon = ewl_icon_new();
    ewl_icon_label_set(EWL_ICON(m->icon), entry_text);
    ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
@@ -120,16 +116,12 @@ void ok_slideshow(Ewl_Widget *w, void *event, void *data)
  home = getenv("HOME");
  entry_text = ewl_text_text_get(EWL_TEXT(data));
 
- snprintf(slideshow_path, PATH_MAX, "%s/.ephoto/slideshows/%s", home, entry_text);
+ snprintf(slideshow_path, PATH_MAX, "%s/.ephoto/database", home);
 
  if (strcmp(entry_text, " ") != 0)
  {
   if (!ecore_file_exists(slideshow_path))
   {
-   sqlite3_open(slideshow_path, &db);
-   sqlite3_exec(db, "create table slideshows(images varchar(255), settings varchar(255));", NULL, 0, 0);
-   sqlite3_close(db);
-
    m->icon = ewl_icon_new();
    ewl_icon_label_set(EWL_ICON(m->icon), entry_text);
    ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
