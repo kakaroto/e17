@@ -62,6 +62,7 @@ sub FieldIntSet
     my $col = shift;
     my $int = shift;
     Etk::etk_tree_row_field_int_set($self->{WIDGET}, $col->{WIDGET}, $int);
+    return $self;
 }
 
 sub FieldTextSet
@@ -70,6 +71,7 @@ sub FieldTextSet
     my $col = shift;
     my $text = shift;
     Etk::etk_tree_row_field_text_set($self->{WIDGET}, $col->{WIDGET}, $text);
+    return $self;
 }
 
 sub FieldDoubleSet
@@ -78,6 +80,7 @@ sub FieldDoubleSet
     my $col = shift;
     my $double = shift;
     Etk::etk_tree_row_field_double_set($self->{WIDGET}, $col->{WIDGET}, $double);
+    return $self;
 }
 
 sub FieldImageFileSet
@@ -88,6 +91,7 @@ sub FieldImageFileSet
     my $text = shift;
     Etk::etk_tree_row_field_image_file_set($self->{WIDGET}, $col->{WIDGET},
 	$icon);
+    return $self;
 }
 
 sub FieldImageEdjeSet
@@ -98,6 +102,7 @@ sub FieldImageEdjeSet
     my $group = shift;
     Etk::etk_tree_row_field_image_edje_set($self->{WIDGET}, $col->{WIDGET},
 	$edje, $group);
+    return $self;
 }
 
 sub FieldIconFileTextSet
@@ -108,6 +113,7 @@ sub FieldIconFileTextSet
     my $text = shift;
     Etk::etk_tree_row_field_icon_file_text_set($self->{WIDGET}, $col->{WIDGET},
 	$icon, $text);
+    return $self;
 }
 
 sub FieldIconEdjeTextSet
@@ -119,6 +125,7 @@ sub FieldIconEdjeTextSet
     my $text = shift;
     Etk::etk_tree_row_field_icon_edje_text_set($self->{WIDGET}, $col->{WIDGET},
 	$edje, $group, $text);
+    return $self;
 }
 
 sub FieldCheckboxSet
@@ -128,6 +135,7 @@ sub FieldCheckboxSet
     my $checked = shift;
     Etk::etk_tree_row_field_checkbox_set($self->{WIDGET}, $col->{WIDGET},
 	$checked);
+    return $self;
 }
 
 sub FieldProgressBarSet
@@ -138,6 +146,7 @@ sub FieldProgressBarSet
     my $text = shift;
     Etk::etk_tree_row_field_progress_bar_set($self->{WIDGET}, $col->{WIDGET},
 	$fraction, $text);
+    return $self;
 }
 
 sub FieldIntGet
@@ -250,6 +259,7 @@ sub DataSet
     my $data = shift;
     
     Etk::etk_tree_row_data_set($self->{WIDGET}, $data);
+    return $self;
 }
 
 sub DataGet
@@ -263,30 +273,35 @@ sub ScrollTo
     my $self = shift;
     my $center_the_row = shift;
     Etk::etk_tree_row_scroll_to($self->{WIDGET}, $center_the_row);
+    return $self;
 }
 
 sub Select
 {
     my $self = shift;
     Etk::etk_tree_row_select($self->{WIDGET});
+    return $self;
 }
 
 sub Unselect
 {
     my $self = shift;
     Etk::etk_tree_row_unselect($self->{WIDGET});
+    return $self;
 }
 
 sub Expand
 {
     my $self = shift;
     Etk::etk_tree_row_expand($self->{WIDGET});
+    return $self;
 }
 
 sub Collapse
 {
     my $self = shift;
     Etk::etk_tree_row_collapse($self->{WIDGET});
+    return $self;
 }
 
 1;

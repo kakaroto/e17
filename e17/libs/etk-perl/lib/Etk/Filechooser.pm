@@ -18,6 +18,7 @@ sub SelectMultipleSet
     my $select_multiple = shift;
     Etk::etk_filechooser_widget_select_multiple_set($self->{WIDGET},
 	$select_multiple);
+    return $self;
 }
 
 sub SelectMultipleGet
@@ -31,6 +32,7 @@ sub ShowHiddenSet
     my $self = shift;
     my $show_hidden = shift;
     Etk::etk_filechooser_widget_show_hidden_set($self->{WIDGET}, $show_hidden);
+    return $self;
 }
 
 sub ShowHiddenGet
@@ -44,6 +46,7 @@ sub CurrentFolderSet
     my $self = shift;
     my $folder = shift;
     Etk::etk_filechooser_widget_current_folder_set($self->{WIDGET}, $folder);
+    return $self;
 }
 
 sub CurrentFolderGet

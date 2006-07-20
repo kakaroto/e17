@@ -23,6 +23,7 @@ sub TipSet
     my $widget = shift;
     my $text = shift;
     Etk::etk_tooltips_tip_set($widget->{WIDGET}, $text);
+    return $widget;
 }
 
 sub TipGet
@@ -35,12 +36,14 @@ sub Popup
 {
     my $widget = shift;
     Etk::etk_tooltips_pop_up($widget->{WIDGET});
+    return $widget;
 }
 
 sub Popdown
 {
     my $widget = shift;
     Etk::etk_tooltips_pop_down($widget->{WIDGET});
+    return $widget;
 }
 
 sub TipVisible

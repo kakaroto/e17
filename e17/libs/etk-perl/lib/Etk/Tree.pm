@@ -2,10 +2,7 @@ package Etk::Tree;
 use strict;
 use vars qw(@ISA);
 require Etk::Widget;
-require Exporter;
-@ISA = ("Etk::Widget", "Exporter");
-
-our @EXPORT = qw/ModeList ModeTree FromFile FromEdje cols/;
+@ISA = ("Etk::Widget");
 
 use Etk::Tree::Col;
 use Etk::Tree::Row;
@@ -19,13 +16,6 @@ use Etk::Tree::Model::Int;
 use Etk::Tree::Model::ProgressBar;
 use Etk::Tree::Model::Text;
 
-use constant
-{
-   ModeList => 0,
-   ModeTree => 1,
-   FromFile => 0,
-   FromEdje => 1
-};
 
 sub new
 {
@@ -46,6 +36,7 @@ sub ModeSet
    my $self = shift;
    my $mode = shift;
    Etk::etk_tree_mode_set($self->{WIDGET}, $mode);
+   return $self;
 }
 
 sub ModeGet
@@ -64,9 +55,7 @@ sub NthColGet
 {
    my $self = shift;
    my $nth = shift;
-   my $col = Etk::Tree::Col->new_nocreate();
-   $col->{WIDGET} = Etk::etk_tree_nth_col_get($self->{WIDGET}, $nth);
-   return $col;
+   return $self->{COLS}->[$nth];
 }
 
 sub HeadersVisibleSet
@@ -74,6 +63,7 @@ sub HeadersVisibleSet
    my $self = shift;
    my $headers_visible = shift;
    Etk::etk_tree_headers_visible_set($self->{WIDGET}, $headers_visible);
+   return $self;
 }
 
 sub HeadersVisibleGet
@@ -86,18 +76,21 @@ sub Build
 {
    my $self = shift;
    Etk::etk_tree_build($self->{WIDGET});
+   return $self;
 }
 
 sub Freeze
 {
    my $self = shift;
    Etk::etk_tree_freeze($self->{WIDGET});
+   return $self;
 }
 
 sub Thaw
 {
    my $self = shift;
    Etk::etk_tree_thaw($self->{WIDGET});
+   return $self;
 }
 
 sub RowHeightSet
@@ -105,6 +98,7 @@ sub RowHeightSet
    my $self = shift;
    my $height = shift;
    Etk::etk_tree_row_height_set($self->{WIDGET}, $height);
+   return $self;
 }
 
 sub RowHeightGet
@@ -118,6 +112,7 @@ sub MultipleSelectSet
    my $self = shift;
    my $multiple_select = shift;
    Etk::etk_tree_multiple_select_set($self->{WIDGET}, $multiple_select);
+   return $self;
 }
 
 sub MultipleSelectGet
@@ -130,12 +125,14 @@ sub SelectAll
 {
    my $self = shift;
    Etk::etk_tree_select_all($self->{WIDGET});
+   return $self;
 }
 
 sub UnselectAll
 {
    my $self = shift;
    Etk::etk_tree_unselect_all($self->{WIDGET});
+   return $self;
 }
 
 # NOTE: since we cant transparently pass a variable number of arguments
@@ -181,6 +178,7 @@ sub Clear
 {
    my $self = shift;
    Etk::etk_tree_clear($self->{WIDGET});
+   return $self;
 }
 
 sub Sort
@@ -189,10 +187,10 @@ sub Sort
     my $callback = shift;
     my $asc = shift;
     my $col = shift;
-    my $data = undef;
-    $data = shift if (@_ > 0);
+    my $data = shift;
     Etk::etk_tree_sort($self->{WIDGET}, $callback, $asc, $col->{WIDGET}, 
 	$data);
+    return $self;
 }
 
 sub FirstRowGet
@@ -215,14 +213,18 @@ sub SelectedRowGet
 {
    my $self = shift;
    my $row = Etk::Tree::Row->new();
-   $row->{WIDGET} = etk_tree_selected_row_get($self->{WIDGET});
+   $row->{WIDGET} = Etk::etk_tree_selected_row_get($self->{WIDGET});
    return $row;
 }
 
 sub SelectedRowsGet
 {
    my $self = shift;
-   # TODO: pending list implementation
+   return map {
+	   my $widget = Etk::Tree::Row->new();
+	   $widget->{WIDGET} = $_;
+	   $_ = $widget;
+   } Etk::etk_tree_selected_rows_get($self->{WIDGET});
 }
 
 sub AddCol

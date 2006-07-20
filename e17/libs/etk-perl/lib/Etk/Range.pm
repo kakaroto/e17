@@ -17,6 +17,7 @@ sub ValueSet
     my $self = shift;
     my $value = shift;
     Etk::etk_range_value_set($self->{WIDGET}, $value);
+    return $self;
 }
 
 sub ValueGet
@@ -31,12 +32,14 @@ sub RangeSet
     my $lower = shift;
     my $upper = shift;
     Etk::etk_range_range_set($self->{WIDGET}, $lower, $upper);
+    return $self;
 }
 
 sub RangeGet
 {
     my $self = shift;
-    Etk::etk_range_range_get($self->{WIDGET}, shift, shift);
+    # return lower, upper
+    return Etk::etk_range_range_get($self->{WIDGET});
 }
 
 sub IncrementsSet
@@ -45,12 +48,14 @@ sub IncrementsSet
     my $step = shift;
     my $page = shift;
     Etk::etk_range_increments_set($self->{WIDGET}, $step, $page);
+    return $self;
 }
 
 sub IncrementstGet
 {
     my $self = shift;
-    Etk::etk_range_increments_get($self->{WIDGET}, shift, shift);
+    #return step, page
+    return Etk::etk_range_increments_get($self->{WIDGET});
 }
 
 sub PageSizeSet
@@ -58,6 +63,7 @@ sub PageSizeSet
     my $self = shift;
     my $page_size = shift;
     Etk::etk_range_page_size_set($self->{WIDGET}, $page_size);
+    return $self;
 }
 
 sub PageSizeGet

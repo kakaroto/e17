@@ -9,9 +9,9 @@ sub new
     my $self = $class->SUPER::new();
     if(@_ == 1) {
 	my $arg = shift;
-	$self->{WIDGET} = $arg + 0 eq $arg ?
-		Etk::etk_menu_item_image_new_from_stock($arg):
-		Etk::etk_menu_item_image_new_with_label($arg);
+	$self->{WIDGET} = $arg =~ /\D/ ?
+		Etk::etk_menu_item_image_new_with_label($arg):
+		Etk::etk_menu_item_image_new_from_stock($arg);
     } else {
 	$self->{WIDGET} = Etk::etk_menu_item_image_new();
     }
@@ -24,6 +24,7 @@ sub ImageSet
     my $self = shift;
     my $image = shift;
     Etk::etk_menu_item_image_set($self->{WIDGET}, $image->{WIDGET});
+    return $self;
 }
 
 1;

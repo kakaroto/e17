@@ -17,6 +17,7 @@ sub TextSet
     my $self = shift;
     my $text = shift;
     Etk::etk_entry_text_set($self->{WIDGET}, $text);
+    return $self;
 }
 
 sub TextGet
@@ -30,6 +31,7 @@ sub PasswordSet
     my $self = shift;
     my $on = shift;
     return Etk::etk_entry_password_set($self->{WIDGET}, $on);
+    return $self;
 }
 
 sub PasswordGet

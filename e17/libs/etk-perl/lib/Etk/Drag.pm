@@ -17,10 +17,10 @@ sub TypesSet
 {
     my $self = shift;
     my @types = @_;
-    if (@types > 0) 
-    {
+    if (@types > 0) {
 	Etk::etk_drag_types_set($self->{WIDGET}, @types);
     }
+    return $self;
 }
 
 sub DataSet
@@ -28,12 +28,14 @@ sub DataSet
     my $self = shift;
     my $data = shift;
     Etk::etk_drag_data_set($self->{WIDGET}, $data);
+    return $self;
 }
 
 sub Begin
 {
     my $self = shift;
     Etk::etk_drag_begin($self->{WIDGET});
+    return $self;
 }
 
 sub ParentWidgetSet
@@ -41,6 +43,7 @@ sub ParentWidgetSet
     my $self = shift;
     my $widget = shift;
     Etk::etk_drag_parent_widget_set($self->{WIDGET}, $widget->{WIDGET});
+    return $self;
 }
 
 sub ParentWidgetGet

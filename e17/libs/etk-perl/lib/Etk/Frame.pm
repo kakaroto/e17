@@ -18,6 +18,7 @@ sub LabelSet
     my $self = shift;
     my $label = shift;
     Etk::etk_frame_label_set($self->{WIDGET}, $label);
+    return $self;
 }
 
 sub LabelGet

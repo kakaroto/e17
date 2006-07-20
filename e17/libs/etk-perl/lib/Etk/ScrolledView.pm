@@ -4,12 +4,6 @@ use vars qw(@ISA);
 require Etk::Widget;
 @ISA = ("Etk::Widget");
 
-use constant {
-	PolicyShow	=> 0,
-	PolicyHide	=> 1,
-	PolicyAuto	=> 2
-};
-
 sub new
 {
     my $class = shift;
@@ -24,6 +18,7 @@ sub AddWithViewport
     my $self = shift;
     my $widget = shift;
     Etk::etk_scrolled_view_add_with_viewport($self->{WIDGET}, $widget->{WIDGET});
+    return $self;
 }
 
 sub HScrollBarGet
@@ -53,6 +48,7 @@ sub PolicySet
     my $hpolicy = shift;
     my $vpolicy = shift;
     Etk::etk_scrolled_view_policy_set($self->{WIDGET}, $hpolicy, $vpolicy);
+    return $self;
 }
 
 1;

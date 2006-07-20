@@ -30,6 +30,7 @@ sub PackInMainArea
     my $pack_at_end = shift;
     Etk::etk_dialog_pack_in_main_area($self->{WIDGET}, $widget->{WIDGET},
 	$expand, $fill, $padding, $pack_at_end);
+    return $self;
 }
 
 sub PackWidgetInActionArea
@@ -42,6 +43,7 @@ sub PackWidgetInActionArea
     my $pack_at_end = shift;
     Etk::etk_dialog_pack_widget_in_action_area($self->{WIDGET}, 
 	$widget->{WIDGET}, $expand, $fill, $padding, $pack_at_end);
+    return $self;
 }
 
 sub PackButtonInActionArea
@@ -55,6 +57,7 @@ sub PackButtonInActionArea
     my $pack_at_end = shift;
     Etk::etk_dialog_pack_button_in_action_area($self->{WIDGET}, 
 	$button->{WIDGET}, $response_id, $expand, $fill, $padding, $pack_at_end);
+    return $self;
 }
 
 sub ButtonAdd
@@ -62,15 +65,12 @@ sub ButtonAdd
     my $self = shift;
     my $label = shift;
     my $response_id = shift;
-    Etk::etk_dialog_button_add($self->{WIDGET}, $label, $response_id);
-}
-
-sub ButtonAddFromStock
-{
-    my $self = shift;
-    my $stock_id = shift;
-    my $response_id = shift;
-    Etk::etk_dialog_button_add_from_stock($self->{WIDGET}, $stock_id, $response_id);
+    if ($label =~ /\D/) {
+	Etk::etk_dialog_button_add($self->{WIDGET}, $label, $response_id);
+    } else {
+	Etk::etk_dialog_button_add_from_stock($self->{WIDGET}, $label, $response_id);
+    }
+    return $self;
 }
 
 sub HasSeparatorSet
@@ -78,6 +78,7 @@ sub HasSeparatorSet
     my $self = shift;
     my $has_separator = shift;
     Etk::etk_dialog_has_separator_set($self->{WIDGET}, $has_separator);
+    return $self;
 }
 
 sub HasSeparatorGet

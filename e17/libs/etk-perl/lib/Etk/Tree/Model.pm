@@ -24,6 +24,7 @@ sub AlignmentSet
     my $xalign = shift;
     my $yalign = shift;
     Etk::etk_tree_model_alignment_set($self->{WIDGET}, $xalign, $yalign);
+    return $self;
 }
 
 sub AlignmentGet

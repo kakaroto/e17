@@ -4,21 +4,6 @@ use vars qw(@ISA);
 require Etk::Dialog;
 @ISA = ("Etk::Dialog");
 
-use constant
-{
-      None = 0,
-      Warning => 1,
-      Question => 2,
-      Error => 3,
-      
-      ButtonsNone => 0,
-      ButtonsOk => 1,
-      ButtonsClose => 2,
-      ButtonsCancel => 3,
-      ButtonsYesNo => 4,
-      ButtonsOkCancel => 5
-};
-
 sub new
 {
     my $class = shift;
@@ -26,8 +11,8 @@ sub new
     my $message_type = shift;
     my $buttons = shift;
     my $text = shift;
-    $self->{WIDGET} = Etk::etk_message_dialog_new($message_type, buttons,
-	$test);
+    $self->{WIDGET} = Etk::etk_message_dialog_new($message_type, $buttons,
+	$text);
     bless($self, $class);
     return $self;
 }
@@ -37,6 +22,7 @@ sub TextSet
     my $self = shift;
     my $text = shift;
     Etk::etk_message_dialog_text_set($self->{WIDGET}, $text);    
+    return $self;
 }
 
 sub TextGet
@@ -50,6 +36,7 @@ sub MessageTypeSet
     my $self = shift;
     my $type = shift;
     Etk::etk_message_dialog_message_type_set($self->{WIDGET}, $type);
+    return $self;
 }
 
 sub MessageTypeGet
@@ -63,6 +50,7 @@ sub ButtonsSet
     my $self = shift;
     my $buttons = shift;
     Etk::etk_message_dialog_buttons_set($self->{WIDGET}, $buttons);
+    return $self;
 }
 
 sub ButtonsGet

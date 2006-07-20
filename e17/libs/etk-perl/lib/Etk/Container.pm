@@ -15,10 +15,10 @@ sub new
 sub Add
 {
     my $self = shift;
-    # confess "usage: \$container->Add(\$widget)" unless @_ == 1;
     my $widget = shift;
     Etk::etk_container_add($self->{WIDGET}, $widget->{WIDGET});
     push @{$self->{CHILDREN}}, $widget;
+    return $self;
 }
 
 sub Remove
@@ -29,6 +29,7 @@ sub Remove
     my @children = @{$self->{CHILDREN}};
     $self->{CHILDREN} = [];
     push @{$self->{CHILDREN}}, grep { $_ != $widget } @children;
+    return $self;
 }
 
 sub BorderWidthSet
@@ -36,6 +37,7 @@ sub BorderWidthSet
     my $self = shift;
     my $width = shift;
     Etk::etk_container_border_width_set($self->{WIDGET}, $width);
+    return $self;
 }
 
 sub BorderWidthGet
@@ -72,6 +74,7 @@ sub ChildSpaceFill
     my $yalign = shift;
     Etk::etk_container_child_space_fill($child->{WIDGET}, $child_space,
     	$hfill, $vfill, $xalign, $yalign);
+    return $self;
 }
 
 1;

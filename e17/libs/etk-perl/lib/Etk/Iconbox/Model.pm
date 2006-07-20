@@ -29,6 +29,7 @@ sub GeometrySet
     my $ypadding = shift;
     Etk::etk_iconbox_model_geometry_set($self->{WIDGET}, $width, $height, 
 	$xpadding, $ypadding);
+    return $self;
 }
 
 sub GeometryGet
@@ -53,6 +54,7 @@ sub IconGeometrySet
     my $keep_aspect_ratio = shift;
     Etk::etk_iconbox_model_icon_geometry_set($self->{WIDGET}, $x, $y, $width,
 	$height, $fill, $keep_aspect_ratio);
+    return $self;
 }
 
 sub IconGeometryGet
@@ -79,6 +81,7 @@ sub LabelGeometrySet
     my $yalign = shift;
     Etk::etk_iconbox_model_label_geometry_set($self->{WIDGET}, $x, $y, $width,
 	$height, $xalign, $yalign);
+    return $self;
 }
 
 sub LabelGeometryGet

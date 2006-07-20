@@ -6,13 +6,6 @@ require Etk::Widget;
 
 use Etk::Combobox::Item;
 
-use constant
-{
-    ColumnTypeLabel => 0,
-    ColumnTypeImage => 1,
-    ColumnTypeOther => 2
-};
-
 sub new
 {
     my $class = shift;
@@ -36,6 +29,7 @@ sub HeightSet
     my $self = shift;
     my $height = shift;
     Etk::etk_combobox_height_set($self->{WIDGET}, $height);
+    return $self;
 }
 
 sub HeightGet
@@ -56,12 +50,14 @@ sub ColumnAdd
     my $yalign = shift;
     Etk::etk_combobox_column_add($self->{WIDGET}, $col_type, $size, $expand,
 	$hfill, $vfill, $xalign, $yalign);
+    return $self;
 }
 
 sub Build
 {
     my $self = shift;
     Etk::etk_combobox_build($self->{WIDGET});
+    return $self;
 }
 
 sub ActiveItemSet
@@ -69,13 +65,14 @@ sub ActiveItemSet
     my $self = shift;
     my $item = shift;
     Etk::etk_combobox_active_item_set($self->{WIDGET}, $item->{WIDGET});
+    return $self;
 }
 
 sub ActiveItemGet
 {
     my $self = shift;
     my $item = Etk::Combobox::Item->new();
-    $item->{WIDGET} =  Etk::etk_combobox_active_item_get($self->{WIDGET});
+    $item->{WIDGET} = Etk::etk_combobox_active_item_get($self->{WIDGET});
     return $item;
 }
 
@@ -96,12 +93,9 @@ sub ItemPrepend
     
     for my $arg (@_)
     {
-	if($arg->isa("Etk::Widget"))
-	{
+	if($arg->isa("Etk::Widget")) {
 	    push @args, $arg->{WIDGET};
-	}
-	else
-	{
+	} else {
 	    push @args, $arg;
 	}
     }    
@@ -118,12 +112,9 @@ sub ItemAppend
     
     for my $arg (@_)
     {
-	if($arg->isa("Etk::Widget"))
-	{
+	if($arg->isa("Etk::Widget")) {
 	    push @args, $arg->{WIDGET};
-	}
-	else
-	{
+	} else {
 	    push @args, $arg;
 	}
     }
@@ -142,12 +133,9 @@ sub ItemPrependRelative
     
     for my $arg (@_)
     {
-	if($arg->isa("Etk::Widget"))
-	{
+	if($arg->isa("Etk::Widget")) {
 	    push @args, $arg->{WIDGET};
-	}
-	else
-	{
+	} else {
 	    push @args, $arg;
 	}
     }
@@ -166,12 +154,9 @@ sub ItemAppendRelative
     
     for my $arg (@_)
     {
-	if($arg->isa("Etk::Widget"))
-	{
+	if($arg->isa("Etk::Widget")) {
 	    push @args, $arg->{WIDGET};
-	}
-	else
-	{
+	} else {
 	    push @args, $arg;
 	}
     }
@@ -186,12 +171,14 @@ sub ItemRemove
     my $self = shift;
     my $item = shift;
     Etk::etk_combobox_item_remove($self->{WIDGET}, $item->{WIDGET});
+    return $self;
 }
 
 sub Clear
 {
     my $self = shift;
     Etk::etk_combobox_clear($self->{WIDGET});
+    return $self;
 }
 
 1;

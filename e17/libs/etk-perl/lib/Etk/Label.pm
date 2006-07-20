@@ -18,6 +18,7 @@ sub Set
     my $self = shift;
     my $text = shift;
     Etk::etk_label_set($self->{WIDGET}, $text);
+    return $self;
 }
 
 sub Get
@@ -32,6 +33,7 @@ sub AlignmentSet
     my $xalign = shift;
     my $yalign = shift;
     Etk::etk_label_alignment_set($self->{WIDGET}, $xalign, $yalign);
+    return $self;
 }
 
 sub AlignmentGet

@@ -9,37 +9,27 @@ sub new
     my $self = $class->SUPER::new();
     my $widget;
     
-    if(@_ >= 1)
-    {
+    if(@_ >= 1) {
         my $data = shift;
-        if (ref $data) 
-	{
+        if (ref $data) {
             $self->{WIDGET} = Etk::etk_menu_item_radio_new_from_widget($data->{WIDGET});
             $widget = $data;
-        } 
-	else 
-	{
-            if (@_) 
-	    {
+        } else {
+            if (@_) {
                 my $data2 = shift;
                 $self->{WIDGET} = Etk::etk_menu_item_radio_new_with_label_from_widget(
                     $data, $data2->{WIDGET});
                 $widget = $data2;
-            }
-	    else 
-	    {
+            } else {
                 $self->{WIDGET} = Etk::etk_menu_item_radio_new_with_label($data);
             }
         }
     }
     bless($self, $class);
-    if ($widget) 
-    {
+    if ($widget) {
         push @{$widget->{GROUP}}, $self;
         $self->{GROUP} = $widget->{GROUP};
-    } 
-    else 
-    {
+    } else {
         push @{$self->{GROUP}}, $self;
     }
     return $self;

@@ -1,6 +1,70 @@
 package Etk::Stock;
 use strict;
 require Etk;
+require Exporter;
+
+our @ISA = qw/Exporter/;
+
+our %EXPORT_TAGS = (
+    size => [qw/SizeSmall SizeMedium SizeBig/],
+
+    stock => [
+    qw/  
+    NoStock AddressBookNew AppointmentNew BookmarkNew ContactNew 
+    DialogOk DialogCancel DialogYes DialogNo DialogClose DocumentNew 
+    DocumentOpen DocumentPrint DocumentPrintPreview DocumentProperties 
+    DocumentSaveAs DocumentSave EditClear EditCopy EditCut EditFind 
+    EditPaste EditRedo EditUndo EditDelete EditFindReplace FolderNew 
+    FormatIndentLess FormatIndentMore FormatJustifyCenter FormatJustifyFill 
+    FormatJustifyLeft FormatJustifyRight FormatTextBold FormatTextItalic 
+    FormatTextStrikethrough FormatTextUnderline GoBottom GoDown GoFirst 
+    GoHome GoJump GoLast GoNext GoPrevious GoTop GoUp ListAdd ListRemove 
+    MailMessageNew MailForward MailMarkJunk MailReplyAll MailReplySender 
+    MailSendReceive MediaEject MediaPlaybackPause MediaPlaybackStart 
+    MediaPlaybackStop MediaRecord MediaSeekBackward MediaSeekForward 
+    MediaSkipBackward MediaSkipForward ProcessStop SystemLockScreen 
+    SystemLogOut SystemSearch SystemShutdown TabNew ViewRefresh WindowNew 
+    AccessoriesCalculator AccessoriesCharacterMap AccessoriesTextEditor 
+    HelpBrowser InternetGroupChat InternetMail InternetNewsReader 
+    InternetWebBrowser MultimediaVolumeControl OfficeCalendar 
+    PreferencesDesktopAccessibility PreferencesDesktopAssistiveTechnology 
+    PreferencesDesktopFont PreferencesDesktopKeyboardShortcuts 
+    PreferencesDesktopLocale PreferencesDesktopRemoteDesktop 
+    PreferencesDesktopSound PreferencesDesktopScreensaver 
+    PreferencesDesktopTheme PreferencesDesktopWallpaper 
+    PreferencesSystemNetworkProxy PreferencesSystemSession 
+    PreferencesSystemWindows SystemFileManager SystemInstaller 
+    SystemSoftwareUpdate SystemUsers UtilitiesSystemMonitor UtilitiesTerminal 
+    ApplicationsAccessories ApplicationsDevelopment ApplicationsGames 
+    ApplicationsGraphics ApplicationsInternet ApplicationsMultimedia 
+    ApplicationsOffice ApplicationsOther ApplicationsSystem 
+    PreferencesDesktopPeripherals PreferencesDesktop PreferencesSystem 
+    AudioCard AudioInputMicrophone Battery CameraPhoto CameraVideo Computer 
+    DriveCdrom DriveHarddisk DriveRemovableMedia InputGaming InputKeyboard 
+    InputMouse MediaCdrom MediaFloppy MultimediaPlayer Network NetworkWireless 
+    NetworkWired Printer PrinterRemote VideoDisplay EmblemFavorite EmblemImportant 
+    EmblemPhotos EmblemReadonly EmblemSymbolicLink EmblemSystem EmblemUnreadable 
+    FaceAngel FaceCrying FaceDevilGrin FaceGlasses FaceGrin FaceKiss FacePlain 
+    FaceSad FaceSmileBig FaceSmile FaceSurprise FaceWink ApplicationCertificate 
+    ApplicationXExecutable AudioXGeneric FontXGeneric ImageXGeneric PackageXGeneric 
+    TextHtml TextXGeneric TextXGenericTemplate TextXScript VideoXGeneric 
+    XDirectoryDesktop XDirectoryNormalDragAccept XDirectoryNormalHome 
+    XDirectoryNormalOpen XDirectoryNormal XDirectoryNormalVisiting XDirectoryRemote 
+    XDirectoryRemoteServer XDirectoryRemoteWorkgroup XDirectoryTrashFull 
+    XDirectoryTrash XOfficeAddressBook XOfficeCalendar XOfficeDocument 
+    XOfficePresentation XOfficeSpreadsheet PlacesFolder PlacesFolderRemote 
+    PlacesFolderSavedSearch PlacesNetworkServer PlacesNetworkWorkgroup PlacesStartHere 
+    PlacesUserDesktop PlacesUserHome PlacesUserTrash AudioVolumeHigh AudioVolumeLow 
+    AudioVolumeMedium AudioVolumeMuted BatteryCaution DialogError DialogInformation 
+    DialogWarning DialogQuestion FolderDragAccept FolderOpen FolderVisiting 
+    ImageLoading ImageMissing MailAttachment NetworkError NetworkIdle NetworkOffline 
+    NetworkOnline NetworkReceive NetworkTransmit NetworkTransmitReceive 
+    NetworkWirelessEncrypted PrinterError UserTrashFull humStockIds/]
+    );
+
+$EXPORT_TAGS{all} = [@{$EXPORT_TAGS{size}} , @{$EXPORT_TAGS{stock}}];
+
+our @EXPORT_OK = @{$EXPORT_TAGS{all}};
 
 use constant
 {
@@ -34,7 +98,6 @@ use constant
     EditUndo => 23,
     EditDelete => 24,
     EditFindReplace => 25,
-#    EditSelectAll => 26, # this is not in etk_stock.h
     FolderNew => 26,
     FormatIndentLess => 27,
     FormatIndentMore => 28,

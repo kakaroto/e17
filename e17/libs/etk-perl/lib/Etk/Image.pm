@@ -34,6 +34,7 @@ sub SetFromFile
     my $self = shift;
     my $filename = shift;
     Etk::etk_image_set_from_file($self->{WIDGET}, $filename);
+    return $self;
 }
 
 sub FileGet
@@ -48,6 +49,7 @@ sub SetFromEdje
     my $edje_filename = shift;
     my $edje_group = shift;
     Etk::etk_image_set_from_edje($self->{WIDGET}, $edje_filename, $edje_group);
+    return $self;
 }
 
 sub EdjeGet
@@ -65,12 +67,14 @@ sub SetFromStock
     my $stock_id = shift;
     my $stock_size = shift;
     Etk::etk_image_set_from_stock($self->{WIDGET}, $stock_id, $stock_size);
+    return $self;
 }
 
 sub StockGet
 {
     my $self = shift;
-    Etk::etk_image_stock_get($self->{WIDGET}, shift, shift);
+    # returns stock_id, stock_size
+    return Etk::etk_image_stock_get($self->{WIDGET});
 }
 
 sub CopyFrom
@@ -78,6 +82,7 @@ sub CopyFrom
     my $self = shift;
     my $src_image = shift;
     Etk::etk_image_copy($self->{WIDGET}, $src_image->{WIDGET});
+    return $self;
 }
 
 sub SizeGet
@@ -91,6 +96,7 @@ sub KeepAspectSet
     my $self = shift;
     my $keep_aspect = shift;
     Etk::etk_image_keep_aspect_set($self->{WIDGET}, $keep_aspect);
+    return $self;
 }
 
 sub KeepAspectGet

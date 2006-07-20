@@ -2102,12 +2102,16 @@ etk_image_size_get(image, width, height)
 	PUSHs(sv_2mortal(newSViv(height)));
 
 void
-etk_image_stock_get(image, stock_id, stock_size)
+etk_image_stock_get(image)
 	Etk_Widget *	image
-	Etk_Stock_Id *	stock_id
-	Etk_Stock_Size *	stock_size
-	CODE:
-	etk_image_stock_get(ETK_IMAGE(image), stock_id, stock_size);
+	PPCODE:
+	Etk_Stock_Id 	stock_id;
+	Etk_Stock_Size 	stock_size;
+	
+	etk_image_stock_get(ETK_IMAGE(image), &stock_id, &stock_size);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSViv(stock_id)));
+	PUSHs(sv_2mortal(newSViv(stock_size)));
 
 Etk_Bool
 etk_init()
@@ -2982,6 +2986,16 @@ etk_range_increments_set(range, step, page)
 	CODE:
 	etk_range_increments_set(ETK_RANGE(range), step, page);
 
+void
+etk_range_increments_get(range)
+	Etk_Widget * range
+	PPCODE:
+	double step, page;
+	etk_range_increments_get(ETK_RANGE(range), &step, &page);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSVnv(step)));
+	PUSHs(sv_2mortal(newSVnv(page)));
+
 double
 etk_range_page_size_get(range)
 	Etk_Widget *	range
@@ -3004,6 +3018,16 @@ etk_range_range_set(range, lower, upper)
 	double	upper
 	CODE:
 	etk_range_range_set(ETK_RANGE(range), lower, upper);
+
+void
+etk_range_range_get(range)
+	Etk_Widget * range
+	PPCODE:
+	double lower, upper;
+	etk_range_range_get(ETK_RANGE(range), &lower, &upper);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSVnv(lower)));
+	PUSHs(sv_2mortal(newSVnv(upper)));
 
 double
 etk_range_value_get(range)
@@ -4156,16 +4180,24 @@ etk_tree_selected_row_get(tree)
 	OUTPUT:
 	RETVAL
 
-Evas_List *
+void 
 etk_tree_selected_rows_get(tree)
 	Etk_Widget *	tree
-	CODE:
-	Evas_List * var;
-	/* FIXME */
-	var = etk_tree_selected_rows_get(ETK_TREE(tree));
-	RETVAL = var;
-	OUTPUT:
-	RETVAL
+	PPCODE:
+	Evas_List * list;
+	AV * av;
+	int i;
+
+	list = etk_tree_selected_rows_get(ETK_TREE(tree));
+	av = evas_list_to_perl(list);
+	for (i=0; i<=av_len(av); i++) 
+	{
+		SV * sv;
+		sv = newRV(newSViv(0));
+		sv_setref_iv(sv, "Etk_WidgetPtr", SvIV(av_shift(av)));
+
+		XPUSHs(sv_2mortal(sv));
+	}
 
 void
 etk_tree_sort(tree, compare_cb, ascendant, col, data)

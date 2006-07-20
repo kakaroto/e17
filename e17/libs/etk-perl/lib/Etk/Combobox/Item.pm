@@ -16,6 +16,7 @@ sub DataSet
     my $self = shift;
     my $data = shift;
     Etk::etk_combobox_item_data_set($self->{WIDGET}, $data);
+    return $self;
 }
 
 sub DataGet

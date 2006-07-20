@@ -3,12 +3,6 @@ use strict;
 use vars qw(@ISA);
 require Etk;
 
-use constant
-{
-    FromFile => 0,
-    FromEdje => 1
-};
-
 sub new
 {
     my $class = shift;

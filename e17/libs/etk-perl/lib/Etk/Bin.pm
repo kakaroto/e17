@@ -16,6 +16,7 @@ sub ChildSet
     my $self = shift;
     my $widget = shift;
     Etk::etk_bin_child_set($self->{WIDGET}, $widget->{WIDGET});
+    return $self;
 }
 
 1;

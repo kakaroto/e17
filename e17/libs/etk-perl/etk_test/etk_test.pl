@@ -1,43 +1,9 @@
 use strict;
 use POSIX;
 use Etk;
-use Etk::Button;
-use Etk::CheckButton;
-use Etk::RadioButton;
-use Etk::Colorpicker;
-use Etk::Combobox;
-use Etk::Entry;
-use Etk::FillPolicy;
-use Etk::Dialog;
-use Etk::Filechooser;
-use Etk::Frame;
-use Etk::HBox;
-use Etk::HPaned;
-use Etk::HSlider;
-use Etk::HSeparator;
-use Etk::Iconbox;
-use Etk::Image;
-use Etk::Label;
-use Etk::Main;
-use Etk::Menu;
-use Etk::ProgressBar;
-use Etk::VBox;
-use Etk::VPaned;
-use Etk::VSlider;
-use Etk::Window;
-use Etk::ScrolledView;
-use Etk::StatusBar;
-use Etk::Stock;
-use Etk::Table;
-use Etk::Timer;
+use Etk::Constants qw/:all/;
+use Etk::Stock qw/:all/;
 use Etk::Theme;
-use Etk::ToggleButton;
-use Etk::Tree;
-use Etk::Alignment;
-use Etk::Notebook;
-use Etk::TextView;
-
-Etk::Init();
 
 my $NUM_COLS = 2;
 my $win = Etk::Window->new("Etk-Perl Test");
@@ -283,8 +249,8 @@ sub image_window_show
     
     $table->AttachDefaults($image1, 0, 0, 0, 0);
     $table->AttachDefaults($image2, 1, 1, 0, 0);
-    $table->Attach($label1, 0, 0, 1, 1, 2, 0, Etk::FillPolicy::HExpand);
-    $table->Attach($label2, 1, 1, 1, 1, 2, 0, Etk::FillPolicy::HExpand);    
+    $table->Attach($label1, 0, 0, 1, 1, 2, 0, HExpand);
+    $table->Attach($label2, 1, 1, 1, 1, 2, 0, HExpand);    
     
     $win->Add($table);
     $win->ShowAll();
@@ -325,7 +291,7 @@ sub slider_window_show
     $slider1->SizeRequestSet(130, 130);    
     $table->AttachDefaults($slider1, 0, 0, 0, 0);
     $label1 = Etk::Label->new("128.00");
-    $table->Attach($label1, 0, 0, 1, 1, 0, 0, Etk::FillPolicy::None);
+    $table->Attach($label1, 0, 0, 1, 1, 0, 0, FillNone);
     $slider1->SignalConnect("value_changed",
 	sub {
 	    my $self = shift;
@@ -337,7 +303,7 @@ sub slider_window_show
     $slider2->SizeRequestSet(130, 130);    
     $table->AttachDefaults($slider2, 1, 1, 0, 0);       
     $label2 = Etk::Label->new("128.00");
-    $table->Attach($label2, 1, 1, 1, 1, 0, 0, Etk::FillPolicy::None);
+    $table->Attach($label2, 1, 1, 1, 1, 0, 0, FillNone);
     $slider2->SignalConnect("value_changed",
 	sub {
 	    my $self = shift;
@@ -407,12 +373,12 @@ sub tree_window_show
     my $label = Etk::Label->new("<h1>Tree:</h1>");
     
     $table->Attach($label, 0, 0, 0, 0, 0, 0, 
-	Etk::FillPolicy::HFill | Etk::FillPolicy::VFill);
+	HFill | VFill);
     
     my $tree = Etk::Tree->new();
     $tree->SizeRequestSet(320, 400);
     $table->AttachDefaults($tree, 0, 0, 1, 1);
-    $tree->ModeSet(Etk::Tree::ModeTree);
+    $tree->ModeSet(ModeTree);
     $tree->MultipleSelectSet(1);
     $tree->Freeze();
     
@@ -445,8 +411,7 @@ sub tree_window_show
     $tree->Thaw();
     
     $label = Etk::Label->new("<h1>List:</h1>");
-    $table->Attach($label, 1, 1, 0, 0, 0, 0, 
-	Etk::FillPolicy::HFill | Etk::FillPolicy::VFill);
+    $table->Attach($label, 1, 1, 0, 0, 0, 0, HFill | VFill);
     
     $tree = Etk::Tree->new();
     $tree->SizeRequestSet(320, 400);
@@ -579,18 +544,15 @@ sub menu_window_show
     my $menu_item = _menu_test_item_new("File", $menubar, $statusbar);
     my $menu = Etk::Menu->new();
     $menu_item->SubmenuSet($menu);
-    _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, 
-	$statusbar);
-    _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, 
-	$statusbar);
+    _menu_test_stock_item_new("Open", DocumentOpen, $menu, $statusbar);
+    _menu_test_stock_item_new("Save", DocumentSave, $menu, $statusbar);
     
     $menu_item = _menu_test_item_new("Edit", $menubar, $statusbar);
     $menu = Etk::Menu->new();
     $menu_item->SubmenuSet($menu);
-    _menu_test_stock_item_new("Cut", Etk::Stock::EditCut, $menu, $statusbar);
-    _menu_test_stock_item_new("Copy", Etk::Stock::EditCopy, $menu, $statusbar);
-    _menu_test_stock_item_new("Paste", Etk::Stock::EditPaste, $menu, 
-	$statusbar);
+    _menu_test_stock_item_new("Cut", EditCut, $menu, $statusbar);
+    _menu_test_stock_item_new("Copy", EditCopy, $menu, $statusbar);
+    _menu_test_stock_item_new("Paste", EditPaste, $menu, $statusbar);
     
     $menu_item = _menu_test_item_new("Help", $menubar, $statusbar);
     $menu = Etk::Menu->new();
@@ -600,14 +562,12 @@ sub menu_window_show
     $menu = Etk::Menu->new();
     $win->SignalConnect("mouse_down", sub { $menu->Popup() });
     
-    _menu_test_stock_item_new("Open", Etk::Stock::DocumentOpen, $menu, 
-	$statusbar);
-    _menu_test_stock_item_new("Save", Etk::Stock::DocumentSave, $menu, 
-	$statusbar);
+    _menu_test_stock_item_new("Open", DocumentOpen, $menu, $statusbar);
+    _menu_test_stock_item_new("Save", DocumentSave, $menu, $statusbar);
     _menu_seperator_new($menu);
-    _menu_test_stock_item_new("Cut", Etk::Stock::EditCut, $menu, $statusbar);
-    _menu_test_stock_item_new("Copy", Etk::Stock::EditCopy, $menu, $statusbar);
-    _menu_test_stock_item_new("Paste", Etk::Stock::EditPaste, $menu, $statusbar);
+    _menu_test_stock_item_new("Cut", EditCut, $menu, $statusbar);
+    _menu_test_stock_item_new("Copy", EditCopy, $menu, $statusbar);
+    _menu_test_stock_item_new("Paste", EditPaste, $menu, $statusbar);
     _menu_seperator_new($menu);
     $menu_item = _menu_test_item_new("Menu Item Test", $menu, $statusbar);
 
@@ -616,11 +576,11 @@ sub menu_window_show
     my $submenu1 = Etk::Menu->new();
     $menu_item->SubmenuSet($submenu1);
 
-    _menu_test_stock_item_new("Item with image", Etk::Stock::DocumentSave, 
+    _menu_test_stock_item_new("Item with image", DocumentSave, 
 	$submenu1, $statusbar);
 
     $menu_item = _menu_test_stock_item_new("Item with child", 
-	Etk::Stock::DocumentOpen, $submenu1, $statusbar);
+	DocumentOpen, $submenu1, $statusbar);
     _menu_seperator_new($submenu1);
     _menu_test_check_item_new("Item with check 1", $submenu1, $statusbar);
     _menu_test_check_item_new("Item with check 2", $submenu1, $statusbar);
@@ -657,7 +617,7 @@ sub _menu_test_stock_item_new
     my ($label, $stockid, $menubar, $statusbar) = @_;
 
     my $menu_item = Etk::Menu::Item::Image->new($label);
-    my $image = Etk::Image->new($stockid, Etk::Stock::SizeSmall);
+    my $image = Etk::Image->new($stockid, SizeSmall);
     $menu_item->ImageSet($image);
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
@@ -734,22 +694,21 @@ sub combobox_window_show
     my $vbox2 = Etk::VBox->new(0, 3);
     $frame->Add($vbox2);
     
-    my $image = Etk::Image->new(Etk::Stock::DocumentNew,
-	Etk::Stock::SizeBig);
+    my $image = Etk::Image->new(DocumentNew, SizeBig);
     $vbox2->PackStart($image, 0, 0, 0);
     
     $combobox = Etk::Combobox->new();
-    $combobox->ColumnAdd(Etk::Combobox::ColumnTypeImage, 24, 0, 0, 0, 0.0, 0.5);
-    $combobox->ColumnAdd(Etk::Combobox::ColumnTypeLabel, 75, 1, 0, 0, 0.0, 0.5);
+    $combobox->ColumnAdd(ColumnTypeImage, 24, 0, 0, 0, 0.0, 0.5);
+    $combobox->ColumnAdd(ColumnTypeLabel, 75, 1, 0, 0, 0.0, 0.5);
     $combobox->Build();
     
     $vbox2->PackStart($combobox, 0, 0, 0);
 	
-    for( my $i = Etk::Stock::DocumentNew; 
-	$i <= Etk::Stock::FormatTextUnderline; $i++)
+    for( my $i = DocumentNew; 
+	$i <= FormatTextUnderline; $i++)
     {
-	my $image2 = Etk::Image->new($i, Etk::Stock::SizeSmall);
-	my $item = $combobox->ItemAppend($image2, Etk::Stock::LabelGet($i));
+	my $image2 = Etk::Image->new($i, SizeSmall);
+	my $item = $combobox->ItemAppend($image2, LabelGet($i));
 	$item->DataSet($i);
     }
     
@@ -757,7 +716,7 @@ sub combobox_window_show
 	sub {
 	    my $item = $combobox->ActiveItemGet();
 	    my $stock_id = $item->DataGet();
-	    $image->SetFromStock($stock_id, Etk::Stock::SizeBig);
+	    $image->SetFromStock($stock_id, SizeBig);
 	}
     );    
     
@@ -906,7 +865,7 @@ sub table_window_show
     
     my @widgets;
     
-    push @widgets, Etk::Button->new(Etk::Stock::DocumentOpen);
+    push @widgets, Etk::Button->new(DocumentOpen);
     $widgets[0]->LabelSet("Set Icon");
     
     push @widgets, 
@@ -927,8 +886,8 @@ sub table_window_show
       Etk::Label->new("Wait exit"),
       Etk::CheckButton->new();
     
-    push @widgets, Etk::Button->new(Etk::Stock::DialogCancel);
-    push @widgets, Etk::Button->new(Etk::Stock::DocumentSave);
+    push @widgets, Etk::Button->new(DialogCancel);
+    push @widgets, Etk::Button->new(DocumentSave);
     
     push @widgets, Etk::Image->new("images/test.png");
 
@@ -945,15 +904,13 @@ sub table_window_show
     $hbox->PackEnd($widgets[18], 0, 0, 0);
     $hbox->PackEnd($widgets[17], 0, 0, 0);
 
-    $table->Attach($widgets[19], 0, 0, 0, 0, 0, 0, Etk::FillPolicy::None);
-    $table->Attach($widgets[20], 1, 1, 0, 0, 0, 0, Etk::FillPolicy::HExpand | 
-	Etk::FillPolicy::HFill);
+    $table->Attach($widgets[19], 0, 0, 0, 0, 0, 0, FillNone);
+    $table->Attach($widgets[20], 1, 1, 0, 0, 0, 0, HExpand | HFill);
 
     my $index = 1;
     for my $i (2 .. 9) 
     {
-        $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, 
-	    Etk::FillPolicy::HFill);
+        $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, HFill);
         $table->AttachDefaults($widgets[$index + 1], 1, 1, $i, $i);
         $index += 2;
     }
@@ -966,7 +923,7 @@ sub paned_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Paned Test");
     $win->SizeRequestSet(300,300);
-    my $vbox = Etk::VBox->new(0,0);
+    my $vbox = $win->AddVBox(0,0);
 
     # Paned Area
     my $vpaned = Etk::VPaned->new();
@@ -1029,7 +986,8 @@ sub scrolledview_window_show
     $win->SizeRequestSet(180,180);
 
     my $scrolledview = $win->AddScrolledView();
-    $scrolledview->AddWithViewport(Etk::Button->new("Scrolled View Test")->SizeRequestSet(300, 300));
+    $scrolledview->AddWithViewport(
+    	Etk::Button->new("Scrolled View Test")->SizeRequestSet(300, 300));
 
     $win->ShowAll();
 }
@@ -1045,7 +1003,7 @@ sub notebook_window_show
 
     my @widgets;
     
-    push @widgets, Etk::Button->new(Etk::Stock::DocumentOpen);
+    push @widgets, Etk::Button->new(DocumentOpen);
     $widgets[0]->LabelSet("Set Icon");
     
     push @widgets, 
@@ -1062,15 +1020,13 @@ sub notebook_window_show
     push @widgets, Etk::Alignment->new(0.5, 0.5, 0, 0);
     $widgets[18]->Add($widgets[0]);
     my $table = Etk::Table->new(2, 10, 0);
-    $table->Attach($widgets[17], 0, 0, 0, 0, 0, 0, Etk::FillPolicy::None);
-    $table->Attach($widgets[18], 1, 1, 0, 0, 0, 0, Etk::FillPolicy::HExpand | 
-	Etk::FillPolicy::HFill);
+    $table->Attach($widgets[17], 0, 0, 0, 0, 0, 0, FillNone);
+    $table->Attach($widgets[18], 1, 1, 0, 0, 0, 0, HExpand | HFill);
 
     my $index = 1;
     for my $i (2 .. 9) 
     {
-        $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, 
-	    Etk::FillPolicy::HFill);
+        $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, HFill);
         $table->AttachDefaults($widgets[$index + 1], 1, 1, $i, $i);
         $index += 2;
     }
@@ -1108,14 +1064,14 @@ sub notebook_window_show
     my $hbox = Etk::HBox->new(1, 0);
     $alignment->Add($hbox);
 
-    $button = Etk::Button->new(Etk::Stock::GoPrevious);
+    $button = Etk::Button->new(GoPrevious);
     $button->LabelSet("Previous");
     $button->SignalConnect("clicked", sub {
 		$notebook->PagePrev();
     });
     $hbox->PackStart($button, 0, 1, 0);
     
-    $button = Etk::Button->new(Etk::Stock::GoNext);
+    $button = Etk::Button->new(GoNext);
     $button->LabelSet("Next");
     $button->SignalConnect("clicked", sub {
 		$notebook->PageNext();
@@ -1152,7 +1108,6 @@ sub filechooser_window_show
     $win->PackInMainArea($fc, 1, 1, 0, 0);
     $win->ButtonAdd("Open", 1);
     $win->ButtonAdd("Close", 2);
-    
 
     $win->ShowAll();   
 }

@@ -3,12 +3,6 @@ use strict;
 use vars qw(@ISA);
 require Etk;
 
-use constant
-{
-    FromFile => 0,
-    FromEdje => 1
-};
-
 sub new
 {
     my $class = shift;
@@ -26,6 +20,7 @@ sub IconWidthSet
     my $self = shift;
     my $icon_width = shift;
     Etk::etk_tree_model_icon_text_icon_width_set($self->{WIDGET}, $icon_width);
+    return $self;
 }
 
 sub IconWidthGet

@@ -7,12 +7,9 @@ sub new
 {
     my $class = shift;
     my $self = $class->SUPER::new();
-    if(@_ == 1)
-    {
+    if(@_ == 1) {
 	$self->{WIDGET} = Etk::etk_menu_item_check_new_with_label(shift);
-    }
-    else
-    {
+    } else {
 	$self->{WIDGET} = Etk::etk_menu_item_check_new();
     }
     bless($self, $class);
@@ -24,6 +21,7 @@ sub ActiveSet
     my $self = shift;
     my $active = shift;
     Etk::etk_menu_item_check_active_set($self->{WIDGET}, $active);
+    return $self;
 }
 
 sub ActiveGet

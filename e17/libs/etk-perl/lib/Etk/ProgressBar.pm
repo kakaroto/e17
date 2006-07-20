@@ -4,22 +4,13 @@ use vars qw(@ISA);
 require Etk::Widget;
 @ISA = ("Etk::Widget");
 
-use constant 
-{
-    LeftToRight => 0,
-    RightToLeft => 1
-};
-
 sub new
 {
     my $class = shift;
     my $self = $class->SUPER::new();
-    if(@_ == 1)
-    {	
+    if(@_ == 1) {	
 	$self->{WIDGET} = Etk::etk_progress_bar_new_with_text(shift);
-    }
-    else
-    {
+    } else {
 	$self->{WIDGET} = Etk::etk_progress_bar_new();
     }	
     bless($self, $class);
@@ -31,6 +22,7 @@ sub TextSet
     my $self = shift;
     my $label = shift;
     Etk::etk_progress_bar_text_set($self->{WIDGET}, $label);
+    return $self;
 }
 
 sub TextGet
@@ -44,6 +36,7 @@ sub FractionSet
     my $self = shift;
     my $fraction = shift;
     Etk::etk_progress_bar_fraction_set($self->{WIDGET}, $fraction);
+    return $self;
 }
 
 sub FractionGet
@@ -56,6 +49,7 @@ sub Pulse
 {
     my $self = shift;
     Etk::etk_progress_bar_pulse($self->{WIDGET});
+    return $self;
 }
 
 sub PulseStepSet
@@ -77,6 +71,7 @@ sub DirectionSet
     my $self = shift;
     my $direction = shift;
     Etk::etk_progress_bar_direction_set($self->{WIDGET}, $direction);
+    return $self;
 }
 
 sub DirectionGet

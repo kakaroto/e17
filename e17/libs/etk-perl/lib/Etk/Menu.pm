@@ -27,18 +27,21 @@ sub PopupAtXY
     my $x = shift;
     my $y = shift;
     Etk::etk_menu_popup_at_xy($self->{WIDGET}, $x, $y);
+    return $self;
 }
 
 sub Popup
 {
     my $self = shift;
     Etk::etk_menu_popup($self->{WIDGET});
+    return $self;
 }
 
 sub Popdown
 {
     my $self = shift;
     Etk::etk_menu_popdown($self->{WIDGET});
+    return $self;
 }
 
 1;

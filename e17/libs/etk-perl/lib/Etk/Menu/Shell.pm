@@ -16,6 +16,7 @@ sub Prepend
     my $self = shift;
     my $item = shift;
     Etk::etk_menu_shell_prepend($self->{WIDGET}, $item->{WIDGET});
+    return $self;
 }
 
 sub Append
@@ -23,6 +24,7 @@ sub Append
     my $self = shift;
     my $item = shift;
     Etk::etk_menu_shell_append($self->{WIDGET}, $item->{WIDGET});
+    return $self;
 }    
 
 sub PrependRelative
@@ -32,6 +34,7 @@ sub PrependRelative
     my $relative = shift;
     Etk::etk_menu_shell_prepend_relative($self->{WIDGET}, $item->{WIDGET}, 
 	$relative->{WIDGET});
+    return $self;
 }
 
 sub AppendRelative
@@ -41,6 +44,7 @@ sub AppendRelative
     my $relative = shift;
     Etk::etk_menu_shell_append_relative($self->{WIDGET}, $item->{WIDGET}, 
 	$relative->{WIDGET});
+    return $self;
 }
 
 sub Insert
@@ -49,6 +53,7 @@ sub Insert
     my $item = shift;
     my $position = shift;
     Etk::etk_menu_shell_insert($self->{WIDGET}, $item->{WIDGET}, $position);
+    return $self;
 }
 
 sub Remove
@@ -56,6 +61,7 @@ sub Remove
     my $self = shift;
     my $item = shift;
     Etk::etk_menu_shell_remove($self->{WIDGET}, $item->{WIDGET});
+    return $self;
 }
 
 sub ItemsGet

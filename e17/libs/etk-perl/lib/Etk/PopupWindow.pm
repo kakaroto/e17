@@ -46,6 +46,7 @@ sub FocusedWindowSet
 {
     my $self = shift;
     Etk::etk_popup_window_focused_window_set($self->{WIDGET});
+    return $self;
 }
 
 sub FocusedWindowGet

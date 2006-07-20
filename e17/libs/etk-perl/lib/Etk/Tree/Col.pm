@@ -31,6 +31,7 @@ sub TitleSet
    my $self = shift;
    my $title = shift;
    Etk::etk_tree_col_title_set($self->{WIDGET}, $title);
+   return $self;
 }
 
 sub TitleGet
@@ -44,6 +45,7 @@ sub WidthSet
     my $self = shift;
     my $width = shift;
     Etk::etk_tree_col_width_set($self->{WIDGET}, $width);
+    return $self;
 }
 
 sub WidthGet
@@ -57,6 +59,7 @@ sub MinWidthSet
     my $self = shift;
     my $min_width = shift;
     Etk::etk_tree_col_min_width_set($self->{WIDGET}, $min_width);
+    return $self;
 }
 
 sub MinWidthGet
@@ -70,6 +73,7 @@ sub ResizableSet
     my $self = shift;
     my $resizable = shift;
     Etk::etk_tree_col_resizable_set($self->{WIDGET}, $resizable);
+    return $self;
 }
 
 sub ResizableGet
@@ -83,6 +87,7 @@ sub ExpandSet
     my $self = shift;
     my $expand = shift;
     Etk::etk_tree_col_expand_set($self->{WIDGET}, $expand);
+    return $self;
 }
 
 sub ExpandGet
@@ -96,6 +101,7 @@ sub VisibleSet
     my $self = shift;
     my $visible = shift;
     Etk::etk_tree_col_visible_set($self->{WIDGET}, $visible);
+    return $self;
 }
 
 sub VisibleGet
@@ -109,16 +115,16 @@ sub Reorder
     my $self = shift;
     my $new_place = shift;
     Etk::etk_tree_col_redorder($self->{WIDGET}, $new_place);
+    return $self;
 }
 
 sub SortFuncSet
 {
     my $self = shift;
     my $callback = shift;
-    my $data = undef;
-    $data = shift if (@_ > 0);
-    # shift in callback and data
+    my $data = shift;
     Etk::etk_tree_col_sort_func_set($self->{WIDGET}, $callback, $data);
+    return $self;
 }
 
 

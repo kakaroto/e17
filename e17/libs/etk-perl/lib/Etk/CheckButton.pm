@@ -7,12 +7,9 @@ sub new
 {
     my $class = shift;
     my $self = $class->SUPER::new();
-    if(@_ == 1)
-    {
+    if(@_ == 1) {
 	$self->{WIDGET} = Etk::etk_check_button_new_with_label(shift);
-    }
-    else
-    {
+    } else {
 	$self->{WIDGET} = Etk::etk_check_button_new();
     }
     bless($self, $class);

@@ -45,18 +45,21 @@ sub WMClassSet
     my $window_name = shift;
     my $window_class = shift;
     Etk::etk_window_wmclass_set($self->{WIDGET}, $window_name, $window_class);
+    return $self;
 }
 
 sub Move
 {
     my $self = shift;
     Etk::etk_window_move($self->{WIDGET}, shift, shift);
+    return $self;
 }
 
 sub Resize
 {
     my $self = shift;
     Etk::etk_window_resize($self->{WIDGET}, shift, shift);
+    return $self;
 }
 
 sub GeometryGet
@@ -70,24 +73,28 @@ sub CenterOnWindow
     my $self = shift;
     my $window = shift;
     Etk::etk_window_center_on_window($self->{WIDGET}, $window->{WIDGET});
+    return $self;
 }
 
 sub MoveToMouse
 {
     my $self = shift;
     Etk::etk_window_move_to_mouse($self->{WIDGET});
+    return $self;
 }
 
 sub Iconify
 {
     my $self = shift;
     Etk::etk_window_iconify($self->{WIDGET});
+    return $self;
 }
 
 sub Deiconify
 {
     my $self = shift;
     Etk::etk_window_deiconify($self->{WIDGET});
+    return $self;
 }
 
 sub isIconified
@@ -100,12 +107,14 @@ sub Maximize
 {
     my $self = shift;
     Etk::etk_window_maximize($self->{WIDGET});
+    return $self;
 }
 
 sub Unmaximize
 {
     my $self = shift;
     Etk::etk_window_unmaximize($self->{WIDGET});
+    return $self;
 }
 
 sub isMaximized
@@ -118,12 +127,14 @@ sub Fullscreen
 {
     my $self = shift;
     Etk::etk_window_fullscreen($self->{WIDGET});
+    return $self;
 }
 
 sub Unfullscreen
 {
     my $self = shift;
     Etk::etk_window_unfullscreen($self->{WIDGET});
+    return $self;
 }
 
 sub isFullscreen
@@ -136,12 +147,14 @@ sub Stick
 {
     my $self = shift;
     Etk::etk_window_stick($self->{WIDGET});
+    return $self;
 }
 
 sub Unstick
 {
     my $self = shift;
     Etk::etk_window_unstick($self->{WIDGET});
+    return $self;
 }
 
 sub isSticky
@@ -154,12 +167,14 @@ sub Focus
 {
     my $self = shift;
     Etk::etk_window_focus($self->{WIDGET});
+    return $self;
 }
 
 sub Unfocus
 {
     my $self = shift;
     Etk::etk_window_unfocus($self->{WIDGET});
+    return $self;
 }
 
 sub isFocused
@@ -172,6 +187,7 @@ sub DecoratedSet
 {
     my $self = shift;
     Etk::etk_window_decorated_set($self->{WIDGET}, shift);
+    return $self;
 }
 
 sub DecoratedGet
@@ -184,6 +200,7 @@ sub ShapedSet
 {
     my $self = shift;
     Etk::etk_window_shaped_set($self->{WIDGET}, shift);
+    return $self;
 }
 
 sub ShapedGet
@@ -196,6 +213,7 @@ sub SkipTaskbarHintSet
 {
     my $self = shift;
     Etk::etk_window_skip_taskbar_hint_set($self->{WIDGET}, shift);
+    return $self;
 }
 
 sub SkipTaskbarHintGet
@@ -208,6 +226,7 @@ sub SkipPagerHintSet
 {
     my $self = shift;
     Etk::etk_window_skip_pager_hint_set($self->{WIDGET}, shift);
+    return $self;
 }
 
 sub SkipPagerHintGet
@@ -220,6 +239,7 @@ sub DndAwareSet
 {
     my $self = shift;
     Etk::etk_window_dnd_aware_set($self->{WIDGET}, shift);
+    return $self;
 }
 
 sub HideOnDelete

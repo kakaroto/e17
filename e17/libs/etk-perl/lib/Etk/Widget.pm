@@ -20,6 +20,7 @@ sub NameSet
     my $self = shift;
     my $name = shift;
     Etk::etk_widget_name_set($self->{WIDGET}, $name);
+    return $self;
 }
 
 sub NameGet
@@ -42,6 +43,7 @@ sub ParentSet
     my $self = shift;
     my $parent = shift;
     Etk::etk_widget_parent_set($self->{WIDGET}, $parent->{WIDGET});
+    return $self;
 }
 
 sub ParentGet 
@@ -56,24 +58,28 @@ sub Show
 {
     my $self = shift;
     Etk::etk_widget_show($self->{WIDGET});
+    return $self;
 }
 
 sub ShowAll
 {
     my $self = shift;
     Etk::etk_widget_show_all($self->{WIDGET});
+    return $self;
 }
 
 sub Hide
 {
     my $self = shift;
     Etk::etk_widget_hide($self->{WIDGET});
+    return $self;
 }
 
 sub HideAll
 {
     my $self = shift;
     Etk::etk_widget_hide_all($self->{WIDGET});
+    return $self;
 }
 
 sub isVisible
@@ -86,6 +92,7 @@ sub VisibilityLockedSet
 {
     my $self = shift;
     Etk::etk_widget_visibility_locked_set($self->{WIDGET}, shift);
+    return $self;
 }
 
 sub VisibilityLockedGet
@@ -98,12 +105,14 @@ sub Raise
 {
     my $self = shift;
     Etk::etk_widget_raise($self->{WIDGET});
+    return $self;
 }
 
 sub Lower
 {
     my $self = shift;
     Etk::etk_widget_lower($self->{WIDGET});
+    return $self;
 }
 
 sub SizeRecalcQueue
@@ -117,6 +126,7 @@ sub RedrawQueue
 {
     my $self = shift;
     Etk::etk_widget_redraw_queue($self->{WIDGET});
+    return $self;
 }
 
 sub SizeRequestSet
@@ -140,30 +150,35 @@ sub Enter
 {
     my $self = shift;
     Etk::etk_widget_enter($self->{WIDGET});
+    return $self;
 }
 
 sub Leave
 {
     my $self = shift;
     Etk::etk_widget_leave($self->{WIDGET});
+    return $self;
 }
 
 sub Focus
 {
     my $self = shift;
     Etk::etk_widget_focus($self->{WIDGET});
+    return $self;
 }
 
 sub Unfocus
 {
     my $self = shift;
     Etk::etk_widget_unfocus($self->{WIDGET});
+    return $self;
 }
 
 sub PassMouseEventsSet
 {
     my $self = shift;
     Etk::etk_widget_pass_mouse_events_set($self->{WIDGET}, shift);
+    return $self;
 }
 
 sub PassMouseEventsGet
@@ -177,6 +192,7 @@ sub DndDestSet
     my $self = shift;
     my $on = shift;
     Etk::etk_widget_dnd_dest_set($self->{WIDGET}, $on);
+    return $self;
 }
 
 sub DndDestGet
@@ -200,6 +216,7 @@ sub DndSourceSet
     my $self = shift;
     my $on = shift;
     Etk::etk_widget_dnd_source_set($self->{WIDGET}, $on);
+    return $self;
 }
 
 sub DndSourceGet
@@ -213,6 +230,7 @@ sub DndDragWidgetSet
     my $self = shift;
     my $drag = shift;
     Etk::etk_widget_dnd_drag_widget_set($self->{WIDGET}, $drag->{WIDGET});
+    return $self;
 }
 
 sub DndDragWidgetGet
@@ -236,10 +254,10 @@ sub DndTypesSet
 {
     my $self = shift;
     my @types = @_;
-    if (@types > 0) 
-    {
+    if (@types > 0) {
     	Etk::etk_widget_dnd_types_set($self->{WIDGET}, @types);
     }
+    return $self;
 }
 
 sub DndTypesGet
@@ -259,6 +277,7 @@ sub DndInternalSet
     my $self = shift;
     my $on = shift;
     Etk::etk_widget_dnd_internal_set($self->{WIDGET}, $on);
+    return $self;
 }
 
 sub DragDrop
@@ -274,30 +293,35 @@ sub DragMotion
 {
     my $self = shift;
     Etk::etk_widget_drag_motion($self->{WIDGET});
+    return $self;
 }
 
 sub DragEnter
 {
     my $self = shift;
     Etk::etk_widget_drag_enter($self->{WIDGET});
+    return $self;
 }
 
 sub DragLeave
 {
     my $self = shift;
     Etk::etk_widget_drag_leave($self->{WIDGET});
+    return $self;
 }
 
 sub DragBegin
 {
     my $self = shift;
     Etk::etk_widget_drag_begin($self->{WIDGET});
+    return $self;
 }
 
 sub DragEnd
 {
     my $self = shift;
     Etk::etk_widget_drag_end($self->{WIDGET});
+    return $self;
 }
 
 sub ThemeFileSet
@@ -305,6 +329,7 @@ sub ThemeFileSet
     my $self = shift;
     my $theme_file = shift;
     Etk::etk_widget_theme_file_set($self->{WIDGET}, $theme_file);
+    return $self;
 
 }
 
@@ -320,6 +345,7 @@ sub ThemeGroupSet
     my $self = shift;
     my $theme_group = shift;
     Etk::etk_widget_theme_group_set($self->{WIDGET}, $theme_group);
+    return $self;
 }
 
 sub ThemeGroupGet
@@ -333,6 +359,7 @@ sub ThemeParentSet
     my $self = shift;
     my $parent = shift;
     Etk::etk_widget_theme_parent_set($self->{WIDGET}, $parent->{WIDGET});
+    return $self;
 }
 
 sub ThemeParentGet
@@ -358,6 +385,7 @@ sub HasEventObjectSet
     my $self = shift;
     my $has = shift;
     Etk::etk_widget_has_event_object_set($self->{WIDGET}, $has);
+    return $self;
 }
 
 sub HasEventObjectGet
@@ -371,6 +399,7 @@ sub RepeatMouseEventsSet
     my $self = shift;
     my $repeat = shift;
     Etk::etk_widget_repeat_mouse_events_set($self->{WIDGET}, $repeat);
+    return $self;
 }
 
 sub RepeatMouseEventsGet
@@ -398,6 +427,7 @@ sub UnswallowWidget
     my $self = shift;
     my $widget = shift;
     Etk::etk_widget_unswallow_widget($self->{WIDGET}, $widget->{WIDGET});
+    return $self;
 }
 
 sub IsSwallowingWidget
@@ -424,6 +454,7 @@ sub ThemeObjectSignalEmit
     my $self = shift;
     my $signal = shift;
     Etk::etk_widget_theme_object_signal_emit($self->{WIDGET}, $signal);
+    return $self;
 }
 
 sub ThemeObjectPartTextSet
@@ -432,6 +463,7 @@ sub ThemeObjectPartTextSet
     my $part = shift;
     my $text = shift;
     Etk::etk_widget_theme_object_part_text_set($self->{WIDGET}, $part, $text);
+    return $self;
 }
 
 # This is just a start.
@@ -461,10 +493,21 @@ sub AUTOLOAD
 sub PackStart
 {
     my $self = shift;
-    if ($self->{PARENT}->isa("Etk::Box")) {
+    if (ref $self->{PARENT} && $self->{PARENT}->isa("Etk::Box")) {
 	    $self->{PARENT}->PackStart($self, @_);
     } else {
 	    warn("Parent is not a Box\n");
+    }
+    return $self;
+}
+
+sub PackEnd
+{
+    my $self = shift;
+    if (ref $self->{PARENT} && $self->{PARENT}->isa("Etk::Box")) {
+	    $self->{PARENT}->PackEnd($self, @_);
+    } else {
+	    warn("Parent is not a Box at PackEnd\n");
     }
     return $self;
 }

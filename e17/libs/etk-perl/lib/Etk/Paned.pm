@@ -18,6 +18,7 @@ sub Child1Set
     my $child = shift;
     my $expand = shift;
     Etk::etk_paned_child1_set($self->{WIDGET}, $child->{WIDGET}, $expand);
+    return $self;
 }
 
 sub Child2Set
@@ -26,6 +27,7 @@ sub Child2Set
     my $child = shift;
     my $expand = shift;
     Etk::etk_paned_child2_set($self->{WIDGET}, $child->{WIDGET}, $expand);
+    return $self;
 }
 
 sub Child1Get
@@ -49,6 +51,7 @@ sub PositionSet
     my $self = shift;
     my $position = shift;
     Etk::etk_paned_position_set($self->{WIDGET}, $position);
+    return $self;
 }
 
 sub PositionGet

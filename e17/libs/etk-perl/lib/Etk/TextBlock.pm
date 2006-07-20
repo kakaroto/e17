@@ -27,6 +27,7 @@ sub TextSet
     my $text = shift;
     my $markup = shift;
     Etk::etk_textblock_text_set($self->{WIDGET}, $text, $markup);
+    return $self;
 }
 
 sub TextGet

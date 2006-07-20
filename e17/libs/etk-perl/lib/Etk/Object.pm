@@ -14,8 +14,7 @@ sub SignalConnect
     my $self = shift;
     my $signal_name = shift;
     my $callback = shift;
-    my $data = undef;
-    $data = shift if (@_ > 0);
+    my $data = shift;
     Etk::etk_signal_connect($signal_name, $self, $callback, $data);
     return $self;
 }
@@ -25,8 +24,7 @@ sub SignalConnectAfter
     my $self = shift;
     my $signal_name = shift;
     my $callback = shift;
-    my $data = undef;
-    $data = shift if (@_ > 0);
+    my $data = shift;
     Etk::etk_signal_connect_after($signal_name, $self, $callback, $data);
     return $self;
 }
@@ -36,8 +34,7 @@ sub SignalConnectSwapped
     my $self = shift;
     my $signal_name = shift;
     my $callback = shift;
-    my $data = undef;
-    $data = shift if (@_ > 0);
+    my $data = shift;
     Etk::etk_signal_connect_swapped($signal_name, $self, $callback, $data);
     return $self;
 }
@@ -70,6 +67,7 @@ sub NotificationCallbackAdd
     my $callback = shift;
     my $data = shift;
     Etk::etk_object_notification_callback_add($self->{WIDGET}, $property_name, $callback, $data);
+    return $self;
 }
 
 sub NotificationCallbackRemove
@@ -77,6 +75,7 @@ sub NotificationCallbackRemove
     my $self = shift;
     my $property_name = shift;
     Etk::etk_object_notification_callback_remove($self->{WIDGET}, $property_name);
+    return $self;
 }
 
 sub Notify
@@ -84,6 +83,7 @@ sub Notify
     my $self = shift;
     my $property_name = shift;
     Etk::etk_object_notify($self->{WIDGET}, $property_name);
+    return $self;
 }
 
 sub DataSet
@@ -92,6 +92,7 @@ sub DataSet
     my $key = shift;
     my $data = shift;
     Etk::etk_object_data_set($self->{WIDGET}, $key, $data);
+    return $self;
 }
 
 sub DataGet

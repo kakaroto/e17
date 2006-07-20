@@ -22,6 +22,7 @@ sub FileSet
     my $filename = shift;
     my $edje_group = shift;
     Etk::etk_iconbox_icon_file_set($self->{WIDGET}, $filename, $edje_group);
+    return $self;
 }
 
 sub FileGet
@@ -38,6 +39,7 @@ sub LabelSet
     my $self = shift;
     my $label = shift;
     Etk::etk_iconbox_icon_label_set($self->{WIDGET}, $label);
+    return $self;
 }
 
 sub LabelGet
@@ -51,6 +53,7 @@ sub DataSet
     my $self = shift;
     my $data = shift;
     Etk::etk_iconbox_icon_data_set($self->{WIDGET}, $data);
+    return $self;
 }
 
 sub DataGet
@@ -63,12 +66,14 @@ sub Select
 {
     my $self = shift;
     Etk::etk_iconbox_icon_select($self->{WIDGET});
+    return $self;
 }
 
 sub Unselect
 {
     my $self = shift;
     Etk::etk_iconbox_icon_unselect($self->{WIDGET});
+    return $self;
 }
 
 sub IsSelected

@@ -20,6 +20,7 @@ sub PagePrepend
     my $page_child = shift;
     Etk::etk_notebook_page_prepend($self->{WIDGET}, $tab_label,
 	$page_child->{WIDGET});
+    return $self;
 }
 
 sub PageAppend
@@ -29,6 +30,7 @@ sub PageAppend
     my $page_child = shift;
     Etk::etk_notebook_page_append($self->{WIDGET}, $tab_label, 
 	$page_child->{WIDGET});
+    return $self;
 }
 
 sub Insert
@@ -39,6 +41,7 @@ sub Insert
     my $position = shift;
     Etk::etk_notebook_page_insert($self->{WIDGET}, $tab_label, 
 	$page_child->{WIDGET}, $position);
+    return $self;
 }
 
 sub Remove
@@ -46,6 +49,7 @@ sub Remove
     my $self = shift;
     my $page_num = shift;
     Etk::etk_notebook_remove($self->{WIDGET}, $page_num);
+    return $self;
 }
 
 sub NumPagesGet
@@ -59,6 +63,7 @@ sub CurrentPageSet
     my $self = shift;
     my $page = shift;
     Etk::etk_notebook_current_page_set($self->{WIDGET}, $page);
+    return $self;
 }
 sub CurrentPageGet
 {
@@ -77,12 +82,14 @@ sub PagePrev
 {
     my $self = shift;
     Etk::etk_notebook_page_prev($self->{WIDGET});
+    return $self;
 }
 
 sub PageNext
 {
     my $self = shift;
     Etk::etk_notebook_page_next($self->{WIDGET});
+    return $self;
 }
 
 sub PageTabLabelSet
@@ -92,6 +99,7 @@ sub PageTabLabelSet
     my $tab_label = shift;
     Etk::etk_notebook_page_tab_label_set($self->{WIDGET}, $page_num,
 	$tab_label);
+    return $self;
 }
 
 sub PageTabLabelGet
@@ -108,6 +116,7 @@ sub PageTabWidgetSet
     my $tab_widget = shift;
     Etk::etk_notebook_page_tab_label_set($self->{WIDGET}, $page_num,
 	$tab_widget->{WIDGET});
+    return $self;
 }
 
 sub PageTabWidgetGet
@@ -127,6 +136,7 @@ sub PageChildSet
     my $child = shift;
     Etk::etk_notebook_page_child_set($self->{WIDGET}, $page_num,
 	$child->{WIDET});
+    return $self;
 }
 
 sub PageChildGet

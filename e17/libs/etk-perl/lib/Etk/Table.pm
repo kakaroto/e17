@@ -26,6 +26,7 @@ sub CellClear
     my $col = shift;
     my $row = shift;
     Etk::etk_table_cell_clear($self->{WIDGET}, $col, $row);
+    return $self;
 }
 
 sub Resize
@@ -34,6 +35,7 @@ sub Resize
     my $num_cols = shift;
     my $num_rows = shift;
     Etk::etk_table_resize($self->{WIDGET}, $num_cols, $num_rows);
+    return $self;
 }
 
 sub Attach
@@ -50,6 +52,7 @@ sub Attach
     Etk::etk_table_attach($self->{WIDGET}, $child->{WIDGET}, $left_attach,
 	$right_attach, $top_attach, $bottom_attach, $x_padding, $y_padding,
 	$fill_policy);
+    return $self;
 }
 
 sub AttachDefaults
@@ -62,6 +65,7 @@ sub AttachDefaults
     my $bottom_attach = shift;
     Etk::etk_table_attach_defaults($self->{WIDGET}, $child->{WIDGET}, 
 	$left_attach, $right_attach, $top_attach, $bottom_attach);
+    return $self;
 }   
 
 sub HomogenousSet
@@ -69,6 +73,7 @@ sub HomogenousSet
     my $self = shift;
     my $homogenous = shift;
     Etk::etk_table_homogeneous_set($self->{WIDGET}, $homogenous);
+    return $self;
 }
 
 sub HomogenousGet

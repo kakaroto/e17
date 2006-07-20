@@ -21,6 +21,7 @@ sub CurrentModelSet
     my $self = shift;
     my $model = shift;
     Etk::etk_iconbox_current_model_set($self->{WIDGET}, $model->{WIDGET});
+    return $self;
 }
 
 sub CurrentModelGet
@@ -35,12 +36,14 @@ sub Freeze
 {
     my $self = shift;
     Etk::etk_iconbox_freeze($self->{WIDGET});
+    return $self;
 }
 
 sub Thaw
 {
     my $self = shift;
     Etk::etk_iconbox_thaw($self->{WIDGET});
+    return $self;
 }
 
 sub Append
@@ -59,6 +62,7 @@ sub Clear
 {
     my $self = shift;
     Etk::etk_iconbox_clear($self->{WIDGET});
+    return $self;
 }
 
 sub IconGetAtXY
@@ -80,12 +84,14 @@ sub SelectAll
 {
     my $self = shift;
     Etk::etk_iconbox_select_all($self->{WIDGET});
+    return $self;
 }
 
 sub UnselectAll
 {
     my $self = shift;
     Etk::etk_iconbox_unselect_all($self->{WIDGET});
+    return $self;
 }
 
 1;

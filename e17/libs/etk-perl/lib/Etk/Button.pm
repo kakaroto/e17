@@ -9,15 +9,12 @@ sub new
 {
     my $class = shift;
     my $self = $class->SUPER::new();
-    if(@_ == 1)
-    {
+    if(@_ == 1) {
 	my $thing = shift;
-	$self->{WIDGET} = $thing + 0 eq $thing ?
-	    Etk::etk_button_new_from_stock($thing) :
-	    Etk::etk_button_new_with_label($thing); 
-    }
-    else
-    {
+	$self->{WIDGET} = $thing =~ /\D/ ?
+	    Etk::etk_button_new_with_label($thing) : 
+	    Etk::etk_button_new_from_stock($thing);
+    } else {
 	$self->{WIDGET} = Etk::etk_button_new();
     }
     bless($self, $class);
@@ -28,18 +25,21 @@ sub Press
 {
     my $self = shift;
     Etk::etk_button_press($self->{WIDGET});
+    return $self;
 }
 
 sub Release
 {
     my $self = shift;
     Etk::etk_button_release($self->{WIDGET});
+    return $self;
 }
 
 sub Click
 {
     my $self = shift;
     Etk::etk_button_click($self->{WIDGET});
+    return $self;
 }
 
 sub LabelSet
@@ -47,6 +47,7 @@ sub LabelSet
     my $self = shift;
     my $label = shift;
     Etk::etk_button_label_set($self->{WIDGET}, $label);
+    return $self;
 }
 
 sub LabelGet
@@ -89,6 +90,7 @@ sub SetFromStock
     my $self = shift;
     my $stock_id = shift;
     Etk::etk_button_set_from_stock($self->{WIDGET}, $stock_id);
+    return $self;
 }
 
 sub AlignmentSet
@@ -96,14 +98,18 @@ sub AlignmentSet
     my $self = shift;
     my $alignment = shift;
     Etk::etk_button_alignment_set($self->{WIDGET}, $alignment);
+    return $self;
 }
+
+=item AlignmentGet()
+
+Return $xalign, $yalign.
+
+=cut
 
 sub AlignmentGet
 {
     my $self = shift;
-    # RETURNS
-    # xalign
-    # yalign
     return Etk::etk_button_alignment_get($self->{WIDGET});
 }
 

@@ -5,10 +5,56 @@ use strict;
 use warnings;
 use Carp;
 
-use Etk::Main;
-use Etk::Window;
-
 our $VERSION = '0.02';
+
+require XSLoader;
+XSLoader::load('Etk', $VERSION);
+
+use Etk::Alignment;
+use Etk::Button;
+use Etk::Canvas;
+use Etk::CheckButton;
+use Etk::Clipboard;
+use Etk::Colorpicker;
+use Etk::Combobox;
+use Etk::Dialog;
+use Etk::Dnd;
+use Etk::Drag;
+use Etk::Entry;
+use Etk::Filechooser;
+use Etk::Frame;
+use Etk::HBox;
+use Etk::HPaned;
+use Etk::HSeparator;
+use Etk::HSlider;
+use Etk::Iconbox;
+use Etk::Image;
+use Etk::Label;
+use Etk::Menu;
+use Etk::MessageDialog;
+use Etk::Notebook;
+use Etk::Paned;
+use Etk::PopupWindow;
+use Etk::ProgressBar;
+use Etk::RadioButton;
+use Etk::Range;
+use Etk::ScrolledView;
+use Etk::Selection;
+use Etk::Separator;
+use Etk::StatusBar;
+use Etk::Table;
+use Etk::TextView;
+use Etk::Timer;
+use Etk::ToggleButton;
+use Etk::ToplevelWidget;
+use Etk::Tree;
+use Etk::VBox;
+use Etk::VPaned;
+use Etk::VSeparator;
+use Etk::VSlider;
+use Etk::Viewport;
+use Etk::Window;
+use Etk::Main;
 
 sub Init
 {
@@ -19,10 +65,6 @@ sub Shutdown
 {
     Etk::etk_shutdown();
 }
-
-require XSLoader;
-XSLoader::load('Etk', $VERSION);
-
 
 # initialize Etk
 Etk::Init();
@@ -99,3 +141,5 @@ at your option, any later version of Perl 5 you may have available.
 
 
 =cut
+
+
