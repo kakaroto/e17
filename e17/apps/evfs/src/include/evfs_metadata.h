@@ -46,7 +46,7 @@ evfs_metadata_file_groups* evfs_metadata_file_groups_get(evfs_filereference* ref
 void evfs_metadata_debug_file_groups_print(evfs_metadata_file_groups* groups);
 int evfs_metadata_file_groups_group_check(evfs_metadata_file_groups* groups, char* group);
 
-char** evfs_metadata_file_group_list(char* group, int* num);
+Ecore_List* evfs_metadata_file_group_list(char* group);
 Evas_List* evfs_metadata_groups_get();
 
 

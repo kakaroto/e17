@@ -238,25 +238,29 @@ evfs_metadata_group_header_new(char* name, char* desc)
 
 int evfs_metadata_group_header_exists(char* group)
 {
-	Evas_List* l;
-	evfs_metadata_group_header* g;
+	char query[1024];
+	int exists = 0;
 	int ret;
+	sqlite3_stmt *pStmt;
 
-	ret = 0;
+	evfs_metadata_db_response_setup();
+	evfs_metadata_db_results_init();
 
-	for (l = metadata_root->group_list; l; ) {
-		g = l->data;
-		
-		if (!strcmp(g->name, group)) {
-			ret = 1;
-			goto GROUP_DONE;
-		}
-		
-		l = l->next;
+	snprintf(query, sizeof(query), "select id from MetaGroup where name='%s'", group);
+	ret = sqlite3_prepare(db, query, 
+			-1, &pStmt, 0);
+	if (ret == SQLITE_OK) {
+		ret = sqlite3_step(pStmt);
+		if (ret == SQLITE_ROW) exists = sqlite3_column_int(pStmt,0);
+	} else {
+		printf("header_exists: sqlite_error\n");
 	}
+		
+	sqlite3_reset(pStmt);
+	sqlite3_finalize(pStmt);
 
-	GROUP_DONE:
-	return ret;
+
+	return exists;
 }
 
 void evfs_metadata_initialise()
@@ -421,29 +425,21 @@ void evfs_metadata_initialise()
 
 Evas_List* evfs_metadata_groups_get() {
 	int ret;
-	char* errMsg = 0;
-	evfs_metadata_db_result* result;
 	Evas_List* ret_list = NULL;
+	sqlite3_stmt *pStmt;
 
-	evfs_metadata_db_response_setup();
-	evfs_metadata_db_results_init();
+	ret = sqlite3_prepare(db, "select name from MetaGroup where parent = 0", 
+			-1, &pStmt, 0);
 
-	ret = sqlite3_exec(db, "select name from MetaGroup where parent = 0", 
-			evfs_metadata_db_callback, 0,&errMsg);
+	do {
+		ret = sqlite3_step(pStmt);
 
-	evfs_metadata_db_response_block();
+		if (ret == SQLITE_ROW) 
+			ret_list = evas_list_append(ret_list, strdup(sqlite3_column_text(pStmt,0)));
+	} while (ret == SQLITE_ROW);
 
-	/*Print results*/
-	ecore_dlist_goto_first(evfs_metdata_db_results);
-
-	while ( (result = ecore_dlist_remove_first(evfs_metdata_db_results))) {
-		int i;
-		evfs_metadata_db_item* item;
-		item = result->fields[0];
-		ret_list = evas_list_append(ret_list, strdup(item->value));
-	}
-
-	evfs_metadata_db_results_free();
+	sqlite3_reset(pStmt);
+	sqlite3_finalize(pStmt);
 	
 	return ret_list;
 }
@@ -454,71 +450,49 @@ void evfs_metadata_file_set_key_value_edd(evfs_filereference* ref, char* key,
 
 }
 
-char**
-evfs_metadata_file_group_list(char* group, int* num) 
+Ecore_List*
+evfs_metadata_file_group_list(char* group) 
 {
-	char** ret_list;
-	char group_base[PATH_MAX];
-	int i;
-	char* j;
+	Ecore_List* ret_list;
+	char query[PATH_MAX];
+	sqlite3_stmt *pStmt;
+	int ret;
 
-	snprintf(group_base, sizeof(group_base), "/groups/%s:*", group);
+	ret_list = ecore_list_new();
 
-	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);
-	ret_list = eet_list(_evfs_metadata_eet, group_base, num);
+	snprintf(query, sizeof(query), "select f.filename from File f join FileGroup fg on f.id = fg.file join MetaGroup mg on mg.id = fg.metagroup where mg.name= '%s'", group);
+	ret = sqlite3_prepare(db, query, 
+			-1, &pStmt, 0);
 
-	if (*num>0) {
-		for(i=0;i<*num;i++) {
-			j = index(ret_list[i], ':');
-			if (j) ret_list[i] = j+1;
-		}
-	}
+	do {
+		ret = sqlite3_step(pStmt);
+
+		if (ret == SQLITE_ROW) 
+			ecore_list_append(ret_list, strdup(sqlite3_column_text(pStmt,0)));
+	} while (ret == SQLITE_ROW);
+
+	sqlite3_reset(pStmt);
+	sqlite3_finalize(pStmt);
+	
 
 	return ret_list;
 }
 
-evfs_metadata_file_groups* evfs_metadata_file_groups_get(evfs_filereference* ref)
-{
-	evfs_metadata_file_groups* groups = NULL;
-
-	char* data;
-	int size;
-	int ret = 0;
-	char path[PATH_MAX];
-	char* file_path;
-
-	/*Build a path*/
-	file_path = evfs_filereference_to_string(ref);
-
-	snprintf(path, PATH_MAX, "/filedata/%s/groups", file_path);
-
-	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);
-	data = eet_read(_evfs_metadata_eet, path, &size);
-	if (data) {
-		groups = eet_data_descriptor_decode(Evfs_Metadata_File_Groups_Edd, data, size);
-		free(data);
-	}
-
-	free(file_path);
-
-	return groups;
-
-}
-
 void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 {
-	evfs_metadata_file_groups* groups;
-	char path[PATH_MAX];
 	char* file_path;
-	char* data;
-	int size;
 	int ret = 0;
-	evfs_metadata_group_header* header;
-	
+
+	char* errMsg = 0;
+	char query[1024];
+
+	int groupid = 0;
+	int file = 0;
+	sqlite3_stmt *pStmt;
 
 	/*First make sure this group exists*/
 
-	if (evfs_metadata_group_header_exists(group)) {
+	if ( (groupid = evfs_metadata_group_header_exists(group))) {
 		printf("Group exists - proceed\n");
 	} else {
 		printf("Alert - group not found\n");
@@ -530,56 +504,36 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 	printf("File path is: %s\n", file_path);
 
 
-	/*Add to file groups*/
-	snprintf(path, PATH_MAX, "/filedata/%s/groups", file_path);
+	snprintf(query, sizeof(query), "select id from File where filename ='%s'", file_path);
+	ret = sqlite3_prepare(db, query, 
+			-1, &pStmt, 0);
 
-	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);
-	data = eet_read(_evfs_metadata_eet, path, &size);
-	eet_close(_evfs_metadata_eet);
+	if (ret == SQLITE_OK) {
+		ret = sqlite3_step(pStmt);
+		if (ret == SQLITE_ROW)  {
+			file = sqlite3_column_int(pStmt,0);
+		} else {
+			snprintf(query, sizeof(query), "insert into File (filename) select '%s';", file_path);
+			ret = sqlite3_exec(db, query, 
+			NULL, 0,&errMsg);
 	
-	if (data) {
-		printf("Found group data for file in eet..\n");
-		
-		groups = eet_data_descriptor_decode(Evfs_Metadata_File_Groups_Edd, data, size);
-		free(data);
+			file = (int)sqlite3_last_insert_rowid(db);
+		}
 	} else {
-		printf("File is not a member of a group - making new group collection..\n");
-		
-		groups = calloc(1, sizeof(evfs_metadata_file_groups));	
+		printf("header_file_add: sqlite error\n");
+	}
+	sqlite3_reset(pStmt);
+	sqlite3_finalize(pStmt);
+
+	if (file && groupid) {
+		printf("File id: %d - Group id: %d\n", file, groupid);
+
+		snprintf(query, sizeof(query), "insert into FileGroup (File,MetaGroup) values (%d,%d);",
+				file, groupid);
+		ret = sqlite3_exec (db, query, NULL, 0, &errMsg);
 	}
 
-	/*Check if we're already in group*/
-	if (!evfs_metadata_file_groups_group_check(groups, group)) {
-		_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ_WRITE);
-
-		/*Add this to file groups*/
-		header = evfs_metadata_group_header_new(group, NULL);
-		groups->groups = evas_list_append(groups->groups, header);
-
-		/*Now write back to eet*/
-		data = eet_data_descriptor_encode(Evfs_Metadata_File_Groups_Edd, groups, &size);
-		
-		if (data) {
-			ret = eet_write(_evfs_metadata_eet, path, data, size, 0);
-		}
-		if (ret) {
-			//printf("Wrote %d for %s\n", size, path);
-		}
-		free(data);
-
-		
-		/*Add to the group itself*/
-		snprintf(path, sizeof(path), "/groups/%s:%s", group, file_path);
-		eet_write(_evfs_metadata_eet, path, EVFS_METADATA_BASE_DATA, strlen(EVFS_METADATA_BASE_DATA), 0);
-
-		eet_close(_evfs_metadata_eet);
-	} else {
-		printf("File aready in group %s!\n", group);
-	}
-	/*Free groups*/
-	evfs_metadata_file_groups_free(groups);
-	
-	free(file_path);
+	evfs_metadata_db_results_free();
 	
 }
 
