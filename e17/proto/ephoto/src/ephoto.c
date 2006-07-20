@@ -37,21 +37,21 @@ main(int argc, char **argv)
  if (!ecore_file_exists(database))
  {
   sqlite3_open(database, &db);
-  sqlite3_exec(db, "CREATE TABLE albums(id INTEGER AUTOINCREMENT PRIMARY KEY," 
+  sqlite3_exec(db, "CREATE TABLE albums(id INTEGER PRIMARY KEY AUTOINCREMENT," 
 			"name VARCHAR(255));", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE a_images(id INTEGER AUTOINCREMENT PRIMARY KEY," 
+  sqlite3_exec(db, "CREATE TABLE a_images(id INTEGER PRIMARY KEY AUTOINCREMENT," 
 			"name VARCHAR(255));", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE albums_full(id INTEGER AUTOINCREMENT PRIMARY KEY," 
+  sqlite3_exec(db, "CREATE TABLE albums_full(id INTEGER PRIMARY KEY AUTOINCREMENT," 
 			"album_id INTEGER, image_id INTEGER);", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE slideshows(id INTEGER AUTOINCREMENT PRIMARY KEY,"
+  sqlite3_exec(db, "CREATE TABLE slideshows(id INTEGER PRIMARY KEY AUTOINCREMENT,"
 			"name VARCHAR(255));", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE s_images(id INTEGER AUTOINCREMENT PRIMARY KEY,"
+  sqlite3_exec(db, "CREATE TABLE s_images(id INTEGER PRIMARY KEY AUTOINCREMENT,"
 			"name VARCHAR(255));", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE slideshows_images_full(id INTEGER AUTOINCREMENT PRIMARY KEY," 
+  sqlite3_exec(db, "CREATE TABLE slideshows_images_full(id INTEGER PRIMARY KEY AUTOINCREMENT," 
 			"slideshows_id INTEGER, images_id INTEGER);", NULL, 0, 0);
-  sqlite3_exec(db, "CREATE TABLE s_settings(id INTEGER AUTOINCREMENT PRIMARY KEY,"
+  sqlite3_exec(db, "CREATE TABLE s_settings(id INTEGER PRIMARY KEY AUTOINCREMENT,"
 			"name VARCHAR(255));", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE slideshows_settings_full(id INTEGER AUTOINCREMENT PRIMARY KEY," 
+  sqlite3_exec(db, "CREATE TABLE slideshows_settings_full(id INTEGER PRIMARY KEY AUTOINCREMENT," 
 			"slideshows_id INTEGER, settings_id INTEGER);", NULL, NULL, NULL);
   sqlite3_close(db);
  }
