@@ -21,13 +21,14 @@ evfs_cleanup_file_command(evfs_command * command)
 {
    int i;
 
-   for (i = 0; i < command->file_command.num_files; i++)
-     {
-        free(command->file_command.files[i]->path);
-        free(command->file_command.files[i]->plugin_uri);
-        free(command->file_command.files[i]);
-     }
-   free(command->file_command.files);
+   if (command->file_command.files) {
+	   for (i = 0; i < command->file_command.num_files; i++) {
+	        free(command->file_command.files[i]->path);
+	        free(command->file_command.files[i]->plugin_uri);
+	        free(command->file_command.files[i]);
+	     }
+	   free(command->file_command.files); 
+   }
 }
 
 void

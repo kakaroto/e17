@@ -612,4 +612,7 @@ void evfs_handle_metadata_file_group_add(evfs_client* client, evfs_command* comm
 
 void evfs_handle_metadata_file_group_remove(evfs_client* client, evfs_command* command)
 {
+	if (command->file_command.num_files > 0) {
+		evfs_metadata_group_header_file_remove(command->file_command.files[0], command->file_command.ref);
+	}	
 }

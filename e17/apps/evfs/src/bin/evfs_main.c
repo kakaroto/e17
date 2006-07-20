@@ -240,7 +240,7 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
 	evfs_handle_metadata_file_group_add(client,command);
 	break;
      case EVFS_CMD_METADATA_FILE_GROUP_REMOVE:
-        evfs_handle_metadata_file_group_add(client,command);
+        evfs_handle_metadata_file_group_remove(client,command);
 	break;
 
      default:

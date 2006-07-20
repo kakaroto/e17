@@ -35,4 +35,7 @@ evfs_client_metadata_groups_get(evfs_connection * conn);
 long 
 evfs_client_metadata_group_file_add(evfs_connection * conn, evfs_filereference* ref, char* group);
 
+long 
+evfs_client_metadata_group_file_remove(evfs_connection * conn, evfs_filereference* ref, char* group);
+
 #endif
