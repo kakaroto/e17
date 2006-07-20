@@ -65,6 +65,8 @@ evfs_io_initialise()
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference,
                                  "password", password, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference,
+                                 "attach", attach, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filereference_edd, evfs_filereference,
                                  "fd", fd, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_SUB(_evfs_filereference_edd, evfs_filereference, "parent", parent, 
 		   _evfs_filereference_edd);
@@ -271,19 +273,13 @@ evfs_write_list_event(evfs_client * client, evfs_event * event)
    char *data;
    int size_ret = 0;
 
-   //char block[1024]; /*Maybe too small, make this dynamic*/
-
    ecore_list_goto_first(event->file_list.list);
    while ((ref = ecore_list_next(event->file_list.list)))
      {
-        /*memcpy(block, &ref->file_type, sizeof(evfs_file_type));
-         * memcpy(block+sizeof(evfs_file_type), ref->path, strlen(ref->path)+1); */
 
-        /*printf("Encoding filename: %d %s '%s'\n", ref->file_type, ref->plugin_uri, ref->path);        */
         data =
            eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
 
-        /*printf ("Writing filename '%s' with filetype %d\n", ref->path, ref->file_type); */
         evfs_write_ecore_ipc_client_message(client->client,
                                             ecore_ipc_message_new(EVFS_EV_REPLY,
                                                                   EVFS_EV_PART_FILE_REFERENCE,
@@ -300,7 +296,7 @@ evfs_write_list_event(evfs_client * client, evfs_event * event)
 void evfs_write_metadata_groups_event(evfs_client* client, evfs_event* event)
 {
 	Evas_List* l;
-	char* g;
+	evfs_metadata_group_header* g;
 
 	for (l = event->misc.string_list; l; ) {
 		g = l->data;
@@ -309,8 +305,8 @@ void evfs_write_metadata_groups_event(evfs_client* client, evfs_event* event)
                                             ecore_ipc_message_new(EVFS_EV_REPLY,
                                                                   EVFS_EV_PART_CHAR_PTR,
                                                                   client->id, 0,
-                                                                  0, (char*)g,
-                                                                  strlen((char*)g)+1));
+                                                                  0, g->name,
+                                                                  strlen(g->name)+1));
 		
 		l = l->next;
 	}

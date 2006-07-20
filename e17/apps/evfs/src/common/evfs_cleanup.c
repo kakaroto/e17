@@ -50,6 +50,8 @@ evfs_cleanup_filereference(evfs_filereference * ref)
       free(ref->username);
    if (ref->password)
       free(ref->password);
+   if (ref->attach)
+      free(ref->attach);
    free(ref);
 
 }
@@ -168,12 +170,25 @@ evfs_cleanup_metadata_groups_event(evfs_event* event)
 {
 	Evas_List* l;
 
-	for (l=event->misc.string_list; l;) {
-		free(l->data);
+	if (evfs_object_client_is_get()) {
+		for (l=event->misc.string_list; l;) {
+			free(l->data);
+			l = l->next;
+		}
+		evas_list_free(event->misc.string_list);
+	} else {
+		evfs_metadata_group_header* g;
+		for (l=event->misc.string_list; l;) {
+			g = l->data;
+			if (g->name) free(g->name);
+			if (g->visualhint) free(g->visualhint);
+			free(g);
 
-		l = l->next;
+			l = l->next;
+		}
+		evas_list_free(event->misc.string_list);
+	
 	}
-	evas_list_free(event->misc.string_list);
 }
 
 void

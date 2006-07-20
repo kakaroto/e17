@@ -103,7 +103,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 		   Evas_List* group_list;
 		   Evas_List* iter;
 		   char assemble[PATH_MAX];
-		   char* g;
+		   evfs_metadata_group_header* g;
 		   
 		   /*Get group list, and return*/
 		   group_list = evfs_metadata_groups_get();
@@ -112,11 +112,12 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 			   g = iter->data;
 			   
 			   snprintf(assemble, sizeof(assemble), "%s/%s", 
-					   EVFS_PLUGIN_VFOLDER_GROUPS_ID, g);
+					   EVFS_PLUGIN_VFOLDER_GROUPS_ID, g->name);
 			   
 		   	   ref = NEW(evfs_filereference);
 			   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
 			   ref->path = strdup(assemble);
+			   if (g->visualhint) ref->attach = strdup(g->visualhint);
 			   ref->file_type = EVFS_FILE_DIRECTORY;
 			   ecore_list_append(files, ref);
 
@@ -138,6 +139,8 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 		   while ( (item = ecore_list_remove_first(list))) {
 			   path = evfs_parse_uri(item);
 			   ecore_list_append(files, path->files[0]);
+
+			   evfs_cleanup_file_uri_path(path);
 		   }
 		   ecore_list_destroy(list);
 	   }

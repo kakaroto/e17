@@ -17,6 +17,8 @@
 
 #include <sqlite3.h>
 
+#include "evfs_metadata_db.h"
+
 #define EVFS_METADATA_GROUP_LIST "/evfs/group/list"
 #define EVFS_METADATA_BASE_DATA "block"
 
@@ -259,7 +261,6 @@ int evfs_metadata_group_header_exists(char* group)
 	sqlite3_reset(pStmt);
 	sqlite3_finalize(pStmt);
 
-
 	return exists;
 }
 
@@ -314,7 +315,6 @@ void evfs_metadata_initialise()
 		}
 
 		snprintf(metadata_file, PATH_MAX, "%s/.e/evfs/evfs_metadata.eet", homedir);
-		snprintf(metadata_db, PATH_MAX, "%s/.e/evfs/evfs_metadata.db", homedir);
 
 		if (stat(metadata_file, &config_dir_stat)) {
 			printf("Making new metadata file..\n");
@@ -358,67 +358,8 @@ void evfs_metadata_initialise()
 			eet_close(_evfs_metadata_eet);
 		}
 
-		/*Check if we need to seed the DB*/
-		if (stat(metadata_db, &config_dir_stat)) {
-			char* errMsg = 0;
-			
-			ret = sqlite3_open(metadata_db, &db);
-			if( ret ){
-			    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(db));
-			    sqlite3_close(db);
-			    exit(1);
-			}
-
-			/*Seed statements*/
-			ret = sqlite3_exec(db, 
-			"CREATE TABLE File (id integer primary key AUTOINCREMENT, filename varchar(1024));", 
-			NULL, 0,&errMsg);
-			if( ret ){
-			    fprintf(stderr, "Create error: %s\n", sqlite3_errmsg(db));
-			    sqlite3_close(db);
-			    exit(1);
-			}
-
-			ret = sqlite3_exec(db, 
-			"CREATE TABLE FileGroup (id integer primary key AUTOINCREMENT, File int, MetaGroup int);", 
-			NULL, 0,&errMsg);
-
-			ret = sqlite3_exec(db, 
-			"CREATE TABLE MetaGroup (id integer primary key AUTOINCREMENT, name varchar(255), parent int);", 
-			NULL, 0,&errMsg);
-
-			ret = sqlite3_exec(db, 
-			"CREATE TABLE CustomValues (id integer primary key AUTOINCREMENT, name varchar(255), value varchar(255));", 
-			NULL, 0,&errMsg);
-
-			/*Inserts*/
-			ret = sqlite3_exec(db, 
-			"INSERT INTO \"MetaGroup\" VALUES(NULL, 'Pictures', 0);", 
-			NULL, 0,&errMsg);
-
-			ret = sqlite3_exec(db, 
-			"INSERT INTO \"MetaGroup\" VALUES(NULL, 'Video', 0);", 
-			NULL, 0,&errMsg);
-
-			ret = sqlite3_exec(db, 
-			"INSERT INTO \"MetaGroup\" VALUES(NULL, 'Audio', 0);", 
-			NULL, 0,&errMsg);
-
-			ret = sqlite3_exec(db, 
-			"INSERT INTO \"CustomValues\" VALUES(NULL, 'ConfigVersion', '1');", 
-			NULL, 0,&errMsg);
-
-
-		} else {
-
-			ret = sqlite3_open(metadata_db, &db);
-			if( ret ){
-			    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(db));
-			    sqlite3_close(db);
-			    exit(1);
 	
-			}
-		}
+		evfs_metadata_db_init(&db);
 	}
 
 }
@@ -427,15 +368,26 @@ Evas_List* evfs_metadata_groups_get() {
 	int ret;
 	Evas_List* ret_list = NULL;
 	sqlite3_stmt *pStmt;
+	evfs_metadata_group_header* g;
+	char* str;
 
-	ret = sqlite3_prepare(db, "select name from MetaGroup where parent = 0", 
+	ret = sqlite3_prepare(db, "select name,visualHint from MetaGroup where parent = 0", 
 			-1, &pStmt, 0);
 
 	do {
 		ret = sqlite3_step(pStmt);
+		
 
-		if (ret == SQLITE_ROW) 
-			ret_list = evas_list_append(ret_list, strdup(sqlite3_column_text(pStmt,0)));
+		if (ret == SQLITE_ROW) {
+			g = calloc(1, sizeof(evfs_metadata_group_header));
+			g->name = strdup(sqlite3_column_text(pStmt,0));
+			if (sqlite3_column_text(pStmt, 1)) {
+				g->visualhint = strdup(sqlite3_column_text(pStmt,1));
+				printf("Loaded visualhint %s\n", g->visualhint);
+			}
+			
+			ret_list = evas_list_append(ret_list, g);
+		}
 	} while (ret == SQLITE_ROW);
 
 	sqlite3_reset(pStmt);

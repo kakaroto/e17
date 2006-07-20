@@ -44,6 +44,8 @@ typedef struct evfs_filereference
    char *username;              /*The username/password pair (if any) required to hit this file */
    char *password;
 
+   char* attach; 		/*Miscellaneous attached data to this file reference*/
+
    int fd;                      /*The file descriptor (if any) */
    void *fd_p;
 } evfs_filereference;

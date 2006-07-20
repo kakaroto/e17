@@ -11,6 +11,7 @@ typedef struct _evfs_metadata_object evfs_metadata_object;
 struct _evfs_metadata_group_header {
 	char* name;
 	char* description;
+	char* visualhint;
 };
 typedef struct _evfs_metadata_group_header evfs_metadata_group_header;
 
