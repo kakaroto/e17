@@ -18,7 +18,7 @@ void ok_album(Ewl_Widget *w, void *event, void *data)
 {
  char *home;
  char *entry_text;
- char album_path[PATH_MAX];
+ char database[PATH_MAX];
  Ewl_Widget *win;
  Ewl_Widget *vbox;
  Ewl_Widget *icon;
@@ -29,12 +29,16 @@ void ok_album(Ewl_Widget *w, void *event, void *data)
  home = getenv("HOME");
  entry_text = ewl_text_text_get(EWL_TEXT(data));
 
- snprintf(album_path, PATH_MAX, "%s/.ephoto/database", home);
+ snprintf(database, PATH_MAX, "%s/.ephoto/ephoto_database", home);
  
  if (strcmp(entry_text, " ") != 0)
  {
-  if (!ecore_file_exists(album_path))
+  if (entry_text)
   {
+   sqlite3_open(database, &db);
+   sqlite3_exec(db, "insert into albums (name) values ('hello');", NULL, 0, 0);
+   sqlite3_close(db);
+
    m->icon = ewl_icon_new();
    ewl_icon_label_set(EWL_ICON(m->icon), entry_text);
    ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
@@ -105,7 +109,7 @@ void ok_slideshow(Ewl_Widget *w, void *event, void *data)
 {
  char *home;
  char *entry_text;
- char slideshow_path[PATH_MAX];
+ char database[PATH_MAX];
  Ewl_Widget *win;
  Ewl_Widget *vbox;
  Ewl_Widget *icon;
@@ -116,12 +120,17 @@ void ok_slideshow(Ewl_Widget *w, void *event, void *data)
  home = getenv("HOME");
  entry_text = ewl_text_text_get(EWL_TEXT(data));
 
- snprintf(slideshow_path, PATH_MAX, "%s/.ephoto/database", home);
+ snprintf(database, PATH_MAX, "%s/.ephoto/ephoto_database", home);
 
  if (strcmp(entry_text, " ") != 0)
  {
-  if (!ecore_file_exists(slideshow_path))
+    
+  if (entry_text)
   {
+   sqlite3_open(database, &db);
+   sqlite3_exec(db, "insert into albums (name) values ('hello');", NULL, 0, 0);
+   sqlite3_close(db);
+ 
    m->icon = ewl_icon_new();
    ewl_icon_label_set(EWL_ICON(m->icon), entry_text);
    ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);

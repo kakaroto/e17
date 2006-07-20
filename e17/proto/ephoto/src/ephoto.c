@@ -37,22 +37,14 @@ main(int argc, char **argv)
  if (!ecore_file_exists(database))
  {
   sqlite3_open(database, &db);
-  sqlite3_exec(db, "create table albums(id int AUTOINCREMENT primary key,"
-					"name varchar(255));", NULL, 0, 0);
-  sqlite3_exec(db, "create table a_images(id int AUTOINCREMENT primary key,"
-					"name varchar(255));", NULL, 0, 0);
-  sqlite3_exec(db, "create table albums_full(id int AUTOINCREMENT primary key," 
-				"alubm_id int, image_id int);", NULL, 0, 0);
-  sqlite3_exec(db, "create table slideshows(id int AUTOINCREMENT primary key," 
-					"name varchar(255));", NULL, 0, 0);
-  sqlite3_exec(db, "create table s_images(id int AUTOINCREMENT primary key,"
-					"name varchar(255));", NULL, 0, 0);
-  sqlite3_exec(db, "create_table slideshows_images_full(id int AUTOINCREMENT primary key," 
-					"slideshows_id int, images_id int);", NULL, 0, 0);
-  sqlite3_exec(db, "create table s_settings(id int AUTOINCREMENT primary key,"
-					"name varchar(255));", NULL, 0, 0);
-  sqlite3_exec(db, "create table slideshows_settings_full(id int AUTOINCREMENT primary key," 
-					"slideshows_id int, settings_id int);", NULL, 0, 0);
+  sqlite3_exec(db, "create table albums (id INTEGER AUTOINCREMENT PRIMARY KEY, name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create table a_images (id INTEGER AUTOINCREMENT PRIMARY KEY, name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create table albums_full (id INTEGER AUTOINCREMENT PRIMARY KEY, alubm_id int, image_id int);", NULL, 0, 0);
+  sqlite3_exec(db, "create table slideshows (id INTEGER AUTOINCREMENT PRIMARY KEY, name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create table s_images (id INTEGER AUTOINCREMENT PRIMARY KEY, name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create_table slideshows_images_full (id INTEGER AUTOINCREMENT PRIMARY KEY, slideshows_id int, images_id int);", NULL, 0, 0);
+  sqlite3_exec(db, "create table s_settings (id INTEGER AUTOINCREMENT PRIMARY KEY, name varchar(255));", NULL, 0, 0);
+  sqlite3_exec(db, "create table slideshows_settings_full (id INTEGER AUTOINCREMENT PRIMARY KEY, slideshows_id int, settings_id int);", NULL, 0, 0);
   sqlite3_close(db);
  }
 
