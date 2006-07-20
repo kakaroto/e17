@@ -151,22 +151,30 @@ _entropy_etk_context_menu_file_rename_cb(Etk_Object *object, void *data)
 }
 
 static void
-_entropy_etk_context_menu_group_file_add_cb(Etk_Object *object, void *data)
+_entropy_etk_context_menu_group_file_add_remove_cb(Etk_Object *object, void *data)
 {
 	const char* label;
+
+	int mode = (int)data;
 
 	label = etk_menu_item_label_get(ETK_MENU_ITEM(object));
 	printf("Add to group '%s'\n", label);
 
 	/*Check for multi, or single, selection*/
 	if (_entropy_etk_context_menu_mode == 0) {
-		entropy_plugin_filesystem_file_group_add(_entropy_etk_context_menu_current_file, (char*)label);
+		if (!mode) 
+			entropy_plugin_filesystem_file_group_add(_entropy_etk_context_menu_current_file, (char*)label);
+		else
+			entropy_plugin_filesystem_file_group_remove(_entropy_etk_context_menu_current_file, (char*)label);
 	} else {
 		entropy_generic_file* file;
 
 		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
 		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
-			entropy_plugin_filesystem_file_group_add(file, (char*)label);
+			if (!mode) 
+				entropy_plugin_filesystem_file_group_add(file, (char*)label);
+			else
+				entropy_plugin_filesystem_file_group_remove(file, (char*)label);
 		}
 	}
 }
@@ -213,10 +221,12 @@ entropy_etk_context_menu_metadata_groups_populate()
 
 	       w = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, str, 
 		    ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(_entropy_etk_context_menu_groups_add_to),NULL);
-	      etk_signal_connect("activated", ETK_OBJECT(w), ETK_CALLBACK(_entropy_etk_context_menu_group_file_add_cb), NULL);
+	      etk_signal_connect("activated", ETK_OBJECT(w), ETK_CALLBACK(_entropy_etk_context_menu_group_file_add_remove_cb), (int*)0);
 
 	       w = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, str, 
 		    ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(_entropy_etk_context_menu_groups_remove_from),NULL);
+		etk_signal_connect("activated", ETK_OBJECT(w), ETK_CALLBACK(_entropy_etk_context_menu_group_file_add_remove_cb), (int*)1);
+
 
        }
 

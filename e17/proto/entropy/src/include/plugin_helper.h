@@ -29,5 +29,6 @@ void entropy_event_action_file(Entropy_Generic_File* file, entropy_gui_component
 entropy_generic_file* entropy_layout_current_folder_get(entropy_gui_component_instance_layout* layout);
 Ecore_List* entropy_plugin_filesystem_metadata_groups_retrieve() ;
 void entropy_plugin_filesystem_file_group_add(entropy_generic_file* file, char* group);
+void entropy_plugin_filesystem_file_group_remove(entropy_generic_file* file, char* group);
 
 #endif
