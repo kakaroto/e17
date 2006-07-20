@@ -6,12 +6,12 @@ INCLUDES = \
 
 bin_PROGRAMS = ephoto
 
-ephoto_SOURCES = ephoto.c ephoto_browsing.c ephoto_misc.c ephoto_presentation.c
+ephoto_SOURCES = ephoto.c ephoto_callbacks.c
 
 ephoto_CFLAGS = @ewl_cflags@
 
 ephoto_LDADD =  $(INTLLIBS) \
-		@ewl_libs@
+		@ewl_libs@ -lsqlite3
 
 EXTRA_DIST = \
 	     ephoto.h
