@@ -45,14 +45,15 @@ Etk - Perl bindings for the Enlightened ToolKit (Etk)
 
   my $win = Etk::Window->new();
   my $button = Etk::Button->new("Click me!");
+  $win->Add($button);
 
   # or
 
   my $win = Etk::Window->new();
   my $button = $win->AddButton("Click me!");
+ 
+  #
 
-
-  $win->Add($button);
   $win->ShowAll();
 
   $button->SignalConnect("clicked", \&clicked_cb);

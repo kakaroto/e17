@@ -2,7 +2,10 @@ package Etk::Tree;
 use strict;
 use vars qw(@ISA);
 require Etk::Widget;
-@ISA = ("Etk::Widget");
+require Exporter;
+@ISA = ("Etk::Widget", "Exporter");
+
+our @EXPORT = qw/ModeList ModeTree FromFile FromEdje cols/;
 
 use Etk::Tree::Col;
 use Etk::Tree::Row;
@@ -19,7 +22,9 @@ use Etk::Tree::Model::Text;
 use constant
 {
    ModeList => 0,
-   ModeTree => 1
+   ModeTree => 1,
+   FromFile => 0,
+   FromEdje => 1
 };
 
 sub new
@@ -225,12 +230,29 @@ sub AddCol
     my $self = shift;
     my ($title, $model, $width) = @_;
 
+    my $data;
     my $model_widget;
+
+    if (ref $model eq "ARRAY") {
+	    $data = $model->[1];
+	    $model = $model->[0];
+    }
+    
     if ($model eq "Text") { 
 	    $model_widget = Etk::Tree::Model::Text->new($self);
     } elsif ($model eq "ProgressBar") {
 	    $model_widget = Etk::Tree::Model::ProgressBar->new($self);
-    } # etc...
+    } elsif ($model eq "IconText") {
+	    $model_widget = Etk::Tree::Model::IconText->new($self, $data);
+    } elsif ($model eq "Image") {
+	    $model_widget = Etk::Tree::Model::Image->new($self, $data);
+    } elsif ($model eq "Double") {
+	    $model_widget = Etk::Tree::Model::Double->new($self);
+    } elsif ($model eq "Checkbox") {
+	    $model_widget = Etk::Tree::Model::Checkbox->new($self);
+    } elsif ($model eq "Int") {
+	    $model_widget = Etk::Tree::Model::Int->new($self);
+    }
 
     my $widget = Etk::Tree::Col->new($self, $title, $model_widget, $width);
     $widget->{MODEL} = $model;
@@ -263,6 +285,25 @@ sub AddRow
 	} elsif ($col->{MODEL} eq "ProgressBar") {
 		my $prog = shift @data;
 		$row->FieldProgressBarSet($col, $prog->[0], $prog->[1]);
+	} elsif ($col->{MODEL} eq "IconText") {
+		my $d = shift @data;
+		if (@$d == 3) {
+			$row->FieldIconEdjeTextSet($col, $d->[0], $d->[1], $d->[2]);
+		} else {
+			$row->FieldIconFileTextSet($col, $d->[0], $d->[1]);
+		}
+	} elsif ($col->{MODEL} eq "Image") {
+		my $path = shift @data;
+		$row->FieldImageFileSet($col, $path);
+	} elsif ($col->{MODEL} eq "Double") {
+		my $value = shift @data;
+		$row->FieldDoubleSet($col, $value);
+	} elsif ($col->{MODEL} eq "Checkbox") {
+		my $checked = shift @data;
+		$row->FieldCheckboxSet($col, $checked);
+	} elsif ($col->{MODEL} eq "Int") {
+		my $value = shift @data;
+		$row->FieldIntSet($col, $value);
 	}
     }
     return $row;
@@ -276,6 +317,12 @@ sub AddRows
 	    $self->AddRow(@$_);
     }
     return $self;
+}
+
+sub cols
+{
+    my $self = shift;
+    return $self->{COLS};
 }
    
 1;

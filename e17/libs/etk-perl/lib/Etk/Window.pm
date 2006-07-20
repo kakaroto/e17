@@ -30,6 +30,7 @@ sub TitleSet
     my $self = shift;
     my $title = shift;
     Etk::etk_window_title_set($self->{WIDGET}, $title);
+    return $self;
 }
 
 sub TitleGet

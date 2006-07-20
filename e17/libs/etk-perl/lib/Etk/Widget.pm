@@ -110,6 +110,7 @@ sub SizeRecalcQueue
 {
     my $self = shift;
     Etk::etk_widget_size_recalc_queue($self->{WIDGET});
+    return $self;
 }
 
 sub RedrawQueue
@@ -124,6 +125,7 @@ sub SizeRequestSet
     my $width = shift;
     my $height = shift;
     Etk::etk_widget_size_request_set($self->{WIDGET}, $width, $height);
+    return $self;
 }
 
 sub SizeAllocate
@@ -131,6 +133,7 @@ sub SizeAllocate
     my $self = shift;
     my $geometry = shift; # hashref
     Etk::etk_widget_size_allocate($self->{WIDGET}, $geometry);
+    return $self;
 }
 
 sub Enter

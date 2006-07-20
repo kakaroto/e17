@@ -23,6 +23,7 @@ sub Toggle
 {
     my $self = shift;
     Etk::etk_toggle_button_toggle($self->{WIDGET});
+    return $self;
 }
 
 sub ActiveSet
@@ -30,6 +31,7 @@ sub ActiveSet
     my $self = shift;
     my $active = shift;
     Etk::etk_toggle_button_active_set($self->{WIDGET}, $active);
+    return $self;
 }
 
 sub ActiveGet

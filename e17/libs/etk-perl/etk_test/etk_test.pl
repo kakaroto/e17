@@ -223,7 +223,7 @@ while (my ($key, $value) = each %buttons)
 
 # Create frames and pack them
 while (my ($key, $value) = each %frames)
-{
+{ 
     $value->{widget} = Etk::Frame->new($value->{label});
     $value->{table} =  Etk::Table->new($NUM_COLS, 
 	($value->{examples} + $NUM_COLS - 1) / $NUM_COLS, 1);
@@ -317,7 +317,7 @@ sub entry_window_show
 sub slider_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Slider Test");
-    my $table = Etk::Table->new(2, 2, 0);
+    my $table = $win->AddTable(2, 2, 0);
     my $slider1 = Etk::HSlider->new(0.0, 255.0, 128.0, 1.0, 10.0);
     my $slider2 = Etk::VSlider->new(0.0, 255.0, 128.0, 1.0, 10.0);
     my ($label1, $label2);
@@ -347,7 +347,6 @@ sub slider_window_show
     );
     
     $win->BorderWidthSet(5);
-    $win->Add($table);
     $win->ShowAll();    
 }
 
@@ -404,7 +403,7 @@ sub canvas_window_show
 sub tree_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Tree Test");
-    my $table = Etk::Table->new(2, 3, 0);
+    my $table = $win->AddTable(2, 3, 0);
     my $label = Etk::Label->new("<h1>Tree:</h1>");
     
     $table->Attach($label, 0, 0, 0, 0, 0, 0, 
@@ -417,20 +416,14 @@ sub tree_window_show
     $tree->MultipleSelectSet(1);
     $tree->Freeze();
     
-    my $col1 = Etk::Tree::Col->new($tree, "Column 1", 
-	Etk::Tree::Model::IconText->new($tree,
-	    Etk::Tree::Model::IconText::FromEdje), 90);
-    
-    my $col2 = Etk::Tree::Col->new($tree, "Column 2",
-	Etk::Tree::Model::Double->new($tree), 60);
-    
-    my $col3 = Etk::Tree::Col->new($tree, "Column 3",
-	Etk::Tree::Model::Image->new($tree, 
-	    Etk::Tree::Model::Image::FromFile), 60);
-    
-    my $col4 = Etk::Tree::Col->new($tree,, "Column 4",
-	Etk::Tree::Model::Checkbox->new($tree), 40);
-    $col4->SignalConnect("cell_value_changed", 
+    $tree->AddCols(
+    	[ "Column 1", ["IconText", FromEdje], 90 ],
+	[ "Column 2", "Double", 60 ],
+	[ "Column 3", ["Image", FromFile], 60 ],
+	[ "Column 4", "Checkbox", 40 ]
+    );
+
+    $tree->cols->[3]->SignalConnect("cell_value_changed", 
 	sub {
 	    # TODO: we need to implement etk_tree_row_fields_get
 	    # why is this getting called if we're not clicking?
@@ -442,12 +435,12 @@ sub tree_window_show
 
     for(my $i = 0; $i < 1000; $i++)
     {
-	my $row = $tree->Append();      
-	$row->FieldIconEdjeTextSet($col1, Etk::Theme::IconThemeGet(),
-	    "places/user-home_16", "Row1");
-	$row->FieldDoubleSet($col2, 10.0);
-	$row->FieldImageFileSet($col3, "images/1star.png");
-	$row->FieldCheckboxSet($col4, 0);
+	$tree->AddRow(
+		[Etk::Theme::IconThemeGet(), "places/user-home_16", "Row1"],
+		10.0,
+		"images/1star.png",
+		0
+		);
     }
     $tree->Thaw();
     
@@ -458,76 +451,49 @@ sub tree_window_show
     $tree = Etk::Tree->new();
     $tree->SizeRequestSet(320, 400);
     $table->AttachDefaults($tree, 1, 1, 1, 1);
-    $tree->ModeSet(Etk::Tree::ModeList);
+    $tree->ModeSet(ModeList);
     $tree->MultipleSelectSet(1);
     $tree->Freeze();
     
-    $col1 = Etk::Tree::Col->new($tree, "Column 1", 
-	Etk::Tree::Model::IconText->new($tree,
-	    Etk::Tree::Model::IconText::FromFile), 90);
-    
-    $col2 = Etk::Tree::Col->new($tree, "Column 2",
-	Etk::Tree::Model::Int->new($tree), 90);
-    $col2->SortFuncSet(\&tree_col2_compare_cb, "some_data");    
-    
-    $col3 = Etk::Tree::Col->new($tree, "Column 3",
-	Etk::Tree::Model::Image->new($tree, 
-	    Etk::Tree::Model::Image::FromFile), 90);
-    
+    $tree->AddCols(
+    	[ "Column 1", ["IconText", FromFile], 90 ],
+	[ "Column 2", "Int", 90 ],
+	[ "Column 3", ["Image", FromFile], 90 ]
+	);
+
     $tree->Build();        
     tree_add_items($tree, 500);
     my $frame = Etk::Frame->new("List Actions");
-    $table->Attach($frame, 0, 1, 2, 2, 0, 0, 
-	Etk::FillPolicy::HFill | Etk::FillPolicy::VFill);
-    my $hbox = Etk::HBox->new(1, 10);
-    $frame->Add($hbox);
+    $table->Attach($frame, 0, 1, 2, 2, 0, 0, HFill | VFill);
+    my $hbox = $frame->AddHBox(1, 10);
     
-    my $button = Etk::Button->new("Clear");
-    $hbox->PackStart($button);
+    $hbox->AddButton("Clear")->PackStart();
+
+    $hbox->AddButton("Add 5 rows")->SignalConnect("clicked",
+	sub { tree_add_items($tree, 5) }
+    )->PackStart();
     
-    $button = Etk::Button->new("Add 5 rows");
-    $button->SignalConnect("clicked",
-	sub {
-	    tree_add_items($tree, 5);
-	}
-    );
-    $hbox->PackStart($button);
+    $hbox->AddButton("Add 50 rows")->SignalConnect("clicked",
+	sub { tree_add_items($tree, 50) }
+    )->PackStart();
     
-    $button = Etk::Button->new("Add 50 rows");
-    $button->SignalConnect("clicked",
-	sub {
-	    tree_add_items($tree, 50);
-	}
-    );    
-    $hbox->PackStart($button);
+    $hbox->AddButton("Add 500 rows")->SignalConnect("clicked",
+	sub { tree_add_items($tree, 500) }
+    )->PackStart();
     
-    $button = Etk::Button->new("Add 500 rows");
-    $button->SignalConnect("clicked",
-	sub {
-	    tree_add_items($tree, 500);
-	}
-    );    
-    $hbox->PackStart($button);
-    
-    $button = Etk::Button->new("Add 5000 rows");
-    $button->SignalConnect("clicked",
-	sub {
-	    tree_add_items($tree, 5000);
-	}
-    );    
-    $hbox->PackStart($button);
+    $hbox->AddButton("Add 5000 rows")->SignalConnect("clicked",
+	sub { tree_add_items($tree, 5000) }
+    )->PackStart();
     
     my $ascendant = 1;
-    $button = Etk::Button->new("Sort");
-    $button->SignalConnect("clicked",
+
+    $hbox->AddButton("Sort")->SignalConnect("clicked",
 	sub {
-	    $tree->Sort(\&tree_col2_compare_cb, $ascendant, $col2, undef);
+	    $tree->Sort(\&tree_col2_compare_cb, $ascendant, $tree->cols->[1], undef);
 	    $ascendant = !$ascendant;
 	}
-    );
-    $hbox->PackStart($button);    
+    )->PackStart();    
             
-    $win->Add($table);
     $win->ShowAll();
 }
 
@@ -562,12 +528,9 @@ sub tree_add_items
 {
     my $tree = shift;
     my $n = shift;
-    my $col1 = $tree->NthColGet(0);
-    my $col2 = $tree->NthColGet(1);
-    my $col3 = $tree->NthColGet(2);
     
     $tree->Freeze();
-    for(my $i = 0; $i < $n; $i++)
+    for my $i (0 ..  $n)
     {
 	my $row_name = "Row$i";
 	my $star_path = "";
@@ -582,10 +545,12 @@ sub tree_add_items
 	    $star_path = "images/3stars.png";
 	}
 	my $rand_value = rand(10000);
-	my $row = $tree->Append();
-	$row->FieldIconFileTextSet($col1, "images/1star.png", $row_name);
-	$row->FieldIntSet($col2, $rand_value);
-	$row->FieldImageFileSet($col3, $star_path);
+
+	$tree->AddRow(
+		["images/1star.png", $row_name],
+		$rand_value,
+		$star_path
+		);
     }
     $tree->Thaw();
 	
@@ -882,12 +847,12 @@ sub _iconbox_folder_set
 sub textview_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Textview Test");
-    my $vbox = Etk::VBox->new(0, 0);
+    my $vbox =$win->AddVBox(0, 0);
 
     $win->SizeRequestSet(150, 150);
     $win->Resize(400, 300);
 
-    my $text_view = Etk::TextView->new();
+    my $text_view = $vbox->AddTextView();
 
     my $text_block = $text_view->TextBlockGet();
 
@@ -928,11 +893,10 @@ sub textview_window_show
             "<i>color2:</i> The second color of the effect\n",
       "</p>") , 1);
 
-    $vbox->PackStart($text_view);
 
+    $text_view->PackStart();
     print $text_block->TextGet(0), "\n";
     
-    $win->Add($vbox);
     $win->ShowAll();  
 }
 
@@ -1064,13 +1028,9 @@ sub scrolledview_window_show
     my $win = Etk::Window->new("Etk-Perl Scrolled View Test");
     $win->SizeRequestSet(180,180);
 
-    my $scrolledview = Etk::ScrolledView->new();
-    my $button = Etk::Button->new("Scrolled View Test");
-    $button->SizeRequestSet(300,300);
+    my $scrolledview = $win->AddScrolledView();
+    $scrolledview->AddWithViewport(Etk::Button->new("Scrolled View Test")->SizeRequestSet(300, 300));
 
-    $scrolledview->AddWithViewport($button);
-
-    $win->Add($scrolledview);
     $win->ShowAll();
 }
 
@@ -1170,9 +1130,8 @@ sub notebook_window_show
 sub dnd_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Dnd Test");
-    my $label = Etk::Label->new("<b>Etk::Dnd is not implemented yet.</b>");
+    $win->AddLabel("<b>Etk::Dnd is not implemented yet.</b>");
     
-    $win->Add($label);
     $win->BorderWidthSet(10);
     $win->ShowAll();    
 }
@@ -1180,16 +1139,14 @@ sub dnd_window_show
 sub colorpicker_window_show
 {
     my $win = Etk::Window->new("Etk-Perl Color Picker Test");
-    my $cp = Etk::Colorpicker->new();
+    $win->AddColorpicker();
     
-    $win->Add($cp);
     $win->ShowAll();
 }
 
 sub filechooser_window_show
 {
-    my $win = Etk::Dialog->new();
-    $win->TitleSet("Etk-Perl Filechooser Test");
+    my $win = Etk::Dialog->new()->TitleSet("Etk-Perl Filechooser Test");
     
     my $fc = Etk::Filechooser->new();
     $win->PackInMainArea($fc, 1, 1, 0, 0);
