@@ -134,7 +134,7 @@ void ok_slideshow(Ewl_Widget *w, void *event, void *data)
    m->icon = ewl_icon_new();
    ewl_icon_label_set(EWL_ICON(m->icon), entry_text);
    ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
-   ewl_callback_append(icon, EWL_CALLBACK_CLICKED, slideshow_clicked_cb, NULL);
+   ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, slideshow_clicked_cb, NULL);
    ewl_container_child_append(EWL_CONTAINER(m->slideshows), m->icon);
    ewl_widget_show(m->icon);
   }
