@@ -13,7 +13,7 @@ entropy_plugin_type_get ()
 char *
 entropy_plugin_identify ()
 {
-  return (char *) "Simple MIME plugin for images";
+  return (char *) "Central object distribution thumbnailer";
 }
 
 Ecore_List *

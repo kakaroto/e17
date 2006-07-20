@@ -23,7 +23,7 @@ struct entropy_generic_file {
 
 	char* uri;
 
-	entropy_thumbnail* thumbnail;
+	entropy_thumbnail* thumbnail; /*NULL until created*/
 
 	struct entropy_generic_file* parent;
 
@@ -31,6 +31,8 @@ struct entropy_generic_file {
 	struct stat properties;
 
 	char* md5; /*A reference to the md5sum made for this file*/
+
+	char* icon_hint;
 };
 
 typedef struct entropy_file_listener entropy_file_listener;

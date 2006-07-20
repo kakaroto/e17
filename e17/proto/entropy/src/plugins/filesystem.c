@@ -264,6 +264,7 @@ callback (evfs_event * data, void *obj)
 				strncpy(folder, ref->path, pos - ref->path);
 			}
 
+			/*Set the file's filename*/
 			filename = strdup (pos + 1);
 
 			/*Look for an existing file we have cached */
@@ -273,6 +274,7 @@ callback (evfs_event * data, void *obj)
 			if (!(listener = entropy_core_file_cache_retrieve (md5))) {
 	
 			  file = entropy_generic_file_new ();
+
 			  /*For now, just make an entropy_generic_file for this object */
 			  strncpy (file->path, folder, 255);
 			  strncpy (file->filename, filename, strlen (filename) + 1);
@@ -290,6 +292,9 @@ callback (evfs_event * data, void *obj)
 			    file->filetype = FILE_STANDARD;
 			    bzero (file->mime_type, MIME_LENGTH);
 			  }
+
+			  /*Set the attached data -> icon_hint, if there*/
+			  if (ref->attach) file->icon_hint = strdup(ref->attach);
 
 			  if (calling_request
 			      && (calling_request->drill_down

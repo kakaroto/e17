@@ -31,6 +31,7 @@ void entropy_generic_file_destroy(entropy_generic_file* file) {
 		}
 
 		if (file->md5) entropy_free(file->md5);
+		if (file->icon_hint) entropy_free(file->icon_hint);
 
 
 		entropy_free(file);

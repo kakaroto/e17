@@ -11,7 +11,7 @@ entropy_plugin_type_get ()
 char *
 entropy_plugin_identify ()
 {
-  return (char *) "Simple system thumbnailer (folders, etc)";
+  return (char *) "Simple system thumbnailer (folders, known types, etc)";
 }
 
 Ecore_List *
@@ -55,7 +55,17 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
   entropy_thumbnail *thumb = entropy_thumbnail_new ();
 
   if (!strcmp (request->file->mime_type, "file/folder")) {
-    strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/folder.png");
+    if (!request->file->icon_hint) {
+	    strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/folder.png");
+    } else {
+	    printf("Object has attach data: %s\n", request->file->icon_hint);
+	    if (!strcmp(request->file->icon_hint, "video_hint")) 
+		    strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/hint_videos.png");
+	    else if (!strcmp(request->file->icon_hint, "audio_hint")) 
+		    strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/hint_audio.png");
+	    else if (!strcmp(request->file->icon_hint, "image_hint"))
+		    strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/hint_image.png");
+    }
   }
   else if (!strcmp (request->file->mime_type, "text/x-perl")) {
     strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/perl.png");
@@ -127,7 +137,7 @@ entropy_plugin_init(entropy_core* core)
 
 	plugin = entropy_malloc(sizeof(Entropy_Plugin_Thumbnailer_Child));
 
-	return plugin;
+	return ENTROPY_PLUGIN(plugin);
 }
 
 
