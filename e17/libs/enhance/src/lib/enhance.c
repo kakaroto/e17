@@ -648,11 +648,32 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 
         etk_image_set_from_file(ETK_IMAGE(wid->wid), value);
      }
+
    else if(!strcmp(name, "active"))
      {
         PROPERTY_BOOL
         etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(wid->wid), value);
      }
+   
+   else if(!strcmp(name, "show_hidden"))
+     {
+	IF_PARENT_CLASS("GtkFileChooserWidget")
+          {
+	     PROPERTY_BOOL;
+             etk_filechooser_widget_show_hidden_set(ETK_FILECHOOSER_WIDGET(wid->wid),
+                                                    value);
+          }
+     }     
+   
+   else if(!strcmp(name, "select_multiple"))
+     {
+	IF_PARENT_CLASS("GtkFileChooserWidget")
+          {
+	     PROPERTY_BOOL;
+             etk_filechooser_widget_select_multiple_set(ETK_FILECHOOSER_WIDGET(wid->wid),
+                                                        value);
+          }
+     }     
 }
 
 void
@@ -845,19 +866,37 @@ _e_traverse_child_xml(Enhance *en)
    
    if(widget != NULL)
      {
-	if(widget->node != NULL)
-	  if(widget->node->parent != NULL)
-	    if(widget->node->parent->parent != NULL)
-	      if(widget->node->parent->parent->attributes > 0)
-		{		 
-		   parent_id = ecore_hash_get(widget->node->parent->parent->attributes, "id");
-		   if(parent_id)
-		     {
-			parent = evas_hash_find(en->widgets, parent_id);
-			if(parent)
-			  _e_widget_parent_add(parent, widget);
-		     }
-		}
+	if(widget->node != NULL
+	   && widget->node->parent != NULL
+	   && widget->node->parent->parent != NULL
+	   && widget->node->parent->parent->attributes > 0)
+          {
+            EXML_Node *area_node;
+
+            if ((area_node = widget->node->parent->parent->parent)
+                 && ecore_hash_get(area_node->attributes, "internal-child")
+                 && !strcmp(ecore_hash_get(area_node->attributes, "internal-child"),
+                            "action_area"))
+              {
+                parent_id = ecore_hash_get(area_node->parent->parent->parent->attributes, "id");
+                if (parent_id)
+                  {
+                    parent = evas_hash_find(en->widgets, parent_id);
+                    if (parent)
+                      _e_widget_parent_add(parent, widget);
+                  }
+              }
+            else
+              {
+                parent_id = ecore_hash_get(widget->node->parent->parent->attributes, "id");
+                if(parent_id)
+                  {
+                    parent = evas_hash_find(en->widgets, parent_id);
+                    if(parent)
+                      _e_widget_parent_add(parent, widget);
+                  }
+              }
+          }
      }
    
    exml_up(xml);      
