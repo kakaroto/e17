@@ -40,12 +40,13 @@ static evfs_metadata_root* metadata_root;
 
 static char* homedir;
 static char metadata_file[PATH_MAX];
-static char metadata_db[PATH_MAX];
 static Eet_File* _evfs_metadata_eet;
 
 static sqlite3 *db;
 static int _evfs_metadata_db_wait = 0;
 static Ecore_DList* evfs_metdata_db_results = NULL;
+
+static pid_t _metadata_fork;
 
 /*DB Helper types*/
 typedef struct {
@@ -282,6 +283,8 @@ void evfs_metadata_initialise()
 
 	if (!evfs_object_client_is_get()) {
 		printf(". EVFS metadata initialise..\n");
+
+		evfs_metadata_extract_init();
 			
 		/*String edd*/
 		Evfs_Metadata_String_Edd = _evfs_metadata_edd_create("evfs_metadata_string", sizeof(evfs_metadata_object));
@@ -619,3 +622,25 @@ void evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key,
 
 	free(file_path);
 }
+
+
+
+
+
+/*----------------*/
+/*This section defines the fork/grab part of the metadata system*/
+
+int evfs_metadata_extract_init()
+{
+	if (!evfs_object_client_is_get()) {
+		if (!(_metadata_fork = fork())) {
+			printf("Metadata fork initialised..\n");
+			while ( 1 ) {
+				sleep(1);
+			}
+		}
+	}
+
+	return 1;
+}
+

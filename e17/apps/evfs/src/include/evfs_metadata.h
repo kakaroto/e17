@@ -51,5 +51,7 @@ int evfs_metadata_file_groups_group_check(evfs_metadata_file_groups* groups, cha
 Ecore_List* evfs_metadata_file_group_list(char* group);
 Evas_List* evfs_metadata_groups_get();
 
+int evfs_metadata_extract_init();
+
 
 #endif
