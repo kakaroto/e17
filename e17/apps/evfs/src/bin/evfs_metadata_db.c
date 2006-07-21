@@ -15,6 +15,57 @@ static char* homedir;
 static Ecore_Hash* db_upgrade_hash = NULL;
 
 
+int evfs_metadata_db_upgrade_0_1(sqlite3* db)
+{
+	int ret;
+	char* errMsg = 0;
+	char query[1024];
+
+	printf("Performing upgrade from v.0 to v.1\n");
+
+	/*Seed statements*/
+	ret = sqlite3_exec(db, 
+	"CREATE TABLE File (id integer primary key AUTOINCREMENT, filename varchar(1024));", 
+	NULL, 0,&errMsg);
+	if( ret ){
+	    fprintf(stderr, "Create error: %s\n", sqlite3_errmsg(db));
+	    sqlite3_close(db);
+	    exit(1);
+	}
+
+	ret = sqlite3_exec(db, 
+	"CREATE TABLE FileGroup (id integer primary key AUTOINCREMENT, File int, MetaGroup int);", 
+	NULL, 0,&errMsg);
+
+	ret = sqlite3_exec(db, 
+	"CREATE TABLE MetaGroup (id integer primary key AUTOINCREMENT, name varchar(255), parent int);", 
+	NULL, 0,&errMsg);
+
+	ret = sqlite3_exec(db, 
+	"CREATE TABLE CustomValues (id integer primary key AUTOINCREMENT, name varchar(255), value varchar(255));", 
+	NULL, 0,&errMsg);
+
+	/*Inserts*/
+	ret = sqlite3_exec(db, 
+	"INSERT INTO \"MetaGroup\" (id,name,parent) VALUES(NULL, 'Pictures', 0);", 
+	NULL, 0,&errMsg);
+
+	ret = sqlite3_exec(db, 
+	"INSERT INTO \"MetaGroup\" (id,name,parent) VALUES(NULL, 'Video', 0);", 
+	NULL, 0,&errMsg);
+
+	ret = sqlite3_exec(db, 
+	"INSERT INTO \"MetaGroup\" (id,name,parent) VALUES(NULL, 'Audio', 0);", 
+	NULL, 0,&errMsg);
+
+	snprintf(query,sizeof(query), "INSERT INTO \"CustomValues\" VALUES(NULL, 'ConfigVersion', '%d');", 
+			1);
+	ret = sqlite3_exec(db, query, NULL, 0,&errMsg);
+
+	return evfs_metadata_db_version_bump(db, "1");
+}
+
+
 
 /*---Upgrade functions*/
 int evfs_metadata_db_upgrade_1_2(sqlite3* db) 
@@ -68,6 +119,7 @@ void evfs_metadata_db_init(sqlite3** db)
 	snprintf(metadata_db, PATH_MAX, "%s/.e/evfs/evfs_metadata.db", homedir);
 
 	db_upgrade_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	ecore_hash_set(db_upgrade_hash, (int*)0, evfs_metadata_db_upgrade_0_1);
 	ecore_hash_set(db_upgrade_hash, (int*)1, evfs_metadata_db_upgrade_1_2);
 	
 	/*Check if we need to seed the DB*/
@@ -80,7 +132,17 @@ void evfs_metadata_db_init(sqlite3** db)
 		    sqlite3_close(*db);
 		    exit(1);
 		}
-		evfs_metadata_db_seed(*db);
+
+		ver = evfs_metadata_db_upgrade_check(*db,1);
+		do {
+			ver = evfs_metadata_db_upgrade_check(*db,0);
+			runs += 1;
+		} while (ver < EVFS_METADATA_DB_CONFIG_LATEST && runs < 100);
+
+		if (runs == 100) {
+			printf("Aborted upgrade of metadata db\n");
+			exit(0);
+		}	
 	} else {
 
 		ret = sqlite3_open(metadata_db, db);
@@ -92,7 +154,7 @@ void evfs_metadata_db_init(sqlite3** db)
 		}
 
 		do {
-			ver = evfs_metadata_db_upgrade_check(*db);
+			ver = evfs_metadata_db_upgrade_check(*db,0);
 			runs += 1;
 		} while (ver < EVFS_METADATA_DB_CONFIG_LATEST && runs < 100);
 
@@ -105,7 +167,7 @@ void evfs_metadata_db_init(sqlite3** db)
 	printf("DB Init complete..\n");
 }
 
-int evfs_metadata_db_upgrade_check(sqlite3* db) 
+int evfs_metadata_db_upgrade_check(sqlite3* db, int startmode) 
 {
 	char query[1024];
 	int ret;
@@ -113,85 +175,36 @@ int evfs_metadata_db_upgrade_check(sqlite3* db)
 	int version = 0;
 	int (*upgrade_func)(sqlite3*);
 
-	snprintf(query, sizeof(query), "select value from CustomValues where name='ConfigVersion'");
-	ret = sqlite3_prepare(db, query, 
-			-1, &pStmt, 0);
-	if (ret == SQLITE_OK) {
-		ret = sqlite3_step(pStmt);
-		if (ret == SQLITE_ROW) version = sqlite3_column_int(pStmt,0);
-	} else {
-		printf("cannot check metadata version: sqlite_error\n");
-		exit(0);
-	}
-		
-	sqlite3_reset(pStmt);
-	sqlite3_finalize(pStmt);
-
-	if (version) {
-		printf("Current version is: %d\n", version);
-
-		if (version < EVFS_METADATA_DB_CONFIG_LATEST) {
-			printf("DB upgrade required..\n");
-			upgrade_func = ecore_hash_get(db_upgrade_hash, (int*)version);
-
-			if (upgrade_func) {
-				return (*upgrade_func)(db);
-			} else {
-				/*No upgrade function? Argh..*/
-				return 0;
-			}
+	if (!startmode) {
+		snprintf(query, sizeof(query), "select value from CustomValues where name='ConfigVersion'");
+		ret = sqlite3_prepare(db, query, 
+				-1, &pStmt, 0);
+		if (ret == SQLITE_OK) {
+			ret = sqlite3_step(pStmt);
+			if (ret == SQLITE_ROW) version = sqlite3_column_int(pStmt,0);
 		} else {
-			return EVFS_METADATA_DB_CONFIG_LATEST;
+			printf("cannot check metadata version: sqlite_error\n");
+			exit(0);
+		}
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+	} else {
+		version = 0;
+	}
+
+	printf("Current version is: %d\n", version);
+
+	if (version < EVFS_METADATA_DB_CONFIG_LATEST) {
+		printf("DB upgrade required..\n");
+		upgrade_func = ecore_hash_get(db_upgrade_hash, (int*)version);
+
+		if (upgrade_func) {
+			return (*upgrade_func)(db);
+		} else {
+			/*No upgrade function? Argh..*/
+			return 0;
 		}
 	} else {
-		printf("version not found in evfs metadata, abort\n");
-		exit(0);
+		return EVFS_METADATA_DB_CONFIG_LATEST;
 	}
 }
-
-void evfs_metadata_db_seed(sqlite3* db)
-{
-	int ret;
-	char* errMsg = 0;
-	char query[1024];
-
-	/*Seed statements*/
-	ret = sqlite3_exec(db, 
-	"CREATE TABLE File (id integer primary key AUTOINCREMENT, filename varchar(1024));", 
-	NULL, 0,&errMsg);
-	if( ret ){
-	    fprintf(stderr, "Create error: %s\n", sqlite3_errmsg(db));
-	    sqlite3_close(db);
-	    exit(1);
-	}
-
-	ret = sqlite3_exec(db, 
-	"CREATE TABLE FileGroup (id integer primary key AUTOINCREMENT, File int, MetaGroup int);", 
-	NULL, 0,&errMsg);
-
-	ret = sqlite3_exec(db, 
-	"CREATE TABLE MetaGroup (id integer primary key AUTOINCREMENT, name varchar(255), parent int, visualHint varchar(255));", 
-	NULL, 0,&errMsg);
-
-	ret = sqlite3_exec(db, 
-	"CREATE TABLE CustomValues (id integer primary key AUTOINCREMENT, name varchar(255), value varchar(255));", 
-	NULL, 0,&errMsg);
-
-	/*Inserts*/
-	ret = sqlite3_exec(db, 
-	"INSERT INTO \"MetaGroup\" VALUES(NULL, 'Pictures', 0, 'image_hint');", 
-	NULL, 0,&errMsg);
-
-	ret = sqlite3_exec(db, 
-	"INSERT INTO \"MetaGroup\" VALUES(NULL, 'Video', 0, 'video_hint');", 
-	NULL, 0,&errMsg);
-
-	ret = sqlite3_exec(db, 
-	"INSERT INTO \"MetaGroup\" VALUES(NULL, 'Audio', 0, 'audio_hint');", 
-	NULL, 0,&errMsg);
-
-	snprintf(query,sizeof(query), "INSERT INTO \"CustomValues\" VALUES(NULL, 'ConfigVersion', '%d');", 
-			EVFS_METADATA_DB_CONFIG_LATEST);
-	ret = sqlite3_exec(db, query, NULL, 0,&errMsg);
-}
-
