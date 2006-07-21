@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-07-11 20:22+0200\n"
-"PO-Revision-Date: 2005-12-20 10:26+0900\n"
+"PO-Revision-Date: 2006-07-18 10:26+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -341,7 +341,7 @@ msgstr "画像名でソート"
 
 #: src/backgrounds.c:2271
 msgid "Enable background transparency compatibility mode"
-msgstr ""
+msgstr "一般の背景透過手法に合わせてE16の背景透過機能を補正する (速度低下の可能性あり)"
 
 #: src/borders.c:647
 msgid "Border Error!"
@@ -1489,7 +1489,7 @@ msgid ""
 "This is a fatal condition.\n"
 "Please remove this file\n"
 msgstr ""
-"%s は明らかにディレクトリではありません。\n"
+"%s はどうみてもディレクトリではありません。\n"
 "致命的な状況です。\n"
 "このファイルを削除してください。\n"
 
