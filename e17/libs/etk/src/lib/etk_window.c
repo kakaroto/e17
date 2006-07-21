@@ -313,10 +313,7 @@ void etk_window_move_to_mouse(Etk_Window *window)
  */
 void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
-#if HAVE_ECORE_X   
-   int x, y, w, h;
-   int cw, ch;
-   
+#if HAVE_ECORE_X
    if (!window_to_modal)
       return;
    
@@ -333,13 +330,11 @@ void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window
       {
 	 Ecore_X_Window_State states[] = {ECORE_X_WINDOW_STATE_MODAL};
 	 
-	 ecore_x_icccm_transient_for_set(window_to_modal->x_window,
-					 window->x_window);
-	 
+	 ecore_x_icccm_transient_for_set(window_to_modal->x_window, window->x_window);
 	 ecore_x_netwm_window_state_set(window_to_modal->x_window, states, 1);
       }
    }
-#endif   
+#endif
 }
 
 /**

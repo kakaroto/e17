@@ -24,45 +24,46 @@ void etk_test_text_view_window_create(void *data)
 
    text_view = etk_text_view_new();
    etk_textblock_text_set(ETK_TEXT_VIEW(text_view)->textblock,
-      "<p align=\"center\"><b><u><font size=18>Etk Textblock</font></u></b></p> \n"
-      "<b><u><font size=12>Supported tags:</font></u></b>\n"
+      "<p align=\"center\"><b><u><font size=18>Etk Textblock</font></u></b></p>\n"
+      "<b><u><font size=12>Supported tags:</font></u></b>"
       "<p left_margin=30>"
          "<b>&lt;b&gt;:</b> <b>Bold</b>\n"
          "<b>&lt;i&gt;:</b> <i>Italic</i>\n"
-         "<b>&lt;u&gt;:</b> <u>Underline</u>\n"
+         "<b>&lt;u&gt;:</b> <u>Underline</u>"
       "</p>"
       "<p left_margin=60>"
             "<i>type:</i> Whether the text is single or double underlined\n"
             "<i>color1:</i> The color of the first underline\n"
-            "<i>color2:</i> The color of the second underline\n"
+            "<i>color2:</i> The color of the second underline"
       "</p>"
       "<p left_margin=30>"
-         "<b>&lt;s&gt;:</b> <s>Strikethrough</s>\n"
+         "<b>&lt;s&gt;:</b> <s>Strikethrough</s>"
       "</p>"
       "<p left_margin=60>"
-            "<i>color:</i> The color of the strikethrough\n"
+            "<i>color:</i> The color of the strikethrough"
       "</p>"
       "<p left_margin=30>"
-         "<b>&lt;font&gt;:</b>\n"
+         "<b>&lt;font&gt;:</b>"
       "</p>"
       "<p left_margin=60>"
             "<i>face:</i> The face of the font\n"
             "<i>size:</i> The size of the font\n"
-            "<i>color:</i> The color of the font\n"
+            "<i>color:</i> The color of the font"
       "</p>"
       "<p left_margin=30>"
-         "<b>&lt;style&gt;:</b>\n"
+         "<b>&lt;style&gt;:</b>"
       "</p>"
       "<p left_margin=60>"
             "<i>effect:</i> The type of effect to apply on the text\n"
             "<i>color1:</i> The first color of the effect\n"
-            "<i>color2:</i> The second color of the effect\n"
+            "<i>color2:</i> The second color of the effect"
       "</p>",
       ETK_TRUE);
    
    etk_box_pack_start(ETK_BOX(vbox), text_view, ETK_TRUE, ETK_TRUE, 0);
    
-   printf("%s\n", etk_string_get(etk_textblock_text_get(ETK_TEXT_VIEW(text_view)->textblock, ETK_FALSE)));
+   //printf("%s\n", etk_string_get(etk_textblock_text_get(ETK_TEXT_VIEW(text_view)->textblock, ETK_FALSE)));
+   etk_textblock_printf(ETK_TEXT_VIEW(text_view)->textblock);
    
    etk_widget_show_all(win);
 }
