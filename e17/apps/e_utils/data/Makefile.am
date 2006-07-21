@@ -8,13 +8,9 @@ if BUILD_ENTANGLE
 entangle_subdir = entangle
 endif
 
-if BUILD_EMBLEM
-emblem_subdir = emblem
-endif
-
 if BUILD_EXIGE
 exige_subdir = exige
 endif
 
-SUBDIRS = $(e17genmenu_subdir) $(entangle_subdir) $(emblem_subdir) $(exige_subdir)
+SUBDIRS = $(e17genmenu_subdir) $(entangle_subdir) $(exige_subdir)
 

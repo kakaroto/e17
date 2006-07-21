@@ -14,7 +14,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: esmart-devel, ewl-devel, imlib2-devel, engrave-devel
 BuildRequires: enlightenment-devel >= 0.16.999, edje-bin
 Requires: enlightenment >= 0.16.999
-Requires: e_utils-e17setroot, e_utils-e_util_eapp_edit, e_utils-emblem
+Requires: e_utils-e17setroot, e_utils-eap_edit
 Requires: e_utils-entangle, e_utils-exige
 
 %description
@@ -29,21 +29,13 @@ Requires: enlightenment >= 0.16.999
 %description e17setroot
 Background setting utility for Enlightenment.
 
-%package e_util_eapp_edit
-Summary: eapp editing utility for Enlightenment.
+%package eap_edit
+Summary: eap editing utility for Enlightenment.
 Group: User Interface/Desktops
 Requires: enlightenment >= 0.16.999
 
-%description e_util_eapp_edit
+%description eap_edit
 eapp editing utility for Enlightenment.
-
-%package emblem
-Summary:  Graphical background selection utility for Enlightenment.
-Group: User Interface/Desktops
-Requires: enlightenment >= 0.16.999
-
-%description emblem
-Graphical background selection utility for Enlightenment.
 
 %package entangle
 Summary:  Graphical menu editing utility for Enlightenment.
@@ -60,14 +52,6 @@ Requires: enlightenment >= 0.16.999
 
 %description exige
 A run dialog box for Enlightenment.
-
-%package ethemes
-Summary:  A theme selector with preview
-Group: User Interface/Desktops
-Requires: enlightenment >= 0.16.999
-
-%description ethemes
-A theme selector with preview
 
 %package e17genmenu
 Summary:  A menu generator for e17
@@ -104,16 +88,10 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_bindir}/e17setroot
 
-%files e_util_eapp_edit
+%files eap_edit
 %defattr(-, root, root)
-%{_bindir}/e_util_eapp_edit
-%{_datadir}/%{name}/data/e_utils_eapp_edit/*
-
-%files emblem
-%defattr(-, root, root)
-%{_bindir}/emblem
-%{_datadir}/%{name}/data/emblem/*
-%{_datadir}/enlightenment/config-apps/emblem.eap
+%{_bindir}/eap_edit
+#%{_datadir}/%{name}/data/eap_edit/*
 
 %files entangle
 %defattr(-, root, root)
@@ -125,11 +103,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_bindir}/exige
 %{_datadir}/%{name}/data/exige/*
-
-%files ethemes
-%defattr(-, root, root)
-%{_bindir}/ethemes
-%{_datadir}/enlightenment/config-apps/ethemes.eap
 
 %files e17genmenu
 %defattr(-, root, root)

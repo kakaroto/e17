@@ -138,9 +138,7 @@ build_e17genmenu="no"
 build_eap_edit="no"
 build_e17setroot="no"
 build_entangle="no"
-build_emblem="no"
 build_exige="no"
-build_ethemes="no"
 
 if test "x$have_ewl" = "xyes" -a "x$have_engrave" = "xyes"; then
   build_eap_edit="yes"
@@ -158,25 +156,15 @@ if test "x$have_eet" = "xyes" -a "x$have_evas" = "xyes" -a "x$have_ecore" = "xye
   build_entangle="yes"
 fi
 
-if test "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xyes" -a "x$have_esmart" = "xyes" -a "x$have_epsilon" = "xyes" -a "x$have_enlightenment" = "xyes"; then
-  build_emblem="yes"
-fi
-
 if test "x$have_eet" = "xyes" -a "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xyes" -a "x$have_esmart" = "xyes"; then
   build_exige="yes"
-fi
-
-if test "x$have_evas" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_edje" = "xyes" -a "x$have_esmart" = "xyes" -a "x$have_enlightenment" = "xyes"; then
-  build_ethemes="yes"
 fi
 
 AM_CONDITIONAL(BUILD_E17GENMENU, test "x$build_e17genmenu" = "xyes")
 AM_CONDITIONAL(BUILD_EAP_EDIT, test "x$build_eap_edit" = "xyes")
 AM_CONDITIONAL(BUILD_E17SETROOT, test "x$build_e17setroot" = "xyes")
 AM_CONDITIONAL(BUILD_ENTANGLE, test "x$build_entangle" = "xyes")
-AM_CONDITIONAL(BUILD_EMBLEM, test "x$build_emblem" = "xyes")
 AM_CONDITIONAL(BUILD_EXIGE, test "x$build_exige" = "xyes")
-AM_CONDITIONAL(BUILD_ETHEMES, test "x$build_ethemes" = "xyes")
 
 
 AC_MSG_CHECKING(debug code support)
@@ -199,9 +187,6 @@ e_utils.spec
 data/Makefile
 data/e17genmenu/Makefile
 data/e17genmenu/icons/Makefile
-data/emblem/Makefile
-data/emblem/default/Makefile
-data/emblem/gant/Makefile
 data/entangle/Makefile
 data/entangle/default/Makefile
 data/exige/Makefile
@@ -211,10 +196,8 @@ src/bin/Makefile
 src/bin/e17genmenu/Makefile
 src/bin/eapp_edit/Makefile
 src/bin/e17setroot/Makefile
-src/bin/emblem/Makefile
 src/bin/entangle/Makefile
 src/bin/exige/Makefile
-src/bin/ethemes/Makefile
 debian/changelog
 ],[
 ])
@@ -248,9 +231,7 @@ echo "  e17genmenu......: "$build_e17genmenu
 echo "  eap_edit........: "$build_eap_edit
 echo "  E17 Setroot.....: "$build_e17setroot
 echo "  Entangle........: "$build_entangle
-echo "  Emblem..........: "$build_emblem
 echo "  Exige...........: "$build_exige
-echo "  Ethemes.........: "$build_ethemes
 echo
 echo "Compilation..........: make"
 echo
