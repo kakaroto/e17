@@ -19,85 +19,52 @@ void ok_album(Ewl_Widget *w, void *event, void *data)
  char *home;
  char *entry_text;
  char database[PATH_MAX];
- Ewl_Widget *win;
- Ewl_Widget *vbox;
- Ewl_Widget *icon;
- Ewl_Widget *text;
- Ewl_Widget *button;
+ char command[PATH_MAX];
  sqlite3 *db;
- 
+ Ewl_Widget *win;
+ Ewl_Widget *parent;
+ Ewl_Widget *next;
+ Ewl_Widget *entry;
+ Ewl_Widget *text;
+
+ entry = data;
+
+ entry_text = ewl_text_text_get(EWL_TEXT(entry));
  home = getenv("HOME");
- entry_text = ewl_text_text_get(EWL_TEXT(data));
-
  snprintf(database, PATH_MAX, "%s/.ephoto/ephoto_database", home);
- 
- if (strcmp(entry_text, " ") != 0)
+
+ ewl_container_child_iterate_begin(EWL_CONTAINER(m->albums));
+
+ while ((next = ewl_container_child_next(EWL_CONTAINER(m->albums))) != NULL)
  {
-  if (entry_text)
+  if (!strcmp(entry_text, ewl_icon_label_get(EWL_ICON(next)))) 
   {
-   sqlite3_open(database, &db);
-   sqlite3_exec(db, "INSERT OR IGNORE INTO albums (name) VALUES ('hello');", NULL, NULL, NULL);
-   sqlite3_close(db);
-
-   m->icon = ewl_icon_new();
-   ewl_icon_label_set(EWL_ICON(m->icon), entry_text);
-   ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
-   ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, album_clicked_cb, NULL);
-   ewl_container_child_append(EWL_CONTAINER(m->albums), m->icon);
-   ewl_widget_show(m->icon);
-  }
- 
-  else
-  {
-   win = ewl_window_new();
-   ewl_window_title_set(EWL_WINDOW(win), "Whoops");
-   ewl_window_name_set(EWL_WINDOW(win), "Whoops");
-   ewl_object_size_request(EWL_OBJECT(win), 243, 50);
-   ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, cancel, win);
-   ewl_widget_show(win);
-  
-   vbox = ewl_vbox_new();
-   ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-   ewl_container_child_append(EWL_CONTAINER(win), vbox);
-   ewl_widget_show(vbox);
-  
-   text = ewl_text_new();
-   ewl_text_text_set(EWL_TEXT(text), "Whoops! This album already exists!");
-   ewl_container_child_append(EWL_CONTAINER(vbox), text);
-   ewl_widget_show(text);
-
-   button = ewl_button_new();
-   ewl_button_label_set(EWL_BUTTON(button), "Ok");
-   ewl_container_child_append(EWL_CONTAINER(vbox), button);
-   ewl_callback_append(button, EWL_CALLBACK_CLICKED, cancel, win);
-   ewl_widget_show(button);
+   parent = entry->parent;
+   text = ewl_container_child_get(EWL_CONTAINER(parent), 0);
+   ewl_text_text_set(EWL_TEXT(text), "Whoops! This album exists!\n Please try again!");
+   w = NULL;
+   event = NULL;
+   data = NULL;
+   return;
   }
  }
- else
- {
-  win = ewl_window_new();
-  ewl_window_title_set(EWL_WINDOW(win), "Whoops");
-  ewl_window_name_set(EWL_WINDOW(win), "Whoops");
-  ewl_object_size_request(EWL_OBJECT(win), 243, 50);
-  ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, cancel, win);
-  ewl_widget_show(win);
 
-  vbox = ewl_vbox_new();
-  ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-  ewl_container_child_append(EWL_CONTAINER(win), vbox);
-  ewl_widget_show(vbox);
+ snprintf(command, PATH_MAX, "INSERT OR IGNORE INTO albums (name) VALUES ('%s');", entry_text);
 
-  text = ewl_text_new();
-  ewl_text_text_set(EWL_TEXT(text), "Whoops! Bad album name!!");
-  ewl_container_child_append(EWL_CONTAINER(vbox), text);
-  ewl_widget_show(text);
+ sqlite3_open(database, &db);
+ sqlite3_exec(db, command, NULL, NULL, NULL);
+ sqlite3_close(db);
+
+ m->icon = ewl_icon_new();
+ ewl_icon_label_set(EWL_ICON(m->icon), entry_text);
+ ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
+ ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, album_clicked_cb, NULL);
+ ewl_container_child_append(EWL_CONTAINER(m->albums), m->icon);
+ ewl_widget_show(m->icon);
  
-  button = ewl_button_new();
-  ewl_button_label_set(EWL_BUTTON(button), "Ok");
-  ewl_container_child_append(EWL_CONTAINER(vbox), button);
-  ewl_callback_append(button, EWL_CALLBACK_CLICKED, cancel, win);
-  ewl_widget_show(button);
- }
+ parent = entry->parent;
+ win = parent->parent;
+ ewl_widget_destroy(win); 
 
  w = NULL;
  event = NULL;
@@ -110,86 +77,52 @@ void ok_slideshow(Ewl_Widget *w, void *event, void *data)
  char *home;
  char *entry_text;
  char database[PATH_MAX];
- Ewl_Widget *win;
- Ewl_Widget *vbox;
- Ewl_Widget *icon;
- Ewl_Widget *text;
- Ewl_Widget *button;
+ char command[PATH_MAX];
  sqlite3 *db;
+ Ewl_Widget *win;
+ Ewl_Widget *parent;
+ Ewl_Widget *next;
+ Ewl_Widget *entry;
+ Ewl_Widget *text;
 
+ entry = data;
+
+ entry_text = ewl_text_text_get(EWL_TEXT(entry));
  home = getenv("HOME");
- entry_text = ewl_text_text_get(EWL_TEXT(data));
-
  snprintf(database, PATH_MAX, "%s/.ephoto/ephoto_database", home);
 
- if (strcmp(entry_text, " ") != 0)
+ ewl_container_child_iterate_begin(EWL_CONTAINER(m->slideshows));
+
+ while ((next = ewl_container_child_next(EWL_CONTAINER(m->slideshows))) != NULL)
  {
-    
-  if (entry_text)
+  if (!strcmp(entry_text, ewl_icon_label_get(EWL_ICON(next))))
   {
-   sqlite3_open(database, &db);
-   sqlite3_exec(db, "INSERT OR IGNORE INTO albums (name) VALUES ('hello');", NULL, NULL, NULL);
-   sqlite3_close(db);
- 
-   m->icon = ewl_icon_new();
-   ewl_icon_label_set(EWL_ICON(m->icon), entry_text);
-   ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
-   ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, slideshow_clicked_cb, NULL);
-   ewl_container_child_append(EWL_CONTAINER(m->slideshows), m->icon);
-   ewl_widget_show(m->icon);
-  }
-
-  else
-  {
-   win = ewl_window_new();
-   ewl_window_title_set(EWL_WINDOW(win), "Whoops");
-   ewl_window_name_set(EWL_WINDOW(win), "Whoops");
-   ewl_object_size_request(EWL_OBJECT(win), 243, 50);
-   ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, cancel, win);
-   ewl_widget_show(win);
-
-   vbox = ewl_vbox_new();
-   ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-   ewl_container_child_append(EWL_CONTAINER(win), vbox);
-   ewl_widget_show(vbox);
-
-   text = ewl_text_new();
-   ewl_text_text_set(EWL_TEXT(text), "Whoops! This slideshow already exists!");
-   ewl_container_child_append(EWL_CONTAINER(vbox), text);
-   ewl_widget_show(text);
-
-   button = ewl_button_new();
-   ewl_button_label_set(EWL_BUTTON(button), "Ok");
-   ewl_container_child_append(EWL_CONTAINER(vbox), button);
-   ewl_callback_append(button, EWL_CALLBACK_CLICKED, cancel, win);
-   ewl_widget_show(button);
+   parent = entry->parent;
+   text = ewl_container_child_get(EWL_CONTAINER(parent), 0);
+   ewl_text_text_set(EWL_TEXT(text), "Whoops! This slideshow exists!\n Please try again!");
+   w = NULL;
+   event = NULL;
+   data = NULL;
+   return;
   }
  }
- else
- {
-  win = ewl_window_new();
-  ewl_window_title_set(EWL_WINDOW(win), "Whoops");
-  ewl_window_name_set(EWL_WINDOW(win), "Whoops");
-  ewl_object_size_request(EWL_OBJECT(win), 243, 50);
-  ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, cancel, win);
-  ewl_widget_show(win);
 
-  vbox = ewl_vbox_new();
-  ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-  ewl_container_child_append(EWL_CONTAINER(win), vbox);
-  ewl_widget_show(vbox);
+ snprintf(command, PATH_MAX, "INSERT OR IGNORE INTO slideshows (name) VALUES ('%s');", entry_text);
 
-  text = ewl_text_new();
-  ewl_text_text_set(EWL_TEXT(text), "Whoops! Bad slideshow name!!");
-  ewl_container_child_append(EWL_CONTAINER(vbox), text);
-  ewl_widget_show(text);
+ sqlite3_open(database, &db);
+ sqlite3_exec(db, command, NULL, NULL, NULL);
+ sqlite3_close(db);
 
-  button = ewl_button_new();
-  ewl_button_label_set(EWL_BUTTON(button), "Ok");
-  ewl_container_child_append(EWL_CONTAINER(vbox), button);
-  ewl_callback_append(button, EWL_CALLBACK_CLICKED, cancel, win);
-  ewl_widget_show(button);
- }
+ m->icon = ewl_icon_new();
+ ewl_icon_label_set(EWL_ICON(m->icon), entry_text);
+ ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
+ ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, slideshow_clicked_cb, NULL);
+ ewl_container_child_append(EWL_CONTAINER(m->slideshows), m->icon);
+ ewl_widget_show(m->icon);
+
+ parent = entry->parent;
+ win = parent->parent;
+ ewl_widget_destroy(win);
 
  w = NULL;
  event = NULL;

@@ -51,8 +51,7 @@ main(int argc, char **argv)
 			"slideshows_id INTEGER, images_id INTEGER);", NULL, 0, 0);
   sqlite3_exec(db, "CREATE TABLE s_settings(id INTEGER PRIMARY KEY AUTOINCREMENT,"
 			"name VARCHAR(255));", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE slideshows_settings_full(id INTEGER PRIMARY KEY AUTOINCREMENT," 
-			"slideshows_id INTEGER, settings_id INTEGER);", NULL, NULL, NULL);
+  sqlite3_exec(db, "CREATE TABLE slideshows_settings_full(id INTEGER PRIMARY KEY AUTOINCREMENT," 			"slideshows_id INTEGER, settings_id INTEGER);", NULL, NULL, NULL);
   sqlite3_close(db);
  }
 
