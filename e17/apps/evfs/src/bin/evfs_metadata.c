@@ -278,9 +278,11 @@ void evfs_metadata_initialise()
 
 	group = NULL;
 
-	printf(". EVFS metadata initialise..\n");
+	
 
 	if (!evfs_object_client_is_get()) {
+		printf(". EVFS metadata initialise..\n");
+			
 		/*String edd*/
 		Evfs_Metadata_String_Edd = _evfs_metadata_edd_create("evfs_metadata_string", sizeof(evfs_metadata_object));
 		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_String_Edd, evfs_metadata_object,
