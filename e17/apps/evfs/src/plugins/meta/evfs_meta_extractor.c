@@ -70,6 +70,9 @@ Ecore_List* evfs_plugin_meta_types_get()
 	ecore_list_append(list, "application/x-bzip2");
 	ecore_list_append(list, "video/quicktime");
 	ecore_list_append(list, "video/x-ms-asf");
+ 	ecore_list_append(list, "object/undefined");
+
+	
 
 
 
