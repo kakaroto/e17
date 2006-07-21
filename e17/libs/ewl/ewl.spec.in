@@ -57,6 +57,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING* NEWS README TODO
 %{_libdir}/libewl.so.*
 %{_libdir}/libewl.la
+%{_libdir}/ewl/engines/*
 %{_datadir}/ewl
 
 %files devel
