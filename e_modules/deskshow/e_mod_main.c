@@ -115,11 +115,13 @@ _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       E_Border *bd;
       E_Border_List *bl;
       E_Zone *zone;
+      E_Desk *desk;
 
       zone = e_util_zone_current_get (e_manager_current_get ());
       if (zone)
 	{
-	   if (zone->deskshow_toggle)
+	   desk = e_desk_current_get(zone);
+	   if (desk->deskshow_toggle)
 	     edje_object_signal_emit(inst->o_button, "passive", "");
 	   else
 	     edje_object_signal_emit(inst->o_button, "active", "");
@@ -127,9 +129,9 @@ _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 	  bl = e_container_border_list_first (zone->container);
 	  while ((bd = e_container_border_list_next (bl)))
 	    {
-	      if (bd->desk == e_desk_current_get (bd->zone))
+	      if (bd->desk == desk)
 		{
-		  if (zone->deskshow_toggle)
+		  if (desk->deskshow_toggle)
 		    {
 		      if (bd->deskshow)
 			e_border_uniconify (bd);
@@ -148,7 +150,7 @@ _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 		    }
 		}
 	    }
-	  zone->deskshow_toggle = zone->deskshow_toggle ? 0 : 1;
+	  desk->deskshow_toggle = desk->deskshow_toggle ? 0 : 1;
 	  e_container_border_list_free (bl);
 	}
 
