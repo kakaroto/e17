@@ -11,6 +11,7 @@ static void _gc_shutdown (E_Gadcon_Client * gcc);
 static void _gc_orient (E_Gadcon_Client * gcc);
 static char *_gc_label (void);
 static Evas_Object *_gc_icon (Evas * evas);
+static int _deskshow_cb_event_desk_show(void *data, int type, void *event);
 
 /* and actually define the gadcon class that this module provides (just 1) */
 static const E_Gadcon_Client_Class _gadcon_class = {
@@ -32,6 +33,7 @@ static void _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 				   void *event_info);
 
 static E_Module *desk_module = NULL;
+Ecore_Event_Handler *handler;
 
 static E_Gadcon_Client *
 _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
@@ -62,6 +64,8 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _button_cb_mouse_down, inst);
+   handler = ecore_event_handler_add(E_EVENT_DESK_SHOW, 
+       _deskshow_cb_event_desk_show, inst);
   return gcc;
 }
 
@@ -159,6 +163,23 @@ _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
     }
 }
 
+static int
+_deskshow_cb_event_desk_show(void *data, int type, void *event)
+{
+   E_Event_Desk_Show *ev;
+   E_Desk *desk;
+   Instance *inst;
+
+   inst = data;
+   ev = event;
+   desk = ev->desk;
+
+   if (desk->deskshow_toggle)
+     edje_object_signal_emit(inst->o_button, "active", "");
+   else
+     edje_object_signal_emit(inst->o_button, "passive", "");
+}
+
 /* module setup */
 EAPI E_Module_Api e_modapi = {
   E_MODULE_API_VERSION,
@@ -168,15 +189,16 @@ EAPI E_Module_Api e_modapi = {
 EAPI void *
 e_modapi_init (E_Module * m)
 {
-  desk_module = m;
-  e_gadcon_provider_register (&_gadcon_class);
-  return desk_module;
+   desk_module = m;
+   e_gadcon_provider_register (&_gadcon_class);
+   return desk_module;
 }
 
 EAPI int
 e_modapi_shutdown (E_Module * m)
 {
   desk_module = NULL;
+  ecore_event_handler_del(handler);
   e_gadcon_provider_unregister (&_gadcon_class);
   return 1;
 }
