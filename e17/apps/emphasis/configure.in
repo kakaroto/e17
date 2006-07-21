@@ -91,6 +91,23 @@ AC_PATH_EFL(
    ]
 )
 
+#check for Enhance
+AC_PATH_EFL(
+	enhance,
+	0.0.1,
+	[
+	 	AC_DEFINE(HAVE_ENHANCE, 1, have ENHANCE)
+		enhance="ENHANCE "
+		AM_CONDITIONAL(HAVE_ENHANCE, true)
+		have_enhance="yes"
+		enhance_libs=`enhance-config --libs`
+		enhance_cflags=`enhance-config --cflags`
+	],
+	[
+	 	AC_MSG_ERROR([No Enhance, can't build.])
+	]
+)
+
 #check for libmpd
 PKG_CHECK_MODULES(
    [libmpd], 
@@ -108,6 +125,9 @@ PKG_CHECK_MODULES(
 	]
 )
 
+PKG_CHECK_MODULES(XML2, libxml-2.0)
+AC_CHECK_LIB(pthread, pthread_create)
+
 dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
 etk_prefix="\"`etk-config --prefix`/share/etk\""
 AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
@@ -117,12 +137,16 @@ ecore_libs=`ecore-config --libs`
 ecore_cflags=`ecore-config --cflags`
 etk_libs=`etk-config --libs`
 etk_cflags=`etk-config --cflags`
+enhance_libs=`enhance-config --libs`
+enhance_flags=`enhance-config --cflags`
 libmpd_libs=`pkg-config --libs libmpd`
 libmpd_cflags=`pkg-config --cflags libmpd`
+libxml2_libs=`xml2-config --libs`
+libxml2_cflags=`xml2-config --cflags`
 
 # add your required libs / include here
-my_includes="$ecore_cflags $etk_cflags $libmpd_cflags"
-my_libs="$ecore_libs $etk_libs $libmpd_libs"
+my_includes="$ecore_cflags $etk_cflags $enhance_cflags $libmpd_cflags $libxml2_cflags"
+my_libs="$ecore_libs $etk_libs $enhance_libs $libmpd_libs $libxml2_libs -lpthread"
 AC_SUBST(my_includes)
 AC_SUBST(my_libs)
 

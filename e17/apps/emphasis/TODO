@@ -1,12 +1,10 @@
-*Add utf-8 support
-*Use Table in config frames
-*Put callback's on the spin button
+*put the config dialog in the glade file
 *Add crossfade config
 *Add a drag and drop to order the tree_pls
 *Make an OSD at song change
 *Make a special panel for stream support
 *Make a special panel for advanced search
+*Add bindings keys
 
--- One Day --
-#use enhance
-#massive code clean-up
+== Later ==
+*Support XMMS 2

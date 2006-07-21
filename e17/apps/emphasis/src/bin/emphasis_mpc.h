@@ -1,12 +1,12 @@
 /** @file emphasis_mpc.h */
-#ifndef _MPC_H_
-#define _MPC_H_
+#ifndef EMPHASIS_MPC_H_
+#define EMPHASIS_MPC_H_
 
 /**
  * @defgroup mpc
  * @{
  */
- 
+
 /**
  * @var mo
  * @brief It's the global object using the connexion to the mpd daemon
@@ -44,7 +44,8 @@ void mpc_toggle_repeat(void);
 
 int mpc_get_vol(void);
 void mpc_change_vol(int value);
-void mpc_database_update(char *path);
+void mpc_database_update(void);
 void mpc_disconnect(void);
 /** @} */
-#endif /*_MPC_H_*/
+
+#endif /* EMPHASIS_MPC_H_ */
