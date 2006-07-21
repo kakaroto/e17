@@ -201,6 +201,35 @@ AC_CHECK_HEADER(taglib/tag_c.h)
 
 
 
+dnl ###################
+dnl # checking for extractor (provider)
+dnl ###################
+
+extractor=no;
+AC_MSG_CHECKING(whether the extractor plugin is explicitly disabled)
+AC_ARG_ENABLE(plugin-extractor, AC_HELP_STRING([--enable-plugin-extractor],[build the file keywords plugin]),
+        [ ac_use_plugin_extractor="$enableval" ],
+        [ ac_use_plugin_extractor="yes" ]
+        )
+if test X"$ac_use_plugin_extractor" = Xyes; then
+        AC_MSG_RESULT(no)
+     AC_CHECK_LIB(extractor, EXTRACTOR_getKeywords,[
+       extractor=yes
+       extractor_libs="-lextractor"
+       extractor_cflags=""
+       AC_DEFINE(HAVE_EXTRACTOR, 1, libextractor keyword-library found)],[
+       extractor=no
+       AC_MSG_WARN([Could not find all headers and libraries for extractor support: there will be fewer metadata in tooltips. cf. http://www.ovmj.org/samant
+a/libextractor/ ])])
+else
+        AC_MSG_RESULT(yes)
+     extractor=no
+fi
+AC_SUBST(extractor_libs)
+AC_SUBST(extractor_cflags)
+AM_CONDITIONAL(HAVE_EXTRACTOR, test $extractor = yes)
+
+
 
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.

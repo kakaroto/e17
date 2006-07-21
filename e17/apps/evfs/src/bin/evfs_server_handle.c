@@ -562,7 +562,7 @@ evfs_handle_operation_command(evfs_client * client, evfs_command * command)
 
 void evfs_handle_metadata_command(evfs_client* client, evfs_command* command)
 {
-	char* type = "audio/x-mp3";
+	char* type = "audio/x-mp3"; /*FIXME - make generic - id mimes..*/
 	evfs_plugin_meta* plugin;
 	Evas_List* ret_list;
 
