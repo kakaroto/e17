@@ -33,6 +33,7 @@
 #include "ecompmgr.h"
 #include "emodule.h"
 #include "eobj.h"
+#include "settings.h"
 #include "timers.h"
 #include "xwin.h"
 

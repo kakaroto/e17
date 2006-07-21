@@ -678,19 +678,9 @@ CB_ConfigureFocus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-SettingsFocus(void)
+_DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di, *radio, *radio2;
-
-   d = DialogFind("CONFIGURE_FOCUS");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_FOCUS");
+   DItem              *di, *radio, *radio2;
 
    tmp_focus = Conf.focus.mode;
    tmp_new_focus = Conf.focus.all_new_windows_get_focus;
@@ -711,10 +701,6 @@ SettingsFocus(void)
 
    tmp_clickalways = Conf.focus.clickraises;
 
-   d = DialogCreate("CONFIGURE_FOCUS");
-   DialogSetTitle(d, _("Focus Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -852,9 +838,15 @@ SettingsFocus(void)
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_warp_icon_mode);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureFocus);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgFocus = {
+   "CONFIGURE_FOCUS",
+   N_("Focus"),
+   N_("Focus Settings"),
+   "SOUND_SETTINGS_FOCUS",
+   _DlgFillFocus
+};
 
 /*
  * Focus Module
@@ -920,7 +912,7 @@ FocusIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strcmp(cmd, "cfg"))
      {
-	SettingsFocus();
+	DialogShowSimple(&DlgFocus, NULL);
      }
    else if (!strncmp(cmd, "mode", 2))
      {

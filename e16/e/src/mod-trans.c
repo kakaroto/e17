@@ -107,22 +107,12 @@ CB_ThemeTransparency(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 }
 
 static void
-SettingsTransparency(void)
+_DlgFillThemeTrans(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di, *label;
+   DItem              *di, *label;
    DItem              *radio_border, *radio_widget, *radio_menu,
       *radio_dialog, *radio_tooltip, *radio_hilight;
    char                s[256];
-
-   d = DialogFind("CONFIGURE_TRANS");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_TRANS");
 
    tmp_st_border = Conf.trans.border;
    tmp_st_widget = Conf.trans.widget;
@@ -133,10 +123,6 @@ SettingsTransparency(void)
 
    tmp_theme_transparency = Conf.trans.alpha;
 
-   d = DialogCreate("CONFIGURE_TRANS");
-   DialogSetTitle(d, _("Selective Transparency Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 7, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -282,9 +268,15 @@ SettingsTransparency(void)
    DialogItemSetCallback(di, CB_ThemeTransparency, 0, (void *)label);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureTrans);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgThemeTrans = {
+   "CONFIGURE_TRANS",
+   N_("Transparency"),
+   N_("Selective Transparency Settings"),
+   "SOUND_SETTINGS_TRANS",
+   _DlgFillThemeTrans
+};
 
 static void
 TransparencySighan(int sig, void *prm __UNUSED__)
@@ -302,7 +294,7 @@ TransparencyIpc(const char *params, Client * c __UNUSED__)
 {
    if (params && !strncmp(params, "cfg", 3))
      {
-	SettingsTransparency();
+	DialogShowSimple(&DlgThemeTrans, NULL);
      }
 }
 

@@ -1801,7 +1801,7 @@ CB_BGScan(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
 }
 
 static void
-CB_BGAreaEvent(int val __UNUSED__, void *data)
+CB_BGAreaEvent(DItem * di __UNUSED__, int val __UNUSED__, void *data)
 {
    int                 x, num, w, h;
    Background         *bg;
@@ -1993,22 +1993,21 @@ CB_BGSortContent(Dialog * d __UNUSED__, int val __UNUSED__,
 }
 
 static void
-SettingsBackground(Background * bg)
+CB_DesktopMiniDisplayAreaRedraw(DItem * di, int val __UNUSED__,
+				void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di, *table2, *area, *slider, *slider2, *label;
+   CB_DesktopMiniDisplayRedraw(DialogItemGetDialog(di), 1, di);
+   BGSettingsGoTo(tmp_bg);
+}
+
+static void
+_DlgFillBackground(Dialog * d, DItem * table, void *data)
+{
+   Background         *bg = data;
+   DItem              *di, *table2, *area, *slider, *slider2, *label;
    DItem              *w1, *w2, *w3, *w4, *w5, *w6;
    int                 num;
    char                s[1024];
-
-   d = DialogFind("CONFIGURE_BG");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_BG");
 
    if (!bg)
       bg = BackgroundFind("NONE");
@@ -2021,10 +2020,8 @@ SettingsBackground(Background * bg)
    tmp_root_hint = Conf.hints.set_xroot_info_on_root_window;
    tmp_bg_timeout = Conf.backgrounds.timeout;
 
-   d = bg_sel_dialog = DialogCreate("CONFIGURE_BG");
-   DialogSetTitle(d, _("Desktop Background Settings"));
+   bg_sel_dialog = d;
 
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -2140,6 +2137,7 @@ SettingsBackground(Background * bg)
 
    di = bg_mini_disp = area = DialogAddItem(table2, DITEM_AREA);
    DialogItemAreaSetSize(di, 64, 48);
+   DialogItemAreaSetInitFunc(di, CB_DesktopMiniDisplayAreaRedraw);
 
    DialogItemSetCallback(w1, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
    DialogItemSetCallback(w2, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
@@ -2272,12 +2270,15 @@ SettingsBackground(Background * bg)
    DialogItemCheckButtonSetPtr(di, &tmp_root_hint);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureBG);
-
-   DialogShow(d);
-
-   CB_DesktopMiniDisplayRedraw(NULL, 1, area);
-   BGSettingsGoTo(tmp_bg);
 }
+
+const DialogDef     DlgBackground = {
+   "CONFIGURE_BG",
+   N_("Background"),
+   N_("Desktop Background Settings"),
+   "SOUND_SETTINGS_BG",
+   _DlgFillBackground
+};
 
 /*
  * IPC functions
@@ -2472,7 +2473,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "cfg", 2))
      {
-	SettingsBackground(DeskBackgroundGet(DesksGetCurrent()));
+	DialogShowSimple(&DlgBackground, DeskBackgroundGet(DesksGetCurrent()));
      }
    else if (!strncmp(cmd, "del", 2))
      {

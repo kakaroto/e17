@@ -1684,7 +1684,6 @@ static int          tmp_pager_sel_button;
 static int          tmp_pager_win_button;
 static int          tmp_pager_menu_button;
 static DItem       *pager_scan_speed_label = NULL;
-static Dialog      *pager_settings_dialog = NULL;
 
 static void
 CB_ConfigurePager(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -1716,33 +1715,21 @@ CB_ConfigurePager(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-CB_PagerScanSlide(Dialog * d __UNUSED__, int val __UNUSED__,
-		  void *data __UNUSED__)
+CB_PagerScanSlide(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
 {
    char                s[256];
 
    Esnprintf(s, sizeof(s), "%s %03i %s", _("Pager scanning speed:"),
 	     tmp_pager_scan_speed, _("lines per second"));
    DialogItemSetText(pager_scan_speed_label, s);
-   DialogDrawItems(pager_settings_dialog, pager_scan_speed_label, 0, 0, 99999,
-		   99999);
+   DialogDrawItems(d, pager_scan_speed_label, 0, 0, 99999, 99999);
 }
 
 static void
-SettingsPager(void)
+_DlgFillPagers(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di, *radio;
+   DItem              *di, *radio;
    char                s[256];
-
-   d = DialogFind("CONFIGURE_PAGER");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_PAGER");
 
    tmp_show_pagers = Conf_pagers.enable;
    tmp_pager_hiq = Conf_pagers.hiq;
@@ -1758,10 +1745,6 @@ SettingsPager(void)
       tmp_pager_do_scan = 1;
    tmp_pager_scan_speed = Conf_pagers.scanspeed;
 
-   d = pager_settings_dialog = DialogCreate("CONFIGURE_PAGER");
-   DialogSetTitle(d, _("Pager Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -1892,9 +1875,15 @@ SettingsPager(void)
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_menu_button);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigurePager);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgPagers = {
+   "CONFIGURE_PAGER",
+   N_("Pagers"),
+   N_("Pager Settings"),
+   "SOUND_SETTINGS_PAGER",
+   _DlgFillPagers
+};
 
 /*
  * Pagers Module
@@ -1977,7 +1966,7 @@ IPC_Pager(const char *params, Client * c __UNUSED__)
 
    if (!strncmp(prm1, "cfg", 3))
      {
-	SettingsPager();
+	DialogShowSimple(&DlgPagers, NULL);
      }
    else if (!strcmp(prm1, "on"))
      {

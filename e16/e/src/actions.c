@@ -278,25 +278,15 @@ ActionsEnd(EWin * ewin)
    return did_end;
 }
 
-void
-About(void)
+static void
+_DlgFillAbout(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
+   DItem              *di;
    char                buf[1024];
 
-   d = DialogFind("ABOUT_ENLIGHTENMENT");
-   if (d)
-     {
-	DialogShow(d);
-	return;
-     }
-
-   d = DialogCreate("ABOUT_ENLIGHTENMENT");
    Esnprintf(buf, sizeof(buf), _("About Enlightenment %s"), e_wm_version);
    DialogSetTitle(d, buf);
 
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_IMAGE);
@@ -320,7 +310,20 @@ About(void)
    DialogItemSetText(di, buf);
 
    DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
-   DialogShow(d);
+}
+
+static const DialogDef DlgAbout = {
+   "ABOUT_ENLIGHTENMENT",
+   NULL,
+   NULL,
+   NULL,
+   _DlgFillAbout
+};
+
+void
+About(void)
+{
+   DialogShowSimple(&DlgAbout, NULL);
 }
 
 #if 0				/* FIXME - Fix */

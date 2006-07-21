@@ -75,6 +75,7 @@ typedef struct
 {
    Win                 area_win;
    int                 w, h;
+   DialogItemCallbackFunc *init_func;
    DialogItemCallbackFunc *event_func;
 } DItemArea;
 
@@ -691,6 +692,36 @@ DialogClose(Dialog * d)
    EwinHide(d->ewin);
 }
 
+void
+DialogShowSimple(const DialogDef * dd, void *data)
+{
+   Dialog             *d;
+   DItem              *table;
+
+   d = DialogFind(dd->name);
+   if (d)
+     {
+	SoundPlay("SOUND_SETTINGS_ACTIVE");
+	DialogShow(d);
+	return;
+     }
+   SoundPlay(dd->sound);
+
+   d = DialogCreate(dd->name);
+   if (!d)
+      return;
+
+   DialogSetTitle(d, _(dd->title));
+
+   table = DialogInitItem(d);
+   if (!table)
+      return;
+
+   dd->fill(d, table, data);
+
+   DialogShow(d);
+}
+
 static DItem       *
 DialogItemCreate(int type)
 {
@@ -749,10 +780,8 @@ DialogAddItem(DItem * dii, int type)
      default:
 	break;
      case DITEM_AREA:
-	di->item.area.area_win = 0;
 	di->item.area.w = 32;
 	di->item.area.h = 32;
-	di->item.area.event_func = NULL;
 	break;
      case DITEM_CHECKBUTTON:
 	di->item.check_button.check_win = 0;
@@ -886,6 +915,12 @@ DialogAddFooter(Dialog * d, int flags, DialogCallbackFunc * cb)
 	DialogBindKey(d, "Escape", DialogCallbackClose, 0);
      }
    DialogSetExitFunction(d, cb, 2);
+}
+
+Dialog             *
+DialogItemGetDialog(DItem * di)
+{
+   return di->dlg;
 }
 
 void
@@ -1673,8 +1708,12 @@ DialogDrawItem(Dialog * d, DItem * di)
 	break;
 
      case DITEM_AREA:
+	if (!d->redraw)
+	   break;
 	ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
 			STATE_NORMAL, ST_DIALOG);
+	if (di->item.area.init_func)
+	   di->item.area.init_func(di, 0, NULL);
 	break;
 
      case DITEM_CHECKBUTTON:
@@ -1981,6 +2020,12 @@ DialogItemAreaGetSize(DItem * di, int *w, int *h)
 }
 
 void
+DialogItemAreaSetInitFunc(DItem * di, DialogItemCallbackFunc * func)
+{
+   di->item.area.init_func = func;
+}
+
+void
 DialogItemAreaSetEventFunc(DItem * di, DialogItemCallbackFunc * func)
 {
    di->item.area.event_func = func;
@@ -2133,7 +2178,7 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
      {
      case DITEM_AREA:
 	if (di->item.area.event_func)
-	   di->item.area.event_func(0, ev);
+	   di->item.area.event_func(di, 0, ev);
 	break;
 
      case DITEM_SLIDER:
@@ -2193,7 +2238,7 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
      {
      case DITEM_AREA:
 	if (di->item.area.event_func)
-	   di->item.area.event_func(0, ev);
+	   di->item.area.event_func(di, 0, ev);
 	break;
 
      case DITEM_SLIDER:
@@ -2299,7 +2344,7 @@ DItemEventMouseUp(Win win, DItem * di, XEvent * ev)
      {
      case DITEM_AREA:
 	if (di->item.area.event_func)
-	   di->item.area.event_func(0, ev);
+	   di->item.area.event_func(di, 0, ev);
 	break;
 
      case DITEM_CHECKBUTTON:
@@ -2341,12 +2386,12 @@ DItemEventMouseIn(Win win __UNUSED__, DItem * di, XEvent * ev)
      {
      case DITEM_AREA:
 	if (di->item.area.event_func)
-	   di->item.area.event_func(0, ev);
+	   di->item.area.event_func(di, 0, ev);
 	break;
 
      case DITEM_RADIOBUTTON:
 	if (di->item.radio_button.event_func)
-	   di->item.radio_button.event_func(di->item.radio_button.val, ev);
+	   di->item.radio_button.event_func(di, di->item.radio_button.val, ev);
 	break;
      }
 
@@ -2362,12 +2407,13 @@ DItemEventMouseOut(Win win __UNUSED__, DItem * di, XEvent * ev)
      {
      case DITEM_AREA:
 	if (di->item.area.event_func)
-	   di->item.area.event_func(0, ev);
+	   di->item.area.event_func(di, 0, ev);
 	break;
 
      case DITEM_RADIOBUTTON:
 	if (di->item.radio_button.event_func)
-	   di->item.radio_button.event_func(di->item.radio_button.val, NULL);
+	   di->item.radio_button.event_func(di, di->item.radio_button.val,
+					    NULL);
 	break;
      }
 

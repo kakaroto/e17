@@ -2135,24 +2135,15 @@ CB_IconSizeSlider(Dialog * d, int val __UNUSED__, void *data)
 }
 
 static void
-IconboxConfigure(Iconbox * ib)
+_DlgFillIconbox(Dialog * d, DItem * table, void *data)
 {
-   Dialog             *d;
-   DItem              *di, *table, *table2;
+   Iconbox            *ib = data;
+   DItem              *di, *table2;
    DItem              *radio1, *radio2, *radio3, *radio4, *label;
    char                s[256];
 
    if (!ib)
       return;
-
-   d = DialogFind("CONFIGURE_ICONBOX");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_ICONBOX");
 
    tmp_ib_nobg = ib->nobg;
    tmp_ib_shownames = ib->shownames;
@@ -2171,13 +2162,11 @@ IconboxConfigure(Iconbox * ib)
       Efree(tmp_ib_name);
    tmp_ib_name = Estrdup(ib->name);
 
-   d = DialogCreate("CONFIGURE_ICONBOX");
    if (ib->type == IB_TYPE_ICONBOX)
       DialogSetTitle(d, _("Iconbox Settings"));
    else
       DialogSetTitle(d, _("Systray Settings"));
 
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -2347,9 +2336,15 @@ IconboxConfigure(Iconbox * ib)
    DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_ib_arrows);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureIconbox);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgIconbox = {
+   "CONFIGURE_ICONBOX",
+   NULL,
+   NULL,
+   "SOUND_SETTINGS_ICONBOX",
+   _DlgFillIconbox
+};
 
 /*
  * Configuration load/save
@@ -2557,7 +2552,7 @@ IconboxesConfigure(const char *params)
 
    ib = IconboxFind(params);
    if (ib)
-      IconboxConfigure(ib);
+      DialogShowSimple(&DlgIconbox, ib);
 }
 
 /*

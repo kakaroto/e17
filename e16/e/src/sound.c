@@ -439,26 +439,12 @@ CB_ConfigureAudio(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-SettingsAudio(void)
+_DlgFillSound(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
-
-   d = DialogFind("CONFIGURE_AUDIO");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_AUDIO");
+   DItem              *di;
 
    tmp_audio = Conf_sound.enable;
 
-   d = DialogCreate("CONFIGURE_AUDIO");
-   DialogSetTitle(d, _("Audio Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -479,9 +465,15 @@ SettingsAudio(void)
 #endif
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureAudio);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgSound = {
+   "CONFIGURE_AUDIO",
+   N_("Sound"),
+   N_("Audio Settings"),
+   "SOUND_SETTINGS_AUDIO",
+   _DlgFillSound
+};
 
 /*
  * IPC functions
@@ -506,7 +498,7 @@ SoundIpc(const char *params, Client * c __UNUSED__)
 
    if (!strncmp(cmd, "cfg", 3))
      {
-	SettingsAudio();
+	DialogShowSimple(&DlgSound, NULL);
      }
    else if (!strncmp(cmd, "del", 3))
      {

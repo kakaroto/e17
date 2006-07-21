@@ -2221,11 +2221,10 @@ DesksSighan(int sig, void *prm __UNUSED__)
 }
 
 /*
- * Dialodgs
+ * Dialogs
  */
 static int          tmp_desktops;
 static DItem       *tmp_desk_text;
-static Dialog      *tmp_desk_dialog;
 static char         tmp_desktop_slide;
 static int          tmp_desktop_slide_speed;
 static char         tmp_desktop_wraparound;
@@ -2258,7 +2257,7 @@ CB_ConfigureDesktops(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
+CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 {
    static char         called = 0;
    static int          prev_desktops = -1;
@@ -2343,24 +2342,21 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    else
       Esnprintf(s, sizeof(s), _("%i Desktop"), tmp_desktops);
    DialogItemSetText(tmp_desk_text, s);
-   DialogDrawItems(tmp_desk_dialog, tmp_desk_text, 0, 0, 99999, 99999);
+   DialogDrawItems(d, tmp_desk_text, 0, 0, 99999, 99999);
 }
 
 static void
-SettingsDesktops(void)
+CB_DesktopDisplayAreaRedraw(DItem * di, int val __UNUSED__,
+			    void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di, *area, *slider, *radio;
-   char                s[64];
+   CB_DesktopDisplayRedraw(DialogItemGetDialog(di), 1, di);
+}
 
-   d = DialogFind("CONFIGURE_DESKTOPS");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_DESKTOPS");
+static void
+_DlgFillDesks(Dialog * d, DItem * table, void *data __UNUSED__)
+{
+   DItem              *di, *area, *slider, *radio;
+   char                s[64];
 
    tmp_desktops = Conf.desks.num;
    tmp_desktop_slide = Conf.desks.slidein;
@@ -2372,10 +2368,6 @@ SettingsDesktops(void)
       tmp_dragbar = 1;
    tmp_dragdir = Conf.desks.dragdir;
 
-   d = tmp_desk_dialog = DialogCreate("CONFIGURE_DESKTOPS");
-   DialogSetTitle(d, _("Multiple Desktop Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -2405,6 +2397,9 @@ SettingsDesktops(void)
    di = area = DialogAddItem(table, DITEM_AREA);
    DialogItemSetColSpan(di, 2);
    DialogItemAreaSetSize(di, 128, 96);
+   DialogItemAreaSetInitFunc(area, CB_DesktopDisplayAreaRedraw);
+
+   DialogItemSetCallback(slider, CB_DesktopDisplayRedraw, 0, area);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -2473,19 +2468,21 @@ SettingsDesktops(void)
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_dragdir);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureDesktops);
-
-   DialogShow(d);
-
-   DialogItemSetCallback(slider, CB_DesktopDisplayRedraw, 0, (void *)area);
-   CB_DesktopDisplayRedraw(d, 1, area);
 }
+
+const DialogDef     DlgDesks = {
+   "CONFIGURE_DESKTOPS",
+   N_("Desks"),
+   N_("Multiple Desktop Settings"),
+   "SOUND_SETTINGS_DESKTOPS",
+   _DlgFillDesks
+};
 
 static int          tmp_area_x;
 static int          tmp_area_y;
 static int          tmp_edge_resist;
 static char         tmp_edge_flip;
 static DItem       *tmp_area_text;
-static Dialog      *tmp_area_dialog;
 static char         tmp_area_wraparound;
 
 static void
@@ -2564,24 +2561,20 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    else
       Esnprintf(s, sizeof(s), _("1\nScreen in size"));
    DialogItemSetText(tmp_area_text, s);
-   DialogDrawItems(tmp_area_dialog, tmp_area_text, 0, 0, 99999, 99999);
+   DialogDrawItems(d, tmp_area_text, 0, 0, 99999, 99999);
 }
 
 static void
-SettingsArea(void)
+CB_AreaDisplayAreaRedraw(DItem * di, int val __UNUSED__, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di, *area, *slider, *slider2, *table2;
-   char                s[64];
+   CB_AreaDisplayRedraw(DialogItemGetDialog(di), 1, di);
+}
 
-   d = DialogFind("CONFIGURE_AREA");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_AREA");
+static void
+_DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
+{
+   DItem              *di, *area, *slider, *slider2, *table2;
+   char                s[64];
 
    tmp_area_wraparound = Conf.desks.areas_wraparound;
    tmp_edge_resist = Conf.edge_flip_resistance;
@@ -2592,10 +2585,6 @@ SettingsArea(void)
    DesksGetAreaSize(&tmp_area_x, &tmp_area_y);
    tmp_area_y = 9 - tmp_area_y;
 
-   d = tmp_area_dialog = DialogCreate("CONFIGURE_AREA");
-   DialogSetTitle(d, _("Virtual Desktop Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -2636,9 +2625,10 @@ SettingsArea(void)
 
    di = area = DialogAddItem(table2, DITEM_AREA);
    DialogItemAreaSetSize(di, 160, 120);
+   DialogItemAreaSetInitFunc(area, CB_AreaDisplayAreaRedraw);
 
-   DialogItemSetCallback(slider, CB_AreaDisplayRedraw, 0, (void *)area);
-   DialogItemSetCallback(slider2, CB_AreaDisplayRedraw, 0, (void *)area);
+   DialogItemSetCallback(slider, CB_AreaDisplayRedraw, 0, area);
+   DialogItemSetCallback(slider2, CB_AreaDisplayRedraw, 0, area);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
 
@@ -2661,11 +2651,15 @@ SettingsArea(void)
    DialogItemSliderSetValPtr(di, &tmp_edge_resist);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureAreas);
-
-   DialogShow(d);
-
-   CB_AreaDisplayRedraw(d, 1, area);
 }
+
+const DialogDef     DlgAreas = {
+   "CONFIGURE_AREA",
+   N_("Areas"),
+   N_("Virtual Desktop Settings"),
+   "SOUND_SETTINGS_AREA",
+   _DlgFillAreas
+};
 
 /*
  * IPC functions
@@ -2731,7 +2725,7 @@ DesksIpcDesk(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "cfg", 3))
      {
-	SettingsDesktops();
+	DialogShowSimple(&DlgDesks, NULL);
      }
    else if (!strncmp(cmd, "set", 3))
      {
@@ -2825,7 +2819,7 @@ DesksIpcArea(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "cfg", 3))
      {
-	SettingsArea();
+	DialogShowSimple(&DlgAreas, NULL);
      }
    else if (!strncmp(cmd, "set", 3))
      {

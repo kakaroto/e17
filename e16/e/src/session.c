@@ -769,29 +769,15 @@ CB_ConfigureSession(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    autosave();
 }
 
-void
-SettingsSession(void)
+static void
+_DlgFillSession(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
-
-   d = DialogFind("CONFIGURE_SESSION");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_SESSION");
+   DItem              *di;
 
    tmp_session_script = Conf.session.enable_script;
    tmp_logout_dialog = Conf.session.enable_logout_dialog;
    tmp_reboot_halt = Conf.session.enable_reboot_halt;
 
-   d = DialogCreate("CONFIGURE_SESSION");
-   DialogSetTitle(d, _("Session Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -814,6 +800,12 @@ SettingsSession(void)
    DialogItemCheckButtonSetPtr(di, &tmp_reboot_halt);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureSession);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgSession = {
+   "CONFIGURE_SESSION",
+   N_("Session"),
+   N_("Session Settings"),
+   "SOUND_SETTINGS_SESSION",
+   _DlgFillSession
+};

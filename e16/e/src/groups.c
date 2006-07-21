@@ -787,39 +787,13 @@ GroupSelectCallback(Dialog * d, int val, void *data __UNUSED__)
 }
 
 static void
-SettingsGroups(EWin * ewin)
+_DlgFillGroups(Dialog * d, DItem * table, void *data)
 {
-   Dialog             *d;
-   DItem              *table, *radio, *di;
+   EWin               *ewin = data;
+   DItem              *radio, *di;
    int                 i;
    char              **group_member_strings;
    EwinGroupDlgData   *dd;
-
-   if (!ewin)
-      return;
-
-   if (ewin->num_groups == 0)
-     {
-	DialogOK(_("Window Group Error"),
-		 _
-		 ("\n  This window currently does not belong to any groups.  \n\n"));
-	return;
-     }
-
-   d = DialogFind("CONFIGURE_GROUP");
-   if (d)
-     {
-	SoundPlay("GROUP_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-
-   SoundPlay("SOUND_SETTINGS_GROUP");
-
-   d = DialogCreate("CONFIGURE_GROUP");
-   if (!d)
-      return;
-   DialogSetTitle(d, _("Window Group Settings"));
 
    dd = Ecalloc(1, sizeof(EwinGroupDlgData));
    if (!dd)
@@ -836,7 +810,6 @@ SettingsGroups(EWin * ewin)
 
    ShowHideWinGroups(ewin, 0, SET_ON);
 
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -921,8 +894,31 @@ SettingsGroups(EWin * ewin)
    DialogItemCheckButtonSetPtr(di, &(dd->cfg.mirror));
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureGroup);
+}
 
-   DialogShow(d);
+static const DialogDef DlgGroups = {
+   "CONFIGURE_GROUP",
+   NULL,
+   N_("Window Group Settings"),
+   "SOUND_SETTINGS_GROUP",
+   _DlgFillGroups
+};
+
+static void
+SettingsGroups(EWin * ewin)
+{
+   if (!ewin)
+      return;
+
+   if (ewin->num_groups == 0)
+     {
+	DialogOK(_("Window Group Error"),
+		 _
+		 ("\n  This window currently does not belong to any groups.  \n\n"));
+	return;
+     }
+
+   DialogShowSimple(&DlgGroups, ewin);
 }
 
 static GroupConfig  tmp_group_cfg;
@@ -940,27 +936,13 @@ CB_ConfigureDefaultGroupSettings(Dialog * d __UNUSED__, int val,
 }
 
 static void
-SettingsDefaultGroupControl(void)
+_DlgFillGroupDefaults(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
-
-   d = DialogFind("CONFIGURE_DEFAULT_GROUP_CONTROL");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_GROUP");
+   DItem              *di;
 
    CopyGroupConfig(&(Conf_groups.dflt), &tmp_group_cfg);
    tmp_group_swap = Conf_groups.swapmove;
 
-   d = DialogCreate("CONFIGURE_DEFAULT_GROUP_CONTROL");
-   DialogSetTitle(d, _("Default Group Control Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -1030,9 +1012,15 @@ SettingsDefaultGroupControl(void)
    DialogItemCheckButtonSetPtr(di, &(tmp_group_swap));
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureDefaultGroupSettings);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgGroupDefaults = {
+   "CONFIGURE_DEFAULT_GROUP_CONTROL",
+   N_("Groups"),
+   N_("Default Group Control Settings"),
+   "SOUND_SETTINGS_GROUP",
+   _DlgFillGroupDefaults
+};
 
 /*
  * Groups module
@@ -1060,7 +1048,7 @@ GroupsConfigure(const char *params)
      }
    else if (!s[0] || !strcmp(s, "group_defaults"))
      {
-	SettingsDefaultGroupControl();
+	DialogShowSimple(&DlgGroupDefaults, NULL);
      }
    else if (!strcmp(s, "group_membership"))
      {

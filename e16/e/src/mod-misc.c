@@ -21,8 +21,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "dialog.h"
 #include "emodule.h"
 #include "session.h"
+#include "settings.h"
 #include "snaps.h"
 
 /***********************************************************************
@@ -199,17 +201,17 @@ MiscIpcConfig(const char *params, Client * c __UNUSED__)
    else if (!strncmp(cmd, "cfg", 3))
      {
 	if (!strncmp(prm, "autoraise", 2))
-	   SettingsAutoRaise();
+	   DialogShowSimple(&DlgAutoraise, NULL);
 	else if (!strncmp(prm, "misc", 2))
-	   SettingsMiscellaneous();
+	   DialogShowSimple(&DlgMisc, NULL);
 	else if (!strncmp(prm, "moveresize", 2))
-	   SettingsMoveResize();
+	   DialogShowSimple(&DlgMoveResize, NULL);
 	else if (!strncmp(prm, "placement", 2))
-	   SettingsPlacement();
+	   DialogShowSimple(&DlgPlacement, NULL);
 	else if (!strncmp(prm, "remember", 2))
-	   SettingsRemember();
+	   DialogShowSimple(&DlgRemember, NULL);
 	else if (!strncmp(prm, "session", 2))
-	   SettingsSession();
+	   DialogShowSimple(&DlgSession, NULL);
      }
    else if (!strncmp(cmd, "arrange", 3))
      {

@@ -795,13 +795,6 @@ void                ProgressbarHide(Progressbar * p);
 /* regex.c */
 int                 matchregexp(const char *rx, const char *s);
 
-/* settings.c */
-void                SettingsMoveResize(void);
-void                SettingsPlacement(void);
-void                SettingsAutoRaise(void);
-void                SettingsMiscellaneous(void);
-void                SettingsComposite(void);
-
 /* setup.c */
 void                MapUnmap(int start);
 void                SetupX(const char *dstr);

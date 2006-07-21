@@ -51,7 +51,16 @@ typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
 
 typedef void        (DialogCallbackFunc) (Dialog * d, int val, void *data);
-typedef void        (DialogItemCallbackFunc) (int val, void *data);
+typedef void        (DialogItemCallbackFunc) (DItem * di, int val, void *data);
+
+typedef struct
+{
+   const char         *name;
+   const char         *label;
+   const char         *title;
+   const char         *sound;
+   void                (*fill) (Dialog * d, DItem * table, void *data);
+} DialogDef;
 
 /* dialog.c */
 Dialog             *DialogCreate(const char *name);
@@ -67,6 +76,7 @@ void               *DialogGetData(Dialog * d);
 
 void                DialogShow(Dialog * d);
 void                DialogShowCentered(Dialog * d);
+void                DialogShowSimple(const DialogDef * dd, void *data);
 void                DialogRedraw(Dialog * d);
 
 void                DialogAddButton(Dialog * d, const char *text,
@@ -78,6 +88,7 @@ void                DialogAddFooter(Dialog * d, int flags,
 				    DialogCallbackFunc * cb);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
+Dialog             *DialogItemGetDialog(DItem * di);
 void                DialogItemSetCallback(DItem * di, DialogCallbackFunc * func,
 					  int val, void *data);
 void                DialogItemSetClass(DItem * di, ImageClass * ic,
@@ -122,6 +133,8 @@ void                DialogItemSliderGetBounds(DItem * di, int *lower,
 void                DialogItemAreaSetSize(DItem * di, int w, int h);
 void                DialogItemAreaGetSize(DItem * di, int *w, int *h);
 Win                 DialogItemAreaGetWindow(DItem * di);
+void                DialogItemAreaSetInitFunc(DItem * di,
+					      DialogItemCallbackFunc * func);
 void                DialogItemAreaSetEventFunc(DItem * di,
 					       DialogItemCallbackFunc * func);
 

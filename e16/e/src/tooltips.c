@@ -839,28 +839,14 @@ CB_ConfigureTooltips(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-SettingsTooltips(void)
+_DlgFillTooltips(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
-
-   d = DialogFind("CONFIGURE_TOOLTIPS");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_TOOLTIPS");
+   DItem              *di;
 
    tmp_tooltips = Conf_tooltips.enable;
    tmp_tooltiptime = Conf_tooltips.delay / 10;
    tmp_roottip = Conf_tooltips.showroottooltip;
 
-   d = DialogCreate("CONFIGURE_TOOLTIPS");
-   DialogSetTitle(d, _("Tooltip Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -888,16 +874,22 @@ SettingsTooltips(void)
    DialogItemSliderSetValPtr(di, &tmp_tooltiptime);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureTooltips);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgTooltips = {
+   "CONFIGURE_TOOLTIPS",
+   N_("Tooltips"),
+   N_("Tooltip Settings"),
+   "SOUND_SETTINGS_TOOLTIPS",
+   _DlgFillTooltips
+};
 
 static void
 TooltipsIpc(const char *params, Client * c __UNUSED__)
 {
    if (params && !strncmp(params, "cfg", 3))
      {
-	SettingsTooltips();
+	DialogShowSimple(&DlgTooltips, NULL);
      }
 }
 

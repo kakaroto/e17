@@ -1003,30 +1003,15 @@ CB_RememberWindowSettings(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
    SnapshotEwinDialog(sn->used);
 }
 
-void
-SettingsRemember(void)
+static void
+_DlgFillRemember(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
+   DItem              *di;
    Snapshot           *sn;
    int                 i, num;
    char                buf[128];
    const char         *s;
 
-   /* init remember window */
-   d = DialogFind("REMEMBER_WINDOW");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_REMEMBER");
-
-   d = DialogCreate("REMEMBER_WINDOW");
-   DialogSetTitle(d, _("Remembered Windows Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -1095,9 +1080,15 @@ SettingsRemember(void)
      }
 
    DialogAddFooter(d, DLG_OC, CB_ApplyRemember);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgRemember = {
+   "CONFIGURE_PAGER",
+   NULL,
+   N_("Remembered Windows Settings"),
+   "SOUND_SETTINGS_PAGER",
+   _DlgFillRemember
+};
 
 /* ... combine writes, only save after a timeout */
 

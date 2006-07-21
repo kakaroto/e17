@@ -971,28 +971,14 @@ CB_ConfigureFX(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-FxSettings(void)
+_DlgFillFx(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
-
-   d = DialogFind("CONFIGURE_FX");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_FX");
+   DItem              *di;
 
    tmp_effect_raindrops = FX_IsOn("raindrops");
    tmp_effect_ripples = FX_IsOn("ripples");
    tmp_effect_waves = FX_IsOn("waves");
 
-   d = DialogCreate("CONFIGURE_FX");
-   DialogSetTitle(d, _("Special FX Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -1016,9 +1002,15 @@ FxSettings(void)
    DialogItemCheckButtonSetPtr(di, &tmp_effect_waves);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureFX);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgFx = {
+   "CONFIGURE_FX",
+   N_("FX"),
+   N_("Special FX Settings"),
+   "SOUND_SETTINGS_FX",
+   _DlgFillFx
+};
 
 static void
 FxIpc(const char *params, Client * c __UNUSED__)
@@ -1051,7 +1043,7 @@ FxIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(word1, "cfg", 2))
      {
-	FxSettings();
+	DialogShowSimple(&DlgFx, NULL);
      }
 }
 

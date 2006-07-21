@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "dialog.h"
+#include "settings.h"
 
 static int          tmp_move;
 static int          tmp_resize;
@@ -42,30 +43,16 @@ CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    autosave();
 }
 
-void
-SettingsMoveResize(void)
+static void
+_DlgFillMoveResize(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di, *radio1, *radio2, *radio3;
-
-   d = DialogFind("CONFIGURE_MOVERESIZE");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_MOVERESIZE");
+   DItem              *di, *radio1, *radio2, *radio3;
 
    tmp_move = Conf.movres.mode_move;
    tmp_resize = Conf.movres.mode_resize;
    tmp_geominfo = Conf.movres.mode_info;
    tmp_update_while_moving = Conf.movres.update_while_moving;
 
-   d = DialogCreate("CONFIGURE_MOVERESIZE");
-   DialogSetTitle(d, _("Move & Resize Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -179,9 +166,15 @@ SettingsMoveResize(void)
    DialogItemCheckButtonSetPtr(di, &tmp_update_while_moving);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureMoveResize);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgMoveResize = {
+   "CONFIGURE_MOVERESIZE",
+   N_("Move/Resize"),
+   N_("Move & Resize Settings"),
+   "SOUND_SETTINGS_MOVERESIZE",
+   _DlgFillMoveResize
+};
 
 static char         tmp_with_leader;
 static char         tmp_switch_popup;
@@ -231,20 +224,10 @@ CB_ConfigurePlacement(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    autosave();
 }
 
-void
-SettingsPlacement(void)
+static void
+_DlgFillPlacement(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di, *radio;
-
-   d = DialogFind("CONFIGURE_PLACEMENT");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_PLACEMENT");
+   DItem              *di, *radio;
 
    tmp_with_leader = Conf.focus.transientsfollowleader;
    tmp_switch_popup = Conf.focus.switchfortransientmap;
@@ -268,10 +251,6 @@ SettingsPlacement(void)
    tmp_extra_head = Conf.extra_head;
 #endif
 
-   d = DialogCreate("CONFIGURE_PLACEMENT");
-   DialogSetTitle(d, _("Window Placement Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 1, 0);
 
    if (Conf.dialogs.headers)
@@ -409,9 +388,15 @@ SettingsPlacement(void)
 #endif
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigurePlacement);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgPlacement = {
+   "CONFIGURE_PLACEMENT",
+   N_("Placement"),
+   N_("Window Placement Settings"),
+   "SOUND_SETTINGS_PLACEMENT",
+   _DlgFillPlacement
+};
 
 static char         tmp_autoraise;
 static int          tmp_autoraisetime;
@@ -427,28 +412,14 @@ CB_ConfigureAutoraise(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    autosave();
 }
 
-void
-SettingsAutoRaise(void)
+static void
+_DlgFillAutoraise(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
-
-   d = DialogFind("CONFIGURE_AUTORAISE");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_AUTORAISE");
+   DItem              *di;
 
    tmp_autoraise = Conf.autoraise.enable;
    tmp_autoraisetime = Conf.autoraise.delay / 10;
 
-   d = DialogCreate("CONFIGURE_AUTORAISE");
-   DialogSetTitle(d, _("Autoraise Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -473,9 +444,15 @@ SettingsAutoRaise(void)
    DialogItemSliderSetValPtr(di, &tmp_autoraisetime);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureAutoraise);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgAutoraise = {
+   "CONFIGURE_AUTORAISE",
+   N_("Autoraise"),
+   N_("Autoraise Settings"),
+   "SOUND_SETTINGS_AUTORAISE",
+   _DlgFillAutoraise
+};
 
 static char         tmp_dialog_headers;
 static char         tmp_button_image;
@@ -495,30 +472,16 @@ CB_ConfigureMiscellaneous(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    autosave();
 }
 
-void
-SettingsMiscellaneous(void)
+static void
+_DlgFillMisc(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
-
-   d = DialogFind("CONFIGURE_MISCELLANEOUS");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_MISCELLANEOUS");
+   DItem              *di;
 
    tmp_dialog_headers = Conf.dialogs.headers;
    tmp_button_image = Conf.dialogs.button_image;
    tmp_animate_startup = Conf.startup.animate;
    tmp_saveunders = Conf.save_under;
 
-   d = DialogCreate("CONFIGURE_MISCELLANEOUS");
-   DialogSetTitle(d, _("Miscellaneous Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -552,9 +515,15 @@ SettingsMiscellaneous(void)
    DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureMiscellaneous);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgMisc = {
+   "CONFIGURE_MISCELLANEOUS",
+   N_("Miscellaneous"),
+   N_("Miscellaneous Settings"),
+   "SOUND_SETTINGS_MISCELLANEOUS",
+   _DlgFillMisc
+};
 
 #if USE_COMPOSITE
 #include "ecompmgr.h"
@@ -577,30 +546,19 @@ CB_ConfigureComposite(Dialog * d, int val, void *data __UNUSED__)
    ECompMgrConfigGet(cfg);
 }
 
-void
-SettingsComposite(void)
+static void
+_DlgFillComposite(Dialog * d, DItem * table, void *data __UNUSED__)
 {
    static cfg_composite Cfg_composite;
-   Dialog             *d;
-   DItem              *table, *di, *radio;
+   DItem              *di, *radio;
 
-   d = DialogFind("CONFIGURE_COMPOSITE");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_COMPOSITE");
-
-   d = DialogCreate("CONFIGURE_COMPOSITE");
    DialogSetTitle(d, _("Composite Settings"));
 
    /* Get current settings */
    ECompMgrConfigGet(&Cfg_composite);
    DialogSetData(d, &Cfg_composite);
 
-   table = DialogInitItem(d);
+   /* Layout */
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -660,7 +618,19 @@ SettingsComposite(void)
    DialogItemSliderSetValPtr(di, &Cfg_composite.fade_speed);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureComposite);
+}
 
-   DialogShow(d);
+const DialogDef     DlgComposite = {
+   "CONFIGURE_COMPOSITE",
+   N_("Composite"),
+   N_("Composite Settings"),
+   "SOUND_SETTINGS_COMPOSITE",
+   _DlgFillComposite
+};
+
+void
+SettingsComposite(void)
+{
+   DialogShowSimple(&DlgComposite, NULL);
 }
 #endif

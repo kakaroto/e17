@@ -100,6 +100,7 @@ e16_SOURCES = \
 	session.c               \
 	session.h               \
 	settings.c              \
+	settings.h              \
 	setup.c			\
 	size.c			\
 	slideout.c		\

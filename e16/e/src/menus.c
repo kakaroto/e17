@@ -2031,28 +2031,14 @@ CB_ConfigureMenus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-MenusSettings(void)
+_DlgFillMenus(Dialog * d, DItem * table, void *data __UNUSED__)
 {
-   Dialog             *d;
-   DItem              *table, *di;
-
-   d = DialogFind("CONFIGURE_MENUS");
-   if (d)
-     {
-	SoundPlay("SOUND_SETTINGS_ACTIVE");
-	DialogShow(d);
-	return;
-     }
-   SoundPlay("SOUND_SETTINGS_MENUS");
+   DItem              *di;
 
    tmp_warpmenus = Conf.menus.warp;
    tmp_animated_menus = Conf.menus.animate;
    tmp_menusonscreen = Conf.menus.onscreen;
 
-   d = DialogCreate("CONFIGURE_MENUS");
-   DialogSetTitle(d, _("Menu Settings"));
-
-   table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
    if (Conf.dialogs.headers)
@@ -2075,9 +2061,15 @@ MenusSettings(void)
    DialogItemCheckButtonSetPtr(di, &tmp_warpmenus);
 
    DialogAddFooter(d, DLG_OAC, CB_ConfigureMenus);
-
-   DialogShow(d);
 }
+
+const DialogDef     DlgMenus = {
+   "CONFIGURE_MENUS",
+   N_("Menus"),
+   N_("Menu Settings"),
+   "SOUND_SETTINGS_MENUS",
+   _DlgFillMenus
+};
 
 static void
 MenusIpc(const char *params, Client * c __UNUSED__)
@@ -2102,7 +2094,7 @@ MenusIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strncmp(cmd, "cfg", 2))
      {
-	MenusSettings();
+	DialogShowSimple(&DlgMenus, NULL);
      }
    else if (!strncmp(cmd, "list", 2))
      {
