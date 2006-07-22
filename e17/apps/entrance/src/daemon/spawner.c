@@ -391,9 +391,35 @@ Entranced_AtExit(void)
    entranced_debug("Entranced exits.\n");
 }
 
+
+
+void usage(char* name)
+{
+   /* This should probably in a separate usage function, but bleh */
+   printf("Entranced - Launcher for the Entrance Display Manager\n");
+   printf("Usage: %s [OPTION] ...\n\n", name);
+   printf
+	  ("--------------------------------------------------------------------------\n");
+   printf("  -c CONFIG          Specify config file for greeter\n");
+   printf("  -d DISPLAY         Connect to an existing X server\n");
+   printf("  -help              Display this help message\n");
+   /*printf("  -verbose           Display extra debugging info\n");*/
+   printf
+	  ("  -nodaemon          Don't fork to background (useful for init scripts)\n");
+   printf
+	  ("==========================================================================\n\n");
+   printf
+	  ("Note: if you're launching Entrance from within an existing X session, don't\n");
+   printf
+	  ("try to use entranced or you may get unexpected results. Instead, launch\n");
+   printf("entrance directly by typing \"entrance\".\n\n");
+   exit(0);
+}
+
 /*
  * Main function
  */
+
 int
 main(int argc, char **argv)
 {
@@ -448,26 +474,7 @@ main(int argc, char **argv)
            nodaemon = 1;
            break;
         case 'h':
-           /* This should probably in a separate usage function, but bleh */
-           printf("Entranced - Launcher for the Entrance Display Manager\n");
-           printf("Usage: %s [OPTION] ...\n\n", argv[0]);
-           printf
-              ("--------------------------------------------------------------------------\n");
-           printf("  -c CONFIG          Specify config file for greeter\n");
-           printf("  -d DISPLAY         Connect to an existing X server\n");
-           printf("  -help              Display this help message\n");
-           /*printf("  -verbose           Display extra debugging info\n");*/
-           printf
-              ("  -nodaemon          Don't fork to background (useful for init scripts)\n");
-           printf
-              ("==========================================================================\n\n");
-           printf
-              ("Note: if you're launching Entrance from within an existing X session, don't\n");
-           printf
-              ("try to use entranced or you may get unexpected results. Instead, launch\n");
-           printf("entrance directly by typing \"entrance\".\n\n");
-           exit(0);
-
+			usage(argv[0]);
         /*case 'v':
            config.debuglevel = 1;*/
 
