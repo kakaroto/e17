@@ -111,8 +111,6 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 		obj->value = strdup(keywords->keyword);
 		ret_list = evas_list_append(ret_list, obj);
 
-		printf("Adding keyword %s -> %s\n", key, keywords->keyword);
-
 		keywords = keywords->next;
 	}
 	EXTRACTOR_freeKeywords(keywords);

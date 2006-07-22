@@ -40,6 +40,7 @@ static evfs_metadata_root* metadata_root;
 
 static char* homedir;
 static char metadata_file[PATH_MAX];
+static char metadata_db[PATH_MAX];
 static Eet_File* _evfs_metadata_eet;
 
 static sqlite3 *db;
@@ -318,6 +319,7 @@ void evfs_metadata_initialise()
 		}
 
 		snprintf(metadata_file, PATH_MAX, "%s/.e/evfs/evfs_metadata.eet", homedir);
+		snprintf(metadata_db, PATH_MAX, "%s/.e/evfs/evfs_metadata.db", homedir);
 
 		if (stat(metadata_file, &config_dir_stat)) {
 			printf("Making new metadata file..\n");
@@ -492,6 +494,7 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 }
 
 
+
 void evfs_metadata_group_header_file_remove(evfs_filereference* ref, char* group)
 {
 	char* file_path;
@@ -633,17 +636,56 @@ int evfs_metadata_extract_fork(evfs_filereference* ref)
 {	
 	int pid;
 
-	if (!(pid = fork())) {
-		evfs_plugin* plugin;
-		evfs_command* command;
+	/*At the moment, we only extract meta from posix folders*/
+	/*This may change, but we'll have to copy the file locally,
+	 * so libextractor can have a shot at it*/
+	if (!strcmp(ref->plugin_uri,"file")) {
 
-		printf("Extract fork started: %s..\n", ref->path);
+		if (!(pid = fork())) {
+			evfs_plugin* plugin;
+			evfs_command* command;
+			Evas_List* meta_list;
+			int ret;
+			sqlite3* db;
+			int file;
+			Evas_List* l;
+			evfs_meta_obj* o;
 
-		command = NEW(evfs_command);
-		command->file_command.files = calloc(1, sizeof(evfs_filereference*));
-		command->file_command.files[0] = ref;
-		plugin = evfs_meta_plugin_get_for_type(evfs_server_get(), "object/undefined");
-		(*EVFS_PLUGIN_META(plugin)->functions->evfs_file_meta_retrieve)(NULL,command);
+			ret = sqlite3_open(metadata_db, &db);
+			if( ret ){
+			    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(db));
+			    sqlite3_close(db);
+			    return 0;
+			}
+
+			printf("Extract fork started: %s..\n", ref->path);
+
+			file = evfs_metadata_db_id_for_file(db,ref,1);
+
+			if (file) {
+				command = NEW(evfs_command);
+				command->file_command.files = calloc(1, sizeof(evfs_filereference*));
+				command->file_command.files[0] = ref;
+				plugin = evfs_meta_plugin_get_for_type(evfs_server_get(), "object/undefined");
+				meta_list = (*EVFS_PLUGIN_META(plugin)->functions->evfs_file_meta_retrieve)(NULL,command);
+	
+				for (l=meta_list;l;) {
+					o=l->data;
+
+					evfs_metadata_db_file_keyword_add(db, file, o->key, o->value);	
+					
+					if (o->key) free(o->key);
+					if (o->value) free(o->value);
+					free(o);
+					l=l->next;
+				}
+			} else {
+				printf("metadata_extract_fork: could not insert file to db\n");
+			}
+
+			sqlite3_close(db);
+		}
+
 	}
 
 	return 1;

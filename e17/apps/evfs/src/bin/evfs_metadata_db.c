@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <sqlite3.h>
 #include "evfs_metadata_db.h"
+#include "evfs.h"
 
 
 /* TODO
@@ -98,7 +99,6 @@ int evfs_metadata_db_upgrade_2_3(sqlite3* db)
 {
 	int ret;
 	char* errMsg = 0;
-	char query[1024];
 
 	printf("Performing upgrade from v.2 to v.3\n");
 
@@ -149,8 +149,6 @@ void evfs_metadata_db_init(sqlite3** db)
 	
 	/*Check if we need to seed the DB*/
 	if (stat(metadata_db, &config_dir_stat)) {
-		char* errMsg = 0;
-		
 		ret = sqlite3_open(metadata_db, db);
 		if( ret ){
 		    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(*db));
@@ -232,4 +230,67 @@ int evfs_metadata_db_upgrade_check(sqlite3* db, int startmode)
 	} else {
 		return EVFS_METADATA_DB_CONFIG_LATEST;
 	}
+}
+
+
+int evfs_metadata_db_id_for_file(sqlite3* db, evfs_filereference* ref, int create)
+{
+	char* file_path;
+	char query[PATH_MAX];
+	int ret;
+	int file = 0;
+	char* errMsg = 0;
+	sqlite3_stmt *pStmt;
+
+	
+	/*Build a path*/
+	file_path = evfs_filereference_to_string(ref);
+	printf("File path is: %s\n", file_path);
+
+
+	snprintf(query, sizeof(query), "select id from File where filename ='%s'", file_path);
+	ret = sqlite3_prepare(db, query, 
+			-1, &pStmt, 0);
+
+	if (ret == SQLITE_OK) {
+		ret = sqlite3_step(pStmt);
+		if (ret == SQLITE_ROW)  {
+			file = sqlite3_column_int(pStmt,0);
+		} else {
+			if (create) {
+				snprintf(query, sizeof(query), "insert into File (filename) select '%s';", file_path);
+				ret = sqlite3_exec(db, query, 
+				NULL, 0,&errMsg);
+	
+				file = (int)sqlite3_last_insert_rowid(db);
+			} else {
+				file = 0;
+			}
+		}
+	} else {
+		printf("id_for_file: sqlite error\n");
+		file = 0;
+	}
+	sqlite3_reset(pStmt);
+	sqlite3_finalize(pStmt);
+
+	return file;
+}
+
+void evfs_metadata_db_file_keyword_add(sqlite3* db, int file, char* key, char* value)
+{
+	char* file_path;
+	char query[512];
+	int ret;
+	char* errMsg = 0;
+
+	if (key&&value) {
+		snprintf(query,sizeof(query), "insert into FileMeta (File, keyword, value) select %d, '%s', '%s';", file,key,value);
+		ret = sqlite3_exec(db, 
+		query, 
+		NULL, 0,&errMsg);
+	} else {
+		printf("db_file_keyword_add: key or value is null\n");
+	}
+
 }
