@@ -716,8 +716,6 @@ main(int argc, char *argv[])
    /* Parse command-line options */
    while (1)
    {
-      char *t;
-
       c = getopt_long(argc, argv, "hd:g:t:Tc:z:", d_opt, NULL);
       if (c == -1)
          break;
@@ -729,45 +727,22 @@ main(int argc, char *argv[])
            display = strdup(optarg);
            break;
         case 'g':
-           t = strchr((const char *) optarg, 'x');
-           if (!t || t >= (optarg + strlen(optarg)))
-           {
-              syslog(LOG_CRIT,
-                     "Invalid argument '%s' given for geometry. Exiting.",
-                     optarg);
-              return (-1);
-           }
-           else
-           {
-              g_x = atoi((const char *) optarg);
-              g_y = atoi((const char *) (t + 1));
-              if (!g_x || !g_y)
-              {
-                 syslog(LOG_CRIT,
-                        "Invalid argument '%s' given for geometry. Exiting.",
-                        optarg);
-                 return (-1);
-              }
-              fullscreen = 0;
-           }
-           break;
+		   atog(optarg, &g_x, &g_y);
+
+		   if (!g_x || !g_y)
+		   {
+			  syslog(LOG_CRIT,
+					"Invalid argument '%s' given for geometry. Exiting.",
+					optarg);
+			  return (-1);
+		   }
+
+		   fullscreen = 0;
+	       break;
         case 't':
            /* Allow arbitrary paths to theme files */
-           t = strchr((const char *) optarg, '/');
-           if (t)
-              theme = strdup(optarg);
-           else
-           {
-              theme = calloc(1, PATH_MAX);
-              t = strrchr((const char *) optarg, '.');
-              if (t && !strcmp(t, ".edj"))
-                 snprintf(theme, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
-                          optarg);
-              else
-                 snprintf(theme, PATH_MAX, "%s/themes/%s.edj",
-                          PACKAGE_DATA_DIR, optarg);
-           }
-           break;
+		   theme = theme_normalize_path(theme, optarg);
+          break;
         case 'T':
            testing = 1;
            fullscreen = 0;

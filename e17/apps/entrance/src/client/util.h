@@ -19,4 +19,7 @@ void entrance_debug(char *msg);
 void entrance_edje_object_resize_intercept_cb(void *data, Evas_Object * o,
                                               Evas_Coord w, Evas_Coord h);
 
+char* theme_normalize_path(char*, const char*);
+void atog(const char*, int *, int *);
+
 #endif
