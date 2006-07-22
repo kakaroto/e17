@@ -16,7 +16,7 @@ entropy_plugin_type_get ()
 char *
 entropy_plugin_identify ()
 {
-  return (char *) "Simple MIME identifier";
+  return (char *) "Simple action execution plugin";
 }
 
 
