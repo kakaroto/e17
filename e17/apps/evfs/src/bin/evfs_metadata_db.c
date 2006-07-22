@@ -9,7 +9,7 @@
  * * Make a 'bulk-run' function to avoid the endless repeated sqlite3_exec
  */
 
-#define EVFS_METADATA_DB_CONFIG_LATEST 2 
+#define EVFS_METADATA_DB_CONFIG_LATEST 3
 static char metadata_db[PATH_MAX];
 static char* homedir;
 static Ecore_Hash* db_upgrade_hash = NULL;
@@ -94,6 +94,30 @@ int evfs_metadata_db_upgrade_1_2(sqlite3* db)
 	return evfs_metadata_db_version_bump(db, "2");
 }
 
+int evfs_metadata_db_upgrade_2_3(sqlite3* db)
+{
+	int ret;
+	char* errMsg = 0;
+	char query[1024];
+
+	printf("Performing upgrade from v.2 to v.3\n");
+
+	ret = sqlite3_exec(db, 
+	"create table FileMeta (id integer primary key AUTOINCREMENT, File int, keyword varchar(255), value varchar(255));", 
+	NULL, 0,&errMsg);
+
+	ret = sqlite3_exec(db, 
+	"create index FileMeta_idx_file on FileMeta(File);", 
+	NULL, 0,&errMsg);
+
+	ret = sqlite3_exec(db, 
+	"create index FileMeta_idx_keyword_value on FileMeta(Keyword,Value);", 
+	NULL, 0,&errMsg);
+
+
+	return evfs_metadata_db_version_bump(db, "3");
+}
+
 int evfs_metadata_db_version_bump(sqlite3* db, char* ver)
 {
 	int ret;
@@ -121,6 +145,7 @@ void evfs_metadata_db_init(sqlite3** db)
 	db_upgrade_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	ecore_hash_set(db_upgrade_hash, (int*)0, evfs_metadata_db_upgrade_0_1);
 	ecore_hash_set(db_upgrade_hash, (int*)1, evfs_metadata_db_upgrade_1_2);
+	ecore_hash_set(db_upgrade_hash, (int*)2, evfs_metadata_db_upgrade_2_3);
 	
 	/*Check if we need to seed the DB*/
 	if (stat(metadata_db, &config_dir_stat)) {

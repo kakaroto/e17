@@ -632,14 +632,14 @@ void evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key,
 
 int evfs_metadata_extract_init()
 {
-	if (!evfs_object_client_is_get()) {
+	/*if (!evfs_object_client_is_get()) {
 		if (!(_metadata_fork = fork())) {
 			printf("Metadata fork initialised..\n");
 			while ( 1 ) {
 				sleep(1);
 			}
 		}
-	}
+	}*/
 
 	return 1;
 }
