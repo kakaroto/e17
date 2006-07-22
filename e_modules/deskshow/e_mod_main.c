@@ -33,7 +33,7 @@ static void _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 				   void *event_info);
 
 static E_Module *desk_module = NULL;
-Ecore_Event_Handler *handler;
+Evas_List *handlers;
 
 static E_Gadcon_Client *
 _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
@@ -64,8 +64,12 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _button_cb_mouse_down, inst);
-   handler = ecore_event_handler_add(E_EVENT_DESK_SHOW, 
-       _deskshow_cb_event_desk_show, inst);
+   handlers = evas_list_append(handlers,
+	 ecore_event_handler_add(E_EVENT_DESK_SHOW,
+	    _deskshow_cb_event_desk_show, inst));
+   handlers = evas_list_append(handlers,
+	 ecore_event_handler_add(E_EVENT_DESK_DESKSHOW,
+	    _deskshow_cb_event_desk_show, inst));
   return gcc;
 }
 
@@ -129,33 +133,7 @@ _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 	     edje_object_signal_emit(inst->o_button, "passive", "");
 	   else
 	     edje_object_signal_emit(inst->o_button, "active", "");
-
-	  bl = e_container_border_list_first (zone->container);
-	  while ((bd = e_container_border_list_next (bl)))
-	    {
-	      if (bd->desk == desk)
-		{
-		  if (desk->deskshow_toggle)
-		    {
-		      if (bd->deskshow)
-			e_border_uniconify (bd);
-		      bd->deskshow = 0;
-		    }
-		  else
-		    {
-		      if (bd->iconic)
-			continue;
-		      if (bd->client.netwm.state.skip_taskbar)
-			continue;
-		      if (bd->user_skip_winlist)
-			continue;
-		      e_border_iconify (bd);
-		      bd->deskshow = 1;
-		    }
-		}
-	    }
-	  desk->deskshow_toggle = desk->deskshow_toggle ? 0 : 1;
-	  e_container_border_list_free (bl);
+	   e_desk_deskshow(zone);
 	}
 
 //      evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
@@ -198,7 +176,11 @@ EAPI int
 e_modapi_shutdown (E_Module * m)
 {
   desk_module = NULL;
-  ecore_event_handler_del(handler);
+  while (handlers) 
+    {
+       ecore_event_handler_del(handlers->data);
+       handlers = evas_list_remove_list(handlers, handlers);
+    }
   e_gadcon_provider_unregister (&_gadcon_class);
   return 1;
 }
