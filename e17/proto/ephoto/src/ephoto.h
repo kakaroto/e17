@@ -13,6 +13,8 @@ void add_album_cb(Ewl_Widget *w, void *event, void *data);
 void add_slideshow_cb(Ewl_Widget *w, void *event, void *data);
 void album_clicked_cb(Ewl_Widget *w, void *event, void *data);
 void slideshow_clicked_cb(Ewl_Widget *w, void *event, void *data);
+int populate_album_cb(void *NotUsed, int argc, char **argv, char **ColName);
+int populate_slideshow_cb(void *NotUsed, int argc, char **argv, char **ColName);
 
 typedef struct _Main Main;
 
@@ -25,7 +27,8 @@ struct _Main
  Ewl_Widget *menubar;
  Ewl_Widget *menu;
  Ewl_Widget *menu_item;
- Ewl_Widget *paned;
+ Ewl_Widget *hpaned;
+ Ewl_Widget *hseparator;
  Ewl_Widget *albums;
  Ewl_Widget *albums_border;
  Ewl_Widget *slideshows;
@@ -37,5 +40,7 @@ struct _Main
 };
 
 extern Main *m;
+extern const char *current_album;
+extern const char *current_slideshow;
 
 #endif

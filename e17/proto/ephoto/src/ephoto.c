@@ -1,5 +1,7 @@
 #include "ephoto.h"
 Main *m = NULL;
+const char *current_album;
+const char *current_slideshow;
 
 int
 main(int argc, char **argv)
@@ -9,6 +11,8 @@ main(int argc, char **argv)
  char ephoto_path[PATH_MAX];
  char database[PATH_MAX];
  int argint = 1;
+ int rc = SQLITE_OK;
+ int i = 0;
  Ecore_List *files; 
  sqlite3 *db;
 
@@ -37,21 +41,24 @@ main(int argc, char **argv)
  if (!ecore_file_exists(database))
  {
   sqlite3_open(database, &db);
-  sqlite3_exec(db, "CREATE TABLE albums(id INTEGER PRIMARY KEY AUTOINCREMENT," 
+  sqlite3_exec(db, "CREATE TABLE images(id INTEGER PRIRMARY KEY AUTOINCREMENT,"
 			"name VARCHAR(255));", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE a_images(id INTEGER PRIMARY KEY AUTOINCREMENT," 
+  sqlite3_exec(db, "CREATE TABLE albums(id INTEGER PRIMARY KEY AUTOINCREMENT," 
 			"name VARCHAR(255));", NULL, NULL, NULL);
   sqlite3_exec(db, "CREATE TABLE albums_full(id INTEGER PRIMARY KEY AUTOINCREMENT," 
 			"album_id INTEGER, image_id INTEGER);", NULL, NULL, NULL);
   sqlite3_exec(db, "CREATE TABLE slideshows(id INTEGER PRIMARY KEY AUTOINCREMENT,"
 			"name VARCHAR(255));", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE s_images(id INTEGER PRIMARY KEY AUTOINCREMENT,"
-			"name VARCHAR(255));", NULL, NULL, NULL);
   sqlite3_exec(db, "CREATE TABLE slideshows_images_full(id INTEGER PRIMARY KEY AUTOINCREMENT," 
-			"slideshows_id INTEGER, images_id INTEGER);", NULL, 0, 0);
-  sqlite3_exec(db, "CREATE TABLE s_settings(id INTEGER PRIMARY KEY AUTOINCREMENT,"
+			"slideshows_id INTEGER, images_id INTEGER);", NULL, NULL, NULL);
+  sqlite3_exec(db, "CREATE TABLE settings(id INTEGER PRIMARY KEY AUTOINCREMENT,"
 			"name VARCHAR(255));", NULL, NULL, NULL);
-  sqlite3_exec(db, "CREATE TABLE slideshows_settings_full(id INTEGER PRIMARY KEY AUTOINCREMENT," 			"slideshows_id INTEGER, settings_id INTEGER);", NULL, NULL, NULL);
+  sqlite3_exec(db, "CREATE TABLE slideshows_settings_full(id INTEGER PRIMARY KEY AUTOINCREMENT,"
+ 			"slideshows_id INTEGER, settings_id INTEGER);", NULL, NULL, NULL);
+  sqlite3_exec(db, "INSERT OR IGNORE INTO albums (name) VALUES ('Complete Library');", 
+			NULL, NULL, NULL);
+  sqlite3_exec(db, "INSERT OR IGNORE INTO slideshows (name) VALUES ('Complete Library Slideshow');",
+			NULL, NULL, NULL);
   sqlite3_close(db);
  }
 
@@ -135,15 +142,16 @@ main(int argc, char **argv)
  ewl_object_fill_policy_set(EWL_OBJECT(m->menu_item), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->menu_item);
 
- m->paned = ewl_hpaned_new();
- ewl_object_alignment_set(EWL_OBJECT(m->paned), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->vbox), m->paned);
- ewl_object_fill_policy_set(EWL_OBJECT(m->paned), EWL_FLAG_FILL_ALL);
- ewl_widget_show(m->paned);
+ m->hpaned = ewl_hpaned_new();
+ ewl_object_alignment_set(EWL_OBJECT(m->hpaned), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(m->vbox), m->hpaned);
+ ewl_object_fill_policy_set(EWL_OBJECT(m->hpaned), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(m->hpaned);
 
  m->groups = ewl_vbox_new();
- ewl_container_child_append(EWL_CONTAINER(m->paned), m->groups);
+ ewl_container_child_append(EWL_CONTAINER(m->hpaned), m->groups);
  ewl_object_fill_policy_set(EWL_OBJECT(m->groups), EWL_FLAG_FILL_ALL);
+ ewl_object_size_request(EWL_OBJECT(m->groups), 30, 250);
  ewl_widget_show(m->groups);
 
  m->albums_border = ewl_border_new();
@@ -152,13 +160,21 @@ main(int argc, char **argv)
  ewl_container_child_append(EWL_CONTAINER(m->groups), m->albums_border);
  ewl_object_alignment_set(EWL_OBJECT(m->albums_border), EWL_FLAG_ALIGN_CENTER);
  ewl_object_fill_policy_set(EWL_OBJECT(m->albums_border), EWL_FLAG_FILL_ALL);
+ ewl_object_size_request(EWL_OBJECT(m->albums_border), 30, 250);
  ewl_widget_show(m->albums_border);
 
  m->albums = ewl_scrollpane_new();
  ewl_widget_state_set(EWL_WIDGET(m->albums), "nobg", EWL_STATE_PERSISTENT);
  ewl_container_child_append(EWL_CONTAINER(m->albums_border), m->albums);
  ewl_object_fill_policy_set(EWL_OBJECT(m->albums), EWL_FLAG_FILL_ALL);
+ ewl_box_spacing_set(EWL_BOX(EWL_SCROLLPANE(m->albums)->box), 8);
  ewl_widget_show(m->albums);
+
+ m->hseparator = ewl_hseparator_new();
+ ewl_object_alignment_set(EWL_OBJECT(m->hseparator), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(m->groups), m->hseparator);
+ ewl_object_fill_policy_set(EWL_OBJECT(m->hseparator), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(m->hseparator);
 
  m->slideshows_border = ewl_border_new();
  ewl_border_text_set(EWL_BORDER(m->slideshows_border), "Slideshows");
@@ -166,18 +182,20 @@ main(int argc, char **argv)
  ewl_container_child_append(EWL_CONTAINER(m->groups), m->slideshows_border);
  ewl_object_alignment_set(EWL_OBJECT(m->slideshows_border), EWL_FLAG_ALIGN_CENTER);
  ewl_object_fill_policy_set(EWL_OBJECT(m->slideshows_border), EWL_FLAG_FILL_ALL);
+ ewl_object_size_request(EWL_OBJECT(m->slideshows_border), 30, 250);
  ewl_widget_show(m->slideshows_border);
 
  m->slideshows = ewl_scrollpane_new();
  ewl_widget_state_set(EWL_WIDGET(m->slideshows), "nobg", EWL_STATE_PERSISTENT);
  ewl_container_child_append(EWL_CONTAINER(m->slideshows_border), m->slideshows);
  ewl_object_fill_policy_set(EWL_OBJECT(m->slideshows), EWL_FLAG_FILL_ALL);
+ ewl_box_spacing_set(EWL_BOX(EWL_SCROLLPANE(m->slideshows)->box), 8);
  ewl_widget_show(m->slideshows);
 
  m->viewer_border = ewl_border_new();
  ewl_border_text_set(EWL_BORDER(m->viewer_border), "Viewer");
  ewl_border_label_alignment_set(EWL_BORDER(m->viewer_border), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->paned), m->viewer_border);
+ ewl_container_child_append(EWL_CONTAINER(m->hpaned), m->viewer_border);
  ewl_object_alignment_set(EWL_OBJECT(m->viewer_border), EWL_FLAG_ALIGN_CENTER);
  ewl_object_fill_policy_set(EWL_OBJECT(m->viewer_border), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->viewer_border);
@@ -193,6 +211,15 @@ main(int argc, char **argv)
  ewl_container_child_append(EWL_CONTAINER(m->viewer), m->viewer_freebox);
  ewl_object_fill_policy_set(EWL_OBJECT(m->viewer_freebox), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->viewer_freebox);
+
+ sqlite3_open(database, &db);
+ rc = sqlite3_exec(db, "SELECT name FROM albums;", populate_album_cb, 0, 0);
+ sqlite3_close(db);
+
+ sqlite3_open(database, &db);
+ rc = sqlite3_exec(db, "SELECT name FROM slideshows;", populate_slideshow_cb, 0, 0);
+ sqlite3_close(db);
+
 
  ewl_main();
  return 0;

@@ -248,6 +248,12 @@ void add_slideshow_cb(Ewl_Widget *w, void *event, void *data)
 
 void album_clicked_cb(Ewl_Widget *w, void *event, void *data)
 {
+ char *home;
+ char database[PATH_MAX];
+ sqlite3 *db;
+
+ current_album = ewl_icon_label_get(EWL_ICON(w));
+
  w = NULL;
  event = NULL;
  data = NULL;
@@ -256,8 +262,49 @@ void album_clicked_cb(Ewl_Widget *w, void *event, void *data)
 
 void slideshow_clicked_cb(Ewl_Widget *w, void *event, void *data)
 {
+ char *home;
+ char database[PATH_MAX];
+ sqlite3 *db;
+
+ current_slideshow = ewl_icon_label_get(EWL_ICON(w));
+
  w = NULL;
  event = NULL;
  data = NULL;
  return;
 }
+
+int populate_album_cb(void *NotUsed, int argc, char **argv, char **ColName)
+{
+ int i;
+
+ for(i = 0; i < argc; i++)
+ {
+  m->icon = ewl_icon_new();
+  ewl_icon_label_set(EWL_ICON(m->icon), argv[i]);
+  ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
+  ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, album_clicked_cb, NULL);
+  ewl_container_child_append(EWL_CONTAINER(m->albums), m->icon);
+  ewl_widget_show(m->icon);
+ }  
+
+ return 0;
+}
+
+int populate_slideshow_cb(void *NotUsed, int argc, char **argv, char **ColName)
+{
+ int i;
+
+ for(i = 0; i < argc; i++)
+ {
+  m->icon = ewl_icon_new();
+  ewl_icon_label_set(EWL_ICON(m->icon), argv[i]);
+  ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
+  ewl_callback_append(m->icon, EWL_CALLBACK_CLICKED, slideshow_clicked_cb, NULL);
+  ewl_container_child_append(EWL_CONTAINER(m->slideshows), m->icon); 
+  ewl_widget_show(m->icon);
+ }
+
+ return 0;
+}
+
