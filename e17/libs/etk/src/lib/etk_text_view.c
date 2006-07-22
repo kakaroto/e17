@@ -158,16 +158,26 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down
 {
    Etk_Text_View *text_view;
    Etk_Textblock_Iter *cursor;
+   Etk_Textblock_Iter *selection;
    
    if (!(text_view = ETK_TEXT_VIEW(object)) || !event || !text_view->textblock_object)
       return;
    
    cursor = etk_textblock_object_cursor_get(text_view->textblock_object);
+   selection = etk_textblock_object_selection_bound_get(text_view->textblock_object);
    
    if (strcmp(event->key, "Left") == 0)
+   {
       etk_textblock_iter_backward_char(cursor);
+      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+         etk_textblock_iter_copy(selection, cursor);
+   }
    else if (strcmp(event->key, "Right") == 0)
+   {
       etk_textblock_iter_forward_char(cursor);
+      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+         etk_textblock_iter_copy(selection, cursor);
+   }
    else if (strcmp(event->key, "Return") == 0 || strcmp(event->key, "KP_Enter") == 0)
       etk_textblock_text_insert(text_view->textblock, cursor, "\n", -1);
    else if (event->string && !(strlen(event->string) == 1 && event->string[0] < 0x20))

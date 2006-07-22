@@ -57,6 +57,15 @@ void etk_test_text_view_window_create(void *data)
             "<i>effect:</i> The type of effect to apply on the text\n"
             "<i>color1:</i> The first color of the effect\n"
             "<i>color2:</i> The second color of the effect"
+      "</p>"
+      "<p left_margin=30>"
+         "<b>&lt;p&gt;:</b>"
+      "</p>"
+      "<p left_margin=60>"
+            "<i>align:</i> The horizontal alignment of the text of the paragraph\n"
+            "<i>wrap:</i> The way the text is wrapped\n"
+            "<i>left_margin:</i> The left margin of the paragraph, in pixels\n"
+            "<i>right_margin:</i> The right margin of the paragraph, in pixels"
       "</p>",
       ETK_TRUE);
    

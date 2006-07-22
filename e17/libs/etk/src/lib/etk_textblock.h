@@ -54,7 +54,7 @@ typedef enum Etk_Textblock_Tag_Type
 typedef enum Etk_Textblock_Style_Type
 {
    ETK_TEXTBLOCK_STYLE_NONE,                    /**< No style is applied */
-   ETK_TEXTBLOCK_STYLE_OUTLINE,                 /**< The text is oulined */
+   ETK_TEXTBLOCK_STYLE_OUTLINE,                 /**< The text is outlined */
    ETK_TEXTBLOCK_STYLE_SHADOW,                  /**< The text has a sharp shadow */
    ETK_TEXTBLOCK_STYLE_SOFT_OUTLINE,            /**< The text has a soft outline */
    ETK_TEXTBLOCK_STYLE_GLOW,                    /**< The text has a glow */
