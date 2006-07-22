@@ -37,13 +37,16 @@ struct _Picture_Local_List
    /* ecore idler to load in background */
    struct
    {
+      Evas_List *queue;
+
       Ecore_Idler *idler;
+      Ecore_Timer *timer;
       Popup_Warn  *popup;
 
       Picture_Local_Dir *current_dir;
 
       Evas_List  *dirs;
-      Ecore_List *file;
+      DIR *odir;
    } loader;
 
    /* event to warn photo items wich are waiting for pictures */
@@ -60,6 +63,7 @@ static Picture_Local_List *pictures_local;
 static void _pictures_old_del(int force, int force_now);
 
 static int  _load_idler(void *data);
+static int  _load_timer(void *data);
 static void _load_idler_stop(void);
 static int  _load_cb_ev_fill(void *data, int type, void *event);
 
@@ -122,7 +126,9 @@ void photo_picture_local_load_start(void)
    pictures_local->thumb.popup = NULL;
 
    /* initialise and launch loader */
+   pictures_local->loader.queue = NULL;
    pictures_local->loader.idler = ecore_idler_add(_load_idler, NULL);
+   pictures_local->loader.timer = ecore_timer_add(0.2, _load_timer, NULL);
 
    if (photo->config_dialog)
      photo_config_dialog_refresh_local_load();
@@ -299,9 +305,10 @@ _load_idler(void *data)
    Picture_Local_List *pl;
    Picture_Local_Dir *d;
    Evas_List *l;
-   Picture *picture;
-   char *name, *file_tmp;
+   char *file_tmp;
    char file[200];
+   struct dirent *fs;
+   struct stat fs_stat;
 
    pl = pictures_local;
 
@@ -329,9 +336,7 @@ _load_idler(void *data)
                   pl->loader.current_dir = d;
                   pl->loader.dirs = evas_list_append(pl->loader.dirs,
                                                      strdup(d->path));
-		  if (pl->loader.file && ecore_list_is_empty(pl->loader.file))
-		    ecore_list_destroy(pl->loader.file);
-		  pl->loader.file = NULL;
+		  pl->loader.odir = NULL;
                   DPICL(("Going to read %s", d->path));
 		  if (photo->config_dialog)
 		    photo_config_dialog_refresh_local_dirs();
@@ -341,9 +346,7 @@ _load_idler(void *data)
         /* no more directories to load */
         if (!pl->loader.current_dir)
           {
-             if (pl->loader.file)
-               ecore_list_destroy(pl->loader.file);
-             pl->loader.file = NULL;
+             pl->loader.odir = NULL;
              pl->loader.idler = NULL;
              if (photo->config_dialog)
                {
@@ -359,74 +362,114 @@ _load_idler(void *data)
 			  evas_list_count(pl->pictures) - pl->pictures_waiting_delete);
 		 POPUP_LOADING(pl, buf, 3);
                }
+             if (pl->loader.timer)
+               {
+                  ecore_timer_del(pl->loader.timer);
+               }
+             pl->loader.timer = ecore_timer_add(0.0001, _load_timer, NULL);
              return 0;
           }
      }
 
    /* first dir list */
-   if ( !pl->loader.file )
-     pl->loader.file = ecore_file_ls(evas_list_data(pl->loader.dirs));
+   if ( !pl->loader.odir )
+     pl->loader.odir = opendir((char *)evas_list_data(pl->loader.dirs));
 
    /* no more files in the current loader.dirs item */
-   if ( !(name = ecore_list_next(pl->loader.file)) )
+   if ( !pl->loader.odir || !(fs = readdir(pl->loader.odir)) )
      {
         DD(("removing %s", (char *)evas_list_data(pl->loader.dirs)));
         /* go to next dir */
-	ecore_list_destroy(pl->loader.file);
-	pl->loader.file = NULL;
+        closedir(pl->loader.odir);
+	pl->loader.odir = NULL;
         free(evas_list_data(pl->loader.dirs));
         pl->loader.dirs = evas_list_remove_list(pl->loader.dirs,
                                                 pl->loader.dirs);
-        if (!evas_list_count(pl->loader.dirs))
-          return 1;
-        /* list the new dir */
-        pl->loader.file = ecore_file_ls(evas_list_data(pl->loader.dirs));
         return 1;
      }
 
-   snprintf(file, sizeof(file),
-            "%s/%s", (char *)evas_list_data(pl->loader.dirs), name);
-
-   if (!pl->loader.current_dir->read_hidden && (name[0] == '.'))
+   if ( (!strcmp(fs->d_name, ".")) || (!strcmp(fs->d_name, "..")) ||
+        (!pl->loader.current_dir->read_hidden && (fs->d_name[0] == '.')) )
      return 1;
-   if ((file_tmp = ecore_file_readlink(file)))
+
+   snprintf(file, sizeof(file),
+            "%s/%s", (char *)evas_list_data(pl->loader.dirs), fs->d_name);
+
+   if (stat(file, &fs_stat) < 0) return 1;
+
+   if ( (S_ISLNK(fs_stat.st_mode)) &&
+        (file_tmp = ecore_file_readlink(file)) )
      {
-        name = strdup(ecore_file_get_file(file_tmp));
         strncpy(file, file_tmp, sizeof(file));
+        if (stat(file, &fs_stat) < 0) return 0;
      }
-   if (pl->loader.current_dir->recursive &&
-       ecore_file_is_dir(file))
+
+   if ( pl->loader.current_dir->recursive &&
+        (S_ISDIR(fs_stat.st_mode)) )
      {
         pl->loader.dirs = evas_list_append(pl->loader.dirs, strdup(file));
         DPICL(("added %s to loader dirs", file));
         return 1;
      }
 
-   /* create the picture */
-   picture = photo_picture_new(file, name, 1, _thumb_generate_cb);
-   if (!picture)
-     return 1;
+   /* enqueue the file */
+   pl->loader.queue = evas_list_append(pl->loader.queue, strdup(file));
+   
+   return 1;
+}
 
-   pl->thumb.nb++;
-   pl->pictures = evas_list_append(pl->pictures, picture);
+static int
+_load_timer(void *data)
+{
+   Picture_Local_List *pl;
+   Picture *picture;
+   char *file;
+   int rounds;
 
-   /* loader popups */
-   if (photo->config->local.popup == PICTURE_LOCAL_POPUP_ALWAYS)
+   pl = pictures_local;
+
+   rounds = 0;
+   while(pl->loader.queue)// && (rounds < 50))
      {
-        int nb;
-        
-        /* loading popup message */        
-        nb = evas_list_count(pl->pictures) - pl->pictures_waiting_delete;
-        if (nb && ((nb == 1) || !(nb%PICTURE_LOCAL_POPUP_LOADER_MOD)))
+        file = pl->loader.queue->data;
+
+        /* create the picture */
+        picture = photo_picture_new(file, 1, _thumb_generate_cb);
+        if (picture)
           {
-             char buf[50];
+             pl->thumb.nb++;
+             pl->pictures = evas_list_append(pl->pictures, picture);
              
-             if (nb == 1)
-               snprintf(buf, sizeof(buf), "Scanning for pictures");
-             else
-               snprintf(buf, sizeof(buf), "%d pictures found", nb);
-             POPUP_LOADING(pl, buf, 0);
+             /* loader popups */
+             if (photo->config->local.popup == PICTURE_LOCAL_POPUP_ALWAYS)
+               {
+                  int nb;
+                  
+                  /* loading popup message */        
+                  nb = evas_list_count(pl->pictures) - pl->pictures_waiting_delete;
+                  if (nb && ((nb == 1) || !(nb%PICTURE_LOCAL_POPUP_LOADER_MOD)))
+                    {
+                       char buf[50];
+                       
+                       if (nb == 1)
+                         snprintf(buf, sizeof(buf), "Scanning for pictures");
+                       else
+                         snprintf(buf, sizeof(buf), "%d pictures found", nb);
+                       POPUP_LOADING(pl, buf, 0);
+                    }
+               }
           }
+
+        free(file);
+        pl->loader.queue = evas_list_remove_list(pl->loader.queue,
+                                                 pl->loader.queue);
+        rounds++;
+     }
+
+   if (!pl->loader.idler)
+     {
+        pl->loader.timer = NULL;
+        return 0;
      }
 
    return 1;
@@ -445,6 +488,11 @@ _load_idler_stop(void)
      {
         ecore_idler_del(pl->loader.idler);
         pl->loader.idler = NULL;
+     }
+   if (pl->loader.timer)
+     {
+        ecore_timer_del(pl->loader.timer);
+        pl->loader.timer = NULL;
      }
 
    if (pl->loader.popup)
@@ -471,10 +519,9 @@ _load_idler_stop(void)
         pl->loader.dirs = NULL;
      }
 
-   if (pl->loader.file)
+   if (pl->loader.odir)
      {
-        ecore_list_destroy(pl->loader.file);
-        pl->loader.file = NULL;
+        pl->loader.odir = NULL;
      }
 }
 
@@ -516,8 +563,6 @@ _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
    pl = pictures_local;
    picture = data;
 
-   DPICL(("back from thumb generation of %s", picture->infos.name));
-
    pl->thumb.nb--;
 
    if (!obj)
@@ -531,6 +576,7 @@ _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
    evas_object_geometry_get(obj, NULL, NULL,
 			    &picture->original_w, &picture->original_h);
    DPICL(("thumb generated %dx%d", picture->original_w, picture->original_h));
+   
 
    picture->thumb = PICTURE_THUMB_READY;
 
@@ -544,9 +590,11 @@ _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
         e_module_dialog_show(photo->module, _("Photo Module Information"),
                              _("<hilight>Creating thumbs</hilight><br><br>"
                                "Some pictures are being thumbed in a <hilight>background task</hilight>.<br>"
-                               "It can take a while, but after, loading will be faster :)<br><br>"
+                               "It can take a while, but after, loading will be faster and lighter :)<br><br>"
                                "Each time wou will load pictures that haven't been loaded in Photo module before,<br>"
-                               "they will be thumbed"));
+                               "they will be thumbed.<br><br>"
+			       "While creating popups, you will not be able to see any picture in Photo.<br>"
+			       "I hope i'll be able to change that :)"));
      }
 
    /* when still thumbnailing after loading */
@@ -606,21 +654,24 @@ static void
 _thumb_generate_stop(void)
 {
    Picture_Local_List *pl;
-   Evas_List *l;
-   Picture *picture;
+   Picture *p;
+   int no = 0;
 
    pl = pictures_local;
 
    if (pl->thumb.nb)
-     {
-        for (l=pl->pictures; l; l=evas_list_next(l))
+     {   
+        while ( (p = evas_list_nth(pictures_local->pictures, no)) )
           {
-             picture = evas_list_data(l);
-             if (picture->thumb != PICTURE_THUMB_WAITING)
-               continue;
-
-             e_thumb_icon_end(picture->picture);
-             photo_picture_free(picture, 1, 1);
+             if (p->thumb == PICTURE_THUMB_WAITING)
+               {
+                  e_thumb_icon_end(p->picture);
+                  photo_picture_free(p, 1, 1);
+                  pictures_local->pictures = evas_list_remove(pictures_local->pictures,
+                                                              p);
+               }
+             else
+               no++;
           }
         pl->thumb.nb = 0;
      }

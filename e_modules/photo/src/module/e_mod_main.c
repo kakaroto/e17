@@ -266,8 +266,5 @@ static int _theme_init(void)
 
 static void _theme_shutdown(void)
 {
-   if (photo->theme)
-     {
-        E_FREE(photo->theme);
-     }
+  E_FREE(photo->theme);
 }

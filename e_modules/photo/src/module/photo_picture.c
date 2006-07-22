@@ -27,7 +27,7 @@ void photo_picture_shutdown(void)
    //photo_picture_net_shutdown();
 }
 
-Picture *photo_picture_new(char *path, char *name, int thumb_it, void (*func_done) (void *data, Evas_Object *obj, void *event_info))
+Picture *photo_picture_new(char *path, int thumb_it, void (*func_done) (void *data, Evas_Object *obj, void *event_info))
 {
    Picture *picture;
    int th_w, th_h;
@@ -36,7 +36,7 @@ Picture *photo_picture_new(char *path, char *name, int thumb_it, void (*func_don
    th_w = photo->config->pictures_thumb_size;
    th_h = photo->config->pictures_thumb_size;
       
-   ext = strrchr(name, '.');
+   ext = strrchr(path, '.');
    if (!ext)
      return NULL;
    if (strcasecmp(ext, ".jpg") && strcasecmp(ext, ".JPG") &&
@@ -44,11 +44,11 @@ Picture *photo_picture_new(char *path, char *name, int thumb_it, void (*func_don
        strcasecmp(ext, ".png") && strcasecmp(ext, ".PNG"))
      return NULL;
       
-   DPICL(("New picture :  file %s", name));
+   DPICL(("New picture :  file %s", path));
       
    picture = E_NEW(Picture, 1);
    picture->path = evas_stringshare_add(path);
-   picture->infos.name = photo_picture_name_get(name);
+   picture->infos.name = photo_picture_name_get(path);
    picture->from = PICTURE_LOCAL;
 
    if (thumb_it)

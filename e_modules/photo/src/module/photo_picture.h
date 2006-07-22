@@ -62,7 +62,7 @@ struct _Picture_Event_Fill
 int          photo_picture_init(void);
 void         photo_picture_shutdown(void);
 
-Picture     *photo_picture_new(char *path, char *name, int thumb_it, void (*func_done) (void *data, Evas_Object *obj, void *event_info));
+Picture     *photo_picture_new(char *path, int thumb_it, void (*func_done) (void *data, Evas_Object *obj, void *event_info));
 int          photo_picture_free(Picture *p, int force, int force_now);
 
 int          photo_picture_load(Picture *pic, Evas *evas);

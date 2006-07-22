@@ -170,6 +170,10 @@ int photo_config_shutdown(void)
 
    E_FREE(photo->config);
 
+   E_CONFIG_DD_FREE(_photo_edd);
+   E_CONFIG_DD_FREE(_photo_dir_edd);
+   E_CONFIG_DD_FREE(_photo_item_edd);
+
    return 1;
 }
 

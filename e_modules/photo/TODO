@@ -4,13 +4,13 @@ make install CFLAGS="-g -Wall -DDEBUG -DDEBUG_MAIN -DDEBUG_CONFIG -DDEBUG_ITEM -
 BUGS
 ----------------------------------------------------
 
+* sometimes the histo menu seems not to show the popup info
 
 
 ----------------------------------------------------
 NEEDED
 ----------------------------------------------------
 
-* fix thumbnailing messages : too much !
 * option to set the thumb size, and no thumb mode
 
 * find a way to have the path of a generated thumb, to load it direcly
