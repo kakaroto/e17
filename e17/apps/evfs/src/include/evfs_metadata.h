@@ -52,6 +52,9 @@ Ecore_List* evfs_metadata_file_group_list(char* group);
 Evas_List* evfs_metadata_groups_get();
 
 int evfs_metadata_extract_init();
+int evfs_metadata_extract_fork(evfs_filereference* ref);
+
+char* evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key);
 
 
 #endif

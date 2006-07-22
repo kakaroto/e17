@@ -1065,13 +1065,14 @@ int evfs_file_close(evfs_filereference * file) {
 			usleep(2);
 		}
 
-		free(host);
-		free(path);
 		ecore_hash_remove(sftp_open_handles, (long*)file->fd);
 		sftp_ohandle_destroy(ohandle);
 	} else {
 		printf("Could not find open file handle\n");
 	}
+
+	free(host);
+	free(path);
 
 }
 

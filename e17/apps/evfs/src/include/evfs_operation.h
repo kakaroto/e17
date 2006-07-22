@@ -121,7 +121,7 @@ struct evfs_operation_task_file_copy {
 	evfs_filereference* file_from;
 	evfs_filereference* file_to;
 
-	uint64 next_byte;
+	int64 next_byte;
 	
 };
 typedef struct evfs_operation_task_file_copy evfs_operation_task_file_copy;

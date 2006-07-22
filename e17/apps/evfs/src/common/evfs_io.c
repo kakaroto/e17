@@ -323,8 +323,7 @@ evfs_write_file_read_event(evfs_client * client, evfs_event * event)
                                                              event->data.size));
 }
 
-void evfs_write_meta_event(evfs_client * client, evfs_command * command,
-                          evfs_event * event)
+void evfs_write_meta_event(evfs_client * client, evfs_event * event)
 {
    int size_ret = 0;
    char *data;
@@ -344,8 +343,7 @@ void evfs_write_meta_event(evfs_client * client, evfs_command * command,
 }
 
 void
-evfs_write_progress_event(evfs_client * client, evfs_command * command,
-                          evfs_event * event)
+evfs_write_progress_event(evfs_client * client, evfs_event * event)
 {
    int size_ret = 0;
    evfs_filereference *ref;
@@ -435,10 +433,10 @@ evfs_write_event(evfs_client * client, evfs_command * command,
         evfs_write_list_event(client, event);
         break;
      case EVFS_EV_FILE_PROGRESS:
-        evfs_write_progress_event(client, command, event);
+        evfs_write_progress_event(client, event);
         break;
      case EVFS_EV_METADATA:
-	evfs_write_meta_event(client,command,event);
+	evfs_write_meta_event(client,event);
 	break;
 
      case EVFS_EV_FILE_OPEN:

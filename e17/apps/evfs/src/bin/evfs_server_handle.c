@@ -334,27 +334,19 @@ evfs_handle_dir_list_command(evfs_client * client, evfs_command * command)
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
                                                  command->file_command.
                                                  files[0]->plugin_uri);
-   if (plugin)
-     {
+   if (plugin) {
         Ecore_List *directory_list = NULL;
-
         (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command, &directory_list);
-
-        if (directory_list)
-          {
+        if (directory_list) {
              evfs_list_dir_event_create(client, command, directory_list);
-          }
-        else
-          {
+        } else {
              printf
                 ("evfs_handle_dir_list_command: Recevied null from plugin for directory_list\n");
-          }
-     }
-   else
-     {
+        }
+  } else {
         printf("No plugin for '%s'\n",
                command->file_command.files[0]->plugin_uri);
-     }
+  }
 }
 
 
@@ -398,7 +390,6 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
    struct stat file_stat;
    struct stat dest_stat;
 
-   int progress = 0;
    int res;
    evfs_operation_files *op;
 
@@ -540,13 +531,13 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 }
 
 void
-evfs_handle_ping_command(evfs_client * client, evfs_command * command)
+evfs_handle_ping_command(evfs_client * client __UNUSED__, evfs_command * command __UNUSED__)
 {
    printf("Ping!\n");
 }
 
 void
-evfs_handle_operation_command(evfs_client * client, evfs_command * command)
+evfs_handle_operation_command(evfs_client * client __UNUSED__, evfs_command * command)
 {
    evfs_operation *op_get = NULL;
 
@@ -577,7 +568,7 @@ void evfs_handle_metadata_command(evfs_client* client, evfs_command* command)
 	
 }
 
-void evfs_handle_metadata_string_file_set_command(evfs_client* client, 
+void evfs_handle_metadata_string_file_set_command(evfs_client* client __UNUSED__, 
 		evfs_command* command, char* key, char* value) 
 {
 	if (command->file_command.num_files > 0) {
@@ -585,11 +576,12 @@ void evfs_handle_metadata_string_file_set_command(evfs_client* client,
 	}
 }
 
-void evfs_handle_metadata_string_file_get_command(evfs_client* client, 
+void evfs_handle_metadata_string_file_get_command(evfs_client* client __UNUSED__, 
 		evfs_command* command, char* key) 
 {
+	char* value;
 	if (command->file_command.num_files > 0) {
-		evfs_metadata_file_get_key_value_string(command->file_command.files[0], key);
+		value = evfs_metadata_file_get_key_value_string(command->file_command.files[0], key);
 	}
 }
 

@@ -284,7 +284,7 @@ void evfs_metadata_initialise()
 	if (!evfs_object_client_is_get()) {
 		printf(". EVFS metadata initialise..\n");
 
-		evfs_metadata_extract_init();
+		evfs_metadata_extract_fork(NULL);
 			
 		/*String edd*/
 		Evfs_Metadata_String_Edd = _evfs_metadata_edd_create("evfs_metadata_string", sizeof(evfs_metadata_object));
@@ -589,8 +589,7 @@ void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
 	eet_close(_evfs_metadata_eet);
 }
 
-void evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key,
-		char* value) 
+char* evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key) 
 {
 	evfs_metadata_object* obj = NULL;
 	char path[PATH_MAX];
@@ -598,6 +597,7 @@ void evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key,
 	char* file_path;
 	int size;
 	int ret;
+	char* value;
 
 	/*Build a path*/
 	file_path = evfs_filereference_to_string(ref);
@@ -614,13 +614,15 @@ void evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key,
 
 		if (obj) {
 			printf ("Got %s -> %s\n", obj->key, (char*)obj->value);
+			value = strdup(obj->value);
 			free(data);
 			free(obj);
 		}
 	}	
 	eet_close(_evfs_metadata_eet);
-
 	free(file_path);
+
+	return value;
 }
 
 
@@ -630,16 +632,15 @@ void evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key,
 /*----------------*/
 /*This section defines the fork/grab part of the metadata system*/
 
-int evfs_metadata_extract_init()
-{
-	/*if (!evfs_object_client_is_get()) {
-		if (!(_metadata_fork = fork())) {
-			printf("Metadata fork initialised..\n");
-			while ( 1 ) {
-				sleep(1);
-			}
-		}
-	}*/
+int evfs_metadata_extract_fork(evfs_filereference* ref)
+{	
+	if (!(_metadata_fork = fork())) {
+		evfs_plugin* plugin;
+		char* uri = homedir;
+		
+		printf("Extract fork started, homedir: %s..\n", homedir);
+
+	}
 
 	return 1;
 }

@@ -1,6 +1,8 @@
 #include "evfs.h"
 
-#define TASK_COPY_ITERATIONS 1
+/*FIXME - this should be dynamic, in proportion to the number
+ * of items on the queue.  If queue is empty, we can iterate till done*/
+#define TASK_COPY_ITERATIONS 3
 
 int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 		evfs_operation_task_file_copy* copy)
@@ -45,7 +47,9 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 	if (copy->file_from->fd == 0 && copy->file_from->fd_p == NULL) {
 		/*printf("Opening source file...\n");*/
 		int fd =(*EVFS_PLUGIN_FILE(copy->file_from->plugin)->functions->evfs_file_open) (op->client, copy->file_from);
-		/*TODO: Error checking on file open fail*/
+		if (!fd) {
+			/*TODO: Error checking on file open fail*/
+		}
 	}
 
 	if (copy->file_to->fd == 0 && copy->file_to->fd_p == NULL) {
