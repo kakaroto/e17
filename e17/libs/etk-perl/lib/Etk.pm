@@ -129,7 +129,8 @@ http://www.enlightenment.org
 
 =head1 AUTHOR
 
-Hisham Mardam Bey, E<lt>hisham.mardambey@gmail.comE<gt>
+Hisham Mardam Bey, E<lt>hisham.mardambey@gmail.comE<gt>, 
+Chady 'Leviathan' Kassouf, E<lt>chady.kassouf@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

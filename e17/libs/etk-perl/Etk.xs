@@ -358,6 +358,70 @@ callback_timer(void *data)
 }
 
 int
+tree_compare_alpha_cb(Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2,
+		Etk_Tree_Col * col, void * data )
+{
+   dSP;
+   int ret, cmp;
+   char * r1, * r2;
+
+   ENTER;
+   SAVETMPS;
+   
+   if (! (tree && row1 && row2 && col) ) {
+	   ret = 0;
+   } else {
+
+	   etk_tree_row_fields_get(row1, col, r1, NULL);
+	   etk_tree_row_fields_get(row2, col, r2, NULL);
+	   cmp = strcmp(r1, r2);
+	   if (cmp < 0)
+		   ret = -1;
+	   else if (cmp > 0)
+		   ret = 1;
+	   else
+		   ret = 0;
+   }
+		  
+   PUTBACK;
+   FREETMPS;
+   LEAVE;
+
+   return ret;
+}
+
+int
+tree_compare_numeric_cb(Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2,
+		Etk_Tree_Col * col, void * data )
+{
+   dSP;
+   int r1, r2, ret;
+
+   ENTER;
+   SAVETMPS;
+   
+   if (! (tree && row1 && row2 && col) ) {
+	   ret = 0;
+   } else {
+
+	   etk_tree_row_fields_get(row1, col, &r1, NULL);
+	   etk_tree_row_fields_get(row2, col, &r2, NULL);
+	   if (r1 < r2)
+		   ret = -1;
+	   else if (r1 > r2)
+		   ret = 1;
+	   else
+		   ret = 0;
+   }
+		  
+   PUTBACK;
+   FREETMPS;
+   LEAVE;
+
+   return ret;
+}
+
+int
 tree_compare_cb( Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2,
 Etk_Tree_Col * col, void * data )
 {
@@ -3692,6 +3756,20 @@ etk_tree_col_sort_func_set(col, compare_cb, data)
         etk_tree_col_sort_func_set(col, tree_compare_cb, cbd);
 
 void
+etk_tree_col_sort_func_alpha_set(col, data)
+	Etk_Tree_Col *  col
+	SV * data
+	CODE:
+	etk_tree_col_sort_func_set(col, tree_compare_alpha_cb, data);
+	
+void
+etk_tree_col_sort_func_numeric_set(col, data)
+	Etk_Tree_Col *  col
+	SV * data
+	CODE:
+	etk_tree_col_sort_func_set(col, tree_compare_numeric_cb, data);
+
+void
 etk_tree_col_sort_func_set2(col, compare_cb, data)
 	Etk_Tree_Col *	col
 	int ( * ) ( Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2, Etk_Tree_Col * col, void * data ) compare_cb
@@ -4214,6 +4292,24 @@ etk_tree_sort(tree, compare_cb, ascendant, col, data)
         cbd->perl_data = newSVsv(data);
         cbd->perl_callback = newSVsv(compare_cb);
         etk_tree_sort(ETK_TREE(tree), tree_compare_cb, ascendant, col, cbd);
+
+void 
+etk_tree_sort_alpha(tree, ascendant, col, data)
+	Etk_Widget *    tree
+	Etk_Bool        ascendant
+	Etk_Tree_Col *  col
+	SV *    data
+	CODE:
+	etk_tree_sort(ETK_TREE(tree), tree_compare_alpha_cb, ascendant, col, data);
+
+void 
+etk_tree_sort_numeric(tree, ascendant, col, data)
+	Etk_Widget *    tree
+	Etk_Bool        ascendant
+	Etk_Tree_Col *  col
+	SV *    data
+	CODE:
+	etk_tree_sort(ETK_TREE(tree), tree_compare_numeric_cb, ascendant, col, data);
 
 void
 etk_tree_thaw(tree)

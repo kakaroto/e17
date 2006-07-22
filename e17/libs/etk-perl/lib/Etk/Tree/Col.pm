@@ -127,5 +127,21 @@ sub SortFuncSet
     return $self;
 }
 
+sub SortFuncAlphabeticalSet
+{
+    my $self = shift;
+    my $data = shift;
+    Etk::etk_tree_col_sort_func_alpha_set($self->{WIDGET}, $data);
+    return $self;
+}
+
+sub SortFuncNumericSet
+{
+    my $self = shift;
+    my $data = shift;
+    Etk::etk_tree_col_sort_func_numeric_set($self->{WIDGET}, $data);
+    return $self;
+}
+
 
 1;

@@ -1,8 +1,6 @@
 
 General TODO:
 =============
-- add some commonly used internal tree sorters to avoid the entire
-  perl -> c -> perl ... loop when sorting trees.
 - finish porting etk_test from C to perl
 - callback system needs to convert structs to perl equivalents
 - finish signal callback functions
@@ -37,6 +35,8 @@ Done:
 - finish remaining signal_connect functions (swapped etc.) [DONE]
 - etk_theme.h [DONE]
 - finish up etk_widget.h [DONE]
+- add some commonly used internal tree sorters to avoid the entire
+  perl -> c -> perl ... loop when sorting trees. [DONE]
 
 Pending:
 ========

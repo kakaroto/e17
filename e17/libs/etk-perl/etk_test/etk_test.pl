@@ -454,7 +454,8 @@ sub tree_window_show
 
     $hbox->AddButton("Sort")->SignalConnect("clicked",
 	sub {
-	    $tree->Sort(\&tree_col2_compare_cb, $ascendant, $tree->cols->[1], undef);
+	    #$tree->Sort(\&tree_col2_compare_cb, $ascendant, $tree->cols->[1], undef);
+	    $tree->SortNumeric($ascendant, $tree->cols->[1], undef);
 	    $ascendant = !$ascendant;
 	}
     )->PackStart();    

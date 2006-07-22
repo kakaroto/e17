@@ -193,6 +193,26 @@ sub Sort
     return $self;
 }
 
+sub SortAlphabetical
+{
+    my $self = shift;
+    my $asc = shift;
+    my $col = shift;
+    my $data = shift;
+    Etk::etk_tree_sort_alpha($self->{WIDGET}, $asc, $col->{WIDGET}, $data);
+    return $self;
+}
+
+sub SortNumeric
+{
+    my $self = shift;
+    my $asc = shift;
+    my $col = shift;
+    my $data = shift;
+    Etk::etk_tree_sort_numeric($self->{WIDGET}, $asc, $col->{WIDGET}, $data);
+    return $self;
+}
+
 sub FirstRowGet
 {
    my $self = shift;
