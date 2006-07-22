@@ -141,7 +141,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 			   ecore_list_append(files, path->files[0]);
 
 			   /*TEMP FIXME - check this file for keywords*/
-  			   evfs_metadata_extract_fork(path->files[0]);
+  			   evfs_metadata_extract_queue(path->files[0]);
 
 			   evfs_cleanup_file_uri_path(path);
 		   }

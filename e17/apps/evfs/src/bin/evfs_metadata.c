@@ -11,6 +11,11 @@
 #include <string.h>
 #include <sys/types.h>
 
+#include <errno.h>
+#include <sys/wait.h>
+#include <sys/param.h>
+#include <inttypes.h>
+
 #include <Eet.h>
 #include <Evas.h>
 #include <limits.h>
@@ -47,7 +52,10 @@ static sqlite3 *db;
 static int _evfs_metadata_db_wait = 0;
 static Ecore_DList* evfs_metdata_db_results = NULL;
 
-static pid_t _metadata_fork;
+/*--*/
+static Ecore_List* evfs_metadata_queue = NULL;
+pid_t _metadata_fork= 0;
+/*--*/
 
 /*DB Helper types*/
 typedef struct {
@@ -60,7 +68,7 @@ typedef struct {
 	evfs_metadata_db_item** fields;
 } evfs_metadata_db_result;
 
-
+int evfs_metadata_extract_runner(void* data);
 
 
 /*DB Helper functions*/
@@ -285,6 +293,8 @@ void evfs_metadata_initialise()
 	if (!evfs_object_client_is_get()) {
 		printf(". EVFS metadata initialise..\n");
 
+		evfs_metadata_queue = ecore_list_new();
+
 		/*String edd*/
 		Evfs_Metadata_String_Edd = _evfs_metadata_edd_create("evfs_metadata_string", sizeof(evfs_metadata_object));
 		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_String_Edd, evfs_metadata_object,
@@ -365,6 +375,8 @@ void evfs_metadata_initialise()
 
 	
 		evfs_metadata_db_init(&db);
+
+		ecore_timer_add(1.0, evfs_metadata_extract_runner, NULL);
 	}
 
 }
@@ -631,64 +643,101 @@ char* evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key
 
 /*----------------*/
 /*This section defines the fork/grab part of the metadata system*/
-
-int evfs_metadata_extract_fork(evfs_filereference* ref)
-{	
-	int pid;
-
+void evfs_metadata_extract_queue(evfs_filereference* ref)
+{
 	/*At the moment, we only extract meta from posix folders*/
 	/*This may change, but we'll have to copy the file locally,
 	 * so libextractor can have a shot at it*/
-
-	return; /*FIXME - there's a bug here*/
-	
 	if (!strcmp(ref->plugin_uri,"file")) {
+		evfs_filereference* clone;
 
-		if (!(pid = fork())) {
-			evfs_plugin* plugin;
-			evfs_command* command;
-			Evas_List* meta_list;
-			int ret;
-			sqlite3* db;
-			int file;
-			Evas_List* l;
-			evfs_meta_obj* o;
+		clone = evfs_filereference_clone(ref);
+		ecore_list_append(evfs_metadata_queue, clone);
+	}
+}
 
-			ret = sqlite3_open(metadata_db, &db);
-			if( ret ){
-			    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(db));
-			    sqlite3_close(db);
-			    return 0;
-			}
-
-			printf("Extract fork started: %s..\n", ref->path);
-
-			file = evfs_metadata_db_id_for_file(db,ref,1);
-
-			if (file) {
-				command = NEW(evfs_command);
-				command->file_command.files = calloc(1, sizeof(evfs_filereference*));
-				command->file_command.files[0] = ref;
-				plugin = evfs_meta_plugin_get_for_type(evfs_server_get(), "object/undefined");
-				meta_list = (*EVFS_PLUGIN_META(plugin)->functions->evfs_file_meta_retrieve)(NULL,command);
+int evfs_metadata_extract_runner(void* data)
+{
+	evfs_filereference* ref;
+	int status;
 	
-				for (l=meta_list;l;) {
-					o=l->data;
+	if (!_metadata_fork) {
+		ecore_list_goto_first(evfs_metadata_queue);
 
-					evfs_metadata_db_file_keyword_add(db, file, o->key, o->value);	
-					
-					if (o->key) free(o->key);
-					if (o->value) free(o->value);
-					free(o);
-					l=l->next;
-				}
-			} else {
-				printf("metadata_extract_fork: could not insert file to db\n");
-			}
+		if ( (ref = ecore_list_current(evfs_metadata_queue))) {
+			printf("..item on queue..\n");
+			evfs_metadata_extract_fork(ref);
+		}
+	} else {
+		printf("...metadata runner executing..\n");
 
-			sqlite3_close(db);
+		if ((waitpid(_metadata_fork, &status, WNOHANG) > 0) ||
+			       errno == ECHILD) {
+			_metadata_fork = 0;
+
+			ecore_list_goto_first(evfs_metadata_queue);
+			ref = ecore_list_current(evfs_metadata_queue);
+			evfs_cleanup_filereference(ref);
+
+			ecore_list_remove_first(evfs_metadata_queue);
+
+			printf("Execution complete..\n");
+		}
+	}
+	return 1;
+}
+
+int evfs_metadata_extract_fork(evfs_filereference* ref)
+{	
+	_metadata_fork = fork();
+	if (!_metadata_fork) {
+		evfs_plugin* plugin;
+		evfs_command* command;
+		Evas_List* meta_list;
+		int ret;
+		sqlite3* dbi;
+		int file;
+		Evas_List* l;
+		evfs_meta_obj* o;
+
+		ret = sqlite3_open(metadata_db, &dbi);
+		if( ret ){
+		    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(dbi));
+		    sqlite3_close(dbi);
+		    return 0;
 		}
 
+		/*Wait up to 10 seconds in this fork for the db to be available*/
+		sqlite3_busy_timeout(dbi,10000);
+
+		printf("Extract fork started: %s..\n", ref->path);
+
+		file = evfs_metadata_db_id_for_file(dbi,ref,1);
+
+		if (file) {
+			command = NEW(evfs_command);
+			command->file_command.files = calloc(1, sizeof(evfs_filereference*));
+			command->file_command.files[0] = ref;
+			plugin = evfs_meta_plugin_get_for_type(evfs_server_get(), "object/undefined");
+			meta_list = (*EVFS_PLUGIN_META(plugin)->functions->evfs_file_meta_retrieve)(NULL,command);
+
+			for (l=meta_list;l;) {
+				o=l->data;
+
+				evfs_metadata_db_file_keyword_add(dbi, file, o->key, o->value);	
+				
+				if (o->key) free(o->key);
+				if (o->value) free(o->value);
+				free(o);
+				l=l->next;
+			}
+		} else {
+			printf("metadata_extract_fork: could not insert file to db\n");
+		}
+
+		sqlite3_close(dbi);
+
+		exit(0);
 	}
 
 	return 1;

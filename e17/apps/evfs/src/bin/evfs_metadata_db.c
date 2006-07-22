@@ -286,9 +286,11 @@ void evfs_metadata_db_file_keyword_add(sqlite3* db, int file, char* key, char* v
 
 	if (key&&value) {
 		snprintf(query,sizeof(query), "insert into FileMeta (File, keyword, value) select %d, '%s', '%s';", file,key,value);
+		printf("Running %p:%s\n", db,query);
 		ret = sqlite3_exec(db, 
 		query, 
 		NULL, 0,&errMsg);
+		if (errMsg) printf("ERROR: %s\n", errMsg);
 	} else {
 		printf("db_file_keyword_add: key or value is null\n");
 	}
