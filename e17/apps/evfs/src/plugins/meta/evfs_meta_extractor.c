@@ -84,6 +84,8 @@ evfs_plugin_functions_meta* evfs_plugin_init()
 	evfs_plugin_functions_meta* functions = calloc(1, sizeof(evfs_plugin_functions_meta));
 	functions->evfs_file_meta_retrieve = evfs_file_meta_retrieve;
 
+	_extractors = EXTRACTOR_loadDefaultLibraries();
+
 	return functions;
 }
 
@@ -93,8 +95,11 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 	Evas_List* ret_list = NULL;
 	evfs_meta_obj* obj;
 	char* key;
+	evfs_filereference* ref;
 
-	keywords=EXTRACTOR_getKeywords(_extractors, buffer);
+	ref = command->file_command.files[0];
+
+	keywords=EXTRACTOR_getKeywords(_extractors, ref->path);
 	keywords=EXTRACTOR_removeDuplicateKeywords(keywords,0);
 
 	while(keywords) {
@@ -105,6 +110,8 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 		obj->key = strdup(key);
 		obj->value = strdup(keywords->keyword);
 		ret_list = evas_list_append(ret_list, obj);
+
+		printf("Adding keyword %s -> %s\n", key, keywords->keyword);
 
 		keywords = keywords->next;
 	}

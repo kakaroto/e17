@@ -21,7 +21,8 @@ evfs_SOURCES = \
 	evfs_metadata.c \ 
 	evfs_metadata_db.c \
 	#evfs_mounts.c \
-	$(top_srcdir)/src/common/evfs_vfolder.c
+	$(top_srcdir)/src/common/evfs_vfolder.c \
+	$(top_srcdir)/src/common/evfs_server.c
 
 evfscat_SOURCES = \
 	evfscat.c

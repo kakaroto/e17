@@ -105,6 +105,7 @@ GNUC_EXTENSION typedef unsigned long long uint64;
 void evfs_operation_user_dispatch(evfs_client * client, evfs_command * command,
                                   evfs_operation * op, char* misc);
 evfs_server* evfs_server_get();
+evfs_server* evfs_server_new();
 
 /**
  * ATTRIBUTE_UNUSED:

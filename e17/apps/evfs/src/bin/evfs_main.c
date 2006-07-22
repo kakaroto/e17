@@ -46,13 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <errno.h>
 #include <dirent.h>
 
-static evfs_server *server;
-
-evfs_server* 
-evfs_server_get()
-{
-	return server;
-}
+static evfs_server* server;
 
 evfs_client *
 evfs_client_get(Ecore_Ipc_Client * client)
@@ -454,7 +448,7 @@ main(int argc, char **argv)
 
    ecore_file_init();
 
-   server = NEW(evfs_server);
+   server = evfs_server_new();
    server->client_hash =
       ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
    server->plugin_uri_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
@@ -469,13 +463,6 @@ main(int argc, char **argv)
 
    /*Add a timer, to make sure our event loop keeps going.  Kinda hacky */
    ecore_timer_add(0.01, ecore_timer_enterer, NULL);
-
-   /*Load the plugins */
-   evfs_load_plugins();
-   evfs_io_initialise();
-   evfs_vfolder_initialise();
-   evfs_operation_initialise();
-   evfs_metadata_initialise();
 
    if ((server->ipc_server =
         ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0,
@@ -500,6 +487,13 @@ main(int argc, char **argv)
         ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_client_data,
                                 NULL);
      }
+
+   /*Load the plugins */
+   evfs_load_plugins();
+   evfs_io_initialise();
+   evfs_vfolder_initialise();
+   evfs_operation_initialise();
+   evfs_metadata_initialise();
 
 
    ecore_main_loop_begin();

@@ -140,6 +140,9 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 			   path = evfs_parse_uri(item);
 			   ecore_list_append(files, path->files[0]);
 
+			   /*TEMP FIXME - check this file for keywords*/
+  			   evfs_metadata_extract_fork(path->files[0]);
+
 			   evfs_cleanup_file_uri_path(path);
 		   }
 		   ecore_list_destroy(list);

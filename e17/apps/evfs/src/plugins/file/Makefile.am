@@ -41,7 +41,7 @@ posix_la_SOURCES = evfs_fs_posix.c \
 vfolder_la_SOURCES = evfs_fs_vfolder.c \
                         $(top_srcdir)/src/common/evfs_debug.c \
                         $(top_srcdir)/src/common/evfs_event_helper.c \
-                        $(top_srcdir)/src/common/evfs_misc.c									
+                        $(top_srcdir)/src/common/evfs_misc.c
 
 tar_la_SOURCES = evfs_fs_tar.c \
                         $(top_srcdir)/src/common/evfs_debug.c \

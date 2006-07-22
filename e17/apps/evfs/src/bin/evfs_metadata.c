@@ -284,8 +284,6 @@ void evfs_metadata_initialise()
 	if (!evfs_object_client_is_get()) {
 		printf(". EVFS metadata initialise..\n");
 
-		evfs_metadata_extract_fork(NULL);
-			
 		/*String edd*/
 		Evfs_Metadata_String_Edd = _evfs_metadata_edd_create("evfs_metadata_string", sizeof(evfs_metadata_object));
 		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_String_Edd, evfs_metadata_object,
@@ -388,7 +386,6 @@ Evas_List* evfs_metadata_groups_get() {
 			g->name = strdup(sqlite3_column_text(pStmt,0));
 			if (sqlite3_column_text(pStmt, 1)) {
 				g->visualhint = strdup(sqlite3_column_text(pStmt,1));
-				printf("Loaded visualhint %s\n", g->visualhint);
 			}
 			
 			ret_list = evas_list_append(ret_list, g);
@@ -597,7 +594,7 @@ char* evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key
 	char* file_path;
 	int size;
 	int ret;
-	char* value;
+	char* value = NULL;
 
 	/*Build a path*/
 	file_path = evfs_filereference_to_string(ref);
@@ -634,12 +631,19 @@ char* evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key
 
 int evfs_metadata_extract_fork(evfs_filereference* ref)
 {	
-	if (!(_metadata_fork = fork())) {
-		evfs_plugin* plugin;
-		char* uri = homedir;
-		
-		printf("Extract fork started, homedir: %s..\n", homedir);
+	int pid;
 
+	if (!(pid = fork())) {
+		evfs_plugin* plugin;
+		evfs_command* command;
+
+		printf("Extract fork started: %s..\n", ref->path);
+
+		command = NEW(evfs_command);
+		command->file_command.files = calloc(1, sizeof(evfs_filereference*));
+		command->file_command.files[0] = ref;
+		plugin = evfs_meta_plugin_get_for_type(evfs_server_get(), "object/undefined");
+		(*EVFS_PLUGIN_META(plugin)->functions->evfs_file_meta_retrieve)(NULL,command);
 	}
 
 	return 1;
