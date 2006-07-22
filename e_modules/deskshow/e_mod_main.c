@@ -113,26 +113,16 @@ static void
 _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 		       void *event_info)
 {
-  Instance *inst;
   Evas_Event_Mouse_Down *ev;
 
-  inst = data;
   ev = event_info;
   if (ev->button == 1)
     {
-      E_Border *bd;
-      E_Border_List *bl;
       E_Zone *zone;
-      E_Desk *desk;
 
       zone = e_util_zone_current_get (e_manager_current_get ());
       if (zone)
 	{
-	   desk = e_desk_current_get(zone);
-	   if (desk->deskshow_toggle)
-	     edje_object_signal_emit(inst->o_button, "passive", "");
-	   else
-	     edje_object_signal_emit(inst->o_button, "active", "");
 	   e_desk_deskshow(zone);
 	}
 
