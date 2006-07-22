@@ -639,6 +639,9 @@ int evfs_metadata_extract_fork(evfs_filereference* ref)
 	/*At the moment, we only extract meta from posix folders*/
 	/*This may change, but we'll have to copy the file locally,
 	 * so libextractor can have a shot at it*/
+
+	return; /*FIXME - there's a bug here*/
+	
 	if (!strcmp(ref->plugin_uri,"file")) {
 
 		if (!(pid = fork())) {
