@@ -10,7 +10,7 @@
  * * Make a 'bulk-run' function to avoid the endless repeated sqlite3_exec
  */
 
-#define EVFS_METADATA_DB_CONFIG_LATEST 3
+#define EVFS_METADATA_DB_CONFIG_LATEST 4
 static char metadata_db[PATH_MAX];
 static char* homedir;
 static Ecore_Hash* db_upgrade_hash = NULL;
@@ -118,6 +118,20 @@ int evfs_metadata_db_upgrade_2_3(sqlite3* db)
 	return evfs_metadata_db_version_bump(db, "3");
 }
 
+int evfs_metadata_db_upgrade_3_4(sqlite3* db)
+{
+	int ret;
+	char* errMsg = 0;
+
+	printf("Performing upgrade from v.3 to v.4\n");
+
+	ret = sqlite3_exec(db, 
+	"create index FileMeta_idx_keyword_value_file on FileMeta(File,Keyword,Value);", 
+	NULL, 0,&errMsg);
+
+	return evfs_metadata_db_version_bump(db, "4");
+}
+
 int evfs_metadata_db_version_bump(sqlite3* db, char* ver)
 {
 	int ret;
@@ -146,6 +160,7 @@ void evfs_metadata_db_init(sqlite3** db)
 	ecore_hash_set(db_upgrade_hash, (int*)0, evfs_metadata_db_upgrade_0_1);
 	ecore_hash_set(db_upgrade_hash, (int*)1, evfs_metadata_db_upgrade_1_2);
 	ecore_hash_set(db_upgrade_hash, (int*)2, evfs_metadata_db_upgrade_2_3);
+	ecore_hash_set(db_upgrade_hash, (int*)3, evfs_metadata_db_upgrade_3_4);
 	
 	/*Check if we need to seed the DB*/
 	if (stat(metadata_db, &config_dir_stat)) {
@@ -245,12 +260,11 @@ int evfs_metadata_db_id_for_file(sqlite3* db, evfs_filereference* ref, int creat
 	
 	/*Build a path*/
 	file_path = evfs_filereference_to_string(ref);
-	printf("File path is: %s\n", file_path);
+	/*printf("File path is: %s\n", file_path);*/
 
 
 	snprintf(query, sizeof(query), "select id from File where filename ='%s'", file_path);
-	ret = sqlite3_prepare(db, query, 
-			-1, &pStmt, 0);
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
 
 	if (ret == SQLITE_OK) {
 		ret = sqlite3_step(pStmt);
@@ -279,20 +293,36 @@ int evfs_metadata_db_id_for_file(sqlite3* db, evfs_filereference* ref, int creat
 
 void evfs_metadata_db_file_keyword_add(sqlite3* db, int file, char* key, char* value)
 {
-	char* file_path;
 	char query[512];
 	int ret;
 	char* errMsg = 0;
+	int cnt;
+	sqlite3_stmt *pStmt;
 
-	if (key&&value) {
-		snprintf(query,sizeof(query), "insert into FileMeta (File, keyword, value) select %d, '%s', '%s';", file,key,value);
-		printf("Running %p:%s\n", db,query);
-		ret = sqlite3_exec(db, 
-		query, 
-		NULL, 0,&errMsg);
-		if (errMsg) printf("ERROR: %s\n", errMsg);
-	} else {
-		printf("db_file_keyword_add: key or value is null\n");
+	/*Check we don't already have a match for this file/keyword/value triplet*/
+	snprintf(query, sizeof(query), "select count(*) from FileMeta where file=%d and keyword='%s' and value='%s'", file,key,value);
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+	if (ret == SQLITE_OK) {
+		ret = sqlite3_step(pStmt);
+		if (ret == SQLITE_ROW)  {
+			cnt = sqlite3_column_int(pStmt,0);
+	
+			sqlite3_reset(pStmt);
+			sqlite3_finalize(pStmt);
+			
+			if (cnt == 0 &&key&&value) {
+				snprintf(query,sizeof(query),
+					"insert into FileMeta (File, keyword, value) select %d, '%s', '%s';", file,key,value);
+				
+				/*printf("Running %p:%s\n", db,query);*/
+				ret = sqlite3_exec(db, 
+				query, 
+				NULL, 0,&errMsg);
+				if (errMsg) printf("ERROR: %s\n", errMsg);
+			} else {
+					/*printf("db_file_keyword_add: key or value is null\n");*/
+			}
+		}
 	}
 
 }

@@ -665,11 +665,11 @@ int evfs_metadata_extract_runner(void* data)
 		ecore_list_goto_first(evfs_metadata_queue);
 
 		if ( (ref = ecore_list_current(evfs_metadata_queue))) {
-			printf("..item on queue..\n");
+			/*printf("..item on queue..\n");*/
 			evfs_metadata_extract_fork(ref);
 		}
 	} else {
-		printf("...metadata runner executing..\n");
+		/*printf("...metadata runner executing..\n");*/
 
 		if ((waitpid(_metadata_fork, &status, WNOHANG) > 0) ||
 			       errno == ECHILD) {
@@ -681,7 +681,7 @@ int evfs_metadata_extract_runner(void* data)
 
 			ecore_list_remove_first(evfs_metadata_queue);
 
-			printf("Execution complete..\n");
+			/*printf("Execution complete..\n");*/
 		}
 	}
 	return 1;
@@ -710,7 +710,7 @@ int evfs_metadata_extract_fork(evfs_filereference* ref)
 		/*Wait up to 10 seconds in this fork for the db to be available*/
 		sqlite3_busy_timeout(dbi,10000);
 
-		printf("Extract fork started: %s..\n", ref->path);
+		/*printf("Extract fork started: %s..\n", ref->path);*/
 
 		file = evfs_metadata_db_id_for_file(dbi,ref,1);
 
