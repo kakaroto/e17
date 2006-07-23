@@ -103,13 +103,15 @@ dnl The following test must come after AM_GNU_GETTEXT as it relies on
 dnl ${DATADIRNAME} being defined.
 
 if test "x$enable_fsstd" = "xyes"; then
+  DATADIR=${prefix}/${DATADIRNAME}
   LOCALEDIR=${prefix}/${DATADIRNAME}/locale
 else
   datadir=${prefix}
+  DATADIR=${datadir}
   exec_prefix=${prefix}/e16
   LOCALEDIR=${prefix}/e16/locale
 fi
-ENLIGHTENMENT_ROOT=`eval echo ${datadir}/e16`
+ENLIGHTENMENT_ROOT=`eval echo ${DATADIR}/e16`
 ENLIGHTENMENT_BIN=`eval echo ${bindir}`
 AC_SUBST(ENLIGHTENMENT_ROOT)
 AC_SUBST(ENLIGHTENMENT_BIN)
