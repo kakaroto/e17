@@ -224,7 +224,6 @@ Imlib_Image
 epsilon_generate_thumb (Epsilon * e)
 {
   int ret = XINE_THUMB_SUCCESS;
-  char *p;
   Imlib_Image img = NULL;
   DATA8 *buf = NULL;
   int cnt, attempts = 0, length = -1, pos_perc, pos_time, new_perc, new_time,
@@ -242,7 +241,6 @@ epsilon_generate_thumb (Epsilon * e)
   snprintf (cfg, PATH_MAX, "%s%s", xine_get_homedir (), ".xine/config");
   xine_config_load (param->xine, cfg);
   xine_init (param->xine);
-
 
   /* opening xine output ports */
   if (!
@@ -338,8 +336,6 @@ try_get_chance:
     }
   else
     {
-      char *v;
-
       /* know we know the size, get a buffer for the snapshot */
       if (!(buf = malloc (w * h * 2)))
 	{
