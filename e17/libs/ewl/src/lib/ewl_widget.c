@@ -1579,7 +1579,7 @@ unsigned int
 ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 {
 	int found = FALSE;
-	char tmp[PATH_MAX];
+	int end;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("widget", widget, FALSE);
@@ -1587,9 +1587,16 @@ ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 	/* we don't check the type of the widget in here or we'll get into
 	 * an infinate loop ... */
 
-	snprintf(tmp, PATH_MAX, ":%s:", type);
-	if (widget->inheritance && strstr(widget->inheritance, tmp))
-		found = TRUE;
+	end = strlen(type);
+	if (widget->inheritance) {
+		char *match;
+		match = (char *)widget->inheritance;
+		while ((match = strstr(match, type))) {
+			if ((*(match - 1) == ':') && (*(match + end) == ':'))
+				found = TRUE;
+			match++;
+		}
+	}
 
 	DRETURN_INT(found, DLEVEL_STABLE);
 }
@@ -2356,6 +2363,7 @@ ewl_widget_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	if (w->theme_object) {
 		/* edje_object_file_set(w->theme_object, "", ""); */
+		evas_object_clip_unset(w->theme_object);
 		ewl_embed_object_cache(emb, w->theme_object);
 		w->theme_object = NULL;
 	}
@@ -2366,20 +2374,25 @@ ewl_widget_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * will be a white rectangle displayed.
 	 */
 	if (w->fx_clip_box) {
-		if (pc && pc->clip_box) {
-			if (!evas_object_clipees_get(pc->clip_box))
-				evas_object_hide(pc->clip_box);
-		}
 		evas_object_hide(w->fx_clip_box);
-		evas_object_clip_unset(w->theme_object);
+		evas_object_clip_unset(w->fx_clip_box);
 		ewl_embed_object_cache(emb, w->fx_clip_box);
 		w->fx_clip_box = NULL;
 	}
+
 	if (w->smart_object) {
 		evas_object_hide(w->smart_object);
 		evas_object_data_del(w->smart_object, "EWL");
 		ewl_embed_object_cache(emb, w->smart_object);
 		w->smart_object = NULL;
+	}
+
+	/*
+	 * This has to happen last to be sure we've removed all clipped parts
+	 */
+	if (pc && pc->clip_box) {
+		if (!evas_object_clipees_get(pc->clip_box))
+			evas_object_hide(pc->clip_box);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
