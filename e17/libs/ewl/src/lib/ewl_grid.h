@@ -96,6 +96,9 @@ int             ewl_grid_init(Ewl_Grid *g);
 void            ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *child,
 				int start_col, int end_col, int start_row,
 				int end_row);
+void            ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *child,
+				int *start_col, int *end_col, int *start_row,
+				int *end_row);
 
 void            ewl_grid_dimensions_set(Ewl_Grid *g, int col, int row);
 void            ewl_grid_dimensions_get(Ewl_Grid *g, int *col, int *row);

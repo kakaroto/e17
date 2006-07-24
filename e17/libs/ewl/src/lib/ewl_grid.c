@@ -373,10 +373,15 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 	/* 
 	 * create a new child 
 	 */
-	child = NEW(Ewl_Grid_Child, 1);
-	if (!child)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
+	if (!(child = ewl_widget_data_get(w,g))) {
+		child = NEW(Ewl_Grid_Child, 1);
+		if (!child)
+			DLEAVE_FUNCTION(DLEVEL_STABLE);
+	}
+	else {
+		g->space -= (child->end_col - child->start_col + 1)
+			* (child->end_row - child->start_row + 1) + 1;
+	}
 	child->start_col = start_col;
 	child->end_col = end_col;
 	child->start_row = start_row;
@@ -399,7 +404,84 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 	 */
 	ewl_widget_data_set(w, (void *)g, child);
 	ewl_grid_dimensions_set(g, new_cols, new_rows);
+	ewl_widget_configure(EWL_WIDGET(g));
 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param g: the grid
+ * @param w: the child widget
+ * @param start_col: the start column
+ * @param end_col: the end column
+ * @param start_row: the start row
+ * @param end_row: the end row
+ * @return Returns no value
+ * @brief get the position of a child widget
+ */
+void
+ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *w,
+				int *start_col, int *end_col, 
+				int *start_row, int *end_row)
+{
+	Ewl_Grid_Child *child;
+	int sc, ec, sr, er;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("g", g);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	
+	child = ewl_widget_data_get(w, g);
+	if (child) {
+		/*
+		 * for a fixed-positioned widget we can
+		 * just return the data
+		 */
+		sc = child->start_col;
+		ec = child->end_col;
+		sr = child->start_row;
+		er = child->end_row;
+	}
+	else {
+		Ewl_Widget *c;
+		int col, row;
+		void (*go_next)(Ewl_Grid *g, int *c, int *r);
+		/*
+		 * for a floating widget we have to search
+		 * for the current position
+		 */
+		if (!g->map)
+			ewl_grid_map_recalc(g);
+		/*
+		 * setup the position stuff for the floating
+		 * widgets
+	 	 */
+		ewl_grid_map_start_position_get(g, &col, &row);
+		if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
+			go_next = ewl_grid_hmap_position_next;
+		else
+			go_next = ewl_grid_vmap_position_next;
+		
+		/*
+		 * and now find the current position
+		 */
+		ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+		while ((c = ecore_dlist_next(EWL_CONTAINER(w)->children))
+				&& c != w) {
+			if (!ewl_widget_data_get(w, g))
+				go_next(g, &col, &row);
+		}
+		sc = ec = col;
+		sr = er = row;
+	}
+
+	if (start_col) *start_col = sc;
+	if (end_col) *end_col = ec;
+	if (start_row) *start_row = sr;
+	if (end_row) *end_row = er;
+	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
