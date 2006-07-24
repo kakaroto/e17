@@ -26,9 +26,11 @@
 #include "borders.h"
 #include "desktops.h"
 #include "ewins.h"
+#include "file.h"
 #include "groups.h"
 #include "iclass.h"
 #include "menus.h"
+#include "parse.h"
 #include <errno.h>
 #include <sys/stat.h>
 

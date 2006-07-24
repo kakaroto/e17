@@ -28,6 +28,7 @@
 #include "emodule.h"
 #include "ewins.h"
 #include "groups.h"
+#include "parse.h"
 #include "snaps.h"
 #include "timers.h"
 #include <math.h>

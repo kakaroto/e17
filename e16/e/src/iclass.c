@@ -29,6 +29,7 @@
 #include "eimage.h"
 #include "emodule.h"
 #include "iclass.h"
+#include "parse.h"
 #include "tclass.h"
 #include "xwin.h"
 

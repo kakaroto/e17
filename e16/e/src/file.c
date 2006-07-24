@@ -21,24 +21,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include <sys/stat.h>
-#include <ctype.h>
+#include "file.h"
+#include "util.h"
 #include <dirent.h>
-#include <pwd.h>
-#include <time.h>
-
-const char         *
-FileExtension(const char *file)
-{
-   const char         *p;
-
-   p = strrchr(file, '.');
-   if (p != NULL)
-     {
-	return p + 1;
-     }
-   return "";
-}
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 void
 Etmp(char *s)
@@ -46,60 +36,6 @@ Etmp(char *s)
    static unsigned int n_calls = 0;
 
    Esnprintf(s, 1024, "%s/TMP_%d_%d", EDirUser(), getpid(), n_calls++);
-}
-
-void
-E_md(const char *s)
-{
-   if ((!s) || (!*s))
-      return;
-   mkdir(s, S_IRWXU);
-}
-
-int
-exists(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   return 1;
-}
-
-int
-isfile(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   if (S_ISREG(st.st_mode))
-      return 1;
-   return 0;
-}
-
-int
-isdir(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   if (S_ISDIR(st.st_mode))
-      return 1;
-   return 0;
-}
-
-int
-isabspath(const char *path)
-{
-   return path[0] == '/';
 }
 
 char              **
@@ -172,11 +108,11 @@ E_ls(const char *dir, int *num)
 }
 
 void
-E_rm(const char *s)
+E_md(const char *s)
 {
    if ((!s) || (!*s))
       return;
-   unlink(s);
+   mkdir(s, S_IRWXU);
 }
 
 void
@@ -185,6 +121,14 @@ E_mv(const char *s, const char *ss)
    if ((!s) || (!ss) || (!*s) || (!*ss))
       return;
    rename(s, ss);
+}
+
+void
+E_rm(const char *s)
+{
+   if ((!s) || (!*s))
+      return;
+   unlink(s);
 }
 
 #if 0				/* Unused */
@@ -215,6 +159,107 @@ E_cp(const char *s, const char *ss)
    fclose(ff);
 }
 #endif
+
+#if 0				/* Unused */
+char               *
+cwd(void)
+{
+   char               *s;
+   char                ss[FILEPATH_LEN_MAX];
+
+   getcwd(ss, FILEPATH_LEN_MAX);
+   s = Estrdup(ss);
+   return s;
+}
+#endif
+
+int
+exists(const char *s)
+{
+   struct stat         st;
+
+   if ((!s) || (!*s))
+      return 0;
+   if (stat(s, &st) < 0)
+      return 0;
+   return 1;
+}
+
+int
+isdir(const char *s)
+{
+   struct stat         st;
+
+   if ((!s) || (!*s))
+      return 0;
+   if (stat(s, &st) < 0)
+      return 0;
+   if (S_ISDIR(st.st_mode))
+      return 1;
+   return 0;
+}
+
+int
+isfile(const char *s)
+{
+   struct stat         st;
+
+   if ((!s) || (!*s))
+      return 0;
+   if (stat(s, &st) < 0)
+      return 0;
+   if (S_ISREG(st.st_mode))
+      return 1;
+   return 0;
+}
+
+static int
+permissions(const char *s)
+{
+   struct stat         st;
+
+   if ((!s) || (!*s))
+      return 0;
+   if (stat(s, &st) < 0)
+      return 0;
+   return st.st_mode;
+}
+
+int
+canread(const char *s)
+{
+   if ((!s) || (!*s))
+      return 0;
+
+   if (!(permissions(s) & (S_IRUSR | S_IRGRP | S_IROTH)))
+      return 0;
+
+   return 1 + access(s, R_OK);
+}
+
+int
+canwrite(const char *s)
+{
+   if ((!s) || (!*s))
+      return 0;
+
+   if (!(permissions(s) & (S_IWUSR | S_IWGRP | S_IWOTH)))
+      return 0;
+
+   return 1 + access(s, W_OK);
+}
+
+int
+canexec(const char *s)
+{
+   if ((!s) || (!*s))
+      return 0;
+
+   if (!(permissions(s) & (S_IXUSR | S_IXGRP | S_IXOTH)))
+      return 0;
+
+   return 1 + access(s, X_OK);
+}
 
 time_t
 moddate(const char *s)
@@ -257,6 +302,18 @@ fileinode(const char *s)
 }
 
 int
+filedev(const char *s)
+{
+   struct stat         st;
+
+   if ((!s) || (!*s))
+      return 0;
+   if (stat(s, &st) < 0)
+      return 0;
+   return filedev_map((int)st.st_dev);
+}
+
+int
 filedev_map(int dev)
 {
 #ifdef __linux__
@@ -278,372 +335,22 @@ filedev_map(int dev)
 }
 
 int
-filedev(const char *s)
+isabspath(const char *path)
 {
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   return filedev_map((int)st.st_dev);
-}
-
-#if 0				/* Unused */
-char               *
-cwd(void)
-{
-   char               *s;
-   char                ss[FILEPATH_LEN_MAX];
-
-   getcwd(ss, FILEPATH_LEN_MAX);
-   s = Estrdup(ss);
-   return s;
-}
-#endif
-
-static int
-permissions(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   return st.st_mode;
-}
-
-#if 0				/* Not used */
-int
-owner(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   return st.st_uid;
-}
-
-int
-group(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   return st.st_gid;
-}
-#endif
-
-char               *
-username(int uid)
-{
-   char               *s;
-   static int          usr_uid = -1;
-   static char        *usr_s = NULL;
-   struct passwd      *pwd;
-
-   if (usr_uid < 0)
-      usr_uid = getuid();
-   if ((uid == usr_uid) && (usr_s))
-      return Estrdup(usr_s);
-   pwd = getpwuid(uid);
-   if (pwd)
-     {
-	s = Estrdup(pwd->pw_name);
-	if (uid == usr_uid)
-	   usr_s = Estrdup(s);
-	return s;
-     }
-   return Estrdup("unknown");
-}
-
-char               *
-homedir(int uid)
-{
-   static int          usr_uid = -1;
-   static char        *usr_s = NULL;
-   char               *s;
-   const char         *ss;
-   struct passwd      *pwd;
-
-   if (usr_uid < 0)
-      usr_uid = getuid();
-   if ((uid == usr_uid) && (usr_s))
-     {
-	return Estrdup(usr_s);
-     }
-   pwd = getpwuid(uid);
-   if (pwd)
-     {
-	s = Estrdup(pwd->pw_dir);
-	if (uid == usr_uid)
-	   usr_s = Estrdup(s);
-	return s;
-     }
-   ss = getenv("TMPDIR");
-   if (!ss)
-      ss = "/tmp";
-   return Estrdup(ss);
-}
-
-char               *
-usershell(int uid)
-{
-   char               *s;
-   static int          usr_uid = -1;
-   static char        *usr_s = NULL;
-   struct passwd      *pwd;
-
-   if (usr_uid < 0)
-      usr_uid = getuid();
-   if ((uid == usr_uid) && (usr_s))
-      return Estrdup(usr_s);
-   pwd = getpwuid(uid);
-   if (pwd)
-     {
-	if (!pwd->pw_shell)
-	   return Estrdup("/bin/sh");
-	if (strlen(pwd->pw_shell) < 1)
-	   return Estrdup("/bin/sh");
-	if (!(canexec(pwd->pw_shell)))
-	   return Estrdup("/bin/sh");
-	s = Estrdup(pwd->pw_shell);
-	if (uid == usr_uid)
-	   usr_s = Estrdup(s);
-	return s;
-     }
-   return Estrdup("/bin/sh");
+   return path[0] == '/';
 }
 
 const char         *
-atword(const char *s, int num)
+FileExtension(const char *file)
 {
-   int                 cnt, i;
+   const char         *p;
 
-   if (!s)
-      return NULL;
-   cnt = 0;
-   i = 0;
-
-   while (s[i])
+   p = strrchr(file, '.');
+   if (p != NULL)
      {
-	if ((s[i] != ' ') && (s[i] != '\t'))
-	  {
-	     if (i == 0)
-		cnt++;
-	     else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
-		cnt++;
-	     if (cnt == num)
-		return &s[i];
-	  }
-	i++;
+	return p + 1;
      }
-   return NULL;
-}
-
-void
-word(const char *s, int num, char *wd)
-{
-   int                 cnt, i;
-   const char         *start, *finish, *ss;
-
-   if (!s)
-      return;
-   if (!wd)
-      return;
-   if (num <= 0)
-     {
-	*wd = 0;
-	return;
-     }
-   cnt = 0;
-   i = 0;
-   start = NULL;
-   finish = NULL;
-   ss = NULL;
-
-   while (s[i])
-     {
-	if ((cnt == num) && ((s[i] == ' ') || (s[i] == '\t')))
-	  {
-	     finish = &s[i];
-	     break;
-	  }
-	if ((s[i] != ' ') && (s[i] != '\t'))
-	  {
-	     if (i == 0)
-	       {
-		  cnt++;
-		  if (cnt == num)
-		     start = &s[i];
-	       }
-	     else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
-	       {
-		  cnt++;
-		  if (cnt == num)
-		     start = &s[i];
-	       }
-	  }
-	i++;
-     }
-   if (cnt == num)
-     {
-	if ((start) && (finish))
-	  {
-	     for (ss = start; ss < finish; ss++)
-		*wd++ = *ss;
-	  }
-	else if (start)
-	  {
-	     for (ss = start; *ss != 0; ss++)
-		*wd++ = *ss;
-	  }
-	*wd = 0;
-     }
-}
-
-/* gets word number [num] in the string [s] and copies it into [wd] */
-/* wd is NULL terminated. If word [num] does not exist wd = "" */
-/* NB: this function now handles quotes so for a line: */
-/* Hello to "Welcome sir - may I Help" Shub Foo */
-/* Word 1 = Hello */
-/* Word 2 = to */
-/* Word 3 = Welcome sir - may I Help */
-/* Word 4 = Shub */
-/* word 5 = Foo */
-void
-fword(char *s, int num, char *wd)
-{
-   char               *cur, *start, *end;
-   int                 count, inword, inquote, len;
-
-   if (!s)
-      return;
-   if (!wd)
-      return;
-   *wd = 0;
-   if (num <= 0)
-      return;
-   cur = s;
-   count = 0;
-   inword = 0;
-   inquote = 0;
-   start = NULL;
-   end = NULL;
-   while ((*cur) && (count < num))
-     {
-	if (inword)
-	  {
-	     if (inquote)
-	       {
-		  if (*cur == '"')
-		    {
-		       inquote = 0;
-		       inword = 0;
-		       end = cur;
-		       count++;
-		    }
-	       }
-	     else
-	       {
-		  if (isspace(*cur))
-		    {
-		       end = cur;
-		       inword = 0;
-		       count++;
-		    }
-	       }
-	  }
-	else
-	  {
-	     if (!isspace(*cur))
-	       {
-		  if (*cur == '"')
-		    {
-		       inquote = 1;
-		       start = cur + 1;
-		    }
-		  else
-		     start = cur;
-		  inword = 1;
-	       }
-	  }
-	if (count == num)
-	   break;
-	cur++;
-     }
-   if (!start)
-      return;
-   if (!end)
-      end = cur;
-   if (end <= start)
-      return;
-   len = (int)(end - start);
-   if (len > 4000)
-      len = 4000;
-   if (len > 0)
-     {
-	strncpy(wd, start, len);
-	wd[len] = 0;
-     }
-}
-
-char               *
-field(char *s, int fieldno)
-{
-   char                buf[4096];
-
-   buf[0] = 0;
-   fword(s, fieldno + 1, buf);
-   if (buf[0])
-     {
-	if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
-	   return NULL;
-	return Estrdup(buf);
-     }
-   return NULL;
-}
-
-int
-canread(const char *s)
-{
-   if ((!s) || (!*s))
-      return 0;
-
-   if (!(permissions(s) & (S_IRUSR | S_IRGRP | S_IROTH)))
-      return 0;
-
-   return 1 + access(s, R_OK);
-}
-
-int
-canwrite(const char *s)
-{
-   if ((!s) || (!*s))
-      return 0;
-
-   if (!(permissions(s) & (S_IWUSR | S_IWGRP | S_IWOTH)))
-      return 0;
-
-   return 1 + access(s, W_OK);
-}
-
-int
-canexec(const char *s)
-{
-   if ((!s) || (!*s))
-      return 0;
-
-   if (!(permissions(s) & (S_IXUSR | S_IXGRP | S_IXOTH)))
-      return 0;
-
-   return 1 + access(s, X_OK);
+   return "";
 }
 
 char               *

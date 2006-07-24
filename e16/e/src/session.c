@@ -28,6 +28,7 @@
 #include "ewins.h"
 #include "session.h"
 #include "snaps.h"
+#include "user.h"
 #include "xwin.h"
 #include <fcntl.h>
 #include <signal.h>

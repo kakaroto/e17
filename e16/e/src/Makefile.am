@@ -61,6 +61,7 @@ e16_SOURCES = \
 	ewmh.c			\
 	extinitwin.c		\
 	file.c		        \
+	file.h		        \
 	finders.c		\
 	focus.c 		\
 	fonts.c 		\
@@ -93,6 +94,8 @@ e16_SOURCES = \
 	moveresize.c		\
 	mwm.c			\
 	pager.c                 \
+	parse.c                 \
+	parse.h                 \
 	progress.c		\
 	regex.c			\
 	screen.c                \
@@ -117,6 +120,8 @@ e16_SOURCES = \
 	timers.h		\
 	tooltips.c		\
 	tooltips.h		\
+	user.c			\
+	user.h			\
 	util.h			\
 	ttfont.c		\
 	warp.c			\

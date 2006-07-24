@@ -25,6 +25,7 @@
 #include "dialog.h"
 #include "eimage.h"
 #include "emodule.h"
+#include "parse.h"
 #include "timers.h"
 #include "xwin.h"
 #include <math.h>

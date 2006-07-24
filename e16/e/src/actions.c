@@ -23,6 +23,8 @@
  */
 #include "E.h"
 #include "dialog.h"
+#include "file.h"
+#include "user.h"
 
 static void
 runApp(const char *exe, const char *params)

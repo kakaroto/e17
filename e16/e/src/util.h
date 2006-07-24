@@ -42,6 +42,7 @@
 #endif
 
 /* memory.c */
+#include <stdlib.h>
 #define Ecalloc     calloc
 #define Emalloc     malloc
 #define Efree       free

@@ -27,11 +27,13 @@
 #include "borders.h"
 #include "buttons.h"
 #include "conf.h"
+#include "file.h"
 #include "iclass.h"
 #include "menus.h"
 #include "session.h"
 #include "tclass.h"
 #include "tooltips.h"
+#include "user.h"
 
 void
 SkipTillEnd(FILE * ConfigFile)

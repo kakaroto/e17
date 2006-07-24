@@ -54,7 +54,7 @@
 #define USE_COMPOSITE 1
 #endif
 
-#include <xwin.h>
+#include "xwin.h"
 
 #define ENABLE_COLOR_MODIFIERS 0	/* Not functional */
 
@@ -669,36 +669,6 @@ Window              ExtInitWinCreate(void);
 void                ExtInitWinSet(Window win);
 Window              ExtInitWinGet(void);
 void                ExtInitWinKill(void);
-
-/* file.c */
-void                Etmp(char *s);
-void                E_md(const char *s);
-int                 exists(const char *s);
-int                 isfile(const char *s);
-int                 isdir(const char *s);
-int                 isabspath(const char *s);
-char              **E_ls(const char *dir, int *num);
-void                E_rm(const char *s);
-void                E_mv(const char *s, const char *ss);
-time_t              moddate(const char *s);
-int                 fileinode(const char *s);
-int                 filedev_map(int dev);
-int                 filedev(const char *s);
-char               *username(int uid);
-char               *homedir(int uid);
-char               *usershell(int uid);
-const char         *atword(const char *s, int num);
-void                word(const char *s, int num, char *wd);
-int                 canread(const char *s);
-int                 canwrite(const char *s);
-int                 canexec(const char *s);
-char               *fileof(const char *s);
-char               *fullfileof(const char *s);
-char               *pathtoexec(const char *file);
-char               *pathtofile(const char *file);
-const char         *FileExtension(const char *file);
-char               *field(char *s, int fieldno);
-void                fword(char *s, int num, char *wd);
 
 /* focus.c */
 #define FOCUS_NOP         0

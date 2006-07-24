@@ -25,10 +25,12 @@
 #include "desktops.h"
 #include "dialog.h"
 #include "emodule.h"
+#include "file.h"
 #include "hints.h"
 #include "session.h"
 #include "snaps.h"
 #include "timestamp.h"
+#include "user.h"
 #include "xwin.h"
 #include <sys/utsname.h>
 #include <signal.h>
