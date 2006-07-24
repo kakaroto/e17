@@ -616,7 +616,7 @@ MenuCreateFromBorders(const char *name, MenuStyle * ms)
 	/* if its not internal (ie doesnt start with _ ) */
 	if (lst[i]->name[0] != '_')
 	  {
-	     Esnprintf(s, sizeof(s), "wop %% bo %s", lst[i]->name);
+	     Esnprintf(s, sizeof(s), "wop * bo %s", lst[i]->name);
 	     mi = MenuItemCreate(lst[i]->name, NULL, s, NULL);
 	     MenuAddItem(m, mi);
 	  }
