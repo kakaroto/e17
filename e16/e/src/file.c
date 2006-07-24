@@ -213,25 +213,10 @@ isfile(const char *s)
    return 0;
 }
 
-static int
-permissions(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   return st.st_mode;
-}
-
 int
 canread(const char *s)
 {
    if ((!s) || (!*s))
-      return 0;
-
-   if (!(permissions(s) & (S_IRUSR | S_IRGRP | S_IROTH)))
       return 0;
 
    return 1 + access(s, R_OK);
@@ -243,9 +228,6 @@ canwrite(const char *s)
    if ((!s) || (!*s))
       return 0;
 
-   if (!(permissions(s) & (S_IWUSR | S_IWGRP | S_IWOTH)))
-      return 0;
-
    return 1 + access(s, W_OK);
 }
 
@@ -253,9 +235,6 @@ int
 canexec(const char *s)
 {
    if ((!s) || (!*s))
-      return 0;
-
-   if (!(permissions(s) & (S_IXUSR | S_IXGRP | S_IXOTH)))
       return 0;
 
    return 1 + access(s, X_OK);

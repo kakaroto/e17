@@ -395,7 +395,7 @@ FindFileLocalized(const char *name, const char *path, int localized)
    lang = Mode.locale.lang;
    if (!localized || !lang)
      {
-	if (isfile(s) && canread(s))	/* FIXME - Only one stat */
+	if (canread(s))
 	   return Estrdup(s);
 	else
 	   return NULL;
@@ -418,7 +418,7 @@ FindFileLocalized(const char *name, const char *path, int localized)
 	   continue;
 
 	*p[i] = '\0';
-	if (isfile(s) && canread(s))	/* FIXME - Only one stat */
+	if (canread(s))
 	   return Estrdup(s);
      }
 
