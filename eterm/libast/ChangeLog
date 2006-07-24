@@ -796,3 +796,7 @@ not tested.
 Added dynamically-loadable module object class along with
 corresponding unit tests.  Appears to work fine.
 ----------------------------------------------------------------------
+Mon Jul 24 01:47:44 2006                        Michael Jennings (mej)
+
+Fix header installation for new headers.
+----------------------------------------------------------------------

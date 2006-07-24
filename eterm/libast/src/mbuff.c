@@ -562,10 +562,9 @@ spif_memidx_t
 spif_mbuff_rindex(spif_mbuff_t self, spif_uint8_t c)
 {
     spif_byteptr_t tmp;
-    spif_memidx_t i;
 
     ASSERT_RVAL(!SPIF_MBUFF_ISNULL(self), (SPIF_CAST(memidx) -1));
-    for (tmp = self->buff + self->len, i = 0; (*tmp & (~c)) && (i < self->len); i++, tmp--);
+    for (tmp = self->buff + self->len - 1; (*tmp != c) && (tmp >= self->buff); tmp--);
 
     if ((tmp == self->buff) && (*tmp != c)) {
         return SPIF_CAST(memidx) (self->len);
