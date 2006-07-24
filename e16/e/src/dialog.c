@@ -201,6 +201,7 @@ struct _dialog
 
    char                redraw;
    char                update;
+   char                close;
    int                 xu1, yu1, xu2, yu2;
 };
 
@@ -680,8 +681,14 @@ DialogShowCentered(Dialog * d)
    DialogShowArranged(d, 1);
 }
 
-static void
+void
 DialogClose(Dialog * d)
+{
+   d->close = 1;
+}
+
+static void
+_DialogClose(Dialog * d)
 {
    if (!d)
       return;
@@ -2167,6 +2174,9 @@ DialogHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	DialogEventKeyPress(d, ev);
 	break;
      }
+
+   if (d->close)
+      _DialogClose(d);
 }
 
 static void
@@ -2493,6 +2503,9 @@ DButtonHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	if (db->close)
 	   DialogClose(d);
      }
+
+   if (d->close)
+      _DialogClose(d);
 }
 
 /*

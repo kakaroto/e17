@@ -78,6 +78,7 @@ void                DialogShow(Dialog * d);
 void                DialogShowCentered(Dialog * d);
 void                DialogShowSimple(const DialogDef * dd, void *data);
 void                DialogRedraw(Dialog * d);
+void                DialogClose(Dialog * d);
 
 void                DialogAddButton(Dialog * d, const char *text,
 				    DialogCallbackFunc * func, char doclose,
@@ -86,6 +87,7 @@ void                DialogAddHeader(Dialog * d, const char *img,
 				    const char *txt);
 void                DialogAddFooter(Dialog * d, int flags,
 				    DialogCallbackFunc * cb);
+
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
 Dialog             *DialogItemGetDialog(DItem * di);

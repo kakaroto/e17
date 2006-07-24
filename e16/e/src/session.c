@@ -602,7 +602,7 @@ SessionLogout(void)
 }
 
 static void
-LogoutCB(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
+LogoutCB(Dialog * d, int val, void *data __UNUSED__)
 {
 #ifdef HAVE_X11_SM_SMLIB_H
    if (sm_conn)
@@ -630,6 +630,8 @@ LogoutCB(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	     break;
 	  }
      }
+
+   DialogClose(d);
 }
 
 static void
