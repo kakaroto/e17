@@ -15,7 +15,6 @@
 
 static unsigned int ewl_callback_hash(void *key);
 static int ewl_callback_compare(void *key1, void *key2);
-static Ewl_Callback *ewl_callback_register(Ewl_Callback * cb);
 static void ewl_callback_unregister(Ewl_Callback * cb);
 static Ewl_Callback *ewl_callback_get(Ewl_Widget *w, unsigned int type, 
 						unsigned int idx);
@@ -79,35 +78,6 @@ ewl_callbacks_shutdown(void)
 		ecore_hash_destroy(cb_registration);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/*
- * ewl_callback_register - register a callback to check for duplicates
- * @cb: the callback to register
- *
- * Returns a pointer to the callback that should be used instead of the passed
- * @cb on success, NULL on failure. The returned callback may in fact be @cb,
- * but this can not be counted on. The callback @cb will be freed if this is
- * not the case.
- */
-static Ewl_Callback *
-ewl_callback_register(Ewl_Callback *cb)
-{
-	Ewl_Callback *found;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cb", cb, NULL);
-
-	found = ecore_hash_get(cb_registration, cb);
-	if (!found) {
-		found = cb; 
-		found->id = ++callback_id;
-		ecore_hash_set(cb_registration, found, found);
-	}
-
-	found->references++;
-
-	DRETURN_PTR(found, DLEVEL_STABLE);
 }
 
 /*
@@ -304,19 +274,32 @@ ewl_callback_position_insert(Ewl_Widget *w, unsigned int type,
 
 	if (type < EWL_CALLBACK_MAX)
 	{
-		cb = NEW(Ewl_Callback, 1);
+		cb = alloca(sizeof(Ewl_Callback));
 	}
 	else
 	{
-		cb = NEW(Ewl_Callback_Custom, 1);
+		cb = alloca(sizeof(Ewl_Callback_Custom));
 		EWL_CALLBACK_CUSTOM(cb)->event_id = type;
 	}
 
 	cb->func = func;
 	cb->user_data = user_data;
 
-	found = ewl_callback_register(cb);
-	if (cb != found) FREE(cb);
+	found = ecore_hash_get(cb_registration, cb);
+	if (!found) {
+		if (type < EWL_CALLBACK_MAX) {
+			found = NEW(Ewl_Callback, 1);
+		}
+		else {
+			found = NEW(Ewl_Callback_Custom, 1);
+		}
+		found->func = func;
+		found->user_data = user_data;
+		found->id = ++callback_id;
+		ecore_hash_set(cb_registration, found, found);
+	}
+
+	found->references++;
 
 	ret = ewl_callback_insert(w, type, found, pos);
 
