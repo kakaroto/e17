@@ -3949,3 +3949,19 @@ of misbehaving clients (yet another variant of unmap/map without waiting for
 withdrawal).
 Fix exit/restart from GSOD.
 
+
+-------------------------------------------------------------------------------
+
+Mon Jul 24 21:05:36 CEST 2006
+(Kim)
+
+--- 0.16.8.3 0.01 ---
+Bump version, add revision to version info strings.
+Japanese translation update (Yasufumi Haga).
+Refactor dialog creation functions.
+Fix for autoconf-2.60 (datadir).
+Fix setting border style using winops menu.
+Fix closing logout dialog when using key bindings.
+Split up, shuffle around file.c (no real changes).
+Eliminate a lot of stat's during configuration file parsing.
+
