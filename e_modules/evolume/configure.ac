@@ -100,7 +100,7 @@ if test "x$prefix" = "xNONE"; then
     moduledir=${prefix}/modules
 else
     datarootdir=${prefix}/share
-    moduledir=${libdir}/lib/enlightenment/modules
+    moduledir=${libdir}/enlightenment/modules
 fi
 
 AC_SUBST(E_MODULES, "${moduledir}")
