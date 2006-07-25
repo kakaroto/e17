@@ -156,6 +156,7 @@ static int
 ewl_callback_insert(Ewl_Widget *w, unsigned int t, 
 				Ewl_Callback *cb, unsigned int pos)
 {
+	int place;
 	Ewl_Callback *old = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -169,47 +170,52 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
 		DRETURN_INT(0, DLEVEL_STABLE);
 	}
 
+	if (t > EWL_CALLBACK_MAX)
+		place = EWL_CALLBACK_MAX;
+	else
+		place = t;
+
 	/* set direct if possible */
 	if (!EWL_CALLBACK_LEN(w, t))
 	{
-		w->callbacks[t].list = (void *)cb;
-		w->callbacks[t].len = 1;
+		w->callbacks[place].list = (void *)cb;
+		w->callbacks[place].len = 1;
 		EWL_CALLBACK_SET_DIRECT(w, t);
 
 		DRETURN_INT(cb->id, DLEVEL_STABLE);
 	}
-	w->callbacks[t].len ++;
+	w->callbacks[place].len ++;
 
 	/* if we have a type direct then we need to save off the direct
 	 * pointer and set the list to NULL so it'll be allocd' correctly */
-	if (w->callbacks[t].mask & EWL_CALLBACK_TYPE_DIRECT)
+	if (w->callbacks[place].mask & EWL_CALLBACK_TYPE_DIRECT)
 	{
-		old = (Ewl_Callback *)w->callbacks[t].list;
-		w->callbacks[t].list = NULL;
+		old = (Ewl_Callback *)w->callbacks[place].list;
+		w->callbacks[place].list = NULL;
 		EWL_CALLBACK_SET_NODIRECT(w, t);
 	}
 
-	w->callbacks[t].list = realloc(w->callbacks[t].list, 
-					w->callbacks[t].len * sizeof(void *));
+	w->callbacks[place].list = realloc(w->callbacks[place].list, 
+					w->callbacks[place].len * sizeof(void *));
 
 	/* if old is set this was a direct so we can just set 0, 1 and be
 	 * done with it */
 	if (old)
 	{
-		w->callbacks[t].list[0] = (!pos ? cb : old);
-		w->callbacks[t].list[1] = ( pos ? cb : old);
+		w->callbacks[place].list[0] = (!pos ? cb : old);
+		w->callbacks[place].list[1] = ( pos ? cb : old);
 	}
 	else
 	{
 		/* only have to move if we aren't at the end (of the
 		 * original lenth already */
-		if ((int)pos != (w->callbacks[t].len - 1))
+		if ((int)pos != (w->callbacks[place].len - 1))
 		{
-			memmove(w->callbacks[t].list + (pos + 1), 
-				w->callbacks[t].list + pos, 
-				(w->callbacks[t].len - 1) * sizeof(void *));
+			memmove(w->callbacks[place].list + (pos + 1), 
+				w->callbacks[place].list + pos, 
+				(w->callbacks[place].len - 1) * sizeof(void *));
 		}
-		w->callbacks[t].list[pos] = cb;
+		w->callbacks[place].list[pos] = cb;
 	}
 
 	if (pos < EWL_CALLBACK_POS(w, t))
@@ -273,14 +279,9 @@ ewl_callback_position_insert(Ewl_Widget *w, unsigned int type,
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	if (type < EWL_CALLBACK_MAX)
-	{
 		cb = alloca(sizeof(Ewl_Callback));
-	}
 	else
-	{
 		cb = alloca(sizeof(Ewl_Callback_Custom));
-		EWL_CALLBACK_CUSTOM(cb)->event_id = type;
-	}
 
 	cb->func = func;
 	cb->user_data = user_data;
@@ -292,6 +293,7 @@ ewl_callback_position_insert(Ewl_Widget *w, unsigned int type,
 		}
 		else {
 			found = NEW(Ewl_Callback_Custom, 1);
+			EWL_CALLBACK_CUSTOM(found)->event_id = type;
 		}
 		found->func = func;
 		found->user_data = user_data;
