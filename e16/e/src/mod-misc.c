@@ -23,7 +23,6 @@
 #include "E.h"
 #include "dialog.h"
 #include "emodule.h"
-#include "session.h"
 #include "settings.h"
 #include "snaps.h"
 

@@ -2338,7 +2338,7 @@ _DlgFillIconbox(Dialog * d, DItem * table, void *data)
    DialogAddFooter(d, DLG_OAC, CB_ConfigureIconbox);
 }
 
-const DialogDef     DlgIconbox = {
+static const DialogDef DlgIconbox = {
    "CONFIGURE_ICONBOX",
    NULL,
    NULL,
