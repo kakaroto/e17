@@ -488,6 +488,9 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	char *dir;
 	const char *file;
 	Evas_List *l;
+        
+        /* Stop the propagation of the signal so the focus won't be passed to the next widget */
+        etk_signal_stop();
 	
 	path = etk_entry_text_get(ETK_ENTRY(e->entry[0]));
 	dir = (const char*)ecore_file_get_dir((char*)path);
@@ -909,7 +912,6 @@ _ex_main_window_show(char *dir)
 		    0, 0, ETK_FILL_POLICY_NONE);
 
    e->entry[0] = etk_entry_new();
-   etk_object_properties_set(ETK_OBJECT(e->entry[0]), "can_pass_focus", ETK_FALSE, NULL);
    etk_table_attach(ETK_TABLE(e->table), e->entry[0], 0, 2, 2, 2, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
    etk_signal_connect("key_down", ETK_OBJECT(e->entry[0]), ETK_CALLBACK(_ex_main_entry_dir_key_down_cb), e);
 
