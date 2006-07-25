@@ -969,7 +969,10 @@ ecore_list_find(Ecore_List * list, Ecore_Match function, const void *match)
 {
    void               *data;
 
-   for (ecore_list_goto_first(list); (data = ecore_list_next(list)) != NULL;)
+   if (!list || !function)
+      return NULL;
+
+   for (_ecore_list_goto_first(list); (data = _ecore_list_next(list)) != NULL;)
       if (!function(data, match))
 	 return data;
 
