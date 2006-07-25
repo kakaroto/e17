@@ -82,8 +82,7 @@ enum _Etk_Widget_Property_Id
    ETK_WIDGET_PASS_MOUSE_EVENTS_PROPERTY,
    ETK_WIDGET_HAS_EVENT_OBJECT_PROPERTY,
    ETK_WIDGET_FOCUSABLE_PROPERTY,
-   ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY,
-   ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY
+   ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY
 };
 
 static void _etk_widget_constructor(Etk_Widget *widget);
@@ -253,8 +252,6 @@ Etk_Type *etk_widget_type_get()
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "focus_on_press", ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(widget_type, "can_pass_focus", ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(widget_type, "repeat_mouse_events", ETK_WIDGET_REPEAT_MOUSE_EVENTS_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "pass_mouse_events", ETK_WIDGET_PASS_MOUSE_EVENTS_PROPERTY,
@@ -1836,7 +1833,6 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->visibility_locked = ETK_FALSE;
    widget->focusable = ETK_FALSE;
    widget->focus_on_press = ETK_FALSE;
-   widget->can_pass_focus = ETK_TRUE;
    widget->use_focus_order = ETK_FALSE;
    widget->has_event_object = ETK_FALSE;
    widget->repeat_mouse_events = ETK_FALSE;
@@ -1952,10 +1948,6 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
          widget->focus_on_press = etk_property_value_bool_get(value);
          etk_object_notify(object, "focus_on_press");
          break;
-      case ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY:
-         widget->can_pass_focus = etk_property_value_bool_get(value);
-         etk_object_notify(object, "can_pass_focus");
-         break;
       default:
          break;
    }
@@ -2012,9 +2004,6 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY:
          etk_property_value_bool_set(value, widget->focus_on_press);
-         break;
-      case ETK_WIDGET_CAN_PASS_FOCUS_PROPERTY:
-         etk_property_value_bool_set(value, widget->can_pass_focus);
          break;
       default:
          break;
@@ -2348,14 +2337,12 @@ static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_
 
    if (strcmp(event->key, "Tab") == 0)
    {
-      if (widget->can_pass_focus)
-         etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
+      etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
       etk_widget_key_event_propagation_stop();
    }
    else if (strcmp(event->key, "ISO_Left_Tab") == 0)
    {
-      if (widget->can_pass_focus)
-         etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
+      etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
       etk_widget_key_event_propagation_stop();
    }
 }

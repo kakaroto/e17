@@ -184,7 +184,7 @@ void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *sig
    if (after)
       object->after_signal_callbacks_list = evas_list_append(object->after_signal_callbacks_list, signal_callback);
    else
-      object->before_signal_callbacks_list = evas_list_append(object->before_signal_callbacks_list, signal_callback);
+      object->before_signal_callbacks_list = evas_list_prepend(object->before_signal_callbacks_list, signal_callback);
 }
 
 /**

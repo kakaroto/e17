@@ -44,6 +44,8 @@ Etk_String *etk_string_copy(const Etk_String *string);
 const char *etk_string_get(Etk_String *string);
 int etk_string_length_get(Etk_String *string);
 Etk_String *etk_string_truncate(Etk_String *string, int length);
+Etk_String *etk_string_delete(Etk_String *string, int pos, int size);
+Etk_String *etk_string_clear(Etk_String *string);
 
 Etk_String *etk_string_set(Etk_String *string, const char *value);
 Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int length);

@@ -170,7 +170,6 @@ struct _Etk_Widget
    unsigned char has_event_object : 1;
    unsigned char focusable : 1;
    unsigned char focus_on_press : 1;
-   unsigned char can_pass_focus : 1;
    unsigned char use_focus_order : 1;
    unsigned char need_size_recalc : 1;
    unsigned char need_redraw : 1;

@@ -151,6 +151,47 @@ Etk_String *etk_string_truncate(Etk_String *string, int length)
 }
 
 /**
+ * @brief Removes from the string a segment of size "size" from the position "pos"
+ * @param string a string
+ * @param pos the position where to start the deletion
+ * @param size the size of the segment of text to remove
+ * @return Returns the string
+ */
+Etk_String *etk_string_delete(Etk_String *string, int pos, int size)
+{
+   if (!string)
+      return NULL;
+   if (pos < 0 || pos >= string->length || size <= 0)
+      return string;
+   
+   if (pos + size >= string->length)
+      return etk_string_truncate(string, pos);
+   else
+   {
+      memmove(&string->string[pos], &string->string[pos + size], string->length - pos - size);
+      return etk_string_truncate(string, string->length - size);
+   }
+}
+
+/**
+ * @brief Clears the string: all the allocated memory will be freed, and the length of the string will be 0
+ * @param string the string to clear
+ * @return Returns the string
+ */
+Etk_String *etk_string_clear(Etk_String *string)
+{
+   if (!string)
+      return NULL;
+   
+   free(string->string);
+   string->string = strdup("");
+   string->length = 0;
+   string->allocated_length = 0;
+   
+   return string;
+}
+
+/**
  * @brief Sets the value of a string
  * @param string a string. If @a string is NULL, a new string is created
  * @param value the value to assign to the string
