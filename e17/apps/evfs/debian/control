@@ -2,12 +2,12 @@ Source: evfs
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: automake1.7, libtool, autotools-dev, debhelper (>= 4.0.0), libsmbclient-dev, libxml2-dev, libecore-dev, libcurl3-dev, libbz2-dev, libeet-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxp-dev, zlib1g-dev
+Build-Depends: automake1.7, libtool, autotools-dev, debhelper (>= 4.0.0), libsmbclient-dev, libxml2-dev, libecore-dev, libcurl3-dev, libbz2-dev, libeet-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxp-dev, zlib1g-dev, libsqlite3-dev
 Standards-Version: 3.6.2
 
 Package: libevfs0
 Architecture: any
-Depends: ${shlibs:Depends}, libbz2-1.0, libxml2, libsmbclient, libecore, libevas, libcurl3, libxinerama1, libxrandr2, libxext6, libxss1, libxcursor1, libxp6, libx11-6 
+Depends: ${shlibs:Depends}, libbz2-1.0, libxml2, libsmbclient, libecore, libevas, libcurl3, libxinerama1, libxrandr2, libxext6, libxss1, libxcursor1, libxp6, libx11-6, libsqlite3-0
 Provides: libevfs
 Section: libs
 Description: enlightenment virtual filesystem library
