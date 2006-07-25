@@ -121,7 +121,7 @@ fi
 if test "x${prefix}" = "xNONE"; then
     datadir="${HOME}/.e/e/modules/${PACKAGE}"
 else
-    datadir="${prefix}/lib/enlightenment/modules/${PACKAGE}"    
+    datadir="${libdir}/enlightenment/modules/${PACKAGE}"    
 fi
 
 

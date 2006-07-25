@@ -90,7 +90,7 @@ if test "x${prefix}" = "xNONE"; then
     datadir="${HOME}/.e/e/modules/${PACKAGE}"
 else
     AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/lib/enlightenment/modules/${PACKAGE}", "Package installed data destination")
-    datadir="${prefix}/lib/enlightenment/modules/${PACKAGE}"    
+    datadir="${libdir}/enlightenment/modules/${PACKAGE}"    
 fi
 
 AC_PREFIX_DEFAULT(${HOME}/.e/e)
