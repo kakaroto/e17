@@ -34,7 +34,7 @@ if test "x${prefix}" = "xNONE"; then
     AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${HOME}/.e/e/modules/${PACKAGE}", "Package installed data destination")
     datadir="${HOME}/.e/e/modules/${PACKAGE}"
 else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/lib/enlightenment/modules/${PACKAGE}", "Package installed data destination")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${libdir}/lib/enlightenment/modules/${PACKAGE}", "Package installed data destination")
     datadir="${libdir}/enlightenment/modules/${PACKAGE}"    
 fi
 
