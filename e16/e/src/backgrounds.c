@@ -1762,8 +1762,7 @@ BG_RedrawView(void)
 		im = BackgroundCacheMini(bg, 1, 0);
 		if (im)
 		  {
-		     EImageRenderOnDrawable(im, NULL, pmap, x + 4, 4, 64, 48,
-					    0);
+		     EImageRenderOnDrawable(im, win, pmap, x + 4, 4, 64, 48, 0);
 		     EImageFree(im);
 		  }
 	     }
