@@ -101,7 +101,7 @@ _lang_configure_language_module(Config *conf)
 
    snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(language_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Language Module Settings"), buf, 0, v, conf);
+			     D_("Language Module Settings"), buf, 0, v, conf);
    conf->config_dialog = cfd;
 }
 
@@ -171,7 +171,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    o = e_widget_list_add(evas, 0, 0);
 
    ol = e_widget_list_add(evas, 0, 1);
-      of = e_widget_framelist_add(evas, _("Available Languages"), 1);
+      of = e_widget_framelist_add(evas, D_("Available Languages"), 1);
 	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->plang));
 	 e_widget_min_size_set(ob, 220, 160);
 	 e_widget_ilist_go(ob);
@@ -179,7 +179,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	 cfdata->gui.o_plang = ob;
       e_widget_list_object_append(ol, of, 1, 1, 0.5);
 
-      of = e_widget_framelist_add(evas, _("Selected Languages"), 0);
+      of = e_widget_framelist_add(evas, D_("Selected Languages"), 0);
 	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->slang));
 	 e_widget_min_size_set(ob, 220, 160);
 	 e_widget_ilist_go(ob);
@@ -195,12 +195,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_del = ob;
 
-	    ob = e_widget_button_add(evas, _("Up"), "widget/up_arrow", 
+	    ob = e_widget_button_add(evas, D_("Up"), "widget/up_arrow", 
 				     _conf_cb_language_up, cfdata, NULL);
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_up = ob;
 
-	    ob = e_widget_button_add(evas, _("Down"), "widget/down_arrow", 
+	    ob = e_widget_button_add(evas, D_("Down"), "widget/down_arrow", 
 				     _conf_cb_language_down, cfdata, NULL);
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_down = ob;
@@ -208,16 +208,16 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
       e_widget_list_object_append(ol, of, 1, 1, 0.5);
    e_widget_list_object_append(o, ol, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Language Switch Policy"), 1);
+   of = e_widget_framelist_add(evas, D_("Language Switch Policy"), 1);
       rg = e_widget_radio_group_new((int *)&(cfdata->lang_policy));
 
-      ob = e_widget_radio_add(evas, _("Global"), LS_GLOBAL_POLICY, rg);
+      ob = e_widget_radio_add(evas, D_("Global"), LS_GLOBAL_POLICY, rg);
       e_widget_framelist_object_append(of, ob);
 
-      ob = e_widget_radio_add(evas, _("Window"), LS_WINDOW_POLICY, rg);
+      ob = e_widget_radio_add(evas, D_("Window"), LS_WINDOW_POLICY, rg);
       e_widget_framelist_object_append(of, ob);
 
-      ob = e_widget_radio_add(evas, _("Application"), LS_APPLICATION_POLICY, rg);
+      ob = e_widget_radio_add(evas, D_("Application"), LS_APPLICATION_POLICY, rg);
       e_widget_framelist_object_append(of, ob);
       e_widget_disabled_set(ob, 1); // this is temporary
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -246,7 +246,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    o = e_widget_list_add(evas, 0, 0);
 
    ol = e_widget_list_add(evas, 0, 1);
-      of = e_widget_framelist_add(evas, _("Available Languages"), 1);
+      of = e_widget_framelist_add(evas, D_("Available Languages"), 1);
 	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->plang));
 	 e_widget_min_size_set(ob, 220, 160);
 	 e_widget_ilist_go(ob);
@@ -254,7 +254,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 	 cfdata->gui.o_plang = ob;
       e_widget_list_object_append(ol, of, 1, 1, 0.5);
 
-      of = e_widget_framelist_add(evas, _("Selected Languages"), 0);
+      of = e_widget_framelist_add(evas, D_("Selected Languages"), 0);
 	 ob = e_widget_ilist_add(evas, ILIST_ICON_WIDTH, ILIST_ICON_HEIGHT, &(cfdata->slang));
 	 e_widget_min_size_set(ob, 220, 160);
 	 e_widget_ilist_go(ob);
@@ -270,12 +270,12 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_del = ob;
 
-	    ob = e_widget_button_add(evas, _("Up"), "widget/up_arrow",
+	    ob = e_widget_button_add(evas, D_("Up"), "widget/up_arrow",
 				     _conf_cb_language_up, cfdata, NULL);
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_up = ob;
 
-	    ob = e_widget_button_add(evas, _("Down"), "widget/down_arrow",
+	    ob = e_widget_button_add(evas, D_("Down"), "widget/down_arrow",
 				     _conf_cb_language_down, cfdata, NULL);
 	    e_widget_list_object_append(ol2, ob, 1, 1, 0.5);
 	    cfdata->gui.o_down = ob;
@@ -284,7 +284,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_list_object_append(o, ol, 1, 1, 0.5);
 
    ol = e_widget_list_add(evas, 0, 1);
-      of = e_widget_framelist_add(evas, _("Keyboard Model"), 1);
+      of = e_widget_framelist_add(evas, D_("Keyboard Model"), 1);
 	 ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->kb_model));
 	 e_widget_min_size_set(ob, 390, 80);
 	 e_widget_ilist_go(ob);
@@ -292,7 +292,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 	 e_widget_framelist_object_append(of, ob);
       e_widget_list_object_append(ol, of, 1, 1, 0.5);
 
-      of = e_widget_framelist_add(evas, _("Layout Variant"), 0);
+      of = e_widget_framelist_add(evas, D_("Layout Variant"), 0);
 	 ob = e_widget_ilist_add(evas, 0, 0, &(cfdata->kb_variant));
 	 e_widget_min_size_set(ob, 120, 80);
 	 e_widget_ilist_go(ob);
@@ -301,16 +301,16 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
       e_widget_list_object_append(ol, of, 1, 1, 0.5);
    e_widget_list_object_append(o, ol, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Language Switch Policy"), 1);
+   of = e_widget_framelist_add(evas, D_("Language Switch Policy"), 1);
       rg = e_widget_radio_group_new((int *)&(cfdata->lang_policy));
 
-      ob = e_widget_radio_add(evas, _("Global"), LS_GLOBAL_POLICY, rg);
+      ob = e_widget_radio_add(evas, D_("Global"), LS_GLOBAL_POLICY, rg);
       e_widget_framelist_object_append(of, ob);
 
-      ob = e_widget_radio_add(evas, _("Window"), LS_WINDOW_POLICY, rg);
+      ob = e_widget_radio_add(evas, D_("Window"), LS_WINDOW_POLICY, rg);
       e_widget_framelist_object_append(of, ob);
 
-      ob = e_widget_radio_add(evas, _("Application"), LS_APPLICATION_POLICY, rg);
+      ob = e_widget_radio_add(evas, D_("Application"), LS_APPLICATION_POLICY, rg);
       e_widget_framelist_object_append(of, ob);
       e_widget_disabled_set(ob, 1); // this is temporary
    e_widget_list_object_append(o, of, 1, 1, 0.5);

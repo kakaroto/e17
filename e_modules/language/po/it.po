@@ -1,0 +1,83 @@
+# Italian translation for E17 language module.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@inwind.it>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Language\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-23 14:21+0200\n"
+"PO-Revision-Date: 2006-07-23 14:32+0200\n"
+"Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Impostazioni modulo Language"
+
+#: src/module/e_mod_config.c:174 src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Lingue disponibili"
+
+#: src/module/e_mod_config.c:182 src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Lingue selezionate"
+
+#: src/module/e_mod_config.c:198 src/module/e_mod_config.c:273
+msgid "Up"
+msgstr "Su"
+
+#: src/module/e_mod_config.c:203 src/module/e_mod_config.c:278
+msgid "Down"
+msgstr "Giu"
+
+#: src/module/e_mod_config.c:211 src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Ambito di commutazione lingua"
+
+#: src/module/e_mod_config.c:214 src/module/e_mod_config.c:307
+msgid "Global"
+msgstr "Globale"
+
+#: src/module/e_mod_config.c:217 src/module/e_mod_config.c:310
+msgid "Window"
+msgstr "Per finestra"
+
+#: src/module/e_mod_config.c:220 src/module/e_mod_config.c:313
+msgid "Application"
+msgstr "Per applicazione"
+
+#: src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Modello di tastiera"
+
+#: src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Variante del layout"
+
+#: src/module/e_mod_main.c:111
+msgid "Language"
+msgstr "Language"
+
+#: src/module/e_mod_main.c:289
+msgid "Enlightenment Language Enhancment Module"
+msgstr "Modulo Language di Enlightenment"
+
+#: src/module/e_mod_main.c:290
+msgid "This module is used to switch between input languages."
+msgstr "Questo modulo viene usato per cambiare la lingua della tastiera"
+
+#: src/module/e_mod_main.c:407
+msgid "Configuration"
+msgstr "Configurazione"
+
+#: src/module/e_mod_main.c:412
+msgid "Configure Key Bindings"
+msgstr "Configura scorciatoie di tastiera"
+
+#: src/module/e_mod_main.c:429
+msgid "Module Configuration"
+msgstr "Configurazione del modulo"

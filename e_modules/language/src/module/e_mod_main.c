@@ -108,7 +108,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void)
 {
-   return _("Language");
+   return D_("Language");
 }
 static Evas_Object *
 _gc_icon(Evas *evas)
@@ -133,6 +133,9 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+   
    int	     load_default_config = 0;
    Evas_List *l;
 
@@ -283,8 +286,8 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(m,_("Enlightenment Language Enhancment Module"),
-			 _("This module is used to switch between input languages."));
+   e_module_dialog_show(m,D_("Enlightenment Language Enhancment Module"),
+			 D_("This module is used to switch between input languages."));
    return 1;
 }
 
@@ -401,12 +404,12 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 	mn2 = e_menu_new();
 
 	mi = e_menu_item_new(mn2);
-	e_menu_item_label_set(mi, _("Configuration"));
+	e_menu_item_label_set(mi, D_("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
 	e_menu_item_callback_set(mi, _language_face_cb_menu_configure, NULL);
 
 	mi = e_menu_item_new(mn2);
-	e_menu_item_label_set(mi, _("Configure Key Bindings"));
+	e_menu_item_label_set(mi, D_("Configure Key Bindings"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
 	e_menu_item_callback_set(mi, _language_face_cb_menu_keybindings_configure, NULL);
 	
@@ -423,7 +426,7 @@ _lang_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 	     mn = e_menu_new(); 
 
 	     mi = e_menu_item_new(mn); 
-	     e_menu_item_label_set(mi, _("Module Configuration")); 
+	     e_menu_item_label_set(mi, D_("Module Configuration")); 
 	     e_menu_item_submenu_set(mi, mn2); 
 	     e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration"); 
 
