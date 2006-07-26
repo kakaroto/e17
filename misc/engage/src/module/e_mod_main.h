@@ -38,8 +38,9 @@ struct _Engage
    E_App       *apps;
    Evas_List   *bars;
    E_Menu      *config_menu;
-   
+
    Config      *conf;
+   E_Module    *module;
 };
 
 struct _Engage_Tray

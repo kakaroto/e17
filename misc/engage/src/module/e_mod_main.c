@@ -151,6 +151,7 @@ e_modapi_init(E_Module *m)
    /* actually init engage */
    e = _engage_new();
 //   m->config_menu = e->config_menu;
+   e->module = m;
    return e;
 }
 
