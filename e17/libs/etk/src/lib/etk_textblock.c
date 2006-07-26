@@ -42,12 +42,14 @@ struct Etk_Textblock_Object_SD
    Etk_Textblock_Object_Line *last_visible_line;
    
    Etk_Bool cursor_visible;
+   Etk_Bool selecting;
    Etk_Textblock_Iter *cursor;
    Etk_Textblock_Iter *selection;
    
    Evas_Object *cursor_object;
    Evas_List *selection_rects;
    Evas_Object *clip;
+   Evas_Object *bg;
    
    int xoffset;
    int yoffset;
@@ -132,6 +134,11 @@ static Evas_Textblock_Cursor *_etk_textblock_object_cursor_get_from_iter(Evas_Ob
 static int _etk_textblock_text_nodes_count(Etk_Textblock_Node *line, Etk_Textblock_Node *node);
 
 static Evas_List *_etk_textblock_object_range_geometry_get(Evas_Object *tbo, Etk_Textblock_Iter *start, Etk_Textblock_Iter *end);
+static void _etk_textblock_object_iter_move_to(Evas_Object *tbo, Etk_Textblock_Iter *iter, int x, int y);
+
+static void _etk_tb_object_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_tb_object_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_tb_object_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static void _etk_tb_object_smart_add(Evas_Object *obj);
 static void _etk_tb_object_smart_del(Evas_Object *obj);
@@ -3696,6 +3703,119 @@ static Evas_List *_etk_textblock_object_range_geometry_get(Evas_Object *tbo, Etk
    return selection_geometry;
 }
 
+/* Moves the iter to the position (x, y) */
+static void _etk_textblock_object_iter_move_to(Evas_Object *tbo, Etk_Textblock_Iter *iter, int x, int y)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   Etk_Textblock_Object_Line *line, *l;
+   
+   if (!tbo || !iter || !(tbo_sd = evas_object_smart_data_get(tbo)))
+      return;
+   
+   /* TODO: optimize: use an AVL to store the object's lines */
+   /* TODO: take account of scrolling */
+   line = tbo_sd->last_line;
+   for (l = tbo_sd->lines; l; l = l->next)
+   {
+      if (l->geometry.y + l->geometry.h >= y)
+      {
+         line = l;
+         break;
+      }
+   }
+   
+   if (!line)
+      return;
+   
+   for (iter->node = line->node; iter->node->children; iter->node = iter->node->children);
+   iter->pos = 0;
+   iter->index = 0;
+   
+   if (line->object && !_etk_textblock_node_is_empty(line->node))
+   {
+      Etk_Textblock_Node *node;
+      Evas_Textblock_Cursor *cur;
+      const char *text;
+      int line_num;
+      int pos, i;
+      int lx, lw;
+      
+      cur = evas_object_textblock_cursor_new(line->object);
+      if (!evas_textblock_cursor_char_coord_set(cur, x - line->geometry.x, y - line->geometry.y))
+      {
+	 line_num = evas_textblock_cursor_line_coord_set(cur, y - line->geometry.y);
+	 if (line_num >= 0)
+	 {
+            evas_textblock_cursor_line_geometry_get(cur, &lx, NULL, &lw, NULL);
+            
+            if (x - (line->geometry.x + lx) <= (lw / 2))
+               evas_textblock_cursor_line_first(cur);
+            else
+               evas_textblock_cursor_line_last(cur);
+         }
+      }
+      pos = evas_textblock_cursor_pos_get(cur);
+      
+      while (evas_textblock_cursor_node_prev(cur))
+      {
+         if ((text = evas_textblock_cursor_node_text_get(cur)) && *text)
+         {
+            if ((node = _etk_textblock_next_text_node_get(iter->node, ETK_TRUE, NULL)))
+               iter->node = node;
+         }
+      }
+      
+      iter->pos = pos;
+      iter->index = 0;
+      for (i = 0; i < pos; i++)
+         iter->index = evas_string_char_next_get(etk_string_get(iter->node->text), iter->index, NULL);
+      
+      evas_textblock_cursor_free(cur);
+   }
+   
+   _etk_textblock_iter_update(iter);
+}
+
+/* Called when the textblock object is pressed by the mouse */
+static void _etk_tb_object_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   Evas_Event_Mouse_Down *event;
+   int ox, oy;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)) || !(event = event_info))
+      return;
+   
+   evas_object_geometry_get(obj, &ox, &oy, NULL, NULL);
+   _etk_textblock_object_iter_move_to(obj, tbo_sd->cursor, event->canvas.x - ox, event->canvas.y - oy);
+   etk_textblock_iter_copy(tbo_sd->selection, tbo_sd->cursor);
+   tbo_sd->selecting = ETK_TRUE;
+}
+
+/* Called when the textblock object is released by the mouse */
+static void _etk_tb_object_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
+      return;
+   tbo_sd->selecting = ETK_FALSE;
+}
+
+/* Called when the mouse moves over the textblock object */
+static void _etk_tb_object_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   Evas_Event_Mouse_Move *event;
+   int ox, oy;
+   
+   if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)) || !(event = event_info) || !tbo_sd->selecting)
+      return;
+   
+   evas_object_geometry_get(obj, &ox, &oy, NULL, NULL);
+   _etk_textblock_object_iter_move_to(obj, tbo_sd->cursor, event->cur.canvas.x - ox, event->cur.canvas.y - oy);
+}
+
 /**************************
  *
  * Textblock object's smart object
@@ -3715,11 +3835,17 @@ static void _etk_tb_object_smart_add(Evas_Object *obj)
    tbo_sd->tb = NULL;
    tbo_sd->wrap = ETK_TEXTBLOCK_WRAP_WORD;
    tbo_sd->cursor_visible = ETK_TRUE;
+   tbo_sd->selecting = ETK_FALSE;
    tbo_sd->cursor_timer = NULL;
    tbo_sd->update_job = NULL;
    
    tbo_sd->clip = evas_object_rectangle_add(evas);
    evas_object_smart_member_add(tbo_sd->clip, obj);
+   
+   tbo_sd->bg = evas_object_rectangle_add(evas);
+   evas_object_color_set(tbo_sd->bg, 255, 255, 255, 0);
+   evas_object_clip_set(tbo_sd->bg, tbo_sd->clip);
+   evas_object_smart_member_add(tbo_sd->bg, obj);
    
    tbo_sd->cursor_object = evas_object_rectangle_add(evas);
    /* TODO: make the cursor color themeable */
@@ -3742,6 +3868,10 @@ static void _etk_tb_object_smart_add(Evas_Object *obj)
    
    tbo_sd->style = evas_textblock_style_new();
    evas_textblock_style_set(tbo_sd->style, "DEFAULT='font=Vera font_size=10 align=left color=#000000'");
+   
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_DOWN, _etk_tb_object_mouse_down_cb, NULL);
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_UP, _etk_tb_object_mouse_up_cb, NULL);
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_MOVE, _etk_tb_object_mouse_move_cb, NULL);
    
    evas_object_smart_data_set(obj, tbo_sd);
 }
@@ -3773,6 +3903,8 @@ static void _etk_tb_object_smart_del(Evas_Object *obj)
       free(line);
    }
    evas_object_del(tbo_sd->cursor_object);
+   evas_object_del(tbo_sd->clip);
+   evas_object_del(tbo_sd->bg);
    evas_textblock_style_free(tbo_sd->style);
    
    tbo_sd->tb->evas_objects = evas_list_remove(tbo_sd->tb->evas_objects, obj);
@@ -3799,6 +3931,7 @@ static void _etk_tb_object_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
    
+   evas_object_move(tbo_sd->bg, x, y);
    evas_object_move(tbo_sd->clip, x, y);
    
    evas_object_geometry_get(obj, &prev_x, &prev_y, NULL, NULL);
@@ -3834,6 +3967,7 @@ static void _etk_tb_object_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coo
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
    
+   evas_object_resize(tbo_sd->bg, w, h);
    evas_object_resize(tbo_sd->clip, w, h);
    
    /* TODO: optimization for non-wrapped lines? */
@@ -3851,6 +3985,7 @@ static void _etk_tb_object_smart_show(Evas_Object *obj)
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
    
+   evas_object_show(tbo_sd->bg);
    evas_object_show(tbo_sd->clip);
    
    for (line = tbo_sd->first_visible_line; line; line = line->next)
@@ -3888,6 +4023,7 @@ static void _etk_tb_object_smart_hide(Evas_Object *obj)
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
    
+   evas_object_hide(tbo_sd->bg);
    evas_object_hide(tbo_sd->clip);
    
    for (line = tbo_sd->first_visible_line; line; line = line->next)
