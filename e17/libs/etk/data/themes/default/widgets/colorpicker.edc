@@ -12,7 +12,7 @@ group {
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -36 -1;
+               offset: -37 -1;
             }
             image {
                normal: "colorpicker_square.png";
@@ -57,7 +57,7 @@ group {
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -40 -11;
+               offset: -41 -11;
             }
          }
       }

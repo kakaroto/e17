@@ -38,6 +38,28 @@ group {
          }
       }
       part {
+         name: "trough_bar";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.5;
+               offset: 1 -1;
+               to_x: "left_left_arrow";
+               to_y: "trough";
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               offset: -2 0;
+               to_x: "right_left_arrow";
+               to_y: "trough";
+            }
+            image {
+               normal: "hscrollbar_trough2.png";
+               border: 4 4 0 0;
+            }
+         }
+      }
+      part {
          name: "confine";
          type: RECT;
          description {
@@ -102,6 +124,28 @@ group {
             image {
                normal: "vscrollbar_trough.png";
                border: 8 8 8 8;
+            }
+         }
+      }
+      part {
+         name: "trough_bar";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.5 1.0;
+               offset: -1 1;
+               to_x: "trough";
+               to_y: "up_up_arrow";
+            }
+            rel2 {
+               relative: 0.5 0.0;
+               offset: 0 -2;
+               to_x: "trough";
+               to_y: "down_up_arrow";
+            }
+            image {
+               normal: "vscrollbar_trough2.png";
+               border: 0 0 4 4;
             }
          }
       }

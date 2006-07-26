@@ -86,6 +86,7 @@ static void _etk_textblock_nodes_clean(Etk_Textblock *tb, Etk_Textblock_Node *no
 static void _etk_textblock_tag_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *tag, int length);
 static Etk_Textblock_Node *_etk_textblock_paragraph_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
 static Etk_Textblock_Node *_etk_textblock_line_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
+static Etk_Textblock_Node *_etk_textblock_line_del(Etk_Textblock *tb, Etk_Textblock_Node *line_node);
 static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool markup, Etk_String *text);
 
 static void _etk_textblock_node_copy(Etk_Textblock_Node *dest, const Etk_Textblock_Node *src, Etk_Bool copy_text);
@@ -106,20 +107,22 @@ static int _etk_textblock_hex_string_get(char ch);
 
 static Etk_Textblock_Node *_etk_textblock_prev_node_get(Etk_Textblock_Node *node);
 static Etk_Textblock_Node *_etk_textblock_next_node_get(Etk_Textblock_Node *node);
-static Etk_Textblock_Node *_etk_textblock_prev_text_node_get(Etk_Textblock_Node *node, Etk_Bool ignore_empty_lines);
-static Etk_Textblock_Node *_etk_textblock_next_text_node_get(Etk_Textblock_Node *node, Etk_Bool ignore_empty_lines);
+static Etk_Textblock_Node *_etk_textblock_prev_text_node_get(Etk_Textblock_Node *node, Etk_Bool ignore_empty_lines, Etk_Bool *line_has_changed);
+static Etk_Textblock_Node *_etk_textblock_next_text_node_get(Etk_Textblock_Node *node, Etk_Bool ignore_empty_lines, Etk_Bool *line_has_changed);
 static Etk_Textblock_Node *_etk_textblock_prev_line_get(Etk_Textblock_Node *line_node);
 static Etk_Textblock_Node *_etk_textblock_next_line_get(Etk_Textblock_Node *line_node);
 
-static void _etk_textblock_iter_update_queue(Etk_Textblock_Iter *iter);
-static void _etk_textblock_node_update_queue(Etk_Textblock *tb, Etk_Textblock_Node *node);
+static void _etk_textblock_iter_update(Etk_Textblock_Iter *iter);
+static void _etk_textblock_node_update(Etk_Textblock *tb, Etk_Textblock_Node *node);
 
 static void _etk_textblock_object_line_add(Evas_Object *tbo, Etk_Textblock_Node *line_node);
+static void _etk_textblock_object_line_del(Evas_Object *tbo, Etk_Textblock_Node *line_node);
 static void _etk_textblock_object_line_fill(Evas_Object *tbo, Evas_Textblock_Cursor *cur, Etk_Textblock_Node *node);
 static void _etk_textblock_object_line_update_queue(Evas_Object *tbo, Etk_Textblock_Object_Line *line, Etk_Bool content_update, Etk_Bool geometry_update);
 static void _etk_textblock_object_line_update(Evas_Object *tbo, Etk_Textblock_Object_Line *line, int y);
 static void _etk_textblock_object_cursor_update_queue(Evas_Object *tbo);
 static void _etk_textblock_object_cursor_update(Evas_Object *tbo);
+static void _etk_textblock_object_update_queue(Evas_Object *tbo);
 static void _etk_textblock_object_update(Evas_Object *tbo);
 static void _etk_textblock_object_update_job_cb(void *data);
 static int _etk_textblock_object_cursor_timer_cb(void *data);
@@ -210,9 +213,9 @@ void etk_textblock_text_set(Etk_Textblock *tb, const char *text, Etk_Bool markup
    
    iter = etk_textblock_iter_new(tb);
    if (!markup)
-      etk_textblock_text_insert(tb, iter, text, -1);
+      etk_textblock_insert(tb, iter, text, -1);
    else
-      etk_textblock_text_insert_markup(tb, iter, text, -1);
+      etk_textblock_insert_markup(tb, iter, text, -1);
    etk_textblock_iter_free(iter);
 }
 
@@ -286,7 +289,7 @@ void etk_textblock_clear(Etk_Textblock *tb)
 
 /**
  * @brief Inserts @a length bytes of @a text at @a iter in the textblock.
- * If you want to use tags to format the text to insert, use etk_textblock_text_insert_markup() instead.
+ * If you want to use tags to format the text to insert, use etk_textblock_insert_markup() instead.
  * @param tb a textblock
  * @param iter the iterator where to insert the text. @n
  * If the gravity of @a iter is left, the iter will be placed before the inserted text.
@@ -294,7 +297,7 @@ void etk_textblock_clear(Etk_Textblock *tb)
  * @param text the unicode-encoded text to insert
  * @param length the number of bytes to insert. If @a length is negative, the text will be entirely inserted
  */
-void etk_textblock_text_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *text, int length)
+void etk_textblock_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *text, int length)
 {
    Evas_List *l;
    Etk_Textblock_Iter *it, *it2;
@@ -384,7 +387,7 @@ void etk_textblock_text_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, cons
                it->node->unicode_length += unicode_length;
                node_start = -1;
                
-               _etk_textblock_node_update_queue(tb, it->node);
+               _etk_textblock_node_update(tb, it->node);
             }
             else
             {
@@ -404,7 +407,7 @@ void etk_textblock_text_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, cons
                it->node->text = etk_string_insert_sized(it->node->text, it->index, &text[node_start], char_length);
                it->node->unicode_length += unicode_length;
                
-               _etk_textblock_node_update_queue(tb, it->node);
+               _etk_textblock_node_update(tb, it->node);
             }
             else
                char_length = 0;
@@ -462,12 +465,13 @@ void etk_textblock_text_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, cons
  * @param text the unicode-encoded markup text to insert
  * @param length the number of bytes to insert. If @a length is negative, the text will be entirely inserted
  */
-void etk_textblock_text_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *markup_text, int length)
+void etk_textblock_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *markup_text, int length)
 {
    const char *t;
    const char *text_start = NULL;
    const char *tag_start = NULL;
    Etk_Textblock_Iter *it;
+   Etk_Textblock_Node *start_line, *end_line, *line, *n;
    
    if (!tb || !iter || !markup_text)
       return;
@@ -483,6 +487,17 @@ void etk_textblock_text_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *ite
    else
       it = iter;
    
+   start_line = NULL;
+   for (n = it->node; n; n = n->parent)
+   {
+      if (n->type == ETK_TEXTBLOCK_NODE_LINE)
+      {
+         start_line = n;
+         break;
+      }
+   }
+   
+   /* Insert the tags and the text */ 
    for (t = markup_text; *t != '\0'; t++)
    {
       if (!text_start && !tag_start)
@@ -497,7 +512,7 @@ void etk_textblock_text_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *ite
       {
          if (*(t + 1) == '<' || *(t + 1) == '\0')
          {
-            etk_textblock_text_insert(tb, it, text_start, t - text_start + 1);
+            etk_textblock_insert(tb, it, text_start, t - text_start + 1);
             text_start = NULL;
          }
       }
@@ -511,10 +526,209 @@ void etk_textblock_text_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *ite
       }
    }
    
-   /* TODO: optimize: only clean the modified nodes!!! */
-   _etk_textblock_nodes_clean(tb, tb->root.children);
+   end_line = NULL;
+   for (n = it->node; n; n = n->parent)
+   {
+      if (n->type == ETK_TEXTBLOCK_NODE_LINE)
+      {
+         end_line = n;
+         break;
+      }
+   }
+   
+   /* Cleanup the modified lines */
+   for (line = start_line; line; line = _etk_textblock_next_line_get(line))
+   {
+      _etk_textblock_nodes_clean(tb, line->children);
+   
+      if (line == end_line)
+         break;
+   }
+   
    if (iter->gravity == ETK_TEXTBLOCK_GRAVITY_LEFT)
       etk_textblock_iter_free(it);
+}
+
+/**
+ * @brief Deletes the char before the iterator
+ * @param tb a textblock
+ * @param iter the iterator where to delete the char
+ */
+void etk_textblock_delete_before(Etk_Textblock *tb, Etk_Textblock_Iter *iter)
+{
+   Etk_Textblock_Iter *iter2;
+   
+   if (!tb || !iter || !_etk_textblock_iter_is_valid(tb, iter))
+      return;
+   
+   iter2 = etk_textblock_iter_new(tb);
+   etk_textblock_iter_copy(iter2, iter);
+   
+   etk_textblock_iter_backward_char(iter);
+   etk_textblock_delete_range(tb, iter, iter2);
+   
+   etk_textblock_iter_free(iter2);
+}
+
+/**
+ * @brief Deletes the char after the iterator
+ * @param tb a textblock
+ * @param iter the iterator where to delete the char
+ */
+void etk_textblock_delete_after(Etk_Textblock *tb, Etk_Textblock_Iter *iter)
+{
+   Etk_Textblock_Iter *iter2;
+   
+   if (!tb || !iter || !_etk_textblock_iter_is_valid(tb, iter))
+      return;
+   
+   iter2 = etk_textblock_iter_new(tb);
+   etk_textblock_iter_copy(iter2, iter);
+   
+   etk_textblock_iter_forward_char(iter);
+   etk_textblock_delete_range(tb, iter, iter2);
+   
+   etk_textblock_iter_free(iter2);
+}
+
+/**
+ * @brief Deletes the text between @a iter1 and @a iter2
+ * @param tb a textblock
+ * @param iter1 the first iterator
+ * @param iter2 the second iterator
+ * @note @a iter1 is not necessarily before @a iter2
+ */
+void etk_textblock_delete_range(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2)
+{
+   int compare_res;
+   Etk_Textblock_Iter *start_iter, *end_iter;
+   Etk_Textblock_Iter *it;
+   Etk_Textblock_Node *start_line, *end_line, *line;
+   Etk_Textblock_Node *start_paragraph, *end_paragraph, *paragraph;
+   Etk_Textblock_Node *n;
+   Evas_List *l;
+   Etk_Bool done;
+   
+   if (!tb || !iter1 || !iter2)
+      return;
+   if (!_etk_textblock_iter_is_valid(tb, iter1) || !_etk_textblock_iter_is_valid(tb, iter2))
+      return;
+   
+   compare_res = etk_textblock_iter_compare(iter1, iter2);
+   if (compare_res == 0)
+      return;
+   else if (compare_res < 0)
+   {
+      start_iter = iter1;
+      end_iter = iter2;
+   }
+   else
+   {
+      start_iter = iter2;
+      end_iter = iter1;
+   }
+   
+   start_line = NULL;
+   start_paragraph = NULL;
+   for (n = start_iter->node; n; n = n->parent)
+   {
+      if (n->type == ETK_TEXTBLOCK_NODE_LINE)
+         start_line = n;
+      else if (n->type == ETK_TEXTBLOCK_NODE_PARAGRAPH)
+         start_paragraph = n;
+   }
+   
+   end_line = NULL;
+   end_paragraph = NULL;
+   for (n = end_iter->node; n; n = n->parent)
+   {
+      if (n->type == ETK_TEXTBLOCK_NODE_LINE)
+         end_line = n;
+      else if (n->type == ETK_TEXTBLOCK_NODE_PARAGRAPH)
+         end_paragraph = n;
+   }
+
+   done = ETK_FALSE;
+   for (n = start_iter->node; n && !done; n = _etk_textblock_next_node_get(n))
+   {
+      /* We cut the text of the node */
+      if (n == start_iter->node)
+      {
+         if (n == end_iter->node)
+         {
+            etk_string_delete(n->text, start_iter->index, end_iter->index - start_iter->index);
+            n->unicode_length -= (end_iter->pos - start_iter->pos);
+            done = ETK_TRUE;
+         }
+         else
+         {
+            etk_string_delete(n->text, start_iter->index, etk_string_length_get(n->text) - start_iter->index);
+            n->unicode_length = start_iter->pos;
+         }
+      }
+      else if (n == end_iter->node)
+      {
+         etk_string_delete(n->text, 0, end_iter->index);
+         n->unicode_length -= end_iter->pos;
+         done = ETK_TRUE;
+      }
+      else
+      {
+         etk_string_clear(n->text);
+         n->unicode_length = 0;
+      }
+      
+      /* We update the iterators */
+      for (l = tb->iters; l; l = l->next)
+      {
+         it = l->data;
+         if (it->node == n)
+         {
+            if (it->node == start_iter->node && it->pos <= start_iter->pos)
+               continue;
+            else if (it != end_iter && it->node == end_iter->node && it->pos > end_iter->pos)
+            {
+               it->index -= end_iter->index;
+               it->pos -= end_iter->pos;
+            }
+            else
+               etk_textblock_iter_copy(it, start_iter);
+         }
+      }
+   }
+   etk_textblock_iter_copy(end_iter, start_iter);
+   
+   /* Merge the start and the end lines, and remove the other lines */
+   if (start_line != end_line)
+   {
+      while (end_line->children)
+         _etk_textblock_node_attach(end_line->children, start_line, start_line->last_child);
+      
+      done = ETK_FALSE;
+      for (line = _etk_textblock_next_line_get(start_line); line && !done; line = _etk_textblock_line_del(tb, line))
+      {
+         if (line == end_line)
+            done = ETK_TRUE;
+      }
+   }
+   
+   /* Remove the empty paragraphs */
+   if (start_paragraph != end_paragraph)
+   {
+      for (paragraph = start_paragraph->next; paragraph && !done; paragraph = paragraph->next)
+      {
+         if (paragraph == end_paragraph)
+            done = ETK_TRUE;
+         
+         if (_etk_textblock_node_is_empty(paragraph))
+            paragraph = _etk_textblock_node_free(paragraph);
+         else
+            paragraph = paragraph->next;
+      }
+   }
+   
+   _etk_textblock_nodes_clean(tb, start_line);
+   _etk_textblock_node_update(tb, start_line);
 }
 
 /**
@@ -615,7 +829,7 @@ void etk_textblock_iter_backward_start(Etk_Textblock_Iter *iter)
    iter->index = 0;
    iter->pos = 0;
    
-   _etk_textblock_iter_update_queue(iter);
+   _etk_textblock_iter_update(iter);
 }
 
 /**
@@ -634,7 +848,7 @@ void etk_textblock_iter_forward_end(Etk_Textblock_Iter *iter)
    iter->pos = iter->node->unicode_length;
    iter->index = etk_string_length_get(iter->node->text);
    
-   _etk_textblock_iter_update_queue(iter);
+   _etk_textblock_iter_update(iter);
 }
 
 /**
@@ -643,29 +857,37 @@ void etk_textblock_iter_forward_end(Etk_Textblock_Iter *iter)
  * @return Returns ETK_FALSE if the movement was not possible (i.e. if the iterator already points
  * on the first character of the textblock)
  */
-/* TODO: improve placement */
 Etk_Bool etk_textblock_iter_backward_char(Etk_Textblock_Iter *iter)
 {
    if (!(iter || !_etk_textblock_iter_is_valid(NULL, iter)))
       return ETK_FALSE;
    
-   if (iter->pos > 0)
+   if (iter->pos > 1)
    {
       iter->pos--;
       iter->index = evas_string_char_prev_get(etk_string_get(iter->node->text), iter->index, NULL);
-      _etk_textblock_iter_update_queue(iter);
+      _etk_textblock_iter_update(iter);
       return ETK_TRUE;
    }
    else
    {
       Etk_Textblock_Node *prev_text_node;
+      Etk_Bool line_has_changed = ETK_FALSE;
       
-      if ((prev_text_node = _etk_textblock_prev_text_node_get(iter->node, ETK_FALSE)))
+      prev_text_node = _etk_textblock_prev_text_node_get(iter->node, ETK_FALSE, &line_has_changed);
+      if (iter->pos == 1 && (line_has_changed || !prev_text_node))
+      {
+         iter->pos = 0;
+         iter->index = 0;
+         _etk_textblock_iter_update(iter);
+         return ETK_TRUE;
+      }
+      else if (prev_text_node)
       {
          iter->node = prev_text_node;
-         iter->pos = prev_text_node->unicode_length - 1;
-         iter->index = etk_string_length_get(prev_text_node->text) - 1;
-         _etk_textblock_iter_update_queue(iter);
+         iter->pos = prev_text_node->unicode_length;
+         iter->index = etk_string_length_get(prev_text_node->text);
+         _etk_textblock_iter_update(iter);
          return ETK_TRUE;
       }
       else
@@ -679,7 +901,6 @@ Etk_Bool etk_textblock_iter_backward_char(Etk_Textblock_Iter *iter)
  * @return Returns ETK_FALSE if the movement was not possible (i.e. if the iterator already points
  * after the last character of the textblock)
  */
-/* TODO: improve placement */
 Etk_Bool etk_textblock_iter_forward_char(Etk_Textblock_Iter *iter)
 {
    if (!(iter || !_etk_textblock_iter_is_valid(NULL, iter)))
@@ -689,19 +910,30 @@ Etk_Bool etk_textblock_iter_forward_char(Etk_Textblock_Iter *iter)
    {
       iter->pos++;
       iter->index = evas_string_char_next_get(etk_string_get(iter->node->text), iter->index, NULL);
-      _etk_textblock_iter_update_queue(iter);
+      _etk_textblock_iter_update(iter);
       return ETK_TRUE;
    }
    else
    {
       Etk_Textblock_Node *next_text_node;
+      Etk_Bool line_has_changed = ETK_FALSE;
       
-      if ((next_text_node = _etk_textblock_next_text_node_get(iter->node, ETK_FALSE)))
+      next_text_node = _etk_textblock_next_text_node_get(iter->node, ETK_FALSE, &line_has_changed);
+      if (next_text_node)
       {
          iter->node = next_text_node;
-         iter->pos = 1;
-         iter->index = evas_string_char_next_get(etk_string_get(next_text_node->text), 0, NULL);
-         _etk_textblock_iter_update_queue(iter);
+         if (line_has_changed)
+         {
+            iter->pos = 0;
+            iter->index = 0;
+         }
+         else
+         {
+            iter->pos = 1;
+            /* TODO: Is this safe (the line may be empty?)?? */
+            iter->index = evas_string_char_next_get(etk_string_get(next_text_node->text), 0, NULL);
+         }
+         _etk_textblock_iter_update(iter);
          return ETK_TRUE;
       }
       else
@@ -723,6 +955,7 @@ void etk_textblock_iter_copy(Etk_Textblock_Iter *dest, const Etk_Textblock_Iter 
    dest->gravity = src->gravity;
    dest->pos = src->pos;
    dest->index = src->index;
+   _etk_textblock_iter_update(dest);
 }
 
 /**
@@ -837,6 +1070,7 @@ void etk_textblock_object_wrap_set(Evas_Object *tbo, Etk_Textblock_Wrap wrap)
    
    
    /* Updates the object's lines */
+   /* TODO: Does this code work, and do we really need this (with the future optimizations)?? */
    for (line = tbo_sd->lines; line; line = line->next)
    {
       if (line->object && line->node && line->node->parent &&
@@ -1006,8 +1240,7 @@ Etk_Bool etk_textblock_is_white_char(int c)
  * @param w the location where to store the average width of a character
  * @param h the location where to store the average height of a character
  */
-/* TODO: cache the result! */
-/* TODO: better test text */
+/* TODO: cache the result, better test text, "Use bold, italic, style..." ! */
 void etk_textblock_char_size_get(Evas *evas, const char *font_face, int font_size, int *w, int *h)
 {
    Evas_Object *text_object;
@@ -1142,14 +1375,7 @@ static Etk_Textblock_Node *_etk_textblock_node_free(Etk_Textblock_Node *node)
       free(node->tag.params.font.face);
    etk_object_destroy(ETK_OBJECT(node->text));
    
-   if (node->parent && node->parent->children == node)
-      node->parent->children = node->next;
-   if (node->parent && node->parent->last_child == node)
-      node->parent->last_child = node->prev;
-   if (node->prev)
-      node->prev->next = node->next;
-   if (node->next)
-      node->next->prev = node->prev;
+   _etk_textblock_node_attach(node, NULL, NULL);
    
    while (node->children)
       _etk_textblock_node_free(node->children);
@@ -1206,7 +1432,7 @@ static void _etk_textblock_node_type_set(Etk_Textblock_Node *node, Etk_Textblock
 /* If "prev" == NULL, the new node is prepended to the list of nodes of the "parent" */
 static void _etk_textblock_node_attach(Etk_Textblock_Node *node, Etk_Textblock_Node *parent, Etk_Textblock_Node *prev)
 {
-   if (!node || !parent)
+   if (!node)
       return;
    if ((prev && prev->parent != parent) || (node->parent == parent && node->prev == prev))
       return;
@@ -1225,21 +1451,24 @@ static void _etk_textblock_node_attach(Etk_Textblock_Node *node, Etk_Textblock_N
    }
    
    /* Then we re-attach it */
-   node->prev = prev;
-   node->next = prev ? prev->next : parent->children;
-   if (node->next)
-      node->next->prev = node;
-   if (prev)
-      prev->next = node;
-   else
-      parent->children = node;
-   if (parent->last_child == prev)
-      parent->last_child = node;
+   if (parent)
+   {
+      node->prev = prev;
+      node->next = prev ? prev->next : parent->children;
+      if (node->next)
+         node->next->prev = node;
+      if (prev)
+         prev->next = node;
+      else
+         parent->children = node;
+      if (parent->last_child == prev)
+         parent->last_child = node;
+   }
    
    node->parent = parent;
 }
 
-/* Gets the format of the node and store it in "format" */
+/* Gets the format of the node and stores it in "format" */
 static void _etk_textblock_node_format_get(Etk_Textblock_Node *node, Etk_Textblock_Format *format)
 {
    Etk_Textblock_Node *n;
@@ -1327,10 +1556,9 @@ static void _etk_textblock_node_format_get(Etk_Textblock_Node *node, Etk_Textblo
 }
 
 /* Removes the empty nodes in the list of 'nodes' */
-/* TODO: do not clean empty lines and implement _etk_textblock_nodes_range_clean() */
 static void _etk_textblock_nodes_clean(Etk_Textblock *tb, Etk_Textblock_Node *nodes)
 {
-   Etk_Textblock_Node *n;
+   Etk_Textblock_Node *n, *p;
    Etk_Textblock_Iter *it;
    Evas_List *l;
    Etk_Bool delete_node;
@@ -1346,6 +1574,7 @@ static void _etk_textblock_nodes_clean(Etk_Textblock *tb, Etk_Textblock_Node *no
       if (n->type == ETK_TEXTBLOCK_NODE_NORMAL && !n->children && etk_string_length_get(n->text) <= 0)
       {
          delete_node = ETK_TRUE;
+         /* Delete the nodes that do not contain an iterator */
          for (l = tb->iters; l; l = l->next)
          {
             it = l->data;
@@ -1353,6 +1582,21 @@ static void _etk_textblock_nodes_clean(Etk_Textblock *tb, Etk_Textblock_Node *no
             {
                delete_node = ETK_FALSE;
                break;
+            }
+         }
+      
+         /* Delete the format nodes belonging to an empty line,
+          * only if the node doesn't really affect the format of the empty line */
+         if (delete_node && _etk_textblock_node_is_empty_line(n, NULL, NULL))
+         {
+            delete_node  = ETK_FALSE;
+            for (p = n; p && p->type != ETK_TEXTBLOCK_NODE_LINE; p = p->parent)
+            {
+               if (!p->prev)
+               {
+                  delete_node = ETK_TRUE;
+                  break;
+               }
             }
          }
       }
@@ -1710,7 +1954,7 @@ static Etk_Textblock_Node *_etk_textblock_line_add(Etk_Textblock *tb, Etk_Textbl
    if (!tb || !iter || !_etk_textblock_iter_is_valid(tb, iter))
       return NULL;
    
-   _etk_textblock_node_update_queue(tb, iter->node);
+   _etk_textblock_node_update(tb, iter->node);
    
    prev_node = iter->node;
    new_line = _etk_textblock_node_new(NULL, NULL, ETK_TEXTBLOCK_NODE_LINE, ETK_TEXTBLOCK_TAG_DEFAULT);
@@ -1725,6 +1969,24 @@ static Etk_Textblock_Node *_etk_textblock_line_add(Etk_Textblock *tb, Etk_Textbl
       _etk_textblock_object_line_add(l->data, new_line);
    
    return new_line;
+}
+
+/* Deletes the line in the textblock, corresponding to the node "line_node". Returns the next line node */
+static Etk_Textblock_Node *_etk_textblock_line_del(Etk_Textblock *tb, Etk_Textblock_Node *line_node)
+{
+   Etk_Textblock_Node *next_line;
+   Evas_List *l;
+   
+   if (!tb || !line_node || line_node->type != ETK_TEXTBLOCK_NODE_LINE)
+      return NULL;
+   
+   for (l = tb->evas_objects; l; l = l->next)
+      _etk_textblock_object_line_del(l->data, line_node);
+   
+   next_line = _etk_textblock_next_line_get(line_node);
+   _etk_textblock_node_free(line_node);
+   
+   return next_line;
 }
 
 /* Gets recursively the text of the node */ 
@@ -1847,7 +2109,7 @@ static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool mark
       }
    }
    
-   /* TODO: escape code for < and > and & in markup mode */
+   /* TODO: escape code for < and > and & in markup mode!! */
    /* Builds the text of the node */
    etk_string_append(text, etk_string_get(start_tag));
    
@@ -1888,7 +2150,7 @@ static void _etk_textblock_node_copy(Etk_Textblock_Node *dest, const Etk_Textblo
 }
 
 /* Compares the two nodes. */
-/* TODO: OPTIMIZE this!!! Use a binary tree for the lines! */
+/* TODO: OPTIMIZE this!!! Use a binary tree (AVL?) for the lines! */
 static int _etk_textblock_node_compare(Etk_Textblock_Node *node1, Etk_Textblock_Node *node2)
 {
    Etk_Textblock_Node *p1, *p2;
@@ -2200,8 +2462,7 @@ static Etk_Bool _etk_textblock_node_is_empty(Etk_Textblock_Node *node)
    return ETK_TRUE;
 }
 
-
-/* Parses an integer and return 'error_value' if it fails */
+/* Parses an integer and returns 'error_value' if it fails */
 static int _etk_textblock_int_parse(const char *int_string, int length, int error_value)
 {
    char *str;
@@ -2220,7 +2481,7 @@ static int _etk_textblock_int_parse(const char *int_string, int length, int erro
    return value;
 }
 
-/* Parses a float and return 'error_value' if it fails */
+/* Parses a float and returns 'error_value' if it fails */
 static float _etk_textblock_float_parse(const char *float_string, int length, float error_value)
 {
    char *str;
@@ -2376,34 +2637,90 @@ static Etk_Textblock_Node *_etk_textblock_next_node_get(Etk_Textblock_Node *node
 }
 
 /* Gets the text node just before "node" */
-static Etk_Textblock_Node *_etk_textblock_prev_text_node_get(Etk_Textblock_Node *node, Etk_Bool ignore_empty_lines)
+static Etk_Textblock_Node *_etk_textblock_prev_text_node_get(Etk_Textblock_Node *node, Etk_Bool ignore_empty_lines, Etk_Bool *line_has_changed)
 {
    Etk_Textblock_Node *prev;
+   Etk_Textblock_Node *current_line, *new_line;
+   
+   if (line_has_changed)
+      *line_has_changed = ETK_FALSE;
    
    if (!node)
       return NULL;
    
+   for (current_line = node; current_line; current_line = current_line->parent)
+   {
+      if (current_line->type == ETK_TEXTBLOCK_NODE_LINE)
+         break;
+   }
+   
    for (prev = _etk_textblock_prev_node_get(node); prev; prev = _etk_textblock_prev_node_get(prev))
    {
-      if (etk_string_length_get(prev->text) > 0)
+      for (new_line = prev; new_line; new_line = new_line->parent)
+      {
+         if (new_line->type == ETK_TEXTBLOCK_NODE_LINE)
+            break;
+      }
+      
+      if (new_line != current_line && !ignore_empty_lines && _etk_textblock_node_is_empty(new_line))
+      {
+         for (prev = new_line; prev->children; prev = prev->children);
+         if (line_has_changed)
+            *line_has_changed = ETK_TRUE;
          return prev;
+      }
+      
+      if (etk_string_length_get(prev->text) > 0)
+      {
+         if (line_has_changed && new_line != current_line)
+            *line_has_changed = ETK_TRUE;
+         return prev;
+      }
    }
    
    return NULL;
 }
 
 /* Gets the text node just after "node" */
-static Etk_Textblock_Node *_etk_textblock_next_text_node_get(Etk_Textblock_Node *node, Etk_Bool ignore_empty_lines)
+static Etk_Textblock_Node *_etk_textblock_next_text_node_get(Etk_Textblock_Node *node, Etk_Bool ignore_empty_lines, Etk_Bool *line_has_changed)
 {
    Etk_Textblock_Node *next;
+   Etk_Textblock_Node *current_line, *new_line;
+   
+   if (line_has_changed)
+      *line_has_changed = ETK_FALSE;
    
    if (!node)
       return NULL;
    
+   for (current_line = node; current_line; current_line = current_line->parent)
+   {
+      if (current_line->type == ETK_TEXTBLOCK_NODE_LINE)
+         break;
+   }
+   
    for (next = _etk_textblock_next_node_get(node); next; next = _etk_textblock_next_node_get(next))
    {
-      if (etk_string_length_get(next->text) > 0)
+      for (new_line = next; new_line; new_line = new_line->parent)
+      {
+         if (new_line->type == ETK_TEXTBLOCK_NODE_LINE)
+            break;
+      }
+      
+      if (new_line != current_line && !ignore_empty_lines && _etk_textblock_node_is_empty(new_line))
+      {
+         for (next = new_line; next->children; next = next->children);
+         if (line_has_changed)
+            *line_has_changed = ETK_TRUE;
          return next;
+      }
+      
+      if (etk_string_length_get(next->text) > 0)
+      {
+         if (line_has_changed && new_line != current_line)
+            *line_has_changed = ETK_TRUE;
+         return next;
+      }
    }
    
    return NULL;
@@ -2452,7 +2769,7 @@ static Etk_Textblock_Node *_etk_textblock_next_line_get(Etk_Textblock_Node *line
 }
 
 /* Queues an update of the textblock object that uses "iter" as its cursor or selection bound */
-static void _etk_textblock_iter_update_queue(Etk_Textblock_Iter *iter)
+static void _etk_textblock_iter_update(Etk_Textblock_Iter *iter)
 {
    Evas_List *l;
    Evas_Object *tbo;
@@ -2476,7 +2793,7 @@ static void _etk_textblock_iter_update_queue(Etk_Textblock_Iter *iter)
 }
 
 /* Queues an update of the node "node" in all the textblock objects (to call when the content of a node has changed) */
-static void _etk_textblock_node_update_queue(Etk_Textblock *tb, Etk_Textblock_Node *node)
+static void _etk_textblock_node_update(Etk_Textblock *tb, Etk_Textblock_Node *node)
 {
    Evas_List *l;
    Evas_Object *tbo;
@@ -2551,6 +2868,34 @@ static void _etk_textblock_object_line_add(Evas_Object *tbo, Etk_Textblock_Node 
    }
    
    _etk_textblock_object_line_update_queue(tbo, new_line, ETK_TRUE, ETK_TRUE);
+}
+
+/* Deletes the line of the textblock object, according to a line node */
+static void _etk_textblock_object_line_del(Evas_Object *tbo, Etk_Textblock_Node *line_node)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   Etk_Textblock_Object_Line *line;
+   
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
+      return;
+   if (!(line = _etk_textblock_object_line_get_from_node(tbo, line_node)))
+      return;
+   
+   if (line->prev)
+      line->prev->next = line->next;
+   if (line->next)
+      line->next->prev = line->prev;
+   if (tbo_sd->lines == line)
+      tbo_sd->lines = line->next;
+   if (tbo_sd->last_line == line)
+      tbo_sd->last_line = line->prev;
+   /* TODO: update first_visible and last_visible too? */
+   
+   if (line->object)
+      evas_object_del(line->object);
+   free(line);
+   
+   _etk_textblock_object_update_queue(tbo);
 }
 
 /* Fills recursively the line of the textblock object with the content of a node */
@@ -2930,20 +3275,13 @@ static void _etk_textblock_object_cursor_update_queue(Evas_Object *tbo)
 }
 
 /* Updates the cursor object and the selection of the textblock object */
+/* TODO: Reset the timer? */
 static void _etk_textblock_object_cursor_update(Evas_Object *tbo)
 {
    Evas *evas;
    Etk_Textblock_Object_SD *tbo_sd;
-   Evas_Textblock_Cursor *cur;
-   Etk_Textblock_Object_Line *line;
-   Evas_List *selection_geometry;
-   Etk_Geometry *rect_geometry;
-   Evas_Object *rect;
    int visible;
-   /* TODO: valg? */
-   int cx = 0, cy = 0, cw = 0, ch = 0;
    int ox, oy;
-   int res;
    
    if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)) || !(evas = evas_object_evas_get(tbo)))
       return;
@@ -2952,55 +3290,92 @@ static void _etk_textblock_object_cursor_update(Evas_Object *tbo)
    evas_object_geometry_get(tbo, &ox, &oy, NULL, NULL);
    
    /* Update the selection */
-   /* TODO: selection stacking ?! */
-   while (tbo_sd->selection_rects)
    {
-      evas_object_del(tbo_sd->selection_rects->data);
-      tbo_sd->selection_rects = evas_list_remove_list(tbo_sd->selection_rects, tbo_sd->selection_rects);
-   }
-   res = etk_textblock_iter_compare(tbo_sd->cursor, tbo_sd->selection);
-   if (res != 0)
-   {
-      if (res < 0)
-         selection_geometry = _etk_textblock_object_range_geometry_get(tbo, tbo_sd->cursor, tbo_sd->selection);
-      else
-         selection_geometry = _etk_textblock_object_range_geometry_get(tbo, tbo_sd->selection, tbo_sd->cursor);
+      Evas_List *selection_geometry;
+      Etk_Geometry *rect_geometry;
+      Evas_Object *rect;
+      int res;
       
-      while (selection_geometry)
+      /* TODO: selection stacking ?! */
+      while (tbo_sd->selection_rects)
       {
-         rect_geometry = selection_geometry->data;
+         evas_object_del(tbo_sd->selection_rects->data);
+         tbo_sd->selection_rects = evas_list_remove_list(tbo_sd->selection_rects, tbo_sd->selection_rects);
+      }
+      res = etk_textblock_iter_compare(tbo_sd->cursor, tbo_sd->selection);
+      if (res != 0)
+      {
+         if (res < 0)
+            selection_geometry = _etk_textblock_object_range_geometry_get(tbo, tbo_sd->cursor, tbo_sd->selection);
+         else
+            selection_geometry = _etk_textblock_object_range_geometry_get(tbo, tbo_sd->selection, tbo_sd->cursor);
          
-         rect = evas_object_rectangle_add(evas);
-         /* TODO: make the selection themeable */
-         evas_object_color_set(rect, 245, 205, 109, 102);
-         evas_object_move(rect, ox + rect_geometry->x, oy + rect_geometry->y);
-         evas_object_resize(rect, rect_geometry->w, rect_geometry->h);
-         evas_object_clip_set(rect, tbo_sd->clip);
-         evas_object_smart_member_add(rect, tbo);
-         if (visible)
-            evas_object_show(rect);
-         
-         free(rect_geometry);
-         tbo_sd->selection_rects = evas_list_append(tbo_sd->selection_rects, rect);
-         selection_geometry = evas_list_remove_list(selection_geometry, selection_geometry);
+         while (selection_geometry)
+         {
+            rect_geometry = selection_geometry->data;
+            
+            rect = evas_object_rectangle_add(evas);
+            /* TODO: make the selection themeable */
+            evas_object_color_set(rect, 245, 205, 109, 102);
+            evas_object_move(rect, ox + rect_geometry->x, oy + rect_geometry->y);
+            evas_object_resize(rect, rect_geometry->w, rect_geometry->h);
+            evas_object_clip_set(rect, tbo_sd->clip);
+            evas_object_smart_member_add(rect, tbo);
+            if (visible)
+               evas_object_show(rect);
+            
+            free(rect_geometry);
+            tbo_sd->selection_rects = evas_list_append(tbo_sd->selection_rects, rect);
+            selection_geometry = evas_list_remove_list(selection_geometry, selection_geometry);
+         }
       }
    }
    
    
    /* Update the cursor */
-   line = _etk_textblock_object_line_get_from_node(tbo, tbo_sd->cursor->node);
-   /* TODO: optimize?! */
-   cur = _etk_textblock_object_cursor_get_from_iter(tbo, tbo_sd->cursor);
-   evas_textblock_cursor_char_geometry_get(cur, &cx, &cy, &cw, &ch);
+   {
+      Evas_Textblock_Cursor *cur;
+      Etk_Textblock_Object_Line *line;
+      int cx = 0, cy = 0, cw = 0, ch = 0;   /* TODO: valg (= 0)? */
+      const char *font_face;
+      int font_size;
+      
+      line = _etk_textblock_object_line_get_from_node(tbo, tbo_sd->cursor->node);
+      if (_etk_textblock_node_is_empty_line(tbo_sd->cursor->node, &font_face, &font_size))
+      {
+         /* TODO: align, margins... */
+         /* TODO: correct font, and align */
+         etk_textblock_char_size_get(evas, "Vera", 10, NULL, &ch);
+         evas_object_move(tbo_sd->cursor_object, ox + line->geometry.x, oy + line->geometry.y);
+         evas_object_resize(tbo_sd->cursor_object, 1, ch);
+      }
+      else
+      {
+         /* TODO: optimize?! */
+         cur = _etk_textblock_object_cursor_get_from_iter(tbo, tbo_sd->cursor);
+         evas_textblock_cursor_char_geometry_get(cur, &cx, &cy, &cw, &ch);
+         
+         /* TODO: make sure the cursor is visible?! */
+         if (tbo_sd->cursor->pos < tbo_sd->cursor->node->unicode_length)
+            evas_object_move(tbo_sd->cursor_object, ox + ETK_MAX(0, cx + line->geometry.x - 1), cy + line->geometry.y + oy);
+         else
+            evas_object_move(tbo_sd->cursor_object, ox + ETK_MAX(0, cx + line->geometry.x + cw - 1), cy + line->geometry.y + oy);
+         
+         evas_object_resize(tbo_sd->cursor_object, 1, ch);
+      }
+   }
+}
+
+/* Queues an update for the textblock object */
+static void _etk_textblock_object_update_queue(Evas_Object *tbo)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
    
-   /* TODO: make sure the cursor is visible?! */
-   if (tbo_sd->cursor->pos < tbo_sd->cursor->node->unicode_length)
-      evas_object_move(tbo_sd->cursor_object, ox + ETK_MAX(0, cx + line->geometry.x - 1), cy + line->geometry.y + oy);
-   else
-      evas_object_move(tbo_sd->cursor_object, ox + ETK_MAX(0, cx + line->geometry.x + cw - 1), cy + line->geometry.y + oy);
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
+      return;
    
-   evas_object_resize(tbo_sd->cursor_object, 1, ch);
-   evas_object_show(tbo_sd->cursor_object);
+   if (!tbo_sd->update_job)
+      tbo_sd->update_job = ecore_job_add(_etk_textblock_object_update_job_cb, tbo);
 }
 
 /* Updates the textblock object */
@@ -3018,7 +3393,7 @@ static void _etk_textblock_object_update(Evas_Object *tbo)
    tbo_sd->last_visible_line = NULL;
    
    /* We update the lines */
-   /* TODO: optimize: Updates all the lines in several times and use a btree! */
+   /* TODO: optimize: Updates all the lines in several times and use a binary tree! */
    y = 0;
    evas_object_geometry_get(tbo, &ox, &oy, &ow, &oh);
    for (line = tbo_sd->lines; line; line = line->next)
@@ -3123,6 +3498,7 @@ static Evas_Textblock_Cursor *_etk_textblock_object_cursor_get_from_iter(Evas_Ob
    Etk_Textblock_Object_Line *line;
    Evas_Textblock_Cursor *cur;
    int num_text_nodes, i;
+   const char *text;
    
    if (!tbo || !iter || !(tbo_sd = evas_object_smart_data_get(tbo)) || !_etk_textblock_iter_is_valid(NULL, iter))
       return NULL;
@@ -3142,7 +3518,7 @@ static Evas_Textblock_Cursor *_etk_textblock_object_cursor_get_from_iter(Evas_Ob
    i = 0;
    for (;;)
    {
-      if (evas_textblock_cursor_node_text_get(cur))
+      if ((text = evas_textblock_cursor_node_text_get(cur)) && *text)
          i++;
       if (i >= num_text_nodes)
          break;
@@ -3158,28 +3534,36 @@ static Evas_Textblock_Cursor *_etk_textblock_object_cursor_get_from_iter(Evas_Ob
    return cur;
 }
 
-/* Counts recursively the number of text nodes that should be walked through to reach "node", in the line "line".
+/* Counts the number of text nodes that should be walked through to reach "node", in the line "line".
  * This function is used by _etk_textblock_object_cursor_get_from_iter() */
 static int _etk_textblock_text_nodes_count(Etk_Textblock_Node *line, Etk_Textblock_Node *node)
 {
    int count = 0;
    Etk_Textblock_Node *n;
    
-   if (!line || !node)
+   if (!line || !node || line->type != ETK_TEXTBLOCK_NODE_LINE || node->children)
       return 0;
    
-   if (line != node)
+   /* Check if "node" is a child node of "line" */
+   for (n = node; n; n = n->parent)
    {
-      for (n = line->children; n; n = n->next)
+      if (n->type == ETK_TEXTBLOCK_NODE_LINE)
       {
-         count += _etk_textblock_text_nodes_count(n, node);
-         if (n == node)
+         if (n != line)
+            return 0;
+         else
             break;
       }
    }
    
-   if (etk_string_length_get(line->text) > 0)
-      count++;
+   for (n = line; n->children; n = n->children);
+   for ( ; n; n = _etk_textblock_next_node_get(n))
+   {
+      if (etk_string_length_get(n->text) > 0)
+         count++;
+      if (n == node)
+         break;
+   }
    
    return count;
 }

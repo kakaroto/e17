@@ -1056,7 +1056,7 @@ static void _etk_combobox_key_down_cb(Etk_Object *object, void *event_info, void
    if (strcmp(event->keyname, "space") == 0)
    {
       etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(combobox->button), ETK_TRUE);
-      etk_widget_key_event_propagation_stop();
+      etk_signal_stop();
    }
 }
 

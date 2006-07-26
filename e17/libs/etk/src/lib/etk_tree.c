@@ -2226,7 +2226,7 @@ static void _etk_tree_key_down_cb(Etk_Object *object, void *event, void *data)
       propagate = ETK_TRUE;
    
    if (!propagate)
-      etk_widget_key_event_propagation_stop();
+      etk_signal_stop();
 }
 
 /* Called when the user presses a column header */

@@ -122,7 +122,9 @@ group {
          description {
             state: "default" 0.0;
             visible: 0;
-            color: 239 191 114 80;
+            //color: 239 191 114 80;
+            color: 245 205 109 102;
+            //color: 245 205 109 127;
             rel1 {
                relative: 0.0 0.0;
                offset: 0 0;

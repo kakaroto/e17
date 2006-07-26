@@ -1,7 +1,73 @@
 #include "etk_test.h"
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct _IM_Button_Type
+{
+   Etk_Stock_Id stock_id;
+   char *open_tag;
+   char *close_tag;
+} IM_Button_Type;
+
+static void _etk_test_text_view_tag_window_create(void *data);
+static void _etk_test_text_view_im_window_create(void *data);
+static void _etk_test_im_editor_key_down_cb(Etk_Object *object, void *event, void *data);
+
+static IM_Button_Type _im_buttons[] =
+{
+   { ETK_STOCK_FORMAT_TEXT_BOLD, "<b>", "</b>" },
+   { ETK_STOCK_FORMAT_TEXT_ITALIC, "<i>", "</i>" },
+   { ETK_STOCK_FORMAT_TEXT_UNDERLINE, "<u>", "</u>" }
+};
+static char *_im_buddies[] =
+{
+   "<b><font color=#16569e>Jack B:</font></b> ",
+   "<b><font color=#609028>Chloe O:</font></b> ",
+   "<b><font color=#a82f2f>David P:</font></b> "
+};
+static int _num_im_buttons = sizeof(_im_buttons) / sizeof(_im_buttons[0]);
+static int _num_im_buddies = sizeof(_im_buddies) / sizeof(_im_buddies[0]);
+static int _num_messages = 0;
 
 /* Creates the window for the text view test */
 void etk_test_text_view_window_create(void *data)
+{
+   static Etk_Widget *win = NULL;
+   Etk_Widget *vbox;
+   Etk_Widget *button;
+   
+   if (win)
+   {
+      etk_widget_show(win);
+      return;
+   }
+
+   win = etk_window_new();
+   etk_window_title_set(ETK_WINDOW(win), "Etk Text View Test");
+   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   
+   vbox = etk_vbox_new(ETK_TRUE, 0);
+   etk_container_add(ETK_CONTAINER(win), vbox);
+   
+   button = etk_button_new_with_label("Tag Presentation");
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_tag_window_create), NULL);
+   etk_box_pack_start(ETK_BOX(vbox), button, ETK_TRUE, ETK_FALSE, 0);
+   
+   button = etk_button_new_with_label("Instant Messenger");
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_im_window_create), NULL);
+   etk_box_pack_start(ETK_BOX(vbox), button, ETK_TRUE, ETK_FALSE, 0);
+   
+   etk_widget_show_all(win);
+}
+
+/**************************
+ *
+ * Tag Presentation
+ *
+ **************************/
+
+/* Creates the window for the tag presentation */
+static void _etk_test_text_view_tag_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
    Etk_Widget *vbox;
@@ -9,10 +75,10 @@ void etk_test_text_view_window_create(void *data)
    
    if (win)
    {
-      etk_widget_show_all(ETK_WIDGET(win));
+      etk_widget_show(win);
       return;
-   }	
-  
+   }
+   
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Text View Test");
    etk_widget_size_request_set(win, 150, 150);
@@ -71,8 +137,117 @@ void etk_test_text_view_window_create(void *data)
    
    etk_box_pack_start(ETK_BOX(vbox), text_view, ETK_TRUE, ETK_TRUE, 0);
    
-   //printf("%s\n", etk_string_get(etk_textblock_text_get(ETK_TEXT_VIEW(text_view)->textblock, ETK_FALSE)));
-   etk_textblock_printf(ETK_TEXT_VIEW(text_view)->textblock);
+   etk_widget_show_all(win);
+}
+
+/**************************
+ *
+ * Instant Messenger
+ *
+ **************************/
+
+/* Creates the window of the instant messenger test app */
+static void _etk_test_text_view_im_window_create(void *data)
+{
+   static Etk_Widget *win = NULL;
+   Etk_Widget *vpaned;
+   Etk_Widget *vbox, *hbox;
+   Etk_Widget *button;
+   Etk_Widget *message_view, *editor_view;
+   Etk_Textblock *tb;
+   int i;
+   
+   if (win)
+   {
+      etk_widget_show(win);
+      return;
+   }
+   
+   win = etk_window_new();
+   etk_window_title_set(ETK_WINDOW(win), "Etk Text View Test: Instant Messenger");
+   etk_window_resize(ETK_WINDOW(win), 300, 300);
+   etk_container_border_width_set(ETK_CONTAINER(win), 3);
+   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+
+   vpaned = etk_vpaned_new();
+   etk_container_add(ETK_CONTAINER(win), vpaned);
+   
+   message_view = etk_text_view_new();
+   etk_widget_size_request_set(message_view, 200, 100);
+   etk_paned_child1_set(ETK_PANED(vpaned), message_view, ETK_TRUE);
+   tb = etk_text_view_textblock_get(ETK_TEXT_VIEW(message_view));
+   etk_textblock_text_set(tb,
+      "<i>Connected with David P. and Chloe O.</i>\n\n"
+      "<b><font color=#a82f2f>David P:</font></b> Hello Jack!\n"
+      "<b><font color=#a82f2f>David P:</font></b> How are you my friend?\n",
+      ETK_TRUE);
+   
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   etk_paned_child2_set(ETK_PANED(vpaned), vbox, ETK_FALSE);
+   
+   
+   /* TODO: We must use a toolbar here instead */
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_TRUE, 0);
+   for (i = 0; i < _num_im_buttons; i++)
+   {
+      button = etk_button_new_from_stock(_im_buttons[i].stock_id);
+      etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_TRUE, 0);
+   }
+   
+   
+   editor_view = etk_text_view_new();
+   etk_widget_size_request_set(editor_view, 200, 80);
+   etk_box_pack_start(ETK_BOX(vbox), editor_view, ETK_TRUE, ETK_TRUE, 0);
+   etk_signal_connect("key_down", ETK_OBJECT(editor_view), ETK_CALLBACK(_etk_test_im_editor_key_down_cb), message_view);
    
    etk_widget_show_all(win);
+}
+
+/* Called when a key is pressed when the editor text view is focused */
+static void _etk_test_im_editor_key_down_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Key_Up_Down *key_event;
+   Etk_Textblock *message_tb, *editor_tb;
+   Etk_Textblock_Iter *iter, *cursor;
+   Etk_String *message;
+   int buddy_id;
+   
+   if (!(message_tb = etk_text_view_textblock_get(ETK_TEXT_VIEW(data))))
+      return;
+   if (!(editor_tb = etk_text_view_textblock_get(ETK_TEXT_VIEW(object))))
+      return;
+   
+   key_event = event;
+   message = etk_textblock_text_get(editor_tb, ETK_TRUE);
+   if ((strcmp(key_event->key, "Return") == 0 || strcmp(key_event->key, "KP_Enter") == 0))
+   {
+      iter = etk_textblock_iter_new(message_tb);
+      etk_textblock_iter_forward_end(iter);
+      
+      /* TODO: we need to wrap the modifiers! */
+      if (evas_key_modifier_is_set(key_event->modifiers, "Shift"))
+      {
+         cursor = etk_text_view_cursor_get(ETK_TEXT_VIEW(object));
+         etk_textblock_insert(editor_tb, cursor, "\n", -1);
+      }
+      else
+      {
+         if (etk_string_length_get(message) > 0)
+         {
+            
+            buddy_id = _num_messages % _num_im_buddies;
+            etk_textblock_insert_markup(message_tb, iter, _im_buddies[buddy_id], -1);
+            etk_textblock_insert_markup(message_tb, iter, etk_string_get(message), -1);
+            etk_textblock_insert(message_tb, iter, "\n", -1);
+            
+            etk_textblock_clear(editor_tb);
+            etk_object_destroy(ETK_OBJECT(message));
+            _num_messages++;
+         }
+      }
+      
+      etk_textblock_iter_free(iter);
+      etk_signal_stop();
+   }
 }

@@ -65,6 +65,7 @@ Etk_Widget *etk_text_view_new()
 
 /**
  * @brief Gets the textblock of the text view
+ * @param text_view a text view
  * @return Returns the textblock of the textview
  */
 Etk_Textblock *etk_text_view_textblock_get(Etk_Text_View *text_view)
@@ -72,6 +73,32 @@ Etk_Textblock *etk_text_view_textblock_get(Etk_Text_View *text_view)
    if (!text_view)
       return NULL;
    return text_view->textblock;
+}
+
+/**
+ * @brief Gets the cursor's iterator of the text view
+ * @param text_view a text view
+ * @param Returns the cursor's iterator of the text view
+ * @warning The text view has to be realized, otherwise it returns NULL
+ */
+Etk_Textblock_Iter *etk_text_view_cursor_get(Etk_Text_View *text_view)
+{
+   if (!text_view || !text_view->textblock_object)
+      return NULL;
+   return etk_textblock_object_cursor_get(text_view->textblock_object);
+}
+
+/**
+ * @brief Gets the selection bound's iterator of the text view
+ * @param text_view a text view
+ * @param Returns the selection bound's iterator of the text view
+ * @warning The text view has to be realized, otherwise it returns NULL
+ */
+Etk_Textblock_Iter *etk_text_view_selection_bound_get(Etk_Text_View *text_view)
+{
+   if (!text_view || !text_view->textblock_object)
+      return NULL;
+   return etk_textblock_object_selection_bound_get(text_view->textblock_object);
 }
 
 /**************************
@@ -157,31 +184,81 @@ static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data)
 static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data)
 {
    Etk_Text_View *text_view;
+   Etk_Textblock *tb;
    Etk_Textblock_Iter *cursor;
    Etk_Textblock_Iter *selection;
+   int compare_res;
+   Etk_Bool selecting;
    
    if (!(text_view = ETK_TEXT_VIEW(object)) || !event || !text_view->textblock_object)
       return;
    
+   tb = text_view->textblock;
    cursor = etk_textblock_object_cursor_get(text_view->textblock_object);
    selection = etk_textblock_object_selection_bound_get(text_view->textblock_object);
+   compare_res = etk_textblock_iter_compare(cursor, selection);
+   selecting = (compare_res != 0);
    
    if (strcmp(event->key, "Left") == 0)
    {
-      etk_textblock_iter_backward_char(cursor);
-      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+      if (evas_key_modifier_is_set(event->modifiers, "Shift"))
+         etk_textblock_iter_backward_char(cursor);
+      else if (selecting)
+      {
+         if (compare_res < 0)
+            etk_textblock_iter_copy(selection, cursor);
+         else
+            etk_textblock_iter_copy(cursor, selection);
+      }
+      else
+      {
+         etk_textblock_iter_backward_char(cursor);
          etk_textblock_iter_copy(selection, cursor);
+      }
    }
    else if (strcmp(event->key, "Right") == 0)
    {
-      etk_textblock_iter_forward_char(cursor);
-      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+      if (evas_key_modifier_is_set(event->modifiers, "Shift"))
+         etk_textblock_iter_forward_char(cursor);
+      else if (selecting)
+      {
+         if (compare_res < 0)
+            etk_textblock_iter_copy(cursor, selection);
+         else
+            etk_textblock_iter_copy(selection, cursor);
+      }
+      else
+      {
+         etk_textblock_iter_forward_char(cursor);
          etk_textblock_iter_copy(selection, cursor);
+      }
+   }
+   else if (strcmp(event->key, "BackSpace") == 0)
+   {
+      if (selecting)
+         etk_textblock_delete_range(tb, cursor, selection);
+      else
+         etk_textblock_delete_before(tb, cursor);
+   }
+   else if (strcmp(event->key, "Delete") == 0)
+   {
+      if (selecting)
+         etk_textblock_delete_range(tb, cursor, selection);
+      else
+         etk_textblock_delete_after(tb, cursor);
    }
    else if (strcmp(event->key, "Return") == 0 || strcmp(event->key, "KP_Enter") == 0)
-      etk_textblock_text_insert(text_view->textblock, cursor, "\n", -1);
+   {
+      if (selecting)
+         etk_textblock_delete_range(tb, cursor, selection);
+      etk_textblock_insert(tb, cursor, "\n", -1);
+   }
    else if (event->string && !(strlen(event->string) == 1 && event->string[0] < 0x20))
-      etk_textblock_text_insert(text_view->textblock, cursor, event->string, -1);
+   {
+      if (selecting)
+         etk_textblock_delete_range(tb, cursor, selection);
+      etk_textblock_insert(tb, cursor, event->string, -1);
+   }
 }
 
 /** @} */

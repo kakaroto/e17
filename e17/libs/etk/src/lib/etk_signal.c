@@ -13,10 +13,17 @@
  * @{
  */
 
+typedef struct Etk_Signal_Emitted
+{
+   Etk_Signal *signal;
+   Etk_Object *object;
+   Etk_Bool stop_emission;
+} Etk_Signal_Emitted;
+
 static void _etk_signal_free(Etk_Signal *signal);
 
 static Evas_List *_etk_signal_signals_list = NULL;
-static Etk_Bool _etk_signal_stop_emission = ETK_FALSE;
+static Evas_List *_etk_signal_emitted_signals = NULL;
 
 /**************************
  *
@@ -25,11 +32,18 @@ static Etk_Bool _etk_signal_stop_emission = ETK_FALSE;
  **************************/
 
 /**
+ * @internal
  * @brief Shutdowns the signal system
  * @warning You must not call it manually, etk_shudown() calls it automatically
  */
 void etk_signal_shutdown()
 {
+   while (_etk_signal_emitted_signals)
+   {
+      free(_etk_signal_emitted_signals->data);
+      _etk_signal_emitted_signals = evas_list_remove_list(_etk_signal_emitted_signals, _etk_signal_emitted_signals);
+   }
+   
    while (_etk_signal_signals_list)
    {
       _etk_signal_free(_etk_signal_signals_list->data);
@@ -318,6 +332,7 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
 {
    Evas_List *callbacks;
    Etk_Signal_Callback *callback;
+   Etk_Signal_Emitted *emitted_signal;
    Etk_Bool return_value_set = ETK_FALSE;
    void *result = NULL;
    va_list args2;
@@ -329,13 +344,19 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    /* The pointer object will be set to NULL if the object is destroyed by a callback */
    object_ptr = object;
    etk_object_weak_pointer_add(object, &object_ptr);
-   _etk_signal_stop_emission = ETK_FALSE;
+   
+   emitted_signal = malloc(sizeof(Etk_Signal_Emitted));
+   emitted_signal->signal = signal;
+   emitted_signal->object = object;
+   emitted_signal->stop_emission = ETK_FALSE;
+   _etk_signal_emitted_signals = evas_list_prepend(_etk_signal_emitted_signals, emitted_signal);
+   
    va_copy(args2, args);
 
    /* We call the callbacks to call before the default handler */
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
-   while (!_etk_signal_stop_emission && callbacks && object_ptr)
+   while (!emitted_signal->stop_emission && callbacks && object_ptr)
    {
       callback = callbacks->data;
       if (!return_value_set || !signal->accumulator)
@@ -349,18 +370,11 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
          signal->accumulator(return_value, result, signal->accum_data);
       }
       callbacks = evas_list_remove_list(callbacks, callbacks);
-   }   
-   
-   if (!object_ptr)
-      return;
-   else if (_etk_signal_stop_emission)
-   {
-      etk_object_weak_pointer_remove(object, &object_ptr);
-      return;
    }
+   callbacks = evas_list_free(callbacks);
 
    /* Calls the default handler */
-   if (signal->default_handler_offset >= 0 && signal->marshaller)
+   if (!emitted_signal->stop_emission && object_ptr && signal->default_handler_offset >= 0 && signal->marshaller)
    {
       Etk_Signal_Callback_Function *default_handler;
 
@@ -380,18 +394,10 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
       }
    }
 
-   if (!object_ptr)
-      return;
-   else if (_etk_signal_stop_emission)
-   {
-      etk_object_weak_pointer_remove(object, &object_ptr);
-      return;
-   }
-
    /* We call the callbacks to call after the default handler */
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
-   while (!_etk_signal_stop_emission && callbacks && object_ptr)
+   while (!emitted_signal->stop_emission && callbacks && object_ptr)
    {
       callback = callbacks->data;
       if (!return_value_set || !signal->accumulator)
@@ -406,9 +412,12 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
       }
       callbacks = evas_list_remove_list(callbacks, callbacks);
    }
+   callbacks = evas_list_free(callbacks);
    
    if (object_ptr)
       etk_object_weak_pointer_remove(object, &object_ptr);
+   _etk_signal_emitted_signals = evas_list_remove_list(_etk_signal_emitted_signals, _etk_signal_emitted_signals);
+   free(emitted_signal);
    
    va_end(args2);
 }
@@ -426,13 +435,19 @@ Etk_Marshaller etk_signal_marshaller_get(Etk_Signal *signal)
 }
 
 /**
- * @brief Stops the propagation of the emitted signal: the remaining callbacks/handler won't be called. @n
+ * @brief Stops the propagation of the last emitted signal: the remaining callbacks/handler won't be called. @n
  * It's usually called in a callback to avoid the other callbacks to be called.
- * @note It has no effect if no signal is emitted
+ * @note It has no effect if no signal is being emitted
  */ 
 void etk_signal_stop()
 {
-   _etk_signal_stop_emission = ETK_TRUE;
+   Etk_Signal_Emitted *last_emitted_signal;
+   
+   if (_etk_signal_emitted_signals)
+   {
+      last_emitted_signal = _etk_signal_emitted_signals->data;
+      last_emitted_signal->stop_emission = ETK_TRUE;
+   }
 }
 
 /**************************
@@ -464,5 +479,5 @@ static void _etk_signal_free(Etk_Signal *signal)
 /**
  * @addtogroup Etk_Signal
  *
- * 
+ * TODO: write doc for Etk_Signal!!
  */

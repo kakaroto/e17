@@ -112,9 +112,11 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
 static void _etk_widget_signal_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
 static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
+static void _etk_widget_signal_mouse_wheel_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data);
 static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data);
 static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
+static void _etk_widget_signal_key_up_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data);
 static void _etk_widget_toplevel_evas_changed_cb(Etk_Object *object, const char *property_name, void *data);
 
 static void _etk_widget_realize(Etk_Widget *widget);
@@ -148,7 +150,6 @@ static void _etk_widget_dnd_drag_mouse_move_cb(Etk_Object *object, void *event, 
 static void _etk_widget_dnd_drag_end_cb(Etk_Object *object, void *data);  
 
 static Etk_Signal *_etk_widget_signals[ETK_WIDGET_NUM_SIGNALS];
-static Etk_Bool _etk_widget_propagate_key_event = ETK_TRUE;
 static Etk_Bool _etk_widget_intercept_show_hide = ETK_TRUE;
 static Evas_Smart *_etk_widget_smart_object_smart = NULL;
 static Evas_List *_etk_widget_dnd_dest_widgets = NULL;
@@ -645,15 +646,6 @@ Etk_Bool etk_widget_pass_mouse_events_get(Etk_Widget *widget)
    if (!widget)
       return ETK_FALSE;
    return widget->pass_mouse_events;
-}
-
-/**
- * @brief Stops the propagation of the current keyboard event so the parents of the widget @n
- * which has received the event won't be notified
- */
-void etk_widget_key_event_propagation_stop()
-{
-   _etk_widget_propagate_key_event = ETK_FALSE;
 }
 
 /**
@@ -1848,10 +1840,12 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->dnd_types = NULL;
    widget->dnd_types_num = 0;
    
-   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_in_cb), NULL, ETK_FALSE, ETK_FALSE);
-   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL, ETK_FALSE, ETK_FALSE);
-   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL, ETK_FALSE, ETK_FALSE);
-   etk_signal_connect_full(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_key_down_cb), NULL, ETK_FALSE, ETK_FALSE);
+   etk_signal_connect("mouse_in", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_in_cb), NULL);
+   etk_signal_connect("mouse_out", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL);
+   etk_signal_connect("mouse_down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL);
+   etk_signal_connect("mouse_wheel", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_wheel_cb), NULL);
+   etk_signal_connect("key_down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_key_down_cb), NULL);
+   etk_signal_connect("key_up", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_key_up_cb), NULL);
    
    if (ETK_IS_TOPLEVEL_WIDGET(widget))
       etk_object_notification_callback_add(ETK_OBJECT(widget), "evas", _etk_widget_toplevel_evas_changed_cb, NULL);
@@ -2105,7 +2099,7 @@ static void _etk_widget_drag_end_handler(Etk_Widget *widget)
    etk_widget_theme_object_signal_emit(widget, "drag_end");
 }
 
-/* Called when the mouse pointer enters the widget */
+/* Evas Callback: Called when the mouse pointer enters the widget */
 static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info)
 {
    Etk_Widget *widget;
@@ -2126,11 +2120,12 @@ static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object,
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
+   /* TODO: should we really propagate the mouse in event? */
    if (widget->parent)
       _etk_widget_mouse_in_cb(widget->parent, evas, NULL, event_info);
 }
 
-/* Called when the signal "mouse_in" is emitted */
+/* Signal Callback: Called when the mouse pointer enters the widget */
 static void _etk_widget_signal_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
 {
    if (!object)
@@ -2138,7 +2133,7 @@ static void _etk_widget_signal_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_I
    etk_widget_enter(ETK_WIDGET(object));
 }
 
-/* Called when the mouse pointer leaves the widget */
+/* Evas Callback: Called when the mouse pointer leaves the widget */
 static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object, void *event_info)
 {
    Etk_Widget *widget;
@@ -2159,11 +2154,12 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
+   /* TODO: should we really propagate the mouse out event? */
    if (widget->parent)
       _etk_widget_mouse_out_cb(widget->parent, evas, NULL, event_info);
 }
 
-/* Called when the signal "mouse_out" is emitted */
+/* Signal Callback: Called when the mouse pointer leaves the widget */
 static void _etk_widget_signal_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
 {
    if (!object)
@@ -2171,7 +2167,7 @@ static void _etk_widget_signal_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_
    etk_widget_leave(ETK_WIDGET(object));
 }
 
-/* Called when the mouse pointer moves */
+/* Evas Callback: Called when the mouse pointer moves over the widget */
 static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *object, void *event_info)
 {
    Etk_Widget *widget;
@@ -2200,7 +2196,7 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
       _etk_widget_mouse_move_cb(widget->parent, evas, NULL, event_info);
 }
 
-/* Called when the mouse presses the widget */
+/* Evas Callback: Called when the widget is pressed by the mouse */
 static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info)
 {
    Etk_Widget *widget;
@@ -2226,7 +2222,7 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
       _etk_widget_mouse_down_cb(widget->parent, evas, NULL, event_info);
 }
 
-/* Called when the widget is pressed */
+/* Signal Callback: Called when the widget is pressed by the mouse */
 static void _etk_widget_signal_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
 {
    Etk_Widget *widget;
@@ -2236,7 +2232,7 @@ static void _etk_widget_signal_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse
    etk_widget_focus(widget);
 }
 
-/* Called when the mouse releases the widget */
+/* Evas Callback: Called when the widget is released by the mouse */
 static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info)
 {
    Etk_Widget *widget;
@@ -2266,7 +2262,7 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
       _etk_widget_mouse_up_cb(widget->parent, evas, NULL, event_info);
 }
 
-/* Called when the mouse wheel is used over the widget */
+/* Evas Callback: Called when the mouse wheel is used over the widget */
 static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *object, void *event_info)
 {
    Etk_Widget *widget;
@@ -2275,10 +2271,6 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
 
    if (!(widget = ETK_WIDGET(data)))
       return;
-   
-   /* TODO: _etk_widget_propagate_key_event for wheel? */
-   if (object)
-      _etk_widget_propagate_key_event = ETK_TRUE;
    
    event.direction = evas_event->direction;
    event.z = evas_event->z;
@@ -2291,12 +2283,22 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
    event.timestamp = evas_event->timestamp;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_WHEEL_SIGNAL], ETK_OBJECT(widget), NULL, &event);
-   
-   if (_etk_widget_propagate_key_event && widget->parent)
-      _etk_widget_mouse_wheel_cb(widget->parent, evas, NULL, event_info);
 }
 
-/* Called when the user presses a key and if the widget is focused */
+/* Signal Callback: Called when the mouse wheel is used over the widget */
+static void _etk_widget_signal_mouse_wheel_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data)
+{
+   Etk_Widget *widget;
+
+   if (!(widget = ETK_WIDGET(object)) || !widget->parent)
+      return;
+   
+   /* Propagates the event to the parent widget */
+   /* TODO: we should recalc the coords of the event according to the parent geometry! */
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_WHEEL_SIGNAL], ETK_OBJECT(widget->parent), NULL, event);
+}
+
+/* Evas Callback: Called when the user presses a key and if the widget is focused */
 static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info)
 {
    Etk_Widget *widget;
@@ -2305,9 +2307,6 @@ static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object,
 
    if (!(widget = ETK_WIDGET(data)))
       return;
-
-   if (object)
-      _etk_widget_propagate_key_event = ETK_TRUE;
    
    event.keyname = evas_event->keyname;
    event.modifiers = evas_event->modifiers;
@@ -2318,12 +2317,9 @@ static void _etk_widget_key_down_cb(void *data, Evas *evas, Evas_Object *object,
    event.timestamp = evas_event->timestamp;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
-   
-   if (_etk_widget_propagate_key_event && widget->parent)
-      _etk_widget_key_down_cb(widget->parent, evas, NULL, event_info);
 }
 
-/* Called when a key is pressed */
+/* Signal Callback: Called when the user presses a key and if the widget is focused */
 static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data)
 {
    Etk_Widget *widget;
@@ -2332,22 +2328,18 @@ static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_
    if (!(widget = ETK_WIDGET(object)) || !event || !(toplevel = (widget->toplevel_parent)) || !event->key)
       return;
 
-   if (object)
-      _etk_widget_propagate_key_event = ETK_TRUE;
-
    if (strcmp(event->key, "Tab") == 0)
-   {
       etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
-      etk_widget_key_event_propagation_stop();
-   }
    else if (strcmp(event->key, "ISO_Left_Tab") == 0)
-   {
       etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
-      etk_widget_key_event_propagation_stop();
+   else
+   {
+      /* Propagates the event to the parent widget */
+      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL], ETK_OBJECT(widget->parent), NULL, event);
    }
 }
 
-/* Called when the user releases a key and if the widget is focused */
+/* Evas Callback: Called when the user releases a key and if the widget is focused */
 static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info)
 {
    Etk_Widget *widget;
@@ -2356,9 +2348,6 @@ static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, v
 
    if (!(widget = ETK_WIDGET(data)))
       return;
-
-   if (object)
-      _etk_widget_propagate_key_event = ETK_TRUE;
    
    event.keyname = evas_event->keyname;
    event.modifiers = evas_event->modifiers;
@@ -2369,9 +2358,18 @@ static void _etk_widget_key_up_cb(void *data, Evas *evas, Evas_Object *object, v
    event.timestamp = evas_event->timestamp;
 
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_KEY_UP_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+}
+
+/* Signal Callback: Called when the user releases a key and if the widget is focused */
+static void _etk_widget_signal_key_up_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data)
+{
+   Etk_Widget *widget;
+
+   if (!(widget = ETK_WIDGET(object)) || !widget->parent)
+      return;
    
-   if (_etk_widget_propagate_key_event && widget->parent)
-      _etk_widget_key_up_cb(widget->parent, evas, NULL, event_info);
+   /* Propagates the event to the parent widget */
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_KEY_UP_SIGNAL], ETK_OBJECT(widget->parent), NULL, event);
 }
 
 /* Called when the widget is a toplevel widget and when its evas is changed */

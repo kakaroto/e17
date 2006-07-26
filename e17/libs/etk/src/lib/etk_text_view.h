@@ -36,6 +36,8 @@ Etk_Type *etk_text_view_type_get();
 Etk_Widget *etk_text_view_new();
 
 Etk_Textblock *etk_text_view_textblock_get(Etk_Text_View *text_view);
+Etk_Textblock_Iter *etk_text_view_cursor_get(Etk_Text_View *text_view);
+Etk_Textblock_Iter *etk_text_view_selection_bound_get(Etk_Text_View *text_view);
 
 /** @} */
 

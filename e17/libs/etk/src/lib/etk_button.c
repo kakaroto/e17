@@ -433,7 +433,7 @@ static void _etk_button_key_down_cb(Etk_Object *object, void *event, void *data)
    if (strcmp(key_event->key, "space") == 0)
    {
       etk_button_press(button);
-      etk_widget_key_event_propagation_stop();
+      etk_signal_stop();
    }
 }
 
@@ -453,7 +453,7 @@ static void _etk_button_key_up_cb(Etk_Object *object, void *event, void *data)
          etk_button_release(button);
          etk_button_click(button);
       }
-      etk_widget_key_event_propagation_stop();
+      etk_signal_stop();
    }
 }
 

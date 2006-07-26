@@ -211,7 +211,6 @@ void etk_widget_repeat_mouse_events_set(Etk_Widget *widget, Etk_Bool repeat_mous
 Etk_Bool etk_widget_repeat_mouse_events_get(Etk_Widget *widget);
 void etk_widget_pass_mouse_events_set(Etk_Widget *widget, Etk_Bool pass_mouse_events);
 Etk_Bool etk_widget_pass_mouse_events_get(Etk_Widget *widget);
-void etk_widget_key_event_propagation_stop();
 
 void etk_widget_show(Etk_Widget *widget);
 void etk_widget_show_all(Etk_Widget *widget);

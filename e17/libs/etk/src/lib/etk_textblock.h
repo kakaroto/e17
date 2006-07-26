@@ -209,8 +209,12 @@ void etk_textblock_text_set(Etk_Textblock *tb, const char *text, Etk_Bool markup
 Etk_String *etk_textblock_text_get(Etk_Textblock *tb, Etk_Bool markup);
 void etk_textblock_clear(Etk_Textblock *tb);
 
-void etk_textblock_text_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *text, int length);
-void etk_textblock_text_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *markup_text, int length);
+void etk_textblock_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *text, int length);
+void etk_textblock_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *markup_text, int length);
+
+void etk_textblock_delete_before(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
+void etk_textblock_delete_after(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
+void etk_textblock_delete_range(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2);
 
 void etk_textblock_printf(Etk_Textblock *tb);
 
