@@ -46,3 +46,5 @@ uptime - A module to monitor computer uptime.
 weather - A module to display a weather forecast.
 
 wlan - A module to monitor a wlan device.
+
+winselector - A module to show menu-based access to open windows
