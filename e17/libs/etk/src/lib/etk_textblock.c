@@ -1129,22 +1129,25 @@ void etk_textblock_object_cursor_visible_set(Evas_Object *tbo, Etk_Bool visible)
    if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)) || tbo_sd->cursor_visible == visible)
       return;
    
-   if (visible)
+   if (evas_object_visible_get(tbo))
    {
-      evas_object_show(tbo_sd->cursor_object);
-      if (!tbo_sd->cursor_timer)
+      if (visible)
       {
-         tbo_sd->cursor_timer = ecore_timer_add(ETK_TB_OBJECT_SHOW_CURSOR_DELAY,
-            _etk_textblock_object_cursor_timer_cb, tbo);
+         evas_object_show(tbo_sd->cursor_object);
+         if (!tbo_sd->cursor_timer)
+         {
+            tbo_sd->cursor_timer = ecore_timer_add(ETK_TB_OBJECT_SHOW_CURSOR_DELAY,
+               _etk_textblock_object_cursor_timer_cb, tbo);
+         }
+         else
+            ecore_timer_interval_set(tbo_sd->cursor_timer, ETK_TB_OBJECT_SHOW_CURSOR_DELAY);
       }
       else
-         ecore_timer_interval_set(tbo_sd->cursor_timer, ETK_TB_OBJECT_SHOW_CURSOR_DELAY);
-   }
-   else
-   {
-      evas_object_hide(tbo_sd->cursor_object);
-      ecore_timer_del(tbo_sd->cursor_timer);
-      tbo_sd->cursor_timer = NULL;
+      {
+         evas_object_hide(tbo_sd->cursor_object);
+         ecore_timer_del(tbo_sd->cursor_timer);
+         tbo_sd->cursor_timer = NULL;
+      }
    }
    
    tbo_sd->cursor_visible = visible;
@@ -2787,6 +2790,13 @@ static void _etk_textblock_iter_update(Etk_Textblock_Iter *iter)
       if (iter == tbo_sd->cursor || iter == tbo_sd->selection)
       {
          _etk_textblock_object_cursor_update_queue(tbo);
+         
+         if (iter == tbo_sd->cursor && tbo_sd->cursor_timer)
+         {
+            evas_object_show(tbo_sd->cursor_object);
+            ecore_timer_interval_set(tbo_sd->cursor_timer, ETK_TB_OBJECT_SHOW_CURSOR_DELAY);
+         }
+         
          break;
       }
    }
@@ -3275,7 +3285,6 @@ static void _etk_textblock_object_cursor_update_queue(Evas_Object *tbo)
 }
 
 /* Updates the cursor object and the selection of the textblock object */
-/* TODO: Reset the timer? */
 static void _etk_textblock_object_cursor_update(Evas_Object *tbo)
 {
    Evas *evas;
