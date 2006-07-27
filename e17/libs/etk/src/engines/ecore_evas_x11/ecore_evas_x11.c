@@ -963,9 +963,12 @@ static int _window_property_cb(void *data, int ev_type, void *event)
 	    switch (state[i])
 	    {
 	       case ECORE_X_WINDOW_STATE_STICKY:
+	          if (window->sticky == 1)
+		    break;
+	          else
+		    etk_object_notify(ETK_OBJECT(window), "sticky");
 	          window->sticky = 1;
-	          sticky = 1;
-	          etk_object_notify(ETK_OBJECT(window), "sticky");
+	          sticky = 1;	          
 	          break;
 	    }
 	 }
