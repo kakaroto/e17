@@ -126,6 +126,7 @@ static Etk_Engine engine_info = {
    NULL, /* engine specific data */
    NULL, /* engine name */
    NULL, /* super (parent) engine */
+   NULL, /* DL handle */
      
    _window_constructor,
    _window_destructor,     

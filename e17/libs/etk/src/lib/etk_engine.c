@@ -80,34 +80,16 @@ void etk_engine_shutdown()
    {
       Etk_Engine *engine;
       void *(*engine_shutdown)();   
-      char filename[PATH_MAX];
-      void *handle;
-      
       engine = _loaded_engines->data;
       _loaded_engines = evas_list_remove(_loaded_engines, engine);
       
-      if (!engine->engine_name)
+      if (!engine->handle)
          continue;
-      
-      snprintf(filename, sizeof(filename), "%s/etk/engines/%s.so", PACKAGE_LIB_DIR, engine->engine_name);
-      
-      if (!ecore_file_exists(filename))
-      {
-         ETK_WARNING("Etk can not find requested engine!");
-         return;
-      }
-      
-      handle = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL);
-      if (!handle)
-      {
-         ETK_WARNING("Etk can not dlopen requested engine!");
-         continue;
-      }
 
-      if ((engine_shutdown = dlsym(handle, "engine_shutdown")))
+      if ((engine_shutdown = dlsym(engine->handle, "engine_shutdown")))
          engine_shutdown();
       
-      dlclose(handle);
+      dlclose(engine->handle);
    }
    
    while (_etk_engines)
@@ -203,7 +185,8 @@ Etk_Engine *etk_engine_load(const char *engine_name)
       return NULL;
    }
    
-   dlclose(handle);
+   _loaded_engines = evas_list_append(_loaded_engines, engine);
+   engine->handle = handle;
    _engine = engine;
    
    return engine;
@@ -630,6 +613,9 @@ void etk_engine_selection_clear()
 /* Copies the methods of "inherit_from" to "inherit_to" */
 static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inherit_from)
 {
+   if (!inherit_to || !inherit_from)
+      return;
+   
    inherit_to->super = inherit_from;
    
    INHERIT(window_constructor);

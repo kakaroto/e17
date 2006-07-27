@@ -64,7 +64,8 @@ static Etk_Engine engine_info = {
    NULL, /* engine specific data */
    NULL, /* engine name */
    NULL, /* super (parent) engine */
-     
+   NULL, /* DL handle */
+   
    _window_constructor,
    _window_destructor,     
    _window_show,
@@ -106,22 +107,22 @@ static Etk_Engine engine_info = {
    NULL, /* window_skip_pager_hint_get */
    NULL, /* window_dnd_aware_set */
    NULL, /* window_pointer_set */
-     
+   
    NULL, /* popup_window_constructor */
    NULL, /* popup_window_popup_at_xy */
    NULL, /* popup_window_popup */
    NULL, /* popup_window_popdown */
    NULL, /* popup_window_popped_get */
-     
+   
    NULL, /* drag_constructor */
    NULL, /* drag_begin */
-     
+   
    NULL, /* dnd_init */
    NULL, /* dnd_shutdown */
-     
+   
    NULL, /* clipboard_text_request */
    NULL, /* clipboard_text_set */
-     
+   
    NULL, /* selection_text_request */
    NULL, /* selection_text_set */
    NULL  /* selection_clear */     

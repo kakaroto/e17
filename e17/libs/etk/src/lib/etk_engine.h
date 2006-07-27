@@ -14,6 +14,7 @@ struct Etk_Engine
    void *engine_data;
    char *engine_name;
    Etk_Engine *super;
+   void *handle;
    
    void (*window_constructor)(Etk_Window *window);
    void (*window_destructor)(Etk_Window *window);   
