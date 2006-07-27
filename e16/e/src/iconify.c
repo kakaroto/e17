@@ -2169,10 +2169,6 @@ _DlgFillIconbox(Dialog * d, DItem * table, void *data)
 
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/iconbox.png",
-		      _("Enlightenment Iconbox\n" "Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Transparent background"));
    DialogItemCheckButtonSetPtr(di, &tmp_ib_nobg);
@@ -2339,11 +2335,13 @@ _DlgFillIconbox(Dialog * d, DItem * table, void *data)
 }
 
 static const DialogDef DlgIconbox = {
+   _DlgFillIconbox,
    "CONFIGURE_ICONBOX",
    NULL,
    NULL,
    "SOUND_SETTINGS_ICONBOX",
-   _DlgFillIconbox
+   "pix/iconbox.png",
+   N_("Enlightenment Iconbox\n" "Settings Dialog\n"),
 };
 
 /*

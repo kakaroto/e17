@@ -55,11 +55,6 @@ _DlgFillMoveResize(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/moveres.png",
-		      _("Enlightenment Move & Resize\n"
-			"Method Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
@@ -169,11 +164,13 @@ _DlgFillMoveResize(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgMoveResize = {
+   _DlgFillMoveResize,
    "CONFIGURE_MOVERESIZE",
    N_("Move/Resize"),
    N_("Move & Resize Settings"),
    "SOUND_SETTINGS_MOVERESIZE",
-   _DlgFillMoveResize
+   "pix/moveres.png",
+   N_("Enlightenment Move & Resize\n" "Method Settings Dialog\n"),
 };
 
 static char         tmp_with_leader;
@@ -252,11 +249,6 @@ _DlgFillPlacement(Dialog * d, DItem * table, void *data __UNUSED__)
 #endif
 
    DialogItemTableSetOptions(table, 2, 0, 1, 0);
-
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/place.png",
-		      _("Enlightenment Window Placement\n"
-			"Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -391,11 +383,13 @@ _DlgFillPlacement(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgPlacement = {
+   _DlgFillPlacement,
    "CONFIGURE_PLACEMENT",
    N_("Placement"),
    N_("Window Placement Settings"),
    "SOUND_SETTINGS_PLACEMENT",
-   _DlgFillPlacement
+   "pix/place.png",
+   N_("Enlightenment Window Placement\n" "Settings Dialog\n"),
 };
 
 static char         tmp_autoraise;
@@ -422,11 +416,6 @@ _DlgFillAutoraise(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/raise.png",
-		      _("Enlightenment Automatic Raising\n"
-			"of Windows Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Raise Windows Automatically"));
@@ -447,11 +436,13 @@ _DlgFillAutoraise(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgAutoraise = {
+   _DlgFillAutoraise,
    "CONFIGURE_AUTORAISE",
    N_("Autoraise"),
    N_("Autoraise Settings"),
    "SOUND_SETTINGS_AUTORAISE",
-   _DlgFillAutoraise
+   "pix/raise.png",
+   N_("Enlightenment Automatic Raising\n" "of Windows Settings Dialog\n"),
 };
 
 static char         tmp_dialog_headers;
@@ -484,10 +475,6 @@ _DlgFillMisc(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/miscellaneous.png",
-		      _("Enlightenment Miscellaneous\n" "Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Dialog Headers"));
@@ -518,11 +505,13 @@ _DlgFillMisc(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgMisc = {
+   _DlgFillMisc,
    "CONFIGURE_MISCELLANEOUS",
    N_("Miscellaneous"),
    N_("Miscellaneous Settings"),
    "SOUND_SETTINGS_MISCELLANEOUS",
-   _DlgFillMisc
+   "pix/miscellaneous.png",
+   N_("Enlightenment Miscellaneous\n" "Settings Dialog\n"),
 };
 
 #if USE_COMPOSITE
@@ -560,10 +549,6 @@ _DlgFillComposite(Dialog * d, DItem * table, void *data __UNUSED__)
 
    /* Layout */
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/pager.png",
-		      _("Enlightenment Composite\n" "Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -621,11 +606,13 @@ _DlgFillComposite(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgComposite = {
+   _DlgFillComposite,
    "CONFIGURE_COMPOSITE",
    N_("Composite"),
    N_("Composite Settings"),
    "SOUND_SETTINGS_COMPOSITE",
-   _DlgFillComposite
+   "pix/pager.png",
+   N_("Enlightenment Composite\n" "Settings Dialog\n"),
 };
 
 void

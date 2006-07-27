@@ -669,32 +669,13 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
 }
 
 static void
-SnapshotEwinDialog(const EWin * ewin)
+_DlgFillSnap(Dialog * d, DItem * table, void *data)
 {
-   Dialog             *d;
-   DItem              *table, *di;
+   DItem              *di;
    Snapshot           *sn;
    SnapDlgData        *sd;
    char                s[1024];
-
-   Esnprintf(s, sizeof(s), "SNAPSHOT_WINDOW-%#lx", _EwinGetClientXwin(ewin));
-
-   d = DialogFind(s);
-   if (d)
-     {
-	DialogShow(d);
-	return;
-     }
-   d = DialogCreate(s);
-   DialogSetTitle(d, _("Remembered Application Attributes"));
-
-   table = DialogInitItem(d);
-   DialogItemTableSetOptions(table, 4, 0, 0, 0);
-
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/snapshots.png",
-		      _("Select the attributes of this\n"
-			"window you wish to Remember\n" "from now on\n"));
+   const EWin         *ewin = data;
 
    sd = Ecalloc(1, sizeof(SnapDlgData));
    DialogSetData(d, sd);
@@ -752,6 +733,9 @@ SnapshotEwinDialog(const EWin * ewin)
 	     sd->match.title = ewin->icccm.wm_name != NULL;
 	  }
      }
+
+   table = DialogAddItem(table, DITEM_TABLE);
+   DialogItemTableSetOptions(table, 4, 0, 0, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetAlign(di, 0, 512);
@@ -946,8 +930,27 @@ SnapshotEwinDialog(const EWin * ewin)
      }
 
    DialogAddFooter(d, DLG_OAC, CB_ApplySnap);
+}
 
-   DialogShow(d);
+const DialogDef     DlgSnap = {
+   _DlgFillSnap,
+   NULL,
+   NULL,
+   N_("Remembered Application Attributes"),
+   NULL,
+   "pix/snapshots.png",
+   N_("Select the attributes of this\n"
+      "window you wish to Remember\n" "from now on\n"),
+};
+
+static void
+SnapshotEwinDialog(const EWin * ewin)
+{
+   char                s[1024];
+
+   Esnprintf(s, sizeof(s), "SNAPSHOT_WINDOW-%#lx", _EwinGetClientXwin(ewin));
+
+   DialogShowSimpleWithName(&DlgSnap, s, (void *)ewin);
 }
 
 /* list of remembered items for the remember dialog -- it's either
@@ -1016,11 +1019,6 @@ _DlgFillRemember(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/snapshots.png",
-		      _("Enlightenment Remembered\n"
-			"Windows Settings Dialog\n"));
-
    num = ecore_list_nodes(ss_list);
    rd_ewin_list = Emalloc(sizeof(RememberWinList) * (num + 1));
 
@@ -1085,11 +1083,13 @@ _DlgFillRemember(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgRemember = {
+   _DlgFillRemember,
    "CONFIGURE_PAGER",
    NULL,
    N_("Remembered Windows Settings"),
    "SOUND_SETTINGS_PAGER",
-   _DlgFillRemember
+   "pix/snapshots.png",
+   N_("Enlightenment Remembered\n" "Windows Settings Dialog\n"),
 };
 
 /* ... combine writes, only save after a timeout */

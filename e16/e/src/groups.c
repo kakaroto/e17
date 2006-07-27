@@ -594,6 +594,7 @@ static int          tmp_group_index;
 static int          tmp_index;
 static EWin        *tmp_ewin;
 static Group      **tmp_groups;
+static int          tmp_group_num;
 static int          tmp_action;
 
 static void
@@ -639,14 +640,61 @@ GroupCallback(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
+_DlgFillGroupChoose(Dialog * d, DItem * table, void *data)
+{
+   DItem              *di, *radio;
+   int                 i, num_groups;
+   char              **group_member_strings;
+   const char         *message = data;
+
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemSetText(di, message);
+
+   num_groups = tmp_group_num;
+   group_member_strings = GetWinGroupMemberNames(tmp_groups, num_groups);
+
+   radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, GroupCallback, 0, (void *)d);
+   DialogItemSetText(di, group_member_strings[0]);
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, 0);
+
+   for (i = 1; i < num_groups; i++)
+     {
+	di = DialogAddItem(table, DITEM_RADIOBUTTON);
+	DialogItemSetColSpan(di, 2);
+	DialogItemSetCallback(di, GroupCallback, i, NULL);
+	DialogItemSetText(di, group_member_strings[i]);
+	DialogItemRadioButtonSetFirst(di, radio);
+	DialogItemRadioButtonGroupSetVal(di, i);
+     }
+   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_group_index);
+
+   StrlistFree(group_member_strings, num_groups);
+
+   DialogAddFooter(d, DLG_OC, ChooseGroup);
+}
+
+static const DialogDef DlgGroupChoose = {
+   _DlgFillGroupChoose,
+   "GROUP_SELECTION",
+   NULL,
+   N_("Window Group Selection"),
+   "SOUND_SETTINGS_GROUP",
+   "pix/group.png",
+   N_("Enlightenment Window Group\n" "Selection Dialog\n"),
+};
+
+static void
 ChooseGroupDialog(EWin * ewin, const char *message, char group_select,
 		  int action)
 {
-
-   Dialog             *d;
-   DItem              *table, *di, *radio;
-   int                 i, num_groups;
-   char              **group_member_strings;
+   int                 num_groups;
 
    if (!ewin)
       return;
@@ -655,6 +703,7 @@ ChooseGroupDialog(EWin * ewin, const char *message, char group_select,
    tmp_group_index = tmp_index = 0;
    tmp_action = action;
    tmp_groups = ListWinGroups(ewin, group_select, &num_groups);
+   tmp_group_num = num_groups;
 
    if ((num_groups == 0)
        && (action == GROUP_OP_BREAK || action == GROUP_OP_DEL))
@@ -684,54 +733,7 @@ ChooseGroupDialog(EWin * ewin, const char *message, char group_select,
 
    ShowHideWinGroups(ewin, 0, SET_ON);
 
-   d = DialogFind("GROUP_SELECTION");
-   if (d)
-     {
-	SoundPlay("GROUP_SETTINGS_ACTIVE");
-	DialogShow(d);
-     }
-   SoundPlay("SOUND_SETTINGS_GROUP");
-
-   d = DialogCreate("GROUP_SELECTION");
-   DialogSetTitle(d, _("Window Group Selection"));
-
-   table = DialogInitItem(d);
-   DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/group.png",
-		      _("Enlightenment Window Group\n" "Selection Dialog\n"));
-
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di, message);
-
-   group_member_strings = GetWinGroupMemberNames(tmp_groups, num_groups);
-
-   radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetCallback(di, GroupCallback, 0, (void *)d);
-   DialogItemSetText(di, group_member_strings[0]);
-   DialogItemRadioButtonSetFirst(di, radio);
-   DialogItemRadioButtonGroupSetVal(di, 0);
-
-   for (i = 1; i < num_groups; i++)
-     {
-	di = DialogAddItem(table, DITEM_RADIOBUTTON);
-	DialogItemSetColSpan(di, 2);
-	DialogItemSetCallback(di, GroupCallback, i, NULL);
-	DialogItemSetText(di, group_member_strings[i]);
-	DialogItemRadioButtonSetFirst(di, radio);
-	DialogItemRadioButtonGroupSetVal(di, i);
-     }
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_group_index);
-
-   StrlistFree(group_member_strings, num_groups);
-
-   DialogAddFooter(d, DLG_OC, ChooseGroup);
-
-   DialogShow(d);
+   DialogShowSimple(&DlgGroupChoose, (void *)message);
 }
 
 typedef struct
@@ -812,10 +814,6 @@ _DlgFillGroups(Dialog * d, DItem * table, void *data)
    ShowHideWinGroups(ewin, 0, SET_ON);
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/group.png",
-		      _("Enlightenment Window Group\n" "Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -898,11 +896,13 @@ _DlgFillGroups(Dialog * d, DItem * table, void *data)
 }
 
 static const DialogDef DlgGroups = {
+   _DlgFillGroups,
    "CONFIGURE_GROUP",
    NULL,
    N_("Window Group Settings"),
    "SOUND_SETTINGS_GROUP",
-   _DlgFillGroups
+   "pix/group.png",
+   N_("Enlightenment Window Group\n" "Settings Dialog\n"),
 };
 
 static void
@@ -945,11 +945,6 @@ _DlgFillGroupDefaults(Dialog * d, DItem * table, void *data __UNUSED__)
    tmp_group_swap = Conf_groups.swapmove;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/group.png",
-		      _("Enlightenment Default\n"
-			"Group Control Settings Dialog\n"));
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
@@ -1016,11 +1011,13 @@ _DlgFillGroupDefaults(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgGroupDefaults = {
+   _DlgFillGroupDefaults,
    "CONFIGURE_DEFAULT_GROUP_CONTROL",
    N_("Groups"),
    N_("Default Group Control Settings"),
    "SOUND_SETTINGS_GROUP",
-   _DlgFillGroupDefaults
+   "pix/group.png",
+   N_("Enlightenment Default\n" "Group Control Settings Dialog\n"),
 };
 
 /*

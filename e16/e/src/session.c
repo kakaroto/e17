@@ -783,10 +783,6 @@ _DlgFillSession(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/miscellaneous.png",
-		      _("Enlightenment Session\n" "Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Session Script"));
@@ -806,9 +802,11 @@ _DlgFillSession(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgSession = {
+   _DlgFillSession,
    "CONFIGURE_SESSION",
    N_("Session"),
    N_("Session Settings"),
    "SOUND_SETTINGS_SESSION",
-   _DlgFillSession
+   "pix/miscellaneous.png",
+   N_("Enlightenment Session\n" "Settings Dialog\n"),
 };

@@ -982,10 +982,6 @@ _DlgFillFx(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/fx.png",
-		      _("Enlightenment Special Effects\n" "Settings Dialog\n"));
-
    /* Effects */
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, _("Effects"));
@@ -1006,11 +1002,13 @@ _DlgFillFx(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgFx = {
+   _DlgFillFx,
    "CONFIGURE_FX",
    N_("FX"),
    N_("Special FX Settings"),
    "SOUND_SETTINGS_FX",
-   _DlgFillFx
+   "pix/fx.png",
+   N_("Enlightenment Special Effects\n" "Settings Dialog\n"),
 };
 
 static void

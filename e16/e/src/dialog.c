@@ -702,10 +702,16 @@ _DialogClose(Dialog * d)
 void
 DialogShowSimple(const DialogDef * dd, void *data)
 {
+   DialogShowSimpleWithName(dd, dd->name, data);
+}
+
+void
+DialogShowSimpleWithName(const DialogDef * dd, const char *name, void *data)
+{
    Dialog             *d;
    DItem              *table;
 
-   d = DialogFind(dd->name);
+   d = DialogFind(name);
    if (d)
      {
 	SoundPlay("SOUND_SETTINGS_ACTIVE");
@@ -714,13 +720,20 @@ DialogShowSimple(const DialogDef * dd, void *data)
      }
    SoundPlay(dd->sound);
 
-   d = DialogCreate(dd->name);
+   d = DialogCreate(name);
    if (!d)
       return;
 
    DialogSetTitle(d, _(dd->title));
 
    table = DialogInitItem(d);
+   if (!table)
+      return;
+
+   if (Conf.dialogs.headers && (dd->header_image || dd->header_text))
+      DialogAddHeader(table, dd->header_image, _(dd->header_text));
+
+   table = DialogAddItem(d->item, DITEM_TABLE);
    if (!table)
       return;
 
@@ -880,14 +893,15 @@ DialogAddItem(DItem * dii, int type)
 }
 
 void
-DialogAddHeader(Dialog * d, const char *img, const char *txt)
+DialogAddHeader(DItem * parent, const char *img, const char *txt)
 {
    DItem              *table, *di;
 
    /* FIXME - Center table horizontally */
-   table = DialogAddItem(d->item, DITEM_TABLE);
-   DialogItemSetColSpan(table, d->item->item.table.num_columns);
+   table = DialogAddItem(parent, DITEM_TABLE);
+   DialogItemSetColSpan(table, 1);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
+   DialogItemSetAlign(table, 512, 0);
 
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemImageSetFile(di, img);
@@ -895,8 +909,7 @@ DialogAddHeader(Dialog * d, const char *img, const char *txt)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, txt);
 
-   di = DialogAddItem(d->item, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, d->item->item.table.num_columns);
+   di = DialogAddItem(parent, DITEM_SEPARATOR);
 }
 
 void

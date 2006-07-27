@@ -849,10 +849,6 @@ _DlgFillTooltips(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/tips.png",
-		      _("Enlightenment Tooltip\n" "Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Display Tooltips"));
@@ -877,11 +873,13 @@ _DlgFillTooltips(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgTooltips = {
+   _DlgFillTooltips,
    "CONFIGURE_TOOLTIPS",
    N_("Tooltips"),
    N_("Tooltip Settings"),
    "SOUND_SETTINGS_TOOLTIPS",
-   _DlgFillTooltips
+   "pix/tips.png",
+   N_("Enlightenment Tooltip\n" "Settings Dialog\n"),
 };
 
 static void

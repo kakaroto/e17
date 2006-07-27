@@ -2025,11 +2025,6 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
 
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/bg.png",
-		      _("Enlightenment Desktop\n"
-			"Background Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, _("BG Colour\n"));
 
@@ -2274,11 +2269,13 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
 }
 
 const DialogDef     DlgBackground = {
+   _DlgFillBackground,
    "CONFIGURE_BG",
    N_("Background"),
    N_("Desktop Background Settings"),
    "SOUND_SETTINGS_BG",
-   _DlgFillBackground
+   "pix/bg.png",
+   N_("Enlightenment Desktop\n" "Background Settings Dialog\n"),
 };
 
 /*

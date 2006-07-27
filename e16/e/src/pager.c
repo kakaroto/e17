@@ -1747,11 +1747,6 @@ _DlgFillPagers(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/pager.png",
-		      _("Enlightenment Desktop & Area\n"
-			"Pager Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable pager display"));
@@ -1878,11 +1873,13 @@ _DlgFillPagers(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgPagers = {
+   _DlgFillPagers,
    "CONFIGURE_PAGER",
    N_("Pagers"),
    N_("Pager Settings"),
    "SOUND_SETTINGS_PAGER",
-   _DlgFillPagers
+   "pix/pager.png",
+   N_("Enlightenment Desktop & Area\n" "Pager Settings Dialog\n"),
 };
 
 /*

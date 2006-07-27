@@ -2370,11 +2370,6 @@ _DlgFillDesks(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/desktops.png",
-		      _("Enlightenment Multiple Desktop\n"
-			"Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Number of virtual desktops:\n"));
@@ -2471,11 +2466,13 @@ _DlgFillDesks(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgDesks = {
+   _DlgFillDesks,
    "CONFIGURE_DESKTOPS",
    N_("Desks"),
    N_("Multiple Desktop Settings"),
    "SOUND_SETTINGS_DESKTOPS",
-   _DlgFillDesks
+   "pix/desktops.png",
+   N_("Enlightenment Multiple Desktop\n" "Settings Dialog\n"),
 };
 
 static int          tmp_area_x;
@@ -2587,10 +2584,6 @@ _DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/areas.png",
-		      _("Enlightenment Virtual Desktop\n" "Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, _("Virtual Desktop size:\n"));
 
@@ -2654,11 +2647,13 @@ _DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgAreas = {
+   _DlgFillAreas,
    "CONFIGURE_AREA",
    N_("Areas"),
    N_("Virtual Desktop Settings"),
    "SOUND_SETTINGS_AREA",
-   _DlgFillAreas
+   "pix/areas.png",
+   N_("Enlightenment Virtual Desktop\n" "Settings Dialog\n"),
 };
 
 /*

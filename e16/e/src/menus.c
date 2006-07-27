@@ -2043,10 +2043,6 @@ _DlgFillMenus(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/place.png",
-		      _("Enlightenment Menu\n" "Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 3);
    DialogItemSetText(di, _("Animated display of menus"));
@@ -2066,11 +2062,13 @@ _DlgFillMenus(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgMenus = {
+   _DlgFillMenus,
    "CONFIGURE_MENUS",
    N_("Menus"),
    N_("Menu Settings"),
    "SOUND_SETTINGS_MENUS",
-   _DlgFillMenus
+   "pix/place.png",
+   N_("Enlightenment Menu\n" "Settings Dialog\n"),
 };
 
 static void

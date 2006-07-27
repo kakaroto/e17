@@ -447,10 +447,6 @@ _DlgFillSound(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/sound.png",
-		      _("Enlightenment Audio\n" "Settings Dialog\n"));
-
 #ifdef HAVE_LIBESD
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
@@ -468,11 +464,13 @@ _DlgFillSound(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgSound = {
+   _DlgFillSound,
    "CONFIGURE_AUDIO",
    N_("Sound"),
    N_("Audio Settings"),
    "SOUND_SETTINGS_AUDIO",
-   _DlgFillSound
+   "pix/sound.png",
+   N_("Enlightenment Audio\n" "Settings Dialog\n"),
 };
 
 /*

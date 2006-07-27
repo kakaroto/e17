@@ -125,11 +125,6 @@ _DlgFillThemeTrans(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 7, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/tips.png",
-		      _("Enlightenment Selective Transparency\n"
-			"Settings Dialog\n"));
-
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 7);
    DialogItemSetAlign(di, 0, 512);
@@ -271,11 +266,13 @@ _DlgFillThemeTrans(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgThemeTrans = {
+   _DlgFillThemeTrans,
    "CONFIGURE_TRANS",
    N_("Transparency"),
    N_("Selective Transparency Settings"),
    "SOUND_SETTINGS_TRANS",
-   _DlgFillThemeTrans
+   "pix/tips.png",
+   N_("Enlightenment Selective Transparency\n" "Settings Dialog\n"),
 };
 
 static void

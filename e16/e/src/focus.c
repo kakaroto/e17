@@ -703,10 +703,6 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-   if (Conf.dialogs.headers)
-      DialogAddHeader(d, "pix/focus.png",
-		      _("Enlightenment Focus\n" "Settings Dialog\n"));
-
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Focus follows pointer"));
@@ -841,11 +837,13 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 const DialogDef     DlgFocus = {
+   _DlgFillFocus,
    "CONFIGURE_FOCUS",
    N_("Focus"),
    N_("Focus Settings"),
    "SOUND_SETTINGS_FOCUS",
-   _DlgFillFocus
+   "pix/focus.png",
+   N_("Enlightenment Focus\n" "Settings Dialog\n"),
 };
 
 /*
