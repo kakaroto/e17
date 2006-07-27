@@ -59,7 +59,7 @@ struct Etk_Engine
    void (*window_skip_pager_hint_set)(Etk_Window *window, Etk_Bool skip_pager_hint);
    Etk_Bool (*window_skip_pager_hint_get)(Etk_Window *window);   
    void (*window_dnd_aware_set)(Etk_Window *window, Etk_Bool on);
-   void (*window_pointer_set)(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type);
+   void (*window_pointer_set)(Etk_Window *window, Etk_Pointer_Type pointer_type);
    
    void (*popup_window_constructor)(Etk_Popup_Window *popup_window);
    void (*popup_window_popup_at_xy)(Etk_Popup_Window *popup_window, int x, int y);

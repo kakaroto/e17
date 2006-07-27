@@ -7,7 +7,6 @@
 #include <Ecore_X_Cursor.h>
 #include <Ecore_X_Atoms.h>
 
-#include "config.h"
 #include "etk_types.h"
 #include "etk_dnd.h"
 #include "etk_engine.h"
@@ -54,7 +53,7 @@ static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window);
 static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
 static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window);
 static void _window_dnd_aware_set(Etk_Window *window, Etk_Bool on);
-static void _window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type);
+static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type);
   
 /* Etk_Popup_Window functions */
 static void _popup_window_constructor(Etk_Popup_Window *popup_window);
@@ -87,8 +86,6 @@ static Ecore_Event_Handler *_drag_mouse_up_handler;
 /* Etk_Drag callbacks */
 static int  _drag_mouse_up_cb(void *data, int type, void *event);
 static int  _drag_mouse_move_cb(void *data, int type, void *event);
-
-#define ETK_DND_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
 
 /* Etk Dnd functions */
 static Etk_Bool _dnd_init();
@@ -519,20 +516,11 @@ static void _window_dnd_aware_set(Etk_Window *window, Etk_Bool on)
 #endif
 }
 
-static void _window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
+static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type)
 {
-#if 0
-   /* TODO: for now this is totally done in the parent engine, we need to fix */
-   
-#if HAVE_ECORE_X
-   Etk_Window *window;
    int x_pointer_type = ECORE_X_CURSOR_LEFT_PTR;
    Ecore_X_Cursor cursor;
    Etk_Engine_Window_Data *engine_data;
-
-   /* TODO: do we want to move the following line to etk_window ? */
-   if (!(window = ETK_WINDOW(toplevel_widget)))
-      return;
    
    engine_data = window->engine_data;
 
@@ -590,9 +578,7 @@ static void _window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointe
       ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas), cursor);
    else
       ETK_WARNING("Unable to find the X cursor \"%d\"", pointer_type);
-#endif   
-#endif   
-}  
+}
 
 static void _popup_window_constructor(Etk_Popup_Window *popup_window)
 {   
@@ -1149,7 +1135,7 @@ static void _dnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y
          continue;
       
       etk_widget_geometry_get(widget, &wx, &wy, &ww, &wh);
-      if (ETK_DND_INSIDE(x, y, wx + offx, wy + offy, ww, wh))
+      if (ETK_INSIDE(x, y, wx + offx, wy + offy, ww, wh))
 	 *list = evas_list_append(*list, widget);
    }
 }
@@ -1230,7 +1216,7 @@ static int _dnd_position_handler(void *data, int type, void *event)
       if (_dnd_widget)
       {
          etk_widget_geometry_get(_dnd_widget, &wx, &wy, &ww, &wh);
-         if (!ETK_DND_INSIDE(ev->position.x, ev->position.y, wx + x, wy + y, ww, wh))
+         if (!ETK_INSIDE(ev->position.x, ev->position.y, wx + x, wy + y, ww, wh))
          {
             etk_widget_drag_leave(_dnd_widget);
             _dnd_widget = NULL;

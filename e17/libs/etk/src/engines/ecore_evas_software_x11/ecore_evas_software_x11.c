@@ -6,7 +6,6 @@
 #include <Ecore_X.h>
 #include <Ecore_X_Cursor.h>
 
-#include "config.h"
 #include "etk_types.h"
 #include "etk_dnd.h"
 #include "etk_engine.h"
@@ -30,7 +29,6 @@ static void _engine_shutdown();
 
 /* Etk_Window functions */
 static void _window_constructor(Etk_Window *window);
-static void _window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type);
 
 static Etk_Engine engine_info = {
    
@@ -82,7 +80,7 @@ static Etk_Engine engine_info = {
    NULL, /* window_skip_pager_hint_set */
    NULL, /* window_skip_pager_hint_get */
    NULL, /* window_dnd_aware_set */
-   _window_pointer_set,
+   NULL, /* window_pointer_set */
 
    NULL, /* popup_window_constructor */
    NULL, /* popup_window_popup_at_xy */
@@ -103,7 +101,6 @@ static Etk_Engine engine_info = {
    NULL, /* selection_text_set */
    NULL  /* selection_clear */
 };
-
 
 
 Etk_Engine *engine_open()
@@ -127,74 +124,3 @@ static void _window_constructor(Etk_Window *window)
    engine_data->x_window = ecore_evas_software_x11_window_get(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas);
    engine_info.super->window_constructor(window);   
 }
-
-static void _window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
-{
-#if HAVE_ECORE_X
-   Etk_Window *window;
-   int x_pointer_type = ECORE_X_CURSOR_LEFT_PTR;
-   Ecore_X_Cursor cursor;
-   Etk_Engine_Window_Data *engine_data;
-
-   /* TODO: do we want to move the following line to etk_window ? */
-   if (!(window = ETK_WINDOW(toplevel_widget)))
-      return;
-   
-   engine_data = window->engine_data;
-
-   switch (pointer_type)
-   {
-      case ETK_POINTER_DND_DROP:
-         x_pointer_type = ECORE_X_CURSOR_PLUS;
-         break;
-      case ETK_POINTER_MOVE:
-         x_pointer_type = ECORE_X_CURSOR_FLEUR;
-         break;
-      case ETK_POINTER_H_DOUBLE_ARROW:
-         x_pointer_type = ECORE_X_CURSOR_SB_H_DOUBLE_ARROW;
-         break;
-      case ETK_POINTER_V_DOUBLE_ARROW:
-         x_pointer_type = ECORE_X_CURSOR_SB_V_DOUBLE_ARROW;
-         break;
-      case ETK_POINTER_RESIZE:
-         x_pointer_type = ECORE_X_CURSOR_SIZING;
-         break;
-      case ETK_POINTER_RESIZE_TL:
-         x_pointer_type = ECORE_X_CURSOR_TOP_LEFT_CORNER;
-         break;
-      case ETK_POINTER_RESIZE_T:
-         x_pointer_type = ECORE_X_CURSOR_TOP_SIDE;
-         break;
-      case ETK_POINTER_RESIZE_TR:
-         x_pointer_type = ECORE_X_CURSOR_TOP_RIGHT_CORNER;
-         break;
-      case ETK_POINTER_RESIZE_R:
-         x_pointer_type = ECORE_X_CURSOR_RIGHT_SIDE;
-         break;
-      case ETK_POINTER_RESIZE_BR:
-         x_pointer_type = ECORE_X_CURSOR_BOTTOM_RIGHT_CORNER;
-         break;
-      case ETK_POINTER_RESIZE_B:
-         x_pointer_type = ECORE_X_CURSOR_BOTTOM_SIDE;
-         break;
-      case ETK_POINTER_RESIZE_BL:
-         x_pointer_type = ECORE_X_CURSOR_BOTTOM_LEFT_CORNER;
-         break;
-      case ETK_POINTER_RESIZE_L:
-         x_pointer_type = ECORE_X_CURSOR_LEFT_SIDE;
-         break;
-      case ETK_POINTER_TEXT_EDIT:
-         x_pointer_type = ECORE_X_CURSOR_XTERM;
-         break;
-      case ETK_POINTER_DEFAULT:
-      default:
-         x_pointer_type = ECORE_X_CURSOR_LEFT_PTR;
-         break;
-   }
-
-   if ((cursor = ecore_x_cursor_shape_get(x_pointer_type)))
-      ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas), cursor);
-   else
-      ETK_WARNING("Unable to find the X cursor \"%d\"", pointer_type);
-#endif   
-}  

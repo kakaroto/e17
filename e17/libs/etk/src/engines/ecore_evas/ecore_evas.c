@@ -265,7 +265,6 @@ static void _window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int
       *h = window->height;
 }
 
-
 static void _window_iconify(Etk_Window *window)
 {
    Etk_Engine_Window_Data *engine_data;
@@ -432,6 +431,7 @@ static Etk_Bool _window_shaped_get(Etk_Window *window)
  *
  **************************/
 
+/* Called when the window is moved */
 static void _window_move_cb(Ecore_Evas *ecore_evas)
 {
    Etk_Window *window;
@@ -500,6 +500,5 @@ static void _window_delete_request_cb(Ecore_Evas *ecore_evas)
    
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
      return;
-   
    window->delete_request_cb(window);   
 }

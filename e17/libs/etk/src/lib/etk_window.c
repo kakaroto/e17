@@ -770,8 +770,11 @@ static void _etk_window_toplevel_object_geometry_get(Etk_Toplevel_Widget *toplev
 /* Sets the mouse pointer of the window */
 static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
 {
-   /* TODO: do we want the engine to take the toplevel_widget or the window? */
-   etk_engine_window_pointer_set(toplevel_widget, pointer_type);
+   Etk_Window *window;
+   
+   if (!(window = ETK_WINDOW(toplevel_widget)))
+      return;
+   etk_engine_window_pointer_set(window, pointer_type);
 }
 
 /** @} */
