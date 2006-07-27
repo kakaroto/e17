@@ -991,7 +991,7 @@ _ex_main_window_show(char *dir)
 int
 main(int argc, char *argv[])
 {
-   if (!etk_init())
+   if (!etk_init("ecore_evas_software_x11"))
      {
 	fprintf(stderr, "Could not init etk. Exiting...\n");
 	return 0;

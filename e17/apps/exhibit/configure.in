@@ -179,16 +179,12 @@ AC_PATH_EFL(
      e="E "
      AM_CONDITIONAL(HAVE_E, true)
      have_e="yes"
-     e_libs=`enlightenment-config --libs`
-     e_cflags=`enlightenment-config --cflags`     
    ],
    [
      AC_DEFINE(HAVE_E, 0, no E)
      AM_CONDITIONAL(HAVE_E, false)
      AC_MSG_WARN([No E, can't build E desktop support.])
      have_e="no"
-     e_libs=""
-     e_cflags=""
    ]
 )
 
@@ -232,8 +228,8 @@ epsilon_libs=`epsilon-config --libs`
 epsilon_cflags=`epsilon-config --cflags`
 
 # add your required libs / include here
-my_includes="$ecore_cflags $evas_cflags $edje_cflags $etk_cflags $epsilon_cflags $engrave_cflags $e_cflags"
-my_libs="$ecore_libs $evas_libs $edje_libs $etk_libs $epsilon_libs $engrave_libs $e_libs"
+my_includes="$ecore_cflags $evas_cflags $edje_cflags $etk_cflags $epsilon_cflags $engrave_cflags"
+my_libs="$ecore_libs $evas_libs $edje_libs $etk_libs $epsilon_libs $engrave_libs"
 AC_SUBST(my_includes)
 AC_SUBST(my_libs)
 
