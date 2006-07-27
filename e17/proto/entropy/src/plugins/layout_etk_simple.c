@@ -215,7 +215,7 @@ entropy_plugin_init (entropy_core * core)
   Entropy_Plugin* base;
 	
   /*Init etk */
-  etk_init ();
+  etk_init ("ecore_evas_software_x11");
 
   plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
   base = ENTROPY_PLUGIN(plugin);
