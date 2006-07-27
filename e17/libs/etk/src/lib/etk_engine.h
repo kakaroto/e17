@@ -16,6 +16,9 @@ struct Etk_Engine
    Etk_Engine *super;
    void *handle;
    
+   Etk_Bool (*engine_init)();
+   void (*engine_shutdown)();
+   
    void (*window_constructor)(Etk_Window *window);
    void (*window_destructor)(Etk_Window *window);   
    void (*window_show)(Etk_Window *window);
@@ -149,6 +152,7 @@ void etk_engine_clipboard_text_set(Etk_Widget *widget, const char *text, int len
 void etk_engine_selection_text_request(Etk_Widget *widget);
 void etk_engine_selection_text_set(Etk_Widget *widget, const char *text, int length);
 void etk_engine_selection_clear();
+
 /** @} */
 
 #endif

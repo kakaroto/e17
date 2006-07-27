@@ -18,8 +18,6 @@
 #include "Etk_Engine_Ecore_Evas.h"
 #include "Etk_Engine_Ecore_Evas_X11.h"
 
-#define ETK_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
-
 /* Engine specific data for Etk_Window
  * We do this to shorten the name for internal use
  */
@@ -40,7 +38,10 @@ static Ecore_Timer *_popup_window_slide_timer = NULL;
 static Evas_List *_popup_window_popped_windows = NULL;
 
 /* General engine functions */
-Etk_Engine *engine_init();
+Etk_Engine *engine_open();
+
+static Etk_Bool _engine_init();
+static void _engine_shutdown();
 
 /* Etk_Window functions */
 static void _window_constructor(Etk_Window *window);
@@ -128,6 +129,9 @@ static Etk_Engine engine_info = {
    NULL, /* super (parent) engine */
    NULL, /* DL handle */
      
+   _engine_init,
+   _engine_shutdown,
+   
    _window_constructor,
    _window_destructor,     
    NULL, /* window_show */
@@ -190,12 +194,27 @@ static Etk_Engine engine_info = {
    _selection_clear
 };
 
-Etk_Engine * engine_init()
+Etk_Engine *engine_open()
 {
    engine_info.engine_data = NULL;
    engine_info.engine_name = strdup("ecore_evas_x11");
    etk_engine_inherit_from(&engine_info, "ecore_evas");
    return &engine_info;
+}
+
+static Etk_Bool _engine_init()
+{
+   if (!ecore_x_init(NULL))
+   {
+      ETK_WARNING("Ecore_X initialization failed!");
+      return ETK_FALSE;
+   }
+   return ETK_TRUE;
+}
+
+static void _engine_shutdown()
+{
+   ecore_x_shutdown();
 }
 
 static void _window_constructor(Etk_Window *window)

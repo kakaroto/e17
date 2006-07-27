@@ -23,7 +23,10 @@
 typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
 
 /* General engine functions */
-Etk_Engine *engine_init();
+Etk_Engine *engine_open();
+
+static Etk_Bool _engine_init();
+static void _engine_shutdown();
 
 /* Etk_Window functions */
 static void _window_constructor(Etk_Window *window);
@@ -36,6 +39,9 @@ static Etk_Engine engine_info = {
    NULL, /* super (parent) engine */
    NULL, /* DL handle */
      
+   NULL, /* engine_init */
+   NULL, /* engine_shutdown */
+   
    _window_constructor,
    NULL, /* window_destructor */
    NULL, /* window_show */
@@ -100,7 +106,7 @@ static Etk_Engine engine_info = {
 
 
 
-Etk_Engine *engine_init()
+Etk_Engine *engine_open()
 {
    engine_info.engine_data = NULL;
    engine_info.engine_name = strdup("ecore_evas_software_x11");

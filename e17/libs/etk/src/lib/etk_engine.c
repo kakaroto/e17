@@ -79,17 +79,19 @@ void etk_engine_shutdown()
    while (_loaded_engines)
    {
       Etk_Engine *engine;
-      void *(*engine_shutdown)();   
+      void *(*engine_close)();   
       engine = _loaded_engines->data;
       _loaded_engines = evas_list_remove(_loaded_engines, engine);
       
-      if (!engine->handle)
-         continue;
+      if (engine->engine_shutdown)
+         engine->engine_shutdown();
 
-      if ((engine_shutdown = dlsym(engine->handle, "engine_shutdown")))
-         engine_shutdown();
-      
-      dlclose(engine->handle);
+      if (engine->handle)
+      {
+         if ((engine_close = dlsym(engine->handle, "engine_close")))
+            engine_close();
+         dlclose(engine->handle);
+      }
    }
    
    while (_etk_engines)
@@ -148,7 +150,7 @@ Etk_Engine *etk_engine_get()
 Etk_Engine *etk_engine_load(const char *engine_name)
 {
    Etk_Engine *engine;
-   Etk_Engine *(*engine_init)();   
+   Etk_Engine *(*engine_open)();   
    char filename[PATH_MAX];
    void *handle;
    
@@ -166,26 +168,33 @@ Etk_Engine *etk_engine_load(const char *engine_name)
    handle = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL);
    if (!handle)
    {
-      ETK_WARNING("Etk can not dlopen requested engine!");
+      ETK_WARNING("Etk can not dlopen the requested engine!");
       return NULL;
    }
 
-   engine_init = dlsym(handle, "engine_init");
-   if (!engine_init)
+   engine_open = dlsym(handle, "engine_open");
+   if (!engine_open)
    {
-      ETK_WARNING("Etk can not find an initializer for this engine!");
+      ETK_WARNING("Etk can not find an open method for this engine!");
       dlclose(handle);
       return NULL;
    }
    
-   if (!(engine = engine_init()))
+   if (!(engine = engine_open()))
    {
-      ETK_WARNING("Etk can not initialize requested engine!");
+      ETK_WARNING("Etk can not open the requested engine!");
       dlclose(handle);
       return NULL;
    }
    
-   _loaded_engines = evas_list_append(_loaded_engines, engine);
+   if (engine->engine_init && !engine->engine_init())
+   {
+      ETK_WARNING("Etk can not initialize the requested engine!");
+      dlclose(handle);
+      return NULL;
+   }
+   
+   _loaded_engines = evas_list_prepend(_loaded_engines, engine);
    engine->handle = handle;
    _engine = engine;
    
@@ -679,3 +688,5 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(selection_text_set);
    INHERIT(selection_clear);
 }
+
+/** @} */

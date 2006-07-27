@@ -1,20 +1,19 @@
 #include <stdio.h>
 #include <string.h>
-#include <Evas.h>
 #include <Ecore_Evas.h>
 
-#include "config.h"
 #include "etk_engine.h"
 #include "etk_utils.h"
 
 #include "Etk_Engine_Ecore_Evas.h"
 
-#define ETK_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
-
 typedef Etk_Engine_Ecore_Evas_Window_Data Etk_Engine_Window_Data;
 
 /* General engine functions */
-Etk_Engine *engine_init();
+Etk_Engine *engine_open();
+
+static Etk_Bool _engine_init();
+static void _engine_shutdown();
 
 /* Etk_Window functions */
 static void _window_constructor(Etk_Window *window);
@@ -65,6 +64,9 @@ static Etk_Engine engine_info = {
    NULL, /* engine name */
    NULL, /* super (parent) engine */
    NULL, /* DL handle */
+   
+   _engine_init,
+   _engine_shutdown,
    
    _window_constructor,
    _window_destructor,     
@@ -128,11 +130,26 @@ static Etk_Engine engine_info = {
    NULL  /* selection_clear */     
 };
 
-Etk_Engine *engine_init()
+Etk_Engine *engine_open()
 {
    engine_info.engine_data = NULL;
    engine_info.engine_name = strdup("ecore_evas");
    return &engine_info;
+}
+
+static Etk_Bool _engine_init()
+{
+   if (!ecore_evas_init())
+   {
+      ETK_WARNING("Ecore_Evas initialization failed!");
+      return ETK_FALSE;
+   }
+   return ETK_TRUE;
+}
+
+static void _engine_shutdown()
+{
+   ecore_evas_shutdown();
 }
 
 static void _window_constructor(Etk_Window *window)
