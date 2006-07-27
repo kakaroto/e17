@@ -27,7 +27,6 @@ typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
 static Ecore_Event_Handler *_window_property_handler = NULL;
 static int _window_property_cb(void *data, int ev_type, void *ev);
     
-
 /* Engine specific data for Etk_Popup_Window */
 static Ecore_X_Window _etk_popup_window_input_window = 0;
 static Ecore_Event_Handler *_popup_window_key_down_handler = NULL;
@@ -935,16 +934,16 @@ static void _selection_clear()
  *
  **************************/
 
-
 static int _window_property_cb(void *data, int ev_type, void *event)
 {
    Etk_Window *window;
    Ecore_X_Event_Window_Property *ev;
+   int sticky;
    
    if (!(window = ETK_WINDOW(data)) || !(ev = event))
      return 1;
    
-   if(ev->atom == ECORE_X_ATOM_NET_WM_STATE)
+   if (ev->atom == ECORE_X_ATOM_NET_WM_STATE)
    {
       unsigned int i, num;
       Ecore_X_Window_State *state;
@@ -955,6 +954,8 @@ static int _window_property_cb(void *data, int ev_type, void *event)
       win = engine_data->x_window;      
       ecore_x_netwm_window_state_get(win, &state, &num);
       
+      sticky = 0;      
+      
       if (state)
       {
 	 for (i = 0; i < num; i++)
@@ -963,12 +964,18 @@ static int _window_property_cb(void *data, int ev_type, void *event)
 	    {
 	       case ECORE_X_WINDOW_STATE_STICKY:
 	          window->sticky = 1;
+	          sticky = 1;
 	          etk_object_notify(ETK_OBJECT(window), "sticky");
-	          //printf("internal sticky = %d\n", etk_window_sticky_get(window));
 	          break;
 	    }
 	 }
-      }		           
+      }
+      
+      if (window->sticky == 1 && sticky == 0)
+      {
+	 window->sticky = 0;
+	 etk_object_notify(ETK_OBJECT(window), "sticky");
+      }
    }
 }
 
