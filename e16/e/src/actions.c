@@ -312,6 +312,8 @@ _DlgFillAbout(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, buf);
 
    DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
+   DialogBindKey(d, "Return", DialogCallbackClose, 0);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
 }
 
 static const DialogDef DlgAbout = {
