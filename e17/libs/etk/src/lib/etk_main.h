@@ -4,7 +4,7 @@
 
 #include <Evas.h>
 #include "etk_types.h"
-#include "etk_engine.h"
+
 /**
  * @defgroup Etk_Main The main functions of Etk
  * @brief The main functions of Etk, used to initialize or shutdown Etk, or to control the main loop

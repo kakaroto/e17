@@ -46,6 +46,7 @@ typedef struct Etk_Container Etk_Container;
 typedef struct Etk_Dialog Etk_Dialog;
 typedef struct _Etk_Drag Etk_Drag;
 typedef struct Etk_Embed Etk_Embed;
+typedef struct Etk_Engine Etk_Engine;
 typedef struct _Etk_Entry Etk_Entry;
 typedef struct _Etk_Event_Key_Up_Down Etk_Event_Key_Up_Down;
 typedef struct _Etk_Event_Mouse_In_Out Etk_Event_Mouse_In_Out;
@@ -107,9 +108,18 @@ typedef struct _Etk_Tree_Row Etk_Tree_Row;
 typedef struct _Etk_Viewport Etk_Viewport;
 typedef struct _Etk_Widget Etk_Widget;
 typedef struct _Etk_Window Etk_Window;
-typedef struct _Etk_Engine Etk_Engine;
 
 typedef Etk_Engine *(*Etk_Engine_Constructor)(void);
+
+/**
+ * @struct Etk_Position
+ * @brief The structure of a position
+ */
+typedef struct Etk_Position
+{
+   int x;       /**< The x component */
+   int y;       /**< The y component */
+} Etk_Position;
 
 /**
  * @struct Etk_Size

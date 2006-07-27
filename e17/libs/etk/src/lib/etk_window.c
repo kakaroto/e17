@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
-#include "etk_main.h"
+#include "etk_engine.h"
 #include "etk_utils.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "config.h"
 
 /**
  * @addtogroup Etk_Window

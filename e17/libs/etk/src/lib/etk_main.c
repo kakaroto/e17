@@ -8,6 +8,7 @@
 #include <Ecore_Evas.h>
 #include <Evas.h>
 #include <Edje.h>
+#include "etk_engine.h"
 #include "etk_type.h"
 #include "etk_signal.h"
 #include "etk_object.h"
@@ -17,8 +18,6 @@
 #include "etk_dnd.h"
 #include "etk_tooltips.h"
 #include "config.h"
-
-extern Etk_Engine *engine;
 
 /**
  * @addtogroup Etk_Main
@@ -62,45 +61,21 @@ Etk_Bool etk_init(const char *engine_name)
       ETK_WARNING("Ecore initialization failed!");
       return ETK_FALSE;
    }
-   if (!ecore_evas_init())
-   {
-      ETK_WARNING("Ecore_Evas initialization failed!");
-      return ETK_FALSE;
-   }
-#if HAVE_ECORE_X   
-   if (!ecore_x_init(NULL))
-   {
-      ETK_WARNING("Ecore_X initialization failed!");
-      return ETK_FALSE;
-   }
-#endif   
    if (!edje_init())
    {
       ETK_WARNING("Edje initialization failed!");
       return ETK_FALSE;
    }
-   
-   if(!etk_engine_init())
+   if (!etk_engine_init())
    {
       ETK_WARNING("Etk_Engine initialization failed!");
       return ETK_FALSE;
-   }   
-         
-   if(etk_engine_exists(engine_name))
-   {
-      engine = etk_engine_load(engine_name);
-      if(!engine)
-      {
-	 ETK_WARNING("Etk can not load requested engine!");
-	 return ETK_FALSE;
-      }
    }
-   else
+   if (!etk_engine_load(engine_name))
    {
-      ETK_WARNING("Etk can not load requested engine!");
-      return ETK_FALSE;      
-   }   
-   
+      ETK_WARNING("Etk can not load the requested engine!");
+      return ETK_FALSE;
+   }
    if (!etk_dnd_init())
    {
       ETK_WARNING("Etk_dnd initialization failed!");
@@ -135,8 +110,8 @@ void etk_shutdown()
    etk_theme_shutdown();
    etk_tooltips_shutdown();
    etk_dnd_shutdown();
+   etk_engine_shutdown();
    edje_shutdown();
-   ecore_evas_shutdown();
    ecore_shutdown();
    evas_shutdown();
    _etk_main_toplevel_widgets = evas_list_free(_etk_main_toplevel_widgets);

@@ -1,4 +1,4 @@
-/** @file etk_engine.h.h */
+/** @file etk_engine.h */
 #ifndef _ETK_ENGINE_H_
 #define _ETK_ENGINE_H_
 
@@ -9,12 +9,12 @@
 #include "etk_widget.h"
 #include "etk_toplevel_widget.h"
 
-struct _Etk_Engine
+struct Etk_Engine
 {
    void *engine_data;
    char *engine_name;
    Etk_Engine *super;
-      
+   
    void (*window_constructor)(Etk_Window *window);
    void (*window_destructor)(Etk_Window *window);   
    void (*window_show)(Etk_Window *window);
@@ -78,12 +78,15 @@ struct _Etk_Engine
 };
 
 Etk_Bool etk_engine_init();
+void etk_engine_shutdown();
+
 Evas_List *etk_engine_list_get();
 Etk_Bool etk_engine_exists(const char *engine_name);
-Etk_Engine *etk_engine_load(const char *engine_name);
 Etk_Engine *etk_engine_get();
+
+Etk_Engine *etk_engine_load(const char *engine_name);
+void etk_engine_unload(Etk_Engine *engine);
 Etk_Bool etk_engine_inherit_from(Etk_Engine *engine, const char * inherit_name);
-void etk_engine_inheritence_set(Etk_Engine *inherit_to, Etk_Engine *inherit_from);
 
 void etk_engine_window_constructor(Etk_Window *window);
 void etk_engine_window_destructor(Etk_Window *window);
