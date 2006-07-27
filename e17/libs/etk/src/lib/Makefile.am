@@ -79,7 +79,8 @@ etk_types.h \
 etk_utils.h \
 etk_viewport.h \
 etk_widget.h \
-etk_window.h
+etk_window.h \
+etk_engine.h
 
 libetk_la_SOURCES = \
 etk_alignment.c \
@@ -144,6 +145,7 @@ etk_utils.c \
 etk_viewport.c \
 etk_widget.c \
 etk_window.c \
+etk_engine.c \
 $(ETKHEADERS)
 
 installed_headersdir = $(prefix)/include/etk

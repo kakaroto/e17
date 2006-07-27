@@ -3,8 +3,6 @@
 #define _ETK_WINDOW_H_
 
 #include <Ecore.h>
-#include <Ecore_Evas.h>
-#include <Ecore_X.h>
 #include "etk_toplevel_widget.h"
 #include "etk_types.h"
 
@@ -30,8 +28,7 @@ struct _Etk_Window
    /* Inherit from Etk_Toplevel_Widget */
    Etk_Toplevel_Widget toplevel_widget;
 
-   Ecore_Evas *ecore_evas;
-   Ecore_X_Window x_window;
+   void *engine_data;
    
    int width;
    int height;
@@ -41,7 +38,15 @@ struct _Etk_Window
    Etk_Bool center;
    Etk_Window *center_on_window;
    Etk_Bool modal;
-   Etk_Window *modal_for_window;   
+   Etk_Window *modal_for_window;
+
+   unsigned char sticky : 1;
+   
+   void (*move_cb)(Etk_Window *window);
+   void (*resize_cb)(Etk_Window *window);   
+   void (*focus_in_cb)(Etk_Window *window);
+   void (*focus_out_cb)(Etk_Window *window);
+   void (*delete_request_cb)(Etk_Window *window);   
 };
 
 Etk_Type *etk_window_type_get();
@@ -69,9 +74,11 @@ void etk_window_fullscreen(Etk_Window *window);
 void etk_window_unfullscreen(Etk_Window *window);
 Etk_Bool etk_window_is_fullscreen(Etk_Window *window);
 
-void etk_window_stick(Etk_Window *window);
-void etk_window_unstick(Etk_Window *window);
-Etk_Bool etk_window_is_sticky(Etk_Window *window);
+void etk_window_raise(Etk_Window *window);
+void etk_window_lower(Etk_Window *window);  
+
+void etk_window_sticky_set(Etk_Window *window, Etk_Bool on);
+Etk_Bool etk_window_sticky_get(Etk_Window *window);
 
 void etk_window_focus(Etk_Window *window);
 void etk_window_unfocus(Etk_Window *window);

@@ -33,6 +33,7 @@ extern "C" {
 #include "etk_scrolled_view.h"
 #include "etk_viewport.h"
 #include "etk_window.h"
+#include "etk_engine.h"   
 #include "etk_dialog.h"
 #include "etk_label.h"
 #include "etk_image.h"
@@ -71,7 +72,7 @@ extern "C" {
 #include "etk_message_dialog.h"
 #include "etk_iconbox.h"
 #include "etk_embed.h"
-
+   
 #ifdef __cplusplus
 }
 #endif

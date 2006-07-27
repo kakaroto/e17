@@ -22,6 +22,8 @@
 #define ETK_POPUP_WINDOW(obj)       (ETK_OBJECT_CAST((obj), ETK_POPUP_WINDOW_TYPE, Etk_Popup_Window))
 /** Check if the object is an Etk_Popup_Window */
 #define ETK_IS_POPUP_WINDOW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_POPUP_WINDOW_TYPE))
+/** Minimum popup time */
+#define ETK_POPUP_WINDOW_MIN_POP_TIME 400
 
 /**
  * @brief @widget The structure of a popup window
@@ -32,7 +34,18 @@ struct Etk_Popup_Window
    /* private: */
    /* Inherit from Etk_Window */
    Etk_Window window;
+   
+   void *engine_data;
 };
+
+typedef enum Etk_Popup_Window_Screen_Edge
+{
+   ETK_POPUP_WINDOW_NO_EDGE = 0,
+   ETK_POPUP_WINDOW_LEFT_EDGE = (1 << 0),
+   ETK_POPUP_WINDOW_RIGHT_EDGE = (1 << 1),
+   ETK_POPUP_WINDOW_BOTTOM_EDGE = (1 << 2),
+   ETK_POPUP_WINDOW_TOP_EDGE = (1 << 3)
+} Etk_Popup_Window_Screen_Edge;
 
 Etk_Type *etk_popup_window_type_get();
 

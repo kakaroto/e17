@@ -107,6 +107,9 @@ typedef struct _Etk_Tree_Row Etk_Tree_Row;
 typedef struct _Etk_Viewport Etk_Viewport;
 typedef struct _Etk_Widget Etk_Widget;
 typedef struct _Etk_Window Etk_Window;
+typedef struct _Etk_Engine Etk_Engine;
+
+typedef Etk_Engine *(*Etk_Engine_Constructor)(void);
 
 /**
  * @struct Etk_Size

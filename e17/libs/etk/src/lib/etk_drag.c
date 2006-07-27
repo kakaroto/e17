@@ -2,16 +2,11 @@
 #include "etk_drag.h"
 #include <stdlib.h>
 #include <string.h>
-#include <Ecore.h>
-#include <Ecore_Evas.h>
 #include "config.h"
-
-#if HAVE_ECORE_X
-#include <Ecore_X.h>
-#endif
 
 #include "etk_widget.h"
 #include "etk_window.h"
+#include "etk_engine.h"
 
 /**
  * @addtogroup Etk_Ddrag
@@ -23,16 +18,11 @@ enum _Etk_Drag_Propery_Id
    ETK_DRAG_PARENT_WIDGET_PROPERTY
 };
 
-Etk_Drag            *_etk_drag_widget = NULL;
-
-static Ecore_Event_Handler *_etk_drag_mouse_move_handler;
-static Ecore_Event_Handler *_etk_drag_mouse_up_handler;
+Etk_Drag *_etk_drag_widget = NULL;
 
 static void _etk_drag_constructor(Etk_Drag *drag);
 static void _etk_drag_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_drag_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static int  _etk_drag_mouse_up_cb(void *data, int type, void *event);
-static int  _etk_drag_mouse_move_cb(void *data, int type, void *event);
 
 /**
  * @brief Gets the type of an Etk_Drag
@@ -49,8 +39,7 @@ Etk_Type *etk_drag_type_get()
       etk_type_property_add(drag_type, "parent_widget", ETK_DRAG_PARENT_WIDGET_PROPERTY, ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
       
       drag_type->property_set = _etk_drag_property_set;
-      drag_type->property_get = _etk_drag_property_get;
-      
+      drag_type->property_get = _etk_drag_property_get;      
    }
    
    return drag_type;
@@ -86,17 +75,11 @@ void etk_drag_data_set(Etk_Drag *drag, void *data, int size)
 
 void etk_drag_begin(Etk_Drag *drag)
 {
-#if HAVE_ECORE_X   
    _etk_drag_widget = drag;
    
    etk_widget_drag_begin(drag->widget);
-   etk_widget_show_all(ETK_WIDGET(drag));   
-   ecore_evas_ignore_events_set((ETK_WINDOW(drag))->ecore_evas, 1);
-   ecore_x_dnd_types_set((ETK_WINDOW(drag))->x_window, drag->types, drag->num_types);
-   ecore_x_dnd_begin((ETK_WINDOW(drag))->x_window, drag->data, drag->data_size);
-   _etk_drag_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _etk_drag_mouse_move_cb, drag);
-   _etk_drag_mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, _etk_drag_mouse_up_cb, drag);
-#endif   
+   etk_widget_show_all(ETK_WIDGET(drag));
+   etk_engine_drag_begin(drag);
 }
 
 /**
@@ -134,7 +117,6 @@ Etk_Widget *etk_drag_parent_widget_get(Etk_Drag *drag)
 /* Initializes the members */
 static void _etk_drag_constructor(Etk_Drag *drag)
 {
-#if HAVE_ECORE_X   
    if (!drag)
      return;
    
@@ -148,8 +130,8 @@ static void _etk_drag_constructor(Etk_Drag *drag)
    etk_window_shaped_set(ETK_WINDOW(drag), ETK_TRUE);
    etk_window_skip_pager_hint_set(ETK_WINDOW(drag), ETK_TRUE);
    etk_window_skip_taskbar_hint_set(ETK_WINDOW(drag), ETK_TRUE);
-   ecore_x_dnd_aware_set((ETK_WINDOW(drag))->x_window, 1);
-#endif   
+   
+   etk_engine_drag_constructor(drag);    
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -186,36 +168,6 @@ static void _etk_drag_property_get(Etk_Object *object, int property_id, Etk_Prop
       default:
 	break;
      }
-}
-
-static int _etk_drag_mouse_up_cb(void *data, int type, void *event)
-{
-#if HAVE_ECORE_X   
-   Etk_Drag *drag;
-   
-   drag = data;
-   etk_widget_hide_all(ETK_WIDGET(drag));
-   ecore_event_handler_del(_etk_drag_mouse_move_handler);
-   ecore_event_handler_del(_etk_drag_mouse_up_handler);
-   ecore_x_dnd_drop();   
-   etk_widget_drag_end(ETK_WIDGET(drag));   
-   etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(drag->widget), ETK_POINTER_DEFAULT);
-#endif   
-   return 1;
-}
-
-static int _etk_drag_mouse_move_cb(void *data, int type, void *event)
-{
-#if HAVE_ECORE_X   
-   Ecore_X_Event_Mouse_Move *ev;
-   Etk_Drag *drag;
-   
-   drag = data;
-   ev = event;
-   
-   etk_window_move(ETK_WINDOW(drag), ev->root.x + 2, ev->root.y + 2);
-#endif   
-   return 1;
 }
 
 /** @} */

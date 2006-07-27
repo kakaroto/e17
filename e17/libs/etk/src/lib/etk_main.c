@@ -1,12 +1,9 @@
 /** @file etk_main.c */
 #include "etk_main.h"
 #include <locale.h>
+#include <limits.h>
+
 #include <Ecore.h>
-
-#if HAVE_ECORE_X
-#include <Ecore_X.h>
-#endif
-
 #include <Ecore_Job.h>
 #include <Ecore_Evas.h>
 #include <Evas.h>
@@ -20,6 +17,8 @@
 #include "etk_dnd.h"
 #include "etk_tooltips.h"
 #include "config.h"
+
+extern Etk_Engine *engine;
 
 /**
  * @addtogroup Etk_Main
@@ -48,7 +47,7 @@ static Ecore_Job *_etk_main_iterate_job = NULL;
  * @return Returns ETK_TRUE on success, ETK_FALSE on failure
  * @see etk_shutdown()
  */
-Etk_Bool etk_init()
+Etk_Bool etk_init(const char *engine_name)
 {
    if (_etk_main_initialized)
       return ETK_TRUE;
@@ -80,11 +79,34 @@ Etk_Bool etk_init()
       ETK_WARNING("Edje initialization failed!");
       return ETK_FALSE;
    }
+   
+   if(!etk_engine_init())
+   {
+      ETK_WARNING("Etk_Engine initialization failed!");
+      return ETK_FALSE;
+   }   
+         
+   if(etk_engine_exists(engine_name))
+   {
+      engine = etk_engine_load(engine_name);
+      if(!engine)
+      {
+	 ETK_WARNING("Etk can not load requested engine!");
+	 return ETK_FALSE;
+      }
+   }
+   else
+   {
+      ETK_WARNING("Etk can not load requested engine!");
+      return ETK_FALSE;      
+   }   
+   
    if (!etk_dnd_init())
    {
       ETK_WARNING("Etk_dnd initialization failed!");
       return ETK_FALSE;
    }
+      
    etk_theme_init();
    etk_tooltips_init();
    
@@ -92,7 +114,7 @@ Etk_Bool etk_init()
    setlocale(LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
-
+   
    _etk_main_initialized = ETK_TRUE;
    return ETK_TRUE;
 }
