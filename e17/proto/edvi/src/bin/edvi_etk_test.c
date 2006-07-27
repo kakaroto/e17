@@ -35,7 +35,7 @@ main (int argc, char *argv[])
     return -1;
   }
 
-  etk_init ();
+  etk_init ("ecore_evas_software_x11");
 
   dvi = etk_dvi_new ();
   etk_dvi_file_set (ETK_DVI (dvi), argv[1]);

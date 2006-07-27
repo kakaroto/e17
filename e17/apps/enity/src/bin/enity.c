@@ -594,7 +594,7 @@ Etk_Argument args[] = {
 
 int main(int argc, char **argv)
 {
-   etk_init();
+   etk_init("ecore_evas_software_x11");
       
    if(etk_arguments_parse(args, argc, argv) != ETK_ARGUMENT_RETURN_OK)
      {

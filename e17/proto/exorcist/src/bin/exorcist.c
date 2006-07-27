@@ -32,7 +32,7 @@ exo_init (Exorcist_Toolkit toolkit, int argc, char *argv[])
     break;
   case EXORCIST_TOOLKIT_ETK:
 #ifdef HAVE_TOOLKIT_ETK
-    if (!etk_init ()) exit (-1);
+    if (!etk_init ("ecore_evas_software_x11")) exit (-1);
 #else
     printf ("Etk toolkit is not installed\nExiting..");
     exit (-1);

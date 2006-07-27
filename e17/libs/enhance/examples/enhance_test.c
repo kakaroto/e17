@@ -33,7 +33,7 @@ int main(void)
    data = string1;
    
    enhance_init();
-   etk_init();
+   etk_init("ecore_evas_software_x11");
    
    en = enhance_new();      
    enhance_callback_data_set(en, "rip_only_clicked", &data);
@@ -44,9 +44,7 @@ int main(void)
    data2 = enhance_callback_data_get(en, "rip_only_clicked");
    *data2 = string2;
    
-   etk_main();
-   
-   etk_main_quit();
+   etk_main();   
    etk_shutdown();
    
    enhance_free(en);  
