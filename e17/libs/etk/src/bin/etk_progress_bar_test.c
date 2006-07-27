@@ -15,9 +15,7 @@ void etk_test_progress_bar_window_create(void *data)
    Etk_Widget *vbox;   
    Etk_Widget *pbar;
    Etk_Widget *pbar2;   
-   
-   etk_init();   
-   
+      
    if (win)
    {
       etk_widget_show_all(ETK_WIDGET(win));
