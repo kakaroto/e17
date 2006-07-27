@@ -193,6 +193,67 @@ void add_album_cb(Ewl_Widget *w, void *event, void *data)
  return;
 }
 
+void album_fd_cb(Ewl_Widget *w, void *event, void *data)
+{
+ char full_name[PATH_MAX];
+ Ewl_Dialog_Event *e;
+ e = event;
+ 
+ if (e->response == EWL_STOCK_CANCEL)
+ {
+  cancel(w, NULL, w);
+  w = NULL;
+  event = NULL;
+  data = NULL;
+  return;
+ }
+
+ if (e->response == EWL_STOCK_OK)
+ {
+  snprintf(full_name, PATH_MAX, "%s/%s", ewl_filedialog_directory_get(EWL_FILEDIALOG(w)), 
+					 ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w)));
+
+  m->icon = ewl_icon_new();
+  ewl_icon_label_set(EWL_ICON(m->icon), ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w)));
+  ewl_icon_image_set(EWL_ICON(m->icon), full_name, NULL);
+  ewl_icon_constrain_set(EWL_ICON(m->icon), 64);
+  ewl_object_alignment_set(EWL_OBJECT(m->icon), EWL_FLAG_ALIGN_CENTER);
+  ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), m->icon);
+  ewl_widget_show(m->icon); 
+ 
+  cancel(w, NULL, w);
+  w = NULL;
+  event = NULL;
+  data = NULL;
+  return;
+ }
+
+ w = NULL;
+ event = NULL;
+ data = NULL;
+ return;
+}
+
+void add_album_image_cb(Ewl_Widget *w, void *event, void *data)
+{
+ Ewl_Widget *fd;
+ 
+ fd = ewl_filedialog_new();
+ ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "png files", ".png");
+ ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "jpg files", ".jpg");
+ ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "jpeg files", ".jpeg");
+ ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW, cancel, fd);
+ ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, album_fd_cb, NULL);
+ ewl_object_size_request(EWL_OBJECT(fd), 400, 200);
+ ewl_filedialog_list_view_set(EWL_FILEDIALOG(fd), ewl_filelist_icon_view_get());
+ ewl_widget_show(fd);
+
+ w = NULL;
+ event = NULL;
+ data = NULL;
+ return;
+}
+
 void add_slideshow_cb(Ewl_Widget *w, void *event, void *data)
 {
  Ewl_Widget *win;

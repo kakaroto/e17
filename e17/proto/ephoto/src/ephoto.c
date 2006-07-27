@@ -107,6 +107,7 @@ main(int argc, char **argv)
 
  m->menu_item = ewl_menu_item_new();
  ewl_button_label_set(EWL_BUTTON(m->menu_item), "Add images to album");
+ ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, add_album_image_cb, NULL);
  ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
  ewl_object_fill_policy_set(EWL_OBJECT(m->menu_item), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->menu_item);

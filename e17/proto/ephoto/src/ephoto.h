@@ -10,7 +10,9 @@
 
 void destroy_cb(Ewl_Widget *w, void *event, void *data);
 void add_album_cb(Ewl_Widget *w, void *event, void *data);
+void add_album_image_cb(Ewl_Widget *w, void *event, void *data);
 void add_slideshow_cb(Ewl_Widget *w, void *event, void *data);
+void add_slideshow_image_cb(Ewl_Widget *w, void *event, void *data);
 void album_clicked_cb(Ewl_Widget *w, void *event, void *data);
 void slideshow_clicked_cb(Ewl_Widget *w, void *event, void *data);
 int populate_album_cb(void *NotUsed, int argc, char **argv, char **ColName);
