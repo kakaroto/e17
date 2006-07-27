@@ -55,6 +55,8 @@ static void _window_move_cb(Ecore_Evas *ecore_evas);
 static void _window_resize_cb(Ecore_Evas *ecore_evas);
 static void _window_focus_in_cb(Ecore_Evas *ecore_evas);
 static void _window_focus_out_cb(Ecore_Evas *ecore_evas);
+static void _window_sticky_cb(Ecore_Evas *ecore_evas);
+static void _window_unsticky_cb(Ecore_Evas *ecore_evas);
 static void _window_delete_request_cb(Ecore_Evas *ecore_evas);
 
 static Etk_Engine engine_info = {
@@ -144,6 +146,8 @@ static void _window_constructor(Etk_Window *window)
    ecore_evas_callback_resize_set(engine_data->ecore_evas, _window_resize_cb);
    ecore_evas_callback_focus_in_set(engine_data->ecore_evas, _window_focus_in_cb);
    ecore_evas_callback_focus_out_set(engine_data->ecore_evas, _window_focus_out_cb);
+   ecore_evas_callback_sticky_set(engine_data->ecore_evas, _window_sticky_cb);
+   ecore_evas_callback_unsticky_set(engine_data->ecore_evas, _window_unsticky_cb);
    ecore_evas_callback_delete_request_set(engine_data->ecore_evas, _window_delete_request_cb);
 }
 
@@ -449,6 +453,26 @@ static void _window_focus_out_cb(Ecore_Evas *ecore_evas)
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
      return;
    window->focus_out_cb(window);
+}
+
+/* Called when the window is made sticky */
+static void _window_sticky_cb(Ecore_Evas *ecore_evas)
+{
+   Etk_Window *window;
+   
+   if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
+     return;
+   window->sticky_cb(window);
+}
+
+/* Called when the window is made unsticky */
+static void _window_unsticky_cb(Ecore_Evas *ecore_evas)
+{
+   Etk_Window *window;
+   
+   if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
+     return;
+   window->unsticky_cb(window);
 }
 
 /* Called when the user wants to close the window */

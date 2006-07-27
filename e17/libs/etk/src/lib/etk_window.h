@@ -40,12 +40,12 @@ struct _Etk_Window
    Etk_Bool modal;
    Etk_Window *modal_for_window;
 
-   unsigned char sticky : 1;
-   
    void (*move_cb)(Etk_Window *window);
    void (*resize_cb)(Etk_Window *window);   
    void (*focus_in_cb)(Etk_Window *window);
    void (*focus_out_cb)(Etk_Window *window);
+   void (*sticky_cb)(Etk_Window *window);
+   void (*unsticky_cb)(Etk_Window *window);   
    void (*delete_request_cb)(Etk_Window *window);   
 };
 

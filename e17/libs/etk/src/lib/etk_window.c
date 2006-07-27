@@ -20,6 +20,8 @@ enum _Etk_Widget_Signal_Id
    ETK_WINDOW_RESIZE_SIGNAL,
    ETK_WINDOW_FOCUS_IN_SIGNAL,
    ETK_WINDOW_FOCUS_OUT_SIGNAL,
+   ETK_WINDOW_STICKY_SIGNAL,
+   ETK_WINDOW_UNSTICKY_SIGNAL,     
    ETK_WINDOW_DELETE_EVENT_SIGNAL,
    ETK_WINDOW_NUM_SIGNALS
 };
@@ -54,6 +56,8 @@ static void _etk_window_move_cb(Etk_Window *window);
 static void _etk_window_resize_cb(Etk_Window *window);
 static void _etk_window_focus_in_cb(Etk_Window *window);
 static void _etk_window_focus_out_cb(Etk_Window *window);
+static void _etk_window_sticky_cb(Etk_Window *window);
+static void _etk_window_unsticky_cb(Etk_Window *window);
 static void _etk_window_delete_request_cb(Etk_Window *window);
 
 static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
@@ -80,6 +84,8 @@ Etk_Type *etk_window_type_get()
       _etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL] = etk_signal_new("resize", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL] = etk_signal_new("focus_in", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL] = etk_signal_new("focus_out", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_window_signals[ETK_WINDOW_STICKY_SIGNAL] = etk_signal_new("sticky", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_window_signals[ETK_WINDOW_UNSTICKY_SIGNAL] = etk_signal_new("unsticky", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete_event", window_type, ETK_MEMBER_OFFSET(Etk_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
    
       etk_type_property_add(window_type, "title", ETK_WINDOW_TITLE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -546,6 +552,8 @@ static void _etk_window_constructor(Etk_Window *window)
    window->resize_cb = _etk_window_resize_cb;
    window->focus_in_cb = _etk_window_focus_in_cb;
    window->focus_out_cb = _etk_window_focus_out_cb;
+   window->sticky_cb = _etk_window_sticky_cb;
+   window->unsticky_cb = _etk_window_unsticky_cb;   
    window->delete_request_cb = _etk_window_delete_request_cb;
    
    ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
@@ -789,6 +797,18 @@ static void _etk_window_focus_out_cb(Etk_Window *window)
 {
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL], ETK_OBJECT(window), NULL);
    etk_object_notify(ETK_OBJECT(window), "focused");   
+}
+
+static void _etk_window_sticky_cb(Etk_Window *window)
+{
+   etk_signal_emit(_etk_window_signals[ETK_WINDOW_STICKY_SIGNAL], ETK_OBJECT(window), NULL);
+   etk_object_notify(ETK_OBJECT(window), "sticky");
+}
+
+static void _etk_window_unsticky_cb(Etk_Window *window)
+{
+   etk_signal_emit(_etk_window_signals[ETK_WINDOW_UNSTICKY_SIGNAL], ETK_OBJECT(window), NULL);
+   etk_object_notify(ETK_OBJECT(window), "sticky");
 }
 
 static void _etk_window_delete_request_cb(Etk_Window *window)

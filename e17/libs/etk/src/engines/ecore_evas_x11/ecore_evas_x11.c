@@ -938,7 +938,6 @@ static int _window_property_cb(void *data, int ev_type, void *event)
 {
    Etk_Window *window;
    Ecore_X_Event_Window_Property *ev;
-   int sticky;
    
    if (!(window = ETK_WINDOW(data)) || !(ev = event))
      return 1;
@@ -953,31 +952,17 @@ static int _window_property_cb(void *data, int ev_type, void *event)
       engine_data = window->engine_data;
       win = engine_data->x_window;      
       ecore_x_netwm_window_state_get(win, &state, &num);
-      
-      sticky = 0;      
-      
+            
       if (state)
       {
 	 for (i = 0; i < num; i++)
 	 {
 	    switch (state[i])
 	    {
-	       case ECORE_X_WINDOW_STATE_STICKY:
-	          if (window->sticky == 1)
-		    break;
-	          else
-		    etk_object_notify(ETK_OBJECT(window), "sticky");
-	          window->sticky = 1;
-	          sticky = 1;	          
-	          break;
+	     default:
+	       break;
 	    }
 	 }
-      }
-      
-      if (window->sticky == 1 && sticky == 0)
-      {
-	 window->sticky = 0;
-	 etk_object_notify(ETK_OBJECT(window), "sticky");
       }
    }
 }
