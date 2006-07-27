@@ -77,7 +77,6 @@ struct Etk_Textblock_Object_Line
 static void _etk_tb_constructor(Etk_Textblock *tb);
 static void _etk_tb_destructor(Etk_Textblock *tb);
 
-static void _etk_textblock_node_printf(Etk_Textblock_Node *node, int n_tabs);
 static Etk_Textblock_Node *_etk_textblock_node_new(Etk_Textblock_Node *parent, Etk_Textblock_Node *prev, Etk_Textblock_Node_Type node_type, Etk_Textblock_Tag_Type tag_type);
 static Etk_Textblock_Node *_etk_textblock_node_free(Etk_Textblock_Node *node);
 static void _etk_textblock_node_type_set(Etk_Textblock_Node *node, Etk_Textblock_Node_Type node_type, Etk_Textblock_Tag_Type tag_type);
@@ -89,7 +88,7 @@ static void _etk_textblock_tag_insert(Etk_Textblock *tb, Etk_Textblock_Iter *ite
 static Etk_Textblock_Node *_etk_textblock_paragraph_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
 static Etk_Textblock_Node *_etk_textblock_line_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
 static Etk_Textblock_Node *_etk_textblock_line_del(Etk_Textblock *tb, Etk_Textblock_Node *line_node);
-static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool markup, Etk_String *text);
+static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool markup, Etk_String *text, Etk_Textblock_Iter *start_iter, Etk_Textblock_Iter *end_iter);
 
 static void _etk_textblock_node_copy(Etk_Textblock_Node *dest, const Etk_Textblock_Node *src, Etk_Bool copy_text);
 static int _etk_textblock_node_compare(Etk_Textblock_Node *node1, Etk_Textblock_Node *node2);
@@ -170,7 +169,17 @@ static const char *_etk_tb_escapes[] =
 /**************************
  * Textblock's funcs
  **************************/
- 
+
+/**
+ * @internal
+ * @brief Shutdowns the textblock system.
+ * It justs frees the hash table used to store the results of etk_textblock_char_size_get()
+ */
+void etk_textblock_shutdown()
+{
+   
+}
+
 /**
  * @brief Gets the type of an Etk_Textblock
  * @return Returns the type of an Etk_Textblock
@@ -230,8 +239,8 @@ void etk_textblock_text_set(Etk_Textblock *tb, const char *text, Etk_Bool markup
  * @brief Gets the text of the textblock
  * @param tb a textblock
  * @param markup whether or not you want to have tags in the returned text
- * @return Returns a string containing the text of the textblock.
- * Once you no longer need the returned string, you should destroy it with etk_object_destroy()
+ * @return Returns a string containing the text of the textblock
+ * @note Once you no longer need the returned string, you should destroy it with etk_object_destroy()
  */
 Etk_String *etk_textblock_text_get(Etk_Textblock *tb, Etk_Bool markup)
 {
@@ -241,57 +250,40 @@ Etk_String *etk_textblock_text_get(Etk_Textblock *tb, Etk_Bool markup)
       return NULL;
    
    text = etk_string_new(NULL);
-   /* TODO: use etk_textblock_range_text_get() */
-   _etk_textblock_node_text_get(&tb->root, markup, text);
+   _etk_textblock_node_text_get(&tb->root, markup, text, NULL, NULL);
    
    return text;
 }
 
 /**
- * @brief Clears the textblock: removes all the text and all the tags
- * @param tb the textblock to clear
+ * @brief Gets the text of the textblock, between @a iter1 and @a iter2
+ * @param tb a textblock
+ * @param iter1 the first iterator
+ * @param iter2 the second_iterator
+ * @param markup whether or not you want to have tags in the returned text
+ * @return Returns a string containing the text of the textblock, between @a iter1 and @a iter2
+ * @note Once you no longer need the returned string, you should destroy it with etk_object_destroy()
+ * @note @a iter1 is not necessarily before @a iter2
  */
-void etk_textblock_clear(Etk_Textblock *tb)
+Etk_String *etk_textblock_range_text_get(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2, Etk_Bool markup)
 {
-   Evas_List *l;
-   Evas_Object *tbo;
-   Etk_Textblock_Object_SD *tbo_sd;
-   Etk_Textblock_Object_Line *line, *next;
-   Etk_Textblock_Node *node;
+   Etk_String *text;
+   int compare_res;
    
-   if (!tb)
-      return;
+   if (!tb || !iter1 || !iter2)
+      return NULL;
    
-   /* Frees the nodes */
-   while (tb->root.children)
-      _etk_textblock_node_free(tb->root.children);
+   compare_res = etk_textblock_iter_compare(iter1, iter2);
+   if (compare_res == 0)
+      return NULL;
    
-   /* Adds an empty line */
-   node = _etk_textblock_node_new(&tb->root, NULL, ETK_TEXTBLOCK_NODE_PARAGRAPH, ETK_TEXTBLOCK_TAG_P);
-   node = _etk_textblock_node_new(node, NULL, ETK_TEXTBLOCK_NODE_LINE, ETK_TEXTBLOCK_TAG_DEFAULT);
+   text = etk_string_new(NULL);
+   if (compare_res < 0)
+      _etk_textblock_node_text_get(&tb->root, markup, text, iter1, iter2);
+   else
+      _etk_textblock_node_text_get(&tb->root, markup, text, iter2, iter1);
    
-   /* Updates the textblock objects */
-   for (l = tb->evas_objects; l; l = l->next)
-   {
-      if (!(tbo = l->data) || !(tbo_sd = evas_object_smart_data_get(tbo)))
-         continue;
-      
-      for (line = tbo_sd->lines; line; line = next)
-      {
-         if (line->object)
-            evas_object_del(line->object);
-         next = line->next;
-         free(line);
-      }
-      tbo_sd->lines = NULL;
-      tbo_sd->last_line = NULL;
-      
-      _etk_textblock_object_line_add(tbo, node);
-   }
-   
-   /* Updates the iters */
-   for (l = tb->iters; l; l = l->next)
-      etk_textblock_iter_backward_start(l->data);
+   return text;
 }
 
 /**
@@ -557,6 +549,53 @@ void etk_textblock_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *iter, co
 }
 
 /**
+ * @brief Clears the textblock: removes all the text and all the tags
+ * @param tb the textblock to clear
+ */
+void etk_textblock_clear(Etk_Textblock *tb)
+{
+   Evas_List *l;
+   Evas_Object *tbo;
+   Etk_Textblock_Object_SD *tbo_sd;
+   Etk_Textblock_Object_Line *line, *next;
+   Etk_Textblock_Node *node;
+   
+   if (!tb)
+      return;
+   
+   /* Frees the nodes */
+   while (tb->root.children)
+      _etk_textblock_node_free(tb->root.children);
+   
+   /* Adds an empty line */
+   node = _etk_textblock_node_new(&tb->root, NULL, ETK_TEXTBLOCK_NODE_PARAGRAPH, ETK_TEXTBLOCK_TAG_P);
+   node = _etk_textblock_node_new(node, NULL, ETK_TEXTBLOCK_NODE_LINE, ETK_TEXTBLOCK_TAG_DEFAULT);
+   
+   /* Updates the textblock objects */
+   for (l = tb->evas_objects; l; l = l->next)
+   {
+      if (!(tbo = l->data) || !(tbo_sd = evas_object_smart_data_get(tbo)))
+         continue;
+      
+      for (line = tbo_sd->lines; line; line = next)
+      {
+         if (line->object)
+            evas_object_del(line->object);
+         next = line->next;
+         free(line);
+      }
+      tbo_sd->lines = NULL;
+      tbo_sd->last_line = NULL;
+      
+      _etk_textblock_object_line_add(tbo, node);
+   }
+   
+   /* Updates the iters */
+   for (l = tb->iters; l; l = l->next)
+      etk_textblock_iter_backward_start(l->data);
+}
+
+/**
  * @brief Deletes the char before the iterator
  * @param tb a textblock
  * @param iter the iterator where to delete the char
@@ -738,21 +777,6 @@ void etk_textblock_delete_range(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Et
    _etk_textblock_node_update(tb, start_line);
 }
 
-/**
- * @brief Prints the textblock hierarchy for debug
- * TODO: etk_textblock_printf(): Remove this function
- */
-void etk_textblock_printf(Etk_Textblock *tb)
-{
-   if (!tb)
-      return;
-   
-   printf("TEXTBLOCK PRINTF\n"
-          "----------------\n");
-   _etk_textblock_node_printf(&tb->root, -1);
-   printf("----------------\n\n");
-}
-
 /**************************
  * Textblock Iter's funcs
  **************************/
@@ -797,7 +821,8 @@ void etk_textblock_iter_free(Etk_Textblock_Iter *iter)
 }
 
 /**
- * @brief Sets the gravity of the iterator (TODOC: gravity)
+ * @brief Sets the gravity of the iterator.
+ * The gravity describes how the iterator should be placed when text is inserted at the iterator's position
  * @param iter an iterator
  * @param gravity the gravity to set to the iterator
  */
@@ -861,8 +886,8 @@ void etk_textblock_iter_forward_end(Etk_Textblock_Iter *iter)
 /**
  * @brief Moves the iterator backward by one character offset
  * @param iter an iterator
- * @return Returns ETK_FALSE if the movement was not possible (i.e. if the iterator already points
- * on the first character of the textblock)
+ * @return Returns ETK_FALSE if the movement was not possible (i.e. the iterator is already
+ * before the first character of the textblock)
  */
 Etk_Bool etk_textblock_iter_backward_char(Etk_Textblock_Iter *iter)
 {
@@ -905,7 +930,7 @@ Etk_Bool etk_textblock_iter_backward_char(Etk_Textblock_Iter *iter)
 /**
  * @brief Moves the iterator forward by one character offset
  * @param iter an iterator
- * @return Returns ETK_FALSE if the movement was not possible (i.e. if the iterator already points
+ * @return Returns ETK_FALSE if the movement was not possible (i.e. the iterator is already
  * after the last character of the textblock)
  */
 Etk_Bool etk_textblock_iter_forward_char(Etk_Textblock_Iter *iter)
@@ -937,7 +962,6 @@ Etk_Bool etk_textblock_iter_forward_char(Etk_Textblock_Iter *iter)
          else
          {
             iter->pos = 1;
-            /* TODO: Is this safe (the line may be empty?)?? */
             iter->index = evas_string_char_next_get(etk_string_get(next_text_node->text), 0, NULL);
          }
          _etk_textblock_iter_update(iter);
@@ -2000,7 +2024,7 @@ static Etk_Textblock_Node *_etk_textblock_line_del(Etk_Textblock *tb, Etk_Textbl
 }
 
 /* Gets recursively the text of the node */ 
-static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool markup, Etk_String *text)
+static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool markup, Etk_String *text, Etk_Textblock_Iter *start_iter, Etk_Textblock_Iter *end_iter)
 {
    if (!node || !text)
       return;
@@ -2130,7 +2154,7 @@ static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool mark
       Etk_Textblock_Node *n;
       
       for (n = node->children; n; n = n->next)
-         _etk_textblock_node_text_get(n, markup, text);
+         _etk_textblock_node_text_get(n, markup, text, start_iter, end_iter);
    }
    
    etk_string_append(text, etk_string_get(end_tag));

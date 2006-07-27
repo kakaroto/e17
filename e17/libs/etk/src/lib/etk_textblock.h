@@ -202,21 +202,22 @@ struct Etk_Textblock
 };
 
 /* Textblock's funcs */
+void etk_textblock_shutdown();
+
 Etk_Type *etk_textblock_type_get();
 Etk_Textblock *etk_textblock_new();
 
 void etk_textblock_text_set(Etk_Textblock *tb, const char *text, Etk_Bool markup);
 Etk_String *etk_textblock_text_get(Etk_Textblock *tb, Etk_Bool markup);
-void etk_textblock_clear(Etk_Textblock *tb);
+Etk_String *etk_textblock_range_text_get(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2, Etk_Bool markup);
 
 void etk_textblock_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *text, int length);
 void etk_textblock_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *markup_text, int length);
 
+void etk_textblock_clear(Etk_Textblock *tb);
 void etk_textblock_delete_before(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
 void etk_textblock_delete_after(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
 void etk_textblock_delete_range(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2);
-
-void etk_textblock_printf(Etk_Textblock *tb);
 
 /* Textblock iter's funcs */
 Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *tb);
