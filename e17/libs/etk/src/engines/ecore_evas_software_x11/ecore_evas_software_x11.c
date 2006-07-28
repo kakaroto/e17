@@ -1,17 +1,11 @@
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <Evas.h>
 #include <Ecore_Evas.h>
-#include <Ecore_X.h>
-#include <Ecore_X_Cursor.h>
 
 #include "etk_types.h"
-#include "etk_dnd.h"
 #include "etk_engine.h"
+#include "etk_window.h"
 #include "etk_utils.h"
-#include "etk_toplevel_widget.h"
-#include "etk_main.h"
 
 #include "Etk_Engine_Ecore_Evas.h"
 #include "Etk_Engine_Ecore_Evas_X11.h"
@@ -24,9 +18,6 @@ typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
 /* General engine functions */
 Etk_Engine *engine_open();
 
-static Etk_Bool _engine_init();
-static void _engine_shutdown();
-
 /* Etk_Window functions */
 static void _window_constructor(Etk_Window *window);
 
@@ -36,7 +27,7 @@ static Etk_Engine engine_info = {
    NULL, /* engine name */
    NULL, /* super (parent) engine */
    NULL, /* DL handle */
-     
+   
    NULL, /* engine_init */
    NULL, /* engine_shutdown */
    
@@ -78,27 +69,32 @@ static Etk_Engine engine_info = {
    NULL, /* window_dnd_aware_set */
    NULL, /* window_dnd_aware_get */
    NULL, /* window_pointer_set */
-
+   
    NULL, /* popup_window_constructor */
    NULL, /* popup_window_popup_at_xy */
    NULL, /* popup_window_popup */
    NULL, /* popup_window_popdown */
    NULL, /* popup_window_popped_get */
-     
+   
    NULL, /* drag_constructor */
    NULL, /* drag_begin */
-     
+   
    NULL, /* dnd_init */
    NULL, /* dnd_shutdown */
-     
+   
    NULL, /* clipboard_text_request */
    NULL, /* clipboard_text_set */
-     
+   
    NULL, /* selection_text_request */
    NULL, /* selection_text_set */
    NULL  /* selection_clear */
 };
 
+/**************************
+ *
+ * Engine general functions
+ *
+ **************************/
 
 Etk_Engine *engine_open()
 {
@@ -107,6 +103,12 @@ Etk_Engine *engine_open()
    etk_engine_inherit_from(&engine_info, "ecore_evas_x11");
    return &engine_info;
 }
+
+/**************************
+ *
+ * Etk_Window's functions
+ *
+ **************************/
 
 static void _window_constructor(Etk_Window *window)
 {
@@ -117,7 +119,7 @@ static void _window_constructor(Etk_Window *window)
 
    engine_data = malloc(sizeof(Etk_Engine_Window_Data));
    window->engine_data = engine_data;   
-   ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
+   ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
    engine_data->x_window = ecore_evas_software_x11_window_get(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas);
    engine_info.super->window_constructor(window);   
 }

@@ -195,6 +195,8 @@ void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
  */
 void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window)
 {
+   if (!window_to_center)
+      return;
    etk_engine_window_center_on_window(window_to_center, window);
 }
 
@@ -204,16 +206,20 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
  */
 void etk_window_move_to_mouse(Etk_Window *window)
 {
+   if (!window)
+      return;
    etk_engine_window_move_to_mouse(window);
 }
 
 /**
  * @brief Makes a window modal for another window
  * @param window_to_modal the window to make modal
- * @param window the window on which @a window_to_model will modal'ed on
+ * @param window the window on which @a window_to_modal will modal'ed on
  */
 void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
+   if (window_to_modal)
+      return;
    etk_engine_window_modal_for_window(window_to_modal, window);
 }
 
@@ -393,7 +399,6 @@ void etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped)
    if (!window)
       return;
    etk_engine_window_shaped_set(window, shaped);
-   etk_object_notify(ETK_OBJECT(window), "shaped");
 }
 
 /**
@@ -469,7 +474,8 @@ Etk_Bool etk_window_dnd_aware_get(Etk_Window *window)
 }
 
 /**
- * @brief A utility function to use as a callback for the "delete_event" signal. It will hide the window and return ETK_TRUE to prevent the program to quit
+ * @brief A utility function to use as a callback for the "delete_event" signal.
+ * It will hide the window and return ETK_TRUE to prevent the program from quitting
  * @param window the window to hide
  * @param data the data passed when the signal is emitted - unused
  * @return Return ETK_TRUE so the the program won't quit

@@ -23,7 +23,7 @@
 typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
 static Ecore_Event_Handler *_window_property_handler = NULL;
 static int _window_property_cb(void *data, int ev_type, void *ev);
-    
+
 /* Engine specific data for Etk_Popup_Window */
 static Ecore_X_Window _etk_popup_window_input_window = 0;
 static Ecore_Event_Handler *_popup_window_key_down_handler = NULL;

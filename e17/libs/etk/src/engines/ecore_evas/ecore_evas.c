@@ -122,6 +122,12 @@ static Etk_Engine engine_info = {
    NULL  /* selection_clear */     
 };
 
+/**************************
+ *
+ * General engine functions
+ *
+ **************************/
+
 Etk_Engine *engine_open()
 {
    engine_info.engine_data = NULL;
@@ -143,6 +149,12 @@ static void _engine_shutdown()
 {
    ecore_evas_shutdown();
 }
+
+/**************************
+ *
+ * Etk_Window's functions
+ *
+ **************************/
 
 static void _window_constructor(Etk_Window *window)
 {
@@ -378,7 +390,8 @@ static void _window_shaped_set(Etk_Window *window, Etk_Bool shaped)
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;
-   ecore_evas_shaped_set(engine_data->ecore_evas, shaped);   
+   ecore_evas_shaped_set(engine_data->ecore_evas, shaped);
+   etk_object_notify(ETK_OBJECT(window), "shaped");
 }
 
 static Etk_Bool _window_shaped_get(Etk_Window *window)

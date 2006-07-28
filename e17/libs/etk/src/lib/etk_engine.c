@@ -228,6 +228,10 @@ Etk_Bool etk_engine_inherit_from(Etk_Engine *engine, const char *inherit_name)
  *
  **************************/
 
+/**
+ * @brief Calls the engine's method to initialize a window
+ * @param window a window
+ */
 void etk_engine_window_constructor(Etk_Window *window)
 {
    if (!_engine || !_engine->window_constructor)
@@ -235,6 +239,10 @@ void etk_engine_window_constructor(Etk_Window *window)
    _engine->window_constructor(window);
 }
 
+/**
+ * @brief Calls the engine's method to destroy a window
+ * @param window a window
+ */
 void etk_engine_window_destructor(Etk_Window *window)
 {
    if (!_engine || !_engine->window_destructor)
@@ -242,6 +250,10 @@ void etk_engine_window_destructor(Etk_Window *window)
    _engine->window_destructor(window);
 }
 
+/**
+ * @brief Calls the engines's method to show a window
+ * @param window a window
+ */
 void etk_engine_window_show(Etk_Window *window)
 {
    if (!_engine || !_engine->window_show)
@@ -249,6 +261,10 @@ void etk_engine_window_show(Etk_Window *window)
    _engine->window_show(window);
 }
 
+/**
+ * @brief Calls the engines's method to hide a window
+ * @param window a window
+ */
 void etk_engine_window_hide(Etk_Window *window)
 {
    if (!_engine || !_engine->window_hide)
@@ -256,6 +272,11 @@ void etk_engine_window_hide(Etk_Window *window)
    _engine->window_hide(window);
 }
 
+/**
+ * @brief Calls the engines's method to get the evas of a window
+ * @param window a window
+ * @return Returns the evas of the window, or NULL on failure
+ */
 Evas *etk_engine_window_evas_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_evas_get)
@@ -263,6 +284,11 @@ Evas *etk_engine_window_evas_get(Etk_Window *window)
    return _engine->window_evas_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set the title of a window
+ * @param window a window
+ * @param title the title to set to the window
+ */
 void etk_engine_window_title_set(Etk_Window *window, const char *title)
 {
    if (!_engine || !_engine->window_title_set)
@@ -270,6 +296,11 @@ void etk_engine_window_title_set(Etk_Window *window, const char *title)
    _engine->window_title_set(window, title);
 }
 
+/**
+ * @brief Calls the engines's method to get the title of a window
+ * @param window a window
+ * @return Returns the title of the window, or NULL on failure
+ */
 const char *etk_engine_window_title_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_title_get)
@@ -277,6 +308,12 @@ const char *etk_engine_window_title_get(Etk_Window *window)
    return _engine->window_title_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set the window name and the window class of a window
+ * @param window a window
+ * @param window_name the window name to set
+ * @param window_class the window class to set
+ */
 void etk_engine_window_wmclass_set(Etk_Window *window, const char *window_name, const char *window_class)
 {
    if (!_engine || !_engine->window_wmclass_set)
@@ -284,6 +321,12 @@ void etk_engine_window_wmclass_set(Etk_Window *window, const char *window_name, 
    _engine->window_wmclass_set(window, window_name, window_class);
 }
 
+/**
+ * @brief Calls the engines's method to move a window
+ * @param window a window
+ * @param x the x position
+ * @param y the y position
+ */
 void etk_engine_window_move(Etk_Window *window, int x, int y)
 {
    if (!_engine || !_engine->window_move)
@@ -291,6 +334,12 @@ void etk_engine_window_move(Etk_Window *window, int x, int y)
    _engine->window_move(window, x, y);
 }
 
+/**
+ * @brief Calls the engines's method to resize a window
+ * @param window a window
+ * @param w the new width of the window
+ * @param h the new height of the window
+ */
 void etk_engine_window_resize(Etk_Window *window, int w, int h)
 {
    if (!_engine || !_engine->window_resize)
@@ -298,6 +347,12 @@ void etk_engine_window_resize(Etk_Window *window, int w, int h)
    _engine->window_resize(window, w, h);
 }
 
+/**
+ * @brief Calls the engines's method to set the minimum size of a window
+ * @param window a window
+ * @param w the minimum width of the window
+ * @param h the minimum height of the window
+ */
 void etk_engine_window_size_min_set(Etk_Window *window, int w, int h)
 {
    if (!_engine || !_engine->window_size_min_set)
@@ -305,6 +360,14 @@ void etk_engine_window_size_min_set(Etk_Window *window, int w, int h)
    _engine->window_size_min_set(window, w, h);
 }
 
+/**
+ * @brief Calls the engines's method to get the geometry of a window
+ * @param window a window
+ * @param x the location where to store the x position of the window
+ * @param y the location where to store the y position of the window
+ * @param w the location where to store the width of the window
+ * @param h the location where to store the height of the window
+ */
 void etk_engine_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
 {
    if (!_engine || !_engine->window_geometry_get)
