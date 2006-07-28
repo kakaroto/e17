@@ -520,7 +520,6 @@ _slide_get_bg_count(void *data)
 
    ecore_list_destroy(dirListing);
 
-   inst->bg_list = ecore_file_ls(ci->dir);
    ecore_list_goto_first(inst->bg_list);
    while ((item = (char *)ecore_list_next(inst->bg_list)) != NULL)
      inst->bg_count++;
