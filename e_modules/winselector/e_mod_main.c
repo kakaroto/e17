@@ -40,7 +40,6 @@ static void _win_menu_free_hook(void *obj);
 static void _win_menu_item_create(E_Border *bd, E_Menu *m, Instance *inst);
 static int _window_cb_focus_in(void *data, int type, void *event);
 static int _window_cb_focus_out(void *data, int type, void *event);
-static int _window_cb_bd_remove(void *data, int type, void *event);
 static int _window_cb_icon_change(void *data, int type, void *event);
 static void _focus_in(E_Border *bd, Instance *inst);
 static void _focus_out(Instance *inst);
@@ -79,8 +78,6 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 	(ECORE_X_EVENT_WINDOW_FOCUS_IN, _window_cb_focus_in, inst));
   handlers = evas_list_append (handlers, ecore_event_handler_add
 	(ECORE_X_EVENT_WINDOW_FOCUS_OUT, _window_cb_focus_out, inst));
-  handlers = evas_list_append (handlers, ecore_event_handler_add
-	(E_EVENT_BORDER_REMOVE, _window_cb_bd_remove, inst));
   handlers = evas_list_append (handlers, ecore_event_handler_add
 	(E_EVENT_BORDER_ICON_CHANGE, _window_cb_icon_change, inst));
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
@@ -296,7 +293,6 @@ _win_menu_pre_cb(void *data, E_Menu *m)
 static void
 _win_menu_item_create(E_Border *bd, E_Menu *m, Instance *inst)
 {
-   E_App *a;
    Evas_Object *icon;
    E_Menu_Item *mi;
    const char *title;
@@ -314,13 +310,7 @@ _win_menu_item_create(E_Border *bd, E_Menu *m, Instance *inst)
    e_menu_item_callback_set(mi, _win_menu_item_cb, bd);
    if (!bd->iconic) e_menu_item_toggle_set(mi, 1);
    icon = e_border_icon_add(bd, evas_object_evas_get(inst->o_button));
-   a = bd->app;
-   if (a)
-     {
-	if (!((a->icon_class) && 
-		 (e_util_menu_item_edje_icon_list_set(mi, a->icon_class))))
-	  e_menu_item_icon_edje_set(mi, a->path, "icon");
-     }
+   e_menu_item_icon_object_set(mi, icon);
 }
 
 static void 
@@ -407,21 +397,6 @@ static int _window_cb_focus_out(void *data, int type, void *event)
 
    _focus_out(inst);
 
-   return 1;
-}
-
-static int
-_window_cb_bd_remove(void *data, int type, void *event)
-{
-   E_Event_Border_Remove *ev;
-   E_Border *bd;
-   Instance *inst;
-
-   ev = event;
-   inst = data;
-   if (!(bd = ev->border)) return 1;
-
-   _focus_out(inst);
    return 1;
 }
 
