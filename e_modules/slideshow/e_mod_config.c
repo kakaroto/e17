@@ -4,6 +4,7 @@
 struct _E_Config_Dialog_Data
 {
   int disable_timer;
+  int random_order;
   double poll_time;
   char *dir;
 };
@@ -46,6 +47,7 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 
   cfdata->poll_time = ci->poll_time;
   cfdata->disable_timer = ci->disable_timer;
+  cfdata->random_order = ci->random_order;
   if (ci->dir)
     cfdata->dir = strdup (ci->dir);
   else
@@ -91,8 +93,8 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
     e_widget_check_add (evas, D_ ("Disable Timer"), &(cfdata->disable_timer));
   e_widget_framelist_object_append (of, ob);
   ob =
-    e_widget_slider_add (evas, 1, 0, D_ ("%3.0f seconds"), 5.0, 60.0, 1.0, 0,
-			 &(cfdata->poll_time), NULL, 200);
+ e_widget_slider_add (evas, 1, 0, D_ ("%3.0f seconds"), 5.0, 300.0, 1.0, 0,
+ 			 &(cfdata->poll_time), NULL, 200);
   e_widget_framelist_object_append (of, ob);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
@@ -103,6 +105,11 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   ob = e_widget_entry_add (evas, &cfdata->dir);
   e_widget_table_object_append (ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
   e_widget_framelist_object_append (of, ot);
+  e_widget_list_object_append (o, of, 1, 1, 0.5);
+
+  of = e_widget_framelist_add (evas, D_ ("Extra"), 0);
+  ob = e_widget_check_add (evas, D_ ("Randomize order"), &(cfdata->random_order));
+  e_widget_framelist_object_append (of, ob);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
   return o;
@@ -117,6 +124,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   ci = cfd->data;
   ci->poll_time = cfdata->poll_time;
   ci->disable_timer = cfdata->disable_timer;
+ci->random_order = cfdata->random_order;
 
   if (ci->dir)
     evas_stringshare_del (ci->dir);

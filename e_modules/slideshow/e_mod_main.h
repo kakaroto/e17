@@ -20,6 +20,7 @@ struct _Config_Item
    const char *id;
 
    int disable_timer;
+   int random_order;
    double poll_time;
    const char *dir;
 };
