@@ -44,8 +44,7 @@ struct _Etk_Window
    void (*resize_cb)(Etk_Window *window);   
    void (*focus_in_cb)(Etk_Window *window);
    void (*focus_out_cb)(Etk_Window *window);
-   void (*sticky_cb)(Etk_Window *window);
-   void (*unsticky_cb)(Etk_Window *window);   
+   void (*sticky_changed_cb)(Etk_Window *window);  
    void (*delete_request_cb)(Etk_Window *window);   
 };
 
@@ -61,29 +60,23 @@ void etk_window_resize(Etk_Window *window, int w, int h);
 void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
 void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window);
 void etk_window_move_to_mouse(Etk_Window *window);
-
-void etk_window_iconify(Etk_Window *window);
-void etk_window_deiconify(Etk_Window *window);
-Etk_Bool etk_window_is_iconified(Etk_Window *window);
-
-void etk_window_maximize(Etk_Window *window);
-void etk_window_unmaximize(Etk_Window *window);
-Etk_Bool etk_window_is_maximized(Etk_Window *window);
-
-void etk_window_fullscreen(Etk_Window *window);
-void etk_window_unfullscreen(Etk_Window *window);
-Etk_Bool etk_window_is_fullscreen(Etk_Window *window);
+void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window);
 
 void etk_window_raise(Etk_Window *window);
-void etk_window_lower(Etk_Window *window);  
+void etk_window_lower(Etk_Window *window);
 
-void etk_window_sticky_set(Etk_Window *window, Etk_Bool on);
+void etk_window_iconified_set(Etk_Window *window, Etk_Bool iconified);
+Etk_Bool etk_window_iconified_get(Etk_Window *window);
+void etk_window_maximized_set(Etk_Window *window, Etk_Bool maximized);
+Etk_Bool etk_window_maximized_get(Etk_Window *window);
+void etk_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen);
+Etk_Bool etk_window_fullscreen_get(Etk_Window *window);
+
+void etk_window_focused_set(Etk_Window *window, Etk_Bool focused);
+Etk_Bool etk_window_focused_get(Etk_Window *window);
+
+void etk_window_sticky_set(Etk_Window *window, Etk_Bool sticky);
 Etk_Bool etk_window_sticky_get(Etk_Window *window);
-
-void etk_window_focus(Etk_Window *window);
-void etk_window_unfocus(Etk_Window *window);
-Etk_Bool etk_window_is_focused(Etk_Window *window);
-
 void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
 Etk_Bool etk_window_decorated_get(Etk_Window *window);
 void etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped);
@@ -95,6 +88,8 @@ void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint
 Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window);
 
 void etk_window_dnd_aware_set(Etk_Window *window, Etk_Bool on);
+Etk_Bool etk_window_dnd_aware_get(Etk_Window *window);
+
 
 Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data);
 

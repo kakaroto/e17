@@ -55,22 +55,18 @@ static Etk_Engine engine_info = {
    NULL, /* window_center_on_window */
    NULL, /* window_move_to_mouse */
    NULL, /* window_modal_for_window */
-   NULL, /* window_iconify */
-   NULL, /* window_deiconify */
-   NULL, /* window_is_iconified */
-   NULL, /* window_maximize */
-   NULL, /* window_unmaximize */
-   NULL, /* window_is_maximized */
-   NULL, /* window_fullscreen */
-   NULL, /* window_unfullscreen */
-   NULL, /* window_is_fullscreen */
+   NULL, /* window_iconified_set */
+   NULL, /* window_iconified_get */
+   NULL, /* window_maximized_set */
+   NULL, /* window_maximized_get */
+   NULL, /* window_fullscreen_set */
+   NULL, /* window_fullscreen_get */
    NULL, /* window_raise */
    NULL, /* window_lower */
    NULL, /* window_sticky_set */
    NULL, /* window_sticky_get */
-   NULL, /* window_focus */
-   NULL, /* window_unfocus */
-   NULL, /* window_if_focised */
+   NULL, /* window_focused_set */
+   NULL, /* window_focused_get */
    NULL, /* window_decorated_set */
    NULL, /* window_decorated_get */
    NULL, /* window_shaped_set */
@@ -80,6 +76,7 @@ static Etk_Engine engine_info = {
    NULL, /* window_skip_pager_hint_set */
    NULL, /* window_skip_pager_hint_get */
    NULL, /* window_dnd_aware_set */
+   NULL, /* window_dnd_aware_get */
    NULL, /* window_pointer_set */
 
    NULL, /* popup_window_constructor */

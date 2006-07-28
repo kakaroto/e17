@@ -333,67 +333,46 @@ void etk_engine_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window 
    _engine->window_modal_for_window(window_to_modal, window);
 }
 
-void etk_engine_window_iconify(Etk_Window *window)
+void etk_engine_window_iconified_set(Etk_Window *window, Etk_Bool iconified)
 {
-   if (!_engine || !_engine->window_iconify)
-      return;   
-   _engine->window_iconify(window);
+   if (!_engine || !_engine->window_iconified_set)
+      return;
+   _engine->window_iconified_set(window, iconified);
 }
 
-void etk_engine_window_deiconify(Etk_Window *window)
+Etk_Bool etk_engine_window_iconified_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_deiconify)
-      return;   
-   _engine->window_deiconify(window);
-}
-
-Etk_Bool etk_engine_window_is_iconified(Etk_Window *window)
-{
-   if (!_engine || !_engine->window_is_iconified)
+   if (!_engine || !_engine->window_iconified_get)
       return ETK_FALSE;
-   return _engine->window_is_iconified(window);
+   return _engine->window_iconified_get(window);
 }
 
-void etk_engine_window_maximize(Etk_Window *window)
+void etk_engine_window_maximized_set(Etk_Window *window, Etk_Bool maximized)
 {
-   if (!_engine || !_engine->window_maximize)
-      return;   
-   _engine->window_maximize(window);
+   if (!_engine || !_engine->window_maximized_set)
+      return;
+   _engine->window_maximized_set(window, maximized);
 }
 
-void etk_engine_window_unmaximize(Etk_Window *window)
+Etk_Bool etk_engine_window_maximized_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_unmaximize)
-      return;   
-   _engine->window_unmaximize(window);
-}
-
-Etk_Bool etk_engine_window_is_maximized(Etk_Window *window)
-{
-   if (!_engine || !_engine->window_is_maximized)
+   if (!_engine || !_engine->window_maximized_get)
       return ETK_FALSE;   
-   return _engine->window_is_maximized(window);
+   return _engine->window_maximized_get(window);
 }
 
-void etk_engine_window_fullscreen(Etk_Window *window)
+void etk_engine_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen)
 {
-   if (!_engine || !_engine->window_fullscreen)
+   if (!_engine || !_engine->window_fullscreen_set)
       return;   
-   _engine->window_fullscreen(window);
+   _engine->window_fullscreen_set(window, fullscreen);
 }
 
-void etk_engine_window_unfullscreen(Etk_Window *window)
+Etk_Bool etk_engine_window_fullscreen_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_unfullscreen)
-      return;   
-   _engine->window_unfullscreen(window);
-}
-
-Etk_Bool etk_engine_window_is_fullscreen(Etk_Window *window)
-{
-   if (!_engine || !_engine->window_is_fullscreen)
-      return ETK_FALSE;   
-   return _engine->window_is_fullscreen(window);
+   if (!_engine || !_engine->window_fullscreen_get)
+      return ETK_FALSE;
+   return _engine->window_fullscreen_get(window);
 }
 
 void etk_engine_window_raise(Etk_Window *window)
@@ -410,11 +389,11 @@ void etk_engine_window_lower(Etk_Window *window)
    _engine->window_lower(window);
 }
 
-void etk_engine_window_sticky_set(Etk_Window *window, Etk_Bool on)
+void etk_engine_window_sticky_set(Etk_Window *window, Etk_Bool sticky)
 {
    if (!_engine || !_engine->window_sticky_set)
       return;   
-   _engine->window_sticky_set(window, on);
+   _engine->window_sticky_set(window, sticky);
 }
 
 Etk_Bool etk_engine_window_sticky_get(Etk_Window *window)
@@ -424,25 +403,18 @@ Etk_Bool etk_engine_window_sticky_get(Etk_Window *window)
    return _engine->window_sticky_get(window);
 }
 
-void etk_engine_window_focus(Etk_Window *window)
+void etk_engine_window_focused_set(Etk_Window *window, Etk_Bool focused)
 {
-   if (!_engine || !_engine->window_focus)
+   if (!_engine || !_engine->window_focused_set)
       return;   
-   _engine->window_focus(window);
+   _engine->window_focused_set(window, focused);
 }
 
-void etk_engine_window_unfocus(Etk_Window *window)
+Etk_Bool etk_engine_window_focused_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_unfocus)
-      return;   
-   _engine->window_unfocus(window);
-}
-
-Etk_Bool etk_engine_window_is_focused(Etk_Window *window)
-{
-   if (!_engine || !_engine->window_is_focused)
+   if (!_engine || !_engine->window_focused_get)
       return ETK_FALSE;   
-   return _engine->window_is_focused(window);
+   return _engine->window_focused_get(window);
 }
 
 void etk_engine_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
@@ -508,11 +480,18 @@ void etk_engine_window_dnd_aware_set(Etk_Window *window, Etk_Bool on)
    _engine->window_dnd_aware_set(window, on);
 }
 
-void etk_engine_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
+Etk_Bool etk_engine_window_dnd_aware_get(Etk_Window *window)
+{
+   if (!_engine || !_engine->window_dnd_aware_get)
+      return ETK_FALSE;   
+   return _engine->window_dnd_aware_get(window);
+}
+
+void etk_engine_window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type)
 {
    if (!_engine || !_engine->window_pointer_set)
       return;   
-   _engine->window_pointer_set(toplevel_widget, pointer_type);
+   _engine->window_pointer_set(window, pointer_type);
 }
 
 void etk_engine_popup_window_constructor(Etk_Popup_Window *popup_window)
@@ -525,7 +504,7 @@ void etk_engine_popup_window_constructor(Etk_Popup_Window *popup_window)
 void etk_engine_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 {
    if (!_engine || !_engine->popup_window_popup_at_xy)
-      return;   
+      return;
    _engine->popup_window_popup_at_xy(popup_window, x, y);
 }
 
@@ -642,22 +621,18 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(window_center_on_window);
    INHERIT(window_move_to_mouse);
    INHERIT(window_modal_for_window);
-   INHERIT(window_iconify);
-   INHERIT(window_deiconify);
-   INHERIT(window_is_iconified);
-   INHERIT(window_maximize);
-   INHERIT(window_unmaximize);
-   INHERIT(window_is_maximized);
-   INHERIT(window_fullscreen);
-   INHERIT(window_unfullscreen);
-   INHERIT(window_is_fullscreen);
+   INHERIT(window_iconified_set);
+   INHERIT(window_iconified_get);
+   INHERIT(window_maximized_set);
+   INHERIT(window_maximized_get);
+   INHERIT(window_fullscreen_set);
+   INHERIT(window_fullscreen_get);
    INHERIT(window_raise);
    INHERIT(window_lower);   
    INHERIT(window_sticky_set);
    INHERIT(window_sticky_get);
-   INHERIT(window_focus);
-   INHERIT(window_unfocus);
-   INHERIT(window_is_focused);
+   INHERIT(window_focused_set);
+   INHERIT(window_focused_get);
    INHERIT(window_decorated_set);
    INHERIT(window_decorated_get);
    INHERIT(window_shaped_set);
@@ -667,6 +642,7 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(window_skip_pager_hint_set);
    INHERIT(window_skip_pager_hint_get);
    INHERIT(window_dnd_aware_set);
+   INHERIT(window_dnd_aware_get);
    INHERIT(window_pointer_set);
    
    INHERIT(popup_window_constructor);

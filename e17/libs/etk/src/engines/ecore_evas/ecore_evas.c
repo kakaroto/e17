@@ -28,22 +28,18 @@ static void _window_move(Etk_Window *window, int x, int y);
 static void _window_resize(Etk_Window *window, int w, int h);
 static void _window_size_min_set(Etk_Window *window, int w, int h);
 static void _window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
-static void _window_iconify(Etk_Window *window);
-static void _window_deiconify(Etk_Window *window);
-static Etk_Bool _window_is_iconified(Etk_Window *window);
-static void _window_maximize(Etk_Window *window);
-static void _window_unmaximize(Etk_Window *window);
-static Etk_Bool _window_is_maximized(Etk_Window *window);
-static void _window_fullscreen(Etk_Window *window);
-static void _window_unfullscreen(Etk_Window *window);
-static Etk_Bool _window_is_fullscreen(Etk_Window *window);
+static void _window_iconified_set(Etk_Window *window, Etk_Bool iconified);
+static Etk_Bool _window_iconified_get(Etk_Window *window);
+static void _window_maximized_set(Etk_Window *windo, Etk_Bool maximized);
+static Etk_Bool _window_maximized_get(Etk_Window *window);
+static void _window_fullscreen_set(Etk_Window *window, Etk_Bool focused);
+static Etk_Bool _window_fullscreen_get(Etk_Window *window);
 static void _window_raise(Etk_Window *window);
 static void _window_lower(Etk_Window *window);
 static void _window_sticky_set(Etk_Window *window, Etk_Bool on);
 static Etk_Bool _window_sticky_get(Etk_Window *window);
-static void _window_focus(Etk_Window *window);
-static void _window_unfocus(Etk_Window *window);  
-static Etk_Bool _window_is_focused(Etk_Window *window);
+static void _window_focused_set(Etk_Window *window, Etk_Bool focused);
+static Etk_Bool _window_focused_get(Etk_Window *window);
 static void _window_decorated_set(Etk_Window *window, Etk_Bool decorated);
 static Etk_Bool _window_decorated_get(Etk_Window *window);
 static void _window_shaped_set(Etk_Window *window, Etk_Bool shaped);  
@@ -54,8 +50,7 @@ static void _window_move_cb(Ecore_Evas *ecore_evas);
 static void _window_resize_cb(Ecore_Evas *ecore_evas);
 static void _window_focus_in_cb(Ecore_Evas *ecore_evas);
 static void _window_focus_out_cb(Ecore_Evas *ecore_evas);
-static void _window_sticky_cb(Ecore_Evas *ecore_evas);
-static void _window_unsticky_cb(Ecore_Evas *ecore_evas);
+static void _window_sticky_changed_cb(Ecore_Evas *ecore_evas);
 static void _window_delete_request_cb(Ecore_Evas *ecore_evas);
 
 static Etk_Engine engine_info = {
@@ -69,36 +64,32 @@ static Etk_Engine engine_info = {
    _engine_shutdown,
    
    _window_constructor,
-   _window_destructor,     
+   _window_destructor,
    _window_show,
    _window_hide,
    _window_evas_get,
    _window_title_set,
-   _window_title_get,     
+   _window_title_get,
    _window_wmclass_set,
    _window_move,
    _window_resize,
-   _window_size_min_set,     
+   _window_size_min_set,
    _window_geometry_get,
    NULL, /* window_center_on_window */
    NULL, /* window_move_to_mouse */
    NULL, /* window_modal_for_window */
-   _window_iconify,
-   _window_deiconify,
-   _window_is_iconified,
-   _window_maximize,
-   _window_unmaximize,
-   _window_is_maximized,
-   _window_fullscreen,
-   _window_unfullscreen,
-   _window_is_fullscreen,
+   _window_iconified_set,
+   _window_iconified_get,
+   _window_maximized_set,
+   _window_maximized_get,
+   _window_fullscreen_set,
+   _window_fullscreen_get,
    _window_raise,
    _window_lower,
    _window_sticky_set,
    _window_sticky_get,
-   _window_focus,
-   _window_unfocus,
-   _window_is_focused,
+   _window_focused_set,
+   _window_focused_get,
    _window_decorated_set,
    _window_decorated_get,
    _window_shaped_set,
@@ -108,6 +99,7 @@ static Etk_Engine engine_info = {
    NULL, /* window_skip_pager_hint_set */
    NULL, /* window_skip_pager_hint_get */
    NULL, /* window_dnd_aware_set */
+   NULL, /* window_dnd_aware_get */
    NULL, /* window_pointer_set */
    
    NULL, /* popup_window_constructor */
@@ -164,8 +156,8 @@ static void _window_constructor(Etk_Window *window)
    ecore_evas_callback_resize_set(engine_data->ecore_evas, _window_resize_cb);
    ecore_evas_callback_focus_in_set(engine_data->ecore_evas, _window_focus_in_cb);
    ecore_evas_callback_focus_out_set(engine_data->ecore_evas, _window_focus_out_cb);
-   ecore_evas_callback_sticky_set(engine_data->ecore_evas, _window_sticky_cb);
-   ecore_evas_callback_unsticky_set(engine_data->ecore_evas, _window_unsticky_cb);
+   ecore_evas_callback_sticky_set(engine_data->ecore_evas, _window_sticky_changed_cb);
+   ecore_evas_callback_unsticky_set(engine_data->ecore_evas, _window_sticky_changed_cb);
    ecore_evas_callback_delete_request_set(engine_data->ecore_evas, _window_delete_request_cb);
 }
 
@@ -207,6 +199,7 @@ static void _window_title_set(Etk_Window *window, const char *title)
    
    engine_data = window->engine_data;   
    ecore_evas_title_set(engine_data->ecore_evas, title);
+   etk_object_notify(ETK_OBJECT(window), "title");
 }
 
 static const char *_window_title_get(Etk_Window *window)
@@ -265,23 +258,15 @@ static void _window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int
       *h = window->height;
 }
 
-static void _window_iconify(Etk_Window *window)
+static void _window_iconified_set(Etk_Window *window, Etk_Bool iconified)
 {
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;   
-   ecore_evas_iconified_set(engine_data->ecore_evas, 1);
+   ecore_evas_iconified_set(engine_data->ecore_evas, iconified);
 }
 
-static void _window_deiconify(Etk_Window *window)
-{
-   Etk_Engine_Window_Data *engine_data;
-   
-   engine_data = window->engine_data;   
-   ecore_evas_iconified_set(engine_data->ecore_evas, 0);
-}
-
-static Etk_Bool _window_is_iconified(Etk_Window *window)
+static Etk_Bool _window_iconified_get(Etk_Window *window)
 {
    Etk_Engine_Window_Data *engine_data;
    
@@ -289,23 +274,16 @@ static Etk_Bool _window_is_iconified(Etk_Window *window)
    return ecore_evas_iconified_get(engine_data->ecore_evas);
 }
 
-static void _window_maximize(Etk_Window *window)
+static void _window_maximized_set(Etk_Window *window, Etk_Bool maximized)
 {
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;   
-   ecore_evas_maximized_set(engine_data->ecore_evas, 1);
+   ecore_evas_maximized_set(engine_data->ecore_evas, maximized);
+   etk_object_notify(ETK_OBJECT(window), "maximized");
 }
 
-static void _window_unmaximize(Etk_Window *window)
-{
-   Etk_Engine_Window_Data *engine_data;
-   
-   engine_data = window->engine_data;   
-   ecore_evas_maximized_set(engine_data->ecore_evas, 0);
-}
-
-Etk_Bool _window_is_maximized(Etk_Window *window)
+Etk_Bool _window_maximized_get(Etk_Window *window)
 {
    Etk_Engine_Window_Data *engine_data;
    
@@ -313,23 +291,16 @@ Etk_Bool _window_is_maximized(Etk_Window *window)
    return ecore_evas_maximized_get(engine_data->ecore_evas);
 }
 
-static void _window_fullscreen(Etk_Window *window)
+static void _window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen)
 {
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;   
-   ecore_evas_fullscreen_set(engine_data->ecore_evas, 1);
+   ecore_evas_fullscreen_set(engine_data->ecore_evas, fullscreen);
+   etk_object_notify(ETK_OBJECT(window), "fullscreen");
 }
 
-static void _window_unfullscreen(Etk_Window *window)
-{
-   Etk_Engine_Window_Data *engine_data;
-   
-   engine_data = window->engine_data;   
-   ecore_evas_fullscreen_set(engine_data->ecore_evas, 0);
-}
-
-static Etk_Bool _window_is_fullscreen(Etk_Window *window)
+static Etk_Bool _window_fullscreen_get(Etk_Window *window)
 {
    Etk_Engine_Window_Data *engine_data;
    
@@ -369,23 +340,15 @@ static Etk_Bool _window_sticky_get(Etk_Window *window)
    return ecore_evas_sticky_get(engine_data->ecore_evas);
 }
 
-static void _window_focus(Etk_Window *window)
+static void _window_focused_set(Etk_Window *window, Etk_Bool focused)
 {   
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;   
-   ecore_evas_focus_set(engine_data->ecore_evas, 1);
+   ecore_evas_focus_set(engine_data->ecore_evas, focused);
 }
 
-static void _window_unfocus(Etk_Window *window)
-{
-   Etk_Engine_Window_Data *engine_data;
-   
-   engine_data = window->engine_data;   
-   ecore_evas_focus_set(engine_data->ecore_evas, 0);
-}
-
-static Etk_Bool _window_is_focused(Etk_Window *window)
+static Etk_Bool _window_focused_get(Etk_Window *window)
 {
    Etk_Engine_Window_Data *engine_data;
    
@@ -399,6 +362,7 @@ static void _window_decorated_set(Etk_Window *window, Etk_Bool decorated)
    
    engine_data = window->engine_data;   
    ecore_evas_borderless_set(engine_data->ecore_evas, !decorated);
+   etk_object_notify(ETK_OBJECT(window), "decorated");
 }
 
 static Etk_Bool _window_decorated_get(Etk_Window *window)
@@ -473,24 +437,14 @@ static void _window_focus_out_cb(Ecore_Evas *ecore_evas)
    window->focus_out_cb(window);
 }
 
-/* Called when the window is made sticky */
-static void _window_sticky_cb(Ecore_Evas *ecore_evas)
+/* Called when the window's sticky setting has changed */
+static void _window_sticky_changed_cb(Ecore_Evas *ecore_evas)
 {
    Etk_Window *window;
    
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
      return;
-   window->sticky_cb(window);
-}
-
-/* Called when the window is made unsticky */
-static void _window_unsticky_cb(Ecore_Evas *ecore_evas)
-{
-   Etk_Window *window;
-   
-   if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "etk_window"))))
-     return;
-   window->unsticky_cb(window);
+   window->sticky_changed_cb(window);
 }
 
 /* Called when the user wants to close the window */

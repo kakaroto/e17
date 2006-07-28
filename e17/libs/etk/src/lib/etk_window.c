@@ -14,19 +14,17 @@
  * @{
  */
 
-enum _Etk_Widget_Signal_Id
+enum Etk_Widget_Signal_Id
 {
    ETK_WINDOW_MOVE_SIGNAL,
    ETK_WINDOW_RESIZE_SIGNAL,
    ETK_WINDOW_FOCUS_IN_SIGNAL,
    ETK_WINDOW_FOCUS_OUT_SIGNAL,
-   ETK_WINDOW_STICKY_SIGNAL,
-   ETK_WINDOW_UNSTICKY_SIGNAL,     
    ETK_WINDOW_DELETE_EVENT_SIGNAL,
    ETK_WINDOW_NUM_SIGNALS
 };
 
-enum _Etk_Window_Property_Id
+enum Etk_Window_Property_Id
 {
    ETK_WINDOW_TITLE_PROPERTY,
    ETK_WINDOW_ICONIFIED_PROPERTY,
@@ -56,8 +54,7 @@ static void _etk_window_move_cb(Etk_Window *window);
 static void _etk_window_resize_cb(Etk_Window *window);
 static void _etk_window_focus_in_cb(Etk_Window *window);
 static void _etk_window_focus_out_cb(Etk_Window *window);
-static void _etk_window_sticky_cb(Etk_Window *window);
-static void _etk_window_unsticky_cb(Etk_Window *window);
+static void _etk_window_sticky_changed_cb(Etk_Window *window);
 static void _etk_window_delete_request_cb(Etk_Window *window);
 
 static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
@@ -78,14 +75,12 @@ Etk_Type *etk_window_type_get()
 
    if (!window_type)
    {
-      window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_WIDGET_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor));
+       window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_WIDGET_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor));
    
       _etk_window_signals[ETK_WINDOW_MOVE_SIGNAL] = etk_signal_new("move", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL] = etk_signal_new("resize", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL] = etk_signal_new("focus_in", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL] = etk_signal_new("focus_out", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_STICKY_SIGNAL] = etk_signal_new("sticky", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_UNSTICKY_SIGNAL] = etk_signal_new("unsticky", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete_event", window_type, ETK_MEMBER_OFFSET(Etk_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
    
       etk_type_property_add(window_type, "title", ETK_WINDOW_TITLE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -125,7 +120,6 @@ void etk_window_title_set(Etk_Window *window, const char *title)
    if (!window)
       return;
    etk_engine_window_title_set(window, title);
-   etk_object_notify(ETK_OBJECT(window), "title");
 }
 
 /**
@@ -176,7 +170,6 @@ void etk_window_resize(Etk_Window *window, int w, int h)
 {   
    if (!window)
       return;
-   
    etk_engine_window_resize(window, w, h);
 }
 
@@ -192,7 +185,6 @@ void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
 {
    if (!window)
       return;
-   
    etk_engine_window_geometry_get(window, x, y, w, h);
 }
 
@@ -226,115 +218,7 @@ void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window
 }
 
 /**
- * @brief Iconifies (i.e. minimize) the window
- * @param window a window
- */
-void etk_window_iconify(Etk_Window *window)
-{
-   if (!window)
-      return;
-   etk_engine_window_iconify(window);
-   etk_object_notify(ETK_OBJECT(window), "iconified");
-}
-
-/**
- * @brief Deiconifies (i.e. unminimize) the window
- * @param window a window
- */
-void etk_window_deiconify(Etk_Window *window)
-{
-   if (!window)
-      return;
-   etk_engine_window_deiconify(window);
-   etk_object_notify(ETK_OBJECT(window), "iconified");
-}
-
-/**
- * @brief Gets whether the window is iconified
- * @param window a window
- * @return Returns ETK_TRUE if the window is iconified, ETK_FALSE otherwise
- */
-Etk_Bool etk_window_is_iconified(Etk_Window *window)
-{
-   if (!window)
-      return ETK_FALSE;
-   return etk_engine_window_is_iconified(window);
-}
-
-/**
- * @brief Maximizes the window
- * @param window a window
- */
-void etk_window_maximize(Etk_Window *window)
-{
-   if (!window)
-      return;
-   etk_engine_window_maximize(window);
-   etk_object_notify(ETK_OBJECT(window), "maximized");
-}
-
-/**
- * @brief Unmaximizes the window
- * @param window a window
- */
-void etk_window_unmaximize(Etk_Window *window)
-{
-   if (!window)
-      return;
-   etk_engine_window_unmaximize(window);
-   etk_object_notify(ETK_OBJECT(window), "maximized");
-}
-
-/**
- * @brief Gets whether the window is maximized
- * @param window a window
- * @return Returns ETK_TRUE if the window is maximized, ETK_FALSE otherwise
- */
-Etk_Bool etk_window_is_maximized(Etk_Window *window)
-{
-   if (!window)
-      return ETK_FALSE;
-   return etk_engine_window_is_maximized(window);
-}
-
-/**
- * @brief Places the window in the fullscreen state
- * @param window a window
- */
-void etk_window_fullscreen(Etk_Window *window)
-{
-   if (!window)
-      return;
-   etk_engine_window_fullscreen(window);
-   etk_object_notify(ETK_OBJECT(window), "fullscreen");
-}
-
-/**
- * @brief Toggles off the fullscreen state for the window
- * @param window a window
- */
-void etk_window_unfullscreen(Etk_Window *window)
-{
-   if (!window)
-      return;
-   etk_engine_window_unfullscreen(window);
-   etk_object_notify(ETK_OBJECT(window), "fullscreen");
-}
-
-/**
- * @brief Gets whether the window is in the fullscreen state
- * @param window a window
- * @return Returns ETK_TRUE if the window is in the fullscreen state, ETK_FALSE otherwise
- */
-Etk_Bool etk_window_is_fullscreen(Etk_Window *window)
-{
-   if (!window)
-      return ETK_FALSE;
-   return etk_engine_window_is_fullscreen(window);
-}
-
-/**
- * @brief Raises a window.
+ * @brief Raises the window.
  * @param window a window
  */
 void etk_window_raise(Etk_Window *window)
@@ -345,7 +229,7 @@ void etk_window_raise(Etk_Window *window)
 }
 
 /**
- * @brief Lowers a window.
+ * @brief Lowers the window.
  * @param window a window
  */
 void etk_window_lower(Etk_Window *window)
@@ -356,15 +240,111 @@ void etk_window_lower(Etk_Window *window)
 }
 
 /**
- * @brief Sticks / unsticks the window: it will appear / disappear on all the virtual desktops
+ * @brief Sets whether or not the window is iconified (i.e. minimized)
  * @param window a window
- * @param on boolean value to stick / unstick
+ * @param iconified ETK_TRUE to iconify the window, ETK_FALSE to deiconify it
  */
-void etk_window_sticky_set(Etk_Window *window, Etk_Bool on)
+void etk_window_iconified_set(Etk_Window *window, Etk_Bool iconified)
 {
    if (!window)
       return;
-   etk_engine_window_sticky_set(window, on);
+   etk_engine_window_iconified_set(window, iconified);
+}
+
+/**
+ * @brief Gets whether the window is iconified
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is iconified, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_iconified_get(Etk_Window *window)
+{
+   if (!window)
+      return ETK_FALSE;
+   return etk_engine_window_iconified_get(window);
+}
+
+/**
+ * @brief Sets whether or not the window is maximized
+ * @param window a window
+ * @param maximized ETK_TRUE to maximize the window, ETK_FALSE to unmaximize it
+ */
+void etk_window_maximized_set(Etk_Window *window, Etk_Bool maximized)
+{
+   if (!window)
+      return;
+   etk_engine_window_maximized_set(window, maximized);
+}
+
+/**
+ * @brief Gets whether the window is maximized
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is maximized, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_maximized_get(Etk_Window *window)
+{
+   if (!window)
+      return ETK_FALSE;
+   return etk_engine_window_maximized_get(window);
+}
+
+/**
+ * @brief Places the window in the fullscreen state
+ * @param window a window
+ * @param fullscreen ETK_TRUE to place the window in the fullscreen state, ETK_FALSE to toggle off the fullscreen state
+ */
+void etk_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen)
+{
+   if (!window)
+      return;
+   etk_engine_window_fullscreen_set(window, fullscreen);
+}
+
+/**
+ * @brief Gets whether the window is in the fullscreen state
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is in the fullscreen state, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_fullscreen_get(Etk_Window *window)
+{
+   if (!window)
+      return ETK_FALSE;
+   return etk_engine_window_fullscreen_get(window);
+}
+
+/**
+ * @brief Sets whether or not the window is focused
+ * @param window a window
+ * @param focused ETK_TRUE to focus the window, ETK_FALSE to unfocus it
+ */
+void etk_window_focused_set(Etk_Window *window, Etk_Bool focused)
+{
+   if (!window)
+      return;
+   etk_engine_window_focused_set(window, focused);
+}
+
+/**
+ * @brief Gets whether the window is focused
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is focused, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_focused_get(Etk_Window *window)
+{
+   if (!window)
+      return ETK_FALSE;
+   return etk_engine_window_focused_get(window);
+}
+
+/**
+ * @brief Sticks / unsticks the window: it will appear / disappear on all the virtual desktops
+ * @param window a window
+ * @param sticky ETK_TRUE to stick the window, ETK_FALSE to unstick it
+ */
+void etk_window_sticky_set(Etk_Window *window, Etk_Bool sticky)
+{
+   if (!window)
+      return;
+   etk_engine_window_sticky_set(window, sticky);
 }
 
 /**
@@ -380,40 +360,6 @@ Etk_Bool etk_window_sticky_get(Etk_Window *window)
 }
 
 /**
- * @brief Focuses the window
- * @param window a window
- */
-void etk_window_focus(Etk_Window *window)
-{
-   if (!window)
-      return;
-   etk_engine_window_focus(window);
-}
-
-/**
- * @brief Unfocuses the window
- * @param window a window
- */
-void etk_window_unfocus(Etk_Window *window)
-{
-   if (!window)
-      return;
-   etk_engine_window_unfocus(window);
-}
-
-/**
- * @brief Gets whether the window is focused
- * @param window a window
- * @return Returns ETK_TRUE if the window is focused, ETK_FALSE otherwise
- */
-Etk_Bool etk_window_is_focused(Etk_Window *window)
-{
-   if (!window)
-      return ETK_FALSE;
-   return etk_engine_window_is_focused(window);
-}
-
-/**
  * @brief Sets wheter the window is decorated
  * @param window a window
  * @param decorated if @a decorated is ETK_FALSE, the border of the window will be hidden
@@ -423,7 +369,6 @@ void etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
    if (!window)
       return;
    etk_engine_window_decorated_set(window, decorated);
-   etk_object_notify(ETK_OBJECT(window), "decorated");
 }
 
 /**
@@ -506,11 +451,21 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
 /**
  * @brief Sets whether the window is dnd-aware (true by default)
  * @param window a window
- * @param on ETK_TTUE if to set the window dnd-aware
+ * @param on ETK_TRUE to set the window dnd-aware, ETK_FALSE otherwise
  */
 void etk_window_dnd_aware_set(Etk_Window *window, Etk_Bool on)
 {
    etk_engine_window_dnd_aware_set(window, on);
+}
+
+/**
+ * @brief Gets whether the window is dnd-aware
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is dnd-aware, ETK_FALSE otherwise
+ */
+Etk_Bool etk_window_dnd_aware_get(Etk_Window *window)
+{
+   return etk_engine_window_dnd_aware_get(window);
 }
 
 /**
@@ -536,10 +491,7 @@ static void _etk_window_constructor(Etk_Window *window)
 {
    if (!window)
       return;
-
-   window->delete_event = _etk_window_delete_event_handler;
-
-   etk_engine_window_constructor(window);   
+ 
    window->width = 0;
    window->height = 0; 
    window->wait_size_request = ETK_TRUE;
@@ -548,13 +500,15 @@ static void _etk_window_constructor(Etk_Window *window)
    window->modal = ETK_FALSE;
    window->modal_for_window = NULL;   
 
+   window->delete_event = _etk_window_delete_event_handler;
    window->move_cb = _etk_window_move_cb;
    window->resize_cb = _etk_window_resize_cb;
    window->focus_in_cb = _etk_window_focus_in_cb;
    window->focus_out_cb = _etk_window_focus_out_cb;
-   window->sticky_cb = _etk_window_sticky_cb;
-   window->unsticky_cb = _etk_window_unsticky_cb;   
+   window->sticky_changed_cb = _etk_window_sticky_changed_cb;
    window->delete_request_cb = _etk_window_delete_request_cb;
+   
+   etk_engine_window_constructor(window);
    
    ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
    ETK_TOPLEVEL_WIDGET(window)->geometry_get = _etk_window_toplevel_geometry_get;
@@ -576,6 +530,7 @@ static void _etk_window_destructor(Etk_Window *window)
       return;
    
    etk_engine_window_destructor(window);
+   
    if (window->center_on_window)
       etk_object_weak_pointer_remove(ETK_OBJECT(window->center_on_window), (void **)(&window->center_on_window));
    if (window->modal_for_window)
@@ -596,31 +551,19 @@ static void _etk_window_property_set(Etk_Object *object, int property_id, Etk_Pr
          etk_window_title_set(window, etk_property_value_string_get(value));
          break;
       case ETK_WINDOW_ICONIFIED_PROPERTY:
-         if (etk_property_value_bool_get(value))
-            etk_window_iconify(window);
-         else
-            etk_window_deiconify(window);
+         etk_window_iconified_set(window, etk_property_value_bool_get(value));
          break;
       case ETK_WINDOW_MAXIMIZED_PROPERTY:
-         if (etk_property_value_bool_get(value))
-            etk_window_maximize(window);
-         else
-            etk_window_unmaximize(window);
+         etk_window_maximized_set(window, etk_property_value_bool_get(value));
          break;
       case ETK_WINDOW_FULLSCREEN_PROPERTY:
-         if (etk_property_value_bool_get(value))
-            etk_window_fullscreen(window);
-         else
-            etk_window_unfullscreen(window);
+         etk_window_fullscreen_set(window, etk_property_value_bool_get(value));
          break;
       case ETK_WINDOW_STICKY_PROPERTY:
          etk_window_sticky_set(window, etk_property_value_bool_get(value));
          break;
       case ETK_WINDOW_FOCUSED_PROPERTY:
-         if (etk_property_value_bool_get(value))
-            etk_window_focus(window);
-         else
-            etk_window_unfocus(window);
+         etk_window_focused_set(window, etk_property_value_bool_get(value));
          break;
       case ETK_WINDOW_DECORATED_PROPERTY:
          etk_window_decorated_set(window, etk_property_value_bool_get(value));
@@ -653,19 +596,19 @@ static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Pr
          etk_property_value_string_set(value, etk_window_title_get(window));
          break;
       case ETK_WINDOW_ICONIFIED_PROPERTY:
-         etk_property_value_bool_set(value, etk_window_is_iconified(window));
+         etk_property_value_bool_set(value, etk_window_iconified_get(window));
          break;
       case ETK_WINDOW_MAXIMIZED_PROPERTY:
-         etk_property_value_bool_set(value, etk_window_is_maximized(window));
+         etk_property_value_bool_set(value, etk_window_maximized_get(window));
          break;
       case ETK_WINDOW_FULLSCREEN_PROPERTY:
-         etk_property_value_bool_set(value, etk_window_is_fullscreen(window));
+         etk_property_value_bool_set(value, etk_window_fullscreen_get(window));
          break;
       case ETK_WINDOW_STICKY_PROPERTY:
          etk_property_value_bool_set(value, etk_window_sticky_get(window));
          break;
       case ETK_WINDOW_FOCUSED_PROPERTY:
-         etk_property_value_bool_set(value, etk_window_is_focused(window));
+         etk_property_value_bool_set(value, etk_window_focused_get(window));
          break;
       case ETK_WINDOW_DECORATED_PROPERTY:
          etk_property_value_bool_set(value, etk_window_decorated_get(window));
@@ -777,48 +720,47 @@ static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Po
    etk_engine_window_pointer_set(window, pointer_type);
 }
 
-/** @} */
-
+/* Called when the window is moved by the engine */
 static void _etk_window_move_cb(Etk_Window *window)
 {
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_MOVE_SIGNAL], ETK_OBJECT(window), NULL);
 }
 
+/* Called when the window is resized by the engine */
 static void _etk_window_resize_cb(Etk_Window *window)
 {
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL], ETK_OBJECT(window), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(window));   
 }
 
+/* Called when the window is focused by the engine */
 static void _etk_window_focus_in_cb(Etk_Window *window)
 {
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL], ETK_OBJECT(window), NULL);
    etk_object_notify(ETK_OBJECT(window), "focused");   
 }
 
+/* Called when the window is unfocused by the engine */
 static void _etk_window_focus_out_cb(Etk_Window *window)
 {
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL], ETK_OBJECT(window), NULL);
    etk_object_notify(ETK_OBJECT(window), "focused");   
 }
 
-static void _etk_window_sticky_cb(Etk_Window *window)
+/* Called when the window's sticky setting has changed */
+static void _etk_window_sticky_changed_cb(Etk_Window *window)
 {
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_STICKY_SIGNAL], ETK_OBJECT(window), NULL);
    etk_object_notify(ETK_OBJECT(window), "sticky");
 }
 
-static void _etk_window_unsticky_cb(Etk_Window *window)
-{
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_UNSTICKY_SIGNAL], ETK_OBJECT(window), NULL);
-   etk_object_notify(ETK_OBJECT(window), "sticky");
-}
-
+/* Called when the engine asks to delete the window */
 static void _etk_window_delete_request_cb(Etk_Window *window)
 {
    Etk_Bool result;
    
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(window), &result);
    if (!result)
-     etk_object_destroy(ETK_OBJECT(window));
+      etk_object_destroy(ETK_OBJECT(window));
 }
+
+/** @} */

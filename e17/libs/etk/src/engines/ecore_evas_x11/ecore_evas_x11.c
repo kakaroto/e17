@@ -53,6 +53,7 @@ static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window);
 static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
 static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window);
 static void _window_dnd_aware_set(Etk_Window *window, Etk_Bool on);
+static Etk_Bool _window_dnd_aware_get(Etk_Window *window);
 static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type);
   
 /* Etk_Popup_Window functions */
@@ -144,22 +145,18 @@ static Etk_Engine engine_info = {
    _window_center_on_window,
    _window_move_to_mouse,
    _window_modal_for_window,     
-   NULL, /* window_iconify */
-   NULL, /* window_deiconify */
-   NULL, /* window_is_iconified */
-   NULL, /* window_maximize */
-   NULL, /* window_unmaximize */
-   NULL, /* window_is_maximized */
-   NULL, /* window_fullscreen */
-   NULL, /* window_unfullscreen */
-   NULL, /* window_is_fullscreen */
+   NULL, /* window_iconified_set */
+   NULL, /* window_iconified_get */
+   NULL, /* window_maximized_set */
+   NULL, /* window_maximized_get */
+   NULL, /* window_fullscreen_set */
+   NULL, /* window_fullscreen_get */
    NULL, /* window_raise */
    NULL, /* window_lower */
    NULL, /* window_sticky_set */
    NULL, /* window_sticky_get */
-   NULL, /* window_focus */
-   NULL, /* window_unfocus */
-   NULL, /* window_if_focised */
+   NULL, /* window_focused_set */
+   NULL, /* window_focused_get */
    NULL, /* window_decorated_set */
    NULL, /* window_decorated_get */
    NULL, /* window_shaped_set */
@@ -169,6 +166,7 @@ static Etk_Engine engine_info = {
    _window_skip_pager_hint_set,
    _window_skip_pager_hint_get,
    _window_dnd_aware_set,
+   _window_dnd_aware_get,
    _window_pointer_set,
 
    _popup_window_constructor,
@@ -276,7 +274,6 @@ static void _window_center_on_window(Etk_Window *window_to_center, Etk_Window *w
 
       else
       {
-#if HAVE_ECORE_X	 
          Ecore_X_Window root;
 	 int screens;
 	 
@@ -307,12 +304,11 @@ DEFAULT:
 	    for (root = engine_data->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
 	    ecore_x_window_geometry_get(root, &x, &y, &w, &h);
 	 }
-#else
+         
 	 /* this is the case where we DONT have ecore_x and
 	  * our window is NULL, we cant do anything.
 	  */
 	 return;
-#endif	 
       }
 
 END:      
@@ -323,7 +319,6 @@ END:
 
 static void _window_move_to_mouse(Etk_Window *window)
 {
-#if HAVE_ECORE_X   
    int x, y;
    Ecore_X_Window root;
    Etk_Engine_Window_Data *engine_data;
@@ -336,12 +331,10 @@ static void _window_move_to_mouse(Etk_Window *window)
    for (root = engine_data->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
    ecore_x_pointer_xy_get(root, &x, &y);
    etk_window_move(window, x, y);
-#endif      
 }
 
 static void _window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
-#if HAVE_ECORE_X
    int x, y, w, h;
    int cw, ch;
    Etk_Engine_Window_Data *engine_data;
@@ -371,12 +364,10 @@ static void _window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *wi
 	 ecore_x_netwm_window_state_set(engine_data->x_window, states, 1);
       }
    }
-#endif
 }
 
 static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint)
 {
-#if HAVE_ECORE_X   
    Etk_Engine_Window_Data *engine_data;
       
    if (!window || skip_taskbar_hint == etk_window_skip_taskbar_hint_get(window))
@@ -411,12 +402,10 @@ static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_task
 	  ecore_x_netwm_window_state_set(engine_data->x_window, NULL, 0);
      }
    etk_object_notify(ETK_OBJECT(window), "skip_taskbar");
-#endif
 }
 
 static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window)
 {
-#if HAVE_ECORE_X   
    unsigned int num_states, i;
    Ecore_X_Window_State *states;
    Etk_Engine_Window_Data *engine_data;
@@ -436,13 +425,12 @@ static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window)
    }
    if (num_states > 0)
      free(states);
-#endif   
+   
    return ETK_FALSE;   
 }
 
 static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint)
 {
-#if HAVE_ECORE_X
    Etk_Engine_Window_Data *engine_data;
         
    if (!window || skip_pager_hint == etk_window_skip_pager_hint_get(window))
@@ -477,12 +465,10 @@ static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_
 	ecore_x_netwm_window_state_set(engine_data->x_window, NULL, 0);
    }
    etk_object_notify(ETK_OBJECT(window), "skip_pager");
-#endif   
 }
 
 static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window)
 {
-#if HAVE_ECORE_X   
    unsigned int num_states, i;
    Ecore_X_Window_State *states;
    Etk_Engine_Window_Data *engine_data;
@@ -502,18 +488,22 @@ static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window)
    }
    if (num_states > 0)
      free(states);
-#endif   
+   
    return ETK_FALSE;
 }
 
 static void _window_dnd_aware_set(Etk_Window *window, Etk_Bool on)
 {
-#if HAVE_ECORE_X
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;   
    ecore_x_dnd_aware_set(engine_data->x_window, on);
-#endif
+}
+
+static Etk_Bool _window_dnd_aware_get(Etk_Window *window)
+{
+   /* TODO: we need to implement ecore_x_dnd_aware_get() */
+   return ETK_TRUE;
 }
 
 static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type)
@@ -592,10 +582,10 @@ static void _popup_window_constructor(Etk_Popup_Window *popup_window)
 
 static void _popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 {
-#if HAVE_ECORE_X
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = ETK_WINDOW(popup_window)->engine_data;
+   
    
    if (_etk_popup_window_input_window == 0)
    {
@@ -631,23 +621,19 @@ static void _popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int
    etk_popup_window_focused_window_set(popup_window);
    /* TODO: this still doesnt work with TWM */
    etk_window_raise(ETK_WINDOW(popup_window));
-   _popup_window_slide_timer_update(popup_window);   
-#endif
+   _popup_window_slide_timer_update(popup_window);
 }
 
 static void _popup_window_popup(Etk_Popup_Window *popup_window)
 {
-#if HAVE_ECORE_X   
    int x, y;
    
    ecore_x_pointer_last_xy_get(&x, &y);
    etk_popup_window_popup_at_xy(popup_window, x + 1, y + 1);
-#endif   
 }
 
 static void _popup_window_popdown(Etk_Popup_Window *popup_window)
 {
-#if HAVE_ECORE_X      
    if (!_popup_window_popped_windows)
    {
       /* TODO: pointer ungrab, fixme!! */
@@ -664,8 +650,7 @@ static void _popup_window_popdown(Etk_Popup_Window *popup_window)
       _popup_window_key_up_handler = NULL;
       _popup_window_mouse_up_handler = NULL;
       _popup_window_mouse_move_handler = NULL;
-   }   
-#endif   
+   }
 }
 
 static Evas_List **_popup_window_popped_get()
@@ -677,7 +662,7 @@ static Evas_List **_popup_window_popped_get()
 static Etk_Popup_Window_Screen_Edge _popup_window_over_screen_edge_get(Etk_Popup_Window *popup_window)
 {
    Etk_Popup_Window_Screen_Edge result = ETK_POPUP_WINDOW_NO_EDGE;
-#if HAVE_ECORE_X   
+   
    int rx, ry, rw, rh;
    int px, py, pw, ph;
 
@@ -695,7 +680,7 @@ static Etk_Popup_Window_Screen_Edge _popup_window_over_screen_edge_get(Etk_Popup
       result |= ETK_POPUP_WINDOW_TOP_EDGE;
    if (py + ph > ry + rh)
       result |= ETK_POPUP_WINDOW_BOTTOM_EDGE;
-#endif
+   
    return result;
 }
 
@@ -703,7 +688,7 @@ static Etk_Popup_Window_Screen_Edge _popup_window_over_screen_edge_get(Etk_Popup
 static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_on_screen_edge_get()
 {
    Etk_Popup_Window_Screen_Edge result = ETK_POPUP_WINDOW_NO_EDGE;   
-#if HAVE_ECORE_X   
+   
    int rx, ry, rw, rh;
 
    if (_etk_popup_window_input_window == 0)
@@ -718,7 +703,7 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_on_screen_edge_get()
       result |= ETK_POPUP_WINDOW_BOTTOM_EDGE;
    if (_popup_window_mouse_y <= ry)
       result |= ETK_POPUP_WINDOW_TOP_EDGE;
-#endif
+   
    return result;
 }
 
@@ -739,7 +724,6 @@ static void _popup_window_slide_timer_update(Etk_Popup_Window *popup_window)
 /* Makes the popup windows slide (called every 1/60 sec) */
 static int _popup_window_slide_timer_cb(void *data)
 {
-#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window = NULL, *pwin;
    Evas_List *l;
    Etk_Popup_Window_Screen_Edge mouse_edge, window_edge;
@@ -812,25 +796,22 @@ static int _popup_window_slide_timer_cb(void *data)
       /* We feed a mouse move event since the relative position between the mouse pointer and the popup window has changed */
       evas_event_feed_mouse_move(ETK_TOPLEVEL_WIDGET(pwin)->evas, _popup_window_mouse_x - x, _popup_window_mouse_y - y, ecore_x_current_time_get(), NULL);
    }
-#endif
+   
    return 1;
 }
 
 static void _drag_constructor(Etk_Drag *drag)
 {
-#if HAVE_ECORE_X   
    Etk_Engine_Window_Data *engine_data;
    Ecore_X_Window x_window;
    
    engine_data = ETK_WINDOW(drag)->engine_data;
    x_window = engine_data->x_window;
    ecore_x_dnd_aware_set(x_window, 1);
-#endif   
 }
 
 static void _drag_begin(Etk_Drag *drag)
 {
-#if HAVE_ECORE_X
    Etk_Engine_Window_Data *engine_data;
    Ecore_Evas *ecore_evas;
    Ecore_X_Window x_window;
@@ -845,7 +826,6 @@ static void _drag_begin(Etk_Drag *drag)
 
    _drag_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _drag_mouse_move_cb, drag);
    _drag_mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, _drag_mouse_up_cb, drag);
-#endif   
 }
 
 static Etk_Bool _dnd_init()
@@ -853,7 +833,6 @@ static Etk_Bool _dnd_init()
    if (_dnd_handlers)
      return ETK_TRUE;
    
-#if HAVE_ECORE_X
    _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_ENTER, _dnd_enter_handler, NULL));
    _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, _dnd_position_handler, NULL));
    _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _dnd_drop_handler, NULL));
@@ -861,25 +840,21 @@ static Etk_Bool _dnd_init()
    _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _dnd_selection_handler, NULL));
    _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_STATUS, _dnd_status_handler, NULL));
    _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_FINISHED, _dnd_finished_handler, NULL));
-#endif
    
    return ETK_TRUE;   
 }
 
 static void _dnd_shutdown()
 {
-#if HAVE_ECORE_X
    while (_dnd_handlers)
    {
       ecore_event_handler_del(_dnd_handlers->data);
       _dnd_handlers = evas_list_remove(_dnd_handlers, _dnd_handlers->data);
    }
-#endif      
 }
 
 static void _clipboard_text_request(Etk_Widget *widget)
 {
-#if HAVE_ECORE_X
    Etk_Engine_Window_Data *engine_data;
    Ecore_X_Window win;
    
@@ -887,24 +862,20 @@ static void _clipboard_text_request(Etk_Widget *widget)
    win = engine_data->x_window;   
    _etk_selection_widget = widget;
    ecore_x_selection_clipboard_request(win, ECORE_X_SELECTION_TARGET_UTF8_STRING);
-#endif
 }  
 
 static void _clipboard_text_set(Etk_Widget *widget, const char *text, int length)
 {  
-#if HAVE_ECORE_X
    Etk_Engine_Window_Data *engine_data;
    Ecore_X_Window win;
    
    engine_data = ETK_WINDOW(widget->toplevel_parent)->engine_data;
    win = engine_data->x_window;
    ecore_x_selection_clipboard_set(win, (char *)text, length);
-#endif
 }
 
 static void _selection_text_request(Etk_Widget *widget)
 {
-#if HAVE_ECORE_X
    Etk_Engine_Window_Data *engine_data;
    Ecore_X_Window win;
    
@@ -912,26 +883,21 @@ static void _selection_text_request(Etk_Widget *widget)
    win = engine_data->x_window;   
    _etk_selection_widget = widget;
    ecore_x_selection_primary_request(win, ECORE_X_SELECTION_TARGET_UTF8_STRING);
-#endif
 }  
 
 static void _selection_text_set(Etk_Widget *widget, const char *text, int length)
-{  
-#if HAVE_ECORE_X
+{
    Etk_Engine_Window_Data *engine_data;
    Ecore_X_Window win;
    
    engine_data = ETK_WINDOW(widget->toplevel_parent)->engine_data;
    win = engine_data->x_window;
    ecore_x_selection_primary_set(win, (char *)text, length);
-#endif
 }
 
 static void _selection_clear()
 {
-#if HAVE_ECORE_X
    ecore_x_selection_primary_clear();
-#endif
 }
 
 /**************************
@@ -976,7 +942,6 @@ static int _window_property_cb(void *data, int ev_type, void *event)
 /* Called when the user presses a key on the input window: we just feed it */
 static int _popup_window_key_down_cb(void *data, int type, void *event)
 {
-#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window;
    Ecore_X_Event_Key_Down *key_event;
    
@@ -987,14 +952,12 @@ static int _popup_window_key_down_cb(void *data, int type, void *event)
    
    evas_event_feed_key_down(ETK_TOPLEVEL_WIDGET(etk_popup_window_focused_window_get())->evas, key_event->keyname,
 			    key_event->keysymbol, key_event->key_compose, NULL, key_event->time, NULL);
-#endif   
    return 1;
 }
 
 /* Called wgen the user releases a key on the input window: we just feed it */
 static int _popup_window_key_up_cb(void *data, int type, void *event)
 {
-#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window;
    Ecore_X_Event_Key_Up *key_event;
    
@@ -1005,7 +968,7 @@ static int _popup_window_key_up_cb(void *data, int type, void *event)
    
    evas_event_feed_key_up(ETK_TOPLEVEL_WIDGET(etk_popup_window_focused_window_get())->evas, key_event->keyname,
 			  key_event->keysymbol, key_event->key_compose, NULL, key_event->time, NULL);
-#endif   
+   
    return 1;
 }
 
@@ -1016,7 +979,6 @@ static int _popup_window_key_up_cb(void *data, int type, void *event)
 
 static int _popup_window_mouse_up_cb(void *data, int type, void *event)
 {
-#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window, *pwin;
    Evas_List *l;
    Ecore_X_Event_Mouse_Button_Up *mouse_event;
@@ -1043,7 +1005,7 @@ static int _popup_window_mouse_up_cb(void *data, int type, void *event)
    /* Otherwize, we pop down all the popup windows */
    if (!pointer_over_window && (mouse_event->time - _popup_window_popup_timestamp) >= ETK_POPUP_WINDOW_MIN_POP_TIME)
      etk_popup_window_popdown_all();
-#endif
+   
    return 1;
 }
 
@@ -1053,7 +1015,6 @@ static int _popup_window_mouse_up_cb(void *data, int type, void *event)
  */
 static int _popup_window_mouse_move_cb(void *data, int type, void *event)
 {
-#if HAVE_ECORE_X   
    Etk_Popup_Window *popup_window, *pwin;
    Evas_List *l;
    Ecore_X_Event_Mouse_Move *mouse_event;
@@ -1066,21 +1027,20 @@ static int _popup_window_mouse_move_cb(void *data, int type, void *event)
    _popup_window_mouse_y = mouse_event->y;
    
    for (l = _popup_window_popped_windows; l; l = l->next)
-     {
-	pwin = ETK_POPUP_WINDOW(l->data);
-	etk_window_geometry_get(ETK_WINDOW(pwin), &px, &py, NULL, NULL);
-	evas_event_feed_mouse_move(ETK_TOPLEVEL_WIDGET(pwin)->evas, mouse_event->x - px, mouse_event->y - py, mouse_event->time, NULL);
-	
-	/* Start to make the popup window slide if needed */
-	_popup_window_slide_timer_update(pwin);
-     }
-#endif
+   {
+      pwin = ETK_POPUP_WINDOW(l->data);
+      etk_window_geometry_get(ETK_WINDOW(pwin), &px, &py, NULL, NULL);
+      evas_event_feed_mouse_move(ETK_TOPLEVEL_WIDGET(pwin)->evas, mouse_event->x - px, mouse_event->y - py, mouse_event->time, NULL);
+      
+      /* Start to make the popup window slide if needed */
+      _popup_window_slide_timer_update(pwin);
+   }
+   
    return 1;
 }
 
 static int _drag_mouse_up_cb(void *data, int type, void *event)
 {
-#if HAVE_ECORE_X   
    Etk_Drag *drag;
    
    drag = data;
@@ -1090,13 +1050,12 @@ static int _drag_mouse_up_cb(void *data, int type, void *event)
    ecore_x_dnd_drop();   
    etk_widget_drag_end(ETK_WIDGET(drag));   
    etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(drag->widget), ETK_POINTER_DEFAULT);
-#endif   
+   
    return 1;
 }
 
 static int _drag_mouse_move_cb(void *data, int type, void *event)
 {
-#if HAVE_ECORE_X   
    Ecore_X_Event_Mouse_Move *ev;
    Etk_Drag *drag;
    
@@ -1104,11 +1063,10 @@ static int _drag_mouse_move_cb(void *data, int type, void *event)
    ev = event;
    
    etk_window_move(ETK_WINDOW(drag), ev->root.x + 2, ev->root.y + 2);
-#endif   
+   
    return 1;
 }
 
-#if HAVE_ECORE_X
 /**
  * @brief Search the container recursively for the widget that accepts xdnd
  * @param top top level widget
@@ -1521,4 +1479,3 @@ static int _dnd_finished_handler(void *data, int type, void *event)
 {
    return 1;
 }
-#endif
