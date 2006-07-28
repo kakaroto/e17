@@ -37,6 +37,8 @@ typedef struct _Exhibit Exhibit;
 typedef struct _Ex_Options Ex_Options;
 typedef struct _Ex_Tab Ex_Tab;
 typedef struct _Ex_Thumb Ex_Thumb;
+typedef struct _Ex_Filedialog Ex_Filedialog;
+
 typedef enum _Ex_Images
 {
    EX_IMAGE_FIT_TO_WINDOW = -1,
@@ -60,7 +62,9 @@ struct _Ex_Options
    
    double slide_interval;
    
-   int    comments_visible;   
+   int    comments_visible;
+
+	 Ex_Images im_view;
 };
 
 struct _Ex_Tab
@@ -154,6 +158,14 @@ struct _Ex_Thumb
    char     *image;
    Etk_Bool  selected;
    Epsilon  *ep;
+};
+
+struct _Ex_Filedialog
+{
+   Etk_Widget *win;
+   Etk_Widget *filechooser;
+   Etk_Widget *entry;
+   Etk_Image  *im;   
 };
 
 #define WINDOW_TITLE "Exhibit"

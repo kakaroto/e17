@@ -60,7 +60,8 @@ _ex_comment_hide(Exhibit *e)
 void
 _ex_comment_load(Exhibit *e)
 {
-   char *file, *comment;
+   char *file;
+   char *comment;
    unsigned int len;
 
    file = ((Ex_Tab *) e->cur_tab)->cur_file;
@@ -76,9 +77,10 @@ _ex_comment_load(Exhibit *e)
 void
 _ex_comment_save(Exhibit *e)
 {
-   char *file, *comment;
+   char *file;
+   const char *comment;
    int len;
-
+   
    file = ((Ex_Tab *) e->cur_tab)->cur_file;
    comment = etk_entry_text_get(ETK_ENTRY(e->comment.entry));
    if (comment)

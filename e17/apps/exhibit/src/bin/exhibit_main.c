@@ -167,8 +167,17 @@ _ex_main_image_set(Exhibit *e, char *image)
    else
      {
 	etk_image_set_from_file(ETK_IMAGE(e->cur_tab->image), image);
-	etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);	
-	etk_widget_size_request_set(ETK_WIDGET(e->cur_tab->image), w, h);
+
+	/* Use selected option for default view */
+	if (e->options->im_view == EX_IMAGE_ONE_TO_ONE)
+	  _ex_main_button_zoom_one_to_one_cb(NULL, e);
+	else if (e->options->im_view == EX_IMAGE_FIT_TO_WINDOW)
+	  _ex_main_button_fit_to_window_cb(NULL, e);
+	else 
+	  {
+	     etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);
+	     etk_widget_size_request_set(ETK_WIDGET(e->cur_tab->image), w, h);
+	  }						
      }
    
    bytes = ecore_file_size(image);
@@ -351,7 +360,7 @@ _ex_main_itree_resol_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row
 }
 
 void
-_ex_main_populate_files(Exhibit *e, char *selected_file)
+_ex_main_populate_files(Exhibit *e, const char *selected_file)
 {
    char back[PATH_MAX];
    DIR *dir;
@@ -485,7 +494,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
    if(!strcmp(ev->key, "Tab"))
      {
 	const char *path;
-	char *dir;
+	const char *dir;
 	const char *file;
 	Evas_List *l;
         
@@ -493,7 +502,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
         etk_signal_stop();
 	
 	path = etk_entry_text_get(ETK_ENTRY(e->entry[0]));
-	dir = (const char*)ecore_file_get_dir((char*)path);
+	dir = ecore_file_get_dir((char*)path);
 	file = ecore_file_get_file(path);
 	
 	if(!dir || !strcmp(dir, ""))
@@ -546,7 +555,6 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	       }	
 	  }
 	
-	E_FREE(dir);
      }
    
    if(!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
@@ -598,6 +606,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	     Ex_Tab *tab;
 	     
 	     tab = _ex_tab_new(e, e->cur_tab->cur_path);
+
 	     _ex_main_window_tab_append(e, tab);
 	     _ex_main_populate_files(e, NULL);
 	  }
@@ -736,11 +745,11 @@ void
 _ex_main_window_show(char *dir)
 {
    Exhibit *e;
-   Ex_Tab  *tab;
-   char    *file;
-   char    *homedir;
+   Ex_Tab *tab;
+   const char *file;
+   char *homedir;
    const char **dnd_types;
-   int      dnd_types_num;
+   int dnd_types_num;
    
    e = calloc(1, sizeof(Exhibit));
    e->mouse.down = 0;
@@ -749,6 +758,10 @@ _ex_main_window_show(char *dir)
    e->slideshow.active = ETK_FALSE;
    e->slideshow.interval = 5.0;
    e->comment.visible = ETK_FALSE;
+   
+   e->options = _ex_options_new();
+   /* Now load saved options */
+   e->options = _ex_options_load(e->options);
    
    homedir = getenv("HOME");
    if (!homedir) 
@@ -805,6 +818,7 @@ _ex_main_window_show(char *dir)
 	
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("File"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu_bar), NULL, NULL);
 	menu = etk_menu_new();
+	
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("New window"), ETK_STOCK_WINDOW_NEW, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_new_window_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_cb), e);
@@ -815,12 +829,16 @@ _ex_main_window_show(char *dir)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rename"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_rename_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_X_DIRECTORY_TRASH, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_delete_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Options"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_options_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Close window"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_close_window_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Quit"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_quit_cb), e);
 			
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Edit"), -99, ETK_MENU_SHELL(e->menu_bar), NULL, NULL);
 	menu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));       	
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Undo"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_undo_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in The Gimp"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in XV"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in Xpaint"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
@@ -933,7 +951,7 @@ _ex_main_window_show(char *dir)
 	     dir2 = ecore_file_get_dir(dir);
 	     tab = _ex_tab_new(e, dir2);
 	     E_FREE(dir2);
-	     file = (const char*)ecore_file_get_file((const char*)dir);
+	     file = ecore_file_get_file(dir);
 	  }
 	else     
 	  tab = _ex_tab_new(e, ".");

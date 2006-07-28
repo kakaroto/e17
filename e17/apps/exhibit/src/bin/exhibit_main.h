@@ -14,7 +14,7 @@ int          _ex_main_itree_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, 
 int          _ex_main_itree_resol_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 void         _ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 int          _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
-void         _ex_main_populate_files(Exhibit *e, char *selected_file);
+void         _ex_main_populate_files(Exhibit *e, const char *selected_file);
 void         _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
 int          _ex_main_window_slideshow_next(void *data);
 void         _ex_main_window_slideshow_toggle(Exhibit *e);    

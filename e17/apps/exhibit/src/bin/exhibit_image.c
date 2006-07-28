@@ -90,6 +90,8 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	submenu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Undo"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_undo_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Date"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_date_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_size_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Name"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_name_cb), e);
@@ -157,6 +159,45 @@ _ex_image_mouse_move(Etk_Object *object, void *event, void *data)
    etk_range_value_set(vs, etk_range_value_get(ETK_RANGE(vs)) + dy);
 }
 
+unsigned int *
+_ex_image_data_copy(Etk_Image *im, unsigned int *data, int w, int h) 
+{
+   unsigned int *data2;
+   
+   data2 = etk_object_data_get(ETK_OBJECT(im), "undo");
+   if(data2)
+     free(data2);
+   
+   data2 = malloc(w * h * sizeof(unsigned int));
+   memcpy(data2, data, w * h * sizeof(unsigned int));
+   etk_object_data_set(ETK_OBJECT(im), "undo", data2);
+   printf("Undo: setting data %p size %d\n", data, w * h * sizeof(unsigned int));
+   
+   return data2;
+}
+
+void
+_ex_image_undo(Etk_Image *im)
+{
+   unsigned int *data;
+   int           w, h;
+
+   if(im->use_edje)
+     return;
+	
+   etk_image_size_get(im, &w, &h);
+   
+   data = etk_object_data_get(ETK_OBJECT(im), "undo");
+   
+   if (data) 
+     {
+	printf("Undo: getting data %p\n", data);
+	evas_object_image_data_set(im->image_object, data);
+	evas_object_image_data_update_add(im->image_object, 0, 0, w, h);
+	etk_object_data_set(ETK_OBJECT(im), "undo", NULL);
+     }
+}
+	
 void
 _ex_image_flip_horizontal(Etk_Image *im)
 {
@@ -170,6 +211,7 @@ _ex_image_flip_horizontal(Etk_Image *im)
    
    etk_image_size_get(im, &w, &h);
    data = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   _ex_image_data_copy(im, data, w, h); /* for undo */
    
    for (y = 0; y < h; y++)
      {
@@ -202,6 +244,7 @@ _ex_image_flip_vertical(Etk_Image *im)
    
    etk_image_size_get(im, &w, &h);
    data = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   _ex_image_data_copy(im, data, w, h); /* for undo */
    
    for (y = 0; y < (h >> 1); y++)
      {
@@ -238,7 +281,7 @@ _ex_image_flip_diagonal(Etk_Image *im, int direction)
    
    etk_image_size_get(im, &iw, &ih);
    data2 = evas_object_image_data_get(im->image_object, ETK_FALSE);
-      
+	 
    data = malloc(iw * ih * sizeof(unsigned int));
    from = data2;
    w = ih;
@@ -301,6 +344,7 @@ _ex_image_blur(Etk_Image *im)
    
    etk_image_size_get(im, &w, &h);
    data2 = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   _ex_image_data_copy(im, data2, w, h); /* for undo */
    
    if (rad < 1)
      return;
@@ -401,6 +445,7 @@ _ex_image_sharpen(Etk_Image *im)
 
    etk_image_size_get(im, &w, &h);
    data2 = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   _ex_image_data_copy(im, data2, w, h); /* for undo */
       
    data = malloc(w * h * sizeof(unsigned int));
    if (rad == 0)
@@ -479,6 +524,114 @@ _ex_image_save(Etk_Image *im)
 }
 
 void
+_ex_image_save_as_entry_cb(Etk_Object *object, void *event, void *data) 
+{
+   Etk_Event_Key_Up_Down *ev = event;
+   
+   if(!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
+     _ex_image_save_as_cb(data);   
+}
+
+void
+_ex_image_save_as_cb(void *data)
+{
+   Ex_Filedialog *fd = data;
+   pid_t pid;
+   char file[1024];
+   const char *basename;
+   const char *dir;
+
+   basename = etk_entry_text_get(ETK_ENTRY(fd->entry));
+   dir = etk_filechooser_widget_current_folder_get
+     (ETK_FILECHOOSER_WIDGET(fd->filechooser));
+   
+   if (!basename || !dir)
+     return;
+   
+   sprintf(file, "%s/%s", dir, basename);   
+   printf("Saving: %s\n", file);
+   
+   pid = fork();
+   if(!pid) 
+     {
+	evas_object_image_save(fd->im->image_object, file, NULL, NULL);
+	exit(0);
+     }
+   
+   etk_widget_hide(fd->win);
+}
+
+void
+_ex_image_save_as(Etk_Image *im, Etk_Tree *tree, Etk_Tree_Row *row)
+{
+   static Ex_Filedialog *fd = NULL;
+   Etk_Widget *vbox;
+   Etk_Widget *hbox;
+   Etk_Widget *btn;
+   Etk_Widget *label;
+   char *filename;
+   
+   if (!fd) 
+     {
+	fd = calloc(1, sizeof(Ex_Filedialog));
+	if (!fd) return;	
+	fd->im = im;
+	fd->win = NULL;
+     }
+   
+   /* Don't open more then one window */
+   if (fd->win) 
+     {
+	/* Update the filename when we show the window again */
+	etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, 
+				&filename, etk_tree_nth_col_get(tree, 1), 
+				NULL);
+	etk_entry_text_set(ETK_ENTRY(fd->entry), filename);      
+	etk_widget_show_all(ETK_WIDGET(fd->win));
+	return;
+     }
+   
+   fd->win = etk_window_new();
+   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit save image as ..");
+   etk_signal_connect("delete_event", ETK_OBJECT(fd->win), 
+		      ETK_CALLBACK(etk_window_hide_on_delete), fd->win);
+   
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(fd->win), vbox);
+   
+   fd->filechooser = etk_filechooser_widget_new();
+   etk_container_add(ETK_CONTAINER(vbox), fd->filechooser);
+   
+   label = etk_label_new("Filename:");
+   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
+   
+   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, 
+			   &filename, etk_tree_nth_col_get(tree, 1), NULL);
+   printf ("Selected original filename: %s\n", filename);
+   
+   fd->entry = etk_entry_new();
+   etk_entry_text_set(ETK_ENTRY(fd->entry), filename);
+   etk_box_pack_start(ETK_BOX(vbox), fd->entry, ETK_TRUE, ETK_FALSE, 0);
+   etk_signal_connect("key_down", ETK_OBJECT(fd->entry), 
+		      ETK_CALLBACK(_ex_image_save_as_entry_cb), fd);
+   
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(vbox), hbox);
+   
+   btn = etk_button_new_with_label("Save");
+   etk_box_pack_start(ETK_BOX(hbox), btn, ETK_FALSE, ETK_FALSE, 0);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(btn), 
+			      ETK_CALLBACK(_ex_image_save_as_cb), fd);
+   
+   btn = etk_button_new_with_label("Cancel");
+   etk_box_pack_start(ETK_BOX(hbox), btn, ETK_FALSE, ETK_FALSE, 0);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(btn), 
+			      ETK_CALLBACK(etk_widget_hide), fd->win);
+   
+   etk_widget_show_all(fd->win);
+}
+
+void
 _ex_image_zoom(Etk_Image *im, int zoom)
 {
    int           w, h;
@@ -527,6 +680,7 @@ _ex_image_brightness(Etk_Image *im, int brightness)
       
    etk_image_size_get(im, &w, &h);
    data = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   _ex_image_data_copy(im, data, w, h); /* for undo */
    
    for (i = 0; i < 256; i++)
      {

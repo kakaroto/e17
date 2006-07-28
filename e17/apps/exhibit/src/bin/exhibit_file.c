@@ -64,7 +64,6 @@ int
 _ex_file_is_jpg(char *file)
 {
    char        *ext;
-   Evas_List   *groups, *l;
 
    ext = strrchr(file, '.');
    if (!ext) return 0;
@@ -97,11 +96,11 @@ _ex_file_strip_extention(char *path) {
    return file;
 }
 
-char *
+const char *
 _ex_file_get(char *path)
 {
    if(!path[0]) return NULL;
-      
+   
    if(path[strlen(path) - 1] == '/' && strlen(path) >= 2)
      {
 	char *ret;
