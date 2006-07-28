@@ -12,7 +12,6 @@ TODO List
  ESSENTIAL FEATURES
 -------------------------------------------------------------------------------
 
-* Command-line configuration tool
 * Create abstracted interface for obtaining system session list.
   - Add functions for finding session list on various distributions
   - Move entrance-definded sessions out of config into $prefix/share/xsessions/.
