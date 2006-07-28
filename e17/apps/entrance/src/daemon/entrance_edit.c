@@ -20,7 +20,6 @@ static Entranced_Edit _entrance_edit;
 
 static int _entrance_edit_new();
 static void _entrance_edit_free();
-static void _entrance_edit_save();
 static void _entrance_edit_defaults_set();
 
 int entrance_edit_init(const char *filename)
@@ -59,7 +58,6 @@ int entrance_edit_init(const char *filename)
 
 int entrance_edit_shutdown()
 {
-	_entrance_edit_save();
 	_entrance_edit_free();
 	ecore_config_shutdown();
 	ecore_shutdown();
@@ -68,6 +66,16 @@ int entrance_edit_shutdown()
 	return 1;
 }
 
+int entrance_edit_save()
+{
+	if(_entrance_edit) {
+		if(ecore_config_file_save(_entrance_edit->config_file) != ECORE_CONFIG_ERR_SUCC) {
+		   return 0;
+		} else {
+		   return 1;
+		}
+	}
+}
 
 void entrance_edit_list()
 {
@@ -157,12 +165,6 @@ static void _entrance_edit_free()
 	}
 }
 
-static void _entrance_edit_save()
-{
-	if(_entrance_edit) {
-		ecore_config_file_save(_entrance_edit->config_file);
-	}
-}
 
 static void _entrance_edit_defaults_set()
 {

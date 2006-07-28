@@ -34,6 +34,7 @@
 
 int entrance_edit_init(const char*);
 int entrance_edit_shutdown();
+int entrance_edit_save();
 
 void entrance_edit_list();
 
