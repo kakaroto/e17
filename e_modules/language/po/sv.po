@@ -1,0 +1,86 @@
+# Swedish translation of Language module for E17.
+# This file is put in the public domain.
+# Anders Trobäck <enlightenment@troback.com>, 2006.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Language module for E17 N/A\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-27 21:50+0200\n"
+"PO-Revision-Date: 2006-07-28 14:47+0200\n"
+"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Inställningar för språkmodul"
+
+#: src/module/e_mod_config.c:174 src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Tillgängliga språk"
+
+#: src/module/e_mod_config.c:182 src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Valda språk"
+
+#: src/module/e_mod_config.c:198 src/module/e_mod_config.c:273
+msgid "Up"
+msgstr "Upp"
+
+#: src/module/e_mod_config.c:203 src/module/e_mod_config.c:278
+msgid "Down"
+msgstr "Ner"
+
+#: src/module/e_mod_config.c:211 src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Växlingspolicy för språk"
+
+#: src/module/e_mod_config.c:214 src/module/e_mod_config.c:307
+msgid "Global"
+msgstr "Global"
+
+#: src/module/e_mod_config.c:217 src/module/e_mod_config.c:310
+msgid "Window"
+msgstr "Fönster"
+
+#: src/module/e_mod_config.c:220 src/module/e_mod_config.c:313
+msgid "Application"
+msgstr "Applikation"
+
+#: src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Tangentbordsmodell"
+
+#: src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Variant av layout"
+
+#: src/module/e_mod_main.c:111
+msgid "Language"
+msgstr "Språk"
+
+#: src/module/e_mod_main.c:289
+msgid "Enlightenment Language Enhancment Module"
+msgstr "Enlightenment språk modul"
+
+#: src/module/e_mod_main.c:290
+msgid "This module is used to switch between input languages."
+msgstr "Denna modulen används för att växla mellan inmatningsspråk."
+
+#: src/module/e_mod_main.c:407
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: src/module/e_mod_main.c:412
+msgid "Configure Key Bindings"
+msgstr "Konfigurera tangentgenvägar"
+
+#: src/module/e_mod_main.c:429
+msgid "Module Configuration"
+msgstr "Modul konfiguration"
+
