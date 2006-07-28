@@ -5,7 +5,8 @@
 #include <getopt.h>
 #include "Entrance_Edit.h"
 
-void usage()
+void 
+usage()
 {
 	printf("entrance_edit - Commandline config file editor for Entrance daemon\n");
 	printf("Usage: %s [OPTION <value>] ...\n\n", "entrance_edit");
@@ -20,7 +21,8 @@ void usage()
 	exit(EXIT_SUCCESS);
 }
 
-int main(int argc, char** argv)
+int 
+main(int argc, char** argv)
 {
 
 	struct option d_opt[] = {
@@ -88,8 +90,10 @@ int main(int argc, char** argv)
 
 
 	int c;
-	while((c = getopt_long_only(argc, argv, ":a:A:b:d:e:g:hH:i:I:m:M:n:N:o:p:r:R:s:S:t:T:u:U:x:X:", d_opt, NULL)) != -1) {
-		switch(c) {
+	while((c = getopt_long_only(argc, argv, ":a:A:b:d:e:g:hH:i:I:m:M:n:N:o:p:r:R:s:S:t:T:u:U:x:X:", d_opt, NULL)) != -1) 
+	{
+		switch(c) 
+		{
 			case 'a':
 				config_attempts = atoi(optarg);
 				break;
@@ -176,13 +180,17 @@ int main(int argc, char** argv)
 	}
 
 
-	if(!entrance_edit_init(config_file)) {
+	if(!entrance_edit_init(config_file)) 
+	{
 		exit(EXIT_FAILURE);
 	}
 
-	if(flag_list) {
+	if(flag_list) 
+	{
 		entrance_edit_list();
-	} else {
+	} 
+	else 
+	{
 
 	   /*TODO: for int config_*'s consider using a flag
 	    * to check if it has been modified or not.
@@ -190,107 +198,133 @@ int main(int argc, char** argv)
 	    * to use negative values as valid values.
 	    * */
 
-	   if(config_attempts >= 0) {
+	   if(config_attempts >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_DAEMON_ATTEMPTS_INT, config_attempts);
 	   }
 
-	   if(config_xserver >= 0) {
+	   if(config_xserver >= 0) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_DAEMON_XSERVER_STR, config_xserver);
 	   }
 
-	   if(config_auth >= 0) { 
+	   if(config_auth >= 0) 
+	   { 
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_AUTH_INT, config_auth);
 	   }
 
-	   if(config_engine >= 0) {
+	   if(config_engine >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_ENGINE_INT, config_engine);
 	   }
 	   
-	   if(config_reboot >= 0) {
+	   if(config_reboot >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_SYSTEM_REBOOT_INT, config_reboot);
 	   }
 	   
-	   if(config_halt >= 0) {
+	   if(config_halt >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_SYSTEM_HALT_INT, config_halt);
 	   }
 	   
-	   if(config_autologin_mode >= 0) {
+	   if(config_autologin_mode >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_AUTOLOGIN_MODE_INT, config_autologin_mode);
 	   }
 	   
-	   if(config_presel_mode >= 0) {
+	   if(config_presel_mode >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_PRESEL_MODE_INT, config_presel_mode);
 	   }
 	   
-	   if(config_user_remember >= 0) {
+	   if(config_user_remember >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_USER_REMEMBER_INT, config_user_remember);
 	   }
 	   
-	   if(config_user_remember_count >= 0) {
+	   if(config_user_remember_count >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_USER_REMEMBER_N_INT, config_user_remember_count);
 	   }
 
-	   if(config_user_count >= 0) {
+	   if(config_user_count >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_USER_COUNT_INT, config_user_count);
 	   }
 	   
-	   if(config_session_count >= 0) {
+	   if(config_session_count >= 0) 
+	   {
 		   entrance_edit_int_set(ENTRANCE_EDIT_KEY_CLIENT_SESSION_COUNT_INT, config_session_count);
 	   }
 
-	   if(config_xsession) {
+	   if(config_xsession) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_XSESSION_STR, config_xsession);
 	   }
 	   
-	   if(config_background) {
+	   if(config_background) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_BACKGROUND_STR, config_background);
 	   }
 
-	   if(config_pointer) {
+	   if(config_pointer) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_POINTER_STR, config_pointer);
 	   }
 
-	   if(config_greeting_before) {
+	   if(config_greeting_before) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_GREETING_BEFORE_STR, config_greeting_before);
 	   }
 
-	   if(config_greeting_after) {
+	   if(config_greeting_after) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_GREETING_AFTER_STR, config_greeting_after);
 	   }
 
-	   if(config_date_format) {
+	   if(config_date_format) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_DATE_FORMAT_STR, config_date_format);
 	   }
 
-	   if(config_time_format) {
+	   if(config_time_format) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_TIME_FORMAT_STR, config_time_format);
 	   }
 
-	   if(config_autologin_user) {
+	   if(config_autologin_user) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_AUTOLOGIN_USER_STR, config_autologin_user);
 	   }
 
-	   if(config_presel_prevuser) {
+	   if(config_presel_prevuser) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_PRESEL_PREVUSER_STR, config_presel_prevuser);
 	   }
 
-	   if(config_default_session) {
+	   if(config_default_session) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_SESSION_0_SESSION_STR, config_default_session);
 	   }
 
-	   if(config_default_session_title) {
+	   if(config_default_session_title) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_SESSION_0_TITLE_STR, config_default_session_title);
 	   }
 
-	   if(config_default_session_icon) {
+	   if(config_default_session_icon) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_SESSION_0_ICON_STR, config_default_session_icon);
 	   }
 
-	   if(config_theme) {
+	   if(config_theme) 
+	   {
 		   entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_THEME_STR, config_theme);
 	   }
 
-	   if(!entrance_edit_save()) {
+	   if(!entrance_edit_save()) 
+	   {
 	      fprintf(stderr, "entrance_edit: Error writing to config file!\n");
 	   }
 	}

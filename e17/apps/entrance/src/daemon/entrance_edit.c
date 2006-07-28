@@ -22,12 +22,14 @@ static int _entrance_edit_new();
 static void _entrance_edit_free();
 static void _entrance_edit_defaults_set();
 
-int entrance_edit_init(const char *filename)
+int 
+entrance_edit_init(const char *filename)
 {
 	int status;
 
 	ecore_init();
-	if(ecore_config_init(_CONF_INIT_DOMAIN) != ECORE_CONFIG_ERR_SUCC) {
+	if(ecore_config_init(_CONF_INIT_DOMAIN) != ECORE_CONFIG_ERR_SUCC) 
+	{
 		ecore_shutdown();
 		return 0;
 	}
@@ -35,20 +37,25 @@ int entrance_edit_init(const char *filename)
 
 	_entrance_edit_defaults_set();
 
-	if(!_entrance_edit_new()) {
+	if(!_entrance_edit_new()) 
+	{
 		ecore_shutdown();
 		return 0;
 	}
 
-	if(filename) {
+	if(filename) 
+	{
 		_entrance_edit->config_file = strdup(filename);
-	} else {
+	} 
+	else 
+	{
 		_entrance_edit->config_file = strdup(PACKAGE_CFG_DIR "/" _CONF_FILENAME);
 	}
 
 	status = ecore_config_file_load(_entrance_edit->config_file);
 
-	if(status != ECORE_CONFIG_ERR_SUCC) {
+	if(status != ECORE_CONFIG_ERR_SUCC) 
+	{
 		return 0;
 	}
 
@@ -56,7 +63,8 @@ int entrance_edit_init(const char *filename)
 }
 
 
-int entrance_edit_shutdown()
+int
+entrance_edit_shutdown()
 {
 	_entrance_edit_free();
 	ecore_config_shutdown();
@@ -66,18 +74,24 @@ int entrance_edit_shutdown()
 	return 1;
 }
 
-int entrance_edit_save()
+int
+entrance_edit_save()
 {
-	if(_entrance_edit) {
-		if(ecore_config_file_save(_entrance_edit->config_file) != ECORE_CONFIG_ERR_SUCC) {
+	if(_entrance_edit) 
+	{
+		if(ecore_config_file_save(_entrance_edit->config_file) != ECORE_CONFIG_ERR_SUCC) 
+		{
 		   return 0;
-		} else {
+		} 
+		else 
+		{
 		   return 1;
 		}
 	}
 }
 
-void entrance_edit_list()
+void 
+entrance_edit_list()
 {
 	/*TODO:eet_list anyone?*/
 	printf("Entrance Daemon Settings\n");
@@ -122,42 +136,51 @@ void entrance_edit_list()
  * entrance_edit_auth_set/get, entrance_edit_theme_set/get
  * */
 
-int entrance_edit_int_get(const char *key)
+int 
+entrance_edit_int_get(const char *key)
 {
 	return ecore_config_int_get(key);
 }
 
-int entrance_edit_int_set(const char *key, int val)
+int 
+entrance_edit_int_set(const char *key, int val)
 {
 	return ecore_config_int_set(key, val);
 }
 
-char* entrance_edit_string_get(const char *key)
+char* 
+entrance_edit_string_get(const char *key)
 {
 	return ecore_config_string_get(key);
 }
 
-int entrance_edit_string_set(const char *key, char* val)
+int 
+entrance_edit_string_set(const char *key, char* val)
 {
 	return ecore_config_string_set(key, val);
 }
 
 /*private parts - oops!!!*/
 
-static int _entrance_edit_new()
+static int 
+_entrance_edit_new()
 {
 	_entrance_edit = calloc(1, sizeof(_Entranced_Edit));
-	if(!_entrance_edit) {
+	if(!_entrance_edit) 
+	{
 		return 0;
 	} 
 
 	return 1;
 }
 
-static void _entrance_edit_free()
+static void 
+_entrance_edit_free()
 {
-	if(_entrance_edit) {
-		if(_entrance_edit->config_file) {
+	if(_entrance_edit) 
+	{
+		if(_entrance_edit->config_file) 
+		{
 			free(_entrance_edit->config_file);
 		}
 
