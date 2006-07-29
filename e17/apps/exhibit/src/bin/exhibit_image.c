@@ -54,6 +54,8 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 	     etk_tree_row_scroll_to(row, ETK_FALSE);	     
 	  }
      }
+   
+   etk_signal_stop();
 }
 
 void

@@ -256,16 +256,16 @@ _ex_main_image_set(Exhibit *e, char *image)
      {
 	etk_image_set_from_file(ETK_IMAGE(e->cur_tab->image), image);
 
-	/* Use selected option for default view */
-	if (e->options->default_view == EX_IMAGE_ONE_TO_ONE)
-	  _ex_main_button_zoom_one_to_one_cb(NULL, e);
-	else if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW)
-	  _ex_main_button_fit_to_window_cb(NULL, e);
-	else 
-	  {
-	     etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);
-	     etk_widget_size_request_set(ETK_WIDGET(e->cur_tab->image), w, h);
-	  }						
+	if (e->cur_tab->fit_window)
+          {
+	    _ex_main_button_fit_to_window_cb(NULL, e);
+            e->options->default_view = EX_IMAGE_FIT_TO_WINDOW;
+          }
+	else
+          {
+	    _ex_main_button_zoom_one_to_one_cb(NULL, e);
+            e->options->default_view = EX_IMAGE_ONE_TO_ONE;
+          }					
      }
    
    bytes = ecore_file_size(image);
