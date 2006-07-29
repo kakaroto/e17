@@ -29,7 +29,8 @@ _ex_comment_show(Exhibit *e)
    e->cur_tab->comment.frame = etk_frame_new(_("Image Comments"));
    etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
    
-   e->cur_tab->comment.entry = etk_entry_new();
+   e->cur_tab->comment.textview = etk_text_view_new();
+   etk_widget_size_request_set(e->cur_tab->comment.textview, -1, 50);
    e->cur_tab->comment.save = etk_button_new_with_label("Save");
    etk_signal_connect("clicked", ETK_OBJECT(e->cur_tab->comment.save), ETK_CALLBACK(_ex_comment_save_clicked_cb), e);
    e->cur_tab->comment.revert = etk_button_new_with_label("Revert");
@@ -40,7 +41,7 @@ _ex_comment_show(Exhibit *e)
    
    etk_container_add(ETK_CONTAINER(e->cur_tab->comment.frame), e->cur_tab->comment.vbox2);
    
-   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox2), e->cur_tab->comment.entry, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox2), e->cur_tab->comment.textview, ETK_TRUE, ETK_TRUE, 0);
    etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox2), e->cur_tab->comment.hbox, ETK_FALSE, ETK_FALSE, 0);
    
    etk_box_pack_start(ETK_BOX(e->cur_tab->comment.hbox), e->cur_tab->comment.revert, ETK_FALSE, ETK_FALSE, 0);
@@ -48,7 +49,8 @@ _ex_comment_show(Exhibit *e)
    
    e->cur_tab->comment.visible = ETK_TRUE;
    
-   etk_widget_show_all(ETK_WIDGET(e->hpaned));   
+   etk_widget_show_all(ETK_WIDGET(e->hpaned));
+   _ex_comment_load(e);   
 }
 
 void
@@ -74,7 +76,7 @@ _ex_comment_hide(Exhibit *e)
 	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
      }   
    
-   etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.entry));
+   etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.textview));
    etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.save));
    etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.revert));
    etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.hbox));
@@ -96,10 +98,10 @@ _ex_comment_load(Exhibit *e)
    if (_ex_file_is_jpg(file))
      if (_ex_comment_jpeg_read(file, &comment, &len) && (len != 0))
        {
-	  etk_entry_text_set(ETK_ENTRY(e->cur_tab->comment.entry), comment);
+	  etk_textblock_text_set(ETK_TEXT_VIEW(e->cur_tab->comment.textview)->textblock,
+				 comment, ETK_TRUE);
 	  return;
        }
-   etk_entry_text_set(ETK_ENTRY(e->cur_tab->comment.entry), "");
 }
 
 void
@@ -110,7 +112,7 @@ _ex_comment_save(Exhibit *e)
    int len;
    
    file = ((Ex_Tab *) e->cur_tab)->cur_file;
-   comment = etk_entry_text_get(ETK_ENTRY(e->cur_tab->comment.entry));
+   comment = etk_string_get(etk_textblock_text_get(ETK_TEXT_VIEW(e->cur_tab->comment.textview)->textblock, ETK_FALSE));
    if (comment)
      len = strlen(comment);
    else

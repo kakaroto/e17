@@ -283,8 +283,6 @@ _ex_main_image_set(Exhibit *e, char *image)
       
    etk_range_value_set(hs, (double)w/2);
    etk_range_value_set(vs, (double)h/2);
-   
-   _ex_comment_load(e);     
 }
 
 void

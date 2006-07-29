@@ -97,7 +97,7 @@ struct _Ex_Tab
       Etk_Widget *vbox;
       Etk_Widget *frame;
       Etk_Widget *table;
-      Etk_Widget *entry;
+      Etk_Widget *textview;
       Etk_Widget *save;
       Etk_Widget *revert;
       Etk_Widget *vbox2;
