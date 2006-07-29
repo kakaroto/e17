@@ -225,7 +225,8 @@ static void _window_constructor(Etk_Window *window)
      return;
    
    ecore_x_dnd_aware_set(engine_data->x_window, 1);
-   _window_property_handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _window_property_cb, window);
+   /* We are not using this now */
+   /*_window_property_handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _window_property_cb, window); */
    engine_info.super->window_constructor(window);
 }
 
@@ -236,7 +237,8 @@ static void _window_destructor(Etk_Window *window)
    engine_data = window->engine_data;
    engine_info.super->window_destructor(window);
    free(engine_data);
-   ecore_event_handler_del(_window_property_handler);
+   /* We are not using this now */
+   /* ecore_event_handler_del(_window_property_handler); */
    window->engine_data = NULL;
 }
 
