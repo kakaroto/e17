@@ -19,6 +19,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->images = NULL;
    tab->e = e;
    tab->fit_window = ETK_FALSE;
+   tab->comment.visible = ETK_FALSE;
    
    tab->dtree = etk_tree_new();
    etk_widget_size_request_set(tab->dtree, 180, 120);

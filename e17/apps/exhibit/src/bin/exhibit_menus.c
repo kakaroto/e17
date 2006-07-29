@@ -360,7 +360,7 @@ _ex_menu_comments_cb(Etk_Object *obj, void *data)
    
    etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);   
    
-   if(!e->comment.visible)
+   if(!e->cur_tab->comment.visible)
      {
 	_ex_comment_show(e);
 	_ex_comment_load(e);	  

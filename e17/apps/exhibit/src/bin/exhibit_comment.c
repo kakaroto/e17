@@ -6,35 +6,47 @@ static void _ex_comment_revert_clicked_cb(Etk_Object *obj, void *data);
 void
 _ex_comment_show(Exhibit *e)
 {
-   if(e->comment.visible)
+   if(e->cur_tab->comment.visible)
      return;
    
-   e->comment.vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_paned_child2_set(ETK_PANED(e->hpaned), e->comment.vbox, ETK_TRUE);
+   e->cur_tab->comment.vbox = etk_vbox_new(ETK_FALSE, 0);
+   if(evas_list_count(e->tabs) == 1)
+     {
+	/* we only have 1 tab, ie, no notebook */
+	etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
+     }
+   else
+     {
+	/* we have multiple tabs */
+	etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+     }
+
+   if (e->cur_tab->fit_window)
+     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_TRUE, ETK_TRUE, 0);
+   else
+     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
    
-   etk_box_pack_start(ETK_BOX(e->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+   e->cur_tab->comment.frame = etk_frame_new(_("Image Comments"));
+   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
    
-   e->comment.frame = etk_frame_new(_("Image Comments"));
-   etk_box_pack_start(ETK_BOX(e->comment.vbox), e->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+   e->cur_tab->comment.entry = etk_entry_new();
+   e->cur_tab->comment.save = etk_button_new_with_label("Save");
+   etk_signal_connect("clicked", ETK_OBJECT(e->cur_tab->comment.save), ETK_CALLBACK(_ex_comment_save_clicked_cb), e);
+   e->cur_tab->comment.revert = etk_button_new_with_label("Revert");
+   etk_signal_connect("clicked", ETK_OBJECT(e->cur_tab->comment.revert), ETK_CALLBACK(_ex_comment_revert_clicked_cb), e);
    
-   e->comment.entry = etk_entry_new();
-   e->comment.save = etk_button_new_with_label("Save");
-   etk_signal_connect("clicked", ETK_OBJECT(e->comment.save), ETK_CALLBACK(_ex_comment_save_clicked_cb), e);
-   e->comment.revert = etk_button_new_with_label("Revert");
-   etk_signal_connect("clicked", ETK_OBJECT(e->comment.revert), ETK_CALLBACK(_ex_comment_revert_clicked_cb), e);
+   e->cur_tab->comment.vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   e->cur_tab->comment.hbox = etk_hbox_new(ETK_FALSE, 0);
    
-   e->comment.vbox2 = etk_vbox_new(ETK_FALSE, 0);
-   e->comment.hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(e->cur_tab->comment.frame), e->cur_tab->comment.vbox2);
    
-   etk_container_add(ETK_CONTAINER(e->comment.frame), e->comment.vbox2);
+   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox2), e->cur_tab->comment.entry, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox2), e->cur_tab->comment.hbox, ETK_FALSE, ETK_FALSE, 0);
    
-   etk_box_pack_start(ETK_BOX(e->comment.vbox2), e->comment.entry, ETK_TRUE, ETK_TRUE, 0);
-   etk_box_pack_start(ETK_BOX(e->comment.vbox2), e->comment.hbox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.hbox), e->cur_tab->comment.revert, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.hbox), e->cur_tab->comment.save, ETK_FALSE, ETK_FALSE, 0);
    
-   etk_box_pack_start(ETK_BOX(e->comment.hbox), e->comment.revert, ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_start(ETK_BOX(e->comment.hbox), e->comment.save, ETK_FALSE, ETK_FALSE, 0);
-   
-   e->comment.visible = ETK_TRUE;
+   e->cur_tab->comment.visible = ETK_TRUE;
    
    etk_widget_show_all(ETK_WIDGET(e->hpaned));   
 }
@@ -42,19 +54,35 @@ _ex_comment_show(Exhibit *e)
 void
 _ex_comment_hide(Exhibit *e)
 {
-   if(!e->comment.visible)
+   if(!e->cur_tab->comment.visible)
      return;
+
+   if(evas_list_count(e->tabs) == 1)
+     {
+	/* we only have 1 tab, ie, no notebook */
+	if (e->cur_tab->fit_window)
+	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->alignment, ETK_TRUE);
+	else
+	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+     }
+   else
+     {
+	/* we have multiple tabs */
+	if (e->cur_tab->fit_window)
+	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->alignment);
+	else
+	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+     }   
    
-   etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
-   etk_object_destroy(ETK_OBJECT(e->comment.entry));
-   etk_object_destroy(ETK_OBJECT(e->comment.save));
-   etk_object_destroy(ETK_OBJECT(e->comment.revert));
-   etk_object_destroy(ETK_OBJECT(e->comment.hbox));
-   etk_object_destroy(ETK_OBJECT(e->comment.vbox2));
-   etk_object_destroy(ETK_OBJECT(e->comment.frame));
-   etk_object_destroy(ETK_OBJECT(e->comment.vbox));   
+   etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.entry));
+   etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.save));
+   etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.revert));
+   etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.hbox));
+   etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.vbox2));
+   etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.frame));
+   etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.vbox));   
    
-   e->comment.visible = ETK_FALSE;
+   e->cur_tab->comment.visible = ETK_FALSE;
 }
 
 void
@@ -68,10 +96,10 @@ _ex_comment_load(Exhibit *e)
    if (_ex_file_is_jpg(file))
      if (_ex_comment_jpeg_read(file, &comment, &len) && (len != 0))
        {
-	  etk_entry_text_set(ETK_ENTRY(e->comment.entry), comment);
+	  etk_entry_text_set(ETK_ENTRY(e->cur_tab->comment.entry), comment);
 	  return;
        }
-   etk_entry_text_set(ETK_ENTRY(e->comment.entry), "");
+   etk_entry_text_set(ETK_ENTRY(e->cur_tab->comment.entry), "");
 }
 
 void
@@ -82,7 +110,7 @@ _ex_comment_save(Exhibit *e)
    int len;
    
    file = ((Ex_Tab *) e->cur_tab)->cur_file;
-   comment = etk_entry_text_get(ETK_ENTRY(e->comment.entry));
+   comment = etk_entry_text_get(ETK_ENTRY(e->cur_tab->comment.entry));
    if (comment)
      len = strlen(comment);
    else

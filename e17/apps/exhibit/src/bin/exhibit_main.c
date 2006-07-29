@@ -41,16 +41,38 @@ _ex_main_statusbar_zoom_update(Exhibit *e)
 void
 _ex_main_button_zoom_in_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
+   Exhibit *e;
    
    e = data;
    
    if (e->cur_tab->fit_window)
      {
 	if(evas_list_count(e->tabs) == 1)
-	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else
+	       etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  }
 	else
-	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else
+	       etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  }
 	  
         etk_widget_size_request_set(e->cur_tab->alignment, -1, -1);
         etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view), e->cur_tab->alignment);
@@ -69,16 +91,38 @@ _ex_main_button_zoom_in_cb(Etk_Object *obj, void *data)
 void
 _ex_main_button_zoom_out_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
+   Exhibit *e;
    
    e = data;
    
    if (e->cur_tab->fit_window)
      {
-	if(evas_list_count(e->tabs) == 1)	  
-	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	if(evas_list_count(e->tabs) == 1)
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else
+	       etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  }
 	else
-	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else	     
+	       etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  }
 	
         etk_widget_size_request_set(e->cur_tab->alignment, -1, -1);
         etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view), e->cur_tab->alignment);
@@ -104,9 +148,31 @@ _ex_main_button_zoom_one_to_one_cb(Etk_Object *obj, void *data)
    if (e->cur_tab->fit_window)
      {
 	if(evas_list_count(e->tabs) == 1)
-	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);	     
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else	     	     
+	       etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  }
 	else
-	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else	     
+	       etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  }
 	
         etk_widget_size_request_set(e->cur_tab->alignment, -1, -1);
         etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view), e->cur_tab->alignment);
@@ -133,9 +199,31 @@ _ex_main_button_fit_to_window_cb(Etk_Object *obj, void *data)
    
    etk_widget_size_request_set(e->cur_tab->alignment, 10, 10);
    if(evas_list_count(e->tabs) == 1)
-     etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->alignment, ETK_TRUE);
-   else          
-     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->alignment);
+     {
+	if(e->cur_tab->comment.visible)
+	  {
+	     etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
+	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view);
+	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);	     
+	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_TRUE, ETK_TRUE, 0);	     
+	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	  }
+	else
+	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->alignment, ETK_TRUE);
+     }
+   else
+     {
+	if(e->cur_tab->comment.visible)
+	  {
+	     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view);
+	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_TRUE, ETK_TRUE, 0);
+	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	  }
+	else	
+	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->alignment);
+     }
      
    etk_widget_size_request_set(e->cur_tab->image, -1, -1);
    
@@ -757,7 +845,6 @@ _ex_main_window_show(char *dir)
    e->tabs = NULL;
    e->slideshow.active = ETK_FALSE;
    e->slideshow.interval = 5.0;
-   e->comment.visible = ETK_FALSE;
    
    e->options = _ex_options_new();
    /* Now load saved options */

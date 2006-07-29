@@ -64,7 +64,9 @@ struct _Ex_Options
    
    int    comments_visible;
 
-	 Ex_Images im_view;
+   int im_view;
+   
+   int default_sort;
 };
 
 struct _Ex_Tab
@@ -89,6 +91,19 @@ struct _Ex_Tab
    Etk_Tree_Col  *icol;
    
    Exhibit       *e;
+   
+   struct {
+      Etk_Bool    visible;
+      Etk_Widget *vbox;
+      Etk_Widget *frame;
+      Etk_Widget *table;
+      Etk_Widget *entry;
+      Etk_Widget *save;
+      Etk_Widget *revert;
+      Etk_Widget *vbox2;
+      Etk_Widget *hbox;
+      char       *text;
+   } comment;   
 };
 
 
@@ -113,19 +128,6 @@ struct _Exhibit
    Etk_Widget    *zoombar;
    Etk_Widget    *menu;
    Etk_Widget    *win;
-
-   struct {
-      Etk_Bool    visible;
-      Etk_Widget *vbox;
-      Etk_Widget *frame;
-      Etk_Widget *table;
-      Etk_Widget *entry;
-      Etk_Widget *save;
-      Etk_Widget *revert;
-      Etk_Widget *vbox2;
-      Etk_Widget *hbox;
-      char       *text;
-   } comment;
    
    char           fav_path[PATH_MAX];
 
