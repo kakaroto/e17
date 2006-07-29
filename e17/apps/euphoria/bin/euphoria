@@ -19,6 +19,7 @@ require "fileutils"
 require "euphoria/playlist"
 require "euphoria/playlist_item"
 require "euphoria/slider"
+require "euphoria/volume_box"
 require "euphoria/playtime_updater"
 require "euphoria/playback_status_handler"
 require "euphoria/file_dialog"
@@ -46,6 +47,7 @@ class Euphoria
 	def initialize
 		@edje = nil
 		@xmms = nil
+		@volume_box = nil
 
 		# settings
 		unless File.directory?(DATA_DIR_PRIV)
@@ -93,6 +95,11 @@ class Euphoria
 		unless @edje.data("has_volume_slider").nil?
 			@sliders["volume"] = VolumeSlider.new(@edje, @xmms,
 			                                      "player.slider.volume")
+		end
+
+		if @edje.part_exists?("vol_display_text")
+			# FIXME Maybe rename the part to volume_box
+			@volume_box = VolumeBox.new(@edje, @xmms, "player.volumeBox")
 		end
 
 =begin
@@ -295,7 +302,13 @@ private
 		end
 
 		@xmms.broadcast_playback_volume_changed.notifier do |res|
-			@sliders["volume"].value = res.value
+			if @edje.data("has_volume_slider")
+				@sliders["volume"].value = res.value
+			end
+
+			if @edje.part_exists?("vol_display_text")
+				@volume_box.value = res.value
+			end
 		end
 
 		@xmms.broadcast_playlist_current_pos.notifier do |res|
@@ -314,7 +327,11 @@ private
 
 	def ui_fill_track_info(item)
 		unless item.nil?
-			msg = Edje::Message.new(0, item.artist, item.title, item.album)
+			if item.channel.nil?
+				msg = Edje::Message.new(0, item.artist, item.title, item.album)
+			else
+				msg = Edje::Message.new(0, "", item.title, "")
+			end
 			@edje.send_message(msg)
 		end
 	end
