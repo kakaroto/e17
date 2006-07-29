@@ -23,7 +23,7 @@ class PlaylistItem
 	end
 
 	def method_missing(method)
-		@props[method] || "default"
+		@props[method] || "unknown #{method}"
 	end
 
 	def duration
