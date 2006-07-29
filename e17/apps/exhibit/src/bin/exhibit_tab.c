@@ -84,7 +84,9 @@ _ex_tab_select(Ex_Tab *tab)
 {   
    chdir(tab->cur_path);
 
-   if(tab->fit_window)
+   if(tab->comment.visible)
+     etk_notebook_page_child_set(ETK_NOTEBOOK(tab->e->notebook), tab->num, tab->comment.vbox);
+   else if(tab->fit_window)
      etk_notebook_page_child_set(ETK_NOTEBOOK(tab->e->notebook), tab->num, tab->alignment);
    
    etk_table_attach(ETK_TABLE(tab->e->table), tab->dtree,

@@ -85,6 +85,23 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
+#check for EET
+AC_PATH_EFL(
+   eet,
+   0.9.10.030,
+   [
+     AC_DEFINE(HAVE_EET, 1, have EET)
+     eet="EET "
+     AM_CONDITIONAL(HAVE_EET, true)
+     have_eet="yes"
+     eet_libs=`eet-config --libs`
+     eet_cflags=`eet-config --cflags`
+   ],
+   [
+     AC_MSG_ERROR([No Eet, can't build.])
+   ]
+)
+
 #check for ECORE
 AC_PATH_EFL(
    ecore,
@@ -216,6 +233,8 @@ etk_prefix="\"`etk-config --prefix`/share/etk\""
 AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
 
 
+eet_libs=`eet-config --libs`
+eet_cflags=`eet-config --cflags`
 ecore_libs=`ecore-config --libs`
 ecore_cflags=`ecore-config --cflags`
 evas_libs=`evas-config --libs`
@@ -228,8 +247,8 @@ epsilon_libs=`epsilon-config --libs`
 epsilon_cflags=`epsilon-config --cflags`
 
 # add your required libs / include here
-my_includes="$ecore_cflags $evas_cflags $edje_cflags $etk_cflags $epsilon_cflags $engrave_cflags"
-my_libs="$ecore_libs $evas_libs $edje_libs $etk_libs $epsilon_libs $engrave_libs"
+my_includes="$eet_cflags $ecore_cflags $evas_cflags $edje_cflags $etk_cflags $epsilon_cflags $engrave_cflags"
+my_libs="$eet_libs $ecore_libs $evas_libs $edje_libs $etk_libs $epsilon_libs $engrave_libs"
 AC_SUBST(my_includes)
 AC_SUBST(my_libs)
 

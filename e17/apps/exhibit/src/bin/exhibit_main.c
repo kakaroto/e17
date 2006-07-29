@@ -4,6 +4,7 @@
 extern pid_t pid;
 extern Evas_List *thumb_list;
 
+Exhibit *e;
 Ecore_Evas *ee_buf;
 Evas       *evas_buf;
 Evas_List  *event_handlers;
@@ -36,7 +37,6 @@ _ex_main_statusbar_zoom_update(Exhibit *e)
 	etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
      }      
 }
-
 
 void
 _ex_main_button_zoom_in_cb(Etk_Object *obj, void *data)
@@ -257,9 +257,9 @@ _ex_main_image_set(Exhibit *e, char *image)
 	etk_image_set_from_file(ETK_IMAGE(e->cur_tab->image), image);
 
 	/* Use selected option for default view */
-	if (e->options->im_view == EX_IMAGE_ONE_TO_ONE)
+	if (e->options->default_view == EX_IMAGE_ONE_TO_ONE)
 	  _ex_main_button_zoom_one_to_one_cb(NULL, e);
-	else if (e->options->im_view == EX_IMAGE_FIT_TO_WINDOW)
+	else if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW)
 	  _ex_main_button_fit_to_window_cb(NULL, e);
 	else 
 	  {
@@ -283,6 +283,9 @@ _ex_main_image_set(Exhibit *e, char *image)
       
    etk_range_value_set(hs, (double)w/2);
    etk_range_value_set(vs, (double)h/2);
+   
+   if(e->cur_tab->comment.visible)
+     _ex_comment_load(e);
 }
 
 void
@@ -767,8 +770,31 @@ _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab)
      {
 	/* adding first "real" tab, copy existing tab, and create new one */
 	e->notebook = etk_notebook_new();        
-	etk_paned_child2_set(ETK_PANED(e->hpaned), e->notebook, ETK_TRUE);	
-	etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), _ex_file_get(e->cur_tab->dir), e->cur_tab->scrolled_view);
+	etk_paned_child2_set(ETK_PANED(e->hpaned), e->notebook, ETK_TRUE);
+	
+	if(e->cur_tab->fit_window)
+	  {
+	     if(e->cur_tab->comment.visible)
+	       etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), 
+					_ex_file_get(e->cur_tab->dir), 
+					e->cur_tab->comment.vbox);
+	     else
+	       etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), 
+					_ex_file_get(e->cur_tab->dir), 
+					e->cur_tab->alignment);
+	  }
+	else
+	  {
+	     if(e->cur_tab->comment.visible)
+	       etk_notebook_page_append(ETK_NOTEBOOK(e->notebook),
+					_ex_file_get(e->cur_tab->dir),
+					e->cur_tab->comment.vbox);
+	     else	       
+	       etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), 
+					_ex_file_get(e->cur_tab->dir), 
+					e->cur_tab->scrolled_view);
+	  }
+	
 	etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), ETK_CALLBACK(_ex_main_window_tab_toggled_cb), e);
 	etk_widget_show(ETK_WIDGET(e->notebook));
      }
@@ -830,7 +856,6 @@ static void _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 void
 _ex_main_window_show(char *dir)
 {
-   Exhibit *e;
    Ex_Tab *tab;
    const char *file;
    char *homedir;
@@ -846,7 +871,7 @@ _ex_main_window_show(char *dir)
    
    e->options = _ex_options_new();
    /* Now load saved options */
-   e->options = _ex_options_load(e->options);
+   _ex_options_load(e);  
    
    homedir = getenv("HOME");
    if (!homedir) 
@@ -1101,6 +1126,9 @@ main(int argc, char *argv[])
      };
    
    ecore_file_init();
+   if(!_ex_options_init())
+     printf("WARNING: Exhibit could not set up its options files!\n"
+	    "         You will not be able to save your preferences.\n");
    event_handlers = evas_list_append(event_handlers,
 				     ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
 							     _ex_thumb_exe_exit,
@@ -1113,6 +1141,8 @@ main(int argc, char *argv[])
      _ex_main_window_show(NULL);   
      
    etk_main();
+   _ex_options_save(e);
+   _ex_options_shutdown();
    ecore_file_shutdown();
    etk_shutdown();
 

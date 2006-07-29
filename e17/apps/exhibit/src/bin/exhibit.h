@@ -1,6 +1,7 @@
 #ifndef _EX_H
 #define _EX_H
 
+#include <Eet.h>
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
@@ -38,6 +39,7 @@ typedef struct _Ex_Options Ex_Options;
 typedef struct _Ex_Tab Ex_Tab;
 typedef struct _Ex_Thumb Ex_Thumb;
 typedef struct _Ex_Filedialog Ex_Filedialog;
+typedef struct _Ex_Config_Version Ex_Config_Version;
 
 typedef enum _Ex_Images
 {
@@ -60,13 +62,10 @@ struct _Ex_Options
    double sharpen_thresh;
    double brighten_thresh;
    
-   double slide_interval;
-   
-   int    comments_visible;
-
-   int im_view;
-   
-   int default_sort;
+   double slide_interval;   
+   int comments_visible;
+   int default_view;   
+   int default_sort;   
 };
 
 struct _Ex_Tab
@@ -138,7 +137,8 @@ struct _Exhibit
    Evas_List     *tabs;
    Ex_Tab        *cur_tab;
    
-   Ex_Options     *options;   
+   Ex_Options     *options;
+   Ex_Config_Version *version;   
    
    struct {
       int down;
@@ -168,6 +168,13 @@ struct _Ex_Filedialog
    Etk_Widget *filechooser;
    Etk_Widget *entry;
    Etk_Image  *im;   
+};
+
+struct _Ex_Config_Version
+{
+   int major;
+   int minor;
+   int patch;
 };
 
 #define WINDOW_TITLE "Exhibit"

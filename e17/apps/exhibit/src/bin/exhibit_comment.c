@@ -102,6 +102,8 @@ _ex_comment_load(Exhibit *e)
 				 comment, ETK_TRUE);
 	  return;
        }
+   etk_textblock_text_set(ETK_TEXT_VIEW(e->cur_tab->comment.textview)->textblock,
+			  "", ETK_TRUE);   
 }
 
 void
