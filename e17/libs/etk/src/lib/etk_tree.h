@@ -210,7 +210,6 @@ void etk_tree_row_data_set(Etk_Tree_Row *row, void *data);
 void etk_tree_row_data_set_full(Etk_Tree_Row *row, void *data, void (*free_cb)(void *data));
 void *etk_tree_row_data_get(Etk_Tree_Row *row);
 
-void etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center_the_row);
 void etk_tree_row_select(Etk_Tree_Row *row);
 void etk_tree_row_unselect(Etk_Tree_Row *row);
 Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree);
@@ -218,6 +217,9 @@ Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree);
 
 void etk_tree_row_expand(Etk_Tree_Row *row);
 void etk_tree_row_collapse(Etk_Tree_Row *row);
+
+Etk_Scrolled_View *etk_tree_scrolled_view_get(Etk_Tree *tree);
+void etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center_the_row);
 
 /** @} */
 

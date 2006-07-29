@@ -1177,47 +1177,6 @@ void *etk_tree_row_data_get(Etk_Tree_Row *row)
 }
 
 /**
- * @brief Makes the tree scroll to show the row
- * @param row the row up to which you want to scroll
- * @param center_the_row ETK_TRUE if you want the row to be centered
- */
-void etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center_the_row)
-{
-   Etk_Tree *tree;
-   Etk_Tree_Row *r;
-   int row_offset;
-   int tree_height;
-   int i;
-   int new_xoffset;
-   
-   if (!row || !(tree = row->tree))
-      return;
-   
-   for (r = tree->root.first_child, i = 0; r; r = etk_tree_next_row_get(r, ETK_TRUE, ETK_FALSE), i++)
-   {
-      if (r == row)
-      {
-         row_offset = i * tree->row_height;
-         tree_height = tree->grid->inner_geometry.h;
-         
-         /* If the row is already entirely visible, we do nothing */
-         if (!center_the_row && (row_offset >= tree->yoffset && (row_offset + tree->row_height) <= (tree->yoffset + tree_height)))
-            return;
-         
-         if (center_the_row)
-            new_xoffset = row_offset + (tree->row_height - tree_height) / 2;
-         else if (row_offset < tree->yoffset)
-            new_xoffset = row_offset;
-         else
-            new_xoffset = row_offset - tree_height + tree->row_height;
-         
-         etk_range_value_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), new_xoffset);
-         return;
-      }
-   }
-}
-
-/**
  * @brief Selects the row
  * @param row the row to select
  */
@@ -1323,6 +1282,60 @@ void etk_tree_row_collapse(Etk_Tree_Row *row)
    {
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree->grid));
+   }
+}
+
+/**
+ * @brief Gets the scrolled view of the tree.
+ * It can be used to change the scrollbars' policy, or to get the scroll value
+ * @param tree a tree
+ * @return Returns the scrolled view of the tree
+ */
+Etk_Scrolled_View *etk_tree_scrolled_view_get(Etk_Tree *tree)
+{
+   if (!tree)
+      return NULL;
+   return ETK_SCROLLED_VIEW(tree->scrolled_view);
+}
+
+/**
+ * @brief Makes the tree scroll to show the row
+ * @param row the row up to which you want to scroll
+ * @param center_the_row ETK_TRUE if you want the row to be centered
+ */
+void etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center_the_row)
+{
+   Etk_Tree *tree;
+   Etk_Tree_Row *r;
+   int row_offset;
+   int tree_height;
+   int i;
+   int new_xoffset;
+   
+   if (!row || !(tree = row->tree))
+      return;
+   
+   for (r = tree->root.first_child, i = 0; r; r = etk_tree_next_row_get(r, ETK_TRUE, ETK_FALSE), i++)
+   {
+      if (r == row)
+      {
+         row_offset = i * tree->row_height;
+         tree_height = tree->grid->inner_geometry.h;
+         
+         /* If the row is already entirely visible, we do nothing */
+         if (!center_the_row && (row_offset >= tree->yoffset && (row_offset + tree->row_height) <= (tree->yoffset + tree_height)))
+            return;
+         
+         if (center_the_row)
+            new_xoffset = row_offset + (tree->row_height - tree_height) / 2;
+         else if (row_offset < tree->yoffset)
+            new_xoffset = row_offset;
+         else
+            new_xoffset = row_offset - tree_height + tree->row_height;
+         
+         etk_range_value_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), new_xoffset);
+         return;
+      }
    }
 }
 
