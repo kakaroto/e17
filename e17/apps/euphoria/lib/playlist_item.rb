@@ -118,8 +118,9 @@ class PlaylistItem
 
 	private
 	def set_parts_text
-		@edje.part("duration").text =
-			"%i:%02i" % [duration / 60, duration % 60]
+		tmp = (duration == -1) ? "" :
+		      ("%i:%02i" % [duration / 60, duration % 60])
+		@edje.part("duration").text = tmp
 		@edje.part("title").text = "%i %s - %s" % [@position + 1, artist, title]
 	end
 end
