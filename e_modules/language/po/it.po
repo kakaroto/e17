@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Language\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-07-23 14:21+0200\n"
-"PO-Revision-Date: 2006-07-23 14:32+0200\n"
+"PO-Revision-Date: 2006-07-29 12:30+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgstr "Su"
 
 #: src/module/e_mod_config.c:203 src/module/e_mod_config.c:278
 msgid "Down"
-msgstr "Giu"
+msgstr "Giù"
 
 #: src/module/e_mod_config.c:211 src/module/e_mod_config.c:304
 msgid "Language Switch Policy"
@@ -44,11 +44,11 @@ msgstr "Globale"
 
 #: src/module/e_mod_config.c:217 src/module/e_mod_config.c:310
 msgid "Window"
-msgstr "Per finestra"
+msgstr "Finestra"
 
 #: src/module/e_mod_config.c:220 src/module/e_mod_config.c:313
 msgid "Application"
-msgstr "Per applicazione"
+msgstr "Applicazione"
 
 #: src/module/e_mod_config.c:287
 msgid "Keyboard Model"
