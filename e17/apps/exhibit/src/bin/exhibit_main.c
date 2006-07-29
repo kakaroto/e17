@@ -307,7 +307,7 @@ _ex_main_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data
 }
 
 void
-_ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+_ex_main_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event, void *data)
 {
    Etk_Tree *tree;
    char *dcol_string;
@@ -917,7 +917,7 @@ _ex_main_window_show(char *dir)
    etk_paned_child1_set(ETK_PANED(e->hpaned), e->vpaned, ETK_FALSE);
    
    e->table = etk_table_new(4, 4, ETK_FALSE);
-   etk_paned_child1_set(ETK_PANED(e->vpaned), e->table, ETK_FALSE);
+   etk_paned_child1_set(ETK_PANED(e->vpaned), e->table, ETK_TRUE);
 
    e->menu_bar = etk_menu_bar_new();
    etk_table_attach(ETK_TABLE(e->table), e->menu_bar, 0, 4, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
@@ -997,10 +997,7 @@ _ex_main_window_show(char *dir)
    
    e->zoom_in[0] = etk_button_new();
    e->zoom_in[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "zoom_in");
-   etk_widget_pass_mouse_events_set(e->zoom_in[1], ETK_TRUE);   
-   etk_widget_size_request_set(e->zoom_in[1], 33, 27);
-   //etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(e->zoom_in[1]));
-   etk_container_add(ETK_CONTAINER(e->zoom_in[0]), e->zoom_in[1]);
+   etk_button_image_set(ETK_BUTTON(e->zoom_in[0]), ETK_IMAGE(e->zoom_in[1]));
    etk_signal_connect("clicked", ETK_OBJECT(e->zoom_in[0]), ETK_CALLBACK(_ex_main_button_zoom_in_cb), e);
    etk_table_attach(ETK_TABLE(e->table), e->zoom_in[0],
 		    0, 0, 1, 1,
@@ -1008,10 +1005,7 @@ _ex_main_window_show(char *dir)
 
    e->zoom_out[0] = etk_button_new();
    e->zoom_out[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "zoom_out");
-   etk_widget_pass_mouse_events_set(e->zoom_out[1], ETK_TRUE);   
-   etk_widget_size_request_set(e->zoom_out[1], 33, 27);
-   //etk_button_image_set(ETK_BUTTON(e->zoom_out[0]), ETK_IMAGE(e->zoom_out[1]));
-   etk_container_add(ETK_CONTAINER(e->zoom_out[0]), e->zoom_out[1]);
+   etk_button_image_set(ETK_BUTTON(e->zoom_out[0]), ETK_IMAGE(e->zoom_out[1]));
    etk_signal_connect("clicked", ETK_OBJECT(e->zoom_out[0]), ETK_CALLBACK(_ex_main_button_zoom_out_cb), e);   
    etk_table_attach(ETK_TABLE(e->table), e->zoom_out[0],
 		    1, 1, 1, 1,
@@ -1019,10 +1013,7 @@ _ex_main_window_show(char *dir)
 
    e->fit[0] = etk_button_new();
    e->fit[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "fit_to_window");
-   etk_widget_pass_mouse_events_set(e->fit[1], ETK_TRUE);   
-   etk_widget_size_request_set(e->fit[1], 33, 27);
-   //etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(e->fit[1]));
-   etk_container_add(ETK_CONTAINER(e->fit[0]), e->fit[1]);
+   etk_button_image_set(ETK_BUTTON(e->fit[0]), ETK_IMAGE(e->fit[1]));
    etk_signal_connect("clicked", ETK_OBJECT(e->fit[0]), ETK_CALLBACK(_ex_main_button_fit_to_window_cb), e);   
    etk_table_attach(ETK_TABLE(e->table), e->fit[0],
 		    2, 2, 1, 1,
@@ -1030,10 +1021,7 @@ _ex_main_window_show(char *dir)
 
    e->original[0] = etk_button_new();
    e->original[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "one_to_one");
-   etk_widget_pass_mouse_events_set(e->original[1], ETK_TRUE);
-   etk_widget_size_request_set(e->original[1], 33, 27);
-   //etk_button_image_set(ETK_BUTTON(e->original[0]), ETK_IMAGE(e->original[1]));
-   etk_container_add(ETK_CONTAINER(e->original[0]), e->original[1]);
+   etk_button_image_set(ETK_BUTTON(e->original[0]), ETK_IMAGE(e->original[1]));
    etk_signal_connect("clicked", ETK_OBJECT(e->original[0]), ETK_CALLBACK(_ex_main_button_zoom_one_to_one_cb), e);
    etk_table_attach(ETK_TABLE(e->table), e->original[0],
 		    3, 3, 1, 1,

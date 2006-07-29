@@ -23,9 +23,10 @@ _ex_tab_new(Exhibit *e, char *dir)
    
    tab->dtree = etk_tree_new();
    etk_widget_size_request_set(tab->dtree, 180, 120);
-   etk_signal_connect("row_selected", ETK_OBJECT(tab->dtree), ETK_CALLBACK(_ex_main_dtree_item_clicked_cb), e);
+   etk_signal_connect("row_clicked", ETK_OBJECT(tab->dtree), ETK_CALLBACK(_ex_main_dtree_item_clicked_cb), e);
    tab->dcol = etk_tree_col_new(ETK_TREE(tab->dtree), "Directories", etk_tree_model_icon_text_new(ETK_TREE(tab->dtree), ETK_TREE_FROM_EDJE), 10);
    etk_tree_headers_visible_set(ETK_TREE(tab->dtree), 0);
+   etk_scrolled_view_policy_set(etk_tree_scrolled_view_get(ETK_TREE(tab->dtree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
    etk_tree_build(ETK_TREE(tab->dtree));
 
    tab->itree = etk_tree_new();
@@ -40,6 +41,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->icol = etk_tree_col_new(ETK_TREE(tab->itree), "Files", imodel, 10);
    etk_tree_headers_visible_set(ETK_TREE(tab->itree), 0);
    etk_tree_row_height_set(ETK_TREE(tab->itree), 60);
+   etk_scrolled_view_policy_set(etk_tree_scrolled_view_get(ETK_TREE(tab->itree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
    etk_tree_build(ETK_TREE(tab->itree));
 
    if(dir)
@@ -55,14 +57,16 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_signal_connect("mouse_down", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_down), e);
    etk_signal_connect("mouse_up", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_up), e);
    etk_signal_connect("mouse_move", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_move), e);
-   etk_signal_connect("mouse_wheel", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_wheel), e);
 	 
    etk_image_keep_aspect_set(ETK_IMAGE(tab->image), ETK_TRUE);
 	 
    etk_container_add(ETK_CONTAINER(tab->alignment), tab->image);   
       
    tab->scrolled_view = etk_scrolled_view_new();
+   etk_scrolled_view_policy_set(ETK_SCROLLED_VIEW(tab->scrolled_view), ETK_POLICY_HIDE, ETK_POLICY_HIDE);
    etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(tab->scrolled_view), tab->alignment);
+   etk_widget_has_event_object_set(tab->scrolled_view, ETK_TRUE);
+   etk_signal_connect("mouse_wheel", ETK_OBJECT(tab->scrolled_view), ETK_CALLBACK(_ex_image_mouse_wheel), e);
 
    return tab;
 }
