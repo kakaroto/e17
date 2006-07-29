@@ -381,6 +381,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
    Etk_Widget *child;
    Etk_Table_Cell *cell;
    Etk_Size child_requisition;
+   Etk_Bool hexpand = ETK_FALSE, vexpand = ETK_FALSE;
    Evas_List *l;
    int i;
 
@@ -399,7 +400,6 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
       {
          int max_col_width = ETK_TABLE_CELL_MIN_SIZE, max_row_height = ETK_TABLE_CELL_MIN_SIZE;
          int cell_size;
-         Etk_Bool hexpand = ETK_FALSE, vexpand = ETK_FALSE;
    
          /* We calculate the maximum size of a cell */
          for (l = table->children; l; l = l->next)
@@ -462,6 +462,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                if (table->cols[cell->left_attach].requested_size < child_requisition.w + 2 * cell->x_padding)
                   table->cols[cell->left_attach].requested_size = child_requisition.w + 2 * cell->x_padding;
                table->cols[cell->left_attach].expand |= (cell->fill_policy & ETK_FILL_POLICY_HEXPAND);
+               hexpand |= (cell->fill_policy & ETK_FILL_POLICY_HEXPAND);
             }
 
             /* Rows */
@@ -470,6 +471,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                if (table->rows[cell->top_attach].requested_size < child_requisition.h + 2 * cell->y_padding)
                   table->rows[cell->top_attach].requested_size = child_requisition.h + 2 * cell->y_padding;
                table->rows[cell->top_attach].expand |= (cell->fill_policy & ETK_FILL_POLICY_VEXPAND);
+               vexpand |= (cell->fill_policy & ETK_FILL_POLICY_VEXPAND);
             }
          }
          /* Then, we treat the children that span multiple columns or rows */
@@ -494,6 +496,8 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                for (i = cell->left_attach; i <= cell->right_attach; i++)
                {
                   cells_size += table->cols[i].requested_size;
+                  if (!hexpand && (cell->fill_policy & ETK_FILL_POLICY_HEXPAND))
+                     table->cols[i].expand = ETK_TRUE;
                   if (table->cols[i].expand)
                      num_expandable_cells++;
                }
@@ -528,6 +532,8 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                for (i = cell->top_attach; i <= cell->bottom_attach; i++)
                {
                   cells_size += table->rows[i].requested_size;
+                  if (!vexpand && (cell->fill_policy & ETK_FILL_POLICY_VEXPAND))
+                     table->rows[i].expand = ETK_TRUE;
                   if (table->rows[i].expand)
                      num_expandable_cells++;;
                }
