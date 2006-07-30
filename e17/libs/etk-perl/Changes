@@ -1,5 +1,13 @@
 Revision history for Perl extension Etk.
 
+0.02  Sun Jul 30 17:53:12 GMT+2 2006
+	- rewrite of Etk-Perl
+		+ Removed all .pm code
+		+ Reverted functions to original types
+		+ Type handling is now done through the typemap
+		+ Added EtkTypes.[ch] to create/access objects
+		+ Simple AUTOLOAD mechanism in Etk::Object to handle FooBar() -> foo_bar() conversion
+
 0.01  Thu Jun  1 15:53:00 2006
 	- original version; created by h2xs 1.23 with options
 		-d -x -F -I/usr/local/include/etk -M etk -n Etk /usr/local/include/etk/Etk.h
