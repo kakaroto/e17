@@ -141,7 +141,9 @@ static Etk_Engine engine_info = {
    NULL, /* window_move */
    NULL, /* window_resize */
    NULL, /* window_size_min_get */
-   NULL, /* window_geometry_get */
+   NULL, /* window_evas_position_get */
+   NULL, /* window_screen_position_get */
+   NULL, /* window_size_get */
    _window_center_on_window,
    _window_move_to_mouse,
    _window_modal_for_window,     
@@ -225,8 +227,8 @@ static void _window_constructor(Etk_Window *window)
      return;
    
    ecore_x_dnd_aware_set(engine_data->x_window, 1);
-   /* We are not using this now */
-   /*_window_property_handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _window_property_cb, window); */
+   /* TODO: We are not using this now */
+   /* _window_property_handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _window_property_cb, window); */
    engine_info.super->window_constructor(window);
 }
 

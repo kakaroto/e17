@@ -22,7 +22,7 @@
  * @enum Etk_Pointer_Type
  * @brief The different types of mouse pointer
  */
-typedef enum _Etk_Pointer_Type
+typedef enum Etk_Pointer_Type
 {
    ETK_POINTER_DEFAULT,
    ETK_POINTER_MOVE,
@@ -52,8 +52,9 @@ struct _Etk_Toplevel_Widget
    Etk_Bin bin;
 
    Evas *evas;
-   void (*geometry_get)(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y, int *w, int *h);
-   void (*object_geometry_get)(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y, int *w, int *h);
+   void (*evas_position_get)(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y);
+   void (*screen_position_get)(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y);
+   void (*size_get)(Etk_Toplevel_Widget *toplevel_widget, int *w, int *h); 
 
    Etk_Widget *focused_widget;
 
@@ -63,7 +64,10 @@ struct _Etk_Toplevel_Widget
 
 Etk_Type *etk_toplevel_widget_type_get();
 Evas *etk_toplevel_widget_evas_get(Etk_Toplevel_Widget *toplevel_widget);
-void etk_toplevel_widget_geometry_get(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y, int *w, int *h);
+
+void etk_toplevel_widget_evas_position_get(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y);
+void etk_toplevel_widget_screen_position_get(Etk_Toplevel_Widget *toplevel_widget, int *x, int *y);
+void etk_toplevel_widget_size_get(Etk_Toplevel_Widget *toplevel_widget, int *w, int *h);
 
 void etk_toplevel_widget_focused_widget_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Widget *widget);
 Etk_Widget *etk_toplevel_widget_focused_widget_get(Etk_Toplevel_Widget *toplevel_widget);

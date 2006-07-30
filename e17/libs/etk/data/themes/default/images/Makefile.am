@@ -94,4 +94,7 @@ EXTRA_DIST = background.png \
              colorpicker_vertical.png \
              colorpicker_slider_trough.png \
              colorpicker_slider_drag.png \
-             colorpicker_preview.png
+             colorpicker_preview.png \
+             wm_bg_brushed.png \
+             wm_bg_overlay.png \
+             wm_border.png

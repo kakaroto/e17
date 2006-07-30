@@ -27,7 +27,9 @@ static void _window_wmclass_set(Etk_Window *window, const char *window_name, con
 static void _window_move(Etk_Window *window, int x, int y);
 static void _window_resize(Etk_Window *window, int w, int h);
 static void _window_size_min_set(Etk_Window *window, int w, int h);
-static void _window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
+static void _window_evas_position_get(Etk_Window *window, int *x, int *y);
+static void _window_screen_position_get(Etk_Window *window, int *x, int *y);
+static void _window_size_get(Etk_Window *window, int *w, int *h);
 static void _window_iconified_set(Etk_Window *window, Etk_Bool iconified);
 static Etk_Bool _window_iconified_get(Etk_Window *window);
 static void _window_maximized_set(Etk_Window *windo, Etk_Bool maximized);
@@ -74,7 +76,9 @@ static Etk_Engine engine_info = {
    _window_move,
    _window_resize,
    _window_size_min_set,
-   _window_geometry_get,
+   _window_evas_position_get,
+   _window_screen_position_get,
+   _window_size_get,
    NULL, /* window_center_on_window */
    NULL, /* window_move_to_mouse */
    NULL, /* window_modal_for_window */
@@ -258,16 +262,24 @@ static void _window_size_min_set(Etk_Window *window, int w, int h)
    ecore_evas_size_min_set(engine_data->ecore_evas, w, h);
 }
 
-static void _window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
-{   
+static void _window_evas_position_get(Etk_Window *window, int *x, int *y)
+{
+   if (x)   *x = 0;
+   if (y)   *y = 0;
+}
+
+static void _window_screen_position_get(Etk_Window *window, int *x, int *y)
+{
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;   
    ecore_evas_geometry_get(engine_data->ecore_evas, x, y, NULL, NULL);
-   if (w)
-      *w = window->width;
-   if (h)
-      *h = window->height;
+}
+
+static void _window_size_get(Etk_Window *window, int *w, int *h)
+{
+   if (w)   *w = window->width;
+   if (h)   *h = window->height;
 }
 
 static void _window_iconified_set(Etk_Window *window, Etk_Bool iconified)

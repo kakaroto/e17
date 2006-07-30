@@ -30,7 +30,9 @@ struct Etk_Engine
    void (*window_move)(Etk_Window *window, int x, int y);
    void (*window_resize)(Etk_Window *window, int w, int h);
    void (*window_size_min_set)(Etk_Window *window, int w, int h);
-   void (*window_geometry_get)(Etk_Window *window, int *x, int *y, int *w, int *h);
+   void (*window_evas_position_get)(Etk_Window *window, int *x, int *y);
+   void (*window_screen_position_get)(Etk_Window *window, int *x, int *y);
+   void (*window_size_get)(Etk_Window *window, int *w, int *h);
    void (*window_center_on_window)(Etk_Window *window_to_center, Etk_Window *window);
    void (*window_move_to_mouse)(Etk_Window *window);
    void (*window_modal_for_window)(Etk_Window *window_to_modal, Etk_Window *window);
@@ -100,7 +102,9 @@ void etk_engine_window_wmclass_set(Etk_Window *window, const char *window_name, 
 void etk_engine_window_move(Etk_Window *window, int x, int y);
 void etk_engine_window_resize(Etk_Window *window, int w, int h);
 void etk_engine_window_size_min_set(Etk_Window *window, int w, int h);
-void etk_engine_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
+void etk_engine_window_evas_position_get(Etk_Window *window, int *x, int *y);
+void etk_engine_window_screen_position_get(Etk_Window *window, int *x, int *y);
+void etk_engine_window_size_get(Etk_Window *window, int *w, int *h);
 void etk_engine_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window);
 void etk_engine_window_move_to_mouse(Etk_Window *window);  
 void etk_engine_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window);

@@ -2407,7 +2407,7 @@ static void _etk_widget_realize(Etk_Widget *widget)
    
    if (widget->realized)
       _etk_widget_unrealize(widget);
-
+   
    /* First, we create the smart object */
    widget->smart_object = _etk_widget_smart_object_add(evas, widget);
    evas_object_event_callback_add(widget->smart_object, EVAS_CALLBACK_MOUSE_IN, _etk_widget_mouse_in_cb, widget);

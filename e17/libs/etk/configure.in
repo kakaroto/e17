@@ -196,6 +196,35 @@ AM_CONDITIONAL(BUILD_ENGINE_EE_S_X11, true)
 fi
 
 #####################################################################
+## Ecore_FB
+## have_ecore_fb="no"
+## save_CPPFLAGS=$CPPFLAGS
+## CPPFLAGS="$CPPFLAGS $ECORE_CFLAGS"
+## save_LDFLAGS=$LDFLAGS
+## LDFLAGS="$LDFLAGS $ECORE_LIBS"
+## AC_CHECK_HEADER(Ecore_Fb.h,
+##   [AC_CHECK_LIB(ecore_fb,
+##       ecore_fb_init,
+##       [AC_DEFINE(HAVE_ECORE_FB,
+##                  1,
+##                  [Define to 1 if you have the Ecore_FB headers and libraries])
+##       have_ecore_fb="yes"],
+##       [AC_DEFINE(HAVE_ECORE_FB,
+##                  0,
+##          [Define to 1 if you have the Ecore_FB headers and libraries])])],
+## 	 
+##   [AC_DEFINE(HAVE_ECORE_FB,
+##       0,
+##       [Define to 1 if you have the Ecore_X headers and libraries])]
+## )
+## CPPFLAGS=$save_CPPFLAGS
+## LDFLAGS=$save_LDFLAGS
+## 
+## if test "x${have_ecore_fb}" = 'xyes'; then
+## AM_CONDITIONAL(BUILD_ENGINE_E_FB, true)
+## fi
+
+#####################################################################
 ## Gettext
 ALL_LINGUAS="fr"
 AC_SUBST(ALL_LINGUAS)
@@ -230,6 +259,7 @@ data/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/widgets/Makefile
+data/themes/default/wm/Makefile
 data/themes/default/fonts/Makefile
 data/themes/default/images/Makefile
 data/themes/default/macros/Makefile
@@ -268,6 +298,7 @@ data/icons/default/icons/48x48/mimetypes/Makefile
 data/icons/default/icons/48x48/places/Makefile
 data/icons/default/icons/48x48/status/Makefile
 data/icons/default/Makefile
+data/pointers/Makefile
 po/Makefile
 intl/Makefile
 etk-config
@@ -290,6 +321,7 @@ echo
 echo "Configuration Options Summary:"
 echo
 echo "  Ecore Evas Software X11 Engine..............: $have_ecore_x"
+echo "  Ecore FB Engine.............................: $have_ecore_fb"
 echo
 echo "Installation Path.........: $prefix"
 echo

@@ -42,7 +42,9 @@ static Etk_Engine engine_info = {
    NULL, /* window_move */
    NULL, /* window_resize */
    NULL, /* window_size_min_get */
-   NULL, /* window_geometry_get */
+   NULL, /* window_evas_position_get */
+   NULL, /* window_screen_position_get */
+   NULL, /* window_size_get */
    NULL, /* window_center_on_window */
    NULL, /* window_move_to_mouse */
    NULL, /* window_modal_for_window */

@@ -1063,7 +1063,7 @@ static void _etk_combobox_key_down_cb(Etk_Object *object, void *event_info, void
 /* Called when the combobox button is toggled */
 static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
 {
-   int tx, ty;
+   int ex, ey, sx, sy;
    int bx, by, bw, bh;
    Etk_Combobox *combobox;
    Etk_Toplevel_Widget *toplevel;
@@ -1073,9 +1073,10 @@ static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
    
    if (etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(combobox->button)))
    {
-      etk_toplevel_widget_geometry_get(toplevel, &tx, &ty, NULL, NULL);
       etk_widget_geometry_get(combobox->button, &bx, &by, &bw, &bh);
-      etk_popup_window_popup_at_xy(combobox->window, tx + bx, ty + by + bh);
+      etk_toplevel_widget_evas_position_get(toplevel, &ex, &ey);
+      etk_toplevel_widget_screen_position_get(toplevel, &sx, &sy);
+      etk_popup_window_popup_at_xy(combobox->window, sx + (bx - ex), sy + (by - ey) + bh);
       etk_window_resize(ETK_WINDOW(combobox->window), bw, 0);
    }
 }

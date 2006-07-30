@@ -17,6 +17,7 @@
 #include "etk_theme.h"
 #include "etk_dnd.h"
 #include "etk_tooltips.h"
+#include "etk_textblock.h"
 #include "config.h"
 
 /**
@@ -66,6 +67,8 @@ Etk_Bool etk_init(const char *engine_name)
       ETK_WARNING("Edje initialization failed!");
       return ETK_FALSE;
    }
+   
+   etk_theme_init();
    if (!etk_engine_init())
    {
       ETK_WARNING("Etk_Engine initialization failed!");
@@ -81,8 +84,6 @@ Etk_Bool etk_init(const char *engine_name)
       ETK_WARNING("Etk_dnd initialization failed!");
       return ETK_FALSE;
    }
-      
-   etk_theme_init();
    etk_tooltips_init();
    
    /* Initialize Gettext */
@@ -107,10 +108,13 @@ void etk_shutdown()
    etk_object_destroy_all_objects();
    etk_signal_shutdown();
    etk_type_shutdown();
-   etk_theme_shutdown();
+   
+   etk_textblock_shutdown();
    etk_tooltips_shutdown();
    etk_dnd_shutdown();
    etk_engine_shutdown();
+   etk_theme_shutdown();
+   
    edje_shutdown();
    ecore_shutdown();
    evas_shutdown();
@@ -246,10 +250,10 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
    if (!widget)
       return;
    
-   if (is_top_level && ETK_TOPLEVEL_WIDGET(widget)->object_geometry_get)
+   if (is_top_level)
    {
-      ETK_TOPLEVEL_WIDGET(widget)->object_geometry_get(ETK_TOPLEVEL_WIDGET(widget),
-         &geometry.x, &geometry.y, &geometry.w, &geometry.h);
+      etk_toplevel_widget_evas_position_get(ETK_TOPLEVEL_WIDGET(widget), &geometry.x, &geometry.y);
+      etk_toplevel_widget_size_get(ETK_TOPLEVEL_WIDGET(widget), &geometry.w, &geometry.h);
    }
    else
       etk_widget_geometry_get(widget, &geometry.x, &geometry.y, &geometry.w, &geometry.h);

@@ -1,2 +1,2 @@
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS = themes fonts images icons
+SUBDIRS = themes fonts images icons pointers

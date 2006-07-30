@@ -1,0 +1,49 @@
+group {
+   name: "wm_border";
+   parts {
+      part {
+	 name: "border";
+	 description {
+	    state: "default" 0.0;
+            rel1 {
+               offset: -6 -6;
+            }
+            rel2 {
+               offset: 13 13;
+            }
+	    image {
+	       normal: "wm_border.png";
+               border: 40 68 30 19;
+            }
+	 }
+      }
+      part {
+         name: "titlebar";
+         type: RECT;
+         description {
+	    state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1 {
+               offset: 24 0;
+            }
+            rel2 {
+               relative: 1.0 0.0;
+               offset: -45 23;
+            }
+         }
+      }
+      part {
+	 name: "content";
+         type: SWALLOW;
+	 description {
+	    state: "default" 0.0;
+            rel1 {
+               offset: 4 24;
+            }
+            rel2 {
+               offset: -5 -5;
+            }
+	 }
+      }
+   }
+}

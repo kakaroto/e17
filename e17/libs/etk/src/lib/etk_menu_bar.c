@@ -183,7 +183,7 @@ static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event)
    }
    
    /* If the mouse pointer is above a menu item, we select it */
-   etk_toplevel_widget_geometry_get(toplevel, &tx, &ty, NULL, NULL);
+   etk_toplevel_widget_screen_position_get(toplevel, &tx, &ty);
    for (l = ETK_MENU_SHELL(menu_bar)->items; l; l = l->next)
    {
       item = ETK_WIDGET(l->data);
@@ -222,11 +222,12 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
    /* Then we popup the child menu */
    if (item->submenu && (toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(menu_bar))))
    {
-      int ix, iy, ih, tx, ty;
+      int ix, iy, ih, ex, ey, sx, sy;
       
       etk_widget_geometry_get(ETK_WIDGET(item), &ix, &iy, NULL, &ih);
-      etk_toplevel_widget_geometry_get(toplevel, &tx, &ty, NULL, NULL);
-      etk_menu_popup_at_xy(item->submenu, tx + ix, ty + iy + ih);
+      etk_toplevel_widget_evas_position_get(toplevel, &ex, &ey);
+      etk_toplevel_widget_screen_position_get(toplevel, &sx, &sy);
+      etk_menu_popup_at_xy(item->submenu, sx + (ix - ex), sy + (iy - ey) + ih);
    }
    
    if (!_etk_menu_bar_mouse_move_handler)

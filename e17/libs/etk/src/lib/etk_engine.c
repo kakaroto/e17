@@ -361,18 +361,51 @@ void etk_engine_window_size_min_set(Etk_Window *window, int w, int h)
 }
 
 /**
- * @brief Calls the engines's method to get the geometry of a window
+ * @brief Calls the engines's method to get the position of a window, relative to the evas where it is drawn
  * @param window a window
- * @param x the location where to store the x position of the window
- * @param y the location where to store the y position of the window
- * @param w the location where to store the width of the window
- * @param h the location where to store the height of the window
+ * @param x the location where to store the x evas position of the window
+ * @param y the location where to store the y evas position of the window
  */
-void etk_engine_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
+void etk_engine_window_evas_position_get(Etk_Window *window, int *x, int *y)
 {
-   if (!_engine || !_engine->window_geometry_get)
-      return;   
-   _engine->window_geometry_get(window, x, y, w, h);
+   if (x)   *x = 0;
+   if (y)   *y = 0;
+   
+   if (!_engine || !_engine->window_evas_position_get)
+      return;
+   _engine->window_evas_position_get(window, x, y);
+}
+
+/**
+ * @brief Calls the engines's method to get the position of a window, relative to the screen
+ * @param window a window
+ * @param x the location where to store the x screen position of the window
+ * @param y the location where to store the y screen position of the window
+ */
+void etk_engine_window_screen_position_get(Etk_Window *window, int *x, int *y)
+{
+   if (x)   *x = 0;
+   if (y)   *y = 0;
+   
+   if (!_engine || !_engine->window_screen_position_get)
+      return;
+   _engine->window_screen_position_get(window, x, y);
+}
+
+/**
+ * @brief Calls the engines's method to get the size of a window
+ * @param window a window
+ * @param x the location where to store the width of the window
+ * @param y the location where to store the height of the window
+ */
+void etk_engine_window_size_get(Etk_Window *window, int *w, int *h)
+{
+   if (w)   *w = 0;
+   if (h)   *h = 0;
+   
+   if (!_engine || !_engine->window_size_get)
+      return;
+   _engine->window_size_get(window, w, h);
 }
 
 void etk_engine_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window)
@@ -609,7 +642,7 @@ void etk_engine_drag_begin(Etk_Drag *drag)
 Etk_Bool etk_engine_dnd_init()
 {
    if (!_engine || !_engine->dnd_init)
-           return ETK_FALSE;
+           return ETK_TRUE;
    return _engine->dnd_init();
 }
 
@@ -680,7 +713,9 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(window_move);
    INHERIT(window_resize);
    INHERIT(window_size_min_set);
-   INHERIT(window_geometry_get);
+   INHERIT(window_evas_position_get);
+   INHERIT(window_screen_position_get);
+   INHERIT(window_size_get);
    INHERIT(window_center_on_window);
    INHERIT(window_move_to_mouse);
    INHERIT(window_modal_for_window);

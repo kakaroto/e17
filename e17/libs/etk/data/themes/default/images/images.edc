@@ -91,4 +91,7 @@ images {
    image: "colorpicker_slider_trough.png" COMP;
    image: "colorpicker_slider_drag.png" COMP;
    image: "colorpicker_preview.png" COMP;
+   image: "wm_bg_brushed.png" COMP;
+   image: "wm_bg_overlay.png" COMP;
+   image: "wm_border.png" COMP;
 }

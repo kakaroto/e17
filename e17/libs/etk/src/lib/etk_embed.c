@@ -13,8 +13,9 @@
  */
 
 static void _etk_embed_constructor(Etk_Embed *embed);
-static void _etk_embed_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h);
-static void _etk_embed_object_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h);
+static void _etk_embed_evas_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y);
+static void _etk_embed_screen_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y);
+static void _etk_embed_size_get(Etk_Toplevel_Widget *toplevel, int *w, int *h);
 
 /**************************
  *
@@ -59,10 +60,11 @@ Etk_Widget *etk_embed_new(Evas *evas, void (*window_position_get)(void *window_d
    ETK_EMBED(embed)->window_position_get = window_position_get;
    ETK_EMBED(embed)->window_data = window_data;
    ETK_TOPLEVEL_WIDGET(embed)->evas = evas;
-   ETK_TOPLEVEL_WIDGET(embed)->geometry_get = _etk_embed_geometry_get;
-   ETK_TOPLEVEL_WIDGET(embed)->geometry_get = _etk_embed_object_geometry_get;
+   ETK_TOPLEVEL_WIDGET(embed)->evas_position_get = _etk_embed_evas_position_get;
+   ETK_TOPLEVEL_WIDGET(embed)->screen_position_get = _etk_embed_screen_position_get;
+   ETK_TOPLEVEL_WIDGET(embed)->size_get = _etk_embed_size_get;
    
-   /* TODO: font path */
+   /* TODO: remove font path */
    evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts/");
    /* TODO: FIXME: We need that to force the widget to realize */
    etk_object_properties_set(ETK_OBJECT(embed), "theme_group", "", NULL);
@@ -115,8 +117,14 @@ static void _etk_embed_constructor(Etk_Embed *embed)
  *
  **************************/
 
-/* Gets the geometry of the embed toplevel widget */
-static void _etk_embed_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h)
+/* Gets the evas position of the embed widget */
+static void _etk_embed_evas_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y)
+{
+   etk_widget_geometry_get(ETK_WIDGET(toplevel), x, y, NULL, NULL);
+}
+
+/* Gets the screen position of the embed widget */
+static void _etk_embed_screen_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y)
 {
    Etk_Embed *embed;
    int win_x, win_y;
@@ -124,7 +132,7 @@ static void _etk_embed_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *
    if (!(embed = ETK_EMBED(toplevel)))
       return;
    
-   etk_widget_geometry_get(ETK_WIDGET(toplevel), x, y, w, h);
+   etk_widget_geometry_get(ETK_WIDGET(embed), x, y, NULL, NULL);
    if (embed->window_position_get)
    {
       embed->window_position_get(embed->window_data, &win_x, &win_y);
@@ -133,10 +141,10 @@ static void _etk_embed_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *
    }
 }
 
-/* Gets the geometry of the evas object of the embed toplevel widget */
-static void _etk_embed_object_geometry_get(Etk_Toplevel_Widget *toplevel, int *x, int *y, int *w, int *h)
+/* Gets the size of the embed widget */
+static void _etk_embed_size_get(Etk_Toplevel_Widget *toplevel, int *w, int *h)
 {
-   etk_widget_geometry_get(ETK_WIDGET(toplevel), x, y, w, h);
+   etk_widget_geometry_get(ETK_WIDGET(toplevel), NULL, NULL, w, h);
 }
 
 /** @} */
