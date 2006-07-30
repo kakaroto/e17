@@ -4,7 +4,7 @@ images {
 collections {
    group {
       name: "icon";
-      max: %d %d;
+      max: 24 24;
       parts {
         part {
            name: "image";
