@@ -289,17 +289,4 @@ use constant
     humStockIds => 214,
 };
     
-sub KeyGet
-{
-    my $stock_id = shift;
-    my $size = shift;
-    return Etk::etk_stock_key_get($stock_id, $size);
-}
-
-sub LabelGet
-{
-    my $stock_id = shift;
-    return Etk::etk_stock_label_get($stock_id);
-}
-
 1;

@@ -1,4 +1,3 @@
-
 General TODO:
 =============
 - finish porting etk_test from C to perl
@@ -15,6 +14,7 @@ General TODO:
 - etk_type.h
 - etk_types.h
 - etk_utils.h
+- go over all list functions and check as necessary
 - create Test cases
 
 Done:

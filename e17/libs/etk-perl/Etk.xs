@@ -14,6 +14,9 @@
 
 #include "const-c.inc"
 
+#include "EtkTypes.h"
+
+
 typedef struct _Callback_Signal_Data Callback_Signal_Data;
 typedef struct _Notification_Callback_Data Notification_Callback_Data;
 typedef struct _Callback_Tree_Compare_Data Callback_Tree_Compare_Data;
@@ -276,26 +279,21 @@ __etk_signal_connect_full(char *signal_name, SV *object, SV *callback, SV *data,
 {
 	dSP;
 
-	Etk_Object *	obj;
 	Callback_Signal_Data *cbd = NULL;
 	Etk_Signal *sig = NULL;
 	Etk_Marshaller marsh;
-
-	HV * ref;
-	SV ** o;
+	Etk_Object * obj;
 
 	ENTER;
 	SAVETMPS;
 
-	ref = (HV *)SvRV(object);
-	o = hv_fetch( ref, "WIDGET", strlen("WIDGET"), 0);
-
-	obj = ETK_OBJECT( (void *) SvIV(SvRV(*o)) );
+	obj = (Etk_Object *)SvObj(object, "Etk::Object");
 
 	cbd = calloc(1, sizeof(Callback_Signal_Data));
 	cbd->signal_name = strdup(signal_name);
 	cbd->object = obj;
-	cbd->perl_object = newSVsv(object);
+	//cbd->perl_object = newSViv((IV)obj);
+	cbd->perl_object = object;
 	cbd->perl_data = newSVsv(data);
 	cbd->perl_callback = newSVsv(callback);	
 	
@@ -503,137 +501,7 @@ Etk_Tree_Col * col, void * data )
    return ret;
 }
 
-Etk_Color
-perl_hash_to_color(SV * color)
-{
-	dSP;
-	Etk_Color col;
-
-	ENTER;
-	SAVETMPS;
 	
-	if (SvROK(color) && SvTYPE(SvRV(color)) == SVt_PVHV) 
-	{
-	    HV * hash;
-	    SV ** val;
-
-	    hash = (HV*)SvRV(color);
-
-	    val = hv_fetch(hash, "r", strlen("r"), 0);
-	    col.r = val ? SvIV(*val) : 0;
-
-	    val = hv_fetch(hash, "g", strlen("g"), 0);
-	    col.g = val ? SvIV(*val) : 0;
-
-	    val = hv_fetch(hash, "b", strlen("b"), 0);
-	    col.b = val ? SvIV(*val) : 0;
-
-	    val = hv_fetch(hash, "a", strlen("a"), 0);
-	    col.a = val ? SvIV(*val) : 0;
-		
-	}
-
-	PUTBACK;
-	FREETMPS;
-	LEAVE;
-
-	return col;
-}	
-
-HV *
-color_to_perl_hash(Etk_Color col)
-{
-	dSP;
-	HV * hv;
-	SV * color;
-
-	ENTER;
-	SAVETMPS;
-	
-	hv = (HV*)sv_2mortal((SV*)newHV());
-
-	color = newSViv(col.r);
-        hv_store(hv, "r", strlen("r"), color, 0);
-	color = newSViv(col.g);
-        hv_store(hv, "g", strlen("g"), color, 0);
-	color = newSViv(col.b);
-        hv_store(hv, "b", strlen("b"), color, 0);
-	color = newSViv(col.a);
-        hv_store(hv, "a", strlen("a"), color, 0);
-	
-	PUTBACK;
-	FREETMPS;
-	LEAVE;
-
-	return hv;
-}	
-
-
-Etk_Geometry
-perl_hash_to_geometry(SV * geometry)
-{
-	dSP;
-	
-	Etk_Geometry geo;
-
-	ENTER;
-	SAVETMPS;
-	
-	if (SvROK(geometry) && SvTYPE(SvRV(geometry)) == SVt_PVHV) 
-	{
-	    HV * hash;
-	    SV ** val;
-
-	    hash = (HV*)SvRV(geometry);
-
-	    val = hv_fetch(hash, "x", strlen("x"), 0);
-	    geo.x = val ? SvIV(*val) : 0;
-
-	    val = hv_fetch(hash, "y", strlen("y"), 0);
-	    geo.y = val ? SvIV(*val) : 0;
-
-	    val = hv_fetch(hash, "w", strlen("w"), 0);
-	    geo.w = val ? SvIV(*val) : 0;
-
-	    val = hv_fetch(hash, "h", strlen("h"), 0);
-	    geo.h = val ? SvIV(*val) : 0;
-		
-	}
-
-	PUTBACK;
-	FREETMPS;
-	LEAVE;
-	
-	return geo;
-}	
-
-HV *
-geometry_to_perl_hash(Etk_Geometry geo)
-{
-	dSP;
-	HV * hv;
-	SV * geometry;
-	
-	ENTER;
-	SAVETMPS;
-	
-	hv = (HV*)sv_2mortal((SV*)newHV());
-
-	geometry = newSViv(geo.x);
-        hv_store(hv, "x", strlen("x"), geometry, 0);
-	geometry = newSViv(geo.y);
-        hv_store(hv, "y", strlen("y"), geometry, 0);
-	geometry = newSViv(geo.w);
-        hv_store(hv, "w", strlen("w"), geometry, 0);
-	geometry = newSViv(geo.h);
-        hv_store(hv, "h", strlen("h"), geometry, 0);
-	
-	PUTBACK;
-	FREETMPS;
-	LEAVE;
-
-	return hv;
-}	
 
 Etk_Size
 perl_hash_to_size(SV * size)
@@ -711,62 +579,78 @@ evas_list_to_perl(Evas_List * list)
 	return av;
 }
 
-MODULE = Etk		PACKAGE = Etk		
+MODULE = Etk		PACKAGE = Etk	PREFIX = etk_
 
 INCLUDE: const-xs.inc
 
+Etk_Bool
+etk_init(engine)
+	const char * engine
+	CODE:
+	RETVAL = etk_init(engine);
+	__etk_perl_inheritance_init();
+	OUTPUT:
+	RETVAL
+
+void
+etk_shutdown()
+
+MODULE = Etk::Alignment		PACKAGE = Etk::Alignment	PREFIX = etk_alignment_
+
 void
 etk_alignment_get(alignment)
-	Etk_Widget *	alignment
+	Etk_Alignment *	alignment
       PPCODE:
 	float xalign;
 	float yalign;
 	float xscale;
 	float yscale;
 
-	etk_alignment_get(ETK_ALIGNMENT(alignment), &xalign, &yalign,
-	                  &xscale, &yscale);
+	etk_alignment_get(alignment, &xalign, &yalign, &xscale, &yscale);
         EXTEND(SP, 4);
         PUSHs(sv_2mortal(newSVnv(xalign)));
         PUSHs(sv_2mortal(newSVnv(yalign)));
         PUSHs(sv_2mortal(newSVnv(xscale)));
         PUSHs(sv_2mortal(newSVnv(yscale)));	
 
-Etk_Widget *
-etk_alignment_new(xalign, yalign, xscale, yscale)
-	float	xalign
-	float	yalign
-	float	xscale
-	float	yscale
-
-void
-etk_alignment_set(alignment, xalign, yalign, xscale, yscale)
-	Etk_Widget *	alignment
+Etk_Alignment *
+new(class, xalign=0.5, yalign=0.5, xscale=1, yscale=1)
+	SV	*class
 	float	xalign
 	float	yalign
 	float	xscale
 	float	yscale
 	CODE:
-	etk_alignment_set(ETK_ALIGNMENT(alignment), xalign, yalign, xscale, yscale);
-
-Etk_Widget *
-etk_bin_child_get(bin)
-	Etk_Widget *	bin
-	CODE:
-	RETVAL = etk_bin_child_get(ETK_BIN(bin));
+	RETVAL = ETK_ALIGNMENT(etk_alignment_new(xalign, yalign, xscale, yscale));
 	OUTPUT:
 	RETVAL
 
 void
+etk_alignment_set(alignment, xalign, yalign, xscale, yscale)
+	Etk_Alignment *	alignment
+	float	xalign
+	float	yalign
+	float	xscale
+	float	yscale
+
+
+MODULE = Etk::Bin		PACKAGE = Etk::Bin	PREFIX = etk_bin_
+
+Etk_Widget *
+etk_bin_child_get(bin)
+	Etk_Bin *	bin
+
+void
 etk_bin_child_set(bin, child)
-	Etk_Widget *	bin
+	Etk_Bin *	bin
 	Etk_Widget *	child
-	CODE:
-	etk_bin_child_set(ETK_BIN(bin), child);
+
+
+MODULE = Etk::Box		PACKAGE = Etk::Box	PREFIX = etk_box_
 
 void
 etk_box_child_packing_get(box, child)
-	Etk_Widget *	box
+	Etk_Box *	box
 	Etk_Widget *	child
      PPCODE:
        int 	        padding;
@@ -774,8 +658,7 @@ etk_box_child_packing_get(box, child)
        Etk_Bool   	fill;
        Etk_Bool   	pack_end;
        
-       etk_box_child_packing_get(ETK_BOX(box), child, &padding, &expand, &fill,
-                                 &pack_end);
+       etk_box_child_packing_get(box, child, &padding, &expand, &fill, &pack_end);
        EXTEND(SP, 4);
        PUSHs(sv_2mortal(newSViv(padding)));
        PUSHs(sv_2mortal(newSViv(expand)));
@@ -784,152 +667,127 @@ etk_box_child_packing_get(box, child)
 
 void
 etk_box_child_packing_set(box, child, padding, expand, fill, pack_end)
-	Etk_Widget *	box
+	Etk_Box *	box
 	Etk_Widget *	child
 	int	padding
 	Etk_Bool	expand
 	Etk_Bool	fill
 	Etk_Bool	pack_end
-	CODE:
-	etk_box_child_packing_set(ETK_BOX(box), child, padding, expand, fill, pack_end);
 
 Etk_Bool
 etk_box_homogeneous_get(box)
-	Etk_Widget *	box
-	CODE:
-	RETVAL = etk_box_homogeneous_get(ETK_BOX(box));
-	OUTPUT:
-	RETVAL
+	Etk_Box *	box
 
 void
 etk_box_homogeneous_set(box, homogeneous)
-	Etk_Widget *	box
+	Etk_Box *	box
 	Etk_Bool	homogeneous
-	CODE:
-	etk_box_homogeneous_set(ETK_BOX(box), homogeneous);
 
 void
-etk_box_pack_end(box, child, expand, fill, padding)
-	Etk_Widget *	box
+etk_box_pack_end(box, child, expand=1, fill=1, padding=0)
+	Etk_Box *	box
 	Etk_Widget *	child
 	Etk_Bool	expand
 	Etk_Bool	fill
 	int	padding
-	CODE:
-	etk_box_pack_end(ETK_BOX(box), child, expand, fill, padding);
 
 void
-etk_box_pack_start(box, child, expand, fill, padding)
-	Etk_Widget *	box
+etk_box_pack_start(box, child, expand=1, fill=1, padding=0)
+	Etk_Box *	box
 	Etk_Widget *	child
 	Etk_Bool	expand
 	Etk_Bool	fill
 	int	padding
-	CODE:
-	etk_box_pack_start(ETK_BOX(box), child, expand, fill, padding);
 
 int
 etk_box_spacing_get(box)
-	Etk_Widget *	box
-	CODE:
-	RETVAL = etk_box_spacing_get(ETK_BOX(box));
-	OUTPUT:
-	RETVAL
+	Etk_Box *	box
 
 void
 etk_box_spacing_set(box, spacing)
-	Etk_Widget *	box
+	Etk_Box *	box
 	int	spacing
-	CODE:
-	etk_box_spacing_set(ETK_BOX(box), spacing);
+
+MODULE = Etk::Button		PACKAGE = Etk::Button	PREFIX = etk_button_
 
 void
 etk_button_alignment_get(button)
-	Etk_Widget *	button
+	Etk_Button *	button
       PPCODE:	
        float xalign;
        float yalign;
        
-       etk_button_alignment_get(ETK_BUTTON(button), &xalign, &yalign);
+       etk_button_alignment_get(button, &xalign, &yalign);
        EXTEND(SP, 2);
        PUSHs(sv_2mortal(newSVnv(xalign)));
        PUSHs(sv_2mortal(newSVnv(yalign)));
 
 void
 etk_button_alignment_set(button, xalign, yalign)
-	Etk_Widget *	button
+	Etk_Button *	button
 	float	xalign
 	float	yalign
-	CODE:
-	etk_button_alignment_set(ETK_BUTTON(button), xalign, yalign);
 
 void
 etk_button_click(button)
-	Etk_Widget *	button
-	CODE:
-	etk_button_click(ETK_BUTTON(button));
+	Etk_Button *	button
 
-Etk_Widget *
+Etk_Image *
 etk_button_image_get(button)
-	Etk_Widget *	button
-	CODE:
-	Etk_Image * var;
-	var = etk_button_image_get(ETK_BUTTON(button));
-	RETVAL = ETK_WIDGET(var);
-	OUTPUT:
-	RETVAL
+	Etk_Button *	button
 
 void
 etk_button_image_set(button, image)
-	Etk_Widget *	button
-	Etk_Widget *	image
-	CODE:
-	etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
+	Etk_Button *	button
+	Etk_Image *	image
 
 const char *
 etk_button_label_get(button)
-	Etk_Widget *	button
+	Etk_Button *	button
+
+void
+etk_button_label_set(button, label)
+	Etk_Button *	button
+	char *	label
+
+Etk_Button *
+new(class)
+	SV	*class
 	CODE:
-	RETVAL = etk_button_label_get(ETK_BUTTON(button));
+	RETVAL = ETK_BUTTON(etk_button_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Button *
+new_from_stock(stock_id)
+	Etk_Stock_Id	stock_id
+	CODE:
+	RETVAL = ETK_BUTTON(etk_button_new_from_stock(stock_id));
+	OUTPUT:
+	RETVAL
+
+Etk_Button *
+new_with_label(label)
+	char *	label
+	CODE:
+	RETVAL = ETK_BUTTON(etk_button_new_with_label(label));
 	OUTPUT:
 	RETVAL
 
 void
-etk_button_label_set(button, label)
-	Etk_Widget *	button
-	char *	label
-	CODE:
-	etk_button_label_set(ETK_BUTTON(button), label);
-
-Etk_Widget *
-etk_button_new()
-
-Etk_Widget *
-etk_button_new_from_stock(stock_id)
-	Etk_Stock_Id	stock_id
-
-Etk_Widget *
-etk_button_new_with_label(label)
-	char *	label
-
-void
 etk_button_press(button)
-	Etk_Widget *	button
-	CODE:
-	etk_button_press(ETK_BUTTON(button));
+	Etk_Button *	button
 
 void
 etk_button_release(button)
-	Etk_Widget *	button
-	CODE:
-	etk_button_release(ETK_BUTTON(button));
+	Etk_Button *	button
 
 void
 etk_button_set_from_stock(button, stock_id)
-	Etk_Widget *	button
+	Etk_Button *	button
 	Etk_Stock_Id	stock_id
-	CODE:
-	etk_button_set_from_stock(ETK_BUTTON(button), stock_id);
+
+MODULE = Etk::Canvas		PACKAGE = Etk::Canvas	PREFIX = etk_canvas_
 
 Etk_Widget *
 etk_canvas_new()
@@ -952,12 +810,26 @@ etk_canvas_object_remove(canvas, object)
 	CODE:
 	etk_canvas_object_remove(ETK_CANVAS(canvas), object);
 
-Etk_Widget *
-etk_check_button_new()
 
-Etk_Widget *
-etk_check_button_new_with_label(label)
+MODULE = Etk::CheckButton		PACKAGE = Etk::CheckButton	PREFIX = etk_check_button_
+	
+Etk_Check_Button *
+new(class)
+	SV	*class
+	CODE:
+	RETVAL = ETK_CHECK_BUTTON(etk_check_button_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Check_Button *
+new_with_label(label)
 	char *	label
+	CODE:
+	RETVAL = ETK_CHECK_BUTTON(etk_check_button_new_with_label(label));
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::Clipboard		PACKAGE = Etk::Clipboard	PREFIX = etk_clipboard_
 
 void
 etk_clipboard_text_request(widget)
@@ -969,82 +841,80 @@ etk_clipboard_text_set(widget, data, length)
 	char *	data
 	int	length
 
-void
-etk_colorpicker_current_color_get(cp)
-	Etk_Widget *	cp
-	PPCODE:
-	Etk_Color var;
-	HV * hv;
-	SV * color;
-	
-	var = etk_colorpicker_current_color_get(ETK_COLORPICKER(cp));
-	hv = color_to_perl_hash(var);
 
-	color = newRV((SV*)hv);
-	XPUSHs(sv_2mortal(color));
+MODULE = Etk::Colorpicker		PACKAGE = Etk::Colorpicker	PREFIX = etk_colorpicker_
+	
+Etk_Color
+etk_colorpicker_current_color_get(cp)
+	Etk_Colorpicker *	cp
 	
 
 void
 etk_colorpicker_current_color_set(cp, color)
-	Etk_Widget *	cp
-	SV *	color
-	PPCODE:
-	Etk_Color col;
-	
-	col = perl_hash_to_color(color);
-	etk_colorpicker_current_color_set(ETK_COLORPICKER(cp), col);
+	Etk_Colorpicker *	cp
+	Etk_Color	color
 	
 
 Etk_Colorpicker_Mode
 etk_colorpicker_mode_get(cp)
-	Etk_Widget *	cp
-	CODE:
-	RETVAL = etk_colorpicker_mode_get(ETK_COLORPICKER(cp));
-	OUTPUT:
-	RETVAL
+	Etk_Colorpicker *	cp
 
 void
 etk_colorpicker_mode_set(cp, mode)
-	Etk_Widget *	cp
+	Etk_Colorpicker *	cp
 	Etk_Colorpicker_Mode	mode
-	CODE:
-	etk_colorpicker_mode_set(ETK_COLORPICKER(cp), mode);
 
-Etk_Widget *
-etk_colorpicker_new()
-
-Etk_Combobox_Item *
-etk_combobox_active_item_get(combobox)
-	Etk_Widget *	combobox
+Etk_Colorpicker *
+new(class)
+	SV	*class
 	CODE:
-	Etk_Combobox_Item * var;
-	var = etk_combobox_active_item_get(ETK_COMBOBOX(combobox));
-	RETVAL = var;
+	RETVAL = ETK_COLORPICKER(etk_colorpicker_new());
 	OUTPUT:
 	RETVAL
 
+MODULE = Etk::Combobox		PACKAGE = Etk::Combobox		PREFIX = etk_combobox_
+	
+
+Etk_Combobox *
+new(class)
+	SV	*class
+	CODE:
+	RETVAL = ETK_COMBOBOX(etk_combobox_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Combobox *
+new_default()
+	CODE:
+	RETVAL = ETK_COMBOBOX(etk_combobox_new_default());
+	OUTPUT:
+	RETVAL
+
+Etk_Combobox_Item *
+etk_combobox_active_item_get(combobox)
+	Etk_Combobox *	combobox
+
+Etk_Combobox_Item *
+etk_combobox_nth_item_get(combobox, index)
+	Etk_Combobox *	combobox
+	int	index
+
 void
 etk_combobox_active_item_set(combobox, item)
-	Etk_Widget *	combobox
+	Etk_Combobox *	combobox
 	Etk_Combobox_Item *	item
-	CODE:
-	etk_combobox_active_item_set(ETK_COMBOBOX(combobox), item);
 
 void
 etk_combobox_build(combobox)
-	Etk_Widget *	combobox
-	CODE:
-	etk_combobox_build(ETK_COMBOBOX(combobox));
+	Etk_Combobox *	combobox
 
 void
 etk_combobox_clear(combobox)
-	Etk_Widget *	combobox
-	CODE:
-	etk_combobox_clear(ETK_COMBOBOX(combobox));
+	Etk_Combobox *	combobox
 
 void
 etk_combobox_column_add(combobox, col_type, size, expand, hfill, vfill, xalign, yalign)
-	Etk_Widget *	combobox
+	Etk_Combobox *	combobox
 	Etk_Combobox_Column_Type	col_type
 	int	size
 	Etk_Bool	expand
@@ -1052,16 +922,19 @@ etk_combobox_column_add(combobox, col_type, size, expand, hfill, vfill, xalign, 
 	Etk_Bool	vfill
 	float	xalign
 	float	yalign
-	CODE:
-	etk_combobox_column_add(ETK_COMBOBOX(combobox), col_type, size, expand, hfill, vfill, xalign, yalign);
 
 void
-etk_combobox_item_activate(item)
-	Etk_Combobox_Item *	item
+etk_combobox_item_height_set(combobox, item_height)
+	Etk_Combobox *	combobox
+	int	item_height
+
+int
+etk_combobox_item_height_get(combobox)
+	Etk_Combobox *	combobox
 
 Etk_Combobox_Item *
-etk_combobox_item_append_complex(combobox, ...)
-        Etk_Widget * combobox
+etk_combobox_item_append(combobox, ...)
+        Etk_Combobox * combobox
     CODE:
         int i;
         void **ptr = NULL;
@@ -1087,46 +960,43 @@ etk_combobox_item_append_complex(combobox, ...)
         switch(items)
         {	   
 	   case 2:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0]);
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0]);
 	   break;
 	   case 3:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0],
-					     ptr[1]);
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0], ptr[1]);
 	   break;
 	   case 4:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0],
-					     ptr[1], ptr[2]);
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0], ptr[1], ptr[2]);
 	   break;
 	   case 5:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0],
-					     ptr[1], ptr[2], ptr[3]);
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0], ptr[1], ptr[2], ptr[3]);
 	   break;
 	   case 6:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4]);
 	   break;
 	   case 7:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4], 
 					     ptr[5]);
 	   break;
 	   case 8:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4],
 					     ptr[5], ptr[6]);
 	   break;
 	   case 9:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4], 
 					     ptr[5], ptr[6], ptr[7]);
 	   break;
 	   case 10:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4], 
 					     ptr[5], ptr[6], ptr[7], ptr[8]);
 	   break;
 	   case 11:
-	   RETVAL = etk_combobox_item_append(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_append(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4], 
 					     ptr[5], ptr[6], ptr[7], ptr[8],
 					     ptr[9]);
@@ -1138,8 +1008,8 @@ etk_combobox_item_append_complex(combobox, ...)
         RETVAL
   
 Etk_Combobox_Item *
-etk_combobox_item_prepend_complex(combobox, ...)
-        Etk_Widget * combobox
+etk_combobox_item_prepend(combobox, ...)
+        Etk_Combobox * combobox
     CODE:
         int i;
         void **ptr = NULL;
@@ -1165,46 +1035,46 @@ etk_combobox_item_prepend_complex(combobox, ...)
         switch(items)
         {	   
 	   case 2:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0]);
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0]);
 	   break;
 	   case 3:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0],
 					     ptr[1]);
 	   break;
 	   case 4:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0],
 					     ptr[1], ptr[2]);
 	   break;
 	   case 5:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3]);
 	   break;
 	   case 6:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4]);
 	   break;
 	   case 7:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4], 
 					     ptr[5]);
 	   break;
 	   case 8:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4],
 					     ptr[5], ptr[6]);
 	   break;
 	   case 9:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4], 
 					     ptr[5], ptr[6], ptr[7]);
 	   break;
 	   case 10:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4], 
 					     ptr[5], ptr[6], ptr[7], ptr[8]);
 	   break;
 	   case 11:
-	   RETVAL = etk_combobox_item_prepend(ETK_COMBOBOX(combobox), ptr[0],
+	   RETVAL = etk_combobox_item_prepend(combobox, ptr[0],
 					     ptr[1], ptr[2], ptr[3], ptr[4], 
 					     ptr[5], ptr[6], ptr[7], ptr[8],
 					     ptr[9]);
@@ -1216,8 +1086,8 @@ etk_combobox_item_prepend_complex(combobox, ...)
         RETVAL
   
 Etk_Combobox_Item *
-etk_combobox_item_prepend_relative_complex(combobox, relative, ...)
-        Etk_Widget * combobox
+etk_combobox_item_prepend_relative(combobox, relative, ...)
+        Etk_Combobox * combobox
         Etk_Combobox_Item * relative
     CODE:
         int i;
@@ -1244,58 +1114,58 @@ etk_combobox_item_prepend_relative_complex(combobox, relative, ...)
         switch(items)
         {	   
 	   case 2:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0]);
 	   break;
 	   case 3:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0], 
 						       ptr[1]);
 	   break;
 	   case 4:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2]);
 	   break;
 	   case 5:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3]);
 	   break;
 	   case 6:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4]);
 	   break;
 	   case 7:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5]);
 	   break;
 	   case 8:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5], ptr[6]);
 	   break;
 	   case 9:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5], ptr[6],
 						       ptr[7]);
 	   break;
 	   case 10:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5], ptr[6],
 						       ptr[7], ptr[8]);
 	   break;
 	   case 11:
-	   RETVAL = etk_combobox_item_prepend_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3], 
 						       ptr[4], ptr[5], ptr[6], 
@@ -1308,8 +1178,8 @@ etk_combobox_item_prepend_relative_complex(combobox, relative, ...)
         RETVAL
   
 Etk_Combobox_Item *
-etk_combobox_item_append_relative_complex(combobox, relative, ...)
-        Etk_Widget * combobox
+etk_combobox_item_append_relative(combobox, relative, ...)
+        Etk_Combobox * combobox
         Etk_Combobox_Item * relative
     CODE:
         int i;
@@ -1336,58 +1206,58 @@ etk_combobox_item_append_relative_complex(combobox, relative, ...)
         switch(items)
         {	   
 	   case 2:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0]);
 	   break;
 	   case 3:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0], 
 						       ptr[1]);
 	   break;
 	   case 4:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2]);
 	   break;
 	   case 5:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3]);
 	   break;
 	   case 6:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4]);
 	   break;
 	   case 7:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5]);
 	   break;
 	   case 8:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5], ptr[6]);
 	   break;
 	   case 9:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5], ptr[6],
 						       ptr[7]);
 	   break;
 	   case 10:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5], ptr[6],
 						       ptr[7], ptr[8]);
 	   break;
 	   case 11:
-	   RETVAL = etk_combobox_item_append_relative(ETK_COMBOBOX(combobox), 
+	   RETVAL = etk_combobox_item_append_relative(combobox, 
 						       relative, ptr[0],
 						       ptr[1], ptr[2], ptr[3], 
 						       ptr[4], ptr[5], ptr[6], 
@@ -1398,6 +1268,13 @@ etk_combobox_item_append_relative_complex(combobox, relative, ...)
           free(ptr);
     OUTPUT:
         RETVAL  
+
+
+MODULE = Etk::Combobox::Item		PACKAGE = Etk::Combobox::Item		PREFIX = etk_combobox_item_
+
+void
+etk_combobox_item_activate(item)
+	Etk_Combobox_Item *	item
   
 SV *
 etk_combobox_item_data_get(item)
@@ -1416,198 +1293,176 @@ etk_combobox_item_data_set_full(item, data, free_cb)
 	void *	data
 	void ( * ) ( void * data ) free_cb
 
-int
-etk_combobox_item_height_get(combobox)
-	Etk_Widget *	combobox
-	CODE:
-	RETVAL = etk_combobox_item_height_get(ETK_COMBOBOX(combobox));
-	OUTPUT:
-	RETVAL
-
-void
-etk_combobox_item_height_set(combobox, item_height)
-	Etk_Widget *	combobox
-	int	item_height
-	CODE:
-	etk_combobox_item_height_set(ETK_COMBOBOX(combobox), item_height);
-
 void
 etk_combobox_item_remove(combobox, item)
-	Etk_Widget *	combobox
+	Etk_Combobox *	combobox
 	Etk_Combobox_Item *	item
-	CODE:
-	etk_combobox_item_remove(ETK_COMBOBOX(combobox), item);
 
-Etk_Widget *
-etk_combobox_new()
 
-Etk_Widget *
-etk_combobox_new_default()
-
-Etk_Combobox_Item *
-etk_combobox_nth_item_get(combobox, index)
-	Etk_Widget *	combobox
-	int	index
-	CODE:
-	RETVAL = etk_combobox_nth_item_get(ETK_COMBOBOX(combobox), index);
-	OUTPUT:
-	RETVAL
+MODULE = Etk::Container	PACKAGE = Etk::Container	PREFIX = etk_container_
 
 void
 etk_container_add(container, widget)
-	Etk_Widget *	container
+	Etk_Container *	container
 	Etk_Widget *	widget
-	CODE:
-	etk_container_add(ETK_CONTAINER(container), widget);
 
 int
 etk_container_border_width_get(container)
-	Etk_Widget *	container
-	CODE:
-	RETVAL = etk_container_border_width_get(ETK_CONTAINER(container));
-	OUTPUT:
-	RETVAL
+	Etk_Container *	container
 
 void
 etk_container_border_width_set(container, border_width)
-	Etk_Widget *	container
+	Etk_Container *	container
 	int	border_width
-	CODE:
-	etk_container_border_width_set(ETK_CONTAINER(container), border_width);
 
 void
 etk_container_child_space_fill(child, child_space, hfill, vfill, xalign, yalign)
 	Etk_Widget *	child
-	SV *	child_space
+	Etk_Geometry *	child_space
 	Etk_Bool	hfill
 	Etk_Bool	vfill
 	float	xalign
 	float	yalign
-	CODE:
-	Etk_Geometry sp;
-	sp = perl_hash_to_geometry(child_space);
-	etk_container_child_space_fill(child, &sp, hfill, vfill, xalign, yalign);
 	
+void
+etk_container_children_get(container)
+	Etk_Container	*container
+	PPCODE:
+	Evas_List * children;
+	AV * av;
+	int i;
+	
+	children = etk_container_children_get(container);
+	av = evas_list_to_perl(children);
+	for (i=0; i<=av_len(av); i++)
+	{
+		XPUSHs(sv_2mortal(newSViv(SvIV(av_shift(av)))));
+	}
 
+Etk_Bool
+etk_container_is_child(container, widget)
+	Etk_Container * container
+	Etk_Widget * widget
+
+# TODO: etk_container_for_each
+	
 void
 etk_container_remove(container, widget)
-	Etk_Widget *	container
+	Etk_Container *	container
 	Etk_Widget *	widget
-	CODE:
-	etk_container_remove(ETK_CONTAINER(container), widget);
 
-Etk_Widget *
+MODULE = Etk::Dialog	PACKAGE = Etk::Dialog	PREFIX = etk_dialog_
+
+Etk_Button *
 etk_dialog_button_add(dialog, label, response_id)
-	Etk_Widget *	dialog
+	Etk_Dialog *	dialog
 	char *	label
 	int	response_id
 	CODE:
-	RETVAL = etk_dialog_button_add(ETK_DIALOG(dialog), label, response_id);
+	RETVAL = ETK_BUTTON(etk_dialog_button_add(dialog, label, response_id));
 	OUTPUT:
 	RETVAL
 
-Etk_Widget *
+Etk_Button *
 etk_dialog_button_add_from_stock(dialog, stock_id, response_id)
-	Etk_Widget *	dialog
+	Etk_Dialog *	dialog
 	int	stock_id
 	int	response_id
 	CODE:
-	RETVAL = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), stock_id, response_id);
+	RETVAL = ETK_BUTTON(etk_dialog_button_add_from_stock(dialog, stock_id, response_id));
 	OUTPUT:
 	RETVAL
 	
 
 Etk_Bool
 etk_dialog_has_separator_get(dialog)
-	Etk_Widget *	dialog
+	Etk_Dialog *	dialog
+
+void
+etk_dialog_has_separator_set(dialog, has_separator)
+	Etk_Dialog *	dialog
+	Etk_Bool	has_separator
+
+Etk_Dialog *
+new(class)
+	SV	* class
 	CODE:
-	RETVAL = etk_dialog_has_separator_get(ETK_DIALOG(dialog));
+	RETVAL = ETK_DIALOG(etk_dialog_new());
 	OUTPUT:
 	RETVAL
 
 void
-etk_dialog_has_separator_set(dialog, has_separator)
-	Etk_Widget *	dialog
-	Etk_Bool	has_separator
-	CODE:
-	etk_dialog_has_separator_set(ETK_DIALOG(dialog), has_separator);
-
-Etk_Widget *
-etk_dialog_new()
-
-void
 etk_dialog_pack_button_in_action_area(dialog, button, response_id, expand, fill, padding, pack_at_end)
-	Etk_Widget *	dialog
-	Etk_Widget *	button
+	Etk_Dialog *	dialog
+	Etk_Button *	button
 	int	response_id
 	Etk_Bool	expand
 	Etk_Bool	fill
 	int	padding
 	Etk_Bool	pack_at_end
-	CODE:
-	etk_dialog_pack_button_in_action_area(ETK_DIALOG(dialog), ETK_BUTTON(button), response_id, expand, fill, padding, pack_at_end);
 
 void
 etk_dialog_pack_in_main_area(dialog, widget, expand, fill, padding, pack_at_end)
-	Etk_Widget *	dialog
+	Etk_Dialog *	dialog
 	Etk_Widget *	widget
 	Etk_Bool	expand
 	Etk_Bool	fill
 	int	padding
 	Etk_Bool	pack_at_end
-	CODE:
-	etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), widget, expand, fill, padding, pack_at_end);
 
 void
 etk_dialog_pack_widget_in_action_area(dialog, widget, expand, fill, padding, pack_at_end)
-	Etk_Widget *	dialog
+	Etk_Dialog *	dialog
 	Etk_Widget *	widget
 	Etk_Bool	expand
 	Etk_Bool	fill
 	int	padding
 	Etk_Bool	pack_at_end
-	CODE:
-	etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog), widget, expand, fill, padding, pack_at_end);
 
+
+MODULE = Etk::Dnd	PACKAGE = Etk::Dnd	PREFIX = etk_dnd_
+	
 Etk_Bool
 etk_dnd_init()
 
 void
 etk_dnd_shutdown()
 
+
+MODULE = Etk::Drag	PACKAGE = Etk::Drag	PREFIX = etk_drag_
+	
 void
 etk_drag_begin(drag)
-	Etk_Widget *	drag
-	CODE:
-	etk_drag_begin(ETK_DRAG(drag));
+	Etk_Drag *	drag
 
 void
 etk_drag_data_set(drag, data, size)
-	Etk_Widget *	drag
+	Etk_Drag *	drag
 	SV *	data
 	CODE:
-	etk_drag_data_set(ETK_DRAG(drag), newSVsv(data), sizeof(SV));
+	etk_drag_data_set(drag, newSVsv(data), sizeof(SV));
 
-Etk_Widget *
-etk_drag_new(widget)
+Etk_Drag *
+new(class, widget)
+	SV * class
 	Etk_Widget *	widget
+	CODE:
+	RETVAL = ETK_DRAG(etk_drag_new(widget));
+	OUTPUT:
+	RETVAL
 
 Etk_Widget *
 etk_drag_parent_widget_get(drag)
-	Etk_Widget *	drag
-	CODE:
-	etk_drag_parent_widget_get(ETK_DRAG(drag));
+	Etk_Drag *	drag
 
 void
 etk_drag_parent_widget_set(drag, widget)
-	Etk_Widget *	drag
+	Etk_Drag *	drag
 	Etk_Widget *	widget
-	CODE:
-	etk_drag_parent_widget_set(ETK_DRAG(drag), widget);
 
 void
 etk_drag_types_set(drag, types)
-	Etk_Widget *	drag
+	Etk_Drag *	drag
 	AV * types
 	CODE:
 	const char **	t;
@@ -1625,8 +1480,11 @@ etk_drag_types_set(drag, types)
 		t[i] = 0;
 	}   
 	
-	etk_drag_types_set(ETK_DRAG(drag), t, num_types);
+	etk_drag_types_set(drag, t, num_types);
 
+MODULE = Etk::EditableText	PACKAGE = Etk::EditableText	PREFIX = etk_editable_text_
+
+# TODO
 
 Evas_Object *
 etk_editable_text_object_add(evas)
@@ -1678,97 +1536,77 @@ etk_editable_text_object_text_set(object, text)
 	Evas_Object *	object
 	char *	text
 
-Etk_Widget *
-etk_entry_new()
+
+MODULE = Etk::Entry	PACKAGE = Etk::Entry	PREFIX = etk_entry_
+	
+Etk_Entry *
+new(class)
+	SV *	class
+	CODE:
+	RETVAL = ETK_ENTRY(etk_entry_new());
+	OUTPUT:
+	RETVAL
 
 Etk_Bool
 etk_entry_password_get(entry)
-	Etk_Widget *	entry
-	CODE:
-	RETVAL = etk_entry_password_get(ETK_ENTRY(entry));
-	OUTPUT:
-	RETVAL
+	Etk_Entry *	entry
 
 void
 etk_entry_password_set(entry, on)
-	Etk_Widget *	entry
+	Etk_Entry *	entry
 	Etk_Bool	on
-	CODE:
-	etk_entry_password_set(ETK_ENTRY(entry), on);
 
 const char *
 etk_entry_text_get(entry)
-	Etk_Widget *	entry
-	CODE:
-	RETVAL = etk_entry_text_get(ETK_ENTRY(entry));
-	OUTPUT:
-	RETVAL
+	Etk_Entry *	entry
 
 void
 etk_entry_text_set(entry, text)
-	Etk_Widget *	entry
+	Etk_Entry *	entry
 	char *	text
-	CODE:
-	etk_entry_text_set(ETK_ENTRY(entry), text);
 
+
+MODULE = Etk::Filechooser	PACKAGE = Etk::Filechooser	PREFIX = etk_filechooser_
+	
 const char *
 etk_filechooser_widget_current_folder_get(filechooser_widget)
-	Etk_Widget *	filechooser_widget
-	CODE:
-	RETVAL = etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(filechooser_widget));
-	OUTPUT:
-	RETVAL
-	
+	Etk_Filechooser_Widget *	filechooser_widget
 
 void
 etk_filechooser_widget_current_folder_set(filechooser_widget, folder)
-	Etk_Widget *	filechooser_widget
+	Etk_Filechooser_Widget *	filechooser_widget
 	char *	folder
+
+Etk_Filechooser_Widget *
+etk_filechooser_widget_new(class)
+	SV * class
 	CODE:
-	etk_filechooser_widget_current_folder_set(ETK_FILECHOOSER_WIDGET(filechooser_widget), folder);
-
-
-Etk_Widget *
-etk_filechooser_widget_new()
+	RETVAL = ETK_FILECHOOSER_WIDGET(etk_filechooser_widget_new());
+	OUTPUT:
+	RETVAL
 
 Etk_Bool
 etk_filechooser_widget_select_multiple_get(filechooser_widget)
-	Etk_Widget *	filechooser_widget
-	CODE:
-	RETVAL = etk_filechooser_widget_select_multiple_get(ETK_FILECHOOSER_WIDGET(filechooser_widget));
-	OUTPUT:
-	RETVAL
+	Etk_Filechooser_Widget *	filechooser_widget
 
 void
 etk_filechooser_widget_select_multiple_set(filechooser_widget, select_multiple)
-	Etk_Widget *	filechooser_widget
+	Etk_Filechooser_Widget *	filechooser_widget
 	Etk_Bool	select_multiple
-	CODE:
-	etk_filechooser_widget_select_multiple_set(ETK_FILECHOOSER_WIDGET(filechooser_widget), select_multiple);
 
 const char *
 etk_filechooser_widget_selected_file_get(widget)
-	Etk_Widget *	widget
-	CODE:
-	const char * val;
-	val = etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(widget));
-	if (val)
-		RETVAL = val;
-	else
-		RETVAL = "";
-	OUTPUT:
-	RETVAL
-
+	Etk_Filechooser_Widget *	widget
 
 void
 etk_filechooser_widget_selected_files_get(widget)
-	Etk_Widget *	widget
+	Etk_Filechooser_Widget *	widget
 	PPCODE:
 	Evas_List * list;
 	AV * av;
 	int i;
 
-	list = etk_filechooser_widget_selected_files_get(ETK_FILECHOOSER_WIDGET(widget));
+	list = etk_filechooser_widget_selected_files_get(widget);
 	av = evas_list_to_perl(list);
 	for (i=0; i<=av_len(av); i++) 
 	{
@@ -1784,106 +1622,157 @@ etk_filechooser_widget_selected_files_get(widget)
 
 Etk_Bool
 etk_filechooser_widget_show_hidden_get(filechooser_widget)
-	Etk_Widget *	filechooser_widget
-	CODE:
-	RETVAL = etk_filechooser_widget_show_hidden_get(ETK_FILECHOOSER_WIDGET(filechooser_widget));
-	OUTPUT:
-	RETVAL
+	Etk_Filechooser_Widget *	filechooser_widget
 
 void
 etk_filechooser_widget_show_hidden_set(filechooser_widget, show_hidden)
-	Etk_Widget *	filechooser_widget
+	Etk_Filechooser_Widget *	filechooser_widget
 	Etk_Bool	show_hidden
-	CODE:
-	etk_filechooser_widget_show_hidden_set(ETK_FILECHOOSER_WIDGET(filechooser_widget), show_hidden);
 	
+
+MODULE = Etk::Frame	PACKAGE = Etk::Frame	PREFIX = etk_frame_
 
 const char *
 etk_frame_label_get(frame)
-	Etk_Widget *	frame
-	CODE:
-	const char * var;
-	var = etk_frame_label_get(ETK_FRAME(frame));
-	RETVAL = var;
-	OUTPUT:
-	RETVAL
+	Etk_Frame *	frame
 
 void
 etk_frame_label_set(frame, label)
-	Etk_Widget *	frame
+	Etk_Frame *	frame
+	char *	label
+
+Etk_Frame *
+etk_frame_new(class, label)
+	SV * class
 	char *	label
 	CODE:
-	etk_frame_label_set(ETK_FRAME(frame), label);
+	RETVAL = ETK_FRAME(etk_frame_new(label));
+	OUTPUT:
+	RETVAL
 
-Etk_Widget *
-etk_frame_new(label)
-	char *	label
-
-Etk_Widget *
-etk_hbox_new(homogeneous, spacing)
+MODULE = Etk::HBox	PACKAGE = Etk::HBox	PREFIX = etk_hbox_
+	
+Etk_HBox *
+new(class, homogeneous=ETK_FALSE, spacing=0)
+	SV	*class
 	Etk_Bool	homogeneous
 	int	spacing
+	CODE:
+	RETVAL = ETK_HBOX(etk_hbox_new(homogeneous, spacing));
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::HPaned	PACKAGE = Etk::HPaned	PREFIX = etk_hpaned_
+
+Etk_HPaned *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_HPANED(etk_hpaned_new());
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::HScrollbar	PACKAGE = Etk::HScrollbar	PREFIX = etk_hscrollbar_
+
+# FIXME: type HScrollbar
 
 Etk_Widget *
-etk_hpaned_new()
-
-Etk_Widget *
-etk_hscrollbar_new(lower, upper, value, step_increment, page_increment, page_size)
+new(class, lower, upper, value, step_increment, page_increment, page_size)
+	SV * class
 	double	lower
 	double	upper
 	double	value
 	double	step_increment
 	double	page_increment
 	double	page_size
+	CODE:
+	RETVAL = etk_hscrollbar_new(lower, upper, value, 
+				step_increment, page_increment, page_size);
+	OUTPUT:
+	RETVAL
 
-Etk_Widget *
-etk_hseparator_new()
 
-Etk_Widget *
-etk_hslider_new(lower, upper, value, step_increment, page_increment)
+MODULE = Etk::HSeparator	PACKAGE = Etk::HSeparator	PREFIX = etk_hseparator_
+
+Etk_HSeparator *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_HSEPARATOR(etk_hseparator_new());
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::HSlider	PACKAGE = Etk::HSlider	PREFIX = etk_hslider_
+
+Etk_HSlider *
+new(class, lower, upper, value, step_increment, page_increment)
+	SV * class
 	double	lower
 	double	upper
 	double	value
 	double	step_increment
 	double	page_increment
+	CODE:
+	RETVAL = ETK_HSLIDER(etk_hslider_new(lower, upper, value, step_increment, page_increment));
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::Iconbox	PACKAGE = Etk::Iconbox	PREFIX = etk_iconbox_
+
+Etk_Iconbox *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_ICONBOX(etk_iconbox_new());
+	OUTPUT:
+	RETVAL
+
+void
+etk_iconbox_select_all(iconbox)
+	Etk_Iconbox *	iconbox
+
+void
+etk_iconbox_thaw(iconbox)
+	Etk_Iconbox *	iconbox
+
+void
+etk_iconbox_unselect_all(iconbox)
+	Etk_Iconbox *	iconbox
 
 Etk_Iconbox_Icon *
 etk_iconbox_append(iconbox, filename, edje_group, label)
-	Etk_Widget *	iconbox
+	Etk_Iconbox *	iconbox
 	char *	filename
 	char *	edje_group
 	char *	label
-	CODE:
-	RETVAL = etk_iconbox_append(ETK_ICONBOX(iconbox), filename, edje_group, label);
-	OUTPUT:
-	RETVAL
 
 void
 etk_iconbox_clear(iconbox)
-	Etk_Widget *	iconbox
-	CODE:
-	etk_iconbox_clear(ETK_ICONBOX(iconbox));
+	Etk_Iconbox *	iconbox
 
 Etk_Iconbox_Model *
 etk_iconbox_current_model_get(iconbox)
-	Etk_Widget *	iconbox
-	CODE:
-	RETVAL = etk_iconbox_current_model_get(ETK_ICONBOX(iconbox));
-	OUTPUT:
-	RETVAL
+	Etk_Iconbox *	iconbox
 
 void
 etk_iconbox_current_model_set(iconbox, model)
-	Etk_Widget *	iconbox
+	Etk_Iconbox *	iconbox
 	Etk_Iconbox_Model *	model
-	CODE:
-	etk_iconbox_current_model_set(ETK_ICONBOX(iconbox), model);
 
 void
 etk_iconbox_freeze(iconbox)
-	Etk_Widget *	iconbox
-	CODE:
-	etk_iconbox_freeze(ETK_ICONBOX(iconbox));
+	Etk_Iconbox *	iconbox
+
+Etk_Iconbox_Icon *
+etk_iconbox_icon_get_at_xy(iconbox, x, y, over_cell, over_icon, over_label)
+	Etk_Iconbox *	iconbox
+	int	x
+	int	y
+	Etk_Bool	over_cell
+	Etk_Bool	over_icon
+	Etk_Bool	over_label
+
+MODULE = Etk::Iconbox::Icon	PACKAGE = Etk::Iconbox::Icon	PREFIX = etk_iconbox_icon_
 
 SV *
 etk_iconbox_icon_data_get(icon)
@@ -1917,18 +1806,6 @@ etk_iconbox_icon_file_set(icon, filename, edje_group)
 	const char *	filename
 	const char *	edje_group
 
-Etk_Iconbox_Icon *
-etk_iconbox_icon_get_at_xy(iconbox, x, y, over_cell, over_icon, over_label)
-	Etk_Widget *	iconbox
-	int	x
-	int	y
-	Etk_Bool	over_cell
-	Etk_Bool	over_icon
-	Etk_Bool	over_label
-	CODE:
-	RETVAL = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(iconbox), x, y, over_cell, over_icon, over_label);
-	OUTPUT:
-	RETVAL
 
 const char *
 etk_iconbox_icon_label_get(icon)
@@ -1950,6 +1827,9 @@ etk_iconbox_icon_unselect(icon)
 Etk_Bool
 etk_iconbox_is_selected(icon)
 	Etk_Iconbox_Icon *	icon
+
+
+MODULE = Etk::Iconbox::Model	PACKAGE = Etk::Iconbox::Model	PREFIX = etk_iconbox_model_
 
 void
 etk_iconbox_model_free(model)
@@ -2046,180 +1926,158 @@ etk_iconbox_model_label_geometry_set(model, x, y, width, height, xalign, yalign)
 
 Etk_Iconbox_Model *
 etk_iconbox_model_new(iconbox)
-	Etk_Widget *	iconbox
-	CODE:
-	RETVAL = etk_iconbox_model_new(ETK_ICONBOX(iconbox));
-	OUTPUT:
-	RETVAL
+	Etk_Iconbox *	iconbox
 
-Etk_Widget *
-etk_iconbox_new()
-
-void
-etk_iconbox_select_all(iconbox)
-	Etk_Widget *	iconbox
-	CODE:
-	etk_iconbox_select_all(ETK_ICONBOX(iconbox));
-
-void
-etk_iconbox_thaw(iconbox)
-	Etk_Widget *	iconbox
-	CODE:
-	etk_iconbox_thaw(ETK_ICONBOX(iconbox));
-
-void
-etk_iconbox_unselect_all(iconbox)
-	Etk_Widget *	iconbox
-	CODE:
-	etk_iconbox_unselect_all(ETK_ICONBOX(iconbox));
-
+MODULE = Etk::Image	PACKAGE = Etk::Image	PREFIX = etk_image_
+	
 void
 etk_image_copy(dest_image, src_image)
-	Etk_Widget *	dest_image
-	Etk_Widget *	src_image
-	CODE:
-	etk_image_copy(ETK_IMAGE(dest_image), ETK_IMAGE(src_image));
+	Etk_Image *	dest_image
+	Etk_Image *	src_image
 
 void
 etk_image_edje_get(image, edje_filename, edje_group)
-	Etk_Widget *	image
+	Etk_Image *	image
 	PPCODE:
 	char *	edje_filename;
 	char *	edje_group;
-	etk_image_edje_get(ETK_IMAGE(image), &edje_filename, &edje_group);
+	etk_image_edje_get(image, &edje_filename, &edje_group);
 	EXTEND(SP, 2);
 	PUSHs(sv_2mortal(newSVpv(edje_filename, strlen(edje_filename))));
 	PUSHs(sv_2mortal(newSVpv(edje_group, strlen(edje_group))));
 
 const char *
 etk_image_file_get(image)
-	Etk_Widget *	image
-	CODE:
-	RETVAL = etk_image_file_get(ETK_IMAGE(image));
-	OUTPUT:
-	RETVAL
+	Etk_Image *	image
 
 Etk_Bool
 etk_image_keep_aspect_get(image)
-	Etk_Widget *	image
+	Etk_Image *	image
+
+void
+etk_image_keep_aspect_set(image, keep_aspect)
+	Etk_Image *	image
+	Etk_Bool	keep_aspect
+
+Etk_Image *
+new(class)
+	SV * class
 	CODE:
-	RETVAL = etk_image_keep_aspect_get(ETK_IMAGE(image));
+	RETVAL = ETK_IMAGE(etk_image_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Image *
+etk_image_new_from_edje(edje_filename, edje_group)
+	char *	edje_filename
+	char *	edje_group
+	CODE:
+	RETVAL = ETK_IMAGE(etk_image_new_from_edje(edje_filename, edje_group));
+	OUTPUT:
+	RETVAL
+
+Etk_Image *
+etk_image_new_from_file(filename)
+	char *	filename
+	CODE:
+	RETVAL = ETK_IMAGE(etk_image_new_from_file(filename));
+	OUTPUT:
+	RETVAL
+
+Etk_Image *
+etk_image_new_from_stock(stock_id, stock_size)
+	Etk_Stock_Id	stock_id
+	int	stock_size
+	CODE:
+	RETVAL = ETK_IMAGE(etk_image_new_from_stock(stock_id, stock_size));
 	OUTPUT:
 	RETVAL
 
 void
-etk_image_keep_aspect_set(image, keep_aspect)
-	Etk_Widget *	image
-	Etk_Bool	keep_aspect
-	CODE:
-	etk_image_keep_aspect_set(ETK_IMAGE(image), keep_aspect);
-
-Etk_Widget *
-etk_image_new()
-
-Etk_Widget *
-etk_image_new_from_edje(edje_filename, edje_group)
-	char *	edje_filename
-	char *	edje_group
-
-Etk_Widget *
-etk_image_new_from_file(filename)
-	char *	filename
-
-Etk_Widget *
-etk_image_new_from_stock(stock_id, stock_size)
-	Etk_Stock_Id	stock_id
-	int	stock_size
-
-void
 etk_image_set_from_edje(image, edje_filename, edje_group)
-	Etk_Widget *	image
+	Etk_Image *	image
 	char *	edje_filename
 	char *	edje_group
-	CODE:
-	etk_image_set_from_edje(ETK_IMAGE(image), edje_filename, edje_group);
 
 void
 etk_image_set_from_file(image, filename)
-	Etk_Widget *	image
+	Etk_Image *	image
 	char *	filename
-	CODE:
-	etk_image_set_from_file(ETK_IMAGE(image), filename);
 
 void
 etk_image_set_from_stock(image, stock_id, stock_size)
-	Etk_Widget *	image
+	Etk_Image *	image
 	Etk_Stock_Id	stock_id
 	Etk_Stock_Size	stock_size
-	CODE:
-	etk_image_set_from_stock(ETK_IMAGE(image), stock_id, stock_size);
 
 void
 etk_image_size_get(image, width, height)
-	Etk_Widget *	image
+	Etk_Image *	image
 	PPCODE:
 	int 	width;
 	int 	height;
-	etk_image_size_get(ETK_IMAGE(image), &width, &height);
+	etk_image_size_get(image, &width, &height);
 	EXTEND(SP, 2);
 	PUSHs(sv_2mortal(newSViv(width)));
 	PUSHs(sv_2mortal(newSViv(height)));
 
 void
 etk_image_stock_get(image)
-	Etk_Widget *	image
+	Etk_Image *	image
 	PPCODE:
 	Etk_Stock_Id 	stock_id;
 	Etk_Stock_Size 	stock_size;
 	
-	etk_image_stock_get(ETK_IMAGE(image), &stock_id, &stock_size);
+	etk_image_stock_get(image, &stock_id, &stock_size);
 	EXTEND(SP, 2);
 	PUSHs(sv_2mortal(newSViv(stock_id)));
 	PUSHs(sv_2mortal(newSViv(stock_size)));
 
-Etk_Bool
-etk_init()
+
+MODULE = Etk::Label	PACKAGE = Etk::Label	PREFIX = etk_label_
 
 void
 etk_label_alignment_get(label)
-	Etk_Widget *	label
+	Etk_Label *	label
 	PPCODE:
 	float xalign;
 	float yalign;
-	etk_label_alignment_get(ETK_LABEL(label), &xalign, &yalign);
+	etk_label_alignment_get(label, &xalign, &yalign);
 
 	XPUSHs(sv_2mortal(newSViv(xalign)));
 	XPUSHs(sv_2mortal(newSViv(yalign)));
 
 void
 etk_label_alignment_set(label, xalign, yalign)
-	Etk_Widget *	label
+	Etk_Label *	label
 	float	xalign
 	float	yalign
-	CODE:
-	etk_label_alignment_set(ETK_LABEL(label), xalign, yalign);
 
 const char *
 etk_label_get(label)
-	Etk_Widget *	label
+	Etk_Label *	label
+
+Etk_Label *
+new(class, text)
+	SV * class
+	char *	text
 	CODE:
-	RETVAL = etk_label_get(ETK_LABEL(label));
+	RETVAL = ETK_LABEL(etk_label_new(text));
 	OUTPUT:
 	RETVAL
 
-Etk_Widget *
-etk_label_new(text)
-	char *	text
-
 void
 etk_label_set(label, text)
-	Etk_Widget *	label
+	Etk_Label *	label
 	char *	text
-	CODE:
-	etk_label_set(ETK_LABEL(label), text);
+
+
+MODULE = Etk::Main	PACKAGE = Etk::Main	PREFIX = etk_main_
 
 void
-etk_main()
+etk_main_run()
+	CODE:
+	etk_main();
 
 void
 etk_main_iterate()
@@ -2232,15 +2090,11 @@ etk_main_quit()
 
 void
 etk_main_toplevel_widget_add(widget)
-	Etk_Widget *	widget
-	CODE:
-	etk_main_toplevel_widget_add(ETK_TOPLEVEL_WIDGET(widget));
+	Etk_Toplevel_Widget *	widget
 
 void
 etk_main_toplevel_widget_remove(widget)
-	Etk_Widget *	widget
-	CODE:
-	etk_main_toplevel_widget_remove(ETK_TOPLEVEL_WIDGET(widget));
+	Etk_Toplevel_Widget *	widget
 
 void
 etk_main_toplevel_widgets_get()
@@ -2256,200 +2110,250 @@ etk_main_toplevel_widgets_get()
 	{
 		SV * sv;
 		sv = newRV(newSViv(0));
+		/* FIXME */
 		sv_setref_iv(sv, "Etk_WidgetPtr", SvIV(av_shift(av)));
 
 		XPUSHs(sv_2mortal(sv));
 	}
 	av_undef(av);
 
-Etk_Widget *
-etk_menu_bar_new()
+
+MODULE = Etk::Menu::Bar	PACKAGE = Etk::Menu::Bar	PREFIX = etk_menu_bar_
+	
+Etk_Menu_Bar *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_MENU_BAR(etk_menu_bar_new());
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::Menu::Item	PACKAGE = Etk::Menu::Item	PREFIX = etk_menu_item_
 
 void
 etk_menu_item_activate(menu_item)
-	Etk_Widget *	menu_item
-	CODE:
-	etk_menu_item_activate(ETK_MENU_ITEM(menu_item));
-
-Etk_Bool
-etk_menu_item_check_active_get(check_item)
-	Etk_Widget *	check_item
-	CODE:
-	RETVAL = etk_menu_item_check_active_get(ETK_MENU_ITEM_CHECK(check_item));
-	OUTPUT:
-	RETVAL
-
-void
-etk_menu_item_check_active_set(check_item, active)
-	Etk_Widget *	check_item
-	Etk_Bool	active
-	CODE:
-	etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(check_item), active);
-
-Etk_Widget *
-etk_menu_item_check_new()
-
-Etk_Widget *
-etk_menu_item_check_new_with_label(label)
-	char *	label
+	Etk_Menu_Item *	menu_item
 
 void
 etk_menu_item_deselect(menu_item)
-	Etk_Widget *	menu_item
-	CODE:
-	etk_menu_item_deselect(ETK_MENU_ITEM(menu_item));
-
-Etk_Widget *
-etk_menu_item_image_new()
-
-Etk_Widget *
-etk_menu_item_image_new_from_stock(stock_id)
-	Etk_Stock_Id	stock_id
-
-Etk_Widget *
-etk_menu_item_image_new_with_label(label)
-	char *	label
-
-void
-etk_menu_item_image_set(image_item, image)
-	Etk_Widget *	image_item
-	Etk_Widget *	image
-	CODE:
-	etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(image_item), ETK_IMAGE(image));
+	Etk_Menu_Item *	menu_item
 
 const char *
 etk_menu_item_label_get(menu_item)
-	Etk_Widget *	menu_item
-	CODE:
-	RETVAL = etk_menu_item_label_get(ETK_MENU_ITEM(menu_item));
-	OUTPUT:
-	RETVAL
+	Etk_Menu_Item *	menu_item
 
 void
 etk_menu_item_label_set(menu_item, label)
 	Etk_Menu_Item *	menu_item
 	char *	label
 
-Etk_Widget *
-etk_menu_item_new()
-
-Etk_Widget *
-etk_menu_item_new_from_stock(stock_id)
-	Etk_Stock_Id	stock_id
-
-Etk_Widget *
-etk_menu_item_new_with_label(label)
-	char *	label
-
-Etk_Widget *
-etk_menu_item_radio_new_from_widget(radio_item)
-	Etk_Widget *	radio_item
+Etk_Menu_Item *
+new(class)
+	SV * class
 	CODE:
-	RETVAL = etk_menu_item_radio_new_from_widget(ETK_MENU_ITEM_RADIO(radio_item));
+	RETVAL = ETK_MENU_ITEM(etk_menu_item_new());
 	OUTPUT:
 	RETVAL
 
-Etk_Widget *
-etk_menu_item_radio_new_with_label(label)
-	char *	label
+Etk_Menu_Item *
+etk_menu_item_new_from_stock(stock_id)
+	Etk_Stock_Id	stock_id
 	CODE:
-	RETVAL = etk_menu_item_radio_new_with_label(label, NULL);
+	RETVAL = ETK_MENU_ITEM(etk_menu_item_new_from_stock(stock_id));
 	OUTPUT:
-	RETVAL	
+	RETVAL
 
-Etk_Widget *
-etk_menu_item_radio_new_with_label_from_widget(label, radio_item)
+Etk_Menu_Item *
+etk_menu_item_new_with_label(label)
 	char *	label
-	Etk_Widget *	radio_item
 	CODE:
-	RETVAL = etk_menu_item_radio_new_with_label_from_widget(label, ETK_MENU_ITEM_RADIO(radio_item));
+	RETVAL = ETK_MENU_ITEM(etk_menu_item_new_with_label(label));
 	OUTPUT:
 	RETVAL
 
 void
 etk_menu_item_select(menu_item)
-	Etk_Widget *	menu_item
-	CODE:
-	etk_menu_item_select(ETK_MENU_ITEM(menu_item));
-
-Etk_Widget *
-etk_menu_item_separator_new()
+	Etk_Menu_Item *	menu_item
 
 void
 etk_menu_item_set_from_stock(menu_item, stock_id)
-	Etk_Widget *	menu_item
+	Etk_Menu_Item *	menu_item
 	Etk_Stock_Id	stock_id
-	CODE:
-	etk_menu_item_set_from_stock(ETK_MENU_ITEM(menu_item), stock_id);
 
 void
 etk_menu_item_submenu_set(menu_item, submenu)
-	Etk_Widget *	menu_item
-	Etk_Widget *	submenu
-	CODE:
-	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
+	Etk_Menu_Item *	menu_item
+	Etk_Menu *	submenu
 
-Etk_Widget *
-etk_menu_new()
+
+
+MODULE = Etk::Menu::Item::Check	PACKAGE = Etk::Menu::Item::Check	PREFIX = etk_menu_item_check_
+	
+Etk_Menu_Item_Check *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_MENU_ITEM_CHECK(etk_menu_item_check_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Menu_Item_Check *
+etk_menu_item_check_new_with_label(label)
+	char *	label
+	CODE:
+	RETVAL = ETK_MENU_ITEM_CHECK(etk_menu_item_check_new_with_label(label));
+	OUTPUT:
+	RETVAL
+
+Etk_Bool
+etk_menu_item_check_active_get(check_item)
+	Etk_Menu_Item_Check *	check_item
+
+void
+etk_menu_item_check_active_set(check_item, active)
+	Etk_Menu_Item_Check *	check_item
+	Etk_Bool	active
+
+
+MODULE = Etk::Menu::Item::Image	PACKAGE = Etk::Menu::Item::Image	PREFIX = etk_menu_item_image_
+
+Etk_Menu_Item_Image *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_MENU_ITEM_IMAGE(etk_menu_item_image_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Menu_Item_Image *
+etk_menu_item_image_new_from_stock(stock_id)
+	Etk_Stock_Id	stock_id
+	CODE:
+	RETVAL = ETK_MENU_ITEM_IMAGE(etk_menu_item_image_new_from_stock(stock_id));
+	OUTPUT:
+	RETVAL
+
+Etk_Menu_Item_Image *
+etk_menu_item_image_new_with_label(label)
+	char *	label
+	CODE:
+	RETVAL = ETK_MENU_ITEM_IMAGE(etk_menu_item_image_new_with_label(label));
+	OUTPUT:
+	RETVAL
+
+void
+etk_menu_item_image_set(image_item, image)
+	Etk_Menu_Item_Image *	image_item
+	Etk_Image *	image
+
+
+MODULE = Etk::Menu::Item::Radio	PACKAGE = Etk::Menu::Item::Radio	PREFIX = etk_menu_item_radio_
+	
+Etk_Menu_Item_Radio *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_MENU_ITEM_RADIO(etk_menu_item_new());
+	OUTPUT:
+	RETVAL
+	
+Etk_Menu_Item_Radio *
+etk_menu_item_radio_new_from_widget(radio_item)
+	Etk_Menu_Item_Radio *	radio_item
+	CODE:
+	RETVAL = ETK_MENU_ITEM_RADIO(etk_menu_item_radio_new_from_widget(radio_item));
+	OUTPUT:
+	RETVAL
+
+Etk_Menu_Item_Radio *
+etk_menu_item_radio_new_with_label(label)
+	char *	label
+	CODE:
+	RETVAL = ETK_MENU_ITEM_RADIO(etk_menu_item_radio_new_with_label(label, NULL));
+	OUTPUT:
+	RETVAL	
+
+Etk_Menu_Item_Radio *
+etk_menu_item_radio_new_with_label_from_widget(label, radio_item)
+	char *	label
+	Etk_Menu_Item_Radio *	radio_item
+	CODE:
+	RETVAL = ETK_MENU_ITEM_RADIO(etk_menu_item_radio_new_with_label_from_widget(label, 
+				radio_item));
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::Menu::Item::Separator	PACKAGE = Etk::Menu::Item::Separator	PREFIX = etk_menu_item_separator_
+
+Etk_Menu_Item_Separator *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_MENU_ITEM_SEPARATOR(etk_menu_item_separator_new());
+	OUTPUT:
+	RETVAL
+
+
+MODULE = Etk::Menu	PACKAGE = Etk::Menu	PREFIX = etk_menu_
+
+Etk_Menu *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_MENU(etk_menu_new());
+	OUTPUT:
+	RETVAL
 
 void
 etk_menu_popdown(menu)
-	Etk_Widget *	menu
-	CODE:
-	etk_menu_popdown(ETK_MENU(menu));
+	Etk_Menu *	menu
 
 void
 etk_menu_popup(menu)
-	Etk_Widget *	menu
-	CODE:
-	etk_menu_popup(ETK_MENU(menu));
+	Etk_Menu *	menu
 
 void
 etk_menu_popup_at_xy(menu, x, y)
-	Etk_Widget *	menu
+	Etk_Menu *	menu
 	int	x
 	int	y
-	CODE:
-	etk_menu_popup_at_xy(ETK_MENU(menu), x, y);
+
+
+MODULE = Etk::Menu::Shell	PACKAGE = Etk::Menu::Shell	PREFIX = etk_menu_shell_
 
 void
 etk_menu_shell_append(menu_shell, item)
-	Etk_Widget *	menu_shell
-	Etk_Widget *	item
-	CODE:
-	etk_menu_shell_append(ETK_MENU_SHELL(menu_shell), ETK_MENU_ITEM(item));
+	Etk_Menu_Shell *	menu_shell
+	Etk_Menu_Item *	item
 
 void
 etk_menu_shell_append_relative(menu_shell, item, relative)
-	Etk_Widget *	menu_shell
-	Etk_Widget *	item
-	Etk_Widget *	relative
-	CODE:
-	etk_menu_shell_append_relative(ETK_MENU_SHELL(menu_shell), ETK_MENU_ITEM(item), ETK_MENU_ITEM(relative));
+	Etk_Menu_Shell *	menu_shell
+	Etk_Menu_Item *	item
+	Etk_Menu_Item *	relative
 
 void
 etk_menu_shell_insert(menu_shell, item, position)
-	Etk_Widget *	menu_shell
-	Etk_Widget *	item
+	Etk_Menu_Shell *	menu_shell
+	Etk_Menu_Item *	item
 	int	position
-	CODE:
-	etk_menu_shell_insert(ETK_MENU_SHELL(menu_shell), ETK_MENU_ITEM(item), position);
 
 void
 etk_menu_shell_items_get(menu_shell)
-	Etk_Widget *	menu_shell
+	Etk_Menu_Shell *	menu_shell
 	PPCODE:
 	Evas_List * list;
 	AV * av;
 	int i;
 
-	list = etk_menu_shell_items_get(ETK_MENU_SHELL(menu_shell));
+	list = etk_menu_shell_items_get(menu_shell);
 	av = evas_list_to_perl(list);
 
         for (i = av_len(av) ; i >=0 ; i--)
         {
                SV * sv;
                sv = newRV(newSViv(0));
+	       /* FIXME */
                sv_setref_iv(sv, "Etk_WidgetPtr", SvIV(av_shift(av)));
    
                XPUSHs(sv_2mortal(sv));
@@ -2458,230 +2362,166 @@ etk_menu_shell_items_get(menu_shell)
 
 void
 etk_menu_shell_prepend(menu_shell, item)
-	Etk_Widget *	menu_shell
-	Etk_Widget *	item
-	CODE:
-	etk_menu_shell_prepend(ETK_MENU_SHELL(menu_shell), ETK_MENU_ITEM(item));
+	Etk_Menu_Shell *	menu_shell
+	Etk_Menu_Item *	item
 
 void
 etk_menu_shell_prepend_relative(menu_shell, item, relative)
-	Etk_Widget *	menu_shell
-	Etk_Widget *	item
-	Etk_Widget *	relative
-	CODE:
-	etk_menu_shell_prepend_relative(ETK_MENU_SHELL(menu_shell), ETK_MENU_ITEM(item), ETK_MENU_ITEM(relative));
+	Etk_Menu_Shell *	menu_shell
+	Etk_Menu_Item *	item
+	Etk_Menu_Item *	relative
 
 void
 etk_menu_shell_remove(menu_shell, item)
-	Etk_Widget *	menu_shell
-	Etk_Widget *	item
-	CODE:
-	etk_menu_shell_remove(ETK_MENU_SHELL(menu_shell), ETK_MENU_ITEM(item));
+	Etk_Menu_Shell *	menu_shell
+	Etk_Menu_Item *	item
 	
+MODULE = Etk::MessageDialog	PACKAGE = Etk::MessageDialog	PREFIX = etk_message_dialog_
 
 Etk_Message_Dialog_Buttons
 etk_message_dialog_buttons_get(dialog)
-	Etk_Widget *	dialog
-	CODE:
-	RETVAL = etk_message_dialog_buttons_get(ETK_MESSAGE_DIALOG(dialog));
-	OUTPUT:
-	RETVAL
+	Etk_Message_Dialog *	dialog
 
 void
 etk_message_dialog_buttons_set(dialog, buttons)
-	Etk_Widget *	dialog
+	Etk_Message_Dialog *	dialog
 	Etk_Message_Dialog_Buttons	buttons
-	CODE:
-	etk_message_dialog_buttons_set(ETK_MESSAGE_DIALOG(dialog), buttons);
 
 void
 etk_message_dialog_message_type_set(dialog, type)
-	Etk_Widget *	dialog
+	Etk_Message_Dialog *	dialog
 	Etk_Message_Dialog_Type	type
-	CODE:
-	etk_message_dialog_message_type_set(ETK_MESSAGE_DIALOG(dialog), type);
 
-Etk_Widget *
-etk_message_dialog_new(message_type, buttons, text)
+Etk_Message_Dialog *
+new(class, message_type, buttons, text)
+	SV * class
 	Etk_Message_Dialog_Type	message_type
 	Etk_Message_Dialog_Buttons	buttons
 	char *	text
+	CODE:
+	RETVAL = ETK_MESSAGE_DIALOG(etk_message_dialog_new(message_type, buttons, text));
+	OUTPUT:
+	RETVAL
 
 const char *
 etk_message_dialog_text_get(dialog)
-	Etk_Widget *	dialog
-	CODE:
-	RETVAL = etk_message_dialog_text_get(ETK_MESSAGE_DIALOG(dialog));
-	OUTPUT:
-	RETVAL
+	Etk_Message_Dialog *	dialog
 
 void
 etk_message_dialog_text_set(dialog, text)
-	Etk_Widget *	dialog
+	Etk_Message_Dialog *	dialog
 	char *	text
-	CODE:
-	etk_message_dialog_text_set(ETK_MESSAGE_DIALOG(dialog), text);
 
+MODULE = Etk::Notebook	PACKAGE = Etk::Notebook	PREFIX = etk_notebook_
+	
 int
 etk_notebook_current_page_get(notebook)
-	Etk_Widget *	notebook
-	CODE:
-	RETVAL = etk_notebook_current_page_get(ETK_NOTEBOOK(notebook));
-	OUTPUT:
-	RETVAL
+	Etk_Notebook *	notebook
 
 void
 etk_notebook_current_page_set(notebook, page_num)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	int	page_num
-	CODE:
-	etk_notebook_current_page_set(ETK_NOTEBOOK(notebook), page_num);
 
-Etk_Widget *
-etk_notebook_new()
+Etk_Notebook *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_NOTEBOOK(etk_notebook_new());
+	OUTPUT:
+	RETVAL
 
 int
 etk_notebook_num_pages_get(notebook)
-	Etk_Widget *	notebook
-	CODE:
-	RETVAL = etk_notebook_num_pages_get(ETK_NOTEBOOK(notebook));
-	OUTPUT:
-	RETVAL
+	Etk_Notebook *	notebook
 
 int
 etk_notebook_page_append(notebook, tab_label, page_child)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	char *	tab_label
 	Etk_Widget *	page_child
-	CODE:
-	RETVAL = etk_notebook_page_append(ETK_NOTEBOOK(notebook), tab_label, page_child);
-	OUTPUT:
-	RETVAL
 
 Etk_Widget *
 etk_notebook_page_child_get(notebook, page_num)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	int	page_num
-	CODE:
-	RETVAL = etk_notebook_page_child_get(ETK_NOTEBOOK(notebook), page_num);
-	OUTPUT:
-	RETVAL
 
 void
 etk_notebook_page_child_set(notebook, page_num, child)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	int	page_num
 	Etk_Widget *	child
-	CODE:
-	etk_notebook_page_child_set(ETK_NOTEBOOK(notebook), page_num, child);
 
 int
 etk_notebook_page_index_get(notebook, child)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	Etk_Widget *	child
-	CODE:
-	RETVAL = etk_notebook_page_index_get(ETK_NOTEBOOK(notebook), child);
-	OUTPUT:
-	RETVAL
 
 int
 etk_notebook_page_insert(notebook, tab_label, page_child, position)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	char *	tab_label
 	Etk_Widget *	page_child
 	int	position
-	CODE:
-	RETVAL = etk_notebook_page_insert(ETK_NOTEBOOK(notebook), tab_label, page_child, position);
-	OUTPUT:
-	RETVAL
 
 int
 etk_notebook_page_next(notebook)
-	Etk_Widget *	notebook
-	CODE:
-	RETVAL = etk_notebook_page_next(ETK_NOTEBOOK(notebook));
-	OUTPUT:
-	RETVAL
+	Etk_Notebook *	notebook
 
 int
 etk_notebook_page_prepend(notebook, tab_label, page_child)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	char *	tab_label
 	Etk_Widget *	page_child
-	CODE:
-	RETVAL = etk_notebook_page_prepend(ETK_NOTEBOOK(notebook), tab_label, page_child);
-	OUTPUT:
-	RETVAL
 
 int
 etk_notebook_page_prev(notebook)
-	Etk_Widget *	notebook
-	CODE:
-	RETVAL = etk_notebook_page_prev(ETK_NOTEBOOK(notebook));
-	OUTPUT:
-	RETVAL
+	Etk_Notebook *	notebook
 
 void
 etk_notebook_page_remove(notebook, page_num)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	int	page_num
-	CODE:
-	etk_notebook_page_remove(ETK_NOTEBOOK(notebook), page_num);
 
 const char *
 etk_notebook_page_tab_label_get(notebook, page_num)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	int	page_num
-	CODE:
-	RETVAL = etk_notebook_page_tab_label_get(ETK_NOTEBOOK(notebook), page_num);
-	OUTPUT:
-	RETVAL
 
 void
 etk_notebook_page_tab_label_set(notebook, page_num, tab_label)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	int	page_num
 	char *	tab_label
-	CODE:
-	etk_notebook_page_tab_label_set(ETK_NOTEBOOK(notebook), page_num, tab_label);
 
 Etk_Widget *
 etk_notebook_page_tab_widget_get(notebook, page_num)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	int	page_num
-	CODE:
-	RETVAL = etk_notebook_page_tab_widget_get(ETK_NOTEBOOK(notebook), page_num);
-	OUTPUT:
-	RETVAL
 
 void
 etk_notebook_page_tab_widget_set(notebook, page_num, tab_widget)
-	Etk_Widget *	notebook
+	Etk_Notebook *	notebook
 	int	page_num
 	Etk_Widget *	tab_widget
-	CODE:
-	etk_notebook_page_tab_widget_set(ETK_NOTEBOOK(notebook), page_num, tab_widget);
+
+
+MODULE = Etk::Object	PACKAGE = Etk::Object	PREFIX = etk_object_
 
 SV *
 etk_object_data_get(object, key)
-	Etk_Widget *	object
+	Etk_Object *	object
 	char *	key
-	CODE:
-	RETVAL = etk_object_data_get(ETK_OBJECT(object), key);
-	OUTPUT:
-	RETVAL
 
 void
 etk_object_data_set(object, key, value)
-	Etk_Widget *	object
+	Etk_Object *	object
 	char *	key
 	SV *	value
-	CODE:
-	etk_object_data_set(ETK_OBJECT(object), key, value);
 
 void
 etk_object_notification_callback_add(object, property_name, callback, data)
-	Etk_Widget *	object
+	Etk_Object *	object
 	char *	property_name
 	SV *	callback
 	SV *	data
@@ -2691,170 +2531,219 @@ etk_object_notification_callback_add(object, property_name, callback, data)
 
 	ncb = calloc(1, sizeof(Notification_Callback_Data));
 	ncb->property_name = strdup(property_name);
-	ncb->object = ETK_OBJECT(object);
+	ncb->object = object;
 	ncb->perl_data = newSVsv(data);
 	ncb->perl_callback = newSVsv(callback);
 
-	etk_object_notification_callback_add(ETK_OBJECT(object), property_name, notification_callback, ncb);
+	etk_object_notification_callback_add(object, property_name, notification_callback, ncb);
 
 void
 etk_object_notification_callback_remove(object, property_name, callback)
-	Etk_Widget *	object
+	Etk_Object *	object
 	char *	property_name
 	CODE:
-	etk_object_notification_callback_remove(ETK_OBJECT(object), property_name, notification_callback);
+	etk_object_notification_callback_remove(object, property_name, notification_callback);
 
 void
 etk_object_notify(object, property_name)
-	Etk_Widget *	object
+	Etk_Object *	object
 	char *	property_name
-	CODE:
-	etk_object_notify(ETK_OBJECT(object), property_name);
 
+
+void
+signal_connect(object, signal_name, callback, data=NULL)
+	SV *		object
+	char *	        signal_name
+	SV *	        callback
+	SV *            data
+	
+	CODE:	
+	__etk_signal_connect_full(signal_name, object, callback, data, ETK_FALSE, ETK_FALSE);
+
+void
+signal_connect_after(object, signal_name, callback, data=NULL)
+	SV *		object
+	char *	        signal_name
+	SV *	        callback
+	SV *            data
+	
+	CODE:	
+	__etk_signal_connect_full(signal_name, object, callback, data, ETK_FALSE, ETK_TRUE);
+
+void 
+signal_connect_full(object, signal_name, callback, data, swapped, after)
+	SV *		object
+	char *	        signal_name
+	SV *	        callback
+	SV *            data
+	Etk_Bool	swapped
+	Etk_Bool	after
+	CODE:
+	__etk_signal_connect_full(signal_name, object, callback, data, swapped, after);
+
+	
+void
+signal_connect_swapped(object, signal_name, callback, data=NULL)
+	SV *		object
+	char *	        signal_name
+	SV *	        callback
+	SV *            data
+	
+	CODE:	
+	__etk_signal_connect_full(signal_name, object, callback, data, ETK_TRUE, ETK_FALSE);
+
+void
+signal_disconnect(object, signal_name, callback)
+	SV *		object
+	char *	        signal_name
+	SV *	        callback
+	
+	CODE:	
+	Etk_Signal *sig = NULL;
+	Etk_Marshaller marsh;
+	Etk_Object * obj;
+
+	obj = (Etk_Object *) SvObj(object, "Etk::Object");
+	
+	sig = etk_signal_lookup(signal_name, obj->type);
+	if(!sig) printf("CANT GET SIG!\n");
+	marsh = etk_signal_marshaller_get(sig);
+	
+	if(marsh == etk_marshaller_VOID__VOID)
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
+	else if(marsh == etk_marshaller_VOID__INT)
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__INT));
+	else if(marsh == etk_marshaller_VOID__DOUBLE)
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__DOUBLE));
+	else if(marsh == etk_marshaller_VOID__POINTER)
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__POINTER));
+	else if(marsh == etk_marshaller_VOID__INT_POINTER)
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__INT_POINTER));
+	else if(marsh == etk_marshaller_BOOL__VOID)
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__VOID));
+	else if(marsh == etk_marshaller_BOOL__DOUBLE)
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__DOUBLE));
+	else if(marsh == etk_marshaller_BOOL__POINTER_POINTER)
+	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__POINTER_POINTER));
+	else
+ 	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
+
+
+MODULE = Etk::Paned	PACKAGE = Etk::Paned	PREFIX = etk_paned_
+	
 Etk_Widget *
 etk_paned_child1_get(paned)
-	Etk_Widget *	paned
-	CODE:
-	RETVAL = etk_paned_child1_get(ETK_PANED(paned));
-	OUTPUT:
-	RETVAL
+	Etk_Paned *	paned
 
 void
 etk_paned_child1_set(paned, child, expand)
-	Etk_Widget *	paned
+	Etk_Paned *	paned
 	Etk_Widget *	child
 	Etk_Bool	expand
-	CODE:
-	etk_paned_child1_set(ETK_PANED(paned), child, expand);
 
 Etk_Widget *
 etk_paned_child2_get(paned)
-	Etk_Widget *	paned
-	CODE:
-	RETVAL = etk_paned_child2_get(ETK_PANED(paned));
-	OUTPUT:
-	RETVAL
+	Etk_Paned *	paned
 
 void
 etk_paned_child2_set(paned, child, expand)
-	Etk_Widget *	paned
+	Etk_Paned *	paned
 	Etk_Widget *	child
 	Etk_Bool	expand
-	CODE:
-	etk_paned_child2_set(ETK_PANED(paned), child, expand);
 
 int
 etk_paned_position_get(paned)
-	Etk_Widget *	paned
-	CODE:
-	RETVAL = etk_paned_position_get(ETK_PANED(paned));
-	OUTPUT:
-	RETVAL
+	Etk_Paned *	paned
 
 void
 etk_paned_position_set(paned, position)
-	Etk_Widget *	paned
+	Etk_Paned *	paned
 	int	position
-	CODE:
-	etk_paned_position_set(ETK_PANED(paned), position);
 
+
+MODULE = Etk::PopupWindow	PACKAGE = Etk::PopupWindow	PREFIX = etk_popup_window_
+	
 Etk_Popup_Window *
 etk_popup_window_focused_window_get()
 
 void
 etk_popup_window_focused_window_set(popup_window)
-	Etk_Widget *	popup_window
-	CODE:
-	etk_popup_window_focused_window_set(ETK_POPUP_WINDOW(popup_window));
+	Etk_Popup_Window *	popup_window
 
 Etk_Bool
 etk_popup_window_is_popped_up(popup_window)
-	Etk_Widget *	popup_window
-	CODE:
-	RETVAL = etk_popup_window_is_popped_up(ETK_POPUP_WINDOW(popup_window));
-	OUTPUT:
-	RETVAL
+	Etk_Popup_Window *	popup_window
 
 void
 etk_popup_window_popdown(popup_window)
-	Etk_Widget *	popup_window
-	CODE:
-	etk_popup_window_popdown(ETK_POPUP_WINDOW(popup_window));
+	Etk_Popup_Window *	popup_window
 
 void
 etk_popup_window_popdown_all()
 
 void
 etk_popup_window_popup(popup_window)
-	Etk_Widget *	popup_window
-	CODE:
-	etk_popup_window_popup(ETK_POPUP_WINDOW(popup_window));
+	Etk_Popup_Window *	popup_window
 
 void
 etk_popup_window_popup_at_xy(popup_window, x, y)
-	Etk_Widget *	popup_window
+	Etk_Popup_Window *	popup_window
 	int	x
 	int	y
-	CODE:
-	etk_popup_window_popup_at_xy(ETK_POPUP_WINDOW(popup_window), x, y);
 
+MODULE = Etk::ProgressBar	PACKAGE = Etk::ProgressBar	PREFIX = etk_progress_bar_
+	
 double
 etk_progress_bar_fraction_get(progress_bar)
-	Etk_Widget *	progress_bar
-	CODE:
-	RETVAL = etk_progress_bar_fraction_get(ETK_PROGRESS_BAR(progress_bar));
-	OUTPUT:
-	RETVAL
+	Etk_Progress_Bar *	progress_bar
 
 void
 etk_progress_bar_fraction_set(progress_bar, fraction)
-	Etk_Widget *	progress_bar
+	Etk_Progress_Bar *	progress_bar
 	double	fraction
+
+Etk_Progress_Bar *
+new(class)
+	SV * class
 	CODE:
-	etk_progress_bar_fraction_set(ETK_PROGRESS_BAR(progress_bar), fraction);
+	RETVAL = ETK_PROGRESS_BAR(etk_progress_bar_new());
+	OUTPUT:
+	RETVAL
 
-Etk_Widget *
-etk_progress_bar_new()
-
-Etk_Widget *
+Etk_Progress_Bar *
 etk_progress_bar_new_with_text(label)
 	char *	label
+	CODE:
+	RETVAL = ETK_PROGRESS_BAR(etk_progress_bar_new_with_text(label));
+	OUTPUT:
+	RETVAL
 
 void
 etk_progress_bar_pulse(progress_bar)
-	Etk_Widget *	progress_bar
-	CODE:
-	etk_progress_bar_pulse(ETK_PROGRESS_BAR(progress_bar));
+	Etk_Progress_Bar *	progress_bar
 
 double
 etk_progress_bar_pulse_step_get(progress_bar)
-	Etk_Widget *	progress_bar
-	CODE:
-	RETVAL = etk_progress_bar_pulse_step_get(ETK_PROGRESS_BAR(progress_bar));
-	OUTPUT:
-	RETVAL
+	Etk_Progress_Bar *	progress_bar
 
 void
 etk_progress_bar_pulse_step_set(progress_bar, pulse_step)
-	Etk_Widget *	progress_bar
+	Etk_Progress_Bar *	progress_bar
 	double	pulse_step
-	CODE:
-	etk_progress_bar_pulse_step_set(ETK_PROGRESS_BAR(progress_bar), pulse_step);
 
 const char *
 etk_progress_bar_text_get(progress_bar)
-	Etk_Widget *	progress_bar
-	CODE:
-	RETVAL = etk_progress_bar_text_get(ETK_PROGRESS_BAR(progress_bar));
-	OUTPUT:
-	RETVAL
+	Etk_Progress_Bar *	progress_bar
 
 void
 etk_progress_bar_text_set(progress_bar, label)
-	Etk_Widget *	progress_bar
+	Etk_Progress_Bar *	progress_bar
 	char *	label
-	CODE:
-	etk_progress_bar_text_set(ETK_PROGRESS_BAR(progress_bar), label);
+
+
+MODULE = Etk	PACKAGE = Etk	
+
+
 
 Etk_Bool
 etk_property_default_value_set(property, default_value)
@@ -3012,152 +2901,131 @@ etk_property_value_string_set(property_value, value)
 	Etk_Property_Value *	property_value
 	char *	value
 
+MODULE = Etk::RadioButton	PACKAGE = Etk::RadioButton	PREFIX = etk_radio_button_
 
 Etk_Widget *
 etk_radio_button_new(group)
 	Evas_List **	group
 
-Etk_Widget *
+Etk_Radio_Button *
 etk_radio_button_new_from_widget(radio_button)
-	Etk_Widget *	radio_button
+	Etk_Radio_Button *	radio_button
 	CODE:
-	RETVAL = etk_radio_button_new_from_widget(ETK_RADIO_BUTTON(radio_button));
+	RETVAL = ETK_RADIO_BUTTON(etk_radio_button_new_from_widget(radio_button));
 	OUTPUT:
 	RETVAL
 
-Etk_Widget *
+Etk_Radio_Button *
 etk_radio_button_new_with_label(label)
 	char *	label
 	CODE:
-	RETVAL = etk_radio_button_new_with_label(label, NULL);
+	RETVAL = ETK_RADIO_BUTTON(etk_radio_button_new_with_label(label, NULL));
 	OUTPUT:
 	RETVAL
 	
-Etk_Widget *
+Etk_Radio_Button *
 etk_radio_button_new_with_label_from_widget(label, radio_button)
 	char *	label
-	Etk_Widget *	radio_button
+	Etk_Radio_Button *	radio_button
 	CODE:
-	RETVAL = etk_radio_button_new_with_label_from_widget(label, ETK_RADIO_BUTTON(radio_button));
+	RETVAL = ETK_RADIO_BUTTON(etk_radio_button_new_with_label_from_widget(label, radio_button));
 	OUTPUT:
 	RETVAL
 
+MODULE = Etk::Range	PACKAGE = Etk::Range	PREFIX = etk_range_
+
 void
 etk_range_increments_set(range, step, page)
-	Etk_Widget *	range
+	Etk_Range *	range
 	double	step
 	double	page
-	CODE:
-	etk_range_increments_set(ETK_RANGE(range), step, page);
 
 void
 etk_range_increments_get(range)
-	Etk_Widget * range
+	Etk_Range * range
 	PPCODE:
 	double step, page;
-	etk_range_increments_get(ETK_RANGE(range), &step, &page);
+	etk_range_increments_get(range, &step, &page);
 	EXTEND(SP, 2);
 	PUSHs(sv_2mortal(newSVnv(step)));
 	PUSHs(sv_2mortal(newSVnv(page)));
 
 double
 etk_range_page_size_get(range)
-	Etk_Widget *	range
-	CODE:
-	RETVAL = etk_range_page_size_get(ETK_RANGE(range));
-	OUTPUT:
-	RETVAL
+	Etk_Range *	range
 
 void
 etk_range_page_size_set(range, page_size)
-	Etk_Widget *	range
+	Etk_Range *	range
 	double	page_size
-	CODE:
-	etk_range_page_size_set(ETK_RANGE(range), page_size);
 
 void
 etk_range_range_set(range, lower, upper)
-	Etk_Widget *	range
+	Etk_Range *	range
 	double	lower
 	double	upper
-	CODE:
-	etk_range_range_set(ETK_RANGE(range), lower, upper);
 
 void
 etk_range_range_get(range)
-	Etk_Widget * range
+	Etk_Range * range
 	PPCODE:
 	double lower, upper;
-	etk_range_range_get(ETK_RANGE(range), &lower, &upper);
+	etk_range_range_get(range, &lower, &upper);
 	EXTEND(SP, 2);
 	PUSHs(sv_2mortal(newSVnv(lower)));
 	PUSHs(sv_2mortal(newSVnv(upper)));
 
 double
 etk_range_value_get(range)
-	Etk_Widget *	range
-	CODE:
-	RETVAL = etk_range_value_get(ETK_RANGE(range));
-	OUTPUT:
-	RETVAL
+	Etk_Range *	range
 
 void
 etk_range_value_set(range, value)
-	Etk_Widget *	range
+	Etk_Range *	range
 	double	value
-	CODE:
-	etk_range_value_set(ETK_RANGE(range), value);
+
+MODULE = Etk::ScrolledView	PACKAGE = Etk::ScrolledView	PREFIX = etk_scrolled_view_
 
 void
 etk_scrolled_view_add_with_viewport(scrolled_view, child)
-	Etk_Widget *	scrolled_view
+	Etk_Scrolled_View *	scrolled_view
 	Etk_Widget *	child
-	CODE:
-	etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(scrolled_view), child);
 
-double
+Etk_Range *
 etk_scrolled_view_hscrollbar_get(scrolled_view)
-	Etk_Widget *	scrolled_view
+	Etk_Scrolled_View *	scrolled_view
+
+Etk_Scrolled_View *
+new(class)
+	SV * class
 	CODE:
-	Etk_Range * var;
-	var = etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(scrolled_view));
-	RETVAL = etk_range_value_get(var);
+	RETVAL = ETK_SCROLLED_VIEW(etk_scrolled_view_new());
 	OUTPUT:
 	RETVAL
 
-Etk_Widget *
-etk_scrolled_view_new()
-
 void
 etk_scrolled_view_policy_get(scrolled_view)
-	Etk_Widget *	scrolled_view
+	Etk_Scrolled_View *	scrolled_view
 	PPCODE:
 	Etk_Scrolled_View_Policy hpolicy;
 	Etk_Scrolled_View_Policy vpolicy;
 
-	etk_scrolled_view_policy_get(ETK_SCROLLED_VIEW(scrolled_view), &hpolicy, &vpolicy);
+	etk_scrolled_view_policy_get(scrolled_view, &hpolicy, &vpolicy);
 	XPUSHs(sv_2mortal(newSViv(hpolicy)));
 	XPUSHs(sv_2mortal(newSViv(vpolicy)));
-	
 
 void
 etk_scrolled_view_policy_set(scrolled_view, hpolicy, vpolicy)
-	Etk_Widget *	scrolled_view
+	Etk_Scrolled_View *	scrolled_view
 	Etk_Scrolled_View_Policy	hpolicy
 	Etk_Scrolled_View_Policy	vpolicy
-	CODE:
-	etk_scrolled_view_policy_set(ETK_SCROLLED_VIEW(scrolled_view), hpolicy, vpolicy);
-	
 
-double
+Etk_Range *
 etk_scrolled_view_vscrollbar_get(scrolled_view)
-	Etk_Widget *	scrolled_view
-	CODE:
-	Etk_Range * var;
-	var = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(scrolled_view));
-	RETVAL = etk_range_value_get(var);
-	OUTPUT:
-	RETVAL
+	Etk_Scrolled_View *	scrolled_view
+
+
+MODULE = Etk::Selection	PACKAGE = Etk::Selection	PREFIX = etk_selection_
 
 void
 etk_selection_text_request(widget)
@@ -3169,9 +3037,12 @@ etk_selection_text_set(widget, data, length)
 	char *	data
 	int	length
 
-void
-etk_shutdown()
+# TODO XXX
+	
+MODULE = Etk	PACKAGE = Etk
+	
 
+	
 void
 etk_signal_callback_call(callback, object, return_value, ...)
 	Etk_Signal_Callback *	callback
@@ -3191,90 +3062,8 @@ etk_signal_callback_del(signal_callback)
 #	Etk_Bool	swapped
 
 void
-etk_signal_connect(signal_name, object, callback, data)
-	char *	        signal_name
-	SV *		object
-	SV *	        callback
-	SV *            data
-	
-	CODE:	
-	__etk_signal_connect_full(signal_name, object, callback, data, ETK_FALSE, ETK_FALSE);
-
-void
-etk_signal_connect_after(signal_name, object, callback, data)
-	char *	        signal_name
-	SV *		object
-	SV *	        callback
-	SV *            data
-	
-	CODE:	
-	__etk_signal_connect_full(signal_name, object, callback, data, ETK_FALSE, ETK_TRUE);
-
-void etk_signal_connect_full(signal_name, object, callback, data, swapped, after)
-	char *	        signal_name
-	SV *		object
-	SV *	        callback
-	SV *            data
-	Etk_Bool	swapped
-	Etk_Bool	after
-	CODE:
-	__etk_signal_connect_full(signal_name, object, callback, data, swapped, after);
-
-	
-void
-etk_signal_connect_swapped(signal_name, object, callback, data)
-	char *	        signal_name
-	SV *		object
-	SV *	        callback
-	SV *            data
-	
-	CODE:	
-	__etk_signal_connect_full(signal_name, object, callback, data, ETK_TRUE, ETK_FALSE);
-
-void
 etk_signal_delete(signal)
 	Etk_Signal *	signal
-
-void
-etk_signal_disconnect(signal_name, object, callback)
-	char *	        signal_name
-	SV *		object
-	SV *	        callback
-	
-	CODE:	
-	Etk_Signal *sig = NULL;
-	Etk_Marshaller marsh;
-	Etk_Object * obj;
-	HV * ref;
-	SV ** o;
-	
-	ref = (HV *)SvRV(object);
-	o = hv_fetch( ref, "WIDGET", strlen("WIDGET"), 0);
-
-	obj = ETK_OBJECT( (void *) SvIV(SvRV(*o)) );
-
-	sig = etk_signal_lookup(signal_name, obj->type);
-	if(!sig) printf("CANT GET SIG!\n");
-	marsh = etk_signal_marshaller_get(sig);
-	
-	if(marsh == etk_marshaller_VOID__VOID)
-	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
-	else if(marsh == etk_marshaller_VOID__INT)
-	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__INT));
-	else if(marsh == etk_marshaller_VOID__DOUBLE)
-	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__DOUBLE));
-	else if(marsh == etk_marshaller_VOID__POINTER)
-	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__POINTER));
-	else if(marsh == etk_marshaller_VOID__INT_POINTER)
-	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__INT_POINTER));
-	else if(marsh == etk_marshaller_BOOL__VOID)
-	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__VOID));
-	else if(marsh == etk_marshaller_BOOL__DOUBLE)
-	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__DOUBLE));
-	else if(marsh == etk_marshaller_BOOL__POINTER_POINTER)
-	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__POINTER_POINTER));
-	else
- 	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
 
 void
 etk_signal_emit(signal, object, return_value, ...)
@@ -3316,57 +3105,49 @@ etk_signal_shutdown()
 void
 etk_signal_stop()
 
+
+MODULE = Etk::StatusBar	PACKAGE = Etk::StaturBar	PREFIX = etk_statusbar_
+
 int
 etk_statusbar_context_id_get(statusbar, context)
-	Etk_Widget *	statusbar
+	Etk_Statusbar *	statusbar
 	char *	context
-	CODE:
-	RETVAL = etk_statusbar_context_id_get(ETK_STATUSBAR(statusbar), context);
-	OUTPUT:
-	RETVAL
 
 Etk_Bool
 etk_statusbar_has_resize_grip_get(statusbar)
-	Etk_Widget *	statusbar
-	CODE:
-	RETVAL = etk_statusbar_has_resize_grip_get(ETK_STATUSBAR(statusbar));
-	OUTPUT:
-	RETVAL
+	Etk_Statusbar *	statusbar
 
 void
 etk_statusbar_has_resize_grip_set(statusbar, has_resize_grip)
-	Etk_Widget *	statusbar
+	Etk_Statusbar *	statusbar
 	Etk_Bool	has_resize_grip
-	CODE:
-	etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(statusbar), has_resize_grip);
 
-Etk_Widget *
-etk_statusbar_new()
-
-void
-etk_statusbar_pop(statusbar, context_id)
-	Etk_Widget *	statusbar
-	int	context_id
+Etk_Statusbar *
+new(class)
+	SV * class
 	CODE:
-	etk_statusbar_pop(ETK_STATUSBAR(statusbar), context_id);
-
-int
-etk_statusbar_push(statusbar, message, context_id)
-	Etk_Widget *	statusbar
-	char *	message
-	int	context_id
-	CODE:
-	RETVAL = etk_statusbar_push(ETK_STATUSBAR(statusbar), message, context_id);
+	RETVAL = ETK_STATUSBAR(etk_statusbar_new());
 	OUTPUT:
 	RETVAL
 
 void
-etk_statusbar_remove(statusbar, message_id)
-	Etk_Widget *	statusbar
-	int	message_id
-	CODE:
-	etk_statusbar_remove(ETK_STATUSBAR(statusbar), message_id);
+etk_statusbar_pop(statusbar, context_id)
+	Etk_Statusbar *	statusbar
+	int	context_id
 
+int
+etk_statusbar_push(statusbar, message, context_id)
+	Etk_Statusbar *	statusbar
+	char *	message
+	int	context_id
+
+void
+etk_statusbar_remove(statusbar, message_id)
+	Etk_Statusbar *	statusbar
+	int	message_id
+
+MODULE = Etk::Stock	PACKAGE = Etk::Stock	PREFIX = etk_stock_
+	
 const char *
 etk_stock_key_get(stock_id, size)
 	Etk_Stock_Id	stock_id
@@ -3376,9 +3157,11 @@ const char *
 etk_stock_label_get(stock_id)
 	Etk_Stock_Id	stock_id
 
+MODULE = Etk::Table	PACKAGE = Etk::Table	PREFIX = etk_table_
+
 void
 etk_table_attach(table, child, left_attach, right_attach, top_attach, bottom_attach, x_padding, y_padding, fill_policy)
-	Etk_Widget *	table
+	Etk_Table *	table
 	Etk_Widget *	child
 	int	left_attach
 	int	right_attach
@@ -3387,67 +3170,66 @@ etk_table_attach(table, child, left_attach, right_attach, top_attach, bottom_att
 	int	x_padding
 	int	y_padding
 	Etk_Fill_Policy_Flags	fill_policy
-	CODE:
-	etk_table_attach(ETK_TABLE(table), child, left_attach, right_attach, top_attach, bottom_attach, x_padding, y_padding, fill_policy);
 
 void
 etk_table_attach_defaults(table, child, left_attach, right_attach, top_attach, bottom_attach)
-	Etk_Widget *	table
+	Etk_Table *	table
 	Etk_Widget *	child
 	int	left_attach
 	int	right_attach
 	int	top_attach
 	int	bottom_attach
-	CODE:
-	etk_table_attach_defaults(ETK_TABLE(table), child, left_attach, right_attach, top_attach, bottom_attach);
 
 void
 etk_table_cell_clear(table, col, row)
-	Etk_Widget *	table
+	Etk_Table *	table
 	int	col
 	int	row
-	CODE:
-	etk_table_cell_clear(ETK_TABLE(table), col, row);
 
 Etk_Bool
 etk_table_homogeneous_get(table)
-	Etk_Widget *	table
-	CODE:
-	RETVAL = etk_table_homogeneous_get(ETK_TABLE(table));
-	OUTPUT:
-	RETVAL
+	Etk_Table *	table
 
 void
 etk_table_homogeneous_set(table, homogeneous)
-	Etk_Widget *	table
+	Etk_Table *	table
 	Etk_Bool	homogeneous
-	CODE:
-	etk_table_homogeneous_set(ETK_TABLE(table), homogeneous);
 
-Etk_Widget *
-etk_table_new(num_cols, num_rows, homogeneous)
+Etk_Table *
+new(class, num_cols, num_rows, homogeneous)
+	SV * class
 	int	num_cols
 	int	num_rows
 	Etk_Bool	homogeneous
+	CODE:
+	RETVAL = ETK_TABLE(etk_table_new(num_cols, num_rows, homogeneous));
+	OUTPUT:
+	RETVAL
 
 void
 etk_table_resize(table, num_cols, num_rows)
-	Etk_Widget *	table
+	Etk_Table *	table
 	int	num_cols
 	int	num_rows
-	CODE:
-	etk_table_resize(ETK_TABLE(table), num_cols, num_rows);
 
-Etk_Widget *
-etk_text_view_new()
+
+MODULE = Etk::TextView	PACKAGE = Etk::TextView	PREFIX = etk_text_view_
+
+Etk_Text_View *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_TEXT_VIEW(etk_text_view_new());
+	OUTPUT:
+	RETVAL
+	
 
 Etk_Textblock *
 etk_text_view_textblock_get(text_view)
-	Etk_Widget * text_view
-	CODE:
-	RETVAL = etk_text_view_textblock_get(ETK_TEXT_VIEW(text_view));
-	OUTPUT:
-	RETVAL
+	Etk_Text_View * text_view
+
+
+MODULE = Etk::TextBlock	PACKAGE = Etk::TextBlock	PREFIX = etk_textblock_
 
 void
 etk_textblock_iter_copy(iter, dest_iter)
@@ -3507,6 +3289,9 @@ void
 etk_textblock_unrealize(textblock)
 	Etk_Textblock *	textblock
 
+
+MODULE = Etk::Theme	PACKAGE = Etk::Theme	PREFIX = etk_theme_
+	
 const char *
 etk_theme_default_icon_theme_get()
 
@@ -3546,33 +3331,40 @@ Etk_Bool
 etk_theme_widget_theme_set(theme_name)
 	char *	theme_name
 
+
+MODULE = Etk::ToggleButton	PACKAGE = Etk::ToggleButton	PREFIX = etk_toggle_button_
+
 Etk_Bool
 etk_toggle_button_active_get(toggle_button)
-	Etk_Widget *	toggle_button
+	Etk_Toggle_Button *	toggle_button
+
+void
+etk_toggle_button_active_set(toggle_button, active)
+	Etk_Toggle_Button *	toggle_button
+	Etk_Bool	active
+
+Etk_Toggle_Button *
+new(class)
+	SV * class
 	CODE:
-	RETVAL = etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(toggle_button));
+	RETVAL = ETK_TOGGLE_BUTTON(etk_toggle_button_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Toggle_Button *
+etk_toggle_button_new_with_label(label)
+	char *	label
+	CODE:
+	RETVAL = ETK_TOGGLE_BUTTON(etk_toggle_button_new_with_label(label));
 	OUTPUT:
 	RETVAL
 
 void
-etk_toggle_button_active_set(toggle_button, active)
-	Etk_Widget *	toggle_button
-	Etk_Bool	active
-	CODE:
-	etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(toggle_button), active);
-
-Etk_Widget *
-etk_toggle_button_new()
-
-Etk_Widget *
-etk_toggle_button_new_with_label(label)
-	char *	label
-
-void
 etk_toggle_button_toggle(toggle_button)
-	Etk_Widget *	toggle_button
-	CODE:
-	etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(toggle_button));
+	Etk_Toggle_Button *	toggle_button
+
+
+MODULE = Etk::Tooltips	PACKAGE = Etk::Tooltips	PREFIX = etk_tooltips_
 
 void
 etk_tooltips_disable()
@@ -3605,51 +3397,39 @@ etk_tooltips_tip_set(widget, text)
 Etk_Bool
 etk_tooltips_tip_visible()
 
+
+MODULE = Etk::ToplevelWidget	PACKAGE = Etk::ToplevelWidget	PREFIX = etk_toplevel_widget_
+
 Evas *
 etk_toplevel_widget_evas_get(toplevel_widget)
 	Etk_Toplevel_Widget *	toplevel_widget
 
 Etk_Widget *
 etk_toplevel_widget_focused_widget_get(toplevel_widget)
-	Etk_Widget *	toplevel_widget
-	CODE:
-	RETVAL = etk_toplevel_widget_focused_widget_get(ETK_TOPLEVEL_WIDGET(toplevel_widget));
-	OUTPUT:
-	RETVAL
+	Etk_Toplevel_Widget *	toplevel_widget
 
 Etk_Widget *
 etk_toplevel_widget_focused_widget_next_get(toplevel_widget)
-	Etk_Widget *	toplevel_widget
-	CODE:
-	RETVAL = etk_toplevel_widget_focused_widget_next_get(ETK_TOPLEVEL_WIDGET(toplevel_widget));
-	OUTPUT:
-	RETVAL
+	Etk_Toplevel_Widget *	toplevel_widget
 
 Etk_Widget *
 etk_toplevel_widget_focused_widget_prev_get(toplevel_widget)
-	Etk_Widget *	toplevel_widget
-	CODE:
-	RETVAL = etk_toplevel_widget_focused_widget_prev_get(ETK_TOPLEVEL_WIDGET(toplevel_widget));
-	OUTPUT:
-	RETVAL
+	Etk_Toplevel_Widget *	toplevel_widget
 
 void
 etk_toplevel_widget_focused_widget_set(toplevel_widget, widget)
-	Etk_Widget *	toplevel_widget
+	Etk_Toplevel_Widget *	toplevel_widget
 	Etk_Widget *	widget
-	CODE:
-	etk_toplevel_widget_focused_widget_set(ETK_TOPLEVEL_WIDGET(toplevel_widget), widget);
 
 void
 etk_toplevel_widget_geometry_get(toplevel_widget, x, y, w, h)
-	Etk_Widget *	toplevel_widget
+	Etk_Toplevel_Widget *	toplevel_widget
 	PPCODE:
 	int 	x;
 	int 	y;
 	int 	w;
 	int 	h;
-	etk_toplevel_widget_geometry_get(ETK_TOPLEVEL_WIDGET(toplevel_widget),
-			&x, &y, &w, &h);
+	etk_toplevel_widget_geometry_get(toplevel_widget, &x, &y, &w, &h);
 	EXTEND(SP, 4);
 	PUSHs(sv_2mortal(newSViv(x)));
 	PUSHs(sv_2mortal(newSViv(y)));
@@ -3658,23 +3438,22 @@ etk_toplevel_widget_geometry_get(toplevel_widget, x, y, w, h)
 
 void
 etk_toplevel_widget_pointer_pop(toplevel_widget, pointer_type)
-	Etk_Widget *	toplevel_widget
+	Etk_Toplevel_Widget *	toplevel_widget
 	Etk_Pointer_Type	pointer_type
-	CODE:
-	etk_toplevel_widget_pointer_pop(ETK_TOPLEVEL_WIDGET(toplevel_widget), pointer_type);
 
 void
 etk_toplevel_widget_pointer_push(toplevel_widget, pointer_type)
-	Etk_Widget *	toplevel_widget
+	Etk_Toplevel_Widget *	toplevel_widget
 	Etk_Pointer_Type	pointer_type
-	CODE:
-	etk_toplevel_widget_pointer_push(ETK_TOPLEVEL_WIDGET(toplevel_widget), pointer_type);
 
+
+MODULE = Etk::Tree	PACKAGE = Etk::Tree	PREFIX = etk_tree_
+	
 Etk_Tree_Row *
 etk_tree_append(tree)
-	Etk_Widget *	tree
+	Etk_Tree *	tree
       CODE:
-        RETVAL = etk_tree_append(ETK_TREE(tree), NULL);
+        RETVAL = etk_tree_append(tree, NULL);
       OUTPUT:
         RETVAL
 
@@ -3684,15 +3463,162 @@ etk_tree_append_to_row(row, ...)
 
 void
 etk_tree_build(tree)
-	Etk_Widget *	tree
-	CODE:
-	etk_tree_build(ETK_TREE(tree));
+	Etk_Tree *	tree
 
 void
 etk_tree_clear(tree)
-	Etk_Widget *	tree
+	Etk_Tree *	tree
+
+Etk_Tree_Row *
+etk_tree_first_row_get(tree)
+	Etk_Tree *	tree
+
+void
+etk_tree_freeze(tree)
+	Etk_Tree *	tree
+
+Etk_Bool
+etk_tree_headers_visible_get(tree)
+	Etk_Tree *	tree
+
+void
+etk_tree_headers_visible_set(tree, headers_visible)
+	Etk_Tree *	tree
+	Etk_Bool	headers_visible
+
+Etk_Tree_Row *
+etk_tree_last_row_get(tree, walking_through_hierarchy, include_collapsed_children)
+	Etk_Tree *	tree
+	Etk_Bool	walking_through_hierarchy
+	Etk_Bool	include_collapsed_children
+
+Etk_Tree_Mode
+etk_tree_mode_get(tree)
+	Etk_Tree *	tree
+
+void
+etk_tree_mode_set(tree, mode)
+	Etk_Tree *	tree
+	Etk_Tree_Mode	mode
+
+Etk_Bool
+etk_tree_multiple_select_get(tree)
+	Etk_Tree *	tree
+
+void
+etk_tree_multiple_select_set(tree, multiple_select)
+	Etk_Tree *	tree
+	Etk_Bool	multiple_select
+
+Etk_Tree *
+new(class)
+	SV * class
 	CODE:
-	etk_tree_clear(ETK_TREE(tree));
+	RETVAL = ETK_TREE(etk_tree_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Tree_Row *
+etk_tree_next_row_get(row, walking_through_hierarchy, include_collapsed_children)
+	Etk_Tree_Row *	row
+	Etk_Bool	walking_through_hierarchy
+	Etk_Bool	include_collapsed_children
+
+Etk_Tree_Col *
+etk_tree_nth_col_get(tree, nth)
+	Etk_Tree *	tree
+	int	nth
+
+int
+etk_tree_num_cols_get(tree)
+	Etk_Tree *	tree
+
+Etk_Tree_Row *
+etk_tree_prev_row_get(row, walking_through_hierarchy, include_collapsed_children)
+	Etk_Tree_Row *	row
+	Etk_Bool	walking_through_hierarchy
+	Etk_Bool	include_collapsed_children
+
+	
+void
+etk_tree_select_all(tree)
+	Etk_Tree *	tree
+
+Etk_Tree_Row *
+etk_tree_selected_row_get(tree)
+	Etk_Tree *	tree
+
+void 
+etk_tree_selected_rows_get(tree)
+	Etk_Tree *	tree
+	PPCODE:
+	Evas_List * list;
+	AV * av;
+	int i;
+
+	list = etk_tree_selected_rows_get(tree);
+	av = evas_list_to_perl(list);
+	for (i=0; i<=av_len(av); i++) 
+	{
+		SV * sv;
+		sv = newRV(newSViv(0));
+		/* FIXME */
+		sv_setref_iv(sv, "Etk_WidgetPtr", SvIV(av_shift(av)));
+
+		XPUSHs(sv_2mortal(sv));
+	}
+
+void
+etk_tree_sort(tree, compare_cb, ascendant, col, data)
+	Etk_Tree *	tree
+        SV *compare_cb
+	Etk_Bool	ascendant
+	Etk_Tree_Col *	col
+	SV *	data
+      CODE:
+        Callback_Tree_Compare_Data *cbd;
+        
+        cbd = calloc(1, sizeof(Callback_Tree_Compare_Data));
+        cbd->object = ETK_OBJECT(col);
+        cbd->perl_data = newSVsv(data);
+        cbd->perl_callback = newSVsv(compare_cb);
+        etk_tree_sort(tree, tree_compare_cb, ascendant, col, cbd);
+
+void 
+etk_tree_sort_alpha(tree, ascendant, col, data)
+	Etk_Tree *    tree
+	Etk_Bool        ascendant
+	Etk_Tree_Col *  col
+	SV *    data
+	CODE:
+	etk_tree_sort(tree, tree_compare_alpha_cb, ascendant, col, data);
+
+void 
+etk_tree_sort_numeric(tree, ascendant, col, data)
+	Etk_Tree *    tree
+	Etk_Bool        ascendant
+	Etk_Tree_Col *  col
+	SV *    data
+	CODE:
+	etk_tree_sort(tree, tree_compare_numeric_cb, ascendant, col, data);
+
+void
+etk_tree_thaw(tree)
+	Etk_Tree *	tree
+
+void
+etk_tree_unselect_all(tree)
+	Etk_Tree *	tree
+
+Etk_Tree_Col *
+etk_tree_col_new(tree, title, model, width)
+	Etk_Tree *	tree
+	char *	title
+	Etk_Tree_Model *	model
+	int	width
+
+	
+MODULE = Etk::Tree::Col	PACKAGE = Etk::Tree::Col	PREFIX = etk_tree_col_
 
 Etk_Bool
 etk_tree_col_expand_get(col)
@@ -3711,17 +3637,6 @@ void
 etk_tree_col_min_width_set(col, min_width)
 	Etk_Tree_Col *	col
 	int	min_width
-
-Etk_Tree_Col *
-etk_tree_col_new(tree, title, model, width)
-	Etk_Widget *	tree
-	char *	title
-	Etk_Tree_Model *	model
-	int	width
-	CODE:
-	RETVAL = etk_tree_col_new(ETK_TREE(tree), title, model, width);
-	OUTPUT:
-	RETVAL
 
 int
 etk_tree_col_place_get(col)
@@ -3802,59 +3717,8 @@ etk_tree_col_width_set(col, width)
 	Etk_Tree_Col *	col
 	int	width
 
-Etk_Tree_Row *
-etk_tree_first_row_get(tree)
-	Etk_Widget *	tree
-	CODE:
-	RETVAL = etk_tree_first_row_get(ETK_TREE(tree));
-	OUTPUT:
-	RETVAL
 
-void
-etk_tree_freeze(tree)
-	Etk_Widget *	tree
-	CODE:
-	etk_tree_freeze(ETK_TREE(tree));
-
-Etk_Bool
-etk_tree_headers_visible_get(tree)
-	Etk_Widget *	tree
-	CODE:
-	RETVAL = etk_tree_headers_visible_get(ETK_TREE(tree));
-	OUTPUT:
-	RETVAL
-
-void
-etk_tree_headers_visible_set(tree, headers_visible)
-	Etk_Widget *	tree
-	Etk_Bool	headers_visible
-	CODE:
-	etk_tree_headers_visible_set(ETK_TREE(tree), headers_visible);
-
-Etk_Tree_Row *
-etk_tree_last_row_get(tree, walking_through_hierarchy, include_collapsed_children)
-	Etk_Widget *	tree
-	Etk_Bool	walking_through_hierarchy
-	Etk_Bool	include_collapsed_children
-	CODE:
-	RETVAL = etk_tree_last_row_get(ETK_TREE(tree), walking_through_hierarchy, include_collapsed_children);
-	OUTPUT:
-	RETVAL
-
-Etk_Tree_Mode
-etk_tree_mode_get(tree)
-	Etk_Widget *	tree
-	CODE:
-	RETVAL = etk_tree_mode_get(ETK_TREE(tree));
-	OUTPUT:
-	RETVAL
-
-void
-etk_tree_mode_set(tree, mode)
-	Etk_Widget *	tree
-	Etk_Tree_Mode	mode
-	CODE:
-	etk_tree_mode_set(ETK_TREE(tree), mode);
+MODULE = Etk::Tree::Model	PACKAGE = Etk::Tree::Model	PREFIX = etk_tree_model_
 
 void
 etk_tree_model_alignment_get(model)
@@ -3874,25 +3738,36 @@ etk_tree_model_alignment_set(model, xalign, yalign)
 	float	xalign
 	float	yalign
 
-Etk_Tree_Model *
-etk_tree_model_checkbox_new(tree)
-	Etk_Widget *	tree
-	CODE:
-	RETVAL = etk_tree_model_checkbox_new(ETK_TREE(tree));
-	OUTPUT:
-	RETVAL
-
-Etk_Tree_Model *
-etk_tree_model_double_new(tree)
-	Etk_Widget *	tree
-	CODE:
-	RETVAL = etk_tree_model_double_new(ETK_TREE(tree));
-	OUTPUT:
-	RETVAL
-
 void
 etk_tree_model_free(model)
 	Etk_Tree_Model *	model
+
+
+MODULE = Etk::Tree::Model::Checkbox	PACKAGE = Etk::Tree::Model::Checkbox	PREFIX = etk_tree_model_checkbox_
+
+Etk_Tree_Model *
+new(class, tree)
+	SV * class
+	Etk_Tree *	tree
+	CODE:
+	RETVAL = etk_tree_model_checkbox_new(tree);
+	OUTPUT:
+	RETVAL
+
+
+MODULE = Etk::Tree::Model::Double	PACKAGE = Etk::Tree::Model::Double	PREFIX = etk_tree_model_double_
+
+Etk_Tree_Model *
+new(class, tree)
+	SV * class
+	Etk_Tree *	tree
+	CODE:
+	RETVAL = etk_tree_model_double_new(tree);
+	OUTPUT:
+	RETVAL
+
+
+MODULE = Etk::Tree::Model::IconText	PACKAGE = Etk::Tree::Model::IconText	PREFIX = etk_tree_model_icon_text_
 
 int
 etk_tree_model_icon_text_icon_width_get(model)
@@ -3904,93 +3779,64 @@ etk_tree_model_icon_text_icon_width_set(model, icon_width)
 	int	icon_width
 
 Etk_Tree_Model *
-etk_tree_model_icon_text_new(tree, icon_type)
-	Etk_Widget *	tree
+new(class, tree, icon_type)
+	SV * class
+	Etk_Tree *	tree
 	Etk_Tree_Model_Image_Type	icon_type
 	CODE:
-	RETVAL = etk_tree_model_icon_text_new(ETK_TREE(tree), icon_type);
+	RETVAL = etk_tree_model_icon_text_new(tree, icon_type);
 	OUTPUT:
 	RETVAL
 
+
+MODULE = Etk::Tree::Model::Image	PACKAGE = Etk::Tree::Model::Image	PREFIX = etk_tree_model_image_
+
 Etk_Tree_Model *
-etk_tree_model_image_new(tree, image_type)
-	Etk_Widget *	tree
+new(class, tree, image_type)
+	SV * class
+	Etk_Tree *	tree
 	Etk_Tree_Model_Image_Type	image_type
 	CODE:
-	RETVAL = etk_tree_model_image_new(ETK_TREE(tree), image_type);
+	RETVAL = etk_tree_model_image_new(tree, image_type);
 	OUTPUT:
 	RETVAL
+
+MODULE = Etk::Tree::Model::Int	PACKAGE = Etk::Tree::Model::Int	PREFIX = etk_tree_model_int_
 
 Etk_Tree_Model *
-etk_tree_model_int_new(tree)
-	Etk_Widget *	tree
+new(class, tree)
+	SV * class
+	Etk_Tree *	tree
 	CODE:
-	RETVAL = etk_tree_model_int_new(ETK_TREE(tree));
+	RETVAL = etk_tree_model_int_new(tree);
 	OUTPUT:
 	RETVAL
+
+MODULE = Etk::Tree::Model::ProgressBar	PACKAGE = Etk::Tree::Model::ProgressBar	PREFIX = etk_tree_model_progress_bar_
 
 Etk_Tree_Model *
-etk_tree_model_progress_bar_new(tree)
-	Etk_Widget *	tree
+new(class, tree)
+	SV * class
+	Etk_Tree *	tree
 	CODE:
-	RETVAL = etk_tree_model_progress_bar_new(ETK_TREE(tree));
+	RETVAL = etk_tree_model_progress_bar_new(tree);
 	OUTPUT:
 	RETVAL
+
+
+MODULE = Etk::Tree::Model::Text	PACKAGE = Etk::Tree::Model::Text	PREFIX = etk_tree_model_text_
 
 Etk_Tree_Model *
-etk_tree_model_text_new(tree)
-	Etk_Widget *	tree
+new(class, tree)
+	SV * class
+	Etk_Tree *	tree
 	CODE:
-	RETVAL = etk_tree_model_text_new(ETK_TREE(tree));
+	RETVAL = etk_tree_model_text_new(tree);
 	OUTPUT:
 	RETVAL
 
-Etk_Bool
-etk_tree_multiple_select_get(tree)
-	Etk_Widget *	tree
-	CODE:
-	RETVAL = etk_tree_multiple_select_get(ETK_TREE(tree));
-	OUTPUT:
-	RETVAL
 
-void
-etk_tree_multiple_select_set(tree, multiple_select)
-	Etk_Widget *	tree
-	Etk_Bool	multiple_select
-	CODE:
-	etk_tree_multiple_select_set(ETK_TREE(tree), multiple_select);
-
-Etk_Widget *
-etk_tree_new()
-
-Etk_Tree_Row *
-etk_tree_next_row_get(row, walking_through_hierarchy, include_collapsed_children)
-	Etk_Tree_Row *	row
-	Etk_Bool	walking_through_hierarchy
-	Etk_Bool	include_collapsed_children
-
-Etk_Tree_Col *
-etk_tree_nth_col_get(tree, nth)
-	Etk_Widget *	tree
-	int	nth
-	CODE:
-	RETVAL = etk_tree_nth_col_get(ETK_TREE(tree), nth);
-	OUTPUT:
-	RETVAL
-
-int
-etk_tree_num_cols_get(tree)
-	Etk_Widget *	tree
-	CODE:
-	RETVAL = etk_tree_num_cols_get(ETK_TREE(tree));
-	OUTPUT:
-	RETVAL
-
-Etk_Tree_Row *
-etk_tree_prev_row_get(row, walking_through_hierarchy, include_collapsed_children)
-	Etk_Tree_Row *	row
-	Etk_Bool	walking_through_hierarchy
-	Etk_Bool	include_collapsed_children
+MODULE = Etk::Tree::Row	PACKAGE = Etk::Tree::Row	PREFIX = etk_tree_row_
 
 void
 etk_tree_row_collapse(row)
@@ -4212,18 +4058,12 @@ etk_tree_row_first_child_get(row)
 
 int
 etk_tree_row_height_get(tree)
-	Etk_Widget *	tree
-	CODE:
-	RETVAL = etk_tree_row_height_get(ETK_TREE(tree));
-	OUTPUT:
-	RETVAL
+	Etk_Tree *	tree
 
 void
 etk_tree_row_height_set(tree, row_height)
-	Etk_Widget *	tree
+	Etk_Tree *	tree
 	int	row_height
-	CODE:
-	etk_tree_row_height_set(ETK_TREE(tree), row_height);
 
 Etk_Tree_Row *
 etk_tree_row_last_child_get(row, walking_through_hierarchy, include_collapsed_children)
@@ -4244,84 +4084,9 @@ void
 etk_tree_row_unselect(row)
 	Etk_Tree_Row *	row
 
-void
-etk_tree_select_all(tree)
-	Etk_Widget *	tree
-	CODE:
-	etk_tree_select_all(ETK_TREE(tree));
 
-Etk_Tree_Row *
-etk_tree_selected_row_get(tree)
-	Etk_Widget *	tree
-	CODE:
-	RETVAL = etk_tree_selected_row_get(ETK_TREE(tree));
-	OUTPUT:
-	RETVAL
 
-void 
-etk_tree_selected_rows_get(tree)
-	Etk_Widget *	tree
-	PPCODE:
-	Evas_List * list;
-	AV * av;
-	int i;
-
-	list = etk_tree_selected_rows_get(ETK_TREE(tree));
-	av = evas_list_to_perl(list);
-	for (i=0; i<=av_len(av); i++) 
-	{
-		SV * sv;
-		sv = newRV(newSViv(0));
-		sv_setref_iv(sv, "Etk_WidgetPtr", SvIV(av_shift(av)));
-
-		XPUSHs(sv_2mortal(sv));
-	}
-
-void
-etk_tree_sort(tree, compare_cb, ascendant, col, data)
-	Etk_Widget *	tree
-        SV *compare_cb
-	Etk_Bool	ascendant
-	Etk_Tree_Col *	col
-	SV *	data
-      CODE:
-        Callback_Tree_Compare_Data *cbd;
-        
-        cbd = calloc(1, sizeof(Callback_Tree_Compare_Data));
-        cbd->object = ETK_OBJECT(col);
-        cbd->perl_data = newSVsv(data);
-        cbd->perl_callback = newSVsv(compare_cb);
-        etk_tree_sort(ETK_TREE(tree), tree_compare_cb, ascendant, col, cbd);
-
-void 
-etk_tree_sort_alpha(tree, ascendant, col, data)
-	Etk_Widget *    tree
-	Etk_Bool        ascendant
-	Etk_Tree_Col *  col
-	SV *    data
-	CODE:
-	etk_tree_sort(ETK_TREE(tree), tree_compare_alpha_cb, ascendant, col, data);
-
-void 
-etk_tree_sort_numeric(tree, ascendant, col, data)
-	Etk_Widget *    tree
-	Etk_Bool        ascendant
-	Etk_Tree_Col *  col
-	SV *    data
-	CODE:
-	etk_tree_sort(ETK_TREE(tree), tree_compare_numeric_cb, ascendant, col, data);
-
-void
-etk_tree_thaw(tree)
-	Etk_Widget *	tree
-	CODE:
-	etk_tree_thaw(ETK_TREE(tree));
-
-void
-etk_tree_unselect_all(tree)
-	Etk_Widget *	tree
-	CODE:
-	etk_tree_unselect_all(ETK_TREE(tree));
+MODULE = Etk	PACKAGE = Etk
 
 void
 etk_type_delete(type)
@@ -4394,16 +4159,40 @@ etk_type_signal_remove(type, signal)
 	Etk_Type *	type
 	Etk_Signal *	signal
 
-Etk_Widget *
-etk_vbox_new(homogeneous, spacing)
+
+MODULE = Etk::VBox	PACKAGE = Etk::VBox	PREFIX = etk_vbox_
+	
+Etk_VBox *
+new(class, homogeneous=ETK_FALSE, spacing=0)
+	SV	*class
 	Etk_Bool	homogeneous
 	int	spacing
+	CODE:
+	RETVAL = ETK_VBOX(etk_vbox_new(homogeneous, spacing));
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::Viewport	PACKAGE = Etk::Viewport	PREFIX = etk_viewport_
 
 Etk_Widget *
-etk_viewport_new()
+new(class)
+	SV * class
+	CODE:
+	RETVAL = etk_viewport_new();
+	OUTPUT:
+	RETVAL
 
-Etk_Widget *
-etk_vpaned_new()
+MODULE = Etk::VPaned	PACKAGE = Etk::VPaned	PREFIX = etk_vpaned_
+
+Etk_VPaned *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_VPANED(etk_vpaned_new());
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::VScrollbar	PACKAGE = Etk::VScrollbar	PREFIX = etk_vscrollbar_
 
 Etk_Widget *
 etk_vscrollbar_new(lower, upper, value, step_increment, page_increment, page_size)
@@ -4414,16 +4203,32 @@ etk_vscrollbar_new(lower, upper, value, step_increment, page_increment, page_siz
 	double	page_increment
 	double	page_size
 
-Etk_Widget *
-etk_vseparator_new()
+MODULE = Etk::VSeparator	PACKAGE = Etk::VSeparator	PREFIX = etk_vseparator_
 
-Etk_Widget *
-etk_vslider_new(lower, upper, value, step_increment, page_increment)
+Etk_VSeparator *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_VSEPARATOR(etk_vseparator_new());
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::VSlider	PACKAGE = Etk::VSlider	PREFIX = etk_vslider_
+
+Etk_VSlider *
+new(class, lower, upper, value, step_increment, page_increment)
+	SV * class
 	double	lower
 	double	upper
 	double	value
 	double	step_increment
 	double	page_increment
+	CODE:
+	RETVAL = ETK_VSLIDER(etk_vslider_new(lower, upper, value, step_increment, page_increment));
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::Widget	PACKAGE = Etk::Widget	PREFIX = etk_widget_
 
 Evas_Object *
 etk_widget_clip_get(widget)
@@ -4767,11 +4572,7 @@ etk_widget_show_all(widget)
 void
 etk_widget_size_allocate(widget, geometry)
 	Etk_Widget *	widget
-	SV *	geometry
-	CODE:
-	Etk_Geometry	g;
-	g = perl_hash_to_geometry(geometry);
-	etk_widget_size_allocate(widget, g);
+	Etk_Geometry 	geometry
 
 void
 etk_widget_size_recalc_queue(widget)
@@ -4871,13 +4672,9 @@ Evas *
 etk_widget_toplevel_evas_get(widget)
 	Etk_Widget *	widget
 
-Etk_Widget *
+Etk_Toplevel_Widget *
 etk_widget_toplevel_parent_get(widget)
 	Etk_Widget *	widget
-	CODE:
-	RETVAL = ETK_WIDGET(etk_widget_toplevel_parent_get(widget));
-	OUTPUT:
-	RETVAL
 
 void
 etk_widget_unfocus(widget)
@@ -4897,64 +4694,49 @@ etk_widget_visibility_locked_set(widget, visibility_locked)
 	Etk_Widget *	widget
 	Etk_Bool	visibility_locked
 
+
+MODULE = Etk::Window	PACKAGE = Etk::Window	PREFIX = etk_window_
+
 void
 etk_window_center_on_window(window_to_center, window)
-	Etk_Widget *	window_to_center
-	Etk_Widget *	window
-	CODE:
-	etk_window_center_on_window(ETK_WINDOW(window_to_center), ETK_WINDOW(window));
+	Etk_Window *	window_to_center
+	Etk_Window *	window
 
 Etk_Bool
 etk_window_decorated_get(window)
-	Etk_Widget *	window
-	CODE:
-	Etk_Bool var;
-	var = etk_window_decorated_get(ETK_WINDOW(window));
-	RETVAL = var;
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 void
 etk_window_decorated_set(window, decorated)
-	Etk_Widget *	window
+	Etk_Window *	window
 	Etk_Bool	decorated
-	CODE:
-	etk_window_decorated_set(ETK_WINDOW(window), decorated);
 
 void
 etk_window_deiconify(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_deiconify(ETK_WINDOW(window));
+	Etk_Window *	window
 
 void
 etk_window_dnd_aware_set(window, on)
-	Etk_Widget *	window
+	Etk_Window *	window
 	Etk_Bool	on
-	CODE:
-	etk_window_dnd_aware_set(ETK_WINDOW(window), on);
 
 void
 etk_window_focus(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_focus(ETK_WINDOW(window));
+	Etk_Window *	window
 
 void
 etk_window_fullscreen(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_fullscreen(ETK_WINDOW(window));
+	Etk_Window *	window
 
 void
 etk_window_geometry_get(window)
-	Etk_Widget *	window
+	Etk_Window *	window
 	PPCODE:
 	int 	x;
 	int 	y;
 	int 	w;
 	int 	h;
-	etk_window_geometry_get(ETK_WINDOW(window), &x, &y, &w, &h);
+	etk_window_geometry_get(window, &x, &y, &w, &h);
 	EXTEND(SP, 4);
 	PUSHs(sv_2mortal(newSViv(x)));
 	PUSHs(sv_2mortal(newSViv(y)));
@@ -4968,179 +4750,121 @@ etk_window_hide_on_delete(window, data)
 
 void
 etk_window_iconify(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_iconify(ETK_WINDOW(window));
+	Etk_Window *	window
 
 Etk_Bool
 etk_window_is_focused(window)
-	Etk_Widget *	window
-	CODE:
-	RETVAL = etk_window_is_focused(ETK_WINDOW(window));
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 Etk_Bool
 etk_window_is_fullscreen(window)
-	Etk_Widget *	window
-	CODE:
-	RETVAL = etk_window_is_fullscreen(ETK_WINDOW(window));
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 Etk_Bool
 etk_window_is_iconified(window)
-	Etk_Widget *	window
-	CODE:
-	RETVAL = etk_window_is_iconified(ETK_WINDOW(window));
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 Etk_Bool
 etk_window_is_maximized(window)
-	Etk_Widget *	window
-	CODE:
-	RETVAL = etk_window_is_maximized(ETK_WINDOW(window));
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 Etk_Bool
 etk_window_is_sticky(window)
-	Etk_Widget *	window
-	CODE:
-	RETVAL = etk_window_is_sticky(ETK_WINDOW(window));
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 void
 etk_window_maximize(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_maximize(ETK_WINDOW(window));
+	Etk_Window *	window
 
 void
 etk_window_move(window, x, y)
-	Etk_Widget *	window
+	Etk_Window *	window
 	int	x
 	int	y
-	CODE:
-	etk_window_move(ETK_WINDOW(window), x, y);
 
 void
 etk_window_move_to_mouse(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_move_to_mouse(ETK_WINDOW(window));
+	Etk_Window *	window
 
-Etk_Widget *
-etk_window_new()
+Etk_Window *
+new(class)
+	SV	* class
+	CODE:
+	RETVAL = ETK_WINDOW(etk_window_new());
+	OUTPUT:
+	RETVAL
 
 void
 etk_window_resize(window, w, h)
-	Etk_Widget *	window
+	Etk_Window *	window
 	int	w
 	int	h
-	CODE:
-	etk_window_resize(ETK_WINDOW(window), w, h);
 
 Etk_Bool
 etk_window_shaped_get(window)
-	Etk_Widget *	window
-	CODE:
-	RETVAL = etk_window_shaped_get(ETK_WINDOW(window));
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 void
 etk_window_shaped_set(window, shaped)
-	Etk_Widget *	window
+	Etk_Window *	window
 	Etk_Bool	shaped
-	CODE:
-	etk_window_shaped_set(ETK_WINDOW(window), shaped);
 
 Etk_Bool
 etk_window_skip_pager_hint_get(window)
-	Etk_Widget *	window
-	CODE:
-	RETVAL = etk_window_skip_pager_hint_get(ETK_WINDOW(window));
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 void
 etk_window_skip_pager_hint_set(window, skip_pager_hint)
-	Etk_Widget *	window
+	Etk_Window *	window
 	Etk_Bool	skip_pager_hint
-	CODE:
-	etk_window_skip_pager_hint_set(ETK_WINDOW(window), skip_pager_hint);
 
 Etk_Bool
 etk_window_skip_taskbar_hint_get(window)
-	Etk_Widget *	window
-	CODE:
-	RETVAL = etk_window_skip_taskbar_hint_get(ETK_WINDOW(window));
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 void
 etk_window_skip_taskbar_hint_set(window, skip_taskbar_hint)
-	Etk_Widget *	window
+	Etk_Window *	window
 	Etk_Bool	skip_taskbar_hint
-	CODE:
-	etk_window_skip_taskbar_hint_set(ETK_WINDOW(window), skip_taskbar_hint);
 
 void
 etk_window_stick(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_stick(ETK_WINDOW(window));
+	Etk_Window *	window
 
 const char *
 etk_window_title_get(window)
-	Etk_Widget *	window
-	CODE:
-	RETVAL = etk_window_title_get(ETK_WINDOW(window));
-	OUTPUT:
-	RETVAL
+	Etk_Window *	window
 
 void
 etk_window_title_set(window, title)
-	Etk_Widget *	window
+	Etk_Window *	window
 	char *	title
-	CODE:
-	etk_window_title_set(ETK_WINDOW(window), title);
 
 void
 etk_window_unfocus(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_unfocus(ETK_WINDOW(window));
+	Etk_Window *	window
 
 void
 etk_window_unfullscreen(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_unfullscreen(ETK_WINDOW(window));
+	Etk_Window *	window
 
 void
 etk_window_unmaximize(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_unmaximize(ETK_WINDOW(window));
+	Etk_Window *	window
 
 void
 etk_window_unstick(window)
-	Etk_Widget *	window
-	CODE:
-	etk_window_unstick(ETK_WINDOW(window));
+	Etk_Window *	window
 
 void
 etk_window_wmclass_set(window, window_name, window_class)
-	Etk_Widget *	window
+	Etk_Window *	window
 	char *	window_name
 	char *	window_class
-	CODE:
-	etk_window_wmclass_set(ETK_WINDOW(window), window_name, window_class);
 	 
+
+MODULE = Etk	PACKAGE = Etk
+
 Ecore_Timer *
 etkpl_timer_add(interval, callback, data)
         double interval

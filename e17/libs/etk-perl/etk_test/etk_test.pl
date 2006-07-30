@@ -3,11 +3,13 @@ use POSIX;
 use Etk;
 use Etk::Constants qw/:all/;
 use Etk::Stock qw/:all/;
-use Etk::Theme;
 
 my $NUM_COLS = 2;
-my $win = Etk::Window->new("Etk-Perl Test");
-my $vbox_frames = $win->AddVBox(0, 0);
+my $win = Etk::Window->new();
+$win->TitleSet("Etk-Perl Test");
+my $vbox_frames = Etk::VBox->new(0, 0);
+
+$win->Add($vbox_frames);
 
 # our frames, each frame is a category for examples
 my %frames = (
@@ -201,7 +203,7 @@ while (my ($key, $value) = each %frames)
 # Create buttons and attach them
 while (my ($key, $value) = each %buttons)
 {
-    my $button = Etk::Button->new($value->{label});
+    my $button = Etk::Button::new_with_label($value->{label});
     my $table = $frames{ $value->{frame} }->{table};
     my $j = $frames{ $value->{frame} }->{examples};
     $button->SignalConnect("clicked", $value->{cb});
@@ -214,24 +216,38 @@ $win->SignalConnect("delete_event", \&main_window_delete);
 $win->BorderWidthSet(5);
 $win->ShowAll();
 
-Etk::Main::Run();
-Etk::Shutdown();
+Etk::Main::run();
 
 sub button_window_show
 {
-    my $win = Etk::Window->new("Etk-Perl Button Test");
-    my $vbox = $win->AddVBox(0, 0);
+    my $win = Etk::Window->new();
+    $win->TitleSet("Etk-Perl Button Test");
+    my $vbox = Etk::VBox->new(0, 0);
+   
+    my $button = Etk::Button::new_with_label("Normal Button");
+    $vbox->PackStart($button);
+    $button = Etk::Button::new_with_label("Button with an image");
+    $button->ImageSet(Etk::Image::new_from_file("images/e_icon.png"));
+    $vbox->PackStart($button);
+    $button = Etk::Button->new();
+    $vbox->PackStart($button);
+    $button = Etk::CheckButton::new_with_label("Check Button");
+    $vbox->PackStart($button);
+    $button = Etk::CheckButton->new();
+    $vbox->PackStart($button);
 
-    $vbox->AddButton("Normal Button")->PackStart();
-    $vbox->AddButton("Button with an image")->ImageSet("images/e_icon.png")->PackStart();
-    $vbox->AddButton()->PackStart();
-    $vbox->AddCheckButton("Check Button")->PackStart();
-    $vbox->AddCheckButton()->PackStart();
-    my $radio = $vbox->AddRadioButton("Radio button")->PackStart();
-    $vbox->AddRadioButton($radio)->PackStart();
-    $vbox->AddToggleButton("Toggle Button")->PackStart();
-    $vbox->AddToggleButton()->PackStart();
-    
+    my $radio = Etk::RadioButton::new_with_label("Radio Button");
+    $vbox->PackStart($radio);
+
+    my $radio2 = Etk::RadioButton::new_from_widget($radio);
+    $vbox->PackStart($radio2);
+
+    my $toggle = Etk::ToggleButton::new_with_label("Toggle Button");
+    $vbox->PackStart($toggle);
+    $toggle = Etk::ToggleButton->new();
+    $vbox->PackStart($toggle);
+
+    $win->Add($vbox);
     $win->ShowAll();
 }
 
@@ -806,15 +822,18 @@ sub _iconbox_folder_set
 
 sub textview_window_show
 {
-    my $win = Etk::Window->new("Etk-Perl Textview Test");
-    my $vbox =$win->AddVBox(0, 0);
+    my $win = Etk::Window->new();
+    $win->TitleSet("Etk-Perl Textview Test");
+    my $vbox = Etk::VBox->new(0, 0);
+
+    $win->Add($vbox);
 
     $win->SizeRequestSet(150, 150);
     $win->Resize(400, 300);
 
-    my $text_view = $vbox->AddTextView();
+    my $text_view = Etk::TextView->new();
 
-    my $text_block = $text_view->TextBlockGet();
+    my $text_block = $text_view->TextblockGet();
 
     $text_block->TextSet(
     join ('',
@@ -854,7 +873,7 @@ sub textview_window_show
       "</p>") , 1);
 
 
-    $text_view->PackStart();
+    $vbox->PackStart($text_view);
     print $text_block->TextGet(0), "\n";
     
     $win->ShowAll();  
@@ -1115,5 +1134,5 @@ sub filechooser_window_show
 
 sub main_window_delete
 {
-    Etk::Main::Quit();
+    Etk::Main::quit();
 }

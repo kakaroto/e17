@@ -3,17 +3,19 @@ use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(
+    DISTNAME          => 'Etk',
     NAME              => 'Etk',
-    VERSION_FROM      => 'lib/Etk.pm', # finds $VERSION
-    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
-    ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM  => 'lib/Etk.pm', # retrieve abstract from module
+    VERSION_FROM      => 'lib/Etk.pm', 
+    PREREQ_PM         => {}, 
+    ($] >= 5.005 ?     
+      (ABSTRACT_FROM  => 'lib/Etk.pm', 
        AUTHOR         => 'Hisham Mardam Bey <hisham.mardambey@gmail.com>') : ()),
-    LIBS              => [`etk-config --libs`], # e.g., '-lm'
-    DEFINE            => '', # e.g., '-DHAVE_SOMETHING'
-    INC               => "-g -I. `etk-config --cflags`", # e.g., '-I. -I/usr/include/other'
-	# Un-comment this if you add C files to link with later:
-    # OBJECT            => '$(O_FILES)', # link all the C files too
+    LIBS              => [`etk-config --libs`], 
+    DEFINE            => '', # '-DDEBUG', 
+    INC               => "-g -I. `etk-config --cflags`", 
+    XSPROTOARG        => '-noprototypes',
+    
+    OBJECT            => '$(O_FILES)', 
 );
 if  (eval {require ExtUtils::Constant; 1}) {
   # If you edit these definitions to change the constants used by this module,
