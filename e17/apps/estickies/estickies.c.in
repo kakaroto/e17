@@ -1,0 +1,22 @@
+/** 
+@file
+@brief enity
+ 
+These routines are used for enity
+*/
+
+/**
+
+@mainpage enity Documentation
+@image html  enity.png
+@version 0.0.1
+@author CodeWarrior <hisham.mardambey@gmail.com>
+@date 2005
+
+@section intro What is Enity?
+
+Shell based gui creation application.
+
+@todo Complete documentation
+
+*/

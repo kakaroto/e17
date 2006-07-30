@@ -1,0 +1,335 @@
+#define IMAGE(icon_name) \
+   images { \
+      image: icon_name".png" COMP; \
+   } \
+   group { \
+      name: icon_name; \
+      min: 16 16; \
+      max: 16 16; \
+      parts { \
+	 part { \
+	    name: "icon"; \
+	    description { \
+	       state: "default" 0.0; \
+	       rel1 { \
+		  relative: 0.0 0.0; \
+		  offset: 0 0; \
+	       } \
+	       rel2 { \
+		  relative: 1.0 1.0; \
+		  offset: -1 -1; \
+	       } \
+	       image { \
+		  normal: icon_name".png"; \
+	       } \
+	       fill { \
+		  smooth: 0; \
+	       } \
+	    } \
+	 } \
+      } \
+   }
+
+
+images {
+   image: "sticky.png" COMP;
+   image: "button_up.png" COMP;
+   image: "button_over.png" COMP;
+   image: "button_down.png" COMP;
+   image: "button_toggled.png" COMP;   
+}
+
+collections {
+   IMAGE("button_close");
+   IMAGE("button_lock");
+   IMAGE("button_stick");
+   group {
+      name: "window";
+      data {
+	 item: "inset" "11 11 11 11";
+      }
+      parts {
+	 part {
+	    name: "background";
+	    mouse_events: 1;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0 0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       image {
+		  normal: "sticky.png";
+		  border: 11 11 11 11;
+	       }
+	    }
+	 }
+      }
+   }
+   
+   group {
+      name: "button";
+      min: 0 16;
+      data {
+	 item: "inset" "8 8 8 8";
+      }
+      parts {      
+	 part {
+	    name: "button";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0 0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       image {
+		  normal: "button_up.png";
+		  border: 1 1 1 1;
+	       }
+	       fill {
+		  smooth: 0;
+	       }
+	    }
+	    description {
+	       state: "down" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_down.png";
+	       }
+	    }
+	    description {
+	       state: "over" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_over.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "swallow_area";
+	    type: SWALLOW;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 1 1;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -2 -2;
+	       }
+	    }
+	 }
+      }
+      programs {      
+	 program {
+	    name: "button_pressed";
+	    signal: "pressed";
+	    source: "";
+	    action: STATE_SET "down" 0.0;
+	    target: "button";
+	 }
+	 program {
+	    name: "button_released";
+	    signal: "released";
+	    source: "";
+	    action: STATE_SET "default" 0.0;
+	    target: "button";
+	 }
+	 program {
+	    name: "button_enter";
+	    signal: "enter";
+	    source: "";
+	    action: STATE_SET "over" 0.0;
+	    target: "button";
+	 }
+	 program {
+	    name: "button_leave";
+	    signal: "leave";
+	    source: "";
+	    action: STATE_SET "default" 0.0;
+	    target: "button";
+	 }
+      }
+   }
+   
+   group {
+      name: "toggle_button";
+      min: 0 16;
+      data {
+	 item: "inset" "1 1 1 1";
+      }
+      parts {
+	 part {
+	    name: "toggle_button";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0 0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       image {
+		  normal: "button_up.png";
+		  border: 1 1 1 1;
+	       }
+	       fill {
+		  smooth: 0;
+	       }
+	    }
+	    description {
+	       state: "down" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_down.png";
+	       }
+	    }
+	    description {
+	       state: "on" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_toggled.png";
+	       }
+	    }
+	    description {
+	       state: "over" 0.0;
+	       inherit: "default" 0.0;
+	       image {
+		  normal: "button_over.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "swallow_area";
+	    type: SWALLOW;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 1 1;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -2 -2;
+	       }
+	    }
+	    description {
+	       state: "down" 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 2 2;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name: "toggle_button_activate";
+	    signal: "activate";
+	    source: "";
+	    script {
+	       activate();
+	    }
+	 }
+	 program {
+	    name: "toggle_button_deactivate";
+	    signal: "deactivate";
+	    source: "";
+	    script {
+	       deactivate();
+	    }
+	 }
+	 program {
+	    name: "toggle_button_pressed";
+	    signal: "pressed";
+	    source: "";
+	    action: STATE_SET "down" 0.0;
+	    target: "toggle_button";
+	 }
+	 program {
+	    name: "toggle_button_released";
+	    signal: "released";
+	    source: "";
+	    script {
+	       up();
+	    }
+	 }
+	 program {
+	    name: "toggle_button_enter";
+	    signal: "enter";
+	    source: "";
+	    script {
+	       enter();
+	    }
+	 }
+	 program {
+	    name: "toggle_button_leave";
+	    signal: "leave";
+	    source: "";
+	    script {
+	       leave();
+	    }
+	 }
+	 
+      }
+      script
+	{
+	   public activated = 0;
+	   
+	   public enter()
+	     {	   		
+		if(activated == 0)
+		  set_state(PART:"toggle_button", "over", 0.0);
+	     }	   
+	   public leave()
+	     {
+		if (activated == 0)
+		  set_state(PART:"toggle_button", "default", 0.0);
+	     }	   
+	   public activate()
+	     {
+		activated = 1;
+		set_state(PART:"toggle_button", "on", 0.0);
+		set_state(PART:"swallow_area", "down", 0.0);
+	     }
+	   public deactivate()
+	     {
+		activated = 0;
+		set_state(PART:"toggle_button", "default", 0.0);
+		set_state(PART:"swallow_area", "default", 0.0);
+	     }
+	   public up()
+	     {
+		if (activated == 1)
+		  activate();
+		else
+		  deactivate();
+	     }
+	}
+   }
+   
+   group {
+      name: "text_view";
+      min: 120 18;
+      data {
+	 item: "inset" "2 2 2 2";
+      }
+   }
+}
