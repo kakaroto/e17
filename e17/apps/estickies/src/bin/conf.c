@@ -1,5 +1,7 @@
 #include "stickies.h"
 
+#define DEFAULT_THEME "default.edj"
+
 #define NEWD(str, typ) \
      eet_data_descriptor_new(str, sizeof(typ), \
 				(void *(*) (void *))evas_list_next, \
@@ -89,10 +91,13 @@ _e_config_init()
    CFG_STICKY_NEWI("cg", g, EET_T_INT);
    CFG_STICKY_NEWI("cb", b, EET_T_INT);
    CFG_STICKY_NEWI("ca", a, EET_T_INT);
-   CFG_STICKY_NEWI("tx", text, EET_T_STRING);
+   CFG_STICKY_NEWI("st", stick, EET_T_INT);
+   CFG_STICKY_NEWI("lk", locked, EET_T_INT);   
+   CFG_STICKY_NEWI("tm", theme, EET_T_STRING);   
+   CFG_STICKY_NEWI("tx", text, EET_T_STRING);   
 
    _e_config_stickies_edd = NEWD("E_Config_Stickies", E_Config_Stickies);
-   CFG_STICKIES_NEWI("ts", test, EET_T_INT);
+   CFG_STICKIES_NEWI("tm", theme, EET_T_STRING);
    CFG_STICKIES_NEWL("st", stickies, _e_config_sticky_edd);
    
    _e_config_version_edd = NEWD("E_Config_Version", E_Config_Version);
@@ -158,6 +163,7 @@ _e_config_defaults_apply(E_Stickies *ss)
 {
    ss->version = _e_config_version_parse(VERSION);
    ss->stickies = NULL;
+   ss->theme = strdup(DEFAULT_THEME);
 }     
 
 int
@@ -166,6 +172,7 @@ _e_config_load(E_Stickies *ss)
    Eet_File *ef;
    char      buf[PATH_MAX];
    char     *home;
+   int size;
    E_Config_Stickies *stickies = NULL;   
    
    home = getenv("HOME");
@@ -190,7 +197,7 @@ _e_config_load(E_Stickies *ss)
 	ERROR("Cant open configuration file! Using program defaults.");
 	return 0;
      }
-   
+      
    ss->version = NULL;
    ss->version = eet_data_read(ef, _e_config_version_edd, "config/version");
    if(!ss->version)
@@ -222,6 +229,11 @@ _e_config_load(E_Stickies *ss)
    //else
      //printf("no stickies found in conf!\n");
    E_FREE(stickies);
+   
+   ss->theme = NULL;
+   ss->theme = eet_read(ef, "config/theme", &size);
+   if(size <= 0 || !ss->theme)
+     ss->theme = strdup(DEFAULT_THEME);   
    
    eet_close(ef);
    return 1;
@@ -267,7 +279,10 @@ _e_config_save(E_Stickies *ss)
      DEBUG(_("Problem saving config/stickies!"));
 
    E_FREE(stickies);
-   
+
+   if(!eet_write(ef, "config/theme", ss->theme, strlen(ss->theme) + 1, 1))
+     DEBUG(_("Problem saving config/theme!"));
+      
    eet_close(ef);
    return ret;
 }

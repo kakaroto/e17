@@ -37,6 +37,7 @@ typedef struct _E_Sticky E_Sticky;
 typedef struct _E_Stickies E_Stickies;
 
 #include "conf.h"
+#include "theme_chooser.h"
 
 struct _E_Config_Sticky
 {
@@ -47,7 +48,7 @@ struct _E_Config_Sticky
 
 struct _E_Config_Stickies
 {
-   int test;
+   char *theme;
    Evas_List *stickies;
 };
 
@@ -67,6 +68,9 @@ struct _E_Sticky
 {
    int x, y, w, h;
    int r, g, b, a;
+   int stick;
+   int locked;
+   char *theme;
    char *text;
    
    /* non-savable fields */
@@ -74,12 +78,31 @@ struct _E_Sticky
    Etk_Widget *textview;
    Etk_Widget *buttonbox;
    Etk_Widget *stick_toggle;
+   Etk_Widget *lock_button;
+   Etk_Widget *close_button;   
 };
 
 struct _E_Stickies
 {
+   char *theme;
    Evas_List *stickies;
    E_Config_Version *version;
 };
+
+E_Sticky *_e_sticky_new();
+void _e_sticky_window_add(E_Sticky *s);
+E_Sticky *_e_sticky_new_show_append();
+void _e_sticky_destroy(E_Sticky *s);
+void _e_sticky_delete(E_Sticky *s);
+void _e_sticky_move(E_Sticky *s, int x, int y);
+void _e_sticky_resize(E_Sticky *s, int w, int h);
+Etk_Bool _e_sticky_exists(E_Sticky *s);    
+void _e_sticky_show(E_Sticky *s);
+void _e_sticky_move_resize(E_Sticky *s);
+void _e_sticky_menu_show(E_Sticky *s);
+void _e_sticky_stick_toggle(E_Sticky *s);
+void _e_sticky_load_from(E_Sticky *s);
+void _e_sticky_theme_apply(E_Sticky *s, char *theme);
+void _e_sticky_theme_apply_all(char *theme);  
 
 #endif

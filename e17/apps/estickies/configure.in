@@ -143,4 +143,6 @@ data/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/images/Makefile
+data/themes/postit/Makefile
+data/themes/postit/images/Makefile
 ])

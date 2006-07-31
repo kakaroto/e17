@@ -47,7 +47,7 @@ collections {
    group {
       name: "window";
       data {
-	 item: "inset" "11 11 11 11";
+	 item: "inset" "6 6 6 6";
       }
       parts {
 	 part {
@@ -65,7 +65,7 @@ collections {
 	       }
 	       image {
 		  normal: "sticky.png";
-		  border: 11 11 11 11;
+		  border: 11 11 30 11;
 	       }
 	    }
 	 }
@@ -285,11 +285,11 @@ collections {
       name: "text_view";
       min: 120 18;
       data {
-	 item: "inset" "2 2 2 2";
+	 item: "inset" "0 0 11 11";
       }
    }
    
-   group {
+   group {   
       name: "preview";
       parts {
 	 part {
@@ -297,7 +297,7 @@ collections {
 	    mouse_events: 1;
 	    description {
 	       state: "default" 0.0;
-	       max: 208 206;
+               max: 208 206;	       
 	       rel1 {
 		  relative: 0 0;
 		  offset: 0 0;
@@ -312,5 +312,5 @@ collections {
 	    }
 	 }
       }
-   }   
+   }
 }

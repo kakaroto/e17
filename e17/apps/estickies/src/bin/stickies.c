@@ -1,6 +1,6 @@
 #include "stickies.h"
 
-static E_Stickies *ss;
+E_Stickies *ss;
 static Etk_Bool _e_sticky_is_moving = ETK_FALSE;
 static int _e_sticky_mouse_x = 0;
 static int _e_sticky_mouse_y = 0;
@@ -16,18 +16,6 @@ static void _e_sticky_focus_in_cb(Etk_Object *object, void *data);
 static void _e_sticky_focus_out_cb(Etk_Object *object, void *data);
 static void _e_sticky_sticky_cb(Etk_Object *object, const char *property_name, void *data);
 
-E_Sticky *_e_sticky_new();
-void _e_sticky_window_add(E_Sticky *s);    
-E_Sticky *_e_sticky_new_show_append();
-void _e_sticky_destroy(E_Sticky *s);
-void _e_sticky_delete(E_Sticky *s);
-void _e_sticky_move(E_Sticky *s, int x, int y);
-void _e_sticky_resize(E_Sticky *s, int w, int h);
-void _e_sticky_show(E_Sticky *s);
-void _e_sticky_move_resize(E_Sticky *s);
-void _e_sticky_menu_show(E_Sticky *s);
-void _e_sticky_stick_toggle(E_Sticky *s);
-  
 static void
 _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 {
@@ -222,6 +210,7 @@ _e_sticky_menu_show(E_Sticky *s)
    _etk_menu_stock_item_new("New", ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_sticky_new_show_append), NULL);
    _etk_menu_stock_item_new("Save", ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_config_save), ss);
    _etk_menu_stock_item_new("Delete", ETK_STOCK_EDIT_DELETE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_sticky_delete), s);
+   _etk_menu_stock_item_new("Options", ETK_STOCK_PREFERENCES_DESKTOP_THEME, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_theme_chooser_show), s);
    _etk_menu_stock_item_new("Quit", ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(etk_main_quit), NULL);
    etk_menu_popup(ETK_MENU(menu));
 }
@@ -232,6 +221,7 @@ _e_sticky_new()
    E_Sticky *s;
    
    s = E_NEW(1, E_Sticky);
+   s->theme = NULL;
    
    _e_sticky_window_add(s);
    return s;
@@ -242,13 +232,19 @@ _e_sticky_window_add(E_Sticky *s)
 {
    Etk_Widget *vbox;
    Etk_Widget *hbox;
-   Etk_Widget *button;
+   char theme[PATH_MAX];
+   
+   if(!s->theme)
+     s->theme = strdup(ss->theme);
+   
+   snprintf(theme, sizeof(theme), PACKAGE_DATA_DIR"/themes/%s", s->theme);
+   
    s->win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(s->win), "estickies");
    etk_window_wmclass_set(ETK_WINDOW(s->win), "_estickies", "_estickies");
    etk_window_decorated_set(ETK_WINDOW(s->win), ETK_FALSE);
    etk_window_shaped_set(ETK_WINDOW(s->win), ETK_TRUE);
-   etk_widget_theme_file_set(s->win, PACKAGE_DATA_DIR"/themes/default.edj");
+   etk_widget_theme_file_set(s->win, theme);
    etk_widget_size_request_set(s->win, 208, 206);
    etk_signal_connect("key_down", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_key_down_cb), s);
    etk_signal_connect("mouse_down", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_mouse_down_cb), s);
@@ -271,32 +267,32 @@ _e_sticky_window_add(E_Sticky *s)
    etk_object_properties_set(ETK_OBJECT(s->stick_toggle), 
 			     "focusable", ETK_FALSE, NULL);
    etk_button_image_set(ETK_BUTTON(s->stick_toggle),
-			ETK_IMAGE(etk_image_new_from_edje(PACKAGE_DATA_DIR"/themes/default.edj",
+			ETK_IMAGE(etk_image_new_from_edje(theme,
 						"button_stick")));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(s->stick_toggle),
 			      ETK_CALLBACK(_e_sticky_stick_toggle), s);
    //etk_tooltips_tip_set(button, "Make sticky visible on all desktops");   
    etk_box_pack_start(ETK_BOX(hbox), s->stick_toggle, ETK_FALSE, ETK_FALSE, 0);
    
-   button = etk_button_new();
-   etk_object_properties_set(ETK_OBJECT(button), 
+   s->lock_button = etk_button_new();
+   etk_object_properties_set(ETK_OBJECT(s->lock_button),
 			     "focusable", ETK_FALSE, NULL);   
-   etk_button_image_set(ETK_BUTTON(button), 
-			ETK_IMAGE(etk_image_new_from_edje(PACKAGE_DATA_DIR"/themes/default.edj",
+   etk_button_image_set(ETK_BUTTON(s->lock_button), 
+			ETK_IMAGE(etk_image_new_from_edje(theme,
 						"button_lock")));
    //etk_tooltips_tip_set(button, "Lock sticky (read-only)");   
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(hbox), s->lock_button, ETK_FALSE, ETK_FALSE, 0);
    
-   button = etk_button_new();
-   etk_object_properties_set(ETK_OBJECT(button), 
+   s->close_button = etk_button_new();
+   etk_object_properties_set(ETK_OBJECT(s->close_button),
 			     "focusable", ETK_FALSE, NULL);   
-   etk_button_image_set(ETK_BUTTON(button), 
-			ETK_IMAGE(etk_image_new_from_edje(PACKAGE_DATA_DIR"/themes/default.edj",
+   etk_button_image_set(ETK_BUTTON(s->close_button), 
+			ETK_IMAGE(etk_image_new_from_edje(theme,
 							  "button_close")));
-   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), 
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(s->close_button), 
 			      ETK_CALLBACK(_e_sticky_delete), s);
    //etk_tooltips_tip_set(button, "Delete this sticky");
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(hbox), s->close_button, ETK_FALSE, ETK_FALSE, 0);
 
    s->textview = etk_text_view_new();
    if(s->text)
@@ -350,6 +346,14 @@ _e_sticky_resize(E_Sticky *s, int w, int h)
    etk_window_resize(ETK_WINDOW(s->win), h, h);
 }
 
+Etk_Bool
+_e_sticky_exists(E_Sticky *s)
+{
+   if(evas_list_find(ss->stickies, s))
+     return ETK_TRUE;
+   return ETK_FALSE;
+}
+
 void
 _e_sticky_show(E_Sticky *s)
 {
@@ -380,12 +384,55 @@ _e_sticky_load_from(E_Sticky *s)
    _e_sticky_window_add(s);
 }
 
+void
+_e_sticky_theme_apply(E_Sticky *s, char *theme)
+{
+   char theme_file[PATH_MAX];
+   
+   if(!theme)
+     return;
+   
+   if(!strcmp(s->theme, theme))
+     return;
+   
+   snprintf(theme_file, sizeof(theme_file), PACKAGE_DATA_DIR"/themes/%s", 
+	    theme);   
+   
+   if(!ecore_file_exists(theme_file))
+     return;
+   
+   E_FREE(s->theme);   
+   s->theme = strdup(theme);
+   
+   etk_widget_theme_file_set(s->win, theme_file);
+   
+   etk_button_image_set(ETK_BUTTON(s->stick_toggle),
+			ETK_IMAGE(etk_image_new_from_edje(theme_file,
+							  "button_stick")));
+   etk_button_image_set(ETK_BUTTON(s->lock_button),
+			ETK_IMAGE(etk_image_new_from_edje(theme_file,
+							  "button_lock")));
+   etk_button_image_set(ETK_BUTTON(s->close_button),
+			ETK_IMAGE(etk_image_new_from_edje(theme_file,
+							  "button_close")));
+   etk_widget_show_all(s->win);
+}
+
+void
+_e_sticky_theme_apply_all(char *theme)
+{
+   Evas_List *l;
+   
+   for(l = ss->stickies; l; l = l->next)
+     _e_sticky_theme_apply(l->data, theme);   
+}
+
 int main(int argc, char **argv)
 {
    E_Sticky *s;
 
    ss = E_NEW(1, E_Stickies);
-   ss->stickies = NULL;
+   ss->stickies = NULL;   
    
    eet_init();
    etk_init("ecore_evas_software_x11");

@@ -11,11 +11,13 @@ bin_PROGRAMS = estickies
 
 estickies_INCLUDES = \
 stickies.h \
-conf.h
+conf.h \
+theme_chooser.h
 
 estickies_SOURCES = \
 stickies.c \
 conf.c \
+theme_chooser.c \
 $(estickies_INCLUDES)
 
 estickies_LDADD = @my_libs@
