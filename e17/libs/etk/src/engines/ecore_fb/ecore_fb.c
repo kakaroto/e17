@@ -6,7 +6,6 @@
 #include <Edje.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Fb.h>
-#include <Ecore_Li.h>
 #include <Ecore_File.h>
 
 #include "etk_types.h"
@@ -24,6 +23,10 @@
 #define HEIGHT 1024
 
 #define POINTER_SIZE 64
+
+/* fb data */
+int fb_width = 0;
+int fb_height = 0;
 
 /* TODO: prop notify ? */
 
@@ -135,7 +138,9 @@ static Etk_Engine engine_info = {
 static Ecore_Evas *_ecore_evas = NULL;
 static Evas *_evas = NULL;
 static Evas_Object *_background_object = NULL;
+#if 0
 static Evas_Object *_pointer_object = NULL;
+#endif
 
 static Etk_Window *_drag_window = NULL;
 static int _drag_offset_x = 0;
@@ -161,46 +166,46 @@ static Etk_Bool _engine_init()
    Ecore_List *files;
    char *filename;
    char device_path[PATH_MAX];
-   Ecore_Li_Device *device;
-   Ecore_Li_Device_Cap caps;
-   Etk_Bool keyboard_handled = ETK_FALSE;
-   Etk_Bool mouse_handled = ETK_FALSE;
    
    if (!ecore_evas_init())
    {
       ETK_WARNING("Ecore_Evas initialization failed!");
       return ETK_FALSE;
    }
-   if (!ecore_fb_init(NULL))
+   /* Create the evas where all the windows will be drawn, 
+    * here the widht and height are unnecessary
+    */
+   _ecore_evas = ecore_evas_fb_new(NULL, 0, 320, 240);
+   //ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 320, 240);
+   if(!_ecore_evas);
    {
-      ETK_WARNING("Ecore_FB initialization failed!");
+      ETK_WARNING("Ecore_Evas_Fb initialization failed!");
       return ETK_FALSE;
    }
-   if (!ecore_li_init())
-   {
-      ETK_WARNING("Ecore_LI initialization failed!");
-      return ETK_FALSE;
-   }
+   usleep(1000);
+   ecore_evas_fullscreen_set(_ecore_evas, 1);
+   ecore_fb_size_get(&fb_width, &fb_height);
    
-   
-   /* Create the evas where all the windows will be drawn */
-   _ecore_evas = ecore_evas_fb_new(NULL, 0, WIDTH, HEIGHT);
-   //_ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, WIDTH, HEIGHT);
    if (!(_evas = ecore_evas_get(_ecore_evas)))
    {
       ETK_WARNING("Unable to create a FB evas");
       return ETK_FALSE;
    }
+   ecore_evas_show(_ecore_evas);
+   
+   #if 0
    ecore_evas_ignore_events_set(_ecore_evas, 1);
    evas_event_feed_mouse_in(_evas, ecore_time_get(), NULL);
-   ecore_evas_show(_ecore_evas);
+#endif
    
    /* Create the background */
    _background_object = etk_theme_object_load(_evas, etk_theme_widget_theme_get(), "wm_background");
-   evas_object_resize(_background_object, WIDTH, HEIGHT);
+   evas_object_resize(_background_object, fb_width, fb_height);
    evas_object_show(_background_object);
    
    /* Create the mouse pointer */
+   ecore_evas_pointer_set(_ecore_evas, PACKAGE_DATA_DIR "/pointers/default_pointer.png",1000000, 1, 1);
+#if 0
    _pointer_object = evas_object_image_add(_evas);
    evas_object_image_file_set(_pointer_object, PACKAGE_DATA_DIR "/pointers/default_pointer.png", NULL);
    evas_object_image_fill_set(_pointer_object, 0, 0, POINTER_SIZE, POINTER_SIZE);
@@ -208,47 +213,7 @@ static Etk_Bool _engine_init()
    evas_object_move(_pointer_object, WIDTH - (POINTER_SIZE / 2), HEIGHT - (POINTER_SIZE / 2));
    evas_object_resize(_pointer_object, POINTER_SIZE, POINTER_SIZE);
    evas_object_show(_pointer_object);
-   
-   
-   /* Open the devices */
-   files = ecore_file_ls("/dev/input/");
-   while ((filename = ecore_list_next(files)))
-   {
-      if (strncmp(filename, "event", 5) == 0)
-      {
-         snprintf(device_path, PATH_MAX, "/dev/input/%s", filename);
-         if (!(device = ecore_li_device_open(device_path)))
-            continue;
-         
-         caps = ecore_li_device_cap_get(device);
-         
-         /* Mouse */
-         if (caps & ECORE_LI_DEVICE_CAP_RELATIVE)
-         {
-            ecore_li_device_axis_size_set(device, WIDTH, HEIGHT);
-            ecore_li_device_listen(device);
-            if (!mouse_handled)
-            {
-               ecore_event_handler_add(ECORE_LI_EVENT_POSITION, _mouse_move_handler, NULL);
-               ecore_event_handler_add(ECORE_LI_EVENT_MOUSE_DOWN, _mouse_down_handler, NULL);
-               ecore_event_handler_add(ECORE_LI_EVENT_MOUSE_UP, _mouse_up_handler, NULL);
-               mouse_handled = ETK_TRUE;
-            }
-         }
-         /* Keyboard */
-         else if ((caps & ECORE_LI_DEVICE_CAP_KEYS_OR_BUTTONS) && !(caps & ECORE_LI_DEVICE_CAP_ABSOLUTE))
-         {
-            ecore_li_device_listen(device);
-            if (!keyboard_handled)
-            {
-               ecore_event_handler_add(ECORE_LI_EVENT_KEY_DOWN, _key_down_handler, NULL);
-               ecore_event_handler_add(ECORE_LI_EVENT_KEY_UP, _key_up_handler, NULL);
-               keyboard_handled = ETK_TRUE;
-            }
-         }
-      }
-   }
-   ecore_list_destroy(files);
+#endif
    
    return ETK_TRUE;
 }
@@ -260,12 +225,11 @@ static void _engine_shutdown()
    _ecore_evas = NULL;
    _evas = NULL;
    _background_object = NULL;
-   _pointer_object = NULL;
+   //_pointer_object = NULL;
    _drag_window = NULL;
    
-   ecore_li_shutdown();
-   ecore_fb_shutdown();
    ecore_evas_shutdown();
+   ecore_fb_shutdown();
 }
 
 /**************************
@@ -406,63 +370,6 @@ static void _window_size_get(Etk_Window *window, int *w, int *h)
  *
  **************************/
 
-/* Called when a key is pressed */
-static int _key_down_handler(void *data, int ev_type, void *ev)
-{
-   Ecore_Li_Event_Key_Down *event = ev;
-   
-   evas_event_feed_key_down(_evas, event->keyname, event->keysymbol, event->key_compose, NULL, ecore_time_get(), NULL);
-   return 1;
-}
-
-/* Called when a key is released */
-static int _key_up_handler(void *data, int ev_type, void *ev)
-{
-   Ecore_Li_Event_Key_Up *event = ev;
-   
-   evas_event_feed_key_up(_evas, event->keyname, event->keysymbol, event->key_compose, NULL, ecore_time_get(), NULL);
-   return 1;
-}
-
-/* Called when a mouse button is pressed */
-static int _mouse_down_handler(void *data, int ev_type, void *ev)
-{
-   Ecore_Li_Event_Mouse_Down *event = ev;
-   Evas_Button_Flags flags = EVAS_BUTTON_NONE;
-   
-   if (event->double_click)
-      flags |= EVAS_BUTTON_DOUBLE_CLICK;
-   if (event->triple_click)
-      flags |= EVAS_BUTTON_TRIPLE_CLICK;
-   
-   evas_event_feed_mouse_down(_evas, event->button, flags, ecore_time_get(), NULL);
-   return 1;
-}
-
-/* Called when a mouse button is released */
-static int _mouse_up_handler(void *data, int ev_type, void *ev)
-{
-   Ecore_Li_Event_Mouse_Up *event = ev;
-   
-   evas_event_feed_mouse_up(_evas, event->button, EVAS_BUTTON_NONE, ecore_time_get(), NULL);
-   return 1;
-}
-
-/* Called when the mouse is moved */
-static int _mouse_move_handler(void *data, int ev_type, void *ev)
-{
-   Ecore_Li_Event_Position *event = ev;
-   
-   /* Move the window to drag */
-   if (_drag_window)
-      etk_window_move(_drag_window, event->x - _drag_offset_x, event->y - _drag_offset_y);
-   
-   evas_object_move(_pointer_object, event->x - (POINTER_SIZE / 2), event->y - (POINTER_SIZE / 2));
-   evas_event_feed_mouse_move(_evas, event->x, event->y, ecore_time_get(), NULL);
-   
-   return 1;
-}
-
 /* Called when the window is realized: it creates the border */
 static void _window_realized_cb(Etk_Object *object, void *data)
 {
@@ -487,7 +394,7 @@ static void _window_realized_cb(Etk_Object *object, void *data)
    edje_object_signal_callback_add(engine_data->border, "mouse,down,1*", "titlebar", _window_titlebar_mouse_down_cb, window);
    edje_object_signal_callback_add(engine_data->border, "mouse,up,1*", "titlebar", _window_titlebar_mouse_up_cb, window);
    
-   evas_object_raise(_pointer_object);
+   //evas_object_raise(_pointer_object);
 }
 
 /* Called when the titlebar of the window is pressed */

@@ -193,36 +193,40 @@ LDFLAGS=$save_LDFLAGS
 
 if test "x${have_ecore_x}" = 'xyes'; then
 AM_CONDITIONAL(BUILD_ENGINE_EE_S_X11, true)
+else
+AM_CONDITIONAL(BUILD_ENGINE_EE_S_X11, false)
 fi
 
 #####################################################################
-## Ecore_FB
-## have_ecore_fb="no"
-## save_CPPFLAGS=$CPPFLAGS
-## CPPFLAGS="$CPPFLAGS $ECORE_CFLAGS"
-## save_LDFLAGS=$LDFLAGS
-## LDFLAGS="$LDFLAGS $ECORE_LIBS"
-## AC_CHECK_HEADER(Ecore_Fb.h,
-##   [AC_CHECK_LIB(ecore_fb,
-##       ecore_fb_init,
-##       [AC_DEFINE(HAVE_ECORE_FB,
-##                  1,
-##                  [Define to 1 if you have the Ecore_FB headers and libraries])
-##       have_ecore_fb="yes"],
-##       [AC_DEFINE(HAVE_ECORE_FB,
-##                  0,
-##          [Define to 1 if you have the Ecore_FB headers and libraries])])],
-## 	 
-##   [AC_DEFINE(HAVE_ECORE_FB,
-##       0,
-##       [Define to 1 if you have the Ecore_X headers and libraries])]
-## )
-## CPPFLAGS=$save_CPPFLAGS
-## LDFLAGS=$save_LDFLAGS
-## 
-## if test "x${have_ecore_fb}" = 'xyes'; then
-## AM_CONDITIONAL(BUILD_ENGINE_E_FB, true)
-## fi
+Ecore_FB
+have_ecore_fb="no"
+save_CPPFLAGS=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $ECORE_CFLAGS"
+save_LDFLAGS=$LDFLAGS
+LDFLAGS="$LDFLAGS $ECORE_LIBS"
+AC_CHECK_HEADER(Ecore_Fb.h,
+  [AC_CHECK_LIB(ecore_fb,
+      ecore_fb_init,
+      [AC_DEFINE(HAVE_ECORE_FB,
+                 1,
+                 [Define to 1 if you have the Ecore_FB headers and libraries])
+      have_ecore_fb="yes"],
+      [AC_DEFINE(HAVE_ECORE_FB,
+                 0,
+         [Define to 1 if you have the Ecore_FB headers and libraries])])],
+	 
+  [AC_DEFINE(HAVE_ECORE_FB,
+      0,
+      [Define to 1 if you have the Ecore_FB headers and libraries])]
+)
+CPPFLAGS=$save_CPPFLAGS
+LDFLAGS=$save_LDFLAGS
+
+if test "x${have_ecore_fb}" = 'xyes'; then
+AM_CONDITIONAL(BUILD_ENGINE_E_FB, true)
+else
+AM_CONDITIONAL(BUILD_ENGINE_E_FB, false)
+fi
 
 #####################################################################
 ## Gettext
@@ -254,6 +258,7 @@ src/engines/Makefile
 src/engines/ecore_evas/Makefile
 src/engines/ecore_evas_x11/Makefile
 src/engines/ecore_evas_software_x11/Makefile
+src/engines/ecore_fb/Makefile
 src/bin/Makefile
 data/Makefile
 data/themes/Makefile

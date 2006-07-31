@@ -2,7 +2,7 @@
 #include "etk_menu_bar.h"
 #include <stdlib.h>
 #include <Ecore.h>
-#include <Ecore_X.h>
+//#include <Ecore_X.h>
 #include "etk_menu.h"
 #include "etk_menu_item.h"
 #include "etk_toplevel_widget.h"
@@ -168,6 +168,7 @@ static void _etk_menu_bar_item_removed_cb(Etk_Object *object, void *item, void *
  */
 static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event)
 {
+#if 0
    Etk_Menu_Bar *menu_bar;
    Ecore_X_Event_Mouse_Move *mouse_event;
    Etk_Toplevel_Widget *toplevel;
@@ -198,6 +199,7 @@ static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event)
    }
    
    return 1;
+#endif
 }
 
 /* Called when the item is selected */
@@ -232,8 +234,10 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
    
    if (!_etk_menu_bar_mouse_move_handler)
    {
+#if 0
       _etk_menu_bar_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
          _etk_menu_bar_mouse_move_cb, menu_bar);
+#endif
    }
    menu_bar->item_selected = ETK_TRUE;
 }
