@@ -54,41 +54,20 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-PROG="ecore-config";
-AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if test "x$ECORE_CONFIG" = "x" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
+AC_PATH_GENERIC(ecore, 0.9.9,
+  [ ],
+  [ AC_MSG_ERROR(Make sure that ecore-config is in your PATH or that Ecore is correctly installed) ],
+)
 
-PROG="xml2-config";
-AC_PATH_PROG(XML2_CONFIG, $PROG, "", $PATH)
-if test "x$XML2_CONFIG" = "x" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-xml2_cflags=`$XML2_CONFIG --cflags`
-xml2_libs=`$XML2_CONFIG --libs`
-AC_SUBST(xml2_cflags)
-AC_SUBST(xml2_libs)
+AC_PATH_GENERIC(xml2, 2.6.13,
+  [ ],
+  [ AC_MSG_ERROR(Make sure that ecore-config is in your PATH or that Libxml2 is correctly installed) ],
+)
 
-PROG="xslt-config";
-AC_PATH_PROG(XSLT_CONFIG, $PROG, "", $PATH)
-if test "x$XSLT_CONFIG" = "x" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-xslt_cflags=`$XSLT_CONFIG --cflags`
-xslt_libs=`$XSLT_CONFIG --libs`
-AC_SUBST(xslt_cflags)
-AC_SUBST(xslt_libs)
+AC_PATH_GENERIC(xslt, 1.1.10,
+  [ ],
+  [ AC_MSG_ERROR(Make sure that ecore-config is in your PATH or that Xslt is correctly installed) ],
+)
 
 AC_OUTPUT([
 Makefile 

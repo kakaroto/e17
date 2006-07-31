@@ -4,6 +4,7 @@ SUBDIRS = src
 
 EXTRA_DIST = \
 	README AUTHORS COPYING exml.pc.in \
+	m4/ac_path_generic.m4 \
 	debian/changelog \
 	debian/changelog.in \
 	debian/control \
