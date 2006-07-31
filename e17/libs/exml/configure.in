@@ -61,12 +61,12 @@ AC_PATH_GENERIC(ecore, 0.9.9,
 
 AC_PATH_GENERIC(xml2, 2.6.13,
   [ ],
-  [ AC_MSG_ERROR(Make sure that ecore-config is in your PATH or that Libxml2 is correctly installed) ],
+  [ AC_MSG_ERROR(Make sure that xml2-config is in your PATH or that Libxml2 is correctly installed) ],
 )
 
 AC_PATH_GENERIC(xslt, 1.1.10,
   [ ],
-  [ AC_MSG_ERROR(Make sure that ecore-config is in your PATH or that Xslt is correctly installed) ],
+  [ AC_MSG_ERROR(Make sure that xslt-config is in your PATH or that Xslt is correctly installed) ],
 )
 
 AC_OUTPUT([

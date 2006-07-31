@@ -42,11 +42,11 @@ while test $# -gt 0; do
       if test @prefix@/include != /usr/include ; then
         includes="-I@prefix@/include"
       fi
-      echo $includes @ecore_cflags@
+      echo $includes @ECORE_CFLAGS@
       ;;
     --libs)
       libdirs=-L@libdir@
-      echo $libdirs -lexml @ecore_libs@ -lm -lxml2
+      echo $libdirs -lexml @ECORE_LIBS@ -lm -lxml2
       ;;
     *)
       echo "${usage}" 1>&2
