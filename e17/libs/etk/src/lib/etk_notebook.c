@@ -379,6 +379,33 @@ Etk_Widget *etk_notebook_page_child_get(Etk_Notebook *notebook, int page_num)
    return etk_bin_child_get(ETK_BIN(page->frame));
 }
 
+/**
+ * @brief Sets the visibility of the tab bar
+ * @param notebook a notebook
+ * @param show_tabs if show_tabs is ETK_FALSE, then the tab bar will be hidden
+ */
+void etk_notebook_show_tabs_set(Etk_Notebook *notebook, Etk_Bool show_tabs)
+{
+   if (show_tabs == ETK_FALSE)
+     {
+       etk_widget_hide(notebook->tab_bar);
+     }
+   else if (show_tabs == ETK_TRUE)
+     {
+       etk_widget_show(notebook->tab_bar);
+     }
+}
+
+/**
+ * @brief Gets the visibility of the tab bar
+ * @param notebook a notebook
+ * @return Returns ETK_TRUE if the tab bar is visible, ETK_FALSE otherwise
+ */
+Etk_Bool etk_notebook_show_tabs_get(Etk_Notebook *notebook)
+{
+   return etk_widget_is_visible(ETK_NOTEBOOK(notebook)->tab_bar);
+}
+
 /**************************
  *
  * Etk specific functions

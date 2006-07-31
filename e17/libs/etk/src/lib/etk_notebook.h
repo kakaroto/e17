@@ -74,6 +74,8 @@ Etk_Widget *etk_notebook_page_tab_widget_get(Etk_Notebook *notebook, int page_nu
 void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widget *child);
 Etk_Widget *etk_notebook_page_child_get(Etk_Notebook *notebook, int page_num);
 
+void etk_notebook_show_tabs_set(Etk_Notebook *notebook, Etk_Bool show_tabs);
+Etk_Bool etk_notebook_show_tabs_get(Etk_Notebook *notebook);
 /** @} */
 
 #endif
