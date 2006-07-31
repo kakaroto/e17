@@ -674,6 +674,15 @@ _e_property_handle(Enhance *en, EXML_Node *node)
                                                         value);
           }
      }     
+   
+   else if(!strcmp(name, "show_tabs"))
+     {
+	IF_PARENT_CLASS("GtkNotebook")
+          {
+	     PROPERTY_BOOL;
+             etk_notebook_show_tabs_set(ETK_NOTEBOOK(wid->wid), value);
+          }
+     }     
 }
 
 void

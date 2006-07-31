@@ -32,6 +32,8 @@ static E_Widget *_e_widget_vseparator_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_hslider_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_vslider_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_textview_handle(Enhance *en, EXML_Node *node);
+static E_Widget *_e_widget_filechooser_widget_handle(Enhance *en, EXML_Node *node);
+static E_Widget *_e_widget_iconview_handle(Enhance *en, EXML_Node *node);
 
 static EXML_Node *find_node(EXML_Node *node, char *key, char *value)
 {
@@ -681,6 +683,21 @@ _e_widget_filechooser_widget_handle(Enhance *en, EXML_Node *node)
    return filechooser;
 }
 
+static E_Widget *
+_e_widget_iconview_handle(Enhance *en, EXML_Node *node)
+{
+   E_Widget *iconbox;
+   char     *id;
+
+   id = ecore_hash_get(node->attributes, "id");
+   if(!id) return NULL;
+
+   iconbox = _e_widget_new(en, node, etk_iconbox_new(), id);
+//   etk_iconbox_model_new(ETK_ICONBOX(iconbox));
+
+   return iconbox;
+}
+
 E_Widget *
 _e_widget_handle(Enhance *en, EXML_Node *node)
 {
@@ -763,6 +780,8 @@ _e_widget_handle(Enhance *en, EXML_Node *node)
      return _e_widget_textview_handle(en, node);
    else if(!strcmp(class, "GtkFileChooserWidget"))
      return _e_widget_filechooser_widget_handle(en, node);
+   else if(!strcmp(class, "GtkIconView"))
+     return _e_widget_iconview_handle(en, node);
    return NULL;
 }
 
