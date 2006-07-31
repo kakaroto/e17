@@ -74,6 +74,12 @@ inline void exml_print_warning(const char *function, const char *sparam);
 	    return; \
 	 }
 
+/**
+ * I want this one to be opaque simply because one of the elements will be
+ * a libxslt pointer.
+ */
+typedef struct _exml_xsl EXML_XSL;
+
 typedef struct _exml_node EXML_Node;
 
 typedef struct _exml EXML;
@@ -135,6 +141,20 @@ int exml_mem_read(EXML *xml, void *s_mem, size_t len);
 int exml_file_write(EXML *xml, char *filename);
 int exml_fd_write(EXML *xml, int fd);
 void *exml_mem_write(EXML *xml, size_t *len);
+
+/**
+ * XSLT utility functions
+ */
+EXML_XSL *exml_xsl_new(char *filename);
+int exml_xsl_init(EXML_XSL *xsl, char *filename);
+void exml_xsl_destroy(EXML_XSL *xsl);
+int exml_transform_file_write(EXML *xml, EXML_XSL *xsl, const char *params[],
+                              char *filename, int compression);
+int exml_transform_fd_write(EXML *xml, EXML_XSL *xsl, const char *params[],
+                            int fd);
+void *exml_transform_mem_write(EXML *xml, EXML_XSL *xsl, const char *params[],
+                               size_t *len);
+void exml_transform_mem_free(EXML_XSL *xsl, void *ptr);
 
 EXML_Node *exml_node_new();
 int exml_node_init(EXML_Node *node);

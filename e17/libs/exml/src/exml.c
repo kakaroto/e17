@@ -3,9 +3,18 @@
 #include <EXML.h>
 #include <libxml/xmlreader.h>
 #include <libxml/xmlwriter.h>
+#include <libxslt/xslt.h>
+#include <libxslt/xsltutils.h>
+#include <libxslt/transform.h>
 
-static int _exml_read(EXML *xml, xmlTextReader *reader);
-static int _exml_write(EXML *xml, xmlTextWriter *writer);
+struct _exml_xsl {
+	Ecore_List *buffers;
+	xsltStylesheetPtr cur;
+};
+
+static int exml_doc_write(EXML *xml, xmlDocPtr *doc);
+static int _exml_read(EXML *xml, xmlTextReaderPtr reader);
+static int _exml_write(EXML *xml, xmlTextWriterPtr writer);
 
 inline void exml_print_warning(const char *function, const char *sparam)
 {
@@ -27,7 +36,7 @@ EXML *exml_new()
 {
 	EXML *xml;
 
-	xml = (EXML *) malloc(sizeof(EXML));
+	xml = (EXML *) calloc(sizeof(EXML), 1);
 	if (!xml)
 		return NULL;
 
@@ -49,9 +58,8 @@ int exml_init(EXML *xml)
 {
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
-	memset(xml, 0, sizeof(EXML));
-
 	xml->buffers = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	ecore_hash_set_free_value(xml->buffers, ECORE_FREE_CB(xmlBufferFree));
 
 	return TRUE;
 }
@@ -530,7 +538,7 @@ int exml_fd_read(EXML *xml, int fd)
 
 	reader = xmlReaderForFd( fd, "", NULL, XML_PARSE_RECOVER );
 
-  return _exml_read(xml, reader);
+	return _exml_read(xml, reader);
 }
 
 /**
@@ -552,7 +560,7 @@ int exml_mem_read(EXML *xml, void *s_mem, size_t len)
 	return _exml_read(xml, reader);
 }
 
-static int _exml_read(EXML *xml, xmlTextReader *reader)
+static int _exml_read(EXML *xml, xmlTextReaderPtr reader)
 {
 	int ret, empty;
 	xmlChar *name, *value;
@@ -611,15 +619,33 @@ static int _exml_read(EXML *xml, xmlTextReader *reader)
 }
 
 /**
+ * Write the xml document out to an xmlDoc, for use in xslt
+ * @param   xml The xml document
+ * @param   doc A pointer to an xmlDocPtr
+ * @return  @c TRUE if successful, @c FALSE if an error occurs.
+ * @ingroup EXML_Write_Group
+ */
+int exml_doc_write( EXML *xml, xmlDocPtr *doc )
+{
+	xmlTextWriterPtr writer;
+
+	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
+
+	writer = xmlNewTextWriterDoc(doc, 0);
+
+	return _exml_write(xml, writer);
+}
+
+/**
  * Write the xml document out to a file
  * @param   xml The xml document
- * @param   filename The source xml input filename
+ * @param   filename The xml output filename
  * @return  @c TRUE if successful, @c FALSE if an error occurs.
  * @ingroup EXML_Write_Group
  */
 int exml_file_write(EXML *xml, char *filename)
 {
-	xmlTextWriter *writer;
+	xmlTextWriterPtr writer;
 
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
@@ -631,14 +657,14 @@ int exml_file_write(EXML *xml, char *filename)
 /**
  * Write the xml document out to a file descriptor.
  * @param   xml The xml document
- * @param   fd The source xml input descriptor
+ * @param   fd The xml output descriptor
  * @return  @c TRUE if successful, @c FALSE if an error occurs.
  * @ingroup EXML_Write_Group
  */
 int exml_fd_write(EXML *xml, int fd)
 {
-	xmlTextWriter *writer;
-	xmlOutputBuffer *out;
+	xmlTextWriterPtr writer;
+	xmlOutputBufferPtr out;
 
 	out = xmlOutputBufferCreateFd(fd, NULL);
 	if (out == NULL) {
@@ -657,15 +683,14 @@ int exml_fd_write(EXML *xml, int fd)
 /**
  * Write the xml document out to a memory location.
  * @param   xml The xml document
- * @param   ptr The source xml input location
  * @param   len The size of the memory buffer
- * @return  a pointer to the memory location, or NULL if 
+ * @return  a pointer to the memory location, or @c NULL if an error occurs.
  * @ingroup EXML_Write_Group
  */
 void *exml_mem_write(EXML *xml, size_t *len)
 {
-	xmlTextWriter *writer;
-	xmlBuffer *buf;
+	xmlTextWriterPtr writer;
+	xmlBufferPtr buf;
 
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
@@ -696,12 +721,12 @@ void exml_mem_free(EXML *xml, void *ptr)
 
 	CHECK_PARAM_POINTER("xml", xml);
 
-	if ((buf = ecore_hash_get(xml->buffers, ptr)))
-		xmlBufferFree( buf );
+	if ((buf = ecore_hash_get(xml->buffers, ptr))) {
+		ecore_hash_remove(xml->buffers, ptr);
+	}
 }
 
-static void _exml_write_element(EXML_Node *node,
-																xmlTextWriter *writer)
+static void _exml_write_element(EXML_Node *node, xmlTextWriterPtr writer)
 {
 	EXML_Node *child;
 	Ecore_List *keys;
@@ -730,7 +755,7 @@ static void _exml_write_element(EXML_Node *node,
 	xmlTextWriterEndElement( writer );
 }
 
-static int _exml_write(EXML *xml, xmlTextWriter *writer)
+static int _exml_write(EXML *xml, xmlTextWriterPtr writer)
 {
 	xmlTextWriterSetIndent( writer, 1 );
 	xmlTextWriterSetIndentString( writer, (xmlChar *) "\t" );
@@ -748,15 +773,226 @@ static int _exml_write(EXML *xml, xmlTextWriter *writer)
 }
 
 /**
+ * Create and initialize a new xml stylesheet.
+ * @return	A new initialized xml stylesheet on success, @c NULL on failure.
+ * @ingroup EXML_XSLT_Group
+ */
+EXML_XSL *exml_xsl_new( char *filename )
+{
+	EXML_XSL *xsl;
+
+	xsl = (EXML_XSL *) calloc(sizeof(EXML_XSL), 1);
+	if( !xsl )
+		return NULL;
+
+	if( !exml_xsl_init(xsl, filename) ) {
+		exml_xsl_destroy(xsl);
+		return NULL;
+	}
+
+	return xsl;
+}
+
+/**
+ * Initialize an xml stylesheet structure to some sane starting values.
+ * @param   xsl The stylesheet to initialize.
+ * @return  @c TRUE if successful, @c FALSE if an error occurs.
+ * @ingroup EXML_XSLT_Group
+ */
+int exml_xsl_init( EXML_XSL *xsl, char *filename )
+{
+	CHECK_PARAM_POINTER_RETURN("xsl", xsl, FALSE);
+
+	xmlSubstituteEntitiesDefault(1);
+
+	xmlLoadExtDtdDefaultValue = 1;
+
+	xsl->buffers = ecore_list_new();
+	ecore_list_set_free_cb(xsl->buffers, ECORE_FREE_CB(xmlFree));
+
+	xsl->cur = xsltParseStylesheetFile((const xmlChar *) filename);
+
+	if( !xsl->cur )
+		return FALSE;
+
+	return TRUE;
+}
+
+/**
+ * Destroys this xml stylesheet
+ * @param   xsl The xml stylesheet
+ * @return  nothing
+ */
+void exml_xsl_destroy( EXML_XSL *xsl )
+{
+	CHECK_PARAM_POINTER("xsl", xsl);
+
+	if( xsl->buffers )
+		ecore_list_destroy(xsl->buffers);
+
+	if( xsl->cur )
+		xsltFreeStylesheet(xsl->cur);
+
+	free(xsl);
+}
+
+/**
+ * Write the transformed xml document out to a file.
+ * @param   xml The xml document
+ * @param   xsl The xml stylesheet
+ * @param   params The transform parameters
+ * @param   filename The source xml input descriptor
+ * @return  @c TRUE if successful, @c FALSE if an error occurs.
+ * @ingroup EXML_XSLT_Group
+ */
+int exml_transform_file_write( EXML *xml, EXML_XSL *xsl, const char *params[],
+                               char *filename, int compression )
+{
+	int ret;
+	xmlDocPtr res, doc;
+
+	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
+	CHECK_PARAM_POINTER_RETURN("xsl", xsl, FALSE);
+	
+	exml_doc_write(xml, &doc);
+
+	res = xsltApplyStylesheet(xsl->cur, doc, params);
+
+	xmlFreeDoc(doc);
+
+	if( !res ) {
+		return FALSE;
+	}
+
+	ret = xsltSaveResultToFilename(filename, res, xsl->cur, compression);
+
+	xmlFreeDoc(res);
+
+	xsltCleanupGlobals();
+
+	if( ret < 0 )
+		return FALSE;
+
+	return TRUE;
+}
+
+/**
+ * Write the transformed xml document out to a file descriptor.
+ * @param   xml The xml document
+ * @param  xsl The xml stylesheet
+ * @param  params The transform parameters
+ * @param   fd The source xml input descriptor
+ * @return	@c TRUE if successful, @c FALSE if an error occurs.
+ * @ingroup EXML_XSLT_Group
+ */
+int exml_transform_fd_write( EXML *xml, EXML_XSL *xsl, const char *params[],
+                             int fd )
+{
+	int ret;
+	xmlDocPtr res, doc;
+
+	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
+	CHECK_PARAM_POINTER_RETURN("xsl", xsl, FALSE);
+	
+	exml_doc_write(xml, &doc);
+
+	res = xsltApplyStylesheet(xsl->cur, doc, params);
+
+	xmlFreeDoc(doc);
+
+	if( !res ) {
+		return FALSE;
+	}
+
+	ret = xsltSaveResultToFd(fd, res, xsl->cur);
+
+	xmlFreeDoc(res);
+
+	xsltCleanupGlobals();
+
+	if( ret < 0 )
+		return FALSE;
+
+	return TRUE;
+}
+
+/**
+ * Write the transformed xml document out to a memory location.
+ * @param   xml The xml document
+ * @param  xsl The xml stylesheet
+ * @param  params The transform parameters
+ * @param   ptr The source xml output location
+ * @param   len The size of the memory buffer
+ * @return	a pointer to the memory location, or NULL if 
+ * @ingroup EXML_XSLT_Group
+ */
+void *exml_transform_mem_write( EXML *xml, EXML_XSL *xsl, const char *params[],
+                                size_t *len )
+{
+	xmlDocPtr res, doc;
+	xmlChar *buf;
+	int ret;
+
+	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
+	CHECK_PARAM_POINTER_RETURN("xsl", xsl, NULL);
+	
+	exml_doc_write(xml, &doc);
+
+	res = xsltApplyStylesheet(xsl->cur, doc, params);
+
+	xmlFreeDoc(doc);
+
+	if( !res ) {
+		return NULL;
+	}
+
+	ret = xsltSaveResultToString(&buf, len, res, xsl->cur);
+
+	xmlFreeDoc(res);
+
+	if( ret < 0 ) {
+		*len = 0;
+
+		xsltCleanupGlobals();
+
+		return NULL;
+	}
+
+	ecore_list_append( xsl->buffers, buf );
+
+	xsltCleanupGlobals();
+
+	return buf;
+}
+
+/**
+ * Free memory allocated by a call to exml_transform_mem_write
+ * @param   xsl The xml stylesheet
+ * @param   ptr The xslt buffer
+ * @return  nothing
+ * @ingroup	 EXML_XSLT_Group
+ */
+void exml_transform_mem_free( EXML_XSL *xsl, void *ptr )
+{
+	CHECK_PARAM_POINTER("xsl", xsl);
+
+	/**
+	 * xmlFree as destroy cb will take care of business for us
+	 */
+	if( ecore_list_goto(xsl->buffers, ptr) == ptr )
+		ecore_list_remove_destroy(ptr);
+}
+
+/**
  * Allocate and initialize an EXML_Node struct
- * @return   allocated XML_Node struct, or NULL if an error occurred
- * @ingroup  EXML_
+ * @return	 allocated XML_Node struct, or NULL if an error occurred
+ * @ingroup	 EXML_Creation_Group
  */
 EXML_Node *exml_node_new( void )
 {
 	EXML_Node *node;
 
-	node = (EXML_Node *)malloc(sizeof(EXML_Node));
+	node = (EXML_Node *) calloc(sizeof(EXML_Node), 1);
 	if (!node)
 		return NULL;
 
@@ -777,8 +1013,6 @@ EXML_Node *exml_node_new( void )
 int exml_node_init(EXML_Node *node)
 {
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
-
-	memset(node, 0, sizeof(EXML_Node));
 
 	node->attributes = ecore_hash_new( ecore_str_hash, ecore_str_compare );
 	ecore_hash_set_free_value( node->attributes, free );

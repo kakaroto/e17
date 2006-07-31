@@ -78,6 +78,18 @@ xml2_libs=`$XML2_CONFIG --libs`
 AC_SUBST(xml2_cflags)
 AC_SUBST(xml2_libs)
 
+PROG="xslt-config";
+AC_PATH_PROG(XSLT_CONFIG, $PROG, "", $PATH)
+if test "x$XSLT_CONFIG" = "x" ; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "Read the manual page for you shell as to how to extend your path.";
+  AC_MSG_ERROR(Cannot find $PROG)
+fi
+xslt_cflags=`$XSLT_CONFIG --cflags`
+xslt_libs=`$XSLT_CONFIG --libs`
+AC_SUBST(xslt_cflags)
+AC_SUBST(xslt_libs)
+
 AC_OUTPUT([
 Makefile 
 exml.pc

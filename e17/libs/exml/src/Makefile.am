@@ -2,7 +2,8 @@
 
 INCLUDES = \
 @ecore_cflags@ \
-@xml2_cflags@
+@xml2_cflags@ \
+@xslt_cflags@
 
 lib_LTLIBRARIES = libexml.la
 include_HEADERS = \
