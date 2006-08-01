@@ -978,6 +978,195 @@ ewl_engine_theme_widget_group(Ewl_Widget *w)
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns a new theme object on success, NULL on failure
+ * @brief Add a theme object.
+ */
+void *
+ewl_engine_theme_object_add(Ewl_Embed *embed)
+{
+	Ewl_Engine_Cb_Theme_Object_Add theme_object_add;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
+
+	theme_object_add = ewl_engine_hook_get(embed,
+					EWL_ENGINE_THEME_OBJECT_ADD);
+	if (theme_object_add)
+		DRETURN_PTR(theme_object_add(embed), DLEVEL_STABLE);
+
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a new theme object on success, NULL on failure
+ * @brief Del a theme object.
+ */
+void
+ewl_engine_theme_object_del(Ewl_Embed *embed, void *obj)
+{
+	Ewl_Engine_Cb_Theme_Object_Del theme_object_del;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("obj", obj);
+
+	theme_object_del = ewl_engine_hook_get(embed,
+					EWL_ENGINE_THEME_OBJECT_DEL);
+	if (theme_object_del)
+		theme_object_del(obj);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief Move a theme object.
+ */
+void
+ewl_engine_theme_object_move(Ewl_Embed *embed, void *obj, int x, int y)
+{
+	Ewl_Engine_Cb_Theme_Object_Move theme_object_move;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	theme_object_move = ewl_engine_hook_get(EWL_EMBED(embed),
+					EWL_ENGINE_THEME_OBJECT_MOVE);
+	if (theme_object_move)
+		theme_object_move(obj, x, y);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief Resize a theme object.
+ */
+void
+ewl_engine_theme_object_resize(Ewl_Embed *embed, void *obj, int width, int height)
+{
+	Ewl_Engine_Cb_Theme_Object_Resize theme_object_resize;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_WIDGET_TYPE);
+
+	theme_object_resize = ewl_engine_hook_get(embed,
+					EWL_ENGINE_THEME_OBJECT_RESIZE);
+	if (theme_object_resize)
+		theme_object_resize(obj, width, height);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief Show a theme object.
+ */
+void
+ewl_engine_theme_object_show(Ewl_Embed *embed, void *obj)
+{
+	Ewl_Engine_Cb_Theme_Object_Show theme_object_show;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	theme_object_show = ewl_engine_hook_get(embed,
+					EWL_ENGINE_THEME_OBJECT_SHOW);
+	if (theme_object_show)
+		theme_object_show(obj);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief Hide a theme object.
+ */
+void
+ewl_engine_theme_object_hide(Ewl_Embed *embed, void *obj)
+{
+	Ewl_Engine_Cb_Theme_Object_Hide theme_object_hide;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	theme_object_hide = ewl_engine_hook_get(embed,
+					EWL_ENGINE_THEME_OBJECT_HIDE);
+	if (theme_object_hide)
+		theme_object_hide(obj);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief Clip set a theme object.
+ */
+void
+ewl_engine_theme_object_clip_set(Ewl_Embed *embed, void *obj, void *clip)
+{
+	Ewl_Engine_Cb_Theme_Object_Clip_Set theme_object_clip_set;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	theme_object_clip_set = ewl_engine_hook_get(embed,
+					EWL_ENGINE_THEME_OBJECT_CLIP_SET);
+	if (theme_object_clip_set)
+		theme_object_clip_set(obj, clip);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief Clip unset a theme object.
+ */
+void
+ewl_engine_theme_object_clip_unset(Ewl_Embed *embed, void *obj)
+{
+	Ewl_Engine_Cb_Theme_Object_Clip_Unset theme_object_clip_unset;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	theme_object_clip_unset = ewl_engine_hook_get(embed,
+					EWL_ENGINE_THEME_OBJECT_CLIP_UNSET);
+	if (theme_object_clip_unset)
+		theme_object_clip_unset(obj);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief File set a theme object.
+ */
+void
+ewl_engine_theme_object_file_set(Ewl_Embed *embed, void *obj, char *file, char *group)
+{
+	Ewl_Engine_Cb_Theme_Object_File_Set theme_object_file_set;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	theme_object_file_set = ewl_engine_hook_get(embed,
+					EWL_ENGINE_THEME_OBJECT_FILE_SET);
+	if (theme_object_file_set)
+		theme_object_file_set(obj, file, group);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
 static void
 ewl_engine_free(Ewl_Engine *engine)
 {
