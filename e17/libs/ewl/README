@@ -1,8 +1,8 @@
  EWL README
 ============
 The Enlightened Widget Library (EWL) is a toolkit for creating graphical user 
-interfaces based on the Enlightenment Foundation Libaries (EFL). The library
-aims to eas the pain of creating graphical interfaces through the simplicity
+interfaces based on the Enlightenment Foundation Libraries (EFL). The library
+aims to ease the pain of creating graphical interfaces through the simplicity
 and consistency of it's APIs.
 
 EWL is still very much in a development state. We do, sometimes, break APIs
@@ -44,14 +44,14 @@ You can check that everything is working correctly by running:
 
 This is the main test application for EWL. It contains source code and
 tutorials for the different widgets. (These tutorials are currently only
-available for a few widgest, if you'd like to add some please send us
+available for a few widgets, if you'd like to add some please send us
 patches.) 
 
 
  PROGRAMMING EWL
 =================
 It would take too much space to explain all of the APIs and concepts behind
-EWL, luckly there are other great resources for this purpose already. If
+EWL, luckily there are other great resources for this purpose already. If
 you have CVS checked up there is a e17/docs/ewlbook which is the main EWL
 documentation. (This can also be found at:
 http://enlightenment.sourceforge.net/docs/ewlbook.html or as a PDF: 
@@ -76,10 +76,10 @@ the moment. We are working on filling in more. If you'd like to contribute
 please feel free to send patches adding tutorials. These tutorials also show
 up in the main EWL documentation for each widget.)
 
-EWL also fully supports being embeded into an Evas application. So, if
-you're writting an application in Evas/Edje and just require a simple text
+EWL also fully supports being embedded into an Evas application. So, if
+you're writing an application in Evas/Edje and just require a simple text
 entry, or some buttons, you can embed the EWL widgets into you're
-application. Saves you the effort of writting them yourself. Examples of
+application. Saves you the effort of writing them yourself. Examples of
 this embedding can be see in the ewl/src/bin/ewl_embed_test.c file.
 
 
