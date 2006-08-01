@@ -45,6 +45,7 @@ struct Etk_Notebook
    
    Etk_Widget *tab_bar;
    Etk_Bool tab_bar_focused;
+   Etk_Bool tab_bar_visible;
    
    Evas_List *pages;
    Etk_Notebook_Page *current_page;
