@@ -43,12 +43,7 @@ typedef struct _Entranced_Client {
 
 
 /* Functions */
-int Entranced_Write_Pidfile (pid_t pid);
-void Entranced_Fork_And_Exit(void);
 void Entranced_X_Killall();
-int Entranced_Respawn_Reset(void *data);
-int Entranced_Exe_Exited(void *data, int type, void *event);
-int Entranced_Signal_Exit(void *data, int type, void *event);
 
 #endif
 

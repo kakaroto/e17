@@ -1,4 +1,7 @@
 2006-08-01 Essien Ita Essien <me@essienitaessien.com>
+	* src/daemon/spawner.c: Make private functions static and remove them from
+	the Entranced.h header file, since no one else uses them.
+2006-08-01 Essien Ita Essien <me@essienitaessien.com>
 	* src/daemon/spawner.c: Extract out Entranced_Display subsystem
 	into entranced_display.c and Entranced_Display.h
 2003-10-24 Ibukun Olumuyiwa <ibukun@computer.org>

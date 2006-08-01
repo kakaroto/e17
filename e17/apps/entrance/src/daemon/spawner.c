@@ -18,212 +18,20 @@ static unsigned char is_respawning = 0;
 static unsigned char exev = 0;
 static Ecore_Timer *respawn_timer = NULL;
 
-/**
- * Write the entranced pid to the defined pidfile.
- * @param pid The spawner's process ID, which is the pid after the fork if there was one
- * @return 0 if the operation was successful, 1 otherwise.
- */
-int
-Entranced_Write_Pidfile(pid_t pid)
-{
-   FILE *fp;
-   int size, result = 1;
-   char buf[PATH_MAX];
+static int _Entranced_Write_Pidfile(pid_t);
+static void _Entranced_Fork_And_Exit(void);
+static int _Entranced_Respawn_Reset(void *);
 
-   size = snprintf(buf, PATH_MAX, "%d", pid);
-   if ((fp = fopen(PIDFILE, "w+")))
-   {
-      fwrite(buf, sizeof(char), size, fp);
-      fclose(fp);
-      result = 0;
-   }
-
-   return result;
-}
-
-/**
- * Make entranced a daemon by fork-and-exit. This is the default behavior.
- */
-void
-Entranced_Fork_And_Exit(void)
-{
-   pid_t entranced_pid;
-
-   switch (entranced_pid = fork())
-   {
-     case 0:
-        break;
-     default:
-        if (Entranced_Write_Pidfile(entranced_pid))
-        {
-           syslog(LOG_CRIT, "%d is the pid, but I couldn't write to %s.",
-                  entranced_pid, PIDFILE);
-           kill(entranced_pid, SIGKILL);
-           exit(1);
-        }
-        exit(0);
-   }
-}
+static void * _Entranced_Filter_Start(void *);
+static int _Entranced_Filter_Loop(void *, void *, int , void *);
+static void _Entranced_Filter_End(void *, void *);
 
 
+static void _Entranced_SIGUSR(int);
 
-int
-Entranced_Respawn_Reset(void *data)
-{
-   entranced_debug("Respawn timer reset.\n");
-   is_respawning = 0;
-   ecore_timer_del(respawn_timer);
-   respawn_timer = NULL;
-   return 0;
-}
-
-
-/* Event Filters */
-void *
-Entranced_Filter_Start(void *data)
-{
-   return &exev;
-}
-
-int
-Entranced_Filter_Loop(void *data, void *loop_data, int type, void *event)
-{
-
-   /* Filter out redundant exit events */
-   if (type == ECORE_EXE_EVENT_DEL)
-   {
-      if (exev)
-         return 0;
-      else
-         exev = 1;
-   }
-
-   return 1;
-}
-
-void
-Entranced_Filter_End(void *data, void *loop_data)
-{
-   exev = 0;
-}
-
-/* Event handlers */
-
-/*int _Entranced_SIGUSR(void *data, int type, void *event) {*/
-static void
-_Entranced_SIGUSR(int sig)
-{
-/*    Ecore_Event_Signal_User *e = (Ecore_Event_Signal_User *) event; */
-
-   entranced_debug("SIGUSR event triggered.\n");
-
-   /* X sends SIGUSR1 to let us know it is ready */
-/*    if (e->number == 1)*/
-/*   x_ready = 1; this becomes below */
-   Entranced_Display_XReady_Set(1);
-/*    return 1; */
-}
-
-int
-Entranced_Exe_Exited(void *data, int type, void *event)
-{
-   Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *) event;
-   Entranced_Display *d = (Entranced_Display *) data;
-
-   entranced_debug("Ecore_Exe_Event_Del triggered.\n");
-
-   if (is_respawning)
-   {
-      entranced_debug("Event ignored.\n");
-      return 1;
-   }
-   else
-   {
-      entranced_debug("Processing Event.\n");
-   }
-
-   is_respawning = 1;
-   respawn_timer = ecore_timer_add(1.0, Entranced_Respawn_Reset, d);
-
-   if (e->exe == d->e_exe || e->pid == ecore_exe_pid_get(d->e_exe))
-   {
-      /* Entrance GUI failed to initialize correctly */
-      if (!d->client.connected)
-      {
-         syslog(LOG_CRIT, "Entrance GUI initialization failure. Aborting.");
-         fprintf(stderr, "Entrance has detected that the GUI is failing to launch properly.\n");
-         fprintf(stderr, "Please check your installation. Aborting.\n\n");
-         ecore_main_loop_quit(); 
-      }
-
-      /* Session exited or crashed */
-      if (e->exited)
-      {
-         syslog(LOG_INFO, "The session has ended normally.");
-         if (e->exit_code == EXITCODE)
-         {
-            ecore_main_loop_quit();
-            return 0;
-         }
-
-      }
-      else if (e->signalled)
-         syslog(LOG_INFO, "The session was terminated with signal %d.",
-                e->exit_signal);
-
-      kill(d->pid, SIGHUP);
-      sleep(3);
-      if (waitpid(d->pid, NULL, WNOHANG) > 0)
-      {
-         syslog(LOG_INFO, "The X Server apparently died as well.");
-         if (!Entranced_Display_X_Restart(d))
-            exit(1);
-      }
-
-   }
-   else if (e->pid == d->pid)
-   {
-      /* X terminated for some reason */
-      if (e->exited)
-         syslog(LOG_INFO, "The X Server terminated for some reason.");
-      else if (e->signalled)
-         syslog(LOG_INFO, "The X server was terminated with signal %d.",
-                e->exit_signal);
-
-      sleep(2);
-      kill(d->pid, SIGKILL);
-      if (!Entranced_Display_X_Restart(d))
-         exit(1);
-
-   }
-   else 
-   {
-      return 1;
-   }
-
-   d->client.connected = 0;
-   entranced_auth_user_remove(d);
-   Entranced_Display_Spawn_Entrance(d);
-
-   return 1;
-}
-
-int
-Entranced_Signal_Exit(void *data, int type, void *event)
-{
-   entranced_debug("Ecore_Signal_Exit_Triggered\n");
-   syslog(LOG_INFO, "Caught exit signal.");
-   syslog(LOG_INFO, "Display and display manager are shutting down.");
-   ecore_main_loop_quit();
-   return 0;
-}
-
-void
-Entranced_AtExit(void)
-{
-   entranced_debug("Entranced exits.\n");
-}
-
+static int _Entranced_Exe_Exited(void *, int , void *);
+static int _Entranced_Signal_Exit(void *, int , void *);
+static void _Entranced_AtExit(void);
 
 
 void usage(char* name)
@@ -330,7 +138,7 @@ main(int argc, char **argv)
    entranced_pid = getpid();
    if (nodaemon)
    {
-      if (Entranced_Write_Pidfile(entranced_pid))
+      if (_Entranced_Write_Pidfile(entranced_pid))
       {
          syslog(LOG_CRIT, "%d is the pid, but I couldn't write to %s.",
                 entranced_pid, PIDFILE);
@@ -339,7 +147,7 @@ main(int argc, char **argv)
    }
    else
    {
-      Entranced_Fork_And_Exit();
+      _Entranced_Fork_And_Exit();
    }
 
    /* Check to make sure entrance binary is executable */
@@ -370,14 +178,14 @@ main(int argc, char **argv)
 
    /* Event filter */
    _e_filter =
-      ecore_event_filter_add(Entranced_Filter_Start, Entranced_Filter_Loop,
-                             Entranced_Filter_End, NULL);
+      ecore_event_filter_add(_Entranced_Filter_Start, _Entranced_Filter_Loop,
+                             _Entranced_Filter_End, NULL);
 
    /* Set up event handlers */
    _e_handler =
-      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, Entranced_Exe_Exited, d);
+      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _Entranced_Exe_Exited, d);
    _d_handler =
-      ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, Entranced_Signal_Exit,
+      ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _Entranced_Signal_Exit,
                               NULL);
 /*    _sigusr1_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER, _Entranced_SIGUSR, NULL); */
 
@@ -428,4 +236,211 @@ main(int argc, char **argv)
    ecore_config_shutdown();
    ecore_shutdown();
    exit(0);
+}
+
+
+/* privates */
+
+/**
+ * Write the entranced pid to the defined pidfile.
+ * @param pid The spawner's process ID, which is the pid after the fork if there was one
+ * @return 0 if the operation was successful, 1 otherwise.
+ */
+static int
+_Entranced_Write_Pidfile(pid_t pid)
+{
+   FILE *fp;
+   int size, result = 1;
+   char buf[PATH_MAX];
+
+   size = snprintf(buf, PATH_MAX, "%d", pid);
+   if ((fp = fopen(PIDFILE, "w+")))
+   {
+      fwrite(buf, sizeof(char), size, fp);
+      fclose(fp);
+      result = 0;
+   }
+
+   return result;
+}
+
+
+/**
+ * Make entranced a daemon by fork-and-exit. This is the default behavior.
+ */
+static void
+_Entranced_Fork_And_Exit(void)
+{
+   pid_t entranced_pid;
+
+   switch (entranced_pid = fork())
+   {
+     case 0:
+        break;
+     default:
+        if (_Entranced_Write_Pidfile(entranced_pid))
+        {
+           syslog(LOG_CRIT, "%d is the pid, but I couldn't write to %s.",
+                  entranced_pid, PIDFILE);
+           kill(entranced_pid, SIGKILL);
+           exit(1);
+        }
+        exit(0);
+   }
+}
+
+static int
+_Entranced_Respawn_Reset(void *data)
+{
+   entranced_debug("Respawn timer reset.\n");
+   is_respawning = 0;
+   ecore_timer_del(respawn_timer);
+   respawn_timer = NULL;
+   return 0;
+}
+
+/* Event Filters */
+static void *
+_Entranced_Filter_Start(void *data)
+{
+   return &exev;
+}
+
+static int
+_Entranced_Filter_Loop(void *data, void *loop_data, int type, void *event)
+{
+
+   /* Filter out redundant exit events */
+   if (type == ECORE_EXE_EVENT_DEL)
+   {
+      if (exev)
+         return 0;
+      else
+         exev = 1;
+   }
+
+   return 1;
+}
+
+static void
+_Entranced_Filter_End(void *data, void *loop_data)
+{
+   exev = 0;
+}
+
+/* Event handlers */
+
+/*int _Entranced_SIGUSR(void *data, int type, void *event) {*/
+static void
+_Entranced_SIGUSR(int sig)
+{
+/*    Ecore_Event_Signal_User *e = (Ecore_Event_Signal_User *) event; */
+
+   entranced_debug("SIGUSR event triggered.\n");
+
+   /* X sends SIGUSR1 to let us know it is ready */
+/*    if (e->number == 1)*/
+/*   x_ready = 1; this becomes below */
+   Entranced_Display_XReady_Set(1);
+/*    return 1; */
+}
+
+static int
+_Entranced_Exe_Exited(void *data, int type, void *event)
+{
+   Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *) event;
+   Entranced_Display *d = (Entranced_Display *) data;
+
+   entranced_debug("Ecore_Exe_Event_Del triggered.\n");
+
+   if (is_respawning)
+   {
+      entranced_debug("Event ignored.\n");
+      return 1;
+   }
+   else
+   {
+      entranced_debug("Processing Event.\n");
+   }
+
+   is_respawning = 1;
+   respawn_timer = ecore_timer_add(1.0, _Entranced_Respawn_Reset, d);
+
+   if (e->exe == d->e_exe || e->pid == ecore_exe_pid_get(d->e_exe))
+   {
+      /* Entrance GUI failed to initialize correctly */
+      if (!d->client.connected)
+      {
+         syslog(LOG_CRIT, "Entrance GUI initialization failure. Aborting.");
+         fprintf(stderr, "Entrance has detected that the GUI is failing to launch properly.\n");
+         fprintf(stderr, "Please check your installation. Aborting.\n\n");
+         ecore_main_loop_quit(); 
+      }
+
+      /* Session exited or crashed */
+      if (e->exited)
+      {
+         syslog(LOG_INFO, "The session has ended normally.");
+         if (e->exit_code == EXITCODE)
+         {
+            ecore_main_loop_quit();
+            return 0;
+         }
+
+      }
+      else if (e->signalled)
+         syslog(LOG_INFO, "The session was terminated with signal %d.",
+                e->exit_signal);
+
+      kill(d->pid, SIGHUP);
+      sleep(3);
+      if (waitpid(d->pid, NULL, WNOHANG) > 0)
+      {
+         syslog(LOG_INFO, "The X Server apparently died as well.");
+         if (!Entranced_Display_X_Restart(d))
+            exit(1);
+      }
+
+   }
+   else if (e->pid == d->pid)
+   {
+      /* X terminated for some reason */
+      if (e->exited)
+         syslog(LOG_INFO, "The X Server terminated for some reason.");
+      else if (e->signalled)
+         syslog(LOG_INFO, "The X server was terminated with signal %d.",
+                e->exit_signal);
+
+      sleep(2);
+      kill(d->pid, SIGKILL);
+      if (!Entranced_Display_X_Restart(d))
+         exit(1);
+
+   }
+   else 
+   {
+      return 1;
+   }
+
+   d->client.connected = 0;
+   entranced_auth_user_remove(d);
+   Entranced_Display_Spawn_Entrance(d);
+
+   return 1;
+}
+
+static int
+_Entranced_Signal_Exit(void *data, int type, void *event)
+{
+   entranced_debug("Ecore_Signal_Exit_Triggered\n");
+   syslog(LOG_INFO, "Caught exit signal.");
+   syslog(LOG_INFO, "Display and display manager are shutting down.");
+   ecore_main_loop_quit();
+   return 0;
+}
+
+static void
+_Entranced_AtExit(void)
+{
+   entranced_debug("Entranced exits.\n");
 }

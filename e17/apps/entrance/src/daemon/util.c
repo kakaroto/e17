@@ -6,6 +6,7 @@
 void entranced_debug (char *fmt, ...)
 {
 /*   if (config.debuglevel > 0) */
+#ifdef DEBUG
    if (ENTRANCED_DEBUG)
    {
       va_list args;
@@ -14,5 +15,6 @@ void entranced_debug (char *fmt, ...)
       va_end(args);
       fflush(stdout);
    }
+#endif
 }
 
