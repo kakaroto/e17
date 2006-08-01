@@ -8,11 +8,7 @@
 static unsigned char x_ready = 0;
 static struct sigaction _entrance_x_sa;
 
-void 
-Entranced_Display_XReady_Set(unsigned char i)
-{
-	x_ready = i;
-}
+static pid_t _start_server_once(Entranced_Display *);
 
 
 /**
@@ -20,7 +16,7 @@ Entranced_Display_XReady_Set(unsigned char i)
  * @return A pointer to an Entranced_Display handle for the new context
  */
 Entranced_Display *
-Entranced_Display_New(void)
+edd_new(void)
 {
    Entranced_Display *d;
 
@@ -47,7 +43,7 @@ Entranced_Display_New(void)
  * @param d The spawner display context that will handle this server
  */
 void
-Entranced_Display_Spawn_X(Entranced_Display * d)
+edd_spawn_x(Entranced_Display * d)
 {
    int i = 0;
 
@@ -57,19 +53,73 @@ Entranced_Display_Spawn_X(Entranced_Display * d)
    d->status = NOT_RUNNING;
    while ((i < d->attempts) && (d->status != RUNNING))
    {
-      if ((d->pid = Entranced_Display_Start_Server_Once(d)) > 0)
+      if ((d->pid = _start_server_once(d)) > 0)
          break;
       ++i;
    }
 }
 
+
+/**
+ * Start a new Entrance session
+ * @param d The spawner display context that this session will use
+ */
+void
+edd_spawn_entrance(Entranced_Display *d)
+{
+   char entrance_cmd[PATH_MAX];
+
+   d->client.pid = 0;
+   d->client.uid = -1;
+   d->client.gid = -1;
+   if (d->client.homedir)
+      free(d->client.homedir);
+   d->client.homedir = NULL;
+
+   snprintf(entrance_cmd, PATH_MAX, "%s -d %s", ENTRANCE, d->name);
+   if (d->config)
+      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -c \"%s\" -z %d", 
+               ENTRANCE, d->name, d->config, getpid());
+   else
+      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -z %d", ENTRANCE, d->name,
+                                                         getpid());
+   printf("Starting command: %s\n", entrance_cmd);
+   d->e_exe = ecore_exe_run(entrance_cmd, d);
+   d->client.pid = ecore_exe_pid_get(d->e_exe);
+}
+
+int
+edd_x_restart(Entranced_Display * d)
+{
+   /* Attempt to restart X server */
+   d->status = NOT_RUNNING;
+
+   syslog(LOG_INFO, "Attempting to restart X server.");
+   edd_spawn_x(d);
+   if (d->status != RUNNING)
+   {
+      syslog(LOG_CRIT, "Failed to restart the X server. Aborting.");
+      return 0;
+   }
+   else
+      syslog(LOG_INFO, "Successfully restarted the X server.");
+   return 1;
+}
+
+void 
+edd_x_ready_set(unsigned char i)
+{
+	x_ready = i;
+}
+
+/*privates*/
 /**
  * Single attempt to start the X Server.
  * @param d The spawner display context that will handle this server
  * @return The status of the display context after the launch attempt
  */
-pid_t
-Entranced_Display_Start_Server_Once(Entranced_Display * d)
+static pid_t
+_start_server_once(Entranced_Display * d) /*seems private*/
 {
    double start_time;
    char x_cmd[PATH_MAX];
@@ -139,50 +189,3 @@ Entranced_Display_Start_Server_Once(Entranced_Display * d)
         return xpid;
    }
 }
-
-/**
- * Start a new Entrance session
- * @param d The spawner display context that this session will use
- */
-void
-Entranced_Display_Spawn_Entrance(Entranced_Display *d)
-{
-   char entrance_cmd[PATH_MAX];
-
-   d->client.pid = 0;
-   d->client.uid = -1;
-   d->client.gid = -1;
-   if (d->client.homedir)
-      free(d->client.homedir);
-   d->client.homedir = NULL;
-
-   snprintf(entrance_cmd, PATH_MAX, "%s -d %s", ENTRANCE, d->name);
-   if (d->config)
-      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -c \"%s\" -z %d", 
-               ENTRANCE, d->name, d->config, getpid());
-   else
-      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -z %d", ENTRANCE, d->name,
-                                                         getpid());
-   printf("Starting command: %s\n", entrance_cmd);
-   d->e_exe = ecore_exe_run(entrance_cmd, d);
-   d->client.pid = ecore_exe_pid_get(d->e_exe);
-}
-
-int
-Entranced_Display_X_Restart(Entranced_Display * d)
-{
-   /* Attempt to restart X server */
-   d->status = NOT_RUNNING;
-
-   syslog(LOG_INFO, "Attempting to restart X server.");
-   Entranced_Display_Spawn_X(d);
-   if (d->status != RUNNING)
-   {
-      syslog(LOG_CRIT, "Failed to restart the X server. Aborting.");
-      return 0;
-   }
-   else
-      syslog(LOG_INFO, "Successfully restarted the X server.");
-   return 1;
-}
-

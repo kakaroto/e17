@@ -24,11 +24,10 @@ typedef struct _Entranced_Display
 } Entranced_Display;
 
 
-Entranced_Display* Entranced_Display_New(void);
-void Entranced_Display_Spawn_X(Entranced_Display *);
-pid_t Entranced_Display_Start_Server_Once(Entranced_Display *);
-void Entranced_Display_Spawn_Entrance(Entranced_Display *);
-int Entranced_Display_X_Restart(Entranced_Display *);
-void Entranced_Display_XReady_Set(unsigned char i);
+Entranced_Display* edd_new(void);
+void edd_spawn_x(Entranced_Display *);
+void edd_spawn_entrance(Entranced_Display *);
+int edd_x_restart(Entranced_Display *);
+void edd_x_ready_set(unsigned char i);
 
 #endif

@@ -5,6 +5,8 @@
 	into entranced_display.c and Entranced_Display.h
 	* src/daemon/spawner.c: Make private functions static and remove them from
 	the Entranced.h header file, since no one else uses them.
+	* src/daemon/entranced_display.c: rename functions here too. Move stuff
+	around.
 2003-10-24 Ibukun Olumuyiwa <ibukun@computer.org>
 	* src/daemon/spawner.c: Rewrite complete, spawner
     now works fairly reliably

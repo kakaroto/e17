@@ -92,7 +92,7 @@ main(int argc, char **argv)
    openlog("entranced", LOG_NOWAIT, LOG_DAEMON);
 
    /* Set up a spawner context */
-   d = Entranced_Display_New();
+   d = edd_new();
    entranced_ipc_display_set(d);
 
    /* Parse command-line options */
@@ -198,7 +198,7 @@ main(int argc, char **argv)
 
    /* Launch X Server */
    syslog(LOG_INFO, "Starting X server.");
-   Entranced_Display_Spawn_X(d);
+   edd_spawn_x(d);
 
    if (d->status == NOT_RUNNING)
    {
@@ -210,7 +210,7 @@ main(int argc, char **argv)
 
    /* Run Entrance */
    syslog(LOG_INFO, "Starting Entrance.");
-   Entranced_Display_Spawn_Entrance(d);
+   edd_spawn_entrance(d);
 
    /* Main program loop */
    entranced_debug("Entering main loop.\n");
@@ -343,7 +343,7 @@ _sigaction_cb_sigusr(int sig)
    /* X sends SIGUSR1 to let us know it is ready */
 /*    if (e->number == 1)*/
 /*   x_ready = 1; this becomes below */
-   Entranced_Display_XReady_Set(1);
+   edd_x_ready_set(1);
 /*    return 1; */
 }
 
@@ -399,7 +399,7 @@ _event_cb_exited(void *data, int type, void *event)
       if (waitpid(d->pid, NULL, WNOHANG) > 0)
       {
          syslog(LOG_INFO, "The X Server apparently died as well.");
-         if (!Entranced_Display_X_Restart(d))
+         if (!edd_x_restart(d))
             exit(1);
       }
 
@@ -415,7 +415,7 @@ _event_cb_exited(void *data, int type, void *event)
 
       sleep(2);
       kill(d->pid, SIGKILL);
-      if (!Entranced_Display_X_Restart(d))
+      if (!edd_x_restart(d))
          exit(1);
 
    }
@@ -426,7 +426,7 @@ _event_cb_exited(void *data, int type, void *event)
 
    d->client.connected = 0;
    entranced_auth_user_remove(d);
-   Entranced_Display_Spawn_Entrance(d);
+   edd_spawn_entrance(d);
 
    return 1;
 }
