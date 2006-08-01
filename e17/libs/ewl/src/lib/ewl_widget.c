@@ -295,19 +295,19 @@ ewl_widget_reveal(Ewl_Widget *w)
  */
 void ewl_widget_obscure(Ewl_Widget *w)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("w", w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 
 	if (OBSCURED(w))
 		DRETURN(DLEVEL_STABLE);
 
-        ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
+	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
 
-        if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
-                                EWL_FLAG_QUEUED_RSCHEDULED))
-                ewl_callback_call(w, EWL_CALLBACK_OBSCURE);
+	if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
+				EWL_FLAG_QUEUED_RSCHEDULED))
+		ewl_callback_call(w, EWL_CALLBACK_OBSCURE);
 
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1579,7 +1579,6 @@ unsigned int
 ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 {
 	int found = FALSE;
-	int end;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("widget", widget, FALSE);
@@ -1587,14 +1586,35 @@ ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 	/* we don't check the type of the widget in here or we'll get into
 	 * an infinate loop ... */
 
-	end = strlen(type);
-	if (widget->inheritance) {
-		char *match;
+	if (widget->inheritance) 
+	{
+		char *match, *end;
+
 		match = (char *)widget->inheritance;
-		while ((match = strstr(match, type))) {
-			if ((*(match - 1) == ':') && (*(match + end) == ':'))
+		end = match + 1;
+
+		while (*end != '\0')
+		{
+			int count = 0;
+
+			/* while the type still matches the current part of
+			 * the string */
+			while ((*(type + count) == *end) && (*end != ':'))
+			{
+				count ++;
+				end ++;
+			}
+
+			/* if we ended with the : then this is a match */
+			if (*end == ':')
+			{
 				found = TRUE;
-			match++;
+				break;
+			}
+
+			/* move to the next set of :s and then move past it */
+			while ((*end != '\0') && (*end != ':')) end ++;
+			while (*end == ':') end ++;
 		}
 	}
 
@@ -2178,7 +2198,7 @@ ewl_widget_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                          void *user_data __UNUSED__)
+					  void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
 
@@ -2219,7 +2239,7 @@ ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		/*
 		 * Attempt to load a cached object first, fallback to adding a
 		 * new one.
-                 */
+		 */
 		w->theme_object = ewl_embed_object_request(emb, "edje");
 		if (!w->theme_object) {
 			w->theme_object = edje_object_add(emb->evas);
@@ -2342,7 +2362,7 @@ ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                           void *user_data __UNUSED__)
+					   void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
 	Ewl_Container *pc;
