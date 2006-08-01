@@ -18,20 +18,21 @@ static unsigned char is_respawning = 0;
 static unsigned char exev = 0;
 static Ecore_Timer *respawn_timer = NULL;
 
-static int _Entranced_Write_Pidfile(pid_t);
-static void _Entranced_Fork_And_Exit(void);
-static int _Entranced_Respawn_Reset(void *);
+static int _write_pidfile(pid_t);
+static void _fork_and_exit(void);
 
-static void * _Entranced_Filter_Start(void *);
-static int _Entranced_Filter_Loop(void *, void *, int , void *);
-static void _Entranced_Filter_End(void *, void *);
+static int _timer_cb_respawn_reset(void *);
+
+static void * _filter_cb_start(void *);
+static int _filter_cb_loop(void *, void *, int , void *);
+static void _filter_cb_end(void *, void *);
 
 
-static void _Entranced_SIGUSR(int);
+static void _sigaction_cb_sigusr(int);
 
-static int _Entranced_Exe_Exited(void *, int , void *);
-static int _Entranced_Signal_Exit(void *, int , void *);
-static void _Entranced_AtExit(void);
+static int _event_cb_exited(void *, int , void *);
+static int _event_cb_signal_exit(void *, int , void *);
+static void _cb_atexit(void);
 
 
 void usage(char* name)
@@ -138,7 +139,7 @@ main(int argc, char **argv)
    entranced_pid = getpid();
    if (nodaemon)
    {
-      if (_Entranced_Write_Pidfile(entranced_pid))
+      if (_write_pidfile(entranced_pid))
       {
          syslog(LOG_CRIT, "%d is the pid, but I couldn't write to %s.",
                 entranced_pid, PIDFILE);
@@ -147,7 +148,7 @@ main(int argc, char **argv)
    }
    else
    {
-      _Entranced_Fork_And_Exit();
+      _fork_and_exit();
    }
 
    /* Check to make sure entrance binary is executable */
@@ -178,19 +179,19 @@ main(int argc, char **argv)
 
    /* Event filter */
    _e_filter =
-      ecore_event_filter_add(_Entranced_Filter_Start, _Entranced_Filter_Loop,
-                             _Entranced_Filter_End, NULL);
+      ecore_event_filter_add(_filter_cb_start, _filter_cb_loop,
+                             _filter_cb_end, NULL);
 
    /* Set up event handlers */
    _e_handler =
-      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _Entranced_Exe_Exited, d);
+      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _event_cb_exited, d);
    _d_handler =
-      ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _Entranced_Signal_Exit,
+      ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _event_cb_signal_exit,
                               NULL);
-/*    _sigusr1_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER, _Entranced_SIGUSR, NULL); */
+/*    _sigusr1_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER, _sigaction_cb_sigusr, NULL); */
 
    /* Manually add signal handler for SIGUSR1 */
-   _entrance_d_sa.sa_handler = _Entranced_SIGUSR;
+   _entrance_d_sa.sa_handler = _sigaction_cb_sigusr;
    _entrance_d_sa.sa_flags = SA_RESTART;
    sigemptyset(&_entrance_d_sa.sa_mask);
    sigaction(SIGUSR1, &_entrance_d_sa, NULL);
@@ -247,7 +248,7 @@ main(int argc, char **argv)
  * @return 0 if the operation was successful, 1 otherwise.
  */
 static int
-_Entranced_Write_Pidfile(pid_t pid)
+_write_pidfile(pid_t pid)
 {
    FILE *fp;
    int size, result = 1;
@@ -269,7 +270,7 @@ _Entranced_Write_Pidfile(pid_t pid)
  * Make entranced a daemon by fork-and-exit. This is the default behavior.
  */
 static void
-_Entranced_Fork_And_Exit(void)
+_fork_and_exit(void)
 {
    pid_t entranced_pid;
 
@@ -278,7 +279,7 @@ _Entranced_Fork_And_Exit(void)
      case 0:
         break;
      default:
-        if (_Entranced_Write_Pidfile(entranced_pid))
+        if (_write_pidfile(entranced_pid))
         {
            syslog(LOG_CRIT, "%d is the pid, but I couldn't write to %s.",
                   entranced_pid, PIDFILE);
@@ -289,8 +290,9 @@ _Entranced_Fork_And_Exit(void)
    }
 }
 
+
 static int
-_Entranced_Respawn_Reset(void *data)
+_timer_cb_respawn_reset(void *data)
 {
    entranced_debug("Respawn timer reset.\n");
    is_respawning = 0;
@@ -301,13 +303,13 @@ _Entranced_Respawn_Reset(void *data)
 
 /* Event Filters */
 static void *
-_Entranced_Filter_Start(void *data)
+_filter_cb_start(void *data)
 {
    return &exev;
 }
 
 static int
-_Entranced_Filter_Loop(void *data, void *loop_data, int type, void *event)
+_filter_cb_loop(void *data, void *loop_data, int type, void *event)
 {
 
    /* Filter out redundant exit events */
@@ -323,16 +325,16 @@ _Entranced_Filter_Loop(void *data, void *loop_data, int type, void *event)
 }
 
 static void
-_Entranced_Filter_End(void *data, void *loop_data)
+_filter_cb_end(void *data, void *loop_data)
 {
    exev = 0;
 }
 
 /* Event handlers */
 
-/*int _Entranced_SIGUSR(void *data, int type, void *event) {*/
+/*int _sigaction_cb_sigusr(void *data, int type, void *event) {*/
 static void
-_Entranced_SIGUSR(int sig)
+_sigaction_cb_sigusr(int sig)
 {
 /*    Ecore_Event_Signal_User *e = (Ecore_Event_Signal_User *) event; */
 
@@ -346,7 +348,7 @@ _Entranced_SIGUSR(int sig)
 }
 
 static int
-_Entranced_Exe_Exited(void *data, int type, void *event)
+_event_cb_exited(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *) event;
    Entranced_Display *d = (Entranced_Display *) data;
@@ -364,7 +366,7 @@ _Entranced_Exe_Exited(void *data, int type, void *event)
    }
 
    is_respawning = 1;
-   respawn_timer = ecore_timer_add(1.0, _Entranced_Respawn_Reset, d);
+   respawn_timer = ecore_timer_add(1.0, _timer_cb_respawn_reset, d);
 
    if (e->exe == d->e_exe || e->pid == ecore_exe_pid_get(d->e_exe))
    {
@@ -430,7 +432,7 @@ _Entranced_Exe_Exited(void *data, int type, void *event)
 }
 
 static int
-_Entranced_Signal_Exit(void *data, int type, void *event)
+_event_cb_signal_exit(void *data, int type, void *event)
 {
    entranced_debug("Ecore_Signal_Exit_Triggered\n");
    syslog(LOG_INFO, "Caught exit signal.");
@@ -440,7 +442,7 @@ _Entranced_Signal_Exit(void *data, int type, void *event)
 }
 
 static void
-_Entranced_AtExit(void)
+_cb_atexit(void)
 {
    entranced_debug("Entranced exits.\n");
 }
