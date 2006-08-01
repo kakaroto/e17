@@ -172,17 +172,13 @@ static Etk_Bool _engine_init()
       ETK_WARNING("Ecore_Evas initialization failed!");
       return ETK_FALSE;
    }
-   /* Create the evas where all the windows will be drawn, 
-    * here the widht and height are unnecessary
-    */
-   _ecore_evas = ecore_evas_fb_new(NULL, 0, 320, 240);
-   //ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 320, 240);
-   if(!_ecore_evas);
+   /* Create the evas where all the windows will be drawn */
+   _ecore_evas = ecore_evas_fb_new(NULL, 0, 800, 600);
+   if(!_ecore_evas)
    {
       ETK_WARNING("Ecore_Evas_Fb initialization failed!");
       return ETK_FALSE;
    }
-   usleep(1000);
    ecore_evas_fullscreen_set(_ecore_evas, 1);
    ecore_fb_size_get(&fb_width, &fb_height);
    
@@ -204,7 +200,7 @@ static Etk_Bool _engine_init()
    evas_object_show(_background_object);
    
    /* Create the mouse pointer */
-   ecore_evas_pointer_set(_ecore_evas, PACKAGE_DATA_DIR "/pointers/default_pointer.png",1000000, 1, 1);
+   ecore_evas_cursor_set(_ecore_evas, PACKAGE_DATA_DIR "/pointers/default_pointer.png",1000000, 1, 1);
 #if 0
    _pointer_object = evas_object_image_add(_evas);
    evas_object_image_file_set(_pointer_object, PACKAGE_DATA_DIR "/pointers/default_pointer.png", NULL);
