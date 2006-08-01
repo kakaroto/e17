@@ -11,7 +11,13 @@ entrancelib_SCRIPTS = entrance_wrapper
 lib_LTLIBRARIES=libentrance_edit.la
 
 entranced_SOURCES = \
-	auth.c auth.h Entranced.h ipc.c ipc.h md5.c md5.h spawner.c util.c util.h
+	Entranced.h \
+	auth.c auth.h \
+	ipc.c ipc.h \
+	md5.c md5.h \
+	util.c util.h \
+	spawner.c \
+	Entranced_Display.h entranced_display.c
 
 entranced_LDADD = @X_LIBS@ -lXau @ECORE_LIBS@
 

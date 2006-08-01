@@ -13,6 +13,7 @@
 
 #include "../ipc.h"
 #include "Entranced.h"
+#include "Entranced_Display.h"
 
 int  entranced_ipc_init(pid_t pid);
 void entranced_ipc_shutdown(void);

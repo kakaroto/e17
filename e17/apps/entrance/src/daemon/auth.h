@@ -2,6 +2,7 @@
 #define __ENTRANCED_AUTH_H
 
 #include <Entranced.h>
+#include <Entranced_Display.h>
 #include <X11/Xauth.h>
 #include <X11/Xos.h>
 

@@ -88,6 +88,8 @@ entrance_edit_save()
 		   return 1;
 		}
 	}
+
+	return 0;
 }
 
 void 

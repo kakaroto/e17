@@ -1,3 +1,6 @@
+2006-08-01 Essien Ita Essien <me@essienitaessien.com>
+	* src/daemon/spawner.c: Extract out Entranced_Display subsystem
+	into entranced_display.c and Entranced_Display.h
 2003-10-24 Ibukun Olumuyiwa <ibukun@computer.org>
 	* src/daemon/spawner.c: Rewrite complete, spawner
     now works fairly reliably
