@@ -36,6 +36,11 @@
 #define EX_DEFAULT_SLIDE_INTERVAL 5.0
 #define EX_DEFAULT_COMMENTS_VISIBLE 0
 	    
+#ifdef EX_DEBUG
+# define D(x)  do {printf(__FILE__ ":%d:  ", __LINE__); printf x; fflush(stdout);} while (0)
+#else
+# define D(x)  ((void) 0)
+#endif
 
 typedef struct _Exhibit Exhibit;
 typedef struct _Ex_Options Ex_Options;

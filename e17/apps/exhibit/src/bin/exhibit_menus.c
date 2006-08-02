@@ -70,7 +70,7 @@ void
 _ex_menu_new_window_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("new window\n");
+   D(("new window\n"));
 }
 
 void
@@ -103,14 +103,14 @@ void
 _ex_menu_search_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("search\n");
+   D(("search\n"));
 }
 
 void
 _ex_menu_rename_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("rename\n");
+   D(("rename\n"));
 }
 
 void
@@ -159,19 +159,18 @@ void
 _ex_menu_run_in_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("run in\n");
+   D(("run in\n"));
 }
 
 void
 _ex_menu_undo_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
+   if (!e->cur_tab->image_loaded)
+     return;
+
    _ex_image_undo(ETK_IMAGE(e->cur_tab->image));   
 }
 
@@ -179,15 +178,14 @@ _ex_menu_undo_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;
+   Exhibit      *e = data;
    int           w, h;
    char          size[30];
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
+   if (!e->cur_tab->image_loaded)
+     return;
+
    _ex_image_flip_diagonal(ETK_IMAGE(e->cur_tab->image), 1);
    etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);
    snprintf(size, sizeof(size), "( %d x %d )", w, h);
@@ -198,15 +196,14 @@ _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_rot_counter_clockwise_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;   
+   Exhibit      *e = data;
    int           w, h;
    char          size[30];   
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
+   if (!e->cur_tab->image_loaded)
+     return;
+   
    _ex_image_flip_diagonal(ETK_IMAGE(e->cur_tab->image), 2);
    etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);
    snprintf(size, sizeof(size), "( %d x %d )", w, h);
@@ -217,65 +214,59 @@ _ex_menu_rot_counter_clockwise_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_flip_horizontal_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
+   if (!e->cur_tab->image_loaded)
+     return;
+
    _ex_image_flip_horizontal(ETK_IMAGE(e->cur_tab->image));
 }
 
 void
 _ex_menu_flip_vertical_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
+   if (!e->cur_tab->image_loaded)
+     return;
+
    _ex_image_flip_vertical(ETK_IMAGE(e->cur_tab->image));   
 }
 
 void
 _ex_menu_blur_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
+   if (!e->cur_tab->image_loaded)
+     return;
+
    _ex_image_blur(ETK_IMAGE(e->cur_tab->image));   
 }
 
 void
 _ex_menu_sharpen_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
+   if (!e->cur_tab->image_loaded)
+     return;
+
    _ex_image_sharpen(ETK_IMAGE(e->cur_tab->image));   
 }
 
 void
 _ex_menu_brighten_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
+   if (!e->cur_tab->image_loaded)
+     return;
    
    e->brightness += 10;
    if(e->brightness > 255)
@@ -286,13 +277,11 @@ _ex_menu_brighten_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_darken_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
+   if (!e->cur_tab->image_loaded)
+     return;
    
    e->brightness -= 10;
    if(e->brightness < 0)
@@ -303,13 +292,12 @@ _ex_menu_darken_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
-   Etk_Tree_Row *r;   
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
+
+   if (!e->cur_tab->image_loaded)
+     return;
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;   
    _ex_image_wallpaper_set(ETK_IMAGE(e->cur_tab->image));
 }
 
@@ -351,7 +339,7 @@ void
 _ex_menu_refresh_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("refresh\n");
+   D(("refresh\n"));
 }
 
 void
@@ -431,12 +419,12 @@ void
 _ex_menu_release_notes_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("release notes\n");
+   D(("release notes\n"));
 }
 
 void
 _ex_menu_about_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("about\n");
+   D(("about\n"));
 }

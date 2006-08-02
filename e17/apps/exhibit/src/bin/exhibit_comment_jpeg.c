@@ -1,5 +1,4 @@
 /*
- * common.c
  *   Updated by HandyAndE
  *
  * based on:

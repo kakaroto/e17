@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include "exhibit.h"
 
 void
@@ -19,7 +22,7 @@ _ex_favorites_add(Exhibit *e, char *path)
 
    ecore_file_symlink(realpath, new_path);
    if(realpath)
-     free(realpath);   
+     E_FREE(realpath);   
 }
 
 void

@@ -34,7 +34,7 @@ _ex_options_init()
    home = getenv("HOME");
    if(!home)
      {
-	printf("Cant find home directory!\n");
+	fprintf(stderr, "Cant find home directory!\n");
 	return 0;
      }
    
@@ -44,13 +44,13 @@ _ex_options_init()
      {
 	if(ecore_file_exists(buf))
 	  {
-	     printf("Cant create config path!\n");
+	     fprintf(stderr, "Cant create config path!\n");
 	     return 0;
 	  }
 	
 	if(!ecore_file_mkdir(buf))
 	  {
-	     printf("Cant create config path!");
+	     fprintf(stderr, "Cant create config path!");
 	     return 0;
 	  }
      }
@@ -61,13 +61,13 @@ _ex_options_init()
      {
 	if(ecore_file_exists(buf))
 	  {
-	     printf("Cant create config path!");
+	     fprintf(stderr, "Cant create config path!");
 	     return 0;
 	  }
 	
 	if(!ecore_file_mkdir(buf))
 	  {
-	     printf("Cant create config path!");
+	     fprintf(stderr, "Cant create config path!");
 	     return 0;
 	  }
      }
@@ -206,11 +206,11 @@ _ex_options_save(Exhibit *e)
    
    ret = eet_data_write(ef, _ex_config_version_edd, "config/version", e->version, 1);
    if(!ret)
-     printf("Problem saving config!\n");
+     fprintf(stderr, "Problem saving config!\n");
          
    ret = eet_data_write(ef, _ex_config_options_edd, "config/options", e->options, 1);
    if(!ret)
-     printf("Problem saving config/options!");
+     fprintf(stderr, "Problem saving config/options!");
    
    eet_close(ef);
    return ret;   
@@ -242,7 +242,7 @@ _ex_options_load(Exhibit *e)
    ef = eet_open(buf, EET_FILE_MODE_READ);
    if(!ef)
      {
-	printf("Cant open configuration file! Using program defaults.\n");
+	fprintf(stderr, "Cant open configuration file! Using program defaults.\n");
 	return 0;
      }
    
@@ -250,7 +250,7 @@ _ex_options_load(Exhibit *e)
    e->version = eet_data_read(ef, _ex_config_version_edd, "config/version");
    if(!e->version)
      {
-	printf("Incompatible configuration file! Creating new one.\n");
+	fprintf(stderr, "Incompatible configuration file! Creating new one.\n");
 	eet_close(ef);
 	_ex_options_default(e);
 	return 0;
@@ -262,7 +262,7 @@ _ex_options_load(Exhibit *e)
 	v = _ex_options_version_parse(VERSION);
 	if(_ex_options_version_compare(v, e->version) != 0)
 	  {
-	     printf("Your version / configuration of E-Stickies is not valid!\n");
+	     fprintf(stderr, "Your version / configuration of Exhibit is not valid!\n");
 	     _ex_options_default(e);	     
 	     return 0;
 	  }

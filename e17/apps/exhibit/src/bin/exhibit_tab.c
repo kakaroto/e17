@@ -90,8 +90,10 @@ _ex_tab_delete(Ex_Tab *tab)
 
 void
 _ex_tab_select(Ex_Tab *tab)
-{   
+{ 
    chdir(tab->cur_path);
+
+   D(("_ex_tab_select: changed dir to %s\n", tab->cur_path));
 
    if(tab->comment.visible)
      etk_notebook_page_child_set(ETK_NOTEBOOK(tab->e->notebook), tab->num, tab->comment.vbox);

@@ -18,7 +18,6 @@ void         _ex_image_save(Etk_Image *im);
 void	     _ex_image_save_as_entry_cb(Etk_Object *object, void *event, void *data);
 void	     _ex_image_save_as_cb(void *data);
 void         _ex_image_save_as(Exhibit *e);
-void         _ex_image_delete_cb(void *data);
 void	     _ex_image_delete(Exhibit *e);
 void         _ex_image_zoom(Etk_Image *im, int zoom); 
 void         _ex_image_brightness(Etk_Image *im, int brightness);

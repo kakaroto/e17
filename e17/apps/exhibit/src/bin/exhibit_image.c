@@ -18,6 +18,11 @@
 #define G_VAL(p) ((DATA8 *)(p))[1]
 #define B_VAL(p) ((DATA8 *)(p))[0]
 
+static void _ex_image_delete_dialog_response(Etk_Object *obj, int response_id, void *data);
+static void _ex_image_delete_cb(void *data);
+
+
+
 void
 _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 {
@@ -171,13 +176,13 @@ _ex_image_data_copy(Etk_Image *im, unsigned int *data, int w, int h)
    
    data2 = etk_object_data_get(ETK_OBJECT(im), "undo");
    if(data2)
-     free(data2);
+     E_FREE(data2);
    
    data2 = malloc(w * h * sizeof(unsigned int));
    memcpy(data2, data, w * h * sizeof(unsigned int));
    etk_object_data_set(ETK_OBJECT(im), "undo", data2);
-   printf("Undo: setting data %p size %d, image %p\n", data, 
-	 w * h * sizeof(unsigned int), im);
+   D(("Undo: setting data %p size %d, image %p\n", data,
+	 w * h * sizeof(unsigned int), im));
    
    return data2;
 }
@@ -197,7 +202,7 @@ _ex_image_undo(Etk_Image *im)
    
    if (data) 
      {
-	printf("Undo: getting data %p, image %p\n", data, im);
+	D(("Undo: getting data %p, image %p\n", data, im));
 	evas_object_image_data_set(im->image_object, data);
 	evas_object_image_data_update_add(im->image_object, 0, 0, w, h);
 	etk_object_data_set(ETK_OBJECT(im), "undo", NULL);
@@ -555,12 +560,14 @@ _ex_image_save_as_cb(void *data)
     return;
   
    sprintf(file, "%s/%s", dir, basename);
-   printf("Saving: %s\n", file);
+   D(("Saving: %s\n", file));
 
    /* Dont fork for the tree polulating to work */
    evas_object_image_save(im->image_object, file, NULL, NULL);
 
    /* Refresh list if the file is saved in our dir */
+   D(("Image path: %s <-> Cur path: %s\n", fd->e->cur_tab->set_img_path,
+	 fd->e->cur_tab->cur_path));
    if (!strcmp(fd->e->cur_tab->set_img_path, fd->e->cur_tab->cur_path)) 
      {
 	etk_tree_clear(ETK_TREE(fd->e->cur_tab->itree));
@@ -612,7 +619,7 @@ _ex_image_save_as(Exhibit *e)
    label = etk_label_new("Filename:");
    etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
    
-   printf ("Selected original filename: %s\n", e->cur_tab->cur_file);
+   D(("Selected original filename: %s\n", e->cur_tab->cur_file));
    
    fd->entry = etk_entry_new();
    etk_entry_text_set(ETK_ENTRY(fd->entry), e->cur_tab->cur_file);
@@ -636,7 +643,7 @@ _ex_image_save_as(Exhibit *e)
    etk_widget_show_all(fd->win);
 }
 
-void
+static void
 _ex_image_delete_cb(void *data)
 {
    Exhibit *e = data;
@@ -660,38 +667,71 @@ _ex_image_delete_cb(void *data)
    etk_tree_clear(ETK_TREE(tab->dtree));
    _ex_main_populate_files(e, NULL);
 
-   printf ("Ex_Tab pointer in _ex_image_delete_cb %p\n", tab);
+   D(("Ex_Tab pointer in _ex_image_delete_cb %p\n", tab));
    etk_object_destroy(ETK_OBJECT(tab->dialog));
 
-   printf("Deleted for %s\n", string);
+   D(("Deleted for %s\n", string));
+}
+
+static void
+_ex_image_delete_dialog_response(Etk_Object *obj, int response_id, void *data)
+{
+   Exhibit *e = data;
+
+   switch(response_id)
+     {
+      case ETK_RESPONSE_OK:
+	 _ex_image_delete_cb(e);
+	 break;
+      case ETK_RESPONSE_CANCEL:
+	 etk_object_destroy(ETK_OBJECT(obj));
+	 break;
+      default:
+	 break;
+     }
 }
 
 void
 _ex_image_delete(Exhibit *e)
 {
    Etk_Widget *label;
-   Etk_Widget *button, *button2;
    Ex_Tab *tab = e->cur_tab;
+   char string[PATH_MAX];
 
-   printf ("Ex_Tab pointer in _ex_image_delete %p\n", e->cur_tab);
+   sprintf(string, "%s%s", tab->set_img_path, tab->cur_file);
+
+   D(("Ex_Tab pointer in _ex_image_delete %p\n", e->cur_tab));
 
    tab->dialog = etk_dialog_new();
+
    etk_signal_connect("delete_event", ETK_OBJECT(tab->dialog), 
 	 ETK_CALLBACK(etk_object_destroy), tab->dialog);
 
-   label = etk_label_new("Are you sure you want to delete the picture?");
-   etk_dialog_pack_widget_in_action_area(ETK_DIALOG(tab->dialog), label, ETK_TRUE, 
-	 ETK_TRUE, 5, ETK_FALSE);
+   label = etk_label_new("Are you sure you want to delete picture?");
+   etk_dialog_pack_in_main_area(ETK_DIALOG(tab->dialog), label, 
+	 ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
+   label = etk_label_new(string);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(tab->dialog), label, 
+	 ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
 
-   button = etk_dialog_button_add(ETK_DIALOG(tab->dialog), "Cancel", ETK_RESPONSE_CANCEL);
-   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), 
-	 ETK_CALLBACK(etk_object_destroy), ETK_OBJECT(tab->dialog));
+   etk_dialog_button_add_from_stock(ETK_DIALOG(tab->dialog), 
+	 ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
+   etk_dialog_button_add_from_stock(ETK_DIALOG(tab->dialog), 
+	 ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
+
+   etk_signal_connect("response", ETK_OBJECT(tab->dialog), 
+	 ETK_CALLBACK(_ex_image_delete_dialog_response), e);
    
-   button2 = etk_dialog_button_add(ETK_DIALOG(tab->dialog), "Delete", ETK_RESPONSE_OK);
-   etk_signal_connect_swapped("clicked", ETK_OBJECT(button2), 
-	 ETK_CALLBACK(_ex_image_delete_cb), e);
+   etk_container_border_width_set(ETK_CONTAINER(tab->dialog), 4);
+   etk_window_title_set(ETK_WINDOW(tab->dialog), 
+	 _("Exhibit, confirm delete"));
 
    etk_widget_show_all(tab->dialog);
+
+   /* TODO
+    * Center the dialog on top of the app.
+   etk_window_center_on_window(ETK_WINDOW(tab->dialog), ETK_WINDOW(e->win));
+   */
 }
 
 
@@ -806,7 +846,7 @@ _ex_image_brightness2(Etk_Image *im, int brightness)
    if(im->use_edje)
      return;
    
-   printf("brightness = %d\n", brightness);
+   D(("brightness = %d\n", brightness));
    for(i=0; i<256; i++){
       light_transform[i] = i + brightness;
       if(light_transform[i] > 255)
@@ -879,6 +919,16 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	
 	filenoext = _ex_file_strip_extention(im->filename);
 	filenoext = ecore_file_get_file(filenoext);
+
+	D(("Setting bg: dir: %s \tfile: %s\n", dir, file));
+
+	/* 
+	 * FIXME
+	 *
+	 * This doesnt set the bg if we choose another dir
+	 * after having choosen the picture itself
+	 *
+	 */
 	
 	if (strcmp(im->filename + strlen(im->filename) - 4, ".edj") == 0) {
 	   int w, h, num;
@@ -887,6 +937,8 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	   char e_bg_set[PATH_MAX*2];	   
 	   char filename_s[PATH_MAX];
 	   Ecore_X_Window *roots = NULL;
+
+	   D(("Entered the foo\n"));
 	   
 	   if (!ecore_x_init(NULL))
 	     exit(0);
@@ -897,7 +949,9 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	   snprintf(filename_s, PATH_MAX, "/tmp/%s.png", filenoext);
 	   snprintf(static_bg, PATH_MAX, "edje_thumb %s desktop/background %s -g %dx%d -og %dx%d", im->filename, filename_s, w, h, w, h);
 	   snprintf(e_bg_set, PATH_MAX, "enlightenment_remote -default-bg-set %s", im->filename);
-	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, filename_s);	   
+	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, 
+		 filename_s);	 
+	   D(("Filename_s: %s\n", filename_s));
 	   system(static_bg);
 	   system(e_bg_set);	   
 	   system(esetroot_s);
@@ -912,6 +966,8 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	strcat(edj_file, "/.e/e/backgrounds/");
 	strcat(edj_file, filenoext);
 	strcat(edj_file, ".edj");
+
+	D(("Edje file: %s  FILENOEXT: %s\n", edj_file, filenoext));
 	
 	/* Determine image width / height */
 	  {
@@ -985,6 +1041,8 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	     char e_bg_set[PATH_MAX*2];
 	     
 	     snprintf(e_bg_set, PATH_MAX, "enlightenment_remote -default-bg-set %s", edj_file);
+
+	     D(("FOO: %s\n", e_bg_set));
 	     system(e_bg_set);
 	  }
 	

@@ -242,8 +242,8 @@ _ex_main_image_unset(Exhibit *e)
    etk_window_title_set(ETK_WINDOW(e->win), 
 	 WINDOW_TITLE " - Image Viewing the Kewl Way!");
 
-   free(tab->set_img_path);
-   free(tab->cur_file);
+   E_FREE(tab->set_img_path);
+   E_FREE(tab->cur_file);
    tab->image_loaded = ETK_FALSE;
    
    etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[0]), 0);
@@ -321,10 +321,10 @@ _ex_main_image_set(Exhibit *e, char *image)
    etk_range_value_set(vs, (double)h/2);
 
    /* Reset undo data every time we change image */
-   printf("Resetting undo data on image %p\n", e->cur_tab->image);
+   D(("Resetting undo data on image %p\n", e->cur_tab->image));
    data2 = etk_object_data_get(ETK_OBJECT(e->cur_tab->image), "undo");
    if (data2) 
-     free(data2);
+     E_FREE(data2);
 
    etk_object_data_set(ETK_OBJECT(e->cur_tab->image), "undo", NULL);
    
@@ -508,7 +508,7 @@ _ex_main_populate_files(Exhibit *e, const char *selected_file)
 
    chdir(e->cur_tab->dir);
 
-   printf ("Changing to dir: %s\n", e->cur_tab->dir);
+   D(("Changing to dir: %s\n", e->cur_tab->dir));
 
    if ((dir = opendir(".")) == NULL)
      return ;
@@ -596,6 +596,11 @@ _ex_main_populate_files(Exhibit *e, const char *selected_file)
 	etk_tree_row_select(selected_row);
 	etk_tree_row_scroll_to(selected_row, ETK_TRUE);
      }
+
+   /* Set the dir to the current dir at the end so we avoid
+      stepdown like ".." if we just call the refresh on
+      the listing like after a delete */
+   e->cur_tab->dir = strdup(".");
    
    closedir(dir);
 }
@@ -647,7 +652,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	if(!file || !strcmp(file, path))
 	  return;	
 	
-	printf("dir='%s' file='%s'\n", dir, file);
+	D(("dir='%s' file='%s'\n", dir, file));
 	
 	//if(strcmp(dir, e->cur_path))
 	  {
@@ -1183,8 +1188,8 @@ main(int argc, char *argv[])
    
    ecore_file_init();
    if(!_ex_options_init())
-     printf("WARNING: Exhibit could not set up its options files!\n"
-	    "         You will not be able to save your preferences.\n");
+     fprintf(stderr, "WARNING: Exhibit could not set up its options files!\n"
+	             "         You will not be able to save your preferences.\n");
    event_handlers = evas_list_append(event_handlers,
 				     ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
 							     _ex_thumb_exe_exit,
