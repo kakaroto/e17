@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #ifndef _EX_MAIN_H
 #define _EX_MAIN_H
 
@@ -23,5 +26,7 @@ Etk_Bool     _ex_main_window_deleted_cb(void *data);
 void         _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data);
 void         _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab);
 void         _ex_main_window_show(char *dir);
+void         _ex_main_image_unset(Exhibit *e);
+   
 
 #endif

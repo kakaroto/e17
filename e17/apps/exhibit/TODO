@@ -1,6 +1,10 @@
-TODO (release version 1.0.0 when this is done):
-===============================================
 
+================
+* RELEASE 0.1.0:
+================
+
+o TODO:
+ ------
 -menus
   * new window
   * save image as
@@ -14,26 +18,43 @@ TODO (release version 1.0.0 when this is done):
   
 - options
   * slide show speed
-  * path to favorites
   * comments visibile / hidden by default (with remembering last state)
   
-- wallpaper setting - center, stretch, tile
-
-- andy's comments feature
-  * gui bits
-  * comment code
-
 - key shotcuts
   * x - fit / unfit to window
 
+- save window geometry between sessions
+
+o DONE:
+ ------
++ andy's comments feature
 + sorting
 + wheel changing / zooming
 + dnd
 + fix .spec file
 + make argv work with /path/to/image.png and not only /path/to/dir
 
-BUGS:
-=====
+=================
+* RELEASSE 0.2.0:
+=================
+
+o TODO:
+ ------
+- integrate with evfs for file tagging and categories
+- integrate with libgphoto for digicam interaction
+
+================
+* MISC FEATURES:
+================
+
+o TODO:
+ ------
+- wallpaper setting - center, stretch, tile
+- path to favorites (will be replace by evfs)
+
+=======
+* BUGS:
+=======
 
 - fix autocomplete (combobox?)
 - if we're scrolled to the end of the dir tree, clicking on a dir needs to

@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #ifndef _EX_H
 #define _EX_H
 
@@ -72,7 +75,13 @@ struct _Ex_Tab
 {
    char          *dir;
    char           cur_path[PATH_MAX];
-   char           cur_file[PATH_MAX];   
+
+   /* Path and filename of the dir to the 
+      currently "set" image */
+   char           *set_img_path; 
+   char           *cur_file;
+   int            image_loaded;
+
    int            num;
 
    Etk_Bool       fit_window;   
@@ -85,6 +94,7 @@ struct _Ex_Tab
    Etk_Widget    *itree;   
    Etk_Widget    *scrolled_view;
    Etk_Widget    *alignment;   
+   Etk_Widget    *dialog; 
    
    Etk_Tree_Col  *dcol;
    Etk_Tree_Col  *icol;
@@ -167,7 +177,8 @@ struct _Ex_Filedialog
    Etk_Widget *win;
    Etk_Widget *filechooser;
    Etk_Widget *entry;
-   Etk_Image  *im;   
+   Etk_Image  *im;
+   Exhibit *e;
 };
 
 struct _Ex_Config_Version

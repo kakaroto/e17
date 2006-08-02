@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include "exhibit.h"
 #include "exhibit_main.h"
 #include "exhibit_image.h"
@@ -79,6 +82,7 @@ _ex_menu_save_image_cb(Etk_Object *obj, void *data)
    
    e = data;
    r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+
    if(!r) return;
    _ex_image_save(ETK_IMAGE(e->cur_tab->image));
 }
@@ -86,14 +90,13 @@ _ex_menu_save_image_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_save_image_as_cb(Etk_Object *obj, void *data)
 {   
-   Exhibit      *e;
-   Etk_Tree_Row *r;
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
 
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;
-   _ex_image_save_as(ETK_IMAGE(e->cur_tab->image), ETK_TREE(e->cur_tab->itree), r);
+   if (!e->cur_tab->image_loaded)
+     return;
+
+   _ex_image_save_as(e);
 }
 
 void
@@ -113,8 +116,13 @@ _ex_menu_rename_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_delete_cb(Etk_Object *obj, void *data)
 {
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
-   printf("delete\n");
+
+   if (!e->cur_tab->image_loaded)
+     return;
+
+   _ex_image_delete(e);
 }
 
 void

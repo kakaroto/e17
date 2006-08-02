@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include "exhibit.h"
 #include <Ecore_File.h>
 #include <Ecore_Evas.h>
@@ -173,7 +176,8 @@ _ex_image_data_copy(Etk_Image *im, unsigned int *data, int w, int h)
    data2 = malloc(w * h * sizeof(unsigned int));
    memcpy(data2, data, w * h * sizeof(unsigned int));
    etk_object_data_set(ETK_OBJECT(im), "undo", data2);
-   printf("Undo: setting data %p size %d\n", data, w * h * sizeof(unsigned int));
+   printf("Undo: setting data %p size %d, image %p\n", data, 
+	 w * h * sizeof(unsigned int), im);
    
    return data2;
 }
@@ -193,7 +197,7 @@ _ex_image_undo(Etk_Image *im)
    
    if (data) 
      {
-	printf("Undo: getting data %p\n", data);
+	printf("Undo: getting data %p, image %p\n", data, im);
 	evas_object_image_data_set(im->image_object, data);
 	evas_object_image_data_update_add(im->image_object, 0, 0, w, h);
 	etk_object_data_set(ETK_OBJECT(im), "undo", NULL);
@@ -530,7 +534,7 @@ _ex_image_save_as_entry_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Up_Down *ev = event;
    
-   if(!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
+   if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
      _ex_image_save_as_cb(data);   
 }
 
@@ -538,46 +542,49 @@ void
 _ex_image_save_as_cb(void *data)
 {
    Ex_Filedialog *fd = data;
-   pid_t pid;
    char file[1024];
    const char *basename;
    const char *dir;
+   Etk_Image *im = ETK_IMAGE(fd->e->cur_tab->image);
 
    basename = etk_entry_text_get(ETK_ENTRY(fd->entry));
    dir = etk_filechooser_widget_current_folder_get
-     (ETK_FILECHOOSER_WIDGET(fd->filechooser));
+      (ETK_FILECHOOSER_WIDGET(fd->filechooser));
    
-   if (!basename || !dir)
-     return;
-   
-   sprintf(file, "%s/%s", dir, basename);   
+  if (!dir || !basename)
+    return;
+  
+   sprintf(file, "%s/%s", dir, basename);
    printf("Saving: %s\n", file);
-   
-   pid = fork();
-   if(!pid) 
+
+   /* Dont fork for the tree polulating to work */
+   evas_object_image_save(im->image_object, file, NULL, NULL);
+
+   /* Refresh list if the file is saved in our dir */
+   if (!strcmp(fd->e->cur_tab->set_img_path, fd->e->cur_tab->cur_path)) 
      {
-	evas_object_image_save(fd->im->image_object, file, NULL, NULL);
-	exit(0);
+	etk_tree_clear(ETK_TREE(fd->e->cur_tab->itree));
+	etk_tree_clear(ETK_TREE(fd->e->cur_tab->dtree));
+	_ex_main_populate_files(fd->e, NULL);
      }
-   
+
    etk_widget_hide(fd->win);
 }
 
 void
-_ex_image_save_as(Etk_Image *im, Etk_Tree *tree, Etk_Tree_Row *row)
+_ex_image_save_as(Exhibit *e)
 {
    static Ex_Filedialog *fd = NULL;
    Etk_Widget *vbox;
    Etk_Widget *hbox;
    Etk_Widget *btn;
    Etk_Widget *label;
-   char *filename;
    
    if (!fd) 
      {
 	fd = calloc(1, sizeof(Ex_Filedialog));
-	if (!fd) return;	
-	fd->im = im;
+	if (!fd) return;
+	fd->e = e;
 	fd->win = NULL;
      }
    
@@ -585,16 +592,14 @@ _ex_image_save_as(Etk_Image *im, Etk_Tree *tree, Etk_Tree_Row *row)
    if (fd->win) 
      {
 	/* Update the filename when we show the window again */
-	etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, 
-				&filename, etk_tree_nth_col_get(tree, 1), 
-				NULL);
-	etk_entry_text_set(ETK_ENTRY(fd->entry), filename);      
+	etk_entry_text_set(ETK_ENTRY(fd->entry), e->cur_tab->cur_file);
 	etk_widget_show_all(ETK_WIDGET(fd->win));
 	return;
      }
+
    
    fd->win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit save image as ..");
+   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit - Save image as ..");
    etk_signal_connect("delete_event", ETK_OBJECT(fd->win), 
 		      ETK_CALLBACK(etk_window_hide_on_delete), fd->win);
    
@@ -607,12 +612,10 @@ _ex_image_save_as(Etk_Image *im, Etk_Tree *tree, Etk_Tree_Row *row)
    label = etk_label_new("Filename:");
    etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
    
-   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, 
-			   &filename, etk_tree_nth_col_get(tree, 1), NULL);
-   printf ("Selected original filename: %s\n", filename);
+   printf ("Selected original filename: %s\n", e->cur_tab->cur_file);
    
    fd->entry = etk_entry_new();
-   etk_entry_text_set(ETK_ENTRY(fd->entry), filename);
+   etk_entry_text_set(ETK_ENTRY(fd->entry), e->cur_tab->cur_file);
    etk_box_pack_start(ETK_BOX(vbox), fd->entry, ETK_TRUE, ETK_FALSE, 0);
    etk_signal_connect("key_down", ETK_OBJECT(fd->entry), 
 		      ETK_CALLBACK(_ex_image_save_as_entry_cb), fd);
@@ -632,6 +635,65 @@ _ex_image_save_as(Etk_Image *im, Etk_Tree *tree, Etk_Tree_Row *row)
    
    etk_widget_show_all(fd->win);
 }
+
+void
+_ex_image_delete_cb(void *data)
+{
+   Exhibit *e = data;
+   Ex_Tab *tab = e->cur_tab;
+   char string[PATH_MAX];
+   int ret;
+
+   sprintf(string, "%s%s", tab->set_img_path, tab->cur_file);
+
+   ret = remove(string);
+   if (ret == -1) 
+     {
+	perror("Error deleting file\n");
+	return;
+     }
+
+   _ex_main_image_unset(e);
+
+   /* Refresh the tree as we deleted the file first */
+   etk_tree_clear(ETK_TREE(tab->itree));
+   etk_tree_clear(ETK_TREE(tab->dtree));
+   _ex_main_populate_files(e, NULL);
+
+   printf ("Ex_Tab pointer in _ex_image_delete_cb %p\n", tab);
+   etk_object_destroy(ETK_OBJECT(tab->dialog));
+
+   printf("Deleted for %s\n", string);
+}
+
+void
+_ex_image_delete(Exhibit *e)
+{
+   Etk_Widget *label;
+   Etk_Widget *button, *button2;
+   Ex_Tab *tab = e->cur_tab;
+
+   printf ("Ex_Tab pointer in _ex_image_delete %p\n", e->cur_tab);
+
+   tab->dialog = etk_dialog_new();
+   etk_signal_connect("delete_event", ETK_OBJECT(tab->dialog), 
+	 ETK_CALLBACK(etk_object_destroy), tab->dialog);
+
+   label = etk_label_new("Are you sure you want to delete the picture?");
+   etk_dialog_pack_widget_in_action_area(ETK_DIALOG(tab->dialog), label, ETK_TRUE, 
+	 ETK_TRUE, 5, ETK_FALSE);
+
+   button = etk_dialog_button_add(ETK_DIALOG(tab->dialog), "Cancel", ETK_RESPONSE_CANCEL);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), 
+	 ETK_CALLBACK(etk_object_destroy), ETK_OBJECT(tab->dialog));
+   
+   button2 = etk_dialog_button_add(ETK_DIALOG(tab->dialog), "Delete", ETK_RESPONSE_OK);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(button2), 
+	 ETK_CALLBACK(_ex_image_delete_cb), e);
+
+   etk_widget_show_all(tab->dialog);
+}
+
 
 void
 _ex_image_zoom(Etk_Image *im, int zoom)

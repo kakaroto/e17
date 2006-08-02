@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include "exhibit.h"
 
 #define EX_DND_MAX_NUM 25
@@ -20,6 +23,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->e = e;
    tab->fit_window = ETK_FALSE;
    tab->comment.visible = ETK_FALSE;
+   tab->image_loaded = ETK_FALSE;
    
    tab->dtree = etk_tree_new();
    etk_widget_size_request_set(tab->dtree, 180, 120);
@@ -32,7 +36,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->itree = etk_tree_new();
    etk_widget_dnd_source_set(ETK_WIDGET(tab->itree), ETK_TRUE);
    etk_signal_connect("drag_begin", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_tree_drag_begin_cb), tab);
-   etk_widget_size_request_set(tab->itree, 180, 120);
+   etk_widget_size_request_set(tab->itree, 180, 220);
    etk_tree_multiple_select_set(ETK_TREE(tab->itree), ETK_TRUE);
    etk_signal_connect("row_selected", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_main_itree_item_clicked_cb), e);
    etk_signal_connect("key_down", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_main_itree_key_down_cb), e);
