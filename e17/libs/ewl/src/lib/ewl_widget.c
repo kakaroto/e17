@@ -1606,7 +1606,7 @@ ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 			}
 
 			/* if we ended with the : then this is a match */
-			if (*end == ':')
+			if ((*end == ':') && (*(type + count) == '\0'))
 			{
 				found = TRUE;
 				break;

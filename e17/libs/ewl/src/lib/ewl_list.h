@@ -36,7 +36,11 @@ struct Ewl_List
 	Ewl_View *view;		/**< The view for the list */
 	void *data;		/**< The data for the list */
 
-	Ewl_Widget *selected;	/**< The selected widget */
+	struct {
+		Ewl_Widget *widget; /**< The selected widget */
+		Ewl_Widget *highlight; /**< The highlight widget */
+	} selected;		/**< Selected widget info */
+
 	unsigned char dirty:1;	/**< Has the model changed? */
 };
 

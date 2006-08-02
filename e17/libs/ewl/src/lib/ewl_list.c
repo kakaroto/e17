@@ -3,6 +3,13 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static void ewl_list_cb_highlight_configure(Ewl_Widget *w, 
+						void *ev, void *data);
+static void ewl_list_cb_highlighted_destroy(Ewl_Widget *w, 
+						void *ev, void *data);
+static void ewl_list_cb_highlight_destroy(Ewl_Widget *w, 
+						void *ev, void *data);
+
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure
  * @brief Creates and initializes a new Ewl_List widget
@@ -206,12 +213,38 @@ ewl_list_selected_widget_set(Ewl_List *list, Ewl_Widget *w)
 	DCHECK_PARAM_PTR("list", list);
 	DCHECK_TYPE("list", list, EWL_LIST_TYPE);
 
-	if (list->selected == w)
+	if (list->selected.widget == w)
 		DRETURN(DLEVEL_STABLE);
 
-	/* XXX probably need to do some theme thing here to highlight as
-	 * selected */
-	list->selected = w;
+	if (list->selected.highlight)
+		ewl_widget_destroy(list->selected.highlight);
+
+	list->selected.widget = w;
+
+	if (w)
+	{
+		Ewl_Widget *f;
+		int width, height;
+
+		f = ewl_floater_new();
+		ewl_widget_internal_set(f, TRUE);
+		ewl_widget_appearance_set(f, "highlight");
+		ewl_floater_follow_set(EWL_FLOATER(f), w);
+		ewl_object_current_size_get(EWL_OBJECT(w), &width, &height);
+		ewl_object_size_request(EWL_OBJECT(f), width, height);
+
+		ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
+					ewl_list_cb_highlight_configure, f);
+		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
+					ewl_list_cb_highlighted_destroy, f);
+		ewl_callback_prepend(f, EWL_CALLBACK_DESTROY,
+					ewl_list_cb_highlight_destroy, w);
+		ewl_container_child_append(EWL_CONTAINER(list), f);
+		ewl_widget_show(f);
+
+		list->selected.highlight = f;
+	}
+
 
 	ewl_callback_call(EWL_WIDGET(list), EWL_CALLBACK_VALUE_CHANGED);
 
@@ -230,7 +263,7 @@ ewl_list_selected_widget_get(Ewl_List *list)
 	DCHECK_PARAM_PTR_RET("list", list, NULL);
 	DCHECK_TYPE_RET("list", list, EWL_LIST_TYPE, NULL);
 
-	DRETURN_PTR(list->selected, DLEVEL_STABLE);
+	DRETURN_PTR(list->selected.widget, DLEVEL_STABLE);
 }
 
 /**
@@ -272,10 +305,11 @@ ewl_list_selected_index_get(Ewl_List *list)
 	DCHECK_PARAM_PTR_RET("list", list, -1);
 	DCHECK_TYPE_RET("list", list, EWL_LIST_TYPE, -1);
 
-	if (!list->selected)
+	if (!list->selected.widget)
 		DRETURN_INT(-1, DLEVEL_STABLE);
 
-	idx = ewl_container_child_index_get(EWL_CONTAINER(list), list->selected);
+	idx = ewl_container_child_index_get(EWL_CONTAINER(list),
+						list->selected.widget);
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
 }
@@ -340,6 +374,10 @@ ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	/* the highlight floaters are internal */
+	if (ewl_widget_internal_is(w))
+		DRETURN(DLEVEL_STABLE);
+
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, 
 				ewl_list_cb_item_clicked, c);
 
@@ -366,7 +404,7 @@ ewl_list_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	list = EWL_LIST(c);
-	if (list->selected == w)
+	if (list->selected.widget == w)
 		ewl_list_selected_widget_set(list, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -391,7 +429,7 @@ ewl_list_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	list = EWL_LIST(c);
-	if (list->selected == w)
+	if (list->selected.widget == w)
 		ewl_list_selected_widget_set(list, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -418,6 +456,62 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	list = data;
 	ewl_list_selected_widget_set(list, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_list_cb_highlight_configure(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Object *f;
+	int width, height;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("data", data, EWL_FLOATER_TYPE);
+
+	f = data;
+	ewl_object_current_size_get(EWL_OBJECT(w), &width, &height);
+	ewl_object_size_request(f, width, height);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_list_cb_highlighted_destroy(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Widget *f;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("data", data, EWL_FLOATER_TYPE);
+
+	f = data;
+	ewl_widget_destroy(f);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_list_cb_highlight_destroy(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Widget *o;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_FLOATER_TYPE);
+	DCHECK_TYPE("data", data, EWL_WIDGET_TYPE);
+
+	o = data;
+	ewl_callback_del(o, EWL_CALLBACK_CONFIGURE,
+				ewl_list_cb_highlight_configure);
+	ewl_callback_del(o, EWL_CALLBACK_DESTROY,
+				ewl_list_cb_highlighted_destroy);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
