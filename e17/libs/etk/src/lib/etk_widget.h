@@ -3,7 +3,6 @@
 #define _ETK_WIDGET_H_
 
 #include <Evas.h>
-#include <stdarg.h>
 #include "etk_object.h"
 #include "etk_types.h"
 
@@ -18,6 +17,19 @@
 #define ETK_WIDGET(obj)       (ETK_OBJECT_CAST((obj), ETK_WIDGET_TYPE, Etk_Widget))
 /** @brief Check if the object is an Etk_Widget */
 #define ETK_IS_WIDGET(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_WIDGET_TYPE))
+
+/**
+ * @brief The code corresponding to the error that occurs during the last call of
+ * etk_widget_swallow_widget() or etk_widget_swallow_object()
+ */
+typedef enum Etk_Widget_Swallow_Error
+{
+   ETK_SWALLOW_ERROR_NONE,                  /**< The object has been succesfully swallowed */
+   ETK_SWALLOW_ERROR_INCOMPATIBLE_PARENT,   /**< The parent of the widget to swallow was not the swallower widget */
+   ETK_SWALLOW_ERROR_NOT_REALIZED,          /**< The swallower widget was not realized */
+   ETK_SWALLOW_ERROR_NO_PART,               /**< The part where to swallow the object has not been found
+                                             * in the theme object of the swallower widget */
+} Etk_Widget_Swallow_Error;
 
 /**
  * @struct Etk_Event_Mouse_In_out
@@ -235,14 +247,14 @@ void etk_widget_leave(Etk_Widget *widget);
 void etk_widget_focus(Etk_Widget *widget);
 void etk_widget_unfocus(Etk_Widget *widget);
 
-Etk_Bool etk_widget_swallow_widget(Etk_Widget *swallowing_widget, const char *part, Etk_Widget *widget_to_swallow);
-void etk_widget_unswallow_widget(Etk_Widget *swallowing_widget, Etk_Widget *widget);
-Etk_Bool etk_widget_is_swallowing_widget(Etk_Widget *widget, Etk_Widget *swallowed_widget);
+Etk_Bool etk_widget_swallow_widget(Etk_Widget *swallower, const char *part, Etk_Widget *to_swallow);
+void etk_widget_unswallow_widget(Etk_Widget *swallower, Etk_Widget *swallowed);
+Etk_Bool etk_widget_is_swallowing_widget(Etk_Widget *swallower, Etk_Widget *swallowed);
 Etk_Bool etk_widget_is_swallowed(Etk_Widget *widget);
-
-Etk_Bool etk_widget_theme_object_swallow(Etk_Widget *swallowing_widget, const char *part, Evas_Object *object);
-void etk_widget_theme_object_unswallow(Etk_Widget *swallowing_widget, Evas_Object *object);
-Etk_Bool etk_widget_is_swallowing_object(Etk_Widget *widget, Evas_Object *object);
+Etk_Bool etk_widget_swallow_object(Etk_Widget *swallower, const char *part, Evas_Object *object);
+void etk_widget_unswallow_object(Etk_Widget *swallower, Evas_Object *object);
+Etk_Bool etk_widget_is_swallowing_object(Etk_Widget *swallower, Evas_Object *object);
+Etk_Widget_Swallow_Error etk_widget_swallow_error_get();
 
 void etk_widget_theme_object_min_size_calc(Etk_Widget *widget, int *w, int *h);
 void etk_widget_theme_object_signal_emit(Etk_Widget *widget, const char *signal_name);

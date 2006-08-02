@@ -25,7 +25,6 @@ static Evas_List *_etk_bin_children_get(Etk_Container *container);
 static void _etk_bin_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_bin_realize_cb(Etk_Object *object, void *data);
-static void _etk_bin_child_realize_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -82,9 +81,11 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
 
    if (child)
    {
-      etk_signal_connect("realize", ETK_OBJECT(child), ETK_CALLBACK(_etk_bin_child_realize_cb), bin);
       etk_widget_parent_set(child, ETK_WIDGET(bin));
       bin->child = child;
+      
+      /* TODO; warnings? */
+      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
       
       etk_object_notify(ETK_OBJECT(bin), "child");
       etk_signal_emit_by_name("child_added", ETK_OBJECT(bin), NULL, child);
@@ -210,8 +211,6 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
       return;
 
    etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
-   etk_signal_disconnect("realize", ETK_OBJECT(bin->child), ETK_CALLBACK(_etk_bin_child_realize_cb));
-   
    bin->child = NULL;
    
    etk_object_notify(ETK_OBJECT(bin), "child");
@@ -247,21 +246,8 @@ static void _etk_bin_realize_cb(Etk_Object *object, void *data)
 
    if (!(bin = ETK_BIN(object)) || !bin->child)
       return;
-
-   if (ETK_WIDGET(bin)->realized && bin->child->realized)
-      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
-}
-
-/* Called when the child of the bin is realized */
-static void _etk_bin_child_realize_cb(Etk_Object *object, void *data)
-{
-   Etk_Bin *bin;
-
-   if (!(bin = ETK_BIN(data)) || !bin->child || ETK_OBJECT(bin->child) != object)
-      return;
-
-   if (ETK_WIDGET(bin)->realized && bin->child->realized)
-      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
+   /* TODO; warnings? */
+   etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
 }
 
 /** @} */

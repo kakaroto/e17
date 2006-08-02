@@ -252,7 +252,7 @@ static void _etk_entry_realize_cb(Etk_Object *object, void *data)
       entry->text = NULL;
    }
    evas_object_show(entry->editable_object);
-   etk_widget_theme_object_swallow(entry_widget, "text_area", entry->editable_object);
+   etk_widget_swallow_object(entry_widget, "text_area", entry->editable_object);
 }
 
 /* Called when the entry is unrealized */

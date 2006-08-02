@@ -481,7 +481,6 @@ static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geom
  **************************/
 
 /* Called when the colorpicker is realized */
-/* TODO: FIXME: swallow bug: need to call etk_widget_member_object_add() */
 static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker *cp;
@@ -493,8 +492,7 @@ static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data)
    
    /* Square picker objects */
    cp->sp_object = _etk_colorpicker_picker_object_add(evas, cp, _etk_colorpicker_sp_move_resize);
-   etk_widget_member_object_add(cp->picker_widget, cp->sp_object);
-   etk_widget_theme_object_swallow(cp->picker_widget, "square_picker", cp->sp_object);
+   etk_widget_swallow_object(cp->picker_widget, "square_picker", cp->sp_object);
    picker_sd = evas_object_smart_data_get(cp->sp_object);
    
    cp->sp_image = evas_object_image_add(evas);
@@ -518,8 +516,7 @@ static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data)
    
    /* Vertical picker objects */
    cp->vp_object = _etk_colorpicker_picker_object_add(evas, cp, _etk_colorpicker_vp_move_resize);
-   etk_widget_member_object_add(cp->picker_widget, cp->vp_object);
-   etk_widget_theme_object_swallow(cp->picker_widget, "vertical_picker", cp->vp_object);
+   etk_widget_swallow_object(cp->picker_widget, "vertical_picker", cp->vp_object);
    picker_sd = evas_object_smart_data_get(cp->vp_object);
    
    cp->vp_image = evas_object_image_add(evas);
@@ -564,7 +561,6 @@ static void _etk_colorpicker_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when a slider of the colorpicker is realized */
-/* TODO: FIXME: swallow bug: need to call etk_widget_member_object_add() */
 static void _etk_colorpicker_slider_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *slider;
@@ -585,8 +581,7 @@ static void _etk_colorpicker_slider_realize_cb(Etk_Object *object, void *data)
          evas_object_show(cp->sliders_image[i]);
          evas_object_event_callback_add(cp->sliders_image[i], EVAS_CALLBACK_RESIZE,
             _etk_colorpicker_slider_image_resize_cb, NULL);
-         etk_widget_member_object_add(slider, cp->sliders_image[i]);
-         etk_widget_theme_object_swallow(slider, "slider_image", cp->sliders_image[i]);
+         etk_widget_swallow_object(slider, "slider_image", cp->sliders_image[i]);
          
          _etk_colorpicker_update(cp, ETK_FALSE, ETK_FALSE, ETK_FALSE, ETK_FALSE);
          return;
@@ -613,7 +608,6 @@ static void _etk_colorpicker_slider_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the current color widget of the colorpicker is realized */
-/* TODO: FIXME: swallow bug: need to call etk_widget_member_object_add() */
 static void _etk_colorpicker_current_color_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker *cp;
@@ -623,8 +617,7 @@ static void _etk_colorpicker_current_color_realize_cb(Etk_Object *object, void *
       return;
    
    cp->current_color_rect = evas_object_rectangle_add(evas);
-   etk_widget_member_object_add(cp->current_color_widget, cp->current_color_rect);
-   etk_widget_theme_object_swallow(cp->current_color_widget, "preview_rect", cp->current_color_rect);
+   etk_widget_swallow_object(cp->current_color_widget, "preview_rect", cp->current_color_rect);
    evas_object_show(cp->current_color_rect);
    
    evas_object_color_set(cp->current_color_rect, cp->current_color.r,

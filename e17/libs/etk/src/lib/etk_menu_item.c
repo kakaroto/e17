@@ -50,8 +50,7 @@ static void _etk_menu_item_check_property_get(Etk_Object *object, int property_i
 static void _etk_menu_item_radio_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_menu_item_radio_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_menu_item_realize_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_left_widget_realize_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_check_left_widget_realize_cb(Etk_Object *object, void *data);
+static void _etk_menu_item_check_box_realize_cb(Etk_Object *object, void *data);
 static void _etk_menu_item_check_activated_cb(Etk_Object *object, void *data);
 static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item);
 static void _etk_menu_item_deselected_handler(Etk_Menu_Item *menu_item);
@@ -372,21 +371,21 @@ void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image)
    
    if (menu_item->left_widget)
    {
-      etk_widget_parent_set(ETK_WIDGET(menu_item->left_widget), NULL);
+      etk_widget_parent_set(menu_item->left_widget, NULL);
       menu_item->left_widget = NULL;
    }
    
    if ((image_widget = ETK_WIDGET(image)))
    {
-      if (image_widget->parent && ETK_IS_CONTAINER(image_widget->parent))
-         etk_container_remove(ETK_CONTAINER(image_widget->parent), image_widget);
+      /* TODO: DO WE NEED THAT?? */
+      /*if (image_widget->parent && ETK_IS_CONTAINER(image_widget->parent))
+         etk_container_remove(ETK_CONTAINER(image_widget->parent), image_widget);*/
 
-      /* TODO: improve swallow */
       menu_item->left_widget = image_widget;
-      etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget), ETK_CALLBACK(_etk_menu_item_left_widget_realize_cb), menu_item);
       etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));
       etk_widget_pass_mouse_events_set(menu_item->left_widget, ETK_TRUE);
       
+      etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", image_widget);
       etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "left_widget_show");
    }
    else
@@ -651,14 +650,16 @@ static void _etk_menu_item_check_constructor(Etk_Menu_Item_Check *check_item)
    menu_item->left_widget = etk_widget_new(ETK_WIDGET_TYPE,
       "theme_group", ETK_IS_MENU_ITEM_RADIO(check_item) ? "radiobox" : "checkbox",
       "pass_mouse_events", ETK_TRUE, "visible", ETK_TRUE, NULL);
-   /* TODO: improve swallow */
-   etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget),
-      ETK_CALLBACK(_etk_menu_item_left_widget_realize_cb), menu_item);
-   etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget),
-      ETK_CALLBACK(_etk_menu_item_check_left_widget_realize_cb), menu_item);
    etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));
+   etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", menu_item->left_widget);
    
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_check_activated_cb), menu_item);
+   etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "left_widget_show");
+   etk_widget_theme_object_signal_emit(menu_item->left_widget, check_item->active ? "check" : "uncheck");
+   
+   etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget),
+      ETK_CALLBACK(_etk_menu_item_check_box_realize_cb), menu_item);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+      ETK_CALLBACK(_etk_menu_item_check_activated_cb), menu_item);
 }
 
 /* Menu_Item_Radio: Initializes the radio menu item */
@@ -844,24 +845,12 @@ static void _etk_menu_item_realize_cb(Etk_Object *object, void *data)
       return;
    
    etk_widget_theme_object_part_text_set(ETK_WIDGET(menu_item), "label", menu_item->label ? menu_item->label : "");
-   if (menu_item->left_widget && menu_item->left_widget->realized)
+   if (menu_item->left_widget)
       etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", menu_item->left_widget);
 }
 
-/* Called when the left widget of the menu item is realized */
-static void _etk_menu_item_left_widget_realize_cb(Etk_Object *object, void *data)
-{
-   Etk_Menu_Item *menu_item;
-
-   if (!(menu_item = ETK_MENU_ITEM(data)) || !menu_item->left_widget)
-      return;
-
-   if (ETK_WIDGET(menu_item)->realized)
-      etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", menu_item->left_widget);
-}
-
-/* Called when the left widget of the check item is realized */
-static void _etk_menu_item_check_left_widget_realize_cb(Etk_Object *object, void *data)
+/* Called when the checkbox of the check item is realized */
+static void _etk_menu_item_check_box_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *menu_item;
 

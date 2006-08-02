@@ -7,7 +7,7 @@
 #include "etk_stock.h"
 
 /* TODO/FIXME list:
- * - Simplify the "swallow" code
+ * - Fix the calc of width of the item!
  */
  
 /**
