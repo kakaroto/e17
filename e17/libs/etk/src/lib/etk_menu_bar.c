@@ -241,7 +241,7 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
    
    if (!_etk_menu_bar_mouse_move_handler)
    {
-#if 0
+#if BUILD_ENGINE_EE_S_X11
       _etk_menu_bar_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
          _etk_menu_bar_mouse_move_cb, menu_bar);
 #endif

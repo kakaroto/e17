@@ -156,7 +156,7 @@ static void _etk_widget_dnd_drag_end_cb(Etk_Object *object, void *data);
 static Etk_Signal *_etk_widget_signals[ETK_WIDGET_NUM_SIGNALS];
 static Etk_Bool _etk_widget_intercept_show_hide = ETK_TRUE;
 static Evas_Smart *_etk_widget_smart_object_smart = NULL;
-static Etk_Widget_Swallow_Error _etk_widget_swallow_error = ETK_SWALLOW_ERROR_NODE;
+static Etk_Widget_Swallow_Error _etk_widget_swallow_error = ETK_SWALLOW_ERROR_NONE;
 static Evas_List *_etk_widget_dnd_dest_widgets = NULL;
 static Evas_List *_etk_widget_dnd_source_widgets = NULL;
 static Etk_Bool _etk_dnd_drag_start = ETK_TRUE;
