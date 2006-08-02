@@ -37,9 +37,9 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
    if(evas_key_modifier_is_set(evas_key_modifier_get(evas), "Control"))
      {
 	if (ev->z > 0)
-	  _ex_main_button_zoom_in_cb(NULL, data);
+	  _ex_tab_current_zoom_in(data);
 	else
-	  _ex_main_button_zoom_out_cb(NULL, data);
+	  _ex_tab_current_zoom_out(data);
      }
    else
      {	
@@ -1073,7 +1073,7 @@ _ex_image_is_favorite(Exhibit *e)
    if(!r) return ETK_FALSE;
    
    etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
-   snprintf(path, sizeof(path), "%s/%s", e->fav_path, icol_string);
+   snprintf(path, sizeof(path), "%s/%s", e->options->fav_path, icol_string);
    if(ecore_file_exists(path))     
      return ETK_TRUE;
    return ETK_FALSE;

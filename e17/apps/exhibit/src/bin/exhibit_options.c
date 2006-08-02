@@ -84,7 +84,9 @@ _ex_options_init()
    CFG_OPTIONS_NEWI("lt", slide_interval, EET_T_DOUBLE);
    CFG_OPTIONS_NEWI("cv", comments_visible, EET_T_INT);
    CFG_OPTIONS_NEWI("dv", default_view, EET_T_INT);
-
+   CFG_OPTIONS_NEWI("lw", last_w, EET_T_INT);
+   CFG_OPTIONS_NEWI("lh", last_h, EET_T_INT);
+   
    _ex_config_version_edd = NEWD("Ex_Config_Version", Ex_Config_Version);
    VER_NEWI("mj", major, EET_T_INT);
    VER_NEWI("mn", minor, EET_T_INT);
@@ -157,6 +159,8 @@ _ex_options_default(Exhibit *e)
    if(!e->options)
      e->options = _ex_options_new();
 
+   D(("Config: using default options!\n"));
+   
    /* TODO: free values before allocating if e->options != NULL */
    
    e->options->app1 =     NULL;
@@ -171,7 +175,8 @@ _ex_options_default(Exhibit *e)
    e->options->comments_visible = EX_DEFAULT_COMMENTS_VISIBLE;
    e->options->default_view     = EX_IMAGE_ONE_TO_ONE;
    e->options->default_sort     = 0; /* TODO: enumerate sort types */
-   
+   e->options->last_w           = EX_DEFAULT_WINDOW_WIDTH;
+   e->options->last_h           = EX_DEFAULT_WINDOW_HEIGHT;   
    e->version = _ex_options_version_parse(VERSION);        
 }
 
@@ -211,6 +216,8 @@ _ex_options_save(Exhibit *e)
    ret = eet_data_write(ef, _ex_config_options_edd, "config/options", e->options, 1);
    if(!ret)
      fprintf(stderr, "Problem saving config/options!");
+
+   D(("Saving configuation (%s)\n", e->options->fav_path));
    
    eet_close(ef);
    return ret;   
@@ -269,6 +276,9 @@ _ex_options_load(Exhibit *e)
      }
    
    e->options = eet_data_read(ef, _ex_config_options_edd, "config/options");
+   
+   D(("Config: Loaded saved options (%s)\n", e->options->fav_path));
+   
    
    eet_close(ef);
    return 1;

@@ -304,25 +304,25 @@ _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_zoom_in_cb(Etk_Object *obj, void *data)
 {
-   _ex_main_button_zoom_in_cb(NULL, data);  
+   _ex_tab_current_zoom_in(data);  
 }
 
 void
 _ex_menu_zoom_out_cb(Etk_Object *obj, void *data)
 {
-   _ex_main_button_zoom_out_cb(NULL, data);
+   _ex_tab_current_zoom_out(data);
 }
 
 void
 _ex_menu_zoom_one_to_one_cb(Etk_Object *obj, void *data)
 {
-   _ex_main_button_zoom_one_to_one_cb(NULL, data);    
+   _ex_tab_current_zoom_one_to_one(data);    
 }
 
 void
 _ex_menu_fit_to_window_cb(Etk_Object *obj, void *data)
 {
-   _ex_main_button_fit_to_window_cb(NULL, data);
+   _ex_tab_current_fit_to_window(data);
 }
 
 void
@@ -409,7 +409,7 @@ _ex_menu_go_to_fav_cb(Etk_Object *obj, void *data)
    
    _ex_slideshow_stop(e);
    E_FREE(e->cur_tab->dir);
-   e->cur_tab->dir = strdup(e->fav_path);
+   e->cur_tab->dir = strdup(e->options->fav_path);
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    _ex_main_populate_files(e, NULL);   

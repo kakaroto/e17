@@ -5,11 +5,12 @@
 #define _EX_H
 
 #include <Eet.h>
-#include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
 #include <Ecore_File.h>
 #include <Ecore_X_Cursor.h>
+#include <Evas.h>
+#include <Ecore_Evas.h>
 #include <Epsilon.h>
 #include <etk/Etk.h>
 #include <stdio.h>
@@ -35,7 +36,9 @@
 #define EX_DEFAULT_BRIGHTEN_THRESH 100
 #define EX_DEFAULT_SLIDE_INTERVAL 5.0
 #define EX_DEFAULT_COMMENTS_VISIBLE 0
-	    
+#define EX_DEFAULT_WINDOW_WIDTH 700
+#define EX_DEFAULT_WINDOW_HEIGHT 500
+
 #ifdef EX_DEBUG
 # define D(x)  do {printf(__FILE__ ":%d:  ", __LINE__); printf x; fflush(stdout);} while (0)
 #else
@@ -73,7 +76,10 @@ struct _Ex_Options
    double slide_interval;   
    int comments_visible;
    int default_view;   
-   int default_sort;   
+   int default_sort;
+   
+   int last_w;
+   int last_h;
 };
 
 struct _Ex_Tab
@@ -141,9 +147,7 @@ struct _Exhibit
    Etk_Widget    *resbar;
    Etk_Widget    *zoombar;
    Etk_Widget    *menu;
-   Etk_Widget    *win;
-   
-   char           fav_path[PATH_MAX];
+   Etk_Widget    *win;   
 
    int            zoom;
    int            brightness;
@@ -194,8 +198,6 @@ struct _Ex_Config_Version
 };
 
 #define WINDOW_TITLE "Exhibit"
-#define WINDOW_WIDTH 700
-#define WINDOW_HEIGHT 500
 #define ZOOM_MAX 16
 #define ZOOM_MIN -16
 

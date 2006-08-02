@@ -7,6 +7,9 @@
 #define EX_DND_COL_NUM 5
 
 static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data);
+static void _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event, void *data);
+static void _ex_tab_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _ex_tab_itree_key_down_cb(Etk_Object *object, void *event, void *data);
 
 Ex_Tab *
 _ex_tab_new(Exhibit *e, char *dir)
@@ -27,7 +30,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    
    tab->dtree = etk_tree_new();
    etk_widget_size_request_set(tab->dtree, 180, 120);
-   etk_signal_connect("row_clicked", ETK_OBJECT(tab->dtree), ETK_CALLBACK(_ex_main_dtree_item_clicked_cb), e);
+   etk_signal_connect("row_clicked", ETK_OBJECT(tab->dtree), ETK_CALLBACK(_ex_tab_dtree_item_clicked_cb), e);
    tab->dcol = etk_tree_col_new(ETK_TREE(tab->dtree), "Directories", etk_tree_model_icon_text_new(ETK_TREE(tab->dtree), ETK_TREE_FROM_EDJE), 10);
    etk_tree_headers_visible_set(ETK_TREE(tab->dtree), 0);
    etk_scrolled_view_policy_set(etk_tree_scrolled_view_get(ETK_TREE(tab->dtree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
@@ -38,8 +41,8 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_signal_connect("drag_begin", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_tree_drag_begin_cb), tab);
    etk_widget_size_request_set(tab->itree, 180, 220);
    etk_tree_multiple_select_set(ETK_TREE(tab->itree), ETK_TRUE);
-   etk_signal_connect("row_selected", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_main_itree_item_clicked_cb), e);
-   etk_signal_connect("key_down", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_main_itree_key_down_cb), e);
+   etk_signal_connect("row_selected", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_item_clicked_cb), e);
+   etk_signal_connect("key_down", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_key_down_cb), e);
    imodel = etk_tree_model_icon_text_new(ETK_TREE(tab->itree), ETK_TREE_FROM_FILE);
    etk_tree_model_icon_text_icon_width_set(imodel, 80);
    tab->icol = etk_tree_col_new(ETK_TREE(tab->itree), "Files", imodel, 10);
@@ -113,6 +116,183 @@ _ex_tab_select(Ex_Tab *tab)
    etk_widget_show(tab->scrolled_view);
       
    etk_widget_show_all(tab->e->win);
+}
+
+void
+_ex_tab_current_zoom_in(Exhibit *e)
+{
+   if (e->cur_tab->fit_window)
+     {
+	if(evas_list_count(e->tabs) == 1)
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else
+	       etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  }
+	else
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else
+	       etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  }
+	  
+        etk_widget_size_request_set(e->cur_tab->alignment, -1, -1);
+        etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view), e->cur_tab->alignment);
+        e->cur_tab->fit_window = ETK_FALSE;
+     }
+   
+   if(e->zoom == ZOOM_MAX)
+     e->zoom = ZOOM_MAX;
+   else
+     e->zoom += 2;
+   
+   _ex_image_zoom(ETK_IMAGE(e->cur_tab->image), e->zoom);
+   _ex_main_statusbar_zoom_update(e);     
+}
+
+void
+_ex_tab_current_zoom_out(Exhibit *e)
+{
+   if (e->cur_tab->fit_window)
+     {
+	if(evas_list_count(e->tabs) == 1)
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else
+	       etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  }
+	else
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else	     
+	       etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  }
+	
+        etk_widget_size_request_set(e->cur_tab->alignment, -1, -1);
+        etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view), e->cur_tab->alignment);
+        e->cur_tab->fit_window = ETK_FALSE;
+     }
+   
+   if(e->zoom <= ZOOM_MIN)
+     e->zoom = ZOOM_MIN;
+   else
+     e->zoom -= 2;
+   
+   _ex_image_zoom(ETK_IMAGE(e->cur_tab->image), e->zoom);
+   _ex_main_statusbar_zoom_update(e);   
+}
+
+void
+_ex_tab_current_zoom_one_to_one(Exhibit *e)
+{
+   if (e->cur_tab->fit_window)
+     {
+	if(evas_list_count(e->tabs) == 1)
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);	     
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else	     	     
+	       etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
+	  }
+	else
+	  {
+	     if(e->cur_tab->comment.visible)
+	       {
+		  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
+		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	       }
+	     else	     
+	       etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
+	  }
+	
+        etk_widget_size_request_set(e->cur_tab->alignment, -1, -1);
+        etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view), e->cur_tab->alignment);
+        e->cur_tab->fit_window = ETK_FALSE;
+     }
+   
+   e->zoom = 0;
+   e->brightness = 128;
+   e->contrast = 0;
+   
+   _ex_image_zoom(ETK_IMAGE(e->cur_tab->image), e->zoom);
+   _ex_main_statusbar_zoom_update(e);   
+}
+
+void
+_ex_tab_current_fit_to_window(Exhibit *e)
+{
+   if (e->cur_tab->fit_window)
+      return;
+   
+   etk_widget_size_request_set(e->cur_tab->alignment, 10, 10);
+   if(evas_list_count(e->tabs) == 1)
+     {
+	if(e->cur_tab->comment.visible)
+	  {
+	     etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
+	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view);
+	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);	     
+	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_TRUE, ETK_TRUE, 0);	     
+	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	  }
+	else
+	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->alignment, ETK_TRUE);
+     }
+   else
+     {
+	if(e->cur_tab->comment.visible)
+	  {
+	     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view);
+	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_TRUE, ETK_TRUE, 0);
+	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	  }
+	else	
+	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->alignment);
+     }
+     
+   etk_widget_size_request_set(e->cur_tab->image, -1, -1);
+   
+   e->cur_tab->fit_window = ETK_TRUE;
+   _ex_main_statusbar_zoom_update(e);
 }
 
 static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
@@ -195,4 +375,62 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
    
    etk_drag_types_set(ETK_DRAG(drag), types, num_types);
    etk_drag_data_set(ETK_DRAG(drag), drag_data, strlen(drag_data) + 1);
+}
+
+static void
+_ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event, void *data)
+{
+   Etk_Tree *tree;
+   char *dcol_string;
+   Exhibit *e;
+
+   e = data;
+   _ex_slideshow_stop(e);
+   
+   tree = ETK_TREE(object);
+   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, NULL, &dcol_string, NULL);
+
+   E_FREE(e->cur_tab->dir);
+   e->cur_tab->dir = strdup(dcol_string);
+   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   _ex_main_populate_files(e, NULL);
+   etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, _ex_file_get(e->cur_tab->cur_path));
+}
+
+static void
+_ex_tab_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   Exhibit *e;   
+   Etk_Tree *tree;
+   char *icol_string;
+
+   e = data;
+   e->zoom = 0;
+   _ex_main_statusbar_zoom_update(e);
+   
+   tree = ETK_TREE(object);
+
+   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, 
+	 &icol_string, etk_tree_nth_col_get(tree, 1),NULL);
+
+   _ex_main_image_set(e, icol_string);
+}
+
+static void
+_ex_tab_itree_key_down_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Key_Up_Down *ev;
+   Exhibit *e;
+
+   e = data;
+   ev = event;
+
+   if(!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
+     {
+        e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
+        etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+        etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+        _ex_main_populate_files(e, NULL);
+     }
 }
