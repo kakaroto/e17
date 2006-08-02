@@ -11,7 +11,8 @@
  * @{
  */
 
-Etk_Bool etk_init(const char *engine_name);
+Etk_Bool etk_init(int *argc, char ***argv);
+Etk_Bool etk_init_with_options(int *argc, char ***argv, const char *extra_options);
 void etk_shutdown();
 
 void etk_main();

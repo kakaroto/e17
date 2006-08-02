@@ -6,7 +6,7 @@ main(int argc, char **argv)
   Emphasis_Gui *gui;
  
   /* void */ enhance_init();
-  if (!etk_init("ecore_evas_software_x11"))
+  if (!etk_init(&argc, &argv))
     {
       fprintf(stderr, "Unable to init etk\n");
       return 1;

@@ -2,12 +2,14 @@
 #include "etk_main.h"
 #include <locale.h>
 #include <limits.h>
+#include <string.h>
 
 #include <Ecore.h>
 #include <Ecore_Job.h>
 #include <Ecore_Evas.h>
 #include <Evas.h>
 #include <Edje.h>
+#include "etk_argument.h"
 #include "etk_engine.h"
 #include "etk_type.h"
 #include "etk_signal.h"
@@ -34,6 +36,16 @@ static Etk_Bool _etk_main_running = ETK_FALSE;
 static Etk_Bool _etk_main_initialized = ETK_FALSE;
 static Ecore_Job *_etk_main_iterate_job = NULL;
 
+/* configuration. FIXME should be on other subsystem? */
+static void _etk_main_options_setup(Etk_Argument *args, int index);
+
+Etk_Argument args[] = {
+   { "etk-engine", 0, NULL, _etk_main_options_setup, NULL, ETK_ARGUMENT_FLAG_OPTIONAL | ETK_ARGUMENT_FLAG_VALUE_REQUIRED, " " },
+   { NULL,   -1,  NULL, NULL,      NULL, ETK_ARGUMENT_FLAG_NONE,     " " }
+};
+char *_etk_engine_name = NULL;
+
+
 /**************************
  *
  * Implementation
@@ -47,10 +59,22 @@ static Ecore_Job *_etk_main_iterate_job = NULL;
  * @return Returns ETK_TRUE on success, ETK_FALSE on failure
  * @see etk_shutdown()
  */
-Etk_Bool etk_init(const char *engine_name)
+Etk_Bool etk_init(int *argc, char ***argv)
 {
+   int ret;
+
    if (_etk_main_initialized)
       return ETK_TRUE;
+    
+   ret = etk_arguments_parse(args, argc, argv);
+   if((ret != ETK_ARGUMENT_RETURN_OK_NONE_PARSED) && (ret != ETK_ARGUMENT_RETURN_OK))
+   {
+      ETK_WARNING("Arguments parsing failed!");
+      return ETK_FALSE;
+   }
+   /* TODO after the parsing, setup defaults if they arent set */
+   if(!_etk_engine_name)
+      _etk_engine_name = strdup("ecore_evas_software_x11");
    
    if (!evas_init())
    {
@@ -74,7 +98,7 @@ Etk_Bool etk_init(const char *engine_name)
       ETK_WARNING("Etk_Engine initialization failed!");
       return ETK_FALSE;
    }
-   if (!etk_engine_load(engine_name))
+   if (!etk_engine_load(_etk_engine_name))
    {
       ETK_WARNING("Etk can not load the requested engine!");
       return ETK_FALSE;
@@ -92,6 +116,18 @@ Etk_Bool etk_init(const char *engine_name)
    textdomain(PACKAGE);
    
    _etk_main_initialized = ETK_TRUE;
+   return ETK_TRUE;
+}
+/**
+ * @brief Initializes Etk. This function needs to be called before any other call to an etk_* function. @n
+ * It initializes Evas, Ecore, Ecore_Evas, Ecore_X and Edje so you do not need to initialize them manually
+ * if you call etk_init().
+ * @return Returns ETK_TRUE on success, ETK_FALSE on failure
+ * @see etk_shutdown()
+ */
+Etk_Bool etk_init_with_options(int *argc, char ***argv, const char *extra_options)
+{
+   /* TODO: this is just a stub */
    return ETK_TRUE;
 }
 
@@ -263,4 +299,15 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
       _etk_main_size_allocate_recursive(ETK_WIDGET(l->data), ETK_FALSE);
 }
 
+/* Setup parsed values. FIXME this should be on other subsystem (config?) */
+static void _etk_main_options_setup(Etk_Argument *args, int index)
+{
+   Evas_List *l;
+
+   l = args[index].data;
+   if(!strcmp(args[index].long_name, "etk-engine"))
+   {
+	_etk_engine_name = l->data;
+   }
+}
 /** @} */

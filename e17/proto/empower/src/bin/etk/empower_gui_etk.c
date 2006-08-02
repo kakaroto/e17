@@ -6,7 +6,7 @@ void display_window()
    Etk_Widget *button_cancel;
    Etk_Size size;
 
-   etk_init("ecore_evas_software_x11");
+   etk_init(NULL, NULL);
    
    em->dialog = etk_dialog_new();
    em->hbox = etk_hbox_new(ETK_FALSE, 0);

@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 	int attempts = 0;
 	int i;
 	
-	ecore_init();
+	ecore_init(NULL, NULL);
 	ecore_ipc_init();
 
 	if (argc == 1 || strcmp(argv[1], "--enqueue")) {

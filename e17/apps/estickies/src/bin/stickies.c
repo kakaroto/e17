@@ -435,7 +435,7 @@ int main(int argc, char **argv)
    ss->stickies = NULL;   
    
    eet_init();
-   etk_init("ecore_evas_software_x11");
+   etk_init(&argc, &argv);
    //etk_tooltips_enable();
    _e_config_init();
    _e_config_load(ss);

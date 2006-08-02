@@ -840,7 +840,7 @@ etk_fe_init(Extrackt *ex)
    //E_Gui_Etk *gui;
    
    enhance_init();
-   etk_init("ecore_evas_software_x11");
+   etk_init(NULL,NULL);
    /* create main window */
    gui = calloc(1, sizeof(E_Gui_Etk));
    

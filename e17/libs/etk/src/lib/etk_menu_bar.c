@@ -1,8 +1,16 @@
 /** @file etk_menu_bar.c */
+
+/* TODO: 
+ * remove Ecore_X from here 
+ */
 #include "etk_menu_bar.h"
 #include <stdlib.h>
 #include <Ecore.h>
-//#include <Ecore_X.h>
+
+#if BUILD_ENGINE_EE_S_X11
+#include <Ecore_X.h>
+#endif
+
 #include "etk_menu.h"
 #include "etk_menu_item.h"
 #include "etk_toplevel_widget.h"
@@ -168,7 +176,7 @@ static void _etk_menu_bar_item_removed_cb(Etk_Object *object, void *item, void *
  */
 static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event)
 {
-#if 0
+#if BUILD_ENGINE_EE_S_X11
    Etk_Menu_Bar *menu_bar;
    Ecore_X_Event_Mouse_Move *mouse_event;
    Etk_Toplevel_Widget *toplevel;
@@ -197,9 +205,8 @@ static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event)
          break;
       }
    }
-   
+#endif   
    return 1;
-#endif
 }
 
 /* Called when the item is selected */

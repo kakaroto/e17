@@ -57,7 +57,7 @@ main (int argc, char *argv[])
   int           page_count;
   int           i;
 
-  etk_init ();
+  etk_init (NULL,NULL);
 
   if (argc == 1) {
     printf ("Usage: %s pdf_file\n", argv[0]);

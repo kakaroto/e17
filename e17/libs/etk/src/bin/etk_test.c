@@ -127,24 +127,11 @@ static int _etk_test_num_examples = sizeof(_etk_test_examples) / sizeof (_etk_te
 
 int main(int argc, char *argv[])
 {
-   /* TODO
-    * + change etk_init to receive argc and argv
-    * + make a parser for argv
-    */
-   char *engine;
-   if (argc > 1)
-   {
-      if(!strcmp(argv[1], "-fb"))
-         engine = strdup("ecore_fb");
-      else 
-         engine = strdup("ecore_evas_software_x11");
-   }
-   if (!etk_init(engine))
+   if (!etk_init(&argc, &argv))
    {
       fprintf(stderr, "Could not init etk. Exiting...\n");
       return 1;
    };
-
    etk_tooltips_enable();
    _etk_test_main_window();
    etk_main();

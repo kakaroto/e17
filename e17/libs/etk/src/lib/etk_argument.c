@@ -44,19 +44,24 @@ static int _etk_argument_status = 0;
  *
  * int main(int argc, char **argv)
  * {
- *    etk_arguments_parse(args, argc, argv);
+ *    etk_arguments_parse(args, &argc, argv);
  *
  *    return 0;
  * }
  * @endcode
  */
-int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
+int etk_arguments_parse(Etk_Argument *args, int *argc, char ***argv)
 {
    int i;
+   int ret_argc;
+   char **ret_argv;
+   int *delete; /* 1 delete, 0 keep */
    Etk_Argument *arg;
-      
+   
+   if(!args || !argc || !argv)
+      return ETK_ARGUMENT_RETURN_OK_NONE_PARSED;
    /* no arguments */
-   if(argc < 2)
+   if(*argc < 2)
    {
       /* check for required arguments */
       i = 0;
@@ -72,18 +77,22 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
       }
       return ETK_ARGUMENT_RETURN_OK_NONE_PARSED;
    }
-   
-   for(i = 1; i < argc; i++)
+   /* create the array */
+   delete = calloc(*argc, sizeof(int));
+
+   /* arguments */ 
+   for(i = 1; i < *argc; i++)
    {
       char *cur;
       
-      cur = argv[i];
+      cur = (*argv)[i];
       if(!cur) continue;
       
       /* min length is 2, anything less is invalid */
       if(strlen(cur) < 2 && cur[0] == '-')
       {
-	 printf(_("Argument %d '%s' is too short\n"), i, argv[i]);
+	 printf(_("Argument %d '%s' is too short\n"), i, (*argv)[i]);
+	 free(delete);
 	 return ETK_ARGUMENT_RETURN_MALFORMED;
       }
 
@@ -99,14 +108,15 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 	    {
 	       /* check to see if arg needs value */
 	       if((arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED) &&
-		  i + 1 < argc)
+		  i + 1 < *argc)
 	       {
-		  char *val = argv[i + 1];
+		  char *val = (*argv)[i + 1];
 		  
 		  /* if no value is present, report error */
 		  if(val[0] == '-')
 		  {
 		     printf(_("Argument %d '%s' requires a value\n"), i, cur);
+	             free(delete);
 		     return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 		  }
 		  
@@ -114,20 +124,22 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
 		  _etk_argument_status = 1;
 		  ++i;
+		  delete[i] = delete[i+1] = 1;
 	       }
 	       else if (arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED
-			&& i + 1 >= argc)
+			&& i + 1 >= *argc)
 	       {
 		  /* if no value is present, report error */
 		  printf(_("Argument %d '%s' requires a value\n"), i, cur);
+	          free(delete);
 		  return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 	       }
 	       else if(!(arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED))
 	       {
 		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
 		  _etk_argument_status = 1;
+		  delete[i] = 1;
 	       }
-		  
 	    }
 	    ++arg;
 	 }
@@ -161,12 +173,12 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 	    {		       
 	       /* check to see if arg needs value */
 	       if((arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED) &&
-		  ((i + 1 < argc) || (tmp != NULL)))
+		  ((i + 1 < *argc) || (tmp != NULL)))
 	       {
 		  char *val;
 		  
 		  if(!tmp)
-		    val = argv[i + 1];
+		    val = (*argv)[i + 1];
 		  else
 		    val = tmp + 1;			    
 		  
@@ -174,37 +186,45 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		  if(val[0] == '-')
 		  {
 		     printf(_("Argument %d '%s' requires a value\n"), i, cur);
+	             free(delete);
 		     return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 		  }
 		  
 		  arg->data = evas_list_append(arg->data, val);
 		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
-		  _etk_argument_status = 1;		  
+		  _etk_argument_status = 1;  
+		  delete[i] = 1;
 		  
 		  if(!tmp)
+		  {
 		    ++i;
+		    delete[i+1] = 1;
+		  }
+
 	       }
 	       else if (arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED
-			&& i + 1 >= argc)
+			&& i + 1 >= *argc)
 	       {
 		  /* if no value is present, report error */
 		  printf(_("Argument %d '%s' requires a value\n"), i, cur);
+	          free(delete);
 		  return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
 	       }
 	       else if(!(arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED))
 	       {
 		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
 		  _etk_argument_status = 1;
+		  delete[i] = 1;
 	       }		  
 	    }
 	    
 	    if(tmp)
 	    {
 	       free(cur);
-	       cur = argv[i];
+	       cur = (*argv)[i];
 	    }
-	    	    
-	    if(arg->flags & ETK_ARGUMENT_FLAG_MULTIVALUE && i + 1 < argc &&
+	    /* TODO test this on removing args! */	    
+	    if(arg->flags & ETK_ARGUMENT_FLAG_MULTIVALUE && i + 1 < *argc &&
 	       arg->short_name != -1 && arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET)
 	    {
 	       /* if we want multi-argument arguments like:
@@ -213,14 +233,14 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		*/
 	       char *extra;
 	       Evas_List *value = NULL;
-	       int j = 1;
+	       int j = i + 1;
 	       
-	       extra = argv[i + j];
-	       while(i + j < argc)
+	       extra = (*argv)[j];
+	       while(j < *argc)
 	       {
 		  if(extra[0] == '-')
 		  {
-		     j = argc;
+		     j = *argc;
 		     break;
 		  }
 		  
@@ -244,7 +264,7 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 		  }
 		  
 		  ++j;
-		  extra = argv[i + j];
+		  extra = (*argv)[j];
 	       }
 	    }
 	    
@@ -261,12 +281,30 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
       if(!(arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET) &&
 	 arg->flags & ETK_ARGUMENT_FLAG_REQUIRED)
       {
-	 printf(_("Argument %d '-%c | --%s' is required\n"), i, arg->short_name, arg->long_name);
+	 printf(_("Argument %d '-%c | --%s' is required\n"), i, arg->short_name, arg->long_name);         free(delete);
 	 return ETK_ARGUMENT_RETURN_REQUIRED_NOT_FOUND;
       }
       ++i; ++arg;
    }
-   
+   /* copy parameters */
+   ret_argc = 0;
+   ret_argv = malloc(sizeof(char *) * (*argc));
+   for(i = 0; i < *argc; i++)
+   {
+   	if(!delete[i])
+	{
+		ret_argv[ret_argc] = strdup((*argv)[i]);
+		ret_argc++;
+		/* TODO: delete this comments after correct behaviour */
+		//printf("dont delete %s\n", (*argv)[i]);
+	}
+	/*else
+		printf("deleting %s\n", (*argv)[i]);*/
+   }
+   free(delete);
+   *argv = ret_argv;
+   *argc = ret_argc;
+ 
    /* call all the callbacks */
    i = 0;
    arg = args;	     
@@ -276,7 +314,6 @@ int etk_arguments_parse(Etk_Argument *args, int argc, char **argv)
 	arg->func(args, i);
       ++i; ++arg;
    }
-
    if(_etk_argument_status == 0)     
      return ETK_ARGUMENT_RETURN_OK_NONE_PARSED;     
    else
