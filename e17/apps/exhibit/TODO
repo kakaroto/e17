@@ -7,23 +7,23 @@ o TODO:
  ------
 -menus
   * new window
-  * save image as
   * search
   * rename
-  * delete
+  * delete (needs message dialog)
   * open in options based on config values
   * refresh
   * release notes
   * about
   
 - options
+  * dialog
   * slide show speed
   * comments visibile / hidden by default (with remembering last state)
   
 - key shotcuts
   * x - fit / unfit to window
 
-- save window geometry between sessions
+- make slideshow display its status in the statusbar(s)
 
 o DONE:
  ------
@@ -33,6 +33,10 @@ o DONE:
 + dnd
 + fix .spec file
 + make argv work with /path/to/image.png and not only /path/to/dir
++ save window geometry between sessions
++ menus
+  + save image as
+  
 
 =================
 * RELEASSE 0.2.0:
