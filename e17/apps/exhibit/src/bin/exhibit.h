@@ -224,4 +224,6 @@ struct _Ex_Config_Version
 #include "exhibit_options.h"
 #include "exhibit_comment.h"
 
+extern Exhibit *e;
+
 #endif

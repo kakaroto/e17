@@ -70,7 +70,36 @@ void
 _ex_menu_new_window_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
+   
    D(("new window\n"));
+}
+
+void
+_ex_menu_new_tab_cb(Etk_Object *obj, void *data)
+{
+   Ex_Tab *tab;
+
+   EX_MENU_ITEM_GET_RETURN(obj);
+
+   tab = _ex_tab_new(e, e->cur_tab->cur_path);
+   _ex_main_window_tab_append(e, tab);
+   _ex_main_populate_files(e, NULL);
+}
+
+void
+_ex_menu_delete_tab_cb(Etk_Object *obj, void *data)
+{
+   if(evas_list_count(e->tabs) <= 1)
+     {
+	 _ex_main_dialog_show("No tabs open! Create new with Ctrl^t", 
+	       ETK_MESSAGE_DIALOG_INFO);
+	return;
+     }
+     
+   EX_MENU_ITEM_GET_RETURN(obj);
+
+   _ex_main_window_tab_remove(e->cur_tab);
+   _ex_tab_delete(e->cur_tab);
 }
 
 void
@@ -158,14 +187,20 @@ _ex_menu_quit_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_run_in_cb(Etk_Object *obj, void *data)
 {
+   const char *app;
    EX_MENU_ITEM_GET_RETURN(obj);
-   D(("run in\n"));
+
+   if (!e->cur_tab->image_loaded)
+     return;
+
+   app = etk_menu_item_label_get(ETK_MENU_ITEM(obj));
+   _ex_image_run(app);
 }
 
 void
 _ex_menu_undo_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
+   Exhibit *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)

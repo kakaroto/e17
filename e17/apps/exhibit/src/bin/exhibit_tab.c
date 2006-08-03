@@ -88,7 +88,7 @@ _ex_tab_dir_set(Ex_Tab *tab, char *path)
 void
 _ex_tab_delete(Ex_Tab *tab)
 {
-   
+   D (("Delete tab\n"));
 }
 
 void

@@ -83,6 +83,11 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
 	
         etk_toplevel_widget_pointer_push(ETK_TOPLEVEL_WIDGET(e->win), ETK_POINTER_MOVE);
      }
+   else if(ev->button == 2)
+     {
+	/* TODO Make this function configurable in options */
+	_ex_tab_current_fit_to_window(e);
+     }
    else if(ev->button == 3)
      {
 	Etk_Widget *menu_item;
@@ -97,34 +102,35 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
 #endif	
 	e->menu = etk_menu_new();
 	
-	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Undo"), ETK_STOCK_EDIT_UNDO, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_undo_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
+
+	 menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Run in ..."), ETK_STOCK_APPLICATION_X_EXECUTABLE, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
+	 submenu = etk_menu_new();
+	 etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
+	 _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("The Gimp"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
+	 _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("XV"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
+	 _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Xpaint"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
+	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Favorites"), ETK_STOCK_EMBLEM_FAVORITE, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	submenu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Undo"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_undo_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Add to favorites"), ETK_STOCK_EMBLEM_PHOTOS, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_add_to_fav_cb), e);
+	if(_ex_image_is_favorite(e))
+	  _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Remove from favorites"), ETK_STOCK_LIST_REMOVE, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_remove_from_fav_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Date"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_date_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_size_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Name"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_name_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Resolution"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_resol_cb), e);	
-	
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in The Gimp"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in XV"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("in Xpaint"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rotate clockwise"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_rot_clockwise_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rotate counterclockwise"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_rot_counter_clockwise_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rotate clockwise"), ETK_STOCK_GO_NEXT, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_rot_clockwise_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rotate counterclockwise"), ETK_STOCK_GO_PREVIOUS, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_rot_counter_clockwise_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Flip horizontally"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_flip_horizontal_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Flip vertically"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_flip_vertical_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Blur"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_blur_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sharpen"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_sharpen_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Brighten"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_brighten_cb), e);
-	//_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Darken"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_darken_cb), e);
+	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Effects"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
+	submenu = etk_menu_new();
+	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Blur"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_blur_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sharpen"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_sharpen_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Brighten"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_brighten_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Add to favorites"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_add_to_fav_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Toggle Comments"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_comments_cb), e);
-	if(_ex_image_is_favorite(e))
-	  _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Remove from favorites"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_remove_from_fav_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Set as wallpaper"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_set_wallpaper_cb), e);
 	etk_menu_popup(ETK_MENU(e->menu));
      }
@@ -656,11 +662,12 @@ _ex_image_delete_cb(void *data)
    ret = remove(string);
    if (ret == -1) 
      {
-	perror("Error deleting file\n");
+	_ex_main_dialog_show("Error deleting file!", ETK_MESSAGE_DIALOG_ERROR);
+	etk_object_destroy(ETK_OBJECT(tab->dialog));
 	return;
      }
 
-   _ex_main_image_unset(e);
+   _ex_main_image_unset();
 
    /* Refresh the tree as we deleted the file first */
    etk_tree_clear(ETK_TREE(tab->itree));
@@ -694,37 +701,23 @@ _ex_image_delete_dialog_response(Etk_Object *obj, int response_id, void *data)
 void
 _ex_image_delete(Exhibit *e)
 {
-   Etk_Widget *label;
    Ex_Tab *tab = e->cur_tab;
    char string[PATH_MAX];
 
-   sprintf(string, "%s%s", tab->set_img_path, tab->cur_file);
+   sprintf(string, "Are you sure you want to delete this image? <br>%s%s<br> ", tab->set_img_path, tab->cur_file);
 
    D(("Ex_Tab pointer in _ex_image_delete %p\n", e->cur_tab));
 
-   tab->dialog = etk_dialog_new();
-
-   etk_signal_connect("delete_event", ETK_OBJECT(tab->dialog), 
-	 ETK_CALLBACK(etk_object_destroy), tab->dialog);
-
-   label = etk_label_new("Are you sure you want to delete picture?");
-   etk_dialog_pack_in_main_area(ETK_DIALOG(tab->dialog), label, 
-	 ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
-   label = etk_label_new(string);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(tab->dialog), label, 
-	 ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
-
-   etk_dialog_button_add_from_stock(ETK_DIALOG(tab->dialog), 
-	 ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
-   etk_dialog_button_add_from_stock(ETK_DIALOG(tab->dialog), 
-	 ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
+   tab->dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, 
+	 ETK_MESSAGE_DIALOG_OK_CANCEL, 
+	 string);
 
    etk_signal_connect("response", ETK_OBJECT(tab->dialog), 
 	 ETK_CALLBACK(_ex_image_delete_dialog_response), e);
    
    etk_container_border_width_set(ETK_CONTAINER(tab->dialog), 4);
    etk_window_title_set(ETK_WINDOW(tab->dialog), 
-	 _("Exhibit, confirm delete"));
+	 _("Exhibit - Confirm delete"));
 
    etk_widget_show_all(tab->dialog);
 
@@ -734,6 +727,42 @@ _ex_image_delete(Exhibit *e)
    */
 }
 
+void
+_ex_image_run(const char *app)
+{
+   Ecore_Exe *exe = NULL;
+   char *tmp = NULL;
+
+   D(("Application from menu: %s\n", app));
+
+   tmp = malloc(PATH_MAX + 10);
+   memset(tmp, 0, PATH_MAX + 10);
+
+   if (!tmp)
+     return;
+   
+   if (!strcasecmp(app, "The Gimp")) 
+	sprintf(tmp, "gimp %s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
+   else if (!strcasecmp(app, "XV")) 
+	sprintf(tmp, "xv %s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
+   else if (!strcasecmp(app, "Xpaint")) 
+	sprintf(tmp, "xpaint %s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
+
+   if (strlen(tmp) <= 0) 
+     return;
+   
+   exe = ecore_exe_run(tmp, NULL);
+   if (exe) 
+     {
+      D(("ecore_exe_run: %s\n", tmp));
+      return;
+     } 
+   else
+     _ex_main_dialog_show("Error runnng command", ETK_MESSAGE_DIALOG_ERROR);
+
+   E_FREE(tmp);
+   E_FREE(exe);
+}
 
 void
 _ex_image_zoom(Etk_Image *im, int zoom)

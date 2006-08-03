@@ -6,10 +6,8 @@
 o TODO:
  ------
 -menus
-  * new window
   * search
   * rename
-  * delete (needs message dialog)
   * open in options based on config values
   * refresh
   * release notes
@@ -25,6 +23,9 @@ o TODO:
 
 - make slideshow display its status in the statusbar(s)
 
+- image operations:
+  * crop
+
 o DONE:
  ------
 + andy's comments feature
@@ -36,7 +37,8 @@ o DONE:
 + save window geometry between sessions
 + menus
   + save image as
-  
+  + delete (needs message dialog)
+  + new window    
 
 =================
 * RELEASSE 0.2.0:

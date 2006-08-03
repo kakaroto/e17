@@ -9,8 +9,12 @@ void         _ex_main_populate_files(Exhibit *e, const char *selected_file);
 int          _ex_main_window_slideshow_next(void *data);
 void         _ex_main_window_slideshow_toggle(Exhibit *e);    
 void         _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab);
+void         _ex_main_window_tab_remove(Ex_Tab *tab);
+void         _ex_main_dialog_show(char *text, Etk_Message_Dialog_Type type);
 void         _ex_main_window_show(char *dir);
-void         _ex_main_image_unset(Exhibit *e);
+void         _ex_main_image_unset();
+void         _ex_main_image_set(Exhibit *e, char *image);
+   
    
 
 #endif
