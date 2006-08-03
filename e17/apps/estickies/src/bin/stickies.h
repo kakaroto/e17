@@ -104,5 +104,6 @@ void _e_sticky_stick_toggle(E_Sticky *s);
 void _e_sticky_load_from(E_Sticky *s);
 void _e_sticky_theme_apply(E_Sticky *s, char *theme);
 void _e_sticky_theme_apply_all(char *theme);  
-
+void _e_sticky_delete_confirm(E_Sticky *s);
+    
 #endif

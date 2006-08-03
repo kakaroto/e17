@@ -15,6 +15,7 @@ static int _e_sticky_delete_event_cb(Etk_Object *object, void *data);
 static void _e_sticky_focus_in_cb(Etk_Object *object, void *data);
 static void _e_sticky_focus_out_cb(Etk_Object *object, void *data);
 static void _e_sticky_sticky_cb(Etk_Object *object, const char *property_name, void *data);
+static void _e_sticky_delete_confirm_cb(Etk_Object *obj, int response_id, void *data);  
 
 static void
 _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
@@ -209,7 +210,7 @@ _e_sticky_menu_show(E_Sticky *s)
    menu = etk_menu_new();
    _etk_menu_stock_item_new("New", ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_sticky_new_show_append), NULL);
    _etk_menu_stock_item_new("Save", ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_config_save), ss);
-   _etk_menu_stock_item_new("Delete", ETK_STOCK_EDIT_DELETE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_sticky_delete), s);
+   _etk_menu_stock_item_new("Delete", ETK_STOCK_EDIT_DELETE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_sticky_delete_confirm), s);
    _etk_menu_stock_item_new("Options", ETK_STOCK_PREFERENCES_DESKTOP_THEME, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_theme_chooser_show), s);
    _etk_menu_stock_item_new("Quit", ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(etk_main_quit), NULL);
    etk_menu_popup(ETK_MENU(menu));
@@ -290,7 +291,7 @@ _e_sticky_window_add(E_Sticky *s)
 			ETK_IMAGE(etk_image_new_from_edje(theme,
 							  "button_close")));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(s->close_button), 
-			      ETK_CALLBACK(_e_sticky_delete), s);
+			      ETK_CALLBACK(_e_sticky_delete_confirm), s);
    //etk_tooltips_tip_set(button, "Delete this sticky");
    etk_box_pack_start(ETK_BOX(hbox), s->close_button, ETK_FALSE, ETK_FALSE, 0);
 
@@ -332,6 +333,24 @@ _e_sticky_delete(E_Sticky *s)
    _e_sticky_destroy(s);
    if(!ss->stickies || evas_list_count(ss->stickies) == 0)
      etk_main_quit();
+}
+
+void
+_e_sticky_delete_confirm(E_Sticky *s)
+{
+   Etk_Widget *dialog;
+   
+   dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, 
+				   ETK_MESSAGE_DIALOG_YES_NO,
+				   "Are you sure you want to delete this sticky?");
+   etk_signal_connect_swapped("delete_event", ETK_OBJECT(dialog), 
+			      ETK_CALLBACK(etk_object_destroy), dialog);
+   etk_signal_connect("response", ETK_OBJECT(dialog), 
+		      ETK_CALLBACK(_e_sticky_delete_confirm_cb), s);
+   etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
+   
+   etk_window_title_set(ETK_WINDOW(dialog), "Confirm Deletion");
+   etk_widget_show_all(dialog);      
 }
 
 void
@@ -425,6 +444,23 @@ _e_sticky_theme_apply_all(char *theme)
    
    for(l = ss->stickies; l; l = l->next)
      _e_sticky_theme_apply(l->data, theme);   
+}
+
+static void 
+_e_sticky_delete_confirm_cb(Etk_Object *obj, int response_id, void *data)
+{
+   switch(response_id)
+     {
+      case ETK_RESPONSE_YES:
+	if(data)	  
+	  _e_sticky_delete(data);
+	break;
+	
+      default:
+	break;
+     }
+   
+   etk_object_destroy(obj);
 }
 
 int main(int argc, char **argv)
