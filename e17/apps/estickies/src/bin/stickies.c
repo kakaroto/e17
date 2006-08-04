@@ -16,6 +16,7 @@ static void _e_sticky_focus_in_cb(Etk_Object *object, void *data);
 static void _e_sticky_focus_out_cb(Etk_Object *object, void *data);
 static void _e_sticky_sticky_cb(Etk_Object *object, const char *property_name, void *data);
 static void _e_sticky_delete_confirm_cb(Etk_Object *obj, int response_id, void *data);  
+static void _e_sticky_clipboard_text_request_cb(Etk_Object *object, void *event, void *data);
 
 static void
 _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
@@ -35,7 +36,6 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 	     sn = _e_sticky_new();
 	     ss->stickies = evas_list_append(ss->stickies, sn);
 	     _e_sticky_show(sn);
-	     //printf("appending stick, total = %d\n", evas_list_count(ss->stickies));
 	  }
 	else if(!strcmp(ev->key, "d"))
 	  {
@@ -44,7 +44,35 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 	else if(!strcmp(ev->key, "q"))
 	  {
 	     etk_main_quit();
-	  }	
+	  }
+	else if(!strcmp(ev->key, "c") || !strcmp(ev->key, "x"))
+	  {
+	     const char *text = NULL;
+	     Etk_String *string = NULL;
+	     Etk_Textblock_Iter *iter1;
+	     Etk_Textblock_Iter *iter2;	     
+	     
+	     iter1 = etk_textblock_object_cursor_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
+	     iter2 = etk_textblock_object_selection_bound_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
+	     
+	     string = etk_textblock_range_text_get(
+				   ETK_TEXT_VIEW(s->textview)->textblock,
+				   iter1, iter2, ETK_FALSE);
+	     
+	     if(string && (text = etk_string_get(string)))
+	       {		  
+		  etk_clipboard_text_set(s->textview, text, strlen(text) + 1);
+		  etk_object_destroy(ETK_OBJECT(string));
+	       }
+	     
+	     if(!strcmp(ev->key, "x"))
+	       etk_textblock_delete_range(ETK_TEXT_VIEW(s->textview)->textblock,
+					  iter1, iter2);
+	  }
+	else if(!strcmp(ev->key, "v"))
+	  {
+	     etk_clipboard_text_request(ETK_WIDGET(s->win));
+	  }
      }
 }
 
@@ -87,11 +115,13 @@ _e_sticky_mouse_move_cb(Etk_Object *object, void *event, void *data)
    
    s = data;
    ev = event;
+
+   etk_window_geometry_get(ETK_WINDOW(s->win), &s->x, &s->y, NULL, NULL);
    
    if(_e_sticky_is_moving)
      {
-	_e_sticky_move(s, s->x + ev->cur.canvas.x - _e_sticky_mouse_x,
-		       s->y + ev->cur.canvas.y - _e_sticky_mouse_y);
+	_e_sticky_move(s, s->x + ev->cur.widget.x - _e_sticky_mouse_x,
+		       s->y + ev->cur.widget.y  - _e_sticky_mouse_y);
      }
 }
 
@@ -102,8 +132,12 @@ _e_sticky_move_cb(Etk_Object *object, void *data)
    
    s = data;
    etk_window_geometry_get(ETK_WINDOW(s->win), &s->x, &s->y, NULL, NULL);
-   
+
      {
+	/* FIXME:
+	 * this bit of code forces estickies to only work on X11.
+	 * we need to acquire this info through etk.
+	 */
 	Ecore_X_Window root;
 	int x, y, w, h;
 	
@@ -123,7 +157,8 @@ _e_sticky_resize_cb(Etk_Object *object, void *data)
    E_Sticky *s;
    
    s = data;
-   etk_window_geometry_get(ETK_WINDOW(s->win), NULL, NULL, &s->w, &s->h);
+   if(!_e_sticky_is_moving)
+     etk_window_geometry_get(ETK_WINDOW(s->win), NULL, NULL, &s->w, &s->h);
 }
 
 static int
@@ -297,6 +332,7 @@ _e_sticky_window_add(E_Sticky *s)
    etk_box_pack_start(ETK_BOX(hbox), s->close_button, ETK_FALSE, ETK_FALSE, 0);
 
    s->textview = etk_text_view_new();
+   etk_widget_repeat_mouse_events_set(s->textview, ETK_TRUE);
    if(s->text)
      etk_textblock_text_set(ETK_TEXT_VIEW(s->textview)->textblock, s->text,
 			    ETK_TRUE);
@@ -306,7 +342,8 @@ _e_sticky_window_add(E_Sticky *s)
    etk_box_pack_start(ETK_BOX(vbox), s->textview, ETK_TRUE, ETK_TRUE, 0);
    
    etk_container_add(ETK_CONTAINER(s->win), vbox);
-   etk_widget_focus(s->textview);   
+   etk_widget_focus(s->textview);
+   etk_signal_connect("clipboard_received", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_clipboard_text_request_cb), s);
 }
 
 E_Sticky *
@@ -464,6 +501,29 @@ _e_sticky_delete_confirm_cb(Etk_Object *obj, int response_id, void *data)
    etk_object_destroy(obj);
 }
 
+static void _e_sticky_clipboard_text_request_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Selection_Request *ev;
+   Etk_Selection_Data_Text *ev_text;
+   Etk_Textblock_Iter *cursor;
+   Etk_Textblock_Iter *selection;   
+   E_Sticky *s;
+   
+   ev = event;
+   if(!(s = data) || !(ev_text = ev->data) || !(ev_text->text))
+     return;
+	     
+   cursor = etk_textblock_object_cursor_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
+   selection = etk_textblock_object_selection_bound_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
+   
+   /* TODO:
+    * handle the case where we are pasting and there's a selection
+    */
+   
+   etk_textblock_insert(ETK_TEXT_VIEW(s->textview)->textblock, cursor,
+			ev_text->text, strlen(ev_text->text));
+}
+
 int main(int argc, char **argv)
 {
    E_Sticky *s;
@@ -480,7 +540,7 @@ int main(int argc, char **argv)
    if(ss->stickies)
      {
 	Evas_List *l;
-	//printf("loading %d stickies!\n", evas_list_count(ss->stickies));
+
 	for(l = ss->stickies; l; l = l->next)
 	  {
 	     _e_sticky_load_from(l->data);
@@ -490,7 +550,6 @@ int main(int argc, char **argv)
      }
    else
      {
-	//printf("no stickies found\n");
 	s = _e_sticky_new();
 	ss->stickies = evas_list_append(ss->stickies, s);
 	_e_sticky_show(s);

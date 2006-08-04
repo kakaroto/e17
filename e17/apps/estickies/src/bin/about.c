@@ -11,6 +11,7 @@ _e_about_show()
    Etk_Widget *logo;
    Etk_Widget *desctext;   
    Etk_Widget *abouttext;
+   Etk_Widget *helptext;   
    
    if(win)
      {
@@ -63,9 +64,24 @@ _e_about_show()
 			  "Brian 'morlenxus' Miculcy",
 			  ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), abouttext);
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   
+   /* Help */
+   frame = etk_frame_new("Common shortcuts");
+   helptext = etk_text_view_new();
+   etk_widget_size_request_set(helptext, -1, 75);
+   etk_object_properties_set(ETK_OBJECT(helptext),
+			     "focusable", ETK_FALSE, NULL);   
+   etk_textblock_text_set(ETK_TEXT_VIEW(helptext)->textblock,
+			  "<b>control-n:</b> create a new note\n"
+			  "<b>control-q:</b> quit application\n"
+			  "<b>control-c:</b> copy selected text\n"
+			  "<b>control-x:</b> cut selected text\n"
+			  "<b>control-v:</b> paste text from clipboard\n",
+			  ETK_TRUE);
+   etk_container_add(ETK_CONTAINER(frame), helptext);
    etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);   
 
-								 
    etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox, ETK_FALSE, ETK_FALSE,
 				0, ETK_FALSE);
    etk_dialog_button_add(ETK_DIALOG(win), "Close", ETK_RESPONSE_CLOSE);
@@ -75,5 +91,7 @@ _e_about_show()
    etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(abouttext)->textblock_object,
 					   ETK_FALSE);
    etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(desctext)->textblock_object,
+					   ETK_FALSE);
+   etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(helptext)->textblock_object,
 					   ETK_FALSE);   
 }

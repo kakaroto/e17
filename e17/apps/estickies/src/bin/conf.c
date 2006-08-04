@@ -187,6 +187,7 @@ _e_config_load(E_Stickies *ss)
    if(!ecore_file_exists(buf) || ecore_file_size(buf) == 0)
      {
 	/* no saved config */
+	_e_about_show();
 	_e_config_defaults_apply(ss);	
 	return 0;
      }
