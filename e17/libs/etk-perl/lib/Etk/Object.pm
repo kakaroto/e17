@@ -14,14 +14,15 @@ sub AUTOLOAD {
 #    print "DECODED AS Package=$package FUNCTION=$func\n";
 
    if ($func =~ /[a-z]/ && $func =~ /[A-Z]/) {
-	    $func =~ s/([A-Z][a-z]+)/lc($1) . "_"/eg; 
+	    $func =~ s/([A-Z][a-z0-9]+)/lc($1) . "_"/eg; 
 	    $func =~ s/_$//;
 
 #	    print "\tTranslate to $func\n";
 	    my $obj = shift;
 #	    print "Object: $obj -> $func (@_)\n";
 
-	    return $obj->$func(@_);
+	    return $obj->$func(@_) if $obj->can($func);
+	    die "Object $obj does not have method $func\n"; # fail with some noise
 	    
     }
 

@@ -927,14 +927,9 @@ etk_combobox_item_append(combobox, ...)
 	 for(i = 0; i < items - 1; i++)
            {
 	      if(SvPOK(ST(i + 1)))
-		{
 		   ptr[i] = SvPV_nolen(ST(i + 1));
-		}
-	      else if (sv_derived_from(ST(i + 1), "Etk_WidgetPtr")) 
-		{
-		   IV tmp = SvIV((SV*)SvRV(ST(i + 1)));
-		   ptr[i] = INT2PTR(Etk_Widget *,tmp);
-		}
+	      else 
+		   ptr[i] = SvEtkWidgetPtr(ST(i + 1));
 	   }
         switch(items)
         {	   
@@ -1002,14 +997,9 @@ etk_combobox_item_prepend(combobox, ...)
 	 for(i = 0; i < items - 1; i++)
            {
 	      if(SvPOK(ST(i + 1)))
-		{
 		   ptr[i] = SvPV_nolen(ST(i + 1));
-		}
-	      else if (sv_derived_from(ST(i + 1), "Etk_WidgetPtr")) 
-		{
-		   IV tmp = SvIV((SV*)SvRV(ST(i + 1)));
-		   ptr[i] = INT2PTR(Etk_Widget *,tmp);
-		}
+	      else 
+		   ptr[i] = SvEtkWidgetPtr(ST(i + 1));
 	   }
         switch(items)
         {	   
@@ -1080,15 +1070,10 @@ etk_combobox_item_prepend_relative(combobox, relative, ...)
 	 */
 	 for(i = 0; i < items - 2; i++)
            {
-	      if(SvPOK(ST(i + 2)))
-		{
-		   ptr[i] = SvPV_nolen(ST(i + 2));
-		}
-	      else if (sv_derived_from(ST(i + 2), "Etk_WidgetPtr")) 
-		{
-		   IV tmp = SvIV((SV*)SvRV(ST(i + 2)));
-		   ptr[i] = INT2PTR(Etk_Widget *,tmp);
-		}
+	      if(SvPOK(ST(i + 1)))
+		   ptr[i] = SvPV_nolen(ST(i + 1));
+	      else 
+		   ptr[i] = SvEtkWidgetPtr(ST(i + 1));
 	   }
         switch(items)
         {	   
@@ -1172,15 +1157,10 @@ etk_combobox_item_append_relative(combobox, relative, ...)
 	 */
 	 for(i = 0; i < items - 2; i++)
            {
-	      if(SvPOK(ST(i + 2)))
-		{
-		   ptr[i] = SvPV_nolen(ST(i + 2));
-		}
-	      else if (sv_derived_from(ST(i + 2), "Etk_WidgetPtr")) 
-		{
-		   IV tmp = SvIV((SV*)SvRV(ST(i + 2)));
-		   ptr[i] = INT2PTR(Etk_Widget *,tmp);
-		}
+	      if(SvPOK(ST(i + 1)))
+		   ptr[i] = SvPV_nolen(ST(i + 1));
+	      else 
+		   ptr[i] = SvEtkWidgetPtr(ST(i + 1));
 	   }
         switch(items)
         {	   
@@ -3036,7 +3016,7 @@ void
 etk_signal_stop()
 
 
-MODULE = Etk::StatusBar	PACKAGE = Etk::StaturBar	PREFIX = etk_statusbar_
+MODULE = Etk::StatusBar	PACKAGE = Etk::StatusBar	PREFIX = etk_statusbar_
 
 int
 etk_statusbar_context_id_get(statusbar, context)

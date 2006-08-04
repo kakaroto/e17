@@ -101,6 +101,8 @@ void __etk_perl_inheritance_init() {
 		__("ProgressBar", "Widget");
 		__("Range", "Widget");
 			__("Slider", "Range");
+				__("HSlider", "Slider");
+				__("VSlider", "Slider");
 		__("Spearator", "Widget");
 			__("HSeparator", "Spearator");
 			__("VSeparator", "Spearator");
