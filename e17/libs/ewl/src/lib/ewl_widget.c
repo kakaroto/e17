@@ -1599,7 +1599,7 @@ ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 
 			/* while the type still matches the current part of
 			 * the string */
-			while ((*(type + count) == *end) && (*end != ':'))
+			while ((*end != ':') && (*(type + count) == *end))
 			{
 				count ++;
 				end ++;
@@ -1614,7 +1614,7 @@ ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 
 			/* move to the next set of :s and then move past it */
 			while ((*end != '\0') && (*end != ':')) end ++;
-			while (*end == ':') end ++;
+			if ((*end == ':') && (*(++end) == ':')) end++;
 		}
 	}
 
