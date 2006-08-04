@@ -274,24 +274,35 @@ sub image_window_show
 
 sub entry_window_show
 {
-    my $win = Etk::Window->new("Etk-Perl Entry Test");
-    my $vbox = $win->AddVBox(0, 0);    
-    my $hbox = $vbox->AddHBox(0, 0)->PackStart();
-    my $label = $vbox->AddLabel("")->PackStart();
+    my $win = Etk::Window->new();
+    $win->TitleSet("Etk-Perl Entry Test");
+    my $vbox = Etk::VBox->new(0, 0);    
+    $win->Add($vbox);
+    my $hbox = Etk::HBox->new(0, 0);
+    $vbox->PackStart($hbox);
+    my $label = Etk::Label->new("");
+    $vbox->PackStart($label);
 
-    my $entry = $hbox->AddEntry()->PackStart();
+    my $entry = Etk::Entry->new();
+    $hbox->PackStart($entry);
 
-    $hbox->AddButton("Print text")->SignalConnect("clicked",
+    my $button = Etk::Button->new();
+    $button->LabelSet("Print text");
+    $button->SignalConnect("clicked",
     	sub {
 		$label->Set($entry->TextGet());
 	}
-	)->PackStart();
+	);
+    $hbox->PackStart($button);
 
-    $hbox->AddToggleButton("Toggle password")->SignalConnect("clicked",
+    my $button2 = Etk::ToggleButton->new();
+    $button2->LabelSet("Toggle password");
+    $button2->SignalConnect("clicked",
     	sub {
 		$entry->PasswordSet(!$entry->PasswordGet());
 	}
-	)->PackStart();
+	);
+    $hbox->PackStart($button2);
 
     $win->ShowAll();
 }

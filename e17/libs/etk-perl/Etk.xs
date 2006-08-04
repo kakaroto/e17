@@ -558,27 +558,6 @@ size_to_perl_hash(Etk_Size s)
 	return hv;
 }	
 
-AV *
-evas_list_to_perl(Evas_List * list) 
-{
-	dSP;
-	AV * av;
-	Evas_List * l;
-
-	ENTER;
-	SAVETMPS;
-	
-	av = newAV();
-	for (l = list; l; l = l->next)
-		av_push(av, newSViv((IV)(l->data)));
-	
-	PUTBACK;
-	FREETMPS;
-	LEAVE;
-
-	return av;
-}
-
 MODULE = Etk		PACKAGE = Etk	PREFIX = etk_
 
 INCLUDE: const-xs.inc
@@ -1324,20 +1303,9 @@ etk_container_child_space_fill(child, child_space, hfill, vfill, xalign, yalign)
 	float	xalign
 	float	yalign
 	
-void
+Evas_List *
 etk_container_children_get(container)
 	Etk_Container	*container
-	PPCODE:
-	Evas_List * children;
-	AV * av;
-	int i;
-	
-	children = etk_container_children_get(container);
-	av = evas_list_to_perl(children);
-	for (i=0; i<=av_len(av); i++)
-	{
-		XPUSHs(sv_2mortal(newSViv(SvIV(av_shift(av)))));
-	}
 
 Etk_Bool
 etk_container_is_child(container, widget)
@@ -1566,7 +1534,7 @@ etk_entry_text_set(entry, text)
 	char *	text
 
 
-MODULE = Etk::Filechooser	PACKAGE = Etk::Filechooser	PREFIX = etk_filechooser_
+MODULE = Etk::Filechooser	PACKAGE = Etk::Filechooser	PREFIX = etk_filechooser_widget_
 	
 const char *
 etk_filechooser_widget_current_folder_get(filechooser_widget)
@@ -1603,22 +1571,9 @@ etk_filechooser_widget_selected_files_get(widget)
 	Etk_Filechooser_Widget *	widget
 	PPCODE:
 	Evas_List * list;
-	AV * av;
-	int i;
 
 	list = etk_filechooser_widget_selected_files_get(widget);
-	av = evas_list_to_perl(list);
-	for (i=0; i<=av_len(av); i++) 
-	{
-		SV * sv;
-		const char * filename;
-
-		filename = (const char *)SvIV(av_shift(av));
-		sv = newSVpv(filename, strlen(filename));
-
-		XPUSHs(sv_2mortal(sv));
-	}
-
+	XPUSHs(sv_2mortal(newSVCharEvasList(list)));
 
 Etk_Bool
 etk_filechooser_widget_show_hidden_get(filechooser_widget)
@@ -1777,11 +1732,17 @@ MODULE = Etk::Iconbox::Icon	PACKAGE = Etk::Iconbox::Icon	PREFIX = etk_iconbox_ic
 SV *
 etk_iconbox_icon_data_get(icon)
 	Etk_Iconbox_Icon *	icon
+	CODE:
+	RETVAL = newSVsv((SV*)etk_iconbox_icon_data_get(icon));
+	OUTPUT:
+	RETVAL
 
 void
 etk_iconbox_icon_data_set(icon, data)
 	Etk_Iconbox_Icon *	icon
 	SV *	data
+	CODE:
+	etk_iconbox_icon_data_set(icon, newSVsv(data));
 
 void
 etk_iconbox_icon_del(icon)
@@ -1872,7 +1833,7 @@ etk_iconbox_model_icon_geometry_get(model)
 	Etk_Bool fill;
 	Etk_Bool keep_aspect_ratio;
 
-	etk_iconbox_model_icon_geometry(model, &x, &y, &width, &height,
+	etk_iconbox_model_icon_geometry_get(model, &x, &y, &width, &height,
 					&fill, &keep_aspect_ratio);
         EXTEND(SP, 6);
         PUSHs(sv_2mortal(newSViv(x)));
@@ -1893,7 +1854,7 @@ etk_iconbox_model_icon_geometry_set(model, x, y, width, height, fill, keep_aspec
 	Etk_Bool	keep_aspect_ratio
 
 void
-etk_iconbox_model_label_geometry_get(model, x, y, width, height, xalign, yalign)
+etk_iconbox_model_label_geometry_get(model)
 	Etk_Iconbox_Model *	model
 	PPCODE:
 	int x;
@@ -1910,8 +1871,8 @@ etk_iconbox_model_label_geometry_get(model, x, y, width, height, xalign, yalign)
         PUSHs(sv_2mortal(newSViv(y)));
         PUSHs(sv_2mortal(newSViv(width)));
         PUSHs(sv_2mortal(newSViv(height)));
-        PUSHs(sv_2mortal(newSViv(xalign)));
-        PUSHs(sv_2mortal(newSViv(yalign)));	
+        PUSHs(sv_2mortal(newSVnv(xalign)));
+        PUSHs(sv_2mortal(newSVnv(yalign)));	
 
 
 void
@@ -1925,8 +1886,13 @@ etk_iconbox_model_label_geometry_set(model, x, y, width, height, xalign, yalign)
 	float	yalign
 
 Etk_Iconbox_Model *
-etk_iconbox_model_new(iconbox)
+new(class, iconbox)
+	SV * class
 	Etk_Iconbox *	iconbox
+	CODE:
+	RETVAL = etk_iconbox_model_new(iconbox);
+	OUTPUT:
+	RETVAL
 
 MODULE = Etk::Image	PACKAGE = Etk::Image	PREFIX = etk_image_
 	
@@ -2069,7 +2035,7 @@ new(class, text)
 void
 etk_label_set(label, text)
 	Etk_Label *	label
-	char *	text
+	const char *	text
 
 
 MODULE = Etk::Main	PACKAGE = Etk::Main	PREFIX = etk_main_
@@ -2096,26 +2062,8 @@ void
 etk_main_toplevel_widget_remove(widget)
 	Etk_Toplevel_Widget *	widget
 
-void
+Evas_List *
 etk_main_toplevel_widgets_get()
-	PPCODE:
-	Evas_List * list;
-	AV * av;
-	int i;
-
-	list = etk_main_toplevel_widgets_get();
-	av = evas_list_to_perl(list);
-
-	for (i = av_len(av); i>=0; i--)
-	{
-		SV * sv;
-		sv = newRV(newSViv(0));
-		/* FIXME */
-		sv_setref_iv(sv, "Etk_WidgetPtr", SvIV(av_shift(av)));
-
-		XPUSHs(sv_2mortal(sv));
-	}
-	av_undef(av);
 
 
 MODULE = Etk::Menu::Bar	PACKAGE = Etk::Menu::Bar	PREFIX = etk_menu_bar_
@@ -2338,27 +2286,9 @@ etk_menu_shell_insert(menu_shell, item, position)
 	Etk_Menu_Item *	item
 	int	position
 
-void
+Evas_List *
 etk_menu_shell_items_get(menu_shell)
 	Etk_Menu_Shell *	menu_shell
-	PPCODE:
-	Evas_List * list;
-	AV * av;
-	int i;
-
-	list = etk_menu_shell_items_get(menu_shell);
-	av = evas_list_to_perl(list);
-
-        for (i = av_len(av) ; i >=0 ; i--)
-        {
-               SV * sv;
-               sv = newRV(newSViv(0));
-	       /* FIXME */
-               sv_setref_iv(sv, "Etk_WidgetPtr", SvIV(av_shift(av)));
-   
-               XPUSHs(sv_2mortal(sv));
-        }
-         av_undef(av);  
 
 void
 etk_menu_shell_prepend(menu_shell, item)
@@ -3548,25 +3478,9 @@ Etk_Tree_Row *
 etk_tree_selected_row_get(tree)
 	Etk_Tree *	tree
 
-void 
+Evas_List * 
 etk_tree_selected_rows_get(tree)
 	Etk_Tree *	tree
-	PPCODE:
-	Evas_List * list;
-	AV * av;
-	int i;
-
-	list = etk_tree_selected_rows_get(tree);
-	av = evas_list_to_perl(list);
-	for (i=0; i<=av_len(av); i++) 
-	{
-		SV * sv;
-		sv = newRV(newSViv(0));
-		/* FIXME */
-		sv_setref_iv(sv, "Etk_WidgetPtr", SvIV(av_shift(av)));
-
-		XPUSHs(sv_2mortal(sv));
-	}
 
 void
 etk_tree_sort(tree, compare_cb, ascendant, col, data)
@@ -4257,23 +4171,8 @@ etk_widget_dnd_dest_set(widget, on)
 	Etk_Widget *	widget
 	Etk_Bool	on
 
-void
+Evas_List *
 etk_widget_dnd_dest_widgets_get()
-	PPCODE:
-	AV * av;
-	int i;
-	
-	av = evas_list_to_perl(etk_widget_dnd_dest_widgets_get());
-	for (i = av_len(av) ; i >=0 ; i--)
-	{
-		SV * sv;
-		sv = newRV(newSViv(0));
-		sv_setref_iv(sv, "Etk_WidgetPtr", SvIV(av_shift(av)));
-		
-		XPUSHs(sv_2mortal(sv));
-	}
-	av_undef(av);
-
 
 void
 etk_widget_dnd_drag_data_set(widget, types, num_types, data, data_size)

@@ -14,10 +14,8 @@ my $button = Etk::Button->new();
 $b->Add($button);
 is($b->IsChild($button), 1, 	"Container Add/Check");
 
+my @children = $b->ChildrenGet();
+is(@children, 1, "Children Get");
 
-SKIP: {
-	skip "List implementation fuxxored", 1;
-	my @children = $b->ChildrenGet();
-}
 
 

@@ -23,6 +23,10 @@ Etk_Geometry 		SvGeometry(SV * geo);
 SV *			newSVGeometryPtr(Etk_Geometry * geo);
 Etk_Geometry *		SvGeometryPtr(SV * geo);
 
+Evas_List *		SvEvasList(SV *sv);
+SV *			newSVEvasList(Evas_List *list);
+SV *			newSVCharEvasList(Evas_List *list);
+
 SV *			newSVEtkAlignmentPtr(Etk_Alignment *o); 
 Etk_Alignment *		SvEtkAlignmentPtr(SV *data); 
 SV *			newSVEtkBinPtr(Etk_Bin *o); 

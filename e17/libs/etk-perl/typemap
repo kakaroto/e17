@@ -30,7 +30,7 @@ Etk_Geometry					T_GEOMETRY
 Etk_Geometry *					T_GEOMETRY_PTR
 Etk_Iconbox *					T_PTROBJ_ETK
 Etk_Iconbox_Icon *				T_PTROBJ_ETK
-Etk_Iconbox_Model *				T_PTROBJ
+Etk_Iconbox_Model *				T_PTROBJ_ETK
 Etk_Image *					T_PTROBJ_ETK
 Etk_Label *					T_PTROBJ_ETK
 Etk_Marshaller					T_PTROBJ
@@ -96,7 +96,7 @@ Etk_Type **					T_PTROBJ
 Etk_Widget *					T_PTROBJ_ETK
 Etk_Window *					T_PTROBJ_ETK
 Evas *						T_PTROBJ_ETK
-Evas_List *					T_PTROBJ
+Evas_List *					T_PTROBJ_EVAS_LIST
 Evas_List **					T_PTROBJ
 Evas_Object *					T_PTROBJ_ETK
 const Etk_String *				T_PTROBJ
@@ -150,6 +150,11 @@ T_GEOMETRY_PTR
 	if (!$arg || !SvOK($arg))
 		croak(\"$var is not of type ${ntype}\");
 	$var = SvGeometryPtr($arg);
+
+T_TROBJ_EVAS_LIST
+	if (!$arg || !SvOK($arg))
+		croak(\"$var is not of type ${ntype}\");
+	$var = SvEvasList($arg);
 	
 
 #############################################################################
@@ -176,3 +181,9 @@ T_GEOMETRY_PTR
 	do {
 	$arg = sv_2mortal(newSVGeometryPtr($var));
 	} while(0);
+
+T_PTROBJ_EVAS_LIST
+	do {
+	$arg = sv_2mortal(newSVEvasList($var));
+	} while(0);
+

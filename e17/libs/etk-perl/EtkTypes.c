@@ -86,6 +86,8 @@ void __etk_perl_inheritance_init() {
 		__("Entry", "Widget");
 		__("Filechooser", "Widget");
 		__("Iconbox", "Widget");
+			__("Iconbox::Model", "Iconbox");
+			__("Iconbox::Icon", "Iconbox");
 		__("Image", "Widget");
 		__("Label", "Widget");
 		__("Menu::Shell", "Widget");
@@ -219,6 +221,55 @@ SV * newSVGeometry(Etk_Geometry geo) {
 	return newRV((SV*)hv);
 }
 
+Evas_List * SvEvasList(SV *sv) {
+
+	AV * av;
+	Evas_List * list;
+	int i;
+	
+	if (!SvROK(sv)) {
+		printf("cannot convert to Evas_List. SV is not a reference\n");
+		return NULL;
+	}
+
+	av = (AV*)SvRV(sv);
+	list = NULL;
+	for (i=0; i<=av_len(av); i++) 
+		list = evas_list_append(list, *av_fetch(av, i, 0));
+
+	return list;
+
+}
+
+SV * newSVEvasList(Evas_List *list) {
+
+	AV * av;
+	SV * ret;
+	Evas_List * l;
+
+	av = newAV();
+	for (l = list; l; l = l->next) 
+		av_push(av, newSVEtkWidgetPtr((Etk_Widget *)(l->data)));
+
+	return newRV((SV*)av);
+
+}
+
+SV * newSVCharEvasList(Evas_List *list) {
+
+	AV * av;
+	SV * ret;
+	Evas_List * l;
+
+	av = newAV();
+	for (l = list; l; l = l->next) 
+		av_push(av, newSVpv((char *)(l->data), 0));
+
+	return newRV((SV*)av);
+
+}
+
+
 SV * newSVEtkAlignmentPtr(Etk_Alignment *o) { return newSVObj(o, "Etk::Alignment", 0); }
 Etk_Alignment * SvEtkAlignmentPtr(SV *data) { return SvObj(data, "Etk::Alignment"); }
 SV * newSVEtkBinPtr(Etk_Bin *o) { return newSVObj(o, "Etk::Bin", 0); }
@@ -238,6 +289,7 @@ Etk_Combobox * SvEtkComboboxPtr(SV *data) { return SvObj(data, "Etk::Combobox");
 SV * newSVEtkContainerPtr(Etk_Container *o) { return newSVObj(o, "Etk::Container", 0); }
 Etk_Container * SvEtkContainerPtr(SV *data) { return SvObj(data, "Etk::Container"); }
 SV * newSVEtkDialogPtr(Etk_Dialog *o) { return newSVObj(o, "Etk::Dialog", 0); }
+Etk_Dialog * SvEtkDialogPtr(SV *data) { return SvObj(data, "Etk::Dialog"); }
 SV * newSVEtkDragPtr(Etk_Drag *o) { return newSVObj(o, "Etk::Drag", 0); }
 Etk_Drag * SvEtkDragPtr(SV *data) { return SvObj(data, "Etk::Drag"); }
 SV * newSVEtkEntryPtr(Etk_Entry *o) { return newSVObj(o, "Etk::Entry", 0); }
