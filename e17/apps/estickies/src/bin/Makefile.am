@@ -18,6 +18,7 @@ estickies_SOURCES = \
 stickies.c \
 conf.c \
 theme_chooser.c \
+about.c \
 $(estickies_INCLUDES)
 
 estickies_LDADD = @my_libs@

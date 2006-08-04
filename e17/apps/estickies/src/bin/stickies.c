@@ -212,7 +212,8 @@ _e_sticky_menu_show(E_Sticky *s)
    _etk_menu_stock_item_new("Save", ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_config_save), ss);
    _etk_menu_stock_item_new("Delete", ETK_STOCK_EDIT_DELETE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_sticky_delete_confirm), s);
    _etk_menu_stock_item_new("Options", ETK_STOCK_PREFERENCES_DESKTOP_THEME, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_theme_chooser_show), s);
-   _etk_menu_stock_item_new("Quit", ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(etk_main_quit), NULL);
+   _etk_menu_stock_item_new("About", ETK_STOCK_DIALOG_INFORMATION, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_about_show), NULL);
+   _etk_menu_stock_item_new("Quit", ETK_STOCK_DIALOG_CLOSE, ETK_MENU_SHELL(menu), ETK_CALLBACK(etk_main_quit), NULL);
    etk_menu_popup(ETK_MENU(menu));
 }
 

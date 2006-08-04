@@ -38,6 +38,7 @@ typedef struct _E_Stickies E_Stickies;
 
 #include "conf.h"
 #include "theme_chooser.h"
+#include "about.h"
 
 struct _E_Config_Sticky
 {
