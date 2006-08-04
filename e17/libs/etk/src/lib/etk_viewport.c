@@ -63,6 +63,7 @@ static void _etk_viewport_constructor(Etk_Viewport *viewport)
    if (!viewport)
       return;
 
+   viewport->clip = NULL;
    viewport->xscroll = 0;
    viewport->yscroll = 0;
 
