@@ -3149,8 +3149,10 @@ static void _etk_textblock_object_line_fill(Evas_Object *tbo, Evas_Textblock_Cur
                case ETK_TEXTBLOCK_STYLE_SOFT_SHADOW:
                case ETK_TEXTBLOCK_STYLE_FAR_SOFT_SHADOW:
                   fmt_str = etk_string_set(fmt_str, "+ shadow_color=");
+                  break;
                case ETK_TEXTBLOCK_STYLE_GLOW:
-                  fmt_str = etk_string_set(fmt_str, "+ glow_color1=");
+                  fmt_str = etk_string_set(fmt_str, "+ glow_color=");
+                  break;
                default:
                   append_color = ETK_FALSE;
                   break;
@@ -3178,6 +3180,7 @@ static void _etk_textblock_object_line_fill(Evas_Object *tbo, Evas_Textblock_Cur
                   break;
                case ETK_TEXTBLOCK_STYLE_GLOW:
                   fmt_str = etk_string_set(fmt_str, "+ glow_color2=");
+                  break;
                default:
                   append_color = ETK_FALSE;
                   break;
