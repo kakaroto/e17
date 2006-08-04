@@ -60,9 +60,11 @@ int main(int argc, char** argv)
 
 		snprintf(fullpath, PATH_MAX, "%s/%s", argv[1], file);
 		realpath = ecore_file_realpath(fullpath);
-		if (ecore_file_exists(realpath) && !ecore_file_is_dir(realpath))
+		if (ecore_file_exists(realpath) && !ecore_file_is_dir(realpath)) {
 			epsilon_add(realpath, NULL, EPSILON_THUMB_NORMAL, NULL);
-		incomplete_thumbs++;
+			incomplete_thumbs++;
+		}
+		free(realpath);
 	}
 
 	ecore_main_loop_begin();
