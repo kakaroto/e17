@@ -74,6 +74,8 @@ enum Etk_Widget_Property_Id
    ETK_WIDGET_THEME_GROUP_PROPERTY,
    ETK_WIDGET_THEME_PARENT_PROPERTY,
    ETK_WIDGET_GEOMETRY_PROPERTY,
+   ETK_WIDGET_WIDTH_REQUEST_PROPERTY,
+   ETK_WIDGET_HEIGHT_REQUEST_PROPERTY,
    ETK_WIDGET_VISIBLE_PROPERTY,
    ETK_WIDGET_VISIBILITY_LOCKED_PROPERTY,
    ETK_WIDGET_REPEAT_MOUSE_EVENTS_PROPERTY,
@@ -250,6 +252,10 @@ Etk_Type *etk_widget_type_get()
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
       etk_type_property_add(widget_type, "geometry", ETK_WIDGET_GEOMETRY_PROPERTY,
          ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
+      etk_type_property_add(widget_type, "width_request", ETK_WIDGET_WIDTH_REQUEST_PROPERTY, 
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
+      etk_type_property_add(widget_type, "height_request", ETK_WIDGET_HEIGHT_REQUEST_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
       etk_type_property_add(widget_type, "visible", ETK_WIDGET_VISIBLE_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "visibility_locked", ETK_WIDGET_VISIBILITY_LOCKED_PROPERTY,
@@ -892,6 +898,9 @@ void etk_widget_size_request_set(Etk_Widget *widget, int w, int h)
 
    widget->requested_size.w = w;
    widget->requested_size.h = h;
+   
+   etk_object_notify(ETK_OBJECT(widget), "width_request");
+   etk_object_notify(ETK_OBJECT(widget), "height_request");
    etk_widget_size_recalc_queue(widget);
 }
 
@@ -1982,6 +1991,12 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WIDGET_VISIBILITY_LOCKED_PROPERTY:
          etk_widget_visibility_locked_set(widget, etk_property_value_bool_get(value));
          break;
+      case ETK_WIDGET_WIDTH_REQUEST_PROPERTY:
+         etk_widget_size_request_set(widget, etk_property_value_int_get(value), widget->requested_size.h);
+         break;
+      case ETK_WIDGET_HEIGHT_REQUEST_PROPERTY:
+         etk_widget_size_request_set(widget, widget->requested_size.w, etk_property_value_int_get(value));
+         break;
       case ETK_WIDGET_NAME_PROPERTY:
          etk_widget_name_set(widget, etk_property_value_string_get(value));
          break;
@@ -2032,6 +2047,12 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_WIDGET_THEME_PARENT_PROPERTY:
          etk_property_value_pointer_set(value, widget->theme_parent);
+         break;
+      case ETK_WIDGET_WIDTH_REQUEST_PROPERTY:
+         etk_property_value_int_set(value, widget->requested_size.w);
+         break;
+      case ETK_WIDGET_HEIGHT_REQUEST_PROPERTY:
+         etk_property_value_int_set(value, widget->requested_size.h);
          break;
       case ETK_WIDGET_VISIBLE_PROPERTY:
          etk_property_value_bool_set(value, widget->visible);
