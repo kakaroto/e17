@@ -1,21 +1,24 @@
 Etk version 0.02
 ================
 
-NOTE:
-=====
-THIS IS STILL UNDER DEV! NO AUTOFOO! NO DETECTION! THE API WILL BE CHANGING
-OVER THE NEXT FEW DAYS / WEEKS! LOOK AT test.pl OR test/ FOR EXAMPLES.
+These are the Etk bindings for the Enlightenment Toolkit (etk)
+This version is a direct almost 1-to-1 mapping of the C function
+calls into a Perl OO interface.
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+In order to find out how the functions map, you need to remove
+the namespace from the function, ex:
 
-A README file is required for CPAN modules since CPAN extracts the
-README file from a module distribution so that people browsing the
-archive can use it get an idea of the modules uses. It is usually a
-good idea to provide version information here so that people can
-decide whether fixes for the module are worth downloading.
+The C function call:  etk_window_title_set(window, title);
+translates into: $window->title_set($title);
+where $window is an object of type Etk::Window
+
+Alternatively, there is another calling technique which
+removes underscores and uppercases the first letter of 
+each word: $window->TitleSet($title);
+
+This calling technique is for now converted with a regular 
+expression into the real function call, so it has its problems.
+
 
 INSTALLATION
 
@@ -23,18 +26,16 @@ To install this module type the following:
 
    perl Makefile.PL
    make
-   make test
+   make test 
    make install
 
 DEPENDENCIES
 
-This module requires these other modules and libraries:
-
-  blah blah blah
+This module requires the etk library.
+You can get etk from the Enlightenment CVS repository:
+http://www.enlightenment.org/??/Get_Enlightenment/
 
 COPYRIGHT AND LICENCE
-
-Put the correct copyright and licence information here.
 
 Copyright (C) 2006 by Hisham Mardam Bey
 

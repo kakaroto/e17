@@ -13,7 +13,7 @@ XSLoader::load('Etk', $VERSION);
 use Etk::Object;
 
 # initialize Etk
-Etk::init("ecore_evas_software_x11");
+Etk::init();
 
 END {
 	Etk::shutdown();

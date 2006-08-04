@@ -129,46 +129,30 @@ callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
-   Etk_Event_Mouse_Up_Down *event = value;   
    HV *event_hv;
    SV *event_rv;
    cbd = data;   
    
-   if(!strcmp(cbd->signal_name, "mouse_up"))
+   if(!strcmp(cbd->signal_name, "mouse_up") || !strcmp(cbd->signal_name, "mouse_down"))
      {	
-	event_hv = (HV*)sv_2mortal((SV*)newHV());	
-	event_rv = newSViv(event->canvas.x);
-	hv_store(event_hv, "canvas_x", strlen("canvas_x"), event_rv, 0);
-	event_rv = newSViv(event->canvas.y);
-	hv_store(event_hv, "canvas_y", strlen("canvas_y"), event_rv, 0);
-	event_rv = newSViv(event->widget.x);
-	hv_store(event_hv, "widget_x", strlen("widget_x"), event_rv, 0);
-	event_rv = newSViv(event->widget.y);
-	hv_store(event_hv, "widget_y", strlen("widget_y"), event_rv, 0);
-	event_rv = newRV((SV*)event_hv);	
+        Etk_Event_Mouse_Up_Down *event = value;   
+	event_rv = newSVEventMouseUpDown(event);
      }
-   else if(!strcmp(cbd->signal_name, "row_mouse_in"))
+   else if(!strcmp(cbd->signal_name, "mouse_move"))
      {
-	SV *row_rv;
-	HV *row_hv;
-	row_rv = newRV(newSViv(0));
-	sv_setref_iv(row_rv, "Etk_Tree_RowPtr", (IV) value);
-	row_hv = newHV();
-	hv_store(row_hv, "WIDGET", strlen("WIDGET"), row_rv, 0);
-	event_rv = newRV((SV*)row_hv);
-	sv_bless(event_rv, gv_stashpv("Etk::Tree::Row", FALSE));
+	Etk_Event_Mouse_Move *event = value;
+	event_rv = newSVEventMouseMove(event);
      }
-   else if(!strcmp(cbd->signal_name, "row_mouse_out"))
+   else if(!strcmp(cbd->signal_name, "row_mouse_in") || !strcmp(cbd->signal_name, "row_mouse_out"))
      {
-	SV *row_rv;
-	HV *row_hv;
-	row_rv = newRV(newSViv(0));
-	sv_setref_iv(row_rv, "Etk_Tree_RowPtr", (IV) value);
-	row_hv = newHV();
-	hv_store(row_hv, "WIDGET", strlen("WIDGET"), row_rv, 0);
-	event_rv = newRV((SV*)row_hv);
-	sv_bless(event_rv, gv_stashpv("Etk::Tree::Row", FALSE));
-     }      
+	event_rv = newSVEtkTreeRowPtr((Etk_Tree_Row *)value);
+     }
+   else if(!strcmp(cbd->signal_name, "key_down") || !strcmp(cbd->signal_name, "key_up"))
+     {
+	Etk_Event_Key_Up_Down *key_event = value;
+	event_rv = newSVEventKeyUpDown(key_event);
+
+     }
    else
      {
 	event_hv = (HV*)sv_2mortal((SV*)newHV());
@@ -292,8 +276,7 @@ __etk_signal_connect_full(char *signal_name, SV *object, SV *callback, SV *data,
 	cbd = calloc(1, sizeof(Callback_Signal_Data));
 	cbd->signal_name = strdup(signal_name);
 	cbd->object = obj;
-	//cbd->perl_object = newSViv((IV)obj);
-	cbd->perl_object = object;
+	cbd->perl_object = newSVsv(object);
 	cbd->perl_data = newSVsv(data);
 	cbd->perl_callback = newSVsv(callback);	
 	
@@ -503,70 +486,14 @@ Etk_Tree_Col * col, void * data )
 
 	
 
-Etk_Size
-perl_hash_to_size(SV * size)
-{
-	dSP;
-	Etk_Size s;
-	
-	ENTER;
-	SAVETMPS;
-	
-	if (SvROK(size) && SvTYPE(SvRV(size)) == SVt_PVHV) 
-	{
-	    HV * hash;
-	    SV ** val;
-
-	    hash = (HV*)SvRV(size);
-
-	    val = hv_fetch(hash, "w", strlen("w"), 0);
-	    s.w = val ? SvIV(*val) : 0;
-
-	    val = hv_fetch(hash, "h", strlen("h"), 0);
-	    s.h = val ? SvIV(*val) : 0;
-
-	}
-
-	PUTBACK;
-	FREETMPS;
-	LEAVE;
-	
-	return s;
-}	
-
-HV *
-size_to_perl_hash(Etk_Size s)
-{
-	dSP;
-	HV * hv;
-	SV * size;
-	
-	ENTER;
-	SAVETMPS;
-	
-	hv = (HV*)sv_2mortal((SV*)newHV());
-
-	size = newSViv(s.w);
-        hv_store(hv, "w", strlen("w"), size, 0);
-	size = newSViv(s.h);
-        hv_store(hv, "h", strlen("h"), size, 0);
-	
-	PUTBACK;
-	FREETMPS;
-	LEAVE;
-	
-	return hv;
-}	
-
 MODULE = Etk		PACKAGE = Etk	PREFIX = etk_
 
 INCLUDE: const-xs.inc
 
 Etk_Bool
-etk_init(engine)
-	const char * engine
+etk_init()
 	CODE:
-	RETVAL = etk_init(engine);
+	RETVAL = etk_init(NULL, NULL);
 	__etk_perl_inheritance_init();
 	OUTPUT:
 	RETVAL
@@ -1257,6 +1184,31 @@ etk_combobox_item_remove(combobox, item)
 	Etk_Combobox *	combobox
 	Etk_Combobox_Item *	item
 
+# void
+# etk_combobox_item_col_set(item, col, data)
+#	Etk_Combobox_Item * item
+#	int col
+#	SV * data
+#	CODE:
+# /	if (SvPOK(data))
+#		etk_combobox_item_col_set(item, col, SvPV_nolen(data));
+# /	else
+#		etk_combobox_item_col_set(item, col, SvEtkWidgetPtr(data));
+#
+# SV *
+# etk_combobox_item_col_get(item, col, type=0)
+#	Etk_Combobox_Item * item
+#	int col
+#	int type
+#	CODE:
+#	void * data;
+#	data = etk_combobox_item_col_get(item, col);
+# /	if (type == 0)
+#		RETVAL = sv_2mortal(newSVpv((char *)data, 0));
+# /	else
+# 		RETVAL = sv_2mortal(newSVEtkWidgetPtr((Etk_Widget *)data));
+#	OUTPUT:
+#	RETVAL
 
 MODULE = Etk::Container	PACKAGE = Etk::Container	PREFIX = etk_container_
 
@@ -2651,166 +2603,6 @@ etk_progress_bar_text_set(progress_bar, label)
 	char *	label
 
 
-MODULE = Etk	PACKAGE = Etk	
-
-
-
-Etk_Bool
-etk_property_default_value_set(property, default_value)
-	Etk_Property *	property
-	Etk_Property_Value *	default_value
-
-void
-etk_property_delete(property)
-	Etk_Property *	property
-
-Etk_Property *
-etk_property_new(name, property_id, type, flags, default_value)
-	char *	name
-	int	property_id
-	Etk_Property_Type	type
-	Etk_Property_Flags	flags
-	Etk_Property_Value *	default_value
-
-Etk_Property_Value *
-etk_property_value_bool(value)
-	Etk_Bool	value
-
-Etk_Bool
-etk_property_value_bool_get(value)
-	Etk_Property_Value *	value
-
-void
-etk_property_value_bool_set(property_value, value)
-	Etk_Property_Value *	property_value
-	Etk_Bool	value
-
-Etk_Property_Value *
-etk_property_value_char(value)
-	char	value
-
-char
-etk_property_value_char_get(value)
-	Etk_Property_Value *	value
-
-void
-etk_property_value_char_set(property_value, value)
-	Etk_Property_Value *	property_value
-	char	value
-
-Etk_Property_Value *
-etk_property_value_create(type, ...)
-	Etk_Property_Type	type
-
-void
-etk_property_value_delete(value)
-	Etk_Property_Value *	value
-
-Etk_Property_Value *
-etk_property_value_double(value)
-	double	value
-
-double
-etk_property_value_double_get(value)
-	Etk_Property_Value *	value
-
-void
-etk_property_value_double_set(property_value, value)
-	Etk_Property_Value *	property_value
-	double	value
-
-Etk_Property_Value *
-etk_property_value_float(value)
-	float	value
-
-float
-etk_property_value_float_get(value)
-	Etk_Property_Value *	value
-
-void
-etk_property_value_float_set(property_value, value)
-	Etk_Property_Value *	property_value
-	float	value
-
-void
-etk_property_value_get(value, type, value_location)
-	Etk_Property_Value *	value
-	Etk_Property_Type	type
-	void *	value_location
-
-Etk_Property_Value *
-etk_property_value_int(value)
-	int	value
-
-int
-etk_property_value_int_get(value)
-	Etk_Property_Value *	value
-
-void
-etk_property_value_int_set(property_value, value)
-	Etk_Property_Value *	property_value
-	int	value
-
-Etk_Property_Value *
-etk_property_value_long(value)
-	long	value
-
-long
-etk_property_value_long_get(value)
-	Etk_Property_Value *	value
-
-void
-etk_property_value_long_set(property_value, value)
-	Etk_Property_Value *	property_value
-	long	value
-
-Etk_Property_Value *
-etk_property_value_new()
-
-Etk_Property_Value *
-etk_property_value_pointer(value)
-	void *	value
-
-void *
-etk_property_value_pointer_get(value)
-	Etk_Property_Value *	value
-
-void
-etk_property_value_pointer_set(property_value, value)
-	Etk_Property_Value *	property_value
-	void *	value
-
-void
-etk_property_value_set(property_value, type, ...)
-	Etk_Property_Value *	property_value
-	Etk_Property_Type	type
-
-Etk_Property_Value *
-etk_property_value_short(value)
-	short	value
-
-short
-etk_property_value_short_get(value)
-	Etk_Property_Value *	value
-
-void
-etk_property_value_short_set(property_value, value)
-	Etk_Property_Value *	property_value
-	short	value
-
-Etk_Property_Value *
-etk_property_value_string(value)
-	char *	value
-
-const char *
-etk_property_value_string_get(value)
-	Etk_Property_Value *	value
-
-void
-etk_property_value_string_set(property_value, value)
-	Etk_Property_Value *	property_value
-	char *	value
-
 MODULE = Etk::RadioButton	PACKAGE = Etk::RadioButton	PREFIX = etk_radio_button_
 
 Etk_Widget *
@@ -3138,8 +2930,16 @@ Etk_Textblock *
 etk_text_view_textblock_get(text_view)
 	Etk_Text_View * text_view
 
+Etk_Textblock_Iter *
+etk_text_view_cursor_get(text_view)
+	Etk_Text_View *text_view
 
-MODULE = Etk::TextBlock	PACKAGE = Etk::TextBlock	PREFIX = etk_textblock_
+Etk_Textblock_Iter *
+etk_text_view_selection_bound_get(text_view)
+	Etk_Text_View *text_view
+
+
+MODULE = Etk::TextBlock::Iter	PACKAGE = Etk::TextBlock::Iter	PREFIX = etk_textblock_iter_
 
 void
 etk_textblock_iter_copy(iter, dest_iter)
@@ -3150,41 +2950,60 @@ void
 etk_textblock_iter_free(iter)
 	Etk_Textblock_Iter *	iter
 
+void 
+etk_textblock_iter_gravity_set(iter, gravity)
+	Etk_Textblock_Iter *iter
+	Etk_Textblock_Gravity gravity
+
+Etk_Textblock_Gravity
+etk_textblock_iter_gravity_get(iter)
+	Etk_Textblock_Iter *iter
+
 void
-etk_textblock_iter_goto_end(iter)
+etk_textblock_iter_forward_end(iter)
 	Etk_Textblock_Iter *	iter
 
 void
-etk_textblock_iter_goto_next_char(iter)
+etk_textblock_iter_backward_char(iter)
 	Etk_Textblock_Iter *	iter
 
 void
-etk_textblock_iter_goto_prev_char(iter)
+etk_textblock_iter_forward_char(iter)
 	Etk_Textblock_Iter *	iter
 
 void
-etk_textblock_iter_goto_start(iter)
+etk_textblock_iter_backward_start(iter)
 	Etk_Textblock_Iter *	iter
+
+int
+etk_textblock_iter_compare(iter1, iter2)
+	Etk_Textblock_Iter *iter1
+	Etk_Textblock_Iter *iter2
 
 Etk_Textblock_Iter *
-etk_textblock_iter_new(textblock)
+new(class, textblock)
+	SV * class
 	Etk_Textblock *	textblock
+	CODE:
+	RETVAL = etk_textblock_iter_new(textblock);
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::TextBlock	PACKAGE = Etk::TextBlock	PREFIX = etk_textblock_
 
 Etk_Textblock *
-etk_textblock_new()
-
-void
-etk_textblock_realize(textblock, evas)
-	Etk_Textblock *	textblock
-	Evas *	evas
+new(class)
+	SV * class
+	CODE:
+	RETVAL = etk_textblock_new();
+	OUTPUT:
+	RETVAL
 
 void
 etk_textblock_text_set(textblock, text, markup)
 	Etk_Textblock *	textblock
 	char *	text
         Etk_Bool markup
-	CODE:
-	etk_textblock_text_set(ETK_TEXTBLOCK(textblock), text, markup);
 	
 const char *
 etk_textblock_text_get(tb, markup)
@@ -3198,6 +3017,60 @@ etk_textblock_text_get(tb, markup)
 void
 etk_textblock_unrealize(textblock)
 	Etk_Textblock *	textblock
+
+const char *
+etk_textblock_range_text_get(tb, iter1, iter2, markup)
+	Etk_Textblock *tb
+	Etk_Textblock_Iter * iter1
+	Etk_Textblock_Iter * iter2
+	Etk_Bool markup
+	CODE:
+	RETVAL = etk_string_get(etk_textblock_range_text_get(tb, iter1, iter2, markup));
+	OUTPUT:
+	RETVAL
+
+void
+etk_textblock_insert(tb, iter, txt)
+	Etk_Textblock *tb
+	Etk_Textblock_Iter *iter
+	SV * txt
+	CODE:
+	int length;
+	const char * text;
+	text = SvPV(txt, length);
+	etk_textblock_insert(tb, iter, text, length);
+
+void
+etk_textblock_insert_markup(tb, iter, txt)
+	Etk_Textblock *tb
+	Etk_Textblock_Iter *iter
+	SV * txt
+	CODE:
+	int length;
+	const char * text;
+	text = SvPV(txt, length);
+	etk_textblock_insert_markup(tb, iter, text, length);
+
+void
+etk_textblock_clear(tb)
+	Etk_Textblock *tb
+
+void
+etk_textblock_delete_before(tb, iter)
+	Etk_Textblock *tb
+	Etk_Textblock_Iter *iter
+
+void
+etk_textblock_delete_after(tb, iter)
+	Etk_Textblock *tb
+	Etk_Textblock_Iter *iter
+
+void
+etk_textblock_delete_range(tb, iter1, iter2)
+	Etk_Textblock *tb
+	Etk_Textblock_Iter *iter1
+	Etk_Textblock_Iter *iter2
+
 
 
 MODULE = Etk::Theme	PACKAGE = Etk::Theme	PREFIX = etk_theme_
@@ -3977,81 +3850,6 @@ etk_tree_row_select(row)
 void
 etk_tree_row_unselect(row)
 	Etk_Tree_Row *	row
-
-
-
-MODULE = Etk	PACKAGE = Etk
-
-void
-etk_type_delete(type)
-	Etk_Type *	type
-
-void
-etk_type_destructors_call(type, object)
-	Etk_Type *	type
-	Etk_Object *	object
-
-Etk_Bool
-etk_type_inherits_from(type, parent)
-	Etk_Type *	type
-	Etk_Type *	parent
-
-const char *
-etk_type_name_get(type)
-	Etk_Type *	type
-
-Etk_Type *
-etk_type_new(type_name, parent_type, type_size, arg3, arg4)
-	char *	type_name
-	Etk_Type *	parent_type
-	int	type_size
-	Etk_Constructor arg3
-	Etk_Destructor 	arg4
-
-void
-etk_type_object_construct(type, object)
-	Etk_Type *	type
-	Etk_Object *	object
-
-
-Etk_Property *
-etk_type_property_add(type, name, property_id, property_type, flags, default_value)
-	Etk_Type *	type
-	char *	name
-	int	property_id
-	Etk_Property_Type	property_type
-	Etk_Property_Flags	flags
-	Etk_Property_Value *	default_value
-
-Etk_Bool
-etk_type_property_find(type, name, property_owner, property)
-	Etk_Type *	type
-	char *	name
-	Etk_Type **	property_owner
-	Etk_Property **	property
-
-void
-etk_type_property_list(type, properties)
-	Etk_Type *	type
-	Evas_List **	properties
-
-void
-etk_type_shutdown()
-
-void
-etk_type_signal_add(type, signal)
-	Etk_Type *	type
-	Etk_Signal *	signal
-
-Etk_Signal *
-etk_type_signal_get(type, signal_name)
-	Etk_Type *	type
-	char *	signal_name
-
-void
-etk_type_signal_remove(type, signal)
-	Etk_Type *	type
-	Etk_Signal *	signal
 
 
 MODULE = Etk::VBox	PACKAGE = Etk::VBox	PREFIX = etk_vbox_

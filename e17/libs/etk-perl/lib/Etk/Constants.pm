@@ -14,7 +14,8 @@ our %EXPORT_TAGS = (
     PointerVDoubleArrow PointerResize PointerResizeTL PointerResizeT 
     PointerResizeTR PointerResizeR PointerResizeBR PointerResizeB 
     PointerResizeBL PointerResizeL PointerTextEdit PointerDndDrop/],
-   tree		=> [qw/ModeList ModeTree FromFile FromEdje/]
+   tree		=> [qw/ModeList ModeTree FromFile FromEdje/],
+   textblock	=> [qw/GravityLeft GravityRight/]
 
    );
 
@@ -108,6 +109,13 @@ use constant
 {
     FromFile => 0,
     FromEdje => 1
+};
+
+# textblock gravity
+use constant
+{
+    GravityLeft => 0,
+    GravityRight => 1
 };
 
 

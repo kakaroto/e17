@@ -66,7 +66,7 @@ Etk_Scrolled_View_Policy *			T_PTROBJ
 Etk_Signal *					T_PTROBJ
 Etk_Signal_Callback *				T_PTROBJ
 Etk_Signal_Callback_Function			T_CALLBACK
-Etk_Size *					T_PTROBJ
+Etk_Size *					T_SIZE
 Etk_Statusbar *					T_PTROBJ_ETK
 Etk_Separator *					T_PTROBJ_ETK
 Etk_HSeparator *				T_PTROBJ_ETK
@@ -83,6 +83,7 @@ Etk_Table *					T_PTROBJ_ETK
 Etk_Text_View *					T_PTROBJ_ETK
 Etk_Textblock *					T_PTROBJ_ETK
 Etk_Textblock_Iter *				T_PTROBJ_ETK
+Etk_Textblock_Gravity				T_IV
 Etk_Toggle_Button *				T_PTROBJ_ETK
 Etk_Toplevel_Widget *				T_PTROBJ_ETK
 Etk_Tree *					T_PTROBJ_ETK
@@ -151,6 +152,11 @@ T_GEOMETRY_PTR
 		croak(\"$var is not of type ${ntype}\");
 	$var = SvGeometryPtr($arg);
 
+T_SIZE
+	if (!$arg || !SvOK($arg))
+		croak(\"$var is not of type ${ntype}\");
+	$var = SvSizePtr($arg);
+
 T_TROBJ_EVAS_LIST
 	if (!$arg || !SvOK($arg))
 		croak(\"$var is not of type ${ntype}\");
@@ -181,7 +187,11 @@ T_GEOMETRY_PTR
 	do {
 	$arg = sv_2mortal(newSVGeometryPtr($var));
 	} while(0);
-
+T_SIZE
+	do {
+	$arg = sv_2mortal(newSVSizePtr($var));
+	} while(0);
+	
 T_PTROBJ_EVAS_LIST
 	do {
 	$arg = sv_2mortal(newSVEvasList($var));

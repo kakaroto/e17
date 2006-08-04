@@ -769,8 +769,11 @@ sub combobox_window_show
     {
 	my $image2 = Etk::Image::new_from_stock($i, SizeSmall);
 	my $item = $combobox->ItemAppend($image2, Etk::Stock::label_get($i));
+#	$item->ColSet(1, Etk::Stock::label_get($i));
 	$item->DataSet($i);
     }
+
+    $combobox->ActiveItemSet($combobox->ActiveItemGet());
     
     $combobox->SignalConnect("active_item_changed", 
 	sub {
@@ -868,57 +871,138 @@ sub textview_window_show
 {
     my $win = Etk::Window->new();
     $win->TitleSet("Etk-Perl Textview Test");
-    my $vbox = Etk::VBox->new(0, 0);
+    my $vbox = Etk::VBox->new(1, 0);
 
     $win->Add($vbox);
 
-    $win->SizeRequestSet(150, 150);
-    $win->Resize(400, 300);
+    my $button = Etk::Button::new_with_label("Tag Presentation");
+    $button->SignalConnect("clicked", sub {
 
-    my $text_view = Etk::TextView->new();
+	    my $win = Etk::Window->new();
+	    $win->TitleSet("Etk-Perl Text View Test");
+	    my $vbox = Etk::VBox->new(0, 0);
+	    $win->Add($vbox);
 
-    my $text_block = $text_view->TextblockGet();
+	    $win->SizeRequestSet(150, 150);
+	    $win->Resize(400, 300);
 
-    $text_block->TextSet(
-    join ('',
-      "<p align=\"center\"><b><u><font size=18>Etk Textblock</font></u></b></p> \n",
-      "<b><u><font size=12>Supported tags:</font></u></b>\n",
-      "<p left_margin=30>",
-         "<b>&lt;b&gt;:</b> <b>Bold</b>\n",
-         "<b>&lt;i&gt;:</b> <i>Italic</i>\n",
-         "<b>&lt;u&gt;:</b> <u>Underline</u>\n",
-      "</p>" ,
-      "<p left_margin=60>",
-            "<i>type:</i> Whether the text is single or double underlined\n",
-            "<i>color1:</i> The color of the first underline\n",
-            "<i>color2:</i> The color of the second underline\n",
-      "</p>"  ,
-      "<p left_margin=30>",
-         "<b>&lt;s&gt;:</b> <s>Strikethrough</s>\n",
-      "</p>"  ,
-      "<p left_margin=60>",
-            "<i>color:</i> The color of the strikethrough\n",
-      "</p>"  ,
-      "<p left_margin=30>",
-         "<b>&lt;font&gt;:</b>\n",
-      "</p>"  ,
-      "<p left_margin=60>",
-            "<i>face:</i> The face of the font\n",
-            "<i>size:</i> The size of the font\n",
-            "<i>color:</i> The color of the font\n",
-      "</p>"  ,
-      "<p left_margin=30>",
-         "<b>&lt;style&gt;:</b>\n",
-      "</p>"  ,
-      "<p left_margin=60>",
-            "<i>effect:</i> The type of effect to apply on the text\n",
-            "<i>color1:</i> The first color of the effect\n",
-            "<i>color2:</i> The second color of the effect\n",
-      "</p>") , 1);
+	    my $text_view = Etk::TextView->new();
+
+	    my $text_block = $text_view->TextblockGet();
+
+	    $text_block->TextSet(
+	    join ('',
+	      "<p align=\"center\"><b><u><font size=18>Etk Textblock</font></u></b></p> \n",
+	      "<b><u><font size=12>Supported tags:</font></u></b>\n",
+	      "<p left_margin=30>",
+	         "<b>&lt;b&gt;:</b> <b>Bold</b>\n",
+	         "<b>&lt;i&gt;:</b> <i>Italic</i>\n",
+	         "<b>&lt;u&gt;:</b> <u>Underline</u>\n",
+	      "</p>" ,
+	      "<p left_margin=60>",
+	            "<i>type:</i> Whether the text is single or double underlined\n",
+	            "<i>color1:</i> The color of the first underline\n",
+	            "<i>color2:</i> The color of the second underline\n",
+	      "</p>"  ,
+	      "<p left_margin=30>",
+	         "<b>&lt;s&gt;:</b> <s>Strikethrough</s>\n",
+	      "</p>"  ,
+	      "<p left_margin=60>",
+	            "<i>color:</i> The color of the strikethrough\n",
+	      "</p>"  ,
+	      "<p left_margin=30>",
+	         "<b>&lt;font&gt;:</b>\n",
+	      "</p>"  ,
+	      "<p left_margin=60>",
+	            "<i>face:</i> The face of the font\n",
+	            "<i>size:</i> The size of the font\n",
+	            "<i>color:</i> The color of the font\n",
+	      "</p>"  ,
+	      "<p left_margin=30>",
+	         "<b>&lt;style&gt;:</b>\n",
+	      "</p>"  ,
+	      "<p left_margin=60>",
+	            "<i>effect:</i> The type of effect to apply on the text\n",
+	            "<i>color1:</i> The first color of the effect\n",
+	            "<i>color2:</i> The second color of the effect\n",
+	      "</p>") , 1);
 
 
-    $vbox->PackStart($text_view);
-    print $text_block->TextGet(0), "\n";
+	    $vbox->PackStart($text_view);
+
+	    $win->ShowAll();
+
+
+    });
+    $vbox->PackStart($button);
+
+    $button = Etk::Button::new_with_label("Instant Messenger");
+    $button->SignalConnect("clicked", sub {
+
+	    my $win = Etk::Window->new();
+	    $win->TitleSet("Etk Text View Test: Instant Messenger");
+	    $win->Resize(300, 300);
+	    $win->BorderWidthSet(3);
+	    
+	    my $vpaned = Etk::VPaned->new();
+	    $win->Add($vpaned);
+
+	    my $message_view = Etk::TextView->new();
+	    $message_view->SizeRequestSet(200, 100);
+	    $vpaned->Child1Set($message_view, 1);
+
+	    my $tb = $message_view->TextblockGet();
+
+	    $tb->TextSet(
+	    	"<i>Connected with David P. and Chloe O.</i>\n\n".
+		"<b><font color=#a82f2f>David P:</font></b> Hello Jack!\n".
+		"<b><font color=#a82f2f>David P:</font></b> How are you my friend?\n", 1);
+
+	    my $vbox = Etk::VBox->new(0, 0);
+	    $vpaned->Child2Set($vbox, 0);
+
+	    my $hbox = Etk::HBox->new(0, 0);
+	    $vbox->PackStart($hbox, 0, 1, 0);
+
+	    for my $b (FormatTextBold, FormatTextItalic, FormatTextUnderline) {
+		    my $button = Etk::Button::new_from_stock($b);
+		    $hbox->PackStart($button, 0, 1, 0);
+	    }
+
+	    my $editor_view = Etk::TextView->new();
+	    $editor_view->SizeRequestSet(200, 80);
+	    $vbox->PackStart($editor_view, 1, 1, 0);
+	    my @buddies = (
+		"<b><font color=#16569e>Jack B:</font></b> ",
+		"<b><font color=#609028>Chloe O:</font></b> ",
+		"<b><font color=#a82f2f>David P:</font></b> "
+	    );
+	    my $num_messages = 0;
+	    $editor_view->SignalConnect("key_down", sub {
+		    my $self = shift->TextblockGet();
+		    my $event = shift;
+		    my $message_tb = shift->TextblockGet();
+		    my $message = $self->TextGet(1);
+		    if ($event->{key} eq "Return" || $event->{key} eq "KP_Enter"){
+			    my $iter = Etk::TextBlock::Iter->new($message_tb);
+			    $iter->ForwardEnd();
+			    if ($message ne "") {
+				    $message_tb->InsertMarkup($iter, $buddies[$num_messages % @buddies]);
+				    $message_tb->InsertMarkup($iter, $message);
+				    $message_tb->Insert($iter, "\n");
+
+				    $self->Clear();
+				    $num_messages++;
+			    }
+			    $iter->free();
+			    Etk::etk_signal_stop(); # FIXME fix signals
+		    }
+
+	    }, $message_view);
+
+	    $win->ShowAll();
+    });
+    $vbox->PackStart($button);
     
     $win->ShowAll();  
 }

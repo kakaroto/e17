@@ -53,6 +53,7 @@ void __etk_perl_inheritance_init() {
 	av_push(get_av("Etk::"A"::ISA", TRUE), newSVpv("Etk::"B, strlen("Etk::"B)));
 
 	__("TextBlock", "Object");
+		__("TextBlock::Iter", "TextBlock");
 	__("Tree::Col", "Object");
 	__("Widget", "Object");
 
@@ -220,6 +221,45 @@ SV * newSVGeometry(Etk_Geometry geo) {
 	geometry = newSViv(geo.h);
         hv_store(hv, "h", strlen("h"), geometry, 0);
 	
+	return newRV((SV*)hv);
+}
+
+Etk_Size * SvSizePtr(SV * size) {
+	
+	Etk_Size * s;
+	s = malloc(sizeof(Etk_Size *));
+
+	if (SvROK(size) && SvTYPE(SvRV(size)) == SVt_PVHV) 
+	{
+	    HV * hash;
+	    SV ** val;
+
+	    hash = (HV*)SvRV(size);
+
+	    val = hv_fetch(hash, "w", strlen("w"), 0);
+	    s->w = val ? SvIV(*val) : 0;
+
+	    val = hv_fetch(hash, "h", strlen("h"), 0);
+	    s->h = val ? SvIV(*val) : 0;
+		
+	}
+
+	return s;
+}
+
+
+
+SV * newSVSizePtr(Etk_Size *size) {
+	HV *hv;
+	SV * sv;
+
+	hv = (HV*)sv_2mortal((SV*)newHV());
+
+	sv = newSViv(size->w);
+	hv_store(hv, "w", strlen("w"), sv, 0);
+	sv = newSViv(size->h);
+	hv_store(hv, "h", strlen("h"), sv, 0);
+
 	return newRV((SV*)hv);
 }
 
@@ -402,3 +442,94 @@ SV * newSVEtkMenuItemRadioPtr(Etk_Menu_Item_Radio *o) { return newSVObj(o, "Etk:
 Etk_Menu_Item_Radio * SvEtkMenuItemRadioPtr(SV *data) { return SvObj(data, "Etk::Menu::Item::Radio"); }
 SV * newSVEtkMenuItemSeparatorPtr(Etk_Menu_Item_Separator *o) { return newSVObj(o, "Etk::Menu::Item::Separator", 0); }
 Etk_Menu_Item_Separator * SvEtkMenuItemSeparatorPtr(SV *data) { return SvObj(data, "Etk::Menu::Item::Separator"); }
+
+
+#define S_STORE(A, B)\
+	if (B)\
+		hv_store(hv, A, strlen(A), newSVpv(B, 0), 0);\
+	else\
+		hv_store(hv, A, strlen(A), &PL_sv_undef, 0);
+
+#define I_STORE(A, B)\
+	hv_store(hv, A, strlen(A), B, 0);
+
+SV * newSVEventKeyUpDown(Etk_Event_Key_Up_Down *ev) {
+	HV * hv;
+	hv = (HV*)sv_2mortal((SV*)newHV());
+
+	S_STORE("keyname", ev->keyname)
+	S_STORE("key", ev->key)
+	S_STORE("string", ev->string)
+	I_STORE("timestamp", newSVuv(ev->timestamp))
+
+	return newRV((SV*)hv);
+}
+
+SV * newSVEventMouseWheel(Etk_Event_Mouse_Wheel *ev) {
+	
+	HV * hv;
+	hv = (HV*)sv_2mortal((SV*)newHV());
+
+	I_STORE("direction", newSViv(ev->direction))
+	I_STORE("z", newSViv(ev->z))
+	I_STORE("canvas.x", newSViv(ev->canvas.x))
+	I_STORE("canvas.y", newSViv(ev->canvas.y))
+	I_STORE("widget.x", newSViv(ev->widget.x))
+	I_STORE("widget.y", newSViv(ev->widget.y))
+	I_STORE("timestamp", newSVuv(ev->timestamp))
+
+	return newRV((SV*)hv);
+}
+
+SV * newSVEventMouseMove(Etk_Event_Mouse_Move *ev) {
+	
+	HV * hv;
+	hv = (HV*)sv_2mortal((SV*)newHV());
+
+	I_STORE("buttons", newSViv(ev->buttons))
+	I_STORE("cur.canvas.x", newSViv(ev->cur.canvas.x))
+	I_STORE("cur.canvas.y", newSViv(ev->cur.canvas.y))
+	I_STORE("cur.widget.x", newSViv(ev->cur.widget.x))
+	I_STORE("cur.widget.y", newSViv(ev->cur.widget.y))
+	I_STORE("prev.canvas.x", newSViv(ev->prev.canvas.x))
+	I_STORE("prev.canvas.y", newSViv(ev->prev.canvas.y))
+	I_STORE("prev.widget.x", newSViv(ev->prev.widget.x))
+	I_STORE("prev.widget.y", newSViv(ev->prev.widget.y))
+	I_STORE("timestamp", newSVuv(ev->timestamp))
+
+	return newRV((SV*)hv);
+}
+
+SV * newSVEventMouseUpDown(Etk_Event_Mouse_Up_Down *ev) {
+	
+	HV * hv;
+	hv = (HV*)sv_2mortal((SV*)newHV());
+
+	I_STORE("button", newSViv(ev->button))
+	I_STORE("canvas.x", newSViv(ev->canvas.x))
+	I_STORE("canvas.y", newSViv(ev->canvas.y))
+	I_STORE("widget.x", newSViv(ev->widget.x))
+	I_STORE("widget.y", newSViv(ev->widget.y))
+	I_STORE("timestamp", newSVuv(ev->timestamp))
+
+	return newRV((SV*)hv);
+}
+
+SV * newSVEventMouseInOut(Etk_Event_Mouse_In_Out *ev) {
+	
+	HV * hv;
+	hv = (HV*)sv_2mortal((SV*)newHV());
+
+	I_STORE("buttons", newSViv(ev->buttons))
+	I_STORE("canvas.x", newSViv(ev->canvas.x))
+	I_STORE("canvas.y", newSViv(ev->canvas.y))
+	I_STORE("widget.x", newSViv(ev->widget.x))
+	I_STORE("widget.y", newSViv(ev->widget.y))
+	I_STORE("timestamp", newSVuv(ev->timestamp))
+
+	return newRV((SV*)hv);
+}
+
+#undef S_STORE
+#undef I_STORE
+

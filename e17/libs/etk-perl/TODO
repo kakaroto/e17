@@ -1,20 +1,9 @@
 General TODO:
 =============
-- finish porting etk_test from C to perl
-- callback system needs to convert structs to perl equivalents
+- callback system needs to convert event structs to perl equivalents 
+- port evas key modifiers and locks
 - finish signal callback functions
 - perldoc everything
-- go over all enums and structs and port as needed
-- etk_property.h ?
-- etk_editable_text_object.h
-- etk_text_buffer.h
-- etk_text_iter.h
-- etk_text_view.h
-- etk_textblock.h
-- etk_type.h
-- etk_types.h
-- etk_utils.h
-- go over all list functions and check as necessary
 - create Test cases
 
 Done:
@@ -37,6 +26,17 @@ Done:
 - finish up etk_widget.h [DONE]
 - add some commonly used internal tree sorters to avoid the entire
   perl -> c -> perl ... loop when sorting trees. [DONE]
+- etk_property.h [NOT NEEDED]
+- etk_types.h [DONE]
+- etk_type.h [NOT NEEDED]
+- etk_utils.h [NOT NEEDED]
+- go over all list functions and check as necessary [DONE]
+- go over all enums and structs and port as needed [DONE]
+- finish porting etk_test from C to perl [DONE]
+- etk_text_iter.h [DONE]
+- etk_text_view.h [DONE]
+- etk_textblock.h [DONE]
+- etk_editable_text_object.h [NOT NEEDED]
 
 Pending:
 ========
