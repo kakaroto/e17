@@ -30,6 +30,7 @@ struct Etk_Canvas
    Etk_Widget widget;
 
    Evas_Object *clip;
+   Evas_List *objects;
 };
 
 Etk_Type *etk_canvas_type_get();

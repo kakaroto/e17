@@ -160,6 +160,9 @@ struct _Etk_Widget
    void (*scroll_size_get)(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
    void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
+   
+   void (*clip_set)(Etk_Widget *widget, Evas_Object *clip);
+   void (*clip_unset)(Etk_Widget *widget);
 
    void (*show)(Etk_Widget *widget);
    void (*enter)(Etk_Widget *widget);
@@ -256,7 +259,6 @@ void etk_widget_unswallow_object(Etk_Widget *swallower, Evas_Object *object);
 Etk_Bool etk_widget_is_swallowing_object(Etk_Widget *swallower, Evas_Object *object);
 Etk_Widget_Swallow_Error etk_widget_swallow_error_get();
 
-void etk_widget_theme_object_min_size_calc(Etk_Widget *widget, int *w, int *h);
 void etk_widget_theme_object_signal_emit(Etk_Widget *widget, const char *signal_name);
 void etk_widget_theme_object_part_text_set(Etk_Widget *widget, const char *part_name, const char *text);
 int etk_widget_theme_object_data_get(Etk_Widget *widget, const char *data_name, const char *format, ...);

@@ -20,7 +20,6 @@
 #define ETK_INSIDE(x, y, xx, yy, ww, hh) \
    (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
 
-/* TODO: make it portable ?? */
 /** Displays a warning in the output console */
 #define ETK_WARNING(format, ...) \
    fprintf(stderr, "Etk Warning: %s, %d: %s: " format "\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
@@ -29,5 +28,7 @@ void etk_accumulator_bool_or(void *return_value, const void *value_to_accum, voi
 void etk_accumulator_bool_and(void *return_value, const void *value_to_accum, void *data);
 void etk_accumulator_stopping_bool_or(void *return_value, const void *value_to_accum, void *data);
 void etk_accumulator_stopping_bool_and(void *return_value, const void *value_to_accum, void *data);
+
+void etk_callback_set_null(void *data);
 
 #endif

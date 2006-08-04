@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/src/lib \
 	   -I$(top_srcdir)/src/engines/ecore_evas \
 	   -I$(top_srcdir)/src/engines/ecore_evas_x11 \
 	   -I$(top_srcdir)/src/engines/ecore_evas_software_x11 \
-	   @EVAS_CFLAGS@ @ECORE_CFLAGS@
+	   @EVAS_CFLAGS@ @ECORE_CFLAGS@ -g
 
 pkgdir = $(libdir)/etk/engines
 
