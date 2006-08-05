@@ -11,9 +11,8 @@
  * @{
  */
 
-Etk_Bool etk_init(int *argc, char ***argv);
-Etk_Bool etk_init_with_options(int *argc, char ***argv, const char *extra_options);
-void etk_shutdown();
+int etk_init(int *argc, char ***argv);
+int etk_shutdown();
 
 void etk_main();
 void etk_main_quit();

@@ -1,365 +1,165 @@
 /** @file etk_argument.c */
+#include "etk_argument.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <Evas.h>
-#include "etk_utils.h"
-#include "etk_argument.h"
-
-#define ETK_ARGUMENT_FLAG_PRIV_SET (1 << 4)
-
-static Evas_Hash *_etk_argument_extra = NULL;
-static int _etk_argument_status = 0;
 
 /**
- * @brief Parses the arguments as described by the user
- * @param args the arguments you are interested in
- * @param argc the number of arguments given to your program
- * @param argv the values of the arguments given to your program
- * @return Returns an int which tells the caller about the status
- *
- * Example:
- * @code
- * static void info_func(Etk_Argument *args, int index)
- * {
- *   printf("info func!\n");
- * }
- *
- * static void text_func(Etk_Argument *args, int index)
- * {
- *    printf("text func! %s\n", args[index].data);
- * }
- *
- * static void hide_func(Etk_Argument *args, int index)
- * {
- *   printf("hide func!\n");
- * }
- *
- * Etk_Argument args[] = {
- *      { "info", 'i', NULL, info_func, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, " " },
- *      { "text", 't', NULL, text_func, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, " " },
- *      { "hide", 'h', NULL, hide_func, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, " " },
- *      { NULL,   -1,  NULL, NULL,      NULL, ETK_ARGUMENT_FLAG_NONE,     " " }
- * };
- *
- * int main(int argc, char **argv)
- * {
- *    etk_arguments_parse(args, &argc, argv);
- *
- *    return 0;
- * }
- * @endcode
+ * @addtogroup Etk_Argument
+ * @{
  */
-int etk_arguments_parse(Etk_Argument *args, int *argc, char ***argv)
-{
-   int i;
-   int ret_argc;
-   char **ret_argv;
-   int *delete; /* 1 delete, 0 keep */
-   Etk_Argument *arg;
-   
-   if(!args || !argc || !argv)
-      return ETK_ARGUMENT_RETURN_OK_NONE_PARSED;
-   /* no arguments */
-   if(*argc < 2)
-   {
-      /* check for required arguments */
-      i = 0;
-      arg = args;	     
-      while(arg->short_name != -1)
-      {
-	 if(arg->flags & ETK_ARGUMENT_FLAG_REQUIRED)
-	 {
-	    printf(_("Argument %d '-%c | --%s' is required\n"), i, arg->short_name, arg->long_name);
-	    return ETK_ARGUMENT_RETURN_REQUIRED_NOT_FOUND;
-	 }
-	 ++i; ++arg;
-      }
-      return ETK_ARGUMENT_RETURN_OK_NONE_PARSED;
-   }
-   /* create the array */
-   delete = calloc(*argc, sizeof(int));
 
-   /* arguments */ 
-   for(i = 1; i < *argc; i++)
+/**************************
+ *
+ * Implementation
+ *
+ **************************/
+
+/**
+ * @brief Checks whether the argument has been passed to the program
+ * @param argc the location of the "argc" parameter passed to main()
+ * @param argv the location of the "argv" parameter passed to main()
+ * @param long_name the complete name of the argument to find. If --long_name is found in @a argv, this function will
+ * return ETK_TRUE. It can be set to NULL to be ignored it
+ * @param short_name a shortcut for the argument to find. If -short_name is found in @a argv, this function will
+ * return ETK_TRUE. It can be set to 0 to be ignored it
+ * @param remove if @a remove is ETK_TRUE, the argument will be removed from @a argv if it has been found
+ * @return Returns ETK_TRUE if the argument has been found, ETK_FALSE otherwise
+ */
+Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, char short_name, Etk_Bool remove)
+{
+   Etk_Bool is_set = ETK_FALSE;
+   char *arg;
+   int arg_len;
+   int i, j;
+   
+   if (!argc || !argv)
+      return ETK_FALSE;
+   
+   for (i = 0; i < *argc; i++)
    {
-      char *cur;
+      if (!(arg = ((*argv)[i])))
+         continue;
       
-      cur = (*argv)[i];
-      if(!cur) continue;
+      arg_len = strlen(arg);
+      if ((arg_len == 2) && (arg[0] == '-') && (arg[1] == short_name))
+         is_set = ETK_TRUE;
+      else if ((arg_len > 2) && (arg[0] == '-') && (arg[1] == '-'))
+      {
+         if (long_name && (strcmp(&arg[2], long_name) == 0))
+            is_set = ETK_TRUE;
+      }
       
-      /* min length is 2, anything less is invalid */
-      if(strlen(cur) < 2 && cur[0] == '-')
+      if (is_set)
       {
-	 printf(_("Argument %d '%s' is too short\n"), i, (*argv)[i]);
-	 free(delete);
-	 return ETK_ARGUMENT_RETURN_MALFORMED;
+         if (remove)
+         {
+            for (j = i + 1; j < *argc; j++)
+               (*argv)[j - 1] = (*argv)[j];
+            *argc--;
+         }
+         return ETK_TRUE;
       }
-
-      /* short (single char) argument of the form -d val or -dval */
-      if(cur[0] == '-' && cur[1] != '-')
-      {
-	 arg = args;
-	 
-	 while(arg->short_name != -1)
-	 {
-	    /* match found for short arg */
-	    if(arg->short_name == cur[1])
-	    {
-	       /* check to see if arg needs value */
-	       if((arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED) &&
-		  i + 1 < *argc)
-	       {
-		  char *val = (*argv)[i + 1];
-		  
-		  /* if no value is present, report error */
-		  if(val[0] == '-')
-		  {
-		     printf(_("Argument %d '%s' requires a value\n"), i, cur);
-	             free(delete);
-		     return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
-		  }
-		  
-		  arg->data = evas_list_append(arg->data, val);
-		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
-		  _etk_argument_status = 1;
-		  ++i;
-		  delete[i] = delete[i+1] = 1;
-	       }
-	       else if (arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED
-			&& i + 1 >= *argc)
-	       {
-		  /* if no value is present, report error */
-		  printf(_("Argument %d '%s' requires a value\n"), i, cur);
-	          free(delete);
-		  return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
-	       }
-	       else if(!(arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED))
-	       {
-		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
-		  _etk_argument_status = 1;
-		  delete[i] = 1;
-	       }
-	    }
-	    ++arg;
-	 }
-      }
-      /* long argument of the form --debug or --debug=something */
-      else if(cur[0] == '-' && cur[1] == '-' && strlen(cur) > 2)
-      {
-	 arg = args;
-	 
-	 while(arg->short_name != -1)
-	 {
-	    char *tmp = NULL;
-	    char *tmp2;
-	    
-	    if(!arg->long_name)
-	      continue;
-	    
-	    /* check if arg if of the form --foo=bar */
-	    tmp = strchr(cur, '=');
-	    if(tmp)
-	    {
-	       tmp2 = cur;
-	       cur = calloc(tmp - tmp2 + 1, sizeof(char));
-	       snprintf(cur, (tmp - tmp2 + 1) * sizeof(char), "%s", tmp2);		     		       
-	    }
-	    else		    
-	      tmp = NULL;
-	    
-	    /* match found for long arg */
-	    if(!strcmp(arg->long_name, cur + 2))
-	    {		       
-	       /* check to see if arg needs value */
-	       if((arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED) &&
-		  ((i + 1 < *argc) || (tmp != NULL)))
-	       {
-		  char *val;
-		  
-		  if(!tmp)
-		    val = (*argv)[i + 1];
-		  else
-		    val = tmp + 1;			    
-		  
-		  /* if no value is present, report error */
-		  if(val[0] == '-')
-		  {
-		     printf(_("Argument %d '%s' requires a value\n"), i, cur);
-	             free(delete);
-		     return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
-		  }
-		  
-		  arg->data = evas_list_append(arg->data, val);
-		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
-		  _etk_argument_status = 1;  
-		  delete[i] = 1;
-		  
-		  if(!tmp)
-		  {
-		    ++i;
-		    delete[i+1] = 1;
-		  }
-
-	       }
-	       else if (arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED
-			&& i + 1 >= *argc)
-	       {
-		  /* if no value is present, report error */
-		  printf(_("Argument %d '%s' requires a value\n"), i, cur);
-	          free(delete);
-		  return ETK_ARGUMENT_RETURN_REQUIRED_VALUE_NOT_FOUND;
-	       }
-	       else if(!(arg->flags & ETK_ARGUMENT_FLAG_VALUE_REQUIRED))
-	       {
-		  arg->flags |= ETK_ARGUMENT_FLAG_PRIV_SET;
-		  _etk_argument_status = 1;
-		  delete[i] = 1;
-	       }		  
-	    }
-	    
-	    if(tmp)
-	    {
-	       free(cur);
-	       cur = (*argv)[i];
-	    }
-	    /* TODO test this on removing args! */	    
-	    if(arg->flags & ETK_ARGUMENT_FLAG_MULTIVALUE && i + 1 < *argc &&
-	       arg->short_name != -1 && arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET)
-	    {
-	       /* if we want multi-argument arguments like:
-		* foo --bar "one" "two" "three"
-		* then this is where we get them.
-		*/
-	       char *extra;
-	       Evas_List *value = NULL;
-	       int j = i + 1;
-	       
-	       extra = (*argv)[j];
-	       while(j < *argc)
-	       {
-		  if(extra[0] == '-')
-		  {
-		     j = *argc;
-		     break;
-		  }
-		  
-		  if(arg->long_name != NULL)
-		    value = evas_hash_find(_etk_argument_extra, arg->long_name);
-		  else if(arg->short_name != ' ' && arg->short_name != -1)
-		    value = evas_hash_find(_etk_argument_extra, &arg->short_name);
-		  else
-		    break;
-		  
-		  if(!value)
-		  {
-		     value = evas_list_append(value, extra);
-		     _etk_argument_extra = evas_hash_add(_etk_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
-		  }
-		  else
-		  {
-		     _etk_argument_extra = evas_hash_del(_etk_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
-		     value = evas_list_append(value, extra);
-		     _etk_argument_extra = evas_hash_add(_etk_argument_extra, arg->long_name ? arg->long_name : &arg->short_name, value);
-		  }
-		  
-		  ++j;
-		  extra = (*argv)[j];
-	       }
-	    }
-	    
-	    ++arg;	    
-	 }
-      }      
    }
    
-   /* check for required arguments */
-   i = 0;
-   arg = args;	     
-   while(arg->short_name != -1)
+   return ETK_FALSE;
+}
+
+/**
+ * @brief Gets the value of an argument passed to the program
+ * @param argc the location of the "argc" parameter passed to main()
+ * @param argv the location of the "argv" parameter passed to main()
+ * @param long_name the complete name of the argument to find. If --long_name is found in @a argv and is followed by a
+ * value, this function will return ETK_TRUE. It can be set to NULL to be ignored it
+ * @param short_name a shortcut for the argument to find. If -short_name is found in @a argv and is followed by a
+ * value, this function will return ETK_TRUE. It can be set to 0 to be ignored it
+ * @param remove if @a remove is ETK_TRUE, the argument and its value will be removed from @a argv
+ * if they have been found
+ * @param value the location where to store the value of the argument. You'll have to free it when you no longer need it
+ * @return Returns ETK_TRUE if the argument has been found and was followed by a value, ETK_FALSE otherwise
+ */
+Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, char short_name, Etk_Bool remove, char **value)
+{
+   int num_args = 0;
+   char *arg, *next, *value_ptr = NULL;
+   int arg_len, long_name_len = 0;
+   int i, j;
+   
+   if (!argc || !argv)
+      return ETK_FALSE;
+   
+   if (long_name)
+      long_name_len = strlen(long_name);
+   
+   for (i = 0; i < *argc; i++)
    {
-      if(!(arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET) &&
-	 arg->flags & ETK_ARGUMENT_FLAG_REQUIRED)
+      if (!(arg = (*argv)[i]))
+         continue;
+      
+      arg_len = strlen(arg);
+      if (arg_len < 2 || arg[0] != '-')
+         continue;
+      
+      /* Short argument */
+      if (arg[1] != '-')
       {
-	 printf(_("Argument %d '-%c | --%s' is required\n"), i, arg->short_name, arg->long_name);         free(delete);
-	 return ETK_ARGUMENT_RETURN_REQUIRED_NOT_FOUND;
+         if (arg[1] == short_name)
+         {
+            /* -s value */
+            if (arg_len == 2)
+            {
+               if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
+               {
+                  value_ptr = next;
+                  num_args = 2;
+               }
+            }
+            /* -svalue */
+            else
+            {
+               value_ptr = &arg[2];
+               num_args = 1;
+            }
+         }
       }
-      ++i; ++arg;
+      /* Long argument */
+      else if (long_name_len > 0)
+      {
+         if (strncmp(&arg[2], long_name, long_name_len) == 0)
+         {
+            /* --long_name value */
+            if (arg_len == long_name_len + 2)
+            {
+               if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
+               {
+                  value_ptr = next;
+                  num_args = 2;
+               }
+            }
+            /* --long_name=value */
+            else if ((arg_len > long_name_len + 3) && (arg[long_name_len + 2] == '='))
+            {
+               value_ptr = &arg[long_name_len + 3];
+               num_args = 1;
+            }
+         }
+      }
+      
+      /* A value has been found */
+      if (value_ptr)
+      {
+         if (value)
+            *value = strdup(value_ptr);
+         if (remove)
+         {
+            for (j = i + num_args; j < *argc; j++)
+               (*argv)[j - num_args] = (*argv)[j];
+            *argc--;
+         }
+         return ETK_TRUE;
+      }
    }
-   /* copy parameters */
-   ret_argc = 0;
-   ret_argv = malloc(sizeof(char *) * (*argc));
-   for(i = 0; i < *argc; i++)
-   {
-   	if(!delete[i])
-	{
-		ret_argv[ret_argc] = strdup((*argv)[i]);
-		ret_argc++;
-		/* TODO: delete this comments after correct behaviour */
-		//printf("dont delete %s\n", (*argv)[i]);
-	}
-	/*else
-		printf("deleting %s\n", (*argv)[i]);*/
-   }
-   free(delete);
-   *argv = ret_argv;
-   *argc = ret_argc;
- 
-   /* call all the callbacks */
-   i = 0;
-   arg = args;	     
-   while(arg->short_name != -1)
-   {
-      if(arg->func && arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET)
-	arg->func(args, i);
-      ++i; ++arg;
-   }
-   if(_etk_argument_status == 0)     
-     return ETK_ARGUMENT_RETURN_OK_NONE_PARSED;     
-   else
-     return ETK_ARGUMENT_RETURN_OK;
-}
-
-void etk_argument_help_show(Etk_Argument *args)
-{
-   Etk_Argument *arg;
    
-   arg = args;
-   while(arg->short_name != -1)
-     {
-	if(arg->long_name)
-	  printf("--%s ", arg->long_name);
-	if(arg->short_name != -1 && arg->short_name != ' ')
-	  printf("-%c", arg->short_name);
-	printf("\t");
-	if(arg->description)
-	  printf("%s", arg->description);
-	printf("\n");
-	++arg;
-     }
-}
-
-Evas_List *etk_argument_extra_find(const char *key)
-{
-   if(!_etk_argument_extra)
-     return NULL;
-   
-   return evas_hash_find(_etk_argument_extra, "column");
-}
-
-Etk_Bool etk_argument_is_set(Etk_Argument *args, const char *long_name, char short_name)
-{
-   Etk_Argument *arg;
-
-   arg = args;
-   while(arg->short_name != -1)
-   {
-      if((!strcmp(arg->long_name, long_name) || 
-	 (arg->short_name == short_name && short_name != -1 && short_name != ' '))
-	 && arg->flags & ETK_ARGUMENT_FLAG_PRIV_SET)
-	return ETK_TRUE;
-      ++arg;
-   }
    return ETK_FALSE;
 }
 

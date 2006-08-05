@@ -1,12 +1,12 @@
 /** @file etk_main.c */
 #include "etk_main.h"
+#include <stdlib.h>
+#include <string.h>
 #include <locale.h>
 #include <limits.h>
-#include <string.h>
 
 #include <Ecore.h>
 #include <Ecore_Job.h>
-#include <Ecore_Evas.h>
 #include <Evas.h>
 #include <Edje.h>
 #include "etk_argument.h"
@@ -33,18 +33,8 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
 
 static Evas_List *_etk_main_toplevel_widgets = NULL;
 static Etk_Bool _etk_main_running = ETK_FALSE;
-static Etk_Bool _etk_main_initialized = ETK_FALSE;
+static int _etk_main_init_count = 0;
 static Ecore_Job *_etk_main_iterate_job = NULL;
-
-/* configuration. FIXME should be on other subsystem? */
-static void _etk_main_options_setup(Etk_Argument *args, int index);
-
-Etk_Argument args[] = {
-   { "etk-engine", 0, NULL, _etk_main_options_setup, NULL, ETK_ARGUMENT_FLAG_OPTIONAL | ETK_ARGUMENT_FLAG_VALUE_REQUIRED, " " },
-   { NULL,   -1,  NULL, NULL,      NULL, ETK_ARGUMENT_FLAG_NONE,     " " }
-};
-char *_etk_engine_name = NULL;
-
 
 /**************************
  *
@@ -54,118 +44,124 @@ char *_etk_engine_name = NULL;
 
 /**
  * @brief Initializes Etk. This function needs to be called before any other call to an etk_* function. @n
- * It initializes Evas, Ecore, Ecore_Evas, Ecore_X and Edje so you do not need to initialize them manually
- * if you call etk_init().
- * @return Returns ETK_TRUE on success, ETK_FALSE on failure
+ * You can call safely etk_init() several times, it will have an effect only the first time you call it. The other times,
+ * it will just increment a counter. etk_shutdown() will decrement this counter and will effectively shutdown Etk when
+ * the counter reaches 0. So you need to call etk_shutdown() the same number of times as etk_init().
+ * @param argc the location of the "argc" paramater passed to main(). It is used to parse the arguments specific to Etk.
+ * It can be set to NULL.
+ * @param argv the location of the "argv" paramater passed to main(). It is used to parse the arguments specific to Etk.
+ * It can be set to NULL.
+ * @return Returns the number of times Etk has been initialized, or 0 on failure
+ * @note It initializes Evas, Ecore and Edje so you don't need to initialize them after an etk_init()
  * @see etk_shutdown()
  */
-Etk_Bool etk_init(int *argc, char ***argv)
+int etk_init(int *argc, char ***argv)
 {
-   int ret;
+   char *engine_name = NULL;
 
-   if (_etk_main_initialized)
-      return ETK_TRUE;
-    
-   ret = etk_arguments_parse(args, argc, argv);
-   if((ret != ETK_ARGUMENT_RETURN_OK_NONE_PARSED) && (ret != ETK_ARGUMENT_RETURN_OK))
+   if (_etk_main_init_count > 0)
    {
-      ETK_WARNING("Arguments parsing failed!");
-      return ETK_FALSE;
+      _etk_main_init_count++;
+      return _etk_main_init_count;
    }
-   /* TODO after the parsing, setup defaults if they arent set */
-   if(!_etk_engine_name)
-      _etk_engine_name = strdup("ecore_evas_software_x11");
-   
-   if (!evas_init())
+   else
    {
-      ETK_WARNING("Evas initialization failed!");
-      return ETK_FALSE;
+      /* Parse the arguments */
+      if (argc && argv)
+      {
+         etk_argument_value_get(argc, argv, "etk-engine", 'e', ETK_TRUE, &engine_name);
+      }
+      
+      /* Initialize the EFL */
+      if (!evas_init())
+      {
+         ETK_WARNING("Evas initialization failed!");
+         return 0;
+      }
+      if (!ecore_init())
+      {
+         ETK_WARNING("Ecore initialization failed!");
+         return 0;
+      }
+      if (!edje_init())
+      {
+         ETK_WARNING("Edje initialization failed!");
+         return 0;
+      }
+      
+      /* Initialize the subsystems of Etk */
+      etk_theme_init();
+      if (!etk_engine_init())
+      {
+         ETK_WARNING("Etk_Engine initialization failed!");
+         return 0;
+      }
+      if (!etk_engine_load(engine_name ? engine_name : "ecore_evas_software_x11"))
+      {
+         ETK_WARNING("Etk can not load the requested engine!");
+         return 0;
+      }
+      if (!etk_dnd_init())
+      {
+         ETK_WARNING("Etk_dnd initialization failed!");
+         return 0;
+      }
+      etk_tooltips_init();
+      
+      /* Initialize Gettext */
+      setlocale(LC_ALL, "");
+      bindtextdomain(PACKAGE, LOCALEDIR);
+      textdomain(PACKAGE);
+      
+      free(engine_name);
+      _etk_main_init_count++;
+      return _etk_main_init_count;
    }
-   if (!ecore_init())
-   {
-      ETK_WARNING("Ecore initialization failed!");
-      return ETK_FALSE;
-   }
-   if (!edje_init())
-   {
-      ETK_WARNING("Edje initialization failed!");
-      return ETK_FALSE;
-   }
-   
-   etk_theme_init();
-   if (!etk_engine_init())
-   {
-      ETK_WARNING("Etk_Engine initialization failed!");
-      return ETK_FALSE;
-   }
-   if (!etk_engine_load(_etk_engine_name))
-   {
-      ETK_WARNING("Etk can not load the requested engine!");
-      return ETK_FALSE;
-   }
-   if (!etk_dnd_init())
-   {
-      ETK_WARNING("Etk_dnd initialization failed!");
-      return ETK_FALSE;
-   }
-   etk_tooltips_init();
-   
-   /* Initialize Gettext */
-   setlocale(LC_ALL, "");
-   bindtextdomain(PACKAGE, LOCALEDIR);
-   textdomain(PACKAGE);
-   
-   _etk_main_initialized = ETK_TRUE;
-   return ETK_TRUE;
 }
+
 /**
- * @brief Initializes Etk. This function needs to be called before any other call to an etk_* function. @n
- * It initializes Evas, Ecore, Ecore_Evas, Ecore_X and Edje so you do not need to initialize them manually
- * if you call etk_init().
- * @return Returns ETK_TRUE on success, ETK_FALSE on failure
- * @see etk_shutdown()
+ * @brief Shuts down Etk. It decrements the counter of initializations. If the counter reaches 0, it frees all the
+ * resources used by Etk. @n
+ * @return Returns the new number of times Etk has been initialized. 0 means that the resources has been freed.
  */
-Etk_Bool etk_init_with_options(int *argc, char ***argv, const char *extra_options)
+int etk_shutdown()
 {
-   /* TODO: this is just a stub */
-   return ETK_TRUE;
+   if (_etk_main_init_count <= 0)
+      return 0;
+   
+   _etk_main_init_count--;
+   if (_etk_main_init_count == 0)
+   {
+      /* Shutdown the subsystem of Etk */
+      etk_object_destroy_all_objects();
+      etk_signal_shutdown();
+      etk_type_shutdown();
+      
+      etk_textblock_shutdown();
+      etk_tooltips_shutdown();
+      etk_dnd_shutdown();
+      etk_engine_shutdown();
+      etk_theme_shutdown();
+      
+      _etk_main_toplevel_widgets = evas_list_free(_etk_main_toplevel_widgets);
+      
+      /* Shutdown the EFL*/
+      edje_shutdown();
+      ecore_shutdown();
+      evas_shutdown();
+   }
+   
+   return _etk_main_init_count;
 }
 
 /**
- * @brief Shuts down Etk. @n
- * You need to call it at the shutdown of your program to free all the resources used by Etk. @n
- * It also shutdown Edje, Ecore_Evas, Ecore and Evas, so you do not need to shut them down manually
- */
-void etk_shutdown()
-{
-   if (!_etk_main_initialized)
-      return;
-
-   etk_object_destroy_all_objects();
-   etk_signal_shutdown();
-   etk_type_shutdown();
-   
-   etk_textblock_shutdown();
-   etk_tooltips_shutdown();
-   etk_dnd_shutdown();
-   etk_engine_shutdown();
-   etk_theme_shutdown();
-   
-   edje_shutdown();
-   ecore_shutdown();
-   evas_shutdown();
-   _etk_main_toplevel_widgets = evas_list_free(_etk_main_toplevel_widgets);
-
-   _etk_main_initialized = ETK_FALSE;
-}
-
-/**
- * @brief Runs the Etk's main loop (and Ecore's too) until etk_main_quit() is called. @n
- * The main look updates the widgets that need to be.
+ * @brief Runs the Etk's main loop until etk_main_quit() is called.
+ * @note It calls ecore_main_loop_begin() so you should not call ecore_main_loop_begin() or ecore_main_loop_quit()
+ * if you are using etk_main() in your program.
  */
 void etk_main()
 {
-   if (!_etk_main_initialized || _etk_main_running)
+   if (_etk_main_init_count <= 0 || _etk_main_running)
       return;
    
    _etk_main_running = ETK_TRUE;
@@ -173,8 +169,8 @@ void etk_main()
 }
 
 /**
- * @brief Leaves the main loop of Etk. @n
- * It will quit the main loop of Ecore and will make etk_main() return.
+ * @brief Leaves the main loop of Etk. It will quit the main loop of Ecore (ecore_main_loop_quit())
+ * and will make etk_main() return.
  */
 void etk_main_quit()
 {
@@ -197,7 +193,7 @@ void etk_main_iterate()
    Evas_List *l;
    Etk_Widget *widget;
 
-   if (!_etk_main_initialized)
+   if (_etk_main_init_count <= 0)
       return;
 
    /* TODO: only update the toplevel widgets that need to be updated */
@@ -210,8 +206,8 @@ void etk_main_iterate()
 }
 
 /**
- * @brief Queues an iteration: it will run an iteration as soon as possible.
- * You do not need to call it manually.
+ * @internal
+ * @brief Queues an iteration: it will run an iteration as soon as possible
  */
 void etk_main_iteration_queue()
 {
@@ -220,7 +216,8 @@ void etk_main_iteration_queue()
 }
 
 /**
- * @brief Adds the widget to the list of toplevel widgets. For internal use only!
+ * @internal
+ * @brief Adds the widget to the list of toplevel widgets
  * @param widget the toplevel widget to add
  */
 void etk_main_toplevel_widget_add(Etk_Toplevel_Widget *widget)
@@ -231,7 +228,8 @@ void etk_main_toplevel_widget_add(Etk_Toplevel_Widget *widget)
 }
 
 /**
- * @brief Removes the widget from the list of toplevel widgets. For internal use only!
+ * @internal
+ * @brief Removes the widget from the list of toplevel widgets
  * @param widget the toplevel widget to remove
  */
 void etk_main_toplevel_widget_remove(Etk_Toplevel_Widget *widget)
@@ -299,15 +297,4 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
       _etk_main_size_allocate_recursive(ETK_WIDGET(l->data), ETK_FALSE);
 }
 
-/* Setup parsed values. FIXME this should be on other subsystem (config?) */
-static void _etk_main_options_setup(Etk_Argument *args, int index)
-{
-   Evas_List *l;
-
-   l = args[index].data;
-   if(!strcmp(args[index].long_name, "etk-engine"))
-   {
-	_etk_engine_name = l->data;
-   }
-}
 /** @} */
