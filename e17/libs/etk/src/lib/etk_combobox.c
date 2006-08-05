@@ -986,7 +986,7 @@ static void _etk_combobox_active_item_size_allocate(Etk_Widget *widget, Etk_Geom
             col_geometry.w = combobox->cols[i]->size;
       }
       
-      if (combobox->active_item_children[j])
+      if (combobox->active_item_children && combobox->active_item_children[j])
       {
          memcpy(&child_geometry, &col_geometry, sizeof(Etk_Geometry));
          etk_container_child_space_fill(combobox->active_item_children[j], &child_geometry,
