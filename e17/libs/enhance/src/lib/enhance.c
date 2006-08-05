@@ -695,36 +695,57 @@ _e_signal_handle(Enhance *en, EXML_Node *node)
    void     *handle;
    void     *data = NULL;
    etk_callback_type func;   
+   Evas_List *signals;
+   char     **sig_hndl;
    
    name = ecore_hash_get(node->attributes, "name");
    if(!name) return;
-      
+
    handler = ecore_hash_get(node->attributes, "handler");
    if(!handler) return;
    
-   handle = dlopen(NULL, RTLD_NOW | RTLD_LOCAL);
-   if(!handle)
-     return;
-   
-   func = dlsym(handle, handler);
-   if(!func)
-     {
-	printf("ENHANCE ERROR!!!\n"
-	       "Error loading dynamic callback: %s\n"
-	       "%s\n",
-	       handler, dlerror());
-	return;
-     }
-   
    parent_id = ecore_hash_get(node->parent->attributes, "id");
    if(!parent_id) return;
-   wid = evas_hash_find(en->widgets, parent_id);
-   if(!wid) return;
+      
+   if (en->signal_handling == ENHANCE_SIGNAL_CONNECT)
+   {
+      handle = dlopen(NULL, RTLD_NOW | RTLD_LOCAL);
+      if(!handle)
+        return;
+      
+      func = dlsym(handle, handler);
+      if(!func)
+        {
+      printf("ENHANCE ERROR!!!\n"
+             "Error loading dynamic callback: %s\n"
+             "%s\n",
+             handler, dlerror());
+      return;
+        }
    
-   data = evas_hash_find(en->callback_data, handler);
-   
-   etk_signal_connect(name, ETK_OBJECT(wid->wid), 
-		      ETK_CALLBACK(func), data);
+      wid = evas_hash_find(en->widgets, parent_id);
+      if(!wid) return;
+      
+      data = evas_hash_find(en->callback_data, handler);
+      
+      etk_signal_connect(name, ETK_OBJECT(wid->wid), 
+               ETK_CALLBACK(func), data);
+      return;
+   } 
+   else 
+   {
+      sig_hndl = calloc(2, sizeof(char*));
+      sig_hndl[0] = name;
+      sig_hndl[1] = handler;
+
+#if DEBUG         
+      printf("STORING %s <<< %s => %s\n", parent_id, sig_hndl[0], sig_hndl[1]);
+#endif      
+
+      signals = evas_hash_find(en->signals, parent_id);
+      signals = evas_list_append(signals, sig_hndl);
+      en->signals = evas_hash_add(en->signals, parent_id, signals);  
+   }
 }   
 
 void
@@ -831,7 +852,7 @@ _e_traverse_signal_xml(Enhance *en)
    xml = en->xml;
    node = exml_get(xml);
 	
-   _e_signal_handle(en, node);
+   if (en->signal_handling != ENHANCE_SIGNAL_NONE) _e_signal_handle(en, node);
 }
 
 
@@ -962,8 +983,10 @@ _e_traverse_xml(Enhance *en)
    
    xml = en->xml;
    
-   if((tag = exml_down(xml)) == NULL)
+   if((tag = exml_down(xml)) == NULL) {
+     printf("No tags\n");
      return;
+   }
    
    do
      {
@@ -978,6 +1001,17 @@ _e_traverse_xml(Enhance *en)
    exml_up(xml);
 }
 
+Enhance_Signal_Handling
+enhance_signal_handling_get(Enhance *en)
+{
+   return en->signal_handling;
+}
+
+void
+enhance_signal_handling_set(Enhance *en, Enhance_Signal_Handling mode)
+{
+   en->signal_handling = mode;
+}
 
 void
 enhance_file_load(Enhance *en, char *main_window, char *file)
@@ -1014,6 +1048,55 @@ enhance_var_get(Enhance *en, char *string)
    return NULL;
 }
 
+int
+enhance_signals_count(Enhance *en, char *widget)
+{
+   Evas_List *signals;
+   
+   signals = evas_hash_find(en->signals, widget);
+#if DEBUG      
+   printf("READING %p \n", signals);
+#endif   
+   return evas_list_count(signals);
+}
+
+void
+_enhance_enum_copy(Evas_List *cur, char **signal, char **handler)
+{
+   char **sig_hndl;
+   
+   sig_hndl = cur->data; 
+   *signal = sig_hndl[0];
+   *handler = sig_hndl[1];
+#if DEBUG      
+   printf("PRINTING: %s => %s\n", *signal, *handler);
+#endif   
+}
+
+Enhance_Signals_Enumerator 
+enhance_signals_first(Enhance *en, char* widget, char **signal, char **handler)
+{
+   Evas_List *signals;
+   
+#if DEBUG      
+   printf("PRINTING BF: %p => %p\n", signal, handler);
+#endif
+   
+   signals = evas_hash_find(en->signals, widget);
+   if (signals != NULL) _enhance_enum_copy(signals, signal, handler);
+   return (Enhance_Signals_Enumerator) signals;
+}
+
+Enhance_Signals_Enumerator 
+enhance_signals_next(Enhance *en, Enhance_Signals_Enumerator current, char **signal, char **handler)
+{
+   Evas_List *signals;
+   
+   signals = evas_list_next((Evas_List*) current);
+   if (signals != NULL) _enhance_enum_copy(signals, signal, handler);
+   return (Enhance_Signals_Enumerator) signals;
+}
+
 void
 enhance_callback_data_set(Enhance *en, char *cb_name, void *data)
 {
@@ -1031,7 +1114,8 @@ enhance_new()
 {   
    Enhance *en = NULL;
    
-   en = E_NEW(1, Enhance);   
+   en = E_NEW(1, Enhance);
+   en->signal_handling = ENHANCE_SIGNAL_CONNECT;
    return en;
 }
 
@@ -1053,14 +1137,34 @@ _e_widget_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
    return 1;
 }
 
+static Evas_Bool
+_e_signal_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+{  
+   Evas_List  *signals;
+   Evas_List *l;   
+   
+   signals = data;   
+   for(l = signals; l; l = l->next)
+     E_FREE(l->data);   
+   evas_list_free(signals);
+   
+   return 1;
+}
+
 void
 enhance_free(Enhance *en)
 {
    if(!en) return;
    exml_destroy(en->xml);
+   
    evas_hash_foreach(en->widgets, _e_widget_hash_free, en);
    evas_hash_free(en->widgets);
+   
+   evas_hash_foreach(en->signals, _e_signal_hash_free, en);
+   evas_hash_free(en->signals);
+   
    ecore_hash_destroy(_en_stock_items_hash);
+   
    E_FREE(en->main_window);
    E_FREE(en);   
 }
