@@ -52,6 +52,9 @@ static sqlite3 *db;
 static int _evfs_metadata_db_wait = 0;
 static Ecore_DList* evfs_metdata_db_results = NULL;
 
+/*Directory scan queue*/
+static Ecore_List* evfs_metadata_directory_scan_queue = NULL;
+
 /*--*/
 static Ecore_List* evfs_metadata_queue = NULL;
 pid_t _metadata_fork= 0;
@@ -69,6 +72,7 @@ typedef struct {
 } evfs_metadata_db_result;
 
 int evfs_metadata_extract_runner(void* data);
+int evfs_metadata_scan_runner(void* data);
 
 
 /*DB Helper functions*/
@@ -278,9 +282,11 @@ void evfs_metadata_initialise()
 {
 	struct stat config_dir_stat;
 	Evas_List* group;
+	char tmp[1024];
 	char* data;
 	int size;
 	int ret;
+	evfs_filereference* ref;
 	
 	if (!evfs_metadata_state) {
 		evfs_metadata_state++;
@@ -293,6 +299,7 @@ void evfs_metadata_initialise()
 	if (!evfs_object_client_is_get()) {
 		printf(". EVFS metadata initialise..\n");
 
+		/*Setup the metadata extract queue*/
 		evfs_metadata_queue = ecore_list_new();
 
 		/*String edd*/
@@ -373,9 +380,17 @@ void evfs_metadata_initialise()
 			eet_close(_evfs_metadata_eet);
 		}
 
-	
 		evfs_metadata_db_init(&db);
 
+		/*Setup the directory scan queue*/
+		ref = NEW(evfs_filereference);
+		ref->plugin_uri = strdup("file");
+		ref->path = homedir;
+
+		evfs_metadata_directory_scan_queue = ecore_list_new();
+		ecore_list_append(evfs_metadata_directory_scan_queue, ref);
+
+		ecore_timer_add(1.0, evfs_metadata_scan_runner, NULL);
 		ecore_timer_add(1.0, evfs_metadata_extract_runner, NULL);
 	}
 
@@ -397,9 +412,9 @@ Evas_List* evfs_metadata_groups_get() {
 
 		if (ret == SQLITE_ROW) {
 			g = calloc(1, sizeof(evfs_metadata_group_header));
-			g->name = strdup(sqlite3_column_text(pStmt,0));
+			g->name = strdup((char*)sqlite3_column_text(pStmt,0));
 			if (sqlite3_column_text(pStmt, 1)) {
-				g->visualhint = strdup(sqlite3_column_text(pStmt,1));
+				g->visualhint = strdup((char*)sqlite3_column_text(pStmt,1));
 			}
 			
 			ret_list = evas_list_append(ret_list, g);
@@ -436,7 +451,7 @@ evfs_metadata_file_group_list(char* group)
 		ret = sqlite3_step(pStmt);
 
 		if (ret == SQLITE_ROW) 
-			ecore_list_append(ret_list, strdup(sqlite3_column_text(pStmt,0)));
+			ecore_list_append(ret_list, strdup((char*)sqlite3_column_text(pStmt,0)));
 	} while (ret == SQLITE_ROW);
 
 	sqlite3_reset(pStmt);
@@ -654,6 +669,38 @@ void evfs_metadata_extract_queue(evfs_filereference* ref)
 		clone = evfs_filereference_clone(ref);
 		ecore_list_append(evfs_metadata_queue, clone);
 	}
+}
+
+
+int evfs_metadata_scan_runner(void* data)
+{
+	evfs_filereference* ref;
+
+	if ((ref = ecore_list_remove_first(
+		evfs_metadata_directory_scan_queue))) {
+
+		evfs_filereference_sanitise(ref);
+		printf("Scanning %s://%s..\n", ref->plugin_uri, ref->path);
+
+		if (ref->plugin) {
+			Ecore_List* dir_list;
+			evfs_command* c = NEW(evfs_command);
+			c->file_command.files = calloc(1, sizeof(evfs_filereference*));
+			c->file_command.files[0] = ref;
+			c->file_command.num_files = 1;
+			
+			 (*EVFS_PLUGIN_FILE(ref->plugin)->functions->evfs_dir_list)
+				(NULL, c, &dir_list);
+
+			evfs_cleanup_file_command(c);
+
+			printf("List returned: %d\n", ecore_list_nodes(dir_list));
+		} else {
+			evfs_cleanup_filereference(ref);
+		}
+	}
+	
+	return 1;
 }
 
 int evfs_metadata_extract_runner(void* data)

@@ -12,6 +12,14 @@ evfs_get_plugin_for_uri(evfs_server * server, char *uri_base)
    return ecore_hash_get(server->plugin_uri_hash, uri_base);
 }
 
+/*Make sure as file is all good*/
+int evfs_filereference_sanitise(evfs_filereference* ref)
+{
+	if (!ref->plugin) {
+		ref->plugin = evfs_get_plugin_for_uri(evfs_server_get(), ref->plugin_uri);
+	}
+}
+
 evfs_filereference* evfs_filereference_clone(evfs_filereference* source)
 {
 	evfs_filereference* dest = calloc(1,sizeof(evfs_filereference));
