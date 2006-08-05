@@ -43,9 +43,9 @@ _e_about_show()
 			  "uses Etk. It uses Etk's runtime theming support "
 			  "to change the look and feel of the windows and "
 			  "buttons.\n"
-			  "<b><p align=\"center\"><style effect=\"glow\">"
-			  VERSION
-			  "</style></p></b>",
+			  "<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87>"
+			  "<b>"VERSION"</b>"
+			  "</style></p>",
 			  ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), desctext);
    etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);   

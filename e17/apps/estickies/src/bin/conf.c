@@ -216,6 +216,7 @@ _e_config_load(E_Stickies *ss)
 	if(_e_config_version_compare(v, ss->version) != 0)
 	  {
 	     ERROR("Your version / configuration of E-Stickies is not valid!");
+	     eet_close(ef);	     
 	     _e_config_defaults_apply(ss);	     
 	     return 0;
 	  }
