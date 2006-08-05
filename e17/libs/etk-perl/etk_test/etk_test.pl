@@ -1,7 +1,6 @@
 use strict;
 use POSIX;
 use Etk;
-use Etk::Timer;
 use Etk::Constants qw/:all/;
 use Etk::Stock qw/:all/;
 
@@ -369,7 +368,7 @@ sub progbar_window_show
 	    return 1;
 	}
     );
-    
+
     my $timer2 = Etk::Timer->new(0.025,
 	sub {
 	    $pbar2->Pulse();
@@ -507,7 +506,7 @@ sub tree_window_show
     
     $button->SignalConnect("clicked",
 	sub {
-	    #$tree->Sort(\&tree_col2_compare_cb, $ascendant, $tree->cols->[1], undef);
+	    #$tree->Sort(\&tree_col2_compare_cb, $ascendant, $col2, undef);
 	    $tree->SortNumeric($ascendant, $col2, undef);
 	    $ascendant = !$ascendant;
 	}

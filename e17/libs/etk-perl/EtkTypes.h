@@ -29,6 +29,8 @@ Evas_List *		SvEvasList(SV *sv);
 SV *			newSVEvasList(Evas_List *list);
 SV *			newSVCharEvasList(Evas_List *list);
 
+SV *			newSVEcoreTimerPtr(Ecore_Timer *o); 
+Ecore_Timer *		SvEcoreTimerPtr(SV *data); 
 SV *			newSVEtkAlignmentPtr(Etk_Alignment *o); 
 Etk_Alignment *		SvEtkAlignmentPtr(SV *data); 
 SV *			newSVEtkBinPtr(Etk_Bin *o); 

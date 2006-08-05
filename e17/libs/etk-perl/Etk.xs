@@ -179,7 +179,6 @@ callback_VOID__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
-   //XPUSHs(sv_2mortal(newSViv(value)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
@@ -250,7 +249,6 @@ callback_BOOL__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
-   //XPUSHs(sv_2mortal(newSViv(value)));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
@@ -408,15 +406,6 @@ Etk_Tree_Col * col, void * data )
 {
    dSP;
    Callback_Tree_Compare_Data *cbd;
-   HV *row1_hv;
-   HV *row2_hv;
-   HV *col_hv;
-   HV *tree_hv;
-   SV *data_sv;
-   SV *row1_rv;
-   SV *row2_rv;
-   SV *col_rv;
-   SV *tree_rv;
    int count;
    int ret;   
 
@@ -425,47 +414,12 @@ Etk_Tree_Col * col, void * data )
    
    cbd = data;
    
-   tree_hv = (HV*)sv_2mortal((SV*)newHV());
-   row1_hv = (HV*)sv_2mortal((SV*)newHV());
-   row2_hv = (HV*)sv_2mortal((SV*)newHV());
-   col_hv = (HV*)sv_2mortal((SV*)newHV());
-          
-   tree_rv = newRV(newSViv(0));
-   sv_setref_iv(tree_rv, "Etk_WidgetPtr", (IV) tree);
-   tree_hv = newHV();
-   hv_store(tree_hv, "WIDGET", strlen("WIDGET"), tree_rv, 0);
-   row1_rv = newRV((SV*)tree_hv);
-   sv_bless(tree_rv, gv_stashpv("Etk::Tree", FALSE));   
-
-   row1_rv = newRV(newSViv(0));
-   sv_setref_iv(row1_rv, "Etk_Tree_RowPtr", (IV) row1);
-   row1_hv = newHV();
-   hv_store(row1_hv, "WIDGET", strlen("WIDGET"), row1_rv, 0);
-   row1_rv = newRV((SV*)row1_hv);
-   sv_bless(row1_rv, gv_stashpv("Etk::Tree::Row", FALSE));
-   
-   row2_rv = newRV(newSViv(0));
-   sv_setref_iv(row2_rv, "Etk_Tree_RowPtr", (IV) row2);
-   row2_hv = newHV();
-   hv_store(row2_hv, "WIDGET", strlen("WIDGET"), row2_rv, 0);
-   row2_rv = newRV((SV*)row2_hv);
-   sv_bless(row2_rv, gv_stashpv("Etk::Tree::Row", FALSE));
-   
-   col_rv = newRV(newSViv(0));
-   sv_setref_iv(col_rv, "Etk_Tree_ColPtr", (IV) col);
-   col_hv = newHV();
-   hv_store(col_hv, "WIDGET", strlen("WIDGET"), col_rv, 0);
-   col_rv = newRV((SV*)col_hv);
-   sv_bless(col_rv, gv_stashpv("Etk::Tree::Col", FALSE));   
-
-   data_sv = newSVsv(cbd->perl_data);   
-   
    PUSHMARK(SP);  	  
-   XPUSHs(sv_2mortal(tree_rv));
-   XPUSHs(sv_2mortal(row1_rv));
-   XPUSHs(sv_2mortal(row2_rv));	
-   XPUSHs(sv_2mortal(col_rv));
-   XPUSHs(sv_2mortal(data_sv));   
+   XPUSHs(sv_2mortal(newSVEtkTreePtr(tree)));
+   XPUSHs(sv_2mortal(newSVEtkTreeRowPtr(row1)));
+   XPUSHs(sv_2mortal(newSVEtkTreeRowPtr(row2)));
+   XPUSHs(sv_2mortal(newSVEtkTreeColPtr(col)));
+   XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));
    PUTBACK;
 
    count = call_sv(cbd->perl_callback, G_SCALAR);
@@ -2739,68 +2693,9 @@ etk_selection_text_set(widget, data, length)
 	char *	data
 	int	length
 
-# TODO XXX
 	
-MODULE = Etk	PACKAGE = Etk
+MODULE = Etk::Signal	PACKAGE = Etk::Signal	PREFIX = etk_signal_
 	
-
-	
-void
-etk_signal_callback_call(callback, object, return_value, ...)
-	Etk_Signal_Callback *	callback
-	Etk_Object *	object
-	void *	return_value
-
-void
-etk_signal_callback_del(signal_callback)
-	Etk_Signal_Callback *	signal_callback
-
-# 
-# Etk_Signal_Callback *
-# etk_signal_callback_new(signal, callback, data, swapped)
-#	Etk_Signal *	signal
-#	Etk_Signal_Callback_Function	callback
-#	void *	data
-#	Etk_Bool	swapped
-
-void
-etk_signal_delete(signal)
-	Etk_Signal *	signal
-
-void
-etk_signal_emit(signal, object, return_value, ...)
-	Etk_Signal *	signal
-	Etk_Object *	object
-	void *	return_value
-
-void
-etk_signal_emit_by_name(signal_name, object, return_value, ...)
-	char *	signal_name
-	Etk_Object *	object
-	void *	return_value
-
-Etk_Signal *
-etk_signal_lookup(signal_name, type)
-	char *	signal_name
-	Etk_Type *	type
-
-Etk_Marshaller
-etk_signal_marshaller_get(signal)
-	Etk_Signal *	signal
-
-const char *
-etk_signal_name_get(signal)
-	Etk_Signal *	signal
-
-Etk_Signal *
-etk_signal_new(signal_name, object_type, default_handler_offset, marshaller, accumulator, accum_data)
-	char *	signal_name
-	Etk_Type *	object_type
-	long	default_handler_offset
-	Etk_Marshaller	marshaller
-	Etk_Accumulator	accumulator
-	void *	accum_data
-
 void
 etk_signal_shutdown()
 
@@ -4540,10 +4435,11 @@ etk_window_wmclass_set(window, window_name, window_class)
 	char *	window_class
 	 
 
-MODULE = Etk	PACKAGE = Etk
+MODULE = Etk::Timer	PACKAGE = Etk::Timer 
 
 Ecore_Timer *
-etkpl_timer_add(interval, callback, data)
+new(class, interval, callback, data=&PL_sv_undef)
+	SV * class
         double interval
 	SV *    callback
         SV *    data
@@ -4551,18 +4447,17 @@ etkpl_timer_add(interval, callback, data)
         Callback_Timer_Data *cbd;
         
         cbd = calloc(1, sizeof(Callback_Timer_Data));
-        if(SvOK(data))
-           cbd->perl_data = newSVsv(data);
-        else
-           cbd->perl_data = NULL;
+        cbd->perl_data = newSVsv(data);
         cbd->perl_callback = newSVsv(callback);
         RETVAL = ecore_timer_add(interval, callback_timer, cbd);
       OUTPUT:
         RETVAL
 	
 void
-etkpl_timer_del(timer)
+Delete(timer)
       Ecore_Timer * timer
     CODE:
       ecore_timer_del(timer);
+
+MODULE = Etk	PACKAGE = Etk
 

@@ -52,10 +52,6 @@ calling the functions (although this is not recommended).
 
 None by default.
 
-=head2 Exportable functions
-
-
-
 =head1 SEE ALSO
 
 Etk documentation is available as Doxygen or in the Etk Explained book:

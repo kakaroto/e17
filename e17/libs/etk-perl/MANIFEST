@@ -7,6 +7,8 @@ MANIFEST
 ppport.h
 README
 typemap
+const-c.inc
+const-xs.inc
 etk_test/etk_test.pl
 etk_test/images/1star.png
 etk_test/images/2stars.png
@@ -17,11 +19,17 @@ t/Etk.t
 t/Etk/Alignment.t
 t/Etk/Box.t
 t/Etk/Button.t
-t/Etk/CVS
 t/Etk/CheckButton.t
 t/Etk/Colorpicker.t
 t/Etk/Combobox.t
 t/Etk/Container.t
+t/Etk/Dialog.t
+t/Etk/Entry.t
+t/Etk/Filechooser.t
+t/Etk/Frame.t
+t/Etk/Iconbox.t
+t/Etk/Image.t
+t/Etk/Label.t
 t/Etk/Window.t
 fallback/const-c.inc
 fallback/const-xs.inc
@@ -29,7 +37,6 @@ lib/Etk.pm
 lib/Etk/Object.pm
 lib/Etk/Stock.pm
 lib/Etk/Constants.pm
-lib/Etk/Timer.pm			 Should die soon
 META.yml                                 Module meta-data (added by MakeMaker)
 TODO
 test.pl

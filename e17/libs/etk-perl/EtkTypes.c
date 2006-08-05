@@ -311,7 +311,8 @@ SV * newSVCharEvasList(Evas_List *list) {
 
 }
 
-
+SV * newSVEcoreTimerPtr(Ecore_Timer *o) { return newSVObj(o, "Etk::Timer", 0); } 
+Ecore_Timer * SvEcoreTimerPtr(SV *data) { return SvObj(data, "Etk::Timer"); }
 SV * newSVEtkAlignmentPtr(Etk_Alignment *o) { return newSVObj(o, "Etk::Alignment", 0); }
 Etk_Alignment * SvEtkAlignmentPtr(SV *data) { return SvObj(data, "Etk::Alignment"); }
 SV * newSVEtkBinPtr(Etk_Bin *o) { return newSVObj(o, "Etk::Bin", 0); }

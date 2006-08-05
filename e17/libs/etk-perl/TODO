@@ -2,7 +2,6 @@ General TODO:
 =============
 - callback system needs to convert event structs to perl equivalents 
 - port evas key modifiers and locks
-- finish signal callback functions
 - perldoc everything
 - create Test cases
 
@@ -37,6 +36,7 @@ Done:
 - etk_text_view.h [DONE]
 - etk_textblock.h [DONE]
 - etk_editable_text_object.h [NOT NEEDED]
+- finish signal callback functions [DONE]
 
 Pending:
 ========
