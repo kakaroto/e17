@@ -16,9 +16,6 @@ Alternatively, there is another calling technique which
 removes underscores and uppercases the first letter of 
 each word: $window->TitleSet($title);
 
-This calling technique is for now converted with a regular 
-expression into the real function call, so it has its problems.
-
 
 INSTALLATION
 

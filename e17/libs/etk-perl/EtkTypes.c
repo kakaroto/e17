@@ -104,6 +104,9 @@ void __etk_perl_inheritance_init() {
 			__("Slider", "Range");
 				__("HSlider", "Slider");
 				__("VSlider", "Slider");
+			__("Scrollbar", "Range");
+				__("HScrollbar", "Scrollbar");
+				__("VScrollbar", "Scrollbar");
 		__("Spearator", "Widget");
 			__("HSeparator", "Spearator");
 			__("VSeparator", "Spearator");
@@ -345,6 +348,8 @@ SV * newSVEtkHBoxPtr(Etk_HBox *o) { return newSVObj(o, "Etk::HBox", 0); }
 Etk_HBox * SvEtkHBoxPtr(SV *data) { return SvObj(data, "Etk::HBox"); }
 SV * newSVEtkHPanedPtr(Etk_HPaned *o) { return newSVObj(o, "Etk::HPaned", 0); }
 Etk_HPaned * SvEtkHPanedPtr(SV *data) { return SvObj(data, "Etk::HPaned"); }
+SV * newSVEtkHScrollbarPtr(Etk_HScrollbar *o) { return newSVObj(o, "Etk::HScrollbar", 0); }
+Etk_HScrollbar * SvEtkHScrollbarPtr(SV *data) { return SvObj(data, "Etk::HScrollbar"); }
 SV * newSVEtkHSeparatorPtr(Etk_HSeparator *o) { return newSVObj(o, "Etk::HSeparator", 0); }
 Etk_HSeparator * SvEtkHSeparatorPtr(SV *data) { return SvObj(data, "Etk::HSeparator"); }
 SV * newSVEtkHSliderPtr(Etk_HSlider *o) { return newSVObj(o, "Etk::HSlider", 0); }
@@ -397,6 +402,8 @@ SV * newSVEtkVBoxPtr(Etk_VBox *o) { return newSVObj(o, "Etk::VBox", 0); }
 Etk_VBox * SvEtkVBoxPtr(SV *data) { return SvObj(data, "Etk::VBox"); }
 SV * newSVEtkVPanedPtr(Etk_VPaned *o) { return newSVObj(o, "Etk::VPaned", 0); }
 Etk_VPaned * SvEtkVPanedPtr(SV *data) { return SvObj(data, "Etk::VPaned"); }
+SV * newSVEtkVScrollbarPtr(Etk_VScrollbar *o) { return newSVObj(o, "Etk::VScrollbar", 0); }
+Etk_VScrollbar * SvEtkVScrollbarPtr(SV *data) { return SvObj(data, "Etk::VScrollbar"); }
 SV * newSVEtkVSeparatorPtr(Etk_VSeparator *o) { return newSVObj(o, "Etk::VSeparator", 0); }
 Etk_VSeparator * SvEtkVSeparatorPtr(SV *data) { return SvObj(data, "Etk::VSeparator"); }
 SV * newSVEtkVSliderPtr(Etk_VSlider *o) { return newSVObj(o, "Etk::VSlider", 0); }

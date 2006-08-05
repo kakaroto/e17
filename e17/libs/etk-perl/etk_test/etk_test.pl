@@ -994,7 +994,7 @@ sub textview_window_show
 				    $num_messages++;
 			    }
 			    $iter->free();
-			    Etk::etk_signal_stop(); # FIXME fix signals
+			    Etk::Signal::Stop(); 
 		    }
 
 	    }, $message_view);

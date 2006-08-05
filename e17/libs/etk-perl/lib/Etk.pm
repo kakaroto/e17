@@ -10,8 +10,6 @@ our $VERSION = '0.02';
 require XSLoader;
 XSLoader::load('Etk', $VERSION);
 
-use Etk::Object;
-
 # initialize Etk
 Etk::init();
 

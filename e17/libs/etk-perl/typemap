@@ -74,6 +74,8 @@ Etk_VSeparator *				T_PTROBJ_ETK
 Etk_Slider *					T_PTROBJ_ETK
 Etk_HSlider *					T_PTROBJ_ETK
 Etk_VSlider *					T_PTROBJ_ETK
+Etk_HScrollbar *				T_PTROBJ_ETK
+Etk_VScrollbar *				T_PTROBJ_ETK
 Etk_Stock_Id					T_IV
 Etk_Stock_Id *					T_PTROBJ
 Etk_Stock_Size					T_IV
