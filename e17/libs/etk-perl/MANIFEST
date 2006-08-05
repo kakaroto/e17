@@ -34,7 +34,6 @@ t/Etk/Window.t
 fallback/const-c.inc
 fallback/const-xs.inc
 lib/Etk.pm
-lib/Etk/Object.pm
 lib/Etk/Stock.pm
 lib/Etk/Constants.pm
 META.yml                                 Module meta-data (added by MakeMaker)
