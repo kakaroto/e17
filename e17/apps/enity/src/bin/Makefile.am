@@ -9,10 +9,10 @@ INCLUDES = \
 bin_PROGRAMS = enity
 
 enity_INCLUDES = \
-enity.h
+enity.h en_argument.h
 
 enity_SOURCES = \
-enity.c \
+enity.c en_argument.c \
 $(enity_INCLUDES)
 
 enity_LDADD = @my_libs@

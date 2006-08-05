@@ -26,9 +26,9 @@ static Etk_Bool _en_window_delete_cb(void *data)
    return ETK_TRUE;
 }
 
-static Evas_List *_en_arg_data_get(Etk_Argument *args, char *key)
+static Evas_List *_en_arg_data_get(En_Argument *args, char *key)
 {
-   Etk_Argument *arg;
+   En_Argument *arg;
    
    arg = args;   
    while(arg->short_name != -1)
@@ -141,7 +141,7 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
    etk_main_quit();
 }
 
-static void _en_entry_cb(Etk_Argument *args, int index)
+static void _en_entry_cb(En_Argument *args, int index)
 {  
    Etk_Widget *dialog;   
    Etk_Widget *label;
@@ -176,7 +176,7 @@ static void _en_entry_cb(Etk_Argument *args, int index)
    etk_widget_show_all(dialog);
 }
 
-static void _en_error_cb(Etk_Argument *args, int index)
+static void _en_error_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;
    const char *value;
@@ -201,7 +201,7 @@ static void _en_error_cb(Etk_Argument *args, int index)
    etk_widget_show_all(dialog);
 }
 
-static void _en_question_cb(Etk_Argument *args, int index)
+static void _en_question_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;
    const char *value;
@@ -226,7 +226,7 @@ static void _en_question_cb(Etk_Argument *args, int index)
    etk_widget_show_all(dialog);
 }
 
-static void _en_info_cb(Etk_Argument *args, int index)
+static void _en_info_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;
    const char *value;
@@ -251,7 +251,7 @@ static void _en_info_cb(Etk_Argument *args, int index)
    etk_widget_show_all(dialog);
 }
 
-static void _en_warning_cb(Etk_Argument *args, int index)
+static void _en_warning_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;
    Evas_List  *data;
@@ -276,17 +276,17 @@ static void _en_warning_cb(Etk_Argument *args, int index)
    etk_widget_show_all(dialog);
 }
 
-static void _en_list_column_cb(Etk_Argument *args, int index)
+static void _en_list_column_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
 
-static void _en_list_check_cb(Etk_Argument *args, int index)
+static void _en_list_check_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
 
-static void _en_list_cb(Etk_Argument *args, int index)
+static void _en_list_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;   
    Etk_Widget *label;
@@ -317,7 +317,7 @@ static void _en_list_cb(Etk_Argument *args, int index)
 	     /* todo - implement checkboxes and radio buttons */
 	     col = calloc(1, sizeof(Enity_Tree_Col));
 	     	     
-	     if(etk_argument_is_set(args, "checklist", ' ') && evas_list_count(cols) == 0)
+	     if(en_argument_is_set(args, "checklist", ' ') && evas_list_count(cols) == 0)
 	       {
 		  col->col = etk_tree_col_new(ETK_TREE(tree), l->data, etk_tree_model_checkbox_new(ETK_TREE(tree)), 60);
 		  col->model = ENITY_COL_MODEL_CHECK;
@@ -333,7 +333,7 @@ static void _en_list_cb(Etk_Argument *args, int index)
 	  }
 	etk_tree_build(ETK_TREE(tree));
 	
-	for(l = etk_argument_extra_find("column"); l; l = l->next)
+	for(l = en_argument_extra_find("column"); l; l = l->next)
 	  {
 	     int i;
 	     int j = 0;
@@ -396,17 +396,17 @@ static void _en_list_cb(Etk_Argument *args, int index)
    etk_widget_show_all(dialog);
 }
 
-static void _en_dialog_text_cb(Etk_Argument *args, int index)
+static void _en_dialog_text_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
 
-static void _en_dialog_title_cb(Etk_Argument *args, int index)
+static void _en_dialog_title_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
 
-static void _en_entry_entry_text_cb(Etk_Argument *args, int index)
+static void _en_entry_entry_text_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
@@ -419,7 +419,7 @@ void _en_slider_value_changed(Etk_Object *object, double value, void *data)
    etk_label_set(ETK_LABEL(data), string);
 }
 
-static void _en_scale_cb(Etk_Argument *args, int index)
+static void _en_scale_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;   
    Etk_Widget *label;
@@ -465,7 +465,7 @@ static void _en_scale_cb(Etk_Argument *args, int index)
    slider = etk_hslider_new((double)min_value, (double)max_value, (double)value, (double)step_value, 10.0);
    etk_box_pack_start(ETK_BOX(slider_hbox), slider, ETK_TRUE, ETK_TRUE, 0);
    
-   if(!etk_argument_is_set(args, "hide-value", ' '))
+   if(!en_argument_is_set(args, "hide-value", ' '))
      {
 	char str[256];
 	
@@ -491,7 +491,7 @@ static void _en_scale_cb(Etk_Argument *args, int index)
    etk_widget_show_all(dialog);
 }
 
-static void _en_progress_cb(Etk_Argument *args, int index)
+static void _en_progress_cb(En_Argument *args, int index)
 {
    Etk_Widget *dialog;   
    Etk_Widget *label;
@@ -526,79 +526,79 @@ static void _en_progress_cb(Etk_Argument *args, int index)
    etk_widget_show_all(dialog);   
 }
 
-static void _en_scale_step_cb(Etk_Argument *args, int index)
+static void _en_scale_step_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
 
-static void _en_scale_value_cb(Etk_Argument *args, int index)
+static void _en_scale_value_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
 
-static void _en_scale_min_value_cb(Etk_Argument *args, int index)
+static void _en_scale_min_value_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
 
-static void _en_scale_max_value_cb(Etk_Argument *args, int index)
+static void _en_scale_max_value_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
 
-static void _en_scale_hide_value_cb(Etk_Argument *args, int index)
+static void _en_scale_hide_value_cb(En_Argument *args, int index)
 {
    /* do any changes / fixes / checks here */
 }
 
-Etk_Argument args[] = {
+En_Argument args[] = {
      /* global options that are used with more than one dialog type */
-     { "text", ' ', NULL, _en_dialog_text_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog text" },
-     { "title", ' ', NULL, _en_dialog_title_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog title" },
+     { "text", ' ', NULL, _en_dialog_text_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL|EN_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog text" },
+     { "title", ' ', NULL, _en_dialog_title_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL|EN_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog title" },
    
      /* --entry options */
-     { "entry-text", ' ', NULL, _en_entry_entry_text_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog text" },
-     { "entry", ' ', NULL, _en_entry_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display text entry dialog" },
+     { "entry-text", ' ', NULL, _en_entry_entry_text_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL|EN_ARGUMENT_FLAG_VALUE_REQUIRED, "Set the dialog text" },
+     { "entry", ' ', NULL, _en_entry_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Display text entry dialog" },
      
      /* --error options */
-     { "error", ' ', NULL, _en_error_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display error dialog" },
+     { "error", ' ', NULL, _en_error_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Display error dialog" },
    
      /* --question options */
-     { "question", ' ', NULL, _en_question_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display question dialog" },   
+     { "question", ' ', NULL, _en_question_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Display question dialog" },   
 
      /* --info options */
-     { "info", ' ', NULL, _en_info_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display info dialog" },
+     { "info", ' ', NULL, _en_info_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Display info dialog" },
    
      /* --warning options */
-     { "warning", ' ', NULL, _en_warning_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display warning dialog" },
+     { "warning", ' ', NULL, _en_warning_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Display warning dialog" },
    
      /* --scale options */
-     { "step", ' ', NULL, _en_scale_step_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Step value for the scale" },
-     { "value", ' ', NULL, _en_scale_value_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Initial value for the scale" },
-     { "min-value", ' ', NULL, _en_scale_min_value_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Min value for the scale" },
-     { "max-value", ' ', NULL, _en_scale_max_value_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED, "Max value for the scale" },
-     { "hide-value", ' ', NULL, _en_scale_hide_value_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Hide the label for the scale" },
-     { "scale", ' ', NULL, _en_scale_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display scale dialog" },
+     { "step", ' ', NULL, _en_scale_step_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL|EN_ARGUMENT_FLAG_VALUE_REQUIRED, "Step value for the scale" },
+     { "value", ' ', NULL, _en_scale_value_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL|EN_ARGUMENT_FLAG_VALUE_REQUIRED, "Initial value for the scale" },
+     { "min-value", ' ', NULL, _en_scale_min_value_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL|EN_ARGUMENT_FLAG_VALUE_REQUIRED, "Min value for the scale" },
+     { "max-value", ' ', NULL, _en_scale_max_value_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL|EN_ARGUMENT_FLAG_VALUE_REQUIRED, "Max value for the scale" },
+     { "hide-value", ' ', NULL, _en_scale_hide_value_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Hide the label for the scale" },
+     { "scale", ' ', NULL, _en_scale_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Display scale dialog" },
 
      /* --list options */
-     { "checklist", ' ', NULL, _en_list_check_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Use check boxes for first column" },
-     { "column", ' ', NULL, _en_list_column_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL|ETK_ARGUMENT_FLAG_VALUE_REQUIRED|ETK_ARGUMENT_FLAG_MULTIVALUE, "Set the column header" },
-     { "list", ' ', NULL, _en_list_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display list dialog" },
+     { "checklist", ' ', NULL, _en_list_check_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Use check boxes for first column" },
+     { "column", ' ', NULL, _en_list_column_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL|EN_ARGUMENT_FLAG_VALUE_REQUIRED|EN_ARGUMENT_FLAG_MULTIVALUE, "Set the column header" },
+     { "list", ' ', NULL, _en_list_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Display list dialog" },
 
      /* --progress options */
-     { "progress", ' ', NULL, _en_progress_cb, NULL, ETK_ARGUMENT_FLAG_OPTIONAL, "Display progress indication dialog" },
+     { "progress", ' ', NULL, _en_progress_cb, NULL, EN_ARGUMENT_FLAG_OPTIONAL, "Display progress indication dialog" },
    
      /* terminator */
-     { NULL, -1,  NULL, NULL, NULL, ETK_ARGUMENT_FLAG_NONE, " " }
+     { NULL, -1,  NULL, NULL, NULL, EN_ARGUMENT_FLAG_NONE, " " }
 };  
 
 int main(int argc, char **argv)
 {
    etk_init(&argc, &argv);
       
-   if(etk_arguments_parse(args, argc, argv) != ETK_ARGUMENT_RETURN_OK)
+   if(en_arguments_parse(args, argc, argv) != EN_ARGUMENT_RETURN_OK)
      {
-	etk_argument_help_show(args);
+	en_argument_help_show(args);
 	goto SHUTDOWN;
      }
    

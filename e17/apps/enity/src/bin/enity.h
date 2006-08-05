@@ -7,8 +7,9 @@
 #include <string.h>
 #include <limits.h>
 
-#include <Etk.h>
 #include <Evas.h>
+#include <Etk.h>
+#include "en_argument.h"
 
 typedef struct _Enity_Tree_Col Enity_Tree_Col;
 
@@ -22,18 +23,18 @@ struct _Enity_Tree_Col
    } model;
 };
 
-static Evas_List *_en_arg_data_get(Etk_Argument *args, char *key);
+static Evas_List *_en_arg_data_get(En_Argument *args, char *key);
 static void _en_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data);
-static void _en_entry_cb(Etk_Argument *args, int index);
-static void _en_error_cb(Etk_Argument *args, int index);
-static void _en_question_cb(Etk_Argument *args, int index);
-static void _en_info_cb(Etk_Argument *args, int index);
-static void _en_warning_cb(Etk_Argument *args, int index);
-static void _en_list_column_cb(Etk_Argument *args, int index);
-static void _en_list_cb(Etk_Argument *args, int index);
-static void _en_dialog_text_cb(Etk_Argument *args, int index);
-static void _en_entry_entry_text_cb(Etk_Argument *args, int index);
+static void _en_entry_cb(En_Argument *args, int index);
+static void _en_error_cb(En_Argument *args, int index);
+static void _en_question_cb(En_Argument *args, int index);
+static void _en_info_cb(En_Argument *args, int index);
+static void _en_warning_cb(En_Argument *args, int index);
+static void _en_list_column_cb(En_Argument *args, int index);
+static void _en_list_cb(En_Argument *args, int index);
+static void _en_dialog_text_cb(En_Argument *args, int index);
+static void _en_entry_entry_text_cb(En_Argument *args, int index);
 
   
 
