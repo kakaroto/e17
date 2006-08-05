@@ -20,7 +20,7 @@ on_window1_delete_event(void *data)
    return 1;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {      
    char *string1;
    char *string2;
@@ -33,7 +33,7 @@ int main(void)
    data = string1;
    
    enhance_init();
-   etk_init(NULL,NULL);
+   etk_init(&argc, &argv);
    
    en = enhance_new();      
    enhance_callback_data_set(en, "rip_only_clicked", &data);

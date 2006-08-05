@@ -1041,7 +1041,6 @@ _e_widget_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
    E_Widget *widget;
    
    widget = data;
-   evas_hash_del(hash, key, data);
    if(widget->packing)
      {
 	E_FREE(widget->packing->x_options);
@@ -1060,7 +1059,8 @@ enhance_free(Enhance *en)
    if(!en) return;
    exml_destroy(en->xml);
    evas_hash_foreach(en->widgets, _e_widget_hash_free, en);
-	ecore_hash_destroy(_en_stock_items_hash);
+   evas_hash_free(en->widgets);
+   ecore_hash_destroy(_en_stock_items_hash);
    E_FREE(en->main_window);
    E_FREE(en);   
 }
