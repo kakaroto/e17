@@ -81,31 +81,40 @@ static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *ev
 
    instance = ecore_hash_get(instance_map_hash, row);
    if (instance) {
+	   Ecore_List* files_copy;
+	   
 	   viewer = instance->data;
 	   e_event = ecore_hash_get(viewer->row_hash, row);
    
-	   if(ev->content != ETK_SELECTION_CONTENT_FILES) {
-	     printf("Drop wasn't files!\n");
-	     return;
-	   }
+	   if (e_event) {
+		   if(ev->content != ETK_SELECTION_CONTENT_FILES) {
+		     printf("Drop wasn't files!\n");
+		     return;
+		   }
 
-	   printf("We received %d files\n", files->num_files);
-	   for (i = 0; i < files->num_files; i++)
-	     {
-		     entropy_generic_file* file = entropy_core_uri_generic_file_retrieve(files->files[i]);
+		   printf("We received %d files\n", files->num_files);
+
+		   files_copy = ecore_list_new();
+		   for (i = 0; i < files->num_files; i++)
+		     {
+			     entropy_generic_file* file = entropy_core_uri_generic_file_retrieve(files->files[i]);
+		     
+			     if (!file) {
+				     entropy_file_listener* listener = entropy_malloc(sizeof(entropy_file_listener));
+				     file = entropy_core_parse_uri(files->files[i]);
+				     listener->file = file;
+				     listener->count = 1;
+				     entropy_core_file_cache_add(file->md5, listener);
+			     }
+			     printf("File is '%s' ---> %p\n", files->files[i], file);
+			     printf("Destination: %s\n", e_event->file->uri);
+
+			     ecore_list_append(files_copy, file);
 	     
-		     if (!file) {
-			     entropy_file_listener* listener = entropy_malloc(sizeof(entropy_file_listener));
-			     file = entropy_core_parse_uri(files->files[i]);
-			     listener->file = file;
-			     listener->count = 1;
-			     entropy_core_file_cache_add(file->md5, listener);
 		     }
-		     printf("File is '%s' ---> %p\n", files->files[i], file);
-		     printf("Destination: %s\n", e_event->file->uri);
-
-		     entropy_plugin_filesystem_file_move(file, e_event->file->uri, instance);
-	     }
+		   entropy_plugin_filesystem_file_copy_multi(files_copy, e_event->file->uri, instance);
+		   ecore_list_destroy(files_copy);
+	    }
    } else {
 	   printf("Could not get instance for dropped row!\n");
    }

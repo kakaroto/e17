@@ -66,6 +66,7 @@ struct Entropy_Plugin_File {
 		struct stat* (*filestat_get)(entropy_file_request*);
 		Ecore_List* (*filelist_get) (entropy_file_request*);
 		void (*file_copy)(entropy_generic_file*,char*, entropy_gui_component_instance*);
+		void (*file_copy_multi)(Ecore_List* files,char*, entropy_gui_component_instance*);
 		void (*file_move)(entropy_generic_file*,char*, entropy_gui_component_instance*);
 
 		void (*file_rename) (entropy_generic_file * file_from, entropy_generic_file * file_to);

@@ -27,6 +27,8 @@ Ecore_List *structurelist_get (char *base);
 struct stat *filestat_get (entropy_file_request * request);
 Ecore_List *filelist_get (entropy_file_request * request);
 void entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to, entropy_gui_component_instance * instance);
+void entropy_filesystem_file_copy_multi (Ecore_List* files, char *path_to, entropy_gui_component_instance * instance);
+
 void entropy_filesystem_file_move (entropy_generic_file * file, char *path_to, entropy_gui_component_instance * instance);
 
 
@@ -594,6 +596,7 @@ entropy_plugin_init (entropy_core * core)
   plugin->file_functions.filestat_get = &filestat_get;
   plugin->file_functions.filelist_get = &filelist_get;
   plugin->file_functions.file_copy = &entropy_filesystem_file_copy;
+  plugin->file_functions.file_copy_multi = &entropy_filesystem_file_copy_multi;
   plugin->file_functions.file_move = &entropy_filesystem_file_move;
 
   plugin->file_functions.file_rename = &entropy_filesystem_file_rename;
@@ -864,7 +867,6 @@ entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to,
 {
   evfs_file_uri_path *uri_path_from;
   evfs_file_uri_path *uri_path_to;
-  char copy_buffer[PATH_MAX];
   char uri_from[512];
   char uri_to[512];
   long id;
@@ -886,7 +888,6 @@ entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to,
   //printf("Original uri is: '%s'\n", original);
   //
   /*Track the copy action */
-  snprintf (copy_buffer, PATH_MAX, "%s%s", uri_from, uri_to);
   id = evfs_client_file_copy (con, uri_path_from->files[0], uri_path_to->files[0]);
   ecore_hash_set(evfs_dir_requests, (long*)id, instance);
 
@@ -894,13 +895,35 @@ entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to,
   evfs_cleanup_file_uri_path(uri_path_to);
 }
 
+
+void
+entropy_filesystem_file_copy_multi (Ecore_List* files, char *path_to,
+			      entropy_gui_component_instance * instance)
+{
+  long id;
+  entropy_generic_file* file;
+  Ecore_List* evfs_files;
+
+  evfs_files = ecore_list_new();
+  ecore_list_goto_first(files);
+  while ( (file = ecore_list_next(files)) ) { 
+	  printf("Parsing %s for multi copy\n", file->uri);
+	  ecore_list_append(evfs_files, evfs_parse_uri_single(file->uri));
+  }
+  
+  /*Track the copy action */
+  id = evfs_client_file_copy_multi (con, evfs_files, evfs_parse_uri_single(path_to));
+  ecore_hash_set(evfs_dir_requests, (long*)id, instance);
+
+}
+
+
 void
 entropy_filesystem_file_move (entropy_generic_file * file, char *path_to,
 			      entropy_gui_component_instance * instance)
 {
   evfs_file_uri_path *uri_path_from;
   evfs_file_uri_path *uri_path_to;
-  char copy_buffer[PATH_MAX];
   char uri_from[512];
   char uri_to[512];
   long id;
@@ -915,7 +938,6 @@ entropy_filesystem_file_move (entropy_generic_file * file, char *path_to,
   uri_path_to = evfs_parse_uri (uri_to);
 
   /*Track the move action */
-  snprintf (copy_buffer, PATH_MAX, "%s%s", uri_from, uri_to);
   id = evfs_client_file_move (con, uri_path_from->files[0], uri_path_to->files[0]);
   ecore_hash_set(evfs_dir_requests, (long*)id, instance);
 

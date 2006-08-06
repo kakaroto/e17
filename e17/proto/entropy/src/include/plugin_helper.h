@@ -12,6 +12,7 @@ void entropy_plugin_thumbnail_request(entropy_gui_component_instance* requestor,
 				void (*cb)());
 void entropy_plugin_filesystem_file_remove(entropy_generic_file* file, entropy_gui_component_instance*);
 int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester);
+int entropy_plugin_filesystem_file_copy_multi(Ecore_List* files, char* dest, entropy_gui_component_instance* requester);
 int entropy_plugin_filesystem_file_move(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester);
 void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char* dir);
 Ecore_List* entropy_plugin_filesystem_filelist_get(entropy_file_request* request);

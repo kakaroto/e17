@@ -229,6 +229,20 @@ int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest
   return 1;
 }
 
+int entropy_plugin_filesystem_file_copy_multi(Ecore_List* files, char* dest, entropy_gui_component_instance* requester) 
+{
+  entropy_gui_component_instance *instance = requester;
+  Entropy_Plugin_File* plugin =
+    ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
+				    ENTROPY_PLUGIN_SUB_TYPE_ALL));
+
+  if (plugin) {
+	  (*plugin->file_functions.file_copy_multi) (files, dest, instance);
+  }
+
+  return 1;
+}
+
 int entropy_plugin_filesystem_file_move(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester) 
 {
   entropy_gui_component_instance *instance = requester;
