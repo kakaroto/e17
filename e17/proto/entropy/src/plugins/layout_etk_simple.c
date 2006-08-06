@@ -413,6 +413,8 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entr
 	  icon_string = PACKAGE_DATA_DIR "/icons/samba-system.png";
    else if (!strcmp(file->uri_base,"sftp"))
 	  icon_string = PACKAGE_DATA_DIR "/icons/sftp-system.png"; 
+   else if (!strcmp(file->uri_base,"vfolder"))
+	  icon_string = PACKAGE_DATA_DIR "/icons/vfolder-system.png"; 
 			   
 	
   etk_tree_freeze(ETK_TREE(gui->tree));

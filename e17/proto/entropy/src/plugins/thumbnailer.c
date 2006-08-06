@@ -51,9 +51,6 @@ int thumb_complete_cb(void *data, int type, void *event)
 
 	md5 = md5_entropy_local_file(thumb->path);
 
-        /*printf("\n! EVENT ! THUMB %s -> %s  (%s), COMPLETE ! STATUS %d ! %d REMAINING !\n\n",
-                        thumb->path, thumb->dest, md5, thumb->status,  1);*/
-	
 	req = ecore_hash_get(_ecore_thumb_file_instance_hash, md5);
 	
 	if (req && thumb->dest) {
@@ -80,7 +77,7 @@ int thumb_complete_cb(void *data, int type, void *event)
 		free(md5);
 		free(req);
 	} else {
-		printf("Couldn't file local ref! *****\n");
+		printf("Couldn't file local ref! for %s *****\n", thumb->path);
 	}
 
         return 0;
