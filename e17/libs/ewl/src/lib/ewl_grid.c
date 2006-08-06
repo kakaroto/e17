@@ -467,8 +467,8 @@ ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *w,
 		/*
 		 * and now find the current position
 		 */
-		ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
-		while ((c = ecore_dlist_next(EWL_CONTAINER(w)->children))
+		ecore_dlist_goto_first(EWL_CONTAINER(g)->children);
+		while ((c = ecore_dlist_next(EWL_CONTAINER(g)->children))
 				&& c != w) {
 			if (!ewl_widget_data_get(w, g))
 				go_next(g, &col, &row);
@@ -1189,7 +1189,7 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 		rel = 0.0;
 		fixed = 0;
 		for (i = 0; i < g->rows; i++) {
-			switch (g->col_size[i].resize_type) {
+			switch (g->row_size[i].resize_type) {
 				case EWL_GRID_RESIZE_RELATIVE:
 					rel += g->row_size[i].user.rel_size;
 					break;
