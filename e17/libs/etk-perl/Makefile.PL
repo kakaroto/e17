@@ -3,18 +3,18 @@ use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(
-    DISTNAME          => 'Etk',
+    DISTNAME          => 'Etk-Perl',
     NAME              => 'Etk',
     VERSION_FROM      => 'lib/Etk.pm', 
     PREREQ_PM         => {}, 
     ($] >= 5.005 ?     
-      (ABSTRACT_FROM  => 'lib/Etk.pm', 
+      (ABSTRACT       => 'Perl bindings for the Enlightened ToolKit (Etk)',
        AUTHOR         => 'Hisham Mardam Bey <hisham.mardambey@gmail.com>') : ()),
     LIBS              => [`etk-config --libs`], 
     DEFINE            => '', # '-DDEBUG', 
     INC               => "-g -I. `etk-config --cflags`", 
     XSPROTOARG        => '-noprototypes',
-    
+    test              => {TESTS=>'t/Etk/*.t'},
     OBJECT            => '$(O_FILES)', 
 );
 if  (eval {require ExtUtils::Constant; 1}) {

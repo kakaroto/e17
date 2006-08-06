@@ -44,7 +44,7 @@ Etk_Menu_Item_Separator *				T_PTROBJ_ETK
 Etk_Menu_Shell *				T_PTROBJ_ETK
 Etk_Message_Dialog *				T_PTROBJ_ETK
 Etk_Message_Dialog_Buttons			T_IV
-Etk_Message_Dialog_Type				T_PTROBJ
+Etk_Message_Dialog_Type				T_IV
 Etk_Notebook *					T_PTROBJ_ETK
 Etk_Object *					T_PTROBJ_ETK
 Etk_Paned *					T_PTROBJ_ETK

@@ -19,24 +19,20 @@ ok($geo[0] == 10 && $geo[1] == 10,  	"Move()");
 
 ok(1, "GeometryGet()");
 
-$window->Iconify();
-ok($window->IsIconified(),	"Iconify(), isIconified()");
-$window->Deiconify();
-ok(! $window->IsIconified(),	"Deiconify()");
+$window->IconifiedSet(1);
+ok($window->IconifiedGet(),	"IconifiedSet/Get");
 
-$window->Maximize();
-ok($window->IsMaximized(),	"Maximize(), isMaximized()");
-$window->Unmaximize();
-ok(! $window->IsMaximized(),	"Unmaximize()");
+SKIP: {
+	skip "Need to be visible", 2;
+$window->MaximizedSet(1);
+is($window->MaximizedGet(),1,	"MaximizedSet/Get");
 
-$window->Fullcreen();
-ok($window->IsFullscreen(),	"Fullscreen(), isFullscreen()");
-$window->Unfullscreen();
-ok(! $window->IsFullscreen(),	"Unfullscreen()");
+$window->StickySet(1);
+is($window->StickyGet(),1,	"StickSet/Get");
+}
 
-$window->Stick();
-ok($window->IsSticky(),	"Stick(), isSticky()");
-$window->Unstick();
-ok(! $window->IsSticky(),	"Unstick()");
+$window->FullscreenSet(1);
+is($window->FullscreenGet(),1,	"FullscreenSet/Get");
+
 
 

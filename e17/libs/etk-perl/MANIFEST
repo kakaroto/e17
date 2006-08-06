@@ -30,6 +30,10 @@ t/Etk/Frame.t
 t/Etk/Iconbox.t
 t/Etk/Image.t
 t/Etk/Label.t
+t/Etk/Menu.t
+t/Etk/MessageDialog.t
+t/Etk/Notebook.t
+t/Etk/Object.t
 t/Etk/Window.t
 fallback/const-c.inc
 fallback/const-xs.inc

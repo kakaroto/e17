@@ -15,7 +15,8 @@ our %EXPORT_TAGS = (
     PointerResizeTR PointerResizeR PointerResizeBR PointerResizeB 
     PointerResizeBL PointerResizeL PointerTextEdit PointerDndDrop/],
    tree		=> [qw/ModeList ModeTree FromFile FromEdje/],
-   textblock	=> [qw/GravityLeft GravityRight/]
+   textblock	=> [qw/GravityLeft GravityRight/],
+   colorpicker	=> [qw/ModeH ModeS ModeV ModeR ModeG ModeB/],
 
    );
 
@@ -118,17 +119,15 @@ use constant
     GravityRight => 1
 };
 
-
-package Etk::Colorpicker::Mode;
-
+# colorpicker mode
 use constant  {
 
-	H	=> 0,
-	S	=> 1,
-	V	=> 2,
-	R	=> 3,
-	G	=> 4,
-	B	=> 5
+	ModeH	=> 0,
+	ModeS	=> 1,
+	ModeV	=> 2,
+	ModeR	=> 3,
+	ModeG	=> 4,
+	ModeB	=> 5
 
 };
 

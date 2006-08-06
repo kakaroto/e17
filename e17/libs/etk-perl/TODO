@@ -1,44 +1,24 @@
-General TODO:
-=============
-- callback system needs to convert event structs to perl equivalents 
-- port evas key modifiers and locks
-- perldoc everything
-- create Test cases
+TODO:
+	- callback system needs to convert event structs to perl equivalents 
+	- port evas key modifiers and locks
+	- perldoc everything
+	- complete Tests
+	- Check for memory usage (I'm not sure if we're leaking or not,
+	  need to do some tests for that)
+	- Add cache for perl objects which will help keep track of the C objects
+	- Fix Combobox append functions (waiting for some functionality in etk)
 
-Done:
-=====
-- etk_main.h [DONE]
-- wrap up functions that use (...): important ones are combo for now [DONE]
-- etk_marshallers.h [DONE]
-- etk_toplevel_widget.h [DONE]
-- etk_colorpicker_*.h [DONE]
-- create an evas_list to perl list converter [DONE]
-- etk_radio_button.h [DONE]
-- etk_argument.h [NOT NEEDED]
-- etk_cache.h [NOT NEEDED]
-- etk_string.h [NOT NEEDED]
-- etk_propery.h [NOT NEEDED]
-- all functions that use use references to change multiple values need
-  to return a list of values to the perl caller [DONE]
-- finish remaining signal_connect functions (swapped etc.) [DONE]
-- etk_theme.h [DONE]
-- finish up etk_widget.h [DONE]
-- add some commonly used internal tree sorters to avoid the entire
-  perl -> c -> perl ... loop when sorting trees. [DONE]
-- etk_property.h [NOT NEEDED]
-- etk_types.h [DONE]
-- etk_type.h [NOT NEEDED]
-- etk_utils.h [NOT NEEDED]
-- go over all list functions and check as necessary [DONE]
-- go over all enums and structs and port as needed [DONE]
-- finish porting etk_test from C to perl [DONE]
-- etk_text_iter.h [DONE]
-- etk_text_view.h [DONE]
-- etk_textblock.h [DONE]
-- etk_editable_text_object.h [NOT NEEDED]
-- finish signal callback functions [DONE]
+BUGS:
+	- make test is defining PERL_DL_NONLAZY=1 for some reason and
+	  fails to load the library, for now you can run:
+	  $ perl -MExtUtils::Command::MM -e "test_harness(0, 'blib/lib', 'blib/arch')" t/Etk/*.t
+
+	- some methods return Etk::Widget, there's no way to know
+	  what the original type of the object was, and the object
+	  is unusable most of the time unless you bless it into its
+	  original package. (The cache in the TODO above will help solve this)
 
 Pending:
-========
-etk_canvas.h
+	-etk_canvas.h
+
 

@@ -6,8 +6,12 @@ my $b = Etk::Entry->new();
 ok( defined $b, 	"Entry new()");
 ok( $b->isa("Etk::Entry"),	"Class Check");
 
+SKIP: {
+	skip "need to be visible", 2;
 $b->PasswordSet(1);
 is($b->PasswordGet(), 1, 	"Password set/get");
 
 $b->TextSet("test");
 is($b->TextGet(), "test", 	"Text set/get");
+}
+

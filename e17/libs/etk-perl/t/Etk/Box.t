@@ -37,7 +37,7 @@ is($hb->HomogeneousGet(), 5,	"Homo Set");
 
 
 $hb->PackStart($button, 1, 0, 5);
-my ($padding, $expand, $fill, $pack_end) = $hb->ChildPackingGet($button);
+($padding, $expand, $fill, $pack_end) = $hb->ChildPackingGet($button);
 
 is($padding, 5, 	"Padding set");
 is($expand, 1, 	"Expand set");

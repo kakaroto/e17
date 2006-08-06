@@ -1,6 +1,5 @@
 package Etk::Stock;
 use strict;
-require Etk;
 require Exporter;
 
 our @ISA = qw/Exporter/;

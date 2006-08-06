@@ -1,5 +1,9 @@
 Revision history for Perl extension Etk.
 
+0.03  Sun Aug  6 12:09:59 GMT+2 2006
+	- removed Etk/Object.pm and replaced the function conversion with ALIASes in XS
+	- Followed changes to etk
+	
 0.02  Sun Jul 30 17:53:12 GMT+2 2006
 	- rewrite of Etk-Perl
 		+ Removed all .pm code

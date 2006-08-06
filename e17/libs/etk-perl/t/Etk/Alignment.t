@@ -19,7 +19,7 @@ ok( $xalign == 1 && $yalign == 1,	"Set()");
 
 $al = Etk::Alignment->new();
 ok( defined $al, 	"Alignment new() with default values");
-my ($xalign, $yalign, $xscale, $yscale) = $al->Get();
+($xalign, $yalign, $xscale, $yscale) = $al->Get();
 is( $xalign, 0.5,	"xalign");
 is( $yalign, 0.5,	"yalign");
 is( $xscale, 1,	"xscale");

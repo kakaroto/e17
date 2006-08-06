@@ -5,16 +5,16 @@ use strict;
 use warnings;
 use Carp;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 require XSLoader;
 XSLoader::load('Etk', $VERSION);
 
 # initialize Etk
-Etk::init();
+Etk::Init();
 
 END {
-	Etk::shutdown();
+	Etk::Shutdown();
 }
 
 1;
@@ -59,8 +59,8 @@ http://www.enlightenment.org
 
 =head1 AUTHOR
 
-Hisham Mardam Bey, E<lt>hisham.mardambey@gmail.comE<gt> -  
-Chady 'Leviathan' Kassouf, E<lt>chady.kassouf@gmail.comE<gt>
+Chady 'Leviathan' Kassouf, E<lt>chady.kassouf@gmail.comE<gt> -
+Hisham Mardam Bey, E<lt>hisham.mardambey@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

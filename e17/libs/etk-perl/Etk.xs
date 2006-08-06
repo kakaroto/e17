@@ -2489,6 +2489,12 @@ etk_message_dialog_buttons_set(dialog, buttons)
       ALIAS:
 	ButtonsSet=1
 
+Etk_Message_Dialog_Type
+etk_message_dialog_message_type_get(dialog)
+	Etk_Message_Dialog *	dialog
+      ALIAS:
+	MessageTypeGet=1
+
 void
 etk_message_dialog_message_type_set(dialog, type)
 	Etk_Message_Dialog *	dialog
@@ -2662,6 +2668,8 @@ etk_object_data_set(object, key, value)
 	SV *	value
       ALIAS:
 	DataSet=1
+	CODE:
+	etk_object_data_set(object, key, newSVsv(value));
 
 void
 etk_object_notification_callback_add(object, property_name, callback, data)
@@ -5186,10 +5194,17 @@ etk_window_decorated_set(window, decorated)
 	DecoratedSet=1
 
 void
-etk_window_deiconify(window)
+etk_window_iconified_set(window, iconified)
+	Etk_Window *	window
+	Etk_Bool	iconified
+      ALIAS:
+	IconifiedSet=1
+
+Etk_Bool
+etk_window_iconified_get(window)
 	Etk_Window *	window
       ALIAS:
-	Deiconify=1
+	IconifiedGet=1
 
 void
 etk_window_dnd_aware_set(window, on)
@@ -5198,17 +5213,31 @@ etk_window_dnd_aware_set(window, on)
       ALIAS:
 	DndAwareSet=1
 
-void
-etk_window_focus(window)
+Etk_Bool
+etk_window_focused_get(window)
 	Etk_Window *	window
       ALIAS:
-	Focus=1
+	FocusedGet=1
 
 void
-etk_window_fullscreen(window)
+etk_window_focused_set(window, focused)
+	Etk_Window *	window
+	Etk_Bool	focused
+      ALIAS:
+	FocusedSet=1
+
+Etk_Bool
+etk_window_fullscreen_get(window)
 	Etk_Window *	window
       ALIAS:
-	Fullscreen=1
+	FullscreenGet=1
+
+void
+etk_window_fullscreen_set(window, fullscreen)
+	Etk_Window *	window
+	Etk_Bool	fullscreen
+      ALIAS:
+	FullscreenSet=1
 
 void
 etk_window_geometry_get(window)
@@ -5234,47 +5263,18 @@ etk_window_hide_on_delete(window, data)
       ALIAS:
 	HideOnDelete=1
 
-void
-etk_window_iconify(window)
-	Etk_Window *	window
-      ALIAS:
-	Iconify=1
-
 Etk_Bool
-etk_window_is_focused(window)
+etk_window_maximized_get(window)
 	Etk_Window *	window
       ALIAS:
-	IsFocused=1
-
-Etk_Bool
-etk_window_is_fullscreen(window)
-	Etk_Window *	window
-      ALIAS:
-	IsFullscreen=1
-
-Etk_Bool
-etk_window_is_iconified(window)
-	Etk_Window *	window
-      ALIAS:
-	IsIconified=1
-
-Etk_Bool
-etk_window_is_maximized(window)
-	Etk_Window *	window
-      ALIAS:
-	IsMaximized=1
-
-Etk_Bool
-etk_window_is_sticky(window)
-	Etk_Window *	window
-      ALIAS:
-	IsSticky=1
+	MaximizedGet=1
 
 void
-etk_window_maximize(window)
+etk_window_maximized_set(window, maximized)
 	Etk_Window *	window
+	Etk_Bool	maximized
       ALIAS:
-	Maximize=1
+	MaximizedSet=1
 
 void
 etk_window_move(window, x, y)
@@ -5345,11 +5345,18 @@ etk_window_skip_taskbar_hint_set(window, skip_taskbar_hint)
       ALIAS:
 	SkipTaskbarHintSet=1
 
-void
-etk_window_stick(window)
+Etk_Bool
+etk_window_sticky_get(window)
 	Etk_Window *	window
       ALIAS:
-	Stick=1
+	StickyGet=1
+
+void
+etk_window_sticky_set(window, sticky)
+	Etk_Window *	window
+	Etk_Bool	sticky
+      ALIAS:
+	StickySet=1
 
 const char *
 etk_window_title_get(window)
@@ -5363,30 +5370,6 @@ etk_window_title_set(window, title)
 	char *	title
       ALIAS:
 	TitleSet=1
-
-void
-etk_window_unfocus(window)
-	Etk_Window *	window
-      ALIAS:
-	Unfocus=1
-
-void
-etk_window_unfullscreen(window)
-	Etk_Window *	window
-      ALIAS:
-	Unfullscreen=1
-
-void
-etk_window_unmaximize(window)
-	Etk_Window *	window
-      ALIAS:
-	Unmaximize=1
-
-void
-etk_window_unstick(window)
-	Etk_Window *	window
-      ALIAS:
-	Unstick=1
 
 void
 etk_window_wmclass_set(window, window_name, window_class)
