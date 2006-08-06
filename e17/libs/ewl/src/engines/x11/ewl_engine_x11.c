@@ -1194,7 +1194,6 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 		/* Request a DND data request */
 		for (i = 0; i < window->dnd_types.num_types; i++) {
-			/* FIXME: This function does not exist. */
 			if (ewl_dnd_type_supported(window->dnd_types.types[i])) {
 				ecore_x_selection_xdnd_request(ev->win,
 					window->dnd_types.types[i]);
