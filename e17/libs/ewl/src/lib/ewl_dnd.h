@@ -18,6 +18,7 @@ int 		 ewl_dnd_status_get(void);
 
 void 		 ewl_dnd_position_windows_set(Ewl_Widget *w);
 Ewl_Dnd_Types 	*ewl_dnd_types_for_widget_get(Ewl_Widget *widget);
+int              ewl_dnd_type_supported(char *type);
 
 void 		 ewl_dnd_disable(void);
 void 		 ewl_dnd_enable(void);

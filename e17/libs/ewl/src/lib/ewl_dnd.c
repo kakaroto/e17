@@ -23,7 +23,7 @@ static int ewl_dnd_status = 0;
 Ecore_Event_Handler *ewl_dnd_mouse_up_handler;
 Ecore_Event_Handler *ewl_dnd_mouse_move_handler;
 
-char *ewl_dnd_drop_types[] = { "text/uri-list" };
+char *ewl_dnd_drop_types[] = { "text/uri-list", "UTF8_STRING", NULL };
 
 static int ewl_dnd_event_mouse_up(void *data, int type, void *event);
 static int ewl_dnd_event_dnd_move(void *data, int type, void *event);
@@ -186,6 +186,21 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	ecore_x_dnd_begin(ewl_dnd_drag_win, NULL, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+int
+ewl_dnd_type_supported(char *type)
+{
+	char **check;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("type", type, FALSE);
+
+	for (check = ewl_dnd_drop_types; *check; check++) {
+		if (!strcmp(type, *check))
+			DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
