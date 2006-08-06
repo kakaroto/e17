@@ -385,13 +385,13 @@ void evfs_metadata_initialise()
 		/*Setup the directory scan queue*/
 		ref = NEW(evfs_filereference);
 		ref->plugin_uri = strdup("file");
-		ref->path = homedir;
+		ref->path = strdup(homedir);
 
 		evfs_metadata_directory_scan_queue = ecore_list_new();
 		ecore_list_append(evfs_metadata_directory_scan_queue, ref);
 
-		ecore_timer_add(1.0, evfs_metadata_scan_runner, NULL);
-		ecore_timer_add(1.0, evfs_metadata_extract_runner, NULL);
+		ecore_timer_add(0.5, evfs_metadata_scan_runner, NULL);
+		ecore_timer_add(0.5, evfs_metadata_extract_runner, NULL);
 	}
 
 }
@@ -675,26 +675,51 @@ void evfs_metadata_extract_queue(evfs_filereference* ref)
 int evfs_metadata_scan_runner(void* data)
 {
 	evfs_filereference* ref;
+	evfs_filereference* iref;
+	char tmp[PATH_MAX];
 
 	if ((ref = ecore_list_remove_first(
 		evfs_metadata_directory_scan_queue))) {
 
 		evfs_filereference_sanitise(ref);
-		printf("Scanning %s://%s..\n", ref->plugin_uri, ref->path);
-
 		if (ref->plugin) {
 			Ecore_List* dir_list;
-			evfs_command* c = NEW(evfs_command);
-			c->file_command.files = calloc(1, sizeof(evfs_filereference*));
-			c->file_command.files[0] = ref;
-			c->file_command.num_files = 1;
+			evfs_command* c = evfs_file_command_single_build(ref);
 			
 			 (*EVFS_PLUGIN_FILE(ref->plugin)->functions->evfs_dir_list)
 				(NULL, c, &dir_list);
 
 			evfs_cleanup_file_command(c);
 
-			printf("List returned: %d\n", ecore_list_nodes(dir_list));
+			ecore_list_goto_first(dir_list);
+			while ( (iref = ecore_list_remove_first(dir_list))) {
+				struct stat file_stat;
+				char* pos = strrchr(iref->path, '/');
+
+				if (pos) {
+					/*Dangerous - check str length TODO*/
+					/*Are we a hidden dir/file?*/
+					if (!(pos[1] == '.')) {
+						evfs_command* ci = evfs_file_command_single_build(iref);
+						(*EVFS_PLUGIN_FILE(iref->plugin)->functions->evfs_file_lstat) 
+							(ci, &file_stat, 0);
+
+						if (S_ISDIR(file_stat.st_mode)) {
+							ecore_list_append(evfs_metadata_directory_scan_queue, iref);
+							free(ci->file_command.files);
+							free(ci);
+						} else if (strstr(iref->path, ".mp3") || strstr(iref->path, ".jpg") ||
+								strstr(iref->path, ".mpg")) {
+							ecore_list_append(evfs_metadata_queue, iref);
+							free(ci->file_command.files);
+							free(ci);
+						} else {
+							evfs_cleanup_file_command(ci);
+						}
+					}
+				}
+			}
+			ecore_list_destroy(dir_list);
 		} else {
 			evfs_cleanup_filereference(ref);
 		}

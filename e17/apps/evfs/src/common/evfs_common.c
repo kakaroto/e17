@@ -20,6 +20,18 @@ int evfs_filereference_sanitise(evfs_filereference* ref)
 	}
 }
 
+evfs_command* evfs_file_command_single_build(evfs_filereference* ref)
+{
+	evfs_command* c = NEW(evfs_command);
+
+	c->file_command.files = calloc(1, sizeof(evfs_filereference*));
+	c->file_command.files[0] = ref;
+	c->file_command.num_files = 1;
+	evfs_filereference_sanitise(ref);
+
+	return c;
+}
+
 evfs_filereference* evfs_filereference_clone(evfs_filereference* source)
 {
 	evfs_filereference* dest = calloc(1,sizeof(evfs_filereference));

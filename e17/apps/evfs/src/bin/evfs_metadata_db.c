@@ -263,30 +263,46 @@ int evfs_metadata_db_id_for_file(sqlite3* db, evfs_filereference* ref, int creat
 	/*printf("File path is: %s\n", file_path);*/
 
 
-	snprintf(query, sizeof(query), "select id from File where filename ='%s'", file_path);
+	snprintf(query, sizeof(query), "select id from File where filename = ?");
 	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
 
 	if (ret == SQLITE_OK) {
+		sqlite3_bind_text(pStmt, 1, file_path, strlen(file_path), SQLITE_STATIC);
+		
 		ret = sqlite3_step(pStmt);
 		if (ret == SQLITE_ROW)  {
 			file = sqlite3_column_int(pStmt,0);
+
+			sqlite3_reset(pStmt);
+			sqlite3_finalize(pStmt);
 		} else {
+			sqlite3_reset(pStmt);
+			sqlite3_finalize(pStmt);
+			
 			if (create) {
-				snprintf(query, sizeof(query), "insert into File (filename) select '%s';", file_path);
-				ret = sqlite3_exec(db, query, 
-				NULL, 0,&errMsg);
-	
-				file = (int)sqlite3_last_insert_rowid(db);
+				snprintf(query, sizeof(query), "insert into File (filename) values(?);");
+				ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+				sqlite3_bind_text(pStmt, 1, file_path, strlen(file_path), SQLITE_STATIC);
+
+				if (sqlite3_step(pStmt) == SQLITE_DONE) {
+					file = (int)sqlite3_last_insert_rowid(db);
+				} else {
+					file = 0;
+				}
+				
+				sqlite3_reset(pStmt);
+				sqlite3_finalize(pStmt);
 			} else {
 				file = 0;
 			}
 		}
 	} else {
-		printf("id_for_file: sqlite error\n");
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+		
+		printf("id_for_file: sqlite error (%s)\n", file_path);
 		file = 0;
 	}
-	sqlite3_reset(pStmt);
-	sqlite3_finalize(pStmt);
 
 	return file;
 }
