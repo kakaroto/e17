@@ -13,6 +13,7 @@ autom4te.cache
 depcomp
 entrance.spec
 install-sh
+libtool
 missing
 ltmain.sh
 *.tar.gz
