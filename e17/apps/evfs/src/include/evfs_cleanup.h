@@ -10,6 +10,7 @@ typedef enum evfs_free_state
 void evfs_cleanup_filereference(evfs_filereference * ref);
 void evfs_cleanup_command(evfs_command * command, int free_command);
 void evfs_cleanup_file_command(evfs_command * command);
+void evfs_cleanup_file_command_only(evfs_command* command);
 void evfs_cleanup_file_monitor(evfs_file_monitor * mon);
 void evfs_cleanup_event(evfs_event *);
 void evfs_cleanup_file_uri_path(evfs_file_uri_path * path);

@@ -36,7 +36,10 @@ void evfs_cleanup_client(evfs_client * client);
 void evfs_disconnect(evfs_connection * connection);
 evfs_connection *evfs_connect(void (*callback_func) (evfs_event *, void *),
                               void *obj);
+
 evfs_file_uri_path *evfs_parse_uri(char *uri);
+evfs_filereference * evfs_parse_uri_single(char *uri);
+
 int evfs_handle_command(evfs_client * client, evfs_command * command);
 void evfs_handle_monitor_start_command(evfs_client * client,
                                        evfs_command * command);

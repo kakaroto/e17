@@ -432,10 +432,28 @@ evfs_token_list_free(Ecore_DList * tokens)
    ecore_dlist_destroy(tokens);
 }
 
+
+evfs_file_uri_path*
+evfs_parse_uri(char* uri)
+{
+	evfs_file_uri_path* path = NEW(evfs_file_uri_path);
+	evfs_filereference* ref;
+
+	ref = evfs_parse_uri_single(uri);
+	if (ref) {
+		path->files = calloc(1, sizeof(evfs_filereference*));
+		path->files[0] = ref;
+		path->num_files = 1;
+	}
+
+	return path;
+	
+}
+
 /*Function to parse a uri*/
 /*We should rewrite this,use a proper parser*/
-evfs_file_uri_path *
-evfs_parse_uri(char *uri)
+evfs_filereference *
+evfs_parse_uri_single(char *uri)
 {
    char *pos;
    char *tok;
@@ -443,7 +461,6 @@ evfs_parse_uri(char *uri)
    int i;
    evfs_filereference *ref = NULL, *new_ref = NULL, *root_ref =
       NULL, *bottom_ref = NULL;
-   evfs_file_uri_path *path = NEW(evfs_file_uri_path);
    Ecore_DList *tokens;
 
    /*for (i=0;i<strlen(uri);i++) {
@@ -486,6 +503,7 @@ evfs_parse_uri(char *uri)
      {
         printf("Couldn't get a plugin uri, token was (instead): '%s'\n",
                token->token_s);
+	return NULL;
      }
 
    token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR, "://");   /* '://' */
@@ -502,7 +520,7 @@ evfs_parse_uri(char *uri)
              new_ref->username = strdup(token->token_s);
           }
 
-        token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR, ":");        /* ':' */
+        if (!(token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR, ":"))) return NULL;  /* ':' */
         token = evfs_token_expect(tokens, EVFS_URI_TOKEN_STRING, NULL);
 
         if (token)
@@ -511,9 +529,8 @@ evfs_parse_uri(char *uri)
              new_ref->password = strdup(token->token_s);
           }
 
-        token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR, "@");        /* '@' */
-
-        token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR, "/");        /* '/' */
+	 if (!(token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR, "@"))) return NULL;  /* '@' */
+	 if (!(token = evfs_token_expect(tokens, EVFS_URI_TOKEN_OPERATOR, "/"))) return NULL;  /* '/' */
      }
 
    if (token)
@@ -552,13 +569,9 @@ evfs_parse_uri(char *uri)
       root_ref = new_ref;
    bottom_ref = new_ref;
 
-   path->files = malloc(sizeof(evfs_filereference *));
-   path->num_files = 1;
-   path->files[0] = bottom_ref;
-
    evfs_token_list_free(tokens);
 
-   return path;
+   return bottom_ref;
 }
 
 char *

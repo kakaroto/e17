@@ -16,6 +16,15 @@ evfs_cleanup_command(evfs_command * command, int free_command)
       free(command);
 }
 
+void 
+evfs_cleanup_file_command_only(evfs_command* command)
+{
+	if (command->file_command.files)
+		free(command->file_command.files);
+
+	free(command);
+}
+
 void
 evfs_cleanup_file_command(evfs_command * command)
 {
