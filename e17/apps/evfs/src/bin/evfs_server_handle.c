@@ -404,6 +404,21 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 	   return;
    }
 
+   if (num_files > 2) {
+	   dst_plugin =
+	     evfs_get_plugin_for_uri(client->server,
+	    command->file_command.files[num_files-1]->plugin_uri);
+
+	   /*Check if >2 files, dest file is a dir*/
+	    res =
+	    (*EVFS_PLUGIN_FILE(dst_plugin)->functions->evfs_file_lstat) (command, &dest_stat, num_files-1);
+
+	    if (res != EVFS_SUCCESS || !S_ISDIR(dest_stat.st_mode)) {
+		    printf("Copy > 2 files, and dest is not a directory\n");
+		    return;
+	    }
+   }
+
    /*Make a new evfs_operation, for client communication */
    if (root_command == command) {
 	   op = evfs_operation_files_new(client, root_command);
@@ -417,10 +432,6 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 	      evfs_get_plugin_for_uri(client->server,
                  command->file_command.files[c_file]->plugin_uri);
 	
-	   dst_plugin =
-	      evfs_get_plugin_for_uri(client->server,
-                     command->file_command.files[num_files-1]->plugin_uri);
-
 	   if (plugin && dst_plugin) {
 
 	        /*Check for supported options */
