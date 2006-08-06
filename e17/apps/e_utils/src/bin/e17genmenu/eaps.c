@@ -128,7 +128,8 @@ write_icon(char *file, G_Eap *eap)
    Engrave_Part_State *ps;
    Eet_File *ef;
 
-   char *idir, *ifile;
+   const char *ifile;
+   char *idir;
 
 #ifdef DEBUG
    fprintf(stderr, "\tWriting file %s\t\twith icon (%s) %s\n", file, eap->icon, eap->icon_path);

@@ -29,7 +29,6 @@ static void eapp_write_keys(Eet_File *ef, Eapp_Item *keys, char *lang);
 static void eapp_cb_quit(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_save(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_show(Ewl_Widget *w, void *ev, void *data);
-static void eapp_cb_fd_hide(Ewl_Widget *w, void *ev, void *data);
 static void eapp_cb_fd_changed(Ewl_Widget *w, void *ev, void *data);
 static void eapp_create_content(Eet_File *ef, Eapp_Item *item,
                                         char *lang, char *winclass, 
@@ -229,11 +228,10 @@ eapp_ui_init(char *file, char *lang, char *winclass)
 static int
 eapp_populate(Ewl_Widget *vbox, char *file, char *lang, char *winclass)
 {
-    Ewl_Widget *hbox, *icon_border, *icon, *basic, *o;
+    Ewl_Widget *hbox, *icon_border, *icon, *basic;
     Ewl_Widget *hsep, *general;
     Ewl_Widget *icon_theme, *window, *misc;
     Eet_File *ef = NULL;
-    char *v;
     int i;   
  
     if (ecore_file_exists(file))
@@ -403,12 +401,6 @@ eapp_cb_fd_show(Ewl_Widget *w, void *ev, void *data)
         ewl_widget_show(fd);
     }
     ewl_widget_show(fd);
-}
-
-static void
-eapp_cb_fd_hide(Ewl_Widget *w, void *ev, void *data)
-{
-    ewl_widget_hide(w);
 }
 
 static void
