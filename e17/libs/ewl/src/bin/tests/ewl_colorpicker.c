@@ -66,10 +66,10 @@ create_test(Ewl_Container *box)
 static void
 color_value_changed(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
-	int r, g, b;
+	unsigned int r, g, b;
 
 	ewl_colorpicker_current_rgb_get(EWL_COLORPICKER(w), &r, &g, &b);
-	printf("value changed to (%i, %i, %i)\n", r, g, b);
+	printf("value changed to (%u, %u, %u)\n", r, g, b);
 }
 
 
