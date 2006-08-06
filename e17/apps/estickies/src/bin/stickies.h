@@ -79,7 +79,7 @@ struct _E_Sticky
    Etk_Widget *textview;
    Etk_Widget *buttonbox;
    Etk_Widget *stick_toggle;
-   Etk_Widget *lock_button;
+   Etk_Widget *lock_toggle;
    Etk_Widget *close_button;   
 };
 
@@ -102,7 +102,10 @@ void _e_sticky_show(E_Sticky *s);
 void _e_sticky_move_resize(E_Sticky *s);
 void _e_sticky_menu_show(E_Sticky *s);
 void _e_sticky_stick_toggle(E_Sticky *s);
+void _e_sticky_lock_toggle(E_Sticky *s);
 void _e_sticky_load_from(E_Sticky *s);
+void _e_sticky_lock_set(E_Sticky *s, Etk_Bool on);    
+void _e_sticky_properties_set(E_Sticky *s);
 void _e_sticky_theme_apply(E_Sticky *s, char *theme);
 void _e_sticky_theme_apply_all(char *theme);  
 void _e_sticky_delete_confirm(E_Sticky *s);

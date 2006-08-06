@@ -211,9 +211,10 @@ static void _e_sticky_sticky_cb(Etk_Object *object, const char *property_name, v
    E_Sticky *s;
    
    s = data;
-   
+
    etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(s->stick_toggle),
 				etk_window_sticky_get(ETK_WINDOW(object)));
+   s->stick = etk_window_sticky_get(ETK_WINDOW(object));
 }
 
 static Etk_Widget *
@@ -259,7 +260,8 @@ _e_sticky_new()
    
    s = E_NEW(1, E_Sticky);
    s->theme = NULL;
-   
+   s->stick = 0;
+   s->locked = 0;
    _e_sticky_window_add(s);
    return s;
 }
@@ -278,7 +280,7 @@ _e_sticky_window_add(E_Sticky *s)
    
    s->win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(s->win), "estickies");
-   etk_window_wmclass_set(ETK_WINDOW(s->win), "_estickies", "_estickies");
+   etk_window_wmclass_set(ETK_WINDOW(s->win), "estickies", "estickies");
    etk_window_decorated_set(ETK_WINDOW(s->win), ETK_FALSE);
    etk_window_shaped_set(ETK_WINDOW(s->win), ETK_TRUE);
    etk_widget_theme_file_set(s->win, theme);
@@ -308,17 +310,19 @@ _e_sticky_window_add(E_Sticky *s)
 						"button_stick")));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(s->stick_toggle),
 			      ETK_CALLBACK(_e_sticky_stick_toggle), s);
-   //etk_tooltips_tip_set(button, "Make sticky visible on all desktops");   
+   //etk_tooltips_tip_set(button, "Make sticky visible on all desktops");
    etk_box_pack_start(ETK_BOX(hbox), s->stick_toggle, ETK_FALSE, ETK_FALSE, 0);
    
-   s->lock_button = etk_button_new();
-   etk_object_properties_set(ETK_OBJECT(s->lock_button),
+   s->lock_toggle = etk_toggle_button_new();
+   etk_object_properties_set(ETK_OBJECT(s->lock_toggle),
 			     "focusable", ETK_FALSE, NULL);   
-   etk_button_image_set(ETK_BUTTON(s->lock_button), 
+   etk_button_image_set(ETK_BUTTON(s->lock_toggle), 
 			ETK_IMAGE(etk_image_new_from_edje(theme,
 						"button_lock")));
-   //etk_tooltips_tip_set(button, "Lock sticky (read-only)");   
-   etk_box_pack_start(ETK_BOX(hbox), s->lock_button, ETK_FALSE, ETK_FALSE, 0);
+   etk_signal_connect_swapped("toggled", ETK_OBJECT(s->lock_toggle),
+			      ETK_CALLBACK(_e_sticky_lock_toggle), s);   
+   //etk_tooltips_tip_set(button, "Lock sticky (read-only)");
+   etk_box_pack_start(ETK_BOX(hbox), s->lock_toggle, ETK_FALSE, ETK_FALSE, 0);
    
    s->close_button = etk_button_new();
    etk_object_properties_set(ETK_OBJECT(s->close_button),
@@ -433,12 +437,51 @@ _e_sticky_stick_toggle(E_Sticky *s)
 {
    etk_window_sticky_set(ETK_WINDOW(s->win), 
 			 !etk_window_sticky_get(ETK_WINDOW(s->win)));
+   s->stick = !etk_window_sticky_get(ETK_WINDOW(s->win));
+}
+
+void
+_e_sticky_lock_toggle(E_Sticky *s)
+{   
+   s->locked = etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(s->lock_toggle));   
+   etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(s->textview)->textblock_object,
+					   !s->locked);
+   etk_object_properties_set(ETK_OBJECT(s->textview),
+			     "focusable", !s->locked, NULL);
+   if(s->locked)
+     {
+	etk_object_properties_set(ETK_OBJECT(s->win),
+				  "focusable", ETK_TRUE, NULL);
+	etk_widget_unfocus(s->textview);
+	etk_widget_focus(s->win);
+     }
+   else
+     {
+	etk_widget_focus(s->textview);
+	etk_object_properties_set(ETK_OBJECT(s->win),
+				  "focusable", ETK_FALSE, NULL);
+     }
 }
 
 void
 _e_sticky_load_from(E_Sticky *s)
 {   
    _e_sticky_window_add(s);
+}
+
+void
+_e_sticky_lock_set(E_Sticky *s, Etk_Bool on)
+{
+   etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(s->lock_toggle), on);
+}
+
+void
+_e_sticky_properties_set(E_Sticky *s)
+{   
+   if(s->stick == 1)
+     etk_window_sticky_set(ETK_WINDOW(s->win), ETK_TRUE);
+   if(s->locked == 1)
+     _e_sticky_lock_set(s, ETK_TRUE);
 }
 
 void
@@ -466,7 +509,7 @@ _e_sticky_theme_apply(E_Sticky *s, char *theme)
    etk_button_image_set(ETK_BUTTON(s->stick_toggle),
 			ETK_IMAGE(etk_image_new_from_edje(theme_file,
 							  "button_stick")));
-   etk_button_image_set(ETK_BUTTON(s->lock_button),
+   etk_button_image_set(ETK_BUTTON(s->lock_toggle),
 			ETK_IMAGE(etk_image_new_from_edje(theme_file,
 							  "button_lock")));
    etk_button_image_set(ETK_BUTTON(s->close_button),
@@ -546,6 +589,7 @@ int main(int argc, char **argv)
 	     _e_sticky_load_from(l->data);
 	     _e_sticky_show(l->data);
 	     _e_sticky_move_resize(l->data);
+	     _e_sticky_properties_set(l->data);
 	  }
      }
    else

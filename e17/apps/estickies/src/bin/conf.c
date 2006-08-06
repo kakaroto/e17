@@ -174,7 +174,7 @@ _e_config_load(E_Stickies *ss)
    char     *home;
    int size;
    E_Config_Stickies *stickies = NULL;   
-   
+
    home = getenv("HOME");
    if(!home)
      {
@@ -250,7 +250,7 @@ _e_config_save(E_Stickies *ss)
    int        ret;
    E_Config_Stickies *stickies = NULL;
    Evas_List *l;
-   
+
    home = getenv("HOME");
    if(!home)
      return 0;
