@@ -276,9 +276,7 @@ struct _ewin
 #define EwinGetWindowGroup(ewin)	((ewin)->icccm.group)
 
 #define EwinGetClientWin(ewin)		((ewin)->client.win)
-#define EwinGetClientXwin(ewin)	Xwin((ewin)->client.win)
 #define EwinGetContainerWin(ewin)	((ewin)->win_container)
-#define EwinGetContainerXwin(ewin)	Xwin((ewin)->win_container)
 
 /* ewins.c */
 #define EWIN_CHANGE_NAME        (1<<0)
@@ -288,6 +286,9 @@ struct _ewin
 #define EWIN_CHANGE_LAYER       (1<<4)
 #define EWIN_CHANGE_OPACITY     (1<<5)
 #define EWIN_CHANGE_ATTENTION   (1<<6)
+
+Window              EwinGetClientXwin(const EWin * ewin);
+Window              EwinGetContainerXwin(const EWin * ewin);
 
 void                EwinShapeSet(EWin * ewin);
 void                EwinRaise(EWin * ewin);

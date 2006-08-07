@@ -59,6 +59,22 @@ static void         EwinHandleEventsToplevel(Win win, XEvent * ev, void *prm);
 static void         EwinHandleEventsContainer(Win win, XEvent * ev, void *prm);
 static void         EwinHandleEventsClient(Win win, XEvent * ev, void *prm);
 
+Window
+EwinGetClientXwin(const EWin * ewin)
+{
+   Win                 win = EwinGetClientWin(ewin);
+
+   return (win) ? WinGetXwin(win) : None;
+}
+
+Window
+EwinGetContainerXwin(const EWin * ewin)
+{
+   Win                 win = EwinGetContainerWin(ewin);
+
+   return (win) ? WinGetXwin(win) : None;
+}
+
 static void
 EwinEventsConfigure(EWin * ewin, int mode)
 {
