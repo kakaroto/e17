@@ -612,6 +612,16 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_size", id, NULL);
      }
 
+   else if(!strcmp(name, "icon_name"))
+     {
+	Etk_Stock_Id id;
+	PROPERTY_STR;
+	
+	_en_stock_items_hash_init();      
+	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", (Etk_Stock_Id)id, NULL);
+     }
+
    else if(!strcmp(name, "use_stock"))
      {
 	PROPERTY_BOOL;
