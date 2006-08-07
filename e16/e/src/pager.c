@@ -1110,7 +1110,7 @@ PagerHandleMotion(Pager * p, int x, int y)
    if (!Conf_pagers.enable)
       return;
 
-   on_screen = EXQueryPointer(Xwin(p->win), &x, &y, NULL, NULL);
+   on_screen = EXQueryPointer(WinGetXwin(p->win), &x, &y, NULL, NULL);
 
    if (on_screen && x >= 0 && x < p->w && y >= 0 && y < p->h)
       ewin = EwinInPagerAt(p, x, y);

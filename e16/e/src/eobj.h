@@ -66,7 +66,7 @@ struct _eobj
 #define EOBJ_TYPE_ROOT_BG   7
 
 #define EobjGetWin(eo)          ((eo)->win)
-#define EobjGetXwin(eo)         Xwin((eo)->win)
+#define EobjGetXwin(eo)         WinGetXwin((eo)->win)
 #define EobjGetDesk(eo)         ((eo)->desk)
 #define EobjGetName(eo)         ((eo)->name)
 #define EobjGetType(eo)         ((eo)->type)

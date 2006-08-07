@@ -247,7 +247,7 @@ ECursorApply(ECursor * ec, Win win)
 {
    if (!ec)
       return;
-   XDefineCursor(disp, Xwin(win), ec->cursor);
+   XDefineCursor(disp, WinGetXwin(win), ec->cursor);
 #if 0				/* Not used */
    if (win == VRoot.xwin)
       ec->inroot = 1;

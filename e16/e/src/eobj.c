@@ -186,7 +186,7 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
    eo->shaped = -1;
 
    if (type == EOBJ_TYPE_EXT)
-      eo->name = ecore_x_icccm_title_get(Xwin(win));
+      eo->name = ecore_x_icccm_title_get(WinGetXwin(win));
    else if (name)
       eo->name = Estrdup(name);
    if (!eo->name)

@@ -153,9 +153,9 @@ HintsSetActiveWindow(Window win)
 void
 HintsSetWindowName(Win win, const char *name)
 {
-   ecore_x_icccm_title_set(Xwin(win), name);
+   ecore_x_icccm_title_set(WinGetXwin(win), name);
 
-   EWMH_SetWindowName(Xwin(win), name);
+   EWMH_SetWindowName(WinGetXwin(win), name);
 }
 
 void
@@ -166,7 +166,7 @@ HintsSetWindowClass(Win win, const char *name, const char *clss)
    xch = XAllocClassHint();
    xch->res_name = (char *)name;
    xch->res_class = (char *)clss;
-   XSetClassHint(disp, Xwin(win), xch);
+   XSetClassHint(disp, WinGetXwin(win), xch);
    XFree(xch);
 }
 
@@ -287,7 +287,8 @@ HintsGetRootPixmap(Win win)
 
    pm = None;
    num =
-      ecore_x_window_prop_xid_get(Xwin(win), E_XROOTPMAP_ID, XA_PIXMAP, &pm, 1);
+      ecore_x_window_prop_xid_get(WinGetXwin(win), E_XROOTPMAP_ID, XA_PIXMAP,
+				  &pm, 1);
 
    return pm;
 }
@@ -298,9 +299,11 @@ HintsSetRootInfo(Win win, Pixmap pmap, unsigned int color)
    Ecore_X_Pixmap      pm;
 
    pm = pmap;
-   ecore_x_window_prop_xid_set(Xwin(win), E_XROOTPMAP_ID, XA_PIXMAP, &pm, 1);
+   ecore_x_window_prop_xid_set(WinGetXwin(win), E_XROOTPMAP_ID, XA_PIXMAP, &pm,
+			       1);
 
-   ecore_x_window_prop_card32_set(Xwin(win), E_XROOTCOLOR_PIXEL, &color, 1);
+   ecore_x_window_prop_card32_set(WinGetXwin(win), E_XROOTCOLOR_PIXEL, &color,
+				  1);
 }
 
 typedef union

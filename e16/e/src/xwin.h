@@ -47,7 +47,6 @@ Time                EGetTimestamp(void);
 
 Win                 ELookupXwin(Window xwin);
 
-#define Xwin(win) WinGetXwin(win)
 Window              WinGetXwin(const Win win);
 int                 WinGetBorderWidth(const Win win);
 int                 WinGetDepth(const Win win);
@@ -106,22 +105,22 @@ int                 ETranslateCoordinates(Win src_w, Win dst_w,
 int                 EDrawableCheck(Drawable draw, int grab);
 
 #define ESelectInput(win, event_mask) \
-	XSelectInput(disp, Xwin(win), event_mask)
+	XSelectInput(disp, WinGetXwin(win), event_mask)
 
 #define EChangeWindowAttributes(win, mask, attr) \
-	XChangeWindowAttributes(disp, Xwin(win), mask, attr)
+	XChangeWindowAttributes(disp, WinGetXwin(win), mask, attr)
 #define ESetWindowBorderWidth(win, bw) \
-	XSetWindowBorderWidth(disp, Xwin(win), bw)
+	XSetWindowBorderWidth(disp, WinGetXwin(win), bw)
 
 #define ERaiseWindow(win) \
-	XRaiseWindow(disp, Xwin(win))
+	XRaiseWindow(disp, WinGetXwin(win))
 #define ELowerWindow(win) \
-	XLowerWindow(disp, Xwin(win))
+	XLowerWindow(disp, WinGetXwin(win))
 
 #define EClearWindow(win) \
-	XClearWindow(disp, Xwin(win))
+	XClearWindow(disp, WinGetXwin(win))
 #define EClearArea(win, x, y, w, h, exp) \
-	XClearArea(disp, Xwin(win), x, y, w, h, exp)
+	XClearArea(disp, WinGetXwin(win), x, y, w, h, exp)
 
 Pixmap              ECreatePixmap(Win win, unsigned int width,
 				  unsigned int height, unsigned int depth);
@@ -151,7 +150,7 @@ int                 EXGetGeometry(Window xwin, Window * root_return,
 				  int *x, int *y, int *w, int *h, int *bw,
 				  int *depth);
 #define EXGetWindowAttributes(win, xwa) \
-	XGetWindowAttributes(disp, Xwin(win), xwa)
+	XGetWindowAttributes(disp, WinGetXwin(win), xwa)
 
 void                EXCopyArea(Drawable src, Drawable dst, int sx, int sy,
 			       unsigned int w, unsigned int h, int dx, int dy);

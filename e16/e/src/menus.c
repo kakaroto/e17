@@ -1578,7 +1578,8 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 	     MenusSetEvents(1);
 
 	     if (Conf.menus.warp)
-		EXWarpPointer(Xwin(mi->win), mi->text_w / 2, mi->text_h / 2);
+		EXWarpPointer(WinGetXwin(mi->win), mi->text_w / 2,
+			      mi->text_h / 2);
 	  }
      }
 

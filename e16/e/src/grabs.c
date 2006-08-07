@@ -28,11 +28,12 @@ GrabKeyboardSet(Win win)
 {
    int                 rc;
 
-   rc = XGrabKeyboard(disp, Xwin(win), False, GrabModeAsync, GrabModeAsync,
-		      CurrentTime);
+   rc =
+      XGrabKeyboard(disp, WinGetXwin(win), False, GrabModeAsync, GrabModeAsync,
+		    CurrentTime);
 
 #if 0
-   Eprintf("GrabKeyboardSet %#lx %d\n", Xwin(win), rc);
+   Eprintf("GrabKeyboardSet %#lx %d\n", WinGetXwin(win), rc);
 #endif
    return rc;
 }
@@ -54,15 +55,15 @@ int
 GrabPointerSet(Win win, unsigned int csr, int confine)
 {
    int                 ret = -1;
-   Window              confine_to = (confine) ? Xwin(win) : None;
+   Window              confine_to = (confine) ? WinGetXwin(win) : None;
 
-   ret = XGrabPointer(disp, Xwin(win), False,
+   ret = XGrabPointer(disp, WinGetXwin(win), False,
 		      ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
 		      ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
 		      GrabModeAsync, GrabModeAsync, confine_to, ECsrGet(csr),
 		      CurrentTime);
 
-   Mode.grabs.pointer_grab_window = Xwin(win);
+   Mode.grabs.pointer_grab_window = WinGetXwin(win);
    Mode.grabs.pointer_grab_active = 1;
 
    if (EventDebug(EDBUG_TYPE_GRABS))
@@ -91,14 +92,15 @@ GrabButtonSet(unsigned int button, unsigned int modifiers, Win win,
    Bool                owner_events = False;
    int                 pointer_mode = GrabModeSync;
    int                 keyboard_mode = GrabModeAsync;
-   Window              confine_to = (confine) ? Xwin(win) : None;
+   Window              confine_to = (confine) ? WinGetXwin(win) : None;
 
-   XGrabButton(disp, button, modifiers, Xwin(win), owner_events, event_mask,
-	       pointer_mode, keyboard_mode, confine_to, ECsrGet(csr));
+   XGrabButton(disp, button, modifiers, WinGetXwin(win), owner_events,
+	       event_mask, pointer_mode, keyboard_mode, confine_to,
+	       ECsrGet(csr));
 }
 
 void
 GrabButtonRelease(unsigned int button, unsigned int modifiers, Win win)
 {
-   XUngrabButton(disp, button, modifiers, Xwin(win));
+   XUngrabButton(disp, button, modifiers, WinGetXwin(win));
 }

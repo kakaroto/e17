@@ -1754,7 +1754,7 @@ IB_ShowMenu(Iconbox * ib, int x __UNUSED__, int y __UNUSED__)
 	mi = MenuItemCreate(_("This Iconbox Settings..."), NULL, s, NULL);
 	MenuAddItem(p_menu, mi);
 
-	Esnprintf(s, sizeof(s), "wop %#lx cl", Xwin(ib->win));
+	Esnprintf(s, sizeof(s), "wop %#lx cl", WinGetXwin(ib->win));
 	mi = MenuItemCreate(_("Close Iconbox"), NULL, s, NULL);
 	MenuAddItem(p_menu, mi);
 
@@ -1771,7 +1771,7 @@ IB_ShowMenu(Iconbox * ib, int x __UNUSED__, int y __UNUSED__)
 	mi = MenuItemCreate(_("Systray Settings..."), NULL, s, NULL);
 	MenuAddItem(p_menu, mi);
 
-	Esnprintf(s, sizeof(s), "wop %#lx cl", Xwin(ib->win));
+	Esnprintf(s, sizeof(s), "wop %#lx cl", WinGetXwin(ib->win));
 	mi = MenuItemCreate(_("Close Systray"), NULL, s, NULL);
 	MenuAddItem(p_menu, mi);
 
@@ -2698,7 +2698,7 @@ IconboxObjSwinFind(Iconbox * ib, Window win)
    int                 i;
 
    for (i = 0; i < ib->num_objs; i++)
-      if (win == Xwin(ib->objs[i].u.swin->win))
+      if (win == WinGetXwin(ib->objs[i].u.swin->win))
 	 return i;
 
    return -1;
@@ -2817,7 +2817,7 @@ IconboxObjSwinDel(Iconbox * ib, Win win, int gone)
       return;
 
    if (EventDebug(EDBUG_TYPE_ICONBOX))
-      Eprintf("IconboxObjSwinDel %#lx\n", Xwin(win));
+      Eprintf("IconboxObjSwinDel %#lx\n", WinGetXwin(win));
 
    swin = ib->objs[i].u.swin;
 
@@ -3029,9 +3029,10 @@ SystrayInit(Iconbox * ib, Win win, int screen)
      }
    systray_sel_win = ECreateEventWindow(VRoot.win, -100, -100, 1, 1);
    systray_sel_time = EGetTimestamp();
-   XSetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx, Xwin(systray_sel_win),
+   XSetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx, WinGetXwin(systray_sel_win),
 		      systray_sel_time);
-   if (XGetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx) != Xwin(systray_sel_win))
+   if (XGetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx) !=
+       WinGetXwin(systray_sel_win))
      {
 	DialogOK(_("Systray Error!"), _("Could not activate systray"));
 	Eprintf("Failed to acquire selection %s\n", buf);
@@ -3041,7 +3042,7 @@ SystrayInit(Iconbox * ib, Win win, int screen)
      }
    if (EventDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("Window %#lx is now %s owner, time=%ld\n",
-	      Xwin(systray_sel_win), buf, systray_sel_time);
+	      WinGetXwin(systray_sel_win), buf, systray_sel_time);
 
    ESelectInput(systray_sel_win,
 		SubstructureRedirectMask | SubstructureNotifyMask);
@@ -3053,7 +3054,7 @@ SystrayInit(Iconbox * ib, Win win, int screen)
 
    ecore_x_client_message32_send(VRoot.xwin, E_XA_MANAGER, StructureNotifyMask,
 				 CurrentTime, _NET_SYSTEM_TRAY_Sx,
-				 Xwin(systray_sel_win), 0, 0);
+				 WinGetXwin(systray_sel_win), 0, 0);
 }
 
 static void

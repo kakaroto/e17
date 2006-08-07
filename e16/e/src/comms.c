@@ -153,7 +153,7 @@ ClientConfigure(Client * c, const char *str)
 static int
 ClientMatchWindow(const void *data, const void *match)
 {
-   return Xwin(((const Client *)data)->win) != (Window) match;
+   return WinGetXwin(((const Client *)data)->win) != (Window) match;
 }
 
 static char        *
@@ -274,9 +274,10 @@ CommsInit(void)
    ESelectInput(comms_win, StructureNotifyMask | SubstructureNotifyMask);
    EventCallbackRegister(comms_win, 0, ClientHandleEvents, NULL);
 
-   Esnprintf(s, sizeof(s), "WINID %8lx", Xwin(comms_win));
+   Esnprintf(s, sizeof(s), "WINID %8lx", WinGetXwin(comms_win));
    XA_ENLIGHTENMENT_COMMS = XInternAtom(disp, "ENLIGHTENMENT_COMMS", False);
-   ecore_x_window_prop_string_set(Xwin(comms_win), XA_ENLIGHTENMENT_COMMS, s);
+   ecore_x_window_prop_string_set(WinGetXwin(comms_win), XA_ENLIGHTENMENT_COMMS,
+				  s);
    ecore_x_window_prop_string_set(VRoot.xwin, XA_ENLIGHTENMENT_COMMS, s);
 
    XA_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
@@ -301,7 +302,7 @@ CommsDoSend(Window win, const char *s)
    ev.xclient.format = 8;
    for (i = 0; i < len + 1; i += 12)
      {
-	Esnprintf(ss, sizeof(ss), "%8lx", Xwin(comms_win));
+	Esnprintf(ss, sizeof(ss), "%8lx", WinGetXwin(comms_win));
 	for (j = 0; j < 12; j++)
 	  {
 	     ss[8 + j] = s[i + j];
@@ -322,7 +323,7 @@ CommsSend(Client * c, const char *s)
       return;
 
    c->replied = 1;
-   CommsDoSend(Xwin(c->win), s);
+   CommsDoSend(WinGetXwin(c->win), s);
 }
 
 void
@@ -332,7 +333,7 @@ CommsFlush(Client * c)
       return;
 
    if (!c->replied)
-      CommsDoSend(Xwin(c->win), "");
+      CommsDoSend(WinGetXwin(c->win), "");
 }
 
 /*

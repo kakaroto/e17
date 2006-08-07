@@ -617,7 +617,7 @@ FocusHandleClick(EWin * ewin, Win win)
 
    /* Allow click to pass thorugh */
    if (EventDebug(EDBUG_TYPE_GRABS))
-      Eprintf("FocusHandleClick %#lx %#lx\n", Xwin(win),
+      Eprintf("FocusHandleClick %#lx %#lx\n", WinGetXwin(win),
 	      EwinGetContainerXwin(ewin));
    if (win == EwinGetContainerWin(ewin))
      {

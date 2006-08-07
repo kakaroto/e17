@@ -2207,7 +2207,7 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
      case DITEM_SLIDER:
 	if (!di->item.slider.in_drag)
 	   break;
-	if (ev->xmotion.window == Xwin(di->item.slider.knob_win))
+	if (ev->xmotion.window == WinGetXwin(di->item.slider.knob_win))
 	  {
 	     dx = Mode.events.x - Mode.events.px;
 	     dy = Mode.events.y - Mode.events.py;
@@ -2270,7 +2270,7 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 	   break;
 #endif
 
-	if (ev->xbutton.window == Xwin(di->item.slider.knob_win))
+	if (ev->xbutton.window == WinGetXwin(di->item.slider.knob_win))
 	  {
 	     if (ev->xbutton.button >= 1 && ev->xbutton.button <= 3)
 	       {

@@ -87,7 +87,7 @@ EwinFindByChildren(Window win)
 	else
 	  {
 	     for (j = 0; j < ewins[i]->border->num_winparts; j++)
-		if (win == Xwin(ewins[i]->bits[j].win))
+		if (win == WinGetXwin(ewins[i]->bits[j].win))
 		  {
 		     return ewins[i];
 		  }

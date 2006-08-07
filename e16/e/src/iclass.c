@@ -925,7 +925,7 @@ ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
    flags = pt_type_to_flags(image_type);
    if (flags != ICLASS_ATTR_OPAQUE)
      {
-	bg = pt_get_bg_image(Xwin(win), w, h, flags & ICLASS_ATTR_GLASS);
+	bg = pt_get_bg_image(WinGetXwin(win), w, h, flags & ICLASS_ATTR_GLASS);
 	if (bg)
 	  {
 	     EImageBlendCM(bg, im, (flags & ICLASS_ATTR_USE_CM) ? icm : NULL);
@@ -967,7 +967,7 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 
    if (flags != ICLASS_ATTR_OPAQUE)
      {
-	ii = pt_get_bg_image(Xwin(win), w, h, flags & ICLASS_ATTR_GLASS);
+	ii = pt_get_bg_image(WinGetXwin(win), w, h, flags & ICLASS_ATTR_GLASS);
      }
    else
      {
@@ -1231,8 +1231,8 @@ ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
      {
 	GC                  gc;
 
-	gc = EXCreateGC(Xwin(win), 0, NULL);
-	ImagestateDrawBevel(is, Xwin(win), gc, w, h);
+	gc = EXCreateGC(WinGetXwin(win), 0, NULL);
+	ImagestateDrawBevel(is, WinGetXwin(win), gc, w, h);
 	EXFreeGC(gc);
      }
 }
