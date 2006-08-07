@@ -374,7 +374,7 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_image_thumbnail_la_SOURCES) $(fullscreen_la_SOURCES) \
 	$(modal_la_SOURCES) $(ewl_layer_la_SOURCES) \
 	$(ewl_dnd_snoop_la_SOURCES) $(ewl_list_la_SOURCES) \
-	$(puzzle_la_SOURCES) $(ewl_grid_la_SOURCE)
+	$(puzzle_la_SOURCES) $(ewl_grid_la_SOURCES)
 
 EXTRA_DIST = $(FILES)
 
