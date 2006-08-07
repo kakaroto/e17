@@ -23,6 +23,7 @@ struct _Config
 struct _Config_Item
 {
    const char *id;
+   int highlight;
    int show_label;
    int show_all;
 };

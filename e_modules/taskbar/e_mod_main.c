@@ -102,7 +102,7 @@ static int _taskbar_cb_event_border_zone_set(void *data, int type, void *event);
 static int _taskbar_cb_event_border_desk_set(void *data, int type, void *event);
 static int _taskbar_cb_window_focus_in(void *data, int type, void *event);
 static int _taskbar_cb_window_focus_out(void *data, int type, void *event);
-static int _taskbar_cb_window_property(void *data, int type, void *event);
+static int _taskbar_cb_event_border_property(void *data, int type, void *event);
 static int _taskbar_cb_event_desk_show(void *data, int type, void *event);
 static Config_Item *_taskbar_config_item_get(const char *id);
 
@@ -550,7 +550,7 @@ _taskbar_icon_check_add(Taskbar *b, E_Border *bd)
      {
 	if (bd->zone != b->zone)
 	  return 1;
-	if ((bd->desk != e_desk_current_get(bd->zone))||bd->sticky)
+	if ((bd->desk != e_desk_current_get(bd->zone))&&!bd->sticky)
 	  return 1;
      }
 
@@ -715,6 +715,8 @@ _taskbar_cb_icon_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_inf
 
    ic = (Taskbar_Icon *)data;
    ci = _taskbar_config_item_get(ic->taskbar->inst->gcc->id);
+   if (ci->highlight)
+     edje_object_signal_emit(ic->border->bg_object, "hung", "");
    _taskbar_icon_signal_emit(ic, "active", "");
    if (ci->show_label)
       _taskbar_icon_signal_emit(ic, "label_active", "");
@@ -728,6 +730,8 @@ _taskbar_cb_icon_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_in
 
    ic = (Taskbar_Icon *)data;
    ci = _taskbar_config_item_get(ic->taskbar->inst->gcc->id);
+   if (ci->highlight)
+     edje_object_signal_emit(ic->border->bg_object, "unhung", "");
    _taskbar_icon_signal_emit(ic, "passive", "");
    if (ci->show_label)
       _taskbar_icon_signal_emit(ic, "label_passive", "");
@@ -1043,13 +1047,13 @@ _taskbar_cb_event_border_desk_set(void *data, int type, void *event)
 static int
 _taskbar_cb_window_focus_in(void *data, int type, void *event)
 {
-   Ecore_X_Event_Window_Focus_In *ev;
+   E_Event_Border_Focus_In *ev;
    E_Border *bd;
    Taskbar_Icon *ic;
    Evas_List *l;
 
    ev = event;
-   bd = e_border_find_by_client_window(ev->win);
+   bd = ev->border;
    if (!bd)
       return 1;
 
@@ -1067,13 +1071,13 @@ _taskbar_cb_window_focus_in(void *data, int type, void *event)
 static int
 _taskbar_cb_window_focus_out(void *data, int type, void *event)
 {
-   Ecore_X_Event_Window_Focus_Out *ev;
+   E_Event_Border_Focus_Out *ev;
    E_Border *bd;
    Taskbar_Icon *ic;
    Evas_List *l;
 
    ev = event;
-   bd = e_border_find_by_client_window(ev->win);
+   bd = ev->border;
    if (!bd)
       return 1;
 
@@ -1090,16 +1094,16 @@ _taskbar_cb_window_focus_out(void *data, int type, void *event)
 }
 
 static int
-_taskbar_cb_window_property(void *data, int type, void *event)
+_taskbar_cb_event_border_property(void *data, int type, void *event)
 {
-   Ecore_X_Event_Window_Property *ev;
+   E_Event_Border_Property *ev;
    E_Border *bd;
    Taskbar_Icon *ic;
    Evas_List *l;
    char *label;
    
    ev = event;
-   bd = e_border_find_by_client_window(ev->win);
+   bd = ev->border;
    if (!bd)
      return 1;
 
@@ -1110,9 +1114,9 @@ _taskbar_cb_window_property(void *data, int type, void *event)
         inst = l->data;
         ic = _taskbar_icon_find(inst->taskbar, bd);
         if (ic) {
-	     label = ic->border->client.netwm.name;
+	     label = bd->client.netwm.name;
 	     if (!label)
-	       label = ic->border->client.icccm.title;
+	       label = bd->client.icccm.title;
 	     if (!label)
 	       label = "?";
 	     edje_object_part_text_set(ic->o_holder, "label", label);
@@ -1165,6 +1169,7 @@ _taskbar_config_item_get(const char *id)
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
+   ci->highlight = 1;
    ci->show_label = 1;
    ci->show_all   = 0;
 
@@ -1193,6 +1198,7 @@ e_modapi_init(E_Module *m)
 #define T Config_Item
 #define D conf_item_edd
   E_CONFIG_VAL(D, T, id, STR);
+  E_CONFIG_VAL(D, T, highlight, INT);
   E_CONFIG_VAL(D, T, show_label, INT);
   E_CONFIG_VAL(D, T, show_all, INT);
 
@@ -1209,6 +1215,7 @@ e_modapi_init(E_Module *m)
 	taskbar_config = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
 	ci->id = evas_stringshare_add("0");
+	ci->highlight = 1;
 	ci->show_label = 1;
 	ci->show_all   = 0;
 
@@ -1240,13 +1247,13 @@ e_modapi_init(E_Module *m)
        (E_EVENT_BORDER_ZONE_SET, _taskbar_cb_event_border_zone_set, NULL));
    taskbar_config->handlers = evas_list_append
       (taskbar_config->handlers, ecore_event_handler_add
-       (ECORE_X_EVENT_WINDOW_FOCUS_IN, _taskbar_cb_window_focus_in, NULL));
+       (E_EVENT_BORDER_FOCUS_IN, _taskbar_cb_window_focus_in, NULL));
    taskbar_config->handlers = evas_list_append
       (taskbar_config->handlers, ecore_event_handler_add
-       (ECORE_X_EVENT_WINDOW_FOCUS_OUT, _taskbar_cb_window_focus_out, NULL));
+       (E_EVENT_BORDER_FOCUS_OUT, _taskbar_cb_window_focus_out, NULL));
    taskbar_config->handlers = evas_list_append
       (taskbar_config->handlers, ecore_event_handler_add
-       (ECORE_X_EVENT_WINDOW_PROPERTY, _taskbar_cb_window_property, NULL));
+       (E_EVENT_BORDER_PROPERTY, _taskbar_cb_event_border_property, NULL));
    taskbar_config->handlers = evas_list_append
       (taskbar_config->handlers, ecore_event_handler_add
        (E_EVENT_DESK_SHOW, _taskbar_cb_event_desk_show, NULL));
