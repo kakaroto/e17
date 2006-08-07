@@ -904,19 +904,19 @@ PagerMenuShow(Pager * p, int x, int y)
 	pw_menu =
 	   MenuCreate("__DESK_WIN_MENU", _("Window Options"), NULL, NULL);
 
-	Esnprintf(s, sizeof(s), "wop %#lx ic", _EwinGetClientXwin(ewin));
+	Esnprintf(s, sizeof(s), "wop %#lx ic", EwinGetClientXwin(ewin));
 	mi = MenuItemCreate(_("Iconify"), NULL, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
-	Esnprintf(s, sizeof(s), "wop %#lx close", _EwinGetClientXwin(ewin));
+	Esnprintf(s, sizeof(s), "wop %#lx close", EwinGetClientXwin(ewin));
 	mi = MenuItemCreate(_("Close"), NULL, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
-	Esnprintf(s, sizeof(s), "wop %#lx kill", _EwinGetClientXwin(ewin));
+	Esnprintf(s, sizeof(s), "wop %#lx kill", EwinGetClientXwin(ewin));
 	mi = MenuItemCreate(_("Annihilate"), NULL, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
-	Esnprintf(s, sizeof(s), "wop %#lx st", _EwinGetClientXwin(ewin));
+	Esnprintf(s, sizeof(s), "wop %#lx st", EwinGetClientXwin(ewin));
 	mi = MenuItemCreate(_("Stick / Unstick"), NULL, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
@@ -1440,7 +1440,7 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 	else if (ewin2 && ewin2->props.vroot)
 	  {
 	     /* Dropping onto virtual root */
-	     EwinReparent(ewin, _EwinGetClientWin(ewin2));
+	     EwinReparent(ewin, EwinGetClientWin(ewin2));
 	  }
 	else if (!in_vroot)
 	  {

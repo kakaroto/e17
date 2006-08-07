@@ -101,7 +101,7 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
    ewin->mwm.func_close = 1;
 
    puc = NULL;
-   XGetWindowProperty(disp, _EwinGetClientXwin(ewin), _MOTIF_WM_HINTS, 0, 20,
+   XGetWindowProperty(disp, EwinGetClientXwin(ewin), _MOTIF_WM_HINTS, 0, 20,
 		      False, _MOTIF_WM_HINTS, &a2, &fmt, &num, &end, &puc);
    mwmhints = (MWMHints *) puc;
    if (!mwmhints)

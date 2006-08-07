@@ -28,7 +28,7 @@
 #define ENABLE_DEBUG_STACKING 1
 
 #define EobjGetCwin(p) \
-    ((p->type == EOBJ_TYPE_EWIN) ? _EwinGetClientXwin(((EWin*)(p))) : None)
+    ((p->type == EOBJ_TYPE_EWIN) ? EwinGetClientXwin(((EWin*)(p))) : None)
 
 typedef struct _eobjlist EobjList;
 
@@ -481,7 +481,7 @@ EwinListStackIsRaised(const EWin * ewin)
 	   continue;
 	if (eo->ilayer > eox->ilayer)
 	   continue;
-	if (EwinGetTransientFor((EWin *) eo) == _EwinGetClientXwin(ewin))
+	if (EwinGetTransientFor((EWin *) eo) == EwinGetClientXwin(ewin))
 	   continue;
 	return eo == eox;
      }

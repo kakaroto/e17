@@ -308,7 +308,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
       Eprintf("doEwinMoveResize(%d,%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
-	      call_depth, Mode.mode, _EwinGetClientXwin(ewin), flags,
+	      call_depth, Mode.mode, EwinGetClientXwin(ewin), flags,
 	      (dsk) ? (int)dsk->num : -1, x, y, w, h, EwinGetName(ewin));
 
    pdesk = (ewin->o.stacked >= 0) ? EoGetDesk(ewin) : NULL;
@@ -472,7 +472,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	   EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
 #endif
 
-	EMoveResizeWindow(_EwinGetClientWin(ewin), 0, 0, ewin->client.w,
+	EMoveResizeWindow(EwinGetClientWin(ewin), 0, 0, ewin->client.w,
 			  ewin->client.h);
 	EwinBorderCalcSizes(ewin, 0);
 
@@ -850,13 +850,13 @@ EwinInstantShade(EWin * ewin, int force)
      default:
      case 0:
 	att.win_gravity = EastGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &d);
 	w = b;
 	break;
      case 1:
 	att.win_gravity = WestGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &d);
 	if (!Mode.wm.startup)
 	   x = x + w - b;
@@ -864,13 +864,13 @@ EwinInstantShade(EWin * ewin, int force)
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &d);
 	h = d;
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &d);
 	if (!Mode.wm.startup)
 	   y = y + h - d;
@@ -905,26 +905,26 @@ EwinInstantUnShade(EWin * ewin)
      default:
      case 0:
 	att.win_gravity = EastGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	w = ewin->client.w + ewin->border->border.left +
 	   ewin->border->border.right;
 	break;
      case 1:
 	att.win_gravity = WestGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	w = ewin->client.w + ewin->border->border.left +
 	   ewin->border->border.right;
 	x = x + EoGetW(ewin) - w;
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	h = ewin->client.h + ewin->border->border.top +
 	   ewin->border->border.bottom;
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	h = ewin->client.h + ewin->border->border.top +
 	   ewin->border->border.bottom;
 	y = y + EoGetH(ewin) - h;
@@ -933,7 +933,7 @@ EwinInstantUnShade(EWin * ewin)
 
    /* Reset gravity */
    att.win_gravity = NorthWestGravity;
-   EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+   EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 
    ewin->state.shaded = 0;
    EwinMoveResize(ewin, x, y, ewin->client.w, ewin->client.h);
@@ -942,7 +942,7 @@ EwinInstantUnShade(EWin * ewin)
 #define _EWIN_ADJUST_SHAPE(ewin, xo, yo) \
   do { \
     EShapeCombineShape(ewin->win_container, ShapeBounding, xo, yo, \
-                       _EwinGetClientWin(ewin), ShapeBounding, ShapeSet); \
+                       EwinGetClientWin(ewin), ShapeBounding, ShapeSet); \
     ewin->update.shape = 1; \
   } while (0)
 
@@ -980,7 +980,7 @@ EwinShade(EWin * ewin)
      default:
      case 0:
 	att.win_gravity = EastGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &c);
 	a = w;
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
@@ -1011,7 +1011,7 @@ EwinShade(EWin * ewin)
 	break;
      case 1:
 	att.win_gravity = WestGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &c);
 	a = w;
 	c = x + w;
@@ -1044,7 +1044,7 @@ EwinShade(EWin * ewin)
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &c, &b);
 	a = h;
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
@@ -1075,7 +1075,7 @@ EwinShade(EWin * ewin)
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &c, &b);
 	a = h;
 	c = y + h;
@@ -1154,17 +1154,17 @@ EwinUnShade(EWin * ewin)
      default:
      case 0:
 	att.win_gravity = EastGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	a = ewin->border->border.left + ewin->border->border.right;
 	b = ewin->client.w + a;
 	ewin->state.shaded = 0;
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
 			  1, ewin->client.h);
-	EWindowSync(_EwinGetClientWin(ewin));	/* Gravity - recache */
-	EMoveResizeWindow(_EwinGetClientWin(ewin), -ewin->client.w, 0,
+	EWindowSync(EwinGetClientWin(ewin));	/* Gravity - recache */
+	EMoveResizeWindow(EwinGetClientWin(ewin), -ewin->client.w, 0,
 			  ewin->client.w, ewin->client.h);
-	EMapWindow(_EwinGetClientWin(ewin));
+	EMapWindow(EwinGetClientWin(ewin));
 	EMapWindow(ewin->win_container);
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
 	  {
@@ -1191,7 +1191,7 @@ EwinUnShade(EWin * ewin)
 	break;
      case 1:
 	att.win_gravity = WestGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	a = ewin->border->border.left + ewin->border->border.right;
 	b = ewin->client.w + a;
 	c = x + w;		/* NB! w != a is possible */
@@ -1199,10 +1199,10 @@ EwinUnShade(EWin * ewin)
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
 			  1, ewin->client.h);
-	EWindowSync(_EwinGetClientWin(ewin));	/* Gravity - recache */
-	EMoveResizeWindow(_EwinGetClientWin(ewin), 0, 0, ewin->client.w,
+	EWindowSync(EwinGetClientWin(ewin));	/* Gravity - recache */
+	EMoveResizeWindow(EwinGetClientWin(ewin), 0, 0, ewin->client.w,
 			  ewin->client.h);
-	EMapWindow(_EwinGetClientWin(ewin));
+	EMapWindow(EwinGetClientWin(ewin));
 	EMapWindow(ewin->win_container);
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
 	  {
@@ -1230,17 +1230,17 @@ EwinUnShade(EWin * ewin)
 	break;
      case 2:
 	att.win_gravity = SouthGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	a = ewin->border->border.top + ewin->border->border.bottom;
 	b = ewin->client.h + a;
 	ewin->state.shaded = 0;
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
 			  ewin->client.w, 1);
-	EWindowSync(_EwinGetClientWin(ewin));	/* Gravity - recache */
-	EMoveResizeWindow(_EwinGetClientWin(ewin), 0, 1 - ewin->client.h,
+	EWindowSync(EwinGetClientWin(ewin));	/* Gravity - recache */
+	EMoveResizeWindow(EwinGetClientWin(ewin), 0, 1 - ewin->client.h,
 			  ewin->client.w, ewin->client.h);
-	EMapWindow(_EwinGetClientWin(ewin));
+	EMapWindow(EwinGetClientWin(ewin));
 	EMapWindow(ewin->win_container);
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
 	  {
@@ -1267,7 +1267,7 @@ EwinUnShade(EWin * ewin)
 	break;
      case 3:
 	att.win_gravity = SouthGravity;
-	EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	a = ewin->border->border.top + ewin->border->border.bottom;
 	b = ewin->client.h + a;
 	c = y + h;		/* NB! h != a is possible */
@@ -1275,10 +1275,10 @@ EwinUnShade(EWin * ewin)
 	EMoveResizeWindow(ewin->win_container,
 			  ewin->border->border.left, ewin->border->border.top,
 			  ewin->client.w, 1);
-	EWindowSync(_EwinGetClientWin(ewin));	/* Gravity - recache */
-	EMoveResizeWindow(_EwinGetClientWin(ewin), 0, 1 - ewin->client.h,
+	EWindowSync(EwinGetClientWin(ewin));	/* Gravity - recache */
+	EMoveResizeWindow(EwinGetClientWin(ewin), 0, 1 - ewin->client.h,
 			  ewin->client.w, ewin->client.h);
-	EMapWindow(_EwinGetClientWin(ewin));
+	EMapWindow(EwinGetClientWin(ewin));
 	EMapWindow(ewin->win_container);
 	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
 	  {
@@ -1308,9 +1308,9 @@ EwinUnShade(EWin * ewin)
 
    /* Reset gravity */
    att.win_gravity = NorthWestGravity;
-   EChangeWindowAttributes(_EwinGetClientWin(ewin), CWWinGravity, &att);
+   EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 
-   EMoveResizeWindow(_EwinGetClientWin(ewin), 0, 0, ewin->client.w,
+   EMoveResizeWindow(EwinGetClientWin(ewin), 0, 0, ewin->client.w,
 		     ewin->client.h);
    EMoveResizeWindow(ewin->win_container, ewin->border->border.left,
 		     ewin->border->border.top, ewin->client.w, ewin->client.h);

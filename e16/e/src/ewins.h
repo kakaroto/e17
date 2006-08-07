@@ -275,10 +275,10 @@ struct _ewin
 #define EwinIsWindowGroupLeader(ewin)	((ewin)->icccm.is_group_leader)
 #define EwinGetWindowGroup(ewin)	((ewin)->icccm.group)
 
-#define _EwinGetClientWin(ewin)		((ewin)->client.win)
-#define _EwinGetClientXwin(ewin)	Xwin((ewin)->client.win)
-#define _EwinGetContainerWin(ewin)	((ewin)->win_container)
-#define _EwinGetContainerXwin(ewin)	Xwin((ewin)->win_container)
+#define EwinGetClientWin(ewin)		((ewin)->client.win)
+#define EwinGetClientXwin(ewin)	Xwin((ewin)->client.win)
+#define EwinGetContainerWin(ewin)	((ewin)->win_container)
+#define EwinGetContainerXwin(ewin)	Xwin((ewin)->win_container)
 
 /* ewins.c */
 #define EWIN_CHANGE_NAME        (1<<0)

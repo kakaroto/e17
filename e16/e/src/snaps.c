@@ -163,7 +163,7 @@ SnapshotEwinMatch(const Snapshot * sn, const EWin * ewin)
       return 0;
 
    if (ewin->state.identified)
-      return sn->win == _EwinGetClientXwin(ewin);
+      return sn->win == EwinGetClientXwin(ewin);
 
    if (sn->startup_id && !sn->cmd)
       return 0;
@@ -679,7 +679,7 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
 
    sd = Ecalloc(1, sizeof(SnapDlgData));
    DialogSetData(d, sd);
-   sd->client = _EwinGetClientXwin(ewin);
+   sd->client = EwinGetClientXwin(ewin);
 
    sn = ewin->snap;
    if (sn)
@@ -948,7 +948,7 @@ SnapshotEwinDialog(const EWin * ewin)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), "SNAPSHOT_WINDOW-%#lx", _EwinGetClientXwin(ewin));
+   Esnprintf(s, sizeof(s), "SNAPSHOT_WINDOW-%#lx", EwinGetClientXwin(ewin));
 
    DialogShowSimpleWithName(&DlgSnap, s, (void *)ewin);
 }
@@ -1121,7 +1121,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
    {
       fprintf(f, "NEW: %s\n", sn->name);
       if (sn->used)
-	 fprintf(f, "WIN: %#lx\n", _EwinGetClientXwin(sn->used));
+	 fprintf(f, "WIN: %#lx\n", EwinGetClientXwin(sn->used));
       if ((sn->match_flags & SNAP_MATCH_TITLE) && sn->win_title)
 	 fprintf(f, "TITLE: %s\n", sn->win_title);
       if ((sn->match_flags & SNAP_MATCH_NAME) && sn->win_name)
@@ -1462,7 +1462,7 @@ SnapshotEwinApply(EWin * ewin)
 	     ewin->client.x += ((sn->area_x - ax) * VRoot.w);
 	     ewin->client.y += ((sn->area_y - ay) * VRoot.h);
 	  }
-	EMoveResizeWindow(_EwinGetClientWin(ewin), ewin->client.x,
+	EMoveResizeWindow(EwinGetClientWin(ewin), ewin->client.x,
 			  ewin->client.y, ewin->client.w, ewin->client.h);
      }
 
@@ -1516,7 +1516,7 @@ SnapshotEwinApply(EWin * ewin)
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get snap  %#lx: %4d+%4d %4dx%4d: %s\n",
-	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
+	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 
@@ -1634,8 +1634,7 @@ _SnapShow(void *data, void *prm)
 #define SU(sn, item) ((sn->match_flags & item) ? '>' : ':')
 
    if (sn->used)
-      Esnprintf(buf, sizeof(buf), "In use - %#lx",
-		_EwinGetClientXwin(sn->used));
+      Esnprintf(buf, sizeof(buf), "In use - %#lx", EwinGetClientXwin(sn->used));
    else
       Esnprintf(buf, sizeof(buf), "*** Unused ***");
    IpcPrintf(" Snapshot  Name: %s    %s\n", name, buf);

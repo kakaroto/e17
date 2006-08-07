@@ -651,7 +651,7 @@ MenuLoadFromEwins(Menu * m, int (*f) (EWin * ewin, void *prm), void *prm)
 	if (!f(lst[i], prm))
 	   continue;
 
-	Esnprintf(s, sizeof(s), "wop %#lx focus", _EwinGetClientXwin(lst[i]));
+	Esnprintf(s, sizeof(s), "wop %#lx focus", EwinGetClientXwin(lst[i]));
 	mi = MenuItemCreate(EwinGetName(lst[i]), NULL, s, NULL);
 	MenuAddItem(m, mi);
      }
@@ -739,11 +739,11 @@ MenuLoadFromGroups(Menu * m)
 	mm = MenuCreate("__SUBMENUGROUP_E", NULL, m, NULL);
 
 	Esnprintf(s, sizeof(s), "gop %li showhide",
-		  _EwinGetClientXwin(lst[i]->members[0]));
+		  EwinGetClientXwin(lst[i]->members[0]));
 	mi = MenuItemCreate(_("Show/Hide this group"), NULL, s, NULL);
 
 	Esnprintf(s, sizeof(s), "wop %#lx ic",
-		  _EwinGetClientXwin(lst[i]->members[0]));
+		  EwinGetClientXwin(lst[i]->members[0]));
 	MenuAddItem(mm, mi);
 	mi = MenuItemCreate(_("Iconify this group"), NULL, s, NULL);
 	MenuAddItem(mm, mi);
@@ -751,7 +751,7 @@ MenuLoadFromGroups(Menu * m)
 	for (j = 0; j < lst[i]->num_members; j++)
 	  {
 	     Esnprintf(s, sizeof(s), "wop %#lx focus",
-		       _EwinGetClientXwin(lst[i]->members[j]));
+		       EwinGetClientXwin(lst[i]->members[j]));
 	     mi = MenuItemCreate(EwinGetName(lst[i]->members[j]), NULL,
 				 s, NULL);
 	     MenuAddItem(mm, mi);

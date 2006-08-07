@@ -343,15 +343,15 @@ EHintsSetInfo(const EWin * ewin)
    c[6] = ewin->lh;
    c[7] = ewin->ll;
 
-   ecore_x_window_prop_card32_set(_EwinGetClientXwin(ewin), ENL_WIN_DATA,
+   ecore_x_window_prop_card32_set(EwinGetClientXwin(ewin), ENL_WIN_DATA,
 				  (unsigned int *)c, ENL_DATA_ITEMS);
 
-   ecore_x_window_prop_string_set(_EwinGetClientXwin(ewin), ENL_WIN_BORDER,
+   ecore_x_window_prop_string_set(EwinGetClientXwin(ewin), ENL_WIN_BORDER,
 				  ewin->normal_border->name);
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap set einf  %#lx: %4d+%4d %4dx%4d: %s\n",
-	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
+	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 
@@ -366,7 +366,7 @@ EHintsGetInfo(EWin * ewin)
    if (EwinIsInternal(ewin))
       return;
 
-   num = ecore_x_window_prop_card32_get(_EwinGetClientXwin(ewin), ENL_WIN_DATA,
+   num = ecore_x_window_prop_card32_get(EwinGetClientXwin(ewin), ENL_WIN_DATA,
 					(unsigned int *)c, ENL_DATA_ITEMS + 1);
    if (num != ENL_DATA_ITEMS)
       return;
@@ -390,14 +390,14 @@ EHintsGetInfo(EWin * ewin)
    ewin->ll = c[7];
 
    str =
-      ecore_x_window_prop_string_get(_EwinGetClientXwin(ewin), ENL_WIN_BORDER);
+      ecore_x_window_prop_string_get(EwinGetClientXwin(ewin), ENL_WIN_BORDER);
    if (str)
       EwinSetBorderByName(ewin, str);
    Efree(str);
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
-	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
+	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 }
 

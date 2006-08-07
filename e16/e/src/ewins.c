@@ -67,7 +67,7 @@ EwinEventsConfigure(EWin * ewin, int mode)
    emask = (mode) ? ~((long)0) : ~(EnterWindowMask | LeaveWindowMask);
 
    ESelectInput(EoGetWin(ewin), EWIN_TOP_EVENT_MASK & emask);
-   ESelectInput(_EwinGetClientWin(ewin), ewin->client.event_mask & emask);
+   ESelectInput(EwinGetClientWin(ewin), ewin->client.event_mask & emask);
    EwinBorderEventsConfigure(ewin, mode);
 }
 
@@ -148,7 +148,7 @@ EwinGetAttributes(EWin * ewin, Win win, Window xwin)
 
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get attr  %#lx: %4d+%4d %4dx%4d: %s\n",
-	      _EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
+	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
 
    return 0;
@@ -158,7 +158,7 @@ static void
 EwinGetHints(EWin * ewin)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinGetHints %#lx\n", _EwinGetClientXwin(ewin));
+      Eprintf("EwinGetHints %#lx\n", EwinGetClientXwin(ewin));
 
    ICCCM_GetTitle(ewin, 0);
    if (EwinIsInternal(ewin))
@@ -197,7 +197,7 @@ EwinManage(EWin * ewin)
 	frame =
 	   ECreateObjectWindow(VRoot.win, ewin->client.x, ewin->client.y,
 			       ewin->client.w, ewin->client.h, 0, 1,
-			       _EwinGetClientWin(ewin), &argb);
+			       EwinGetClientWin(ewin), &argb);
 	ewin->o.argb = argb;
 	ewin->win_container =
 	   ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);
@@ -212,7 +212,7 @@ EwinManage(EWin * ewin)
 			      EwinHandleEventsToplevel, ewin);
 	EventCallbackRegister(ewin->win_container, 0,
 			      EwinHandleEventsContainer, ewin);
-	EventCallbackRegister(_EwinGetClientWin(ewin), 0,
+	EventCallbackRegister(EwinGetClientWin(ewin), 0,
 			      EwinHandleEventsClient, ewin);
      }
 
@@ -230,20 +230,20 @@ EwinManage(EWin * ewin)
 
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinManage %#lx frame=%#lx cont=%#lx st=%d\n",
-	      _EwinGetClientXwin(ewin), EoGetXwin(ewin),
-	      _EwinGetContainerXwin(ewin), ewin->state.state);
+	      EwinGetClientXwin(ewin), EoGetXwin(ewin),
+	      EwinGetContainerXwin(ewin), ewin->state.state);
 
    if (!EwinIsInternal(ewin))
      {
-	XShapeSelectInput(disp, _EwinGetClientXwin(ewin), ShapeNotifyMask);
-	ESetWindowBorderWidth(_EwinGetClientWin(ewin), 0);
+	XShapeSelectInput(disp, EwinGetClientXwin(ewin), ShapeNotifyMask);
+	ESetWindowBorderWidth(EwinGetClientWin(ewin), 0);
 	ewin->client.bw = 0;
      }
 
    ICCCM_AdoptStart(ewin);
 
    /* We must reparent after getting original window position */
-   EReparentWindow(_EwinGetClientWin(ewin), ewin->win_container, 0, 0);
+   EReparentWindow(EwinGetClientWin(ewin), ewin->win_container, 0, 0);
 
    EwinUpdateShapeInfo(ewin);
 
@@ -314,7 +314,7 @@ EwinConfigure(EWin * ewin)
    HintsSetClientList();
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinConfigure %#lx st=%d: %s\n", _EwinGetClientXwin(ewin),
+      Eprintf("EwinConfigure %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetName(ewin));
 }
 
@@ -334,16 +334,16 @@ EwinDestroy(EWin * ewin)
       return;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinDestroy %#lx st=%d: %s\n", _EwinGetClientXwin(ewin),
+      Eprintf("EwinDestroy %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetName(ewin));
 
    EventCallbackUnregister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
    EventCallbackUnregister(ewin->win_container, 0, EwinHandleEventsContainer,
 			   ewin);
-   EventCallbackUnregister(_EwinGetClientWin(ewin), 0, EwinHandleEventsClient,
+   EventCallbackUnregister(EwinGetClientWin(ewin), 0, EwinHandleEventsClient,
 			   ewin);
    if (!EwinIsInternal(ewin))
-      EUnregisterWindow(_EwinGetClientWin(ewin));
+      EUnregisterWindow(EwinGetClientWin(ewin));
 
    SnapshotEwinUnmatch(ewin);
 
@@ -515,7 +515,7 @@ GetContextEwin(void)
 
  done:
 #if 0
-   Eprintf("GetContextEwin %#lx %s\n", _EwinGetClientXwin(ewin),
+   Eprintf("GetContextEwin %#lx %s\n", EwinGetClientXwin(ewin),
 	   EwinGetName(ewin));
 #endif
    return ewin;
@@ -527,7 +527,7 @@ SetContextEwin(EWin * ewin)
    if (ewin && ewin->type == EWIN_TYPE_MENU)
       return;
 #if 0
-   Eprintf("SetContextEwin %#lx %s\n", _EwinGetClientXwin(ewin),
+   Eprintf("SetContextEwin %#lx %s\n", EwinGetClientXwin(ewin),
 	   EwinGetName(ewin));
 #endif
    Mode.context_ewin = ewin;
@@ -601,13 +601,12 @@ void
 EwinUpdateShapeInfo(EWin * ewin)
 {
    EGrabServer();
-   ewin->state.shaped =
-      EShapeCopy(ewin->win_container, _EwinGetClientWin(ewin));
+   ewin->state.shaped = EShapeCopy(ewin->win_container, EwinGetClientWin(ewin));
    EUngrabServer();
 
    if (EventDebug(EX_EVENT_SHAPE_NOTIFY))
       Eprintf("EwinUpdateShapeInfo %#lx cont=%#lx shaped=%d\n",
-	      _EwinGetClientXwin(ewin), _EwinGetContainerXwin(ewin),
+	      EwinGetClientXwin(ewin), EwinGetContainerXwin(ewin),
 	      ewin->state.shaped);
 }
 
@@ -625,7 +624,7 @@ EwinPropagateShapes(EWin * ewin)
 
    if (EventDebug(EX_EVENT_SHAPE_NOTIFY))
       Eprintf("EwinPropagateShapes %#lx frame=%#lx shaped=%d\n",
-	      _EwinGetClientXwin(ewin), EoGetXwin(ewin), ewin->state.shaped);
+	      EwinGetClientXwin(ewin), EoGetXwin(ewin), ewin->state.shaped);
 
    EoShapeUpdate(ewin, 1);
    ewin->update.shape = 0;
@@ -710,7 +709,7 @@ AddToFamily(EWin * ewin, Window xwin)
 	     /* Don't treat this as a normal transient */
 	     ewin->icccm.transient = -1;
 	  }
-	else if (ewin->icccm.transient_for == _EwinGetClientXwin(ewin))
+	else if (ewin->icccm.transient_for == EwinGetClientXwin(ewin))
 	  {
 	     /* Some apps actually do this. Why? */
 	     ewin->icccm.transient = 0;
@@ -1008,24 +1007,23 @@ EwinWithdraw(EWin * ewin, Win to)
    /* Only external clients should go here */
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinWithdraw %#lx st=%d: %s\n", _EwinGetClientXwin(ewin),
+      Eprintf("EwinWithdraw %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetName(ewin));
 
    EGrabServer();
 
-   ESelectInput(_EwinGetClientWin(ewin), NoEventMask);
-   XShapeSelectInput(disp, _EwinGetClientXwin(ewin), NoEventMask);
+   ESelectInput(EwinGetClientWin(ewin), NoEventMask);
+   XShapeSelectInput(disp, EwinGetClientXwin(ewin), NoEventMask);
 
-   if (EXWindowGetParent(_EwinGetClientXwin(ewin)) ==
-       _EwinGetContainerXwin(ewin))
+   if (EXWindowGetParent(EwinGetClientXwin(ewin)) == EwinGetContainerXwin(ewin))
      {
 	/* Park the client window on the new root */
 	x = ewin->client.x;
 	y = ewin->client.y;
-	ETranslateCoordinates(_EwinGetClientWin(ewin), VRoot.win,
+	ETranslateCoordinates(EwinGetClientWin(ewin), VRoot.win,
 			      -ewin->border->border.left,
 			      -ewin->border->border.top, &x, &y, &win);
-	EReparentWindow(_EwinGetClientWin(ewin), to, x, y);
+	EReparentWindow(EwinGetClientWin(ewin), to, x, y);
 	HintsDelWindowHints(ewin);
      }
    ICCCM_Withdraw(ewin);
@@ -1046,9 +1044,8 @@ EwinEventMapRequest(EWin * ewin, Window win)
 	else
 	  {
 	     Eprintf("AddToFamily: Already managing %s %#lx\n", "A",
-		     _EwinGetClientXwin(ewin));
-	     EReparentWindow(_EwinGetClientWin(ewin), ewin->win_container, 0,
-			     0);
+		     EwinGetClientXwin(ewin));
+	     EReparentWindow(EwinGetClientWin(ewin), ewin->win_container, 0, 0);
 	  }
      }
    else
@@ -1060,9 +1057,8 @@ EwinEventMapRequest(EWin * ewin, Window win)
 	if (ewin)
 	  {
 	     Eprintf("AddToFamily: Already managing %s %#lx\n", "B",
-		     _EwinGetClientXwin(ewin));
-	     EReparentWindow(_EwinGetClientWin(ewin), ewin->win_container, 0,
-			     0);
+		     EwinGetClientXwin(ewin));
+	     EReparentWindow(EwinGetClientWin(ewin), ewin->win_container, 0, 0);
 	     EwinShow(ewin);
 	  }
 	else
@@ -1074,7 +1070,7 @@ static void
 EwinEventDestroy(EWin * ewin)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventDestroy %#lx st=%d: %s\n", _EwinGetClientXwin(ewin),
+      Eprintf("EwinEventDestroy %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetName(ewin));
 
    EwinDestroy(ewin);
@@ -1091,12 +1087,12 @@ EwinEventReparent(EWin * ewin)
    if (EoIsGone(ewin))
       parent = None;
    else
-      parent = EXWindowGetParent(_EwinGetClientXwin(ewin));
+      parent = EXWindowGetParent(EwinGetClientXwin(ewin));
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventReparent %#lx st=%d parent=%#lx: %s\n",
-	      _EwinGetClientXwin(ewin), ewin->state.state, parent,
+	      EwinGetClientXwin(ewin), ewin->state.state, parent,
 	      EwinGetName(ewin));
-   if (parent != _EwinGetContainerXwin(ewin))
+   if (parent != EwinGetContainerXwin(ewin))
       EwinDestroy(ewin);
 
    EUngrabServer();
@@ -1110,7 +1106,7 @@ EwinEventMap(EWin * ewin)
    ewin->state.state = EWIN_STATE_MAPPED;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventMap %#lx st=%d: %s\n", _EwinGetClientXwin(ewin),
+      Eprintf("EwinEventMap %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetName(ewin));
 
    /* If first time we may want to focus it (unless during startup) */
@@ -1126,7 +1122,7 @@ static void
 EwinEventUnmap(EWin * ewin)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EwinEventUnmap %#lx st=%d: %s\n", _EwinGetClientXwin(ewin),
+      Eprintf("EwinEventUnmap %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetName(ewin));
 
    if (ewin->state.state == EWIN_STATE_WITHDRAWN)
@@ -1138,7 +1134,7 @@ EwinEventUnmap(EWin * ewin)
       ewin->state.state = EWIN_STATE_ICONIC;
 
    EwinUnmap1(ewin);
-   EWindowSetMapped(_EwinGetClientWin(ewin), 0);
+   EWindowSetMapped(EwinGetClientWin(ewin), 0);
    EoUnmap(ewin);
    EwinUnmap2(ewin);
 
@@ -1296,7 +1292,7 @@ EwinEventShapeChange(EWin * ewin, XEvent * ev)
 #define se ((XShapeEvent *)ev)
    if (EventDebug(EX_EVENT_SHAPE_NOTIFY))
       Eprintf("EwinEventShapeChange %#lx %s: state.shaped=%d ev->shaped=%d\n",
-	      _EwinGetClientXwin(ewin), EoGetName(ewin), ewin->state.shaped,
+	      EwinGetClientXwin(ewin), EoGetName(ewin), ewin->state.shaped,
 	      se->shaped);
    if (!se->shaped && !ewin->state.shaped)
       return;
@@ -1333,7 +1329,7 @@ EwinRaise(EWin * ewin)
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
       Eprintf("EwinRaise(%d) %#lx %s n=%d\n", call_depth,
-	      _EwinGetClientXwin(ewin), EwinGetName(ewin), num);
+	      EwinGetClientXwin(ewin), EwinGetName(ewin), num);
 
    if (num == 0)		/* Quit if stacking is unchanged */
       goto done;
@@ -1366,7 +1362,7 @@ EwinLower(EWin * ewin)
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
       Eprintf("EwinLower(%d) %#lx %s n=%d\n", call_depth,
-	      _EwinGetClientXwin(ewin), EwinGetName(ewin), num);
+	      EwinGetClientXwin(ewin), EwinGetName(ewin), num);
 
    if (num == 0)		/* Quit if stacking is unchanged */
       goto done;
@@ -1390,13 +1386,13 @@ EwinShow(EWin * ewin)
    if (EoIsShown(ewin))
       return;
 
-   if (_EwinGetClientWin(ewin))
+   if (EwinGetClientWin(ewin))
      {
 #if 0				/* FIXME - Why? */
 	if (ewin->state.shaded)
 	   EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
 #endif
-	EMapWindow(_EwinGetClientWin(ewin));
+	EMapWindow(EwinGetClientWin(ewin));
      }
 
    if (ewin->update.shape)
@@ -1422,7 +1418,7 @@ EwinHide(EWin * ewin)
 
    EwinUnmap1(ewin);
 
-   EUnmapWindow(_EwinGetClientWin(ewin));
+   EUnmapWindow(EwinGetClientWin(ewin));
    EoUnmap(ewin);
 
    EwinUnmap2(ewin);
@@ -1444,7 +1440,7 @@ EwinKill(EWin * ewin)
    if (EwinIsInternal(ewin))
       return;
 
-   XKillClient(disp, _EwinGetClientXwin(ewin));
+   XKillClient(disp, EwinGetClientXwin(ewin));
 
 #if 0				/* Wait for unmap/destroy for now */
    EwinUnmap1(ewin);
@@ -1943,7 +1939,7 @@ EwinsSetFree(void)
 
 	/* This makes E determine the client window stacking at exit */
 	EwinInstantUnShade(ewin);
-	EReparentWindow(_EwinGetClientWin(ewin), RRoot.win,
+	EReparentWindow(EwinGetClientWin(ewin), RRoot.win,
 			ewin->client.x, ewin->client.y);
      }
 }
@@ -2002,7 +1998,7 @@ EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
      default:
 #if DEBUG_EWIN_EVENTS
 	Eprintf("EwinHandleEventsToplevel: type=%2d win=%#lx: %s\n",
-		ev->type, _EwinGetClientXwin(ewin), EwinGetName(ewin));
+		ev->type, EwinGetClientXwin(ewin), EwinGetName(ewin));
 #endif
 	break;
      }
@@ -2015,12 +2011,12 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 
 #if 0
    Eprintf("EwinHandleEventsContainer: type=%2d win=%#lx: %s\n",
-	   ev->type, _EwinGetClientXwin(ewin), EwinGetName(ewin));
+	   ev->type, EwinGetClientXwin(ewin), EwinGetName(ewin));
 #endif
    switch (ev->type)
      {
      case ButtonPress:
-	FocusHandleClick(ewin, _EwinGetContainerWin(ewin));
+	FocusHandleClick(ewin, EwinGetContainerWin(ewin));
 	break;
      case MapRequest:
 	EwinEventMapRequest(ewin, ev->xmaprequest.window);
@@ -2046,7 +2042,7 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 	if (ewin->state.state == EWIN_STATE_NEW)
 	  {
 	     Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
-		     _EwinGetClientXwin(ewin));
+		     EwinGetClientXwin(ewin));
 	     break;
 	  }
 #endif
@@ -2070,7 +2066,7 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 
      default:
 	Eprintf("EwinHandleEventsContainer: type=%2d win=%#lx: %s\n",
-		ev->type, _EwinGetClientXwin(ewin), EwinGetName(ewin));
+		ev->type, EwinGetClientXwin(ewin), EwinGetName(ewin));
 	break;
      }
 }
@@ -2118,7 +2114,7 @@ EwinHandleEventsClient(Win win __UNUSED__, XEvent * ev, void *prm)
      default:
 #if DEBUG_EWIN_EVENTS
 	Eprintf("EwinHandleEventsClient: type=%2d win=%#lx: %s\n",
-		ev->type, _EwinGetClientXwin(ewin), EwinGetName(ewin));
+		ev->type, EwinGetClientXwin(ewin), EwinGetName(ewin));
 #endif
 	break;
      }

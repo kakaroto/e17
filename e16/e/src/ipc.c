@@ -449,20 +449,20 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	switch (format[0])
 	  {
 	  case '\0':
-	     IpcPrintf("%#lx : %s\n", _EwinGetClientXwin(e),
+	     IpcPrintf("%#lx : %s\n", EwinGetClientXwin(e),
 		       SS(e->icccm.wm_name));
 	     break;
 
 	  default:
 	     IpcPrintf("%#lx : %s :: %d : %d %d : %d %d %dx%d\n",
-		       _EwinGetClientXwin(e), SS(e->icccm.wm_name),
+		       EwinGetClientXwin(e), SS(e->icccm.wm_name),
 		       (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e), e->area_x,
 		       e->area_y, EoGetX(e), EoGetY(e), EoGetW(e), EoGetH(e));
 	     break;
 
 	  case 'a':
 	     IpcPrintf("%#10lx : %5d %5d %4dx%4d :: %2d : %d %d : %s\n",
-		       _EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
+		       EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
 		       EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
 		       e->area_x, e->area_y, SS(e->icccm.wm_name));
 	     break;
@@ -470,7 +470,7 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	  case 'g':
 	     IpcPrintf
 		("%#10lx : %5d %5d %4dx%4d :: %2d : %s %4d,%4d %2d,%2d : %s\n",
-		 _EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
+		 EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
 		 EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
 		 TxtPG[e->place.gravity & 3], e->place.gx, e->place.gy,
 		 e->place.ax, e->place.ay, SS(e->icccm.wm_name));
@@ -479,7 +479,7 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	  case 'p':
 	     IpcPrintf
 		("%#10lx : %5d %5d %4dx%4d :: %2d : \"%s\" \"%s\" \"%s\"\n",
-		 _EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
+		 EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
 		 EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
 		 SS(e->icccm.wm_res_name), SS(e->icccm.wm_res_class),
 		 SS(e->icccm.wm_name));
@@ -561,7 +561,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	  }
 	_EFREE(ewin->icccm.wm_name);
 	ewin->icccm.wm_name = Estrdup(prm);
-	XStoreName(disp, _EwinGetClientXwin(ewin), ewin->icccm.wm_name);
+	XStoreName(disp, EwinGetClientXwin(ewin), ewin->icccm.wm_name);
 	EwinBorderUpdateInfo(ewin);
 	break;
 
@@ -1143,9 +1143,9 @@ EwinShowInfo(const EWin * ewin)
 	     SS(ewin->icccm.wm_role),
 	     SS(ewin->icccm.wm_command),
 	     SS(ewin->icccm.wm_machine),
-	     _EwinGetClientXwin(ewin),
+	     EwinGetClientXwin(ewin),
 	     ewin->client.x, ewin->client.y, ewin->client.w, ewin->client.h,
-	     _EwinGetContainerXwin(ewin),
+	     EwinGetContainerXwin(ewin),
 	     EoGetXwin(ewin),
 	     EoGetX(ewin), EoGetY(ewin), EoGetW(ewin), EoGetH(ewin),
 #if USE_COMPOSITE
@@ -1254,7 +1254,7 @@ IPC_Reparent(const char *params, Client * c __UNUSED__)
    if (!ewin || !enew)
       IpcPrintf("No matching client or target EWin found\n");
    else
-      EwinReparent(ewin, _EwinGetClientWin(enew));
+      EwinReparent(ewin, EwinGetClientWin(enew));
 }
 
 static void

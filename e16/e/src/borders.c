@@ -78,7 +78,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 
 #if 0				/* Debug */
    Eprintf("BorderWpITApply: %#lx %#lx %2d %d %s\n",
-	   _EwinGetClientXwin(ewin), EoGetWin(ewin), i, force,
+	   EwinGetClientXwin(ewin), EoGetWin(ewin), i, force,
 	   EwinGetName(ewin));
 #endif
 
@@ -161,7 +161,7 @@ EwinBorderDraw(EWin * ewin, int do_shape, int do_paint)
 
 #if 0				/* Debug */
    Eprintf("EwinBorderDraw %#lx %s d=%d s=%d p=%d\n",
-	   _EwinGetClientXwin(ewin), EoGetName(ewin), EoGetDeskNum(ewin),
+	   EwinGetClientXwin(ewin), EoGetName(ewin), EoGetDeskNum(ewin),
 	   do_shape, do_paint);
 #endif
 

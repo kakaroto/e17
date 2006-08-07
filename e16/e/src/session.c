@@ -451,7 +451,7 @@ SessionGetInfo(EWin * ewin, Atom atom_change)
 	  atom_change == atom_wm_client_leader)))
       return;
 
-   num = ecore_x_window_prop_window_get(_EwinGetClientXwin(ewin),
+   num = ecore_x_window_prop_window_get(EwinGetClientXwin(ewin),
 					atom_wm_client_leader, &win, 1);
    if (num > 0)
       ewin->session_id = ecore_x_window_prop_string_get(win, atom_sm_client_id);

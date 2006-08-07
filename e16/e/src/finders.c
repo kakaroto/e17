@@ -64,7 +64,7 @@ EwinFindByClient(Window win)
    ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if (win == _EwinGetClientXwin(ewins[i]))
+	if (win == EwinGetClientXwin(ewins[i]))
 	   return ewins[i];
      }
    return NULL;
@@ -79,8 +79,8 @@ EwinFindByChildren(Window win)
    ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
-	if ((win == _EwinGetClientXwin(ewins[i])) ||
-	    (win == _EwinGetContainerXwin(ewins[i])))
+	if ((win == EwinGetClientXwin(ewins[i])) ||
+	    (win == EwinGetContainerXwin(ewins[i])))
 	  {
 	     return ewins[i];
 	  }
@@ -214,7 +214,7 @@ EwinListTransients(const EWin * ewin, int *num, int group)
 	if (ew == ewin)
 	   continue;
 
-	if (EwinGetTransientFor(ew) == _EwinGetClientXwin(ewin))
+	if (EwinGetTransientFor(ew) == EwinGetClientXwin(ewin))
 	  {
 	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
 	     lst[j++] = ew;
@@ -271,7 +271,7 @@ EwinListTransientFor(const EWin * ewin, int *num)
 	   continue;
 
 	/* Regular parent or if root trans, top level group members */
-	if ((EwinGetTransientFor(ewin) == _EwinGetClientXwin(ew)) ||
+	if ((EwinGetTransientFor(ewin) == EwinGetClientXwin(ew)) ||
 	    (!EwinIsTransient(ew) &&
 	     EwinGetTransientFor(ewin) == VRoot.xwin &&
 	     EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin)))

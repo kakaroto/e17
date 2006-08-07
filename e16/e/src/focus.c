@@ -68,7 +68,7 @@ FocusEwinValid(EWin * ewin, int want_on_screen, int click, int want_visible)
 
 #if 0
    Eprintf("FocusEwinValid %#lx %s: st=%d sh=%d inh=%d cl=%d(%d) vis=%d(%d)\n",
-	   _EwinGetClientXwin(ewin), EwinGetName(ewin),
+	   EwinGetClientXwin(ewin), EwinGetName(ewin),
 	   ewin->state.state, EoIsShown(ewin), ewin->state.inhibit_focus,
 	   click, ewin->props.focusclick, want_visible, ewin->state.visibility);
 #endif
@@ -217,11 +217,11 @@ FocusEwinSetGrabs(EWin * ewin)
      {
 	if (!ewin->state.click_grab_isset)
 	  {
-	     GrabButtonSet(AnyButton, AnyModifier, _EwinGetContainerWin(ewin),
+	     GrabButtonSet(AnyButton, AnyModifier, EwinGetContainerWin(ewin),
 			   ButtonPressMask, ECSR_PGRAB, 1);
 	     if (EventDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx set %s\n",
-			_EwinGetClientXwin(ewin), EwinGetName(ewin));
+			EwinGetClientXwin(ewin), EwinGetName(ewin));
 	     ewin->state.click_grab_isset = 1;
 	  }
      }
@@ -230,10 +230,10 @@ FocusEwinSetGrabs(EWin * ewin)
 	if (ewin->state.click_grab_isset)
 	  {
 	     GrabButtonRelease(AnyButton, AnyModifier,
-			       _EwinGetContainerWin(ewin));
+			       EwinGetContainerWin(ewin));
 	     if (EventDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx unset %s\n",
-			_EwinGetClientXwin(ewin), EwinGetName(ewin));
+			EwinGetClientXwin(ewin), EwinGetName(ewin));
 	     ewin->state.click_grab_isset = 0;
 	  }
      }
@@ -290,7 +290,7 @@ doFocusToEwin(EWin * ewin, int why)
 
    if (EventDebug(EDBUG_TYPE_FOCUS))
       Eprintf("doFocusToEWin %#lx %s why=%d\n",
-	      (ewin) ? _EwinGetClientXwin(ewin) : 0,
+	      (ewin) ? EwinGetClientXwin(ewin) : 0,
 	      (ewin) ? EwinGetName(ewin) : "None", why);
 
    switch (why)
@@ -390,7 +390,7 @@ doFocusToEwin(EWin * ewin, int why)
 
 	if (Conf.focus.mode != MODE_FOCUS_CLICK)
 	   DoIn("AUTORAISE_TIMEOUT", 0.001 * Conf.autoraise.delay,
-		AutoraiseTimeout, _EwinGetClientXwin(ewin), NULL);
+		AutoraiseTimeout, EwinGetClientXwin(ewin), NULL);
      }
 
    if (do_raise)
@@ -409,7 +409,7 @@ doFocusToEwin(EWin * ewin, int why)
      {
      case FOCUS_PREV:
 	DoIn("REVERSE_FOCUS_TIMEOUT", 0.5, ReverseTimeout,
-	     _EwinGetClientXwin(ewin), NULL);
+	     EwinGetClientXwin(ewin), NULL);
 	break;
      case FOCUS_DESK_ENTER:
 	if (Conf.focus.mode == MODE_FOCUS_CLICK)
@@ -453,7 +453,7 @@ FocusToEWin(EWin * ewin, int why)
 {
    if (EventDebug(EDBUG_TYPE_FOCUS))
       Eprintf("FocusToEWin(%d) %#lx %s why=%d\n", focus_inhibit,
-	      (ewin) ? _EwinGetClientXwin(ewin) : 0,
+	      (ewin) ? EwinGetClientXwin(ewin) : 0,
 	      (ewin) ? EwinGetName(ewin) : "None", why);
 
    switch (why)
@@ -618,8 +618,8 @@ FocusHandleClick(EWin * ewin, Win win)
    /* Allow click to pass thorugh */
    if (EventDebug(EDBUG_TYPE_GRABS))
       Eprintf("FocusHandleClick %#lx %#lx\n", Xwin(win),
-	      _EwinGetContainerXwin(ewin));
-   if (win == _EwinGetContainerWin(ewin))
+	      EwinGetContainerXwin(ewin));
+   if (win == EwinGetContainerWin(ewin))
      {
 	ESync();
 	XAllowEvents(disp, ReplayPointer, CurrentTime);
@@ -904,7 +904,7 @@ FocusIpc(const char *params, Client * c __UNUSED__)
 
 	ewin = GetFocusEwin();
 	if (ewin)
-	   IpcPrintf("Focused: %#lx\n", _EwinGetClientXwin(ewin));
+	   IpcPrintf("Focused: %#lx\n", EwinGetClientXwin(ewin));
 	else
 	   IpcPrintf("Focused: none\n");
      }
