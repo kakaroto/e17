@@ -2,7 +2,8 @@ group {
    name: "wm_border";
    parts {
       part {
-	 name: "border";
+	 name: "shadow";
+         mouse_events: 0;
 	 description {
 	    state: "default" 0.0;
             rel1 {
@@ -12,8 +13,18 @@ group {
                offset: 13 13;
             }
 	    image {
+	       normal: "wm_shadow.png";
+               border: 6 6 15 15;
+            }
+	 }
+      }
+      part {
+	 name: "border";
+	 description {
+	    state: "default" 0.0;
+	    image {
 	       normal: "wm_border.png";
-               border: 40 68 30 19;
+               border: 33 53 26 5;
             }
 	 }
       }

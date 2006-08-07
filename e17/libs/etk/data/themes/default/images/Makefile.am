@@ -97,4 +97,5 @@ EXTRA_DIST = background.png \
              colorpicker_preview.png \
              wm_bg_brushed.png \
              wm_bg_overlay.png \
-             wm_border.png
+             wm_border.png \
+             wm_shadow.png
