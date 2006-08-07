@@ -896,13 +896,16 @@ EventShow(const XEvent * ev)
      case CreateNotify:
      case DestroyNotify:
      case UnmapNotify:
-     case MapNotify:
      case MapRequest:
      case EX_EVENT_CREATE_GONE:
      case EX_EVENT_UNMAP_GONE:
-     case EX_EVENT_MAP_GONE:
      case EX_EVENT_MAPREQUEST_GONE:
 	Eprintf("%s win=%#lx\n", buf, ev->xcreatewindow.window);
+	break;
+     case MapNotify:
+     case EX_EVENT_MAP_GONE:
+	Eprintf("%s win=%#lx or=%d\n", buf, ev->xmap.window,
+		ev->xmap.override_redirect);
 	break;
      case ReparentNotify:
      case EX_EVENT_REPARENT_GONE:
