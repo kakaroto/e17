@@ -1115,10 +1115,15 @@ EwinEventReparent(EWin * ewin)
 }
 
 static void
-EwinEventMap(EWin * ewin)
+EwinEventMap(EWin * ewin, XEvent * ev)
 {
-   int                 old_state = ewin->state.state;
+   int                 old_state;
 
+   /* Catch clients setting OR without proper withdrawal (just unmap/map) */
+   if (ev->xmap.override_redirect)
+      return;
+
+   old_state = ewin->state.state;
    ewin->state.state = EWIN_STATE_MAPPED;
 
    if (EventDebug(EDBUG_TYPE_EWINS))
@@ -2066,7 +2071,7 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      case MapNotify:
-	EwinEventMap(ewin);
+	EwinEventMap(ewin, ev);
 	break;
 
      case EX_EVENT_REPARENT_GONE:

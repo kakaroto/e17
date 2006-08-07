@@ -758,6 +758,14 @@ EUnregisterWindow(Win win)
    if (!xid)
       return;
 
+   if (xid->cbl.lst)
+     {
+	if (EventDebug(1))
+	   Eprintf("EUnregisterWindow(%#lx) Ignored (%d callbacks remain)\n",
+		   xid->xwin, xid->cbl.num);
+	return;
+     }
+
    EXidDel(xid);
 }
 

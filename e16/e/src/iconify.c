@@ -2738,9 +2738,7 @@ IconboxObjSwinUnmanage(Iconbox * ib __UNUSED__, Win win, int gone)
 	EReparentWindow(win, VRoot.win, 0, 0);
 	XRemoveFromSaveSet(disp, WinGetXwin(win));
      }
-#if 0				/* Not needed when going to EUnregisterWindow */
    EventCallbackUnregister(win, 0, SystrayItemEvent, ib);
-#endif
    EUnregisterWindow(win);
 }
 
