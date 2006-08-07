@@ -1060,5 +1060,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
      {
         if(ETK_IS_IMAGE(child->wid))
           etk_button_image_set(ETK_BUTTON(parent->wid), ETK_IMAGE(child->wid));
+        else
+          etk_container_add(ETK_CONTAINER(parent->wid), child->wid);
      }
 }
