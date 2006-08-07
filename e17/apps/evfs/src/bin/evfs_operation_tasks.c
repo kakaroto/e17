@@ -21,19 +21,26 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 
 
 	/*Check if we're trying to overwrite*/
-	if (!(op->status == EVFS_OPERATION_STATUS_OVERRIDE) && 
-	   !(EVFS_OPERATION_TASK(copy)->status == EVFS_OPERATION_TASK_STATUS_EXEC_CONT) &&
+	if (!(op->status == EVFS_OPERATION_STATUS_OVERRIDE_YES)) {
+		
+	   if (!(EVFS_OPERATION_TASK(copy)->status == EVFS_OPERATION_TASK_STATUS_EXEC_CONT) &&
 	   !(EVFS_OPERATION_TASK(copy)->status == EVFS_OPERATION_TASK_STATUS_CANCEL)) 	{
 
 		if (copy->dest_stat_response != EVFS_ERROR) {
-			/*Looks like we're overwriting*/
+			if (!(op->status == EVFS_OPERATION_STATUS_OVERRIDE_NO)) {
+				/*Looks like we're overwriting*/
 
-			evfs_operation_status_set(op, EVFS_OPERATION_STATUS_USER_WAIT);
-		 	evfs_operation_wait_type_set(op, EVFS_OPERATION_WAIT_TYPE_FILE_OVERWRITE);
-			evfs_operation_user_dispatch(op->client, op->command, op, copy->file_to->path);
+				evfs_operation_status_set(op, EVFS_OPERATION_STATUS_USER_WAIT);
+		 		evfs_operation_wait_type_set(op, EVFS_OPERATION_WAIT_TYPE_FILE_OVERWRITE);
+				evfs_operation_user_dispatch(op->client, op->command, op, copy->file_to->path);
 
-			return 0;
+				return 0;
+			} else {
+				/*Overide == no to all - skip*/
+				EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_CANCEL;
+			}
 		}
+	   }
 	}
 
 	/*Check for cancel...*/

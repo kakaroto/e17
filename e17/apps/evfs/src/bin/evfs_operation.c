@@ -259,7 +259,9 @@ void evfs_operation_response_handle(evfs_operation* op, evfs_operation_task* tas
 				task->status = EVFS_OPERATION_TASK_STATUS_EXEC_CONT;
 				op->status = EVFS_OPERATION_STATUS_NORMAL;
 			} else if (op->response == EVFS_OPERATION_RESPONSE_AFFIRM_ALL) {
-				op->status = EVFS_OPERATION_STATUS_OVERRIDE;
+				op->status = EVFS_OPERATION_STATUS_OVERRIDE_YES;
+			} else if (op->response == EVFS_OPERATION_RESPONSE_NEGATE_ALL) {
+				op->status = EVFS_OPERATION_STATUS_OVERRIDE_NO;
 			} else if (op->response == EVFS_OPERATION_RESPONSE_NEGATE) {
 				printf("NEGATE reponse received\n");
 				task->status = EVFS_OPERATION_TASK_STATUS_CANCEL;
@@ -279,6 +281,7 @@ void evfs_operation_run_tasks(evfs_operation* op)
 {
 	evfs_operation_task* task = NULL;
 
+	TASK_RUN_LOOP:
 	task = ecore_list_current(op->sub_task);
 	if (task) {
 
@@ -286,8 +289,14 @@ void evfs_operation_run_tasks(evfs_operation* op)
 		    evfs_operation_response_handle(op,task);
 	    }
 
+	    if (task->status == EVFS_OPERATION_TASK_STATUS_CANCEL) {
+		ecore_list_next(op->sub_task);		    
+		goto TASK_RUN_LOOP;
+	    }
+
 		
-	    if (op->status == EVFS_OPERATION_STATUS_NORMAL || op->status == EVFS_OPERATION_STATUS_OVERRIDE) {
+	    if (op->status == EVFS_OPERATION_STATUS_NORMAL || op->status == EVFS_OPERATION_STATUS_OVERRIDE_YES ||
+			   op->status == EVFS_OPERATION_STATUS_OVERRIDE_NO ) {
 		
 		if (task->status == EVFS_OPERATION_TASK_STATUS_PENDING)
 			task->status = EVFS_OPERATION_TASK_STATUS_EXEC;
