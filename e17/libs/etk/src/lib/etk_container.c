@@ -98,8 +98,8 @@ void etk_container_border_width_set(Etk_Container *container, int border_width)
       return;
 
    container->border_width = border_width;
-   etk_object_notify(ETK_OBJECT(container), "border_width");
    etk_widget_size_recalc_queue(ETK_WIDGET(container));
+   etk_object_notify(ETK_OBJECT(container), "border_width");
 }
 
 /**

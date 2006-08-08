@@ -82,13 +82,12 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
    if (child)
    {
       etk_widget_parent_set(child, ETK_WIDGET(bin));
+      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
       bin->child = child;
       
-      /* TODO; warnings? */
-      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
-      
+      if (!etk_signal_emit_by_name("child_added", ETK_OBJECT(bin), NULL, child))
+         return;
       etk_object_notify(ETK_OBJECT(bin), "child");
-      etk_signal_emit_by_name("child_added", ETK_OBJECT(bin), NULL, child);
    }
 }
 
@@ -213,8 +212,9 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
    etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
    bin->child = NULL;
    
+   if (!etk_signal_emit_by_name("child_removed", ETK_OBJECT(bin), NULL, widget))
+      return;
    etk_object_notify(ETK_OBJECT(bin), "child");
-   etk_signal_emit_by_name("child_removed", ETK_OBJECT(bin), NULL, widget);
 }
 
 /* Gets the children (the child actually) of the bin */

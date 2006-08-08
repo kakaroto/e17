@@ -204,8 +204,9 @@ static void _etk_toggle_button_active_set_default(Etk_Toggle_Button *toggle_butt
       return;
    
    toggle_button->active = active;
+   if (!etk_signal_emit(_etk_toggle_button_signals[ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL], ETK_OBJECT(toggle_button), NULL))
+      return;
    etk_object_notify(ETK_OBJECT(toggle_button), "active");
-   etk_signal_emit(_etk_toggle_button_signals[ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL], ETK_OBJECT(toggle_button), NULL);
 }
 
 /** @} */

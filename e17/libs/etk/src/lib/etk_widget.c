@@ -405,9 +405,9 @@ void etk_widget_theme_file_set(Etk_Widget *widget, const char *theme_file)
    {
       free(widget->theme_file);
       widget->theme_file = theme_file ? strdup(theme_file) : NULL;
-      etk_object_notify(ETK_OBJECT(widget), "theme_file");
       /* TODO: _realize_on_theme_file_change(): this function name is too loooonggg! */
       _etk_widget_realize_on_theme_file_change(widget, ETK_TRUE);
+      etk_object_notify(ETK_OBJECT(widget), "theme_file");
    }
 }
 
@@ -445,8 +445,8 @@ void etk_widget_theme_group_set(Etk_Widget *widget, const char *theme_group)
    {
       free(widget->theme_group);
       widget->theme_group = theme_group ? strdup(theme_group) : NULL;
-      etk_object_notify(ETK_OBJECT(widget), "theme_group");
       _etk_widget_realize_on_theme_change(widget);
+      etk_object_notify(ETK_OBJECT(widget), "theme_group");
    }
 }
 
@@ -702,9 +702,10 @@ void etk_widget_show(Etk_Widget *widget)
    if (widget->smart_object && (!parent || (parent->smart_object && evas_object_visible_get(parent->smart_object))))
       evas_object_show(widget->smart_object);
    etk_widget_size_recalc_queue(widget);
-   etk_object_notify(ETK_OBJECT(widget), "visible");
    
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SHOW_SIGNAL], ETK_OBJECT(widget), NULL);
+   if (!etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SHOW_SIGNAL], ETK_OBJECT(widget), NULL))
+      return;
+   etk_object_notify(ETK_OBJECT(widget), "visible");
 }
 
 /**
@@ -737,9 +738,10 @@ void etk_widget_hide(Etk_Widget *widget)
    if (widget->smart_object)
       evas_object_hide(widget->smart_object);
    etk_widget_size_recalc_queue(widget);
-   etk_object_notify(ETK_OBJECT(widget), "visible");
    
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_HIDE_SIGNAL], ETK_OBJECT(widget), NULL);
+   if (!etk_signal_emit(_etk_widget_signals[ETK_WIDGET_HIDE_SIGNAL], ETK_OBJECT(widget), NULL))
+      return;
+   etk_object_notify(ETK_OBJECT(widget), "visible");
 }
 
 /**
@@ -782,6 +784,7 @@ void etk_widget_visibility_locked_set(Etk_Widget *widget, Etk_Bool visibility_lo
 {
    if (!widget || widget->visibility_locked == visibility_locked)
       return;
+   
    widget->visibility_locked = visibility_locked;
    etk_object_notify(ETK_OBJECT(widget), "visibility_locked");
 }
@@ -899,9 +902,11 @@ void etk_widget_size_request_set(Etk_Widget *widget, int w, int h)
    widget->requested_size.w = w;
    widget->requested_size.h = h;
    
-   etk_object_notify(ETK_OBJECT(widget), "width_request");
-   etk_object_notify(ETK_OBJECT(widget), "height_request");
    etk_widget_size_recalc_queue(widget);
+   if (!etk_object_notify(ETK_OBJECT(widget), "width_request"))
+      return;
+   if (!etk_object_notify(ETK_OBJECT(widget), "height_request"))
+      return;
 }
 
 /**
@@ -2019,6 +2024,7 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
          /* TODO: is the widget is the one which is focused, we should change the focused widget */
          widget->focusable = etk_property_value_bool_get(value);
          etk_object_notify(object, "focusable");
+         break;
       /* TODO: rename it to "focus_on_click" */
       case ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY:
          widget->focus_on_press = etk_property_value_bool_get(value);

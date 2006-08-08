@@ -126,12 +126,14 @@ void etk_range_range_set(Etk_Range *range, double lower, double upper)
    if (range->lower != lower)
    {
       range->lower = lower;
-      etk_object_notify(ETK_OBJECT(range), "lower");
+      if (!etk_object_notify(ETK_OBJECT(range), "lower"))
+         return;
    }
    if (range->upper != upper)
    {
       range->upper = upper;
-      etk_object_notify(ETK_OBJECT(range), "upper");
+      if (!etk_object_notify(ETK_OBJECT(range), "upper"))
+         return;
    }
 
    etk_range_value_set(range, range->value);
@@ -167,12 +169,14 @@ void etk_range_increments_set(Etk_Range *range, double step, double page)
    if (range->step_increment != step)
    {
       range->step_increment = step;
-      etk_object_notify(ETK_OBJECT(range), "step_increment");
+      if (!etk_object_notify(ETK_OBJECT(range), "step_increment"))
+         return;
    }
    if (range->page_increment != page)
    {
       range->page_increment = page;
-      etk_object_notify(ETK_OBJECT(range), "page_increment");
+      if (!etk_object_notify(ETK_OBJECT(range), "page_increment"))
+         return;
    }
 }
 
@@ -204,8 +208,9 @@ void etk_range_page_size_set(Etk_Range *range, double page_size)
    if (page_size != range->page_size)
    {
       range->page_size = page_size;
-      etk_object_notify(ETK_OBJECT(range), "page_size");
       etk_widget_redraw_queue(ETK_WIDGET(range));
+      if (!etk_object_notify(ETK_OBJECT(range), "page_size"))
+         return;
    }
 }
 

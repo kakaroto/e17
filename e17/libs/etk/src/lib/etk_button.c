@@ -278,12 +278,14 @@ void etk_button_alignment_set(Etk_Button *button, float xalign, float yalign)
    if (button->xalign != xalign)
    {
       button->xalign = xalign;
-      etk_object_notify(ETK_OBJECT(button), "xalign");
+      if (!etk_object_notify(ETK_OBJECT(button), "xalign"))
+         return;
    }
    if (button->yalign != yalign)
    {
       button->yalign = yalign;
-      etk_object_notify(ETK_OBJECT(button), "yalign");
+      if (!etk_object_notify(ETK_OBJECT(button), "yalign"))
+         return;
    }
 }
 

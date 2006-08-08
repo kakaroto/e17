@@ -182,8 +182,10 @@ void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
    table->num_rows = num_rows;
 
    etk_widget_size_recalc_queue(ETK_WIDGET(table));
-   etk_object_notify(ETK_OBJECT(table), "num_cols");
-   etk_object_notify(ETK_OBJECT(table), "num_rows");
+   if (!etk_object_notify(ETK_OBJECT(table), "num_cols"))
+      return;
+   if (!etk_object_notify(ETK_OBJECT(table), "num_rows"))
+      return;
 }
 
 /**

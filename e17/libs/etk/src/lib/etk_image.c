@@ -135,30 +135,35 @@ void etk_image_set_from_file(Etk_Image *image, const char *filename)
 
    free(image->filename);
    image->filename = filename ? strdup(filename) : NULL;
-   etk_object_notify(ETK_OBJECT(image), "image_file");
+   if (!etk_object_notify(ETK_OBJECT(image), "image_file"))
+      return;
 
    if (image->edje_group)
    {
       free(image->edje_group);
       image->edje_group = NULL;
-      etk_object_notify(ETK_OBJECT(image), "edje_group");
+      if (!etk_object_notify(ETK_OBJECT(image), "edje_group"))
+         return;
    }
    if (image->edje_filename)
    {
       free(image->edje_filename);
       image->edje_filename = NULL;
-      etk_object_notify(ETK_OBJECT(image), "edje_file");
+      if (!etk_object_notify(ETK_OBJECT(image), "edje_file"))
+         return;
    }
    if (image->use_edje)
    {
       image->use_edje = ETK_FALSE;
       image->object_type_changed = ETK_TRUE;
-      etk_object_notify(ETK_OBJECT(image), "use_edje");
+      if (!etk_object_notify(ETK_OBJECT(image), "use_edje"))
+         return;
    }
    if (image->stock_id != ETK_STOCK_NO_STOCK)
    {
       image->stock_id = ETK_STOCK_NO_STOCK;
-      etk_object_notify(ETK_OBJECT(image), "stock_id");
+      if (!etk_object_notify(ETK_OBJECT(image), "stock_id"))
+         return;
    }
 
    _etk_image_load(image);
@@ -193,31 +198,36 @@ void etk_image_set_from_edje(Etk_Image *image, const char *edje_filename, const 
    {
       free(image->edje_filename);
       image->edje_filename = edje_filename ? strdup(edje_filename) : NULL;
-      etk_object_notify(ETK_OBJECT(image), "edje_file");
+      if (!etk_object_notify(ETK_OBJECT(image), "edje_file"))
+         return;
    }
    if (image->edje_group != edje_group)
    {
       free(image->edje_group);
       image->edje_group = edje_group ? strdup(edje_group) : NULL;
-      etk_object_notify(ETK_OBJECT(image), "edje_group");
+      if (!etk_object_notify(ETK_OBJECT(image), "edje_group"))
+         return;
    }
 
    if (image->filename)
    {
       free(image->filename);
       image->filename = NULL;
-      etk_object_notify(ETK_OBJECT(image), "image_file");
+      if (!etk_object_notify(ETK_OBJECT(image), "image_file"))
+         return;
    }
    if (!image->use_edje)
    {
       image->use_edje = ETK_TRUE;
       image->object_type_changed = ETK_TRUE;
-      etk_object_notify(ETK_OBJECT(image), "use_edje");
+      if (!etk_object_notify(ETK_OBJECT(image), "use_edje"))
+         return;
    }
    if (image->stock_id != ETK_STOCK_NO_STOCK)
    {
       image->stock_id = ETK_STOCK_NO_STOCK;
-      etk_object_notify(ETK_OBJECT(image), "stock_id");
+      if (!etk_object_notify(ETK_OBJECT(image), "stock_id"))
+         return;
    }
 
    _etk_image_load(image);
@@ -263,8 +273,11 @@ void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock
       etk_image_set_from_edje(image, etk_theme_icon_theme_get(), key);
    image->stock_id = stock_id;
    image->stock_size = stock_size;
-   etk_object_notify(ETK_OBJECT(image), "stock_id");
-   etk_object_notify(ETK_OBJECT(image), "stock_size");
+   
+   if (!etk_object_notify(ETK_OBJECT(image), "stock_id"))
+      return;
+   if (!etk_object_notify(ETK_OBJECT(image), "stock_size"))
+      return;
 }
 
 /**

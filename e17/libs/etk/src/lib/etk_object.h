@@ -79,7 +79,7 @@ void etk_object_properties_set_valist(Etk_Object *object, const char *first_prop
 void etk_object_properties_get(Etk_Object *object, const char *first_property, ...);
 void etk_object_properties_get_valist(Etk_Object *object, const char *first_property, va_list args);
 
-void etk_object_notify(Etk_Object *object, const char *property_name);
+Etk_Object *etk_object_notify(Etk_Object *object, const char *property_name);
 void etk_object_notification_callback_add(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data), void *data);
 void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data));
 

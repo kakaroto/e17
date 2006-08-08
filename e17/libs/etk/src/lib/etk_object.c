@@ -463,13 +463,14 @@ void etk_object_properties_get_valist(Etk_Object *object, const char *first_prop
 }
 
 /**
- * @brief Calls the notification callbacks associated the property of the object.
- * It should be called each time the value of the property is changed
+ * @brief Calls the object's notification callbacks associated the given property.
+ * It should be called each time the value of a property is changed
  * @param object an object
  * @param property_name the name of the property
- * @note This function is mainly used in object implementations, you usually do not need to call it manually
+ * @return Returns the object, or NULL if the object has been destroyed by one of the notification callbacks
+ * @object_implementation
  */
-void etk_object_notify(Etk_Object *object, const char *property_name)
+Etk_Object *etk_object_notify(Etk_Object *object, const char *property_name)
 {
    Evas_List *l;
    Evas_List **notification_callbacks;
@@ -477,29 +478,27 @@ void etk_object_notify(Etk_Object *object, const char *property_name)
    void *object_ptr;
 
    if (!object || !property_name)
-      return;
+      return object;
    if (!(notification_callbacks = evas_hash_find(object->notification_callbacks_hash, property_name)))
-      return;
+      return object;
 
    object_ptr = object;
    etk_object_weak_pointer_add(object, &object_ptr);
-   for (l = *notification_callbacks; l; l = l->next)
+   for (l = *notification_callbacks; l && object_ptr; l = l->next)
    {
       callback = l->data;
       if (callback->callback)
          callback->callback(object, property_name, callback->data);
-      
-      /* If the object has been destroyed by the notification callback, we return */
-      if (!object_ptr)
-         return;
    }
    etk_object_weak_pointer_remove(object, &object_ptr);
+   
+   return object_ptr;
 }
 
 /**
  * @brief Adds a notification callback associated to a property of the object.
  * The callback will be called each time the value of the property is changed
- * (each time etk_object_notify(object, property_name) is called).
+ * (i.e. each time etk_object_notify(object, property_name) is called).
  * @param object an object
  * @param property_name the name of the property
  * @param callback the callback function
@@ -530,7 +529,7 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
  * @brief Removes a notification callback associated to a property of the object
  * @param object an object
  * @param property_name the name of the property
- * @param callback the callback function
+ * @param callback the callback function to remove
  */
 void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data))
 {
@@ -615,7 +614,7 @@ static void _etk_object_destructor(Etk_Object *object)
  *
  **************************/
 
-/* Frees a list of notification callbacks (called by _etk_object_destructor) */
+/* Frees a list of notification callbacks (called by _etk_object_destructor()) */
 static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Evas_List **list;
@@ -665,11 +664,11 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * A new object can be created with etk_object_new(). For example:
  * @code
  * //Creates a new focusable slider, for the range [1.0 - 3.0] and with the initial value 2.0
- * slider = etk_object_new(ETK_SLIDER_TYPE, "focusable", ETK_TRUE, "lower", 1.0, "upper", 3.0, "value", 2.0, NULL);
+ * slider = etk_object_new(ETK_SLIDER_TYPE, "theme_group", "slider", "focusable", ETK_TRUE, "lower", 1.0, "upper", 3.0, "value", 2.0, NULL);
  * @endcode
  * The first argument is the type of the object to create, followed by any number of property-name/property-value pairs,
  * and terminated with NULL. @n
- * etk_object_new() automatically calls the corresponding constructors on the object, from the constructor of
+ * etk_object_new() automatically calls the corresponding constructors of the object, from the constructor of
  * the base class to the constructor of the more derived class. @n
  *
  * You can also destroy an object with etk_object_destroy(). It sets the weak pointers of the object to NULL
@@ -678,8 +677,8 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  *
  * <b>Signal concept:</b> @n
  * Each object has a list of signals that can be connected to one or several callbacks. The callbacks connected to
- * a signal will automatically be called when the signal is emitted with etk_signal_emit(). @n
- * You can connect a callback to a signal with etk_signal_connect(). For example:
+ * a signal will be automatically called when the signal is emitted with etk_signal_emit(). @n
+ * You can connect a callback to a signal of an object with etk_signal_connect(). For example:
  * @code
  * //Callback prototype
  * void clicked_cb(Etk_Button *button, void *data);
@@ -688,16 +687,16 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(clicked_cb), user_data);
  * @endcode
  *
- * You can also disconnect a callback from a signal with etk_signal_disconnect(). For instance: 
+ * You can also disconnect a callback from a signal of an object with etk_signal_disconnect(). For instance: 
  * @code
  * //Disconnects the callback "clicked_cb()" from the signal "clicked"
  * etk_signal_disconnect("clicked", ETK_OBJECT(button), ETK_CALLBACK(clicked_cb));
  * @endcode
  *
- * Each object inherits the signals of its parent classes (for instance, an Etk_Button has the signals of Etk_Object,
+ * Each object inherits the signals from its parent classes (for instance, an Etk_Button has the signals of Etk_Object,
  * Etk_Widget, Etk_Container, Etk_Bin and Etk_Button).
- * Each object's documentation page has a list of its signals with the associated callback prototype and a short
- * explanation. @n
+ * Each object's documentation page has a list of the object's signals with the associated callback prototype and
+ * a short explanation. @n
  * For more information about signals, see the documentation page of Etk_Signal. @n @n
  *
  * <b>Property concept:</b> @n
@@ -717,7 +716,7 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * etk_object_notification_callback_add(ETK_OBJECT(slider), "upper", value_changed_cb, user_data);
  * @endcode
  *
- * Each object inherits the properties of its parent classes (for instance, an Etk_Button has the properties of
+ * Each object inherits the properties from its parent classes (for instance, an Etk_Button has the properties of
  * Etk_Object, Etk_Widget, Etk_Container, Etk_Bin and Etk_Button).
  * <hr>
  * @n @n

@@ -145,7 +145,8 @@ Etk_String *etk_string_truncate(Etk_String *string, int length)
    {
       string->string[length] = 0;
       string->length = length;
-      etk_object_notify(ETK_OBJECT(string), "string");
+      if (!etk_object_notify(ETK_OBJECT(string), "string"))
+         return NULL;
    }
    return string;
 }
@@ -237,7 +238,8 @@ Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int size
       string->string[string->length] = 0;
    }
    
-   etk_object_notify(ETK_OBJECT(string), "string");
+   if (!etk_object_notify(ETK_OBJECT(string), "string"))
+      return NULL;
    return string;
 }
 
@@ -466,8 +468,8 @@ Etk_String *etk_string_insert_sized(Etk_String *string, int pos, const char *tex
    string->length += length;
    string->string[string->length] = 0;
    
-   etk_object_notify(ETK_OBJECT(string), "string");
-   
+   if (!etk_object_notify(ETK_OBJECT(string), "string"))
+      return NULL;
    return string;
 }
 
@@ -500,8 +502,8 @@ Etk_String *etk_string_insert_char(Etk_String *string, int pos, char c)
    string->length++;
    string->string[string->length] = 0;
    
-   etk_object_notify(ETK_OBJECT(string), "string");
-   
+   if (!etk_object_notify(ETK_OBJECT(string), "string"))
+      return NULL;
    return string;
 }
 
