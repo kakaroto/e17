@@ -767,7 +767,7 @@ static void _etk_window_delete_request_cb(Etk_Window *window)
 {
    Etk_Bool result;
    
-   if (etk_signal_emit(_etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(window), &result) && result)
+   if (etk_signal_emit(_etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(window), &result) && !result)
       etk_object_destroy(ETK_OBJECT(window));
 }
 

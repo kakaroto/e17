@@ -2341,7 +2341,6 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
          return;
    }
    
-   /* TODO: what if the widget is destroyed by one of the callbacks (recurrent problem!!!) ?? */
    if (widget->repeat_mouse_events && widget->parent)
       _etk_widget_mouse_up_cb(widget->parent, evas, NULL, event_info);
 }
