@@ -224,6 +224,14 @@ Description: An E17 weather module
  - display degree in Celsius or Fahrenheit
  - choose the weather station from a menu or via ICAO Code.
  
+Package: emodule0-winselector
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-winselector
+Description: An E17 module providing menu-based access to all windows
+ An E17 module which enables access to all windows through a shelf
+ button.
+
 Package: emodule0-wlan
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -236,7 +244,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-wlan
+Depends: enlightenment, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all
 Description: A dummy package for installing all modules for E17

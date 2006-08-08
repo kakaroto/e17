@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/winselector/*.eap
+debian/tmp/usr/lib/enlightenment/modules/winselector/*.edj
+debian/tmp/usr/lib/enlightenment/modules/winselector/*.png
+debian/tmp/usr/lib/enlightenment/modules/winselector/*/*.so

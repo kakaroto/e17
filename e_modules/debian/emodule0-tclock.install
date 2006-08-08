@@ -1,4 +1,3 @@
-debian/tmp/usr/lib/enlightenment/modules/tclock/module_icon.png
 debian/tmp/usr/lib/enlightenment/modules/tclock/*.eap
 debian/tmp/usr/lib/enlightenment/modules/tclock/*.edj
 debian/tmp/usr/lib/enlightenment/modules/tclock/*.png
