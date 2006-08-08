@@ -12,13 +12,15 @@ TODO List
  ESSENTIAL FEATURES
 -------------------------------------------------------------------------------
 
-* Create abstracted interface for obtaining system session list.
+*** Create abstracted interface for obtaining system session list.
   - Add functions for finding session list on various distributions
   - Move entrance-definded sessions out of config into $prefix/share/xsessions/.
-* Handle sessions that crash immediately gracefully by providing some kind of
-  custom error message a la GDM
+*** Handle sessions that crash immediately gracefully by providing some kind of
+  custom error message a la GDM 
 * Xinerama - widgets follow mouse pointer from screen to screen
-* GUI configuration tool (EWL-based?)
+** GUI configuration tool - Launched from within entrance, so we can configure
+  without logging in to the window manager. Allow optional root password, just
+  like GDM does.
 
 -------------------------------------------------------------------------------
  NICE-TO-HAVE FEATURES
@@ -27,3 +29,17 @@ TODO List
 * XDMCP support
 * Add custom user edje to default theme
 
+-------------------------------------------------------------------------------
+ ADDITIONAL USER GENERATED FEATURE REQUESTS FROM THE COLLAB4 ML. 
+-------------------------------------------------------------------------------
+* Tab focus change
+* Session list is currently broken (it sets the layer/raises it etc, after being
+  swallowed).
+* No User listing currently.
+* Session list and User list _need_ to be scrollable and the userlist needs to 
+  possibly handle massive lists of 1000's of users and not take forever to come
+  up (take a leaf out of e17's fm2 code for listting users).
+* A face browser would be just awesome.
+* KDM has a lilo hack that allows you to select which lilo option to reboot
+  to directly from the Login Manager. Would be nice to have this too :)
+* xrandr support in GUI config, so E can worry about that less.
