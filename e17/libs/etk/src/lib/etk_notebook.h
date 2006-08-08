@@ -45,6 +45,7 @@ struct Etk_Notebook
    
    Etk_Widget *tab_bar;
    Etk_Bool tab_bar_focused;
+   Etk_Bool tab_bar_visible;
    
    Evas_List *pages;
    Etk_Notebook_Page *current_page;
@@ -73,6 +74,9 @@ Etk_Widget *etk_notebook_page_tab_widget_get(Etk_Notebook *notebook, int page_nu
 
 void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widget *child);
 Etk_Widget *etk_notebook_page_child_get(Etk_Notebook *notebook, int page_num);
+
+void etk_notebook_tabs_visible_set(Etk_Notebook *notebook, Etk_Bool tabs_visible);
+Etk_Bool etk_notebook_tabs_visible_get(Etk_Notebook *notebook);
 
 /** @} */
 

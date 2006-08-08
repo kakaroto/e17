@@ -1028,7 +1028,7 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
  * \par
  * @prop_name "active" (only for Etk_Menu_Item_Check and Etk_Menu_Item_Radio):
  * Whether or not the menu item is active (i.e. toggled)
- * @prop_type Etk_Bool
+ * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_FALSE
  * \par

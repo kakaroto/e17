@@ -18,8 +18,15 @@ enum Etk_Notebook_Signal_Id
    ETK_NOTEBOOK_NUM_SIGNALS
 };
 
+enum Etk_Notebook_Property_Id
+{
+   ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY
+};
+
 static void _etk_notebook_constructor(Etk_Notebook *notebook);
 static void _etk_notebook_destructor(Etk_Notebook *notebook);
+static void _etk_notebook_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
+static void _etk_notebook_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_notebook_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_notebook_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_notebook_tab_bar_size_request(Etk_Widget *widget, Etk_Size *size);
@@ -61,6 +68,12 @@ Etk_Type *etk_notebook_type_get()
    
       _etk_notebook_signals[ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL] = etk_signal_new("current_page_changed",
          notebook_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      
+      etk_type_property_add(notebook_type, "tabs_visible", ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      
+      notebook_type->property_set = _etk_notebook_property_set;
+      notebook_type->property_get = _etk_notebook_property_get;
    }
 
    return notebook_type;
@@ -379,6 +392,46 @@ Etk_Widget *etk_notebook_page_child_get(Etk_Notebook *notebook, int page_num)
    return etk_bin_child_get(ETK_BIN(page->frame));
 }
 
+/**
+ * @brief Sets whethet the tab bar should be visible or not
+ * @param notebook a notebook
+ * @param tabs_visible if @a tabs_visible is ETK_FALSE, the tab bar will be hidden
+ */
+void etk_notebook_tabs_visible_set(Etk_Notebook *notebook, Etk_Bool tabs_visible)
+{
+   Evas_List *l;
+   Etk_Notebook_Page *page;
+
+   if (!notebook || notebook->tab_bar_visible == tabs_visible)
+      return;
+
+   if (tabs_visible)
+      etk_widget_show(notebook->tab_bar);
+   else
+      etk_widget_hide(notebook->tab_bar);
+   
+   for (l = notebook->pages; l; l = l->next)
+   {
+      page = l->data;
+      etk_widget_theme_group_set(page->frame, tabs_visible ? "frame" : NULL);
+   }
+   
+   notebook->tab_bar_visible = tabs_visible;
+   etk_object_notify(ETK_OBJECT(notebook), "tabs_visible");
+}
+
+/**
+ * @brief Gets whether the tab bar is visible or not
+ * @param notebook a notebook
+ * @return Returns ETK_TRUE if the tab bar is visible, ETK_FALSE otherwise
+ */
+Etk_Bool etk_notebook_tabs_visible_get(Etk_Notebook *notebook)
+{
+   if (!notebook)
+      return ETK_FALSE;
+   return notebook->tab_bar_visible;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -394,6 +447,7 @@ static void _etk_notebook_constructor(Etk_Notebook *notebook)
    notebook->pages = NULL;
    notebook->current_page = NULL;
    notebook->tab_bar_focused = ETK_FALSE;
+   notebook->tab_bar_visible = ETK_TRUE;
    
    _etk_notebook_tab_bar_create(notebook);
    
@@ -419,6 +473,42 @@ static void _etk_notebook_destructor(Etk_Notebook *notebook)
       page = l->data;
       etk_signal_disconnect("toggled", ETK_OBJECT(page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb));
       free(page);
+   }
+}
+   
+/* Sets the property whose id is "property_id" to the value "value" */
+static void _etk_notebook_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)
+{
+   Etk_Notebook *notebook;
+
+   if (!(notebook = ETK_NOTEBOOK(object)) || !value)
+      return;
+
+   switch (property_id)
+   {
+      case ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY:
+         etk_notebook_tabs_visible_set(notebook, etk_property_value_bool_get(value));
+         break;
+      default:
+         break;
+   }
+}
+
+/* Gets the value of the property whose id is "property_id" */
+static void _etk_notebook_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value)
+{
+   Etk_Notebook *notebook;
+
+   if (!(notebook = ETK_NOTEBOOK(object)) || !value)
+      return;
+
+   switch (property_id)
+   {
+      case ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY:
+         etk_property_value_bool_set(value, notebook->tab_bar_visible);
+         break;
+      default:
+         break;
    }
 }
 
@@ -711,7 +801,10 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    etk_widget_show(new_page->tab);
    etk_signal_connect("toggled", ETK_OBJECT(new_page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
    
-   new_page->frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", "frame", NULL);
+   if (notebook->tab_bar_visible)
+      new_page->frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", "frame", NULL);
+   else
+      new_page->frame = etk_widget_new(ETK_BIN_TYPE, NULL);
    etk_widget_parent_set(new_page->frame, ETK_WIDGET(notebook));
    etk_widget_visibility_locked_set(new_page->frame, ETK_TRUE);
    etk_widget_hide(new_page->frame);
@@ -784,4 +877,10 @@ static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page 
  * @signal_cb void callback(Etk_Notebook *notebook, void *data)
  * @signal_arg notebook: the notebook whose active page has been changed
  * @signal_data
+ *
+ * \par Properties:
+ * @prop_name "tabs_visible": Whether the tab bar is visible or not
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
  */
