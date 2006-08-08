@@ -39,7 +39,7 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 	  }
 	else if(!strcmp(ev->key, "d"))
 	  {
-	     _e_sticky_delete(s);
+	     _e_sticky_delete_confirm(s);
 	  }
 	else if(!strcmp(ev->key, "q"))
 	  {
