@@ -690,7 +690,11 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	IF_PARENT_CLASS("GtkNotebook")
           {
 	     PROPERTY_BOOL;
-             etk_notebook_show_tabs_set(ETK_NOTEBOOK(wid->wid), value);
+	     /* FIXME: Simon removed this.
+	      *        lok, wanna implement again without issues?
+	      * 
+	      * etk_notebook_show_tabs_set(ETK_NOTEBOOK(wid->wid), value);
+	      */ 
           }
      }     
 }
