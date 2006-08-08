@@ -354,7 +354,9 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
 /* Called when the label is unrealized */
 static void _etk_label_unrealize_cb(Etk_Object *object, void *data)
 {
-   if (!object)
+   Etk_Label *label;
+   
+   if (!(label = ETK_LABEL(object)))
       return;
 
    _etk_label_style_use--;
@@ -363,6 +365,7 @@ static void _etk_label_unrealize_cb(Etk_Object *object, void *data)
       evas_textblock_style_free(_etk_label_style);
       _etk_label_style = NULL;
    }
+   label->clip = NULL;
 }
 
 /** @} */

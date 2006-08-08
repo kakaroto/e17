@@ -27,7 +27,6 @@ static void _etk_notebook_tab_bar_size_allocate(Etk_Widget *widget, Etk_Geometry
 static void _etk_notebook_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_notebook_child_remove(Etk_Container *container, Etk_Widget *widget);
 static Evas_List *_etk_notebook_children_get(Etk_Container *container);
-static void _etk_notebook_show_frame_borders_set(Etk_Notebook_Page *page, Etk_Bool tab_bar_visible);
 
 static void _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data);
 static void _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data);
@@ -380,47 +379,6 @@ Etk_Widget *etk_notebook_page_child_get(Etk_Notebook *notebook, int page_num)
    return etk_bin_child_get(ETK_BIN(page->frame));
 }
 
-/**
- * @brief Sets the visibility of the tab bar
- * @param notebook a notebook
- * @param show_tabs if show_tabs is ETK_FALSE, then the tab bar will be hidden
- */
-void etk_notebook_show_tabs_set(Etk_Notebook *notebook, Etk_Bool show_tabs)
-{
-   Evas_List *page = NULL;
-
-   if (notebook == NULL)
-     return;
-
-   notebook->tab_bar_visible = show_tabs;
-   if (notebook->tab_bar)
-     {
-       show_tabs ? etk_widget_show(notebook->tab_bar) : etk_widget_hide(notebook->tab_bar);
-     }
-   if (notebook->pages)
-     {
-       page = notebook->pages;
-       while (page)
-         {
-           if (page->data)
-             {
-               _etk_notebook_show_frame_borders_set(page->data, show_tabs);
-             }
-           page = evas_list_next(page);
-         }
-     }
-}
-
-/**
- * @brief Gets the visibility of the tab bar
- * @param notebook a notebook
- * @return Returns ETK_TRUE if the tab bar is visible, ETK_FALSE otherwise
- */
-Etk_Bool etk_notebook_show_tabs_get(Etk_Notebook *notebook)
-{
-   return notebook->tab_bar_visible;
-}
-
 /**************************
  *
  * Etk specific functions
@@ -436,7 +394,6 @@ static void _etk_notebook_constructor(Etk_Notebook *notebook)
    notebook->pages = NULL;
    notebook->current_page = NULL;
    notebook->tab_bar_focused = ETK_FALSE;
-   notebook->tab_bar_focused = ETK_TRUE;
    
    _etk_notebook_tab_bar_create(notebook);
    
@@ -617,19 +574,6 @@ static Evas_List *_etk_notebook_children_get(Etk_Container *container)
    return children;
 }
 
-/* Set the frame borders visible if tab_bar_visible is true */
-static void _etk_notebook_show_frame_borders_set(Etk_Notebook_Page *page, Etk_Bool tab_bar_visible)
-{
-   if (tab_bar_visible == ETK_TRUE)
-     {
-       etk_widget_theme_group_set(page->frame, "frame");
-     }
-   else
-     {
-       etk_widget_theme_group_set(page->frame, NULL);
-     }
-}
-
 /**************************
  *
  * Callbacks and handlers
@@ -767,10 +711,7 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    etk_widget_show(new_page->tab);
    etk_signal_connect("toggled", ETK_OBJECT(new_page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
    
-   if (notebook->tab_bar_visible)
-     new_page->frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", "frame", NULL);
-   else
-     new_page->frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", NULL, NULL);
+   new_page->frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", "frame", NULL);
    etk_widget_parent_set(new_page->frame, ETK_WIDGET(notebook));
    etk_widget_visibility_locked_set(new_page->frame, ETK_TRUE);
    etk_widget_hide(new_page->frame);
@@ -781,7 +722,6 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
       _etk_notebook_page_switch(notebook, new_page);
    etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
    
-
    return new_page;
 }
 
