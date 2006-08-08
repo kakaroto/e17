@@ -763,7 +763,7 @@ static void _etk_notebook_tab_bar_create(Etk_Notebook *notebook)
    if (!notebook)
       return;
    
-   notebook->tab_bar = etk_widget_new(ETK_WIDGET_TYPE, "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+   notebook->tab_bar = etk_widget_new(ETK_WIDGET_TYPE, "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
    etk_widget_parent_set(notebook->tab_bar, ETK_WIDGET(notebook));
    etk_widget_visibility_locked_set(notebook->tab_bar, ETK_TRUE);
    etk_widget_show(notebook->tab_bar);

@@ -82,7 +82,7 @@ enum Etk_Widget_Property_Id
    ETK_WIDGET_PASS_MOUSE_EVENTS_PROPERTY,
    ETK_WIDGET_HAS_EVENT_OBJECT_PROPERTY,
    ETK_WIDGET_FOCUSABLE_PROPERTY,
-   ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY
+   ETK_WIDGET_FOCUS_ON_CLICK_PROPERTY
 };
 
 static void _etk_widget_constructor(Etk_Widget *widget);
@@ -262,7 +262,7 @@ Etk_Type *etk_widget_type_get()
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "focusable", ETK_WIDGET_FOCUSABLE_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(widget_type, "focus_on_press", ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY,
+      etk_type_property_add(widget_type, "focus_on_click", ETK_WIDGET_FOCUS_ON_CLICK_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "repeat_mouse_events", ETK_WIDGET_REPEAT_MOUSE_EVENTS_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
@@ -1911,7 +1911,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->visible = ETK_FALSE;
    widget->visibility_locked = ETK_FALSE;
    widget->focusable = ETK_FALSE;
-   widget->focus_on_press = ETK_FALSE;
+   widget->focus_on_click = ETK_FALSE;
    widget->use_focus_order = ETK_FALSE;
    widget->has_event_object = ETK_FALSE;
    widget->repeat_mouse_events = ETK_FALSE;
@@ -2025,10 +2025,9 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
          widget->focusable = etk_property_value_bool_get(value);
          etk_object_notify(object, "focusable");
          break;
-      /* TODO: rename it to "focus_on_click" */
-      case ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY:
-         widget->focus_on_press = etk_property_value_bool_get(value);
-         etk_object_notify(object, "focus_on_press");
+      case ETK_WIDGET_FOCUS_ON_CLICK_PROPERTY:
+         widget->focus_on_click = etk_property_value_bool_get(value);
+         etk_object_notify(object, "focus_on_click");
          break;
       default:
          break;
@@ -2084,8 +2083,8 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WIDGET_FOCUSABLE_PROPERTY:
          etk_property_value_bool_set(value, widget->focusable);
          break;
-      case ETK_WIDGET_FOCUS_ON_PRESS_PROPERTY:
-         etk_property_value_bool_set(value, widget->focus_on_press);
+      case ETK_WIDGET_FOCUS_ON_CLICK_PROPERTY:
+         etk_property_value_bool_set(value, widget->focus_on_click);
          break;
       default:
          break;
@@ -2318,9 +2317,10 @@ static void _etk_widget_signal_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse
 {
    Etk_Widget *widget;
  
-   if (!(widget = ETK_WIDGET(object)) || !widget->focus_on_press)
+   if (!(widget = ETK_WIDGET(object)))
       return;
-   etk_widget_focus(widget);
+   if (widget->focus_on_click)
+      etk_widget_focus(widget);
 }
 
 /* Evas Callback: Called when the widget is released by the mouse */

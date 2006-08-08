@@ -137,7 +137,7 @@ Etk_Type *etk_iconbox_type_get()
 Etk_Widget *etk_iconbox_new()
 {
    return etk_widget_new(ETK_ICONBOX_TYPE, "theme_group", "iconbox",
-      "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+      "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**

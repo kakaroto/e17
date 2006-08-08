@@ -115,7 +115,7 @@ Etk_Type *etk_combobox_item_type_get()
 Etk_Widget *etk_combobox_new()
 {
    return etk_widget_new(ETK_COMBOBOX_TYPE, "theme_group", "combobox",
-      "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+      "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**

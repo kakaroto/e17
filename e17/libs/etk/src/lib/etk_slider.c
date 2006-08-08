@@ -61,7 +61,7 @@ Etk_Type *etk_hslider_type_get()
 Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
    return etk_widget_new(ETK_HSLIDER_TYPE, "theme_group", "hslider", "focusable", ETK_TRUE, "lower", lower, "upper", upper,
-      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_press", ETK_TRUE, NULL);
+      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**

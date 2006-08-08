@@ -97,7 +97,7 @@ Etk_Type *etk_button_type_get()
 Etk_Widget *etk_button_new()
 {
    return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button",
-      "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+      "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**
@@ -107,7 +107,7 @@ Etk_Widget *etk_button_new()
 Etk_Widget *etk_button_new_with_label(const char *label)
 {
    return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button",
-      "label", label, "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+      "label", label, "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**

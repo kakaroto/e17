@@ -60,7 +60,7 @@ Etk_Type *etk_text_view_type_get()
 Etk_Widget *etk_text_view_new()
 {
    return etk_widget_new(ETK_TEXT_VIEW_TYPE, "theme_group", "text_view", "focusable", ETK_TRUE,
-      "focus_on_press", ETK_TRUE, NULL);
+      "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**

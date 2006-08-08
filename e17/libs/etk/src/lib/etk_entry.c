@@ -73,7 +73,7 @@ Etk_Type *etk_entry_type_get()
  */
 Etk_Widget *etk_entry_new()
 {
-   return etk_widget_new(ETK_ENTRY_TYPE, "theme_group", "entry", "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_ENTRY_TYPE, "theme_group", "entry", "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**

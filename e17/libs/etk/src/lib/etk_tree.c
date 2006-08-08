@@ -212,7 +212,7 @@ Etk_Type *etk_tree_type_get()
  */
 Etk_Widget *etk_tree_new()
 {
-   return etk_widget_new(ETK_TREE_TYPE, "theme_group", "tree", "focusable", ETK_TRUE, "focus_on_press", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_TREE_TYPE, "theme_group", "tree", "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**
