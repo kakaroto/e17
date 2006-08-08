@@ -303,7 +303,8 @@ void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *ite
    if (combobox->active_item != item)
    {
       combobox->active_item = item;
-      etk_signal_emit(_etk_combobox_signals[ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL], ETK_OBJECT(combobox), NULL);
+      if (!etk_signal_emit(_etk_combobox_signals[ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL], ETK_OBJECT(combobox), NULL))
+         return;
       etk_object_notify(ETK_OBJECT(combobox), "active_item");
    }
 }

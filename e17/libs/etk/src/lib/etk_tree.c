@@ -387,8 +387,8 @@ void etk_tree_col_width_set(Etk_Tree_Col *col, int width)
    etk_object_notify(ETK_OBJECT(col), "width");
    if (col->tree)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(col->tree->grid));
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
    }
 }
 
@@ -417,8 +417,8 @@ void etk_tree_col_min_width_set(Etk_Tree_Col *col, int min_width)
    etk_object_notify(ETK_OBJECT(col), "min_width");
    if (col->tree)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(col->tree->grid));
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
    }
 }
 
@@ -499,8 +499,8 @@ void etk_tree_col_visible_set(Etk_Tree_Col *col, Etk_Bool visible)
    etk_object_notify(ETK_OBJECT(col), "visible");
    if (col->tree)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(col->tree->grid));
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->grid), NULL);
    }
 }
 
@@ -645,9 +645,9 @@ void etk_tree_thaw(Etk_Tree *tree)
    if (!tree || !tree->frozen)
       return;
    
-   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
-   etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
    tree->frozen = ETK_FALSE;
+   etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
+   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
 }
 
 /**
@@ -674,9 +674,9 @@ void etk_tree_row_height_set(Etk_Tree *tree, int row_height)
    }
    
    etk_object_notify(ETK_OBJECT(tree), "row_height");
-   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
    etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), tree->row_height, 5 * tree->row_height);
+   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
 }
 
 /**
@@ -729,8 +729,8 @@ void etk_tree_select_all(Etk_Tree *tree)
       return;
 
    _etk_tree_row_select_all(&tree->root);
-   etk_signal_emit(_etk_tree_signals[ETK_TREE_SELECT_ALL_SIGNAL], ETK_OBJECT(tree), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
+   etk_signal_emit(_etk_tree_signals[ETK_TREE_SELECT_ALL_SIGNAL], ETK_OBJECT(tree), NULL);
 }
 
 /**
@@ -745,12 +745,14 @@ void etk_tree_unselect_all(Etk_Tree *tree)
    if (tree->last_selected && tree->last_selected->selected)
    {
       tree->last_selected->selected = ETK_FALSE;
-      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, tree->last_selected);
+      if (!etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, tree->last_selected))
+         return;
    }
    if (tree->multiple_select)
    {
       _etk_tree_row_unselect_all(&tree->root);
-      etk_signal_emit(_etk_tree_signals[ETK_TREE_UNSELECT_ALL_SIGNAL], ETK_OBJECT(tree), NULL);
+      if (!etk_signal_emit(_etk_tree_signals[ETK_TREE_UNSELECT_ALL_SIGNAL], ETK_OBJECT(tree), NULL))
+         return;
    }
    tree->num_selected_rows = 0;
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
@@ -840,26 +842,27 @@ Etk_Tree_Row *etk_tree_append_to_row(Etk_Tree_Row *row, ...)
 void etk_tree_row_del(Etk_Tree_Row *row)
 {
    Etk_Tree_Row *r;
+   Etk_Tree *tree;
 
-   if (!row)
+   if (!row || !(tree = row->tree))
       return;
 
-   for (r = row->tree->last_selected; r; r = r->parent)
+   for (r = tree->last_selected; r; r = r->parent)
    {
       if (row == r)
       {
-         row->tree->last_selected = NULL;
+         tree->last_selected = NULL;
          break;
       }
    }
    
-   if (!row->tree->frozen)
-   {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->grid), NULL);
-      etk_widget_redraw_queue(ETK_WIDGET(row->tree->grid));
-   }
-   
    _etk_tree_row_free(row);
+   
+   if (!tree->frozen)
+   {
+      etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
+   }
 }
 
 /**
@@ -875,8 +878,8 @@ void etk_tree_clear(Etk_Tree *tree)
       _etk_tree_row_free(tree->root.first_child);
    tree->last_selected = NULL;
    
-   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
+   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
 }
 
 /**
@@ -1197,9 +1200,9 @@ void etk_tree_row_unselect(Etk_Tree_Row *row)
       return;
    
    row->selected = ETK_FALSE;
-   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
       etk_widget_redraw_queue(ETK_WIDGET(row->tree->grid));
+   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
 }
 
 /**

@@ -1741,9 +1741,10 @@ void etk_widget_drag_drop(Etk_Widget *widget, Etk_Event_Selection_Request *event
 {
    if (!widget)
       return;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL], ETK_OBJECT(widget), NULL, event);
+   
    /* TODO: FIXME: why isnt this being emitted automatically?!? */
    etk_widget_theme_object_signal_emit(widget, "drag_drop");   
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL], ETK_OBJECT(widget), NULL, event);
 }
 
 /**
@@ -1765,7 +1766,6 @@ void etk_widget_drag_enter(Etk_Widget *widget)
 {
    if (!widget)
       return;
-
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_ENTER_SIGNAL], ETK_OBJECT(widget), NULL);
 }
 
@@ -2193,7 +2193,8 @@ static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object,
    event.locks = evas_event->locks;
    event.timestamp = evas_event->timestamp;
 
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+   if (!etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), NULL, &event))
+      return;
    
    /* TODO: should we really propagate the mouse in event? */
    if (widget->parent)
@@ -2227,7 +2228,8 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
    event.locks = evas_event->locks;
    event.timestamp = evas_event->timestamp;
 
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+   if (!etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), NULL, &event))
+      return;
    
    /* TODO: should we really propagate the mouse out event? */
    if (widget->parent)
@@ -2265,7 +2267,8 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
    event.locks = evas_event->locks;
    event.timestamp = evas_event->timestamp;
 
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_MOVE_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+   if (!etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_MOVE_SIGNAL], ETK_OBJECT(widget), NULL, &event))
+      return;
    
    if (widget->parent)
       _etk_widget_mouse_move_cb(widget->parent, evas, NULL, event_info);
@@ -2291,7 +2294,8 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
    event.flags = evas_event->flags;
    event.timestamp = evas_event->timestamp;
 
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+   if (!etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event))
+      return;
    
    if (widget->repeat_mouse_events && widget->parent)
       _etk_widget_mouse_down_cb(widget->parent, evas, NULL, event_info);
@@ -2327,11 +2331,15 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
    event.flags = evas_event->flags;
    event.timestamp = evas_event->timestamp;
 
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_UP_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+   if (!etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_UP_SIGNAL], ETK_OBJECT(widget), NULL, &event))
+      return;
    
    if (evas_event->canvas.x >= widget->geometry.x && evas_event->canvas.x <= widget->geometry.x + widget->geometry.w &&
-         evas_event->canvas.y >= widget->geometry.y && evas_event->canvas.y <= widget->geometry.y + widget->geometry.h)
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_CLICK_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+      evas_event->canvas.y >= widget->geometry.y && evas_event->canvas.y <= widget->geometry.y + widget->geometry.h)
+   {
+      if (!etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_CLICK_SIGNAL], ETK_OBJECT(widget), NULL, &event))
+         return;
+   }
    
    /* TODO: what if the widget is destroyed by one of the callbacks (recurrent problem!!!) ?? */
    if (widget->repeat_mouse_events && widget->parent)
@@ -2550,7 +2558,8 @@ static void _etk_widget_realize(Etk_Widget *widget)
    widget->need_theme_min_size_recalc = ETK_TRUE;
    widget->realized = ETK_TRUE;
 
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_REALIZE_SIGNAL], ETK_OBJECT(widget), NULL);
+   if (!etk_signal_emit(_etk_widget_signals[ETK_WIDGET_REALIZE_SIGNAL], ETK_OBJECT(widget), NULL))
+      return;
    
    /* Finally, we clip the widget */
    if (widget->clip)

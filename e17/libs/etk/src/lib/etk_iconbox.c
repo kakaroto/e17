@@ -220,8 +220,8 @@ void etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int hei
    
    if (model->iconbox && model->iconbox->current_model == model)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(model->iconbox->grid), NULL);
       etk_widget_redraw_queue(model->iconbox->grid);
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(model->iconbox->grid), NULL);
    }
 }
 

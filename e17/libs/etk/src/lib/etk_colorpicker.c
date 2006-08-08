@@ -739,7 +739,10 @@ static void _etk_colorpicker_slider_value_changed_cb(Etk_Object *object, double 
             cp->current_color.b = color.b;
             evas_object_color_set(cp->current_color_rect, color.r, color.g, color.b, 255);
             if (cp->emit_signal)
-               etk_signal_emit(_etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL], ETK_OBJECT(cp), NULL);
+            {
+               if (!etk_signal_emit(_etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL], ETK_OBJECT(cp), NULL))
+                  return;
+            }
          }
          
          update_sp_image = !((i != cp->mode) && ((i / 3) == (cp->mode / 3)));

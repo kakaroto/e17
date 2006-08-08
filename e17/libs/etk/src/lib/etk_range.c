@@ -91,7 +91,8 @@ void etk_range_value_set(Etk_Range *range, double value)
    if (new_value != range->value)
    {
       range->value = new_value;
-      etk_signal_emit(_etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL], ETK_OBJECT(range), NULL, range->value);
+      if (!(etk_signal_emit(_etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL], ETK_OBJECT(range), NULL, range->value)))
+         return;
       etk_object_notify(ETK_OBJECT(range), "value");
    }
 }

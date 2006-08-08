@@ -735,21 +735,24 @@ static void _etk_window_move_cb(Etk_Window *window)
 /* Called when the window is resized by the engine */
 static void _etk_window_resize_cb(Etk_Window *window)
 {
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL], ETK_OBJECT(window), NULL);
+   if (!etk_signal_emit(_etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL], ETK_OBJECT(window), NULL))
+      return;
    etk_widget_redraw_queue(ETK_WIDGET(window));   
 }
 
 /* Called when the window is focused by the engine */
 static void _etk_window_focus_in_cb(Etk_Window *window)
 {
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL], ETK_OBJECT(window), NULL);
+   if (!etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL], ETK_OBJECT(window), NULL))
+      return;
    etk_object_notify(ETK_OBJECT(window), "focused");   
 }
 
 /* Called when the window is unfocused by the engine */
 static void _etk_window_focus_out_cb(Etk_Window *window)
 {
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL], ETK_OBJECT(window), NULL);
+   if (!etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL], ETK_OBJECT(window), NULL))
+      return;
    etk_object_notify(ETK_OBJECT(window), "focused");   
 }
 
@@ -764,8 +767,7 @@ static void _etk_window_delete_request_cb(Etk_Window *window)
 {
    Etk_Bool result;
    
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(window), &result);
-   if (!result)
+   if (etk_signal_emit(_etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(window), &result) && result)
       etk_object_destroy(ETK_OBJECT(window));
 }
 

@@ -938,7 +938,8 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
    {
       check_item->active = active;
       etk_object_notify(ETK_OBJECT(check_item), "active");
-      etk_signal_emit(_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL], ETK_OBJECT(check_item), NULL);
+      if (!etk_signal_emit(_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL], ETK_OBJECT(check_item), NULL))
+         return;
    
       if (check_item->active)
       {

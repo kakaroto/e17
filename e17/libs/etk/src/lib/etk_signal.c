@@ -282,17 +282,21 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Sign
  * @param object the object which will emit the signal
  * @param return_value the location where store the return value ( @a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
+ * @return Returns @a object, or NULL if @a object has been destroyed by one of the callbacks
  */
-void etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value, ...)
+Etk_Object *etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value, ...)
 {
    va_list args;
+   Etk_Object *ret_obj;
 
    if (!object || !signal)
-      return;
+      return object;
 
    va_start(args, return_value);
-   etk_signal_emit_valist(signal, object, return_value, args);
+   ret_obj = etk_signal_emit_valist(signal, object, return_value, args);
    va_end(args);
+   
+   return ret_obj;
 }
 
 /**
@@ -301,24 +305,28 @@ void etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value,
  * @param object the object which will emit the signal
  * @param return_value the location where store the return value ( @a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
+ * @return Returns @a object, or NULL if @a object has been destroyed by one of the callbacks
  */
-void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...)
+Etk_Object *etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...)
 {
    va_list args;
    Etk_Signal *signal;
+   Etk_Object *ret_obj;
 
    if (!object || !signal_name)
-      return;
+      return object;
 
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
       ETK_WARNING("Invalid signal emission: the object type doesn't have a signal called \"%s\"", signal_name);
-      return;
+      return object;
    }
 
    va_start(args, return_value);
-   etk_signal_emit_valist(signal, object, return_value, args);
+   ret_obj = etk_signal_emit_valist(signal, object, return_value, args);
    va_end(args);
+   
+   return ret_obj;
 }
 
 /**
@@ -327,8 +335,9 @@ void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *
  * @param object the object which will emit the signal
  * @param return_value the location where store the return value ( @a return_value may be NULL)
  * @param args the arguments to pass to the callback function
+ * @return Returns @a object, or NULL if @a object has been destroyed by one of the callbacks
  */
-void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return_value, va_list args)
+Etk_Object *etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return_value, va_list args)
 {
    Evas_List *callbacks;
    Etk_Signal_Callback *callback;
@@ -339,7 +348,7 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    void *object_ptr;
 
    if (!object || !signal)
-      return;
+      return object;
 
    /* The pointer object will be set to NULL if the object is destroyed by a callback */
    object_ptr = object;
@@ -426,6 +435,8 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    free(emitted_signal);
    
    va_end(args2);
+   
+   return object_ptr;
 }
 
 /**

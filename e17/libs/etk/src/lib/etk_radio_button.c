@@ -228,7 +228,8 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
    {
       toggle_button->active = active;
       etk_object_notify(ETK_OBJECT(toggle_button), "active");
-      etk_signal_emit_by_name("toggled", ETK_OBJECT(toggle_button), NULL);
+      if (!etk_signal_emit_by_name("toggled", ETK_OBJECT(toggle_button), NULL))
+         return;
    
       if (toggle_button->active)
       {

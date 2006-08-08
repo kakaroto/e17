@@ -155,9 +155,9 @@ void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
    {
       etk_widget_parent_set(ETK_WIDGET(item), NULL);
       item->parent = NULL;
-      etk_signal_emit(_etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL], ETK_OBJECT(menu_shell), NULL, item);
       menu_shell->items = evas_list_remove_list(menu_shell->items, l);
       etk_widget_size_recalc_queue(ETK_WIDGET(menu_shell));
+      etk_signal_emit(_etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL], ETK_OBJECT(menu_shell), NULL, item);
    }
 }
 
