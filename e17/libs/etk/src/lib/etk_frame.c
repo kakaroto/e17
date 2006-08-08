@@ -82,13 +82,13 @@ void etk_frame_label_set(Etk_Frame *frame, const char *label)
    {
       if (!frame->label || *frame->label == '\0')
       {
-         etk_widget_theme_object_part_text_set(ETK_WIDGET(frame), "label", "");
-         etk_widget_theme_object_signal_emit(ETK_WIDGET(frame), "hide_label");
+         etk_widget_theme_part_text_set(ETK_WIDGET(frame), "label", "");
+         etk_widget_theme_signal_emit(ETK_WIDGET(frame), "hide_label");
       }
       else
       {
-         etk_widget_theme_object_part_text_set(ETK_WIDGET(frame), "label", frame->label);
-         etk_widget_theme_object_signal_emit(ETK_WIDGET(frame), "show_label");
+         etk_widget_theme_part_text_set(ETK_WIDGET(frame), "label", frame->label);
+         etk_widget_theme_signal_emit(ETK_WIDGET(frame), "show_label");
       }
    }
 }

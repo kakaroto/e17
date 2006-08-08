@@ -154,7 +154,7 @@ void etk_menu_item_label_set(Etk_Menu_Item *menu_item, const char *label)
    
    free(menu_item->label);
    menu_item->label = label ? strdup(label) : NULL;
-   etk_widget_theme_object_part_text_set(ETK_WIDGET(menu_item), "label", label ? label : "");
+   etk_widget_theme_part_text_set(ETK_WIDGET(menu_item), "label", label ? label : "");
    
    etk_object_notify(ETK_OBJECT(menu_item), "label");
 }
@@ -188,9 +188,9 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
       ETK_MENU_SHELL(menu_item->submenu)->parent = menu_item;
    
    if (menu_item->submenu)
-      etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "arrow_show");
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "arrow_show");
    else if (!menu_item->submenu)
-      etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "arrow_hide");
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "arrow_hide");
    
    etk_widget_size_recalc_queue(ETK_WIDGET(menu_item));
 }
@@ -386,10 +386,10 @@ void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image)
       etk_widget_pass_mouse_events_set(menu_item->left_widget, ETK_TRUE);
       
       etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", image_widget);
-      etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "left_widget_show");
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_show");
    }
    else
-      etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "left_widget_hide");
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_hide");
    
    etk_widget_size_recalc_queue(ETK_WIDGET(menu_item));
 }
@@ -653,8 +653,8 @@ static void _etk_menu_item_check_constructor(Etk_Menu_Item_Check *check_item)
    etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));
    etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", menu_item->left_widget);
    
-   etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "left_widget_show");
-   etk_widget_theme_object_signal_emit(menu_item->left_widget, check_item->active ? "check" : "uncheck");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_show");
+   etk_widget_theme_signal_emit(menu_item->left_widget, check_item->active ? "check" : "uncheck");
    
    etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget),
       ETK_CALLBACK(_etk_menu_item_check_box_realize_cb), menu_item);
@@ -844,7 +844,7 @@ static void _etk_menu_item_realize_cb(Etk_Object *object, void *data)
    if (!(menu_item = ETK_MENU_ITEM(object)))
       return;
    
-   etk_widget_theme_object_part_text_set(ETK_WIDGET(menu_item), "label", menu_item->label ? menu_item->label : "");
+   etk_widget_theme_part_text_set(ETK_WIDGET(menu_item), "label", menu_item->label ? menu_item->label : "");
    if (menu_item->left_widget)
       etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", menu_item->left_widget);
 }
@@ -856,7 +856,7 @@ static void _etk_menu_item_check_box_realize_cb(Etk_Object *object, void *data)
 
    if (!(menu_item = ETK_MENU_ITEM(data)) || !menu_item->left_widget)
       return;
-   etk_widget_theme_object_signal_emit(menu_item->left_widget,
+   etk_widget_theme_signal_emit(menu_item->left_widget,
       ETK_MENU_ITEM_CHECK(menu_item)->active ? "check" : "uncheck");
 }
 
@@ -875,8 +875,8 @@ static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "select");
-   etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item->left_widget), "select");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "select");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "select");
 }
 
 /* Default handler for the "deselected" signal */
@@ -884,8 +884,8 @@ static void _etk_menu_item_deselected_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "deselect");
-   etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item->left_widget), "deselect");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "deselect");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "deselect");
 }
 
 /* Default handler for the "activated" signal */
@@ -893,8 +893,8 @@ static void _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item), "activate");
-   etk_widget_theme_object_signal_emit(ETK_WIDGET(menu_item->left_widget), "activate");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "activate");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "activate");
 }
 
 /* Default handler for the "toggled" signal */
@@ -902,7 +902,7 @@ static void _etk_menu_item_check_toggled_handler(Etk_Menu_Item_Check *check_item
 {
    if (check_item && ETK_MENU_ITEM(check_item)->left_widget)
    {
-      etk_widget_theme_object_signal_emit(ETK_MENU_ITEM(check_item)->left_widget,
+      etk_widget_theme_signal_emit(ETK_MENU_ITEM(check_item)->left_widget,
          check_item->active ? "check" : "uncheck");
    }
 }

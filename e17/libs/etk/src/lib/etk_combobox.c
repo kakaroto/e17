@@ -152,7 +152,7 @@ void etk_combobox_item_height_set(Etk_Combobox *combobox, int item_height)
    }
    else if (combobox->item_height_set)
    {
-      if (etk_widget_theme_object_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->item_height) != 1 ||
+      if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->item_height) != 1 ||
          combobox->item_height <= 0)
       {
          combobox->item_height = ETK_COMBOBOX_DEFAULT_ITEM_HEIGHT;
@@ -1013,7 +1013,7 @@ static void _etk_combobox_focus_handler(Etk_Widget *widget)
    
    if (!(combobox = ETK_COMBOBOX(widget)))
       return;
-   etk_widget_theme_object_signal_emit(combobox->button, "focus");
+   etk_widget_theme_signal_emit(combobox->button, "focus");
 }
 
 /* Default handler for the "unfocus" handler */
@@ -1023,7 +1023,7 @@ static void _etk_combobox_unfocus_handler(Etk_Widget *widget)
    
    if (!(combobox = ETK_COMBOBOX(widget)))
       return;
-   etk_widget_theme_object_signal_emit(combobox->button, "unfocus");
+   etk_widget_theme_signal_emit(combobox->button, "unfocus");
 }
 
 /* Called when the combobox is realized */
@@ -1036,7 +1036,7 @@ static void _etk_combobox_realize_cb(Etk_Object *object, void *data)
    
    if (!combobox->item_height_set)
    {
-      if (etk_widget_theme_object_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->item_height) != 1 ||
+      if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->item_height) != 1 ||
          combobox->item_height <= 0)
       {
          combobox->item_height = ETK_COMBOBOX_DEFAULT_ITEM_HEIGHT;
@@ -1239,12 +1239,12 @@ static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox
    
    if (combobox->selected_item)
    {
-      etk_widget_theme_object_signal_emit(ETK_WIDGET(combobox->selected_item), "unselect");
+      etk_widget_theme_signal_emit(ETK_WIDGET(combobox->selected_item), "unselect");
       combobox->selected_item = NULL;
    }
    if (item)
    {
-      etk_widget_theme_object_signal_emit(ETK_WIDGET(item), "select");
+      etk_widget_theme_signal_emit(ETK_WIDGET(item), "select");
       combobox->selected_item = item;
    }
 }

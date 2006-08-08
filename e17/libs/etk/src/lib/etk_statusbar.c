@@ -206,7 +206,7 @@ void etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_re
       return;
    
    statusbar->has_resize_grip = has_resize_grip;
-   etk_widget_theme_object_signal_emit(ETK_WIDGET(statusbar), statusbar->has_resize_grip ? "show_resize_grip" : "hide_resize_grip");
+   etk_widget_theme_signal_emit(ETK_WIDGET(statusbar), statusbar->has_resize_grip ? "show_resize_grip" : "hide_resize_grip");
    etk_object_notify(ETK_OBJECT(statusbar), "has_resize_grip");
 }
 
@@ -304,7 +304,7 @@ static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk
 /* Called when the status bar is realized */
 static void _etk_statusbar_realize_cb(Etk_Object *object, void *data)
 {
-   etk_widget_theme_object_signal_emit(ETK_WIDGET(object), ETK_STATUSBAR(object)->has_resize_grip ? "show_resize_grip" : "hide_resize_grip");
+   etk_widget_theme_signal_emit(ETK_WIDGET(object), ETK_STATUSBAR(object)->has_resize_grip ? "show_resize_grip" : "hide_resize_grip");
    _etk_statusbar_update(ETK_STATUSBAR(object));
    
    if (ETK_WIDGET(object)->theme_object)
@@ -367,9 +367,9 @@ static void _etk_statusbar_update(Etk_Statusbar *statusbar)
       return;
    
    if (statusbar->msg_stack && (msg = statusbar->msg_stack->data) && msg->msg)
-      etk_widget_theme_object_part_text_set(ETK_WIDGET(statusbar), "message", msg->msg);
+      etk_widget_theme_part_text_set(ETK_WIDGET(statusbar), "message", msg->msg);
    else
-      etk_widget_theme_object_part_text_set(ETK_WIDGET(statusbar), "message", "");
+      etk_widget_theme_part_text_set(ETK_WIDGET(statusbar), "message", "");
 }
 
 /** @} */

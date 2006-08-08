@@ -1083,7 +1083,7 @@ static void _etk_iconbox_realize_cb(Etk_Object *object, void *data)
    if (!(iconbox = ETK_ICONBOX(object)))
       return;
    
-   if (etk_widget_theme_object_data_get(ETK_WIDGET(iconbox), "selected_icon_color", "%d %d %d %d",
+   if (etk_widget_theme_data_get(ETK_WIDGET(iconbox), "selected_icon_color", "%d %d %d %d",
       &iconbox->selected_icon_color.r, &iconbox->selected_icon_color.g,
       &iconbox->selected_icon_color.b, &iconbox->selected_icon_color.a) != 4)
    {
@@ -1409,7 +1409,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
    label_geometry.h = model->label_height;
    
    etk_label_set(ETK_LABEL(icon_object->label), icon->label);
-   etk_widget_theme_object_signal_emit(icon_object->label, icon->selected ? "select" : "unselect");
+   etk_widget_theme_signal_emit(icon_object->label, icon->selected ? "select" : "unselect");
    
    if (clip && grid->clip)
       etk_widget_clip_set(icon_object->label, grid->clip);

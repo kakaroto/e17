@@ -150,10 +150,8 @@ struct _Etk_Widget
    int left_inset, right_inset, top_inset, bottom_inset;
    Etk_Geometry geometry;
    Etk_Geometry inner_geometry;
-   /* The size requested by the user */
-   Etk_Size requested_size;
-   /* The result of the last call to etk_widget_size_request() */
-   Etk_Size last_size_requisition;
+   Etk_Size requested_size;             /* The size requested by the user */
+   Etk_Size last_size_requisition;      /* The result of the last call to etk_widget_size_request() */
    void (*size_request)(Etk_Widget *widget, Etk_Size *size_requisition);
    void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry);
 
@@ -176,27 +174,27 @@ struct _Etk_Widget
    void (*drag_begin)(Etk_Widget *widget);   
    void (*drag_end)(Etk_Widget *widget);
 
-   unsigned char realized : 1;
-   unsigned char swallowed : 1;
-   unsigned char visible : 1;
-   unsigned char visibility_locked : 1;
-   unsigned char repeat_mouse_events : 1;
-   unsigned char pass_mouse_events : 1;
-   unsigned char has_event_object : 1;
-   unsigned char focusable : 1;
-   unsigned char focus_on_press : 1;
-   unsigned char use_focus_order : 1;
-   unsigned char need_size_recalc : 1;
-   unsigned char need_redraw : 1;
-   unsigned char need_theme_min_size_recalc : 1;
-   unsigned char accepts_dnd : 1;
-   unsigned char dnd_source : 1;
-   unsigned char dnd_dest : 1;
-   unsigned char dnd_internal: 1;
-
    Etk_Widget *drag;
-   char    **dnd_types;
-   int       dnd_types_num;
+   char **dnd_types;
+   int dnd_types_num;
+
+   unsigned int realized : 1;
+   unsigned int swallowed : 1;
+   unsigned int visible : 1;
+   unsigned int visibility_locked : 1;
+   unsigned int repeat_mouse_events : 1;
+   unsigned int pass_mouse_events : 1;
+   unsigned int has_event_object : 1;
+   unsigned int focusable : 1;
+   unsigned int focus_on_press : 1;
+   unsigned int use_focus_order : 1;
+   unsigned int need_size_recalc : 1;
+   unsigned int need_redraw : 1;
+   unsigned int need_theme_min_size_recalc : 1;
+   unsigned int accepts_dnd : 1;
+   unsigned int dnd_source : 1;
+   unsigned int dnd_dest : 1;
+   unsigned int dnd_internal: 1;
 };
 
 Etk_Type *etk_widget_type_get();
@@ -204,6 +202,7 @@ Etk_Widget *etk_widget_new(Etk_Type *widget_type, const char *first_property, ..
 
 void etk_widget_name_set(Etk_Widget *widget, const char *name);
 const char *etk_widget_name_get(Etk_Widget *widget);
+
 void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
 void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
 
@@ -250,6 +249,10 @@ void etk_widget_leave(Etk_Widget *widget);
 void etk_widget_focus(Etk_Widget *widget);
 void etk_widget_unfocus(Etk_Widget *widget);
 
+void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name);
+void etk_widget_theme_part_text_set(Etk_Widget *widget, const char *part_name, const char *text);
+int etk_widget_theme_data_get(Etk_Widget *widget, const char *data_name, const char *format, ...);
+
 Etk_Bool etk_widget_swallow_widget(Etk_Widget *swallower, const char *part, Etk_Widget *to_swallow);
 void etk_widget_unswallow_widget(Etk_Widget *swallower, Etk_Widget *swallowed);
 Etk_Bool etk_widget_is_swallowing_widget(Etk_Widget *swallower, Etk_Widget *swallowed);
@@ -259,13 +262,8 @@ void etk_widget_unswallow_object(Etk_Widget *swallower, Evas_Object *object);
 Etk_Bool etk_widget_is_swallowing_object(Etk_Widget *swallower, Evas_Object *object);
 Etk_Widget_Swallow_Error etk_widget_swallow_error_get();
 
-void etk_widget_theme_object_signal_emit(Etk_Widget *widget, const char *signal_name);
-void etk_widget_theme_object_part_text_set(Etk_Widget *widget, const char *part_name, const char *text);
-int etk_widget_theme_object_data_get(Etk_Widget *widget, const char *data_name, const char *format, ...);
-
 Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object);
 void etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object);
-
 void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object);
 void etk_widget_member_object_lower(Etk_Widget *widget, Evas_Object *object);
 void etk_widget_member_object_stack_above(Etk_Widget *widget, Evas_Object *object, Evas_Object *above);
@@ -274,6 +272,7 @@ void etk_widget_member_object_stack_below(Etk_Widget *widget, Evas_Object *objec
 void etk_widget_clip_set(Etk_Widget *widget, Evas_Object *clip);
 void etk_widget_clip_unset(Etk_Widget *widget);
 Evas_Object *etk_widget_clip_get(Etk_Widget *widget);
+
 
 void         etk_widget_dnd_dest_set(Etk_Widget *widget, Etk_Bool on);
 Etk_Bool     etk_widget_dnd_dest_get(Etk_Widget *widget);

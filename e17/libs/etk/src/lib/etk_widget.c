@@ -1063,6 +1063,69 @@ void etk_widget_unfocus(Etk_Widget *widget)
 }
 
 /**
+ * @brief Sends a signal to the theme object of the widget
+ * @param widget a widget
+ * @param signal_name the name of the signal to send
+ * @note The widget has to be realized, otherwise it will have no effect
+ * @widget_implementation
+ * @see edje_object_signal_emit()
+ */
+void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name)
+{
+   if (!widget || !widget->theme_object)
+      return;
+   edje_object_signal_emit(widget->theme_object, signal_name, "");
+   widget->need_theme_min_size_recalc = ETK_TRUE;
+}
+
+/**
+ * @brief Sets the text of a text part of the theme object of the widget
+ * @param widget a widget
+ * @param part_name the name of the text part
+ * @param text the text to set
+ * @note The widget has to be realized, otherwise it will have no effect
+ * @widget_implementation
+ * @see edje_object_part_text_set()
+ */
+void etk_widget_theme_part_text_set(Etk_Widget *widget, const char *part_name, const char *text)
+{
+   if (!widget || !widget->theme_object)
+      return;
+   edje_object_part_text_set(widget->theme_object, part_name, text);
+   widget->need_theme_min_size_recalc = ETK_TRUE;
+}
+
+/**
+ * @brief Gets the value of data from the theme of the widget
+ * @param widget a widget
+ * @param data_name the name of the data you want to get the value
+ * @param format the format of the data. Same format as the format argument of sscanf()
+ * @param ... the location of the variables where to store the values
+ * @return Returns the number of the input items successfully matched and assigned, same as sscanf
+ * @note The widget has to be realized, otherwise it will have no effect
+ * @widget_implementation
+ * @see edje_object_data_get()
+ */
+int etk_widget_theme_data_get(Etk_Widget *widget, const char *data_name, const char *format, ...)
+{
+   const char *data_string;
+   int result;
+   va_list args;
+   
+   if (!widget || !data_name || !format || !widget->theme_object)
+      return 0;
+   if (!(data_string = edje_object_data_get(widget->theme_object, data_name)))
+      return 0;
+   
+   /* TODO: remove that vsscanf compiler warning */
+   va_start(args, format);
+   result = vsscanf(data_string, format, args);
+   va_end(args);
+   
+   return result;
+}
+
+/**
  * @brief Makes the widget swallow another widget in a part of its theme object
  * @param swallower the widget that will swallow the widget @a to_swallow. @a swallower has to
  * be realized and to have a theme object
@@ -1251,63 +1314,6 @@ Etk_Bool etk_widget_is_swallowing_object(Etk_Widget *widget, Evas_Object *object
 Etk_Widget_Swallow_Error etk_widget_swallow_error_get()
 {
    return _etk_widget_swallow_error;
-}
-
-/**
- * @brief Sends a signal to the theme object of the widget
- * @param widget a widget
- * @param signal_name the name of the signal to send
- * @widget_implementation
- */
-void etk_widget_theme_object_signal_emit(Etk_Widget *widget, const char *signal_name)
-{
-   if (!widget || !widget->theme_object)
-      return;
-   edje_object_signal_emit(widget->theme_object, signal_name, "");
-   widget->need_theme_min_size_recalc = ETK_TRUE;
-}
-
-/**
- * @brief Sets a the text of a text part of the theme object of the widget
- * @param widget a widget
- * @param part_name the name of the text part
- * @param text the text to set
- * @widget_implementation
- */
-void etk_widget_theme_object_part_text_set(Etk_Widget *widget, const char *part_name, const char *text)
-{
-   if (!widget || !widget->theme_object)
-      return;
-   edje_object_part_text_set(widget->theme_object, part_name, text);
-   widget->need_theme_min_size_recalc = ETK_TRUE;
-}
-
-/**
- * @brief Gets the value of data from the theme of the widget. The widget has to be realized
- * @param widget a widget
- * @param data_name the name of the data you want to get the value
- * @param format the format of the data. Same format than the format argument of sscanf
- * @param ... the location of the variables where to set the values
- * @return Returns the number of the input items successfully matched and assigned, same as sscanf
- * @widget_implementation
- */
-int etk_widget_theme_object_data_get(Etk_Widget *widget, const char *data_name, const char *format, ...)
-{
-   const char *data_string;
-   int result;
-   va_list args;
-   
-   if (!widget || !data_name || !format || !widget->theme_object)
-      return 0;
-   if (!(data_string = edje_object_data_get(widget->theme_object, data_name)))
-      return 0;
-   
-   /* TODO: remove that vsscanf compiler warning */
-   va_start(args, format);
-   result = vsscanf(data_string, format, args);
-   va_end(args);
-   
-   return result;
 }
 
 /**
@@ -1743,7 +1749,7 @@ void etk_widget_drag_drop(Etk_Widget *widget, Etk_Event_Selection_Request *event
       return;
    
    /* TODO: FIXME: why isnt this being emitted automatically?!? */
-   etk_widget_theme_object_signal_emit(widget, "drag_drop");   
+   etk_widget_theme_signal_emit(widget, "drag_drop");   
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL], ETK_OBJECT(widget), NULL, event);
 }
 
@@ -2091,7 +2097,7 @@ static void _etk_widget_enter_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "enter");
+   etk_widget_theme_signal_emit(widget, "enter");
 }
 
 /* Default handler for the "leave" signal */
@@ -2099,7 +2105,7 @@ static void _etk_widget_leave_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "leave");
+   etk_widget_theme_signal_emit(widget, "leave");
 }
 
 /* Default handler for the "focus" signal */
@@ -2107,7 +2113,7 @@ static void _etk_widget_focus_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "focus");
+   etk_widget_theme_signal_emit(widget, "focus");
 }
 
 /* Default handler for the "unfocus" signal */
@@ -2115,7 +2121,7 @@ static void _etk_widget_unfocus_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "unfocus");
+   etk_widget_theme_signal_emit(widget, "unfocus");
 }
 
 /* Sets the widget as visible and queues a visibility update */
@@ -2123,7 +2129,7 @@ static void _etk_widget_show_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "show");
+   etk_widget_theme_signal_emit(widget, "show");
 }
 
 /* Default handler for the "drag_drop" signal */
@@ -2131,7 +2137,7 @@ static void _etk_widget_drag_drop_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "drag_drop");
+   etk_widget_theme_signal_emit(widget, "drag_drop");
 }
 
 /* Default handler for the "drag_motion" signal */
@@ -2139,7 +2145,7 @@ static void _etk_widget_drag_motion_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "drag_motion");
+   etk_widget_theme_signal_emit(widget, "drag_motion");
 }
 
 /* Default handler for the "drag_enter" signal */
@@ -2147,7 +2153,7 @@ static void _etk_widget_drag_enter_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "drag_enter");
+   etk_widget_theme_signal_emit(widget, "drag_enter");
 }
 
 /* Default handler for the "drag_leave" signal */
@@ -2155,7 +2161,7 @@ static void _etk_widget_drag_leave_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "drag_leave");
+   etk_widget_theme_signal_emit(widget, "drag_leave");
 }
 
 /* Default handler for the "drag_begin" signal */
@@ -2163,7 +2169,7 @@ static void _etk_widget_drag_begin_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "drag_begin");
+   etk_widget_theme_signal_emit(widget, "drag_begin");
 }
 
 /* Default handler for the "drag_end" signal */
@@ -2171,7 +2177,7 @@ static void _etk_widget_drag_end_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_object_signal_emit(widget, "drag_end");
+   etk_widget_theme_signal_emit(widget, "drag_end");
 }
 
 /* Evas Callback: Called when the mouse pointer enters the widget */
@@ -2532,7 +2538,7 @@ static void _etk_widget_realize(Etk_Widget *widget)
    theme_parent = widget->theme_parent ? widget->theme_parent : widget->parent;
    if ((widget->theme_object = etk_theme_object_load_from_parent(evas, theme_parent, widget->theme_file, widget->theme_group)))
    {
-      if (etk_widget_theme_object_data_get(widget, "inset", "%d %d %d %d",
+      if (etk_widget_theme_data_get(widget, "inset", "%d %d %d %d",
          &widget->left_inset, &widget->right_inset, &widget->top_inset, &widget->bottom_inset) != 4)
       {
          widget->left_inset = 0;

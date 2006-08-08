@@ -663,7 +663,7 @@ void etk_tree_row_height_set(Etk_Tree *tree, int row_height)
    if (row_height < ETK_TREE_MIN_ROW_HEIGHT)
    {
       tree->use_default_row_height = ETK_TRUE;
-      if (etk_widget_theme_object_data_get(tree->grid, "row_height", "%d", &tree->row_height) != 1 || tree->row_height < ETK_TREE_MIN_ROW_HEIGHT)
+      if (etk_widget_theme_data_get(tree->grid, "row_height", "%d", &tree->row_height) != 1 || tree->row_height < ETK_TREE_MIN_ROW_HEIGHT)
          tree->row_height = ETK_TREE_MIN_ROW_HEIGHT;
       etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), tree->row_height, 5 * tree->row_height);
    }
@@ -1872,7 +1872,7 @@ static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data)
       return;
    tree = ETK_TREE_GRID(grid)->tree;
 
-   if (etk_widget_theme_object_data_get(grid, "separator_color", "%d %d %d %d", &tree->separator_color.r, &tree->separator_color.g, &tree->separator_color.b, &tree->separator_color.a) != 4)
+   if (etk_widget_theme_data_get(grid, "separator_color", "%d %d %d %d", &tree->separator_color.r, &tree->separator_color.g, &tree->separator_color.b, &tree->separator_color.a) != 4)
    {
       tree->separator_color.r = 255;
       tree->separator_color.g = 255;
@@ -1882,12 +1882,12 @@ static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data)
 
    if (tree->use_default_row_height || tree->row_height < ETK_TREE_MIN_ROW_HEIGHT)
    {
-      if (etk_widget_theme_object_data_get(grid, "row_height", "%d", &tree->row_height) != 1 || tree->row_height < ETK_TREE_MIN_ROW_HEIGHT)
+      if (etk_widget_theme_data_get(grid, "row_height", "%d", &tree->row_height) != 1 || tree->row_height < ETK_TREE_MIN_ROW_HEIGHT)
          tree->row_height = ETK_TREE_MIN_ROW_HEIGHT;
       etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), tree->row_height, 5 * tree->row_height);
    }
    
-   if (etk_widget_theme_object_data_get(grid, "cell_margins", "%d %d %d %d", &tree->cell_margins[0], &tree->cell_margins[1], &tree->cell_margins[2], &tree->cell_margins[3]) != 4)
+   if (etk_widget_theme_data_get(grid, "cell_margins", "%d %d %d %d", &tree->cell_margins[0], &tree->cell_margins[1], &tree->cell_margins[2], &tree->cell_margins[3]) != 4)
    {
       tree->cell_margins[0] = 0;
       tree->cell_margins[1] = 0;
@@ -1895,7 +1895,7 @@ static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data)
       tree->cell_margins[3] = 0;
    }
    
-   if (etk_widget_theme_object_data_get(grid, "expander_size", "%d", &tree->expander_size) != 1)
+   if (etk_widget_theme_data_get(grid, "expander_size", "%d", &tree->expander_size) != 1)
       tree->expander_size = tree->row_height - 4;
    tree->expander_size = ETK_CLAMP(tree->expander_size, 1, tree->row_height);
 
@@ -2167,7 +2167,7 @@ static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data)
    
    if (!(tree = ETK_TREE(object)))
       return;
-   etk_widget_theme_object_signal_emit(tree->grid, "focus");
+   etk_widget_theme_signal_emit(tree->grid, "focus");
 }
 
 /* Called when the tree is unfocused */
@@ -2177,7 +2177,7 @@ static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data)
    
    if (!(tree = ETK_TREE(object)))
       return;
-   etk_widget_theme_object_signal_emit(tree->grid, "unfocus");
+   etk_widget_theme_signal_emit(tree->grid, "unfocus");
 }
 
 /* Called when the user presses a key */
@@ -2915,7 +2915,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
       row->selected = ETK_TRUE;
       tree->last_selected = row;
       if(tree->dnd_event)      	
-	etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "row_selected");
+	etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
       else
 	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
    }
@@ -2971,7 +2971,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
          tree->last_selected = row;
 	 
 	 if(tree->dnd_event)
-	   etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "row_selected");
+	   etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
 	 else
 	   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
       }
@@ -2983,7 +2983,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
 	    --tree->num_selected_rows;
             tree->last_selected = row;
 	    if(tree->dnd_event)      
-	      etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "row_selected");
+	      etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
 	    else
 	      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
          }
@@ -2993,7 +2993,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
 	    ++tree->num_selected_rows;
             tree->last_selected = row;
 	    if(tree->dnd_event)      
-	      etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "row_selected");
+	      etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
 	    else
 	      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
          }
@@ -3007,7 +3007,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Evas_Modifie
 	    row->selected = ETK_TRUE;
 	    tree->last_selected = row;
 	    if(tree->dnd_event)      
-	      etk_widget_theme_object_signal_emit(ETK_WIDGET(tree), "row_selected");
+	      etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
 	    else
 	      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);	    
 	 }

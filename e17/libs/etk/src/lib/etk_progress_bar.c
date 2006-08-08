@@ -336,7 +336,7 @@ static void _etk_progress_bar_realize_cb(Etk_Object *object, void *data)
    if (!(progress_bar = ETK_PROGRESS_BAR(object)))
       return;
    
-   if (etk_widget_theme_object_data_get(ETK_WIDGET(object), "filler_pulse_width", "%f", &w) != 1)
+   if (etk_widget_theme_data_get(ETK_WIDGET(object), "filler_pulse_width", "%f", &w) != 1)
       w = 0.3;
    progress_bar->filler_pulse_w = ETK_CLAMP(w, 0.1, 0.9);
    
@@ -371,7 +371,7 @@ static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar)
       edje_object_part_drag_size_set(widget->theme_object, "filler", progress_bar->filler_pulse_w, 0.0);
    }
    
-   etk_widget_theme_object_part_text_set(widget, "text", progress_bar->text ? progress_bar->text : "");
+   etk_widget_theme_part_text_set(widget, "text", progress_bar->text ? progress_bar->text : "");
 }
 
 /** @} */

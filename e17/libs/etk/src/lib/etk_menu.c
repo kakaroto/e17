@@ -194,12 +194,11 @@ static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       item = ETK_MENU_ITEM(l->data);
    
       if (items_have_submenu)
-         etk_widget_theme_object_signal_emit(ETK_WIDGET(item), item->submenu ? "arrow_show" : "arrow_spacer");
+         etk_widget_theme_signal_emit(ETK_WIDGET(item), item->submenu ? "arrow_show" : "arrow_spacer");
       else
-         etk_widget_theme_object_signal_emit(ETK_WIDGET(item), "arrow_hide");
+         etk_widget_theme_signal_emit(ETK_WIDGET(item), "arrow_hide");
       
-      etk_widget_theme_object_signal_emit(ETK_WIDGET(item),
-         items_have_left_widget ? "left_widget_show" : "left_widget_hide");
+      etk_widget_theme_signal_emit(ETK_WIDGET(item), items_have_left_widget ? "left_widget_show" : "left_widget_hide");
    }
    
    y_offset = geometry.y;
