@@ -773,7 +773,7 @@ CB_ConfigureSession(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillSession(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillSession(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di;
 
@@ -797,16 +797,15 @@ _DlgFillSession(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Reboot/Halt on Logout"));
    DialogItemCheckButtonSetPtr(di, &tmp_reboot_halt);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureSession);
 }
 
 const DialogDef     DlgSession = {
-   _DlgFillSession,
    "CONFIGURE_SESSION",
    N_("Session"),
    N_("Session Settings"),
    "SOUND_SETTINGS_SESSION",
    "pix/miscellaneous.png",
    N_("Enlightenment Session\n" "Settings Dialog\n"),
+   _DlgFillSession,
+   DLG_OAC, CB_ConfigureSession,
 };

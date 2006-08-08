@@ -676,18 +676,17 @@ _DlgFillGroupChoose(Dialog * d, DItem * table, void *data)
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_group_index);
 
    StrlistFree(group_member_strings, num_groups);
-
-   DialogAddFooter(d, DLG_OC, ChooseGroup);
 }
 
 static const DialogDef DlgGroupChoose = {
-   _DlgFillGroupChoose,
    "GROUP_SELECTION",
    NULL,
    N_("Window Group Selection"),
    "SOUND_SETTINGS_GROUP",
    "pix/group.png",
    N_("Enlightenment Window Group\n" "Selection Dialog\n"),
+   _DlgFillGroupChoose,
+   DLG_OC, ChooseGroup,
 };
 
 static void
@@ -891,18 +890,17 @@ _DlgFillGroups(Dialog * d, DItem * table, void *data)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Mirror Shade/Iconify/Stick"));
    DialogItemCheckButtonSetPtr(di, &(dd->cfg.mirror));
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureGroup);
 }
 
 static const DialogDef DlgGroups = {
-   _DlgFillGroups,
    "CONFIGURE_GROUP",
    NULL,
    N_("Window Group Settings"),
    "SOUND_SETTINGS_GROUP",
    "pix/group.png",
    N_("Enlightenment Window Group\n" "Settings Dialog\n"),
+   _DlgFillGroups,
+   DLG_OAC, CB_ConfigureGroup,
 };
 
 static void
@@ -937,7 +935,8 @@ CB_ConfigureDefaultGroupSettings(Dialog * d __UNUSED__, int val,
 }
 
 static void
-_DlgFillGroupDefaults(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillGroupDefaults(Dialog * d __UNUSED__, DItem * table,
+		      void *data __UNUSED__)
 {
    DItem              *di;
 
@@ -1006,18 +1005,17 @@ _DlgFillGroupDefaults(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Swap Window Locations"));
    DialogItemCheckButtonSetPtr(di, &(tmp_group_swap));
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureDefaultGroupSettings);
 }
 
 const DialogDef     DlgGroupDefaults = {
-   _DlgFillGroupDefaults,
    "CONFIGURE_DEFAULT_GROUP_CONTROL",
    N_("Groups"),
    N_("Default Group Control Settings"),
    "SOUND_SETTINGS_GROUP",
    "pix/group.png",
    N_("Enlightenment Default\n" "Group Control Settings Dialog\n"),
+   _DlgFillGroupDefaults,
+   DLG_OAC, CB_ConfigureDefaultGroupSettings,
 };
 
 /*

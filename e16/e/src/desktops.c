@@ -2353,7 +2353,7 @@ CB_DesktopDisplayAreaRedraw(DItem * di, int val __UNUSED__,
 }
 
 static void
-_DlgFillDesks(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *area, *slider, *radio;
    char                s[64];
@@ -2461,18 +2461,17 @@ _DlgFillDesks(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_dragdir);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureDesktops);
 }
 
 const DialogDef     DlgDesks = {
-   _DlgFillDesks,
    "CONFIGURE_DESKTOPS",
    N_("Desks"),
    N_("Multiple Desktop Settings"),
    "SOUND_SETTINGS_DESKTOPS",
    "pix/desktops.png",
    N_("Enlightenment Multiple Desktop\n" "Settings Dialog\n"),
+   _DlgFillDesks,
+   DLG_OAC, CB_ConfigureDesktops,
 };
 
 static int          tmp_area_x;
@@ -2568,7 +2567,7 @@ CB_AreaDisplayAreaRedraw(DItem * di, int val __UNUSED__, void *data __UNUSED__)
 }
 
 static void
-_DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *area, *slider, *slider2, *table2;
    char                s[64];
@@ -2642,18 +2641,17 @@ _DlgFillAreas(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 10);
    DialogItemSliderSetValPtr(di, &tmp_edge_resist);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureAreas);
 }
 
 const DialogDef     DlgAreas = {
-   _DlgFillAreas,
    "CONFIGURE_AREA",
    N_("Areas"),
    N_("Virtual Desktop Settings"),
    "SOUND_SETTINGS_AREA",
    "pix/areas.png",
    N_("Enlightenment Virtual Desktop\n" "Settings Dialog\n"),
+   _DlgFillAreas,
+   DLG_OAC, CB_ConfigureAreas,
 };
 
 /*

@@ -439,7 +439,7 @@ CB_ConfigureAudio(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillSound(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillSound(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di;
 
@@ -459,18 +459,17 @@ _DlgFillSound(Dialog * d, DItem * table, void *data __UNUSED__)
 		     _("Audio not available since EsounD was not\n"
 		       "present at the time of compilation."));
 #endif
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureAudio);
 }
 
 const DialogDef     DlgSound = {
-   _DlgFillSound,
    "CONFIGURE_AUDIO",
    N_("Sound"),
    N_("Audio Settings"),
    "SOUND_SETTINGS_AUDIO",
    "pix/sound.png",
    N_("Enlightenment Audio\n" "Settings Dialog\n"),
+   _DlgFillSound,
+   DLG_OAC, CB_ConfigureAudio,
 };
 
 /*

@@ -107,7 +107,7 @@ CB_ThemeTransparency(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 }
 
 static void
-_DlgFillThemeTrans(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillThemeTrans(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *label;
    DItem              *radio_border, *radio_widget, *radio_menu,
@@ -261,18 +261,17 @@ _DlgFillThemeTrans(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetJump(di, 16);
    DialogItemSliderSetValPtr(di, &tmp_theme_transparency);
    DialogItemSetCallback(di, CB_ThemeTransparency, 0, (void *)label);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureTrans);
 }
 
 const DialogDef     DlgThemeTrans = {
-   _DlgFillThemeTrans,
    "CONFIGURE_TRANS",
    N_("Transparency"),
    N_("Selective Transparency Settings"),
    "SOUND_SETTINGS_TRANS",
    "pix/tips.png",
    N_("Enlightenment Selective Transparency\n" "Settings Dialog\n"),
+   _DlgFillThemeTrans,
+   DLG_OAC, CB_ConfigureTrans,
 };
 
 static void

@@ -678,7 +678,7 @@ CB_ConfigureFocus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *radio, *radio2;
 
@@ -832,18 +832,17 @@ _DlgFillFocus(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 0);
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_warp_icon_mode);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureFocus);
 }
 
 const DialogDef     DlgFocus = {
-   _DlgFillFocus,
    "CONFIGURE_FOCUS",
    N_("Focus"),
    N_("Focus Settings"),
    "SOUND_SETTINGS_FOCUS",
    "pix/focus.png",
    N_("Enlightenment Focus\n" "Settings Dialog\n"),
+   _DlgFillFocus,
+   DLG_OAC, CB_ConfigureFocus,
 };
 
 /*

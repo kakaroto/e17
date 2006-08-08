@@ -839,7 +839,7 @@ CB_ConfigureTooltips(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillTooltips(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillTooltips(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di;
 
@@ -868,18 +868,17 @@ _DlgFillTooltips(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetUnits(di, 10);
    DialogItemSliderSetJump(di, 25);
    DialogItemSliderSetValPtr(di, &tmp_tooltiptime);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureTooltips);
 }
 
 const DialogDef     DlgTooltips = {
-   _DlgFillTooltips,
    "CONFIGURE_TOOLTIPS",
    N_("Tooltips"),
    N_("Tooltip Settings"),
    "SOUND_SETTINGS_TOOLTIPS",
    "pix/tips.png",
    N_("Enlightenment Tooltip\n" "Settings Dialog\n"),
+   _DlgFillTooltips,
+   DLG_OAC, CB_ConfigureTooltips,
 };
 
 static void

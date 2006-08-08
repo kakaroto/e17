@@ -1726,7 +1726,7 @@ CB_PagerScanSlide(Dialog * d, int val __UNUSED__, void *data __UNUSED__)
 }
 
 static void
-_DlgFillPagers(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *radio;
    char                s[256];
@@ -1868,18 +1868,17 @@ _DlgFillPagers(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_menu_button);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigurePager);
 }
 
 const DialogDef     DlgPagers = {
-   _DlgFillPagers,
    "CONFIGURE_PAGER",
    N_("Pagers"),
    N_("Pager Settings"),
    "SOUND_SETTINGS_PAGER",
    "pix/pager.png",
    N_("Enlightenment Desktop & Area\n" "Pager Settings Dialog\n"),
+   _DlgFillPagers,
+   DLG_OAC, CB_ConfigurePager,
 };
 
 /*

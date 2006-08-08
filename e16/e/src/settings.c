@@ -44,7 +44,7 @@ CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillMoveResize(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *radio1, *radio2, *radio3;
 
@@ -159,18 +159,17 @@ _DlgFillMoveResize(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Update window while moving"));
    DialogItemCheckButtonSetPtr(di, &tmp_update_while_moving);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureMoveResize);
 }
 
 const DialogDef     DlgMoveResize = {
-   _DlgFillMoveResize,
    "CONFIGURE_MOVERESIZE",
    N_("Move/Resize"),
    N_("Move & Resize Settings"),
    "SOUND_SETTINGS_MOVERESIZE",
    "pix/moveres.png",
    N_("Enlightenment Move & Resize\n" "Method Settings Dialog\n"),
+   _DlgFillMoveResize,
+   DLG_OAC, CB_ConfigureMoveResize,
 };
 
 static char         tmp_with_leader;
@@ -222,7 +221,7 @@ CB_ConfigurePlacement(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillPlacement(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di, *radio;
 
@@ -378,18 +377,17 @@ _DlgFillPlacement(Dialog * d, DItem * table, void *data __UNUSED__)
 	DialogItemCheckButtonSetPtr(di, &tmp_extra_head);
      }
 #endif
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigurePlacement);
 }
 
 const DialogDef     DlgPlacement = {
-   _DlgFillPlacement,
    "CONFIGURE_PLACEMENT",
    N_("Placement"),
    N_("Window Placement Settings"),
    "SOUND_SETTINGS_PLACEMENT",
    "pix/place.png",
    N_("Enlightenment Window Placement\n" "Settings Dialog\n"),
+   _DlgFillPlacement,
+   DLG_OAC, CB_ConfigurePlacement,
 };
 
 static char         tmp_autoraise;
@@ -407,7 +405,7 @@ CB_ConfigureAutoraise(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillAutoraise(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillAutoraise(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di;
 
@@ -431,18 +429,17 @@ _DlgFillAutoraise(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetUnits(di, 10);
    DialogItemSliderSetJump(di, 25);
    DialogItemSliderSetValPtr(di, &tmp_autoraisetime);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureAutoraise);
 }
 
 const DialogDef     DlgAutoraise = {
-   _DlgFillAutoraise,
    "CONFIGURE_AUTORAISE",
    N_("Autoraise"),
    N_("Autoraise Settings"),
    "SOUND_SETTINGS_AUTORAISE",
    "pix/raise.png",
    N_("Enlightenment Automatic Raising\n" "of Windows Settings Dialog\n"),
+   _DlgFillAutoraise,
+   DLG_OAC, CB_ConfigureAutoraise,
 };
 
 static char         tmp_dialog_headers;
@@ -464,7 +461,7 @@ CB_ConfigureMiscellaneous(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillMisc(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillMisc(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di;
 
@@ -500,18 +497,17 @@ _DlgFillMisc(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Use saveunders to reduce window exposures"));
    DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureMiscellaneous);
 }
 
 const DialogDef     DlgMisc = {
-   _DlgFillMisc,
    "CONFIGURE_MISCELLANEOUS",
    N_("Miscellaneous"),
    N_("Miscellaneous Settings"),
    "SOUND_SETTINGS_MISCELLANEOUS",
    "pix/miscellaneous.png",
    N_("Enlightenment Miscellaneous\n" "Settings Dialog\n"),
+   _DlgFillMisc,
+   DLG_OAC, CB_ConfigureMiscellaneous,
 };
 
 #if USE_COMPOSITE
@@ -536,7 +532,7 @@ CB_ConfigureComposite(Dialog * d, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillComposite(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    static cfg_composite Cfg_composite;
    DItem              *di, *radio;
@@ -601,18 +597,17 @@ _DlgFillComposite(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetUnits(di, 5);
    DialogItemSliderSetJump(di, 5);
    DialogItemSliderSetValPtr(di, &Cfg_composite.fade_speed);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureComposite);
 }
 
 const DialogDef     DlgComposite = {
-   _DlgFillComposite,
    "CONFIGURE_COMPOSITE",
    N_("Composite"),
    N_("Composite Settings"),
    "SOUND_SETTINGS_COMPOSITE",
    "pix/pager.png",
    N_("Enlightenment Composite\n" "Settings Dialog\n"),
+   _DlgFillComposite,
+   DLG_OAC, CB_ConfigureComposite,
 };
 
 void

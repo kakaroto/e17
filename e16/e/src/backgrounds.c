@@ -2264,18 +2264,17 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSetText(di,
 		     _("Enable background transparency compatibility mode"));
    DialogItemCheckButtonSetPtr(di, &tmp_root_hint);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureBG);
 }
 
 const DialogDef     DlgBackground = {
-   _DlgFillBackground,
    "CONFIGURE_BG",
    N_("Background"),
    N_("Desktop Background Settings"),
    "SOUND_SETTINGS_BG",
    "pix/bg.png",
    N_("Enlightenment Desktop\n" "Background Settings Dialog\n"),
+   _DlgFillBackground,
+   DLG_OAC, CB_ConfigureBG,
 };
 
 /*

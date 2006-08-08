@@ -2034,7 +2034,7 @@ CB_ConfigureMenus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillMenus(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillMenus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di;
 
@@ -2058,18 +2058,17 @@ _DlgFillMenus(Dialog * d, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 3);
    DialogItemSetText(di, _("Warp pointer after moving menus"));
    DialogItemCheckButtonSetPtr(di, &tmp_warpmenus);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureMenus);
 }
 
 const DialogDef     DlgMenus = {
-   _DlgFillMenus,
    "CONFIGURE_MENUS",
    N_("Menus"),
    N_("Menu Settings"),
    "SOUND_SETTINGS_MENUS",
    "pix/place.png",
    N_("Enlightenment Menu\n" "Settings Dialog\n"),
+   _DlgFillMenus,
+   DLG_OAC, CB_ConfigureMenus,
 };
 
 static void

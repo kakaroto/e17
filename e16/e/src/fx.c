@@ -972,7 +972,7 @@ CB_ConfigureFX(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
-_DlgFillFx(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillFx(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di;
 
@@ -997,18 +997,17 @@ _DlgFillFx(Dialog * d, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetText(di, _("Waves"));
    DialogItemCheckButtonSetPtr(di, &tmp_effect_waves);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureFX);
 }
 
 const DialogDef     DlgFx = {
-   _DlgFillFx,
    "CONFIGURE_FX",
    N_("FX"),
    N_("Special FX Settings"),
    "SOUND_SETTINGS_FX",
    "pix/fx.png",
    N_("Enlightenment Special Effects\n" "Settings Dialog\n"),
+   _DlgFillFx,
+   DLG_OAC, CB_ConfigureFX,
 };
 
 static void

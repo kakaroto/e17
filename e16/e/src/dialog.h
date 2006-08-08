@@ -55,13 +55,15 @@ typedef void        (DialogItemCallbackFunc) (DItem * di, int val, void *data);
 
 typedef struct
 {
-   void                (*fill) (Dialog * d, DItem * table, void *data);
    const char         *name;
    const char         *label;
    const char         *title;
    const char         *sound;
    const char         *header_image;
    const char         *header_text;
+   void                (*fill) (Dialog * d, DItem * table, void *data);
+   int                 flags;
+   DialogCallbackFunc *func;
 } DialogDef;
 
 /* dialog.c */
@@ -88,10 +90,6 @@ void                DialogShowSimpleWithName(const DialogDef * dd,
 void                DialogAddButton(Dialog * d, const char *text,
 				    DialogCallbackFunc * func, char doclose,
 				    int image);
-void                DialogAddHeader(DItem * parent, const char *img,
-				    const char *txt);
-void                DialogAddFooter(Dialog * d, int flags,
-				    DialogCallbackFunc * cb);
 
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);

@@ -699,6 +699,11 @@ _DialogClose(Dialog * d)
    EwinHide(d->ewin);
 }
 
+static void         DialogAddHeader(DItem * parent, const char *img,
+				    const char *txt);
+static void         DialogAddFooter(Dialog * d, int flags,
+				    DialogCallbackFunc * cb);
+
 void
 DialogShowSimple(const DialogDef * dd, void *data)
 {
@@ -738,6 +743,9 @@ DialogShowSimpleWithName(const DialogDef * dd, const char *name, void *data)
       return;
 
    dd->fill(d, table, data);
+
+   if (dd->func)
+      DialogAddFooter(d, dd->flags, dd->func);
 
    DialogShow(d);
 }
@@ -892,7 +900,7 @@ DialogAddItem(DItem * dii, int type)
    return di;
 }
 
-void
+static void
 DialogAddHeader(DItem * parent, const char *img, const char *txt)
 {
    DItem              *table, *di;
@@ -912,7 +920,7 @@ DialogAddHeader(DItem * parent, const char *img, const char *txt)
    di = DialogAddItem(parent, DITEM_SEPARATOR);
 }
 
-void
+static void
 DialogAddFooter(Dialog * d, int flags, DialogCallbackFunc * cb)
 {
    DItem              *di;

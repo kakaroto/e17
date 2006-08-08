@@ -317,13 +317,14 @@ _DlgFillAbout(Dialog * d, DItem * table, void *data __UNUSED__)
 }
 
 static const DialogDef DlgAbout = {
-   _DlgFillAbout,
    "ABOUT_ENLIGHTENMENT",
    NULL,
    NULL,
    NULL,
    NULL,
    NULL,
+   _DlgFillAbout,
+   0, NULL,
 };
 
 void

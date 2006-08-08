@@ -928,12 +928,9 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
 	DialogItemSetText(di, _("Remember this window's group(s)"));
 	DialogItemCheckButtonSetPtr(di, &sd->snap_group);
      }
-
-   DialogAddFooter(d, DLG_OAC, CB_ApplySnap);
 }
 
 const DialogDef     DlgSnap = {
-   _DlgFillSnap,
    NULL,
    NULL,
    N_("Remembered Application Attributes"),
@@ -941,6 +938,8 @@ const DialogDef     DlgSnap = {
    "pix/snapshots.png",
    N_("Select the attributes of this\n"
       "window you wish to Remember\n" "from now on\n"),
+   _DlgFillSnap,
+   DLG_OAC, CB_ApplySnap,
 };
 
 static void
@@ -1009,7 +1008,7 @@ CB_RememberWindowSettings(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 }
 
 static void
-_DlgFillRemember(Dialog * d, DItem * table, void *data __UNUSED__)
+_DlgFillRemember(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
    DItem              *di;
    Snapshot           *sn;
@@ -1078,18 +1077,17 @@ _DlgFillRemember(Dialog * d, DItem * table, void *data __UNUSED__)
 			  _
 			  ("There are no active windows with remembered attributes."));
      }
-
-   DialogAddFooter(d, DLG_OC, CB_ApplyRemember);
 }
 
 const DialogDef     DlgRemember = {
-   _DlgFillRemember,
    "CONFIGURE_PAGER",
    NULL,
    N_("Remembered Windows Settings"),
    "SOUND_SETTINGS_PAGER",
    "pix/snapshots.png",
    N_("Enlightenment Remembered\n" "Windows Settings Dialog\n"),
+   _DlgFillRemember,
+   DLG_OC, CB_ApplyRemember,
 };
 
 /* ... combine writes, only save after a timeout */

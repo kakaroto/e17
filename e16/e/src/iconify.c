@@ -2330,18 +2330,17 @@ _DlgFillIconbox(Dialog * d, DItem * table, void *data)
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 3);
    DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_ib_arrows);
-
-   DialogAddFooter(d, DLG_OAC, CB_ConfigureIconbox);
 }
 
 static const DialogDef DlgIconbox = {
-   _DlgFillIconbox,
    "CONFIGURE_ICONBOX",
    NULL,
    NULL,
    "SOUND_SETTINGS_ICONBOX",
    "pix/iconbox.png",
    N_("Enlightenment Iconbox\n" "Settings Dialog\n"),
+   _DlgFillIconbox,
+   DLG_OAC, CB_ConfigureIconbox,
 };
 
 /*
