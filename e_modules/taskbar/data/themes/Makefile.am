@@ -3,19 +3,21 @@ MAINTAINERCLEANFILES = Makefile.in
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v -id images -fd fonts
 
+EXTRA_DIST = \
+taskbar.edc 
+
 filesdir = $(datadir)
 files_DATA = \
 fonts/VeraBd.ttf \
-$(wildcard taskbar.ed?) \
-$(wildcard taskbar2.ed?)
+taskbar.edj \
+taskbar.edc
 
+taskbar.edj: Makefile $(EXTRA_DIST)
+	$(EDJE_CC) $(EDJE_FLAGS) \
+	$(top_srcdir)/data/themes/taskbar.edc \
+	$(top_builddir)/data/themes/taskbar.edj
 
-EXTRA_DIST = $(files_DATA) $(wildcard images/*.png)
-
-%.edj:  %.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $< $@
-
-clean-local:
-	rm -f *.edj
+clean:
+	rm -f taskbar.edj
 
 
