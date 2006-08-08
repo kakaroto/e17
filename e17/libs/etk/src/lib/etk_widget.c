@@ -2594,6 +2594,11 @@ static void _etk_widget_unrealize(Etk_Widget *widget)
       etk_widget_member_object_del(widget, object);
       evas_object_del(object);
    }
+   if (widget->theme_object)
+   {
+      evas_object_del(widget->theme_object);
+      widget->theme_object = NULL;
+   }
    if (widget->event_object)
    {
       evas_object_del(widget->event_object);
