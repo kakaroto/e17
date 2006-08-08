@@ -69,6 +69,7 @@ typedef enum Enhance_Signal_Handling
 } Enhance_Signal_Handling;
 
 typedef Evas_List* Enhance_Signals_Enumerator;
+typedef Evas_List* Enhance_Widgets_Enumerator;
 
 typedef struct _Enhance Enhance;
 
@@ -81,7 +82,7 @@ struct _Enhance
    Evas_Hash *radio_groups;   /* radio groups used */
    char      *main_window;    /* main window to show */
    Enhance_Signal_Handling   signal_handling; /* how the signals should be handled */
-};   
+};
    
 /* Initialize and shutdown the enhance subsystems */
 void        enhance_init();
@@ -98,23 +99,32 @@ Enhance_Signal_Handling  enhance_signal_handling_get(Enhance *en);
 void                     enhance_signal_handling_set(Enhance *en, Enhance_Signal_Handling mode);
 
 /* Loads / parses a Glade XML file showing main_window */
-void        enhance_file_load(Enhance *en, char *main_window, char *file);
+void        enhance_file_load(Enhance *en, const char *main_window, const char *file);
 
 /* Sets / gets a void *data variable of a particular callback */
-void        enhance_callback_data_set(Enhance *en, char *cb_name, void *data);
-void       *enhance_callback_data_get(Enhance *en, char *cb_name);
+void        enhance_callback_data_set(Enhance *en, const char *cb_name, void *data);
+void       *enhance_callback_data_get(Enhance *en, const char *cb_name);
 
 /* Gets the internal Etk_Widget for a certain part in the GUI */
-Etk_Widget *enhance_var_get(Enhance *en, char *string);
+Etk_Widget *enhance_var_get(Enhance *en, const char *string);
 
 /* Gets the number of signal handlers for a certain part in the GUI */
-int                        enhance_signals_count(Enhance *en, char *widget);
+int                        enhance_signals_count(Enhance *en, const char *widget);
 
 /* Gets the first signal name + handler name for a certain part in the GUI. Returns NULL if there are none. */
-Enhance_Signals_Enumerator enhance_signals_first(Enhance *en, char* widget, char **signal, char **handler);
+Enhance_Signals_Enumerator enhance_signals_first(Enhance *en, const char* widget, char **signal, char **handler);
 
 /* Gets the next signal name + handler name for a certain part in the GUI. Returns NULL if there are no more. */
 Enhance_Signals_Enumerator enhance_signals_next(Enhance *en, Enhance_Signals_Enumerator current, char **signal, char **handler);
+
+/* Starts the enumeration of all GUI parts. You should always call enhance_widgets_end to close it. */
+Enhance_Widgets_Enumerator  enhance_widgets_start(Enhance *en);
+
+/* Gets the next GUI part. Return NULL if there are no more GUI parts. */
+const char*                 enhance_widgets_next(Enhance *en, Enhance_Widgets_Enumerator* enumeration);
+
+/* Ends an enumeration of all GUI parts.  */
+void                        enhance_widgets_end(Enhance *en, Enhance_Widgets_Enumerator* enumeration);
 
 #ifdef __cplusplus
 }
