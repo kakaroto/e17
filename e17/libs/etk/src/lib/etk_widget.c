@@ -2333,6 +2333,7 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
          evas_event->canvas.y >= widget->geometry.y && evas_event->canvas.y <= widget->geometry.y + widget->geometry.h)
       etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_CLICK_SIGNAL], ETK_OBJECT(widget), NULL, &event);
    
+   /* TODO: what if the widget is destroyed by one of the callbacks (recurrent problem!!!) ?? */
    if (widget->repeat_mouse_events && widget->parent)
       _etk_widget_mouse_up_cb(widget->parent, evas, NULL, event_info);
 }

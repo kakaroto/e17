@@ -354,27 +354,30 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    va_copy(args2, args);
 
    /* We call the callbacks to call before the default handler */
-   callbacks = NULL;
-   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
-   while (!emitted_signal->stop_emission && callbacks && object_ptr)
+   if (object_ptr)
    {
-      callback = callbacks->data;
-      if (!return_value_set || !signal->accumulator)
+      callbacks = NULL;
+      etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
+      while (!emitted_signal->stop_emission && callbacks && object_ptr)
       {
-         etk_signal_callback_call_valist(callback, object, return_value, args2);
-         return_value_set = ETK_TRUE;
+         callback = callbacks->data;
+         if (!return_value_set || !signal->accumulator)
+         {
+            etk_signal_callback_call_valist(callback, object, return_value, args2);
+            return_value_set = ETK_TRUE;
+         }
+         else
+         {
+            etk_signal_callback_call_valist(callback, object, result, args2);
+            signal->accumulator(return_value, result, signal->accum_data);
+         }
+         callbacks = evas_list_remove_list(callbacks, callbacks);
       }
-      else
-      {
-         etk_signal_callback_call_valist(callback, object, result, args2);
-         signal->accumulator(return_value, result, signal->accum_data);
-      }
-      callbacks = evas_list_remove_list(callbacks, callbacks);
+      callbacks = evas_list_free(callbacks);
    }
-   callbacks = evas_list_free(callbacks);
 
    /* Calls the default handler */
-   if (!emitted_signal->stop_emission && object_ptr && signal->default_handler_offset >= 0 && signal->marshaller)
+   if (object_ptr && !emitted_signal->stop_emission && signal->default_handler_offset >= 0 && signal->marshaller)
    {
       Etk_Signal_Callback_Function *default_handler;
 
@@ -393,26 +396,29 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
          }
       }
    }
-
+   
    /* We call the callbacks to call after the default handler */
-   callbacks = NULL;
-   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
-   while (!emitted_signal->stop_emission && callbacks && object_ptr)
+   if (object_ptr)
    {
-      callback = callbacks->data;
-      if (!return_value_set || !signal->accumulator)
+      callbacks = NULL;
+      etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
+      while (!emitted_signal->stop_emission && callbacks && object_ptr)
       {
-         etk_signal_callback_call_valist(callback, object, return_value, args2);
-         return_value_set = ETK_TRUE;
+         callback = callbacks->data;
+         if (!return_value_set || !signal->accumulator)
+         {
+            etk_signal_callback_call_valist(callback, object, return_value, args2);
+            return_value_set = ETK_TRUE;
+         }
+         else
+         {
+            etk_signal_callback_call_valist(callback, object, result, args2);
+            signal->accumulator(return_value, result, signal->accum_data);
+         }
+         callbacks = evas_list_remove_list(callbacks, callbacks);
       }
-      else
-      {
-         etk_signal_callback_call_valist(callback, object, result, args2);
-         signal->accumulator(return_value, result, signal->accum_data);
-      }
-      callbacks = evas_list_remove_list(callbacks, callbacks);
+      callbacks = evas_list_free(callbacks);
    }
-   callbacks = evas_list_free(callbacks);
    
    if (object_ptr)
       etk_object_weak_pointer_remove(object, &object_ptr);
