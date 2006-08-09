@@ -382,8 +382,8 @@ void
 evfs_handle_file_copy(evfs_client * client, evfs_command * command,
                       evfs_command * root_command, int move)
 {
-   evfs_plugin *plugin;
-   evfs_plugin *dst_plugin;
+   evfs_plugin *plugin = NULL;
+   evfs_plugin *dst_plugin = NULL;
    int num_files;
    int c_file;
 
@@ -404,11 +404,11 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 	   return;
    }
 
-   if (num_files > 2) {
-	   dst_plugin =
-	     evfs_get_plugin_for_uri(client->server,
-	    command->file_command.files[num_files-1]->plugin_uri);
+   dst_plugin =
+     evfs_get_plugin_for_uri(client->server,
+    command->file_command.files[num_files-1]->plugin_uri);
 
+   if (num_files > 2) {
 	   /*Check if >2 files, dest file is a dir*/
 	    res =
 	    (*EVFS_PLUGIN_FILE(dst_plugin)->functions->evfs_file_lstat) (command, &dest_stat, num_files-1);
