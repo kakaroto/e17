@@ -1,6 +1,5 @@
 #include "config.h"
 #include "global.h"
-#include "category.h"
 #include "fdo_icons.h"
 #include "fdo_desktops.h"
 
