@@ -1,6 +1,12 @@
 TODO List
 =========
 
+KEY
+========
+*** - Features that we need Yesterday!!!
+** 	- Features that we need right now!!
+*   - Features that won't hurt if we had them.
+
 -------------------------------------------------------------------------------
  BUGS AND ANNOYANCES
 -------------------------------------------------------------------------------
@@ -21,25 +27,44 @@ TODO List
 ** GUI configuration tool - Launched from within entrance, so we can configure
   without logging in to the window manager. Allow optional root password, just
   like GDM does.
-
+** Loadable Entrance Modules ala e gadman(move halt, reboot, time, to modules)
 -------------------------------------------------------------------------------
  NICE-TO-HAVE FEATURES
 -------------------------------------------------------------------------------
 
 * XDMCP support
 * Add custom user edje to default theme
+* Add suspend and hibernate support eventually via modules, these are distro 
+  dependent apparently)
+* Add battery module, mpd client module (possible to steal from emphasis?)
 
 -------------------------------------------------------------------------------
  ADDITIONAL USER GENERATED FEATURE REQUESTS FROM THE COLLAB4 ML. 
 -------------------------------------------------------------------------------
-* Tab focus change
-* Session list is currently broken (it sets the layer/raises it etc, after being
+** Tab focus change
+** Session list is currently broken (it sets the layer/raises it etc, after being
   swallowed).
-* No User listing currently.
-* Session list and User list _need_ to be scrollable and the userlist needs to 
+** No User listing currently.
+** Session list and User list _need_ to be scrollable and the userlist needs to 
   possibly handle massive lists of 1000's of users and not take forever to come
   up (take a leaf out of e17's fm2 code for listting users).
 * A face browser would be just awesome.
 * KDM has a lilo hack that allows you to select which lilo option to reboot
   to directly from the Login Manager. Would be nice to have this too :)
 * xrandr support in GUI config, so E can worry about that less.
+
+--------------------------------------------------------------------------------
+ SOME REALY FUNKY AND FEATURISTIC IDEAS, UNREFINED - what does raster smoke at nite? ;)
+--------------------------------------------------------------------------------
+* Have something like a special user mode? application mode? So that someone can
+  login like "media center" user, and not have to authenticate. In media center
+  mode, all you see is a media center app like rage? etc. Other modes should be
+  easily configurable, so users can create new modes like, Quake/Doom mode,
+  SETI mode (which will have some bling while doing SETI :) ). Ideally, this modes,
+  should even allow you to set key bindings, so you can use say a remote controller.
+* Some funky authentication schemes - for instance, entrance, works with pam to all login
+  from usb thumbdrive, thumbprint scanners, etc. Can even go further with the usb drive
+  to allow user use the usb drive as their home directory.
+* Entrance have a mini mode that is started by init as a bootup manager (running in fb or
+  with minimal X). When everything is properly launched and ready, entrance will now switch
+  into FULL entrance mode.
