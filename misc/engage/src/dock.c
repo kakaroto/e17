@@ -118,11 +118,25 @@ od_dock_reposition()
   need_redraw = true;
 }
 
+double lasttime = 0;
+
 void
 od_dock_redraw(Ecore_Evas * ee)
 {
-  Evas_List      *item = dock.icons;
+  
 
+    double time = ecore_time_get();
+	
+	if(time - lasttime < 0.04)
+	{
+	 // need_redraw = false; // ????
+	  return;
+	}
+    
+    lasttime = time;
+
+
+  Evas_List      *item = dock.icons;
   while (item) {
     OD_Icon        *icon = (OD_Icon *) item->data;
 

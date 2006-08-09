@@ -136,7 +136,12 @@ od_config_init(void)
                               "ignore-running", "Ignore running apps");
   ecore_config_boolean_create("engage.options.ignore_iconified", 0, 'I',
                               "ignore-iconified", "Ignore iconified windows");
-
+  
+  
+  ecore_config_boolean_create("engage.options.use_composite", 0, 'C',
+                              "use-composite","Use with composite manager for nice transparency effects");
+                          
+                              
   ecore_config_load();
   ret = ecore_config_args_parse();
 
@@ -179,7 +184,8 @@ od_config_init(void)
   options.tray = ecore_config_boolean_get("engage.options.tray");
   options.ignore_run = ecore_config_boolean_get("engage.options.ignore_running");
   options.ignore_min = ecore_config_boolean_get("engage.options.ignore_iconified");
-
+  
+  options.use_composite = ecore_config_boolean_get("engage.options.use_composite");
   return ret;
 }
 

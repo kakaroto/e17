@@ -104,6 +104,7 @@ struct _OD_Options {
   unsigned        bg_fore, bg_back; // color - ARGB
   double          icon_appear_duration;
   int             tray, ignore_run, ignore_min;
+  int			  use_composite;
 };
 
 struct _OD_Window {
