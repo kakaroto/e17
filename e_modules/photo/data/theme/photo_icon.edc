@@ -15,6 +15,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_infos.png";
@@ -39,6 +40,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_next.png";
@@ -63,6 +65,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_previous.png";
@@ -87,6 +90,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_pause.png";
@@ -111,6 +115,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_resume.png";
@@ -135,6 +140,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_setbg.png";
@@ -159,6 +165,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_viewer.png";
@@ -185,6 +192,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_dir_not_loaded.png";
@@ -209,6 +217,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_dir_loading.png";
@@ -233,6 +242,7 @@ group
                 	{
                 		state: "default" 0.0;
                 		aspect: 1.0 1.0;
+		                aspect_preference: BOTH;
                 		image
                 		{
                 			normal: "icon_dir_loaded.png";

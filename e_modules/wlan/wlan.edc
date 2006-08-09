@@ -36,6 +36,7 @@ collections
 		       state:    "default" 0.0;
 		       color: 255 255 255 200;
 		       aspect:   1.0 1.0;
+		       aspect_preference: BOTH;
 		       align: 0.5 0.5;
 		       rel1
 			 {

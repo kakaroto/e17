@@ -33,6 +33,7 @@ part
 		state: "default" 0.0;
 		color:  255 255 255 255;
 		aspect: 1 1;
+	        aspect_preference: BOTH;
 		rel1
 		{
 			relative: 0.1 0.0;
@@ -182,6 +183,7 @@ part
 		color:  255 255 255 255;
 		visible: 1;
 		aspect: 1 1;
+		aspect_preference: BOTH;
 		rel1
 		{
 			relative: 1.0 0.0;
