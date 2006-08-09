@@ -448,11 +448,15 @@ _taskbar_resize_handle(Taskbar *b)
    ic = b->icons->data;
    wnum = evas_list_count(b->borders);
    edje_object_size_min_calc(ic->o_holder, &wmin, &hmin);
+   if (wmin < 1)
+     wmin = 1;
    wnum2 = w / wmin;
    if (wnum < wnum2)
      wnum2 = wnum;
    if (wnum2 < 1)
      wnum2 = 1;
+   if (hmin < 1)
+     hmin = 1;
    hnum = h / hmin;
    if (hnum < 1)
      hnum = 1;
