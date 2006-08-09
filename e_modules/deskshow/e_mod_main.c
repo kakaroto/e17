@@ -18,7 +18,9 @@ static const E_Gadcon_Client_Class _gadcon_class = {
   GADCON_CLIENT_CLASS_VERSION,
   "deskshow",
   {
-   _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
+   _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon
+  },
+  E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 /* actual module specifics */

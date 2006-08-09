@@ -36,7 +36,8 @@ Config *tclock_config = NULL;
 /* Define the class and gadcon functions this module provides */
 static const E_Gadcon_Client_Class _gc_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "tclock", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
+  "tclock", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+  E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 typedef struct _Instance Instance;

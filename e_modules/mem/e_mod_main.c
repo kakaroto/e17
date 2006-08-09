@@ -47,7 +47,8 @@ Config *mem_config = NULL;
 
 static const E_Gadcon_Client_Class _gc_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "mem", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
+  "mem", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+  E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 static E_Gadcon_Client *

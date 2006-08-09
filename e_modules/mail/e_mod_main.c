@@ -59,7 +59,8 @@ static Ecore_Event_Handler *exit_handler;
 
 static const E_Gadcon_Client_Class _gc_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "mail", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
+  "mail", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+  E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 static E_Gadcon_Client *
