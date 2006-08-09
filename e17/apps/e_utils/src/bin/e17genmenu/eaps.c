@@ -1,7 +1,6 @@
 #include <ctype.h>
 #include "global.h"
 #include "config.h"
-#include "icons.h"
 #include "eaps.h"
 #include "parse.h"
 
@@ -10,6 +9,63 @@
 extern int not_found_count;
 
 static void _write_eap(Eet_File *ef, char *section, char *value);
+
+#define APPLICATIONICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_applications.png"
+#define COREICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_applications.png"
+#define EDITORICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_editors.png"
+#define EDUTAINMENTICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_edutainment.png"
+#define GAMESICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_games.png"
+#define GRAPHICSICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_graphics.png"
+#define INTERNETICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_network.png"
+#define MULTIMEDIAICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_multimedia.png"
+#define OFFICEICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_wordprocessing.png"
+#define PROGRAMMINGICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_development.png"
+#define SETTINGSICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_settings.png"
+#define SYSTEMICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_system.png"
+#define TOYSICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_toys.png"
+#define UTILITYICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/package_utilities.png"
+static char *set_icon(char *token);
+
+
+static char *
+set_icon(char *token)
+{
+#ifdef DEBUG
+   fprintf(stderr, "Setting Icon: %s\n", token);
+#endif
+   if (strstr(token, "Core") != NULL)
+      return COREICON;
+   if (strstr(token, "Development") != NULL)
+      return PROGRAMMINGICON;
+   if (strstr(token, "Editors") != NULL)
+      return EDITORICON;
+   if (strstr(token, "Edutainment") != NULL)
+      return EDUTAINMENTICON;
+   if (strstr(token, "Game") != NULL)
+      return GAMESICON;
+   if (strstr(token, "Graphics") != NULL)
+      return GRAPHICSICON;
+   if (strstr(token, "Internet") != NULL)
+      return INTERNETICON;
+   if (strstr(token, "Office") != NULL)
+      return OFFICEICON;
+   if (strstr(token, "Programming") != NULL)
+      return PROGRAMMINGICON;
+   if (strstr(token, "Toys") != NULL)
+      return TOYSICON;
+   if (strstr(token, "Utilities") != NULL)
+      return UTILITYICON;
+   if ((strstr(token, "Accessories") != NULL) || (strstr(token, "Applications") != NULL))
+      return APPLICATIONICON;
+   if ((strstr(token, "Multimedia") != NULL) || (strstr(token, "Sound_Video") != NULL))
+      return MULTIMEDIAICON;
+   if ((strstr(token, "Preferences") != NULL) || (strstr(token, "Settings") != NULL))
+      return SETTINGSICON;
+   if (strstr(token, "System") != NULL)
+      return SYSTEMICON;
+   return token;
+}
+
 
 /* Create a .directory.eap for this dir */
 void

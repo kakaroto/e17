@@ -2,8 +2,8 @@
 #include "config.h"
 #include "menus.h"
 #include "parse.h"
-#include "icons.h"
 #include "sort.h"
+#include "fdo_desktops.h"
 #include "fdo_menus.h"
 #include "fdo_paths.h"
 #include "xmlame.h"
@@ -142,7 +142,7 @@ main(int argc, char **argv)
    begin = ecore_time_get();
    fdo_paths_init();
    paths = ecore_time_get() - begin;
-   parse_ini_init();
+   fdo_desktops_init();
 
 #ifdef DEBUG
    /* You can iterate through the various path lists as needed. */
@@ -219,7 +219,7 @@ main(int argc, char **argv)
    }
 #endif
 
-   parse_ini_shutdown();
+   fdo_desktops_shutdown();
    fdo_paths_shutdown();
 
    /* Shutdown */

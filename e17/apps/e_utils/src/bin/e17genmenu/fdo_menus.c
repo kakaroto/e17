@@ -18,8 +18,8 @@
 #include <Ecore.h>
 
 #include "global.h"
+#include "fdo_desktops.h"
 #include "fdo_paths.h"
-#include "parse.h"
 #include "xmlame.h"
 
 //#define DEBUG 1
@@ -81,7 +81,7 @@ static int _fdo_menus_expand_default_dirs(const void *data, Dumb_Tree * tree, in
 static int _fdo_menus_generate(const void *data, Dumb_Tree * tree, int element, int level);
 static void _fdo_menus_inherit_apps(void *value, void *user_data);
 static void _fdo_menus_select_app(void *value, void *user_data);
-static int _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_Tree * rule, char *key, Desktop * desktop);
+static int _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_Tree * rule, char *key, Fdo_Desktop * desktop);
 
 Dumb_Tree *
 fdo_menus_get(char *file, Dumb_Tree * merge_stack, int level)
@@ -1166,7 +1166,7 @@ static void
 _fdo_menus_select_app(void *value, void *user_data)
 {
    Ecore_Hash_Node *node;
-   Desktop *desktop;
+   Fdo_Desktop *desktop;
    struct _fdo_menus_generate_data *generate_data;
    char *key, *app;
 
@@ -1175,7 +1175,7 @@ _fdo_menus_select_app(void *value, void *user_data)
    key = (char *)node->key;
    app = (char *)node->value;
 
-   desktop = parse_desktop_ini_file(app);
+   desktop = fdo_desktops_parse_desktop_file(app);
 
    if ((generate_data->unallocated) && (desktop->allocated))
       return;
@@ -1201,7 +1201,7 @@ _fdo_menus_select_app(void *value, void *user_data)
 }
 
 static int
-_fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_Tree * rule, char *key, Desktop * desktop)
+_fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_Tree * rule, char *key, Fdo_Desktop * desktop)
 {
    char type = 'O';
    int result = FALSE;
