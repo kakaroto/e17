@@ -253,6 +253,7 @@ collections
 		    {
 		        state: "default" 0.0;
                         aspect: 1 1;
+		        aspect_preference: BOTH;
                         align: 0.0 0.0;
         	        color: 255 255 255 200;
         		rel1
@@ -278,6 +279,7 @@ collections
 		    {
 		        state: "enabled" 0.0;
                         aspect: 1 1;
+		        aspect_preference: BOTH;
                         align: 0.0 0.0;
         	        color: 255 255 255 200;
         		rel1
@@ -479,6 +481,7 @@ collections
 		    {
 		        state: "default" 0.0;
                         aspect: 1 1;
+		        aspect_preference: BOTH;
                         align: 0.0 0.0;
         	        color: 255 255 255 200;
         		rel1
@@ -504,6 +507,7 @@ collections
 		    {
 		        state: "enabled" 0.0;
                         aspect: 1 1;
+		        aspect_preference: BOTH;
                         align: 0.0 0.0;
         	        color: 255 255 255 200;
         		rel1
@@ -878,6 +882,7 @@ collections
 		    {
 		        state: "default" 0.0;
                         aspect: 1 1;
+		        aspect_preference: BOTH;
                         align: 0.0 0.0;
         	        color: 255 255 255 200;
         		rel1
@@ -917,6 +922,7 @@ collections
 		    {
 		        state: "default" 0.0;
                         aspect: 1 1;
+		        aspect_preference: BOTH;
                         align: 0.0 0.0;
         	        color: 255 255 255 200;
         		rel1
@@ -954,6 +960,7 @@ collections
 		    {
 		        state: "default" 0.0;
                         aspect: 1 1;
+		        aspect_preference: BOTH;
                         align: 0.0 0.0;
         	        color: 255 255 255 200;
         		rel1
@@ -991,6 +998,7 @@ collections
 		    {
 		        state: "default" 0.0;
                         aspect: 1 1;
+		        aspect_preference: BOTH;
                         align: 0.0 0.0;
         	        color: 255 255 255 200;
         		rel1
@@ -1028,6 +1036,7 @@ collections
 		    {
 		        state: "default" 0.0;
                         aspect: 1 1;
+		        aspect_preference: BOTH;
                         align: 0.0 0.0;
         	        color: 255 255 255 200;
         		rel1
