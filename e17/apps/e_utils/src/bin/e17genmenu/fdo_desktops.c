@@ -1,11 +1,12 @@
 #include "config.h"
 #include "global.h"
-#include "fdo_icons.h"
 #include "fdo_desktops.h"
+#include "fdo_icons.h"
+#include "fdo_paths.h"
 
 extern int reject_count, not_over_count;
 
-static void _fdo_desktops_desktop_del(Fdo_Desktop * desktop);
+void fdo_desktops_desktop_del(Fdo_Desktop * desktop);
 
 static Ecore_Hash *ini_file_cache;
 static Ecore_Hash *desktop_cache;
@@ -129,48 +130,30 @@ fdo_desktops_parse_desktop_file(char *file)
                     {
                        char *value;
 
-                       value = (char *)ecore_hash_get(result->group, "Name");
-                       if (value)
-                          result->name = strdup(value);
-                       value = (char *)ecore_hash_get(result->group, "GenericName");
-                       if (value)
-                          result->generic = strdup(value);
-                       value = (char *)ecore_hash_get(result->group, "Comment");
-                       if (value)
-                          result->comment = strdup(value);
-                       value = (char *)ecore_hash_get(result->group, "Type");
-                       if (value)
-                          result->type = strdup(value);
-                       value = (char *)ecore_hash_get(result->group, "Categories");
-                       if (value)
-		       {
-                          result->categories = strdup(value);
-                          result->Categories = dumb_tree_from_paths(value);
-		       }
+                       result->name = (char *)ecore_hash_get(result->group, "Name");
+                       result->generic = (char *)ecore_hash_get(result->group, "GenericName");
+                       result->comment = (char *)ecore_hash_get(result->group, "Comment");
+                       result->type = (char *)ecore_hash_get(result->group, "Type");
+                       result->exec = (char *)ecore_hash_get(result->group, "Exec");
+                       result->window_class = (char *)ecore_hash_get(result->group, "StartupWMClass");
+                       result->icon = (char *)ecore_hash_get(result->group, "Icon");
+                       if (result->icon)
+                   	   result->icon_path = find_icon(result->icon);
+                       result->categories = (char *)ecore_hash_get(result->group, "Categories");
+                       if (result->categories)
+                          result->Categories = ecore_hash_from_paths(result->categories);
                        value = (char *)ecore_hash_get(result->group, "OnlyShowIn");
                        if (value)
-                          result->OnlyShowIn = dumb_tree_from_paths(value);
+                          result->OnlyShowIn = ecore_hash_from_paths(value);
                        value = (char *)ecore_hash_get(result->group, "NotShowIn");
                        if (value)
-                          result->NotShowIn = dumb_tree_from_paths(value);
-                       value = (char *)ecore_hash_get(result->group, "Exec");
-                       if (value)
-                          result->exec = strdup(value);
-                       value = (char *)ecore_hash_get(result->group, "Icon");
-                       if (value)
-               	       {
-                           result->icon = strdup(value);
-                   	   result->icon_path = find_icon(result->icon);
-               	       }
+                          result->NotShowIn = ecore_hash_from_paths(value);
                        value = (char *)ecore_hash_get(result->group, "X-KDE-StartupNotify");
                        if (value)
                           result->startup = (!strcmp(value, "true")) ? "1" : "0";
                        value = (char *)ecore_hash_get(result->group, "StartupNotify");
                        if (value)
                           result->startup = (!strcmp(value, "true")) ? "1" : "0";
-                       value = (char *)ecore_hash_get(result->group, "StartupWMClass");
-                       if (value)
-                          result->window_class = strdup(value);
                     }
 
                   ecore_hash_set(desktop_cache, strdup(file), result);
@@ -204,7 +187,7 @@ fdo_desktops_init()
         if (desktop_cache)
           {
              ecore_hash_set_free_key(desktop_cache, free);
-             ecore_hash_set_free_value(desktop_cache, (Ecore_Free_Cb) _fdo_desktops_desktop_del);
+             ecore_hash_set_free_value(desktop_cache, (Ecore_Free_Cb) fdo_desktops_destroy);
           }
      }
 }
@@ -226,15 +209,15 @@ fdo_desktops_shutdown()
 }
 
 
-static void
-_fdo_desktops_desktop_del(Fdo_Desktop * desktop)
+void
+fdo_desktops_destroy(Fdo_Desktop * desktop)
 {
    if (desktop->NotShowIn)
-      dumb_tree_del(desktop->NotShowIn);
+      ecore_hash_destroy(desktop->NotShowIn);
    if (desktop->OnlyShowIn)
-      dumb_tree_del(desktop->OnlyShowIn);
+      ecore_hash_destroy(desktop->OnlyShowIn);
    if (desktop->Categories)
-      dumb_tree_del(desktop->Categories);
+      ecore_hash_destroy(desktop->Categories);
    free(desktop);
 }
 
@@ -269,28 +252,15 @@ menus.c
 
 void parse_desktop_file(char *app, char *menu_path)
    Desktop *desktop = fdo_desktops_parse_desktop_file(app);
-   eap->icon_path = find_icon(eap->icon);
-   void _parse_process_file(app, menu_path, eap);
-
-void parse_debian_file(char *file)
-   char *name = _parse_buffer(buffer, "title=");
-      //char *d = _parse_get_t(t);
-   eap->icon_path = find_icon(eap->icon);
-   void _parse_process_file(file, NULL, eap);
 
 Desktop *desktop = fdo_desktops_parse_desktop_file(app);
    result = (Desktop *) ecore_hash_get(desktop_cache, file);
    Ecore_Hash *result->data = fdo_desktops_parse_ini_file(file);
-   result->Categories = dumb_tree_from_paths(temp);
+   eap->icon_path = find_icon(eap->icon);
    ecore_hash_set(desktop_cache, strdup(file), result);
 
 Ecore_Hash *result->data = fdo_desktops_parse_ini_file(file);
    ecore_hash_set(ini_file_cache, strdup(file), result);
-
-void _parse_process_file(app, menu_path, eap);
-   write_icon(path, eap);
-   category = _parse_find_category(eap->categories);
-   modify_order(order_path, eap->eap_name);
 
 char *find_icon(eap->icon);
    icon_size = get_icon_size();
@@ -298,19 +268,17 @@ char *find_icon(eap->icon);
    static char *find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
       theme_path = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, icn, 1, NULL, NULL);
       Ecore_Hash *result->data = fdo_desktops_parse_ini_file(theme_path);
-      directory_paths = dumb_tree_from_paths(directories);
       found = fdo_paths_search_for_file(FDO_PATHS_TYPE_ICON, path, 0, NULL, NULL);
 
 void fdo_desktops_init()
    ini_file_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    desktop_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-   ecore_hash_set_free_value(desktop_cache, (Ecore_Free_Cb) _fdo_desktops_desktop_del);
+   ecore_hash_set_free_value(desktop_cache, (Ecore_Free_Cb) fdo_desktops_desroy);
 
 void fdo_desktops_shutdown()
    ecore_hash_destroy(ini_file_cache);
    ecore_hash_destroy(desktop_cache);
 
-static void _fdo_desktops_desktop_del(Desktop * desktop)
-   dumb_tree_del(desktop->Categories);
+static void fdo_desktops_destroy(Desktop * desktop)
 
  */

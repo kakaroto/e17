@@ -10,8 +10,7 @@
 typedef struct _Fdo_Desktop Fdo_Desktop;
 struct _Fdo_Desktop
 {
-   Ecore_Hash *data, *group;
-   Dumb_Tree *Categories, *OnlyShowIn, *NotShowIn;      /* FIXME: Better to have these as hashes. */
+   Ecore_Hash *data, *group, *Categories, *OnlyShowIn, *NotShowIn;
    char *name;
    char *generic;
    char *comment;
@@ -30,5 +29,6 @@ void fdo_desktops_init(void);
 void fdo_desktops_shutdown(void);
 Ecore_Hash *fdo_desktops_parse_ini_file(char *file);
 Fdo_Desktop *fdo_desktops_parse_desktop_file(char *file);
+void fdo_desktops_destroy(Fdo_Desktop * desktop);
 
 #endif

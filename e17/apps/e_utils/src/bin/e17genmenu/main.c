@@ -124,9 +124,9 @@ main(int argc, char **argv)
 {
    char path[MAX_PATH];
    double start, begin, paths, gen;
-#ifdef DEBUG
-   int i;
-#endif
+//#ifdef DEBUG
+   char *this_path;
+//#endif
 
    /* Init E Stuff */
    _e17genmenu_init();
@@ -144,21 +144,27 @@ main(int argc, char **argv)
    paths = ecore_time_get() - begin;
    fdo_desktops_init();
 
-#ifdef DEBUG
+//#ifdef DEBUG
    /* You can iterate through the various path lists as needed. */
-   for (i = 0; i < fdo_paths_config->size; i++)
-      printf("FDO config path = %s\n", (char *)fdo_paths_config->elements[i].element);
-   for (i = 0; i < fdo_paths_menus->size; i++)
-      printf("FDO menu path = %s\n", (char *)fdo_paths_menus->elements[i].element);
-   for (i = 0; i < fdo_paths_directories->size; i++)
-      printf("FDO directory path = %s\n", (char *)fdo_paths_directories->elements[i].element);
-   for (i = 0; i < fdo_paths_desktops->size; i++)
-      printf("FDO desktop path = %s\n", (char *)fdo_paths_desktops->elements[i].element);
-   for (i = 0; i < fdo_paths_icons->size; i++)
-      printf("FDO icon path = %s\n", (char *)fdo_paths_icons->elements[i].element);
-   for (i = 0; i < fdo_paths_kde_legacy->size; i++)
-      printf("FDO kde legacy path = %s\n", (char *)fdo_paths_kde_legacy->elements[i].element);
-#endif
+   ecore_list_goto_first(fdo_paths_config);
+   while ((this_path = ecore_list_next(fdo_paths_config)) != NULL)
+      printf("FDO config path = %s\n", this_path);
+   ecore_list_goto_first(fdo_paths_menus);
+   while ((this_path = ecore_list_next(fdo_paths_menus)) != NULL)
+      printf("FDO menu path = %s\n", this_path);
+   ecore_list_goto_first(fdo_paths_directories);
+   while ((this_path = ecore_list_next(fdo_paths_directories)) != NULL)
+      printf("FDO directory path = %s\n", this_path);
+   ecore_list_goto_first(fdo_paths_desktops);
+   while ((this_path = ecore_list_next(fdo_paths_desktops)) != NULL)
+      printf("FDO desktop path = %s\n", this_path);
+   ecore_list_goto_first(fdo_paths_icons);
+   while ((this_path = ecore_list_next(fdo_paths_icons)) != NULL)
+      printf("FDO icon path = %s\n", this_path);
+   ecore_list_goto_first(fdo_paths_kde_legacy);
+   while ((this_path = ecore_list_next(fdo_paths_kde_legacy)) != NULL)
+      printf("FDO kde legacy path = %s\n", this_path);
+//#endif
 
 
    /* Just being paranoid, and cause people have removed these during testing. */

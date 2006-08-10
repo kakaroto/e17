@@ -40,7 +40,6 @@ extern "C"
 {
 # endif
 
-   Dumb_Tree *dumb_tree_from_paths(char *paths);
    Dumb_Tree *dumb_tree_new(char *buffer);
    Dumb_Tree *dumb_tree_add(Dumb_Tree * tree, char *element);
    void dumb_tree_track(Dumb_Tree * tree, void *element);

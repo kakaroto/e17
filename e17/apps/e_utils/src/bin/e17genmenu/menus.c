@@ -29,7 +29,7 @@ make_menus()
      {
          if (!get_fdo())
 	   {
-	      int i;
+	      char *this_path;
 
               printf("Generating menus.\n");
               begin = ecore_time_get();
@@ -37,10 +37,13 @@ make_menus()
               check_for_dirs(GNOME_DIRS);    /* FIXME: probably obsolete. */
               check_for_dirs(KDE_DIRS);      /* FIXME: probably obsolete. */
               check_for_dirs(DEBIAN_DIRS);   /* FIXME: may or may not be obsolete. */
-              for (i = 0; i < fdo_paths_desktops->size; i++)
-                 check_for_dirs((char *)fdo_paths_desktops->elements[i].element);
-              for (i = 0; i < fdo_paths_kde_legacy->size; i++)
-                 check_for_dirs((char *)fdo_paths_kde_legacy->elements[i].element);
+
+              ecore_list_goto_first(fdo_paths_desktops);
+              while ((this_path = ecore_list_next(fdo_paths_desktops)) != NULL)
+                 check_for_dirs(this_path);
+              ecore_list_goto_first(fdo_paths_kde_legacy);
+              while ((this_path = ecore_list_next(fdo_paths_kde_legacy)) != NULL)
+                 check_for_dirs(this_path);
               generate_time = ecore_time_get() - begin;
 	   }
 

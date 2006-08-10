@@ -71,7 +71,7 @@ static int _fdo_menus_legacy_menu_dir(const void *data, char *path);
 static int _fdo_menus_legacy_menu(const void *data, char *path);
 static void _fdo_menus_unxml_rules(Dumb_Tree * rules, Dumb_Tree * tree, char type, char sub_type);
 static void _fdo_menus_unxml_moves(Dumb_Tree * menu, Dumb_Tree * tree);
-static void _fdo_menus_add_dirs(Dumb_Tree * tree, Dumb_Tree * paths, char *pre, char *post, char *extra, int element);
+static void _fdo_menus_add_dirs(Dumb_Tree * tree, Ecore_List * paths, char *pre, char *post, char *extra, int element);
 static int _fdo_menus_expand_apps(struct _fdo_menus_unxml_data *unxml_data, char *app_dir, Ecore_Hash * pool);
 static int _fdo_menus_check_app(const void *data, char *path);
 
@@ -716,18 +716,18 @@ _fdo_menus_unxml_moves(Dumb_Tree * menu, Dumb_Tree * tree)
 }
 
 static void
-_fdo_menus_add_dirs(Dumb_Tree * tree, Dumb_Tree * paths, char *pre, char *post, char *extra, int element)
+_fdo_menus_add_dirs(Dumb_Tree * tree, Ecore_List * paths, char *pre, char *post, char *extra, int element)
 {
-   int i;
-   char t[MAX_PATH];
+   char t[MAX_PATH], *this_path;
 
    /* reverse the order of the dirs. */
-   for (i = paths->size - 1; i >= 0; i--)
+   ecore_list_goto_first(paths);
+   while ((this_path = ecore_list_next(paths)) != NULL)
      {
         if (extra)
-           sprintf(t, "%s %s%s-merged/", pre, (char *)paths->elements[i].element, extra);
+           sprintf(t, "%s %s%s-merged/", pre, this_path, extra);
         else
-           sprintf(t, "%s %s", pre, (char *)paths->elements[i].element);
+           sprintf(t, "%s %s", pre, this_path);
         if (tree)
            dumb_tree_extend(tree, t);
      }
@@ -1242,16 +1242,19 @@ _fdo_menus_apply_rules(struct _fdo_menus_generate_data *generate_data, Dumb_Tree
                      /* Try to match a category. */
                      if (desktop->Categories)
                        {
-                          int j;
+//                          int j;
 
-                          for (j = 0; j < desktop->Categories->size; j++)
-                            {
-                               if (strcmp((char *)(desktop->Categories->elements[j].element), &rul[4]) == 0)
-                                 {
-                                    sub_result = TRUE;
-                                    break;
-                                 }
-                            }
+                          if (ecore_hash_get(desktop->Categories, &rul[4]) != NULL)
+                             sub_result = TRUE;
+
+//                          for (j = 0; j < desktop->Categories->size; j++)
+//                            {
+//                               if (strcmp((char *)(desktop->Categories->elements[j].element), &rul[4]) == 0)
+//                                 {
+//                                    sub_result = TRUE;
+//                                    break;
+//                                 }
+//                            }
                        }
                      break;
                   }

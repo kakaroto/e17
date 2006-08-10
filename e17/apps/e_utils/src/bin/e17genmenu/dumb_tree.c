@@ -7,48 +7,6 @@
 
 static void dumb_tree_dump_each_hash_node(void *value, void *user_data);
 
-/** Split a list of paths into a Dumb_Tree.
- *
- * The list of paths can use any one of ;:, to seperate the paths.
- * You can also escape the :;, with \.
- *
- * FIXME: The concept here is still buggy, but it should do for now.
- *
- * @param   paths A list of paths.
- */
-Dumb_Tree *
-dumb_tree_from_paths(char *paths)
-{
-   Dumb_Tree *tree = NULL;
-
-   tree = dumb_tree_new(paths);
-   if ((tree) && (tree->buffers))
-     {
-        char *start, *end;
-        int finished = 0;
-
-        end = tree->buffers[0];
-        while (!finished)
-          {
-             start = end;
-             do                 /* FIXME: There is probably a better way to do this. */
-               {
-                  while ((*end != ';') && (*end != ':') && (*end != ',') && (*end != '\0'))
-                     end++;
-               }
-             while ((end != tree->buffers[0]) && (*(end - 1) == '\\') && (*end != '\0'));       /* Ignore any escaped ;:, */
-             /* FIXME: We still need to unescape it now. */
-             if (*end == '\0')
-                finished = 1;
-             *end = '\0';
-             if (!dumb_tree_exist(tree, start))
-                tree = dumb_tree_add(tree, start);
-             end++;
-          }
-     }
-   return tree;
-}
-
 /* Just a quick and dirty tree implemtation that will likely get replaced by 
  * something much saner at a later date.  I wrote most of this while falling
  * asleep.  It will probably scare me when I wake up.  B-)

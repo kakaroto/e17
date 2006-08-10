@@ -154,31 +154,34 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                   inherits = (char *)ecore_hash_get(icon_group, "Inherits");
                   if (directories)
                     {
-                       Dumb_Tree *directory_paths;
+                       Ecore_List *directory_paths;
 
                        /* Split the directory list. */
 #ifdef DEBUG
                        printf("Inherits %s Directories %s\n", inherits, directories);
 #endif
-                       directory_paths = dumb_tree_from_paths(directories);
+                       directory_paths = ecore_list_from_paths(directories);
                        if (directory_paths)
                          {
                             int wanted_size;
                             int minimal_size = INT_MAX;
                             int i;
                             char *closest = NULL;
+			    char *directory;
 
                             wanted_size = atoi(icon_size);
                             /* Loop through the themes directories. */
-                            for (i = 0; i < directory_paths->size; i++)
+
+                            ecore_list_goto_first(directory_paths);
+                            while ((directory = ecore_list_next(directory_paths)) != NULL)
                               {
                                  Ecore_Hash *sub_group;
 
 #ifdef DEBUG
-                                 printf("FDO icon path = %s\n", (char *) directory_paths->elements[i].element);
+                                 printf("FDO icon path = %s\n", directory_paths);
 #endif
                                  /* Get the details for this theme directory. */
-                                 sub_group = (Ecore_Hash *) ecore_hash_get(theme, directory_paths->elements[i].element);
+                                 sub_group = (Ecore_Hash *) ecore_hash_get(theme, directory);
                                  if (sub_group)
                                    {
                                       char *size, *type, *minsize, *maxsize, *threshold;
@@ -240,8 +243,7 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
                                            /* Look for icon with all extensions. */
                                            for (j = 0; ext[j] != NULL; j++)
                                              {
-                                                snprintf(path, MAX_PATH, "%s/%s/%s%s", icon_theme,
-                                                         (char *)directory_paths->elements[i].element, icon, ext[j]);
+                                                snprintf(path, MAX_PATH, "%s/%s/%s%s", icon_theme, directory, icon, ext[j]);
 #ifdef DEBUG
                                                 printf("FDO icon = %s\n", path);
 #endif
@@ -263,7 +265,7 @@ find_fdo_icon(char *icon, char *icon_size, char *icon_theme)
 
                                         }
                                    }
-                              } /* for (i = 0; i < directory_paths->size; i++) */
+                              } /* while ((directory = ecore_list_next(directory_paths)) != NULL) */
 
                             /* Fall back strategy #1, look for closest size in this theme. */
                             if (closest)
