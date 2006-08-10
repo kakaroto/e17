@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #ifndef _EX_OPTIONS_H
 #define _EX_OPTIONS_H
 
@@ -9,6 +12,5 @@ void            _ex_options_free(Exhibit *e);
 int             _ex_options_save(Exhibit *e);
 int             _ex_options_load(Exhibit *e);
 void            _ex_options_window_show(Exhibit *e);
-Etk_Bool        _ex_options_window_delete_cb(void *data);
-  
+
 #endif

@@ -14,6 +14,8 @@ void         _ex_main_dialog_show(char *text, Etk_Message_Dialog_Type type);
 void         _ex_main_window_show(char *dir);
 void         _ex_main_image_unset();
 void         _ex_main_image_set(Exhibit *e, char *image);
+void         _ex_main_button_fit_to_window_cb(Etk_Object *obj, void *data);
+void         _ex_main_button_zoom_one_to_one_cb(Etk_Object *obj, void *data);
    
    
 

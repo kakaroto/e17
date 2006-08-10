@@ -353,15 +353,18 @@ _ex_image_blur(Etk_Image *im)
    int           x, y, mx, my, mw, mh, mt, xx, yy;
    int           a, r, g, b;
    int          *as, *rs, *gs, *bs;   
-   int           rad = 2; /* maybe make this configurable later */
+   int           rad = 2; 
    unsigned int *p1, *p2;
    
    if(im->use_edje)
      return;
-   
+
    etk_image_size_get(im, &w, &h);
    data2 = evas_object_image_data_get(im->image_object, ETK_TRUE);
    _ex_image_data_copy(im, data2, w, h); /* for undo */
+
+   rad = e->options->blur_thresh;
+   D(("_ex_image_blur: using rad: %d\n", rad));
    
    if (rad < 1)
      return;
@@ -454,7 +457,7 @@ _ex_image_sharpen(Etk_Image *im)
    int           w, h;
    int           x, y;
    int           a, r, g, b;
-   int           rad = 2; /* maybe make this configurable later */
+   int           rad = 2;
    unsigned int *p1, *p2;
    
    if(im->use_edje)
@@ -465,6 +468,11 @@ _ex_image_sharpen(Etk_Image *im)
    _ex_image_data_copy(im, data2, w, h); /* for undo */
       
    data = malloc(w * h * sizeof(unsigned int));
+
+   /* FIXME I cant see any difference with this changed?? -- Balony */ 
+   rad = e->options->sharpen_thresh;
+   D(("_ex_image_sharpen: using rad: %d\n", rad));
+   
    if (rad == 0)
      return;
    else

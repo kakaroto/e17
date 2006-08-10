@@ -14,15 +14,9 @@ o TODO:
   * about
   
 - options
-  * dialog
   * slide show speed
   * comments visibile / hidden by default (with remembering last state)
   
-- key shotcuts
-  * x - fit / unfit to window
-
-- make slideshow display its status in the statusbar(s)
-
 - image operations:
   * crop
 
@@ -34,11 +28,18 @@ o DONE:
 + dnd
 + fix .spec file
 + make argv work with /path/to/image.png and not only /path/to/dir
++ make slideshow display its status in the statusbar(s)
 + save window geometry between sessions
 + menus
   + save image as
   + delete (needs message dialog)
-  + new window    
+  + new window
++ options
+  + dialog (common options)
++ key shotcuts
+  + x - fit / unfit to window
+  + s (slideshow)
+  + control-q (quit)
 
 =================
 * RELEASSE 0.2.0:

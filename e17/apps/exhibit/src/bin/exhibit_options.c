@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include "exhibit.h"
 
 #define NEWD(str, typ) \
@@ -21,8 +24,16 @@
 
 #define VER_NEWI(str, it, type) EET_DATA_DESCRIPTOR_ADD_BASIC(_ex_config_version_edd, Ex_Config_Version, str, it, type)
 
+#define IS_SELECTED(w) etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(w))
+
 static Eet_Data_Descriptor *_ex_config_options_edd = NULL;
 static Eet_Data_Descriptor *_ex_config_version_edd = NULL;
+
+static void _ex_options_set();
+static void _ex_options_set_cancel_cb(Etk_Object *object, void *data);
+static void _ex_options_set_apply_cb(Etk_Object *object, void *data);
+static void _ex_options_set_ok_cb(Etk_Object *object, void *data);
+static Etk_Bool _ex_options_window_delete_cb(void *data);
 
 
 int
@@ -278,49 +289,265 @@ _ex_options_load(Exhibit *e)
    e->options = eet_data_read(ef, _ex_config_options_edd, "config/options");
    
    D(("Config: Loaded saved options (%s)\n", e->options->fav_path));
+
+   D(("Default view: %d\n", e->options->default_view));
    
    
    eet_close(ef);
    return 1;
 }
 
-void
-_ex_options_window_show(Exhibit *e)
+static void
+_ex_options_set_cancel_cb(Etk_Object *object, void *data)
 {
-   Etk_Widget *win;
-   Etk_Widget *vbox, *vbox2;
-   Etk_Widget *btn, *btn2;
+   etk_object_destroy(ETK_OBJECT(object));
+   E_FREE(e->opt_dialog);
+}
+
+static void
+_ex_options_set_apply_cb(Etk_Object *object, void *data)
+{
+   _ex_options_set();
+   _ex_options_save(e);
+}
+
+static void
+_ex_options_set_ok_cb(Etk_Object *object, void *data)
+{
+   _ex_options_set();
+   _ex_options_save(e);
+   etk_object_destroy(ETK_OBJECT(object));
+
+   E_FREE(e->opt_dialog);
+}
+
+static Etk_Bool 
+_ex_options_window_delete_cb(void *data)
+{
+   etk_object_destroy(ETK_OBJECT(data));
+   E_FREE(e->opt_dialog);
+   return ETK_TRUE;
+}
+
+static void
+_ex_options_set()
+{
+   Ex_Options_Dialog *dialog = e->opt_dialog;
+   const char *string;
+   
+   
+   /* STANDARD VIEW */
+   if (IS_SELECTED(dialog->dv_btn_1))
+     {
+	D(("Zoom 1:1 is checked\n"));
+	e->options->default_view = EX_IMAGE_ONE_TO_ONE;
+	_ex_tab_current_zoom_one_to_one(e);
+     } 
+   else if (IS_SELECTED(dialog->dv_btn_2))
+     {
+	D(("Fit to window is checked\n"));
+	e->options->default_view = EX_IMAGE_FIT_TO_WINDOW;
+	_ex_tab_current_fit_to_window(e);
+     }
+   
+   /* BLUR */
+   string = etk_entry_text_get(ETK_ENTRY(dialog->blur_thresh));
+   if (string)
+   {
+	D(("Setting blur thresh: %f\n", atof(string)));
+	e->options->blur_thresh = atof(string);
+
+	if (e->options->blur_thresh <= 1)
+	   _ex_main_dialog_show("One, Zero or negative value for blur tresh " \
+		 "is not recommended! ", ETK_MESSAGE_DIALOG_WARNING);
+     }
+   else 
+     {
+	_ex_main_dialog_show("Missing value for blur thresh, but still " \
+	      "saving the other options!", ETK_MESSAGE_DIALOG_WARNING);
+     }
+
+   /* SHARPEN */
+   string = etk_entry_text_get(ETK_ENTRY(dialog->sharpen_thresh));
+   if (string)
+     {
+	D(("Setting sharpen thresh: %f\n", atof(string)));
+	e->options->sharpen_thresh = atof(string);
+
+	if (e->options->sharpen_thresh <= 0)
+	   _ex_main_dialog_show("Zero or negative value for sharpen tresh " \
+		 "is not recommended! ", ETK_MESSAGE_DIALOG_WARNING);
+     }
+   else 
+     {
+	_ex_main_dialog_show("Missing value for sharpen thresh, but still " \
+	      "saving the other options!", ETK_MESSAGE_DIALOG_WARNING);
+     }
+
+   /* BRIGHTEN */
+   string = etk_entry_text_get(ETK_ENTRY(dialog->brighten_thresh));
+   if (string)
+     {
+	D(("Setting brighten thresh: %f\n", atof(string)));
+	e->options->brighten_thresh = atof(string);
+
+	if (e->options->brighten_thresh <= 0)
+	   _ex_main_dialog_show("Zero or negative value for brighten tresh " \
+		 "is not recommended! ", ETK_MESSAGE_DIALOG_WARNING);
+	else if (e->options->brighten_thresh > 255)
+	   _ex_main_dialog_show("Bigger then 255 value for brighten tresh " \
+		 "is not recommended! ", ETK_MESSAGE_DIALOG_WARNING);
+     } 
+   else
+     {
+	_ex_main_dialog_show("Missing value for brighten thresh, but still " \
+	      "saving the other options!", ETK_MESSAGE_DIALOG_WARNING);
+     }
+
+
+}
+
+static Etk_Widget *
+_ex_options_page_1_create()
+{
+   Etk_Widget *vbox;
+   Etk_Widget *vbox2;
    Etk_Widget *frame;
+   Etk_Widget *table;
+   Etk_Widget *label;
+   char string[256];
    
-   win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(win), "Exhibit options");
-   etk_window_resize(ETK_WINDOW(win), 200, 150);
-   etk_container_border_width_set(ETK_CONTAINER(win), 10);
-   etk_signal_connect("delete_event", ETK_OBJECT(win),
-		      ETK_CALLBACK(_ex_options_window_delete_cb), win);
-   
-   vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_container_add(ETK_CONTAINER(win), vbox);
+   Ex_Options_Dialog *dialog = e->opt_dialog;
+   vbox = etk_vbox_new(ETK_FALSE, 3);
    
    frame = etk_frame_new("Choose standard view");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_TRUE, ETK_FALSE, 0);
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
    
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox2);
    
-   btn = etk_radio_button_new_with_label("Zoom 1:1", NULL);
-   etk_box_pack_start(ETK_BOX(vbox2), btn, ETK_TRUE, ETK_FALSE, 0);
+   dialog->dv_btn_1 = etk_radio_button_new_with_label("Zoom 1:1", NULL);
+   etk_box_pack_start(ETK_BOX(vbox2), dialog->dv_btn_1, ETK_FALSE, ETK_FALSE, 0);
    
-   btn2 = etk_radio_button_new_with_label_from_widget("Fit to window", 
-						      ETK_RADIO_BUTTON(btn));
-   etk_box_pack_start(ETK_BOX(vbox2), btn2, ETK_TRUE, ETK_FALSE, 0);
-      
+   dialog->dv_btn_2 = etk_radio_button_new_with_label_from_widget("Fit to window", 
+	 ETK_RADIO_BUTTON(dialog->dv_btn_1));
+   etk_box_pack_start(ETK_BOX(vbox2), dialog->dv_btn_2, ETK_FALSE, ETK_FALSE, 0);
+
+   frame = etk_frame_new("Effect thresh");
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
+
+   table = etk_table_new(2, 3, ETK_FALSE);
+   etk_box_pack_start(ETK_BOX(vbox2), table, ETK_FALSE, ETK_FALSE, 0);
+   
+   label = etk_label_new("Blur thresh"); 
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->blur_thresh = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->blur_thresh, 1, 1, 0, 0, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   
+   label = etk_label_new("Sharpen thresh"); 
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->sharpen_thresh = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->sharpen_thresh, 1, 1, 1, 1, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+
+   label = etk_label_new("Brighten thresh"); 
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->brighten_thresh = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->brighten_thresh, 1, 1, 2, 2, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   /* 
+    * Start toggling the correct values from loaded options 
+    */
+   if (e->options->default_view == EX_IMAGE_ONE_TO_ONE)
+      etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->dv_btn_1));
+   else if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW)
+      etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->dv_btn_2));
+   
+   sprintf(string, "%.2f", e->options->blur_thresh);
+   D(("Entry gets texts for blur tresh: %s\n", string));
+   etk_entry_text_set(ETK_ENTRY(dialog->blur_thresh), string);
+   
+   sprintf(string, "%.2f", e->options->sharpen_thresh);
+   D(("Entry gets texts for sharpen tresh: %s\n", string));
+   etk_entry_text_set(ETK_ENTRY(dialog->sharpen_thresh), string);
+   
+   sprintf(string, "%.2f", e->options->brighten_thresh);
+   D(("Entry gets texts for brighten tresh: %s\n", string));
+   etk_entry_text_set(ETK_ENTRY(dialog->brighten_thresh), string);
+   
+   return vbox;
+}
+
+static Etk_Widget *
+_ex_options_page_2_create()
+{
+   Etk_Widget *vbox;
+   
+   vbox = etk_vbox_new(ETK_FALSE, 3);
+   
+   return vbox;
+}
+
+void
+_ex_options_window_show(Exhibit *e)
+{
+   Etk_Widget *win;
+   Etk_Widget *vbox;
+   Etk_Widget *hbox;
+   Etk_Widget *notebook;
+   Etk_Widget *page;
+   Etk_Widget *button;
+   
+   if(e->opt_dialog)
+     return;
+   
+   e->opt_dialog = calloc(1, sizeof(Ex_Options_Dialog));   
+   
+   win = etk_window_new();
+   etk_window_title_set(ETK_WINDOW(win), "Exhibit options");
+   etk_container_border_width_set(ETK_CONTAINER(win), 5);
+   etk_signal_connect("delete_event", ETK_OBJECT(win),
+		      ETK_CALLBACK(_ex_options_window_delete_cb), win);
+   
+   vbox = etk_vbox_new(ETK_FALSE, 3);
+   etk_container_add(ETK_CONTAINER(win), vbox);
+   
+   notebook = etk_notebook_new();
+   etk_box_pack_start(ETK_BOX(vbox), notebook, ETK_TRUE, ETK_TRUE, 0);
+   
+   page = _ex_options_page_1_create();
+   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "General", page);
+   page = _ex_options_page_2_create();
+   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Slideshow", page);
+
+   etk_box_pack_start(ETK_BOX(vbox), etk_hseparator_new(), 
+		      ETK_FALSE, ETK_FALSE, 5);
+
+   hbox = etk_hbox_new(ETK_FALSE, 3);
+   etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+   
+   button = etk_button_new_from_stock(ETK_STOCK_DIALOG_OK);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(button),
+			      ETK_CALLBACK(_ex_options_set_ok_cb), win);
+   
+   button = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
+   etk_button_label_set(ETK_BUTTON(button), "Apply");
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+		      ETK_CALLBACK(_ex_options_set_apply_cb), NULL);
+   
+   button = etk_button_new_from_stock(ETK_STOCK_DIALOG_CANCEL);
+   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(button),
+			      ETK_CALLBACK(_ex_options_set_cancel_cb), win);
+
    etk_widget_show_all(ETK_WIDGET(win));
 }
 
-Etk_Bool 
-_ex_options_window_delete_cb(void *data)
-{
-   etk_object_destroy(ETK_OBJECT(data));
-  return ETK_TRUE;
-}

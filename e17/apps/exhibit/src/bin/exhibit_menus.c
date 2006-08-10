@@ -302,10 +302,16 @@ _ex_menu_brighten_cb(Etk_Object *obj, void *data)
    
    if (!e->cur_tab->image_loaded)
      return;
+
+   e->brightness = e->options->brighten_thresh;
    
-   e->brightness += 10;
+   /* What is this for? FIXME -- Balony */
+   e->brightness += 10; 
+   
    if(e->brightness > 255)
      e->brightness = 255;
+
+   D(("Using brightness %d\n", e->brightness));
    _ex_image_brightness(ETK_IMAGE(e->cur_tab->image), e->brightness);
 }
 

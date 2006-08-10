@@ -11,6 +11,7 @@ Common operations include:
 - sharpen / blur
 - saving
 - resizing (needs implementation)
-- zooming in and out (needs implementation)
-- drag and drop (needs implementation)
-- image sorting (needs implementation)
+- zooming in and out
+- drag and drop
+- image sorting
+

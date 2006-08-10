@@ -47,6 +47,7 @@
 
 typedef struct _Exhibit Exhibit;
 typedef struct _Ex_Options Ex_Options;
+typedef struct _Ex_Options_Dialog Ex_Options_Dialog;
 typedef struct _Ex_Tab Ex_Tab;
 typedef struct _Ex_Thumb Ex_Thumb;
 typedef struct _Ex_Filedialog Ex_Filedialog;
@@ -80,6 +81,16 @@ struct _Ex_Options
    
    int last_w;
    int last_h;
+};
+
+struct _Ex_Options_Dialog
+{
+   Etk_Widget *dv_btn_1;
+   Etk_Widget *dv_btn_2;
+
+   Etk_Widget *blur_thresh;
+   Etk_Widget *sharpen_thresh;
+   Etk_Widget *brighten_thresh;
 };
 
 struct _Ex_Tab
@@ -157,6 +168,7 @@ struct _Exhibit
    Ex_Tab        *cur_tab;
    
    Ex_Options     *options;
+   Ex_Options_Dialog *opt_dialog;
    Ex_Config_Version *version;   
    
    struct {
