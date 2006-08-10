@@ -40,6 +40,7 @@ static void 	window_input_shape_rectangle_set(Ecore_X_Window win, int x, int y, 
 static void
 window_input_shape_rectangle_set(Ecore_X_Window win, int x, int y, int w, int h)
 {
+#ifdef ShapeInput
    XRectangle rect;
    
    rect.x = x;
@@ -47,6 +48,7 @@ window_input_shape_rectangle_set(Ecore_X_Window win, int x, int y, int w, int h)
    rect.width = w;
    rect.height = h;
    XShapeCombineRectangles(ecore_x_display_get(), win, ShapeInput, 0, 0, &rect, 1, ShapeSet, Unsorted);
+#endif
 }
 
 
@@ -100,12 +102,14 @@ handle_mouse_in(Ecore_Evas * _ee)
 {
   if (_ee != ee)
     return;
-    
+
+#ifdef ShapeInput   
   if(options.use_composite)
   {
     Ecore_X_Window win = ecore_evas_software_x11_window_get(_ee);
     window_input_shape_rectangle_set(win,0,0,options.width,options.height);
   }
+#endif
   
   if (mouse_focus_timer)
     ecore_timer_del(mouse_focus_timer);
@@ -119,12 +123,14 @@ handle_mouse_out(Ecore_Evas * _ee)
 {
   if (_ee != ee)
     return;
-  
+
+#ifdef ShapeInput  
   if(options.use_composite) // it should be enough to do this at zoom out, but so it looks less cluttered
   { 
     Ecore_X_Window win = ecore_evas_software_x11_window_get(_ee);
     window_input_shape_rectangle_set(win,0,options.height-options.size,options.width,options.size);    
   }
+#endif
     
   if (mouse_focus_timer)
     ecore_timer_del(mouse_focus_timer);
@@ -236,13 +242,16 @@ od_window_init()
 
   ecore_evas_title_set(ee, "Engage");
   ecore_evas_name_class_set(ee, "engage", "engage");
- 
+
+
   if(options.use_composite)
   {
+#ifdef ShapeInput  
     ecore_evas_alpha_set(ee, 1);
     Ecore_X_Window win = ecore_evas_software_x11_window_get(ee);
     ecore_x_window_override_set(win,1);
     window_input_shape_rectangle_set(win,0,options.height-options.size,options.width,options.size);
+#endif  
   }
   else
     ecore_evas_borderless_set(ee, 1);  
@@ -445,11 +454,13 @@ handle_mouse_move(void *data, Evas * e, Evas_Object * obj, void *event)
   } else if (dock.state == zoomed || dock.state == zooming)
   	{
       od_dock_zoom_out();
+#ifdef ShapeInput  
       if(options.use_composite)
       {
   	    Ecore_X_Window win = ecore_evas_software_x11_window_get(ee);
         window_input_shape_rectangle_set(win, 0, options.height-options.size, options.width, options.size); 
       }
+#endif
   	}
 }
 
