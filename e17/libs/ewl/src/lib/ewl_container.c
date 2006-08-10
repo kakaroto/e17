@@ -59,6 +59,10 @@ ewl_container_init(Ewl_Container *c)
 			    ewl_container_unrealize_cb, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
 			    ewl_container_reparent_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE,
+			    ewl_container_enable_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
+			    ewl_container_disable_cb, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -1256,6 +1260,70 @@ ewl_container_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
 		ewl_widget_reparent(child);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief When enabling a container, pass the signal to the children.
+ */
+void
+ewl_container_enable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
+{
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	if (!EWL_CONTAINER(w)->children)
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Reparent all of the containers children
+	 */
+	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
+		ewl_widget_enable(child);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief When enabling a container, pass the signal to the children.
+ */
+void
+ewl_container_disable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
+{
+	Ewl_Widget *child;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	if (!EWL_CONTAINER(w)->children)
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Reparent all of the containers children
+	 */
+	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
+		ewl_widget_disable(child);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

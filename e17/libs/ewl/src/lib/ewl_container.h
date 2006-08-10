@@ -167,6 +167,8 @@ void ewl_container_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_container_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_enable_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_disable_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}
