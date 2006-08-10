@@ -12,14 +12,6 @@ group {
          name: "entry";
          description {
             state: "default" 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 0 0;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
-            }
             image {
                normal: "entry.png";
                border: 8 8 8 8;
@@ -53,14 +45,6 @@ group {
             state: "default" 0.0;
             visible: 0;
             color: 255 255 255 0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 0 0;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
-            }
             image {
                normal: "entry_focus.png";
                border: 8 8 8 8;
@@ -147,82 +131,78 @@ group {
          transition: LINEAR 0.0;
          target: "entry";
       }
-
    }
 }
 
 group {
-	name, "cursor";
-	min, 1 12;
-	max, 1 10000;
-
-	data {
-		item, "pad/left" "0";
-		item, "pad/right" "0";
-		item, "pad/top" "0";
-		item, "pad/bottom" "0";
-	}
-
-	parts {
-		part {
-			name, "separator";
-			mouse_events, 0;
-			type, RECT;
-			description {
-				state, "default" 0.0;
-				min, 2 20;
-				rel1 {
-					relative, 0.0 0.0;
-					offset, 2 2;
-				}
-				rel2 {
-					relative, 1.0 1.0;
-					offset, -3 -3;
-				}
-				color, 0 0 0 255;
-			}
-			description {
-				state, "hide" 0.0;
-				inherit, "default" 0.0;
-				visible: 0;
-			}
-		}
-	}
-
-	programs {
-		program {
-			name, "blink-on";
-			signal, "show";
-			source, "";
-			action, STATE_SET "default" 0.0;
-			target, "separator";
-			after, "blink-hold-on";
-		}
-		program {
-			name, "blink-hold-on";
-			in, 0.95 0.0;
-			after, "blink-off";
-		}
-		program {
-			name, "blink-off";
-			action, STATE_SET "hide" 0.0;
-			after, "blink-hold-off";
-			target, "separator";
-		}
-		program {
-			name, "blink-hold-off";
-			in, 0.5 0.0;
-			after, "blink-on";
-		}
-		program {
-			name, "noblink";
-			signal, "noblink";
-			source, "EWL";
-			action, ACTION_STOP;
-			target, "blink-hold-on";
-			target, "blink-hold-off";
-			after, "blink-on";
-		}
-	}
+   name, "cursor";
+   min, 1 12;
+   max, 1 10000;
+   data {
+      item, "pad/left" "0";
+      item, "pad/right" "0";
+      item, "pad/top" "0";
+      item, "pad/bottom" "0";
+   }
+   parts {
+      part {
+         name, "separator";
+	 mouse_events, 0;
+	 type, RECT;
+	 description {
+	   state, "default" 0.0;
+	   min, 2 20;
+	   rel1 {
+	      relative, 0.0 0.0;
+	      offset, 2 2;
+	   }
+	   rel2 {
+	      relative, 1.0 1.0;
+	      offset, -3 -3;
+	   }
+	   color, 0 0 0 255;
+	 }
+	 description {
+	    state, "hide" 0.0;
+	    inherit, "default" 0.0;
+	    visible: 0;
+	 }
+      }
+   }
+   programs {
+      program {
+         name, "blink-on";
+	 signal, "show";
+	 source, "";
+	 action, STATE_SET "default" 0.0;
+	 target, "separator";
+	 after, "blink-hold-on";
+      }
+      program {
+         name, "blink-hold-on";
+	 in, 0.95 0.0;
+	 after, "blink-off";
+      }	
+      program {
+         name, "blink-off";
+	 action, STATE_SET "hide" 0.0;
+	 after, "blink-hold-off";
+	 target, "separator";
+      }
+      program {
+         name, "blink-hold-off";
+	 in, 0.5 0.0;
+	 after, "blink-on";
+      }
+      program {
+         name, "noblink";
+	 signal, "noblink";
+	 source, "EWL";
+	 action, ACTION_STOP;
+	 target, "blink-hold-on";
+	 target, "blink-hold-off";
+	 after, "blink-on";
+      }	
+   }
 }
 

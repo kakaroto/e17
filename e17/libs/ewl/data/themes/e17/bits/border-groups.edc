@@ -1,13 +1,11 @@
 group {
    name: "border";
    data {
-      item: "inset/left" "8";
-      item: "inset/right" "8";
-      item: "inset/bottom" "5";
+      item, "inset/left" "8";
+      item, "inset/right" "8";
+      item, "inset/bottom" "5";
    }
-
    parts {
-
       part {
 	 name:          "outline";
 	 mouse_events:  0;
@@ -33,7 +31,6 @@ group {
       }
    }
 }
-
 group {
    name: "border/label";
    data {
@@ -44,20 +41,19 @@ group {
       item: "inset/left" "5";
       item: "inset/right" "5";
    }
-
    parts {
       part {
-	 name:          "label_under";
+	 name: "label_under";
 	 mouse_events:  0;
 	 description {
-	    state:    "default" 0.0;
+	    state: "default" 0.0;
 	    rel1 {
-	       to:       "label_over";
+	       to: "label_over";
 	       relative: 0.0  0.0;
 	       offset:   1    1;
 	    }
 	    rel2 {
-	       to:       "label_over";
+	       to: "label_over";
 	       relative: 1.0  1.0;
 	       offset:   -2   -2;
 	    }
@@ -70,47 +66,68 @@ group {
 	    }
 	 }
       }
-
       part {
-         name, "text";
-         type, TEXT;
-         effect, SOFT_SHADOW;
-
-         description {
-             state, "default" 0.0;
-             align, 0.5 0.5;
-             rel1 {
-                 relative, 0.0 0.0;
-                 offset, 0 0;
-             }
-             rel2 {
-                 relative, 1.0 1.0;
-                 offset, -1 -1;
-             }
-             color, 0 0 0 255;
-             color3, 255 255 255 32;
-             text {
-                text, "text";
-                font, "Vera";
-                size, 10;
-                min, 1 1;
-                align, 0.5 1.0;
-             }
-          }
-      }
-
-      part {
-	 name:          "label_over";
-	 mouse_events:  0;
+	 name: "text";
+	 type: TEXT;
+         effect: SOFT_SHADOW;
+	 mouse_events:   0;
 	 description {
-	    state:    "default" 0.0;
+	    state: "default" 0.0;
+	    align: 0.5 0.5; 
 	    rel1 {
 	       relative: 0.0  0.0;
 	       offset:   0   0;
 	    }
 	    rel2 {
 	       relative: 1.0  1.0;
-	       offset:   -1    -1;
+	       offset:   -1   -1;
+	    }
+	    color: 0 0 0 255;
+            color3: 255 255 255 32;
+	    text {
+	       text: "text";
+	       font: "Vera";
+	       size: 10;
+	       min:  1 1;
+	       align: 0.5 1.0; 
+	    }
+	 }
+         description {
+	    state: "disabled" 0.0;
+            align: 0.5 0.5;
+            rel1 {
+               relative: 0.0  0.0;
+               offset: 0   0;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset: -1   -1;
+            }
+            color: 0 0 0 120;
+            color3: 255 255 255 32;
+            text {
+               text: "text";
+               font: "Vera";
+               size: 10;
+               min:  1 1;
+               align: 0.5 1.0;
+            }
+         }
+      }
+      part {
+	 name: "label_over";
+	 mouse_events:  0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               to: "text";
+	       relative: 0.0  0.0;
+	       offset: 0.5    0.5;
+	    }
+	    rel2 {
+	       to: "text";
+	       relative: 1.0  1.0;
+	       offset: -1.5   -1.5;
 	    }
 	    image {
 	       normal: "e17_frame_label_over.png";
@@ -120,6 +137,24 @@ group {
                smooth: 0;
 	    }
 	 }
+      }
+   }
+   programs {
+      program {
+         name: "disable";
+         signal: "disabled";
+         source: "*";
+         action: STATE_SET "disabled" 0.0;
+         transition: LINEAR 0.0;
+         target: "text";
+      }
+      program {
+         name: "enable";
+         signal: "enabled";
+         source: "*";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.0;
+         target: "text";
       }
    }
 }

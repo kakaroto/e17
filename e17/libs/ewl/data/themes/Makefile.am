@@ -7,7 +7,6 @@ EDJS = $(EDCS:%.edc=%.edj)
 
 e17_DEPS = \
 	e17/bits/border-groups.edc \
-	e17/bits/box-groups.edc \
 	e17/bits/button-groups.edc \
 	e17/bits/debug-groups.edc \
 	e17/bits/entry-groups.edc \
@@ -18,6 +17,7 @@ e17_DEPS = \
 	e17/bits/progressbar-groups.edc \
 	e17/bits/rowtext-groups.edc \
 	e17/bits/scrollbar-groups.edc \
+	e17/bits/scrollpane-groups.edc \
 	e17/bits/selection-groups.edc \
 	e17/bits/separator-groups.edc \
 	e17/bits/spacer-groups.edc \
