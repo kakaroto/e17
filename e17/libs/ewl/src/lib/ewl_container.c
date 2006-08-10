@@ -1287,7 +1287,7 @@ ewl_container_enable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	/*
-	 * Reparent all of the containers children
+	 * Enable all of the containers children
 	 */
 	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
@@ -1319,7 +1319,7 @@ ewl_container_disable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	/*
-	 * Reparent all of the containers children
+	 * Disable all of the containers children
 	 */
 	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
