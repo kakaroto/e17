@@ -172,7 +172,7 @@ tree2_test_data_fetch(void *data, unsigned int row, unsigned int column)
         else if (column == 1)
                 val = d->rows[row]->image;
 
-        else if (column == 1)
+        else if (column == 2)
                 val = d->rows[row];
 
         else
