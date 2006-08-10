@@ -35,7 +35,8 @@
 #define EX_DEFAULT_SHARPEN_THRESH 2
 #define EX_DEFAULT_BRIGHTEN_THRESH 100
 #define EX_DEFAULT_SLIDE_INTERVAL 5.0
-#define EX_DEFAULT_COMMENTS_VISIBLE 0
+#define EX_DEFAULT_COMMENTS_HIDDEN 0
+#define EX_DEFAULT_COMMENTS_VISIBLE 1
 #define EX_DEFAULT_WINDOW_WIDTH 700
 #define EX_DEFAULT_WINDOW_HEIGHT 500
 
@@ -91,6 +92,9 @@ struct _Ex_Options_Dialog
    Etk_Widget *blur_thresh;
    Etk_Widget *sharpen_thresh;
    Etk_Widget *brighten_thresh;
+
+   Etk_Widget *slide_interval;
+   Etk_Widget *comments_visible;
 };
 
 struct _Ex_Tab

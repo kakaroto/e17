@@ -386,24 +386,42 @@ _ex_menu_refresh_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_comments_cb(Etk_Object *obj, void *data)
 {   
-   Exhibit      *e;
-   Etk_Tree_Row *r;
-   char         *icol_string;
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;
-   
-   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);   
-   
+   if (!e->cur_tab->image_loaded)
+     return;
+
    if(!e->cur_tab->comment.visible)
      {
+	e->options->comments_visible = EX_DEFAULT_COMMENTS_VISIBLE;
 	_ex_comment_show(e);
-	_ex_comment_load(e);	  
+	_ex_comment_load(e);
+	
+	if(e->opt_dialog) 
+	  {
+	     /* If the options dialog is open, toggle the checkbox  */
+	     if (!etk_toggle_button_active_get
+		   (ETK_TOGGLE_BUTTON(e->opt_dialog->comments_visible)))
+	       etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(e->opt_dialog->comments_visible));
+	  }
      }
    else
-     _ex_comment_hide(e);
+     {
+	e->options->comments_visible = EX_DEFAULT_COMMENTS_HIDDEN;
+	_ex_comment_hide(e);
+	
+	if(e->opt_dialog) 
+	  {
+	     /* If the options dialog is open, toggle the checkbox  */
+	     if (etk_toggle_button_active_get
+		   (ETK_TOGGLE_BUTTON(e->opt_dialog->comments_visible)))
+	       etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(e->opt_dialog->comments_visible));
+	  }
+     }
+
+   /* Save this as settings since we want "remember state" for this */
+   _ex_options_save(e);
 }
 
 void

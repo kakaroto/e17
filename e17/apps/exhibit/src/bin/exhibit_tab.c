@@ -26,6 +26,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->e = e;
    tab->fit_window = ETK_FALSE;
    tab->comment.visible = ETK_FALSE;
+
    tab->image_loaded = ETK_FALSE;
    
    tab->dtree = etk_tree_new();

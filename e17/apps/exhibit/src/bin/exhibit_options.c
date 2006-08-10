@@ -183,7 +183,7 @@ _ex_options_default(Exhibit *e)
    e->options->sharpen_thresh   = EX_DEFAULT_SHARPEN_THRESH;
    e->options->brighten_thresh  = EX_DEFAULT_BRIGHTEN_THRESH;
    e->options->slide_interval   = EX_DEFAULT_SLIDE_INTERVAL;
-   e->options->comments_visible = EX_DEFAULT_COMMENTS_VISIBLE;
+   e->options->comments_visible = EX_DEFAULT_COMMENTS_HIDDEN;
    e->options->default_view     = EX_IMAGE_ONE_TO_ONE;
    e->options->default_sort     = 0; /* TODO: enumerate sort types */
    e->options->last_w           = EX_DEFAULT_WINDOW_WIDTH;
@@ -334,6 +334,7 @@ _ex_options_set()
 {
    Ex_Options_Dialog *dialog = e->opt_dialog;
    const char *string;
+   double ss_int;
    
    
    /* STANDARD VIEW */
@@ -348,6 +349,21 @@ _ex_options_set()
 	D(("Fit to window is checked\n"));
 	e->options->default_view = EX_IMAGE_FIT_TO_WINDOW;
 	_ex_tab_current_fit_to_window(e);
+     }
+
+   /* COMMENTS */
+   if (IS_SELECTED(dialog->comments_visible))
+     {
+	D(("Comments EX_DEFAULT_COMMENTS_VISIBLE\n"));
+	e->options->comments_visible = EX_DEFAULT_COMMENTS_VISIBLE;
+	_ex_comment_show(e);
+	_ex_comment_load(e);
+     }
+   else
+     {
+	D(("Comments EX_DEFAULT_COMMENTS_HIDDEN\n"));
+	e->options->comments_visible = EX_DEFAULT_COMMENTS_HIDDEN;
+	_ex_comment_hide(e);
      }
    
    /* BLUR */
@@ -404,13 +420,34 @@ _ex_options_set()
 	      "saving the other options!", ETK_MESSAGE_DIALOG_WARNING);
      }
 
+   /* SLIDESHOW */
+   string = etk_entry_text_get(ETK_ENTRY(dialog->slide_interval));
+   if (string)
+     {
+	ss_int = atof(string);
+	
+	if (ss_int <= 0)
+	   _ex_main_dialog_show("Zero or negative value for slideshow interval " \
+		 "is not possible, skipping! ", ETK_MESSAGE_DIALOG_WARNING);
+	else
+	  {
+	     D(("Setting slide_interval: %f\n", ss_int));
+	     e->options->slide_interval = ss_int;
+	  }
+     }
+   else
+     {
+	_ex_main_dialog_show("Missing value for slideshow interval, but still " \
+	      "saving the other options!", ETK_MESSAGE_DIALOG_WARNING);
+
+     }
 
 }
 
 static Etk_Widget *
 _ex_options_page_1_create()
 {
-   Etk_Widget *vbox;
+   Etk_Widget *vbox, *hbox;
    Etk_Widget *vbox2;
    Etk_Widget *frame;
    Etk_Widget *table;
@@ -433,6 +470,55 @@ _ex_options_page_1_create()
 	 ETK_RADIO_BUTTON(dialog->dv_btn_1));
    etk_box_pack_start(ETK_BOX(vbox2), dialog->dv_btn_2, ETK_FALSE, ETK_FALSE, 0);
 
+   frame = etk_frame_new("Slideshow");
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), hbox);
+
+   label = etk_label_new("Interval"); 
+   etk_box_pack_start(ETK_BOX(hbox), label, ETK_FALSE, ETK_FALSE, 0);
+   
+   dialog->slide_interval = etk_entry_new();
+   etk_box_pack_start(ETK_BOX(hbox), dialog->slide_interval, ETK_FALSE, ETK_FALSE, 0);
+
+   
+   frame = etk_frame_new("Comments");
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
+   
+   dialog->comments_visible = etk_check_button_new_with_label("Visible");
+   etk_box_pack_start(ETK_BOX(vbox2), dialog->comments_visible, ETK_FALSE, ETK_FALSE, 0);
+   
+   /* 
+    * Start toggling/setting the correct values from loaded options 
+    */
+   if (e->options->default_view == EX_IMAGE_ONE_TO_ONE)
+      etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->dv_btn_1));
+   else if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW)
+      etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->dv_btn_2));
+
+   if (e->options->comments_visible == EX_DEFAULT_COMMENTS_VISIBLE)
+     etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->comments_visible));
+
+   sprintf(string, "%.2f", e->options->slide_interval);
+   D(("Entry gets texts for slide_interval: %s\n", string));
+   etk_entry_text_set(ETK_ENTRY(dialog->slide_interval), string);
+   
+   return vbox;
+}
+
+static Etk_Widget *
+_ex_options_page_2_create()
+{
+   Etk_Widget *vbox, *vbox2;
+   Etk_Widget *label;
+   Etk_Widget *frame, *table;
+   Ex_Options_Dialog *dialog = e->opt_dialog;
+   char string[256];
+   
+   vbox = etk_vbox_new(ETK_FALSE, 3);
+   
    frame = etk_frame_new("Effect thresh");
    etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
@@ -461,14 +547,7 @@ _ex_options_page_1_create()
    dialog->brighten_thresh = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->brighten_thresh, 1, 1, 2, 2, 0, 0, 
 	 ETK_FILL_POLICY_NONE);
-   /* 
-    * Start toggling the correct values from loaded options 
-    */
-   if (e->options->default_view == EX_IMAGE_ONE_TO_ONE)
-      etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->dv_btn_1));
-   else if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW)
-      etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->dv_btn_2));
-   
+
    sprintf(string, "%.2f", e->options->blur_thresh);
    D(("Entry gets texts for blur tresh: %s\n", string));
    etk_entry_text_set(ETK_ENTRY(dialog->blur_thresh), string);
@@ -480,17 +559,18 @@ _ex_options_page_1_create()
    sprintf(string, "%.2f", e->options->brighten_thresh);
    D(("Entry gets texts for brighten tresh: %s\n", string));
    etk_entry_text_set(ETK_ENTRY(dialog->brighten_thresh), string);
-   
+
    return vbox;
 }
 
 static Etk_Widget *
-_ex_options_page_2_create()
+_ex_options_page_3_create()
 {
    Etk_Widget *vbox;
-   
+   Ex_Options_Dialog *dialog = e->opt_dialog;
+
    vbox = etk_vbox_new(ETK_FALSE, 3);
-   
+
    return vbox;
 }
 
@@ -524,7 +604,9 @@ _ex_options_window_show(Exhibit *e)
    page = _ex_options_page_1_create();
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "General", page);
    page = _ex_options_page_2_create();
-   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Slideshow", page);
+   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Effects", page);
+   page = _ex_options_page_3_create();
+   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Exec commands", page);
 
    etk_box_pack_start(ETK_BOX(vbox), etk_hseparator_new(), 
 		      ETK_FALSE, ETK_FALSE, 5);

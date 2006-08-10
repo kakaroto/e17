@@ -14,6 +14,9 @@ _ex_slideshow_stop(Exhibit *e)
 void
 _ex_slideshow_start(Exhibit *e)
 {
+	if (e->options->slide_interval)
+		e->slideshow.interval = e->options->slide_interval;
+
    if(!e->slideshow.active)
      {
 	etk_statusbar_push(ETK_STATUSBAR(e->statusbar[3]), "Slideshow running", 0);

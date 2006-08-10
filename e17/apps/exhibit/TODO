@@ -14,12 +14,7 @@ o TODO:
   
 - options
   * provide tab for "open in" applications
-  * slide show speed
-  * comments visibile / hidden by default (with remembering last state)
   
-- image operations:
-  * crop
-
 o DONE:
  ------
 + andy's comments feature
@@ -36,6 +31,8 @@ o DONE:
   + new window
 + options
   + dialog (common options)
+  + slide show speed
+  + comments visibile / hidden by default (with remembering last state)  
 + key shotcuts
   + x - fit / unfit to window
   + s (slideshow)

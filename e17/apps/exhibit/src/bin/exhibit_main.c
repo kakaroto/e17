@@ -140,6 +140,9 @@ _ex_main_image_set(Exhibit *e, char *image)
      E_FREE(data2);
 
    etk_object_data_set(ETK_OBJECT(e->cur_tab->image), "undo", NULL);
+
+   if (e->options->comments_visible)
+     _ex_comment_show(e);
    
    if(e->cur_tab->comment.visible)
      _ex_comment_load(e);
