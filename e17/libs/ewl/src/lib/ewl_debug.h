@@ -99,12 +99,12 @@ void ewl_backtrace(void);
 	return num; \
 }
 
-#define DWARNING(fmt) \
+#define DWARNING(fmt, args...) \
 { \
 	ewl_print_warning(); \
 	fprintf(stderr, "\tIn function:\n\n" \
 			"\t%s();\n\n", __func__); \
-	fprintf(stderr, fmt); \
+	fprintf(stderr, fmt, ## args); \
 	ewl_backtrace(); \
 	ewl_segv(); \
 }
@@ -193,7 +193,7 @@ void ewl_backtrace(void);
 #define DRETURN_PTR(ptr, lvl) return (void *)(ptr)
 #define DRETURN_FLOAT(num, lvl) return num
 #define DRETURN_INT(num, lvl) return num
-#define DWARNING(fmt) {}
+#define DWARNING(fmt, args...) {}
 #define DCHECK_PARAM_PTR(str, ptr) \
 { \
 	if (!(ptr)) { \
