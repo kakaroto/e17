@@ -5,15 +5,15 @@
 
 o TODO:
  ------
--menus
-  * search
+- menus
   * rename
-  * open in options based on config values
+  * "open in" should be generated from options
   * refresh
   * release notes
   * about
   
 - options
+  * provide tab for "open in" applications
   * slide show speed
   * comments visibile / hidden by default (with remembering last state)
   
@@ -49,7 +49,10 @@ o TODO:
  ------
 - integrate with evfs for file tagging and categories
 - integrate with libgphoto for digicam interaction
-
+- menus
+  * search
+- image operations:
+  * crop  
 ================
 * MISC FEATURES:
 ================
@@ -64,7 +67,8 @@ o TODO:
 =======
 
 - fix autocomplete (combobox?)
-- if we're scrolled to the end of the dir tree, clicking on a dir needs to
-  reset the scrollbar to the top.
 - if we're looking at a LOT of images and change dir before they have
   finished loading, then the images will thumbnail and load in the current dir
+  
++ if we're scrolled to the end of the dir tree, clicking on a dir needs to
+  reset the scrollbar to the top.
