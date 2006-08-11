@@ -104,13 +104,12 @@ _ex_main_image_set(Exhibit *e, char *image)
      {
 	etk_image_set_from_file(ETK_IMAGE(e->cur_tab->image), image);
 	
-	if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW)
+	if (e->cur_tab->fit_window)
 	  {
 	     _ex_tab_current_fit_to_window(e);
 	     D(("Setting EX_IMAGE_FIT_TO_WINDOW loaded and used\n"));
-	     
 	  }
-	else if (e->options->default_view == EX_IMAGE_ONE_TO_ONE)
+	else
 	  {
 	     _ex_tab_current_zoom_one_to_one(e);
 	     D(("Setting EX_IMAGE_ONE_TO_ONE loaded and used\n"));	     
@@ -143,9 +142,6 @@ _ex_main_image_set(Exhibit *e, char *image)
 
    if (e->options->comments_visible)
      _ex_comment_show(e);
-   
-   if(e->cur_tab->comment.visible)
-     _ex_comment_load(e);
 }
 
 static int
@@ -256,6 +252,18 @@ _ex_main_populate_files(Exhibit *e, const char *selected_file)
      }
 
    etk_tree_thaw(ETK_TREE(e->cur_tab->itree));
+
+   D(("e->options->default_sort: %d\n", e->options->default_sort));
+
+   if (e->options->default_sort == EX_SORT_BY_DATE)
+	_ex_sort_date_cb(NULL, NULL);
+   else if (e->options->default_sort == EX_SORT_BY_SIZE)
+	_ex_sort_size_cb(NULL, NULL);
+   else if (e->options->default_sort == EX_SORT_BY_NAME)
+	_ex_sort_name_cb(NULL, NULL);
+   else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
+	_ex_sort_resol_cb(NULL, NULL);
+
    etk_tree_thaw(ETK_TREE(e->cur_tab->dtree));
    etk_tree_sort(ETK_TREE(e->cur_tab->dtree), _ex_main_dtree_compare_cb, ETK_TRUE, e->cur_tab->dcol, NULL);
 

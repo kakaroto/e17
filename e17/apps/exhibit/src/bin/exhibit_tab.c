@@ -24,9 +24,16 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->dirs = NULL;
    tab->images = NULL;
    tab->e = e;
-   tab->fit_window = ETK_FALSE;
-   tab->comment.visible = ETK_FALSE;
 
+   if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW) 
+     {
+	tab->fit_window = ETK_TRUE;
+	D(("Setting EX_IMAGE_FIT_TO_WINDOW\n"));
+     }
+   else
+      tab->fit_window = ETK_FALSE;
+      
+   tab->comment.visible = ETK_FALSE;
    tab->image_loaded = ETK_FALSE;
    
    tab->dtree = etk_tree_new();
@@ -259,9 +266,6 @@ _ex_tab_current_zoom_one_to_one(Exhibit *e)
 void
 _ex_tab_current_fit_to_window(Exhibit *e)
 {
-   if (e->cur_tab->fit_window)
-      return;
-   
    etk_widget_size_request_set(e->cur_tab->alignment, 10, 10);
    if(evas_list_count(e->tabs) == 1)
      {

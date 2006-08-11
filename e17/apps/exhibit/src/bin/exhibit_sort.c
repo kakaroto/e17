@@ -114,36 +114,25 @@ _ex_sort_itree_resol_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row
 void 
 _ex_sort_name_cb(Etk_Object *obj, void *data)
 {    
-   Exhibit *e;
-   
-   e = data;
-   etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_name_compare_cb, ETK_TRUE, e->cur_tab->icol, NULL);
+   etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_name_compare_cb, 
+			 ETK_TRUE, e->cur_tab->icol, NULL);
 }
 
 void 
 _ex_sort_size_cb(Etk_Object *obj, void *data)
 {    
-   Exhibit *e;
-   
-   e = data;
    etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_size_compare_cb, ETK_TRUE, e->cur_tab->icol, NULL);
 }
 
 void 
 _ex_sort_resol_cb(Etk_Object *obj, void *data)
 {    
-   Exhibit *e;
-   
-   e = data;
    etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_resol_compare_cb, ETK_TRUE, e->cur_tab->icol, NULL);
 }
 
 void 
 _ex_sort_date_cb(Etk_Object *obj, void *data)
 {    
-   Exhibit *e;
-   
-   e = data;
    etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_date_compare_cb, ETK_TRUE, e->cur_tab->icol, NULL);
 }
 

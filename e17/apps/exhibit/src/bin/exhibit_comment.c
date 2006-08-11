@@ -9,9 +9,6 @@ static void _ex_comment_revert_clicked_cb(Etk_Object *obj, void *data);
 void
 _ex_comment_show(Exhibit *e)
 {
-   if(e->cur_tab->comment.visible)
-     return;
-   
    e->cur_tab->comment.vbox = etk_vbox_new(ETK_FALSE, 0);
    if(evas_list_count(e->tabs) == 1)
      {

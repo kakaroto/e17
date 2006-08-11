@@ -94,7 +94,9 @@ _ex_options_init()
    CFG_OPTIONS_NEWI("rt", brighten_thresh, EET_T_DOUBLE);
    CFG_OPTIONS_NEWI("lt", slide_interval, EET_T_DOUBLE);
    CFG_OPTIONS_NEWI("cv", comments_visible, EET_T_INT);
+   CFG_OPTIONS_NEWI("ra", rotate_autosave, EET_T_INT);
    CFG_OPTIONS_NEWI("dv", default_view, EET_T_INT);
+   CFG_OPTIONS_NEWI("ds", default_sort, EET_T_INT);
    CFG_OPTIONS_NEWI("lw", last_w, EET_T_INT);
    CFG_OPTIONS_NEWI("lh", last_h, EET_T_INT);
    
@@ -185,9 +187,10 @@ _ex_options_default(Exhibit *e)
    e->options->slide_interval   = EX_DEFAULT_SLIDE_INTERVAL;
    e->options->comments_visible = EX_DEFAULT_COMMENTS_HIDDEN;
    e->options->default_view     = EX_IMAGE_ONE_TO_ONE;
-   e->options->default_sort     = 0; /* TODO: enumerate sort types */
+   e->options->default_sort     = EX_SORT_BY_NAME;
    e->options->last_w           = EX_DEFAULT_WINDOW_WIDTH;
-   e->options->last_h           = EX_DEFAULT_WINDOW_HEIGHT;   
+   e->options->last_h           = EX_DEFAULT_WINDOW_HEIGHT;
+   e->options->rotate_autosave  = ETK_FALSE;
    e->version = _ex_options_version_parse(VERSION);        
 }
 
@@ -291,8 +294,7 @@ _ex_options_load(Exhibit *e)
    D(("Config: Loaded saved options (%s)\n", e->options->fav_path));
 
    D(("Default view: %d\n", e->options->default_view));
-   
-   
+
    eet_close(ef);
    return 1;
 }
@@ -348,6 +350,7 @@ _ex_options_set()
      {
 	D(("Fit to window is checked\n"));
 	e->options->default_view = EX_IMAGE_FIT_TO_WINDOW;
+	e->cur_tab->fit_window = ETK_TRUE;
 	_ex_tab_current_fit_to_window(e);
      }
 
@@ -365,7 +368,13 @@ _ex_options_set()
 	e->options->comments_visible = EX_DEFAULT_COMMENTS_HIDDEN;
 	_ex_comment_hide(e);
      }
-   
+
+   /* ROTATE */
+   if (IS_SELECTED(dialog->rotate_autosave))
+	e->options->rotate_autosave = ETK_TRUE;
+   else 
+	e->options->rotate_autosave = ETK_FALSE;
+
    /* BLUR */
    string = etk_entry_text_get(ETK_ENTRY(dialog->blur_thresh));
    if (string)
@@ -439,8 +448,13 @@ _ex_options_set()
      {
 	_ex_main_dialog_show("Missing value for slideshow interval, but still " \
 	      "saving the other options!", ETK_MESSAGE_DIALOG_WARNING);
-
      }
+
+   /* SORTING */
+   e->options->default_sort = e->options->default_sort_tmp;
+   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+   _ex_main_populate_files(e, NULL);
 
 }
 
@@ -450,7 +464,6 @@ _ex_options_page_1_create()
    Etk_Widget *vbox, *hbox;
    Etk_Widget *vbox2;
    Etk_Widget *frame;
-   Etk_Widget *table;
    Etk_Widget *label;
    char string[256];
    
@@ -480,7 +493,6 @@ _ex_options_page_1_create()
    
    dialog->slide_interval = etk_entry_new();
    etk_box_pack_start(ETK_BOX(hbox), dialog->slide_interval, ETK_FALSE, ETK_FALSE, 0);
-
    
    frame = etk_frame_new("Comments");
    etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
@@ -500,6 +512,7 @@ _ex_options_page_1_create()
 
    if (e->options->comments_visible == EX_DEFAULT_COMMENTS_VISIBLE)
      etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->comments_visible));
+
 
    sprintf(string, "%.2f", e->options->slide_interval);
    D(("Entry gets texts for slide_interval: %s\n", string));
@@ -548,6 +561,16 @@ _ex_options_page_2_create()
    etk_table_attach(ETK_TABLE(table), dialog->brighten_thresh, 1, 1, 2, 2, 0, 0, 
 	 ETK_FILL_POLICY_NONE);
 
+   frame = etk_frame_new("Rotate");
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
+   
+   dialog->rotate_autosave = etk_check_button_new_with_label("Autosave after rotate");
+   etk_box_pack_start(ETK_BOX(vbox2), dialog->rotate_autosave, ETK_FALSE, 
+	 ETK_FALSE, 0);
+
+   
    sprintf(string, "%.2f", e->options->blur_thresh);
    D(("Entry gets texts for blur tresh: %s\n", string));
    etk_entry_text_set(ETK_ENTRY(dialog->blur_thresh), string);
@@ -560,14 +583,92 @@ _ex_options_page_2_create()
    D(("Entry gets texts for brighten tresh: %s\n", string));
    etk_entry_text_set(ETK_ENTRY(dialog->brighten_thresh), string);
 
+   if (e->options->rotate_autosave)
+     etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->rotate_autosave));
+
    return vbox;
+}
+
+static void 
+_ex_options_combobox_active_item_changed_cb(Etk_Object *object, void *data)
+{
+   Etk_Combobox_Item *item;
+   Ex_Options_Dialog *dialog = e->opt_dialog;
+
+   item = etk_combobox_active_item_get(ETK_COMBOBOX(object));
+
+   if (item == dialog->sort_date)
+     e->options->default_sort_tmp = EX_SORT_BY_DATE;
+   else if (item == dialog->sort_size)
+     e->options->default_sort_tmp = EX_SORT_BY_SIZE;
+   else if (item == dialog->sort_name)
+     e->options->default_sort_tmp = EX_SORT_BY_NAME;
+   else if (item == dialog->sort_resolution)
+     e->options->default_sort_tmp = EX_SORT_BY_RESOLUTION;
+
+   D(("Selected item %p, e->options->default_sort_tmp %d\n", item,
+	    e->options->default_sort_tmp));
 }
 
 static Etk_Widget *
 _ex_options_page_3_create()
 {
-   Etk_Widget *vbox;
+   Etk_Widget *vbox, *hbox;
+   Etk_Widget *frame, *label;
+   Etk_Widget *image;
    Ex_Options_Dialog *dialog = e->opt_dialog;
+
+   vbox = etk_vbox_new(ETK_FALSE, 3);
+   
+   frame = etk_frame_new("Thumb sorting");
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), hbox);
+
+   label = etk_label_new("Default sort by"); 
+   etk_box_pack_start(ETK_BOX(hbox), label, ETK_FALSE, 
+	 ETK_FALSE, 0);
+  
+   e->options->default_sort_tmp = e->options->default_sort;
+
+   dialog->default_sort = etk_combobox_new();
+   etk_combobox_column_add(ETK_COMBOBOX(dialog->default_sort), ETK_COMBOBOX_IMAGE, 
+	 24, ETK_FALSE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_column_add(ETK_COMBOBOX(dialog->default_sort), ETK_COMBOBOX_LABEL, 
+	 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_build(ETK_COMBOBOX(dialog->default_sort));
+   etk_box_pack_start(ETK_BOX(hbox), dialog->default_sort, ETK_FALSE, 
+	 ETK_FALSE, 0);
+
+   image = etk_image_new_from_stock(ETK_STOCK_OFFICE_CALENDAR, ETK_STOCK_SMALL);
+   dialog->sort_date = etk_combobox_item_append(ETK_COMBOBOX(dialog->default_sort), image, "Date");
+   image = etk_image_new_from_stock(ETK_STOCK_DRIVE_HARDDISK, ETK_STOCK_SMALL);
+   dialog->sort_size = etk_combobox_item_append(ETK_COMBOBOX(dialog->default_sort), image, "Size");
+   image = etk_image_new_from_stock(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_SMALL);
+   dialog->sort_name = etk_combobox_item_append(ETK_COMBOBOX(dialog->default_sort), image, "Name");
+   image = etk_image_new_from_stock(ETK_STOCK_UTILITIES_SYSTEM_MONITOR, ETK_STOCK_SMALL);
+   dialog->sort_resolution = etk_combobox_item_append(ETK_COMBOBOX(dialog->default_sort), image, "Resolution");
+   
+   etk_signal_connect("active_item_changed", ETK_OBJECT(dialog->default_sort), 
+	 ETK_CALLBACK(_ex_options_combobox_active_item_changed_cb), NULL);
+
+   if (e->options->default_sort == EX_SORT_BY_DATE)
+      etk_combobox_active_item_set(ETK_COMBOBOX(dialog->default_sort), dialog->sort_date);
+   else if (e->options->default_sort == EX_SORT_BY_SIZE)
+      etk_combobox_active_item_set(ETK_COMBOBOX(dialog->default_sort), dialog->sort_size);
+   else if (e->options->default_sort == EX_SORT_BY_NAME)
+      etk_combobox_active_item_set(ETK_COMBOBOX(dialog->default_sort), dialog->sort_name);
+   else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
+      etk_combobox_active_item_set(ETK_COMBOBOX(dialog->default_sort), dialog->sort_resolution);
+
+   return vbox;
+}
+
+
+static Etk_Widget *
+_ex_options_page_4_create()
+{
+   Etk_Widget *vbox;
 
    vbox = etk_vbox_new(ETK_FALSE, 3);
 
@@ -606,6 +707,8 @@ _ex_options_window_show(Exhibit *e)
    page = _ex_options_page_2_create();
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Effects", page);
    page = _ex_options_page_3_create();
+   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Dir/thumb listing", page);
+   page = _ex_options_page_4_create();
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Exec commands", page);
 
    etk_box_pack_start(ETK_BOX(vbox), etk_hseparator_new(), 

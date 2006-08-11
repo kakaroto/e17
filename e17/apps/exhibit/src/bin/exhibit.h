@@ -62,6 +62,14 @@ typedef enum _Ex_Images
    EX_IMAGE_ZOOM_OUT = -4
 } Ex_Images;
 
+typedef enum _Ex_Sort
+{
+   EX_SORT_BY_DATE = -1,
+   EX_SORT_BY_SIZE = -2,
+   EX_SORT_BY_NAME = -3,
+   EX_SORT_BY_RESOLUTION = -4
+} Ex_Sort;
+
 struct _Ex_Options
 {
    char  *app1;
@@ -77,8 +85,10 @@ struct _Ex_Options
    
    double slide_interval;   
    int comments_visible;
+   int rotate_autosave;
    int default_view;   
    int default_sort;
+   int default_sort_tmp;
    
    int last_w;
    int last_h;
@@ -95,6 +105,12 @@ struct _Ex_Options_Dialog
 
    Etk_Widget *slide_interval;
    Etk_Widget *comments_visible;
+   Etk_Widget *rotate_autosave;
+   Etk_Widget *default_sort;
+   Etk_Combobox_Item *sort_date;
+   Etk_Combobox_Item *sort_size;
+   Etk_Combobox_Item *sort_name;
+   Etk_Combobox_Item *sort_resolution;
 };
 
 struct _Ex_Tab
