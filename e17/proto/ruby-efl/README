@@ -68,8 +68,9 @@ If you installed them, all you need to do to use the binding for library <foo> i
 require 'ruby-efl/foo/ruby-foo'
 
 If you have not installed it, you can require ruby-foo.rb with full path and it will work.
-However, if want to copy the bindings around, for example locally to your application, there's
-a caveat: the ruby-foo.rb files will alway need to require dl_auto.rb *from the directory below them*. 
+However, if want to copy the bindings around, for example locally to your application, 
+there's a caveat: the ruby-foo.rb files will alway need to require dl_auto.rb 
+*from the directory below them*. 
 So always copy both and keep the directory structure in place.
 
 From this point on, you're are on your own for now.
@@ -78,7 +79,25 @@ they are used. More documentation will come sooner or later.
 
 See below for how to poke me for questions, threats, requests etc.
 
-=== 5. CONTACT ===
+=== 5. COMMON PROBLEMS ===
+
+These are some of the problems encountered by users so far:
+
+-- You get an error that mentions "ruby-breakpoint" during build or usage.
+
+This means I have forgotten again to remove debug statements and I richly deserve spanking. 
+You can either bug me, or install ruby-breakpoint with `gem install ruby-breakpoint`. 
+It's a very useful package anyway, so it might even be that I did you a favor.
+
+-- You get an error that mentions DL::Importable. and you have installed the dl2 library.
+
+It seems that dl2 and ruby/dl are not playing along very nicely. The fix for the unfortunate
+finder of this problem was to reinstall ruby althogether. You might have better luck by just 
+uninstalling DL2.
+In any case if you have DL2 and either get this problem or you don't, please let me know 
+about it. It helps investigating this shady issue. Thanks.
+
+=== 6. CONTACT ===
 
 You can email me at nerochiaro@gmail.com or nerochiaro@nerochiaro.net
 
