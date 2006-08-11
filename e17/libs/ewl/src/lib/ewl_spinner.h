@@ -33,18 +33,15 @@ typedef struct Ewl_Spinner Ewl_Spinner;
 #define EWL_SPINNER(spinner) ((Ewl_Spinner *) spinner)
 
 /**
- * Inherits from Ewl_Box and adds an entry box that can only contain
+ * Inherits from Ewl_Range and adds an entry box that can only contain
  * numerical values as well as buttons for manipulating that value.
  */
 struct Ewl_Spinner
 {
-	Ewl_Box   	box; /**< Inherit from Ewl_Box */
-	double          min_val; /**< Minimum numerical value displayed */
-	double          max_val; /**< Maximum numerical value displayed */
-	double          value; /**< Current value displayed */
-	double          step; /**< Amount to add or subtract at a time */
+	Ewl_Range   	range; /**< Inherit from Ewl_Range */
 	int             digits; /**< Number of digits displayed after decimal */
 	Ewl_Widget     *entry; /**< The Ewl_Entry displaying value */
+	Ewl_Widget     *vbox;  /**< Ewl_Box to hold the buttons */
 	Ewl_Widget     *increment; /**< Ewl_Button to add value */
 	Ewl_Widget     *decrement; /**< Ewl_Button to subtract value */
 	double          start_time; /**< Time the spinner was pressed */
@@ -54,19 +51,16 @@ struct Ewl_Spinner
 
 Ewl_Widget     *ewl_spinner_new(void);
 int             ewl_spinner_init(Ewl_Spinner *s);
-void            ewl_spinner_value_set(Ewl_Spinner *s, double value);
-double          ewl_spinner_value_get(Ewl_Spinner *s);
 void            ewl_spinner_digits_set(Ewl_Spinner *s, unsigned char digits);
-double          ewl_spinner_min_val_get(Ewl_Spinner *s);
-void            ewl_spinner_min_val_set(Ewl_Spinner *s, double val);
-double          ewl_spinner_max_val_get(Ewl_Spinner *s);
-void            ewl_spinner_max_val_set(Ewl_Spinner *s, double val);
-void            ewl_spinner_step_set(Ewl_Spinner *s, double step);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
 void ewl_spinner_realize_cb(Ewl_Widget *widget, void *ev_data,
+						void *user_data);
+void ewl_spinner_value_changed_cb(Ewl_Widget *widget, void *ev_data,
+						void *user_data);
+void ewl_spinner_configure_cb(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
 void ewl_spinner_key_down_cb(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
@@ -81,7 +75,9 @@ void ewl_spinner_decrease_value_cb(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
 void ewl_spinner_value_stop_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-
+void ewl_spinner_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
+void ewl_spinner_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+					Ewl_Orientation o);
 /**
  * @}
  */

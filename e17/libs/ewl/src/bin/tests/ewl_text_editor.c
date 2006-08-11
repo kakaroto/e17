@@ -111,10 +111,10 @@ create_test(Ewl_Container *box)
 		o = ewl_spinner_new();
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
 		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
-		ewl_spinner_value_set(EWL_SPINNER(o), 12);
-		ewl_spinner_min_val_set(EWL_SPINNER(o), 8);
-		ewl_spinner_max_val_set(EWL_SPINNER(o), 72);
-		ewl_spinner_step_set(EWL_SPINNER(o), 1);
+		ewl_range_value_set(EWL_RANGE(o), 12);
+		ewl_range_min_val_set(EWL_RANGE(o), 8);
+		ewl_range_max_val_set(EWL_RANGE(o), 72);
+		ewl_range_step_set(EWL_RANGE(o), 1);
 		ewl_spinner_digits_set(EWL_SPINNER(o), 0);
 		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
 					ete_cb_font_size, NULL);
@@ -328,13 +328,13 @@ ete_cb_font_size(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		ewl_text_cursor_position_set(EWL_TEXT(entry),
 					ewl_text_trigger_start_pos_get(selection));
 		ewl_text_font_size_apply(EWL_TEXT(entry),
-					ewl_spinner_value_get(EWL_SPINNER(w)),
+					ewl_range_value_get(EWL_RANGE(w)),
 					ewl_text_trigger_length_get(selection));
 		ewl_text_cursor_position_set(EWL_TEXT(entry), cursor_pos);
 	}
 	else
 		ewl_text_font_size_set(EWL_TEXT(entry), 
-					ewl_spinner_value_get(EWL_SPINNER(w)));
+					ewl_range_value_get(EWL_RANGE(w)));
 }
 
 static void

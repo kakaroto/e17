@@ -48,8 +48,10 @@ create_test(Ewl_Container *box)
 	 */
 	for (i = 0; i < 2; i++) {
 		progressbar[i] = ewl_progressbar_new();
-		ewl_progressbar_value_set (EWL_PROGRESSBAR(progressbar[i]), 0);
-		ewl_widget_show (progressbar[i]);
+		if (i == 0)
+			ewl_range_invert_set(EWL_RANGE(progressbar[0]), TRUE);
+		ewl_range_value_set(EWL_RANGE(progressbar[i]), 0);
+		ewl_widget_show(progressbar[i]);
 
 		progress_timer[i] = ecore_timer_add(0.1, cb_increment_progress,
 				(Ewl_Progressbar *) progressbar[i]);
@@ -62,8 +64,8 @@ create_test(Ewl_Container *box)
 	 * Third big progressbar 
 	 */
 	progressbar[2] = ewl_progressbar_new();
-	ewl_progressbar_value_set (EWL_PROGRESSBAR(progressbar[2]), 0);
-	ewl_widget_show (progressbar[2]);
+	ewl_range_value_set(EWL_RANGE(progressbar[2]), 0);	
+	ewl_widget_show(progressbar[2]);
 	
 	progress_timer[2] = ecore_timer_add(0.1, cb_increment_progress,
 			(Ewl_Progressbar *) progressbar[2]);
@@ -105,12 +107,12 @@ cb_increment_progress(void *data)
 	double val, value, range;
 	char c[30];
 	int i;
-	Ewl_Progressbar *p;
+	Ewl_Range *r;
 	
-	p = EWL_PROGRESSBAR(data);
-	val = ewl_progressbar_value_get(p);
+	r = EWL_RANGE(data);
+	val = ewl_range_value_get(r);
 
-	if (val >= p->range) {
+	if (val >= r->max_val) {
 		for (i = 0; i < 3; i++) {
 			if (progress_timer[i]) {
 				ecore_timer_del(progress_timer[i]);
@@ -121,27 +123,26 @@ cb_increment_progress(void *data)
 	}
 
 	val += 1;
-	ewl_progressbar_value_set(p, val);
-
+	ewl_range_value_set(r, val);
 
 	if (val >= 20 && val < 35 ) {
-		ewl_progressbar_custom_label_set (p,
+		ewl_progressbar_custom_label_set(EWL_PROGRESSBAR(r),
 				"%.0lf / %.0lf kbytes");
 	}
 
 	if (val >= 35 && val < 60) {
-		value = ewl_progressbar_value_get (p);
-		range = ewl_progressbar_range_get (p);
+		value = ewl_range_value_get(r);
+		range = ewl_range_max_val_get(r);
 
-		snprintf (c, sizeof (c), "%.0lf of %.0lf beers", value, range);
-		ewl_progressbar_label_set (p, c);
+		snprintf(c, sizeof (c), "%.0lf of %.0lf beers", value, range);
+		ewl_progressbar_label_set(EWL_PROGRESSBAR(r), c);
 	}
 
 	if (val == 60) 
-		ewl_progressbar_label_hide (p);
+		ewl_progressbar_label_hide(EWL_PROGRESSBAR(r));
 
 	if (val == 70)
-		ewl_progressbar_label_show (p);
+		ewl_progressbar_label_show(EWL_PROGRESSBAR(r));
 
 	return 1;
 }
@@ -170,9 +171,9 @@ cb_set_new_range(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	printf ("New random value: %d\n", j);
 	
 	for (i = 0; i < 3; i++) {
-		ewl_progressbar_range_set(EWL_PROGRESSBAR(progressbar[i]), j);
+		ewl_range_max_val_set(EWL_RANGE(progressbar[i]), j);
 		
-		if (ewl_progressbar_value_get(EWL_PROGRESSBAR(progressbar[i])) >= j)
+		if (ewl_range_value_get(EWL_RANGE(progressbar[i])) >= j)
 			cb_rerun_progressbars(EWL_WIDGET (progressbar[i]), 
 								NULL, NULL);
 	}
@@ -191,7 +192,7 @@ cb_rerun_progressbars (Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		 * (since the auto label is turned off when you label manually)
 		 */
 		ewl_progressbar_label_show (EWL_PROGRESSBAR (progressbar[i]));
-		ewl_progressbar_value_set (EWL_PROGRESSBAR (progressbar[i]), 0);
+		ewl_range_value_set(EWL_RANGE(progressbar[i]), 0);
 		
 		if (progress_timer[i]) {
 			ecore_timer_del(progress_timer[i]);

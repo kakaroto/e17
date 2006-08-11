@@ -141,7 +141,7 @@ ewl_test_cb_unit_test_timer(void *data)
 		entries[2] = (val ? "" : buf);
 		ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
 
-		ewl_progressbar_value_set(EWL_PROGRESSBAR(progress),
+		ewl_range_value_set(EWL_RANGE(progress),
 				(double)(++current_unit_test));
 	}
 	else
@@ -561,8 +561,8 @@ setup_unit_tests(Ewl_Test *test)
 	}
 
 	progress = ewl_widget_name_find("unit_test_progress");
-	ewl_progressbar_range_set(EWL_PROGRESSBAR(progress), (double)(i));
-	ewl_progressbar_value_set(EWL_PROGRESSBAR(progress), 0.0);
+	ewl_range_max_val_set(EWL_RANGE(progress), (double)(i));
+	ewl_range_value_set(EWL_RANGE(progress), 0.0);
 
 }
 
@@ -585,8 +585,8 @@ cb_run_unit_tests(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		;
 
 	progress = ewl_widget_name_find("unit_test_progress");
-	ewl_progressbar_range_set(EWL_PROGRESSBAR(progress), (double)(i));
-	ewl_progressbar_value_set(EWL_PROGRESSBAR(progress), 0.0);
+	ewl_range_max_val_set(EWL_RANGE(progress), (double)(i));
+	ewl_range_value_set(EWL_RANGE(progress), 0.0);
 
 	if (unit_test_timer) 
 	{

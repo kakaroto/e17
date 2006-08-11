@@ -160,7 +160,7 @@ video_change_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, void *data)
 	t = data;
 	pos = ewl_media_position_get(EWL_MEDIA(video));
 
-	ewl_seeker_value_set(EWL_SEEKER(seeker), pos);
+	ewl_range_value_set(EWL_RANGE(seeker), pos);
 	ewl_media_position_time_get(EWL_MEDIA(video), &h, &m, &s);
 	snprintf(buf, sizeof(buf), "%02i:%02i:%02.0f", h, m, s);
 	ewl_text_text_set(t, buf);
@@ -172,7 +172,7 @@ seeker_move_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 {
 	double val;
 
-	val = ewl_seeker_value_get(EWL_SEEKER(seeker));
+	val = ewl_range_value_get(EWL_RANGE(seeker));
 	if (ewl_media_seekable_get(EWL_MEDIA(video)))
 		ewl_media_position_set(EWL_MEDIA(video), val);
 }
@@ -200,7 +200,7 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 		if (file) free(file);
 
 		len = ewl_media_length_get(EWL_MEDIA(video));
-		ewl_seeker_range_set(EWL_SEEKER(seeker), len);
+		ew_range_max_value_set(EWL_RANGE(seeker), len);
 	}
 }
 
@@ -308,9 +308,9 @@ create_media_window(Ewl_Media_Module_Type type)
 	ewl_container_child_append(EWL_CONTAINER(b), seeker);
 	ewl_object_fill_policy_set(EWL_OBJECT(seeker), 
 			EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-	ewl_seeker_value_set(EWL_SEEKER(seeker), 0.0);
-	ewl_seeker_range_set(EWL_SEEKER(seeker), 0.0);
-	ewl_seeker_step_set(EWL_SEEKER(seeker), 1.0);
+	ewl_range_value_set(EWL_RANGE(seeker), 0.0);
+	ewl_range_max_value_set(EWL_RANGE(seeker), 0.0);
+	ewl_range_step_set(EWL_RANGE(seeker), 1.0);
 	ewl_callback_append(seeker, EWL_CALLBACK_VALUE_CHANGED, seeker_move_cb, video);
 	ewl_widget_show(seeker);
 

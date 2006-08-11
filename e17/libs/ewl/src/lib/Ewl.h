@@ -304,6 +304,7 @@ extern"C" {
 #include <ewl_colorpicker.h>
 #include <ewl_colordialog.h>
 #include <ewl_password.h>
+#include <ewl_range.h>
 #include <ewl_seeker.h>
 #include <ewl_scrollbar.h>
 #include <ewl_spacer.h>

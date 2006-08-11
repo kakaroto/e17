@@ -40,13 +40,9 @@ typedef struct Ewl_Seeker Ewl_Seeker;
  */
 struct Ewl_Seeker
 {
-	Ewl_Container   container; /**< Inherit from Ewl_Container */
+	Ewl_Range       range; /**< Inherit from Ewl_Range */
 	Ewl_Orientation orientation; /**< Indicates layout direction */
 	Ewl_Widget     *button; /**< Draggable widget for selecting value */
-	double          value; /**< Currently chosen value */
-	double          range; /**< Total selectable range */
-	double          step; /**< Size of increments in the range */
-	int             invert; /**< Invert the axis */
 	int             dragstart; /**< The coordinate where the drag starts */
 	int             autohide; /**< Indicator to hide when not scrollable */
 	Ecore_Timer    *timer; /**< Timer for scroll repeating */
@@ -61,23 +57,8 @@ int             ewl_seeker_init(Ewl_Seeker *s);
 void            ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o);
 Ewl_Orientation ewl_seeker_orientation_get(Ewl_Seeker *s);
 
-void            ewl_seeker_value_set(Ewl_Seeker *s, double v);
-double          ewl_seeker_value_get(Ewl_Seeker *s);
-
-void            ewl_seeker_range_set(Ewl_Seeker *s, double r);
-double          ewl_seeker_range_get(Ewl_Seeker *s);
-
-void            ewl_seeker_step_set(Ewl_Seeker *s, double step);
-double          ewl_seeker_step_get(Ewl_Seeker *s);
-
 void            ewl_seeker_autohide_set(Ewl_Seeker *s, int v);
 int             ewl_seeker_autohide_get(Ewl_Seeker *s);
-
-void            ewl_seeker_invert_set(Ewl_Seeker *s, int invert);
-int             ewl_seeker_invert_get(Ewl_Seeker *s);
-
-void            ewl_seeker_decrease(Ewl_Seeker *s);
-void            ewl_seeker_increase(Ewl_Seeker *s);
 
 /*
  * Internally used callbacks, override at your own risk.

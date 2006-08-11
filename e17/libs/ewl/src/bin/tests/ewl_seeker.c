@@ -40,10 +40,10 @@ create_test(Ewl_Container *box)
 static void
 cb_print_value(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
-	Ewl_Seeker *s;
+	Ewl_Range *r;
 
-	s = EWL_SEEKER(w);
-	printf("Seeker set to %g\n", ewl_seeker_value_get(s));
+	r = EWL_RANGE(w);
+	printf("Seeker set to %g\n", ewl_range_value_get(r));
 }
 
 
