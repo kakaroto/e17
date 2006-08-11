@@ -230,10 +230,11 @@ AC_SUBST([ENTRANCE_VT_ARG])
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/lib/Makefile
 src/client/Makefile
 src/daemon/Makefile
 src/daemon/entrance_wrapper
-src/lib/Makefile
+src/config/Makefile
 config/Makefile
 config/init.d/Makefile
 config/init.d/entrance

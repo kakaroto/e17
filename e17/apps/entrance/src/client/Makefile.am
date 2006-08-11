@@ -5,7 +5,8 @@ INCLUDES = @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ \
 
 entrancelibdir = $(libdir)/$(PACKAGE)
 
-bin_PROGRAMS = entrance entrance_edit
+#bin_PROGRAMS = entrance entrance_edit
+bin_PROGRAMS = entrance
 
 entrancelib_PROGRAMS = entrance_login
 
@@ -28,9 +29,9 @@ entrance_login_SOURCES = \
 	entrance_auth.c entrance_auth.h \
 	util.c util.h
 
-entrance_edit_SOURCES = \
-	entrance_edit.c \
-	entrance_config.c entrance_user.c \
-	util.c entrance_x_session.c entrance_smart.c
-entrance_edit_LDADD = @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ \
-@ESMART_LIBS@ -lesmart_container -lesmart_text_entry
+#entrance_edit_SOURCES = \
+#	entrance_edit.c \
+#	entrance_config.c entrance_user.c \
+#	util.c entrance_x_session.c entrance_smart.c
+#entrance_edit_LDADD = @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ \
+#@ESMART_LIBS@ -lesmart_container -lesmart_text_entry

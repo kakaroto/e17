@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
-#include "../lib/Entrance_Edit.h"
+#include <Entrance_Edit.h>
 
 void 
 usage()
