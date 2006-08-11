@@ -258,7 +258,6 @@ debian/changelog
 echo
 echo "Finished configuring $PACKAGE $VERSION"
 echo
-echo "OpenGL engine support ............... $have_ecore_gl_x11"
 echo "Support for crypt authentication .... $have_crypt"
 echo "Support for shadow authentication ... $have_shadow"
 echo "Support for PAM authentication ...... $have_pam"
