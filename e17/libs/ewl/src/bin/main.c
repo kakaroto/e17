@@ -15,6 +15,17 @@
 #define MAIN_WIDTH 640
 #define MAIN_HEIGHT 320
 
+static char *ewl_test_about_body = 
+		"The EWL Test application services two purposes\n"
+		"The first is to allow us to test the different\n"
+		"pices of EWL as we develop and work on them.\n\n"
+		"The second piece is to allow deveopers to see\n"
+		"tutorials and source listings for the different\n"
+		"widgets in the system.\n\n"
+		"If you develop your own EWL widget you can add\n"
+		"a test to the test widget without needing to\n"
+		"recompile or edit the test application.\n";
+
 static int ewl_test_setup_tests(void);
 static void ewl_test_print_tests(void);
 
@@ -31,6 +42,9 @@ static int ewl_test_cb_unit_test_timer(void *data);
 static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
 static void ewl_test_cb_exit(Ewl_Widget *w, void *ev, void *data);
 static void cb_run_unit_tests(Ewl_Widget *w, void *ev, void *data);
+
+static void ewl_test_cb_help(Ewl_Widget *w, void *ev, void *data);
+static void ewl_test_cb_about(Ewl_Widget *w, void *ev, void *data);
 
 static Ecore_List *tests = NULL;
 static int window_count = 0;
@@ -379,11 +393,13 @@ create_main_test_window(Ewl_Container *box)
 	o2 = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(o2), "About EWL...");
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, ewl_test_cb_about, NULL);
 	ewl_widget_show(o2);
 
 	o2 = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(o2), "EWL Test Help");
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, ewl_test_cb_help, NULL);
 	ewl_widget_show(o2);
 
 	note = ewl_notebook_new();
@@ -746,4 +762,69 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 		ptr = ptr2;
 	}
 }
+
+static void
+ewl_test_cb_help(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
+{
+	Ewl_Widget *win, *vbox, *o;
+
+	window_count++;
+
+	win = ewl_window_new();
+	ewl_window_title_set(EWL_WINDOW(win), "EWL Test Help");
+	ewl_window_class_set(EWL_WINDOW(win), "ewl_test");
+	ewl_window_name_set(EWL_WINDOW(win), "ewl_test");
+	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
+					ewl_test_cb_delete_window, NULL);
+	ewl_widget_show(win);
+
+	vbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(win), vbox);
+	ewl_widget_show(vbox);
+
+	o = ewl_text_new();
+	ewl_text_font_size_set(EWL_TEXT(o), 22);
+	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
+	ewl_text_text_set(EWL_TEXT(o), "Ewl_ Test App Help");
+	ewl_text_text_append(EWL_TEXT(o), "\n\n");
+	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_font_size_set(EWL_TEXT(o), 12);
+	ewl_text_text_append(EWL_TEXT(o), "Still need to write this, eh.");
+	ewl_container_child_append(EWL_CONTAINER(vbox), o);
+	ewl_widget_show(o);
+}
+
+static void
+ewl_test_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
+{
+	Ewl_Widget *win, *vbox, *o;
+
+	window_count++;
+
+	win = ewl_window_new();
+	ewl_window_title_set(EWL_WINDOW(win), "EWL Test About");
+	ewl_window_class_set(EWL_WINDOW(win), "ewl_test");
+	ewl_window_name_set(EWL_WINDOW(win), "ewl_test");
+	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
+					ewl_test_cb_delete_window, NULL);
+	ewl_widget_show(win);
+
+	vbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(win), vbox);
+	ewl_widget_show(vbox);
+
+	o = ewl_text_new();
+	ewl_text_font_size_set(EWL_TEXT(o), 22);
+	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
+	ewl_text_text_set(EWL_TEXT(o), "Ewl_ Test App");
+	ewl_text_text_append(EWL_TEXT(o), "\n\n");
+	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_font_size_set(EWL_TEXT(o), 12);
+	ewl_text_text_append(EWL_TEXT(o), ewl_test_about_body);
+	ewl_container_child_append(EWL_CONTAINER(vbox), o);
+	ewl_widget_show(o);
+}
+
 
