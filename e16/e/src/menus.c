@@ -292,8 +292,8 @@ MenuShow(Menu * m, char noshow)
    mw = m->w;
    mh = m->h;
 
-   wx = 0;
-   wy = 0;
+   wx = Mode.events.x - x - (w / 2);
+   wy = Mode.events.y - y - (h / 2);
    if (Conf.menus.onscreen)
      {
 	Border             *b;
@@ -309,35 +309,16 @@ MenuShow(Menu * m, char noshow)
 	     head_num =
 		GetPointerScreenGeometry(&x_origin, &y_origin, &width, &height);
 
-	     if (Mode.events.x - x - ((int)mw / 2) > x_origin + width)
-		wx = x_origin + b->border.left;
-	     else if (Mode.events.x + ((int)mw / 2) > x_origin + width)
+	     if (wx > x_origin + width - mw - b->border.right)
 		wx = x_origin + width - mw - b->border.right;
-	     else
-		wx = Mode.events.x - x - (w / 2);
-
-	     if ((wx - ((int)w / 2)) < x_origin)
+	     if (wx < x_origin + b->border.left)
 		wx = x_origin + b->border.left;
 
-	     if (Mode.events.y + (int)mh > VRoot.h)
-		wy = (y_origin + height) - mh - b->border.bottom;
-	     else
-		wy = Mode.events.y - y - (h / 2);
-
-	     if ((wy - ((int)h / 2) - b->border.top) < y_origin)
+	     if (wy > y_origin + height - mh - b->border.bottom)
+		wy = y_origin + height - mh - b->border.bottom;
+	     if (wy < y_origin + b->border.top)
 		wy = y_origin + b->border.top;
 	  }
-	else
-	  {
-	     /* We should never get here */
-	     wx = Mode.events.x - x - (w / 2);
-	     wy = Mode.events.y - y - (h / 2);
-	  }
-     }
-   else
-     {
-	wx = Mode.events.x - x - (w / 2);
-	wy = Mode.events.y - y - (h / 2);
      }
 
    EMoveWindow(m->win, wx, wy);
