@@ -111,6 +111,15 @@ struct _Ex_Options_Dialog
    Etk_Combobox_Item *sort_size;
    Etk_Combobox_Item *sort_name;
    Etk_Combobox_Item *sort_resolution;
+
+   Etk_Widget *app1;
+   Etk_Widget *app2;
+   Etk_Widget *app3;
+   Etk_Widget *app4;
+   Etk_Widget *app1_cmd;
+   Etk_Widget *app2_cmd;
+   Etk_Widget *app3_cmd;
+   Etk_Widget *app4_cmd;
 };
 
 struct _Ex_Tab

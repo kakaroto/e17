@@ -651,7 +651,7 @@ _ex_options_page_3_create()
    
    etk_signal_connect("active_item_changed", ETK_OBJECT(dialog->default_sort), 
 	 ETK_CALLBACK(_ex_options_combobox_active_item_changed_cb), NULL);
-
+   
    if (e->options->default_sort == EX_SORT_BY_DATE)
       etk_combobox_active_item_set(ETK_COMBOBOX(dialog->default_sort), dialog->sort_date);
    else if (e->options->default_sort == EX_SORT_BY_SIZE)
@@ -668,10 +668,72 @@ _ex_options_page_3_create()
 static Etk_Widget *
 _ex_options_page_4_create()
 {
-   Etk_Widget *vbox;
+   Etk_Widget *vbox, *vbox2;
+   Etk_Widget *frame, *table;
+   Etk_Widget *label;
+   Ex_Options_Dialog *dialog = e->opt_dialog;
 
    vbox = etk_vbox_new(ETK_FALSE, 3);
+   
+   frame = etk_frame_new("Open in ...");
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
+   
+   label = etk_label_new("Hint: application command has %s as file argument."); 
+   etk_box_pack_start(ETK_BOX(vbox2), label, ETK_FALSE, ETK_FALSE, 5);
+   etk_box_pack_start(ETK_BOX(vbox2), etk_hseparator_new(), ETK_FALSE, ETK_FALSE, 5);
 
+   table = etk_table_new(3, 5, ETK_FALSE);
+   etk_box_pack_start(ETK_BOX(vbox2), table, ETK_FALSE, ETK_FALSE, 0);
+   
+   label = etk_label_new("Menu display"); 
+   etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   label = etk_label_new("Command"); 
+   etk_table_attach(ETK_TABLE(table), label, 2, 2, 0, 0, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+
+   label = etk_label_new("Application 1"); 
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 5, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->app1 = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->app1, 1, 1, 1, 1, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->app1_cmd = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->app1_cmd, 2, 2, 1, 1, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   
+   label = etk_label_new("Application 2"); 
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->app2 = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->app2, 1, 1, 2, 2, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->app2_cmd = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->app2_cmd, 2, 2, 2, 2, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   
+   label = etk_label_new("Application 3"); 
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 3, 3, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->app3 = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->app3, 1, 1, 3, 3, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->app3_cmd = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->app3_cmd, 2, 2, 3, 3, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+
+   label = etk_label_new("Application 4"); 
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 4, 4, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->app4 = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->app4, 1, 1, 4, 4, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   dialog->app4_cmd = etk_entry_new();
+   etk_table_attach(ETK_TABLE(table), dialog->app4_cmd, 2, 2, 4, 4, 0, 0, 
+	 ETK_FILL_POLICY_NONE);
+   
    return vbox;
 }
 
