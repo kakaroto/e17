@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = client daemon
+SUBDIRS = lib client daemon
 
 EXTRA_DIST = ipc.h

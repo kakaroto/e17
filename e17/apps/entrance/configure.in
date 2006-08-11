@@ -233,6 +233,7 @@ src/Makefile
 src/client/Makefile
 src/daemon/Makefile
 src/daemon/entrance_wrapper
+src/lib/Makefile
 config/Makefile
 config/init.d/Makefile
 config/init.d/entrance

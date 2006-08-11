@@ -1,7 +1,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <Ecore_Config.h>
-#include "Entranced.h"
+#include "../daemon/Entranced.h"
 #include "Entrance_Edit.h"
 
 #define _CONF_INIT_DOMAIN "entrance"
