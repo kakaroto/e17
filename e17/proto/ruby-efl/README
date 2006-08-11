@@ -1,0 +1,87 @@
+==========================================================================================
+                                        ruby-efl
+==========================================================================================
+
+- 1. INTRODUCTION
+- 2. DOCUMENTATION
+- 3. BUILDING
+- 4. USING
+- 5. CONTACT
+
+=== 1. INTRODUCTION ===
+
+Unsurprisingly, this package provides ruby bindings for various EFL libraries.
+
+Currently it works for Etk, Ewl and Enhance. And it's still in developement.
+It works for most things, but there are still some the ugly bits, rough edges and lack of
+documentation common to all things in this state.
+
+The bindings are implemented in pure ruby, using ruby/DL and are almost completely 
+generated with a script that parses the C header files.
+This makes maintenance tremendously easy, which is important because the API of some of 
+the wrapped libraries is still subject to change.
+
+The downside is that the syntax for using them might feel a bit unpleasant to ruby
+purists in some corner cases. And they are possibly less performant than a C-based 
+solution, although I didn't have the chance to run any benchmark to prove that.
+
+There's another set of bindings called ruby-efl. It is maintaned by Tilman Sauerbeck and 
+hosted at http://www.code-monkey.de/pages/ruby-efl.
+It is different from this one in both style and scope: it is written entirely in C and it
+covers evas, edje, ecore and esmart. 
+Be sure to check it out if you need to use these libraries in your ruby programs.
+
+=== 2. DOCUMENTATION ===
+
+The main sources of documentation are, in order: 
+- the examples in the examples dir of each bindings. 
+- myself and other users, if any. hop on IRC and ask away (see bottom of this README)
+- the source, if you can make sense of it (it's commented, but might not be enough)
+
+=== 3. BUILDING ===
+
+Install the prerequisites (you will be warned later if you do not):
+
+A - ruby 1.8.4 (i only tested on this version, sorry)
+B - CAST (C parser for ruby) http://cast.rubyforge.org/
+C - gcc (i use only the preprocessor and you can easily hack-in any other preprocessor)
+
+The rest of the setup will be handled by the setup.rb script. Launch it without any
+parameters to get a summary of its usage.
+
+Generally you want to just call
+
+ruby setup.rb install
+
+This will build and install all the bindings, parsing the headers directly from the CVS tree.
+It will also install the bindings into the standard ruby library path, so you can require
+them from anywhere.
+
+If you don't want to install, use "build" as first parameter to setup.rb
+If you want just one or more bindings, but not all, just append a comma separated list after
+the command. Look at the usage banner to see what are the supported libraries at the moment.
+
+=== 4. USING ===
+
+If you installed them, all you need to do to use the binding for library <foo> is:
+
+require 'ruby-efl/foo/ruby-foo'
+
+If you have not installed it, you can require ruby-foo.rb with full path and it will work.
+However, if want to copy the bindings around, for example locally to your application, there's
+a caveat: the ruby-foo.rb files will alway need to require dl_auto.rb *from the directory below them*. 
+So always copy both and keep the directory structure in place.
+
+From this point on, you're are on your own for now.
+I suggest you look at the examples in the `examples` directory for each binding to see how 
+they are used. More documentation will come sooner or later. 
+
+See below for how to poke me for questions, threats, requests etc.
+
+=== 5. CONTACT ===
+
+You can email me at nerochiaro@gmail.com or nerochiaro@nerochiaro.net
+
+Or join the #edevelop, #etk or #ewl channels in irc.freenode.net and ask me questions
+directly. 
+If I don't answer in a while, leave me a /msg and I'll get back to you when I come back.
