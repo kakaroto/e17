@@ -8,15 +8,65 @@ Standards-Version: 3.6.2.2
 Package: libetk0
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libevas, libecore, libedje
+Depends: ${shlibs:Depends}, libevas, libecore, libedje, libetk0-engine-evas-software-x11
 Provides: libetk
 Description: A widget toolkit based on the EFL
  ETK is a widget toolkit based on the enlightenment foundation libraries.
 
+Package: libetk0-engine-fb
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, libevas, libecore, libedje, libetk0
+Provides: libetk-engine-fb
+Description: Framebuffer engine for Etk
+ ETK is a widget toolkit based on the enlightenment foundation libraries.
+ .
+ This package provides the framebuffer device render engine.
+
+Package: libetk0-engine-evas
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, libevas, libecore, libedje, libetk0
+Provides: libetk-engine-evas
+Description: Evas engine for Etk
+ ETK is a widget toolkit based on the enlightenment foundation libraries.
+ .
+ This package provides the Evas rendering engine.
+
+Package: libetk0-engine-evas-x11
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, libevas, libecore, libedje, libetk0, libetk0-engine-evas
+Provides: libetk-engine-evas-x11
+Description: X11 engine for Etk
+ ETK is a widget toolkit based on the enlightenment foundation libraries.
+ .
+ This package provides the X11 rendering engine.
+
+Package: libetk0-engine-evas-software-x11
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, libevas, libecore, libedje, libetk0, libetk0-engine-evas-x11
+Provides: libetk-engine-evas-software-x11
+Description: X11 software engine for Etk
+ ETK is a widget toolkit based on the enlightenment foundation libraries.
+ .
+ This package provides the X11 software rendering engine.
+
+Package: libetk0-engine-all
+Architecture: any
+Section: libs
+Depends: libevas, libecore, libedje, libetk0, libetk0-engine-evas-x11, libetk0-engine-evas, libetk0-engine-evas-software-x11, libetk0-engine-fb
+Provides: libetk-engine-all
+Description: Virtual package provfing all engines for Etk
+ ETK is a widget toolkit based on the enlightenment foundation libraries.
+ .
+ This is a virtual package providing all available rendering engines.
+
 Package: libetk0-dev
 Architecture: any
 Section: libdevel
-Depends: ${shlibs:Depends}, libevas, libecore, libedje
+Depends: libevas, libecore, libedje
 Provides: libetk-dev
 Description: Etk headers, static libraries and documentation
  Headers, static libraries and documentation for the ETK widget library.
