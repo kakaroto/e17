@@ -1,6 +1,47 @@
 #!/bin/sh -e
+
+usage() {
+	cat <<-EOF
+	Usage: $0 [options]
+
+	Options:
+	  -d, --dir     Session directory to scan
+	  -c, --file    Config file (default: $DB)
+	  -h, --help    This help output :p
+	EOF
+
+	if [ "$1" = "1" ] ; then
+		echo ""
+		echo "ERROR: $2"
+	fi
+
+	exit $1
+}
+
+SESSION_DIR=""
 DB="./entrance_config.cfg"
-rm -f $DB
+
+while [ -n "$1" ] ; do
+	case $1 in
+		-d) shift; SESSION_DIR=$1;;
+		-c) shift; DB=$1;;
+		-h) usage 0;;
+		*)  usage 1 "Unknown option: $1";;
+	esac
+	shift
+done
+
+if [ -z "$DB" ] || [ -d "$DB" ] ; then
+	usage 1 "Invalid DB argument"
+fi
+
+FROM=$SESSION_DIR
+if [ -z "$FROM" ] ; then
+	FROM="defaults"
+fi
+echo "Generating config file '$DB' from '$FROM' ..."
+
+rm -f $DB || exit 1
 
 # set auth to 1 for pam, 2 for shadow
 ecore_config -c $DB  -k /entrance/auth -i @auth_mode@
@@ -19,28 +60,43 @@ ecore_config -c $DB -k /entrance/time_format -s "%l:%M:%S %p"
 #ecore_config -c $DB -k /entrance/fonts/1/-s -s "/usr/X11R6/lib/X11/fonts/Truetype/"
 ecore_config -c $DB -k /entrance/greeting/before -s "Welcome to"
 ecore_config -c $DB -k /entrance/greeting/after -s ""
-ecore_config -c $DB -k /entrance/session/count -i 7
+
+count=0
 ecore_config -c $DB -k /entrance/session/0/session -s "default"
 ecore_config -c $DB -k /entrance/session/0/title -s "Default"
 ecore_config -c $DB -k /entrance/session/0/icon -s "default.png"
-ecore_config -c $DB -k /entrance/session/1/icon -s "enlightenment.png"
-ecore_config -c $DB -k /entrance/session/1/title -s "E17"
-ecore_config -c $DB -k /entrance/session/1/session -s "@prefix@/bin/enlightenment"
-ecore_config -c $DB -k /entrance/session/2/session -s "kde"
-ecore_config -c $DB -k /entrance/session/2/title -s "KDE"
-ecore_config -c $DB -k /entrance/session/2/icon -s "kde.png"
-ecore_config -c $DB -k /entrance/session/3/session -s "gnome"
-ecore_config -c $DB -k /entrance/session/3/title -s "Gnome"
-ecore_config -c $DB -k /entrance/session/3/icon -s "gnome.png"
-ecore_config -c $DB -k /entrance/session/4/session -s "Enlightenment"
-ecore_config -c $DB -k /entrance/session/4/title -s "E16"
-ecore_config -c $DB -k /entrance/session/4/icon -s "enlightenment.png"
-ecore_config -c $DB -k /entrance/session/5/session -s "xfce"
-ecore_config -c $DB -k /entrance/session/5/title -s "XFce"
-ecore_config -c $DB -k /entrance/session/5/icon -s "xfce.png"
-ecore_config -c $DB -k /entrance/session/6/session -s "failsafe"
-ecore_config -c $DB -k /entrance/session/6/title -s "Failsafe"
-ecore_config -c $DB -k /entrance/session/6/icon -s "failsafe.png"
+if [ -z "$SESSION_DIR" ] ; then
+	count=`(expr $count + 6)`
+	ecore_config -c $DB -k /entrance/session/1/session -s "@prefix@/bin/enlightenment"
+	ecore_config -c $DB -k /entrance/session/1/title -s "E17"
+	ecore_config -c $DB -k /entrance/session/1/icon -s "enlightenment.png"
+	ecore_config -c $DB -k /entrance/session/2/session -s "kde"
+	ecore_config -c $DB -k /entrance/session/2/title -s "KDE"
+	ecore_config -c $DB -k /entrance/session/2/icon -s "kde.png"
+	ecore_config -c $DB -k /entrance/session/3/session -s "gnome"
+	ecore_config -c $DB -k /entrance/session/3/title -s "Gnome"
+	ecore_config -c $DB -k /entrance/session/3/icon -s "gnome.png"
+	ecore_config -c $DB -k /entrance/session/4/session -s "Enlightenment"
+	ecore_config -c $DB -k /entrance/session/4/title -s "E16"
+	ecore_config -c $DB -k /entrance/session/4/icon -s "enlightenment.png"
+	ecore_config -c $DB -k /entrance/session/5/session -s "xfce"
+	ecore_config -c $DB -k /entrance/session/5/title -s "XFce"
+	ecore_config -c $DB -k /entrance/session/5/icon -s "xfce.png"
+else
+	for f in $SESSION_DIR/* ; do
+		count=`(expr $count + 1)`
+		s=`echo $f | sed "s:^$SESSION_DIR/::"`
+		ecore_config -c $DB -k /entrance/session/$count/session -s "$s"
+		ecore_config -c $DB -k /entrance/session/$count/title -s "$s"
+		ecore_config -c $DB -k /entrance/session/$count/icon -s "$s.png"
+	done
+fi
+ecore_config -c $DB -k /entrance/session/$count/session -s "failsafe"
+ecore_config -c $DB -k /entrance/session/$count/title -s "Failsafe"
+ecore_config -c $DB -k /entrance/session/$count/icon -s "failsafe.png"
+count=`(expr $count + 1)`
+ecore_config -c $DB -k /entrance/session/count -i $count
+
 ecore_config -c $DB -k /entrance/system/reboot -i 1
 ecore_config -c $DB -k /entrance/system/halt -i 1
 ecore_config -c $DB -k /entrance/user/remember -i 1
