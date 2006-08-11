@@ -386,7 +386,7 @@ ewl_colorpicker_current_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
 	ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->picker.vertical), r, g, b);
 
 	ewl_spectrum_hsv_get(EWL_SPECTRUM(cp->picker.square), &h, &s, &v);
-	ewl_colorpicker_display_update(cp, r, g, b, h, s * 100, v * 100);
+	ewl_colorpicker_display_update(cp, r, g, b, h, s, v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -734,6 +734,11 @@ ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r, unsigned int
 	DCHECK_PARAM_PTR("cp", cp);
 	DCHECK_TYPE("cp", cp, EWL_COLORPICKER_TYPE);
 
+	if (cp->updating)
+		DRETURN(DLEVEL_STABLE);
+
+	cp->updating = TRUE;
+
 	ewl_range_value_set(EWL_RANGE(cp->spinners.rgb.r), r);
 	ewl_range_value_set(EWL_RANGE(cp->spinners.rgb.g), g);
 	ewl_range_value_set(EWL_RANGE(cp->spinners.rgb.b), b);
@@ -743,8 +748,9 @@ ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r, unsigned int
 	ewl_range_value_set(EWL_RANGE(cp->spinners.hsv.v), v * 100);
 
 	ewl_widget_color_set(cp->preview.current, r, g, b, 255);
-
 	ewl_callback_call(EWL_WIDGET(cp), EWL_CALLBACK_VALUE_CHANGED);
+
+	cp->updating = FALSE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

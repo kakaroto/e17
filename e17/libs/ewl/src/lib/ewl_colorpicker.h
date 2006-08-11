@@ -65,6 +65,7 @@ struct Ewl_Colorpicker
 	Ewl_Color_Mode mode;		/**< The current mode */
 
 	unsigned int has_alpha:1;	/**< Does the picker deal with alpha values */
+	unsigned int updating:1;	/**< Are we currently updating the widget */
 };
 
 Ewl_Widget 	*ewl_colorpicker_new(void);
