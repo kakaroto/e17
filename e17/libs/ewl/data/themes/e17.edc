@@ -155,7 +155,8 @@ data {
     item, "/window/group" "window";
 
     item, "/theme/name" "e17";
-    item, "/theme/authors" "dj2 (www.everburning.com) and LinuxTitan (www.ecoding.org)";
+    item, "/theme/authors" "Original Author:dj2 (www.everburning.com)";
+			   "Current Authors: dj2(www.everburning.com) and LinuxTitan (www.ecoding.org)";
     item, "/theme/font_path" "fonts";
     item, "/theme/license" "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
 }
