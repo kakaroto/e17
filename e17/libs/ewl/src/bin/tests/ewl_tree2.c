@@ -92,21 +92,24 @@ static void *
 tree2_test_data_setup(void)
 {
         Tree2_Test_Data *data;
-        Tree2_Test_Row_Data *dt;
+        Tree2_Test_Row_Data **dt;
 
         data = calloc(1, sizeof(Tree2_Test_Data));
-        dt = calloc(3, sizeof(Tree2_Test_Row_Data));
+        dt = calloc(3, sizeof(Tree2_Test_Row_Data *));
 
-        dt[0].image = strdup("/usr/local/share/ewl/e-logo.png");
-        dt[0].text = strdup("The E logo");
+	dt[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
+        dt[0]->image = strdup(PACKAGE_DATA_DIR"/images/e-logo.png");
+        dt[0]->text = strdup("The E logo");
 
-        dt[1].image = strdup("/usr/local/share/ewl/entice.png");
-        dt[1].text = strdup("The Entice image");
+	dt[1] = calloc(1, sizeof(Tree2_Test_Row_Data));
+        dt[1]->image = strdup(PACKAGE_DATA_DIR"/images/elicit.png");
+        dt[1]->text = strdup("The Elicit image");
 
-        dt[2].image = strdup("/usr/local/share/entrance.png");
-        dt[2].text = strdup("The Entrance image");
+	dt[2] = calloc(1, sizeof(Tree2_Test_Row_Data));
+        dt[2]->image = strdup(PACKAGE_DATA_DIR"/images/entrance.png");
+        dt[2]->text = strdup("The Entrance image");
 
-        data->rows = &dt;
+        data->rows = dt;
         data->count = 3;
 
         return data;
