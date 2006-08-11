@@ -450,7 +450,7 @@ etk_init()
 	Init=1
 	CODE:
 	RETVAL = etk_init(NULL, NULL);
-	__etk_perl_inheritance_init();
+	__etk_perl_init();
 	OUTPUT:
 	RETVAL
 
@@ -458,6 +458,10 @@ void
 etk_shutdown()
       ALIAS:
 	Shutdown=1
+	CODE:
+	etk_shutdown();
+	FreeObjectCache();
+
 
 MODULE = Etk::Alignment		PACKAGE = Etk::Alignment	PREFIX = etk_alignment_
 
@@ -1221,6 +1225,10 @@ etk_combobox_item_data_get(item)
 	Etk_Combobox_Item *	item
       ALIAS:
 	DataGet=1
+	CODE:
+	RETVAL = newSVsv((SV*)etk_combobox_item_data_get(item));
+	OUTPUT:
+	RETVAL
 
 void
 etk_combobox_item_data_set(item, data)
@@ -2651,6 +2659,18 @@ etk_notebook_page_tab_widget_set(notebook, page_num, tab_widget)
       ALIAS:
 	PageTabWidgetSet=1
 
+void
+etk_notebook_tabs_visible_set(notebook, visible)
+	Etk_Notebook * notebook
+	Etk_Bool visible
+      ALIAS:
+	TabsVisibleSet=1
+
+Etk_Bool
+etk_notebook_tabs_visible_get(notebook)
+	Etk_Notebook * notebook
+      ALIAS:
+	TabsVisibleGet=1
 
 MODULE = Etk::Object	PACKAGE = Etk::Object	PREFIX = etk_object_
 
@@ -2660,6 +2680,10 @@ etk_object_data_get(object, key)
 	char *	key
       ALIAS:
 	DataGet=1
+	CODE:
+	RETVAL = newSVsv((SV*)etk_object_data_get(object, key));
+	OUTPUT:
+	RETVAL
 
 void
 etk_object_data_set(object, key, value)
@@ -2718,7 +2742,8 @@ signal_connect(object, signal_name, callback, data=NULL)
 	SignalConnect=1
        
 	CODE:	
-	__etk_signal_connect_full(signal_name, object, callback, data, ETK_FALSE, ETK_FALSE);
+	__etk_signal_connect_full(signal_name, newSVsv(object), newSVsv(callback), newSVsv(data), 
+			ETK_FALSE, ETK_FALSE);
 
 void
 signal_connect_after(object, signal_name, callback, data=NULL)
@@ -2795,6 +2820,12 @@ signal_disconnect(object, signal_name, callback)
 	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_BOOL__POINTER_POINTER));
 	else
  	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
+
+void
+DESTROY(object)
+	Etk_Object * object
+	CODE:
+	FreeEtkObject(object);
 
 
 MODULE = Etk::Paned	PACKAGE = Etk::Paned	PREFIX = etk_paned_
@@ -2950,6 +2981,18 @@ etk_progress_bar_text_set(progress_bar, label)
       ALIAS:
 	TextSet=1
 
+void
+etk_progress_bar_direction_set(progress_bar, direction)
+	Etk_Progress_Bar * progress_bar
+	Etk_Progress_Bar_Direction direction
+      ALIAS:
+	DirectionSet=1
+
+Etk_Progress_Bar_Direction
+etk_progress_bar_direction_get(progress_bar)
+	Etk_Progress_Bar * progress_bar
+      ALIAS:
+	DirectionGet=1
 
 MODULE = Etk::RadioButton	PACKAGE = Etk::RadioButton	PREFIX = etk_radio_button_
 
@@ -3713,6 +3756,12 @@ etk_tree_append_to_row(row, ...)
       ALIAS:
 	AppendToRow=1
 
+Etk_Scrolled_View *
+etk_tree_scrolled_view_get(tree)
+	Etk_Tree * tree
+      ALIAS:
+	ScrolledViewGet=1
+
 void
 etk_tree_build(tree)
 	Etk_Tree *	tree
@@ -4179,6 +4228,10 @@ etk_tree_row_data_get(row)
 	Etk_Tree_Row *	row
       ALIAS:
 	DataGet=1
+	CODE:
+	RETVAL = newSVsv((SV*)etk_tree_row_data_get(row));
+	OUTPUT:
+	RETVAL
 
 void
 etk_tree_row_data_set(row, data)
@@ -5174,6 +5227,25 @@ etk_widget_visibility_locked_set(widget, visibility_locked)
 MODULE = Etk::Window	PACKAGE = Etk::Window	PREFIX = etk_window_
 
 void
+etk_window_raise(window)
+	Etk_Window * window
+      ALIAS:
+	Raise=1
+
+void
+etk_window_lower(window)
+	Etk_Window * window
+      ALIAS:
+	Lower=1
+
+void
+etk_window_modal_for_window(window_to_modal, window)
+	Etk_Window *window_to_modal
+	Etk_Window *window
+      ALIAS:
+	ModalForWindow=1
+
+void
 etk_window_center_on_window(window_to_center, window)
 	Etk_Window *	window_to_center
 	Etk_Window *	window
@@ -5205,6 +5277,12 @@ etk_window_iconified_get(window)
 	Etk_Window *	window
       ALIAS:
 	IconifiedGet=1
+
+Etk_Bool
+etk_window_dnd_aware_get(window)
+	Etk_Window *	window
+      ALIAS:
+	DndAwareGet=1
 
 void
 etk_window_dnd_aware_set(window, on)

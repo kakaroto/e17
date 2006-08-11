@@ -29,7 +29,8 @@ Etk - Perl bindings for the Enlightened ToolKit (Etk)
   use Etk;
 
   my $win = Etk::Window->new();
-  my $button = Etk::Button->new("Click me!");
+  my $button = Etk::Button->new();
+  $button->LabelSet("Click me!");
   $win->Add($button);
   $win->ShowAll();
 

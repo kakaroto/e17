@@ -1,7 +1,10 @@
 use 5.008004;
 use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
+
+# dependency check
+my $etklib = `etk-config --version`;
+die "I can't run etk-config, make sure that etk is installed, and that etk-config is in your path" unless $etklib;
+
 WriteMakefile(
     DISTNAME          => 'Etk-Perl',
     NAME              => 'Etk',
@@ -9,9 +12,9 @@ WriteMakefile(
     PREREQ_PM         => {}, 
     ($] >= 5.005 ?     
       (ABSTRACT       => 'Perl bindings for the Enlightened ToolKit (Etk)',
-       AUTHOR         => 'Hisham Mardam Bey <hisham.mardambey@gmail.com>') : ()),
+       AUTHOR         => q|Chady 'Leviathan' Kassouf <chady.kassouf@gmail.com>|) : ()),
     LIBS              => [`etk-config --libs`], 
-    DEFINE            => '', # '-DDEBUG', 
+    DEFINE            => '', #'-DDEBUG', 
     INC               => "-g -I. `etk-config --cflags`", 
     XSPROTOARG        => '-noprototypes',
     test              => {TESTS=>'t/Etk/*.t'},

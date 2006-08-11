@@ -13,7 +13,9 @@
 
 #include <Etk.h>
 
-void __etk_perl_inheritance_init();
+void __etk_perl_init();
+void FreeEtkObject(Etk_Object *object);
+void FreeObjectCache();
 
 
 SV *			newSVColor(Etk_Color col);

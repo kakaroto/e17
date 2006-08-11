@@ -5,7 +5,6 @@ TODO:
 	- complete Tests
 	- Check for memory usage (I'm not sure if we're leaking or not,
 	  need to do some tests for that)
-	- Add cache for perl objects which will help keep track of the C objects
 	- Fix Combobox append functions (waiting for some functionality in etk)
 
 BUGS:
@@ -13,10 +12,7 @@ BUGS:
 	  fails to load the library, for now you can run:
 	  $ perl -MExtUtils::Command::MM -e "test_harness(0, 'blib/lib', 'blib/arch')" t/Etk/*.t
 
-	- some methods return Etk::Widget, there's no way to know
-	  what the original type of the object was, and the object
-	  is unusable most of the time unless you bless it into its
-	  original package. (The cache in the TODO above will help solve this)
+	- Cache is still all over the place
 
 Pending:
 	-etk_canvas.h

@@ -53,6 +53,7 @@ Etk_VPaned *					T_PTROBJ_ETK
 Etk_Pointer_Type				T_OPAQUE_STRUCT
 Etk_Popup_Window *				T_PTROBJ_ETK
 Etk_Progress_Bar *				T_PTROBJ_ETK
+Etk_Progress_Bar_Direction			T_IV
 Etk_Property *					T_PTROBJ
 Etk_Property **					T_PTROBJ
 Etk_Property_Flags				T_PTROBJ
