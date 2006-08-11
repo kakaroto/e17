@@ -1,8 +1,8 @@
 require 'getoptlong'
 require 'rbconfig'
 
-require 'rubygems'
-require_gem 'ruby-breakpoint'
+#require 'rubygems'
+#require_gem 'ruby-breakpoint'
 
 class RubyEFLSetup
     BINDINGS = {
