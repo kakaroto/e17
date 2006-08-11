@@ -77,11 +77,10 @@ data {
     item, "/tree2/group" "tree_background";
     item, "/row/group" "row_background";
     item, "/row/cell/label/group" "row_text";
-    item, "/tree/paned/button/group" "tree_header";
+    item, "/tree/paned/group" "tree_header";
+    item, "/tree/paned/button/group" "tree_header_label";
     item, "/tree/paned/grabber/vertical/group" "vline";
-
     item, "/node/check/group" "treenode";
-
     item, "/row/group" "row_background";
     item, "/row/cell/label/group" "row_text";
     

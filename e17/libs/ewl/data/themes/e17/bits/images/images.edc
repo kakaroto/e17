@@ -82,6 +82,7 @@
 	image: "e17_ibar_over_v.png" COMP;
 	image: "e17_ibar_bg_v.png" COMP;
 	image: "e17_tranny.png" COMP;
+	image: "e17_tree_head_bg.png" COMP;
 	image: "paned_vthumb.png" COMP;
 	image: "e17_frame_label_header_under.png" COMP;
 	image: "e17_spinner_top_arrow.png" COMP;
@@ -89,6 +90,6 @@
 	image: "e17_spinner_bottom_arrow_down.png" COMP;
 	image: "e17_spinner_bottom_arrow.png" COMP;	
 	image: "entry_disabled.png" COMP;
-	image: "row_select.png" COMP;
-	
+	image: "row_select.png" COMP;	
+
 	
