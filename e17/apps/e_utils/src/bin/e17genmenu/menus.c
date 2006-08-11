@@ -1,7 +1,5 @@
 #include "global.h"
 #include "config.h"
-#include "fdo_menus.h"
-#include "fdo_paths.h"
 #include "parse.h"
 #include "menus.h"
 
@@ -10,7 +8,7 @@
 extern int menu_count, item_count;
 extern double generate_time;
 
-static int _menu_make_apps(const void *data, Dumb_Tree * tree, int element, int level);
+static int _menu_make_apps(const void *data, Ecore_Desktop_Tree * tree, int element, int level);
 static void _menu_dump_each_hash_node(void *value, void *user_data);
 
 void
@@ -38,18 +36,18 @@ make_menus()
               check_for_dirs(KDE_DIRS);      /* FIXME: probably obsolete. */
               check_for_dirs(DEBIAN_DIRS);   /* FIXME: may or may not be obsolete. */
 
-              ecore_list_goto_first(fdo_paths_desktops);
-              while ((this_path = ecore_list_next(fdo_paths_desktops)) != NULL)
+              ecore_list_goto_first(ecore_desktop_paths_desktops);
+              while ((this_path = ecore_list_next(ecore_desktop_paths_desktops)) != NULL)
                  check_for_dirs(this_path);
-              ecore_list_goto_first(fdo_paths_kde_legacy);
-              while ((this_path = ecore_list_next(fdo_paths_kde_legacy)) != NULL)
+              ecore_list_goto_first(ecore_desktop_paths_kde_legacy);
+              while ((this_path = ecore_list_next(ecore_desktop_paths_kde_legacy)) != NULL)
                  check_for_dirs(this_path);
               generate_time = ecore_time_get() - begin;
 	   }
 
         printf("Converting freedesktop.org (fdo) menus.\n");
         /* Find the main menu file. */
-        menu_file = fdo_paths_search_for_file(FDO_PATHS_TYPE_MENU, menu, 1, NULL, NULL);
+        menu_file = ecore_desktop_paths_search_for_file(ecore_desktop_paths_menus, menu, 1, NULL, NULL);
         if (menu_file)
           {
              char *path;
@@ -57,14 +55,14 @@ make_menus()
              path = ecore_file_get_dir(menu_file);
              if (path)
                {
-                  Dumb_Tree *menus = NULL;
+                  Ecore_Desktop_Tree *menus = NULL;
 
                   /* convert the xml into menus */
-                  menus = fdo_menus_get(menu_file, NULL, 0);
+                  menus = ecore_desktop_menus_get(menu_file, NULL, 0);
                   if (menus)
                     {
                        /* create the .eap and order files from the menu */
-                       dumb_tree_foreach(menus, 0, _menu_make_apps, path);
+                       ecore_desktop_tree_foreach(menus, 0, _menu_make_apps, path);
                     }
                }
              E_FREE(path);
@@ -151,9 +149,9 @@ check_for_files(char *dir)
 }
 
 static int
-_menu_make_apps(const void *data, Dumb_Tree * tree, int element, int level)
+_menu_make_apps(const void *data, Ecore_Desktop_Tree * tree, int element, int level)
 {
-   if (tree->elements[element].type == DUMB_TREE_ELEMENT_TYPE_STRING)
+   if (tree->elements[element].type == ECORE_DESKTOP_TREE_ELEMENT_TYPE_STRING)
      {
         if (strncmp((char *)tree->elements[element].element, "<MENU ", 6) == 0)
           {

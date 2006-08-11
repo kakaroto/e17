@@ -3,10 +3,6 @@
 #include "menus.h"
 #include "parse.h"
 #include "sort.h"
-#include "fdo_desktops.h"
-#include "fdo_menus.h"
-#include "fdo_paths.h"
-#include "xmlame.h"
 
 //#define DEBUG 1
 
@@ -96,7 +92,7 @@ _e17genmenu_init()
      }
 
    /* Check That Dir All Exists */
-   snprintf(path, sizeof(path), "%s" EAPPDIR, get_home());
+   snprintf(path, sizeof(path), "%s" EAPPDIR, ecore_desktop_get_home());
    if (!ecore_file_exists(path))
      {
         fprintf(stderr, "ERROR: %s doesn't exist. Where are the eapps?\n", path);
@@ -140,37 +136,37 @@ main(int argc, char **argv)
 
    /* Get the fdo paths. */
    begin = ecore_time_get();
-   fdo_paths_init();
+   ecore_desktop_paths_init();
    paths = ecore_time_get() - begin;
-   fdo_desktops_init();
+   ecore_desktop_init();
 
 //#ifdef DEBUG
    /* You can iterate through the various path lists as needed. */
-   ecore_list_goto_first(fdo_paths_config);
-   while ((this_path = ecore_list_next(fdo_paths_config)) != NULL)
+   ecore_list_goto_first(ecore_desktop_paths_config);
+   while ((this_path = ecore_list_next(ecore_desktop_paths_config)) != NULL)
       printf("FDO config path = %s\n", this_path);
-   ecore_list_goto_first(fdo_paths_menus);
-   while ((this_path = ecore_list_next(fdo_paths_menus)) != NULL)
+   ecore_list_goto_first(ecore_desktop_paths_menus);
+   while ((this_path = ecore_list_next(ecore_desktop_paths_menus)) != NULL)
       printf("FDO menu path = %s\n", this_path);
-   ecore_list_goto_first(fdo_paths_directories);
-   while ((this_path = ecore_list_next(fdo_paths_directories)) != NULL)
+   ecore_list_goto_first(ecore_desktop_paths_directories);
+   while ((this_path = ecore_list_next(ecore_desktop_paths_directories)) != NULL)
       printf("FDO directory path = %s\n", this_path);
-   ecore_list_goto_first(fdo_paths_desktops);
-   while ((this_path = ecore_list_next(fdo_paths_desktops)) != NULL)
+   ecore_list_goto_first(ecore_desktop_paths_desktops);
+   while ((this_path = ecore_list_next(ecore_desktop_paths_desktops)) != NULL)
       printf("FDO desktop path = %s\n", this_path);
-   ecore_list_goto_first(fdo_paths_icons);
-   while ((this_path = ecore_list_next(fdo_paths_icons)) != NULL)
+   ecore_list_goto_first(ecore_desktop_paths_icons);
+   while ((this_path = ecore_list_next(ecore_desktop_paths_icons)) != NULL)
       printf("FDO icon path = %s\n", this_path);
-   ecore_list_goto_first(fdo_paths_kde_legacy);
-   while ((this_path = ecore_list_next(fdo_paths_kde_legacy)) != NULL)
+   ecore_list_goto_first(ecore_desktop_paths_kde_legacy);
+   while ((this_path = ecore_list_next(ecore_desktop_paths_kde_legacy)) != NULL)
       printf("FDO kde legacy path = %s\n", this_path);
 //#endif
 
 
    /* Just being paranoid, and cause people have removed these during testing. */
-   snprintf(path, sizeof(path), "%s/.e/e/applications/all", get_home());
+   snprintf(path, sizeof(path), "%s/.e/e/applications/all", ecore_desktop_get_home());
    ecore_file_mkpath(path);
-   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite", get_home());
+   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite", ecore_desktop_get_home());
    ecore_file_mkpath(path);
 
    begin = ecore_time_get();
@@ -185,7 +181,7 @@ main(int argc, char **argv)
    *
    * Currently I do this instead, it seems to work -
    */
-   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite/.eap.cache.cfg", get_home());
+   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite/.eap.cache.cfg", ecore_desktop_get_home());
    ecore_file_unlink(path);
 
    /* Update E Cache */
@@ -193,9 +189,9 @@ main(int argc, char **argv)
 #ifdef DEBUG
    fprintf(stderr, "Regenerating Eapp Caches...\n");
 #endif
-   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s" EAPPDIR " -r", get_home());
+   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s" EAPPDIR " -r", ecore_desktop_get_home());
    system(path);
-   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite -r", get_home());
+   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite -r", ecore_desktop_get_home());
    system(path);
    cache_time += ecore_time_get() - begin;
 
@@ -215,18 +211,18 @@ main(int argc, char **argv)
    /* This is just a test of parsing speed for the old weather data's huge xml file.  It passed the parse test.  B-) */
    {
       double weather;
-      Dumb_Tree *weather_xml;
+      Ecore_Desktop_Tree *weather_xml;
 
       begin = ecore_time_get();
-      weather_xml = xmlame_get("dir.xml");
+      weather_xml = ecore_desktop_xmlame_get("dir.xml");
       weather = ecore_time_get() - begin;
-      dumb_tree_dump(weather_xml, 0);
+      ecore_desktop_tree_dump(weather_xml, 0);
       printf("\nWeather horror parsed in %3.3f seconds.\n", weather);
    }
 #endif
 
-   fdo_desktops_shutdown();
-   fdo_paths_shutdown();
+   ecore_desktop_shutdown();
+   ecore_desktop_paths_shutdown();
 
    /* Shutdown */
    _e17genmenu_shutdown();

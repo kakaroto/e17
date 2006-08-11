@@ -1,8 +1,6 @@
 #include "global.h"
 #include "config.h"
 #include "eaps.h"
-#include "fdo_desktops.h"
-#include "fdo_icons.h"
 #include "order.h"
 #include "parse.h"
 
@@ -111,9 +109,9 @@ parse_desktop_file(char *app, char *menu_path)
 {
    char *home;
    G_Eap *eap;
-   Fdo_Desktop *desktop;
+   Ecore_Desktop *desktop;
 
-   home = get_home();
+   home = ecore_desktop_get_home();
 
 #ifdef DEBUG
    fprintf(stderr, "Parsing Desktop File %s\n", app);
@@ -122,7 +120,7 @@ parse_desktop_file(char *app, char *menu_path)
    eap = calloc(1, sizeof(G_Eap));
    eap->eap_name = get_eap_name(app);
 
-   desktop = fdo_desktops_parse_desktop_file(app);
+   desktop = ecore_desktop_parse_file(app);
    if (desktop)
      {
         if (desktop->name)
@@ -139,8 +137,6 @@ parse_desktop_file(char *app, char *menu_path)
            eap->exec = strdup(desktop->exec);
         if (desktop->icon)
            eap->icon = strdup(desktop->icon);
-        if (desktop->icon_path)
-    	   eap->icon_path = strdup(desktop->icon_path);
         if (desktop->startup)
            eap->startup = strdup(desktop->startup);
         if (desktop->window_class)
@@ -187,7 +183,7 @@ parse_desktop_file(char *app, char *menu_path)
 static void
 _parse_process_file(char *file, char *menu_path, G_Eap *eap)
 {
-   char *home, *category;
+   char *home, *category, *icon_size, *icon_theme;
    char path[MAX_PATH], order_path[MAX_PATH];
    int overwrite;
 
@@ -198,7 +194,11 @@ _parse_process_file(char *file, char *menu_path, G_Eap *eap)
    fprintf(stderr, "Processing File %s\n", file);
 #endif
 
-   home = get_home();
+   /* Get Icon Options */
+   icon_size = get_icon_size();
+   icon_theme = get_icon_theme();
+
+   home = ecore_desktop_get_home();
    overwrite = get_overwrite();
 
    snprintf(path, sizeof(path), "%s" EAPPDIR "/%s", home, eap->eap_name);
@@ -206,7 +206,10 @@ _parse_process_file(char *file, char *menu_path, G_Eap *eap)
    if ((ecore_file_exists(path)) && (!overwrite))
         not_over_count++;
    else
-        write_icon(path, eap);
+      {
+         eap->icon_path = ecore_desktop_find_icon(eap->icon, icon_size, icon_theme);
+         write_icon(path, eap);
+      }
 
    category = NULL;
    if (menu_path != NULL)
@@ -298,10 +301,7 @@ parse_debian_file(char *file)
              if (!icon) icon = _parse_buffer(buffer, "icon32x32");
              if (!icon) icon = _parse_buffer(buffer, "icon");
              if (icon)
-	     {
                 eap->icon = strdup(icon);
-    		eap->icon_path = find_icon(eap->icon);
-	     }
              else
                 eap->icon = NULL;
           }

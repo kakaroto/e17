@@ -66,7 +66,7 @@ sort_menu(char *path)
    fprintf(stderr, "Sorting Menu %s...\n", path);
 #endif
 
-   home = get_home();
+   home = ecore_desktop_get_home();
    snprintf(path2, sizeof(path2), "%s/.order", path);
    if (!ecore_file_exists(path2))
       create_order(path2);
@@ -136,7 +136,7 @@ sort_menus()
    fprintf(stderr, "Sorting Menus...\n");
 #endif
 
-   home = get_home();
+   home = ecore_desktop_get_home();
    snprintf(path, sizeof(path), "%s" EFAVDIR, home);
    list = (Ecore_List *)ecore_file_ls(path);
    if (!list)
@@ -169,7 +169,7 @@ sort_favorites()
    fprintf(stderr, "\nSorting Favorites Menu...\n");
 #endif
 
-   home = get_home();
+   home = ecore_desktop_get_home();
 
    snprintf(path, sizeof(path), "%s" EFAVDIR "/.order", home);
    if (!ecore_file_exists(path))

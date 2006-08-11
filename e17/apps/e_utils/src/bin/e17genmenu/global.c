@@ -3,27 +3,6 @@
 
 /* Functions */
 char *
-get_home()
-{
-   char *d;
-   int length;
-   char home[MAX_PATH];
-
-   /* Get Home Dir, check for trailing '/', strip it */
-   snprintf(home, sizeof(home), "%s", getenv("HOME"));
-   d = strrchr(home, '/');
-   if (d)
-     {
-        if (strlen(d) == 1)
-          {
-             if (home[(length = strlen(home) - 1)] == '/')
-                home[length] = '\0';
-          }
-     }
-   return strdup(home);
-}
-
-char *
 get_desktop_dir()
 {
    int i, argc;
@@ -177,7 +156,7 @@ backup_eaps()
    Ecore_List *eaps = NULL;
 
    /* Check That Dir All Exists */
-   snprintf(path, sizeof(path), "%s" EAPPDIR, get_home());
+   snprintf(path, sizeof(path), "%s" EAPPDIR, ecore_desktop_get_home());
    if (!ecore_file_exists(path))
      {
         fprintf(stderr, "ERROR: %s doesn't exist. Where are the eapps ?\n", path);
@@ -200,7 +179,7 @@ backup_eaps()
 #ifdef DEBUG
              fprintf(stderr, "Backing Up %s\n", tmp);
 #endif
-             snprintf(dest, sizeof(dest), "%s/EapBackup", get_home());
+             snprintf(dest, sizeof(dest), "%s/EapBackup", ecore_desktop_get_home());
              if (!ecore_file_exists(dest))
                {
                   if (!ecore_file_mkdir(dest))
@@ -208,7 +187,7 @@ backup_eaps()
                }
 
              /* Copy The File */
-             snprintf(dest, sizeof(dest), "%s/EapBackup/%s", get_home(), file);
+             snprintf(dest, sizeof(dest), "%s/EapBackup/%s", ecore_desktop_get_home(), file);
              result = ecore_file_cp(tmp, dest);
              if (!result)
                 break;
@@ -227,7 +206,7 @@ write_mapping_file(G_Eap *eap)
    if ((!eap->icon) || (!eap->name) || (!eap->exec) || (!eap->window_class))
       return;
 
-   snprintf(path, sizeof(path), "%s/MAPPING", get_home());
+   snprintf(path, sizeof(path), "%s/MAPPING", ecore_desktop_get_home());
    f = fopen(path, "a+");
    if (!f)
      {

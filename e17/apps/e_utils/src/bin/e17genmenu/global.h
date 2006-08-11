@@ -6,9 +6,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <Ecore.h>
+#include <Ecore_Desktop.h>
 #include <Ecore_File.h>
 
-#define MAX_PATH 4096
 #define EFAVDIR "/.e/e/applications/favorite"
 #define EAPPDIR "/.e/e/applications/all"
 #define DEFAULTICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/e.png"
@@ -32,7 +32,6 @@ struct _G_Eap
 };
 
 /* Function Prototypes */
-char *get_home(void);
 char *get_desktop_dir(void);
 int get_overwrite(void);
 int get_fdo(void);

@@ -4,7 +4,7 @@
 #include "eaps.h"
 #include "parse.h"
 
-#define DEBUG 1
+//#define DEBUG 1
 
 extern int not_found_count;
 

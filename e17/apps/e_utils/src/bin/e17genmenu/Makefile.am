@@ -15,13 +15,8 @@ AM_CFLAGS =\
 
 bin_PROGRAMS = e17genmenu
 
-e17genmenu_SOURCES = main.c global.c menus.c parse.c eaps.c fdo_icons.c \
-	order.c sort.c fdo_desktops.c fdo_menus.c fdo_paths.c dumb_tree.c \
-	xmlame.c
+e17genmenu_SOURCES = main.c global.c menus.c parse.c eaps.c order.c sort.c
 
-noinst_HEADERS = global.h menus.h parse.h eaps.h fdo_icons.h \
-	order.h sort.h fdo_desktops.h fdo_menus.h fdo_paths.h \
-	dumb_tree.h xmlame.h
+noinst_HEADERS = global.h menus.h parse.h eaps.h order.h sort.h
 
 e17genmenu_LDADD = @EET_LIBS@ @ECORE_LIBS@ @ENGRAVE_LIBS@
-
