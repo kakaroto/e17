@@ -140,14 +140,66 @@ _open_folder_window_cb(Etk_Object* obj, void* data)
 static void
 _entropy_etk_context_menu_file_delete_cb(Etk_Object *object, void *data)
 {
-	entropy_plugin_filesystem_file_remove(_entropy_etk_context_menu_current_file,
+	if (_entropy_etk_context_menu_mode ==0) {
+		entropy_plugin_filesystem_file_remove(_entropy_etk_context_menu_current_file,
 			_entropy_etk_context_menu_current_instance);
+	} else {
+		entropy_generic_file* file;
+
+		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
+			entropy_plugin_filesystem_file_remove(file,
+				_entropy_etk_context_menu_current_instance);			
+		}		
+	}
 }
 
 static void
 _entropy_etk_context_menu_file_rename_cb(Etk_Object *object, void *data)
 {
 	etk_file_rename_dialog_create(_entropy_etk_context_menu_current_file);
+}
+
+static void
+_entropy_etk_context_menu_group_file_paste_cb(Etk_Object *object, void *data)
+{
+	Ecore_List* files = entropy_core_selected_files_get();
+
+	if (_entropy_etk_context_menu_current_file) {
+		if (!strcmp(_entropy_etk_context_menu_current_file->mime_type, "file/folder"))
+			_entropy_etk_context_menu_current_folder = _entropy_etk_context_menu_current_file;
+		else
+			_entropy_etk_context_menu_current_folder = 
+				entropy_core_parent_folder_file_get(_entropy_etk_context_menu_current_file);
+	
+		if (_entropy_etk_context_menu_current_folder) {
+			char* f_uri = 	_entropy_etk_context_menu_current_folder->uri;
+			if (f_uri)
+				entropy_plugin_filesystem_file_copy_multi(files, f_uri, 
+						_entropy_etk_context_menu_current_instance);		
+		} else {
+			printf("Current folder is NULL at context menu\n");
+		}
+	}
+	
+	}
+
+static void
+_entropy_etk_context_menu_group_file_copy_cb(Etk_Object *object, void *data)
+{
+	entropy_core_selected_files_clear();
+
+	if (_entropy_etk_context_menu_mode == 0) {
+		entropy_core_selected_file_add(_entropy_etk_context_menu_current_file);
+	} else {
+		entropy_generic_file* file;
+
+		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
+			entropy_core_selected_file_add(file);
+		}
+		
+	}
 }
 
 static void
@@ -334,9 +386,16 @@ void entropy_etk_context_menu_init()
                                 ETK_MENU(_entropy_etk_context_menu_groups_remove_from));
 
 
-		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy (Ctrl-c)"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		menu_item =
+		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy (Ctrl-c)"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_group_file_copy_cb),NULL);
+		
 		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut (Ctrl-x)"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu),NULL);
-		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste (Ctrl-v)"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu),NULL);
+		
+		menu_item =
+		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste (Ctrl-v)"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu),NULL);
+		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_group_file_paste_cb),NULL);
+		
 		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete (Del)"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_file_delete_cb), NULL);
 		
