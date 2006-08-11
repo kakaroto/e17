@@ -49,13 +49,12 @@ ewl_range_init(Ewl_Range *r)
 void
 ewl_range_value_set(Ewl_Range *r, double v)
 {
-	double oval;
-	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("r", r);
 	DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
 
-	oval = r->value;
+	if (r->value == v)
+		DRETURN(DLEVEL_STABLE);
 
         if (v < r->min_val)
                 r->value = r->min_val;
@@ -64,10 +63,8 @@ ewl_range_value_set(Ewl_Range *r, double v)
         else
                 r->value = v;
 
-        if (oval != r->value) {
-		ewl_callback_call(EWL_WIDGET(r), EWL_CALLBACK_VALUE_CHANGED);
-		ewl_widget_configure(EWL_WIDGET(r));
-        }
+	ewl_callback_call(EWL_WIDGET(r), EWL_CALLBACK_VALUE_CHANGED);
+	ewl_widget_configure(EWL_WIDGET(r));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -104,8 +101,10 @@ ewl_range_min_val_set(Ewl_Range *r, double minv)
         DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
 
         r->min_val = minv;
-	/* we need this to check if the value is still in the bounce */
-	ewl_range_value_set(r, r->value);
+
+	/* update to the min value if needed */
+	if (r->value < r->min_val)
+		ewl_range_value_set(r, r->min_val);
 	
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -141,8 +140,10 @@ ewl_range_max_val_set(Ewl_Range *r, double maxv)
         DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
 
         r->max_val = maxv;
-	/* we need this to check if the value is still in the bounce */
-	ewl_range_value_set(r, r->value);
+
+	/* update to max value if needed */
+	if (r->value > r->max_val)
+		ewl_range_value_set(r, r->max_val);
 	
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -214,7 +215,8 @@ ewl_range_invert_set(Ewl_Range *r, int invert)
 	DCHECK_PARAM_PTR("r", r);
 	DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
 
-	if (r->invert != invert) {
+	if (r->invert != invert) 
+	{
 		r->invert = invert;
 		ewl_widget_configure(EWL_WIDGET(r));
 	}
