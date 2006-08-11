@@ -85,7 +85,7 @@ class TestWindow
 		txtread.selectable = true
 		txtread.show
 		spane << txtread
-		txtread << Ewl::RealizeCallback.new { txtread.text = IO.read('ewl-example.rb') }
+		txtread << Ewl::RealizeCallback.new { txtread.text = IO.read(File.dirname(File.expand_path(__FILE__)) + '/ewl-example.rb') }
 
 		midcol = VBox.new
 		midcol.fill_policy = Ewl::FLAG_FILL_FILL
@@ -130,7 +130,8 @@ class TestWindow
 		
 		seekr = Seeker.new
 		seekr.alignment = Ewl::FLAG_ALIGN_TOP
-		seekr.range = 1.0
+		seekr.min_val = 0.0
+        seekr.max_val = 1.0
 		seekr.step = 0.25
 		seekr.value = 0.5
 		seekr.show
