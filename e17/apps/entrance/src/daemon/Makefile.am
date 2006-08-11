@@ -21,3 +21,5 @@ entranced_LDADD = @X_LIBS@ -lXau @ECORE_LIBS@
 
 entrance_edit2_SOURCES = Entranced.h entrance_edit_main.c Entrance_Edit.h
 entrance_edit2_LDADD = @ECORE_LIBS@ -lentrance_edit
+entrance_edit2_CFLAGS = @ECORE_CFLAGS@ -I../lib
+entrance_edit2_LDFLAGS= -L../lib
