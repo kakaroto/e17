@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <Ecore_Data.h>
-#include "dumb_tree.h"
 
 /* Function Prototypes */
 void parse_desktop_file(char *app, char *menu_path);
