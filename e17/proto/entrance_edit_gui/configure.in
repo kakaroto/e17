@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.60)
+#AC_PREREQ(2.60)
 AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
 AM_INIT_AUTOMAKE(entrance_edit_gui, 0.0.1, Essien Ita Essien <essiene@wazobialinux.com>)
 AC_PROG_LIBTOOL
@@ -26,5 +26,13 @@ AC_OUTPUT([
 		   Makefile \
 		   src/Makefile \
 		   src/widgets/Makefile \
-		   src/gui/Makefile
+			 src/gui/Makefile \
+			 \
+			 data/Makefile \
+			 data/icons/Makefile \
+			 data/icons/48x48/Makefile \
+			 data/icons/48x48/apps/Makefile \
+			 data/icons/48x48/categories/Makefile \
+			 data/icons/48x48/devices/Makefile
 		   ])
+

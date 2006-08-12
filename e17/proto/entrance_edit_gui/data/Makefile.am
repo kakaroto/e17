@@ -7,9 +7,9 @@ EDJE_FLAGS = \
 -id $(top_srcdir)/data/icons/
 
 filesdir = $(pkgdatadir)/icons
-files_DATA = default.edj
+files_DATA = icons.edj
 
-default.edj: Makefile default.edc
+icons.edj: Makefile icons.edc 
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/icons.edc \
 	$(top_builddir)/data/icons.edj
