@@ -23,9 +23,9 @@ AC_C_CONST
 
 AC_CONFIG_SUBDIRS([entrance.edit])
 AC_OUTPUT([
-		   Makefile \
-		   src/Makefile \
-		   src/widgets/Makefile \
+			 Makefile \
+			 src/Makefile \
+			 src/widgets/Makefile \
 			 src/gui/Makefile \
 			 \
 			 data/Makefile \
@@ -34,5 +34,5 @@ AC_OUTPUT([
 			 data/icons/48x48/apps/Makefile \
 			 data/icons/48x48/categories/Makefile \
 			 data/icons/48x48/devices/Makefile
-		   ])
+			 ])
 
