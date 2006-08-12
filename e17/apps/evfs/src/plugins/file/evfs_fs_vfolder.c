@@ -116,7 +116,8 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 
 		   evfs_plugin* plugin = ecore_hash_get(evfs_server_get()->plugin_vfolder_hash, vfolder_type);
 
-		   (*EVFS_PLUGIN_VFOLDER(plugin)->functions->evfs_vfolder_list)(command->file_command.files[0], &files);
+		   if (EVFS_PLUGIN_VFOLDER(plugin)->functions->evfs_vfolder_list) 
+			(*EVFS_PLUGIN_VFOLDER(plugin)->functions->evfs_vfolder_list)(command->file_command.files[0], &files);
 
 
 	   }
