@@ -1,0 +1,37 @@
+Source: entrance-edit-gui
+Section: x11
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: cdbs, debhelper (>= 4.1.0), libentrance0-edit-dev
+Standards-Version: 3.7.2
+
+Package: entrance-edit-gui
+Architecture: any
+Depends: ${shlibs:Depends}, libentrance0-edit, libentrance0-widgets
+Description: Entrance configuration editing tool
+ Entrance is a login manager similar to gdm or kdm, it is based on the
+ Enlightenment Foundation Libraries.  It is fully themeable via Edje.
+ .
+ This package provides a tool for editing the configuration data
+ of the Enlightened login manager.
+
+Package: libentrance0-widgets
+Architecture: any
+Depends: ${shlibs:Depends}, libentrance0-edit
+Provides: libentrance-widgets
+Description: Entrance widget library
+ Entrance is a login manager similar to gdm or kdm, it is based on the
+ Enlightenment Foundation Libraries.  It is fully themeable via Edje.
+ .
+ This package contains the Entrance widget library.
+
+Package: libentrance0-widgets-dev
+Architecture: any
+Depends: libentrance0-edit
+Provides: libentrance-widgets-dev
+Description: Entrance widget library
+ Entrance is a login manager similar to gdm or kdm, it is based on the
+ Enlightenment Foundation Libraries.  It is fully themeable via Edje.
+ .
+ This package provides headers and static libraries required to develop
+ against the Entrance widget library.
