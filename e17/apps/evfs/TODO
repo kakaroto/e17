@@ -5,12 +5,20 @@ TODO
        * Exception handling
        * File permissions checking
 [DONE] * Remove monitors for client when client disconnects
-[DONE] * evfs_fs_ssh (SSH filesystem plugin)
+[DONE] * evfs_fs_sftp (SSH filesystem plugin)
 [DONE] * bzip2
 [DONE] * gzip support
-[DONE] * ldap plugin
-[DONE] * iso plugin
+       * ldap plugin
+       * iso plugin
 
+Metadata system
+---------------
+       * Query interface for harvested metadata
+
+
+Vfolder system
+--------------
+       * Plugin system to attach vfolder plugins (i.e. trash can etc)
 
 Plugins
 -------
@@ -18,5 +26,11 @@ Plugins
 	----
 	* Handle different open types.  E.g. if you don't have write and create permissions,
 	  you can't dl the file, etc.  Need to build in an open mask to the open function.
+
+       Tar
+       ---
+       * Support the extraction of files from a tar file.
+
+
 
 

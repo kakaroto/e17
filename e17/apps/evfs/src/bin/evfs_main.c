@@ -245,6 +245,10 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
    return cleanup_command;
 }
 
+
+/* TODO these plugin loader functions should be 
+ * consolidated for common functionality*/
+
 evfs_plugin *
 evfs_load_plugin_file(char *filename)
 {
@@ -351,6 +355,55 @@ evfs_load_plugin_meta(char *filename)
 }
 
 
+evfs_plugin *
+evfs_load_plugin_vfolder(char *filename)
+{
+   evfs_plugin_meta *plugin = NEW(evfs_plugin_vfolder);
+   evfs_plugin_functions_vfolder *(*evfs_plugin_init) ();
+   char* (*evfs_plugin_vfolder_root_get)();
+
+   printf("Loading plugin: %s\n", filename);
+   EVFS_PLUGIN(plugin)->dl_ref = dlopen(filename, RTLD_LAZY);
+
+   if (EVFS_PLUGIN(plugin)->dl_ref)
+     {
+             /*Execute the init function, if it's there.. */
+             evfs_plugin_init = dlsym(EVFS_PLUGIN(plugin)->dl_ref, "evfs_plugin_init");
+             if (evfs_plugin_init)
+               {
+                  plugin->functions = (*evfs_plugin_init) ();
+
+		  /*Load meta types*/
+		  evfs_plugin_vfolder_root_get = dlsym(EVFS_PLUGIN(plugin)->dl_ref, "evfs_plugin_vfolder_root_get");
+		  if (evfs_plugin_vfolder_root_get) {
+			 char* root = (*evfs_plugin_vfolder_root_get)();
+			 ecore_hash_set(evfs_server_get()->plugin_vfolder_hash, root, plugin);
+		  } else {
+			  printf("Error - could not get root register function for vfolder plugin");
+		  }
+               } else {
+	             printf
+                ("Error - plugin file does not contain init function - %s\n",
+                 filename);
+       	      goto exit_error;
+             }
+
+     }
+   else
+     {
+        printf("Error - plugin file invalid - %s\n", filename);
+        goto exit_error;
+     }
+
+   return EVFS_PLUGIN(plugin);
+
+ exit_error:
+   free(plugin);
+   return NULL;
+
+}
+
+
 void
 evfs_load_plugins()
 {
@@ -405,12 +458,37 @@ evfs_load_plugins()
    else
      {
         fprintf(stderr, "EVFS: Could not location plugin directory '%s'\n",
-                PACKAGE_PLUGIN_DIR "/plugins/file");
+                PACKAGE_PLUGIN_DIR "/plugins/meta");
         exit(1);
      }
    closedir(dir);
 
+   /*Load vfolder plugins*/
+   printf("Reading plugins from: %s\n", PACKAGE_PLUGIN_DIR "/plugins/vfolder");
+   dir = opendir(PACKAGE_PLUGIN_DIR "/plugins/vfolder");
+   if (dir)
+     {
+        while ((de = readdir(dir)))
+          {
+             if (!strncmp(de->d_name + strlen(de->d_name) - 3, ".so", 3))
+               {
+                  snprintf(plugin_path, 1024, "%s/%s",
+                           PACKAGE_PLUGIN_DIR "/plugins/vfolder", de->d_name);
+                  if ((plugin = evfs_load_plugin_vfolder(plugin_path)))
+                    {
+                    }
+               }
+          }
+     }
+   else
+     {
+        fprintf(stderr, "EVFS: Could not location plugin directory '%s'\n",
+                PACKAGE_PLUGIN_DIR "/plugins/vfolder");
+        exit(1);
+     }
+   closedir(dir);
 }
+/*-------------------*/
 
 int
 incoming_command_cb(__UNUSED__ void *data)
@@ -451,8 +529,11 @@ main(int argc, char **argv)
    server = evfs_server_new();
    server->client_hash =
       ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+   
    server->plugin_uri_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    server->plugin_meta_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+   server->plugin_vfolder_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare); 
+   
    server->clientCounter = 0;
    server->incoming_command_list = ecore_list_new();
 

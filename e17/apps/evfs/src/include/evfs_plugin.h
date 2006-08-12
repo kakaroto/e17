@@ -8,6 +8,10 @@ typedef struct evfs_plugin_functions_meta
    Evas_List* (*evfs_file_meta_retrieve)(evfs_client* client, evfs_command* command);
 } evfs_plugin_functions_meta;
 
+typedef struct evfs_plugin_functions_vfolder
+{
+} evfs_plugin_functions_vfolder;
+
 typedef struct evfs_plugin_functions
 {
    int (*evfs_client_disconnect) (evfs_client *);
@@ -61,6 +65,16 @@ typedef struct evfs_plugin_meta
 
 } evfs_plugin_meta;
 #define EVFS_PLUGIN_META(plugin) ((evfs_plugin_meta*)plugin)
+
+typedef struct evfs_plugin_vfolder
+{
+	evfs_plugin base;
+	
+	char *uri;
+	evfs_plugin_functions_vfolder *functions;
+
+} evfs_plugin_vfolder;
+#define EVFS_PLUGIN_VFOLDER(plugin) ((evfs_plugin_vfolder*)plugin)
 
 
 

@@ -17,6 +17,8 @@ struct evfs_server
    Ecore_Hash *client_hash;
    Ecore_Hash *plugin_uri_hash;
    Ecore_Hash *plugin_meta_hash;
+   Ecore_Hash *plugin_vfolder_hash;
+   
    Ecore_Ipc_Server *ipc_server;
    unsigned long clientCounter;
 

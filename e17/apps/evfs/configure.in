@@ -316,6 +316,7 @@ src/lib/Makefile
 src/plugins/Makefile
 src/plugins/file/Makefile
 src/plugins/meta/Makefile
+src/plugins/vfolder/Makefile
 src/demo/Makefile
 src/include/Makefile
 src/common/Makefile

@@ -42,6 +42,7 @@
 #define EVFS_PLUGIN_VFOLDER_GROUPS_ID "/Groups"
 #define EVFS_PLUGIN_VFOLDER_QUERIES_ID "/Queries"
 #define EVFS_PLUGIN_VFOLDER_URI "vfolder"
+#define MAX_GROUP_LENGTH 255
 
 void evfs_dir_list(evfs_client * client, evfs_command * command,
               Ecore_List ** directory_list);
@@ -84,20 +85,23 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
    printf("Vfolder listing '%s'..\n", command->file_command.files[0]->path);
    
    if (!strcmp(path, "/")) {
+	   Ecore_List* keys = ecore_hash_keys(evfs_server_get()->plugin_vfolder_hash);
+	   char* key;
+	   char path[MAX_GROUP_LENGTH];
 
-	   /*Metadata groups ref*/
-	   ref = NEW(evfs_filereference);
-	   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
-	   ref->path = strdup(EVFS_PLUGIN_VFOLDER_GROUPS_ID);
-	   ref->file_type = EVFS_FILE_DIRECTORY;
-	   ecore_list_append(files, ref);
+	   ecore_list_goto_first(keys);
+	   while ((key = ecore_list_next(keys))) {
+		   snprintf(path,sizeof(path),"/%s",key); 
 
-	   /*Metadata queries ref*/
-	   ref = NEW(evfs_filereference);
-	   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
-	   ref->path = strdup(EVFS_PLUGIN_VFOLDER_QUERIES_ID);
-	   ref->file_type = EVFS_FILE_DIRECTORY;
-	   ecore_list_append(files, ref);
+		   /*Metadata groups ref*/
+		   ref = NEW(evfs_filereference);
+		   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
+		   ref->path = strdup(path);
+		   ref->file_type = EVFS_FILE_DIRECTORY;
+		   ecore_list_append(files, ref);
+	   }
+	   ecore_list_destroy(keys);
+
    } else if (!strncmp(path, EVFS_PLUGIN_VFOLDER_GROUPS_ID, strlen(EVFS_PLUGIN_VFOLDER_GROUPS_ID))) {
 	   if (!strcmp(path, EVFS_PLUGIN_VFOLDER_GROUPS_ID)) {
 		   Evas_List* group_list;
