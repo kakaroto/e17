@@ -52,20 +52,6 @@ SkipTillEnd(FILE * ConfigFile)
      }
 }
 
-static int
-IsWhitespace(const char *s)
-{
-   int                 i = 0;
-
-   while (s[i])
-     {
-	if ((s[i] != ' ') && (s[i] != '\n') && (s[i] != '\t'))
-	   return 0;
-	i++;
-     }
-   return 1;
-}
-
 #define LINE_BUFFER_SIZE 1024
 /*
  * This function will get a single line from the file
@@ -75,9 +61,19 @@ IsWhitespace(const char *s)
 char               *
 GetLine(char *s, int size, FILE * f)
 {
-   char               *si, *so, ch, quote, escape;
    static char        *buffer = NULL;
-   static char        *bufptr = NULL;
+   static const char  *bufptr = NULL;
+   char               *so, ch, quote, escape;
+   const char         *si;
+   size_t              nr;
+
+   if (buffer == NULL)
+     {
+	buffer = Emalloc(LINE_BUFFER_SIZE);
+	if (buffer == NULL)
+	   return NULL;
+	buffer[LINE_BUFFER_SIZE - 1] = '\0';
+     }
 
    si = bufptr;
    so = s;
@@ -85,83 +81,74 @@ GetLine(char *s, int size, FILE * f)
    escape = '\0';
    for (;;)
      {
-	if (buffer == NULL)
-	  {
-	     buffer = Emalloc(LINE_BUFFER_SIZE);
-	     if (buffer == NULL)
-		return NULL;
-	  }
-
 	/* Get a line from the input file */
 	if (si == NULL)
 	  {
-	     si = fgets(buffer, LINE_BUFFER_SIZE - 1, f);
-	     buffer[LINE_BUFFER_SIZE - 1] = '\0';
-	     if (si == NULL)
-	       {
-		  /* EOF */
-		  Efree(buffer);
-		  buffer = bufptr = NULL;
-		  return NULL;
-	       }
+	     nr = fread(buffer, 1, LINE_BUFFER_SIZE - 1, f);
+	     if (nr == 0)
+		break;
+	     buffer[nr] = '\0';
+	     si = buffer;
 	  }
 
 	/* Split on ';' or '\n', handle quoting */
-	for (; si;)
+	ch = *si++;
+	switch (ch)
 	  {
-	     ch = *si++;
-	     switch (ch)
-	       {
-	       case '\0':
-		  si = NULL;
-		  if (so == s)	/* Skip empty lines */
-		     break;
-		  goto case_eol;
-	       case ';':	/* Line separator */
-		  if (escape || quote)
-		     goto case_char;
-	       case '\n':
-		  if (so == s)	/* Skip empty lines */
-		     break;
-		case_eol:
-		  *so = '\0';	/* Terminate and return */
-		  goto done;
-	       case '\r':	/* Ignore */
-		  break;
-	       case '\\':	/* Escape */
-		  if (escape)
-		     goto case_char;
-		  escape = ch;
-		  break;
-	       case '"':	/* Quoting */
+	  case '\0':
+	     si = NULL;
+	     break;
+	  case ';':		/* Line separator */
+	     if (escape || quote)
+		goto case_char;
+	  case '\n':
+	     if (so == s)	/* Skip empty lines */
+		break;
+	     *so = '\0';	/* Terminate and return */
+	     goto done;
+	  case '\r':		/* Ignore */
+	     break;
+	  case '\\':		/* Escape */
+	     if (escape)
+		goto case_char;
+	     escape = ch;
+	     break;
+	  case '"':		/* Quoting */
 /*	       case '\'': */
-		  if (escape)
-		     goto case_char;
-		  if (quote == '\0')
-		     quote = ch;
-		  else if (quote == ch)
-		     quote = '\0';
-		  else
-		     goto case_char;
-		  break;
-	       case ' ':	/* Whitespace */
-	       case '\t':
-		  if (so == s)	/* Skip leading whitespace */
-		     break;
-		case_char:	/* Normal character */
-	       default:
-		  *so++ = ch;
-		  escape = '\0';
-		  if (--size > 1)
-		     break;
-		  *so = '\0';
-		  goto done;
-	       }
+	     if (escape)
+		goto case_char;
+	     if (quote == '\0')
+		quote = ch;
+	     else if (quote == ch)
+		quote = '\0';
+	     else
+		goto case_char;
+	     break;
+	  case ' ':		/* Whitespace */
+	  case '\t':
+	     if (so == s)	/* Skip leading whitespace */
+		break;
+	   case_char:		/* Normal character */
+	  default:
+	     *so++ = ch;
+	     escape = '\0';
+	     if (--size > 1)
+		break;
+	     *so = '\0';
+	     goto done;
 	  }
      }
 
  done:
    bufptr = si;
+   if (si == NULL)
+     {
+	/* EOF */
+	Efree(buffer);
+	buffer = NULL;
+	if (so == s)
+	   return NULL;
+     }
 
    /* Strip trailing whitespace */
    si = so;
@@ -174,7 +161,7 @@ GetLine(char *s, int size, FILE * f)
    if (so != si)
       *so = '\0';
 
-   if (EventDebug(EDBUG_TYPE_CONFIG))
+   if (EventDebug(EDBUG_TYPE_CONFIG) > 1)
       Eprintf("GetLine %s\n", s);
 
    return s;
@@ -196,7 +183,7 @@ ConfigFilePreparse(const char *path, const char *dest)
    char               *def_home, *def_user, *def_shell;
 
    if (EventDebug(EDBUG_TYPE_CONFIG))
-      Eprintf("ConfigFilePreparse %s->%s\n", path, dest);
+      Eprintf("ConfigFilePreparse %s -> %s\n", path, dest);
 
    def_home = homedir(getuid());
    def_user = username(getuid());
@@ -241,9 +228,6 @@ ConfigFileRead(FILE * fs)
 
    while (GetLine(s, sizeof(s), fs))
      {
-	if (IsWhitespace(s))
-	   continue;
-
 	i1 = i2 = CONFIG_INVALID;
 	fields = sscanf(s, "%i %i", &i1, &i2);
 
@@ -270,6 +254,7 @@ ConfigFileRead(FILE * fs)
 		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
 	       }
 	  }
+
 	if (i2 == CONFIG_OPEN)
 	  {
 	     if (e_cfg_ver > max_e_cfg_ver)

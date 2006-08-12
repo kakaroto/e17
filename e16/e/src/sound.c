@@ -334,59 +334,34 @@ SoundExit(void)
 #include "conf.h"
 
 static int
-SoundConfigLoad(void)
+SoundConfigLoad(FILE * fs)
 {
    int                 err = 0;
    SoundClass         *sc;
    char                s[FILEPATH_LEN_MAX];
    char                s1[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
-   int                 i1, ret;
-   FILE               *fs;
-   char               *file;
-
-   file = ConfigFileFind("sound.cfg", Mode.theme.path, 1);
-   if (!file)
-      return 0;
-
-   fs = fopen(file, "r");
-   Efree(file);
-   if (!fs)
-      goto done;
+   int                 i1, fields;
 
    while (GetLine(s, sizeof(s), fs))
      {
 	i1 = -1;
-	ret = sscanf(s, "%d", &i1);
-	if (ret == 1)
+	fields = sscanf(s, "%d", &i1);
+	if (fields == 1)	/* Just skip the numeric config stuff */
+	   continue;
+
+	s1[0] = s2[0] = '\0';
+	fields = sscanf(s, "%4000s %4000s", s1, s2);
+	if (fields != 2)
 	  {
-	     switch (i1)
-	       {
-	       case CONFIG_VERSION:
-	       case CONFIG_OPEN:
-		  break;
-	       case CONFIG_CLOSE:
-		  goto done;
-	       }
+	     Eprintf("Ignoring line: %s\n", s);
+	     continue;
 	  }
-	else
-	  {
-	     s1[0] = s2[0] = '\0';
-	     ret = sscanf(s, "%4000s %4000s", s1, s2);
-	     if (ret != 2)
-	       {
-		  Eprintf("Ignoring line: %s\n", s);
-		  break;
-	       }
-	     sc = SclassCreate(s1, s2);
-	  }
+	sc = SclassCreate(s1, s2);
      }
    if (err)
       ConfigAlertLoad(_("Sound"));
 
- done:
-   if (fs)
-      fclose(fs);
    return err;
 }
 
@@ -403,7 +378,7 @@ SoundSighan(int sig, void *prm __UNUSED__)
 	SoundInit();
 	break;
      case ESIGNAL_CONFIGURE:
-	SoundConfigLoad();
+	ConfigFileLoad("sound.cfg", Mode.theme.path, SoundConfigLoad, 1);
 	break;
      case ESIGNAL_START:
 	if (!Conf_sound.enable)

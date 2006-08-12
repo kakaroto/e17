@@ -494,7 +494,7 @@ WindowMatchEncode(WindowMatch * wm, char *buf, int len)
    return buf;
 }
 
-static void
+static int
 WindowMatchConfigLoad2(FILE * fs)
 {
    char                s[FILEPATH_LEN_MAX], *ss;
@@ -513,26 +513,8 @@ WindowMatchConfigLoad2(FILE * fs)
 
 	WindowMatchDecode(s);
      }
-}
 
-static void
-WindowMatchConfigLoadConfig(void)
-{
-   char               *file;
-   FILE               *fs;
-
-   file = ConfigFileFind("matches.cfg", NULL, 0);
-   if (!file)
-      return;
-
-   fs = fopen(file, "r");
-   Efree(file);
-   if (!fs)
-      return;
-
-   WindowMatchConfigLoad2(fs);
-
-   fclose(fs);
+   return 0;
 }
 
 static int
@@ -865,11 +847,11 @@ WindowMatchSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_CONFIGURE:
-#if 0
+#if 0				/* Done as part of theme loading */
 	ConfigFileLoad("windowmatches.cfg", Mode.theme.path,
-		       WindowMatchConfigLoad);
+		       WindowMatchConfigLoad, 1);
 #endif
-	WindowMatchConfigLoadConfig();
+	ConfigFileLoad("matches.cfg", NULL, WindowMatchConfigLoad2, 0);
 #if 0
 	WindowMatchConfigLoadUser();
 #endif
