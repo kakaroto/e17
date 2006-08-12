@@ -12,3 +12,26 @@ Depends: ${shlibs:Depends}, x11-common
 Description: The enlightened login manager.
  Entrance is a login manager similar to gdm or kdm, it is based on the 
  Enlightenment Foundation Libraries.  It is fully themeable via Edje.
+
+Package: libentrance0-edit
+Section: x11
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: libentrance-edit
+Description: Entrance configuration editing library
+ Entrance is a login manager similar to gdm or kdm, it is based on the 
+ Enlightenment Foundation Libraries.  It is fully themeable via Edje.
+ .
+ This package provides the Entrance configuration data editing library.
+
+Package: libentrance0-edit-dev
+Section: x11
+Architecture: any
+Depends: libecore-dev, libentrance0-edit
+Provides: libentrance-edit-dev
+Description: Entrance configuration editing library development files
+ Entrance is a login manager similar to gdm or kdm, it is based on the 
+ Enlightenment Foundation Libraries.  It is fully themeable via Edje.
+ .
+ This package provides headers and static libraries to develop against
+ the Entrance configuration data editing library.

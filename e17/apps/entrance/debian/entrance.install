@@ -1,0 +1,7 @@
+debian/tmp/etc/entrance_config.cfg
+debian/tmp/usr/share/entrance/images/*
+debian/tmp/usr/share/entrance/themes/*
+debian/tmp/usr/share/entrance/users/*
+debian/tmp/usr/lib/entrance/entrance_*
+debian/tmp/usr/bin/*
+debian/tmp/usr/sbin/*

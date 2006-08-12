@@ -1,0 +1,4 @@
+debian/tmp/usr/include/*
+debian/tmp/usr/lib/libentrance_edit.la
+debian/tmp/usr/lib/libentrance_edit.a
+debian/tmp/usr/lib/libentrance_edit.so
