@@ -943,7 +943,14 @@ setup_ecore_evas(int wx, int wy, int ww, int wh, int fullscreen)
    ecore_evas_move(e, wx, wy);
 
    if (fullscreen)
-      ecore_evas_fullscreen_set(e, 1);
+     {
+	Ecore_X_Window root;
+	int w = 800, h = 600;
+	
+	root = ecore_x_window_root_first_get();
+	ecore_x_window_size_get(root, &w, &h);
+	ecore_evas_move_resize(e, 0, 0, w, h);
+     }
  
    /* Evas specific callbacks */
    evas = ecore_evas_get(e);
