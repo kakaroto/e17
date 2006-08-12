@@ -93,6 +93,7 @@ typedef struct
    unsigned            damaged:1;
    unsigned            fading:1;
    unsigned            fadeout:1;
+   unsigned            has_shadow:1;
    Damage              damage;
    Picture             picture;
    Picture             pict_alpha;	/* Solid, current opacity */
@@ -873,7 +874,6 @@ make_shadow(double opacity, int width, int height)
    /*
     * sides
     */
-
    for (x = 0; x < xlimit; x++)
      {
 	d = sum_gaussian(gaussianMap, opacity, x - center, center, width,
@@ -964,7 +964,9 @@ win_extents(EObj * eo)
      }
 
 #if ENABLE_SHADOWS
-   if (!eo->shadow || Mode_compmgr.shadow_mode == ECM_SHADOWS_OFF)
+   cw->has_shadow = (Mode_compmgr.shadow_mode != ECM_SHADOWS_OFF) &&
+      eo->shadow && (EShapeCheck(eo->win) >= 0);
+   if (!cw->has_shadow)
       goto skip_shadow;
 
    switch (Mode_compmgr.shadow_mode)
@@ -1995,7 +1997,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  }
 
 #if ENABLE_SHADOWS
-	if (!eo->shadow || Mode_compmgr.shadow_mode == ECM_SHADOWS_OFF)
+	if (!cw->has_shadow)
 	   return;
 
 	if (clip == None)
