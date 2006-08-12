@@ -2,7 +2,7 @@ Source: evfs
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: automake1.7, libtool, autotools-dev, debhelper (>= 4.0.0), libsmbclient-dev, libxml2-dev, libecore-dev, libcurl3-dev, libbz2-dev, libeet-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxp-dev, zlib1g-dev, libsqlite3-dev
+Build-Depends: automake1.7, libtool, autotools-dev, debhelper (>= 4.0.0), libsmbclient-dev, libxml2-dev, libecore-dev, libcurl3-dev, libbz2-dev, libeet-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxp-dev, zlib1g-dev, libsqlite3-dev, libextractor-dev
 Standards-Version: 3.6.2
 
 Package: libevfs0
@@ -45,92 +45,143 @@ Description: enlightenment virtual filesystem debug tools
  support.
  This package contains evfs debug tools.
 
-Package: libevfs0-plugin-posix
+Package: libevfs0-plugin-file-posix
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libevfs0, evfs0-bin, libecore
-Provides: libevfs-plugin-posix
+Depends: ${shlibs:Depends}, libevfs0, evfs0-bin
+Provides: libevfs-plugin-file-posix
 Description: enlightenment virtual filesystem POSIX plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
  This package contains the POSIX file plugin.
 
-Package: libevfs0-plugin-samba
+Package: libevfs0-plugin-file-samba
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libsmbclient, libecore, evfs0-bin, libevfs0
-Provides: libevfs-plugin-samba
+Depends: ${shlibs:Depends}, libsmbclient, evfs0-bin, libevfs0
+Provides: libevfs-plugin-file-samba
 Description: enlightenment virtual filesystem Samba plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
  This package contains the Samba file plugin.
 
-Package: libevfs0-plugin-tar
+Package: libevfs0-plugin-file-tar
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, libevfs0, evfs0-bin
-Provides: libevfs-plugin-tar
+Provides: libevfs-plugin-file-tar
 Description: enlightenment virtual filesystem Tar plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
  This package contains the Tar file plugin.
 
-Package: libevfs0-plugin-bzip2
+Package: libevfs0-plugin-file-bzip2
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, libbz2-1.0, libevfs0, evfs0-bin
-Provides: libevfs-plugin-bzip2
+Provides: libevfs-plugin-file-bzip2
 Description: enlightenment virtual filesystem Bzip2 plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
  This package contains the Bzip2 file plugin.
 
-Package: libevfs0-plugin-gzip
+Package: libevfs0-plugin-file-gzip
 Architecture: any
 Section: libs
 Depends: ${shlibs:Depends}, zlib1g, libevfs0, evfs0-bin
-Provides: libevfs-plugin-gzip
+Provides: libevfs-plugin-file-gzip
 Description: enlightenment virtual filesystem Gzip plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
  This package contains the Gzip file plugin.
 
-Package: libevfs0-plugin-ftp
+Package: libevfs0-plugin-file-ftp
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libcurl3, libecore, libevfs0, evfs0-bin
-Provides: libevfs-plugin-ftp
+Depends: ${shlibs:Depends}, libcurl3, libevfs0, evfs0-bin
+Provides: libevfs-plugin-file-ftp
 Description: enlightenment virtual filesystem FTP plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
  This package contains the FTP file plugin.
 
-Package: libevfs0-plugin-sftp
+Package: libevfs0-plugin-file-sftp
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libecore, libevfs0, evfs0-bin
-Provides: libevfs-plugin-sftp
+Depends: ${shlibs:Depends}, libevfs0, evfs0-bin
+Provides: libevfs-plugin-file-sftp
 Description: enlightenment virtual filesystem SFTP plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
  This package contains the SFTP file plugin.
 
-Package: libevfs0-plugin-vfolder
+Package: libevfs0-plugin-file-vfolder
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libecore, libevfs0, evfs0-bin
-Provides: libevfs-plugin-vfolder
+Depends: ${shlibs:Depends}, libevfs0, evfs0-bin
+Provides: libevfs-plugin-file-vfolder
 Description: enlightenment virtual filesystem vfolder plugin
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
  This package contains the vfolder file plugin.
 
-Package: libevfs0-plugins-all
+Package: libevfs0-plugin-vfolder-group
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, libevfs0-plugin-sftp, libevfs0-plugin-posix, libevfs0-plugin-samba, libevfs0-plugin-tar, libevfs0-plugin-bzip2, libevfs0-plugin-gzip, libevfs0-plugin-ftp, libevfs0-plugin-vfolder, libevfs0, evfs0-bin
-Description: enlightenment virtual filesystem FTP plugin
+Depends: ${shlibs:Depends}, libevfs0 
+Provides: libevfs-plugin-vfolder-group
+Description: enlightenment virtual filesystem vfolder group plugin
+ EVFS - a virtual file system for E with plugins and URI nesting
+ support.
+ This package contains the vfolder group plugin.
+
+Package: libevfs0-plugin-vfolder-trash
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, libevfs0 
+Provides: libevfs-plugin-vfolder-trash
+Description: enlightenment virtual filesystem vfolder trash plugin
+ EVFS - a virtual file system for E with plugins and URI nesting
+ support.
+ This package contains the vfolder trash plugin.
+
+Package: libevfs0-plugin-meta-extractor-tagger
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, libevfs0 
+Provides: libevfs-plugin-meta-extractor-tagger
+Description: enlightenment virtual filesystem extractor tagger plugin
+ EVFS - a virtual file system for E with plugins and URI nesting
+ support.
+ This package contains the extractor tagger meta plugin.
+
+Package: libevfs0-plugins-file-all
+Architecture: any
+Section: libs
+Depends: libevfs0-plugin-file-sftp, libevfs0-plugin-file-posix, libevfs0-plugin-file-samba, libevfs0-plugin-file-tar, libevfs0-plugin-file-bzip2, libevfs0-plugin-file-gzip, libevfs0-plugin-file-ftp, libevfs0-plugin-file-vfolder, evfs0-bin
+Provides: libevfs-plugins-file-all
+Description: virtual package providing all available file plugins
  EVFS - a virtual file system for E with plugins and URI nesting
  support.
  This is a virtual package providing all available file plugins.
+
+Package: libevfs0-plugins-vfolder-all
+Architecture: any
+Section: libs
+Depends: libevfs0-plugin-vfolder-group, libevfs0-plugin-vfolder-trash
+Provides: libevfs-plugins-vfolder-all
+Description: virtual package providing all available vfolder plugins
+ EVFS - a virtual file system for E with plugins and URI nesting
+ support.
+ This is a virtual package providing all available vfolder plugins.
+
+Package: libevfs0-plugins-all
+Architecture: any
+Section: libs
+Depends: libevfs0-plugins-file-all, libevfs0-plugins-vfolder-all, libevfs0-plugin-meta-extractor-tagger
+Provides: libevfs-plugins-all
+Description: virtual package providing all available plugins
+ EVFS - a virtual file system for E with plugins and URI nesting
+ support.
+ This is a virtual package providing all available plugins.
 
