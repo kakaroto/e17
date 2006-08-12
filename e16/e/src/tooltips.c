@@ -579,8 +579,8 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
      {
 	eo = tt->win[i];
 	if (eo)
-	   ImageclassApply(tt->iclass[i], eo->win, eo->w, eo->h, 0, 0,
-			   STATE_NORMAL, ST_TOOLTIP);
+	   ImageclassApply(tt->iclass[i], eo->win, EobjGetW(eo), EobjGetH(eo),
+			   0, 0, STATE_NORMAL, ST_TOOLTIP);
      }
 
    for (i = 0; i < 5; i++)

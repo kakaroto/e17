@@ -71,8 +71,8 @@ CoordsShow(EWin * ewin)
 
    /* Width hysteresis (hack - assuming horizontal text) */
    cw += 8;
-   if (eo && abs(eo->w - cw) < 8)
-      cw = eo->w;
+   if (eo && abs(EobjGetW(eo) - cw) < 8)
+      cw = EobjGetW(eo);
 
    if (Mode.mode == MODE_MOVE)
       md = Conf.movres.mode_move;

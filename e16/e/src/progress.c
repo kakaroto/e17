@@ -117,9 +117,9 @@ ProgressbarDestroy(Progressbar * p)
 
 	     pp = plist[j + 1];
 	     plist[j] = pp;
-	     EobjMove(pp->win, pp->win->x, pp->win->y - dy);
-	     EobjMove(pp->n_win, pp->n_win->x, pp->n_win->y - dy);
-	     EobjMove(pp->p_win, pp->p_win->x, pp->p_win->y - dy);
+	     EobjMove(pp->win, EobjGetX(pp->win), EobjGetY(pp->win) - dy);
+	     EobjMove(pp->n_win, EobjGetX(pp->n_win), EobjGetY(pp->n_win) - dy);
+	     EobjMove(pp->p_win, EobjGetX(pp->p_win), EobjGetY(pp->p_win) - dy);
 	  }
 	break;
      }
