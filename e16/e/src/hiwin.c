@@ -52,6 +52,25 @@ typedef struct
 
 static ImageClass  *hiwin_ic = NULL;
 
+/* TBD: Move elsewhere? */
+static EImage      *
+EobjGetImage(EObj * eo, Drawable draw)
+{
+   EImage             *im;
+   Pixmap              mask;
+   int                 shaped;
+
+   mask = None;
+   shaped = EShapeCheck(EobjGetWin(eo));
+   if (shaped)
+      mask = EWindowGetShapePixmap(EobjGetWin(eo));
+   im = EImageGrabDrawable(draw, mask, 0, 0, EobjGetW(eo), EobjGetH(eo), 0);
+   if (mask)
+      EFreePixmap(mask);
+
+   return im;
+}
+
 static void
 HiwinRenderImageInit(Hiwin * phi)
 {
@@ -61,20 +80,19 @@ HiwinRenderImageInit(Hiwin * phi)
    pmap = EoGetPixmap(ewin);
    if (pmap)
      {
-	phi->im = EImageGrabDrawable(pmap, None, 0, 0,
-				     EoGetW(ewin), EoGetH(ewin), 0);
+	phi->im = EobjGetImage(EoObj(ewin), pmap);
 	/* Skip zoom effect if composite is active */
 	phi->animate = 0;
      }
    else if (phi->zoom > 2 && EwinIsOnScreen(ewin))
      {
-	phi->im = EImageGrabDrawable(EoGetXwin(ewin), None, 0, 0,
-				     EoGetW(ewin), EoGetH(ewin), 0);
+	phi->im = EobjGetImage(EoObj(ewin), EoGetXwin(ewin));
      }
    else
      {
-	phi->im = EImageGrabDrawable(ewin->mini_pmm.pmap, None, 0, 0,
-				     ewin->mini_w, ewin->mini_h, 0);
+	phi->im =
+	   EImageGrabDrawable(ewin->mini_pmm.pmap, ewin->mini_pmm.mask, 0, 0,
+			      ewin->mini_w, ewin->mini_h, 0);
      }
 
    ESetWindowBackgroundPixmap(EoGetWin(phi), None);
@@ -85,10 +103,23 @@ HiwinRenderImageInit(Hiwin * phi)
 }
 
 static void
-HiwinRenderImageDrawX(Hiwin * phi, Drawable draw)
+HiwinRenderImageDrawX(Hiwin * phi, Drawable draw __UNUSED__)
 {
+#if 0
    EImageRenderOnDrawable(phi->im, EoGetWin(phi), draw, 0, 0,
 			  EoGetW(phi), EoGetH(phi), 0);
+#else
+   Pixmap              pmap, mask;
+
+   EImageRenderPixmaps(phi->im, EoGetWin(phi), &pmap, &mask,
+		       EoGetW(phi), EoGetH(phi));
+   ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
+   if (mask)
+      EShapeCombineMask(EoGetWin(phi), ShapeBounding, 0, 0, mask, ShapeSet);
+   EImagePixmapFree(pmap);
+   EClearWindow(EoGetWin(phi));
+   EoShapeUpdate(phi, 0);
+#endif
 }
 
 static void
@@ -100,16 +131,8 @@ HiwinRenderImageDraw(Hiwin * phi)
 static void
 HiwinRenderImageFini(Hiwin * phi, int shown)
 {
-   Pixmap              pmap;
-
    if (shown)
-     {
-	pmap = ECreatePixmap(EoGetWin(phi), EoGetW(phi), EoGetH(phi), 0);
-	ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
-	HiwinRenderImageDrawX(phi, pmap);
-	EFreePixmap(pmap);
-	EClearWindow(EoGetWin(phi));
-     }
+      HiwinRenderImageDraw(phi);
    EImageDecache(phi->im);
    phi->im = NULL;
 }
@@ -125,10 +148,8 @@ HiwinRenderImageUpdate(Hiwin * phi)
    if (pmap == None)
       return;
 
-   phi->im = EImageGrabDrawable(pmap, None, 0, 0,
-				EoGetW(ewin), EoGetH(ewin), 0);
-   ESetWindowBackgroundPixmap(EoGetWin(phi), None);
-   HiwinRenderImageDrawX(phi, EoGetXwin(phi));
+   phi->im = EobjGetImage(EoObj(ewin), pmap);
+   HiwinRenderImageDraw(phi);
    EImageDecache(phi->im);
    phi->im = NULL;
 }
