@@ -3,6 +3,8 @@
 
 #include "evfs_client.h"
 
+#define EVFS_PLUGIN_VFOLDER_URI "vfolder"
+
 typedef struct evfs_plugin_functions_meta
 {
    Evas_List* (*evfs_file_meta_retrieve)(evfs_client* client, evfs_command* command);
@@ -10,6 +12,7 @@ typedef struct evfs_plugin_functions_meta
 
 typedef struct evfs_plugin_functions_vfolder
 {
+   void (*evfs_vfolder_list)(evfs_filereference* ref, Ecore_List** list);
 } evfs_plugin_functions_vfolder;
 
 typedef struct evfs_plugin_functions

@@ -26,7 +26,8 @@
 # include <config.h>
 #endif
 
-#include <evfs.h>
+#include "evfs.h"
+#include "evfs_plugin.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,9 +40,8 @@
 #include <dirent.h>
 #include <Ecore_File.h>
 
-#define EVFS_PLUGIN_VFOLDER_GROUPS_ID "/Groups"
-#define EVFS_PLUGIN_VFOLDER_QUERIES_ID "/Queries"
-#define EVFS_PLUGIN_VFOLDER_URI "vfolder"
+
+//#define EVFS_PLUGIN_VFOLDER_QUERIES_ID "/Queries"
 #define MAX_GROUP_LENGTH 255
 
 void evfs_dir_list(evfs_client * client, evfs_command * command,
@@ -93,7 +93,6 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 	   while ((key = ecore_list_next(keys))) {
 		   snprintf(path,sizeof(path),"/%s",key); 
 
-		   /*Metadata groups ref*/
 		   ref = NEW(evfs_filereference);
 		   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
 		   ref->path = strdup(path);
@@ -102,55 +101,26 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 	   }
 	   ecore_list_destroy(keys);
 
-   } else if (!strncmp(path, EVFS_PLUGIN_VFOLDER_GROUPS_ID, strlen(EVFS_PLUGIN_VFOLDER_GROUPS_ID))) {
-	   if (!strcmp(path, EVFS_PLUGIN_VFOLDER_GROUPS_ID)) {
-		   Evas_List* group_list;
-		   Evas_List* iter;
-		   char assemble[PATH_MAX];
-		   evfs_metadata_group_header* g;
-		   
-		   /*Get group list, and return*/
-		   group_list = evfs_metadata_groups_get();
-		   
-		   for (iter = group_list; iter; ) {
-			   g = iter->data;
-			   
-			   snprintf(assemble, sizeof(assemble), "%s/%s", 
-					   EVFS_PLUGIN_VFOLDER_GROUPS_ID, g->name);
-			   
-		   	   ref = NEW(evfs_filereference);
-			   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
-			   ref->path = strdup(assemble);
-			   if (g->visualhint) ref->attach = strdup(g->visualhint);
-			   ref->file_type = EVFS_FILE_DIRECTORY;
-			   ecore_list_append(files, ref);
-
-			   iter = iter->next;
+   } else {
+	   /*Find the plugin that handles this, */
+	   if (path[0] == '/') {
+		   char vfolder_type[MAX_GROUP_LENGTH];
+		   char* pos=strchr(&path[1], '/');
+		   if (!pos) {
+			   strncpy(vfolder_type, &path[1], MAX_GROUP_LENGTH);
+		   } else {
+			   strncpy(vfolder_type, &path[1], pos-path-1);
+			   vfolder_type[pos-path-1] = '\0';
 		   }
-	   } else {
-		   char* group_name;
-		   char* item;
-		   Ecore_List* list;
-		   int i;
-		   group_name = strstr(path + 1, "/") + 1;
-		   evfs_file_uri_path* path;
+		   printf("Looking for vfolder plugin for: %s\n", vfolder_type);
 
-		   printf("Group name: %s\n", group_name);
+		   evfs_plugin* plugin = ecore_hash_get(evfs_server_get()->plugin_vfolder_hash, vfolder_type);
 
-		   list = evfs_metadata_file_group_list(group_name);
+		   (*EVFS_PLUGIN_VFOLDER(plugin)->functions->evfs_vfolder_list)(command->file_command.files[0], &files);
 
-		   ecore_list_goto_first(list);
-		   while ( (item = ecore_list_remove_first(list))) {
-			   path = evfs_parse_uri(item);
-			   ecore_list_append(files, path->files[0]);
 
-			   /*TEMP FIXME - check this file for keywords*/
-  			   evfs_metadata_extract_queue(path->files[0]);
-
-			   evfs_cleanup_file_uri_path(path);
-		   }
-		   ecore_list_destroy(list);
 	   }
+	   
    }
 		   
    *directory_list = evfs_file_list_sort(files);

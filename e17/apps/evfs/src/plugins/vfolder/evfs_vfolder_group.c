@@ -26,7 +26,7 @@
 # include <config.h>
 #endif
 
-#include <evfs.h>
+#include "evfs.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,11 +39,16 @@
 #include <dirent.h>
 #include <Ecore_File.h>
 
+#define EVFS_PLUGIN_VFOLDER_GROUPS_ID "/Groups"
+
+void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list);
+
 evfs_plugin_functions_vfolder *
 evfs_plugin_init()
 {
    printf("Initialising the vfolder group plugin..\n");
    evfs_plugin_functions_vfolder *functions = calloc(1, sizeof(evfs_plugin_functions_vfolder));
+   functions->evfs_vfolder_list = &evfs_vfolder_list;
 
    return functions;
 }
@@ -51,4 +56,59 @@ evfs_plugin_init()
 char*
 evfs_plugin_vfolder_root_get() {
 	return "Groups";
+}
+
+
+void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
+{
+	char* path = ref->path;
+	
+	if (!strcmp(path, EVFS_PLUGIN_VFOLDER_GROUPS_ID)) {
+		   Evas_List* group_list;
+		   Evas_List* iter;
+		   char assemble[PATH_MAX];
+		   evfs_metadata_group_header* g;
+		   
+		   /*Get group list, and return*/
+		   group_list = evfs_metadata_groups_get();
+		   
+		   for (iter = group_list; iter; ) {
+			   g = iter->data;
+			   
+			   snprintf(assemble, sizeof(assemble), "%s/%s", 
+					   EVFS_PLUGIN_VFOLDER_GROUPS_ID, g->name);
+			   
+		   	   ref = NEW(evfs_filereference);
+			   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
+			   ref->path = strdup(assemble);
+			   if (g->visualhint) ref->attach = strdup(g->visualhint);
+			   ref->file_type = EVFS_FILE_DIRECTORY;
+			   ecore_list_append(*list, ref);
+
+			   iter = iter->next;
+		   }
+	} else {
+		   char* group_name;
+		   char* item;
+		   Ecore_List* flist;
+		   int i;
+		   group_name = strstr(path + 1, "/") + 1;
+		   evfs_file_uri_path* path;
+
+		   printf("Group name: %s\n", group_name);
+
+		   flist = evfs_metadata_file_group_list(group_name);
+
+		   ecore_list_goto_first(flist);
+		   while ( (item = ecore_list_remove_first(flist))) {
+			   path = evfs_parse_uri(item);
+			   ecore_list_append(*list, path->files[0]);
+
+			   /*TEMP FIXME - check this file for keywords*/
+  			   evfs_metadata_extract_queue(path->files[0]);
+
+			   evfs_cleanup_file_uri_path(path);
+		   }
+		   ecore_list_destroy(flist);
+	}
 }
