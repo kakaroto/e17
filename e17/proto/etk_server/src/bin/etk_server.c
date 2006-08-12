@@ -342,7 +342,7 @@ int main(int argc, char **argv)
    _etk_server_valid_signals_populate();   
    _etk_server_rev_vars = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
    
-   etk_init();
+   etk_init(&argc, &argv);
 
    ecore_main_loop_begin();
    ecore_con_shutdown();
