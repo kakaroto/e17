@@ -2,7 +2,12 @@
 bin_PROGRAMS=entrance_edit_gui
 
 entrance_edit_gui_SOURCES=main.c \
+						  background.c \
+						  behavior.c \
+						  layout.c \
+						  sessions.c \
 						  theme.c \
+						  x_settings.c \
 						  Egui.h
 entrance_edit_gui_CFLAGS=-I../widgets
 entrance_edit_gui_LDFLAGS=-L../widgets

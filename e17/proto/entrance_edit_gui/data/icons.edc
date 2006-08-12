@@ -1,0 +1,40 @@
+#define STOCK_ICON(icon_file, icon_name, size) \
+images { \
+   image: icon_file COMP; \
+} \
+group { \
+   name: icon_name; \
+   min: size size;\
+   parts { \
+      part { \
+         name: "icon"; \
+         description { \
+            state: "default" 0.0; \
+            rel1 { \
+               relative: 0.0 0.0; \
+               offset: 0 0; \
+            } \
+            rel2 { \
+               relative: 1.0 1.0; \
+               offset: -1 -1; \
+            } \
+            image { \
+               normal: icon_file; \
+            } \
+            fill { \
+               smooth: 0; \
+            } \
+         } \
+      } \
+   } \
+}
+
+collections {
+	STOCK_ICON("48x48/apps/preferences-desktop-theme.png", "icons/main/theme", 48)
+	STOCK_ICON("48x48/apps/preferences-desktop-wallpaper.png", "icons/main/background", 48)
+	STOCK_ICON("48x48/categories/preferences-desktop.png", "icons/main/layout", 48)
+	STOCK_ICON("48x48/categories/preferences-system.png", "icons/main/behavior", 48)
+	STOCK_ICON("48x48/apps/preferences-system-session.png", "icons/main/sessions", 48)
+	STOCK_ICON("48x48/devices/video-display.png", "icons/main/xsettings", 48)
+}
+

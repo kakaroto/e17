@@ -2,8 +2,8 @@
 #include <Ecore_File.h>
 #include <Ecore_Data.h>
 #include <etk/Etk.h>
-#include <Entrance_Edit.h>
 #include <Entrance_Widgets.h>
+//#include "Egui.h"
 
 static void _egui_theme_cb_selected(void);
 static void _egui_theme_cb_ok(void *object, void *data);

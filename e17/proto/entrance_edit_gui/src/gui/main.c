@@ -31,11 +31,11 @@ _main_dialog_show()
 
    Entrance_List tree = ew_edjelist_new("<b>Configuration</b>", 320, 240, 52, 90);
    ew_edjelist_add(tree, _("Theme"), edjefile, "apps/preferences-desktop-theme_48", NULL, 0, egui_theme_dialog_show);
-   ew_edjelist_add(tree, _("Background"), edjefile, "apps/preferences-desktop-wallpaper_48", NULL, 0, NULL);
-   ew_edjelist_add(tree, _("Fonts"), edjefile, "apps/preferences-desktop-font_48", NULL, 0,  NULL);
-   ew_edjelist_add(tree, _("Language"), edjefile, "apps/preferences-desktop-locale_48", NULL, 0,  NULL);
-   ew_edjelist_add(tree, _("User Preferences"),edjefile, "apps/system-users_48", NULL, 0,  NULL);
-   ew_edjelist_add(tree, _("General"), edjefile, "categories/preferences-system_48",NULL, 0, NULL);
+   ew_edjelist_add(tree, _("Background"), edjefile, "apps/preferences-desktop-wallpaper_48", NULL, 0, egui_background_dialog_show);
+   ew_edjelist_add(tree, _("Layout"), edjefile, "categories/preferences-desktop_48", NULL, 0,  egui_layout_dialog_show);
+   ew_edjelist_add(tree, _("Behavior"), edjefile, "categories/preferences-system_48", NULL, 0,  egui_behavior_dialog_show);
+   ew_edjelist_add(tree, _("Sessions"),edjefile, "apps/preferences-system-session_48", NULL, 0,  egui_sessions_dialog_show);
+   ew_edjelist_add(tree, _("X settings"), edjefile, "devices/video-display_48",NULL, 0, egui_x_settings_dialog_show);
 
    Entrance_Widget group = ew_dialog_group_add(dialog, _("Configuration"));
    ew_group_add(group, tree);
