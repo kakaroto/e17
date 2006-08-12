@@ -1,4 +1,4 @@
-#include <etk/Etk.h>
+#include <Etk.h>
 #include "Entrance_Widgets.h"
 
 #include "_ew_list.h"

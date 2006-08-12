@@ -1,7 +1,7 @@
 #ifndef _ENTRANCE_WIDGETS_H
 #define _ENTRANCE_WIDGETS_H
 
-#include <etk/Etk.h>
+#include <Etk.h>
 
 
 #include "ew.h"
