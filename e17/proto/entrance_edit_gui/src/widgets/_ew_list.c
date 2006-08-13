@@ -6,7 +6,7 @@ static void _ew_list_cb_row_clicked(Etk_Object *, Etk_Tree_Row *, Etk_Event_Mous
 Entrance_List
 __ew_list_new(void)
 {
-	Entrance_List el = calloc(1, sizeof(_Entrance_List_Data));
+	Entrance_List el = calloc(1, sizeof(*el));
 	if(el) 
 	{
 		el->owner = NULL;
@@ -64,7 +64,7 @@ _ew_list_buildtree(Entrance_List ew)
 Entrance_List_Data 
 ew_listdata_new(void)
 {
-	Entrance_List_Data ewld = calloc(1, sizeof(_Entrance_List_Data));
+	Entrance_List_Data ewld = calloc(1, sizeof(*ewld));
 	if(ewld) 
 	{
 		ewld->func = NULL;

@@ -1,22 +1,18 @@
 #ifndef _EW_LIST_H
 #define _EW_LIST_H
 
-struct __Entrance_List_Data {
+typedef struct _Entrance_List_Data {
 	void (*func)(void);
 	void *data;
-};
+} *Entrance_List_Data;
 
-typedef struct __Entrance_List_Data _Entrance_List_Data;
-typedef struct __Entrance_List_Data *Entrance_List_Data;
 
-struct __Entrance_List {
+typedef struct _Entrance_List {
 	Etk_Widget *owner;
 	Etk_Widget *box;
 	Etk_Tree_Col *col;
-};
+} *Entrance_List;
 
-typedef struct __Entrance_List _Entrance_List;
-typedef struct __Entrance_List *Entrance_List;
 
 #define EW_LIST_FREE(ew) if(1) \
 { \

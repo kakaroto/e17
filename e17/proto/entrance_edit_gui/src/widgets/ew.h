@@ -1,13 +1,10 @@
 #ifndef _EW_H
 #define _EW_H
 
-struct __Entrance_Widget {
+typedef struct _Entrance_Widget {
 	Etk_Widget *owner;
 	Etk_Widget *box;
-};
-
-typedef struct __Entrance_Widget _Entrance_Widget;
-typedef struct __Entrance_Widget *Entrance_Widget;
+} *Entrance_Widget;
 
 
 #define EW_FREE(ew) if(1) \

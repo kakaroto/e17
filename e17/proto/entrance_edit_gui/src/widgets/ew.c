@@ -29,7 +29,7 @@ ew_shutdown()
 Entrance_Widget 
 ew_new(void)
 {
-	Entrance_Widget ew = calloc(1, sizeof(_Entrance_Widget));
+	Entrance_Widget ew = calloc(1, sizeof(*ew));
 	if(ew) 
 	{
 		ew->owner = NULL;

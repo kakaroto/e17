@@ -1,14 +1,11 @@
 #ifndef _EW_DIALOG_H
 #define _EW_DIALOG_H
 
-struct __Entrance_Dialog {
+typedef struct _Entrance_Dialog {
 	Etk_Widget *owner;
 	Etk_Widget *box;
 	Etk_Widget *hbox;
-};
-
-typedef struct __Entrance_Dialog _Entrance_Dialog;
-typedef struct __Entrance_Dialog *Entrance_Dialog;
+} *Entrance_Dialog;
 
 #define EW_DIALOG_FREE(ew) if(1) \
 { \

@@ -6,7 +6,7 @@ static void _ew_cb_destroy(void *);
 Entrance_Dialog 
 _ew_dialog_new()
 {
-	Entrance_Dialog ed = calloc(1, sizeof(_Entrance_Dialog));
+	Entrance_Dialog ed = calloc(1, sizeof(*ed));
 	if(ed)
 	{
 		ed->owner = NULL;
