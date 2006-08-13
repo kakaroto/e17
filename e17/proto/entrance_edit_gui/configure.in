@@ -120,7 +120,7 @@ AC_PATH_EFL(
 )
 
 entrance_libs=-lentrance_edit
-entrance_cflags=/usr/include/    
+entrance_cflags=-I/usr/include/    
 
 AC_SUBST(entrance_libs)
 AC_SUBST(entrance_cflags)
