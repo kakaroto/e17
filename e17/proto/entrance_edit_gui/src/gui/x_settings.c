@@ -3,6 +3,6 @@
 
 void
 egui_x_settings_dialog_show() {
-	printf("X settings dialog clicked");
+	printf("X settings dialog clicked\n");
 }
 

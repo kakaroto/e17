@@ -3,5 +3,5 @@
 
 void
 egui_background_dialog_show() {
-printf("Background clicked");
+printf("Background clicked\n");
 }

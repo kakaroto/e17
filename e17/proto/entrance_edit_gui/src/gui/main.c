@@ -1,6 +1,7 @@
 #include <Etk.h>
 #include <Entrance_Widgets.h>
 #include "Egui.h"
+#include "config.h"
 
 static void _main_dialog_show(void);
 static void _close_button_cb(void *, void *);
@@ -27,15 +28,15 @@ static void
 _main_dialog_show()
 {
    dialog = ew_dialog_new(_("Entrance Configuration"), EW_TRUE);   
-   const char* edjefile = etk_theme_icon_theme_get();
+   const char* edjefile = PACKAGE_DATA_DIR"/icons/icons.edj";
 
    Entrance_List tree = ew_edjelist_new("<b>Configuration</b>", 320, 240, 52, 90);
-   ew_edjelist_add(tree, _("Theme"), edjefile, "apps/preferences-desktop-theme_48", NULL, 0, egui_theme_dialog_show);
-   ew_edjelist_add(tree, _("Background"), edjefile, "apps/preferences-desktop-wallpaper_48", NULL, 0, egui_background_dialog_show);
-   ew_edjelist_add(tree, _("Layout"), edjefile, "categories/preferences-desktop_48", NULL, 0,  egui_layout_dialog_show);
-   ew_edjelist_add(tree, _("Behavior"), edjefile, "categories/preferences-system_48", NULL, 0,  egui_behavior_dialog_show);
-   ew_edjelist_add(tree, _("Sessions"),edjefile, "apps/preferences-system-session_48", NULL, 0,  egui_sessions_dialog_show);
-   ew_edjelist_add(tree, _("X settings"), edjefile, "devices/video-display_48",NULL, 0, egui_x_settings_dialog_show);
+   ew_edjelist_add(tree, _("Theme"), edjefile, "icons/main/theme", NULL, 0, egui_theme_dialog_show);
+   ew_edjelist_add(tree, _("Background"), edjefile, "icons/main/background", NULL, 0, egui_background_dialog_show);
+   ew_edjelist_add(tree, _("Layout"), edjefile, "icons/main/layout", NULL, 0,  egui_layout_dialog_show);
+   ew_edjelist_add(tree, _("Behavior"), edjefile, "icons/main/behavior", NULL, 0,  egui_behavior_dialog_show);
+   ew_edjelist_add(tree, _("Sessions"),edjefile, "icons/main/sessions", NULL, 0,  egui_sessions_dialog_show);
+   ew_edjelist_add(tree, _("X settings"), edjefile, "icons/main/xsettings",NULL, 0, egui_x_settings_dialog_show);
 
    Entrance_Widget group = ew_dialog_group_add(dialog, _("Configuration"));
    ew_group_add(group, tree);

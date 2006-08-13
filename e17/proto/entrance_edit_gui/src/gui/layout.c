@@ -3,6 +3,6 @@
 
 void
 egui_layout_dialog_show() {
-	printf("Layout clicked");
+	printf("Layout clicked\n");
 }
 

@@ -3,5 +3,5 @@
 
 void
 egui_behavior_dialog_show() {
-	printf("Behavior clicked");
+	printf("Behavior clicked\n");
 }
