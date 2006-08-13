@@ -26,6 +26,7 @@ struct entropy_file_structure_viewer
   Ecore_Hash *row_folder_hash;
 
   Ewl_Widget *last_selected_label;
+  Ewl_Widget* parent_visual;
 };
 
 typedef struct event_file_core event_file_core;
@@ -36,7 +37,7 @@ struct event_file_core
   void *data;
 };
 
-void structure_viewer_add_row (entropy_gui_component_instance * instance,
+Ewl_Widget* structure_viewer_add_row (entropy_gui_component_instance * instance,
 			       entropy_generic_file * file, Ewl_Row * prow);
 
 int
@@ -54,7 +55,7 @@ entropy_plugin_sub_type_get ()
 char *
 entropy_plugin_identify ()
 {
-  return (char *) "File system tree structure viewer";
+  return (char *) "structureviewer";
 }
 
 char*
@@ -280,7 +281,7 @@ row_clicked_callback (Ewl_Widget * main_win, void *ev_data, void *user_data)
   viewer->last_selected_label = event->data;
 }
 
-void
+Ewl_Widget*
 structure_viewer_add_row (entropy_gui_component_instance * instance,
 			  entropy_generic_file * file, Ewl_Row * prow)
 {
@@ -293,7 +294,6 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   entropy_file_structure_viewer *viewer =
     (entropy_file_structure_viewer *) instance->data;
 
-  printf("Setting structure viewer with '%s'...\n", file->filename);
   ewl_text_text_set (EWL_TEXT (label), file->filename);
 
   image = ewl_image_new ();
@@ -316,7 +316,7 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   children[1] = NULL;
 
   /*printf("Adding row %s to existing row\n", file->filename); */
-  row = ewl_tree_row_add (EWL_TREE (viewer->tree), prow, children);
+  row = ewl_tree_row_add (EWL_TREE (viewer->parent_visual), prow, children);
 
   ewl_object_fill_policy_set (EWL_OBJECT (row),
 			      EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
@@ -349,6 +349,7 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   /*printf ("Adding row to hash %p, file %p\n", row, file); */
   ecore_hash_set (viewer->row_folder_hash, file, row);
 
+  return row;
 }
 
 
@@ -383,6 +384,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   entropy_gui_component_instance *instance;
   entropy_file_structure_viewer *viewer;
   Ewl_Widget *child;
+  Ewl_Widget* row;
 
 
   /*entropy_file_request* file_request = entropy_malloc(sizeof(entropy_file_request)); */
@@ -390,6 +392,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   instance = entropy_gui_component_instance_new ();
   viewer = entropy_malloc (sizeof (entropy_file_structure_viewer));
   instance->data = viewer;
+  viewer->parent_visual = parent_visual;
 
   instance->layout_parent = layout;
 
@@ -411,22 +414,18 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   viewer->ecore = core;
   instance->core = core;
 
-  viewer->tree = ewl_tree_new (1);
-  ewl_tree_headers_visible_set (EWL_TREE (viewer->tree), 0);
   viewer->loaded_dirs =
     ecore_hash_new (ecore_direct_hash, ecore_direct_compare);
   viewer->row_folder_hash =
     ecore_hash_new (ecore_direct_hash, ecore_direct_compare);
 
-  ewl_object_fill_policy_set (EWL_OBJECT
-			      (EWL_TREE (viewer->tree)->scrollarea),
-			      EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL);
+  viewer->tree = parent_visual;
+  row = structure_viewer_add_row (instance, (entropy_generic_file *) data, NULL);
+  instance->gui_object = row;
+ 
 
-  instance->gui_object = viewer->tree;
 
-  structure_viewer_add_row (instance, (entropy_generic_file *) data, NULL);
-
-  ewl_widget_show (viewer->tree);
+  ewl_widget_show (row);
 
   return instance;
 }

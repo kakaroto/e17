@@ -148,6 +148,13 @@ ewl_layout_simple_exit_cb(Ewl_Widget *w, void *event, void *data)
  layout_ewl_simple_quit(instance->core);
 }
 
+void
+gui_event_callback (entropy_notify_event * eevent, void *requestor,
+		    void *el, entropy_gui_component_instance * comp)
+{
+	printf("STUB: layout_ewl_simple gui_event_callback\n");
+}
+
 entropy_gui_component_instance *
 entropy_plugin_layout_create (entropy_core * core)
 {
@@ -168,8 +175,16 @@ entropy_plugin_layout_create (entropy_core * core)
 				  void *parent_visual,
 				  void *data);
 
+
+ entropy_gui_component_instance *(*structure_plugin_instance_new)
+				 (entropy_core *core,
+				  entropy_gui_component_instance *,
+				  void *parent_visual,
+				  void *data);
+
  entropy_plugin *meta;
  entropy_plugin *trackback;
+ entropy_plugin *structure_p;
  entropy_gui_component_instance *meta_instance;
 
  Ewl_Widget *tree;
@@ -285,6 +300,24 @@ entropy_plugin_layout_create (entropy_core * core)
   gui->trackback->plugin = trackback;
   gui->trackback->active=1;
  }
+
+ /*Add an example row to the tree*/
+ structure_p = entropy_plugin_gui_get_by_name_toolkit(ENTROPY_TOOLKIT_EWL, "structureviewer");
+ if (structure_p) {
+   Entropy_Generic_File* file = entropy_generic_file_new();
+   snprintf(file->uri_base,sizeof(file->uri_base),"file");
+   snprintf(file->filename,sizeof(file->filename),"/");
+   file->filetype = FILE_FOLDER;
+   strcpy(file->mime_type, "file/folder");
+
+	 
+   printf("Found structure plugin");
+   structure_plugin_instance_new = dlsym(structure_p->dl_ref, "entropy_plugin_gui_instance_new");
+   instance = (*structure_plugin_instance_new)(core, layout, gui->tree, file); 
+   instance->plugin = structure_p;
+   
+ }
+ 
 
  ewl_widget_show(win);
  ewl_widget_show(vbox);
