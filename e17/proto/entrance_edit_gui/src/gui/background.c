@@ -38,13 +38,13 @@ egui_background_dialog_show()
    list_thumbs = ew_textlist_new(NULL, 320, 140, 20, 90);
    
    /* scan for backgrounds and add them to the list */
-   backgrounds = ecore_file_ls("/usr/share/entrance/backgrounds");
+   backgrounds = ecore_file_ls("/usr/share/enlightenment/data/backgrounds");
    if(!backgrounds || ecore_list_is_empty(backgrounds))
      return;
 
    background = ecore_list_first(backgrounds);
    char *background_file = _background_get_path(background);
-   ew_image_edje_load(img_preview, background_file, "Preview");
+   ew_image_edje_load(img_preview, background_file, "desktop/background");
    free(background_file);
    /*FIXME: selecting the first row doesn't work - maybe we select first row while adding elements to the list:(*/
    ew_list_first_row_select(list_thumbs);
@@ -75,7 +75,7 @@ _background_cb_selected()
 {
 	char* background = ew_list_selected_data_get(list_thumbs);
 	char* background_path = _background_get_path(background);
-	ew_image_edje_load(img_preview, background_path, "Preview");
+	ew_image_edje_load(img_preview, background_path, "desktop/background");
 
 	free(background_path);
 }
@@ -104,7 +104,7 @@ static char*
 _background_get_path(const char *t)
 {
 	char *path = calloc(PATH_MAX, sizeof(*path));
-	snprintf(path, PATH_MAX, "/usr/share/entrance/backgrounds/%s", t);
+	snprintf(path, PATH_MAX, "/usr/share/enlightenment/data/backgrounds/%s", t);
 
 	return path;
 }
