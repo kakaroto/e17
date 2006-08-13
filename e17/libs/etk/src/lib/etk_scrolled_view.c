@@ -137,15 +137,13 @@ void etk_scrolled_view_policy_set(Etk_Scrolled_View *scrolled_view, Etk_Scrolled
    {
       scrolled_view->hpolicy = hpolicy;
       etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));
-      if (!etk_object_notify(ETK_OBJECT(scrolled_view), "hpolicy"))
-         return;
+      etk_object_notify(ETK_OBJECT(scrolled_view), "hpolicy");
    }
    if (scrolled_view->vpolicy != vpolicy)
    {
       scrolled_view->vpolicy = vpolicy;
       etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));
-      if (!etk_object_notify(ETK_OBJECT(scrolled_view), "vpolicy"))
-         return;
+      etk_object_notify(ETK_OBJECT(scrolled_view), "vpolicy");
    }
 }
 

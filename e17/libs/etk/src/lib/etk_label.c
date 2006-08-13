@@ -133,15 +133,13 @@ void etk_label_alignment_set(Etk_Label *label, float xalign, float yalign)
    {
       label->xalign = xalign;
       need_redraw = ETK_TRUE;
-      if (!etk_object_notify(ETK_OBJECT(label), "xalign"))
-         return;
+      etk_object_notify(ETK_OBJECT(label), "xalign");
    }
    if (label->yalign != yalign)
    {
       label->yalign = yalign;
       need_redraw = ETK_TRUE;
-      if (!etk_object_notify(ETK_OBJECT(label), "yalign"))
-         return;
+      etk_object_notify(ETK_OBJECT(label), "yalign");
    }
 
    if (need_redraw)

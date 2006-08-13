@@ -85,8 +85,7 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
       etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
       bin->child = child;
       
-      if (!etk_signal_emit_by_name("child_added", ETK_OBJECT(bin), NULL, child))
-         return;
+      etk_signal_emit_by_name("child_added", ETK_OBJECT(bin), NULL, child);
       etk_object_notify(ETK_OBJECT(bin), "child");
    }
 }
@@ -212,8 +211,7 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
    etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
    bin->child = NULL;
    
-   if (!etk_signal_emit_by_name("child_removed", ETK_OBJECT(bin), NULL, widget))
-      return;
+   etk_signal_emit_by_name("child_removed", ETK_OBJECT(bin), NULL, widget);
    etk_object_notify(ETK_OBJECT(bin), "child");
 }
 

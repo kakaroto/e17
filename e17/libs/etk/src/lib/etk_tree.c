@@ -745,14 +745,12 @@ void etk_tree_unselect_all(Etk_Tree *tree)
    if (tree->last_selected && tree->last_selected->selected)
    {
       tree->last_selected->selected = ETK_FALSE;
-      if (!etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, tree->last_selected))
-         return;
+      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(tree), NULL, tree->last_selected);
    }
    if (tree->multiple_select)
    {
       _etk_tree_row_unselect_all(&tree->root);
-      if (!etk_signal_emit(_etk_tree_signals[ETK_TREE_UNSELECT_ALL_SIGNAL], ETK_OBJECT(tree), NULL))
-         return;
+      etk_signal_emit(_etk_tree_signals[ETK_TREE_UNSELECT_ALL_SIGNAL], ETK_OBJECT(tree), NULL);
    }
    tree->num_selected_rows = 0;
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));

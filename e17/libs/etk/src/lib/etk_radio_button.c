@@ -123,8 +123,7 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **grou
 
    *group = evas_list_append(*group, radio_button);
    radio_button->group = group;
-   if (!etk_object_notify(ETK_OBJECT(radio_button), "group"))
-      return;
+   etk_object_notify(ETK_OBJECT(radio_button), "group");
 
    radio_button->can_uncheck = ETK_TRUE;
    etk_toggle_button_active_set(toggle_button, active);
@@ -228,10 +227,8 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
    if (!toggle_button->active || (toggle_button->active && radio_button->can_uncheck))
    {
       toggle_button->active = active;
-      if (!etk_signal_emit_by_name("toggled", ETK_OBJECT(toggle_button), NULL))
-         return;
-      if (!etk_object_notify(ETK_OBJECT(toggle_button), "active"))
-         return;
+      etk_signal_emit_by_name("toggled", ETK_OBJECT(toggle_button), NULL);
+      etk_object_notify(ETK_OBJECT(toggle_button), "active");
    
       if (toggle_button->active)
       {

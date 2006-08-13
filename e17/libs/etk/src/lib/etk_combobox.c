@@ -148,8 +148,7 @@ void etk_combobox_item_height_set(Etk_Combobox *combobox, int item_height)
    {
       combobox->item_height = item_height;
       combobox->item_height_set = ETK_TRUE;
-      if (!etk_object_notify(ETK_OBJECT(combobox), "item_height"))
-         return;
+      etk_object_notify(ETK_OBJECT(combobox), "item_height");
    }
    else if (combobox->item_height_set)
    {
@@ -159,8 +158,7 @@ void etk_combobox_item_height_set(Etk_Combobox *combobox, int item_height)
          combobox->item_height = ETK_COMBOBOX_DEFAULT_ITEM_HEIGHT;
       }
       combobox->item_height_set = ETK_FALSE;
-      if (!etk_object_notify(ETK_OBJECT(combobox), "item_height"))
-         return;
+      etk_object_notify(ETK_OBJECT(combobox), "item_height");
    }
 }
 
@@ -305,8 +303,7 @@ void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *ite
    if (combobox->active_item != item)
    {
       combobox->active_item = item;
-      if (!etk_signal_emit(_etk_combobox_signals[ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL], ETK_OBJECT(combobox), NULL))
-         return;
+      etk_signal_emit(_etk_combobox_signals[ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL], ETK_OBJECT(combobox), NULL);
       etk_object_notify(ETK_OBJECT(combobox), "active_item");
    }
 }

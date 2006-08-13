@@ -248,8 +248,7 @@ static void _etk_menu_window_popped_down_cb(Etk_Object *object, void *data)
    for (l = menu_shell->items; l; l = l->next)
       etk_menu_item_deselect(ETK_MENU_ITEM(l->data));
    
-   if (!etk_signal_emit(_etk_menu_signals[ETK_MENU_POPPED_DOWN_SIGNAL], ETK_OBJECT(menu_shell), NULL))
-      return;
+   etk_signal_emit(_etk_menu_signals[ETK_MENU_POPPED_DOWN_SIGNAL], ETK_OBJECT(menu_shell), NULL);
    if (menu_shell->parent)
       etk_signal_emit_by_name("submenu_popped_down", ETK_OBJECT(menu_shell->parent), NULL);
 }

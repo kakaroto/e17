@@ -584,8 +584,7 @@ void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Evas_List **
 
    *group = evas_list_append(*group, radio_item);
    radio_item->group = group;
-   if (!etk_object_notify(ETK_OBJECT(radio_item), "group"))
-      return;
+   etk_object_notify(ETK_OBJECT(radio_item), "group");
 
    radio_item->can_uncheck = ETK_TRUE;
    etk_menu_item_check_active_set(check_item, active);
@@ -921,8 +920,7 @@ static void _etk_menu_item_check_active_set(Etk_Menu_Item_Check *check_item, Etk
       return;
    
    check_item->active = active;
-   if (!etk_signal_emit(_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL], ETK_OBJECT(check_item), NULL))
-      return;
+   etk_signal_emit(_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL], ETK_OBJECT(check_item), NULL);
    etk_object_notify(ETK_OBJECT(check_item), "active");
 }
 
@@ -939,10 +937,8 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
    if (!check_item->active || (check_item->active && radio_item->can_uncheck))
    {
       check_item->active = active;
-      if (!etk_signal_emit(_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL], ETK_OBJECT(check_item), NULL))
-         return;
-      if (!etk_object_notify(ETK_OBJECT(check_item), "active"))
-         return;
+      etk_signal_emit(_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL], ETK_OBJECT(check_item), NULL);
+      etk_object_notify(ETK_OBJECT(check_item), "active");
    
       if (check_item->active)
       {

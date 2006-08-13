@@ -88,32 +88,28 @@ void etk_alignment_set(Etk_Alignment *alignment, float xalign, float yalign, flo
    {
       alignment->xalign = xalign;
       etk_widget_redraw_queue(ETK_WIDGET(alignment));
-      if (!etk_object_notify(ETK_OBJECT(alignment), "xalign"))
-         return;
+      etk_object_notify(ETK_OBJECT(alignment), "xalign");
    }
    yalign = ETK_CLAMP(yalign, 0.0, 1.0);
    if (yalign != alignment->yalign)
    {
       alignment->yalign = yalign;
       etk_widget_redraw_queue(ETK_WIDGET(alignment));
-      if (!etk_object_notify(ETK_OBJECT(alignment), "yalign"))
-         return;
+      etk_object_notify(ETK_OBJECT(alignment), "yalign");
    }
    xscale = ETK_CLAMP(xscale, 0.0, 1.0);
    if (xscale != alignment->xscale)
    {
       alignment->xscale = xscale;
       etk_widget_redraw_queue(ETK_WIDGET(alignment));
-      if (!etk_object_notify(ETK_OBJECT(alignment), "xscale"))
-         return;
+      etk_object_notify(ETK_OBJECT(alignment), "xscale");
    }
    yscale = ETK_CLAMP(yscale, 0.0, 1.0);
    if (yscale != alignment->yscale)
    {
       alignment->yscale = yscale;
       etk_widget_redraw_queue(ETK_WIDGET(alignment));
-      if (!etk_object_notify(ETK_OBJECT(alignment), "yscale"))
-         return;
+      etk_object_notify(ETK_OBJECT(alignment), "yscale");
    }
 }
 
