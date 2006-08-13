@@ -1,636 +1,134 @@
 #include <Ewl.h>
 #include "entropy.h"
+#include "entropy_gui.h"
+//#include "ewl_location_add_dialog.h"
+#include "ewl_progress_dialog.h"
+#include "ewl_properties_dialog.h"
+#include "ewl_user_interaction_dialog.h"
+#include "ewl_mime_dialog.h"
+//#include "ewl_file_cache_dialog.h"
+//#include "entropy_ewl_context_menu.h"
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include "ewl_mime_dialog.h"
-#include "entropy_gui.h"
-#include "ewl_tip.h"
-#include "ewl_about_dialog.h"
 
-#define HEADER_CONFIG_MAX 2048
+/* TODO:
+ *
+ * 1. Add a shareable context menu
+ * 2. Add a menubar/status bar
+ * 3. Allow switching between icon/list view
+ * 4. Modify ewl_structure_viewer.c to return a tree row - and append to 
+ *    tree in layout_ewl_simple.c
+ * 5. Add an ewl_trackback plugin
+ * 6. Add an ewl_metadata plugin
+ *
+ */
 
+#define ENTROPY_EWL_WINDOW_WIDTH 640
+#define ENTROPY_EWL_WINDOW_HEIGHT 480
+#define ENTROPY_EWL_WINDOW_PANE_DEFAULT_X 150
 
+static int _ewl_layout_window_count = 0;
 
-static Ewl_Widget *win;
-static int _ewl_layout_count = 0;
-
-int entropy_plugin_type_get ();
-char *entropy_plugin_identify ();
-void location_add_execute_cb (Ewl_Widget * item, void *ev_data,
-			      void *user_data);
-void location_add_cancel_cb (Ewl_Widget * item, void *ev_data,
-			     void *user_data);
-void mime_cb (Ewl_Widget * main_win, void *ev_data, void *user_data);
-void entropy_ewl_layout_simple_tooltip_window ();
-void location_menu_popup_delete_cb (Ewl_Widget * label, void *ev_data,
-				    void *user_data);
-void location_menu_popup_cb (Ewl_Widget * label, void *ev_data,
-			     void *user_data);
-void location_add_cb (Ewl_Widget * main_win, void *ev_data, void *user_data);
-void layout_ewl_simple_config_create (entropy_core * core);
-void layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
-				   char *name, char *uri);
-void __destroy_main_window (Ewl_Widget * main_win, void *ev_data,
-			    void *user_data);
-void contract_cb (Ewl_Widget * main_win, void *ev_data, void *user_data);
-void layout_ewl_simple_local_view_cb (Ewl_Widget * main_win, void *ev_data,
-				      void *user_data);
-void layout_ewl_simple_structure_view_cb (Ewl_Widget * main_win,
-					  void *ev_data, void *user_data);
-void entropy_plugin_layout_main ();
-void entropy_plugin_destroy (entropy_gui_component_instance * comp);
-Entropy_Plugin* entropy_plugin_init (entropy_core * core);
-void entropy_delete_current_folder (Ecore_List * el);
-entropy_gui_component_instance *entropy_plugin_layout_create (entropy_core *
-							      core);
-void ewl_layout_simple_tooltip_show_cb (Ewl_Widget * item, void *ev_data,
-					void *user_data);
-void ewl_layout_simple_about_dialog_cb (Ewl_Widget * item, void *ev_data,
-					void *user_data);
-
-typedef struct entropy_ewl_layout_header_uri entropy_ewl_layout_header_uri;
-struct entropy_ewl_layout_header_uri
-{
-  Ewl_Widget *visual;
-  entropy_gui_component_instance *layout;
-
-  char *uri;
-  char *header;
-};
-
+static Ecore_Hash *_ewl_layout_structure_plugin_reference;
 typedef struct entropy_layout_gui entropy_layout_gui;
 struct entropy_layout_gui
 {
   entropy_gui_component_instance *iconbox_viewer;
+  entropy_gui_component_instance *list_viewer;
   entropy_gui_component_instance *structure_viewer;
+  entropy_gui_component_instance *trackback;
 
   Ewl_Widget *tree;
   Ewl_Widget *paned;
-  Ewl_Widget *local_container;
-  Ewl_Widget *context_menu;
-  Ewl_Widget *context_menu_floater;
-  Ecore_List *current_folder;
-  Ecore_List *local_components;
-  Ecore_Hash *headers;
+  Ewl_Widget *statusbar_box;
+  Ewl_Widget *statusbars[3];
+  Ewl_Widget *delete_row;
+  Ewl_Widget* popup;
+  Ewl_Widget* localshell;
+  Ecore_Hash* progress_hash;
+  Ecore_Hash* properties_request_hash;
 
-  entropy_ewl_layout_header_uri *active_header;
-
-  /*Tmp */
-  Ewl_Widget *samba_radio;
-  Ewl_Widget *posix_radio;
-  Ewl_Widget *sftp_radio;
-  Ewl_Widget *location_add_window;
-  Ewl_Widget *location_add_name;
-  Ewl_Widget *location_add_path;
-  Ewl_Widget *location_add_server;
-  Ewl_Widget *location_add_username;
-  Ewl_Widget *location_add_password;
 };
 
-
-int
-entropy_plugin_type_get ()
+typedef enum _Ewl_Menu_Item_Type
 {
-  return ENTROPY_PLUGIN_GUI_LAYOUT;
+   EWL_MENU_ITEM_NORMAL,
+   EWL_MENU_ITEM_SEPARATOR
+} Ewl_Menu_Item_Type;
+
+void layout_ewl_simple_add_header(entropy_gui_component_instance *instance, Entropy_Config_Structure *structure);
+void entropy_plugin_layout_main ();
+char* entropy_plugin_toolkit_get();
+entropy_gui_component_instance *entropy_plugin_layout_create (entropy_core *core);
+void entropy_ewl_layout_trackback_cb(Ewl_Widget* w, void *event, void* data);
+void entropy_layout_ewl_simple_local_view_set(entropy_gui_component_instance *instance,
+                entropy_gui_component_instance *local);
+
+void layout_ewl_simple_quit(entropy_core *core)
+{
+ entropy_core_destroy(core);
+ ewl_main_quit();
+}
+
+static void _ewl_window_delete_cb(Ewl_Widget *w, void *event, void *data)
+{
+ entropy_gui_component_instance *instance = data;
+
+ _ewl_layout_window_count--;
+
+ ewl_widget_destroy(EWL_WIDGET(instance->gui_object));
+
+ if (_ewl_layout_window_count == 0)
+ {
+  layout_ewl_simple_quit(instance->core);
+ }
+
+}
+
+Entropy_Plugin *
+entropy_plugin_init(entropy_core *core)
+{
+ Entropy_Plugin_Gui *plugin;
+ Entropy_Plugin *base;
+
+ ewl_init(0, NULL);
+ 
+ plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
+ base = ENTROPY_PLUGIN(plugin);
+ 
+ base->functions.entropy_plugin_init = &entropy_plugin_init;
+ plugin->gui_functions.layout_main = &entropy_plugin_layout_main;
+ plugin->gui_functions.layout_create = &entropy_plugin_layout_create;
+ plugin->gui_functions.toolkit_get = &entropy_plugin_toolkit_get;
+
+ return base;
 }
 
 char *
-entropy_plugin_identify ()
+entropy_plugin_identify()
 {
-  return (char *) "ewl";
+ return (char *)"ewl";
 }
 
-char*
-entropy_plugin_toolkit_get() 
+int
+entropy_plugin_type_get()
 {
-	return ENTROPY_TOOLKIT_EWL;
+ return ENTROPY_PLUGIN_GUI_LAYOUT;
 }
 
-void
-ewl_layout_simple_tooltip_show_cb (Ewl_Widget * item, void *ev_data,
-				   void *user_data)
+char *
+entropy_plugin_toolkit_get()
 {
-  ewl_entropy_tip_window_display ();
-}
-
-void
-ewl_layout_simple_about_dialog_cb (Ewl_Widget * item, void *ev_data,
-				   void *user_data)
-{
-  entropy_ewl_about_dialog_display ();
-}
-
-
-/*TODO/FIXME - This needs a rewrite, to be dynamic, and wizard-based*/
-void
-location_add_execute_cb (Ewl_Widget * item, void *ev_data, void *user_data)
-{
-  entropy_gui_component_instance *instance = user_data;
-  entropy_layout_gui *viewer = instance->data;
-
-  char new_uri[2048];
-
-  char *display_name =
-    ewl_text_text_get (EWL_TEXT (viewer->location_add_name));
-  char *path = ewl_text_text_get (EWL_TEXT (viewer->location_add_path));
-  char *server = ewl_text_text_get (EWL_TEXT (viewer->location_add_server));
-  char *username =
-    ewl_text_text_get (EWL_TEXT (viewer->location_add_username));
-  char *password =
-    ewl_password_text_get (EWL_PASSWORD (viewer->location_add_password));
-
-  printf ("Display name: '%s'\n", display_name);
-  printf ("Server: '%s'\n", server);
-  printf ("Path: '%s'\n", path);
-  printf ("Username: '%s'\n", username);
-  printf ("Password: '%s'\n", password);
-
-
-  if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->posix_radio))) {
-    snprintf (new_uri, 2048, "file://%s", path);
-    printf ("New URI is: '%s'\n", new_uri);
-    layout_ewl_simple_add_header (instance, display_name, new_uri);
-
-    entropy_config_standard_structures_add (display_name, new_uri);
-
-  } else if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->sftp_radio))) {
-    snprintf (new_uri, 2048, "sftp:///%s%s", server,path);
-    printf ("New URI is: '%s'\n", new_uri);
-    layout_ewl_simple_add_header (instance, display_name, new_uri);
-
-    entropy_config_standard_structures_add (display_name, new_uri);
-
-  } else if (ewl_checkbutton_is_checked (EWL_CHECKBUTTON (viewer->samba_radio))) {
-    if (server) {
-      if (username && password) {
-	snprintf (new_uri, 2048, "smb://%s:%s@/%s%s", username, password,
-		  server, path);
-	printf ("New URI is: '%s'\n", new_uri);
-	layout_ewl_simple_add_header (instance,display_name, new_uri);
-      }
-      else {
-	snprintf (new_uri, 2048, "smb:///%s%s", server, path);
-	printf ("New URI is: '%s'\n", new_uri);
-	layout_ewl_simple_add_header (instance,display_name, new_uri);
-      }
-
-      entropy_config_standard_structures_add (display_name, new_uri);
-    }
-    else {
-      printf ("Server required for remote file systems!\n");
-    }
-  }
-  
-  else {
-    printf ("No filesystem selected!\n");
-  }
-
-  ewl_widget_destroy (viewer->location_add_window);
-
-
-}
-
-
-void
-location_add_cancel_cb (Ewl_Widget * item, void *ev_data, void *user_data)
-{
-  ewl_widget_destroy (EWL_WIDGET (user_data));
+ return ENTROPY_TOOLKIT_EWL;
 }
 
 void
-mime_cb (Ewl_Widget * main_win, void *ev_data, void *user_data)
+entropy_plugin_layout_main()
 {
-  entropy_ewl_mime_dialog_display ();
+ printf("Init Ewl...\n");
+ ewl_main();
 }
-
-
-void
-entropy_ewl_layout_simple_tooltip_window ()
-{
-  int status = entropy_core_tooltip_status_get ();
-
-}
-
-
-/*Header context menu*/
-void
-location_menu_popup_delete_cb (Ewl_Widget * label, void *ev_data,
-			       void *user_data)
-{
-  entropy_gui_component_instance *instance = user_data;
-  entropy_layout_gui *layout = instance->data;
-
-  printf ("Destroying '%s' -> %p\n",
-	  EWL_WIDGET (layout->active_header->visual)->inheritance,
-	  layout->active_header->visual);
-
-  ewl_widget_destroy (layout->active_header->visual);
-  ecore_hash_remove (layout->headers, layout->active_header->visual);
-}
-
-void
-location_menu_popup_cb (Ewl_Widget * label, void *ev_data, void *user_data)
-{
-  Ewl_Event_Mouse_Down *ev = ev_data;
-  entropy_ewl_layout_header_uri *header = user_data;
-
-  if (ev->button == 3) {
-    printf ("Click at %d:%d for header %p and visual %p\n", ev->x, ev->y,
-	    header, header->visual);
-
-    ((entropy_layout_gui *) header->layout->data)->active_header = header;
-
-    ewl_widget_show (((entropy_layout_gui *) header->layout->data)->
-		     context_menu_floater);
-    ewl_floater_position_set (EWL_FLOATER
-			      (((entropy_layout_gui *) header->layout->data)->
-			       context_menu_floater), ev->x, ev->y);
-    ewl_callback_call (EWL_WIDGET
-		       (((entropy_layout_gui *) header->layout->data)->
-			context_menu), EWL_CALLBACK_FOCUS_IN);
-  }
-}
-
-/*----------------*/
-
-
-
-void
-location_add_cb (Ewl_Widget * main_win, void *ev_data, void *user_data)
-{
-  entropy_gui_component_instance *instance =
-    (entropy_gui_component_instance *) user_data;
-
-  Ewl_Widget *window;
-  Ewl_Widget *label;
-  Ewl_Widget *vbox, *vbox2;
-  Ewl_Widget *hbox;
-  Ewl_Widget *button;
-
-  window = ewl_window_new ();
-
-  ((entropy_layout_gui *) instance->data)->location_add_window = window;
-  ewl_window_title_set (EWL_WINDOW (window), "Add Location");
-
-  vbox = ewl_vbox_new ();
-  ewl_widget_show (vbox);
-  ewl_container_child_append (EWL_CONTAINER (window), vbox);
-
-	/*-------*/
-  hbox = ewl_hbox_new ();
-  ewl_container_child_append (EWL_CONTAINER (vbox), hbox);
-  ewl_widget_show (hbox);
-
-  label = ewl_label_new ();
-  ewl_label_text_set (EWL_LABEL (label), "Filesystem Type");
-  ewl_container_child_append (EWL_CONTAINER (hbox), label);
-  ewl_widget_show (label);
-
-  /*Create the filesystem buttons */
-  /*TODO query EVFS to get supported file system types */
-  vbox2 = ewl_vbox_new ();
-  ewl_container_child_append (EWL_CONTAINER (hbox), vbox2);
-  ewl_widget_show (vbox2);
-
-  ((entropy_layout_gui *) instance->data)->posix_radio =
-    ewl_radiobutton_new ();
-  ewl_button_label_set (EWL_BUTTON
-			(((entropy_layout_gui *) instance->data)->
-			 posix_radio), "Standard Local Posix");
-  ewl_container_child_append (EWL_CONTAINER (vbox2),
-			      ((entropy_layout_gui *) instance->data)->
-			      posix_radio);
-  ewl_widget_show (((entropy_layout_gui *) instance->data)->posix_radio);
-
-  ((entropy_layout_gui *) instance->data)->samba_radio =
-    ewl_radiobutton_new ();
-  ewl_button_label_set (EWL_BUTTON
-			(((entropy_layout_gui *) instance->data)->
-			 samba_radio), "Samba");
-  ewl_radiobutton_chain_set (EWL_RADIOBUTTON
-			     (((entropy_layout_gui *) instance->data)->
-			      samba_radio),
-			     EWL_RADIOBUTTON (((entropy_layout_gui *)
-					       instance->data)->posix_radio));
-  ewl_container_child_append (EWL_CONTAINER (vbox2),
-			      ((entropy_layout_gui *) instance->data)->
-			      samba_radio);
-  ewl_widget_show (((entropy_layout_gui *) instance->data)->samba_radio);
-
-  ((entropy_layout_gui *) instance->data)->sftp_radio =
-    ewl_radiobutton_new ();
-  ewl_button_label_set (EWL_BUTTON
-			(((entropy_layout_gui *) instance->data)->
-			 sftp_radio), "Sftp");
-  ewl_radiobutton_chain_set (EWL_RADIOBUTTON
-			     (((entropy_layout_gui *) instance->data)->
-			      sftp_radio),
-			     EWL_RADIOBUTTON (((entropy_layout_gui *)
-					       instance->data)->samba_radio));
-  ewl_container_child_append (EWL_CONTAINER (vbox2),
-			      ((entropy_layout_gui *) instance->data)->
-			      sftp_radio);
-  ewl_widget_show (((entropy_layout_gui *) instance->data)->sftp_radio);
-
-
-
-
-	/*-------*/
-  /*"Name" */
-  hbox = ewl_hbox_new ();
-  ewl_container_child_append (EWL_CONTAINER (vbox), hbox);
-  ewl_widget_show (hbox);
-
-  label = ewl_label_new ();
-  ewl_label_text_set (EWL_LABEL (label), "Display Name");
-  ewl_container_child_append (EWL_CONTAINER (hbox), label);
-  ewl_widget_show (label);
-
-  ((entropy_layout_gui *) instance->data)->location_add_name =
-    ewl_entry_new ();
-  ewl_container_child_append (EWL_CONTAINER (hbox),
-			      ((entropy_layout_gui *) instance->data)->
-			      location_add_name);
-  ewl_widget_show (((entropy_layout_gui *) instance->data)->
-		   location_add_name);
-	/*-----------------------*/
-
-
-	/*-------*/
-  /*"Server/Host" */
-  hbox = ewl_hbox_new ();
-  ewl_container_child_append (EWL_CONTAINER (vbox), hbox);
-  ewl_widget_show (hbox);
-
-  label = ewl_label_new ();
-  ewl_label_text_set (EWL_LABEL (label), "Server/Host");
-  ewl_container_child_append (EWL_CONTAINER (hbox), label);
-  ewl_widget_show (label);
-
-  ((entropy_layout_gui *) instance->data)->location_add_server =
-    ewl_entry_new ();
-  ewl_container_child_append (EWL_CONTAINER (hbox),
-			      ((entropy_layout_gui *) instance->data)->
-			      location_add_server);
-  ewl_widget_show (((entropy_layout_gui *) instance->data)->
-		   location_add_server);
-	/*-----------------------*/
-
-
-	/*-------*/
-  /*"Path" */
-  hbox = ewl_hbox_new ();
-  ewl_container_child_append (EWL_CONTAINER (vbox), hbox);
-  ewl_widget_show (hbox);
-
-  label = ewl_label_new ();
-  ewl_label_text_set (EWL_LABEL (label), "Path");
-  ewl_container_child_append (EWL_CONTAINER (hbox), label);
-  ewl_widget_show (label);
-
-  ((entropy_layout_gui *) instance->data)->location_add_path =
-    ewl_entry_new ();
-  ewl_container_child_append (EWL_CONTAINER (hbox),
-			      ((entropy_layout_gui *) instance->data)->
-			      location_add_path);
-  ewl_widget_show (((entropy_layout_gui *) instance->data)->
-		   location_add_path);
-	/*-----------------------*/
-
-	/*-------*/
-  /*"Username" */
-  hbox = ewl_hbox_new ();
-  ewl_container_child_append (EWL_CONTAINER (vbox), hbox);
-  ewl_widget_show (hbox);
-
-  label = ewl_label_new ();
-  ewl_label_text_set (EWL_LABEL (label), "Username");
-  ewl_container_child_append (EWL_CONTAINER (hbox), label);
-  ewl_widget_show (label);
-
-  ((entropy_layout_gui *) instance->data)->location_add_username =
-    ewl_entry_new ();
-  ewl_container_child_append (EWL_CONTAINER (hbox),
-			      ((entropy_layout_gui *) instance->data)->
-			      location_add_username);
-  ewl_widget_show (((entropy_layout_gui *) instance->data)->
-		   location_add_username);
-	/*-----------------------*/
-
-	/*-------*/
-  /*"Path" */
-  hbox = ewl_hbox_new ();
-  ewl_container_child_append (EWL_CONTAINER (vbox), hbox);
-  ewl_widget_show (hbox);
-
-  label = ewl_label_new ();
-  ewl_label_text_set (EWL_LABEL (label), "Password");
-  ewl_container_child_append (EWL_CONTAINER (hbox), label);
-  ewl_widget_show (label);
-
-  ((entropy_layout_gui *) instance->data)->location_add_password =
-    ewl_password_new ();
-  ewl_container_child_append (EWL_CONTAINER (hbox),
-			      ((entropy_layout_gui *) instance->data)->
-			      location_add_password);
-  ewl_widget_show (((entropy_layout_gui *) instance->data)->
-		   location_add_password);
-	/*-----------------------*/
-
-
-  hbox = ewl_hbox_new ();
-  ewl_container_child_append (EWL_CONTAINER (vbox), hbox);
-  ewl_widget_show (hbox);
-
-  button = ewl_button_new ();
-  ewl_button_label_set (EWL_BUTTON (button), "Add");
-  ewl_object_maximum_h_set (EWL_OBJECT (button), 15);
-  ewl_container_child_append (EWL_CONTAINER (hbox), button);
-  ewl_callback_append (button, EWL_CALLBACK_CLICKED, location_add_execute_cb,
-		       instance);
-  ewl_widget_show (button);
-
-  button = ewl_button_new ();
-  ewl_button_label_set (EWL_BUTTON (button), "Cancel");
-  ewl_object_maximum_h_set (EWL_OBJECT (button), 15);
-  ewl_container_child_append (EWL_CONTAINER (hbox), button);
-  ewl_callback_append (button, EWL_CALLBACK_CLICKED, location_add_cancel_cb,
-		       window);
-  ewl_widget_show (button);
-
-  ewl_object_custom_size_set (EWL_OBJECT (window), 400, 250);
-  ewl_widget_show (window);
-}
-
-void
-layout_ewl_simple_add_header (entropy_gui_component_instance * instance,
-			      char *name, char *uri)
-{
-
-  Ewl_Widget *hbox;
-  entropy_plugin *structure;
-  entropy_ewl_layout_header_uri *header =
-    entropy_malloc (sizeof (entropy_ewl_layout_header_uri));
-  void *(*structure_plugin_init) (entropy_core * core,
-				  entropy_gui_component_instance *, 
-				  void* parent_visual,
-				  void *data);
-  entropy_layout_gui *gui = ((entropy_layout_gui *) instance->data);
-  Ewl_Widget *tree = gui->tree;
-
-
-
-  hbox = ewl_border_new ();
-  ewl_border_text_set (EWL_BORDER (hbox), name);
-  ewl_container_child_append (EWL_CONTAINER (tree), hbox);
-  ewl_widget_show (hbox);
-
-  header->header = strdup (name);
-  header->uri = strdup (uri);
-  
-  header->visual = hbox;
-  header->layout = instance;
-  ecore_hash_set (gui->headers, hbox, header);
-  printf ("Adding %p to header hash with visual %p\n", header,
-	  header->visual);
-
-
-
-  /*Now attach an object to it */
-  structure =
-    entropy_plugins_type_get_first (ENTROPY_PLUGIN_GUI_COMPONENT,
-				    ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
-
-  if (structure) {
-    Ewl_Widget *visual;
-    entropy_generic_file *file = entropy_core_parse_uri (uri);
-
-    /*Add the callback for the popup */
-    ewl_callback_append (EWL_BORDER (hbox)->label, EWL_CALLBACK_MOUSE_DOWN,
-			 location_menu_popup_cb, header);
-    strcpy (file->mime_type, "file/folder");
-
-    /*Main drive viewer */
-    {
-      structure_plugin_init =
-	dlsym (structure->dl_ref, "entropy_plugin_gui_instance_new");
-      gui->structure_viewer =
-	(*structure_plugin_init) (instance->core, instance, tree, file);
-      gui->structure_viewer->plugin = structure;
-      visual = EWL_WIDGET (gui->structure_viewer->gui_object);
-      if (!visual)
-	printf ("Alert! - Visual component not found\n");
-      else;			// printf("Visual component found\n");
-      ewl_container_child_append (EWL_CONTAINER (hbox), visual);
-      ewl_object_fill_policy_set (EWL_OBJECT (visual), EWL_FLAG_FILL_HFILL);
-
-      ewl_widget_show (visual);
-    }
-  }
-}
-
-void
-__destroy_main_window (Ewl_Widget * main_win, void *ev_data, void *user_data)
-{
-  entropy_core *core = (entropy_core *) user_data;
-  ewl_widget_destroy (main_win);
-  _ewl_layout_count--;
-
-  if (_ewl_layout_count == 0)  {
-	  entropy_core_destroy (core);
-  	  /*TODO cleanup this layout's structure to avoid leaks*/
-	  exit (0); 
-  }
-}
-
-void
-contract_cb (Ewl_Widget * main_win, void *ev_data, void *user_data)
-{
-  Ewl_Box *box = EWL_BOX (user_data);
-
-  ewl_object_maximum_w_set (EWL_OBJECT (box), 15);
-}
-
-
-void
-layout_ewl_simple_structure_view_cb (Ewl_Widget * main_win, void *ev_data,
-				     void *user_data)
-{
-
-  entropy_gui_component_instance *instance = user_data;
-  entropy_layout_gui *layout = instance->data;
-
-  /*entropy_gui_component_instance_disable(layout->structure_viewer);
-     ewl_widget_hide(EWL_WIDGET(layout->structure_viewer->gui_object)); */
-
-  printf ("Hiding tree...\n");
-
-  ewl_widget_hide (layout->tree);
-}
-
-void
-layout_ewl_simple_structure_view_show_cb (Ewl_Widget * main_win,
-					  void *ev_data, void *user_data)
-{
-
-  entropy_gui_component_instance *instance = user_data;
-  entropy_layout_gui *layout = instance->data;
-
-  /*entropy_gui_component_instance_disable(layout->structure_viewer);
-     ewl_widget_hide(EWL_WIDGET(layout->structure_viewer->gui_object)); */
-  ewl_widget_show (layout->tree);
-  ewl_container_child_prepend (EWL_CONTAINER (layout->paned), layout->tree);
-
-}
-
-
-void
-layout_ewl_simple_local_view_cb (Ewl_Widget * main_win, void *ev_data,
-				 void *user_data)
-{
-
-  entropy_gui_component_instance *instance = user_data;
-  entropy_layout_gui *layout = instance->layout_parent->data;
-  entropy_gui_component_instance *iter;
-
-
-  /*Hide all the other local viewers, and disable them */
-  ecore_list_goto_first (layout->local_components);
-  while ((iter = ecore_list_next (layout->local_components))) {
-    if (iter != instance) {
-      entropy_gui_component_instance_disable (iter);
-
-      if (EWL_WIDGET (iter->gui_object)->parent
-	  && EWL_WIDGET (iter->gui_object)->parent ==
-	  layout->local_container) {
-	printf ("Removed a local view..\n");
-	ewl_widget_hide (EWL_WIDGET (iter->gui_object));
-      }
-    }
-
-
-  }
-
-  entropy_gui_component_instance_enable (instance);
-
-  if (!EWL_WIDGET (instance->gui_object)->parent)
-    ewl_container_child_append (EWL_CONTAINER (layout->local_container),
-				EWL_WIDGET (instance->gui_object));
-
-  ewl_widget_show (EWL_WIDGET (instance->gui_object));
-}
-
-
-
-
-void
-entropy_plugin_layout_main ()
-{
-  ewl_main ();
-}
-
 
 void
 entropy_plugin_destroy (entropy_gui_component_instance * comp)
@@ -639,360 +137,162 @@ entropy_plugin_destroy (entropy_gui_component_instance * comp)
 	printf("*** No plugin to destroy at layout_ewl_simple.c\n");
   	return;
   }
-	
-  entropy_layout_gui *gui = comp->data;
-  Ecore_List *keys;
-  void *key;
-  char write_str[HEADER_CONFIG_MAX];
 
-  keys = ecore_hash_keys (gui->headers);
-  ecore_list_goto_first (keys);
-
-  bzero (write_str, HEADER_CONFIG_MAX);
-  while ((key = ecore_list_remove_first (keys))) {
-    entropy_ewl_layout_header_uri *header =
-      ecore_hash_get (gui->headers, key);
-    printf ("Saving header '%s' with '%s'\n", header->header, header->uri);
-    strcat (write_str, header->header);
-    strcat (write_str, ";");
-    strcat (write_str, header->uri);
-    strcat (write_str, "|");
-  }
-
-  printf ("Write string: '%s'\n", write_str);
-
-  entropy_config_str_set ("layout_ewl_simple", "structure_bar", write_str);
-
-
-  printf ("Destroying layout...\n");
-}
-
-
-Entropy_Plugin*
-entropy_plugin_init (entropy_core * core)
-{
-  int i = 0;
-  char **c = NULL;
-  Entropy_Plugin_Gui* plugin;
-  Entropy_Plugin* base;
-  
-  /*Init ewl */
-  ewl_init (&i, c);
-
-  plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
-  base = ENTROPY_PLUGIN(plugin);
-  
-  return plugin;
-
-  
+  /*TODO: put config save code, etc - here*/
 }
 
 void
-entropy_delete_current_folder (Ecore_List * el)
+ewl_layout_simple_exit_cb(Ewl_Widget *w, void *event, void *data)
 {
-  ecore_list_destroy (el);
+ entropy_gui_component_instance *instance = data;
+ layout_ewl_simple_quit(instance->core);
 }
-
 
 entropy_gui_component_instance *
 entropy_plugin_layout_create (entropy_core * core)
 {
-  entropy_gui_component_instance *layout;
-  entropy_layout_gui *gui;
-
-  _ewl_layout_count++;
-
-
-  /*EWL Stuff ----------------- */
-
-  void *(*entropy_plugin_init) (entropy_core * core,
-				entropy_gui_component_instance *);
-
-  Ewl_Widget *box;
-  Ewl_Widget *tree;
-  Ewl_Widget *vbox;
-  Ewl_Widget *hbox;
-  Ewl_Widget *contract_button;
-  Ewl_Widget *expand_button;
-  Ewl_Widget *menubar;
-  Ewl_Widget *menu;
-  Ewl_Widget *item;
-
-  Evas_List* structures;
-  Entropy_Config_Structure* structure;
-  
-  Ecore_List *local_plugins;
-  entropy_gui_component_instance *instance;
-
-  entropy_plugin *plugin;
-  Ewl_Widget *iconbox = NULL;
-
-  layout = 
-	  (entropy_gui_component_instance*)entropy_gui_component_instance_layout_new();
-  gui = entropy_malloc (sizeof (entropy_layout_gui));
-  gui->current_folder = NULL;
-  layout->data = gui;
-  layout->core = core;
-  gui->local_components = ecore_list_new ();
-  gui->headers = ecore_hash_new (ecore_direct_hash, ecore_direct_compare);
-
-  /*Register this layout container with the core, so our children can get events */
-  entropy_core_layout_register (core, layout);
-
-	/*---------------------------*/
-  /*HACK - get the iconbox - this should be configurable */
-  local_plugins =
-    entropy_plugins_type_get (ENTROPY_PLUGIN_GUI_COMPONENT,
-			      ENTROPY_PLUGIN_GUI_COMPONENT_LOCAL_VIEW);
-
-  if (local_plugins) {
-    while ((plugin = ecore_list_remove_first (local_plugins))) {
-      entropy_gui_component_instance *instance;
-      char *name = NULL;
-
-      entropy_plugin_init = dlsym (plugin->dl_ref, "entropy_plugin_gui_instance_new");
-      instance = (*entropy_plugin_init) (core, layout);
-      gui->iconbox_viewer = instance;
-
-      gui->iconbox_viewer->plugin = plugin;
-      instance->plugin = plugin;
-
-      name = entropy_plugin_plugin_identify (plugin);
-      printf ("Loaded '%s'...\n", name);
-
-      //FIXME default to icon view for now
-      if (!strcmp (name, "Icon View")) {
-	iconbox = EWL_WIDGET (gui->iconbox_viewer->gui_object);
-	entropy_gui_component_instance_enable (instance);
-      }
-      else {
-	entropy_gui_component_instance_disable (instance);
-      }
-
-      /*Add this plugin to the local viewers list */
-      ecore_list_append (gui->local_components, instance);
-    }
-  }
-  else {
-    fprintf (stderr, "No visual component found! *****\n");
-    return NULL;
-  }
-
-  /*EWL Setup */
-  win = ewl_window_new ();
-  ewl_window_dnd_aware_set (EWL_WINDOW (win));
-
-  box = ewl_vbox_new ();
-  vbox = ewl_vbox_new ();
-  hbox = ewl_hbox_new ();
-
-  contract_button = ewl_button_new ();
-  ewl_button_label_set (EWL_BUTTON (contract_button), "<");
-  expand_button = ewl_button_new ();
-  ewl_button_label_set (EWL_BUTTON (expand_button), ">");
-
-  tree = ewl_scrollpane_new ();
-  ewl_container_child_append(EWL_CONTAINER(tree), vbox);
-  //ewl_box_spacing_set (EWL_BOX (EWL_SCROLLPANE (tree)->box), 5);
-  gui->tree = vbox;
-
-  gui->paned = ewl_hpaned_new ();
-  gui->local_container = ewl_cell_new ();
-
-  ewl_window_title_set (EWL_WINDOW (win), "Entropy");
-  ewl_window_name_set (EWL_WINDOW (win), "Entropy");
-  ewl_window_class_set (EWL_WINDOW (win), "Entropy");
-
-  ewl_object_size_request (EWL_OBJECT (win), 800, 600);
-
-  ewl_object_maximum_size_set (EWL_OBJECT (contract_button), 20, 10);
-  ewl_object_maximum_size_set (EWL_OBJECT (expand_button), 20, 10);
-
-  /*Main menu setup */
-  menubar = ewl_menubar_new ();
-  ewl_object_fill_policy_set (EWL_OBJECT (menubar), EWL_FLAG_FILL_HFILL);
-  ewl_widget_show (menubar);
-
-
-  ewl_widget_state_set(tree, "nobg", EWL_STATE_PERSISTENT);
-
-  menu = ewl_menu_new ();
-  ewl_button_label_set (EWL_BUTTON (menu), "File");
-  ewl_container_child_append (EWL_CONTAINER (menubar), menu);
-  ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
-  ewl_widget_show (menu);
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "Exit");
-  ewl_container_child_append (EWL_CONTAINER (menu), item);
-  ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
-		       __destroy_main_window, core);
-  ewl_widget_show (item);
-
-
-  menu = ewl_menu_new ();
-  ewl_button_label_set (EWL_BUTTON (menu), "Tools");
-  ewl_container_child_append (EWL_CONTAINER (menubar), menu);
-  ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
-  ewl_widget_show (menu);
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "Add Location...");
-  ewl_container_child_append (EWL_CONTAINER (menu), item);
-  ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
-		       location_add_cb, layout);
-  ewl_widget_show (item);
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "Setup MIME Actions...");
-  ewl_container_child_append (EWL_CONTAINER (menu), item);
-  ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED, mime_cb,
-		       layout);
-  ewl_widget_show (item);
-
-  menu = ewl_menu_new ();
-  ewl_button_label_set (EWL_BUTTON (menu), "View");
-  ewl_container_child_append (EWL_CONTAINER (menubar), menu);
-  ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
-  ewl_widget_show (menu);
-
-  ecore_list_goto_first (gui->local_components);
-  while ((instance = ecore_list_next (gui->local_components))) {
-    char *name = entropy_plugin_plugin_identify (instance->plugin);
-
-    item = ewl_menu_item_new ();
-    ewl_button_label_set (EWL_BUTTON (item), name);
-    ewl_container_child_append (EWL_CONTAINER (menu), item);
-    ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
-			 layout_ewl_simple_local_view_cb, instance);
-    ewl_widget_show (item);
-  }
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "Hide Tree View");
-  ewl_container_child_append (EWL_CONTAINER (menu), item);
-  ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
-		       layout_ewl_simple_structure_view_cb, layout);
-  ewl_widget_show (item);
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "Show Tree View");
-  ewl_container_child_append (EWL_CONTAINER (menu), item);
-  ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
-		       layout_ewl_simple_structure_view_show_cb, layout);
-  ewl_widget_show (item);
-
-
-  menu = ewl_menu_new ();
-  ewl_button_label_set (EWL_BUTTON (menu), "Debug");
-  ewl_container_child_append (EWL_CONTAINER (menubar), menu);
-  ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
-  ewl_widget_show (menu);
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "File Cache");
-  ewl_container_child_append (EWL_CONTAINER (menu), item);
-  ewl_widget_show (item);
-
-
-
-
-
-
-  menu = ewl_spacer_new ();
-  ewl_container_child_append (EWL_CONTAINER (menubar), menu);
-  ewl_widget_show (menu);
-
-
-  menu = ewl_menu_new ();
-  ewl_button_label_set (EWL_BUTTON (menu), "Help");
-  ewl_container_child_append (EWL_CONTAINER (menubar), menu);
-  ewl_object_fill_policy_set (EWL_OBJECT (menu), EWL_FLAG_FILL_NONE);
-  ewl_widget_show (menu);
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "Tip Of The Day..");
-  ewl_container_child_append (EWL_CONTAINER (menu), item);
-  ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
-		       ewl_layout_simple_tooltip_show_cb, layout);
-  ewl_widget_show (item);
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "About..");
-  ewl_container_child_append (EWL_CONTAINER (menu), item);
-  ewl_callback_append (EWL_WIDGET (item), EWL_CALLBACK_CLICKED,
-		       ewl_layout_simple_about_dialog_cb, layout);
-  ewl_widget_show (item);
-	/*-------------------------------*/
-
-
-
-  /*Context menu */
-  gui->context_menu_floater = ewl_floater_new ();
-  ewl_container_child_append (EWL_CONTAINER (win), gui->context_menu_floater);
-
-  gui->context_menu = ewl_menu_new ();
-  ewl_button_label_set (EWL_BUTTON (gui->context_menu), " ");
-  ewl_container_child_append (EWL_CONTAINER (gui->context_menu_floater),
-			      gui->context_menu);
-
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "Edit");
-  ewl_container_child_append (EWL_CONTAINER (gui->context_menu), item);
-  ewl_widget_show (item);
-
-  item = ewl_menu_item_new ();
-  ewl_button_label_set (EWL_BUTTON (item), "Delete");
-  ewl_container_child_append (EWL_CONTAINER (gui->context_menu), item);
-  ewl_callback_append (item, EWL_CALLBACK_CLICKED,
-		       location_menu_popup_delete_cb, layout);
-  ewl_widget_show (item);
-
-  ewl_widget_show (gui->context_menu);
-
-	/*--------------------------*/
-  ewl_container_child_append (EWL_CONTAINER (hbox), expand_button);
-  ewl_container_child_append (EWL_CONTAINER (hbox), contract_button);
-  ewl_container_child_append (EWL_CONTAINER (box), menubar);
-  ewl_container_child_append (EWL_CONTAINER (box), gui->paned);
-
-  ewl_container_child_append (EWL_CONTAINER (gui->paned), tree);
-
-  ewl_container_child_append (EWL_CONTAINER (gui->paned),
-			      gui->local_container);
-  ewl_container_child_append (EWL_CONTAINER (gui->local_container), iconbox);
-
-  /*Add the loaded structure headers*/
-  for (structures = entropy_config_standard_structures_parse (layout, NULL); structures; ) {
-	  structure = structures->data;
-	  
-	  layout_ewl_simple_add_header (layout, structure->name, structure->uri);
-
-	  structures = structures->next;
-  }
-
-
-  ewl_widget_show (box);
-  ewl_widget_show (vbox);
-  ewl_widget_show (hbox);
-  ewl_widget_show (contract_button);
-  ewl_widget_show (expand_button);
-  ewl_widget_show (gui->paned);
-  ewl_widget_show (gui->local_container);
-  ewl_widget_show (tree);
-
-  ewl_container_child_append (EWL_CONTAINER (win), box);
-
-  ewl_callback_append (win, EWL_CALLBACK_DELETE_WINDOW,
-		       __destroy_main_window, core);
-
-  //ewl_container_child_resize(EWL_WIDGET(EWL_PANED(paned)->first), 80, EWL_ORIENTATION_HORIZONTAL);
-
-  /*Tooltip display function */
-  entropy_ewl_layout_simple_tooltip_window ();
-
-  layout->gui_object = win;
-  ewl_widget_show (win);
-  return layout;
+ Ewl_Widget *win;
+ entropy_layout_gui *gui;
+ entropy_gui_component_instance *layout;
+ entropy_gui_component_instance *instance = NULL;
+
+ void *(*local_plugin_init) (entropy_core *core,
+				entropy_gui_component_instance *,
+				void *data);
+
+ entropy_plugin *local;
+
+ entropy_gui_component_instance *(*metadata_plugin_init)
+				 (entropy_core *core,
+				  entropy_gui_component_instance *,
+				  void *parent_visual,
+				  void *data);
+
+ entropy_plugin *meta;
+ entropy_plugin *trackback;
+ entropy_gui_component_instance *meta_instance;
+
+ Ewl_Widget *tree;
+ Ewl_Widget *vbox;
+ Ewl_Widget *menubar;
+ Ewl_Widget *menu;
+ Ewl_Widget *menu_item;
+
+ Ecore_List *structures;
+ Entropy_Config_Structure *structure;
+
+ layout = (entropy_gui_component_instance *)entropy_gui_component_instance_layout_new();
+ gui = entropy_malloc(sizeof(entropy_layout_gui));
+ layout->data = gui;
+ layout->core = core;
+ gui->progress_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+ gui->properties_request_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+
+ entropy_plugin_filesystem_metadata_groups_get(layout);
+
+ entropy_core_layout_register(core, layout);
+
+ entropy_core_component_event_register (layout,
+                                        entropy_core_gui_event_get
+                                        (ENTROPY_GUI_EVENT_FILE_PROGRESS));
+
+ entropy_core_component_event_register (layout,
+                                        entropy_core_gui_event_get
+                                        (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT));
+
+ entropy_core_component_event_register (layout,
+                                        entropy_core_gui_event_get
+                                        (ENTROPY_GUI_EVENT_EXTENDED_STAT));
+
+ entropy_core_component_event_register (layout,
+                                        entropy_core_gui_event_get
+                                        (ENTROPY_GUI_EVENT_FILE_STAT));
+
+ entropy_core_component_event_register (layout,
+                                        entropy_core_gui_event_get
+                                        (ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE));
+
+ entropy_core_component_event_register (layout,
+                                        entropy_core_gui_event_get
+                                        (ENTROPY_GUI_EVENT_METADATA_GROUPS));
+
+ win = ewl_window_new();
+ layout->gui_object = win;
+ ewl_window_title_set(EWL_WINDOW(win), "Entropy");
+ ewl_window_name_set(EWL_WINDOW(win), "Entropy");
+ ewl_object_size_request(EWL_OBJECT(win), ENTROPY_EWL_WINDOW_WIDTH, 
+					  ENTROPY_EWL_WINDOW_HEIGHT);
+ ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, _ewl_window_delete_cb, layout);
+
+ vbox = ewl_vbox_new();
+ ewl_container_child_append(EWL_CONTAINER(win), vbox);
+
+ gui->paned = ewl_hpaned_new();
+
+ /*FIXME - we need an horiz-container to add a menu/statusbar*/
+ ewl_container_child_append(EWL_CONTAINER(win), gui->paned);
+
+ gui->tree = ewl_tree_new(1);
+ ewl_container_child_append(EWL_CONTAINER(gui->paned), gui->tree);
+ ewl_object_size_request(EWL_OBJECT(gui->tree), ENTROPY_EWL_WINDOW_PANE_DEFAULT_X, 50);
+
+ gui->localshell = ewl_vbox_new();
+ ewl_container_child_append(EWL_CONTAINER(gui->paned), gui->localshell);
+ 
+ gui->popup = ewl_menu_new();
+ menu_item = ewl_menu_item_new();
+ menu_item = ewl_menu_item_new();
+
+ local = entropy_plugin_gui_get_by_name_toolkit(ENTROPY_TOOLKIT_EWL, "listviewer");
+
+ if (local)
+ {
+  local_plugin_init = dlsym(local->dl_ref, "entropy_plugin_gui_instance_new");
+  instance = (*local_plugin_init)(core, layout, NULL);
+  instance->plugin = local;
+  gui->list_viewer = instance;
+
+  /*FIXME: this needs to be menu selectable*/
+  ewl_container_child_append(EWL_CONTAINER(gui->localshell), gui->list_viewer->gui_object);
+  printf("Found listviewer..\n");
+ }
+
+ local = entropy_plugin_gui_get_by_name_toolkit(ENTROPY_TOOLKIT_EWL, "iconviewer");
+ if (local) 
+ {
+  local_plugin_init = dlsym(local->dl_ref, "entropy_plugin_gui_instance_new");
+  gui->iconbox_viewer = (*local_plugin_init)(core, layout, NULL);
+  gui->iconbox_viewer->plugin = local;
+  gui->iconbox_viewer->active=0;
+  printf("Found listviewer..\n");
+ }
+
+ meta = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, 
+ 		                       ENTROPY_PLUGIN_GUI_COMPONENT_INFO_PROVIDER);
+ if (meta)
+ {
+  metadata_plugin_init = dlsym(meta->dl_ref, "entropy_plugin_gui_instance_new");
+  meta_instance = (*metadata_plugin_init)(core, layout, layout->gui_object, NULL);
+  meta_instance->plugin = meta;
+ }
+
+ trackback = entropy_plugin_gui_get_by_name_toolkit(ENTROPY_TOOLKIT_EWL, "trackback");
+
+ if (trackback)
+ {
+  local_plugin_init = dlsym(trackback->dl_ref, "entropy_plugin_gui_instance_new");
+  gui->trackback = (*local_plugin_init)(core, layout, NULL);
+  gui->trackback->plugin = trackback;
+  gui->trackback->active=1;
+ }
+
+ ewl_widget_show(win);
+ ewl_widget_show(vbox);
+ ewl_widget_show(gui->paned);
+ ewl_widget_show(gui->tree);
+ ewl_widget_show(gui->localshell);
+
+ _ewl_layout_window_count++;
+
+ return layout;
 }

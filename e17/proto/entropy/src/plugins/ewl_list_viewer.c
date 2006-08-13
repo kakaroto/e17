@@ -247,7 +247,7 @@ entropy_plugin_sub_type_get ()
 char *
 entropy_plugin_identify ()
 {
-  return (char *) "List View";
+  return (char *) "listviewer";
 }
 
 void
