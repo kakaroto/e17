@@ -85,22 +85,22 @@ fi
 #packagesrcdir=`cd $srcdir && pwd`
 #AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
-#check for ENTRANCE which contains libentrance_edit
-#AC_PATH_EFL(
-#   entrance,
-#   0.1.0.001,
-#   [
-#     AC_DEFINE(HAVE_ENTRANCE, 1, have ENTRANCE)
-#     entrance="ENTRANCE "
-#     AM_CONDITIONAL(HAVE_ENTRANCE, true)
-#     have_entrance="yes"
-#     entrance_libs=-lentrance_edit
-#     entrance_cflags=/usr/include/    
-#   ],
-#   [
-#	AC_MSG_ERROR([No Entrance, entrance_edit_gui is an entrance utility. Install entrance first])
-#   ]
-#)
+#check for ENTRANCE_EDIT which contains libentrance_edit
+AC_PATH_EFL(
+   entrance_edit,
+   0.1.0.001,
+   [
+     AC_DEFINE(HAVE_ENTRANCE_EDIT, 1, have ENTRANCE_EDIT)
+     entrance_edit="ENTRANCE_EDIT "
+     AM_CONDITIONAL(HAVE_ENTRANCE_EDIT, true)
+     have_entrance_edit="yes"
+     entrance_edit_libs=`entrance_edit-config --libs`
+     entrance_edit_cflags=`entrance_edit-config --cflags`
+   ],
+   [
+	AC_MSG_ERROR([No Entrance, entrance_edit_gui is an entrance utility. Install entrance first])
+   ]
+)
 
 #check for ETK
 AC_PATH_EFL(
@@ -119,11 +119,8 @@ AC_PATH_EFL(
    ]
 )
 
-entrance_libs=-lentrance_edit
-entrance_cflags=-I/usr/include/    
-
-AC_SUBST(entrance_libs)
-AC_SUBST(entrance_cflags)
+AC_SUBST(entrance_edit_libs)
+AC_SUBST(entrance_edit_cflags)
 AC_SUBST(etk_libs)
 AC_SUBST(etk_cflags)
 
