@@ -14,8 +14,8 @@ EXTRA_DIST = \
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
-		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in debian/changelog
+		       ltconfig ltmain.sh missing mkinstalldirs compile depcomp \
+		       stamp-h.in debian/changelog config.h.in config.h.in~
 
 dist-hook:
 	if test -d data; then \

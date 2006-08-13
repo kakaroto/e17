@@ -2080,8 +2080,8 @@ collections {
    group
      {
 	name: "Preview";
-	min: 80 60;
-	max: 80 60; 
+	min: 320 240;
+	max: 320 240; 
 	parts
 	  {
 	     part
@@ -2092,8 +2092,8 @@ collections {
 		  description
 		    {
 		       state: "default" 0.0;
-		       min: 80 60;
-		       max: 80 60; 
+		       min: 320 240;
+		       max: 320 240; 
 		       visible: 1;
 		       rel1
 			 {

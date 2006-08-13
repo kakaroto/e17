@@ -1,4 +1,5 @@
 ## Process this file with automake to produce Makefile.in
+MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ \
 @ESMART_CFLAGS@

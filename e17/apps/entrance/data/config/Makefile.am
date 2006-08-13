@@ -1,3 +1,5 @@
+MAINTAINERCLEANFILES = Makefile.in
+
 DB = entrance_config.cfg
 SCRIPT = build_config.sh
 

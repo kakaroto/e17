@@ -1,3 +1,4 @@
+MAINTAINERCLEANFILES = Makefile.in
 sessionsdir = $(pkgdatadir)/images/sessions
 sessions_DATA = \
 default.png \
