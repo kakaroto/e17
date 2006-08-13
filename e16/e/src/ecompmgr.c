@@ -935,25 +935,25 @@ win_extents(EObj * eo)
    bw = cw->bw;
    if (Mode_compmgr.use_pixmap)
      {
-	cw->rcx = eo->x;
-	cw->rcy = eo->y;
-	cw->rcw = eo->w + 2 * bw;
-	cw->rch = eo->h + 2 * bw;
+	cw->rcx = EobjGetX(eo);
+	cw->rcy = EobjGetY(eo);
+	cw->rcw = EobjGetW(eo) + 2 * bw;
+	cw->rch = EobjGetH(eo) + 2 * bw;
      }
    else
      {
-	cw->rcx = eo->x + bw;
-	cw->rcy = eo->y + bw;
-	cw->rcw = eo->w;
-	cw->rch = eo->h;
+	cw->rcx = EobjGetX(eo) + bw;
+	cw->rcy = EobjGetY(eo) + bw;
+	cw->rcw = EobjGetW(eo);
+	cw->rch = EobjGetH(eo);
      }
 
    if (eo->noredir && bw)
      {
-	r.x = eo->x;
-	r.y = eo->y;
-	r.width = eo->w + 2 * bw;
-	r.height = eo->h + 2 * bw;
+	r.x = EobjGetX(eo);
+	r.y = EobjGetY(eo);
+	r.width = EobjGetW(eo) + 2 * bw;
+	r.height = EobjGetH(eo) + 2 * bw;
      }
    else
      {
@@ -1062,14 +1062,14 @@ win_shape(EObj * eo)
 	XserverRegion       rgn;
 
 	/* Intersect with window size to get effective bounding region */
-	rgn = ERegionCreateRect(0, 0, eo->w, eo->h);
+	rgn = ERegionCreateRect(0, 0, EobjGetW(eo), EobjGetH(eo));
 	ERegionIntersect(border, rgn);
 	ERegionDestroy(rgn);
      }
 
    /* translate this */
-   x = eo->x + cw->bw;
-   y = eo->y + cw->bw;
+   x = EobjGetX(eo) + cw->bw;
+   y = EobjGetY(eo) + cw->bw;
    ERegionTranslate(border, x, y);
 
    D2printf("shape %#lx: %d %d\n", EobjGetXwin(eo), x, y);
@@ -1559,8 +1559,8 @@ ECompMgrWinConfigure(EObj * eo, XEvent * ev)
    h = ev->xconfigure.height;
    bw = ev->xconfigure.border_width;
 
-   change_xy = eo->x != x || eo->y != y;
-   change_wh = eo->w != w || eo->h != h;
+   change_xy = EobjGetX(eo) != x || EobjGetY(eo) != y;
+   change_wh = EobjGetW(eo) != w || EobjGetH(eo) != h;
    change_bw = cw->bw != bw;
 
    eo->x = x;
@@ -1578,8 +1578,8 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
    ECmWinInfo         *cw = eo->cmhook;
 
    D1printf("ECompMgrWinReparent %#lx %#lx d=%d->%d x,y=%d,%d %d\n",
-	    EobjGetXwin(eo), cw->extents, eo->desk->num, dsk->num, eo->x, eo->y,
-	    change_xy);
+	    EobjGetXwin(eo), cw->extents, eo->desk->num, dsk->num,
+	    EobjGetX(eo), EobjGetY(eo), change_xy);
 
    /* Invalidate old window region */
    if (EventDebug(EDBUG_TYPE_COMPMGR3))
@@ -1696,7 +1696,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
      {
 	parts = ERegionCreate();
 	XDamageSubtract(dpy, cw->damage, None, parts);
-	ERegionTranslate(parts, eo->x + cw->bw, eo->y + cw->bw);
+	ERegionTranslate(parts, EobjGetX(eo) + cw->bw, EobjGetY(eo) + cw->bw);
 #if 0				/* ENABLE_SHADOWS - FIXME - This is not right, remove? */
 	if (Mode_compmgr.shadow_mode == ECM_SHADOWS_SHARP)
 	  {
@@ -1717,8 +1717,8 @@ ECompMgrWinDumpInfo(const char *txt, EObj * eo, XserverRegion rgn, int force)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   Eprintf("%s %#lx: %d,%d %dx%d: %s\n", txt, EobjGetXwin(eo), eo->x, eo->y,
-	   eo->w, eo->h, eo->name);
+   Eprintf("%s %#lx: %d,%d %dx%d: %s\n", txt, EobjGetXwin(eo),
+	   EobjGetX(eo), EobjGetY(eo), EobjGetW(eo), EobjGetH(eo), eo->name);
    if (!cw)
      {
 	Eprintf("Not managed\n");
@@ -1834,7 +1834,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 
 #if USE_BG_WIN_ON_ALL_DESKS	/* Only if using per desk bg overlay */
 	     /* FIXME - We should break when the clip region becomes empty */
-	     if (eo->x == 0 && eo->y == 0)
+	     if (EobjGetX(eo) == 0 && EobjGetY(eo) == 0)
 		stop = 1;
 	     if (stop)
 		break;
@@ -1872,7 +1872,8 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	  case WINDOW_UNREDIR:
 	  case WINDOW_SOLID:
 	     D4printf("-   clip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
-		      cw->clip, eo->x, eo->y, eo->w, eo->h, eo->name);
+		      cw->clip, EobjGetX(eo), EobjGetY(eo), EobjGetW(eo),
+		      EobjGetH(eo), eo->name);
 #if USE_CLIP_RELATIVE_TO_DESK
 	     ERegionUnionOffset(clip, 0, 0, cw->shape);
 #else
@@ -1882,13 +1883,15 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 
 	  default:
 	     D4printf("- noclip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
-		      cw->clip, eo->x, eo->y, eo->w, eo->h, eo->name);
+		      cw->clip, EobjGetX(eo), EobjGetY(eo), EobjGetW(eo),
+		      EobjGetH(eo), eo->name);
 	     break;
 	  }
 
 #if !USE_BG_WIN_ON_ALL_DESKS	/* Not if using per desk bg overlay */
 	/* FIXME - We should break when the clip region becomes empty */
-	if (eo->type == EOBJ_TYPE_DESK && eo->x == 0 && eo->y == 0)
+	if (eo->type == EOBJ_TYPE_DESK &&
+	    EobjGetX(eo) == 0 && EobjGetY(eo) == 0)
 	   stop = 1;
 	if (stop)
 	   break;

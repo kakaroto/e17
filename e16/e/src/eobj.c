@@ -385,8 +385,8 @@ EobjMoveResize(EObj * eo, int x, int y, int w, int h)
 {
    int                 move, resize;
 
-   move = x != eo->x || y != eo->y;
-   resize = w != eo->w || h != eo->h;
+   move = x != EobjGetX(eo) || y != EobjGetY(eo);
+   resize = w != EobjGetW(eo) || h != EobjGetH(eo);
    eo->x = x;
    eo->y = y;
    eo->w = w;
@@ -410,13 +410,13 @@ EobjMoveResize(EObj * eo, int x, int y, int w, int h)
 void
 EobjMove(EObj * eo, int x, int y)
 {
-   EobjMoveResize(eo, x, y, eo->w, eo->h);
+   EobjMoveResize(eo, x, y, EobjGetW(eo), EobjGetH(eo));
 }
 
 void
 EobjResize(EObj * eo, int w, int h)
 {
-   EobjMoveResize(eo, eo->x, eo->y, w, h);
+   EobjMoveResize(eo, EobjGetX(eo), EobjGetY(eo), w, h);
 }
 
 void
@@ -424,7 +424,7 @@ EobjDamage(EObj * eo)
 {
 #if USE_COMPOSITE
    if (eo->cmhook)
-      ECompMgrWinDamageArea(eo, 0, 0, eo->w, eo->h);
+      ECompMgrWinDamageArea(eo, 0, 0, 0, 0);
 #else
    eo = NULL;
 #endif
@@ -435,7 +435,7 @@ EobjReparent(EObj * eo, EObj * dst, int x, int y)
 {
    int                 move;
 
-   move = x != eo->x || y != eo->y;
+   move = x != EobjGetX(eo) || y != EobjGetY(eo);
    eo->x = x;
    eo->y = y;
 
@@ -601,8 +601,8 @@ EobjsSlideBy(EObj ** peo, int num, int dx, int dy, int speed)
 
    for (i = 0; i < num; i++)
      {
-	xy[i].x = peo[i]->x;
-	xy[i].y = peo[i]->y;
+	xy[i].x = EobjGetX(peo[i]);
+	xy[i].y = EobjGetY(peo[i]);
      }
 
    ETimedLoopInit(0, 1024, speed);
