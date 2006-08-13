@@ -66,19 +66,42 @@ struct _tooltip
 #define TTWIN win[4]
 #define TTICL iclass[4]
 
+static void
+TooltipRealize(ToolTip * tt)
+{
+   int                 i, wh;
+   EImage             *im;
+   EObj               *eo;
+
+   for (i = 0; i < 5; i++)
+     {
+	if (!tt->iclass[i])
+	   continue;
+
+	im = ImageclassGetImage(tt->iclass[i], 0, 0, STATE_NORMAL);
+
+	wh = (i + 1) * 8;
+	eo = EobjWindowCreate(EOBJ_TYPE_MISC, -50, -100, wh, wh, 1, tt->name);
+	EobjChangeOpacity(eo, OpacityFromPercent(Conf.opacity.tooltips));
+	tt->win[i] = eo;
+     }
+   tt->iwin = ECreateWindow(tt->TTWIN->win, 0, 0, 1, 1, 0);
+}
+
 static ToolTip     *
 TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
 	      ImageClass * ic2, ImageClass * ic3, ImageClass * ic4,
 	      TextClass * tclass, int dist, ImageClass * tooltippic)
 {
-   int                 i, wh;
+   int                 i;
    ToolTip            *tt;
-   EObj               *eo;
 
    if (ic0 == NULL || tclass == NULL)
       return NULL;
 
    tt = Ecalloc(1, sizeof(ToolTip));
+   if (!tt)
+      return NULL;
 
    tt->name = Estrdup(name);
    tt->iclass[0] = ic1;
@@ -96,20 +119,8 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
    tt->dist = dist;
 
    for (i = 0; i < 5; i++)
-     {
-	if (!tt->iclass[i])
-	   continue;
-
-	wh = (i + 1) * 8;
-
-	eo = EobjWindowCreate(EOBJ_TYPE_MISC, -50, -100, wh, wh, 1, name);
-	ImageclassIncRefcount(tt->iclass[i]);
-	EobjChangeOpacity(eo, OpacityFromPercent(Conf.opacity.tooltips));
-	tt->win[i] = eo;
-     }
-   tt->iwin = ECreateWindow(tt->TTWIN->win, 0, 0, 1, 1, 0);
-
-   tt->ref_count = 0;
+      if (tt->iclass[i])
+	 ImageclassIncRefcount(tt->iclass[i]);
 
    ecore_list_prepend(tt_list, tt);
 
@@ -289,6 +300,13 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 
    if (!tt || Mode.mode != MODE_NONE)
       return;
+
+   if (!tt->TTWIN)
+     {
+	TooltipRealize(tt);
+	if (!tt->TTWIN)
+	   return;
+     }
 
    /* if we get an actionclass, look for tooltip action texts */
    h = 0;
@@ -686,7 +704,7 @@ TooltipHide(ToolTip * tt)
 {
    int                 i;
 
-   if (!tt || !tt->TTWIN->shown)
+   if (!tt || !tt->TTWIN || !tt->TTWIN->shown)
       return;
 
    for (i = 4; i >= 0; i--)
