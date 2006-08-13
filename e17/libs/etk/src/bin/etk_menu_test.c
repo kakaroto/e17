@@ -22,7 +22,9 @@ void etk_test_menu_window_create(void *data)
    Etk_Widget *menu_item;
    Etk_Widget *radio_item;
    Etk_Widget *label;
-
+   Etk_Widget *toolbar;
+   Etk_Widget *button;   
+   
    if (win)
    {
       etk_widget_show_all(ETK_WIDGET(win));
@@ -42,7 +44,28 @@ void etk_test_menu_window_create(void *data)
    
    menu_bar = etk_menu_bar_new();
    etk_box_pack_start(ETK_BOX(vbox), menu_bar, ETK_FALSE, ETK_FALSE, 0);
+
+   toolbar = etk_toolbar_new();
+   etk_box_pack_start(ETK_BOX(vbox), toolbar, ETK_FALSE, ETK_FALSE, 0);
    
+   button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_COPY);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+   
+   button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_CUT);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+   
+   button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_PASTE);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+   
+   button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_FIND);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+   
+   button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_UNDO);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button); 
+   
+   button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_REDO);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button); 
+      
    label = etk_label_new("Click me! :)");
    etk_label_alignment_set(ETK_LABEL(label), 0.5, 0.5);
    etk_widget_pass_mouse_events_set(label, ETK_TRUE);

@@ -31,6 +31,7 @@ collections {
    #include "widgets/tooltips.edc"
    #include "widgets/iconbox.edc"
    #include "widgets/colorpicker.edc"
+   #include "widgets/toolbar.edc"
    
    #include "wm/background.edc"
    #include "wm/borders.edc"

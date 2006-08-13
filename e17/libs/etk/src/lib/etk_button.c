@@ -378,6 +378,7 @@ static void _etk_button_constructor(Etk_Button *button)
    button->is_pressed = ETK_FALSE;
    button->xalign = 0.5;
    button->yalign = 0.5;
+   button->tool = ETK_FALSE;   
 
    etk_signal_connect("realize", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_realize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_key_down_cb), NULL);
@@ -603,7 +604,7 @@ static void _etk_button_children_create(Etk_Button *button)
       if (!button->box)
       {
 	 if (button->tool)
-	    button->box = etk_vbox_new(ETK_FALSE, 8);
+	    button->box = etk_vbox_new(ETK_FALSE, 1);
 	 else
 	    button->box = etk_hbox_new(ETK_FALSE, 8);	   
 	 

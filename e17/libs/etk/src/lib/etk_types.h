@@ -101,6 +101,8 @@ typedef struct Etk_Textblock_Iter Etk_Textblock_Iter;
 typedef struct Etk_Textblock_Node Etk_Textblock_Node;
 typedef struct _Etk_Toggle_Button Etk_Toggle_Button;
 typedef struct _Etk_Toplevel_Widget Etk_Toplevel_Widget;
+typedef struct _Etk_Toolbar Etk_Toolbar;
+typedef struct _Etk_Tool_Button Etk_Tool_Button;
 typedef struct _Etk_Tree Etk_Tree;
 typedef struct _Etk_Tree_Col Etk_Tree_Col;
 typedef struct _Etk_Tree_Model Etk_Tree_Model;

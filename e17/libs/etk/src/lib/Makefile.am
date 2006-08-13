@@ -80,7 +80,9 @@ etk_utils.h \
 etk_viewport.h \
 etk_widget.h \
 etk_window.h \
-etk_engine.h
+etk_engine.h \
+etk_toolbar.h \
+etk_tool_button.h
 
 libetk_la_SOURCES = \
 etk_alignment.c \
@@ -146,6 +148,8 @@ etk_viewport.c \
 etk_widget.c \
 etk_window.c \
 etk_engine.c \
+etk_toolbar.c \
+etk_tool_button.c \
 $(ETKHEADERS)
 
 installed_headersdir = $(prefix)/include/etk

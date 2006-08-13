@@ -95,4 +95,5 @@ images {
    image: "wm_bg_overlay.png" COMP;
    image: "wm_border.png" COMP;
    image: "wm_shadow.png" COMP;
+   image: "toolbar.png" COMP;
 }
