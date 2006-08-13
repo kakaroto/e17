@@ -12,3 +12,5 @@ libentrance_edit_la_HEADERS=Entrance_Edit.h
 libentrance_edit_ladir=$(prefix)/include
 libentrance_edit_la_LIBADD=@ECORE_LIBS@
 libentrance_edit_la_CFLAGS=@ECORE_CFLAGS@
+
+bin_SCRIPTS = entrance_edit-config

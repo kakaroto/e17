@@ -231,6 +231,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/lib/Makefile
+src/lib/entrance_edit-config
 src/client/Makefile
 src/daemon/Makefile
 src/daemon/entrance_wrapper
@@ -255,6 +256,9 @@ data/themes/darkrock/Makefile
 data/themes/darkrock/img/Makefile
 entrance.spec
 debian/changelog
+],
+[
+ chmod +x src/lib/entrance_edit-config
 ])
 
 echo
