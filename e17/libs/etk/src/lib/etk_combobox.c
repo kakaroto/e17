@@ -693,6 +693,7 @@ static void _etk_combobox_constructor(Etk_Combobox *combobox)
 /* Destroys the combobox */
 static void _etk_combobox_destructor(Etk_Combobox *combobox)
 {
+   Etk_Combobox_Item *item;
    int i;
    
    if (!combobox)
@@ -701,7 +702,13 @@ static void _etk_combobox_destructor(Etk_Combobox *combobox)
    combobox->selected_item = NULL;
    combobox->active_item = NULL;
    while (combobox->items)
-      etk_object_destroy(ETK_OBJECT(combobox->items->data));
+   {
+      item = ETK_COMBOBOX_ITEM(combobox->items->data);
+      
+      item->combobox = NULL;
+      etk_object_destroy(ETK_OBJECT(item));
+      combobox->items = evas_list_remove_list(combobox->items, combobox->items);
+   }
    free(combobox->active_item_children);
    
    for (i = 0; i < combobox->num_cols; i++)

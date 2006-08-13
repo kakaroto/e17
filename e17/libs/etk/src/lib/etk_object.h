@@ -51,13 +51,19 @@ struct Etk_Object
    Evas_List *after_signal_callbacks_list;
    Evas_Hash *notification_callbacks_hash;
    Evas_List *weak_pointers_list;
+   Etk_Bool destroy_me;
+   
+   Etk_Object *prev;
+   Etk_Object *next;
 };
+
+void etk_object_shutdown();
+void etk_object_purge();
 
 Etk_Type *etk_object_type_get();
 Etk_Object *etk_object_new(Etk_Type *object_type, const char *first_property, ...);
 Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_property, va_list args);
 void etk_object_destroy(Etk_Object *object);
-void etk_object_destroy_all_objects();
 
 Etk_Object *etk_object_check_cast(Etk_Object *object, Etk_Type *type);
 Etk_Type *etk_object_object_type_get(Etk_Object *object);

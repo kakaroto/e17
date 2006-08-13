@@ -27,10 +27,12 @@ enum Etk_Object_Signal_Id
 
 static void _etk_object_constructor(Etk_Object *object);
 static void _etk_object_destructor(Etk_Object *object);
+static void _etk_object_free(Etk_Object *object);
 static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
 static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
 
-static Evas_List *_etk_object_created_objects = NULL;
+static Etk_Object *_etk_object_objects = NULL;
+static Etk_Object *_etk_object_last_object = NULL;
 static Etk_Signal *_etk_object_signals[ETK_OBJECT_NUM_SIGNALS];
 
 /**************************
@@ -38,6 +40,32 @@ static Etk_Signal *_etk_object_signals[ETK_OBJECT_NUM_SIGNALS];
  * Implementation
  *
  **************************/
+
+/**
+ * @internal
+ * @brief Shutdowns the object system: it frees all the created objects
+ */
+void etk_object_shutdown()
+{
+   while (_etk_object_objects)
+      _etk_object_free(_etk_object_objects);
+}
+/**
+ * @internal
+ * @brief Frees the objects that have been marked as "destroyed".
+ * It's called at the start of each iteration of the main loop
+ */
+void etk_object_purge()
+{
+   Etk_Object *object, *next;
+   
+   for (object = _etk_object_objects; object; object = next)
+   {
+      next = object->next;
+      if (object->destroy_me)
+         _etk_object_free(object);
+   }
+}
 
 /**
  * @brief Gets the type of an Etk_Object
@@ -99,10 +127,9 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
 
    if (!object_type)
       return NULL;
-
+   
    new_object = malloc(object_type->type_size);
    new_object->type = object_type;
-   _etk_object_created_objects = evas_list_append(_etk_object_created_objects, new_object);
    
    etk_type_object_construct(object_type, new_object);
    va_copy(args2, args);
@@ -113,28 +140,29 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
 }
 
 /**
- * @brief Destroys the object: if first emits the "destroyed" signal, sets the weak pointers to NULL and then
- * calls the destructors (from the destructor of the more derived class to the destructor of the ultimate base class)
+ * @brief Destroys the object: it first sets the weak pointers to NULL, emits the "destroyed" signal, and then
+ * queues the object in the list of objects to free. Thus, the destructors will only be called at the beginning of the
+ * next main loop iteration (from the destructor of the more derived class to the destructor of the ultimate base class).
  * @param object the object to destroy
+ * @warning You should not assume that this function will call directly the destructors of the object!
  */
 void etk_object_destroy(Etk_Object *object)
 {
-   if (!object)
+   void **weak_pointer;
+   
+   if (!object || object->destroy_me)
       return;
 
+   /* Sets the weak pointers to NULL */
+   while (object->weak_pointers_list)
+   {
+      weak_pointer = object->weak_pointers_list->data;
+      *weak_pointer =  NULL;
+      object->weak_pointers_list = evas_list_remove_list(object->weak_pointers_list, object->weak_pointers_list);
+   }
+   
+   object->destroy_me = ETK_TRUE;
    etk_signal_emit(_etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL], object, NULL);
-   etk_type_destructors_call(object->type, object);
-   _etk_object_created_objects = evas_list_remove(_etk_object_created_objects, object);
-   free(object);
-}
-
-/**
- * @brief Destroys all the created objects. You do not need to call it manually, etk_shutdown() calls it automatically
- */
-void etk_object_destroy_all_objects()
-{
-   while (_etk_object_created_objects)
-      etk_object_destroy(ETK_OBJECT(_etk_object_created_objects->data));
 }
 
 /**
@@ -223,7 +251,7 @@ void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *
  */
 void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location)
 {
-   if (!object || !pointer_location)
+   if (!object || !pointer_location || object->destroy_me)
       return;
    object->weak_pointers_list = evas_list_append(object->weak_pointers_list, pointer_location);
 }
@@ -571,22 +599,23 @@ static void _etk_object_constructor(Etk_Object *object)
    object->after_signal_callbacks_list = NULL;
    object->notification_callbacks_hash = NULL;
    object->weak_pointers_list = NULL;
+   object->destroy_me = ETK_FALSE;
+   
+   /* Append the new object to the list */
+   object->prev = _etk_object_last_object;
+   object->next = NULL;
+   if (!_etk_object_objects)
+      _etk_object_objects = object;
+   if (_etk_object_last_object)
+      _etk_object_last_object->next = object;
+   _etk_object_last_object = object;
 }
 
 /* Destroys the object */
 static void _etk_object_destructor(Etk_Object *object)
 {
-   void **weak_pointer;
-   
    if (!object)
       return;
-
-   while (object->weak_pointers_list)
-   {
-      weak_pointer = object->weak_pointers_list->data;
-      *weak_pointer =  NULL;
-      object->weak_pointers_list = evas_list_remove_list(object->weak_pointers_list, object->weak_pointers_list);
-   }
    
    evas_hash_foreach(object->data_hash, _etk_object_data_free_cb, NULL);
    evas_hash_free(object->data_hash);
@@ -613,6 +642,28 @@ static void _etk_object_destructor(Etk_Object *object)
  * Private functions
  *
  **************************/
+
+/* Frees the object: it calls the destructors (from the destructor of the more derived class
+ * to the destructor of the ultimate base class) and frees the allocated memory */
+static void _etk_object_free(Etk_Object *object)
+{
+   if (!object)
+      return;
+   
+   etk_object_destroy(object);
+   etk_type_destructors_call(object->type, object);
+   
+   if (object->prev)
+      object->prev->next = object->next;
+   if (object->next)
+      object->next->prev = object->prev;
+   if (object == _etk_object_objects)
+      _etk_object_objects = object->next;
+   if (object == _etk_object_last_object)
+      _etk_object_last_object = object->prev;
+   
+   free(object);
+}
 
 /* Frees a list of notification callbacks (called by _etk_object_destructor()) */
 static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
@@ -671,9 +722,11 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * etk_object_new() automatically calls the corresponding constructors of the object, from the constructor of
  * the base class to the constructor of the more derived class. @n
  *
- * You can also destroy an object with etk_object_destroy(). It sets the weak pointers of the object to NULL
- * (see etk_object_weak_pointer_add()) and then calls the destructors from the destructor of the more derived class
- * to the destructor of the ultimate base class. @n @n
+ * You can then destroy the object with etk_object_destroy(): it sets the weak pointers of the object to NULL
+ * (see etk_object_weak_pointer_add()), emits the "destroyed" signal and queues the object for freeing. Thus, the
+ * destructors will only be called at the beginning of the next main loop iteration (from the destructor of the more
+ * derived class to the destructor of the ultimate base class). So, you should not assume that etk_object_destroy()
+ * will directly call the destructors. @n @n
  *
  * <b>Signal concept:</b> @n
  * Each object has a list of signals that can be connected to one or several callbacks. The callbacks connected to

@@ -87,6 +87,7 @@ enum Etk_Widget_Property_Id
 
 static void _etk_widget_constructor(Etk_Widget *widget);
 static void _etk_widget_destructor(Etk_Widget *widget);
+static void _etk_widget_destroyed_cb(Etk_Object *object, void *data);
 static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 
@@ -1927,6 +1928,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->dnd_types = NULL;
    widget->dnd_types_num = 0;
    
+   etk_signal_connect("destroyed", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_destroyed_cb), NULL);
    etk_signal_connect("mouse_in", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_in_cb), NULL);
    etk_signal_connect("mouse_out", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_out_cb), NULL);
    etk_signal_connect("mouse_down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL);
@@ -1946,11 +1948,6 @@ static void _etk_widget_destructor(Etk_Widget *widget)
       return;
 
    _etk_widget_unrealize(widget);
-   
-   /* Remove the children */
-   while (widget->children)
-      etk_object_destroy(ETK_OBJECT(widget->children->data));
-   evas_list_free(widget->focus_order);
    etk_widget_parent_set(widget, NULL);
    
    while (widget->theme_children)
@@ -1972,6 +1969,27 @@ static void _etk_widget_destructor(Etk_Widget *widget)
    
    free(widget->theme_file);
    free(widget->theme_group);
+}
+
+/* Called when etk_object_destroy() is called on the widget
+ * We use this to destroy the children of the widget because ... TODO */
+void _etk_widget_destroyed_cb(Etk_Object *object, void *data)
+{
+   Etk_Widget *widget;
+   Etk_Widget *child;
+   
+   if (!(widget = ETK_WIDGET(object)))
+      return;
+   
+   /* Remove the children */
+   while (widget->children)
+   {
+      child = ETK_WIDGET(widget->children->data);
+      
+      etk_widget_parent_set(child, NULL);
+      etk_object_destroy(ETK_OBJECT(child));
+   }
+   widget->focus_order = evas_list_free(widget->focus_order);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */

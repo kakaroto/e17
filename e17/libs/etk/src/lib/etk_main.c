@@ -44,12 +44,12 @@ static Ecore_Job *_etk_main_iterate_job = NULL;
 
 /**
  * @brief Initializes Etk. This function needs to be called before any other call to an etk_* function. @n
- * You can call safely etk_init() several times, it will have an effect only the first time you call it. The other times,
+ * You can call safely etk_init() several times, it will only have an effect the first time you call it. The other times,
  * it will just increment a counter. etk_shutdown() will decrement this counter and will effectively shutdown Etk when
  * the counter reaches 0. So you need to call etk_shutdown() the same number of times as etk_init().
- * @param argc the location of the "argc" paramater passed to main(). It is used to parse the arguments specific to Etk.
+ * @param argc the location of the "argc" parameter passed to main(). It is used to parse the arguments specific to Etk.
  * It can be set to NULL.
- * @param argv the location of the "argv" paramater passed to main(). It is used to parse the arguments specific to Etk.
+ * @param argv the location of the "argv" parameter passed to main(). It is used to parse the arguments specific to Etk.
  * It can be set to NULL.
  * @return Returns the number of times Etk has been initialized, or 0 on failure
  * @note It initializes Evas, Ecore and Edje so you don't need to initialize them after an etk_init()
@@ -132,8 +132,8 @@ int etk_shutdown()
    _etk_main_init_count--;
    if (_etk_main_init_count == 0)
    {
-      /* Shutdown the subsystem of Etk */
-      etk_object_destroy_all_objects();
+      /* Shutdown the subsystems of Etk */
+      etk_object_shutdown();
       etk_signal_shutdown();
       etk_type_shutdown();
       
@@ -143,7 +143,8 @@ int etk_shutdown()
       etk_engine_shutdown();
       etk_theme_shutdown();
       
-      _etk_main_toplevel_widgets = evas_list_free(_etk_main_toplevel_widgets);
+      evas_list_free(_etk_main_toplevel_widgets);
+      _etk_main_toplevel_widgets = NULL;
       
       /* Shutdown the EFL*/
       edje_shutdown();
@@ -195,6 +196,8 @@ void etk_main_iterate()
 
    if (_etk_main_init_count <= 0)
       return;
+   
+   etk_object_purge();
 
    /* TODO: only update the toplevel widgets that need to be updated */
    for (l = _etk_main_toplevel_widgets; l; l = l->next)
@@ -240,7 +243,7 @@ void etk_main_toplevel_widget_remove(Etk_Toplevel_Widget *widget)
 }
 
 /**
- * @brief Gets the list of the created toplevel widgets (windows, ...)
+ * @brief Gets the list of the created toplevel widgets (windows, embed widgets, ...)
  * @return Returns the list of the created toplevel widgets
  */
 Evas_List *etk_main_toplevel_widgets_get()
