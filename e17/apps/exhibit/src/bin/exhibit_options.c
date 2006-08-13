@@ -490,7 +490,7 @@ _ex_options_set()
    etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app2_menu));
    etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app3_menu));
    etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app4_menu));
-   _ex_menu_build_run_menu();
+   _ex_menu_build_run_menu(NULL);
 }
 
 static Etk_Widget *

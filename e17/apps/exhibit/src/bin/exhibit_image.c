@@ -108,9 +108,8 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
 	 menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Run in ..."), ETK_STOCK_APPLICATION_X_EXECUTABLE, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	 submenu = etk_menu_new();
 	 etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
-	 _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("The Gimp"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
-	 _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("XV"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
-	 _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Xpaint"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
+	 _ex_menu_build_run_menu(submenu);
+
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Favorites"), ETK_STOCK_EMBLEM_FAVORITE, ETK_MENU_SHELL(e->menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	submenu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
@@ -819,6 +818,15 @@ _ex_image_rename()
 	 _("Exhibit - rename"));
 
    etk_widget_show_all(dialog);
+}
+
+void
+_ex_image_refresh() 
+{
+   char file[PATH_MAX];
+
+   sprintf(file, "%s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
+   _ex_main_image_set(e, file);
 }
 
 void

@@ -19,17 +19,23 @@ char *ex_images[] =
 };
 
 void 
-_ex_menu_build_run_menu() 
+_ex_menu_build_run_menu(Etk_Widget *submenu) 
 {
+   Etk_Widget *w;
+   
+   if (!submenu)
+     w = e->submenu;
+   else
+     w = submenu;
 
    if (e->options->app1 && e->options->app1_cmd)
-     e->app1_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app1), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app1_cmd);
+     e->app1_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app1), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(w), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app1_cmd);
    if (e->options->app2 && e->options->app2_cmd)
-     e->app2_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app2), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app2_cmd);
+     e->app2_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app2), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(w), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app2_cmd);
    if (e->options->app3 && e->options->app3_cmd)
-     e->app3_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app3), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app3_cmd);
+     e->app3_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app3), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(w), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app3_cmd);
    if (e->options->app4 && e->options->app4_cmd)
-     e->app4_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app4), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app4_cmd);
+     e->app4_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app4), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(w), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app4_cmd);
    
 }
 
@@ -399,7 +405,15 @@ void
 _ex_menu_refresh_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
-   D(("refresh\n"));
+
+   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   _ex_main_populate_files(e, NULL);
+   
+   if (!e->cur_tab->image_loaded)
+     return;
+
+   _ex_image_refresh();
 }
 
 void
@@ -503,6 +517,88 @@ _ex_menu_release_notes_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_about_cb(Etk_Object *obj, void *data)
 {
+   static Etk_Widget *win = NULL;
+   Etk_Widget *frame;
+   Etk_Widget *vbox;
+   Etk_Widget *desctext; 
+   Etk_Widget *abouttext;
+   Etk_Widget *helptext; 
+   
    EX_MENU_ITEM_GET_RETURN(obj);
-   D(("about\n"));
+
+   if(win)
+     {
+	etk_widget_show_all(win);
+	return;
+     }
+
+   win = etk_dialog_new();
+   etk_window_title_set(ETK_WINDOW(win), "About Exhibit");
+   etk_signal_connect_swapped("delete_event", ETK_OBJECT(win),
+	 ETK_CALLBACK(etk_window_hide_on_delete), win);
+   etk_signal_connect_swapped("response", ETK_OBJECT(win),
+	 ETK_CALLBACK(etk_window_hide_on_delete), win);
+   etk_widget_size_request_set(win, 290, 405);
+   
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   frame = etk_frame_new("What is Exhibit?");
+   desctext = etk_text_view_new();
+   etk_widget_size_request_set(desctext, -1, 150);
+   etk_object_properties_set(ETK_OBJECT(desctext),
+	 "focusable", ETK_FALSE, NULL);
+   etk_textblock_text_set(ETK_TEXT_VIEW(desctext)->textblock,
+	 "<b>Exhibit</b> is an imageviewer that uses Etk as its toolkit. "
+	 "Exhibit supports image previews for image types supported by "
+	 "Evas and allows for directory changing using a point "
+	 "and click interface or a text input box with "
+	 "tab autocompletion support.\n\n"
+	 "<p align=\"center\"><style effect=glow color1=#fa14 color2=#fe87>"
+	 "<b>"VERSION"</b>"
+	 "</style></p>",
+	 ETK_TRUE);
+   etk_container_add(ETK_CONTAINER(frame), desctext);
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+
+   frame = etk_frame_new("Authors");
+   abouttext = etk_text_view_new();
+   etk_widget_size_request_set(abouttext, -1, 75);
+   etk_object_properties_set(ETK_OBJECT(abouttext),
+	 "focusable", ETK_FALSE, NULL);
+   etk_textblock_text_set(ETK_TEXT_VIEW(abouttext)->textblock,
+	 "<b>Code:</b>\n"
+	 "Hisham '<b>CodeWarrior</b>' Mardam Bey\n"
+	 "Martin '<b>balony</b>' Sarajervi\n"
+	 "Simon '<b>MoOm</b>' Treny",
+	 ETK_TRUE);
+   etk_container_add(ETK_CONTAINER(frame), abouttext);
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   
+   frame = etk_frame_new("Common shortcuts");
+   helptext = etk_text_view_new();
+   etk_widget_size_request_set(helptext, -1,100);
+   etk_object_properties_set(ETK_OBJECT(helptext),
+	 "focusable", ETK_FALSE, NULL);
+   etk_textblock_text_set(ETK_TEXT_VIEW(helptext)->textblock,
+	 "<b>control-t:</b> create a new tab\n"
+	 "<b>control-w:</b> close active tab\n"
+	 "<b>control-d:</b> add to favorites\n"
+	 "<b>control-x:</b> toggle view\n"
+	 "<b>control-q:</b> exit program\n"
+	 "<b>control-s:</b> toggle slideshow\n",
+	 ETK_TRUE);
+   etk_container_add(ETK_CONTAINER(frame), helptext);
+   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox, ETK_FALSE, ETK_FALSE,
+	 0, ETK_FALSE);
+   etk_dialog_button_add(ETK_DIALOG(win), "Close", ETK_RESPONSE_CLOSE);
+   etk_container_border_width_set(ETK_CONTAINER(win), 7);
+   etk_widget_show_all(win);
+
+   etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(abouttext)->textblock_object,
+	 ETK_FALSE);
+   etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(desctext)->textblock_object,
+	 ETK_FALSE);
+   etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(helptext)->textblock_object,
+	 ETK_FALSE);
+
 }

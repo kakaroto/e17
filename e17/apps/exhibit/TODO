@@ -5,16 +5,17 @@
 
 o TODO:
  ------
+- Close tab
+- Create window
+- Close window
+
 - menus
-  * refresh
   * release notes
-  * about
   
   
 o DONE:
  ------
 + "open in" should be generated from options
-+ rename
 + andy's comments feature
 + sorting
 + wheel changing / zooming
@@ -24,8 +25,11 @@ o DONE:
 + make slideshow display its status in the statusbar(s)
 + save window geometry between sessions
 + menus
+  + about
   + save image as
   + delete (needs message dialog)
+  + refresh
+	+ rename
   + new window
 + options
   + dialog (common options)
@@ -63,7 +67,6 @@ o TODO:
 * BUGS:
 =======
 
-- When typing 's' in the comment field you start slideshow.
 - fix autocomplete (combobox?)
 - if we're looking at a LOT of images and change dir before they have
   finished loading, then the images will thumbnail and load in the current dir

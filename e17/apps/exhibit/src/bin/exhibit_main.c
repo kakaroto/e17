@@ -433,18 +433,18 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	     etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
 	     _ex_favorites_add(e, icol_string);
 	  }
+	else if(!strcmp(ev->key, "x"))
+	  {
+	     if(!e->cur_tab->fit_window)
+	       _ex_tab_current_fit_to_window(e);
+	     else
+	       _ex_tab_current_zoom_one_to_one(e);	
+	  }
+	else if(!strcmp(ev->key, "s"))
+	  {
+	     _ex_main_window_slideshow_toggle(e);
+	  }		   
      }
-   else if(!strcmp(ev->key, "x"))
-     {
-	if(!e->cur_tab->fit_window)
-	  _ex_tab_current_fit_to_window(e);
-	else
-	  _ex_tab_current_zoom_one_to_one(e);	
-     }
-   else if(!strcmp(ev->key, "s"))
-     {
-	_ex_main_window_slideshow_toggle(e);
-     }		   
 }
 
 static void
@@ -690,8 +690,6 @@ _ex_main_window_show(char *dir)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image as"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_as_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Search"), ETK_STOCK_SYSTEM_SEARCH, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_search_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rename"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_rename_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_X_DIRECTORY_TRASH, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_delete_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
@@ -721,7 +719,7 @@ _ex_main_window_show(char *dir)
 	e->submenu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(e->submenu));
 
-	_ex_menu_build_run_menu();
+	_ex_menu_build_run_menu(NULL);
 
 	/* Continue "Edit" menu */
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
