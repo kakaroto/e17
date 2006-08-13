@@ -74,10 +74,21 @@ ew_listdata_new(void)
 	return ewld;
 }
 
+void
+ew_list_first_row_select(Entrance_List el)
+{
+	Etk_Tree_Row *row = etk_tree_first_row_get(ETK_TREE(el->owner));
+	etk_tree_row_select(row);
+}
+
 void* 
 ew_list_selected_data_get(Entrance_List el)
 {
 	Etk_Tree_Row *row = etk_tree_selected_row_get(ETK_TREE(el->owner));
+	if(!row) {
+		return NULL;
+	}
+
 	Entrance_List_Data ewld = etk_tree_row_data_get(row);
 	return ewld->data;
 }

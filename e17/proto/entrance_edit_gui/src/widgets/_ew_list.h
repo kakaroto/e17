@@ -53,5 +53,6 @@ Entrance_List _ew_list_new(const char*, int, int, int);
 Entrance_List _ew_list_buildtree(Entrance_List);
 Entrance_List_Data ew_listdata_new(void);
 void* ew_list_selected_data_get(Entrance_List);
+void ew_list_first_row_select(Entrance_List);
 
 #endif
