@@ -1,7 +1,11 @@
 SUBDIRS = data src
 
 MAINTAINERCLEANFILES = \
-			debian/changelog
+	Makefile.in aclocal.m4 config.guess \
+	config.h.in config.sub configure install-sh \
+	ltconfig ltmain.sh missing mkinstalldirs depcomp \
+	stamp-h.in compile \
+	debian/changelog
 
 EXTRA_DIST = \
 	debian/changelog \

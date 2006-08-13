@@ -1,4 +1,4 @@
-
+MAINTAINERCLEANFILES = Makefile.in
 lib_LTLIBRARIES=libentrance_widgets.la
 
 

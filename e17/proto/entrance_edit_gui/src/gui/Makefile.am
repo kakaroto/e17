@@ -1,4 +1,4 @@
-
+MAINTAINERCLEANFILES = Makefile.in
 bin_PROGRAMS=entrance_edit_gui
 
 entrance_edit_gui_SOURCES=main.c \
