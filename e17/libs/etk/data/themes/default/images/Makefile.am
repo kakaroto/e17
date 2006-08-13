@@ -98,4 +98,5 @@ EXTRA_DIST = background.png \
              wm_bg_brushed.png \
              wm_bg_overlay.png \
              wm_border.png \
-             wm_shadow.png
+             wm_shadow.png \
+             toolbar.png

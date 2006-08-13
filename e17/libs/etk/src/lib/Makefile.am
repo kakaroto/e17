@@ -34,6 +34,7 @@ etk_dnd.h \
 etk_drag.h \
 etk_editable_text_object.h \
 etk_embed.h \
+etk_engine.h \
 etk_entry.h \
 etk_filechooser_widget.h \
 etk_frame.h \
@@ -70,6 +71,8 @@ etk_text_view.h \
 etk_textblock.h \
 etk_theme.h \
 etk_toggle_button.h \
+etk_tool_button.h \
+etk_toolbar.h \
 etk_tooltips.h \
 etk_toplevel_widget.h \
 etk_tree_model.h \
@@ -79,10 +82,7 @@ etk_types.h \
 etk_utils.h \
 etk_viewport.h \
 etk_widget.h \
-etk_window.h \
-etk_engine.h \
-etk_toolbar.h \
-etk_tool_button.h
+etk_window.h
 
 libetk_la_SOURCES = \
 etk_alignment.c \
@@ -102,6 +102,7 @@ etk_dnd.c \
 etk_drag.c \
 etk_editable_text_object.c \
 etk_embed.c \
+etk_engine.c \
 etk_entry.c \
 etk_filechooser_widget.c \
 etk_frame.c \
@@ -138,6 +139,8 @@ etk_text_view.c \
 etk_textblock.c \
 etk_theme.c \
 etk_toggle_button.c \
+etk_tool_button.c \
+etk_toolbar.c \
 etk_tooltips.c \
 etk_toplevel_widget.c \
 etk_tree_model.c \
@@ -147,9 +150,6 @@ etk_utils.c \
 etk_viewport.c \
 etk_widget.c \
 etk_window.c \
-etk_engine.c \
-etk_toolbar.c \
-etk_tool_button.c \
 $(ETKHEADERS)
 
 installed_headersdir = $(prefix)/include/etk
