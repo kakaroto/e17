@@ -28,7 +28,8 @@ enum Etk_Button_Property_Id
    ETK_BUTTON_LABEL_PROPERTY,
    ETK_BUTTON_IMAGE_PROPERTY,
    ETK_BUTTON_XALIGN_PROPERTY,
-   ETK_BUTTON_YALIGN_PROPERTY
+   ETK_BUTTON_YALIGN_PROPERTY,
+   ETK_BUTTON_TOOL_PROPERTY
 };
 
 static void _etk_button_constructor(Etk_Button *button);
@@ -82,6 +83,8 @@ Etk_Type *etk_button_type_get()
          ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
       etk_type_property_add(button_type, "yalign", ETK_BUTTON_YALIGN_PROPERTY,
          ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
+      etk_type_property_add(button_type, "tool", ETK_BUTTON_TOOL_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
 
       button_type->property_set = _etk_button_property_set;
       button_type->property_get = _etk_button_property_get;
@@ -206,8 +209,8 @@ void etk_button_image_set(Etk_Button *button, Etk_Image *image)
    
    if (button->image)
    {
-      etk_signal_disconnect("child_removed", ETK_OBJECT(button->hbox), ETK_CALLBACK(_etk_button_image_removed_cb));
-      etk_container_remove(ETK_CONTAINER(button->hbox), ETK_WIDGET(button->image));
+      etk_signal_disconnect("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
+      etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
    }
 
    button->image = image;
@@ -239,8 +242,11 @@ void etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id)
 
    if (!button)
       return;
-   
-   image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
+
+   if (button->tool)
+      image = etk_image_new_from_stock(stock_id, ETK_STOCK_MEDIUM);
+   else
+      image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
    etk_widget_show(image);
    etk_widget_visibility_locked_set(image, ETK_TRUE);
    label = etk_stock_label_get(stock_id);
@@ -303,6 +309,46 @@ void etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign)
       *yalign = button ? button->yalign : 0;
 }
 
+/**
+ * @brief Sets wether the button is a toolbar button or not
+ * @param button a button
+ * @param tool ETK_TRUE for a toolbar button, ETK_FALSE otherwise
+ */
+void etk_button_tool_set(Etk_Button *button, Etk_Bool tool)
+{
+   if (!button)
+      return;
+   
+   if (button->tool == tool)
+      return;
+
+   button->tool = tool;
+   if (button->box)
+   {  
+      if (button->image)
+	 etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
+      if (button->label)
+	 etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->label));
+      etk_object_destroy(ETK_OBJECT(button->box));
+      button->box = NULL;
+   }
+   _etk_button_children_create(button);
+   etk_object_notify(ETK_OBJECT(button), "tool");
+}
+
+/**
+ * @brief Gets wether the button is a toolbar button or not
+ * @param button a button
+ * @return Returns a boolean indication of its a toolbar button or not
+ */
+Etk_Bool etk_button_tool_get(Etk_Button *button)
+{
+   if (!button)
+      return ETK_FALSE;
+   
+   return button->tool;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -315,7 +361,7 @@ static void _etk_button_constructor(Etk_Button *button)
    if (!button)
       return;
 
-   button->hbox = NULL;
+   button->box = NULL;
    button->image = NULL;
    button->alignment = NULL;
 
@@ -362,6 +408,8 @@ static void _etk_button_property_set(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_BUTTON_YALIGN_PROPERTY:
          etk_button_alignment_set(button, button->xalign, etk_property_value_float_get(value));
+      case ETK_BUTTON_TOOL_PROPERTY:
+         etk_button_tool_set(button, etk_property_value_bool_get(value));
       default:
          break;
    }
@@ -389,6 +437,9 @@ static void _etk_button_property_get(Etk_Object *object, int property_id, Etk_Pr
       case ETK_BUTTON_YALIGN_PROPERTY:
          etk_property_value_float_set(value, button->yalign);
          break;
+      case ETK_BUTTON_TOOL_PROPERTY:
+         etk_property_value_bool_set(value, button->tool);
+         break;      
       default:
          break;
    }
@@ -412,7 +463,7 @@ static void _etk_button_realize_cb(Etk_Object *object, void *data)
       etk_widget_theme_signal_emit(ETK_WIDGET(button), "pressed");
 }
 
-/* Called when the image is removed from the hbox */
+/* Called when the image is removed from the box */
 static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Button *button;
@@ -528,8 +579,20 @@ static void _etk_button_children_create(Etk_Button *button)
 
    if (button->image)
    {
-      if (!button->alignment)
+      Etk_Stock_Id stock_id;
+      Etk_Stock_Size stock_size;
+      
+      etk_image_stock_get(button->image, &stock_id, &stock_size);
+      if (stock_id != ETK_STOCK_NO_STOCK)
       {
+	 if (button->tool && stock_size != ETK_STOCK_MEDIUM)
+	    etk_image_set_from_stock(button->image, stock_id, ETK_STOCK_MEDIUM);
+	 else if (!button->tool && stock_size != ETK_STOCK_SMALL)
+	    etk_image_set_from_stock(button->image, stock_id, ETK_STOCK_SMALL);
+      }      
+      
+      if (!button->alignment)
+      {	 
          button->alignment = etk_alignment_new(button->xalign, button->yalign, 0.0, 0.0);
          etk_widget_visibility_locked_set(button->alignment, ETK_TRUE);
          etk_widget_pass_mouse_events_set(button->alignment, ETK_TRUE);
@@ -537,20 +600,24 @@ static void _etk_button_children_create(Etk_Button *button)
          etk_container_add(ETK_CONTAINER(button), button->alignment);
       }
 
-      if (!button->hbox)
+      if (!button->box)
       {
-         button->hbox = etk_hbox_new(ETK_FALSE, 8);
-         etk_widget_visibility_locked_set(button->hbox, ETK_TRUE);
-         etk_widget_pass_mouse_events_set(button->hbox, ETK_TRUE);
-         etk_widget_show(button->hbox);
-         etk_container_add(ETK_CONTAINER(button->alignment), button->hbox);
-         etk_signal_connect("child_removed", ETK_OBJECT(button->hbox), ETK_CALLBACK(_etk_button_image_removed_cb), button);
+	 if (button->tool)
+	    button->box = etk_vbox_new(ETK_FALSE, 8);
+	 else
+	    button->box = etk_hbox_new(ETK_FALSE, 8);	   
+	 
+         etk_widget_visibility_locked_set(button->box, ETK_TRUE);
+         etk_widget_pass_mouse_events_set(button->box, ETK_TRUE);
+         etk_widget_show(button->box);
+         etk_container_add(ETK_CONTAINER(button->alignment), button->box);
+         etk_signal_connect("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb), button);
          
          etk_label_alignment_set(ETK_LABEL(button->label), 0.0, 0.5);
-         etk_box_pack_end(ETK_BOX(button->hbox), button->label, ETK_FALSE, ETK_FALSE, 0);
+         etk_box_pack_end(ETK_BOX(button->box), button->label, ETK_FALSE, ETK_FALSE, 0);
       }
 
-      etk_box_pack_start(ETK_BOX(button->hbox), ETK_WIDGET(button->image), ETK_FALSE, ETK_FALSE, 0);
+      etk_box_pack_start(ETK_BOX(button->box), ETK_WIDGET(button->image), ETK_FALSE, ETK_FALSE, 0);
       etk_widget_pass_mouse_events_set(ETK_WIDGET(button->image), ETK_TRUE);
    }
    else
@@ -560,10 +627,10 @@ static void _etk_button_children_create(Etk_Button *button)
          etk_object_destroy(ETK_OBJECT(button->alignment));
          button->alignment = NULL;
       }
-      if (button->hbox)
+      if (button->box)
       {
-         etk_object_destroy(ETK_OBJECT(button->hbox));
-         button->hbox = NULL;
+         etk_object_destroy(ETK_OBJECT(button->box));
+         button->box = NULL;
       }
 
       etk_label_alignment_set(ETK_LABEL(button->label), button->xalign, button->yalign);

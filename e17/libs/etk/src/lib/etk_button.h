@@ -35,7 +35,7 @@ struct Etk_Button
    Etk_Bin bin;
 
    Etk_Widget *alignment;
-   Etk_Widget *hbox;
+   Etk_Widget *box;
    Etk_Image *image;
    Etk_Widget *label;
    
@@ -46,6 +46,7 @@ struct Etk_Button
    Etk_Bool is_pressed;
    float xalign;
    float yalign;
+   Etk_Bool tool;
 };
 
 Etk_Type *etk_button_type_get();
@@ -67,6 +68,9 @@ void etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id);
 
 void etk_button_alignment_set(Etk_Button *button, float xalign, float yalign);
 void etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign);
+
+void etk_button_tool_set(Etk_Button *button, Etk_Bool tool);
+Etk_Bool etk_button_tool_get(Etk_Button *button);
 
 /** @} */
 
