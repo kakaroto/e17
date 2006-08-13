@@ -20,6 +20,13 @@
 		(eed) = NULL; \
 	     }
 
+#define APP_NEW(d, e) \
+   if (etk_entry_text_get(ETK_ENTRY(d))) \
+     { \
+	E_FREE(e); \
+	e = strdup(etk_entry_text_get(ETK_ENTRY(d))); \
+     } 
+
 #define CFG_OPTIONS_NEWI(str, it, type) EET_DATA_DESCRIPTOR_ADD_BASIC(_ex_config_options_edd, Ex_Options, str, it, type)
 
 #define VER_NEWI(str, it, type) EET_DATA_DESCRIPTOR_ADD_BASIC(_ex_config_version_edd, Ex_Config_Version, str, it, type)
@@ -88,6 +95,10 @@ _ex_options_init()
    CFG_OPTIONS_NEWI("a2", app2, EET_T_STRING);
    CFG_OPTIONS_NEWI("a3", app3, EET_T_STRING);
    CFG_OPTIONS_NEWI("a4", app4, EET_T_STRING);
+   CFG_OPTIONS_NEWI("a1_cmd", app1_cmd, EET_T_STRING);
+   CFG_OPTIONS_NEWI("a2_cmd", app2_cmd, EET_T_STRING);
+   CFG_OPTIONS_NEWI("a3_cmd", app3_cmd, EET_T_STRING);
+   CFG_OPTIONS_NEWI("a4_cmd", app4_cmd, EET_T_STRING);
    CFG_OPTIONS_NEWI("fp", fav_path, EET_T_STRING);
    CFG_OPTIONS_NEWI("bt", blur_thresh, EET_T_DOUBLE);
    CFG_OPTIONS_NEWI("st", sharpen_thresh, EET_T_DOUBLE);
@@ -176,10 +187,14 @@ _ex_options_default(Exhibit *e)
    
    /* TODO: free values before allocating if e->options != NULL */
    
-   e->options->app1 =     NULL;
-   e->options->app2 =     NULL;
-   e->options->app3 =     NULL;
+   e->options->app1 = strdup("The Gimp");
+   e->options->app1_cmd = strdup("gimp %s");
+   e->options->app2 = strdup("Xv");
+   e->options->app2_cmd = strdup("xv %s");
+   e->options->app3 = strdup("Xpaint");
+   e->options->app3_cmd = strdup("xpaint %s");
    e->options->app4 =     NULL;
+   e->options->app4_cmd =     NULL;
    e->options->fav_path = NULL;   
    e->options->blur_thresh      = EX_DEFAULT_BLUR_THRESH;
    e->options->sharpen_thresh   = EX_DEFAULT_SHARPEN_THRESH;
@@ -201,6 +216,10 @@ _ex_options_free(Exhibit *e)
    E_FREE(e->options->app2);
    E_FREE(e->options->app3);
    E_FREE(e->options->app4);
+   E_FREE(e->options->app1_cmd);
+   E_FREE(e->options->app2_cmd);
+   E_FREE(e->options->app3_cmd);
+   E_FREE(e->options->app4_cmd);
    E_FREE(e->options->fav_path);
    E_FREE(e->options);
 }
@@ -456,6 +475,18 @@ _ex_options_set()
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    _ex_main_populate_files(e, NULL);
 
+   /* RUN IN */
+   APP_NEW(dialog->app1, e->options->app1);
+   APP_NEW(dialog->app1_cmd, e->options->app1_cmd);
+   APP_NEW(dialog->app2, e->options->app2);
+   APP_NEW(dialog->app2_cmd, e->options->app2_cmd);
+   APP_NEW(dialog->app3, e->options->app3);
+   APP_NEW(dialog->app3_cmd, e->options->app3_cmd);
+   APP_NEW(dialog->app4, e->options->app4);
+   APP_NEW(dialog->app4_cmd, e->options->app4_cmd);
+
+   /* - Rebuild menus with settings */
+
 }
 
 static Etk_Widget *
@@ -675,7 +706,7 @@ _ex_options_page_4_create()
 
    vbox = etk_vbox_new(ETK_FALSE, 3);
    
-   frame = etk_frame_new("Open in ...");
+   frame = etk_frame_new("Run in ...");
    etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox2);
@@ -733,7 +764,27 @@ _ex_options_page_4_create()
    dialog->app4_cmd = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->app4_cmd, 2, 2, 4, 4, 0, 0, 
 	 ETK_FILL_POLICY_NONE);
+
+   if (e->options->app1)
+	etk_entry_text_set(ETK_ENTRY(dialog->app1), e->options->app1);
+   if (e->options->app1_cmd)
+	etk_entry_text_set(ETK_ENTRY(dialog->app1_cmd), e->options->app1_cmd);
+
+   if (e->options->app2)
+	etk_entry_text_set(ETK_ENTRY(dialog->app2), e->options->app2);
+   if (e->options->app2_cmd)
+	etk_entry_text_set(ETK_ENTRY(dialog->app2_cmd), e->options->app2_cmd);
    
+   if (e->options->app3)
+	etk_entry_text_set(ETK_ENTRY(dialog->app3), e->options->app3);
+   if (e->options->app3_cmd)
+	etk_entry_text_set(ETK_ENTRY(dialog->app3_cmd), e->options->app3_cmd);
+
+   if (e->options->app4)
+	etk_entry_text_set(ETK_ENTRY(dialog->app4), e->options->app4);
+   if (e->options->app4_cmd)
+	etk_entry_text_set(ETK_ENTRY(dialog->app4_cmd), e->options->app4_cmd);
+
    return vbox;
 }
 

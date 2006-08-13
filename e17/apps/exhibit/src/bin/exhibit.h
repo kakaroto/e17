@@ -76,6 +76,10 @@ struct _Ex_Options
    char  *app2;
    char  *app3;
    char  *app4;
+   char  *app1_cmd;
+   char  *app2_cmd;
+   char  *app3_cmd;
+   char  *app4_cmd;
    
    char  *fav_path;
    
