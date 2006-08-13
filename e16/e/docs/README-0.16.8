@@ -210,6 +210,15 @@ enabled for the COMPOSITE, DAMAGE, FIXES, and RENDER extensions.
 For reasonable performance it is also required that hardware acceleration
 of the RENDER extension is enabled.
 
+As of version 0.16.8.2 it may happen that the borders on application windows
+using ARGB visuals (for transparency) are "ugly". Applications may use ARGB
+visuals intentionally (e.g. fdclock) or not (e.g. xv on 16 bit root depth).
+Applications unintentionally using an ARGB visual will normally not be
+rendered properly at all and should be started with the environment variable
+XLIB_SKIP_ARGB_VISUALS set.
+To fix border rendering on "real" ARGB windows it is required to use imlib2
+with version > 1.2.2 (i.e. CVS, atm.).
+
 Tweaks:
 
 If window resize/shading with composite enabled is ugly, try:
