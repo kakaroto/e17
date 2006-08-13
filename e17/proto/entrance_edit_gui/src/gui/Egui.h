@@ -8,6 +8,8 @@ typedef struct _Egui_Graphics_Selector {
 	char *dialog_title;
 	char *list_title;
 	char *entrance_edit_key;
+
+	int use_full_path;
 } Egui_Graphics_Selector;
 
 

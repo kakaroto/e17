@@ -101,10 +101,18 @@ _gs_apply(void)
 		return;
 	}
 
-	entrance_edit_string_set(egs.entrance_edit_key, graphic);
+	if(egs.use_full_path)
+	{
+		char *full_path = _gs_get_path(graphic);
+		entrance_edit_string_set(egs.entrance_edit_key, full_path);
+		free(full_path);
+	}
+	else 
+		entrance_edit_string_set(egs.entrance_edit_key, graphic);
+
 	if(!entrance_edit_save())
 	{
-		printf("Error setting %s - %s. Please check your permissions\n", egs.name, graphic);
+		printf("Error setting %s. Please check your permissions\n", egs.name);
 	}
 }
 

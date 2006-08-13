@@ -15,7 +15,8 @@ egui_theme_dialog_show()
 		"Preview",
 		"Entrance Configuration - Themes",
 		"Themes",
-		ENTRANCE_EDIT_KEY_CLIENT_THEME_STR
+		ENTRANCE_EDIT_KEY_CLIENT_THEME_STR,
+		0
 	};
 
 	egui_gs_dialog_show(theme_egs);
