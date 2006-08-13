@@ -119,7 +119,7 @@ _background_apply(void)
 		return;
 	}
 
-	entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_THEME_STR, background);
+	entrance_edit_string_set(ENTRANCE_EDIT_KEY_CLIENT_BACKGROUND_STR, background);
 	if(!entrance_edit_save())
 	{
 		printf("Error setting background - %s. Please check your permissions\n", background);
