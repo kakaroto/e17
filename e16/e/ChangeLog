@@ -3965,3 +3965,24 @@ Fix closing logout dialog when using key bindings.
 Split up, shuffle around file.c (no real changes).
 Eliminate a lot of stat's during configuration file parsing.
 
+
+-------------------------------------------------------------------------------
+
+Sun Aug 13 14:46:37 CEST 2006
+(Kim)
+
+--- 0.16.8.3 0.02 ---
+Add usual keybindings to about dialog.
+Some more dialog creation refactoring bits.
+Rename some macros (_Ewin...) for consistency.
+Eliminate redundant macro (Xwin).
+Add override redirect flag to map event debug info.
+Fix some segv's in obscure situations.
+Still more dialog creation refactoring bits.
+Fix clients resizing while having bogus max size hint (KDE info windows).
+Fix incorrect menu placement near left screen edge.
+Fix config parameter type.
+Avoid dangling buffer. Eliminate some redundant code.
+Fix shape on pager zoom window (when composite is enabled).
+Defer tooltip realization.
+Add note about ARGB window borders.
