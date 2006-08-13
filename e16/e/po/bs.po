@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-11 20:22+0200\n"
+"POT-Creation-Date: 2006-08-13 12:30+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -17,37 +17,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 
-#: src/aclass.c:204
+#: src/aclass.c:206
 #, fuzzy
 msgid "ActionClass Error!"
 msgstr "TextClass greŷka!"
 
-#: src/aclass.c:204 src/backgrounds.c:239 src/borders.c:647 src/buttons.c:190
-#: src/cmclass.c:84 src/cursors.c:126 src/iclass.c:330 src/tclass.c:103
-#: src/tooltips.c:128
+#: src/aclass.c:206 src/backgrounds.c:241 src/borders.c:647 src/buttons.c:192
+#: src/cmclass.c:84 src/cursors.c:126 src/iclass.c:331 src/tclass.c:104
+#: src/tooltips.c:139
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u referenca ostaje\n"
 
-#: src/aclass.c:289 src/backgrounds.c:1105 src/borders.c:1080
-#: src/borders.c:1203 src/buttons.c:729 src/cmclass.c:201 src/config.c:260
-#: src/cursors.c:177 src/iclass.c:518 src/iconify.c:2387 src/menus.c:1731
-#: src/menus.c:1841 src/slideout.c:425 src/tclass.c:260 src/tooltips.c:165
-#: src/windowmatch.c:159
+#: src/aclass.c:291 src/backgrounds.c:1107 src/borders.c:1083
+#: src/borders.c:1206 src/buttons.c:731 src/cmclass.c:201 src/config.c:246
+#: src/cursors.c:177 src/iclass.c:519 src/iconify.c:2379 src/menus.c:1715
+#: src/menus.c:1825 src/slideout.c:425 src/tclass.c:261 src/tooltips.c:176
+#: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: ignoriŷem dodatni sadrŵaj u \"%s\"\n"
 
-#: src/aclass.c:297 src/backgrounds.c:1113 src/borders.c:1086
-#: src/borders.c:1209 src/buttons.c:737 src/cmclass.c:209 src/config.c:268
-#: src/cursors.c:183 src/iclass.c:523 src/menus.c:1736 src/menus.c:1847
-#: src/slideout.c:431 src/tclass.c:266 src/tooltips.c:171
-#: src/windowmatch.c:164
+#: src/aclass.c:299 src/backgrounds.c:1115 src/borders.c:1089
+#: src/borders.c:1212 src/buttons.c:739 src/cmclass.c:209 src/config.c:254
+#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1720 src/menus.c:1831
+#: src/slideout.c:431 src/tclass.c:267 src/tooltips.c:182
+#: src/windowmatch.c:165
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: nedostaje potrebni sadrŵaj u \"%s\"\n"
 
-#: src/aclass.c:494
+#: src/aclass.c:496
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -60,7 +60,7 @@ msgstr ""
 "%s\n"
 "Ignoriŷem i nastavljam...\n"
 
-#: src/actions.c:68
+#: src/actions.c:70
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -73,7 +73,7 @@ msgstr ""
 "Ovaj program ne moŵe biti izvrŷen.\n"
 "To je zato jer datoteka ne postoji.\n"
 
-#: src/actions.c:76
+#: src/actions.c:78
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -91,7 +91,7 @@ msgstr ""
 "putanji za svoj shell koji je %s. Predlaŵem da proīitate stranice priruīnika\n"
 "za taj shell i da proīitate kako promjeniti ili dodati vaŷu izvrŷavaju�u putanju.\n"
 
-#: src/actions.c:96
+#: src/actions.c:98
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -107,7 +107,7 @@ msgstr ""
 "Nisam siguran zaŷto ovo ne moŵete uraditi. Datoteka postoji,\n"
 "i Vi je moŵete izvrŷavati. Predlaŵem da bolje pogledate ovo.\n"
 
-#: src/actions.c:107
+#: src/actions.c:109
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -122,7 +122,7 @@ msgstr ""
 "To je zato ŷto datoteka postoji, ali Vi niste u moguīnosti da je\n"
 "izvrŷavate zato ŷto nemate psristup za izvrŷavanje te datoteke.\n"
 
-#: src/actions.c:122
+#: src/actions.c:124
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -135,7 +135,7 @@ msgstr ""
 "Ovaj program ne moŵe biti izvrŷen.\n"
 "To je zato ŷto je u stvari datiteka direktorij.\n"
 
-#: src/actions.c:130
+#: src/actions.c:132
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -148,19 +148,19 @@ msgstr ""
 "Ovaj program ne moŵe biti izvrŷen.\n"
 "To je zato ŷto datoteka nije ispravna.\n"
 
-#: src/actions.c:184
+#: src/actions.c:186
 #, c-format
 msgid ""
 "There was an error running the program:\n"
 "%s\n"
 msgstr ""
 
-#: src/actions.c:296
+#: src/actions.c:289
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "O Enlightenment-u %s"
 
-#: src/actions.c:307
+#: src/actions.c:299
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -199,7 +199,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/actions.c:322 src/dialog.c:876 src/dialog.c:2066 src/dialog.c:2093
+#: src/actions.c:314 src/dialog.c:933 src/dialog.c:2139 src/dialog.c:2166
 #: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Uredu"
@@ -224,11 +224,11 @@ msgstr "Ponovo pokreni Enlightenment"
 msgid "Quit Enlightenment"
 msgstr "Iza�i iz Enlightenment-a"
 
-#: src/backgrounds.c:239
+#: src/backgrounds.c:241
 msgid "Background Error!"
 msgstr "Greŷka pozadine!"
 
-#: src/backgrounds.c:1574
+#: src/backgrounds.c:1576
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -239,11 +239,11 @@ msgstr ""
 "Ime: %s\n"
 "Datoteka: %s\n"
 
-#: src/backgrounds.c:1575
+#: src/backgrounds.c:1577
 msgid "-NONE-"
 msgstr "-NIŠTA-"
 
-#: src/backgrounds.c:1752 src/backgrounds.c:1754
+#: src/backgrounds.c:1754 src/backgrounds.c:1756
 msgid ""
 "No\n"
 "Background"
@@ -251,68 +251,56 @@ msgstr ""
 "Bez\n"
 "Pozadine"
 
-#: src/backgrounds.c:1835 src/backgrounds.c:2188
+#: src/backgrounds.c:1836 src/backgrounds.c:2182
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Neiskoriŷtene pozadine se osloba�aju nakon %2i:%02i:%02i"
 
-#: src/backgrounds.c:2025
-msgid "Desktop Background Settings"
-msgstr "Osobine pozadine Desktopa"
-
-#: src/backgrounds.c:2032
-msgid ""
-"Enlightenment Desktop\n"
-"Background Settings Dialog\n"
-msgstr ""
-"Enlightenment Desktop\n"
-"dijalog osobina pozadine\n"
-
-#: src/backgrounds.c:2036
+#: src/backgrounds.c:2029
 msgid "BG Colour\n"
 msgstr "BG Color\n"
 
-#: src/backgrounds.c:2044
+#: src/backgrounds.c:2037
 msgid "Move to Front\n"
 msgstr "Pomjeri naprijed\n"
 
-#: src/backgrounds.c:2049
+#: src/backgrounds.c:2042
 msgid "Duplicate\n"
 msgstr "Poduplaj\n"
 
-#: src/backgrounds.c:2053
+#: src/backgrounds.c:2046
 msgid "Unlist\n"
 msgstr "Unlist\n"
 
-#: src/backgrounds.c:2057
+#: src/backgrounds.c:2050
 msgid "Delete File\n"
 msgstr "Obriŷi datoteku\n"
 
-#: src/backgrounds.c:2065
+#: src/backgrounds.c:2058
 msgid "Red:\n"
 msgstr "Crveno:\n"
 
-#: src/backgrounds.c:2074
+#: src/backgrounds.c:2067
 msgid "Use background image"
 msgstr "Koristi sliku pozadine"
 
-#: src/backgrounds.c:2080
+#: src/backgrounds.c:2073
 msgid "Green:\n"
 msgstr "Zeleno:\n"
 
-#: src/backgrounds.c:2089
+#: src/backgrounds.c:2082
 msgid "Keep aspect on scale"
 msgstr "Zadrŵi izraz na skali"
 
-#: src/backgrounds.c:2095
+#: src/backgrounds.c:2088
 msgid "Blue:\n"
 msgstr "Plavo:\n"
 
-#: src/backgrounds.c:2104
+#: src/backgrounds.c:2097
 msgid "Tile image across background"
 msgstr "Poploīaj sliku ŷirom pozadine"
 
-#: src/backgrounds.c:2115
+#: src/backgrounds.c:2108
 msgid ""
 "Background\n"
 "Image\n"
@@ -326,39 +314,55 @@ msgstr ""
 "i\n"
 "Poravnanje\n"
 
-#: src/backgrounds.c:2178
+#: src/backgrounds.c:2172
 msgid "Use dithering in Hi-Colour"
 msgstr "Use dithering in Hi-Color"
 
-#: src/backgrounds.c:2182
+#: src/backgrounds.c:2176
 msgid "Background overrides theme"
 msgstr "Pozadina zanemaruje temu"
 
-#: src/backgrounds.c:2225
+#: src/backgrounds.c:2219
 msgid "Pre-scan BG's"
 msgstr "Pre-scan BG's"
 
-#: src/backgrounds.c:2233
+#: src/backgrounds.c:2227
 msgid "Sort by File"
 msgstr "Saprtiraj po Datoteci"
 
-#: src/backgrounds.c:2238
+#: src/backgrounds.c:2232
 msgid "Sort by Attr."
 msgstr "Sortiraj po Atributu"
 
-#: src/backgrounds.c:2243
+#: src/backgrounds.c:2237
 msgid "Sort by Image"
 msgstr "Sortiraj po Slici"
 
-#: src/backgrounds.c:2271
+#: src/backgrounds.c:2265
 msgid "Enable background transparency compatibility mode"
 msgstr ""
+
+#: src/backgrounds.c:2271 src/config.c:332 src/mod-trans.c:192
+msgid "Background"
+msgstr "Pozadina"
+
+#: src/backgrounds.c:2272
+msgid "Desktop Background Settings"
+msgstr "Osobine pozadine Desktopa"
+
+#: src/backgrounds.c:2275
+msgid ""
+"Enlightenment Desktop\n"
+"Background Settings Dialog\n"
+msgstr ""
+"Enlightenment Desktop\n"
+"dijalog osobina pozadine\n"
 
 #: src/borders.c:647
 msgid "Border Error!"
 msgstr "Rub greŷka!"
 
-#: src/buttons.c:190
+#: src/buttons.c:192
 msgid "Button Error!"
 msgstr "Greŷka dugmeta!"
 
@@ -400,7 +404,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:185
+#: src/config.c:174
 #, fuzzy, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -409,19 +413,19 @@ msgstr ""
 "Upozorenje:  īini se da je konfiguracija zavrŷila prije nego ŷto smo\n"
 "zavrŷili uīitavanje Izbornik bloka.  Rasplet najīeŷ�e nije dobar.\n"
 
-#: src/config.c:275
+#: src/config.c:262
 msgid "Theme versioning ERROR"
 msgstr "Verzioniranje teme GREŠKA"
 
-#: src/config.c:276
+#: src/config.c:263
 msgid "Restart with Defaults"
 msgstr "Ponovo pokreni sa Uobiīajnim postavkama"
 
-#: src/config.c:277
+#: src/config.c:264
 msgid "Abort and Exit"
 msgstr "Odustani i Iza�i"
 
-#: src/config.c:278
+#: src/config.c:265
 #, fuzzy, c-format
 msgid ""
 "ERROR:\n"
@@ -458,84 +462,80 @@ msgstr ""
 "dok ova tema koristi prednosti novih\n"
 "dodataka Enlightenment-a u novim verzijma.\n"
 
-#: src/config.c:305
+#: src/config.c:292
 #, fuzzy
 msgid "Image class"
 msgstr "ImageClass greŷka!"
 
-#: src/config.c:310
+#: src/config.c:297
 #, fuzzy
 msgid "Tooltip"
 msgstr "Savjeti:"
 
-#: src/config.c:315
+#: src/config.c:302
 msgid "Font"
 msgstr ""
 
-#: src/config.c:320
+#: src/config.c:307
 #, fuzzy
 msgid "Text class"
 msgstr "TextClass greŷka!"
 
-#: src/config.c:325
+#: src/config.c:312
 #, fuzzy
 msgid "Menu style"
 msgstr "Stil ruba"
 
-#: src/config.c:330 src/menus.c:1954
+#: src/config.c:317 src/menus.c:1938
 #, fuzzy
 msgid "Menu"
 msgstr "Izbornici:"
 
-#: src/config.c:335
+#: src/config.c:322
 #, fuzzy
 msgid "Border"
 msgstr "Rubovi:"
 
-#: src/config.c:340
+#: src/config.c:327
 #, fuzzy
 msgid "Button"
 msgstr "Dno"
 
-#: src/config.c:345 src/mod-trans.c:211
-msgid "Background"
-msgstr "Pozadina"
-
-#: src/config.c:350
+#: src/config.c:337
 #, fuzzy
 msgid "Window match"
 msgstr "Opcije prozora"
 
-#: src/config.c:360
+#: src/config.c:347
 #, fuzzy
 msgid "Action class"
 msgstr "ActionClass Greŷka!"
 
-#: src/config.c:365
+#: src/config.c:352
 msgid "Slideout"
 msgstr ""
 
-#: src/config.c:579
+#: src/config.c:566
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment se pokre�e..."
 
-#: src/config.c:614
+#: src/config.c:601
 msgid "Recover system config?"
 msgstr "Vratiti sistemsku konfiguraciju?"
 
-#: src/config.c:614
+#: src/config.c:601
 msgid "Yes, Attempt recovery"
 msgstr "Da, napravi povratak"
 
-#: src/config.c:615
+#: src/config.c:602
 msgid "Restart and try again"
 msgstr "Ponovo pokreni i pokuŷaj ponovo"
 
-#: src/config.c:615
+#: src/config.c:602
 msgid "Quit and give up"
 msgstr "Iza�i i odustani"
 
-#: src/config.c:617
+#: src/config.c:604
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -614,21 +614,67 @@ msgstr ""
 "Kliknite ovdje da spustite ovaj desktop\n"
 "na dno.\n"
 
-#: src/desktops.c:2342 src/desktops.c:2393
+#: src/desktops.c:2341 src/desktops.c:2380
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktopi"
 
-#: src/desktops.c:2344 src/desktops.c:2395
+#: src/desktops.c:2343 src/desktops.c:2382
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
-#: src/desktops.c:2376
+#: src/desktops.c:2375
+msgid "Number of virtual desktops:\n"
+msgstr "Broj virtualnih Desktopa:\n"
+
+#: src/desktops.c:2404
+msgid "Slide desktops around when changing"
+msgstr "Klizaj prozore okolo kada mijenjam"
+
+#: src/desktops.c:2410
+#, fuzzy
+msgid "Desktop Slide speed:\n"
+msgstr "Brzina klizanja Desktop-a: (sporo)\n"
+
+#: src/desktops.c:2424
+msgid "Wrap desktops around"
+msgstr "Uvij prozore okolo"
+
+#: src/desktops.c:2432
+msgid "Display desktop dragbar"
+msgstr "Prikaŵi dektop dragbar"
+
+#: src/desktops.c:2438
+msgid "Drag bar position:"
+msgstr "Dragbar pozicija:"
+
+#: src/desktops.c:2442
+msgid "Top"
+msgstr "Vrh"
+
+#: src/desktops.c:2448
+msgid "Bottom"
+msgstr "Dno"
+
+#: src/desktops.c:2454 src/pager.c:1805 src/pager.c:1830 src/pager.c:1855
+msgid "Left"
+msgstr "Lijevo"
+
+#: src/desktops.c:2460 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
+msgid "Right"
+msgstr "Desno"
+
+#: src/desktops.c:2468 src/menus-misc.c:714
+#, fuzzy
+msgid "Desks"
+msgstr "Desktop"
+
+#: src/desktops.c:2469
 msgid "Multiple Desktop Settings"
 msgstr "Osobine viŷestrukih desktopa"
 
-#: src/desktops.c:2383
+#: src/desktops.c:2472
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -636,48 +682,7 @@ msgstr ""
 "Enlightenment Viŷestruki Dektop\n"
 "dijalog osobina\n"
 
-#: src/desktops.c:2388
-msgid "Number of virtual desktops:\n"
-msgstr "Broj virtualnih Desktopa:\n"
-
-#: src/desktops.c:2414
-msgid "Slide desktops around when changing"
-msgstr "Klizaj prozore okolo kada mijenjam"
-
-#: src/desktops.c:2420
-#, fuzzy
-msgid "Desktop Slide speed:\n"
-msgstr "Brzina klizanja Desktop-a: (sporo)\n"
-
-#: src/desktops.c:2434
-msgid "Wrap desktops around"
-msgstr "Uvij prozore okolo"
-
-#: src/desktops.c:2442
-msgid "Display desktop dragbar"
-msgstr "Prikaŵi dektop dragbar"
-
-#: src/desktops.c:2448
-msgid "Drag bar position:"
-msgstr "Dragbar pozicija:"
-
-#: src/desktops.c:2452
-msgid "Top"
-msgstr "Vrh"
-
-#: src/desktops.c:2458
-msgid "Bottom"
-msgstr "Dno"
-
-#: src/desktops.c:2464 src/pager.c:1827 src/pager.c:1852 src/pager.c:1877
-msgid "Left"
-msgstr "Lijevo"
-
-#: src/desktops.c:2470 src/pager.c:1839 src/pager.c:1864 src/pager.c:1889
-msgid "Right"
-msgstr "Desno"
-
-#: src/desktops.c:2562 src/desktops.c:2610
+#: src/desktops.c:2555 src/desktops.c:2591
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -686,7 +691,7 @@ msgstr ""
 "%i x %i\n"
 "Ekrana u veliīini"
 
-#: src/desktops.c:2565 src/desktops.c:2613
+#: src/desktops.c:2558 src/desktops.c:2594
 msgid ""
 "1\n"
 "Screen in size"
@@ -694,11 +699,31 @@ msgstr ""
 "1\n"
 "Ekran u veliīini"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2587
+msgid "Virtual Desktop size:\n"
+msgstr "Veliīina virtualnog Desktopa:\n"
+
+#: src/desktops.c:2628
+msgid "Wrap virtual desktops around"
+msgstr "Uvij vitrualne desktope okolo"
+
+#: src/desktops.c:2632
+msgid "Enable edge flip"
+msgstr "Ukljuīi precrtavanje ivice"
+
+#: src/desktops.c:2636
+msgid "Resistance at edge of screen:\n"
+msgstr "Otpor precrtavanja ekrana:\n"
+
+#: src/desktops.c:2648
+msgid "Areas"
+msgstr ""
+
+#: src/desktops.c:2649
 msgid "Virtual Desktop Settings"
 msgstr "Osobine virtualnih Desktopa"
 
-#: src/desktops.c:2603
+#: src/desktops.c:2652
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -706,31 +731,15 @@ msgstr ""
 "Enlightenment Virtual Desktop\n"
 "Dijalog osobina\n"
 
-#: src/desktops.c:2606
-msgid "Virtual Desktop size:\n"
-msgstr "Veliīina virtualnog Desktopa:\n"
-
-#: src/desktops.c:2646
-msgid "Wrap virtual desktops around"
-msgstr "Uvij vitrualne desktope okolo"
-
-#: src/desktops.c:2650
-msgid "Enable edge flip"
-msgstr "Ukljuīi precrtavanje ivice"
-
-#: src/desktops.c:2654
-msgid "Resistance at edge of screen:\n"
-msgstr "Otpor precrtavanja ekrana:\n"
-
-#: src/dialog.c:880
+#: src/dialog.c:937
 msgid "Apply"
 msgstr "Izvrŷi"
 
-#: src/dialog.c:885 src/pager.c:912 config/strings.c:30 config/strings.c:163
+#: src/dialog.c:942 src/pager.c:912 config/strings.c:30 config/strings.c:163
 msgid "Close"
 msgstr "Zatvori"
 
-#: src/dialog.c:2093
+#: src/dialog.c:2166
 msgid "Attention !!!"
 msgstr "Paŵnja !!!"
 
@@ -758,11 +767,104 @@ msgstr ""
 "\n"
 "Izlazim.\n"
 
-#: src/focus.c:715
+#: src/focus.c:708
+msgid "Focus follows pointer"
+msgstr "Usmjeravanje prati usmjeriva?"
+
+#: src/focus.c:714
+msgid "Focus follows pointer sloppily"
+msgstr "Usmjerenje prati usmjeriva�"
+
+#: src/focus.c:720
+msgid "Focus follows mouse clicks"
+msgstr "Usmjeravanje prati klikanje miŷa"
+
+#: src/focus.c:730
+msgid "Clicking in a window always raises it"
+msgstr "Klikanje na prozor uvijek ga podstakinje"
+
+#: src/focus.c:738
+msgid "All new windows first get the focus"
+msgstr "Svi novi prozori prvo dobijaju usmjeravanje"
+
+#: src/focus.c:743
+msgid "Only new dialog windows get the focus"
+msgstr "Sam novi dijalog prozori dobivaju usjeravanje"
+
+#: src/focus.c:750
+msgid "Only new dialogs whose owner is focused get the focus"
+msgstr "Samo novi dijalozi īiji je vlasnik usmjeren dobivaju usmjeravanje"
+
+#: src/focus.c:755
+#, fuzzy
+msgid "Raise windows while switching focus"
+msgstr "Usmjeravanje prozora prilikom prebacivanja"
+
+#: src/focus.c:761
+#, fuzzy
+msgid "Send mouse pointer to window while switching focus"
+msgstr "Poŷalji miŷ pokaziva� na prozor na prekida�u sumjerivanja"
+
+#: src/focus.c:767
+#, fuzzy
+msgid "Always send mouse pointer to window on focus switch"
+msgstr "Poŷalji miŷ pokaziva� na prozor na prekida�u sumjerivanja"
+
+#: src/focus.c:775
+msgid "Display and use focus list"
+msgstr "Prikaŵi i koristi listu usmjeravanja"
+
+#: src/focus.c:780
+msgid "Include sticky windows in focus list"
+msgstr "Ukljuīi listu ljepljivih prozora u listi usmjeravanja"
+
+#: src/focus.c:785
+msgid "Include shaded windows in focus list"
+msgstr "Ukljuīi osjenīene prozore u listi usmjeravanja"
+
+#: src/focus.c:790
+msgid "Include iconified windows in focus list"
+msgstr "Ukljuīi ikonificirane prozore u listi usmjeravanja"
+
+#: src/focus.c:795
+msgid "Focus windows while switching"
+msgstr "Usmjeravanje prozora prilikom prebacivanja"
+
+#: src/focus.c:800
+msgid "Raise windows after focus switch"
+msgstr "Pove�an je prozora nakon paljenja/gaŷenja usjeriva�a"
+
+#: src/focus.c:805
+msgid "Send mouse pointer to window after focus switch"
+msgstr "Poŷalji miŷ pokaziva� na prozor nakon ŷto se usjeriva� ugasi/upali"
+
+#: src/focus.c:815
+#, fuzzy
+msgid "Focuslist image display policy (if one operation fails, try the next):"
+msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
+
+#: src/focus.c:819
+msgid "First E Icon, then App Icon"
+msgstr ""
+
+#: src/focus.c:825
+msgid "First App Icon, then E Icon"
+msgstr ""
+
+#: src/focus.c:831 src/iconify.c:2329
+msgid "None"
+msgstr "Niŷta"
+
+#: src/focus.c:839
+#, fuzzy
+msgid "Focus"
+msgstr "Nikad ne usmjeravaj"
+
+#: src/focus.c:840
 msgid "Focus Settings"
 msgstr "Osobine usmjeravanja"
 
-#: src/focus.c:722
+#: src/focus.c:843
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -770,99 +872,11 @@ msgstr ""
 "Enlightenment usmjeravanje\n"
 "Dijalog osobina\n"
 
-#: src/focus.c:726
-msgid "Focus follows pointer"
-msgstr "Usmjeravanje prati usmjeriva?"
-
-#: src/focus.c:732
-msgid "Focus follows pointer sloppily"
-msgstr "Usmjerenje prati usmjeriva�"
-
-#: src/focus.c:738
-msgid "Focus follows mouse clicks"
-msgstr "Usmjeravanje prati klikanje miŷa"
-
-#: src/focus.c:748
-msgid "Clicking in a window always raises it"
-msgstr "Klikanje na prozor uvijek ga podstakinje"
-
-#: src/focus.c:756
-msgid "All new windows first get the focus"
-msgstr "Svi novi prozori prvo dobijaju usmjeravanje"
-
-#: src/focus.c:761
-msgid "Only new dialog windows get the focus"
-msgstr "Sam novi dijalog prozori dobivaju usjeravanje"
-
-#: src/focus.c:768
-msgid "Only new dialogs whose owner is focused get the focus"
-msgstr "Samo novi dijalozi īiji je vlasnik usmjeren dobivaju usmjeravanje"
-
-#: src/focus.c:773
-#, fuzzy
-msgid "Raise windows while switching focus"
-msgstr "Usmjeravanje prozora prilikom prebacivanja"
-
-#: src/focus.c:779
-#, fuzzy
-msgid "Send mouse pointer to window while switching focus"
-msgstr "Poŷalji miŷ pokaziva� na prozor na prekida�u sumjerivanja"
-
-#: src/focus.c:785
-#, fuzzy
-msgid "Always send mouse pointer to window on focus switch"
-msgstr "Poŷalji miŷ pokaziva� na prozor na prekida�u sumjerivanja"
-
-#: src/focus.c:793
-msgid "Display and use focus list"
-msgstr "Prikaŵi i koristi listu usmjeravanja"
-
-#: src/focus.c:798
-msgid "Include sticky windows in focus list"
-msgstr "Ukljuīi listu ljepljivih prozora u listi usmjeravanja"
-
-#: src/focus.c:803
-msgid "Include shaded windows in focus list"
-msgstr "Ukljuīi osjenīene prozore u listi usmjeravanja"
-
-#: src/focus.c:808
-msgid "Include iconified windows in focus list"
-msgstr "Ukljuīi ikonificirane prozore u listi usmjeravanja"
-
-#: src/focus.c:813
-msgid "Focus windows while switching"
-msgstr "Usmjeravanje prozora prilikom prebacivanja"
-
-#: src/focus.c:818
-msgid "Raise windows after focus switch"
-msgstr "Pove�an je prozora nakon paljenja/gaŷenja usjeriva�a"
-
-#: src/focus.c:823
-msgid "Send mouse pointer to window after focus switch"
-msgstr "Poŷalji miŷ pokaziva� na prozor nakon ŷto se usjeriva� ugasi/upali"
-
-#: src/focus.c:833
-#, fuzzy
-msgid "Focuslist image display policy (if one operation fails, try the next):"
-msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
-
-#: src/focus.c:837
-msgid "First E Icon, then App Icon"
-msgstr ""
-
-#: src/focus.c:843
-msgid "First App Icon, then E Icon"
-msgstr ""
-
-#: src/focus.c:849 src/iconify.c:2344
-msgid "None"
-msgstr "Niŷta"
-
-#: src/fx.c:71
+#: src/fx.c:72
 msgid "Starting up Ripples FX..."
 msgstr "Pokre�em Ripples FX..."
 
-#: src/fx.c:72
+#: src/fx.c:73
 msgid ""
 "\n"
 "You have just started the Ripples Effect.\n"
@@ -885,11 +899,11 @@ msgstr ""
 "Da bi iskljuīili ovaj efekt samo ponovo oznaīite ovu opciju i on �e\n"
 "biti iskljuīen.\n"
 
-#: src/fx.c:216
+#: src/fx.c:217
 msgid "Starting up Raindrops FX..."
 msgstr "Pokre�em Raindrops FX..."
 
-#: src/fx.c:217
+#: src/fx.c:218
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
@@ -913,11 +927,11 @@ msgstr ""
 "To disable this effect just select this option again to toggle\n"
 "it off.\n"
 
-#: src/fx.c:510
+#: src/fx.c:511
 msgid "Starting up Waves FX..."
 msgstr "Pokre�em Waves FX......"
 
-#: src/fx.c:511
+#: src/fx.c:512
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -941,11 +955,11 @@ msgstr ""
 "To disable this effect just select this option again to toggle\n"
 "it off.\n"
 
-#: src/fx.c:688
+#: src/fx.c:689
 msgid "Starting up imagespinners FX..."
 msgstr "Pokre�em magespinners FX..."
 
-#: src/fx.c:689
+#: src/fx.c:690
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -959,11 +973,31 @@ msgstr ""
 "Da biste iskljuīili ovaj efekt izaberite ovu opciju opet da ga\n"
 "iskljuīite.\n"
 
-#: src/fx.c:993
+#: src/fx.c:987
+msgid "Effects"
+msgstr "Efekti"
+
+#: src/fx.c:990
+msgid "Enable Effect: Raindrops"
+msgstr "Ukljuīi efekt: Raindrops"
+
+#: src/fx.c:994
+msgid "Ripples"
+msgstr "Talasi"
+
+#: src/fx.c:998
+msgid "Waves"
+msgstr "Valovi"
+
+#: src/fx.c:1004
+msgid "FX"
+msgstr ""
+
+#: src/fx.c:1005
 msgid "Special FX Settings"
 msgstr "Specijalne FX osobine"
 
-#: src/fx.c:1000
+#: src/fx.c:1008
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -971,27 +1005,11 @@ msgstr ""
 "Enlightenment Specijalni efekti\n"
 "dijalog osobina\n"
 
-#: src/fx.c:1004
-msgid "Effects"
-msgstr "Efekti"
-
-#: src/fx.c:1007
-msgid "Enable Effect: Raindrops"
-msgstr "Ukljuīi efekt: Raindrops"
-
-#: src/fx.c:1011
-msgid "Ripples"
-msgstr "Talasi"
-
-#: src/fx.c:1015
-msgid "Waves"
-msgstr "Valovi"
-
-#: src/groups.c:245
+#: src/groups.c:246
 msgid "Cannot comply"
 msgstr "Can't comply"
 
-#: src/groups.c:246
+#: src/groups.c:247
 msgid ""
 "Iconboxes and Pagers are disallowed from being\n"
 "members of a group. You cannot add these windows\n"
@@ -1001,11 +1019,23 @@ msgstr ""
 "members of a group. You can't add these windows\n"
 "to a group.\n"
 
-#: src/groups.c:661 src/groups.c:670 src/groups.c:678 src/groups.c:803
+#: src/groups.c:684
+msgid "Window Group Selection"
+msgstr "Izbor grupisanja prozora"
+
+#: src/groups.c:687
+msgid ""
+"Enlightenment Window Group\n"
+"Selection Dialog\n"
+msgstr ""
+"Enlightenment Drupisanje Prozora\n"
+"dijalog izbora\n"
+
+#: src/groups.c:710 src/groups.c:719 src/groups.c:727 src/groups.c:914
 msgid "Window Group Error"
 msgstr "Grupisanje prozora greŷka"
 
-#: src/groups.c:663
+#: src/groups.c:712
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1019,7 +1049,7 @@ msgstr ""
 "  kroz prozor koji pripada najmanje jednoj grupi.\n"
 "\n"
 
-#: src/groups.c:671
+#: src/groups.c:720
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -1033,7 +1063,7 @@ msgstr ""
 "  Morate pokrenuti ostale grupe prvo.  \n"
 "\n"
 
-#: src/groups.c:680
+#: src/groups.c:729
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -1043,19 +1073,63 @@ msgstr ""
 "  Trenutno ne postoji nijedna grupa. Morate pokrenuti grupu prvo.\n"
 "\n"
 
-#: src/groups.c:695
-msgid "Window Group Selection"
-msgstr "Izbor grupisanja prozora"
+#: src/groups.c:820
+msgid "   Pick the group to configure:   "
+msgstr "   Izaberi grupu za konfigurisanje:   "
 
-#: src/groups.c:702
+#: src/groups.c:851
+msgid ""
+"  The following actions are  \n"
+"  applied to all group members:  "
+msgstr ""
+"  Sljede�e akcije su  \n"
+"  primjenjene za sve īlanove grupe:  "
+
+#: src/groups.c:856 src/groups.c:958
+msgid "Changing Border Style"
+msgstr "Mijenjanje stila ruba"
+
+#: src/groups.c:861 src/groups.c:963
+msgid "Iconifying"
+msgstr "Ikonificiranje"
+
+#: src/groups.c:866 src/groups.c:968
+msgid "Killing"
+msgstr "Ubijanje"
+
+#: src/groups.c:871 src/groups.c:973
+msgid "Moving"
+msgstr "Premjeŷtanje"
+
+#: src/groups.c:876 src/groups.c:978
+msgid "Raising/Lowering"
+msgstr "Pove�avanje/Smanjivanje"
+
+#: src/groups.c:881 src/groups.c:983
+msgid "Sticking"
+msgstr "Lijepljenje"
+
+#: src/groups.c:886 src/groups.c:988
+msgid "Shading"
+msgstr "Sijenīenje"
+
+#: src/groups.c:891 src/groups.c:993
+msgid "Mirror Shade/Iconify/Stick"
+msgstr "Pomo�no sijen�enje/Ikonificiranje/Prijanjanje"
+
+#: src/groups.c:898
+msgid "Window Group Settings"
+msgstr "Osobine grupiranja prozora"
+
+#: src/groups.c:901
 msgid ""
 "Enlightenment Window Group\n"
-"Selection Dialog\n"
+"Settings Dialog\n"
 msgstr ""
-"Enlightenment Drupisanje Prozora\n"
-"dijalog izbora\n"
+"Enlightenment grupiranje prozora\n"
+"dijalog osobina\n"
 
-#: src/groups.c:805
+#: src/groups.c:916
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1065,67 +1139,28 @@ msgstr ""
 "  Ovaj prozor trenutno ne pripada nijednoj grupi.  \n"
 "\n"
 
-#: src/groups.c:822
-msgid "Window Group Settings"
-msgstr "Osobine grupiranja prozora"
+#: src/groups.c:951
+msgid " Per-group settings: "
+msgstr " Osobine po grupi: "
 
-#: src/groups.c:844
-msgid ""
-"Enlightenment Window Group\n"
-"Settings Dialog\n"
-msgstr ""
-"Enlightenment grupiranje prozora\n"
-"dijalog osobina\n"
+#: src/groups.c:1002
+msgid " Global settings: "
+msgstr " Globalne osobine: "
 
-#: src/groups.c:849
-msgid "   Pick the group to configure:   "
-msgstr "   Izaberi grupu za konfigurisanje:   "
+#: src/groups.c:1006
+msgid "Swap Window Locations"
+msgstr "Swap prozor lokacije"
 
-#: src/groups.c:880
-msgid ""
-"  The following actions are  \n"
-"  applied to all group members:  "
-msgstr ""
-"  Sljede�e akcije su  \n"
-"  primjenjene za sve īlanove grupe:  "
+#: src/groups.c:1012 src/menus-misc.c:774
+#, fuzzy
+msgid "Groups"
+msgstr "Grupa %i"
 
-#: src/groups.c:885 src/groups.c:981
-msgid "Changing Border Style"
-msgstr "Mijenjanje stila ruba"
-
-#: src/groups.c:890 src/groups.c:986
-msgid "Iconifying"
-msgstr "Ikonificiranje"
-
-#: src/groups.c:895 src/groups.c:991
-msgid "Killing"
-msgstr "Ubijanje"
-
-#: src/groups.c:900 src/groups.c:996
-msgid "Moving"
-msgstr "Premjeŷtanje"
-
-#: src/groups.c:905 src/groups.c:1001
-msgid "Raising/Lowering"
-msgstr "Pove�avanje/Smanjivanje"
-
-#: src/groups.c:910 src/groups.c:1006
-msgid "Sticking"
-msgstr "Lijepljenje"
-
-#: src/groups.c:915 src/groups.c:1011
-msgid "Shading"
-msgstr "Sijenīenje"
-
-#: src/groups.c:920 src/groups.c:1016
-msgid "Mirror Shade/Iconify/Stick"
-msgstr "Pomo�no sijen�enje/Ikonificiranje/Prijanjanje"
-
-#: src/groups.c:961
+#: src/groups.c:1013
 msgid "Default Group Control Settings"
 msgstr "Uobiīajne kontrolne osobine grupe"
 
-#: src/groups.c:968
+#: src/groups.c:1016
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1133,23 +1168,11 @@ msgstr ""
 "Enlightenment Uobiīajne\n"
 "kontrole grupa dijalog osobina\n"
 
-#: src/groups.c:974
-msgid " Per-group settings: "
-msgstr " Osobine po grupi: "
-
-#: src/groups.c:1025
-msgid " Global settings: "
-msgstr " Globalne osobine: "
-
-#: src/groups.c:1029
-msgid "Swap Window Locations"
-msgstr "Swap prozor lokacije"
-
-#: src/groups.c:1071
+#: src/groups.c:1055
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Izaberite grupu kojoj �e prozor pripadati:  \n"
 
-#: src/groups.c:1109
+#: src/groups.c:1093
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -1169,11 +1192,11 @@ msgstr ""
 "  Izaberite drugu grupu kojoj �e prozor pripadati ovdje:  \n"
 "\n"
 
-#: src/groups.c:1127
+#: src/groups.c:1111
 msgid "   Select the group to remove the window from.  "
 msgstr "   Oznaīite grupu iz koje ŵelite pomjeriti prozor.  "
 
-#: src/groups.c:1137
+#: src/groups.c:1121
 msgid "  Select the group to break  "
 msgstr "  Oznaīite grupu za slamanje  "
 
@@ -1272,12 +1295,12 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/iclass.c:330
+#: src/iclass.c:331
 #, fuzzy
 msgid "Imageclass Error!"
 msgstr "ImageClass greŷka!"
 
-#: src/iclass.c:687
+#: src/iclass.c:688
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -1320,21 +1343,109 @@ msgstr "Osobine automatskog pove�avanja ..."
 msgid "Close Systray"
 msgstr ""
 
-#: src/iconify.c:2132 src/iconify.c:2270
+#: src/iconify.c:2132 src/iconify.c:2255
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Veliīina ikone"
 
-#: src/iconify.c:2176
+#: src/iconify.c:2166
 msgid "Iconbox Settings"
 msgstr "Iconbox Osobine"
 
-#: src/iconify.c:2178
+#: src/iconify.c:2168
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Osobine automatskog pove�avanja"
 
-#: src/iconify.c:2185
+#: src/iconify.c:2173
+msgid "Transparent background"
+msgstr "Providna pozadina"
+
+#: src/iconify.c:2177
+msgid "Hide inner border"
+msgstr ""
+
+#: src/iconify.c:2183
+msgid "Show icon names"
+msgstr "Poka�i imena ikona"
+
+#: src/iconify.c:2188
+msgid "Draw base image behind Icons"
+msgstr "Nacrtaj osnovnu sliku ispod ikona"
+
+#: src/iconify.c:2192
+msgid "Hide scrollbar when not needed"
+msgstr "Sakrij traku za listanje kada nije potrebna"
+
+#: src/iconify.c:2196
+msgid "Automatically resize to fit Icons"
+msgstr "Automatski promjeni veliīini radi podeŷavanja ikona"
+
+#: src/iconify.c:2202
+msgid "Animate when iconifying to this Iconbox"
+msgstr "Pokreni prilikom ikonificiranja ovog Iconbox-a"
+
+#: src/iconify.c:2210
+msgid "Alignment of anchoring when automatically resizing:"
+msgstr "Poravnanje uīvrŷ�ivanja prilikom automatske promjene veliīine:"
+
+#: src/iconify.c:2227
+msgid "Icon image display policy (if one operation fails, try the next):"
+msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
+
+#: src/iconify.c:2232
+msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
+msgstr "Slikaj prozore, koristi ikonu apliacije, koristi Enlightenment ikonu"
+
+#: src/iconify.c:2239
+msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
+msgstr "Koristi ikonu aplikacije, koristi Enlightenment ikonu, Slikaj prozor"
+
+#: src/iconify.c:2244
+msgid "Use Enlightenment Icon, Snapshot Window"
+msgstr "Koristi Enlightenment ikonu, Slikaj prozor"
+
+#: src/iconify.c:2273
+msgid "Orientation:"
+msgstr "Orjentacija:"
+
+#: src/iconify.c:2278
+msgid "Scrollbar side:"
+msgstr "Veliīine trake za listanje:"
+
+#: src/iconify.c:2283
+msgid "Scrollbar arrows:"
+msgstr "Strelice trake za listanje:"
+
+#: src/iconify.c:2286
+msgid "Horizontal"
+msgstr "Horizontalno"
+
+#: src/iconify.c:2291
+msgid "Left / Top"
+msgstr "Lijevo / Vrh"
+
+#: src/iconify.c:2296
+msgid "Start"
+msgstr "Poīetak"
+
+#: src/iconify.c:2301
+msgid "Vertical"
+msgstr "Vertikalno"
+
+#: src/iconify.c:2307
+msgid "Right / Bottom"
+msgstr "Desno / Dno"
+
+#: src/iconify.c:2313
+msgid "Both ends"
+msgstr "Oba kraja"
+
+#: src/iconify.c:2321
+msgid "End"
+msgstr "Kraj"
+
+#: src/iconify.c:2341
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -1342,112 +1453,24 @@ msgstr ""
 "Enlightenment Iconbox\n"
 "dijalog osobina\n"
 
-#: src/iconify.c:2188
-msgid "Transparent background"
-msgstr "Providna pozadina"
-
-#: src/iconify.c:2192
-msgid "Hide inner border"
-msgstr ""
-
-#: src/iconify.c:2198
-msgid "Show icon names"
-msgstr "Poka�i imena ikona"
-
-#: src/iconify.c:2203
-msgid "Draw base image behind Icons"
-msgstr "Nacrtaj osnovnu sliku ispod ikona"
-
-#: src/iconify.c:2207
-msgid "Hide scrollbar when not needed"
-msgstr "Sakrij traku za listanje kada nije potrebna"
-
-#: src/iconify.c:2211
-msgid "Automatically resize to fit Icons"
-msgstr "Automatski promjeni veliīini radi podeŷavanja ikona"
-
-#: src/iconify.c:2217
-msgid "Animate when iconifying to this Iconbox"
-msgstr "Pokreni prilikom ikonificiranja ovog Iconbox-a"
-
-#: src/iconify.c:2225
-msgid "Alignment of anchoring when automatically resizing:"
-msgstr "Poravnanje uīvrŷ�ivanja prilikom automatske promjene veliīine:"
-
-#: src/iconify.c:2242
-msgid "Icon image display policy (if one operation fails, try the next):"
-msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
-
-#: src/iconify.c:2247
-msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr "Slikaj prozore, koristi ikonu apliacije, koristi Enlightenment ikonu"
-
-#: src/iconify.c:2254
-msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr "Koristi ikonu aplikacije, koristi Enlightenment ikonu, Slikaj prozor"
-
-#: src/iconify.c:2259
-msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr "Koristi Enlightenment ikonu, Slikaj prozor"
-
-#: src/iconify.c:2288
-msgid "Orientation:"
-msgstr "Orjentacija:"
-
-#: src/iconify.c:2293
-msgid "Scrollbar side:"
-msgstr "Veliīine trake za listanje:"
-
-#: src/iconify.c:2298
-msgid "Scrollbar arrows:"
-msgstr "Strelice trake za listanje:"
-
-#: src/iconify.c:2301
-msgid "Horizontal"
-msgstr "Horizontalno"
-
-#: src/iconify.c:2306
-msgid "Left / Top"
-msgstr "Lijevo / Vrh"
-
-#: src/iconify.c:2311
-msgid "Start"
-msgstr "Poīetak"
-
-#: src/iconify.c:2316
-msgid "Vertical"
-msgstr "Vertikalno"
-
-#: src/iconify.c:2322
-msgid "Right / Bottom"
-msgstr "Desno / Dno"
-
-#: src/iconify.c:2328
-msgid "Both ends"
-msgstr "Oba kraja"
-
-#: src/iconify.c:2336
-msgid "End"
-msgstr "Kraj"
-
-#: src/iconify.c:3034 src/iconify.c:3043
+#: src/iconify.c:3024 src/iconify.c:3034
 #, fuzzy
 msgid "Systray Error!"
 msgstr "ECursor greŷka!"
 
-#: src/iconify.c:3034
+#: src/iconify.c:3024
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/iconify.c:3043
+#: src/iconify.c:3034
 msgid "Could not activate systray"
 msgstr ""
 
-#: src/ipc.c:306
+#: src/ipc.c:307
 msgid "Message"
 msgstr "Poruka"
 
-#: src/ipc.c:1021
+#: src/ipc.c:1022
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1456,12 +1479,12 @@ msgstr ""
 "Enlightenment verzija : %s\n"
 "kod je trenutno na    : %s\n"
 
-#: src/ipc.c:1631
+#: src/ipc.c:1633
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Comande Pomo?"
 
-#: src/ipc.c:1635
+#: src/ipc.c:1637
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1472,28 +1495,28 @@ msgstr ""
 "koristite \"help <command>\" za pojedinaīni opis\n"
 "\n"
 
-#: src/ipc.c:1637 src/ipc.c:1657 src/ipc.c:1669
+#: src/ipc.c:1639 src/ipc.c:1659 src/ipc.c:1671
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "trenutno dostupne komande:\n"
 
-#: src/ipc.c:1655
+#: src/ipc.c:1657
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1656
+#: src/ipc.c:1658
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "koristi \"help <command>\" za individualni opis\n"
 
-#: src/ipc.c:1658 src/ipc.c:1670
+#: src/ipc.c:1660 src/ipc.c:1672
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"
 
-#: src/main.c:580
+#: src/main.c:582
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1504,7 +1527,7 @@ msgstr ""
 "Ovo je fatalno stanje.\n"
 "Molimo Vas da obriŷete ovu datoteku\n"
 
-#: src/main.c:587
+#: src/main.c:589
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1517,7 +1540,7 @@ msgstr ""
 "Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
 "direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
 
-#: src/main.c:595
+#: src/main.c:597
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -1530,7 +1553,7 @@ msgstr ""
 "Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
 "direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
 
-#: src/main.c:602
+#: src/main.c:604
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -1543,7 +1566,7 @@ msgstr ""
 "Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
 "direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
 
-#: src/main.c:715
+#: src/main.c:717
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1572,7 +1595,7 @@ msgstr ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 
-#: src/main.c:729
+#: src/main.c:731
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1593,12 +1616,29 @@ msgstr ""
 "Molim popravite ovu situaciju i budite sigurni da je instaliran\n"
 "ispravno.\n"
 
-#: src/menus.c:2053
+#: src/menus.c:2030
+msgid "Animated display of menus"
+msgstr "Animirani prikazi menija"
+
+#: src/menus.c:2035
+msgid "Always pop up menus on screen"
+msgstr "Uvijek pop up meniji na ekranu"
+
+#: src/menus.c:2040
+msgid "Warp pointer after moving menus"
+msgstr "Uvi pokaziva� nakon premjeŷtanja izbornika"
+
+#: src/menus.c:2046
+#, fuzzy
+msgid "Menus"
+msgstr "Izbornici:"
+
+#: src/menus.c:2047
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Razne osobine"
 
-#: src/menus.c:2060
+#: src/menus.c:2050
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1607,116 +1647,99 @@ msgstr ""
 "Enlightenment usmjeravanje\n"
 "Dijalog osobina\n"
 
-#: src/menus.c:2064
-msgid "Animated display of menus"
-msgstr "Animirani prikazi menija"
-
-#: src/menus.c:2069
-msgid "Always pop up menus on screen"
-msgstr "Uvijek pop up meniji na ekranu"
-
-#: src/menus.c:2074
-msgid "Warp pointer after moving menus"
-msgstr "Uvi pokaziva� nakon premjeŷtanja izbornika"
-
-#: src/menus-misc.c:584 config/strings.c:118
+#: src/menus-misc.c:586 config/strings.c:118
 #, fuzzy
 msgid "Themes"
 msgstr "Loŷa tema"
 
-#: src/menus-misc.c:672
+#: src/menus-misc.c:674
 #, fuzzy
 msgid "Window List"
 msgstr "Izbjegni listu prozora"
 
-#: src/menus-misc.c:694
+#: src/menus-misc.c:696
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Idi na ovaj Desktop"
 
-#: src/menus-misc.c:698 src/menus-misc.c:794
+#: src/menus-misc.c:700 src/menus-misc.c:796
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
-#: src/menus-misc.c:712
-#, fuzzy
-msgid "Desks"
-msgstr "Desktop"
-
-#: src/menus-misc.c:741
+#: src/menus-misc.c:743
 msgid "Show/Hide this group"
 msgstr "Pokaŵi/Sakrij ovu grupu"
 
-#: src/menus-misc.c:746
+#: src/menus-misc.c:748
 msgid "Iconify this group"
 msgstr "Ikonificiraj ovu grupu"
 
-#: src/menus-misc.c:757
+#: src/menus-misc.c:759
 #, c-format
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus-misc.c:772
-#, fuzzy
-msgid "Groups"
-msgstr "Grupa %i"
-
-#: src/mod-trans.c:102 src/mod-trans.c:271
+#: src/mod-trans.c:102 src/mod-trans.c:252
 #, c-format
 msgid "Theme transparency: %2d"
 msgstr "Prozirnost teme %2d"
 
-#: src/mod-trans.c:137
+#: src/mod-trans.c:131
+msgid "Changes Might Require Restart:"
+msgstr "Promjene koje moŵda zahtjevaju novo pokretanje:"
+
+#: src/mod-trans.c:140
+#, fuzzy
+msgid "Borders:"
+msgstr "Rubovi:"
+
+#: src/mod-trans.c:144
+#, fuzzy
+msgid "Menus:"
+msgstr "Izbornici:"
+
+#: src/mod-trans.c:148
+msgid "Hilights:"
+msgstr "Posvjetljenja:"
+
+#: src/mod-trans.c:152
+msgid "E Widgets:"
+msgstr "E grafiīki objekti:"
+
+#: src/mod-trans.c:156
+msgid "E Dialogs:"
+msgstr "E dijalozi:"
+
+#: src/mod-trans.c:160
+#, fuzzy
+msgid "Tooltips:"
+msgstr "Savjeti:"
+
+#: src/mod-trans.c:164 src/settings.c:69 src/settings.c:74 src/settings.c:290
+msgid "Opaque"
+msgstr "Mutan"
+
+#: src/mod-trans.c:223
+msgid "Glass"
+msgstr "Staklo"
+
+#: src/mod-trans.c:268
+#, fuzzy
+msgid "Transparency"
+msgstr "Prozirnost teme %2d"
+
+#: src/mod-trans.c:269
 msgid "Selective Transparency Settings"
 msgstr "Osobine izabrane prozirnosti "
 
-#: src/mod-trans.c:144
+#: src/mod-trans.c:272
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
 msgstr ""
 "Enlightenment Izabrana providnost\n"
 "dijalog osobina\n"
-
-#: src/mod-trans.c:150
-msgid "Changes Might Require Restart:"
-msgstr "Promjene koje moŵda zahtjevaju novo pokretanje:"
-
-#: src/mod-trans.c:159
-#, fuzzy
-msgid "Borders:"
-msgstr "Rubovi:"
-
-#: src/mod-trans.c:163
-#, fuzzy
-msgid "Menus:"
-msgstr "Izbornici:"
-
-#: src/mod-trans.c:167
-msgid "Hilights:"
-msgstr "Posvjetljenja:"
-
-#: src/mod-trans.c:171
-msgid "E Widgets:"
-msgstr "E grafiīki objekti:"
-
-#: src/mod-trans.c:175
-msgid "E Dialogs:"
-msgstr "E dijalozi:"
-
-#: src/mod-trans.c:179
-#, fuzzy
-msgid "Tooltips:"
-msgstr "Savjeti:"
-
-#: src/mod-trans.c:183 src/settings.c:87 src/settings.c:92 src/settings.c:320
-msgid "Opaque"
-msgstr "Mutan"
-
-#: src/mod-trans.c:242
-msgid "Glass"
-msgstr "Staklo"
 
 #: src/pager.c:905 config/strings.c:51
 msgid "Window Options"
@@ -1766,19 +1789,64 @@ msgstr ""
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1724 src/pager.c:1807
+#: src/pager.c:1722 src/pager.c:1785
 msgid "Pager scanning speed:"
 msgstr "Brzina skeniranja pejdŵera:"
 
-#: src/pager.c:1725 src/pager.c:1808
+#: src/pager.c:1723 src/pager.c:1786
 msgid "lines per second"
 msgstr "linija po sekundi"
 
+#: src/pager.c:1752
+msgid "Enable pager display"
+msgstr "Omogu�i prikaz pejdŵera"
+
+#: src/pager.c:1757
+msgid "Make miniature snapshots of the screen"
+msgstr "Napravi male slike ekrana"
+
 #: src/pager.c:1762
+msgid "Smooth high quality snapshots in snapshot mode"
+msgstr "Visoko kvalitetne glatke slike u modu za slikanje"
+
+#: src/pager.c:1767
+msgid "Zoom in on pager windows when mouse is over them"
+msgstr "Uve�aj prozore pejdŵera kada je miŷ iznad njih"
+
+#: src/pager.c:1773
+msgid "Pop up window title when mouse is over the window"
+msgstr "Pop up naslov prozora kada je miŷ iznad prozora"
+
+#: src/pager.c:1778
+msgid "Continuously scan screen to update pager"
+msgstr "Neprestalno sekinraj ekran radi nadogradnje pejdŵera"
+
+#: src/pager.c:1801
+msgid "Mouse button to select and drag windows:"
+msgstr "Dugme miŷa za izbor i povla�enje prozora:"
+
+#: src/pager.c:1811 src/pager.c:1836 src/pager.c:1861
+msgid "Middle"
+msgstr "Sredina"
+
+#: src/pager.c:1826
+msgid "Mouse button to select desktops:"
+msgstr "Dugme miŷa za izbor desktopa:"
+
+#: src/pager.c:1851
+msgid "Mouse button to display pager menu:"
+msgstr "Dugme miŷa za prikaz izbornika pejdŵera:"
+
+#: src/pager.c:1875
+#, fuzzy
+msgid "Pagers"
+msgstr "Osobine pejdŵera..."
+
+#: src/pager.c:1876
 msgid "Pager Settings"
 msgstr "Osobine pejdŵera..."
 
-#: src/pager.c:1769
+#: src/pager.c:1879
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1786,47 +1854,7 @@ msgstr ""
 "Enlightenment Desktop & Area\n"
 "Dijalog osobina pejdŵera\n"
 
-#: src/pager.c:1774
-msgid "Enable pager display"
-msgstr "Omogu�i prikaz pejdŵera"
-
-#: src/pager.c:1779
-msgid "Make miniature snapshots of the screen"
-msgstr "Napravi male slike ekrana"
-
-#: src/pager.c:1784
-msgid "Smooth high quality snapshots in snapshot mode"
-msgstr "Visoko kvalitetne glatke slike u modu za slikanje"
-
-#: src/pager.c:1789
-msgid "Zoom in on pager windows when mouse is over them"
-msgstr "Uve�aj prozore pejdŵera kada je miŷ iznad njih"
-
-#: src/pager.c:1795
-msgid "Pop up window title when mouse is over the window"
-msgstr "Pop up naslov prozora kada je miŷ iznad prozora"
-
-#: src/pager.c:1800
-msgid "Continuously scan screen to update pager"
-msgstr "Neprestalno sekinraj ekran radi nadogradnje pejdŵera"
-
-#: src/pager.c:1823
-msgid "Mouse button to select and drag windows:"
-msgstr "Dugme miŷa za izbor i povla�enje prozora:"
-
-#: src/pager.c:1833 src/pager.c:1858 src/pager.c:1883
-msgid "Middle"
-msgstr "Sredina"
-
-#: src/pager.c:1848
-msgid "Mouse button to select desktops:"
-msgstr "Dugme miŷa za izbor desktopa:"
-
-#: src/pager.c:1873
-msgid "Mouse button to display pager menu:"
-msgstr "Dugme miŷa za prikaz izbornika pejdŵera:"
-
-#: src/session.c:415
+#: src/session.c:416
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1852,11 +1880,11 @@ msgstr ""
 "\n"
 "... Nadam se.\n"
 
-#: src/session.c:645
+#: src/session.c:648
 msgid "Are you sure?"
 msgstr "Da li ste sigurni?"
 
-#: src/session.c:646
+#: src/session.c:649
 msgid ""
 "\n"
 "\n"
@@ -1870,30 +1898,48 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:651
+#: src/session.c:654
 #, fuzzy
 msgid "  Yes, Shut Down  "
 msgstr "  Da, Odjavi se  "
 
-#: src/session.c:653
+#: src/session.c:656
 #, fuzzy
 msgid "  Yes, Reboot  "
 msgstr "  Da, Odjavi se  "
 
-#: src/session.c:656
+#: src/session.c:659
 msgid "  Yes, Log Out  "
 msgstr "  Da, Odjavi se  "
 
-#: src/session.c:657
+#: src/session.c:660
 msgid "  No  "
 msgstr "  Ne  "
 
-#: src/session.c:792
+#: src/session.c:788
+msgid "Enable Session Script"
+msgstr ""
+
+#: src/session.c:793
+#, fuzzy
+msgid "Enable Logout Dialog"
+msgstr "Omogu�i zaglavlje dijaloga"
+
+#: src/session.c:798
+msgid "Enable Reboot/Halt on Logout"
+msgstr ""
+
+#: src/session.c:804
+#, fuzzy
+msgid "Session"
+msgstr "Razne osobine"
+
+#: src/session.c:805
 #, fuzzy
 msgid "Session Settings"
 msgstr "Razne osobine"
 
-#: src/session.c:799
+#: src/session.c:808
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
@@ -1902,24 +1948,65 @@ msgstr ""
 "Enlightenment usmjeravanje\n"
 "Dijalog osobina\n"
 
-#: src/session.c:803
-msgid "Enable Session Script"
-msgstr ""
-
-#: src/session.c:808
-#, fuzzy
-msgid "Enable Logout Dialog"
-msgstr "Omogu�i zaglavlje dijaloga"
-
-#: src/session.c:813
-msgid "Enable Reboot/Halt on Logout"
-msgstr ""
+#: src/settings.c:61
+msgid "Move Methods:"
+msgstr "Metoda pomakinjanja:"
 
 #: src/settings.c:66
+msgid "Resize Methods:"
+msgstr "Metode mijenjanja veliīine:"
+
+#: src/settings.c:79 src/settings.c:84 src/settings.c:295
+msgid "Technical"
+msgstr "Tehniīki"
+
+#: src/settings.c:89 src/settings.c:94 src/settings.c:300
+msgid "Box"
+msgstr "Kutija"
+
+#: src/settings.c:99 src/settings.c:104 src/settings.c:305
+msgid "Shaded"
+msgstr "Osjen�eno"
+
+#: src/settings.c:109 src/settings.c:114 src/settings.c:310
+msgid "Semi-Solid"
+msgstr "Semi-Solid"
+
+#: src/settings.c:120
+msgid "Translucent"
+msgstr "Proziran"
+
+#: src/settings.c:134
+msgid "Move/Resize Geometry Info Postion:"
+msgstr "Premjesti / Promjeni veliīinu Info pozicija:"
+
+#: src/settings.c:138
+msgid "Window Center (O/T/B Methods)"
+msgstr "Centar prozora (O/T/B Methode)"
+
+#: src/settings.c:144
+msgid "Always Screen corner"
+msgstr "Always Screen corner"
+
+#: src/settings.c:150
+msgid "Don't show"
+msgstr "Nemoj prikazati"
+
+#: src/settings.c:160
+#, fuzzy
+msgid "Update window while moving"
+msgstr "Usmjeravanje prozora prilikom prebacivanja"
+
+#: src/settings.c:166
+#, fuzzy
+msgid "Move/Resize"
+msgstr "Veliīina"
+
+#: src/settings.c:167
 msgid "Move & Resize Settings"
 msgstr "Premjesti & Promjeni veliīinu osobine"
 
-#: src/settings.c:73
+#: src/settings.c:170
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -1927,60 +2014,74 @@ msgstr ""
 "Enlightenment Premjesti & Promjeni veliīinu\n"
 "Metod dijalog osobina\n"
 
-#: src/settings.c:79
-msgid "Move Methods:"
-msgstr "Metoda pomakinjanja:"
+#: src/settings.c:254
+msgid "Dialog windows appear together with their owner"
+msgstr "Dijalog prozora se pojavljuje zajedno sa njihovim vlasnikom"
 
-#: src/settings.c:84
-msgid "Resize Methods:"
-msgstr "Metode mijenjanja veliīine:"
+#: src/settings.c:259
+msgid "Switch to desktop where dialog appears"
+msgstr "Prebaci se na desktop na kojem se dijalg pokazuje"
 
-#: src/settings.c:97 src/settings.c:102 src/settings.c:325
-msgid "Technical"
-msgstr "Tehniīki"
-
-#: src/settings.c:107 src/settings.c:112 src/settings.c:330
-msgid "Box"
-msgstr "Kutija"
-
-#: src/settings.c:117 src/settings.c:122 src/settings.c:335
-msgid "Shaded"
-msgstr "Osjen�eno"
-
-#: src/settings.c:127 src/settings.c:132 src/settings.c:340
-msgid "Semi-Solid"
-msgstr "Semi-Solid"
-
-#: src/settings.c:138
-msgid "Translucent"
-msgstr "Proziran"
-
-#: src/settings.c:152
-msgid "Move/Resize Geometry Info Postion:"
-msgstr "Premjesti / Promjeni veliīinu Info pozicija:"
-
-#: src/settings.c:156
-msgid "Window Center (O/T/B Methods)"
-msgstr "Centar prozora (O/T/B Methode)"
-
-#: src/settings.c:162
-msgid "Always Screen corner"
-msgstr "Always Screen corner"
-
-#: src/settings.c:168
-msgid "Don't show"
-msgstr "Nemoj prikazati"
-
-#: src/settings.c:178
-#, fuzzy
-msgid "Update window while moving"
-msgstr "Usmjeravanje prozora prilikom prebacivanja"
+#: src/settings.c:267
+msgid "Place windows manually"
+msgstr "Smjesti prozore ruīno"
 
 #: src/settings.c:272
+msgid "Place windows under mouse"
+msgstr "Pozicioniraj prozore ispod miŷa"
+
+#: src/settings.c:277
+msgid "Slide windows in when they appear"
+msgstr "Klizaj prozore kada se pojave"
+
+#: src/settings.c:282
+msgid "Slide windows around when cleaning up"
+msgstr "Klizaj prozore okolo kada īistim"
+
+#: src/settings.c:287
+msgid "Slide Method:"
+msgstr "Metpda klizanja:"
+
+#: src/settings.c:320
+#, fuzzy
+msgid "Appear Slide speed:"
+msgstr "Brzina pojavljivanja klizanja: (sporo)\n"
+
+#: src/settings.c:331
+#, fuzzy
+msgid "Cleanup Slide speed:"
+msgstr "Brzina īiŷ�enja klizanja: (sporo)\n"
+
+#: src/settings.c:344
+msgid "Animate shading and unshading of windows"
+msgstr "Pokreni sijen�enje i sklanjanje sijenki prozora"
+
+#: src/settings.c:350
+#, fuzzy
+msgid "Window Shading speed:"
+msgstr "Brzina sjenīenja prozora: (sporo)\n"
+
+#: src/settings.c:363
+msgid "Ignore struts"
+msgstr "Ignoriŷi dijagonale"
+
+#: src/settings.c:368
+msgid "Raise fullscreen windows"
+msgstr ""
+
+#: src/settings.c:376
+msgid "Place windows on another head when full"
+msgstr "Smjesti prozore na druge poīetke kada je puno"
+
+#: src/settings.c:384
+msgid "Placement"
+msgstr ""
+
+#: src/settings.c:385
 msgid "Window Placement Settings"
 msgstr "Osobine smjeŷtanja prozora"
 
-#: src/settings.c:279
+#: src/settings.c:388
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1988,70 +2089,24 @@ msgstr ""
 "Enlightenment Smjeŷtanje prozora\n"
 "dijalog osobina\n"
 
-#: src/settings.c:284
-msgid "Dialog windows appear together with their owner"
-msgstr "Dijalog prozora se pojavljuje zajedno sa njihovim vlasnikom"
+#: src/settings.c:419
+msgid "Raise Windows Automatically"
+msgstr "Pove�aj prozore automatski"
 
-#: src/settings.c:289
-msgid "Switch to desktop where dialog appears"
-msgstr "Prebaci se na desktop na kojem se dijalg pokazuje"
+#: src/settings.c:425
+msgid "Autoraise delay:"
+msgstr "Kaŷnjenje automatskog pove�anja:"
 
-#: src/settings.c:297
-msgid "Place windows manually"
-msgstr "Smjesti prozore ruīno"
-
-#: src/settings.c:302
-msgid "Place windows under mouse"
-msgstr "Pozicioniraj prozore ispod miŷa"
-
-#: src/settings.c:307
-msgid "Slide windows in when they appear"
-msgstr "Klizaj prozore kada se pojave"
-
-#: src/settings.c:312
-msgid "Slide windows around when cleaning up"
-msgstr "Klizaj prozore okolo kada īistim"
-
-#: src/settings.c:317
-msgid "Slide Method:"
-msgstr "Metpda klizanja:"
-
-#: src/settings.c:350
+#: src/settings.c:436
 #, fuzzy
-msgid "Appear Slide speed:"
-msgstr "Brzina pojavljivanja klizanja: (sporo)\n"
+msgid "Autoraise"
+msgstr "Kaŷnjenje automatskog pove�anja:"
 
-#: src/settings.c:361
-#, fuzzy
-msgid "Cleanup Slide speed:"
-msgstr "Brzina īiŷ�enja klizanja: (sporo)\n"
-
-#: src/settings.c:374
-msgid "Animate shading and unshading of windows"
-msgstr "Pokreni sijen�enje i sklanjanje sijenki prozora"
-
-#: src/settings.c:380
-#, fuzzy
-msgid "Window Shading speed:"
-msgstr "Brzina sjenīenja prozora: (sporo)\n"
-
-#: src/settings.c:393
-msgid "Ignore struts"
-msgstr "Ignoriŷi dijagonale"
-
-#: src/settings.c:398
-msgid "Raise fullscreen windows"
-msgstr ""
-
-#: src/settings.c:406
-msgid "Place windows on another head when full"
-msgstr "Smjesti prozore na druge poīetke kada je puno"
-
-#: src/settings.c:449
+#: src/settings.c:437
 msgid "Autoraise Settings"
 msgstr "Osobine automatskog pove�avanja"
 
-#: src/settings.c:456
+#: src/settings.c:440
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -2059,19 +2114,33 @@ msgstr ""
 "Enlightenment Automatsko pove�avanje\n"
 "prozora dijalog osobina\n"
 
-#: src/settings.c:461
-msgid "Raise Windows Automatically"
-msgstr "Pove�aj prozore automatski"
+#: src/settings.c:477
+msgid "Enable Dialog Headers"
+msgstr "Omogu�i zaglavlje dijaloga"
 
-#: src/settings.c:467
-msgid "Autoraise delay:"
-msgstr "Kaŷnjenje automatskog pove�anja:"
+#: src/settings.c:482
+#, fuzzy
+msgid "Enable Button Images"
+msgstr "Omogu�i zvukove"
 
-#: src/settings.c:519
+#: src/settings.c:490
+msgid "Enable sliding startup windows"
+msgstr ""
+
+#: src/settings.c:498
+msgid "Use saveunders to reduce window exposures"
+msgstr "Koristi saveunders da bi regulisali izlaganje prozora"
+
+#: src/settings.c:504 config/strings.c:176
+#, fuzzy
+msgid "Miscellaneous"
+msgstr "Razne osobine"
+
+#: src/settings.c:505
 msgid "Miscellaneous Settings"
 msgstr "Razne osobine"
 
-#: src/settings.c:526
+#: src/settings.c:508
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -2079,27 +2148,45 @@ msgstr ""
 "Enlightenment Razno\n"
 "dijalog osobina\n"
 
-#: src/settings.c:530
-msgid "Enable Dialog Headers"
-msgstr "Omogu�i zaglavlje dijaloga"
-
-#: src/settings.c:535
-#, fuzzy
-msgid "Enable Button Images"
-msgstr "Omogu�i zvukove"
-
-#: src/settings.c:543
-msgid "Enable sliding startup windows"
-msgstr ""
-
-#: src/settings.c:551
-msgid "Use saveunders to reduce window exposures"
-msgstr "Koristi saveunders da bi regulisali izlaganje prozora"
-
-#: src/settings.c:597
+#: src/settings.c:540 src/settings.c:605
 #, fuzzy
 msgid "Composite Settings"
 msgstr "Osobine savjeta"
+
+#: src/settings.c:551
+#, fuzzy
+msgid "Enable Composite"
+msgstr "Omogu�i zvukove"
+
+#: src/settings.c:559
+#, fuzzy
+msgid "Enable Fading"
+msgstr "Ukljuīi precrtavanje ivice"
+
+#: src/settings.c:567
+msgid "Shadows Off"
+msgstr ""
+
+#: src/settings.c:573
+msgid "Shadows Sharp"
+msgstr ""
+
+#: src/settings.c:579
+msgid "Shadows Sharp2"
+msgstr ""
+
+#: src/settings.c:585
+msgid "Shadows Blurred"
+msgstr ""
+
+#: src/settings.c:593
+msgid "Fading Speed:"
+msgstr ""
+
+#: src/settings.c:604
+#, fuzzy
+msgid "Composite"
+msgstr "Omogu�i zvukove"
 
 #: src/settings.c:608
 #, fuzzy
@@ -2109,36 +2196,6 @@ msgid ""
 msgstr ""
 "Enlightenment Savjeti\n"
 "dijalog osobina\n"
-
-#: src/settings.c:612
-#, fuzzy
-msgid "Enable Composite"
-msgstr "Omogu�i zvukove"
-
-#: src/settings.c:620
-#, fuzzy
-msgid "Enable Fading"
-msgstr "Ukljuīi precrtavanje ivice"
-
-#: src/settings.c:628
-msgid "Shadows Off"
-msgstr ""
-
-#: src/settings.c:634
-msgid "Shadows Sharp"
-msgstr ""
-
-#: src/settings.c:640
-msgid "Shadows Sharp2"
-msgstr ""
-
-#: src/settings.c:646
-msgid "Shadows Blurred"
-msgstr ""
-
-#: src/settings.c:654
-msgid "Fading Speed:"
-msgstr ""
 
 #: src/setup.c:130
 msgid ""
@@ -2189,7 +2246,7 @@ msgstr ""
 "server is one the author of Enlightenment neither have\n"
 "access to, nor have heard of.\n"
 
-#: src/slideout.c:455 src/tclass.c:461
+#: src/slideout.c:455 src/tclass.c:462
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2202,11 +2259,90 @@ msgstr ""
 "%s\n"
 "Ignorisat �u i nastaviti...\n"
 
-#: src/snaps.c:687
+#: src/snaps.c:742
+msgid "Title:"
+msgstr "Naslov:"
+
+#: src/snaps.c:754
+msgid "Name:"
+msgstr "Ime:"
+
+#: src/snaps.c:767
+msgid "Class:"
+msgstr "Klasa:"
+
+#: src/snaps.c:780
+#, fuzzy
+msgid "Role:"
+msgstr "Crveno:\n"
+
+#: src/snaps.c:793
+msgid "Command:"
+msgstr "Komanda:"
+
+#: src/snaps.c:833
+msgid "Track Changes"
+msgstr ""
+
+#: src/snaps.c:838
+msgid "Location"
+msgstr "Lokacija:"
+
+#: src/snaps.c:843
+msgid "Border style"
+msgstr "Stil ruba"
+
+#: src/snaps.c:848 config/strings.c:136
+msgid "Size"
+msgstr "Veliīina"
+
+#: src/snaps.c:853 config/strings.c:116
+msgid "Desktop"
+msgstr "Desktop"
+
+#: src/snaps.c:858
+msgid "Shaded state"
+msgstr "Stanje osjen�enosti"
+
+#: src/snaps.c:863
+msgid "Sticky state"
+msgstr "Stanje prijanjanja"
+
+#: src/snaps.c:868
+msgid "Stacking layer"
+msgstr "Nivo slaganja"
+
+#: src/snaps.c:873
+msgid "Window List Skip"
+msgstr "Izbjegni listu prozora"
+
+#: src/snaps.c:879 config/strings.c:175
+msgid "Opacity"
+msgstr ""
+
+#: src/snaps.c:884
+#, fuzzy
+msgid "Shadowing"
+msgstr "Sijenīenje"
+
+#: src/snaps.c:890
+#, fuzzy
+msgid "Flags"
+msgstr "Staklo"
+
+#: src/snaps.c:909
+msgid "Restart application on login"
+msgstr "Ponovo pokreni aplikaciju nakon prijave"
+
+#: src/snaps.c:928
+msgid "Remember this window's group(s)"
+msgstr "Zapamti ove grupe prozora"
+
+#: src/snaps.c:936
 msgid "Remembered Application Attributes"
 msgstr "Zapam�eni atributi aplikacija"
 
-#: src/snaps.c:694
+#: src/snaps.c:939
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
@@ -2216,90 +2352,28 @@ msgstr ""
 "prozora koje ŵelite zapamtiti\n"
 "za ubudu�e\n"
 
-#: src/snaps.c:756
-msgid "Title:"
-msgstr "Naslov:"
-
-#: src/snaps.c:768
-msgid "Name:"
-msgstr "Ime:"
-
-#: src/snaps.c:781
-msgid "Class:"
-msgstr "Klasa:"
-
-#: src/snaps.c:794
+#: src/snaps.c:1030
 #, fuzzy
-msgid "Role:"
-msgstr "Crveno:\n"
+msgid "Delete"
+msgstr "Obriŷi datoteku\n"
 
-#: src/snaps.c:807
-msgid "Command:"
-msgstr "Komanda:"
+#: src/snaps.c:1058
+msgid "Remembered Settings..."
+msgstr "Zapam�ene osobine..."
 
-#: src/snaps.c:847
-msgid "Track Changes"
+#: src/snaps.c:1065
+msgid "Unused"
 msgstr ""
 
-#: src/snaps.c:852
-msgid "Location"
-msgstr "Lokacija:"
+#: src/snaps.c:1078
+msgid "There are no active windows with remembered attributes."
+msgstr "Trenutno nema aktivnih prozora sa zapam�enim atributima."
 
-#: src/snaps.c:857
-msgid "Border style"
-msgstr "Stil ruba"
-
-#: src/snaps.c:862 config/strings.c:136
-msgid "Size"
-msgstr "Veliīina"
-
-#: src/snaps.c:867 config/strings.c:116
-msgid "Desktop"
-msgstr "Desktop"
-
-#: src/snaps.c:872
-msgid "Shaded state"
-msgstr "Stanje osjen�enosti"
-
-#: src/snaps.c:877
-msgid "Sticky state"
-msgstr "Stanje prijanjanja"
-
-#: src/snaps.c:882
-msgid "Stacking layer"
-msgstr "Nivo slaganja"
-
-#: src/snaps.c:887
-msgid "Window List Skip"
-msgstr "Izbjegni listu prozora"
-
-#: src/snaps.c:893 config/strings.c:175
-msgid "Opacity"
-msgstr ""
-
-#: src/snaps.c:898
-#, fuzzy
-msgid "Shadowing"
-msgstr "Sijenīenje"
-
-#: src/snaps.c:904
-#, fuzzy
-msgid "Flags"
-msgstr "Staklo"
-
-#: src/snaps.c:923
-msgid "Restart application on login"
-msgstr "Ponovo pokreni aplikaciju nakon prijave"
-
-#: src/snaps.c:942
-msgid "Remember this window's group(s)"
-msgstr "Zapamti ove grupe prozora"
-
-#: src/snaps.c:1027
+#: src/snaps.c:1085
 msgid "Remembered Windows Settings"
 msgstr "Osobine zapam�enih prozora"
 
-#: src/snaps.c:1034
+#: src/snaps.c:1088
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
@@ -2307,24 +2381,7 @@ msgstr ""
 "Enlightenment Zapam�eni\n"
 "prozori dijalog osobina\n"
 
-#: src/snaps.c:1046
-#, fuzzy
-msgid "Delete"
-msgstr "Obriŷi datoteku\n"
-
-#: src/snaps.c:1074
-msgid "Remembered Settings..."
-msgstr "Zapam�ene osobine..."
-
-#: src/snaps.c:1081
-msgid "Unused"
-msgstr ""
-
-#: src/snaps.c:1094
-msgid "There are no active windows with remembered attributes."
-msgstr "Trenutno nema aktivnih prozora sa zapam�enim atributima."
-
-#: src/snaps.c:1190
+#: src/snaps.c:1181
 msgid "Error saving snaps file\n"
 msgstr "Greŷka prilikom snimanja slike\n"
 
@@ -2361,27 +2418,15 @@ msgstr ""
 "u komuniciranju sa serverom za zvuk (Esound). Zvuk �e sada biti\n"
 "iskljuīen.\n"
 
-#: src/sound.c:385
+#: src/sound.c:363 src/sound.c:441
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:459
-msgid "Audio Settings"
-msgstr "Audio osobine"
-
-#: src/sound.c:466
-msgid ""
-"Enlightenment Audio\n"
-"Settings Dialog\n"
-msgstr ""
-"Enlightenment Audio\n"
-"dijalog osobina\n"
-
-#: src/sound.c:471
+#: src/sound.c:428
 msgid "Enable sounds"
 msgstr "Omogu�i zvukove"
 
-#: src/sound.c:477
+#: src/sound.c:434
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2389,25 +2434,37 @@ msgstr ""
 "Zvuk nije dostupan dok EsounD nije\n"
 "prisutan za vrijeme kompilacije."
 
-#: src/tclass.c:103
+#: src/sound.c:442
+msgid "Audio Settings"
+msgstr "Audio osobine"
+
+#: src/sound.c:445
+msgid ""
+"Enlightenment Audio\n"
+"Settings Dialog\n"
+msgstr ""
+"Enlightenment Audio\n"
+"dijalog osobina\n"
+
+#: src/tclass.c:104
 #, fuzzy
 msgid "Textclass Error!"
 msgstr "TextClass greŷka!"
 
-#: src/theme.c:66
+#: src/theme.c:67
 #, c-format
 msgid "Theme %s does not contain a %s file\n"
 msgstr "Tema %s ne sadrŵi %s datoteku\n"
 
-#: src/theme.c:343
+#: src/theme.c:344
 msgid "Unknown\n"
 msgstr "Nepoznato\n"
 
-#: src/theme.c:388
+#: src/theme.c:389
 msgid "Bad Theme"
 msgstr "Loŷa tema"
 
-#: src/theme.c:389
+#: src/theme.c:390
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2425,7 +2482,7 @@ msgstr ""
 "Razlog neispravnosti ove teme je:\n"
 "%s"
 
-#: src/theme.c:415
+#: src/theme.c:416
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
@@ -2440,11 +2497,11 @@ msgstr ""
 " %s/themes/\n"
 "Nastavljanje ovuda je najīeŷ�i pogodak.\n"
 
-#: src/tooltips.c:128
+#: src/tooltips.c:139
 msgid "ToolTip Error!"
 msgstr "ToolTip greŷka!"
 
-#: src/tooltips.c:218
+#: src/tooltips.c:229
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2456,18 +2513,6 @@ msgstr ""
 "sljede�im tekstom u centru trenutne ToolZip definicije:\n"
 "%s\n"
 "Ignoriŷem i nastavljam...\n"
-
-#: src/tooltips.c:861
-msgid "Tooltip Settings"
-msgstr "Osobine savjeta"
-
-#: src/tooltips.c:868
-msgid ""
-"Enlightenment Tooltip\n"
-"Settings Dialog\n"
-msgstr ""
-"Enlightenment Savjeti\n"
-"dijalog osobina\n"
 
 #: src/tooltips.c:872
 msgid "Display Tooltips"
@@ -2481,7 +2526,24 @@ msgstr "Prikaŵi Root Prozor savjete"
 msgid "Tooltip Delay:\n"
 msgstr "Odgoda savjeta:\n"
 
-#: src/windowmatch.c:302
+#: src/tooltips.c:893
+#, fuzzy
+msgid "Tooltips"
+msgstr "Savjeti:"
+
+#: src/tooltips.c:894
+msgid "Tooltip Settings"
+msgstr "Osobine savjeta"
+
+#: src/tooltips.c:897
+msgid ""
+"Enlightenment Tooltip\n"
+"Settings Dialog\n"
+msgstr ""
+"Enlightenment Savjeti\n"
+"dijalog osobina\n"
+
+#: src/windowmatch.c:303
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -3121,11 +3183,6 @@ msgstr "Stil ruba"
 msgid "Window Groups"
 msgstr "Grupisanje prozora greŷka"
 
-#: config/strings.c:176
-#, fuzzy
-msgid "Miscellaneous"
-msgstr "Razne osobine"
-
 #: config/strings.c:177
 #, fuzzy
 msgid "Remember State"
@@ -3162,9 +3219,6 @@ msgstr "Iza�i iz Enlightenment-a"
 #~ "Postoji greŷka u pisanju datoteke klijentskih sesija.\n"
 #~ "Moŵda nema dovoljno mjesta na disku, nema privilegija\n"
 #~ "za pisanje vaŷih sistemskih ili sliīnih problema.\n"
-
-#~ msgid "Never Focus"
-#~ msgstr "Nikad ne usmjeravaj"
 
 #, fuzzy
 #~ msgid "Misc. FX Settings ..."
