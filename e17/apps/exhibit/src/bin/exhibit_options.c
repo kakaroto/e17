@@ -485,8 +485,12 @@ _ex_options_set()
    APP_NEW(dialog->app4, e->options->app4);
    APP_NEW(dialog->app4_cmd, e->options->app4_cmd);
 
-   /* - Rebuild menus with settings */
-
+   /* Rebuild the possible new menu */
+   etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app1_menu));
+   etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app2_menu));
+   etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app3_menu));
+   etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app4_menu));
+   _ex_menu_build_run_menu();
 }
 
 static Etk_Widget *

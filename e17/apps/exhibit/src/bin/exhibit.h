@@ -191,7 +191,12 @@ struct _Exhibit
    Etk_Widget    *resbar;
    Etk_Widget    *zoombar;
    Etk_Widget    *menu;
-   Etk_Widget    *win;   
+   Etk_Widget    *win;
+   Etk_Widget    *app1_menu;
+   Etk_Widget    *app2_menu;
+   Etk_Widget    *app3_menu;
+   Etk_Widget    *app4_menu;
+   Etk_Widget    *submenu;
 
    int            zoom;
    int            brightness;

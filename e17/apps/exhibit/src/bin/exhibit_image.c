@@ -739,13 +739,94 @@ _ex_image_delete(Exhibit *e)
    */
 }
 
+
+static void
+_ex_image_rename_dialog_response(Etk_Object *obj, int response_id, void *data)
+{
+   const char *string;
+   char *newpath;
+   char *oldpath;
+   int ret;
+   Ex_Tab *tab = e->cur_tab;
+   
+   switch(response_id)
+     {
+      case ETK_RESPONSE_OK:
+	 string = etk_entry_text_get(ETK_ENTRY(data));
+	 newpath = malloc(PATH_MAX);
+	 oldpath = malloc(PATH_MAX);
+	 sprintf(newpath, "%s%s", tab->set_img_path, string);
+	 sprintf(oldpath, "%s%s", tab->set_img_path, tab->cur_file);
+	 D(("Renaming from %s -> %s\n", oldpath, newpath));
+
+	 ret = rename(oldpath, newpath);
+	 if (ret == -1) 
+	   _ex_main_dialog_show("Error renaming file!", ETK_MESSAGE_DIALOG_ERROR);
+	 else 
+	   {
+	      _ex_main_image_unset();
+	      etk_tree_clear(ETK_TREE(tab->itree));
+	      etk_tree_clear(ETK_TREE(tab->dtree));
+	      _ex_main_populate_files(e, NULL);
+	   }
+
+	 E_FREE(newpath);
+	 E_FREE(oldpath);
+	 break;
+      default:
+	 break;
+     }
+   
+   etk_object_destroy(ETK_OBJECT(obj));
+}
+
+void
+_ex_image_rename() 
+{
+   Ex_Tab *tab = e->cur_tab;
+   Etk_Widget *dialog;
+   Etk_Widget *entry;
+   Etk_Widget *label;
+   char string[PATH_MAX];
+   char labeltext[PATH_MAX + 100];
+
+   sprintf(string, "%s%s", tab->set_img_path, tab->cur_file);
+   dialog = etk_dialog_new();
+
+   sprintf(labeltext, "Rename file '%s'", string);
+
+   label = etk_label_new(labeltext);
+
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), ETK_WIDGET(label), 
+	 ETK_FALSE, ETK_FALSE, 5, ETK_FALSE);
+
+   label = etk_label_new("New filename");
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), ETK_WIDGET(label), 
+	 ETK_FALSE, ETK_FALSE, 2, ETK_FALSE);
+
+   entry = etk_entry_new();
+   
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), ETK_WIDGET(entry), 
+	 ETK_FALSE, ETK_FALSE, 0, ETK_FALSE);
+   
+   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
+   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
+   etk_signal_connect("response", ETK_OBJECT(dialog),
+	 ETK_CALLBACK(_ex_image_rename_dialog_response), entry);
+   
+   etk_container_border_width_set(ETK_CONTAINER(dialog), 15);
+   etk_window_title_set(ETK_WINDOW(dialog), 
+	 _("Exhibit - rename"));
+
+   etk_widget_show_all(dialog);
+}
+
 void
 _ex_image_run(const char *app)
 {
    Ecore_Exe *exe = NULL;
    char *tmp = NULL;
-
-   D(("Application from menu: %s\n", app));
+   char str[PATH_MAX];
 
    tmp = malloc(PATH_MAX + 10);
    memset(tmp, 0, PATH_MAX + 10);
@@ -753,12 +834,8 @@ _ex_image_run(const char *app)
    if (!tmp)
      return;
    
-   if (!strcasecmp(app, "The Gimp")) 
-	sprintf(tmp, "gimp %s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
-   else if (!strcasecmp(app, "XV")) 
-	sprintf(tmp, "xv %s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
-   else if (!strcasecmp(app, "Xpaint")) 
-	sprintf(tmp, "xpaint %s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
+   sprintf(str, "%s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
+   sprintf(tmp, app, str);
 
    if (strlen(tmp) <= 0) 
      return;

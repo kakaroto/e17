@@ -18,6 +18,21 @@ char *ex_images[] =
    "zoom_out"
 };
 
+void 
+_ex_menu_build_run_menu() 
+{
+
+   if (e->options->app1 && e->options->app1_cmd)
+     e->app1_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app1), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app1_cmd);
+   if (e->options->app2 && e->options->app2_cmd)
+     e->app2_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app2), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app2_cmd);
+   if (e->options->app3 && e->options->app3_cmd)
+     e->app3_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app3), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app3_cmd);
+   if (e->options->app4 && e->options->app4_cmd)
+     e->app4_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app4), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->submenu), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app4_cmd);
+   
+}
+
 Etk_Widget *
 _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 		  int stock_id, Etk_Menu_Shell *menu_shell,
@@ -138,8 +153,13 @@ _ex_menu_search_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_rename_cb(Etk_Object *obj, void *data)
 {
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
-   D(("rename\n"));
+   
+   if (!e->cur_tab->image_loaded)
+     return;
+   
+   _ex_image_rename();
 }
 
 void
@@ -187,14 +207,13 @@ _ex_menu_quit_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_run_in_cb(Etk_Object *obj, void *data)
 {
-   const char *app;
+   const char *cmd = data;
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
      return;
 
-   app = etk_menu_item_label_get(ETK_MENU_ITEM(obj));
-   _ex_image_run(app);
+   _ex_image_run(cmd);
 }
 
 void
