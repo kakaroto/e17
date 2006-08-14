@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include "exhibit.h"
 
 void
@@ -29,23 +32,14 @@ int
 _ex_slideshow_next(void *data)
 {
    Exhibit *e;
-   Etk_Tree_Row *row, *first_row, *last_row, *count;
-	 int i;
+   Etk_Tree_Row *row, *last_row;
+   int i = 0;
+   int n = 0;
+   char string[80];
 
    e = data;
    row = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
    last_row = etk_tree_last_row_get(ETK_TREE(e->cur_tab->itree), ETK_FALSE, ETK_FALSE);
-   first_row = etk_tree_first_row_get(ETK_TREE(e->cur_tab->itree));
-
-	 /* FIXME
-		* Need an etk function for this, this isnt even working properly.
-		* Would be nice to display slideshow image x of maximages in sbar.
-		*/
-	 for (count = etk_tree_first_row_get(ETK_TREE(e->cur_tab->itree)), i = 0; 
-			 count && count != row; i++)
-		 count = etk_tree_next_row_get(count, ETK_FALSE, ETK_FALSE);
-	 
-	 D(("Rownumber: %d\n", i));
 
    if(!row || row == last_row)
      row = etk_tree_first_row_get(ETK_TREE(e->cur_tab->itree));
@@ -54,6 +48,11 @@ _ex_slideshow_next(void *data)
    
    etk_tree_row_select(row);
    etk_tree_row_scroll_to(row, ETK_FALSE);
-   
+
+   i = etk_tree_num_rows_get(ETK_TREE(e->cur_tab->itree));
+   n = 1 + etk_tree_row_num_get(ETK_TREE(e->cur_tab->itree), row);
+   sprintf(string, "Slideshow picture %d of %d", n, i);
+   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[3]), string, 0);
+
    return 1;   
 }
