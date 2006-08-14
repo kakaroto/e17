@@ -539,8 +539,16 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		ecore_list_goto_first(tree->columns);
 		while((col = ecore_list_next(tree->columns)))
 		{
+			Ewl_Widget *cell;
 			Ewl_Widget *child;
 			void *val;
+
+			cell = ewl_cell_new();
+			ewl_object_fill_policy_set(EWL_OBJECT(cell),
+						   EWL_FLAG_FILL_HSHRINK |
+						   EWL_FLAG_FILL_HFILL);
+			ewl_container_child_append(EWL_CONTAINER(row), cell);
+			ewl_widget_show(cell);
 
 			val = col->model->fetch(tree->data, i, column);
 			if (!val)
@@ -553,7 +561,7 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 				child = col->view->construct();
 				col->view->assign(child, val);
 			}
-			ewl_container_child_append(EWL_CONTAINER(row), child);
+			ewl_container_child_append(EWL_CONTAINER(cell), child);
 			ewl_widget_show(child);
 
 			column ++;
