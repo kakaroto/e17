@@ -58,7 +58,7 @@ make_menus()
                   Ecore_Desktop_Tree *menus = NULL;
 
                   /* convert the xml into menus */
-                  menus = ecore_desktop_menu_get(menu_file, NULL, 0);
+                  menus = ecore_desktop_menu_get(menu_file);
                   if (menus)
                     {
                        /* create the .eap and order files from the menu */
