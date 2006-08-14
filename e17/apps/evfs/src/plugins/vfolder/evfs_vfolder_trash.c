@@ -38,15 +38,25 @@
 #include <errno.h>
 #include <dirent.h>
 #include <Ecore_File.h>
+#include <Ecore_Desktop.h>
 
 #define EVFS_PLUGIN_VFOLDER_TRASH_ID "/Trash"
+
+void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list);
+static char* evfs_home_dir;
+static char evfs_trash_home[PATH_MAX];
 
 evfs_plugin_functions_vfolder *
 evfs_plugin_init()
 {
    printf("Initialising the vfolder trash plugin..\n");
    evfs_plugin_functions_vfolder *functions = calloc(1, sizeof(evfs_plugin_functions_vfolder));
-   //functions->evfs_vfolder_list = &evfs_vfolder_list;
+   functions->evfs_vfolder_list = &evfs_vfolder_list;
+
+   ecore_desktop_init();
+
+   evfs_home_dir = strdup(getenv("HOME"));
+   snprintf(evfs_trash_home, PATH_MAX, "%s/.Trash/info", evfs_home_dir);
 
    return functions;
 }
@@ -56,6 +66,31 @@ evfs_plugin_vfolder_root_get() {
 	return "Trash";
 }
 
+
+void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
+{
+	Ecore_List* info_files;
+	char* file;
+	char parser[PATH_MAX];
+
+	info_files = ecore_file_ls(evfs_trash_home);
+
+	while ( (file = ecore_list_remove_first(info_files))) {
+		Ecore_Hash* trash;
+		evfs_filereference* ref;
+		
+		snprintf(parser, PATH_MAX, "%s/%s", evfs_trash_home, file);
+		Ecore_Desktop* desk = ecore_desktop_get(parser);
+		
+		snprintf(parser, PATH_MAX, "trash:///#file://%s", desk->path);
+		printf("Parsing %s\n", parser);
+		ref = evfs_parse_uri_single(parser);
+
+		if (ref) 
+			ecore_list_append(*list, ref);
+		
+	}
+}
 
 
 

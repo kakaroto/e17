@@ -30,8 +30,16 @@ GZIP_L = gzip.la
 
 VFOLDER_L = vfolder.la
 
+TRASH_L = trash.la
 
-pkg_LTLIBRARIES         = $(POSIX_L) $(SAMBA_L) $(TAR_L) $(BZIP2_L) $(FTP_L) $(GZIP_L) $(SFTP_L) $(VFOLDER_L)
+
+pkg_LTLIBRARIES         = $(POSIX_L) $(SAMBA_L) $(TAR_L) $(BZIP2_L) $(FTP_L) $(GZIP_L) $(SFTP_L) $(VFOLDER_L) $(TRASH_L)
+
+trash_la_SOURCES = evfs_fs_trash.c \
+                        $(top_srcdir)/src/common/evfs_debug.c \
+                        $(top_srcdir)/src/common/evfs_event_helper.c \
+                        $(top_srcdir)/src/common/evfs_misc.c
+
 
 posix_la_SOURCES = evfs_fs_posix.c \
 			$(top_srcdir)/src/common/evfs_debug.c \
@@ -113,4 +121,9 @@ ftp_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs @curl_libs@
 sftp_la_CFLAGS =  @ecore_cflags@
 sftp_la_LDFLAGS = -module -avoid-version
 sftp_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
+
+trash_la_CFLAGS =  @ecore_cflags@
+trash_la_LDFLAGS = -module -avoid-version
+trash_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
+
 

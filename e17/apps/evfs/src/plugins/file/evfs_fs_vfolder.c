@@ -118,8 +118,6 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 
 		   if (EVFS_PLUGIN_VFOLDER(plugin)->functions->evfs_vfolder_list) 
 			(*EVFS_PLUGIN_VFOLDER(plugin)->functions->evfs_vfolder_list)(command->file_command.files[0], &files);
-
-
 	   }
 	   
    }

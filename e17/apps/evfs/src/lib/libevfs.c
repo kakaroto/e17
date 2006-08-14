@@ -264,6 +264,7 @@ evfs_tokenize_uri(char *uri)
    ecore_dlist_append(plugin, "sftp");
    ecore_dlist_append(plugin, "posix");
    ecore_dlist_append(plugin, "vfolder");
+   ecore_dlist_append(plugin, "trash");
 
    ecore_dlist_append(reserved, "://");
    ecore_dlist_append(reserved, "@");
