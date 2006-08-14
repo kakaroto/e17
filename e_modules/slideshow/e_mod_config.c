@@ -36,7 +36,7 @@ _config_slideshow_module (Config_Item * ci)
 	    e_module_dir_get (slide_config->module));
   con = e_container_current_get (e_manager_current_get ());
   cfd =
-    e_config_dialog_new (con, D_ ("Slideshow Configuration"), buf, 0, v, ci);
+    e_config_dialog_new (con, D_ ("Slideshow Configuration"), "SlideShow", "_e_modules_slideshow_config_dialog", buf, 0, v, ci);
   slide_config->config_dialog = cfd;
 }
 

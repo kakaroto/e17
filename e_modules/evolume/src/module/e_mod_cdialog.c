@@ -42,7 +42,7 @@ e_volume_config_module(E_Container *con, Volume_Face *face)
    v->advanced.create_widgets = NULL;
 
    snprintf(buf, sizeof(buf), "%s/module.eap", module_root);
-   cfd = e_config_dialog_new(con, _("Mixer Face Configuration"), buf, 0, v, face);
+   cfd = e_config_dialog_new(con, _("Mixer Face Configuration"), "EVolume", "_e_modules_evolume_config_dialog", buf, 0, v, face);
 }
 
 static void

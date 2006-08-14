@@ -48,7 +48,7 @@ _config_mbar_module (E_Container * con, MBar * mbar)
   snprintf (buf, sizeof (buf), "%s/module.eap",
 	    e_module_dir_get (mbar->module));
   cfd =
-    e_config_dialog_new (con, _("Mount Bar Configuration"), buf, 0, v, mbar);
+    e_config_dialog_new (con, _("Mount Bar Configuration"), "MBar", "_e_modules_mbar_config_dialog", buf, 0, v, mbar);
   mbar->config_dialog = cfd;
 }
 

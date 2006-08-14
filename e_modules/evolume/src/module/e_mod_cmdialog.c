@@ -54,7 +54,7 @@ e_volume_config_mixer(void *data, void *data2)
    c = malloc(sizeof(struct _cfg));
    c->mixer_conf = mixer_conf;
    c->face = face;
-   cfd = e_config_dialog_new(face->con, _("Mixer Face Configuration"), NULL, 0, v, c);
+   cfd = e_config_dialog_new(face->con, _("Mixer Face Configuration"), "EVolume", "_e_modules_evolume_cm_config_dialog", NULL, 0, v, c);
 }
 
 static void

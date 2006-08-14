@@ -62,7 +62,7 @@ _config_screenshot_module (Config_Item * ci)
   /* create config diaolg */
   con = e_container_current_get (e_manager_current_get ());
   cfd =
-    e_config_dialog_new (con, D_ ("Screenshot Configuration"), NULL, 0, v,
+    e_config_dialog_new (con, D_ ("Screenshot Configuration"), "DeskShow", "_e_modules_deskshow_config_dialog", NULL, 0, v,
 			 ci);
   ss_config->config_dialog = cfd;
 }

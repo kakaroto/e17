@@ -49,7 +49,7 @@ _config_ut_module (Config_Item * ci)
   snprintf (buf, sizeof (buf), "%s/module.eap",
 	    e_module_dir_get (ut_config->module));
   con = e_container_current_get (e_manager_current_get ());
-  cfd = e_config_dialog_new (con, D_ ("Uptime Configuration"), buf, 0, v, ci);
+  cfd = e_config_dialog_new (con, D_ ("Uptime Configuration"), "UpTime", "_e_modules_uptime_config_dialog", buf, 0, v, ci);
   ut_config->config_dialog = cfd;
 }
 

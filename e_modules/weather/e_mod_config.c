@@ -37,7 +37,7 @@ _config_weather_module (Config_Item * ci)
 	    e_module_dir_get (weather_config->module));
   con = e_container_current_get (e_manager_current_get ());
   cfd =
-    e_config_dialog_new (con, D_ ("Weather Configuration"), buf, 0, v, ci);
+    e_config_dialog_new (con, D_ ("Weather Configuration"), "Weather", "_e_modules_weather_config_dialog", buf, 0, v, ci);
   weather_config->config_dialog = cfd;
 }
 

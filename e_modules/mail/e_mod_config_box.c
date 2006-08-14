@@ -57,7 +57,7 @@ _config_box (Config_Item * ci, Config_Box * cb, E_Config_Dialog * mcfd)
   v->basic.create_widgets = _basic_create_widgets;
 
   con = e_container_current_get (e_manager_current_get ());
-  cfd = e_config_dialog_new (con, _("Mailbox Configuration"), NULL, 0, v, cb);
+  cfd = e_config_dialog_new (con, _("Mailbox Configuration"), "Mail", "_e_modules_mail_box_config_dialog", NULL, 0, v, cb);
 }
 
 static void

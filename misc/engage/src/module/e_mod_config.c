@@ -45,7 +45,7 @@ void _engage_module_config(E_Container *con, Engage_Bar *eb)
          v->advanced.create_widgets = _advanced_create_widgets;
 
 	 snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(eb->engage->module));
-         cfd = e_config_dialog_new(con, "Engage Configuration", buf, 0, v, eb);
+         cfd = e_config_dialog_new(con, "Engage Configuration", "Engage", "_e_modules_engage_config_dialog", buf, 0, v, eb);
          eb->cfd = cfd;
       }
 }

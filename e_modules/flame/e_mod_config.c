@@ -41,7 +41,7 @@ _config_flame_module (E_Container * con, Flame * fl)
 
   snprintf (buf, sizeof (buf), "%s/module.eap",
 	    e_module_dir_get (fl->module));
-  cfd = e_config_dialog_new (con, D_ ("Flame Configuration"), buf, 0, v, fl);
+  cfd = e_config_dialog_new (con, D_ ("Flame Configuration"), "Flame", "_e_modules_flame_config_dialog", buf, 0, v, fl);
   fl->config_dialog = cfd;
 }
 

@@ -570,7 +570,7 @@ _alarm_snooze(Alarm *al)
    if (al->snooze.dia)
      return;
 
-   dia = e_dialog_new(e_container_current_get(e_manager_current_get()));
+   dia = e_dialog_new(e_container_current_get(e_manager_current_get()), "Eveil", "_e_modules_eveil_snooze_dialog");
    if (!dia)
      return;
    evas = e_win_evas_get(dia->win);

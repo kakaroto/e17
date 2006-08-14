@@ -47,7 +47,7 @@ E_Config_Dialog *DEVIANF(config_dialog_rss) (Rss_Doc *doc, DEVIANN *devian)
    v->advanced.create_widgets = _advanced_create_widgets;
 
    snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(DEVIANM->module));
-   cfd = e_config_dialog_new(DEVIANM->container, _(MODULE_NAME " Module Configuration"), buf, 0, v, doc);
+   cfd = e_config_dialog_new(DEVIANM->container, _(MODULE_NAME " Module Configuration"), "dEvian", "_e_modules_devian_rss_config_dialog", buf, 0, v, doc);
 
    e_object_ref(E_OBJECT(cfd));
 

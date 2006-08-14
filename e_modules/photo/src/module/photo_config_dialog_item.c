@@ -47,7 +47,7 @@ int  photo_config_dialog_item_show(Photo_Item *pi)
    
    snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(photo->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Photo Item Configuration"), buf, 0, v, pi);
+			     _("Photo Item Configuration"), "Photo", "_e_modules_photo_item_config_dialog", buf, 0, v, pi);
    pi->config_dialog = cfd;
 
    return 1;

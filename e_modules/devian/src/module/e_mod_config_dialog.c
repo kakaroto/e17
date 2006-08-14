@@ -90,7 +90,7 @@ E_Config_Dialog *DEVIANF(config_dialog_main) (E_Container *con)
    v->advanced.create_widgets = _main_advanced_create_widgets;
 
    snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(DEVIANM->module));
-   cfd = e_config_dialog_new(con, _(MODULE_NAME " Module Main Configuration"), buf, 0, v, NULL);
+   cfd = e_config_dialog_new(con, _(MODULE_NAME " Module Main Configuration"), "dEvian", "_e_modules_devian_config_dialog", buf, 0, v, NULL);
 
    e_object_ref(E_OBJECT(cfd));
 

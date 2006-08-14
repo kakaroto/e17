@@ -49,7 +49,7 @@ border_props_dialog(E_Container *con, E_Border * bd)
         v->advanced.create_widgets = _border_props_dialog_advanced_create_widgets;
 
         /* Create The Dialog */
-        cfd = e_config_dialog_new(con, D_("Window properties"), NULL, 0, v, bd);
+        cfd = e_config_dialog_new(con, D_("Window properties"), "Emu", "_e_modules_emu_border_dialog", NULL, 0, v, bd);
      }
 }
 

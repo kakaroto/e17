@@ -42,7 +42,7 @@ _configure_wlan_module (Wlan_Face * nf)
   snprintf (buf, sizeof (buf), "%s/module.eap",
 	    e_module_dir_get (nf->wlan->module));
   cfd =
-    e_config_dialog_new (nf->con, D_ ("Wlan Configuration"), buf, 0, v, nf);
+    e_config_dialog_new (nf->con, D_ ("Wlan Configuration"), "WLAN", "_e_modules_wlan_config_dialog", buf, 0, v, nf);
   nf->wlan->cfd = cfd;
 }
 

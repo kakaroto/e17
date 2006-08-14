@@ -45,7 +45,7 @@ e_int_config_calendar_other(void *con, void *calendar)
         v->advanced.create_widgets = _color_edit_advanced_create_widgets;
 
         /* create config diaolg for NULL object/data */
-        cfd = e_config_dialog_new(con, D_("Calendar Settings"), NULL, 0, v, calendar);
+        cfd = e_config_dialog_new(con, D_("Calendar Settings"), "Calendar", "_e_modules_calendar_other_fonts_editor_dialog", NULL, 0, v, calendar);
      }
 }
 /***************************************************

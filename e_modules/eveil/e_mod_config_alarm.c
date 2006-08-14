@@ -67,7 +67,7 @@ void eveil_config_alarm(Alarm *al)
 
    snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(eveil_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     D_("Eveil Alarm Configuration"), buf, 0, v, al);
+			     D_("Eveil Alarm Configuration"), "Eveil", "_e_modules_eveil_alarm_config_dialog", buf, 0, v, al);
 }
 
 static void *

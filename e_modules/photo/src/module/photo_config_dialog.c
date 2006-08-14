@@ -63,7 +63,7 @@ int  photo_config_dialog_show(void)
    
    snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(photo->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Photo Configuration"), buf, 0, v, NULL);
+			     _("Photo Configuration"), "Photo", "_e_modules_photo_config_dialog", buf, 0, v, NULL);
 
    return 1;
 }

@@ -98,7 +98,7 @@ moon_config_dialog_show(Evas_Object *o)
 	
 	con = e_container_current_get(e_manager_current_get());
 	snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(module));
-	cfd = e_config_dialog_new(con, D_("Moon Configuration"), buf, 0, v, o);
+	cfd = e_config_dialog_new(con, D_("Moon Configuration"), "Moon", "_e_modules_moon_config_dialog", buf, 0, v, o);
 	moon_config->config_dialog = cfd;
      }
 }

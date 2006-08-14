@@ -29,7 +29,7 @@ _config_taskbar_module(Config_Item *ci)
    v->basic.create_widgets = _basic_create_widgets;
 
    con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, D_("Taskbar Configuration"), NULL, 0, v, ci);
+   cfd = e_config_dialog_new(con, D_("Taskbar Configuration"), "TaskBar", "_e_modules_taskbar_config_dialog", NULL, 0, v, ci);
    if (taskbar_config->config_dialog) e_object_del(E_OBJECT(taskbar_config->config_dialog));
    taskbar_config->config_dialog = cfd;
 }

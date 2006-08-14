@@ -37,7 +37,7 @@ _config_rain_module(E_Container *con, Rain *r)
         v->basic.create_widgets = _basic_create_widgets;
 	
 	snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(r->module));
-        cfd = e_config_dialog_new(con, D_("Rain Module"), buf, 0, v, r);
+        cfd = e_config_dialog_new(con, D_("Rain Module"), "Rain", "_e_modules_rain_config_dialog", buf, 0, v, r);
         r->config_dialog = cfd;
      }
 }

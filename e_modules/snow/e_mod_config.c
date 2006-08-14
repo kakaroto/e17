@@ -36,7 +36,7 @@ _config_snow_module(E_Container *con, Snow *s)
    v->advanced.create_widgets = NULL;
 
    snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(s->module));
-   cfd = e_config_dialog_new(con, D_("Snow Configuration"), buf, 0, v, s);
+   cfd = e_config_dialog_new(con, D_("Snow Configuration"), "Snow", "_e_modules_snow_config_dialog", buf, 0, v, s);
    s->config_dialog = cfd;
 }
 

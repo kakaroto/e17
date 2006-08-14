@@ -37,7 +37,7 @@ _config_emu_module(E_Container *con, Emu_Face *emu_face)
    v->advanced.create_widgets = _advanced_create_widgets;
 
    /* Create The Dialog */
-   cfd = e_config_dialog_new(con, D_("Emu Configuration"), NULL, 0, v, emu_face);
+   cfd = e_config_dialog_new(con, D_("Emu Configuration"), "Emu", "_e_modules_emu_config_dialog", NULL, 0, v, emu_face);
    emu_face->config_dialog = cfd;
 }
 

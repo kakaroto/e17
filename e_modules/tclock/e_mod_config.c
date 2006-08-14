@@ -38,7 +38,7 @@ _config_tclock_module (Config_Item * ci)
   snprintf (buf, sizeof (buf), "%s/module.eap",
 	    e_module_dir_get (tclock_config->module));
   con = e_container_current_get (e_manager_current_get ());
-  cfd = e_config_dialog_new (con, D_ ("Tclock Configuration"), buf, 0, v, ci);
+  cfd = e_config_dialog_new (con, D_ ("Tclock Configuration"), "TClock", "_e_modules_tclock_config_dialog", buf, 0, v, ci);
   tclock_config->config_dialog = cfd;
 }
 

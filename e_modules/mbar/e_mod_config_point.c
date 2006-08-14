@@ -75,7 +75,7 @@ point_edit_show (E_Container * con, E_App * a, E_App * apps, Evas_Object * il)
       v->override_auto_apply = 1;
 
       cfd =
-	e_config_dialog_new (con, _("Mount Point Editor"), NULL, 0, v,
+	e_config_dialog_new (con, _("Mount Point Editor"), "MBar", "_e_modules_mbar_point_config_dialog", NULL, 0, v,
 			     editor);
     }
 }

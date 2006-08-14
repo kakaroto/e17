@@ -46,7 +46,7 @@ add_todo_show(void *con, void *DayToFix)
         v->basic.create_widgets = _add_todo_basic_create_widgets;
         
            /* create config diaolg */ 
-           cfd = e_config_dialog_new(con, D_("Font Editor"), NULL, 0, v, DayToFix);
+           cfd = e_config_dialog_new(con, D_("Font Editor"), "Calendar", "_e_modules_calendar_add_todo_dialog", NULL, 0, v, DayToFix);
      }
 }
 

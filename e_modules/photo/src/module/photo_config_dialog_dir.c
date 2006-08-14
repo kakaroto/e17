@@ -35,7 +35,7 @@ int  photo_config_dialog_dir_show(Picture_Local_Dir *dir)
    
    snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(photo->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Photo Directory Configuration"), buf, 0, v, dir);
+			     _("Photo Directory Configuration"), "Photo", "_e_modules_photo_dir_config_dialog", buf, 0, v, dir);
 
    if (dir) dir->config_dialog = cfd;
    else photo->config_dialog_adddir = cfd;
