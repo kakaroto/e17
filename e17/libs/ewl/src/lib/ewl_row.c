@@ -164,9 +164,8 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 * Get the first child of the header.
 		 */
 		align = EWL_OBJECT(ewl_container_child_next(EWL_CONTAINER(hdr)));
-		if (align) {
+		if (align)
 			x = MAX(ewl_object_current_x_get(align), CURRENT_X(w));
-		}
 		else
 			x = CURRENT_X(w);
 
@@ -177,7 +176,8 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		while ((child = EWL_OBJECT(ewl_container_child_next(c)))) {
 			align = EWL_OBJECT(ewl_container_child_next(EWL_CONTAINER(hdr)));
 			if (align && VISIBLE(align))
-				width = ewl_object_current_x_get(align) + ewl_object_current_w_get(align) - x;
+				width = ewl_object_current_x_get(align) + 
+						ewl_object_current_w_get(align) - x;
 			else if (nodes)
 				width = remains / nodes;
 			else
@@ -188,7 +188,7 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			 * accepted to calculate remaining steps.
 			 */
 			ewl_object_place(child, x, CURRENT_Y(w), width,
-					 CURRENT_H(w));
+							 CURRENT_H(w));
 			width = ewl_object_current_w_get(child);
 			x += width;
 			remains -= width;
