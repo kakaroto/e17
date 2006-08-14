@@ -111,7 +111,7 @@ parse_desktop_file(char *app, char *menu_path)
    G_Eap *eap;
    Ecore_Desktop *desktop;
 
-   home = ecore_desktop_get_home();
+   home = ecore_desktop_home_get();
 
 #ifdef DEBUG
    fprintf(stderr, "Parsing Desktop File %s\n", app);
@@ -120,7 +120,7 @@ parse_desktop_file(char *app, char *menu_path)
    eap = calloc(1, sizeof(G_Eap));
    eap->eap_name = get_eap_name(app);
 
-   desktop = ecore_desktop_parse_file(app);
+   desktop = ecore_desktop_get(app);
    if (desktop)
      {
         if (desktop->name)
@@ -198,7 +198,7 @@ _parse_process_file(char *file, char *menu_path, G_Eap *eap)
    icon_size = get_icon_size();
    icon_theme = get_icon_theme();
 
-   home = ecore_desktop_get_home();
+   home = ecore_desktop_home_get();
    overwrite = get_overwrite();
 
    snprintf(path, sizeof(path), "%s" EAPPDIR "/%s", home, eap->eap_name);
@@ -207,7 +207,7 @@ _parse_process_file(char *file, char *menu_path, G_Eap *eap)
         not_over_count++;
    else
       {
-         eap->icon_path = ecore_desktop_find_icon(eap->icon, icon_size, icon_theme);
+         eap->icon_path = ecore_desktop_icon_find(eap->icon, icon_size, icon_theme);
          write_icon(path, eap);
       }
 

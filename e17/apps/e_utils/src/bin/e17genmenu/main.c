@@ -92,7 +92,7 @@ _e17genmenu_init()
      }
 
    /* Check That Dir All Exists */
-   snprintf(path, sizeof(path), "%s" EAPPDIR, ecore_desktop_get_home());
+   snprintf(path, sizeof(path), "%s" EAPPDIR, ecore_desktop_home_get());
    if (!ecore_file_exists(path))
      {
         fprintf(stderr, "ERROR: %s doesn't exist. Where are the eapps?\n", path);
@@ -164,9 +164,9 @@ main(int argc, char **argv)
 
 
    /* Just being paranoid, and cause people have removed these during testing. */
-   snprintf(path, sizeof(path), "%s/.e/e/applications/all", ecore_desktop_get_home());
+   snprintf(path, sizeof(path), "%s/.e/e/applications/all", ecore_desktop_home_get());
    ecore_file_mkpath(path);
-   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite", ecore_desktop_get_home());
+   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite", ecore_desktop_home_get());
    ecore_file_mkpath(path);
 
    begin = ecore_time_get();
@@ -181,7 +181,7 @@ main(int argc, char **argv)
    *
    * Currently I do this instead, it seems to work -
    */
-   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite/.eap.cache.cfg", ecore_desktop_get_home());
+   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite/.eap.cache.cfg", ecore_desktop_home_get());
    ecore_file_unlink(path);
 
    /* Update E Cache */
@@ -189,9 +189,9 @@ main(int argc, char **argv)
 #ifdef DEBUG
    fprintf(stderr, "Regenerating Eapp Caches...\n");
 #endif
-   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s" EAPPDIR " -r", ecore_desktop_get_home());
+   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s" EAPPDIR " -r", ecore_desktop_home_get());
    system(path);
-   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite -r", ecore_desktop_get_home());
+   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite -r", ecore_desktop_home_get());
    system(path);
    cache_time += ecore_time_get() - begin;
 

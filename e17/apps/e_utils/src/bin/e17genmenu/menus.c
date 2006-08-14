@@ -47,7 +47,7 @@ make_menus()
 
         printf("Converting freedesktop.org (fdo) menus.\n");
         /* Find the main menu file. */
-        menu_file = ecore_desktop_paths_search_for_file(ecore_desktop_paths_menus, menu, 1, NULL, NULL);
+        menu_file = ecore_desktop_paths_file_find(ecore_desktop_paths_menus, menu, 1, NULL, NULL);
         if (menu_file)
           {
              char *path;
@@ -58,7 +58,7 @@ make_menus()
                   Ecore_Desktop_Tree *menus = NULL;
 
                   /* convert the xml into menus */
-                  menus = ecore_desktop_menus_get(menu_file, NULL, 0);
+                  menus = ecore_desktop_menu_get(menu_file, NULL, 0);
                   if (menus)
                     {
                        /* create the .eap and order files from the menu */
