@@ -4,6 +4,8 @@
 #include "ewl_macros.h"
 
 static void ewl_tree2_cb_column_free(void *data);
+static void ewl_tree2_cb_header_changed(Ewl_Widget *w, void *ev, 
+							void *data);
 
 /**
  * @return Returns NULL on failure, a new tree widget on success.
@@ -61,6 +63,8 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	ewl_widget_appearance_set(EWL_WIDGET(tree->header), "tree_header");
 	ewl_object_fill_policy_set(EWL_OBJECT(tree->header), 
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+	ewl_callback_append(tree->header, EWL_CALLBACK_VALUE_CHANGED,
+					ewl_tree2_cb_header_changed, tree);
 	ewl_widget_show(tree->header);
 
 	tree->rows = ewl_vbox_new();
@@ -582,6 +586,21 @@ ewl_tree2_cb_column_free(void *data)
 
 	c = data;
 	ewl_tree2_column_destroy(c);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree2_cb_header_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
+{
+	Ewl_Tree2 *tree;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	tree = data;
+	ewl_widget_configure(EWL_WIDGET(tree->rows));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

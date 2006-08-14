@@ -896,6 +896,9 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
 	/* place the grabber */
 	layout->position_request(EWL_OBJECT(w), pos);
 
+	/* send a value_changed callback to signal something moved */
+	ewl_callback_call(EWL_WIDGET(p), EWL_CALLBACK_VALUE_CHANGED);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
