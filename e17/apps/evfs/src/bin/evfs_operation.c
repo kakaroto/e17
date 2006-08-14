@@ -232,7 +232,7 @@ void evfs_operation_queue_run()
 				break;
 		}
 
-		if (op->status == EVFS_OPERATION_STATUS_COMPLETED) {
+		if (op->status == EVFS_OPERATION_STATUS_COMPLETED || op->status == EVFS_OPERATION_STATUS_ERROR ) {
 			ecore_list_remove_first(evfs_operation_queue);
 			evfs_operation_destroy(op);
 			
@@ -387,6 +387,12 @@ void evfs_operation_run_tasks(evfs_operation* op)
 				printf("Can't process task - unknown type!\n");
 				break;
 
+		}
+
+		/*TODO: Should we prompt user here? */
+		if (task->status ==  EVFS_OPERATION_TASK_STATUS_ERROR) {
+			op->status = EVFS_OPERATION_STATUS_ERROR;
+			return;
 		}
 
 		OPERATION_TASK_EXIT:

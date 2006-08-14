@@ -55,7 +55,8 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 		/*printf("Opening source file...\n");*/
 		int fd =(*EVFS_PLUGIN_FILE(copy->file_from->plugin)->functions->evfs_file_open) (op->client, copy->file_from);
 		if (!fd) {
-			/*TODO: Error checking on file open fail*/
+			EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_ERROR;
+			goto ERROR;
 		}
 	}
 
@@ -95,6 +96,9 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 		if (b_read == 0) {
 			printf("File copy error - read 0 bytes\n");
 			copy->next_byte = copy->source_stat.st_size;
+
+			EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_ERROR;
+			goto ERROR;
 		}
 
 
@@ -103,6 +107,8 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 	} else {
 		printf("Destination File create error\n");
 		copy->next_byte = copy->source_stat.st_size;	
+		EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_ERROR;
+		goto ERROR;
 	}
 
 	/*printf("Ending task, continuing operation...\n");*/
@@ -115,6 +121,7 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 		EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_COMMITTED;
 	}
 
+	ERROR:
 	return total;
 	
 }
