@@ -6,11 +6,13 @@
 
 require 'dl/ffcall-callback'
 require 'ruby-efl/enhance/ruby-enhance'
+#require File.dirname(File.expand_path(__FILE__)) + '/../ruby-enhance.rb' # uncomment this if you want to use local version
 
 include Etk
 include Enhance
 
-# CClass.debug = true # uncomment this for lots of debug info
+# CClass.debug = true          # uncomment this for lots of debug info
+# CClass.debug_level = [:call] # and uncomment this too this for a bit more relevant debug info
 
 EnhanceBase.init
 EtkBase.init(0, nil)
@@ -20,20 +22,29 @@ en.signal_handling = Enhance::SIGNAL_STORE
 
 en.file_load("window1", File.dirname(File.expand_path(__FILE__)) + "/dialog.glade")
 
-window1 = en.var_get("window1")
-
-class Handlers
-    class << self
-        def cancel_clicked(target, data)
-            puts "Oooh, cancel clicked !"
-        end
+class Event_Handlers
+    attr_accessor :enhance
+    
+    def initialize(enhance)
+        @text = nil
+        @enhance = enhance
+        @textbox = enhance.var_get("textbox")
+    end
+    def save_clicked(target, data)
+        @somevar = @textbox.text
+    end
+    def load_clicked(target, data)
+        @textbox.text = @somevar unless @somevar.nil?
+    end
+    def on_window1_delete_event(target, data)
+        EtkBase.main_quit
     end
 end
+h = Event_Handlers.new(en)
 
-en.autoconnect(Handlers)
+en.autoconnect(h)
 
-win = Dialog.wrap(window1)
-win << Etk::DeleteEventSignal.new { EtkBase.main_quit }
+win = en.var_get("window1")
 win.show
 
 EtkBase.main

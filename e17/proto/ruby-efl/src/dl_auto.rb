@@ -1,8 +1,8 @@
 if $DL_AUTO_LOADED.nil? then
 $DL_AUTO_LOADED = true
 
-require 'rubygems'
-require_gem 'ruby-breakpoint'
+#require 'rubygems'
+#require_gem 'ruby-breakpoint'
 require 'dl/import'
 
 # Base class for any DL-based object that has to encapsulate an (opaque pointer to an) external resource.
@@ -54,9 +54,8 @@ class CClass
 	# Sometimes the names of the "C classes" you need to wrap are illegal or inconvenient in ruby (e.g. "object", "module", "class" etc),
 	# So you can add this delaration to the class definition to use a "call name" different from the actual ruby class name
 	#
-	def self.wraps_class(value)
-            @wrapped_class = value.downcase
-	end
+	def self.wraps_class(value); @wrapped_class = value.downcase; end
+    def self.wrapped_class; return @wrapped_class; end
 
 	# We add this property to DL::PtrData so that we can distinguish in initialize
 	# between regular pointers (that should be passed on as parameters to _new, and
@@ -64,7 +63,7 @@ class CClass
 	# review: This is kind of an hack, but i can't think of a better way.
 	#
 	class DL::PtrData
-            attr_accessor :just_needs_wrapping
+        attr_accessor :just_needs_wrapping
 	end
 	
 	# -------------------------------- PUBLIC INTERFACE -------------------------------------------------
@@ -552,13 +551,13 @@ class CClass
 	# all the constants that are used here
 	#
 	class Callback
-            # Creates a callback from the supplied block using the callback prototype 
-            # for self (a Callback-derived class)
-            #
-            def initialize(&block)
-                @func = self.class::LIB_MODULE.bind_callback(self.class::NAME, &block)
-            end
-            attr_reader :func
+        # Creates a callback from the supplied block using the callback prototype 
+        # for self (a Callback-derived class)
+        #
+        def initialize(&block)
+            @func = self.class::LIB_MODULE.bind_callback(self.class::NAME, &block)
+        end
+        attr_reader :func
 	end
     
     # All the fake constant handling lives in the base class. But it's more natural to
@@ -580,7 +579,7 @@ class CClass
         # handling to import only the CClass-derived classes inside this module.
         #
         def append_features(receiver)
-            #CClass.dWL("#{self.name} being included into #{receiver.name}", :misc)
+            CClass.dWL("#{self.name} being included into #{receiver.name}", :misc)
             
             self.constants.each { |cname|
                 c = self.const_get(cname)

@@ -30,5 +30,6 @@
         ] ,
 	
 	:ignore => [
+        'enhance_callback_data_set', 'enhance_callback_data_get'
 	]
 }

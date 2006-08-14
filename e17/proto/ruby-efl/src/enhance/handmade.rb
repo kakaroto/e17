@@ -17,14 +17,13 @@ class EnhanceBase
         end
     end
 
-    def each_widget(&block)
+   def each_widget(&block)
         e = self.widgets_start
         e = e.ref
         while true
             name = self.widgets_next(e) 
 
-            return self.widgets_end(e) if name.nil? 
-            
+            return nil if name.nil?
             yield name
         end
     end
@@ -39,7 +38,7 @@ class EnhanceBase
                 # First let's check that there's actually a method that we can use as handler.
                 begin hand_proc = handlers_holder.method(handler_name)
                 rescue NameError
-                    dWL("No handler defined for #{signal_name} => #{handler_name} on widget #{widget_name}", :misc)
+                    CClass.dWL("No handler defined for #{signal_name} => #{handler_name} on widget #{widget_name}", :misc)
                     next
                 end
 
@@ -58,4 +57,32 @@ class EnhanceBase
             }
         }
     end
+    
+    # This overrides the original var_get and automatically wraps the returned pointer to the right
+    # Etk widget type (by querying it from the Etk runtime)
+    # todo: this will be reworked when the autowrap feature is implemented globally in dl_auto itself
+    #
+    def var_get(name)
+        w = self.class.var_get(self.this, name)
+        return nil if w.nil?
+        type = Etk::Type.wrap(Etk::EObject.object_type(w))
+        type = type.name.gsub(/^Etk_/,'')
+        
+        begin kl = Etk::const_get(type)
+        rescue NameError
+            type.downcase!
+            Etk::constants.each { |con|
+                con = Etk::const_get(con)
+                next if !con.ancestors.include?(CClass)
+                next if type != con.wrapped_class
+                kl = con
+                break
+            }
+        end
+        
+        return w if kl.nil? 
+        return kl.wrap(w)
+    end
+end
+    
 end
