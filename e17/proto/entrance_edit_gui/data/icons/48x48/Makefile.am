@@ -1,4 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = apps \
 	categories \
-	devices
+	devices \
+	status

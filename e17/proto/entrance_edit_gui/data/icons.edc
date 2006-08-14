@@ -36,5 +36,9 @@ collections {
 	STOCK_ICON("48x48/categories/preferences-system.png", "icons/main/behavior", 48)
 	STOCK_ICON("48x48/apps/preferences-system-session.png", "icons/main/sessions", 48)
 	STOCK_ICON("48x48/devices/video-display.png", "icons/main/xsettings", 48)
+	STOCK_ICON("48x48/status/dialog-error.png", "icons/dialog/error", 48)
+	STOCK_ICON("48x48/status/dialog-information.png", "icons/dialog/information", 48)
+	STOCK_ICON("48x48/status/dialog-warning.png", "icons/dialog/warning", 48)
+	STOCK_ICON("48x48/status/dialog-question.png", "icons/dialog/quiestion", 48)
 }
 

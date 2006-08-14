@@ -2,8 +2,7 @@
 #include <Entrance_Widgets.h>
 #include <string.h>
 #include <stdlib.h>
-
-#define SIZE atoi(ICON_SIZE)
+#include "config.h"
 
 static void _ew_messagebox_cb_ok(void *, int, void *);
 static Entrance_Dialog _ew_messagebox_new(const char *type, const char *title, const char *message);
@@ -28,10 +27,10 @@ _ew_messagebox_new(const char *title, const char *message, const char *icon)
 
 	if(icon) 
 	{
-		_image = ew_image_new(SIZE,SIZE);
-		char image[100] = "status/dialog-";
+		_image = ew_image_new(ICON_SIZE,ICON_SIZE);
+		char image[100] = "icons/dialog/";
 		strcat(image, icon);
-		ew_image_edje_load(_image, etk_theme_icon_theme_get(), image);
+		ew_image_edje_load(_image, PACKAGE_DATA_DIR "/icons/icons.edj", image);
 		ew_group_add(group, _image);
 	}
 

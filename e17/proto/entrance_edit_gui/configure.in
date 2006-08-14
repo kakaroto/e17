@@ -136,5 +136,6 @@ AC_OUTPUT([
 			 data/icons/48x48/apps/Makefile \
 			 data/icons/48x48/categories/Makefile \
 			 data/icons/48x48/devices/Makefile \
+			 data/icons/48x48/status/Makefile \
 			 debian/changelog
 			 ])
