@@ -1,6 +1,10 @@
 This package was debianized by Laurence J. Lane <ljlane@debian.org> on
 Sun, 23 Apr 2000 20:18:27 -0400.
 
+Debian packaging originally maintained by: Sytse Wielinga <s.b.wielinga@student.utwente.nl>
+
+Debian packaging now maintained by: E17 Debian Team <debian@edevelop.org>
+
 The source code is from the e17/libs/ewl module of the enlightenment CVS
 tree. For more information, see:
 
