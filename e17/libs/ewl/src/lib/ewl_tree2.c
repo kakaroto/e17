@@ -482,7 +482,7 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	Ewl_Tree2 *tree;
 	Ewl_Tree2_Column *col;
-	int column = 0;
+	int column = 0, rows = 0, i, size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -495,6 +495,14 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 				CURRENT_Y(tree), CURRENT_W(tree), 
 				CURRENT_H(tree));
 
+	/* place the rows */
+	size = ewl_object_current_h_get(EWL_OBJECT(tree->header));
+	ewl_object_place(EWL_OBJECT(tree->rows), CURRENT_X(tree),
+				CURRENT_Y(tree) + size,
+				CURRENT_W(tree),
+				CURRENT_H(tree) - size);
+
+
 	/* if the tree isn't dirty we're done */
 	if (!ewl_tree2_dirty_get(tree)) 
 		DRETURN(DLEVEL_STABLE);
@@ -504,9 +512,49 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	ecore_list_goto_first(tree->columns);
 	while ((col = ecore_list_next(tree->columns)))
 	{
+		int r;
+
 		ewl_container_child_append(EWL_CONTAINER(tree->header), 
 				col->view->header_fetch(tree->data, column));
 		column ++;
+
+		r = col->model->count(tree->data);
+		if (r > rows) rows = r;
+	}
+
+	ewl_container_reset(EWL_CONTAINER(tree->rows));
+	for (i = 0; i < rows; i++)
+	{
+		Ewl_Widget *row;
+
+		row = ewl_row_new();
+		ewl_row_header_set(EWL_ROW(row), EWL_ROW(tree->header));
+		ewl_container_child_append(EWL_CONTAINER(tree->rows), row);
+		ewl_widget_show(row);
+
+		column = 0;
+		ecore_list_goto_first(tree->columns);
+		while((col = ecore_list_next(tree->columns)))
+		{
+			Ewl_Widget *child;
+			void *val;
+
+			val = col->model->fetch(tree->data, i, column);
+			if (!val)
+			{
+				child = ewl_label_new();
+				ewl_label_text_set(EWL_LABEL(child), " ");
+			}
+			else
+			{
+				child = col->view->construct();
+				col->view->assign(child, val);
+			}
+			ewl_container_child_append(EWL_CONTAINER(row), child);
+			ewl_widget_show(child);
+
+			column ++;
+		}
 	}
 
 	ewl_tree2_dirty_set(tree, FALSE);
