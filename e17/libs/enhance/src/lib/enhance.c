@@ -1212,9 +1212,10 @@ enhance_free(Enhance *en)
    evas_hash_foreach(en->signals, _e_signal_hash_free, en);
    evas_hash_free(en->signals);
    
-   evas_hash_free(en->callback_data);
+   if (en->callback_data) evas_hash_free(en->callback_data);
+   if (en->radio_groups)  evas_hash_free(en->radio_groups);
 
-   ecore_hash_destroy(_en_stock_items_hash);
+   if (_en_stock_items_hash) ecore_hash_destroy(_en_stock_items_hash);
    
    E_FREE(en->main_window);
    E_FREE(en);   
