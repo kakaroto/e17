@@ -120,7 +120,7 @@ parse_desktop_file(char *app, char *menu_path)
    eap = calloc(1, sizeof(G_Eap));
    eap->eap_name = get_eap_name(app);
 
-   desktop = ecore_desktop_get(app);
+   desktop = ecore_desktop_get(app, NULL);
    if (desktop)
      {
         if (desktop->name)

@@ -136,9 +136,8 @@ main(int argc, char **argv)
 
    /* Get the fdo paths. */
    begin = ecore_time_get();
-   ecore_desktop_paths_init();
-   paths = ecore_time_get() - begin;
    ecore_desktop_init();
+   paths = ecore_time_get() - begin;
 
 //#ifdef DEBUG
    /* You can iterate through the various path lists as needed. */
@@ -222,7 +221,6 @@ main(int argc, char **argv)
 #endif
 
    ecore_desktop_shutdown();
-   ecore_desktop_paths_shutdown();
 
    /* Shutdown */
    _e17genmenu_shutdown();

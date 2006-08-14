@@ -80,7 +80,7 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 		evfs_filereference* ref;
 		
 		snprintf(parser, PATH_MAX, "%s/%s", evfs_trash_home, file);
-		Ecore_Desktop* desk = ecore_desktop_get(parser);
+		Ecore_Desktop* desk = ecore_desktop_get(parser, NULL);
 		
 		snprintf(parser, PATH_MAX, "trash:///#file://%s", desk->path);
 		printf("Parsing %s\n", parser);
