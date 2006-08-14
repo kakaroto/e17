@@ -470,7 +470,7 @@ ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *w,
 		ecore_dlist_goto_first(EWL_CONTAINER(g)->children);
 		while ((c = ecore_dlist_next(EWL_CONTAINER(g)->children))
 				&& c != w) {
-			if (!ewl_widget_data_get(w, g))
+			if (!ewl_widget_data_get(c, g))
 				go_next(g, &col, &row);
 		}
 		sc = ec = col;
