@@ -11,6 +11,8 @@
 #include "ew_edjelist.h"
 #include "ew_image.h"
 #include "ew_notice.h"
+#include "ew_messagebox.h"
+#include "ew_label.h"
 
 
 

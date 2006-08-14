@@ -58,9 +58,9 @@ ew_dialog_add(Entrance_Dialog d, Entrance_Widget ew)
 }*/
 
 Entrance_Widget
-ew_dialog_group_add(Entrance_Dialog d, const char *title)
+ew_dialog_group_add(Entrance_Dialog d, const char *title, int direction)
 {
-	Entrance_Widget ew = ew_group_new(title);
+	Entrance_Widget ew = ew_group_new(title, direction);
 	if(!ew) 
 	{
 		return;

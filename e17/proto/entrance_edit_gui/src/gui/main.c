@@ -4,7 +4,7 @@
 #include "config.h"
 
 static void _main_dialog_show(void);
-static void _close_button_cb(void *, void *);
+static void _close_button_cb(void *, int, void *);
 
 static Entrance_Dialog dialog;
 
@@ -38,7 +38,7 @@ _main_dialog_show()
    ew_edjelist_add(tree, _("Sessions"),edjefile, "icons/main/sessions", NULL, 0,  egui_sessions_dialog_show);
    ew_edjelist_add(tree, _("X settings"), edjefile, "icons/main/xsettings",NULL, 0, egui_x_settings_dialog_show);
 
-   Entrance_Widget group = ew_dialog_group_add(dialog, _("Configuration"));
+   Entrance_Widget group = ew_dialog_group_add(dialog, _("Configuration"), EW_GROUP_VERTICAL);
    ew_group_add(group, tree);
 
    ew_dialog_close_button_add(dialog, _close_button_cb, NULL);
@@ -47,7 +47,7 @@ _main_dialog_show()
 }
 
 static void
-_close_button_cb(void *sender, void *data)
+_close_button_cb(void *sender, int response, void *data)
 {
 	ew_dialog_destroy(dialog);
 	ew_main_quit();

@@ -32,12 +32,13 @@ egui_gs_dialog_show(Egui_Graphics_Selector _egs)
    
    win = ew_dialog_new(egs.dialog_title, EW_FALSE);
 
-   group_preview = ew_dialog_group_add(win, _("Preview"));
+
+   group_preview = ew_dialog_group_add(win, _("Preview"), EW_GROUP_VERTICAL);
 
    img_preview = ew_image_new(320, 240);
    ew_group_add(group_preview, img_preview);
 
-   group_graphics = ew_dialog_group_add(win, egs.list_title);
+   group_graphics = ew_dialog_group_add(win, egs.list_title, EW_GROUP_VERTICAL);
 
    list_thumbs = ew_textlist_new(NULL, 320, 140, 20, 90);
    

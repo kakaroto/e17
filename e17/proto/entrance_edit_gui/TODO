@@ -5,15 +5,13 @@ Entrance Widgets
 	- radio button
 	- check box
 	- Labelled Entry
-	- Generic Label
-	- MessageBoxes that return selected stati when buttons are selected. (Grab what can be salvaged from ew_notice)
-		- ew_messagebox_ok(), ew_messagebox_okcancel(), ew_messagebox_yesno(), ew_messagebox_yesnocancel()
-	    - all these functions take three arguments TITLE, MESSAGE, ICONTYPE and return an enum specifying which Button was
-		clicked.
-		- If any input param is null, be able to still show the dialog. These will be the only public interface to the ew_messagebox subsystem.
+	- More Message Boxes.
+		okcancel(), yesno(), yesnocancel()
 	- ew_imagelist
-	- frameless groups - used internally to build complex widgets
 - Entrance_List needs to be refactored to use as common a base as possible. Also, we need to select the first row by default when adding to a list.
+- group types are currently hash defined'd ints. should be enums
+- use etk_window to build ew_dialog, so we can set modality, fixed size, etc, basically, more options
+- ew_messagebox icons are coming from the stock etk theme currently. steal some more icons to put in our theme file :D
 	
 
 GUI

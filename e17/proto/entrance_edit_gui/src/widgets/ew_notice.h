@@ -1,46 +1,25 @@
 #ifndef _EW_NOTICE_H
 #define _EW_NOTICE_H
 
-#define ICON_SIZE "48"
-#define ENTRANCE_NOTICE_QUESTION_DIALOG ("question_" ICON_SIZE)
-#define ENTRANCE_NOTICE_MESSAGE_DIALOG	("information_" ICON_SIZE)
-#define ENTRANCE_NOTICE_WARNING_DIALOG	("warning_" ICON_SIZE)
-#define ENTRANCE_NOTICE_ERROR_DIALOG		("error_" ICON_SIZE)
 
-#define ENTRANCE_NOTICE_OK_BUTTON -5
-#define ENTRANCE_NOTICE_CANCEL_BUTTON -6
-#define ENTRANCE_NOTICE_YES_BUTTON -8
-#define ENTRANCE_NOTICE_NO_BUTTON  -9
+#define EW_NOTICE_OK_BUTTON -5
+#define EW_NOTICE_CANCEL_BUTTON -6
+#define EW_NOTICE_CLOSE_BUTTON -7
+#define EW_NOTICE_YES_BUTTON -8
+#define EW_NOTICE_NO_BUTTON  -9
+#define EW_NOTICE_APPLY_BUTTON -10
 
-#define _EW_NOTICE_FREE(ew) if(1) \
-{ \
-	if(ew) \
-	{ \
-		if(ew->owner) \
-		{ \
-			free(ew->owner); \
-		} \
-		if(ew->box)	\
-		{ \
-			free(ew->box); \
-		} \
-		free(ew); \
-	} \
-} 
+Entrance_Dialog ew_notice_new(const char *);
+void ew_notice_show(Entrance_Dialog);
+Entrance_Widget ew_notice_group_add(Entrance_Dialog, const char *, int);
+void ew_notice_destroy(Entrance_Dialog);
 
-typedef struct _Entrance_Notice {
-	Etk_Widget *owner;
-	Etk_Widget *box;
-} *Entrance_Notice;
-
-Entrance_Notice ew_notice_new(const char *type, const char *title, const char *message, void (*)(Etk_Window *window));
-
-void ew_notice_ok_button_add(Entrance_Notice ew, void (*)(Etk_Dialog *, int, void *));
-void ew_notice_yes_button_add(Entrance_Notice ew, void (*)(Etk_Dialog *, int, void *));
-void ew_notice_no_button_add(Entrance_Notice ew, void (*)(Etk_Dialog *, int, void *));
-void ew_notice_cancel_button_add(Entrance_Notice ew, void (*)(Etk_Dialog *, int, void *));
-
-int ew_notice_show(Entrance_Notice ew);
-void ew_notice_destroy(Entrance_Notice ew);
+void ew_notice_button_add(Entrance_Dialog, const char*, int, void (*)(void *, int, void *), void *);
+void ew_notice_close_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
+void ew_notice_apply_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
+void ew_notice_ok_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
+void ew_notice_yes_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
+void ew_notice_no_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
+void ew_notice_cancel_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
 
 #endif

@@ -2,7 +2,7 @@
 #include "Entrance_Widgets.h"
 
 Entrance_Widget
-ew_group_new(const char *title)
+ew_group_new(const char *title, int direction)
 {
 	Entrance_Widget ew = ew_new();
 	if(!ew)
@@ -10,9 +10,16 @@ ew_group_new(const char *title)
 		return NULL;
 	}
 
-	ew->owner = etk_frame_new(title);
+	if(title)
+	  ew->owner = etk_frame_new(title);
+	else
+	  ew->owner = etk_vbox_new(ETK_FALSE, 0);
 
-	ew->box = etk_vbox_new(ETK_FALSE, 0);
+	if(direction) /*HORIZONTAL*/
+	  ew->box = etk_hbox_new(ETK_FALSE, 0);
+	else
+	  ew->box = etk_vbox_new(ETK_FALSE, 0);
+
 	etk_container_add(ETK_CONTAINER(ew->owner), ew->box);
 
 	return ew;

@@ -5,13 +5,20 @@ lib_LTLIBRARIES=libentrance_widgets.la
 libentrance_widgets_la_HEADERS = \
 	Entrance_Widgets.h \
 	ew.h \
+	\
 	ew_dialog.h \
+	ew_notice.h \
+	\
 	ew_group.h \
+	\
 	_ew_list.h \
 	ew_textlist.h \
 	ew_edjelist.h \
+	\
+	ew_messagebox.h \
+	\
 	ew_image.h \
-	ew_notice.h
+	ew_label.h
 
 libentrance_widgets_ladir = $(prefix)/include
 
@@ -25,6 +32,8 @@ libentrance_widgets_la_SOURCES = \
 	ew_edjelist.c \
 	ew_image.c \
 	ew_notice.c \
+	ew_messagebox.c \
+	ew_label.c
 	$(libentrance_widgets_la_HEADERS)
 	
 libentrance_widgets_la_LIBADD  = @etk_libs@
