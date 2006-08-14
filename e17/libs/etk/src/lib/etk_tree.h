@@ -75,6 +75,7 @@ struct _Etk_Tree
    Etk_Widget *grid;
 
    int num_cols;
+   int num_rows;
    Etk_Tree_Col **columns;
    Etk_Bool headers_visible;
    
@@ -180,6 +181,8 @@ void etk_tree_build(Etk_Tree *tree);
 void etk_tree_freeze(Etk_Tree *tree);
 void etk_tree_thaw(Etk_Tree *tree);
 
+int etk_tree_num_rows_get(Etk_Tree *tree);
+int etk_tree_row_num_get(Etk_Tree *tree, Etk_Tree_Row *row);
 void etk_tree_row_height_set(Etk_Tree *tree, int row_height);
 int etk_tree_row_height_get(Etk_Tree *tree);
 void etk_tree_multiple_select_set(Etk_Tree *tree, Etk_Bool multiple_select);

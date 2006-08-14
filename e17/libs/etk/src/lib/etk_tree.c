@@ -309,6 +309,7 @@ int etk_tree_num_cols_get(Etk_Tree *tree)
    return tree->num_cols;
 }
 
+
 /**
  * @brief Gets the "nth" column of the tree
  * @param tree a tree
@@ -651,6 +652,46 @@ void etk_tree_thaw(Etk_Tree *tree)
 }
 
 /**
+ * @brief Gets the number of rows of the tree
+ * @param tree a tree
+ * @return Returns the number of rows of the tree
+ */
+int etk_tree_num_rows_get(Etk_Tree *tree)
+{
+   if (!tree)
+      return 0;
+   return tree->num_rows;
+}
+
+/**
+ * @brief Gets the rownumber of the row
+ * @param tree a tree
+ * @param row a row
+ * @return Returns the rownumber of the row
+ */
+int etk_tree_row_num_get(Etk_Tree *tree, Etk_Tree_Row *row)
+{
+	Etk_Tree_Row *cur_row;
+	int n = 0;
+
+	if (!tree || !row)
+		return 0;
+
+	cur_row = etk_tree_first_row_get(ETK_TREE(tree));
+	while (cur_row != NULL)
+	{
+		if (row == cur_row) return n;
+		n++;
+		cur_row = etk_tree_next_row_get(cur_row, ETK_FALSE, ETK_FALSE);
+	}
+
+	return 0;
+}
+
+
+
+
+/**
  * @brief Sets the height of the rows of the tree
  * @param tree a tree
  * @param row_height the new height of the rows. If @a row_height < 8, the tree will use the theme default value
@@ -770,6 +811,8 @@ Etk_Tree_Row *etk_tree_append(Etk_Tree *tree, ...)
    if (!tree)
       return NULL;
 
+   tree->num_rows++;
+
    va_start(args, tree);
    new_row = _etk_tree_row_new_valist(tree, &tree->root, args);
    va_end(args);
@@ -875,6 +918,7 @@ void etk_tree_clear(Etk_Tree *tree)
    while (tree->root.first_child)
       _etk_tree_row_free(tree->root.first_child);
    tree->last_selected = NULL;
+   tree->num_rows = 0;
    
    etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
    etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->grid), NULL);
@@ -1583,6 +1627,7 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    etk_widget_show(tree->grid);
 
    tree->num_cols = 0;
+   tree->num_rows = 0;
    tree->columns = NULL;
    tree->last_selected = NULL;
    tree->column_to_resize = NULL;
