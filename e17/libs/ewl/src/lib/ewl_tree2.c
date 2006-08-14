@@ -48,7 +48,8 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	ewl_widget_appearance_set(EWL_WIDGET(tree), EWL_TREE2_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(tree), EWL_TREE2_TYPE);
 
-	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
+	ewl_object_fill_policy_set(EWL_OBJECT(tree), 
+				EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_FILL);
 
 	tree->columns = ecore_list_new();
 	ecore_list_set_free_cb(tree->columns, ewl_tree2_cb_column_free);
@@ -73,9 +74,6 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 					ewl_tree2_cb_configure, NULL);
 	ewl_callback_prepend(EWL_WIDGET(tree), EWL_CALLBACK_DESTROY,
 					ewl_tree2_cb_destroy, NULL);
-
-	ewl_container_resize_notify_set(EWL_CONTAINER(tree),
-					ewl_tree2_cb_child_resize);
 
 	ewl_widget_focusable_set(EWL_WIDGET(tree), FALSE);
 	ewl_tree2_dirty_set(tree, TRUE);
@@ -513,9 +511,14 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	while ((col = ecore_list_next(tree->columns)))
 	{
 		int r;
+		Ewl_Widget *h;
 
-		ewl_container_child_append(EWL_CONTAINER(tree->header), 
-				col->view->header_fetch(tree->data, column));
+
+		h = col->view->header_fetch(tree->data, column);
+		ewl_object_fill_policy_set(EWL_OBJECT(h), 
+				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
+
+		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 		column ++;
 
 		r = col->model->count(tree->data);
@@ -558,40 +561,6 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	}
 
 	ewl_tree2_dirty_set(tree, FALSE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param c: The container to work with
- * @param w: UNUSED
- * @param size: UNUSED
- * @param o: UNUSED
- * @return Returns no value
- * @brief The child resize callback
- */
-void
-ewl_tree2_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
-					int size __UNUSED__,
-					Ewl_Orientation o __UNUSED__)
-{
-	Ewl_Tree2 *tree;
-	int hw, hh, rw, rh;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-
-	tree = EWL_TREE2(c);
-
-	ewl_object_preferred_size_get(EWL_OBJECT(tree->header), &hw, &hh);
-	ewl_object_preferred_size_get(EWL_OBJECT(tree->rows), &rw, &rh);
-
-	ewl_object_preferred_inner_size_set(EWL_OBJECT(tree), hw, hh + rh);
-
-	ewl_object_place(EWL_OBJECT(tree->header), CURRENT_X(tree), CURRENT_Y(tree), hw, hh);
-	ewl_object_place(EWL_OBJECT(tree->rows), CURRENT_X(tree), CURRENT_Y(tree) + hh, rw, rh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

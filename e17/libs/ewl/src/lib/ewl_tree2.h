@@ -189,8 +189,6 @@ unsigned int	 ewl_tree2_dirty_get(Ewl_Tree2 *tree2);
  */
 void ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_tree2_cb_configure(Ewl_Widget *w, void *ev, void *data);
-void ewl_tree2_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
-				     int size, Ewl_Orientation o);
 
 /*
  * Ewl_Tree2_Column stuff
