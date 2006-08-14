@@ -1129,26 +1129,30 @@ enhance_widgets_start(Enhance *en)
 const char*
 enhance_widgets_next(Enhance *en, Enhance_Widgets_Enumerator* enumerator)
 {
-   Evas_List *list;
+   Evas_List *list,*prev;
    char* data;
 
    if (enumerator == NULL) return NULL;
-
    list = *enumerator;
+   if (list == NULL) return NULL;
+      
    data = evas_list_data(list);
-   *enumerator = evas_list_prev(list);
+   prev = evas_list_prev(list);
+   if (prev == NULL) enhance_widgets_end(en, enumerator);
+
+   *enumerator = prev;
    return data;
 }
 
 void
 enhance_widgets_end(Enhance *en, Enhance_Widgets_Enumerator* enumerator)
 {
-   Evas_List *l;
+   Evas_List *list;
 
-   l = *enumerator;
-   for (; l; l = evas_list_next(l)) E_FREE(l->data);
-   evas_list_free(l);
-   
+   if (enumerator == NULL) return;
+
+   list = *enumerator;
+   if (list != NULL) evas_list_free(list);
    *enumerator = NULL;
 }
 
@@ -1184,11 +1188,13 @@ static Evas_Bool
 _e_signal_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {  
    Evas_List  *signals;
-   Evas_List *l;   
+   void       *item;
    
    signals = data;   
-   for(l = signals; l; l = l->next)
-     E_FREE(l->data);   
+   for(; signals; signals = evas_list_next(signals)) {
+      item = evas_list_data(signals);
+      E_FREE(item);   
+   }
    evas_list_free(signals);
    
    return 1;

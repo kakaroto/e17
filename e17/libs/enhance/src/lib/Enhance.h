@@ -117,13 +117,13 @@ Enhance_Signals_Enumerator enhance_signals_first(Enhance *en, const char* widget
 /* Gets the next signal name + handler name for a certain part in the GUI. Returns NULL if there are no more. */
 Enhance_Signals_Enumerator enhance_signals_next(Enhance *en, Enhance_Signals_Enumerator current, char **signal, char **handler);
 
-/* Starts the enumeration of all GUI parts. You should always call enhance_widgets_end to close it. */
+/* Starts the enumeration of all GUI parts. */
 Enhance_Widgets_Enumerator  enhance_widgets_start(Enhance *en);
 
 /* Gets the next GUI part. Return NULL if there are no more GUI parts. */
 const char*                 enhance_widgets_next(Enhance *en, Enhance_Widgets_Enumerator* enumeration);
 
-/* Ends an enumeration of all GUI parts.  */
+/* Ends an enumeration of all GUI parts. You don't need to call this if widgets_next returns NULL. But calling it anyway is legal. */
 void                        enhance_widgets_end(Enhance *en, Enhance_Widgets_Enumerator* enumeration);
 
 #ifdef __cplusplus
