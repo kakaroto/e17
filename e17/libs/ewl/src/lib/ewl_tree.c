@@ -90,6 +90,7 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	}
 
 	ewl_container_child_append(EWL_CONTAINER(tree), header);
+	ewl_widget_appearance_set(EWL_WIDGET(header), "tree_header");
 	ewl_widget_show(header);
 	tree->header = header;
 

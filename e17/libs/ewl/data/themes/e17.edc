@@ -1,7 +1,7 @@
 #include "e17/macros/button-macros.edc"
 
 fonts {
-    font, "e17/fonts/Vera.ttf" "Vera";
+	font, "e17/fonts/Vera.ttf" "Vera";
 }
 
 images {
@@ -37,126 +37,127 @@ collections {
 }
 
 data {
-    item, "/label/group" "label";
-    item, "/label/textpart" "text";
+	item, "/label/group" "label";
+	item, "/label/textpart" "text";
 
-    item, "/border/group"  "border";
-    item, "/border/label/group"  "border/label";
+	item, "/border/group"  "border";
+	item, "/border/label/group"  "border/label";
 
-    item, "/button/group" "button";
+	item, "/button/group" "button";
 
-    item, "/radio/group" "radio";
-    item, "/radiobutton/group" "checkbutton";
+	item, "/radio/group" "radio";
+	item, "/radiobutton/group" "checkbutton";
 
-    item, "/check/group" "checkbox";
-    item, "/checkbutton/group" "checkbutton";
+	item, "/check/group" "checkbox";
+	item, "/checkbutton/group" "checkbutton";
 
-    item, "/entry/group" "entry";
-    item, "/entry/color/a" "255";
-    item, "/entry/font" "Vera";
-    item, "/entry/font_size" "10";
+	item, "/entry/group" "entry";
+	item, "/entry/color/a" "255";
+	item, "/entry/font" "Vera";
+	item, "/entry/font_size" "10";
 
-    item, "/cursor/group" "cursor";
+	item, "/cursor/group" "cursor";
 
-    item, "/text/color/a" "255";
-    item, "/text/font" "Vera";
-    item, "/text/font_size" "10";
-    item, "/text/style" "none";
+	item, "/text/color/a" "255";
+	item, "/text/font" "Vera";
+	item, "/text/font_size" "10";
+	item, "/text/style" "none";
 
-    item, "/hseparator/group" "hline";
-    item, "/vseparator/group" "vline";
+	item, "/hseparator/group" "hline";
+	item, "/vseparator/group" "vline";
 
-    item, "/grabber/vertical/group" "vgrabber";
-    item, "/grabber/horizontal/group" "hgrabber";
+	item, "/grabber/vertical/group" "vgrabber";
+	item, "/grabber/horizontal/group" "hgrabber";
 
-    item, "/icon/group" "icon";
+	item, "/icon/group" "icon";
 
-    item, "/freebox/auto/padding" "5";
+	item, "/freebox/auto/padding" "5";
 
-    item, "/tree/group" "tree_background";
-    item, "/tree2/group" "tree_background";
-    item, "/row/group" "row_background";
-    item, "/row/cell/label/group" "row_text";
-    item, "/tree/paned/group" "tree_header";
-    item, "/tree/paned/button/group" "tree_header_label";
-    item, "/tree/paned/grabber/vertical/group" "vline";
-    item, "/node/check/group" "treenode";
-    item, "/row/group" "row_background";
-    item, "/row/cell/label/group" "row_text";
-    
-    item, "/progressbar_bar/group" "progressbar_bar";
-    item, "/progressbar/group" "progressbar";
+	item, "/tree/group" "tree_background";
+	item, "/tree2/group" "tree_background";
 
-    item, "/stock/apply" "stock/apply";
-    item, "/stock/arrow/down" "stock/arrow/down";
-    item, "/stock/arrow/left" "stock/arrow/left";
-    item, "/stock/arrow/right" "stock/arrow/right";
-    item, "/stock/arrow/up" "stock/arrow/up";
-    item, "/stock/cancel" "stock/cancel";
-    item, "/stock/ff" "stock/ff";
-    item, "/stock/home" "stock/home";
-    item, "/stock/ok" "stock/ok";
-    item, "/stock/open" "stock/open";
-    item, "/stock/pause" "stock/pause";
-    item, "/stock/play" "stock/play";
-    item, "/stock/quit" "stock/quit";
-    item, "/stock/rewind" "stock/rewind";
-    item, "/stock/save" "stock/save";
-    item, "/stock/stop" "stock/stop";
+	item, "/tree_header/group" "tree_header";
+	item, "/tree_header/button/group" "tree_header_label";
+	item, "/tree_header/grabber/vertical/group" "vline";
 
-    item, "/combo/decrement/group" "spinner-down";
-    item, "/combo/decrement/body/group" "spinnerdown";
-    item, "/combo/increment/group" "spinner-up";
-    item, "/combo/increment/body/group" "spinnerup";
+	item, "/row/group" "row_background";
+	item, "/row/cell/label/group" "row_text";
+	item, "/node/check/group" "treenode";
 
-    item, "/selection_area/group" "selection_area";
+	item, "/progressbar/group" "progressbar";
+	item, "/progressbar_bar/group" "progressbar_bar";
 
-    item, "/spinner/controls/decrement/group" "spinner-down";
-    item, "/spinner/controls/increment/group" "spinner-up";
-    item, "/spinner/controls/increment/body/group" "spinnerup";
-    item, "/spinner/controls/decrement/body/group" "spinnerdown";
-    item, "/spinner/acceleration" "5";
-    item, "/spinner/velocity" "5";
+	item, "/stock/apply" "stock/apply";
+	item, "/stock/arrow/down" "stock/arrow/down";
+	item, "/stock/arrow/left" "stock/arrow/left";
+	item, "/stock/arrow/right" "stock/arrow/right";
+	item, "/stock/arrow/up" "stock/arrow/up";
+	item, "/stock/cancel" "stock/cancel";
+	item, "/stock/ff" "stock/ff";
+	item, "/stock/home" "stock/home";
+	item, "/stock/ok" "stock/ok";
+	item, "/stock/open" "stock/open";
+	item, "/stock/pause" "stock/pause";
+	item, "/stock/play" "stock/play";
+	item, "/stock/quit" "stock/quit";
+	item, "/stock/rewind" "stock/rewind";
+	item, "/stock/save" "stock/save";
+	item, "/stock/stop" "stock/stop";
 
-    item, "/spacer/group" "spacer";
+	item, "/combo/decrement/group" "spinner-down";
+	item, "/combo/decrement/body/group" "spinnerdown";
+	item, "/combo/increment/group" "spinner-up";
+	item, "/combo/increment/body/group" "spinnerup";
 
-    item, "/notebook/group" "notebook";
-    item, "/tabbar/tab/group" "tab";
-    item, "/tabbar/tab/label/group" "tab/label";
+	item, "/selection_area/group" "selection_area";
 
-    item, "/vscrollbar/group" "vscrollbar";
-    item, "/hscrollbar/group" "hscrollbar";
-    item, "/vscrollbar/vseeker/group" "transparent";
-    item, "/hscrollbar/hseeker/group" "transparent";
-    item, "/vscrollbar/decrement/group" "vscrollbar_bottom";
-    item, "/vscrollbar/increment/group" "vscrollbar_top";
-    item, "/hscrollbar/decrement/group" "hscrollbar_left";
-    item, "/hscrollbar/increment/group" "hscrollbar_right";
-    
-    item, "/vseeker/group" "vseeker_track";
-    item, "/hseeker/group" "hseeker_track";
-    item, "/vseeker/vbutton/group"  "vscrollbar_drag";
-    item, "/hseeker/hbutton/group"  "hscrollbar_drag";
+	item, "/spinner/controls/decrement/group" "spinner-down";
+	item, "/spinner/controls/increment/group" "spinner-up";
+	item, "/spinner/controls/increment/body/group" "spinnerup";
+	item, "/spinner/controls/decrement/body/group" "spinnerdown";
+	item, "/spinner/acceleration" "5";
+	item, "/spinner/velocity" "5";
 
-    item, "/menubar/group" "menubar";
-    item, "/imenu/group" "menu";
-    item, "/menu/group" "menu";
-    item, "/menu/vbox/menu_container/body/label/group" "submenuitem";
-    item, "/menu_item/body/label/group" "menuitem";
+	item, "/spacer/group" "spacer";
 
-    item, "/scrollpane/group" "scrollpane/background";
+	item, "/notebook/group" "notebook";
+	item, "/tabbar/tab/group" "tab";
+	item, "/tabbar/tab/label/group" "tab/label";
 
-    item, "/statusbar/group" "statusbar";
+	item, "/vscrollbar/group" "vscrollbar";
+	item, "/hscrollbar/group" "hscrollbar";
+	item, "/vscrollbar/vseeker/group" "transparent";
+	item, "/hscrollbar/hseeker/group" "transparent";
+	item, "/vscrollbar/decrement/group" "vscrollbar_bottom";
+	item, "/vscrollbar/increment/group" "vscrollbar_top";
+	item, "/hscrollbar/decrement/group" "hscrollbar_left";
+	item, "/hscrollbar/increment/group" "hscrollbar_right";
+	
+	item, "/vseeker/group" "vseeker_track";
+	item, "/hseeker/group" "hseeker_track";
+	item, "/vseeker/vbutton/group"  "vscrollbar_drag";
+	item, "/hseeker/hbutton/group"  "hscrollbar_drag";
 
-    item, "/tooltip/offset" 15;
-    item, "/tooltip/delay" "1.0";
-    item, "/tooltip/group" "window";
+	item, "/menubar/group" "menubar";
+	item, "/imenu/group" "menu";
+	item, "/menu/group" "menu";
+	item, "/menu/vbox/menu_container/body/label/group" "submenuitem";
+	item, "/menu_item/body/label/group" "menuitem";
 
-    item, "/window/group" "window";
+	item, "/scrollpane/group" "scrollpane/background";
 
-    item, "/theme/name" "e17";
-    item, "/theme/authors" "Original Author:dj2 (www.everburning.com) Current Authors: dj2(www.everburning.com) and LinuxTitan (www.ecoding.org)";
-    item, "/theme/font_path" "fonts";
-    item, "/theme/license" "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
+	item, "/statusbar/group" "statusbar";
+
+	item, "/tooltip/offset" 15;
+	item, "/tooltip/delay" "1.0";
+	item, "/tooltip/group" "window";
+
+	item, "/window/group" "window";
+
+	item, "/theme/name" "e17";
+	item, "/theme/author" "dj2 (www.everburning.com)";
+	item, "/theme/contributors" "LinuxTitan (www.ecoding.org)";
+	item, "/theme/font_path" "fonts";
+	item, "/theme/license" "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
 }
 
