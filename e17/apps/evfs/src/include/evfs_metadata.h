@@ -38,7 +38,7 @@ void evfs_metadata_debug_group_list_print();
 int evfs_metadata_group_header_exists(char* group);
 void evfs_metadata_group_header_free(evfs_metadata_group_header* g);
 void evfs_metadata_file_groups_free(evfs_metadata_file_groups* groups);
-void evfs_metadata_initialise();
+void evfs_metadata_initialise(int);
 evfs_metadata_group* evfs_metadata_group_new(char* name, char* desc) ;
 void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
 				char* value);

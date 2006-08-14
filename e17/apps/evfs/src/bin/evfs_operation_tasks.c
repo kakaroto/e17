@@ -65,7 +65,8 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 	}
 
 	/*printf ("next_byte:size  -> %lld:%lld\n", copy->next_byte, copy->source_stat.st_size);	*/
-	while (iter < TASK_COPY_ITERATIONS && 
+	if (copy->file_to->fd > 0) {
+	   while (iter < TASK_COPY_ITERATIONS && 
 		copy->next_byte < copy->source_stat.st_size) {
 		int b_read = 0, b_write= 0;
 
@@ -98,6 +99,10 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 
 
 		iter++;
+	  }
+	} else {
+		printf("Destination File create error\n");
+		copy->next_byte = copy->source_stat.st_size;	
 	}
 
 	/*printf("Ending task, continuing operation...\n");*/

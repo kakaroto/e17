@@ -278,7 +278,7 @@ int evfs_metadata_group_header_exists(char* group)
 	return exists;
 }
 
-void evfs_metadata_initialise()
+void evfs_metadata_initialise(int forker)
 {
 	struct stat config_dir_stat;
 	Evas_List* group;
@@ -390,8 +390,10 @@ void evfs_metadata_initialise()
 		evfs_metadata_directory_scan_queue = ecore_list_new();
 		ecore_list_append(evfs_metadata_directory_scan_queue, ref);
 
-		ecore_timer_add(0.5, evfs_metadata_scan_runner, NULL);
-		ecore_timer_add(0.5, evfs_metadata_extract_runner, NULL);
+		if (forker) {
+			ecore_timer_add(0.5, evfs_metadata_scan_runner, NULL);
+			ecore_timer_add(0.5, evfs_metadata_extract_runner, NULL);
+		}
 	}
 
 }

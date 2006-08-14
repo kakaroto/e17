@@ -500,7 +500,7 @@ evfs_file_write(evfs_filereference * file, char *bytes, long size)
 int
 evfs_file_create(evfs_filereference * file)
 {
-   //printf ("Creating file '%s'\n", file->path);
+   printf ("Creating file '%s'\n", file->path);
 
    file->fd = open(file->path, O_CREAT | O_TRUNC | O_RDWR, S_IRUSR | S_IWUSR);
 

@@ -22,6 +22,14 @@
          * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          * 
          */
+
+/* TODO:
+ *
+ * * Cloning a filereference, and passing it off to evfs_fs_posix, for each op, is
+ *   terribly inefficient.  Make a caching engine to avoid this 
+ * 
+ */
+
 #if HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -38,6 +46,11 @@
 #include <errno.h>
 #include <dirent.h>
 #include <Ecore_File.h>
+
+/*All these homedir variables need to be consolidated - TODO*/
+static char evfs_fs_trash_info[PATH_MAX];
+static char evfs_fs_trash_files[PATH_MAX];
+static evfs_plugin* posix_plugin;
 
 /*Main file wrappers */
 int evfs_file_remove(char *src);
@@ -61,8 +74,12 @@ evfs_plugin_functions *
 evfs_plugin_init()
 {
    printf("Initialising the file plugin..\n");
-   evfs_plugin_functions *functions = calloc(1, sizeof(evfs_plugin_functions));
 
+   snprintf(evfs_fs_trash_info, sizeof(evfs_fs_trash_info), "%s/.Trash/info", getenv("HOME"));
+   snprintf(evfs_fs_trash_files, sizeof(evfs_fs_trash_files), "%s/.Trash/files", getenv("HOME"));
+   posix_plugin = evfs_get_plugin_for_uri(evfs_server_get(), "file");
+   
+   evfs_plugin_functions *functions = calloc(1, sizeof(evfs_plugin_functions));
    functions->evfs_client_disconnect = &evfs_client_disconnect;
 
    /*functions->evfs_file_remove = &evfs_file_remove;
@@ -120,8 +137,12 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 int
 evfs_file_close(evfs_filereference * file)
 {
-	printf("evfs_fs_trash.c close - STUB\n");
-	return -1;	
+	if (file->plugin) 
+		return (*EVFS_PLUGIN_FILE(posix_plugin)->functions->evfs_file_close) (file);
+	else
+		printf("Trash file not opened with trash plugin\n");	
+
+	return 0;
 }
 
 int
@@ -142,15 +163,37 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
 int
 evfs_file_write(evfs_filereference * file, char *bytes, long size)
 {
-	printf("evfs_fs_trash.c write - STUB\n");
-	return -1;
+	if (file->plugin) {
+		return (*EVFS_PLUGIN_FILE(posix_plugin)->functions->evfs_file_write) (file, bytes, size);
+	} else
+		printf("Trash file not opened with trash plugin\n");
 }
 
 int
 evfs_file_create(evfs_filereference * file)
-{
-	printf("evfs_fs_trash.c create (%s) - STUB\n", file->path);
-	return -1;
+{	
+	evfs_filereference* file_trash = evfs_filereference_clone(file);
+	int fd;
+	int size;
+	
+	free(file_trash->path);
+	size= strlen(evfs_fs_trash_files) + strlen(file->path) +2;
+	file_trash->path = calloc(size, 1);
+	snprintf(file_trash->path, size, "%s/%s", evfs_fs_trash_files, file->path);
+	free(file_trash->plugin_uri);
+	file_trash->plugin_uri = strdup("file");
+	file_trash->plugin = posix_plugin;
+
+	printf("Creating trash file: %s\n", file_trash->path);
+
+	(*EVFS_PLUGIN_FILE(file_trash->plugin)->functions->evfs_file_create) (file_trash);
+	file->fd = file_trash->fd;	
+
+	printf("Trash file fd: %d\n", file->fd);
+	
+	evfs_cleanup_filereference(file_trash);
+	
+	return file->fd;
 }
 
 int
