@@ -18,7 +18,9 @@ Entrance Widgets
 
 GUI
 ==================
-implement layout screen
-implement sessions screen
-implement behavior screen
-implement x-settings screen
+- implement layout screen
+- implement sessions screen
+- implement behavior screen
+- implement x-settings screen
+- theme and background dialogs need a way to browse filesystem to grab from arbitrary locations.
+- The PREVIEW window is just CRAP! We actually should be loading Entrance itself with the config changes into a canvas and displaying that canvas or something. Basically, entrance -T shows us a preview of entrance without running the code, we should be able to kidnap and enslave that functionality in the gui config panel, i'm smelling a libentrance here. no?
