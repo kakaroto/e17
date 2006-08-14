@@ -37,8 +37,8 @@ create_test(Ewl_Container *box)
 
 	spinner[0] = ewl_spinner_new();
 	ewl_spinner_digits_set(EWL_SPINNER(spinner[0]), 0);
-	ewl_range_min_val_set(EWL_RANGE(spinner[0]), 0);
-	ewl_range_max_val_set(EWL_RANGE(spinner[0]), 1280);
+	ewl_range_minimum_value_set(EWL_RANGE(spinner[0]), 0);
+	ewl_range_maximum_value_set(EWL_RANGE(spinner[0]), 1280);
 	ewl_range_value_set(EWL_RANGE(spinner[0]), 0.0);
 	ewl_range_step_set(EWL_RANGE(spinner[0]), 1.0);
 	ewl_container_child_append(EWL_CONTAINER(spinner_row), spinner[0]);
@@ -61,8 +61,8 @@ create_test(Ewl_Container *box)
 
 	spinner[1] = ewl_spinner_new();
 	ewl_spinner_digits_set(EWL_SPINNER(spinner[1]), 0);
-	ewl_range_min_val_set(EWL_RANGE(spinner[1]), 0);
-	ewl_range_max_val_set(EWL_RANGE(spinner[1]), 1024);
+	ewl_range_minimum_value_set(EWL_RANGE(spinner[1]), 0);
+	ewl_range_maximum_value_set(EWL_RANGE(spinner[1]), 1024);
 	ewl_range_value_set(EWL_RANGE(spinner[1]), 0.0);
 	ewl_range_step_set(EWL_RANGE(spinner[1]), 1.0);
 	ewl_container_child_append(EWL_CONTAINER(spinner_row), spinner[1]);
@@ -85,8 +85,8 @@ create_test(Ewl_Container *box)
 
 	spinner[2] = ewl_spinner_new();
 	ewl_spinner_digits_set(EWL_SPINNER(spinner[2]), 0);
-	ewl_range_min_val_set(EWL_RANGE(spinner[2]), 0.0);
-	ewl_range_max_val_set(EWL_RANGE(spinner[2]), 1280);
+	ewl_range_minimum_value_set(EWL_RANGE(spinner[2]), 0.0);
+	ewl_range_maximum_value_set(EWL_RANGE(spinner[2]), 1280);
 	ewl_range_value_set(EWL_RANGE(spinner[2]), 0.0);
 	ewl_range_step_set(EWL_RANGE(spinner[2]), 1.0);
 	ewl_container_child_append(EWL_CONTAINER(spinner_row), spinner[2]);
@@ -109,8 +109,8 @@ create_test(Ewl_Container *box)
 
 	spinner[3] = ewl_spinner_new();
 	ewl_spinner_digits_set(EWL_SPINNER(spinner[3]), 0);
-	ewl_range_min_val_set(EWL_RANGE(spinner[3]), 0.0);
-	ewl_range_max_val_set(EWL_RANGE(spinner[3]), 1024);
+	ewl_range_minimum_value_set(EWL_RANGE(spinner[3]), 0.0);
+	ewl_range_maximum_value_set(EWL_RANGE(spinner[3]), 1024);
 	ewl_range_value_set(EWL_RANGE(spinner[3]), 0.0);
 	ewl_range_step_set(EWL_RANGE(spinner[3]), 1.0);
 	ewl_container_child_append(EWL_CONTAINER(spinner_row), spinner[3]);

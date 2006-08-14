@@ -163,7 +163,8 @@ list_test_assign_set(Ewl_Widget *w, void *data)
 }
 
 static void *
-list_test_data_fetch(void *data, unsigned int row, unsigned int column)
+list_test_data_fetch(void *data, unsigned int row, 
+					unsigned int column __UNUSED__)
 {
 	List_Test_Data *d;
 
@@ -191,7 +192,8 @@ list_test_data_count_get(void *data)
 }
 
 static void
-list_cb_value_changed(Ewl_Widget *w, void *ev, void *data)
+list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_List *list;
 	Ecore_List *el;

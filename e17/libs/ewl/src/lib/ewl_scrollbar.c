@@ -173,7 +173,7 @@ ewl_scrollbar_init(Ewl_Scrollbar *s)
 	 * Define the maximum value that the seeker can reach, and the
 	 * default increments it takes to get there.
 	 */
-	ewl_range_max_val_set(EWL_RANGE(s->seeker), 1.0);
+	ewl_range_maximum_value_set(EWL_RANGE(s->seeker), 1.0);
 	ewl_range_step_set(EWL_RANGE(s->seeker), 0.05);
 
 	/*

@@ -164,8 +164,8 @@ widgets_build(void)
 	
 	misc = ewl_spinner_new();
 	ewl_spinner_digits_set(EWL_SPINNER(misc), 0);
-	ewl_range_min_val_set(EWL_RANGE(misc), 0);
-	ewl_range_max_val_set(EWL_RANGE(misc), 1024);
+	ewl_range_minimum_value_set(EWL_RANGE(misc), 0);
+	ewl_range_maximum_value_set(EWL_RANGE(misc), 1024);
 	ewl_range_step_set(EWL_RANGE(misc), 1.0);
 	ewl_range_value_set(EWL_RANGE(misc), 15.0);
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
@@ -177,7 +177,7 @@ widgets_build(void)
 	ewl_widget_show(misc);
 	
 	misc = ewl_hseeker_new();
-	ewl_range_max_val_set(EWL_RANGE(misc), 10.0);
+	ewl_range_maximum_value_set(EWL_RANGE(misc), 10.0);
 	ewl_range_step_set(EWL_RANGE(misc), 1.0);
 	ewl_range_value_set(EWL_RANGE(misc), 15.0);
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);

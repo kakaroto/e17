@@ -94,7 +94,7 @@ ewl_range_value_get(Ewl_Range *r)
  * Sets the smallest value that @a r can obtain to @a minv.
  */
 void
-ewl_range_min_val_set(Ewl_Range *r, double minv)
+ewl_range_minimum_value_set(Ewl_Range *r, double minv)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR("r", r);
@@ -115,7 +115,7 @@ ewl_range_min_val_set(Ewl_Range *r, double minv)
  * @return Returns the currently set minimum value for the specified range.
  */
 double
-ewl_range_min_val_get(Ewl_Range *r)
+ewl_range_minimum_value_get(Ewl_Range *r)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("r", r, 0.0);
@@ -133,7 +133,7 @@ ewl_range_min_val_get(Ewl_Range *r)
  * Sets the smallest value that @a r can obtain to @a maxv.
  */
 void
-ewl_range_max_val_set(Ewl_Range *r, double maxv)
+ewl_range_maximum_value_set(Ewl_Range *r, double maxv)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR("r", r);
@@ -154,7 +154,7 @@ ewl_range_max_val_set(Ewl_Range *r, double maxv)
  * @return Returns the currently set maximum value for the specified range.
  */
 double
-ewl_range_max_val_get(Ewl_Range *r)
+ewl_range_maximum_value_get(Ewl_Range *r)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("r", r, 0.0);

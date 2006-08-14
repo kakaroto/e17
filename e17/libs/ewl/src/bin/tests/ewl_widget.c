@@ -103,19 +103,22 @@ ewl_widget_cb_toggle(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-ewl_widget_cb_first_click(Ewl_Widget *w, void *ev, void *data)
+ewl_widget_cb_first_click(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+							void *data __UNUSED__)
 {
 	printf("first clicked\n");
 }
 
 static void
-ewl_widget_cb_second_click(Ewl_Widget *w, void *ev, void *data)
+ewl_widget_cb_second_click(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+							void *data __UNUSED__)
 {
 	printf("second clicked\n");
 }
 
 static void
-ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev, void *data)
+ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ewl_Embed *win;
 

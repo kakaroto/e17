@@ -114,7 +114,8 @@ ewl_dnd_snoop_output(char *buf)
 }
 
 static void
-ewl_dnd_snoop_cb_realize(Ewl_Widget *w, void *event, void *data)
+ewl_dnd_snoop_cb_realize(Ewl_Widget *w, void *event __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ewl_Embed *embed;
 	embed = ewl_embed_widget_find(w);
@@ -122,7 +123,7 @@ ewl_dnd_snoop_cb_realize(Ewl_Widget *w, void *event, void *data)
 }
 
 static int
-ewl_dnd_snoop_cb_enter(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_enter(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	int i;
 	char buf[1024];
@@ -143,7 +144,7 @@ ewl_dnd_snoop_cb_enter(void *data, int type, void *ev)
 }
 
 static int
-ewl_dnd_snoop_cb_position(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_position(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Xdnd_Position *event = ev;
@@ -168,7 +169,7 @@ ewl_dnd_snoop_cb_position(void *data, int type, void *ev)
 }
 
 static int
-ewl_dnd_snoop_cb_status(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_status(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Xdnd_Status *event = ev;
@@ -199,7 +200,7 @@ ewl_dnd_snoop_cb_status(void *data, int type, void *ev)
 }
 
 static int
-ewl_dnd_snoop_cb_leave(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_leave(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Xdnd_Leave *event = ev;
@@ -215,7 +216,7 @@ ewl_dnd_snoop_cb_leave(void *data, int type, void *ev)
 }
 
 static int
-ewl_dnd_snoop_cb_drop(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_drop(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Xdnd_Drop *event = ev;
@@ -240,7 +241,7 @@ ewl_dnd_snoop_cb_drop(void *data, int type, void *ev)
 }
 
 static int
-ewl_dnd_snoop_cb_finished(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_finished(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Xdnd_Finished *event = ev;
@@ -264,7 +265,8 @@ ewl_dnd_snoop_cb_finished(void *data, int type, void *ev)
 }
 
 static void
-ewl_dnd_snoop_cb_clear(Ewl_Widget *w, void *ev, void *data)
+ewl_dnd_snoop_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	ewl_text_clear(EWL_TEXT(text));
 }

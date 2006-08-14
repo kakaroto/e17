@@ -234,8 +234,8 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 		o = ewl_colorpicker_spinner_new();
 		ewl_widget_internal_set(o, TRUE);
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
-		ewl_range_min_val_set(EWL_RANGE(o), 0);
-		ewl_range_max_val_set(EWL_RANGE(o), modes[i].max);
+		ewl_range_minimum_value_set(EWL_RANGE(o), 0);
+		ewl_range_maximum_value_set(EWL_RANGE(o), modes[i].max);
 
 		switch(modes[i].mode)
 		{
@@ -278,8 +278,8 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	o = ewl_spinner_new();
 	ewl_widget_internal_set(o, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(vbox), o);
-	ewl_range_min_val_set(EWL_RANGE(o), 0);
-	ewl_range_max_val_set(EWL_RANGE(o), 255);
+	ewl_range_minimum_value_set(EWL_RANGE(o), 0);
+	ewl_range_maximum_value_set(EWL_RANGE(o), 255);
 	ewl_range_value_set(EWL_RANGE(o), 0);
 	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
 	cp->spinners.alpha = o;

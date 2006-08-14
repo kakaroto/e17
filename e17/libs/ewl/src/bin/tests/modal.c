@@ -38,7 +38,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-ewl_widget_cb_click(Ewl_Widget *w, void *ev, void *data)
+ewl_widget_cb_click(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Embed *emb;
 	Ewl_Widget *win, *vbox, *o;
@@ -71,7 +71,8 @@ ewl_widget_cb_click(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-ewl_widget_cb_close_click(Ewl_Widget *w, void *ev, void *data)
+ewl_widget_cb_close_click(Ewl_Widget *w, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ewl_Embed *emb;
 
@@ -80,7 +81,7 @@ ewl_widget_cb_close_click(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-ewl_widget_cb_go_modal(Ewl_Widget *w, void *ev, void *data)
+ewl_widget_cb_go_modal(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Embed *emb;
 

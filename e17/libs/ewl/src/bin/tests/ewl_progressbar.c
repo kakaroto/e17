@@ -132,7 +132,7 @@ cb_increment_progress(void *data)
 
 	if (val >= 35 && val < 60) {
 		value = ewl_range_value_get(r);
-		range = ewl_range_max_val_get(r);
+		range = ewl_range_maximum_value_get(r);
 
 		snprintf(c, sizeof (c), "%.0lf of %.0lf beers", value, range);
 		ewl_progressbar_label_set(EWL_PROGRESSBAR(r), c);
@@ -171,7 +171,7 @@ cb_set_new_range(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	printf ("New random value: %d\n", j);
 	
 	for (i = 0; i < 3; i++) {
-		ewl_range_max_val_set(EWL_RANGE(progressbar[i]), j);
+		ewl_range_maximum_value_set(EWL_RANGE(progressbar[i]), j);
 		
 		if (ewl_range_value_get(EWL_RANGE(progressbar[i])) >= j)
 			cb_rerun_progressbars(EWL_WIDGET (progressbar[i]), 

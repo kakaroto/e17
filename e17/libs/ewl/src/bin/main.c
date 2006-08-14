@@ -577,7 +577,7 @@ setup_unit_tests(Ewl_Test *test)
 	}
 
 	progress = ewl_widget_name_find("unit_test_progress");
-	ewl_range_max_val_set(EWL_RANGE(progress), (double)(i));
+	ewl_range_maximum_value_set(EWL_RANGE(progress), (double)(i));
 	ewl_range_value_set(EWL_RANGE(progress), 0.0);
 
 }
@@ -601,7 +601,7 @@ cb_run_unit_tests(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		;
 
 	progress = ewl_widget_name_find("unit_test_progress");
-	ewl_range_max_val_set(EWL_RANGE(progress), (double)(i));
+	ewl_range_maximum_value_set(EWL_RANGE(progress), (double)(i));
 	ewl_range_value_set(EWL_RANGE(progress), 0.0);
 
 	if (unit_test_timer) 

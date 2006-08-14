@@ -44,8 +44,8 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(border_box), avbox);
 	ewl_widget_show(avbox);
 
-	alabel = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(alabel), "Tabs Alignment");
+	alabel = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(alabel), "Tabs Alignment");
 	ewl_container_child_append(EWL_CONTAINER(avbox), alabel);
 	ewl_widget_show(alabel);
 
@@ -102,8 +102,8 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(border_box), pvbox);
 	ewl_widget_show(pvbox);
 
-	plabel = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(plabel), "Tabs Position");
+	plabel = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(plabel), "Tabs Position");
 	ewl_container_child_append(EWL_CONTAINER(pvbox), plabel);
 	ewl_widget_show(plabel);
 
@@ -205,11 +205,10 @@ border_change_position(Ewl_Widget *w, void *ev __UNUSED__,
 
 	else if (w == button_pbottom)
 		ewl_border_label_position_set(data, EWL_POSITION_BOTTOM);
-
-	return;
 }
 
-static void checkbutton_cb(Ewl_Widget *w, void *ev, void *data)
+static void
+checkbutton_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
         {
@@ -221,6 +220,5 @@ static void checkbutton_cb(Ewl_Widget *w, void *ev, void *data)
 		ewl_widget_enable(EWL_WIDGET(data));
 		ewl_button_label_set(EWL_BUTTON(w), "Disable");
 	}
-        return;
 }
 

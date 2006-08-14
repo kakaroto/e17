@@ -200,7 +200,7 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 		if (file) free(file);
 
 		len = ewl_media_length_get(EWL_MEDIA(video));
-		ewl_range_max_val_set(EWL_RANGE(seeker), len);
+		ewl_range_maximum_value_set(EWL_RANGE(seeker), len);
 	}
 }
 
@@ -309,7 +309,7 @@ create_media_window(Ewl_Media_Module_Type type)
 	ewl_object_fill_policy_set(EWL_OBJECT(seeker), 
 			EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 	ewl_range_value_set(EWL_RANGE(seeker), 0.0);
-	ewl_range_max_val_set(EWL_RANGE(seeker), 0.0);
+	ewl_range_maximum_value_set(EWL_RANGE(seeker), 0.0);
 	ewl_range_step_set(EWL_RANGE(seeker), 1.0);
 	ewl_callback_append(seeker, EWL_CALLBACK_VALUE_CHANGED, seeker_move_cb, video);
 	ewl_widget_show(seeker);

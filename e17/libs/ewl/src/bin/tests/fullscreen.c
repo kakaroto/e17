@@ -40,7 +40,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-ewl_widget_cb_click(Ewl_Widget *w, void *ev, void *data)
+ewl_widget_cb_click(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Embed *emb;
 

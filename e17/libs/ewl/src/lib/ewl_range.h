@@ -47,11 +47,11 @@ int             ewl_range_init(Ewl_Range *r);
 void            ewl_range_value_set(Ewl_Range *r, double v);
 double          ewl_range_value_get(Ewl_Range *r);
 
-void            ewl_range_min_val_set(Ewl_Range *r, double minv);
-double          ewl_range_min_val_get(Ewl_Range *r);
+void            ewl_range_minimum_value_set(Ewl_Range *r, double minv);
+double          ewl_range_minimum_value_get(Ewl_Range *r);
 
-void            ewl_range_max_val_set(Ewl_Range *r, double maxv);
-double          ewl_range_max_val_get(Ewl_Range *r);
+void            ewl_range_maximum_value_set(Ewl_Range *r, double maxv);
+double          ewl_range_maximum_value_get(Ewl_Range *r);
 
 void            ewl_range_step_set(Ewl_Range *r, double step);
 double          ewl_range_step_get(Ewl_Range *r);

@@ -112,8 +112,8 @@ create_test(Ewl_Container *box)
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
 		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
 		ewl_range_value_set(EWL_RANGE(o), 12);
-		ewl_range_min_val_set(EWL_RANGE(o), 8);
-		ewl_range_max_val_set(EWL_RANGE(o), 72);
+		ewl_range_minimum_value_set(EWL_RANGE(o), 8);
+		ewl_range_maximum_value_set(EWL_RANGE(o), 72);
 		ewl_range_step_set(EWL_RANGE(o), 1);
 		ewl_spinner_digits_set(EWL_SPINNER(o), 0);
 		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,

@@ -122,7 +122,7 @@ child_prepend_cb(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d)
 }
 
 static void 
-button_clicked_cb(Ewl_Widget *w, void *e, void *d)
+button_clicked_cb(Ewl_Widget *w, void *e __UNUSED__, void *d __UNUSED__)
 {
 	Ewl_Widget *g;
 	int start_col, end_col, start_row, end_row;
