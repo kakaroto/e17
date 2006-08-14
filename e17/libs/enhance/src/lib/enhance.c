@@ -418,7 +418,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    if(!strcmp(name, "response_id"))
      {
 	PROPERTY_STR;	
-	etk_object_data_set(ETK_OBJECT(wid->wid), "response_id", strdup(value));
+	etk_object_data_set(ETK_OBJECT(wid->wid), "response_id", value);
      }
    
    else if(!strcmp(name, "visible"))
@@ -1129,7 +1129,7 @@ enhance_widgets_start(Enhance *en)
 const char*
 enhance_widgets_next(Enhance *en, Enhance_Widgets_Enumerator* enumerator)
 {
-   Evas_List *list,*prev;
+   Evas_List *list;
    char* data;
 
    if (enumerator == NULL) return NULL;
@@ -1137,10 +1137,9 @@ enhance_widgets_next(Enhance *en, Enhance_Widgets_Enumerator* enumerator)
    if (list == NULL) return NULL;
       
    data = evas_list_data(list);
-   prev = evas_list_prev(list);
-   if (prev == NULL) enhance_widgets_end(en, enumerator);
+   if (!evas_list_prev(list)) enhance_widgets_end(en, enumerator);
 
-   *enumerator = prev;
+   *enumerator = evas_list_prev(list);
    return data;
 }
 
@@ -1152,7 +1151,7 @@ enhance_widgets_end(Enhance *en, Enhance_Widgets_Enumerator* enumerator)
    if (enumerator == NULL) return;
 
    list = *enumerator;
-   if (list != NULL) evas_list_free(list);
+   evas_list_free(list);
    *enumerator = NULL;
 }
 
@@ -1195,6 +1194,7 @@ _e_signal_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
       item = evas_list_data(signals);
       E_FREE(item);   
    }
+   signals = data;   
    evas_list_free(signals);
    
    return 1;
@@ -1212,6 +1212,8 @@ enhance_free(Enhance *en)
    evas_hash_foreach(en->signals, _e_signal_hash_free, en);
    evas_hash_free(en->signals);
    
+   evas_hash_free(en->callback_data);
+
    ecore_hash_destroy(_en_stock_items_hash);
    
    E_FREE(en->main_window);

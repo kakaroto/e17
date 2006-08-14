@@ -48,7 +48,11 @@ int main(int argc, char **argv)
    etk_shutdown();
    
    enhance_free(en);  
+
+   free(string1);
+   free(string2);
    enhance_shutdown();
+   etk_shutdown();
    
    return 0;
 }

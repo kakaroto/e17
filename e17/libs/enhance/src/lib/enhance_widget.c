@@ -1062,5 +1062,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
           etk_button_image_set(ETK_BUTTON(parent->wid), ETK_IMAGE(child->wid));
         else
           etk_container_add(ETK_CONTAINER(parent->wid), child->wid);
+
+        etk_widget_pass_mouse_events_set(child->wid, ETK_TRUE);
      }
 }
