@@ -85,7 +85,7 @@ Etk_Type *etk_vslider_type_get()
 Etk_Widget *etk_vslider_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
    return etk_widget_new(ETK_VSLIDER_TYPE, "theme_group", "vslider", "focusable", ETK_TRUE, "lower", lower, "upper", upper,
-      "value", value, "step_increment", step_increment, "page_increment", page_increment, NULL);
+      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**************************
