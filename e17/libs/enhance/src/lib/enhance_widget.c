@@ -962,19 +962,23 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
    else if(!strcmp(parent_class, "GtkVBox") || !strcmp(parent_class, "GtkHBox") ||
 	   !strcmp(parent_class, "GtkVButtonBox") || !strcmp(parent_class, "GtkHButtonBox"))
      {
-	Etk_Bool expand  = ETK_TRUE;
-	Etk_Bool fill    = ETK_TRUE;
-	int      padding = 0;
+        Etk_Box_Fill_Policy fill_policy;
+	int      padding;
 		
 	if(child->packing)
 	  {
-	     expand = child->packing->expand;
-	     fill = child->packing->fill;	     
+             fill_policy = child->packing->expand ? ETK_BOX_EXPAND : ETK_BOX_NONE;
+             fill_policy |= child->packing->fill ? ETK_BOX_FILL : ETK_BOX_NONE;
 	     padding = child->packing->padding;
 	  }
+        else
+          {
+             fill_policy = ETK_BOX_EXPAND_FILL;
+             padding = 0;
+          }
 	
-	etk_box_pack_start(ETK_BOX(parent->wid), child->wid, 
-			   expand, fill, padding);
+	etk_box_append(ETK_BOX(parent->wid), child->wid, ETK_BOX_START, 
+			   fill_policy, padding);
      }
    
    else if(!strcmp(parent_class, "GtkTable"))
@@ -986,7 +990,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 	int x_padding     = 0;
 	int y_padding     = 0;
 	int flags_set     = 0;	
-	Etk_Fill_Policy_Flags fill_policy = ETK_FILL_POLICY_NONE;
+	Etk_Table_Fill_Policy fill_policy = ETK_TABLE_NONE;
 	
 	if(child->packing)
 	  {
@@ -1006,38 +1010,37 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 	       {
 		  if(strstr(child->packing->x_options, "fill"))
 		    {
-		       fill_policy = ETK_FILL_POLICY_HFILL;
+		       fill_policy = ETK_TABLE_HFILL;
 		       flags_set = 1;
 		    }
 		  else if(strstr(child->packing->x_options, "expand"))
 		    {
 		       if(flags_set)
-			 fill_policy |= ETK_FILL_POLICY_HEXPAND;
+			 fill_policy |= ETK_TABLE_HEXPAND;
 		       else
-			 fill_policy = ETK_FILL_POLICY_HEXPAND;
+			 fill_policy = ETK_TABLE_HEXPAND;
 		       flags_set = 1;
 		    }
 		  else if(strstr(child->packing->y_options, "fill"))
 		    {
 		       if(flags_set)
-			 fill_policy |= ETK_FILL_POLICY_VFILL;
+			 fill_policy |= ETK_TABLE_VFILL;
 		       else
-			 fill_policy = ETK_FILL_POLICY_VFILL;
+			 fill_policy = ETK_TABLE_VFILL;
 		       flags_set = 1;
 		    }
 		  else if(strstr(child->packing->y_options, "expand"))
 		    {
 		       if(flags_set)
-			 fill_policy |= ETK_FILL_POLICY_VEXPAND;
+			 fill_policy |= ETK_TABLE_VEXPAND;
 		       else
-			 fill_policy = ETK_FILL_POLICY_VEXPAND;
+			 fill_policy = ETK_TABLE_VEXPAND;
 		       flags_set = 1;
 		    }
 	       }
 	     
 	     if(!flags_set)
-	       fill_policy = ETK_FILL_POLICY_VFILL|ETK_FILL_POLICY_HFILL|
-	                     ETK_FILL_POLICY_VEXPAND|ETK_FILL_POLICY_HEXPAND;
+	       fill_policy = ETK_TABLE_EXPAND_FILL;
 	  }
 	
 	/* NOTE: we have a problem here:
