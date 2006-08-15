@@ -1,5 +1,8 @@
 group {
    name: "toolbar";
+   data {   
+      item: "inset" "1 1 2 2";
+   }   
    parts {
       part {
 	 name: "toolbar";

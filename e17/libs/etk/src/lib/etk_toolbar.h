@@ -5,6 +5,7 @@
 #include "etk_widget.h"
 #include "etk_box.h"
 #include "etk_types.h"
+#include "etk_utils.h"
 
 /**
  * @defgroup Etk_Toolbar Etk_Toolbar
@@ -50,6 +51,9 @@ Etk_Widget *etk_toolbar_new();
 
 void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget);
 void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget);
+
+void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, int orientation);
+int etk_toolbar_orientation_get(Etk_Toolbar *toolbar);  
 
 /** @} */
 

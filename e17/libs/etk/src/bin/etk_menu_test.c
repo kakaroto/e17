@@ -23,7 +23,8 @@ void etk_test_menu_window_create(void *data)
    Etk_Widget *radio_item;
    Etk_Widget *label;
    Etk_Widget *toolbar;
-   Etk_Widget *button;   
+   Etk_Widget *button;
+   Etk_Widget *sep;   
    
    if (win)
    {
@@ -34,7 +35,7 @@ void etk_test_menu_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Menu Test");
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-   etk_widget_size_request_set(win, 300, 200);
+   etk_widget_size_request_set(win, 325, 240);
    
    /****************
     * The window
@@ -52,20 +53,27 @@ void etk_test_menu_window_create(void *data)
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_COPY);
    etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+   
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_CUT);
    etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_PASTE);
    etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
    
-   button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_FIND);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+   sep = etk_vseparator_new();
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), sep);
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_UNDO);
    etk_toolbar_append(ETK_TOOLBAR(toolbar), button); 
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_REDO);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), button); 
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);   
+   
+   sep = etk_vseparator_new();
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), sep);   
+   
+   button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_FIND);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);      
    
    /* Window body */
    label = etk_label_new("Click me! :)");

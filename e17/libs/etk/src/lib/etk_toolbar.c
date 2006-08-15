@@ -85,6 +85,55 @@ void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget)
    etk_box_prepend(ETK_BOX(toolbar->box), widget, ETK_BOX_START, ETK_BOX_NONE, 0);
 }
 
+/**
+ * @brief Sets the toolbar's orientation (horizontal or vertical)
+ * @param toolbar the toolbar
+ * @param orientation the orientation
+ */
+void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, int orientation)
+{
+   Evas_List *children;
+   Evas_List *l;
+   
+   if (!toolbar || toolbar->orientation == orientation ||
+       (orientation != ETK_TOOLBAR_ORIENTATION_HORIZONTAL &&
+	orientation != ETK_TOOLBAR_ORIENTATION_VERTICAL))
+      return;
+   
+   children = etk_container_children_get(ETK_CONTAINER(toolbar->box));
+      
+   for (l = children; l; l = l->next)
+      etk_container_remove(ETK_CONTAINER(toolbar->box), ETK_WIDGET(l->data));
+   
+   etk_object_destroy(ETK_OBJECT(toolbar->box));
+   
+   toolbar->orientation = orientation;
+   if (toolbar->orientation == ETK_TOOLBAR_ORIENTATION_VERTICAL)
+      toolbar->box = etk_vbox_new(ETK_FALSE, 0);
+   else
+      toolbar->box = etk_hbox_new(ETK_FALSE, 0);           
+   
+   etk_widget_parent_set(toolbar->box, ETK_WIDGET(toolbar));
+   etk_widget_visibility_locked_set(ETK_WIDGET(toolbar->box), ETK_TRUE);
+   etk_widget_show(toolbar->box);
+   
+   for (l = children; l; l = l->next)
+      etk_box_append(ETK_BOX(toolbar->box), ETK_WIDGET(l->data), ETK_BOX_START, ETK_BOX_NONE, 0);
+}
+
+/**
+ * @brief Gets the toolbar's orientation (horizontal or vertical)
+ * @param toolbar the toolbar
+ * @return the orientation
+ */
+int etk_toolbar_orientation_get(Etk_Toolbar *toolbar)
+{
+   if (!toolbar)
+      return ETK_FALSE;
+   
+   return toolbar->orientation;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -131,7 +180,7 @@ static void _etk_toolbar_property_set(Etk_Object *object, int property_id, Etk_P
    switch (property_id)
    {
       case ETK_TOOLBAR_ORIENTATION_PROPERTY:
-         //etk_window_title_set(window, etk_property_value_string_get(value));
+         etk_toolbar_orientation_set(toolbar, etk_property_value_int_get(value));
          break;
       default:
          break;      
@@ -149,7 +198,7 @@ static void _etk_toolbar_property_get(Etk_Object *object, int property_id, Etk_P
    switch (property_id)
    {
       case ETK_TOOLBAR_ORIENTATION_PROPERTY:
-         //etk_property_value_string_set(value, etk_window_title_get(window));
+         etk_property_value_int_set(value, toolbar->orientation);
          break;
       default:
          break;
@@ -171,10 +220,14 @@ static void _etk_toolbar_size_request(Etk_Widget *widget, Etk_Size *size)
 static void _etk_toolbar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Toolbar *toolbar;
+   Etk_Size size;
    
    if (!(toolbar = ETK_TOOLBAR(widget)))
       return;   
-      
+   
+   etk_widget_size_request(toolbar->box, &size);
+   geometry.w = ETK_MAX(geometry.w, size.w);
+   geometry.h = ETK_MAX(geometry.h, size.h);
    etk_widget_size_allocate(ETK_WIDGET(toolbar->box), geometry);
 }
 
