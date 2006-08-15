@@ -90,6 +90,8 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	}
 
 	ewl_container_child_append(EWL_CONTAINER(tree), header);
+	ewl_callback_append(header, EWL_CALLBACK_VALUE_CHANGED,
+					ewl_tree_header_change_cb, tree);
 	ewl_widget_appearance_set(EWL_WIDGET(header), "tree_header");
 	ewl_widget_show(header);
 	tree->header = header;
@@ -1411,6 +1413,28 @@ ewl_tree_hscroll_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("user_data", user_data);
 
 	ewl_widget_configure(user_data);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: UNUSED
+ * @param data: The tree
+ * @return Returns no value
+ * @brief Callback for when the header grabbers are moved
+ */
+void
+ewl_tree_header_change_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
+{
+	Ewl_Tree *tree;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	tree = data;
+	ewl_widget_configure(tree->scrollarea);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

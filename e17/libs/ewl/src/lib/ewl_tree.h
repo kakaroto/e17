@@ -128,6 +128,7 @@ void ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w);
 void ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
 						     Ewl_Orientation o);
 
+void ewl_tree_header_change_cb(Ewl_Widget *w, void *ev, void *data);
 void ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
