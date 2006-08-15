@@ -29,8 +29,6 @@ ew_entry_new(const char *label, const char *text, int ispassword)
 	ew->owner = etk_hbox_new(0, 10);
 	ew->control = etk_entry_new();
 
-	if(text)
-		ew_entry_set(ew, text);
 
 	if(ispassword)
 		ew_entry_password_set(ew);
@@ -42,6 +40,8 @@ ew_entry_new(const char *label, const char *text, int ispassword)
 	}
 
 	etk_box_pack_start(ETK_BOX(ew->owner), ew->control, ETK_TRUE, ETK_TRUE, 0);
+	if(text)
+		ew_entry_set(ew, text);
 
 	return ew;
 }

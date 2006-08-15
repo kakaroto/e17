@@ -12,6 +12,7 @@ Entrance Widgets
 - use etk_window to build ew_dialog, so we can set modality, fixed size, etc, basically, more options
 - Fix up Fileselector widget. This may probably need to refactor out the buttons used by ew_notice as ew_reponse_buttons ?
 - use ecore_lists to hold buttons and other *low life* widgets used on composite widgets.
+- There is a bug in ew_entry. I've not been albe to programmatically add text to the widget and display it.
 	
 
 GUI
