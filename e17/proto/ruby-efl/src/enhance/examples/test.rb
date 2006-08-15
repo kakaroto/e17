@@ -38,6 +38,7 @@ class Event_Handlers
     end
     def on_window1_delete_event(target, data)
         EtkBase.main_quit
+		  puts("coin")
     end
 end
 h = Event_Handlers.new(en)
@@ -48,8 +49,8 @@ win = en.var_get("window1")
 win.show
 
 EtkBase.main
-EtkBase.shutdown
    
-en.free
+#en.free
 EnhanceBase.shutdown
+EtkBase.shutdown
    

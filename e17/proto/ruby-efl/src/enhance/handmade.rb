@@ -31,7 +31,7 @@ class EnhanceBase
     def autoconnect(handlers_holder)
         each_widget { |widget_name| 
 
-            widget = Etk::Widget.wrap(self.var_get(widget_name))
+            widget = self.var_get(widget_name)
             
             each_signal(widget_name) { |signal_name, handler_name|
 
@@ -53,7 +53,9 @@ class EnhanceBase
                 # connect it to the widget
                 hand_proc = hand_proc.to_proc
                 sig = sig.new &hand_proc
-                widget << sig
+					 if sig != nil and widget != nil
+						 widget << sig 
+					 end
             }
         }
     end
@@ -83,6 +85,4 @@ class EnhanceBase
         return w if kl.nil? 
         return kl.wrap(w)
     end
-end
-    
 end

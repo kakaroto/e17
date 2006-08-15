@@ -66,7 +66,7 @@
                         { :name => 'Table', :child_of => 'Container' } ,
                     
                     { :name => 'Entry', :child_of => 'Widget' } ,
-                    { :name => 'FileChooser', :child_of => 'Widget' } ,
+                    { :name => 'FilechooserWidget', :wraps => 'filechooser_widget', :child_of => 'Widget' } ,
                     { :name => 'IconBox', :child_of => 'Widget' } ,
                     { :name => 'Image', :child_of => 'Widget' } ,
                     { :name => 'Label', :child_of => 'Widget' } ,
