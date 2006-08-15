@@ -629,7 +629,8 @@ ewl_entry_delete_left(Ewl_Entry *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
-
+	if(!EWL_TEXT(e)->text)
+		DRETURN(DLEVEL_STABLE);	
 	pos1 = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 	pos2 = ewl_text_utf_char_position_prev(EWL_TEXT(e)->text, pos1);
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), pos2);
@@ -651,7 +652,8 @@ ewl_entry_delete_right(Ewl_Entry *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
-
+	if(!EWL_TEXT(e)->text)
+		DRETURN(DLEVEL_STABLE);
 	pos1 = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 	pos2 = ewl_text_utf_char_position_next(EWL_TEXT(e)->text, pos1);
 	ewl_text_text_delete(EWL_TEXT(e), pos2 - pos1);
