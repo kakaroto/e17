@@ -59,7 +59,7 @@ ew_dialog_group_add(Entrance_Dialog d, const char *title, int direction)
 		return;
 	}
 
-	etk_box_pack_start(ETK_BOX(d->box), ew->owner, ETK_TRUE, ETK_TRUE, 0);
+	etk_box_append(ETK_BOX(d->box), ew->owner, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 	return ew;
 }
@@ -68,7 +68,7 @@ ew_dialog_group_add(Entrance_Dialog d, const char *title, int direction)
 ew_dialog_add(Entrance_Dialog d, Entrance_Widget ew)
 {
 	if(d && ew)
-		etk_box_pack_start(ETK_BOX(d->box), ew->box, ETK_TRUE, ETK_TRUE, 0);
+		etk_box_append(ETK_BOX(d->box), ew->box, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 }*/
 
 
