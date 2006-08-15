@@ -211,7 +211,7 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 #define ewl_object_toplevel_set(o, val) \
 	(val ? ewl_object_flags_add(o, EWL_FLAG_PROPERTY_TOPLEVEL, \
 				    EWL_FLAGS_PROPERTY_MASK) : \
-	 ewl_object_flags_remove(o, EWL_FLAG_PROPERTY_RECURSIVE, \
+	 ewl_object_flags_remove(o, EWL_FLAG_PROPERTY_TOPLEVEL, \
 				    EWL_FLAGS_PROPERTY_MASK));
 
 /**
@@ -545,6 +545,29 @@ unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
  * Used to determine if a widget is disabled
  */
 #define DISABLED(o) (ewl_object_state_has(EWL_OBJECT(o), EWL_FLAG_STATE_DISABLED))
+
+/**
+ * @def ewl_object_in_tab_list_get(o)
+ * @param o: the parameter to retrieve the current value of the in tab list flag
+ * @return Returns the current setting of the in tab list flag for @a o.
+ * @brief Retrieves the current setting of the in tab list flag for @a o.
+ */
+#define ewl_object_in_tab_list_get(o) \
+	(ewl_object_flags_get(o, EWL_FLAGS_PROPERTY_MASK) & \
+	 EWL_FLAG_PROPERTY_IN_TAB_LIST)
+
+/**
+ * @def ewl_object_in_tab_list_set(o, val)
+ * @param o: the object to change the in tab list
+ * @param val: a boolean indicating the value of the tab list flag
+ * @return Returns no value.
+ * @brief Changes the tab list flag value to match @a val.
+ */
+#define ewl_object_in_tab_list_set(o, val) \
+	(val ? ewl_object_flags_add(o, EWL_FLAG_PROPERTY_IN_TAB_LIST, \
+				    EWL_FLAGS_PROPERTY_MASK) : \
+	 ewl_object_flags_remove(o, EWL_FLAG_PROPERTY_IN_TAB_LIST, \
+				    EWL_FLAGS_PROPERTY_MASK));
 
 /**
  * @}

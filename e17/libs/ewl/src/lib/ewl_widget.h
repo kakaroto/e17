@@ -143,8 +143,6 @@ struct Ewl_Widget
 	int              layer;        /**< the layer relative to the parent */
 	int              toplayered;   /**< Indicates if the widget should 
 						be on the top of the layer stack */ 
-	unsigned char	 in_tab_order:1; /**< Has the widget been inserted
-							into the tab order */
 
 	Ecore_Hash      *theme;        /**< Overriding theme settings */
 	Ewl_Pair_List    theme_text;   /**< Overriding text in theme */

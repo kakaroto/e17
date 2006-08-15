@@ -1106,7 +1106,8 @@ ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
 	current_idx = ecore_dlist_index(e->tab_order);
 
 	/* make sure this widget isn't already in the list */
-	if (w->in_tab_order && ecore_dlist_goto(e->tab_order, w)) {
+	if (ewl_object_in_tab_list_get(EWL_OBJECT(w)) 
+			&& ecore_dlist_goto(e->tab_order, w)) {
 		int del_idx;
 
 		/* if this widget was before or at our current focused
@@ -1125,7 +1126,7 @@ ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
 	if (current_idx <= (int)idx) current_idx ++;
 	ecore_dlist_goto_index(e->tab_order, current_idx);
 
-	w->in_tab_order = 1;
+	ewl_object_in_tab_list_set(EWL_OBJECT(w), TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1219,8 +1220,8 @@ ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w)
 
 	if (ecore_dlist_goto(e->tab_order, w))
 		ecore_dlist_remove(e->tab_order);
-	
-	w->in_tab_order = 0;
+
+	ewl_object_in_tab_list_set(EWL_OBJECT(w), FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
