@@ -2,6 +2,7 @@
 #include "Entrance_Widgets.h"
 
 static void _ew_cb_destroy(void *);
+static void _ew_dialog_add_bottom(Entrance_Dialog d, Entrance_Widget ew);
 
 Entrance_Dialog 
 _ew_dialog_new()
@@ -50,12 +51,7 @@ ew_dialog_show(Entrance_Dialog ew)
 	etk_widget_show_all(ew->owner);
 }
 
-/*void 
-ew_dialog_add(Entrance_Dialog d, Entrance_Widget ew)
-{
-	if(d && ew)
-		etk_box_pack_start(ETK_BOX(d->box), ew->box, ETK_TRUE, ETK_TRUE, 0);
-}*/
+
 
 Entrance_Widget
 ew_dialog_group_add(Entrance_Dialog d, const char *title, int direction)
@@ -71,28 +67,39 @@ ew_dialog_group_add(Entrance_Dialog d, const char *title, int direction)
 	return ew;
 }
 
+/*void 
+ew_dialog_add(Entrance_Dialog d, Entrance_Widget ew)
+{
+	if(d && ew)
+		etk_box_pack_start(ETK_BOX(d->box), ew->box, ETK_TRUE, ETK_TRUE, 0);
+}*/
+
+
+void
+ew_dialog_button_add(Entrance_Dialog ew, const char *title, void (*func)(void*, void*), void *data)
+{
+	/*TODO: poke all buttons into an ecore_list*/
+	Entrance_Widget button = ew_button_new(title, func, data);
+	_ew_dialog_add_bottom(ew, button);
+}
+
+
 void 
 ew_dialog_close_button_add(Entrance_Dialog ew, void (*func)(void *, void*), void *data)
 {
-	Etk_Widget *button = etk_button_new_with_label(_("Close"));
-	etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(func), data);
-	etk_box_pack_start(ETK_BOX(ew->hbox), button, ETK_TRUE, ETK_TRUE, 0);
+	ew_dialog_button_add(ew, _("Close"), func, data);
 }
 
 void 
 ew_dialog_apply_button_add(Entrance_Dialog ew, void (*func)(void *, void*), void *data)
 {
-	Etk_Widget *button = etk_button_new_with_label(_("Apply"));
-	etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(func), data);
-	etk_box_pack_start(ETK_BOX(ew->hbox), button, ETK_TRUE, ETK_TRUE, 0);
+	ew_dialog_button_add(ew, _("Apply"), func, data);
 }
 
 void 
 ew_dialog_ok_button_add(Entrance_Dialog ew, void (*func)(void *, void*), void *data)
 {
-	Etk_Widget *button = etk_button_new_with_label(_("Ok"));
-	etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(func), data);
-	etk_box_pack_start(ETK_BOX(ew->hbox), button, ETK_TRUE, ETK_TRUE, 0);
+	ew_dialog_button_add(ew, _("Ok"), func, data);
 }
 
 void
@@ -107,3 +114,11 @@ _ew_cb_destroy(void *data)
 {
 	ew_main_quit();
 }
+
+static void
+_ew_dialog_add_bottom(Entrance_Dialog d, Entrance_Widget ew)
+{
+	if(d && ew)
+		etk_box_pack_start(ETK_BOX(d->hbox), ew->owner, ETK_TRUE, ETK_TRUE, 0);
+}
+

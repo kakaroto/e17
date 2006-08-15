@@ -4,7 +4,7 @@
 #include "config.h"
 
 static void _main_dialog_show(void);
-static void _close_button_cb(void *, int, void *);
+static void _close_button_cb(void *, void *);
 
 static Entrance_Dialog dialog;
 
@@ -47,7 +47,7 @@ _main_dialog_show()
 }
 
 static void
-_close_button_cb(void *sender, int response, void *data)
+_close_button_cb(void *sender, void *data)
 {
 	ew_dialog_destroy(dialog);
 	ew_main_quit();

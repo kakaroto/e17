@@ -9,6 +9,7 @@ static void _gs_cb_selected(void);
 static void _gs_cb_ok(void *, void *);
 static void _gs_cb_apply(void *, void *);
 static void _gs_cb_close(void *, void *);
+static void _gs_cb_browse(void*, void*);
 
 static char* _gs_get_path(const char *);
 static void _gs_close(void);
@@ -20,6 +21,7 @@ static Entrance_Dialog win;
 static Entrance_Widget img_preview;
 static Entrance_List list_thumbs;
 static Entrance_Widget browse_entry;
+static Entrance_Widget browse_button;
 static Entrance_Widget group_graphics;
 static Entrance_Widget group_preview;
 static Entrance_Widget group_options;
@@ -48,10 +50,15 @@ egui_gs_dialog_show(Egui_Graphics_Selector _egs)
    
    ew_group_add(group_graphics, list_thumbs);
 
-   group_options = ew_dialog_group_add(win, _("Browse System"), EW_GROUP_HORIZONTAL);
-   browse_entry = ew_entry_new(NULL, EW_FALSE);
+   char t[PATH_MAX];
+   snprintf(t, PATH_MAX, "Browse system ror %ss", egs.name);
+   group_options = ew_dialog_group_add(win, t, EW_GROUP_HORIZONTAL);
 
+   browse_entry = ew_entry_new(NULL, EW_FALSE);
    ew_group_add(group_options, browse_entry);
+
+   browse_button = ew_button_new(_("Browse..."), _gs_cb_browse, NULL);
+   ew_group_add(group_options, browse_button);
    
    ew_dialog_close_button_add(win, _gs_cb_close, NULL);
    ew_dialog_apply_button_add(win, _gs_cb_apply, NULL);
@@ -85,6 +92,12 @@ static void
 _gs_cb_close(void *object, void *data)
 {
 	_gs_close();
+}
+
+static void
+_gs_cb_browse(void *object, void* data)
+{
+	ew_messagebox_ok("Entrance Configuration - Notice", "Browsing for files :)", EW_MESSAGEBOX_ICON_MESSAGE);
 }
 
 static char*

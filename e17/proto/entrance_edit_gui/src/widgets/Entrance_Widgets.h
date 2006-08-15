@@ -3,7 +3,6 @@
 
 #include <Etk.h>
 
-
 #include "ew.h"
 #include "ew_dialog.h"
 #include "ew_group.h"
@@ -14,10 +13,6 @@
 #include "ew_messagebox.h"
 #include "ew_label.h"
 #include "ew_entry.h"
-
-
-
-
-
+#include "ew_button.h"
 
 #endif
