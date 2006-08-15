@@ -12,7 +12,7 @@ static void _gs_cb_close(void *, void *);
 
 static char* _gs_get_path(const char *);
 static void _gs_close(void);
-static void _gs_apply(void);
+static int _gs_apply(void);
 static char* _gs_populate_list(void);
 static void _gs_load_preview(const char *);
 
@@ -67,8 +67,8 @@ _gs_cb_selected()
 static void
 _gs_cb_ok(void *object, void *data)
 {
-   _gs_apply();
-   _gs_close();
+   if(_gs_apply()) 
+	   _gs_close();
 }
 
 static void
@@ -92,14 +92,17 @@ _gs_get_path(const char *t)
 	return path;
 }
 
-static void 
+static int
 _gs_apply(void)
 {
+	char msg[PATH_MAX];
+
     char *graphic = ew_list_selected_data_get(list_thumbs);
 	if(!graphic) 
 	{
-		printf("Error. Please select a %s first\n", egs.name);
-		return;
+		snprintf(msg, PATH_MAX, "Please select a %s first", egs.name);
+		ew_messagebox_ok("Entrance Config - Error", msg, EW_MESSAGEBOX_ICON_ERROR);
+		return 0;
 	}
 
 	if(egs.use_full_path)
@@ -113,8 +116,12 @@ _gs_apply(void)
 
 	if(!entrance_edit_save())
 	{
-		printf("Error setting %s. Please check your permissions\n", egs.name);
+		snprintf(msg, PATH_MAX, "Can not set %s. Please check your permissions", egs.name);
+		ew_messagebox_ok("Entrance Config - Error", msg, EW_MESSAGEBOX_ICON_ERROR);
+		return 0;
 	}
+
+	return 1;
 }
 
 static void
