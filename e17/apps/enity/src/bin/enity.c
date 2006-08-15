@@ -463,7 +463,7 @@ static void _en_scale_cb(En_Argument *args, int index)
      value = 0;
    
    slider = etk_hslider_new((double)min_value, (double)max_value, (double)value, (double)step_value, 10.0);
-   etk_box_pack_start(ETK_BOX(slider_hbox), slider, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(slider_hbox), slider, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    if(!en_argument_is_set(args, "hide-value", ' '))
      {
@@ -472,7 +472,7 @@ static void _en_scale_cb(En_Argument *args, int index)
 	snprintf(str, sizeof(str), "%d", (int)value);
 	slider_label = etk_label_new(str);
 	etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(_en_slider_value_changed), slider_label);
-	etk_box_pack_start(ETK_BOX(slider_hbox), slider_label, ETK_TRUE, ETK_TRUE, 0);
+	etk_box_append(ETK_BOX(slider_hbox), slider_label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
      }
    
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_FALSE, ETK_FALSE, 3, ETK_FALSE);
