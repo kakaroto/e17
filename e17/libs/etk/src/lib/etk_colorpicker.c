@@ -303,14 +303,12 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    etk_widget_show(cp->main_table);
    
    cp->picker_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "picker", NULL);
-   etk_table_attach(ETK_TABLE(cp->main_table), cp->picker_widget, 0, 0, 0, 0,
-      0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_VEXPAND);
+   etk_table_attach_default(ETK_TABLE(cp->main_table), cp->picker_widget, 0, 0, 0, 0);
    etk_widget_visibility_locked_set(cp->picker_widget, ETK_TRUE);
    etk_widget_show(cp->picker_widget);
    
    cp->component_table = etk_table_new(3, 6, ETK_FALSE);
-   etk_table_attach(ETK_TABLE(cp->main_table), cp->component_table, 1, 1, 0, 0,
-      0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_VEXPAND);
+   etk_table_attach_default(ETK_TABLE(cp->main_table), cp->component_table, 1, 1, 0, 0);
    etk_widget_visibility_locked_set(cp->component_table, ETK_TRUE);
    etk_widget_show(cp->component_table);
    
@@ -322,13 +320,13 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       else
          cp->radios[i] = etk_radio_button_new_with_label_from_widget(labels[i], ETK_RADIO_BUTTON(cp->radios[0]));
       etk_table_attach(ETK_TABLE(cp->component_table), cp->radios[i], 0, 0, i, i,
-         0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VEXPAND);
+         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       etk_widget_visibility_locked_set(cp->radios[i], ETK_TRUE);
       etk_widget_show(cp->radios[i]);
       
       cp->sliders[i] = etk_hslider_new(0.0, values[i], 0.0, steps[i], steps[i] * 5);
       etk_table_attach(ETK_TABLE(cp->component_table), cp->sliders[i], 1, 1, i, i,
-         0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_VEXPAND);
+         0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
       etk_widget_visibility_locked_set(cp->sliders[i], ETK_TRUE);
       etk_widget_show(cp->sliders[i]);
       
@@ -337,7 +335,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       
       cp->value_labels[i] = etk_label_new("0");
       etk_table_attach(ETK_TABLE(cp->component_table), cp->value_labels[i], 2, 2, i, i,
-         0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VEXPAND);
+         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       etk_widget_size_request_set(cp->value_labels[i], 28, -1);
       etk_widget_visibility_locked_set(cp->value_labels[i], ETK_TRUE);
       etk_widget_show(cp->value_labels[i]);
@@ -355,20 +353,20 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    /* We create the widgets for the color preview */
    cp->color_table = etk_table_new(2, 1, ETK_FALSE);
    etk_table_attach(ETK_TABLE(cp->main_table), cp->color_table, 0, 0, 1, 1,
-      0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+      0, 0, ETK_TABLE_FILL | ETK_TABLE_HEXPAND);
    etk_widget_visibility_locked_set(cp->color_table, ETK_TRUE);
    etk_widget_show(cp->color_table);
    
    /* Current color preview */
    cp->current_color_label = etk_label_new(_("Current"));
    etk_table_attach(ETK_TABLE(cp->color_table), cp->current_color_label, 0, 0, 0, 0,
-      0, 0, ETK_FILL_POLICY_HFILL);
+      0, 0, ETK_TABLE_HFILL);
    etk_widget_visibility_locked_set(cp->current_color_label, ETK_TRUE);
    etk_widget_show(cp->current_color_label);
    
    cp->current_color_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "color_preview", NULL);
    etk_table_attach(ETK_TABLE(cp->color_table), cp->current_color_widget, 1, 1, 0, 0,
-      0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_HEXPAND);
+      0, 0, ETK_TABLE_HFILL | ETK_TABLE_HEXPAND);
    etk_widget_visibility_locked_set(cp->current_color_widget, ETK_TRUE);
    etk_widget_show(cp->current_color_widget);
    

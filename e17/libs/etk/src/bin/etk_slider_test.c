@@ -26,18 +26,18 @@ void etk_test_slider_window_create(void *data)
    
    slider = etk_hslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
    etk_widget_size_request_set(slider, 130, 130);
-   etk_table_attach_defaults(ETK_TABLE(table), slider, 0, 0, 0, 0);
+   etk_table_attach_default(ETK_TABLE(table), slider, 0, 0, 0, 0);
    
    label = etk_label_new("128.00");
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 0, 0, ETK_FILL_POLICY_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 0, 0, ETK_TABLE_NONE);
    etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(_etk_test_slider_value_changed), label);
    
    slider = etk_vslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
    etk_widget_size_request_set(slider, 130, 130);
-   etk_table_attach_defaults(ETK_TABLE(table), slider, 1, 1, 0, 0);
+   etk_table_attach_default(ETK_TABLE(table), slider, 1, 1, 0, 0);
 
    label = etk_label_new("128.00");
-   etk_table_attach(ETK_TABLE(table), label, 1, 1, 1, 1, 0, 0, ETK_FILL_POLICY_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 1, 1, 1, 1, 0, 0, ETK_TABLE_NONE);
    etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(_etk_test_slider_value_changed), label);
    
    etk_widget_show_all(win);

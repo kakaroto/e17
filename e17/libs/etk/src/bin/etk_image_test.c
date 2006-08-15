@@ -28,10 +28,10 @@ void etk_test_image_window_create(void *data)
    labels[1] = etk_label_new("Don't keep aspect");
    table = etk_table_new(2, 2, ETK_FALSE);
 
-   etk_table_attach_defaults(ETK_TABLE(table), images[0], 0, 0, 0, 0);
-   etk_table_attach_defaults(ETK_TABLE(table), images[1], 1, 1, 0, 0);
-   etk_table_attach(ETK_TABLE(table), labels[0], 0, 0, 1, 1, 2, 0, ETK_FILL_POLICY_HEXPAND);
-   etk_table_attach(ETK_TABLE(table), labels[1], 1, 1, 1, 1, 2, 0, ETK_FILL_POLICY_HEXPAND);
+   etk_table_attach_default(ETK_TABLE(table), images[0], 0, 0, 0, 0);
+   etk_table_attach_default(ETK_TABLE(table), images[1], 1, 1, 0, 0);
+   etk_table_attach(ETK_TABLE(table), labels[0], 0, 0, 1, 1, 2, 0, ETK_TABLE_HEXPAND);
+   etk_table_attach(ETK_TABLE(table), labels[1], 1, 1, 1, 1, 2, 0, ETK_TABLE_HEXPAND);
 
    etk_container_add(ETK_CONTAINER(win), table);
 

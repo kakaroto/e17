@@ -10,7 +10,6 @@
  * @{
  */
 
-/* Gets the array index of the cell located at column "col" and row "row" in table "table" */
 #define ETK_TABLE_CELL_INDEX(table, col, row)   ((row) * (table)->num_cols + (col))
 #define ETK_TABLE_CELL_MIN_SIZE 10
 
@@ -199,7 +198,7 @@ void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
  * @param fill_policy The fill policy of the child
  */
 void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach,
-   int top_attach, int bottom_attach, int x_padding, int y_padding, Etk_Fill_Policy_Flags fill_policy)
+   int top_attach, int bottom_attach, int x_padding, int y_padding, Etk_Table_Fill_Policy fill_policy)
 {
    Etk_Table_Cell *cell;
    int i, j;
@@ -238,7 +237,8 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
 }
 
 /**
- * @brief Simpler version of etk_table_attach: padding is set to 0 and fill policy is FILL and EXPAND in the both directions.
+ * @brief Same as etk_table_attach() but with default settings: padding is set to 0 and
+ * the fill policy is ETK_TABLE_EXPAND_FILL.
  * @param table a table
  * @param child the child widget to attach
  * @param left_attach the column where the left size of the child will be attached
@@ -246,10 +246,9 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
  * @param top_attach the row where the top size of the child will be attached
  * @param bottom_attach the row where the bottom size of the child will be attached
  */
-void etk_table_attach_defaults(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach, int top_attach, int bottom_attach)
+void etk_table_attach_default(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach, int top_attach, int bottom_attach)
 {
-   etk_table_attach(table, child, left_attach, right_attach, top_attach, bottom_attach,
-      0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_VEXPAND);
+   etk_table_attach(table, child, left_attach, right_attach, top_attach, bottom_attach, 0, 0, ETK_TABLE_EXPAND_FILL);
 }
 
 /**
@@ -412,12 +411,12 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             cell_size = (2 * cell->x_padding + child_requisition.w) / (cell->right_attach - cell->left_attach + 1);
             if (max_col_width < cell_size)
                max_col_width = cell_size;
-            hexpand |= (cell->fill_policy & ETK_FILL_POLICY_HEXPAND);
+            hexpand |= (cell->fill_policy & ETK_TABLE_HEXPAND);
 
             cell_size = (2 * cell->y_padding + child_requisition.h) / (cell->bottom_attach - cell->top_attach + 1);
             if (max_row_height < cell_size)
                max_row_height = cell_size;
-            vexpand |= (cell->fill_policy & ETK_FILL_POLICY_VEXPAND);
+            vexpand |= (cell->fill_policy & ETK_TABLE_VEXPAND);
          }
 
          for (i = 0; i < table->num_cols; i++)
@@ -461,8 +460,8 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             {
                if (table->cols[cell->left_attach].requested_size < child_requisition.w + 2 * cell->x_padding)
                   table->cols[cell->left_attach].requested_size = child_requisition.w + 2 * cell->x_padding;
-               table->cols[cell->left_attach].expand |= (cell->fill_policy & ETK_FILL_POLICY_HEXPAND);
-               hexpand |= (cell->fill_policy & ETK_FILL_POLICY_HEXPAND);
+               table->cols[cell->left_attach].expand |= (cell->fill_policy & ETK_TABLE_HEXPAND);
+               hexpand |= (cell->fill_policy & ETK_TABLE_HEXPAND);
             }
 
             /* Rows */
@@ -470,8 +469,8 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             {
                if (table->rows[cell->top_attach].requested_size < child_requisition.h + 2 * cell->y_padding)
                   table->rows[cell->top_attach].requested_size = child_requisition.h + 2 * cell->y_padding;
-               table->rows[cell->top_attach].expand |= (cell->fill_policy & ETK_FILL_POLICY_VEXPAND);
-               vexpand |= (cell->fill_policy & ETK_FILL_POLICY_VEXPAND);
+               table->rows[cell->top_attach].expand |= (cell->fill_policy & ETK_TABLE_VEXPAND);
+               vexpand |= (cell->fill_policy & ETK_TABLE_VEXPAND);
             }
          }
          /* Then, we treat the children that span multiple columns or rows */
@@ -496,7 +495,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                for (i = cell->left_attach; i <= cell->right_attach; i++)
                {
                   cells_size += table->cols[i].requested_size;
-                  if (!hexpand && (cell->fill_policy & ETK_FILL_POLICY_HEXPAND))
+                  if (!hexpand && (cell->fill_policy & ETK_TABLE_HEXPAND))
                      table->cols[i].expand = ETK_TRUE;
                   if (table->cols[i].expand)
                      num_expandable_cells++;
@@ -532,7 +531,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                for (i = cell->top_attach; i <= cell->bottom_attach; i++)
                {
                   cells_size += table->rows[i].requested_size;
-                  if (!vexpand && (cell->fill_policy & ETK_FILL_POLICY_VEXPAND))
+                  if (!vexpand && (cell->fill_policy & ETK_TABLE_VEXPAND))
                      table->rows[i].expand = ETK_TRUE;
                   if (table->rows[i].expand)
                      num_expandable_cells++;;
@@ -691,7 +690,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       child_geometry.h = table->rows[cell->bottom_attach].offset - table->rows[cell->top_attach].offset +
          table->rows[cell->bottom_attach].size - 2 * cell->y_padding;
 
-      etk_container_child_space_fill(child, &child_geometry, cell->fill_policy & ETK_FILL_POLICY_HFILL, cell->fill_policy & ETK_FILL_POLICY_VFILL, 0.5, 0.5);
+      etk_container_child_space_fill(child, &child_geometry, cell->fill_policy & ETK_TABLE_HFILL, cell->fill_policy & ETK_TABLE_VFILL, 0.5, 0.5);
       etk_widget_size_allocate(child, child_geometry);
    }
 }
@@ -705,7 +704,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 /* Adds a child to the table */
 static void _etk_table_child_add(Etk_Container *container, Etk_Widget *widget)
 {
-   etk_table_attach_defaults(ETK_TABLE(container), widget, 0, 0, 0, 0);
+   etk_table_attach_default(ETK_TABLE(container), widget, 0, 0, 0, 0);
 }
 
 /* Removes the child from the table */

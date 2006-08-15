@@ -179,7 +179,7 @@ static void _etk_test_main_window()
       button = etk_button_new_with_label(_etk_test_examples[i].name);
       etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_examples[i].func), NULL);
       j = current_ids[_etk_test_examples[i].category];
-      etk_table_attach_defaults(ETK_TABLE(tables[_etk_test_examples[i].category]), button,
+      etk_table_attach_default(ETK_TABLE(tables[_etk_test_examples[i].category]), button,
          j % ETK_TEST_NUM_COLS, j % ETK_TEST_NUM_COLS, j / ETK_TEST_NUM_COLS, j / ETK_TEST_NUM_COLS);
       current_ids[_etk_test_examples[i].category]++;
    }

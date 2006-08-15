@@ -50,11 +50,11 @@ void etk_test_tree_window_create(void *data)
 
    /* The tree: */
    label = etk_label_new("<h1>Tree:</h1>");
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, ETK_TABLE_FILL);
 
    tree = etk_tree_new();
    etk_widget_size_request_set(tree, 320, 400);
-   etk_table_attach_defaults(ETK_TABLE(table), tree, 0, 0, 1, 1);
+   etk_table_attach_default(ETK_TABLE(table), tree, 0, 0, 1, 1);
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
@@ -79,7 +79,7 @@ void etk_test_tree_window_create(void *data)
 
    /* The list: */
    label = etk_label_new("<h1>List:</h1>");
-   etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL);
+   etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, ETK_TABLE_FILL);
 
    tree = etk_tree_new();
    etk_widget_dnd_source_set(ETK_WIDGET(tree), ETK_TRUE);   
@@ -87,7 +87,7 @@ void etk_test_tree_window_create(void *data)
    etk_signal_connect("drag_drop", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_drag_drop_cb), NULL);
    etk_signal_connect("drag_begin", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_drag_begin_cb), NULL);
    etk_widget_size_request_set(tree, 320, 400);
-   etk_table_attach_defaults(ETK_TABLE(table), tree, 1, 1, 1, 1);
+   etk_table_attach_default(ETK_TABLE(table), tree, 1, 1, 1, 1);
 
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
@@ -105,7 +105,7 @@ void etk_test_tree_window_create(void *data)
 
    /* Frame */
    frame = etk_frame_new("List Actions");
-   etk_table_attach(ETK_TABLE(table), frame, 0, 1, 2, 2, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL);
+   etk_table_attach(ETK_TABLE(table), frame, 0, 1, 2, 2, 0, 0, ETK_TABLE_FILL);
    hbox = etk_hbox_new(ETK_TRUE, 10);
    etk_container_add(ETK_CONTAINER(frame), hbox);
 

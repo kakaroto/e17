@@ -95,19 +95,19 @@ static Etk_Widget *_etk_test_notebook_page1_widget_create()
    
 
    table = etk_table_new(2, 10, ETK_FALSE);
-   etk_table_attach(ETK_TABLE(table), image, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
-   etk_table_attach(ETK_TABLE(table), buttons[0], 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND);
+   etk_table_attach(ETK_TABLE(table), image, 0, 0, 0, 0, 0, 0, ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), buttons[0], 1, 1, 0, 0, 0, 0, ETK_TABLE_HEXPAND);
    
    for (i = 0; i < 6; i++)
    {
-      etk_table_attach(ETK_TABLE(table), labels[i], 0, 0, 2 + i, 2 + i, 0, 0, ETK_FILL_POLICY_HFILL);
-      etk_table_attach_defaults(ETK_TABLE(table), entries[i], 1, 1, 2 + i, 2 + i);
+      etk_table_attach(ETK_TABLE(table), labels[i], 0, 0, 2 + i, 2 + i, 0, 0, ETK_TABLE_HFILL);
+      etk_table_attach_default(ETK_TABLE(table), entries[i], 1, 1, 2 + i, 2 + i);
    }
    
-   etk_table_attach(ETK_TABLE(table), labels[6], 0, 0, 8, 8, 0, 0, ETK_FILL_POLICY_HFILL);
-   etk_table_attach_defaults(ETK_TABLE(table), buttons[1], 1, 1, 8, 8);
-   etk_table_attach(ETK_TABLE(table), labels[7], 0, 0, 9, 9, 0, 0, ETK_FILL_POLICY_HFILL);
-   etk_table_attach_defaults(ETK_TABLE(table), buttons[2], 1, 1, 9, 9);
+   etk_table_attach(ETK_TABLE(table), labels[6], 0, 0, 8, 8, 0, 0, ETK_TABLE_HFILL);
+   etk_table_attach_default(ETK_TABLE(table), buttons[1], 1, 1, 8, 8);
+   etk_table_attach(ETK_TABLE(table), labels[7], 0, 0, 9, 9, 0, 0, ETK_TABLE_HFILL);
+   etk_table_attach_default(ETK_TABLE(table), buttons[2], 1, 1, 9, 9);
    
    
    return table;

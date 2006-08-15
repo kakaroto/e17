@@ -19,6 +19,21 @@
 /** Checks if the object is an Etk_Table */
 #define ETK_IS_TABLE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TABLE_TYPE))
 
+/** @brief Describes how a child of the table should fill and expand the space allocated to it */ 
+typedef enum Etk_Table_Fill_Policy
+{
+   ETK_TABLE_NONE = 1 << 0,       /**< The child doesn't fill or expand */
+   ETK_TABLE_HFILL = 1 << 1,      /**< The child fills all the horizontal space allocated to it */
+   ETK_TABLE_VFILL = 1 << 2,      /**< The child fills all the vertical space allocated to it */
+   ETK_TABLE_HEXPAND = 1 << 3,    /**< The child expands horizontally: the cell containing the child */
+                                  /**< will take as much place as possible in the horizontal direction */
+   ETK_TABLE_VEXPAND = 1 << 4,    /**< The child expands vertically: the cell containing the child */
+                                  /**< will take as much place as possible in the vertical direction */
+   ETK_TABLE_FILL = ETK_TABLE_HFILL | ETK_TABLE_VFILL,         /**< Equivalent to ETK_TABLE_HFILL | ETK_TABLE_VFILL */
+   ETK_TABLE_EXPAND = ETK_TABLE_HEXPAND | ETK_TABLE_VEXPAND,   /**< Equivalent to ETK_TABLE_HEXPAND | ETK_TABLE_VEXPAND */
+   ETK_TABLE_EXPAND_FILL = ETK_TABLE_EXPAND | ETK_TABLE_FILL,  /**< Equivalent to ETK_TABLE_EXPAND | ETK_TABLE_FILL */
+} Etk_Table_Fill_Policy;
+
 /* A cell of a table */
 typedef struct Etk_Table_Cell
 {
@@ -29,7 +44,7 @@ typedef struct Etk_Table_Cell
    int bottom_attach;
    int x_padding;
    int y_padding;
-   Etk_Fill_Policy_Flags fill_policy;
+   Etk_Table_Fill_Policy fill_policy;
    Etk_Widget *child;
 } Etk_Table_Cell;
 
@@ -70,9 +85,8 @@ Etk_Widget *etk_table_new(int num_cols, int num_rows, Etk_Bool homogeneous);
 void etk_table_cell_clear(Etk_Table *table, int col, int row);
 void etk_table_resize(Etk_Table *table, int num_cols, int num_rows);
 
-void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach,
-   int top_attach, int bottom_attach, int x_padding, int y_padding, Etk_Fill_Policy_Flags fill_policy);
-void etk_table_attach_defaults(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach, int top_attach, int bottom_attach);
+void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach, int top_attach, int bottom_attach, int x_padding, int y_padding, Etk_Table_Fill_Policy fill_policy);
+void etk_table_attach_default(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach, int top_attach, int bottom_attach);
 
 void etk_table_homogeneous_set(Etk_Table *table, Etk_Bool homogeneous);
 Etk_Bool etk_table_homogeneous_get(Etk_Table *table);

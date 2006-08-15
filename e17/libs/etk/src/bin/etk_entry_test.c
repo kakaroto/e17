@@ -27,18 +27,18 @@ void etk_test_entry_window_create(void *data)
    etk_container_add(ETK_CONTAINER(win), table);
 
    entry = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), entry, 0, 0, 0, 0, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
+   etk_table_attach(ETK_TABLE(table), entry, 0, 0, 0, 0, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);
 
    button = etk_button_new_with_label("Print text");
-   etk_table_attach(ETK_TABLE(table), button, 1, 1, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
+   etk_table_attach(ETK_TABLE(table), button, 1, 1, 0, 0, 0, 0, ETK_TABLE_NONE);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_entry_print_clicked), NULL);
 
    button = etk_toggle_button_new_with_label("Toggle password");
-   etk_table_attach(ETK_TABLE(table), button, 2, 2, 0, 0, 0, 0, ETK_FILL_POLICY_NONE);
+   etk_table_attach(ETK_TABLE(table), button, 2, 2, 0, 0, 0, 0, ETK_TABLE_NONE);
    etk_signal_connect("toggled", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_entry_password_toggled), NULL);
    
    label = etk_label_new(" ");
-   etk_table_attach(ETK_TABLE(table), label, 0, 1, 1, 1, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
+   etk_table_attach(ETK_TABLE(table), label, 0, 1, 1, 1, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);
    
    etk_widget_show_all(win);
 }
