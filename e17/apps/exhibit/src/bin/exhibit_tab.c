@@ -23,7 +23,6 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->num = evas_list_count(e->tabs);
    tab->dirs = NULL;
    tab->images = NULL;
-   tab->e = e;
 
    if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW) 
      {
@@ -88,15 +87,30 @@ _ex_tab_new(Exhibit *e, char *dir)
 }
 
 void
-_ex_tab_dir_set(Ex_Tab *tab, char *path)
-{
-   
-}
-
-void
 _ex_tab_delete(Ex_Tab *tab)
 {
-   D (("Delete tab\n"));
+   if (!e->cur_tab) {
+	D(("No currently selected TAB!!\n"));
+	return;
+   }
+
+   if (e->cur_tab->num == 0)
+     return;
+
+   D(("Delete tab %d\n", e->cur_tab->num));
+   etk_notebook_page_remove(ETK_NOTEBOOK(e->notebook), e->cur_tab->num);
+
+   D(("Remove from list\n"));
+   evas_list_remove(e->tabs, e->cur_tab);
+
+   D(("Free\n"));
+   E_FREE(e->cur_tab->dir);
+   E_FREE(e->cur_tab->set_img_path);
+   E_FREE(e->cur_tab->cur_file);
+   E_FREE(tab->comment.text);
+   evas_list_free(e->cur_tab->images);
+   evas_list_free(e->cur_tab->dirs);
+   E_FREE(e->cur_tab);
 }
 
 void
@@ -107,23 +121,23 @@ _ex_tab_select(Ex_Tab *tab)
    D(("_ex_tab_select: changed dir to %s\n", tab->cur_path));
 
    if(tab->comment.visible)
-     etk_notebook_page_child_set(ETK_NOTEBOOK(tab->e->notebook), tab->num, tab->comment.vbox);
+     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, tab->comment.vbox);
    else if(tab->fit_window)
-     etk_notebook_page_child_set(ETK_NOTEBOOK(tab->e->notebook), tab->num, tab->alignment);
+     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, tab->alignment);
    
-   etk_table_attach(ETK_TABLE(tab->e->table), tab->dtree,
+   etk_table_attach(ETK_TABLE(e->table), tab->dtree,
 		    0, 3, 3, 3,
 		    0, 0, ETK_TABLE_VEXPAND | ETK_TABLE_FILL);
    etk_widget_show(tab->dtree);
    
-   etk_paned_child2_set(ETK_PANED(tab->e->vpaned), tab->itree, ETK_TRUE);
+   etk_paned_child2_set(ETK_PANED(e->vpaned), tab->itree, ETK_TRUE);
    etk_widget_show(tab->itree);
       
    etk_widget_show(tab->image);
    etk_widget_show(tab->alignment);   
    etk_widget_show(tab->scrolled_view);
       
-   etk_widget_show_all(tab->e->win);
+   etk_widget_show_all(e->win);
 }
 
 void

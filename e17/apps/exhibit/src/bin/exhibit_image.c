@@ -770,7 +770,7 @@ _ex_image_rename_dialog_response(Etk_Object *obj, int response_id, void *data)
 	   }
 
 	 E_FREE(newpath);
-	 E_FREE(oldpath);
+	E_FREE(oldpath);
 	 break;
       default:
 	 break;

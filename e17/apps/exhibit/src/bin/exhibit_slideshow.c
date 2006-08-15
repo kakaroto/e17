@@ -54,5 +54,5 @@ _ex_slideshow_next(void *data)
    sprintf(string, "Slideshow picture %d of %d", n, i);
    etk_statusbar_push(ETK_STATUSBAR(e->statusbar[3]), string, 0);
 
-   return 1;   
+   return 1; 
 }

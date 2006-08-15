@@ -88,14 +88,6 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 }
 
 void
-_ex_menu_new_window_cb(Etk_Object *obj, void *data)
-{
-   EX_MENU_ITEM_GET_RETURN(obj);
-   
-   D(("new window\n"));
-}
-
-void
 _ex_menu_new_tab_cb(Etk_Object *obj, void *data)
 {
    Ex_Tab *tab;
@@ -119,7 +111,6 @@ _ex_menu_delete_tab_cb(Etk_Object *obj, void *data)
      
    EX_MENU_ITEM_GET_RETURN(obj);
 
-   _ex_main_window_tab_remove(e->cur_tab);
    _ex_tab_delete(e->cur_tab);
 }
 
@@ -147,13 +138,6 @@ _ex_menu_save_image_as_cb(Etk_Object *obj, void *data)
      return;
 
    _ex_image_save_as(e);
-}
-
-void
-_ex_menu_search_cb(Etk_Object *obj, void *data)
-{
-   EX_MENU_ITEM_GET_RETURN(obj);
-   D(("search\n"));
 }
 
 void
@@ -187,13 +171,6 @@ _ex_menu_options_cb(Etk_Object *obj, void *data)
    
    EX_MENU_ITEM_GET_RETURN(obj);
    _ex_options_window_show(e);
-}
-
-void
-_ex_menu_close_window_cb(Etk_Object *obj, void *data)
-{
-   EX_MENU_ITEM_GET_RETURN(obj);
-   etk_main_quit();   
 }
 
 void
@@ -505,13 +482,6 @@ _ex_menu_go_to_fav_cb(Etk_Object *obj, void *data)
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    _ex_main_populate_files(e, NULL);   
-}
-
-void
-_ex_menu_release_notes_cb(Etk_Object *obj, void *data)
-{
-   EX_MENU_ITEM_GET_RETURN(obj);
-   D(("release notes\n"));
 }
 
 void

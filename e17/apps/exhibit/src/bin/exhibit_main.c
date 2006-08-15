@@ -413,10 +413,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	  {
 	     D(("Number of tabs: %d\n", evas_list_count(e->tabs)));
 	     if(evas_list_count(e->tabs) > 1)
-	       {
-		  _ex_main_window_tab_remove(e->cur_tab);
 		  _ex_tab_delete(e->cur_tab);
-	       }
 	  }
 	else if(!strcmp(ev->key, "q"))
 	  {
@@ -479,14 +476,9 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
    tab = evas_list_nth(e->tabs, etk_notebook_current_page_get(ETK_NOTEBOOK(object)));
 
    e->cur_tab = tab;
+   D(("Selecting tab %d\n", e->cur_tab->num));
    _ex_tab_select(tab);
    etk_entry_text_set(ETK_ENTRY(e->entry[0]), e->cur_tab->cur_path);   
-}
-
-void
-_ex_main_window_tab_remove(Ex_Tab *tab)
-{
-   D(("_ex_main_window_tab_remove\n"));
 }
 
 void
@@ -685,7 +677,6 @@ _ex_main_window_show(char *dir)
 	submenu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
 	
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Window"), ETK_STOCK_WINDOW_NEW, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_new_window_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Tab"), ETK_STOCK_TAB_NEW, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_new_tab_cb), NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image as"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_as_cb), e);
@@ -700,7 +691,6 @@ _ex_main_window_show(char *dir)
 	submenu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
 
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Window"), ETK_STOCK_WINDOW_NEW, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_close_window_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Tab"), ETK_STOCK_TAB_NEW, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_delete_tab_cb), NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Quit"), ETK_STOCK_DIALOG_CLOSE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_quit_cb), e);
 	
@@ -767,7 +757,6 @@ _ex_main_window_show(char *dir)
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Help"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu_bar), NULL, NULL);
 	menu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Release notes"), ETK_STOCK_TEXT_X_GENERIC, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_release_notes_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("About"), ETK_STOCK_HELP_BROWSER, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_about_cb), e);
      }   
    
@@ -837,7 +826,7 @@ _ex_main_window_show(char *dir)
    e->cur_tab = tab;   
    e->tabs = evas_list_append(e->tabs, tab);   
    _ex_tab_select(tab);
-   etk_paned_child2_set(ETK_PANED(tab->e->hpaned), tab->scrolled_view, ETK_TRUE);
+   etk_paned_child2_set(ETK_PANED(e->hpaned), tab->scrolled_view, ETK_TRUE);
    
    _ex_main_populate_files(e, file);
       

@@ -154,8 +154,6 @@ struct _Ex_Tab
    Etk_Tree_Col  *dcol;
    Etk_Tree_Col  *icol;
    
-   Exhibit       *e;
-   
    struct {
       Etk_Bool    visible;
       Etk_Widget *vbox;

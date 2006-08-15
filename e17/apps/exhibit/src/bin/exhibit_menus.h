@@ -13,16 +13,13 @@ typedef enum _Ex_Menu_Item_Type
 Etk_Widget *_ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label, int stock_id, Etk_Menu_Shell *menu_shell, Etk_Signal_Callback_Function callback, void *data);
 
 void        _ex_menu_build_run_menu(Etk_Widget *submenu);
-void        _ex_menu_new_window_cb(Etk_Object *obj, void *data);
 void        _ex_menu_new_tab_cb(Etk_Object *obj, void *data);
 void        _ex_menu_delete_tab_cb(Etk_Object *obj, void *data);
 void        _ex_menu_save_image_cb(Etk_Object *obj, void *data);
 void        _ex_menu_save_image_as_cb(Etk_Object *obj, void *data);
-void        _ex_menu_search_cb(Etk_Object *obj, void *data);
 void        _ex_menu_rename_cb(Etk_Object *obj, void *data);
 void        _ex_menu_delete_cb(Etk_Object *obj, void *data);
 void        _ex_menu_options_cb(Etk_Object *obj, void *data);
-void        _ex_menu_close_window_cb(Etk_Object *obj, void *data);
 void        _ex_menu_quit_cb(Etk_Object *obj, void *data);
 void        _ex_menu_run_in_cb(Etk_Object *obj, void *data);
 void        _ex_menu_undo_cb(Etk_Object *obj, void *data);
@@ -45,7 +42,6 @@ void        _ex_menu_comments_cb(Etk_Object *obj, void *data);
 void        _ex_menu_add_to_fav_cb(Etk_Object *obj, void *data);
 void        _ex_menu_remove_from_fav_cb(Etk_Object *obj, void *data);    
 void        _ex_menu_go_to_fav_cb(Etk_Object *obj, void *data);    
-void        _ex_menu_release_notes_cb(Etk_Object *obj, void *data);
 void        _ex_menu_about_cb(Etk_Object *obj, void *data);
 
 #endif
