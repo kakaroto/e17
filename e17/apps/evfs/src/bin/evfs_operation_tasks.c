@@ -47,7 +47,6 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 	if (EVFS_OPERATION_TASK(copy)->status == EVFS_OPERATION_TASK_STATUS_CANCEL) {
 		printf("**** Cancelling copy via user request\n");
 		
-		EVFS_OPERATION_TASK(copy)->status = EVFS_OPERATION_TASK_STATUS_COMMITTED;
 		return copy->source_stat.st_size;
 	}
 

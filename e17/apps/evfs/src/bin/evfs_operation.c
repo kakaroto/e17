@@ -393,6 +393,9 @@ void evfs_operation_run_tasks(evfs_operation* op)
 		if (task->status ==  EVFS_OPERATION_TASK_STATUS_ERROR) {
 			op->status = EVFS_OPERATION_STATUS_ERROR;
 			return;
+		} else if (task->status == EVFS_OPERATION_TASK_STATUS_CANCEL) {
+			op->status = EVFS_OPERATION_STATUS_COMPLETED;
+			return;
 		}
 
 		OPERATION_TASK_EXIT:
