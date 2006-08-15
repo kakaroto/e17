@@ -836,9 +836,9 @@ cb_switch_full(Etk_Object *object, void *data)
   etk_widget_hide_all(player->media.window);
   
   etk_container_remove(ETK_CONTAINER(player->media.window), player->media.root);
-  etk_box_pack_start(ETK_BOX(player->full.root),
+  etk_box_append(ETK_BOX(player->full.root),
                      player->media.root,
-                     ETK_TRUE, ETK_TRUE, 0);
+                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
  
   emphasis_player_toggle_full(player, ETK_TRUE);
 

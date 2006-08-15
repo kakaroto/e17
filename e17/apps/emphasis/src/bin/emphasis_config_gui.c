@@ -17,8 +17,8 @@ config_gui_init(void)
   etk_container_add(ETK_CONTAINER(gui->window), gui->vbox);
 
   gui->connection_frame = etk_frame_new("Connection settings");
-  etk_box_pack_start(ETK_BOX(gui->vbox), gui->connection_frame, 
-                     ETK_TRUE, ETK_TRUE, 0);
+  etk_box_append(ETK_BOX(gui->vbox), gui->connection_frame, 
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
   gui->connection_vbox = etk_vbox_new(ETK_TRUE, 5);
   etk_container_add(ETK_CONTAINER(gui->connection_frame), gui->connection_vbox);
@@ -26,38 +26,38 @@ config_gui_init(void)
   gui->hostname_hbox = etk_hbox_new(ETK_TRUE, 0);
   gui->hostname_label = etk_label_new("Hostname :");
   gui->hostname_entry = etk_entry_new();
-  etk_box_pack_start(ETK_BOX(gui->hostname_hbox), gui->hostname_label,
-                     ETK_TRUE, ETK_TRUE, 0);
-  etk_box_pack_start(ETK_BOX(gui->hostname_hbox), gui->hostname_entry,
-                     ETK_TRUE, ETK_TRUE, 0);
-  etk_box_pack_start(ETK_BOX(gui->connection_vbox), gui->hostname_hbox,
-                     ETK_TRUE, ETK_TRUE, 5);
+  etk_box_append(ETK_BOX(gui->hostname_hbox), gui->hostname_label,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+  etk_box_append(ETK_BOX(gui->hostname_hbox), gui->hostname_entry,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+  etk_box_append(ETK_BOX(gui->connection_vbox), gui->hostname_hbox,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
   gui->port_hbox = etk_hbox_new(ETK_TRUE, 0);
   gui->port_label = etk_label_new("Port :");
 // gui->port_spin = etk_spin_button_new(0, 65536, 1); 
-  etk_box_pack_start(ETK_BOX(gui->port_hbox), gui->port_label, 
-                     ETK_TRUE, ETK_TRUE, 0);
-/* etk_box_pack_start(ETK_BOX(gui->port_hbox), gui->port_spin, 
-                      ETK_TRUE, ETK_TRUE, 0);*/
-  etk_box_pack_start(ETK_BOX(gui->connection_vbox), gui->port_hbox, 
-                     ETK_TRUE, ETK_TRUE, 5);
+  etk_box_append(ETK_BOX(gui->port_hbox), gui->port_label, 
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+/* etk_box_append(ETK_BOX(gui->port_hbox), gui->port_spin, 
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0); */
+  etk_box_append(ETK_BOX(gui->connection_vbox), gui->port_hbox, 
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
   gui->password_hbox = etk_hbox_new(ETK_TRUE, 0);
   gui->password_label = etk_label_new("password :");
   gui->password_entry = etk_entry_new();
   etk_entry_password_set(ETK_ENTRY(gui->password_entry), ETK_TRUE);
-  etk_box_pack_start(ETK_BOX(gui->password_hbox), gui->password_label,
-                     ETK_TRUE, ETK_TRUE, 0);
-  etk_box_pack_start(ETK_BOX(gui->password_hbox), gui->password_entry,
-                     ETK_TRUE, ETK_TRUE, 0);
-  etk_box_pack_start(ETK_BOX(gui->connection_vbox), gui->password_hbox,
-                     ETK_TRUE, ETK_TRUE, 5);
+  etk_box_append(ETK_BOX(gui->password_hbox), gui->password_label,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+  etk_box_append(ETK_BOX(gui->password_hbox), gui->password_entry,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+  etk_box_append(ETK_BOX(gui->connection_vbox), gui->password_hbox,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 /**/ 
   gui->interface_frame = etk_frame_new("Interface settings");
-  etk_box_pack_start(ETK_BOX(gui->vbox), gui->interface_frame, 
-                     ETK_TRUE, ETK_TRUE, 0);
+  etk_box_append(ETK_BOX(gui->vbox), gui->interface_frame, 
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
   gui->interface_vbox = etk_vbox_new(ETK_TRUE, 5);
   etk_container_add(ETK_CONTAINER(gui->interface_frame), gui->interface_vbox);
@@ -65,25 +65,25 @@ config_gui_init(void)
   gui->rowheight_hbox = etk_hbox_new(ETK_TRUE, 0);
   gui->rowheight_label = etk_label_new("Row Height :");
 //  gui->rowheight_spin = etk_spin_button_new(0, 50, 1);
-  etk_box_pack_start(ETK_BOX(gui->rowheight_hbox), gui->rowheight_label,
-                     ETK_TRUE, ETK_TRUE, 0);
-/* etk_box_pack_start(ETK_BOX(gui->rowheight_hbox), gui->rowheight_spin, 
-                      ETK_TRUE, ETK_TRUE, 0); */
-  etk_box_pack_start(ETK_BOX(gui->interface_vbox), gui->rowheight_hbox,
-                     ETK_TRUE, ETK_TRUE, 5);
+  etk_box_append(ETK_BOX(gui->rowheight_hbox), gui->rowheight_label,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+/* etk_box_append(ETK_BOX(gui->rowheight_hbox), gui->rowheight_spin, 
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0); */
+  etk_box_append(ETK_BOX(gui->interface_vbox), gui->rowheight_hbox,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 /**/ 
   gui->buttons_box_hbox = etk_hbox_new(ETK_TRUE, 5);
   gui->buttons_box_ok = etk_button_new_with_label("Ok");
   gui->buttons_box_apply = etk_button_new_with_label("Apply");
   gui->buttons_box_cancel = etk_button_new_with_label("Cancel");
-  etk_box_pack_start(ETK_BOX(gui->buttons_box_hbox), gui->buttons_box_ok,
-                     ETK_TRUE, ETK_FALSE, 0);
-  etk_box_pack_start(ETK_BOX(gui->buttons_box_hbox), gui->buttons_box_apply,
-                     ETK_TRUE, ETK_FALSE, 0);
-  etk_box_pack_start(ETK_BOX(gui->buttons_box_hbox), gui->buttons_box_cancel,
-                     ETK_TRUE, ETK_FALSE, 0);
-  etk_box_pack_start(ETK_BOX(gui->vbox), gui->buttons_box_hbox, 
-                     ETK_FALSE, ETK_FALSE, 0);
+  etk_box_append(ETK_BOX(gui->buttons_box_hbox), gui->buttons_box_ok,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+  etk_box_append(ETK_BOX(gui->buttons_box_hbox), gui->buttons_box_apply,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+  etk_box_append(ETK_BOX(gui->buttons_box_hbox), gui->buttons_box_cancel,
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+  etk_box_append(ETK_BOX(gui->vbox), gui->buttons_box_hbox, 
+                 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
   return gui;
 }
 
