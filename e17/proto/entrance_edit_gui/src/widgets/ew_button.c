@@ -24,3 +24,12 @@ ew_button_onclick_set(Entrance_Widget ew, void (*func)(void*, void*), void *data
 		etk_signal_connect("clicked", ETK_OBJECT(ew->owner), ETK_CALLBACK(func), data);
 }
 
+void
+ew_button_label_set(Entrance_Widget ew, char *label) {
+	etk_button_label_set(ETK_BUTTON(ew->owner), label);
+}
+
+const char *
+ew_button_label_get(Entrance_Widget ew) {
+	return etk_button_label_get(ETK_BUTTON(ew->owner));
+}

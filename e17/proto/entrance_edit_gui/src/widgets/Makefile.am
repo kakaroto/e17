@@ -20,7 +20,10 @@ libentrance_widgets_la_HEADERS = \
 	ew_image.h \
 	ew_label.h \
 	ew_entry.h \
-	ew_button.h
+	ew_button.h \
+	ew_toggle_button.h \
+	ew_radio_button.h \
+	ew_checkbox.h
 
 libentrance_widgets_ladir = $(prefix)/include
 
@@ -38,6 +41,9 @@ libentrance_widgets_la_SOURCES = \
 	ew_label.c \
 	ew_entry.c \
 	ew_button.c \
+	ew_toggle_button.c \
+	ew_radio_button.c \
+	ew_checkbox.c \
 	$(libentrance_widgets_la_HEADERS)
 	
 libentrance_widgets_la_LIBADD  = @etk_libs@

@@ -14,5 +14,8 @@
 #include "ew_label.h"
 #include "ew_entry.h"
 #include "ew_button.h"
+#include "ew_radio_button.h"
+#include "ew_toggle_button.h"
+#include "ew_checkbox.h"
 
 #endif
