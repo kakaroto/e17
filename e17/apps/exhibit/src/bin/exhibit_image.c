@@ -634,13 +634,13 @@ _ex_image_save_as(Exhibit *e)
    etk_container_add(ETK_CONTAINER(vbox), fd->filechooser);
    
    label = etk_label_new("Filename:");
-   etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    D(("Selected original filename: %s\n", e->cur_tab->cur_file));
    
    fd->entry = etk_entry_new();
    etk_entry_text_set(ETK_ENTRY(fd->entry), e->cur_tab->cur_file);
-   etk_box_pack_start(ETK_BOX(vbox), fd->entry, ETK_TRUE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), fd->entry, ETK_BOX_START, ETK_BOX_EXPAND, 0);
    etk_signal_connect("key_down", ETK_OBJECT(fd->entry), 
 		      ETK_CALLBACK(_ex_image_save_as_entry_cb), fd);
    
@@ -648,12 +648,12 @@ _ex_image_save_as(Exhibit *e)
    etk_container_add(ETK_CONTAINER(vbox), hbox);
    
    btn = etk_button_new_with_label("Save");
-   etk_box_pack_start(ETK_BOX(hbox), btn, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect_swapped("clicked", ETK_OBJECT(btn), 
 			      ETK_CALLBACK(_ex_image_save_as_cb), fd);
    
    btn = etk_button_new_with_label("Cancel");
-   etk_box_pack_start(ETK_BOX(hbox), btn, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect_swapped("clicked", ETK_OBJECT(btn), 
 			      ETK_CALLBACK(etk_widget_hide), fd->win);
    

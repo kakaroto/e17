@@ -22,12 +22,12 @@ _ex_comment_show(Exhibit *e)
      }
 
    if (e->cur_tab->fit_window)
-     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_TRUE, ETK_TRUE, 0);
+     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    else
-     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
+     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    e->cur_tab->comment.frame = etk_frame_new(_("Image Comments"));
-   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+   etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
    
    e->cur_tab->comment.textview = etk_text_view_new();
    etk_widget_size_request_set(e->cur_tab->comment.textview, -1, 50);
@@ -41,11 +41,11 @@ _ex_comment_show(Exhibit *e)
    
    etk_container_add(ETK_CONTAINER(e->cur_tab->comment.frame), e->cur_tab->comment.vbox2);
    
-   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox2), e->cur_tab->comment.textview, ETK_TRUE, ETK_TRUE, 0);
-   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox2), e->cur_tab->comment.hbox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(e->cur_tab->comment.vbox2), e->cur_tab->comment.textview, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(e->cur_tab->comment.vbox2), e->cur_tab->comment.hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
    
-   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.hbox), e->cur_tab->comment.revert, ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_start(ETK_BOX(e->cur_tab->comment.hbox), e->cur_tab->comment.save, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(e->cur_tab->comment.hbox), e->cur_tab->comment.revert, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(e->cur_tab->comment.hbox), e->cur_tab->comment.save, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    e->cur_tab->comment.visible = ETK_TRUE;
    

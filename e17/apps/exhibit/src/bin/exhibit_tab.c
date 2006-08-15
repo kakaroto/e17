@@ -113,7 +113,7 @@ _ex_tab_select(Ex_Tab *tab)
    
    etk_table_attach(ETK_TABLE(tab->e->table), tab->dtree,
 		    0, 3, 3, 3,
-		    0, 0, ETK_FILL_POLICY_VEXPAND|ETK_FILL_POLICY_VFILL|ETK_FILL_POLICY_HFILL);
+		    0, 0, ETK_TABLE_VEXPAND | ETK_TABLE_FILL);
    etk_widget_show(tab->dtree);
    
    etk_paned_child2_set(ETK_PANED(tab->e->vpaned), tab->itree, ETK_TRUE);
@@ -138,8 +138,8 @@ _ex_tab_current_zoom_in(Exhibit *e)
 		  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	       }
 	     else
 	       etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
@@ -151,8 +151,8 @@ _ex_tab_current_zoom_in(Exhibit *e)
 		  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	       }
 	     else
 	       etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
@@ -184,8 +184,8 @@ _ex_tab_current_zoom_out(Exhibit *e)
 		  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	       }
 	     else
 	       etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
@@ -197,8 +197,8 @@ _ex_tab_current_zoom_out(Exhibit *e)
 		  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	       }
 	     else	     
 	       etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
@@ -230,8 +230,8 @@ _ex_tab_current_zoom_one_to_one(Exhibit *e)
 		  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);	     
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	       }
 	     else	     	     
 	       etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
@@ -243,8 +243,8 @@ _ex_tab_current_zoom_one_to_one(Exhibit *e)
 		  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
 		  etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_TRUE, ETK_TRUE, 0);
-		  etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+		  etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	       }
 	     else	     
 	       etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
@@ -274,8 +274,8 @@ _ex_tab_current_fit_to_window(Exhibit *e)
 	     etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
 	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view);
 	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);	     
-	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_TRUE, ETK_TRUE, 0);	     
-	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);	     
+	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	  }
 	else
 	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->alignment, ETK_TRUE);
@@ -287,8 +287,8 @@ _ex_tab_current_fit_to_window(Exhibit *e)
 	     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
 	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view);
 	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
-	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_TRUE, ETK_TRUE, 0);
-	     etk_box_pack_start(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_FALSE, ETK_FALSE, 3);
+	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	  }
 	else	
 	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->alignment);
@@ -351,7 +351,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 		  etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
 		  etk_widget_size_request_set(image, 48, 48);
 		  etk_table_attach(ETK_TABLE(table), image, l, r, t, b, 3, 3,
-				   ETK_FILL_POLICY_NONE);
+				   ETK_TABLE_NONE);
 		  
 		  ++l; ++r;
 		  

@@ -657,7 +657,7 @@ _ex_main_window_show(char *dir)
                
    e->hpaned = etk_hpaned_new();
    //etk_container_add(ETK_CONTAINER(e->win), e->hpaned);
-   etk_box_pack_start(ETK_BOX(e->vbox), e->hpaned, ETK_TRUE, ETK_TRUE, 0);   
+   etk_box_append(ETK_BOX(e->vbox), e->hpaned, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);   
 
    e->vpaned = etk_vpaned_new();
    etk_paned_child1_set(ETK_PANED(e->hpaned), e->vpaned, ETK_FALSE);
@@ -666,7 +666,7 @@ _ex_main_window_show(char *dir)
    etk_paned_child1_set(ETK_PANED(e->vpaned), e->table, ETK_TRUE);
 
    e->menu_bar = etk_menu_bar_new();
-   etk_table_attach(ETK_TABLE(e->table), e->menu_bar, 0, 4, 0, 0, 0, 0, ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+   etk_table_attach(ETK_TABLE(e->table), e->menu_bar, 0, 4, 0, 0, 0, 0, ETK_TABLE_FILL | ETK_TABLE_HEXPAND);
    
      {
 	Etk_Widget *menu;
@@ -777,7 +777,7 @@ _ex_main_window_show(char *dir)
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->zoom_in[0]), ETK_CALLBACK(_ex_tab_current_zoom_in), e);
    etk_table_attach(ETK_TABLE(e->table), e->zoom_in[0],
 		    0, 0, 1, 1,
-		    0, 0, ETK_FILL_POLICY_NONE);
+		    0, 0, ETK_TABLE_NONE);
 
    e->zoom_out[0] = etk_button_new();
    e->zoom_out[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "zoom_out");
@@ -785,7 +785,7 @@ _ex_main_window_show(char *dir)
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->zoom_out[0]), ETK_CALLBACK(_ex_tab_current_zoom_out), e);
    etk_table_attach(ETK_TABLE(e->table), e->zoom_out[0],
 		    1, 1, 1, 1,
-		    0, 0, ETK_FILL_POLICY_NONE);
+		    0, 0, ETK_TABLE_NONE);
 
    e->fit[0] = etk_button_new();
    e->fit[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "fit_to_window");
@@ -793,7 +793,7 @@ _ex_main_window_show(char *dir)
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->fit[0]), ETK_CALLBACK(_ex_tab_current_fit_to_window), e);
    etk_table_attach(ETK_TABLE(e->table), e->fit[0],
 		    2, 2, 1, 1,
-		    0, 0, ETK_FILL_POLICY_NONE);
+		    0, 0, ETK_TABLE_NONE);
 
    e->original[0] = etk_button_new();
    e->original[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "one_to_one");
@@ -801,16 +801,16 @@ _ex_main_window_show(char *dir)
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->original[0]), ETK_CALLBACK(_ex_tab_current_zoom_one_to_one), e);
    etk_table_attach(ETK_TABLE(e->table), e->original[0],
 		    3, 3, 1, 1,
-		    0, 0, ETK_FILL_POLICY_NONE);
+		    0, 0, ETK_TABLE_NONE);
 
    e->entry[0] = etk_entry_new();
-   etk_table_attach(ETK_TABLE(e->table), e->entry[0], 0, 2, 2, 2, 0, 0, ETK_FILL_POLICY_HEXPAND | ETK_FILL_POLICY_HFILL);
+   etk_table_attach(ETK_TABLE(e->table), e->entry[0], 0, 2, 2, 2, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);
    etk_signal_connect("key_down", ETK_OBJECT(e->entry[0]), ETK_CALLBACK(_ex_main_entry_dir_key_down_cb), e);
 
    e->entry[1] = etk_button_new_with_label("Go");
    etk_table_attach(ETK_TABLE(e->table), e->entry[1],
 		    3, 3, 2, 2,
-		    0, 0, ETK_FILL_POLICY_NONE);
+		    0, 0, ETK_TABLE_NONE);
    etk_signal_connect("clicked", ETK_OBJECT(e->entry[1]), ETK_CALLBACK(_ex_main_goto_dir_clicked_cb), e);
    
    /* create first tab but dont place it in notebook */
@@ -842,11 +842,11 @@ _ex_main_window_show(char *dir)
    _ex_main_populate_files(e, file);
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);   
-   etk_box_pack_end(ETK_BOX(e->vbox), e->hbox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(e->vbox), e->hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
 
    e->sort = etk_label_new("Sort by date");
    /* size is different than statusbar, how do we make it look good? */
-   //etk_box_pack_start(ETK_BOX(e->hbox), e->sort, ETK_TRUE, ETK_TRUE, 0);
+   //etk_box_append(ETK_BOX(e->hbox), e->sort, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
      {
 	Etk_Widget *menu;
 	Etk_Widget *menu_item;
@@ -863,15 +863,15 @@ _ex_main_window_show(char *dir)
    
    e->statusbar[0] = etk_statusbar_new();
    etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->statusbar[0]), ETK_FALSE);
-   etk_box_pack_start(ETK_BOX(e->hbox), e->statusbar[0], ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(e->hbox), e->statusbar[0], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    e->statusbar[1] = etk_statusbar_new();
    etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->statusbar[1]), ETK_FALSE);
-   etk_box_pack_start(ETK_BOX(e->hbox), e->statusbar[1], ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(e->hbox), e->statusbar[1], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    e->statusbar[2] = etk_statusbar_new();
    etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->statusbar[2]), ETK_FALSE);   
-   etk_box_pack_start(ETK_BOX(e->hbox), e->statusbar[2], ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(e->hbox), e->statusbar[2], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    if (e->options->default_view == EX_IMAGE_ONE_TO_ONE) 
       etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
@@ -879,7 +879,7 @@ _ex_main_window_show(char *dir)
       etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "Fit to window", 0);
    
    e->statusbar[3] = etk_statusbar_new();
-   etk_box_pack_start(ETK_BOX(e->hbox), e->statusbar[3], ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(e->hbox), e->statusbar[3], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    etk_widget_show_all(e->win);
 }

@@ -557,7 +557,7 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 	 "</style></p>",
 	 ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), desctext);
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    frame = etk_frame_new("Authors");
    abouttext = etk_text_view_new();
@@ -571,7 +571,7 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 	 "Simon '<b>MoOm</b>' Treny",
 	 ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), abouttext);
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    frame = etk_frame_new("Common shortcuts");
    helptext = etk_text_view_new();
@@ -587,7 +587,7 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 	 "<b>control-s:</b> toggle slideshow\n",
 	 ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), helptext);
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox, ETK_FALSE, ETK_FALSE,
 	 0, ETK_FALSE);
    etk_dialog_button_add(ETK_DIALOG(win), "Close", ETK_RESPONSE_CLOSE);

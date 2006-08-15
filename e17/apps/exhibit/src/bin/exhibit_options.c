@@ -506,36 +506,36 @@ _ex_options_page_1_create()
    vbox = etk_vbox_new(ETK_FALSE, 3);
    
    frame = etk_frame_new("Choose standard view");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
    
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    dialog->dv_btn_1 = etk_radio_button_new_with_label("Zoom 1:1", NULL);
-   etk_box_pack_start(ETK_BOX(vbox2), dialog->dv_btn_1, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox2), dialog->dv_btn_1, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    dialog->dv_btn_2 = etk_radio_button_new_with_label_from_widget("Fit to window", 
 	 ETK_RADIO_BUTTON(dialog->dv_btn_1));
-   etk_box_pack_start(ETK_BOX(vbox2), dialog->dv_btn_2, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox2), dialog->dv_btn_2, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    frame = etk_frame_new("Slideshow");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), hbox);
 
    label = etk_label_new("Interval"); 
-   etk_box_pack_start(ETK_BOX(hbox), label, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    dialog->slide_interval = etk_entry_new();
-   etk_box_pack_start(ETK_BOX(hbox), dialog->slide_interval, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), dialog->slide_interval, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    frame = etk_frame_new("Comments");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    dialog->comments_visible = etk_check_button_new_with_label("Visible");
-   etk_box_pack_start(ETK_BOX(vbox2), dialog->comments_visible, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox2), dialog->comments_visible, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    /* 
     * Start toggling/setting the correct values from loaded options 
@@ -568,42 +568,42 @@ _ex_options_page_2_create()
    vbox = etk_vbox_new(ETK_FALSE, 3);
    
    frame = etk_frame_new("Effect thresh");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox2);
 
    table = etk_table_new(2, 3, ETK_FALSE);
-   etk_box_pack_start(ETK_BOX(vbox2), table, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox2), table, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    label = etk_label_new("Blur thresh"); 
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->blur_thresh = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->blur_thresh, 1, 1, 0, 0, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    
    label = etk_label_new("Sharpen thresh"); 
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->sharpen_thresh = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->sharpen_thresh, 1, 1, 1, 1, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
 
    label = etk_label_new("Brighten thresh"); 
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->brighten_thresh = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->brighten_thresh, 1, 1, 2, 2, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
 
    frame = etk_frame_new("Rotate");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    dialog->rotate_autosave = etk_check_button_new_with_label("Autosave after rotate");
-   etk_box_pack_start(ETK_BOX(vbox2), dialog->rotate_autosave, ETK_FALSE, 
-	 ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox2), dialog->rotate_autosave, ETK_BOX_START,
+         ETK_BOX_NONE, 0);
 
    
    sprintf(string, "%.2f", e->options->blur_thresh);
@@ -656,13 +656,13 @@ _ex_options_page_3_create()
    vbox = etk_vbox_new(ETK_FALSE, 3);
    
    frame = etk_frame_new("Thumb sorting");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), hbox);
 
    label = etk_label_new("Default sort by"); 
-   etk_box_pack_start(ETK_BOX(hbox), label, ETK_FALSE, 
-	 ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, 
+	 ETK_BOX_NONE, 0);
   
    e->options->default_sort_tmp = e->options->default_sort;
 
@@ -672,8 +672,8 @@ _ex_options_page_3_create()
    etk_combobox_column_add(ETK_COMBOBOX(dialog->default_sort), ETK_COMBOBOX_LABEL, 
 	 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
    etk_combobox_build(ETK_COMBOBOX(dialog->default_sort));
-   etk_box_pack_start(ETK_BOX(hbox), dialog->default_sort, ETK_FALSE, 
-	 ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), dialog->default_sort, ETK_BOX_START, 
+	 ETK_BOX_NONE, 0);
 
    image = etk_image_new_from_stock(ETK_STOCK_OFFICE_CALENDAR, ETK_STOCK_SMALL);
    dialog->sort_date = etk_combobox_item_append(ETK_COMBOBOX(dialog->default_sort), image, "Date");
@@ -711,63 +711,63 @@ _ex_options_page_4_create()
    vbox = etk_vbox_new(ETK_FALSE, 3);
    
    frame = etk_frame_new("Run in ...");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    label = etk_label_new("Hint: application command has %s as file argument."); 
-   etk_box_pack_start(ETK_BOX(vbox2), label, ETK_FALSE, ETK_FALSE, 5);
-   etk_box_pack_start(ETK_BOX(vbox2), etk_hseparator_new(), ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox2), label, ETK_BOX_START, ETK_BOX_NONE, 5);
+   etk_box_append(ETK_BOX(vbox2), etk_hseparator_new(), ETK_BOX_START, ETK_BOX_NONE, 5);
 
    table = etk_table_new(3, 5, ETK_FALSE);
-   etk_box_pack_start(ETK_BOX(vbox2), table, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox2), table, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    label = etk_label_new("Menu display"); 
    etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    label = etk_label_new("Command"); 
    etk_table_attach(ETK_TABLE(table), label, 2, 2, 0, 0, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
 
    label = etk_label_new("Application 1"); 
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 5, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->app1 = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->app1, 1, 1, 1, 1, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->app1_cmd = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->app1_cmd, 2, 2, 1, 1, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    
    label = etk_label_new("Application 2"); 
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->app2 = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->app2, 1, 1, 2, 2, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->app2_cmd = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->app2_cmd, 2, 2, 2, 2, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    
    label = etk_label_new("Application 3"); 
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 3, 3, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->app3 = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->app3, 1, 1, 3, 3, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->app3_cmd = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->app3_cmd, 2, 2, 3, 3, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
 
    label = etk_label_new("Application 4"); 
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 4, 4, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->app4 = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->app4, 1, 1, 4, 4, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
    dialog->app4_cmd = etk_entry_new();
    etk_table_attach(ETK_TABLE(table), dialog->app4_cmd, 2, 2, 4, 4, 0, 0, 
-	 ETK_FILL_POLICY_NONE);
+	 ETK_TABLE_NONE);
 
    if (e->options->app1)
 	etk_entry_text_set(ETK_ENTRY(dialog->app1), e->options->app1);
@@ -817,7 +817,7 @@ _ex_options_window_show(Exhibit *e)
    etk_container_add(ETK_CONTAINER(win), vbox);
    
    notebook = etk_notebook_new();
-   etk_box_pack_start(ETK_BOX(vbox), notebook, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), notebook, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    page = _ex_options_page_1_create();
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "General", page);
@@ -828,25 +828,25 @@ _ex_options_window_show(Exhibit *e)
    page = _ex_options_page_4_create();
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Exec commands", page);
 
-   etk_box_pack_start(ETK_BOX(vbox), etk_hseparator_new(), 
-		      ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox), etk_hseparator_new(), 
+		      ETK_BOX_START, ETK_BOX_NONE, 5);
 
    hbox = etk_hbox_new(ETK_FALSE, 3);
-   etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    button = etk_button_new_from_stock(ETK_STOCK_DIALOG_OK);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect_swapped("clicked", ETK_OBJECT(button),
 			      ETK_CALLBACK(_ex_options_set_ok_cb), win);
    
    button = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
    etk_button_label_set(ETK_BUTTON(button), "Apply");
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect("clicked", ETK_OBJECT(button),
 		      ETK_CALLBACK(_ex_options_set_apply_cb), NULL);
    
    button = etk_button_new_from_stock(ETK_STOCK_DIALOG_CANCEL);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect_swapped("clicked", ETK_OBJECT(button),
 			      ETK_CALLBACK(_ex_options_set_cancel_cb), win);
 
