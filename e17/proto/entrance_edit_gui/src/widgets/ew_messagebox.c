@@ -57,6 +57,7 @@ ew_messagebox_ok_cancel(const char *title, const char *message, const char *icon
 	ew_notice_ok_button_add(ew, funct, NULL);
 	ew_notice_cancel_button_add(ew, funct, NULL);
 
+	ew_notice_show(ew);
 	return ew;
 }
 
@@ -66,6 +67,7 @@ ew_messagebox_yes_no(const char *title, const char *message, const char *icon, v
 	ew_notice_yes_button_add(ew, funct, NULL);
 	ew_notice_no_button_add(ew, funct, NULL);
 
+	ew_notice_show(ew);
 	return ew;
 }
 
@@ -76,6 +78,7 @@ ew_messagebox_yes_no_cancel(const char *title, const char *message, const char *
 	ew_notice_no_button_add(ew, funct, NULL);
 	ew_notice_cancel_button_add(ew, funct, NULL);
 
+	ew_notice_show(ew);
 	return ew;
 }
 
