@@ -60,6 +60,8 @@ evfs_cleanup_filereference(evfs_filereference * ref)
       free(ref->username);
    if (ref->password)
       free(ref->password);
+
+   /*Do we assume this is just a string?*/
    if (ref->attach)
       free(ref->attach);
    free(ref);
