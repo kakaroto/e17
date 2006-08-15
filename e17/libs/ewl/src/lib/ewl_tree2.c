@@ -539,6 +539,11 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		ewl_container_child_append(EWL_CONTAINER(tree->rows), row);
 		ewl_widget_show(row);
 
+		if (i % 2)
+			ewl_widget_state_set(row, "odd", EWL_STATE_PERSISTENT);
+		else
+			ewl_widget_state_set(row, "even", EWL_STATE_PERSISTENT);
+
 		column = 0;
 		ecore_list_goto_first(tree->columns);
 		while((col = ecore_list_next(tree->columns)))
