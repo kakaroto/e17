@@ -2,4 +2,5 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = apps \
 	categories \
 	devices \
-	status
+	status \
+	mimetypes
