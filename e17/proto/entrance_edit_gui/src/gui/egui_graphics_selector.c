@@ -51,7 +51,7 @@ egui_gs_dialog_show(Egui_Graphics_Selector _egs)
    ew_group_add(group_graphics, list_thumbs);
 
    char t[PATH_MAX];
-   snprintf(t, PATH_MAX, "Browse system ror %ss", egs.name);
+   snprintf(t, PATH_MAX, "Browse system for %ss", egs.name);
    group_options = ew_dialog_group_add(win, t, EW_GROUP_HORIZONTAL);
 
    browse_entry = ew_entry_new(NULL, EW_FALSE);
