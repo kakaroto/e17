@@ -188,6 +188,11 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param type: The type to check for
+ * @return Returns TRUE if the given type is supported, FALSE otherwise
+ * @brief Checks if the given type @a type is supported 
+ */
 int
 ewl_dnd_type_supported(char *type)
 {
