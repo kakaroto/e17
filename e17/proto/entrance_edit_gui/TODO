@@ -2,10 +2,7 @@ Entrance Widgets
 ===================
 - No proper tracking of objects is being done, hence no proper freeing is being done.
 - Need more widgets... yesterday!!!
-	- radio button
-	- check box
-	- More Message Boxes.
-		okcancel(), yesno(), yesnocancel()
+	- fileselector
 	- ew_imagelist
 - Entrance_List needs to be refactored to use as common a base as possible. Also, we need to select the first row by default when adding to a list.
 - group types are currently hash defined'd ints. should be enums
