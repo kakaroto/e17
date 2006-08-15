@@ -62,6 +62,8 @@ int evfs_operation_tasks_file_copy_run(evfs_operation* op,
 
 	if (copy->file_to->fd == 0 && copy->file_to->fd_p == NULL) {
 	     /*printf("Creating destination file..\n");*/
+	     if (*EVFS_PLUGIN_FILE(copy->file_to->plugin)->functions->evfs_file_notify_create)
+   	         (*EVFS_PLUGIN_FILE(copy->file_to->plugin)->functions->evfs_file_notify_create) (copy->file_from);
              (*EVFS_PLUGIN_FILE(copy->file_to->plugin)->functions->evfs_file_create) (copy->file_to);
 	}
 

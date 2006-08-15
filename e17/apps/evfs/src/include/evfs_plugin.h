@@ -36,6 +36,8 @@ typedef struct evfs_plugin_functions
    int (*evfs_file_write) (evfs_filereference * command, char *bytes,
                            long size);
    int (*evfs_file_close) (evfs_filereference * command);
+
+   void (*evfs_file_notify_create) (evfs_filereference* file);
    int (*evfs_file_create) (evfs_filereference * file);
 
    int (*evfs_file_mkdir) (evfs_filereference * file);

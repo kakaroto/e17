@@ -48,6 +48,8 @@
 #include <Ecore_File.h>
 
 /*All these homedir variables need to be consolidated - TODO*/
+static char* next_trash_file;
+static char* next_trash_path;
 static char evfs_fs_trash_info[PATH_MAX];
 static char evfs_fs_trash_files[PATH_MAX];
 static evfs_plugin* posix_plugin;
@@ -65,19 +67,71 @@ int evfs_file_seek(evfs_filereference * file, long offset, int whence);
 int evfs_file_read(evfs_client * client, evfs_filereference * file,
                    char *bytes, long size);
 int evfs_file_write(evfs_filereference * file, char *bytes, long size);
+
+void evfs_file_notify_create(evfs_filereference* file);
 int evfs_file_create(evfs_filereference * file);
 int evfs_file_mkdir(evfs_filereference * file);
 void evfs_dir_list(evfs_client * client, evfs_command * command,
                    Ecore_List ** directory_list);
+
+
+/*Internal functions*/
+char* evfs_fs_trash_filename_get(evfs_filereference* ref)
+{
+	time_t res;
+	int fulllen;
+	char* newname;
+	int i;
+
+	fulllen = strlen(ref->path) + 1 + 11 /*time() length*/;
+	newname = calloc(fulllen, 1);
+
+	
+
+	res = time(NULL);
+	snprintf(newname, fulllen, "%s.%d", ref->path, res);
+	for (i=0;i<strlen(newname);i++)
+		if (newname[i] == '/') newname[i] = '_';
+
+	return newname;
+}
+
+void evfs_fs_trash_infofile_create(evfs_filereference* ref, char* newname, char* path)
+{
+	int origlen;
+	FILE* file;
+	char* fullpath;
+
+	/* 1 for '/', 1 for \0 */
+	origlen = strlen(evfs_fs_trash_info) + 1 + strlen(newname)+10+1;
+	fullpath = malloc(origlen);
+	snprintf(fullpath, origlen, "%s/%s", evfs_fs_trash_info, newname, ".trashinfo");
+
+	printf("Create info file: '%s'\n", fullpath);
+
+	/*Should we use the evfs wrappers here? Faster not to..*/
+	if (file = fopen(fullpath, "w+") ){
+		fprintf(file, "[Trash Info]\n");
+		fprintf(file, "Path=%s\n", path);
+		fprintf(file, "DeletionDate=20040831T22:32:08\n");
+		
+		fclose(file);
+	} else {
+		printf("Could not open trash info file\n");
+	}
+
+	free(fullpath);
+}
 
 evfs_plugin_functions *
 evfs_plugin_init()
 {
    printf("Initialising the file plugin..\n");
 
-   snprintf(evfs_fs_trash_info, sizeof(evfs_fs_trash_info), "%s/.Trash/info", getenv("HOME"));
-   snprintf(evfs_fs_trash_files, sizeof(evfs_fs_trash_files), "%s/.Trash/files", getenv("HOME"));
+   snprintf(evfs_fs_trash_info, PATH_MAX, "%s/.Trash/info", getenv("HOME"));
+   snprintf(evfs_fs_trash_files, PATH_MAX, "%s/.Trash/files", getenv("HOME"));
    posix_plugin = evfs_get_plugin_for_uri(evfs_server_get(), "file");
+   next_trash_file = NULL;
    
    evfs_plugin_functions *functions = calloc(1, sizeof(evfs_plugin_functions));
    functions->evfs_client_disconnect = &evfs_client_disconnect;
@@ -95,7 +149,10 @@ evfs_plugin_init()
    functions->evfs_file_seek = &evfs_file_seek;
    functions->evfs_file_read = &evfs_file_read;
    functions->evfs_file_write = &evfs_file_write;
+   
    functions->evfs_file_create = &evfs_file_create;
+   functions->evfs_file_notify_create = &evfs_file_notify_create;
+
    functions->evfs_file_mkdir = &evfs_file_mkdir;
    /*functions->evfs_file_rename = &evfs_file_rename;*/
    return functions;
@@ -169,29 +226,46 @@ evfs_file_write(evfs_filereference * file, char *bytes, long size)
 		printf("Trash file not opened with trash plugin\n");
 }
 
+void evfs_file_notify_create(evfs_filereference* ref)
+{
+	if (next_trash_file) {
+		free(next_trash_file);
+		next_trash_file = NULL;
+	}
+	next_trash_file = evfs_fs_trash_filename_get(ref);
+	next_trash_path = evfs_filereference_to_string(ref);
+	printf("Next trash path is : %s\n", next_trash_path);
+}
+
 int
 evfs_file_create(evfs_filereference * file)
 {	
 	evfs_filereference* file_trash = evfs_filereference_clone(file);
 	int fd;
 	int size;
-	
+
+	/*Make a proxy file, and send this to the posix plugin create*/
 	free(file_trash->path);
-	size= strlen(evfs_fs_trash_files) + strlen(file->path) +2;
+	size= strlen(evfs_fs_trash_files) + strlen(next_trash_file) +2;
 	file_trash->path = calloc(size, 1);
-	snprintf(file_trash->path, size, "%s/%s", evfs_fs_trash_files, file->path);
+	snprintf(file_trash->path, size, "%s/%s", evfs_fs_trash_files, next_trash_file);
 	free(file_trash->plugin_uri);
 	file_trash->plugin_uri = strdup("file");
 	file_trash->plugin = posix_plugin;
 
-	printf("Creating trash file: %s\n", file_trash->path);
+	printf("Creating new file: %s\n", file_trash->path);
 
+	/*Dispatch to posix*/
 	(*EVFS_PLUGIN_FILE(file_trash->plugin)->functions->evfs_file_create) (file_trash);
 	file->fd = file_trash->fd;	
 
-	printf("Trash file fd: %d\n", file->fd);
-	
 	evfs_cleanup_filereference(file_trash);
+
+	/*Create the infofile*/
+	evfs_fs_trash_infofile_create(file,next_trash_file,next_trash_path);
+
+	free(next_trash_file);
+	free(next_trash_path);
 	
 	return file->fd;
 }

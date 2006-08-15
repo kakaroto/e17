@@ -78,16 +78,33 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 	while ( (file = ecore_list_remove_first(info_files))) {
 		Ecore_Hash* trash;
 		evfs_filereference* ref;
+		char* pos;
 		
 		snprintf(parser, PATH_MAX, "%s/%s", evfs_trash_home, file);
 		Ecore_Desktop* desk = ecore_desktop_get(parser, NULL);
-		
-		snprintf(parser, PATH_MAX, "trash:///#file://%s", desk->path);
-		printf("Parsing %s\n", parser);
-		ref = evfs_parse_uri_single(parser);
 
-		if (ref) 
-			ecore_list_append(*list, ref);
+		if (desk->path) {
+			pos = strrchr(desk->path, '/');
+			if (pos ) {
+		
+				/*First check if this is a complete uri path in .info*/
+				/*We need to find someway to reference the .info file we're talking
+				 * about - Note the following section is redundant for now*/
+				if (!(ref = evfs_parse_uri_single(desk->path))) {
+					snprintf(parser, PATH_MAX, "trash:///%s", pos+1);
+					printf("Parsing %s\n", parser);
+					ref = evfs_parse_uri_single(parser);
+				} else {
+					evfs_cleanup_filereference(ref);
+					snprintf(parser, PATH_MAX, "trash:///%s", pos+1);
+					printf("Parsing %s\n", parser);
+					ref = evfs_parse_uri_single(parser);			
+				}
+		
+				if (ref) 
+					ecore_list_append(*list, ref);
+			}
+		}
 		
 	}
 }
