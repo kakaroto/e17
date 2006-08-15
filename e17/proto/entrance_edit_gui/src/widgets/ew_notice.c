@@ -23,13 +23,6 @@ ew_notice_show(Entrance_Dialog ew)
 	ew_dialog_show(ew);
 }
 
-/*void 
-ew_dialog_add(Entrance_Dialog d, Entrance_Widget ew)
-{
-	if(d && ew)
-		etk_box_pack_start(ETK_BOX(d->box), ew->box, ETK_TRUE, ETK_TRUE, 0);
-}*/
-
 Entrance_Widget
 ew_notice_group_add(Entrance_Dialog d, const char *title, int direction)
 {
@@ -47,10 +40,9 @@ ew_notice_group_add(Entrance_Dialog d, const char *title, int direction)
 void 
 ew_notice_button_add(Entrance_Dialog ew, const char *name, int response_id, void (*response_event)(void *, int, void *), void *data)
 {
-	Etk_Widget *btn = etk_dialog_button_add(ETK_DIALOG(ew->owner), name, response_id);
+	etk_dialog_button_add(ETK_DIALOG(ew->owner), name, response_id);
 	if(response_event)
 		etk_signal_connect("response", ETK_OBJECT(ew->owner), ETK_CALLBACK(response_event), data);
-	etk_box_pack_start(ETK_BOX(ew->hbox), btn, ETK_TRUE, ETK_TRUE, 0);
 }
 
 void 

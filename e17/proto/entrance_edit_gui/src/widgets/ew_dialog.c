@@ -35,8 +35,6 @@ ew_dialog_new(const char *title, int toplevel)
 	ew->box = etk_vbox_new(0, 10);   
 	etk_container_border_width_set(ETK_CONTAINER(ew->owner), 5); /*its hardcoded and bad. i know, but just to keep things uniform*/
 
-	ew->hbox = etk_hbox_new(0,10);
-
 	if(toplevel)
 		etk_signal_connect("destroyed", ETK_OBJECT(ew->owner), ETK_CALLBACK(_ew_cb_destroy), NULL);
 	return ew;
@@ -45,7 +43,6 @@ ew_dialog_new(const char *title, int toplevel)
 void 
 ew_dialog_show(Entrance_Dialog ew)
 {
-	etk_box_pack_start(ETK_BOX(ew->box), ew->hbox, ETK_TRUE, ETK_TRUE, 0);
 	etk_dialog_pack_in_main_area(ETK_DIALOG(ew->owner), ew->box, ETK_TRUE, ETK_TRUE, 
 			0, ETK_FALSE);
 	etk_widget_show_all(ew->owner);
@@ -119,6 +116,6 @@ static void
 _ew_dialog_add_bottom(Entrance_Dialog d, Entrance_Widget ew)
 {
 	if(d && ew)
-		etk_box_pack_start(ETK_BOX(d->hbox), ew->owner, ETK_TRUE, ETK_TRUE, 0);
+		etk_dialog_pack_widget_in_action_area(ETK_DIALOG(d->owner), ETK_WIDGET(ew->owner), ETK_TRUE, ETK_TRUE, 10, ETK_TRUE);
 }
 
