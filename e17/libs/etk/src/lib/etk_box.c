@@ -301,7 +301,7 @@ Etk_Bool etk_box_child_position_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Gro
  * @brief Sets the packing settings of a child of the box
  * @param box a box
  * @param child a child of the box. If @a child is not packed in the box, this function has no effect
- * @param fill policy the fill policy of the child
+ * @param fill_policy the fill policy of the child
  * @param padding the amount of free space on the two sides of the child, in pixels
  */
 void etk_box_child_packing_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Policy fill_policy, int padding)
@@ -323,9 +323,9 @@ void etk_box_child_packing_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Pol
  * @brief Gets the packing settings of a child of the box
  * @param box a box
  * @param child a child of the box
- * @param fill policy the location where to store the fill policy of the child
+ * @param fill_policy the location where to store the fill policy of the child
  * @param padding the location where to store the padding of the child
- * @param Returns ETK_TRUE on success, and ETK_FALSE on failure (because @a child is not packed in @a box)
+ * @return Returns ETK_TRUE on success, and ETK_FALSE on failure (because @a child is not packed in @a box)
  */
 Etk_Bool etk_box_child_packing_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Policy *fill_policy, int *padding)
 {
@@ -1077,10 +1077,14 @@ static Etk_Box_Cell *_etk_box_cell_get(Etk_Box *box, Etk_Widget *widget)
  *
  * Etk_Box is the base class for Etk_HBox and Etk_VBox:
  * in an Etk_HBox, the children are packed horizontally, and in an Etk_VBox, the children are packed vertically. @n
- * A child can be packed at the start of the box (left for the hbox, top for the vbox),
- * or at the end of the box (right for the hbox, bottom for the vbox). @n @n
- * The "homogeneous" setting controls whether or not all the children of the box should take the same amount of space. @n
+ * You can pack a child in two differen groups of widgets: the start-group and the end-group. The children of the
+ * start-group are packed at the start of the box (left for the hbox, top for the vbox) and the children of the
+ * end are packed at the end of the box (right for the hbox, bottom for the vbox). @n
+ * Widgets can be packed with the functions etk_box_prepend(), etk_box_append(), etk_box_insert() and
+ * etk_box_insert_at(). @n @n
+ * The "homogeneous" setting determines whether or not all the children of the box take up the same amount of space. @n
  * The "spacing" setting determines the amount of space between two children.
+ *
  * 
  * \par Object Hierarchy:
  * - Etk_Object
@@ -1091,7 +1095,7 @@ static Etk_Box_Cell *_etk_box_cell_get(Etk_Box *box, Etk_Widget *widget)
  *         - Etk_VBox
  *
  * \par Properties:
- * @prop_name "homogeneous": Whether or not the children of the box should take the same amount of space
+ * @prop_name "homogeneous": Whether or not the children of the box take up the same amount of space
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_FALSE

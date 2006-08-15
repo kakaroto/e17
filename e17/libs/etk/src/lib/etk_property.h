@@ -38,17 +38,17 @@ typedef enum Etk_Property_Type
  */
 typedef enum Etk_Property_Flags
 {
-   ETK_PROPERTY_NO_ACCESS = 1 << 0,     /**< Used when the property type is ETK_PROPERTY_OTHER */
-   ETK_PROPERTY_READABLE = 1 << 1,      /**< The value of the property is readable */
-   ETK_PROPERTY_WRITABLE = 1 << 2,      /**< The value of the property is writable */
+   ETK_PROPERTY_NO_ACCESS = 0,          /**< Used when the property type is ETK_PROPERTY_OTHER */
+   ETK_PROPERTY_READABLE = 1 << 0,      /**< The value of the property is readable */
+   ETK_PROPERTY_WRITABLE = 1 << 1,      /**< The value of the property is writable */
    ETK_PROPERTY_READABLE_WRITABLE =     /**< The value of the property is readable and writable */
       ETK_PROPERTY_READABLE | ETK_PROPERTY_WRITABLE,
-   ETK_PROPERTY_CONSTRUCT = 1 << 3      /**< Use this flag to force the default value of the property to be set when
+   ETK_PROPERTY_CONSTRUCT = 1 << 2      /**< Use this flag to force the default value of the property to be set when
                                          * the object is created */
 } Etk_Property_Flags;
 
 /**
- * @brief An Etk_Property is a name associated to a type.
+ * @brief An Etk_Property is a name/value couple that can be associated to a type.
  * A property has a default value and can be readable, writable or both
  * @structinfo
  */
@@ -63,7 +63,7 @@ struct Etk_Property
 };
 
 /**
- * @brief The value of a property. You usually do not need to manipulate directly it, use etk_object_properties_set()
+ * @brief The value of a property. You usually do not need to manipulate it directly, use etk_object_properties_set()
  * and etk_object_properties_get() to set and get the value of a property of an object.
  * @structinfo
  */
@@ -85,14 +85,14 @@ struct Etk_Property_Value
    Etk_Property_Type type;
 };
 
-Etk_Property *etk_property_new(const char *name, int property_id, Etk_Property_Type type, Etk_Property_Flags flags, Etk_Property_Value *default_value);
-void etk_property_delete(Etk_Property *property);
-Etk_Bool etk_property_default_value_set(Etk_Property *property, Etk_Property_Value *default_value);
+Etk_Property     *etk_property_new(const char *name, int property_id, Etk_Property_Type type, Etk_Property_Flags flags, Etk_Property_Value *default_value);
+void              etk_property_delete(Etk_Property *property);
+Etk_Bool          etk_property_default_value_set(Etk_Property *property, Etk_Property_Value *default_value);
 Etk_Property_Type etk_property_type_get(Etk_Property *property);
 
 Etk_Property_Value *etk_property_value_new();
-void etk_property_value_delete(Etk_Property_Value *value);
-Etk_Property_Type etk_property_value_type_get(Etk_Property_Value *value);
+void                etk_property_value_delete(Etk_Property_Value *value);
+Etk_Property_Type   etk_property_value_type_get(Etk_Property_Value *value);
 
 Etk_Property_Value *etk_property_value_create         (Etk_Property_Type type, ...);
 Etk_Property_Value *etk_property_value_create_valist  (Etk_Property_Type type, va_list *arg);
@@ -126,7 +126,7 @@ float       etk_property_value_float_get(Etk_Property_Value *value);
 double      etk_property_value_double_get(Etk_Property_Value *value);
 short       etk_property_value_short_get(Etk_Property_Value *value);
 long        etk_property_value_long_get(Etk_Property_Value *value);
-void *      etk_property_value_pointer_get(Etk_Property_Value *value);
+void       *etk_property_value_pointer_get(Etk_Property_Value *value);
 const char *etk_property_value_string_get(Etk_Property_Value *value);
 
 /** @} */

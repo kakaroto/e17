@@ -22,12 +22,12 @@
 /** @brief Describes how a child of the table should fill and expand the space allocated to it */ 
 typedef enum Etk_Table_Fill_Policy
 {
-   ETK_TABLE_NONE = 1 << 0,       /**< The child doesn't fill or expand */
-   ETK_TABLE_HFILL = 1 << 1,      /**< The child fills all the horizontal space allocated to it */
-   ETK_TABLE_VFILL = 1 << 2,      /**< The child fills all the vertical space allocated to it */
-   ETK_TABLE_HEXPAND = 1 << 3,    /**< The child expands horizontally: the cell containing the child */
+   ETK_TABLE_NONE = 0,            /**< The child doesn't fill or expand */
+   ETK_TABLE_HFILL = 1 << 0,      /**< The child fills all the horizontal space allocated to it */
+   ETK_TABLE_VFILL = 1 << 1,      /**< The child fills all the vertical space allocated to it */
+   ETK_TABLE_HEXPAND = 1 << 2,    /**< The child expands horizontally: the cell containing the child */
                                   /**< will take as much place as possible in the horizontal direction */
-   ETK_TABLE_VEXPAND = 1 << 4,    /**< The child expands vertically: the cell containing the child */
+   ETK_TABLE_VEXPAND = 1 << 3,    /**< The child expands vertically: the cell containing the child */
                                   /**< will take as much place as possible in the vertical direction */
    ETK_TABLE_FILL = ETK_TABLE_HFILL | ETK_TABLE_VFILL,         /**< Equivalent to ETK_TABLE_HFILL | ETK_TABLE_VFILL */
    ETK_TABLE_EXPAND = ETK_TABLE_HEXPAND | ETK_TABLE_VEXPAND,   /**< Equivalent to ETK_TABLE_HEXPAND | ETK_TABLE_VEXPAND */

@@ -34,7 +34,8 @@
 /** Checks if the object is an Etk_VBox */
 #define ETK_IS_VBOX(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VBOX_TYPE))
 
-/** @brief The two groups where the children could be packed: the start-group and the end-group */
+
+/** @brief The two groups where the children can be packed: the start-group and the end-group */
 typedef enum Etk_Box_Group
 {
    ETK_BOX_START,    /**< The start-group of children: the children in this group are displayed
@@ -46,14 +47,14 @@ typedef enum Etk_Box_Group
 /** @brief Describes how a child of the box expands and fills the space */
 typedef enum Etk_Box_Fill_Policy
 {
-   ETK_BOX_NONE = 1 << 0,       /**< The child does not fill or expand */
-   ETK_BOX_EXPAND = 1 << 1,     /**< The child will fill all the available space in its cell */
-   ETK_BOX_FILL = 1 << 2,       /**< The cell containing the child will expand to take all the available space */
+   ETK_BOX_NONE = 0,            /**< The child does not fill or expand */
+   ETK_BOX_EXPAND = 1 << 0,     /**< The cell containing the child will expand to take all the available space */
+   ETK_BOX_FILL = 1 << 1,       /**< The child will fill all the available space in its cell */
    ETK_BOX_EXPAND_FILL = ETK_BOX_EXPAND | ETK_BOX_FILL,   /**< Equivalent to ETK_BOX_EXPAND | ETK_BOX_FILL */
 } Etk_Box_Fill_Policy;
 
 /**
- * @brief @widget The structure of a box
+ * @brief @widget An abstract class for a box
  * @structinfo
  */
 struct Etk_Box
@@ -69,7 +70,7 @@ struct Etk_Box
 };
 
 /**
- * @brief @widget The structure of a hbox
+ * @brief @widget A box in which the children are packed horizontally
  * @structinfo
  */
 struct Etk_HBox
@@ -80,7 +81,7 @@ struct Etk_HBox
 };
 
 /**
- * @brief @widget The structure of a vbox
+ * @brief @widget A box in which the children are packed vertically
  * @structinfo
  */
 struct Etk_VBox
