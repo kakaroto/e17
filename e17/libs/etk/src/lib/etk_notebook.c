@@ -2,10 +2,10 @@
 #include "etk_notebook.h"
 #include <stdlib.h>
 #include <string.h>
-#include "etk_utils.h"
+#include "etk_radio_button.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "etk_radio_button.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Notebook
@@ -35,6 +35,8 @@ static void _etk_notebook_child_add(Etk_Container *container, Etk_Widget *widget
 static void _etk_notebook_child_remove(Etk_Container *container, Etk_Widget *widget);
 static Evas_List *_etk_notebook_children_get(Etk_Container *container);
 
+static void _etk_notebook_frame_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data);
+static void _etk_notebook_frame_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
 static void _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data);
 static void _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data);
 static void _etk_notebook_tab_bar_unfocused_cb(Etk_Object *object, void *data);
@@ -129,7 +131,7 @@ int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_
 }
 
 /**
- * @brief Creates a new page and inserts it to the notebook at the given position
+ * @brief Creates a new page and inserts it to the notebook at a given position
  * @param notebook a notebook
  * @param tab_label the text to set to the tab's label
  * @param page_child the child of the new page. This widget will be shown when the page is set as the current one
@@ -162,29 +164,40 @@ int etk_notebook_page_insert(Etk_Notebook *notebook, const char *tab_label, Etk_
  * @brief Removes from the notebook the page corresponding to the index
  * @param notebook a notebook
  * @param page_num the index of the page to remove
+ * @warning The widget of the child of the page will be automatically destroyed too.
+ * To avoid this, call etk_notebook_page_child_set(notebook, page_num, NULL); before
  */
 void etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
 {
    Evas_List *l;
-   Etk_Notebook_Page *page;
+   Etk_Notebook_Page *page, *new_current = NULL;
    
    if (!notebook || !(l = evas_list_nth_list(notebook->pages, page_num)))
       return;
-     
-   page = l->data;
-   etk_widget_parent_set(page->frame, NULL);
-   etk_object_destroy(ETK_OBJECT(page->frame));
-   etk_widget_parent_set(page->tab, NULL);
-   etk_object_destroy(ETK_OBJECT(page->tab));
-   free(page);
-   notebook->pages = evas_list_remove_list(notebook->pages, l);
    
-   if (!notebook->pages)
+   page = l->data;
+   etk_object_destroy(ETK_OBJECT(page->frame));
+   etk_object_destroy(ETK_OBJECT(page->tab));
+   
+   if (notebook->current_page == page)
    {
-      notebook->current_page = NULL;
-      ETK_WIDGET(notebook)->focus_order = evas_list_free(ETK_WIDGET(notebook)->focus_order);
-      etk_signal_emit(_etk_notebook_signals[ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL], ETK_OBJECT(notebook), NULL);
+      if (l->next)
+         new_current = l->next->data;
+      else if (l->prev)
+         new_current = l->prev->data;
    }
+   
+   notebook->pages = evas_list_remove_list(notebook->pages, l);
+   free(page);
+   
+   
+   if (notebook->current_page != new_current)
+   {
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(new_current->tab), ETK_TRUE);
+      notebook->current_page = new_current;
+   }
+   
+   etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
 }
 
 /**
@@ -304,7 +317,7 @@ int etk_notebook_page_next(Etk_Notebook *notebook)
 /**
  * @brief Sets the label of a tab of the notebook
  * @param notebook a notebook
- * @param page_num the index of the page that you want you set the tab label
+ * @param page_num the index of the page you want to set the tab label of
  * @param tab_label the new label of the tab
  */
 void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const char *tab_label)
@@ -319,7 +332,7 @@ void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const
 /**
  * @brief Gets the label of a tab of the notebook
  * @param notebook a notebook
- * @param page_num the index of the page that you want to get the tab label
+ * @param page_num the index of the page you want to get the tab label of
  * @return Returns the label, or NULL on failure
  */
 const char *etk_notebook_page_tab_label_get(Etk_Notebook *notebook, int page_num)
@@ -670,6 +683,26 @@ static Evas_List *_etk_notebook_children_get(Etk_Container *container)
  *
  **************************/
 
+/* Called when a child is added to a page frame */
+static void _etk_notebook_frame_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data)
+{
+   Etk_Object *notebook;
+   
+   if (!(notebook = ETK_OBJECT(data)))
+      return;
+   etk_signal_emit_by_name("child_added", notebook, NULL, child);
+}
+
+/* Called when a child is removed from a page frame */
+static void _etk_notebook_frame_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
+{
+   Etk_Object *notebook;
+   
+   if (!(notebook = ETK_OBJECT(data)))
+      return;
+   etk_signal_emit_by_name("child_removed", notebook, NULL, child);
+}
+
 /* Called when a tab is toggled (activated or deactivated) */
 static void _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data)
 {
@@ -801,6 +834,7 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    etk_widget_show(new_page->tab);
    etk_signal_connect("toggled", ETK_OBJECT(new_page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
    
+   
    if (notebook->tab_bar_visible)
       new_page->frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", "frame", NULL);
    else
@@ -808,6 +842,12 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    etk_widget_parent_set(new_page->frame, ETK_WIDGET(notebook));
    etk_widget_visibility_locked_set(new_page->frame, ETK_TRUE);
    etk_widget_hide(new_page->frame);
+   
+   etk_signal_connect("child_added", ETK_OBJECT(new_page->frame),
+      ETK_CALLBACK(_etk_notebook_frame_child_added_cb), notebook);
+   etk_signal_connect("child_removed", ETK_OBJECT(new_page->frame),
+      ETK_CALLBACK(_etk_notebook_frame_child_removed_cb), notebook);
+   
    
    etk_bin_child_set(ETK_BIN(new_page->frame), page_child);
    

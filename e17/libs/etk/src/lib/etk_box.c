@@ -1,6 +1,8 @@
 /** @file etk_box.c */
 #include "etk_box.h"
 #include <stdlib.h>
+#include "etk_signal.h"
+#include "etk_signal_callback.h"
 #include "etk_utils.h"
 
 /**
@@ -514,6 +516,8 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
       etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
       etk_widget_size_recalc_queue(box_widget);
       free(cell);
+      
+      etk_signal_emit_by_name("child_removed", ETK_OBJECT(box), NULL, widget);
    }
 }
 
@@ -1040,6 +1044,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
    }
    
    etk_widget_parent_set(child, ETK_WIDGET(box));
+   etk_signal_emit_by_name("child_added", ETK_OBJECT(box), NULL, child);
 }
 
 /* Gets the cell of the box containing the widget */

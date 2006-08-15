@@ -120,8 +120,8 @@ Etk_Widget *etk_vpaned_new()
  * @brief Sets the first child of the paned (the left one for a hpaned, the top one for a vpaned)
  * @param paned a paned
  * @param child the child to set
- * @param expand if @a expand == ETK_TRUE, when the paned will be resized, the first child will try to expand as much as
- * possible
+ * @param expand if @a expand is ETK_TRUE, when the paned will be resized, the child will try to expand
+ * as much as possible
  */
 void etk_paned_child1_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
 {
@@ -140,6 +140,8 @@ void etk_paned_child1_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
       etk_widget_parent_set(child, ETK_WIDGET(paned));
       
       etk_widget_raise(paned->separator);
+      
+      etk_signal_emit_by_name("child_added", ETK_OBJECT(paned), NULL, child);
    }
 }
 
@@ -147,8 +149,8 @@ void etk_paned_child1_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
  * @brief Sets the second child of the paned (the right one for a hpaned, the bottom one for a vpaned)
  * @param paned a paned
  * @param child the child to set
- * @param expand if @a expand == ETK_TRUE, when the paned will be resized, the first child will try to expand as much as
- * possible
+ * @param expand if @a expand is ETK_TRUE, when the paned will be resized, the first child will try to expand
+ * as much as possible
  */
 void etk_paned_child2_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
 {
@@ -167,6 +169,8 @@ void etk_paned_child2_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
       etk_widget_parent_set(child, ETK_WIDGET(paned));
       
       etk_widget_raise(paned->separator);
+      
+      etk_signal_emit_by_name("child_added", ETK_OBJECT(paned), NULL, child);
    }
 }
 
@@ -464,6 +468,7 @@ static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget
 
    etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
    etk_widget_size_recalc_queue(ETK_WIDGET(paned));
+   etk_signal_emit_by_name("child_removed", ETK_OBJECT(paned), NULL, widget);
 }
 
 /* Returns the children of the paned */
@@ -654,8 +659,10 @@ static void _etk_vpaned_position_calc(Etk_Paned *paned)
  *
  * @image html widgets/paned.png
  * Etk_Paned is the abstract class for two derived widgets: Etk_HPaned and Etk_VPaned.
- * - Etk_HPaned is a paned where the two children are arranged horizontally and separated by a draggable vertical separator
- * - Etk_VPaned is a paned where the two children are arranged vertically and separated by a draggable horizontal separator
+ * - Etk_HPaned is a paned where the two children are arranged horizontally and
+ * separated by a vertical draggable separator
+ * - Etk_VPaned is a paned where the two children are arranged vertically and
+ * separated by a horizontal draggable separator
  * @n @n
  *
  * \par Object Hierarchy:

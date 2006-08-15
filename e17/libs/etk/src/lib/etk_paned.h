@@ -38,7 +38,7 @@
 #define ETK_IS_VPANED(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VPANED_TYPE))
 
 /**
- * @brief @widget The structure of a paned
+ * @brief @widget A container that can contain two children separated by a draggable separator
  * @structinfo
  */
 struct Etk_Paned
@@ -59,7 +59,7 @@ struct Etk_Paned
 };
 
 /**
- * @brief @widget The structure of a hpaned
+ * @brief @widget An horizontal paned
  * @structinfo
  */
 struct Etk_HPaned
@@ -70,7 +70,7 @@ struct Etk_HPaned
 };
 
 /**
- * @brief @widget The structure of a vpaned
+ * @brief @widget A vertical paned
  * @structinfo
  */
 struct Etk_VPaned

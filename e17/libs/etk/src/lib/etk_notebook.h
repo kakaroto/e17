@@ -9,12 +9,14 @@
 /** TODO/FIXME list:
  * - Improve the default theme of the tabs
  * - Make the tab bar "swallowable"
- * - Focus the first widget of the page when the current page is changed
+ * - Fix focus problems
+ * - Find a way to access clipped tabs when there are two many tabs (popup menus ?)
  */
 
 /**
  * @defgroup Etk_Notebook Etk_Notebook
- * @brief The Etk_Notebook widget is a container that can contain several widgets in different pages accessible via tabs
+ * @brief The Etk_Notebook widget is a container that can contain several widgets in different pages
+  * accessible through tabs
  * @{
  */
 
@@ -34,7 +36,7 @@ typedef struct Etk_Notebook_Page
 } Etk_Notebook_Page;
 
 /**
- * @brief @widget The structure of a notebook
+ * @brief @widget A container that can contain several widgets in different pages accessible through tabs
  * @structinfo
  */
 struct Etk_Notebook
@@ -54,28 +56,27 @@ struct Etk_Notebook
 Etk_Type *etk_notebook_type_get();
 Etk_Widget *etk_notebook_new();
 
-int etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
-int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
-int etk_notebook_page_insert(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child, int position);
+int  etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
+int  etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
+int  etk_notebook_page_insert(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child, int position);
 void etk_notebook_page_remove(Etk_Notebook *notebook, int page_num);
 
-int etk_notebook_num_pages_get(Etk_Notebook *notebook);
+int  etk_notebook_num_pages_get(Etk_Notebook *notebook);
 void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num);
-int etk_notebook_current_page_get(Etk_Notebook *notebook);
-int etk_notebook_page_index_get(Etk_Notebook *notebook, Etk_Widget *child);
+int  etk_notebook_current_page_get(Etk_Notebook *notebook);
+int  etk_notebook_page_index_get(Etk_Notebook *notebook, Etk_Widget *child);
 
 int etk_notebook_page_prev(Etk_Notebook *notebook);
 int etk_notebook_page_next(Etk_Notebook *notebook);
 
-void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const char *tab_label);
+void        etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const char *tab_label);
 const char *etk_notebook_page_tab_label_get(Etk_Notebook *notebook, int page_num);
-void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_Widget *tab_widget);
+void        etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_Widget *tab_widget);
 Etk_Widget *etk_notebook_page_tab_widget_get(Etk_Notebook *notebook, int page_num);
-
-void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widget *child);
+void        etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widget *child);
 Etk_Widget *etk_notebook_page_child_get(Etk_Notebook *notebook, int page_num);
 
-void etk_notebook_tabs_visible_set(Etk_Notebook *notebook, Etk_Bool tabs_visible);
+void     etk_notebook_tabs_visible_set(Etk_Notebook *notebook, Etk_Bool tabs_visible);
 Etk_Bool etk_notebook_tabs_visible_get(Etk_Notebook *notebook);
 
 /** @} */

@@ -244,7 +244,6 @@ static void _etk_bin_realize_cb(Etk_Object *object, void *data)
 
    if (!(bin = ETK_BIN(object)) || !bin->child)
       return;
-   /* TODO; warnings? */
    etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
 }
 

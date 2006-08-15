@@ -23,7 +23,7 @@
 #define ETK_IS_BIN(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_BIN_TYPE))
 
 /**
- * @brief @widget The structure of a bin
+ * @brief @widget A container that can contain only one child
  * @structinfo
  */
 struct Etk_Bin
