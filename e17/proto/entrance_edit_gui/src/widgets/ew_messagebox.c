@@ -5,14 +5,11 @@
 #include "config.h"
 
 static void _ew_messagebox_cb_ok(void *, int, void *);
-static Entrance_Dialog _ew_messagebox_new(const char *type, const char *title, const char *message);
 
-static Entrance_Dialog ew;
-
-static Entrance_Dialog
+Entrance_Dialog
 _ew_messagebox_new(const char *title, const char *message, const char *icon) 
 {
-	ew = ew_notice_new(title);
+	Entrance_Dialog ew = ew_notice_new(title);
 	Entrance_Widget group;
 	Entrance_Widget _image;
 	Entrance_Widget _text;
@@ -47,9 +44,31 @@ _ew_messagebox_new(const char *title, const char *message, const char *icon)
 Entrance_Dialog
 ew_messagebox_ok(const char *title, const char *message, const char *icon) 
 {
-	_ew_messagebox_new(title, message, icon);
+	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
 	ew_notice_ok_button_add(ew, _ew_messagebox_cb_ok, NULL);
 	ew_notice_show(ew);
+}
+
+Entrance_Dialog
+ew_messagebox_ok_cancel(const char *title, const char *message, const char *icon, void (*funct)(void *, int *, void *)) {
+	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	ew_notice_ok_button_add(ew, funct, NULL);
+	ew_notice_cancel_button_add(ew, NULL, NULL);
+}
+
+Entrance_Dialog
+ew_messagebox_yes_no(const char *title, const char *message, const char *icon, void (*funct)(void *, int *, void *)) {
+	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	ew_notice_yes_button_add(ew, funct, NULL);
+	ew_notice_no_button_add(ew, NULL, NULL);
+}
+
+Entrance_Dialog
+ew_messagebox_yes_no_cancel(const char *title, const char *message, const char *icon, void (*funct)(void *, int *, void *)) {
+	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	ew_notice_yes_button_add(ew, funct, NULL);
+	ew_notice_no_button_add(ew, NULL, NULL);
+	ew_notice_cancel_button_add(ew, NULL, NULL);
 }
 
 static void
