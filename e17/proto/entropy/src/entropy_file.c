@@ -27,11 +27,11 @@ void entropy_generic_file_destroy(entropy_generic_file* file) {
 		/*If the file has a parent, remove a reference, because we added one when we got here..*/
 		if (file->parent) {
 			//TODO fix this - we need to detatch this from threading issues*/
-			//entropy_core_file_cache_remove_reference(entropy_core_get_core(), file->parent->md5);
+			entropy_core_file_cache_remove_reference(file->parent->md5);
 		}
 
 		if (file->md5) entropy_free(file->md5);
-		if (file->icon_hint) entropy_free(file->icon_hint);
+		if (file->attach) entropy_free(file->attach);
 
 
 		entropy_free(file);

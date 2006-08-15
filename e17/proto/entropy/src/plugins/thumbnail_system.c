@@ -55,15 +55,15 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
   entropy_thumbnail *thumb = entropy_thumbnail_new ();
 
   if (!strcmp (request->file->mime_type, "file/folder")) {
-    if (!request->file->icon_hint) {
+    if (!request->file->attach) {
 	    strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/folder.png");
     } else {
-	    printf("Object has attach data: %s\n", request->file->icon_hint);
-	    if (!strcmp(request->file->icon_hint, "video_hint")) 
+	    printf("Object has attach data: %s\n", request->file->attach);
+	    if (!strcmp(request->file->attach, "video_hint")) 
 		    strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/hint_videos.png");
-	    else if (!strcmp(request->file->icon_hint, "audio_hint")) 
+	    else if (!strcmp(request->file->attach, "audio_hint")) 
 		    strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/hint_audio.png");
-	    else if (!strcmp(request->file->icon_hint, "image_hint"))
+	    else if (!strcmp(request->file->attach, "image_hint"))
 		    strcpy (thumb->thumbnail_filename, PACKAGE_DATA_DIR "/icons/hint_image.png");
     }
   }

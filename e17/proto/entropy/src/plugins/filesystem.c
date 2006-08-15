@@ -163,16 +163,31 @@ callback (evfs_event * data, void *obj)
       entropy_gui_component_instance *instance;
       entropy_file_stat *file_stat;
       entropy_file_listener* listener;
+      evfs_filereference* ref;
       char* md5;
+      char *folder, *filename;
+      char* pos;
 
-      char *folder =
-	strdup ((char *) data->resp_command.file_command.files[0]->path);
-      char *pos = rindex (folder, '/');
 
-      *pos = '\0';
+      ref = data->resp_command.file_command.files[0];
+
+      pos = rindex (ref->path, '/');
+      /*Set the file's filename*/
+      filename = strdup (pos + 1);
+	
+      if (pos - ref->path == 0 && ref->path[0] == '/') 
+   	folder = strdup("/");
+      else {
+	folder = calloc(pos - ref->path +1, 1 );
+ 	strncpy(folder, ref->path, pos - ref->path);
+      }
+
+
+      
+      /*printf("Path: '%s' -> pos+1: '%s'\n", (char *) data->resp_command.file_command.files[0]->path, pos+1);*/
 
       //printf("Folder: '%s'\nFilename: '%s'\n", folder, pos+1);
-      md5 = md5_entropy_path_file (data->resp_command.file_command.files[0]->plugin_uri, folder, pos + 1);
+      md5 = md5_entropy_path_file (ref->plugin_uri, folder, filename);
       instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier );
 
       /*Build a file<->stat structure to pass to requester */
@@ -215,7 +230,7 @@ callback (evfs_event * data, void *obj)
 	      entropy_core_layout_notify_event (instance, gui_event,
 					ENTROPY_EVENT_LOCAL);
       } else {
-	      printf("Error! Couldn't fine listener for '%s'\n", data->resp_command.file_command.files[0]->path);
+	      printf("Error! Couldn't find listener for '%s' '%s' '%s'\n",data->resp_command.file_command.files[0]->plugin_uri, folder, filename);
       }
 
       /*Do some freeing */
@@ -224,6 +239,7 @@ callback (evfs_event * data, void *obj)
 
       ecore_hash_remove (evfs_dir_requests, (long*)data->resp_command.client_identifier);
       entropy_free (folder);
+      entropy_free (filename);
       entropy_free (md5);
 
       /*No need to free event - notify_event frees it for us */
@@ -260,15 +276,16 @@ callback (evfs_event * data, void *obj)
 			/*printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type); */
 
 			pos = rindex (ref->path, '/');
+
+			/*Set the file's filename*/
+			filename = strdup (pos + 1);
+			
 			if (pos - ref->path == 0 && ref->path[0] == '/') 
 				folder = strdup("/");
 			else {
 				folder = calloc(pos - ref->path +1, 1 );
 				strncpy(folder, ref->path, pos - ref->path);
 			}
-
-			/*Set the file's filename*/
-			filename = strdup (pos + 1);
 
 			/*Look for an existing file we have cached */
 			char *md5 = md5_entropy_path_file (ref->plugin_uri, folder, filename);
@@ -297,7 +314,7 @@ callback (evfs_event * data, void *obj)
 			  }
 
 			  /*Set the attached data -> icon_hint, if there*/
-			  if (ref->attach) file->icon_hint = strdup(ref->attach);
+			  if (ref->attach) file->attach = strdup(ref->attach);
 
 			  if (calling_request
 			      && (calling_request->drill_down
@@ -657,18 +674,18 @@ structurelist_get (char *base)
 struct stat *
 filestat_get (entropy_file_request * request)
 {
-  evfs_file_uri_path *path;
+  evfs_filereference *path;
   char *uri = uri = entropy_core_generic_file_uri_create (request->file, 0);
   long id;
 
-  //printf("Getting a stat from evfs...\n");
+  path = evfs_parse_uri_single (uri);
+  if (request->file->attach) 
+	  path->attach = strdup(request->file->attach);
 
+  id = evfs_client_file_stat (con, path);
+  ecore_hash_set (evfs_dir_requests, (long*)id, request->requester);
 
-  path = evfs_parse_uri (uri);
-  id = evfs_client_file_stat (con, path->files[0]);
-ecore_hash_set (evfs_dir_requests, (long*)id, request->requester);
-
-  evfs_cleanup_file_uri_path (path);
+  evfs_cleanup_filereference (path);
   free(uri);
 
 

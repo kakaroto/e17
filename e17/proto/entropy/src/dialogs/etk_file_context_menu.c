@@ -203,6 +203,33 @@ _entropy_etk_context_menu_group_file_copy_cb(Etk_Object *object, void *data)
 }
 
 static void
+_entropy_etk_context_menu_trash_copy_cb(Etk_Object *object, void *data)
+{
+	Ecore_List* files = ecore_list_new();
+
+	if (_entropy_etk_context_menu_mode == 0) {
+		ecore_list_append(files,_entropy_etk_context_menu_current_file);
+	} else {
+		entropy_generic_file* file;
+
+		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
+			ecore_list_append(files,file);
+		}
+		
+	}
+
+	if (ecore_list_nodes(files) > 0) {
+		entropy_plugin_filesystem_file_copy_multi(files, "trash:///", 
+			_entropy_etk_context_menu_current_instance);	
+	}
+
+	
+
+	ecore_list_destroy(files);
+}
+
+static void
 _entropy_etk_context_menu_group_file_add_remove_cb(Etk_Object *object, void *data)
 {
 	const char* label;
@@ -414,6 +441,12 @@ void entropy_etk_context_menu_init()
 
 		menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Folder.."), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(new_menu),NULL);
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_directory_add_cb), NULL);
+
+		
+		/*TEST: TRASH*/
+		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy to trash (test)"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		etk_signal_connect("activated", ETK_OBJECT(menu_item), 
+				ETK_CALLBACK(_entropy_etk_context_menu_trash_copy_cb), NULL);
 
 	}
 

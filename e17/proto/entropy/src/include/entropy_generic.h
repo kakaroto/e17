@@ -32,7 +32,7 @@ struct entropy_generic_file {
 
 	char* md5; /*A reference to the md5sum made for this file*/
 
-	char* icon_hint;
+	char* attach;
 };
 
 typedef struct entropy_file_listener entropy_file_listener;
