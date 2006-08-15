@@ -33,7 +33,7 @@ typedef struct _Entrance_Entry {
 } \
 else \
 
-Entrance_Entry ew_entry_new(const char*, const char *, int);
+Entrance_Entry ew_entry_new(const char *label, const char *text, int ispassword);
 const char* ew_entry_get(Entrance_Entry);
 void ew_entry_set(Entrance_Entry ew, const char *text);
 void ew_entry_password_set(Entrance_Entry ew);

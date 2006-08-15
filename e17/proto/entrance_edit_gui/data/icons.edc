@@ -40,5 +40,6 @@ collections {
 	STOCK_ICON("48x48/status/dialog-information.png", "icons/dialog/information", 48)
 	STOCK_ICON("48x48/status/dialog-warning.png", "icons/dialog/warning", 48)
 	STOCK_ICON("48x48/status/dialog-question.png", "icons/dialog/quiestion", 48)
+	STOCK_ICON("48x48/mimetypes/package-x-generic.png", "icons/main/modules", 48)
 }
 

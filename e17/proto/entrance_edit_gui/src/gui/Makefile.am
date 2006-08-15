@@ -13,13 +13,13 @@ entrance_edit_gui_SOURCES=main.c \
 						  Egui.h
 
 entrance_edit_gui_CFLAGS = \
- -I$(top_srcdir)/src/widgets \
-@etk_cflags@ \
-@entrance_edit_cflags@ 
+	-I$(top_srcdir)/src/widgets \
+	@etk_cflags@ \
+	@entrance_edit_cflags@ 
 
 entrance_edit_gui_LDFLAGS = \
- -L$(top_srcdir)/src/widgets
+	-L$(top_srcdir)/src/widgets
 
 entrance_edit_gui_LDADD = \
- -lentrance_widgets \
- @entrance_edit_libs@
+	-lentrance_widgets \
+	@entrance_edit_libs@
