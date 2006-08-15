@@ -75,6 +75,25 @@ void evfs_dir_list(evfs_client * client, evfs_command * command,
                    Ecore_List ** directory_list);
 
 
+evfs_filereference* evfs_fs_trash_proxy_create(evfs_filereference* ref, char* newpath)
+{
+	int size;
+	evfs_filereference* newfile = evfs_filereference_clone(ref);
+
+	/*Make a proxy file, and send this to the posix plugin create*/
+	free(newfile->path);
+	
+	size= strlen(evfs_fs_trash_files) + strlen(newpath) +2;
+	newfile->path = calloc(size, 1);
+	snprintf(newfile->path, size, "%s/%s", evfs_fs_trash_files, newpath);
+	free(newfile->plugin_uri);
+	
+	newfile->plugin_uri = strdup("file");
+	newfile->plugin = posix_plugin;
+
+	return newfile;
+}
+
 /*Internal functions*/
 char* evfs_fs_trash_filename_get(evfs_filereference* ref)
 {
@@ -105,7 +124,7 @@ void evfs_fs_trash_infofile_create(evfs_filereference* ref, char* newname, char*
 	/* 1 for '/', 1 for \0 */
 	origlen = strlen(evfs_fs_trash_info) + 1 + strlen(newname)+10+1;
 	fullpath = malloc(origlen);
-	snprintf(fullpath, origlen, "%s/%s", evfs_fs_trash_info, newname, ".trashinfo");
+	snprintf(fullpath, origlen, "%s/%s%s", evfs_fs_trash_info, newname, ".trashinfo");
 
 	printf("Create info file: '%s'\n", fullpath);
 
@@ -175,10 +194,45 @@ evfs_client_disconnect(evfs_client * client)
 int
 evfs_file_stat(evfs_command * command, struct stat *file_stat, int file_number)
 {
+	evfs_filereference* ref = command->file_command.files[file_number];
+	
 	/*FIXME - if we're asking for the root - it's a directory*/
-	if (!strcmp(command->file_command.files[file_number]->path, "/")) {
+	if (!strcmp(ref->path, "/")) {
 		file_stat->st_mode |= S_IFDIR;
 		return EVFS_SUCCESS;
+	} else {
+		if (ref->attach) {
+			evfs_filereference* proxy;
+			char* pos;
+			char* slashpos;
+			
+			pos = strstr(ref->attach, ".trashinfo");
+			slashpos = strrchr(ref->attach, '/');
+			if (pos && slashpos) { 
+				char* newfile = NULL;
+				evfs_command* command_proxy;
+				int res;
+				int newsize;
+				
+				newsize= strlen(slashpos) - strlen(".trashinfo");
+				newfile = malloc(newsize);
+				strncpy(newfile, slashpos+1 , newsize);
+				newfile[newsize-1] = '\0';
+				proxy = evfs_fs_trash_proxy_create(ref, newfile); 
+				free(newfile);
+				
+				command_proxy = evfs_file_command_single_build(proxy);
+
+				res = (*EVFS_PLUGIN_FILE(proxy->plugin)->functions->evfs_file_stat) 
+					(command_proxy, file_stat, 0);
+				
+				evfs_cleanup_command(command_proxy,EVFS_CLEANUP_FREE_COMMAND);
+
+				return res;
+			} else {
+				printf("Attach data did not contain trashinfo\n");
+			}	
+		}
 	}
 	
 	return EVFS_ERROR;
@@ -240,20 +294,13 @@ void evfs_file_notify_create(evfs_filereference* ref)
 int
 evfs_file_create(evfs_filereference * file)
 {	
-	evfs_filereference* file_trash = evfs_filereference_clone(file);
+	evfs_filereference* file_trash;
 	int fd;
-	int size;
 
-	/*Make a proxy file, and send this to the posix plugin create*/
-	free(file_trash->path);
-	size= strlen(evfs_fs_trash_files) + strlen(next_trash_file) +2;
-	file_trash->path = calloc(size, 1);
-	snprintf(file_trash->path, size, "%s/%s", evfs_fs_trash_files, next_trash_file);
-	free(file_trash->plugin_uri);
-	file_trash->plugin_uri = strdup("file");
-	file_trash->plugin = posix_plugin;
 
-	printf("Creating new file: %s\n", file_trash->path);
+	file_trash = evfs_fs_trash_proxy_create(file, next_trash_file);
+	
+	/*printf("Creating new file: %s\n", file_trash->path);*/
 
 	/*Dispatch to posix*/
 	(*EVFS_PLUGIN_FILE(file_trash->plugin)->functions->evfs_file_create) (file_trash);

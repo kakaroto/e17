@@ -32,9 +32,7 @@ evfs_cleanup_file_command(evfs_command * command)
 
    if (command->file_command.files) {
 	   for (i = 0; i < command->file_command.num_files; i++) {
-	        free(command->file_command.files[i]->path);
-	        free(command->file_command.files[i]->plugin_uri);
-	        free(command->file_command.files[i]);
+		evfs_cleanup_filereference(command->file_command.files[i]);
 	     }
 	   free(command->file_command.files); 
    }

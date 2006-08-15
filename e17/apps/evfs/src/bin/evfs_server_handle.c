@@ -268,6 +268,8 @@ evfs_handle_file_stat_command(evfs_client * client, evfs_command * command)
      {
         (*(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_stat)) (command, &file_stat, 0);
 
+	printf("Size: %lld for '%s'\n", file_stat.st_size, command->file_command.files[0]->path);
+
         evfs_stat_event_create(client, command, &file_stat);
      }
 }

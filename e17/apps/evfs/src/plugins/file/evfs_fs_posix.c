@@ -393,7 +393,6 @@ evfs_file_stat(evfs_command * command, struct stat *file_stat, int file_number)
 {
    int res;
 	
-   //printf("Getting file stat...\n");
    #ifdef  __USE_LARGEFILE64
    res = stat64(command->file_command.files[file_number]->path, file_stat);
    #else
