@@ -25,6 +25,18 @@
 #define ETK_IS_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_BUTTON_TYPE))
 
 /**
+ * @enum Etk_Button_Style
+ * @brief The button's style (icon, text, both vertically, both horizontally)
+ */
+typedef enum _Etk_Button_Style
+{
+   ETK_BUTTON_ICON,
+   ETK_BUTTON_TEXT,
+   ETK_BUTTON_BOTH_VERT,
+   ETK_BUTTON_BOTH_HORIZ
+} Etk_Button_Style;
+
+/**
  * @brief @widget The structure of a button
  * @structinfo
  */
@@ -46,7 +58,8 @@ struct Etk_Button
    Etk_Bool is_pressed;
    float xalign;
    float yalign;
-   Etk_Bool tool;
+   Etk_Button_Style style;
+   Etk_Stock_Size stock_size;
 };
 
 Etk_Type *etk_button_type_get();
@@ -69,8 +82,11 @@ void etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id);
 void etk_button_alignment_set(Etk_Button *button, float xalign, float yalign);
 void etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign);
 
-void etk_button_tool_set(Etk_Button *button, Etk_Bool tool);
-Etk_Bool etk_button_tool_get(Etk_Button *button);
+void etk_button_style_set(Etk_Button *button, Etk_Button_Style style);
+Etk_Button_Style etk_button_style_get(Etk_Button *button);
+
+void etk_button_stock_size_set(Etk_Button *button, Etk_Stock_Size size);
+Etk_Stock_Size etk_button_stock_size_get(Etk_Button *button);
 
 /** @} */
 

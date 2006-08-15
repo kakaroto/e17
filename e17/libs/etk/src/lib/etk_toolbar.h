@@ -27,9 +27,22 @@
  */
 typedef enum _Etk_Toolbar_Orientation
 {
-   ETK_TOOLBAR_ORIENTATION_HORIZONTAL,
-   ETK_TOOLBAR_ORIENTATION_VERTICAL,
+   ETK_TOOLBAR_HORIZ,
+   ETK_TOOLBAR_VERT,
 } Etk_Toolbar_Orientation;
+
+/**
+ * @enum Etk_Toolbar_Style
+ * @brief The style a toolbar has (icons, text, both, both horizontally)
+ */
+typedef enum _Etk_Toolbar_Style
+{
+   ETK_TOOLBAR_ICONS,            /**< Only show icons */
+   ETK_TOOLBAR_TEXT,             /**< Only show text */
+   ETK_TOOLBAR_BOTH_VERT,        /**< Show icons and text, vertically */
+   ETK_TOOLBAR_BOTH_HORIZ,       /**< Show icons and text, horizontally */
+   ETK_TOOLBAR_DEFAULT           /**< Use Etk's default policy */
+} Etk_Toolbar_Style;
 
 /**
  * @brief @widget The structure of a toolbar
@@ -42,7 +55,8 @@ struct _Etk_Toolbar
    Etk_Widget widget;
 
    Etk_Widget *box;
-   int orientation;
+   Etk_Toolbar_Orientation orientation;
+   Etk_Toolbar_Style style;
 };
 
 Etk_Type *etk_toolbar_type_get();
@@ -52,8 +66,11 @@ Etk_Widget *etk_toolbar_new();
 void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget);
 void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget);
 
-void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, int orientation);
-int etk_toolbar_orientation_get(Etk_Toolbar *toolbar);  
+void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation orientation);
+Etk_Toolbar_Orientation etk_toolbar_orientation_get(Etk_Toolbar *toolbar);
+
+void etk_toolbar_style_set(Etk_Toolbar *toolbar, Etk_Toolbar_Style style);
+Etk_Toolbar_Style etk_toolbar_style_get(Etk_Toolbar *toolbar);
 
 /** @} */
 

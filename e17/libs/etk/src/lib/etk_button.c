@@ -29,7 +29,8 @@ enum Etk_Button_Property_Id
    ETK_BUTTON_IMAGE_PROPERTY,
    ETK_BUTTON_XALIGN_PROPERTY,
    ETK_BUTTON_YALIGN_PROPERTY,
-   ETK_BUTTON_TOOL_PROPERTY
+   ETK_BUTTON_STYLE_PROPERTY,
+   ETK_BUTTON_STOCK_SIZE_PROPERTY
 };
 
 static void _etk_button_constructor(Etk_Button *button);
@@ -83,8 +84,10 @@ Etk_Type *etk_button_type_get()
          ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
       etk_type_property_add(button_type, "yalign", ETK_BUTTON_YALIGN_PROPERTY,
          ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
-      etk_type_property_add(button_type, "tool", ETK_BUTTON_TOOL_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(button_type, "style", ETK_BUTTON_STYLE_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_BUTTON_BOTH_VERT));
+      etk_type_property_add(button_type, "stock_size", ETK_BUTTON_STOCK_SIZE_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_STOCK_SMALL));
 
       button_type->property_set = _etk_button_property_set;
       button_type->property_get = _etk_button_property_get;
@@ -243,10 +246,7 @@ void etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id)
    if (!button)
       return;
 
-   if (button->tool)
-      image = etk_image_new_from_stock(stock_id, ETK_STOCK_MEDIUM);
-   else
-      image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
+   image = etk_image_new_from_stock(stock_id, button->stock_size);
    etk_widget_show(image);
    etk_widget_visibility_locked_set(image, ETK_TRUE);
    label = etk_stock_label_get(stock_id);
@@ -308,19 +308,19 @@ void etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign)
 }
 
 /**
- * @brief Sets wether the button is a toolbar button or not
+ * @brief Sets the style of the button (icon, text, both vertically, both horizontally
  * @param button a button
- * @param tool ETK_TRUE for a toolbar button, ETK_FALSE otherwise
+ * @param style the style to give the button
  */
-void etk_button_tool_set(Etk_Button *button, Etk_Bool tool)
+void etk_button_style_set(Etk_Button *button, Etk_Button_Style style)
 {
    if (!button)
       return;
    
-   if (button->tool == tool)
+   if (button->style == style)
       return;
 
-   button->tool = tool;
+   button->style = style;
    if (button->box)
    {  
       if (button->image)
@@ -331,20 +331,62 @@ void etk_button_tool_set(Etk_Button *button, Etk_Bool tool)
       button->box = NULL;
    }
    _etk_button_children_create(button);
-   etk_object_notify(ETK_OBJECT(button), "tool");
+   etk_object_notify(ETK_OBJECT(button), "style");
 }
 
 /**
- * @brief Gets wether the button is a toolbar button or not
+ * @brief Sets the style of the button (icon, text, both vertically, both horizontally
  * @param button a button
- * @return Returns a boolean indication of its a toolbar button or not
+ * @return Returns the button's style
  */
-Etk_Bool etk_button_tool_get(Etk_Button *button)
+Etk_Button_Style etk_button_style_get(Etk_Button *button)
 {
    if (!button)
       return ETK_FALSE;
    
-   return button->tool;
+   return button->style;
+}
+
+/**
+ * @brief Sets the button's stock size
+ * @param button a button
+ * @param style the stock size
+ */
+void etk_button_stock_size_set(Etk_Button *button, Etk_Stock_Size size)
+{
+   Etk_Stock_Id stock_id;
+   Etk_Stock_Size stock_size;
+   
+   if (!button)
+      return;
+   
+   if (button->stock_size == size)
+      return;
+
+   button->stock_size = size;
+   
+   if (!button->image)
+      return;
+   
+   etk_image_stock_get(button->image, &stock_id, &stock_size);
+   if (stock_id == ETK_STOCK_NO_STOCK)
+      return;
+
+   etk_button_set_from_stock(ETK_BUTTON(button), stock_id);  
+   etk_object_notify(ETK_OBJECT(button), "stock_size");
+}
+
+/**
+ * @brief Gets the size of the button's stock
+ * @param button a button
+ * @return Returns the button's stock size
+ */
+Etk_Stock_Size etk_button_stock_size_get(Etk_Button *button)
+{
+   if (!button)
+      return ETK_STOCK_SMALL;
+   
+   return button->stock_size;
 }
 
 /**************************
@@ -362,7 +404,9 @@ static void _etk_button_constructor(Etk_Button *button)
    button->box = NULL;
    button->image = NULL;
    button->alignment = NULL;
-
+   button->style = ETK_BUTTON_BOTH_HORIZ;
+   button->stock_size = ETK_STOCK_SMALL;   
+   
    button->label = etk_label_new(NULL);
    etk_widget_visibility_locked_set(button->label, ETK_TRUE);
    etk_label_alignment_set(ETK_LABEL(button->label), 0.5, 0.5);
@@ -376,7 +420,7 @@ static void _etk_button_constructor(Etk_Button *button)
    button->is_pressed = ETK_FALSE;
    button->xalign = 0.5;
    button->yalign = 0.5;
-   button->tool = ETK_FALSE;   
+   button->style = ETK_BUTTON_BOTH_HORIZ;
 
    etk_signal_connect("realize", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_realize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_key_down_cb), NULL);
@@ -407,8 +451,13 @@ static void _etk_button_property_set(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_BUTTON_YALIGN_PROPERTY:
          etk_button_alignment_set(button, button->xalign, etk_property_value_float_get(value));
-      case ETK_BUTTON_TOOL_PROPERTY:
-         etk_button_tool_set(button, etk_property_value_bool_get(value));
+         break;
+      case ETK_BUTTON_STYLE_PROPERTY:
+         etk_button_style_set(button, etk_property_value_int_get(value));
+         break;
+      case ETK_BUTTON_STOCK_SIZE_PROPERTY:
+         etk_button_stock_size_set(button, etk_property_value_int_get(value));
+         break;      
       default:
          break;
    }
@@ -436,8 +485,11 @@ static void _etk_button_property_get(Etk_Object *object, int property_id, Etk_Pr
       case ETK_BUTTON_YALIGN_PROPERTY:
          etk_property_value_float_set(value, button->yalign);
          break;
-      case ETK_BUTTON_TOOL_PROPERTY:
-         etk_property_value_bool_set(value, button->tool);
+      case ETK_BUTTON_STYLE_PROPERTY:
+         etk_property_value_int_set(value, button->style);
+         break;
+      case ETK_BUTTON_STOCK_SIZE_PROPERTY:
+         etk_property_value_int_set(value, button->stock_size);
          break;      
       default:
          break;
@@ -582,13 +634,8 @@ static void _etk_button_children_create(Etk_Button *button)
       Etk_Stock_Size stock_size;
       
       etk_image_stock_get(button->image, &stock_id, &stock_size);
-      if (stock_id != ETK_STOCK_NO_STOCK)
-      {
-	 if (button->tool && stock_size != ETK_STOCK_MEDIUM)
-	    etk_image_set_from_stock(button->image, stock_id, ETK_STOCK_MEDIUM);
-	 else if (!button->tool && stock_size != ETK_STOCK_SMALL)
-	    etk_image_set_from_stock(button->image, stock_id, ETK_STOCK_SMALL);
-      }      
+      if (stock_id != ETK_STOCK_NO_STOCK)      
+	 etk_image_set_from_stock(button->image, stock_id, button->stock_size);
       
       if (!button->alignment)
       {	 
@@ -601,8 +648,8 @@ static void _etk_button_children_create(Etk_Button *button)
 
       if (!button->box)
       {
-	 if (button->tool)
-	    button->box = etk_vbox_new(ETK_FALSE, 1);
+	 if (button->style == ETK_BUTTON_BOTH_VERT)	   
+	    button->box = etk_vbox_new(ETK_FALSE, 1);	   
 	 else
 	    button->box = etk_hbox_new(ETK_FALSE, 8);	   
 	 
@@ -613,10 +660,14 @@ static void _etk_button_children_create(Etk_Button *button)
          etk_signal_connect("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb), button);
          
          etk_label_alignment_set(ETK_LABEL(button->label), 0.0, 0.5);
-         etk_box_append(ETK_BOX(button->box), button->label, ETK_BOX_END, ETK_BOX_NONE, 0);
+	 etk_box_append(ETK_BOX(button->box), button->label, ETK_BOX_END, ETK_BOX_NONE, 0);
+	 if (button->style == ETK_BUTTON_ICON)	   
+	    etk_widget_hide(button->label);	   
       }
-
+           
       etk_box_append(ETK_BOX(button->box), ETK_WIDGET(button->image), ETK_BOX_START, ETK_BOX_NONE, 0);
+      if (button->style == ETK_BUTTON_TEXT)
+	 etk_widget_hide(ETK_WIDGET(button->image));
       etk_widget_pass_mouse_events_set(ETK_WIDGET(button->image), ETK_TRUE);
    }
    else

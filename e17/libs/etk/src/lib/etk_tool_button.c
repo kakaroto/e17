@@ -43,7 +43,7 @@ Etk_Type *etk_tool_button_type_get()
 Etk_Widget *etk_tool_button_new()
 {
    return etk_widget_new(ETK_TOOL_BUTTON_TYPE, "theme_group", "toolbar/button",
-      "tool", ETK_TRUE, NULL);
+      "style", ETK_BUTTON_BOTH_VERT, NULL);
 }
 
 /**
@@ -53,7 +53,7 @@ Etk_Widget *etk_tool_button_new()
 Etk_Widget *etk_tool_button_new_with_label(const char *label)
 {
    return etk_widget_new(ETK_TOOL_BUTTON_TYPE, "theme_group", "toolbar/button",
-      "label", label, "tool", ETK_TRUE, NULL);
+      "label", label, "style", ETK_BUTTON_BOTH_VERT, NULL);
 }
 
 /**
