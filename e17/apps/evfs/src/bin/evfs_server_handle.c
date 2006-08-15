@@ -502,9 +502,31 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 
 	          } else {
 	             Ecore_List *directory_list = NULL;
+		     int newlen;
+		     int origlen;
+		     char* pos;
+
+		     evfs_filereference* newdir_rewrite;
+		     
+		     newdir_rewrite = evfs_filereference_clone(command->file_command.files[num_files-1]);
+		     if (command == root_command && S_ISDIR(dest_stat.st_mode)) {
+			     origlen = strlen(newdir_rewrite->path);
+			     printf("Origlen is: %d (%s)\n", origlen, newdir_rewrite->path);
+			     pos = strrchr(command->file_command.files[c_file]->path, '/');
+			     printf("String after pos: '%s'\n", pos+1);
+			     newlen = strlen(newdir_rewrite->path)+1+strlen(pos+1)+1;
+			     printf("Newlen is: %d\n", newlen);
+			     newdir_rewrite->path = realloc(newdir_rewrite->path, newlen);
+			     newdir_rewrite->path[origlen] = '/';
+			     strncat(&newdir_rewrite->path[origlen+1], pos+1, strlen(pos)-1);
+		     }
+		     
+
+		     printf("Done: '%s %s'\n",  newdir_rewrite->plugin_uri, newdir_rewrite->path);
+		     
+		     
 	
-			  evfs_operation_mkdir_task_add(EVFS_OPERATION(op), 
-			       evfs_filereference_clone(command->file_command.files[num_files-1]));
+		     evfs_operation_mkdir_task_add(EVFS_OPERATION(op), newdir_rewrite);
 	
 	             /*First, we need a directory list... */
 	             (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command,
@@ -518,23 +540,23 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 	                       evfs_command *recursive_command = NEW(evfs_command);
 	
         	               snprintf(destination_file, PATH_MAX, "%s%s",
-                	                command->file_command.files[num_files-1]->path,
+                	                newdir_rewrite->path,
 	                                strrchr(file->path, '/'));
 
         	               source->path = strdup(file->path);
 	                       source->plugin_uri =
 	                          strdup(command->file_command.files[c_file]->plugin_uri);
 	                       source->parent = NULL;   /*TODO - handle nested uris */
+
 	                       dest->path = strdup(destination_file);
-	                       dest->plugin_uri =
-	                          strdup(command->file_command.files[num_files-1]->plugin_uri);
+	                       dest->plugin_uri = strdup(newdir_rewrite->plugin_uri);
 	                       dest->parent = NULL;     /*TODO - handle nested uris */
 
         	               recursive_command->file_command.files =
 	                          malloc(sizeof(evfs_filereference *) * 2);
 	                       recursive_command->type = EVFS_CMD_FILE_COPY;
-	                       recursive_command->file_command.files[c_file] = source;
-	                       recursive_command->file_command.files[num_files-1] = dest;
+	                       recursive_command->file_command.files[0] = source;
+	                       recursive_command->file_command.files[1] = dest;
         	               recursive_command->file_command.num_files = 2;
 
 	                       //printf("Copy file '%s' to %s\n", file->path, destination_file);
