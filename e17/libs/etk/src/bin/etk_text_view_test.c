@@ -51,11 +51,11 @@ void etk_test_text_view_window_create(void *data)
    
    button = etk_button_new_with_label("Tag Presentation");
    etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_tag_window_create), NULL);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_TRUE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
    
    button = etk_button_new_with_label("Instant Messenger");
    etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_im_window_create), NULL);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_TRUE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
    
    etk_widget_show_all(win);
 }
@@ -135,7 +135,7 @@ static void _etk_test_text_view_tag_window_create(void *data)
       "</p>",
       ETK_TRUE);
    
-   etk_box_pack_start(ETK_BOX(vbox), text_view, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), text_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    etk_widget_show_all(win);
 }
@@ -188,17 +188,17 @@ static void _etk_test_text_view_im_window_create(void *data)
    
    /* TODO: We must use a toolbar here instead */
    hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
    for (i = 0; i < _num_im_buttons; i++)
    {
       button = etk_button_new_from_stock(_im_buttons[i].stock_id);
-      etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_TRUE, 0);
+      etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    }
    
    
    editor_view = etk_text_view_new();
    etk_widget_size_request_set(editor_view, 200, 80);
-   etk_box_pack_start(ETK_BOX(vbox), editor_view, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), editor_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_signal_connect("key_down", ETK_OBJECT(editor_view), ETK_CALLBACK(_etk_test_im_editor_key_down_cb), message_view);
    
    etk_widget_show_all(win);

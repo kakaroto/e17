@@ -111,27 +111,27 @@ void etk_test_tree_window_create(void *data)
 
    button = etk_button_new_with_label("Clear");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_clear_list_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    button = etk_button_new_with_label("Add 5 rows");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_5_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    button = etk_button_new_with_label("Add 50 rows");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_50_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    button = etk_button_new_with_label("Add 500 rows");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_500_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    button = etk_button_new_with_label("Add 5000 rows");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_add_5000_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    button = etk_button_new_with_label("Sort");
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_tree_sort_cb), tree);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    etk_widget_show_all(win);
 }

@@ -20,7 +20,7 @@ void etk_test_slider_window_create(void *data)
    etk_window_title_set(ETK_WINDOW(win), "Etk Slider Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-        
+   
    table = etk_table_new(2, 2, ETK_FALSE);
    etk_container_add(ETK_CONTAINER(win), table);
    

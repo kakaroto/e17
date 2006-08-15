@@ -29,8 +29,9 @@ void etk_test_notebook_window_create(void *data)
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
 
+   /* Create the notebook */
    notebook = etk_notebook_new();
-   etk_box_pack_start(ETK_BOX(vbox), notebook, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), notebook, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    /* Add the page */
    page_widget = _etk_test_notebook_page1_widget_create();
@@ -38,28 +39,28 @@ void etk_test_notebook_window_create(void *data)
    page_widget = _etk_test_notebook_page2_widget_create();
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Tab 2 - Button test", page_widget);
    
-   etk_box_pack_start(ETK_BOX(vbox), etk_hseparator_new(), ETK_FALSE, ETK_FALSE, 5);
+   etk_box_append(ETK_BOX(vbox), etk_hseparator_new(), ETK_BOX_START, ETK_BOX_NONE, 5);
    
    /* Create the prev/next buttons */
    alignment = etk_alignment_new(0.5, 0.5, 0.0, 1.0);
-   etk_box_pack_start(ETK_BOX(vbox), alignment, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), alignment, ETK_BOX_START, ETK_BOX_NONE, 0);
    hbox = etk_hbox_new(ETK_TRUE, 0);
    etk_container_add(ETK_CONTAINER(alignment), hbox);
    
    button = etk_button_new_from_stock(ETK_STOCK_GO_PREVIOUS);
    etk_button_label_set(ETK_BUTTON(button), "Previous");
    etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(etk_notebook_page_prev), notebook);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_FILL, 0);
    
    button = etk_button_new_from_stock(ETK_STOCK_GO_NEXT);
    etk_button_label_set(ETK_BUTTON(button), "Next");
    etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(etk_notebook_page_next), notebook);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_FILL, 0);
    
-   /* Create the hide tabs toggle button */
+   /* Create the "Hide tabs" toggle button */
    button = etk_toggle_button_new_with_label("Hide tabs");
    etk_signal_connect("toggled", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_notebook_hide_tabs_toggled_cb), notebook);
-   etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_FILL, 0);
 
    etk_widget_show_all(win);
 }
@@ -128,22 +129,22 @@ static Etk_Widget *_etk_test_notebook_page2_widget_create()
    etk_container_add(ETK_CONTAINER(alignment), vbox);
 
    button_normal = etk_button_new_with_label("Normal button");
-   etk_box_pack_start(ETK_BOX(vbox), button_normal, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button_normal, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    button_toggle = etk_toggle_button_new_with_label("Toggle button");
-   etk_box_pack_start(ETK_BOX(vbox), button_toggle, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button_toggle, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    button_check = etk_check_button_new_with_label("Check button");
-   etk_box_pack_start(ETK_BOX(vbox), button_check, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button_check, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    button_check = etk_check_button_new();
-   etk_box_pack_start(ETK_BOX(vbox), button_check, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button_check, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    button_radio = etk_radio_button_new_with_label("Radio button", NULL);
-   etk_box_pack_start(ETK_BOX(vbox), button_radio, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button_radio, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    button_radio = etk_radio_button_new_from_widget(ETK_RADIO_BUTTON(button_radio));
-   etk_box_pack_start(ETK_BOX(vbox), button_radio, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button_radio, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    return alignment;
 }

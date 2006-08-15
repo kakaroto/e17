@@ -66,10 +66,10 @@ void etk_test_table_window_create(void *data)
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
 
-   etk_box_pack_start(ETK_BOX(vbox), table, ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_end(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_end(ETK_BOX(hbox), buttons[3], ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_end(ETK_BOX(hbox), buttons[4], ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), table, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), buttons[3], ETK_BOX_END, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), buttons[4], ETK_BOX_END, ETK_BOX_NONE, 0);
 
    etk_widget_show_all(win);
 }

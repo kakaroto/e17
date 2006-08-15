@@ -613,10 +613,10 @@ static void _etk_button_children_create(Etk_Button *button)
          etk_signal_connect("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb), button);
          
          etk_label_alignment_set(ETK_LABEL(button->label), 0.0, 0.5);
-         etk_box_pack_end(ETK_BOX(button->box), button->label, ETK_FALSE, ETK_FALSE, 0);
+         etk_box_append(ETK_BOX(button->box), button->label, ETK_BOX_END, ETK_BOX_NONE, 0);
       }
 
-      etk_box_pack_start(ETK_BOX(button->box), ETK_WIDGET(button->image), ETK_FALSE, ETK_FALSE, 0);
+      etk_box_append(ETK_BOX(button->box), ETK_WIDGET(button->image), ETK_BOX_START, ETK_BOX_NONE, 0);
       etk_widget_pass_mouse_events_set(ETK_WIDGET(button->image), ETK_TRUE);
    }
    else

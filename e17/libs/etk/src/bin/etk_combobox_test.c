@@ -34,7 +34,7 @@ void etk_test_combobox_window_create(void *data)
 
    /* Simple combobox */
    frame = etk_frame_new("Simple combobox");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    combobox = etk_combobox_new_default();
    etk_container_add(ETK_CONTAINER(frame), combobox);
@@ -44,19 +44,19 @@ void etk_test_combobox_window_create(void *data)
    
    /* More complex combobox */
    frame = etk_frame_new("Some stock icons");
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(frame), vbox);
    
    image = etk_image_new_from_stock(STARTING_STOCK_ID, ETK_STOCK_BIG);
-   etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), image, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    combobox = etk_combobox_new();
-   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_IMAGE, 24, ETK_FALSE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
-   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_IMAGE, 24, ETK_FALSE, ETK_BOX_START, ETK_BOX_NONE, 0.0, 0.5);
+   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_BOX_START, ETK_BOX_NONE, 0.0, 0.5);
    etk_combobox_build(ETK_COMBOBOX(combobox));
-   etk_box_pack_start(ETK_BOX(vbox), combobox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), combobox, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect("active_item_changed", ETK_OBJECT(combobox), ETK_CALLBACK(_etk_test_combobox_active_item_changed_cb), image);
    
    for (i = STARTING_STOCK_ID; i <= ENDING_STOCK_ID; i++)

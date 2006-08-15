@@ -221,12 +221,12 @@ static void _etk_message_dialog_constructor(Etk_Message_Dialog *dialog)
    etk_widget_show(dialog->main_area_hbox);
    
    dialog->image = etk_image_new_from_stock(ETK_STOCK_DIALOG_INFORMATION, ETK_STOCK_BIG);
-   etk_box_pack_start(ETK_BOX(dialog->main_area_hbox), dialog->image, ETK_FALSE, ETK_FALSE, 3);
+   etk_box_append(ETK_BOX(dialog->main_area_hbox), dialog->image, ETK_BOX_START, ETK_BOX_NONE, 3);
    etk_widget_visibility_locked_set(dialog->image, ETK_TRUE);
    etk_widget_show(dialog->image);
 
    dialog->label = etk_label_new(NULL);
-   etk_box_pack_start(ETK_BOX(dialog->main_area_hbox), dialog->label, ETK_FALSE, ETK_FALSE, 2);
+   etk_box_append(ETK_BOX(dialog->main_area_hbox), dialog->label, ETK_BOX_START, ETK_BOX_NONE, 2);
    etk_widget_visibility_locked_set(dialog->label, ETK_TRUE);
    etk_widget_show(dialog->label);
 

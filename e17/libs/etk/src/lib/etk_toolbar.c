@@ -69,7 +69,7 @@ void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget)
    if (!toolbar || !widget)
       return;
    
-   etk_box_pack_start(ETK_BOX(toolbar->box), widget, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(toolbar->box), widget, ETK_BOX_START, ETK_BOX_NONE, 0);
 }
 
 /**
@@ -82,7 +82,7 @@ void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget)
    if (!toolbar || !widget)
       return;
    
-   etk_box_pack_end(ETK_BOX(toolbar->box), widget, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_prepend(ETK_BOX(toolbar->box), widget, ETK_BOX_START, ETK_BOX_NONE, 0);
 }
 
 /**************************

@@ -169,7 +169,7 @@ static void _etk_test_main_window()
       }
       
       frame = etk_frame_new(_etk_test_categories[i]);
-      etk_box_pack_start(ETK_BOX(vbox), frame, ETK_TRUE, ETK_TRUE, 0);
+      etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
       tables[i] = etk_table_new(ETK_TEST_NUM_COLS, (num_examples + ETK_TEST_NUM_COLS - 1) / ETK_TEST_NUM_COLS, ETK_TRUE);
       etk_container_add(ETK_CONTAINER(frame), tables[i]);
    }

@@ -14,6 +14,9 @@
  * @{
  */
 
+#define ETK_DIALOG_FILL_POLICY(fill, expand) \
+   (((fill) ? ETK_BOX_FILL : ETK_BOX_NONE) | (((expand) ? ETK_BOX_EXPAND : ETK_BOX_NONE)))
+
 enum Etk_Dialog_Signal_Id
 {
    ETK_DIALOG_RESPONSE_SIGNAL,
@@ -90,9 +93,9 @@ void etk_dialog_pack_in_main_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Bo
       return;
    
    if (pack_at_end)
-      etk_box_pack_end(ETK_BOX(dialog->main_area_vbox), widget, expand, fill, padding);
+      etk_box_prepend(ETK_BOX(dialog->main_area_vbox), widget, ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
    else
-      etk_box_pack_start(ETK_BOX(dialog->main_area_vbox), widget, expand, fill, padding);
+      etk_box_append(ETK_BOX(dialog->main_area_vbox), widget, ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
 }
 
 /**
@@ -112,9 +115,9 @@ void etk_dialog_pack_widget_in_action_area(Etk_Dialog *dialog, Etk_Widget *widge
       return;
    
    if (pack_at_end)
-      etk_box_pack_end(ETK_BOX(dialog->action_area_hbox), widget, expand, fill, padding);
+      etk_box_prepend(ETK_BOX(dialog->action_area_hbox), widget, ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
    else
-      etk_box_pack_start(ETK_BOX(dialog->action_area_hbox), widget, expand, fill, padding);
+      etk_box_append(ETK_BOX(dialog->action_area_hbox), widget, ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
 }
 
 /**
@@ -139,9 +142,9 @@ void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *butto
    etk_object_data_set_full(ETK_OBJECT(button), "_Etk_Dialog::response_id", id, free);
    
    if (pack_at_end)
-      etk_box_pack_end(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), fill, expand, padding);
+      etk_box_prepend(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
    else
-      etk_box_pack_start(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), fill, expand, padding);
+      etk_box_append(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
    
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
 }
@@ -241,17 +244,17 @@ static void _etk_dialog_constructor(Etk_Dialog *dialog)
    
    dialog->main_area_vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_widget_visibility_locked_set(dialog->main_area_vbox, ETK_TRUE);
-   etk_box_pack_start(ETK_BOX(dialog->dialog_vbox), dialog->main_area_vbox, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->main_area_vbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_widget_show(dialog->main_area_vbox);
    
    dialog->separator = etk_hseparator_new();
    etk_widget_visibility_locked_set(dialog->separator, ETK_TRUE);
-   etk_box_pack_start(ETK_BOX(dialog->dialog_vbox), dialog->separator, ETK_FALSE, ETK_TRUE, 6);
+   etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->separator, ETK_BOX_START, ETK_BOX_FILL, 6);
    etk_widget_show(dialog->separator);
 
    dialog->action_area_hbox = etk_hbox_new(ETK_FALSE, 6);
    etk_widget_visibility_locked_set(dialog->action_area_hbox, ETK_TRUE);
-   etk_box_pack_end(ETK_BOX(dialog->dialog_vbox), dialog->action_area_hbox, ETK_FALSE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->action_area_hbox, ETK_BOX_END, ETK_BOX_FILL, 0);
    etk_widget_show(dialog->action_area_hbox);
 
    dialog->has_separator = ETK_TRUE;

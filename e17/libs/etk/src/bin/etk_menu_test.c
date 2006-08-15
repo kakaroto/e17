@@ -42,15 +42,16 @@ void etk_test_menu_window_create(void *data)
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
    
+   /* Menubar */
    menu_bar = etk_menu_bar_new();
-   etk_box_pack_start(ETK_BOX(vbox), menu_bar, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), menu_bar, ETK_BOX_START, ETK_BOX_NONE, 0);
 
+   /* Toolbar */
    toolbar = etk_toolbar_new();
-   etk_box_pack_start(ETK_BOX(vbox), toolbar, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), toolbar, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_COPY);
    etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
-   
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_CUT);
    etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
    
@@ -65,14 +66,17 @@ void etk_test_menu_window_create(void *data)
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_REDO);
    etk_toolbar_append(ETK_TOOLBAR(toolbar), button); 
-      
+   
+   /* Window body */
    label = etk_label_new("Click me! :)");
    etk_label_alignment_set(ETK_LABEL(label), 0.5, 0.5);
    etk_widget_pass_mouse_events_set(label, ETK_TRUE);
-   etk_box_pack_start(ETK_BOX(vbox), label, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
+   /* Statusbar */
    _etk_test_menu_statusbar = etk_statusbar_new();
-   etk_box_pack_end(ETK_BOX(vbox), _etk_test_menu_statusbar, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), _etk_test_menu_statusbar, ETK_BOX_END, ETK_BOX_NONE, 0);
+   
    
    /****************
     * Menu Bar

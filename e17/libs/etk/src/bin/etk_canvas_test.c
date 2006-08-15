@@ -27,11 +27,11 @@ void etk_test_canvas_window_create(void *data)
 
    canvas = etk_canvas_new();
    etk_widget_size_request_set(canvas, 300, 200);
-   etk_box_pack_start(ETK_BOX(vbox), canvas, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), canvas, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    button = etk_button_new_with_label("Add object");
    etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_canvas_object_add), canvas);
-   etk_box_pack_start(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    etk_widget_show_all(win);
 }
