@@ -19,6 +19,7 @@ static void _gs_load_preview(const char *);
 static Entrance_Dialog win;
 static Entrance_Widget img_preview;
 static Entrance_List list_thumbs;
+static Entrance_Widget browse_entry;
 static Entrance_Widget group_graphics;
 static Entrance_Widget group_preview;
 static Entrance_Widget group_options;
@@ -47,7 +48,10 @@ egui_gs_dialog_show(Egui_Graphics_Selector _egs)
    
    ew_group_add(group_graphics, list_thumbs);
 
-   /*Entrance_Widget group_options = ew_dialog_group_add(win, _("Browse System"));*/
+   group_options = ew_dialog_group_add(win, _("Browse System"), EW_GROUP_HORIZONTAL);
+   browse_entry = ew_entry_new(NULL, EW_FALSE);
+
+   ew_group_add(group_options, browse_entry);
    
    ew_dialog_close_button_add(win, _gs_cb_close, NULL);
    ew_dialog_apply_button_add(win, _gs_cb_apply, NULL);

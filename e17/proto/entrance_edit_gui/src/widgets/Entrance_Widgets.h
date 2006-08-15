@@ -13,6 +13,7 @@
 #include "ew_notice.h"
 #include "ew_messagebox.h"
 #include "ew_label.h"
+#include "ew_entry.h"
 
 
 
