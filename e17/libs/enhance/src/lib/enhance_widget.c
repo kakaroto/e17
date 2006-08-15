@@ -977,7 +977,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
              padding = 0;
           }
 	
-	etk_box_append(ETK_BOX(parent->wid), child->wid, ETK_BOX_START, 
+	etk_box_append(ETK_BOX(parent->wid), child->wid, child->packing->box_group, 
 			   fill_policy, padding);
      }
    

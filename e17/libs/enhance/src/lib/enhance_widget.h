@@ -17,7 +17,8 @@ struct _E_Widget_Packing
    int      padding;
    Etk_Bool expand;
    Etk_Bool fill;
-   
+   Etk_Box_Group box_group;
+
    /* Table packing */
    int   left_attach;
    int   right_attach;

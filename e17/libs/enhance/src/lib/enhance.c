@@ -773,6 +773,7 @@ _e_traverse_packing_xml(Enhance *en, E_Widget *widget)
    packing->padding       = 0;
    packing->expand        = ETK_TRUE;
    packing->fill          = ETK_TRUE;
+   packing->box_group     = ETK_BOX_START;
    packing->left_attach   = 0;
    packing->right_attach  = 0;
    packing->top_attach    = 0;
@@ -792,7 +793,15 @@ _e_traverse_packing_xml(Enhance *en, E_Widget *widget)
 	     variable = ETK_FALSE; \
 	} \
       while(0)
-      
+#define IF_PACK_TYPE_ASSIGN(value, variable) \
+      do \
+	{ \
+	   if(!strcmp(value, "GTK_PACK_START")) \
+	     variable = ETK_BOX_START; \
+	   else if (!strcmp(value, "GTK_PACK_END")) \
+   	     variable = ETK_BOX_END; \
+	} \
+      while (0)   
    do
      {
 	char *str = NULL;
@@ -808,6 +817,8 @@ _e_traverse_packing_xml(Enhance *en, E_Widget *widget)
 	       IF_TRUE_FALSE_ASSIGN(node->value, packing->expand);
 	     else if(!strcmp("fill", str))
 	       IF_TRUE_FALSE_ASSIGN(node->value, packing->fill);
+       else if(!strcmp("pack_type", str))
+	       IF_PACK_TYPE_ASSIGN(node->value, packing->box_group);
 	     else if(!strcmp("left_attach", str))
 	       packing->left_attach = atoi(node->value);
 	     else if(!strcmp("right_attach", str))
