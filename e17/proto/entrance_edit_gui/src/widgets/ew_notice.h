@@ -14,12 +14,12 @@ void ew_notice_show(Entrance_Dialog);
 Entrance_Widget ew_notice_group_add(Entrance_Dialog, const char *, int);
 void ew_notice_destroy(Entrance_Dialog);
 
-void ew_notice_button_add(Entrance_Dialog, const char*, int, void (*)(void *, int, void *), void *);
-void ew_notice_close_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
-void ew_notice_apply_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
-void ew_notice_ok_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
-void ew_notice_yes_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
-void ew_notice_no_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
-void ew_notice_cancel_button_add(Entrance_Dialog, void (*)(void *, int, void *), void *);
+void ew_notice_button_add(Entrance_Dialog, const char*, int, void (*)(void *, void *), void *);
+void ew_notice_close_button_add(Entrance_Dialog, void (*)(void *, void *), void *);
+void ew_notice_apply_button_add(Entrance_Dialog, void (*)(void *, void *), void *);
+void ew_notice_ok_button_add(Entrance_Dialog, void (*)(void *, void *), void *);
+void ew_notice_yes_button_add(Entrance_Dialog, void (*)(void *, void *), void *);
+void ew_notice_no_button_add(Entrance_Dialog, void (*)(void *, void *), void *);
+void ew_notice_cancel_button_add(Entrance_Dialog, void (*)(void *, void *), void *);
 
 #endif
