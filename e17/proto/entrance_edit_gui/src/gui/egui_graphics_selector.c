@@ -20,7 +20,7 @@ static void _gs_load_preview(const char *);
 static Entrance_Dialog win;
 static Entrance_Widget img_preview;
 static Entrance_List list_thumbs;
-static Entrance_Widget browse_entry;
+static Entrance_Entry browse_entry;
 static Entrance_Widget browse_button;
 static Entrance_Widget group_graphics;
 static Entrance_Widget group_preview;
@@ -54,7 +54,7 @@ egui_gs_dialog_show(Egui_Graphics_Selector _egs)
    snprintf(t, PATH_MAX, "Browse system for %ss", egs.name);
    group_options = ew_dialog_group_add(win, t, EW_GROUP_HORIZONTAL);
 
-   browse_entry = ew_entry_new(NULL, EW_FALSE);
+   browse_entry = ew_entry_new(NULL, NULL, EW_FALSE);
    ew_group_add(group_options, browse_entry);
 
    browse_button = ew_button_new(_("Browse..."), _gs_cb_browse, NULL);
