@@ -51,7 +51,7 @@ _e_theme_chooser_show(E_Sticky *s)
    
    /* hbox to hold tree and preview */
    preview_hbox = etk_hbox_new(ETK_FALSE, 5);
-   etk_box_pack_start(ETK_BOX(vbox), preview_hbox, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), preview_hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    /* the preview, an image */
    preview = etk_image_new();
@@ -92,27 +92,27 @@ _e_theme_chooser_show(E_Sticky *s)
    ecore_list_destroy(themes);
    
    /* pack tree + preview widget */
-   etk_box_pack_start(ETK_BOX(preview_hbox), thumbs, ETK_TRUE, ETK_TRUE, 0);
-   etk_box_pack_start(ETK_BOX(preview_hbox), preview, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(preview_hbox), thumbs, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(preview_hbox), preview, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    /* box to store the check buttons */
    frame = etk_frame_new("Options");
    option_vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), option_vbox);
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    /* check buttons for various options */
    button = etk_radio_button_new_with_label("Apply to this sticky only", NULL);
-   etk_box_pack_start(ETK_BOX(option_vbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(option_vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_e_theme_sticky_only_cb), NULL);
    
    button = etk_radio_button_new_with_label_from_widget("Apply to all stickies",
 						       ETK_RADIO_BUTTON(button));
-   etk_box_pack_start(ETK_BOX(option_vbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(option_vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_e_theme_stickies_all_cb), NULL);   
    
    button = etk_check_button_new_with_label("Make this my default theme");
-   etk_box_pack_start(ETK_BOX(option_vbox), button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(option_vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect("toggled", ETK_OBJECT(button), ETK_CALLBACK(_e_theme_make_default_cb), NULL);
    
    /* box to store Ok / Apply / Cancel */
@@ -129,14 +129,14 @@ _e_theme_chooser_show(E_Sticky *s)
    etk_signal_connect("clicked", ETK_OBJECT(cancel_button), 
 		      ETK_CALLBACK(_e_theme_cancel_cb), s);
    
-   etk_box_pack_start(ETK_BOX(button_hbox), ok_button, 
-		      ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_start(ETK_BOX(button_hbox), apply_button, 
-		      ETK_FALSE, ETK_FALSE, 0);
-   etk_box_pack_start(ETK_BOX(button_hbox), cancel_button, 
-		      ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_append(ETK_BOX(button_hbox), ok_button, 
+		      ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(button_hbox), apply_button, 
+		      ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(button_hbox), cancel_button, 
+		      ETK_BOX_START, ETK_BOX_NONE, 0);   
    
-   etk_box_pack_start(ETK_BOX(vbox), button_hbox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), button_hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    etk_container_add(ETK_CONTAINER(win), vbox);
    etk_container_border_width_set(ETK_CONTAINER(win), 5);

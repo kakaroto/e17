@@ -30,7 +30,7 @@ _e_about_show()
    
    /* Logo */
    logo = etk_image_new_from_file(PACKAGE_DATA_DIR"/images/estickies.png");
-   etk_box_pack_start(ETK_BOX(vbox), logo, ETK_TRUE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), logo, ETK_BOX_START, ETK_BOX_EXPAND, 0);
       
    /* Description */
    frame = etk_frame_new("What is E Stickies?");
@@ -48,7 +48,7 @@ _e_about_show()
 			  "</style></p>",
 			  ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), desctext);
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);   
    
    /* Authors */
    frame = etk_frame_new("Authors");
@@ -64,7 +64,7 @@ _e_about_show()
 			  "Brian 'morlenxus' Miculcy",
 			  ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), abouttext);
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    /* Help */
    frame = etk_frame_new("Common shortcuts");
@@ -80,7 +80,7 @@ _e_about_show()
 			  "<b>control-v:</b> paste text from clipboard\n",
 			  ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), helptext);
-   etk_box_pack_start(ETK_BOX(vbox), frame, ETK_FALSE, ETK_FALSE, 0);   
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);   
 
    etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox, ETK_FALSE, ETK_FALSE,
 				0, ETK_FALSE);

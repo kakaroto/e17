@@ -301,7 +301,7 @@ _e_sticky_window_add(E_Sticky *s)
    hbox = etk_hbox_new(ETK_FALSE, 2);
    s->buttonbox = hbox;
    
-   etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
    s->stick_toggle = etk_toggle_button_new();
    etk_object_properties_set(ETK_OBJECT(s->stick_toggle), 
 			     "focusable", ETK_FALSE, NULL);
@@ -311,7 +311,7 @@ _e_sticky_window_add(E_Sticky *s)
    etk_signal_connect_swapped("clicked", ETK_OBJECT(s->stick_toggle),
 			      ETK_CALLBACK(_e_sticky_stick_toggle), s);
    //etk_tooltips_tip_set(button, "Make sticky visible on all desktops");
-   etk_box_pack_start(ETK_BOX(hbox), s->stick_toggle, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), s->stick_toggle, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    s->lock_toggle = etk_toggle_button_new();
    etk_object_properties_set(ETK_OBJECT(s->lock_toggle),
@@ -322,7 +322,7 @@ _e_sticky_window_add(E_Sticky *s)
    etk_signal_connect_swapped("toggled", ETK_OBJECT(s->lock_toggle),
 			      ETK_CALLBACK(_e_sticky_lock_toggle), s);   
    //etk_tooltips_tip_set(button, "Lock sticky (read-only)");
-   etk_box_pack_start(ETK_BOX(hbox), s->lock_toggle, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), s->lock_toggle, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    s->close_button = etk_button_new();
    etk_object_properties_set(ETK_OBJECT(s->close_button),
@@ -333,7 +333,7 @@ _e_sticky_window_add(E_Sticky *s)
    etk_signal_connect_swapped("clicked", ETK_OBJECT(s->close_button), 
 			      ETK_CALLBACK(_e_sticky_delete_confirm), s);
    //etk_tooltips_tip_set(button, "Delete this sticky");
-   etk_box_pack_start(ETK_BOX(hbox), s->close_button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), s->close_button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    s->textview = etk_text_view_new();
    etk_widget_repeat_mouse_events_set(s->textview, ETK_TRUE);
@@ -343,7 +343,7 @@ _e_sticky_window_add(E_Sticky *s)
    else
      etk_textblock_text_set(ETK_TEXT_VIEW(s->textview)->textblock, " ",
 		       ETK_TRUE);     
-   etk_box_pack_start(ETK_BOX(vbox), s->textview, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), s->textview, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    etk_container_add(ETK_CONTAINER(s->win), vbox);
    etk_widget_focus(s->textview);
