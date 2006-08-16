@@ -47,10 +47,10 @@ ew_entry_new(const char *label, const char *text, int ispassword)
 	return ew;
 }
 
-const char*
+char*
 ew_entry_get(Entrance_Entry ew)
 {
-	return etk_entry_text_get(ETK_ENTRY(ew->control));
+	return (char*) etk_entry_text_get(ETK_ENTRY(ew->control));
 }
 
 void
