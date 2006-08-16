@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
+<!-- Generated with glade3
+	Version: 3.0.0
+	Date: Wed Aug 16 19:33:52 2006
+	User: lok
+	Host: dapper
+-->
+<glade-interface>
+  <widget class="GtkWindow" id="window1">
+    <child>
+      <widget class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <child>
+          <widget class="GtkToolbar" id="toolbar1">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkToolButton" id="toolbutton1">
+                <property name="visible">True</property>
+                <property name="stock_id">gtk-add</property>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="toolbutton2">
+                <property name="visible">True</property>
+                <property name="label">This is</property>
+                <property name="icon_name">ETK_STOCK_EDIT_CUT</property>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="toolbutton3">
+                <property name="visible">True</property>
+                <property name="label">a test</property>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkImage" id="image1">
+                <property name="visible">True</property>
+                <property name="icon_size">6</property>
+                <property name="icon_name">ETK_STOCK_BOOKMARK_NEW</property>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">This is an enhanced window :)</property>
+              </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</glade-interface>
