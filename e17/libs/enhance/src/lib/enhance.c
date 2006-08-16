@@ -782,7 +782,7 @@ _e_traverse_packing_xml(Enhance *en, E_Widget *widget)
    packing->y_padding     = 0;
    packing->x_options     = NULL;
    packing->y_options     = NULL;
-   packing->shrink        = ETK_FALSE;
+   packing->shrink        = ETK_TRUE;
    
 #define IF_TRUE_FALSE_ASSIGN(value, variable) \
       do \
@@ -817,7 +817,7 @@ _e_traverse_packing_xml(Enhance *en, E_Widget *widget)
 	       IF_TRUE_FALSE_ASSIGN(node->value, packing->expand);
 	     else if(!strcmp("fill", str))
 	       IF_TRUE_FALSE_ASSIGN(node->value, packing->fill);
-       else if(!strcmp("pack_type", str))
+	     else if(!strcmp("pack_type", str))
 	       IF_PACK_TYPE_ASSIGN(node->value, packing->box_group);
 	     else if(!strcmp("left_attach", str))
 	       packing->left_attach = atoi(node->value);
