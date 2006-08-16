@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "config.h"
 
-static void _ew_messagebox_cb_ok(void *, void *);
+static void _ew_messagebox_cb_ok(void *, int, void *);
 
 Entrance_Dialog
 _ew_messagebox_new(const char *title, const char *message, const char *icon) 
@@ -83,7 +83,7 @@ ew_messagebox_yes_no_cancel(const char *title, const char *message, const char *
 }
 
 static void
-_ew_messagebox_cb_ok(void *win, void *data) {
+_ew_messagebox_cb_ok(void *win, int response_type, void *data) {
 	Entrance_Dialog ew = data;
 	ew_dialog_destroy(ew);
 }

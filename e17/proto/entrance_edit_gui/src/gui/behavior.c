@@ -18,7 +18,7 @@ static Entrance_Widget login_autologin_mode;
 static Entrance_Entry login_autologin_user;
 
 static int val_login_mode;
-static char* val_login_user;
+static const char* val_login_user;
 
 static void _build_group_login(void);
 static void _load_login(void);
@@ -29,7 +29,7 @@ static Entrance_Widget presel_mode;
 static Entrance_Entry presel_prevuser;
 
 static int val_presel_mode;
-static char* val_presel_prevuser;
+static const char* val_presel_prevuser;
 
 static void _build_group_presel(void);
 static void _load_presel(void);

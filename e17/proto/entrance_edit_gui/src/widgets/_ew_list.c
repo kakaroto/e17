@@ -57,7 +57,7 @@ _ew_list_buildtree(Entrance_List ew)
 	   
 	   ew->box = etk_vbox_new(0,10);
 	   /*etk_box_append(ETK_BOX(ew->box), hbox, ETK_BOX_START, ETK_BOX_EXPAND, 0);*/
-	   etk_box_pack_start(ETK_BOX(ew->box), ew->owner, ETK_TRUE, ETK_TRUE, 0);
+	   etk_box_append(ETK_BOX(ew->box), ew->owner, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 	   return ew;
 }
