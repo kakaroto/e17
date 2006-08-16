@@ -39,7 +39,7 @@ int main(int argc, char **argv)
    enhance_callback_data_set(en, "rip_only_clicked", &data);
 
    /* if you're trying the dialog test, show it explicitly! */
-   enhance_file_load(en, "window1", "dialog.glade");
+   enhance_file_load(en, "window1", "toolbar.glade");
    
    data2 = enhance_callback_data_get(en, "rip_only_clicked");
    *data2 = string2;

@@ -600,7 +600,33 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	
 	_en_stock_items_hash_init();      
 	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", (Etk_Stock_Id)id, NULL);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", id, NULL);
+     }
+   
+   else if(!strcmp(name, "stock_id"))
+     {
+	Etk_Stock_Id id;
+	PROPERTY_STR;
+	
+	_en_stock_items_hash_init();      
+	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
+
+	IF_PARENT_CLASS("GtkToolButton")
+	  {
+	    if (etk_button_label_get(ETK_BUTTON(wid->wid))
+		&& strcmp(" ", etk_button_label_get(ETK_BUTTON(wid->wid))))
+	      {
+		Etk_Widget *image;
+	        image = etk_image_new_from_stock(id, ETK_STOCK_SMALL);
+		etk_button_image_set(ETK_BUTTON(wid->wid), ETK_IMAGE(image));
+		etk_widget_show(image);
+		etk_widget_visibility_locked_set(image, ETK_TRUE);
+	      }
+	    else
+	      {
+		etk_button_set_from_stock(ETK_BUTTON(wid->wid), id);
+	      }
+	  }
      }
 
    else if(!strcmp(name, "icon_size"))
@@ -619,7 +645,26 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	
 	_en_stock_items_hash_init();      
 	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", (Etk_Stock_Id)id, NULL);
+	IF_PARENT_CLASS("GtkImage")
+	  {
+	    etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", id, NULL);
+	  }
+	IF_PARENT_CLASS("GtkToolButton")
+	  {
+	    if (etk_button_label_get(ETK_BUTTON(wid->wid))
+		&& strcmp(" ", etk_button_label_get(ETK_BUTTON(wid->wid))))
+	      {
+		Etk_Widget *image;
+	        image = etk_image_new_from_stock(id, ETK_STOCK_SMALL);
+		etk_button_image_set(ETK_BUTTON(wid->wid), ETK_IMAGE(image));
+		etk_widget_show(image);
+		etk_widget_visibility_locked_set(image, ETK_TRUE);
+	      }
+	    else
+	      {
+		etk_button_set_from_stock(ETK_BUTTON(wid->wid), id);
+	      }
+	  }
      }
 
    else if(!strcmp(name, "use_stock"))
@@ -637,7 +682,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 		  label = (char *)etk_button_label_get(ETK_BUTTON(wid->wid));
 		  id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, label);
 		  if (id != ETK_STOCK_NO_STOCK)
-		    etk_button_set_from_stock(ETK_BUTTON(wid->wid), (Etk_Stock_Id)id);
+		    etk_button_set_from_stock(ETK_BUTTON(wid->wid), id);
 	       }
 	     IF_PARENT_CLASS("GtkImageMenuItem")
 	       {
@@ -646,7 +691,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 		  label = (char *)etk_menu_item_label_get(ETK_MENU_ITEM(wid->wid));
 		  id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, label);
 		  if (id != ETK_STOCK_NO_STOCK)
-		    etk_menu_item_set_from_stock(ETK_MENU_ITEM(wid->wid), (Etk_Stock_Id)id);
+		    etk_menu_item_set_from_stock(ETK_MENU_ITEM(wid->wid), id);
 	       }
 	  }
      }

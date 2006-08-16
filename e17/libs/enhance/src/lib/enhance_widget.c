@@ -34,6 +34,8 @@ static E_Widget *_e_widget_vslider_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_textview_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_filechooser_widget_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_iconview_handle(Enhance *en, EXML_Node *node);
+static E_Widget *_e_widget_toolbar_handle(Enhance *en, EXML_Node *node);
+static E_Widget *_e_widget_tool_button_handle(Enhance *en, EXML_Node *node);
 
 static EXML_Node *find_node(EXML_Node *node, char *key, char *value)
 {
@@ -693,9 +695,36 @@ _e_widget_iconview_handle(Enhance *en, EXML_Node *node)
    if(!id) return NULL;
 
    iconbox = _e_widget_new(en, node, etk_iconbox_new(), id);
-//   etk_iconbox_model_new(ETK_ICONBOX(iconbox));
 
    return iconbox;
+}
+
+static E_Widget *
+_e_widget_toolbar_handle(Enhance *en, EXML_Node *node)
+{
+   E_Widget *toolbar;
+   char     *id;
+
+   id = ecore_hash_get(node->attributes, "id");
+   if(!id) return NULL;
+
+   toolbar = _e_widget_new(en, node, etk_toolbar_new(), id);
+
+   return toolbar;
+}
+
+static E_Widget *
+_e_widget_tool_button_handle(Enhance *en, EXML_Node *node)
+{
+   E_Widget *tool_button;
+   char     *id;
+
+   id = ecore_hash_get(node->attributes, "id");
+   if(!id) return NULL;
+
+   tool_button = _e_widget_new(en, node, etk_tool_button_new(), id);
+
+   return tool_button;
 }
 
 E_Widget *
@@ -782,6 +811,10 @@ _e_widget_handle(Enhance *en, EXML_Node *node)
      return _e_widget_filechooser_widget_handle(en, node);
    else if(!strcmp(class, "GtkIconView"))
      return _e_widget_iconview_handle(en, node);
+   else if(!strcmp(class, "GtkToolbar"))
+     return _e_widget_toolbar_handle(en, node);
+   else if(!strcmp(class, "GtkToolButton"))
+     return _e_widget_tool_button_handle(en, node);
    return NULL;
 }
 
@@ -1074,4 +1107,8 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 
         etk_widget_pass_mouse_events_set(child->wid, ETK_TRUE);
      }
+   else if(!strcmp(parent_class, "GtkToolbar"))
+     {
+	etk_toolbar_append(ETK_TOOLBAR(parent->wid), child->wid);
+     }	
 }
