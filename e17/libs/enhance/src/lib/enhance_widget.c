@@ -992,7 +992,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 	int x_padding     = 0;
 	int y_padding     = 0;
 	int flags_set     = 0;	
-	Etk_Table_Fill_Policy fill_policy = ETK_TABLE_NONE;
+	Etk_Table_Fill_Policy fill_policy = ETK_TABLE_EXPAND_FILL;
 	
 	if(child->packing)
 	  {
