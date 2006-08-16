@@ -195,7 +195,7 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	/*---------------------*/
 
 	hbox = etk_hbox_new(ETK_TRUE,0);
-	etk_box_pack_end(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
 
 	button = etk_button_new_with_label("OK");
 	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);

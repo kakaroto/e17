@@ -16,13 +16,13 @@ entropy_file_progress_window* entropy_etk_progress_window_create()
 	etk_container_add(ETK_CONTAINER(dialog->progress_window), vbox);
 
 	dialog->file_from = etk_label_new( _("File From"));
-	etk_box_pack_start(ETK_BOX(vbox), dialog->file_from, ETK_TRUE, ETK_TRUE, 0);
+	etk_box_append(ETK_BOX(vbox), dialog->file_from, ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
 	
 	dialog->file_to = etk_label_new(_("File To"));
- 	etk_box_pack_start(ETK_BOX(vbox), dialog->file_to, ETK_TRUE, ETK_TRUE, 0);
+ 	etk_box_append(ETK_BOX(vbox), dialog->file_to, ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
 	
 	dialog->progressbar = etk_progress_bar_new_with_text(_("0% done"));
-	etk_box_pack_end(ETK_BOX(vbox), dialog->progressbar, ETK_TRUE, ETK_TRUE, 0);
+	etk_box_append(ETK_BOX(vbox), dialog->progressbar, ETK_BOX_END, ETK_BOX_EXPAND_FILL,0 );
 	
 	return dialog;
 }

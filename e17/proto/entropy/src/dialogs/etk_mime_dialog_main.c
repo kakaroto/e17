@@ -491,7 +491,7 @@ void etk_mime_dialog_create()
 	etk_container_add(ETK_CONTAINER(mime_dialog_window), vbox);
 
 	hbox = etk_hbox_new(ETK_FALSE,0);
-	etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_TRUE, ETK_TRUE, 0);
+	etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 
 	/*Build the main tree*/
@@ -507,7 +507,7 @@ void etk_mime_dialog_create()
         etk_tree_col_expand_set(tree_col, ETK_TRUE);
 
 	etk_tree_build(ETK_TREE(tree));
-	etk_box_pack_start(ETK_BOX(hbox), tree, ETK_TRUE, ETK_TRUE, 0);
+	etk_box_append(ETK_BOX(hbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 	etk_signal_connect("row_selected", ETK_OBJECT( tree  ), 
 		  ETK_CALLBACK(_etk_mime_dialog_main_row_clicked), NULL);
@@ -517,19 +517,19 @@ void etk_mime_dialog_create()
 
 
 	hbox = etk_hbox_new(ETK_FALSE,0);
-	etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
 	button = etk_button_new_with_label("Add New Type");
-	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_add_cb), NULL);
 
 	button = etk_button_new_with_label("Remove Selected Type");
-	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_remove_cb), NULL);
 
 
 	/*button = etk_button_new_with_label("Add New..");
-	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);*/
+	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);*/
 	
 
 
@@ -548,22 +548,22 @@ void etk_mime_dialog_create()
 		  etk_tree_model_text_new(ETK_TREE(tree)), 150);
 
 	etk_tree_build(ETK_TREE(tree));
-	etk_box_pack_start(ETK_BOX(vbox), tree, ETK_TRUE, ETK_TRUE, 0);
+	etk_box_append(ETK_BOX(vbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 	/*Bottom button row*/
 	hbox = etk_hbox_new(ETK_FALSE,0);
-	etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
 	button = etk_button_new_with_label("Add");
-	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_application_add_cb), NULL);
 	//
 	button = etk_button_new_with_label("Edit");
-	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_application_add_cb), (int*)1);
 
 	button = etk_button_new_with_label("Remove");
-	etk_box_pack_start(ETK_BOX(hbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_remove_app_cb), NULL);
 	
 

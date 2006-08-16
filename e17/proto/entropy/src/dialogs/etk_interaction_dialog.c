@@ -34,8 +34,8 @@ void entropy_etk_user_interaction_dialog_new(entropy_file_operation* interact)
 		etk_container_add(ETK_CONTAINER(window), vbox);
 
 		label = etk_label_new(buf);
-		etk_box_pack_start(ETK_BOX(vbox), label, ETK_TRUE, ETK_TRUE, 5);
-		etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 5);
+		etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 5);
+		etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 5);
 
 		button = etk_button_new_with_label("Yes");
 		etk_container_add(ETK_CONTAINER(hbox), button);

@@ -97,7 +97,7 @@ void etk_file_cache_dialog_create()
 
 
 	tree = etk_tree_new();
-	etk_box_pack_start(ETK_BOX(vbox), tree, ETK_TRUE, ETK_TRUE, 0);
+	etk_box_append(ETK_BOX(vbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	
 	etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
 	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Listeners"), 
@@ -118,7 +118,7 @@ void etk_file_cache_dialog_create()
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_etk_file_cache_dialog_refresh_cb), tree);
 
 	
-	etk_box_pack_end(ETK_BOX(vbox), button, ETK_FALSE, ETK_FALSE, 0);
+	etk_box_append(ETK_BOX(vbox), button, ETK_BOX_END, ETK_BOX_NONE, 0);
 
 
 	  etk_signal_connect ("delete_event", ETK_OBJECT (window),
