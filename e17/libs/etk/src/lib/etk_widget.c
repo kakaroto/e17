@@ -3252,7 +3252,8 @@ static void _etk_widget_smart_object_hide_cb(Evas_Object *obj)
    for (l = widget->children; l; l = l->next)
    {
       child = l->data;
-      evas_object_hide(child->smart_object);
+      if (!child->swallowed)
+         evas_object_hide(child->smart_object);
    }
 }
 

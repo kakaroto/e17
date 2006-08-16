@@ -377,10 +377,6 @@ void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image)
    
    if ((image_widget = ETK_WIDGET(image)))
    {
-      /* TODO: DO WE NEED THAT?? */
-      /*if (image_widget->parent && ETK_IS_CONTAINER(image_widget->parent))
-         etk_container_remove(ETK_CONTAINER(image_widget->parent), image_widget);*/
-
       menu_item->left_widget = image_widget;
       etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));
       etk_widget_pass_mouse_events_set(menu_item->left_widget, ETK_TRUE);
