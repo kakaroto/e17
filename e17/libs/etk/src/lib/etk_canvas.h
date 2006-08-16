@@ -33,11 +33,13 @@ struct Etk_Canvas
    Evas_List *objects;
 };
 
-Etk_Type *etk_canvas_type_get();
+Etk_Type   *etk_canvas_type_get();
 Etk_Widget *etk_canvas_new();
 
 Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object);
-void etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *object);
+void     etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *object);
+void     etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *object, int x, int y);
+void     etk_canvas_object_geometry_get(Etk_Canvas *canvas, Evas_Object *object, int *x, int *y, int *w, int *h);
 
 /** @} */
 
