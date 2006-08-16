@@ -1,4 +1,6 @@
 TODO:
 
+- enable enhance to generate C code
+- test with glade3
 - look out for recursive naming (2 widgets with same name)
 
