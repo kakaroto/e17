@@ -38,7 +38,7 @@ _em_dialog_size_request_cb(Etk_Object *object, Etk_Size *size_request, void *dat
      {
 	etk_window_center_on_window(ETK_WINDOW(object), NULL);
 	etk_widget_focus(em->entry);
-	etk_window_focus(ETK_WINDOW(object));
+	etk_window_focused_set(ETK_WINDOW(object), ETK_TRUE);
 	_em_centered = ETK_TRUE;
      }
 }

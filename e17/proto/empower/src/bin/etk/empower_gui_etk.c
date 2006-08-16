@@ -24,9 +24,9 @@ void display_window()
    etk_entry_password_set(ETK_ENTRY(em->entry), ETK_TRUE);
    
    etk_dialog_pack_in_main_area(ETK_DIALOG(em->dialog), em->hbox, ETK_FALSE, ETK_FALSE, 4, ETK_FALSE);
-   etk_box_pack_start(ETK_BOX(em->hbox), em->icon, ETK_FALSE, ETK_FALSE, 3);
-   etk_box_pack_start(ETK_BOX(em->hbox), em->label, ETK_FALSE, ETK_FALSE, 2);   
-   etk_box_pack_start(ETK_BOX(em->hbox), em->entry, ETK_FALSE, ETK_FALSE, 2);
+   etk_box_append(ETK_BOX(em->hbox), em->icon, ETK_BOX_START, ETK_BOX_NONE, 3);
+   etk_box_append(ETK_BOX(em->hbox), em->label, ETK_BOX_START, ETK_BOX_NONE, 2);   
+   etk_box_append(ETK_BOX(em->hbox), em->entry, ETK_BOX_START, ETK_BOX_NONE, 2);
 
    button_cancel = etk_dialog_button_add_from_stock(ETK_DIALOG(em->dialog), ETK_STOCK_DIALOG_CANCEL, 0);
    button_ok = etk_dialog_button_add_from_stock(ETK_DIALOG(em->dialog), ETK_STOCK_DIALOG_OK, 1);
