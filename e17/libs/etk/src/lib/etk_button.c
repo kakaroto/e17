@@ -324,7 +324,10 @@ void etk_button_style_set(Etk_Button *button, Etk_Button_Style style)
    if (button->box)
    {  
       if (button->image)
+      {
+	 etk_signal_disconnect("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
 	 etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
+      }
       if (button->label)
 	 etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->label));
       etk_object_destroy(ETK_OBJECT(button->box));
