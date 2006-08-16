@@ -186,6 +186,8 @@ void etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
       else if (l->prev)
          new_current = l->prev->data;
    }
+   else
+      new_current = notebook->current_page;
    
    notebook->pages = evas_list_remove_list(notebook->pages, l);
    free(page);
@@ -193,8 +195,11 @@ void etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
    
    if (notebook->current_page != new_current)
    {
-      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(new_current->tab), ETK_TRUE);
-      notebook->current_page = new_current;
+      notebook->current_page = NULL;
+      if (new_current)
+         etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(new_current->tab), ETK_TRUE);
+      else
+         etk_signal_emit(_etk_notebook_signals[ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL], ETK_OBJECT(notebook), NULL);
    }
    
    etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
