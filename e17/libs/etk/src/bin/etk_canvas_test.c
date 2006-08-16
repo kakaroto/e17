@@ -1,6 +1,7 @@
 #include "etk_test.h"
 #include <Evas.h>
 #include <stdlib.h>
+#include "config.h"
 
 static void _etk_test_canvas_object_add(void *data);
 
@@ -45,24 +46,37 @@ static void _etk_test_canvas_object_add(void *data)
    int x, y, w, h;
    int r, g, b, a;
    int cw, ch;
+   Etk_Bool is_image;
 
    if (!(canvas = ETK_CANVAS(data)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(canvas))))
       return;
 
-   object = evas_object_rectangle_add(evas);
+   if (rand() % 4 != 0)
+   {
+      object = evas_object_rectangle_add(evas);
+      is_image = ETK_FALSE;
+   }
+   else
+   {
+      object = evas_object_image_add(evas);
+      evas_object_image_file_set(object, PACKAGE_DATA_DIR "/images/test.png", NULL);
+      is_image = ETK_TRUE;
+   }
+   
    evas_object_show(object);
    etk_canvas_object_add(canvas, object);
 
-   /* TODO: make a function to get the geometry of a widget */
-   cw = ETK_WIDGET(canvas)->geometry.w;
-   ch = ETK_WIDGET(canvas)->geometry.h;
+   etk_widget_geometry_get(ETK_WIDGET(canvas), NULL, NULL, &cw, &ch);
+   
    x = rand() % cw;
    y = rand() % ch;
-   evas_object_move(object, x, y);
+   etk_canvas_object_move(canvas, object, x, y);
 
    w = ETK_MAX(abs(rand() % (cw - x)), 10);
    h = ETK_MAX(abs(rand() % (ch - y)), 10);
    evas_object_resize(object, w, h);
+   if (is_image)
+      evas_object_image_fill_set(object, 0, 0, w, h);
 
    r = rand() % 255;
    g = rand() % 255;
