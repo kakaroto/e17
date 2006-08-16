@@ -1,6 +1,9 @@
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
 
+#define EWL_ICON_THEME_PER_LOOP 20
+
+static int ewl_icon_theme_pos = 0;
 const char *icons[] = {
 			EWL_ICON_ADDRESS_BOOK_NEW,
 			EWL_ICON_APPLICATION_EXIT,
@@ -257,6 +260,7 @@ const char *icons[] = {
 };
 
 static int create_test(Ewl_Container *box);
+static int ewl_icon_theme_idle(void *data);
 
 void
 test_info(Ewl_Test *test)
@@ -271,33 +275,53 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget *fbox, *scroll, *o;
-	int i;
+	Ewl_Widget *fbox, *scroll;
 
 	scroll = ewl_scrollpane_new();
 	ewl_container_child_append(box, scroll);
-	ewl_object_minimum_size_set(EWL_OBJECT(scroll), 640, 480);
+	ewl_object_minimum_size_set(EWL_OBJECT(scroll), 240, 180);
 	ewl_widget_show(scroll);
 
 	fbox = ewl_vfreebox_new();
 	ewl_container_child_append(EWL_CONTAINER(scroll), fbox);
 	ewl_widget_show(fbox);
 
-	for (i = 0; icons[i] != NULL; i++)
+	ecore_idle_enterer_add(ewl_icon_theme_idle, fbox);
+
+	return 1;
+}
+
+static int
+ewl_icon_theme_idle(void *data)
+{
+	Ewl_Widget *o, *fbox;
+	int count = 0, ret = 0;
+
+	fbox = data;
+	for ( ; icons[ewl_icon_theme_pos] != NULL; 
+			ewl_icon_theme_pos++, count ++)
 	{
 		const char *path;
 
-		path = ewl_icon_theme_icon_path_get(icons[i],
+		if (count >= EWL_ICON_THEME_PER_LOOP)
+		{
+			ret = 1;
+			break;
+		}
+
+		path = ewl_icon_theme_icon_path_get(icons[ewl_icon_theme_pos],
 							EWL_ICON_SIZE_MEDIUM);
 
 		o = ewl_icon_new();
-		if (path) ewl_icon_image_set(EWL_ICON(o), path, icons[i]);
-		ewl_icon_label_set(EWL_ICON(o), icons[i]);
+		if (path) ewl_icon_image_set(EWL_ICON(o), path, 
+						icons[ewl_icon_theme_pos]);
+		ewl_icon_label_set(EWL_ICON(o), icons[ewl_icon_theme_pos]);
 		ewl_container_child_append(EWL_CONTAINER(fbox), o);
 		ewl_widget_show(o);
 	}
 
-	return 1;
+	return ret;
 }
+
 
 
