@@ -19,12 +19,15 @@ static void _gs_load_preview(const char *);
 
 static Entrance_Dialog win;
 static Entrance_Widget img_preview;
+static Entrance_Widget pointer_preview;
 static Entrance_List list_thumbs;
 static Entrance_Entry browse_entry;
 static Entrance_Widget browse_button;
+static Entrance_Widget pointer_browse_button;
 static Entrance_Widget group_graphics;
 static Entrance_Widget group_preview;
 static Entrance_Widget group_options;
+static Entrance_Widget group_pointer;
 
 static Egui_Graphics_Selector egs;
 
@@ -59,6 +62,17 @@ egui_gs_dialog_show(Egui_Graphics_Selector _egs)
 
    browse_button = ew_button_new(_("Browse..."), _gs_cb_browse, NULL);
    ew_group_add(group_options, browse_button);
+
+   if(egs.show_pointer_options)
+   {
+	   group_pointer = ew_dialog_group_add(win, _("Pointer Options"), EW_GROUP_HORIZONTAL);
+
+	   pointer_preview = ew_image_new(100, 50);
+	   ew_group_add(group_pointer, pointer_preview);
+
+	   pointer_browse_button = ew_button_new(_("Browse..."), _gs_cb_browse, NULL);
+	   ew_group_add(group_pointer, pointer_browse_button);
+   }
    
    ew_dialog_close_button_add(win, _gs_cb_close, NULL);
    ew_dialog_apply_button_add(win, _gs_cb_apply, NULL);

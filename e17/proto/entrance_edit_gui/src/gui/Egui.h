@@ -10,6 +10,7 @@ typedef struct _Egui_Graphics_Selector {
 	char *entrance_edit_key;
 
 	int use_full_path;
+	int show_pointer_options;
 } Egui_Graphics_Selector;
 
 

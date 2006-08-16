@@ -16,7 +16,8 @@ egui_background_dialog_show()
 		"Entrance Configuration - Background",
 		"Backgrounds",
 		ENTRANCE_EDIT_KEY_CLIENT_BACKGROUND_STR,
-		1
+		1,
+		0
 	};
 
 	egui_gs_dialog_show(background_egs);
