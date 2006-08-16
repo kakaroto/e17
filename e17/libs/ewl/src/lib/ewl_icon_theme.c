@@ -38,7 +38,7 @@ ewl_icon_theme_theme_change(void)
 const char *
 ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 {
-	char *ret;
+	const char *ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
@@ -54,8 +54,8 @@ ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 	/* XXX Should store a hash of these here so we don't have to keep
 	 * looking it up. Just reset the hash on theme change */
 
-	ret = ecore_desktop_icon_find((char *)icon, (char *)size, 
-						ewl_config.theme.icon_theme);
+	ret = ecore_desktop_icon_find(icon, size, ewl_config.theme.icon_theme);
+
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
