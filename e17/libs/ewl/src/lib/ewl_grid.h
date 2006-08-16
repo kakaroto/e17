@@ -30,6 +30,7 @@ typedef struct Ewl_Grid_Info Ewl_Grid_Info;
 struct Ewl_Grid_Info
 {
 	int			 current_size;		/**< the current size */
+	int                      current_pos;           /**< the current position */
 	int			 preferred_size;	/**< The greatest preferred size of a widget inside */
 	union {
 		int		 size;			/**< The size set by the user */

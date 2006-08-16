@@ -929,20 +929,12 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
-		/* 
-		 * reset geometry values for the next child 
-		 */
-		c_x = CURRENT_X(EWL_OBJECT(w));
-		c_y = CURRENT_Y(EWL_OBJECT(w));
-		c_w = 0;
-		c_h = 0;
-
 		c = (Ewl_Grid_Child *)ewl_widget_data_get(child, (void *) g);
 		if (c) {
+			c_h = c_w = 0;
 			/*
 			 * calculate the geometry of the fixed widgets
 			 */
-			
 			/* calculate child widgets width */
 			for (i = c->start_col; i <= c->end_col; i++)
 				c_w += g->col_size[i].current_size;
@@ -952,12 +944,10 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				c_h += g->row_size[i].current_size;
 
 			/* calculate child widgets x coordinate */
-			for (i = 0; i < c->start_col; i++)
-				c_x += g->col_size[i].current_size;
+			c_x = g->col_size[c->start_col].current_pos;
 
 			/* calculate child widgets y coordinate */
-			for (i = 0; i < c->start_row; i++)
-				c_y += g->row_size[i].current_size;
+			c_y = g->row_size[c->start_row].current_pos;
 		}
 		else {
 			/* 
@@ -965,14 +955,8 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 			 */
 			c_w = g->col_size[col].current_size;
 			c_h = g->row_size[row].current_size;
-			
-			/* calculate child widgets x coordinate */
-			for (i = 0; i < col; i++)
-				c_x += g->col_size[i].current_size;
-
-			/* calculate child widgets y coordinate */
-			for (i = 0; i < row; i++)
-				c_y += g->row_size[i].current_size;
+			c_x = g->col_size[col].current_pos;
+			c_y = g->row_size[row].current_pos;
 			
 			go_next(g, &col, &row);
 		}
@@ -1220,6 +1204,7 @@ ewl_grid_resize(Ewl_Grid *g)
 {
 	int i, new_w = 0, new_h = 0;
 	int left_over, left_over2;
+	int pos;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
@@ -1373,6 +1358,21 @@ ewl_grid_resize(Ewl_Grid *g)
 			g->row_size[left_over2 % g->rows].current_size -= 1;
 			left_over++;
 		}
+	}
+
+	/*
+	 * calculate the positions
+	 */
+	pos = CURRENT_X(g);
+	for (i = 0; i < g->cols; i++) {
+		g->col_size[i].current_pos = pos;
+		pos += g->col_size[i].current_size;
+	}
+	
+	pos = CURRENT_Y(g);
+	for (i = 0; i < g->rows; i++) {
+		g->row_size[i].current_pos = pos;
+		pos += g->row_size[i].current_size;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
