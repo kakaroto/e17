@@ -358,11 +358,11 @@ static void _entropy_etk_icon_viewer_drag_begin_cb(Etk_Object *object, void *dat
 			  }
 			 etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
 			 etk_widget_size_request_set(image, 48, 48);
-			 etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
+			 etk_box_append(ETK_BOX(vbox), image, ETK_BOX_START, ETK_BOX_NONE, 0);
 			  
-			  etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
+			  etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 			  etk_table_attach(ETK_TABLE(table), vbox, l, r, t, b, 3, 3,
-				   ETK_FILL_POLICY_NONE);
+				   ETK_TABLE_NONE);
 		  
 			  ++l; ++r;
 			  added_object++;
@@ -422,12 +422,12 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   
   /*Make the slider*/
   viewer->slider = etk_hslider_new(10,128, 48, 1, 1);
-  etk_box_pack_start(ETK_BOX(viewer->vbox), viewer->slider, ETK_FALSE, ETK_FALSE,0);
+  etk_box_append(ETK_BOX(viewer->vbox), viewer->slider, ETK_BOX_START, ETK_BOX_NONE, 0);
   etk_signal_connect("value_changed", ETK_OBJECT(viewer->slider), 
 		  ETK_CALLBACK(_entropy_etk_icon_viewer_slider_cb), instance);
   
   viewer->iconbox = etk_iconbox_new();
-  etk_box_pack_start(ETK_BOX(viewer->vbox), viewer->iconbox, ETK_TRUE,ETK_TRUE,0);
+  etk_box_append(ETK_BOX(viewer->vbox), viewer->iconbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
 
   

@@ -285,13 +285,13 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
 		  }
 		 etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
 		 etk_widget_size_request_set(image, 48, 48);
-		 etk_box_pack_start(ETK_BOX(vbox), image, ETK_FALSE, ETK_FALSE, 0);
+		 etk_box_append(ETK_BOX(vbox), image, ETK_BOX_START, ETK_BOX_NONE, 0);
 		  
-		  etk_box_pack_start(ETK_BOX(vbox), label, ETK_FALSE, ETK_FALSE, 0);
+		  etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 		  
 
 		  etk_table_attach(ETK_TABLE(table), vbox, l, r, t, b, 3, 3,
-			   ETK_FILL_POLICY_NONE);
+			   ETK_TABLE_NONE);
 		  
 		  ++l; ++r;
 		  added_object++;

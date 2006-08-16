@@ -331,7 +331,7 @@ void etk_mime_dialog_add_edit_create(char* mime, char* program) {
 	label = etk_label_new("MIME-Type");
 	etk_table_attach(ETK_TABLE(table), label,0,0,0,0,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	etk_mime_mime_entry = etk_entry_new();
 	if (mime) {
@@ -340,31 +340,31 @@ void etk_mime_dialog_add_edit_create(char* mime, char* program) {
 	}
 	etk_table_attach(ETK_TABLE(table), etk_mime_mime_entry,1,1,0,0,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	label = etk_label_new("Description");
 	etk_table_attach(ETK_TABLE(table), label,0,0,1,1,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	etk_mime_desc_entry = etk_entry_new();
 	if (program) etk_entry_text_set(ETK_ENTRY(etk_mime_desc_entry), program);	
 	etk_table_attach(ETK_TABLE(table), etk_mime_desc_entry,1,1,1,1,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 
 	button = etk_button_new_with_label("OK");
 	etk_table_attach(ETK_TABLE(table), button,0,0,2,2,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_add_edit_final_cb), 
 				NULL );
 
 	button = etk_button_new_with_label("Cancel");
 	etk_table_attach(ETK_TABLE(table), button,1,1,2,2,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_mime_dialog_add_edit_cancel_cb), 
 				NULL );
 
@@ -408,47 +408,47 @@ void etk_mime_dialog_application_create(char* mime, Entropy_Config_Mime_Binding_
 	label = etk_label_new("Program Name (Description)");
 	etk_table_attach(ETK_TABLE(table), label,0,0,0,0,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	etk_mime_app_name_entry = etk_entry_new();
 	etk_table_attach(ETK_TABLE(table), etk_mime_app_name_entry,1,1,0,0,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	label = etk_label_new("Executable");
 	etk_table_attach(ETK_TABLE(table), label,0,0,1,1,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	etk_mime_app_exe_entry = etk_entry_new();
 	etk_table_attach(ETK_TABLE(table), etk_mime_app_exe_entry,1,1,1,1,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 
 	label = etk_label_new("Arguments");
 	etk_table_attach(ETK_TABLE(table), label,0,0,2,2,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	etk_mime_app_args_entry = etk_entry_new();
 	etk_table_attach(ETK_TABLE(table), etk_mime_app_args_entry,1,1,2,2,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 
 
 	button = etk_button_new_with_label("OK");
 	etk_table_attach(ETK_TABLE(table), button,0,0,3,3,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 	etk_signal_connect("pressed", ETK_OBJECT(button), 
 			ETK_CALLBACK(_entropy_etk_mime_dialog_app_add_edit_final_cb), mime );
 
 	button = etk_button_new_with_label("Cancel");
 	etk_table_attach(ETK_TABLE(table), button,1,1,3,3,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 	etk_signal_connect("pressed", ETK_OBJECT(button), 
 			ETK_CALLBACK(_entropy_etk_mime_dialog_app_add_edit_cancel_cb), NULL );
 

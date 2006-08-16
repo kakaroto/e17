@@ -230,56 +230,56 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
 	label = etk_label_new("Location Name");
 	etk_table_attach(ETK_TABLE(dialog->vbox2), label,0,0,0,0,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	dialog->name_entry = etk_entry_new();
 	etk_entry_text_set(ETK_ENTRY(dialog->name_entry), _("New Location"));
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->name_entry,1,1,0,0,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	label = etk_label_new("Path");
 	etk_table_attach(ETK_TABLE(dialog->vbox2), label,0,0,1,1,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	dialog->path_entry = etk_entry_new();
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->path_entry,1,1,1,1,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 
 	/*Optional Elements*/
 	dialog->host_widget_label = etk_label_new("Host");
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->host_widget_label,0,0,2,2,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	dialog->host_widget_entry = etk_entry_new();
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->host_widget_entry,1,1,2,2,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	dialog->username_widget_label = etk_label_new("Username");
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->username_widget_label,0,0,3,3,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	dialog->username_widget_entry = etk_entry_new();
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->username_widget_entry,1,1,3,3,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 
 	dialog->password_widget_label = etk_label_new("Password");
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->password_widget_label,0,0,4,4,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	dialog->password_widget_entry = etk_entry_new();
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->password_widget_entry,1,1,4,4,
 				0,0,
-				ETK_FILL_POLICY_HFILL | ETK_FILL_POLICY_VFILL | ETK_FILL_POLICY_HEXPAND);
+				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	
 
@@ -287,7 +287,7 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
 	hbox = etk_hbox_new(ETK_FALSE,0);
 	
 	dialog_button = etk_button_new_with_label("Back");
-	etk_box_pack_start(ETK_BOX(hbox), dialog_button, ETK_FALSE, ETK_FALSE, 5);
+	etk_box_append(ETK_BOX(hbox), dialog_button, ETK_BOX_START, ETK_BOX_NONE, 5);
 	
 
 	dialog_button = etk_button_new_with_label("Next >");

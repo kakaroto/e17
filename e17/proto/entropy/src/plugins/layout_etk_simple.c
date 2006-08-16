@@ -336,7 +336,7 @@ void entropy_layout_etk_simple_local_view_set(entropy_gui_component_instance* in
 		} else {
 			printf("No current folder!\n");
 		}
-		etk_box_pack_start(ETK_BOX(gui->localshell), local->gui_object, ETK_TRUE,ETK_TRUE,0);
+		etk_box_append(ETK_BOX(gui->localshell), local->gui_object, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	} else {
 		printf("Selected instance has no GUI_OBJECT\n");
 	}	
@@ -671,7 +671,7 @@ entropy_plugin_layout_create (entropy_core * core)
 	  instance = (*local_plugin_init)(core, layout,NULL);
 	  instance->plugin = local;
 	  gui->list_viewer = instance;
-	  etk_box_pack_start(ETK_BOX(gui->localshell), instance->gui_object, ETK_TRUE,ETK_TRUE,0);
+	  etk_box_append(ETK_BOX(gui->localshell), instance->gui_object, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    }
 
    /*Initialise the icon viewer*/
@@ -683,7 +683,6 @@ entropy_plugin_layout_create (entropy_core * core)
 	  gui->iconbox_viewer = (*local_plugin_init)(core, layout,NULL);
 	  gui->iconbox_viewer->plugin = local;
 	  gui->iconbox_viewer->active=0;
-	  //etk_box_pack_start(ETK_BOX(gui->localshell), instance->gui_object, ETK_TRUE,ETK_TRUE,0);
    }
 
 
@@ -782,29 +781,29 @@ entropy_plugin_layout_create (entropy_core * core)
   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("About.."), ETK_STOCK_HELP_BROWSER, ETK_MENU_SHELL(menu), NULL);
 
 
-  etk_box_pack_start(ETK_BOX(vbox), menubar, ETK_FALSE, ETK_FALSE, 0);
+  etk_box_append(ETK_BOX(vbox), menubar, ETK_BOX_START, ETK_BOX_NONE, 0);
 
   if (trackback) {
-	  etk_box_pack_start(ETK_BOX(vbox), gui->trackback->gui_object, ETK_FALSE,ETK_FALSE,0);
+	  etk_box_append(ETK_BOX(vbox), gui->trackback->gui_object, ETK_BOX_START, ETK_BOX_NONE, 0);
   }
   
-  etk_box_pack_start(ETK_BOX(vbox), gui->paned, TRUE, TRUE, 0);
+  etk_box_append(ETK_BOX(vbox), gui->paned, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
   /*---------------------------*/
 
   gui->statusbar_box = etk_hbox_new(ETK_TRUE, 0);
-  etk_box_pack_start(ETK_BOX(vbox), gui->statusbar_box, ETK_FALSE, ETK_FALSE, 0);
+  etk_box_append(ETK_BOX(vbox), gui->statusbar_box, ETK_BOX_START, ETK_BOX_NONE, 0);
   
   gui->statusbars[0] = etk_statusbar_new();
   etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(gui->statusbars[0]), ETK_FALSE);
-  etk_box_pack_start(ETK_BOX(gui->statusbar_box), gui->statusbars[0], ETK_TRUE, ETK_TRUE, 0);
+  etk_box_append(ETK_BOX(gui->statusbar_box), gui->statusbars[0], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
   gui->statusbars[1] = etk_statusbar_new();
   etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(gui->statusbars[1]), ETK_FALSE);
-  etk_box_pack_start(ETK_BOX(gui->statusbar_box), gui->statusbars[1], ETK_TRUE, ETK_TRUE, 0);
+  etk_box_append(ETK_BOX(gui->statusbar_box), gui->statusbars[1], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
   gui->statusbars[2] = etk_statusbar_new();
   etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(gui->statusbars[2]), ETK_TRUE);
-  etk_box_pack_start(ETK_BOX(gui->statusbar_box), gui->statusbars[2], ETK_TRUE, ETK_TRUE, 0);
+  etk_box_append(ETK_BOX(gui->statusbar_box), gui->statusbars[2], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
      
   etk_widget_show_all (window);
 

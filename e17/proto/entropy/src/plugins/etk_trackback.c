@@ -195,7 +195,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			etk_object_data_set(ETK_OBJECT(combo), "COMP", comp);
 			
 			etk_widget_show_all(combo);
-			etk_box_pack_start(ETK_BOX(trackback->hbox), combo, ETK_FALSE,ETK_FALSE,0);
+			etk_box_append(ETK_BOX(trackback->hbox), combo, ETK_BOX_START, ETK_BOX_NONE, 0);
 
 
 			ecore_list_prepend(trackback->levels, combo);
@@ -226,8 +226,8 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_trackback_up_cb), instance);
   
   trackback->label = etk_label_new("");
-  etk_box_pack_start(ETK_BOX(trackback->hbox), button, ETK_FALSE,ETK_FALSE,0);
-  etk_box_pack_start(ETK_BOX(trackback->hbox), trackback->label, ETK_FALSE,ETK_FALSE,0);
+  etk_box_append(ETK_BOX(trackback->hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
+  etk_box_append(ETK_BOX(trackback->hbox), trackback->label, ETK_BOX_START, ETK_BOX_NONE, 0);
   
   
   instance->gui_object = trackback->hbox;
