@@ -416,6 +416,7 @@ ewl_spinner_increase_value_cb(Ewl_Widget *w, void *ev_data,
 	if (ev_data) {
 		s->direction = (!r->invert) ? 1 : -1;
 		s->start_time = ecore_time_get();
+		s->last_value = 0.0;
 		s->timer = ecore_timer_add(0.02, ewl_spinner_timer, s);
 	}
 
@@ -484,6 +485,7 @@ ewl_spinner_decrease_value_cb(Ewl_Widget *w, void *ev_data,
 	if (ev_data) {
 		s->direction = (!r->invert) ? -1 : 1;
 		s->start_time = ecore_time_get();
+		s->last_value = 0.0;
 		s->timer = ecore_timer_add(0.02, ewl_spinner_timer, s);
 	}
 
@@ -522,9 +524,9 @@ ewl_spinner_timer(void *data)
 {
 	Ewl_Spinner *s;
 	Ewl_Range *r;
-	double dt;
-	double value, range, tmpt;
-	int velocity, delay;
+	double dt, dv;
+	double step;
+	int velocity;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, FALSE);
@@ -533,8 +535,7 @@ ewl_spinner_timer(void *data)
 	r = EWL_RANGE(s);
 
 	dt = ecore_time_get() - s->start_time;
-	value = r->value;
-	range = r->max_val - r->min_val;
+	step = 0;
 
 	/*
 	 * Check the theme for a velocity setting and bring it within normal
@@ -545,27 +546,26 @@ ewl_spinner_timer(void *data)
 		velocity = 1;
 	else if (velocity > 10)
 		velocity = 10;
-
-	/*
-	 * Check the theme for a delay setting and bring it within normal
-	 * useable bounds.
-	 */
-	delay = ewl_theme_data_int_get(EWL_WIDGET(s), "delay");
-	if (delay < 1)
-		delay = 1;
-	else if (delay > 10)
-		delay = 10;
+	
 
 	/*
 	 * Move the value of the spinner based on the direction of it's motion
 	 * and the velocity setting.
 	 */
-	tmpt = (dt > (double)delay ? dt - (double)delay : 0.0);
-	tmpt = ((1 - exp(-tmpt)) * ((double)(velocity) / 100.0)) * range;
-	value += (double)(s->direction) * ((1 - exp(-dt)) + tmpt);
 
-	ewl_range_value_set(r, value);
-
+	dv = velocity  * s->direction 
+		* (r->max_val - r->min_val) / r->step / 10  * dt * dt;
+	
+	while  (r->step < abs(dv - s->last_value - step)) {
+		if (s->direction == 1) 
+			step += r->step;
+		else 
+			step -= r->step;
+	}
+	
+	ewl_range_value_set(r, r->value + step);
+	s->last_value += step;
+	
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 

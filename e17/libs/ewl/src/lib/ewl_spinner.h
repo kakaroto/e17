@@ -45,6 +45,7 @@ struct Ewl_Spinner
 	Ewl_Widget     *increment; /**< Ewl_Button to add value */
 	Ewl_Widget     *decrement; /**< Ewl_Button to subtract value */
 	double          start_time; /**< Time the spinner was pressed */
+	double          last_value; /**< The last value while spinning */
 	int             direction; /**< Indicate increasing/decreasing value */
 	Ecore_Timer    *timer; /**< Timer for tracking mouse button held down */
 };
