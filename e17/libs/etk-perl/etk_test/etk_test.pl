@@ -195,7 +195,7 @@ while (my ($key, $value) = each %frames)
     $value->{widget} = Etk::Frame->new($value->{label});
     $value->{table} =  Etk::Table->new($NUM_COLS, 
 	($value->{examples} + $NUM_COLS - 1) / $NUM_COLS, 1);
-    $vbox_frames->PackStart($value->{widget});
+    $vbox_frames->Append($value->{widget}, BoxStart);
     $value->{widget}->Add($value->{table});
     $value->{examples} = 0;
 }
@@ -207,7 +207,7 @@ while (my ($key, $value) = each %buttons)
     my $table = $frames{ $value->{frame} }->{table};
     my $j = $frames{ $value->{frame} }->{examples};
     $button->SignalConnect("clicked", $value->{cb});
-    $table->AttachDefaults($button, $j % $NUM_COLS, $j % $NUM_COLS, 
+    $table->AttachDefault($button, $j % $NUM_COLS, $j % $NUM_COLS, 
 	floor($j / $NUM_COLS), floor($j / $NUM_COLS));
     $frames{ $value->{frame} }->{examples}++;
 }
@@ -225,27 +225,27 @@ sub button_window_show
     my $vbox = Etk::VBox->new(0, 0);
    
     my $button = Etk::Button::new_with_label("Normal Button");
-    $vbox->PackStart($button);
+    $vbox->Append($button);
     $button = Etk::Button::new_with_label("Button with an image");
     $button->ImageSet(Etk::Image::new_from_file("images/e_icon.png"));
-    $vbox->PackStart($button);
+    $vbox->Append($button);
     $button = Etk::Button->new();
-    $vbox->PackStart($button);
+    $vbox->Append($button);
     $button = Etk::CheckButton::new_with_label("Check Button");
-    $vbox->PackStart($button);
+    $vbox->Append($button);
     $button = Etk::CheckButton->new();
-    $vbox->PackStart($button);
+    $vbox->Append($button);
 
     my $radio = Etk::RadioButton::new_with_label("Radio Button");
-    $vbox->PackStart($radio);
+    $vbox->Append($radio);
 
     my $radio2 = Etk::RadioButton::new_from_widget($radio);
-    $vbox->PackStart($radio2);
+    $vbox->Append($radio2);
 
     my $toggle = Etk::ToggleButton::new_with_label("Toggle Button");
-    $vbox->PackStart($toggle);
+    $vbox->Append($toggle);
     $toggle = Etk::ToggleButton->new();
-    $vbox->PackStart($toggle);
+    $vbox->Append($toggle);
 
     $win->Add($vbox);
     $win->ShowAll();
@@ -266,8 +266,8 @@ sub image_window_show
     $image1->KeepAspectSet(1);
     $image2->KeepAspectSet(0);
     
-    $table->AttachDefaults($image1, 0, 0, 0, 0);
-    $table->AttachDefaults($image2, 1, 1, 0, 0);
+    $table->AttachDefault($image1, 0, 0, 0, 0);
+    $table->AttachDefault($image2, 1, 1, 0, 0);
     $table->Attach($label1, 0, 0, 1, 1, 2, 0, HExpand);
     $table->Attach($label2, 1, 1, 1, 1, 2, 0, HExpand);    
     
@@ -282,12 +282,12 @@ sub entry_window_show
     my $vbox = Etk::VBox->new(0, 0);    
     $win->Add($vbox);
     my $hbox = Etk::HBox->new(0, 0);
-    $vbox->PackStart($hbox);
+    $vbox->Append($hbox);
     my $label = Etk::Label->new("");
-    $vbox->PackStart($label);
+    $vbox->Append($label);
 
     my $entry = Etk::Entry->new();
-    $hbox->PackStart($entry);
+    $hbox->Append($entry);
 
     my $button = Etk::Button->new();
     $button->LabelSet("Print text");
@@ -296,7 +296,7 @@ sub entry_window_show
 		$label->Set($entry->TextGet());
 	}
 	);
-    $hbox->PackStart($button);
+    $hbox->Append($button);
 
     my $button2 = Etk::ToggleButton->new();
     $button2->LabelSet("Toggle password");
@@ -305,7 +305,7 @@ sub entry_window_show
 		$entry->PasswordSet(!$entry->PasswordGet());
 	}
 	);
-    $hbox->PackStart($button2);
+    $hbox->Append($button2);
 
     $win->ShowAll();
 }
@@ -320,7 +320,7 @@ sub slider_window_show
     my ($label1, $label2);
     
     $slider1->SizeRequestSet(130, 130);    
-    $table->AttachDefaults($slider1, 0, 0, 0, 0);
+    $table->AttachDefault($slider1, 0, 0, 0, 0);
     $label1 = Etk::Label->new("128.00");
     $table->Attach($label1, 0, 0, 1, 1, 0, 0, FillNone);
     $slider1->SignalConnect("value_changed",
@@ -332,7 +332,7 @@ sub slider_window_show
     );
     
     $slider2->SizeRequestSet(130, 130);    
-    $table->AttachDefaults($slider2, 1, 1, 0, 0);       
+    $table->AttachDefault($slider2, 1, 1, 0, 0);       
     $label2 = Etk::Label->new("128.00");
     $table->Attach($label2, 1, 1, 1, 1, 0, 0, FillNone);
     $slider2->SignalConnect("value_changed",
@@ -381,14 +381,14 @@ sub progbar_window_show
     	sub {
 		$timer1->Delete();
 	});
-    $vbox->PackStart($pbar1);
+    $vbox->Append($pbar1);
     $pbar2 = Etk::ProgressBar::new_with_text("Loading...");
     $pbar2->PulseStepSet(0.015);
     $pbar2->SignalConnect("destroyed",
     	sub {
 		$timer2->Delete();
 	});
-    $vbox->PackStart($pbar2);
+    $vbox->Append($pbar2);
     
     
     $win->Add($vbox);
@@ -417,20 +417,13 @@ sub tree_window_show
     
     my $tree = Etk::Tree->new();
     $tree->SizeRequestSet(320, 400);
-    $table->AttachDefaults($tree, 0, 0, 1, 1);
+    $table->AttachDefault($tree, 0, 0, 1, 1);
     $tree->ModeSet(ModeTree);
     $tree->MultipleSelectSet(1);
     $tree->Freeze();
     
-    my @_cols = (
-    	[ "Column 1", ["IconText", FromEdje], 90 ],
-	[ "Column 2", "Double", 60 ],
-	[ "Column 3", ["Image", FromFile], 60 ],
-	[ "Column 4", "Checkbox", 40 ]
-    );
-
     my $col1 = $tree->ColNew("Column 1", Etk::Tree::Model::IconText->new($tree, FromEdje), 90);
-    my $col2 = $tree->ColNew("Column 2", Etk::Tree::Model::Double->new($tree), 60);
+    my $col2 = $tree->ColNew("Column 2", Etk::Tree::Model::Int->new($tree), 60);
     my $col3 = $tree->ColNew("Column 3", Etk::Tree::Model::Image->new($tree, FromFile), 60);
     my $col4 = $tree->ColNew("Column 4", Etk::Tree::Model::Checkbox->new($tree), 40);
 
@@ -447,10 +440,10 @@ sub tree_window_show
     for(my $i = 0; $i < 1000; $i++)
     {
 	my $row = $tree->Append();
-	$row->FieldIconEdjeTextSet($col1, Etk::Theme::icon_theme_get(), "places/user-home_16", "Row1");
-	$row->FieldDoubleSet($col2, 10.0);
-	$row->FieldImageFileSet($col3, "images/1star.png");
-	$row->FieldCheckboxSet($col4, 0);
+	$row->FieldSet($col1, Etk::Theme::icon_theme_get(), "places/user-home_16", "Row1");
+	$row->FieldSet($col2, 10);
+	$row->FieldSet($col3, "images/1star.png");
+	$row->FieldSet($col4, 1);
     }
     $tree->Thaw();
     
@@ -459,7 +452,7 @@ sub tree_window_show
     
     $tree = Etk::Tree->new();
     $tree->SizeRequestSet(320, 400);
-    $table->AttachDefaults($tree, 1, 1, 1, 1);
+    $table->AttachDefault($tree, 1, 1, 1, 1);
     $tree->ModeSet(ModeList);
     $tree->MultipleSelectSet(1);
     $tree->Freeze();
@@ -472,32 +465,32 @@ sub tree_window_show
 
 
     $tree->Build();        
-    tree_add_items($tree, 500, @cols);
+    #tree_add_items($tree, 500, @cols);
     my $frame = Etk::Frame->new("List Actions");
     $table->Attach($frame, 0, 1, 2, 2, 0, 0, HFill | VFill);
     my $hbox = Etk::HBox->new(1, 10);
 
     $frame->Add($hbox); 
     
-    $hbox->PackStart(Etk::Button::new_with_label("Clear"));
+    $hbox->Append(Etk::Button::new_with_label("Clear"));
 
     my $button;
 
     $button = Etk::Button::new_with_label("Add 5 rows");
     $button->SignalConnect("clicked", sub { tree_add_items($tree, 5, @cols) });
-    $hbox->PackStart($button);
+    $hbox->Append($button);
 
     $button = Etk::Button::new_with_label("Add 50 rows");
     $button->SignalConnect("clicked", sub { tree_add_items($tree, 50, @cols) });
-    $hbox->PackStart($button);
+    $hbox->Append($button);
 
     $button = Etk::Button::new_with_label("Add 500 rows");
     $button->SignalConnect("clicked", sub { tree_add_items($tree, 500, @cols) });
-    $hbox->PackStart($button);
+    $hbox->Append($button);
 
     $button = Etk::Button::new_with_label("Add 5000 rows");
     $button->SignalConnect("clicked", sub { tree_add_items($tree, 5000, @cols) });
-    $hbox->PackStart($button);
+    $hbox->Append($button);
 
     
     my $ascendant = 1;
@@ -511,7 +504,7 @@ sub tree_window_show
 	    $ascendant = !$ascendant;
 	}
     );
-    $hbox->PackStart($button);    
+    $hbox->Append($button);    
     
     $win->Add($table);
     $win->ShowAll();
@@ -565,13 +558,13 @@ sub tree_add_items
 	{
 	    $star_path = "images/3stars.png";
 	}
-	my $rand_value = rand(10000);
+	my $rand_value =int( rand(10000));
 
         
 	my $row = $tree->Append();
-	$row->FieldIconFileTextSet($col1, "images/1star.png", $row_name);
-	$row->FieldIntSet($col2, $rand_value);
-	$row->FieldImageFileSet($col3, $star_path);
+	$row->FieldSet($col1, "images/1star.png", $row_name);
+	$row->FieldSet($col2, $rand_value);
+	$row->FieldSet($col3, $star_path);
 
     }
     $tree->Thaw();
@@ -587,17 +580,17 @@ sub menu_window_show
 
     my $menubar = Etk::Menu::Bar->new();
 
-    $box->PackStart($menubar, 0, 0);
+    $box->Append($menubar);
 
     my $label = Etk::Label->new("Click me :)");
     $label->AlignmentSet(0.5, 0.5);
     $label->PassMouseEventsSet(1);
 
-    $box->PackStart($label);
+    $box->Append($label, BoxStart, BoxExpandFill);
 
     my $statusbar = Etk::StatusBar->new();
 
-    $box->PackEnd($statusbar, 0, 0);
+    $box->Append($statusbar, BoxEnd);
 
     my $menu_item = _menu_test_item_new("File", $menubar, $statusbar);
     my $menu = Etk::Menu->new();
@@ -739,7 +732,7 @@ sub combobox_window_show
     my $vbox = Etk::VBox->new(0, 3);
     
     my $frame = Etk::Frame->new("Simple combobox");
-    $vbox->PackStart($frame, 0, 0, 0);
+    $vbox->Append($frame);
     
     my $combobox = Etk::Combobox::new_default();
     $frame->Add($combobox);
@@ -748,20 +741,20 @@ sub combobox_window_show
     $combobox->ItemAppend("Test 3");    
 
     $frame = Etk::Frame->new("Some stock icons");
-    $vbox->PackStart($frame);
+    $vbox->Append($frame);
     
     my $vbox2 = Etk::VBox->new(0, 3);
     $frame->Add($vbox2);
     
     my $image = Etk::Image::new_from_stock(DocumentNew, SizeBig);
-    $vbox2->PackStart($image, 0, 0, 0);
+    $vbox2->Append($image);
     
     $combobox = Etk::Combobox->new();
     $combobox->ColumnAdd(ColumnTypeImage, 24, 0, 0, 0, 0.0, 0.5);
     $combobox->ColumnAdd(ColumnTypeLabel, 75, 1, 0, 0, 0.0, 0.5);
     $combobox->Build();
     
-    $vbox2->PackStart($combobox, 0, 0, 0);
+    $vbox2->Append($combobox);
 	
     for( my $i = DocumentNew; 
 	$i <= FormatTextUnderline; $i++)
@@ -927,13 +920,13 @@ sub textview_window_show
 	      "</p>") , 1);
 
 
-	    $vbox->PackStart($text_view);
+	    $vbox->Append($text_view, BoxStart, BoxExpandFill);
 
 	    $win->ShowAll();
 
 
     });
-    $vbox->PackStart($button);
+    $vbox->Append($button);
 
     $button = Etk::Button::new_with_label("Instant Messenger");
     $button->SignalConnect("clicked", sub {
@@ -961,16 +954,16 @@ sub textview_window_show
 	    $vpaned->Child2Set($vbox, 0);
 
 	    my $hbox = Etk::HBox->new(0, 0);
-	    $vbox->PackStart($hbox, 0, 1, 0);
+	    $vbox->Append($hbox, BoxStart, BoxNone, 0);
 
 	    for my $b (FormatTextBold, FormatTextItalic, FormatTextUnderline) {
 		    my $button = Etk::Button::new_from_stock($b);
-		    $hbox->PackStart($button, 0, 1, 0);
+		    $hbox->Append($button);
 	    }
 
 	    my $editor_view = Etk::TextView->new();
 	    $editor_view->SizeRequestSet(200, 80);
-	    $vbox->PackStart($editor_view, 1, 1, 0);
+	    $vbox->Append($editor_view);
 	    my @buddies = (
 		"<b><font color=#16569e>Jack B:</font></b> ",
 		"<b><font color=#609028>Chloe O:</font></b> ",
@@ -1001,7 +994,7 @@ sub textview_window_show
 
 	    $win->ShowAll();
     });
-    $vbox->PackStart($button);
+    $vbox->Append($button);
     
     $win->ShowAll();  
 }
@@ -1047,10 +1040,10 @@ sub table_window_show
     my $hbox = Etk::HBox->new(0, 0);
     my $table = Etk::Table->new(2, 10, 0);
 
-    $vbox->PackStart($table, 0, 0, 0);
-    $vbox->PackEnd($hbox, 0, 0, 0);
-    $hbox->PackEnd($widgets[18], 0, 0, 0);
-    $hbox->PackEnd($widgets[17], 0, 0, 0);
+    $vbox->Append($table);
+    $vbox->Append($hbox, BoxEnd);
+    $hbox->Append($widgets[18], BoxEnd);
+    $hbox->Append($widgets[17], BoxEnd);
 
     $table->Attach($widgets[19], 0, 0, 0, 0, 0, 0, FillNone);
     $table->Attach($widgets[20], 1, 1, 0, 0, 0, 0, HExpand | HFill);
@@ -1059,7 +1052,7 @@ sub table_window_show
     for my $i (2 .. 9) 
     {
         $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, HFill);
-        $table->AttachDefaults($widgets[$index + 1], 1, 1, $i, $i);
+        $table->AttachDefault($widgets[$index + 1], 1, 1, $i, $i);
         $index += 2;
     }
     $win->BorderWidthSet(5);
@@ -1076,14 +1069,14 @@ sub paned_window_show
 
     # Paned Area
     my $vpaned = Etk::VPaned->new();
-    $vbox->PackStart($vpaned);
+    $vbox->Append($vpaned, BoxStart, BoxExpandFill);
 
     my $hpaned = Etk::HPaned->new();
     $vpaned->Child1Set($hpaned, 0);
 
     my $label = Etk::Label->new("HPaned Child 1");
     $label->AlignmentSet(0.5, 0.5);
-    $hpaned->Child1Set($label, 0);
+    $hpaned->Child1Set($label, 1);
 
     $label = Etk::Label->new("HPaned Child 2");
     $label->AlignmentSet(0.5, 0.5);
@@ -1094,35 +1087,35 @@ sub paned_window_show
     $vpaned->Child2Set($label, 1);
 
     my $hseparator = Etk::HSeparator->new();
-    $vbox->PackStart($hseparator, 0, 0, 6);
+    $vbox->Append($hseparator, BoxStart, BoxNone, 6);
 
     # Properties Area
     my $hbox = Etk::HBox->new(1, 0);
-    $vbox->PackStart($hbox, 0, 1, 0);
+    $vbox->Append($hbox);
 
     my $frame = Etk::Frame->new("HPaned Properties");
-    $hbox->PackStart($frame, 1, 1, 0);
+    $hbox->Append($frame, BoxStart, BoxExpandFill);
 
     my $vbox2 = Etk::VBox->new(1, 0);
     $frame->Add($vbox2);
     
     my $check_button = Etk::CheckButton::new_with_label("Child 1 Expand");
     $check_button->ActiveSet(1);
-    $vbox2->PackStart($check_button, 1, 1, 0);
+    $vbox2->Append($check_button, BoxStart, BoxExpandFill);
 
     $check_button = Etk::CheckButton::new_with_label("Child 2 Expand");
-    $vbox2->PackStart($check_button, 1, 1, 0);
+    $vbox2->Append($check_button);
 
     $frame = Etk::Frame->new("VPaned Properties");
-    $hbox->PackStart($frame, 1, 1, 0);
+    $hbox->Append($frame, BoxStart, BoxExpandFill);
 
     $vbox2 = Etk::VBox->new(1, 0);
     $frame->Add($vbox2);
     $check_button = Etk::CheckButton::new_with_label("Child 1 Expand");
-    $vbox2->PackStart($check_button, 1, 1, 0);
+    $vbox2->Append($check_button, BoxStart, BoxExpandFill);
     $check_button = Etk::CheckButton::new_with_label("Child 2 Expand");
     $check_button->ActiveSet(1);
-    $vbox2->PackStart($check_button, 1, 1, 0);
+    $vbox2->Append($check_button, BoxStart, BoxExpandFill);
 
     $win->Add($vbox);
     $win->ShowAll();
@@ -1152,7 +1145,7 @@ sub notebook_window_show
     my $vbox = Etk::VBox->new(0, 0);
 
     my $notebook = Etk::Notebook->new();
-    $vbox->PackStart($notebook, 1, 1, 0);
+    $vbox->Append($notebook, BoxStart, BoxExpandFill);
 
     my @widgets;
     
@@ -1180,7 +1173,7 @@ sub notebook_window_show
     for my $i (2 .. 9) 
     {
         $table->Attach($widgets[$index], 0, 0, $i, $i, 0, 0, HFill);
-        $table->AttachDefaults($widgets[$index + 1], 1, 1, $i, $i);
+        $table->AttachDefault($widgets[$index + 1], 1, 1, $i, $i);
         $index += 2;
     }
 
@@ -1191,29 +1184,29 @@ sub notebook_window_show
     $alignment->Add($vbox2);
  
     my $button = Etk::Button::new_with_label("Normal Button");
-    $vbox2->PackStart($button);
+    $vbox2->Append($button);
     
     $button = Etk::ToggleButton::new_with_label("Toggle Button");
-    $vbox2->PackStart($button);
+    $vbox2->Append($button);
     
     $button = Etk::CheckButton::new_with_label("Check Button");
-    $vbox2->PackStart($button);
+    $vbox2->Append($button);
     
     $button = Etk::CheckButton->new();
-    $vbox2->PackStart($button);
+    $vbox2->Append($button);
     
     $button = Etk::RadioButton::new_with_label("Radio button");
-    $vbox2->PackStart($button);
+    $vbox2->Append($button);
 
     my $button2 = Etk::RadioButton::new_from_widget($button);
-    $vbox2->PackStart($button2);
+    $vbox2->Append($button2);
     
     $notebook->PageAppend("Tab 2 - Button test", $alignment);
 
-    $vbox->PackStart(Etk::HSeparator->new(), 0, 0, 5);
+    $vbox->Append(Etk::HSeparator->new(), 0, 0, 5);
 
     $alignment = Etk::Alignment->new(0.5, 0.5, 0, 1);
-    $vbox->PackStart($alignment, 0, 0, 0);
+    $vbox->Append($alignment, 0, 0, 0);
     my $hbox = Etk::HBox->new(1, 0);
     $alignment->Add($hbox);
 
@@ -1222,14 +1215,14 @@ sub notebook_window_show
     $button->SignalConnect("clicked", sub {
 		$notebook->PagePrev();
     });
-    $hbox->PackStart($button, 0, 1, 0);
+    $hbox->Append($button);
     
     $button = Etk::Button::new_from_stock(GoNext);
     $button->LabelSet("Next");
     $button->SignalConnect("clicked", sub {
 		$notebook->PageNext();
     });
-    $hbox->PackStart($button, 0, 1, 0);
+    $hbox->Append($button);
 
     $win->Add($vbox);
     $win->BorderWidthSet(5);

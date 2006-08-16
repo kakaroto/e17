@@ -1,5 +1,3 @@
-
-
 #include "EtkTypes.h"
 
 
@@ -217,15 +215,12 @@ void __etk_perl_init() {
 }
 
 
-// main
-
-
 SV * newSVColor(Etk_Color col) { 
 
 	HV * hv;
 	SV * color;
 
-	hv = (HV*)sv_2mortal((SV*)newHV());
+	hv = newHV();
 
 	color = newSViv(col.r);
         hv_store(hv, "r", strlen("r"), color, 0);
@@ -236,7 +231,7 @@ SV * newSVColor(Etk_Color col) {
 	color = newSViv(col.a);
         hv_store(hv, "a", strlen("a"), color, 0);
 	
-	return newRV((SV*)hv);
+	return newRV_noinc((SV*)hv);
 }
 
 Etk_Color SvColor(SV *color) { 
@@ -309,7 +304,7 @@ SV * newSVGeometry(Etk_Geometry geo) {
 	HV * hv;
 	SV * geometry;
 	
-	hv = (HV*)sv_2mortal((SV*)newHV());
+	hv = newHV();
 
 	geometry = newSViv(geo.x);
         hv_store(hv, "x", strlen("x"), geometry, 0);
@@ -320,7 +315,7 @@ SV * newSVGeometry(Etk_Geometry geo) {
 	geometry = newSViv(geo.h);
         hv_store(hv, "h", strlen("h"), geometry, 0);
 	
-	return newRV((SV*)hv);
+	return newRV_noinc((SV*)hv);
 }
 
 Etk_Size * SvSizePtr(SV * size) {
@@ -352,14 +347,14 @@ SV * newSVSizePtr(Etk_Size *size) {
 	HV *hv;
 	SV * sv;
 
-	hv = (HV*)sv_2mortal((SV*)newHV());
+	hv = newHV();
 
 	sv = newSViv(size->w);
 	hv_store(hv, "w", strlen("w"), sv, 0);
 	sv = newSViv(size->h);
 	hv_store(hv, "h", strlen("h"), sv, 0);
 
-	return newRV((SV*)hv);
+	return newRV_noinc((SV*)hv);
 }
 
 Evas_List * SvEvasList(SV *sv) {
@@ -392,7 +387,7 @@ SV * newSVEvasList(Evas_List *list) {
 	for (l = list; l; l = l->next) 
 		av_push(av, newSVEtkWidgetPtr((Etk_Widget *)(l->data)));
 
-	return newRV((SV*)av);
+	return newRV_noinc((SV*)av);
 
 }
 
@@ -406,7 +401,7 @@ SV * newSVCharEvasList(Evas_List *list) {
 	for (l = list; l; l = l->next) 
 		av_push(av, newSVpv((char *)(l->data), 0));
 
-	return newRV((SV*)av);
+	return newRV_noinc((SV*)av);
 
 }
 
@@ -567,7 +562,7 @@ SV * newSVEventKeyUpDown(Etk_Event_Key_Up_Down *ev) {
 	I_STORE("timestamp", newSVuv(ev->timestamp))
 
 	printf("New Event (%p)\n", hv);
-	return newRV((SV*)hv);
+	return newRV_noinc((SV*)hv);
 }
 
 SV * newSVEventMouseWheel(Etk_Event_Mouse_Wheel *ev) {
@@ -583,7 +578,7 @@ SV * newSVEventMouseWheel(Etk_Event_Mouse_Wheel *ev) {
 	I_STORE("widget.y", newSViv(ev->widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
 
-	return newRV((SV*)hv);
+	return newRV_noinc((SV*)hv);
 }
 
 SV * newSVEventMouseMove(Etk_Event_Mouse_Move *ev) {
@@ -602,7 +597,7 @@ SV * newSVEventMouseMove(Etk_Event_Mouse_Move *ev) {
 	I_STORE("prev.widget.y", newSViv(ev->prev.widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
 
-	return newRV((SV*)hv);
+	return newRV_noinc((SV*)hv);
 }
 
 SV * newSVEventMouseUpDown(Etk_Event_Mouse_Up_Down *ev) {
@@ -617,7 +612,7 @@ SV * newSVEventMouseUpDown(Etk_Event_Mouse_Up_Down *ev) {
 	I_STORE("widget.y", newSViv(ev->widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
 
-	return newRV((SV*)hv);
+	return newRV_noinc((SV*)hv);
 }
 
 SV * newSVEventMouseInOut(Etk_Event_Mouse_In_Out *ev) {
@@ -632,7 +627,7 @@ SV * newSVEventMouseInOut(Etk_Event_Mouse_In_Out *ev) {
 	I_STORE("widget.y", newSViv(ev->widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
 
-	return newRV((SV*)hv);
+	return newRV_noinc((SV*)hv);
 }
 
 #undef S_STORE

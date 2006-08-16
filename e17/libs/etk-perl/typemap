@@ -5,6 +5,8 @@ Etk_Bin *					T_PTROBJ_ETK
 Etk_Bool					T_IV
 Etk_Bool *					T_PV
 Etk_Box *					T_PTROBJ_ETK
+Etk_Box_Group					T_IV
+Etk_Box_Fill_Policy				T_IV
 Etk_HBox *					T_PTROBJ_ETK
 Etk_VBox *					T_PTROBJ_ETK
 Etk_Button *					T_PTROBJ_ETK
@@ -24,7 +26,7 @@ Etk_Drag *					T_PTROBJ_ETK
 Etk_Entry *					T_PTROBJ_ETK
 Etk_Event_Selection_Request *			T_PTROBJ
 Etk_Filechooser_Widget *			T_PTROBJ_ETK
-Etk_Fill_Policy_Flags				T_IV
+Etk_Table_Fill_Policy				T_IV
 Etk_Frame *					T_PTROBJ_ETK
 Etk_Geometry					T_GEOMETRY
 Etk_Geometry *					T_GEOMETRY_PTR

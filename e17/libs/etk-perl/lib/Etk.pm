@@ -47,11 +47,13 @@ This module allows the use of Etk from within Perl. You can use them in one
 of two ways, either by using the object oriented approach or directly by
 calling the functions (although this is not recommended).
 
-=head2 EXPORT
+=head1 EXPORT
 
 None by default.
 
 =head1 SEE ALSO
+
+L<Etk::Constants>
 
 Etk documentation is available as Doxygen or in the Etk Explained book:
 http://hisham.cc/etk_explained.pdf

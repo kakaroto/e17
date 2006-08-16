@@ -6,6 +6,7 @@ TODO:
 	- Check for memory usage (I'm not sure if we're leaking or not,
 	  need to do some tests for that)
 	- Fix Combobox append functions (waiting for some functionality in etk)
+	- Fix Tree models
 
 BUGS:
 	- make test is defining PERL_DL_NONLAZY=1 for some reason and

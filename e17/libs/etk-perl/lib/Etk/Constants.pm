@@ -1,9 +1,38 @@
 package Etk::Constants;
 
+=head1 NAME
+
+Etk::Constants - Constants to use with Etk
+
+=head1 SYNOPSIS
+
+   use Etk::Constants qw/ButtonsOk ButtonsClose/;
+   # 
+   use Etk::Constants qw/:messagedialog/;
+   # 
+   use Etk::Constants qw/:all/;
+
+=head1 DESCRIPTION
+
+This module contains constants to use while building Etk apps.
+The constants have numerical values which can be used instead.
+
+=head1 EXPORT
+
+None by default.
+
+=head1 EXPORTABLE
+
+   combobox fillpolicy messagedialog progressbar scrolledview
+   toplevelwidget tree textblock colorpicker all
+ 
+=cut
+
 require Exporter;
 our @ISA = qw/Exporter/;
 
 our %EXPORT_TAGS = (
+   box		=> [qw/BoxStart BoxEnd BoxNone BoxExpand BoxFill BoxExpandFill/],
    combobox	=> [qw/ColumnTypeLabel ColumnTypeImage ColumnTypeOther/],
    fillpolicy	=> [qw/FillNone HFill VFill HExpand VExpand/],
    messagedialog=> [qw/None Warning Question Error
@@ -16,6 +45,8 @@ our %EXPORT_TAGS = (
     PointerResizeBL PointerResizeL PointerTextEdit PointerDndDrop/],
    tree		=> [qw/ModeList ModeTree FromFile FromEdje/],
    textblock	=> [qw/GravityLeft GravityRight/],
+   table	=> [qw/TableNone TableHFill TableVFill TableHExpand TableVExpand
+    TableFill TableExpand TableExpandFill/],
    colorpicker	=> [qw/ModeH ModeS ModeV ModeR ModeG ModeB/],
 
    );
@@ -26,6 +57,19 @@ push @all, map { @{$EXPORT_TAGS{$_}} } keys %EXPORT_TAGS;
 $EXPORT_TAGS{all} = [@all];
 
 our @EXPORT_OK = @all;
+
+# Box constants
+use constant
+{
+   BoxStart	=> 0,
+   BoxEnd	=> 1,
+
+   BoxNone	=> 0,
+   BoxExpand	=> 1 << 0,
+   BoxFill	=> 1 << 1,
+   BoxExpandFill=> (1 << 0) | (1 << 1)
+
+};
 
 # Combobox Constants
 use constant
@@ -131,3 +175,15 @@ use constant  {
 
 };
 
+# Table Constants
+use constant {
+	TableNone	=> 0,
+	TableHFill	=> 1 << 0,
+	TableVFill	=> 1 << 1,
+	TableHExpand	=> 1 << 2,
+	TableVExpand	=> 1 << 3,
+	TableFill	=> (1<<0) | (1<<1),
+	TableExapnd	=> (1<<2) | (1<<3),
+	TableExpandFill	=> (1<<0) | (1<<1) | (1<<2) | (1<<3)
+
+}

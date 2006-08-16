@@ -5,6 +5,7 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#define NEED_newRV_noinc
 #include "ppport.h"
 
 #ifdef _

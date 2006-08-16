@@ -2,6 +2,8 @@ Changes
 Etk.xs
 EtkTypes.c
 EtkTypes.h
+EtkSignals.c
+EtkSignals.h
 Makefile.PL
 MANIFEST
 ppport.h

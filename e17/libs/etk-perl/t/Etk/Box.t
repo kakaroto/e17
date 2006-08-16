@@ -15,11 +15,10 @@ is($hb->HomogeneousGet(), 5,	"Homo Set");
 
 
 my $button = Etk::Button->new();
-$hb->PackStart($button, 1, 0, 5);
-my ($padding, $expand, $fill, $pack_end) = $hb->ChildPackingGet($button);
+$hb->Append($button, 0, 0, 5);
+my ($fill, $padding) = $hb->ChildPackingGet($button);
 
 is($padding, 5, 	"Padding set");
-is($expand, 1, 	"Expand set");
 is($fill, 0, 	"Fill set");
 
 
@@ -36,11 +35,10 @@ $hb->HomogeneousSet(5);
 is($hb->HomogeneousGet(), 5,	"Homo Set");
 
 
-$hb->PackStart($button, 1, 0, 5);
-($padding, $expand, $fill, $pack_end) = $hb->ChildPackingGet($button);
+$hb->Append($button, 0, 0, 5);
+($fill, $padding) = $hb->ChildPackingGet($button);
 
 is($padding, 5, 	"Padding set");
-is($expand, 1, 	"Expand set");
 is($fill, 0, 	"Fill set");
 
 
