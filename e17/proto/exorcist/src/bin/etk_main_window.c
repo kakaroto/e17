@@ -410,11 +410,11 @@ exo_etk_main_window (const char *filename)
   etk_widget_show (vbox);
 
   menu_bar = _exo_etk_menu_bar (data);
-  etk_box_pack_start (ETK_BOX (vbox), menu_bar, ETK_FALSE, ETK_FALSE, 0);
+  etk_box_append (ETK_BOX (vbox), menu_bar, ETK_BOX_START, ETK_BOX_NONE, 0);
   etk_widget_show (menu_bar);
 
   hbox = etk_hbox_new (ETK_FALSE, 0);
-  etk_box_pack_start (ETK_BOX (vbox), hbox, ETK_TRUE, ETK_TRUE, 0);
+  etk_box_append (ETK_BOX (vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
   etk_widget_show (hbox);
 
   etk_tree_headers_visible_set (ETK_TREE (data->list_pages), ETK_FALSE);
@@ -426,13 +426,13 @@ exo_etk_main_window (const char *filename)
                                 etk_tree_model_int_new (ETK_TREE (data->list_pages)),
                                 60);
   etk_tree_build (ETK_TREE (data->list_pages));
-  etk_box_pack_start (ETK_BOX (hbox), data->list_pages, ETK_FALSE, ETK_TRUE, 0);
+  etk_box_append (ETK_BOX (hbox), data->list_pages, ETK_BOX_START, ETK_BOX_FILL, 0);
   etk_widget_show (data->list_pages);
 
   popup = _exo_etk_menu_options (data);
 
   scrollview = etk_scrolled_view_new ();
-  etk_box_pack_start (ETK_BOX (hbox), scrollview, ETK_TRUE, ETK_TRUE, 0);
+  etk_box_append (ETK_BOX (hbox), scrollview, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
   etk_widget_show (scrollview);
 
   etk_scrolled_view_add_with_viewport (ETK_SCROLLED_VIEW (scrollview), data->pdf);
