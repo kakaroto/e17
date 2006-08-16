@@ -1,9 +1,9 @@
 #include <limits.h>
 #include <Ecore_File.h>
 #include <Ecore_Data.h>
-#include <Entrance_Widgets.h>
 #include <Entrance_Edit.h>
-#include <Egui.h>
+#include <Entrance_Widgets.h>
+#include "Egui.h"
 
 static void _gs_cb_selected(void);
 static void _gs_cb_ok(void *, void *);

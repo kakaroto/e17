@@ -1,7 +1,6 @@
 #ifndef _EW_NOTICE_H
 #define _EW_NOTICE_H
 
-
 #define EW_NOTICE_OK_BUTTON -5
 #define EW_NOTICE_CANCEL_BUTTON -6
 #define EW_NOTICE_CLOSE_BUTTON -7
