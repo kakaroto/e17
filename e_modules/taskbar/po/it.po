@@ -5,47 +5,51 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-07-08 14:01+0200\n"
-"PO-Revision-Date: 2006-07-08 14:22+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-15 13:03+0200\n"
+"PO-Revision-Date: 2006-08-15 13:09+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:31
+#: e_mod_config.c:32
 msgid "Taskbar Configuration"
 msgstr "Configurazione di Taskbar"
 
-#: e_mod_config.c:71
+#: e_mod_config.c:74
 msgid "Display"
 msgstr "Visualizzazione"
 
-#: e_mod_config.c:73
+#: e_mod_config.c:75
+msgid "Highlight Window on Mouse Over"
+msgstr "Evidenzia finestra al passaggio del mouse"
+
+#: e_mod_config.c:80
 msgid "Show Labels"
 msgstr "Mostra etichette"
 
-#: e_mod_config.c:78
+#: e_mod_config.c:85
 msgid "Show windows from all desktops"
 msgstr "Mostra finestre da tutti i desktop"
 
-#: e_mod_main.c:204
+#: e_mod_main.c:206
 msgid "Taskbar"
 msgstr "Taskbar"
 
-#: e_mod_main.c:275 e_mod_main.c:763
+#: e_mod_main.c:277 e_mod_main.c:772
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: e_mod_main.c:1308
+#: e_mod_main.c:1319
 msgid "Enlightenment Taskbar Module"
 msgstr "Modulo Taskbar di Enlightenment"
 
-#: e_mod_main.c:1309
+#: e_mod_main.c:1320
 msgid ""
 "This is the Taskbar Iconified Application module for Enlightenment.<br>It "
 "will hold minimized applications"
 msgstr ""
-"Questo è il modulo per applicazioni iconificate di Enlightenment.<br>"
-"Esso conterrà le applicazioni minimizzate ad icona."
+"Questo è il modulo per applicazioni iconificate di Enlightenment.<br>Esso "
+"conterrà le applicazioni minimizzate ad icona."
