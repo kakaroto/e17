@@ -13,6 +13,7 @@ _ew_dialog_new()
 		ed->owner = NULL;
 		ed->box = NULL;
 		ed->hbox = NULL;
+		ed->extra = NULL;
 	}
 
 	return ed;
@@ -59,7 +60,7 @@ ew_dialog_group_add(Entrance_Dialog d, const char *title, int direction)
 		return;
 	}
 
-	etk_box_append(ETK_BOX(d->box), ew->owner, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	etk_box_pack_start(ETK_BOX(d->box), ew->owner, ETK_TRUE, ETK_TRUE, 0);
 
 	return ew;
 }

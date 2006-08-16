@@ -5,6 +5,7 @@ typedef struct _Entrance_Dialog {
 	Etk_Widget *owner;
 	Etk_Widget *box;
 	Etk_Widget *hbox;
+	void *extra;
 } *Entrance_Dialog;
 
 #define EW_DIALOG_FREE(ew) if(1) \

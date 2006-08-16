@@ -36,10 +36,10 @@ ew_entry_new(const char *label, const char *text, int ispassword)
 	if(label)
 	{
 		ew->label = etk_label_new(label);
-		etk_box_append(ETK_BOX(ew->owner), ew->label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+		etk_box_pack_start(ETK_BOX(ew->owner), ew->label, ETK_TRUE, ETK_TRUE, 0);
 	}
 
-	etk_box_append(ETK_BOX(ew->owner), ew->control, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	etk_box_pack_start(ETK_BOX(ew->owner), ew->control, ETK_TRUE, ETK_TRUE, 0);
 	if(text)
 	{
 		ew_entry_set(ew, text);

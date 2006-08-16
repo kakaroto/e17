@@ -33,6 +33,6 @@ ew_group_add(Entrance_Widget g, void *w)
 	}
 
 	Entrance_Widget ew = w;
-	etk_box_append(ETK_BOX(g->box), ew->owner, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	etk_box_pack_start(ETK_BOX(g->box), ew->owner, ETK_TRUE, ETK_TRUE, 0);
 }
 
