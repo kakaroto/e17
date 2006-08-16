@@ -324,6 +324,7 @@ extern"C" {
 #include <ewl_calendar.h>
 #include <ewl_datepicker.h>
 #include <ewl_icon.h>
+#include <ewl_icon_theme.h>
 #include <ewl_iconbox.h>
 #include <ewl_media.h>
 #include <ewl_notebook.h>

@@ -122,6 +122,13 @@ ewl_init(int *argc, char **argv)
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
+	if (!ecore_desktop_init()) {
+		DERROR("Could not init ecore_desktop...\n");
+		evas_shutdown();
+		ecore_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
+
 	if (!ecore_string_init()) {
 		DERROR("Could not init ecore strings....\n");
 		evas_shutdown();
@@ -307,6 +314,7 @@ ewl_shutdown(void)
 	evas_shutdown();
 
 	ecore_string_shutdown();
+	ecore_desktop_shutdown();
 	ecore_shutdown();
 
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);

@@ -27,7 +27,8 @@ pkg_LTLIBRARIES		= ewl_border.la ewl_box.la ewl_button.la \
 			  ewl_scrollpane.la ewl_spinner.la ewl_progressbar.la \
 			  ewl_theme.la ewl_media.la ewl_menu.la ewl_imenu.la \
 			  ewl_widget.la fullscreen.la  modal.la ewl_layer.la \
-			  ewl_list.la puzzle.la ewl_grid.la
+			  ewl_list.la puzzle.la ewl_grid.la \
+			  ewl_icon_theme.la
 
 ewl_border_la_SOURCES   = ewl_border.c
 ewl_border_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
@@ -351,6 +352,13 @@ ewl_grid_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_grid_la_DEPENDENCIES = 
 
+ewl_icon_theme_la_SOURCES   = ewl_icon_theme.c
+ewl_icon_theme_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_icon_theme_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_icon_theme_la_DEPENDENCIES = 
+
 
 FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_button_la_SOURCES) $(ewl_colordialog_la_SOURCES) \
@@ -374,7 +382,8 @@ FILES = $(ewl_border_la_SOURCES) $(ewl_box_la_SOURCES) \
 	$(ewl_image_thumbnail_la_SOURCES) $(fullscreen_la_SOURCES) \
 	$(modal_la_SOURCES) $(ewl_layer_la_SOURCES) \
 	$(ewl_dnd_snoop_la_SOURCES) $(ewl_list_la_SOURCES) \
-	$(puzzle_la_SOURCES) $(ewl_grid_la_SOURCES)
+	$(puzzle_la_SOURCES) $(ewl_grid_la_SOURCES) \
+	$(ewl_icon_theme_la_SOURCES)
 
 EXTRA_DIST = $(FILES)
 

@@ -10,6 +10,7 @@ enum Ewl_Config_Types
 	EWL_CONFIG_ENGINE_NAME,
 	EWL_CONFIG_EVAS_FONT_CACHE,
 	EWL_CONFIG_EVAS_IMAGE_CACHE,
+	EWL_CONFIG_THEME_ICON_THEME_NAME,
 	EWL_CONFIG_THEME_NAME,
 	EWL_CONFIG_THEME_CACHE,
 	EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE,
@@ -193,6 +194,7 @@ ewl_config_config_read(void)
 	nc.evas.image_cache = ewl_config_int_get("/ewl/evas/image_cache");
 	nc.engine_name = ewl_config_str_get("/ewl/engine_name");
 	nc.theme.name = ewl_config_str_get("/ewl/theme/name");
+	nc.theme.icon_theme = ewl_config_str_get("/ewl/theme/icon/name");
 	nc.theme.cache = ewl_config_int_get("/ewl/theme/cache");
 	nc.theme.print_keys = ewl_config_int_get("/ewl/theme/print_keys");
 	nc.theme.print_signals = ewl_config_int_get("/ewl/theme/print_signals");
@@ -345,6 +347,8 @@ ewl_config_config_read(void)
 	ewl_config.engine_name = nc.engine_name;
 	IF_FREE(ewl_config.theme.name);
 	ewl_config.theme.name = nc.theme.name;
+	IF_FREE(ewl_config.theme.icon_theme);
+	ewl_config.theme.icon_theme = nc.theme.icon_theme;
 	ewl_config.theme.cache = nc.theme.cache;
 	ewl_config.theme.print_keys = nc.theme.print_keys;
 	ewl_config.theme.print_signals = nc.theme.print_signals;
@@ -364,6 +368,7 @@ ewl_config_defaults_set(void)
 	ecore_config_int_default("/ewl/evas/font_cache", 2097152);
 	ecore_config_int_default("/ewl/evas/image_cache", 8388608);
 	ecore_config_theme_default("/ewl/theme/name", "default");
+	ecore_config_string_default("/ewl/theme/icon/name", "Tango");
 	ecore_config_int_default("/ewl/theme/cache", 0);
 	ecore_config_int_default("/ewl/theme/color_classes/override", 0);
 	ecore_config_int_default("/ewl/theme/print_keys", 0);
@@ -380,6 +385,7 @@ ewl_config_defaults_set(void)
 		    "/ewl/evas/font_cache",
 		    "/ewl/evas/image_cache",
 		    "/ewl/theme/name",
+		    "/ewl/theme/icon/name",
 		    "/ewl/theme/cache",
 		    "/ewl/theme/color_classes/override",
 		    "/ewl/theme/print_keys",
@@ -405,13 +411,16 @@ ewl_config_defaults_set(void)
 		    ewl_config_listener, EWL_CONFIG_EVAS_IMAGE_CACHE, NULL);
 		ecore_config_listen("ewl_theme_name", "/ewl/theme/name",
 		    ewl_config_listener, EWL_CONFIG_THEME_NAME, NULL);
+		ecore_config_listen("ewl_theme_icon_name", "/ewl/theme/icon/name",
+		    ewl_config_listener, EWL_CONFIG_THEME_ICON_THEME_NAME, NULL);
 		ecore_config_listen("ewl_theme_cache", "/ewl/theme/cache",
 		    ewl_config_listener, EWL_CONFIG_THEME_CACHE, NULL);
 		ecore_config_listen("ewl_theme_print_keys", "/ewl/theme/print_keys",
 		    ewl_config_listener, EWL_CONFIG_THEME_PRINT_KEYS, NULL);
 		ecore_config_listen("ewl_theme_print_signals", "/ewl/theme/print_signals",
 		    ewl_config_listener, EWL_CONFIG_THEME_PRINT_SIGNALS, NULL);
-		ecore_config_listen("ewl_theme_cclases_override", "/ewl/theme/color_classes/override",
+		ecore_config_listen("ewl_theme_cclases_override", 
+					"/ewl/theme/color_classes/override",
 		    ewl_config_listener, EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE, NULL);
 	}
 
@@ -452,6 +461,12 @@ ewl_config_listener(const char *key,
 			IF_FREE(ewl_config.theme.name);
 			ewl_config.theme.name = ewl_config_str_get(key);
 			break;
+	
+		case EWL_CONFIG_THEME_ICON_THEME_NAME:
+			IF_FREE(ewl_config.theme.icon_theme);
+			ewl_config.theme.icon_theme = ewl_config_str_get(key);
+			ewl_icon_theme_theme_change();
+			break;
 
 		case EWL_CONFIG_THEME_CACHE:
 			ewl_config.theme.cache = ewl_config_int_get(key);
@@ -470,7 +485,7 @@ ewl_config_listener(const char *key,
 			break;
 	}
 
-	DRETURN_INT(0, DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 

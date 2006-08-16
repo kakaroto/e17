@@ -45,6 +45,7 @@ EWLHEADERS = \
 	ewl_freebox.h \
 	ewl_grid.h \
 	ewl_icon.h \
+	ewl_icon_theme.h \
 	ewl_iconbox.h \
 	ewl_image.h \
 	ewl_imenu.h \
@@ -116,6 +117,7 @@ EWLSOURCES= \
 	ewl_freebox.c \
 	ewl_grid.c \
 	ewl_icon.c \
+	ewl_icon_theme.c \
 	ewl_iconbox.c \
 	ewl_image.c \
 	ewl_list.c \

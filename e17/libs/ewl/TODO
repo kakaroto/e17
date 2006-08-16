@@ -141,9 +141,8 @@
   - Invert on mouse click (behavior depends upon select mode).
   - determination of whether a row is selected or not (ewl_[tree_]row_selected).
 
-- Create a separate configuration value and theme hook for stock icons in
-  order to eliminate most icons from the distributed lib, but provide good
-  hooks for external icon sets.
+- Hook the icon theme code into the button stock code. The stock buttons
+  should only be a subset of the available icons.
 
 - Add a function that returns the selected radio button of a chain
   associated to a given radio button.
