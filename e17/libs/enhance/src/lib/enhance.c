@@ -738,6 +738,33 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	     etk_notebook_tabs_visible_set(ETK_NOTEBOOK(wid->wid), value);
           }
      }     
+   
+   else if(!strcmp(name, "orientation"))
+     {
+	     PROPERTY_STR;
+	     Etk_Toolbar_Orientation orientation = ETK_TOOLBAR_HORIZ;
+
+	     if (value && !strcmp(value, "GTK_ORIENTATION_VERTICAL"))
+	       orientation = ETK_TOOLBAR_VERT;
+	     etk_toolbar_orientation_set(ETK_TOOLBAR(wid->wid), orientation);
+     }     
+
+   else if(!strcmp(name, "toolbar_style"))
+     {
+	     PROPERTY_STR;
+	     Etk_Toolbar_Style style = ETK_TOOLBAR_ICONS;
+
+	     if (value)
+	       {
+		 if (!strcmp(value, "GTK_TOOLBAR_TEXT"))
+		   style = ETK_TOOLBAR_TEXT;
+		 else if (!strcmp(value, "GTK_TOOLBAR_BOTH"))
+		   style = ETK_TOOLBAR_BOTH_VERT;
+		 else if (!strcmp(value, "GTK_TOOLBAR_BOTH_HORIZ"))
+		   style = ETK_TOOLBAR_BOTH_HORIZ;
+	       }
+	     etk_toolbar_style_set(ETK_TOOLBAR(wid->wid), style);
+     }     
 }
 
 void
