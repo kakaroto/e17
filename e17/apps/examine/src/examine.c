@@ -157,7 +157,7 @@ cb_set_int(Ewl_Widget * w, void *ev_data, void *user_data)
   examine_prop   *change;
 
   change = (examine_prop *) user_data;
-  change->value.val = (int) ewl_spinner_value_get(EWL_SPINNER(w));
+  change->value.val = (int) ewl_range_value_get(EWL_RANGE(w));
 }
 
 static void
@@ -166,7 +166,7 @@ cb_set_float(Ewl_Widget * w, void *ev_data, void *user_data)
   examine_prop   *change;
 
   change = (examine_prop *) user_data;
-  change->value.fval = (float) ewl_spinner_value_get(EWL_SPINNER(w));
+  change->value.fval = (float) ewl_range_value_get(EWL_RANGE(w));
 }
 
 static void
@@ -272,26 +272,26 @@ draw_tree(examine_prop * prop_item)
       entries[1] = ewl_spinner_new();
 
       ewl_spinner_digits_set(EWL_SPINNER(entries[1]), 0);
-      ewl_spinner_step_set(EWL_SPINNER(entries[1]), 1);
+      ewl_range_step_set(EWL_RANGE(entries[1]), 1);
       if (prop_item->bound & BOUND_BOUND) {
-        ewl_spinner_min_val_set(EWL_SPINNER(entries[1]), prop_item->min);
-        ewl_spinner_max_val_set(EWL_SPINNER(entries[1]), prop_item->max);
+        ewl_range_minimum_value_set(EWL_RANGE(entries[1]), prop_item->min);
+        ewl_range_maximum_value_set(EWL_RANGE(entries[1]), prop_item->max);
       }
       if (prop_item->bound & BOUND_STEPPED)
-        ewl_spinner_step_set(EWL_SPINNER(entries[1]), prop_item->step);
+        ewl_range_step_set(EWL_RANGE(entries[1]), prop_item->step);
       ewl_callback_append(entries[1], EWL_CALLBACK_VALUE_CHANGED, cb_set_int,
                           prop_item);
     } else if (prop_item->type == ECORE_CONFIG_FLT) {
       entries[1] = ewl_spinner_new();
 
 /*          ewl_spinner_digits_set(EWL_SPINNER(input), 0);
-            ewl_spinner_step_set(EWL_SPINNER(input), 1);*/
+            ewl_range_step_set(EWL_RANGE(input), 1);*/
       if (prop_item->bound & BOUND_BOUND) {
-        ewl_spinner_min_val_set(EWL_SPINNER(entries[1]), prop_item->fmin);
-        ewl_spinner_max_val_set(EWL_SPINNER(entries[1]), prop_item->fmax);
+        ewl_range_minimum_value_set(EWL_RANGE(entries[1]), prop_item->fmin);
+        ewl_range_maximum_value_set(EWL_RANGE(entries[1]), prop_item->fmax);
       }
       if (prop_item->bound & BOUND_STEPPED)
-        ewl_spinner_step_set(EWL_SPINNER(entries[1]), prop_item->fstep);
+        ewl_range_step_set(EWL_RANGE(entries[1]), prop_item->fstep);
       ewl_callback_append(entries[1], EWL_CALLBACK_VALUE_CHANGED, cb_set_float,
                           prop_item);
     } else if (prop_item->type == ECORE_CONFIG_RGB) {

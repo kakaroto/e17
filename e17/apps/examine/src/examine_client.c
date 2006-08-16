@@ -355,7 +355,7 @@ examine_client_revert(examine_prop * target)
   switch (target->type) {
   case ECORE_CONFIG_INT:
     target->value.val = target->oldvalue.val;
-    ewl_spinner_value_set(EWL_SPINNER(target->w), target->value.val);
+    ewl_range_value_set(EWL_RANGE(target->w), target->value.val);
     break;
   case ECORE_CONFIG_BLN:
     target->value.val = target->oldvalue.val;
@@ -363,7 +363,7 @@ examine_client_revert(examine_prop * target)
     break;
   case ECORE_CONFIG_FLT:
     target->value.fval = target->oldvalue.fval;
-    ewl_spinner_value_set(EWL_SPINNER(target->w), target->value.fval);
+    ewl_range_value_set(EWL_RANGE(target->w), target->value.fval);
     break;
   case ECORE_CONFIG_THM:
     free(target->value.ptr);
@@ -501,13 +501,13 @@ examine_client_get_val_cb(void)
     sscanf(ret, "%d", &tmpi);
     prop->value.val = tmpi;
     prop->oldvalue.val = tmpi;
-    ewl_spinner_value_set(EWL_SPINNER(prop->w), (double) tmpi);
+    ewl_range_value_set(EWL_RANGE(prop->w), (double) tmpi);
     break;
   case ECORE_CONFIG_FLT:
     sscanf(ret, "%f", &tmpd);
     prop->value.fval = tmpd;
     prop->oldvalue.fval = tmpd;
-    ewl_spinner_value_set(EWL_SPINNER(prop->w), tmpd);
+    ewl_range_value_set(EWL_RANGE(prop->w), tmpd);
     break;
   case ECORE_CONFIG_THM:
     prop->value.ptr = strdup(ret);
