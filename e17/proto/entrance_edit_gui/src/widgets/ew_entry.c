@@ -41,12 +41,13 @@ ew_entry_new(const char *label, const char *text, int ispassword)
 
 	etk_box_append(ETK_BOX(ew->owner), ew->control, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	if(text)
+	{
 		ew_entry_set(ew, text);
-
+	} 
 	return ew;
 }
 
-const char*
+char*
 ew_entry_get(Entrance_Entry ew)
 {
 	return etk_entry_text_get(ETK_ENTRY(ew->control));
@@ -71,4 +72,12 @@ ew_entry_password_clear(Entrance_Entry ew)
 {
 	if(ew)
 		etk_entry_password_set(ETK_ENTRY(ew->control),  ETK_FALSE);
+}
+
+void
+ew_entry_bugfix_makeshow(Entrance_Entry ew)
+{
+	/*this is a work around till the etk_entry rewrite*/
+	etk_widget_focus(ETK_WIDGET(ew->control));
+	etk_widget_unfocus(ETK_WIDGET(ew->control));
 }

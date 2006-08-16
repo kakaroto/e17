@@ -55,6 +55,10 @@ egui_x_settings_dialog_show()
 	ew_dialog_ok_button_add(win, _xs_cb_ok, NULL);
 
 	ew_dialog_show(win);
+
+	ew_entry_bugfix_makeshow(entry_attempts);
+	ew_entry_bugfix_makeshow(entry_xession);
+	ew_entry_bugfix_makeshow(entry_xserver);
 }
 
 
