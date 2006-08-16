@@ -55,8 +55,8 @@ void main_window_show(char *file)
    etk_container_add(ETK_CONTAINER(gui->win), vbox);
 
    menubar = etk_menu_bar_new();
-   etk_box_pack_start(ETK_BOX(vbox), menubar, 
-	   ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), menubar, 
+	   ETK_BOX_START, ETK_BOX_NONE, 0);
 
    menuitem = _gui_menubar_item_new(gui, _("File"), ETK_MENU_SHELL(menubar));
    menu = etk_menu_new();
@@ -104,7 +104,7 @@ void main_window_show(char *file)
 
    paned = etk_hpaned_new();
    vpaned = etk_vpaned_new();
-   etk_box_pack_start(ETK_BOX(vbox), vpaned, ETK_TRUE, ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), vpaned, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_paned_child1_set(ETK_PANED(vpaned), paned, ETK_TRUE);
 
    gui->tree = etk_tree_new();
@@ -138,30 +138,30 @@ void main_window_show(char *file)
    etk_paned_child2_set(ETK_PANED(vpaned), gui->output, ETK_FALSE);
 
    hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_box_pack_start(ETK_BOX(vbox), hbox, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    signal_label = etk_label_new("Signal: ");
-   etk_box_pack_start(ETK_BOX(hbox), signal_label, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), signal_label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    signal_entry = etk_entry_new();
-   etk_box_pack_start(ETK_BOX(hbox), signal_entry, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), signal_entry, ETK_BOX_START, ETK_BOX_NONE, 0);
    gui->signal_entry = signal_entry;
 
    source_label = etk_label_new("Source: ");
-   etk_box_pack_start(ETK_BOX(hbox), source_label, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), source_label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    source_entry = etk_entry_new();
-   etk_box_pack_start(ETK_BOX(hbox), source_entry, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), source_entry, ETK_BOX_START, ETK_BOX_NONE, 0);
    gui->source_entry = source_entry;
 
    send_button = etk_button_new_with_label("Send");
    etk_button_alignment_set(ETK_BUTTON(send_button), 1.0, 0.5);
-   etk_box_pack_end(ETK_BOX(hbox), send_button, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), send_button, ETK_BOX_END, ETK_BOX_NONE, 0);
    etk_signal_connect("clicked", ETK_OBJECT(send_button), 
 	   ETK_CALLBACK(_gui_send_clicked_cb), gui);
 
    gui->status = etk_statusbar_new();
-   etk_box_pack_end(ETK_BOX(vbox), gui->status, ETK_FALSE, ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), gui->status, ETK_BOX_END, ETK_BOX_NONE, 0);
 
    bg_setup(ETK_CANVAS(gui->canvas));
    etk_widget_show_all(gui->win);
