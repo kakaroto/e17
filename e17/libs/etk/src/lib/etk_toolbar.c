@@ -169,12 +169,12 @@ void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation o
    
    for (l = children; l; l = l->next)
    {
-      if (ETK_IS_VSEPARATOR(l->data))
+      if (ETK_IS_VSEPARATOR(l->data) && toolbar->orientation == ETK_TOOLBAR_HORIZ)
       {
 	 etk_object_destroy(ETK_OBJECT(l->data));
 	 l->data = etk_hseparator_new();
       } 
-      else if (ETK_IS_HSEPARATOR(l->data))
+      else if (ETK_IS_HSEPARATOR(l->data) && toolbar->orientation == ETK_TOOLBAR_VERT)
       {
 	 etk_object_destroy(ETK_OBJECT(l->data));
 	 l->data = etk_vseparator_new();
