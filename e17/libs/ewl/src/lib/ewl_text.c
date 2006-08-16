@@ -70,9 +70,7 @@ ewl_text_new(void)
 
 	w = NEW(Ewl_Text, 1);
 	if (!w)
-	{
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
 
 	if (!ewl_text_init(EWL_TEXT(w)))
 	{
@@ -95,9 +93,8 @@ ewl_text_init(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, FALSE);
 
 	if (!ewl_container_init(EWL_CONTAINER(t)))
-	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
+
 	ewl_widget_appearance_set(EWL_WIDGET(t), EWL_TEXT_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(t), EWL_TEXT_TYPE);
 
@@ -106,9 +103,7 @@ ewl_text_init(Ewl_Text *t)
 	/* create the formatting tree before we do any formatting */
 	t->formatting.tree = ewl_text_tree_new();
 	if (!t->formatting.tree) 
-	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
 
 	t->formatting.tree->tx = ewl_text_context_default_create(t);
 	ewl_text_context_acquire(t->formatting.tree->tx);
@@ -276,9 +271,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	if ((!REALIZED(t)) || (!t->textblock) || (!t->text))
-	{
 		DRETURN_INT(0, DLEVEL_STABLE);
-	}
 
 	/* force a display of the text */
 	if (t->dirty)
@@ -671,9 +664,7 @@ ewl_text_selection_get(Ewl_Text *t)
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
 	if (t->selection && ewl_text_trigger_length_get(t->selection) > 0)
-	{
 		DRETURN_PTR(t->selection, DLEVEL_STABLE);
-	}
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
@@ -691,9 +682,7 @@ ewl_text_has_selection(Ewl_Text *t)
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, FALSE);
 
 	if (ewl_text_selection_get(t))
-	{
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
-	}
 
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
@@ -875,9 +864,7 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 
 	/* if length is 0 we have nothing to do */
 	if (length == 0) 
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 
@@ -960,9 +947,7 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->size = size;
@@ -1051,9 +1036,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->color.r = r;
@@ -1146,9 +1129,7 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->align = align;
@@ -1224,9 +1205,7 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->styles = styles;
@@ -1392,9 +1371,7 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->wrap = wrap;
@@ -1483,9 +1460,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->style_colors.bg.r = r;
@@ -1591,9 +1566,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->style_colors.glow.r = r;
@@ -1699,9 +1672,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->style_colors.outline.r = r;
@@ -1807,9 +1778,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->style_colors.shadow.r = r;
@@ -1915,9 +1884,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->style_colors.strikethrough.r = r;
@@ -2023,9 +1990,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->style_colors.underline.r = r;
@@ -2131,9 +2096,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 
 	/* set this into the b-tree if we have length */
 	if (length == 0)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	tx = ewl_text_context_new();
 	tx->style_colors.double_underline.r = r;
@@ -2278,9 +2241,7 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 	DCHECK_PARAM_PTR("tb", tb);
 
 	if (!txt) 
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	/* we don't free this cursor as it is actually const
 	 * Evas_Textblock_Cursor * and i'm casting it...  */
@@ -2596,7 +2557,8 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* don't do anything if we're obscured */
-	if (OBSCURED(w)) DRETURN(DLEVEL_STABLE);
+	if (OBSCURED(w)) 
+		DRETURN(DLEVEL_STABLE);
 
 	t = EWL_TEXT(w);
 
@@ -2651,7 +2613,8 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	t = EWL_TEXT(w);
 
-	if (t->textblock) {
+	if (t->textblock) 
+	{
 		DWARNING("We have a textblock when we shoudn't");
 		DRETURN(DLEVEL_STABLE);
 	}
@@ -3837,9 +3800,7 @@ ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type)
 
 	area = NEW(Ewl_Text_Trigger_Area, 1);
 	if (!area)
-	{
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
 
 	if (!ewl_text_trigger_area_init(area, type))
 	{
@@ -4484,9 +4445,7 @@ ewl_text_tree_new(void)
 
 	tree = NEW(Ewl_Text_Tree, 1);
 	if (!tree)
-	{
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
 
 	DRETURN_PTR(tree, DLEVEL_STABLE);
 }

@@ -16,15 +16,14 @@ ewl_entry_new(void)
 
 	w = NEW(Ewl_Entry, 1);
 	if (!w)
-	{
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
 
 	if (!ewl_entry_init(EWL_ENTRY(w)))
 	{
 		ewl_widget_destroy(w);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
+
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
@@ -44,9 +43,7 @@ ewl_entry_init(Ewl_Entry *e)
 	w = EWL_WIDGET(e);
 
 	if (!ewl_text_init(EWL_TEXT(e)))
-	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
 
 	ewl_widget_inherit(w, EWL_ENTRY_TYPE);
 	ewl_widget_appearance_set(w, EWL_ENTRY_TYPE);
@@ -138,9 +135,7 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
 
 	if (e->editable == editable)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	e->editable = editable;
 
@@ -245,9 +240,7 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	e = EWL_ENTRY(w);
 	if (!e->editable)
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	c_pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 	ewl_text_index_geometry_map(EWL_TEXT(e), c_pos, &cx, &cy, &cw, &ch);
@@ -629,8 +622,10 @@ ewl_entry_delete_left(Ewl_Entry *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
-	if(!EWL_TEXT(e)->text)
+
+	if (!EWL_TEXT(e)->text)
 		DRETURN(DLEVEL_STABLE);	
+
 	pos1 = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 	pos2 = ewl_text_utf_char_position_prev(EWL_TEXT(e)->text, pos1);
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), pos2);
@@ -652,8 +647,10 @@ ewl_entry_delete_right(Ewl_Entry *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
-	if(!EWL_TEXT(e)->text)
+
+	if (!EWL_TEXT(e)->text)
 		DRETURN(DLEVEL_STABLE);
+
 	pos1 = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 	pos2 = ewl_text_utf_char_position_next(EWL_TEXT(e)->text, pos1);
 	ewl_text_text_delete(EWL_TEXT(e), pos2 - pos1);
@@ -679,15 +676,14 @@ ewl_entry_cursor_new(Ewl_Entry *parent)
 	
 	w = NEW(Ewl_Entry_Cursor, 1);
 	if (!w)
-	{
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
 
 	if (!ewl_entry_cursor_init(EWL_ENTRY_CURSOR(w), parent))
 	{
 		ewl_widget_destroy(w);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
+
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
@@ -706,9 +702,7 @@ ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent)
 	DCHECK_TYPE_RET("parent", parent, EWL_ENTRY_TYPE, FALSE);
 
 	if (!ewl_widget_init(EWL_WIDGET(c)))
-	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
 
 	ewl_widget_appearance_set(EWL_WIDGET(c), EWL_ENTRY_CURSOR_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(c), EWL_ENTRY_CURSOR_TYPE);
