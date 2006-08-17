@@ -25,7 +25,7 @@ struct Etk_Signal
    /* private: */
    char *name;
    Etk_Type *object_type;
-   long default_handler_offset;
+   long handler_offset;
    Etk_Marshaller marshaller;
    Etk_Accumulator accumulator;
    void *accum_data;
@@ -33,18 +33,18 @@ struct Etk_Signal
 
 void etk_signal_shutdown();
 
-Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long default_handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data);
+Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data);
 void etk_signal_delete(Etk_Signal *signal);
 
 Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type);
 const char *etk_signal_name_get(Etk_Signal *signal);
 Etk_Marshaller etk_signal_marshaller_get(Etk_Signal *signal);
 
-void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data);
-void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data);
-void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data);
-void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data, Etk_Bool swapped, Etk_Bool after);
-void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback);
+void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data);
+void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data);
+void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data);
+void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Callback callback, void *data, Etk_Bool swapped, Etk_Bool after);
+void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Callback callback);
 
 void etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value, ...);
 void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...);

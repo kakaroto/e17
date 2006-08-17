@@ -5,17 +5,14 @@
 #include <stdarg.h>
 #include "etk_types.h"
 
-/** Casts the function pointer to an Etk_Signal_Marshaller */
-#define ETK_MARSHALLER(marshaller)    ((Etk_Signal_Marshaller)(marshaller))
-
-void etk_marshaller_VOID__VOID(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
-void etk_marshaller_VOID__INT(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
-void etk_marshaller_VOID__DOUBLE(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
-void etk_marshaller_VOID__POINTER(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
-void etk_marshaller_VOID__POINTER_POINTER(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
-void etk_marshaller_VOID__INT_POINTER(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
-void etk_marshaller_BOOL__VOID(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
-void etk_marshaller_BOOL__DOUBLE(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
-void etk_marshaller_BOOL__POINTER_POINTER(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_VOID__VOID(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_VOID__INT(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_VOID__DOUBLE(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_VOID__POINTER(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_VOID__POINTER_POINTER(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_VOID__INT_POINTER(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_BOOL__VOID(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_BOOL__DOUBLE(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_BOOL__POINTER_POINTER(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
 
 #endif

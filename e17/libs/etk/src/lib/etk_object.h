@@ -9,7 +9,7 @@
 
 /**
  * @defgroup Etk_Object Etk_Object
- * @brief The Etk_Object class is the base class of all the objects and the widgets of Etk
+ * @brief The Etk_Object class is the base class for all the objects and the widgets of Etk
  * @{
  */
 
@@ -39,7 +39,7 @@ struct Etk_Notification_Callback
 };
 
 /**
- * @brief @object The structure of an object
+ * @brief @object The base class for all the objects and widgets of Etk
  * @structinfo
  */
 struct Etk_Object

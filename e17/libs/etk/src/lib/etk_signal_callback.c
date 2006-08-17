@@ -1,6 +1,7 @@
 /** @file etk_signal_callback.c */
 #include "etk_signal_callback.h"
 #include <stdlib.h>
+#include <stdarg.h>
 #include "etk_signal.h"
 
 /**
@@ -15,15 +16,17 @@
  **************************/
 
 /**
- * @brief Creates a new signal callback for the signal @a signal, with callback function @a callback, and with user data @a data
- * @param signal the signal to add this callback to
- * @param callback the callback function called when the signal is emitted
+ * @internal
+ * @brief Creates a new signal callback for the signal @a signal, using the callback function @a callback, and
+ * associated to user data @a data
+ * @param signal the signal to which this callback should be added
+ * @param callback the callback function to call when the signal is emitted
  * @param data the user data to pass to the callback function
- * @param swapped if @a swapped != 0, the callback function with the data as the only arguments
- * @return Returns the new callback on succes or NULL on failure
+ * @param swapped if @a swapped is ETK_TRUE, the callback function will be called with the data as the only argument
+ * @return Returns the new signal callback on success or NULL on failure
  * @warning The new signal callback has to be freed with etk_signal_callback_del()
  */
-Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Signal_Callback_Function callback, void *data, Etk_Bool swapped)
+Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Callback callback, void *data, Etk_Bool swapped)
 {
    Etk_Signal_Callback *new_callback;
 
@@ -40,6 +43,7 @@ Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Signal_Call
 }
 
 /**
+ * @internal
  * @brief Deletes the signal callback
  * @param signal_callback the signal callback to delete
  */
@@ -49,7 +53,8 @@ void etk_signal_callback_del(Etk_Signal_Callback *signal_callback)
 }
 
 /**
- * @brief Calls the callback @a callback on the object @a object
+ * @internal
+ * @brief Calls the signal callback @a callback on the object @a object
  * @param callback the signal callback to call
  * @param object the object to call the callback on
  * @param return_value the location for the return value (if none, it can be NULL)
@@ -68,6 +73,7 @@ void etk_signal_callback_call(Etk_Signal_Callback *callback, Etk_Object *object,
 }
 
 /**
+ * @internal
  * @brief Calls the callback @a callback on the object @a object
  * @param callback the signal callback to call
  * @param object the object to call the callback on
@@ -79,12 +85,14 @@ void etk_signal_callback_call_valist(Etk_Signal_Callback *callback, Etk_Object *
    Etk_Marshaller marshaller;
 
    if (!callback || !callback->callback || !callback->signal ||
-         !object || !(marshaller = etk_signal_marshaller_get(callback->signal)))
+      !object || !(marshaller = etk_signal_marshaller_get(callback->signal)))
+   {
       return;
+   }
 
    if (callback->swapped)
    {
-      Etk_Signal_Swapped_Callback_Function swapped_callback = ETK_SWAPPED_CALLBACK(callback->callback);
+      Etk_Callback_Swapped swapped_callback = callback->callback;
       swapped_callback(callback->data);
    }
    else

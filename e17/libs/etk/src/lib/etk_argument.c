@@ -19,10 +19,10 @@
  * @brief Checks whether the argument has been passed to the program
  * @param argc the location of the "argc" parameter passed to main()
  * @param argv the location of the "argv" parameter passed to main()
- * @param long_name the complete name of the argument to find. If --long_name is found in @a argv, this function will
- * return ETK_TRUE. It can be set to NULL to be ignored it
- * @param short_name a shortcut for the argument to find. If -short_name is found in @a argv, this function will
- * return ETK_TRUE. It can be set to 0 to be ignored it
+ * @param long_name the complete name of the argument to find. If '--long_name' is found in @a argv, this function will
+ * return ETK_TRUE. You can set it to NULL to ignore it
+ * @param short_name a shortcut for the argument to find. If '-short_name' is found in @a argv, this function will
+ * return ETK_TRUE. You can set it to NULL to ignore it
  * @param remove if @a remove is ETK_TRUE, the argument will be removed from @a argv if it has been found
  * @return Returns ETK_TRUE if the argument has been found, ETK_FALSE otherwise
  */
@@ -70,9 +70,9 @@ Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, cha
  * @param argc the location of the "argc" parameter passed to main()
  * @param argv the location of the "argv" parameter passed to main()
  * @param long_name the complete name of the argument to find. If --long_name is found in @a argv and is followed by a
- * value, this function will return ETK_TRUE. It can be set to NULL to be ignored it
+ * value, this function will return ETK_TRUE. You can set it to NULL to ignore it
  * @param short_name a shortcut for the argument to find. If -short_name is found in @a argv and is followed by a
- * value, this function will return ETK_TRUE. It can be set to 0 to be ignored it
+ * value, this function will return ETK_TRUE. You can set it to NULL to ignore it
  * @param remove if @a remove is ETK_TRUE, the argument and its value will be removed from @a argv
  * if they have been found
  * @param value the location where to store the value of the argument. You'll have to free it when you no longer need it
@@ -164,3 +164,18 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Argument
+ *
+ * You can use those two functions to parse the arguments given to your program. @n
+ * Two kinds of arguments are supported:
+ * - <b>Short arguments</b>: <i>"-c"</i>, <i>"-c value"</i> or <i>"-cvalue"</i>
+ * - <b>Long arguments</b>: <i>"--argument"</i>, <i>"--agument value"</i> or <i>"--argument=value"</i>
+ */

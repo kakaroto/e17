@@ -28,6 +28,7 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Alignment
  * @return Returns the type of an Etk_Alignment
  */
@@ -60,8 +61,8 @@ Etk_Type *etk_alignment_type_get()
  * @brief Creates a new alignment
  * @param xalign the horizontal alignment, from 0.0 (left) to 1.0 (right)
  * @param yalign the vertical alignment, from 0.0 (top) to 1.0 (bottom)
- * @param xscale the horizontal scale factor, from 0.0 (do not scale) to 1.0 (take all the available space)
- * @param yscale the vertical scale factor, from 0.0 (do not scale) to 1.0 (take all the available space)
+ * @param xscale the horizontal scale factor, from 0.0 (do not scale) to 1.0 (fill all the available space)
+ * @param yscale the vertical scale factor, from 0.0 (do not scale) to 1.0 (fill all the available space)
  * @return Returns the new alignment widget
  */
 Etk_Widget *etk_alignment_new(float xalign, float yalign, float xscale, float yscale)
@@ -75,8 +76,8 @@ Etk_Widget *etk_alignment_new(float xalign, float yalign, float xscale, float ys
  * @param alignment an alignment
  * @param xalign the horizontal alignment, from 0.0 (left) to 1.0 (right)
  * @param yalign the vertical alignment, from 0.0 (top) to 1.0 (bottom)
- * @param xscale the horizontal scale factor, from 0.0 (do not scale) to 1.0 (take all the available space)
- * @param yscale the vertical scale factor, from 0.0 (do not scale) to 1.0 (take all the available space)
+ * @param xscale the horizontal scale factor, from 0.0 (do not scale) to 1.0 (fill all the available space)
+ * @param yscale the vertical scale factor, from 0.0 (do not scale) to 1.0 (fill all the available space)
  */
 void etk_alignment_set(Etk_Alignment *alignment, float xalign, float yalign, float xscale, float yscale)
 {
@@ -259,7 +260,7 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  * @addtogroup Etk_Alignment
  *
  * The scale settings control how much the child should expand to fill the available space,
- * from 0.0 (the child doesn't expand at all) to 1.0 (the child takes all the available space). @n
+ * from 0.0 (the child doesn't expand at all) to 1.0 (the child takes up all the available space). @n
  * The align settings control the alignment of the child inside the container,
  * from 0.0 (the child is aligned on the left/top) to 1.0 (the child is aligned on the right/bottom). @n
  * The align settings have no effect if the scale factors are set to 1.0. 
@@ -282,14 +283,14 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  * @prop_rw
  * @prop_val 0.5
  * \par 
- * @prop_name "xscale": How much of the horizontal space should use the child,
- * from 0.0 (none, the child does not expand) to 1.0 (the child fill all the horizontal space).
+ * @prop_name "xscale": How much of the horizontal space the child should use,
+ * from 0.0 (none, the child does not expand) to 1.0 (the child fills all the horizontal space).
  * @prop_type Float
  * @prop_rw
  * @prop_val 1.0
  * \par 
- * @prop_name "yscale": How much of the vertical space should use the child,
- * from 0.0 (none, the child does not expand) to 1.0 (the child fill all the vertical space).
+ * @prop_name "yscale": How much of the vertical space the child should use,
+ * from 0.0 (none, the child does not expand) to 1.0 (the child fills all the vertical space).
  * @prop_type Float
  * @prop_rw
  * @prop_val 1.0

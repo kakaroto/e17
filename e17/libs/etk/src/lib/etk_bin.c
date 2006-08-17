@@ -33,6 +33,7 @@ static void _etk_bin_realize_cb(Etk_Object *object, void *data);
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Bin
  * @return Returns the type of an Etk_Bin
  */
@@ -258,7 +259,7 @@ static void _etk_bin_realize_cb(Etk_Object *object, void *data)
 /**
  * @addtogroup Etk_Bin
  *
- * The Etk_Bin widget is mainly used as a base class for containers that only have one children
+ * The Etk_Bin widget is mainly used as a base class for containers that only have one child
  * (such as Etk_Alignment, Etk_Window, Etk_Frame...).
  *
  * \par Object Hierarchy:

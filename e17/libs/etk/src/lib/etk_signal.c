@@ -33,8 +33,7 @@ static Evas_List *_etk_signal_emitted_signals = NULL;
 
 /**
  * @internal
- * @brief Shutdowns the signal system
- * @warning You must not call it manually, etk_shudown() calls it automatically
+ * @brief Shutdowns the signal system: it destroys all the created signals
  */
 void etk_signal_shutdown()
 {
@@ -55,7 +54,7 @@ void etk_signal_shutdown()
  * @brief Creates a new signal called @a signal_name, for the object type @a object_type
  * @param signal_name the name of the new signal
  * @param object_type the object type of the new signal
- * @param default_handler_offset the offset of the default handler in the object's struct 
+ * @param handler_offset the offset of the default handler in the object's struct 
  * (use ETK_MEMBER_OFFSET() to get it). -1 if there is no default handler
  * @param marshaller the marshaller of the signal: it will treat and pass the arguments to the callbacks
  * @param accumulator the accumulator used to combine together the different values returned by the callbacks.
@@ -63,7 +62,7 @@ void etk_signal_shutdown()
  * @param accum_data the value to pass to the accumulator
  * @return Returns the new signal, or NULL on failure
  */
-Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long default_handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data)
+Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data)
 {
    Etk_Signal *new_signal;
 
@@ -73,7 +72,7 @@ Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long 
    new_signal = malloc(sizeof(Etk_Signal));
    new_signal->name = strdup(signal_name);
    new_signal->object_type = object_type;
-   new_signal->default_handler_offset = default_handler_offset;
+   new_signal->handler_offset = handler_offset;
    new_signal->marshaller = marshaller;
    new_signal->accumulator = accumulator;
    new_signal->accum_data = accum_data;
@@ -147,7 +146,7 @@ const char *etk_signal_name_get(Etk_Signal *signal)
  * Otherwise, it will be called before the default handler. It can be useful to set it to ETK_TRUE if you want the
  * callback to be called after all the other callbacks connect to the signal.
  */
-void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data, Etk_Bool swapped, Etk_Bool after)
+void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Callback callback, void *data, Etk_Bool swapped, Etk_Bool after)
 {
    Etk_Signal_Callback *new_callback;
    if (!object || !signal || !callback)
@@ -166,7 +165,7 @@ void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Signal_
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
  */
-void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data)
+void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
 
@@ -191,7 +190,7 @@ void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Signal_
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
  */
-void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data)
+void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
 
@@ -217,7 +216,7 @@ void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_S
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
  */ 
-void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback, void *data)
+void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
 
@@ -240,7 +239,7 @@ void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk
  * @param object the object connected to the callback to disconnect
  * @param callback the callback to disconnect
  */
-void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Signal_Callback_Function callback)
+void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Callback callback)
 {
    Etk_Signal *signal;
    Evas_List *callbacks;
@@ -378,11 +377,11 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    }
 
    /* Calls the default handler */
-   if (object_ptr && !emitted_signal->stop_emission && signal->default_handler_offset >= 0 && signal->marshaller)
+   if (object_ptr && !emitted_signal->stop_emission && signal->handler_offset >= 0 && signal->marshaller)
    {
-      Etk_Signal_Callback_Function *default_handler;
+      Etk_Callback *default_handler;
 
-      default_handler = (void *)object + signal->default_handler_offset;
+      default_handler = (void *)object + signal->handler_offset;
       if (*default_handler)
       {
          if (!return_value_set || !signal->accumulator)

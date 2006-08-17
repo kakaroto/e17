@@ -11,26 +11,25 @@
 
 #define ETK_FALSE 0
 #define ETK_TRUE 1
-
 typedef unsigned char Etk_Bool;
+
 typedef struct Etk_Notification_Callback Etk_Notification_Callback;
 typedef struct Etk_Object Etk_Object;
 typedef struct Etk_Property Etk_Property;
 typedef struct Etk_Property_Value Etk_Property_Value;
 typedef struct Etk_Signal Etk_Signal;
-typedef struct _Etk_Signal_Callback Etk_Signal_Callback;
+typedef struct Etk_Signal_Callback Etk_Signal_Callback;
 typedef struct _Etk_String Etk_String;
 typedef struct _Etk_Type Etk_Type;
 
 typedef void (*Etk_Accumulator)(void *return_value, const void *value_to_accum, void *data);
 typedef void (*Etk_Constructor)(Etk_Object *object);
 typedef void (*Etk_Destructor)(Etk_Object *object);
-typedef void (*Etk_Signal_Callback_Function)(void);
-typedef void (*Etk_Signal_Swapped_Callback_Function)(void *data);
-typedef void (*Etk_Marshaller)(Etk_Signal_Callback_Function callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+typedef void (*Etk_Callback)();
+typedef void (*Etk_Callback_Swapped)(void *data);
+typedef void (*Etk_Marshaller)(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
 
 typedef struct Etk_Alignment Etk_Alignment;
-typedef struct _Etk_Argument Etk_Argument;
 typedef struct Etk_Bin Etk_Bin;
 typedef struct Etk_Box Etk_Box;
 typedef struct Etk_HBox Etk_HBox;
@@ -111,8 +110,6 @@ typedef struct _Etk_Tree_Row Etk_Tree_Row;
 typedef struct _Etk_Viewport Etk_Viewport;
 typedef struct _Etk_Widget Etk_Widget;
 typedef struct _Etk_Window Etk_Window;
-
-typedef Etk_Engine *(*Etk_Engine_Constructor)(void);
 
 /**
  * @struct Etk_Position
