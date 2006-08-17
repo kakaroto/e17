@@ -1,0 +1,7 @@
+.libs
+.deps
+Makefile
+Makefile.in
+entrance_edit-config
+*.la
+*.lo
