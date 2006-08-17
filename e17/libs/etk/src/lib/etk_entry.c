@@ -1,27 +1,27 @@
 /** @file etk_entry.c */
 #include "etk_entry.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "etk_editable.h"
+#include "etk_toplevel_widget.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "etk_editable_text_object.h"
-#include "etk_toplevel_widget.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Entry
-* @{
+ * @{
  */
 
-enum _Etk_Entry_Signal_Id
+enum Etk_Entry_Signal_Id
 {
    ETK_ENTRY_TEXT_CHANGED_SIGNAL,
    ETK_ENTRY_NUM_SIGNALS
 };
 
-enum _Etk_Entry_Propery_Id
+enum Etk_Entry_Propery_Id
 {
-   ETK_ENTRY_PASSWORD_PROPERTY
+   ETK_ENTRY_PASSWORD_MODE_PROPERTY
 };
 
 static void _etk_entry_constructor(Etk_Entry *entry);
@@ -29,14 +29,17 @@ static void _etk_entry_property_set(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_entry_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_entry_realize_cb(Etk_Object *object, void *data);
 static void _etk_entry_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_entry_key_down_cb(Etk_Object *object, void *event, void *data);
+static void _etk_entry_key_down_cb(Etk_Object *object, void *event_info, void *data);
 static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
 static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
+static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_entry_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_entry_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
 static void _etk_entry_focus_cb(Etk_Object *object, void *data);
 static void _etk_entry_unfocus_cb(Etk_Object *object, void *data);
-static void _etk_entry_text_changed_cb(Etk_Object *object, void *data);
   
 static Etk_Signal *_etk_entry_signals[ETK_ENTRY_NUM_SIGNALS];
+
 
 /**************************
  *
@@ -45,8 +48,9 @@ static Etk_Signal *_etk_entry_signals[ETK_ENTRY_NUM_SIGNALS];
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Entry
- * @return Returns the type on an Etk_Entry
+ * @return Returns the type of an Etk_Entry
  */
 Etk_Type *etk_entry_type_get()
 {
@@ -54,12 +58,15 @@ Etk_Type *etk_entry_type_get()
 
    if (!entry_type)
    {
-      entry_type = etk_type_new("Etk_Entry", ETK_WIDGET_TYPE, sizeof(Etk_Entry), ETK_CONSTRUCTOR(_etk_entry_constructor), NULL);
+      entry_type = etk_type_new("Etk_Entry", ETK_WIDGET_TYPE, sizeof(Etk_Entry),
+         ETK_CONSTRUCTOR(_etk_entry_constructor), NULL);
 
-      _etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL] = etk_signal_new("text_changed", entry_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL] = etk_signal_new("text_changed",
+         entry_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
-      etk_type_property_add(entry_type, "password", ETK_ENTRY_PASSWORD_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
-            
+      etk_type_property_add(entry_type, "password_mode", ETK_ENTRY_PASSWORD_MODE_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
+      
       entry_type->property_set = _etk_entry_property_set;
       entry_type->property_get = _etk_entry_property_get;      
    }
@@ -73,7 +80,8 @@ Etk_Type *etk_entry_type_get()
  */
 Etk_Widget *etk_entry_new()
 {
-   return etk_widget_new(ETK_ENTRY_TYPE, "theme_group", "entry", "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_ENTRY_TYPE, "theme_group", "entry",
+      "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**
@@ -85,13 +93,19 @@ void etk_entry_text_set(Etk_Entry *entry, const char *text)
 {
    if (!entry)
       return;
-   if(!entry->editable_object)
-     entry->text = strdup(text);
-   else
+   
+   if (!entry->editable_object)
    {
-      etk_editable_text_object_text_set(entry->editable_object, text);
-      etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
+      if (entry->text != text)
+      {
+         free(entry->text);
+         entry->text = strdup(text);
+      }
    }
+   else
+      etk_editable_text_set(entry->editable_object, text);
+   
+   etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
 }
 
 /**
@@ -101,68 +115,41 @@ void etk_entry_text_set(Etk_Entry *entry, const char *text)
  */
 const char *etk_entry_text_get(Etk_Entry *entry)
 {
-   if (!entry || !entry->editable_object)
+   if (!entry)
       return NULL;
-   if(entry->is_password)
-     return entry->password_text;
+   
+   if (!entry->editable_object)
+      return entry->text;
    else
-     return etk_editable_text_object_text_get(entry->editable_object);
+      return etk_editable_text_get(entry->editable_object);
 }
 
 /**
- * @brief Turns an entry into a password entry or disables it
+ * @brief Sets whether or not the entry is in password mode
  * @param entry an entry
- * @param on wether we want to to be a password entry or not
+ * @param password_mode ETK_TRUE to turn the entry into a password entry, ETK_FALSE to turn it into a normal entry
  */
-void etk_entry_password_set(Etk_Entry *entry, Etk_Bool on)
+void etk_entry_password_mode_set(Etk_Entry *entry, Etk_Bool password_mode)
+{
+   if (!entry || entry->password_mode == password_mode)
+      return;
+   
+   if (entry->editable_object)
+      etk_editable_password_mode_set(entry->editable_object, password_mode);
+   entry->password_mode = password_mode;
+   etk_object_notify(ETK_OBJECT(entry), "password_mode");
+}
+
+/**
+ * @brief Gets whether or not the entry is in password mode
+ * @param entry an entry
+ * @return Returns ETK_TRUE if the entry is in password mode, ETK_FALSE otherwise
+ */
+Etk_Bool etk_entry_password_mode_get(Etk_Entry *entry)
 {
    if (!entry)
-      return;
-
-   if(entry->is_password == on)
-     return;
-   
-   if(on)
-   {
-      char *text;
-      int   i;
-      
-      entry->is_password = ETK_TRUE;
-      etk_signal_connect("text_changed", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_text_changed_cb), NULL);
-
-      if(!entry->editable_object)
-	return;
-      
-      entry->password_text = strdup(etk_editable_text_object_text_get(entry->editable_object));
-      text = calloc(strlen(entry->password_text) + 1, sizeof(char));
-      for(i = 0; i < strlen(entry->password_text); i++)
-	strncat(text, "*", strlen(entry->password_text));
-      etk_editable_text_object_text_set(entry->editable_object, text);
-   }
-   else
-   {
-      entry->is_password = ETK_FALSE;
-      etk_signal_disconnect("text_changed", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_text_changed_cb));
-      if(entry->password_text && entry->editable_object)
-      {
-	 etk_editable_text_object_text_set(entry->editable_object, entry->password_text);
-	 free(entry->password_text);
-      }
-      
-   }
-}
-
-/**
- * @brief Gets wether an entry is a password entry
- * @param entry an entry
- * @return Returns true if its a password entry, false otherwise
- */
-Etk_Bool etk_entry_password_get(Etk_Entry *entry)
-{
-   if (!entry || !entry->editable_object)
-     return ETK_FALSE;
-   
-   return entry->is_password;
+      return ETK_FALSE;
+   return entry->password_mode;
 }
 
 /**************************
@@ -178,8 +165,8 @@ static void _etk_entry_constructor(Etk_Entry *entry)
       return;
 
    entry->editable_object = NULL;
-   entry->is_password = ETK_FALSE;
-   entry->password_text = NULL;
+   entry->password_mode = ETK_FALSE;
+   entry->selection_dragging = ETK_FALSE;
    entry->text = NULL;   
    
    etk_signal_connect("realize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_realize_cb), NULL);
@@ -187,9 +174,14 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    etk_signal_connect("key_down", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_key_down_cb), NULL);
    etk_signal_connect("mouse_in", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_in_cb), NULL);
    etk_signal_connect("mouse_out", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_out_cb), NULL);
+   etk_signal_connect("mouse_down", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_down_cb), NULL);
+   etk_signal_connect("mouse_up", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_up_cb), NULL);
+   etk_signal_connect("mouse_move", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_mouse_move_cb), NULL);
    etk_signal_connect("focus", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_unfocus_cb), NULL);
 }
+
+/* TODO: free text */
 
 /* Sets the property whose id is "property_id" to the value "value" */
 static void _etk_entry_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)
@@ -197,16 +189,16 @@ static void _etk_entry_property_set(Etk_Object *object, int property_id, Etk_Pro
    Etk_Entry *entry;
    
    if (!(entry = ETK_ENTRY(object)) || !value)
-     return;
+      return;
    
    switch (property_id)
-     {
-      case ETK_ENTRY_PASSWORD_PROPERTY:
-	etk_entry_password_set(entry, etk_property_value_bool_get(value));
-	break;
+   {
+      case ETK_ENTRY_PASSWORD_MODE_PROPERTY:
+	 etk_entry_password_mode_set(entry, etk_property_value_bool_get(value));
+	 break;
       default:
-	break;
-     }
+	 break;
+   }
 }
 
 /* Gets the value of the property whose id is "property_id" */
@@ -215,16 +207,16 @@ static void _etk_entry_property_get(Etk_Object *object, int property_id, Etk_Pro
    Etk_Entry *entry;
    
    if (!(entry = ETK_ENTRY(object)) || !value)
-     return;
+      return;
    
    switch (property_id)
-     {
-      case ETK_ENTRY_PASSWORD_PROPERTY:
-	etk_property_value_bool_set(value, etk_entry_password_get(entry));
-	break;
+   {
+      case ETK_ENTRY_PASSWORD_MODE_PROPERTY:
+         etk_property_value_bool_set(value, entry->password_mode);
+         break;
       default:
-	break;
-     }
+         break;
+   }
 }
 
 /**************************
@@ -237,61 +229,142 @@ static void _etk_entry_property_get(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_entry_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
-   Etk_Widget *entry_widget;
    Evas *evas;
 
-   if (!(entry_widget = ETK_WIDGET(object)) || !(evas = etk_widget_toplevel_evas_get(entry_widget)))
+   if (!(entry = ETK_ENTRY(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(entry))))
       return;
 
-   entry = ETK_ENTRY(entry_widget);
-   entry->editable_object = etk_editable_text_object_add(evas);
-   if(entry->text != NULL)
-   {
-      etk_editable_text_object_text_set(entry->editable_object, entry->text);
-      free(entry->text);
-      entry->text = NULL;
-   }
+   entry->editable_object = etk_editable_add(evas);
+   etk_editable_text_set(entry->editable_object, entry->text);
+   etk_editable_password_mode_set(entry->editable_object, entry->password_mode);
+   etk_editable_cursor_hide(entry->editable_object);
+   etk_editable_selection_hide(entry->editable_object);
    evas_object_show(entry->editable_object);
-   etk_widget_swallow_object(entry_widget, "text_area", entry->editable_object);
+   etk_widget_swallow_object(ETK_WIDGET(entry), "text_area", entry->editable_object);
 }
 
 /* Called when the entry is unrealized */
 static void _etk_entry_unrealize_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
+   const char *text;
 
    if (!(entry = ETK_ENTRY(object)))
       return;
+   
+   free(entry->text);
+   if ((text = etk_editable_text_get(entry->editable_object)))
+      entry->text = strdup(text);
+   else
+      entry->text = NULL;
+   
+   evas_object_del(entry->editable_object);
    entry->editable_object = NULL;
 }
 
 /* Called when the user presses a key */
-static void _etk_entry_key_down_cb(Etk_Object *object, void *event, void *data)
+static void _etk_entry_key_down_cb(Etk_Object *object, void *event_info, void *data)
 {
-   Etk_Event_Key_Up_Down *key_event = event;
    Etk_Entry *entry;
-   Etk_Bool text_changed = ETK_FALSE;
+   Evas_Object *editable;
+   Etk_Event_Key_Up_Down *event;
+   int cursor_pos, selection_pos;
+   int start_pos, end_pos;
+   Etk_Bool selecting;
+   Etk_Bool changed = ETK_FALSE;
+   
+   if (!(entry = ETK_ENTRY(object)) || !(event = event_info) || !event->keyname)
+     return;
 
-   if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
-      return;
-
-   if (strcmp(key_event->key, "BackSpace") == 0)
-      text_changed = etk_editable_text_object_delete_char_before(entry->editable_object);
-   else if (strcmp(key_event->key, "Delete") == 0)
-      text_changed = etk_editable_text_object_delete_char_after(entry->editable_object);
-   else if (strcmp(key_event->key, "Left") == 0)
-      etk_editable_text_object_cursor_move_left(entry->editable_object);
-   else if (strcmp(key_event->key, "Right") == 0)
-      etk_editable_text_object_cursor_move_right(entry->editable_object);
-   else if (strcmp(key_event->key, "Home") == 0)
-      etk_editable_text_object_cursor_move_at_start(entry->editable_object);
-   else if (strcmp(key_event->key, "End") == 0)
-      etk_editable_text_object_cursor_move_at_end(entry->editable_object);
-   else
-      text_changed = etk_editable_text_object_insert(entry->editable_object, key_event->string);
-
-   if (text_changed)
-      etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], object, NULL);
+   editable = entry->editable_object;
+   cursor_pos = etk_editable_cursor_pos_get(editable);
+   selection_pos = etk_editable_selection_pos_get(editable);
+   start_pos = (cursor_pos <= selection_pos) ? cursor_pos : selection_pos;
+   end_pos = (cursor_pos >= selection_pos) ? cursor_pos : selection_pos;
+   selecting = (start_pos != end_pos);
+   
+   /* TODO: CTRL + A, X, C, V */
+   
+   /* Move the cursor/selection to the left */
+   if (strcmp(event->key, "Left") == 0)
+   {
+      if (evas_key_modifier_is_set(event->modifiers, "Shift"))
+         etk_editable_cursor_move_left(editable);
+      else if (selecting)
+      {
+         if (cursor_pos < selection_pos)
+            etk_editable_selection_pos_set(editable, cursor_pos);
+         else
+            etk_editable_cursor_pos_set(editable, selection_pos);
+      }
+      else
+      {
+         etk_editable_cursor_move_left(editable);
+         etk_editable_selection_pos_set(editable, etk_editable_cursor_pos_get(editable));
+      }
+   }
+   /* Move the cursor/selection to the right */
+   else if (strcmp(event->key, "Right") == 0)
+   {
+      if (evas_key_modifier_is_set(event->modifiers, "Shift"))
+         etk_editable_cursor_move_right(editable);
+      else if (selecting)
+      {
+         if (cursor_pos > selection_pos)
+            etk_editable_selection_pos_set(editable, cursor_pos);
+         else
+            etk_editable_cursor_pos_set(editable, selection_pos);
+      }
+      else
+      {
+         etk_editable_cursor_move_right(editable);
+         etk_editable_selection_pos_set(editable, etk_editable_cursor_pos_get(editable));
+      }
+   }
+   /* Move the cursor/selection to the start of the entry */
+   else if ((strcmp(event->keyname, "Home") == 0) ||
+      ((event->string) && (strlen(event->string) == 1) && (event->string[0] == 0x1)))
+   {
+      etk_editable_cursor_move_to_start(editable);
+      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+         etk_editable_selection_pos_set(editable, etk_editable_cursor_pos_get(editable));
+   }
+   /* Move the cursor/selection to the end of the entry */
+   else if ((strcmp(event->keyname, "End") == 0) ||
+      ((event->string) && (strlen(event->string) == 1) && (event->string[0] == 0x5)))
+   {
+      etk_editable_cursor_move_to_end(editable);
+      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+         etk_editable_selection_pos_set(editable, etk_editable_cursor_pos_get(editable));
+   }
+   /* Remove the previous character */
+   else if ((strcmp(event->keyname, "BackSpace") == 0) ||
+      ((event->string) && (strlen(event->string) == 1) && (event->string[0] == 0x8)))
+   {
+      if (selecting)
+         changed = etk_editable_delete(editable, start_pos, end_pos);
+      else
+         changed = etk_editable_delete(editable, cursor_pos - 1, cursor_pos);
+   }
+   /* Remove the next character */
+   else if ((!strcmp(event->keyname, "Delete")) ||
+      ((event->string) && (strlen(event->string) == 1) && (event->string[0] == 0x4)))
+   {
+      if (selecting)
+         changed = etk_editable_delete(editable, start_pos, end_pos);
+      else
+         changed = etk_editable_delete(editable, cursor_pos, cursor_pos + 1);
+   }
+   /* Otherwise, we insert the corresponding character */
+   else if ((event->string) && ((strlen(event->string) != 1) || (event->string[0] >= 0x20)))
+   {
+      if (selecting)
+         changed = etk_editable_delete(editable, start_pos, end_pos);
+      changed |= etk_editable_insert(editable, start_pos, event->string);
+   }
+   
+   if (changed)
+      etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
 }
 
 /* Called when the mouse enters the entry */
@@ -314,6 +387,57 @@ static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *
    etk_toplevel_widget_pointer_pop(entry_widget->toplevel_parent, ETK_POINTER_TEXT_EDIT);
 }
 
+/* Called when the entry is pressed by the mouse */
+static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+{
+   Etk_Entry *entry;
+   Evas_Coord ox, oy;
+   int pos;
+   
+   if (!(entry = ETK_ENTRY(object)))
+      return;
+   
+   evas_object_geometry_get(entry->editable_object, &ox, &oy, NULL, NULL);
+   pos = etk_editable_pos_get_from_coords(entry->editable_object, event->canvas.x - ox, event->canvas.y - oy);
+   if (pos >= 0)
+   {
+      etk_editable_cursor_pos_set(entry->editable_object, pos);
+      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+         etk_editable_selection_pos_set(entry->editable_object, pos);
+      
+      entry->selection_dragging = ETK_TRUE;
+   }
+}
+
+/* Called when the entry is released by the mouse */
+static void _etk_entry_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+{
+   Etk_Entry *entry;
+   
+   if (!(entry = ETK_ENTRY(object)))
+      return;
+   entry->selection_dragging = ETK_FALSE;
+}
+
+/* Called when the mouse moves over the entry */
+static void _etk_entry_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
+{
+   Etk_Entry *entry;
+   Evas_Coord ox, oy;
+   int pos;
+   
+   if (!(entry = ETK_ENTRY(object)))
+      return;
+   
+   if (entry->selection_dragging)
+   {
+      evas_object_geometry_get(entry->editable_object, &ox, &oy, NULL, NULL);
+      pos = etk_editable_pos_get_from_coords(entry->editable_object, event->cur.canvas.x - ox, event->cur.canvas.y - oy);
+      if (pos >= 0)
+         etk_editable_cursor_pos_set(entry->editable_object, pos);
+   }
+}
+
 /* Called when the entry is focused */
 static void _etk_entry_focus_cb(Etk_Object *object, void *data)
 {
@@ -321,7 +445,9 @@ static void _etk_entry_focus_cb(Etk_Object *object, void *data)
 
    if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
       return;
-   etk_editable_text_object_cursor_show(entry->editable_object);
+   
+   etk_editable_cursor_show(entry->editable_object);
+   etk_editable_selection_show(entry->editable_object);
 }
 
 /* Called when the entry is unfocused */
@@ -331,72 +457,11 @@ static void _etk_entry_unfocus_cb(Etk_Object *object, void *data)
 
    if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
       return;
-   etk_editable_text_object_cursor_hide(entry->editable_object);
-   etk_editable_text_object_cursor_move_at_start(entry->editable_object);
-}
-
-/* Called when the entry's text is changed and its a password */
-static void _etk_entry_text_changed_cb(Etk_Object *object, void *data)
-{
-   Etk_Entry       *entry;
-   const char      *text;
-   char            *text2;
-   int              i;
    
-   if (!(entry = ETK_ENTRY(object)))
-     return;      
-   
-   if(entry->password_text)
-   {
-      int size;
-      
-      text = etk_editable_text_object_text_get(entry->editable_object);
-      if(!text) 
-	return;
-      
-      while(*text == '*')
-	++text;
-      
-      if(*text == '\0')
-      {
-	 int size;
-	 
-	 /* set the visible text, the *'s */
-	 text = etk_editable_text_object_text_get(entry->editable_object);
-	 size = strlen(text) + 1;
-	 text2 = calloc(size, sizeof(char));
-	 snprintf(text2, size, "%s", text);
-	 etk_editable_text_object_text_set(entry->editable_object, text2);
-	 free(text2);
-	 
-	 /* save the real text */
-	 size = strlen(entry->password_text) + 1;
-	 text2 = calloc(size, sizeof(char));
-	 snprintf(text2, size - 1, "%s", entry->password_text);
-	 free(entry->password_text);	 
-	 entry->password_text = text2;
-	 
-	 return;
-      }
-      else
-      {      
-	 size = strlen(text) + strlen(entry->password_text) + 1;
-	 text2 = calloc(size, sizeof(char));
-	 snprintf(text2, size, "%s%s", entry->password_text, text);
-	 free(entry->password_text);
-	 entry->password_text = text2;
-      }
-   }
-   else
-     entry->password_text = strdup(etk_editable_text_object_text_get(entry->editable_object));
-
-   text = etk_entry_text_get(entry);
-   text2 = calloc(strlen(text) + 2, sizeof(char));
-   for(i = 0; i < strlen(text); i++)
-     strncat(text2, "*", strlen(text));
-   etk_editable_text_object_text_set(entry->editable_object, text2);
-   
-   free(text2);
+   etk_editable_cursor_move_to_end(entry->editable_object);
+   etk_editable_selection_move_to_end(entry->editable_object);
+   etk_editable_cursor_hide(entry->editable_object);
+   etk_editable_selection_hide(entry->editable_object);
 }
 
 /** @} */

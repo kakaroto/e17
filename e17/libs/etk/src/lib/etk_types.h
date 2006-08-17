@@ -46,7 +46,7 @@ typedef struct Etk_Dialog Etk_Dialog;
 typedef struct _Etk_Drag Etk_Drag;
 typedef struct Etk_Embed Etk_Embed;
 typedef struct Etk_Engine Etk_Engine;
-typedef struct _Etk_Entry Etk_Entry;
+typedef struct Etk_Entry Etk_Entry;
 typedef struct _Etk_Event_Key_Up_Down Etk_Event_Key_Up_Down;
 typedef struct _Etk_Event_Mouse_In_Out Etk_Event_Mouse_In_Out;
 typedef struct _Etk_Event_Mouse_Move Etk_Event_Mouse_Move;

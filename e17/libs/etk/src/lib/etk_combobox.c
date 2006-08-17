@@ -11,12 +11,12 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 
-#define ETK_COMBOBOX_DEFAULT_ITEM_HEIGHT 24
-
 /**
  * @addtogroup Etk_Combobox
  * @{
  */
+ 
+#define ETK_COMBOBOX_DEFAULT_ITEM_HEIGHT 24
 
 enum Etk_Combobox_Signal_Id
 {

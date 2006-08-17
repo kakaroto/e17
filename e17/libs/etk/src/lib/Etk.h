@@ -34,7 +34,7 @@ extern "C" {
 #include "etk_dialog.h"
 #include "etk_dnd.h"
 #include "etk_drag.h"
-#include "etk_editable_text_object.h"
+#include "etk_editable.h"
 #include "etk_embed.h"
 #include "etk_engine.h"
 #include "etk_entry.h"

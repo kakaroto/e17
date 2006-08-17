@@ -53,5 +53,5 @@ static void _etk_test_entry_print_clicked(Etk_Object *object, void *data)
 /* Turns the entry into a password */
 static void _etk_test_entry_password_toggled(Etk_Object *object, void *data)
 {
-   etk_entry_password_set(ETK_ENTRY(entry), !etk_entry_password_get(ETK_ENTRY(entry)));
+   etk_entry_password_mode_set(ETK_ENTRY(entry), etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object)));
 }

@@ -32,7 +32,7 @@ etk_container.h \
 etk_dialog.h \
 etk_dnd.h \
 etk_drag.h \
-etk_editable_text_object.h \
+etk_editable.h \
 etk_embed.h \
 etk_engine.h \
 etk_entry.h \
@@ -100,7 +100,7 @@ etk_container.c \
 etk_dialog.c \
 etk_dnd.c \
 etk_drag.c \
-etk_editable_text_object.c \
+etk_editable.c \
 etk_embed.c \
 etk_engine.c \
 etk_entry.c \
