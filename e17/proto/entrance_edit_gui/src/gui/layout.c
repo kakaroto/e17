@@ -11,17 +11,6 @@ static Entrance_Entry display_time_format;
 
 void
 egui_layout_dialog_show() {
-/*	Egui_Settings_Item greeting_items[] = {
-		{ ew_entry_new("Before", NULL, EW_FALSE),
-				ENTRANCE_EDIT_KEY_CLIENT_GREETING_BEFORE_STR,
-				ENTRY
-		},
-		{ ew_entry_new("After", NULL, EW_FALSE),
-				ENTRANCE_EDIT_KEY_CLIENT_GREETING_AFTER_STR,
-				ENTRY
-		}
-	};*/
-
 	Egui_Settings_Group greeting = {
 		"Greeting settings",
 		EW_GROUP_VERTICAL,
@@ -35,9 +24,23 @@ egui_layout_dialog_show() {
 				ENTRY
 		}}
 	};
-	
-	Egui_Settings_Group groups[] = { greeting };
 
-	egui_settings_dialog_show("Layout settings", 1, groups);
+	Egui_Settings_Group time = {
+		"Time/Date format",
+		EW_GROUP_VERTICAL,
+		2,
+		{{ ew_entry_new("Time format", NULL, EW_FALSE),
+				ENTRANCE_EDIT_KEY_CLIENT_TIME_FORMAT_STR,
+				ENTRY
+		},
+		{ ew_entry_new("Data format", NULL, EW_FALSE),
+				ENTRANCE_EDIT_KEY_CLIENT_TIME_FORMAT_STR,
+				ENTRY
+		}}
+	};
+	
+	Egui_Settings_Group groups[] = { greeting, time };
+
+	egui_settings_dialog_show("Layout settings", 2, groups);
 }
 
