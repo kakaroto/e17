@@ -3986,3 +3986,10 @@ Avoid dangling buffer. Eliminate some redundant code.
 Fix shape on pager zoom window (when composite is enabled).
 Defer tooltip realization.
 Add note about ARGB window borders.
+
+-------------------------------------------------------------------------------
+
+Thu Aug 17 23:21:24 CEST 2006
+(Kim)
+
+--- 0.16.8.3 ---
