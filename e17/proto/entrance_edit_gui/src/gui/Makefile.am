@@ -10,6 +10,7 @@ entrance_edit_gui_SOURCES=main.c \
 						  theme.c \
 						  x_settings.c \
 						  egui_graphics_selector.c \
+							egui_settings.c \
 						  Egui.h
 
 entrance_edit_gui_CFLAGS = \
