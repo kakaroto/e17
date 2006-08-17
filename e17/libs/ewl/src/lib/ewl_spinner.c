@@ -156,6 +156,21 @@ ewl_spinner_digits_set(Ewl_Spinner *s, unsigned char digits)
 }
 
 /**
+ * @param s: The spinnner to get the number of digits displayed
+ * @return Returns the number of digits displayed by the spinner
+ * @brief This will retrieve the number of digits displayed by the spinner
+ */
+unsigned char
+ewl_spinner_digits_get(Ewl_Spinner *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0);
+	DCHECK_TYPE_RET("s", s, EWL_SPINNER_TYPE, 0);
+
+	DRETURN_INT(s->digits, DLEVEL_STABLE);
+}
+
+/**
  * @internal
  * @param w: The widget to work with
  * @param ev_data: UNUSED

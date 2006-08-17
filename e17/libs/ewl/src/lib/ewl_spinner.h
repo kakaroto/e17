@@ -39,7 +39,7 @@ typedef struct Ewl_Spinner Ewl_Spinner;
 struct Ewl_Spinner
 {
 	Ewl_Range   	range; /**< Inherit from Ewl_Range */
-	int             digits; /**< Number of digits displayed after decimal */
+	unsigned char   digits; /**< Number of digits displayed after decimal */
 	Ewl_Widget     *entry; /**< The Ewl_Entry displaying value */
 	Ewl_Widget     *vbox;  /**< Ewl_Box to hold the buttons */
 	Ewl_Widget     *increment; /**< Ewl_Button to add value */
@@ -52,7 +52,9 @@ struct Ewl_Spinner
 
 Ewl_Widget     *ewl_spinner_new(void);
 int             ewl_spinner_init(Ewl_Spinner *s);
+
 void            ewl_spinner_digits_set(Ewl_Spinner *s, unsigned char digits);
+unsigned char   ewl_spinner_digits_get(Ewl_Spinner *s);
 
 /*
  * Internally used callbacks, override at your own risk.
