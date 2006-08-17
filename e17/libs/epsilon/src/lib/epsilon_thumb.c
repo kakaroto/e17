@@ -253,7 +253,7 @@ epsilon_client_connect()
 				if (fork() == 0) {
 					if (debug) printf("Second child\n");
 					// daemon(0, 0);
-					execlp(PACKAGE_BIN_DIR "/epsilon_thumbd", NULL);
+					execlp(PACKAGE_BIN_DIR "/epsilon_thumbd", NULL, NULL);
 					perror("execlp");
 					exit(0);
 				}
