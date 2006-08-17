@@ -23,8 +23,8 @@ static Entrance_Entry entry_xserver;
 static Entrance_Entry entry_xession;
 
 int val_attempts;
-char* val_xserver;
-char* val_xsession;
+const char* val_xserver;
+const char* val_xsession;
 
 void
 egui_x_settings_dialog_show() 
