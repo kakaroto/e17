@@ -74,7 +74,7 @@ char *
 get_eap_name(char *file)
 {
    char *tmp2;
-   char eap[MAX_PATH];
+   char eap[PATH_MAX];
 
    tmp2 = strdup(ecore_file_get_file(file));
    if (!tmp2)
@@ -152,7 +152,7 @@ backup_eaps()
 {
    int result;
    char *file;
-   char path[MAX_PATH], tmp[MAX_PATH], dest[MAX_PATH];
+   char path[PATH_MAX], tmp[PATH_MAX], dest[PATH_MAX];
    Ecore_List *eaps = NULL;
 
    /* Check That Dir All Exists */
@@ -201,7 +201,7 @@ void
 write_mapping_file(G_Eap *eap)
 {
    FILE *f;
-   char buff[MAX_PATH], path[MAX_PATH];
+   char buff[PATH_MAX], path[PATH_MAX];
 
    if ((!eap->icon) || (!eap->name) || (!eap->exec) || (!eap->window_class))
       return;

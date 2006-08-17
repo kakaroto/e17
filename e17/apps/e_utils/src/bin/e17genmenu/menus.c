@@ -65,7 +65,7 @@ make_menus()
                        ecore_desktop_tree_foreach(menus, 0, _menu_make_apps, path);
                     }
                }
-             E_FREE(path);
+             if (path) free(path);
           }
 
      }
@@ -78,7 +78,7 @@ void
 check_for_dirs(char *path)
 {
    char *dir;
-   char dirs[MAX_PATH];
+   char dirs[PATH_MAX];
 
    snprintf(dirs, sizeof(dirs), path);
    dir = path;                  //strdup(path);
@@ -109,7 +109,7 @@ void
 check_for_files(char *dir)
 {
    char *file;
-   char path[MAX_PATH];
+   char path[PATH_MAX];
    Ecore_List *files = NULL;
 
 #ifdef DEBUG

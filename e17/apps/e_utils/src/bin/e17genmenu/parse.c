@@ -162,8 +162,8 @@ parse_desktop_file(char *app, char *menu_path)
           }
 
         FILE *f;
-        char buff[MAX_PATH];
-        char map_path[MAX_PATH];
+        char buff[PATH_MAX];
+        char map_path[PATH_MAX];
 
         snprintf(map_path, sizeof(map_path), "%s/MAPPING", home);
         f = fopen(map_path, "a+");
@@ -184,7 +184,7 @@ static void
 _parse_process_file(char *file, char *menu_path, G_Eap *eap)
 {
    char *home, *category, *icon_size, *icon_theme;
-   char path[MAX_PATH], order_path[MAX_PATH];
+   char path[PATH_MAX], order_path[PATH_MAX];
    int overwrite;
 
    if (!eap)
@@ -234,7 +234,7 @@ void
 parse_debian_file(char *file)
 {
    char *name, *generic, *comment, *exec, *category, *icon;
-   char buffer[MAX_PATH];
+   char buffer[PATH_MAX];
    int overwrite, length;
    FILE *f;
    G_Eap *eap;

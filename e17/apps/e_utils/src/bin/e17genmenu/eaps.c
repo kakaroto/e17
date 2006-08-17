@@ -71,7 +71,7 @@ set_icon(char *token)
 void
 create_dir_eap(char *path, char *cat)
 {
-   char path2[MAX_PATH];
+   char path2[PATH_MAX];
    G_Eap eap;
 
    memset(&eap, 0, sizeof(G_Eap));

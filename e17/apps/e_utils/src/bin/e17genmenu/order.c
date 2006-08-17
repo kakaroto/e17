@@ -42,7 +42,7 @@ modify_order(char *path, char *entry)
 {
    int length, i;
    char *buff, *cat;
-   char buffer[MAX_PATH], path2[MAX_PATH], t[MAX_PATH];
+   char buffer[PATH_MAX], path2[PATH_MAX], t[PATH_MAX];
    FILE *f;
    Ecore_List *list = NULL;
 

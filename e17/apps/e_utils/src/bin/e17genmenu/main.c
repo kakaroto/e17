@@ -65,7 +65,7 @@ _e17genmenu_parseargs(int argc, char **argv)
 void
 _e17genmenu_init()
 {
-   char path[MAX_PATH];
+   char path[PATH_MAX];
 
    /* Setup Ecore */
    if (!ecore_init())
@@ -118,7 +118,7 @@ int menu_count, item_count, reject_count, not_over_count, not_found_count;
 int
 main(int argc, char **argv)
 {
-   char path[MAX_PATH];
+   char path[PATH_MAX];
    double start, begin, paths, gen;
 //#ifdef DEBUG
    char *this_path;

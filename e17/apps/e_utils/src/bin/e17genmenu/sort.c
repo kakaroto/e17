@@ -57,7 +57,7 @@ void
 sort_menu(char *path)
 {
    char *home, *name, *v, *token;
-   char path2[MAX_PATH], buffer[MAX_PATH];
+   char path2[PATH_MAX], buffer[PATH_MAX];
    int length, j;
    FILE *f;
    Ecore_List *eaps = NULL;
@@ -78,7 +78,7 @@ sort_menu(char *path)
    /* Sort Names */
    eaps = ecore_list_new();
    *buffer = 0;
-   while (fgets(buffer, MAX_PATH, f) != NULL)
+   while (fgets(buffer, PATH_MAX, f) != NULL)
      {
         if (!(*buffer) || (*buffer == '\n'))
            continue;
@@ -129,7 +129,7 @@ void
 sort_menus()
 {
    char *home, *file;
-   char path[MAX_PATH];
+   char path[PATH_MAX];
    Ecore_List *list = NULL;
 
 #ifdef DEBUG
@@ -161,7 +161,7 @@ sort_favorites()
 {
    int length;
    char *home, *file;
-   char path[MAX_PATH], buffer[MAX_PATH];
+   char path[PATH_MAX], buffer[PATH_MAX];
    Ecore_List *list = NULL, *dir = NULL;
    FILE *f;
 
