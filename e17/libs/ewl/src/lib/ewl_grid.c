@@ -900,7 +900,6 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int c_w = 0, c_h = 0;	/* child width/height */
 	int c_x = 0, c_y = 0;	/* child x/y coordinate */
 	int col, row;
-	int i = 0;
 	void (*go_next)(Ewl_Grid *g, int *c, int *r);
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -931,17 +930,18 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
 		c = (Ewl_Grid_Child *)ewl_widget_data_get(child, (void *) g);
 		if (c) {
-			c_h = c_w = 0;
 			/*
 			 * calculate the geometry of the fixed widgets
 			 */
 			/* calculate child widgets width */
-			for (i = c->start_col; i <= c->end_col; i++)
-				c_w += g->col_size[i].current_size;
+			c_w = g->col_size[c->end_col].current_pos
+				- g->col_size[c->start_col].current_pos
+				+ g->col_size[c->end_col].current_size;
 
 			/* calculate child widgets height */
-			for (i = c->start_row; i <= c->end_row; i++)
-				c_h += g->row_size[i].current_size;
+			c_h = g->row_size[c->end_row].current_pos
+				- g->row_size[c->start_row].current_pos
+				+ g->row_size[c->end_row].current_size;
 
 			/* calculate child widgets x coordinate */
 			c_x = g->col_size[c->start_col].current_pos;
