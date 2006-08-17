@@ -2,7 +2,7 @@
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
 <!-- Generated with glade3
 	Version: 3.0.0
-	Date: Wed Aug 16 21:10:56 2006
+	Date: Thu Aug 17 22:29:57 2006
 	User: lok
 	Host: dapper
 -->
@@ -19,6 +19,11 @@
               <widget class="GtkToolButton" id="toolbutton1">
                 <property name="visible">True</property>
                 <property name="stock_id">gtk-add</property>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkSeparatorToolItem" id="toolbutton6">
+                <property name="visible">True</property>
               </widget>
             </child>
             <child>
@@ -61,6 +66,13 @@
                     <property name="visible">True</property>
                     <property name="visible_vertical">False</property>
                     <property name="stock_id">gtk-no</property>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkToggleToolButton" id="toolbutton7">
+                    <property name="visible">True</property>
+                    <property name="label">toggle</property>
+                    <property name="stock_id">gtk-media-record</property>
                   </widget>
                 </child>
               </widget>

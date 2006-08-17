@@ -611,7 +611,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	_en_stock_items_hash_init();      
 	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
 
-	IF_PARENT_CLASS("GtkToolButton")
+	if ETK_IS_BUTTON(wid->wid)
 	  {
 	    if (etk_button_label_get(ETK_BUTTON(wid->wid))
 		&& strcmp(" ", etk_button_label_get(ETK_BUTTON(wid->wid))))
@@ -649,7 +649,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	  {
 	    etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", id, NULL);
 	  }
-	IF_PARENT_CLASS("GtkToolButton")
+	if ETK_IS_BUTTON(wid->wid)
 	  {
 	    if (etk_button_label_get(ETK_BUTTON(wid->wid))
 		&& strcmp(" ", etk_button_label_get(ETK_BUTTON(wid->wid))))

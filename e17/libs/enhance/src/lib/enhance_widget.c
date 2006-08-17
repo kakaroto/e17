@@ -36,6 +36,7 @@ static E_Widget *_e_widget_filechooser_widget_handle(Enhance *en, EXML_Node *nod
 static E_Widget *_e_widget_iconview_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_toolbar_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_tool_button_handle(Enhance *en, EXML_Node *node);
+static E_Widget *_e_widget_tool_toggle_button_handle(Enhance *en, EXML_Node *node);
 
 static EXML_Node *find_node(EXML_Node *node, char *key, char *value)
 {
@@ -727,6 +728,20 @@ _e_widget_tool_button_handle(Enhance *en, EXML_Node *node)
    return tool_button;
 }
 
+static E_Widget *
+_e_widget_tool_toggle_button_handle(Enhance *en, EXML_Node *node)
+{
+   E_Widget *tool_toggle_button;
+   char     *id;
+
+   id = ecore_hash_get(node->attributes, "id");
+   if(!id) return NULL;
+
+   tool_toggle_button = _e_widget_new(en, node, etk_tool_toggle_button_new(), id);
+
+   return tool_toggle_button;
+}
+
 E_Widget *
 _e_widget_handle(Enhance *en, EXML_Node *node)
 {
@@ -815,6 +830,8 @@ _e_widget_handle(Enhance *en, EXML_Node *node)
      return _e_widget_toolbar_handle(en, node);
    else if(!strcmp(class, "GtkToolButton"))
      return _e_widget_tool_button_handle(en, node);
+   else if(!strcmp(class, "GtkToggleToolButton"))
+     return _e_widget_tool_toggle_button_handle(en, node);
    return NULL;
 }
 
