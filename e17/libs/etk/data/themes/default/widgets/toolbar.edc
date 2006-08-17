@@ -161,7 +161,7 @@ group {
                offset: -1 -1;
             }
             image {
-               normal: "menu_item_highlight.png";
+               normal: "button_down.png";
                border: 8 8 8 8;
             }
             fill {
@@ -495,6 +495,544 @@ group {
          source: "";
          action: STATE_SET "invisible" 0.0;
          target: "left_widget_swallow";
+      }
+   }
+}
+
+/* TODO: this is ripped off from the menubar's item
+ * we need to clean it a bit, and remove the "left_widget" swallow thing
+ */
+group {
+   name: "toolbar/toggle_button";
+   parts {
+      part {
+         name: "item_rect";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+         }
+      }
+      part {
+         name: "left_widget_swallow";
+         type: SWALLOW;
+         mouse_events: 0;
+         description {
+            state: "invisible" 0.0;
+            visible: 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: 0 -1;
+            }
+         }
+         description {
+            state: "visible" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 3 -8;
+            }
+            rel2 {
+               relative: 0.0 0.5;
+               offset: 18 7;
+            }
+         }
+      }
+      part {
+         name: "item_shadow2";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 255;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 0 0;
+               to_x: "left_widget_swallow";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "menu_item_shadow2.png";
+               border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state: "active" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part {
+         name: "item_shadow1";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 255;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 0 0;
+               to_x: "left_widget_swallow";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "menu_item_shadow1.png";
+               border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state: "active" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part {
+         name: "item_highlight";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 0 0;
+               to_x: "left_widget_swallow";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+            image {
+               normal: "button_down.png";
+               border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
+            }
+         }	 
+         description {
+            state: "active" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+         description {
+            state: "on" 0.0;
+            inherit: "default" 0.0;
+	    visible: 1;
+	    color: 255 255 255 255;
+            image {
+               normal: "button_toggled.png";
+            }
+         }	 
+      }
+      part {
+         name: "swallow_area";
+         type: SWALLOW;
+         mouse_events:   1;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: 13 6;
+               to_x: "left_widget_swallow";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -14 -7;
+            }
+         }
+      }
+      part {
+         name: "glint_clip";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1 {
+               offset: 3 3;
+               to: "item_highlight";
+            }
+            rel2 {
+               offset: -4 -4;
+               to: "item_highlight";
+            }
+         }
+      }
+      part {
+         name: "glint1";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            align: 0.0 0.0;
+            max: 34 13;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 2 2;
+               to: "item_highlight";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -3 -3;
+               to: "item_highlight";
+            }
+            image {
+               normal: "glint1.png";
+               border: 5 0 5 0;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state: "active" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part {
+         name: "glint2";
+         mouse_events: 0;
+         clip_to: "glint_clip";
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            align: 1.0 0.5;
+            max: 0 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 3 3;
+               to: "item_highlight";
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: 3 -4;
+               to: "item_highlight";
+            }
+            image {
+               normal: "glint2.png";
+               border: 0 0 5 5;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state: "active" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+            max: 169 9999;
+            min: 169 8;
+            align: 0.5 0.5;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 3 3;
+            }
+            rel2 {
+               relative: 0.0 1.0;
+               offset: 3 -4;
+            }
+         }
+         description {
+            state: "active2" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 128;
+            max: 169 9999;
+            min: 169 8;
+            align: 0.5 0.5;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: -4 3;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -4 -4;
+            }
+         }
+         description {
+            state: "active3" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            max: 169 9999;
+            min: 169 8;
+            align: 0.0 0.5;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: -4 3;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -4 -4;
+            }
+         }
+      }
+      part {
+         name: "glint3";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            align: 1.0 1.0;
+            max: 34 13;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 2 2;
+               to: "item_highlight";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -3 -3;
+               to: "item_highlight";
+            }
+            image {
+               normal: "glint3.png";
+               border: 0 5 0 5;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state: "active" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+   }
+   programs {            
+      program {
+         name: "toggle_button_activate";
+         signal: "activate";
+         source: "";
+         script {
+            activate();
+         }
+      }
+      program {
+         name: "toggle_button_deactivate";
+         signal: "deactivate";
+         source: "";
+         script {
+            deactivate();
+         }
+      }
+      program {
+         name: "toggle_button_pressed";
+         signal: "pressed";
+         source: "";
+         action: STATE_SET "down" 0.0;
+         target: "item_highlight";
+      }
+      program {
+         name: "toggle_button_released";
+         signal: "released";
+         source: "";
+         script {
+            up();
+         }
+      }                  
+      program {
+         name: "go_active_pre";
+         signal: "enter";
+         source: "";
+         script {
+	    enter();
+	 }	 
+      }            
+      program {
+         name: "go_active";
+         action: STATE_SET "active" 0.0;
+         target: "item_highlight";
+         transition: LINEAR 0.05;
+         after: "go_active2";
+      }
+      program {
+         name: "go_active2";
+         action: STATE_SET "active" 0.0;
+         target: "item_shadow1";
+         transition: LINEAR 0.05;
+         after: "go_active3";
+         after: "go_active3b";
+      }
+      program {
+         name: "go_active3";
+         action: STATE_SET "active" 0.0;
+         target: "item_shadow2";
+         transition: LINEAR 0.05;
+      }
+      program {
+         name: "go_active3b";
+         action: STATE_SET "active" 0.0;
+         target: "glint1";
+         target: "glint2";
+         transition: LINEAR 0.05;
+         after: "go_active4";
+         after: "go_active4b";
+      }
+      program {
+         name: "go_active4";
+         action: STATE_SET "active2" 0.0;
+         target: "glint2";
+         transition: LINEAR 0.2;
+         after: "go_active5";
+         after: "go_active5b";
+      }
+      program {
+         name: "go_active4b";
+         action: STATE_SET "active" 0.0;
+         target: "glint3";
+         transition: LINEAR 0.2;
+      }
+      program {
+         name: "go_active5";
+         action: STATE_SET "active3" 0.0;
+         target: "glint2";
+         transition: LINEAR 0.05;
+      }
+      program {
+         name: "go_active5b";
+         action: STATE_SET "default" 0.0;
+         target: "glint3";
+         transition: LINEAR 0.1;
+         after: "go_active6";
+      }
+      program {
+         name: "go_active6";
+         action: STATE_SET "default" 0.0;
+         target: "glint1";
+         target: "glint2";
+         target: "glint3";
+      }
+      program {
+         name: "go_passive_pre";
+         signal: "leave";
+         source: "";
+         script {
+	    leave();
+	 }	 
+      }
+      program {
+         name: "go_passive";
+         action: STATE_SET "default" 0.0;
+         target: "item_shadow2";
+         transition: LINEAR 0.1;
+         after: "go_passive2";
+      }
+      program {
+         name: "go_passive2";
+         action: STATE_SET "default" 0.0;
+         target: "item_shadow1";
+         transition: LINEAR 0.1;
+         after: "go_passive3";
+      }
+      program {
+         name: "go_passive3";
+         action: STATE_SET "default" 0.0;
+         target: "item_highlight";
+         transition: LINEAR 0.1;
+      }
+
+      /* We do not need the following two, nor the left_widget part
+       * we should clean it all up */
+      program {
+         name: "left_widget_show";
+         signal: "left_widget_show";
+         source: "";
+         action: STATE_SET "visible" 0.0;
+         target: "left_widget_swallow";
+      }
+      program {
+         name: "left_widget_hide";
+         signal: "left_widget_hide";
+         source: "";
+         action: STATE_SET "invisible" 0.0;
+         target: "left_widget_swallow";
+      }
+   }
+   script
+   {
+      public activated = 0;
+      
+      public activate()
+      {
+         set_int(activated, 1);
+         set_state(PART:"item_shadow1", "default", 0.0);
+         set_state(PART:"item_shadow2", "default", 0.0);
+         set_state(PART:"item_highlight", "on", 0.0);
+      }
+      public deactivate()
+      {
+         set_int(activated, 0);
+         set_state(PART:"item_highlight", "active", 0.0);
+         set_state(PART:"item_shadow2", "active", 0.0);	 
+         set_state(PART:"item_shadow1", "active", 0.0);
+      }
+      public up()
+      {
+         if (get_int(activated) == 1)
+            activate();
+         else
+            deactivate();
+      }
+      public enter()
+      {
+	 if (get_int(activated) == 1)
+	 {
+	    run_program(PROGRAM:"go_active3b");
+	 }
+	 else
+	 {
+	    set_state(PART:"item_highlight", "default", 0.0);
+	    set_state(PART:"item_shadow1", "default", 0.0);
+	    set_state(PART:"item_shadow2", "default", 0.0);
+	    run_program(PROGRAM:"go_active");
+	 } 
+      }
+      public leave()
+      {
+	 if (get_int(activated) == 0)
+	 {
+	    set_state(PART:"item_highlight", "active", 0.0);
+	    set_state(PART:"item_shadow1", "active", 0.0);
+	    set_state(PART:"item_shadow2", "active", 0.0);
+	    run_program(PROGRAM:"go_passive");
+	 }
       }
    }
 }

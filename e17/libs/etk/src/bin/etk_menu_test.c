@@ -72,7 +72,7 @@ void etk_test_menu_window_create(void *data)
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(toolbar), sep);   
    
-   button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_FIND);
+   button = etk_tool_toggle_button_new_from_stock(ETK_STOCK_EDIT_FIND);
    etk_toolbar_append(ETK_TOOLBAR(toolbar), button);      
    
    /* Window body */
