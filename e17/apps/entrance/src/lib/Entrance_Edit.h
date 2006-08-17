@@ -42,6 +42,6 @@ int entrance_edit_int_get(const char*);
 int entrance_edit_int_set(const char*, int);
 
 char* entrance_edit_string_get(const char*);
-int entrance_edit_string_set(const char*, char*);
+int entrance_edit_string_set(const char*, const char*);
 
 #endif

@@ -157,7 +157,7 @@ entrance_edit_string_get(const char *key)
 }
 
 int 
-entrance_edit_string_set(const char *key, char* val)
+entrance_edit_string_set(const char *key, const char* val)
 {
 	return ecore_config_string_set(key, val);
 }
