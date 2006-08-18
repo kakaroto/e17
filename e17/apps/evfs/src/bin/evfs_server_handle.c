@@ -455,6 +455,14 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 	        res =
 	           (*EVFS_PLUGIN_FILE(dst_plugin)->functions->evfs_file_lstat) (command, &dest_stat, num_files-1);
 
+		/*if (S_ISDIR(dest_stat.st_mode)) {
+			printf("Dest is a dir: %s\n", command->file_command.files[num_files-1]->path);
+			printf("Res: %d\n", res);
+		} else {
+			printf("Dest not a dir: %s://%s\n",  command->file_command.files[num_files-1]->plugin_uri, command->file_command.files[num_files-1]->path);
+			printf("Res: %d\n", res);
+		}*/
+
 	        if (!S_ISDIR(file_stat.st_mode)) {
 			  evfs_filereference* rewrite_dest = NULL;
 

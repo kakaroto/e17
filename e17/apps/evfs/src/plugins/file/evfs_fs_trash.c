@@ -52,7 +52,7 @@ static char* next_trash_file;
 static char* next_trash_path;
 static char evfs_fs_trash_info[PATH_MAX];
 static char evfs_fs_trash_files[PATH_MAX];
-static evfs_plugin* posix_plugin;
+evfs_plugin* posix_plugin;
 
 /*Main file wrappers */
 int evfs_file_remove(char *src);
@@ -195,10 +195,13 @@ int
 evfs_file_stat(evfs_command * command, struct stat *file_stat, int file_number)
 {
 	evfs_filereference* ref = command->file_command.files[file_number];
+
+	printf("Performing stat on: '%s'\n", ref->path);
 	
 	/*FIXME - if we're asking for the root - it's a directory*/
 	if (!strcmp(ref->path, "/")) {
-		file_stat->st_mode |= S_IFDIR;
+		memset(file_stat, sizeof(struct stat), 0);
+		file_stat->st_mode = S_IFDIR;
 		return EVFS_SUCCESS;
 	} else {
 		if (ref->attach) {
@@ -313,6 +316,9 @@ evfs_file_create(evfs_filereference * file)
 
 	free(next_trash_file);
 	free(next_trash_path);
+
+	next_trash_file = NULL;
+	next_trash_path = NULL;
 	
 	return file->fd;
 }
