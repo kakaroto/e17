@@ -69,10 +69,10 @@ on_timer (void *udata)
 	Enthrall *e = udata;
 	Imlib_Image im;
 	Bool b;
-	int ptr_x = 0, ptr_y = 0;
+	int ptr_x = 0, ptr_y = 0, unused1;
+	unsigned int unused2;
 	char buf[PATH_MAX];
 	Window dw, childw = None;
-	unsigned int unused;
 
 	/* FIXME: check whether e->window.id still points to a
 	 *        valid window. not sure whether this really should be
@@ -89,7 +89,7 @@ on_timer (void *udata)
 	/* if we have a cursor, find out where it's at */
 	if (e->cursor.id) {
 		b = XQueryPointer (e->disp, e->window.id, &dw, &childw,
-		                   &unused, &unused, &ptr_x, &ptr_y, &unused);
+		                   &unused1, &unused1, &ptr_x, &ptr_y, &unused2);
 
 		if (b == True && childw != None)
 			imlib_blend_image_onto_image (e->cursor.id, true, 0, 0,
