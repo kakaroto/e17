@@ -38,7 +38,7 @@
 #define _GNU_SOURCE
 #include <getopt.h>
 
-#define VERSION "0.0.1"
+#define VERSION "0.0.2"
 
 /* FIXME: should be configurable, but i'm too lazy to add the necessary
  * sanity checks :)
