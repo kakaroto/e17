@@ -3,7 +3,6 @@ Entrance Widgets
 - No proper tracking of objects is being done, hence no proper freeing is being done.
 - Need more widgets... yesterday!!!
 	- ew_imagelist
-- Entrance_List needs to be refactored to use as common a base as possible. Also, we need to select the first row by default when adding to a list.
 - group types are currently hash defined'd ints. should be enums
 - use ecore_lists to hold buttons and other *low life* widgets used on composite widgets.
 - AT some point, we'll need to use tables to layout stuff. Free flowing with parralel hboxes just pains the eyes
@@ -23,6 +22,7 @@ GUI
 	- fileselector widget needs to be done.
 - Fix up Fileselector widget. This may probably need to refactor out the buttons used by ew_notice as ew_reponse_buttons ?
 - The PREVIEW window is just CRAP! We actually should be loading Entrance itself with the config changes into a canvas and displaying that canvas or something. Basically, entrance -T shows us a preview of entrance without running the code, we should be able to kidnap and enslave that functionality in the gui config panel, i'm smelling a libentrance here. no?
+- Entrance_List needs to be refactored to use as common a base as possible. Also, we need to select the first row by default when adding to a list.
 
 Issues that MUST go before tree relocates to entrance's tree
 ============================================================
