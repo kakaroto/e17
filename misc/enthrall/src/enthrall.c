@@ -248,7 +248,7 @@ main (int argc, char **argv)
 	printf ("Suggested MEncoder call to encode the video:\n\n"
 	        "mencoder \"mf://*.jpeg\" \\\n"
 	        "    -mf w=%i:h=%i:fps=%i:type=jpeg -ovc lavc \\\n"
-	        "    -lavcopts vcodec=mpeg4:vbitrate=16000:vhq \\\n"
+	        "    -lavcopts vcodec=mpeg4:vbitrate=16000:vhq:autoaspect \\\n"
 	        "    -o out.avi\n\n", e.window.w, e.window.h, e.fps);
 
 	return EXIT_SUCCESS;
