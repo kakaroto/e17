@@ -49,7 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc ChangeLog DESIGN README
+%doc ChangeLog DESIGN LICENSE README
 %{_bindir}/*
 %{_libdir}/*
 %{_includedir}/*
