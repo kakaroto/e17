@@ -37,9 +37,9 @@ _main_dialog_show()
    ew_edjelist_add(tree, _("Background"), edjefile, "icons/main/background", NULL, 0, egui_background_dialog_show);
    ew_edjelist_add(tree, _("Behavior"), edjefile, "icons/main/behavior", NULL, 0,  egui_behavior_dialog_show);
    ew_edjelist_add(tree, _("X settings"), edjefile, "icons/main/xsettings",NULL, 0, egui_x_settings_dialog_show);
-   ew_edjelist_add(tree, _("Sessions"),edjefile, "icons/main/sessions", NULL, 0,  egui_sessions_dialog_show);
+/*   ew_edjelist_add(tree, _("Sessions"),edjefile, "icons/main/sessions", NULL, 0,  egui_sessions_dialog_show);*/
    ew_edjelist_add(tree, _("Layout"), edjefile, "icons/main/layout", NULL, 0,  egui_layout_dialog_show);
-   ew_edjelist_add(tree, _("Modules"), edjefile, "icons/main/modules",NULL, 0, NULL);
+/*   ew_edjelist_add(tree, _("Modules"), edjefile, "icons/main/modules",NULL, 0, NULL);*/
 
    Entrance_Widget group = ew_dialog_group_add(dialog, _("Configuration"), EW_GROUP_VERTICAL);
    ew_group_add(group, tree);

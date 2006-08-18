@@ -2,11 +2,9 @@ Entrance Widgets
 ===================
 - No proper tracking of objects is being done, hence no proper freeing is being done.
 - Need more widgets... yesterday!!!
-	- fileselector
 	- ew_imagelist
 - Entrance_List needs to be refactored to use as common a base as possible. Also, we need to select the first row by default when adding to a list.
 - group types are currently hash defined'd ints. should be enums
-- Fix up Fileselector widget. This may probably need to refactor out the buttons used by ew_notice as ew_reponse_buttons ?
 - use ecore_lists to hold buttons and other *low life* widgets used on composite widgets.
 - AT some point, we'll need to use tables to layout stuff. Free flowing with parralel hboxes just pains the eyes
 - show that we either need or do not need radio buttons / toggle buttons.
@@ -15,10 +13,18 @@ Entrance Widgets
 
 GUI
 ==================
-- implement layout screen
 - implement sessions screen
- theme and background dialogs need a way to browse filesystem to grab from arbitrary locations.
-- The PREVIEW window is just CRAP! We actually should be loading Entrance itself with the config changes into a canvas and displaying that canvas or something. Basically, entrance -T shows us a preview of entrance without running the code, we should be able to kidnap and enslave that functionality in the gui config panel, i'm smelling a libentrance here. no?
-- Modify egui_graphics_selector and reorganize the code in conformance with behaviour dialog.
-- egui_settings.c currently doesn't save back to ecore_properly. there is something wrong when trying to retrieve tack the *item from the global *items list; i'm too sleepy to do this now. Correct this first, then move over behavior.c to use this.
+- Modify egui_graphics_selector and see if it can also inherit from egui_settings
 	
+***SHOW STOPPERS - TOP PRIORITY
+============================
+ - egui_settings.c currently doesn't save back to ecore_properly. there is something wrong when trying to retrieve tack the *item from the global *items list; i'm too sleepy to do this now. Correct this first, then move over behavior.c to use this.
+- theme and background dialogs need a way to browse filesystem to grab from arbitrary locations.
+	- fileselector widget needs to be done.
+- Fix up Fileselector widget. This may probably need to refactor out the buttons used by ew_notice as ew_reponse_buttons ?
+- The PREVIEW window is just CRAP! We actually should be loading Entrance itself with the config changes into a canvas and displaying that canvas or something. Basically, entrance -T shows us a preview of entrance without running the code, we should be able to kidnap and enslave that functionality in the gui config panel, i'm smelling a libentrance here. no?
+
+Issues that MUST go before tree relocates to entrance's tree
+============================================================
+- Mem is not handled properly, we're just coding, no free's. Valgrind must be run thru before we even dream of moving into entrance's src tree.
+- Formating is currently not like the rest of e.
