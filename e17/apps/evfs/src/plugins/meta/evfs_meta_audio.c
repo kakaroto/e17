@@ -111,6 +111,19 @@ Evas_List* evfs_file_meta_retrieve(evfs_client* client, evfs_command* command)
 		obj->value = NULL;
 		ret_list = evas_list_append(ret_list, obj);
 	}
+	
+	tmp = taglib_tag_album(taglib_tag);
+	if (tmp) {
+		obj = calloc(1,sizeof(evfs_meta_obj));
+		obj->key = strdup("album");
+		obj->value = strdup(tmp);
+		ret_list = evas_list_append(ret_list, obj);
+	} else {
+		obj = calloc(1,sizeof(evfs_meta_obj));
+		obj->key = strdup("album");
+		obj->value = NULL;
+		ret_list = evas_list_append(ret_list, obj);
+	}
 
 	taglib_props = taglib_file_audioproperties(taglib_file);
 	if(taglib_props) {
