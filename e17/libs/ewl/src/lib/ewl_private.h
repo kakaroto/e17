@@ -8,7 +8,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <alloca.h>
 #include <string.h>
 #include <limits.h>
 #include <ctype.h>
@@ -25,6 +24,10 @@
 
 #ifdef HAVE_CONFIG_H
 #include "ewl-config.h"
+#endif
+
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
 #endif
 
 #ifdef ENABLE_EWL_FB
