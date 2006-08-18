@@ -245,7 +245,7 @@ int
 evfs_file_open(evfs_client * client, evfs_filereference * file)
 {
 	printf("evfs_fs_trash.c open - STUB\n");
-	return -1;	
+	return 0;	
 }
 
 int
