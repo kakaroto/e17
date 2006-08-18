@@ -525,13 +525,13 @@ Etk_Object *etk_object_notify(Etk_Object *object, const char *property_name)
     * if a notification callback is removed while being called */
    callbacks_copy = NULL;
    for (l = *callbacks; l; l = l->next)
-      callbacks_copy = evas_list_append(l->data);
+      callbacks_copy = evas_list_append(callbacks_copy, l->data);
 
    object_ptr = object;
    etk_object_weak_pointer_add(object, &object_ptr);
    while (callbacks_copy && object_ptr)
    {
-      callback = l->data;
+      callback = callbacks_copy->data;
       if (callback->callback)
          callback->callback(object, property_name, callback->data);
       callbacks_copy = evas_list_remove_list(callbacks_copy, callbacks_copy);
