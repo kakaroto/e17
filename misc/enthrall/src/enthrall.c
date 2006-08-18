@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <dirent.h>
 
 #define _GNU_SOURCE
 #include <getopt.h>
@@ -49,6 +50,7 @@ typedef struct {
 
 	int fps;
 	int quality;
+	char output_dir[PATH_MAX];
 
 	struct {
 		Ecore_X_Window id;
@@ -79,7 +81,8 @@ on_timer (void *udata)
 	 *        done every time we enter this function.
 	 */
 
-	snprintf (buf, sizeof (buf), FILE_FMT".jpeg", e->frame_count);
+	snprintf (buf, sizeof (buf), "%s/"FILE_FMT".jpeg",
+	          e->output_dir, e->frame_count);
 
 	im = imlib_create_image_from_drawable (0, 0, 0,
 	                                       e->window.w, e->window.h,
@@ -115,13 +118,15 @@ show_usage ()
 	printf ("enthrall " VERSION "\n\n"
 	        "Usage: enthrall [options]\n\n"
 	        "Options:\n"
-	        "  -f, --fps=FPS         "
+	        "  -f, --fps=FPS               "
 	        "frames per second (1-50, default: 25)\n"
-	        "  -p, --pointer=FILE    "
+	        "  -o, --output-directory=DIR  "
+	        "output directory (default: working directory)\n"
+	        "  -p, --pointer=FILE          "
 	        "path to pointer image file\n"
-	        "  -q, --quality=QUALITY "
+	        "  -q, --quality=QUALITY       "
 	        "JPEG quality (0-100, default: 90)\n"
-	        "  -w, --window=WINDOW   "
+	        "  -w, --window=WINDOW         "
 	        "window to grab\n");
 }
 
@@ -154,11 +159,13 @@ int
 main (int argc, char **argv)
 {
 	Enthrall e;
+	DIR *d;
 	char pointer_img[PATH_MAX];
 	double start;
 	struct option options[] = {
 		{"help", no_argument, NULL, 'h'},
 		{"fps", required_argument, NULL, 'f'},
+		{"output-directory", required_argument, NULL, 'o'},
 		{"pointer", required_argument, NULL, 'p'},
 		{"quality", required_argument, NULL, 'q'},
 		{"window", required_argument, NULL, 'w'},
@@ -170,6 +177,8 @@ main (int argc, char **argv)
 	e.fps = 25;
 	e.quality = 90;
 
+	strcpy (e.output_dir, ".");
+
 	while ((c = getopt_long (argc, argv, "hf:q:w:", options, NULL)) != -1) {
 		int base;
 
@@ -179,6 +188,10 @@ main (int argc, char **argv)
 				return EXIT_SUCCESS;
 			case 'f':
 				e.fps = atoi (optarg);
+				break;
+			case 'o':
+				snprintf (e.output_dir, sizeof (e.output_dir), "%s",
+				          optarg);
 				break;
 			case 'p':
 				snprintf (pointer_img, sizeof (pointer_img), "%s",
@@ -211,6 +224,15 @@ main (int argc, char **argv)
 
 		return EXIT_FAILURE;
 	}
+
+	d = opendir (e.output_dir);
+	if (!d) {
+		fprintf (stderr, "Error: cannot open output directory.\n");
+
+		return EXIT_FAILURE;
+	}
+
+	closedir (d);
 
 	ecore_init ();
 	ecore_x_init (NULL);
@@ -246,10 +268,11 @@ main (int argc, char **argv)
 	printf ("Wrote %lu frames in %f seconds.\n\n", e.frame_count,
 	        ecore_time_get () - start);
 	printf ("Suggested MEncoder call to encode the video:\n\n"
-	        "mencoder \"mf://*.jpeg\" \\\n"
+	        "mencoder \"mf://%s/*.jpeg\" \\\n"
 	        "    -mf w=%i:h=%i:fps=%i:type=jpeg -ovc lavc \\\n"
 	        "    -lavcopts vcodec=mpeg4:vbitrate=16000:vhq:autoaspect \\\n"
-	        "    -o out.avi\n\n", e.window.w, e.window.h, e.fps);
+	        "    -o out.avi\n\n",
+	        e.output_dir, e.window.w, e.window.h, e.fps);
 
 	return EXIT_SUCCESS;
 }
