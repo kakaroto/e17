@@ -34,7 +34,7 @@ od_dock_init()
 
   for (i = 0; i < 5; i++) {
     dock.background[i] = evas_object_image_add(evas);
-    if (options.mode == OM_ONTOP)
+    if (options.use_composite || options.mode == OM_ONTOP)
       evas_object_image_alpha_set(dock.background[i], 0);
     else
       evas_object_image_alpha_set(dock.background[i], 1);
@@ -123,17 +123,11 @@ double lasttime = 0;
 void
 od_dock_redraw(Ecore_Evas * ee)
 {
-  
-
-    double time = ecore_time_get();
+  double time = ecore_time_get();
 	
-	if(time - lasttime < 0.04)
-	{
-	 // need_redraw = false; // ????
-	  return;
-	}
-    
-    lasttime = time;
+  if(time - lasttime < 0.04) return;
+
+  lasttime = time;
 
 
   Evas_List      *item = dock.icons;

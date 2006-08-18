@@ -21,6 +21,7 @@ Ecore_X_Window  od_window;
 int             od_hidden;
 static Ecore_Timer *mouse_focus_timer = NULL;
 int             fullheight;
+int             input_shape_full_area = 1;
 
 static void     handle_pre_render_cb(Ecore_Evas * _ee);
 static void     handle_post_render_cb(Ecore_Evas * _ee);
@@ -34,20 +35,35 @@ static void     handle_mouse_move(void *data, Evas * e, Evas_Object * obj,
 static void     handle_menu_draw(void *data, Evas * e, Evas_Object * obj,
                                  void *event);
 static void     od_window_set_hidden(int hidden);
-static void 	window_input_shape_rectangle_set(Ecore_X_Window win, int x, int y, int w, int h);
-
+static void     od_window_input_shape_rectangle_set(Ecore_X_Window win, int x, int y, int w, int h);
+static void     od_window_input_shape_set_extents();
 
 static void
-window_input_shape_rectangle_set(Ecore_X_Window win, int x, int y, int w, int h)
+od_window_input_shape_rectangle_set(Ecore_X_Window win, int x, int y, int w, int h)
 {
 #ifdef ShapeInput
-   XRectangle rect;
+   XRectangle rect;   
    
    rect.x = x;
    rect.y = y;
    rect.width = w;
    rect.height = h;
    XShapeCombineRectangles(ecore_x_display_get(), win, ShapeInput, 0, 0, &rect, 1, ShapeSet, Unsorted);
+#endif
+}
+
+static void 
+od_window_input_shape_set_extents()
+{
+#ifdef ShapeInput
+   Ecore_X_Window win = ecore_evas_software_x11_window_get(ee);
+   od_window_input_shape_rectangle_set(win, 
+         (int)dock.left_pos, 
+         options.height-options.size, 
+         (int)dock.right_pos - (int)dock.left_pos, 
+         options.size); 
+         
+  input_shape_full_area = 0;       
 #endif
 }
 
@@ -107,7 +123,8 @@ handle_mouse_in(Ecore_Evas * _ee)
   if(options.use_composite)
   {
     Ecore_X_Window win = ecore_evas_software_x11_window_get(_ee);
-    window_input_shape_rectangle_set(win,0,0,options.width,options.height);
+    od_window_input_shape_rectangle_set(win,0,0,options.width,options.height);
+    input_shape_full_area = 1;
   }
 #endif
   
@@ -123,14 +140,6 @@ handle_mouse_out(Ecore_Evas * _ee)
 {
   if (_ee != ee)
     return;
-
-#ifdef ShapeInput  
-  if(options.use_composite) // it should be enough to do this at zoom out, but so it looks less cluttered
-  { 
-    Ecore_X_Window win = ecore_evas_software_x11_window_get(_ee);
-    window_input_shape_rectangle_set(win,0,options.height-options.size,options.width,options.size);    
-  }
-#endif
     
   if (mouse_focus_timer)
     ecore_timer_del(mouse_focus_timer);
@@ -243,25 +252,25 @@ od_window_init()
   ecore_evas_title_set(ee, "Engage");
   ecore_evas_name_class_set(ee, "engage", "engage");
 
-
+#ifdef ShapeInput  
   if(options.use_composite)
   {
-#ifdef ShapeInput  
     ecore_evas_alpha_set(ee, 1);
     Ecore_X_Window win = ecore_evas_software_x11_window_get(ee);
-    ecore_x_window_override_set(win,1);
-    window_input_shape_rectangle_set(win,0,options.height-options.size,options.width,options.size);
-#endif  
+    ecore_x_window_override_set(win,1); 
   }
   else
+#endif 
     ecore_evas_borderless_set(ee, 1);  
-
-
-
-  if (options.mode == OM_ONTOP) 
+  
+  if(options.use_composite)
   {
     ecore_evas_avoid_damage_set(ee, 1);
-     if(!options.use_composite) ecore_evas_shaped_set(ee, 1);
+  }
+  else if (options.mode == OM_ONTOP) 
+  {
+    ecore_evas_avoid_damage_set(ee, 1);
+    ecore_evas_shaped_set(ee, 1);
   } 
   else
     ecore_evas_shaped_set(ee, 0);
@@ -293,7 +302,7 @@ od_window_init()
  
  
 //  printf("move %d %d\n", (int) ((res_x - options.width) / 2.0 + x),
-//		                        (int) (res_y - options.height + y);
+//                              (int) (res_y - options.height + y);
 
   ecore_x_window_move(od_window,
                       (int) ((res_x - options.width) / 2.0 + x),
@@ -343,7 +352,7 @@ od_window_init()
 #endif
   }
   
-  if (options.mode == OM_ONTOP)
+  if (options.use_composite || options.mode == OM_ONTOP)
     ecore_evas_layer_set(ee, 7);
   else
     ecore_evas_layer_set(ee, 2);
@@ -354,7 +363,7 @@ od_window_init()
   ecore_evas_callback_move_set(ee, od_window_move);
   ecore_evas_callback_resize_set(ee, od_window_resize);
 
-  if (options.mode == OM_BELOW) {
+  if (options.mode == OM_BELOW && !options.use_composite) {
 #ifdef HAVE_TRANS_BG
     o = esmart_trans_x11_new(evas);
     evas_object_layer_set(o, 0);
@@ -452,16 +461,12 @@ handle_mouse_move(void *data, Evas * e, Evas_Object * obj, void *event)
       od_dock_zoom_in();
     need_redraw = true;
   } else if (dock.state == zoomed || dock.state == zooming)
-  	{
       od_dock_zoom_out();
 #ifdef ShapeInput  
-      if(options.use_composite)
-      {
-  	    Ecore_X_Window win = ecore_evas_software_x11_window_get(ee);
-        window_input_shape_rectangle_set(win, 0, options.height-options.size, options.width, options.size); 
-      }
+    if(options.use_composite && input_shape_full_area && 
+      (dock.state == unzoomed || dock.state == unzooming))
+         od_window_input_shape_set_extents();
 #endif
-  	}
 }
 
 static void
@@ -470,8 +475,6 @@ handle_menu_draw(void *data, Evas * e, Evas_Object * obj, void *event)
   Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down *) event;
 
 #ifdef HAVE_EWL
-/* this doesnt work with the override window or composite, dont know, have to look at it... */
-if(!options.use_composite)
   if (ev->button == 3)
       od_config_menu_draw(ev->canvas.x, ev->canvas.y);
 #endif
