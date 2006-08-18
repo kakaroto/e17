@@ -73,11 +73,3 @@ ew_entry_password_clear(Entrance_Entry ew)
 	if(ew)
 		etk_entry_password_mode_set(ETK_ENTRY(ew->control),  ETK_FALSE);
 }
-
-void
-ew_entry_bugfix_makeshow(Entrance_Entry ew)
-{
-	/*this is a work around till the etk_entry rewrite*/
-	etk_widget_focus(ETK_WIDGET(ew->control));
-	etk_widget_unfocus(ETK_WIDGET(ew->control));
-}

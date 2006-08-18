@@ -78,11 +78,6 @@ egui_behavior_dialog_show() {
 	ew_dialog_ok_button_add(win, _cb_ok, NULL);
 
 	ew_dialog_show(win);
-
-	ew_entry_bugfix_makeshow(login_autologin_user);
-	ew_entry_bugfix_makeshow(presel_prevuser);
-	ew_entry_bugfix_makeshow(remember_user_count);
-	ew_entry_bugfix_makeshow(remember_remember_count);
 }
 
 static void
