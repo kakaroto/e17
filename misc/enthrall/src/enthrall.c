@@ -117,6 +117,8 @@ show_usage ()
 	        "Options:\n"
 	        "  -f, --fps=FPS         "
 	        "frames per second (1-50, default: 25)\n"
+	        "  -p, --pointer=FILE    "
+	        "path to pointer image file\n"
 	        "  -q, --quality=QUALITY "
 	        "JPEG quality (0-100, default: 90)\n"
 	        "  -w, --window=WINDOW   "
@@ -152,10 +154,12 @@ int
 main (int argc, char **argv)
 {
 	Enthrall e;
+	char pointer_img[PATH_MAX];
 	double start;
 	struct option options[] = {
 		{"help", no_argument, NULL, 'h'},
 		{"fps", required_argument, NULL, 'f'},
+		{"pointer", required_argument, NULL, 'p'},
 		{"quality", required_argument, NULL, 'q'},
 		{"window", required_argument, NULL, 'w'},
 		{NULL, no_argument, NULL, 0}};
@@ -175,6 +179,10 @@ main (int argc, char **argv)
 				return EXIT_SUCCESS;
 			case 'f':
 				e.fps = atoi (optarg);
+				break;
+			case 'p':
+				snprintf (pointer_img, sizeof (pointer_img), "%s",
+				          optarg);
 				break;
 			case 'q':
 				e.quality = atoi (optarg);
@@ -211,8 +219,8 @@ main (int argc, char **argv)
 
 	e.disp = ecore_x_display_get ();
 
-	if (file_exists ("pointer.png")) {
-		e.cursor.id = imlib_load_image ("pointer.png");
+	if (file_exists (pointer_img)) {
+		e.cursor.id = imlib_load_image (pointer_img);
 		imlib_context_set_image (e.cursor.id);
 		e.cursor.w = imlib_image_get_width ();
 		e.cursor.h = imlib_image_get_height ();
