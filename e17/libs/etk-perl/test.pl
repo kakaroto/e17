@@ -24,12 +24,12 @@ $tree->SizeRequestSet(320, 400);
 $tree->Build();
 
 my $row = $tree->Append();
-$row->FieldTextSet($col1, "Wee!!!!");
-$row->FieldProgressBarSet($col2, 0.5, " Loading ... ");
+$row->FieldsSet($col1, "Wee!!!!");
+$row->FieldsSet($col2, 0.5, " Loading ... ");
 
 $row = $tree->Append();
-$row->field_text_set($col1, "Second Line");
-$row->FieldProgressBarSet($col2, 0.2, " Reading ... ");
+$row->FieldsSet($col1, "Second Line");
+$row->FieldsSet($col2, 0.2, " Reading ... ");
 
 $vbox->Append($tree, BoxStart, BoxNone, 0);
 

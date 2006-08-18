@@ -30,7 +30,7 @@ SV * GetSignalEvent(Etk_Object * object, void * value, Callback_Signal_Data * cb
      }
    else
      {
-	event_rv = newRV_noinc(sv_2mortal((SV*)newHV()));
+	event_rv =  &PL_sv_undef; 
      }
  
 

@@ -423,7 +423,7 @@ sub tree_window_show
     $tree->Freeze();
     
     my $col1 = $tree->ColNew("Column 1", Etk::Tree::Model::IconText->new($tree, FromEdje), 90);
-    my $col2 = $tree->ColNew("Column 2", Etk::Tree::Model::Int->new($tree), 60);
+    my $col2 = $tree->ColNew("Column 2", Etk::Tree::Model::Double->new($tree), 60);
     my $col3 = $tree->ColNew("Column 3", Etk::Tree::Model::Image->new($tree, FromFile), 60);
     my $col4 = $tree->ColNew("Column 4", Etk::Tree::Model::Checkbox->new($tree), 40);
 
@@ -434,16 +434,16 @@ sub tree_window_show
 	    # print "toggle!\n";
 	}
     );
-    
+
     $tree->Build();
 
     for(my $i = 0; $i < 1000; $i++)
     {
 	my $row = $tree->Append();
-	$row->FieldSet($col1, Etk::Theme::icon_theme_get(), "places/user-home_16", "Row1");
-	$row->FieldSet($col2, 10);
-	$row->FieldSet($col3, "images/1star.png");
-	$row->FieldSet($col4, 1);
+	$row->FieldsSet($col1, Etk::Theme::icon_theme_get(), "places/user-home_16", "Row1");
+	$row->FieldsSet($col2, 10);
+	$row->FieldsSet($col3, "images/1star.png");
+	$row->FieldsSet($col4, 1);
     }
     $tree->Thaw();
     
@@ -465,7 +465,7 @@ sub tree_window_show
 
 
     $tree->Build();        
-    #tree_add_items($tree, 500, @cols);
+    tree_add_items($tree, 500, @cols);
     my $frame = Etk::Frame->new("List Actions");
     $table->Attach($frame, 0, 1, 2, 2, 0, 0, HFill | VFill);
     my $hbox = Etk::HBox->new(1, 10);
@@ -499,7 +499,7 @@ sub tree_window_show
     
     $button->SignalConnect("clicked",
 	sub {
-	    #$tree->Sort(\&tree_col2_compare_cb, $ascendant, $col2, undef);
+	    #$tree->Sort(\&tree_col2_compare_cb, $ascendant, $col2, undef);   
 	    $tree->SortNumeric($ascendant, $col2, undef);
 	    $ascendant = !$ascendant;
 	}
@@ -562,9 +562,9 @@ sub tree_add_items
 
         
 	my $row = $tree->Append();
-	$row->FieldSet($col1, "images/1star.png", $row_name);
-	$row->FieldSet($col2, $rand_value);
-	$row->FieldSet($col3, $star_path);
+	$row->FieldsSet($col1, "images/1star.png", $row_name);
+	$row->FieldsSet($col2, $rand_value);
+	$row->FieldsSet($col3, $star_path);
 
     }
     $tree->Thaw();
