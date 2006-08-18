@@ -804,3 +804,7 @@ Fri Aug 18 13:05:31 2006                        Michael Jennings (mej)
 
 By popular demand, a LICENSE file.
 ----------------------------------------------------------------------
+Fri Aug 18 17:45:56 2006                        Michael Jennings (mej)
+
+Add libcurl macro for future use.
+----------------------------------------------------------------------
