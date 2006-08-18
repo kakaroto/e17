@@ -218,7 +218,7 @@ static void _e_sticky_sticky_cb(Etk_Object *object, const char *property_name, v
 }
 
 static Etk_Widget *
-_etk_menu_stock_item_new(const char *label, Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell, Etk_Signal_Callback_Function callback, void *data)
+_etk_menu_stock_item_new(const char *label, Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell, Etk_Callback callback, void *data)
 {
    Etk_Widget *menu_item;
    Etk_Widget *image;
