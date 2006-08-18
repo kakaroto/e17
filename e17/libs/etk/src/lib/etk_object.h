@@ -9,16 +9,20 @@
 
 /**
  * @defgroup Etk_Object Etk_Object
- * @brief The Etk_Object class is the base class for all the objects and the widgets of Etk
+ * @brief The Etk_Object class is the base class for all the objects and widgets of Etk
  * @{
  */
 
 #ifndef ETK_DISABLE_CAST_CHECKS
-   #define ETK_OBJECT_CAST(obj, etk_type, c_type)     ((c_type *)etk_object_check_cast((Etk_Object *)(obj), (etk_type)))
+   #define ETK_OBJECT_CAST(obj, etk_type, c_type) \
+      ((c_type *)etk_object_check_cast((Etk_Object *)(obj), (etk_type)))
 #else
    #define ETK_OBJECT_CAST(obj, etk_type, c_type)     ((c_type *)(obj))
 #endif
-#define ETK_OBJECT_CHECK_TYPE(obj, etk_type)          (etk_type_inherits_from(((Etk_Object *)(obj))->type, (etk_type)))
+
+#define ETK_OBJECT_CHECK_TYPE(obj, etk_type) \
+   (etk_type_inherits_from(((Etk_Object *)(obj))->type, (etk_type)))
+
 
 /** Gets the type of an object */
 #define ETK_OBJECT_TYPE       (etk_object_type_get())
@@ -60,13 +64,13 @@ struct Etk_Object
 void etk_object_shutdown();
 void etk_object_purge();
 
-Etk_Type *etk_object_type_get();
+Etk_Type   *etk_object_type_get();
 Etk_Object *etk_object_new(Etk_Type *object_type, const char *first_property, ...);
 Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_property, va_list args);
-void etk_object_destroy(Etk_Object *object);
+void        etk_object_destroy(Etk_Object *object);
 
 Etk_Object *etk_object_check_cast(Etk_Object *object, Etk_Type *type);
-Etk_Type *etk_object_object_type_get(Etk_Object *object);
+Etk_Type   *etk_object_object_type_get(Etk_Object *object);
 
 void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *signal_callback, Etk_Bool after);
 void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *signal_callback);
@@ -75,8 +79,8 @@ void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Eva
 void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location);
 void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location);
 
-void etk_object_data_set(Etk_Object *object, const char *key, void *value);
-void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, void (*free_cb)(void *data));
+void  etk_object_data_set(Etk_Object *object, const char *key, void *value);
+void  etk_object_data_set_full(Etk_Object *object, const char *key, void *value, void (*free_cb)(void *data));
 void *etk_object_data_get(Etk_Object *object, const char *key);
 
 void etk_object_property_reset(Etk_Object *object, const char *property_name);
@@ -86,8 +90,8 @@ void etk_object_properties_get(Etk_Object *object, const char *first_property, .
 void etk_object_properties_get_valist(Etk_Object *object, const char *first_property, va_list args);
 
 Etk_Object *etk_object_notify(Etk_Object *object, const char *property_name);
-void etk_object_notification_callback_add(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data), void *data);
-void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data));
+void        etk_object_notification_callback_add(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data), void *data);
+void        etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data));
 
 /** @} */
 

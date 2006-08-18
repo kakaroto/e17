@@ -5,8 +5,8 @@
 #include "etk_type.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "etk_utils.h"
 #include "etk_property.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Object
@@ -68,6 +68,7 @@ void etk_object_purge()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Object
  * @return Returns the type of an Etk_Object
  */
@@ -197,12 +198,13 @@ Etk_Type *etk_object_object_type_get(Etk_Object *object)
 }
 
 /**
+ * @internal
  * @brief Adds @a signal_callback to the list of the signal callbacks of the object
  * @param object an object
  * @param signal_callback the signal callback to add
- * @param after if @a after == ETK_TRUE, the callback will be called after the default handler.
+ * @param after if @a after is ETK_TRUE, the callback will be called after the default handler.
  * Otherwise, it will be called before.
- * @note You usually do not need to call this function, use etk_signal_connect() instead.
+ * @note You do not have to call this function, use etk_signal_connect() instead
  */
 void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *signal_callback, Etk_Bool after)
 {
@@ -216,10 +218,11 @@ void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *sig
 }
 
 /**
+ * @internal
  * @brief Removes @a signal_callback from the list of the signal callbacks of the object
  * @param object an object
  * @param signal_callback the signal callback to remove
- * @note You usually do not need to call this function, use etk_signal_disconnect() instead.
+ * @note You do not have have to call this function, use etk_signal_disconnect() instead
  */
 void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *signal_callback)
 {
@@ -241,41 +244,13 @@ void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *
 }
 
 /**
- * @brief Adds a weak pointer to the object. A weak pointer is pointer that is automatically set
- * to NULL when the object is destroyed
- * @param object an object
- * @param pointer_location the location of the weak pointer to add
- * @warning if the @a pointer_location is not accessible when the object is destroyed, it may segfaults. So you have
- * to use etk_object_weak_pointer_remove() when @a pointer_location becomes inaccessible
- * @see etk_object_weak_pointer_remove()
- */
-void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location)
-{
-   if (!object || !pointer_location || object->destroy_me)
-      return;
-   object->weak_pointers_list = evas_list_append(object->weak_pointers_list, pointer_location);
-}
-
-/**
- * @brief Removes a weak pointer from the object
- * @param object an object
- * @param pointer_location the location of the weak pointer to remove
- * @see etk_object_weak_pointer_add()
- */
-void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location)
-{
-   if (!object || !pointer_location)
-      return;
-   object->weak_pointers_list = evas_list_remove(object->weak_pointers_list, pointer_location);
-}
-
-/**
+ * @internal
  * @brief Gets the signal callbacks connected to the signal @a signal of the object @a object
  * @param object the object connected to the signal
  * @param signal the signal of which we want the callbacks
  * @param callbacks the location of a list where the signal callbacks will be appended
- * @param after if @a after == ETK_TRUE, it appends only the callbacks that have to be called after the default handler. @n
- * Otherwise, it appends the callbacks called before the default handler
+ * @param after if @a after == ETK_TRUE, it appends only the callbacks that have to be called after the
+ * default handler. Otherwise, it appends the callbacks called before the default handler
  * @note You usually do not need to call this function manually, it is used by etk_signal_emit()
  */
 void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks, Etk_Bool after)
@@ -296,8 +271,42 @@ void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Eva
 }
 
 /**
- * @brief Sets the data associated to a key for the object. The data could be retrieved later with etk_object_data_get()
- * @param object the object to which the data will be added
+ * @brief Adds a weak pointer to the object. A weak pointer is a pointer that will be automatically set
+ * to NULL when the object is destroyed
+ * @param object an object
+ * @param pointer_location the location of the weak pointer
+ * @warning if the @a pointer_location is not accessible when the object is destroyed, it may segfaults. So you have
+ * to use etk_object_weak_pointer_remove() when @a pointer_location becomes inaccessible
+ * @see etk_object_weak_pointer_remove()
+ */
+void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location)
+{
+   if (!object || !pointer_location || object->destroy_me)
+      return;
+   if (evas_list_find(object->weak_pointers_list, pointer_location))
+      return;
+   
+   object->weak_pointers_list = evas_list_append(object->weak_pointers_list, pointer_location);
+}
+
+/**
+ * @brief Removes a weak pointer from the object
+ * @param object an object
+ * @param pointer_location the location of the weak pointer to remove
+ * @see etk_object_weak_pointer_add()
+ */
+void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location)
+{
+   if (!object || !pointer_location)
+      return;
+   object->weak_pointers_list = evas_list_remove(object->weak_pointers_list, pointer_location);
+}
+
+/**
+ * @brief Associates a data pointer to a key. The pointer will be carried by the object and could be retrieved
+ * later with etk_object_data_get(). If the object already has an association for the given key, the old data
+ * will be destroyed
+ * @param object the object which the data will be added to
  * @param key the key to associate to the data
  * @param value the value of the data
  * @note If you want the data to be freed when the object is destroyed or when the value is changed,
@@ -309,11 +318,13 @@ void etk_object_data_set(Etk_Object *object, const char *key, void *value)
 }
 
 /**
- * @brief Sets the data associated to a key for the object. The data could be retrieved later with etk_object_data_get()
- * @param object the object to which the data will be added
+ * @brief Associates a data pointer to a key. The pointer will be carried by the object and could be retrieved
+ * later with etk_object_data_get(). If the object already has an association for the given key, the old data
+ * will be destroyed
+ * @param object the object which the data will be added to
  * @param key the key to associate to the data
- * @param free_cb the function to call on the data when the object is destroyed or when the value is changed
  * @param value the value of the data
+ * @param free_cb the function to call on @a value when the object is destroyed or when the value is changed
  */
 void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, void (*free_cb)(void *data))
 {
@@ -337,10 +348,10 @@ void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, 
 }
 
 /**
- * @brief Gets the data associated to the key
+ * @brief Gets the pointer associated to the given key
  * @param object the object which has the data
  * @param key the key associated to the data
- * @return Returns the value of the data, NULL on failure
+ * @return Returns the associated pointer, NULL on failure
  */
 void *etk_object_data_get(Etk_Object *object, const char *key)
 {
@@ -373,7 +384,7 @@ void etk_object_property_reset(Etk_Object *object, const char *property_name)
 
 /**
  * @brief Sets the values of several properties
- * @param object the object that has the properties to set
+ * @param object the object that has the properties
  * @param first_property the name of the first property value
  * @param ... the value of the first property, followed by any number of property-name/property-value pairs,
  * terminated with NULL
@@ -392,7 +403,7 @@ void etk_object_properties_set(Etk_Object *object, const char *first_property, .
 
 /**
  * @brief Sets the values of several properties
- * @param object the object that has the properties to set
+ * @param object the object that has the properties
  * @param first_property the name of the first property value
  * @param args the value of the first property, followed by any number of property-name/property-value pairs,
  * terminated with NULL
@@ -501,23 +512,31 @@ void etk_object_properties_get_valist(Etk_Object *object, const char *first_prop
 Etk_Object *etk_object_notify(Etk_Object *object, const char *property_name)
 {
    Evas_List *l;
-   Evas_List **notification_callbacks;
+   Evas_List **callbacks, *callbacks_copy;
    Etk_Notification_Callback *callback;
    void *object_ptr;
 
    if (!object || !property_name)
       return object;
-   if (!(notification_callbacks = evas_hash_find(object->notification_callbacks_hash, property_name)))
+   if (!(callbacks = evas_hash_find(object->notification_callbacks_hash, property_name)))
       return object;
+   
+   /* We use a copy of the callback list here to avoid potential bugs
+    * if a notification callback is removed while being called */
+   callbacks_copy = NULL;
+   for (l = *callbacks; l; l = l->next)
+      callbacks_copy = evas_list_append(l->data);
 
    object_ptr = object;
    etk_object_weak_pointer_add(object, &object_ptr);
-   for (l = *notification_callbacks; l && object_ptr; l = l->next)
+   while (callbacks_copy && object_ptr)
    {
       callback = l->data;
       if (callback->callback)
          callback->callback(object, property_name, callback->data);
+      callbacks_copy = evas_list_remove_list(callbacks_copy, callbacks_copy);
    }
+   evas_list_free(callbacks_copy);
    etk_object_weak_pointer_remove(object, &object_ptr);
    
    return object_ptr;
@@ -725,7 +744,7 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * You can then destroy the object with etk_object_destroy(): it sets the weak pointers of the object to NULL
  * (see etk_object_weak_pointer_add()), emits the "destroyed" signal and queues the object for freeing. Thus, the
  * destructors will only be called at the beginning of the next main loop iteration (from the destructor of the more
- * derived class to the destructor of the ultimate base class). So, you should not assume that etk_object_destroy()
+ * derived class to the destructor of the ultimate base class). You should then not assume that etk_object_destroy()
  * will directly call the destructors. @n @n
  *
  * <b>Signal concept:</b> @n
@@ -778,7 +797,8 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * - Etk_Object
  *
  * \par Signals:
- * @signal_name "destroyed": Emitted just before all the destructors of the object are called
+ * @signal_name "destroyed": Emitted when the object is destroyed, before all the destructors of the object are called.
+ * Since the destructors have not been called yet, the object should still be usable at this point.
  * @signal_cb void callback(Etk_Object *object, void *data)
  * @signal_arg object: the object which is about to be destroyed
  * @signal_data

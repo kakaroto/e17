@@ -38,12 +38,12 @@ typedef enum Etk_Property_Type
  */
 typedef enum Etk_Property_Flags
 {
-   ETK_PROPERTY_NO_ACCESS = 0,          /**< Used when the property type is ETK_PROPERTY_OTHER */
-   ETK_PROPERTY_READABLE = 1 << 0,      /**< The value of the property is readable */
-   ETK_PROPERTY_WRITABLE = 1 << 1,      /**< The value of the property is writable */
+   ETK_PROPERTY_NO_ACCESS = 1 << 0,     /**< Used when the property type is ETK_PROPERTY_OTHER */
+   ETK_PROPERTY_READABLE = 1 << 1,      /**< The value of the property is readable */
+   ETK_PROPERTY_WRITABLE = 1 << 2,      /**< The value of the property is writable */
    ETK_PROPERTY_READABLE_WRITABLE =     /**< The value of the property is readable and writable */
       ETK_PROPERTY_READABLE | ETK_PROPERTY_WRITABLE,
-   ETK_PROPERTY_CONSTRUCT = 1 << 2      /**< Use this flag to force the default value of the property to be set when
+   ETK_PROPERTY_CONSTRUCT = 1 << 3      /**< Use this flag to force the default value of the property to be set when
                                          * the object is created */
 } Etk_Property_Flags;
 
