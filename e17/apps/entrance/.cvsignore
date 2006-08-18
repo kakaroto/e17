@@ -9,6 +9,7 @@ config.status
 config.sub
 configure
 configure-stamp
+compile
 autom4te.cache
 depcomp
 entrance.spec
