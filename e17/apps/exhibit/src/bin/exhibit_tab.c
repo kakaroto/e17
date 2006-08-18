@@ -19,10 +19,17 @@ _ex_tab_new(Exhibit *e, char *dir)
    char *file;
    
    file = NULL;
-   tab = calloc(1, sizeof(Ex_Tab));   
-   tab->num = evas_list_count(e->tabs);
+   tab = calloc(1, sizeof(Ex_Tab)); 
+   //tab->num = evas_list_count(e->tabs);
    tab->dirs = NULL;
    tab->images = NULL;
+
+   if (!dir) {
+	D(("NO DIR\n"));
+	exit(-1);
+   }
+
+   D(("Creating new tab with %s\n", dir));
 
    if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW) 
      {
@@ -87,7 +94,7 @@ _ex_tab_new(Exhibit *e, char *dir)
 }
 
 void
-_ex_tab_delete(Ex_Tab *tab)
+_ex_tab_delete()
 {
    if (!e->cur_tab) {
 	D(("No currently selected TAB!!\n"));
@@ -97,20 +104,24 @@ _ex_tab_delete(Ex_Tab *tab)
    if (e->cur_tab->num == 0)
      return;
 
+   
+   D(("Number of tabs: %d\n", evas_list_count(e->tabs)));
+
+   if(evas_list_count(e->tabs) < 1)
+     {
+	D(("Cannot remove the last tab\n"));
+	return;
+     }
+     
+
    D(("Delete tab %d\n", e->cur_tab->num));
-   etk_notebook_page_remove(ETK_NOTEBOOK(e->notebook), e->cur_tab->num);
 
    D(("Remove from list\n"));
-   evas_list_remove(e->tabs, e->cur_tab);
+//   e->tabs = evas_list_remove(e->tabs, e->cur_tab);
 
    D(("Free\n"));
-   E_FREE(e->cur_tab->dir);
-   E_FREE(e->cur_tab->set_img_path);
-   E_FREE(e->cur_tab->cur_file);
-   E_FREE(tab->comment.text);
-   evas_list_free(e->cur_tab->images);
-   evas_list_free(e->cur_tab->dirs);
-   E_FREE(e->cur_tab);
+   etk_notebook_page_remove(ETK_NOTEBOOK(e->notebook), e->cur_tab->num);
+ //  E_FREE(e->cur_tab);
 }
 
 void
@@ -119,11 +130,14 @@ _ex_tab_select(Ex_Tab *tab)
    chdir(tab->cur_path);
 
    D(("_ex_tab_select: changed dir to %s\n", tab->cur_path));
+   D(("_ex_tab_select: selecting tab num %d\n", e->cur_tab->num));
 
    if(tab->comment.visible)
-     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, tab->comment.vbox);
+     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, 
+	   tab->comment.vbox);
    else if(tab->fit_window)
-     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, tab->alignment);
+     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, 
+	   tab->alignment);
    
    etk_table_attach(ETK_TABLE(e->table), tab->dtree,
 		    0, 3, 3, 3,

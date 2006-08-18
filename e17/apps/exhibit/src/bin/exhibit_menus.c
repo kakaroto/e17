@@ -42,7 +42,7 @@ _ex_menu_build_run_menu(Etk_Widget *submenu)
 Etk_Widget *
 _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 		  int stock_id, Etk_Menu_Shell *menu_shell,
-		  Etk_Signal_Callback_Function callback,
+		  Etk_Callback callback,
 		  void *data)
 {
    Etk_Widget *menu_item = NULL;
@@ -111,7 +111,7 @@ _ex_menu_delete_tab_cb(Etk_Object *obj, void *data)
      
    EX_MENU_ITEM_GET_RETURN(obj);
 
-   _ex_tab_delete(e->cur_tab);
+   _ex_tab_delete();
 }
 
 void

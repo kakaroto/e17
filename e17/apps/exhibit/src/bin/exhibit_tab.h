@@ -5,7 +5,7 @@
 #define _EX_TAB_H
 
 Ex_Tab *_ex_tab_new(Exhibit *e, char *dir);
-void    _ex_tab_delete(Ex_Tab *tab);    
+void    _ex_tab_delete();    
 void    _ex_tab_select(Ex_Tab *tab);
 void    _ex_tab_current_zoom_in(Exhibit *e);
 void    _ex_tab_current_zoom_out(Exhibit *e);

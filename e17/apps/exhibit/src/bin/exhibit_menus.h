@@ -10,7 +10,7 @@ typedef enum _Ex_Menu_Item_Type
    EX_MENU_ITEM_SEPERATOR
 } Ex_Menu_Item_Type;
 
-Etk_Widget *_ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label, int stock_id, Etk_Menu_Shell *menu_shell, Etk_Signal_Callback_Function callback, void *data);
+Etk_Widget *_ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label, int stock_id, Etk_Menu_Shell *menu_shell, Etk_Callback callback, void *data);
 
 void        _ex_menu_build_run_menu(Etk_Widget *submenu);
 void        _ex_menu_new_tab_cb(Etk_Object *obj, void *data);

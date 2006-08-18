@@ -411,9 +411,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	  }
 	else if(!strcmp(ev->key, "w"))
 	  {
-	     D(("Number of tabs: %d\n", evas_list_count(e->tabs)));
-	     if(evas_list_count(e->tabs) > 1)
-		  _ex_tab_delete(e->cur_tab);
+	     _ex_tab_delete();
 	  }
 	else if(!strcmp(ev->key, "q"))
 	  {
@@ -473,9 +471,13 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
    
    e = data;
    _ex_slideshow_stop(e);
-   tab = evas_list_nth(e->tabs, etk_notebook_current_page_get(ETK_NOTEBOOK(object)));
+
+   tab = evas_list_nth(e->tabs, 
+	 etk_notebook_current_page_get(ETK_NOTEBOOK(object)));
 
    e->cur_tab = tab;
+   D(("Toggeled tab %p number %d\n", tab, e->cur_tab->num));
+
    D(("Selecting tab %d\n", e->cur_tab->num));
    _ex_tab_select(tab);
    etk_entry_text_set(ETK_ENTRY(e->entry[0]), e->cur_tab->cur_path);   
@@ -521,6 +523,9 @@ _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab)
    e->cur_tab = tab;
    etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), _ex_file_get(e->cur_tab->dir), e->cur_tab->scrolled_view);
    etk_notebook_current_page_set(ETK_NOTEBOOK(e->notebook), evas_list_count(e->tabs) - 1);
+
+   tab->num = etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook));
+   D(("Setting tab number %d\n", tab->num));
 }
 
 static void 
