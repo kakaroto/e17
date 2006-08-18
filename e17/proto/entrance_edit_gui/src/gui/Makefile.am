@@ -10,8 +10,10 @@ entrance_edit_gui_SOURCES=main.c \
 						  theme.c \
 						  x_settings.c \
 						  egui_graphics_selector.c \
-							egui_settings.c \
-						  Egui.h
+						  egui_settings.c \
+						  egui_settings.h \
+						  Egui.h 
+
 
 entrance_edit_gui_CFLAGS = \
 	-I$(top_srcdir)/src/widgets \

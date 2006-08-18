@@ -289,6 +289,7 @@ _save_to_file(void)
 		return 0;
 }
 
+/*callbacks*/
 static void
 _cb_close(void* sender, void* data)
 {
@@ -314,6 +315,7 @@ _close(void)
 {
 	ew_dialog_destroy(win);
 }
+
 
 static int
 _apply(void)

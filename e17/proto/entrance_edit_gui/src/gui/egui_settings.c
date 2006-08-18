@@ -6,105 +6,238 @@
 #include <Entrance_Widgets.h>
 #include "Egui.h"
 
-static void _ests_cb_response(void *, int, void *);
-static void _ests_cb_apply(void);
-static void _ests_cb_close(void);
+static void _cb_close(void*, void*);
+static void _cb_apply(void*, void*);
+static void _cb_ok(void *, void *);
 
-static void _ests_group_build(Egui_Settings_Group);
-static Entrance_Widget _ests_item_build(Egui_Settings_Item);
+static void _cb_group_build(void*, void*);
+static void _cb_item_build(void*, void*);
 
-static Entrance_Dialog dialog;
-static Evas_List *items;
+static void _close(void);
+static int _apply(void);
+static void _save_to_file(void);
+
+static void _load_button(void *w, const char *key, int ktype);
+static void _load_entry(void *w, const char *key, int ktype);
+static void _load_checkbox(void *w, const char *key, int ktype);
+
+static void _save_button(void *w, const char *key, int ktype);
+static void _save_entry(void *w, const char *key, int ktype);
+static void _save_checkbox(void *w, const char *key, int ktype);
+static void _save_list(void *w, const char *key, int ktype);
+
+static Entrance_Widget _item_build(Egui_Settings_Item);
+
+static Entrance_Dialog win;
+static Ecore_List *items;
+
+
+Egui_Settings_Group es_group_new(const char* name, int direction)
+{
+	Egui_Settings_Group esg = calloc(1, sizeof(*esg));
+	if(esg)
+	{
+		esg->title = name;
+		esg->direction = direction;
+		esg->items = ecore_list_new();
+	}
+
+	return esg;
+}
 
 void
-egui_settings_dialog_show(char *title, int count, Egui_Settings_Group groups[]) {
-	int i = 0;
-	dialog = ew_notice_new(title);
-	items = NULL;
+es_group_append(Egui_Settings_Group g, Egui_Settings_Item *i)
+{
+	ecore_list_append(g->items, i);
+}
 
-	for( ; i<count; i++)
-		_ests_group_build(groups[i]);
+void
+es_dialog_show(char *title, Ecore_List *groups) 
+{
+	win = ew_dialog_new(title, EW_FALSE);
+	items = ecore_list_new();
+
+	ecore_list_for_each(groups, _cb_group_build, NULL);
 	
-	ew_notice_close_button_add(dialog, _ests_cb_response, NULL);
-	ew_notice_apply_button_add(dialog, NULL, NULL);
-	ew_notice_ok_button_add(dialog, NULL, NULL);
+	ew_dialog_close_button_add(win, _cb_close, NULL);
+	ew_dialog_apply_button_add(win, _cb_apply, NULL);
+	ew_dialog_ok_button_add(win, _cb_ok, NULL);
 
-	ew_notice_show(dialog);
+	ew_dialog_show(win);
 }
 
 /*private*/
-void
-_ests_group_build(Egui_Settings_Group group) {
-	Entrance_Widget grp = ew_dialog_group_add(dialog, group.title, group.direction);
-	int i = 0;
-	
-	for( ; i<group.item_count; i++)
-		ew_group_add(grp, _ests_item_build(group.items[i]));
-}
 
 Entrance_Widget
-_ests_item_build(Egui_Settings_Item item) {
-	switch(item.type) {
-		case BUTTON:
-			ew_toggle_button_active_set(item.widget, entrance_edit_int_get(item.entrance_edit_key));
+_item_build(Egui_Settings_Item item) 
+{
+	switch(item.widget_type) 
+	{
+		/*TODO: move widget builders from case body into _widget_build_button, _widget_build_checkbox, etc*/
+		case EGUI_TYPE_BUTTON:
+			_load_button(item.widget, item.entrance_edit_key, item.key_type);
 			break;
-		case ENTRY:
-			ew_entry_set(item.widget, entrance_edit_string_get(item.entrance_edit_key));
+		case EGUI_TYPE_ENTRY:
+			_load_entry(item.widget, item.entrance_edit_key, item.key_type);
+			break;
+		case EGUI_TYPE_CHECKBOX:
+			_load_checkbox(item.widget, item.entrance_edit_key, item.key_type);
 			break;
 		default: break;
 	}
-	evas_list_append(items, &item);
+
 	return item.widget;
 }
 
-/*callbacks*/
 static void
-_ests_cb_response(void *owner, int response, void *data) {
-	switch(response) {
-		case EW_NOTICE_OK_BUTTON:
-			_ests_cb_apply();
-			_ests_cb_close();
-			break;
-		case EW_NOTICE_APPLY_BUTTON:
-			_ests_cb_apply();
-			break;
-		case EW_NOTICE_CLOSE_BUTTON:
-			_ests_cb_close();
-			break;
-		default: break;
+_load_button(void *w, const char *key, int ktype)
+{
+	if(ktype == EGUI_TYPE_INT)
+	 ew_toggle_button_active_set(w, entrance_edit_int_get(key));
+}
+
+static void
+_load_entry(void *w, const char *key, int ktype)
+{
+	if(ktype == EGUI_TYPE_STR)
+		ew_entry_set(w, entrance_edit_string_get(key));
+	else if(ktype == EGUI_TYPE_INT)
+	{
+		char msg[PATH_MAX];
+		snprintf(msg, PATH_MAX, "%d", entrance_edit_int_get(key));
+		ew_entry_set(w, msg);
 	}
 }
 
-void
-_ests_cb_apply() {
-	char msg[PATH_MAX];
+static void
+_load_checkbox(void *w, const char *key, int ktype)
+{
+	if(ktype == EGUI_TYPE_INT)
+	{
+		if(entrance_edit_int_get(key))
+			ew_checkbox_toggle(w);
+	}
+}
+
+static void
+_save_button(void *w, const char *key, int ktype)
+{
+	if(ktype == EGUI_TYPE_INT)
+		entrance_edit_int_set(key, ew_toggle_button_active_get(w));
+}
+
+static void
+_save_entry(void *w, const char *key, int ktype)
+{
+/*	printf("value of entry = %s, key = %s\n", ew_entry_get(w), key);*/
+	if(ktype == EGUI_TYPE_STR)
+		entrance_edit_string_set(key, ew_entry_get(w));
+	else if(ktype == EGUI_TYPE_INT)
+		entrance_edit_int_set(key, atoi(ew_entry_get(w)));
+}
+
+static void
+_save_list(void *w, const char *key, int ktype)
+{
+	if(ktype == EGUI_TYPE_STR)
+		entrance_edit_string_set(key, ew_list_selected_data_get(w));
+	else if(ktype = EGUI_TYPE_INT)
+	{
+		char *s = ew_list_selected_data_get(w);
+		entrance_edit_int_set(key, atoi(s));
+	}
+}
+
+static void
+_save_checkbox(void *w, const char *key, int ktype)
+{
+	if(ktype == EGUI_TYPE_INT)
+		entrance_edit_int_set(key, ew_checkbox_is_active(w));
+}
+
+static void
+_close(void)
+{
+	ew_dialog_destroy(win);
+}
+
+
+
+static int
+_apply(void) 
+{
+	/*printf("starting apply main\n");*/
 	Egui_Settings_Item *item;
-	Evas_List *last = items;
+	ecore_list_goto_first(items);
 
-	while(last = evas_list_next(last)) {
-		item = evas_list_data(last);
+	while(item = ecore_list_next(items)) {
 
-		switch(item->type) {
-			case BUTTON:
-				entrance_edit_int_set(item->entrance_edit_key, ew_toggle_button_active_get(item->widget));
+		/*printf("first widget key = %s, type = %d\n", item->entrance_edit_key, item->widget_type);*/
+		switch(item->widget_type) {
+			case EGUI_TYPE_BUTTON:
+				_save_button(item->widget, item->entrance_edit_key, item->key_type);
 				break;
-			case ENTRY:
-				entrance_edit_string_set(item->entrance_edit_key, ew_entry_get(item->widget));
+			case EGUI_TYPE_ENTRY:
+				_save_entry(item->widget, item->entrance_edit_key, item->key_type);
 				break;
-			case LIST:
-				entrance_edit_string_set(item->entrance_edit_key, ew_list_selected_data_get(item->widget));
+			case EGUI_TYPE_LIST:
+				_save_list(item->widget, item->entrance_edit_key, item->key_type);
+				break;
+			case EGUI_TYPE_CHECKBOX:
+				_save_checkbox(item->widget, item->entrance_edit_key, item->key_type);
+				break;
 			default: break;
 		}
 	}
 
 	if(!entrance_edit_save())
 	{
-		snprintf(msg, PATH_MAX, "Can not set a value. Please check your permissions");
-		ew_messagebox_ok("Entrance Config - Error", msg, EW_MESSAGEBOX_ICON_ERROR);
+		ew_messagebox_ok("Entrance Configuration - Error", "Can not save to config file. Please check your permissions", EW_MESSAGEBOX_ICON_ERROR);
+		return 0;
 	}
+
+	return 1;
 }
 
-void
-_ests_cb_close() {
-	ew_dialog_destroy(dialog);
+/*callbacks*/
+static void
+_cb_close(void* sender, void* data)
+{
+	_close();
+}
+
+static void
+_cb_apply(void* sender, void* data)
+{
+	/*printf("calling on apply to apply me\n");*/
+	_apply();
+}
+
+static void
+_cb_ok(void* sender, void* data)
+{
+	if(_apply()) 
+		_close();
+}
+
+static void
+_cb_group_build(void *listdata, void* data) 
+{
+	Egui_Settings_Group group = listdata;
+	Entrance_Widget grp = ew_dialog_group_add(win, group->title, group->direction);
+
+	ecore_list_for_each(group->items, _cb_item_build, grp);
+}
+
+static void
+_cb_item_build(void * listdata, void* data)
+{
+	Egui_Settings_Item *itemp = listdata;
+	Egui_Settings_Item item = *itemp;
+
+	Entrance_Widget group = data;
+
+	ew_group_add(group, _item_build(item));
+
+	ecore_list_append(items, &item);
 }

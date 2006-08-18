@@ -64,14 +64,14 @@ void
 ew_entry_password_set(Entrance_Entry ew)
 {
 	if(ew)
-		etk_entry_password_set(ETK_ENTRY(ew->control), ETK_TRUE);
+		etk_entry_password_mode_set(ETK_ENTRY(ew->control), ETK_TRUE);
 }
 
 void 
 ew_entry_password_clear(Entrance_Entry ew)
 {
 	if(ew)
-		etk_entry_password_set(ETK_ENTRY(ew->control),  ETK_FALSE);
+		etk_entry_password_mode_set(ETK_ENTRY(ew->control),  ETK_FALSE);
 }
 
 void

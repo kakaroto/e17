@@ -12,6 +12,7 @@ static Entrance_Dialog dialog;
 int
 main(int argc, char **argv)
 {
+   ecore_init();
    entrance_edit_init(NULL);
    ew_init(&argc, &argv);
    
@@ -20,6 +21,7 @@ main(int argc, char **argv)
    ew_main();
    ew_shutdown();
    entrance_edit_shutdown();
+   ecore_shutdown();
    
    return 0;
 }
