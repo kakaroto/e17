@@ -83,6 +83,10 @@ void                DialogShowCentered(Dialog * d);
 void                DialogRedraw(Dialog * d);
 void                DialogClose(Dialog * d);
 
+void                DialogArrange(Dialog * d, int resize);
+void                DialogDestroyButtons(Dialog * d, int clean);
+void                DialogItemTableEmpty(DItem * di);
+
 void                DialogShowSimple(const DialogDef * dd, void *data);
 void                DialogShowSimpleWithName(const DialogDef * dd,
 					     const char *name, void *data);

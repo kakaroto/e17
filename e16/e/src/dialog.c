@@ -154,6 +154,7 @@ struct _ditem
    item;
 
    char                update;
+   char                realized;
 };
 
 typedef struct
@@ -201,6 +202,7 @@ struct _dialog
 
    char                redraw;
    char                update;
+   char                resize;
    char                close;
    int                 xu1, yu1, xu2, yu2;
 };
@@ -214,7 +216,7 @@ static void         DButtonHandleEvents(Win win, XEvent * ev, void *prm);
 
 static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 static void         DialogItemsRealize(Dialog * d);
-static void         DialogFreeItem(DItem * di);
+static void         DialogItemDestroy(DItem * di, int clean);
 
 static int          DialogItemCheckButtonGetState(DItem * di);
 
@@ -271,7 +273,7 @@ DialogCreate(const char *name)
 }
 
 static void
-FreeDButton(DButton * db)
+DialogButtonDestroy(DButton * db, int clean)
 {
    if (db->text)
       Efree(db->text);
@@ -279,14 +281,27 @@ FreeDButton(DButton * db)
       ImageclassDecRefcount(db->iclass);
    if (db->tclass)
       TextclassDecRefcount(db->tclass);
+   if (clean && db->win)
+      EDestroyWindow(db->win);
    Efree(db);
+}
+
+void
+DialogDestroyButtons(Dialog * d, int clean)
+{
+   int                 i;
+
+   for (i = 0; i < d->num_buttons; i++)
+      DialogButtonDestroy(d->button[i], clean);
+   if (d->button)
+      Efree(d->button);
+   d->button = NULL;
+   d->num_buttons = 0;
 }
 
 static void
 DialogDestroy(Dialog * d)
 {
-   int                 i;
-
    ecore_list_remove_node(dialog_list, d);
 
    if (d->name)
@@ -295,12 +310,9 @@ DialogDestroy(Dialog * d)
       Efree(d->title);
    if (d->text)
       Efree(d->text);
-   for (i = 0; i < d->num_buttons; i++)
-      FreeDButton(d->button[i]);
-   if (d->button)
-      Efree(d->button);
+   DialogDestroyButtons(d, 0);
    if (d->item)
-      DialogFreeItem(d->item);
+      DialogItemDestroy(d->item, 0);
    if (d->iclass)
       ImageclassDecRefcount(d->iclass);
    if (d->tclass)
@@ -508,8 +520,10 @@ DialogRedraw(Dialog * d)
    if (d->pmm_bg.pmap == None)
       return;
 
-   if (d->pmap == None)
+   if (d->resize || d->pmap == None)
      {
+	if (d->pmap != None)
+	   EFreePixmap(d->pmap);
 	d->pmap = ECreatePixmap(d->win, d->w, d->h, 0);
 	ESetWindowBackgroundPixmap(d->win, d->pmap);
      }
@@ -570,35 +584,19 @@ DialogEwinInit(EWin * ewin, void *ptr)
    ewin->MoveResize = DialogEwinMoveResize;
    ewin->Close = DialogEwinClose;
 
-   ICCCM_SetSizeConstraints(ewin, d->w, d->h, d->w, d->h, 0, 0, 1, 1,
-			    0.0, 65535.0);
-
    EoSetLayer(ewin, 10);
 }
 
-static void
-DialogShowArranged(Dialog * d, int center)
+void
+DialogArrange(Dialog * d, int resize)
 {
    int                 i, w, h, mw, mh;
-   EWin               *ewin;
    EImageBorder       *pad;
 
    if (d->title)
      {
 	HintsSetWindowName(d->win, d->title);
 	HintsSetWindowClass(d->win, d->name, "Enlightenment_Dialog");
-     }
-
-   ewin = FindEwinByDialog(d);
-   if (ewin)
-     {
-#if 0				/* Make dialogs sticky? */
-	if (EoGetDesk(ewin) != DesksGetCurrent())
-	   EwinMoveToDesktop(ewin, DesksGetCurrent());
-#endif
-	EwinRaise(ewin);
-	EwinShow(ewin);
-	return;
      }
 
    if (d->item)
@@ -641,10 +639,43 @@ DialogShowArranged(Dialog * d, int center)
    d->h = h;
    EResizeWindow(d->win, w, h);
 
+   ICCCM_SetSizeConstraints(d->ewin, d->w, d->h, d->w, d->h, 0, 0, 1, 1,
+			    0.0, 65535.0);
+
+   if (resize)
+     {
+	EwinResize(d->ewin, d->w, d->h);
+	d->resize = 1;
+	DialogRedraw(d);
+	DialogUpdate(d);
+	d->resize = 0;
+	ArrangeEwinCentered(d->ewin);
+     }
+}
+
+static void
+DialogShowArranged(Dialog * d, int center)
+{
+   EWin               *ewin;
+
+   ewin = FindEwinByDialog(d);
+   if (ewin)
+     {
+#if 0				/* Make dialogs sticky? */
+	if (EoGetDesk(ewin) != DesksGetCurrent())
+	   EwinMoveToDesktop(ewin, DesksGetCurrent());
+#endif
+	EwinRaise(ewin);
+	EwinShow(ewin);
+	return;
+     }
+
    ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG, d,
 			      DialogEwinInit);
    if (!ewin)
       return;
+
+   DialogArrange(d, 0);
 
    ewin->client.event_mask |= KeyPressMask;
    ESelectInput(d->win, ewin->client.event_mask);
@@ -653,11 +684,11 @@ DialogShowArranged(Dialog * d, int center)
 
    if (ewin->state.placed)
      {
-	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), w, h);
+	EwinMoveResize(ewin, EoGetX(ewin), EoGetY(ewin), d->w, d->h);
      }
    else
      {
-	EwinResize(ewin, w, h);
+	EwinResize(ewin, d->w, d->h);
 	if (center || FindADialog() == 1)
 	   ArrangeEwinCentered(ewin);
 	else
@@ -1029,6 +1060,10 @@ DialogRealizeItem(Dialog * d, DItem * di)
    EImage             *im;
    EImageBorder       *pad;
 
+   if (di->realized && di->type != DITEM_TABLE)
+      return;
+   di->realized = 1;
+
    if (di->type == DITEM_BUTTON)
      {
 	def = "DIALOG_WIDGET_BUTTON";
@@ -1081,6 +1116,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
      }
 
    register_win_callback = 1;
+
    switch (di->type)
      {
      case DITEM_SLIDER:
@@ -2060,15 +2096,28 @@ DialogItemAreaSetEventFunc(DItem * di, DialogItemCallbackFunc * func)
 }
 
 void
-DialogFreeItem(DItem * di)
+DialogItemTableEmpty(DItem * di)
+{
+   int                 i;
+
+   if (di->type != DITEM_TABLE)
+      return;
+
+   for (i = 0; i < di->item.table.num_items; i++)
+      DialogItemDestroy(di->item.table.items[i], 1);
+
+   if (di->item.table.items)
+      Efree(di->item.table.items);
+
+   di->item.table.items = NULL;
+   di->item.table.num_items = 0;
+}
+
+static void
+DialogItemDestroy(DItem * di, int clean)
 {
    if (di->type == DITEM_TABLE)
-     {
-	int                 i;
-
-	for (i = 0; i < di->item.table.num_items; i++)
-	   DialogFreeItem(di->item.table.items[i]);
-     }
+      DialogItemTableEmpty(di);
 
    if (di->text)
       Efree(di->text);
@@ -2077,9 +2126,19 @@ DialogFreeItem(DItem * di)
      {
      default:
 	break;
+     case DITEM_CHECKBUTTON:
+	if (!clean)
+	   break;
+	EDestroyWindow(di->item.check_button.check_win);
+	break;
      case DITEM_IMAGE:
 	if (di->item.image.image)
 	   Efree(di->item.image.image);
+	break;
+     case DITEM_RADIOBUTTON:
+	if (!clean)
+	   break;
+	EDestroyWindow(di->item.radio_button.radio_win);
 	break;
      case DITEM_SLIDER:
 	if (di->item.slider.ic_base)
@@ -2088,13 +2147,21 @@ DialogFreeItem(DItem * di)
 	   ImageclassDecRefcount(di->item.slider.ic_knob);
 	if (di->item.slider.ic_border)
 	   ImageclassDecRefcount(di->item.slider.ic_border);
+	if (!clean)
+	   break;
+	EDestroyWindow(di->item.slider.base_win);
+	EDestroyWindow(di->item.slider.knob_win);
+	EDestroyWindow(di->item.slider.border_win);
 	break;
-     case DITEM_TABLE:
-	if (di->item.table.items)
-	   Efree(di->item.table.items);
+     case DITEM_AREA:
+	if (!clean)
+	   break;
+	EDestroyWindow(di->item.area.area_win);
 	break;
      }
 
+   if (clean && di->win)
+      EDestroyWindow(di->win);
    if (di->iclass)
       ImageclassDecRefcount(di->iclass);
    if (di->tclass)
