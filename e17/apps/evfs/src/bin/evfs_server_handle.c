@@ -459,7 +459,8 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 			printf("Dest is a dir: %s\n", command->file_command.files[num_files-1]->path);
 			printf("Res: %d\n", res);
 		} else {
-			printf("Dest not a dir: %s://%s\n",  command->file_command.files[num_files-1]->plugin_uri, command->file_command.files[num_files-1]->path);
+			printf("Dest not a dir: %s://%s\n",  command->file_command.files[num_files-1]->plugin_uri,
+				command->file_command.files[num_files-1]->path);
 			printf("Res: %d\n", res);
 		}*/
 
@@ -508,6 +509,8 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 				  file_stat);
 			  }
 
+			  printf("Rewritten destination: '%s'\n", rewrite_dest->path);
+
 	          } else {
 	             Ecore_List *directory_list = NULL;
 		     int newlen;
@@ -525,8 +528,14 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 			     newlen = strlen(newdir_rewrite->path)+1+strlen(pos+1)+1;
 			     printf("Newlen is: %d\n", newlen);
 			     newdir_rewrite->path = realloc(newdir_rewrite->path, newlen);
-			     newdir_rewrite->path[origlen] = '/';
-			     strncat(&newdir_rewrite->path[origlen+1], pos+1, strlen(pos)-1);
+			    
+			     /*Handle the root dir*/
+			     if (strcmp(newdir_rewrite->path, "/")) {
+				     newdir_rewrite->path[origlen] = '/';
+				     strncat(&newdir_rewrite->path[origlen+1], pos+1, strlen(pos)-1);
+			     } else {
+				     strncat(&newdir_rewrite->path[origlen], pos+1, strlen(pos)-1);
+			     }
 		     }
 		     
 

@@ -100,6 +100,8 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 		}
 		
 	}
+
+	ecore_list_destroy(info_files);
 }
 
 
