@@ -117,11 +117,13 @@ _ex_tab_delete()
    D(("Delete tab %d\n", e->cur_tab->num));
 
    D(("Remove from list\n"));
-//   e->tabs = evas_list_remove(e->tabs, e->cur_tab);
+   e->tabs = evas_list_remove(e->tabs, e->cur_tab);
 
    D(("Free\n"));
    etk_notebook_page_remove(ETK_NOTEBOOK(e->notebook), e->cur_tab->num);
- //  E_FREE(e->cur_tab);
+   /* Set the cur_tab on the new one */
+   e->cur_tab = evas_list_nth(e->tabs, etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook)));
+//   E_FREE(e->cur_tab);
 }
 
 void
@@ -428,7 +430,7 @@ _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    _ex_main_populate_files(e, NULL);
-   etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, _ex_file_get(e->cur_tab->cur_path));
+   etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook)), _ex_file_get(e->cur_tab->cur_path));
 }
 
 static void
