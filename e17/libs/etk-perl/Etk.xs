@@ -3702,10 +3702,14 @@ etk_tree_append(tree)
         RETVAL
 
 Etk_Tree_Row *
-etk_tree_append_to_row(row, ...)
+etk_tree_append_to_row(row)
 	Etk_Tree_Row *	row
       ALIAS:
 	AppendToRow=1
+	CODE:
+	RETVAL = etk_tree_append_to_row(row, NULL);
+	OUTPUT:
+	RETVAL
 
 Etk_Scrolled_View *
 etk_tree_scrolled_view_get(tree)
@@ -4305,6 +4309,7 @@ fields_get(row, col)
 	Etk_Tree_Col * column;
 	SV ** model;
 	int i;
+	Etk_Bool c;
 	double d;
 	char *c1, *c2, *c3;
 	PPCODE:
@@ -4316,9 +4321,12 @@ fields_get(row, col)
 		int type = SvIV(*model);
 		switch(type) {
 			case mINT:
-			case mCHECKBOX:
 				etk_tree_row_fields_get(row, column, &i, NULL);
 				XPUSHs(sv_2mortal(newSViv(i)));
+				break;
+			case mCHECKBOX:
+				etk_tree_row_fields_get(row, column, &c, NULL);
+				XPUSHs(sv_2mortal(newSViv(c)));
 				break;
 			case mDOUBLE:
 				etk_tree_row_fields_get(row, column, &d, NULL);

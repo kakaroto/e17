@@ -18,7 +18,13 @@ SV * GetSignalEvent(Etk_Object * object, void * value, Callback_Signal_Data * cb
 	Etk_Event_Mouse_Move *event = value;
 	event_rv = newSVEventMouseMove(event);
      }
-   else if(!strcmp(cbd->signal_name, "row_mouse_in") || !strcmp(cbd->signal_name, "row_mouse_out"))
+   else if(!strcmp(cbd->signal_name, "row_mouse_in") || 
+		   !strcmp(cbd->signal_name, "row_mouse_out")||
+		   !strcmp(cbd->signal_name, "row_selected")||
+		   !strcmp(cbd->signal_name, "row_unselected")||
+		   !strcmp(cbd->signal_name, "row_activated")||
+		   !strcmp(cbd->signal_name, "cell_value_changed")
+		   )
      {
 	event_rv = newSVEtkTreeRowPtr((Etk_Tree_Row *)value);
      }

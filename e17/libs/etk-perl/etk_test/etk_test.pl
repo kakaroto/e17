@@ -427,11 +427,16 @@ sub tree_window_show
     my $col3 = $tree->ColNew("Column 3", Etk::Tree::Model::Image->new($tree, FromFile), 60);
     my $col4 = $tree->ColNew("Column 4", Etk::Tree::Model::Checkbox->new($tree), 40);
 
-    $col2->SignalConnect("cell_value_changed", 
+    $col4->SignalConnect("cell_value_changed", 
 	sub {
-	    # TODO: we need to implement etk_tree_row_fields_get
-	    # why is this getting called if we're not clicking?
-	    # print "toggle!\n";
+		my $self = shift;
+		my $row = shift;
+
+		if ($row->FieldsGet($self)) {
+			print "Checkbox activated\n";
+		} else {
+			print "Checkbox deactivated\n";
+		}
 	}
     );
 
@@ -440,10 +445,19 @@ sub tree_window_show
     for(my $i = 0; $i < 1000; $i++)
     {
 	my $row = $tree->Append();
-	$row->FieldsSet($col1, Etk::Theme::icon_theme_get(), "places/user-home_16", "Row1");
+	$row->FieldsSet($col1, Etk::Theme::IconThemeGet(), "places/user-home_16", "Row1");
 	$row->FieldsSet($col2, 10);
 	$row->FieldsSet($col3, "images/1star.png");
-	$row->FieldsSet($col4, 1);
+
+	my $row2 = $row->AppendToRow();
+	$row2->FieldsSet($col1, Etk::Theme::IconThemeGet(), "places/folder_16", "Row2");
+	$row2->FieldsSet($col2, 20);
+	$row2->FieldsSet($col3, "images/2stars.png");
+
+	my $row3 = $row2->AppendToRow();
+	$row3->FieldsSet($col1, Etk::Theme::IconThemeGet(), "mimetypes/text-x-generic_16", "Row3");
+	$row3->FieldsSet($col2, 30);
+	$row3->FieldsSet($col3, "images/3stars.png");
     }
     $tree->Thaw();
     
@@ -466,31 +480,58 @@ sub tree_window_show
 
     $tree->Build();        
     tree_add_items($tree, 500, @cols);
+
+    $tree->SignalConnect("row_selected", 
+    	sub {
+		my $self = shift;
+		my $row = shift;
+		# XXX moo
+		my @fields = $row->FieldsGet($tree->NthColGet(0));
+
+		print "Row selected: ", join " ", @fields, "\n";
+	}
+	);
+
+    $tree->SignalConnect("row_unselected", 
+    	sub {
+	}
+	);
+
+    $tree->SignalConnect("row_activated", 
+    	sub {
+	}
+	);
+    
     my $frame = Etk::Frame->new("List Actions");
     $table->Attach($frame, 0, 1, 2, 2, 0, 0, HFill | VFill);
     my $hbox = Etk::HBox->new(1, 10);
 
     $frame->Add($hbox); 
     
-    $hbox->Append(Etk::Button::new_with_label("Clear"));
-
     my $button;
+    $button = Etk::Button::new_with_label("Clear");
+    $button->SignalConnect("clicked",
+    	sub {
+		$tree->Clear();
+	}
+	);
+    $hbox->Append($button, BoxStart, BoxExpandFill);
 
     $button = Etk::Button::new_with_label("Add 5 rows");
     $button->SignalConnect("clicked", sub { tree_add_items($tree, 5, @cols) });
-    $hbox->Append($button);
+    $hbox->Append($button, BoxStart, BoxExpandFill);
 
     $button = Etk::Button::new_with_label("Add 50 rows");
     $button->SignalConnect("clicked", sub { tree_add_items($tree, 50, @cols) });
-    $hbox->Append($button);
+    $hbox->Append($button, BoxStart, BoxExpandFill);
 
     $button = Etk::Button::new_with_label("Add 500 rows");
     $button->SignalConnect("clicked", sub { tree_add_items($tree, 500, @cols) });
-    $hbox->Append($button);
+    $hbox->Append($button, BoxStart, BoxExpandFill);
 
     $button = Etk::Button::new_with_label("Add 5000 rows");
     $button->SignalConnect("clicked", sub { tree_add_items($tree, 5000, @cols) });
-    $hbox->Append($button);
+    $hbox->Append($button, BoxStart, BoxExpandFill);
 
     
     my $ascendant = 1;
@@ -504,7 +545,7 @@ sub tree_window_show
 	    $ascendant = !$ascendant;
 	}
     );
-    $hbox->Append($button);    
+    $hbox->Append($button, BoxStart, BoxExpandFill);    
     
     $win->Add($table);
     $win->ShowAll();
