@@ -56,10 +56,10 @@ struct Etk_Notebook
 Etk_Type *etk_notebook_type_get();
 Etk_Widget *etk_notebook_new();
 
-int  etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
-int  etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
-int  etk_notebook_page_insert(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child, int position);
-void etk_notebook_page_remove(Etk_Notebook *notebook, int page_num);
+int         etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
+int         etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
+int         etk_notebook_page_insert(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child, int position);
+Etk_Widget *etk_notebook_page_remove(Etk_Notebook *notebook, int page_num);
 
 int  etk_notebook_num_pages_get(Etk_Notebook *notebook);
 void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num);

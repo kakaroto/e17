@@ -161,21 +161,24 @@ int etk_notebook_page_insert(Etk_Notebook *notebook, const char *tab_label, Etk_
 }
 
 /**
- * @brief Removes from the notebook the page corresponding to the index
+ * @brief Removes from the notebook the page corresponding to the index, after having unpacked the child of the page
  * @param notebook a notebook
  * @param page_num the index of the page to remove
- * @warning The widget of the child of the page will be automatically destroyed too.
- * To avoid this, call etk_notebook_page_child_set(notebook, page_num, NULL); before
+ * @return Returns the child that was packed in the page, or NULL if the page had no child
+ * @note This function does not destroy the child of the page, it just unpack it
  */
-void etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
+Etk_Widget *etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
 {
    Evas_List *l;
    Etk_Notebook_Page *page, *new_current = NULL;
+   Etk_Widget *child;
    
    if (!notebook || !(l = evas_list_nth_list(notebook->pages, page_num)))
-      return;
+      return NULL;
    
    page = l->data;
+   child = etk_bin_child_get(ETK_BIN(page->frame));
+   etk_bin_child_set(ETK_BIN(page->frame), NULL);
    etk_object_destroy(ETK_OBJECT(page->frame));
    etk_object_destroy(ETK_OBJECT(page->tab));
    
@@ -203,6 +206,7 @@ void etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
    }
    
    etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
+   return child;
 }
 
 /**

@@ -91,7 +91,7 @@ Etk_Type *etk_object_type_get()
 /**
  * @brief Creates a new object: it calls the corresponding constructors (from the constructor of the base class to the
  * constructor of the more derived class) and then sets the values of the given properties
- * @param object_type the type of the object to create
+ * @param object_type the type of object to create
  * @param first_property the name of the first property to set
  * @param ... the value of the first property, followed by any number of property-name/property-value pairs,
  * terminated with NULL
@@ -115,7 +115,7 @@ Etk_Object *etk_object_new(Etk_Type *object_type, const char *first_property, ..
 /**
  * @brief Creates a new object: it calls the corresponding constructors (from the constructor of the base class to the
  * constructor of the more derived class) and then sets the values of the given properties
- * @param object_type the type of the object to create
+ * @param object_type the type of object to create
  * @param first_property the name of the first property to set
  * @param args the value of the first property, followed by any number of property-name/property-value pairs,
  * terminated with NULL

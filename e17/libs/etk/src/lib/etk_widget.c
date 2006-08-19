@@ -282,12 +282,12 @@ Etk_Type *etk_widget_type_get()
 /**
  * @brief Creates a new widget: it calls the corresponding constructors (from the constructor of the base class to the
  * constructor of the more derived class) and then sets the values of the given properties
- * @param widget_type the type of the widget to create
+ * @param widget_type the type of widget to create
  * @param first_property the name of the first property to set
  * @param ... the value of the first property, followed by any number of property-name/property-value pairs,
  * terminated with NULL
  * @return Returns the new Etk_Widget of type @a widget_type
- * @note This function just call etk_object_new() and casts the result to an "Etk_Widget *"
+ * @note This function just calls etk_object_new() and casts the result to an "Etk_Widget *"
  */
 Etk_Widget *etk_widget_new(Etk_Type *widget_type, const char *first_property, ...)
 {
@@ -305,7 +305,7 @@ Etk_Widget *etk_widget_new(Etk_Type *widget_type, const char *first_property, ..
 }
 
 /**
- * @brief Sets the name of the widget
+ * @brief Sets the name of the widget. This is used mainly for debugging
  * @param widget a widget
  * @param name the name to set
  */
@@ -320,7 +320,7 @@ void etk_widget_name_set(Etk_Widget *widget, const char *name)
 }
 
 /**
- * @brief Gets the name of the widget
+ * @brief Gets the name of the widget. This is used mainly for debugging
  * @param widget a widget
  * @return Returns the name of the widget
  */
@@ -349,8 +349,7 @@ void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h)
 
 /**
  * @brief Gets the inner geometry of the widget, relative to the top left corner of the Evas where it is drawn. @n
- * The inner geometry takes the inset values (horizontal and vertical paddings) into account (inset values are defined
- * by the theme)
+ * The inner geometry takes the inset values (horizontal and vertical paddings) into account
  * @param widget a widget
  * @param x the location where to store the inner x position of the widget
  * @param y the location where to store the inner y position of the widget
@@ -368,7 +367,7 @@ void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, i
 /**
  * @brief Gets the toplevel widget that contains @a widget
  * @param widget a widget
- * @return Returns the toplevel widget if @a widget is contained in a toplevel widget, NULL on failure
+ * @return Returns the toplevel widget if @a widget is contained by toplevel widget, NULL on failure
  */
 Etk_Toplevel_Widget *etk_widget_toplevel_parent_get(Etk_Widget *widget)
 {
@@ -380,7 +379,7 @@ Etk_Toplevel_Widget *etk_widget_toplevel_parent_get(Etk_Widget *widget)
 /**
  * @brief Gets the evas of the toplevel widget that contains @a widget
  * @param widget a widget
- * @return Returns the evas if @a widget is contained in a toplevel widget, or NULL on failure
+ * @return Returns the evas if @a widget is contained by toplevel widget, or NULL on failure
  */
 Evas *etk_widget_toplevel_evas_get(Etk_Widget *widget)
 {
@@ -393,7 +392,7 @@ Evas *etk_widget_toplevel_evas_get(Etk_Widget *widget)
  * @brief Sets the theme-file of the widget
  * @param widget a widget
  * @param theme_file the path of the .edj theme-file. If NULL, it will use the theme-file of its theme-parent
- * (or parent if is has no theme-parent). If none of its theme-parents has a non-null theme file, it will use the
+ * (or parent if it is has no theme-parent). If none of its theme-parents has a non-null theme-file, it will use the
  * current theme-file of Etk. @n
  * Children of the widget will automatically inherit this theme-file if they have no theme-file already set
  */
