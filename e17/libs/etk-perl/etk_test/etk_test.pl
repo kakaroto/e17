@@ -485,20 +485,24 @@ sub tree_window_show
     	sub {
 		my $self = shift;
 		my $row = shift;
-		# XXX moo
-		my @fields = $row->FieldsGet($tree->NthColGet(0));
+		my $col = $tree->NthColGet(0);
+		my @fields = $row->FieldsGet($col);
 
 		print "Row selected: ", join " ", @fields, "\n";
 	}
 	);
 
-    $tree->SignalConnect("row_unselected", 
-    	sub {
-	}
-	);
+    $tree->SignalConnect("row_unselected", sub { print "Row unselected\n" } );
 
     $tree->SignalConnect("row_activated", 
     	sub {
+		my $self = shift;
+		my $row = shift;
+		
+		print "Row activated: ", 
+			$row->FieldsGet($tree->NthColGet(0)), " ",
+			$row->FieldsGet($tree->NthColGet(1)), " ",
+			$row->FieldsGet($tree->NthColGet(2)), "\n";
 	}
 	);
     
@@ -510,11 +514,7 @@ sub tree_window_show
     
     my $button;
     $button = Etk::Button::new_with_label("Clear");
-    $button->SignalConnect("clicked",
-    	sub {
-		$tree->Clear();
-	}
-	);
+    $button->SignalConnect("clicked", sub { $tree->Clear() });
     $hbox->Append($button, BoxStart, BoxExpandFill);
 
     $button = Etk::Button::new_with_label("Add 5 rows");

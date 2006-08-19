@@ -19,11 +19,13 @@
 
 #define mINT 1 
 #define mDOUBLE 2
-#define mICONTEXT 3 
-#define mIMAGE 4
+#define mICONTEXTF 3 
+#define mIMAGEF 4
 #define mCHECKBOX 5
 #define mPROGRESSBAR 6
 #define mTEXT 7
+#define mICONTEXTE 8 
+#define mIMAGEE 9
 
 static void
 notification_callback(Etk_Object * object, const char * property_name, void * data)
@@ -395,7 +397,7 @@ etk_shutdown()
 	Shutdown=1
 	CODE:
 	etk_shutdown();
-	FreeObjectCache();
+	//FreeObjectCache();
 
 
 MODULE = Etk::Alignment		PACKAGE = Etk::Alignment	PREFIX = etk_alignment_
@@ -2772,12 +2774,6 @@ signal_disconnect(object, signal_name, callback)
 	else
  	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
 
-void
-DESTROY(object)
-	Etk_Object * object
-	CODE:
-	FreeEtkObject(object);
-
 
 MODULE = Etk::Paned	PACKAGE = Etk::Paned	PREFIX = etk_paned_
 	
@@ -3808,8 +3804,6 @@ Etk_Tree_Col *
 etk_tree_nth_col_get(tree, nth)
 	Etk_Tree *	tree
 	int	nth
-      ALIAS:
-	NthColGet=1
 
 int
 etk_tree_num_cols_get(tree)
@@ -3902,8 +3896,6 @@ etk_tree_col_new(tree, title, model, width)
 	char *	title
 	SV *	model
 	int	width
-      ALIAS:
-	ColNew=1
 	CODE:
 	Etk_Tree_Model * modeldata;
 	Etk_Tree_Col * col;
@@ -4144,9 +4136,15 @@ new(class, tree, type)
 	PPCODE:
 	Etk_Tree_Model * model;
 	SV * ret;
+	SV * mod;
+	if (type == ETK_TREE_FROM_FILE)
+		mod = newSViv(mICONTEXTF);
+	else
+		mod = newSViv(mICONTEXTE);
+
 	model = etk_tree_model_icon_text_new(tree, type);
 	ret = newSVEtkTreeModelPtr(model);
-	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mICONTEXT), 0);
+	hv_store( (HV*)SvRV(ret), "_model", 6, mod, 0);
 	XPUSHs(sv_2mortal(ret));
 
 
@@ -4160,9 +4158,14 @@ new(class, tree, type)
 	PPCODE:
 	Etk_Tree_Model * model;
 	SV * ret;
+	SV * mod;
+	if (type == ETK_TREE_FROM_FILE)
+		mod = newSViv(mIMAGEF);
+	else
+		mod = newSViv(mIMAGEE);
 	model = etk_tree_model_image_new(tree, type);
 	ret = newSVEtkTreeModelPtr(model);
-	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mIMAGE), 0);
+	hv_store( (HV*)SvRV(ret), "_model", 6, mod, 0);
 	XPUSHs(sv_2mortal(ret));
 
 MODULE = Etk::Tree::Model::Int	PACKAGE = Etk::Tree::Model::Int	PREFIX = etk_tree_model_int_
@@ -4275,19 +4278,17 @@ fields_set(row, col, ...)
 			case mDOUBLE:
 				etk_tree_row_fields_set(row, column, SvNV(ST(2)), NULL);
 				break;
-			case mICONTEXT:
-				if (items == 3) 
-					etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), NULL);
-				else if (items == 4)
-					etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), SvPV_nolen(ST(3)), NULL);
-				else 
-					etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), SvPV_nolen(ST(3)), SvPV_nolen(ST(4)), NULL);
+			case mICONTEXTF:
+				etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), SvPV_nolen(ST(3)), NULL);
 				break;
-			case mIMAGE:
-				if (items == 3)
-					etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), NULL);
-				else
-					etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), SvPV_nolen(ST(3)), NULL);
+			case mICONTEXTE:
+				etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), SvPV_nolen(ST(3)), SvPV_nolen(ST(4)), NULL);
+				break;
+			case mIMAGEF:
+				etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), NULL);
+				break;
+			case mIMAGEE:
+				etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), SvPV_nolen(ST(3)), NULL);
 				break;
 			case mPROGRESSBAR:
 				etk_tree_row_fields_set(row, column, SvNV(ST(2)), SvPV_nolen(ST(3)), NULL);
@@ -4332,16 +4333,25 @@ fields_get(row, col)
 				etk_tree_row_fields_get(row, column, &d, NULL);
 				XPUSHs(sv_2mortal(newSVnv(d)));
 				break;
-			case mICONTEXT:
+			case mICONTEXTE:
 				etk_tree_row_fields_get(row, column, &c1, &c2, &c3, NULL);
 				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
-				if (c2) XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
-				if (c3) XPUSHs(sv_2mortal(newSVpv(c3, strlen(c3))));
+				XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
+				XPUSHs(sv_2mortal(newSVpv(c3, strlen(c3))));
 				break;
-			case mIMAGE:
+			case mICONTEXTF:
 				etk_tree_row_fields_get(row, column, &c1, &c2, NULL);
 				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
-				if (c2) XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
+				XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
+				break;
+			case mIMAGEF:
+				etk_tree_row_fields_get(row, column, &c1, NULL);
+				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
+				break;
+			case mIMAGEE:
+				etk_tree_row_fields_get(row, column, &c1, &c2, NULL);
+				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
+				XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
 				break;
 			case mPROGRESSBAR:
 				etk_tree_row_fields_get(row, column, &d, &c1, NULL);

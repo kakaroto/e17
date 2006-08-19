@@ -33,11 +33,7 @@ $i = $b->ActiveItemGet();
 ok( ref $i, 	"ActiveItemGet ");
 ok($i->isa("Etk::Combobox::Item"), 	"Class Check");
 
-SKIP: { 
-	skip "WTF?", 1;
-
-	is($i->DataGet(), "moo",	"Which Item");
-}
+is($i->DataGet(), "moo",	"Which Item");
 
 print "TODO: Complete this...\n";
 

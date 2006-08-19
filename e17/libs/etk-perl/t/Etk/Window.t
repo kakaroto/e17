@@ -23,16 +23,16 @@ $window->IconifiedSet(1);
 ok($window->IconifiedGet(),	"IconifiedSet/Get");
 
 SKIP: {
-	skip "Need to be visible", 2;
+	skip "Need to be visible", 3;
 $window->MaximizedSet(1);
 is($window->MaximizedGet(),1,	"MaximizedSet/Get");
 
 $window->StickySet(1);
 is($window->StickyGet(),1,	"StickSet/Get");
-}
 
 $window->FullscreenSet(1);
 is($window->FullscreenGet(),1,	"FullscreenSet/Get");
 
+}
 
 

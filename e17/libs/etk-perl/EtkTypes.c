@@ -1,6 +1,7 @@
 #include "EtkTypes.h"
 
 
+#if 0
 static HV * ObjectCache = NULL;
 
 static void SetEtkObject(SV * perl_object, Etk_Object * object)
@@ -86,6 +87,8 @@ void FreeObjectCache()
 	ObjectCache = NULL;
 }
 
+#endif
+
 void * SvObj(SV *o, char * classname)
 {
 #ifdef DEBUG
@@ -141,7 +144,7 @@ SV * newSVObj(void *object, char * classname, int * newref)
 
 void __etk_perl_init() {
 
-	ObjectCache = newHV();
+//	ObjectCache = newHV();
 
 #define __(A, B)\
 	av_push(get_av("Etk::"A"::ISA", TRUE), newSVpv("Etk::"B, strlen("Etk::"B)));

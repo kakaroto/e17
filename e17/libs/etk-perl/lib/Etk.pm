@@ -17,6 +17,23 @@ END {
 	Etk::Shutdown();
 }
 
+
+package Etk::Tree;
+
+sub ColNew {
+	my ($tree, $title, $model, $width) = @_;
+	my $col = col_new($tree, $title, $model, $width);
+	push @{$tree->{_COLS}}, $col;
+	return $col;
+}
+
+sub NthColGet {
+	my $self = shift;
+	my $nth = shift || 0;
+	return $self->{_COLS}->[$nth];
+}
+
+
 1;
 __END__
 
