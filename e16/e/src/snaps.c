@@ -1081,7 +1081,7 @@ _DlgFillRemember(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 
 const DialogDef     DlgRemember = {
    "CONFIGURE_PAGER",
-   NULL,
+   N_("Remember"),
    N_("Remembered Windows Settings"),
    "SOUND_SETTINGS_PAGER",
    "pix/snapshots.png",
