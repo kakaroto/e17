@@ -866,6 +866,8 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
                                                                   0, data,
                                                                   size));
 
+	free(data);
+
      }
 
     /*If there's a string ref, write it*/

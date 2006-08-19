@@ -87,7 +87,7 @@ evfs_filereference* evfs_fs_trash_proxy_create(evfs_filereference* ref, char* ne
 	newfile->path = calloc(size, 1);
 	snprintf(newfile->path, size, "%s/%s", evfs_fs_trash_files, newpath);
 	free(newfile->plugin_uri);
-	
+
 	newfile->plugin_uri = strdup("file");
 	newfile->plugin = posix_plugin;
 
@@ -149,7 +149,10 @@ evfs_plugin_init()
 
    snprintf(evfs_fs_trash_info, PATH_MAX, "%s/.Trash/info", getenv("HOME"));
    snprintf(evfs_fs_trash_files, PATH_MAX, "%s/.Trash/files", getenv("HOME"));
+
+   /*FIXME - this assumes the trash plugin is loaded after posix - not always true*/
    posix_plugin = evfs_get_plugin_for_uri(evfs_server_get(), "file");
+
    next_trash_file = NULL;
    
    evfs_plugin_functions *functions = calloc(1, sizeof(evfs_plugin_functions));
@@ -271,7 +274,7 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
                long size)
 {
 	printf("evfs_fs_trash.c read - STUB\n");	
-	return -1;
+	return 0;
 }
 
 int
