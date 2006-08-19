@@ -112,6 +112,22 @@ _e17genmenu_shutdown()
    return;
 }
 
+
+#ifdef DEBUG
+static void
+_print_theme(void *value, void *user_data)
+{
+   Ecore_Hash_Node    *node;
+   char               *key, *theme;
+
+   node = (Ecore_Hash_Node *) value;
+   key = (char *)node->key;
+   theme = (char *)node->value;
+   printf("FDO icon theme %s is in %s\n", key, theme);
+}
+#endif
+
+
 double convert_time = 0.0, icon_time = 0.0, cache_time = 0.0, generate_time = 0.0;
 int menu_count, item_count, reject_count, not_over_count, not_found_count;
 
@@ -122,6 +138,7 @@ main(int argc, char **argv)
    double start, begin, paths, gen;
 #ifdef DEBUG
    char *this_path;
+   Ecore_Hash *icon_themes;
 #endif
 
    /* Init E Stuff */
@@ -159,8 +176,10 @@ main(int argc, char **argv)
    ecore_list_goto_first(ecore_desktop_paths_kde_legacy);
    while ((this_path = ecore_list_next(ecore_desktop_paths_kde_legacy)) != NULL)
       printf("FDO kde legacy path = %s\n", this_path);
-#endif
 
+   if ((icon_themes = ecore_desktop_icon_theme_list()))
+      ecore_hash_for_each_node(icon_themes, _print_theme, NULL);
+#endif
 
    /* Just being paranoid, and cause people have removed these during testing. */
    snprintf(path, sizeof(path), "%s/.e/e/applications/all", ecore_desktop_home_get());
