@@ -120,9 +120,9 @@ main(int argc, char **argv)
 {
    char path[PATH_MAX];
    double start, begin, paths, gen;
-//#ifdef DEBUG
+#ifdef DEBUG
    char *this_path;
-//#endif
+#endif
 
    /* Init E Stuff */
    _e17genmenu_init();
@@ -139,7 +139,7 @@ main(int argc, char **argv)
    ecore_desktop_init();
    paths = ecore_time_get() - begin;
 
-//#ifdef DEBUG
+#ifdef DEBUG
    /* You can iterate through the various path lists as needed. */
    ecore_list_goto_first(ecore_desktop_paths_config);
    while ((this_path = ecore_list_next(ecore_desktop_paths_config)) != NULL)
@@ -159,7 +159,7 @@ main(int argc, char **argv)
    ecore_list_goto_first(ecore_desktop_paths_kde_legacy);
    while ((this_path = ecore_list_next(ecore_desktop_paths_kde_legacy)) != NULL)
       printf("FDO kde legacy path = %s\n", this_path);
-//#endif
+#endif
 
 
    /* Just being paranoid, and cause people have removed these during testing. */
@@ -188,20 +188,20 @@ main(int argc, char **argv)
 #ifdef DEBUG
    fprintf(stderr, "Regenerating Eapp Caches...\n");
 #endif
-   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s" EAPPDIR " -r", ecore_desktop_home_get());
-   system(path);
-   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite -r", ecore_desktop_home_get());
-   system(path);
+//   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s" EAPPDIR " -r", ecore_desktop_home_get());
+//   system(path);
+//   snprintf(path, sizeof(path), "enlightenment_eapp_cache_gen %s/.e/e/applications/favorite -r", ecore_desktop_home_get());
+//   system(path);
    cache_time += ecore_time_get() - begin;
 
-   printf("********************************************************************************\n");
-   printf("* WARNING!                                                                     *\n");
-   printf("*                                                                              *\n");
-   printf("* E17 will be completely unresponsive for a few minutes after this finishes    *\n");
-   printf("* running.  This is due to a bad interaction with the eap caching code when    *\n");
-   printf("* you generate a lot of eaps at once, like e17genmenu just did.  raster is     *\n");
-   printf("* aware of this problem, and has a fix on his TODO list.                       *\n");
-   printf("********************************************************************************\n");
+//   printf("********************************************************************************\n");
+//   printf("* WARNING!                                                                     *\n");
+//   printf("*                                                                              *\n");
+//   printf("* E17 will be completely unresponsive for a few minutes after this finishes    *\n");
+//   printf("* running.  This is due to a bad interaction with the eap caching code when    *\n");
+//   printf("* you generate a lot of eaps at once, like e17genmenu just did.  raster is     *\n");
+//   printf("* aware of this problem, and has a fix on his TODO list.                       *\n");
+//   printf("********************************************************************************\n");
 
    printf("\nTotal time %3.3f seconds, finding fdo paths %3.3f, converting fdo menus %3.3f, converting to %d (rejected %d) eaps in %d fdo menus %3.3f, generating menus %3.3f, finding icons %3.3f (%d not found), not overwritten %d, generating eap caches %3.3f.\n",
        ecore_time_get() - start, paths, convert_time, item_count, reject_count, menu_count, gen - (icon_time + generate_time), generate_time, icon_time, not_found_count, not_over_count, cache_time);

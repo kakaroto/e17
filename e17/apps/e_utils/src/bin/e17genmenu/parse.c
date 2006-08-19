@@ -183,9 +183,11 @@ parse_desktop_file(char *app, char *menu_path)
 static void
 _parse_process_file(char *file, char *menu_path, G_Eap *eap)
 {
-   char *home, *category, *icon_size, *icon_theme;
-   char path[PATH_MAX], order_path[PATH_MAX];
-   int overwrite;
+   char *home, *category;
+//   char *icon_size, *icon_theme;
+//   char path[PATH_MAX];
+   char order_path[PATH_MAX];
+//   int overwrite;
 
    if (!eap)
       return;
@@ -195,27 +197,28 @@ _parse_process_file(char *file, char *menu_path, G_Eap *eap)
 #endif
 
    /* Get Icon Options */
-   icon_size = get_icon_size();
-   icon_theme = get_icon_theme();
+//   icon_size = get_icon_size();
+//   icon_theme = get_icon_theme();
 
    home = ecore_desktop_home_get();
-   overwrite = get_overwrite();
+//   overwrite = get_overwrite();
 
-   snprintf(path, sizeof(path), "%s" EAPPDIR "/%s", home, eap->eap_name);
+//   snprintf(path, sizeof(path), "%s" EAPPDIR "/%s", home, eap->eap_name);
 
-   if ((ecore_file_exists(path)) && (!overwrite))
-        not_over_count++;
-   else
-      {
-         eap->icon_path = ecore_desktop_icon_find(eap->icon, icon_size, icon_theme);
-         write_icon(path, eap);
-      }
+//   if ((ecore_file_exists(path)) && (!overwrite))
+//        not_over_count++;
+//   else
+//      {
+//         eap->icon_path = ecore_desktop_icon_find(eap->icon, icon_size, icon_theme);
+//         write_icon(path, eap);
+//      }
 
    category = NULL;
    if (menu_path != NULL)
      {
         snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/Converted Menus/%s", home, menu_path);
-        modify_order(order_path, eap->eap_name);
+//        modify_order(order_path, eap->eap_name);
+        modify_order(order_path, file);
      }
    else if (eap->categories != NULL)
      {
@@ -223,7 +226,8 @@ _parse_process_file(char *file, char *menu_path, G_Eap *eap)
         if (category != NULL)
           {
              snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/Generated Menus/%s", home, category);
-             modify_order(order_path, eap->eap_name);
+//             modify_order(order_path, eap->eap_name);
+             modify_order(order_path, file);
           }
      }
    return;

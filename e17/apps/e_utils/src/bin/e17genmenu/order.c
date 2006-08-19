@@ -65,7 +65,7 @@ modify_order(char *path, char *entry)
    fprintf(stderr, "Modifying Order File %s\n", path2);
 #endif
 
-   entry = ecore_file_get_file(entry);
+//   entry = ecore_file_get_file(entry);
    list = ecore_list_new();
 
    /* Stat .order; Create If Not Found */
