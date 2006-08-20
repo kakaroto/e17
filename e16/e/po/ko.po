@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-13 12:30+0200\n"
+"POT-Creation-Date: 2006-08-20 21:37+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -198,7 +198,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/actions.c:314 src/dialog.c:933 src/dialog.c:2139 src/dialog.c:2166
+#: src/actions.c:314 src/dialog.c:1005 src/dialog.c:2273 src/dialog.c:2300
 #: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "확인"
@@ -215,7 +215,7 @@ msgstr "인라이튼먼트 메시지 대화상자"
 msgid "Ignore this"
 msgstr "무시"
 
-#: src/alert.c:574 config/strings.c:123 config/strings.c:183
+#: src/alert.c:574 config/strings.c:124 config/strings.c:186
 msgid "Restart Enlightenment"
 msgstr "인라이튼먼트 재시작"
 
@@ -729,15 +729,15 @@ msgstr ""
 "인라이튼먼트 가상 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/dialog.c:937
+#: src/dialog.c:1012
 msgid "Apply"
 msgstr "적용"
 
-#: src/dialog.c:942 src/pager.c:912 config/strings.c:30 config/strings.c:163
+#: src/dialog.c:1020 src/pager.c:912 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "닫기"
 
-#: src/dialog.c:2166
+#: src/dialog.c:2300
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
@@ -1641,7 +1641,7 @@ msgstr ""
 "인라이튼먼트 포커스\n"
 "설정 대화상자\n"
 
-#: src/menus-misc.c:586 config/strings.c:118
+#: src/menus-misc.c:586 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "잘못된 테마"
@@ -1739,11 +1739,11 @@ msgstr ""
 msgid "Window Options"
 msgstr "창 옵션"
 
-#: src/pager.c:908 config/strings.c:53 config/strings.c:165
+#: src/pager.c:908 config/strings.c:53 config/strings.c:168
 msgid "Iconify"
 msgstr "아이콘화"
 
-#: src/pager.c:916 config/strings.c:164
+#: src/pager.c:916 config/strings.c:167
 msgid "Annihilate"
 msgstr "전멸시킴"
 
@@ -2125,7 +2125,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "창 노출을 줄이기 위해 세이브언더 사용"
 
-#: src/settings.c:504 config/strings.c:176
+#: src/settings.c:504 config/strings.c:179
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "기타 설정"
@@ -2190,6 +2190,11 @@ msgid ""
 msgstr ""
 "인라이튼먼트 툴팁\n"
 "설정 대화상자\n"
+
+#: src/settings.c:694
+#, fuzzy
+msgid "Enlightenment Settings"
+msgstr "인라이튼먼트 시작중..."
 
 #: src/setup.c:130
 msgid ""
@@ -2286,11 +2291,11 @@ msgstr "위치"
 msgid "Border style"
 msgstr "테두리 스타일"
 
-#: src/snaps.c:848 config/strings.c:136
+#: src/snaps.c:848 config/strings.c:138
 msgid "Size"
 msgstr "크기"
 
-#: src/snaps.c:853 config/strings.c:116
+#: src/snaps.c:853 config/strings.c:117
 msgid "Desktop"
 msgstr "데스크탑"
 
@@ -2310,7 +2315,7 @@ msgstr "계층 스택킹"
 msgid "Window List Skip"
 msgstr "창 목록 건너뜀"
 
-#: src/snaps.c:879 config/strings.c:175
+#: src/snaps.c:879 config/strings.c:178
 msgid "Opacity"
 msgstr ""
 
@@ -2362,6 +2367,11 @@ msgstr ""
 #: src/snaps.c:1078
 msgid "There are no active windows with remembered attributes."
 msgstr "속성을 기억할 활성화된 창이 없습니다"
+
+#: src/snaps.c:1084
+#, fuzzy
+msgid "Remember"
+msgstr "기억할 설정..."
 
 #: src/snaps.c:1085
 msgid "Remembered Windows Settings"
@@ -2740,7 +2750,7 @@ msgstr "아래"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:166
+#: config/strings.c:58 config/strings.c:169
 msgid "Raise"
 msgstr ""
 
@@ -2751,7 +2761,7 @@ msgstr ""
 "데스크탑을 제일 위로 올리기 위해서는\n"
 "여기를 클릭하세요.\n"
 
-#: config/strings.c:60 config/strings.c:167
+#: config/strings.c:60 config/strings.c:170
 msgid "Lower"
 msgstr ""
 
@@ -2759,7 +2769,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:62 config/strings.c:169
+#: config/strings.c:62 config/strings.c:172
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "고착 / 잡아뗌"
@@ -2840,7 +2850,7 @@ msgstr "이 데스크탑으로 가기"
 msgid "Create Systray"
 msgstr ""
 
-#: config/strings.c:85 config/strings.c:119
+#: config/strings.c:85 config/strings.c:120
 msgid "Maintenance"
 msgstr ""
 
@@ -2881,318 +2891,331 @@ msgstr ""
 msgid "Regenerate Menus"
 msgstr ""
 
-#: config/strings.c:95 config/strings.c:117
+#: config/strings.c:95 config/strings.c:118
 #, fuzzy
 msgid "Settings"
 msgstr "포커스 설정"
 
 #: config/strings.c:96
+#, fuzzy
+msgid "Enlightenment Settings ..."
+msgstr "인라이튼먼트 시작중..."
+
+#: config/strings.c:97
 msgid "Focus Settings ..."
 msgstr "초점 설정"
 
-#: config/strings.c:97
+#: config/strings.c:98
 msgid "Move & Resize Settings ..."
 msgstr "이동과 크기조정 설정"
 
-#: config/strings.c:98
+#: config/strings.c:99
 msgid "Window Placement Settings ..."
 msgstr "창 배치 설정"
 
-#: config/strings.c:99
+#: config/strings.c:100
 msgid "Multiple Desktop Settings ..."
 msgstr "여러 데스크탑 설정"
 
-#: config/strings.c:100
+#: config/strings.c:101
 msgid "Virtual Desktop Settings ..."
 msgstr "가상 데스크탑 설정"
 
-#: config/strings.c:101
+#: config/strings.c:102
 msgid "Pager Settings ..."
 msgstr "페이저 설정..."
 
-#: config/strings.c:102
+#: config/strings.c:103
 #, fuzzy
 msgid "Menu Settings ..."
 msgstr "기타 설정"
 
-#: config/strings.c:103
+#: config/strings.c:104
 msgid "Autoraise Settings ..."
 msgstr "자동올리기 설정"
 
-#: config/strings.c:104
+#: config/strings.c:105
 msgid "Tooltip Settings ..."
 msgstr "툴팁 설정"
 
-#: config/strings.c:105
+#: config/strings.c:106
 msgid "Audio Settings ..."
 msgstr "오디오 설정"
 
-#: config/strings.c:106
+#: config/strings.c:107
 msgid "Group Settings ..."
 msgstr "페이저 설정..."
 
-#: config/strings.c:107
+#: config/strings.c:108
 msgid "Remember Settings ..."
 msgstr "기억할 설정..."
 
-#: config/strings.c:108
+#: config/strings.c:109
 msgid "Special FX Settings ..."
 msgstr "특수효과 설정"
 
-#: config/strings.c:109
+#: config/strings.c:110
 msgid "Desktop Background Settings ..."
 msgstr "데스크탑 배경 설정"
 
-#: config/strings.c:110
+#: config/strings.c:111
 #, fuzzy
 msgid "Theme Transparency Settings ..."
 msgstr "테마 투명도 설정"
 
-#: config/strings.c:111
+#: config/strings.c:112
 #, fuzzy
 msgid "Composite Settings ..."
 msgstr "툴팁 설정"
 
-#: config/strings.c:112
+#: config/strings.c:113
 #, fuzzy
 msgid "Session Settings ..."
 msgstr "오디오 설정"
 
-#: config/strings.c:113
+#: config/strings.c:114
 msgid "Miscellaneous Settings ..."
 msgstr "기타 설정"
 
-#: config/strings.c:114
+#: config/strings.c:115
 #, fuzzy
 msgid "Enlightenment"
 msgstr "인라이튼먼트 종료"
 
-#: config/strings.c:115 config/strings.c:179
+#: config/strings.c:116 config/strings.c:182
 #, fuzzy
 msgid "User Menus"
 msgstr "메뉴:"
 
-#: config/strings.c:120
+#: config/strings.c:121
 msgid "Help"
 msgstr ""
 
-#: config/strings.c:121
+#: config/strings.c:122
 #, fuzzy
 msgid "About Enlightenment"
 msgstr "인라이튼먼트 %s에 대하여"
 
-#: config/strings.c:122
+#: config/strings.c:123
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:124 config/strings.c:184
+#: config/strings.c:125 config/strings.c:187
 #, fuzzy
 msgid "Log Out"
 msgstr "  예, 로그아웃  "
 
-#: config/strings.c:125
+#: config/strings.c:126
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:126
+#: config/strings.c:127
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:127
+#: config/strings.c:128
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:128
+#: config/strings.c:129
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:129
+#: config/strings.c:130
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:130
+#: config/strings.c:131
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:131
+#: config/strings.c:132
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:132
+#: config/strings.c:133
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:133
+#: config/strings.c:134
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:134
+#: config/strings.c:135
+msgid "Span Xinerama Screens"
+msgstr ""
+
+#: config/strings.c:136
 #, fuzzy
 msgid "Height"
 msgstr "오른쪽"
 
-#: config/strings.c:135
+#: config/strings.c:137
 msgid "Width"
 msgstr ""
 
-#: config/strings.c:137
+#: config/strings.c:139
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:138
+#: config/strings.c:140
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:139
+#: config/strings.c:141
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:140
+#: config/strings.c:142
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:141
+#: config/strings.c:143
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:142
+#: config/strings.c:144
 #, fuzzy
 msgid "On Top"
 msgstr "위"
 
-#: config/strings.c:143
+#: config/strings.c:145
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:144
+#: config/strings.c:146
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:145
+#: config/strings.c:147
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:146
+#: config/strings.c:148
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:147
+#: config/strings.c:149
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:148
-msgid "Toggle Shadows"
-msgstr ""
-
-#: config/strings.c:149
-msgid "Toggle Skip Window Lists"
-msgstr ""
-
 #: config/strings.c:150
-msgid "Toggle Fixed Position"
+msgid "Opaque when focused"
 msgstr ""
 
 #: config/strings.c:151
-msgid "Toggle Fixed Size"
+msgid "Toggle Shadows"
 msgstr ""
 
 #: config/strings.c:152
+msgid "Toggle Skip Window Lists"
+msgstr ""
+
+#: config/strings.c:153
+msgid "Toggle Fixed Position"
+msgstr ""
+
+#: config/strings.c:154
+msgid "Toggle Fixed Size"
+msgstr ""
+
+#: config/strings.c:155
 #, fuzzy
 msgid "Toggle Never Focus"
 msgstr "포커스 갖지않음"
 
-#: config/strings.c:153
+#: config/strings.c:156
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:154
+#: config/strings.c:157
 #, fuzzy
 msgid "Toggle Never Use Area"
 msgstr "포커스 갖지않음"
 
-#: config/strings.c:155
+#: config/strings.c:158
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "아래"
 
-#: config/strings.c:156
+#: config/strings.c:159
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "이 창의 그룹 기억"
 
-#: config/strings.c:157
+#: config/strings.c:160
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:158
+#: config/strings.c:161
 #, fuzzy
 msgid "Select group to add this window to"
 msgstr "   창을 삭제할 그룹을 선택하십시오.   "
 
-#: config/strings.c:159
+#: config/strings.c:162
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:160
+#: config/strings.c:163
 #, fuzzy
 msgid "Remove this window from a group"
 msgstr "이 창의 그룹 기억"
 
-#: config/strings.c:161
+#: config/strings.c:164
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr "  창이 속할 그룹 선택:  \n"
 
-#: config/strings.c:162
+#: config/strings.c:165
 #, fuzzy
 msgid "Show/Hide this window's group(s)"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: config/strings.c:168
+#: config/strings.c:171
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "쉐이드 상태"
 
-#: config/strings.c:170
+#: config/strings.c:173
 #, fuzzy
 msgid "Remember..."
 msgstr "기억할 설정..."
 
-#: config/strings.c:171
+#: config/strings.c:174
 #, fuzzy
 msgid "Window Size"
 msgstr "창 목록 건너뜀"
 
-#: config/strings.c:172
+#: config/strings.c:175
 #, fuzzy
 msgid "Set Stacking"
 msgstr "포커스 설정"
 
-#: config/strings.c:173
+#: config/strings.c:176
 #, fuzzy
 msgid "Set Border Style"
 msgstr "테두리 스타일"
 
-#: config/strings.c:174
+#: config/strings.c:177
 #, fuzzy
 msgid "Window Groups"
 msgstr "창 그룹 오류"
 
-#: config/strings.c:177
+#: config/strings.c:180
 #, fuzzy
 msgid "Remember State"
 msgstr "기억할 설정..."
 
-#: config/strings.c:180
+#: config/strings.c:183
 #, fuzzy
 msgid "User Application List"
 msgstr "기억할 응용프로그램 속성"
 
-#: config/strings.c:181
+#: config/strings.c:184
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:182
+#: config/strings.c:185
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "인라이튼먼트 종료"

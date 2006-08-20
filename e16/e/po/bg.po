@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-13 12:30+0200\n"
+"POT-Creation-Date: 2006-08-20 21:37+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -194,7 +194,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/actions.c:314 src/dialog.c:933 src/dialog.c:2139 src/dialog.c:2166
+#: src/actions.c:314 src/dialog.c:1005 src/dialog.c:2273 src/dialog.c:2300
 #: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Да"
@@ -211,7 +211,7 @@ msgstr "Диалог за съобщения на Enlightenment"
 msgid "Ignore this"
 msgstr "Игнорирайте това"
 
-#: src/alert.c:574 config/strings.c:123 config/strings.c:183
+#: src/alert.c:574 config/strings.c:124 config/strings.c:186
 msgid "Restart Enlightenment"
 msgstr "Рестартирайте Enlightenment"
 
@@ -713,15 +713,15 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Е: Виртуални полетаДиалог за настройки\n"
 
-#: src/dialog.c:937
+#: src/dialog.c:1012
 msgid "Apply"
 msgstr "Приложи"
 
-#: src/dialog.c:942 src/pager.c:912 config/strings.c:30 config/strings.c:163
+#: src/dialog.c:1020 src/pager.c:912 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "Затвори"
 
-#: src/dialog.c:2166
+#: src/dialog.c:2300
 msgid "Attention !!!"
 msgstr "Внимание !!!"
 
@@ -1625,7 +1625,7 @@ msgstr ""
 "Е: Фокус\n"
 "Диалог за настройкию\n"
 
-#: src/menus-misc.c:586 config/strings.c:118
+#: src/menus-misc.c:586 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "Некоректна тема"
@@ -1719,11 +1719,11 @@ msgstr ""
 msgid "Window Options"
 msgstr "Опции за прозореца"
 
-#: src/pager.c:908 config/strings.c:53 config/strings.c:165
+#: src/pager.c:908 config/strings.c:53 config/strings.c:168
 msgid "Iconify"
 msgstr "Скрий"
 
-#: src/pager.c:916 config/strings.c:164
+#: src/pager.c:916 config/strings.c:167
 msgid "Annihilate"
 msgstr "Унижтожи"
 
@@ -2101,7 +2101,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "Използвай saveunder-и за намаляване на грешки"
 
-#: src/settings.c:504 config/strings.c:176
+#: src/settings.c:504 config/strings.c:179
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Други настройки"
@@ -2165,6 +2165,11 @@ msgid ""
 msgstr ""
 "Е: Композитор\n"
 "Диалог за настройки\n"
+
+#: src/settings.c:694
+#, fuzzy
+msgid "Enlightenment Settings"
+msgstr "Enlightenment стартира..."
 
 #: src/setup.c:130
 msgid ""
@@ -2258,11 +2263,11 @@ msgstr "Място"
 msgid "Border style"
 msgstr "Стил на рамката"
 
-#: src/snaps.c:848 config/strings.c:136
+#: src/snaps.c:848 config/strings.c:138
 msgid "Size"
 msgstr "Размер"
 
-#: src/snaps.c:853 config/strings.c:116
+#: src/snaps.c:853 config/strings.c:117
 msgid "Desktop"
 msgstr "Поле"
 
@@ -2282,7 +2287,7 @@ msgstr "Слой на натрупване"
 msgid "Window List Skip"
 msgstr "Лист за пропускане на прозорци"
 
-#: src/snaps.c:879 config/strings.c:175
+#: src/snaps.c:879 config/strings.c:178
 msgid "Opacity"
 msgstr "Плътност"
 
@@ -2332,6 +2337,11 @@ msgstr "Неизползван(и)"
 #: src/snaps.c:1078
 msgid "There are no active windows with remembered attributes."
 msgstr "Няма активни прозорци със запомнени настройки."
+
+#: src/snaps.c:1084
+#, fuzzy
+msgid "Remember"
+msgstr "Настройки на запомняне ..."
 
 #: src/snaps.c:1085
 msgid "Remembered Windows Settings"
@@ -2708,7 +2718,7 @@ msgstr "Бутон"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:166
+#: config/strings.c:58 config/strings.c:169
 msgid "Raise"
 msgstr ""
 
@@ -2719,7 +2729,7 @@ msgstr ""
 "Щтракнете тук за да вдигнете това\n"
 "поле най-горе.\n"
 
-#: config/strings.c:60 config/strings.c:167
+#: config/strings.c:60 config/strings.c:170
 msgid "Lower"
 msgstr ""
 
@@ -2727,7 +2737,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:62 config/strings.c:169
+#: config/strings.c:62 config/strings.c:172
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Залепи / Отлепи"
@@ -2806,7 +2816,7 @@ msgstr "Отиди на това поле"
 msgid "Create Systray"
 msgstr "Затвори системната табла"
 
-#: config/strings.c:85 config/strings.c:119
+#: config/strings.c:85 config/strings.c:120
 msgid "Maintenance"
 msgstr ""
 
@@ -2847,316 +2857,329 @@ msgstr ""
 msgid "Regenerate Menus"
 msgstr ""
 
-#: config/strings.c:95 config/strings.c:117
+#: config/strings.c:95 config/strings.c:118
 #, fuzzy
 msgid "Settings"
 msgstr "Настройки за фокуса"
 
 #: config/strings.c:96
+#, fuzzy
+msgid "Enlightenment Settings ..."
+msgstr "Enlightenment стартира..."
+
+#: config/strings.c:97
 msgid "Focus Settings ..."
 msgstr "Настройки за фокуса ..."
 
-#: config/strings.c:97
+#: config/strings.c:98
 msgid "Move & Resize Settings ..."
 msgstr "Настройки за движение и промяна на размера ..."
 
-#: config/strings.c:98
+#: config/strings.c:99
 msgid "Window Placement Settings ..."
 msgstr "Настройки за разположение на прозорци ..."
 
-#: config/strings.c:99
+#: config/strings.c:100
 msgid "Multiple Desktop Settings ..."
 msgstr "Настройки за много работни полета ..."
 
-#: config/strings.c:100
+#: config/strings.c:101
 msgid "Virtual Desktop Settings ..."
 msgstr "Настройки на виртуални полета ..."
 
-#: config/strings.c:101
+#: config/strings.c:102
 msgid "Pager Settings ..."
 msgstr "Настройки на Pager-а ..."
 
-#: config/strings.c:102
+#: config/strings.c:103
 #, fuzzy
 msgid "Menu Settings ..."
 msgstr "Други настройки"
 
-#: config/strings.c:103
+#: config/strings.c:104
 msgid "Autoraise Settings ..."
 msgstr "Настройки за автоматично вдигане ..."
 
-#: config/strings.c:104
+#: config/strings.c:105
 msgid "Tooltip Settings ..."
 msgstr "Настройки за съветване ..."
 
-#: config/strings.c:105
+#: config/strings.c:106
 msgid "Audio Settings ..."
 msgstr "Настройки на звука ..."
 
-#: config/strings.c:106
+#: config/strings.c:107
 msgid "Group Settings ..."
 msgstr "Настройки на групите ..."
 
-#: config/strings.c:107
+#: config/strings.c:108
 msgid "Remember Settings ..."
 msgstr "Настройки на запомняне ..."
 
-#: config/strings.c:108
+#: config/strings.c:109
 msgid "Special FX Settings ..."
 msgstr "Настройки за специални ефекти ..."
 
-#: config/strings.c:109
+#: config/strings.c:110
 msgid "Desktop Background Settings ..."
 msgstr "Настройки на фон ..."
 
-#: config/strings.c:110
+#: config/strings.c:111
 msgid "Theme Transparency Settings ..."
 msgstr "Настройки за тематична прозрачност ..."
 
-#: config/strings.c:111
+#: config/strings.c:112
 msgid "Composite Settings ..."
 msgstr "Настройки за композитора ..."
 
-#: config/strings.c:112
+#: config/strings.c:113
 #, fuzzy
 msgid "Session Settings ..."
 msgstr "Настройки на звука ..."
 
-#: config/strings.c:113
+#: config/strings.c:114
 msgid "Miscellaneous Settings ..."
 msgstr "Други настройки ..."
 
-#: config/strings.c:114
+#: config/strings.c:115
 #, fuzzy
 msgid "Enlightenment"
 msgstr "Излезте от Enlightenment"
 
-#: config/strings.c:115 config/strings.c:179
+#: config/strings.c:116 config/strings.c:182
 #, fuzzy
 msgid "User Menus"
 msgstr "показване на менюто на потребителя"
 
-#: config/strings.c:120
+#: config/strings.c:121
 msgid "Help"
 msgstr ""
 
-#: config/strings.c:121
+#: config/strings.c:122
 #, fuzzy
 msgid "About Enlightenment"
 msgstr "За Enlightenment %s"
 
-#: config/strings.c:122
+#: config/strings.c:123
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:124 config/strings.c:184
+#: config/strings.c:125 config/strings.c:187
 #, fuzzy
 msgid "Log Out"
 msgstr "  Да, излез  "
 
-#: config/strings.c:125
+#: config/strings.c:126
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:126
+#: config/strings.c:127
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:127
+#: config/strings.c:128
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:128
+#: config/strings.c:129
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:129
+#: config/strings.c:130
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:130
+#: config/strings.c:131
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:131
+#: config/strings.c:132
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:132
+#: config/strings.c:133
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:133
+#: config/strings.c:134
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:134
+#: config/strings.c:135
+msgid "Span Xinerama Screens"
+msgstr ""
+
+#: config/strings.c:136
 #, fuzzy
 msgid "Height"
 msgstr "Десният"
 
-#: config/strings.c:135
+#: config/strings.c:137
 msgid "Width"
 msgstr ""
 
-#: config/strings.c:137
+#: config/strings.c:139
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:138
+#: config/strings.c:140
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:139
+#: config/strings.c:141
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:140
+#: config/strings.c:142
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:141
+#: config/strings.c:143
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:142
+#: config/strings.c:144
 #, fuzzy
 msgid "On Top"
 msgstr "Отгоре"
 
-#: config/strings.c:143
+#: config/strings.c:145
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:144
+#: config/strings.c:146
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:145
+#: config/strings.c:147
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:146
+#: config/strings.c:148
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:147
+#: config/strings.c:149
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:148
-msgid "Toggle Shadows"
-msgstr ""
-
-#: config/strings.c:149
-msgid "Toggle Skip Window Lists"
-msgstr ""
-
 #: config/strings.c:150
-msgid "Toggle Fixed Position"
+msgid "Opaque when focused"
 msgstr ""
 
 #: config/strings.c:151
-msgid "Toggle Fixed Size"
+msgid "Toggle Shadows"
 msgstr ""
 
 #: config/strings.c:152
+msgid "Toggle Skip Window Lists"
+msgstr ""
+
+#: config/strings.c:153
+msgid "Toggle Fixed Position"
+msgstr ""
+
+#: config/strings.c:154
+msgid "Toggle Fixed Size"
+msgstr ""
+
+#: config/strings.c:155
 #, fuzzy
 msgid "Toggle Never Focus"
 msgstr "Никога не фокусирай"
 
-#: config/strings.c:153
+#: config/strings.c:156
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:154
+#: config/strings.c:157
 #, fuzzy
 msgid "Toggle Never Use Area"
 msgstr "Никога не фокусирай"
 
-#: config/strings.c:155
+#: config/strings.c:158
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Бутон"
 
-#: config/strings.c:156
+#: config/strings.c:159
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "Запомни групата на този прозорец"
 
-#: config/strings.c:157
+#: config/strings.c:160
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:158
+#: config/strings.c:161
 #, fuzzy
 msgid "Select group to add this window to"
 msgstr "   Изберете групата, от която да махнете прозореца.  "
 
-#: config/strings.c:159
+#: config/strings.c:162
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:160
+#: config/strings.c:163
 #, fuzzy
 msgid "Remove this window from a group"
 msgstr "Запомни групата на този прозорец"
 
-#: config/strings.c:161
+#: config/strings.c:164
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr "  Изберете групата в която този прозорец да принадлежи:  \n"
 
-#: config/strings.c:162
+#: config/strings.c:165
 #, fuzzy
 msgid "Show/Hide this window's group(s)"
 msgstr "Покажи/скрий тази група"
 
-#: config/strings.c:168
+#: config/strings.c:171
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Навито положение"
 
-#: config/strings.c:170
+#: config/strings.c:173
 #, fuzzy
 msgid "Remember..."
 msgstr "Настройки на запомняне ..."
 
-#: config/strings.c:171
+#: config/strings.c:174
 #, fuzzy
 msgid "Window Size"
 msgstr "Лист за пропускане на прозорци"
 
-#: config/strings.c:172
+#: config/strings.c:175
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Настройки за фокуса"
 
-#: config/strings.c:173
+#: config/strings.c:176
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Стил на рамката"
 
-#: config/strings.c:174
+#: config/strings.c:177
 #, fuzzy
 msgid "Window Groups"
 msgstr "Грешка на Window Group"
 
-#: config/strings.c:177
+#: config/strings.c:180
 #, fuzzy
 msgid "Remember State"
 msgstr "Настройки на запомняне ..."
 
-#: config/strings.c:180
+#: config/strings.c:183
 #, fuzzy
 msgid "User Application List"
 msgstr "Запомнени атрибути на програми"
 
-#: config/strings.c:181
+#: config/strings.c:184
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:182
+#: config/strings.c:185
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Излезте от Enlightenment"

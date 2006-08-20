@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-13 12:30+0200\n"
+"POT-Creation-Date: 2006-08-20 21:37+0200\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -182,7 +182,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/actions.c:314 src/dialog.c:933 src/dialog.c:2139 src/dialog.c:2166
+#: src/actions.c:314 src/dialog.c:1005 src/dialog.c:2273 src/dialog.c:2300
 #: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Oldu"
@@ -199,7 +199,7 @@ msgstr "Enlightenment ileti kutusu"
 msgid "Ignore this"
 msgstr "Bunu geç"
 
-#: src/alert.c:574 config/strings.c:123 config/strings.c:183
+#: src/alert.c:574 config/strings.c:124 config/strings.c:186
 msgid "Restart Enlightenment"
 msgstr "Enlightenment'i yeniden baþlat"
 
@@ -717,15 +717,15 @@ msgstr ""
 "Enlightenment sanal masaüstü\n"
 "ayarlarý diyaloðu\n"
 
-#: src/dialog.c:937
+#: src/dialog.c:1012
 msgid "Apply"
 msgstr "Uygula"
 
-#: src/dialog.c:942 src/pager.c:912 config/strings.c:30 config/strings.c:163
+#: src/dialog.c:1020 src/pager.c:912 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "Kapat"
 
-#: src/dialog.c:2166
+#: src/dialog.c:2300
 msgid "Attention !!!"
 msgstr "Dikkat !!!"
 
@@ -1639,7 +1639,7 @@ msgstr ""
 "Enlightenment foküsleme\n"
 "ayarlarý diyaloðu\n"
 
-#: src/menus-misc.c:586 config/strings.c:118
+#: src/menus-misc.c:586 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "Kütü görünüm"
@@ -1742,11 +1742,11 @@ msgstr ""
 msgid "Window Options"
 msgstr "Pencere ayarlarý"
 
-#: src/pager.c:908 config/strings.c:53 config/strings.c:165
+#: src/pager.c:908 config/strings.c:53 config/strings.c:168
 msgid "Iconify"
 msgstr "Simgeleþtir"
 
-#: src/pager.c:916 config/strings.c:164
+#: src/pager.c:916 config/strings.c:167
 msgid "Annihilate"
 msgstr "Öldür"
 
@@ -2130,7 +2130,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "Pencere gösterimlerini \"saveunder\"'leri kullanýp azalt"
 
-#: src/settings.c:504 config/strings.c:176
+#: src/settings.c:504 config/strings.c:179
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Karýþýk ayarlar"
@@ -2195,6 +2195,11 @@ msgid ""
 msgstr ""
 "Enlightenment balon yardýmý\n"
 "ayarlarý diyaloðu\n"
+
+#: src/settings.c:694
+#, fuzzy
+msgid "Enlightenment Settings"
+msgstr "Enlightenment baþlýyor ...."
 
 #: src/setup.c:130
 msgid ""
@@ -2291,11 +2296,11 @@ msgstr "Yer"
 msgid "Border style"
 msgstr "Kenar tipi"
 
-#: src/snaps.c:848 config/strings.c:136
+#: src/snaps.c:848 config/strings.c:138
 msgid "Size"
 msgstr "Boyut"
 
-#: src/snaps.c:853 config/strings.c:116
+#: src/snaps.c:853 config/strings.c:117
 msgid "Desktop"
 msgstr "Masaüstü"
 
@@ -2315,7 +2320,7 @@ msgstr "Býrakým seviyesi"
 msgid "Window List Skip"
 msgstr "Pencere çizgiyesinde kaydetme"
 
-#: src/snaps.c:879 config/strings.c:175
+#: src/snaps.c:879 config/strings.c:178
 msgid "Opacity"
 msgstr ""
 
@@ -2367,6 +2372,11 @@ msgstr ""
 #: src/snaps.c:1078
 msgid "There are no active windows with remembered attributes."
 msgstr "Hatýrlanan ayarlarlý geçerli pencere yok."
+
+#: src/snaps.c:1084
+#, fuzzy
+msgid "Remember"
+msgstr "Hatýrlanan ayarlar ..."
 
 #: src/snaps.c:1085
 msgid "Remembered Windows Settings"
@@ -2740,7 +2750,7 @@ msgstr "Alt"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:166
+#: config/strings.c:58 config/strings.c:169
 msgid "Raise"
 msgstr ""
 
@@ -2751,7 +2761,7 @@ msgstr ""
 "Bu masaüstünü baþa getirmek için \n"
 "buraya týkla .\n"
 
-#: config/strings.c:60 config/strings.c:167
+#: config/strings.c:60 config/strings.c:170
 msgid "Lower"
 msgstr ""
 
@@ -2759,7 +2769,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:62 config/strings.c:169
+#: config/strings.c:62 config/strings.c:172
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Yapýþtýr/Serbest'et"
@@ -2842,7 +2852,7 @@ msgstr "Bu masaüstüne geç"
 msgid "Create Systray"
 msgstr ""
 
-#: config/strings.c:85 config/strings.c:119
+#: config/strings.c:85 config/strings.c:120
 msgid "Maintenance"
 msgstr ""
 
@@ -2883,334 +2893,347 @@ msgstr ""
 msgid "Regenerate Menus"
 msgstr ""
 
-#: config/strings.c:95 config/strings.c:117
+#: config/strings.c:95 config/strings.c:118
 #, fuzzy
 msgid "Settings"
 msgstr "Foküsleme ayarlarý"
 
 #: config/strings.c:96
 #, fuzzy
+msgid "Enlightenment Settings ..."
+msgstr "Enlightenment baþlýyor ...."
+
+#: config/strings.c:97
+#, fuzzy
 msgid "Focus Settings ..."
 msgstr "Foküsleme ayarlarý"
 
-#: config/strings.c:97
+#: config/strings.c:98
 #, fuzzy
 msgid "Move & Resize Settings ..."
 msgstr "Boyutlandýrma & Taþýma þekilleri"
 
-#: config/strings.c:98
+#: config/strings.c:99
 #, fuzzy
 msgid "Window Placement Settings ..."
 msgstr "Pencere yerleþme ayarlarý"
 
-#: config/strings.c:99
+#: config/strings.c:100
 #, fuzzy
 msgid "Multiple Desktop Settings ..."
 msgstr "Çoklu masaüstü ayarlarý"
 
-#: config/strings.c:100
+#: config/strings.c:101
 #, fuzzy
 msgid "Virtual Desktop Settings ..."
 msgstr "Sanal masaüstü ayarlarý"
 
-#: config/strings.c:101
+#: config/strings.c:102
 #, fuzzy
 msgid "Pager Settings ..."
 msgstr "Gözey ayarlarý ..."
 
-#: config/strings.c:102
+#: config/strings.c:103
 #, fuzzy
 msgid "Menu Settings ..."
 msgstr "Karýþýk ayarlar"
 
-#: config/strings.c:103
+#: config/strings.c:104
 #, fuzzy
 msgid "Autoraise Settings ..."
 msgstr "Otomatik öne getirim"
 
-#: config/strings.c:104
+#: config/strings.c:105
 #, fuzzy
 msgid "Tooltip Settings ..."
 msgstr "Balon yardýmý ayarlarý"
 
-#: config/strings.c:105
+#: config/strings.c:106
 #, fuzzy
 msgid "Audio Settings ..."
 msgstr "Ses ayarlarý"
 
-#: config/strings.c:106
+#: config/strings.c:107
 #, fuzzy
 msgid "Group Settings ..."
 msgstr "Gözey ayarlarý ..."
 
-#: config/strings.c:107
+#: config/strings.c:108
 #, fuzzy
 msgid "Remember Settings ..."
 msgstr "Hatýrlanan ayarlar ..."
 
-#: config/strings.c:108
+#: config/strings.c:109
 #, fuzzy
 msgid "Special FX Settings ..."
 msgstr "Özel efekler ayarlarý"
 
-#: config/strings.c:109
+#: config/strings.c:110
 #, fuzzy
 msgid "Desktop Background Settings ..."
 msgstr "Ardalan ayarlarý"
 
-#: config/strings.c:110
+#: config/strings.c:111
 #, fuzzy
 msgid "Theme Transparency Settings ..."
 msgstr ""
 "Enlightenment balon yardýmý\n"
 "ayarlarý diyaloðu\n"
 
-#: config/strings.c:111
+#: config/strings.c:112
 #, fuzzy
 msgid "Composite Settings ..."
 msgstr "Balon yardýmý ayarlarý"
 
-#: config/strings.c:112
+#: config/strings.c:113
 #, fuzzy
 msgid "Session Settings ..."
 msgstr "Ses ayarlarý"
 
-#: config/strings.c:113
+#: config/strings.c:114
 #, fuzzy
 msgid "Miscellaneous Settings ..."
 msgstr "Karýþýk ayarlar"
 
-#: config/strings.c:114
+#: config/strings.c:115
 #, fuzzy
 msgid "Enlightenment"
 msgstr "Enlightenment'ten çýk"
 
-#: config/strings.c:115 config/strings.c:179
+#: config/strings.c:116 config/strings.c:182
 #, fuzzy
 msgid "User Menus"
 msgstr "Kenar tipi"
 
-#: config/strings.c:120
+#: config/strings.c:121
 msgid "Help"
 msgstr ""
 
-#: config/strings.c:121
+#: config/strings.c:122
 #, fuzzy
 msgid "About Enlightenment"
 msgstr "Enlightenment %s hakkýnda bilgi "
 
-#: config/strings.c:122
+#: config/strings.c:123
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:124 config/strings.c:184
+#: config/strings.c:125 config/strings.c:187
 #, fuzzy
 msgid "Log Out"
 msgstr " Evet, çýk"
 
-#: config/strings.c:125
+#: config/strings.c:126
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:126
+#: config/strings.c:127
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:127
+#: config/strings.c:128
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:128
+#: config/strings.c:129
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:129
+#: config/strings.c:130
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:130
+#: config/strings.c:131
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:131
+#: config/strings.c:132
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:132
+#: config/strings.c:133
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:133
+#: config/strings.c:134
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:134
+#: config/strings.c:135
+msgid "Span Xinerama Screens"
+msgstr ""
+
+#: config/strings.c:136
 #, fuzzy
 msgid "Height"
 msgstr "Sað"
 
-#: config/strings.c:135
+#: config/strings.c:137
 msgid "Width"
 msgstr ""
 
-#: config/strings.c:137
+#: config/strings.c:139
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:138
+#: config/strings.c:140
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:139
+#: config/strings.c:141
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:140
+#: config/strings.c:142
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:141
+#: config/strings.c:143
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:142
+#: config/strings.c:144
 #, fuzzy
 msgid "On Top"
 msgstr "Üst"
 
-#: config/strings.c:143
+#: config/strings.c:145
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:144
+#: config/strings.c:146
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:145
+#: config/strings.c:147
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:146
+#: config/strings.c:148
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:147
+#: config/strings.c:149
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:148
-msgid "Toggle Shadows"
-msgstr ""
-
-#: config/strings.c:149
-msgid "Toggle Skip Window Lists"
-msgstr ""
-
 #: config/strings.c:150
-msgid "Toggle Fixed Position"
+msgid "Opaque when focused"
 msgstr ""
 
 #: config/strings.c:151
-msgid "Toggle Fixed Size"
+msgid "Toggle Shadows"
 msgstr ""
 
 #: config/strings.c:152
+msgid "Toggle Skip Window Lists"
+msgstr ""
+
+#: config/strings.c:153
+msgid "Toggle Fixed Position"
+msgstr ""
+
+#: config/strings.c:154
+msgid "Toggle Fixed Size"
+msgstr ""
+
+#: config/strings.c:155
 #, fuzzy
 msgid "Toggle Never Focus"
 msgstr "Katiyyen foküsleme"
 
-#: config/strings.c:153
+#: config/strings.c:156
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:154
+#: config/strings.c:157
 #, fuzzy
 msgid "Toggle Never Use Area"
 msgstr "Katiyyen foküsleme"
 
-#: config/strings.c:155
+#: config/strings.c:158
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Alt"
 
-#: config/strings.c:156
+#: config/strings.c:159
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "Pencere(ler)in kitlesini hýfzet"
 
-#: config/strings.c:157
+#: config/strings.c:160
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:158
+#: config/strings.c:161
 #, fuzzy
 msgid "Select group to add this window to"
 msgstr " Pencerenin silnecek olduðu kitleyi seç ."
 
-#: config/strings.c:159
+#: config/strings.c:162
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:160
+#: config/strings.c:163
 #, fuzzy
 msgid "Remove this window from a group"
 msgstr "Pencere(ler)in kitlesini hýfzet"
 
-#: config/strings.c:161
+#: config/strings.c:164
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr " Pencerenin eklencek olduðu kitleyi seç : \n"
 
-#: config/strings.c:162
+#: config/strings.c:165
 #, fuzzy
 msgid "Show/Hide this window's group(s)"
 msgstr "Bu kitleyi göster/gizle"
 
-#: config/strings.c:168
+#: config/strings.c:171
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Toplanmýþ"
 
-#: config/strings.c:170
+#: config/strings.c:173
 #, fuzzy
 msgid "Remember..."
 msgstr "Hatýrlanan ayarlar ..."
 
-#: config/strings.c:171
+#: config/strings.c:174
 #, fuzzy
 msgid "Window Size"
 msgstr "Pencere çizgiyesinde kaydetme"
 
-#: config/strings.c:172
+#: config/strings.c:175
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Foküsleme ayarlarý"
 
-#: config/strings.c:173
+#: config/strings.c:176
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Kenar tipi"
 
-#: config/strings.c:174
+#: config/strings.c:177
 #, fuzzy
 msgid "Window Groups"
 msgstr "Pencere kitle hatasý"
 
-#: config/strings.c:177
+#: config/strings.c:180
 #, fuzzy
 msgid "Remember State"
 msgstr "Hatýrlanan ayarlar ..."
 
-#: config/strings.c:180
+#: config/strings.c:183
 #, fuzzy
 msgid "User Application List"
 msgstr "Hatýrlanan uygulama özellikleri"
 
-#: config/strings.c:181
+#: config/strings.c:184
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:182
+#: config/strings.c:185
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment'ten çýk"

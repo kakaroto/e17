@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-13 12:30+0200\n"
+"POT-Creation-Date: 2006-08-20 21:37+0200\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -181,7 +181,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/actions.c:314 src/dialog.c:933 src/dialog.c:2139 src/dialog.c:2166
+#: src/actions.c:314 src/dialog.c:1005 src/dialog.c:2273 src/dialog.c:2300
 #: src/events.c:78 src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Ok"
@@ -198,7 +198,7 @@ msgstr "Enlightenment meddelandedialog"
 msgid "Ignore this"
 msgstr "Ignorera detta"
 
-#: src/alert.c:574 config/strings.c:123 config/strings.c:183
+#: src/alert.c:574 config/strings.c:124 config/strings.c:186
 msgid "Restart Enlightenment"
 msgstr "Starta om Enlightenment"
 
@@ -713,15 +713,15 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "virtuella skrivbordsinställningar\n"
 
-#: src/dialog.c:937
+#: src/dialog.c:1012
 msgid "Apply"
 msgstr "Använd"
 
-#: src/dialog.c:942 src/pager.c:912 config/strings.c:30 config/strings.c:163
+#: src/dialog.c:1020 src/pager.c:912 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "Stäng"
 
-#: src/dialog.c:2166
+#: src/dialog.c:2300
 msgid "Attention !!!"
 msgstr "Uppmärksamhet!!!"
 
@@ -1633,7 +1633,7 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "fokusinställningar\n"
 
-#: src/menus-misc.c:586 config/strings.c:118
+#: src/menus-misc.c:586 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "Felaktigt tema"
@@ -1736,11 +1736,11 @@ msgstr ""
 msgid "Window Options"
 msgstr "Fönsterval"
 
-#: src/pager.c:908 config/strings.c:53 config/strings.c:165
+#: src/pager.c:908 config/strings.c:53 config/strings.c:168
 msgid "Iconify"
 msgstr "Ikonifiera"
 
-#: src/pager.c:916 config/strings.c:164
+#: src/pager.c:916 config/strings.c:167
 msgid "Annihilate"
 msgstr "Förinta"
 
@@ -2125,7 +2125,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "Anv spara-under för att minska fönsterexponering"
 
-#: src/settings.c:504 config/strings.c:176
+#: src/settings.c:504 config/strings.c:179
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Diverse inställningar"
@@ -2190,6 +2190,11 @@ msgid ""
 msgstr ""
 "Dialog för Enlightenments\n"
 "verktygstipsinställningar\n"
+
+#: src/settings.c:694
+#, fuzzy
+msgid "Enlightenment Settings"
+msgstr "Enlightenment Startar..."
 
 #: src/setup.c:130
 msgid ""
@@ -2286,11 +2291,11 @@ msgstr "Placering"
 msgid "Border style"
 msgstr "Ramstil"
 
-#: src/snaps.c:848 config/strings.c:136
+#: src/snaps.c:848 config/strings.c:138
 msgid "Size"
 msgstr "Storlek"
 
-#: src/snaps.c:853 config/strings.c:116
+#: src/snaps.c:853 config/strings.c:117
 msgid "Desktop"
 msgstr "Skrivbord"
 
@@ -2310,7 +2315,7 @@ msgstr "Stapellager"
 msgid "Window List Skip"
 msgstr "Fönsterlistignorering"
 
-#: src/snaps.c:879 config/strings.c:175
+#: src/snaps.c:879 config/strings.c:178
 msgid "Opacity"
 msgstr ""
 
@@ -2362,6 +2367,11 @@ msgstr ""
 #: src/snaps.c:1078
 msgid "There are no active windows with remembered attributes."
 msgstr "Det finns inga aktiva fönster med ihågkommna attribut."
+
+#: src/snaps.c:1084
+#, fuzzy
+msgid "Remember"
+msgstr "Ihågkommna tillval..."
 
 #: src/snaps.c:1085
 msgid "Remembered Windows Settings"
@@ -2735,7 +2745,7 @@ msgstr "Nertill"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:166
+#: config/strings.c:58 config/strings.c:169
 msgid "Raise"
 msgstr ""
 
@@ -2746,7 +2756,7 @@ msgstr ""
 "Klicka här för att lägga detta\n"
 "skrivbord överst.\n"
 
-#: config/strings.c:60 config/strings.c:167
+#: config/strings.c:60 config/strings.c:170
 msgid "Lower"
 msgstr ""
 
@@ -2754,7 +2764,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:62 config/strings.c:169
+#: config/strings.c:62 config/strings.c:172
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Klibbigt / Ej klibbigt"
@@ -2837,7 +2847,7 @@ msgstr "Gå till detta skrivbord"
 msgid "Create Systray"
 msgstr ""
 
-#: config/strings.c:85 config/strings.c:119
+#: config/strings.c:85 config/strings.c:120
 msgid "Maintenance"
 msgstr ""
 
@@ -2878,334 +2888,347 @@ msgstr ""
 msgid "Regenerate Menus"
 msgstr ""
 
-#: config/strings.c:95 config/strings.c:117
+#: config/strings.c:95 config/strings.c:118
 #, fuzzy
 msgid "Settings"
 msgstr "Fokusinställningar"
 
 #: config/strings.c:96
 #, fuzzy
+msgid "Enlightenment Settings ..."
+msgstr "Enlightenment Startar..."
+
+#: config/strings.c:97
+#, fuzzy
 msgid "Focus Settings ..."
 msgstr "Fokusinställningar"
 
-#: config/strings.c:97
+#: config/strings.c:98
 #, fuzzy
 msgid "Move & Resize Settings ..."
 msgstr "Flytt & storleksändringsinställningar"
 
-#: config/strings.c:98
+#: config/strings.c:99
 #, fuzzy
 msgid "Window Placement Settings ..."
 msgstr "Fönsterplaceringsinställningar"
 
-#: config/strings.c:99
+#: config/strings.c:100
 #, fuzzy
 msgid "Multiple Desktop Settings ..."
 msgstr "Multipla skrivbordsinställningar"
 
-#: config/strings.c:100
+#: config/strings.c:101
 #, fuzzy
 msgid "Virtual Desktop Settings ..."
 msgstr "Virtuella skrivbordsinställningar"
 
-#: config/strings.c:101
+#: config/strings.c:102
 #, fuzzy
 msgid "Pager Settings ..."
 msgstr "Sidväxlarinställningar..."
 
-#: config/strings.c:102
+#: config/strings.c:103
 #, fuzzy
 msgid "Menu Settings ..."
 msgstr "Diverse inställningar"
 
-#: config/strings.c:103
+#: config/strings.c:104
 #, fuzzy
 msgid "Autoraise Settings ..."
 msgstr "Lägga överst inställningar"
 
-#: config/strings.c:104
+#: config/strings.c:105
 #, fuzzy
 msgid "Tooltip Settings ..."
 msgstr "Verktygstipsinställningar"
 
-#: config/strings.c:105
+#: config/strings.c:106
 #, fuzzy
 msgid "Audio Settings ..."
 msgstr "Ljudinställningar"
 
-#: config/strings.c:106
+#: config/strings.c:107
 #, fuzzy
 msgid "Group Settings ..."
 msgstr "Sidväxlarinställningar..."
 
-#: config/strings.c:107
+#: config/strings.c:108
 #, fuzzy
 msgid "Remember Settings ..."
 msgstr "Ihågkommna tillval..."
 
-#: config/strings.c:108
+#: config/strings.c:109
 #, fuzzy
 msgid "Special FX Settings ..."
 msgstr "Specialeffektsinställningar"
 
-#: config/strings.c:109
+#: config/strings.c:110
 #, fuzzy
 msgid "Desktop Background Settings ..."
 msgstr "Skrivbordsbakgrundsinställningar"
 
-#: config/strings.c:110
+#: config/strings.c:111
 #, fuzzy
 msgid "Theme Transparency Settings ..."
 msgstr ""
 "Dialog för Enlightenments\n"
 "verktygstipsinställningar\n"
 
-#: config/strings.c:111
+#: config/strings.c:112
 #, fuzzy
 msgid "Composite Settings ..."
 msgstr "Verktygstipsinställningar"
 
-#: config/strings.c:112
+#: config/strings.c:113
 #, fuzzy
 msgid "Session Settings ..."
 msgstr "Ljudinställningar"
 
-#: config/strings.c:113
+#: config/strings.c:114
 #, fuzzy
 msgid "Miscellaneous Settings ..."
 msgstr "Diverse inställningar"
 
-#: config/strings.c:114
+#: config/strings.c:115
 #, fuzzy
 msgid "Enlightenment"
 msgstr "Avsluta Enlightenment"
 
-#: config/strings.c:115 config/strings.c:179
+#: config/strings.c:116 config/strings.c:182
 #, fuzzy
 msgid "User Menus"
 msgstr "Ramstil"
 
-#: config/strings.c:120
+#: config/strings.c:121
 msgid "Help"
 msgstr ""
 
-#: config/strings.c:121
+#: config/strings.c:122
 #, fuzzy
 msgid "About Enlightenment"
 msgstr "Om Enlightenment %s"
 
-#: config/strings.c:122
+#: config/strings.c:123
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:124 config/strings.c:184
+#: config/strings.c:125 config/strings.c:187
 #, fuzzy
 msgid "Log Out"
 msgstr "  Ja, logga ut  "
 
-#: config/strings.c:125
+#: config/strings.c:126
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:126
+#: config/strings.c:127
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:127
+#: config/strings.c:128
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:128
+#: config/strings.c:129
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:129
+#: config/strings.c:130
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:130
+#: config/strings.c:131
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:131
+#: config/strings.c:132
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:132
+#: config/strings.c:133
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:133
+#: config/strings.c:134
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:134
+#: config/strings.c:135
+msgid "Span Xinerama Screens"
+msgstr ""
+
+#: config/strings.c:136
 #, fuzzy
 msgid "Height"
 msgstr "Höger"
 
-#: config/strings.c:135
+#: config/strings.c:137
 msgid "Width"
 msgstr ""
 
-#: config/strings.c:137
+#: config/strings.c:139
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:138
+#: config/strings.c:140
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:139
+#: config/strings.c:141
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:140
+#: config/strings.c:142
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:141
+#: config/strings.c:143
 msgid "Above"
 msgstr ""
 
-#: config/strings.c:142
+#: config/strings.c:144
 #, fuzzy
 msgid "On Top"
 msgstr "Upptill"
 
-#: config/strings.c:143
+#: config/strings.c:145
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:144
+#: config/strings.c:146
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:145
+#: config/strings.c:147
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:146
+#: config/strings.c:148
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:147
+#: config/strings.c:149
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:148
-msgid "Toggle Shadows"
-msgstr ""
-
-#: config/strings.c:149
-msgid "Toggle Skip Window Lists"
-msgstr ""
-
 #: config/strings.c:150
-msgid "Toggle Fixed Position"
+msgid "Opaque when focused"
 msgstr ""
 
 #: config/strings.c:151
-msgid "Toggle Fixed Size"
+msgid "Toggle Shadows"
 msgstr ""
 
 #: config/strings.c:152
+msgid "Toggle Skip Window Lists"
+msgstr ""
+
+#: config/strings.c:153
+msgid "Toggle Fixed Position"
+msgstr ""
+
+#: config/strings.c:154
+msgid "Toggle Fixed Size"
+msgstr ""
+
+#: config/strings.c:155
 #, fuzzy
 msgid "Toggle Never Focus"
 msgstr "Fokusera aldrig"
 
-#: config/strings.c:153
+#: config/strings.c:156
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:154
+#: config/strings.c:157
 #, fuzzy
 msgid "Toggle Never Use Area"
 msgstr "Fokusera aldrig"
 
-#: config/strings.c:155
+#: config/strings.c:158
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Nertill"
 
-#: config/strings.c:156
+#: config/strings.c:159
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "Kom ihåg detta fönsters grupp(er)"
 
-#: config/strings.c:157
+#: config/strings.c:160
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:158
+#: config/strings.c:161
 #, fuzzy
 msgid "Select group to add this window to"
 msgstr "  Välj den grupp som fönstret skall tas bort ifrån.  "
 
-#: config/strings.c:159
+#: config/strings.c:162
 msgid "Add this window to the current group"
 msgstr ""
 
-#: config/strings.c:160
+#: config/strings.c:163
 #, fuzzy
 msgid "Remove this window from a group"
 msgstr "Kom ihåg detta fönsters grupp(er)"
 
-#: config/strings.c:161
+#: config/strings.c:164
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr "  Välj den grupp som fönstret skall tillhöra:  \n"
 
-#: config/strings.c:162
+#: config/strings.c:165
 #, fuzzy
 msgid "Show/Hide this window's group(s)"
 msgstr "Visa/gömma denna grupp"
 
-#: config/strings.c:168
+#: config/strings.c:171
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Skymt läge"
 
-#: config/strings.c:170
+#: config/strings.c:173
 #, fuzzy
 msgid "Remember..."
 msgstr "Ihågkommna tillval..."
 
-#: config/strings.c:171
+#: config/strings.c:174
 #, fuzzy
 msgid "Window Size"
 msgstr "Fönsterlistignorering"
 
-#: config/strings.c:172
+#: config/strings.c:175
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Fokusinställningar"
 
-#: config/strings.c:173
+#: config/strings.c:176
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Ramstil"
 
-#: config/strings.c:174
+#: config/strings.c:177
 #, fuzzy
 msgid "Window Groups"
 msgstr "Fönstergruppsfel"
 
-#: config/strings.c:177
+#: config/strings.c:180
 #, fuzzy
 msgid "Remember State"
 msgstr "Ihågkommna tillval..."
 
-#: config/strings.c:180
+#: config/strings.c:183
 #, fuzzy
 msgid "User Application List"
 msgstr "Ihågkommna applikationsattribut"
 
-#: config/strings.c:181
+#: config/strings.c:184
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:182
+#: config/strings.c:185
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Avsluta Enlightenment"
