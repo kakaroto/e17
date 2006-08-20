@@ -3,6 +3,7 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+static void ewl_tree2_build_tree(Ewl_Tree2 *tree);
 static void ewl_tree2_cb_column_free(void *data);
 static void ewl_tree2_cb_header_changed(Ewl_Widget *w, void *ev, 
 							void *data);
@@ -483,8 +484,7 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Tree2 *tree;
-	Ewl_Tree2_Column *col;
-	int column = 0, rows = 0, i, size;
+	int size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -508,6 +508,22 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	/* if the tree isn't dirty we're done */
 	if (!ewl_tree2_dirty_get(tree)) 
 		DRETURN(DLEVEL_STABLE);
+
+	ewl_tree2_build_tree(tree);
+	ewl_tree2_dirty_set(tree, FALSE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree2_build_tree(Ewl_Tree2 *tree)
+{
+	Ewl_Tree2_Column *col;
+	int column = 0, rows = 0, i;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
 	/* setup the headers */
 	ewl_container_reset(EWL_CONTAINER(tree->header));
@@ -576,8 +592,6 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 			column ++;
 		}
 	}
-
-	ewl_tree2_dirty_set(tree, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
