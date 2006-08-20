@@ -220,7 +220,7 @@ _entropy_etk_context_menu_trash_copy_cb(Etk_Object *object, void *data)
 	}
 
 	if (ecore_list_nodes(files) > 0) {
-		entropy_plugin_filesystem_file_copy_multi(files, "trash:///", 
+		entropy_plugin_filesystem_file_move_multi(files, "trash:///", 
 			_entropy_etk_context_menu_current_instance);	
 	}
 
