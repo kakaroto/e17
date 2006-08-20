@@ -658,8 +658,8 @@ SessionLogoutConfirm(void)
 	  }
 	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1, DLG_BUTTON_OK);
 	DialogAddButton(d, _("  No  "), NULL, 1, DLG_BUTTON_CANCEL);
-	DialogBindKey(d, "Escape", DialogCallbackClose, 1);
-	DialogBindKey(d, "Return", LogoutCB, 0);
+	DialogBindKey(d, "Escape", DialogCallbackClose, 1, NULL);
+	DialogBindKey(d, "Return", LogoutCB, 0, NULL);
      }
 
    DialogShowCentered(d);

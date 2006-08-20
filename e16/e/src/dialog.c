@@ -175,8 +175,9 @@ typedef struct
 typedef struct
 {
    KeyCode             key;
-   int                 val;
    DialogCallbackFunc *func;
+   int                 val;
+   void               *data;
 } DKeyBind;
 
 struct _dialog
@@ -232,7 +233,8 @@ static Ecore_List  *dialog_list = NULL;
 static char         dialog_update_pending = 0;
 
 void
-DialogBindKey(Dialog * d, const char *key, DialogCallbackFunc * func, int val)
+DialogBindKey(Dialog * d, const char *key, DialogCallbackFunc * func, int val,
+	      void *data)
 {
    d->num_bindings++;
    if (!d->keybindings)
@@ -242,6 +244,7 @@ DialogBindKey(Dialog * d, const char *key, DialogCallbackFunc * func, int val)
 	 Erealloc(d->keybindings, sizeof(DKeyBind) * d->num_bindings);
    d->keybindings[d->num_bindings - 1].val = val;
    d->keybindings[d->num_bindings - 1].func = func;
+   d->keybindings[d->num_bindings - 1].data = data;
    d->keybindings[d->num_bindings - 1].key =
       XKeysymToKeycode(disp, XStringToKeysym(key));
 }
@@ -960,8 +963,7 @@ DialogAddHeader(Dialog * d __UNUSED__, DItem * parent, const char *img,
 }
 
 static void
-DialogAddFooter(Dialog * d, DItem * parent __UNUSED__, int flags,
-		DialogCallbackFunc * cb)
+DialogAddFooter(Dialog * d, DItem * parent, int flags, DialogCallbackFunc * cb)
 {
    DItem              *table, *di;
 
@@ -978,12 +980,12 @@ DialogAddFooter(Dialog * d, DItem * parent __UNUSED__, int flags,
    if (flags & 2)
      {
 	DialogAddButton(d, _("Apply"), cb, 0, DLG_BUTTON_APPLY);
-	DialogBindKey(d, "Return", cb, 0);
+	DialogBindKey(d, "Return", cb, 0, NULL);
      }
    if (flags & 1)
      {
 	DialogAddButton(d, _("Close"), cb, 1, DLG_BUTTON_CLOSE);
-	DialogBindKey(d, "Escape", DialogCallbackClose, 0);
+	DialogBindKey(d, "Escape", DialogCallbackClose, 0, NULL);
      }
    DialogSetExitFunction(d, cb, 2);
 }
@@ -2216,8 +2218,8 @@ DialogOKstr(const char *title, const char *txt)
    DialogSetText(d, txt);
 
    DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
-   DialogBindKey(d, "Return", DialogCallbackClose, 0);
-   DialogBindKey(d, "Escape", DialogCallbackClose, 0);
+   DialogBindKey(d, "Return", DialogCallbackClose, 0, NULL);
+   DialogBindKey(d, "Escape", DialogCallbackClose, 0, NULL);
    DialogShow(d);
 }
 
@@ -2258,7 +2260,8 @@ DialogEventKeyPress(Dialog * d, XEvent * ev)
      {
 	if (ev->xkey.keycode != d->keybindings[i].key)
 	   continue;
-	d->keybindings[i].func(d, d->keybindings[i].val, NULL);
+	d->keybindings[i].func(d, d->keybindings[i].val,
+			       d->keybindings[i].data);
 	break;
      }
 }

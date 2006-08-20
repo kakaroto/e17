@@ -2036,7 +2036,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetText(di, _("Move to Front\n"));
    DialogItemSetCallback(di, CB_ConfigureFrontBG, 0, NULL);
-   DialogBindKey(d, "F", CB_ConfigureFrontBG, 0);
+   DialogBindKey(d, "F", CB_ConfigureFrontBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetText(di, _("Duplicate\n"));
@@ -2049,8 +2049,8 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetText(di, _("Delete File\n"));
    DialogItemSetCallback(di, CB_ConfigureDelBG, 0, NULL);
-   DialogBindKey(d, "D", CB_ConfigureDelBG, 0);
-   DialogBindKey(d, "Delete", CB_ConfigureDelBG, 1);
+   DialogBindKey(d, "D", CB_ConfigureDelBG, 0, NULL);
+   DialogBindKey(d, "Delete", CB_ConfigureDelBG, 1, NULL);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
@@ -2204,15 +2204,15 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, "<-");
    DialogItemSetCallback(di, CB_BGNext, -1, NULL);
-   DialogBindKey(d, "Left", CB_BGNext, -1);
-   DialogBindKey(d, "BackSpace", CB_BGNext, -1);
+   DialogBindKey(d, "Left", CB_BGNext, -1, NULL);
+   DialogBindKey(d, "BackSpace", CB_BGNext, -1, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetText(di, "->");
    DialogItemSetCallback(di, CB_BGNext, 1, NULL);
-   DialogBindKey(d, "Right", CB_BGNext, 1);
-   DialogBindKey(d, "space", CB_BGNext, 1);
+   DialogBindKey(d, "Right", CB_BGNext, 1, NULL);
+   DialogBindKey(d, "space", CB_BGNext, 1, NULL);
 
    di = DialogAddItem(table, DITEM_BUTTON);
    DialogItemSetFill(di, 0, 0);
