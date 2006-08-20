@@ -16,7 +16,8 @@
 enum Etk_Window_Property_Id
 {
    ETK_TOOLBAR_ORIENTATION_PROPERTY,
-   ETK_TOOLBAR_STYLE_PROPERTY     
+   ETK_TOOLBAR_STYLE_PROPERTY, 
+   ETK_TOOLBAR_STOCK_SIZE_PROPERTY     
 };     
 
 static void _etk_toolbar_constructor(Etk_Toolbar *toolbar);
@@ -47,6 +48,7 @@ Etk_Type *etk_toolbar_type_get()
 
       etk_type_property_add(toolbar_type, "orientation", ETK_TOOLBAR_ORIENTATION_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_HORIZ));
       etk_type_property_add(toolbar_type, "style", ETK_TOOLBAR_STYLE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_BOTH_VERT));
+      etk_type_property_add(toolbar_type, "stock_size", ETK_TOOLBAR_STOCK_SIZE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_STOCK_SMALL));
       
       toolbar_type->property_set = _etk_toolbar_property_set;
       toolbar_type->property_get = _etk_toolbar_property_get;
@@ -96,6 +98,7 @@ void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget)
             break;      
       }      
       etk_button_style_set(ETK_BUTTON(widget), button_style);
+      etk_button_stock_size_set(ETK_BUTTON(widget), toolbar->stock_size);
    }
    etk_box_append(ETK_BOX(toolbar->box), widget, ETK_BOX_START, ETK_BOX_NONE, 0);
 }
@@ -251,6 +254,50 @@ Etk_Toolbar_Style etk_toolbar_style_get(Etk_Toolbar *toolbar)
    return toolbar->style;
 }
 
+/**
+ * @brief Sets the toolbar's stock size
+ * @param toolbar a toolbar
+ * @param style the stock size
+ */
+void etk_toolbar_stock_size_set(Etk_Toolbar *toolbar, Etk_Stock_Size size)
+{
+   Evas_List *child;
+   Etk_Button *button;
+
+   if (!toolbar)
+     return;
+
+   if (toolbar->stock_size == size)
+     return;
+
+   toolbar->stock_size = size;
+
+   child = etk_container_children_get(ETK_CONTAINER(toolbar->box));
+
+   while (child)
+   {
+      if (ETK_IS_BUTTON(evas_list_data(child)))
+      {
+	 button = ETK_BUTTON(evas_list_data(child));
+	 etk_button_stock_size_set(button, size);
+      }
+      child = evas_list_next(child);
+   }
+   etk_object_notify(ETK_OBJECT(toolbar), "stock_size");
+}
+
+/**
+ * @brief Gets the size of the toolbar's stock
+ * @param toolbar a toolbar
+ * @return Returns the toolbar's stock size
+ */
+Etk_Stock_Size etk_toolbar_stock_size_get(Etk_Toolbar *toolbar)
+{
+   if (!toolbar)
+      return ETK_STOCK_SMALL;
+
+   return toolbar->stock_size;
+}
 /**************************
  *
  * Etk specific functions
@@ -265,6 +312,7 @@ static void _etk_toolbar_constructor(Etk_Toolbar *toolbar)
 
    toolbar->style = ETK_TOOLBAR_BOTH_VERT;
    toolbar->orientation = ETK_TOOLBAR_HORIZ;
+   toolbar->stock_size = ETK_STOCK_SMALL;
       
    ETK_WIDGET(toolbar)->size_request = _etk_toolbar_size_request;
    ETK_WIDGET(toolbar)->size_allocate = _etk_toolbar_size_allocate;
@@ -301,6 +349,9 @@ static void _etk_toolbar_property_set(Etk_Object *object, int property_id, Etk_P
       case ETK_TOOLBAR_STYLE_PROPERTY:
          etk_toolbar_style_set(toolbar, etk_property_value_int_get(value));
          break;      
+      case ETK_TOOLBAR_STOCK_SIZE_PROPERTY:
+         etk_toolbar_stock_size_set(toolbar, etk_property_value_int_get(value));
+         break;      
       default:
          break;
    }
@@ -321,6 +372,9 @@ static void _etk_toolbar_property_get(Etk_Object *object, int property_id, Etk_P
          break;
       case ETK_TOOLBAR_STYLE_PROPERTY:
          etk_property_value_int_set(value, toolbar->style);
+         break;      
+      case ETK_TOOLBAR_STOCK_SIZE_PROPERTY:
+         etk_property_value_int_set(value, toolbar->stock_size);
          break;      
       default:
          break;

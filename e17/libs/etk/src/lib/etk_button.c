@@ -375,7 +375,7 @@ void etk_button_stock_size_set(Etk_Button *button, Etk_Stock_Size size)
    if (stock_id == ETK_STOCK_NO_STOCK)
       return;
 
-   etk_button_set_from_stock(ETK_BUTTON(button), stock_id);  
+   etk_image_set_from_stock(button->image, stock_id, size);  
    etk_object_notify(ETK_OBJECT(button), "stock_size");
 }
 
@@ -662,7 +662,7 @@ static void _etk_button_children_create(Etk_Button *button)
          etk_container_add(ETK_CONTAINER(button->alignment), button->box);
          etk_signal_connect("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb), button);
          
-         etk_label_alignment_set(ETK_LABEL(button->label), 0.0, 0.5);
+         etk_label_alignment_set(ETK_LABEL(button->label), 0.5, 0.5);
 	 etk_box_append(ETK_BOX(button->box), button->label, ETK_BOX_END, ETK_BOX_NONE, 0);
 	 if (button->style == ETK_BUTTON_ICON)	   
 	    etk_widget_hide(button->label);	   

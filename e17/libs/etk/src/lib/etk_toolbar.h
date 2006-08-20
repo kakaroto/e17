@@ -6,6 +6,7 @@
 #include "etk_box.h"
 #include "etk_types.h"
 #include "etk_utils.h"
+#include "etk_stock.h"
 
 /**
  * @defgroup Etk_Toolbar Etk_Toolbar
@@ -57,6 +58,8 @@ struct _Etk_Toolbar
    Etk_Widget *box;
    Etk_Toolbar_Orientation orientation;
    Etk_Toolbar_Style style;
+
+   Etk_Stock_Size stock_size;
 };
 
 Etk_Type *etk_toolbar_type_get();
@@ -71,6 +74,9 @@ Etk_Toolbar_Orientation etk_toolbar_orientation_get(Etk_Toolbar *toolbar);
 
 void etk_toolbar_style_set(Etk_Toolbar *toolbar, Etk_Toolbar_Style style);
 Etk_Toolbar_Style etk_toolbar_style_get(Etk_Toolbar *toolbar);
+
+void etk_toolbar_stock_size_set(Etk_Toolbar *toolbar, Etk_Stock_Size size);
+Etk_Stock_Size etk_toolbar_stock_size_get(Etk_Toolbar *toolbar);
 
 /** @} */
 
