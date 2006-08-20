@@ -1,0 +1,11 @@
+WARNING : 
+This app can damage your ~/.e/e/apps/emphasis/cover.eet
+Please make a backup before using it.
+If the cover editor or emphasis say something like :
+"Can't open ~/.e/e/apps/emphasis/cover.eet blabla"
+your file is crushed, replace it by the backup. 
+(or just remove it to have a new one)
+
+README :
+This is a quick made app to edit your cover database.
+It's a temporary app. Emphasis will handle this by itself (better than that).

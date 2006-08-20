@@ -75,6 +75,7 @@ emphasis_tree_mlib_append(Etk_Tree *tree, Evas_List *list,
 
   first_list = list;
 
+  etk_tree_freeze(tree);
   if (mpd_type == MPD_DATA_TYPE_TAG)
     {
       et = (Emphasis_Type) etk_object_data_get(ETK_OBJECT(tree),
@@ -113,6 +114,18 @@ emphasis_tree_mlib_append(Etk_Tree *tree, Evas_List *list,
               list = evas_list_next(list);
             }
         }
+      else
+        {
+          if (mpd_type == MPD_DATA_TYPE_PLAYLIST)
+            {
+              while (list)
+                {
+                  data = evas_list_data(list);
+                  etk_tree_append(tree, col, data->playlist, NULL);
+                  list = evas_list_next(list);
+                }
+            }
+        }
     }
 
   etk_tree_thaw(tree);
@@ -141,6 +154,7 @@ emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist)
   etk_tree_freeze(tree);
   row = etk_tree_first_row_get(tree);
 
+  /* LEAK : playlist and on NULL */
   while (row && playlist)
     {
       data = evas_list_data(playlist);
@@ -229,3 +243,19 @@ emphasis_pls_mark_current(Etk_Tree *tree, int id)
 
   etk_tree_thaw(tree);
 }
+
+
+/* Pane 3 : Playlists */
+void
+emphasis_pls_list_init(Emphasis_Player_Gui *player)
+{
+  Etk_Tree *pls_list;
+
+  pls_list = ETK_TREE(player->media.pls_list);
+  etk_tree_clear(pls_list); 
+  emphasis_tree_mlib_append(pls_list, 
+                            (mpc_list_playlists()),
+                            MPD_DATA_TYPE_PLAYLIST,
+                            NULL);
+}
+

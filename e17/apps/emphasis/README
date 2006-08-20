@@ -6,7 +6,7 @@ Features:
 	Double left click on a row of medialib treeview add it with a search to the playlist,
 		and play it if the server is on status "stop".
 		ex : double left click on an album row will add all this album
-	Double middle click remove them on the same principe,
+	Middle click remove them on the same principe,
 	Select a row in the playlist and push "d" to delete it from the playlist.
 	Right click open a contextual menu. 
 	A click on the progress bar seek the right time on the song.
@@ -15,7 +15,6 @@ Features:
 #####################################
 Description:
 	Emphasis is a simple MPD (Music Player Daemon) client writen in C/Etk.
-	It's a clone of MpcOS-X
 
 #####################################
 Depends:

@@ -4,7 +4,7 @@
 
 #define EMPHASIS_GLADE  "/emphasis.glade"
 
-#define EMPHASIS_LOGO   "/images/haricot_musique-grrrr.png"
+#define EMPHASIS_LOGO   "/images/haricot_musique.png"
 #define EMPHASIS_SOUNDL "/images/sound_low.png"
 #define EMPHASIS_SOUNDR "/images/sound_high.png"
 
@@ -30,6 +30,8 @@ struct _Emphasis_Player_Gui
       Etk_Widget *root;
 
       Etk_Widget *cover;
+      int         cover_size_w;
+      int         cover_size_h;
 
       Etk_Widget *play;
       Etk_Widget *stop;
@@ -57,6 +59,8 @@ struct _Emphasis_Player_Gui
       Etk_Widget *root;
 
       Etk_Widget *cover;
+      int         cover_size_w;
+      int         cover_size_h;
 
       Etk_Widget *play;
       Etk_Widget *stop;
@@ -82,11 +86,25 @@ struct _Emphasis_Player_Gui
       Etk_Widget *window;
       Etk_Widget *root;
 
+      Etk_Widget *button_lib;
+      Etk_Widget *button_search;
+      Etk_Widget *button_playlists;
+      Etk_Widget *button_stats;
+
+      Etk_Widget *notebook;
+      Etk_Widget *toolbar;
+
+      /* Pane 1 content */
       Etk_Widget *pls;
 
       Etk_Widget *artist;
       Etk_Widget *album;
       Etk_Widget *track;
+
+      /* Pane 3 content */
+      Etk_Widget *pls_list;
+      Etk_Widget *pls_content;
+      Etk_Widget *pls_entry_save;
 
       Etk_Widget *drag;
     } media;
@@ -100,6 +118,8 @@ void emphasis_init_player(Emphasis_Player_Gui *player);
 void emphasis_player_cover_set(Emphasis_Player_Gui *player, const char *path);
 
 void emphasis_player_cover_size_set(Emphasis_Player_Gui *player, int w, int h);
+
+void emphasis_player_cover_size_update(Emphasis_Player_Gui *player);
 
 void emphasis_player_info_set(Emphasis_Player_Gui *player,
                               mpd_Song * song, char *msg);
@@ -120,6 +140,9 @@ void emphasis_player_vol_image_set(Emphasis_Player_Gui *player,
                                    const char *path);
 void emphasis_player_mode_set(Emphasis_Player_Gui *player,
                               Emphasis_Mode state);
+
+void emphasis_player_force_mode_set(Emphasis_Player_Gui *player,
+                                    Emphasis_Mode state);
 
 /** @} */
 #endif /* EMPHASIS_PLAYER_H_ */

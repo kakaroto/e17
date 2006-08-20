@@ -42,7 +42,7 @@ emphasis_cover_thread_process(void *data)
             {
               emphasis_player_cover_set(gui->player, cover_path);
             }
-          emphasis_player_cover_size_set(gui->player, 100, 100);
+          emphasis_player_cover_size_update(gui->player);
 
           free(artist);
           free(album);

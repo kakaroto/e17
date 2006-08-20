@@ -46,6 +46,14 @@ int mpc_get_vol(void);
 void mpc_change_vol(int value);
 void mpc_database_update(void);
 void mpc_disconnect(void);
+
+Evas_List *mpc_list_playlists(void);
+Evas_List *mpc_get_playlist_content(char *playlist_name);
+void mpc_save_playlist(char *playlist_name);
+void mpc_load_playlist(char *playlist_name);
+void mpc_delete_playlist(char *playlist_name);
+
+MpdData *mpd_database_list_playlist();
 /** @} */
 
 #endif /* EMPHASIS_MPC_H_ */

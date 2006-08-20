@@ -145,7 +145,7 @@ libxml2_libs=`xml2-config --libs`
 libxml2_cflags=`xml2-config --cflags`
 
 # add your required libs / include here
-my_includes="$ecore_cflags $etk_cflags $enhance_cflags $libmpd_cflags $libxml2_cflags"
+my_includes="$ecore_cflags $etk_cflags $enhance_cflags $libmpd_cflags $libxml2_cflags -DHAVE_STRNDUP"
 my_libs="$ecore_libs $etk_libs $enhance_libs $libmpd_libs $libxml2_libs -lpthread"
 AC_SUBST(my_includes)
 AC_SUBST(my_libs)
@@ -155,6 +155,7 @@ Makefile
 src/Makefile
 src/bin/Makefile
 data/Makefile
+data/eap/Makefile
 data/images/Makefile
 debian/changelog
 ],[

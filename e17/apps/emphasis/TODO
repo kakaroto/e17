@@ -1,10 +1,21 @@
-*put the config dialog in the glade file
+== Bugfix ==
+-Un-Leak the writing of the config
+-Parse song title for & before put them in the label
+-Change prototypes of row_clicked callbacks
+
+== Global ==
 *Add crossfade config
 *Add a drag and drop to order the tree_pls
 *Make an OSD at song change
 *Make a special panel for stream support
 *Make a special panel for advanced search
 *Add bindings keys
+*Add "crossfade" cover
+*Fixe windows postion (not at startup)
+*Parse Song name (emphasis hate special caract like '&')
+*Add support of ID3 covers and path choose for cover
+*Grab media-keys 
+*Add a theme or media_tab_icons
 
 == Later ==
-*Support XMMS 2
+*Support XMMS 2 (later later later)

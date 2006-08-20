@@ -250,3 +250,80 @@ strescape(char *str)
       i++;
     }
 }
+
+void 
+pack_in_vbox(Etk_Widget *child, void *data)
+{
+  Etk_Widget *vbox;
+  vbox = data;
+  etk_box_append(ETK_BOX(vbox), child, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+}
+
+void
+etk_button_make_vertical(Etk_Widget *button)
+{
+  Etk_Widget *align;
+  Etk_Widget *hbox;
+  Etk_Widget *vbox;
+
+  align = evas_list_data(etk_container_children_get(ETK_CONTAINER(button)));
+  hbox  = evas_list_data(etk_container_children_get(ETK_CONTAINER(align)));
+
+  etk_container_remove(ETK_CONTAINER(button), align);
+  etk_container_remove(ETK_CONTAINER(align),  hbox);
+
+  vbox = etk_vbox_new(ETK_FALSE, 0);
+  etk_widget_show(vbox);
+  etk_container_for_each_data(ETK_CONTAINER(hbox), pack_in_vbox, (void *)vbox);
+  etk_container_add(ETK_CONTAINER(align),  vbox);
+  etk_container_add(ETK_CONTAINER(button), align);
+
+  etk_widget_pass_mouse_events_set(align, ETK_TRUE);
+  etk_object_destroy(ETK_OBJECT(hbox));
+}
+
+/* Used for debug tiem to time */
+void etk_container_inspect(Etk_Container *container, int lvl, int *to_trace)
+{ 
+#define PRINTF_TYPE_NAME(widget) printf("%s\n", \
+                                          etk_type_name_get( \
+                                            etk_object_object_type_get( \
+                                              ETK_OBJECT(widget))));
+  Evas_List *children;
+  Etk_Widget *widget;
+  int i = 0;
+
+  if (lvl == 0)
+    PRINTF_TYPE_NAME(ETK_WIDGET(container));
+
+  children = etk_container_children_get(ETK_CONTAINER(container));
+  
+  while (children)
+    {
+      widget = evas_list_data(children);
+      for (i=0; i<=lvl; i++)
+        {
+          if (to_trace[i])
+            printf("|    ");
+          else
+            printf("     ");
+        }
+      printf("'");
+      printf("----");
+      PRINTF_TYPE_NAME(widget);
+
+      if ((int) sizeof(to_trace) < lvl+3)
+        to_trace = realloc(to_trace, sizeof(int) * (lvl+3));
+      if (evas_list_next(children) && ETK_IS_CONTAINER(widget))
+        to_trace[lvl+1] = 1;
+      else
+        to_trace[lvl+1] = 0;
+
+      if (ETK_IS_CONTAINER(widget)) 
+        {
+            etk_container_inspect(ETK_CONTAINER(widget), lvl+1, to_trace);
+        }
+      children = evas_list_next(children);
+    }
+}
+

@@ -36,3 +36,5 @@ emphasis_convert.c \
 emphasis_data_list.c 
 
 emphasis_LDADD = @my_libs@
+
+MAINTAINERCLEANFILES = Makefile.in

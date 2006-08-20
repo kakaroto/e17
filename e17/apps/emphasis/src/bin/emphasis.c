@@ -6,7 +6,7 @@ main(int argc, char **argv)
   Emphasis_Gui *gui;
  
   /* void */ enhance_init();
-  if (!etk_init(&argc, &argv))
+  if(!etk_init(&argc, &argv))
     {
       fprintf(stderr, "Unable to init etk\n");
       return 1;
@@ -32,7 +32,7 @@ main(int argc, char **argv)
 
   etk_main();
 
-  /* enhance_free(gui->player->en); *HUM* *HUM* */
+  enhance_free(gui->player->en);
 
   return 0;
 }
@@ -62,7 +62,7 @@ emphasis_pref_init(void *data)
   etk_tree_col_width_set(ETK_TREE_COL_GET(player->media.pls, 3),
                          config->colwidth.album);
 
-  emphasis_player_mode_set(player, config->mode);
+  emphasis_player_force_mode_set(player, config->mode);
   emphasis_player_info_set(player, NULL, "Not connected to MPD");
 
   config_free(config);

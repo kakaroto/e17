@@ -1,6 +1,26 @@
 #include "emphasis.h"
 #include "emphasis_player.h"
 
+/* XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX */
+#ifndef EMPHASIS_LOCAL_PATH
+
+# if   defined(__lok__)
+#   define EMPHASIS_LOCAL_PATH "/home/lok/projects/"
+# elif defined(__any__)
+#   define EMPHASIS_LOCAL_PATH "./"
+# elif defined(__aji__)
+#   define EMPHASIS_LOCAL_PATH "/home/aji/src/"
+# else
+#   define EMPHASIS_LOCAL_PATH "./"
+# endif
+
+#endif
+
+#undef ICON_TEST
+#define ICON_TEST "emphasis/src/pict/haricot_eap-test3.png"
+/* XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX */
+
+
 #undef  EN_VAR_GET
 #define EN_VAR_GET(en,root,id) \
  (root)->small.id=ENHANCE_VAR_GET(en,"small_"#id);\
@@ -59,15 +79,39 @@ emphasis_init_player(Emphasis_Player_Gui *player)
   player->small.media  = enhance_var_get(en, "small_media");
 
 
-  player->media.window = enhance_var_get(en, "media_window");
-  player->media.root   = enhance_var_get(en, "media_root");
+  player->media.window   = enhance_var_get(en, "media_window");
+  player->media.root     = enhance_var_get(en, "media_root");
 
-  player->media.pls    = enhance_var_get(en, "media_pls");
+  player->media.notebook = enhance_var_get(en, "media_notebook");
 
-  player->media.artist = enhance_var_get(en, "media_artist");
-  player->media.album  = enhance_var_get(en, "media_album");
-  player->media.track  = enhance_var_get(en, "media_track");
+  player->media.pls      = enhance_var_get(en, "media_pls");
 
+  player->media.artist   = enhance_var_get(en, "media_artist");
+  player->media.album    = enhance_var_get(en, "media_album");
+  player->media.track    = enhance_var_get(en, "media_track");
+
+  player->media.pls_list    = enhance_var_get(en, "media_pls_list");
+  player->media.pls_content = enhance_var_get(en, "media_pls_content");
+
+  player->media.pls_entry_save = enhance_var_get(en, "media_pls_entry_save");
+
+  /* Mediabox buttons init */
+  player->media.toolbar          = enhance_var_get(en, "media_toolbar");
+  player->media.button_lib       = enhance_var_get(en, "media_button_lib");
+  player->media.button_search    = enhance_var_get(en, "media_button_search");
+  player->media.button_playlists = enhance_var_get(en, "media_button_pls");
+  player->media.button_stats     = enhance_var_get(en, "media_button_stats");
+
+  /* TODO : finish the special theme  
+  etk_widget_theme_file_set(ETK_WIDGET(player->media.button_lib),
+                            PACKAGE_DATA_DIR "/widgets/media_tab_button.edj");
+  etk_widget_theme_file_set(ETK_WIDGET(player->media.button_search),
+                            PACKAGE_DATA_DIR "/widgets/media_tab_button.edj");
+  etk_widget_theme_file_set(ETK_WIDGET(player->media.button_playlists),
+                            PACKAGE_DATA_DIR "/widgets/media_tab_button.edj");
+  etk_widget_theme_file_set(ETK_WIDGET(player->media.button_stats),
+                            PACKAGE_DATA_DIR "/widgets/media_tab_button.edj");
+  */
   /* enhance completion : col def */
   etk_tree_multiple_select_set(ETK_TREE(player->media.artist), ETK_TRUE);
   etk_tree_multiple_select_set(ETK_TREE(player->media.album) , ETK_TRUE);
@@ -104,6 +148,15 @@ emphasis_init_player(Emphasis_Player_Gui *player)
                    "Album",
                    etk_tree_model_text_new(ETK_TREE(player->media.pls)),
                    120);
+  /* playlists page */
+  etk_tree_col_new(ETK_TREE(player->media.pls_list),
+                   "Playlists",
+                   etk_tree_model_text_new(ETK_TREE(player->media.pls_list)),
+                   120);
+  etk_tree_col_new(ETK_TREE(player->media.pls_content),
+                   "Preview",
+                   etk_tree_model_text_new(ETK_TREE(player->media.pls_content)),
+                   120);
   /**/
  
   etk_object_data_set(ETK_OBJECT(player->media.artist), "title", "Artist");
@@ -128,16 +181,21 @@ emphasis_init_player(Emphasis_Player_Gui *player)
 
   etk_signal_connect("row_clicked", ETK_OBJECT(player->media.artist),
                      ETK_CALLBACK(cb_tree_mlib_clicked),
-                     (void*)EMPHASIS_ARTIST);
+                     player);
   etk_signal_connect("row_clicked", ETK_OBJECT(player->media.album ),
                      ETK_CALLBACK(cb_tree_mlib_clicked),
-                     (void*)EMPHASIS_ALBUM);
+                     player);
   etk_signal_connect("row_clicked", ETK_OBJECT(player->media.track ),
                      ETK_CALLBACK(cb_tree_mlib_clicked),
-                     (void*)EMPHASIS_TRACK);
+                     player);
   etk_signal_connect("row_clicked", ETK_OBJECT(player->media.pls   ),
                      ETK_CALLBACK(cb_tree_pls_clicked),
                      NULL);
+
+  /* Media pls init */
+  etk_object_data_set(ETK_OBJECT(player->media.pls_content),
+                      "Emphasis_Type",
+                      (void*)EMPHASIS_TRACK);
 
   /* enhance complection : images */
   /* TODO : use cover_haricotmagique() */
@@ -146,13 +204,18 @@ emphasis_init_player(Emphasis_Player_Gui *player)
   emphasis_player_vol_image_set(player, 0, PACKAGE_DATA_DIR EMPHASIS_SOUNDL);
   emphasis_player_vol_image_set(player, 1, PACKAGE_DATA_DIR EMPHASIS_SOUNDR);
 
+  player->small.cover_size_w = player->small.cover->requested_size.w;
+  player->small.cover_size_h = player->small.cover->requested_size.h;
+  player->full.cover_size_w  = player->full.cover->requested_size.w;
+  player->full.cover_size_h  = player->full.cover->requested_size.h;
+
   /* TEMP configuration, need to add this to enhance */
   etk_window_wmclass_set(ETK_WINDOW(player->full.window),
-                         "Emphasis", "emphasis");
+                         "emphasis", "Emphasis");
   etk_window_wmclass_set(ETK_WINDOW(player->small.window),
-                         "Emphasis", "emphasis");
+                         "emphasis", "Emphasis");
   etk_window_wmclass_set(ETK_WINDOW(player->media.window),
-                         "Emphasis", "emphasis");
+                         "emphasis", "Emphasis");
   etk_container_border_width_set(ETK_CONTAINER(player->full.window), 5);
 }
 
@@ -164,7 +227,7 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
   en = player->en;
 
   /* destroyed */
-  enhance_callback_data_set(en, "cb_quit", player);
+  enhance_callback_data_set(en, "cb_quit"      , player);
   enhance_callback_data_set(en, "cb_media_quit", player);
 
   /* clicked */
@@ -201,6 +264,21 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
   /* row_selected */
   enhance_callback_data_set(en, "cb_tree_artist_selected", player);
   enhance_callback_data_set(en, "cb_tree_album_selected" , player);
+
+  /* media buttonbox */
+  enhance_callback_data_set(en, "cb_media_button_lib_clicked"      , player);
+  enhance_callback_data_set(en, "cb_media_button_search_clicked"   , player);
+  enhance_callback_data_set(en, "cb_media_button_playlists_clicked", player);
+  enhance_callback_data_set(en, "cb_media_button_stats_clicked"    , player);
+
+  enhance_callback_data_set(en, "cb_media_pls_list_row_clicked"    , player);
+  enhance_callback_data_set(en, "cb_media_pls_save_clicked"        , player);
+  enhance_callback_data_set(en, "cb_media_pls_load_clicked"        , player);
+  enhance_callback_data_set(en, "cb_media_pls_del_clicked"         , player);
+
+  enhance_callback_data_set(en, "cb_media_pls_list_row_clicked"    , player);
+  enhance_callback_data_set(en, "cb_tree_mlib_clicked"             , player);
+  enhance_callback_data_set(en, "cb_media_pls_save_key_down"       , player);
 }
 
 /* TODO : documentation */
@@ -219,6 +297,19 @@ emphasis_player_cover_size_set(Emphasis_Player_Gui *player, int w, int h)
   etk_widget_size_request_set(player->full.cover , w, h);
 }
 
+/* TODO : documentation */
+void
+emphasis_player_cover_size_update(Emphasis_Player_Gui *player)
+{
+  etk_widget_size_request_set(player->small.cover,
+                              player->small.cover_size_w,
+                              player->small.cover_size_h);
+
+  etk_widget_size_request_set(player->full.cover,
+                              player->full.cover_size_w,
+                              player->full.cover_size_h);
+}
+
 /* TODO : update doc */
 /**
  * @brief Set the message in th textblock
@@ -230,40 +321,87 @@ void
 emphasis_player_info_set(Emphasis_Player_Gui *player,
                          mpd_Song * song, char *msg)
 {
-  char *info;
+  char *info_label;
+  char *info_textblock;
 
   if (song)
     {
       char **table[] = {&(song->artist), &(song->title), &(song->album), NULL};
       emphasis_unknow_if_null(table);
 
-      asprintf(&info, "\n<b><font size=16>%s</font></b> \n \n"
-               "<font size=11><i>by</i></font>  <font size=13>%s</font>  "
-               "<font size=11><i>in</i></font>  <font size=13>%s</font> \n \n",
-               song->title, song->artist, song->album);
-      if (msg)
+      /* TEMP */
+      if (!msg)
         {
-          asprintf(&info, "%s <font size=11>(%s)</font>", info, msg);
+          asprintf(&info_label,
+                   "<left_margin=10>"
+                   "<b><font_size=16>%s</font_size></b>"
+                   "<br><br>"
+                   "<font_size=11><i>by</i></font_size>  "
+                   "<font_size=13>%s</font_size>  "
+                   "<font_size=11><i>in</i></font_size>  "
+                   "<font_size=13>%s</font_size>"
+                   "</left_margin>",
+                   song->title, song->artist, song->album);
+           asprintf(&info_textblock,
+                    "<b><font size=16>%s</font size></b>"
+                    "\n\n"
+                    "<font size=11><i>by</i></font size>  "
+                    "<font size=13>%s</font size>\n"
+                    "<font size=11><i>in</i></font size>  "
+                    "<font size=13>%s</font size>",
+                    song->title, song->artist, song->album);
         }
-      etk_textblock_text_set(ETK_TEXT_VIEW(player->full.info)->textblock,  info,
+      else
+        {
+          asprintf(&info_label,
+                   "<left_margin=10>"
+                   "<b><font_size=16>%s</font_size></b>"
+                   "<br><br>"
+                   "<font_size=11><i>by</i></font_size>  "
+                   "<font_size=13>%s</font_size>  "
+                   "<font_size=11><i>in</i></font_size>  "
+                   "<font_size=13>%s</font_size>"
+                   "<font_size=11>   (%s)</font_size>"
+                   "</left_margin>",
+                   song->title, song->artist, song->album, msg);
+          asprintf(&info_textblock,
+                   "<b><font size=16>%s</font size></b>"
+                   "\n\n"
+                   "<font size=11><i>by</i></font size>  "
+                   "<font size=13>%s</font size>\n"
+                   "<font size=11><i>in</i></font size>  "
+                   "<font size=13>%s</font size>"
+                   "<font size=11>(%s)</font size>",
+                   song->title, song->artist, song->album, msg);
+        }
+      
+      etk_label_set(ETK_LABEL(player->full.info), info_label);
+      etk_textblock_text_set(ETK_TEXT_VIEW(player->small.info)->textblock,
+                             info_textblock,
                              ETK_TRUE);
-      etk_textblock_text_set(ETK_TEXT_VIEW(player->small.info)->textblock, info,
-                             ETK_TRUE);
-
-      free(info);
+      free(info_label);
+      free(info_textblock);
     }
   else
     {
       if (msg)
         {
-          asprintf(&info, "%s", msg);
-          etk_textblock_text_set(ETK_TEXT_VIEW(player->full.info)->textblock,
-                                 info, ETK_TRUE);
+          asprintf(&info_label, "%s", msg);
+          asprintf(&info_textblock, "%s", msg);
+
+          etk_label_set(ETK_LABEL(player->full.info), info_label);
           etk_textblock_text_set(ETK_TEXT_VIEW(player->small.info)->textblock,
-                                 info, ETK_TRUE);
-          free(info);
+                                 info_textblock, ETK_TRUE);
+
+          free(info_label);
+          free(info_textblock);
+          
         }
     }
+  
+  etk_textblock_object_cursor_visible_set
+   (ETK_TEXT_VIEW(player->small.info)->textblock->evas_objects->data,
+    ETK_FALSE);
 }
 
 /* TODO : update doc */
@@ -408,4 +546,12 @@ emphasis_player_mode_set(Emphasis_Player_Gui *player,
       cb_switch_small(NULL, player);
       break;
     }
+}
+
+void
+emphasis_player_force_mode_set(Emphasis_Player_Gui *player,
+                               Emphasis_Mode state)
+{
+  player->state = (state == EMPHASIS_SMALL) ? EMPHASIS_FULL : EMPHASIS_SMALL;
+  emphasis_player_mode_set(player, state);
 }

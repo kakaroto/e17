@@ -8,6 +8,7 @@
 #include "config.h"
 
 #include <libmpd/libmpd.h>
+#include <libmpd/libmpd-internal.h>
 
 #include <Ecore.h>
 #include <Evas.h>

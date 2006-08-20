@@ -18,10 +18,11 @@ emphasis_init_gui(Emphasis_Gui *gui)
 
   if(!etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(gui->player->small.media)))
     {
-      etk_widget_hide_all(gui->player->media.window);
+      etk_widget_hide(gui->player->media.window);
     }
 
   gui->cover_queue = NULL;
+  gui->config_gui  = NULL;
 }
 
 
@@ -40,21 +41,15 @@ emphasis_clear(Emphasis_Gui *gui)
 }
 
 /* TODO : documentation */
-/* TODO : enhanced? pfffffffffffffff */
 void
 emphasis_init_menu(Emphasis_Gui *gui)
 {
-  gui->config_gui = malloc(sizeof(Emphasis_Config_Gui));
   Emphasis_Player_Gui *player;
 	
   /* playlist menu setup*/
-
   gui->menu = etk_menu_new();
   player = gui->player;
 	
-  Etk_Widget *separator, *radio_item=NULL;
-
-
   emphasis_menu_append(gui->menu,
                        "clear",
                        ETK_STOCK_EDIT_CLEAR, cb_playlist_clear, NULL,
@@ -65,22 +60,8 @@ emphasis_init_menu(Emphasis_Gui *gui)
                        "config",
                        ETK_STOCK_PREFERENCES_SYSTEM, cb_config_show, gui,
                        NULL);
-  separator = etk_menu_item_separator_new();
-  etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(separator));
-
-  radio_item = etk_menu_item_radio_new_with_label_from_widget("full", NULL);
-  etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(radio_item));
-  etk_signal_connect("activated",
-                     ETK_OBJECT(radio_item),
-                     ETK_CALLBACK(cb_switch_full), player);
-  radio_item = etk_menu_item_radio_new_with_label_from_widget
-               	("small", ETK_MENU_ITEM_RADIO(radio_item));
-  etk_menu_shell_append(ETK_MENU_SHELL(gui->menu), ETK_MENU_ITEM(radio_item));
-  etk_signal_connect("activated",
-                     ETK_OBJECT(radio_item),
-                     ETK_CALLBACK(cb_switch_small), player);
-
-	/* Do we need all this connect ? */
+	
+  /* Do we need all this connect ? */
 	etk_signal_connect("mouse_down", ETK_OBJECT(player->full.window), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
   etk_signal_connect("mouse_down", ETK_OBJECT(player->small.window), 

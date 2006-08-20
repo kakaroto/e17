@@ -24,6 +24,13 @@ mpc_init(const char *hostname, int port, const char *password)
       timer = NULL;
     }
 
+  if (!mpd_server_check_version(mo, 0, 12, 0))
+    {
+      fprintf(stderr, "Wrong server version. Emphasis require MPD 0.12.0\n");
+      mpc_disconnect();
+      exit(-1);
+    }
+
   return timer;
 }
 
@@ -473,3 +480,95 @@ mpc_disconnect(void)
 {
   mpd_free(mo);
 }
+
+Evas_List *
+mpc_list_playlists(void)
+{
+  MpdData *data;
+  Evas_List *list;
+
+  data = mpd_database_list_playlist(mo);
+  list = convert_mpd_data(data);
+
+  mpd_data_free(data);
+  return list;
+}
+
+Evas_List *
+mpc_get_playlist_content(char *playlist_name)
+{
+  MpdData *data;
+  Evas_List *list;
+  
+  data = mpd_database_get_playlist_content (mo, playlist_name);
+  list = convert_mpd_data(data);
+
+  mpd_data_free(data);
+  return list;
+}
+
+void
+mpc_save_playlist(char *playlist_name)
+{
+  int mpd_error;
+
+  mpd_error = mpd_database_save_playlist(mo, playlist_name);
+  if (mpd_error != MPD_OK)
+    {
+      if (mpd_error == MPD_DATABASE_PLAYLIST_EXIST)
+        {
+          fprintf(stderr, "A playlist with the same name already exist.\n");
+        }
+    }
+}
+
+void
+mpc_delete_playlist(char *playlist_name)
+{
+  int mpd_error;
+
+  mpd_error = mpd_database_delete_playlist(mo, playlist_name);
+  if (mpd_error != MPD_OK)
+    {
+      fprintf(stderr, "An error occur during the playlist deleting\n");
+    }
+}
+
+MpdData *mpd_database_list_playlist()
+{
+	MpdData *data = NULL;
+	mpd_InfoEntity *ent = NULL;
+
+	if(!mpd_check_connected(mo))
+	{
+		return NULL;
+	}
+	if(mpd_lock_conn(mo))
+	{
+		return NULL;
+	}
+
+	mpd_sendLsInfoCommand(mo->connection, "");
+
+	while((ent = mpd_getNextInfoEntity(mo->connection))) 
+	{
+		if(ent->type == MPD_INFO_ENTITY_TYPE_PLAYLISTFILE) 
+		{
+			data = mpd_new_data_struct_append(data);
+			data->type = MPD_DATA_TYPE_PLAYLIST;
+			data->playlist = ent->info.playlistFile->path;
+      ent->info.playlistFile->path=NULL;
+		}
+		mpd_freeInfoEntity(ent);
+	}
+
+	mpd_finishCommand(mo->connection);
+
+	mpd_unlock_conn(mo);
+	if(data == NULL)
+	{
+		return NULL;
+	}
+	return mpd_data_get_first(data);
+}
+
