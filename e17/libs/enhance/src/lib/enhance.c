@@ -632,11 +632,27 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 
    else if(!strcmp(name, "icon_size"))
      {
-	PROPERTY_INT;
-	Etk_Stock_Id id = ETK_STOCK_MEDIUM;
-	if (value <= 2) id = ETK_STOCK_SMALL;
-	else if (value >= 5) id = ETK_STOCK_BIG;
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_size", id, NULL);
+	PROPERTY_STR;
+	int size_value = 0;
+	Etk_Stock_Size size = ETK_STOCK_MEDIUM;
+	
+	if (strlen(value) > 14)
+	  {
+	     value = &value[14];
+	     if (!strcmp(value, "DIALOG") || !strcmp(value, "DND"))
+		size = ETK_STOCK_BIG;
+	     else if (!strcmp(value, "LARGE_TOOLBAR") || !strcmp(value, "BUTTON"))
+		size = ETK_STOCK_MEDIUM;
+	     else if (!strcmp(value, "SMALL_TOOLBAR") || !strcmp(value, "MENU"))
+		size = ETK_STOCK_BIG;
+	  }
+	else 
+	  {
+	     size_value = atoi(value);
+	     if (size_value <= 2) size = ETK_STOCK_SMALL;
+	     else if (size_value >= 5) size = ETK_STOCK_BIG;
+	  }
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_size", size, NULL);
      }
 
    else if(!strcmp(name, "icon_name"))
