@@ -249,6 +249,7 @@ Etk_Textblock_Iter *etk_textblock_object_selection_bound_get(Evas_Object *tbo);
 int etk_textblock_unicode_length_get(const char *unicode_string);
 Etk_Bool etk_textblock_is_white_char(int c);
 void etk_textblock_char_size_get(Evas *evas, const char *font_face, int font_size, int *w, int *h);
+void etk_textblock_printf(Etk_Textblock *tb);
 
 /** @} */
  

@@ -77,6 +77,7 @@ struct Etk_Textblock_Object_Line
 static void _etk_tb_constructor(Etk_Textblock *tb);
 static void _etk_tb_destructor(Etk_Textblock *tb);
 
+static void _etk_textblock_node_printf(Etk_Textblock_Node *node, int n_tabs);
 static Etk_Textblock_Node *_etk_textblock_node_new(Etk_Textblock_Node *parent, Etk_Textblock_Node *prev, Etk_Textblock_Node_Type node_type, Etk_Textblock_Tag_Type tag_type);
 static Etk_Textblock_Node *_etk_textblock_node_free(Etk_Textblock_Node *node);
 static void _etk_textblock_node_type_set(Etk_Textblock_Node *node, Etk_Textblock_Node_Type node_type, Etk_Textblock_Tag_Type tag_type);
@@ -651,7 +652,7 @@ void etk_textblock_delete_range(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Et
    Etk_Textblock_Iter *it;
    Etk_Textblock_Node *start_line, *end_line, *line;
    Etk_Textblock_Node *start_paragraph, *end_paragraph, *paragraph;
-   Etk_Textblock_Node *n;
+   Etk_Textblock_Node *n, *new_node;
    Evas_List *l;
    Etk_Bool done;
    
@@ -732,7 +733,8 @@ void etk_textblock_delete_range(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Et
          {
             if (it->node == start_iter->node && it->pos <= start_iter->pos)
                continue;
-            else if (it != end_iter && it->node == end_iter->node && it->pos > end_iter->pos)
+            
+            if (it != end_iter && it->node == end_iter->node && it->pos > end_iter->pos)
             {
                it->index -= end_iter->index;
                it->pos -= end_iter->pos;
@@ -747,6 +749,24 @@ void etk_textblock_delete_range(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Et
    /* Merge the start and the end lines, and remove the other lines */
    if (start_line != end_line)
    {
+      /* Make sure the start line node has at least one child */
+      if (etk_string_length_get(start_line->text) > 0)
+      {
+         new_node = _etk_textblock_node_new(start_line, NULL, ETK_TEXTBLOCK_NODE_NORMAL, ETK_TEXTBLOCK_TAG_DEFAULT);
+         new_node->text = start_line->text;
+         new_node->unicode_length = start_line->unicode_length;
+         start_line->text = NULL;
+         start_line->unicode_length = 0;
+         
+         for (l = tb->iters; l; l = l->next)
+         {
+            it = l->data;
+            if (it->node == start_line)
+               it->node = new_node;
+         }
+      }
+      
+      /* Add the children of the end line node to the start line node */
       while (end_line->children)
          _etk_textblock_node_attach(end_line->children, start_line, start_line->last_child);
       
@@ -1293,6 +1313,30 @@ void etk_textblock_char_size_get(Evas *evas, const char *font_face, int font_siz
    
    if (w)
       *w = tw / len;
+}
+
+/**
+ * @brief Prints the textblock hierarchy for debug
+ * TODO: etk_textblock_printf(): Remove this function
+ */
+void etk_textblock_printf(Etk_Textblock *tb)
+{
+   Evas_List *l;
+   Etk_Textblock_Object_SD *sd;
+   
+   if (!tb)
+      return;
+   
+   printf("TEXTBLOCK PRINTF\n"
+          "----------------\n");
+   _etk_textblock_node_printf(&tb->root, -1);
+   printf("\n");
+   for (l = tb->evas_objects; l; l = l->next)
+   {
+      sd = evas_object_smart_data_get(l->data);
+      printf("Iterator node: %d %d | %s\n", sd->cursor->node->type, sd->cursor->node->tag.type,
+         etk_string_get(sd->cursor->node->text) ? etk_string_get(sd->cursor->node->text) : "NULL");
+   }
 }
 
 /**************************
@@ -2401,9 +2445,9 @@ static Etk_Bool _etk_textblock_iter_is_valid(Etk_Textblock *tb, Etk_Textblock_It
       ETK_WARNING("The iterator is not attached to a textblock node");
       return ETK_FALSE;
    }
-   else if (iter->node->children)
+   else if (iter->node->type == ETK_TEXTBLOCK_NODE_ROOT)
    {
-      ETK_WARNING("The node of the iterator is not a leaf");
+      ETK_WARNING("The iterator can't be attached to the root node");
       return ETK_FALSE;
    }
    else if (iter->node->type == ETK_TEXTBLOCK_NODE_PARAGRAPH)
@@ -2411,9 +2455,9 @@ static Etk_Bool _etk_textblock_iter_is_valid(Etk_Textblock *tb, Etk_Textblock_It
       ETK_WARNING("The iterator can't be attached to a paragraph node");
       return ETK_FALSE;
    }
-   else if (iter->node->type == ETK_TEXTBLOCK_NODE_ROOT)
+   else if (iter->node->children)
    {
-      ETK_WARNING("The iterator can't be attached to the root node");
+      ETK_WARNING("The node of the iterator is not a leaf");
       return ETK_FALSE;
    }
    else if (iter->pos < 0 || iter->pos > iter->node->unicode_length ||

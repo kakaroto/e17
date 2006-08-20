@@ -394,7 +394,7 @@ Evas *etk_widget_toplevel_evas_get(Etk_Widget *widget)
  * @param theme_file the path of the .edj theme-file. If NULL, it will use the theme-file of its theme-parent
  * (or parent if it is has no theme-parent). If none of its theme-parents has a non-null theme-file, it will use the
  * current theme-file of Etk. @n
- * Children of the widget will automatically inherit this theme-file if they have no theme-file already set
+ * Children of the widget will automatically inherit this theme-file if their theme-file is NULL
  */
 void etk_widget_theme_file_set(Etk_Widget *widget, const char *theme_file)
 {
@@ -414,9 +414,9 @@ void etk_widget_theme_file_set(Etk_Widget *widget, const char *theme_file)
 /**
  * @brief Gets the theme-file of the widget. See etk_widget_theme_file_set() for more infos about theme-file
  * @param widget a widget
- * @return Returns the theme-file used by the widget (if NULL, it uses the theme-file of its parent)
- * @note To get the theme-file really used by the widget, you have to walk through the theme-parents of the widget @n
- * until you find the first theme-parent that uses a non-null theme-file. This is the theme-file used of the widget. @n
+ * @return Returns the theme-file used by the widget (if NULL, it uses the theme-file of its theme-parent)
+ * @note To get the theme-file really used by the widget, you have to walk through the theme-parents of the widget
+ * until you find the first theme-parent that uses a non-null theme-file. This is the theme-file used by the widget. @n
  * If no theme-parent has a non-null theme-file, then it uses the current theme-file of Etk, that you can get with
  * etk_theme_widget_theme_get()
  */
@@ -515,8 +515,8 @@ void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent)
  * @param widget a widget
  * @param parent the new parent
  * @param remove_from_container if @a remove_from_container is ETK_TRUE and if the parent of the widget is a container,
- * the remove_child() function of the container parent will be called. So @a remove_from_container should most of the
- * time be set to ETK_TRUE, except when etk_widget_parent_set_full() is called from the remove_child() function of a
+ * the child_remove() function of the parent container will be called. So @a remove_from_container should most of the
+ * time be set to ETK_TRUE, except when etk_widget_parent_set_full() is called from the child_remove() function of a
  * container, in order to avoid an infinite loop.
  * @widget_implementation
  * @note If you want to add a widget to a container, use etk_container_add() instead!
@@ -577,7 +577,7 @@ Etk_Widget *etk_widget_parent_get(Etk_Widget *widget)
 
 /**
  * @brief Sets whether the widget should have an event object. An event object is a simple invisible rectangle that
- * grabs the mouse events. It can be useful for example if you want to know when a container with no theme object
+ * grabs the mouse events. It is useful for example if you want to know when a container with no theme object
  * (a table, a box, ...) is clicked. @n
  * If a widget already has a theme object, then this function has no effect since the theme object is already used to
  * grab the mouse events
@@ -629,7 +629,8 @@ Etk_Bool etk_widget_has_event_object_get(Etk_Widget *widget)
 /**
  * @brief Sets whether the widget should repeat the mouse events it receives
  * @param widget a widget
- * @param repeat_mouse_events if @a repeat_mouse_events is ETK_TRUE, the parent widget will also receive the mouse events
+ * @param repeat_mouse_events if @a repeat_mouse_events is ETK_TRUE, the parent
+ * widget will also receive the mouse events
  */
 void etk_widget_repeat_mouse_events_set(Etk_Widget *widget, Etk_Bool repeat_mouse_events)
 {
