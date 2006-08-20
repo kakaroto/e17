@@ -948,10 +948,10 @@ DialogAddHeader(Dialog * d __UNUSED__, DItem * parent, const char *img,
 {
    DItem              *table, *di;
 
-   /* FIXME - Center table horizontally */
    table = DialogAddItem(parent, DITEM_TABLE);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
    DialogItemSetAlign(table, 512, 0);
+   DialogItemSetFill(table, 0, 0);
 
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemImageSetFile(di, img);
@@ -962,31 +962,63 @@ DialogAddHeader(Dialog * d __UNUSED__, DItem * parent, const char *img,
    di = DialogAddItem(parent, DITEM_SEPARATOR);
 }
 
+/*
+ * Hacky wrapper to get the dialog closed as needed
+ * val = 0: Ok (apply, close)
+ *       1: Apply
+ *       2: Close
+ */
+static void
+DialogCallbackWrapper(Dialog * d, int val, void *data)
+{
+   DialogCallbackFunc *cb = data;
+
+   cb(d, val, NULL);
+
+   if (val == 0)
+      DialogClose(d);
+}
+
 static void
 DialogAddFooter(Dialog * d, DItem * parent, int flags, DialogCallbackFunc * cb)
 {
    DItem              *table, *di;
+   int                 n_buttons;
 
    di = DialogAddItem(parent, DITEM_SEPARATOR);
 
    table = DialogAddItem(parent, DITEM_TABLE);
-   DialogItemTableSetOptions(table, 1, 0, 0, 0);
    DialogItemSetAlign(table, 512, 0);
+   DialogItemSetFill(table, 0, 0);
 
+   /* FIXME - The "real" dialog buttons are slightly different */
+   n_buttons = 0;
    if (flags & 4)
      {
-	DialogAddButton(d, _("OK"), cb, 1, DLG_BUTTON_OK);
+	di = DialogAddItem(table, DITEM_BUTTON);
+	DialogItemSetText(di, _("OK"));
+	DialogItemSetCallback(di, DialogCallbackWrapper, 0, cb);
+	n_buttons++;
      }
    if (flags & 2)
      {
-	DialogAddButton(d, _("Apply"), cb, 0, DLG_BUTTON_APPLY);
-	DialogBindKey(d, "Return", cb, 0, NULL);
+	di = DialogAddItem(table, DITEM_BUTTON);
+	DialogItemSetText(di, _("Apply"));
+	DialogItemSetCallback(di, DialogCallbackWrapper, 1, cb);
+	DialogBindKey(d, "Return", DialogCallbackWrapper, 1, cb);
+	n_buttons++;
      }
    if (flags & 1)
      {
-	DialogAddButton(d, _("Close"), cb, 1, DLG_BUTTON_CLOSE);
+	di = DialogAddItem(table, DITEM_BUTTON);
+	DialogItemSetText(di, _("Close"));
+	DialogItemSetCallback(di, DialogCallbackClose, 0, NULL);
 	DialogBindKey(d, "Escape", DialogCallbackClose, 0, NULL);
+	n_buttons++;
      }
+
+   DialogItemTableSetOptions(table, n_buttons, 0, 1, 0);
+
    DialogSetExitFunction(d, cb, 2);
 }
 
@@ -1714,6 +1746,21 @@ DialogDrawItem(Dialog * d, DItem * di)
 		   dii->update = 1;
 		DialogDrawItem(d, dii);
 	     }
+
+#if 0				/* Debug */
+	   {
+	      XGCValues           gcv;
+	      GC                  gc;
+
+	      pad = ImageclassGetPadding(d->iclass);
+	      gcv.subwindow_mode = IncludeInferiors;
+	      gc = EXCreateGC(d->pmap, GCSubwindowMode, &gcv);
+	      XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
+	      XDrawRectangle(disp, d->pmap, gc, pad->left + di->x,
+			     pad->top + di->y, di->w, di->h);
+	      EXFreeGC(gc);
+	   }
+#endif
 	}
 	break;
 
@@ -2558,6 +2605,9 @@ DItemHandleEvents(Win win, XEvent * ev, void *prm)
 	DItemEventMouseOut(win, di, ev);
 	break;
      }
+
+   if (di->dlg->close)
+      _DialogClose(di->dlg);
 }
 
 static void
