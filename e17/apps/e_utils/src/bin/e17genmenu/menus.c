@@ -47,7 +47,7 @@ make_menus()
 
         printf("Converting freedesktop.org (fdo) menus.\n");
         /* Find the main menu file. */
-        menu_file = ecore_desktop_paths_file_find(ecore_desktop_paths_menus, menu, 1, NULL, NULL);
+        menu_file = ecore_desktop_paths_file_find(ecore_desktop_paths_menus, menu, -1, NULL, NULL);
         if (menu_file)
           {
              char *path;
