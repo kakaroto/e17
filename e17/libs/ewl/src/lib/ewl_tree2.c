@@ -147,6 +147,7 @@ ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 
 	ewl_tree2_column_model_set(c, model);
 	ewl_tree2_column_view_set(c, view);
+	ewl_tree2_column_tree_set(c, tree);
 
 	ecore_list_append(tree->columns, c);
 	ewl_tree2_dirty_set(tree, TRUE);
@@ -181,6 +182,7 @@ ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 
 	ewl_tree2_column_model_set(c, model);
 	ewl_tree2_column_view_set(c, view);
+	ewl_tree2_column_tree_set(c, tree);
 
 	ecore_list_prepend(tree->columns, c);
 	ewl_tree2_dirty_set(tree, TRUE);
@@ -217,6 +219,7 @@ ewl_tree2_column_insert(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 
 	ewl_tree2_column_model_set(c, model);
 	ewl_tree2_column_view_set(c, view);
+	ewl_tree2_column_tree_set(c, tree);
 
 	ecore_list_goto_index(tree->columns, idx);
 	ecore_list_insert(tree->columns, c);
@@ -515,6 +518,84 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The header that was clicked
+ * @param ev: UNUSED
+ * @param data: The column related to this header
+ * @return Returns no value
+ * @brief Sorts the tree by the given column
+ */
+void
+ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	Ewl_Tree2_Column *c, *col;
+	Ewl_Widget *child;
+	char *theme_str;
+	int index = 0, count = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	c = data;
+
+	/* sanity check */
+	if (!c->model || !c->model->sort)
+	{
+		DWARNING("In ewl_tree2_cb_column_sort without a sort cb.");
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* need to loop over the headers and reset the state */
+	theme_str = "default";
+	ewl_container_child_iterate_begin(EWL_CONTAINER(c->parent->header));
+	while ((child = ewl_container_child_next(EWL_CONTAINER(c->parent->header))))
+	{
+		/* don't bother signaling the clicked header as we'll do
+		 * that later anyway */
+		if (child == w) 
+		{
+			index = count;
+			continue;
+		}
+
+		ewl_widget_state_set(child, theme_str, EWL_STATE_TRANSIENT);
+		count ++;
+	}
+
+	/* loop over the columns and reset the sort settings */
+	ecore_list_goto_first(c->parent->columns);
+	while ((col = ecore_list_next(c->parent->columns)))
+	{
+		/* skip the current column */
+		if (col == c) continue;
+
+		col->sort = EWL_SORT_DIRECTION_NONE;
+	}
+
+	/* update our sort direction and call the sort function, skipping
+	 * over SORT_NONE */
+	c->sort = ((c->sort + 1) % EWL_SORT_DIRECTION_MAX);
+	if (!c->sort) c->sort ++;
+
+	/* pick the theme setting for the sort direction and set on the
+	 * header */
+	if (c->sort == EWL_SORT_DIRECTION_ASCENDING)
+		theme_str = "ascending";
+	else if (c->sort == EWL_SORT_DIRECTION_DESCENDING)
+		theme_str = "descending";
+
+	ewl_widget_state_set(w, theme_str, EWL_STATE_TRANSIENT);
+
+	c->model->sort(c->parent->data, index, c->sort);
+
+	/* force the tree to redraw */
+	ewl_tree2_dirty_set(c->parent, TRUE);
+	ewl_widget_configure(EWL_WIDGET(c->parent));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 static void
 ewl_tree2_build_tree(Ewl_Tree2 *tree)
 {
@@ -533,12 +614,14 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 		int r;
 		Ewl_Widget *h;
 
-
 		h = col->view->header_fetch(tree->data, column);
 		ewl_object_fill_policy_set(EWL_OBJECT(h), 
 				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
-
 		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
+
+		if (col->model->sort)
+			ewl_callback_append(h, EWL_CALLBACK_CLICKED, 
+						ewl_tree2_cb_column_sort, col);
 		column ++;
 
 		r = col->model->count(tree->data);
@@ -657,6 +740,9 @@ ewl_tree2_column_destroy(Ewl_Tree2_Column *c)
 
 	c->model = NULL;
 	c->view = NULL;
+	c->parent = NULL;
+	c->sort = EWL_SORT_DIRECTION_NONE;
+
 	FREE(c);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -725,5 +811,71 @@ ewl_tree2_column_view_get(Ewl_Tree2_Column *c)
 
 	DRETURN_PTR(c->view, DLEVEL_STABLE);
 }
+
+/**
+ * @param c: The Ewl_Tree2_Column to work with
+ * @param tree: The parent to set
+ * @return Returns no value
+ * @brief Sets @a tree as the parent of the column @a c
+ */
+void
+ewl_tree2_column_tree_set(Ewl_Tree2_Column *c, Ewl_Tree2 *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
+
+	c->parent = tree;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param c: The Ewl_Tree2_Column to work with
+ * @return Returns the parent tree for this column or NULL if none set
+ * @brief Retrieves the parent tree for this column or NULL if none set
+ */
+Ewl_Tree2 *
+ewl_tree2_column_tree_get(Ewl_Tree2_Column *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, NULL);
+
+	DRETURN_PTR(c->parent, DLEVEL_STABLE);
+}
+
+/**
+ * @param c: The Ewl_Tree2_Column to work with
+ * @param sort: The sort direction to set
+ * @return Returns no value
+ * @brief Sets the sort direction of the column to the given value
+ */
+void
+ewl_tree2_column_sort_direction_set(Ewl_Tree2_Column *c, Ewl_Sort_Direction sort)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	c->sort = sort;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param c: The Ewl_Tree2_Column to get the sort information from
+ * @return Returns the current sort direction for the column or
+ * EWL_SORT_DIRECTION_NONE if none set
+ * @brief Retrieves the current sort information for the Ewl_Tree2_Column
+ */
+Ewl_Sort_Direction
+ewl_tree2_column_sort_direction_get(Ewl_Tree2_Column *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, EWL_SORT_DIRECTION_NONE);
+
+	DRETURN_INT(c->sort, DLEVEL_STABLE);
+}
+
 
 

@@ -97,26 +97,6 @@
 #define EWL_TREE2_TYPE "tree2"
 
 /**
- * @def EWL_TREE2_COLUMN
- * Typecasts a pointer to an Ewl_Tree2_Column pointer.
- */
-#define EWL_TREE2_COLUMN(c) ((Ewl_Tree2_Column *)c)
-
-/**
- * The Ewl_Tree2_Column type
- */
-typedef struct Ewl_Tree2_Column Ewl_Tree2_Column;
-
-/**
- * Holdes the model and view to use for this column in the tree
- */
-struct Ewl_Tree2_Column
-{
-	Ewl_Model *model;	/**< The model for the column */
-	Ewl_View  *view;	/**< The view for the column */
-};
-
-/**
  * @def EWL_TREE2(t)
  * Typecasts a pointer to an Ewl_Tree pointer.
  */
@@ -148,6 +128,29 @@ struct Ewl_Tree2
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
 	unsigned char dirty:1;    /**< Has the data changed? */
+};
+
+/**
+ * @def EWL_TREE2_COLUMN
+ * Typecasts a pointer to an Ewl_Tree2_Column pointer.
+ */
+#define EWL_TREE2_COLUMN(c) ((Ewl_Tree2_Column *)c)
+
+/**
+ * The Ewl_Tree2_Column type
+ */
+typedef struct Ewl_Tree2_Column Ewl_Tree2_Column;
+
+/**
+ * Holdes the model and view to use for this column in the tree
+ */
+struct Ewl_Tree2_Column
+{
+	Ewl_Model *model;	/**< The model for the column */
+	Ewl_View  *view;	/**< The view for the column */
+	
+	Ewl_Tree2 *parent;	/**< The tree this column is for */
+	Ewl_Sort_Direction sort; /**< direction the column is sorted in */
 };
 
 /*
@@ -189,6 +192,7 @@ unsigned int	 ewl_tree2_dirty_get(Ewl_Tree2 *tree2);
  */
 void ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_tree2_cb_configure(Ewl_Widget *w, void *ev, void *data);
+void ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev, void *data);
 
 /*
  * Ewl_Tree2_Column stuff
@@ -201,6 +205,13 @@ Ewl_Model 		*ewl_tree2_column_model_get(Ewl_Tree2_Column *c);
 
 void			 ewl_tree2_column_view_set(Ewl_Tree2_Column *c, Ewl_View *v);
 Ewl_View		*ewl_tree2_column_view_get(Ewl_Tree2_Column *c);
+
+void			 ewl_tree2_column_tree_set(Ewl_Tree2_Column *c, Ewl_Tree2 *tree);
+Ewl_Tree2 		*ewl_tree2_column_tree_get(Ewl_Tree2_Column *c);
+
+void			 ewl_tree2_column_sort_direction_set(Ewl_Tree2_Column *c, 
+								Ewl_Sort_Direction sort);
+Ewl_Sort_Direction	 ewl_tree2_column_sort_direction_get(Ewl_Tree2_Column *c);
 
 /**
  * @}

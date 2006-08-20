@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define TREE2_DATA_ELEMENTS 5
+
 typedef struct Tree2_Test_Row_Data Tree2_Test_Row_Data;
 struct Tree2_Test_Row_Data
 {
@@ -26,7 +28,8 @@ static Ewl_Widget *tree2_test_data_header_fetch(void *data,
 						int column);
 static void *tree2_test_data_fetch(void *data, unsigned int row, 
 						unsigned int column);
-static void tree2_test_data_sort(void *data, unsigned int column);
+static void tree2_test_data_sort(void *data, unsigned int column, 
+						Ewl_Sort_Direction sort);
 static int tree2_test_data_count_get(void *data);
 
 void 
@@ -78,6 +81,11 @@ create_test(Ewl_Container *box)
         ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
         ewl_tree2_column_append(EWL_TREE2(tree), model, view);
 
+	/* we don't want this one sortable */
+	model = ewl_model_new();
+        ewl_model_fetch_set(model, tree2_test_data_fetch);
+        ewl_model_count_set(model, tree2_test_data_count_get);
+
         /* create a view for the third column that has a custom widget */
         view = ewl_view_new();
         ewl_view_constructor_set(view, tree2_test_custom_new);
@@ -95,7 +103,7 @@ tree2_test_data_setup(void)
         Tree2_Test_Row_Data **dt;
 
         data = calloc(1, sizeof(Tree2_Test_Data));
-        dt = calloc(3, sizeof(Tree2_Test_Row_Data *));
+        dt = calloc(TREE2_DATA_ELEMENTS, sizeof(Tree2_Test_Row_Data *));
 
 	dt[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
         dt[0]->image = strdup(PACKAGE_DATA_DIR"/images/e-logo.png");
@@ -109,8 +117,16 @@ tree2_test_data_setup(void)
         dt[2]->image = strdup(PACKAGE_DATA_DIR"/images/entrance.png");
         dt[2]->text = strdup("The Entrance image");
 
+	dt[3] = calloc(1, sizeof(Tree2_Test_Row_Data));
+        dt[3]->image = strdup(PACKAGE_DATA_DIR"/images/End.png");
+        dt[3]->text = strdup("Zebra");
+	
+	dt[4] = calloc(1, sizeof(Tree2_Test_Row_Data));
+        dt[4]->image = strdup(PACKAGE_DATA_DIR"/images/banner-top.png");
+        dt[4]->text = strdup("Ant");
+
         data->rows = dt;
-        data->count = 3;
+        data->count = TREE2_DATA_ELEMENTS;
 
         return data;
 }
@@ -189,9 +205,52 @@ tree2_test_data_fetch(void *data, unsigned int row, unsigned int column)
 }
 
 static void
-tree2_test_data_sort(void *data __UNUSED__, unsigned int column __UNUSED__)
+tree2_test_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort)
 {
-        printf("No sort yet.\n");
+	int i;
+        Tree2_Test_Data *d;
+
+	/* just leave it if we're in sort none. */
+	if (sort == EWL_SORT_DIRECTION_NONE)
+		return;
+
+	d = data;
+
+	for (i = (TREE2_DATA_ELEMENTS - 1); i >= 0; i--)
+	{
+		int j;
+
+		for (j = 1; j <= i; j++)
+		{
+			char *a, *b;
+
+			if (column == 0)
+			{
+				a = d->rows[j - 1]->text;
+				b = d->rows[j]->text;
+			}
+			else
+			{
+				a = d->rows[j - 1]->image;
+				b = d->rows[j]->image;
+			}
+
+			if (((sort == EWL_SORT_DIRECTION_ASCENDING) && strcmp(a, b) > 0)
+					|| ((sort == EWL_SORT_DIRECTION_DESCENDING) 
+						&& strcmp(a, b) < 0))
+			{
+				char *temp;
+
+				temp = d->rows[j - 1]->text;
+				d->rows[j - 1]->text = d->rows[j]->text;
+				d->rows[j]->text = temp;
+
+				temp = d->rows[j - 1]->image;
+				d->rows[j - 1]->image = d->rows[j]->image;
+				d->rows[j]->image = temp;
+			}
+		}
+	}
 }
 
 static int

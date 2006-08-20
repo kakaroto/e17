@@ -45,7 +45,8 @@ typedef void *(*Ewl_Model_Subfetch)(void *data, unsigned int parent,
 /**
  * A typedef to shorten the definition of the model_sort callbacks. 
  */
-typedef void (*Ewl_Model_Sort)(void *data, unsigned int column);
+typedef void (*Ewl_Model_Sort)(void *data, unsigned int column, 
+						Ewl_Sort_Direction sort);
 
 /**
  * @def EWL_MODEL_DATA_COUNT(f)

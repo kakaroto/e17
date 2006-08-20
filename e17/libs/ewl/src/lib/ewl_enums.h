@@ -694,6 +694,23 @@ enum Ewl_Mouse_Cursor_Type
 typedef enum Ewl_Mouse_Cursor_Type Ewl_Mouse_Cursor_Type;
 
 /**
+ * @enum Ewl_Sort_Direction
+ * The current sort direction
+ */
+enum Ewl_Sort_Direction
+{
+	EWL_SORT_DIRECTION_NONE = 0,
+	EWL_SORT_DIRECTION_ASCENDING,
+	EWL_SORT_DIRECTION_DESCENDING,
+	EWL_SORT_DIRECTION_MAX
+};
+
+/**
+ * The Ewl_Sort_Direction
+ */
+typedef enum Ewl_Sort_Direction Ewl_Sort_Direction;
+
+/**
  * @}
  */ 
 #endif				/* __EWL_ENUMS_H__ */
