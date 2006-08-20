@@ -535,6 +535,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 			     /*Handle the root dir*/
 			     if (strcmp(newdir_rewrite->path, "/")) {
 				     newdir_rewrite->path[origlen] = '/';
+				     newdir_rewrite->path[origlen+1] = '\0';
 				     strncat(&newdir_rewrite->path[origlen+1], pos+1, strlen(pos)-1);
 			     } else {
 				     strncat(&newdir_rewrite->path[origlen], pos+1, strlen(pos)-1);
