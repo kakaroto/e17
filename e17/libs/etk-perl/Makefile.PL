@@ -1,9 +1,12 @@
 use 5.008004;
 use ExtUtils::MakeMaker;
+use Devel::PPPort;
 
 # dependency check
 my $etklib = `etk-config --version`;
 die "I can't run etk-config, make sure that etk is installed, and that etk-config is in your path" unless $etklib;
+
+Devel::PPPort::WriteFile();
 
 WriteMakefile(
     DISTNAME          => 'Etk-Perl',
@@ -18,28 +21,8 @@ WriteMakefile(
     INC               => "-g -I. `etk-config --cflags`", 
     XSPROTOARG        => '-noprototypes',
     test              => {TESTS=>'t/Etk/*.t'},
+    clean             => {FILES=>"ppport.h"},
     OBJECT            => '$(O_FILES)', 
 );
-if  (eval {require ExtUtils::Constant; 1}) {
-  # If you edit these definitions to change the constants used by this module,
-  # you will need to use the generated const-c.inc and const-xs.inc
-  # files to replace their "fallback" counterparts before distributing your
-  # changes.
-  my @names = (qw());
-  ExtUtils::Constant::WriteConstants(
-                                     NAME         => 'Etk',
-                                     NAMES        => \@names,
-                                     DEFAULT_TYPE => 'IV',
-                                     C_FILE       => 'const-c.inc',
-                                     XS_FILE      => 'const-xs.inc',
-                                  );
 
-}
-else {
-  use File::Copy;
-  use File::Spec;
-  foreach my $file ('const-c.inc', 'const-xs.inc') {
-    my $fallback = File::Spec->catfile('fallback', $file);
-    copy ($fallback, $file) or die "Can't copy $fallback to $file: $!";
-  }
-}
+

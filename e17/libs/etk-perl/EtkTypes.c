@@ -564,8 +564,7 @@ SV * newSVEventKeyUpDown(Etk_Event_Key_Up_Down *ev) {
 	S_STORE("string", ev->string)
 	I_STORE("timestamp", newSVuv(ev->timestamp))
 
-	printf("New Event (%p)\n", hv);
-	return newRV_noinc((SV*)hv);
+	return newRV_inc((SV*)hv);
 }
 
 SV * newSVEventMouseWheel(Etk_Event_Mouse_Wheel *ev) {

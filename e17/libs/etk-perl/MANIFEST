@@ -6,11 +6,8 @@ EtkSignals.c
 EtkSignals.h
 Makefile.PL
 MANIFEST
-ppport.h
 README
 typemap
-const-c.inc
-const-xs.inc
 etk_test/etk_test.pl
 etk_test/images/1star.png
 etk_test/images/2stars.png
@@ -37,8 +34,6 @@ t/Etk/MessageDialog.t
 t/Etk/Notebook.t
 t/Etk/Object.t
 t/Etk/Window.t
-fallback/const-c.inc
-fallback/const-xs.inc
 lib/Etk.pm
 lib/Etk/Stock.pm
 lib/Etk/Constants.pm

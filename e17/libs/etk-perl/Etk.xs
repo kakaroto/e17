@@ -12,8 +12,6 @@
 #include <Ecore.h>
 #include <Ecore_Data.h>
 
-#include "const-c.inc"
-
 #include "EtkTypes.h"
 #include "EtkSignals.h"
 
@@ -378,8 +376,6 @@ Etk_Tree_Col * col, void * data )
 	
 
 MODULE = Etk		PACKAGE = Etk	PREFIX = etk_
-
-INCLUDE: const-xs.inc
 
 Etk_Bool
 etk_init()

@@ -1,5 +1,12 @@
 Revision history for Perl extension Etk.
 
+0.04  Sun Aug 20 12:19:10 GMT+2 2006
+	- Followed etk changes
+	- fixed Tree implementation
+	- put required dependency in Makefile.PL
+	- autogenerate ppport.h from Makefile.PL
+	- removed unneeded const-* and fallback
+	
 0.03  Sun Aug  6 12:09:59 GMT+2 2006
 	- removed Etk/Object.pm and replaced the function conversion with ALIASes in XS
 	- Followed changes to etk
