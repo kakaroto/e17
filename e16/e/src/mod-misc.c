@@ -211,6 +211,8 @@ MiscIpcConfig(const char *params, Client * c __UNUSED__)
 	   DialogShowSimple(&DlgRemember, NULL);
 	else if (!strncmp(prm, "session", 2))
 	   DialogShowSimple(&DlgSession, NULL);
+	else if (prm[0] == '\0')
+	   SettingsConfiguration();
      }
    else if (!strncmp(cmd, "arrange", 3))
      {

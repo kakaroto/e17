@@ -616,3 +616,91 @@ SettingsComposite(void)
    DialogShowSimple(&DlgComposite, NULL);
 }
 #endif
+
+/*
+ * Combined configuration dialog
+ */
+
+static const DialogDef *dialogs[] = {
+   &DlgFocus,
+   &DlgMoveResize,
+   &DlgPlacement,
+   &DlgDesks,
+   &DlgAreas,
+   &DlgPagers,
+   &DlgMenus,
+   &DlgAutoraise,
+   &DlgTooltips,
+   &DlgSound,
+   &DlgGroupDefaults,
+   &DlgRemember,
+   &DlgFx,
+   &DlgBackground,
+   &DlgThemeTrans,
+#if USE_COMPOSITE
+   &DlgComposite,
+#endif
+   &DlgSession,
+   &DlgMisc,
+};
+#define N_CFG_DLGS (sizeof(dialogs)/sizeof(DialogDef*))
+
+static void
+CB_DlgSelect(Dialog * d, int val, void *data)
+{
+   const DialogDef    *dd = dialogs[val];
+   DItem              *table = data;
+
+   if (!table)
+      return;
+   if (!dd->fill)
+      return;
+
+   DialogItemTableEmpty(table);
+   DialogButtonsDestroy(d, 1);
+   DialogKeybindingsDestroy(d);
+
+   DialogSetTitle(d, _(dd->title));
+   DialogFill(d, table, dd, NULL);
+
+   DialogArrange(d, 1);
+}
+
+static void
+_DlgFillConfiguration(Dialog * d, DItem * table, void *data __UNUSED__)
+{
+   DItem              *di, *buttons, *content;
+   unsigned int        i;
+
+   DialogItemTableSetOptions(table, 2, 0, 0, 0);
+
+   buttons = DialogAddItem(table, DITEM_TABLE);
+   content = DialogAddItem(table, DITEM_TABLE);
+
+   for (i = 0; i < N_CFG_DLGS; i++)
+     {
+	di = DialogAddItem(buttons, DITEM_BUTTON);
+	DialogItemSetPadding(di, 2, 2, 0, 0);
+	DialogItemSetText(di, dialogs[i]->label);
+	DialogItemSetCallback(di, CB_DlgSelect, i, content);
+     }
+
+   DialogFill(d, content, dialogs[0], NULL);
+}
+
+static const DialogDef DlgConfiguration = {
+   "CONFIGURE_ALL",
+   NULL,
+   N_("Enlightenment Settings"),
+   "SOUND_SETTINGS_ALL",
+   NULL,
+   NULL,
+   _DlgFillConfiguration,
+   0, NULL,
+};
+
+void
+SettingsConfiguration(void)
+{
+   DialogShowSimple(&DlgConfiguration, NULL);
+}

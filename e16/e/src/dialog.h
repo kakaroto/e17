@@ -85,7 +85,8 @@ void                DialogRedraw(Dialog * d);
 void                DialogClose(Dialog * d);
 
 void                DialogArrange(Dialog * d, int resize);
-void                DialogDestroyButtons(Dialog * d, int clean);
+void                DialogButtonsDestroy(Dialog * d, int clean);
+void                DialogKeybindingsDestroy(Dialog * d);
 void                DialogItemTableEmpty(DItem * di);
 
 void                DialogShowSimple(const DialogDef * dd, void *data);

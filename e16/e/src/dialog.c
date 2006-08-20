@@ -249,6 +249,13 @@ DialogBindKey(Dialog * d, const char *key, DialogCallbackFunc * func, int val,
       XKeysymToKeycode(disp, XStringToKeysym(key));
 }
 
+void
+DialogKeybindingsDestroy(Dialog * d)
+{
+   _EFREE(d->keybindings);
+   d->num_bindings = 0;
+}
+
 Dialog             *
 DialogCreate(const char *name)
 {
@@ -295,7 +302,7 @@ DialogButtonDestroy(DButton * db, int clean)
 }
 
 void
-DialogDestroyButtons(Dialog * d, int clean)
+DialogButtonsDestroy(Dialog * d, int clean)
 {
    int                 i;
 
@@ -318,15 +325,14 @@ DialogDestroy(Dialog * d)
       Efree(d->title);
    if (d->text)
       Efree(d->text);
-   DialogDestroyButtons(d, 0);
+   DialogButtonsDestroy(d, 0);
+   DialogKeybindingsDestroy(d);
    if (d->item)
       DialogItemDestroy(d->item, 0);
    if (d->iclass)
       ImageclassDecRefcount(d->iclass);
    if (d->tclass)
       TextclassDecRefcount(d->tclass);
-   if (d->keybindings)
-      Efree(d->keybindings);
 
    FreePmapMask(&(d->pmm_bg));
    EFreePixmap(d->pmap);
