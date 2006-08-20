@@ -90,6 +90,8 @@ void                DialogItemTableEmpty(DItem * di);
 void                DialogShowSimple(const DialogDef * dd, void *data);
 void                DialogShowSimpleWithName(const DialogDef * dd,
 					     const char *name, void *data);
+void                DialogFill(Dialog * d, DItem * parent, const DialogDef * dd,
+			       void *data);
 
 void                DialogAddButton(Dialog * d, const char *text,
 				    DialogCallbackFunc * func, char doclose,

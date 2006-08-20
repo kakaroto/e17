@@ -222,6 +222,11 @@ static int          DialogItemCheckButtonGetState(DItem * di);
 
 static void         DialogUpdate(Dialog * d);
 
+static void         DialogAddFooter(Dialog * d, DItem * parent,
+				    int flags, DialogCallbackFunc * cb);
+static void         DialogAddHeader(Dialog * d, DItem * parent,
+				    const char *img, const char *txt);
+
 static Ecore_List  *dialog_list = NULL;
 
 static char         dialog_update_pending = 0;
@@ -730,15 +735,28 @@ _DialogClose(Dialog * d)
    EwinHide(d->ewin);
 }
 
-static void         DialogAddHeader(DItem * parent, const char *img,
-				    const char *txt);
-static void         DialogAddFooter(Dialog * d, int flags,
-				    DialogCallbackFunc * cb);
-
 void
 DialogShowSimple(const DialogDef * dd, void *data)
 {
    DialogShowSimpleWithName(dd, dd->name, data);
+}
+
+void
+DialogFill(Dialog * d, DItem * parent, const DialogDef * dd, void *data)
+{
+   DItem              *content;
+
+   if (Conf.dialogs.headers && (dd->header_image || dd->header_text))
+      DialogAddHeader(d, parent, dd->header_image, _(dd->header_text));
+
+   content = DialogAddItem(parent, DITEM_TABLE);
+   if (!content)
+      return;
+
+   dd->fill(d, content, data);
+
+   if (dd->func)
+      DialogAddFooter(d, parent, dd->flags, dd->func);
 }
 
 void
@@ -766,17 +784,7 @@ DialogShowSimpleWithName(const DialogDef * dd, const char *name, void *data)
    if (!table)
       return;
 
-   if (Conf.dialogs.headers && (dd->header_image || dd->header_text))
-      DialogAddHeader(table, dd->header_image, _(dd->header_text));
-
-   table = DialogAddItem(d->item, DITEM_TABLE);
-   if (!table)
-      return;
-
-   dd->fill(d, table, data);
-
-   if (dd->func)
-      DialogAddFooter(d, dd->flags, dd->func);
+   DialogFill(d, table, dd, data);
 
    DialogShow(d);
 }
@@ -932,13 +940,13 @@ DialogAddItem(DItem * dii, int type)
 }
 
 static void
-DialogAddHeader(DItem * parent, const char *img, const char *txt)
+DialogAddHeader(Dialog * d __UNUSED__, DItem * parent, const char *img,
+		const char *txt)
 {
    DItem              *table, *di;
 
    /* FIXME - Center table horizontally */
    table = DialogAddItem(parent, DITEM_TABLE);
-   DialogItemSetColSpan(table, 1);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
    DialogItemSetAlign(table, 512, 0);
 
@@ -952,12 +960,16 @@ DialogAddHeader(DItem * parent, const char *img, const char *txt)
 }
 
 static void
-DialogAddFooter(Dialog * d, int flags, DialogCallbackFunc * cb)
+DialogAddFooter(Dialog * d, DItem * parent __UNUSED__, int flags,
+		DialogCallbackFunc * cb)
 {
-   DItem              *di;
+   DItem              *table, *di;
 
-   di = DialogAddItem(d->item, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, d->item->item.table.num_columns);
+   di = DialogAddItem(parent, DITEM_SEPARATOR);
+
+   table = DialogAddItem(parent, DITEM_TABLE);
+   DialogItemTableSetOptions(table, 1, 0, 0, 0);
+   DialogItemSetAlign(table, 512, 0);
 
    if (flags & 4)
      {
