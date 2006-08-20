@@ -25,7 +25,7 @@ typedef struct evfs_plugin_functions
    int (*evfs_file_stat) (evfs_command * command, struct stat * file_stat, int);
    int (*evfs_file_lstat) (evfs_command * command, struct stat * file_stat,
                            int);
-   void (*evfs_dir_list) (evfs_client * client, evfs_command * command,
+   void (*evfs_dir_list) (evfs_client * client, evfs_filereference * file,
                           Ecore_List ** directory_list);
 
    int (*evfs_file_open) (evfs_client * client, evfs_filereference * command);

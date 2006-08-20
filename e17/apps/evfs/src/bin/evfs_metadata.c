@@ -689,7 +689,7 @@ int evfs_metadata_scan_runner(void* data)
 			evfs_command* c = evfs_file_command_single_build(ref);
 			
 			 (*EVFS_PLUGIN_FILE(ref->plugin)->functions->evfs_dir_list)
-				(NULL, c, &dir_list);
+				(NULL, c->file_command.files[0], &dir_list);
 
 			evfs_cleanup_file_command(c);
 

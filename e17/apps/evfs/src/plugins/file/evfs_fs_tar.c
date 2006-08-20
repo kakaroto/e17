@@ -90,7 +90,7 @@ int evfs_file_seek(evfs_filereference * file, long offset, int whence);
 int evfs_file_read(evfs_filereference * file, char *bytes, long size);
 int evfs_file_write(evfs_filereference * file, char *bytes, long size);
 int evfs_file_create(evfs_filereference * file);
-void evfs_dir_list(evfs_client * client, evfs_command * file,
+void evfs_dir_list(evfs_client * client, evfs_filereference * file,
                    Ecore_List ** directory_list);
 
 struct tar_file
@@ -429,7 +429,7 @@ evfs_tar_load_tar(evfs_client * client, evfs_filereference * ref)
 }
 
 void
-evfs_dir_list(evfs_client * client, evfs_command * com,
+evfs_dir_list(evfs_client * client, evfs_filereference *ref,
 /*Returns..*/
               Ecore_List ** directory_list)
 {
@@ -440,18 +440,17 @@ evfs_dir_list(evfs_client * client, evfs_command * com,
    Ecore_List *files = ecore_list_new();
    char *key;
 
-   printf("Listing tar file dir: '%s'\n", com->file_command.files[0]->path);
+   printf("Listing tar file dir: '%s'\n", ref->path);
 
    if (!
        (file =
         ecore_hash_get(tar_cache,
-                       evfs_file_top_level_find(com->file_command.files[0])->
-                       path)))
+                       evfs_file_top_level_find(ref->path))))
      {
-        file = evfs_tar_load_tar(client, com->file_command.files[0]);
+        file = evfs_tar_load_tar(client, ref);
      }
 
-   if (!strcmp(com->file_command.files[0]->path, "/"))
+   if (!strcmp(ref->path, "/"))
      {
         printf("They want the root dir..\n");
 
@@ -476,7 +475,7 @@ evfs_dir_list(evfs_client * client, evfs_command * com,
    else
      {
 
-        ele = ecore_hash_get(file->link_in, com->file_command.files[0]->path);
+        ele = ecore_hash_get(file->link_in, ref->path);
         if (ele)
           {
              printf("Got node..%s/%s\n", ele->path, ele->name);

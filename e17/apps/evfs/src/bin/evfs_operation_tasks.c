@@ -135,6 +135,8 @@ void evfs_operation_tasks_mkdir_run(evfs_operation* op, evfs_operation_task_mkdi
 		task->file->plugin = evfs_get_plugin_for_uri(evfs_server_get(),
                               task->file->plugin_uri);
 
+        if (task->from && *EVFS_PLUGIN_FILE(task->file->plugin)->functions->evfs_file_notify_create)
+  	      (*EVFS_PLUGIN_FILE(task->file->plugin)->functions->evfs_file_notify_create) (task->from);
 	
 	ret = (*EVFS_PLUGIN_FILE(task->file->plugin)->functions->evfs_file_mkdir) (task->file);
 

@@ -51,7 +51,7 @@ Ecore_List *auth_cache;
 int smb_next_fd;
 Ecore_Hash *smb_fd_hash;
 
-static void smb_evfs_dir_list(evfs_client * client, evfs_command * command,
+static void smb_evfs_dir_list(evfs_client * client, evfs_filereference* command,
                               Ecore_List ** directory_list);
 int smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int);
 int evfs_file_open(evfs_client * client, evfs_filereference * file);
@@ -286,7 +286,7 @@ smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
 }
 
 static void
-smb_evfs_dir_list(evfs_client * client, evfs_command * command,
+smb_evfs_dir_list(evfs_client * client, evfs_filereference * file,
                   /*Returns.. */
                   Ecore_List ** directory_list)
 {
@@ -302,17 +302,17 @@ smb_evfs_dir_list(evfs_client * client, evfs_command * command,
    Ecore_List *files = ecore_list_new();
 
    /*Does this command have an attached authentication object? */
-   if (command->file_command.files[0]->username)
+   if (file->username)
      {
         printf("We have a username, adding to hash..\n");
         evfs_auth_structure_add(auth_cache,
-                                command->file_command.files[0]->username,
-                                command->file_command.files[0]->password,
-                                command->file_command.files[0]->path);
+                                file->username,
+                                file->password,
+                                file->path);
      }
 
    //Reappend smb protocol header for libsmbclient..
-   snprintf(dir_path, 1024, "smb:/%s", command->file_command.files[0]->path);
+   snprintf(dir_path, 1024, "smb:/%s", file->path);
 
    printf("evfs_fs_samba: Listing directory %s\n", dir_path);
 
@@ -348,12 +348,12 @@ smb_evfs_dir_list(evfs_client * client, evfs_command * command,
 
                   size =
                      (sizeof(char) *
-                      strlen(command->file_command.files[0]->path)) +
+                      strlen(file->path)) +
                      (sizeof(char) * strlen(entry->name)) + (sizeof(char) * 2);
                   reference->path = malloc(size);
 
                   snprintf(reference->path, size, "%s/%s",
-                           command->file_command.files[0]->path, entry->name);
+                           file->path, entry->name);
 
                   /*printf("File '%s' is of type '%d'\n", reference->path, reference->file_type); */
 

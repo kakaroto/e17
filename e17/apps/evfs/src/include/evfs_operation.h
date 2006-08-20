@@ -143,6 +143,7 @@ typedef struct evfs_operation_task_file_remove evfs_operation_task_file_remove;
 struct evfs_operation_task_mkdir {
 	evfs_operation_task task;
 
+	evfs_filereference* from;
 	evfs_filereference* file;
 };
 typedef struct evfs_operation_task_mkdir evfs_operation_task_mkdir;
@@ -160,7 +161,7 @@ void evfs_operation_response_handle(evfs_operation* op, evfs_operation_task* tas
 
 void evfs_operation_copy_task_add(evfs_operation* op, evfs_filereference* file_from, 
 		evfs_filereference* file_to, struct stat from_stat, struct stat to_stat, int);
-void evfs_operation_mkdir_task_add(evfs_operation* op, evfs_filereference* dir);
+void evfs_operation_mkdir_task_add(evfs_operation* op, evfs_filereference* src, evfs_filereference* dir);
 void evfs_operation_remove_task_add(evfs_operation* op, evfs_filereference* file, struct stat file_stat);
 
 void evfs_operation_tasks_print(evfs_operation* op);

@@ -181,7 +181,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
                   evfs_filereference *file = NULL;
 
                   /*First, we need a directory list... */
-                  (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command,
+                  (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command->file_command.files[0],
                                                        &directory_list);
                   if (directory_list)
                     {
@@ -338,7 +338,7 @@ evfs_handle_dir_list_command(evfs_client * client, evfs_command * command)
                                                  files[0]->plugin_uri);
    if (plugin) {
         Ecore_List *directory_list = NULL;
-        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command, &directory_list);
+        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command->file_command.files[0], &directory_list);
         if (directory_list) {
              evfs_list_dir_event_create(client, command, directory_list);
         } else {
@@ -483,7 +483,10 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 				char *path_to = malloc(final_len);
 				
 				
-				snprintf(path_to, final_len , "%s%s", command->file_command.files[num_files-1]->path, slashpos);
+				if (strcmp(command->file_command.files[num_files-1]->path, "/")) 
+					snprintf(path_to, final_len , "%s%s", command->file_command.files[num_files-1]->path, slashpos);
+				else
+					snprintf(path_to, final_len , "%s%s", command->file_command.files[num_files-1]->path, slashpos+1);
 				printf("Multi file dest dir rewrite path: %s\n", path_to);
 
 				free(rewrite_dest->path);
@@ -543,10 +546,10 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 		     
 		     
 	
-		     evfs_operation_mkdir_task_add(EVFS_OPERATION(op), newdir_rewrite);
+		     evfs_operation_mkdir_task_add(EVFS_OPERATION(op), evfs_filereference_clone(command->file_command.files[c_file]), newdir_rewrite);
 	
 	             /*First, we need a directory list... */
-	             (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command,
+	             (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command->file_command.files[c_file],
 	                                                  &directory_list);
 	             if (directory_list) {
         	          evfs_filereference *file = NULL;

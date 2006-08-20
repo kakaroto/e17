@@ -53,7 +53,7 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
                    char *bytes, long size);
 int evfs_file_write(evfs_filereference * file, char *bytes, long size);
 int evfs_file_create(evfs_filereference * file);
-void evfs_dir_list(evfs_client * client, evfs_command * file);
+void evfs_dir_list(evfs_client * client, evfs_filereference* file);
 
 #define BZIP2_BUFFER 5000
 #define EVFS_BZ2_GOT_DATA -1

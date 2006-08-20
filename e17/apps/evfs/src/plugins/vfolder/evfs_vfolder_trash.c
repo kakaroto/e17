@@ -98,6 +98,8 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 					ecore_list_append(*list, ref);
 			}
 		}
+
+		free(file);
 		
 	}
 

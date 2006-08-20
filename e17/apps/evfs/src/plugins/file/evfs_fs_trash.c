@@ -52,6 +52,7 @@ static char* next_trash_file;
 static char* next_trash_path;
 static char evfs_fs_trash_info[PATH_MAX];
 static char evfs_fs_trash_files[PATH_MAX];
+static Ecore_Hash* trash_dir_mapping;
 evfs_plugin* posix_plugin;
 
 /*Main file wrappers */
@@ -86,6 +87,25 @@ evfs_filereference* evfs_fs_trash_proxy_create(evfs_filereference* ref, char* ne
 	size= strlen(evfs_fs_trash_files) + strlen(newpath) +2;
 	newfile->path = calloc(size, 1);
 	snprintf(newfile->path, size, "%s/%s", evfs_fs_trash_files, newpath);
+	free(newfile->plugin_uri);
+
+	newfile->plugin_uri = strdup("file");
+	newfile->plugin = posix_plugin;
+
+	return newfile;
+}
+
+evfs_filereference* evfs_fs_trash_proxy_create_absolute(evfs_filereference* ref, char* newdir, char* newsuffix)
+{
+	int size;
+	evfs_filereference* newfile = evfs_filereference_clone(ref);
+
+	/*Make a proxy file, and send this to the posix plugin create*/
+	free(newfile->path);
+	
+	size= strlen(newdir) + 1 + strlen(newsuffix) + 1;
+	newfile->path = calloc(size, 1);
+	snprintf(newfile->path, size, "%s/%s", newdir, newsuffix);
 	free(newfile->plugin_uri);
 
 	newfile->plugin_uri = strdup("file");
@@ -152,6 +172,9 @@ evfs_plugin_init()
 
    /*FIXME - this assumes the trash plugin is loaded after posix - not always true*/
    posix_plugin = evfs_get_plugin_for_uri(evfs_server_get(), "file");
+
+   trash_dir_mapping = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+   ecore_hash_set_free_key(trash_dir_mapping, free);
 
    next_trash_file = NULL;
    
@@ -292,6 +315,11 @@ void evfs_file_notify_create(evfs_filereference* ref)
 		free(next_trash_file);
 		next_trash_file = NULL;
 	}
+	if (next_trash_path) {
+		free(next_trash_path);
+		next_trash_path = NULL;
+
+	}
 	next_trash_file = evfs_fs_trash_filename_get(ref);
 	next_trash_path = evfs_filereference_to_string(ref);
 	printf("Next trash path is : %s\n", next_trash_path);
@@ -302,20 +330,42 @@ evfs_file_create(evfs_filereference * file)
 {	
 	evfs_filereference* file_trash;
 	int fd;
+	char* pos;
+	char* rewrite_parent;
+	char* parent_dir;
 
+	printf("File->path at trash create: '%s'\n", file->path);
 
-	file_trash = evfs_fs_trash_proxy_create(file, next_trash_file);
+	/*Check if this file lives in a directory other than '/'*/
+	if ( (pos = strchr(file->path+1, '/'))) {
+		/*If it does, see if we have a mapping for this dir*/
+		parent_dir = calloc(pos-file->path+1,1 );
+		strncpy(parent_dir, file->path,pos-file->path);
+		parent_dir[pos-file->path] = '\0';
+
+		printf("Rewritten dir: %s\n", parent_dir);
+		rewrite_parent = ecore_hash_get(trash_dir_mapping, parent_dir);
+		printf("Parent dir: %s\n", rewrite_parent);
+		printf("Suffix: '%s'\n", pos+1);
+
+		file_trash = evfs_fs_trash_proxy_create_absolute(file, rewrite_parent, pos+1);
+
+		free(parent_dir);
+	} else {
+		printf("Destination path: %s\n", file->path);
+		file_trash = evfs_fs_trash_proxy_create(file, next_trash_file);
 	
-	/*printf("Creating new file: %s\n", file_trash->path);*/
+		/*printf("Creating new file: %s\n", file_trash->path);*/
+
+		/*Create the infofile*/
+		evfs_fs_trash_infofile_create(file,next_trash_file,next_trash_path);
+	}
 
 	/*Dispatch to posix*/
 	(*EVFS_PLUGIN_FILE(file_trash->plugin)->functions->evfs_file_create) (file_trash);
 	file->fd = file_trash->fd;	
 
 	evfs_cleanup_filereference(file_trash);
-
-	/*Create the infofile*/
-	evfs_fs_trash_infofile_create(file,next_trash_file,next_trash_path);
 
 	free(next_trash_file);
 	free(next_trash_path);
@@ -329,6 +379,37 @@ evfs_file_create(evfs_filereference * file)
 int
 evfs_file_mkdir(evfs_filereference * file)
 {
-	printf("evfs_fs_trash.c mkdir - STUB\n");
-	return -1;
+	char* pos;
+	char* rewrite_parent;
+	char* parent_dir;
+	evfs_filereference* par;
+
+	/*Check if this file lives in a directory other than '/'*/
+	if ( (pos = strchr(file->path+1, '/'))) {
+		/*If it does, see if we have a mapping for this dir*/
+		parent_dir = calloc(pos-file->path+1,1 );
+		strncpy(parent_dir, file->path,pos-file->path);
+		parent_dir[pos-file->path] = '\0';
+
+		printf("Rewritten dir: %s\n", parent_dir);
+		rewrite_parent = ecore_hash_get(trash_dir_mapping, parent_dir);
+		printf("Parent dir: %s\n", rewrite_parent);
+		printf("Suffix: '%s'\n", pos+1);
+
+		par=  	evfs_fs_trash_proxy_create_absolute(file, rewrite_parent, pos+1);
+
+		free(parent_dir);
+	} else {
+		par = evfs_fs_trash_proxy_create(file, next_trash_file);
+		evfs_fs_trash_infofile_create(file,next_trash_file,next_trash_path);
+	}
+
+	/*Dispatch to posix*/
+	(*EVFS_PLUGIN_FILE(par->plugin)->functions->evfs_file_mkdir) (par);
+	
+	printf("Trash mkdir: '%s' '%s' '%s'\n", file->path, next_trash_path, next_trash_file);
+
+	ecore_hash_set(trash_dir_mapping, strdup(file->path), strdup(par->path));
+
+	evfs_cleanup_filereference(par);
 }

@@ -44,7 +44,7 @@
 //#define EVFS_PLUGIN_VFOLDER_QUERIES_ID "/Queries"
 #define MAX_GROUP_LENGTH 255
 
-void evfs_dir_list(evfs_client * client, evfs_command * command,
+void evfs_dir_list(evfs_client * client, evfs_filereference* ref,
               Ecore_List ** directory_list);
 
 int
@@ -71,18 +71,18 @@ evfs_plugin_uri_get()
 
 
 void
-evfs_dir_list(evfs_client * client, evfs_command * command,
+evfs_dir_list(evfs_client * client, evfs_filereference* file,
               Ecore_List ** directory_list)
 {
    Ecore_List *files = ecore_list_new();
    evfs_filereference* ref;
    char* path;
 
-   path = command->file_command.files[0]->path;
+   path = file->path;
 
    /*We should make this generic - perhaps a plugin system*/
    /*FIXME - but this will do for testing*/
-   printf("Vfolder listing '%s'..\n", command->file_command.files[0]->path);
+   printf("Vfolder listing '%s'..\n", file->path);
    
    if (!strcmp(path, "/")) {
 	   Ecore_List* keys = ecore_hash_keys(evfs_server_get()->plugin_vfolder_hash);
@@ -117,7 +117,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
 		   evfs_plugin* plugin = ecore_hash_get(evfs_server_get()->plugin_vfolder_hash, vfolder_type);
 
 		   if (EVFS_PLUGIN_VFOLDER(plugin)->functions->evfs_vfolder_list) 
-			(*EVFS_PLUGIN_VFOLDER(plugin)->functions->evfs_vfolder_list)(command->file_command.files[0], &files);
+			(*EVFS_PLUGIN_VFOLDER(plugin)->functions->evfs_vfolder_list)(file, &files);
 	   }
 	   
    }

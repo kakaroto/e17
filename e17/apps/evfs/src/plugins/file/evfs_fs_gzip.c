@@ -53,7 +53,7 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
                    char *bytes, long size);
 int evfs_file_write(evfs_filereference * file, char *bytes, long size);
 int evfs_file_create(evfs_filereference * file);
-void evfs_dir_list(evfs_client * client, evfs_command * file);
+void evfs_dir_list(evfs_client * client, evfs_filereference * file);
 
 #define GZIP_BUFFER 16384
 #define GZIP_MAX_ERRORS 5

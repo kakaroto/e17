@@ -156,11 +156,12 @@ void evfs_operation_remove_task_add(evfs_operation* op, evfs_filereference* file
 
 
 /*Sub task functions*/
-void evfs_operation_mkdir_task_add(evfs_operation* op, evfs_filereference* dir)
+void evfs_operation_mkdir_task_add(evfs_operation* op, evfs_filereference* src, evfs_filereference* dir)
 {
 	evfs_operation_files* fop = EVFS_OPERATION_FILES(op);
 	evfs_operation_task_mkdir* mkdir = calloc(1, sizeof(evfs_operation_task_mkdir));
 
+	mkdir->from = src;
 	mkdir->file = dir;
 
 	EVFS_OPERATION_TASK(mkdir)->status = EVFS_OPERATION_TASK_STATUS_PENDING;

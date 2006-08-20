@@ -57,7 +57,7 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
 int evfs_file_write(evfs_filereference * file, char *bytes, long size);
 int evfs_file_create(evfs_filereference * file);
 int evfs_file_mkdir(evfs_filereference * file);
-void evfs_dir_list(evfs_client * client, evfs_command * command,
+void evfs_dir_list(evfs_client * client, evfs_filereference* ref,
                    Ecore_List ** directory_list);
 
         /*Internal functions */
@@ -507,7 +507,7 @@ evfs_file_create(evfs_filereference * file)
 }
 
 void
-evfs_dir_list(evfs_client * client, evfs_command * command,
+evfs_dir_list(evfs_client * client, evfs_filereference* file,
               Ecore_List ** directory_list)
 {
    struct dirent *de;
@@ -516,7 +516,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
    Ecore_List *files = ecore_list_new();
    char full_name[PATH_MAX];
 
-   dir = opendir(command->file_command.files[0]->path);
+   dir = opendir(file->path);
    while ((de = readdir(dir)))
      {
         if (strcmp(de->d_name, ".") && strcmp(de->d_name, "..")
@@ -525,7 +525,7 @@ evfs_dir_list(evfs_client * client, evfs_command * command,
              evfs_filereference *ref = NEW(evfs_filereference);
 
              snprintf(full_name, 1024, "%s/%s",
-                      command->file_command.files[0]->path, de->d_name);
+                      file->path, de->d_name);
              stat(full_name, &st);
              if (S_ISDIR(st.st_mode))
                {
