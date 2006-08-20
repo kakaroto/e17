@@ -560,9 +560,9 @@ _e_widget_hslider_handle(Enhance *en, EXML_Node *node)
    int         value;
    int         min       = 0;
    int         max       = 0;
-   int         step_inc  = 0;
-   int         page_inc  = 0;
-   int         page_size = 0;
+   int         step_inc  = 1;
+   int         page_inc  = 1;
+   int         page_size = 1;
    
    id = ecore_hash_get(node->attributes, "id");
    if(!id) return NULL;

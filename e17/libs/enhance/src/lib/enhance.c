@@ -781,7 +781,26 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 		   style = ETK_TOOLBAR_BOTH_HORIZ;
 	       }
 	     etk_toolbar_style_set(ETK_TOOLBAR(wid->wid), style);
-     }     
+     }
+
+   else if(!strcmp(name, "adjustment"))
+     {
+	PROPERTY_STR;
+	double val;
+	double lower;
+	double upper;
+	double step_incr;
+	double page_incr;
+	double page_size;
+
+	sscanf(value, "%lf %lf %lf %lf %lf %lf", &val, &lower, &upper, &step_incr, &page_incr, &page_size);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), 
+                            "value", val, 
+                            "lower", lower, 
+                            "upper", upper, 
+                            "step_increment", step_incr, 
+                            "page_increment", page_incr, NULL);
+     }
 }
 
 void
