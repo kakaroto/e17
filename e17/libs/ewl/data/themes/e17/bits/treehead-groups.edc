@@ -1,43 +1,41 @@
 group {
-   name: "tree_header";
-   data {
-   }
-    parts {
-        part {
-         description {
-	    min: 23 23;
-            state:    "default" 0.0;
-            image {
-               normal: "e17_tree_head_bg.png";
-               border: 8 8 8 8;
-            }
-	    fill {
-	       smooth: 0;
-	    }
-         }
-      }
-   }
+	name: "tree_header";
+	parts {
+		part {
+			description {
+				min: 23 23;
+				state: "default" 0.0;
+				image {
+					normal: "e17_tree_head_bg.png";
+					border: 8 8 8 8;
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
 }
 group {
-   name: "tree_header_label";
-   data {
-      item, "inset/top" "2.5";
-   }
+	name: "tree_header_label";
+	data {
+		item, "inset/top" "2.5";
+	}
 
-   parts {
-      part {
-         name:          "label";
-         mouse_events:  0;
-         description {
-            state:    "default" 0.0; 
-            image {
-               normal: "e17_tranny.png";
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }   
-   }
+	parts {
+		part {
+			name: "label";
+			mouse_events:  0;
+			description {
+				state: "default" 0.0; 
+				image {
+					normal: "e17_tranny.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}   
+	}
 }
 
