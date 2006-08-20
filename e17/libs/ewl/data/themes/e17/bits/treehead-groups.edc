@@ -39,3 +39,67 @@ group {
 	}
 }
 
+group {
+	name, "tree/header/ascending/body";
+	min, 16 16;
+
+	parts {
+		part {
+			name, "uback";
+			mouse_events, 0;
+			description {
+				state, "default" 0.0;
+				min, 16 16;
+				image {
+					normal, "stock-arrow_down.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "tree/header/descending/body";
+	min, 16 16;
+	parts {
+		part {
+			name, "dback";
+			mouse_events, 0;
+			description {
+				state, "default" 0.0;
+				min, 16 16;
+				image {
+					normal, "stock-arrow_up.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group {
+	name, "tree/header/blank/body";
+	min, 16 16;
+	parts {
+		part {
+			name, "dback";
+			mouse_events, 0;
+			description {
+				state, "default" 0.0;
+				min, 16 16;
+				image {
+					normal, "blank.png";
+				}
+				fill {
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+

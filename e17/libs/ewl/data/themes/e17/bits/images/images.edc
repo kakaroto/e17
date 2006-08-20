@@ -91,5 +91,6 @@
 	image: "e17_spinner_bottom_arrow.png" COMP;	
 	image: "entry_disabled.png" COMP;
 	image: "row_select.png" COMP;	
+	image: "blank.png" COMP;	
 
 	

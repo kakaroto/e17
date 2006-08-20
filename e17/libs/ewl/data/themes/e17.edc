@@ -80,6 +80,10 @@ data {
 	item, "/tree_header/button/group" "tree_header_label";
 	item, "/tree_header/grabber/vertical/group" "vline";
 
+	item, "/tree_header/header/ascending/body/group" "tree/header/ascending/body";
+	item, "/tree_header/header/descending/body/group" "tree/header/descending/body";
+	item, "/tree_header/header/blank/body/group" "tree/header/blank/body";
+
 	item, "/row/group" "row_background";
 	item, "/row/cell/label/group" "row_text";
 	item, "/node/check/group" "treenode";

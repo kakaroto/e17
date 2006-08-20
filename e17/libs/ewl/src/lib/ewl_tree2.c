@@ -530,9 +530,7 @@ void
 ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Tree2_Column *c, *col;
-	Ewl_Widget *child;
-	char *theme_str;
-	int index = 0, count = 0;
+	int index = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
@@ -546,29 +544,17 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	/* need to loop over the headers and reset the state */
-	theme_str = "default";
-	ewl_container_child_iterate_begin(EWL_CONTAINER(c->parent->header));
-	while ((child = ewl_container_child_next(EWL_CONTAINER(c->parent->header))))
-	{
-		/* don't bother signaling the clicked header as we'll do
-		 * that later anyway */
-		if (child == w) 
-		{
-			index = count;
-			continue;
-		}
-
-		ewl_widget_state_set(child, theme_str, EWL_STATE_TRANSIENT);
-		count ++;
-	}
-
 	/* loop over the columns and reset the sort settings */
 	ecore_list_goto_first(c->parent->columns);
 	while ((col = ecore_list_next(c->parent->columns)))
 	{
 		/* skip the current column */
-		if (col == c) continue;
+		if (col == c)
+		{
+			/* we're the index before the one we're now on */
+			index = ecore_list_index(c->parent->columns) - 1;
+			continue;
+		}
 
 		col->sort = EWL_SORT_DIRECTION_NONE;
 	}
@@ -577,15 +563,6 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	 * over SORT_NONE */
 	c->sort = ((c->sort + 1) % EWL_SORT_DIRECTION_MAX);
 	if (!c->sort) c->sort ++;
-
-	/* pick the theme setting for the sort direction and set on the
-	 * header */
-	if (c->sort == EWL_SORT_DIRECTION_ASCENDING)
-		theme_str = "ascending";
-	else if (c->sort == EWL_SORT_DIRECTION_DESCENDING)
-		theme_str = "descending";
-
-	ewl_widget_state_set(w, theme_str, EWL_STATE_TRANSIENT);
 
 	c->model->sort(c->parent->data, index, c->sort);
 
@@ -612,20 +589,47 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 	while ((col = ecore_list_next(tree->columns)))
 	{
 		int r;
-		Ewl_Widget *h;
+		char *theme_str;
+		Ewl_Widget *h, *c;
 
-		h = col->view->header_fetch(tree->data, column);
-		ewl_object_fill_policy_set(EWL_OBJECT(h), 
-				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
+		h = ewl_hbox_new();
 		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
+		ewl_widget_appearance_set(h, "header");
+		ewl_widget_show(h);
 
 		if (col->model->sort)
 			ewl_callback_append(h, EWL_CALLBACK_CLICKED, 
 						ewl_tree2_cb_column_sort, col);
-		column ++;
+
+		c = col->view->header_fetch(tree->data, column);
+		ewl_object_fill_policy_set(EWL_OBJECT(c), 
+				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
+		ewl_container_child_append(EWL_CONTAINER(h), c);
+
+		/* display the sort arrow if needed */
+		if (col->model->sort)
+		{
+			c = ewl_button_new();
+			ewl_container_child_append(EWL_CONTAINER(h), c);
+
+			if (col->sort == EWL_SORT_DIRECTION_ASCENDING)
+				theme_str = "ascending";
+			else if (col->sort == EWL_SORT_DIRECTION_DESCENDING)
+				theme_str = "descending";
+			else
+				theme_str = "blank";
+
+			ewl_widget_appearance_set(c, theme_str);
+			ewl_widget_internal_set(c, TRUE);
+			ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_SHRINK);
+			ewl_object_alignment_set(EWL_OBJECT(c), EWL_FLAG_ALIGN_RIGHT);
+			ewl_widget_show(c);
+		}
 
 		r = col->model->count(tree->data);
 		if (r > rows) rows = r;
+
+		column ++;
 	}
 
 	ewl_container_reset(EWL_CONTAINER(tree->rows));
