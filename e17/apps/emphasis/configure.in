@@ -124,6 +124,11 @@ PKG_CHECK_MODULES(
 	 AC_MSG_ERROR([libmpd not found.])
 	]
 )
+if test `pkg-config --modversion libmpd` = "0.12.4"; then
+ libmpd_v_cflags="-DLIBMPD_0_12_4"
+else
+ libmpd_v_cflags="-DLIBMPD_0_12_0"
+fi
 
 PKG_CHECK_MODULES(XML2, libxml-2.0)
 AC_CHECK_LIB(pthread, pthread_create)
@@ -145,7 +150,7 @@ libxml2_libs=`xml2-config --libs`
 libxml2_cflags=`xml2-config --cflags`
 
 # add your required libs / include here
-my_includes="$ecore_cflags $etk_cflags $enhance_cflags $libmpd_cflags $libxml2_cflags -DHAVE_STRNDUP"
+my_includes="$ecore_cflags $etk_cflags $enhance_cflags $libmpd_cflags $libxml2_cflags -DHAVE_STRNDUP $libmpd_v_cflags"
 my_libs="$ecore_libs $etk_libs $enhance_libs $libmpd_libs $libxml2_libs -lpthread"
 AC_SUBST(my_includes)
 AC_SUBST(my_libs)
@@ -157,6 +162,10 @@ src/bin/Makefile
 data/Makefile
 data/eap/Makefile
 data/images/Makefile
+data/widgets/Makefile
+data/widgets/media_tab_button/Makefile
+data/widgets/media_tab_button/images/Makefile
+data/widgets/media_tab_button/macros/Makefile
 debian/changelog
 ],[
 touch emphasis_docs.tar.gz

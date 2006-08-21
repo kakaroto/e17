@@ -1,26 +1,6 @@
 #include "emphasis.h"
 #include "emphasis_player.h"
 
-/* XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX */
-#ifndef EMPHASIS_LOCAL_PATH
-
-# if   defined(__lok__)
-#   define EMPHASIS_LOCAL_PATH "/home/lok/projects/"
-# elif defined(__any__)
-#   define EMPHASIS_LOCAL_PATH "./"
-# elif defined(__aji__)
-#   define EMPHASIS_LOCAL_PATH "/home/aji/src/"
-# else
-#   define EMPHASIS_LOCAL_PATH "./"
-# endif
-
-#endif
-
-#undef ICON_TEST
-#define ICON_TEST "emphasis/src/pict/haricot_eap-test3.png"
-/* XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX */
-
-
 #undef  EN_VAR_GET
 #define EN_VAR_GET(en,root,id) \
  (root)->small.id=ENHANCE_VAR_GET(en,"small_"#id);\

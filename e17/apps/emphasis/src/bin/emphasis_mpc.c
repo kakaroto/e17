@@ -484,6 +484,7 @@ mpc_disconnect(void)
 Evas_List *
 mpc_list_playlists(void)
 {
+#if defined(LIBMPD_0_12_4)
   MpdData *data;
   Evas_List *list;
 
@@ -492,19 +493,27 @@ mpc_list_playlists(void)
 
   mpd_data_free(data);
   return list;
+#else
+  return NULL;
+#endif
 }
 
 Evas_List *
 mpc_get_playlist_content(char *playlist_name)
 {
+#if defined(LIBMPD_0_12_4)
   MpdData *data;
   Evas_List *list;
   
-  data = mpd_database_get_pls_content (mo, playlist_name);
+  data = mpd_database_get_playlist_content(mo, playlist_name);
   list = convert_mpd_data(data);
 
   mpd_data_free(data);
   return list;
+#else
+  UNUSED(playlist_name);
+  return NULL;
+#endif
 }
 
 void
@@ -525,6 +534,7 @@ mpc_save_playlist(char *playlist_name)
 void
 mpc_delete_playlist(char *playlist_name)
 {
+#if defined(LIBMPD_0_12_4)
   int mpd_error;
 
   mpd_error = mpd_database_delete_playlist(mo, playlist_name);
@@ -532,25 +542,29 @@ mpc_delete_playlist(char *playlist_name)
     {
       fprintf(stderr, "An error occur during the playlist deleting\n");
     }
+#else
+  UNUSED(playlist_name);
+#endif
 }
 
-MpdData *mpd_database_list_playlist()
+#if defined(LIBMPD_0_12_4)
+MpdData *mpd_database_list_playlist(MpdObj *mi)
 {
 	MpdData *data = NULL;
 	mpd_InfoEntity *ent = NULL;
 
-	if(!mpd_check_connected(mo))
+	if(!mpd_check_connected(mi))
 	{
 		return NULL;
 	}
-	if(mpd_lock_conn(mo))
+	if(mpd_lock_conn(mi))
 	{
 		return NULL;
 	}
 
-	mpd_sendLsInfoCommand(mo->connection, "");
+	mpd_sendLsInfoCommand(mi->connection, "");
 
-	while((ent = mpd_getNextInfoEntity(mo->connection))) 
+	while((ent = mpd_getNextInfoEntity(mi->connection))) 
 	{
 		if(ent->type == MPD_INFO_ENTITY_TYPE_PLAYLISTFILE) 
 		{
@@ -562,64 +576,8 @@ MpdData *mpd_database_list_playlist()
 		mpd_freeInfoEntity(ent);
 	}
 
-	mpd_finishCommand(mo->connection);
-
-	mpd_unlock_conn(mo);
-	if(data == NULL)
-	{
-		return NULL;
-	}
-	return mpd_data_get_first(data);
-}
-
-MpdData *mpd_database_get_pls_content(MpdObj *mi,char *playlist)
-{
-	MpdData *data = NULL;
-	mpd_InfoEntity *ent = NULL;
-	if(!mpd_check_connected(mi))
-	{
-		return NULL;
-	}
-	if(!mpd_server_check_version(mi, 0,12,0))
-	{
-		return NULL;
-	}
-	if(mpd_server_check_command_allowed(mi, "listplaylistinfo") != MPD_SERVER_COMMAND_ALLOWED)
-	{
-		return NULL;
-	}
-	if(mpd_lock_conn(mi))
-	{
-		return NULL;
-	}
-	mpd_sendListPlaylistInfoCommand(mi->connection, playlist);
-	while (( ent = mpd_getNextInfoEntity(mi->connection)) != NULL)
-	{
-		data = mpd_new_data_struct_append( data );
-		if(ent->type == MPD_INFO_ENTITY_TYPE_DIRECTORY)
-		{
-			data->type = MPD_DATA_TYPE_DIRECTORY;
-			data->directory = ent->info.directory->path;
-			ent->info.directory->path = NULL;
-		}
-		else if (ent->type == MPD_INFO_ENTITY_TYPE_SONG)
-		{
-			data->type = MPD_DATA_TYPE_SONG;
-			data->song = ent->info.song;
-			ent->info.song = NULL;
-		}
-		else if (ent->type == MPD_INFO_ENTITY_TYPE_PLAYLISTFILE)
-		{
-			data->type = MPD_DATA_TYPE_PLAYLIST;
-			data->playlist = ent->info.playlistFile->path;
-			ent->info.playlistFile->path = NULL;
-		}
-
-		mpd_freeInfoEntity(ent);
-	}
 	mpd_finishCommand(mi->connection);
 
-	/* unlock */
 	mpd_unlock_conn(mi);
 	if(data == NULL)
 	{
@@ -627,3 +585,5 @@ MpdData *mpd_database_get_pls_content(MpdObj *mi,char *playlist)
 	}
 	return mpd_data_get_first(data);
 }
+#endif
+

@@ -1013,6 +1013,7 @@ void
 cb_media_pls_save_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
+#if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
   Etk_Widget *entry;
   
@@ -1033,12 +1034,16 @@ cb_media_pls_save_clicked(Etk_Object *object, void *data)
       etk_widget_focus(entry);
     }
   emphasis_pls_list_init(player);
+#else
+  UNUSED(data);
+#endif
 }
 
 void
 cb_media_pls_load_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
+#if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
   Etk_Tree_Col *col;
   Etk_Tree_Row *row;
@@ -1056,12 +1061,16 @@ cb_media_pls_load_clicked(Etk_Object *object, void *data)
                                     EMPHASIS_TRACK);
   etk_tree_unselect_all(ETK_TREE(player->media.pls_content));
   mpc_play_if_stopped();
+#else
+  UNUSED(data);
+#endif
 }
 
 void
 cb_media_pls_del_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
+#if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
   Etk_Tree_Col *col;
   Etk_Tree_Row *row;
@@ -1074,6 +1083,9 @@ cb_media_pls_del_clicked(Etk_Object *object, void *data)
 
   mpc_delete_playlist(playlist_name);
   emphasis_pls_list_init(player);
+#else
+  UNUSED(data);
+#endif
 }
 
 void
