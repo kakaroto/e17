@@ -246,7 +246,7 @@ Package: emodules0-all
 Architecture: any
 Depends: enlightenment, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
-Provides: emodules-all
+Provides: emodules-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install the following modules:
  Bling       : EFLized Composite Manager for E17.
