@@ -216,7 +216,7 @@ _etk_fe_gui_slow_timer_handler_cb(void *data)
 Etk_Widget *
 _etk_fe_gui_menu_item_new(E_Gui_Menu_Item_Type item_type, const char *label,
 			  Etk_Menu_Shell *menu_shell,
-			  Etk_Signal_Callback_Function callback,
+			  Etk_Callback callback,
 			  void *data)
 {
    Etk_Widget *menu_item = NULL;
