@@ -73,6 +73,17 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 	  {
 	     etk_clipboard_text_request(ETK_WIDGET(s->win));
 	  }
+	else if(!strcmp(ev->key, "a"))
+	  {
+	     Etk_Textblock_Iter *cursor;
+	     Etk_Textblock_Iter *selection;
+	     
+	     cursor = etk_textblock_object_cursor_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
+	     selection = etk_textblock_object_selection_bound_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
+	     
+	     etk_textblock_iter_backward_start(selection);
+	     etk_textblock_iter_forward_end(cursor);
+	  }
      }
 }
 
@@ -559,10 +570,9 @@ static void _e_sticky_clipboard_text_request_cb(Etk_Object *object, void *event,
    cursor = etk_textblock_object_cursor_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
    selection = etk_textblock_object_selection_bound_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
    
-   /* TODO:
-    * handle the case where we are pasting and there's a selection
-    */
-   
+   if(cursor != selection)
+     etk_textblock_delete_range(ETK_TEXT_VIEW(s->textview)->textblock,
+				cursor, selection);      
    etk_textblock_insert(ETK_TEXT_VIEW(s->textview)->textblock, cursor,
 			ev_text->text, strlen(ev_text->text));
 }
