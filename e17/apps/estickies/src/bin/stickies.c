@@ -56,7 +56,7 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 	     iter2 = etk_textblock_object_selection_bound_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
 	     
 	     string = etk_textblock_range_text_get(
-				   ETK_TEXT_VIEW(s->textview)->textblock,
+				   etk_text_view_textblock_get(ETK_TEXT_VIEW(s->textview)),
 				   iter1, iter2, ETK_FALSE);
 	     
 	     if(string && (text = etk_string_get(string)))
@@ -66,7 +66,7 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 	       }
 	     
 	     if(!strcmp(ev->key, "x"))
-	       etk_textblock_delete_range(ETK_TEXT_VIEW(s->textview)->textblock,
+	       etk_textblock_delete_range(etk_text_view_textblock_get(ETK_TEXT_VIEW(s->textview)),
 					  iter1, iter2);
 	  }
 	else if(!strcmp(ev->key, "v"))
@@ -349,10 +349,10 @@ _e_sticky_window_add(E_Sticky *s)
    s->textview = etk_text_view_new();
    etk_widget_repeat_mouse_events_set(s->textview, ETK_TRUE);
    if(s->text)
-     etk_textblock_text_set(ETK_TEXT_VIEW(s->textview)->textblock, s->text,
+     etk_textblock_text_set(etk_text_view_textblock_get(ETK_TEXT_VIEW(s->textview)), s->text,
 			    ETK_TRUE);
    else
-     etk_textblock_text_set(ETK_TEXT_VIEW(s->textview)->textblock, " ",
+     etk_textblock_text_set(etk_text_view_textblock_get(ETK_TEXT_VIEW(s->textview)), " ",
 		       ETK_TRUE);     
    etk_box_append(ETK_BOX(vbox), s->textview, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
@@ -570,10 +570,9 @@ static void _e_sticky_clipboard_text_request_cb(Etk_Object *object, void *event,
    cursor = etk_textblock_object_cursor_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
    selection = etk_textblock_object_selection_bound_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
    
-   if(cursor != selection)
-     etk_textblock_delete_range(ETK_TEXT_VIEW(s->textview)->textblock,
-				cursor, selection);      
-   etk_textblock_insert(ETK_TEXT_VIEW(s->textview)->textblock, cursor,
+   etk_textblock_delete_range(etk_text_view_textblock_get(ETK_TEXT_VIEW(s->textview)),
+			      cursor, selection);      
+   etk_textblock_insert(etk_text_view_textblock_get(ETK_TEXT_VIEW(s->textview)), cursor,
 			ev_text->text, strlen(ev_text->text));
 }
 
