@@ -118,12 +118,13 @@ static void
 _print_theme(void *value, void *user_data)
 {
    Ecore_Hash_Node    *node;
-   char               *key, *theme;
+   Ecore_Desktop_Icon_Theme *theme;
+   char               *key;
 
    node = (Ecore_Hash_Node *) value;
-   key = (char *)node->key;
-   theme = (char *)node->value;
-   printf("FDO icon theme %s is in %s\n", key, theme);
+   key = node->key;
+   theme = node->value;
+   printf("FDO icon theme %s is in %s\n", key, theme->path);
 }
 #endif
 
@@ -184,7 +185,11 @@ main(int argc, char **argv)
    /* Just being paranoid, and cause people have removed these during testing. */
    snprintf(path, sizeof(path), "%s/.e/e/applications/all", ecore_desktop_home_get());
    ecore_file_mkpath(path);
-   snprintf(path, sizeof(path), "%s/.e/e/applications/favorite", ecore_desktop_home_get());
+   snprintf(path, sizeof(path), "%s/.e/e/applications/menu", ecore_desktop_home_get());
+   ecore_file_mkpath(path);
+   snprintf(path, sizeof(path), "%s/.e/e/applications/menu/all", ecore_desktop_home_get());
+   ecore_file_mkpath(path);
+   snprintf(path, sizeof(path), "%s/.e/e/applications/menu/favorite", ecore_desktop_home_get());
    ecore_file_mkpath(path);
 
    begin = ecore_time_get();
