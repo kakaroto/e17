@@ -37,6 +37,7 @@ static void _menu_cb_post(void *data, E_Menu *m);
 static E_Menu * _win_menu_new(Instance *inst);
 static void _win_menu_pre_cb(void *data, E_Menu *m);
 static void _win_menu_item_cb(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _win_menu_icon_cb(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _win_menu_free_hook(void *obj);
 static void _win_menu_item_create(E_Border *bd, E_Menu *m, Instance *inst);
 static int _window_cb_focus_in(void *data, int type, void *event);
@@ -309,9 +310,8 @@ _win_menu_item_create(E_Border *bd, E_Menu *m, Instance *inst)
    e_object_ref(E_OBJECT(bd));
 /*   e_object_breadcrumb_add(E_OBJECT(bd), "clients_menu");*/
    e_menu_item_callback_set(mi, _win_menu_item_cb, bd);
+   e_menu_item_realize_callback_set(mi, _win_menu_icon_cb, bd);
    if (!bd->iconic) e_menu_item_toggle_set(mi, 1);
-   icon = e_border_icon_add(bd, evas_object_evas_get(inst->o_button));
-   e_menu_item_icon_object_set(mi, icon);
 }
 
 static void 
@@ -337,6 +337,21 @@ _win_menu_item_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 			       bd->y + (bd->h / 2));
 	e_border_focus_set(bd, 1, 1);
      }
+}
+
+static void 
+_win_menu_icon_cb(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   E_Border *bd;
+   Evas_Object *o;
+   
+   bd = data;
+   E_OBJECT_CHECK(bd);
+
+   o = e_icon_add(m->evas);
+   e_icon_object_set(o, e_border_icon_add(bd, m->evas));
+
+   mi->icon_object = o;
 }
 
 static void
