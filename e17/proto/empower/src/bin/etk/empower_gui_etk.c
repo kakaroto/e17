@@ -21,7 +21,7 @@ void display_window()
    etk_signal_connect("response", ETK_OBJECT(em->dialog), ETK_CALLBACK(_em_dialog_response_cb), em);
    
    etk_signal_connect("key_down", ETK_OBJECT(em->entry), ETK_CALLBACK(_em_entry_key_down), em);
-   etk_entry_password_set(ETK_ENTRY(em->entry), ETK_TRUE);
+   etk_entry_password_mode_set(ETK_ENTRY(em->entry), ETK_TRUE);
    
    etk_dialog_pack_in_main_area(ETK_DIALOG(em->dialog), em->hbox, ETK_FALSE, ETK_FALSE, 4, ETK_FALSE);
    etk_box_append(ETK_BOX(em->hbox), em->icon, ETK_BOX_START, ETK_BOX_NONE, 3);
