@@ -336,16 +336,16 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
       _etk_label_style_use = 0;
    }
 
+   label->clip = evas_object_rectangle_add(evas);
+   evas_object_show(label->clip);
+   etk_widget_member_object_add(ETK_WIDGET(label), label->clip);
+   
    label->text_object = evas_object_textblock_add(evas);
    evas_object_textblock_style_set(label->text_object, _etk_label_style);
    evas_object_show(label->text_object);
    etk_widget_member_object_add(ETK_WIDGET(label), label->text_object);
-   _etk_label_style_use++;
-
-   label->clip = evas_object_rectangle_add(evas);
    evas_object_clip_set(label->text_object, label->clip);
-   evas_object_show(label->clip);
-   etk_widget_member_object_add(ETK_WIDGET(label), label->clip);
+   _etk_label_style_use++;
 
    evas_object_textblock_text_markup_set(label->text_object, label->text);
    etk_widget_size_recalc_queue(ETK_WIDGET(label));
@@ -365,6 +365,7 @@ static void _etk_label_unrealize_cb(Etk_Object *object, void *data)
       evas_textblock_style_free(_etk_label_style);
       _etk_label_style = NULL;
    }
+   label->text_object = NULL;
    label->clip = NULL;
 }
 

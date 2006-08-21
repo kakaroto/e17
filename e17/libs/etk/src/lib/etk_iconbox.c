@@ -193,11 +193,36 @@ void etk_iconbox_model_free(Etk_Iconbox_Model *model)
    iconbox = model->iconbox;
    iconbox->models = evas_list_remove(iconbox->models, model);
    if (iconbox->current_model == model)
-      iconbox->current_model = evas_list_data(evas_list_last(iconbox->models));
-   if (iconbox->default_model == model)
-      iconbox->default_model = NULL;
+      iconbox->current_model = evas_list_data(iconbox->models);
    
    free(model);
+}
+
+/**
+ * @brief Sets the model used by the iconbox
+ * @param iconbox an iconbox
+ * @param model the model that the iconbox should use (if NULL, no icon will be displayed)
+ */
+void etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *model)
+{
+   if (!iconbox || (model && model->iconbox != iconbox))
+      return;
+   
+   iconbox->current_model = model;
+   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(iconbox->grid), NULL);
+   etk_widget_redraw_queue(iconbox->grid);
+}
+
+/**
+ * @brief Gets the model currently used by the iconbox
+ * @param iconbox an iconbox
+ * @return Returns the model currently used by the iconbox
+ */
+Etk_Iconbox_Model *etk_iconbox_current_model_get(Etk_Iconbox *iconbox)
+{
+   if (!iconbox)
+      return NULL;
+   return iconbox->current_model;
 }
 
 /**
@@ -364,33 +389,6 @@ void etk_iconbox_model_label_geometry_get(Etk_Iconbox_Model *model, int *x, int 
 }
 
 /**
- * @brief Sets the model used by the iconbox
- * @param iconbox an iconbox
- * @param model the model that the iconbox should use (if NULL, no icon will be displayed)
- */
-void etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *model)
-{
-   if (!iconbox || (model && model->iconbox != iconbox))
-      return;
-   
-   iconbox->current_model = model;
-   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(iconbox->grid), NULL);
-   etk_widget_redraw_queue(iconbox->grid);
-}
-
-/**
- * @brief Gets the model currently used by the iconbox
- * @param iconbox an iconbox
- * @return Returns the model currently used by the iconbox
- */
-Etk_Iconbox_Model *etk_iconbox_current_model_get(Etk_Iconbox *iconbox)
-{
-   if (!iconbox)
-      return NULL;
-   return iconbox->current_model;
-}
-
-/**
  * @brief Freezes the iconbox: it will not be updated until it is thawed. @n
  * This function is useful when you want to add a lot of icons efficiently.
  * @param iconbox an iconbox
@@ -420,7 +418,8 @@ void etk_iconbox_thaw(Etk_Iconbox *iconbox)
  * @brief Appends a new icon to the iconbox
  * @param iconbox a iconbox
  * @param filename the filename of the image to use for the icon. It can be either an image or an edje file
- * @param edje_group the edje group to use for the icon. If NULL, @a filename will be considerated as a normal image file
+ * @param edje_group the edje group to use for the icon. If NULL, @a filename will be considerated as a
+ * normal image file
  * @param label the label to associate to the icon
  * @return Returns the new icon
  */
@@ -431,6 +430,7 @@ Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename,
    if (!iconbox)
       return NULL;
    
+   /* TODO: more insert func */
    icon = malloc(sizeof(Etk_Iconbox_Icon));
    icon->iconbox = iconbox;
    icon->prev = NULL;
@@ -516,13 +516,17 @@ void etk_iconbox_clear(Etk_Iconbox *iconbox)
 }
 
 /**
- * @brief Gets the icon located below the position (x, y). The position should be relative to the canvas
+ * @brief Gets the icon located below the position ( @a x, @a y ). The position should be relative to the canvas
+ * (TODO: relative to the icobox instead?)
  * @param iconbox an iconbox
  * @param x the x position
  * @param y the y position
- * @param over_cell if @a over_cell == ETK_TRUE, the function will return the icon if (x, y) is over the cell of the icon
- * @param over_icon if @a over_icon == ETK_TRUE, the function will return the icon if (x, y) is over the image of the icon
- * @param over_label if @a over_label == ETK_TRUE, the function will return the icon if (x, y) is over the label of the icon
+ * @param over_cell if @a over_cell is ETK_TRUE, the function will return the icon if (x, y) is over
+ * the cell of the icon
+ * @param over_icon if @a over_icon == ETK_TRUE, the function will return the icon if (x, y) is over
+ * the image of the icon
+ * @param over_label if @a over_label == ETK_TRUE, the function will return the icon if (x, y) is over
+ * the label of the icon
  * @return Returns the icon located below the position (x, y), or NULL if none
  */
 Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y, Etk_Bool over_cell, Etk_Bool over_icon, Etk_Bool over_label)
@@ -584,11 +588,10 @@ Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y,
 }
 
 /**
- * @brief Sets the file used for the icon image
+ * @brief Sets the file path of the icon's image
  * @param icon an icon
- * @param filename the filename of the image to use for the icon
- * @param edje_group the edje group to use if the image file is an edje animation.
- * It has to be set to NULL for a "normal" image
+ * @param filename the filename of the icon's image
+ * @param edje_group the edje group of the icon's image. It has to be set to NULL for a "normal" image
  */
 void etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, const char *edje_group)
 {
@@ -611,10 +614,10 @@ void etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, con
 }
 
 /**
- * @brief Sets the file used for the icon image
+ * @brief Sets the file used by the icon's image
  * @param icon an icon
- * @param filename a location where to store the filename of the image used by the icon
- * @param edje_group a location where to store the edje group of the image used by the icon
+ * @param filename a location where to store the filename of the icon's image
+ * @param edje_group a location where to store the edje group of the icon's image
  */
 void etk_iconbox_icon_file_get(Etk_Iconbox_Icon *icon, const char **filename, const char **edje_group)
 {
@@ -794,6 +797,7 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    
    iconbox->scrolled_view = etk_scrolled_view_new();
    etk_widget_visibility_locked_set(iconbox->scrolled_view, ETK_TRUE);
+   /* TODO: Why do we need this? */
    etk_widget_repeat_mouse_events_set(iconbox->scrolled_view, ETK_TRUE);
    etk_widget_parent_set(iconbox->scrolled_view, ETK_WIDGET(iconbox));
    etk_widget_show(iconbox->scrolled_view);
@@ -805,15 +809,15 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    etk_widget_show(iconbox->grid);
 
    iconbox->models = NULL;
-   iconbox->default_model = etk_iconbox_model_new(iconbox);
-   iconbox->current_model = iconbox->default_model;
+   iconbox->current_model = etk_iconbox_model_new(iconbox);
    
    iconbox->num_icons = 0;
    iconbox->first_icon = NULL;
    iconbox->last_icon = NULL;
-      
+   
    iconbox->frozen = ETK_FALSE;
    
+   /* TODO: size request */
    ETK_WIDGET(iconbox)->size_allocate = _etk_iconbox_size_allocate;
    
    etk_signal_connect("realize", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_iconbox_realize_cb), NULL);
@@ -828,7 +832,6 @@ static void _etk_iconbox_destructor(Etk_Iconbox *iconbox)
    
    etk_iconbox_clear(iconbox);
    
-   iconbox->default_model = NULL;
    iconbox->current_model = NULL;
    while (iconbox->models)
       etk_iconbox_model_free(iconbox->models->data);

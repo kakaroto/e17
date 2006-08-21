@@ -1322,13 +1322,15 @@ Etk_Widget_Swallow_Error etk_widget_swallow_error_get()
  * @brief Adds an evas object to the list of member objects of the widget. @n
  * A member object is automatically shown/hidden when the widget is shown/hidden, it is automatically clipped when the
  * widget is, and it is used by the widget to receive mouse events. @n
- * The object will be automatically deleted when the object will be unrealized, unless you remove it before the widget
- * is deleted, with etk_widget_member_object_del().
+ * The object will be automatically deleted when the object is unrealized, unless you remove it before the widget
+ * is deleted with etk_widget_member_object_del().
  * @param widget a widget
  * @param object the evas object to add
  * @return Returns ETK_TRUE on success. ETK_FALSE on failure, probably because the widget and the object do not
  * belong to the same evas, or because the widget is not realized yet
- * @note The object has to belong to the same evas than the widget
+ * @note The object has to belong to the same evas as the widget
+ * @note The object may be clipped against the clip object of the widget. So if you want to clip the object against your
+ * own clip object, you'll have to clip it after having called etk_widget_member_object_add()
  * @widget_implementation
  */
 Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
@@ -1943,7 +1945,6 @@ static void _etk_widget_destructor(Etk_Widget *widget)
    if (!widget)
       return;
 
-   _etk_widget_unrealize(widget);
    etk_widget_parent_set(widget, NULL);
    
    while (widget->theme_children)
@@ -1976,6 +1977,8 @@ void _etk_widget_destroyed_cb(Etk_Object *object, void *data)
    
    if (!(widget = ETK_WIDGET(object)))
       return;
+   
+   _etk_widget_unrealize(widget);
    
    /* Remove the children */
    while (widget->children)
