@@ -202,12 +202,10 @@ struct Etk_Textblock
 };
 
 /* Textblock's funcs */
-void etk_textblock_shutdown();
-
-Etk_Type *etk_textblock_type_get();
+Etk_Type      *etk_textblock_type_get();
 Etk_Textblock *etk_textblock_new();
 
-void etk_textblock_text_set(Etk_Textblock *tb, const char *text, Etk_Bool markup);
+void        etk_textblock_text_set(Etk_Textblock *tb, const char *text, Etk_Bool markup);
 Etk_String *etk_textblock_text_get(Etk_Textblock *tb, Etk_Bool markup);
 Etk_String *etk_textblock_range_text_get(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2, Etk_Bool markup);
 
@@ -220,36 +218,34 @@ void etk_textblock_delete_after(Etk_Textblock *tb, Etk_Textblock_Iter *iter);
 void etk_textblock_delete_range(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2);
 
 /* Textblock iter's funcs */
-Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *tb);
-void etk_textblock_iter_free(Etk_Textblock_Iter *iter);
-
-void etk_textblock_iter_gravity_set(Etk_Textblock_Iter *iter, Etk_Textblock_Gravity gravity);
+Etk_Textblock_Iter   *etk_textblock_iter_new(Etk_Textblock *tb);
+void                  etk_textblock_iter_free(Etk_Textblock_Iter *iter);
+void                  etk_textblock_iter_gravity_set(Etk_Textblock_Iter *iter, Etk_Textblock_Gravity gravity);
 Etk_Textblock_Gravity etk_textblock_iter_gravity_get(Etk_Textblock_Iter *iter);
 
-void etk_textblock_iter_backward_start(Etk_Textblock_Iter *iter);
-void etk_textblock_iter_forward_end(Etk_Textblock_Iter *iter);
+void     etk_textblock_iter_backward_start(Etk_Textblock_Iter *iter);
+void     etk_textblock_iter_forward_end(Etk_Textblock_Iter *iter);
 Etk_Bool etk_textblock_iter_backward_char(Etk_Textblock_Iter *iter);
 Etk_Bool etk_textblock_iter_forward_char(Etk_Textblock_Iter *iter);
 
 void etk_textblock_iter_copy(Etk_Textblock_Iter *dest, const Etk_Textblock_Iter *src);
-int etk_textblock_iter_compare(Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2);
+int  etk_textblock_iter_compare(Etk_Textblock_Iter *iter1, Etk_Textblock_Iter *iter2);
 
 /* Textblock object's funcs */
-Evas_Object *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas);
-
-void etk_textblock_object_wrap_set(Evas_Object *tbo, Etk_Textblock_Wrap wrap);
+Evas_Object       *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas);
+void               etk_textblock_object_wrap_set(Evas_Object *tbo, Etk_Textblock_Wrap wrap);
 Etk_Textblock_Wrap etk_textblock_object_wrap_get(Evas_Object *tbo);
 
-void etk_textblock_object_cursor_visible_set(Evas_Object *tbo, Etk_Bool visible);
-Etk_Bool etk_textblock_object_cursor_visible_get(Evas_Object *tbo);
 Etk_Textblock_Iter *etk_textblock_object_cursor_get(Evas_Object *tbo);
 Etk_Textblock_Iter *etk_textblock_object_selection_bound_get(Evas_Object *tbo);
+void                etk_textblock_object_cursor_visible_set(Evas_Object *tbo, Etk_Bool visible);
+Etk_Bool            etk_textblock_object_cursor_visible_get(Evas_Object *tbo);
 
 /* Misc funcs */
-int etk_textblock_unicode_length_get(const char *unicode_string);
+int      etk_textblock_unicode_length_get(const char *unicode_string);
 Etk_Bool etk_textblock_is_white_char(int c);
-void etk_textblock_char_size_get(Evas *evas, const char *font_face, int font_size, int *w, int *h);
-void etk_textblock_printf(Etk_Textblock *tb);
+void     etk_textblock_char_size_get(Evas *evas, const char *font_face, int font_size, int *w, int *h);
+void     etk_textblock_printf(Etk_Textblock *tb);
 
 /** @} */
  

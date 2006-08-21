@@ -137,7 +137,6 @@ int etk_shutdown()
       etk_signal_shutdown();
       etk_type_shutdown();
       
-      etk_textblock_shutdown();
       etk_tooltips_shutdown();
       etk_dnd_shutdown();
       etk_engine_shutdown();

@@ -16,6 +16,7 @@
 #define ETK_TB_OBJECT_DEFAULT_HEIGHT 300
 #define ETK_TB_EMPTY_LINE_WIDTH 3
 
+/* TODO: in the theme */
 #define ETK_TB_OBJECT_SHOW_CURSOR_DELAY 0.75
 #define ETK_TB_OBJECT_HIDE_CURSOR_DELAY 0.25
 
@@ -170,16 +171,6 @@ static const char *_etk_tb_escapes[] =
 /**************************
  * Textblock's funcs
  **************************/
-
-/**
- * @internal
- * @brief Shutdowns the textblock system.
- * It justs frees the hash table used to store the results of etk_textblock_char_size_get()
- */
-void etk_textblock_shutdown()
-{
-   
-}
 
 /**
  * @brief Gets the type of an Etk_Textblock
@@ -1169,6 +1160,36 @@ Etk_Textblock_Wrap etk_textblock_object_wrap_get(Evas_Object *tbo)
 }
 
 /**
+ * @brief Gets the cursor's iterator of the textblock object
+ * @param tbo a textblock object
+ * @return Returns the cursor's iterator of the textblock object
+ * @warning You should not free the returned iterator
+ */
+Etk_Textblock_Iter *etk_textblock_object_cursor_get(Evas_Object *tbo)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
+      return NULL;
+   return tbo_sd->cursor;
+}
+
+/**
+ * @brief Gets the selection bound's iterator of the textblock object
+ * @param tbo a textblock object
+ * @return Returns the selection bound's iterator of the textblock object
+ * @warning You should not free the returned iterator
+ */
+Etk_Textblock_Iter *etk_textblock_object_selection_bound_get(Evas_Object *tbo)
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
+      return NULL;
+   return tbo_sd->selection;
+}
+
+/**
  * @brief Sets whether the cursor of the textblock object is visible or not
  * @param tbo a textblock object
  * @param visible ETK_TRUE to show the cursor, ETK_FALSE to hide it
@@ -1216,36 +1237,6 @@ Etk_Bool etk_textblock_object_cursor_visible_get(Evas_Object *tbo)
    if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
       return ETK_FALSE;
    return tbo_sd->cursor_visible;
-}
-
-/**
- * @brief Gets the cursor's iterator of the textblock object
- * @param tbo a textblock object
- * @return Returns the cursor's iterator of the textblock object
- * @warning You should not free the returned iterator
- */
-Etk_Textblock_Iter *etk_textblock_object_cursor_get(Evas_Object *tbo)
-{
-   Etk_Textblock_Object_SD *tbo_sd;
-   
-   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
-      return NULL;
-   return tbo_sd->cursor;
-}
-
-/**
- * @brief Gets the selection bound's iterator of the textblock object
- * @param tbo a textblock object
- * @return Returns the selection bound's iterator of the textblock object
- * @warning You should not free the returned iterator
- */
-Etk_Textblock_Iter *etk_textblock_object_selection_bound_get(Evas_Object *tbo)
-{
-   Etk_Textblock_Object_SD *tbo_sd;
-   
-   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
-      return NULL;
-   return tbo_sd->selection;
 }
 
 /**************************
@@ -2070,11 +2061,13 @@ static Etk_Textblock_Node *_etk_textblock_line_del(Etk_Textblock *tb, Etk_Textbl
 /* Gets recursively the text of the node */ 
 static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool markup, Etk_String *text, Etk_Textblock_Iter *start_iter, Etk_Textblock_Iter *end_iter)
 {
-   if (!node || !text)
-      return;
-   
    Etk_String *start_tag = NULL;
    Etk_String *end_tag = NULL;
+   int text_len;
+   Etk_Bool end_of_line = ETK_TRUE;
+   
+   if (!node || !text)
+      return;
    
    if (markup)
    {
@@ -2191,18 +2184,91 @@ static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool mark
    /* Builds the text of the node */
    etk_string_append(text, etk_string_get(start_tag));
    
-   if (node->text)
-      etk_string_append(text, etk_string_get(node->text));
-   else
+   /* Add the text of the node */
+   text_len = etk_string_length_get(node->text);
+   if (text_len > 0)
    {
-      Etk_Textblock_Node *n;
+      const char *node_text;
+      int start_pos;
+      int len;
       
+      node_text = etk_string_get(node->text);
+      start_pos = (start_iter && node == start_iter->node) ? start_iter->index : 0;
+      start_pos = ETK_MIN(start_pos, text_len - 1);
+      if (end_iter && node == end_iter->node)
+      {
+         len = end_iter->pos - start_pos;
+         len = ETK_MIN(len, text_len - start_pos);
+         etk_string_append_sized(text, &node_text[start_pos], len);
+      }
+      else
+         etk_string_append(text, &node_text[start_pos]);
+   }
+   
+   /* Adds recursively the text of the children */
+   if (node->children)
+   {
+      Evas_List *node_hierarchy;
+      Etk_Textblock_Node *start_node, *end_node;
+      Etk_Textblock_Node *n;
+      int depth;
+      Etk_Bool add_child;
+      Etk_Bool found;
+      
+      depth = 0;
+      for (n = node; n; n = n->parent)
+         depth++;
+      
+      if (!start_iter)
+         start_node = NULL;
+      else
+      {
+         node_hierarchy = NULL;
+         found = ETK_FALSE;
+         for (n = start_iter->node; n; n = n->parent)
+         {
+            node_hierarchy = evas_list_prepend(node_hierarchy, n);
+            if (node == n)
+               found = ETK_TRUE;
+         }
+         start_node = found ? evas_list_nth(node_hierarchy, depth) : NULL;
+         evas_list_free(node_hierarchy);
+      }
+      
+      if (!end_iter)
+         end_node = NULL;
+      else
+      {
+         node_hierarchy = NULL;
+         found = ETK_FALSE;
+         for (n = end_iter->node; n; n = n->parent)
+         {
+            node_hierarchy = evas_list_prepend(node_hierarchy, n);
+            if (node == n)
+            {
+               end_of_line = ETK_FALSE;
+               found = ETK_TRUE;
+            }
+         }
+         end_node = found ? evas_list_nth(node_hierarchy, depth) : NULL;
+         evas_list_free(node_hierarchy);
+      }
+      
+      add_child = (start_node == NULL);
       for (n = node->children; n; n = n->next)
-         _etk_textblock_node_text_get(n, markup, text, start_iter, end_iter);
+      {
+         if (n == start_node)
+            add_child = ETK_TRUE;
+         if (add_child)
+            _etk_textblock_node_text_get(n, markup, text, start_iter, end_iter);
+         if (n == end_node)
+            add_child = ETK_FALSE;
+      }
    }
    
    etk_string_append(text, etk_string_get(end_tag));
-   if (node->type == ETK_TEXTBLOCK_NODE_LINE && node->next)
+   
+   if (node->type == ETK_TEXTBLOCK_NODE_LINE && _etk_textblock_next_line_get(node) && end_of_line)
       etk_string_append_char(text, '\n');
    
    etk_object_destroy(ETK_OBJECT(start_tag));
