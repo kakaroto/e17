@@ -216,7 +216,7 @@ _parse_process_file(char *file, char *menu_path, G_Eap *eap)
    category = NULL;
    if (menu_path != NULL)
      {
-        snprintf(order_path, sizeof(order_path), "%s" EFAVDIR "/Converted Menus/%s", home, menu_path);
+        snprintf(order_path, sizeof(order_path), "%s" EALLDIR "/%s", home, menu_path);
 //        modify_order(order_path, eap->eap_name);
         modify_order(order_path, file);
      }

@@ -10,7 +10,8 @@
 #include <Ecore_Desktop.h>
 #include <Ecore_File.h>
 
-#define EFAVDIR "/.e/e/applications/favorite"
+#define EFAVDIR "/.e/e/applications/menu/favorite"
+#define EALLDIR "/.e/e/applications/menu/all"
 #define EAPPDIR "/.e/e/applications/all"
 #define DEFAULTICON PACKAGE_DATA_DIR"/data/e17genmenu/icons/e.png"
 
