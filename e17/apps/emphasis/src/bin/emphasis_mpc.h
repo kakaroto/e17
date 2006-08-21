@@ -53,7 +53,9 @@ void mpc_save_playlist(char *playlist_name);
 void mpc_load_playlist(char *playlist_name);
 void mpc_delete_playlist(char *playlist_name);
 
+/* TEMP */
 MpdData *mpd_database_list_playlist();
+MpdData *mpd_database_get_pls_content(MpdObj *mi,char *playlist);
 /** @} */
 
 #endif /* EMPHASIS_MPC_H_ */
