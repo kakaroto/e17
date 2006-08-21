@@ -195,8 +195,8 @@ ewl_container_child_append(Ewl_Container *pc, Ewl_Widget *child)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	ecore_dlist_append(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
+	ecore_dlist_append(pc->children, child);
 	ewl_container_child_add_call(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -230,8 +230,8 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
 	while (pc->redirect)
 		pc = pc->redirect;
 
-	ecore_dlist_prepend(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
+	ecore_dlist_prepend(pc->children, child);
 	ewl_container_child_add_call(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -279,8 +279,8 @@ ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
 		ecore_dlist_next(pc->children);
 	}
 
-	ecore_dlist_insert(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
+	ecore_dlist_insert(pc->children, child);
 	ewl_container_child_add_call(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -380,9 +380,8 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	/*
 	 * If the child isn't found, then this isn't it's parent.
 	 */
-	if (!temp) {
+	if (!temp)
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	/* get the index of the widget we are removing */
 	idx = ecore_dlist_index(pc->children);
@@ -393,8 +392,8 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
 	ecore_dlist_remove(pc->children);
 	if (VISIBLE(child) && REALIZED(child))
 		ewl_container_child_hide_call(pc, child);
-	ewl_container_child_remove_call(pc, child, idx);
 
+	ewl_container_child_remove_call(pc, child, idx);
 	ewl_widget_configure(EWL_WIDGET(pc));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

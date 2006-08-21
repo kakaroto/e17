@@ -756,12 +756,11 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
 	if (op == EWL_CONTAINER(p))
 		DRETURN(DLEVEL_STABLE);
 
-	if (!p)
-		ewl_widget_obscure(w);
+	/* if no parent, obsure the widget */
+	if (!p) ewl_widget_obscure(w);
 
 	emb = ewl_embed_widget_find(w);
-	if (emb)
-		ewl_embed_info_widgets_cleanup(emb, w);
+	if (emb) ewl_embed_info_widgets_cleanup(emb, w);
 
 	/*
 	 * Verify this will not result in recursively nested widgets.
@@ -775,18 +774,20 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
 		tmp = tmp->parent;
 	}
 
-	/*
-	 * Set this to the new parent here to avoid infinite recursion when
-	 * called from ewl_container_child_remove.
-	 */
-	w->parent = p;
+	/* set the parent to NULL before doing the child remove */
+	w->parent = NULL;
 
 	/*
 	 * A widget cannot be the child of multiple widgets, so remove it
 	 * from a previous parent before adding to this parent.
 	 */
-	if (op)
-		ewl_container_child_remove(op, w);
+	if (op) ewl_container_child_remove(op, w);
+
+	/*
+	 * Set this to the new parent here to avoid infinite recursion when
+	 * called from ewl_container_child_remove.
+	 */
+	w->parent = p;
 
 	ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
 
