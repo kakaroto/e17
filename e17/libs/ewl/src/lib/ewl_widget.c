@@ -784,8 +784,9 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
 	if (op) ewl_container_child_remove(op, w);
 
 	/*
-	 * Set this to the new parent here to avoid infinite recursion when
-	 * called from ewl_container_child_remove.
+	 * Set this to the new parent here as child_remove will try to call
+	 * us again if our parent isn't NULL with a NULL parent. This makes
+	 * sure the parent is set when the remove is done.
 	 */
 	w->parent = p;
 
