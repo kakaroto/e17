@@ -162,10 +162,6 @@ src/bin/Makefile
 data/Makefile
 data/eap/Makefile
 data/images/Makefile
-data/widgets/Makefile
-data/widgets/media_tab_button/Makefile
-data/widgets/media_tab_button/images/Makefile
-data/widgets/media_tab_button/macros/Makefile
 debian/changelog
 ],[
 touch emphasis_docs.tar.gz
