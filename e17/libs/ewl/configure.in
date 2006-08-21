@@ -121,6 +121,25 @@ if test "x$enable_software_x11" != "xno" ; then
 fi
 AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_X11, test "x$have_software_x11" = xyes)
 
+AC_ARG_ENABLE(xrender-x11,
+	[AC_HELP_STRING([--enable-xrender-x11],[enable xrender X11 support])],
+	[enable_xrender_x11=$enableval], [enable_xrender_x11="auto"])
+if test "x$enable_xrender_x11" != "xno" ; then
+	have_xrender_x11=no
+	AC_CHECK_HEADER(Evas_Engine_XRender_X11.h,
+		[AC_CHECK_HEADER(Ecore_X.h,
+			[have_xrender_x11=yes],
+			[], [#include <Ecore.h>])],
+		[], [#include <Evas.h>])
+	if test "x$have_xrender_x11" = "xyes" ; then
+		AC_DEFINE(ENABLE_EWL_XRENDER_X11, 1, [Enable X11 Xrender])
+	elif test "x$enable_xrender_x11" = "xyes" ; then
+		AC_MSG_ERROR(xrender X11 requested but no evas/ecore support found)
+	fi
+fi
+AM_CONDITIONAL(EWL_ENABLE_EVAS_XRENDER_X11, test "x$have_xrender_x11" = xyes)
+
+
 AC_ARG_ENABLE(opengl-x11,
 	[AC_HELP_STRING([--enable-opengl-x11],[enable opengl X11 support])],
 	[enable_opengl_x11=$enableval], [enable_opengl_x11="auto"])
@@ -236,6 +255,7 @@ src/engines/Makefile
 src/engines/x11/Makefile
 src/engines/evas/Makefile
 src/engines/evas_software_x11/Makefile
+src/engines/evas_xrender_x11/Makefile
 src/engines/evas_gl_x11/Makefile
 src/engines/evas_fb/Makefile
 data/Makefile
