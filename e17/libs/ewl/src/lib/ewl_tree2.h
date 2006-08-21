@@ -117,6 +117,7 @@ struct Ewl_Tree2
 
 	Ewl_Widget *header;	 /**< The tree header */
 	Ewl_Widget *rows;	 /**< Holds the rows of the tree */
+	Ewl_Widget *scroll;	/**< Holds the scrollpane */
 
 	Ecore_List *columns;     /**< The tree columns. */
 	void *data;              /**< Data provided to the tree */
@@ -125,8 +126,11 @@ struct Ewl_Tree2
 	Ecore_List *selected; 	 /**< The list of selected cells */
 
 	Ewl_Tree_Mode mode;	 /**< The mode of the tree */
+
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
+	unsigned char scroll_visible:1; /**< Is the scrollpane visible? */
+	unsigned char scroll_headers:1; /**< Are the headers in the scrollpane? */
 	unsigned char dirty:1;    /**< Has the data changed? */
 };
 
@@ -186,6 +190,14 @@ unsigned int	 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 
 void		 ewl_tree2_dirty_set(Ewl_Tree2 *tree2, unsigned int dirty);
 unsigned int	 ewl_tree2_dirty_get(Ewl_Tree2 *tree2);
+
+void		 ewl_tree2_scroll_visible_set(Ewl_Tree2 *tree, 
+						unsigned int visible);
+unsigned int	 ewl_tree2_scroll_visible_get(Ewl_Tree2 *tree);
+
+void		 ewl_tree2_scroll_headers_set(Ewl_Tree2 *tree,
+						unsigned int scroll);
+unsigned int	 ewl_tree2_scroll_headers_get(Ewl_Tree2 *tree);
 
 /*
  * Internal stuff.

@@ -68,8 +68,15 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 					ewl_tree2_cb_header_changed, tree);
 	ewl_widget_show(tree->header);
 
+	tree->scroll_headers = FALSE;
+	tree->scroll_visible = TRUE;
+
+	tree->scroll = ewl_scrollpane_new();
+	ewl_container_child_append(EWL_CONTAINER(tree), tree->scroll);
+	ewl_widget_show(tree->scroll);
+
 	tree->rows = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(tree), tree->rows);
+	ewl_container_child_append(EWL_CONTAINER(tree->scroll), tree->rows);
 	ewl_widget_show(tree->rows);
 
 	ewl_tree2_headers_visible_set(tree, TRUE);
@@ -450,6 +457,98 @@ ewl_tree2_dirty_get(Ewl_Tree2 *tree2)
 }
 
 /**
+ * @param tree: The tree to work with
+ * @param visible: The value to set the scroll visible setting too
+ * @return Returns no value
+ * @brief Sets if the scrollpane is visible in the tree or not
+ */
+void
+ewl_tree2_scroll_visible_set(Ewl_Tree2 *tree, unsigned int visible)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
+
+	if (tree->scroll_visible == visible)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->scroll_visible = visible;
+	if (tree->scroll_visible)
+	{
+		ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(tree->scroll), 
+						EWL_SCROLLPANE_FLAG_AUTO_VISIBLE);
+		ewl_scrollpane_vscrollbar_flag_set(EWL_SCROLLPANE(tree->scroll), 
+						EWL_SCROLLPANE_FLAG_AUTO_VISIBLE);
+	}
+	else
+	{
+		ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(tree->scroll), 
+						EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
+		ewl_scrollpane_vscrollbar_flag_set(EWL_SCROLLPANE(tree->scroll), 
+						EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns if the scrollarea is visible in the tree
+ * @brief Returns TRUE if the scrollarea is visible else returns FALSE
+ */
+unsigned int
+ewl_tree2_scroll_visible_get(Ewl_Tree2 *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
+	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, FALSE);
+
+	DRETURN_INT(tree->scroll_visible, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @param scroll: If the headers should be scrolled
+ * @return Returns no value
+ * @brief Sets if the headers should be scrolled with the tree
+ */
+void
+ewl_tree2_scroll_headers_set(Ewl_Tree2 *tree, unsigned int scroll)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
+
+	if (tree->scroll_headers == scroll)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->scroll_headers = scroll;
+	if (tree->scroll_headers)
+		ewl_container_child_prepend(EWL_CONTAINER(tree->scroll),
+							tree->header);
+	else
+		ewl_container_child_prepend(EWL_CONTAINER(tree),
+							tree->header);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns no value
+ * @brief Retrieves if the tree headers will be scrolled or not
+ */
+unsigned int
+ewl_tree2_scroll_headers_get(Ewl_Tree2 *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
+	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, FALSE);
+
+	DRETURN_INT(tree->scroll_headers, DLEVEL_STABLE);
+}
+
+/**
  * @internal
  * @param w: The widget to work with
  * @param ev: UNUSED
@@ -487,7 +586,7 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Tree2 *tree;
-	int size;
+	int size = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -496,13 +595,17 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	tree = EWL_TREE2(w);
 
 	/* place the header */
-	ewl_object_place(EWL_OBJECT(tree->header), CURRENT_X(tree), 
-				CURRENT_Y(tree), CURRENT_W(tree), 
-				CURRENT_H(tree));
+	if (!tree->scroll_headers)
+	{
+		ewl_object_place(EWL_OBJECT(tree->header), CURRENT_X(tree), 
+					CURRENT_Y(tree), CURRENT_W(tree), 
+					CURRENT_H(tree));
+
+		size = ewl_object_current_h_get(EWL_OBJECT(tree->header));
+	}
 
 	/* place the rows */
-	size = ewl_object_current_h_get(EWL_OBJECT(tree->header));
-	ewl_object_place(EWL_OBJECT(tree->rows), CURRENT_X(tree),
+	ewl_object_place(EWL_OBJECT(tree->scroll), CURRENT_X(tree),
 				CURRENT_Y(tree) + size,
 				CURRENT_W(tree),
 				CURRENT_H(tree) - size);

@@ -32,6 +32,9 @@ static void tree2_test_data_sort(void *data, unsigned int column,
 						Ewl_Sort_Direction sort);
 static int tree2_test_data_count_get(void *data);
 
+static void ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree2_cb_scroll_visible(Ewl_Widget *w, void *ev, void *data);
+
 void 
 test_info(Ewl_Test *test)
 {
@@ -46,10 +49,16 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget *tree;
+	Ewl_Widget *tree, *o, *o2;
         Ewl_Model *model;
         Ewl_View *view;
         void *data;
+
+	o2 = ewl_hbox_new();
+	ewl_container_child_append(box, o2);
+	ewl_object_fill_policy_set(EWL_OBJECT(o2), 
+				EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+	ewl_widget_show(o2);
 
         /* create our data */
         data = tree2_test_data_setup();
@@ -92,6 +101,22 @@ create_test(Ewl_Container *box)
         ewl_view_assign_set(view, tree2_test_custom_assign_set);
         ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
         ewl_tree2_column_append(EWL_TREE2(tree), model, view);
+
+	/* create the checkbuttons for the top box */
+	o = ewl_checkbutton_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Scroll headers");
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+				ewl_tree2_cb_scroll_headers, tree);
+	ewl_widget_show(o);
+
+	o = ewl_checkbutton_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Scroll visible");
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_tree2_cb_scroll_visible, tree);
+	ewl_widget_show(o);
 
 	return 1;
 }
@@ -262,4 +287,25 @@ tree2_test_data_count_get(void *data)
 
         return d->count;
 }
+
+static void
+ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	Ewl_Tree2 *tree;
+
+	tree = data;
+	ewl_tree2_scroll_headers_set(tree, 
+			ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
+}
+
+static void
+ewl_tree2_cb_scroll_visible(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	Ewl_Tree2 *tree;
+
+	tree = data;
+	ewl_tree2_scroll_visible_set(tree, 
+			ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
+}
+
 
