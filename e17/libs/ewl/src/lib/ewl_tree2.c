@@ -630,7 +630,8 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Sorts the tree by the given column
  */
 void
-ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+ewl_tree2_cb_column_sort(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
 {
 	Ewl_Tree2_Column *c, *col;
 	int index = 0;

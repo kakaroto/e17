@@ -69,7 +69,7 @@ ee_init(Ewl_Engine *engine)
 }
 
 static void
-ee_canvas_setup(Ewl_Window *win, int debug)
+ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 {
 	Evas *evas;
 	Ewl_Object *o;
