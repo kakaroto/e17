@@ -34,6 +34,7 @@ static int tree2_test_data_count_get(void *data);
 
 static void ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_scroll_visible(Ewl_Widget *w, void *ev, void *data);
+static void tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data);
 
 void 
 test_info(Ewl_Test *test)
@@ -74,6 +75,7 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(box), tree);
         ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
         ewl_tree2_data_set(EWL_TREE2(tree), data);
+	ewl_widget_name_set(tree, "tree");
         ewl_widget_show(tree);
 
         /* create a view for the first column that just has an ewl label */
@@ -116,6 +118,22 @@ create_test(Ewl_Container *box)
 	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_tree2_cb_scroll_visible, tree);
+	ewl_widget_show(o);
+
+	o = ewl_spinner_new();
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+	ewl_range_minimum_value_set(EWL_RANGE(o), 0);
+	ewl_range_maximum_value_set(EWL_RANGE(o), 10000);
+	ewl_range_value_set(EWL_RANGE(o), 5);
+	ewl_range_step_set(EWL_RANGE(o), 1);
+	ewl_widget_name_set(o, "rows_spinner");
+	ewl_widget_show(o);
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Set number of rows");
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, tree2_cb_set_rows_clicked, NULL);
 	ewl_widget_show(o);
 
 	return 1;
@@ -211,13 +229,13 @@ tree2_test_data_fetch(void *data, unsigned int row, unsigned int column)
         }
 
         if (column == 0)
-                val = d->rows[row]->text;
+                val = d->rows[row % TREE2_DATA_ELEMENTS]->text;
 
         else if (column == 1)
-                val = d->rows[row]->image;
+                val = d->rows[row % TREE2_DATA_ELEMENTS]->image;
 
         else if (column == 2)
-                val = d->rows[row];
+                val = d->rows[row % TREE2_DATA_ELEMENTS];
 
         else
         {
@@ -307,5 +325,21 @@ ewl_tree2_cb_scroll_visible(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	ewl_tree2_scroll_visible_set(tree, 
 			ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
 }
+
+static void
+tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Widget *spinner, *tree;
+	Tree2_Test_Data *d;
+
+	tree = ewl_widget_name_find("tree");
+	spinner = ewl_widget_name_find("rows_spinner");
+
+	d = ewl_tree2_data_get(EWL_TREE2(tree));
+	d->count = ewl_range_value_get(EWL_RANGE(spinner));
+
+	ewl_tree2_dirty_set(EWL_TREE2(tree), TRUE);
+}
+
 
 
