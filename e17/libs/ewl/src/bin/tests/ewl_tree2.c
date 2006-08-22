@@ -33,8 +33,8 @@ static void tree2_test_data_sort(void *data, unsigned int column,
 static int tree2_test_data_count_get(void *data);
 
 static void ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev, void *data);
-static void ewl_tree2_cb_scroll_visible(Ewl_Widget *w, void *ev, void *data);
-static void tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data);
 
 void 
 test_info(Ewl_Test *test)
@@ -113,11 +113,10 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(o);
 
 	o = ewl_checkbutton_new();
-	ewl_button_label_set(EWL_BUTTON(o), "Scroll visible");
+	ewl_button_label_set(EWL_BUTTON(o), "Plain view");
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
-	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-				ewl_tree2_cb_scroll_visible, tree);
+				ewl_tree2_cb_plain_view, tree);
 	ewl_widget_show(o);
 
 	o = ewl_spinner_new();
@@ -133,7 +132,8 @@ create_test(Ewl_Container *box)
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Set number of rows");
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, tree2_cb_set_rows_clicked, NULL);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+				ewl_tree2_cb_set_rows_clicked, NULL);
 	ewl_widget_show(o);
 
 	return 1;
@@ -310,24 +310,33 @@ static void
 ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Tree2 *tree;
+	Ewl_Widget *view;
 
 	tree = data;
-	ewl_tree2_scroll_headers_set(tree, 
+	view = ewl_tree2_view_widget_get(tree);
+
+	if (ewl_widget_type_is(view, EWL_TREE2_VIEW_SCROLLED_TYPE))
+		ewl_tree2_view_scrolled_scroll_headers_set(EWL_TREE2_VIEW(view),
 			ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
 }
 
 static void
-ewl_tree2_cb_scroll_visible(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Tree2 *tree;
+	Ewl_View *view;
 
 	tree = data;
-	ewl_tree2_scroll_visible_set(tree, 
-			ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
+	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
+		view = ewl_tree2_view_plain_get();
+	else
+		view = ewl_tree2_view_scrolled_get();
+
+	ewl_tree2_view_set(tree, view);
 }
 
 static void
-tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data)
+ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data)
 {
 	Ewl_Widget *spinner, *tree;
 	Tree2_Test_Data *d;

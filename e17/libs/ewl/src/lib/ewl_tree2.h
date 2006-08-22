@@ -113,11 +113,11 @@ typedef struct Ewl_Tree2 Ewl_Tree2;
  */
 struct Ewl_Tree2
 {
-	Ewl_Container container; /**< Inherit from container. */
+	Ewl_Box box; 		/**< Inherit from ewl_box. */
 
 	Ewl_Widget *header;	 /**< The tree header */
-	Ewl_Widget *rows;	 /**< Holds the rows of the tree */
-	Ewl_Widget *scroll;	/**< Holds the scrollpane */
+	Ewl_Widget *rows;	 /**< The rows of the tree */
+	Ewl_View *view;	 	 /**< Holds the view of the tree */
 
 	Ecore_List *columns;     /**< The tree columns. */
 	void *data;              /**< Data provided to the tree */
@@ -129,8 +129,6 @@ struct Ewl_Tree2
 
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
-	unsigned char scroll_visible:1; /**< Is the scrollpane visible? */
-	unsigned char scroll_headers:1; /**< Are the headers in the scrollpane? */
 	unsigned char dirty:1;    /**< Has the data changed? */
 };
 
@@ -163,6 +161,9 @@ struct Ewl_Tree2_Column
 Ewl_Widget 	*ewl_tree2_new(void);
 int 		 ewl_tree2_init(Ewl_Tree2 *tree);
 
+void		 ewl_tree2_view_set(Ewl_Tree2 *t, Ewl_View *view);
+Ewl_View	*ewl_tree2_view_get(Ewl_Tree2 *t);
+
 void		 ewl_tree2_data_set(Ewl_Tree2 *m, void *data);
 void		*ewl_tree2_data_get(Ewl_Tree2 *m);
 
@@ -191,13 +192,7 @@ unsigned int	 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 void		 ewl_tree2_dirty_set(Ewl_Tree2 *tree2, unsigned int dirty);
 unsigned int	 ewl_tree2_dirty_get(Ewl_Tree2 *tree2);
 
-void		 ewl_tree2_scroll_visible_set(Ewl_Tree2 *tree, 
-						unsigned int visible);
-unsigned int	 ewl_tree2_scroll_visible_get(Ewl_Tree2 *tree);
-
-void		 ewl_tree2_scroll_headers_set(Ewl_Tree2 *tree,
-						unsigned int scroll);
-unsigned int	 ewl_tree2_scroll_headers_get(Ewl_Tree2 *tree);
+Ewl_Widget	*ewl_tree2_view_widget_get(Ewl_Tree2 *tree);
 
 /*
  * Internal stuff.
