@@ -657,7 +657,6 @@ CB_DlgSelect(Dialog * d, int val, void *data)
       return;
 
    DialogItemTableEmpty(table);
-   DialogButtonsDestroy(d, 1);
    DialogKeybindingsDestroy(d);
 
    DialogSetTitle(d, _(dd->title));

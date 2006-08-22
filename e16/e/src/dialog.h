@@ -44,8 +44,12 @@
 #define DLG_BUTTON_CLOSE   4
 
 /* Dialog footer flags */
-#define DLG_OAC 7
-#define DLG_OC  5
+#define DLG_OK             0x01
+#define DLG_APPLY          0x02
+#define DLG_CLOSE          0x04
+#define DLG_NO_SEPARATOR   0x10
+#define DLG_OC             (DLG_OK | DLG_CLOSE)
+#define DLG_OAC            (DLG_OK | DLG_APPLY | DLG_CLOSE)
 
 typedef struct _dialog Dialog;
 typedef struct _ditem DItem;
@@ -85,7 +89,6 @@ void                DialogRedraw(Dialog * d);
 void                DialogClose(Dialog * d);
 
 void                DialogArrange(Dialog * d, int resize);
-void                DialogButtonsDestroy(Dialog * d, int clean);
 void                DialogKeybindingsDestroy(Dialog * d);
 void                DialogItemTableEmpty(DItem * di);
 
@@ -94,10 +97,6 @@ void                DialogShowSimpleWithName(const DialogDef * dd,
 					     const char *name, void *data);
 void                DialogFill(Dialog * d, DItem * parent, const DialogDef * dd,
 			       void *data);
-
-void                DialogAddButton(Dialog * d, const char *text,
-				    DialogCallbackFunc * func, char doclose,
-				    int image);
 
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
@@ -150,6 +149,10 @@ void                DialogItemAreaSetInitFunc(DItem * di,
 					      DialogItemCallbackFunc * func);
 void                DialogItemAreaSetEventFunc(DItem * di,
 					       DialogItemCallbackFunc * func);
+
+DItem              *DialogItemAddButton(DItem * parent, const char *text,
+					DialogCallbackFunc * func, int val,
+					char doclose, int image);
 
 void                DialogCallbackClose(Dialog * d, int val, void *data);
 

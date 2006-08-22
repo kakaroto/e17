@@ -617,17 +617,16 @@ LogoutCB(Dialog * d, int val, void *data __UNUSED__)
 	/* 0:Halt 1:Reboot 2:LogOut -:No */
 	switch (val)
 	  {
-	  case 0:
-	     if (Conf.session.enable_reboot_halt)
-		SessionExit(EEXIT_EXEC, Conf.session.cmd_halt);
-	     else
-		SessionExit(EEXIT_EXIT, NULL);
+	  default:
 	     break;
 	  case 1:
-	     SessionExit(EEXIT_EXEC, Conf.session.cmd_reboot);
+	     SessionExit(EEXIT_EXIT, NULL);
 	     break;
 	  case 2:
-	     SessionExit(EEXIT_EXIT, NULL);
+	     SessionExit(EEXIT_EXEC, Conf.session.cmd_reboot);
+	     break;
+	  case 3:
+	     SessionExit(EEXIT_EXEC, Conf.session.cmd_halt);
 	     break;
 	  }
      }
@@ -639,27 +638,34 @@ static void
 SessionLogoutConfirm(void)
 {
    Dialog             *d;
+   DItem              *table, *di;
 
    d = DialogFind("LOGOUT_DIALOG");
    if (!d)
      {
 	SoundPlay("SOUND_LOGOUT");
 	d = DialogCreate("LOGOUT_DIALOG");
+	table = DialogInitItem(d);
 	DialogSetTitle(d, _("Are you sure?"));
-	DialogSetText(d, _("\n\n"
-			   "    Are you sure you wish to log out ?    \n"
-			   "\n\n"));
+	di = DialogAddItem(table, DITEM_TEXT);
+	DialogItemSetText(di, _("\n\n"
+				"    Are you sure you wish to log out ?    \n"
+				"\n\n"));
+	table = DialogAddItem(table, DITEM_TABLE);
+	DialogItemTableSetOptions(table, 2, 0, 1, 0);
 	if (Conf.session.enable_reboot_halt)
 	  {
-	     DialogAddButton(d, _("  Yes, Shut Down  "), LogoutCB, 1,
-			     DLG_BUTTON_OK);
-	     DialogAddButton(d, _("  Yes, Reboot  "), LogoutCB, 1,
-			     DLG_BUTTON_OK);
+	     DialogItemTableSetOptions(table, 4, 0, 1, 0);
+	     DialogItemAddButton(table, _("  Yes, Shut Down  "), LogoutCB, 3,
+				 1, DLG_BUTTON_OK);
+	     DialogItemAddButton(table, _("  Yes, Reboot  "), LogoutCB, 2,
+				 1, DLG_BUTTON_OK);
 	  }
-	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1, DLG_BUTTON_OK);
-	DialogAddButton(d, _("  No  "), NULL, 1, DLG_BUTTON_CANCEL);
-	DialogBindKey(d, "Escape", DialogCallbackClose, 1, NULL);
-	DialogBindKey(d, "Return", LogoutCB, 0, NULL);
+	DialogItemAddButton(table, _("  Yes, Log Out  "), LogoutCB, 1,
+			    1, DLG_BUTTON_OK);
+	DialogItemAddButton(table, _("  No  "), NULL, 0, 1, DLG_BUTTON_CANCEL);
+	DialogBindKey(d, "Escape", DialogCallbackClose, 0, NULL);
+	DialogBindKey(d, "Return", LogoutCB, 1, NULL);
      }
 
    DialogShowCentered(d);

@@ -311,7 +311,6 @@ _DlgFillAbout(Dialog * d, DItem * table, void *data __UNUSED__)
 	       "Kim Woelders - kim@woelders.dk\n"), e_wm_version, e_wm_date);
    DialogItemSetText(di, buf);
 
-   DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
    DialogBindKey(d, "Return", DialogCallbackClose, 0, NULL);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0, NULL);
 }
@@ -324,7 +323,7 @@ static const DialogDef DlgAbout = {
    NULL,
    NULL,
    _DlgFillAbout,
-   0, NULL,
+   DLG_OK | DLG_NO_SEPARATOR, DialogCallbackClose,
 };
 
 void

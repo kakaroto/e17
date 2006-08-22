@@ -131,14 +131,13 @@ struct _ditem
    EImageBorder        padding;
    char                fill_h;
    char                fill_v;
+   char                do_close;
    int                 align_h;
    int                 align_v;
    int                 row_span;
    int                 col_span;
 
    int                 x, y, w, h;
-   char                hilited;
-   char                clicked;
    Win                 win;
    char               *text;
    union
@@ -153,24 +152,12 @@ struct _ditem
    }
    item;
 
-   char                update;
    char                realized;
-};
+   char                update;
 
-typedef struct
-{
-   Dialog             *parent;
-   char               *text;
-   DialogCallbackFunc *func;
-   Win                 win;
-   int                 x, y, w, h;
    char                hilited;
    char                clicked;
-   char                close;
-   TextClass          *tclass;
-   ImageClass         *iclass;
-   int                 image;
-} DButton;
+};
 
 typedef struct
 {
@@ -185,12 +172,9 @@ struct _dialog
    EWin               *ewin;
    char               *name;
    char               *title;
-   char               *text;
-   int                 num_buttons;
    Win                 win;
    Pixmap              pmap;
    PmapMask            pmm_bg;
-   DButton           **button;
    TextClass          *tclass;
    ImageClass         *iclass;
    int                 w, h;
@@ -213,7 +197,6 @@ static int          FindADialog(void);
 
 static void         DialogHandleEvents(Win win, XEvent * ev, void *prm);
 static void         DItemHandleEvents(Win win, XEvent * ev, void *prm);
-static void         DButtonHandleEvents(Win win, XEvent * ev, void *prm);
 
 static void         MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 static void         DialogItemsRealize(Dialog * d);
@@ -288,33 +271,6 @@ DialogCreate(const char *name)
 }
 
 static void
-DialogButtonDestroy(DButton * db, int clean)
-{
-   if (db->text)
-      Efree(db->text);
-   if (db->iclass)
-      ImageclassDecRefcount(db->iclass);
-   if (db->tclass)
-      TextclassDecRefcount(db->tclass);
-   if (clean && db->win)
-      EDestroyWindow(db->win);
-   Efree(db);
-}
-
-void
-DialogButtonsDestroy(Dialog * d, int clean)
-{
-   int                 i;
-
-   for (i = 0; i < d->num_buttons; i++)
-      DialogButtonDestroy(d->button[i], clean);
-   if (d->button)
-      Efree(d->button);
-   d->button = NULL;
-   d->num_buttons = 0;
-}
-
-static void
 DialogDestroy(Dialog * d)
 {
    ecore_list_remove_node(dialog_list, d);
@@ -323,9 +279,6 @@ DialogDestroy(Dialog * d)
       Efree(d->name);
    if (d->title)
       Efree(d->title);
-   if (d->text)
-      Efree(d->text);
-   DialogButtonsDestroy(d, 0);
    DialogKeybindingsDestroy(d);
    if (d->item)
       DialogItemDestroy(d->item, 0);
@@ -351,25 +304,6 @@ Dialog             *
 DialogFind(const char *name)
 {
    return ecore_list_find(dialog_list, _DialogMatchName, name);
-}
-
-void
-DialogSetText(Dialog * d, const char *text)
-{
-   int                 w, h;
-   EImageBorder       *pad;
-
-   if (d->text)
-      Efree(d->text);
-   d->text = Estrdup(text);
-
-   if ((!d->tclass) || (!d->iclass))
-      return;
-
-   TextSize(d->tclass, 0, 0, STATE_NORMAL, text, &w, &h, 17);
-   pad = ImageclassGetPadding(d->iclass);
-   d->w = w + pad->left + pad->right;
-   d->h = h + pad->top + pad->bottom;
 }
 
 void
@@ -399,6 +333,7 @@ DialogGetData(Dialog * d)
    return d->data;
 }
 
+#if 0				/* FIXME - Merge/remove */
 void
 DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
 		char doclose, int image)
@@ -515,12 +450,26 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 		ST_WIDGET, db->tclass, NULL, db->text);
      }
 }
+#endif
+
+DItem              *
+DialogItemAddButton(DItem * parent, const char *text, DialogCallbackFunc * func,
+		    int val, char doclose, int image __UNUSED__)
+{
+   DItem              *di;
+
+   di = DialogAddItem(parent, DITEM_BUTTON);
+   DialogItemSetText(di, text);
+   DialogItemSetCallback(di, func, 0, NULL);
+   di->val = val;
+   di->do_close = doclose;
+
+   return di;
+}
 
 void
 DialogRedraw(Dialog * d)
 {
-   int                 i;
-
    if ((!d->tclass) || (!d->iclass))
       return;
 
@@ -545,24 +494,7 @@ DialogRedraw(Dialog * d)
 
    d->redraw = 1;
 
-   for (i = 0; i < d->num_buttons; i++)
-      DialogDrawButton(d, d->button[i]);
-
-   if (d->text)
-     {
-	EImageBorder       *pad;
-
-	pad = ImageclassGetPadding(d->iclass);
-	TextDraw(d->tclass, d->win, d->pmap, 0, 0, STATE_NORMAL, d->text,
-		 pad->left, pad->top, d->w - (pad->left + pad->right),
-		 d->h - (pad->top + pad->bottom),
-		 d->h - (pad->top + pad->bottom),
-		 TextclassGetJustification(d->tclass));
-     }
-   else if (d->item)
-     {
-	DialogDrawItems(d, d->item, 0, 0, 99999, 99999);
-     }
+   DialogDrawItems(d, d->item, 0, 0, 99999, 99999);
 }
 
 static void
@@ -604,9 +536,6 @@ DialogEwinInit(EWin * ewin, void *ptr)
 void
 DialogArrange(Dialog * d, int resize)
 {
-   int                 i, w, h, mw, mh;
-   EImageBorder       *pad;
-
    if (d->title)
      {
 	HintsSetWindowName(d->win, d->title);
@@ -615,43 +544,6 @@ DialogArrange(Dialog * d, int resize)
 
    if (d->item)
       DialogItemsRealize(d);
-
-   pad = ImageclassGetPadding(d->iclass);
-   w = d->w;
-   h = d->h;
-   mw = 0;
-   mh = 0;
-   for (i = 0; i < d->num_buttons; i++)
-     {
-	if (d->button[i]->w > mw)
-	   mw = d->button[i]->w;
-	if (d->button[i]->h > mh)
-	   mh = d->button[i]->h;
-     }
-   h += pad->top + pad->bottom + mh;
-
-   if ((pad->left + pad->right +
-	(d->num_buttons * (mw + pad->left + pad->right))) > w)
-      w = pad->left + pad->right +
-	 (d->num_buttons * (mw + pad->left + pad->right));
-
-   for (i = 0; i < d->num_buttons; i++)
-     {
-	d->button[i]->x =
-	   (((w - (pad->left + pad->right)) -
-	     (d->num_buttons * (mw + pad->left +
-				pad->right))) / 2) + pad->left +
-	   (i * (mw + pad->left + pad->right)) + pad->left;
-	d->button[i]->y = d->h - pad->bottom + pad->top;
-
-	d->button[i]->w = mw;
-	d->button[i]->h = mh;
-	EMoveResizeWindow(d->button[i]->win, d->button[i]->x,
-			  d->button[i]->y, d->button[i]->w, d->button[i]->h);
-     }
-   d->w = w;
-   d->h = h;
-   EResizeWindow(d->win, w, h);
 
    ICCCM_SetSizeConstraints(d->ewin, d->w, d->h, d->w, d->h, 0, 0, 1, 1,
 			    0.0, 65535.0);
@@ -968,30 +860,14 @@ DialogAddHeader(Dialog * d __UNUSED__, DItem * parent, const char *img,
    di = DialogAddItem(parent, DITEM_SEPARATOR);
 }
 
-/*
- * Hacky wrapper to get the dialog closed as needed
- * val = 0: Ok (apply, close)
- *       1: Apply
- *       2: Close
- */
-static void
-DialogCallbackWrapper(Dialog * d, int val, void *data)
-{
-   DialogCallbackFunc *cb = data;
-
-   cb(d, val, NULL);
-
-   if (val == 0)
-      DialogClose(d);
-}
-
 static void
 DialogAddFooter(Dialog * d, DItem * parent, int flags, DialogCallbackFunc * cb)
 {
    DItem              *table, *di;
    int                 n_buttons;
 
-   di = DialogAddItem(parent, DITEM_SEPARATOR);
+   if (!(flags & DLG_NO_SEPARATOR))
+      di = DialogAddItem(parent, DITEM_SEPARATOR);
 
    table = DialogAddItem(parent, DITEM_TABLE);
    DialogItemSetAlign(table, 512, 0);
@@ -999,26 +875,21 @@ DialogAddFooter(Dialog * d, DItem * parent, int flags, DialogCallbackFunc * cb)
 
    /* FIXME - The "real" dialog buttons are slightly different */
    n_buttons = 0;
-   if (flags & 4)
+   if (flags & 1)
      {
-	di = DialogAddItem(table, DITEM_BUTTON);
-	DialogItemSetText(di, _("OK"));
-	DialogItemSetCallback(di, DialogCallbackWrapper, 0, cb);
+	di = DialogItemAddButton(table, _("OK"), cb, 0, 1, DLG_BUTTON_OK);
 	n_buttons++;
      }
    if (flags & 2)
      {
-	di = DialogAddItem(table, DITEM_BUTTON);
-	DialogItemSetText(di, _("Apply"));
-	DialogItemSetCallback(di, DialogCallbackWrapper, 1, cb);
-	DialogBindKey(d, "Return", DialogCallbackWrapper, 1, cb);
+	di = DialogItemAddButton(table, _("Apply"), cb, 1, 0, DLG_BUTTON_APPLY);
+	DialogBindKey(d, "Return", cb, 1, NULL);
 	n_buttons++;
      }
-   if (flags & 1)
+   if (flags & 4)
      {
-	di = DialogAddItem(table, DITEM_BUTTON);
-	DialogItemSetText(di, _("Close"));
-	DialogItemSetCallback(di, DialogCallbackClose, 0, NULL);
+	di =
+	   DialogItemAddButton(table, _("Close"), NULL, 0, 1, DLG_BUTTON_CLOSE);
 	DialogBindKey(d, "Escape", DialogCallbackClose, 0, NULL);
 	n_buttons++;
      }
@@ -2265,14 +2136,23 @@ void
 DialogOKstr(const char *title, const char *txt)
 {
    Dialog             *d;
+   DItem              *table, *di;
 
    d = DialogCreate("DIALOG");
-   DialogSetTitle(d, title);
-   DialogSetText(d, txt);
 
-   DialogAddButton(d, _("OK"), NULL, 1, DLG_BUTTON_OK);
+   table = DialogInitItem(d);
+   DialogSetTitle(d, title);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetText(di, txt);
+
+   di = DialogItemAddButton(table, _("OK"), DialogCallbackClose, 0, 1,
+			    DLG_BUTTON_OK);
+   DialogItemSetFill(di, 0, 0);
+
    DialogBindKey(d, "Return", DialogCallbackClose, 0, NULL);
    DialogBindKey(d, "Escape", DialogCallbackClose, 0, NULL);
+
    DialogShow(d);
 }
 
@@ -2504,8 +2384,6 @@ DItemEventMouseUp(Win win, DItem * di, XEvent * ev)
    if (ev->xbutton.window != Mode.events.last_bpress)
       return;
 
-   di->clicked = 0;
-
    switch (di->type)
      {
      case DITEM_AREA:
@@ -2539,10 +2417,18 @@ DItemEventMouseUp(Win win, DItem * di, XEvent * ev)
 	break;
      }
 
-   DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
+   if (di->hilited && di->clicked)
+     {
+	if (di->func)
+	   di->func(di->dlg, di->val, di->data);
 
-   if (di->func)
-      di->func(di->dlg, di->val, di->data);
+	if (di->do_close)
+	   di->dlg->close = 1;
+     }
+
+   di->clicked = 0;
+
+   DialogDrawItems(di->dlg, di, di->x, di->y, di->w, di->h);
 }
 
 static void
@@ -2614,57 +2500,6 @@ DItemHandleEvents(Win win, XEvent * ev, void *prm)
 
    if (di->dlg->close)
       _DialogClose(di->dlg);
-}
-
-static void
-DButtonHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
-{
-   DButton            *db = (DButton *) prm;
-   Dialog             *d;
-   int                 doact = 0;
-
-   d = db->parent;
-
-   switch (ev->type)
-     {
-     case ButtonPress:
-	db->clicked = 1;
-	break;
-     case ButtonRelease:
-	if (db->hilited && db->clicked)
-	   doact = 1;
-	db->clicked = 0;
-	break;
-     case EnterNotify:
-	db->hilited = 1;
-	break;
-     case LeaveNotify:
-	db->hilited = 0;
-	break;
-     default:
-	return;
-     }
-
-   DialogDrawButton(d, db);
-
-   if (doact)
-     {
-	if (db->func)
-	  {
-	     int                 i;
-
-	     for (i = 0; i < d->num_buttons; i++)
-		if (d->button[i] == db)
-		   break;
-	     db->func(d, i, NULL);
-	  }
-
-	if (db->close)
-	   DialogClose(d);
-     }
-
-   if (d->close)
-      _DialogClose(d);
 }
 
 /*
