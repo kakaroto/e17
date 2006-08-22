@@ -2,21 +2,18 @@
 #include "config.h"
 #include "parse.h"
 #include "menus.h"
+#include "e_fdo_menu_to_order.h"
 
 //#define DEBUG 1
 
 extern int menu_count, item_count;
 extern double generate_time;
 
-static int _menu_make_apps(const void *data, Ecore_Desktop_Tree * tree, int element, int level);
-static void _menu_dump_each_hash_node(void *value, void *user_data);
 
 void
 make_menus()
 {
    char *d;
-   char *menu = "applications.menu";
-   char *menu_file;
    double begin;
 
    d = get_desktop_dir();
@@ -46,28 +43,7 @@ make_menus()
 	   }
 
         printf("Converting freedesktop.org (fdo) menus.\n");
-        /* Find the main menu file. */
-        menu_file = ecore_desktop_paths_file_find(ecore_desktop_paths_menus, menu, -1, NULL, NULL);
-        if (menu_file)
-          {
-             char *path;
-
-             path = ecore_file_get_dir(menu_file);
-             if (path)
-               {
-                  Ecore_Desktop_Tree *menus = NULL;
-
-                  /* convert the xml into menus */
-                  menus = ecore_desktop_menu_get(menu_file);
-                  if (menus)
-                    {
-                       /* create the .eap and order files from the menu */
-                       ecore_desktop_tree_foreach(menus, 0, _menu_make_apps, path);
-                    }
-               }
-             if (path) free(path);
-          }
-
+	e_fdo_menu_to_order();
      }
 
    if (d)
@@ -146,44 +122,4 @@ check_for_files(char *dir)
       ecore_list_destroy(files);
    if (file)
       free(file);
-}
-
-static int
-_menu_make_apps(const void *data, Ecore_Desktop_Tree * tree, int element, int level)
-{
-   if (tree->elements[element].type == ECORE_DESKTOP_TREE_ELEMENT_TYPE_STRING)
-     {
-        if (strncmp((char *)tree->elements[element].element, "<MENU ", 6) == 0)
-          {
-             char *name, *path;
-             Ecore_Hash *pool, *apps;
-
-             name = (char *)tree->elements[element].element;
-             path = (char *)tree->elements[element + 1].element;
-             pool = (Ecore_Hash *) tree->elements[element + 2].element;
-             apps = (Ecore_Hash *) tree->elements[element + 4].element;
-#ifdef DEBUG
-             printf("MAKING MENU - %s \t\t%s\n", path, name);
-#endif
-             menu_count++;
-             ecore_hash_for_each_node(apps, _menu_dump_each_hash_node, &path[11]);
-          }
-     }
-   return 0;
-}
-
-static void
-_menu_dump_each_hash_node(void *value, void *user_data)
-{
-   Ecore_Hash_Node *node;
-   char *file, *path;
-
-   path = (char *)user_data;
-   node = (Ecore_Hash_Node *) value;
-   file = (char *)node->value;
-#ifdef DEBUG
-   printf("MAKING EAP %s -> %s\n", path, file);
-#endif
-   item_count++;
-   parse_desktop_file(strdup(file), path);
 }
