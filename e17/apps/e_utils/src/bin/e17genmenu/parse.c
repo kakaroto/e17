@@ -272,32 +272,32 @@ parse_debian_file(char *file)
         length = strlen(buffer);
         if (buffer[length - 1] == '\n')
            buffer[length - 1] = '\0';
-        if (strstr(buffer, "title"))
+        if (strstr(buffer, "title="))
           {
              name = _parse_buffer(buffer, "title=");
-             eap->name = strdup(name);
+             eap->name = (name == NULL ? NULL : strdup(name));
           }
-        if (strstr(buffer, "longtitle"))
+        if (strstr(buffer, "longtitle="))
           {
              generic = _parse_buffer(buffer, "longtitle=");
-             eap->generic = strdup(generic);
+             eap->generic = (generic == NULL ? NULL : strdup(generic));
           }
-        if (strstr(buffer, "description"))
+        if (strstr(buffer, "description="))
           {
              comment = _parse_buffer(buffer, "description=");
-             eap->comment = strdup(comment);
+             eap->comment = (comment == NULL ? NULL : strdup(comment));
           }
-        if (strstr(buffer, "section"))
+        if (strstr(buffer, "section="))
           {
              category = _parse_buffer(buffer, "section=");
-             eap->categories = strdup(category);
+             eap->categories = (category == NULL ? NULL : strdup(category));
           }
-        if (strstr(buffer, "command"))
+        if (strstr(buffer, "command="))
           {
              exec = _parse_buffer(buffer, "command=");
-             eap->exec = strdup(exec);
+             eap->exec = (exec == NULL ? NULL : strdup(exec));
           }
-        if (strstr(buffer, "icon"))
+        if (strstr(buffer, "icon="))
           {
              icon = _parse_buffer(buffer, "icon128x128");
              if (!icon) icon = _parse_buffer(buffer, "icon96x96");
