@@ -438,6 +438,8 @@ ewl_tree2_dirty_set(Ewl_Tree2 *tree2, unsigned int dirty)
 
 	tree2->dirty = !!dirty;
 
+	ewl_widget_configure(EWL_WIDGET(tree2));
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
