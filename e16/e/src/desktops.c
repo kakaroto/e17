@@ -2492,10 +2492,10 @@ CB_ConfigureAreas(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	  {
 	     if (tmp_edge_resist < 1)
 		tmp_edge_resist = 1;
-	     Conf.edge_flip_resistance = tmp_edge_resist;
+	     Conf.desks.edge_flip_resistance = tmp_edge_resist;
 	  }
 	else
-	   Conf.edge_flip_resistance = 0;
+	   Conf.desks.edge_flip_resistance = 0;
 	EdgeWindowsShow();
      }
    autosave();
@@ -2573,7 +2573,7 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    char                s[64];
 
    tmp_area_wraparound = Conf.desks.areas_wraparound;
-   tmp_edge_resist = Conf.edge_flip_resistance;
+   tmp_edge_resist = Conf.desks.edge_flip_resistance;
    if (tmp_edge_resist == 0)
       tmp_edge_flip = 0;
    else
@@ -2927,6 +2927,7 @@ static const CfgItem DesksCfgItems[] = {
    CFG_FUNC_INT(Conf.desks, areas_nx, 2, AreasCfgFuncSizeX),
    CFG_FUNC_INT(Conf.desks, areas_ny, 1, AreasCfgFuncSizeY),
    CFG_ITEM_BOOL(Conf.desks, areas_wraparound, 0),
+   CFG_ITEM_INT(Conf.desks, edge_flip_resistance, 25),
 };
 #define N_CFG_ITEMS (sizeof(DesksCfgItems)/sizeof(CfgItem))
 

@@ -207,14 +207,14 @@ CB_ConfigurePlacement(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.place.slidespeedmap = tmp_map_slide_speed;
 	Conf.place.slidespeedcleanup = tmp_cleanup_slide_speed;
 
-	Conf.animate_shading = tmp_animate_shading;
-	Conf.shadespeed = tmp_shade_speed;
+	Conf.shading.animate = tmp_animate_shading;
+	Conf.shading.speed = tmp_shade_speed;
 
 	Conf.place.ignore_struts = tmp_place_ignore_struts;
 	Conf.place.raise_fullscreen = tmp_raise_fullscreen;
 #ifdef HAS_XINERAMA
 	if (Mode.display.xinerama_active)
-	   Conf.extra_head = tmp_extra_head;
+	   Conf.place.extra_head = tmp_extra_head;
 #endif
      }
    autosave();
@@ -237,14 +237,14 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    tmp_map_slide_speed = Conf.place.slidespeedmap;
    tmp_cleanup_slide_speed = Conf.place.slidespeedcleanup;
 
-   tmp_animate_shading = Conf.animate_shading;
-   tmp_shade_speed = Conf.shadespeed;
+   tmp_animate_shading = Conf.shading.animate;
+   tmp_shade_speed = Conf.shading.speed;
 
    tmp_place_ignore_struts = Conf.place.ignore_struts;
    tmp_raise_fullscreen = Conf.place.raise_fullscreen;
 
 #ifdef HAS_XINERAMA
-   tmp_extra_head = Conf.extra_head;
+   tmp_extra_head = Conf.place.extra_head;
 #endif
 
    DialogItemTableSetOptions(table, 2, 0, 1, 0);
@@ -368,7 +368,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Raise fullscreen windows"));
    DialogItemCheckButtonSetPtr(di, &tmp_raise_fullscreen);
 
-#ifdef HAS_XINERAMA
+#ifdef HAS_XINERAMA_no		/* Not implemented */
    if (Mode.display.xinerama_active)
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);

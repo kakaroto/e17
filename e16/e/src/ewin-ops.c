@@ -963,7 +963,7 @@ EwinShade(EWin * ewin)
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
       return;
 
-   speed = Conf.shadespeed;
+   speed = Conf.shading.speed;
 
    x = EoGetX(ewin);
    y = EoGetY(ewin);
@@ -983,7 +983,7 @@ EwinShade(EWin * ewin)
 	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &b, &c);
 	a = w;
-	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
+	if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
@@ -1015,7 +1015,7 @@ EwinShade(EWin * ewin)
 	EwinBorderMinShadeSize(ewin, &b, &c);
 	a = w;
 	c = x + w;
-	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
+	if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
@@ -1047,7 +1047,7 @@ EwinShade(EWin * ewin)
 	EChangeWindowAttributes(EwinGetClientWin(ewin), CWWinGravity, &att);
 	EwinBorderMinShadeSize(ewin, &c, &b);
 	a = h;
-	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
+	if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
@@ -1079,7 +1079,7 @@ EwinShade(EWin * ewin)
 	EwinBorderMinShadeSize(ewin, &c, &b);
 	a = h;
 	c = y + h;
-	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
+	if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
@@ -1137,7 +1137,7 @@ EwinUnShade(EWin * ewin)
    if (!ewin->state.shaded || ewin->state.iconified)
       return;
 
-   speed = Conf.shadespeed;
+   speed = Conf.shading.speed;
 
    x = EoGetX(ewin);
    y = EoGetY(ewin);
@@ -1166,7 +1166,7 @@ EwinUnShade(EWin * ewin)
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(EwinGetClientWin(ewin));
 	EMapWindow(ewin->win_container);
-	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
+	if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
@@ -1204,7 +1204,7 @@ EwinUnShade(EWin * ewin)
 			  ewin->client.h);
 	EMapWindow(EwinGetClientWin(ewin));
 	EMapWindow(ewin->win_container);
-	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
+	if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
@@ -1242,7 +1242,7 @@ EwinUnShade(EWin * ewin)
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(EwinGetClientWin(ewin));
 	EMapWindow(ewin->win_container);
-	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
+	if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)
@@ -1280,7 +1280,7 @@ EwinUnShade(EWin * ewin)
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(EwinGetClientWin(ewin));
 	EMapWindow(ewin->win_container);
-	if ((Conf.animate_shading) || (ewin->type == EWIN_TYPE_MENU))
+	if ((Conf.shading.animate) || (ewin->type == EWIN_TYPE_MENU))
 	  {
 	     ETimedLoopInit(0, 1024, speed);
 	     for (k = 0; k < 1024;)

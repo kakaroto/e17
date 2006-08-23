@@ -108,6 +108,8 @@ MiscSighan(int sig, void *prm __UNUSED__)
 
 static const CfgItem MiscCfgItems[] = {
 
+   CFG_ITEM_INT(Conf, buttons.move_resistance, 10),
+
    CFG_ITEM_BOOL(Conf, dialogs.headers, 0),
    CFG_ITEM_BOOL(Conf, dialogs.button_image, 0),
 
@@ -145,6 +147,9 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_STR(Conf, session.cmd_reboot),
    CFG_ITEM_STR(Conf, session.cmd_halt),
 
+   CFG_ITEM_BOOL(Conf, shading.animate, 1),
+   CFG_ITEM_INT(Conf, shading.speed, 8000),
+
    CFG_ITEM_BOOL(Conf, snap.enable, 1),
    CFG_ITEM_INT(Conf, snap.edge_snap_dist, 8),
    CFG_ITEM_INT(Conf, snap.screen_snap_dist, 32),
@@ -158,14 +163,9 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, testing.argb_clients_inherit_attr, 0),
    CFG_ITEM_BOOL(Conf, testing.use_sync, 1),
 
-   CFG_ITEM_INT(Conf, deskmode, MODE_NONE),
-   CFG_ITEM_BOOL(Conf, animate_shading, 1),
-   CFG_ITEM_INT(Conf, shadespeed, 8000),
-   CFG_ITEM_INT(Conf, button_move_resistance, 5),
    CFG_ITEM_BOOL(Conf, autosave, 1),
    CFG_ITEM_BOOL(Conf, memory_paranoia, 1),
    CFG_ITEM_BOOL(Conf, save_under, 0),
-   CFG_ITEM_INT(Conf, edge_flip_resistance, 25),
 };
 #define N_CFG_ITEMS ((int)(sizeof(MiscCfgItems)/sizeof(CfgItem)))
 

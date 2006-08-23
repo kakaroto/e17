@@ -1555,7 +1555,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 
 	     /* Disable menu item events while sliding */
 	     MenusSetEvents(0);
-	     SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shadespeed);
+	     SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shading.speed);
 	     MenusSetEvents(1);
 
 	     if (Conf.menus.warp)

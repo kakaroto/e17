@@ -251,6 +251,10 @@ typedef struct
    } backgrounds;
    struct
    {
+      int                 move_resistance;
+   } buttons;
+   struct
+   {
       unsigned int        num;
       int                 dragdir;
       int                 dragbar_width;
@@ -262,6 +266,7 @@ typedef struct
       int                 areas_nx;
       int                 areas_ny;
       char                areas_wraparound;
+      int                 edge_flip_resistance;
    } desks;
    struct
    {
@@ -329,6 +334,9 @@ typedef struct
       int                 slidespeedcleanup;
       char                ignore_struts;
       char                raise_fullscreen;
+#ifdef HAS_XINERAMA
+      char                extra_head;	/* Not used */
+#endif
    } place;
    struct
    {
@@ -339,6 +347,11 @@ typedef struct
       char               *cmd_reboot;
       char               *cmd_halt;
    } session;
+   struct
+   {
+      char                animate;
+      int                 speed;
+   } shading;
    struct
    {
       char                enable;
@@ -383,6 +396,7 @@ typedef struct
       char                warp_on_select;
       int                 icon_mode;
    } warplist;
+
    struct
    {
       char                argb_internal_objects;
@@ -391,19 +405,10 @@ typedef struct
       char                argb_clients_inherit_attr;
       char                use_sync;
    } testing;
-   int                 deskmode;
-   char                animate_shading;
-   int                 shadespeed;
-   int                 button_move_resistance;
+
    char                autosave;
    char                memory_paranoia;
    char                save_under;
-   int                 edge_flip_resistance;
-
-   /* Not used */
-#ifdef HAS_XINERAMA
-   char                extra_head;	/* Not used */
-#endif
 }
 EConf;
 

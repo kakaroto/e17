@@ -69,7 +69,6 @@ ScreenInit(void)
       return;
 
    Mode.display.xinerama_active = XineramaIsActive(disp);
-   Conf.extra_head = 0;
    if (Mode.display.xinerama_active)
       screens = XineramaQueryScreens(disp, &num_screens);
 

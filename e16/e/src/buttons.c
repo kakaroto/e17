@@ -584,8 +584,8 @@ ButtonEventMotion(Button * b, XEvent * ev __UNUSED__)
 	   x = -x;
 	if (y < 0)
 	   y = -y;
-	if ((x > Conf.button_move_resistance) ||
-	    (y > Conf.button_move_resistance))
+	if ((x > Conf.buttons.move_resistance) ||
+	    (y > Conf.buttons.move_resistance))
 	   Mode_buttons.move_pending = 0;
 	Mode_buttons.action_inhibit = 1;
      }
