@@ -102,6 +102,57 @@ AC_PATH_EFL(
    ]
 )
 
+#check for ECORE
+AC_PATH_EFL(
+   ecore,
+   0.1.0.001,
+   [
+     AC_DEFINE(HAVE_ECORE, 1, have ECORE)
+     ecore="ECORE "
+     AM_CONDITIONAL(HAVE_ECORE, true)
+     have_ecore="yes"
+     ecore_libs=`ecore-config --libs`
+     ecore_cflags=`ecore-config --cflags`     
+   ],
+   [
+     AC_MSG_ERROR([No Ecore, can't build!])
+   ]
+)
+
+#check for EVAS
+AC_PATH_EFL(
+   evas,
+   0.1.0.001,
+   [
+     AC_DEFINE(HAVE_EVAS, 1, have EVAS)
+     evas="EVAS "
+     AM_CONDITIONAL(HAVE_EVAS, true)
+     have_evas="yes"
+     evas_libs=`evas-config --libs`
+     evas_cflags=`evas-config --cflags`     
+   ],
+   [
+     AC_MSG_ERROR([No Evas, can't build!])
+   ]
+)
+
+#check for EDJE
+AC_PATH_EFL(
+   edje,
+   0.1.0.001,
+   [
+     AC_DEFINE(HAVE_EDJE, 1, have EDJE)
+     edje="EDJE "
+     AM_CONDITIONAL(HAVE_EDJE, true)
+     have_edje="yes"
+     edje_libs=`edje-config --libs`
+     edje_cflags=`edje-config --cflags`     
+   ],
+   [
+     AC_MSG_ERROR([No Edje, can't build!])
+   ]
+)
+
 #check for ETK
 AC_PATH_EFL(
    etk,
@@ -123,11 +174,18 @@ AC_SUBST(entrance_edit_libs)
 AC_SUBST(entrance_edit_cflags)
 AC_SUBST(etk_libs)
 AC_SUBST(etk_cflags)
+AC_SUBST(ecore_libs)
+AC_SUBST(ecore_cflags)
+AC_SUBST(evas_libs)
+AC_SUBST(evas_cflags)
+AC_SUBST(edje_libs)
+AC_SUBST(edje_cflags)
 
 AC_OUTPUT([
 			 Makefile \
 			 src/Makefile \
 			 src/widgets/Makefile \
+			 src/smarts/Makefile \
 			 src/gui/Makefile \
 			 \
 			 data/Makefile \

@@ -21,5 +21,4 @@ egui_background_dialog_show()
 	};
 
 	egui_gs_dialog_show(background_egs);
-
 }

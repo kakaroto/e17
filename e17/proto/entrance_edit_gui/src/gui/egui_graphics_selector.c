@@ -1,9 +1,16 @@
 #include <limits.h>
+#include <Evas.h>
 #include <Ecore_File.h>
 #include <Ecore_Data.h>
 #include <Entrance_Edit.h>
 #include <Entrance_Widgets.h>
+#include <Entrance_Smart.h>
 #include "Egui.h"
+
+#define PREVIEW_WIDTH 320
+#define PREVIEW_HEIGHT 240
+#define PREVIEW_V_WIDTH 1024
+#define PREVIEW_V_HEIGHT 768
 
 static void _gs_cb_selected(void);
 static void _gs_cb_ok(void *, void *);
@@ -18,7 +25,7 @@ static char* _gs_populate_list(void);
 static void _gs_load_preview(const char *);
 
 static Entrance_Dialog win;
-static Entrance_Widget img_preview;
+static Entrance_Preview img_preview;
 static Entrance_Widget pointer_preview;
 static Entrance_List list_thumbs;
 static Entrance_Entry browse_entry;
@@ -41,16 +48,14 @@ egui_gs_dialog_show(Egui_Graphics_Selector _egs)
 
    group_preview = ew_dialog_group_add(win, _("Preview"), EW_GROUP_VERTICAL);
 
-   img_preview = ew_image_new(320, 240);
+   img_preview = ew_preview_new(PREVIEW_WIDTH, PREVIEW_HEIGHT);
    ew_group_add(group_preview, img_preview);
 
    group_graphics = ew_dialog_group_add(win, egs.list_title, EW_GROUP_VERTICAL);
 
-   list_thumbs = ew_textlist_new(NULL, 320, 140, 20, 90);
+   list_thumbs = ew_textlist_new(NULL, PREVIEW_WIDTH, 140, 20, 90);
    
-   char *first = _gs_populate_list();
-   _gs_load_preview(first);
-   
+      
    ew_group_add(group_graphics, list_thumbs);
 
    char t[PATH_MAX];
@@ -79,6 +84,10 @@ egui_gs_dialog_show(Egui_Graphics_Selector _egs)
    ew_dialog_ok_button_add(win, _gs_cb_ok, NULL);
    
    ew_dialog_show(win);
+
+
+   char *first = _gs_populate_list();
+	_gs_load_preview(first);
 }
 
 static void
@@ -191,7 +200,21 @@ static void
 _gs_load_preview(const char *graphic)
 {
    char *file = _gs_get_path(graphic);
-   ew_image_edje_load(img_preview, file, egs.preview_edje_part);
+   Evas *evas = ew_preview_evas_get(img_preview, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
+
+   /*TODO: currently, i'm just grabbing *file and displaying blindly, which mean, I won't be able to 
+	* preview different background and themes, the below commented code should be filled out to
+	* pick up the most recently selected combo of bg and theme, and use that instead*/
+
+   /*char *bg_path = _gs_get_bg_path();
+   char *theme_path = _gs_get_theme_path();*/
+
+   Evas_Object *es  = es_new(evas);
+   es_background_edje_set(es, file);
+   es_main_edje_set(es, file);
+   evas_object_resize(es, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
+   evas_object_show(es);
+
    free(file);
    /*FIXME: selecting the first row doesn't work - maybe we select first row while adding elements to the list:(*/
    /*ew_list_first_row_select(list_thumbs);*/

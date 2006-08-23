@@ -17,6 +17,8 @@ libentrance_widgets_la_HEADERS = \
 	\
 	ew_messagebox.h \
 	\
+	ew_preview.h\
+	\
 	ew_image.h \
 	ew_label.h \
 	ew_entry.h \
@@ -38,6 +40,7 @@ libentrance_widgets_la_SOURCES = \
 	ew_image.c \
 	ew_notice.c \
 	ew_messagebox.c \
+	ew_preview.c \
 	ew_label.c \
 	ew_entry.c \
 	ew_button.c \
@@ -46,5 +49,10 @@ libentrance_widgets_la_SOURCES = \
 	ew_checkbox.c \
 	$(libentrance_widgets_la_HEADERS)
 	
-libentrance_widgets_la_LIBADD  = @etk_libs@
-libentrance_widgets_la_CFLAGS = @etk_cflags@
+libentrance_widgets_la_LIBADD  = \
+	@evas_libs@  @etk_libs@
+
+libentrance_widgets_la_CFLAGS = \
+	-I$(top_srcdir)/src/smarts \
+	-I$(top_srcdir)/src/widgets \
+	@evas_cflags@ @etk_cflags@

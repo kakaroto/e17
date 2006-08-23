@@ -1,5 +1,6 @@
 #include <Entrance_Widgets.h>
 #include <Entrance_Edit.h>
+#include <Entrance_Smart.h>
 #include "Egui.h"
 #include "config.h"
 
@@ -15,6 +16,7 @@ main(int argc, char **argv)
    ecore_init();
    entrance_edit_init(NULL);
    ew_init(&argc, &argv);
+   entrance_smart_init();
    
    _main_dialog_show();
    

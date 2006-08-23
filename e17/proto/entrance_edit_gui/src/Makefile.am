@@ -1,2 +1,2 @@
 MAINTAINERCLEANFILES= Makefile.in
-SUBDIRS = widgets gui
+SUBDIRS = widgets smarts gui
