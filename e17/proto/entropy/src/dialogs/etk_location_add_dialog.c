@@ -219,7 +219,7 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
 	      etk_object_data_set(ETK_OBJECT(button), "uri", key);
 	      etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_location_radio_cb), dialog );
 
-		etk_box_pack_start(ETK_BOX(dialog->vbox1), button, ETK_TRUE, ETK_TRUE, 10);
+		etk_box_append(ETK_BOX(dialog->vbox1), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 10);
 	}
 	ecore_list_destroy(filesystems);
 
@@ -291,15 +291,15 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
 	
 
 	dialog_button = etk_button_new_with_label("Next >");
-	etk_box_pack_start(ETK_BOX(hbox), dialog_button, ETK_FALSE, ETK_FALSE, 5);
+	etk_box_append(ETK_BOX(hbox), dialog_button, ETK_BOX_START, ETK_BOX_NONE, 5);
 	etk_signal_connect("clicked", ETK_OBJECT(dialog_button), ETK_CALLBACK(_location_add_next_cb), dialog);
 
 	dialog_button = etk_button_new_with_label("Cancel");
 	etk_signal_connect("clicked", ETK_OBJECT(dialog_button), ETK_CALLBACK(_entropy_etk_location_cancel_cb), dialog);
-	etk_box_pack_start(ETK_BOX(hbox), dialog_button, ETK_FALSE, ETK_FALSE, 5);
+	etk_box_append(ETK_BOX(hbox), dialog_button, ETK_FALSE, ETK_FALSE, 5);
 	
 
-	etk_box_pack_start(ETK_BOX(outer_vbox), hbox, ETK_FALSE, ETK_FALSE, 5);
+	etk_box_append(ETK_BOX(outer_vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 5);
 	
 	etk_widget_show_all(dialog->window);
 }
