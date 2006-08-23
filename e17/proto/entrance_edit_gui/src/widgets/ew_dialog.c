@@ -2,27 +2,12 @@
 #include "Entrance_Widgets.h"
 
 static void _ew_cb_destroy(void *);
-static void _ew_dialog_add_bottom(Entrance_Dialog d, Entrance_Widget ew);
+static void _ew_dialog_add_bottom(Entrance_Widget d, Entrance_Widget ew);
 
-Entrance_Dialog 
-_ew_dialog_new()
-{
-	Entrance_Dialog ed = calloc(1, sizeof(*ed));
-	if(ed)
-	{
-		ed->owner = NULL;
-		ed->box = NULL;
-		ed->hbox = NULL;
-		ed->extra = NULL;
-	}
-
-	return ed;
-}
-
-Entrance_Dialog 
+Entrance_Widget 
 ew_dialog_new(const char *title, int toplevel)
 {
-	Entrance_Dialog ew = _ew_dialog_new();
+	Entrance_Widget ew = ew_new();
 	if(!ew) 
 	{
 		return NULL;
@@ -42,7 +27,7 @@ ew_dialog_new(const char *title, int toplevel)
 }
 
 void 
-ew_dialog_show(Entrance_Dialog ew)
+ew_dialog_show(Entrance_Widget ew)
 {
 	etk_dialog_pack_in_main_area(ETK_DIALOG(ew->owner), ew->box, ETK_TRUE, ETK_TRUE, 
 			0, ETK_FALSE);
@@ -52,7 +37,7 @@ ew_dialog_show(Entrance_Dialog ew)
 
 
 Entrance_Widget
-ew_dialog_group_add(Entrance_Dialog d, const char *title, int direction)
+ew_dialog_group_add(Entrance_Widget d, const char *title, int direction)
 {
 	Entrance_Widget ew = ew_group_new(title, direction);
 	if(!ew) 
@@ -66,7 +51,7 @@ ew_dialog_group_add(Entrance_Dialog d, const char *title, int direction)
 }
 
 /*void 
-ew_dialog_add(Entrance_Dialog d, Entrance_Widget ew)
+ew_dialog_add(Entrance_Widget d, Entrance_Widget ew)
 {
 	if(d && ew)
 		etk_box_append(ETK_BOX(d->box), ew->box, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
@@ -74,7 +59,7 @@ ew_dialog_add(Entrance_Dialog d, Entrance_Widget ew)
 
 
 void
-ew_dialog_button_add(Entrance_Dialog ew, const char *title, void (*func)(void*, void*), void *data)
+ew_dialog_button_add(Entrance_Widget ew, const char *title, void (*func)(void*, void*), void *data)
 {
 	/*TODO: poke all buttons into an ecore_list*/
 	Entrance_Widget button = ew_button_new(title, func, data);
@@ -83,25 +68,25 @@ ew_dialog_button_add(Entrance_Dialog ew, const char *title, void (*func)(void*, 
 
 
 void 
-ew_dialog_close_button_add(Entrance_Dialog ew, void (*func)(void *, void*), void *data)
+ew_dialog_close_button_add(Entrance_Widget ew, void (*func)(void *, void*), void *data)
 {
 	ew_dialog_button_add(ew, _("Close"), func, data);
 }
 
 void 
-ew_dialog_apply_button_add(Entrance_Dialog ew, void (*func)(void *, void*), void *data)
+ew_dialog_apply_button_add(Entrance_Widget ew, void (*func)(void *, void*), void *data)
 {
 	ew_dialog_button_add(ew, _("Apply"), func, data);
 }
 
 void 
-ew_dialog_ok_button_add(Entrance_Dialog ew, void (*func)(void *, void*), void *data)
+ew_dialog_ok_button_add(Entrance_Widget ew, void (*func)(void *, void*), void *data)
 {
 	ew_dialog_button_add(ew, _("Ok"), func, data);
 }
 
 void
-ew_dialog_destroy(Entrance_Dialog ew)
+ew_dialog_destroy(Entrance_Widget ew)
 {
 	etk_object_destroy(ETK_OBJECT(ew->owner));
 }
@@ -114,7 +99,7 @@ _ew_cb_destroy(void *data)
 }
 
 static void
-_ew_dialog_add_bottom(Entrance_Dialog d, Entrance_Widget ew)
+_ew_dialog_add_bottom(Entrance_Widget d, Entrance_Widget ew)
 {
 	if(d && ew)
 		etk_dialog_pack_widget_in_action_area(ETK_DIALOG(d->owner), ETK_WIDGET(ew->owner), ETK_TRUE, ETK_TRUE, 10, ETK_TRUE);

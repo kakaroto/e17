@@ -1,26 +1,10 @@
 #include <Etk.h>
 #include <Entrance_Widgets.h>
 
-
-Entrance_Entry
-_ew_entry_new(void)
-{
-	Entrance_Entry ee = calloc(1, sizeof(*ee));
-	if(ee)
-	{
-		ee->owner = NULL;
-		ee->box = NULL;
-		ee->label = NULL;
-		ee->control = NULL;
-	}
-
-	return ee;
-}
-
-Entrance_Entry
+Entrance_Widget
 ew_entry_new(const char *label, const char *text, int ispassword)
 {
-	Entrance_Entry ew = _ew_entry_new();
+	Entrance_Widget ew = ew_new();
 	if(!ew)
 	{
 		return NULL;
@@ -48,27 +32,27 @@ ew_entry_new(const char *label, const char *text, int ispassword)
 }
 
 const char*
-ew_entry_get(Entrance_Entry ew)
+ew_entry_get(Entrance_Widget ew)
 {
 	return etk_entry_text_get(ETK_ENTRY(ew->control));
 }
 
 void
-ew_entry_set(Entrance_Entry ew, const char *text)
+ew_entry_set(Entrance_Widget ew, const char *text)
 {
 	if(ew)
 		etk_entry_text_set(ETK_ENTRY(ew->control), text);
 }
 
 void
-ew_entry_password_set(Entrance_Entry ew)
+ew_entry_password_set(Entrance_Widget ew)
 {
 	if(ew)
 		etk_entry_password_mode_set(ETK_ENTRY(ew->control), ETK_TRUE);
 }
 
 void 
-ew_entry_password_clear(Entrance_Entry ew)
+ew_entry_password_clear(Entrance_Widget ew)
 {
 	if(ew)
 		etk_entry_password_mode_set(ETK_ENTRY(ew->control),  ETK_FALSE);

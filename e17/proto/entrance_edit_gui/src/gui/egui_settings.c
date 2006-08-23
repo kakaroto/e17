@@ -28,7 +28,7 @@ static void _save_list(void *w, const char *key, int ktype);
 
 static Entrance_Widget _item_build(Egui_Settings_Item);
 
-static Entrance_Dialog win;
+static Entrance_Widget win;
 static Ecore_List *items;
 
 

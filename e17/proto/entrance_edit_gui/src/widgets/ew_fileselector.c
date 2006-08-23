@@ -1,9 +1,9 @@
 #include "Entrance_Widgets.h"
 
-Entrance_Dialog
+Entrance_Widget
 ew_fileselector_new(const char *title, const char *directory, int multiple, int showdot,
 			void (*response)(void *, int, void *), void *data) {
-	Entrance_Dialog dialog = ew_notice_new(title);
+	Entrance_Widget dialog = ew_notice_new(title);
 	dialog->hbox = etk_filechooser_widget_new();
 
 	if(directory)
@@ -21,11 +21,11 @@ ew_fileselector_new(const char *title, const char *directory, int multiple, int 
 }
 
 const char *
-ew_fileselector_file_get(Entrance_Dialog dialog) {
+ew_fileselector_file_get(Entrance_Widget dialog) {
 	return etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(dialog->hbox));
 }
 
 Evas_List *
-ew_fileselector_file_list_get(Entrance_Dialog dialog) {
+ew_fileselector_file_list_get(Entrance_Widget dialog) {
 	return etk_filechooser_widget_selected_files_get(ETK_FILECHOOSER_WIDGET(dialog->hbox));
 }

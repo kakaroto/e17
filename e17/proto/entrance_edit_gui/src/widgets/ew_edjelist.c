@@ -5,10 +5,10 @@
 
 static void _ew_tree_cb_row_clicked(Etk_Object *, Etk_Tree_Row *, Etk_Event_Mouse_Up_Down *, void *);
 
-Entrance_List
+Entrance_Widget
 ew_edjelist_new(const char *title, int w, int h, int r_h, int c_w)
 {
-   Entrance_List ew = _ew_list_new(title, w, h, r_h);
+   Entrance_Widget ew = _ew_list_new(title, w, h, r_h);
    if(!ew) {
 	   return NULL;
    }
@@ -19,7 +19,7 @@ ew_edjelist_new(const char *title, int w, int h, int r_h, int c_w)
 }
 
 void
-ew_edjelist_add(Entrance_List ew, const char *label, const char *edje, const char *group, void *data,  size_t size, void (*func) (void))
+ew_edjelist_add(Entrance_Widget ew, const char *label, const char *edje, const char *group, void *data,  size_t size, void (*func) (void))
 {
    Etk_Tree_Row *row;
    etk_tree_freeze(ETK_TREE(ew->owner));

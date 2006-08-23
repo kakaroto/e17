@@ -6,10 +6,10 @@
 
 static void _ew_messagebox_cb_ok(void *, int, void *);
 
-Entrance_Dialog
+Entrance_Widget
 _ew_messagebox_new(const char *title, const char *message, const char *icon) 
 {
-	Entrance_Dialog ew = ew_notice_new(title);
+	Entrance_Widget ew = ew_notice_new(title);
 	Entrance_Widget group;
 	Entrance_Widget _image;
 	Entrance_Widget _text;
@@ -41,19 +41,19 @@ _ew_messagebox_new(const char *title, const char *message, const char *icon)
 	return ew;
 }
 
-Entrance_Dialog
+Entrance_Widget
 ew_messagebox_ok(const char *title, const char *message, const char *icon) 
 {
-	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	Entrance_Widget ew = _ew_messagebox_new(title, message, icon);
 	ew_notice_ok_button_add(ew, _ew_messagebox_cb_ok, ew);
 	ew_notice_show(ew);
 
 	return ew;
 }
 
-Entrance_Dialog
+Entrance_Widget
 ew_messagebox_ok_cancel(const char *title, const char *message, const char *icon, void (*funct)(void *, int, void *)) {
-	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	Entrance_Widget ew = _ew_messagebox_new(title, message, icon);
 	ew_notice_ok_button_add(ew, funct, NULL);
 	ew_notice_cancel_button_add(ew, NULL, NULL);
 
@@ -61,9 +61,9 @@ ew_messagebox_ok_cancel(const char *title, const char *message, const char *icon
 	return ew;
 }
 
-Entrance_Dialog
+Entrance_Widget
 ew_messagebox_yes_no(const char *title, const char *message, const char *icon, void (*funct)(void *, int, void *)) {
-	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	Entrance_Widget ew = _ew_messagebox_new(title, message, icon);
 	ew_notice_yes_button_add(ew, funct, NULL);
 	ew_notice_no_button_add(ew, NULL, NULL);
 
@@ -71,9 +71,9 @@ ew_messagebox_yes_no(const char *title, const char *message, const char *icon, v
 	return ew;
 }
 
-Entrance_Dialog
+Entrance_Widget
 ew_messagebox_yes_no_cancel(const char *title, const char *message, const char *icon, void (*funct)(void *, int, void *)) {
-	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	Entrance_Widget ew = _ew_messagebox_new(title, message, icon);
 	ew_notice_yes_button_add(ew, funct, NULL);
 	ew_notice_no_button_add(ew, NULL, NULL);
 	ew_notice_cancel_button_add(ew, NULL, NULL);
@@ -84,6 +84,6 @@ ew_messagebox_yes_no_cancel(const char *title, const char *message, const char *
 
 static void
 _ew_messagebox_cb_ok(void *win, int response_type, void *data) {
-	Entrance_Dialog ew = data;
+	Entrance_Widget ew = data;
 	ew_dialog_destroy(ew);
 }

@@ -1,7 +1,6 @@
 #include <etk/Etk.h>
 #include "Entrance_Widgets.h"
 
-
 int
 ew_init(int *argc, char*** argv)
 {
@@ -34,11 +33,15 @@ ew_new(void)
 	{
 		ew->owner = NULL;
 		ew->box = NULL;
+		ew->hbox = NULL;
+		ew->label = NULL;
+		ew->control = NULL;
+		ew->col = NULL;
+		ew->preview_smart = NULL;
+		ew->extra = NULL;
 	}
 
 	return ew;
 }
-
-
 
 /* privates */

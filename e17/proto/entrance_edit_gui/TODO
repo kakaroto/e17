@@ -16,10 +16,10 @@ GUI
 - Modify egui_graphics_selector and see if it can also inherit from egui_settings
 - There's a todo above some commented code in egui_graphics_selector.c related to making the preview even more awesome.
 - We should have a way to show a COMPLETE entrance preview i think in the main ui screen or something, that shows the greetings, etc... so when we change stuff, we can see how it looks like. This is different from the theme and background previews, which only show what the theme and background look like, but hey, maybe we should combine them? Dunno... not critical, just a nice to have feature.
+- If we click on a file in the file selector let it appear in the Preview object of the theme/background dialog.
 	
 ***SHOW STOPPERS - TOP PRIORITY
 ============================
-- API cleanup, get rid of Entrance_Entry, Entrance_List, and object types like those. Let everything be Entrance_Widget.
 - egui_settings.c currently doesn't save back to ecore_properly. there is something wrong when trying to retrieve tack the *item from the global *items list; i'm too sleepy to do this now. Correct this first, then move over behavior.c to use this.
 - fileselector integration into theme and background dialogs.
 - Entrance_List needs to be refactored to use as common a base as possible. Also, we need to select the first row by default when adding to a list.
