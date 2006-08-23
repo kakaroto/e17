@@ -19,10 +19,9 @@ GUI
 	
 ***SHOW STOPPERS - TOP PRIORITY
 ============================
- - egui_settings.c currently doesn't save back to ecore_properly. there is something wrong when trying to retrieve tack the *item from the global *items list; i'm too sleepy to do this now. Correct this first, then move over behavior.c to use this.
-- theme and background dialogs need a way to browse filesystem to grab from arbitrary locations.
-	- fileselector widget needs to be done.
-- Fix up Fileselector widget. This may probably need to refactor out the buttons used by ew_notice as ew_reponse_buttons ?
+- API cleanup, get rid of Entrance_Entry, Entrance_List, and object types like those. Let everything be Entrance_Widget.
+- egui_settings.c currently doesn't save back to ecore_properly. there is something wrong when trying to retrieve tack the *item from the global *items list; i'm too sleepy to do this now. Correct this first, then move over behavior.c to use this.
+- fileselector integration into theme and background dialogs.
 - Entrance_List needs to be refactored to use as common a base as possible. Also, we need to select the first row by default when adding to a list.
 
 Issues that MUST go before tree relocates to entrance's tree
