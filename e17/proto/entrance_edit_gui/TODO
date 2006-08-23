@@ -15,6 +15,7 @@ GUI
 - implement sessions screen
 - Modify egui_graphics_selector and see if it can also inherit from egui_settings
 - There's a todo above some commented code in egui_graphics_selector.c related to making the preview even more awesome.
+- We should have a way to show a COMPLETE entrance preview i think in the main ui screen or something, that shows the greetings, etc... so when we change stuff, we can see how it looks like. This is different from the theme and background previews, which only show what the theme and background look like, but hey, maybe we should combine them? Dunno... not critical, just a nice to have feature.
 	
 ***SHOW STOPPERS - TOP PRIORITY
 ============================
