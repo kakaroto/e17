@@ -1073,7 +1073,7 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	   roots = ecore_x_window_root_list(&num);
 	   ecore_x_window_size_get(roots[0], &w, &h);
 	   snprintf(filename_s, PATH_MAX, "/tmp/%s.png", filenoext);
-	   snprintf(static_bg, PATH_MAX, "edje_thumb %s desktop/background %s -g %dx%d -og %dx%d", im->filename, filename_s, w, h, w, h);
+	   snprintf(static_bg, PATH_MAX, "edje_thumb %s e/desktop/background %s -g %dx%d -og %dx%d", im->filename, filename_s, w, h, w, h);
 	   snprintf(e_bg_set, PATH_MAX, "enlightenment_remote -default-bg-set %s", im->filename);
 	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, 
 		 filename_s);	 
@@ -1115,7 +1115,7 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	engrave_file_image_add(edj, image);
 	
 	grp = engrave_group_new();
-	engrave_group_name_set(grp, "desktop/background");
+	engrave_group_name_set(grp, "e/desktop/background");
 	engrave_file_group_add(edj, grp);
 	
 	part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
