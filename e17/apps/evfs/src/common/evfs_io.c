@@ -700,6 +700,7 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
      case EVFS_CMD_METADATA_GROUPS_GET:
      case EVFS_CMD_METADATA_FILE_GROUP_ADD:
      case EVFS_CMD_METADATA_FILE_GROUP_REMOVE:
+     case EVFS_CMD_TRASH_RESTORE:
         evfs_write_file_command(conn, command);
         break;
      case EVFS_CMD_OPERATION_RESPONSE:
@@ -765,6 +766,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
      case EVFS_CMD_METADATA_GROUPS_GET:
      case EVFS_CMD_METADATA_FILE_GROUP_ADD:
      case EVFS_CMD_METADATA_FILE_GROUP_REMOVE:
+     case EVFS_CMD_TRASH_RESTORE:
         evfs_write_file_command_client(client, command);
         break;
      default:

@@ -332,9 +332,9 @@ smb_evfs_dir_list(evfs_client * client, evfs_filereference * file,
                   else if (entry->smbc_type == SMBC_DIR)
                      reference->file_type = EVFS_FILE_DIRECTORY;
                   else if (entry->smbc_type == SMBC_WORKGROUP)
-                     reference->file_type = EVFS_FILE_SMB_WORKGROUP;
+                     reference->file_type = EVFS_FILE_DIRECTORY;
                   else if (entry->smbc_type == SMBC_SERVER)
-                     reference->file_type = EVFS_FILE_SMB_SERVER;
+                     reference->file_type = EVFS_FILE_DIRECTORY;
                   else if (entry->smbc_type == SMBC_FILE_SHARE)
                      reference->file_type = EVFS_FILE_SMB_FILE_SHARE;
                   else if (entry->smbc_type == SMBC_PRINTER_SHARE)

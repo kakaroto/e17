@@ -142,8 +142,7 @@ evfs_client_file_copy(evfs_connection * conn, evfs_filereference * from,
 }
 
 long 
-evfs_client_file_copy_multi(evfs_connection * conn, Ecore_List* files,
-		evfs_filereference* to)
+evfs_client_multi_file_command(evfs_connection * conn, Ecore_List* files, evfs_filereference* to, int type)
 {
    evfs_command *command = evfs_client_command_new();
    long id = command->client_identifier;
@@ -154,21 +153,16 @@ evfs_client_file_copy_multi(evfs_connection * conn, Ecore_List* files,
 
    count = ecore_list_nodes(files);
 
-   command->type = EVFS_CMD_FILE_COPY;
+   command->type = type;
    command->file_command.num_files = count+1;
    command->file_command.files = malloc(sizeof(evfs_filereference *) * (count+1));
  
-   printf("Sending %d files for multi copy...\n", count+1);
    ecore_list_goto_first(files);
    while ((ref = ecore_list_next(files))) {
 	   command->file_command.files[cfile] = ref;
 	   cfile++;
-
-	   str = evfs_filereference_to_string(ref);
-	   printf("Added %s to multi copy\n", str);
-	   free(str);
    }
-   command->file_command.files[cfile] = to;
+   if (to) command->file_command.files[cfile] = to;
 
    evfs_write_command(conn, command);
 
@@ -177,6 +171,27 @@ evfs_client_file_copy_multi(evfs_connection * conn, Ecore_List* files,
 
    return id;
 	
+}
+
+
+long 
+evfs_client_file_copy_multi(evfs_connection * conn, Ecore_List* files,
+		evfs_filereference* to)
+{
+	return 	evfs_client_multi_file_command(conn,files,to, EVFS_CMD_FILE_COPY);
+}
+
+long 
+evfs_client_file_move_multi(evfs_connection * conn, Ecore_List* files,
+		evfs_filereference* to)
+{
+	return 	evfs_client_multi_file_command(conn,files,to, EVFS_CMD_FILE_MOVE);
+}
+
+long 
+evfs_client_file_trash_restore(evfs_connection * conn, Ecore_List* files)
+{
+	return 	evfs_client_multi_file_command(conn,files,NULL, EVFS_CMD_TRASH_RESTORE);
 }
 
 long
@@ -200,48 +215,6 @@ evfs_client_file_move(evfs_connection * conn, evfs_filereference * from,
 
    return id;
 }
-
-
-/*FIXME: This is dup'ed code from ^^ .  Rationalise this*/
-long 
-evfs_client_file_move_multi(evfs_connection * conn, Ecore_List* files,
-		evfs_filereference* to)
-{
-   evfs_command *command = evfs_client_command_new();
-   long id = command->client_identifier;
-   long count = 0;
-   long cfile = 0;
-   evfs_filereference* ref;
-   char* str;
-
-   count = ecore_list_nodes(files);
-
-   command->type = EVFS_CMD_FILE_MOVE;
-   command->file_command.num_files = count+1;
-   command->file_command.files = malloc(sizeof(evfs_filereference *) * (count+1));
- 
-   printf("Sending %d files for multi move...\n", count+1);
-   ecore_list_goto_first(files);
-   while ((ref = ecore_list_next(files))) {
-	   command->file_command.files[cfile] = ref;
-	   cfile++;
-
-	   str = evfs_filereference_to_string(ref);
-	   printf("Added %s to multi move\n", str);
-	   free(str);
-   }
-   command->file_command.files[cfile] = to;
-
-   evfs_write_command(conn, command);
-
-   free(command->file_command.files);
-   free(command);
-
-   return id;
-	
-}
-
-
 
 long
 evfs_client_file_open(evfs_connection * conn, evfs_filereference * file)
