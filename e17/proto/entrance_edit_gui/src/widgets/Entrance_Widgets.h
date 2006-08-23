@@ -18,5 +18,6 @@
 #include "ew_radio_button.h"
 #include "ew_toggle_button.h"
 #include "ew_checkbox.h"
+#include "ew_fileselector.h"
 
 #endif

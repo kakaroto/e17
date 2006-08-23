@@ -8,6 +8,7 @@ libentrance_widgets_la_HEADERS = \
 	\
 	ew_dialog.h \
 	ew_notice.h \
+	ew_fileselector.h \
 	\
 	ew_group.h \
 	\
@@ -33,12 +34,13 @@ libentrance_widgets_ladir = $(prefix)/include
 libentrance_widgets_la_SOURCES = \
 	ew.c \
 	ew_dialog.c \
+	ew_notice.c \
+	ew_fileselector.c \
 	ew_group.c \
 	_ew_list.c \
 	ew_textlist.c \
 	ew_edjelist.c \
 	ew_image.c \
-	ew_notice.c \
 	ew_messagebox.c \
 	ew_preview.c \
 	ew_label.c \
