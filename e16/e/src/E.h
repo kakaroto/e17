@@ -389,6 +389,7 @@ typedef struct
       char                argb_internal_clients;
       char                argb_clients;
       char                argb_clients_inherit_attr;
+      char                use_sync;
    } testing;
    int                 deskmode;
    char                animate_shading;
@@ -424,6 +425,9 @@ typedef struct
       int                 screens;
 #ifdef HAS_XINERAMA
       char                xinerama_active;
+#endif
+#if USE_XSYNC
+      XID                 server_time;
 #endif
    } display;
    struct
@@ -652,6 +656,7 @@ void                EdgeWindowsHide(void);
 #define EDBUG_TYPE_EVENTS       142
 #define EDBUG_TYPE_ICONBOX      143
 #define EDBUG_TYPE_VERBOSE      144
+#define EDBUG_TYPE_SYNC         145
 
 int                 EventDebug(unsigned int type);
 void                EventDebugSet(unsigned int type, int value);

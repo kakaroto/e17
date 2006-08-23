@@ -29,10 +29,9 @@
 #include "session.h"
 #include "xwin.h"
 #if USE_XSYNC
+#include "timers.h"
 #include <X11/extensions/sync.h>
 #endif
-
-#undef USE_XSYNC		/* No - Not sure this is safe */
 
 static void         ICCCM_SetIconSizes(void);
 
@@ -264,24 +263,6 @@ ICCCM_Configure(EWin * ewin)
    if (EwinIsInternal(ewin))
       return;
 
-#if USE_XSYNC
-   if (ewin->ewmh.sync_request_enable && !EServerIsGrabbed())
-     {
-	long long           count;
-
-	count = ++ewin->ewmh.sync_request_count;
-
-	if (count == 0)
-	   ewin->ewmh.sync_request_count = ++count;
-	ecore_x_client_message32_send(EwinGetClientXwin(ewin),
-				      ECORE_X_ATOM_WM_PROTOCOLS,
-				      StructureNotifyMask,
-				      ECORE_X_ATOM_NET_WM_SYNC_REQUEST,
-				      Mode.events.time,
-				      count & 0xffffffff, count >> 32, 0);
-     }
-#endif
-
    ev.type = ConfigureNotify;
    ev.xconfigure.display = disp;
    ev.xconfigure.event = EwinGetClientXwin(ewin);
@@ -306,24 +287,6 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.above = EoGetXwin(ewin);
    ev.xconfigure.override_redirect = False;
    XSendEvent(disp, EwinGetClientXwin(ewin), False, StructureNotifyMask, &ev);
-
-#if USE_XSYNC
-   if (ewin->ewmh.sync_request_enable && !EServerIsGrabbed())
-     {
-	XSyncWaitCondition  xswc[1];
-
-	xswc[0].trigger.counter = ewin->ewmh.sync_request_counter;
-	xswc[0].trigger.value_type = XSyncAbsolute;
-	XSyncIntsToValue(&xswc[0].trigger.wait_value,
-			 ewin->ewmh.sync_request_count & 0xffffffff,
-			 ewin->ewmh.sync_request_count >> 32);
-	xswc[0].trigger.test_type = XSyncPositiveComparison;
-	XSyncIntsToValue(&xswc[0].event_threshold, 0, 0);
-	Eprintf("Sync t=%#lx c=%llx\n", xswc[0].trigger.counter,
-		ewin->ewmh.sync_request_count);
-	XSyncAwait(disp, xswc, 1);
-     }
-#endif
 }
 
 void
@@ -807,3 +770,60 @@ ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change)
    ICCCM_Cmap(ewin);
    ICCCM_GetGeoms(ewin, atom_change);
 }
+
+#if USE_XSYNC
+int
+EwinSyncRequestSend(EWin * ewin)
+{
+   long long           count;
+
+   if (!Conf.testing.use_sync || !ewin->ewmh.sync_request_enable ||
+       EServerIsGrabbed())
+      return 0;
+
+   count = ++ewin->ewmh.sync_request_count;
+
+   if (count == 0)
+      ewin->ewmh.sync_request_count = ++count;
+   ecore_x_client_message32_send(EwinGetClientXwin(ewin),
+				 ECORE_X_ATOM_WM_PROTOCOLS,
+				 StructureNotifyMask,
+				 ECORE_X_ATOM_NET_WM_SYNC_REQUEST,
+				 Mode.events.time,
+				 count & 0xffffffff, count >> 32, 0);
+
+   return 1;
+}
+
+void
+EwinSyncRequestWait(EWin * ewin)
+{
+   XSyncWaitCondition  xswc[2];
+   double              t;
+
+   if (!Conf.testing.use_sync || !ewin->ewmh.sync_request_enable ||
+       EServerIsGrabbed())
+      return;
+
+   xswc[0].trigger.counter = ewin->ewmh.sync_request_counter;
+   xswc[0].trigger.value_type = XSyncAbsolute;
+   XSyncIntsToValue(&xswc[0].trigger.wait_value,
+		    ewin->ewmh.sync_request_count & 0xffffffff,
+		    ewin->ewmh.sync_request_count >> 32);
+   xswc[0].trigger.test_type = XSyncPositiveComparison;
+   XSyncIntsToValue(&xswc[0].event_threshold, 0, 0);
+
+   xswc[1].trigger.counter = Mode.display.server_time;
+   xswc[1].trigger.value_type = XSyncRelative;
+   XSyncIntsToValue(&xswc[1].trigger.wait_value, 1000, 0);	/* 1 sec */
+   xswc[1].trigger.test_type = XSyncPositiveComparison;
+   XSyncIntsToValue(&xswc[1].event_threshold, 0, 0);
+
+   t = GetTime();
+   XSyncAwait(disp, xswc, 2);
+   if (EventDebug(EDBUG_TYPE_SYNC))
+      Eprintf("Sync t=%#lx c=%llx: Delay=%8.6lf us\n",
+	      xswc[0].trigger.counter, ewin->ewmh.sync_request_count,
+	      GetTime() - t);
+}
+#endif /* USE_XSYNC */

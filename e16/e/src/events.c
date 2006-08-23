@@ -88,23 +88,27 @@ ExtInitShape(int available)
 static void
 ExtInitSync(int available)
 {
+   int                 i, num;
+   XSyncSystemCounter *xssc;
+
    if (!available)
       return;
 
-   if (EventDebug(EDBUG_TYPE_VERBOSE))
+   xssc = XSyncListSystemCounters(disp, &num);
+   for (i = 0; i < num; i++)
      {
-	int                 i, num;
-	XSyncSystemCounter *xssc;
-
-	xssc = XSyncListSystemCounters(disp, &num);
-	for (i = 0; i < num; i++)
-	  {
-	     Eprintf(" Sync counter %2d: %10s %#lx %#x:%#x\n", i,
-		     xssc[i].name, xssc[i].counter,
-		     XSyncValueHigh32(xssc[i].resolution),
-		     XSyncValueLow32(xssc[i].resolution));
-	  }
+	if (!strcmp(xssc[i].name, "SERVERTIME"))
+	   Mode.display.server_time = xssc[i].counter;
+	if (EventDebug(EDBUG_TYPE_SYNC))
+	   Eprintf(" Sync counter %2d: %10s %#lx %#x:%#x\n", i,
+		   xssc[i].name, xssc[i].counter,
+		   XSyncValueHigh32(xssc[i].resolution),
+		   XSyncValueLow32(xssc[i].resolution));
      }
+   XSyncFreeSystemCounterList(xssc);
+
+   if (Mode.display.server_time == None)
+      Conf.testing.use_sync = 0;
 }
 #endif
 

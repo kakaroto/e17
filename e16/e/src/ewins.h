@@ -391,6 +391,12 @@ EWin               *EwinFindByChildren(Window win);
 EWin              **EwinListTransients(const EWin * ewin, int *num, int group);
 EWin              **EwinListTransientFor(const EWin * ewin, int *num);
 
+/* icccm.c (for now) */
+#if USE_XSYNC
+int                 EwinSyncRequestSend(EWin * ewin);
+void                EwinSyncRequestWait(EWin * ewin);
+#endif
+
 /* session.c */
 void                SessionGetInfo(EWin * ewin, Atom atom_change);
 
