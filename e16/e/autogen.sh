@@ -22,7 +22,7 @@ autoconf || exit 1
 echo "Running autoheader"
 autoheader || exit 1
 echo "Running automake --add-missing"
-automake --add-missing || exit 1
+automake --copy --add-missing || exit 1
 
 if test x$NOCONFIGURE != x; then
     echo "Skipping configure process."
