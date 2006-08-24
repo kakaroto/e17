@@ -2348,12 +2348,10 @@ static void _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Dow
 
    if (strcmp(event->keyname, "Tab") == 0)
    {
-      etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
-      etk_signal_stop();
-   }
-   else if (strcmp(event->keyname, "ISO_Left_Tab") == 0)
-   {
-      etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
+      if (event->modifiers & ETK_MODIFIER_SHIFT)
+         etk_widget_focus(etk_toplevel_widget_focused_widget_prev_get(toplevel));
+      else
+         etk_widget_focus(etk_toplevel_widget_focused_widget_next_get(toplevel));
       etk_signal_stop();
    }
 }
