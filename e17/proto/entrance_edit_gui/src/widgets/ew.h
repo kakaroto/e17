@@ -16,7 +16,6 @@ typedef struct _Entrance_Widget {
 #define _EW_FREE(ew) if(ew) \
 { \
 	etk_object_destroy(ETK_OBJECT(ew)); \
-	free(ew); \
 }
 
 #define EW_FREE(ew) if(ew) \
