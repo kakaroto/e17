@@ -167,7 +167,7 @@ IpcFindEwins(const char *match, int *pnum, int *pflags)
 	     name = ewin->icccm.wm_name;
 	     if (!name)
 		continue;
-	     if (!strstr(name, match))
+	     if (!strcasestr(name, match))
 		continue;
 	  }
 	nfound++;

@@ -99,6 +99,13 @@
 #error "particular Operating System or Distribution"
 #endif
 
+#ifndef HAVE_STRCASESTR
+# define strcasestr(haystack, needle) strstr(haystack, needle)
+#endif
+#ifndef HAVE_STRCASECMP
+# define strcasecmp(s1, s2) strcmp(s1, s2)
+#endif
+
 #define FILEPATH_LEN_MAX 4096
 
 #ifndef MAX
