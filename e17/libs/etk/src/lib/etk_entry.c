@@ -4,6 +4,7 @@
 #include <string.h>
 #include "etk_editable.h"
 #include "etk_toplevel_widget.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -29,11 +30,11 @@ static void _etk_entry_property_set(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_entry_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_entry_realize_cb(Etk_Object *object, void *data);
 static void _etk_entry_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_entry_key_down_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
-static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
-static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
-static void _etk_entry_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data);
+static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data);
+static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
+static void _etk_entry_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_entry_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
 static void _etk_entry_focus_cb(Etk_Object *object, void *data);
 static void _etk_entry_unfocus_cb(Etk_Object *object, void *data);
@@ -263,17 +264,16 @@ static void _etk_entry_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the user presses a key */
-static void _etk_entry_key_down_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Entry *entry;
    Evas_Object *editable;
-   Etk_Event_Key_Up_Down *event;
    int cursor_pos, selection_pos;
    int start_pos, end_pos;
    Etk_Bool selecting;
    Etk_Bool changed = ETK_FALSE;
    
-   if (!(entry = ETK_ENTRY(object)) || !(event = event_info) || !event->keyname)
+   if (!(entry = ETK_ENTRY(object)))
      return;
 
    editable = entry->editable_object;
@@ -286,9 +286,9 @@ static void _etk_entry_key_down_cb(Etk_Object *object, void *event_info, void *d
    /* TODO: CTRL + A, X, C, V */
    
    /* Move the cursor/selection to the left */
-   if (strcmp(event->key, "Left") == 0)
+   if (strcmp(event->keyname, "Left") == 0)
    {
-      if (evas_key_modifier_is_set(event->modifiers, "Shift"))
+      if (event->modifiers & ETK_MODIFIER_SHIFT)
          etk_editable_cursor_move_left(editable);
       else if (selecting)
       {
@@ -304,9 +304,9 @@ static void _etk_entry_key_down_cb(Etk_Object *object, void *event_info, void *d
       }
    }
    /* Move the cursor/selection to the right */
-   else if (strcmp(event->key, "Right") == 0)
+   else if (strcmp(event->keyname, "Right") == 0)
    {
-      if (evas_key_modifier_is_set(event->modifiers, "Shift"))
+      if (event->modifiers & ETK_MODIFIER_SHIFT)
          etk_editable_cursor_move_right(editable);
       else if (selecting)
       {
@@ -326,7 +326,7 @@ static void _etk_entry_key_down_cb(Etk_Object *object, void *event_info, void *d
       ((event->string) && (strlen(event->string) == 1) && (event->string[0] == 0x1)))
    {
       etk_editable_cursor_move_to_start(editable);
-      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+      if (!(event->modifiers & ETK_MODIFIER_SHIFT))
          etk_editable_selection_pos_set(editable, etk_editable_cursor_pos_get(editable));
    }
    /* Move the cursor/selection to the end of the entry */
@@ -334,7 +334,7 @@ static void _etk_entry_key_down_cb(Etk_Object *object, void *event_info, void *d
       ((event->string) && (strlen(event->string) == 1) && (event->string[0] == 0x5)))
    {
       etk_editable_cursor_move_to_end(editable);
-      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+      if (!(event->modifiers & ETK_MODIFIER_SHIFT))
          etk_editable_selection_pos_set(editable, etk_editable_cursor_pos_get(editable));
    }
    /* Remove the previous character */
@@ -368,7 +368,7 @@ static void _etk_entry_key_down_cb(Etk_Object *object, void *event_info, void *d
 }
 
 /* Called when the mouse enters the entry */
-static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
+static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data)
 {
    Etk_Widget *entry_widget;
 
@@ -378,7 +378,7 @@ static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *e
 }
 
 /* Called when the mouse leaves the entry */
-static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
+static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data)
 {
    Etk_Widget *entry_widget;
 
@@ -388,7 +388,7 @@ static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *
 }
 
 /* Called when the entry is pressed by the mouse */
-static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
    Etk_Entry *entry;
    Evas_Coord ox, oy;
@@ -402,7 +402,7 @@ static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down
    if (pos >= 0)
    {
       etk_editable_cursor_pos_set(entry->editable_object, pos);
-      if (!evas_key_modifier_is_set(event->modifiers, "Shift"))
+      if (!(event->modifiers & ETK_MODIFIER_SHIFT))
          etk_editable_selection_pos_set(entry->editable_object, pos);
       
       entry->selection_dragging = ETK_TRUE;
@@ -410,7 +410,7 @@ static void _etk_entry_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down
 }
 
 /* Called when the entry is released by the mouse */
-static void _etk_entry_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_entry_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Entry *entry;
    

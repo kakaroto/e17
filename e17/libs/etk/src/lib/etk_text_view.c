@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "etk_textblock.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "etk_textblock.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Text_View
@@ -23,7 +25,7 @@ static void _etk_text_view_destructor(Etk_Text_View *text_view);
 static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_text_view_realize_cb(Etk_Object *object, void *data);
 static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data);
+static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 
 static Etk_Signal *_etk_text_view_signals[ETK_TEXT_VIEW_NUM_SIGNALS];
 
@@ -181,7 +183,7 @@ static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when a key is pressed */
-static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down *event, void *data)
+static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Text_View *text_view;
    Etk_Textblock *tb;
@@ -190,7 +192,7 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down
    int compare_res;
    Etk_Bool selecting;
    
-   if (!(text_view = ETK_TEXT_VIEW(object)) || !event || !text_view->textblock_object)
+   if (!(text_view = ETK_TEXT_VIEW(object)) || !text_view->textblock_object)
       return;
    
    tb = text_view->textblock;
@@ -199,9 +201,9 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down
    compare_res = etk_textblock_iter_compare(cursor, selection);
    selecting = (compare_res != 0);
    
-   if (strcmp(event->key, "Left") == 0)
+   if (strcmp(event->keyname, "Left") == 0)
    {
-      if (evas_key_modifier_is_set(event->modifiers, "Shift"))
+      if (event->modifiers & ETK_MODIFIER_SHIFT)
          etk_textblock_iter_backward_char(cursor);
       else if (selecting)
       {
@@ -216,9 +218,9 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down
          etk_textblock_iter_copy(selection, cursor);
       }
    }
-   else if (strcmp(event->key, "Right") == 0)
+   else if (strcmp(event->keyname, "Right") == 0)
    {
-      if (evas_key_modifier_is_set(event->modifiers, "Shift"))
+      if (event->modifiers & ETK_MODIFIER_SHIFT)
          etk_textblock_iter_forward_char(cursor);
       else if (selecting)
       {
@@ -233,21 +235,21 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Up_Down
          etk_textblock_iter_copy(selection, cursor);
       }
    }
-   else if (strcmp(event->key, "BackSpace") == 0)
+   else if (strcmp(event->keyname, "BackSpace") == 0)
    {
       if (selecting)
          etk_textblock_delete_range(tb, cursor, selection);
       else
          etk_textblock_delete_before(tb, cursor);
    }
-   else if (strcmp(event->key, "Delete") == 0)
+   else if (strcmp(event->keyname, "Delete") == 0)
    {
       if (selecting)
          etk_textblock_delete_range(tb, cursor, selection);
       else
          etk_textblock_delete_after(tb, cursor);
    }
-   else if (strcmp(event->key, "Return") == 0 || strcmp(event->key, "KP_Enter") == 0)
+   else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
    {
       if (selecting)
          etk_textblock_delete_range(tb, cursor, selection);

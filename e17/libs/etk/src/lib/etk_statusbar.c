@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Edje.h>
+#include "etk_toplevel_widget.h"
+#include "etk_window.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
-#include "etk_toplevel_widget.h"
-#include "etk_window.h"
 
 /**
  * @addtogroup Etk_Statusbar
@@ -39,7 +40,7 @@ static void _etk_statusbar_property_set(Etk_Object *object, int property_id, Etk
 static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_statusbar_realize_cb(Etk_Object *object, void *data);
 static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
-static void _etk_statusbar_mouse_move_cb(Etk_Object *object, void *event_info, void *data);
+static void _etk_statusbar_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
 static void _etk_statusbar_update(Etk_Statusbar *statusbar);
 
 static Etk_Signal *_etk_statusbar_signals[ETK_STATUSBAR_NUM_SIGNALS];
@@ -338,13 +339,14 @@ static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const ch
 }
 
 /* Called when mouse presses the resize grip and when the mouse is moved */
-static void _etk_statusbar_mouse_move_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_statusbar_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
 {
    Etk_Statusbar *statusbar;
    Etk_Toplevel_Widget *window;
-   Etk_Event_Mouse_Move *event = event_info;
    
-   if (!(statusbar = ETK_STATUSBAR(object)) || !(window = etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar))) || !ETK_IS_WINDOW(window))
+   if (!(statusbar = ETK_STATUSBAR(object)))
+      return;
+   if (!(window = etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar))) || !ETK_IS_WINDOW(window))
       return;
    
    statusbar->new_window_width += event->cur.widget.x - event->prev.widget.x;

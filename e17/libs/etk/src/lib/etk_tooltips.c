@@ -1,16 +1,15 @@
 /** @file etk_tooltips.c */
+#include "etk_tooltips.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <Ecore.h>
 #include <Evas.h>
-#include "etk_tooltips.h"
 #include "etk_window.h"
 #include "etk_label.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-
-#include "config.h"
 
 /**
  * @addtogroup Etk_Tooltips
@@ -18,8 +17,8 @@
  */
 
 static Evas_Bool _etk_tooltips_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
-static void _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
+static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data);
+static void _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data);
 static void _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
 static void _etk_tooltips_mouse_down_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tooltips_mouse_wheel_cb(Etk_Object *object, void *event, void *data);
@@ -248,7 +247,7 @@ void etk_tooltips_pop_down()
 }
 
 /* Callback for when the mouse enters a widget */
-static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
+static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data)
 {
    if(!_etk_tooltips_enabled || !ETK_IS_OBJECT(object))
      return;
@@ -268,7 +267,7 @@ static int _etk_tooltips_timer_cb(void *data)
 }
 
 /* Callback for when the mouse leave the widget */
-static void _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
+static void _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data)
 {
    if(!_etk_tooltips_enabled)
      return;

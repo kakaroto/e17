@@ -281,17 +281,22 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Call
  * @param object the object which will emit the signal
  * @param return_value the location where store the return value ( @a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
+ * @return Returns ETK_FALSE if the signal has been stopped (i.e. etk_signal_stop() has been called in one of the
+ * callbacks), and ETK_TRUE otherwise
  */
-void etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value, ...)
+Etk_Bool etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value, ...)
 {
    va_list args;
+   Etk_Bool ret;
 
    if (!object || !signal)
-      return;
+      return ETK_FALSE;
 
    va_start(args, return_value);
-   etk_signal_emit_valist(signal, object, return_value, args);
+   ret = etk_signal_emit_valist(signal, object, return_value, args);
    va_end(args);
+   
+   return ret;
 }
 
 /**
@@ -300,24 +305,29 @@ void etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value,
  * @param object the object which will emit the signal
  * @param return_value the location where store the return value ( @a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
+ * @return Returns ETK_FALSE if the signal has been stopped (i.e. etk_signal_stop() has been called in one of the
+ * callbacks), and ETK_TRUE otherwise
  */
-void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...)
+Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...)
 {
    va_list args;
    Etk_Signal *signal;
+   Etk_Bool ret;
 
    if (!object || !signal_name)
-      return;
+      return ETK_FALSE;
 
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
       ETK_WARNING("Invalid signal emission: the object type doesn't have a signal called \"%s\"", signal_name);
-      return;
+      return ETK_FALSE;
    }
 
    va_start(args, return_value);
-   etk_signal_emit_valist(signal, object, return_value, args);
+   ret = etk_signal_emit_valist(signal, object, return_value, args);
    va_end(args);
+   
+   return ret;
 }
 
 /**
@@ -327,8 +337,10 @@ void etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *
  * @param return_value the location where store the return value ( @a return_value may be NULL)
  * @param args the arguments to pass to the callback function
  * @return Returns @a object, or NULL if @a object has been destroyed by one of the callbacks
+ * @return Returns ETK_FALSE if the signal has been stopped (i.e. etk_signal_stop() has been called in one of the
+ * callbacks), and ETK_TRUE otherwise
  */
-void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return_value, va_list args)
+Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return_value, va_list args)
 {
    Evas_List *callbacks;
    Etk_Signal_Callback *callback;
@@ -337,9 +349,10 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    void *result = NULL;
    va_list args2;
    void *object_ptr;
+   Etk_Bool ret;
 
    if (!object || !signal)
-      return;
+      return ETK_FALSE;
 
    /* The pointer object will be set to NULL if the object is destroyed by a callback */
    object_ptr = object;
@@ -423,9 +436,11 @@ void etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return
    if (object_ptr)
       etk_object_weak_pointer_remove(object, &object_ptr);
    _etk_signal_emitted_signals = evas_list_remove_list(_etk_signal_emitted_signals, _etk_signal_emitted_signals);
+   ret = !emitted_signal->stop_emission;
    free(emitted_signal);
    
    va_end(args2);
+   return ret;
 }
 
 /**

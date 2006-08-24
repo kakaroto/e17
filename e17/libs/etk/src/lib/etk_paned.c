@@ -3,10 +3,11 @@
 #include <stdlib.h>
 #include <Evas.h>
 #include "etk_separator.h"
-#include "etk_utils.h"
+#include "etk_toplevel_widget.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "etk_toplevel_widget.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Paned
@@ -29,10 +30,10 @@ static void _etk_paned_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget);
 static Evas_List *_etk_paned_children_get(Etk_Container *container);
 
-static void _etk_paned_separator_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
-static void _etk_paned_separator_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data);
-static void _etk_paned_separator_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
-static void _etk_paned_separator_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_paned_separator_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data);
+static void _etk_paned_separator_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data);
+static void _etk_paned_separator_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static void _etk_paned_separator_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
 static void _etk_paned_separator_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
 
 static void _etk_hpaned_position_calc(Etk_Paned *paned);
@@ -496,7 +497,7 @@ static Evas_List *_etk_paned_children_get(Etk_Container *container)
  **************************/
 
 /* Called when the mouse enters the paned separator */
-static void _etk_paned_separator_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
+static void _etk_paned_separator_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data)
 {
    Etk_Paned *paned;
    Etk_Widget *separator_widget;
@@ -511,7 +512,7 @@ static void _etk_paned_separator_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse
 }
 
 /* Called when the mouse leaves the paned separator */
-static void _etk_paned_separator_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_In_Out *event, void *data)
+static void _etk_paned_separator_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data)
 {
    Etk_Paned *paned;
    Etk_Widget *separator_widget;
@@ -526,7 +527,7 @@ static void _etk_paned_separator_mouse_out_cb(Etk_Object *object, Etk_Event_Mous
 }
 
 /* Called when the user presses the paned separator */
-static void _etk_paned_separator_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_paned_separator_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
    Etk_Paned *paned;
 
@@ -541,7 +542,7 @@ static void _etk_paned_separator_mouse_down_cb(Etk_Object *object, Etk_Event_Mou
 }
 
 /* Called when the user releases the paned separator */
-static void _etk_paned_separator_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_paned_separator_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Paned *paned;
 

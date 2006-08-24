@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "etk_radio_button.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -40,8 +41,8 @@ static void _etk_notebook_frame_child_removed_cb(Etk_Object *object, Etk_Widget 
 static void _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data);
 static void _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data);
 static void _etk_notebook_tab_bar_unfocused_cb(Etk_Object *object, void *data);
-static void _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, void *event_info, void *data);
+static void _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static void _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 
 static void _etk_notebook_tab_bar_create(Etk_Notebook *notebook);
 static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
@@ -756,12 +757,11 @@ static void _etk_notebook_tab_bar_unfocused_cb(Etk_Object *object, void *data)
 }
 
 /* Called when a key is pressed, if the tab bar is focused */
-static void _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Notebook *notebook;
-   Etk_Event_Key_Up_Down *event;
    
-   if (!(notebook = ETK_NOTEBOOK(data)) || !(event = event_info))
+   if (!(notebook = ETK_NOTEBOOK(data)))
       return;
    
    if (strcmp(event->keyname, "Left") == 0)
@@ -777,13 +777,12 @@ static void _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, void *event_in
 }
 
 /* Called when the user uses the mouse wheel over the tab bar */
-static void _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Notebook *notebook;
-   Etk_Event_Mouse_Wheel *event;
    int page_index;
    
-   if (!(notebook = ETK_NOTEBOOK(data)) || !(event = event_info))
+   if (!(notebook = ETK_NOTEBOOK(data)))
       return;
    
    page_index = etk_notebook_current_page_get(notebook);

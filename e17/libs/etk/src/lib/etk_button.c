@@ -6,6 +6,7 @@
 #include "etk_alignment.h"
 #include "etk_image.h"
 #include "etk_label.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -38,11 +39,11 @@ static void _etk_button_property_set(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_button_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_button_realize_cb(Etk_Object *object, void *data);
 static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
-static void _etk_button_key_down_cb(Etk_Object *object, void *event, void *data);
-static void _etk_button_key_up_cb(Etk_Object *object, void *event, void *data);
-static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
-static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
-static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_button_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static void _etk_button_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data);
+static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
+static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_button_pressed_handler(Etk_Button *button);
 static void _etk_button_released_handler(Etk_Button *button);
 static void _etk_button_clicked_handler(Etk_Button *button);
@@ -529,15 +530,14 @@ static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, 
 }
 
 /* Called when the user presses a key */
-static void _etk_button_key_down_cb(Etk_Object *object, void *event, void *data)
+static void _etk_button_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
-   Etk_Event_Key_Up_Down *key_event = event;
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(object)))
       return;
 
-   if (strcmp(key_event->key, "space") == 0)
+   if (strcmp(event->keyname, "space") == 0)
    {
       etk_button_press(button);
       etk_signal_stop();
@@ -545,15 +545,14 @@ static void _etk_button_key_down_cb(Etk_Object *object, void *event, void *data)
 }
 
 /* Called when the user releases a key */
-static void _etk_button_key_up_cb(Etk_Object *object, void *event, void *data)
+static void _etk_button_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data)
 {
-   Etk_Event_Key_Up_Down *key_event = event;
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(object)))
       return;
 
-   if (strcmp(key_event->key, "space") == 0)
+   if (strcmp(event->keyname, "space") == 0)
    {
       if (button->is_pressed)
       {
@@ -565,7 +564,7 @@ static void _etk_button_key_up_cb(Etk_Object *object, void *event, void *data)
 }
 
 /* Called when the user presses the button with the mouse */
-static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
    Etk_Button *button;
 
@@ -578,7 +577,7 @@ static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up_Dow
 }
 
 /* Called when the user releases the button */
-static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Button *button;
 
@@ -590,7 +589,7 @@ static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down 
 }
 
 /* Called when the uses clicks on the button with the mouse */
-static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Button *button;
 

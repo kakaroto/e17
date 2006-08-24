@@ -9,6 +9,7 @@
 /* TODO/FIXME list:
  * - For some reasons, sometimes the child is not "swallowed" (see Extrackt's combobox)
  * - More properties (stock, ...)?
+ * - Should the button repeat the "clicked" signal when space is kept pressed 
  */
 
 /**

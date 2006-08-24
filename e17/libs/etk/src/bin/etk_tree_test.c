@@ -8,7 +8,7 @@ static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *data);
 static void _etk_test_tree_add_items(Etk_Tree *tree, int n);
 static void _etk_test_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row, void *data);
-static void _etk_test_tree_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data);
+static void _etk_test_tree_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_test_tree_row_activated(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_test_tree_clear_list_cb(Etk_Object *object, void *data);
@@ -233,12 +233,12 @@ static void _etk_test_tree_row_unselected(Etk_Object *object, Etk_Tree_Row *row,
 }
 
 /* Called when a row is clicked */
-static void _etk_test_tree_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_test_tree_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
 {
    printf("Row clicked %p. Button: %d. ", row, event->button);
-   if (event->flags & EVAS_BUTTON_TRIPLE_CLICK)
+   if (event->flags & ETK_MOUSE_TRIPLE_CLICK)
       printf("Triple Click\n");
-   else if (event->flags & EVAS_BUTTON_DOUBLE_CLICK)
+   else if (event->flags & ETK_MOUSE_DOUBLE_CLICK)
       printf("Double Click\n");
    else
       printf("Single Click\n");

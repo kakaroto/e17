@@ -32,6 +32,7 @@
 /** Check if the object is an Etk_Combobox_Item */
 #define ETK_IS_COMBOBOX_ITEM(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_COMBOBOX_ITEM_TYPE))
 
+
 /** @brief The type of widget that can contain a column of a combobox */
 typedef enum Etk_Combobox_Column_Type
 {
@@ -100,6 +101,7 @@ struct Etk_Combobox
    
    Etk_Bool built;
 };
+
 
 Etk_Type *etk_combobox_type_get();
 Etk_Type *etk_combobox_item_type_get();

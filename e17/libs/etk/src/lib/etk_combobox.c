@@ -7,9 +7,10 @@
 #include "etk_toggle_button.h"
 #include "etk_label.h"
 #include "etk_image.h"
-#include "etk_utils.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Combobox
@@ -45,13 +46,13 @@ static void _etk_combobox_active_item_size_allocate(Etk_Widget *widget, Etk_Geom
 static void _etk_combobox_focus_handler(Etk_Widget *widget);
 static void _etk_combobox_unfocus_handler(Etk_Widget *widget);
 static void _etk_combobox_realize_cb(Etk_Object *object, void *data);
-static void _etk_combobox_key_down_cb(Etk_Object *object, void *event_info, void *data);
+static void _etk_combobox_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data);
 static void _etk_combobox_window_popped_down_cb(Etk_Object *object, void *data);
-static void _etk_combobox_window_key_down_cb(Etk_Object *object, void *event_info, void *data);
+static void _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_combobox_item_enter_cb(Etk_Object *object, void *data);
 static void _etk_combobox_item_leave_cb(Etk_Object *object, void *data);
-static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, void *event_info, void *data);
+static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item);
 static Etk_Combobox_Item *_etk_combobox_item_new_valist(Etk_Combobox *combobox, va_list args);
 
@@ -1052,12 +1053,11 @@ static void _etk_combobox_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when a key is pressed on the combobox */
-static void _etk_combobox_key_down_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_combobox_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Combobox *combobox;
-   Evas_Event_Key_Down *event;
    
-   if (!(combobox = ETK_COMBOBOX(object)) || !(event = event_info))
+   if (!(combobox = ETK_COMBOBOX(object)))
       return;
    
    if (strcmp(event->keyname, "space") == 0)
@@ -1099,19 +1099,19 @@ static void _etk_combobox_window_popped_down_cb(Etk_Object *object, void *data)
 }
 
 /* Called when a key is pressed on the combobox window */
-static void _etk_combobox_window_key_down_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Combobox *combobox;
-   Evas_Event_Key_Down *event;
    Evas_List *l;
    
-   if (!(combobox = ETK_COMBOBOX(data)) || !(event = event_info))
+   if (!(combobox = ETK_COMBOBOX(data)))
       return;
    
    if (strcmp(event->keyname, "Down") == 0)
    {
       if (!combobox->items)
          return;
+      
       if (!combobox->selected_item || !(l = evas_list_find_list(combobox->items, combobox->selected_item)) || !l->next)
          _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(combobox->items->data));
       else
@@ -1121,6 +1121,7 @@ static void _etk_combobox_window_key_down_cb(Etk_Object *object, void *event_inf
    {
       if (!combobox->items)
          return;
+      
       if (!combobox->selected_item || !(l = evas_list_find_list(combobox->items, combobox->selected_item)) || !l->prev)
          _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(evas_list_last(combobox->items)->data));
       else
@@ -1133,7 +1134,7 @@ static void _etk_combobox_window_key_down_cb(Etk_Object *object, void *event_inf
       {
          etk_combobox_active_item_set(combobox, combobox->selected_item);
 	 if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
-	   etk_popup_window_popdown(combobox->window);
+	    etk_popup_window_popdown(combobox->window);
       }
    }
    else if (strcmp(event->keyname, "Escape") == 0)
@@ -1163,12 +1164,11 @@ static void _etk_combobox_item_leave_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the mouse releases the item */
-static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
-   Etk_Event_Mouse_Up_Down *event;
    Etk_Combobox_Item *item;
    
-   if (!(item = ETK_COMBOBOX_ITEM(object)) || !(event = event_info))
+   if (!(item = ETK_COMBOBOX_ITEM(object)))
       return;
    if (event->button != 1 && event->button != 3)
       return;

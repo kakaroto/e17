@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Edje.h>
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -14,8 +15,8 @@
 
 static void _etk_slider_constructor(Etk_Slider *slider);
 static void _etk_slider_realize_cb(Etk_Object *object, void *data);
-static void _etk_slider_key_down_cb(Etk_Object *object, void *event, void *data);
-static void _etk_slider_mouse_wheel(Etk_Object *object, void *event, void *data);
+static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static void _etk_slider_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_slider_value_changed_handler(Etk_Range *range, double value);
 static void _etk_slider_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
@@ -128,26 +129,25 @@ static void _etk_slider_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the user presses a key */
-static void _etk_slider_key_down_cb(Etk_Object *object, void *event, void *data)
+static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
-   Etk_Event_Key_Up_Down *key_event = event;
    Etk_Range *range;
    Etk_Bool propagate = ETK_FALSE;
 
    if (!(range = ETK_RANGE(object)))
       return;
 
-   if (strcmp(key_event->key, "Right") == 0 || strcmp(key_event->key, "Down") == 0)
+   if (strcmp(event->keyname, "Right") == 0 || strcmp(event->keyname, "Down") == 0)
       etk_range_value_set(range, range->value + range->step_increment);
-   else if (strcmp(key_event->key, "Left") == 0 || strcmp(key_event->key, "Up") == 0)
+   else if (strcmp(event->keyname, "Left") == 0 || strcmp(event->keyname, "Up") == 0)
       etk_range_value_set(range, range->value - range->step_increment);
-   else if (strcmp(key_event->key, "Home") == 0)
+   else if (strcmp(event->keyname, "Home") == 0)
       etk_range_value_set(range, range->lower);
-   else if (strcmp(key_event->key, "End") == 0)
+   else if (strcmp(event->keyname, "End") == 0)
       etk_range_value_set(range, range->upper);
-   else if (strcmp(key_event->key, "Next") == 0)
+   else if (strcmp(event->keyname, "Next") == 0)
       etk_range_value_set(range, range->value + range->page_increment);
-   else if (strcmp(key_event->key, "Prior") == 0)
+   else if (strcmp(event->keyname, "Prior") == 0)
       etk_range_value_set(range, range->value - range->page_increment);
    else
       propagate = ETK_TRUE;
@@ -157,15 +157,14 @@ static void _etk_slider_key_down_cb(Etk_Object *object, void *event, void *data)
 }
 
 /* Called when the user wants to change the value the mouse wheel */
-static void _etk_slider_mouse_wheel(Etk_Object *object, void *event, void *data)
+static void _etk_slider_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
-   Etk_Event_Mouse_Wheel *wheel_event = event;
    Etk_Range *slider_range;
    
    if (!(slider_range = ETK_RANGE(object)))
       return;
    
-   etk_range_value_set(slider_range, slider_range->value + wheel_event->z * slider_range->step_increment);
+   etk_range_value_set(slider_range, slider_range->value + event->z * slider_range->step_increment);
    etk_signal_stop();
 }
 

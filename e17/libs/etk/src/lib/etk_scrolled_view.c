@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "etk_viewport.h"
-#include "etk_utils.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Scrolled_View
@@ -23,8 +24,8 @@ static void _etk_scrolled_view_property_set(Etk_Object *object, int property_id,
 static void _etk_scrolled_view_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void *data);
-static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, void *event, void *data);
+static void _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, void *data);
@@ -385,10 +386,9 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
  **************************/
 
 /* Called when the user presses a key */
-static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void *data)
+static void _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Scrolled_View *scrolled_view;
-   Etk_Event_Key_Up_Down *key_event = event;
    Etk_Range *hscrollbar_range;
    Etk_Range *vscrollbar_range;
    Etk_Bool propagate = ETK_FALSE;
@@ -398,21 +398,21 @@ static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void
    hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
    vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
 
-   if (strcmp(key_event->key, "Right") == 0)
+   if (strcmp(event->keyname, "Right") == 0)
       etk_range_value_set(hscrollbar_range, hscrollbar_range->value + hscrollbar_range->step_increment);
-   else if (strcmp(key_event->key, "Down") == 0)
+   else if (strcmp(event->keyname, "Down") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value + vscrollbar_range->step_increment);
-   else if (strcmp(key_event->key, "Left") == 0)
+   else if (strcmp(event->keyname, "Left") == 0)
       etk_range_value_set(hscrollbar_range, hscrollbar_range->value - hscrollbar_range->step_increment);
-   else if (strcmp(key_event->key, "Up") == 0)
+   else if (strcmp(event->keyname, "Up") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->step_increment);
-   else if (strcmp(key_event->key, "Home") == 0)
+   else if (strcmp(event->keyname, "Home") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->lower);
-   else if (strcmp(key_event->key, "End") == 0)
+   else if (strcmp(event->keyname, "End") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->upper);
-   else if (strcmp(key_event->key, "Next") == 0)
+   else if (strcmp(event->keyname, "Next") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value + vscrollbar_range->page_increment);
-   else if (strcmp(key_event->key, "Prior") == 0)
+   else if (strcmp(event->keyname, "Prior") == 0)
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->page_increment);
    else
       propagate = ETK_TRUE;
@@ -422,17 +422,16 @@ static void _etk_scrolled_view_key_down_cb(Etk_Object *object, void *event, void
 }
 
 /* Called when the user wants to scroll the scrolled view with the mouse wheel */
-static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, void *event, void *data)
+static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Scrolled_View *scrolled_view;
-   Etk_Event_Mouse_Wheel *wheel_event = event;
    Etk_Range *vscrollbar_range;
    
    if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
       return;
    
    vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
-   etk_range_value_set(vscrollbar_range, vscrollbar_range->value + wheel_event->z * vscrollbar_range->step_increment);
+   etk_range_value_set(vscrollbar_range, vscrollbar_range->value + event->z * vscrollbar_range->step_increment);
    etk_signal_stop();
 }
 

@@ -9,6 +9,7 @@
 #include "etk_label.h"
 #include "etk_cache.h"
 #include "etk_theme.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -86,9 +87,9 @@ static void _etk_iconbox_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrol
 static void _etk_iconbox_realize_cb(Etk_Object *object, void *data);
 static void _etk_iconbox_grid_realize_cb(Etk_Object *object, void *data);
 static void _etk_iconbox_grid_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, void *event_info, void *data);
+static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
+static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
 
 static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid);
 static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid);
@@ -1133,22 +1134,21 @@ static void _etk_iconbox_grid_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the mouse presses the iconbox */
-static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
    Etk_Iconbox_Grid *grid;
    Etk_Iconbox *iconbox;
    Etk_Iconbox_Icon *icon;
-   Etk_Event_Mouse_Up_Down *down_event;
    Etk_Bool ctrl_pressed;
    
-   if (!(grid = ETK_ICONBOX_GRID(object)) || !(down_event = event_info) || !(iconbox = grid->iconbox))
+   if (!(grid = ETK_ICONBOX_GRID(object)) || !(iconbox = grid->iconbox))
       return;
    
-   if (down_event->button != 1)
+   if (event->button != 1)
       return;
    
-   ctrl_pressed = evas_key_modifier_is_set(down_event->modifiers, "Control");
-   if ((icon = etk_iconbox_icon_get_at_xy(iconbox, down_event->canvas.x, down_event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
+   ctrl_pressed = (event->modifiers & ETK_MODIFIER_CTRL);
+   if ((icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
    {
       if (ctrl_pressed)
       {
@@ -1166,8 +1166,8 @@ static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, void *event_info
    else
    {
       grid->selection_started = ETK_TRUE;
-      grid->selection_orig_x = down_event->widget.x + grid->xoffset;
-      grid->selection_orig_y = down_event->widget.y + grid->yoffset;
+      grid->selection_orig_x = event->widget.x + grid->xoffset;
+      grid->selection_orig_y = event->widget.y + grid->yoffset;
       grid->selection_mouse_x = grid->selection_orig_x;
       grid->selection_mouse_y = grid->selection_orig_y;
       grid->selection_first_col = 0;
@@ -1183,15 +1183,14 @@ static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, void *event_info
 }
 
 /* Called when the mouse releases the iconbox */
-static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Iconbox_Grid *grid;
-   Etk_Event_Mouse_Up_Down *up_event;
    
-   if (!(grid = ETK_ICONBOX_GRID(object)) || !(up_event = event_info))
+   if (!(grid = ETK_ICONBOX_GRID(object)))
       return;
    
-   if (up_event->button != 1)
+   if (event->button != 1)
       return;
    
    if (grid->selection_started)
@@ -1207,48 +1206,47 @@ static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, void *event_info, 
 }
 
 /* Called when the mouse moves over the iconbox */
-static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, void *event_info, void *data)
+static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
 {
    Etk_Iconbox_Grid *grid;
-   Etk_Event_Mouse_Move *move_event;
    Etk_Bool should_scroll = ETK_FALSE;
    int x, y, w, h;
    
-   if (!(grid = ETK_ICONBOX_GRID(object)) || !(move_event = event_info))
+   if (!(grid = ETK_ICONBOX_GRID(object)))
       return;
    
    if (grid->selection_started)
    {
-      grid->selection_mouse_x = move_event->cur.widget.x + grid->xoffset;
-      grid->selection_mouse_y = move_event->cur.widget.y + grid->yoffset;
+      grid->selection_mouse_x = event->cur.widget.x + grid->xoffset;
+      grid->selection_mouse_y = event->cur.widget.y + grid->yoffset;
       _etk_iconbox_grid_selection_rect_update(grid);
       
       /* Scroll the grid if the mouse is outside the edges of the grid */
       grid->hscrolling_speed = 0.0;
       grid->vscrolling_speed = 0.0;
       etk_widget_geometry_get(ETK_WIDGET(grid), &x, &y, &w, &h);
-      if (move_event->cur.canvas.x <= x + ETK_ICONBOX_SCROLL_MARGIN)
+      if (event->cur.canvas.x <= x + ETK_ICONBOX_SCROLL_MARGIN)
       {
          grid->hscrolling_speed = -ETK_ICONBOX_MAX_SCROLL_SPEED / ETK_ICONBOX_MAX_SCROLL_DISTANCE *
-            ETK_MIN((x + ETK_ICONBOX_SCROLL_MARGIN) - move_event->cur.canvas.x, ETK_ICONBOX_MAX_SCROLL_DISTANCE);
+            ETK_MIN((x + ETK_ICONBOX_SCROLL_MARGIN) - event->cur.canvas.x, ETK_ICONBOX_MAX_SCROLL_DISTANCE);
          should_scroll = ETK_TRUE;
       }
-      else if (move_event->cur.canvas.x >= x + w - ETK_ICONBOX_SCROLL_MARGIN)
+      else if (event->cur.canvas.x >= x + w - ETK_ICONBOX_SCROLL_MARGIN)
       {
          grid->hscrolling_speed = ETK_ICONBOX_MAX_SCROLL_SPEED / ETK_ICONBOX_MAX_SCROLL_DISTANCE *
-            ETK_MIN(move_event->cur.canvas.x - (x + w - ETK_ICONBOX_SCROLL_MARGIN), ETK_ICONBOX_MAX_SCROLL_DISTANCE);
+            ETK_MIN(event->cur.canvas.x - (x + w - ETK_ICONBOX_SCROLL_MARGIN), ETK_ICONBOX_MAX_SCROLL_DISTANCE);
          should_scroll = ETK_TRUE;
       }
-      if (move_event->cur.canvas.y <= y + ETK_ICONBOX_SCROLL_MARGIN)
+      if (event->cur.canvas.y <= y + ETK_ICONBOX_SCROLL_MARGIN)
       {
          grid->vscrolling_speed = -ETK_ICONBOX_MAX_SCROLL_SPEED / ETK_ICONBOX_MAX_SCROLL_DISTANCE *
-            ETK_MIN((y + ETK_ICONBOX_SCROLL_MARGIN) - move_event->cur.canvas.y, ETK_ICONBOX_MAX_SCROLL_DISTANCE);
+            ETK_MIN((y + ETK_ICONBOX_SCROLL_MARGIN) - event->cur.canvas.y, ETK_ICONBOX_MAX_SCROLL_DISTANCE);
          should_scroll = ETK_TRUE;
       }
-      else if (move_event->cur.canvas.y >= y + h - ETK_ICONBOX_SCROLL_MARGIN)
+      else if (event->cur.canvas.y >= y + h - ETK_ICONBOX_SCROLL_MARGIN)
       {
          grid->vscrolling_speed = ETK_ICONBOX_MAX_SCROLL_SPEED / ETK_ICONBOX_MAX_SCROLL_DISTANCE *
-            ETK_MIN(move_event->cur.canvas.y - (y + h - ETK_ICONBOX_SCROLL_MARGIN), ETK_ICONBOX_MAX_SCROLL_DISTANCE);
+            ETK_MIN(event->cur.canvas.y - (y + h - ETK_ICONBOX_SCROLL_MARGIN), ETK_ICONBOX_MAX_SCROLL_DISTANCE);
          should_scroll = ETK_TRUE;
       }
       

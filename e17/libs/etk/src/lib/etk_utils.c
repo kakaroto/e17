@@ -4,7 +4,12 @@
 #include "etk_signal.h"
 
 /**
- * @brief Combines the boolean returned values together by performing an "OR" operation
+ * @addtogroup Etk_Utils
+ * @{
+ */
+ 
+/**
+ * @brief Combines the returned boolean values together by performing an "OR" operation
  * @param return_value the location where to store the result
  * @param value_to_accum the new value to combine
  * @param data unused
@@ -21,7 +26,7 @@ void etk_accumulator_bool_or(void *return_value, const void *value_to_accum, voi
 }
 
 /**
- * @brief Combines the boolean returned values together by performing an "AND" operation
+ * @brief Combines the returned boolean values together by performing an "AND" operation
  * @param return_value the location where to store the result
  * @param value_to_accum the new value to combine
  * @param data unused
@@ -38,8 +43,8 @@ void etk_accumulator_bool_and(void *return_value, const void *value_to_accum, vo
 }
 
 /**
- * @brief Combines the boolean returned values together by performing an "OR" operation. @n
- * The accumulator will stop the propagation of the signal when a ETK_TRUE value is returned
+ * @brief Combines the returned boolean values together by performing an "OR" operation. @n
+ * The accumulator will stop the propagation of the signal as soon as a callback returns ETK_TRUE
  * @param return_value the location where to store the result
  * @param value_to_accum the new value to combine
  * @param data unused
@@ -58,8 +63,8 @@ void etk_accumulator_stopping_bool_or(void *return_value, const void *value_to_a
 }
 
 /**
- * @brief Combines the boolean returned values together by performing an "AND" operation. @n
- * The accumulator will stop the propagation of the signal when a ETK_FALSE value is returned
+ * @brief Combines the returned boolean values together by performing an "AND" operation. @n
+ * The accumulator will stop the propagation of the signal as soon as a callback returns ETK_FALSE
  * @param return_value the location where to store the result
  * @param value_to_accum the new value to combine
  * @param data unused
@@ -90,3 +95,5 @@ void etk_callback_set_null(void *data)
       return;
    *((void **)data) = NULL;
 }
+
+/** @} */

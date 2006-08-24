@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Edje.h>
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -21,7 +22,7 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
 static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value);
 static void _etk_scrollbar_page_size_changed_cb(Etk_Object *object, const char *property_name, void *data);
 static void _etk_scrollbar_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
-static void _etk_scrollbar_mouse_wheel(Etk_Object *object, void *event, void *data);
+static void _etk_scrollbar_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 
 static void _etk_scrollbar_scroll_start_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_scrollbar_scroll_stop_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -187,14 +188,13 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
 }
 
 /* Called when the user wants to scroll the scrollbar with the mouse wheel */
-static void _etk_scrollbar_mouse_wheel(Etk_Object *object, void *event, void *data)
+static void _etk_scrollbar_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Range *scrollbar_range;
-   Etk_Event_Mouse_Wheel *wheel_event;
    
-   if (!(scrollbar_range = ETK_RANGE(object)) || !(wheel_event = event))
+   if (!(scrollbar_range = ETK_RANGE(object)))
       return;
-   etk_range_value_set(scrollbar_range, scrollbar_range->value + wheel_event->z * scrollbar_range->step_increment);
+   etk_range_value_set(scrollbar_range, scrollbar_range->value + event->z * scrollbar_range->step_increment);
    etk_signal_stop();
 }
 

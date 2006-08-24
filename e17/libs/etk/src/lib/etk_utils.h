@@ -5,8 +5,14 @@
 #include <stdio.h>
 #include <libintl.h>
 
-/* Gettext */
-#define _(string) gettext(string)
+/**
+ * @defgroup Etk_Utils Etk_Utils
+ * @brief A set of utility functions and macros
+ * @{
+ */
+
+/** Finds a translation of "string" according to the locale settings (use gettext) */
+#define _(string)          gettext(string)
 
 /** Gets the max of the two values */
 #define ETK_MAX(v1, v2)    (((v1) > (v2)) ? (v1) : (v2)) 
@@ -22,7 +28,8 @@
 
 /** Displays a warning in the output console */
 #define ETK_WARNING(format, ...) \
-   fprintf(stderr, "Etk Warning: %s, %d: %s: " format "\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+   fprintf(stderr, "[Etk: Warning] [%s:%d - %s]: " format "\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+
 
 void etk_accumulator_bool_or(void *return_value, const void *value_to_accum, void *data);
 void etk_accumulator_bool_and(void *return_value, const void *value_to_accum, void *data);
@@ -30,5 +37,7 @@ void etk_accumulator_stopping_bool_or(void *return_value, const void *value_to_a
 void etk_accumulator_stopping_bool_and(void *return_value, const void *value_to_accum, void *data);
 
 void etk_callback_set_null(void *data);
+
+/** @} */
 
 #endif
