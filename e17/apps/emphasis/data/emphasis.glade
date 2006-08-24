@@ -2,7 +2,7 @@
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
 <!-- Generated with glade3
 	Version: 3.0.0
-	Date: Tue Aug 22 00:21:17 2006
+	Date: Fri Aug 25 01:23:27 2006
 	User: lok
 	Host: dapper
 -->
@@ -391,9 +391,6 @@
                       </packing>
                     </child>
                   </widget>
-                  <packing>
-                    <property name="resize">False</property>
-                  </packing>
                 </child>
                 <child>
                   <widget class="GtkTreeView" id="media_pls">
@@ -456,9 +453,6 @@
                         <property name="can_focus">True</property>
                         <signal name="row_clicked" handler="cb_media_pls_list_row_clicked"/>
                       </widget>
-                      <packing>
-                        <property name="resize">False</property>
-                      </packing>
                     </child>
                     <child>
                       <widget class="GtkTreeView" id="media_pls_content">
