@@ -191,7 +191,7 @@ static void _etk_layout_location_delete_confirm_cb(Etk_Object * object, void *da
 }
 
 static void _etk_layout_row_clicked(Etk_Object *object, 
-		Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
+		Etk_Tree_Row *row, Etk_Event_Mouse_Down *event, void *data)
 {
 	entropy_gui_component_instance* instance = data;
 	entropy_layout_gui* gui = instance->data;	
@@ -358,13 +358,14 @@ void _location_add_cb(Etk_Object *obj, void *data)
 void
 _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Key_Up_Down *ev;
+   Etk_Event_Key_Down *ev;
    entropy_gui_component_instance* instance = data;
    entropy_layout_gui* gui = instance->data;
 
    ev = event;
 
-   if(evas_key_modifier_is_set(ev->modifiers, "Control"))
+   /*FIXME: How do we do modifiers now?*/
+   /*if(evas_key_modifier_is_set(ev->modifiers, "Control"))
    {
 	   if (!strcmp(ev->key, "q")) {
 		   layout_etk_simple_quit(instance->core);
@@ -378,7 +379,7 @@ _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
 	   }
 
   
-   }
+   }*/
    
 }
 

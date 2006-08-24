@@ -191,7 +191,7 @@ static int _entropy_etk_list_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
 /* Called when the user presses a key */
 static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Key_Up_Down *key_event = event;
+   Etk_Event_Key_Down *key_event = event;
 
    Etk_Tree* tree;
    Evas_List* row_list;
@@ -394,7 +394,7 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 }
 
 
-static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Down *event, void *data)
 {
    entropy_gui_component_instance* instance;
    entropy_etk_file_list_viewer* viewer;

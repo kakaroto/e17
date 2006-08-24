@@ -194,7 +194,7 @@ void _etk_entropy_click_cb(Etk_Object *object, void *event_info, void *data)
   entropy_etk_iconbox_viewer *viewer;
   entropy_generic_file* file;
   Etk_Iconbox_Icon* icon;
-  Etk_Event_Mouse_Up_Down *event;
+  Etk_Event_Mouse_Down *event;
 
   instance = data;
   viewer = instance->data;

@@ -260,7 +260,7 @@ void etk_mime_dialog_populate_nth_binding_apps(int record)
 }
 
 
-static void _etk_mime_dialog_main_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_mime_dialog_main_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Down *event, void *data)
 {
 	int record;
 	Etk_Widget* tree = _etk_mime_dialog_sub_tree;

@@ -4,7 +4,7 @@
 #include <limits.h>
 #include <Etk.h>
 #include "etk_progress_dialog.h"
-#include "entropy_etk_context_menu.h";
+#include "entropy_etk_context_menu.h"
 
 static int etk_callback_setup = 0;
 static Ecore_Hash* instance_map_hash = NULL;
@@ -120,7 +120,7 @@ static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *ev
    }
 }
 
-static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
+static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Down *event, void *data)
 {
    entropy_gui_component_instance* instance;
    entropy_etk_file_structure_viewer* viewer;
