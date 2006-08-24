@@ -161,7 +161,7 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, testing.argb_internal_clients, 0),
    CFG_ITEM_BOOL(Conf, testing.argb_clients, 0),
    CFG_ITEM_BOOL(Conf, testing.argb_clients_inherit_attr, 0),
-   CFG_ITEM_BOOL(Conf, testing.use_sync, 1),
+   CFG_ITEM_BOOL(Conf, testing.use_sync, 0),
 
    CFG_ITEM_BOOL(Conf, autosave, 1),
    CFG_ITEM_BOOL(Conf, memory_paranoia, 1),
