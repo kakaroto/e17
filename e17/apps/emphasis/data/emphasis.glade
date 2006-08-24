@@ -2,7 +2,7 @@
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
 <!-- Generated with glade3
 	Version: 3.0.0
-	Date: Sun Aug 20 21:43:16 2006
+	Date: Tue Aug 22 00:21:17 2006
 	User: lok
 	Host: dapper
 -->
@@ -391,6 +391,9 @@
                       </packing>
                     </child>
                   </widget>
+                  <packing>
+                    <property name="resize">False</property>
+                  </packing>
                 </child>
                 <child>
                   <widget class="GtkTreeView" id="media_pls">
@@ -453,6 +456,9 @@
                         <property name="can_focus">True</property>
                         <signal name="row_clicked" handler="cb_media_pls_list_row_clicked"/>
                       </widget>
+                      <packing>
+                        <property name="resize">False</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkTreeView" id="media_pls_content">
@@ -693,7 +699,7 @@
                       <widget class="GtkHScale" id="full_sound_slider">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="adjustment">1.000000 0.000000 100.000000 1.000000 1.000000 0.000000</property>
+                        <property name="adjustment">1.000000 1.000000 100.000000 1.000000 1.000000 0.000000</property>
                         <property name="draw_value">False</property>
                         <signal name="value_changed" handler="cb_vol_slider_value_changed"/>
                       </widget>

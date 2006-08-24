@@ -162,7 +162,7 @@ cb_toggle_media(Etk_Object *object, void *data)
  * @brief Seek in the song the same percent position than the progress bar click
  */
 void
-cb_seek_time(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
+cb_seek_time(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
   UNUSED(data)
   Etk_Widget *progress;
@@ -178,7 +178,7 @@ cb_seek_time(Etk_Object *object, Etk_Event_Mouse_Up_Down *event, void *data)
 
 void
 cb_vol_image_clicked(Etk_Object *object,
-                     Etk_Event_Mouse_Up_Down *event,
+                     Etk_Event_Mouse_Down *event,
                      void *data)
 {
   UNUSED(event);
@@ -521,7 +521,7 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
  */
 void
 cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
-                     Etk_Event_Mouse_Up_Down *event, void *data)
+                     Etk_Event_Mouse_Down *event, void *data)
 {
   Emphasis_Player_Gui *player;
   Emphasis_Type et;
@@ -548,7 +548,7 @@ cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
  */
 void
 cb_tree_pls_clicked(Etk_Object *object, Etk_Tree_Row *row,
-                    Etk_Event_Mouse_Up_Down *event, void *data)
+                    Etk_Event_Mouse_Down *event, void *data)
 {
   UNUSED(data)
   int id;
@@ -565,7 +565,7 @@ cb_tree_pls_clicked(Etk_Object *object, Etk_Tree_Row *row,
 }
 
 void
-cb_emphasis_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event,
+cb_emphasis_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
                          void *data)
 {
   UNUSED(data)
@@ -606,7 +606,7 @@ cb_emphasis_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event,
  * @brief Fast find in mlib tree
  */
 void
-cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event,
+cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
                      void *data)
 {
   Etk_Tree *tree;
@@ -622,7 +622,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event,
   player = data;
 
   if (!strcmp(event->key, "a")
-      && evas_key_modifier_is_set(event->modifiers, "Control"))
+      && event->modifiers == ETK_MODIFIER_CTRL)
     {
       etk_tree_select_all(tree);
 
@@ -644,7 +644,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event,
     }
 
   if (!strcmp(event->key, "Tab")
-      || evas_key_modifier_is_set(event->modifiers, "Control"))
+      || event->modifiers == ETK_MODIFIER_CTRL)
     return;
 
   col = etk_tree_nth_col_get(tree, 0);
@@ -727,7 +727,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event,
  * @brief If right-clicked: popdown the contextual menu on the playlist
  */
 void
-cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Up_Down *event,
+cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Down *event,
                        void *data)
 {
   UNUSED(object)
@@ -745,7 +745,7 @@ cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Up_Down *event,
  * @brief Clear the playlist
  */
 void
-cb_playlist_clear(Etk_Object *object, Etk_Event_Mouse_Up_Down *event,
+cb_playlist_clear(Etk_Object *object, Etk_Event_Mouse_Down *event,
                   void *data)
 {
   UNUSED(object)
@@ -759,7 +759,7 @@ cb_playlist_clear(Etk_Object *object, Etk_Event_Mouse_Up_Down *event,
  * @brief Callback function of bindings key on the playlist
  */
 void
-cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Up_Down *event, 
+cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event, 
                     void *data)
 {
   UNUSED(object)
@@ -980,7 +980,7 @@ cb_config_ok(Etk_Object *object, void *data)
 
 void
 cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
-                              Etk_Event_Mouse_Up_Down *event, void *data)
+                              Etk_Event_Mouse_Down *event, void *data)
 {
   Emphasis_Player_Gui *player;
   Etk_Tree *tree;
@@ -1089,7 +1089,7 @@ cb_media_pls_del_clicked(Etk_Object *object, void *data)
 }
 
 void
-cb_media_pls_save_key_down(Etk_Object *object, Etk_Event_Key_Up_Down *event,
+cb_media_pls_save_key_down(Etk_Object *object, Etk_Event_Key_Down *event,
                            void *data)
 {
   if (!strcmp(event->key, "Return"))
