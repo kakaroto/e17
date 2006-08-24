@@ -8,19 +8,19 @@ ew_init(int *argc, char*** argv)
 }
 
 void 
-ew_main()
+ew_main(void)
 {
 	etk_main();
 }
 
 void 
-ew_main_quit()
+ew_main_quit(void)
 {
 	etk_main_quit();
 }
 
 int
-ew_shutdown()
+ew_shutdown(void)
 {
 	return etk_shutdown();
 }
@@ -33,15 +33,30 @@ ew_new(void)
 	{
 		ew->owner = NULL;
 		ew->box = NULL;
-		ew->hbox = NULL;
 		ew->label = NULL;
-		ew->control = NULL;
-		ew->col = NULL;
+		ew->dialog_hbox = NULL;
+		ew->entry_control = NULL;
+		ew->list_col = NULL;
 		ew->preview_smart = NULL;
 		ew->extra = NULL;
 	}
 
 	return ew;
+}
+
+void
+ew_widget_destroy(Entrance_Widget ew) {
+	EW_FREE(ew);
+}
+
+void
+ew_widget_extra_set(Entrance_Widget w, void *extra) {
+	w->extra = extra;
+}
+
+void *
+ew_widget_extra_get(Entrance_Widget w) {
+	return w->extra;
 }
 
 /* privates */

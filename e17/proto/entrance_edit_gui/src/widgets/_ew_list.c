@@ -19,7 +19,7 @@ _ew_list_new(const char *title, int w, int h, int r_h)
    etk_tree_headers_visible_set(ETK_TREE(ew->owner), ETK_FALSE);
    etk_tree_row_height_set(ETK_TREE(ew->owner), r_h);
    
-  ew->col = NULL;
+  ew->list_col = NULL;
 
    return ew;
 

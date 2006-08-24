@@ -13,7 +13,7 @@ ew_edjelist_new(const char *title, int w, int h, int r_h, int c_w)
 	   return NULL;
    }
 
-   ew->col = etk_tree_col_new(ETK_TREE(ew->owner), NULL, etk_tree_model_icon_text_new(ETK_TREE(ew->owner), ETK_TREE_FROM_EDJE), c_w);
+   ew->list_col = etk_tree_col_new(ETK_TREE(ew->owner), NULL, etk_tree_model_icon_text_new(ETK_TREE(ew->owner), ETK_TREE_FROM_EDJE), c_w);
  
    return _ew_list_buildtree(ew);
 }

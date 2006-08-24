@@ -88,7 +88,7 @@ ew_dialog_ok_button_add(Entrance_Widget ew, void (*func)(void *, void*), void *d
 void
 ew_dialog_destroy(Entrance_Widget ew)
 {
-	etk_object_destroy(ETK_OBJECT(ew->owner));
+	ew_widget_destroy(ew);
 }
 
 /*privates*/
