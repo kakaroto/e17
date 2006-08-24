@@ -652,6 +652,8 @@ SessionLogoutConfirm(void)
 				"    Are you sure you wish to log out ?    \n"
 				"\n\n"));
 	table = DialogAddItem(table, DITEM_TABLE);
+	DialogItemSetAlign(table, 512, 0);
+	DialogItemSetFill(table, 0, 0);
 	DialogItemTableSetOptions(table, 2, 0, 1, 0);
 	if (Conf.session.enable_reboot_halt)
 	  {
