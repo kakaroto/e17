@@ -241,7 +241,7 @@ GetPointerScreenGeometry(int *px, int *py, int *pw, int *ph)
 {
    int                 pointer_x, pointer_y;
 
-   EXQueryPointer(VRoot.xwin, &pointer_x, &pointer_y, NULL, NULL);
+   EQueryPointer(NULL, &pointer_x, &pointer_y, NULL, NULL);
 
    return ScreenGetGeometry(pointer_x, pointer_y, px, py, pw, ph);
 }
@@ -251,7 +251,7 @@ GetPointerScreenAvailableArea(int *px, int *py, int *pw, int *ph)
 {
    int                 pointer_x, pointer_y;
 
-   EXQueryPointer(VRoot.xwin, &pointer_x, &pointer_y, NULL, NULL);
+   EQueryPointer(NULL, &pointer_x, &pointer_y, NULL, NULL);
 
    return ScreenGetAvailableArea(pointer_x, pointer_y, px, py, pw, ph);
 }

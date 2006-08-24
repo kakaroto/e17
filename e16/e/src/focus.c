@@ -430,7 +430,7 @@ doFocusToEwin(EWin * ewin, int why)
    ICCCM_Cmap(ewin);
 
    /* Quit if pointer is not on our screen */
-   if (!EXQueryPointer(None, NULL, NULL, NULL, NULL))
+   if (!EQueryPointer(NULL, NULL, NULL, NULL, NULL))
      {
 	Mode.focuswin = NULL;
 	return;

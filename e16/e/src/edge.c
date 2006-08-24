@@ -45,7 +45,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
       return;
 
    /* Quit if pointer has left screen */
-   if (!EXQueryPointer(None, NULL, NULL, NULL, NULL))
+   if (!EQueryPointer(NULL, NULL, NULL, NULL, NULL))
       return;
 
    /* Quit if in fullscreen window */

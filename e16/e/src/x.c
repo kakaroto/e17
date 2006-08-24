@@ -1027,7 +1027,7 @@ EXWarpPointer(Window xwin, int x, int y)
    XWarpPointer(disp, None, xwin, 0, 0, 0, 0, x, y);
 }
 
-Bool
+static              Bool
 EXQueryPointer(Window xwin, int *px, int *py, Window * pchild,
 	       unsigned int *pmask)
 {
@@ -1049,6 +1049,17 @@ EXQueryPointer(Window xwin, int *px, int *py, Window * pchild,
 
    return XQueryPointer(disp, xwin, &root, pchild, &root_x, &root_y, px, py,
 			pmask);
+}
+
+Bool
+EQueryPointer(Win win, int *px, int *py, Window * pchild, unsigned int *pmask)
+{
+   EXID               *xid = win;
+   Window              xwin;
+
+   xwin = (xid) ? xid->xwin : VRoot.xwin;
+
+   return EXQueryPointer(xwin, px, py, pchild, pmask);
 }
 
 void

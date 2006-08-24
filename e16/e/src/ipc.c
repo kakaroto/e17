@@ -1269,7 +1269,7 @@ IPC_Warp(const char *params, Client * c __UNUSED__)
    x = y = 0;
    if (!strcmp(params, "?"))
      {
-	EXQueryPointer(None, &x, &y, NULL, NULL);
+	EQueryPointer(NULL, &x, &y, NULL, NULL);
 	IpcPrintf("Pointer location: %d %d\n", x, y);
      }
    else if (!strncmp(params, "abs", 3))

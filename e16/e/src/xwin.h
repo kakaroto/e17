@@ -141,6 +141,9 @@ int                 EShapePropagate(Win win);
 int                 EShapeCheck(Win win);
 Pixmap              EWindowGetShapePixmap(Win win);
 
+Bool                EQueryPointer(Win win, int *px, int *py,
+				  Window * pchild, unsigned int *pmask);
+
 void                EAllocColor(Colormap colormap, XColor * pxc);
 void                ESetColor(XColor * pxc, int r, int g, int b);
 void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
@@ -155,8 +158,6 @@ int                 EXGetGeometry(Window xwin, Window * root_return,
 void                EXCopyArea(Drawable src, Drawable dst, int sx, int sy,
 			       unsigned int w, unsigned int h, int dx, int dy);
 
-Bool                EXQueryPointer(Window xwin, int *px, int *py,
-				   Window * pchild, unsigned int *pmask);
 void                EXWarpPointer(Window xwin, int x, int y);
 
 #define EXCreatePixmap(win, w, h, d) \
