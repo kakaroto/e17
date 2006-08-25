@@ -21,13 +21,13 @@ static void _e_sticky_clipboard_text_request_cb(Etk_Object *object, void *event,
 static void
 _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Key_Up_Down *ev;
+   Etk_Event_Key_Down *ev;
    E_Sticky *s;
    
    s = data;
    ev = event;
    
-   if(evas_key_modifier_is_set(ev->modifiers, "Control"))
+   if(ev->modifiers == ETK_MODIFIER_CTRL)
      {
 	if(!strcmp(ev->key, "n"))
 	  {
@@ -90,7 +90,7 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 static void
 _e_sticky_mouse_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Mouse_Up_Down *ev;
+   Etk_Event_Mouse_Down *ev;
    E_Sticky *s;
    
    s = data;
@@ -108,7 +108,7 @@ _e_sticky_mouse_down_cb(Etk_Object *object, void *event, void *data)
 static void
 _e_sticky_mouse_up_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Mouse_Up_Down *ev;
+   Etk_Event_Mouse_Down *ev;
    E_Sticky *s;
    
    s = data;
