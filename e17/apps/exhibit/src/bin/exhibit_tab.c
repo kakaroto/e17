@@ -455,7 +455,7 @@ _ex_tab_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 static void
 _ex_tab_itree_key_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Key_Up_Down *ev;
+   Etk_Event_Key_Down *ev;
    Exhibit *e;
 
    e = data;

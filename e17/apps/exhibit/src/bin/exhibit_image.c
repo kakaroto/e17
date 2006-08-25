@@ -69,7 +69,7 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 void
 _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Mouse_Up_Down *ev;
+   Etk_Event_Mouse_Down *ev;
    Exhibit *e;
    
    e = data;
@@ -139,7 +139,7 @@ void
 _ex_image_mouse_up(Etk_Object *object, void *event, void *data)
 {
    Exhibit *e;
-   Etk_Event_Mouse_Up_Down *ev;
+   Etk_Event_Mouse_Down *ev;
       
    e = data;
    ev = event;
@@ -554,7 +554,7 @@ _ex_image_save(Etk_Image *im)
 void
 _ex_image_save_as_entry_cb(Etk_Object *object, void *event, void *data) 
 {
-   Etk_Event_Key_Up_Down *ev = event;
+   Etk_Event_Key_Down *ev = event;
    
    if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
      _ex_image_save_as_cb(data);   

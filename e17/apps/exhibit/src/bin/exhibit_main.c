@@ -284,7 +284,7 @@ _ex_main_populate_files(Exhibit *e, const char *selected_file)
 static void
 _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Key_Up_Down *ev;
+   Etk_Event_Key_Down *ev;
    Exhibit *e;
 
    e = data;
@@ -392,13 +392,13 @@ _ex_main_window_deleted_cb(void *data)
 static void
 _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Key_Up_Down *ev;
+   Etk_Event_Key_Down *ev;
    Exhibit *e;
 
    e = data;
    ev = event;
 
-   if(evas_key_modifier_is_set(ev->modifiers, "Control"))
+   if(ev->modifiers == ETK_MODIFIER_CTRL)
      {
 	if(!strcmp(ev->key, "t"))
 	  {
