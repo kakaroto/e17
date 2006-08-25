@@ -529,7 +529,7 @@ cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
 
   player = data;
   et = (Emphasis_Type) etk_object_data_get(object, "Emphasis_Type");
-  if ((event->button == 1) && (event->flags & EVAS_BUTTON_DOUBLE_CLICK))
+  if ((event->button == 1) && (event->flags == ETK_MOUSE_DOUBLE_CLICK))
     {
       emphasis_playlist_append_selected(ETK_TREE(object), et);
       mpc_play_if_stopped();
@@ -553,7 +553,7 @@ cb_tree_pls_clicked(Etk_Object *object, Etk_Tree_Row *row,
   UNUSED(data)
   int id;
 
-  if ((event->button == 1) && (event->flags & EVAS_BUTTON_DOUBLE_CLICK))
+  if ((event->button == 1) && (event->flags == ETK_MOUSE_DOUBLE_CLICK))
     {
       id = (int) etk_tree_row_data_get(row);
       mpc_play_id(id);
@@ -990,7 +990,7 @@ cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row,
   player = data;
   if (event->button == 1)
     {
-      if (event->flags == EVAS_BUTTON_NONE)
+      if (event->flags == ETK_MOUSE_NONE)
         {
           tree = ETK_TREE(object);
           col = etk_tree_nth_col_get(tree, 0);
@@ -1002,7 +1002,7 @@ cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row,
                                     MPD_DATA_TYPE_SONG,
                                     NULL);
         }
-      else if (event->flags == EVAS_BUTTON_DOUBLE_CLICK)
+      else if (event->flags == ETK_MOUSE_DOUBLE_CLICK)
         {
           cb_media_pls_load_clicked(NULL, data);
         }
