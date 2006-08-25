@@ -37,26 +37,11 @@ static Etk_Test_Iconbox_Types _etk_test_iconbox_types[] =
 static int _etk_test_iconbox_num_types = sizeof(_etk_test_iconbox_types) / sizeof (_etk_test_iconbox_types[0]);
 static Etk_String *_etk_test_iconbox_current_folder = NULL;
 
-/*static char *_etk_test_iconbox_icon_filenames[] =
-{
-   "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/audio-x-generic.png",
-   "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/image-x-generic.png",
-   "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/video-x-generic.png",
-   "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/text-html.png",
-   "/home/simon/etk/data/icons/default/icons/48x48/mimetypes/application-x-executable.png",
-   "/home/simon/etk/data/themes/default/images/entry.png",
-   "/home/simon/etk/data/themes/default/images/scrollbar_button_up1.png",
-   "/home/simon/etk/data/themes/default/images/scrollbar_vdrag2.png"
-};
-static int _etk_test_iconbox_num_icon_filenames = sizeof(_etk_test_iconbox_icon_filenames) / sizeof(char *);*/
-
 /* Creates the window for the iconbox test */
 void etk_test_iconbox_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
    Etk_Widget *iconbox;
-   Etk_Iconbox_Model *mini_model;
-   //int i;
    
    if (win)
    {
@@ -67,23 +52,14 @@ void etk_test_iconbox_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Iconbox Test");
    etk_widget_size_request_set(ETK_WIDGET(win), 100, 100);
+   etk_window_resize(ETK_WINDOW(win), 600, 330);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    iconbox = etk_iconbox_new();
    etk_container_add(ETK_CONTAINER(win), iconbox);
    etk_signal_connect("mouse_up", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_test_iconbox_mouse_up_cb), NULL);
    
-   /* Create a new iconbox model: mini view */
-   mini_model = etk_iconbox_model_new(ETK_ICONBOX(iconbox));
-   etk_iconbox_model_geometry_set(mini_model, 150, 20, 2, 2);
-   etk_iconbox_model_icon_geometry_set(mini_model, 0, 0, 16, 16, ETK_FALSE, ETK_TRUE);
-   etk_iconbox_model_label_geometry_set(mini_model, 20, 0, 130, 16, 0.0, 0.5);
-   //etk_iconbox_current_model_set(ETK_ICONBOX(iconbox), mini_model);
-   
-   /*for (i = 0; i < 500; i++)
-      etk_iconbox_append(iconbox, _etk_test_iconbox_icon_filenames[rand() % _etk_test_iconbox_num_icon_filenames], NULL, "filename");*/
    _etk_test_iconbox_folder_set(ETK_ICONBOX(iconbox), NULL);
-   
    etk_widget_show_all(win);
 }
 
@@ -96,12 +72,13 @@ static void _etk_test_iconbox_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up
    
    if (!(iconbox = ETK_ICONBOX(object)))
       return;
-   if (event->button != 1)
+   if (event->button != 1 || !(event->flags & ETK_MOUSE_DOUBLE_CLICK))
       return;
    if (!(icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
       return;
    
-   new_folder = etk_string_new_printf("%s/%s", etk_string_get(_etk_test_iconbox_current_folder), etk_iconbox_icon_label_get(icon));
+   new_folder = etk_string_new_printf("%s/%s", etk_string_get(_etk_test_iconbox_current_folder),
+      etk_iconbox_icon_label_get(icon));
    _etk_test_iconbox_folder_set(iconbox, etk_string_get(new_folder));
    etk_object_destroy(ETK_OBJECT(new_folder));
 }
