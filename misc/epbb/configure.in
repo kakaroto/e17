@@ -66,11 +66,12 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code director
 
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-if [ test -z $EVAS_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+if test -z "$EVAS_CONFIG" ; then
+  AC_MSG_ERROR([
+  $PROG is not in your \$PATH. Please ensure it is.
+  Read the manual page for you shell as to how to extend your path.
+  FATAL ERROR. ABORT.
+  ])
 fi
 evas_cflags=`$EVAS_CONFIG --cflags`
 evas_libs=`$EVAS_CONFIG --libs`
@@ -80,10 +81,11 @@ AC_SUBST(evas_libs)
 PROG="ecore-config";
 AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
 if [ test -z $ECORE_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR([
+  $PROG is not in your \$PATH. Please ensure it is.
+  Read the manual page for you shell as to how to extend your path.
+  FATAL ERROR. ABORT.
+  ])
 fi
 ecore_cflags=`$ECORE_CONFIG --cflags`
 ecore_libs=`$ECORE_CONFIG --libs`
@@ -93,10 +95,11 @@ AC_SUBST(ecore_libs)
 PROG="edje-config";
 AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
 if [ test -z $EDJE_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
+  AC_MSG_ERROR([
+  $PROG is not in your \$PATH. Please ensure it is.
+  Read the manual page for you shell as to how to extend your path.
+  FATAL ERROR. ABORT.
+  ])
 fi
 edje_cflags=`$EDJE_CONFIG --cflags`
 edje_libs=`$EDJE_CONFIG --libs`
@@ -112,8 +115,8 @@ if test -d "../pbbuttonsd"; then
   PBB_LDADD="-lpbb"
   echo "Use develpment version of libpbb."
 else
-  AC_CHECK_LIB(pbb, init_libpbb,pbb_libs="-lpbb",AC_MSG_ERROR(Cannot find libpbb, please compile and install it first.))
-  AC_CHECK_LIB(pbb, taglist_count,,AC_DEFINE_UNQUOTED(HAVE_OLDLIBPBB, 1,[latest libpbb version available]))
+  AC_CHECK_LIB([pbb], [init_libpbb], [pbb_libs="-lpbb"], [AC_MSG_ERROR([Cannot find libpbb, please compile and install it first.])])
+  AC_CHECK_LIB([pbb], [taglist_count], [], [AC_DEFINE_UNQUOTED([HAVE_OLDLIBPBB], [1], [latest libpbb version available])])
 fi
 AC_SUBST(pbb_cflags)
 AC_SUBST(pbb_libs)
