@@ -2433,7 +2433,6 @@ static void _etk_widget_realize(Etk_Widget *widget)
       evas_object_hide(widget->smart_object);
 
    evas_object_propagate_events_set(widget->smart_object, 0);
-   evas_object_repeat_events_set(widget->smart_object, widget->repeat_mouse_events);
    evas_object_pass_events_set(widget->smart_object, widget->pass_mouse_events);
    
    /* TODO: focus: we should probably check if the toplevel widget is focused too! */
@@ -2970,7 +2969,6 @@ static void _etk_widget_swallowed_widget_realize_cb(Etk_Object *object, void *da
       }
    }
    
-   /* TODO: etk_signal may not like that?!!!! IMPORTANT TO FIX!!! */
    etk_signal_disconnect("realize", ETK_OBJECT(swallowed), ETK_CALLBACK(_etk_widget_swallowed_widget_realize_cb));
 }
 
@@ -3069,17 +3067,9 @@ static void _etk_widget_smart_object_resize_cb(Evas_Object *obj, Evas_Coord w, E
       widget->inner_geometry.h = widget->geometry.h - widget->top_inset - widget->bottom_inset;
 
       if (widget->theme_object)
-      {
-         /* TODO: high: do we need the move here? */
-         evas_object_move(widget->theme_object, widget->geometry.x, widget->geometry.y);
          evas_object_resize(widget->theme_object, widget->geometry.w, widget->geometry.h);
-      }
       if (widget->event_object)
-      {
-         /* TODO: high: do we need the move here? */
-         evas_object_move(widget->event_object, widget->geometry.x, widget->geometry.y);
          evas_object_resize(widget->event_object, widget->geometry.w, widget->geometry.h);
-      }
       if (widget->size_allocate)
          widget->size_allocate(widget, widget->inner_geometry);
       
