@@ -3,7 +3,7 @@
 
 #include "_ew_list.h"
 
-static void _ew_tree_cb_row_clicked(Etk_Object *, Etk_Tree_Row *, Etk_Event_Mouse_Up_Down *, void *);
+static void _ew_tree_cb_row_clicked(Etk_Object *, Etk_Tree_Row *, Etk_Event_Mouse_Down *, void *);
 
 Entrance_Widget
 ew_textlist_new(const char *title, int w, int h, int r_h, int c_w)

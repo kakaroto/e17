@@ -1,7 +1,7 @@
 #include <Etk.h>
 #include "Entrance_Widgets.h"
 
-static void _ew_list_cb_row_clicked(Etk_Object *, Etk_Tree_Row *, Etk_Event_Mouse_Up_Down *, void *);
+static void _ew_list_cb_row_clicked(Etk_Object *, Etk_Tree_Row *, Etk_Event_Mouse_Down *, void *);
 
 Entrance_Widget
 _ew_list_new(const char *title, int w, int h, int r_h)
@@ -82,7 +82,7 @@ ew_list_selected_data_get(Entrance_Widget el)
 
 /*privates*/
 static void 
-_ew_list_cb_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up_Down *event, void *data)
+_ew_list_cb_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Down *event, void *data)
 {  
    Entrance_List_Data ewld =  etk_tree_row_data_get(row);
 
