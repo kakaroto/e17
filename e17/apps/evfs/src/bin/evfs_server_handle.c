@@ -695,3 +695,8 @@ void evfs_handle_metadata_file_group_remove(evfs_client* client, evfs_command* c
 		evfs_metadata_group_header_file_remove(command->file_command.files[0], command->file_command.ref);
 	}	
 }
+
+void evfs_handle_trash_restore_command(evfs_client* client, evfs_command* command)
+{
+	printf("TRASH restore: stub\n");
+}

@@ -237,6 +237,9 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
         evfs_handle_metadata_file_group_remove(client,command);
 	break;
 
+     case EVFS_CMD_TRASH_RESTORE:
+	evfs_handle_trash_restore_command(client,command);
+
      default:
         printf("Warning - unhandled command %d\n", command->type);
         break;
