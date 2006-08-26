@@ -562,7 +562,10 @@ SV * newSVEventKeyUp(Etk_Event_Key_Up *ev) {
 	S_STORE("keyname", ev->keyname)
 	S_STORE("key", ev->key)
 	S_STORE("string", ev->string)
+	S_STORE("compose", ev->compose)
 	I_STORE("timestamp", newSVuv(ev->timestamp))
+	I_STORE("modifiers", newSVuv(ev->modifiers))
+	I_STORE("locks", newSVuv(ev->locks))
 
 	return newRV_inc((SV*)hv);
 }
@@ -574,7 +577,10 @@ SV * newSVEventKeyDown(Etk_Event_Key_Down *ev) {
 	S_STORE("keyname", ev->keyname)
 	S_STORE("key", ev->key)
 	S_STORE("string", ev->string)
+	S_STORE("compose", ev->compose)
 	I_STORE("timestamp", newSVuv(ev->timestamp))
+	I_STORE("modifiers", newSVuv(ev->modifiers))
+	I_STORE("locks", newSVuv(ev->locks))
 
 	return newRV_inc((SV*)hv);
 }
@@ -591,6 +597,8 @@ SV * newSVEventMouseWheel(Etk_Event_Mouse_Wheel *ev) {
 	I_STORE("widget.x", newSViv(ev->widget.x))
 	I_STORE("widget.y", newSViv(ev->widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
+	I_STORE("modifiers", newSVuv(ev->modifiers))
+	I_STORE("locks", newSVuv(ev->locks))
 
 	return newRV_noinc((SV*)hv);
 }
@@ -610,6 +618,8 @@ SV * newSVEventMouseMove(Etk_Event_Mouse_Move *ev) {
 	I_STORE("prev.widget.x", newSViv(ev->prev.widget.x))
 	I_STORE("prev.widget.y", newSViv(ev->prev.widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
+	I_STORE("modifiers", newSVuv(ev->modifiers))
+	I_STORE("locks", newSVuv(ev->locks))
 
 	return newRV_noinc((SV*)hv);
 }
@@ -625,6 +635,9 @@ SV * newSVEventMouseUp(Etk_Event_Mouse_Up *ev) {
 	I_STORE("widget.x", newSViv(ev->widget.x))
 	I_STORE("widget.y", newSViv(ev->widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
+	I_STORE("modifiers", newSVuv(ev->modifiers))
+	I_STORE("locks", newSVuv(ev->locks))
+	I_STORE("flags", newSVuv(ev->flags))
 
 	return newRV_inc((SV*)hv);
 }
@@ -640,6 +653,9 @@ SV * newSVEventMouseDown(Etk_Event_Mouse_Down *ev) {
 	I_STORE("widget.x", newSViv(ev->widget.x))
 	I_STORE("widget.y", newSViv(ev->widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
+	I_STORE("modifiers", newSVuv(ev->modifiers))
+	I_STORE("locks", newSVuv(ev->locks))
+	I_STORE("flags", newSVuv(ev->flags))
 
 	return newRV_inc((SV*)hv);
 }
@@ -655,6 +671,8 @@ SV * newSVEventMouseIn(Etk_Event_Mouse_In *ev) {
 	I_STORE("widget.x", newSViv(ev->widget.x))
 	I_STORE("widget.y", newSViv(ev->widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
+	I_STORE("modifiers", newSVuv(ev->modifiers))
+	I_STORE("locks", newSVuv(ev->locks))
 
 	return newRV_noinc((SV*)hv);
 }
@@ -670,6 +688,8 @@ SV * newSVEventMouseOut(Etk_Event_Mouse_Out *ev) {
 	I_STORE("widget.x", newSViv(ev->widget.x))
 	I_STORE("widget.y", newSViv(ev->widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
+	I_STORE("modifiers", newSVuv(ev->modifiers))
+	I_STORE("locks", newSVuv(ev->locks))
 
 	return newRV_noinc((SV*)hv);
 }

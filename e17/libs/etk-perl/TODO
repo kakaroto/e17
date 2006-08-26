@@ -1,6 +1,5 @@
 TODO:
 	- callback system needs to convert event structs to perl equivalents 
-	- port evas key modifiers and locks
 	- perldoc everything
 	- complete Tests
 	- Check for memory usage (I'm not sure if we're leaking or not,

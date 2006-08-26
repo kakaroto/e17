@@ -825,6 +825,7 @@ sub iconbox_window_show
     my $win = Etk::Window->new();
     $win->TitleSet("Etk-Perl Iconbox Test");
     $win->SizeRequestSet(100, 100);
+    $win->Resize(600, 330);
     
     $_iconbox_folder = "";    
     my $iconbox = Etk::Iconbox->new();
@@ -833,12 +834,13 @@ sub iconbox_window_show
     $model->IconGeometrySet(20, 0, 130, 16, 0.0, 0.5);
     _iconbox_folder_set($iconbox, "");
     
-    $iconbox->SignalConnect("mouse_up", 
+    $iconbox->SignalConnect("mouse_down", 
 	sub {
 	    my $self = shift;
 	    my $event = shift;
-	    my $icon = $iconbox->IconGetAtXy($event->{canvas_x},
-		$event->{canvas_y}, 0, 1, 1);
+	    return unless $event->{flags} & MouseDoubleClick;
+	    my $icon = $iconbox->IconGetAtXy($event->{"canvas.x"},
+		$event->{"canvas.y"}, 0, 1, 1);
 	    return if($icon == undef);
 	    if (-d $_iconbox_folder."/".$icon->LabelGet())
 	    {
