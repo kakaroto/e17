@@ -35,6 +35,7 @@ struct entropy_etk_iconbox_viewer
   Ecore_Hash* properties_request_hash;  
 };
 
+void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, void *data);
 
 /*------------- boilerplate -----*/
 typedef struct gui_file gui_file;
@@ -188,7 +189,7 @@ void _entropy_etk_icon_viewer_slider_cb(Etk_Object *object, double value, void *
 		  0, value + 2, (value*2) + 4, 12, 0.5,0);
 }
 
-void _etk_entropy_click_cb(Etk_Object *object, void *event_info, void *data)
+void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, void *data)
 {
   entropy_gui_component_instance *instance;	
   entropy_etk_iconbox_viewer *viewer;
@@ -208,8 +209,10 @@ void _etk_entropy_click_cb(Etk_Object *object, void *event_info, void *data)
   file = etk_iconbox_icon_data_get(icon);
 
   if (event->button == 1) {
-	  if (file) {
-		entropy_event_action_file(file,instance);
+	  if (event->flags & ETK_MOUSE_DOUBLE_CLICK) {
+		  if (file) {
+			entropy_event_action_file(file,instance);
+		  }
 	  }
   } else if (event->button == 3) {
 	  etk_iconbox_unselect_all(icon->iconbox);
@@ -435,7 +438,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 		  0,0,64,64,1,1);*/
 		  
 	  
-  etk_signal_connect("mouse_up", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_etk_entropy_click_cb), instance);
+  etk_signal_connect("mouse_up", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_click_cb), instance);
   
   instance->gui_object = viewer->vbox;
   instance->core = core;
