@@ -11,7 +11,7 @@ typedef struct _Etk_Test_Iconbox_Types
    char *icon;
 } Etk_Test_Iconbox_Types;
 
-static void _etk_test_iconbox_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static void _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folder);
 
 static Etk_Test_Iconbox_Types _etk_test_iconbox_types[] =
@@ -57,14 +57,14 @@ void etk_test_iconbox_window_create(void *data)
    
    iconbox = etk_iconbox_new();
    etk_container_add(ETK_CONTAINER(win), iconbox);
-   etk_signal_connect("mouse_up", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_test_iconbox_mouse_up_cb), NULL);
+   etk_signal_connect("mouse_down", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_test_iconbox_mouse_down_cb), NULL);
    
    _etk_test_iconbox_folder_set(ETK_ICONBOX(iconbox), NULL);
    etk_widget_show_all(win);
 }
 
 /* Called when the iconbox is pressed by the mouse */
-static void _etk_test_iconbox_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
+static void _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Iconbox *iconbox;
    Etk_Iconbox_Icon *icon;

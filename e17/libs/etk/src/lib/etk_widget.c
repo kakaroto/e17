@@ -3067,9 +3067,15 @@ static void _etk_widget_smart_object_resize_cb(Evas_Object *obj, Evas_Coord w, E
       widget->inner_geometry.h = widget->geometry.h - widget->top_inset - widget->bottom_inset;
 
       if (widget->theme_object)
+      {
+         evas_object_move(widget->theme_object, widget->geometry.x, widget->geometry.y);
          evas_object_resize(widget->theme_object, widget->geometry.w, widget->geometry.h);
+      }
       if (widget->event_object)
+      {
+         evas_object_move(widget->event_object, widget->geometry.x, widget->geometry.y);
          evas_object_resize(widget->event_object, widget->geometry.w, widget->geometry.h);
+      }
       if (widget->size_allocate)
          widget->size_allocate(widget, widget->inner_geometry);
       

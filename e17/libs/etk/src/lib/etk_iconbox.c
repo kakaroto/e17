@@ -1116,6 +1116,7 @@ static void _etk_iconbox_grid_realize_cb(Etk_Object *object, void *data)
    etk_widget_member_object_add(ETK_WIDGET(grid), grid->clip);
    
    grid->selection_rect = etk_theme_object_load_from_parent(evas, ETK_WIDGET(grid->iconbox), NULL, "selection");
+   evas_object_pass_events_set(grid->selection_rect, 1);
    evas_object_clip_set(grid->selection_rect, grid->clip);
    etk_widget_member_object_add(ETK_WIDGET(grid), grid->selection_rect);
 }
