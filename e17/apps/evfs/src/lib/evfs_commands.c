@@ -162,7 +162,10 @@ evfs_client_multi_file_command(evfs_connection * conn, Ecore_List* files, evfs_f
 	   command->file_command.files[cfile] = ref;
 	   cfile++;
    }
-   if (to) command->file_command.files[cfile] = to;
+   if (to) 
+	   command->file_command.files[cfile] = to;
+   else
+	   command->file_command.num_files -= 1;
 
    evfs_write_command(conn, command);
 
