@@ -1134,14 +1134,21 @@ void entropy_filesystem_file_trash_restore (Ecore_List* files, entropy_gui_compo
   long id;
   entropy_generic_file* file;
   Ecore_List* evfs_files;
+  evfs_filereference* ref;
 
   evfs_files = ecore_list_new();
   ecore_list_goto_first(files);
   while ( (file = ecore_list_next(files)) ) { 
-	  ecore_list_append(evfs_files, evfs_parse_uri_single(file->uri));
+	  printf("Parsing %s\n", file->uri);
+	  if ( (ref =  evfs_parse_uri_single(file->uri))) {
+		  ecore_list_append(evfs_files, ref);
+	  }
   }
   
   /*Track the restore action */
   id = evfs_client_file_trash_restore (con, evfs_files);
   ecore_hash_set(evfs_dir_requests, (long*)id, instance);
+
+  ecore_list_destroy(files);
+  ecore_list_destroy(evfs_files);
 }
