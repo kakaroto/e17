@@ -47,7 +47,7 @@ _config_mail_module (Config_Item * ci)
   snprintf (buf, sizeof (buf), "%s/module.eap",
 	    e_module_dir_get (mail_config->module));
   con = e_container_current_get (e_manager_current_get ());
-  cfd = e_config_dialog_new (con, _("Mail Configuration"), "Mail", "_e_modules_mail_config_dialog", buf, 0, v, ci);
+  cfd = e_config_dialog_new (con, D_("Mail Configuration"), "Mail", "_e_modules_mail_config_dialog", buf, 0, v, ci);
   mail_config->config_dialog = cfd;
 }
 
@@ -90,17 +90,17 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   o = e_widget_list_add (evas, 0, 0);
   of = e_widget_framelist_add (evas, _("General Settings"), 0);
   ob =
-    e_widget_check_add (evas, _("Always Show Labels"), &(cfdata->show_label));
+    e_widget_check_add (evas, D_("Always Show Labels"), &(cfdata->show_label));
   e_widget_framelist_object_append (of, ob);
-  ob = e_widget_label_add (evas, _("Check Interval"));
+  ob = e_widget_label_add (evas, D_("Check Interval"));
   e_widget_framelist_object_append (of, ob);
   ob =
-    e_widget_slider_add (evas, 1, 0, _("%2.0f minutes"), 1.0, 60.0, 1.0, 0,
+    e_widget_slider_add (evas, 1, 0, D_("%2.0f minutes"), 1.0, 60.0, 1.0, 0,
 			 &(cfdata->check_time), NULL, 100);
   e_widget_framelist_object_append (of, ob);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
-  of = e_widget_frametable_add (evas, _("Mail Boxes"), 0);
+  of = e_widget_frametable_add (evas, D_("Mail Boxes"), 0);
   ob = e_widget_ilist_add (evas, 32, 32, NULL);
   e_widget_ilist_selector_set (ob, 1);
   cfdata->il = ob;
@@ -120,7 +120,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   cfdata->del = ob;
   e_widget_table_object_append (ot, ob, 0, 1, 1, 1, 1, 1, 1, 0);
   ob =
-    e_widget_button_add (evas, _("Configure..."), "widget/config",
+    e_widget_button_add (evas, D_("Configure..."), "widget/config",
 			 _cb_edit_box, cfd, NULL);
   e_widget_disabled_set (ob, 1);
   cfdata->configure = ob;

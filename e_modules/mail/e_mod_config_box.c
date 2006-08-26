@@ -57,7 +57,7 @@ _config_box (Config_Item * ci, Config_Box * cb, E_Config_Dialog * mcfd)
   v->basic.create_widgets = _basic_create_widgets;
 
   con = e_container_current_get (e_manager_current_get ());
-  cfd = e_config_dialog_new (con, _("Mailbox Configuration"), "Mail", "_e_modules_mail_box_config_dialog", NULL, 0, v, cb);
+  cfd = e_config_dialog_new (con, D_("Mailbox Configuration"), "Mail", "_e_modules_mail_box_config_dialog", NULL, 0, v, cb);
 }
 
 static void
@@ -137,12 +137,12 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   o = e_widget_list_add (evas, 0, 0);
   of = e_widget_framelist_add (evas, _("General Settings"), 0);
   ob =
-    e_widget_check_add (evas, _("Start Program When New Mail Arrives"),
+    e_widget_check_add (evas, D_("Start Program When New Mail Arrives"),
 			&(cfdata->use_exec));
   e_widget_framelist_object_append (of, ob);
   e_widget_on_change_hook_set (ob, _use_exec_cb_change, cfdata);
   ot = e_widget_table_add (evas, 1);
-  cfdata->exec_label = e_widget_label_add (evas, _("Program:"));
+  cfdata->exec_label = e_widget_label_add (evas, D_("Program:"));
   e_widget_table_object_append (ot, cfdata->exec_label, 0, 0, 1, 1, 0, 0, 1,
 				0);
   cfdata->exec_entry = e_widget_entry_add (evas, &cfdata->exec);
@@ -154,59 +154,59 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   e_widget_disabled_set (cfdata->exec_label, !cfdata->use_exec);
   e_widget_disabled_set (cfdata->exec_entry, !cfdata->use_exec);
 
-  of = e_widget_framelist_add (evas, _("Mailbox Type"), 0);
+  of = e_widget_framelist_add (evas, D_("Mailbox Type"), 0);
   rg = e_widget_radio_group_new (&(cfdata->type));
-  ob = e_widget_radio_add (evas, _("Pop3"), 0, rg);
+  ob = e_widget_radio_add (evas, D_("Pop3"), 0, rg);
   e_widget_on_change_hook_set (ob, _type_cb_change, cfdata);
   e_widget_framelist_object_append (of, ob);
-  ob = e_widget_radio_add (evas, _("Imap"), 1, rg);
+  ob = e_widget_radio_add (evas, D_("Imap"), 1, rg);
   e_widget_on_change_hook_set (ob, _type_cb_change, cfdata);
   e_widget_framelist_object_append (of, ob);
-  ob = e_widget_radio_add (evas, _("Maildir"), 2, rg);
+  ob = e_widget_radio_add (evas, D_("Maildir"), 2, rg);
   e_widget_on_change_hook_set (ob, _type_cb_change, cfdata);
   e_widget_framelist_object_append (of, ob);
-  ob = e_widget_radio_add (evas, _("Mbox"), 3, rg);
+  ob = e_widget_radio_add (evas, D_("Mbox"), 3, rg);
   e_widget_on_change_hook_set (ob, _type_cb_change, cfdata);
   e_widget_framelist_object_append (of, ob);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
-  of = e_widget_frametable_add (evas, _("Port Settings"), 1);
+  of = e_widget_frametable_add (evas, D_("Port Settings"), 1);
 
-  ob = e_widget_label_add (evas, _("Use SSL:"));
+  ob = e_widget_label_add (evas, D_("Use SSL:"));
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
   ob = e_widget_check_add (evas, "", &(cfdata->ssl));
   e_widget_on_change_hook_set (ob, _type_cb_change, cfdata);
   e_widget_frametable_object_append (of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
 
-  ob = e_widget_label_add (evas, _("Port:"));
+  ob = e_widget_label_add (evas, D_("Port:"));
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->port);
   cfdata->port_entry = ob;
   e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
-  of = e_widget_frametable_add (evas, _("Mailbox Settings"), 1);
-  ob = e_widget_label_add (evas, _("Name:"));
+  of = e_widget_frametable_add (evas, D_("Mailbox Settings"), 1);
+  ob = e_widget_label_add (evas, D_("Name:"));
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->name);
   e_widget_frametable_object_append (of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
 
-  ob = e_widget_label_add (evas, _("Mail Host:"));
+  ob = e_widget_label_add (evas, D_("Mail Host:"));
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->host);
   e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
 
-  ob = e_widget_label_add (evas, _("Username:"));
+  ob = e_widget_label_add (evas, D_("Username:"));
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->user);
   e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 0, 0, 1, 0);
 
-  ob = e_widget_label_add (evas, _("Password:"));
+  ob = e_widget_label_add (evas, D_("Password:"));
   e_widget_frametable_object_append (of, ob, 0, 3, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->pass);
   e_widget_frametable_object_append (of, ob, 1, 3, 1, 1, 0, 0, 1, 0);
 
-  cfdata->new_path_label = e_widget_label_add (evas, _("New Mail Path:"));
+  cfdata->new_path_label = e_widget_label_add (evas, D_("New Mail Path:"));
   e_widget_frametable_object_append (of, cfdata->new_path_label, 0, 4, 1, 1,
 				     0, 0, 1, 0);
   cfdata->new_path_entry = e_widget_entry_add (evas, &cfdata->new_path);
@@ -218,7 +218,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
       e_widget_disabled_set (cfdata->new_path_entry, 1);
     }
 
-  cfdata->cur_path_label = e_widget_label_add (evas, _("Current Mail Path:"));
+  cfdata->cur_path_label = e_widget_label_add (evas, D_("Current Mail Path:"));
   e_widget_frametable_object_append (of, cfdata->cur_path_label, 0, 5, 1, 1,
 				     0, 0, 1, 0);
   cfdata->cur_path_entry = e_widget_entry_add (evas, &cfdata->cur_path);
@@ -353,7 +353,7 @@ _type_cb_change (void *data, Evas_Object * obj)
       e_widget_disabled_set (cfdata->cur_path_label, 1);
       e_widget_disabled_set (cfdata->cur_path_entry, 1);
       e_widget_entry_text_set (cfdata->cur_path_entry, "");
-      e_widget_entry_text_set (cfdata->new_path_entry, _("Inbox"));
+      e_widget_entry_text_set (cfdata->new_path_entry, D_("Inbox"));
       if (cfdata->ssl)
 	{
 	  e_widget_entry_text_set (cfdata->port_entry, "993");

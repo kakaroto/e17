@@ -174,7 +174,7 @@ _gc_orient (E_Gadcon_Client * gcc)
 static char *
 _gc_label (void)
 {
-  return D_ ("Mail");
+  return D_("Mail");
 }
 
 static Evas_Object *
@@ -220,7 +220,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 	  snprintf (buf, sizeof (buf), "%s/module.eap",
 		    e_module_dir_get (mail_config->module));
 	  mm = e_menu_item_new (mn);
-	  e_menu_item_label_set (mm, _("Mailboxes"));
+	  e_menu_item_label_set (mm, D_("Mailboxes"));
 	  e_menu_item_icon_edje_set (mm, buf, "icon");
 
 	  sn = e_menu_new ();
@@ -342,6 +342,9 @@ EAPI E_Module_Api e_modapi = {
 EAPI void *
 e_modapi_init (E_Module * m)
 {
+  bindtextdomain(PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset(PACKAGE, "UTF-8");
+
   conf_box_edd = E_CONFIG_DD_NEW ("Mail_Box_Config", Config_Box);
 #undef T
 #undef D
@@ -498,9 +501,8 @@ e_modapi_save (E_Module * m)
 EAPI int
 e_modapi_about (E_Module * m)
 {
-  e_module_dialog_show (m, D_ ("Enlightenment Mail Module"),
-			D_
-			("This is a module to notify when you have new mail."));
+  e_module_dialog_show (m, D_("Enlightenment Mail Module"),
+			D_("This is a module to notify when you have new mail."));
   return 1;
 }
 

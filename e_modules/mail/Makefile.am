@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in mkinstalldirs
 
+SUBDIRS = po
+
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
 -id $(top_srcdir) \
