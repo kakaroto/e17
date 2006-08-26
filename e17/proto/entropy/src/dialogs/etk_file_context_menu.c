@@ -20,6 +20,7 @@ Etk_Widget* _entropy_etk_context_menu_groups_remove_from = NULL;
 Etk_Widget* _entropy_etk_context_menu_groups_remove_from_item = NULL;
 
 Etk_Widget* _entropy_etk_context_menu_rename_menu_item = NULL;
+Etk_Widget* _entropy_etk_context_menu_restore_trash_menu_item = NULL;
 
 entropy_generic_file* _entropy_etk_context_menu_current_folder = NULL;
 entropy_generic_file* _entropy_etk_context_menu_current_file = NULL;
@@ -225,6 +226,20 @@ _entropy_etk_context_menu_trash_copy_cb(Etk_Object *object, void *data)
 	}
 
 	
+
+	ecore_list_destroy(files);
+}
+
+static void
+_entropy_etk_context_menu_trash_restore_cb(Etk_Object *object, void *data)
+{
+	Ecore_List* files;
+
+	files = ecore_list_new();
+	ecore_list_append(files, _entropy_etk_context_menu_current_file);
+	
+	entropy_plugin_filesystem_file_trash_restore(
+		files, _entropy_etk_context_menu_current_instance);
 
 	ecore_list_destroy(files);
 }
@@ -448,6 +463,15 @@ void entropy_etk_context_menu_init()
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), 
 				ETK_CALLBACK(_entropy_etk_context_menu_trash_copy_cb), NULL);
 
+		/*Trash restore*/
+		_entropy_etk_context_menu_restore_trash_menu_item = 
+		    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Restore from Trash (test)"), 
+		    ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		
+		etk_signal_connect("activated", ETK_OBJECT(_entropy_etk_context_menu_restore_trash_menu_item), 
+				ETK_CALLBACK(_entropy_etk_context_menu_trash_restore_cb), NULL);
+
+
 	}
 
 	entropy_etk_context_menu_metadata_groups_populate();
@@ -467,6 +491,11 @@ void entropy_etk_context_menu_popup(entropy_gui_component_instance* instance, en
 	etk_widget_show_all(_entropy_etk_context_menu_open_with_item);
 	etk_widget_show_all(_entropy_etk_context_menu_rename_menu_item);
 
+	if (!strcmp(current_file->uri_base, "trash"))
+  	    etk_widget_show_all(_entropy_etk_context_menu_restore_trash_menu_item);
+	else
+	    etk_widget_hide(_entropy_etk_context_menu_restore_trash_menu_item);
+
 	/*Mode = single*/
 	_entropy_etk_context_menu_mode = 0;	
 
@@ -482,6 +511,7 @@ void entropy_etk_context_menu_popup_multi(entropy_gui_component_instance* instan
 	/*Hide*/
 	etk_widget_hide(_entropy_etk_context_menu_open_with_item);
 	etk_widget_hide(_entropy_etk_context_menu_rename_menu_item);
+	etk_widget_hide(_entropy_etk_context_menu_restore_trash_menu_item);
 
 	if (_entropy_etk_context_menu_selected_files)
 		ecore_list_destroy(_entropy_etk_context_menu_selected_files);

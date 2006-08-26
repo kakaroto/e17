@@ -77,6 +77,7 @@ struct Entropy_Plugin_File {
 		void (*group_file_add) (entropy_generic_file * file,char*);
 		void (*group_file_remove) (entropy_generic_file * file,char*);
 
+		void (*file_trash_restore) (Ecore_List* files, entropy_gui_component_instance* instance);
 
 	} file_functions;
 

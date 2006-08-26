@@ -29,6 +29,8 @@ Ecore_List *filelist_get (entropy_file_request * request);
 void entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to, entropy_gui_component_instance * instance);
 void entropy_filesystem_file_copy_multi (Ecore_List* files, char *path_to, entropy_gui_component_instance * instance);
 void entropy_filesystem_file_move_multi (Ecore_List* files, char *path_to, entropy_gui_component_instance * instance);
+void entropy_filesystem_file_trash_restore (Ecore_List* files, entropy_gui_component_instance * instance);
+
 
 void entropy_filesystem_file_move (entropy_generic_file * file, char *path_to, entropy_gui_component_instance * instance);
 
@@ -617,6 +619,7 @@ entropy_plugin_init (entropy_core * core)
   plugin->file_functions.file_copy_multi = &entropy_filesystem_file_copy_multi;
   plugin->file_functions.file_move_multi = &entropy_filesystem_file_move_multi;
   plugin->file_functions.file_move = &entropy_filesystem_file_move;
+  plugin->file_functions.file_trash_restore = &entropy_filesystem_file_trash_restore;
 
   plugin->file_functions.file_rename = &entropy_filesystem_file_rename;
   plugin->file_functions.operation_respond = &entropy_filesystem_operation_respond;
@@ -1123,4 +1126,22 @@ Ecore_List*
 entropy_filesystem_metadata_groups_retrieve()
 {
 	return metadata_groups;
+}
+
+
+void entropy_filesystem_file_trash_restore (Ecore_List* files, entropy_gui_component_instance * instance)
+{
+  long id;
+  entropy_generic_file* file;
+  Ecore_List* evfs_files;
+
+  evfs_files = ecore_list_new();
+  ecore_list_goto_first(files);
+  while ( (file = ecore_list_next(files)) ) { 
+	  ecore_list_append(evfs_files, evfs_parse_uri_single(file->uri));
+  }
+  
+  /*Track the restore action */
+  id = evfs_client_file_trash_restore (con, evfs_files);
+  ecore_hash_set(evfs_dir_requests, (long*)id, instance);
 }

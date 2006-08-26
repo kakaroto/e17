@@ -438,7 +438,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 		  0,0,64,64,1,1);*/
 		  
 	  
-  etk_signal_connect("mouse_up", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_click_cb), instance);
+  etk_signal_connect("mouse_down", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_click_cb), instance);
   
   instance->gui_object = viewer->vbox;
   instance->core = core;
