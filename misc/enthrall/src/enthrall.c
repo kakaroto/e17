@@ -179,7 +179,7 @@ main (int argc, char **argv)
 
 	strcpy (e.output_dir, ".");
 
-	while ((c = getopt_long (argc, argv, "hf:q:w:", options, NULL)) != -1) {
+	while ((c = getopt_long (argc, argv, "hf:o:p:q:w:", options, NULL)) != -1) {
 		int base;
 
 		switch (c) {
