@@ -163,11 +163,14 @@ Etk_Menu_Item_Radio *	SvEtkMenuItemRadioPtr(SV *data);
 SV *			newSVEtkMenuItemSeparatorPtr(Etk_Menu_Item_Separator *o); 
 Etk_Menu_Item_Separator *SvEtkMenuItemSeparatorPtr(SV *data); 
 
-SV *			newSVEventKeyUpDown(Etk_Event_Key_Up_Down *ev);
+SV *			newSVEventKeyUp(Etk_Event_Key_Up *ev);
+SV *			newSVEventKeyDown(Etk_Event_Key_Down *ev);
 SV *			newSVEventMouseWheel(Etk_Event_Mouse_Wheel *ev);
 SV *			newSVEventMouseMove(Etk_Event_Mouse_Move *ev);
-SV *			newSVEventMouseUpDown(Etk_Event_Mouse_Up_Down *ev);
-SV *			newSVEventMouseInOut(Etk_Event_Mouse_In_Out *ev);
+SV *			newSVEventMouseUp(Etk_Event_Mouse_Up *ev);
+SV *			newSVEventMouseDown(Etk_Event_Mouse_Down *ev);
+SV *			newSVEventMouseIn(Etk_Event_Mouse_In *ev);
+SV *			newSVEventMouseOut(Etk_Event_Mouse_Out *ev);
 
 #endif
 

@@ -555,7 +555,19 @@ Etk_Menu_Item_Separator * SvEtkMenuItemSeparatorPtr(SV *data) { return SvObj(dat
 #define I_STORE(A, B)\
 	hv_store(hv, A, strlen(A), B, 0);
 
-SV * newSVEventKeyUpDown(Etk_Event_Key_Up_Down *ev) {
+SV * newSVEventKeyUp(Etk_Event_Key_Up *ev) {
+	HV * hv;
+	hv = (HV*)sv_2mortal((SV*)newHV());
+
+	S_STORE("keyname", ev->keyname)
+	S_STORE("key", ev->key)
+	S_STORE("string", ev->string)
+	I_STORE("timestamp", newSVuv(ev->timestamp))
+
+	return newRV_inc((SV*)hv);
+}
+
+SV * newSVEventKeyDown(Etk_Event_Key_Down *ev) {
 	HV * hv;
 	hv = (HV*)sv_2mortal((SV*)newHV());
 
@@ -602,7 +614,7 @@ SV * newSVEventMouseMove(Etk_Event_Mouse_Move *ev) {
 	return newRV_noinc((SV*)hv);
 }
 
-SV * newSVEventMouseUpDown(Etk_Event_Mouse_Up_Down *ev) {
+SV * newSVEventMouseUp(Etk_Event_Mouse_Up *ev) {
 	
 	HV * hv;
 	hv = (HV*)sv_2mortal((SV*)newHV());
@@ -614,10 +626,40 @@ SV * newSVEventMouseUpDown(Etk_Event_Mouse_Up_Down *ev) {
 	I_STORE("widget.y", newSViv(ev->widget.y))
 	I_STORE("timestamp", newSVuv(ev->timestamp))
 
+	return newRV_inc((SV*)hv);
+}
+
+SV * newSVEventMouseDown(Etk_Event_Mouse_Down *ev) {
+	
+	HV * hv;
+	hv = (HV*)sv_2mortal((SV*)newHV());
+
+	I_STORE("button", newSViv(ev->button))
+	I_STORE("canvas.x", newSViv(ev->canvas.x))
+	I_STORE("canvas.y", newSViv(ev->canvas.y))
+	I_STORE("widget.x", newSViv(ev->widget.x))
+	I_STORE("widget.y", newSViv(ev->widget.y))
+	I_STORE("timestamp", newSVuv(ev->timestamp))
+
+	return newRV_inc((SV*)hv);
+}
+
+SV * newSVEventMouseIn(Etk_Event_Mouse_In *ev) {
+	
+	HV * hv;
+	hv = (HV*)sv_2mortal((SV*)newHV());
+
+	I_STORE("buttons", newSViv(ev->buttons))
+	I_STORE("canvas.x", newSViv(ev->canvas.x))
+	I_STORE("canvas.y", newSViv(ev->canvas.y))
+	I_STORE("widget.x", newSViv(ev->widget.x))
+	I_STORE("widget.y", newSViv(ev->widget.y))
+	I_STORE("timestamp", newSVuv(ev->timestamp))
+
 	return newRV_noinc((SV*)hv);
 }
 
-SV * newSVEventMouseInOut(Etk_Event_Mouse_In_Out *ev) {
+SV * newSVEventMouseOut(Etk_Event_Mouse_Out *ev) {
 	
 	HV * hv;
 	hv = (HV*)sv_2mortal((SV*)newHV());
