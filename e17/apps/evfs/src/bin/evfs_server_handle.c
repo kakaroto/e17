@@ -10,6 +10,8 @@
 #include <errno.h>
 #include <dirent.h>
 
+#include <Ecore_Desktop.h>
+
 /*---------------------------------------------------*/
 /*Move these functions somewhere*/
 
@@ -698,5 +700,41 @@ void evfs_handle_metadata_file_group_remove(evfs_client* client, evfs_command* c
 
 void evfs_handle_trash_restore_command(evfs_client* client, evfs_command* command)
 {
-	printf("TRASH restore: stub\n");
+	int c;
+	Ecore_Desktop* desk;
+	char path[PATH_MAX];
+	evfs_filereference *ref, *src, *dest;
+	char* pos;
+	char* pos2;
+	int len;
+	evfs_command* f_command;
+
+	for (c=0;c<command->file_command.num_files;c++) {
+		ref = command->file_command.files[c];
+		pos = strrchr(ref->path, '.');
+		pos2 = strrchr(ref->path, '/');
+
+		memset(path, 0,PATH_MAX);
+		snprintf(path, PATH_MAX, "file://%s/", evfs_trash_files_dir_get());
+		strncat(path, pos2+1, strlen(pos2+1) - strlen(pos));
+		
+		printf("Parsing '%s'\n", command->file_command.files[c]->path);
+
+		/*Parse the ecore_desktop file*/
+		desk = ecore_desktop_get(command->file_command.files[c]->path,NULL);
+
+		src = evfs_parse_uri_single(path);
+		dest = evfs_parse_uri_single(desk->path);
+
+		f_command = NEW(evfs_command);
+		f_command->type = EVFS_CMD_FILE_MOVE;
+		f_command->file_command.files = calloc(2, sizeof(evfs_filereference));
+		f_command->file_command.files[0] = src;
+		f_command->file_command.files[1] = dest;
+		f_command->file_command.num_files = 2;
+
+		printf("Original location: %s -- file: %s\n", desk->path, path);
+
+		evfs_handle_file_copy(client, f_command, f_command, 1);
+	}
 }

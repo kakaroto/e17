@@ -34,7 +34,7 @@
 # include <config.h>
 #endif
 
-#include <evfs.h>
+#include "evfs.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,8 +50,6 @@
 /*All these homedir variables need to be consolidated - TODO*/
 static char* next_trash_file;
 static char* next_trash_path;
-static char evfs_fs_trash_info[PATH_MAX];
-static char evfs_fs_trash_files[PATH_MAX];
 static Ecore_Hash* trash_dir_mapping;
 evfs_plugin* posix_plugin;
 
@@ -84,9 +82,9 @@ evfs_filereference* evfs_fs_trash_proxy_create(evfs_filereference* ref, char* ne
 	/*Make a proxy file, and send this to the posix plugin create*/
 	free(newfile->path);
 	
-	size= strlen(evfs_fs_trash_files) + strlen(newpath) +2;
+	size= strlen(evfs_trash_files_dir_get()) + strlen(newpath) +2;
 	newfile->path = calloc(size, 1);
-	snprintf(newfile->path, size, "%s/%s", evfs_fs_trash_files, newpath);
+	snprintf(newfile->path, size, "%s/%s", evfs_trash_files_dir_get(), newpath);
 	free(newfile->plugin_uri);
 
 	newfile->plugin_uri = strdup("file");
@@ -142,9 +140,9 @@ void evfs_fs_trash_infofile_create(evfs_filereference* ref, char* newname, char*
 	char* fullpath;
 
 	/* 1 for '/', 1 for \0 */
-	origlen = strlen(evfs_fs_trash_info) + 1 + strlen(newname)+10+1;
+	origlen = strlen(evfs_trash_info_dir_get()) + 1 + strlen(newname)+10+1;
 	fullpath = malloc(origlen);
-	snprintf(fullpath, origlen, "%s/%s%s", evfs_fs_trash_info, newname, ".trashinfo");
+	snprintf(fullpath, origlen, "%s/%s%s", evfs_trash_info_dir_get(), newname, ".trashinfo");
 
 	printf("Create info file: '%s'\n", fullpath);
 
@@ -166,9 +164,6 @@ evfs_plugin_functions *
 evfs_plugin_init()
 {
    printf("Initialising the file plugin..\n");
-
-   snprintf(evfs_fs_trash_info, PATH_MAX, "%s/.Trash/info", getenv("HOME"));
-   snprintf(evfs_fs_trash_files, PATH_MAX, "%s/.Trash/files", getenv("HOME"));
 
    /*FIXME - this assumes the trash plugin is loaded after posix - not always true*/
    posix_plugin = evfs_get_plugin_for_uri(evfs_server_get(), "file");
