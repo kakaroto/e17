@@ -3993,3 +3993,22 @@ Thu Aug 17 23:21:24 CEST 2006
 (Kim)
 
 --- 0.16.8.3 ---
+
+-------------------------------------------------------------------------------
+
+Sun Aug 27 22:14:29 CEST 2006
+(Kim)
+
+--- 0.16.8.4 0.01 ---
+Enable emptying part of dialog and resizing dialog window.
+Add missing label text.
+Add data parameter to dialog keybinding callback.
+Use table with normal buttons in dialog footer.
+Add combined configuration dialog.
+Simplify dialogs (remove rarely used simple dialog variant).
+Shuffle _NET_WM_SYNC_REQUEST stuff around (still not active).
+Rename a few configuration items.
+Fix logout dialog layout.
+Do case insensitive searching with ipc window names (vapier).
+Trivial re-wrapping of XQueryPointer().
+
