@@ -1,6 +1,8 @@
+ABOUT-NLS
 Makefile
 Makefile.in
 aclocal.m4
+autom4te*.cache
 config.cache
 config.guess
 config.h
@@ -10,12 +12,13 @@ config.rpath
 config.status
 config.sub
 configure
-stamp-h
-stamp-h.in
+depcomp
 e16.spec
 e16*.tar.gz
-ABOUT-NLS
+install-sh
 m4
-autom4te*.cache
-stamp-h1
+missing
 mkinstalldirs
+stamp-h
+stamp-h.in
+stamp-h1
