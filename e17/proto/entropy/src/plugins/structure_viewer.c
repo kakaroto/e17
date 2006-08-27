@@ -298,7 +298,9 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
 
   image = ewl_image_new ();
   ewl_image_file_set (EWL_IMAGE (image),
-		      PACKAGE_DATA_DIR "/icons/folder_structure.png", NULL);
+		      PACKAGE_DATA_DIR "/icons/folder.png", NULL);
+  ewl_image_constrain_set(EWL_IMAGE(image), 20);
+  ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
   ewl_widget_show (image);
 
   /*printf ("  Added %s'\n", file->filename); */
@@ -315,15 +317,14 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   children[0] = hbox;
   children[1] = NULL;
 
+  ewl_object_minimum_size_set(EWL_OBJECT(row), 20, 20);
   /*printf("Adding row %s to existing row\n", file->filename); */
   row = ewl_tree_row_add (EWL_TREE (viewer->parent_visual), prow, children);
-
+  
   ewl_object_fill_policy_set (EWL_OBJECT (row),
 			      EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
   ewl_container_callback_intercept (EWL_CONTAINER (row),
 				    EWL_CALLBACK_MOUSE_DOWN);
-
-  ewl_object_custom_h_set (EWL_OBJECT (row), 15);
   ewl_widget_show (row);
 
   event = entropy_malloc (sizeof (event_file_core));
@@ -423,8 +424,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   row = structure_viewer_add_row (instance, (entropy_generic_file *) data, NULL);
   instance->gui_object = row;
  
-
-
   ewl_widget_show (row);
 
   return instance;

@@ -246,7 +246,11 @@ entropy_plugin_layout_create (entropy_core * core)
  Ewl_Widget *menubar;
  Ewl_Widget *menu;
  Ewl_Widget *menu_item;
+ char *header[1];
 
+ header[0] = "Folders";
+ header[1] = NULL;
+ 
  Ecore_List *structures;
  Entropy_Config_Structure *structure;
 
@@ -327,7 +331,9 @@ entropy_plugin_layout_create (entropy_core * core)
  gui->tree = ewl_tree_new(1);
  ewl_container_child_append(EWL_CONTAINER(gui->paned), gui->tree);
  ewl_object_size_request(EWL_OBJECT(gui->tree), ENTROPY_EWL_WINDOW_PANE_DEFAULT_X, 50);
-
+ ewl_tree_headers_visible_set(EWL_TREE(gui->tree), TRUE);
+ ewl_tree_headers_set(EWL_TREE(gui->tree), header);
+ 
  gui->localshell = ewl_vbox_new();
  ewl_container_child_append(EWL_CONTAINER(gui->paned), gui->localshell);
  

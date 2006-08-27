@@ -467,7 +467,7 @@ entropy_gui_component_instance *
 entropy_plugin_gui_instance_new (entropy_core * core,
 		     entropy_gui_component_instance * layout)
 {
-  char *headers[6];
+  char *headers[5];
 
   entropy_gui_component_instance *instance =
     entropy_gui_component_instance_new ();
@@ -479,15 +479,14 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   instance->data = viewer;
   instance->layout_parent = layout;
 
-  viewer->list = ewl_tree_new (5);
+  viewer->list = ewl_tree_new (4);
   ewl_tree_mode_set (EWL_TREE (viewer->list), EWL_TREE_MODE_MULTI);
 
   headers[0] = "Icon";
   headers[1] = "Filename";
   headers[2] = "Size";
   headers[3] = "Date Modified";
-  headers[4] = " ";
-  headers[5] = NULL;
+  headers[4] = NULL;
   ewl_tree_headers_set (EWL_TREE (viewer->list), headers);
 
 
@@ -579,7 +578,7 @@ ewl_icon_local_viewer_add_icon (entropy_gui_component_instance * comp,
 				entropy_generic_file * list_item, int do_mime)
 {
   entropy_icon_viewer *view = comp->data;
-  Ewl_Widget *text[6];
+  Ewl_Widget *text[5];
   char buf[50];
 
 
@@ -592,9 +591,9 @@ ewl_icon_local_viewer_add_icon (entropy_gui_component_instance * comp,
 
     text[0] = ewl_image_new ();
     ewl_image_file_set (EWL_IMAGE (text[0]),
-			PACKAGE_DATA_DIR "/icons/default.png", 0);
-    ewl_image_constrain_set (EWL_IMAGE (text[0]), 15);
-    ewl_object_minimum_w_set(EWL_OBJECT(text[0]), 15);
+			PACKAGE_DATA_DIR "/icons/folder.png", NULL);
+    ewl_image_constrain_set (EWL_IMAGE (text[0]), 20);
+    ewl_image_proportional_set(EWL_IMAGE(text[0]), TRUE);
     ewl_widget_show (text[0]);
 
 
@@ -629,11 +628,7 @@ ewl_icon_local_viewer_add_icon (entropy_gui_component_instance * comp,
       ewl_widget_show (text[3]);	/*Mod time */
     }
     ewl_object_minimum_w_set(EWL_OBJECT(text[3]), 40);
-
-    text[4] = ewl_label_new ();
-    ewl_label_text_set (EWL_LABEL (text[4]), "...");
-    ewl_widget_show (text[4]);
-    text[5] = NULL;
+    text[4] = NULL;
 
     icon = ewl_tree_row_add (EWL_TREE (view->list), NULL, text);
     ewl_widget_draggable_set (icon, 1, entropy_list_data_get);
