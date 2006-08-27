@@ -309,6 +309,16 @@ entropy_plugin_layout_create (entropy_core * core)
  ewl_widget_show(menu);
 
  menu_item = _entropy_ewl_menu_item_new(EWL_MENU_ITEM_NORMAL, "Exit", NULL, menu, NULL);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, ewl_layout_simple_exit_cb, layout);
+ ewl_widget_show(menu_item);
+
+ menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(menu), "View");
+ ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(menu);
+
+ menu_item = _entropy_ewl_menu_check_item_new("Default", menu);
  ewl_widget_show(menu_item);
  
  gui->paned = ewl_hpaned_new();
