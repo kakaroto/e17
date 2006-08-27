@@ -83,9 +83,63 @@ static void _ewl_window_delete_cb(Ewl_Widget *w, void *event, void *data)
  {
   layout_ewl_simple_quit(instance->core);
  }
-
 }
 
+static Ewl_Widget *
+_entropy_ewl_menu_item_new(Ewl_Menu_Item_Type item_type, const char *label,
+			   char *stock, Ewl_Widget *menu, Ewl_Widget *statusbar)
+{
+ Ewl_Widget *menu_item = NULL;
+
+ if (!menu) return NULL;
+ 
+ switch (item_type)
+ {
+  case EWL_MENU_ITEM_NORMAL:
+   menu_item = ewl_menu_item_new();
+   if (stock != NULL) ewl_button_image_set(EWL_BUTTON(menu_item), stock, NULL);
+   ewl_button_label_set(EWL_BUTTON(menu_item), label);
+   break;
+  case EWL_MENU_ITEM_SEPARATOR:
+   menu_item = ewl_hseparator_new();
+   break;
+  default:
+   return NULL;
+ }
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ return menu_item;
+}
+
+static Ewl_Widget *
+_entropy_ewl_menu_check_item_new(const char *label, Ewl_Widget *menu)
+{
+ Ewl_Widget *menu_item;
+ 
+ if (!menu) return NULL;
+
+ menu_item = ewl_checkbutton_new();
+ ewl_button_label_set(EWL_BUTTON(menu_item), label);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+
+ return menu_item;
+}
+
+static Ewl_Widget *
+_entropy_ewl_menu_radio_item_new(const char *label, Ewl_Widget *group_radio, 
+				 Ewl_Widget *menu)
+{
+ Ewl_Widget *menu_item;
+
+ if (!menu) return NULL;
+
+ menu_item = ewl_radiobutton_new();
+ ewl_button_label_set(EWL_BUTTON(menu_item), label);
+ ewl_radiobutton_chain_set(EWL_RADIOBUTTON(group_radio), EWL_RADIOBUTTON(menu_item));
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+
+ return menu_item;
+}
+	
 Entropy_Plugin *
 entropy_plugin_init(entropy_core *core)
 {
@@ -241,11 +295,24 @@ entropy_plugin_layout_create (entropy_core * core)
 
  vbox = ewl_vbox_new();
  ewl_container_child_append(EWL_CONTAINER(win), vbox);
+ ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+ 
+ menubar = ewl_menubar_new();
+ ewl_container_child_append(EWL_CONTAINER(vbox), menubar);
+ ewl_object_fill_policy_set(EWL_OBJECT(menubar), EWL_FLAG_FILL_HFILL);
+ ewl_widget_show(menubar);
+ 
+ menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(menu), "File");
+ ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(menu);
 
+ menu_item = _entropy_ewl_menu_item_new(EWL_MENU_ITEM_NORMAL, "Exit", NULL, menu, NULL);
+ ewl_widget_show(menu_item);
+ 
  gui->paned = ewl_hpaned_new();
-
- /*FIXME - we need an horiz-container to add a menu/statusbar*/
- ewl_container_child_append(EWL_CONTAINER(win), gui->paned);
+ ewl_container_child_append(EWL_CONTAINER(vbox), gui->paned);
 
  gui->tree = ewl_tree_new(1);
  ewl_container_child_append(EWL_CONTAINER(gui->paned), gui->tree);
