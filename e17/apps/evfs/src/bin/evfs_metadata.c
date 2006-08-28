@@ -734,10 +734,10 @@ int evfs_metadata_extract_runner(void* data)
 {
 	evfs_filereference* ref;
 	int status;
+	int ret;
 	
 	if (!_metadata_fork) {
 		ecore_list_goto_first(evfs_metadata_queue);
-
 		if ( (ref = ecore_list_current(evfs_metadata_queue))) {
 			/*printf("..item on queue..\n");*/
 			evfs_metadata_extract_fork(ref);
@@ -745,17 +745,23 @@ int evfs_metadata_extract_runner(void* data)
 	} else {
 		/*printf("...metadata runner executing..\n");*/
 
-		if ((waitpid(_metadata_fork, &status, WNOHANG) > 0) ||
+		if ((ret = (waitpid(_metadata_fork, &status, WNOHANG) > 0)) ||
 			       errno == ECHILD) {
 			_metadata_fork = 0;
 
+			
 			ecore_list_goto_first(evfs_metadata_queue);
 			ref = ecore_list_current(evfs_metadata_queue);
-			evfs_cleanup_filereference(ref);
+				
+			if (ref) {
+				evfs_cleanup_filereference(ref);
+				ecore_list_remove_first(evfs_metadata_queue);
+			} else {
+				printf("EVFS: ugh? no file, and we just processed it for meta? : %d\n", getpid());
+			}
 
-			ecore_list_remove_first(evfs_metadata_queue);
-
-			/*printf("Execution complete..\n");*/
+		} else {
+			printf("Fork ret was: %d\n", ret);
 		}
 	}
 	return 1;
@@ -773,6 +779,8 @@ int evfs_metadata_extract_fork(evfs_filereference* ref)
 		int file;
 		Evas_List* l;
 		evfs_meta_obj* o;
+
+		ecore_main_loop_quit();
 
 		ret = sqlite3_open(metadata_db, &dbi);
 		if( ret ){
