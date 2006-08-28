@@ -31,6 +31,8 @@ e16_SOURCES = \
 	comms.c			\
 	conf.h			\
 	config.c		\
+	container.c		\
+	container.h		\
 	coords.c                \
 	cursors.c		\
 	desktops.c		\
@@ -112,6 +114,7 @@ e16_SOURCES = \
 	sound.c			\
 	stacking.c		\
 	startup.c		\
+	systray.c		\
 	tclass.c		\
 	tclass.h		\
 	text.c			\
