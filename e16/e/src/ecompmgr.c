@@ -1709,6 +1709,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 	  }
 #endif
      }
+   eo->serial = ev->xany.serial;
    ECompMgrDamageMergeObject(eo, parts, 1);
 }
 

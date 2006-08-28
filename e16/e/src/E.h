@@ -669,6 +669,7 @@ void                EdgeWindowsHide(void);
 #define EDBUG_TYPE_ICONBOX      143
 #define EDBUG_TYPE_VERBOSE      144
 #define EDBUG_TYPE_SYNC         145
+#define EDBUG_TYPE_PAGER        146
 
 int                 EventDebug(unsigned int type);
 void                EventDebugSet(unsigned int type, int value);

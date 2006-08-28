@@ -110,6 +110,10 @@ EImageCreateScaled(EImage * im, int sx, int sy, int sw, int sh, int dw, int dh)
       sw = imlib_image_get_width();
    if (sh <= 0)
       sh = imlib_image_get_height();
+   if (dw <= 0)
+      dw = sw;
+   if (dh <= 0)
+      dh = sh;
    return imlib_create_cropped_scaled_image(sx, sy, sw, sh, dw, dh);
 }
 

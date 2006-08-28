@@ -52,6 +52,7 @@ struct _eobj
 #if USE_COMPOSITE
    unsigned int        opacity;
    void               *cmhook;
+   unsigned int        serial;
 #endif
    char               *name;
 };
