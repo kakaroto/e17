@@ -1132,23 +1132,34 @@ entropy_filesystem_metadata_groups_retrieve()
 void entropy_filesystem_file_trash_restore (Ecore_List* files, entropy_gui_component_instance * instance)
 {
   long id;
+  int flag;
   entropy_generic_file* file;
   Ecore_List* evfs_files;
   evfs_filereference* ref;
+  char path[PATH_MAX];
+
+  flag = 0;
 
   evfs_files = ecore_list_new();
   ecore_list_goto_first(files);
   while ( (file = ecore_list_next(files)) ) { 
-	  printf("Parsing %s\n", file->uri);
-	  if ( (ref =  evfs_parse_uri_single(file->uri))) {
-		  ecore_list_append(evfs_files, ref);
+	  if (file->attach) {
+		  snprintf(path, PATH_MAX, "%s%s%s", URI_POSIX, "://", file->attach);
+		  printf("Parsing %s\n", path);
+		  if ( (ref =  evfs_parse_uri_single(path))) {
+			  ecore_list_append(evfs_files, ref);
+		  }
+		  flag++;
 	  }
   }
   
-  /*Track the restore action */
-  id = evfs_client_file_trash_restore (con, evfs_files);
-  ecore_hash_set(evfs_dir_requests, (long*)id, instance);
-
-  ecore_list_destroy(files);
-  ecore_list_destroy(evfs_files);
+  if (flag) {
+	  /*Track the restore action */
+	  id = evfs_client_file_trash_restore (con, evfs_files);
+	  ecore_hash_set(evfs_dir_requests, (long*)id, instance);
+	
+	  ecore_list_destroy(evfs_files); 
+  } else {
+	  printf("No files with attached uris to de-trash\n");
+  }
 }

@@ -404,24 +404,31 @@ void entropy_etk_context_menu_init()
 		etk_signal_connect("popped_up", ETK_OBJECT(menu), ETK_CALLBACK(_entropy_etk_context_menu_popup_cb), NULL);
 
 		_entropy_etk_context_menu_open_with_item =  
-		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Open With"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL,
+		  _("Open With"), ETK_STOCK_APPLICATION_X_EXECUTABLE, ETK_MENU_SHELL(menu),NULL);
+		
 		_entropy_etk_context_menu_open_with = etk_menu_new();
-		etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_open_with_item), ETK_MENU(_entropy_etk_context_menu_open_with)); 
+		etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_open_with_item),
+		ETK_MENU(_entropy_etk_context_menu_open_with)); 
 
 		_entropy_etk_context_menu_groups_item =  
-		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Groups"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Groups"), 
+		ETK_STOCK_EMBLEM_IMPORTANT, ETK_MENU_SHELL(menu),NULL);
+
 		_entropy_etk_context_menu_groups = etk_menu_new();
-		etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_item), ETK_MENU(_entropy_etk_context_menu_groups)); 
+		etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_item), 
+		ETK_MENU(_entropy_etk_context_menu_groups)); 
 
 		_entropy_etk_context_menu_groups_add_to_item =  
-		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Add to.."), ETK_STOCK_EDIT_COPY, 
+		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Add to.."), ETK_STOCK_DIALOG_APPLY, 
 				   ETK_MENU_SHELL(_entropy_etk_context_menu_groups),NULL);
+		
 		_entropy_etk_context_menu_groups_add_to = etk_menu_new();
 		etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_add_to_item), 
 				ETK_MENU(_entropy_etk_context_menu_groups_add_to)); 
 
                 _entropy_etk_context_menu_groups_remove_from_item =
-                   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Remove from.."), ETK_STOCK_EDIT_COPY, 
+                   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Remove from.."), ETK_STOCK_DIALOG_CLOSE, 
                                    ETK_MENU_SHELL(_entropy_etk_context_menu_groups),NULL);
                 _entropy_etk_context_menu_groups_remove_from = etk_menu_new();
                 etk_menu_item_submenu_set(ETK_MENU_ITEM(_entropy_etk_context_menu_groups_remove_from_item),
@@ -429,44 +436,56 @@ void entropy_etk_context_menu_init()
 
 
 		menu_item =
-		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy (Ctrl-c)"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
-		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_group_file_copy_cb),NULL);
+		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy (Ctrl-c)"),
+		ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
 		
-		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut (Ctrl-x)"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu),NULL);
+		etk_signal_connect("activated", ETK_OBJECT(menu_item),
+		ETK_CALLBACK(_entropy_etk_context_menu_group_file_copy_cb),NULL);
+		
+		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut (Ctrl-x)"), 
+		ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu),NULL);
 		
 		menu_item =
-		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste (Ctrl-v)"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu),NULL);
-		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_group_file_paste_cb),NULL);
+		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste (Ctrl-v)"), 
+		ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu),NULL);
+		etk_signal_connect("activated", ETK_OBJECT(menu_item), 
+		ETK_CALLBACK(_entropy_etk_context_menu_group_file_paste_cb),NULL);
+
+		/*TEST: TRASH*/
+		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Send to Trash"), ETK_STOCK_USER_TRASH_FULL, ETK_MENU_SHELL(menu),NULL);
+		etk_signal_connect("activated", ETK_OBJECT(menu_item), 
+		ETK_CALLBACK(_entropy_etk_context_menu_trash_copy_cb), NULL);
 		
-		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete (Del)"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
-		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_file_delete_cb), NULL);
+		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete (Del)"),
+		ETK_STOCK_EDIT_DELETE, ETK_MENU_SHELL(menu),NULL);
+		etk_signal_connect("activated", ETK_OBJECT(menu_item), 
+		ETK_CALLBACK(_entropy_etk_context_menu_file_delete_cb), NULL);
 		
 		_entropy_etk_context_menu_rename_menu_item = 
-			_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Rename"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+			_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Rename"), 
+		ETK_STOCK_EDIT_FIND_REPLACE, ETK_MENU_SHELL(menu),NULL);
 		
 		etk_signal_connect("activated", ETK_OBJECT(_entropy_etk_context_menu_rename_menu_item), 
 				ETK_CALLBACK(_entropy_etk_context_menu_file_rename_cb), NULL);
 
-		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Properties"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, 
+		_("Properties"), ETK_STOCK_DOCUMENT_PROPERTIES, ETK_MENU_SHELL(menu),NULL);
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_properties_cb), NULL);
 
-		menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("New"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("New"), 
+		ETK_STOCK_DOCUMENT_NEW, ETK_MENU_SHELL(menu),NULL);
 		new_menu = etk_menu_new();
 		etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(new_menu));
 
-		menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Folder.."), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(new_menu),NULL);
+		menu_item =  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, 
+		_("Folder.."), ETK_STOCK_FOLDER_NEW, ETK_MENU_SHELL(new_menu),NULL);
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_directory_add_cb), NULL);
 
 		
-		/*TEST: TRASH*/
-		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy to trash (test)"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
-		etk_signal_connect("activated", ETK_OBJECT(menu_item), 
-				ETK_CALLBACK(_entropy_etk_context_menu_trash_copy_cb), NULL);
-
 		/*Trash restore*/
 		_entropy_etk_context_menu_restore_trash_menu_item = 
-		    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Restore from Trash (test)"), 
-		    ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu),NULL);
+		    _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Restore from Trash"), 
+		   ETK_STOCK_PLACES_USER_TRASH , ETK_MENU_SHELL(menu),NULL);
 		
 		etk_signal_connect("activated", ETK_OBJECT(_entropy_etk_context_menu_restore_trash_menu_item), 
 				ETK_CALLBACK(_entropy_etk_context_menu_trash_restore_cb), NULL);
