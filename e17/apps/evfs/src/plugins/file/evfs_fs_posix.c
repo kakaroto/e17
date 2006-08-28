@@ -367,7 +367,7 @@ evfs_file_remove(char *src)
    struct stat stat_src;
    int i;
 
-   if (!stat(src, &stat_src))
+   if (!lstat(src, &stat_src))
      {
         return remove(src);
      }

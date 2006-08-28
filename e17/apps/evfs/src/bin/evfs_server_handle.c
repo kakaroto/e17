@@ -169,9 +169,6 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
 		       evfs_filereference_clone(command->file_command.files[0]),
 		       file_stat);		
 		  
-             /*Iterate */
-             ecore_main_loop_iterate();
-
           }
         else
           {
@@ -213,6 +210,9 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
              else
                {
                   printf("Not recursing - LINK directory!\n");
+		  evfs_operation_remove_task_add(EVFS_OPERATION(op), 
+		       evfs_filereference_clone(command->file_command.files[0]),
+		       file_stat);	
                }
 
           }
@@ -502,10 +502,16 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 				evfs_cleanup_file_command_only(new_command);
 			  }
 			
-			  evfs_operation_copy_task_add(EVFS_OPERATION(op), 
-			       evfs_filereference_clone(command->file_command.files[c_file]),
-			       rewrite_dest,
-			       file_stat, dest_stat, res);
+			  if (!S_ISLNK(file_stat.st_mode)) {
+				  evfs_operation_copy_task_add(EVFS_OPERATION(op), 
+				       evfs_filereference_clone(command->file_command.files[c_file]),
+				       rewrite_dest,
+				       file_stat, dest_stat, res);
+
+				  printf("Rewritten destination: '%s'\n", rewrite_dest->path);
+			  } else {
+				  printf("TODO: HANDLE link copy/move\n");
+			  }
 
 			  /*If we're a move, queue the delete of this dir..*/
 			  if (move) {
@@ -513,8 +519,6 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 			     	  evfs_filereference_clone(command->file_command.files[c_file]),
 				  file_stat);
 			  }
-
-			  printf("Rewritten destination: '%s'\n", rewrite_dest->path);
 
 	          } else {
 	             Ecore_List *directory_list = NULL;
@@ -706,7 +710,6 @@ void evfs_handle_trash_restore_command(evfs_client* client, evfs_command* comman
 	evfs_filereference *ref, *src, *dest;
 	char* pos;
 	char* pos2;
-	int len;
 	evfs_command* f_command;
 
 	for (c=0;c<command->file_command.num_files;c++) {
