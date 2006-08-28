@@ -13,6 +13,8 @@ KEY
 
 * Internationalization issues with date/time format - LANG support
 * FreeBSD waitpid() bug in entrance_login.c (Bug #309)
+* Add icons back to the session list
+* Rip out and rework the smart objects used in Entrance (or rather not used)
 
 -------------------------------------------------------------------------------
  ESSENTIAL FEATURES
@@ -42,8 +44,6 @@ KEY
  ADDITIONAL USER GENERATED FEATURE REQUESTS FROM THE COLLAB4 ML. 
 -------------------------------------------------------------------------------
 ** Tab focus change
-** Session list is currently broken (it sets the layer/raises it etc, after being
-  swallowed).
 ** No User listing currently.
 ** Session list and User list _need_ to be scrollable and the userlist needs to 
   possibly handle massive lists of 1000's of users and not take forever to come

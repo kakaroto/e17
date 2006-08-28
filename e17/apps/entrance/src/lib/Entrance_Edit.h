@@ -44,4 +44,6 @@ int entrance_edit_int_set(const char*, int);
 char* entrance_edit_string_get(const char*);
 int entrance_edit_string_set(const char*, const char*);
 
+int entrance_edit_session_add(const char *title, const char *exec, const char *icon);
+
 #endif

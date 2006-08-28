@@ -16,6 +16,7 @@
 @brief Variables and Data relating to an instance of the application as a whole
 
 */
+
 extern void session_item_selected_cb(void *data, Evas_Object * o,
                                      const char *emission,
                                      const char *source);
@@ -591,7 +592,6 @@ entrance_session_xsession_list_add(Entrance_Session * e)
    Evas_Coord w, h;
    Evas_List *l = NULL;
    const char *key = NULL;
-   const char *file = NULL;
    Evas_Object *edje = NULL;
    Entrance_X_Session *exs = NULL;
    Evas_Object *container = NULL;
@@ -617,22 +617,24 @@ entrance_session_xsession_list_add(Entrance_Session * e)
                                           CONTAINER_FILL_POLICY_KEEP_ASPECT);
          esmart_container_direction_set(container, 1);
       }
-      edje_object_file_get(e->edje, &file, NULL);
+
       for (l = e->config->sessions.keys; l; l = l->next)
       {
          key = (const char *) l->data;
          if ((exs = evas_hash_find(e->config->sessions.hash, key)))
          {
-            if ((edje = entrance_x_session_edje_get(exs, e->edje, file)))
-            {
-               esmart_container_element_append(container, edje);
-            }
+		    edje = entrance_x_session_button_new(exs, e->edje);
+			if(edje) 
+				esmart_container_element_append(container, edje);
          }
+
       }
+
       edje_object_part_swallow(e->edje, "entrance.xsessions.list", container);
       e->session_container = container;
    }
 }
+
 void
 entrance_session_list_direction_set(Entrance_Session * e,
                                     Evas_Object * container,

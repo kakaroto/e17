@@ -26,5 +26,6 @@ void entrance_x_session_free(Entrance_X_Session * e);
 Evas_Object *entrance_x_session_edje_get(Entrance_X_Session * e,
                                          Evas_Object * o,
                                          const char *themefile);
+Evas_Object *entrance_x_session_button_new(Entrance_X_Session *, Evas_Object *);
 
 #endif
