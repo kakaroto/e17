@@ -20,4 +20,5 @@ installed_headers_DATA = evfs_cleanup.h \
 			evfs_operation_tasks.h \
 			evfs_vfolder.h \
 			evfs_metadata.h \
+			evfs_trash.h \
 			tarpet.h
