@@ -1227,7 +1227,8 @@ MenuItemEventMouseUp(MenuItem * mi, XEvent * ev __UNUSED__)
    if (Mode_menus.just_shown)
      {
 	Mode_menus.just_shown = 0;
-	return;
+	if (ev->xbutton.time - Mode.events.last_btime < 250)
+	   return;
      }
 
    m = mi->menu;
