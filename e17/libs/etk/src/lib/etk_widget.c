@@ -1185,30 +1185,6 @@ void etk_widget_unswallow_widget(Etk_Widget *swallower, Etk_Widget *swallowed)
 }
 
 /**
- * @brief Checks if @a swallower is currently swallowing @a swallowed
- * @param swallower a widget
- * @param swallowed the widget to check if it is swallowed by @a swallower
- * @return Returns ETK_TRUE if @a swallower is swallowing @a swallowed, and ETK_FALSE otherwise
- * @widget_implementation
- */
-Etk_Bool etk_widget_is_swallowing_widget(Etk_Widget *swallower, Etk_Widget *swallowed)
-{
-   Evas_List *l;
-   Etk_Widget_Swallowed_Object *swo;
-   
-   if (!swallower || !swallowed)
-      return ETK_FALSE;
-   
-   for (l = swallower->swallowed_objects; l; l = l->next)
-   {
-      swo = l->data;
-      if (swo->widget == swallowed)
-         return ETK_TRUE;
-   }
-   return ETK_FALSE;
-}
-
-/**
  * @brief Checks if the widget is swallowed by its parent
  * @return Returns ETK_TRUE if the widget is swallowed by its parent
  * @widget_implementation
@@ -1273,30 +1249,6 @@ void etk_widget_unswallow_object(Etk_Widget *swallower, Evas_Object *object)
          break;
       }
    }
-}
-
-/**
- * @brief Checks if the widget swallows the object
- * @param widget a widget
- * @param object an evas object
- * @return Returns ETK_TRUE if @a widget is swallowing @a object
- * @widget_implementation
- */
-Etk_Bool etk_widget_is_swallowing_object(Etk_Widget *widget, Evas_Object *object)
-{
-   Evas_List *l;
-   Etk_Widget_Swallowed_Object *swallowed_object;
-
-   if (!widget || !object)
-      return ETK_FALSE;
-
-   for (l = widget->swallowed_objects; l; l = l->next)
-   {
-      swallowed_object = l->data;
-      if (swallowed_object->object == object)
-         return ETK_TRUE;
-   }
-   return ETK_FALSE;
 }
 
 /**

@@ -83,7 +83,7 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
    if (child)
    {
       etk_widget_parent_set(child, ETK_WIDGET(bin));
-      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
+      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", child);
       bin->child = child;
       
       etk_signal_emit_by_name("child_added", ETK_OBJECT(bin), NULL, child);

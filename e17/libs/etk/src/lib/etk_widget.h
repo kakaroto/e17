@@ -171,11 +171,9 @@ int  etk_widget_theme_data_get(Etk_Widget *widget, const char *data_name, const 
 
 Etk_Bool                 etk_widget_swallow_widget(Etk_Widget *swallower, const char *part, Etk_Widget *to_swallow);
 void                     etk_widget_unswallow_widget(Etk_Widget *swallower, Etk_Widget *swallowed);
-Etk_Bool                 etk_widget_is_swallowing_widget(Etk_Widget *swallower, Etk_Widget *swallowed);
 Etk_Bool                 etk_widget_is_swallowed(Etk_Widget *widget);
 Etk_Bool                 etk_widget_swallow_object(Etk_Widget *swallower, const char *part, Evas_Object *object);
 void                     etk_widget_unswallow_object(Etk_Widget *swallower, Evas_Object *object);
-Etk_Bool                 etk_widget_is_swallowing_object(Etk_Widget *swallower, Evas_Object *object);
 Etk_Widget_Swallow_Error etk_widget_swallow_error_get();
 
 Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object);
