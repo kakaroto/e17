@@ -14,6 +14,7 @@
 #include <Esmart/Esmart_Text_Entry.h>
 #include <Esmart/Esmart_Container.h>
 #include <Ecore_Config.h>
+#include <Ecore_Desktop.h>
 #include "entrance.h"
 #include "entrance_session.h"
 #include "entrance_x_session.h"
@@ -704,6 +705,14 @@ main(int argc, char *argv[])
       ecore_shutdown();
       return -1;
    }
+   
+   if(!ecore_desktop_init())
+   {
+	   ecore_shutdown();
+	   ecore_config_shutdown();
+	   return -1;
+   }
+
    ecore_app_args_set(argc, (const char **) argv);
    
    /* Set locale to user's environment */
@@ -874,6 +883,7 @@ main(int argc, char *argv[])
       edje_shutdown();
       ecore_evas_shutdown();
       ecore_x_shutdown();
+	  ecore_desktop_shutdown();
       ecore_config_shutdown();
       ecore_shutdown();
    }

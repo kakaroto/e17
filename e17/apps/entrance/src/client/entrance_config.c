@@ -484,6 +484,8 @@ _cb_xsessions_foreach(void *list_data, void *data)
        e->sessions.hash =
           evas_hash_add(e->sessions.hash, exs->name, exs);
     }
+
+	ecore_desktop_destroy(ed);
 }
 
 
