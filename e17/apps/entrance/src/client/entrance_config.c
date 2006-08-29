@@ -1,9 +1,16 @@
+#include <Ecore_File.h>
+#include <Ecore_Data.h>
 #include <Ecore_Config.h>
+#include <Ecore_Desktop.h>
 
 #include "entrance.h"
 #include "entrance_config.h"
 #include "entrance_user.h"
 #include "entrance_x_session.h"
+
+#include "../config.h"
+
+static void _cb_xsessions_foreach(void *list_data, void *data);
 
 /**
 @file entrance_config.c
@@ -137,6 +144,12 @@ entrance_config_populate(Entrance_Config *e)
       }
    }
 
+
+   Ecore_List *xsessions = ecore_file_ls(ENTRANCE_SESSIONS_DIR);
+   if(xsessions)
+	   ecore_list_for_each(xsessions, _cb_xsessions_foreach, e);
+
+
    num_session = ecore_config_int_get("/entrance/session/count");
    for (i = 0; i < num_session; i++)
    {
@@ -154,6 +167,7 @@ entrance_config_populate(Entrance_Config *e)
             evas_hash_add(e->sessions.hash, exs->name, exs);
       }
    }
+   
 
 #if 0
    if (!e_db_int_get(db, "/entrance/xinerama/screens/w", &(e->screens.w)))
@@ -443,6 +457,36 @@ entrance_config_prevuser_save(char *user, const char *file)
    ecore_config_string_set(buf, user);
    ecore_config_file_save(file);
 }
+
+static void 
+_cb_xsessions_foreach(void *list_data, void *data)
+{
+	const char* filename = list_data;
+	if(!filename)
+		return;
+
+	Entrance_Config *e = data;
+	if(!e)
+		return;
+
+	char path[PATH_MAX];
+	snprintf(path, PATH_MAX, ENTRANCE_SESSIONS_DIR "/%s", filename);
+
+	Ecore_Desktop *ed = ecore_desktop_get(path, "en_US");
+	if(!ed)
+		return;
+
+	Entrance_X_Session *exs = NULL;
+
+    if ((exs = entrance_x_session_new(ed->name, ed->icon, ed->exec)))
+    {
+       e->sessions.keys = evas_list_append(e->sessions.keys, ed->name);
+       e->sessions.hash =
+          evas_hash_add(e->sessions.hash, exs->name, exs);
+    }
+}
+
+
 
 #if 0
 int

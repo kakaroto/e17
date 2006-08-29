@@ -20,9 +20,6 @@ KEY
  ESSENTIAL FEATURES
 -------------------------------------------------------------------------------
 
-*** Create abstracted interface for obtaining system session list.
-  - Add functions for finding session list on various distributions
-  - Move entrance-definded sessions out of config into $prefix/share/xsessions/.
 *** Handle sessions that crash immediately gracefully by providing some kind of
   custom error message a la GDM 
 * Xinerama - widgets follow mouse pointer from screen to screen
