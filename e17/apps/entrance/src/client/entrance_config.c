@@ -10,7 +10,15 @@
 
 #include "../config.h"
 
+struct _Entrance_Config_And_Path
+{
+   Entrance_Config *e;
+   const char      *path;
+};
+
+
 static void _cb_xsessions_foreach(void *list_data, void *data);
+static void _cb_desktop_xsessions_foreach(void *list_data, void *data);
 
 /**
 @file entrance_config.c
@@ -88,6 +96,7 @@ entrance_config_populate(Entrance_Config *e)
 
    int i, num_session, num_user;
    char buf[PATH_MAX];
+   struct _Entrance_Config_And_Path ep;
 
    if (!e) return;
 
@@ -144,11 +153,15 @@ entrance_config_populate(Entrance_Config *e)
       }
    }
 
-
+   /* Search the local session directory first. */
+   ep.e = e;
+   ep.path = ENTRANCE_SESSIONS_DIR;
    Ecore_List *xsessions = ecore_file_ls(ENTRANCE_SESSIONS_DIR);
    if(xsessions)
-	   ecore_list_for_each(xsessions, _cb_xsessions_foreach, e);
-
+	   ecore_list_for_each(xsessions, _cb_xsessions_foreach, &ep);
+   /* Search all the relevant FDO paths second. */
+   if(ecore_desktop_paths_xsessions)
+	   ecore_list_for_each(ecore_desktop_paths_xsessions, _cb_desktop_xsessions_foreach, &ep);
 
    num_session = ecore_config_int_get("/entrance/session/count");
    for (i = 0; i < num_session; i++)
@@ -461,33 +474,58 @@ entrance_config_prevuser_save(char *user, const char *file)
 static void 
 _cb_xsessions_foreach(void *list_data, void *data)
 {
-	const char* filename = list_data;
-	if(!filename)
-		return;
+   const char* filename = list_data;
+   struct _Entrance_Config_And_Path *ep = data;
+   Entrance_Config *e;
 
-	Entrance_Config *e = data;
-	if(!e)
-		return;
+   if(!filename)
+      return;
 
-	char path[PATH_MAX];
-	snprintf(path, PATH_MAX, ENTRANCE_SESSIONS_DIR "/%s", filename);
+   e = ep->e;
+   if(!e)
+      return;
 
-	Ecore_Desktop *ed = ecore_desktop_get(path, "en_US");
-	if(!ed)
-		return;
+   char path[PATH_MAX];
+   snprintf(path, PATH_MAX, "%s/%s", ep->path, filename);
 
-	Entrance_X_Session *exs = NULL;
+   Ecore_Desktop *ed = ecore_desktop_get(path, "en_US");
+   if(!ed)
+      return;
+
+   Entrance_X_Session *exs = NULL;
 
     if ((exs = entrance_x_session_new(ed->name, ed->icon, ed->exec)))
     {
-       e->sessions.keys = evas_list_append(e->sessions.keys, ed->name);
-       e->sessions.hash =
-          evas_hash_add(e->sessions.hash, exs->name, exs);
+       /* Sessions found earlier in the FDO search sequence override those found later. */
+       if (evas_hash_find(e->sessions.hash, exs->name) == NULL)
+          {
+             e->sessions.keys = evas_list_append(e->sessions.keys, ed->name);
+             e->sessions.hash = evas_hash_add(e->sessions.hash, exs->name, exs);
+	  }
+       else
+          {
+             entrance_x_session_free(exs);
+	  }
     }
 
 	ecore_desktop_destroy(ed);
 }
 
+static void 
+_cb_desktop_xsessions_foreach(void *list_data, void *data)
+{
+   const char* path = list_data;
+   struct _Entrance_Config_And_Path *ep = data;
+   Ecore_List *xsessions;
+
+   if(!path)
+      return;
+
+   ep->path = path;
+   xsessions = ecore_file_ls(path);
+   if(xsessions)
+      ecore_list_for_each(xsessions, _cb_xsessions_foreach, ep);
+}
 
 
 #if 0
