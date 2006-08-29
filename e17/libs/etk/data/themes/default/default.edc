@@ -1,13 +1,17 @@
-#include "macros/focus.edc"
 #include "macros/dnd.edc"
-#include "macros/scrollbar.edc"
+#include "macros/focus.edc"
+#include "macros/glint.edc"
 #include "macros/paned.edc"
+#include "macros/scrollbar.edc"
+
 fonts {
    font: "Vera.ttf" "Vera";
    font: "VeraBd.ttf" "Vera-Bold";
    font: "VeraIt.ttf" "Vera-Italic";   
 }
+
 #include "images/images.edc"
+
 collections {
    #include "widgets/windows.edc"
    #include "widgets/button.edc"

@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = dnd.edc \
 	     focus.edc \
-	     Makefile.am \
+	     glint.edc \
 	     paned.edc \
 	     scrollbar.edc
