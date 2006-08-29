@@ -11,12 +11,6 @@ rm -Rf  aclocal.m4 autom4te.cache/ ltmain.sh config.log config.status config.cac
 
 touch README
 
-echo
-echo "Options : (see INSTALL file)"
-echo "   No arguments : Build dEvian module (Picture & Rss feature)"
-echo "   --enable-modular=rss : Build dErss module (Rss feature only)"
-echo "   --enable-modular=log : Build dElog module (Log feature only)"
-echo
 echo "Running aclocal..." ; aclocal $ACLOCAL_FLAGS -I m4 || exit 1
 echo "Running autoheader..." ; autoheader || exit 1
 echo "Running autoconf..." ; autoconf || exit 1
@@ -24,5 +18,11 @@ echo "Running libtoolize..." ; (libtoolize --copy --automake || glibtoolize --au
 echo "Running automake..." ; automake --add-missing --copy --gnu || exit 1
 
 if [ -z "$NOCONFIGURE" ]; then
+	echo
+	echo "Options : (see INSTALL file)"
+	echo "   No arguments : Build dEvian module (Picture & Rss feature)"
+	echo "   --enable-modular=rss : Build dErss module (Rss feature only)"
+	echo "   --enable-modular=log : Build dElog module (Log feature only)"
+	echo
 	./configure "$@"
 fi
