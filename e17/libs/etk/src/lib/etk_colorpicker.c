@@ -496,18 +496,21 @@ static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data)
    cp->sp_image = evas_object_image_add(evas);
    evas_object_image_alpha_set(cp->sp_image, 0);
    evas_object_image_size_set(cp->sp_image, cp->sp_res, cp->sp_res);
+   evas_object_smart_member_add(cp->sp_image, cp->sp_object);
    picker_sd->objects = evas_list_append(picker_sd->objects, cp->sp_image);
    
    cp->sp_hcursor = evas_object_image_add(evas);
    evas_object_image_alpha_set(cp->sp_hcursor, 0);
    evas_object_image_size_set(cp->sp_hcursor, cp->sp_res, 1);
    evas_object_pass_events_set(cp->sp_hcursor, 1);
+   evas_object_smart_member_add(cp->sp_hcursor, cp->sp_object);
    picker_sd->objects = evas_list_append(picker_sd->objects, cp->sp_hcursor);
    
    cp->sp_vcursor = evas_object_image_add(evas);
    evas_object_image_alpha_set(cp->sp_vcursor, 0);
    evas_object_image_size_set(cp->sp_vcursor, 1, cp->sp_res);
    evas_object_pass_events_set(cp->sp_vcursor, 1);
+   evas_object_smart_member_add(cp->sp_vcursor, cp->sp_object);
    picker_sd->objects = evas_list_append(picker_sd->objects, cp->sp_vcursor);
    
    evas_object_show(cp->sp_object);
@@ -520,10 +523,12 @@ static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data)
    cp->vp_image = evas_object_image_add(evas);
    evas_object_image_alpha_set(cp->vp_image, 0);
    evas_object_image_size_set(cp->vp_image, 1, cp->vp_res);
+   evas_object_smart_member_add(cp->vp_image, cp->sp_object);
    picker_sd->objects = evas_list_append(picker_sd->objects, cp->vp_image);
    
    cp->vp_cursor = evas_object_rectangle_add(evas);
    evas_object_pass_events_set(cp->vp_cursor, 1);
+   evas_object_smart_member_add(cp->vp_cursor, cp->sp_object);
    picker_sd->objects = evas_list_append(picker_sd->objects, cp->vp_cursor);
    
    evas_object_show(cp->vp_object);
