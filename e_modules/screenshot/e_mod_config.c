@@ -296,27 +296,27 @@ _advanced_create_widgets (E_Config_Dialog * cfd, Evas * evas,
       ob =
 	e_widget_check_add (evas, D_ ("Include Image Border"),
 			    &(cfdata->import.use_img_border));
-      e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
       ob =
 	e_widget_check_add (evas, D_ ("Use Image Dithering"),
 			    &(cfdata->import.use_dither));
-      e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
       ob =
 	e_widget_check_add (evas, D_ ("Include Window Manager Frame"),
 			    &(cfdata->import.use_frame));
-      e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
       ob =
 	e_widget_check_add (evas, D_ ("Choose Window To Grab"),
 			    &(cfdata->import.use_window));
-      e_widget_frametable_object_append (of, ob, 0, 3, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 3, 1, 1, 1, 0, 1, 0);
       ob =
 	e_widget_check_add (evas, D_ ("Silent"),
 			    &(cfdata->import.use_silent));
-      e_widget_frametable_object_append (of, ob, 0, 4, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 4, 1, 1, 1, 0, 1, 0);
       ob =
 	e_widget_check_add (evas, D_ ("Trim Edges"),
 			    &(cfdata->import.use_trim));
-      e_widget_frametable_object_append (of, ob, 0, 5, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 5, 1, 1, 1, 0, 1, 0);
       e_widget_table_object_append (ot, of, 0, 0, 1, 1, 1, 1, 1, 1);
     }
   if (ecore_file_app_installed ("scrot"))
@@ -325,11 +325,11 @@ _advanced_create_widgets (E_Config_Dialog * cfd, Evas * evas,
       ob =
 	e_widget_check_add (evas, D_ ("Include Image Border"),
 			    &(cfdata->scrot.use_img_border));
-      e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
       ob =
 	e_widget_check_add (evas, D_ ("Generate Thumbnail"),
 			    &(cfdata->scrot.use_thumb));
-      e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
       e_widget_table_object_append (ot, of, 1, 0, 1, 1, 1, 1, 1, 1);
     }
   e_widget_list_object_append (o, ot, 1, 1, 0.5);
