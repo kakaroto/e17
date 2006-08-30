@@ -10,12 +10,12 @@ INCLUDES = -I$(top_srcdir)/src/lib \
 
 pkgdir = $(libdir)/ewl/engines
 
-if EWL_ENABLE_EVAS_SOFTWARE_X11
+if EWL_ENABLE_EVAS_XRENDER_X11
 
 pkg_LTLIBRARIES = evas_xrender_x11.la
 
 evas_xrender_x11_la_SOURCES = \
-	Ewl_Engine_Evas_Software_X11.h \
+	Ewl_Engine_Evas_Xrender_X11.h \
 	ewl_engine_evas_xrender_x11.c
 
 evas_xrender_x11_la_LIBADD = $(top_builddir)/src/lib/libewl.la
