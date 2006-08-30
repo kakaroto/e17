@@ -1,8 +1,533 @@
 #include <e.h>
 #include "e_mod_main.h"
-#include "e_mod_config.h"
-#include "config.h"
 
+typedef struct _Instance Instance;
+typedef struct _Cpu Cpu;
+
+struct _Instance 
+{
+   E_Gadcon_Client *gcc;
+   Cpu             *cpu;
+   Ecore_Timer     *timer;
+};
+
+struct _Cpu 
+{
+   Instance *inst;
+   Evas_Object *o_icon;
+};
+
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
+static void _gc_shutdown(E_Gadcon_Client *gcc);
+static void _gc_orient(E_Gadcon_Client *gcc);
+static char *_gc_label(void);
+static Evas_Object *_gc_icon(Evas *evas);
+static Config_Item *_config_item_get(const char *id);
+static int _set_cpu_load(void *data);
+static int _get_cpu_count(void);
+static int _get_cpu_load(void);
+static void _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _menu_cb_post(void *data, E_Menu *m);
+static void _cpu_menu_fast(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _cpu_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _cpu_menu_normal(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _cpu_menu_slow(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _cpu_menu_very_slow(void *data, E_Menu *m, E_Menu_Item *mi);
+
+static E_Config_DD *conf_edd = NULL;
+static E_Config_DD *conf_item_edd = NULL;
+
+Config *cpu_conf = NULL;
+
+static int cpu_count;
+static int cpu_stats[4];
+
+static const E_Gadcon_Client_Class _gc_class = 
+{
+   GADCON_CLIENT_CLASS_VERSION, "cpu", 
+     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
+};
+
+static E_Gadcon_Client *
+_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
+{
+   Cpu             *cpu;
+   Instance        *inst;
+   Config_Item     *ci;
+   E_Gadcon_Client *gcc;
+   char             buf[4096];
+
+   cpu_count = _get_cpu_count();
+   
+   inst = E_NEW(Instance, 1);   
+
+   ci = _config_item_get(id);
+   if (!ci->id)
+     ci->id = evas_stringshare_add(id);
+
+   cpu = E_NEW(Cpu, 1);
+   cpu->inst = inst;
+
+   snprintf(buf, sizeof(buf), "%s/cpu.edj", 
+	    e_module_dir_get(cpu_conf->module));
+   
+   cpu->o_icon = edje_object_add(gc->evas);
+   if (!e_theme_edje_object_set(cpu->o_icon, 
+				"base/theme/modules/cpu", "modules/cpu/main"))
+     edje_object_file_set(cpu->o_icon, buf, "modules/cpu/main");
+   evas_object_show(cpu->o_icon);
+   
+   gcc = e_gadcon_client_new(gc, name, id, style, cpu->o_icon);
+   gcc->data = inst;
+   inst->gcc = gcc;
+   inst->cpu = cpu;
+
+   cpu_conf->instances = evas_list_append(cpu_conf->instances, inst);
+
+   evas_object_event_callback_add(cpu->o_icon, EVAS_CALLBACK_MOUSE_DOWN,
+				  _button_cb_mouse_down, inst);
+
+   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   return gcc;
+}
+
+static void
+_gc_shutdown(E_Gadcon_Client *gcc) 
+{
+   Instance *inst;
+   Cpu      *cpu;
+   
+   inst = gcc->data;
+   cpu = inst->cpu;
+
+   if (inst->timer)
+     ecore_timer_del(inst->timer);
+   if (cpu->o_icon)
+     evas_object_del(cpu->o_icon);
+   
+   cpu_conf->instances = evas_list_remove(cpu_conf->instances, inst);
+   E_FREE(cpu);
+   E_FREE(inst);
+}
+
+static void
+_gc_orient(E_Gadcon_Client *gcc) 
+{
+   e_gadcon_client_aspect_set(gcc, 16, 16);
+   e_gadcon_client_min_size_set(gcc, 16, 16);
+}
+
+static char *
+_gc_label(void) 
+{
+   return _("Cpu");
+}
+
+static Evas_Object *
+_gc_icon(Evas *evas) 
+{
+   Evas_Object *o;
+   char         buf[4096];
+
+   if (!cpu_conf->module) return NULL;
+   
+   snprintf(buf, sizeof(buf), "%s/module.eap", 
+	    e_module_dir_get(cpu_conf->module));
+   
+   o = edje_object_add(evas);
+   edje_object_file_set(o, buf, "icon");
+   return o;
+}
+
+static Config_Item *
+_config_item_get(const char *id) 
+{
+   Evas_List   *l;
+   Config_Item *ci;
+
+   for (l = cpu_conf->items; l; l = l->next) 
+     {
+	ci = l->data;
+	if (!ci->id) continue;
+	if (!strcmp(ci->id, id)) return ci;
+     }
+
+   ci = E_NEW(Config_Item, 1);
+   ci->id = evas_stringshare_add(id);
+   ci->interval = 1;
+   
+   cpu_conf->items = evas_list_append(cpu_conf->items, ci);
+   return ci;
+}
+
+static int 
+_set_cpu_load(void *data) 
+{
+   Instance *inst;
+   Cpu      *cpu;
+   int       load, i = 0;
+   char      str[100], str_tmp[100];
+
+   if (cpu_count == -1) return 0;
+
+   inst = data;
+   if (!inst) return 1;
+   cpu = inst->cpu;
+   if (!cpu) return 1;
+   
+   _get_cpu_load();
+
+   snprintf(str, sizeof(str), "%d%%", cpu_stats[0]);
+   i = 1;
+   while (i < cpu_count)
+     {
+	snprintf(str_tmp, sizeof(str_tmp), " / %d%%", cpu_stats[i]);
+	strncat(str, str_tmp, sizeof(str));
+	i++;
+     }
+   edje_object_part_text_set(cpu->o_icon, "load", str);
+   return 1;
+}
+
+static int
+_get_cpu_count(void)
+{
+   FILE *f;
+   char tmp[4];
+   int cpu = -1;
+
+   if (!(f = fopen("/proc/stat", "r"))) return cpu;
+
+   while (fscanf(f, "cp%s %*u %*u %*u %*u %*u %*u %*u %*u\n", (char *) &tmp) == 1)
+     cpu++;
+
+   fclose(f);
+   return cpu;
+}
+
+static int
+_get_cpu_load(void) 
+{
+   FILE *stat;
+   static unsigned long old_u[4], old_n[4], old_s[4], old_i[4], old_wa[4], old_hi[4], old_si[4];
+   unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, ticks_past;
+   int tmp_u = 0, tmp_n = 0, tmp_s = 0;
+   char dummy[16];
+   int i = 0;
+   
+   if (!(stat = fopen("/proc/stat", "r"))) return -1;
+
+   while (i < cpu_count)
+     {
+
+	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
+	     &new_s, &new_i, &new_wa, &new_hi, &new_si) < 5)
+	  {
+	     fclose (stat);
+	     return;
+	  }
+
+	ticks_past = ((new_u + new_n + new_s + new_i + new_wa + new_hi + new_si) -
+		      (old_u[i] + old_n[i] + old_s[i] + old_i[i] + old_wa[i] + old_hi[i] + old_si[i]));
+
+	if (ticks_past)
+	  {
+	     tmp_u = ((new_u - old_u[i]));
+	     tmp_n = ((new_n - old_n[i]));
+	     tmp_s = ((new_s - old_s[i]));
+	  }
+	
+	cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / cpu_count;
+
+	old_u[i] = new_u;
+	old_n[i] = new_n;
+	old_s[i] = new_s;
+	old_wa[i] = new_wa;
+	old_hi[i] = new_hi;
+	old_si[i] = new_si;
+	
+	if (cpu_stats[i] >= 100) cpu_stats[i] = 100;
+
+	i++;
+     }
+   fclose (stat);
+}
+
+static void
+_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Instance *inst;
+   Evas_Event_Mouse_Down *ev;
+   
+   inst = data;
+   ev = event_info;
+   if ((ev->button == 3) && (!cpu_conf->menu))
+     {
+	E_Menu *mn;
+	E_Menu_Item *mi;
+	int cx, cy, cw, ch;
+	Evas_List *l;
+	char buf[256];
+	Config_Item *ci;
+	
+	ci = _config_item_get(inst->gcc->id);
+
+	mn = e_menu_new();
+	cpu_conf->menu_interval = mn;
+	
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, _("Fast (0.5 sec)"));
+	e_menu_item_radio_set(mi, 1);
+	e_menu_item_radio_group_set(mi, 1);
+	if (ci->interval <= 0.5) e_menu_item_toggle_set(mi, 1);
+	e_menu_item_callback_set(mi, _cpu_menu_fast, inst);
+
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, _("Medium (1 sec)"));
+	e_menu_item_radio_set(mi, 1);
+	e_menu_item_radio_group_set(mi, 1);
+	if (ci->interval > 0.5) e_menu_item_toggle_set(mi, 1);
+	e_menu_item_callback_set(mi, _cpu_menu_medium, inst);
+
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, _("Normal (2 sec)"));
+	e_menu_item_radio_set(mi, 1);
+	e_menu_item_radio_group_set(mi, 1);
+	if (ci->interval >= 2.0) e_menu_item_toggle_set(mi, 1);
+	e_menu_item_callback_set(mi, _cpu_menu_normal, inst);
+
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, _("Slow (5 sec)"));
+	e_menu_item_radio_set(mi, 1);
+	e_menu_item_radio_group_set(mi, 1);
+	if (ci->interval >= 5.0) e_menu_item_toggle_set(mi, 1);
+	e_menu_item_callback_set(mi, _cpu_menu_slow, inst);
+
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, _("Very Slow (30 sec)"));
+	e_menu_item_radio_set(mi, 1);
+	e_menu_item_radio_group_set(mi, 1);
+	if (ci->interval >= 30.0) e_menu_item_toggle_set(mi, 1);
+	e_menu_item_callback_set(mi, _cpu_menu_very_slow, inst);
+
+	mn = e_menu_new();
+	cpu_conf->menu = mn;
+	e_menu_post_deactivate_callback_set(mn, _menu_cb_post, inst);
+	
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, _("Time Between Updates"));
+	e_menu_item_submenu_set(mi, cpu_conf->menu_interval);
+
+        e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
+	
+	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
+	e_menu_activate_mouse(mn,
+			      e_util_zone_current_get(e_manager_current_get()),
+			      cx + ev->output.x, cy + ev->output.y, 1, 1,
+			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+	evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
+				 EVAS_BUTTON_NONE, ev->timestamp, NULL);
+     }
+}
+
+static void
+_menu_cb_post(void *data, E_Menu *m)
+{
+   if (!cpu_conf->menu) return;
+   e_object_del(E_OBJECT(cpu_conf->menu));
+   cpu_conf->menu = NULL;
+   if (cpu_conf->menu_interval)
+     e_object_del(E_OBJECT(cpu_conf->menu_interval));
+   cpu_conf->menu_interval = NULL;
+}
+   
+static void
+_cpu_menu_fast(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Instance *inst;
+   Config_Item *ci;
+   
+   inst = data;
+   ci = _config_item_get(inst->gcc->id);
+
+   ci->interval = 0.5;
+   ecore_timer_del(inst->timer);
+   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   e_config_save_queue();
+}
+
+static void
+_cpu_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Instance *inst;
+   Config_Item *ci;
+   
+   inst = data;
+   ci = _config_item_get(inst->gcc->id);
+
+   ci->interval = 1.0;
+   ecore_timer_del(inst->timer);
+   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   e_config_save_queue();
+}
+
+static void
+_cpu_menu_normal(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Instance *inst;
+   Config_Item *ci;
+   
+   inst = data;
+   ci = _config_item_get(inst->gcc->id);
+
+   ci->interval = 2.0;
+   ecore_timer_del(inst->timer);
+   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   e_config_save_queue();
+}
+
+static void
+_cpu_menu_slow(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Instance *inst;
+   Config_Item *ci;
+   
+   inst = data;
+   ci = _config_item_get(inst->gcc->id);
+
+   ci->interval = 5.0;
+   ecore_timer_del(inst->timer);
+   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   e_config_save_queue();
+}
+
+static void
+_cpu_menu_very_slow(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Instance *inst;
+   Config_Item *ci;
+   
+   inst = data;
+   ci = _config_item_get(inst->gcc->id);
+
+   ci->interval = 30.0;
+   ecore_timer_del(inst->timer);
+   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   e_config_save_queue();
+}
+
+EAPI E_Module_Api e_modapi = 
+{
+   E_MODULE_API_VERSION, "Cpu"
+};
+
+EAPI void *
+e_modapi_init(E_Module *m) 
+{
+   conf_item_edd = E_CONFIG_DD_NEW("Cpu_Config_Item", Config_Item);
+   conf_edd = E_CONFIG_DD_NEW("Cpu_Config", Config);
+   
+   #undef T
+   #define T Config_Item
+   #undef D
+   #define D conf_item_edd
+   E_CONFIG_VAL(D, T, id, STR);
+   E_CONFIG_VAL(D, T, interval, DOUBLE);
+   
+   #undef T
+   #define T Config
+   #undef D
+   #define D conf_edd
+   E_CONFIG_LIST(D, T, items, conf_item_edd);
+   
+   cpu_conf = e_config_domain_load("module.cpu", conf_edd);
+   if (!cpu_conf) 
+     {
+	Config_Item *ci;
+	
+	cpu_conf = E_NEW(Config, 1);
+	ci = E_NEW(Config_Item, 1);
+	ci->id = evas_stringshare_add("0");
+	ci->interval = 1;
+	
+	cpu_conf->items = evas_list_append(cpu_conf->items, ci);
+     }
+   
+   cpu_conf->module = m;
+   e_gadcon_provider_register(&_gc_class);
+   return m;
+}
+
+EAPI int
+e_modapi_shutdown(E_Module *m) 
+{
+   cpu_conf->module = NULL;
+   e_gadcon_provider_unregister(&_gc_class);
+   if (cpu_conf->config_dialog)
+     e_object_del(E_OBJECT(cpu_conf->config_dialog));
+   if (cpu_conf->menu) 
+     {
+	e_menu_post_deactivate_callback_set(cpu_conf->menu, NULL, NULL);
+	e_object_del(E_OBJECT(cpu_conf->menu));
+	cpu_conf->menu = NULL;
+     }
+
+   while(cpu_conf->items) 
+     {
+	Config_Item *ci;
+	
+	ci = cpu_conf->items->data;
+	if (ci->id)
+	  evas_stringshare_del(ci->id);
+	cpu_conf->items = evas_list_remove_list(cpu_conf->items, cpu_conf->items);
+	E_FREE(ci);
+     }
+
+   E_FREE(cpu_conf);
+   E_CONFIG_DD_FREE(conf_item_edd);
+   E_CONFIG_DD_FREE(conf_edd);
+   return 1;
+}
+
+EAPI int
+e_modapi_save(E_Module *m) 
+{
+   Evas_List *l;
+   
+   for (l = cpu_conf->instances; l; l = l->next) 
+     {
+	Instance *inst;
+	Config_Item *ci;
+	
+	inst = l->data;
+	ci = _config_item_get(inst->gcc->id);
+	if (ci->id)
+	  evas_stringshare_del(ci->id);
+	ci->id = evas_stringshare_add(inst->gcc->id);
+     }
+   e_config_domain_save("module.cpu", conf_edd, cpu_conf);
+   return 1;
+}
+
+EAPI int
+e_modapi_about(E_Module *m)
+{
+  e_module_dialog_show (m, _("Enlightenment Cpu Monitor Module"),
+			_("This module is used to monitor cpu load."));
+  return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*
 static Cpu *_cpu_init (E_Module * m);
 static void _cpu_shutdown (Cpu * n);
 static void _cpu_config_menu_new (Cpu * n);
@@ -19,205 +544,13 @@ static void _cpu_face_cb_menu_edit (void *data, E_Menu * mn,
 				    E_Menu_Item * mi);
 static void _cpu_face_cb_menu_configure (void *data, E_Menu * mn,
 					 E_Menu_Item * mi);
-static int _cpu_face_update_values (void *data);
 static int _cpu_face_get_cpu_count (Cpu_Face * cf);
 static void _cpu_face_get_load (Cpu_Face * cf);
 static void _cpu_face_graph_values (Cpu_Face * cf);
 static void _cpu_face_graph_clear (Cpu_Face * cf);
 
 static int cpu_count;
-static int cpu_stats[4];
 
-EAPI E_Module_Api e_modapi = {
-  E_MODULE_API_VERSION,
-  "Cpu"
-};
-
-EAPI void *
-e_modapi_init (E_Module * m)
-{
-  Cpu *c;
-
-  /* Set up module's message catalogue */
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset (PACKAGE, "UTF-8");
-
-  c = _cpu_init (m);
-  if (!c)
-    return NULL;
-  c->module = m;
-  return c;
-}
-
-EAPI int
-e_modapi_shutdown (E_Module * m)
-{
-  Cpu *c;
-
-  c = m->data;
-  if (!c)
-    return 0;
-
-  if (c->cfd)
-    {
-      e_object_del (E_OBJECT (c->cfd));
-      c->cfd = NULL;
-    }
-  _cpu_shutdown (c);
-  return 1;
-}
-
-EAPI int
-e_modapi_save (E_Module * m)
-{
-  Cpu *c;
-
-  c = m->data;
-  if (!c)
-    return 0;
-  e_config_domain_save ("module.cpu", c->conf_edd, c->conf);
-  return 1;
-}
-
-EAPI int
-e_modapi_about (E_Module * m)
-{
-  e_module_dialog_show (m, D_ ("Enlightenment Cpu Monitor Module"),
-			D_ ("This module is used to monitor a cpu."));
-  return 1;
-}
-
-EAPI int
-e_modapi_config (E_Module * m)
-{
-  Cpu *c;
-  E_Container *con;
-
-  c = m->data;
-  if (!c)
-    return 0;
-  if (!c->face)
-    return 0;
-
-  con = e_container_current_get (e_manager_current_get ());
-  if (c->face->con == con)
-    _configure_cpu_module (con, c);
-
-  return 1;
-}
-
-static Cpu *
-_cpu_init (E_Module * m)
-{
-  Cpu *c;
-  E_Menu_Item *mi;
-  Evas_List *mans, *l, *l2;
-
-  c = E_NEW (Cpu, 1);
-
-  if (!c)
-    return NULL;
-
-  c->conf_edd = E_CONFIG_DD_NEW ("Cpu_Config", Config);
-#undef T
-#undef D
-#define T Config
-#define D c->conf_edd
-  E_CONFIG_VAL (D, T, check_interval, INT);
-  E_CONFIG_VAL (D, T, show_text, INT);
-  E_CONFIG_VAL (D, T, show_graph, INT);
-
-  c->conf = e_config_domain_load ("module.cpu", c->conf_edd);
-  if (!c->conf)
-    {
-      c->conf = E_NEW (Config, 1);
-
-      c->conf->check_interval = 1;
-      c->conf->show_text = 1;
-      c->conf->show_graph = 1;
-    }
-  E_CONFIG_LIMIT (c->conf->check_interval, 0, 60);
-  E_CONFIG_LIMIT (c->conf->show_text, 0, 1);
-  E_CONFIG_LIMIT (c->conf->show_graph, 0, 1);
-
-  _cpu_config_menu_new (c);
-
-  mans = e_manager_list ();
-  for (l = mans; l; l = l->next)
-    {
-      E_Manager *man;
-
-      man = l->data;
-      for (l2 = man->containers; l2; l2 = l2->next)
-	{
-	  E_Container *con;
-	  Cpu_Face *cf;
-
-	  con = l2->data;
-	  cf = E_NEW (Cpu_Face, 1);
-
-	  if (cf)
-	    {
-	      cf->conf_face_edd =
-		E_CONFIG_DD_NEW ("Cpu_Face_Config", Config_Face);
-
-#undef T
-#undef D
-#define T Config_Face
-#define D cf->conf_face_edd
-	      E_CONFIG_VAL (D, T, enabled, UCHAR);
-
-	      c->face = cf;
-	      cf->cpu = c;
-	      cf->con = con;
-	      cf->evas = con->bg_evas;
-
-	      cf->conf = E_NEW (Config_Face, 1);
-
-	      cf->conf->enabled = 1;
-
-	      if (!_cpu_face_init (cf))
-		return NULL;
-
-	      _cpu_face_menu_new (cf);
-
-	      mi = e_menu_item_new (c->config_menu);
-	      e_menu_item_label_set (mi, _("Configuration"));
-	      e_menu_item_callback_set (mi, _cpu_face_cb_menu_configure, cf);
-
-	      mi = e_menu_item_new (c->config_menu);
-	      e_menu_item_label_set (mi, con->name);
-	      e_menu_item_submenu_set (mi, cf->menu);
-
-	      if (!cf->conf->enabled)
-		_cpu_face_disable (cf);
-	      else
-		_cpu_face_enable (cf);
-	    }
-	}
-    }
-  return c;
-}
-
-static void
-_cpu_shutdown (Cpu * c)
-{
-  _cpu_face_free (c->face);
-
-  c->module = NULL;
-  E_FREE (c->conf);
-  E_CONFIG_DD_FREE (c->conf_edd);
-  E_FREE (c);
-}
-
-static void
-_cpu_config_menu_new (Cpu * c)
-{
-  E_Menu *mn;
-
-  mn = e_menu_new ();
-  c->config_menu = mn;
-}
 
 static int
 _cpu_face_init (Cpu_Face * cf)
@@ -246,19 +579,6 @@ _cpu_face_init (Cpu_Face * cf)
   evas_object_color_set (o, 255, 255, 255, 255);
   evas_object_show (o);
 
-  o = edje_object_add (cf->evas);
-  cf->txt_obj = o;
-  if (!e_theme_edje_object_set
-      (o, "base/theme/modules/cpu", "modules/cpu/text"))
-    {
-      snprintf (buf, sizeof (buf), PACKAGE_DATA_DIR "/cpu.edj");
-      edje_object_file_set (o, buf, "modules/cpu/text");
-    }
-  evas_object_layer_set (o, 2);
-  evas_object_repeat_events_set (o, 0);
-  evas_object_pass_events_set (o, 1);
-  evas_object_color_set (o, 255, 255, 255, 255);
-  evas_object_show (o);
 
   o = evas_object_rectangle_add (cf->evas);
   cf->event_obj = o;
@@ -309,258 +629,6 @@ _cpu_face_menu_new (Cpu_Face * cf)
   e_menu_item_callback_set (mi, _cpu_face_cb_menu_edit, cf);
 }
 
-static void
-_cpu_face_enable (Cpu_Face * cf)
-{
-  cf->conf->enabled = 1;
-  e_config_save_queue ();
-  evas_object_show (cf->cpu_obj);
-  evas_object_show (cf->event_obj);
-  if (cf->cpu->conf->show_graph)
-    evas_object_show (cf->chart_obj);
-  if (cf->cpu->conf->show_text)
-    evas_object_show (cf->txt_obj);
-}
-
-static void
-_cpu_face_disable (Cpu_Face * cf)
-{
-  cf->conf->enabled = 0;
-  e_config_save_queue ();
-  evas_object_hide (cf->event_obj);
-  evas_object_hide (cf->chart_obj);
-  evas_object_hide (cf->cpu_obj);
-  evas_object_hide (cf->txt_obj);
-}
-
-static void
-_cpu_face_free (Cpu_Face * cf)
-{
-  if (cf->monitor)
-    ecore_timer_del (cf->monitor);
-  if (cf->menu)
-    e_object_del (E_OBJECT (cf->menu));
-  if (cf->event_obj)
-    evas_object_del (cf->event_obj);
-  if (cf->cpu_obj)
-    evas_object_del (cf->cpu_obj);
-  if (cf->old_values)
-    _cpu_face_graph_clear (cf);
-  if (cf->chart_obj)
-    evas_object_del (cf->chart_obj);
-  if (cf->txt_obj)
-    evas_object_del (cf->txt_obj);
-
-  if (cf->gmc)
-    {
-      e_gadman_client_save (cf->gmc);
-      e_object_del (E_OBJECT (cf->gmc));
-    }
-
-  E_FREE (cf->conf);
-  E_FREE (cf);
-  cpu_count--;
-}
-
-static void
-_cpu_face_cb_gmc_change (void *data, E_Gadman_Client * gmc,
-			 E_Gadman_Change change)
-{
-  Cpu_Face *cf;
-  Evas_Coord x, y, w, h;
-
-  cf = data;
-  switch (change)
-    {
-    case E_GADMAN_CHANGE_MOVE_RESIZE:
-      e_gadman_client_geometry_get (cf->gmc, &x, &y, &w, &h);
-      evas_object_move (cf->chart_obj, x, y);
-      evas_object_move (cf->event_obj, x, y);
-      evas_object_move (cf->cpu_obj, x, y);
-      evas_object_move (cf->txt_obj, x, y);
-      evas_object_resize (cf->chart_obj, w, h);
-      evas_object_resize (cf->event_obj, w, h);
-      evas_object_resize (cf->cpu_obj, w, h);
-      evas_object_resize (cf->txt_obj, w, h);
-      _cpu_face_graph_clear (cf);
-      break;
-    case E_GADMAN_CHANGE_RAISE:
-      evas_object_raise (cf->cpu_obj);
-      evas_object_raise (cf->chart_obj);
-      evas_object_raise (cf->event_obj);
-      evas_object_raise (cf->txt_obj);
-      break;
-    default:
-      break;
-    }
-}
-
-static void
-_cpu_face_cb_mouse_down (void *data, Evas * evas, Evas_Object * obj,
-			 void *event_info)
-{
-  Cpu_Face *cf;
-  Evas_Event_Mouse_Down *ev;
-
-  ev = event_info;
-  cf = data;
-  if (ev->button == 3)
-    {
-      e_menu_activate_mouse (cf->menu, e_zone_current_get (cf->con),
-			     ev->output.x, ev->output.y, 1, 1,
-			     E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-      e_util_container_fake_mouse_up_all_later (cf->con);
-    }
-}
-
-static void
-_cpu_face_cb_menu_edit (void *data, E_Menu * mn, E_Menu_Item * mi)
-{
-  Cpu_Face *cf;
-
-  cf = data;
-  e_gadman_mode_set (cf->gmc->gadman, E_GADMAN_MODE_EDIT);
-}
-
-static void
-_cpu_face_cb_menu_configure (void *data, E_Menu * mn, E_Menu_Item * mi)
-{
-  Cpu_Face *cf;
-
-  cf = data;
-  _configure_cpu_module (cf->con, cf->cpu);
-}
-
-static int
-_cpu_face_update_values (void *data)
-{
-  Cpu_Face *cf;
-  char str[100];
-  int i = 0;
-  char str_tmp[100];
-
-  cf = data;
-  _cpu_face_get_load (cf);
-
-  if (cpu_stats[0] == -1)
-    return 1;
-
-  if (cf->cpu->conf->show_text)
-    {
-      snprintf (str, sizeof (str), "%d%%", cpu_stats[0]);
-      i = 1;
-      while (i < cpu_count)
-	{
-	  snprintf (str_tmp, sizeof (str_tmp), " / %d%%", cpu_stats[i]);
-	  strncat (str, str_tmp, sizeof (str));
-	  i++;
-	}
-      edje_object_part_text_set (cf->txt_obj, "in-text", str);
-    }
-  else
-    edje_object_part_text_set (cf->txt_obj, "in-text", "");
-
-  if ((cf->cpu->conf->show_graph)
-      && (edje_object_part_exists (cf->cpu_obj, "lines")))
-    _cpu_face_graph_values (cf);
-  else
-    _cpu_face_graph_clear (cf);
-
-  return 1;
-}
-
-static int
-_cpu_face_get_cpu_count (Cpu_Face * cf)
-{
-  char tmp[4];
-  FILE *f;
-  int cpu = -1;
-
-  if (!(f = fopen ("/proc/stat", "r")))
-    return -1;
-
-  while (fscanf (f, "cp%s %*u %*u %*u %*u %*u %*u %*u %*u\n", (char *) &tmp)
-	 == 1)
-    cpu++;
-
-  fclose (f);
-  return cpu;
-}
-
-static void
-_cpu_face_get_load (Cpu_Face * cf)
-{
-  static unsigned long old_u[4], old_n[4], old_s[4], old_i[4], old_wa[4],
-    old_hi[4], old_si[4];
-  unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si =
-    0, ticks_past;
-  int tmp_u, tmp_n, tmp_s, tmp_i;
-  char dummy[16];
-  FILE *stat;
-  int cpu_count;
-  Edje_Message_Float msg;
-
-  cpu_count = _cpu_face_get_cpu_count (cf);
-  if (cpu_count == -1)
-    return;
-
-  if (!(stat = fopen ("/proc/stat", "r")))
-    return;
-
-  int i = 0;
-
-  while (i < cpu_count)
-    {
-
-      if (fscanf
-	  (stat, "%s %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
-	   &new_s, &new_i, &new_wa, &new_hi, &new_si) < 5)
-	{
-	  fclose (stat);
-	  return;
-	}
-
-      ticks_past =
-	((new_u + new_n + new_s + new_i + new_wa + new_hi + new_si) -
-	 (old_u[i] + old_n[i] + old_s[i] + old_i[i] + old_wa[i] + old_hi[i] +
-	  old_si[i]));
-
-      if (ticks_past)
-	{
-	  tmp_u = ((new_u - old_u[i]));
-	  tmp_n = ((new_n - old_n[i]));
-	  tmp_s = ((new_s - old_s[i]));
-	  tmp_i = ((new_i - old_i[i]));
-	}
-      else
-	{
-	  tmp_u = 0;
-	  tmp_n = 0;
-	  tmp_s = 0;
-	  tmp_i = 0;
-	}
-
-      /* Update the values */
-      cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / cpu_count;
-
-      old_u[i] = new_u;
-      old_n[i] = new_n;
-      old_s[i] = new_s;
-      old_i[i] = new_i;
-      old_wa[i] = new_wa;
-      old_hi[i] = new_hi;
-      old_si[i] = new_si;
-
-      if (cpu_stats[i] >= 100)
-	cpu_stats[i] = 100;
-
-      msg.val = cpu_stats[i];
-      edje_object_message_send (cf->cpu_obj, EDJE_MESSAGE_FLOAT, i, &msg);
-
-      i++;
-    }
-  fclose (stat);
-}
 
 static void
 _cpu_face_graph_values (Cpu_Face * cf)
@@ -666,3 +734,5 @@ _cpu_face_graph_clear (Cpu_Face * cf)
 
   evas_event_thaw (cf->evas);
 }
+
+*/
