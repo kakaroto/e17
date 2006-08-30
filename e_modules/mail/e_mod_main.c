@@ -151,6 +151,9 @@ _gc_shutdown (E_Gadcon_Client * gcc)
 
   inst = gcc->data;
 
+   if (inst->check_timer)
+     ecore_timer_del(inst->check_timer);
+   
   evas_object_event_callback_del (inst->mail_obj, EVAS_CALLBACK_MOUSE_DOWN,
 				  _mail_cb_mouse_down);
   evas_object_event_callback_del (inst->mail_obj, EVAS_CALLBACK_MOUSE_IN,
