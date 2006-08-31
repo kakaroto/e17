@@ -23,10 +23,12 @@ static char *_etk_theme_icon_theme = NULL;
 void etk_theme_init()
 {
    _etk_theme_default_widget_theme = _etk_theme_find("themes", etk_config_widget_theme_get());
+   if (!_etk_theme_default_widget_theme)
+     _etk_theme_default_widget_theme = strdup("default");
    _etk_theme_default_icon_theme = _etk_theme_find("icons", "default");
    
    /* TODO: etk_config: add support of non default themes */
-   etk_theme_widget_theme_set(etk_config_widget_theme_get());
+   etk_theme_widget_theme_set(_etk_theme_default_widget_theme);
    etk_theme_icon_theme_set("default");
 }
 
@@ -276,7 +278,7 @@ static char *_etk_theme_find(const char *subdir, const char *theme_name)
    {
       /* TODO: etk_config_dir_get? */
       path = malloc(strlen(home) + strlen(subdir) + strlen("/.etk//.edj") + strlen(theme_name) + 1);
-      sprintf(path, "%s/.etk/%s/%s.edj", home, subdir, theme_name);
+      sprintf(path, "%s/.e/etk/%s/%s.edj", home, subdir, theme_name);
       if (ecore_file_exists(path))
          return path;
       else
