@@ -488,7 +488,7 @@ _cb_xsessions_foreach(void *list_data, void *data)
    char path[PATH_MAX];
    snprintf(path, PATH_MAX, "%s/%s", ep->path, filename);
 
-   Ecore_Desktop *ed = ecore_desktop_get(path, "en_US");
+   Ecore_Desktop *ed = ecore_desktop_get(path, NULL);
    if(!ed)
       return;
 
