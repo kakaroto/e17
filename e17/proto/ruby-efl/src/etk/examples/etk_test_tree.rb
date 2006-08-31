@@ -19,11 +19,11 @@ class TreeExample < Example
         self << table
 
         label = Label.new("<h1>Tree:</h1>")
-        table.attach(label, 0, 0, 0, 0, 0, 0, Etk::FILL_POLICY_HFILL | Etk::FILL_POLICY_HFILL)
+        table.attach(label, 0, 0, 0, 0, 0, 0, Etk::TABLE_FILL)
 
         tree = Tree.new
         tree.size_request_set(320, 400)
-        table.attach_defaults(tree, 0, 0, 1, 1)
+        table.attach_default(tree, 0, 0, 1, 1)
 
         tree.mode = Etk::TREE_MODE_TREE
         tree.multiple_select = true

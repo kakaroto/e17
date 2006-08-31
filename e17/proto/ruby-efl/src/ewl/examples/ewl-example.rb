@@ -7,7 +7,7 @@ require 'dl/ffcall-callback'
 require 'ruby-efl/ewl/ruby-ewl'
 #require '../ruby-ewl.rb'       # if you want to use the local version
 
-# CClass.debug = true           # uncomment this on when you want to see lots of debug info
+#CClass.debug = true           # uncomment this on when you want to see lots of debug info
 
 include Ewl
 
@@ -130,8 +130,8 @@ class TestWindow
 		
 		seekr = Seeker.new
 		seekr.alignment = Ewl::FLAG_ALIGN_TOP
-		seekr.min_val = 0.0
-        seekr.max_val = 1.0
+		seekr.minimum_value = 0.0
+        seekr.maximum_value = 1.0
 		seekr.step = 0.25
 		seekr.value = 0.5
 		seekr.show
@@ -147,8 +147,8 @@ class TestWindow
 
 		spin = Spinner.new
 		spin.alignment = Ewl::FLAG_ALIGN_TOP
-		spin.min_val = 0.0
-		spin.max_val = 1.0
+		spin.minimum_value = 0.0
+		spin.maximum_value = 1.0
 		spin.step = 0.25
 		spin.value = 0.5
 		spin.show

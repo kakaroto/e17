@@ -57,7 +57,7 @@ class EtkTestWindow < Window
         
         CATEGORIES.each { |category|
             frame = Frame.new(category[:title])
-            box.pack_start(frame, true, true, 0)
+            box.append(frame, Etk::BOX_START, Etk::BOX_NONE, 0)
 
             table = Table.new(NUM_COLS, (category[:examples].length + NUM_COLS - 1) / NUM_COLS, true);
             frame << table
@@ -68,7 +68,7 @@ class EtkTestWindow < Window
                 button.label = example.label
                 button << ButtonClickedSignal.new { example.run if example.respond_to?(:run) }
                 
-                table.attach_defaults(button, i % NUM_COLS, i % NUM_COLS, i / NUM_COLS, i / NUM_COLS)
+                table.attach_default(button, i % NUM_COLS, i % NUM_COLS, i / NUM_COLS, i / NUM_COLS)
             }
         }
         
