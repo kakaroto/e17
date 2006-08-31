@@ -69,6 +69,10 @@ void entropy_etk_options_dialog_create()
 	Etk_Widget* button;
 	Etk_Widget* vbox;
 	Etk_Widget* frame;
+	Etk_Widget* iframe;
+	Etk_Widget* ivbox;
+	Etk_Widget* iivbox;
+	Etk_Widget* radio;
 	
 	_entropy_global_options_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	
@@ -95,6 +99,20 @@ void entropy_etk_options_dialog_create()
 	etk_box_append(ETK_BOX(_entropy_etk_options_local_box), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);
 	
+	ivbox = etk_vbox_new(ETK_FALSE,0);
+	etk_container_add(ETK_CONTAINER(frame), ivbox);
+	   iframe = etk_frame_new("Default Local Viewer");
+	   etk_box_append(ETK_BOX(ivbox), iframe, ETK_BOX_START, ETK_BOX_NONE, 0);
+	      iivbox = etk_vbox_new(ETK_FALSE,0);
+	      etk_container_add(ETK_CONTAINER(iframe), iivbox);
+
+	      radio = etk_radio_button_new_with_label("List view", NULL);
+	      etk_box_append(ETK_BOX(iivbox), radio, ETK_BOX_START, ETK_BOX_NONE, 0);
+	      radio = etk_radio_button_new_with_label_from_widget("Icon view", ETK_RADIO_BUTTON(radio));
+ 	      etk_box_append(ETK_BOX(iivbox), radio, ETK_BOX_START, ETK_BOX_NONE, 0);
+	      
+	
+	
 
 	/*Advanced*/
 	button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
@@ -104,11 +122,13 @@ void entropy_etk_options_dialog_create()
 
 	/*Thumbnail*/
 	button = etk_tool_button_new_from_stock(ETK_STOCK_IMAGE_X_GENERIC);
-	etk_toolbar_prepend(ETK_TOOLBAR(toolbar), button);
+	etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
 
 	frame = etk_frame_new("Thumbnail Settings");
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);	
-	
+
+
+	etk_widget_size_request_set(_entropy_etk_options_dialog, 560, 460);
 }
 
 
