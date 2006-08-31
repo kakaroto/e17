@@ -46,6 +46,24 @@ void entropy_etk_options_radio_generic_cb(Etk_Object* obj, void* data)
 	}
 }
 
+void entropy_etk_options_slider_generic_cb(Etk_Object* obj, double value, void* data)
+{
+	char* name;
+	char px[10];
+	Entropy_Etk_Options_Object* opt;
+
+	name = (char*)data;
+	
+	opt = ecore_hash_get(_entropy_global_options_hash, name);	
+	if (opt) {
+		snprintf(px,sizeof(px), "%.0f", value);
+		if (opt->value) free(opt->value);
+		opt->value = strdup(px);
+
+		printf("Set '%s' for '%s'\n", opt->name, opt->value);
+	}	
+}
+
 void entropy_etk_options_dialog_frame_set(Etk_Object* obj, void* data)
 {
 	Etk_Widget* frame;
@@ -70,6 +88,18 @@ void entropy_etk_options_dialog_close(Etk_Object* obj, void* data)
 	etk_widget_hide(_entropy_etk_options_dialog);
 }
 
+void etk_options_dialog_slider_cb(Etk_Object* obj, double value, void* data)
+{
+	Etk_Widget* label;
+	char px[10];
+
+	label = data;
+	snprintf(px,sizeof(px), "%.0f", value);
+	etk_label_set(ETK_LABEL(label), px);
+
+	
+}
+
 void entropy_etk_options_dialog_create()
 {
 	Etk_Widget* toolbar;
@@ -82,6 +112,8 @@ void entropy_etk_options_dialog_create()
 	Etk_Widget* radio;
 	Etk_Widget* check;
 	Etk_Widget* hbox;
+	Etk_Widget* slider;
+	Etk_Widget* label;
 	
 	_entropy_etk_options_dialog = etk_window_new();
 
@@ -125,7 +157,38 @@ void entropy_etk_options_dialog_create()
            check = etk_check_button_new_with_label("Sort folders before files");
 	   etk_box_append(ETK_BOX(ivbox), check, ETK_BOX_START, ETK_BOX_NONE, 0);
 	   etk_signal_connect("toggled", ETK_OBJECT(check), 
-		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.presortfolders" );
+		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.presortfolders");
+           check = etk_check_button_new_with_label("Show hidden and backup files");
+	   etk_box_append(ETK_BOX(ivbox), check, ETK_BOX_START, ETK_BOX_NONE, 0);
+	   etk_signal_connect("toggled", ETK_OBJECT(check), 
+		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.hiddenbackup");
+
+	   iframe = etk_frame_new("Icon View Settings");
+	   etk_box_append(ETK_BOX(ivbox), iframe, ETK_BOX_START, ETK_BOX_NONE, 0);
+	      iivbox = etk_vbox_new(ETK_FALSE,0);
+	      etk_container_add(ETK_CONTAINER(iframe), iivbox);
+
+	      label = etk_label_new("Icon size (pixels)");
+	      etk_box_append(ETK_BOX(iivbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+	      hbox = etk_hbox_new(ETK_FALSE,0);  
+	      etk_box_append(ETK_BOX(iivbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+	      slider = etk_hslider_new(10,128, 48, 1, 1);
+	      etk_box_append(ETK_BOX(hbox), slider, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	      label = etk_label_new("");
+	      etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+	      etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(etk_options_dialog_slider_cb), 
+			      label);
+	      etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(entropy_etk_options_slider_generic_cb), 
+			      "general.iconsize");
+	   
+
+	   iframe = etk_frame_new("List View Settings");
+	   etk_box_append(ETK_BOX(ivbox), iframe, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+
+
+	   
 
 	/*Advanced*/
 	button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
@@ -169,6 +232,8 @@ void entropy_etk_options_dialog_show()
 		entropy_etk_options_object_create("general.listviewer");
 		entropy_etk_options_object_create("general.iconviewer");
 		entropy_etk_options_object_create("general.presortfolders");
+		entropy_etk_options_object_create("general.hiddenbackup");
+		entropy_etk_options_object_create("general.iconsize");
 		
 		entropy_etk_options_dialog_create();
 	}
