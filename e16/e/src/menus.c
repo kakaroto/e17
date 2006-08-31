@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "borders.h"
+#include "desktops.h"
 #include "dialog.h"
 #include "e16-ecore_list.h"
 #include "eimage.h"
@@ -244,9 +245,7 @@ MenuEwinInit(EWin * ewin, void *ptr)
    ICCCM_SetSizeConstraints(ewin, m->w, m->h, m->w, m->h, 0, 0, 1, 1,
 			    0.0, 65535.0);
 
-   EoSetSticky(ewin, 1);
-   EoSetLayer(ewin, 3);
-   EoSetFloating(ewin, 1);
+   EoSetLayer(ewin, 12);
    ewin->ewmh.opacity = OpacityFromPercent(Conf.opacity.menus);
 }
 
@@ -292,8 +291,8 @@ MenuShow(Menu * m, char noshow)
    mw = m->w;
    mh = m->h;
 
-   wx = Mode.events.x - x - (w / 2);
-   wy = Mode.events.y - y - (h / 2);
+   wx = Mode.events.x - EoGetX(DesksGetCurrent()) - x - (w / 2);
+   wy = Mode.events.y - EoGetY(DesksGetCurrent()) - y - (h / 2);
    if (Conf.menus.onscreen)
      {
 	Border             *b;
@@ -968,8 +967,8 @@ MenuShowMasker(Menu * m __UNUSED__)
 	if (!eo)
 	   return;
 
-	EobjSetFloating(eo, 1);
-	EobjSetLayer(eo, 2);
+	EobjReparent(eo, EoObj(DesksGetCurrent()), 0, 0);
+	EobjSetLayer(eo, 11);
 	ESelectInput(eo->win, ButtonPressMask | ButtonReleaseMask |
 		     EnterWindowMask | LeaveWindowMask);
 	EventCallbackRegister(eo->win, 0, MenuMaskerHandleEvents, NULL);
