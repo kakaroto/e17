@@ -34,7 +34,7 @@ void etk_prefs_show()
    Etk_Widget *dialog;
    Etk_Widget *tree;
    Etk_Widget *notebook;
-   Etk_Widget *hbox;
+   Etk_Widget *paned;
    Etk_Tree_Col *col;
    
    /* main dialog to hold everything */
@@ -50,7 +50,7 @@ void etk_prefs_show()
    tree = etk_tree_new();
    etk_tree_headers_visible_set(ETK_TREE(tree), ETK_FALSE);
    etk_signal_connect("row_clicked", ETK_OBJECT(tree), ETK_CALLBACK(_etk_prefs_row_clicked), notebook);
-   etk_widget_size_request_set(tree, 220, 240);
+   etk_widget_size_request_set(tree, 180, 240);
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_FALSE);
    etk_tree_row_height_set(ETK_TREE(tree), 52);   
@@ -64,10 +64,10 @@ void etk_prefs_show()
    etk_prefs_standard_item_add(tree, "categories/preferences-system_48", _("General"), NULL);   
    etk_tree_thaw(ETK_TREE(tree));
    
-   /* hbox to hold the tree on one side and the pref's contents on the other */
-   hbox = etk_hbox_new(0, 0);
-   etk_box_append(ETK_BOX(hbox), tree, ETK_BOX_START, ETK_BOX_NONE, 0);
-   etk_box_append(ETK_BOX(hbox), notebook, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   /* paned to hold the tree on one side and the pref's contents on the other */
+   paned = etk_hpaned_new();
+   etk_paned_child1_set(ETK_PANED(paned), tree, ETK_FALSE);
+   etk_paned_child2_set(ETK_PANED(paned), notebook, ETK_TRUE);   
 
    /* Some buttons */
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CLOSE, ETK_RESPONSE_CLOSE);
@@ -76,7 +76,7 @@ void etk_prefs_show()
    etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_etk_prefs_response_cb), dialog);
    
    etk_container_border_width_set(ETK_CONTAINER(dialog), 5);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), hbox, ETK_TRUE, ETK_TRUE,
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), paned, ETK_TRUE, ETK_TRUE,
 				0, ETK_FALSE);
    
    /* create tabs */
