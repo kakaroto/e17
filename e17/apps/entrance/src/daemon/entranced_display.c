@@ -124,6 +124,11 @@ _start_server_once(Entranced_Display * d) /*seems private*/
    double start_time;
    char x_cmd[PATH_MAX];
 
+   int i;
+   char *x_cmd_argv[32]; 
+
+   for (i=0;i<32;i++) x_cmd_argv[i]=NULL;
+
    /* Ecore_Exe *x_exe; */
    pid_t xpid;
 
@@ -160,9 +165,15 @@ _start_server_once(Entranced_Display * d) /*seems private*/
         _entrance_x_sa.sa_flags = 0;
         sigemptyset(&_entrance_x_sa.sa_mask);
         sigaction(SIGUSR1, &_entrance_x_sa, NULL);
-      /* FIXME: need to parse command and NOT go thru /bin/sh!!!! */
-      /* why? some /bin/sh's wont pass on this SIGUSR1 thing... */
-        execl("/bin/sh", "/bin/sh", "-c", x_cmd, NULL);
+
+	x_cmd_argv[0]=strtok(x_cmd," ");
+	i=1;
+
+	while ((x_cmd_argv[i]=strtok(NULL," "))!=NULL) {
+	   i++;
+	}
+
+        execvp(x_cmd_argv[0], x_cmd_argv);
         syslog(LOG_WARNING, "Could not execute X server.");
         exit(1);
      default:

@@ -22,6 +22,7 @@ KEY
 
 *** Handle sessions that crash immediately gracefully by providing some kind of
   custom error message a la GDM 
+	- basically, report any critical errors to user via *always-available* widgets
 * Xinerama - widgets follow mouse pointer from screen to screen
 ** GUI configuration tool - Launched from within entrance, so we can configure
   without logging in to the window manager. Allow optional root password, just

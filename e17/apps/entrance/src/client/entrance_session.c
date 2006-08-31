@@ -25,6 +25,7 @@ extern void user_selected_cb(void *data, Evas_Object * o,
 extern void user_unselected_cb(void *data, Evas_Object * o,
                                const char *emission, const char *source);
 static void _entrance_session_user_list_fix(Entrance_Session * e);
+static void _entrance_session_execute_in_shell(char *user,char *shell,char *buf);
 
 /**
  * entrance_session_new: allocate a new  Entrance_Session
@@ -379,6 +380,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    pid_t pid;
    char buf[PATH_MAX];
    char *shell = NULL;
+   char *user = NULL;
    struct passwd *pwent = NULL;
    Entrance_X_Session *exs = NULL;
 
@@ -417,7 +419,9 @@ entrance_session_start_user_session(Entrance_Session * e)
       e->ee = NULL;
    }
 
-   syslog(LOG_NOTICE, "Starting session for user \"%s\".", e->auth->user);
+   user = strdup(e->auth->user);
+
+   syslog(LOG_NOTICE, "Starting session for user \"%s\".", user);
 
 #ifdef HAVE_PAM
    if (e->config->auth == ENTRANCE_USE_PAM)
@@ -464,41 +468,27 @@ entrance_session_start_user_session(Entrance_Session * e)
         if (setuid(pwent->pw_uid))
            syslog(LOG_CRIT, "Unable to set user id.");
         shell = strdup(pwent->pw_shell);
+
+        /* replace this process with a clean small one that just waits for its */
+        /* child to exit.. passed on the cmd-line */
+
+        _entrance_session_execute_in_shell(user,shell,buf);
         break;
      case -1:
         syslog(LOG_INFO, "FORK FAILED, UH OH");
         exit(0);
      default:
         syslog(LOG_NOTICE, "Replacing Entrance with simple login program to wait for session end.");
-#ifdef HAVE_PAM
-        if (e->config->auth == ENTRANCE_USE_PAM)
-        {
-           snprintf(buf, sizeof(buf), "%s/%s/entrance_login %i %s %s",
-                    PACKAGE_LIB_DIR, PACKAGE, (int) pid, pwent->pw_name, 
-		    e->display);
-        }
-        else
-#endif
-        {
-           snprintf(buf, sizeof(buf), "%s/%s/entrance_login %i",
-                    PACKAGE_LIB_DIR, PACKAGE, (int) pid);
-        }
-        shell = strdup("/bin/sh");
-        /* this bypasses a race condition where entrance loses its x
-           connection before the wm gets it and x goes and resets itself */
-        sleep(10);
-        /*
-         * FIXME These should be called!
+	wait(NULL); 
         ecore_x_shutdown();
         ecore_shutdown();
-        */
         break;
    }
    struct_passwd_free(pwent);
    entrance_session_free(e);
-   /* replace this process with a clean small one that just waits for its */
-   /* child to exit.. passed on the cmd-line */
-   execl("/bin/sh", "/bin/sh", "-l", "-c", buf, NULL);
+   if (shell) free(shell);
+   if (user) free(user);
+   if (buf) free(buf);
 }
 
 
@@ -797,5 +787,64 @@ _entrance_session_user_list_fix(Entrance_Session * e)
             evas_list_prepend(e->config->users.keys, eu->name);
          entrance_config_user_list_save(e->config, e->db);
       }
+   }
+}
+
+static void
+_entrance_session_execute_in_shell(char *user,char *shell,char *buf)
+{
+   int pid;
+   int status;
+   int res=0;
+
+   /* If the user's passwd entry has a shell try to run it in login mode */
+   if (shell != "") {
+      switch (pid=fork()) {
+         case 0:
+            res=execl(shell, shell, "-l", "-c", buf, NULL);
+            break;
+         case -1:
+            return;
+         default:
+    	    wait(&status);
+	    break;
+      }
+   }
+
+   /* If that didn't work try to run /bin/sh in login mode */
+   if (WEXITSTATUS(status)==2 || res == -1 || shell == "") {
+      switch(pid=fork()) {
+         case 0: 
+   	    execl("/bin/sh", "/bin/sh", "-l", "-c", buf, NULL);
+	    break;
+         case -1:
+	    return;
+	 default: 
+	    wait(&status);
+	    break;
+      }
+   }
+
+
+   /* If /bin/sh isn't a login shell run /bin/sh without loading the profile
+    * Also log a warning because this will probably not behave correctly */
+   if (WEXITSTATUS(status)==2) { 
+      syslog(LOG_NOTICE, "Neither '%s' or '/bin/sh' are working login shells for user '%s'. Your session may not function properly. ",shell,user);
+      switch(pid=fork()) {
+ 	 case 0:
+	    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
+	 break;
+       case -1:
+	  return;
+       default:
+	  wait(&status);
+	  break;
+      }
+   }
+
+   /* Damn, that didn't work either.
+    * Bye! We call it quits and log an error */
+   if (WEXITSTATUS(status)==2) {
+      syslog(LOG_CRIT, "Entrance could not find a working shell to start the session for user: \"%s\".",user);
    }
 }
