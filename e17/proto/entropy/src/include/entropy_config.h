@@ -29,6 +29,9 @@ struct Entropy_Config_Loaded {
 	int config_version;
 	Evas_List* mime_bindings;
 	Evas_List* structures;
+
+	Ecore_Hash* Misc_Config;
+	Evas_List* Misc_Config_Load;
 };
 typedef struct Entropy_Config_Loaded Entropy_Config_Loaded;
 
@@ -44,8 +47,6 @@ struct Entropy_Config {
 	char* config_dir_and_file_eet;
 
 	Entropy_Config_Loaded* Loaded_Config;
-	Ecore_Hash* Misc_Config;
-	Evas_List* MisC_Config_Load;
 };
 typedef struct Entropy_Config Entropy_Config;
 

@@ -16,6 +16,7 @@ static Eet_Data_Descriptor *_entropy_config_loaded_edd;
 static Eet_Data_Descriptor *_entropy_config_mime_binding_edd;
 static Eet_Data_Descriptor *_entropy_config_mime_binding_action_edd;
 static Eet_Data_Descriptor *_entropy_config_structure_edd;
+static Eet_Data_Descriptor *_entropy_config_item_edd;
 
 
 void entropy_config_loaded_config_free()
@@ -118,6 +119,25 @@ void entropy_config_edd_build()
 	EET_DATA_DESCRIPTOR_ADD_LIST(_entropy_config_mime_binding_edd, Entropy_Config_Mime_Binding, "actions", actions, 
 				_entropy_config_mime_binding_action_edd);
 
+	_entropy_config_item_edd =
+	eet_data_descriptor_new("entropy_config_item", sizeof(Entropy_Config_Item),
+                              (void *(*)(void *))evas_list_next,
+                              (void *(*)(void *, void *))evas_list_append,
+                              (void *(*)(void *))evas_list_data,
+                              (void *(*)(void *))evas_list_free,
+                              (void (*)
+                               (void *,
+                                int (*)(void *, const char *, void *, void *),
+                                void *))evas_hash_foreach, (void *(*)(void *,
+                                                                      const char
+                                                                      *,
+                                                                      void *))
+                              evas_hash_add, (void (*)(void *))evas_hash_free);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_item_edd, Entropy_Config_Item,
+                                 "name", name, EET_T_STRING);
+	EET_DATA_DESCRIPTOR_ADD_BASIC(_entropy_config_item_edd, Entropy_Config_Item,
+                                 "value", value, EET_T_STRING);
+
 	_entropy_config_structure_edd = 
 	eet_data_descriptor_new("entropy_config_mime_binding", sizeof(Entropy_Config_Structure),
                               (void *(*)(void *))evas_list_next,
@@ -138,8 +158,6 @@ void entropy_config_edd_build()
                                  "uri", uri, EET_T_STRING);
 
 	
-
-
 	_entropy_config_loaded_edd =
 	eet_data_descriptor_new("entropy_config_loaded", sizeof(Entropy_Config_Loaded),
                               (void *(*)(void *))evas_list_next,
@@ -158,7 +176,8 @@ void entropy_config_edd_build()
 				_entropy_config_mime_binding_edd);
 	EET_DATA_DESCRIPTOR_ADD_LIST(_entropy_config_loaded_edd, Entropy_Config_Loaded, "structures", structures, 
 				_entropy_config_structure_edd);
-
+	EET_DATA_DESCRIPTOR_ADD_LIST(_entropy_config_loaded_edd, Entropy_Config_Loaded, "Misc_Config_Load", Misc_Config_Load, 
+				_entropy_config_item_edd);
 }
 
 
@@ -299,10 +318,6 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	_Entropy_Config = entropy_malloc(sizeof(Entropy_Config));
 	mimes = entropy_malloc(sizeof(Entropy_Config_Loaded));
 
-	/*Init the misc hash*/
-	entropy_config_items_init();
-
-
 	i = strlen(entropy_core_home_dir_get()) + strlen("/.e/entropy") + 2;
 	_Entropy_Config->config_dir = entropy_malloc(i * sizeof(char));
 	snprintf(_Entropy_Config->config_dir, i, "%s/%s", entropy_core_home_dir_get(), "/.e/entropy");
@@ -392,6 +407,9 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	//Init ecore_config
 	ecore_config_init("entropy_config");
 	ecore_config_file_load(_Entropy_Config->config_dir_and_file);
+
+	/*Init the misc hash*/
+	entropy_config_items_init();
 
 	return _Entropy_Config;
 }
@@ -619,16 +637,27 @@ entropy_config_standard_structures_create ()
 
 void entropy_config_items_init()
 {
-	_Entropy_Config->Misc_Config = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	_Entropy_Config->Loaded_Config->Misc_Config = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 }
 
 void entropy_config_misc_item_set_str(char* item, char* value)
 {
-	ecore_hash_set(_Entropy_Config->Misc_Config, strdup(item), strdup(value));
+	Entropy_Config_Item* c_item;
+	
+	if (!(c_item=ecore_hash_get(_Entropy_Config->Loaded_Config->Misc_Config, item))) {
+		c_item = calloc(1,sizeof(Entropy_Config_Item));
+		c_item->name = strdup(item);
+		if (value) c_item->value = strdup(value);
+		ecore_hash_set(_Entropy_Config->Loaded_Config->Misc_Config, c_item->name, c_item);
+		
+	} else {
+		if (c_item->value) free(c_item->value);
+		if (value) c_item->value = strdup(c_item->value);
+	}
 	printf ("Set '%s' -> '%s'\n",item, value);
 }
 
 char* entropy_config_misc_item_get_str(char* item)
 {
-	return ecore_hash_get(_Entropy_Config->Misc_Config, item);
+	return ecore_hash_get(_Entropy_Config->Loaded_Config->Misc_Config, item);
 }

@@ -85,7 +85,23 @@ void entropy_etk_options_dialog_frame_set(Etk_Object* obj, void* data)
 
 void entropy_etk_options_dialog_close(Etk_Object* obj, void* data)
 {
+	Entropy_Etk_Options_Object* c_obj;
+	Ecore_List* keys;
+	char* key;
+	
 	etk_widget_hide(_entropy_etk_options_dialog);
+
+	if ((int)data == 0) {
+		printf("Save config selected..\n");
+
+		keys = ecore_hash_keys(_entropy_global_options_hash);
+		while ((key = ecore_list_remove_first(keys))) {
+			c_obj = ecore_hash_get(_entropy_global_options_hash, key);
+			printf("'%s' -> '%s'\n", key, c_obj->value);
+
+			entropy_config_misc_item_set_str(key,c_obj->value);
+		}
+	}
 }
 
 void etk_options_dialog_slider_cb(Etk_Object* obj, double value, void* data)
