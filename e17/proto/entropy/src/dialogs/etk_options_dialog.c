@@ -11,7 +11,7 @@ typedef struct _Entropy_Etk_Options_Object {
 	char* value;
 } Entropy_Etk_Options_Object;
 
-void entropy_etk_options_object_create(char* name) 
+Entropy_Etk_Options_Object* entropy_etk_options_object_create(char* name) 
 {
 	Entropy_Etk_Options_Object* obj;
 
@@ -19,6 +19,8 @@ void entropy_etk_options_object_create(char* name)
 	obj->name = strdup(name);
 
 	ecore_hash_set(_entropy_global_options_hash, obj->name, obj);
+
+	return obj;
 }
 
 /*CB Handlers*/
@@ -63,6 +65,11 @@ void entropy_etk_options_dialog_frame_set(Etk_Object* obj, void* data)
 	etk_widget_show_all(frame);
 }
 
+void entropy_etk_options_dialog_close(Etk_Object* obj, void* data)
+{
+	etk_widget_hide(_entropy_etk_options_dialog);
+}
+
 void entropy_etk_options_dialog_create()
 {
 	Etk_Widget* toolbar;
@@ -73,8 +80,8 @@ void entropy_etk_options_dialog_create()
 	Etk_Widget* ivbox;
 	Etk_Widget* iivbox;
 	Etk_Widget* radio;
-	
-	_entropy_global_options_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	Etk_Widget* check;
+	Etk_Widget* hbox;
 	
 	_entropy_etk_options_dialog = etk_window_new();
 
@@ -87,14 +94,13 @@ void entropy_etk_options_dialog_create()
 	etk_toolbar_style_set(ETK_TOOLBAR(toolbar), ETK_TOOLBAR_ICONS);
 	etk_box_append(ETK_BOX(vbox), toolbar, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-	etk_box_append(ETK_BOX(vbox),_entropy_etk_options_local_box , ETK_BOX_START, ETK_BOX_NONE, 0);
+	etk_box_append(ETK_BOX(vbox),_entropy_etk_options_local_box , ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	
 	/*General settings*/
 	button = etk_tool_button_new_from_stock(ETK_STOCK_APPLICATIONS_SYSTEM);
 	etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
 
 	/*General frame*/
-	/*etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(_entropy_etk_location_radio_cb), dialog );*/
 	frame = etk_frame_new("General Settings");
 	etk_box_append(ETK_BOX(_entropy_etk_options_local_box), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);
@@ -108,11 +114,18 @@ void entropy_etk_options_dialog_create()
 
 	      radio = etk_radio_button_new_with_label("List view", NULL);
 	      etk_box_append(ETK_BOX(iivbox), radio, ETK_BOX_START, ETK_BOX_NONE, 0);
+	      etk_signal_connect("toggled", ETK_OBJECT(radio), 
+		  ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.listviewer" );
 	      radio = etk_radio_button_new_with_label_from_widget("Icon view", ETK_RADIO_BUTTON(radio));
  	      etk_box_append(ETK_BOX(iivbox), radio, ETK_BOX_START, ETK_BOX_NONE, 0);
-	      
-	
-	
+	      etk_signal_connect("toggled", ETK_OBJECT(radio), 
+		  ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.iconviewer" );
+	     
+	   
+           check = etk_check_button_new_with_label("Sort folders before files");
+	   etk_box_append(ETK_BOX(ivbox), check, ETK_BOX_START, ETK_BOX_NONE, 0);
+	   etk_signal_connect("toggled", ETK_OBJECT(check), 
+		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.presortfolders" );
 
 	/*Advanced*/
 	button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
@@ -129,13 +142,36 @@ void entropy_etk_options_dialog_create()
 
 
 	etk_widget_size_request_set(_entropy_etk_options_dialog, 560, 460);
+
+
+	hbox = etk_hbox_new(ETK_FALSE,5);
+	etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+	button = etk_button_new_from_stock(ETK_STOCK_DIALOG_OK);
+	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_close), (void*)0);
+	button = etk_button_new_from_stock(ETK_STOCK_DIALOG_APPLY);
+	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_close), (void*)1);
+	button = etk_button_new_from_stock(ETK_STOCK_DIALOG_CANCEL);
+	etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_close), (void*)2);
 }
 
 
 void entropy_etk_options_dialog_show()
 {
-	if (!_entropy_etk_options_dialog)
+	if (!_entropy_etk_options_dialog) {
+		Entropy_Etk_Options_Object* obj;
+
+		_entropy_global_options_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+		
+		entropy_etk_options_object_create("general.listviewer");
+		entropy_etk_options_object_create("general.iconviewer");
+		entropy_etk_options_object_create("general.presortfolders");
+		
 		entropy_etk_options_dialog_create();
+	}
 
 	etk_widget_show_all(_entropy_etk_options_dialog);
 }
