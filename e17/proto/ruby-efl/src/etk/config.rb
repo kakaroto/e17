@@ -11,7 +11,10 @@
 	:external_types => [ 
  	'Evas', 'Evas_Object', 'Evas_Hash', 'Evas_List', 'Evas_Modifier', 'Evas_Lock', 'Evas_Button_Flags',
         'Ecore_Timer', 'Ecore_Evas', 'Ecore_X_Window',
-        'va_list'
+        'va_list',
+        'Evas_Event_Mouse_In', 'Evas_Event_Mouse_Out', 'Evas_Event_Mouse_Move', 
+        'Evas_Event_Mouse_Up', 'Evas_Event_Mouse_Down', 'Evas_Event_Mouse_Wheel',
+        'Evas_Event_Key_Up', 'Evas_Event_Key_Down'
  	#'Ecore', 'Ecore_List', 'Ecore_DList', 'Ecore_Hash', 'Ecore_Timer',
  	#'off_t', 'mode_t', 'uid_t', 'gid_t', 
  	#'short int', 'time_t'
@@ -48,6 +51,7 @@
                             { :name => 'ScrolledView', :wraps => 'scrolled_view', :child_of => 'Bin' } ,
 
                             { :name => 'ToplevelWidget', :wraps => 'toplevel_widget', :child_of => 'Bin' } ,
+                                { :name => 'Embed', :child_of => 'ToplevelWidget' } ,
                                 { :name => 'Window', :child_of => 'ToplevelWidget' } ,
                                     { :name => 'Dialog', :child_of => 'Window' } ,
                                         { :name => 'MessageDialog', :wraps => 'message_dialog', :child_of => 'Dialog' } ,
