@@ -1,0 +1,6 @@
+.cvsignore
+Makefile
+Makefile.in
+.deps
+.libs
+etk_prefs
