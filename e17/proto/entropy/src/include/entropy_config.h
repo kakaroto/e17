@@ -32,14 +32,20 @@ struct Entropy_Config_Loaded {
 };
 typedef struct Entropy_Config_Loaded Entropy_Config_Loaded;
 
+struct Entropy_Config_Item {
+	char* name;
+	char* value;
+};
+typedef struct Entropy_Config_Item Entropy_Config_Item;
 
 struct Entropy_Config {
 	char* config_dir;
 	char* config_dir_and_file;
 	char* config_dir_and_file_eet;
 
-	
 	Entropy_Config_Loaded* Loaded_Config;
+	Ecore_Hash* Misc_Config;
+	Evas_List* MisC_Config_Load;
 };
 typedef struct Entropy_Config Entropy_Config;
 
@@ -64,6 +70,9 @@ void entropy_config_loaded_config_free();
 void entropy_config_defaults_populate(Entropy_Config_Loaded* config);
 Entropy_Config_Structure* entropy_config_structure_new(char* name, char* uri);
 
+void entropy_config_items_init();
+void entropy_config_misc_item_set_str(char* item, char* value);
+char* entropy_config_misc_item_get_str(char* item);
 
 #define ENTROPY_CONFIG_INT_UNDEFINED 65535
 

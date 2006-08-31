@@ -299,6 +299,9 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	_Entropy_Config = entropy_malloc(sizeof(Entropy_Config));
 	mimes = entropy_malloc(sizeof(Entropy_Config_Loaded));
 
+	/*Init the misc hash*/
+	entropy_config_items_init();
+
 
 	i = strlen(entropy_core_home_dir_get()) + strlen("/.e/entropy") + 2;
 	_Entropy_Config->config_dir = entropy_malloc(i * sizeof(char));
@@ -486,8 +489,6 @@ void entropy_config_destroy(Entropy_Config* config)
 
 }
 
-
-
 /*Config helper functions*/
 void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 {
@@ -573,13 +574,7 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 		config->structures = evas_list_append(config->structures, 
 				entropy_config_structure_new("Virtual Folders", "vfolder:///")
 				);
-
-		
-
-	
 }
-
-
 
 Evas_List *
 entropy_config_standard_structures_parse (entropy_gui_component_instance * instance,
@@ -622,3 +617,18 @@ entropy_config_standard_structures_create ()
   free (eg);
 }
 
+void entropy_config_items_init()
+{
+	_Entropy_Config->Misc_Config = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+}
+
+void entropy_config_misc_item_set_str(char* item, char* value)
+{
+	ecore_hash_set(_Entropy_Config->Misc_Config, strdup(item), strdup(value));
+	printf ("Set '%s' -> '%s'\n",item, value);
+}
+
+char* entropy_config_misc_item_get_str(char* item)
+{
+	return ecore_hash_get(_Entropy_Config->Misc_Config, item);
+}
