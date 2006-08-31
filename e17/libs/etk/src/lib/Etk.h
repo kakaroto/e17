@@ -19,8 +19,9 @@ extern "C" {
 #include "etk_string.h"
 #include "etk_type.h"
 #include "etk_types.h"
+#include "etk_config.h"   
 #include "etk_utils.h"
-
+   
 #include "etk_alignment.h"
 #include "etk_bin.h"
 #include "etk_box.h"

@@ -16,6 +16,7 @@
 #include "etk_object.h"
 #include "etk_toplevel_widget.h"
 #include "etk_utils.h"
+#include "etk_config.h"
 #include "etk_theme.h"
 #include "etk_dnd.h"
 #include "etk_tooltips.h"
@@ -90,12 +91,18 @@ int etk_init(int *argc, char ***argv)
       }
       
       /* Initialize the subsystems of Etk */
-      etk_theme_init();
       if (!etk_engine_init())
       {
          ETK_WARNING("Etk_Engine initialization failed!");
          return 0;
       }
+      if (!etk_config_init())
+      {
+	 ETK_WARNING("Etk_Config initialization failed!");
+	 return 0;
+      }
+      etk_config_load();
+      etk_theme_init();      
       if (!etk_engine_load(engine_name ? engine_name : "ecore_evas_software_x11"))
       {
          ETK_WARNING("Etk can not load the requested engine!");
@@ -140,6 +147,8 @@ int etk_shutdown()
       etk_tooltips_shutdown();
       etk_dnd_shutdown();
       etk_engine_shutdown();
+      /* TODO: do we want to save the config here? hmm... */
+      etk_config_shutdown();
       etk_theme_shutdown();
       
       evas_list_free(_etk_main_toplevel_widgets);

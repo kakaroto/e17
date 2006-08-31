@@ -7,6 +7,7 @@
 #include <Edje.h>
 #include "etk_widget.h"
 #include "etk_string.h"
+#include "etk_config.h"
 #include "config.h"
 
 #define ETK_THEME_PARENT_GET(widget)      ((widget)->theme_parent ? (widget)->theme_parent : (widget)->parent)
@@ -21,11 +22,11 @@ static char *_etk_theme_icon_theme = NULL;
 /** @brief Initializes the theming system of Etk. Do not call it manually, etk_init() calls it! */
 void etk_theme_init()
 {
-   _etk_theme_default_widget_theme = _etk_theme_find("themes", "default");
+   _etk_theme_default_widget_theme = _etk_theme_find("themes", etk_config_widget_theme_get());
    _etk_theme_default_icon_theme = _etk_theme_find("icons", "default");
    
    /* TODO: etk_config: add support of non default themes */
-   etk_theme_widget_theme_set("default");
+   etk_theme_widget_theme_set(etk_config_widget_theme_get());
    etk_theme_icon_theme_set("default");
 }
 
@@ -80,6 +81,46 @@ Etk_Bool etk_theme_widget_theme_set(const char *theme_name)
 const char *etk_theme_default_widget_theme_get()
 {
    return _etk_theme_default_widget_theme;
+}
+
+/**
+ * @brief Gets the list of available widget themes
+ * @return Returns an Evas_List of available widget themes
+ */
+Evas_List *etk_theme_widget_theme_available_get()
+{
+   Ecore_List *files;
+   Evas_List *themes = NULL;
+   char *home;
+   char *path;
+   char *file;
+   
+   if ((home = getenv("HOME")))
+   {
+      /* TODO: etk_config_dir_get? */
+      path = malloc(strlen(home) + strlen("/.e/etk/themes/") + 1);
+      sprintf(path, "%s/.e/etk/themes/", home);
+      files = ecore_file_ls(path);
+      if (files)
+      {
+	 ecore_list_goto_first(files);
+	 while((file = ecore_list_next(files)))      
+	   themes = evas_list_append(themes, ecore_file_strip_ext(file));
+      }
+      free(path);
+   }
+   
+   path = malloc(strlen(PACKAGE_DATA_DIR"/themes/") + 1);
+   sprintf(path, PACKAGE_DATA_DIR"/themes/");
+   files = ecore_file_ls(path);
+   if (files)
+   {
+      ecore_list_goto_first(files);
+      while((file = ecore_list_next(files)))
+	themes = evas_list_append(themes, ecore_file_strip_ext(file));
+   }
+   free(path);
+   return themes;
 }
 
 /**

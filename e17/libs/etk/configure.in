@@ -260,6 +260,8 @@ src/engines/ecore_evas_x11/Makefile
 src/engines/ecore_evas_software_x11/Makefile
 src/engines/ecore_fb/Makefile
 src/bin/Makefile
+src/tools/Makefile
+src/tools/etk_prefs/Makefile
 data/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
