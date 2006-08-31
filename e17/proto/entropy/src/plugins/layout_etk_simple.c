@@ -5,6 +5,7 @@
 #include "etk_progress_dialog.h"
 #include "etk_properties_dialog.h"
 #include "etk_user_interaction_dialog.h"
+#include "entropy_etk_options_dialog.h"
 #include "etk_mime_dialog.h"
 #include "etk_file_cache_dialog.h"
 #include "entropy_etk_context_menu.h"
@@ -265,6 +266,11 @@ void etk_layout_simple_exit_cb(Etk_Object* obj, void* data)
 void etk_mime_dialog_cb(Etk_Object* obj, void* data)
 {
 	etk_mime_dialog_create();
+}
+
+void entropy_etk_options_dialog_cb(Etk_Object* obj, void* data)
+{
+	entropy_etk_options_dialog_show();
 }
 
 void entropy_etk_layout_trackback_cb(Etk_Object* obj, void* data)
@@ -740,6 +746,10 @@ entropy_plugin_layout_create (entropy_core * core)
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Program Associations.."), 
 		  ETK_STOCK_EMBLEM_SYMBOLIC_LINK, ETK_MENU_SHELL(menu), NULL);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_mime_dialog_cb), layout);
+
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Options.."), 
+		  ETK_STOCK_EMBLEM_SYMBOLIC_LINK, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_options_dialog_cb), layout);
   
   /*View menu*/
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("View"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
