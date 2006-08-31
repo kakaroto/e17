@@ -53,9 +53,7 @@ class EnhanceBase
                 # connect it to the widget
                 hand_proc = hand_proc.to_proc
                 sig = sig.new &hand_proc
-					 if sig != nil and widget != nil
-						 widget << sig 
-					 end
+                widget << sig if !sig.nil? and !widget.nil?
             }
         }
     end
