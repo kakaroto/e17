@@ -116,7 +116,7 @@ class Autobindings
         @types   = []
         @synon   = {}
         @decls   = []
-        @structs = {}
+        @structs = []
         @protos  = {}
         
         tree.entities.each { |e|
@@ -177,6 +177,7 @@ class Autobindings
                 # -- STRUCTURE (todo: not yet implemented)
                 elsif C::Struct === e.type then
                     @types << 'struct ' + e.type.name
+                    @structs << [e.type.name, []]
                     # st = (@structs[e.type.name] = [])
                     # e.type.members.each { |mem|
                     #	#todo: nested structures, initializers, etc
@@ -249,12 +250,13 @@ class Autobindings
                 ftype = dec.indirect_type.type
                 f.ret = node.type.to_s  		# return type without any pointer qualifier
                 f.ret << FunctionPtr.pointers(ftype.type)
-
+                
+                
                 f.params = []
                 ftype.params.each { |par| 
                     p = FunctionPtr.parse(par)
                     f.params << (( p.nil? ) ? par.type.to_s : p) 
-                }
+                } unless ftype.params.nil?
                 
                 return f
                 end 
@@ -355,6 +357,9 @@ class Autobindings
         }
         enumpool << "\tend\n"
 
+        struct_aliases = ''
+        @structs.each { |struct| struct_aliases << "\ttypealias '#{struct}*', 'void*'\n" }
+
         base_class = nil
 
         classes = ""
@@ -411,6 +416,10 @@ module Lib#{@config[:module_base_name]}
     #
 #{enum_aliases}
 
+    # Type aliases (from structures)
+    #
+#{struct_aliases}
+
     # Function declarations
     #
 #{declarations}
@@ -453,7 +462,7 @@ END_DL_CODE
                         
         o += title "#{@synon.length} Type aliases:"
         @synon.each { |syn,syn_to|
-                o += "#{syn} => #{syn_to}\n"
+            o += "#{syn} => #{syn_to}\n"
         }
         o += "\n"
 
@@ -467,21 +476,22 @@ END_DL_CODE
         
         o += title "#{@enums.length} Enumerations:"
         @enums.each { |name,mem|
-                o += name + "{\n"
-                mem.each { |k,v| 
-                        o += "\t\t#{k} => #{v}\n"
-                }
-                o += "}\n"
+            o += name + "{\n"
+            mem.each { |k,v| 
+                    o += "\t\t#{k} => #{v}\n"
+            }
+            o += "}\n"
         }
         o += "\n"
         
         o += title "#{@structs.length} Structures:"
         @structs.each { |name, str|
-                o += name + '{ '
-                str.each { |mem| 
-                        o += "\t\t#{mem[0]} => #{mem[1]}\n"
-                }
-                o += "}\n"
+            o += name + "\n"
+            #~ o += name + '{ '
+            #~ str.each { |mem| 
+                    #~ o += "\t\t#{mem[0]} => #{mem[1]}\n"
+            #~ }
+            #~ o += "}\n"
         }
         o += "\n"
         
@@ -490,14 +500,14 @@ END_DL_CODE
 
     def classgraph(k = nil, lev = 0)
         if k.nil?
-        k = @config[:classes][0]
-        puts title('Class tree') 
+            k = @config[:classes][0]
+            puts title('Class tree') 
         end 
         
         puts "#{''.pad(lev-1,' ')} #{k[:name]} " + ((!k[:wraps].nil?) ? "(#{k[:wraps]})" : '')
         
         @config[:classes].each { |sub|
-        classgraph(sub, lev+1) if (sub[:child_of] == k[:name])
+            classgraph(sub, lev+1) if (sub[:child_of] == k[:name])
         }
     end
     
