@@ -7,7 +7,7 @@ Standards-Version: 3.6.2
 
 Package: entropy
 Architecture: any
-Depends: ${shlibs:Depends}, libevfs0, libetk0 | libewl0, libecore0, libimlib2, libpng12-0, libevfs0-plugin-posix
+Depends: ${shlibs:Depends}, libevfs0, libetk0 | libewl0, libecore0, libimlib2, libpng12-0, libevfs0-plugin-posix, evfs0-bin
 Suggests: libevfs0-plugins-all
 Description: Entropy is a file manager based on the EFL
  Entropy is a file manager based on the EFL and using evfs.
