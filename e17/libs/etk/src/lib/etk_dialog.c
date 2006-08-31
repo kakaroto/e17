@@ -93,9 +93,9 @@ void etk_dialog_pack_in_main_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Bo
       return;
    
    if (pack_at_end)
-      etk_box_prepend(ETK_BOX(dialog->main_area_vbox), widget, ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
+      etk_box_prepend(ETK_BOX(dialog->main_area_vbox), widget, ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
    else
-      etk_box_append(ETK_BOX(dialog->main_area_vbox), widget, ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
+      etk_box_append(ETK_BOX(dialog->main_area_vbox), widget, ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
 }
 
 /**
@@ -115,9 +115,9 @@ void etk_dialog_pack_widget_in_action_area(Etk_Dialog *dialog, Etk_Widget *widge
       return;
    
    if (pack_at_end)
-      etk_box_prepend(ETK_BOX(dialog->action_area_hbox), widget, ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
+      etk_box_prepend(ETK_BOX(dialog->action_area_hbox), widget, ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
    else
-      etk_box_append(ETK_BOX(dialog->action_area_hbox), widget, ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
+      etk_box_append(ETK_BOX(dialog->action_area_hbox), widget, ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
 }
 
 /**
@@ -142,9 +142,9 @@ void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *butto
    etk_object_data_set_full(ETK_OBJECT(button), "_Etk_Dialog::response_id", id, free);
    
    if (pack_at_end)
-      etk_box_prepend(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
+      etk_box_prepend(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
    else
-      etk_box_append(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, padding), padding);
+      etk_box_append(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
    
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
 }
