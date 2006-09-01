@@ -277,7 +277,7 @@ static char *_etk_theme_find(const char *subdir, const char *theme_name)
    if ((home = getenv("HOME")))
    {
       /* TODO: etk_config_dir_get? */
-      path = malloc(strlen(home) + strlen(subdir) + strlen("/.etk//.edj") + strlen(theme_name) + 1);
+      path = malloc(strlen(home) + strlen(subdir) + strlen("/.e/etk//.edj") + strlen(theme_name) + 1);
       sprintf(path, "%s/.e/etk/%s/%s.edj", home, subdir, theme_name);
       if (ecore_file_exists(path))
          return path;
