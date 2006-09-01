@@ -210,21 +210,34 @@ _get_cpu_load(void)
 {
    FILE *stat;
    static unsigned long old_u[4], old_n[4], old_s[4], old_i[4], old_wa[4], old_hi[4], old_si[4];
-   unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, ticks_past;
+   unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, dummy2, ticks_past;
    int tmp_u = 0, tmp_n = 0, tmp_s = 0;
    char dummy[16];
    int i = 0;
    
    if (!(stat = fopen("/proc/stat", "r"))) return -1;
 
+   /* since if there are more than 1 CPUs, the first entry is the summary:
+	cpu  366384 274786 214744 7129029 1975609 12775 353729 0
+	cpu0 167188 137966 127694 3664600 704402 12775 353588 0
+	cpu1 199195 136820 87050 3464429 1271207 0 140 0
+	
+	In this case the first line is read and forgotten
+   */
+   if(cpu_count>1){
+      /* I had to add another %lu (linux 2.6.17) */
+      fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2);
+   }
+   
    while (i < cpu_count)
      {
 
-	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
-	     &new_s, &new_i, &new_wa, &new_hi, &new_si) < 5)
+        /* I had to add another %lu (linux 2.6.17) */
+	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
+	     &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2) < 5)
 	  {
 	     fclose (stat);
-	     return;
+	     return -1;
 	  }
 
 	ticks_past = ((new_u + new_n + new_s + new_i + new_wa + new_hi + new_si) -
@@ -237,7 +250,7 @@ _get_cpu_load(void)
 	     tmp_s = ((new_s - old_s[i]));
 	  }
 	
-	cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / cpu_count;
+	cpu_stats[i] = (tmp_u + tmp_n + tmp_s);
 
 	old_u[i] = new_u;
 	old_n[i] = new_n;
@@ -246,11 +259,12 @@ _get_cpu_load(void)
 	old_hi[i] = new_hi;
 	old_si[i] = new_si;
 	
-	if (cpu_stats[i] >= 100) cpu_stats[i] = 100;
+	cpu_stats[i]=(cpu_stats[i]>100?100:cpu_stats[i]);
 
 	i++;
      }
    fclose (stat);
+   return 0;
 }
 
 static void
