@@ -3259,6 +3259,69 @@ etk_table_resize(table, num_cols, num_rows)
       ALIAS:
 	Resize=1
 
+MODULE = Etk::Toolbar	PACKAGE = Etk::Toolbar	PREFIX = etk_toolbar_
+
+Etk_Toolbar *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_TOOLBAR(etk_toolbar_new());
+	OUTPUT:
+	RETVAL
+
+void
+etk_toolbar_append(toolbar, widget)
+	Etk_Toolbar * toolbar
+	Etk_Widget * widget
+	ALIAS:
+	Append=1
+
+void
+etk_toolbar_prepend(toolbar, widget)
+	Etk_Toolbar * toolbar
+	Etk_Widget * widget
+	ALIAS:
+	Prepend=1
+
+void
+etk_toolbar_orientation_set(toolbar, orientation)
+	Etk_Toolbar * toolbar
+	Etk_Toolbar_Orientation orientation
+	ALIAS:
+	OrientationSet=1
+
+Etk_Toolbar_Orientation
+etk_toolbar_orientation_get(toolbar)
+	Etk_Toolbar * toolbar
+	ALIAS:
+	OrientationGet=1
+
+void
+etk_toolbar_style_set(toolbar, style)
+	Etk_Toolbar * toolbar
+	Etk_Toolbar_Style style
+	ALIAS:
+	StyleSet=1
+
+Etk_Toolbar_Style
+etk_toolbar_style_get(toolbar)
+	Etk_Toolbar * toolbar
+	ALIAS:
+	StyleGet=1
+
+void
+etk_toolbar_stock_size_set(toolbar, size)
+	Etk_Toolbar * toolbar
+	Etk_Stock_Size size
+	ALIAS:
+	StockSizeSet=1
+
+Etk_Stock_Size
+etk_toolbar_stock_size_get(toolbar)
+	Etk_Toolbar * toolbar
+	ALIAS:
+	StockSizeGet=1
+
 
 MODULE = Etk::TextView	PACKAGE = Etk::TextView	PREFIX = etk_text_view_
 

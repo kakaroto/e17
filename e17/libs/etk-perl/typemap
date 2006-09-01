@@ -91,6 +91,9 @@ Etk_Textblock_Iter *				T_PTROBJ_ETK
 Etk_Textblock_Gravity				T_IV
 Etk_Toggle_Button *				T_PTROBJ_ETK
 Etk_Toplevel_Widget *				T_PTROBJ_ETK
+Etk_Toolbar *					T_PTROBJ_ETK
+Etk_Toolbar_Style				T_IV
+Etk_Toolbar_Orientation				T_IV
 Etk_Tree *					T_PTROBJ_ETK
 Etk_Tree_Col *					T_PTROBJ_ETK
 Etk_Tree_Mode					T_IV

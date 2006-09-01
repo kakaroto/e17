@@ -174,6 +174,7 @@ void __etk_perl_init() {
 						__("Drag", "Window");
 				__("Viewport", "Bin");
 			__("Box", "Container");
+				__("Toolbar", "Box");
 				__("HBox", "Box");
 				__("VBox", "Box");
 			__("Notebook", "Container");
@@ -480,6 +481,8 @@ SV * newSVEtkStatusbarPtr(Etk_Statusbar *o) { return newSVObj(o, "Etk::StatusBar
 Etk_Statusbar * SvEtkStatusbarPtr(SV *data) { return SvObj(data, "Etk::StatusBar"); }
 SV * newSVEtkTablePtr(Etk_Table *o) { return newSVObj(o, "Etk::Table", 0); }
 Etk_Table * SvEtkTablePtr(SV *data) { return SvObj(data, "Etk::Table"); }
+SV * newSVEtkToolbarPtr(Etk_Toolbar *o) { return newSVObj(o, "Etk::Toolbar", 0);}
+Etk_Toolbar * SvEtkToolbarPtr(SV *data) { return SvObj(data, "Etk::Toolbar");}
 SV * newSVEtkTextblockPtr(Etk_Textblock *o) { return newSVObj(o, "Etk::TextBlock", 0); }
 Etk_Textblock * SvEtkTextblockPtr(SV *data) { return SvObj(data, "Etk::TextBlock"); }
 SV * newSVEtkTextblockIterPtr(Etk_Textblock_Iter *o) { return newSVObj(o, "Etk::TextBlock::Iter", 0); }

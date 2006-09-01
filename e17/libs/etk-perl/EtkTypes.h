@@ -104,6 +104,8 @@ SV *			newSVEtkStatusbarPtr(Etk_Statusbar *o);
 Etk_Statusbar *		SvEtkStatusbarPtr(SV *data); 
 SV *			newSVEtkTablePtr(Etk_Table *o); 
 Etk_Table *		SvEtkTablePtr(SV *data); 
+SV *			newSVEtkToolbarPtr(Etk_Toolbar *o); 
+Etk_Toolbar *		SvEtkToolbarPtr(SV *data); 
 SV *			newSVEtkTextblockPtr(Etk_Textblock *o); 
 Etk_Textblock *		SvEtkTextblockPtr(SV *data); 
 SV *			newSVEtkTextblockIterPtr(Etk_Textblock_Iter *o); 

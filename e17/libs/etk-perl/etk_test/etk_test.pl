@@ -616,12 +616,28 @@ sub menu_window_show
 {
     my $win = Etk::Window->new();
     $win->TitleSet("Etk-Perl Menu Test");
-    $win->SizeRequestSet(300, 200);
+    $win->SizeRequestSet(325, 240);
     my $box = Etk::VBox->new(0, 0);
 
     my $menubar = Etk::Menu::Bar->new();
 
     $box->Append($menubar);
+
+    my $toolbar = Etk::Toolbar->new();
+    $box->Append($toolbar);
+
+    $toolbar->Append(Etk::Button::new_from_stock(EditCopy));
+    $toolbar->Append(Etk::Button::new_from_stock(EditCut));
+    $toolbar->Append(Etk::Button::new_from_stock(EditPaste));
+
+    $toolbar->Append(Etk::VSeparator->new());
+
+    $toolbar->Append(Etk::Button::new_from_stock(EditUndo));
+    $toolbar->Append(Etk::Button::new_from_stock(EditRedo));
+
+    $toolbar->Append(Etk::VSeparator->new());
+
+    $toolbar->Append(Etk::Button::new_from_stock(EditFind));
 
     my $label = Etk::Label->new("Click me :)");
     $label->AlignmentSet(0.5, 0.5);

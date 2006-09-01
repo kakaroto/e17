@@ -51,6 +51,8 @@ our %EXPORT_TAGS = (
    mouse	=> [qw/ModifierNone ModifierCtrl ModifierAlt ModifierShift ModifierWin
     LockNone LockNum LockCaps LockScroll
     MouseNone MouseDoubleClick MouseTripleClick/],
+   toolbar	=> [qw/ToolbarIcons ToolbarText ToolbarBothVert ToolbarBothHoriz 
+    ToolbarDefault ToolbarHoriz ToolbarVert/],
    );
 
 my @all = ();
@@ -211,6 +213,21 @@ use constant {
    MouseDoubleClick => 1 << 0, 
    MouseTripleClick => 1 << 1, 
 };
+
+
+# toolbar
+use constant {
+   ToolbarIcons => 0,
+   ToolbarText  => 1,
+   ToolbarBothVert => 2,
+   ToolbarBothHoriz => 3,
+   ToolbarDefault => 4,
+
+   ToolbarHoriz => 0,
+   ToolbarVert =>  1,
+
+};
+
 
 
 
