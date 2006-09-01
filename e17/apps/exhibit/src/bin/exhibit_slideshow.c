@@ -4,7 +4,7 @@
 #include "exhibit.h"
 
 void
-_ex_slideshow_stop(Exhibit *e)
+_ex_slideshow_stop()
 {
    if(e->slideshow.active)
      {
@@ -15,7 +15,7 @@ _ex_slideshow_stop(Exhibit *e)
 }
 
 void
-_ex_slideshow_start(Exhibit *e)
+_ex_slideshow_start()
 {
 	if (e->options->slide_interval)
 		e->slideshow.interval = e->options->slide_interval;
@@ -23,7 +23,8 @@ _ex_slideshow_start(Exhibit *e)
    if(!e->slideshow.active)
      {
 	etk_statusbar_push(ETK_STATUSBAR(e->statusbar[3]), "Slideshow running", 0);
-	e->slideshow.timer = ecore_timer_add(e->slideshow.interval, _ex_slideshow_next, e);
+	e->slideshow.timer = ecore_timer_add(e->slideshow.interval, 
+	      _ex_slideshow_next, NULL);
 	e->slideshow.active = ETK_TRUE;
      }
 }
@@ -31,13 +32,11 @@ _ex_slideshow_start(Exhibit *e)
 int
 _ex_slideshow_next(void *data)
 {
-   Exhibit *e;
    Etk_Tree_Row *row, *last_row;
    int i = 0;
    int n = 0;
    char string[80];
 
-   e = data;
    row = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
    last_row = etk_tree_last_row_get(ETK_TREE(e->cur_tab->itree), ETK_FALSE, ETK_FALSE);
 

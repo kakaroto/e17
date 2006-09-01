@@ -469,7 +469,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	     
 	     tab = _ex_tab_new(e, e->cur_tab->cur_path);
 
-	     _ex_main_window_tab_append(e, tab);
+	     _ex_main_window_tab_append(tab);
 	     _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 	  }
 	else if(!strcmp(ev->key, "w"))
@@ -500,7 +500,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	  }
 	else if(!strcmp(ev->key, "s"))
 	  {
-	     _ex_main_window_slideshow_toggle(e);
+	     _ex_main_window_slideshow_toggle();
 	  }		   
      }
 }
@@ -514,26 +514,24 @@ _ex_main_window_resize_cb(Etk_Object *object, void *data)
 }
 
 void
-_ex_main_window_slideshow_toggle(Exhibit *e)
+_ex_main_window_slideshow_toggle()
 {
    if(e->slideshow.active)
      {
-	_ex_slideshow_stop(e);
+	_ex_slideshow_stop();
      }
    else
      {
-	_ex_slideshow_start(e);
+	_ex_slideshow_start();
      }
 }
 
 static void 
 _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
 {     
-   Exhibit *e;
    Ex_Tab  *tab;
    
-   e = data;
-   _ex_slideshow_stop(e);
+   _ex_slideshow_stop();
 
    tab = evas_list_nth(e->tabs, 
 	 etk_notebook_current_page_get(ETK_NOTEBOOK(object)));
@@ -547,7 +545,7 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
 }
 
 void
-_ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab)
+_ex_main_window_tab_append(Ex_Tab *tab)
 {
    if(evas_list_count(e->tabs) == 1)
      {
