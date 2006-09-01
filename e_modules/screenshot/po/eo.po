@@ -1,14 +1,15 @@
 # translation of eo.po to
-# French translation for Screenshot module for Enlightenment DR0.17
 # This file is put in the public domain.
-# Chidambar 'ilLogict' Zinnoury <illogict@online.fr>, 2006.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-07 00:56+0100\n"
-"PO-Revision-Date: 2006-06-04 20:20+0200\n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:24+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,86 +17,112 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:75
+#: e_mod_config.c:72
 msgid "Screenshot Configuration"
-msgstr "Agordo de Ekrankopio"
+msgstr "Konfiguraĵo de Ekrankopio"
 
-#: e_mod_config.c:163 e_mod_config.c:283
+#: e_mod_config.c:142 e_mod_config.c:242
+msgid "General Settings"
+msgstr "Ĝeneralaj Agordoj"
+
+#: e_mod_config.c:148 e_mod_config.c:248
 msgid "Use Import"
-msgstr "Uzi «import»"
+msgstr "Uzi la programon \"import\""
 
-#: e_mod_config.c:165 e_mod_config.c:285
+#: e_mod_config.c:150 e_mod_config.c:250
 msgid "Use Scrot"
-msgstr "Uzi «scrot»"
+msgstr "Uzi la programon \"scrot\""
 
-#: e_mod_config.c:172 e_mod_config.c:292
+#: e_mod_config.c:158 e_mod_config.c:258
 msgid "Delay Time:"
-msgstr "Limtempo :"
+msgstr "Intertempo :"
 
-#: e_mod_config.c:182 e_mod_config.c:302
-msgid "File Settings"
-msgstr "Agordoj de Dosieroj"
-
-#: e_mod_config.c:185 e_mod_config.c:305
-msgid "Save Directory:"
-msgstr "Konserva Dosierujo :"
-
-#: e_mod_config.c:191 e_mod_config.c:311
-msgid "Filename (minus extension):"
-msgstr "Dosiernomo (sen finaĵo) :"
-
-#: e_mod_config.c:199 e_mod_config.c:319
+#: e_mod_config.c:161 e_mod_config.c:261
 #, c-format
-msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
-msgstr "Ekzemple : ekrancopi%d = ekrancopio1, ekrancopio2, ktp…"
+msgid "%1.0f seconds"
+msgstr "%1.0f sekundoj"
 
-#: e_mod_config.c:326
-msgid "Import Options"
-msgstr "Opcioj de «import»"
+#: e_mod_config.c:166 e_mod_config.c:275
+msgid "File Settings"
+msgstr "Dosieraj Agordoj"
 
-#: e_mod_config.c:327 e_mod_config.c:348
+#: e_mod_config.c:168 e_mod_config.c:277
+msgid "Always Prompt For Filename"
+msgstr "Cxiam Peti Dosiernomon"
+
+#: e_mod_config.c:172 e_mod_config.c:281
+msgid "Save Directory:"
+msgstr "Konservi Dosierujon :"
+
+#: e_mod_config.c:176 e_mod_config.c:285
+msgid "Filename:"
+msgstr "Dosiernomo:"
+
+#: e_mod_config.c:266
+msgid "Image Viewer Settings"
+msgstr "Bildprezentaj Agordoj"
+
+#: e_mod_config.c:268
+msgid "Launch Image Viewer After Screenshot"
+msgstr "Lancxi Bildprezento Poste Ekrankopiado"
+
+#: e_mod_config.c:295
+msgid "Import Settings"
+msgstr "Agordoj de \"import\" programo"
+
+#: e_mod_config.c:297 e_mod_config.c:326
 msgid "Include Image Border"
-msgstr "Inkluzivi bildan bordon"
+msgstr "Inkluzi Bildan Randon"
 
-#: e_mod_config.c:330
+#: e_mod_config.c:301
 msgid "Use Image Dithering"
 msgstr "Uzi Bildan Punktismon"
 
-#: e_mod_config.c:333
+#: e_mod_config.c:305
 msgid "Include Window Manager Frame"
-msgstr "Inkluzivu Kadron de Fenestroadministrilon"
+msgstr "Inkluzivi Kadron de Fenestradministrilo"
 
-#: e_mod_config.c:336
-#, fuzzy
+#: e_mod_config.c:309
 msgid "Choose Window To Grab"
-msgstr "Elektu Ekkaptontan Fenestron"
+msgstr "Elekti Fenestron Ekkaptendan"
 
-#: e_mod_config.c:339
+#: e_mod_config.c:313
 msgid "Silent"
-msgstr "Silento"
+msgstr "Silentigi"
 
-#: e_mod_config.c:342
+#: e_mod_config.c:317
 msgid "Trim Edges"
-msgstr "Stucu Egxojn"
+msgstr "Struci Randojn"
 
-#: e_mod_config.c:347
-msgid "Scrot Options"
-msgstr "Opcioj de «scrot»"
+#: e_mod_config.c:324
+msgid "Scrot Settings"
+msgstr "Agordoj de la programon \"Scrot\""
 
-#: e_mod_config.c:351
-#, fuzzy
+#: e_mod_config.c:330
 msgid "Generate Thumbnail"
-msgstr "Kreu Bildeton"
+msgstr "Krei Bildeton"
 
-#: e_mod_main.c:108 e_mod_main.c:527
+#: e_mod_main.c:136
+msgid "Screenshot"
+msgstr "Ekrankopio"
+
+#: e_mod_main.c:171
+msgid "Configuration"
+msgstr "Konfiguraĵo"
+
+#: e_mod_main.c:428 e_mod_main.c:665 e_mod_main.c:718
 msgid "Enlightenment Screenshot Module"
-msgstr "Modulo de Ekrancopio de Enlightenment"
+msgstr "\"Enlightenment-a Ekrankopio\" Modulo"
 
-#: e_mod_main.c:109
+#: e_mod_main.c:429
 msgid "This module is used to take screenshots"
-msgstr "Tiun modulon uzas por fari ekrankopiojn."
+msgstr "Tiu modulo uzigxas por ekkapti ekrankopion"
 
-#: e_mod_main.c:528
-msgid "Please Choose A Program To Use For Taking Screenshots."
-msgstr "Bonvulu elekti programon por ekrankopioj."
+#: e_mod_main.c:667
+msgid "Please install either ImageMagick or Scrot for taking screenshots."
+msgstr "Bonvolu instali cxu \"ImageMagick\" or \"Scrot\" por ekkapti ekrankopion."
+
+#: e_mod_main.c:719
+msgid "You did not specify a path.<br>This shot will be saved in your home folder."
+msgstr "Vi ne difinis padon.<br>Tiu ekrankopio estos konservita en via hejma dosiero."
 

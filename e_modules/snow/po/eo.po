@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eo\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 20:29+0200\n"
-"PO-Revision-Date: 2006-06-04 20:30+0200\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:07+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,11 +17,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:92
-msgid "General Settings"
-msgstr "Ĝeneral Agordoj"
+#: e_mod_config.c:39
+msgid "Snow Configuration"
+msgstr "Konfiguraĵo de Neĝo"
 
-#: e_mod_config.c:101
-msgid "Medium"
-msgstr "Mezo"
+#: e_mod_config.c:96
+msgid "Show Trees"
+msgstr "Vidigi Arbojn"
+
+#: e_mod_config.c:100
+msgid "Snow Density"
+msgstr "Neĝa Denseco"
+
+#: e_mod_config.c:102
+msgid "Sparse"
+msgstr ""
+
+#: e_mod_config.c:106
+msgid "Dense"
+msgstr "Densa"
+
+#: e_mod_main.c:72
+msgid "Enlightenment Snow Module"
+msgstr "\"Enlightenment-a Neĝo\" Modulo"
+
+#: e_mod_main.c:72
+msgid "This is a snow module that may replace xsnow."
+msgstr "Tiu estas neĝa modulo kiu eblas anstataŭigi \"xsnow\""
 

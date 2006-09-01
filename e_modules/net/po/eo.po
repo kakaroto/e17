@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eo\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 19:59+0200\n"
-"PO-Revision-Date: 2006-06-04 20:00+0200\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:27+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,13 +17,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:138
-#, c-format
-msgid "%1.0f seconds"
-msgstr "%1.0f sekundoj"
+#: e_mod_config.c:44
+msgid "Net Configuration"
+msgstr "Konfiguraĵo de Reto"
 
-#: e_mod_config.c:144
-#, c-format
-msgid "%1.0f"
-msgstr "%1.0f"
+#: e_mod_config.c:122
+msgid "General Settings"
+msgstr "Ĝeneralaj Agordoj"
+
+#: e_mod_config.c:124
+msgid "Always Show Text"
+msgstr "Cxiam Vidigi Tekston"
+
+#: e_mod_config.c:126
+msgid "Show Text On Mouse Over"
+msgstr "Vidigi Tekston dum movado de muso"
+
+#: e_mod_config.c:130
+msgid "Device Settings"
+msgstr "Aparataj Agordoj"
+
+#: e_mod_config.c:142
+msgid "Check Interval:"
+msgstr "Kontroli Intervalon :"
+
+#: e_mod_config.c:150
+msgid "Max MTU:"
+msgstr ""
+
+#: e_mod_main.c:114
+msgid "Net"
+msgstr "Reto"
+
+#: e_mod_main.c:176
+msgid "Configuration"
+msgstr "Konfiguraĵo"
+
+#: e_mod_main.c:379
+msgid "Enlightenment Network Monitor Module"
+msgstr "\"Enlightenment-a Reta Kasxauxskulto\" Modulo"
+
+#: e_mod_main.c:381
+msgid "This module is used to monitor a network device."
+msgstr "Tiu modulo uzigxas por kasxauxskulti retan aparaton"
 

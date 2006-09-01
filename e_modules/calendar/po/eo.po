@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eo\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 19:51+0200\n"
-"PO-Revision-Date: 2006-06-04 19:52+0200\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-31 00:03+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,56 +17,370 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: src/otherfonts_editor.c:114 src/otherfonts_editor.c:117
-#: src/otherfonts_editor.c:120 src/otherfonts_editor.c:123
-#: src/otherfonts_editor.c:134 src/otherfonts_editor.c:137
-#: src/otherfonts_editor.c:140 src/otherfonts_editor.c:143
-#: src/otherfonts_editor.c:229 src/otherfonts_editor.c:232
-#: src/otherfonts_editor.c:235 src/otherfonts_editor.c:238
-#: src/otherfonts_editor.c:274 src/otherfonts_editor.c:277
-#: src/otherfonts_editor.c:280 src/otherfonts_editor.c:283
-#: src/weekend_editor.c:117 src/weekend_editor.c:120 src/weekend_editor.c:123
-#: src/weekend_editor.c:126 src/weekend_editor.c:137 src/weekend_editor.c:140
-#: src/weekend_editor.c:143 src/weekend_editor.c:146 src/weekend_editor.c:234
-#: src/weekend_editor.c:237 src/weekend_editor.c:240 src/weekend_editor.c:243
-#: src/weekend_editor.c:254 src/weekend_editor.c:257 src/weekend_editor.c:260
-#: src/weekend_editor.c:263 src/today_editor.c:113 src/today_editor.c:116
-#: src/today_editor.c:119 src/today_editor.c:122 src/today_editor.c:133
-#: src/today_editor.c:136 src/today_editor.c:139 src/today_editor.c:142
-#: src/today_editor.c:229 src/today_editor.c:232 src/today_editor.c:235
-#: src/today_editor.c:238 src/today_editor.c:249 src/today_editor.c:252
-#: src/today_editor.c:255 src/today_editor.c:258 src/weekday_editor.c:120
-#: src/weekday_editor.c:123 src/weekday_editor.c:126 src/weekday_editor.c:129
-#: src/weekday_editor.c:140 src/weekday_editor.c:143 src/weekday_editor.c:146
-#: src/weekday_editor.c:149 src/weekday_editor.c:236 src/weekday_editor.c:239
-#: src/weekday_editor.c:242 src/weekday_editor.c:245 src/weekday_editor.c:256
-#: src/weekday_editor.c:259 src/weekday_editor.c:262 src/weekday_editor.c:265
-#, c-format
-msgid "%1.0f"
-msgstr "%1.0f"
+#: src/add_event_dialog.c:47 src/add_todo_dialog.c:49
+msgid "Font Editor"
+msgstr "Tipara Redaktilo"
 
-#: src/otherfonts_editor.c:242 src/otherfonts_editor.c:245
-#: src/otherfonts_editor.c:248 src/otherfonts_editor.c:251
-#: src/otherfonts_editor.c:254 src/otherfonts_editor.c:257
-#: src/otherfonts_editor.c:260 src/otherfonts_editor.c:263
-#: src/otherfonts_editor.c:287 src/otherfonts_editor.c:291
-#: src/otherfonts_editor.c:295 src/otherfonts_editor.c:299
-#: src/otherfonts_editor.c:303 src/otherfonts_editor.c:307
-#: src/otherfonts_editor.c:311 src/otherfonts_editor.c:315
-#: src/weekend_editor.c:267 src/weekend_editor.c:270 src/weekend_editor.c:273
-#: src/weekend_editor.c:276 src/weekend_editor.c:279 src/weekend_editor.c:282
-#: src/weekend_editor.c:285 src/weekend_editor.c:288 src/main_editor.c:336
-#: src/main_editor.c:345 src/main_editor.c:352 src/today_editor.c:262
-#: src/today_editor.c:265 src/today_editor.c:268 src/today_editor.c:271
-#: src/today_editor.c:274 src/today_editor.c:277 src/today_editor.c:280
-#: src/today_editor.c:283 src/weekday_editor.c:269 src/weekday_editor.c:272
-#: src/weekday_editor.c:275 src/weekday_editor.c:278 src/weekday_editor.c:281
-#: src/weekday_editor.c:284 src/weekday_editor.c:287 src/weekday_editor.c:290
-#, c-format
-msgid "%1.2f"
-msgstr "%1.2f"
+#: src/add_event_dialog.c:118
+msgid "Event Type"
+msgstr "Eventa Tipo"
 
-#: src/cal_face_func.c:432
-msgid "Edit Mode"
-msgstr "Redaktomoduso"
+#: src/add_event_dialog.c:120
+msgid "Birthday"
+msgstr "Naskiĝdato"
+
+#: src/add_event_dialog.c:122
+msgid "Anniversary"
+msgstr "Datreveno"
+
+#: src/add_event_dialog.c:124
+msgid "Other"
+msgstr "Alia"
+
+#: src/add_event_dialog.c:127 src/add_todo_dialog.c:118
+msgid "Event"
+msgstr "Evento"
+
+#: src/cal_face_func.c:436
+msgid "Config Dialog"
+msgstr "Konfigurajxa Dialogo"
+
+#: src/cal_face_func.c:455
+msgid "View Events"
+msgstr "Vidigi Eventojn"
+
+#: src/cal_face_func.c:459
+msgid "View TODO"
+msgstr "Vidigi TODO"
+
+#: src/cal_face_func.c:463
+msgid "Add Event"
+msgstr "Aldoni Eventon"
+
+#: src/cal_face_func.c:467
+msgid "Add TODO"
+msgstr "Aldoni TODO"
+
+#: src/cal_face_func.c:471
+msgid "Remove Event"
+msgstr "Forigi Eventon"
+
+#: src/cal_face_func.c:475
+msgid "Remove TODO"
+msgstr "Forigi TODO"
+
+#: src/calendar_text_fun.c:186 src/calendar_text_fun.c:216
+#: src/calendar_text_fun.c:233 src/calendar_text_fun.c:249
+#: src/calendar_text_fun.c:265 src/calendar_text_fun.c:281
+#: src/calendar_text_fun.c:297
+msgid "Su"
+msgstr "Di"
+
+#: src/calendar_text_fun.c:188 src/calendar_text_fun.c:204
+#: src/calendar_text_fun.c:235 src/calendar_text_fun.c:251
+#: src/calendar_text_fun.c:267 src/calendar_text_fun.c:283
+#: src/calendar_text_fun.c:299
+msgid "Mo"
+msgstr "Lu"
+
+#: src/calendar_text_fun.c:190 src/calendar_text_fun.c:206
+#: src/calendar_text_fun.c:223 src/calendar_text_fun.c:253
+#: src/calendar_text_fun.c:269 src/calendar_text_fun.c:285
+#: src/calendar_text_fun.c:301
+msgid "Tu"
+msgstr "Ma"
+
+#: src/calendar_text_fun.c:192 src/calendar_text_fun.c:208
+#: src/calendar_text_fun.c:225 src/calendar_text_fun.c:241
+#: src/calendar_text_fun.c:271 src/calendar_text_fun.c:287
+#: src/calendar_text_fun.c:303
+msgid "We"
+msgstr "Me"
+
+#: src/calendar_text_fun.c:194 src/calendar_text_fun.c:210
+#: src/calendar_text_fun.c:227 src/calendar_text_fun.c:243
+#: src/calendar_text_fun.c:259 src/calendar_text_fun.c:289
+#: src/calendar_text_fun.c:305
+#, fuzzy
+msgid "Th"
+msgstr "ĵa"
+
+#: src/calendar_text_fun.c:196 src/calendar_text_fun.c:212
+#: src/calendar_text_fun.c:229 src/calendar_text_fun.c:245
+#: src/calendar_text_fun.c:261 src/calendar_text_fun.c:277
+#: src/calendar_text_fun.c:307
+msgid "Fr"
+msgstr "Ve"
+
+#: src/calendar_text_fun.c:198 src/calendar_text_fun.c:214
+#: src/calendar_text_fun.c:231 src/calendar_text_fun.c:247
+#: src/calendar_text_fun.c:263 src/calendar_text_fun.c:279
+#: src/calendar_text_fun.c:295
+msgid "Sa"
+msgstr "Sa"
+
+#: src/calendar_text_fun.c:329
+msgid "JANUARY"
+msgstr "JANUARO"
+
+#: src/calendar_text_fun.c:335
+msgid "FEBRUARY"
+msgstr "FEBRUARO"
+
+#: src/calendar_text_fun.c:341
+msgid "MARCH"
+msgstr "MARTO"
+
+#: src/calendar_text_fun.c:347
+msgid "APRIL"
+msgstr "APRILO"
+
+#: src/calendar_text_fun.c:353
+msgid "MAY"
+msgstr "MAJO"
+
+#: src/calendar_text_fun.c:359
+msgid "JUNE"
+msgstr "JUNIO"
+
+#: src/calendar_text_fun.c:365
+msgid "JULY"
+msgstr "JULIO"
+
+#: src/calendar_text_fun.c:371
+msgid "AUGUST"
+msgstr "AUXGUSTO"
+
+#: src/calendar_text_fun.c:377
+msgid "SEPTEMBER"
+msgstr "SEPTEMBRO"
+
+#: src/calendar_text_fun.c:383
+msgid "OCTOBER"
+msgstr "OKTOBRO"
+
+#: src/calendar_text_fun.c:389
+msgid "NOVEMBER"
+msgstr "NOVEMBRO"
+
+#: src/calendar_text_fun.c:395
+msgid "DECEMBER"
+msgstr "DECEMBRO"
+
+#: src/e_mod_main.c:183
+msgid "Enlightenment calendar Module"
+msgstr "\"Enlightenment-a Kalendaro\" Modulo"
+
+#: src/e_mod_main.c:185
+msgid "A simple module to give E17 a desktop calendar "
+msgstr "Simpla modulo por aldoni en E17 labortabla kalendaro"
+
+#: src/main_editor.c:50 src/otherfonts_editor.c:48 src/today_editor.c:46
+#: src/weekday_editor.c:51 src/weekend_editor.c:51
+msgid "Calendar Settings"
+msgstr "Agordoj de kalendaro"
+
+#: src/main_editor.c:111
+msgid "Color/Text Scheme"
+msgstr ""
+
+#: src/main_editor.c:112
+msgid "User"
+msgstr "Uzanto"
+
+#: src/main_editor.c:116
+msgid "Backgroud Image"
+msgstr ""
+
+#: src/main_editor.c:118
+msgid "With Top Image"
+msgstr ""
+
+#: src/main_editor.c:120
+msgid "Without Top Image"
+msgstr ""
+
+#: src/main_editor.c:124 src/main_editor.c:291
+msgid "First Day of Week"
+msgstr "Unua tago de la semajno"
+
+#: src/main_editor.c:126 src/main_editor.c:293
+msgid "Sunday"
+msgstr "Dimanĉo"
+
+#: src/main_editor.c:128 src/main_editor.c:295
+msgid "Monday"
+msgstr "Lundo"
+
+#: src/main_editor.c:130 src/main_editor.c:297
+msgid "Tuesday"
+msgstr "Mardo"
+
+#: src/main_editor.c:132 src/main_editor.c:299
+msgid "Wednesday"
+msgstr "Merkredo"
+
+#: src/main_editor.c:134 src/main_editor.c:301
+msgid "Thursday"
+msgstr "Ĵaŭdo"
+
+#: src/main_editor.c:136 src/main_editor.c:303
+msgid "Friday"
+msgstr "Vendredo"
+
+#: src/main_editor.c:138 src/main_editor.c:305
+msgid "Saturday"
+msgstr "Sabato"
+
+#: src/main_editor.c:280
+msgid "Top Image"
+msgstr ""
+
+#: src/main_editor.c:282
+msgid "With"
+msgstr "Kun"
+
+#: src/main_editor.c:284
+msgid "Without"
+msgstr "Sen"
+
+#: src/main_editor.c:314
+msgid "Fonts"
+msgstr "Tiparoj"
+
+#: src/main_editor.c:350
+msgid "Configure Colors"
+msgstr "Konfiguri Kolorojn"
+
+#: src/otherfonts_editor.c:106 src/otherfonts_editor.c:211
+msgid "Year/Month Font"
+msgstr "Jara/Monata Tiparo"
+
+#: src/otherfonts_editor.c:107 src/otherfonts_editor.c:127
+#: src/otherfonts_editor.c:212 src/otherfonts_editor.c:257
+#: src/today_editor.c:106 src/today_editor.c:126 src/today_editor.c:212
+#: src/today_editor.c:232 src/weekday_editor.c:113 src/weekday_editor.c:133
+#: src/weekday_editor.c:219 src/weekday_editor.c:239 src/weekend_editor.c:111
+#: src/weekend_editor.c:131 src/weekend_editor.c:218 src/weekend_editor.c:238
+msgid "Red:"
+msgstr "Ruĝa:"
+
+#: src/otherfonts_editor.c:110 src/otherfonts_editor.c:130
+#: src/otherfonts_editor.c:215 src/otherfonts_editor.c:260
+#: src/today_editor.c:109 src/today_editor.c:129 src/today_editor.c:215
+#: src/today_editor.c:235 src/weekday_editor.c:116 src/weekday_editor.c:136
+#: src/weekday_editor.c:222 src/weekday_editor.c:242 src/weekend_editor.c:114
+#: src/weekend_editor.c:134 src/weekend_editor.c:221 src/weekend_editor.c:241
+msgid "Blue:"
+msgstr "Blua:"
+
+#: src/otherfonts_editor.c:113 src/otherfonts_editor.c:133
+#: src/otherfonts_editor.c:218 src/otherfonts_editor.c:263
+#: src/today_editor.c:112 src/today_editor.c:132 src/today_editor.c:218
+#: src/today_editor.c:238 src/weekday_editor.c:119 src/weekday_editor.c:139
+#: src/weekday_editor.c:225 src/weekday_editor.c:245 src/weekend_editor.c:117
+#: src/weekend_editor.c:137 src/weekend_editor.c:224 src/weekend_editor.c:244
+msgid "Green:"
+msgstr "Verda:"
+
+#: src/otherfonts_editor.c:116 src/otherfonts_editor.c:136
+#: src/otherfonts_editor.c:221 src/otherfonts_editor.c:266
+#: src/today_editor.c:115 src/today_editor.c:135 src/today_editor.c:221
+#: src/today_editor.c:241 src/weekday_editor.c:122 src/weekday_editor.c:142
+#: src/weekday_editor.c:228 src/weekday_editor.c:248 src/weekend_editor.c:120
+#: src/weekend_editor.c:140 src/weekend_editor.c:227 src/weekend_editor.c:247
+msgid "Alpha:"
+msgstr "Alfa"
+
+#: src/otherfonts_editor.c:126 src/otherfonts_editor.c:256
+msgid "Day Font"
+msgstr "Taga Tiparo"
+
+#: src/otherfonts_editor.c:225 src/otherfonts_editor.c:270
+msgid "R Out:"
+msgstr ""
+
+#: src/otherfonts_editor.c:228 src/otherfonts_editor.c:274
+msgid "B Out:"
+msgstr ""
+
+#: src/otherfonts_editor.c:231 src/otherfonts_editor.c:278
+msgid "G Out:"
+msgstr ""
+
+#: src/otherfonts_editor.c:234 src/otherfonts_editor.c:282
+msgid "A Out:"
+msgstr ""
+
+#: src/otherfonts_editor.c:237 src/otherfonts_editor.c:286
+msgid "R Shad:"
+msgstr ""
+
+#: src/otherfonts_editor.c:240 src/otherfonts_editor.c:290
+msgid "B Shad:"
+msgstr ""
+
+#: src/otherfonts_editor.c:243 src/otherfonts_editor.c:294
+msgid "G Shad:"
+msgstr ""
+
+#: src/otherfonts_editor.c:246 src/otherfonts_editor.c:298
+msgid "A Shad:"
+msgstr ""
+
+#: src/today_editor.c:104 src/today_editor.c:210
+msgid "Today"
+msgstr "Hodiaŭ"
+
+#: src/today_editor.c:125 src/today_editor.c:231
+msgid "Today Font"
+msgstr "Hodiaŭa Tiparo"
+
+#: src/today_editor.c:245 src/weekday_editor.c:252 src/weekend_editor.c:251
+msgid "R Outline:"
+msgstr ""
+
+#: src/today_editor.c:248 src/weekday_editor.c:255 src/weekend_editor.c:254
+msgid "B Outline:"
+msgstr ""
+
+#: src/today_editor.c:251 src/weekday_editor.c:258 src/weekend_editor.c:257
+msgid "G Outline:"
+msgstr ""
+
+#: src/today_editor.c:254 src/weekday_editor.c:261 src/weekend_editor.c:260
+msgid "A Outline:"
+msgstr ""
+
+#: src/today_editor.c:257 src/weekday_editor.c:264 src/weekend_editor.c:263
+msgid "R Shadow:"
+msgstr ""
+
+#: src/today_editor.c:260 src/weekday_editor.c:267 src/weekend_editor.c:266
+msgid "B Shadow:"
+msgstr ""
+
+#: src/today_editor.c:263 src/weekday_editor.c:270 src/weekend_editor.c:269
+msgid "G Shadow:"
+msgstr ""
+
+#: src/today_editor.c:266 src/weekday_editor.c:273 src/weekend_editor.c:272
+msgid "A Shadow:"
+msgstr "A Ombro"
+
+#: src/weekday_editor.c:111 src/weekday_editor.c:217
+msgid "Weekday"
+msgstr "Semajntago"
+
+#: src/weekday_editor.c:132 src/weekday_editor.c:238
+msgid "Weekday Font"
+msgstr "Semajntaga Tiparo"
+
+#: src/weekend_editor.c:109 src/weekend_editor.c:216
+msgid "Weekend"
+msgstr "Semajnfino"
+
+#: src/weekend_editor.c:130 src/weekend_editor.c:237
+msgid "Weekend Font"
+msgstr "Semajnfina Tiparo"
 

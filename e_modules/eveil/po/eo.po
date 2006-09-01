@@ -1,0 +1,342 @@
+# translation of eo.po to
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:51+0200\n"
+"Last-Translator: \n"
+"Language-Team:  <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.2\n"
+
+#: e_mod_config.c:75
+msgid "Eveil Configuration"
+msgstr "Konfigurajxo de \"Eveil\""
+
+#: e_mod_config.c:188
+msgid "Alarm"
+msgstr "Alarmi"
+
+#: e_mod_config.c:190 e_mod_config_alarm.c:171
+msgid "Active"
+msgstr "Aktiva"
+
+#: e_mod_config.c:209
+msgid "Timer"
+msgstr "Tempoplanilo"
+
+#: e_mod_config.c:212 e_mod_main.c:582
+#, c-format
+msgid "%1.0f hours"
+msgstr "%1.0f horoj"
+
+#: e_mod_config.c:220
+#, c-format
+msgid "%1.0f min"
+msgstr "%1.0f min"
+
+#: e_mod_config.c:228
+#, c-format
+msgid "%1.0f sec"
+msgstr "%1.0f sek"
+
+#: e_mod_config.c:237
+msgid "Start !"
+msgstr "Ek !"
+
+#: e_mod_config.c:242
+msgid "Stop !"
+msgstr "Halti !"
+
+#: e_mod_config.c:247
+msgid "Zero"
+msgstr "Nul"
+
+#: e_mod_config.c:307
+msgid "Alarm Options"
+msgstr "Alarmaj Opcioj"
+
+#: e_mod_config.c:309 e_mod_config.c:355
+msgid "Show icon"
+msgstr "Vidigi Piktogramon"
+
+#: e_mod_config.c:312 e_mod_config.c:322 e_mod_config.c:358 e_mod_config.c:368
+msgid "Never"
+msgstr "Neniam"
+
+#: e_mod_config.c:314 e_mod_config.c:324 e_mod_config.c:360 e_mod_config.c:370
+msgid "When enabled"
+msgstr "Kiam ebligita"
+
+#: e_mod_config.c:316 e_mod_config.c:326 e_mod_config.c:362 e_mod_config.c:372
+msgid "Always"
+msgstr "Ĉiam"
+
+#: e_mod_config.c:319 e_mod_config.c:365
+msgid "Show details"
+msgstr "Vidigi Detalojn"
+
+#: e_mod_config.c:329 e_mod_config.c:375 e_mod_config_alarm.c:365
+msgid "Open popup"
+msgstr "Malfermi ŝprucon"
+
+#: e_mod_config.c:332 e_mod_config.c:378
+msgid "Run program"
+msgstr "Lancxi programon"
+
+#: e_mod_config.c:339
+msgid "Remove alarm after the date"
+msgstr "Forigu alarmon poste la dato"
+
+#: e_mod_config.c:342
+msgid "Time format"
+msgstr "Tempoformato"
+
+#: e_mod_config.c:345
+msgid "12h"
+msgstr "12h"
+
+#: e_mod_config.c:347
+msgid "24h"
+msgstr "24h"
+
+#: e_mod_config.c:353
+msgid "Timer Options"
+msgstr "Tempoplanilaj Opcioj"
+
+#: e_mod_config_alarm.c:70
+msgid "Eveil Alarm Configuration"
+msgstr "Konfigurajxo de \"Eveil\" Alarmo"
+
+#: e_mod_config_alarm.c:169
+msgid "Informations"
+msgstr "Informajxoj"
+
+#: e_mod_config_alarm.c:178
+msgid "Description"
+msgstr "Priskribo"
+
+#: e_mod_config_alarm.c:188
+msgid "Schedule"
+msgstr "Plano"
+
+#: e_mod_config_alarm.c:190
+#, c-format
+msgid "%1.0f hour"
+msgstr "%1.0f horo"
+
+#: e_mod_config_alarm.c:193
+#, c-format
+msgid "%1.0f minute"
+msgstr "%1.0f minuto"
+
+#: e_mod_config_alarm.c:199
+msgid "Days of the week"
+msgstr "Semajntagoj"
+
+#: e_mod_config_alarm.c:201
+msgid "Monday"
+msgstr "Lundo"
+
+#: e_mod_config_alarm.c:203
+msgid "Tuesday"
+msgstr "Mardo"
+
+#: e_mod_config_alarm.c:205
+msgid "Wenesday"
+msgstr "Merkredo"
+
+#: e_mod_config_alarm.c:207
+msgid "Thursday"
+msgstr "Ĵaŭdo"
+
+#: e_mod_config_alarm.c:209
+msgid "Friday"
+msgstr "Vendredo"
+
+#: e_mod_config_alarm.c:211
+msgid "Saturday"
+msgstr "Sabato"
+
+#: e_mod_config_alarm.c:213
+msgid "Sunday"
+msgstr "Dimanĉo"
+
+#: e_mod_config_alarm.c:216
+msgid "One day"
+msgstr "Unu tago"
+
+#: e_mod_config_alarm.c:218
+msgid "Date (YYYY/MM/DD)"
+msgstr "Dato (JJJJ/MM/TT)"
+
+#: e_mod_config_alarm.c:223
+msgid "Today"
+msgstr "Hodiaŭ"
+
+#: e_mod_config_alarm.c:225
+msgid "Tomorrow"
+msgstr "Morgaux"
+
+#: e_mod_config_alarm.c:261
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
+"in the informations / schedule of your alarm"
+msgstr "<hilight>Eraro, alarmo estis aldonita !</hilight><br><br>Estas eraro en informajxoj / plano de via alarmo"
+
+#: e_mod_config_alarm.c:266
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
+"a name for the alarm"
+msgstr ""
+
+#: e_mod_config_alarm.c:271
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
+"select at least one day in the week"
+msgstr ""
+
+#: e_mod_config_alarm.c:276
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
+"entered for the alarm has incorrect syntax<br><br>You have to respect this "
+"format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
+"month on 2 numbers<br>DD is the day on 2 numbers<br>"
+msgstr ""
+
+#: e_mod_config_alarm.c:286
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
+"entered is before now"
+msgstr ""
+
+#: e_mod_config_alarm.c:290 e_mod_main.c:348
+msgid "Eveil Module Error"
+msgstr "Eraro de \"Eveil\" Modulo"
+
+#: e_mod_config_alarm.c:323 e_mod_config_alarm.c:396
+msgid "Test this alarm"
+msgstr "Provi tiun cxi alarmon"
+
+#: e_mod_config_alarm.c:351
+msgid "Ring Options"
+msgstr ""
+
+#: e_mod_config_alarm.c:353
+msgid "Remove alarm"
+msgstr "Forigi alarmon"
+
+#: e_mod_config_alarm.c:360 e_mod_config_alarm.c:372 e_mod_config_alarm.c:384
+msgid "Use general settings"
+msgstr "Uzi gxeneralajn agordojn"
+
+#: e_mod_config_alarm.c:377
+msgid "Run a program"
+msgstr "Lancxi programon"
+
+#: e_mod_config_alarm.c:386
+msgid "Run this program"
+msgstr "Lancxi tiun cxi programon"
+
+#: e_mod_config_alarm.c:430
+msgid "<hilight>Alarm test SUCCEED !</hilight>"
+msgstr ""
+
+#: e_mod_config_alarm.c:435
+msgid "<hilight>Alarm test FAILED !</hilight>"
+msgstr ""
+
+#: e_mod_config_alarm.c:437
+msgid "Eveil Module Test Report"
+msgstr ""
+
+#: e_mod_main.c:184
+msgid "Eveil"
+msgstr ""
+
+#: e_mod_main.c:319
+#, c-format
+msgid "<hilight>Alarm : %s</hilight><br><br>%s"
+msgstr "<hilight>Alarmo : %s</hilight><br><br>%s"
+
+#: e_mod_main.c:322 e_mod_main.c:941
+msgid "Eveil Module Popup"
+msgstr ""
+
+#: e_mod_main.c:346
+msgid ""
+"<hilight>Failed !</hilight><br><br>Eveil couln't launch the program you "
+"specified"
+msgstr ""
+
+#: e_mod_main.c:578 e_mod_main.c:754
+#, c-format
+msgid "Snooze %s"
+msgstr ""
+
+#: e_mod_main.c:585
+#, c-format
+#, fuzzy
+msgid "%1.0f minutes"
+msgstr "minutoj"
+
+#: e_mod_main.c:762
+#, c-format
+msgid "Snooze %.14s of %.2d:%.2d"
+msgstr ""
+
+#: e_mod_main.c:776
+msgid "Snooze (No alarm to delay)"
+msgstr ""
+
+#: e_mod_main.c:783
+msgid "Add an alarm"
+msgstr ""
+
+#: e_mod_main.c:792
+msgid "Start the timer"
+msgstr ""
+
+#: e_mod_main.c:799
+msgid "Stop the timer"
+msgstr ""
+
+#: e_mod_main.c:939
+msgid "<hilight>Timer elapsed !</hilight><br><br>Time for pastas :D"
+msgstr ""
+
+#: e_mod_main.c:1083
+#, c-format
+msgid ""
+"<hilight>Eveil module : Configuration Upgraded</hilight><br><br>Your "
+"configuration of eveil module<br>has been upgraded<br>Your settings were "
+"removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+msgstr ""
+
+#: e_mod_main.c:1089 e_mod_main.c:1103 e_mod_main.c:1214
+msgid "Eveil Module version "
+msgstr ""
+
+#: e_mod_main.c:1097
+#, c-format
+msgid ""
+"<hilight>Eveil module : Configuration Downgraded</hilight><br><br>Your "
+"configuration of Eveil module<br>has been downgraded<br>Your settings were "
+"removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+msgstr ""
+
+#: e_mod_main.c:1215
+msgid ""
+"A module to set timers and alarms to alert you<br> when youre pastas are "
+"ready<br>or when you need to wake up<br><br>http://oooo.zapto."
+"org<br>ooookiwi@free.fr"
+msgstr ""
+

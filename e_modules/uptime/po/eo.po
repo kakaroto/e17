@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eo\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 20:33+0200\n"
-"PO-Revision-Date: 2006-06-04 20:34+0200\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 22:58+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,16 +17,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:77
-#, c-format
-msgid "%1.0f seconds"
-msgstr "%1.0f sekundoj"
+#: e_mod_config.c:52
+msgid "Uptime Configuration"
+msgstr ""
 
-#: e_mod_main.c:183 e_mod_main.c:272
+#: e_mod_config.c:105
+msgid "Uptime Settings"
+msgstr ""
+
+#: e_mod_config.c:107
+msgid "Update Interval:"
+msgstr ""
+
+#: e_mod_config.c:114
+msgid "Check Interval:"
+msgstr "Kontroli Intervalon :"
+
+#: e_mod_main.c:161
+msgid "Uptime"
+msgstr ""
+
+#: e_mod_main.c:201
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#: e_mod_main.c:277
-msgid "Edit Mode"
-msgstr "Redaktomoduso"
+#: e_mod_main.c:402
+msgid "Enlightenment Uptime Monitor Module"
+msgstr ""
+
+#: e_mod_main.c:403
+msgid "This module is used to monitor uptime."
+msgstr ""
+
+#: e_mod_main.c:574
+#, c-format
+msgid "up: %d days, %d:%02d:%02ld"
+msgstr ""
+
+#: e_mod_main.c:581
+#, c-format
+msgid "la: %.2f %.2f %.2f"
+msgstr ""
+
+#: e_mod_main.c:586
+#, c-format
+msgid "users: %d"
+msgstr "Usantoj : %d"
 

@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eo\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 19:55+0200\n"
-"PO-Revision-Date: 2006-06-04 19:55+0200\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:40+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,12 +17,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:165 e_mod_config.c:170 e_mod_config.c:175
-#, c-format
-msgid "%1.0f"
-msgstr "%1.0f"
+#: e_mod_config.c:44
+msgid "Flame Configuration"
+msgstr "Konfigurajxo de Flamoj"
 
-#: e_mod_main.c:226
-msgid "Configuration"
-msgstr "Konfiguraĵo"
+#: e_mod_config.c:89 e_mod_config.c:172
+msgid "Flame Color"
+msgstr "Koloro de Flamoj"
+
+#: e_mod_config.c:91
+msgid "Gold"
+msgstr "Oro"
+
+#: e_mod_config.c:93
+msgid "Fire"
+msgstr "Fajro"
+
+#: e_mod_config.c:95
+msgid "Plasma"
+msgstr ""
+
+#: e_mod_config.c:97
+msgid "Matrix"
+msgstr "Matrico"
+
+#: e_mod_config.c:99
+msgid "Ice"
+msgstr "Glacio"
+
+#: e_mod_config.c:101
+msgid "White"
+msgstr "Blanko"
+
+#: e_mod_config.c:103
+msgid "Custom"
+msgstr "Propra"
+
+#: e_mod_config.c:174
+msgid "Red Amount"
+msgstr ""
+
+#: e_mod_config.c:181
+msgid "Blue Amount"
+msgstr ""
+
+#: e_mod_config.c:188
+msgid "Green Amount"
+msgstr ""
+
+#: e_mod_main.c:97
+msgid "Enlightenment Flame Module"
+msgstr "\"Enlightenment-a Flamo\" Modulo"
+
+#: e_mod_main.c:98
+msgid "A simple module to display flames."
+msgstr "Simpla modulo por vidigi flamojn."
 

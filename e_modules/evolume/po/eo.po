@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eo\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 19:54+0200\n"
-"PO-Revision-Date: 2006-06-04 19:54+0200\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:51+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,15 +17,39 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: src/module/e_mod_cmdialog.c:59 src/module/e_mod_cdialog.c:44
-msgid "Mixer Face Configuration"
+#: src/module/e_mod_cdialog.c:108
+msgid "Mixers"
+msgstr "Miksiloj"
+
+#: src/module/e_mod_cdialog.c:118
+msgid "Configure"
+msgstr "Konfiguri"
+
+#: src/module/e_mod_cmdialog.c:122
+msgid "Mixer Configuration"
+msgstr "Miksila Konfigurajxo"
+
+#: src/module/e_mod_cmdialog.c:132
+msgid "Active"
+msgstr "Aktiva"
+
+#: src/module/e_mod_cmdialog.c:133
+msgid "Balance"
 msgstr ""
 
-#: src/module/e_mod_menu.c:159
-msgid "Configuration"
-msgstr "Konfiguraĵo"
+#: src/module/e_mod_main.c:77
+msgid "Enlightenment Evolume Module"
+msgstr "\"Enlightenment-a Miksilo\" Modulo"
 
-#: src/module/e_mod_menu.c:164
-msgid "Edit Mode"
-msgstr "Redaktomoduso"
+#: src/module/e_mod_main.c:78
+msgid "A simple module to give E17 a volume control for some mixers."
+msgstr "Simpla modulo por aldoni el E17 volumkontrolon por kelkaj miksiloj."
+
+#: src/module/e_mod_menu.c:145
+msgid "Faces"
+msgstr "Vizagxoj"
+
+#: src/module/e_mod_menu.c:150
+msgid "Remove Face"
+msgstr "Forigi Vizagxon"
 

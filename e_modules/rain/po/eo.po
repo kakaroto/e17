@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eo\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 20:00+0200\n"
-"PO-Revision-Date: 2006-06-04 20:01+0200\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:33+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +17,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:94
-msgid "General Settings"
-msgstr "Ĝeneral Agordoj"
+#: e_mod_config.c:40
+msgid "Rain Module"
+msgstr "Pluva Modulo"
+
+#: e_mod_config.c:98
+msgid "Show Clouds"
+msgstr "Vidigi Nubojn"
+
+#: e_mod_config.c:102
+msgid "Rain Density"
+msgstr "Pluva Dendeco"
+
+#: e_mod_config.c:104
+msgid "Sprinkle"
+msgstr "ĵetkovri"
+
+#: e_mod_config.c:106
+msgid "Drizzle"
+msgstr "Pluveti"
+
+#: e_mod_config.c:108
+msgid "Downpour"
+msgstr ""
+
+#: e_mod_main.c:67
+msgid "Enlightenment Rain Module"
+msgstr "\"Enlightenment-a Pluvo\" Modulo"
+
+#: e_mod_main.c:69
+msgid ""
+"This is a simple module to display some rain on the desktop.<br>It can "
+"display clouds too, if you like clouds."
+msgstr "Tiu estas simpla modulo por vidigi pluvon super labortablo.<br>Gxi povas vidigi nubojn ankaux, se vi sxatas nubojn."
 

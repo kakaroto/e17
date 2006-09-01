@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eo\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 20:36+0200\n"
-"PO-Revision-Date: 2006-06-04 20:36+0200\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 22:54+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,16 +17,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:137
-#, c-format
-msgid "%1.0f seconds"
-msgstr "%1.0f sekundoj"
+#: e_mod_config.c:45
+msgid "Wlan Configuration"
+msgstr "Konfigurajxo de Wlan"
 
-#: e_mod_main.c:207 e_mod_main.c:332
-msgid "Configuration"
-msgstr "Konfiguraĵo"
+#: e_mod_config.c:123
+msgid "General Settings"
+msgstr "Ĝeneralaj Alĝustigoj"
 
-#: e_mod_main.c:337
-msgid "Edit Mode"
-msgstr "Redaktomoduso"
+#: e_mod_config.c:124
+msgid "Show Text"
+msgstr "Vidigi Tekston"
+
+#: e_mod_config.c:126
+msgid "Show Graph"
+msgstr "Vidigi Grafon"
+
+#: e_mod_config.c:130
+msgid "Device Settings"
+msgstr "Aparataj Agordoj"
+
+#: e_mod_config.c:142
+msgid "Check Interval:"
+msgstr "Kontroli Intervalon"
+
+#: e_mod_main.c:85
+msgid "Enlightenment Wlan Monitor Module"
+msgstr "Modulo de Enlightenment-a Wlan kaŝaŭskulto"
+
+#: e_mod_main.c:86
+msgid "This module is used to monitor a wlan device."
+msgstr "Tiu modulo uzigxas por kaŝaŭskulti Wlan-aparaton"
 

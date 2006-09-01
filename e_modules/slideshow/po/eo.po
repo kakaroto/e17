@@ -1,14 +1,15 @@
 # translation of eo.po to
-# French translation for Slideshow module for Enlightenment DR0.17
 # This file is put in the public domain.
-# Chidambar 'ilLogict' Zinnoury <illogict@online.fr>, 2006.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-07 00:56+0100\n"
-"PO-Revision-Date: 2006-06-04 20:28+0200\n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:10+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,41 +17,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:47
+#: e_mod_config.c:39
 msgid "Slideshow Configuration"
-msgstr "Agordo de Diapozitivomontro"
+msgstr "Konfiguraĵo de \"Foliprezento\""
+
+#: e_mod_config.c:91
+msgid "Cycle Time"
+msgstr ""
 
 #: e_mod_config.c:93
-msgid "Cycle Time"
-msgstr "Daŭro"
-
-#: e_mod_config.c:94
 msgid "Disable Timer"
-msgstr "Neebligu  Tempoplanilon"
+msgstr "Neebligi Tempoplanilon"
 
 #: e_mod_config.c:96
 #, c-format
 msgid "%3.0f seconds"
-msgstr "%3.0f sekundoj"
+msgstr "%3.0f secondoj"
 
-#: e_mod_config.c:102
-msgid "Theme"
-msgstr "Etoso"
+#: e_mod_config.c:101
+msgid "Directory"
+msgstr "Dosierujo"
 
-#: e_mod_config.c:104
+#: e_mod_config.c:103
 msgid "Sub-directory to use for backgrounds"
-msgstr ""
+msgstr "Patraj dosierujoj por uzado de ekranfonoj"
 
-#: e_mod_config.c:106
-msgid "Leave blank for none"
-msgstr "Lasu malplene por nenio"
+#: e_mod_config.c:110
+msgid "Extra"
+msgstr "Ekstra"
 
-#: e_mod_main.c:148
+#: e_mod_config.c:111
+msgid "Randomize order"
+msgstr "Senvicigi ordon"
+
+#: e_mod_main.c:140
+msgid "Slideshow"
+msgstr "Foliprezento"
+
+#: e_mod_main.c:174
+msgid "Configuration"
+msgstr "Konfiguraĵo"
+
+#: e_mod_main.c:384
 msgid "Enlightenment Slide Show Module"
-msgstr "Modulo de Diapozitivomontroj de Enlightenment"
+msgstr "\"Enlightenment-a Foliprezento\" Modulo "
 
-#: e_mod_main.c:149
-#, fuzzy
+#: e_mod_main.c:385
 msgid "This module is VERY simple and is used to cycle desktop backgrounds"
-msgstr "Tiu modulo estas simplega kaj permesas havi diapozitivomontron de ekranfonoj."
+msgstr "Tiu modulo estas simplega kaj uzigxas por senhalte sxangxi ekranfonoj"
 

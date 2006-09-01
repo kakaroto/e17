@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Bulgarian translations for tclock package.
 # This file is put in the public domain.
-# Luchezar P. Petkov <>, 2006.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-27 03:28+0300\n"
-"PO-Revision-Date: 2006-06-04 20:33+0200\n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:00+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,55 +17,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:36
+#: e_mod_config.c:41
 msgid "Tclock Configuration"
-msgstr "Agordo de Tclock"
+msgstr "Konfiguraĵo de \"TClock\""
 
-#: e_mod_config.c:80
+#: e_mod_config.c:88
 msgid "Resolution"
 msgstr "Distingivo"
 
-#: e_mod_config.c:82
+#: e_mod_config.c:90
 msgid "1 Minute"
 msgstr "1 Minuto"
 
-#: e_mod_config.c:84
+#: e_mod_config.c:92
 msgid "1 Second"
 msgstr "1 Sekundo"
 
-#: e_mod_config.c:88
+#: e_mod_config.c:96
 msgid "Date"
 msgstr "Dato"
 
-#: e_mod_config.c:89
+#: e_mod_config.c:98
 msgid "Show Date"
-msgstr "Montru daton"
+msgstr "Vidigi Daton"
 
-#: e_mod_config.c:98 e_mod_config.c:112
+#: e_mod_config.c:108 e_mod_config.c:124
 msgid "Consult strftime(3) for format syntax"
 msgstr ""
 
-#: e_mod_config.c:102
+#: e_mod_config.c:112
 msgid "Time"
 msgstr "Tempo"
 
-#: e_mod_config.c:103
+#: e_mod_config.c:114
 msgid "Show Time"
-msgstr "Montru tempon"
+msgstr "Vidigi Tempon"
 
-#: e_mod_main.c:103
+#: e_mod_main.c:123
 msgid "TClock"
-msgstr "TClock"
+msgstr ""
 
-#: e_mod_main.c:137
+#: e_mod_main.c:159
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#: e_mod_main.c:406
-msgid "Displays a digital clock on the desktop"
-msgstr ""
-
-#: e_mod_main.c:406
+#: e_mod_main.c:424
 msgid "Simple Digital Clock"
-msgstr ""
+msgstr "Simpla Cxifera Horlogxo"
+
+#: e_mod_main.c:425
+msgid "Displays a digital clock on the desktop"
+msgstr "Vidigi cxiferan horlogxon en la labortablo"
 

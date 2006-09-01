@@ -1,14 +1,15 @@
 # translation of eo.po to
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eo\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 19:57+0200\n"
-"PO-Revision-Date: 2006-06-04 19:57+0200\n"
+"Project-Id-Version: eo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"PO-Revision-Date: 2006-08-30 23:34+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +17,83 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: src/e_mod_main.c:261
-msgid "Configuration"
-msgstr "Konfiguraĵo"
+#: src/e_mod_config.c:101
+msgid "Moon Configuration"
+msgstr "Luna Konfigurajxo"
+
+#: src/e_mod_config.c:157
+msgid "Display Settings"
+msgstr "Vidigaj Agordoj"
+
+#: src/e_mod_config.c:158
+msgid "Animated Clouds"
+msgstr "Animitaj Nuboj"
+
+#: src/e_mod_config.c:162
+msgid "Moon Phase Value"
+msgstr ""
+
+#: src/e_mod_config.c:164
+msgid "Show always"
+msgstr "Montru ĉiam"
+
+#: src/e_mod_config.c:166
+msgid "Show on mouse over"
+msgstr "Vidigi dum musa movado"
+
+#: src/e_mod_config.c:168
+msgid "Never show"
+msgstr "Neniam vidigi"
+
+#: src/e_mod_config.c:172
+msgid "Description"
+msgstr "Priskribo"
+
+#: src/e_mod_config.c:175
+msgid "Numerical"
+msgstr ""
+
+#: src/e_mod_main.c:126
+msgid "Moon Clock Module"
+msgstr ""
+
+#: src/e_mod_main.c:129
+msgid "Display current phase of the moon ala e16 E-MoonClock"
+msgstr ""
+
+#: src/e_mod_main.c:217
+msgid "Moon"
+msgstr "Luno"
+
+#: src/e_mod_main.c:495
+msgid "New Moon"
+msgstr "Novluno"
+
+#: src/e_mod_main.c:497
+msgid "Waxing Crescent"
+msgstr ""
+
+#: src/e_mod_main.c:499
+msgid "First Quarter"
+msgstr "Kreskanta kvaronluno"
+
+#: src/e_mod_main.c:501
+msgid "Waxing Gibbous"
+msgstr ""
+
+#: src/e_mod_main.c:503
+msgid "Full Moon"
+msgstr "Plenluno"
+
+#: src/e_mod_main.c:505
+msgid "Waning Gibbous"
+msgstr ""
+
+#: src/e_mod_main.c:507
+msgid "Last Quarter"
+msgstr "Malkreskanta kvaronluno"
+
+#: src/e_mod_main.c:509
+msgid "Waning Crescent"
+msgstr ""
 
