@@ -30,10 +30,7 @@ struct Etk_Engine
    void (*window_evas_position_get)(Etk_Window *window, int *x, int *y);
    void (*window_screen_position_get)(Etk_Window *window, int *x, int *y);
    void (*window_size_get)(Etk_Window *window, int *w, int *h);
-   /* ++ */
    void (*window_screen_geometry_get)(Etk_Window *window, int *x, int *y, int *w, int *h);
-   //void (*window_center_on_window)(Etk_Window *window_to_center, Etk_Window *window);
-   //void (*window_move_to_mouse)(Etk_Window *window);
    void (*window_modal_for_window)(Etk_Window *window_to_modal, Etk_Window *window);
    void (*window_iconified_set)(Etk_Window *window, Etk_Bool iconified);
    Etk_Bool (*window_iconified_get)(Etk_Window *window);
@@ -55,19 +52,14 @@ struct Etk_Engine
    Etk_Bool (*window_skip_taskbar_hint_get)(Etk_Window *window);
    void (*window_skip_pager_hint_set)(Etk_Window *window, Etk_Bool skip_pager_hint);
    Etk_Bool (*window_skip_pager_hint_get)(Etk_Window *window);
-   /*void (*window_dnd_aware_set)(Etk_Window *window, Etk_Bool on);
-   Etk_Bool (*window_dnd_aware_get)(Etk_Window *window);*/
    void (*window_pointer_set)(Etk_Window *window, Etk_Pointer_Type pointer_type);
    
    void (*popup_window_constructor)(Etk_Popup_Window *popup_window);
    void (*popup_window_popup_at_xy)(Etk_Popup_Window *popup_window, int x, int y);
-   //void (*popup_window_popup)(Etk_Popup_Window *popup_window);
    void (*popup_window_popdown)(Etk_Popup_Window *popup_window);
    Evas_List **(*popup_window_popped_get)(void);
    
-   /* ++ */
    void (*mouse_position_get)(int *x, int *y);
-   /* ++ */
    void (*mouse_screen_geometry_get)(int *x, int *y, int *w, int *h);
    
    void (*drag_constructor)(Etk_Drag *drag);
@@ -109,10 +101,7 @@ void etk_engine_window_size_min_set(Etk_Window *window, int w, int h);
 void etk_engine_window_evas_position_get(Etk_Window *window, int *x, int *y);
 void etk_engine_window_screen_position_get(Etk_Window *window, int *x, int *y);
 void etk_engine_window_size_get(Etk_Window *window, int *w, int *h);
-/* TODO: ++*/
-void etk_engine_window_root_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
-//void etk_engine_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window);
-//void etk_engine_window_move_to_mouse(Etk_Window *window);  
+void etk_engine_window_screen_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
 void etk_engine_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window);
 void etk_engine_window_iconified_set(Etk_Window *window, Etk_Bool iconified);
 Etk_Bool etk_engine_window_iconified_get(Etk_Window *window);
@@ -133,14 +122,11 @@ Etk_Bool etk_engine_window_shaped_get(Etk_Window *window);
 void etk_engine_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint);
 Etk_Bool etk_engine_window_skip_taskbar_hint_get(Etk_Window *window);
 void etk_engine_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
-Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window);/*
-void etk_engine_window_dnd_aware_set(Etk_Window *window, Etk_Bool on);
-Etk_Bool etk_engine_window_dnd_aware_get(Etk_Window *window);*/
+Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window);
 void etk_engine_window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type);
   
 void etk_engine_popup_window_constructor(Etk_Popup_Window *popup_window);
 void etk_engine_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y);
-//void etk_engine_popup_window_popup(Etk_Popup_Window *popup_window);
 void etk_engine_popup_window_popdown(Etk_Popup_Window *popup_window);
 Evas_List **etk_engine_popup_window_popped_get();
 

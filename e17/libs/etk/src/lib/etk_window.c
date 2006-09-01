@@ -236,7 +236,7 @@ void etk_window_move_to_mouse(Etk_Window *window)
 /**
  * @brief Makes a window modal for another window
  * @param window_to_modal the window to make modal
- * @param window the window on which @a window_to_modal will modal'ed on, or NULL
+ * @param window the window on which @a window_to_modal will modal'ed on, or NULL to disable the modal state
  */
 void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {

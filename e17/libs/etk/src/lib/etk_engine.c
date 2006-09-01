@@ -431,22 +431,11 @@ void etk_engine_window_screen_geometry_get(Etk_Window *window, int *x, int *y, i
    _engine->window_screen_geometry_get(window, x, y, w, h);
    
 }
-
-/* TODO: remove */
-/*void etk_engine_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window)
-{
-   if (!_engine || !_engine->window_center_on_window)
-      return;   
-   _engine->window_center_on_window(window_to_center, window);
-}
-
-void etk_engine_window_move_to_mouse(Etk_Window *window)
-{
-   if (!_engine || !_engine->window_move_to_mouse)
-      return;   
-   _engine->window_move_to_mouse(window);
-}*/
-
+/**
+ * @brief Calls the engines's method to make a window modal for another window
+ * @param window_to_modal the window to make modal
+ * @param window the window on which @a window_to_modal will modal'ed on, or NULL to disable the modal state
+ */
 void etk_engine_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
    if (!_engine || !_engine->window_modal_for_window)
@@ -454,6 +443,11 @@ void etk_engine_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window 
    _engine->window_modal_for_window(window_to_modal, window);
 }
 
+/**
+ * @brief Calls the engines's method to set whether or not a window is iconified
+ * @param window a window
+ * @param iconified ETK_TRUE to iconify the window, ETK_FALSE to de-iconify it
+ */
 void etk_engine_window_iconified_set(Etk_Window *window, Etk_Bool iconified)
 {
    if (!_engine || !_engine->window_iconified_set)
@@ -461,6 +455,11 @@ void etk_engine_window_iconified_set(Etk_Window *window, Etk_Bool iconified)
    _engine->window_iconified_set(window, iconified);
 }
 
+/**
+ * @brief Calls the engines's method to get whether or not a window is iconified
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is iconified, ETK_FALSE if not
+ */
 Etk_Bool etk_engine_window_iconified_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_iconified_get)
@@ -468,6 +467,11 @@ Etk_Bool etk_engine_window_iconified_get(Etk_Window *window)
    return _engine->window_iconified_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set whether or not a window is maximized
+ * @param window a window
+ * @param maximized ETK_TRUE to maximize the window, ETK_FALSE to unmaximize it
+ */
 void etk_engine_window_maximized_set(Etk_Window *window, Etk_Bool maximized)
 {
    if (!_engine || !_engine->window_maximized_set)
@@ -475,6 +479,11 @@ void etk_engine_window_maximized_set(Etk_Window *window, Etk_Bool maximized)
    _engine->window_maximized_set(window, maximized);
 }
 
+/**
+ * @brief Calls the engines's method to get whether or not a window is maximized
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is maximized, ETK_FALSE if not
+ */
 Etk_Bool etk_engine_window_maximized_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_maximized_get)
@@ -482,6 +491,11 @@ Etk_Bool etk_engine_window_maximized_get(Etk_Window *window)
    return _engine->window_maximized_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set whether or not a window is in fullscreen mode
+ * @param window a window
+ * @param fullscreen ETK_TRUE to place the window in the fullscreen state, ETK_FALSE to toggle off the fullscreen state
+ */
 void etk_engine_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen)
 {
    if (!_engine || !_engine->window_fullscreen_set)
@@ -489,6 +503,11 @@ void etk_engine_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen)
    _engine->window_fullscreen_set(window, fullscreen);
 }
 
+/**
+ * @brief Calls the engines's method to get whether a window is in fullscreen mode
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is in fullscreen mode, ETK_FALSE otherwise
+ */
 Etk_Bool etk_engine_window_fullscreen_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_fullscreen_get)
@@ -496,6 +515,10 @@ Etk_Bool etk_engine_window_fullscreen_get(Etk_Window *window)
    return _engine->window_fullscreen_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to raise a window. The window will be stacked above all the existing windows
+ * @param window the window to raise
+ */
 void etk_engine_window_raise(Etk_Window *window)
 {
    if (!_engine || !_engine->window_raise)
@@ -503,6 +526,10 @@ void etk_engine_window_raise(Etk_Window *window)
    _engine->window_raise(window);
 }
 
+/**
+ * @brief Calls the engines's method to lower a window. The window will be stacked below all the existing windows
+ * @param window the window to lower
+ */
 void etk_engine_window_lower(Etk_Window *window)
 {
    if (!_engine || !_engine->window_lower)
@@ -510,6 +537,12 @@ void etk_engine_window_lower(Etk_Window *window)
    _engine->window_lower(window);
 }
 
+/**
+ * @brief Calls the engines's method to set whether a window is sticky. A sticky window is a window that appears on all
+ * the virtual desktops
+ * @param window a window
+ * @param sticky ETK_TRUE to make the window sticky, ETK_FALSE otherwise
+ */
 void etk_engine_window_sticky_set(Etk_Window *window, Etk_Bool sticky)
 {
    if (!_engine || !_engine->window_sticky_set)
@@ -517,6 +550,12 @@ void etk_engine_window_sticky_set(Etk_Window *window, Etk_Bool sticky)
    _engine->window_sticky_set(window, sticky);
 }
 
+/**
+ * @brief Calls the engines's method to get whether a window is sticky
+ * the virtual desktops
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is sticky, ETK_FALSE otherwise
+ */
 Etk_Bool etk_engine_window_sticky_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_sticky_get)
@@ -524,6 +563,11 @@ Etk_Bool etk_engine_window_sticky_get(Etk_Window *window)
    return _engine->window_sticky_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set whether a window is focused or not
+ * @param window a window
+ * @param focused ETK_TRUE to focus the window, ETK_FALSE to unfocus it
+ */
 void etk_engine_window_focused_set(Etk_Window *window, Etk_Bool focused)
 {
    if (!_engine || !_engine->window_focused_set)
@@ -531,6 +575,11 @@ void etk_engine_window_focused_set(Etk_Window *window, Etk_Bool focused)
    _engine->window_focused_set(window, focused);
 }
 
+/**
+ * @brief Calls the engines's method to get whether a window is focused or not
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is focused, ETK_FALSE otherwise
+ */
 Etk_Bool etk_engine_window_focused_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_focused_get)
@@ -538,6 +587,11 @@ Etk_Bool etk_engine_window_focused_get(Etk_Window *window)
    return _engine->window_focused_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set whether the window should be decorated or not
+ * @param window a window
+ * @param decorated ETK_TRUE to make the window decorated, ETK_FALSE to make it undecorated
+ */
 void etk_engine_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
 {
    if (!_engine || !_engine->window_decorated_set)
@@ -545,6 +599,11 @@ void etk_engine_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
    _engine->window_decorated_set(window, decorated);
 }
 
+/**
+ * @brief Calls the engines's method to get whether a window is decorated or not
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is decorated, ETK_FALSE otherwise
+ */
 Etk_Bool etk_engine_window_decorated_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_decorated_get)
@@ -552,6 +611,11 @@ Etk_Bool etk_engine_window_decorated_get(Etk_Window *window)
    return _engine->window_decorated_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set whether the window is shaped or not. A shaped window can be non-rectangular
+ * @param window a window
+ * @param shaped ETK_TRUE to make the window shaped, ETK_FALSE to make it rectangular
+ */
 void etk_engine_window_shaped_set(Etk_Window *window, Etk_Bool shaped)
 {
    if (!_engine || !_engine->window_shaped_set)
@@ -559,6 +623,11 @@ void etk_engine_window_shaped_set(Etk_Window *window, Etk_Bool shaped)
    _engine->window_shaped_set(window, shaped);
 }
 
+/**
+ * @brief Calls the engines's method to get whether the window is shaped or not
+ * @param window a window
+ * @return Returns ETK_TRUE if the window is shaped, ETK_FALSE otherwise
+ */
 Etk_Bool etk_engine_window_shaped_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_shaped_get)
@@ -566,6 +635,11 @@ Etk_Bool etk_engine_window_shaped_get(Etk_Window *window)
    return _engine->window_shaped_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set whether or not the window should appear in the taskbar
+ * @param window a window
+ * @param skip_taskbar_hint ETK_TRUE to prevent the window from appearing in the taskbar, ETK_FALSE otherwise
+ */
 void etk_engine_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint)
 {
    if (!_engine || !_engine->window_skip_taskbar_hint_set)
@@ -573,6 +647,11 @@ void etk_engine_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_t
    _engine->window_skip_taskbar_hint_set(window, skip_taskbar_hint);
 }
 
+/**
+ * @brief Calls the engines's method to get whether or not the window appears in the taskbar
+ * @param window a window
+ * @return ETK_TRUE if the window does not appear in the taskbar, ETK_FALSE otherwise
+ */
 Etk_Bool etk_engine_window_skip_taskbar_hint_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_skip_taskbar_hint_get)
@@ -580,6 +659,11 @@ Etk_Bool etk_engine_window_skip_taskbar_hint_get(Etk_Window *window)
    return _engine->window_skip_taskbar_hint_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set whether or not the window should appear in the pager
+ * @param window a window
+ * @param skip_pager_hint ETK_TRUE to prevent the window from appearing in the pager, ETK_FALSE otherwise
+ */
 void etk_engine_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint)
 {
    if (!_engine || !_engine->window_skip_pager_hint_set)
@@ -587,6 +671,11 @@ void etk_engine_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pag
    _engine->window_skip_pager_hint_set(window, skip_pager_hint);
 }
 
+/**
+ * @brief Calls the engines's method to get whether or not the window appears in the pager
+ * @param window a window
+ * @return ETK_TRUE if the window does not appear in the pager, ETK_FALSE otherwise
+ */
 Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window)
 {
    if (!_engine || !_engine->window_skip_pager_hint_get)
@@ -594,6 +683,11 @@ Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window)
    return _engine->window_skip_pager_hint_get(window);
 }
 
+/**
+ * @brief Calls the engines's method to set the mouse pointer to use when the pointer is inside the window
+ * @param window a window
+ * @param pointer_type the type of mouse pointer to use
+ */
 void etk_engine_window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type)
 {
    if (!_engine || !_engine->window_pointer_set)
@@ -614,14 +708,6 @@ void etk_engine_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, 
       return;
    _engine->popup_window_popup_at_xy(popup_window, x, y);
 }
-
-/* TODO: remove */
-/*void etk_engine_popup_window_popup(Etk_Popup_Window *popup_window)
-{
-   if (!_engine || !_engine->popup_window_popup)
-      return;   
-   _engine->popup_window_popup(popup_window);
-}*/
 
 void etk_engine_popup_window_popdown(Etk_Popup_Window *popup_window)
 {
@@ -654,6 +740,13 @@ void etk_engine_mouse_position_get(int *x, int *y)
    return _engine->mouse_position_get(x, y);
 }
 
+/**
+ * @brief Calls the engines's method to get the geometry of the screen containing the mouse pointer
+ * @param x the location where to store x position of the screen
+ * @param y the location where to store y position of the screen
+ * @param w the location where to store the width of the screen
+ * @param h the location where to store the height of the screen
+ */
 void etk_engine_mouse_screen_geometry_get(int *x, int *y, int *w, int *h)
 {
    if (x)   *x = 0;
