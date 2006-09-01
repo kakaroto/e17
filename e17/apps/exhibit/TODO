@@ -9,12 +9,8 @@ o TODO:
 - Create window
 - Close window
 - menus
-  * release notes
-  
-  
-=======
+  * release notes    
 
->>>>>>> 1.15
 o DONE:
  ------
 + add monitor code to add / remove / reload images as they change on disk 
