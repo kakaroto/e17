@@ -6,8 +6,7 @@
 #include "Etk_Engine_Ecore_Evas_X11.h"
 
 /* Etk_Window engine data
- * we do another typedef to shorten the name for internal use
- */
+ * we do another typedef to shorten the name for internal use */
 typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
 
 /* General engine functions */
@@ -50,6 +49,8 @@ static Etk_Engine engine_info = {
    NULL, /* window_fullscreen_get */
    NULL, /* window_raise */
    NULL, /* window_lower */
+   NULL, /* window_stacking_set */
+   NULL, /* window_stacking_get */
    NULL, /* window_sticky_set */
    NULL, /* window_sticky_get */
    NULL, /* window_focused_set */
@@ -109,13 +110,12 @@ Etk_Engine *engine_open()
 static void _window_constructor(Etk_Window *window)
 {
    /* We _MUST_ initialize and create the ecore_evas and the x_window
-    * variables in the engine_data.
-    */
-   Etk_Engine_Window_Data *engine_data;
+    * variables in the engine_data. */
+   Etk_Engine_Window_Data *engine_data; 
 
    engine_data = malloc(sizeof(Etk_Engine_Window_Data));
    window->engine_data = engine_data;   
    ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
    engine_data->x_window = ecore_evas_software_x11_window_get(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas);
-   engine_info.super->window_constructor(window);   
+   engine_info.super->window_constructor(window);
 }

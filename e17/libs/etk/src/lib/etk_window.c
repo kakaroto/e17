@@ -238,6 +238,7 @@ void etk_window_move_to_mouse(Etk_Window *window)
  * @param window_to_modal the window to make modal
  * @param window the window on which @a window_to_modal will modal'ed on, or NULL to disable the modal state
  */
+/* TODO: grab the input */
 void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
    if (window_to_modal)
@@ -265,6 +266,30 @@ void etk_window_lower(Etk_Window *window)
    if (!window)
       return;
    etk_engine_window_lower(window);
+}
+
+/**
+ * @brief Sets the stacking layer of the window (normal, "always on top" or "always below")
+ * @param window a window
+ * @param stacking the stacking layer to use
+ */
+void etk_window_stacking_set(Etk_Window *window, Etk_Window_Stacking stacking)
+{
+   if (!window)
+      return;
+   etk_engine_window_stacking_set(window, stacking);
+}
+
+/**
+ * @brief Gets the stacking layer of the window
+ * @param window a window
+ * @return Returns the stacking layer of the window
+ */
+Etk_Window_Stacking etk_window_stacking_get(Etk_Window *window)
+{
+   if (!window)
+      return ETK_WINDOW_NORMAL;
+   return etk_engine_window_stacking_get(window);
 }
 
 /**

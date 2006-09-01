@@ -86,6 +86,8 @@ static Etk_Engine engine_info = {
    _window_fullscreen_get,
    _window_raise,
    _window_lower,
+   NULL, /* window_stacking_set */
+   NULL, /* window_stacking_get */
    _window_sticky_set,
    _window_sticky_get,
    _window_focused_set,

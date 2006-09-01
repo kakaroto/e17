@@ -538,6 +538,30 @@ void etk_engine_window_lower(Etk_Window *window)
 }
 
 /**
+ * @brief Calls the engines's method to set the stacking layer of the window
+ * @param window a window
+ * @param stacking the stacking layer to use
+ */
+void etk_engine_window_stacking_set(Etk_Window *window, Etk_Window_Stacking stacking)
+{
+   if (!_engine || !_engine->window_stacking_set)
+      return;   
+   _engine->window_stacking_set(window, stacking);
+}
+
+/**
+ * @brief Calls the engines's method to get the stacking layer of the window
+ * @param window a window
+ * @return Returns the stacking layer of the window
+ */
+Etk_Window_Stacking etk_engine_window_stacking_get(Etk_Window *window)
+{
+   if (!_engine || !_engine->window_stacking_get)
+      return ETK_WINDOW_NORMAL;   
+   return _engine->window_stacking_get(window);
+}
+
+/**
  * @brief Calls the engines's method to set whether a window is sticky. A sticky window is a window that appears on all
  * the virtual desktops
  * @param window a window
@@ -859,7 +883,9 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(window_fullscreen_set);
    INHERIT(window_fullscreen_get);
    INHERIT(window_raise);
-   INHERIT(window_lower);   
+   INHERIT(window_lower); 
+   INHERIT(window_stacking_set);
+   INHERIT(window_stacking_get);
    INHERIT(window_sticky_set);
    INHERIT(window_sticky_get);
    INHERIT(window_focused_set);

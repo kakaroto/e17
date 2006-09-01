@@ -4,6 +4,7 @@
 
 #include "Evas.h"
 #include "etk_toplevel_widget.h"
+#include "etk_window.h"
 #include "etk_types.h"
 
 struct Etk_Engine
@@ -39,7 +40,9 @@ struct Etk_Engine
    void (*window_fullscreen_set)(Etk_Window *window, Etk_Bool fullscreen);
    Etk_Bool (*window_fullscreen_get)(Etk_Window *window);
    void (*window_raise)(Etk_Window *window);
-   void (*window_lower)(Etk_Window *window);   
+   void (*window_lower)(Etk_Window *window);
+   void (*window_stacking_set)(Etk_Window *window, Etk_Window_Stacking stacking);
+   Etk_Window_Stacking (*window_stacking_get)(Etk_Window *window);
    void (*window_sticky_set)(Etk_Window *window, Etk_Bool sticky);
    Etk_Bool (*window_sticky_get)(Etk_Window *window);
    void (*window_focused_set)(Etk_Window *window, Etk_Bool focused);
@@ -110,7 +113,9 @@ Etk_Bool etk_engine_window_maximized_get(Etk_Window *window);
 void etk_engine_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen);
 Etk_Bool etk_engine_window_fullscreen_get(Etk_Window *window);
 void etk_engine_window_raise(Etk_Window *window);
-void etk_engine_window_lower(Etk_Window *window);    
+void etk_engine_window_lower(Etk_Window *window);
+void etk_engine_window_stacking_set(Etk_Window *window, Etk_Window_Stacking stacking);
+Etk_Window_Stacking etk_engine_window_stacking_get(Etk_Window *window);
 void etk_engine_window_sticky_set(Etk_Window *window, Etk_Bool on);
 Etk_Bool etk_engine_window_sticky_get(Etk_Window *window);
 void etk_engine_window_focused_set(Etk_Window *window, Etk_Bool focused);

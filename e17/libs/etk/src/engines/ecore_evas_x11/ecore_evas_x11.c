@@ -13,20 +13,7 @@
 /* Engine specific data for Etk_Window
  * We do this to shorten the name for internal use */
 typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
-static Ecore_Event_Handler *_window_property_handler = NULL;
-static int _window_property_cb(void *data, int ev_type, void *ev);
 
-/* Engine specific data for Etk_Popup_Window */
-static Ecore_X_Window _etk_popup_window_input_window = 0;
-static Ecore_Event_Handler *_popup_window_key_down_handler = NULL;
-static Ecore_Event_Handler *_popup_window_key_up_handler = NULL;
-static Ecore_Event_Handler *_popup_window_mouse_up_handler = NULL;
-static Ecore_Event_Handler *_popup_window_mouse_move_handler = NULL;
-static int _popup_window_popup_timestamp = 0;
-static int _popup_window_mouse_x = -100000;
-static int _popup_window_mouse_y = -100000;
-static Ecore_Timer *_popup_window_slide_timer = NULL;
-static Evas_List *_popup_window_popped_windows = NULL;
 
 /* General engine functions */
 Etk_Engine *engine_open();
@@ -39,6 +26,8 @@ static void _window_constructor(Etk_Window *window);
 static void _window_destructor(Etk_Window *window);
 static void _window_screen_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
 static void _window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window);
+static void _window_stacking_set(Etk_Window *window, Etk_Window_Stacking stacking);
+static Etk_Window_Stacking _window_stacking_get(Etk_Window *window);
 static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint);
 static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window);
 static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
@@ -60,21 +49,18 @@ static int _popup_window_key_up_cb(void *data, int type, void *event);
 static int _popup_window_mouse_move_cb(void *data, int type, void *event);
 static int _popup_window_mouse_up_cb(void *data, int type, void *event);
 
-/* Mouse */
+/* Mouse functions */
 static void _mouse_position_get(int *x, int *y);
 static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
 
-/* Etk_Drag */
+/* Etk_Drag functions*/
 static void _drag_constructor(Etk_Drag *drag);
 static void _drag_begin(Etk_Drag *drag);
-
-static Ecore_Event_Handler *_drag_mouse_move_handler;
-static Ecore_Event_Handler *_drag_mouse_up_handler;
 
 static int  _drag_mouse_up_cb(void *data, int type, void *event);
 static int  _drag_mouse_move_cb(void *data, int type, void *event);
 
-/* Etk Dnd */
+/* Etk_Dnd functions */
 static Etk_Bool _dnd_init();
 static void _dnd_shutdown();
 
@@ -87,6 +73,35 @@ static int _dnd_selection_handler(void *data, int type, void *event);
 static int _dnd_status_handler(void *data, int type, void *event);
 static int _dnd_finished_handler(void *data, int type, void *event);
 
+/* Etk_Clipboard functions */
+static void _clipboard_text_request(Etk_Widget *widget);
+static void _clipboard_text_set(Etk_Widget *widget, const char *text, int length);
+
+/* Etk_Selection functions */
+static void _selection_text_request(Etk_Widget *widget);
+static void _selection_text_set(Etk_Widget *widget, const char *text, int length);
+static void _selection_clear(void);
+
+/* Private functions */
+static int _window_property_cb(void *data, int ev_type, void *ev);
+
+/* Private vars */
+static Ecore_Event_Handler *_window_property_handler = NULL;
+
+static Ecore_X_Window _etk_popup_window_input_window = 0;
+static Ecore_Event_Handler *_popup_window_key_down_handler = NULL;
+static Ecore_Event_Handler *_popup_window_key_up_handler = NULL;
+static Ecore_Event_Handler *_popup_window_mouse_up_handler = NULL;
+static Ecore_Event_Handler *_popup_window_mouse_move_handler = NULL;
+static int _popup_window_popup_timestamp = 0;
+static int _popup_window_mouse_x = -100000;
+static int _popup_window_mouse_y = -100000;
+static Ecore_Timer *_popup_window_slide_timer = NULL;
+static Evas_List *_popup_window_popped_windows = NULL;
+
+static Ecore_Event_Handler *_drag_mouse_move_handler;
+static Ecore_Event_Handler *_drag_mouse_up_handler;
+
 extern Etk_Widget  *_etk_selection_widget;
 extern Etk_Widget  *_etk_drag_widget;
 static char       **_dnd_types          = NULL;
@@ -95,14 +110,6 @@ static Etk_Widget  *_dnd_widget         = NULL;
 static Evas_List   *_dnd_handlers       = NULL;
 static int          _dnd_widget_accepts = 0;
 
-/* Etk Clipboard functions */
-static void _clipboard_text_request(Etk_Widget *widget);
-static void _clipboard_text_set(Etk_Widget *widget, const char *text, int length);
-
-/* Etk Selection functions */
-static void _selection_text_request(Etk_Widget *widget);
-static void _selection_text_set(Etk_Widget *widget, const char *text, int length);
-static void _selection_clear(void);
 
 /* TODO: remove! */
 static Evas_List **_popup_window_popped_get()
@@ -144,6 +151,8 @@ static Etk_Engine engine_info = {
    NULL, /* window_fullscreen_get */
    NULL, /* window_raise */
    NULL, /* window_lower */
+   _window_stacking_set,
+   _window_stacking_get,
    NULL, /* window_sticky_set */
    NULL, /* window_sticky_get */
    NULL, /* window_focused_set */
@@ -211,9 +220,6 @@ static void _window_constructor(Etk_Window *window)
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;
-   if (!engine_data)
-      return;
-   
    ecore_x_dnd_aware_set(engine_data->x_window, 1);
    engine_info.super->window_constructor(window);
 }
@@ -265,33 +271,54 @@ static void _window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *wi
 {
    int x, y, w, h;
    int cw, ch;
-   Etk_Engine_Window_Data *engine_data;
-   Etk_Engine_Window_Data *engine_data2;   
+   Etk_Engine_Window_Data *engine_data;  
    
-   engine_data = window_to_modal->engine_data;
-   engine_data2 = window->engine_data;   
    if (!window_to_modal)
      return;
    
-   if (window_to_modal->wait_size_request)
+   engine_data = window_to_modal->engine_data;
+   
+   if (window)
    {
-      window_to_modal->modal = ETK_TRUE;
-      window_to_modal->modal_for_window = window;
-      if (window)
-	etk_object_weak_pointer_add(ETK_OBJECT(window), (void **)(&window_to_modal->modal_for_window));
+      Etk_Engine_Window_Data *engine_data2 = window->engine_data; 
+      Ecore_X_Window_State states[] = { ECORE_X_WINDOW_STATE_MODAL };
+      
+      ecore_x_icccm_transient_for_set(engine_data->x_window, engine_data2->x_window);
+      /* TODO: Should we get the previous state here?? */
+      ecore_x_netwm_window_state_set(engine_data->x_window, states, 1);
    }
-   else
-   {
-      if (window)
-      {
-	 Ecore_X_Window_State states[] = {ECORE_X_WINDOW_STATE_MODAL};
-	 
-	 ecore_x_icccm_transient_for_set(engine_data->x_window, engine_data2->x_window);
-	 ecore_x_netwm_window_state_set(engine_data->x_window, states, 1);
-      }
-   }
+   //TODO: else...
 }
 
+static void _window_stacking_set(Etk_Window *window, Etk_Window_Stacking stacking)
+{
+   Etk_Engine_Ecore_Evas_Window_Data *engine_data;
+   
+   engine_data = window->engine_data;
+   if (stacking == ETK_WINDOW_ABOVE)
+      ecore_evas_layer_set(engine_data->ecore_evas, ECORE_X_WINDOW_LAYER_ABOVE);
+   else if (stacking == ETK_WINDOW_BELOW)
+      ecore_evas_layer_set(engine_data->ecore_evas, ECORE_X_WINDOW_LAYER_BELOW);
+   else
+      ecore_evas_layer_set(engine_data->ecore_evas, ECORE_X_WINDOW_LAYER_NORMAL);
+}
+
+static Etk_Window_Stacking _window_stacking_get(Etk_Window *window)
+{
+   Etk_Engine_Ecore_Evas_Window_Data *engine_data;
+   int layer;
+   
+   engine_data = window->engine_data;
+   layer = ecore_evas_layer_get(engine_data->ecore_evas);
+   if (layer <= ECORE_X_WINDOW_LAYER_BELOW)
+      return ETK_WINDOW_BELOW;
+   else if (layer >= ECORE_X_WINDOW_LAYER_ABOVE)
+      return ETK_WINDOW_ABOVE;
+   else
+      return ETK_WINDOW_NORMAL;
+}
+
+/* TODO: maybe there is a better way to do this? */
 static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint)
 {
    Etk_Engine_Window_Data *engine_data;
@@ -330,6 +357,7 @@ static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_task
    etk_object_notify(ETK_OBJECT(window), "skip_taskbar");
 }
 
+/* TODO: maybe there is a better way to do this? */
 static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window)
 {
    unsigned int num_states, i;
@@ -355,6 +383,7 @@ static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window)
    return ETK_FALSE;   
 }
 
+/* TODO: maybe there is a better way to do this? */
 static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint)
 {
    Etk_Engine_Window_Data *engine_data;
@@ -393,6 +422,7 @@ static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_
    etk_object_notify(ETK_OBJECT(window), "skip_pager");
 }
 
+/* TODO: maybe there is a better way to do this? */
 static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window)
 {
    unsigned int num_states, i;
