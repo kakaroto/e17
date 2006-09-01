@@ -25,4 +25,15 @@ WriteMakefile(
     OBJECT            => '$(O_FILES)', 
 );
 
+sub MY::test_via_harness {
+    local $_ = shift()->MM::test_via_harness( @_ );
+    s/\bPERL_DL_NONLAZY=1 +//g;
+    return $_;
+}
+
+sub MY::test_via_script {
+    local $_ = shift()->MM::test_via_script( @_ );
+    s/\bPERL_DL_NON_LAZY=1 +//g;
+    return $_;
+}
 

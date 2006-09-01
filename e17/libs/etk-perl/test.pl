@@ -1,4 +1,5 @@
 use strict;
+BEGIN { $ENV{PERL_DL_NONLAZY} = 0 }
 use Etk;
 use Etk::Constants qw/:box/;
 
