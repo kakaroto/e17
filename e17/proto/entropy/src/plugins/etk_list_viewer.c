@@ -120,21 +120,27 @@ static int _entropy_etk_list_filename_compare_cb(Etk_Tree *tree, Etk_Tree_Row *r
 {
    gui_file *file1, *file2;
    int val;
+   int presort_folder;
    
    if (!tree || !row1 || !row2 || !col)
       return 0;
 
    file1 = ecore_hash_get(etk_list_viewer_row_hash, row1);
    file2 = ecore_hash_get(etk_list_viewer_row_hash, row2);
+
+   presort_folder = entropy_config_misc_is_set("general.presortfolders");
   
    if (file1 && file2) {
 	 val = strcasecmp(file1->file->filename, file2->file->filename);
 	 
-	 if ( !strcmp(file1->file->mime_type, "file/folder") && strcmp(file2->file->mime_type, "file/folder"))
-		 return -1;
-	 else if (!strcmp(file2->file->mime_type, "file/folder") && strcmp(file1->file->mime_type, "file/folder"))
-		 return 1;
-	 else 
+	 if (presort_folder) {
+		 if ( !strcmp(file1->file->mime_type, "file/folder") && strcmp(file2->file->mime_type, "file/folder"))
+			 return -1;
+		 else if (!strcmp(file2->file->mime_type, "file/folder") && strcmp(file1->file->mime_type, "file/folder"))
+			 return 1;
+		 else
+			 return val;
+	 } else 
 		 return val;
    } else {
 	   printf("Could not locate file!\n");

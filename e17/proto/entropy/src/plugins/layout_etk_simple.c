@@ -686,9 +686,11 @@ entropy_plugin_layout_create (entropy_core * core)
 	  if (entropy_config_misc_is_set("general.listviewer")) {
 		  gui->list_viewer->active=1;
 		  local_viewer_selected = 1;
+		  etk_widget_show(gui->list_viewer->gui_object);
 		  etk_box_append(ETK_BOX(gui->localshell), gui->list_viewer->gui_object, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	  } else {
 		   gui->list_viewer->active=0;
+		   etk_widget_show(gui->list_viewer->gui_object);
 	  }
    }
 
@@ -704,9 +706,11 @@ entropy_plugin_layout_create (entropy_core * core)
 	  if (entropy_config_misc_is_set("general.iconviewer")) {
 		  gui->iconbox_viewer->active=1;
 		  local_viewer_selected = 1;
+		  etk_widget_show(gui->iconbox_viewer->gui_object);
 		  etk_box_append(ETK_BOX(gui->localshell), gui->iconbox_viewer->gui_object, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	  } else {
 	  	gui->iconbox_viewer->active=0;
+		etk_widget_show(gui->iconbox_viewer->gui_object);
 	  }
    }
 
@@ -795,11 +799,17 @@ entropy_plugin_layout_create (entropy_core * core)
   menu_item = _entropy_etk_radio_item_new(_("List View (Alt-l)"), NULL, ETK_MENU_SHELL(menu));
   etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->list_viewer);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
+  if (entropy_config_misc_is_set("general.listviewer")) {
+	  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item), ETK_TRUE);
+  }
 
   
   menu_item = _entropy_etk_radio_item_new(_("Icon View (Alt-i)"), menu_item, ETK_MENU_SHELL(menu));
   etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->iconbox_viewer);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
+  if (entropy_config_misc_is_set("general.iconviewer")) {
+	  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item), ETK_TRUE);
+  }
 
 
   /*Debug menu*/
