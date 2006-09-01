@@ -783,7 +783,9 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_layout_tree_cb), layout);
 
   menu_item = _entropy_etk_menu_check_item_new(_("Trackback view"), ETK_MENU_SHELL(menu));
-  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item),1 );
+  if (entropy_config_misc_is_set("general.trackback")) {
+	etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item), ETK_TRUE);
+  }
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_layout_trackback_cb), layout);
 
 

@@ -14,9 +14,13 @@ typedef struct _Entropy_Etk_Options_Object {
 Entropy_Etk_Options_Object* entropy_etk_options_object_create(char* name) 
 {
 	Entropy_Etk_Options_Object* obj;
+	char* val;
 
 	obj = calloc(1, sizeof(Entropy_Etk_Options_Object));
 	obj->name = strdup(name);
+	if ( (val = entropy_config_misc_item_str_get(name))) {
+		obj->value = strdup(val);
+	}
 
 	ecore_hash_set(_entropy_global_options_hash, obj->name, obj);
 
@@ -97,9 +101,11 @@ void entropy_etk_options_dialog_close(Etk_Object* obj, void* data)
 		keys = ecore_hash_keys(_entropy_global_options_hash);
 		while ((key = ecore_list_remove_first(keys))) {
 			c_obj = ecore_hash_get(_entropy_global_options_hash, key);
-			printf("'%s' -> '%s'\n", key, c_obj->value);
-
-			entropy_config_misc_item_str_set(key,c_obj->value, ENTROPY_CONFIG_LOC_HASH);
+			
+			if (c_obj->value) {
+				printf("'%s' -> '%s'\n", key, c_obj->value);
+				entropy_config_misc_item_str_set(key,c_obj->value, ENTROPY_CONFIG_LOC_HASH);
+			}
 		}
 		ecore_list_destroy(keys);
 	}
@@ -117,6 +123,42 @@ void etk_options_dialog_slider_cb(Etk_Object* obj, double value, void* data)
 	
 }
 
+Etk_Widget* etk_options_dialog_checkbox_new(char* label, char* config_item)
+{
+	Etk_Widget* check;
+	
+        check = etk_check_button_new_with_label(label);
+	etk_signal_connect("toggled", ETK_OBJECT(check), 
+		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), config_item);
+
+	if (entropy_config_misc_is_set(config_item))
+		etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(check), ETK_TRUE);
+	else
+		etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(check), ETK_FALSE);
+
+	return check;
+}
+
+Etk_Widget* etk_options_dialog_radiobutton_new(char* label, char* config_item, Etk_Widget* from)
+{
+	Etk_Widget* radio;
+	
+        if (!from) 
+		radio = etk_radio_button_new_with_label(label,NULL);
+	else
+		radio = etk_radio_button_new_with_label_from_widget(label, ETK_RADIO_BUTTON(from));
+	
+	etk_signal_connect("toggled", ETK_OBJECT(radio), 
+		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), config_item);
+
+	if (entropy_config_misc_is_set(config_item))
+		etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(radio), ETK_TRUE);
+	else
+		etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(radio), ETK_FALSE);
+
+	return radio;
+}
+
 void entropy_etk_options_dialog_create()
 {
 	Etk_Widget* toolbar;
@@ -127,7 +169,6 @@ void entropy_etk_options_dialog_create()
 	Etk_Widget* ivbox;
 	Etk_Widget* iivbox;
 	Etk_Widget* radio;
-	Etk_Widget* check;
 	Etk_Widget* hbox;
 	Etk_Widget* slider;
 	Etk_Widget* label;
@@ -161,29 +202,24 @@ void entropy_etk_options_dialog_create()
 	      iivbox = etk_vbox_new(ETK_FALSE,0);
 	      etk_container_add(ETK_CONTAINER(iframe), iivbox);
 
-	      radio = etk_radio_button_new_with_label("List view", NULL);
-	      etk_box_append(ETK_BOX(iivbox), radio, ETK_BOX_START, ETK_BOX_NONE, 0);
-	      etk_signal_connect("toggled", ETK_OBJECT(radio), 
-		  ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.listviewer" );
-	      radio = etk_radio_button_new_with_label_from_widget("Icon view", ETK_RADIO_BUTTON(radio));
- 	      etk_box_append(ETK_BOX(iivbox), radio, ETK_BOX_START, ETK_BOX_NONE, 0);
-	      etk_signal_connect("toggled", ETK_OBJECT(radio), 
-		  ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.iconviewer" );
-	     
-           check = etk_check_button_new_with_label("Show trackback viewer");
-	   etk_box_append(ETK_BOX(ivbox), check, ETK_BOX_START, ETK_BOX_NONE, 0);
-	   etk_signal_connect("toggled", ETK_OBJECT(check), 
-		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.trackback");
-	      
-           check = etk_check_button_new_with_label("Sort folders before files");
-	   etk_box_append(ETK_BOX(ivbox), check, ETK_BOX_START, ETK_BOX_NONE, 0);
-	   etk_signal_connect("toggled", ETK_OBJECT(check), 
-		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.presortfolders");
-           check = etk_check_button_new_with_label("Show hidden and backup files");
-	   etk_box_append(ETK_BOX(ivbox), check, ETK_BOX_START, ETK_BOX_NONE, 0);
-	   etk_signal_connect("toggled", ETK_OBJECT(check), 
-		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.hiddenbackup");
+	   radio=etk_options_dialog_radiobutton_new("Icon view", "general.iconviewer", NULL);
+	   etk_box_append(ETK_BOX(iivbox),radio , ETK_BOX_START, ETK_BOX_NONE, 0);
+	   etk_box_append(ETK_BOX(iivbox), etk_options_dialog_radiobutton_new(
+			"List view", "general.listviewer", radio), ETK_BOX_START, ETK_BOX_NONE, 0);
+	   
+	   etk_box_append(ETK_BOX(ivbox), 
+			   etk_options_dialog_checkbox_new("Show trackback viewer", "general.trackback"), 
+			   ETK_BOX_START, ETK_BOX_NONE, 0); 
 
+   	   etk_box_append(ETK_BOX(ivbox), 
+			   etk_options_dialog_checkbox_new("Show folders before files", "general.presortfolders"), 
+			   ETK_BOX_START, ETK_BOX_NONE, 0); 
+	      
+           
+	   etk_box_append(ETK_BOX(ivbox), 
+			   etk_options_dialog_checkbox_new("Show hidden and backup files", "general.hiddenbackup"), 
+			   ETK_BOX_START, ETK_BOX_NONE, 0); 
+			   
 	   iframe = etk_frame_new("Icon View Settings");
 	   etk_box_append(ETK_BOX(ivbox), iframe, ETK_BOX_START, ETK_BOX_NONE, 0);
 	      iivbox = etk_vbox_new(ETK_FALSE,0);
