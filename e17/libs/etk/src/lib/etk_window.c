@@ -197,9 +197,25 @@ void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
  */
 void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window)
 {
+   int x, y, w, h;
+   int cw, ch;
+   
    if (!window_to_center)
       return;
-   etk_engine_window_center_on_window(window_to_center, window);
+   
+   if (window_to_center->wait_size_request)
+   {
+      window_to_center->center = ETK_TRUE;
+      window_to_center->center_on_window = window;
+      if (window)
+         etk_object_weak_pointer_add(ETK_OBJECT(window), (void **)(&window_to_center->center_on_window));
+   }
+   else
+   {
+      etk_engine_mouse_screen_geometry_get(&x, &y, &w, &h);
+      etk_window_geometry_get(window_to_center, NULL, NULL, &cw, &ch);
+      etk_window_move(window_to_center, x + (w - cw) / 2, y + (h - ch) / 2);
+   }
 }
 
 /**
@@ -208,15 +224,19 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
  */
 void etk_window_move_to_mouse(Etk_Window *window)
 {
+   int x, y;
+   
    if (!window)
       return;
-   etk_engine_window_move_to_mouse(window);
+   
+   etk_engine_mouse_position_get(&x, &y);
+   etk_window_move(window, x, y);
 }
 
 /**
  * @brief Makes a window modal for another window
  * @param window_to_modal the window to make modal
- * @param window the window on which @a window_to_modal will modal'ed on
+ * @param window the window on which @a window_to_modal will modal'ed on, or NULL
  */
 void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
@@ -453,26 +473,6 @@ void etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint
 Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
 {
    return etk_engine_window_skip_pager_hint_get(window);
-}
-
-/**
- * @brief Sets whether the window is dnd-aware (true by default)
- * @param window a window
- * @param on ETK_TRUE to set the window dnd-aware, ETK_FALSE otherwise
- */
-void etk_window_dnd_aware_set(Etk_Window *window, Etk_Bool on)
-{
-   etk_engine_window_dnd_aware_set(window, on);
-}
-
-/**
- * @brief Gets whether the window is dnd-aware
- * @param window a window
- * @return Returns ETK_TRUE if the window is dnd-aware, ETK_FALSE otherwise
- */
-Etk_Bool etk_window_dnd_aware_get(Etk_Window *window)
-{
-   return etk_engine_window_dnd_aware_get(window);
 }
 
 /**

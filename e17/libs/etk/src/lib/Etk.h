@@ -10,6 +10,7 @@ extern "C" {
 #endif
 
 #include "etk_argument.h"
+#include "etk_config.h"
 #include "etk_main.h"
 #include "etk_marshallers.h"
 #include "etk_object.h"
@@ -19,9 +20,8 @@ extern "C" {
 #include "etk_string.h"
 #include "etk_type.h"
 #include "etk_types.h"
-#include "etk_config.h"   
 #include "etk_utils.h"
-   
+
 #include "etk_alignment.h"
 #include "etk_bin.h"
 #include "etk_box.h"
@@ -76,7 +76,7 @@ extern "C" {
 #include "etk_viewport.h"
 #include "etk_widget.h"
 #include "etk_window.h"
-   
+
 #ifdef __cplusplus
 }
 #endif

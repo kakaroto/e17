@@ -1,14 +1,16 @@
 /** @file etk_engine.c */
+#include "etk_engine.h"
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 #include <dlfcn.h>
-
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
-#include <Evas.h>
-
-#include "etk_engine.h"
+#include "etk_object.h"
+#include "etk_window.h"
+#include "etk_popup_window.h"
+#include "etk_drag.h"
+#include "etk_widget.h"
 #include "etk_utils.h"
 #include "config.h"
 
@@ -35,9 +37,8 @@ static Evas_List *_etk_engines = NULL;
  
 /**
  * @internal
- * @brief Initializes the engine system
+ * @brief Initializes the engine subsystem
  * @return Returns ETK_TRUE on success, ETK_FALSE on failure
- * @warning You should not call it manually, it's called by etk_init()
  */
 Etk_Bool etk_engine_init()
 {
@@ -49,7 +50,7 @@ Etk_Bool etk_engine_init()
    
    files = ecore_file_ls(PACKAGE_LIB_DIR "/etk/engines");
    if (!files || (ecore_list_nodes(files) == 0))
-     return ETK_FALSE;
+      return ETK_FALSE;
    
    ecore_list_goto_first(files);
    while ((file = ecore_list_next(files)))
@@ -70,8 +71,7 @@ Etk_Bool etk_engine_init()
 
 /**
  * @internal
- * @brief Shutdowns the engine system
- * @warning You should not call it manually, it's called by etk_shutdown()
+ * @brief Shutdowns the engine subsystem
  */
 void etk_engine_shutdown()
 {
@@ -79,7 +79,8 @@ void etk_engine_shutdown()
    while (_loaded_engines)
    {
       Etk_Engine *engine;
-      void *(*engine_close)();   
+      void *(*engine_close)();
+      
       engine = _loaded_engines->data;
       _loaded_engines = evas_list_remove(_loaded_engines, engine);
       
@@ -122,6 +123,9 @@ Etk_Bool etk_engine_exists(const char *engine_name)
 {
    Evas_List *l;
    
+   if (!engine_name)
+      return ETK_FALSE;
+   
    for (l = _etk_engines; l; l = l->next)   
    {
       if (strcmp(l->data, engine_name) == 0)
@@ -132,8 +136,8 @@ Etk_Bool etk_engine_exists(const char *engine_name)
 }
 
 /**
- * @brief Gets the engine used by Etk
- * @return Returns the engine used by Etk or NULL if no engine is loaded yet
+ * @brief Gets the engine currently used by Etk
+ * @return Returns the engine currently used by Etk or NULL if no engine is loaded yet
  */
 Etk_Engine *etk_engine_get()
 {
@@ -145,7 +149,6 @@ Etk_Engine *etk_engine_get()
  * @brief Loads an engine. The loaded engine will automatically become the engine used by Etk
  * @param engine_name the name of the engine to load
  * @return Returns the loaded engine, or NULL if the engine could not be loaded
- * @warning You should not call this function yourself, etk_init() calls it automatically
  */
 Etk_Engine *etk_engine_load(const char *engine_name)
 {
@@ -161,7 +164,7 @@ Etk_Engine *etk_engine_load(const char *engine_name)
    
    if (!ecore_file_exists(filename))
    {
-      ETK_WARNING("Etk can not find requested engine!");
+      ETK_WARNING("Etk can not find the requested engine!");
       return NULL;
    }
    
@@ -202,7 +205,7 @@ Etk_Engine *etk_engine_load(const char *engine_name)
 }
 
 /**
- * @brief Makes the engine inherit from another exising engine: the methods of the base engine
+ * @brief Makes the engine inherit from another existing engine: the methods of the base engine
  * will be used by the inheriting engine
  * @param engine the engine which will inherit from the methods of the base engine
  * @param inherit_name the name of the engine from which @a engine will inherit
@@ -229,7 +232,7 @@ Etk_Bool etk_engine_inherit_from(Etk_Engine *engine, const char *inherit_name)
  **************************/
 
 /**
- * @brief Calls the engine's method to initialize a window
+ * @brief Calls the engine's method to create a window
  * @param window a window
  */
 void etk_engine_window_constructor(Etk_Window *window)
@@ -395,8 +398,8 @@ void etk_engine_window_screen_position_get(Etk_Window *window, int *x, int *y)
 /**
  * @brief Calls the engines's method to get the size of a window
  * @param window a window
- * @param x the location where to store the width of the window
- * @param y the location where to store the height of the window
+ * @param w the location where to store the width of the window
+ * @param h the location where to store the height of the window
  */
 void etk_engine_window_size_get(Etk_Window *window, int *w, int *h)
 {
@@ -408,7 +411,29 @@ void etk_engine_window_size_get(Etk_Window *window, int *w, int *h)
    _engine->window_size_get(window, w, h);
 }
 
-void etk_engine_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window)
+/**
+ * @brief Calls the engines's method to get the geometry of the screen containing @a window
+ * @param window a window
+ * @param x the location where to store x position of the screen
+ * @param y the location where to store y position of the screen
+ * @param w the location where to store the width of the screen
+ * @param h the location where to store the height of the screen
+ */
+void etk_engine_window_screen_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
+{
+   if (x)   *x = 0;
+   if (y)   *y = 0;
+   if (w)   *w = 0;
+   if (h)   *h = 0;
+   
+   if (!_engine || !_engine->window_screen_geometry_get)
+      return;
+   _engine->window_screen_geometry_get(window, x, y, w, h);
+   
+}
+
+/* TODO: remove */
+/*void etk_engine_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window)
 {
    if (!_engine || !_engine->window_center_on_window)
       return;   
@@ -420,7 +445,7 @@ void etk_engine_window_move_to_mouse(Etk_Window *window)
    if (!_engine || !_engine->window_move_to_mouse)
       return;   
    _engine->window_move_to_mouse(window);
-}
+}*/
 
 void etk_engine_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
@@ -569,20 +594,6 @@ Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window)
    return _engine->window_skip_pager_hint_get(window);
 }
 
-void etk_engine_window_dnd_aware_set(Etk_Window *window, Etk_Bool on)
-{
-   if (!_engine || !_engine->window_dnd_aware_set)
-      return;   
-   _engine->window_dnd_aware_set(window, on);
-}
-
-Etk_Bool etk_engine_window_dnd_aware_get(Etk_Window *window)
-{
-   if (!_engine || !_engine->window_dnd_aware_get)
-      return ETK_FALSE;   
-   return _engine->window_dnd_aware_get(window);
-}
-
 void etk_engine_window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type)
 {
    if (!_engine || !_engine->window_pointer_set)
@@ -604,12 +615,13 @@ void etk_engine_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, 
    _engine->popup_window_popup_at_xy(popup_window, x, y);
 }
 
-void etk_engine_popup_window_popup(Etk_Popup_Window *popup_window)
+/* TODO: remove */
+/*void etk_engine_popup_window_popup(Etk_Popup_Window *popup_window)
 {
    if (!_engine || !_engine->popup_window_popup)
       return;   
    _engine->popup_window_popup(popup_window);
-}
+}*/
 
 void etk_engine_popup_window_popdown(Etk_Popup_Window *popup_window)
 {
@@ -618,6 +630,7 @@ void etk_engine_popup_window_popdown(Etk_Popup_Window *popup_window)
    _engine->popup_window_popdown(popup_window);
 }
 
+/* TODO: remove?? */
 Evas_List **etk_engine_popup_window_popped_get()
 {
    if (!_engine || !_engine->popup_window_popped_get)
@@ -625,11 +638,39 @@ Evas_List **etk_engine_popup_window_popped_get()
    return _engine->popup_window_popped_get();
 }
 
+/**
+ * @brief Calls the engines's method to get the position of the mouse pointer, relative to the screen
+ * @param window a window
+ * @param x the location where to store the x position of the mouse pointer
+ * @param y the location where to store the y position of the mouse pointer
+ */
+void etk_engine_mouse_position_get(int *x, int *y)
+{
+   if (x)   *x = 0;
+   if (y)   *y = 0;
+   
+   if (!_engine || !_engine->mouse_position_get)
+      return;
+   return _engine->mouse_position_get(x, y);
+}
+
+void etk_engine_mouse_screen_geometry_get(int *x, int *y, int *w, int *h)
+{
+   if (x)   *x = 0;
+   if (y)   *y = 0;
+   if (w)   *w = 0;
+   if (h)   *h = 0;
+   
+   if (!_engine || !_engine->mouse_screen_geometry_get)
+      return;
+   return _engine->mouse_screen_geometry_get(x, y, w, h);
+}
+
 void etk_engine_drag_constructor(Etk_Drag *drag)
 {
    if (!_engine || !_engine->drag_constructor)
       return;
-   return _engine->drag_constructor(drag);   
+   return _engine->drag_constructor(drag);
 }
   
 void etk_engine_drag_begin(Etk_Drag *drag)
@@ -716,8 +757,7 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(window_evas_position_get);
    INHERIT(window_screen_position_get);
    INHERIT(window_size_get);
-   INHERIT(window_center_on_window);
-   INHERIT(window_move_to_mouse);
+   INHERIT(window_screen_geometry_get);
    INHERIT(window_modal_for_window);
    INHERIT(window_iconified_set);
    INHERIT(window_iconified_get);
@@ -739,15 +779,15 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(window_skip_taskbar_hint_get);
    INHERIT(window_skip_pager_hint_set);
    INHERIT(window_skip_pager_hint_get);
-   INHERIT(window_dnd_aware_set);
-   INHERIT(window_dnd_aware_get);
    INHERIT(window_pointer_set);
    
    INHERIT(popup_window_constructor);
    INHERIT(popup_window_popup_at_xy);
-   INHERIT(popup_window_popup);
    INHERIT(popup_window_popdown);
    INHERIT(popup_window_popped_get);
+   
+   INHERIT(mouse_position_get);
+   INHERIT(mouse_screen_geometry_get);
    
    INHERIT(drag_constructor);
    INHERIT(drag_begin);

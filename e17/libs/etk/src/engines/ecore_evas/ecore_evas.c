@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <Ecore_Evas.h>
-
-#include "etk_engine.h"
-#include "etk_utils.h"
-
+#include <Etk.h>
 #include "Etk_Engine_Ecore_Evas.h"
 
 typedef Etk_Engine_Ecore_Evas_Window_Data Etk_Engine_Window_Data;
@@ -79,8 +76,7 @@ static Etk_Engine engine_info = {
    _window_evas_position_get,
    _window_screen_position_get,
    _window_size_get,
-   NULL, /* window_center_on_window */
-   NULL, /* window_move_to_mouse */
+   NULL, /* window_screen_geometry_get */
    NULL, /* window_modal_for_window */
    _window_iconified_set,
    _window_iconified_get,
@@ -102,15 +98,15 @@ static Etk_Engine engine_info = {
    NULL, /* window_skip_taskbar_hint_get */
    NULL, /* window_skip_pager_hint_set */
    NULL, /* window_skip_pager_hint_get */
-   NULL, /* window_dnd_aware_set */
-   NULL, /* window_dnd_aware_get */
    NULL, /* window_pointer_set */
    
    NULL, /* popup_window_constructor */
    NULL, /* popup_window_popup_at_xy */
-   NULL, /* popup_window_popup */
    NULL, /* popup_window_popdown */
    NULL, /* popup_window_popped_get */
+   
+   NULL, /* mouse_position_get */
+   NULL, /* mouse_screen_geometry_get */
    
    NULL, /* drag_constructor */
    NULL, /* drag_begin */

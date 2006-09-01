@@ -28,6 +28,7 @@ etk_check_button.h \
 etk_clipboard.h \
 etk_colorpicker.h \
 etk_combobox.h \
+etk_config.h \
 etk_container.h \
 etk_dialog.h \
 etk_dnd.h \
@@ -83,8 +84,7 @@ etk_types.h \
 etk_utils.h \
 etk_viewport.h \
 etk_widget.h \
-etk_window.h \
-etk_config.h
+etk_window.h
 
 libetk_la_SOURCES = \
 etk_alignment.c \
@@ -98,6 +98,7 @@ etk_check_button.c \
 etk_clipboard.c \
 etk_colorpicker.c \
 etk_combobox.c \
+etk_config.c \
 etk_container.c \
 etk_dialog.c \
 etk_dnd.c \
@@ -153,7 +154,6 @@ etk_utils.c \
 etk_viewport.c \
 etk_widget.c \
 etk_window.c \
-etk_config.c \
 $(ETKHEADERS)
 
 installed_headersdir = $(prefix)/include/etk

@@ -6,20 +6,12 @@
 #include <Ecore_X.h>
 #include <Ecore_X_Cursor.h>
 #include <Ecore_X_Atoms.h>
-
-#include "etk_types.h"
-#include "etk_dnd.h"
-#include "etk_engine.h"
-#include "etk_utils.h"
-#include "etk_toplevel_widget.h"
-#include "etk_main.h"
-
+#include <Etk.h>
 #include "Etk_Engine_Ecore_Evas.h"
 #include "Etk_Engine_Ecore_Evas_X11.h"
 
 /* Engine specific data for Etk_Window
- * We do this to shorten the name for internal use
- */
+ * We do this to shorten the name for internal use */
 typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
 static Ecore_Event_Handler *_window_property_handler = NULL;
 static int _window_property_cb(void *data, int ev_type, void *ev);
@@ -42,66 +34,50 @@ Etk_Engine *engine_open();
 static Etk_Bool _engine_init();
 static void _engine_shutdown();
 
-/* Etk_Window functions */
+/* Etk_Window */
 static void _window_constructor(Etk_Window *window);
 static void _window_destructor(Etk_Window *window);
-static void _window_center_on_window(Etk_Window *window_to_center, Etk_Window *window);
-static void _window_move_to_mouse(Etk_Window *window);
+static void _window_screen_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
 static void _window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window);
 static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint);
 static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window);
 static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
 static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window);
-static void _window_dnd_aware_set(Etk_Window *window, Etk_Bool on);
-static Etk_Bool _window_dnd_aware_get(Etk_Window *window);
 static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type);
   
-/* Etk_Popup_Window functions */
+/* Etk_Popup_Window */
 static void _popup_window_constructor(Etk_Popup_Window *popup_window);
 static void _popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y);
-static void _popup_window_popup(Etk_Popup_Window *popup_window);
-static void _popup_window_popdown(Etk_Popup_Window *popup_window);  
-static Evas_List **_popup_window_popped_get();
+static void _popup_window_popdown(Etk_Popup_Window *popup_window);
 
-/* Etk_Popup_Window private functions */
 static Etk_Popup_Window_Screen_Edge _popup_window_over_screen_edge_get(Etk_Popup_Window *popup_window);
 static Etk_Popup_Window_Screen_Edge _popup_window_mouse_on_screen_edge_get();
 static void _popup_window_slide_timer_update(Etk_Popup_Window *popup_window);
 static int _popup_window_slide_timer_cb(void *data);
-  
-/* Etk_Popup_Window callbacks */
+
 static int _popup_window_key_down_cb(void *data, int type, void *event);
 static int _popup_window_key_up_cb(void *data, int type, void *event);
 static int _popup_window_mouse_move_cb(void *data, int type, void *event);
 static int _popup_window_mouse_up_cb(void *data, int type, void *event);
 
-/* Etk_Drag functions */
+/* Mouse */
+static void _mouse_position_get(int *x, int *y);
+static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
+
+/* Etk_Drag */
 static void _drag_constructor(Etk_Drag *drag);
 static void _drag_begin(Etk_Drag *drag);
 
-
-/* Etk_Drag event handlers */
 static Ecore_Event_Handler *_drag_mouse_move_handler;
 static Ecore_Event_Handler *_drag_mouse_up_handler;
 
-/* Etk_Drag callbacks */
 static int  _drag_mouse_up_cb(void *data, int type, void *event);
 static int  _drag_mouse_move_cb(void *data, int type, void *event);
 
-/* Etk Dnd functions */
+/* Etk Dnd */
 static Etk_Bool _dnd_init();
 static void _dnd_shutdown();
 
-/* Etk Dnd variables */
-extern Etk_Widget  *_etk_selection_widget;
-extern Etk_Widget  *_etk_drag_widget;
-static char       **_dnd_types          = NULL;
-static int          _dnd_types_num      = 0;
-static Etk_Widget  *_dnd_widget         = NULL;
-static Evas_List   *_dnd_handlers       = NULL;
-static int          _dnd_widget_accepts = 0;
-
-/* Etk Dnd callbacks */
 static void _dnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list);
 static int _dnd_enter_handler(void *data, int type, void *event);
 static int _dnd_position_handler(void *data, int type, void *event);
@@ -110,6 +86,14 @@ static int _dnd_leave_handler(void *data, int type, void *event);
 static int _dnd_selection_handler(void *data, int type, void *event);
 static int _dnd_status_handler(void *data, int type, void *event);
 static int _dnd_finished_handler(void *data, int type, void *event);
+
+extern Etk_Widget  *_etk_selection_widget;
+extern Etk_Widget  *_etk_drag_widget;
+static char       **_dnd_types          = NULL;
+static int          _dnd_types_num      = 0;
+static Etk_Widget  *_dnd_widget         = NULL;
+static Evas_List   *_dnd_handlers       = NULL;
+static int          _dnd_widget_accepts = 0;
 
 /* Etk Clipboard functions */
 static void _clipboard_text_request(Etk_Widget *widget);
@@ -120,13 +104,19 @@ static void _selection_text_request(Etk_Widget *widget);
 static void _selection_text_set(Etk_Widget *widget, const char *text, int length);
 static void _selection_clear(void);
 
+/* TODO: remove! */
+static Evas_List **_popup_window_popped_get()
+{
+   return &_popup_window_popped_windows;
+}
+
 static Etk_Engine engine_info = {
    
    NULL, /* engine specific data */
    NULL, /* engine name */
    NULL, /* super (parent) engine */
    NULL, /* DL handle */
-     
+   
    _engine_init,
    _engine_shutdown,
    
@@ -144,8 +134,7 @@ static Etk_Engine engine_info = {
    NULL, /* window_evas_position_get */
    NULL, /* window_screen_position_get */
    NULL, /* window_size_get */
-   _window_center_on_window,
-   _window_move_to_mouse,
+   _window_screen_geometry_get,
    _window_modal_for_window,     
    NULL, /* window_iconified_set */
    NULL, /* window_iconified_get */
@@ -167,29 +156,30 @@ static Etk_Engine engine_info = {
    _window_skip_taskbar_hint_get,
    _window_skip_pager_hint_set,
    _window_skip_pager_hint_get,
-   _window_dnd_aware_set,
-   _window_dnd_aware_get,
    _window_pointer_set,
 
    _popup_window_constructor,
    _popup_window_popup_at_xy,
-   _popup_window_popup,
    _popup_window_popdown,
    _popup_window_popped_get,
-     
+   
+   _mouse_position_get,
+   _mouse_screen_geometry_get,
+   
    _drag_constructor,
    _drag_begin,
-     
+   
    _dnd_init,
    _dnd_shutdown,
-     
+   
    _clipboard_text_request,
    _clipboard_text_set,
-     
+   
    _selection_text_request,
    _selection_text_set,
    _selection_clear
 };
+
 
 Etk_Engine *engine_open()
 {
@@ -217,18 +207,14 @@ static void _engine_shutdown()
 static void _window_constructor(Etk_Window *window)
 {
    /* We expect the engine that extends this one to initialize and create
-    * the engine_data, ecore_evas and to get us the x_window.
-    */   
+    * the engine_data, ecore_evas and to get us the x_window. */
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;
-   /* TODO: perhaps this should be able to return with an error somehow */
-   if(!engine_data)
-     return;
+   if (!engine_data)
+      return;
    
    ecore_x_dnd_aware_set(engine_data->x_window, 1);
-   /* TODO: We are not using this now */
-   /* _window_property_handler = ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY, _window_property_cb, window); */
    engine_info.super->window_constructor(window);
 }
 
@@ -239,102 +225,40 @@ static void _window_destructor(Etk_Window *window)
    engine_data = window->engine_data;
    engine_info.super->window_destructor(window);
    free(engine_data);
-   /* We are not using this now */
-   /* ecore_event_handler_del(_window_property_handler); */
    window->engine_data = NULL;
 }
 
-static void _window_center_on_window(Etk_Window *window_to_center, Etk_Window *window)
+static void _window_screen_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
 {
-   int x, y, w, h;
-   int cw, ch;
    Etk_Engine_Window_Data *engine_data;
-   
-   engine_data = window->engine_data;   
-   if (!window_to_center)
-     return;
-   
-   if (window_to_center->wait_size_request)
-   {
-      window_to_center->center = ETK_TRUE;
-      window_to_center->center_on_window = window;
-      if (window)
-         etk_object_weak_pointer_add(ETK_OBJECT(window), (void **)(&window_to_center->center_on_window));
-   }
-   else
-   {
-      if (window)
-      {
-         etk_window_geometry_get(window, &x, &y, &w, &h);
-         if (window->wait_size_request)
-         {
-            Etk_Size size_requisition;
-            
-            etk_widget_size_request(ETK_WIDGET(window), &size_requisition);
-            w = size_requisition.w;
-            h = size_requisition.h;
-         }
-      }
-
-      else
-      {
-         Ecore_X_Window root;
-	 int screens;
-	 
-	 screens = ecore_x_xinerama_screen_count_get();	 
-	 if (screens > 0)
-	 {
-	    int i;
-	    
-	    for (root = engine_data->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
-	    ecore_x_pointer_xy_get(root, &x, &y);
-	    for (i = 0; i < screens; i++)
-	    {	       
-	       int rx, ry, rw, rh;
-	       
-	       root = ecore_x_xinerama_screen_geometry_get(i, &rx, &ry, &rw, &rh);
-	       if (ETK_INSIDE(x, y, rx, ry, rw, rh))
-	       {
-		  x = rx; y = ry;
-		  w = rw; h = rh;
-		  goto END;
-	       }	       
-	    }
-	    goto DEFAULT;
-	 }
-	 else
-	 {
-DEFAULT:	    
-	    for (root = engine_data->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
-	    ecore_x_window_geometry_get(root, &x, &y, &w, &h);
-	 }
-         
-	 /* this is the case where we DONT have ecore_x and
-	  * our window is NULL, we cant do anything.
-	  */
-	 return;
-      }
-
-END:      
-      etk_window_geometry_get(window_to_center, NULL, NULL, &cw, &ch);
-      ecore_evas_move(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas, x + (w - cw) / 2, y + (h - ch) / 2);
-   }
-}
-
-static void _window_move_to_mouse(Etk_Window *window)
-{
-   int x, y;
    Ecore_X_Window root;
-   Etk_Engine_Window_Data *engine_data;
+   int num_screens;
+   int sx, sy, sw, sh;
+   int cx, cy, cw, ch;
+   int i;
    
-   engine_data = window->engine_data;   
+   engine_data = window->engine_data;
    
-   if (!window)
-     return;
+   num_screens = ecore_x_xinerama_screen_count_get();
+   etk_window_geometry_get(window, &cx, &cy, &cw, &ch);
+   cx += (cw / 2);
+   cy += (ch / 2);
+   
+   for (i = 0; i < num_screens; i++)
+   {
+      ecore_x_xinerama_screen_geometry_get(i, &sx, &sy, &sw, &sh);
+      if (ETK_INSIDE(cx, cy, sx, sy, sw, sh))
+      {
+         if (x)   *x = sx;
+         if (y)   *y = sy;
+         if (w)   *w = sw;
+         if (h)   *h = sh;
+         return;
+      }
+   }
    
    for (root = engine_data->x_window; ecore_x_window_parent_get(root) != 0; root = ecore_x_window_parent_get(root));
-   ecore_x_pointer_xy_get(root, &x, &y);
-   etk_window_move(window, x, y);
+   ecore_x_window_geometry_get(root, x, y, w, h);
 }
 
 static void _window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
@@ -362,9 +286,7 @@ static void _window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *wi
       {
 	 Ecore_X_Window_State states[] = {ECORE_X_WINDOW_STATE_MODAL};
 	 
-	 ecore_x_icccm_transient_for_set(engine_data->x_window,
-					 engine_data2->x_window);
-	 
+	 ecore_x_icccm_transient_for_set(engine_data->x_window, engine_data2->x_window);
 	 ecore_x_netwm_window_state_set(engine_data->x_window, states, 1);
       }
    }
@@ -496,20 +418,6 @@ static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window)
    return ETK_FALSE;
 }
 
-static void _window_dnd_aware_set(Etk_Window *window, Etk_Bool on)
-{
-   Etk_Engine_Window_Data *engine_data;
-   
-   engine_data = window->engine_data;   
-   ecore_x_dnd_aware_set(engine_data->x_window, on);
-}
-
-static Etk_Bool _window_dnd_aware_get(Etk_Window *window)
-{
-   /* TODO: we need to implement ecore_x_dnd_aware_get() */
-   return ETK_TRUE;
-}
-
 static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type)
 {
    int x_pointer_type = ECORE_X_CURSOR_LEFT_PTR;
@@ -628,14 +536,6 @@ static void _popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int
    _popup_window_slide_timer_update(popup_window);
 }
 
-static void _popup_window_popup(Etk_Popup_Window *popup_window)
-{
-   int x, y;
-   
-   ecore_x_pointer_last_xy_get(&x, &y);
-   etk_popup_window_popup_at_xy(popup_window, x + 1, y + 1);
-}
-
 static void _popup_window_popdown(Etk_Popup_Window *popup_window)
 {
    if (!_popup_window_popped_windows)
@@ -656,11 +556,6 @@ static void _popup_window_popdown(Etk_Popup_Window *popup_window)
       _popup_window_mouse_move_handler = NULL;
    }
 }
-
-static Evas_List **_popup_window_popped_get()
-{
-   return &_popup_window_popped_windows;
-}  
 
 /* Returns a flag incating on which edges of the screen the popup window is over */
 static Etk_Popup_Window_Screen_Edge _popup_window_over_screen_edge_get(Etk_Popup_Window *popup_window)
@@ -802,6 +697,40 @@ static int _popup_window_slide_timer_cb(void *data)
    }
    
    return 1;
+}
+
+static void _mouse_position_get(int *x, int *y)
+{
+   ecore_x_pointer_last_xy_get(x, y);
+}
+
+static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h)
+{
+   int num_screens;
+   int sx, sy, sw, sh;
+   int mx, my;
+   
+   num_screens = ecore_x_xinerama_screen_count_get();	 
+   if (num_screens > 0)
+   {
+      int i;
+      
+      ecore_x_pointer_last_xy_get(&mx, &my);
+      for (i = 0; i < num_screens; i++)
+      {
+         ecore_x_xinerama_screen_geometry_get(i, &sx, &sy, &sw, &sh);
+         if (ETK_INSIDE(mx, my, sx, sy, sw, sh))
+         {
+            if (x)   *x = sx;
+            if (y)   *y = sy;
+            if (w)   *w = sw;
+            if (h)   *h = sh;
+            return;
+         }
+      }
+   }
+   
+   ecore_x_window_geometry_get(ecore_x_window_root_first_get(), x, y, w, h);
 }
 
 static void _drag_constructor(Etk_Drag *drag)
