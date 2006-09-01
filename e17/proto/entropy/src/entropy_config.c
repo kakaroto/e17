@@ -7,7 +7,7 @@
 #include <Eet.h>
 #include <stdarg.h>
 
-#define ENTROPY_CONFIG_VERSION 14
+#define ENTROPY_CONFIG_VERSION 15
 
 static Entropy_Config* _Entropy_Config = NULL;
 
@@ -310,7 +310,8 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	char* data;
 	int size_ret;
 	int ok;
-
+	Evas_List* l;
+	Entropy_Config_Item* item;
 	Entropy_Config_Loaded* mimes;
 	
 	if (_Entropy_Config) return _Entropy_Config;
@@ -384,9 +385,6 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 		entropy_config_loaded_config_free();
 	}
 
-
-
-	
 	/*Load the eet config*/
 	conf_file = eet_open(_Entropy_Config->config_dir_and_file_eet, EET_FILE_MODE_READ);
 	if (conf_file) {
@@ -399,11 +397,21 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	}
 	/*------*/
 
+	/*Xlate misc list->hash*/
+	if (_Entropy_Config->Loaded_Config->Misc_Config)
+		ecore_hash_destroy(_Entropy_Config->Loaded_Config->Misc_Config);
 
+	_Entropy_Config->Loaded_Config->Misc_Config = ecore_hash_new(ecore_str_hash,ecore_str_compare);
+	
+	for (l =_Entropy_Config->Loaded_Config->Misc_Config_Load  ; l; ) {
+		item = l->data;
+		ecore_hash_set(_Entropy_Config->Loaded_Config->Misc_Config, item->name, item);
+		printf("Loaded misc '%s' -> '%s'\n", item->name, item->value);
+		
+		l=l->next;
+	}
 
-
-
-
+	
 	//Init ecore_config
 	ecore_config_init("entropy_config");
 	ecore_config_file_load(_Entropy_Config->config_dir_and_file);
@@ -469,11 +477,30 @@ void entropy_config_eet_config_save()
 	int size_ret;
 	int ok;
 	Entropy_Config* config;
+	char* key;
+	Ecore_List* keys;
+	Entropy_Config_Item* item;
 
 	config = entropy_core_get_core()->config;
 	
+	/*Xlate misc hash->list*/
+	if (config->Loaded_Config->Misc_Config_Load)
+		evas_list_free(config->Loaded_Config->Misc_Config_Load);
+
+	config->Loaded_Config->Misc_Config_Load = NULL;
+	keys = ecore_hash_keys(config->Loaded_Config->Misc_Config);
+	while ((key = ecore_list_remove_first(keys))) {
+		item = ecore_hash_get(config->Loaded_Config->Misc_Config,key);
+		
+		if (item && item->name && item->value) {
+			config->Loaded_Config->Misc_Config_Load = 
+				evas_list_append(config->Loaded_Config->Misc_Config_Load, item);
+		}
+	}
+	ecore_list_destroy(keys);
 	
-	conf_file = eet_open(config->config_dir_and_file_eet, EET_FILE_MODE_WRITE);
+
+		conf_file = eet_open(config->config_dir_and_file_eet, EET_FILE_MODE_WRITE);
 	if (conf_file) {
 		char buf[10];
 		/*Write the config version..*/

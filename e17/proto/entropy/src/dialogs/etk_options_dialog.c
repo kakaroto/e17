@@ -101,6 +101,7 @@ void entropy_etk_options_dialog_close(Etk_Object* obj, void* data)
 
 			entropy_config_misc_item_set_str(key,c_obj->value);
 		}
+		ecore_list_destroy(keys);
 	}
 }
 
