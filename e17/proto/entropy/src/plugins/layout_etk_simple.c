@@ -562,6 +562,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
   Evas_List* structures;
   Entropy_Config_Structure* structure;
+  int local_viewer_selected = 0;
 
 
   /*Entropy related init */
@@ -675,10 +676,16 @@ entropy_plugin_layout_create (entropy_core * core)
   if (local) {
 	  local_plugin_init =
 	      dlsym (local->dl_ref, "entropy_plugin_gui_instance_new");   
-	  instance = (*local_plugin_init)(core, layout,NULL);
-	  instance->plugin = local;
-	  gui->list_viewer = instance;
-	  etk_box_append(ETK_BOX(gui->localshell), instance->gui_object, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	  gui->list_viewer = (*local_plugin_init)(core, layout,NULL);
+	  gui->list_viewer->plugin = local;
+	  
+	  if (entropy_config_misc_is_set("general.listviewer")) {
+		  gui->list_viewer->active=1;
+		  local_viewer_selected = 1;
+		  etk_box_append(ETK_BOX(gui->localshell), gui->list_viewer->gui_object, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	  } else {
+		   gui->list_viewer->active=0;
+	  }
    }
 
    /*Initialise the icon viewer*/
@@ -689,7 +696,14 @@ entropy_plugin_layout_create (entropy_core * core)
 	      dlsym (local->dl_ref, "entropy_plugin_gui_instance_new");   
 	  gui->iconbox_viewer = (*local_plugin_init)(core, layout,NULL);
 	  gui->iconbox_viewer->plugin = local;
-	  gui->iconbox_viewer->active=0;
+
+	  if (entropy_config_misc_is_set("general.iconviewer")) {
+		  gui->iconbox_viewer->active=1;
+		  local_viewer_selected = 1;
+		  etk_box_append(ETK_BOX(gui->localshell), gui->iconbox_viewer->gui_object, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	  } else {
+	  	gui->iconbox_viewer->active=0;
+	  }
    }
 
 

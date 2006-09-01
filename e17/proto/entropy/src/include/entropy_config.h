@@ -56,7 +56,7 @@ Entropy_Config* entropy_config_init(entropy_core* core);
 void entropy_config_destroy(Entropy_Config* config);
 char* entropy_config_str_get(char* module, char* key);
 void entropy_config_str_set(char* module, char* key, char* value);
-
+int entropy_config_misc_is_set(char*);
 
 Evas_List* entropy_config_standard_structures_parse (entropy_gui_component_instance * instance, char *config);
 Entropy_Config_Structure* entropy_config_standard_structures_add (char *name, char *uri);
@@ -72,9 +72,11 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config);
 Entropy_Config_Structure* entropy_config_structure_new(char* name, char* uri);
 
 void entropy_config_items_init();
-void entropy_config_misc_item_set_str(char* item, char* value);
-char* entropy_config_misc_item_get_str(char* item);
+void entropy_config_misc_item_str_set(char* item, char* value, int loc);
+char* entropy_config_misc_item_str_get(char* item);
 
 #define ENTROPY_CONFIG_INT_UNDEFINED 65535
+#define ENTROPY_CONFIG_LOC_HASH 0 
+#define ENTROPY_CONFIG_LOC_LIST 1
 
 #endif

@@ -99,7 +99,7 @@ void entropy_etk_options_dialog_close(Etk_Object* obj, void* data)
 			c_obj = ecore_hash_get(_entropy_global_options_hash, key);
 			printf("'%s' -> '%s'\n", key, c_obj->value);
 
-			entropy_config_misc_item_set_str(key,c_obj->value);
+			entropy_config_misc_item_str_set(key,c_obj->value, ENTROPY_CONFIG_LOC_HASH);
 		}
 		ecore_list_destroy(keys);
 	}
@@ -170,7 +170,11 @@ void entropy_etk_options_dialog_create()
 	      etk_signal_connect("toggled", ETK_OBJECT(radio), 
 		  ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.iconviewer" );
 	     
-	   
+           check = etk_check_button_new_with_label("Show trackback viewer");
+	   etk_box_append(ETK_BOX(ivbox), check, ETK_BOX_START, ETK_BOX_NONE, 0);
+	   etk_signal_connect("toggled", ETK_OBJECT(check), 
+		ETK_CALLBACK(entropy_etk_options_radio_generic_cb), "general.trackback");
+	      
            check = etk_check_button_new_with_label("Sort folders before files");
 	   etk_box_append(ETK_BOX(ivbox), check, ETK_BOX_START, ETK_BOX_NONE, 0);
 	   etk_signal_connect("toggled", ETK_OBJECT(check), 
@@ -248,6 +252,7 @@ void entropy_etk_options_dialog_show()
 		
 		entropy_etk_options_object_create("general.listviewer");
 		entropy_etk_options_object_create("general.iconviewer");
+		entropy_etk_options_object_create("general.trackback");
 		entropy_etk_options_object_create("general.presortfolders");
 		entropy_etk_options_object_create("general.hiddenbackup");
 		entropy_etk_options_object_create("general.iconsize");

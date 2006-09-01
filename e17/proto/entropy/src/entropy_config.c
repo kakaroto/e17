@@ -7,7 +7,7 @@
 #include <Eet.h>
 #include <stdarg.h>
 
-#define ENTROPY_CONFIG_VERSION 15
+#define ENTROPY_CONFIG_VERSION 16
 
 static Entropy_Config* _Entropy_Config = NULL;
 
@@ -351,6 +351,7 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	if (stat(_Entropy_Config->config_dir_and_file_eet, &eetstat)) {
 		//Make the dir..
 
+		_Entropy_Config->Loaded_Config = mimes;
 		entropy_config_defaults_populate(mimes);
 
 		
@@ -380,8 +381,6 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 			eet_close(conf_file);
 		}
 
-
-		_Entropy_Config->Loaded_Config = mimes;
 		entropy_config_loaded_config_free();
 	}
 
@@ -398,8 +397,8 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	/*------*/
 
 	/*Xlate misc list->hash*/
-	if (_Entropy_Config->Loaded_Config->Misc_Config)
-		ecore_hash_destroy(_Entropy_Config->Loaded_Config->Misc_Config);
+	/*Init the misc hash*/
+	entropy_config_items_init();
 
 	_Entropy_Config->Loaded_Config->Misc_Config = ecore_hash_new(ecore_str_hash,ecore_str_compare);
 	
@@ -415,9 +414,6 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	//Init ecore_config
 	ecore_config_init("entropy_config");
 	ecore_config_file_load(_Entropy_Config->config_dir_and_file);
-
-	/*Init the misc hash*/
-	entropy_config_items_init();
 
 	return _Entropy_Config;
 }
@@ -495,6 +491,7 @@ void entropy_config_eet_config_save()
 		if (item && item->name && item->value) {
 			config->Loaded_Config->Misc_Config_Load = 
 				evas_list_append(config->Loaded_Config->Misc_Config_Load, item);
+			printf("CONFIG SAVE: Wrote '%s' for '%s'\n", item->name, item->value);
 		}
 	}
 	ecore_list_destroy(keys);
@@ -619,6 +616,15 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 		config->structures = evas_list_append(config->structures, 
 				entropy_config_structure_new("Virtual Folders", "vfolder:///")
 				);
+
+		/*Default settings*/
+		entropy_config_misc_item_str_set("general.listviewer", "1",ENTROPY_CONFIG_LOC_LIST);
+		entropy_config_misc_item_str_set("general.iconviewer", "0",ENTROPY_CONFIG_LOC_LIST);
+		entropy_config_misc_item_str_set("general.trackback", "1",ENTROPY_CONFIG_LOC_LIST);
+		entropy_config_misc_item_str_set("general.presortfolders", "1",ENTROPY_CONFIG_LOC_LIST);
+		entropy_config_misc_item_str_set("general.hiddenbackup", "1",ENTROPY_CONFIG_LOC_LIST);
+		entropy_config_misc_item_str_set("general.iconsize", "48",ENTROPY_CONFIG_LOC_LIST);
+
 }
 
 Evas_List *
@@ -664,27 +670,64 @@ entropy_config_standard_structures_create ()
 
 void entropy_config_items_init()
 {
+	if (_Entropy_Config->Loaded_Config->Misc_Config)
+		ecore_hash_destroy(_Entropy_Config->Loaded_Config->Misc_Config);
+
 	_Entropy_Config->Loaded_Config->Misc_Config = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 }
 
-void entropy_config_misc_item_set_str(char* item, char* value)
+void entropy_config_misc_item_str_set(char* item, char* value, int loc)
 {
 	Entropy_Config_Item* c_item;
-	
-	if (!(c_item=ecore_hash_get(_Entropy_Config->Loaded_Config->Misc_Config, item))) {
+
+	if (loc == ENTROPY_CONFIG_LOC_HASH) {
+		if (!(c_item=ecore_hash_get(_Entropy_Config->Loaded_Config->Misc_Config, item))) {
+			c_item = calloc(1,sizeof(Entropy_Config_Item));
+			c_item->name = strdup(item);
+			if (value) c_item->value = strdup(value);
+			
+			ecore_hash_set(_Entropy_Config->Loaded_Config->Misc_Config, c_item->name, c_item);
+			printf ("hash Set '%s' -> '%s'\n",c_item->name, c_item->value);
+		} else {
+			  if (c_item->value) free(c_item->value);
+			  if (value) 
+				  c_item->value = strdup(value);	
+			  else
+				  c_item->value = NULL;
+
+			  printf ("hash Set (existing) '%s' -> '%s'\n",c_item->name, c_item->value);
+		}
+	} else if (loc == ENTROPY_CONFIG_LOC_LIST) {
 		c_item = calloc(1,sizeof(Entropy_Config_Item));
 		c_item->name = strdup(item);
-		if (value) c_item->value = strdup(value);
-		ecore_hash_set(_Entropy_Config->Loaded_Config->Misc_Config, c_item->name, c_item);
+		if (value) c_item->value = strdup(value);		
 		
-	} else {
-		if (c_item->value) free(c_item->value);
-		if (value) c_item->value = strdup(c_item->value);
+		_Entropy_Config->Loaded_Config->Misc_Config_Load = evas_list_append(
+			_Entropy_Config->Loaded_Config->Misc_Config_Load, c_item);
+		printf ("Set '%s' -> '%s'\n",item, value);
 	}
-	printf ("Set '%s' -> '%s'\n",item, value);
 }
 
-char* entropy_config_misc_item_get_str(char* item)
+char* entropy_config_misc_item_str_get(char* item)
 {
-	return ecore_hash_get(_Entropy_Config->Loaded_Config->Misc_Config, item);
+	Entropy_Config_Item* res;
+	
+	printf("Looking for item for '%s'\n", item);
+	
+	res = (Entropy_Config_Item*)ecore_hash_get(_Entropy_Config->Loaded_Config->Misc_Config, item);
+	if (res) {
+		return res->value;
+	} else
+		return NULL;
+}
+
+int entropy_config_misc_is_set(char* item)
+{
+	char* res;
+
+	res = entropy_config_misc_item_str_get(item);
+	if (res && !strcmp(res, "1"))
+		return 1;
+	else 
+		return 0;
 }
