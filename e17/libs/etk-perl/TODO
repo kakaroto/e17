@@ -7,9 +7,6 @@ TODO:
 	- Fix Combobox append functions (waiting for some functionality in etk)
 
 BUGS:
-	- make test is defining PERL_DL_NONLAZY=1 for some reason and
-	  fails to load the library, for now you can run:
-	  $ perl -MExtUtils::Command::MM -e "test_harness(0, 'blib/lib', 'blib/arch')" t/Etk/*.t
 
 Pending:
 	-etk_canvas.h
