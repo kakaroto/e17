@@ -49,6 +49,7 @@ struct entropy_layout_gui
 
   Etk_Widget* popup;
   Etk_Widget* localshell;
+  Etk_Widget* trackback_shell;
   Ecore_Hash* progress_hash; /*Track progress events->dialogs*/
 
   Ecore_Hash* properties_request_hash; 
@@ -278,10 +279,11 @@ void entropy_etk_layout_trackback_cb(Etk_Object* obj, void* data)
 	entropy_gui_component_instance* instance = data;
 	entropy_layout_gui* gui = instance->data;
 
-	if (!etk_widget_is_visible(gui->trackback->gui_object)) {
-		etk_widget_show_all(gui->trackback->gui_object);
+	if (etk_container_is_child(ETK_CONTAINER(gui->trackback_shell), gui->trackback->gui_object) == ETK_FALSE) {
+		etk_box_append(ETK_BOX(gui->trackback_shell), gui->trackback->gui_object, ETK_BOX_START, ETK_BOX_NONE,0);
+		etk_widget_show_all(ETK_WIDGET(gui->trackback->gui_object));
 	} else {
-		etk_widget_hide(gui->trackback->gui_object);
+		etk_container_remove(ETK_CONTAINER(gui->trackback_shell), gui->trackback->gui_object);
 	}
 }
 
@@ -536,7 +538,6 @@ entropy_plugin_layout_create (entropy_core * core)
   Etk_Widget *window;
   entropy_layout_gui *gui;
   entropy_gui_component_instance *layout;
-  entropy_gui_component_instance* instance=  NULL;
 
   void *(*local_plugin_init) (entropy_core * core,
 				  entropy_gui_component_instance *,
@@ -653,6 +654,9 @@ entropy_plugin_layout_create (entropy_core * core)
   gui->localshell = etk_vbox_new(ETK_TRUE,0);
   etk_paned_child2_set(ETK_PANED(gui->paned), gui->localshell, ETK_TRUE);
 
+  /*Trackback container init*/
+  gui->trackback_shell = etk_vbox_new(ETK_TRUE,0);
+
   /*Popup init*/
    gui->popup = etk_menu_new();
    etk_signal_connect("row_clicked", ETK_OBJECT( gui->tree  ),
@@ -726,6 +730,10 @@ entropy_plugin_layout_create (entropy_core * core)
 	  gui->trackback = (*local_plugin_init)(core, layout,NULL);
 	  gui->trackback->plugin = trackback;
 	  gui->trackback->active=1;
+
+	  if (entropy_config_misc_is_set("general.trackback")) {
+		  etk_box_append(ETK_BOX(gui->trackback_shell), gui->trackback->gui_object, ETK_BOX_START, ETK_BOX_NONE, 0);
+	  }
   }
 
 
@@ -807,11 +815,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
 
   etk_box_append(ETK_BOX(vbox), menubar, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-  if (trackback) {
-	  etk_box_append(ETK_BOX(vbox), gui->trackback->gui_object, ETK_BOX_START, ETK_BOX_NONE, 0);
-  }
-  
+  etk_box_append(ETK_BOX(vbox), gui->trackback_shell, ETK_BOX_START, ETK_BOX_NONE, 0);
   etk_box_append(ETK_BOX(vbox), gui->paned, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
   /*---------------------------*/
 
