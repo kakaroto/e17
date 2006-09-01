@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libgen.h>
 #include <dirent.h>
 #include <limits.h>
 #include <sys/types.h>
@@ -100,6 +101,7 @@ struct _Ex_Options
    int default_view;   
    int default_sort;
    int default_sort_tmp;
+   int monitor_focus;
    
    int last_w;
    int last_h;
@@ -118,6 +120,7 @@ struct _Ex_Options_Dialog
    Etk_Widget *comments_visible;
    Etk_Widget *rotate_autosave;
    Etk_Widget *default_sort;
+   Etk_Widget *monitor_focus;
    Etk_Combobox_Item *sort_date;
    Etk_Combobox_Item *sort_size;
    Etk_Combobox_Item *sort_name;

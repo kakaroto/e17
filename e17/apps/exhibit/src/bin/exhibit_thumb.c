@@ -7,8 +7,8 @@ Evas_List *thumb_list;
 int
 _ex_thumb_exe_exit(void *data, int type, void *event)
 {
-   Ecore_Exe_Event_Del *ev;
-   Ex_Thumb              *thumb;
+   Ecore_Exe_Event_Del  *ev;
+   Ex_Thumb             *thumb;
    char                 *ext;
 
    ev = event;
@@ -31,10 +31,10 @@ _ex_thumb_exe_exit(void *data, int type, void *event)
 	     etk_tree_row_select(row);
 	     etk_tree_row_scroll_to(row, ETK_TRUE);	     
 	  }
-	free(thumb->image);
-	free(thumb->name);
+	E_FREE(thumb->image);
+	E_FREE(thumb->name);
 	epsilon_free(thumb->ep);
-	free(thumb);
+	E_FREE(thumb);
      }
 
    pid = -1;

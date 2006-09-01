@@ -106,6 +106,7 @@ _ex_options_init()
    CFG_OPTIONS_NEWI("lt", slide_interval, EET_T_DOUBLE);
    CFG_OPTIONS_NEWI("cv", comments_visible, EET_T_INT);
    CFG_OPTIONS_NEWI("ra", rotate_autosave, EET_T_INT);
+   CFG_OPTIONS_NEWI("mf", monitor_focus, EET_T_INT);
    CFG_OPTIONS_NEWI("dv", default_view, EET_T_INT);
    CFG_OPTIONS_NEWI("ds", default_sort, EET_T_INT);
    CFG_OPTIONS_NEWI("lw", last_w, EET_T_INT);
@@ -206,6 +207,7 @@ _ex_options_default(Exhibit *e)
    e->options->last_w           = EX_DEFAULT_WINDOW_WIDTH;
    e->options->last_h           = EX_DEFAULT_WINDOW_HEIGHT;
    e->options->rotate_autosave  = ETK_FALSE;
+   e->options->monitor_focus  = ETK_FALSE;
    e->version = _ex_options_version_parse(VERSION);        
 }
 
@@ -475,6 +477,12 @@ _ex_options_set()
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 
+   /* MONITOR FOCUS */
+   if (IS_SELECTED(dialog->monitor_focus))
+	e->options->monitor_focus = ETK_TRUE;
+   else 
+	e->options->monitor_focus = ETK_FALSE;
+
    /* RUN IN */
    APP_NEW(dialog->app1, e->options->app1);
    APP_NEW(dialog->app1_cmd, e->options->app1_cmd);
@@ -687,6 +695,17 @@ _ex_options_page_3_create()
    etk_signal_connect("active_item_changed", ETK_OBJECT(dialog->default_sort), 
 	 ETK_CALLBACK(_ex_options_combobox_active_item_changed_cb), NULL);
    
+   frame = etk_frame_new("Filesystem monitoring");
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), hbox);
+   
+   dialog->monitor_focus = etk_check_button_new_with_label("Autofocus new images added to your current dir");
+   etk_box_append(ETK_BOX(hbox), dialog->monitor_focus, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
+   if (e->options->monitor_focus)
+     etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->monitor_focus));
+
    if (e->options->default_sort == EX_SORT_BY_DATE)
       etk_combobox_active_item_set(ETK_COMBOBOX(dialog->default_sort), dialog->sort_date);
    else if (e->options->default_sort == EX_SORT_BY_SIZE)

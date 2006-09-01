@@ -10,6 +10,7 @@ extern Evas_List *thumb_list;
 Exhibit *e;
 Evas_List  *event_handlers;
 
+static void _ex_main_itree_add(const char *file, const char *selected_file);
 static void _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path);
 static int _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 static void _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
@@ -157,7 +158,6 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    char back[PATH_MAX];
    DIR *dir;
    struct dirent *dir_entry;
-   Etk_Tree_Row *row, *selected_row = NULL;
 
    chdir(e->cur_tab->dir);
    
@@ -195,7 +195,6 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	char image[PATH_MAX];
 	char imagereal[PATH_MAX];
 	struct stat st;
-	Epsilon *ep;
 
         /* Do not include hidden files */
 	if (dir_entry->d_name[0] == '.')
@@ -227,37 +226,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	if(!realpath(image, imagereal))
 	  snprintf(imagereal, PATH_MAX, "%s", image);
 
-	ep = epsilon_new(imagereal);
-	epsilon_thumb_size(ep, EPSILON_THUMB_NORMAL);
-
-	if(epsilon_exists(ep) == EPSILON_OK)
-	  {
-	     char *thumb;
-
-	     thumb = (char*)epsilon_thumb_file_get(ep);
-	     row = etk_tree_append(ETK_TREE(e->cur_tab->itree), e->cur_tab->icol, thumb, dir_entry->d_name, NULL);
-	     if(selected_file)	       		  		  
-	       if(!strcmp(selected_file, dir_entry->d_name))
-		 selected_row = row;		    	     
-	     E_FREE(thumb);
-	  }
-	else {
-	   Ex_Thumb *thumb;
-
-	   thumb = calloc(1, sizeof(Ex_Thumb));
-	   thumb->ep = ep;
-	   thumb->e = e;
-	   thumb->name = strdup(dir_entry->d_name);
-	   thumb_list = evas_list_append(thumb_list, thumb);
-	   if(selected_file)
-	     {
-		if(!strcmp(selected_file, dir_entry->d_name))
-		  thumb->selected = ETK_TRUE;
-	     }
-	   else
-	     thumb->selected = ETK_FALSE;
-	   if(pid == -1) _ex_thumb_generate();
-	}
+	_ex_main_itree_add(imagereal, selected_file);	
      }
 
    etk_tree_thaw(ETK_TREE(e->cur_tab->itree));
@@ -276,21 +245,8 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
      }
 
    if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
-     {
 	etk_tree_sort(ETK_TREE(e->cur_tab->dtree), _ex_main_dtree_compare_cb, 
 	      ETK_TRUE, e->cur_tab->dcol, NULL);
-     }
-
-   if(selected_row)
-     {
-	etk_tree_row_select(selected_row);
-	etk_tree_row_scroll_to(selected_row, ETK_TRUE);
-     }
-
-   /* Set the dir to the current dir at the end so we avoid
-      stepdown like ".." if we just call the refresh on
-      the listing like after a delete */
-   e->cur_tab->dir = strdup(".");
 
    if (!e->cur_tab->monitor)
      {
@@ -298,8 +254,66 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	e->cur_tab->monitor = ecore_file_monitor_add(e->cur_tab->cur_path, 
 	      _ex_main_monitor_dir, NULL);
      }
+
+   /* Set the dir to the current dir at the end so we avoid
+      stepdown like ".." if we just call the refresh on
+      the listing like after a delete */
+   e->cur_tab->dir = strdup(".");
    
    closedir(dir);
+}
+
+static void
+_ex_main_itree_add(const char *file, const char *selected_file)
+{
+   Epsilon *ep;
+   Etk_Tree_Row *row;
+   
+   if(!_ex_file_is_viewable(basename((char *) file)))
+     return;
+   
+   ep = epsilon_new(file);
+   epsilon_thumb_size(ep, EPSILON_THUMB_NORMAL);
+   
+   if(epsilon_exists(ep) == EPSILON_OK)
+     {
+	char *thumb;
+
+	thumb = (char*) epsilon_thumb_file_get(ep);
+	row = etk_tree_append(ETK_TREE(e->cur_tab->itree), e->cur_tab->icol, 
+	      thumb, basename((char *) file), NULL);
+
+	if (selected_file && e->options->monitor_focus)
+	  {
+	     if(!strcmp(selected_file, file))
+	       {
+		  etk_tree_row_select(row);
+		  etk_tree_row_scroll_to(row, ETK_TRUE);
+	       }
+	  }
+	
+	E_FREE(thumb);
+     }
+   else 
+     {
+	Ex_Thumb *thumb;
+	
+	thumb = calloc(1, sizeof(Ex_Thumb));
+	thumb->ep = ep;
+	thumb->e = e;
+	thumb->name = strdup(basename((char *) file));
+	thumb_list = evas_list_append(thumb_list, thumb);
+	if(selected_file && e->options->monitor_focus)
+	  {
+	     if(!strcmp(selected_file, file))
+	       thumb->selected = ETK_TRUE;
+	  }
+	else
+	  thumb->selected = ETK_FALSE;
+	
+	if(pid == -1) _ex_thumb_generate();
+     }
+
 }
 
 static void
@@ -335,8 +349,7 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
 	 break;
       case ECORE_FILE_EVENT_CREATED_FILE:
-	 etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
+	 _ex_main_itree_add(path, path);
 	 break;
       default:
 	 D(("Unknown ecore file event occured\n"));
@@ -942,9 +955,7 @@ main(int argc, char *argv[])
      fprintf(stderr, "WARNING: Exhibit could not set up its options files!\n"
 	             "         You will not be able to save your preferences.\n");
    event_handlers = evas_list_append(event_handlers,
-				     ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-							     _ex_thumb_exe_exit,
-							     NULL));
+	 ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _ex_thumb_exe_exit, NULL));
    
    epsilon_init();
    if(argc > 1)
