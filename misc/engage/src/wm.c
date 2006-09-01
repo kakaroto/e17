@@ -299,6 +299,7 @@ od_sync_clients(void *data)
     owd = NULL;
     if (!od_wm_ignored(*win)) {
       snprintf(buf, 32, "%8x", *win);
+printf("not ignored\n");
       if ((owd = evas_hash_find(clients_hash, buf))) {
         dirty = evas_list_remove(dirty, owd);
         if (!owd->minwin && od_wm_iconified(owd->id) && !options.ignore_min) {

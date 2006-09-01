@@ -208,16 +208,7 @@ od_icon_reload(OD_Icon * in)
         pic = NULL;
       }
     } else {
-      pic = edje_object_add(evas_object_evas_get(icon));
-      if (edje_object_file_set(pic, icon_file, "icon") > 0 ||
-          edje_object_file_set(pic, path, "Unknown") > 0) {
-#if 0
-        fprintf(stderr, "Didn't Find icon part for %s\n", name);
-#endif
-      } else {
-        evas_object_del(pic);
-        pic = NULL;
-      }
+      pic = e_app_icon_add(evas_object_evas_get(icon), in->a);
     }
 
     if (!pic) {
@@ -238,6 +229,7 @@ od_icon_reload(OD_Icon * in)
     evas_object_show(pic);
     if (edje_object_part_exists(icon, "EngageIcon")) {
       edje_object_part_swallow(icon, "EngageIcon", pic);
+      evas_object_pass_events_set(pic, 1);
     } else {
       evas_object_del(pic);
       in->pic = NULL;
@@ -267,6 +259,7 @@ od_icon_new(E_App *app, char *name_override, char *class_override, int type)
 
   ret = (OD_Icon *) malloc(sizeof(OD_Icon));
   memset(ret, 0, sizeof(OD_Icon));
+  ret->a = app;
   if (app->win_class) 
     ret->winclass = strdup(class_override ? class_override : app->win_class);
   ret->name = strdup(name_override ? name_override : app->name);

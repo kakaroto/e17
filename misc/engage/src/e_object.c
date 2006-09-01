@@ -1,23 +1,11 @@
-#include "e.h"
-
-/* TODO List:
- * 
- * * fix a lot of parts of e17's code to use e_object_del NOT e_object_unref.
- *   there is a subtle difference. unref means u had a reference and you stop
- *   referencing the object - thats ALL. if you created it and now literally
- *   want to destroy it - del is the way to go. there is a separate handler for
- *   this so on del it can go and clean up objects that may reference this one
- *   etc.
- * 
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
+#include "e.h"
 
 /* yes - i know. glibc specific... but i like being able to do my own */
 /* backtraces! NB: you need CFLAGS="-rdynamic -g" LDFLAGS="-rdynamic -g" */
 #ifdef OBJECT_PARANOIA_CHECK
-#include <execinfo.h>
-#include <stdio.h>
-#include <signal.h>
-#include <setjmp.h>
 
 /* local subsystem functions */
 static void _e_object_segv(int sig);
@@ -27,79 +15,101 @@ static sigjmp_buf _e_object_segv_buf;
 #endif
 
 /* externally accessible functions */
-void *
-e_object_alloc(int size, E_Object_Cleanup_Func cleanup_func)
+EAPI void *
+e_object_alloc(int size, int type, E_Object_Cleanup_Func cleanup_func)
 {
    E_Object *obj;
    
    obj = calloc(1, size);
    if (!obj) return NULL;
    obj->magic = E_OBJECT_MAGIC;
+   obj->type = type;
    obj->references   = 1;
    obj->cleanup_func = cleanup_func;
    return obj;
 }
 
-void
+EAPI void
 e_object_del(E_Object *obj)
 {
    E_OBJECT_CHECK(obj);
-   obj->deleted = 1;
+   if (obj->deleted) return;
+   if (obj->del_att_func) obj->del_att_func(obj);
    if (obj->del_func) obj->del_func(obj);
+   obj->deleted = 1;
    e_object_unref(obj);
 }
 
-int
-e_object_del_get(E_Object *obj)
+EAPI int
+e_object_is_del(E_Object *obj)
 {
    E_OBJECT_CHECK_RETURN(obj, 1);
    return obj->deleted;
 }
 
-void
+EAPI void
 e_object_del_func_set(E_Object *obj, E_Object_Cleanup_Func del_func)
 {
    E_OBJECT_CHECK(obj);
    obj->del_func = del_func;
 }
 
-void
+EAPI void
+e_object_type_set(E_Object *obj, int type)
+{
+   E_OBJECT_CHECK(obj);
+   obj->type = type;
+}
+
+EAPI void
 e_object_free(E_Object *obj)
 {
    E_OBJECT_CHECK(obj);
-   if (obj->func) obj->func(obj);
-   obj->magic = E_OBJECT_MAGIC_FREED;
+/*   
+   if (obj->crumbs)
+     {
+	printf("EEEK obj type %x has crumbs still! ->\n", obj->type);
+	e_object_breadcrumb_debug(obj);
+     }
+ */
+   if (obj->free_att_func) obj->free_att_func(obj);
+// FIXME: although this is good - if during cleanup the cleanup func calls
+// other generic funcs to do cleanups on the same object... we get bitching.
+// disable for now (the final free of the struct should probably happen after
+// the cleanup func and be done byt he object system - set the magic after
+// cleanup :)  
+//   obj->magic = E_OBJECT_MAGIC_FREED;
    obj->cleanup_func(obj);
 }
 
-int
+EAPI int
 e_object_ref(E_Object *obj)
 {
-   E_OBJECT_CHECK(obj);
+   E_OBJECT_CHECK_RETURN(obj, -1);
    obj->references++;
    return obj->references;
 }
 
-int
+EAPI int
 e_object_unref(E_Object *obj)
 {
    int ref;
    
-   E_OBJECT_CHECK(obj);
+   E_OBJECT_CHECK_RETURN(obj, -1);
    obj->references--;
    ref = obj->references;
-   if (obj->references <= 0) e_object_free(obj);
+   if (obj->references == 0) e_object_free(obj);
    return ref;
 }
 
-int
+EAPI int
 e_object_ref_get(E_Object *obj)
 {
    E_OBJECT_CHECK_RETURN(obj, 0);
    return obj->references;
 }
 
-int
+EAPI int
 e_object_error(E_Object *obj)
 {
 #ifdef OBJECT_PARANOIA_CHECK   
@@ -183,6 +193,18 @@ e_object_error(E_Object *obj)
 			"%s",
 			obj, magic,
 			bt);
+	     else if (obj->references < 0)
+	       snprintf(buf, sizeof(buf),
+			"Object [%p] has negative references (%i).\n"
+			"%s",
+			obj, obj->references,
+			bt);
+	     else if (obj->references > 100)
+	       snprintf(buf, sizeof(buf),
+			"Object [%p] has unusually high reference count (%i).\n"
+			"%s",
+			obj, obj->references,
+			bt);
 	     /* it's all ok! */
 	     else
 	       {
@@ -199,26 +221,69 @@ e_object_error(E_Object *obj)
 #endif   
 }
 
-void
+EAPI void
 e_object_data_set(E_Object *obj, void *data)
 {
    E_OBJECT_CHECK(obj);
    obj->data = data;
 }
 
-void *
+EAPI void *
 e_object_data_get(E_Object *obj)
 {
    E_OBJECT_CHECK_RETURN(obj, NULL);
    return obj->data;
 }
 
-void
+EAPI void
 e_object_free_attach_func_set(E_Object *obj, void (*func) (void *obj))
 {
    E_OBJECT_CHECK(obj);
-   obj->func = func;
+   obj->free_att_func = func;
 }
+
+EAPI void
+e_object_del_attach_func_set(E_Object *obj, void (*func) (void *obj))
+{
+   E_OBJECT_CHECK(obj);
+   obj->del_att_func = func;
+}
+
+/*
+void
+e_object_breadcrumb_add(E_Object *obj, char *crumb)
+{
+   E_OBJECT_CHECK(obj);
+   obj->crumbs = evas_list_append(obj->crumbs, strdup(crumb));
+}
+
+void
+e_object_breadcrumb_del(E_Object *obj, char *crumb)
+{
+   Evas_List *l;
+   
+   E_OBJECT_CHECK(obj);
+   for (l = obj->crumbs; l; l = l->next)
+     {
+	if (!strcmp(crumb, l->data))
+	  {
+	     free(l->data);
+	     obj->crumbs = evas_list_remove_list(obj->crumbs, l);
+	     return;
+	  }
+     }
+}
+
+void
+e_object_breadcrumb_debug(E_Object *obj)
+{
+   Evas_List *l;
+   
+   E_OBJECT_CHECK(obj);
+   for (l = obj->crumbs; l; l = l->next)
+     printf("CRUMB: %s\n", l->data);
+}
+*/
 
 #ifdef OBJECT_PARANOIA_CHECK
 /* local subsystem functions */

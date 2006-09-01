@@ -134,6 +134,7 @@ struct _OD_Dock {
 #define OD_ICON_STATE_BOUNCING                 0x00000008
 
 struct _OD_Icon {
+  E_App          *a;
   Evas_Object    *icon, *pic;
   unsigned        state;        // see above
   char           *name, *icon_file, *winclass;

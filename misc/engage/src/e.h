@@ -1,5 +1,14 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #ifndef E_H
 #define E_H
+
+#include "config.h"
+
+#define USE_IPC
+//#define OBJECT_PARANOIA_CHECK
+//#define OBJECT_CHECK
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,8 +19,37 @@
 #include <sys/time.h>
 #include <sys/param.h>
 #include <dlfcn.h>
+#include <math.h>
+#include <fnmatch.h>
+#include <limits.h>
+#include <ctype.h>
+#include <time.h>
+#include <dirent.h>
+#include <pwd.h>
+#include <grp.h>
+#include <glob.h>
+#include <locale.h>
+#include <libintl.h>
+#include <errno.h>
+#include <signal.h>
+
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
+
+#ifdef HAVE_VALGRIND
+# include <memcheck.h>
+#endif
+
+#ifdef __GLIBC__
+#ifdef OBJECT_PARANOIA_CHECK
+#include <execinfo.h>
+#include <setjmp.h>
+#endif
+#endif
 
 #include <Evas.h>
+#include <Evas_Engine_Buffer.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
@@ -20,10 +58,19 @@
 #include <Ecore_Job.h>
 #include <Ecore_Txt.h>
 #include <Ecore_Config.h>
+#include <Ecore_Desktop.h>
+#include <Ecore_File.h>
+#include <Ecore_X_Atoms.h>
+#include <Ecore_X_Cursor.h>
+#include <Ecore_Desktop.h>
 #include <Eet.h>
 #include <Edje.h>
 
-#include "config.h"
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
 
 #ifdef EAPI
 #undef EAPI
@@ -35,45 +82,63 @@
 #  define EAPI __declspec(dllimport)
 # endif
 #else
-# ifdef GCC_HASCLASSVISIBILITY
-#  define EAPI __attribute__ ((visibility("default")))
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+// BROKEN in gcc 4 on amd64
+//#   pragma GCC visibility push(hidden)
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
 # else
 #  define EAPI
 # endif
 #endif
 
-#include "e_object.h"
-#include "e_file.h"
-#include "e_user.h"
-/*#include "e_manager.h"*/
-#include "e_path.h"
-/*#include "e_ipc.h"
-#include "e_error.h"
-#include "e_container.h"
-#include "e_desk.h"
-#include "e_border.h"
-#include "e_pointer.h"
-#include "e_config.h"
-#include "e_menu.h"
-#include "e_icon.h"
-#include "e_box.h"
-#include "e_init.h"
-#include "e_int_menus.h"
-#include "e_module.h"*/
-#include "e_apps.h"
-/*#include "e_atoms.h"
-#include "e_utils.h"
-#include "e_canvas.h"
-#include "e_focus.h"
-#include "e_place.h"
-#include "e_resist.h"
-#include "e_startup.h"
-#include "e_iconify.h"*/
-
 typedef struct _E_Before_Idler E_Before_Idler;
+typedef struct _E_Rect E_Rect;
+
+/* convenience macro to compress code and avoid typos */
+#define E_FN_DEL(_fn, _h) if (_h) { _fn(_h); _h = NULL; }
+#define E_INTERSECTS(x, y, w, h, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && (((x) + (w)) > (xx)) && (((y) + (h)) > (yy)))
+#define E_INSIDE(x, y, xx, yy, ww, hh) (((x) < ((xx) + (ww))) && ((y) < ((yy) + (hh))) && ((x) >= (xx)) && ((y) >= (yy)))
+#define E_CONTAINS(x, y, w, h, xx, yy, ww, hh) (((xx) >= (x)) && (((x) + (w)) >= ((xx) + (ww))) && ((yy) >= (y)) && (((y) + (h)) >= ((yy) + (hh))))
+#define E_SPANS_COMMON(x1, w1, x2, w2) (!((((x2) + (w2)) <= (x1)) || ((x2) >= ((x1) + (w1)))))
+#define E_REALLOC(p, s, n) p = (s *)realloc(p, sizeof(s) * n)
+#define E_NEW(s, n) (s *)calloc(n, sizeof(s))
+#define E_NEW_BIG(s, n) (s *)malloc(n * sizeof(s))
+#define E_FREE(p) { if (p) {free(p); p = NULL;} }
+
+#define E_CLAMP(x, min, max) (x < min ? min : (x > max ? max : x))
+
+#define E_REMOTE_OPTIONS 1
+#define E_REMOTE_OUT     2
+#define E_WM_IN          3
+#define E_REMOTE_IN      4
+#define E_ENUM           5
+#define E_LIB_IN         6
+
+#define E_TYPEDEFS 1
+#include "e_includes.h"
+#undef E_TYPEDEFS
+#include "e_includes.h"
 
 EAPI E_Before_Idler *e_main_idler_before_add(int (*func) (void *data), void *data, int once);
 EAPI void            e_main_idler_before_del(E_Before_Idler *eb);
+
+
+struct _E_Before_Idler
+{
+   int          (*func) (void *data);
+   void          *data;
+   unsigned char  once : 1;
+   unsigned char  delete_me : 1;
+};
+
+struct _E_Rect
+{
+   int x, y, w, h;
+};
 
 extern EAPI E_Path *path_data;
 extern EAPI E_Path *path_images;
@@ -81,42 +146,13 @@ extern EAPI E_Path *path_fonts;
 extern EAPI E_Path *path_themes;
 extern EAPI E_Path *path_icons;
 extern EAPI E_Path *path_init;
+extern EAPI E_Path *path_modules;
+extern EAPI E_Path *path_backgrounds;
+extern EAPI E_Path *path_input_methods;
+extern EAPI E_Path *path_messages;
 extern EAPI int     restart;
-
-/* convenience macro to compress code and avoid typos */
-#define E_FN_DEL(_fn, _h) \
-if (_h) \
-{ \
-   _fn(_h); \
-   _h = NULL; \
-}
-
-#define E_INTERSECTS(x, y, w, h, xx, yy, ww, hh) \
-(((x) < ((xx) + (ww))) && \
-((y) < ((yy) + (hh))) && \
-(((x) + (w)) > (xx)) && \
-(((y) + (h)) > (yy)))
-
-#define E_SPANS_COMMON(x1, w1, x2, w2) \
-(!((((x2) + (w2)) <= (x1)) || ((x2) >= ((x1) + (w1)))))
-
-#define E_REALLOC(p, s, n) \
-       p = realloc(p, sizeof(s) * n)
-
-#define E_NEW(s, n) \
-       calloc(n, sizeof(s))
-
-#define E_NEW_BIG(s, n) \
-       malloc(n * sizeof(s))
-
-#define E_FREE(p) \
-       { if (p) {free(p); p = NULL;} }
-
-typedef struct _E_Rect E_Rect;
-
-struct _E_Rect
-{
-   int x, y, w, h;
-};
+extern EAPI int     good;
+extern EAPI int     evil;
+extern EAPI int     starting;
 
 #endif
