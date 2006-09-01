@@ -36,6 +36,8 @@ struct entropy_etk_iconbox_viewer
 };
 
 void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, void *data);
+void entropy_etk_icon_viewer_icon_size_set(entropy_etk_iconbox_viewer* viewer, double value ) ;
+
 
 /*------------- boilerplate -----*/
 typedef struct gui_file gui_file;
@@ -169,14 +171,8 @@ entropy_plugin_init (entropy_core * core)
   return base;
 }
 
-void _entropy_etk_icon_viewer_slider_cb(Etk_Object *object, double value, void *data)
+void entropy_etk_icon_viewer_icon_size_set(entropy_etk_iconbox_viewer* viewer, double value ) 
 {
-  entropy_gui_component_instance *instance;	
-  entropy_etk_iconbox_viewer *viewer;
-
-  instance = data;
-  viewer = instance->data;
-
   etk_iconbox_model_geometry_set(etk_iconbox_current_model_get(ETK_ICONBOX(viewer->iconbox)),
 		  (value*2) + 14,
 	  	  value + 22,
@@ -187,6 +183,17 @@ void _entropy_etk_icon_viewer_slider_cb(Etk_Object *object, double value, void *
   
   etk_iconbox_model_label_geometry_set(etk_iconbox_current_model_get(ETK_ICONBOX(viewer->iconbox)),
 		  0, value + 2, (value*2) + 4, 12, 0.5,0);
+}
+
+void _entropy_etk_icon_viewer_slider_cb(Etk_Object *object, double value, void *data)
+{
+  entropy_gui_component_instance *instance;	
+  entropy_etk_iconbox_viewer *viewer;
+
+  instance = data;
+  viewer = instance->data;
+
+  entropy_etk_icon_viewer_icon_size_set(viewer, value);
 }
 
 void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, void *data)
@@ -309,7 +316,7 @@ static void _entropy_etk_icon_viewer_drag_begin_cb(Etk_Object *object, void *dat
    Etk_Iconbox *iconbox;
    const char **types;
    unsigned int num_types;
-   Etk_Drag *drag;
+   Etk_Widget *drag;
    Etk_Widget *image;
    entropy_gui_component_instance* instance;
    entropy_etk_iconbox_viewer* viewer;
@@ -388,8 +395,8 @@ static void _entropy_etk_icon_viewer_drag_begin_cb(Etk_Object *object, void *dat
 
    printf("Drag buffer: %s\n", buffer);
    
-   etk_drag_types_set(drag, types, num_types);
-   etk_drag_data_set(drag, buffer, strlen(buffer)+1);
+   etk_drag_types_set(ETK_DRAG(drag), types, num_types);
+   etk_drag_data_set(ETK_DRAG(drag), buffer, strlen(buffer)+1);
 
 
 
@@ -412,6 +419,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   entropy_etk_iconbox_viewer *viewer;
   char  **dnd_types;
   int dnd_types_num=0;
+  char* size;
 
     
   instance = entropy_gui_component_instance_new ();
@@ -422,6 +430,11 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 
   /*Make the various widgets*/
   viewer->vbox = etk_vbox_new(ETK_FALSE,0);
+
+  instance->gui_object = viewer->vbox;
+  instance->core = core;
+  instance->data = viewer;
+  instance->layout_parent = layout;
   
   /*Make the slider*/
   viewer->slider = etk_hslider_new(10,128, 48, 1, 1);
@@ -432,7 +445,10 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   viewer->iconbox = etk_iconbox_new();
   etk_box_append(ETK_BOX(viewer->vbox), viewer->iconbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-
+  if ((size = entropy_config_misc_item_str_get("general.iconsize"))) {
+	etk_range_value_set(ETK_RANGE(viewer->slider), atoi(size));
+	entropy_etk_icon_viewer_icon_size_set(viewer, atoi(size));
+  }
   
   /*etk_iconbox_model_icon_geometry_set(etk_iconbox_current_model_get(ETK_ICONBOX(viewer->iconbox)),
 		  0,0,64,64,1,1);*/
@@ -440,11 +456,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 	  
   etk_signal_connect("mouse_down", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_click_cb), instance);
   
-  instance->gui_object = viewer->vbox;
-  instance->core = core;
-  instance->data = viewer;
-  instance->layout_parent = layout;
-
   /*DND Setup*/
   /* dnd_types_num = 1;
    dnd_types = entropy_malloc(dnd_types_num* sizeof(char*));
