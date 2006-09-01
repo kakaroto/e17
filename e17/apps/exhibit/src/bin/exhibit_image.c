@@ -582,16 +582,6 @@ _ex_image_save_as_cb(void *data)
    /* Dont fork for the tree polulating to work */
    evas_object_image_save(im->image_object, file, NULL, NULL);
 
-   /* Refresh list if the file is saved in our dir */
-   D(("Image path: %s <-> Cur path: %s\n", fd->e->cur_tab->set_img_path,
-	 fd->e->cur_tab->cur_path));
-   if (!strcmp(fd->e->cur_tab->set_img_path, fd->e->cur_tab->cur_path)) 
-     {
-	etk_tree_clear(ETK_TREE(fd->e->cur_tab->itree));
-	etk_tree_clear(ETK_TREE(fd->e->cur_tab->dtree));
-	_ex_main_populate_files(fd->e, NULL);
-     }
-
    etk_widget_hide(fd->win);
 }
 
@@ -679,23 +669,13 @@ _ex_image_delete_cb(void *data)
      }
 
    _ex_main_image_unset();
-
-   /* Refresh the tree as we deleted the file first */
-   etk_tree_clear(ETK_TREE(tab->itree));
-   etk_tree_clear(ETK_TREE(tab->dtree));
-   _ex_main_populate_files(e, NULL);
-
-   D(("Ex_Tab pointer in _ex_image_delete_cb %p\n", tab));
    etk_object_destroy(ETK_OBJECT(tab->dialog));
-
-   D(("Deleted for %s\n", string));
+   D(("Deleted %s\n", string));
 }
 
 static void
 _ex_image_delete_dialog_response(Etk_Object *obj, int response_id, void *data)
 {
-   Exhibit *e = data;
-
    switch(response_id)
      {
       case ETK_RESPONSE_OK:
@@ -715,9 +695,8 @@ _ex_image_delete(Exhibit *e)
    Ex_Tab *tab = e->cur_tab;
    char string[PATH_MAX];
 
-   sprintf(string, "Are you sure you want to delete this image? <br>%s%s<br> ", tab->set_img_path, tab->cur_file);
-
-   D(("Ex_Tab pointer in _ex_image_delete %p\n", e->cur_tab));
+   sprintf(string, "Are you sure you want to delete this image? <br>%s%s<br> ", 
+	 tab->set_img_path, tab->cur_file);
 
    tab->dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, 
 	 ETK_MESSAGE_DIALOG_OK_CANCEL, 
@@ -731,11 +710,6 @@ _ex_image_delete(Exhibit *e)
 	 _("Exhibit - Confirm delete"));
 
    etk_widget_show_all(tab->dialog);
-
-   /* TODO
-    * Center the dialog on top of the app.
-   etk_window_center_on_window(ETK_WINDOW(tab->dialog), ETK_WINDOW(e->win));
-   */
 }
 
 
@@ -761,13 +735,8 @@ _ex_image_rename_dialog_response(Etk_Object *obj, int response_id, void *data)
 	 ret = rename(oldpath, newpath);
 	 if (ret == -1) 
 	   _ex_main_dialog_show("Error renaming file!", ETK_MESSAGE_DIALOG_ERROR);
-	 else 
-	   {
-	      _ex_main_image_unset();
-	      etk_tree_clear(ETK_TREE(tab->itree));
-	      etk_tree_clear(ETK_TREE(tab->dtree));
-	      _ex_main_populate_files(e, NULL);
-	   }
+	 else
+	   _ex_main_image_unset();
 
 	 E_FREE(newpath);
 	E_FREE(oldpath);
@@ -1064,8 +1033,6 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	   char filename_s[PATH_MAX];
 	   Ecore_X_Window *roots = NULL;
 
-	   D(("Entered the foo\n"));
-	   
 	   if (!ecore_x_init(NULL))
 	     exit(0);
 	   
@@ -1166,9 +1133,8 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	  {
 	     char e_bg_set[PATH_MAX*2];
 	     
-	     snprintf(e_bg_set, PATH_MAX, "enlightenment_remote -default-bg-set %s", edj_file);
-
-	     D(("FOO: %s\n", e_bg_set));
+	     snprintf(e_bg_set, PATH_MAX, "enlightenment_remote -default-bg-set %s", 
+		   edj_file);
 	     system(e_bg_set);
 	  }
 	

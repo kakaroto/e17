@@ -96,7 +96,7 @@ _ex_menu_new_tab_cb(Etk_Object *obj, void *data)
 
    tab = _ex_tab_new(e, e->cur_tab->cur_path);
    _ex_main_window_tab_append(e, tab);
-   _ex_main_populate_files(e, NULL);
+   _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 
 void
@@ -383,10 +383,6 @@ _ex_menu_refresh_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
 
-   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-   _ex_main_populate_files(e, NULL);
-   
    if (!e->cur_tab->image_loaded)
      return;
 
@@ -481,7 +477,7 @@ _ex_menu_go_to_fav_cb(Etk_Object *obj, void *data)
    e->cur_tab->dir = strdup(e->options->fav_path);
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-   _ex_main_populate_files(e, NULL);   
+   _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 
 void

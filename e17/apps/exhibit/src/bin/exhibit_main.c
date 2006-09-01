@@ -10,6 +10,7 @@ extern Evas_List *thumb_list;
 Exhibit *e;
 Evas_List  *event_handlers;
 
+static void _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path);
 static int _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 static void _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
 static void _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
@@ -103,17 +104,11 @@ _ex_main_image_set(Exhibit *e, char *image)
    else
      {
 	etk_image_set_from_file(ETK_IMAGE(e->cur_tab->image), image);
-	
+
 	if (e->cur_tab->fit_window)
-	  {
-	     _ex_tab_current_fit_to_window(e);
-	     D(("Setting EX_IMAGE_FIT_TO_WINDOW loaded and used\n"));
-	  }
+	  _ex_tab_current_fit_to_window(e);
 	else
-	  {
-	     _ex_tab_current_zoom_one_to_one(e);
-	     D(("Setting EX_IMAGE_ONE_TO_ONE loaded and used\n"));	     
-	  }	
+	  _ex_tab_current_zoom_one_to_one(e);
      }
    
    bytes = ecore_file_size(image);
@@ -133,7 +128,6 @@ _ex_main_image_set(Exhibit *e, char *image)
    etk_range_value_set(vs, (double)h/2);
 
    /* Reset undo data every time we change image */
-   D(("Resetting undo data on image %p\n", e->cur_tab->image));
    data2 = etk_object_data_get(ETK_OBJECT(e->cur_tab->image), "undo");
    if (data2) 
      E_FREE(data2);
@@ -158,24 +152,31 @@ _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2
 }
 
 void
-_ex_main_populate_files(Exhibit *e, const char *selected_file)
+_ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 {
    char back[PATH_MAX];
    DIR *dir;
    struct dirent *dir_entry;
-   Etk_Tree_Row *row, *selected_row;
-
-   selected_row = NULL;
-   snprintf(back, PATH_MAX, "..");
-   etk_tree_append(ETK_TREE(e->cur_tab->dtree), e->cur_tab->dcol, 
-		   etk_theme_icon_theme_get(), "actions/go-up_16", back, NULL);
+   Etk_Tree_Row *row, *selected_row = NULL;
 
    chdir(e->cur_tab->dir);
+   
+   if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
+     {
+	snprintf(back, PATH_MAX, "..");
+	etk_tree_append(ETK_TREE(e->cur_tab->dtree), e->cur_tab->dcol, 
+	      etk_theme_icon_theme_get(), "actions/go-up_16", back, NULL);
+     }
 
-   D(("Changing to dir: %s\n", e->cur_tab->dir));
+   if (e->cur_tab->monitor)
+     {
+	D(("Removing old monitoring\n"));
+	ecore_file_monitor_del(e->cur_tab->monitor);
+	e->cur_tab->monitor = NULL;
+     }
 
    if ((dir = opendir(".")) == NULL)
-     return ;
+     return;
 
    etk_tree_freeze(ETK_TREE(e->cur_tab->itree));
    etk_tree_freeze(ETK_TREE(e->cur_tab->dtree));
@@ -201,16 +202,24 @@ _ex_main_populate_files(Exhibit *e, const char *selected_file)
 	  continue;
 
 	snprintf(image, PATH_MAX, "%s", dir_entry->d_name);
-	if(stat(image, &st) == -1) continue;
-	if(S_ISDIR(st.st_mode))
+
+	if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
 	  {
-	     etk_tree_append(ETK_TREE(e->cur_tab->dtree), e->cur_tab->dcol,
-			     etk_theme_icon_theme_get(),
-			     "places/folder_16",
-			     dir_entry->d_name, NULL);
-	     e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, dir_entry->d_name);
-	     continue;
+	     if(stat(image, &st) == -1) continue;
+	     if(S_ISDIR(st.st_mode))
+	       {
+		  etk_tree_append(ETK_TREE(e->cur_tab->dtree), e->cur_tab->dcol,
+			etk_theme_icon_theme_get(),
+			"places/folder_16",
+			dir_entry->d_name, NULL);
+		  e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, dir_entry->d_name);
+		  continue;
+	       }
 	  }
+
+	/* If we don't want to do the rtree updating */
+	if (update == EX_TREE_UPDATE_DIRS)
+	  continue;
 
 	if(!_ex_file_is_viewable(dir_entry->d_name))
 	  continue;
@@ -252,20 +261,25 @@ _ex_main_populate_files(Exhibit *e, const char *selected_file)
      }
 
    etk_tree_thaw(ETK_TREE(e->cur_tab->itree));
-
-   D(("e->options->default_sort: %d\n", e->options->default_sort));
-
-   if (e->options->default_sort == EX_SORT_BY_DATE)
-	_ex_sort_date_cb(NULL, NULL);
-   else if (e->options->default_sort == EX_SORT_BY_SIZE)
-	_ex_sort_size_cb(NULL, NULL);
-   else if (e->options->default_sort == EX_SORT_BY_NAME)
-	_ex_sort_name_cb(NULL, NULL);
-   else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
-	_ex_sort_resol_cb(NULL, NULL);
-
    etk_tree_thaw(ETK_TREE(e->cur_tab->dtree));
-   etk_tree_sort(ETK_TREE(e->cur_tab->dtree), _ex_main_dtree_compare_cb, ETK_TRUE, e->cur_tab->dcol, NULL);
+
+   if (update == EX_TREE_UPDATE_FILES)
+     {
+	if (e->options->default_sort == EX_SORT_BY_DATE)
+	  _ex_sort_date_cb(NULL, NULL);
+	else if (e->options->default_sort == EX_SORT_BY_SIZE)
+	  _ex_sort_size_cb(NULL, NULL);
+	else if (e->options->default_sort == EX_SORT_BY_NAME)
+	  _ex_sort_name_cb(NULL, NULL);
+	else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
+	  _ex_sort_resol_cb(NULL, NULL);
+     }
+
+   if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
+     {
+	etk_tree_sort(ETK_TREE(e->cur_tab->dtree), _ex_main_dtree_compare_cb, 
+	      ETK_TRUE, e->cur_tab->dcol, NULL);
+     }
 
    if(selected_row)
      {
@@ -277,18 +291,65 @@ _ex_main_populate_files(Exhibit *e, const char *selected_file)
       stepdown like ".." if we just call the refresh on
       the listing like after a delete */
    e->cur_tab->dir = strdup(".");
+
+   if (!e->cur_tab->monitor)
+     {
+	D(("Adding monitoring to path %s\n", e->cur_tab->cur_path)); 
+	e->cur_tab->monitor = ecore_file_monitor_add(e->cur_tab->cur_path, 
+	      _ex_main_monitor_dir, NULL);
+     }
    
    closedir(dir);
 }
 
 static void
+_ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path)
+{
+   /* Only do changes if tree's are visible */
+   if (ecore_file_monitor != e->cur_tab->monitor)
+     return;
+
+   /* TODO: update non-visible tabs too */
+   
+   switch (event)
+     {
+      case ECORE_FILE_EVENT_CREATED_DIRECTORY:
+	 etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
+	 break;
+      case ECORE_FILE_EVENT_DELETED_DIRECTORY:
+	 etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
+	 break;
+      case ECORE_FILE_EVENT_DELETED_SELF:
+	 etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	 etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
+	 break;
+      case ECORE_FILE_EVENT_MODIFIED:
+	 etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
+	 break;
+      case ECORE_FILE_EVENT_DELETED_FILE:
+	 etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
+	 break;
+      case ECORE_FILE_EVENT_CREATED_FILE:
+	 etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
+	 break;
+      default:
+	 D(("Unknown ecore file event occured\n"));
+	 break;
+     }
+   
+   D(("Monitor event %d happened in %s\n", event, path));
+}
+
+static void
 _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Key_Down *ev;
-   Exhibit *e;
-
-   e = data;
-   ev = event;
+   Etk_Event_Key_Down *ev = event;
 
    if(!strcmp(ev->key, "Tab"))
      {
@@ -362,29 +423,22 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
         e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
         etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-        _ex_main_populate_files(e, NULL);
+        _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
      }
 }
 
 static void
 _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data)
 {
-   Exhibit *e;
-
-   e = data;
-
    e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-   _ex_main_populate_files(e, NULL);
+   _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 
 static Etk_Bool
 _ex_main_window_deleted_cb(void *data)
 {
-   Exhibit *e;
-
-   e = data;
    etk_main_quit();
    return 1;
 }
@@ -392,11 +446,7 @@ _ex_main_window_deleted_cb(void *data)
 static void
 _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Key_Down *ev;
-   Exhibit *e;
-
-   e = data;
-   ev = event;
+   Etk_Event_Key_Down *ev = event;
 
    if(ev->modifiers == ETK_MODIFIER_CTRL)
      {
@@ -407,7 +457,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	     tab = _ex_tab_new(e, e->cur_tab->cur_path);
 
 	     _ex_main_window_tab_append(e, tab);
-	     _ex_main_populate_files(e, NULL);
+	     _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 	  }
 	else if(!strcmp(ev->key, "w"))
 	  {
@@ -568,7 +618,7 @@ _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 	e->cur_tab->dir = strdup(dir);
 	etk_tree_clear(ETK_TREE(e->cur_tab->itree));
 	etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-	_ex_main_populate_files(e, ecore_file_get_file(file));
+	_ex_main_populate_files(ecore_file_get_file(file), EX_TREE_UPDATE_ALL);
 	if(ecore_file_exists(file) && !ecore_file_is_dir(file))
 	  _ex_main_image_set(e, file);
 	etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, _ex_file_get(e->cur_tab->cur_path));
@@ -833,7 +883,7 @@ _ex_main_window_show(char *dir)
    _ex_tab_select(tab);
    etk_paned_child2_set(ETK_PANED(e->hpaned), tab->scrolled_view, ETK_TRUE);
    
-   _ex_main_populate_files(e, file);
+   _ex_main_populate_files(file, EX_TREE_UPDATE_ALL);
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);   
    etk_box_append(ETK_BOX(e->vbox), e->hbox, ETK_BOX_END, ETK_BOX_NONE, 0);

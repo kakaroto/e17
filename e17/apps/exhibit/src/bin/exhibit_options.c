@@ -473,7 +473,7 @@ _ex_options_set()
    e->options->default_sort = e->options->default_sort_tmp;
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-   _ex_main_populate_files(e, NULL);
+   _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 
    /* RUN IN */
    APP_NEW(dialog->app1, e->options->app1);

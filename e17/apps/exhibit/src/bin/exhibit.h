@@ -70,6 +70,13 @@ typedef enum _Ex_Sort
    EX_SORT_BY_RESOLUTION = -4
 } Ex_Sort;
 
+typedef enum _Ex_Tree_Update
+{
+   EX_TREE_UPDATE_FILES = -1,
+   EX_TREE_UPDATE_DIRS = -2,
+   EX_TREE_UPDATE_ALL = -3,
+} Ex_Tree_Update;
+
 struct _Ex_Options
 {
    char  *app1;
@@ -139,7 +146,8 @@ struct _Ex_Tab
 
    int            num;
 
-   Etk_Bool       fit_window;   
+   Etk_Bool       fit_window;
+   Ecore_File_Monitor *monitor;
    
    Evas_List     *images;
    Evas_List     *dirs;

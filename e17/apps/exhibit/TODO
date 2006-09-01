@@ -9,10 +9,6 @@ o TODO:
 - Create window
 - Close window
 
-- menus
-  * release notes
-  
-  
 o DONE:
  ------
 + "open in" should be generated from options
@@ -37,12 +33,12 @@ o DONE:
   + comments visibile / hidden by default (with remembering last state)  
   + provide tab for "open in" applications
 + key shotcuts
-  + x - fit / unfit to window
-  + s (slideshow)
+  + control-x - fit / unfit to window
+  + control-s (slideshow)
   + control-q (quit)
 
 =================
-* RELEASSE 0.2.0:
+* RELEASE 0.2.0:
 =================
 
 o TODO:

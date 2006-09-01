@@ -5,7 +5,7 @@
 #define _EX_MAIN_H
 
 void         _ex_main_statusbar_zoom_update(Exhibit *e);
-void         _ex_main_populate_files(Exhibit *e, const char *selected_file);
+void         _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update);
 int          _ex_main_window_slideshow_next(void *data);
 void         _ex_main_window_slideshow_toggle(Exhibit *e);    
 void         _ex_main_window_tab_append(Exhibit *e, Ex_Tab *tab);

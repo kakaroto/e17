@@ -134,12 +134,15 @@ _ex_tab_select(Ex_Tab *tab)
    D(("_ex_tab_select: changed dir to %s\n", tab->cur_path));
    D(("_ex_tab_select: selecting tab num %d\n", e->cur_tab->num));
 
-   if(tab->comment.visible)
-     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, 
-	   tab->comment.vbox);
-   else if(tab->fit_window)
-     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, 
-	   tab->alignment);
+   if (!e->notebook) 
+     {
+	if(tab->comment.visible)
+	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, 
+		tab->comment.vbox);
+	else if(tab->fit_window)
+	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), tab->num, 
+		tab->alignment);
+     }
    
    etk_table_attach(ETK_TABLE(e->table), tab->dtree,
 		    0, 3, 3, 3,
@@ -429,7 +432,7 @@ _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event
    e->cur_tab->dir = strdup(dcol_string);
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-   _ex_main_populate_files(e, NULL);
+   _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
    etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook)), _ex_file_get(e->cur_tab->cur_path));
 }
 
@@ -466,6 +469,6 @@ _ex_tab_itree_key_down_cb(Etk_Object *object, void *event, void *data)
         e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
         etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-        _ex_main_populate_files(e, NULL);
+        _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
      }
 }
