@@ -196,7 +196,7 @@ static Etk_Widget *_etk_prefs_theme_tab_create()
 
 static void _etk_prefs_theme_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
-   static Etk_Widget *child = NULL;
+   Etk_Widget *child = NULL;
    Etk_Tree *tree;
    char *icol_string;
    Etk_Widget *preview;
@@ -205,11 +205,6 @@ static void _etk_prefs_theme_row_selected_cb(Etk_Object *object, Etk_Tree_Row *r
    preview = data;
 
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol_string, NULL, NULL, NULL);
-   if(child)
-   {
-      etk_container_remove(ETK_CONTAINER(preview), child);
-      etk_object_destroy(ETK_OBJECT(child));
-   }
    child = _etk_prefs_theme_preview_get(icol_string);
    etk_container_add(ETK_CONTAINER(preview), child);
    etk_widget_show_all(child);
@@ -218,7 +213,7 @@ static void _etk_prefs_theme_row_selected_cb(Etk_Object *object, Etk_Tree_Row *r
 static Etk_Widget *_etk_prefs_theme_preview_get(const char *theme)
 {
    char file[PATH_MAX];
-   Etk_Widget *box;
+   static Etk_Widget *box = NULL;
    Etk_Widget *widget;
    Etk_Widget *vbox;
    Etk_Widget *frame;
@@ -240,7 +235,13 @@ static Etk_Widget *_etk_prefs_theme_preview_get(const char *theme)
    free(_etk_prefs_widget_theme);
    _etk_prefs_widget_theme = strdup(theme);
    
-   box = etk_vbox_new(ETK_FALSE, 0);
+   if (box)
+   {
+      etk_widget_theme_file_set(box, file);
+      return box;
+   }
+   
+   box = etk_vbox_new(ETK_FALSE, 0);   
    etk_widget_theme_file_set(box, file);
    
    frame = etk_frame_new("Buttons");
