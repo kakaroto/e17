@@ -206,7 +206,7 @@ struct _Exhibit
    Etk_Widget    *app3_menu;
    Etk_Widget    *app4_menu;
    Etk_Widget    *submenu;
-
+   
    int            zoom;
    int            brightness;
    int            contrast;

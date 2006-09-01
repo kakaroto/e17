@@ -2,7 +2,6 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 #include "exhibit.h"
-#include <Ecore_File.h>
 
 extern pid_t pid;
 extern Evas_List *thumb_list;
@@ -84,7 +83,8 @@ _ex_main_image_set(Exhibit *e, char *image)
    etk_window_title_set(ETK_WINDOW(e->win), title);
 
    /* Save the path of where the image really is in case
-      we browse more in the dtree */
+    * we browse more in the dtree 
+    */
    e->cur_tab->set_img_path = malloc(PATH_MAX);
    memset(e->cur_tab->set_img_path, 0, PATH_MAX);
    e->cur_tab->cur_file = malloc(PATH_MAX);
@@ -96,7 +96,7 @@ _ex_main_image_set(Exhibit *e, char *image)
    e->cur_tab->image_loaded = ETK_TRUE;
    etk_widget_show(ETK_WIDGET(e->cur_tab->image));
    
-   if(_ex_file_is_ebg(image))
+   if (_ex_file_is_ebg(image))
      {
 	/* can we do this without the size request? it doesnt look good */
 	etk_widget_size_request_set(ETK_WIDGET(e->cur_tab->image), 800, 600);	
@@ -182,7 +182,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    etk_tree_freeze(ETK_TREE(e->cur_tab->dtree));
    
    getcwd(e->cur_tab->cur_path, PATH_MAX);
-   if(strlen(e->cur_tab->cur_path) < PATH_MAX - 2)
+   if (strlen(e->cur_tab->cur_path) < PATH_MAX - 2)
      {
 	int len = strlen(e->cur_tab->cur_path);
 	e->cur_tab->cur_path[len] = '/';
@@ -255,9 +255,9 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	      _ex_main_monitor_dir, NULL);
      }
 
-   /* Set the dir to the current dir at the end so we avoid
-      stepdown like ".." if we just call the refresh on
-      the listing like after a delete */
+   /* Set the dir to the current dir at the end so we avoid stepdown 
+    * like ".." if we just call the refresh on the listing like after a delete
+    */
    e->cur_tab->dir = strdup(".");
    
    closedir(dir);
@@ -364,7 +364,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Down *ev = event;
 
-   if(!strcmp(ev->key, "Tab"))
+   if (!strcmp(ev->key, "Tab"))
      {
 	const char *path;
 	const char *dir;
@@ -430,7 +430,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	
      }
    
-   if(!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
+   if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
      {
 	_ex_slideshow_stop(e);
         e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
@@ -461,9 +461,9 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Down *ev = event;
 
-   if(ev->modifiers == ETK_MODIFIER_CTRL)
+   if (ev->modifiers == ETK_MODIFIER_CTRL)
      {
-	if(!strcmp(ev->key, "t"))
+	if (!strcmp(ev->key, "t"))
 	  {
 	     Ex_Tab *tab;
 	     
@@ -508,7 +508,6 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 static void
 _ex_main_window_resize_cb(Etk_Object *object, void *data)
 {
-
    etk_window_geometry_get(ETK_WINDOW(object), NULL, NULL, 
 			   &e->options->last_w, &e->options->last_h);
 }
@@ -516,25 +515,25 @@ _ex_main_window_resize_cb(Etk_Object *object, void *data)
 void
 _ex_main_window_slideshow_toggle()
 {
-   if(e->slideshow.active)
-     {
-	_ex_slideshow_stop();
-     }
-   else
-     {
-	_ex_slideshow_start();
-     }
+   if (e->slideshow.active)     
+     _ex_slideshow_stop();     
+   else     
+     _ex_slideshow_start();
 }
 
 static void 
 _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
 {     
    Ex_Tab  *tab;
+   int num;
    
    _ex_slideshow_stop();
 
-   tab = evas_list_nth(e->tabs, 
-	 etk_notebook_current_page_get(ETK_NOTEBOOK(object)));
+   num = etk_notebook_current_page_get(ETK_NOTEBOOK(object));
+   if (num < 0)
+     return;
+   
+   tab = evas_list_nth(e->tabs, num);
 
    e->cur_tab = tab;
    D(("Toggeled tab %p number %d\n", tab, e->cur_tab->num));
@@ -547,38 +546,10 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
 void
 _ex_main_window_tab_append(Ex_Tab *tab)
 {
-   if(evas_list_count(e->tabs) == 1)
-     {
-	/* adding first "real" tab, copy existing tab, and create new one */
-	e->notebook = etk_notebook_new();        
-	etk_paned_child2_set(ETK_PANED(e->hpaned), e->notebook, ETK_TRUE);
-	
-	if(e->cur_tab->fit_window)
-	  {
-	     if(e->cur_tab->comment.visible)
-	       etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), 
-					_ex_file_get(e->cur_tab->dir), 
-					e->cur_tab->comment.vbox);
-	     else
-	       etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), 
-					_ex_file_get(e->cur_tab->dir), 
-					e->cur_tab->alignment);
-	  }
-	else
-	  {
-	     if(e->cur_tab->comment.visible)
-	       etk_notebook_page_append(ETK_NOTEBOOK(e->notebook),
-					_ex_file_get(e->cur_tab->dir),
-					e->cur_tab->comment.vbox);
-	     else	       
-	       etk_notebook_page_append(ETK_NOTEBOOK(e->notebook), 
-					_ex_file_get(e->cur_tab->dir), 
-					e->cur_tab->scrolled_view);
-	  }
-	
-	etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), ETK_CALLBACK(_ex_main_window_tab_toggled_cb), e);
-	etk_widget_show(ETK_WIDGET(e->notebook));
-     }
+   if (evas_list_count(e->tabs) >= 1)
+     etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_TRUE);
+   else
+     etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);     
 
    e->tabs = evas_list_append(e->tabs, tab);
    e->cur_tab = tab;
@@ -611,18 +582,16 @@ _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 	char *dir;
 	char *file;
 	
-
 	if ((file = strstr(files->files[i], "file://")) == NULL)
 	  continue;
-		
-	
+			
 	file += strlen("file://");	
 	dir = ecore_file_get_dir(file);
 	
 	if(!ecore_file_is_dir(dir))
 	  continue;
 	
-	if(!ecore_file_exists(file))
+	if (!ecore_file_exists(file))
 	  file = NULL;
 	
 	E_FREE(e->cur_tab->dir);
@@ -630,7 +599,7 @@ _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 	etk_tree_clear(ETK_TREE(e->cur_tab->itree));
 	etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
 	_ex_main_populate_files(ecore_file_get_file(file), EX_TREE_UPDATE_ALL);
-	if(ecore_file_exists(file) && !ecore_file_is_dir(file))
+	if (ecore_file_exists(file) && !ecore_file_is_dir(file))
 	  _ex_main_image_set(e, file);
 	etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, _ex_file_get(e->cur_tab->cur_path));
 	break;
@@ -887,14 +856,11 @@ _ex_main_window_show(char *dir)
      }
    else
      tab = _ex_tab_new(e, ".");
-   
-	
-   e->cur_tab = tab;   
-   e->tabs = evas_list_append(e->tabs, tab);   
-   _ex_tab_select(tab);
-   etk_paned_child2_set(ETK_PANED(e->hpaned), tab->scrolled_view, ETK_TRUE);
-   
-   _ex_main_populate_files(file, EX_TREE_UPDATE_ALL);
+   	
+   e->notebook = etk_notebook_new();
+   etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);
+   etk_paned_child2_set(ETK_PANED(e->hpaned), e->notebook, ETK_TRUE);
+   etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), ETK_CALLBACK(_ex_main_window_tab_toggled_cb), e);
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);   
    etk_box_append(ETK_BOX(e->vbox), e->hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
@@ -935,6 +901,10 @@ _ex_main_window_show(char *dir)
    
    e->statusbar[3] = etk_statusbar_new();
    etk_box_append(ETK_BOX(e->hbox), e->statusbar[3], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   _ex_main_window_tab_append(tab);   
+   _ex_main_populate_files(file, EX_TREE_UPDATE_ALL);   
+   _ex_tab_select(tab);
    
    etk_widget_show_all(e->win);
 }

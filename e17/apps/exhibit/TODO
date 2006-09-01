@@ -8,9 +8,17 @@ o TODO:
 - Close tab
 - Create window
 - Close window
+- menus
+  * release notes
+  
+  
+=======
 
+>>>>>>> 1.15
 o DONE:
  ------
++ add monitor code to add / remove / reload images as they change on disk 
++ use notebook all the time (hide tabs when not needed)
 + "open in" should be generated from options
 + andy's comments feature
 + sorting

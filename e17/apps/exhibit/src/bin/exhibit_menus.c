@@ -95,7 +95,7 @@ _ex_menu_new_tab_cb(Etk_Object *obj, void *data)
    EX_MENU_ITEM_GET_RETURN(obj);
 
    tab = _ex_tab_new(e, e->cur_tab->cur_path);
-   _ex_main_window_tab_append(e, tab);
+   _ex_main_window_tab_append(tab);
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 

@@ -10,17 +10,8 @@ void
 _ex_comment_show(Exhibit *e)
 {
    e->cur_tab->comment.vbox = etk_vbox_new(ETK_FALSE, 0);
-   if(evas_list_count(e->tabs) == 1)
-     {
-	/* we only have 1 tab, ie, no notebook */
-	etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->comment.vbox, ETK_TRUE);
-     }
-   else
-     {
-	/* we have multiple tabs */
-	etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
-     }
-
+   etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
+   
    if (e->cur_tab->fit_window)
      etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    else
@@ -59,22 +50,10 @@ _ex_comment_hide(Exhibit *e)
    if(!e->cur_tab->comment.visible)
      return;
 
-   if(evas_list_count(e->tabs) == 1)
-     {
-	/* we only have 1 tab, ie, no notebook */
-	if (e->cur_tab->fit_window)
-	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->alignment, ETK_TRUE);
-	else
-	  etk_paned_child2_set(ETK_PANED(e->hpaned), e->cur_tab->scrolled_view, ETK_TRUE);
-     }
+   if (e->cur_tab->fit_window)
+     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->alignment);
    else
-     {
-	/* we have multiple tabs */
-	if (e->cur_tab->fit_window)
-	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->alignment);
-	else
-	  etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
-     }   
+     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->scrolled_view);
    
    etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.textview));
    etk_object_destroy(ETK_OBJECT(e->cur_tab->comment.save));
