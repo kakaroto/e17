@@ -2355,7 +2355,7 @@ CB_DesktopDisplayAreaRedraw(DItem * di, int val __UNUSED__,
 static void
 _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
-   DItem              *di, *area, *slider, *radio;
+   DItem              *di, *slider, *radio;
    char                s[64];
 
    tmp_desktops = Conf.desks.num;
@@ -2389,12 +2389,12 @@ _DlgFillDesks(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSliderSetValPtr(di, &tmp_desktops);
 
-   di = area = DialogAddItem(table, DITEM_AREA);
+   di = DialogAddItem(table, DITEM_AREA);
    DialogItemSetColSpan(di, 2);
    DialogItemAreaSetSize(di, 128, 96);
-   DialogItemAreaSetInitFunc(area, CB_DesktopDisplayAreaRedraw);
+   DialogItemAreaSetInitFunc(di, CB_DesktopDisplayAreaRedraw);
 
-   DialogItemSetCallback(slider, CB_DesktopDisplayRedraw, 0, area);
+   DialogItemSetCallback(slider, CB_DesktopDisplayRedraw, 0, di);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
@@ -2569,7 +2569,7 @@ CB_AreaDisplayAreaRedraw(DItem * di, int val __UNUSED__, void *data __UNUSED__)
 static void
 _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
-   DItem              *di, *area, *slider, *slider2, *table2;
+   DItem              *di, *slider, *slider2, *table2;
    char                s[64];
 
    tmp_area_wraparound = Conf.desks.areas_wraparound;
@@ -2615,12 +2615,12 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSliderSetJump(di, 1);
    DialogItemSliderSetValPtr(di, &tmp_area_y);
 
-   di = area = DialogAddItem(table2, DITEM_AREA);
+   di = DialogAddItem(table2, DITEM_AREA);
    DialogItemAreaSetSize(di, 160, 120);
-   DialogItemAreaSetInitFunc(area, CB_AreaDisplayAreaRedraw);
+   DialogItemAreaSetInitFunc(di, CB_AreaDisplayAreaRedraw);
 
-   DialogItemSetCallback(slider, CB_AreaDisplayRedraw, 0, area);
-   DialogItemSetCallback(slider2, CB_AreaDisplayRedraw, 0, area);
+   DialogItemSetCallback(slider, CB_AreaDisplayRedraw, 0, di);
+   DialogItemSetCallback(slider2, CB_AreaDisplayRedraw, 0, di);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
 
@@ -2635,7 +2635,7 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, _("Resistance at edge of screen:\n"));
 
-   di = slider = DialogAddItem(table, DITEM_SLIDER);
+   di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetBounds(di, 1, 100);
    DialogItemSliderSetUnits(di, 1);
