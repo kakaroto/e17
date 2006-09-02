@@ -80,6 +80,8 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 	}
       i++;
     }
+    
+    E_FREE(tmp);
 }
 
 static void *

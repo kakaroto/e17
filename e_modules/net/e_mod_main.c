@@ -343,6 +343,9 @@ e_modapi_shutdown (E_Module * m)
 	evas_list_remove_list (net_config->items, net_config->items);
       if (ci->id)
 	evas_stringshare_del (ci->id);
+      if (ci->device)
+	evas_stringshare_del (ci->device);
+
       free (ci);
       ci = NULL;
     }
