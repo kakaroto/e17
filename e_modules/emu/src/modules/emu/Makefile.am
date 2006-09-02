@@ -41,3 +41,6 @@ module.edj: Makefile module_edje.edc module_face.edc module_icon.edc
 
 clean-local:
 	 rm -rf *.eap *.edj *~
+uninstall:
+	rm -rf $(libdir)/enlightenment/modules/$(MODULE)
+
