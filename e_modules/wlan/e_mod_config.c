@@ -75,7 +75,7 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 	  }
 	i++;
      }
-   E_FREE(tmp);
+   //E_FREE(tmp);
 }
 
 static void *
@@ -86,7 +86,7 @@ _create_data (E_Config_Dialog * cfd)
 
   ci = cfd->data;
   cfdata = E_NEW (E_Config_Dialog_Data, 1);
-
+  
   _fill_data (ci, cfdata);
   return cfdata;
 }
@@ -144,8 +144,9 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 	     ob = e_widget_radio_add(evas, tmp, i, rg);
 	     e_widget_framelist_object_append (of, ob);
 	     i++;
+
+		E_FREE(tmp);
 	  }
-	E_FREE(tmp);
 	e_widget_list_object_append (o, of, 1, 1, 0.5);
      }
    
@@ -202,10 +203,10 @@ _wlan_config_get_devices(Ecore_List *devs)
 	  if (buf[i] == ':')
 	    buf[i] = ' ';
 	}	
-      if (sscanf (buf, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu "
+      if (sscanf (buf, "%s %lu %f %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu "
 		  "%lu %lu %lu %lu\n", dev, &dummy, &dummy, &dummy,
 		  &dummy, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy,
-		  &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 16)
+		  &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 4)
 	continue;
       ecore_list_append (devs, strdup (dev));
     }
