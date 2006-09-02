@@ -211,6 +211,10 @@ void entropy_etk_options_dialog_create()
 			   etk_options_dialog_checkbox_new("Show trackback viewer", "general.trackback"), 
 			   ETK_BOX_START, ETK_BOX_NONE, 0); 
 
+	   etk_box_append(ETK_BOX(ivbox), 
+			   etk_options_dialog_checkbox_new("Show tree view", "general.treeview"), 
+			   ETK_BOX_START, ETK_BOX_NONE, 0); 
+
    	   etk_box_append(ETK_BOX(ivbox), 
 			   etk_options_dialog_checkbox_new("Show folders before files", "general.presortfolders"), 
 			   ETK_BOX_START, ETK_BOX_NONE, 0); 
@@ -248,20 +252,20 @@ void entropy_etk_options_dialog_create()
 	   
 
 	/*Advanced*/
-	button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
+	/*button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
 	etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
 	frame = etk_frame_new("Advanced Settings");
-	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);*/
 
 	/*Thumbnail*/
-	button = etk_tool_button_new_from_stock(ETK_STOCK_IMAGE_X_GENERIC);
+	/*button = etk_tool_button_new_from_stock(ETK_STOCK_IMAGE_X_GENERIC);
 	etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
 
 	frame = etk_frame_new("Thumbnail Settings");
-	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);	
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);	*/
 
 
-	etk_widget_size_request_set(_entropy_etk_options_dialog, 560, 460);
+	//etk_widget_size_request_set(_entropy_etk_options_dialog, 560, 460);
 
 
 	hbox = etk_hbox_new(ETK_FALSE,5);
@@ -292,6 +296,7 @@ void entropy_etk_options_dialog_show()
 		entropy_etk_options_object_create("general.presortfolders");
 		entropy_etk_options_object_create("general.hiddenbackup");
 		entropy_etk_options_object_create("general.iconsize");
+		entropy_etk_options_object_create("general.treeview");
 		
 		entropy_etk_options_dialog_create();
 	}
