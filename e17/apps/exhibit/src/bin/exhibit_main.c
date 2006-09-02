@@ -269,7 +269,6 @@ _ex_main_itree_add(const char *file, const char *selected_file)
    Epsilon *ep;
    Etk_Tree_Row *row;
    
-   
    ep = epsilon_new(file);
    epsilon_thumb_size(ep, EPSILON_THUMB_NORMAL);
    
@@ -281,7 +280,7 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	row = etk_tree_append(ETK_TREE(e->cur_tab->itree), e->cur_tab->icol, 
 	      thumb, basename((char *) file), NULL);
 
-	if (selected_file && e->options->monitor_focus)
+	if (selected_file)
 	  {
 	     if(!strcmp(selected_file, file))
 	       {
@@ -301,7 +300,7 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	thumb->e = e;
 	thumb->name = strdup(basename((char *) file));
 	thumb_list = evas_list_append(thumb_list, thumb);
-	if(selected_file && e->options->monitor_focus)
+	if(selected_file)
 	  {
 	     if(!strcmp(selected_file, file))
 	       thumb->selected = ETK_TRUE;
@@ -354,7 +353,10 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
 	      break;
 	   case ECORE_FILE_EVENT_CREATED_FILE:
-	      _ex_main_itree_add(path, path);
+	      if (e->options->monitor_focus)
+		 _ex_main_itree_add(path, path);
+	      else
+		 _ex_main_itree_add(NULL, path);
 	      break;
 	   default:
 	      D(("Unknown ecore file event occured\n"));
@@ -627,7 +629,7 @@ void
 _ex_main_window_show(char *dir)
 {
    Ex_Tab *tab;
-   const char *file;
+   char *file;
    char *homedir;
    const char **dnd_types;
    int dnd_types_num;
@@ -838,6 +840,11 @@ _ex_main_window_show(char *dir)
 		    3, 3, 2, 2,
 		    0, 0, ETK_TABLE_NONE);
    etk_signal_connect("clicked", ETK_OBJECT(e->entry[1]), ETK_CALLBACK(_ex_main_goto_dir_clicked_cb), e);
+
+   if (ecore_file_download_protocol_available("http://")) 
+     {
+	D(("Protocol HTTP is available\n"));
+     }
    
    /* create first tab but dont place it in notebook */
    if(dir)
@@ -851,7 +858,7 @@ _ex_main_window_show(char *dir)
 	     dir2 = ecore_file_get_dir(dir);
 	     tab = _ex_tab_new(e, dir2);
 	     E_FREE(dir2);
-	     file = ecore_file_get_file(dir);
+	     file = strdup(dir);
 	  }
 	else     
 	  tab = _ex_tab_new(e, ".");
@@ -905,10 +912,11 @@ _ex_main_window_show(char *dir)
    etk_box_append(ETK_BOX(e->hbox), e->statusbar[3], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    _ex_main_window_tab_append(tab);   
-   _ex_main_populate_files(file, EX_TREE_UPDATE_ALL);   
+   _ex_main_populate_files(file, EX_TREE_UPDATE_ALL);
    _ex_tab_select(tab);
    
    etk_widget_show_all(e->win);
+   E_FREE(file);
 }
 
 int
