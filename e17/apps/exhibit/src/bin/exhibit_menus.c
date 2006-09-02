@@ -52,6 +52,9 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
       case EX_MENU_ITEM_NORMAL:
 	menu_item = etk_menu_item_image_new_with_label(label);
 	break;
+      case EX_MENU_ITEM_CHECK:
+	menu_item = etk_menu_item_check_new_with_label(label);
+	break;	
       case EX_MENU_ITEM_SEPERATOR:
 	menu_item = etk_menu_item_separator_new();
 	break;

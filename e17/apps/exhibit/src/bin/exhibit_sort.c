@@ -139,10 +139,9 @@ _ex_sort_date_cb(Etk_Object *obj, void *data)
    etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_date_compare_cb, ETK_TRUE, e->cur_tab->icol, NULL);
 }
 
-
 void
 _ex_sort_label_mouse_down_cb(Etk_Object *object, void *event_info, void *data)
 {
-   etk_menu_popup(ETK_MENU(data));   
+   etk_menu_popup(ETK_MENU(data));
 }
 

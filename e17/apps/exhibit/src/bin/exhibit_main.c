@@ -865,9 +865,10 @@ _ex_main_window_show(char *dir)
    etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), 
 	 ETK_CALLBACK(_ex_main_window_tab_toggled_cb), NULL);
       
-   e->hbox = etk_hbox_new(ETK_TRUE, 0);   
+   e->hbox = etk_hbox_new(ETK_TRUE, 0);
+   e->sort = etk_label_new("Sort by date");
    etk_box_append(ETK_BOX(e->vbox), e->hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
-
+   etk_box_append(ETK_BOX(e->hbox), e->sort, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
      {
 	Etk_Widget *menu;
 	Etk_Widget *menu_item;
@@ -877,8 +878,9 @@ _ex_main_window_show(char *dir)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by name"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by date"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by resolution"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);	
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Ascending"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_CHECK, _("Ascending"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
      }
    

@@ -7,6 +7,7 @@
 typedef enum _Ex_Menu_Item_Type
 {
    EX_MENU_ITEM_NORMAL,
+   EX_MENU_ITEM_CHECK,     
    EX_MENU_ITEM_SEPERATOR
 } Ex_Menu_Item_Type;
 
