@@ -1596,6 +1596,7 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
    eo->desk = dsk;
    _ECM_SET_STACK_CHANGED();
    ECompMgrDamageMergeObject(eo, cw->extents, 0);
+   ECompMgrWinInvalidate(eo, INV_PIXMAP);
 }
 
 static void
