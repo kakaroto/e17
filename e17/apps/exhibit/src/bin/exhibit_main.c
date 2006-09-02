@@ -356,7 +356,7 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 	      if (e->options->monitor_focus)
 		 _ex_main_itree_add(path, path);
 	      else
-		 _ex_main_itree_add(NULL, path);
+		 _ex_main_itree_add(path, NULL);
 	      break;
 	   default:
 	      D(("Unknown ecore file event occured\n"));
