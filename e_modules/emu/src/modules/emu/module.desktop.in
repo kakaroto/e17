@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Emu
+GenericName=gadget
+Comment=Experimental generic scriptable module for E17
+Exec=enlightenment
+Icon=@libdir@/enlightenment/modules/emu/module.edj
+X-Enlightenment-IconClass=emu,gadget
