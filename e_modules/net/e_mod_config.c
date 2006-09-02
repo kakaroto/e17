@@ -131,6 +131,9 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 
   of = e_widget_framelist_add (evas, D_ ("Device Settings"), 0);
   ot = e_widget_table_add (evas, 0);
+  
+if (cfdata->devs)
+{
   rg = e_widget_radio_group_new (&(cfdata->dev_num));
   i = 0;
   ecore_list_goto_first (cfdata->devs);
@@ -140,6 +143,10 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
       e_widget_table_object_append (ot, ob, 0, i, 1, 1, 1, 0, 1, 0);
       i++;
     }
+}
+
+    E_FREE(tmp);
+    
   i++;
   ob = e_widget_label_add (evas, D_ ("Check Interval:"));
   e_widget_table_object_append (ot, ob, 0, i, 1, 1, 0, 0, 1, 0);

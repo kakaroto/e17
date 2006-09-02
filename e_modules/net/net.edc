@@ -137,7 +137,7 @@ collections
 			 }
 		       text 
 			 {
-			    text: "Device";
+			    text: "";
 			    font: "VeraMono";
 			    size: 9;
 			    min: 1 1;
