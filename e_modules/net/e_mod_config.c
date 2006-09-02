@@ -80,8 +80,6 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 	}
       i++;
     }
-    
-    E_FREE(tmp);
 }
 
 static void *
@@ -145,9 +143,7 @@ if (cfdata->devs)
     }
 }
 
-    E_FREE(tmp);
-    
-  i++;
+   i++;
   ob = e_widget_label_add (evas, D_ ("Check Interval:"));
   e_widget_table_object_append (ot, ob, 0, i, 1, 1, 0, 0, 1, 0);
   i++;
