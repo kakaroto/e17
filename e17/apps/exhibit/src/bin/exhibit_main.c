@@ -629,7 +629,7 @@ void
 _ex_main_window_show(char *dir)
 {
    Ex_Tab *tab;
-   char *file;
+   char file[PATH_MAX];
    char *homedir;
    const char **dnd_types;
    int dnd_types_num;
@@ -667,7 +667,6 @@ _ex_main_window_show(char *dir)
    if(!ecore_file_is_dir(e->options->fav_path))
      ecore_file_mkdir(e->options->fav_path);
    
-   file = NULL;
    tab = NULL;
    
    e->win = etk_window_new();
@@ -858,7 +857,7 @@ _ex_main_window_show(char *dir)
 	     dir2 = ecore_file_get_dir(dir);
 	     tab = _ex_tab_new(e, dir2);
 	     E_FREE(dir2);
-	     file = strdup(dir);
+	     realpath(dir, file);
 	  }
 	else     
 	  tab = _ex_tab_new(e, ".");
@@ -916,7 +915,6 @@ _ex_main_window_show(char *dir)
    _ex_tab_select(tab);
    
    etk_widget_show_all(e->win);
-   E_FREE(file);
 }
 
 int
