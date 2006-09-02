@@ -1,3 +1,4 @@
-debian/tmp/usr/lib/enlightenment/modules/emu/*.eap
+debian/tmp/usr/lib/enlightenment/modules/emu/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/emu/*.edj
 debian/tmp/usr/lib/enlightenment/modules/emu/*/*.so
 debian/tmp/usr/bin/emu*
