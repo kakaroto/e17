@@ -26,4 +26,5 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 clean-local:
 	 rm -rf *~
-
+uninstall:
+	rm -rf $(datadir)
