@@ -75,7 +75,8 @@ group {
             text {
                text: "Message";
                font: "Vera";
-               size:  10;
+               size: 10;
+               min: 1 1;
                align: 0.0 0.5;
             }
          }
