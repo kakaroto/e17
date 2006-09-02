@@ -444,10 +444,10 @@ _ex_image_blur(Etk_Image *im)
 	  {
 	  }
      }
-   free(as);
-   free(rs);
-   free(gs);
-   free(bs);
+   E_FREE(as);
+   E_FREE(rs);
+   E_FREE(gs);
+   E_FREE(bs);
    
    evas_object_image_data_set(im->image_object, data);
    evas_object_image_data_update_add(im->image_object, 0, 0, w, h);   
@@ -1149,7 +1149,7 @@ PSEUDO:
 	snprintf(esetroot, strlen("Esetroot ") + strlen(esetroot_opt) + strlen(im->filename) + 2,
 		 "Esetroot %s %s", esetroot_opt, im->filename);
 	system(esetroot);
-	free(esetroot);
+	E_FREE(esetroot);
 	exit(0);
      }
 }

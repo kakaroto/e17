@@ -812,7 +812,7 @@ _ex_options_page_4_create()
 }
 
 void
-_ex_options_window_show(Exhibit *e)
+_ex_options_window_show()
 {
    Etk_Widget *win;
    Etk_Widget *vbox;

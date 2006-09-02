@@ -1,4 +1,11 @@
 /*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
+
+#include "exhibit.h"
+#include "exhibit_comment_jpeg.h"
+
+/*
  *   Updated by HandyAndE
  *
  * based on:
@@ -9,10 +16,18 @@
  *
  */
 
-#include <stdlib.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <string.h>
+static int _ex_comment_jpeg_read_1_byte (FILE *infile, int *c);
+static int _ex_comment_jpeg_read_2_bytes (FILE *infile, unsigned int *c);
+static void _ex_comment_jpeg_write_1_byte (FILE *outfile, int c);
+static void _ex_comment_jpeg_write_2_bytes (FILE *outfile, unsigned int val);   
+static void _ex_comment_jpeg_write_marker(FILE *outfile, int marker);
+static void _ex_comment_jpeg_copy_rest_of_file(FILE *infile, FILE *outfile);
+static int _ex_comment_jpeg_next_marker (FILE *infile, int *c);
+static int _ex_comment_jpeg_first_marker (FILE *infile, int *c);
+static int _ex_comment_jpeg_skip_variable (FILE *infile);
+static int _ex_comment_jpeg_copy_variable (FILE *infile, FILE *outfile);
+static int _ex_comment_jpeg_read_process_COM (FILE *infile, unsigned int *len, char **com);
+static int _ex_comment_jpeg_write_scan_header (FILE *infile, FILE *outfile, int *ret, int keep_COM);
 
 /* Read one byte, testing for EOF */
 static int
@@ -536,7 +551,7 @@ _ex_comment_jpeg_write(char *file, const char *comment, unsigned int len)
    fclose(infile);
    fclose(outfile);
    rename((const char*) tmp_file, (const char*) file);
-   free(tmp_file);
+   E_FREE(tmp_file);
    return 1;
 }
 

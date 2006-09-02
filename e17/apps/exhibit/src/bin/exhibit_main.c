@@ -269,8 +269,6 @@ _ex_main_itree_add(const char *file, const char *selected_file)
    Epsilon *ep;
    Etk_Tree_Row *row;
    
-   if(!_ex_file_is_viewable(basename((char *) file)))
-     return;
    
    ep = epsilon_new(file);
    epsilon_thumb_size(ep, EPSILON_THUMB_NORMAL);
@@ -319,44 +317,52 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 static void
 _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path)
 {
+   struct stat st;
+   
+   /* TODO: update non-visible tabs too */
+   
    /* Only do changes if tree's are visible */
    if (ecore_file_monitor != e->cur_tab->monitor)
      return;
 
-   /* TODO: update non-visible tabs too */
-   
-   switch (event)
+   stat(path, &st);
+
+   if(_ex_file_is_viewable(basename((char *) path)) || 
+	 S_ISDIR(st.st_mode))
      {
-      case ECORE_FILE_EVENT_CREATED_DIRECTORY:
-	 etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
-	 break;
-      case ECORE_FILE_EVENT_DELETED_DIRECTORY:
-	 etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
-	 break;
-      case ECORE_FILE_EVENT_DELETED_SELF:
-	 etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-	 etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
-	 break;
-      case ECORE_FILE_EVENT_MODIFIED:
-	 etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
-	 break;
-      case ECORE_FILE_EVENT_DELETED_FILE:
-	 etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-	 _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
-	 break;
-      case ECORE_FILE_EVENT_CREATED_FILE:
-	 _ex_main_itree_add(path, path);
-	 break;
-      default:
-	 D(("Unknown ecore file event occured\n"));
-	 break;
+	switch (event)
+	  {
+	   case ECORE_FILE_EVENT_CREATED_DIRECTORY:
+	      etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
+	      break;
+	   case ECORE_FILE_EVENT_DELETED_DIRECTORY:
+	      etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
+	      break;
+	   case ECORE_FILE_EVENT_DELETED_SELF:
+	      etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	      etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
+	      break;
+	   case ECORE_FILE_EVENT_MODIFIED:
+	      /* Careful with what to do here.. */
+	      break;
+	   case ECORE_FILE_EVENT_DELETED_FILE:
+	      /* TODO: remove the correct item from tree, don't refresh all */
+	      etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
+	      break;
+	   case ECORE_FILE_EVENT_CREATED_FILE:
+	      _ex_main_itree_add(path, path);
+	      break;
+	   default:
+	      D(("Unknown ecore file event occured\n"));
+	      break;
+	  }
+	
+	D(("Monitor event %d happened in %s\n", event, path));
      }
-   
-   D(("Monitor event %d happened in %s\n", event, path));
 }
 
 static void
@@ -488,7 +494,8 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	     r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
 	     if(!r) return;
 	     
-	     etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+	     etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), 
+		   NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1), NULL);
 	     _ex_favorites_add(e, icol_string);
 	  }
 	else if(!strcmp(ev->key, "x"))
@@ -563,16 +570,11 @@ _ex_main_window_tab_append(Ex_Tab *tab)
 static void 
 _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Selection_Request *ev;
+   Etk_Event_Selection_Request *ev = event;
    Etk_Selection_Data_Files *files;
-   Exhibit *e;
-   
    int i;
    
-   ev = event;
-   e = data;
-   
-   if(ev->content != ETK_SELECTION_CONTENT_FILES)
+   if (ev->content != ETK_SELECTION_CONTENT_FILES)
      return;
    
    files = ev->data;
@@ -601,7 +603,8 @@ _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 	_ex_main_populate_files(ecore_file_get_file(file), EX_TREE_UPDATE_ALL);
 	if (ecore_file_exists(file) && !ecore_file_is_dir(file))
 	  _ex_main_image_set(e, file);
-	etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, _ex_file_get(e->cur_tab->cur_path));
+	etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, 
+	      _ex_file_get(e->cur_tab->cur_path));
 	break;
      }
 }
@@ -683,7 +686,6 @@ _ex_main_window_show(char *dir)
    etk_container_add(ETK_CONTAINER(e->win), e->vbox);
                
    e->hpaned = etk_hpaned_new();
-   //etk_container_add(ETK_CONTAINER(e->win), e->hpaned);
    etk_box_append(ETK_BOX(e->vbox), e->hpaned, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);   
 
    e->vpaned = etk_vpaned_new();
@@ -860,14 +862,12 @@ _ex_main_window_show(char *dir)
    e->notebook = etk_notebook_new();
    etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);
    etk_paned_child2_set(ETK_PANED(e->hpaned), e->notebook, ETK_TRUE);
-   etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), ETK_CALLBACK(_ex_main_window_tab_toggled_cb), e);
+   etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), 
+	 ETK_CALLBACK(_ex_main_window_tab_toggled_cb), NULL);
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);   
    etk_box_append(ETK_BOX(e->vbox), e->hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
 
-   e->sort = etk_label_new("Sort by date");
-   /* size is different than statusbar, how do we make it look good? */
-   //etk_box_append(ETK_BOX(e->hbox), e->sort, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
      {
 	Etk_Widget *menu;
 	Etk_Widget *menu_item;

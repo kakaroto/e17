@@ -11,6 +11,6 @@ void            _ex_options_default(Exhibit *o);
 void            _ex_options_free(Exhibit *e);
 int             _ex_options_save(Exhibit *e);
 int             _ex_options_load(Exhibit *e);
-void            _ex_options_window_show(Exhibit *e);
+void            _ex_options_window_show();
 
 #endif
