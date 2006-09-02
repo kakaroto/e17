@@ -48,6 +48,10 @@
 #define USE_PAGER_BACKGROUND_CACHE 1
 #define IMG_SCALE 2
 
+#define PAGER_MODE_SIMPLE 0
+#define PAGER_MODE_SNAP   1
+#define PAGER_MODE_LIVE   2
+
 #define EwinGetVX(ew) (ew->vx)
 #define EwinGetVY(ew) (ew->vy)
 #define EwinGetVX2(ew) (ew->vx + EoGetW(ew))
@@ -162,7 +166,7 @@ PagerScanTrig(Pager * p)
    if (p->scan_pending || Conf_pagers.scanspeed <= 0)
       return;
 
-   Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)p->win);
+   Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)WinGetXwin(p->win));
    DoIn(s, 1 / ((double)Conf_pagers.scanspeed), PagerScanTimeout, 0, p);
    p->scan_pending = 1;
 }
@@ -175,7 +179,7 @@ PagerScanCancel(Pager * p)
    if (!p->scan_pending)
       return;
 
-   Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)p->win);
+   Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)WinGetXwin(p->win));
    RemoveTimerEvent(s);
 }
 
@@ -187,7 +191,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    int                 y, y2, phase, cx, cy, ww, hh, xx, yy;
    static int          offsets[8] = { 0, 4, 2, 6, 1, 5, 3, 7 };
 
-   if (Conf_pagers.mode == 0)
+   if (Conf_pagers.mode == PAGER_MODE_SIMPLE)
       return;
 
    p = (Pager *) data;
@@ -196,10 +200,13 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    ewin = p->ewin;
    if (!ewin || !EoIsShown(ewin))
       return;
-   if (p->dsk != DesksGetCurrent())
-      return;
-   if (ewin->state.visibility == VisibilityFullyObscured)
-      return;
+   if (Conf_pagers.mode == PAGER_MODE_SNAP)
+     {
+	if (p->dsk != DesksGetCurrent())
+	   return;
+	if (ewin->state.visibility == VisibilityFullyObscured)
+	   return;
+     }
 
    if (Conf_pagers.scanspeed > 0)
       PagerScanTrig(p);
@@ -207,7 +214,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    if (Mode.mode != MODE_NONE)
       return;
 
-   if (Conf_pagers.mode == 2)
+   if (Conf_pagers.mode == PAGER_MODE_LIVE)
      {
 	doPagerUpdate(p);
 	return;
@@ -287,17 +294,20 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    if (ewin->mini_w != w || ewin->mini_h != h)
       update = 1;
 
-   if (serdif > 0 && ewin->type != EWIN_TYPE_PAGER)
+   if (serdif > 0 && ewin->type != EWIN_TYPE_PAGER &&
+       Conf_pagers.mode == PAGER_MODE_LIVE && Mode.mode == 0)
       update = 1;
    if (serdif > p->serdif)
       p->serdif = serdif;
+
+   if (!update)
+      return;
 
    Dprintf("PagerEwinUpdateMini %#lx/%#lx wxh=%dx%d ser=%#x/%#x dif=%d: %s\n",
 	   EwinGetClientXwin(ewin), EoGetXwin(ewin), w, h,
 	   EoObj(ewin)->serial, p->serial, serdif, EwinGetName(ewin));
 
-   if (!update)
-      return;
+   p->do_update = 1;
 
    FreePmapMask(&ewin->mini_pmm);
 
@@ -305,7 +315,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    ewin->mini_h = h;
 
    draw = None;
-   if (Conf_pagers.mode)
+   if (Conf_pagers.mode != PAGER_MODE_SIMPLE)
      {
 	draw = EoGetPixmap(ewin);
 	if (draw == None && EwinIsOnScreen(ewin))
@@ -348,7 +358,7 @@ static void
 doPagerUpdate(Pager * p)
 {
    int                 x, y, ax, ay, cx, cy, vx, vy;
-   GC                  gc;
+   GC                  gc = None;
    EWin               *const *lst;
    int                 i, num, update_screen_included, update_screen_only;
 
@@ -358,12 +368,9 @@ doPagerUpdate(Pager * p)
    vx = cx * VRoot.w;
    vy = cy * VRoot.h;
 
-   gc = EXCreateGC(p->pmap, 0, NULL);
-   if (gc == None)
-      return;
-
    update_screen_included = update_screen_only = 0;
-   if (Conf_pagers.mode == 1 && p->dsk == DesksGetCurrent())
+   if (Conf_pagers.mode == PAGER_MODE_SNAP && p->dsk == DesksGetCurrent()
+       && Mode.mode == 0)
      {
 	/* Update from screen unless update area is entirely off-screen */
 	if (!(p->x2 <= vx || p->y2 <= vy ||
@@ -375,10 +382,36 @@ doPagerUpdate(Pager * p)
 	    p->x2 <= vx + VRoot.w && p->y2 <= vy + VRoot.h)
 	   update_screen_only = 1;
      }
+   p->x1 = p->y1 = 99999;
+   p->x2 = p->y2 = -99999;
 
    if (update_screen_only)
       goto do_screen_update;
 
+   lst = EwinListGetForDesk(&num, p->dsk);
+   for (i = num - 1; i >= 0; i--)
+     {
+	EWin               *ewin;
+
+	ewin = lst[i];
+	if (!EoIsShown(ewin))
+	   continue;
+
+	PagerEwinUpdateMini(p, ewin);
+     }
+   if (p->serdif > 0)
+      p->serial += p->serdif;
+   p->serdif = 0;
+
+   if (!p->do_update)
+      return;
+   p->do_update = 0;
+
+   gc = EXCreateGC(p->pmap, 0, NULL);
+   if (gc == None)
+      return;
+
+   Dprintf("doPagerUpdate %d: Repaint\n", p->dsk->num);
    for (y = 0; y < ay; y++)
      {
 	for (x = 0; x < ax; x++)
@@ -392,7 +425,6 @@ doPagerUpdate(Pager * p)
 	  }
      }
 
-   lst = EwinListGetForDesk(&num, p->dsk);
    for (i = num - 1; i >= 0; i--)
      {
 	EWin               *ewin;
@@ -406,8 +438,6 @@ doPagerUpdate(Pager * p)
 	wy = (EwinGetVY(ewin) * p->dh) / VRoot.h;
 	ww = (EoGetW(ewin) * p->dw) / VRoot.w;
 	wh = (EoGetH(ewin) * p->dh) / VRoot.h;
-
-	PagerEwinUpdateMini(p, ewin);
 
 	if (ewin->mini_pmm.pmap)
 	  {
@@ -429,9 +459,6 @@ doPagerUpdate(Pager * p)
 	     XFillRectangle(disp, p->pmap, gc, wx, wy, ww, wh);
 	  }
      }
-   if (p->serdif > 0)
-      p->serial += p->serdif;
-   p->serdif = 0;
 
    if (!update_screen_included)
      {
@@ -445,7 +472,6 @@ doPagerUpdate(Pager * p)
    ScaleRect(VRoot.win, VRoot.xwin, p->win, p->pmap, NULL, 0, 0,
 	     VRoot.w, VRoot.h, cx * p->dw, cy * p->dh, p->dw, p->dh,
 	     Conf_pagers.hiq);
-   p->update_phase = 0;
 
    EClearWindow(p->win);
 
@@ -453,10 +479,8 @@ doPagerUpdate(Pager * p)
    PagerUpdateEwinsFromPager(p);
 
  done:
-   p->x1 = p->y1 = 99999;
-   p->x2 = p->y2 = -99999;
-
-   EXFreeGC(gc);
+   if (gc != None)
+      EXFreeGC(gc);
 }
 
 static void
@@ -477,7 +501,7 @@ PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
    p->do_update = 1;
    pager_update_pending = 1;
 
-   if (Conf_pagers.mode == 0)
+   if (Conf_pagers.mode == PAGER_MODE_SIMPLE)
       return;
 
    DoIn("pg-upd", .2, PagerUpdateTimeout, 0, NULL);
@@ -541,7 +565,7 @@ PagerUpdateBg(Pager * p)
    pmap = p->bgpmap = ECreatePixmap(p->win, p->dw, p->dh, 0);
 
    bg = DeskBackgroundGet(p->dsk);
-   if (Conf_pagers.mode != 0 && bg)
+   if (Conf_pagers.mode != PAGER_MODE_SIMPLE && bg)
      {
 #if USE_PAGER_BACKGROUND_CACHE
 	char                s[4096];
@@ -572,7 +596,7 @@ PagerUpdateBg(Pager * p)
 	return;
      }
 
-   if (Conf_pagers.mode != 0 && p->dsk->bg.pmap)
+   if (Conf_pagers.mode != PAGER_MODE_SIMPLE && p->dsk->bg.pmap)
      {
 	ScaleRect(VRoot.win, p->dsk->bg.pmap, p->win, pmap, NULL, 0, 0,
 		  VRoot.w, VRoot.h, 0, 0, p->dw, p->dh, Conf_pagers.hiq);
@@ -972,7 +996,7 @@ PagerMenuShow(Pager * p, int x, int y)
    mi = MenuItemCreate(_("Pager Settings..."), NULL, "pg cfg", NULL);
    MenuAddItem(p_menu, mi);
 
-   if (Conf_pagers.mode)
+   if (Conf_pagers.mode != PAGER_MODE_SIMPLE)
      {
 	mi = MenuItemCreate(_("Snapshotting Off"), NULL, "pg snap off", NULL);
 	MenuAddItem(p_menu, mi);
@@ -1247,7 +1271,7 @@ PagersSetMode(int mode)
 
    PagersUpdateBackground(NULL);
 
-   if (Conf_pagers.mode != 0 && Conf_pagers.scanspeed > 0)
+   if (Conf_pagers.mode != PAGER_MODE_SIMPLE && Conf_pagers.scanspeed > 0)
       PagersForeach(DesksGetCurrent(), _PagerSetSnap, NULL);
 
    autosave();
