@@ -174,8 +174,10 @@ AC_ARG_WITH(freetype-config, [  --with-freetype-config=FREETYPE_CONFIG    use fr
 freetype_cflags=`$FREETYPE_CONFIG --cflags`
 freetype_libs=`$FREETYPE_CONFIG --libs`
 
-AC_PATH_X([X11], [X11/Xlib.h], [XOpenDisplay(NULL)])
-
+AC_CHECK_HEADER(X11/X.h,
+  [ have_x="yes" ],
+  [ have_x="no" ])
+  
 if test "x$have_x" = "xno"; then
    # If --without-x was passed, this will be "disabled" instead of "no" --
    # so always treat "no" as an error
@@ -185,14 +187,10 @@ path on your system, or --without-x to disable X support.])
 fi
 
 if test "x$have_x" = "xyes"; then
-  if test "x$x_includes" != "x"; then
-    x_cflags="-I$x_includes"
-  fi
-  if test "x$x_libraries" != "x"; then
-    x_libs="-L$x_libraries -lX11 -lXext"
-  else
-    x_libs="-lX11 -lXext"
-  fi
+  AC_PATH_XTRA
+  x_dir=${x_dir:-/usr/X11R6}
+  x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
+  x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
   AM_CONDITIONAL(BUILD_X11, true)
   AC_DEFINE(BUILD_X11, 1, [enabling X11 support])
 else
