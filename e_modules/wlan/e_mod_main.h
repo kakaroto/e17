@@ -18,6 +18,8 @@ struct _Config
 struct _Config_Item
 {
    const char *id;
+   
+   const char *device;   
    double poll_time;
    int show_percent;
    int always_text;

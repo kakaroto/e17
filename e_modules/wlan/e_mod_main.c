@@ -39,6 +39,8 @@ static Config_Item *_wlan_config_item_get (const char *id);
 static Wlan *_wlan_new (Evas * evas);
 static void _wlan_free (Wlan * wlan);
 static int _wlan_cb_check (void *data);
+static void _wlan_update_qual (void *data, double value);
+static void _wlan_update_level (void *data, double value);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -240,6 +242,7 @@ _wlan_config_item_get (const char *id)
     }
   ci = E_NEW (Config_Item, 1);
   ci->id = evas_stringshare_add (id);
+  ci->device = evas_stringshare_add ("wlan0");  
   ci->poll_time = 1.0;
   ci->always_text = 0;
   ci->show_percent = 1;
@@ -265,6 +268,7 @@ e_modapi_init (E_Module * m)
 #define T Config_Item
 #define D conf_item_edd
   E_CONFIG_VAL (D, T, id, STR);
+  E_CONFIG_VAL (D, T, device, STR);  
   E_CONFIG_VAL (D, T, poll_time, DOUBLE);
   E_CONFIG_VAL (D, T, always_text, INT);
   E_CONFIG_VAL (D, T, show_percent, INT);
@@ -285,6 +289,7 @@ e_modapi_init (E_Module * m)
 
       ci = E_NEW (Config_Item, 1);
       ci->id = evas_stringshare_add ("0");
+      ci->device = evas_stringshare_add ("wlan0");      
       ci->poll_time = 1.0;
       ci->always_text = 0;
       ci->show_percent = 1;
@@ -318,6 +323,9 @@ e_modapi_shutdown (E_Module * m)
 	evas_list_remove_list (wlan_config->items, wlan_config->items);
       if (ci->id)
 	evas_stringshare_del (ci->id);
+      if (ci->device)
+	evas_stringshare_del (ci->device);
+	
       free (ci);
       ci = NULL;
     }
@@ -441,11 +449,13 @@ _wlan_cb_check (void *data)
         if (sscanf(buf, "%s %u %u %u %u %u %u %u %u %u %u",
                    iface, &wlan_status, &wlan_link, &wlan_level, &wlan_noise, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 11)
            continue;
-        if (!strcmp(iface, "wlan0"))
-          {
-             found_dev = 1;
-             break;
-          }
+      if (!ci->device)
+	continue;
+      if (!strcmp (iface, ci->device))
+	{
+	  found_dev = 1;
+	  break;
+	}
      }
    fclose(stat);
 
@@ -457,21 +467,12 @@ _wlan_cb_check (void *data)
   inst = data;
   ci = _wlan_config_item_get (inst->gcc->id);
 
-
    double link_send = ((double)wlan_link / (double)100.0);
    double level_send = ((double)wlan_level / (double)100.0);
 
-   Edje_Message_Float *val;
-   val = malloc(sizeof(Edje_Message_Float));
-   val->val = link_send;   
-   edje_object_message_send(inst->wlan_obj, EDJE_MESSAGE_FLOAT,1, val);
-   free(val);
-
-   val = malloc(sizeof(Edje_Message_Float));
-   val->val = level_send;   
-   edje_object_message_send(inst->wlan_obj, EDJE_MESSAGE_FLOAT,2, val);
-   free(val);
-
+  _wlan_update_qual(inst, link_send);
+  _wlan_update_level (inst, level_send);
+  
    snprintf(omsg,sizeof(omsg),"Qual: %d%%", wlan_link);
    edje_object_signal_emit(inst->wlan_obj, "label_active", "");
    edje_object_part_text_set(inst->wlan_obj, "qual_label", omsg);
@@ -479,6 +480,32 @@ _wlan_cb_check (void *data)
    snprintf(omsg,sizeof(omsg),"Lvl: %d%%", wlan_level);
    edje_object_part_text_set(inst->wlan_obj, "level_label", omsg);
 
-
   return 1;
 }
+
+static void 
+_wlan_update_qual(void *data, double value) 
+{
+   Instance *inst;
+   Edje_Message_Float *val;
+   
+   inst = data;
+   val = malloc(sizeof(Edje_Message_Float));
+   val->val = value;
+   edje_object_message_send(inst->wlan_obj, EDJE_MESSAGE_FLOAT,1, val);
+   free(val);
+}
+
+static void 
+_wlan_update_level(void *data, double value) 
+{
+   Instance *inst;
+   Edje_Message_Float *val;
+   
+   inst = data;
+   val = malloc(sizeof(Edje_Message_Float));
+   val->val = value;   
+   edje_object_message_send(inst->wlan_obj, EDJE_MESSAGE_FLOAT,2, val);
+   free(val);
+}
+
