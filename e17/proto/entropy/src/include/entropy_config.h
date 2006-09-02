@@ -38,6 +38,8 @@ typedef struct Entropy_Config_Loaded Entropy_Config_Loaded;
 struct Entropy_Config_Item {
 	char* name;
 	char* value;
+
+	Ecore_Hash* callback_hash;
 };
 typedef struct Entropy_Config_Item Entropy_Config_Item;
 
@@ -73,6 +75,7 @@ Entropy_Config_Structure* entropy_config_structure_new(char* name, char* uri);
 
 void entropy_config_items_init();
 void entropy_config_misc_item_str_set(char* item, char* value, int loc);
+void entropy_config_misc_callback_register(char* item, void (*cb)(char*, void*), void* data);
 char* entropy_config_misc_item_str_get(char* item);
 
 #define ENTROPY_CONFIG_INT_UNDEFINED 65535

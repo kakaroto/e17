@@ -67,7 +67,7 @@ void entropy_plugin_layout_main ();
 char* entropy_plugin_toolkit_get();
 entropy_gui_component_instance* entropy_plugin_layout_create (entropy_core * core);
 void entropy_etk_layout_trackback_cb(Etk_Object* obj, void* data);
-
+void entropy_etk_layout_trackback_show(entropy_layout_gui* gui, int visible);
 void entropy_layout_etk_simple_local_view_set(entropy_gui_component_instance* instance,
 		entropy_gui_component_instance* local);
 
@@ -167,7 +167,8 @@ static Etk_Widget *_entropy_etk_radio_item_new(const char *label, Etk_Menu_Item_
    return menu_item;
 }
 
-
+/*-----*/
+/*Location related functions*/
 static void _etk_layout_location_delete_confirm_cb(Etk_Object * object, void *data)
 {
 	entropy_gui_component_instance* instance = data;
@@ -210,51 +211,81 @@ static void _etk_layout_row_clicked(Etk_Object *object,
 	
 }
 
-Entropy_Plugin*
-entropy_plugin_init (entropy_core * core)
+void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entropy_Config_Structure* structure_obj)
 {
-  Entropy_Plugin_Gui* plugin;
-  Entropy_Plugin* base;
+  void *(*structure_plugin_init) (entropy_core * core,
+				  entropy_gui_component_instance *,
+				  void* parent_visual,
+				  void *data);
+
+  entropy_plugin *structure;
+  entropy_generic_file* file;
+  Etk_Tree_Row* row;
+  Etk_Tree_Col* col;
+  entropy_layout_gui* gui = instance->data;
+  char* icon_string = NULL;
+  Ecore_List* layouts;
+  _layout_etk_row_structure_plugin* struct_ref = NULL;
+
+  col = etk_tree_nth_col_get(ETK_TREE(gui->tree), 0);
+
+  /*Parse the file from the URI*/
+   file = entropy_core_parse_uri (structure_obj->uri);
+
+   printf("Object for %s/%s is %p....\n", file->path, file->filename, file);
+   
+
+   /*This will be moved to a central function. TODO*/
+   if (!strcmp(file->uri_base, "file"))
+	   icon_string = PACKAGE_DATA_DIR "/icons/local-system.png";
+  else if (!strcmp(file->uri_base, "smb"))
+	  icon_string = PACKAGE_DATA_DIR "/icons/samba-system.png";
+   else if (!strcmp(file->uri_base,"sftp"))
+	  icon_string = PACKAGE_DATA_DIR "/icons/sftp-system.png"; 
+   else if (!strcmp(file->uri_base,"vfolder"))
+	  icon_string = PACKAGE_DATA_DIR "/icons/vfolder-system.png"; 
+			   
 	
-  /*Init etk */
-  etk_init (NULL, NULL);
-
-  plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
-  base = ENTROPY_PLUGIN(plugin);
+  etk_tree_freeze(ETK_TREE(gui->tree));
+  row = etk_tree_append(ETK_TREE(gui->tree), col, 
+			  icon_string, structure_obj->name, NULL);
+  etk_tree_thaw(ETK_TREE(gui->tree));
   
-  base->functions.entropy_plugin_init = &entropy_plugin_init;
-  plugin->gui_functions.layout_main = &entropy_plugin_layout_main;
-  plugin->gui_functions.layout_create = &entropy_plugin_layout_create;
-  plugin->gui_functions.toolkit_get= &entropy_plugin_toolkit_get;
+  
+  structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
+   structure_plugin_init =
+      dlsym (structure->dl_ref, "entropy_plugin_gui_instance_new");
 
-  return base;
+   /*We shouldn't really assume it's a folder - but it bootstraps us for
+    * now- FIXME*/
+   strcpy(file->mime_type, "file/folder");
+   file->filetype = FILE_FOLDER;
+
+  if (!strlen (file->mime_type)) {
+	    entropy_mime_file_identify (file);
+  }
+   
+   instance = (*structure_plugin_init)(instance->core, instance, row,file);
+   instance->plugin = structure;
+
+   /*Add to tracker*/
+  ecore_hash_set(_etk_layout_row_reference, row, structure_obj);
+  
+  /*Add to layout/plugin tracker - this is to destroy if the user removes a location*/
+  if (! (layouts = ecore_hash_get(_etk_layout_structure_plugin_reference, structure_obj))) {
+	  layouts = ecore_list_new();
+	  ecore_hash_set(_etk_layout_structure_plugin_reference, structure_obj, layouts);
+  }
+
+  struct_ref = entropy_malloc(sizeof(_layout_etk_row_structure_plugin));
+  struct_ref->row = row;
+  struct_ref->structure_plugin = structure;
+
+  ecore_list_append(layouts, struct_ref);
+
 }
+/*----------*/
 
-char *
-entropy_plugin_identify ()
-{
-  return (char *) "etk";
-}
-
-int
-entropy_plugin_type_get ()
-{
-  return ENTROPY_PLUGIN_GUI_LAYOUT;
-}
-
-char*
-entropy_plugin_toolkit_get() 
-{
-	return ENTROPY_TOOLKIT_ETK;
-}
-
-void
-entropy_plugin_layout_main ()
-{
-
-  printf("Init ETK main...\n");
-  etk_main ();
-}
 
 void etk_layout_simple_exit_cb(Etk_Object* obj, void* data)
 {
@@ -274,18 +305,30 @@ void entropy_etk_options_dialog_cb(Etk_Object* obj, void* data)
 	entropy_etk_options_dialog_show();
 }
 
+/*---*/
+/*Trackback plugin related functions*/
 void entropy_etk_layout_trackback_cb(Etk_Object* obj, void* data)
 {
 	entropy_gui_component_instance* instance = data;
 	entropy_layout_gui* gui = instance->data;
 
 	if (etk_container_is_child(ETK_CONTAINER(gui->trackback_shell), gui->trackback->gui_object) == ETK_FALSE) {
+		entropy_etk_layout_trackback_show(gui,1);
+	} else {
+		entropy_etk_layout_trackback_show(gui,0);
+	}
+}
+
+void entropy_etk_layout_trackback_show(entropy_layout_gui* gui, int visible)
+{
+	if (visible) {
 		etk_box_append(ETK_BOX(gui->trackback_shell), gui->trackback->gui_object, ETK_BOX_START, ETK_BOX_NONE,0);
-		etk_widget_show_all(ETK_WIDGET(gui->trackback->gui_object));
+		etk_widget_show_all(ETK_WIDGET(gui->trackback->gui_object));	
 	} else {
 		etk_container_remove(ETK_CONTAINER(gui->trackback_shell), gui->trackback->gui_object);
 	}
 }
+/*--------*/
 
 void entropy_etk_layout_tree_cb(Etk_Object* obj, void* data)
 {
@@ -391,78 +434,72 @@ _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
    
 }
 
-void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entropy_Config_Structure* structure_obj)
+/*Config related functions*/
+void
+_entropy_layout_etk_simple_config_cb(char* option, void* data)
 {
-  void *(*structure_plugin_init) (entropy_core * core,
-				  entropy_gui_component_instance *,
-				  void* parent_visual,
-				  void *data);
+	entropy_layout_gui* gui;
 
-  entropy_plugin *structure;
-  entropy_generic_file* file;
-  Etk_Tree_Row* row;
-  Etk_Tree_Col* col;
-  entropy_layout_gui* gui = instance->data;
-  char* icon_string = NULL;
-  Ecore_List* layouts;
-  _layout_etk_row_structure_plugin* struct_ref = NULL;
-
-  col = etk_tree_nth_col_get(ETK_TREE(gui->tree), 0);
-
-  /*Parse the file from the URI*/
-   file = entropy_core_parse_uri (structure_obj->uri);
-
-   printf("Object for %s/%s is %p....\n", file->path, file->filename, file);
-   
-
-   /*This will be moved to a central function. TODO*/
-   if (!strcmp(file->uri_base, "file"))
-	   icon_string = PACKAGE_DATA_DIR "/icons/local-system.png";
-  else if (!strcmp(file->uri_base, "smb"))
-	  icon_string = PACKAGE_DATA_DIR "/icons/samba-system.png";
-   else if (!strcmp(file->uri_base,"sftp"))
-	  icon_string = PACKAGE_DATA_DIR "/icons/sftp-system.png"; 
-   else if (!strcmp(file->uri_base,"vfolder"))
-	  icon_string = PACKAGE_DATA_DIR "/icons/vfolder-system.png"; 
-			   
+	gui = data;
 	
-  etk_tree_freeze(ETK_TREE(gui->tree));
-  row = etk_tree_append(ETK_TREE(gui->tree), col, 
-			  icon_string, structure_obj->name, NULL);
-  etk_tree_thaw(ETK_TREE(gui->tree));
+	printf("Layout notified of change to '%s'\n", option);
+	if (!strcmp(option, "general.trackback")) {
+		if (entropy_config_misc_is_set("general.trackback"))
+			entropy_etk_layout_trackback_show(gui, 1);
+		else
+			entropy_etk_layout_trackback_show(gui, 0);
+	}
+}
+/*----*/
+
+
+/*----*/
+/*Interal functions*/
+
+Entropy_Plugin*
+entropy_plugin_init (entropy_core * core)
+{
+  Entropy_Plugin_Gui* plugin;
+  Entropy_Plugin* base;
+	
+  /*Init etk */
+  etk_init (NULL, NULL);
+
+  plugin = entropy_malloc(sizeof(Entropy_Plugin_Gui));
+  base = ENTROPY_PLUGIN(plugin);
   
-  
-  structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
-   structure_plugin_init =
-      dlsym (structure->dl_ref, "entropy_plugin_gui_instance_new");
+  base->functions.entropy_plugin_init = &entropy_plugin_init;
+  plugin->gui_functions.layout_main = &entropy_plugin_layout_main;
+  plugin->gui_functions.layout_create = &entropy_plugin_layout_create;
+  plugin->gui_functions.toolkit_get= &entropy_plugin_toolkit_get;
 
-   /*We shouldn't really assume it's a folder - but it bootstraps us for
-    * now- FIXME*/
-   strcpy(file->mime_type, "file/folder");
-   file->filetype = FILE_FOLDER;
+  return base;
+}
 
-  if (!strlen (file->mime_type)) {
-	    entropy_mime_file_identify (file);
-  }
-   
-   instance = (*structure_plugin_init)(instance->core, instance, row,file);
-   instance->plugin = structure;
+char *
+entropy_plugin_identify ()
+{
+  return (char *) "etk";
+}
 
-   /*Add to tracker*/
-  ecore_hash_set(_etk_layout_row_reference, row, structure_obj);
-  
-  /*Add to layout/plugin tracker - this is to destroy if the user removes a location*/
-  if (! (layouts = ecore_hash_get(_etk_layout_structure_plugin_reference, structure_obj))) {
-	  layouts = ecore_list_new();
-	  ecore_hash_set(_etk_layout_structure_plugin_reference, structure_obj, layouts);
-  }
+int
+entropy_plugin_type_get ()
+{
+  return ENTROPY_PLUGIN_GUI_LAYOUT;
+}
 
-  struct_ref = entropy_malloc(sizeof(_layout_etk_row_structure_plugin));
-  struct_ref->row = row;
-  struct_ref->structure_plugin = structure;
+char*
+entropy_plugin_toolkit_get() 
+{
+	return ENTROPY_TOOLKIT_ETK;
+}
 
-  ecore_list_append(layouts, struct_ref);
+void
+entropy_plugin_layout_main ()
+{
 
+  printf("Init ETK main...\n");
+  etk_main ();
 }
 
 
@@ -738,6 +775,7 @@ entropy_plugin_layout_create (entropy_core * core)
 	  if (entropy_config_misc_is_set("general.trackback")) {
 		  etk_box_append(ETK_BOX(gui->trackback_shell), gui->trackback->gui_object, ETK_BOX_START, ETK_BOX_NONE, 0);
 	  }
+	  entropy_config_misc_callback_register("general.trackback", _entropy_layout_etk_simple_config_cb, gui);
   }
 
 
@@ -804,7 +842,7 @@ entropy_plugin_layout_create (entropy_core * core)
   }
 
   
-  menu_item = _entropy_etk_radio_item_new(_("Icon View (Alt-i)"), menu_item, ETK_MENU_SHELL(menu));
+  menu_item = _entropy_etk_radio_item_new(_("Icon View (Alt-i)"), ETK_MENU_ITEM_RADIO(menu_item), ETK_MENU_SHELL(menu));
   etk_object_data_set(ETK_OBJECT(menu_item), "VISUAL", gui->iconbox_viewer);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_local_viewer_cb), layout);
   if (entropy_config_misc_is_set("general.iconviewer")) {

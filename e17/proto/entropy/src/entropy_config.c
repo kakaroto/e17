@@ -680,6 +680,8 @@ void entropy_config_items_init()
 void entropy_config_misc_item_str_set(char* item, char* value, int loc)
 {
 	Entropy_Config_Item* c_item;
+	void (*cb)();
+	Ecore_List* keys;
 
 	if (loc == ENTROPY_CONFIG_LOC_HASH) {
 		if (!(c_item=ecore_hash_get(_Entropy_Config->Loaded_Config->Misc_Config, item))) {
@@ -698,6 +700,17 @@ void entropy_config_misc_item_str_set(char* item, char* value, int loc)
 
 			  printf ("hash Set (existing) '%s' -> '%s'\n",c_item->name, c_item->value);
 		}
+
+		if (c_item) {
+			if (c_item->callback_hash) {
+				keys = ecore_hash_keys(c_item->callback_hash);
+				ecore_list_goto_first(keys);
+				while ((cb = ecore_list_remove_first(keys))) {
+					(*cb)(item, ecore_hash_get(c_item->callback_hash, cb));
+				}
+				ecore_list_destroy(keys);
+			}
+		}
 	} else if (loc == ENTROPY_CONFIG_LOC_LIST) {
 		c_item = calloc(1,sizeof(Entropy_Config_Item));
 		c_item->name = strdup(item);
@@ -706,6 +719,21 @@ void entropy_config_misc_item_str_set(char* item, char* value, int loc)
 		_Entropy_Config->Loaded_Config->Misc_Config_Load = evas_list_append(
 			_Entropy_Config->Loaded_Config->Misc_Config_Load, c_item);
 		printf ("Set '%s' -> '%s'\n",item, value);
+	}
+}
+
+void entropy_config_misc_callback_register(char* item, void (*cb)(char*, void*), void* data)
+{
+	Entropy_Config_Item* c_item;	
+
+	c_item = ecore_hash_get(_Entropy_Config->Loaded_Config->Misc_Config, item);
+	if (c_item) {
+		if (!c_item->callback_hash)
+			c_item->callback_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+
+		ecore_hash_set(c_item->callback_hash, cb, data);
+	} else {
+		printf("Register called for non existent misc config item: '%s'\n", item);
 	}
 }
 
