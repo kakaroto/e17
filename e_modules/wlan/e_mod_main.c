@@ -243,10 +243,6 @@ _wlan_config_item_get (const char *id)
   ci->poll_time = 1.0;
   ci->always_text = 0;
   ci->show_percent = 1;
-#ifdef __linux__
-  ci->real_ignore_buffers = 0;
-  ci->real_ignore_cached = 0;
-#endif
 
   wlan_config->items = evas_list_append (wlan_config->items, ci);
   return ci;
@@ -272,10 +268,6 @@ e_modapi_init (E_Module * m)
   E_CONFIG_VAL (D, T, poll_time, DOUBLE);
   E_CONFIG_VAL (D, T, always_text, INT);
   E_CONFIG_VAL (D, T, show_percent, INT);
-#ifdef __linux__
-  E_CONFIG_VAL (D, T, real_ignore_buffers, INT);
-  E_CONFIG_VAL (D, T, real_ignore_cached, INT);
-#endif
 
   conf_edd = E_CONFIG_DD_NEW ("Wlan_Config", Config);
 #undef T
@@ -296,10 +288,6 @@ e_modapi_init (E_Module * m)
       ci->poll_time = 1.0;
       ci->always_text = 0;
       ci->show_percent = 1;
-#ifdef __linux__
-      ci->real_ignore_buffers = 0;
-      ci->real_ignore_cached = 0;
-#endif
       wlan_config->items = evas_list_append (wlan_config->items, ci);
     }
   wlan_config->module = m;
