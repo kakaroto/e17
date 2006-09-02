@@ -217,7 +217,7 @@ entropy_core* entropy_core_init(int argc, char** argv) {
                    if (!strncmp(de->d_name + strlen(de->d_name) -3, ".so", 3)) {
                         snprintf(plugin_path, 1024,"%s/%s", PACKAGE_DATA_DIR "/plugins/", de->d_name);
 		
-			printf("Loading '%s'...\n", plugin_path);
+			/*printf("Loading '%s'...\n", plugin_path);*/
 			ecore_list_append(core->plugin_list, create_plugin_object(plugin_path));
                    }
                 }
@@ -250,10 +250,10 @@ entropy_core* entropy_core_init(int argc, char** argv) {
         while ( (plugin = ecore_list_current(core->plugin_list)) ) {
                 int res = entropy_plugin_load(core, plugin);
 		if (res) {
-			printf("Removing plugin from list..%s\n", plugin->filename);
+			/*printf("Removing plugin from list..%s\n", plugin->filename);*/
 			ecore_list_remove(core->plugin_list);
 		} else {
-			printf("Going to next plugin...%s\n", plugin->filename);
+			/*printf("Going to next plugin...%s\n", plugin->filename);*/
 			ecore_list_next(core->plugin_list);
 		}
 		
@@ -659,7 +659,7 @@ int entropy_plugin_load(entropy_core* core, entropy_plugin* plugin) {
         entropy_plugin_identify =dlsym(plugin->dl_ref, "entropy_plugin_identify");
         entropy_plugin_type_get = dlsym(plugin->dl_ref, "entropy_plugin_type_get");
 	entropy_plugin_sub_type_get = dlsym(plugin->dl_ref, "entropy_plugin_sub_type_get");
-        printf("Plugin IDs as: '%s'\n", (*entropy_plugin_identify)());
+        /*printf("Plugin IDs as: '%s'\n", (*entropy_plugin_identify)());*/
 
         type = (*entropy_plugin_type_get)();
 	plugin->type = type;
@@ -938,7 +938,7 @@ void entropy_core_component_event_register(entropy_gui_component_instance* comp,
 		/*This must be a layout (or the programmer has messed up,
 		 * use this as the layout*/
 		layout = comp;
-		printf(" ******* Layout registered itself to receive events\n");
+		/*printf(" ******* Layout registered itself to receive events\n");*/
 	} else {
 		layout = comp->layout_parent;
 	}

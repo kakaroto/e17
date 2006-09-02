@@ -405,7 +405,7 @@ Entropy_Config* entropy_config_init(entropy_core* core) {
 	for (l =_Entropy_Config->Loaded_Config->Misc_Config_Load  ; l; ) {
 		item = l->data;
 		ecore_hash_set(_Entropy_Config->Loaded_Config->Misc_Config, item->name, item);
-		printf("Loaded misc '%s' -> '%s'\n", item->name, item->value);
+		/*printf("Loaded misc '%s' -> '%s'\n", item->name, item->value);*/
 		
 		l=l->next;
 	}
@@ -690,7 +690,7 @@ void entropy_config_misc_item_str_set(char* item, char* value, int loc)
 			if (value) c_item->value = strdup(value);
 			
 			ecore_hash_set(_Entropy_Config->Loaded_Config->Misc_Config, c_item->name, c_item);
-			printf ("hash Set '%s' -> '%s'\n",c_item->name, c_item->value);
+			/*printf ("hash Set '%s' -> '%s'\n",c_item->name, c_item->value);*/
 		} else {
 			  if (c_item->value) free(c_item->value);
 			  if (value) 
@@ -698,7 +698,7 @@ void entropy_config_misc_item_str_set(char* item, char* value, int loc)
 			  else
 				  c_item->value = NULL;
 
-			  printf ("hash Set (existing) '%s' -> '%s'\n",c_item->name, c_item->value);
+			  /*printf ("hash Set (existing) '%s' -> '%s'\n",c_item->name, c_item->value);*/
 		}
 
 		if (c_item) {
@@ -718,7 +718,7 @@ void entropy_config_misc_item_str_set(char* item, char* value, int loc)
 		
 		_Entropy_Config->Loaded_Config->Misc_Config_Load = evas_list_append(
 			_Entropy_Config->Loaded_Config->Misc_Config_Load, c_item);
-		printf ("Set '%s' -> '%s'\n",item, value);
+		/*printf ("Set '%s' -> '%s'\n",item, value);*/
 	}
 }
 
@@ -741,7 +741,7 @@ char* entropy_config_misc_item_str_get(char* item)
 {
 	Entropy_Config_Item* res;
 	
-	printf("Looking for item for '%s'\n", item);
+	/*printf("Looking for item for '%s'\n", item);*/
 	
 	res = (Entropy_Config_Item*)ecore_hash_get(_Entropy_Config->Loaded_Config->Misc_Config, item);
 	if (res) {
