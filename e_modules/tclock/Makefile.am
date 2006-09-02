@@ -39,3 +39,5 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/tclock.edj
 
 clean-local:
 	 rm -rf *.edj *~
+uninstall:
+	rm -rf $(datadir)

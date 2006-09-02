@@ -40,3 +40,5 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/screenshot.edj
 
 clean-local:
 	 rm -rf *.edj *~
+uninstall:
+	rm -rf $(datadir)
