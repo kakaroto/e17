@@ -813,11 +813,11 @@ entropy_plugin_layout_create (entropy_core * core)
 
 
   /*Debug menu*/
-  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Debug"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL); 
+  /*menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Debug"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL); 
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("File Cache"), ETK_STOCK_PLACES_FOLDER_SAVED_SEARCH, ETK_MENU_SHELL(menu), NULL);
-  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_file_cache_dialog_cb), layout);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(etk_file_cache_dialog_cb), layout);*/
   
   /*Help menu*/
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Help"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
