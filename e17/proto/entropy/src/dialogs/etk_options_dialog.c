@@ -212,7 +212,7 @@ void entropy_etk_options_dialog_create()
 			   ETK_BOX_START, ETK_BOX_NONE, 0); 
 
 	   etk_box_append(ETK_BOX(ivbox), 
-			   etk_options_dialog_checkbox_new("Show tree view", "general.treeview"), 
+			   etk_options_dialog_checkbox_new("Show tree view", "general.treeviewer"), 
 			   ETK_BOX_START, ETK_BOX_NONE, 0); 
 
    	   etk_box_append(ETK_BOX(ivbox), 
@@ -296,7 +296,7 @@ void entropy_etk_options_dialog_show()
 		entropy_etk_options_object_create("general.presortfolders");
 		entropy_etk_options_object_create("general.hiddenbackup");
 		entropy_etk_options_object_create("general.iconsize");
-		entropy_etk_options_object_create("general.treeview");
+		entropy_etk_options_object_create("general.treeviewer");
 		
 		entropy_etk_options_dialog_create();
 	}

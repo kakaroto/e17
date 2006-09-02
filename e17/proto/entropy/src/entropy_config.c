@@ -7,7 +7,7 @@
 #include <Eet.h>
 #include <stdarg.h>
 
-#define ENTROPY_CONFIG_VERSION 16
+#define ENTROPY_CONFIG_VERSION 17
 
 static Entropy_Config* _Entropy_Config = NULL;
 

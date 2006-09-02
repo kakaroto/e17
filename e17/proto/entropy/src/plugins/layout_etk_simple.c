@@ -68,6 +68,7 @@ char* entropy_plugin_toolkit_get();
 entropy_gui_component_instance* entropy_plugin_layout_create (entropy_core * core);
 void entropy_etk_layout_trackback_cb(Etk_Object* obj, void* data);
 void entropy_etk_layout_trackback_show(entropy_layout_gui* gui, int visible);
+void entropy_etk_layout_tree_show(entropy_layout_gui* gui, int visible);
 void entropy_layout_etk_simple_local_view_set(entropy_gui_component_instance* instance,
 		entropy_gui_component_instance* local);
 
@@ -330,12 +331,23 @@ void entropy_etk_layout_trackback_show(entropy_layout_gui* gui, int visible)
 }
 /*--------*/
 
+/*------*/
+/*Tree related functions*/
 void entropy_etk_layout_tree_cb(Etk_Object* obj, void* data)
 {
 	entropy_gui_component_instance* instance = data;
 	entropy_layout_gui* gui = instance->data;
 
 	if (!etk_widget_is_visible(gui->tree)) {
+		entropy_etk_layout_tree_show(gui,1);
+	} else {
+		entropy_etk_layout_tree_show(gui,0);
+	}
+}
+
+void entropy_etk_layout_tree_show(entropy_layout_gui* gui, int visible)
+{
+	if (visible) {
 		etk_widget_show_all(gui->tree);
 		etk_paned_position_set(ETK_PANED(gui->paned), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X);
 	} else {
@@ -343,6 +355,7 @@ void entropy_etk_layout_tree_cb(Etk_Object* obj, void* data)
 		etk_paned_position_set(ETK_PANED(gui->paned), 0);
 	}
 }
+/*----------*/
 
 void etk_local_viewer_cb(Etk_Object* obj, void* data)
 {
@@ -448,6 +461,11 @@ _entropy_layout_etk_simple_config_cb(char* option, void* data)
 			entropy_etk_layout_trackback_show(gui, 1);
 		else
 			entropy_etk_layout_trackback_show(gui, 0);
+	} else if (!strcmp(option, "general.treeviewer")) {
+		if (entropy_config_misc_is_set("general.treeviewer"))
+			entropy_etk_layout_tree_show(gui,1);
+		else
+			entropy_etk_layout_tree_show(gui,0);
 	}
 }
 /*----*/
@@ -685,6 +703,11 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_tree_col_expand_set(col, ETK_TRUE);
   etk_tree_build(ETK_TREE(gui->tree));
 
+  /*Register to receive events related to the treeview config*/
+  entropy_config_misc_callback_register("general.treeviewer", _entropy_layout_etk_simple_config_cb, gui);
+
+
+
   etk_widget_size_request_set(ETK_WIDGET(gui->tree), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X, 50);
 
   /*LocalShell Init*/
@@ -821,7 +844,9 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
   
   menu_item = _entropy_etk_menu_check_item_new(_("Tree View"), ETK_MENU_SHELL(menu));
-  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item),1 );
+  if (entropy_config_misc_is_set("general.treeviewer")) {
+	etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item),ETK_TRUE );
+  }
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_layout_tree_cb), layout);
 
   menu_item = _entropy_etk_menu_check_item_new(_("Trackback view"), ETK_MENU_SHELL(menu));
