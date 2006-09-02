@@ -38,7 +38,6 @@ E_MODULE_API_VERSION,
 "Calendar" 
 };
 
-
 /**  Public function ***/ 
 int 
 increment_cal_count() 
@@ -52,7 +51,6 @@ return _calendar_count;
 
 
 }
-
 
 /************ public module routines. all modules must have these ***************/ 
 /***************************************************
@@ -70,17 +68,14 @@ e_modapi_init(E_Module *module)
 Calendar *calendar;
 
    
-
       /* Set up module's message catalogue */ 
       bindtextdomain(PACKAGE, LOCALEDIR);
    
 bind_textdomain_codeset(PACKAGE, "UTF-8");
    
-
       /* check module api version */ 
       if (module->api->version < E_MODULE_API_VERSION)
       
-
      {
         
 
@@ -98,7 +93,6 @@ return NULL;
 
 }
    
-
      /* actually init buttons */
      calendar = _calendar_new();
    
@@ -107,7 +101,6 @@ return calendar;
 
 
 }
-
 
 /***************************************************
 / Function: 
@@ -139,7 +132,6 @@ return 1;
 
 
 }
-
 
 /***************************************************
 / Function: 
@@ -190,7 +182,6 @@ return 1;
 
 }
 
-
 /***************************************************
 / Function: 
 / Purpose:  
@@ -219,7 +210,6 @@ return 1;
 
 
 }
-
 
 
 /************************ End of the required routines ******************************************/ 
@@ -270,7 +260,6 @@ return NULL;
 
 conf_font_edd = E_CONFIG_DD_NEW("CalFonts", CalFonts);
    
-
 #undef T
 #undef D
 #define T CalFonts
@@ -285,7 +274,6 @@ E_CONFIG_VAL(D, T, size, INT);
 conf_color_edd = E_CONFIG_DD_NEW("c_array", c_array);
 
    
-
 #undef T
 #undef D
 #define T c_array
@@ -330,7 +318,6 @@ E_CONFIG_VAL(D, T, alpha_s, INT);
 conf_edd = E_CONFIG_DD_NEW("calendar_Config", Config);
 
    
-
 #undef T
 #undef D
 #define T Config
@@ -370,7 +357,6 @@ E_CONFIG_VAL(D, T, arrow_path, STR);
 
 E_CONFIG_VAL(D, T, UserCS, INT);
    
-
 //Store colors
       E_CONFIG_LIST(D, T, Today_s_text_colors, conf_color_edd);
    
@@ -395,7 +381,6 @@ E_CONFIG_LIST(D, T, YearMon_numb_colors, conf_color_edd);
 
 E_CONFIG_LIST(D, T, DayWeek_text_colors, conf_color_edd);
    
-
 //Store fonts
       E_CONFIG_LIST(D, T, YM_text_class, conf_font_edd);
    
@@ -412,7 +397,6 @@ calendar->conf = e_config_domain_load("module.calendar", conf_edd);
 
 if (!calendar->conf)
       
-
      {
         
 
@@ -613,16 +597,13 @@ calendar_face_set_text(calendar);
 
 }
    
-
    else
       
-
      {
         
 
 if (strncmp(calendar->conf->TopImage_path, " ", 2) == 0)
            
-
           {
              
 
@@ -667,11 +648,9 @@ calendar->conf->view_year = date.tm_year + 1900;
 
 calendar->conf->Today = date.tm_mday;
    
-
 //Start up Face
       calendar_face_start(calendar);
    
-
 //Add Timer
       calendar->date_check_timer = 
 ecore_timer_add(60, _date_cb_check, calendar);
@@ -681,7 +660,6 @@ return calendar;
 
 
 }
-
 
 /***************************************************
 / Function: _calendar_shutdown(Calendar *calendar)
@@ -715,7 +693,6 @@ ecore_timer_del(calendar->date_check_timer);
 
 for (list = calendar->faces; list; list = list->next)
       
-
      {
         
 
@@ -734,7 +711,6 @@ evas_list_free(calendar->faces);
 
 free_Calfonts(calendar);
    
-
 
       // need to free color list
       evas_list_free(calendar->conf->Today_s_text_colors);
@@ -791,7 +767,6 @@ free(calendar);
 
 
 }
-
 
 /***************************************************
 / Function: _calendar_config_menu_new(Calendar *calendar)
@@ -850,10 +825,8 @@ if ((calendar->conf->Today == date.tm_mday)
 
 return 1;
    
-
    else
       
-
      {
         
 
@@ -865,7 +838,6 @@ Evas_List *l;
 
 for (l = calendar->faces; l; l = l->next)
            
-
           {
              
 
@@ -884,7 +856,6 @@ _clear_dates(face);
 
 if (calendar->conf->UserCS)
                 
-
                {
                   
 
@@ -913,7 +884,6 @@ return 1;
 
 
 }
-
 
 
 /***************************************************
@@ -954,7 +924,6 @@ edje_object_part_text_set(face->today_object[x]->obj, "date-text", " ");
 
 
 }
-
 
 
 /***************************************************
@@ -1033,7 +1002,6 @@ if (SwitchImage == 1)     //Ok, so I need to redraw the whole calendar
 
 for (l = calendar->faces; l; l = l->next)
            
-
           {
              
 
@@ -1054,16 +1022,13 @@ calendar_face_start(calendar);
 
 }
    
-
    else
       
-
      {
         
 
 for (l = calendar->faces; l; l = l->next)
            
-
           {
              
 
@@ -1090,7 +1055,6 @@ calendar->conf->view_year);
 
 if (calendar->conf->UserCS)
                 
-
                {
                   
 
@@ -1110,6 +1074,5 @@ update_colors(calendar, face);
 
 
 }
-
 
 

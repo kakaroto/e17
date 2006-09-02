@@ -579,7 +579,6 @@ DTC_Ptr->alpha_s = 0;
 }
 
 
-
 /***************************************************
 / Function: 
 / Purpose:  Assign Calendar Config color variable to 

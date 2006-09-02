@@ -9,7 +9,6 @@
 #include "add_todo_dialog.h"
    
 
-
 #define CALENDAR_CONFIG_VERSION 1000
    
 typedef struct _Config Config;
@@ -76,7 +75,6 @@ int alpha, alpha_o, alpha_s;
 
 
 };
-
 
 
 
@@ -320,7 +318,6 @@ void calendar_config_menu_new(Calendar *calendar);
 
 
 int increment_cal_count();
-
 
 
 

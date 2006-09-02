@@ -48,7 +48,6 @@ DTCs_Ptr->font, DTCs_Ptr->size);
 
 }
 
-
 /***************************************************
 / Function: 
 / Purpose:  REad config file and assign values to 
@@ -162,7 +161,6 @@ TC_Ptr->font = "VeraMono";
 }
 
 }
-
 
 /***************************************************
 / Function: 
@@ -417,7 +415,6 @@ free_Calfonts(Calendar *calendar)
 Evas_List *list;
 
    
-
       //need to free Calfonts & colorarray (calendar & *char)
       for (list = calendar->conf->YM_text_class; list; list = list->next)
       

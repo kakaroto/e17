@@ -94,7 +94,6 @@ config->Background_path = (char *)evas_stringshare_add(file);
 e_object_del(E_OBJECT(dia));
 
 } 
-
 /***************************************************
 / Function: 
 / Purpose:  

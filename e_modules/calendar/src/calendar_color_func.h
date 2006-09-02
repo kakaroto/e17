@@ -16,4 +16,3 @@ void update_colors(Calendar *calendar, Calendar_Face *face);
    
 
 
-
