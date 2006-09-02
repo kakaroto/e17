@@ -441,6 +441,9 @@ _wlan_cb_check (void *data)
    if (!stat)
       return 1;
 
+  inst = data;
+  ci = _wlan_config_item_get (inst->gcc->id);
+   
    while (fgets(buf, 256, stat))
      {
         int i = 0;
@@ -453,8 +456,10 @@ _wlan_cb_check (void *data)
         if (sscanf(buf, "%s %u %u %u %u %u %u %u %u %u %u",
                    iface, &wlan_status, &wlan_link, &wlan_level, &wlan_noise, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 11)
            continue;
+
       if (!ci->device)
 	continue;
+
       if (!strcmp (iface, ci->device))
 	{
 	  found_dev = 1;
@@ -468,9 +473,6 @@ _wlan_cb_check (void *data)
 
   snprintf(in_str, sizeof(in_str), "LNK: %d%%", wlan_link);
 
-  inst = data;
-  ci = _wlan_config_item_get (inst->gcc->id);
-
    double link_send = ((double)wlan_link / (double)100.0);
    double level_send = ((double)wlan_level / (double)100.0);
 
@@ -478,6 +480,7 @@ _wlan_cb_check (void *data)
   _wlan_update_level (inst, level_send);
   
    snprintf(omsg,sizeof(omsg),"Qual: %d%%", wlan_link);
+   
    edje_object_signal_emit(inst->wlan_obj, "label_active", "");
    edje_object_part_text_set(inst->wlan_obj, "qual_label", omsg);
 

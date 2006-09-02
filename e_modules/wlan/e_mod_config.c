@@ -75,7 +75,6 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 	  }
 	i++;
      }
-   //E_FREE(tmp);
 }
 
 static void *
@@ -145,7 +144,6 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 	     e_widget_framelist_object_append (of, ob);
 	     i++;
 
-		E_FREE(tmp);
 	  }
 	e_widget_list_object_append (o, of, 1, 1, 0.5);
      }
@@ -170,10 +168,11 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 	tmp = ecore_list_goto_index(cfdata->devs, cfdata->dev_num);
 	if (tmp != NULL) 
 	  {
-	     evas_stringshare_del(ci->device);
+	     if (ci->device) evas_stringshare_del(ci->device);
+
 	     ci->device = evas_stringshare_add(tmp);
+	     E_FREE(tmp);
 	  }
-	E_FREE(tmp);
      }
    
   e_config_save_queue ();
