@@ -237,8 +237,12 @@ _wlan_config_item_get (const char *id)
       ci = l->data;
       if (!ci->id)
 	continue;
-      if (!strcmp (ci->id, id))
-	return ci;
+      if (!strcmp (ci->id, id)) 
+	 {
+	    if (!ci->device)
+	      ci->device = evas_stringshare_add ("wlan0");
+	    return ci;
+	 }       
     }
   ci = E_NEW (Config_Item, 1);
   ci->id = evas_stringshare_add (id);
