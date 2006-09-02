@@ -1444,8 +1444,8 @@ static DItem       *tmp_w[10];
 
 static Background  *tmp_bg;	/* The background being configured */
 static Pixmap       tmp_bg_mini_pixmap = None;
-static int          tmp_bg_sel_sliderval = 0;
-static int          tmp_bg_sel_sliderval_old = -1;
+static int          tmp_bg_sel_sliderval;
+static int          tmp_bg_sel_sliderval_old;
 static int          tmp_bg_r;
 static int          tmp_bg_g;
 static int          tmp_bg_b;
@@ -1466,8 +1466,10 @@ static void         BG_RedrawView(void);
 static void
 CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
-   if (val < 0)
+   if (val == 2)
      {
+	bg_sel = bg_sel_slider = bg_mini_disp = bg_filename = NULL;
+	memset(tmp_w, 0, sizeof(tmp_w));
 	BackgroundImagesKeep(tmp_bg, 0);
 	tmp_bg = NULL;
 	if (tmp_bg_mini_pixmap != None)
@@ -1846,7 +1848,7 @@ BGSettingsGoTo(Background * bg)
 {
    int                 i, num;
 
-   if (!DialogFind("CONFIGURE_BG"))
+   if (!bg_sel_slider)
       return;
 
    bg = ecore_list_goto(bg_list, bg);
@@ -1862,7 +1864,6 @@ BGSettingsGoTo(Background * bg)
       i = 4 * num;
    DialogItemSliderSetVal(bg_sel_slider, i);
    DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
-   DialogItemCallCallback(NULL, bg_sel_slider);
    BgDialogSetNewCurrent(bg);
 }
 
@@ -1994,10 +1995,16 @@ CB_BGSortContent(Dialog * d __UNUSED__, int val __UNUSED__,
 }
 
 static void
-CB_DesktopMiniDisplayAreaRedraw(DItem * di, int val __UNUSED__,
-				void *data __UNUSED__)
+CB_DesktopMiniDisplayAreaInit(DItem * di, int val __UNUSED__,
+			      void *data __UNUSED__)
 {
    CB_DesktopMiniDisplayRedraw(DialogItemGetDialog(di), 1, di);
+}
+
+static void
+CB_InitView(DItem * di __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
+{
+   tmp_bg_sel_sliderval_old = tmp_bg_sel_sliderval = -1;
    BGSettingsGoTo(tmp_bg);
 }
 
@@ -2010,6 +2017,8 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    int                 num;
    char                s[1024];
 
+   if (!bg)
+      bg = DeskBackgroundGet(DesksGetCurrent());
    if (!bg)
       bg = BackgroundFind("NONE");
    tmp_bg = bg;
@@ -2133,7 +2142,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
 
    di = bg_mini_disp = area = DialogAddItem(table2, DITEM_AREA);
    DialogItemAreaSetSize(di, 64, 48);
-   DialogItemAreaSetInitFunc(di, CB_DesktopMiniDisplayAreaRedraw);
+   DialogItemAreaSetInitFunc(di, CB_DesktopMiniDisplayAreaInit);
 
    DialogItemSetCallback(w1, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
    DialogItemSetCallback(w2, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
@@ -2241,6 +2250,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSetColSpan(di, 3);
    DialogItemAreaSetSize(di, 160, 56);
    DialogItemAreaSetEventFunc(di, CB_BGAreaEvent);
+   DialogItemAreaSetInitFunc(di, CB_InitView);
 
    num = ecore_list_nodes(bg_list);
    di = bg_sel_slider = DialogAddItem(table, DITEM_SLIDER);
