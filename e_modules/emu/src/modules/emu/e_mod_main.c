@@ -124,7 +124,7 @@ e_modapi_init(E_Module *m)
    char buf[4096];
 
    emu_module = m;
-   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(m));
+   snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(m));
    _emu_module_edje = evas_stringshare_add(buf);
    /* Set up module's message catalogue */
    bindtextdomain(PACKAGE, LOCALEDIR);
@@ -309,7 +309,7 @@ _gc_icon(Evas *evas)
    char buf[4096];
    
    o = edje_object_add(evas);
-   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(emu_module));
+   snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(emu_module));
    edje_object_file_set(o, buf, "icon");
    return o;
 }
