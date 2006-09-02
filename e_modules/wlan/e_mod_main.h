@@ -4,61 +4,37 @@
 #define E_MOD_MAIN_H
 
 typedef struct _Config Config;
-typedef struct _Config_Face Config_Face;
-typedef struct _Wlan Wlan;
-typedef struct _Wlan_Face Wlan_Face;
+typedef struct _Config_Item Config_Item;
 
-struct _Config
+struct _Config 
 {
-   Evas_List *faces;
-};
-
-struct _Config_Face
-{
-   unsigned char enabled;
-   char *device;
-   int check_interval;
-   int show_text;
-   int show_graph;
-};
-
-struct _Wlan
-{
-   E_Menu *config_menu;
-   Evas_List *faces;
-   Config *conf;
-   E_Config_Dialog *cfd;
    E_Module *module;
+   E_Config_Dialog *config_dialog;
+   E_Menu *menu;
+   Evas_List *instances;
+   Evas_List *items;
 };
 
-struct _Wlan_Face
+struct _Config_Item
 {
-   Evas *evas;
-   E_Container *con;
-   E_Menu *menu;
-   Wlan *wlan;
-   Evas_List *old_values;
-
-   Config_Face *conf;
-
-   Evas_Object *wlan_obj;
-   Evas_Object *event_obj;
-   Evas_Object *chart_obj;
-   Evas_Object *txt_obj;
-
-   Ecore_Timer *monitor;
-
-   E_Gadman_Client *gmc;
+   const char *id;
+   double poll_time;
+   int show_percent;
+   int always_text;
+   int real_ignore_buffers;
+   int real_ignore_cached;
 };
 
 EAPI extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init(E_Module *m);
-EAPI int e_modapi_shutdown(E_Module *m);
-EAPI int e_modapi_save(E_Module *m);
-EAPI int e_modapi_about(E_Module *m);
-EAPI int e_modapi_config(E_Module *m);
+EAPI int   e_modapi_shutdown(E_Module *m);
+EAPI int   e_modapi_save(E_Module *m);
+EAPI int   e_modapi_about(E_Module *m);
 
-void _wlan_face_graph_clear(Wlan_Face *wf);
+void _wlan_config_updated(const char *id);
+void _config_wlan_module(Config_Item *ci);
+void _wlan_get_values(Config_Item *ci, int *real, int *swap, int *total_real, int *total_swap);
+extern Config *wlan_config;
 
 #endif
