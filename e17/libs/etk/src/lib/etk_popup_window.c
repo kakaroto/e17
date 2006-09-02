@@ -80,7 +80,7 @@ void etk_popup_window_popup(Etk_Popup_Window *popup_window)
    int x, y;
    
    etk_engine_mouse_position_get(&x, &y);
-   etk_engine_popup_window_popup_at_xy(popup_window, x, y);
+   etk_popup_window_popup_at_xy(popup_window, x, y);
 }
 
 /**
