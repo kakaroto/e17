@@ -5,12 +5,11 @@
 #include "Etk_Engine_Ecore_Evas.h"
 #include "Etk_Engine_Ecore_Evas_X11.h"
 
-/* Etk_Window engine data
- * we do another typedef to shorten the name for internal use */
 typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
 
 /* General engine functions */
 Etk_Engine *engine_open();
+void engine_close();
 
 /* Etk_Window functions */
 static void _window_constructor(Etk_Window *window);
@@ -66,7 +65,7 @@ static Etk_Engine engine_info = {
    NULL, /* window_pointer_set */
    
    NULL, /* popup_window_constructor */
-   NULL, /* popup_window_popup_at_xy */
+   NULL, /* popup_window_popup */
    NULL, /* popup_window_popdown */
    
    NULL, /* event_callback_set */
@@ -93,6 +92,7 @@ static Etk_Engine engine_info = {
  *
  **************************/
 
+/* Called when the engine is loaded */
 Etk_Engine *engine_open()
 {
    engine_info.engine_data = NULL;
@@ -101,16 +101,23 @@ Etk_Engine *engine_open()
    return &engine_info;
 }
 
+/* Called when the engine is unloaded */
+void engine_close()
+{
+   free(engine_info.engine_name);
+}
+
 /**************************
  *
  * Etk_Window's functions
  *
  **************************/
 
+/* Initializes the created window */
 static void _window_constructor(Etk_Window *window)
 {
    /* We _MUST_ initialize and create the ecore_evas and the x_window
-    * variables in the engine_data. */
+    * variables in the engine_data since they are used by the "ecore_evas_x11" engine */
    Etk_Engine_Window_Data *engine_data; 
 
    engine_data = malloc(sizeof(Etk_Engine_Window_Data));
