@@ -1,2 +1,2 @@
-icondir = $(datadir)/icons
+icondir = $(pkgdatadir)/icons
 icon_DATA = *.eap
