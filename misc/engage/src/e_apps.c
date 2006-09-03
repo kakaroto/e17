@@ -53,7 +53,7 @@ static void      _e_app_subdir_rescan      (E_App *app);
 static int       _e_app_is_eapp            (const char *path);
 static int       _e_app_copy               (E_App *dst, E_App *src);
 static void      _e_app_save_order         (E_App *app);
-static int       _e_app_cb_event_border_add(void *data, int type, void *event);
+//static int       _e_app_cb_event_border_add(void *data, int type, void *event);
 static int       _e_app_cb_expire_timer    (void *data);
 static void      _e_app_cache_copy         (E_App_Cache *ac, E_App *a);
 static int       _e_app_cb_scan_cache_timer(void *data);
@@ -1154,13 +1154,12 @@ e_app_fields_fill(E_App *a, const char *path)
      }
    if (!path) path = a->path;
 
-   ext = strchr(path, '.');
+   ext = strrchr(path, '.');
    if ((ext) && (strcmp(ext, ".desktop") == 0))
    {   /* It's a .desktop file. */
       Ecore_Desktop *desktop;
 
       desktop = ecore_desktop_get(path, lang);
-      if (!desktop) return;
       if (desktop)
         {
 	   if (desktop->name)  a->name = evas_stringshare_add(desktop->name);
@@ -1169,18 +1168,10 @@ e_app_fields_fill(E_App *a, const char *path)
 
 	   if (desktop->exec)  a->exe = evas_stringshare_add(desktop->exec);
 	   if (desktop->icon_class)  a->icon_class = evas_stringshare_add(desktop->icon_class);
+	   if (desktop->icon_path)  a->icon_path = evas_stringshare_add(desktop->icon_path);
 	   if (desktop->window_class)  a->win_class = evas_stringshare_add(desktop->window_class);
 	   if (desktop->startup)
               a->startup_notify = *(desktop->startup);
-
-	   if (desktop->icon)
-	      {
-	         /* FIXME: Should do this only when needed, is it can be expensive. */
-		 /* FIXME: Use a real icon size. */
-	         v = (char *) ecore_desktop_icon_find(desktop->icon, NULL, NULL);//e_config->icon_theme);
-		 if (v)
-	            a->icon_path = evas_stringshare_add(v);
-	      }
 
 //	   if (desktop->type)  a->type = evas_stringshare_add(desktop->type);
 //	   if (desktop->categories)  a->categories = evas_stringshare_add(desktop->categories);
@@ -1506,27 +1497,63 @@ e_app_valid_exe_get(E_App *a)
    return ok;
 }
 
+static Evas_Object *
+_e_app_icon_path_add(Evas *evas, E_App *a)
+{
+   Evas_Object *o;
+   char *ext;
+
+   o = e_icon_add(evas);
+   ext = strrchr(a->icon_path, '.');
+   if (ext)
+      {
+         if (strcmp(ext, ".edj") == 0)
+            e_icon_file_edje_set(o, a->icon_path, "icon");
+         else
+            e_icon_file_set(o, a->icon_path);
+      }
+   else
+      e_icon_file_set(o, a->icon_path);
+   e_icon_fill_inside_set(o, 1);
+
+   return o;
+}
+
 EAPI Evas_Object *
 e_app_icon_add(Evas *evas, E_App *a)
 {
-   Evas_Object *o;
+   Evas_Object *o = NULL;
    
-   o = edje_object_add(evas);
-//   if (!e_util_edje_icon_list_set(o, a->icon_class))
-//      {
-         if (edje_object_file_set(o, a->path, "icon"))
-	    {
-	       ;  /* It's a bit more obvious this way. */
-	    }
-         else if (a->icon_path)   /* If that fails, then this might be an FDO icon. */
-	    {
-	       /* Free the aborted object first. */
-               if (o) evas_object_del(o);
-	       o = e_icon_add(evas);
-	       e_icon_file_set(o, a->icon_path);
-	       e_icon_fill_inside_set(o, 1);
-            }
-//      }
+   if ((a->icon_path) && (a->icon_path[0] != 0))
+     o = _e_app_icon_path_add(evas, a);
+   else
+     {
+	o = edje_object_add(evas);
+//	if (!e_util_edje_icon_list_set(o, a->icon_class))
+//	  {
+	     if (edje_object_file_set(o, a->path, "icon"))
+	       {
+		  ;  /* It's a bit more obvious this way. */
+	       }
+	     else if (a->icon_class)   /* If that fails, then this might be an FDO icon. */
+	       {
+		  char *v;
+		  
+		  /* FIXME: Use a real icon size. */
+//		  v = (char *) ecore_desktop_icon_find(a->icon_class, NULL, e_config->icon_theme);
+		  v = (char *) ecore_desktop_icon_find(a->icon_class, NULL, NULL);
+		  if (v)
+		    a->icon_path = evas_stringshare_add(v);
+	       }
+	     
+	     if (a->icon_path)
+	       {
+		  /* Free the aborted object first. */
+		  if (o)   evas_object_del(o);
+		  o = _e_app_icon_path_add(evas, a);
+	       }
+//	  }
+     }
    return o;
 }
 

@@ -23,9 +23,22 @@ main(int argc, char **argv)
   if((ecore_init()) == 0) {
       exit(0);
   }
-  
+
+  if((ecore_file_init()) == 0) {
+     ecore_shutdown();
+     exit(0);
+  }
+
+  if((ecore_desktop_init()) == 0) {
+     ecore_file_shutdown();
+     ecore_shutdown();
+     exit(0);
+  }
+
   if((ecore_config_init("engage")) == ECORE_CONFIG_ERR_FAIL) {
      ecore_x_shutdown();
+     ecore_desktop_shutdown();
+     ecore_file_shutdown();
      ecore_shutdown();
      exit(0);
   }
@@ -34,11 +47,15 @@ main(int argc, char **argv)
   if (od_config_init() != ECORE_CONFIG_PARSE_CONTINUE) {
     ecore_config_shutdown();
     ecore_x_shutdown();
+     ecore_desktop_shutdown();
+     ecore_file_shutdown();
     ecore_shutdown();
     exit(0);
   }
 
   if((ecore_x_init(NULL)) == 0) {
+     ecore_desktop_shutdown();
+     ecore_file_shutdown();
      ecore_shutdown();
      exit(0);
   }
@@ -78,6 +95,8 @@ main(int argc, char **argv)
   ecore_config_save();
   ecore_config_shutdown();
   ecore_x_shutdown();
+  ecore_desktop_shutdown();
+  ecore_file_shutdown();
   ecore_shutdown();
 
   return 0;
