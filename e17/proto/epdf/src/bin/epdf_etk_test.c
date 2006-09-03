@@ -101,7 +101,7 @@ main (int argc, char *argv[])
     epdf_index_delete (index);
     etk_signal_connect ("row_selected", ETK_OBJECT (tree),
                         ETK_CALLBACK(_change_page_cb), pdf);
-    etk_table_attach_defaults (ETK_TABLE (table), tree, 0, 0, 0, 0);
+    etk_table_attach_default (ETK_TABLE (table), tree, 0, 0, 0, 0);
     etk_widget_show (tree);
   }
 
@@ -109,9 +109,9 @@ main (int argc, char *argv[])
   etk_tree_headers_visible_set (ETK_TREE (list), FALSE);
   etk_widget_size_request_set (list, 60, -1);
   if  (index)
-    etk_table_attach_defaults (ETK_TABLE (table), list, 0, 0, 1, 1);
+    etk_table_attach_default (ETK_TABLE (table), list, 0, 0, 1, 1);
   else
-    etk_table_attach_defaults (ETK_TABLE (table), list, 0, 0, 0, 1);
+    etk_table_attach_default (ETK_TABLE (table), list, 0, 0, 0, 1);
   etk_widget_show (list);
 
   etk_signal_connect ("row_selected", ETK_OBJECT (list),
@@ -134,7 +134,7 @@ main (int argc, char *argv[])
   }
   etk_tree_thaw (ETK_TREE (list));
 
-  etk_table_attach_defaults (ETK_TABLE (table), pdf, 1, 1, 0, 1);
+  etk_table_attach_default (ETK_TABLE (table), pdf, 1, 1, 0, 1);
   etk_widget_show (pdf);
   
   etk_widget_show (window);
