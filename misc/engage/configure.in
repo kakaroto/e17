@@ -193,7 +193,6 @@ CFLAGS="-Wall $CFLAGS"
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/module/Makefile
 data/Makefile
 data/icons/Makefile
 data/themes/Makefile

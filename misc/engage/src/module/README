@@ -1,11 +1,7 @@
 This is the e17 engage module which features real transparency and fits nicely
 in the sexiest window manager out there :)
 
-To use it compile as before (you must have e17 installed when you run
-./configure (or ./autogen.sh) ) then with e17 running type:
+Engage module has now been moved into the e_modules repository.
 
-enlightenment_remote -module-load engage
-enlightenment_remote -module-enable engage
-
-enjoy
+see you there
 HandyAndE
