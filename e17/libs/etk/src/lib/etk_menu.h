@@ -3,6 +3,7 @@
 #define _ETK_MENU_H_
 
 #include "etk_menu_shell.h"
+#include "etk_popup_window.h"
 #include "etk_types.h"
 
 /* TODO/FIXME list:
@@ -43,8 +44,10 @@ struct Etk_Menu
 Etk_Type *etk_menu_type_get();
 Etk_Widget *etk_menu_new();
 
-void etk_menu_popup_at_xy(Etk_Menu *menu, int x, int y);
 void etk_menu_popup(Etk_Menu *menu);
+void etk_menu_popup_in_direction(Etk_Menu *menu, Etk_Popup_Direction direction);
+void etk_menu_popup_at_xy(Etk_Menu *menu, int x, int y);
+void etk_menu_popup_at_xy_in_direction(Etk_Menu *menu, int x, int y, Etk_Popup_Direction direction);
 void etk_menu_popdown(Etk_Menu *menu);
 
 /** @} */

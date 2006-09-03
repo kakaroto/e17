@@ -931,15 +931,21 @@ void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition
       size_requisition->w = 0;
    else if (widget->requested_size.w >= 0)
       size_requisition->w = widget->requested_size.w;
-   else if (!widget->need_size_recalc && widget->last_size_requisition.w >= 0)
+   else if (widget->last_size_requisition.w >= 0 &&
+      !widget->need_size_recalc && (widget->visible || hidden_has_no_size))
+   {
       size_requisition->w = widget->last_size_requisition.w;
+   }
    
    if (!widget->visible && hidden_has_no_size)
       size_requisition->h = 0;
    else if (widget->requested_size.h >= 0)
       size_requisition->h = widget->requested_size.h;
-   else if (!widget->need_size_recalc && widget->last_size_requisition.h >= 0)
+   else if (widget->last_size_requisition.h >= 0 &&
+      !widget->need_size_recalc && (widget->visible || hidden_has_no_size))
+   {
       size_requisition->h = widget->last_size_requisition.h;
+   }
 
    /* We need to recalc it */
    if (size_requisition->w < 0 || size_requisition->h < 0)

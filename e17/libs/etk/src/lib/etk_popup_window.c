@@ -174,11 +174,35 @@ Etk_Popup_Window *etk_popup_window_focused_window_get()
 }
 
 /**
+ * @brief Pops up the popup window at the mouse pointer position
+ * @param popup_window a popup window
+ * @note This is equivalent to etk_popup_window_popup_in_direction(popup_window, ETK_POPUP_BELOW_RIGHT)
+ */
+void etk_popup_window_popup(Etk_Popup_Window *popup_window)
+{
+   etk_popup_window_popup_in_direction(popup_window, ETK_POPUP_BELOW_RIGHT);
+}
+
+/**
+ * @brief Pops up the popup window at the mouse pointer position, in the given direction
+ * @param popup_window a popup window
+ * @param direction the direction to which the window should be popped up
+ */
+void etk_popup_window_popup_in_direction(Etk_Popup_Window *popup_window, Etk_Popup_Direction direction)
+{
+   int x, y;
+   
+   etk_engine_mouse_position_get(&x, &y);
+   etk_popup_window_popup_at_xy_in_direction(popup_window, x, y, direction);
+}
+
+/**
  * @brief Pops up the popup window at the position (x, y). If the parent of the popup window has already a child which
  * is popped up, the child will be automatically popped down
  * @param popup_window a popup window
- * @param x the x component of the position where to pop up the popup window
- * @param y the y component of the position where to pop up the popup window
+ * @param x the x position where to pop up the popup window
+ * @param y the y position where to pop up the popup window
+ * @note This is equivalent to etk_popup_window_popup_at_xy_in_direction(popup_window, x, y, ETK_POPUP_BELOW_RIGHT)
  */
 void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 {
@@ -226,16 +250,40 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 }
 
 /**
- * @brief Pops up the popup window at the mouse pointer position
+ * @brief Pops up the popup window at the position (x, y). If the parent of the popup window has already a child which
+ * is popped up, the child will be automatically popped down
  * @param popup_window a popup window
+ * @param x the x position where to pop up the popup window
+ * @param y the y position where to pop up the popup window
+ * @param direction the direction to which the window should be popped up
+ * @note This is equivalent to etk_popup_window_popup_at_xy_in_direction(popup_window, x, y, ETK_POPUP_BELOW_RIGHT)
  */
-void etk_popup_window_popup(Etk_Popup_Window *popup_window)
+void etk_popup_window_popup_at_xy_in_direction(Etk_Popup_Window *popup_window, int x, int y, Etk_Popup_Direction direction)
 {
-   int x, y;
+   Etk_Size size;
    
-   etk_engine_mouse_position_get(&x, &y);
+   if (!popup_window)
+      return;
+   
+   etk_widget_size_request_full(ETK_WIDGET(popup_window), &size, ETK_FALSE);
+   switch (direction)
+   {
+      case ETK_POPUP_BELOW_LEFT:
+         x -= size.w;
+         break;
+      case ETK_POPUP_ABOVE_RIGHT:
+         y -= size.h;
+         break;
+      case ETK_POPUP_ABOVE_LEFT:
+         x -= size.w;
+         y -= size.h;
+         break;
+      default:
+         break;
+   }
    etk_popup_window_popup_at_xy(popup_window, x, y);
 }
+
 
 /**
  * @brief Pops down the popup window and its children
