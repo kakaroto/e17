@@ -95,7 +95,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   ob = e_widget_label_add (evas, D_("Check Interval"));
   e_widget_framelist_object_append (of, ob);
   ob =
-    e_widget_slider_add (evas, 1, 0, D_("%2.0f minutes"), 1.0, 60.0, 1.0, 0,
+    e_widget_slider_add (evas, 1, 0, D_("%2.0f minutes"), 0.5, 60.0, 0.5, 0,
 			 &(cfdata->check_time), NULL, 100);
   e_widget_framelist_object_append (of, ob);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
