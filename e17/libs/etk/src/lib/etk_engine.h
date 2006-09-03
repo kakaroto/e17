@@ -3,6 +3,7 @@
 #define _ETK_ENGINE_H_
 
 #include "Evas.h"
+#include "etk_event.h"
 #include "etk_toplevel_widget.h"
 #include "etk_window.h"
 #include "etk_types.h"
@@ -58,10 +59,10 @@ struct Etk_Engine
    void (*window_pointer_set)(Etk_Window *window, Etk_Pointer_Type pointer_type);
    
    void (*popup_window_constructor)(Etk_Popup_Window *popup_window);
-   void (*popup_window_popup_at_xy)(Etk_Popup_Window *popup_window, int x, int y);
+   void (*popup_window_popup)(Etk_Popup_Window *popup_window);
    void (*popup_window_popdown)(Etk_Popup_Window *popup_window);
-   Evas_List **(*popup_window_popped_get)(void);
    
+   void (*event_callback_set)(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info));
    void (*mouse_position_get)(int *x, int *y);
    void (*mouse_screen_geometry_get)(int *x, int *y, int *w, int *h);
    
@@ -131,10 +132,10 @@ Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window);
 void etk_engine_window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type);
   
 void etk_engine_popup_window_constructor(Etk_Popup_Window *popup_window);
-void etk_engine_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y);
+void etk_engine_popup_window_popup(Etk_Popup_Window *popup_window);
 void etk_engine_popup_window_popdown(Etk_Popup_Window *popup_window);
-Evas_List **etk_engine_popup_window_popped_get();
 
+void etk_engine_event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info));
 void etk_engine_mouse_position_get(int *x, int *y);
 void etk_engine_mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
 

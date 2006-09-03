@@ -90,6 +90,7 @@ int etk_init(int *argc, char ***argv)
          return 0;
       }
       
+      /* TODO: reorder ? */
       /* Initialize the subsystems of Etk */
       if (!etk_engine_init())
       {
@@ -102,12 +103,13 @@ int etk_init(int *argc, char ***argv)
 	 return 0;
       }
       etk_config_load();
-      etk_theme_init();      
+      etk_theme_init();
       if (!etk_engine_load(engine_name ? engine_name : "ecore_evas_software_x11"))
       {
          ETK_WARNING("Etk can not load the requested engine!");
          return 0;
       }
+      etk_event_init();
       if (!etk_dnd_init())
       {
          ETK_WARNING("Etk_dnd initialization failed!");
@@ -146,8 +148,8 @@ int etk_shutdown()
       
       etk_tooltips_shutdown();
       etk_dnd_shutdown();
+      etk_event_shutdown();
       etk_engine_shutdown();
-      /* TODO: do we want to save the config here? hmm... */
       etk_config_shutdown();
       etk_theme_shutdown();
       
@@ -194,8 +196,8 @@ void etk_main_quit()
 }
 
 /**
- * @brief Runs an iteration of the main loop: it updates the widgets that need to be updated. @n
- * You usually do not need to call it manually, you might want to use etk_main() instead.
+ * @brief Runs an iteration of the main loop: it updates the widgets that need to be updated
+ * @note You usually do not need to call it manually, you might want to use etk_main() instead
  */
 void etk_main_iterate()
 {

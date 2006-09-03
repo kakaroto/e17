@@ -10,6 +10,8 @@
 #include "Etk_Engine_Ecore_Evas.h"
 #include "Etk_Engine_Ecore_Evas_X11.h"
 
+#define NUM_INPUT_HANDLERS 6
+
 /* Engine specific data for Etk_Window
  * We do this to shorten the name for internal use */
 typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
@@ -36,34 +38,24 @@ static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_typ
   
 /* Etk_Popup_Window */
 static void _popup_window_constructor(Etk_Popup_Window *popup_window);
-static void _popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y);
+static void _popup_window_popup(Etk_Popup_Window *popup_window);
 static void _popup_window_popdown(Etk_Popup_Window *popup_window);
 
-static Etk_Popup_Window_Screen_Edge _popup_window_over_screen_edge_get(Etk_Popup_Window *popup_window);
-static Etk_Popup_Window_Screen_Edge _popup_window_mouse_on_screen_edge_get();
-static void _popup_window_slide_timer_update(Etk_Popup_Window *popup_window);
-static int _popup_window_slide_timer_cb(void *data);
-
-static int _popup_window_key_down_cb(void *data, int type, void *event);
-static int _popup_window_key_up_cb(void *data, int type, void *event);
-static int _popup_window_mouse_move_cb(void *data, int type, void *event);
-static int _popup_window_mouse_up_cb(void *data, int type, void *event);
-
-/* Mouse functions */
+/* Event and mouse functions */
+static void _event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info));
+static int _event_input_handler_cb(void *data, int type, void *event);
 static void _mouse_position_get(int *x, int *y);
 static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
 
 /* Etk_Drag functions*/
 static void _drag_constructor(Etk_Drag *drag);
 static void _drag_begin(Etk_Drag *drag);
-
 static int  _drag_mouse_up_cb(void *data, int type, void *event);
 static int  _drag_mouse_move_cb(void *data, int type, void *event);
 
 /* Etk_Dnd functions */
 static Etk_Bool _dnd_init();
 static void _dnd_shutdown();
-
 static void _dnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list);
 static int _dnd_enter_handler(void *data, int type, void *event);
 static int _dnd_position_handler(void *data, int type, void *event);
@@ -83,21 +75,17 @@ static void _selection_text_set(Etk_Widget *widget, const char *text, int length
 static void _selection_clear(void);
 
 /* Private functions */
-static int _window_property_cb(void *data, int ev_type, void *ev);
+static void _window_netwm_state_active_set(Etk_Window *window, Ecore_X_Window_State state, Etk_Bool active);
+static Etk_Bool _window_netwm_state_active_get(Etk_Window *window, Ecore_X_Window_State state);
+static void _event_global_modifiers_locks_wrap(int xmodifiers, Etk_Modifiers *modifiers, Etk_Locks *locks);
+
 
 /* Private vars */
-static Ecore_Event_Handler *_window_property_handler = NULL;
+static void (*_event_callback)(Etk_Event_Type event, Etk_Event_Global event_info) = NULL;
+static Ecore_Event_Handler *_event_input_handlers[NUM_INPUT_HANDLERS];
 
-static Ecore_X_Window _etk_popup_window_input_window = 0;
-static Ecore_Event_Handler *_popup_window_key_down_handler = NULL;
-static Ecore_Event_Handler *_popup_window_key_up_handler = NULL;
-static Ecore_Event_Handler *_popup_window_mouse_up_handler = NULL;
-static Ecore_Event_Handler *_popup_window_mouse_move_handler = NULL;
-static int _popup_window_popup_timestamp = 0;
-static int _popup_window_mouse_x = -100000;
-static int _popup_window_mouse_y = -100000;
-static Ecore_Timer *_popup_window_slide_timer = NULL;
 static Evas_List *_popup_window_popped_windows = NULL;
+static Ecore_X_Window _popup_window_input_window = 0;
 
 static Ecore_Event_Handler *_drag_mouse_move_handler;
 static Ecore_Event_Handler *_drag_mouse_up_handler;
@@ -110,12 +98,6 @@ static Etk_Widget  *_dnd_widget         = NULL;
 static Evas_List   *_dnd_handlers       = NULL;
 static int          _dnd_widget_accepts = 0;
 
-
-/* TODO: remove! */
-static Evas_List **_popup_window_popped_get()
-{
-   return &_popup_window_popped_windows;
-}
 
 static Etk_Engine engine_info = {
    
@@ -168,10 +150,10 @@ static Etk_Engine engine_info = {
    _window_pointer_set,
 
    _popup_window_constructor,
-   _popup_window_popup_at_xy,
+   _popup_window_popup,
    _popup_window_popdown,
-   _popup_window_popped_get,
    
+   _event_callback_set,
    _mouse_position_get,
    _mouse_screen_geometry_get,
    
@@ -205,11 +187,30 @@ static Etk_Bool _engine_init()
       ETK_WARNING("Ecore_X initialization failed!");
       return ETK_FALSE;
    }
+   
+   _event_input_handlers[0] = ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, _event_input_handler_cb, NULL);
+   _event_input_handlers[1] = ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, _event_input_handler_cb, NULL);
+   _event_input_handlers[2] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN, _event_input_handler_cb, NULL);
+   _event_input_handlers[3] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, _event_input_handler_cb, NULL);
+   _event_input_handlers[4] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _event_input_handler_cb, NULL);
+   _event_input_handlers[5] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_WHEEL, _event_input_handler_cb, NULL);
+   
    return ETK_TRUE;
 }
 
 static void _engine_shutdown()
 {
+   int i;
+   
+   for (i = 0; i < NUM_INPUT_HANDLERS; i++)
+   {
+      if (_event_input_handlers[i])
+      {
+         ecore_event_handler_del(_event_input_handlers[i]);
+         _event_input_handlers[i] = NULL;
+      }
+   }
+   
    ecore_x_shutdown();
 }
 
@@ -269,8 +270,6 @@ static void _window_screen_geometry_get(Etk_Window *window, int *x, int *y, int 
 
 static void _window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
-   int x, y, w, h;
-   int cw, ch;
    Etk_Engine_Window_Data *engine_data;  
    
    if (!window_to_modal)
@@ -360,27 +359,7 @@ static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_task
 /* TODO: maybe there is a better way to do this? */
 static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window)
 {
-   unsigned int num_states, i;
-   Ecore_X_Window_State *states;
-   Etk_Engine_Window_Data *engine_data;
-   
-   if (!window)
-     return ETK_FALSE;
-   
-   engine_data = window->engine_data;   
-   ecore_x_netwm_window_state_get(engine_data->x_window, &states, &num_states);
-   for (i = 0; i < num_states; i++)
-   {
-      if (states[i] == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
-      {
-	 free(states);
-	 return ETK_TRUE;
-      }
-   }
-   if (num_states > 0)
-     free(states);
-   
-   return ETK_FALSE;   
+   return _window_netwm_state_active_get(window, ECORE_X_WINDOW_STATE_SKIP_TASKBAR);
 }
 
 /* TODO: maybe there is a better way to do this? */
@@ -505,7 +484,7 @@ static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_typ
          x_pointer_type = ECORE_X_CURSOR_LEFT_PTR;
          break;
    }
-
+   
    if ((cursor = ecore_x_cursor_shape_get(x_pointer_type)))
       ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas), cursor);
    else
@@ -518,18 +497,17 @@ static void _popup_window_constructor(Etk_Popup_Window *popup_window)
    
    engine_data = ETK_WINDOW(popup_window)->engine_data;   
    ecore_x_netwm_window_type_set(engine_data->x_window, ECORE_X_WINDOW_TYPE_MENU);
-   /* TODO: this can be done using ecore_evas */
-   ecore_x_window_override_set(engine_data->x_window, 1);
+   ecore_evas_override_set(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas, 1);
+   ecore_evas_ignore_events_set(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas, 1);
 }
 
-static void _popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
+static void _popup_window_popup(Etk_Popup_Window *popup_window)
 {
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = ETK_WINDOW(popup_window)->engine_data;
    
-   
-   if (_etk_popup_window_input_window == 0)
+   if (_popup_window_input_window == 0)
    {
       Ecore_X_Window root, parent;
       int root_x, root_y, root_w, root_h;
@@ -540,193 +518,32 @@ static void _popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int
 	root = parent;
       
       ecore_x_window_geometry_get(root, &root_x, &root_y, &root_w, &root_h);
-      _etk_popup_window_input_window = ecore_x_window_input_new(root, root_x, root_y, root_w, root_h);
-      ecore_x_window_show(_etk_popup_window_input_window);
+      _popup_window_input_window = ecore_x_window_input_new(root, root_x, root_y, root_w, root_h);
+      ecore_x_window_show(_popup_window_input_window);
       /* TODO: fixme pointer_grab!! */
-      /* ecore_x_pointer_confine_grab(_etk_popup_window_input_window); */
-      ecore_x_keyboard_grab(_etk_popup_window_input_window);
-      
-      _popup_window_key_down_handler = ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, _popup_window_key_down_cb, popup_window);
-      _popup_window_key_up_handler = ecore_event_handler_add(ECORE_X_EVENT_KEY_UP, _popup_window_key_up_cb, popup_window);
-      _popup_window_mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, _popup_window_mouse_up_cb, popup_window);
-      _popup_window_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _popup_window_mouse_move_cb, popup_window);
-      
-      _popup_window_popup_timestamp = ecore_x_current_time_get();
+      /* ecore_x_pointer_confine_grab(_popup_window_input_window); */
+      ecore_x_keyboard_grab(_popup_window_input_window);
    }
-   
-   etk_window_move(ETK_WINDOW(popup_window), x, y);
-   etk_widget_show(ETK_WIDGET(popup_window));
-   evas_event_feed_mouse_move(ETK_TOPLEVEL_WIDGET(popup_window)->evas, -100000, -100000, ecore_x_current_time_get(), NULL);
-   evas_event_feed_mouse_in(ETK_TOPLEVEL_WIDGET(popup_window)->evas, ecore_x_current_time_get(), NULL);
    _popup_window_popped_windows = evas_list_append(_popup_window_popped_windows, popup_window);
-   
-   etk_popup_window_focused_window_set(popup_window);
-   /* TODO: this still doesnt work with TWM */
-   etk_window_raise(ETK_WINDOW(popup_window));
-   _popup_window_slide_timer_update(popup_window);
 }
 
 static void _popup_window_popdown(Etk_Popup_Window *popup_window)
 {
+   _popup_window_popped_windows = evas_list_remove(_popup_window_popped_windows, popup_window);
+   
    if (!_popup_window_popped_windows)
    {
-      /* TODO: pointer ungrab, fixme!! */
+      /* TODO: FIXME: pointer ungrab */
       /* ecore_x_pointer_ungrab(); */
       ecore_x_keyboard_ungrab();
-      ecore_x_window_del(_etk_popup_window_input_window);
-      _etk_popup_window_input_window = 0;
-      
-      ecore_event_handler_del(_popup_window_key_down_handler);
-      ecore_event_handler_del(_popup_window_key_up_handler);
-      ecore_event_handler_del(_popup_window_mouse_up_handler);
-      ecore_event_handler_del(_popup_window_mouse_move_handler);
-      _popup_window_key_down_handler = NULL;
-      _popup_window_key_up_handler = NULL;
-      _popup_window_mouse_up_handler = NULL;
-      _popup_window_mouse_move_handler = NULL;
+      ecore_x_window_del(_popup_window_input_window);
+      _popup_window_input_window = 0;
    }
 }
 
-/* Returns a flag incating on which edges of the screen the popup window is over */
-static Etk_Popup_Window_Screen_Edge _popup_window_over_screen_edge_get(Etk_Popup_Window *popup_window)
+static void _event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info))
 {
-   Etk_Popup_Window_Screen_Edge result = ETK_POPUP_WINDOW_NO_EDGE;
-   
-   int rx, ry, rw, rh;
-   int px, py, pw, ph;
-
-   if (!popup_window || _etk_popup_window_input_window == 0)
-      return ETK_POPUP_WINDOW_NO_EDGE;
-
-   ecore_x_window_geometry_get(_etk_popup_window_input_window, &rx, &ry, &rw, &rh);
-   etk_window_geometry_get(ETK_WINDOW(popup_window), &px, &py, &pw, &ph);
-
-   if (px < rx)
-      result |= ETK_POPUP_WINDOW_LEFT_EDGE;
-   if (px + pw > rx + rw)
-      result |= ETK_POPUP_WINDOW_RIGHT_EDGE;
-   if (py < ry)
-      result |= ETK_POPUP_WINDOW_TOP_EDGE;
-   if (py + ph > ry + rh)
-      result |= ETK_POPUP_WINDOW_BOTTOM_EDGE;
-   
-   return result;
-}
-
-/* Returns a flag incating on which edges of the screen the mouse pointer is */
-static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_on_screen_edge_get()
-{
-   Etk_Popup_Window_Screen_Edge result = ETK_POPUP_WINDOW_NO_EDGE;   
-   
-   int rx, ry, rw, rh;
-
-   if (_etk_popup_window_input_window == 0)
-      return ETK_POPUP_WINDOW_NO_EDGE;
-
-   ecore_x_window_geometry_get(_etk_popup_window_input_window, &rx, &ry, &rw, &rh);
-   if (_popup_window_mouse_x - rx + 1 >= rw)
-      result |= ETK_POPUP_WINDOW_RIGHT_EDGE;
-   if (_popup_window_mouse_x <= rx)
-      result |= ETK_POPUP_WINDOW_LEFT_EDGE;
-   if (_popup_window_mouse_y - ry + 1 >= rh)
-      result |= ETK_POPUP_WINDOW_BOTTOM_EDGE;
-   if (_popup_window_mouse_y <= ry)
-      result |= ETK_POPUP_WINDOW_TOP_EDGE;
-   
-   return result;
-}
-
-/* Starts the slide timer if needed */
-static void _popup_window_slide_timer_update(Etk_Popup_Window *popup_window)
-{
-   Etk_Popup_Window_Screen_Edge mouse_on_edge, window_over_edge;
-
-   if (!popup_window)
-      return;
-
-   mouse_on_edge = _etk_popup_window_mouse_on_screen_edge_get();
-   window_over_edge = _popup_window_over_screen_edge_get(popup_window);
-   if (!_popup_window_slide_timer && (mouse_on_edge & window_over_edge) != ETK_POPUP_WINDOW_NO_EDGE)
-      _popup_window_slide_timer = ecore_timer_add(1.0 / 60.0, _popup_window_slide_timer_cb, NULL);
-}
-
-/* Makes the popup windows slide (called every 1/60 sec) */
-static int _popup_window_slide_timer_cb(void *data)
-{
-   Etk_Popup_Window *popup_window = NULL, *pwin;
-   Evas_List *l;
-   Etk_Popup_Window_Screen_Edge mouse_edge, window_edge;
-   int rx, ry, rw, rh;
-   int px, py, pw, ph;
-   int x, y;
-   int dx = 0, dy = 0, max_delta = (int)(1.0 / 60.0 * 800);
-
-   /* We first look for the popup window that is over an edge of the screen */
-   for (l = _popup_window_popped_windows; l; l = l->next)
-   {
-      pwin = ETK_POPUP_WINDOW(l->data);
-      if ((window_edge = _popup_window_over_screen_edge_get(pwin)) != ETK_POPUP_WINDOW_NO_EDGE)
-      {
-         popup_window = pwin;
-         break;
-      }
-   }
-   if (!popup_window)
-   {
-      _popup_window_slide_timer = NULL;
-      return 0;
-   }
-
-   /* Then we move all the popup windows in the right direction */
-   mouse_edge = _etk_popup_window_mouse_on_screen_edge_get();
-   ecore_x_window_geometry_get(_etk_popup_window_input_window, &rx, &ry, &rw, &rh);
-   etk_window_geometry_get(ETK_WINDOW(popup_window), &px, &py, &pw, &ph);
-   if (mouse_edge & window_edge & ETK_POPUP_WINDOW_LEFT_EDGE)
-   {
-      if (max_delta < rx - px)
-         dx = max_delta;
-      else
-         dx = rx - px;
-   }
-   if (mouse_edge & window_edge & ETK_POPUP_WINDOW_RIGHT_EDGE)
-   {
-      if (max_delta < pw - rx - rw + px)
-         dx = -max_delta;
-      else
-         dx = -pw + rx + rw - px;
-   }
-   if (mouse_edge & window_edge & ETK_POPUP_WINDOW_TOP_EDGE)
-   {
-      if (max_delta < ry - py)
-         dy = max_delta;
-      else
-         dy = ry - py;
-   }
-   if (mouse_edge & window_edge & ETK_POPUP_WINDOW_BOTTOM_EDGE)
-   {
-      if (max_delta < ph - ry - rh + py)
-         dy = -max_delta;
-      else
-         dy = -ph + ry + rh - py;
-   }
-
-   if (dx == 0 && dy == 0)
-   {
-      _popup_window_slide_timer = NULL;
-      return 0;
-   }
-
-   for (l = _popup_window_popped_windows; l; l = l->next)
-   {
-      pwin = ETK_POPUP_WINDOW(l->data);
-      etk_window_geometry_get(ETK_WINDOW(pwin), &x, &y, NULL, NULL);
-      etk_window_move(ETK_WINDOW(pwin), x + dx, y + dy);
-
-      /* We feed a mouse move event since the relative position between the mouse pointer and the popup window has changed */
-      evas_event_feed_mouse_move(ETK_TOPLEVEL_WIDGET(pwin)->evas, _popup_window_mouse_x - x, _popup_window_mouse_y - y, ecore_x_current_time_get(), NULL);
-   }
-   
-   return 1;
+   _event_callback = callback;
 }
 
 static void _mouse_position_get(int *x, int *y)
@@ -869,136 +686,97 @@ static void _selection_clear()
  *
  **************************/
 
-static int _window_property_cb(void *data, int ev_type, void *event)
+
+/* Called when an input event is received */
+static int _event_input_handler_cb(void *data, int type, void *event)
 {
-   Etk_Window *window;
-   Ecore_X_Event_Window_Property *ev;
+   Etk_Event_Global ev;
+   int x, y;
    
-   if (!(window = ETK_WINDOW(data)) || !(ev = event))
-     return 1;
+   if (!_event_callback)
+      return 1;
    
-   if (ev->atom == ECORE_X_ATOM_NET_WM_STATE)
+   if (type == ECORE_X_EVENT_MOUSE_MOVE)
    {
-      unsigned int i, num;
-      Ecore_X_Window_State *state;
-      Etk_Engine_Window_Data *engine_data;
-      Ecore_X_Window win;
+      Ecore_X_Event_Mouse_Move *xev = event;
       
-      engine_data = window->engine_data;
-      win = engine_data->x_window;      
-      ecore_x_netwm_window_state_get(win, &state, &num);
-            
-      if (state)
-      {
-	 for (i = 0; i < num; i++)
-	 {
-	    switch (state[i])
-	    {
-	     default:
-	       break;
-	    }
-	 }
-      }
+      ecore_x_window_geometry_get(xev->win, &x, &y, NULL, NULL);
+      _event_global_modifiers_locks_wrap(xev->modifiers, &ev.mouse_move.modifiers, &ev.mouse_move.locks);
+      ev.mouse_move.pos.x = xev->x + x;
+      ev.mouse_move.pos.y = xev->y + y;
+      ev.mouse_move.timestamp = xev->time;
+      _event_callback(ETK_EVENT_MOUSE_MOVE, ev);
    }
-}
-
-/* Called when the user presses a key on the input window: we just feed it */
-static int _popup_window_key_down_cb(void *data, int type, void *event)
-{
-   Etk_Popup_Window *popup_window;
-   Ecore_X_Event_Key_Down *key_event;
-   
-   if (!(popup_window = ETK_POPUP_WINDOW(data)) || !(key_event = event) || key_event->win != _etk_popup_window_input_window)
-     return 1;
-   if (!etk_popup_window_focused_window_get())
-     return 1;
-   
-   evas_event_feed_key_down(ETK_TOPLEVEL_WIDGET(etk_popup_window_focused_window_get())->evas, key_event->keyname,
-			    key_event->keysymbol, key_event->key_compose, NULL, key_event->time, NULL);
-   return 1;
-}
-
-/* Called wgen the user releases a key on the input window: we just feed it */
-static int _popup_window_key_up_cb(void *data, int type, void *event)
-{
-   Etk_Popup_Window *popup_window;
-   Ecore_X_Event_Key_Up *key_event;
-   
-   if (!(popup_window = ETK_POPUP_WINDOW(data)) || !(key_event = event) || key_event->win != _etk_popup_window_input_window)
-     return 1;
-   if (!etk_popup_window_focused_window_get())
-     return 1;
-   
-   evas_event_feed_key_up(ETK_TOPLEVEL_WIDGET(etk_popup_window_focused_window_get())->evas, key_event->keyname,
-			  key_event->keysymbol, key_event->key_compose, NULL, key_event->time, NULL);
-   
-   return 1;
-}
-
-/*
- * Called when the user clicks on the input window:
- * it pops down the opened popup windows if needed and feeds the mouse up event to the popup window
- */
-
-static int _popup_window_mouse_up_cb(void *data, int type, void *event)
-{
-   Etk_Popup_Window *popup_window, *pwin;
-   Evas_List *l;
-   Ecore_X_Event_Mouse_Button_Up *mouse_event;
-   Etk_Bool pointer_over_window = ETK_FALSE;
-   
-   if (!(popup_window = ETK_POPUP_WINDOW(data)) || !(mouse_event = event) || mouse_event->win != _etk_popup_window_input_window)
-     return 1;
-   
-   /* If the user clicks on a popped window, we feed the event */
-   for (l = _popup_window_popped_windows; l; l = l->next)
+   else if (type == ECORE_X_EVENT_MOUSE_BUTTON_DOWN)
    {
-      int px, py, pw, ph;
+      Ecore_X_Event_Mouse_Button_Down *xev = event;
       
-      pwin = ETK_POPUP_WINDOW(l->data);
-      etk_window_geometry_get(ETK_WINDOW(pwin), &px, &py, &pw, &ph);
-
-      if (_popup_window_mouse_x >= px && _popup_window_mouse_x <= px + pw && _popup_window_mouse_y >= py && _popup_window_mouse_y <= py + ph)
-      {
-	 pointer_over_window = ETK_TRUE;
-	 evas_event_feed_mouse_up(ETK_TOPLEVEL_WIDGET(pwin)->evas, mouse_event->button, EVAS_BUTTON_NONE, mouse_event->time, NULL);
-	 break;
-      }
+      ecore_x_window_geometry_get(xev->win, &x, &y, NULL, NULL);
+      _event_global_modifiers_locks_wrap(xev->modifiers, &ev.mouse_down.modifiers, &ev.mouse_down.locks);
+      ev.mouse_down.flags = ETK_MOUSE_NONE;
+      if (xev->double_click)
+         ev.mouse_down.flags |= ETK_MOUSE_DOUBLE_CLICK;
+      if (xev->triple_click)
+         ev.mouse_down.flags |= ETK_MOUSE_TRIPLE_CLICK;
+      ev.mouse_down.button = xev->button;
+      ev.mouse_down.pos.x = xev->x + x;
+      ev.mouse_down.pos.y = xev->y + y;
+      ev.mouse_down.timestamp = xev->time;
+      _event_callback(ETK_EVENT_MOUSE_DOWN, ev);
    }
-   /* Otherwize, we pop down all the popup windows */
-   if (!pointer_over_window && (mouse_event->time - _popup_window_popup_timestamp) >= ETK_POPUP_WINDOW_MIN_POP_TIME)
-     etk_popup_window_popdown_all();
-   
-   return 1;
-}
-
-/*
- * Called when the user moves the mouse above the popup input window:
- * It feeds the mouse move, in and out events to the popup windows and starts to make the popup windows slide if needed
- */
-static int _popup_window_mouse_move_cb(void *data, int type, void *event)
-{
-   Etk_Popup_Window *popup_window, *pwin;
-   Evas_List *l;
-   Ecore_X_Event_Mouse_Move *mouse_event;
-   int px, py;
-   
-   if (!(popup_window = ETK_POPUP_WINDOW(data)) || !(mouse_event = event) || mouse_event->win != _etk_popup_window_input_window)
-     return 1;
-   
-   _popup_window_mouse_x = mouse_event->x;
-   _popup_window_mouse_y = mouse_event->y;
-   
-   for (l = _popup_window_popped_windows; l; l = l->next)
+   else if (type == ECORE_X_EVENT_MOUSE_BUTTON_UP)
    {
-      pwin = ETK_POPUP_WINDOW(l->data);
-      etk_window_geometry_get(ETK_WINDOW(pwin), &px, &py, NULL, NULL);
-      evas_event_feed_mouse_move(ETK_TOPLEVEL_WIDGET(pwin)->evas, mouse_event->x - px, mouse_event->y - py, mouse_event->time, NULL);
+      Ecore_X_Event_Mouse_Button_Up *xev = event;
       
-      /* Start to make the popup window slide if needed */
-      _popup_window_slide_timer_update(pwin);
+      ecore_x_window_geometry_get(xev->win, &x, &y, NULL, NULL);
+      _event_global_modifiers_locks_wrap(xev->modifiers, &ev.mouse_up.modifiers, &ev.mouse_up.locks);
+      ev.mouse_up.flags = ETK_MOUSE_NONE;
+      if (xev->double_click)
+         ev.mouse_up.flags |= ETK_MOUSE_DOUBLE_CLICK;
+      if (xev->triple_click)
+         ev.mouse_up.flags |= ETK_MOUSE_TRIPLE_CLICK;
+      ev.mouse_up.button = xev->button;
+      ev.mouse_up.pos.x = xev->x + x;
+      ev.mouse_up.pos.y = xev->y + y;
+      ev.mouse_up.timestamp = xev->time;
+      _event_callback(ETK_EVENT_MOUSE_UP, ev);
    }
-   
+   else if (type == ECORE_X_EVENT_MOUSE_WHEEL)
+   {
+      Ecore_X_Event_Mouse_Wheel *xev = event;
+      
+      ecore_x_window_geometry_get(xev->win, &x, &y, NULL, NULL);
+      _event_global_modifiers_locks_wrap(xev->modifiers, &ev.mouse_wheel.modifiers, &ev.mouse_wheel.locks);
+      ev.mouse_wheel.direction = (xev->direction == 0) ? ETK_WHEEL_VERTICAL : ETK_WHEEL_HORIZONTAL;
+      ev.mouse_wheel.z = xev->z;
+      ev.mouse_wheel.pos.x = xev->x + x;
+      ev.mouse_wheel.pos.y = xev->y + y;
+      ev.mouse_wheel.timestamp = xev->time;
+      _event_callback(ETK_EVENT_MOUSE_WHEEL, ev);
+   }
+   else if (type == ECORE_X_EVENT_KEY_DOWN)
+   {
+      Ecore_X_Event_Key_Down *xev = event;
+      
+      _event_global_modifiers_locks_wrap(xev->modifiers, &ev.key_down.modifiers, &ev.key_down.locks);
+      ev.key_down.keyname = xev->keyname;
+      ev.key_down.key = xev->keysymbol;
+      ev.key_down.string = xev->key_compose;
+      ev.key_down.timestamp = xev->time;
+      _event_callback(ETK_EVENT_KEY_DOWN, ev);
+   }
+   else if (type == ECORE_X_EVENT_KEY_UP)
+   {
+      Ecore_X_Event_Key_Up *xev = event;
+      
+      _event_global_modifiers_locks_wrap(xev->modifiers, &ev.key_up.modifiers, &ev.key_up.locks);
+      ev.key_up.keyname = xev->keyname;
+      ev.key_up.key = xev->keysymbol;
+      ev.key_up.string = xev->key_compose;
+      ev.key_up.timestamp = xev->time;
+      _event_callback(ETK_EVENT_KEY_UP, ev);
+   }
+
    return 1;
 }
 
@@ -1422,11 +1200,11 @@ static int _dnd_status_handler(void *data, int type, void *event)
    Ecore_X_Event_Xdnd_Status *ev;
    Etk_Engine_Window_Data *engine_data;  
    Ecore_X_Window x_window;
-      
+   
    engine_data = ETK_WINDOW(_etk_drag_widget)->engine_data;   
    x_window = engine_data->x_window;   
    ev = event;
-       
+   
    if (ev->win != x_window) return 1;	  
    if(!ev->will_accept)
    {
@@ -1441,4 +1219,70 @@ static int _dnd_status_handler(void *data, int type, void *event)
 static int _dnd_finished_handler(void *data, int type, void *event)
 {
    return 1;
+}
+
+/**************************
+ *
+ * Private functions
+ *
+ **************************/
+
+/* Sets whether or not the given netwm state is active */
+static void _window_netwm_state_active_set(Etk_Window *window, Ecore_X_Window_State state, Etk_Bool active)
+{
+   int num_states;
+   
+}
+
+/* Gets whether or not the given netwm state is active */
+static Etk_Bool _window_netwm_state_active_get(Etk_Window *window, Ecore_X_Window_State state)
+{
+   unsigned int num_states, i;
+   Ecore_X_Window_State *states;
+   Etk_Engine_Window_Data *engine_data;
+   
+   if (!window)
+     return ETK_FALSE;
+   
+   engine_data = window->engine_data;   
+   ecore_x_netwm_window_state_get(engine_data->x_window, &states, &num_states);
+   for (i = 0; i < num_states; i++)
+   {
+      if (states[i] == state)
+      {
+	 free(states);
+	 return ETK_TRUE;
+      }
+   }
+   if (num_states > 0)
+     free(states);
+   
+   return ETK_FALSE;
+}
+
+static void _event_global_modifiers_locks_wrap(int xmodifiers, Etk_Modifiers *modifiers, Etk_Locks *locks)
+{
+   if (modifiers)
+   {
+      *modifiers = ETK_MODIFIER_NONE;
+      if (xmodifiers & ECORE_X_MODIFIER_SHIFT)
+         *modifiers |= ETK_MODIFIER_SHIFT;
+      if (xmodifiers & ECORE_X_MODIFIER_CTRL)
+         *modifiers |= ETK_MODIFIER_CTRL;
+      if (xmodifiers & ECORE_X_MODIFIER_ALT)
+         *modifiers |= ETK_MODIFIER_ALT;
+      if (xmodifiers & ECORE_X_MODIFIER_WIN)
+         *modifiers |= ETK_MODIFIER_WIN;
+   }
+   
+   if (modifiers)
+   {
+      *locks = ETK_LOCK_NONE;
+      if (xmodifiers & ECORE_X_LOCK_SCROLL)
+         *locks |= ETK_LOCK_SCROLL;
+      if (xmodifiers & ECORE_X_LOCK_NUM)
+         *locks |= ETK_LOCK_NUM;
+      if (xmodifiers & ECORE_X_LOCK_CAPS)
+         *locks |= ETK_LOCK_CAPS;
+   }
 }

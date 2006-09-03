@@ -1,5 +1,4 @@
 #include "etk_test.h"
-#include <sys/time.h>
 #include <math.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
@@ -14,7 +13,6 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas);
 static void _etk_test_embed_update();
 static void _etk_test_embed_resize_cb(Ecore_Evas *ecore_evas);
 static int _etk_test_embed_animator_cb(void *data);
-static double _etk_test_embed_time_get();
 
 static Ecore_Evas *ecore_evas = NULL;
 static Evas_Object *e_logo, *backdrop;
@@ -23,7 +21,7 @@ static Evas_Object *panel_clip;
 static Evas_Object *embed_object;
 static Etk_Widget *embed;
 static int win_w = 240, win_h = 320;
-static double starting_time = 0.0;
+static unsigned int starting_time;
 
 /* Creates the window for the embed widget test */
 void etk_test_embed_window_create(void *data)
@@ -34,7 +32,7 @@ void etk_test_embed_window_create(void *data)
    
    if (ecore_evas)
    {
-      starting_time = _etk_test_embed_time_get();
+      starting_time = etk_current_time_get();
       _etk_test_embed_update();
       ecore_evas_show(ecore_evas);
       return;
@@ -82,7 +80,7 @@ void etk_test_embed_window_create(void *data)
    ecore_evas_size_min_set(ecore_evas, min_size.w + 50, min_size.h + 120);
    
    /* Updates the position of the objects */
-   starting_time = _etk_test_embed_time_get();
+   starting_time = etk_current_time_get();
    _etk_test_embed_update();
    ecore_animator_add(_etk_test_embed_animator_cb, NULL);
    
@@ -151,7 +149,7 @@ static void _etk_test_embed_update()
    Etk_Size embed_size;
    int y;
    
-   t = ETK_MAX(0.0, _etk_test_embed_time_get() - starting_time);
+   t = ETK_MAX(0.0, etk_current_time_get() - starting_time) / 1000.0;
    if (t <= 2.0)
       y = win_h - (0.75 * sin((t / 2.0) * (ETK_TEST_PI / 2)) * win_h);
    else
@@ -202,14 +200,4 @@ static int _etk_test_embed_animator_cb(void *data)
 {
    _etk_test_embed_update();
    return 1;
-}
-
-/* Gets the current time in seconds */
-static double _etk_test_embed_time_get()
-{
-   struct timeval timev;
-
-   gettimeofday(&timev, NULL);
-   return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
-
 }

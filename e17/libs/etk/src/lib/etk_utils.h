@@ -38,6 +38,8 @@ void etk_accumulator_stopping_bool_and(void *return_value, const void *value_to_
 
 void etk_callback_set_null(void *data);
 
+unsigned int etk_current_time_get();
+
 /** @} */
 
 #endif

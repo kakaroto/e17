@@ -1,5 +1,6 @@
 /** @file etk_utils.c */
 #include "etk_utils.h"
+#include <sys/time.h>
 #include "etk_types.h"
 #include "etk_signal.h"
 
@@ -94,6 +95,18 @@ void etk_callback_set_null(void *data)
    if (!data)
       return;
    *((void **)data) = NULL;
+}
+
+/**
+ * @brief Gets the current time, in milliseconds
+ * @return Returns the current time, in milliseconds
+ */
+unsigned int etk_current_time_get()
+{
+   struct timeval timev;
+
+   gettimeofday(&timev, NULL);
+   return ((timev.tv_sec * 1000) + ((timev.tv_usec) / 1000));
 }
 
 /** @} */

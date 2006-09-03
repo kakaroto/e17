@@ -237,7 +237,7 @@ Etk_Bool etk_engine_inherit_from(Etk_Engine *engine, const char *inherit_name)
  */
 void etk_engine_window_constructor(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_constructor)
+   if (!_engine || !_engine->window_constructor || !window)
       return;
    _engine->window_constructor(window);
 }
@@ -248,7 +248,7 @@ void etk_engine_window_constructor(Etk_Window *window)
  */
 void etk_engine_window_destructor(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_destructor)
+   if (!_engine || !_engine->window_destructor || !window)
       return;   
    _engine->window_destructor(window);
 }
@@ -259,7 +259,7 @@ void etk_engine_window_destructor(Etk_Window *window)
  */
 void etk_engine_window_show(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_show)
+   if (!_engine || !_engine->window_show || !window)
       return;   
    _engine->window_show(window);
 }
@@ -270,7 +270,7 @@ void etk_engine_window_show(Etk_Window *window)
  */
 void etk_engine_window_hide(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_hide)
+   if (!_engine || !_engine->window_hide || !window)
       return;   
    _engine->window_hide(window);
 }
@@ -282,7 +282,7 @@ void etk_engine_window_hide(Etk_Window *window)
  */
 Evas *etk_engine_window_evas_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_evas_get)
+   if (!_engine || !_engine->window_evas_get || !window)
       return NULL;
    return _engine->window_evas_get(window);
 }
@@ -294,7 +294,7 @@ Evas *etk_engine_window_evas_get(Etk_Window *window)
  */
 void etk_engine_window_title_set(Etk_Window *window, const char *title)
 {
-   if (!_engine || !_engine->window_title_set)
+   if (!_engine || !_engine->window_title_set || !window)
       return;   
    _engine->window_title_set(window, title);
 }
@@ -306,7 +306,7 @@ void etk_engine_window_title_set(Etk_Window *window, const char *title)
  */
 const char *etk_engine_window_title_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_title_get)
+   if (!_engine || !_engine->window_title_get || !window)
       return NULL;   
    return _engine->window_title_get(window);
 }
@@ -319,7 +319,7 @@ const char *etk_engine_window_title_get(Etk_Window *window)
  */
 void etk_engine_window_wmclass_set(Etk_Window *window, const char *window_name, const char *window_class)
 {
-   if (!_engine || !_engine->window_wmclass_set)
+   if (!_engine || !_engine->window_wmclass_set || !window)
       return;   
    _engine->window_wmclass_set(window, window_name, window_class);
 }
@@ -332,7 +332,7 @@ void etk_engine_window_wmclass_set(Etk_Window *window, const char *window_name, 
  */
 void etk_engine_window_move(Etk_Window *window, int x, int y)
 {
-   if (!_engine || !_engine->window_move)
+   if (!_engine || !_engine->window_move || !window)
       return;   
    _engine->window_move(window, x, y);
 }
@@ -345,7 +345,7 @@ void etk_engine_window_move(Etk_Window *window, int x, int y)
  */
 void etk_engine_window_resize(Etk_Window *window, int w, int h)
 {
-   if (!_engine || !_engine->window_resize)
+   if (!_engine || !_engine->window_resize || !window)
       return;   
    _engine->window_resize(window, w, h);
 }
@@ -358,7 +358,7 @@ void etk_engine_window_resize(Etk_Window *window, int w, int h)
  */
 void etk_engine_window_size_min_set(Etk_Window *window, int w, int h)
 {
-   if (!_engine || !_engine->window_size_min_set)
+   if (!_engine || !_engine->window_size_min_set || !window)
       return;   
    _engine->window_size_min_set(window, w, h);
 }
@@ -374,7 +374,7 @@ void etk_engine_window_evas_position_get(Etk_Window *window, int *x, int *y)
    if (x)   *x = 0;
    if (y)   *y = 0;
    
-   if (!_engine || !_engine->window_evas_position_get)
+   if (!_engine || !_engine->window_evas_position_get || !window)
       return;
    _engine->window_evas_position_get(window, x, y);
 }
@@ -390,7 +390,7 @@ void etk_engine_window_screen_position_get(Etk_Window *window, int *x, int *y)
    if (x)   *x = 0;
    if (y)   *y = 0;
    
-   if (!_engine || !_engine->window_screen_position_get)
+   if (!_engine || !_engine->window_screen_position_get || !window)
       return;
    _engine->window_screen_position_get(window, x, y);
 }
@@ -406,7 +406,7 @@ void etk_engine_window_size_get(Etk_Window *window, int *w, int *h)
    if (w)   *w = 0;
    if (h)   *h = 0;
    
-   if (!_engine || !_engine->window_size_get)
+   if (!_engine || !_engine->window_size_get || !window)
       return;
    _engine->window_size_get(window, w, h);
 }
@@ -426,7 +426,7 @@ void etk_engine_window_screen_geometry_get(Etk_Window *window, int *x, int *y, i
    if (w)   *w = 0;
    if (h)   *h = 0;
    
-   if (!_engine || !_engine->window_screen_geometry_get)
+   if (!_engine || !_engine->window_screen_geometry_get || !window)
       return;
    _engine->window_screen_geometry_get(window, x, y, w, h);
    
@@ -438,7 +438,7 @@ void etk_engine_window_screen_geometry_get(Etk_Window *window, int *x, int *y, i
  */
 void etk_engine_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
-   if (!_engine || !_engine->window_modal_for_window)
+   if (!_engine || !_engine->window_modal_for_window || !window_to_modal)
       return;   
    _engine->window_modal_for_window(window_to_modal, window);
 }
@@ -450,7 +450,7 @@ void etk_engine_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window 
  */
 void etk_engine_window_iconified_set(Etk_Window *window, Etk_Bool iconified)
 {
-   if (!_engine || !_engine->window_iconified_set)
+   if (!_engine || !_engine->window_iconified_set || !window)
       return;
    _engine->window_iconified_set(window, iconified);
 }
@@ -462,7 +462,7 @@ void etk_engine_window_iconified_set(Etk_Window *window, Etk_Bool iconified)
  */
 Etk_Bool etk_engine_window_iconified_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_iconified_get)
+   if (!_engine || !_engine->window_iconified_get || !window)
       return ETK_FALSE;
    return _engine->window_iconified_get(window);
 }
@@ -474,7 +474,7 @@ Etk_Bool etk_engine_window_iconified_get(Etk_Window *window)
  */
 void etk_engine_window_maximized_set(Etk_Window *window, Etk_Bool maximized)
 {
-   if (!_engine || !_engine->window_maximized_set)
+   if (!_engine || !_engine->window_maximized_set || !window)
       return;
    _engine->window_maximized_set(window, maximized);
 }
@@ -486,7 +486,7 @@ void etk_engine_window_maximized_set(Etk_Window *window, Etk_Bool maximized)
  */
 Etk_Bool etk_engine_window_maximized_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_maximized_get)
+   if (!_engine || !_engine->window_maximized_get || !window)
       return ETK_FALSE;   
    return _engine->window_maximized_get(window);
 }
@@ -498,7 +498,7 @@ Etk_Bool etk_engine_window_maximized_get(Etk_Window *window)
  */
 void etk_engine_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen)
 {
-   if (!_engine || !_engine->window_fullscreen_set)
+   if (!_engine || !_engine->window_fullscreen_set || !window)
       return;   
    _engine->window_fullscreen_set(window, fullscreen);
 }
@@ -510,7 +510,7 @@ void etk_engine_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen)
  */
 Etk_Bool etk_engine_window_fullscreen_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_fullscreen_get)
+   if (!_engine || !_engine->window_fullscreen_get || !window)
       return ETK_FALSE;
    return _engine->window_fullscreen_get(window);
 }
@@ -521,7 +521,7 @@ Etk_Bool etk_engine_window_fullscreen_get(Etk_Window *window)
  */
 void etk_engine_window_raise(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_raise)
+   if (!_engine || !_engine->window_raise || !window)
       return;   
    _engine->window_raise(window);
 }
@@ -532,7 +532,7 @@ void etk_engine_window_raise(Etk_Window *window)
  */
 void etk_engine_window_lower(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_lower)
+   if (!_engine || !_engine->window_lower || !window)
       return;   
    _engine->window_lower(window);
 }
@@ -544,7 +544,7 @@ void etk_engine_window_lower(Etk_Window *window)
  */
 void etk_engine_window_stacking_set(Etk_Window *window, Etk_Window_Stacking stacking)
 {
-   if (!_engine || !_engine->window_stacking_set)
+   if (!_engine || !_engine->window_stacking_set || !window)
       return;   
    _engine->window_stacking_set(window, stacking);
 }
@@ -556,7 +556,7 @@ void etk_engine_window_stacking_set(Etk_Window *window, Etk_Window_Stacking stac
  */
 Etk_Window_Stacking etk_engine_window_stacking_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_stacking_get)
+   if (!_engine || !_engine->window_stacking_get || !window)
       return ETK_WINDOW_NORMAL;   
    return _engine->window_stacking_get(window);
 }
@@ -569,7 +569,7 @@ Etk_Window_Stacking etk_engine_window_stacking_get(Etk_Window *window)
  */
 void etk_engine_window_sticky_set(Etk_Window *window, Etk_Bool sticky)
 {
-   if (!_engine || !_engine->window_sticky_set)
+   if (!_engine || !_engine->window_sticky_set || !window)
       return;   
    _engine->window_sticky_set(window, sticky);
 }
@@ -582,7 +582,7 @@ void etk_engine_window_sticky_set(Etk_Window *window, Etk_Bool sticky)
  */
 Etk_Bool etk_engine_window_sticky_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_sticky_get)
+   if (!_engine || !_engine->window_sticky_get || !window)
       return ETK_FALSE;
    return _engine->window_sticky_get(window);
 }
@@ -594,7 +594,7 @@ Etk_Bool etk_engine_window_sticky_get(Etk_Window *window)
  */
 void etk_engine_window_focused_set(Etk_Window *window, Etk_Bool focused)
 {
-   if (!_engine || !_engine->window_focused_set)
+   if (!_engine || !_engine->window_focused_set || !window)
       return;   
    _engine->window_focused_set(window, focused);
 }
@@ -606,7 +606,7 @@ void etk_engine_window_focused_set(Etk_Window *window, Etk_Bool focused)
  */
 Etk_Bool etk_engine_window_focused_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_focused_get)
+   if (!_engine || !_engine->window_focused_get || !window)
       return ETK_FALSE;   
    return _engine->window_focused_get(window);
 }
@@ -618,7 +618,7 @@ Etk_Bool etk_engine_window_focused_get(Etk_Window *window)
  */
 void etk_engine_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
 {
-   if (!_engine || !_engine->window_decorated_set)
+   if (!_engine || !_engine->window_decorated_set || !window)
       return;   
    _engine->window_decorated_set(window, decorated);
 }
@@ -630,7 +630,7 @@ void etk_engine_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
  */
 Etk_Bool etk_engine_window_decorated_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_decorated_get)
+   if (!_engine || !_engine->window_decorated_get || !window)
       return ETK_FALSE;   
    return _engine->window_decorated_get(window);
 }
@@ -642,7 +642,7 @@ Etk_Bool etk_engine_window_decorated_get(Etk_Window *window)
  */
 void etk_engine_window_shaped_set(Etk_Window *window, Etk_Bool shaped)
 {
-   if (!_engine || !_engine->window_shaped_set)
+   if (!_engine || !_engine->window_shaped_set || !window)
       return;   
    _engine->window_shaped_set(window, shaped);
 }
@@ -654,7 +654,7 @@ void etk_engine_window_shaped_set(Etk_Window *window, Etk_Bool shaped)
  */
 Etk_Bool etk_engine_window_shaped_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_shaped_get)
+   if (!_engine || !_engine->window_shaped_get || !window)
       return ETK_FALSE;   
    return _engine->window_shaped_get(window);
 }
@@ -666,7 +666,7 @@ Etk_Bool etk_engine_window_shaped_get(Etk_Window *window)
  */
 void etk_engine_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint)
 {
-   if (!_engine || !_engine->window_skip_taskbar_hint_set)
+   if (!_engine || !_engine->window_skip_taskbar_hint_set || !window)
       return;   
    _engine->window_skip_taskbar_hint_set(window, skip_taskbar_hint);
 }
@@ -678,7 +678,7 @@ void etk_engine_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_t
  */
 Etk_Bool etk_engine_window_skip_taskbar_hint_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_skip_taskbar_hint_get)
+   if (!_engine || !_engine->window_skip_taskbar_hint_get || !window)
       return ETK_FALSE;   
    return _engine->window_skip_taskbar_hint_get(window);
 }
@@ -690,7 +690,7 @@ Etk_Bool etk_engine_window_skip_taskbar_hint_get(Etk_Window *window)
  */
 void etk_engine_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint)
 {
-   if (!_engine || !_engine->window_skip_pager_hint_set)
+   if (!_engine || !_engine->window_skip_pager_hint_set || !window)
       return;   
    _engine->window_skip_pager_hint_set(window, skip_pager_hint);
 }
@@ -702,7 +702,7 @@ void etk_engine_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pag
  */
 Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window)
 {
-   if (!_engine || !_engine->window_skip_pager_hint_get)
+   if (!_engine || !_engine->window_skip_pager_hint_get || !window)
       return ETK_FALSE;   
    return _engine->window_skip_pager_hint_get(window);
 }
@@ -714,38 +714,44 @@ Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window)
  */
 void etk_engine_window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type)
 {
-   if (!_engine || !_engine->window_pointer_set)
+   if (!_engine || !_engine->window_pointer_set || !window)
       return;   
    _engine->window_pointer_set(window, pointer_type);
 }
 
 void etk_engine_popup_window_constructor(Etk_Popup_Window *popup_window)
 {
-   if (!_engine || !_engine->popup_window_constructor)
+   if (!_engine || !_engine->popup_window_constructor || !popup_window)
       return;   
    _engine->popup_window_constructor(popup_window);
 }
 
-void etk_engine_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
+void etk_engine_popup_window_popup(Etk_Popup_Window *popup_window)
 {
-   if (!_engine || !_engine->popup_window_popup_at_xy)
+   if (!_engine || !_engine->popup_window_popup || !popup_window)
       return;
-   _engine->popup_window_popup_at_xy(popup_window, x, y);
+   _engine->popup_window_popup(popup_window);
 }
 
 void etk_engine_popup_window_popdown(Etk_Popup_Window *popup_window)
 {
-   if (!_engine || !_engine->popup_window_popdown)
-      return;   
+   if (!_engine || !_engine->popup_window_popdown || !popup_window)
+      return;
    _engine->popup_window_popdown(popup_window);
 }
 
-/* TODO: remove?? */
-Evas_List **etk_engine_popup_window_popped_get()
+/**
+ * @internal
+ * @brief Sets the callback to call when an input event is emitted
+ * @param callback the function to call
+ * @param data the data to pass to the callback
+ * @note This function is already used by Etk_Event, you must not use it. Use etk_event_global_callback_add() instead
+ */
+void etk_engine_event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info))
 {
-   if (!_engine || !_engine->popup_window_popped_get)
-      return NULL;   
-   return _engine->popup_window_popped_get();
+   if (!_engine || !_engine->event_callback_set)
+      return;
+   _engine->event_callback_set(callback);
 }
 
 /**
@@ -785,14 +791,14 @@ void etk_engine_mouse_screen_geometry_get(int *x, int *y, int *w, int *h)
 
 void etk_engine_drag_constructor(Etk_Drag *drag)
 {
-   if (!_engine || !_engine->drag_constructor)
+   if (!_engine || !_engine->drag_constructor || !drag)
       return;
    return _engine->drag_constructor(drag);
 }
   
 void etk_engine_drag_begin(Etk_Drag *drag)
 {
-   if (!_engine || !_engine->drag_begin)
+   if (!_engine || !_engine->drag_begin || !drag)
       return;
    return _engine->drag_begin(drag);
 }
@@ -813,28 +819,28 @@ void etk_engine_dnd_shutdown()
 
 void etk_engine_clipboard_text_request(Etk_Widget *widget)
 {
-   if (!_engine || !_engine->clipboard_text_request)
+   if (!_engine || !_engine->clipboard_text_request || !widget)
       return;
    _engine->clipboard_text_request(widget);
 }
 
 void etk_engine_clipboard_text_set(Etk_Widget *widget, const char *text, int length)
 {
-   if (!_engine || !_engine->clipboard_text_set)
+   if (!_engine || !_engine->clipboard_text_set || !widget)
       return;
    _engine->clipboard_text_set(widget, text, length);
 }
 
 void etk_engine_selection_text_request(Etk_Widget *widget)
 {
-   if (!_engine || !_engine->clipboard_text_request)
+   if (!_engine || !_engine->clipboard_text_request || !widget)
       return;
    _engine->selection_text_request(widget);
 }
 
 void etk_engine_selection_text_set(Etk_Widget *widget, const char *text, int length)
 {
-   if (!_engine || !_engine->clipboard_text_set)
+   if (!_engine || !_engine->clipboard_text_set || !widget)
       return;
    _engine->selection_text_set(widget, text, length);
 }
@@ -901,10 +907,10 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(window_pointer_set);
    
    INHERIT(popup_window_constructor);
-   INHERIT(popup_window_popup_at_xy);
+   INHERIT(popup_window_popup);
    INHERIT(popup_window_popdown);
-   INHERIT(popup_window_popped_get);
    
+   INHERIT(event_callback_set);
    INHERIT(mouse_position_get);
    INHERIT(mouse_screen_geometry_get);
    

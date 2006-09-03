@@ -4,6 +4,7 @@
 #include <string.h>
 #include "etk_image.h"
 #include "etk_menu_shell.h"
+#include "etk_menu.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -18,6 +19,7 @@ enum Etk_Menu_Item_Signal_Id
    ETK_MENU_ITEM_SELECTED_SIGNAL,
    ETK_MENU_ITEM_DESELECTED_SIGNAL,
    ETK_MENU_ITEM_ACTIVATED_SIGNAL,
+   ETK_MENU_ITEM_SUBMENU_POPPED_UP_SIGNAL,
    ETK_MENU_ITEM_SUBMENU_POPPED_DOWN_SIGNAL,
    ETK_MENU_ITEM_NUM_SIGNALS
 };
@@ -31,6 +33,7 @@ enum Etk_Menu_Item_Check_Signal_Id
 enum Etk_Menu_Item_Property_Id
 {
    ETK_MENU_ITEM_LABEL_PROPERTY,
+   ETK_MENU_ITEM_SUBMENU_PROPERTY,
    ETK_MENU_ITEM_IMAGE_PROPERTY,
    ETK_MENU_ITEM_ACTIVE_PROPERTY,
    ETK_MENU_ITEM_GROUP_PROPERTY
@@ -91,11 +94,15 @@ Etk_Type *etk_menu_item_type_get()
          menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, deselected), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_menu_item_signals[ETK_MENU_ITEM_ACTIVATED_SIGNAL] = etk_signal_new("activated",
          menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, activated), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_menu_item_signals[ETK_MENU_ITEM_SUBMENU_POPPED_UP_SIGNAL] = etk_signal_new("submenu_popped_up",
+         menu_item_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_menu_item_signals[ETK_MENU_ITEM_SUBMENU_POPPED_DOWN_SIGNAL] = etk_signal_new("submenu_popped_down",
          menu_item_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
       etk_type_property_add(menu_item_type, "label", ETK_MENU_ITEM_LABEL_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(menu_item_type, "submenu", ETK_MENU_ITEM_SUBMENU_PROPERTY,
+         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
       
       menu_item_type->property_set = _etk_menu_item_property_set;
       menu_item_type->property_get = _etk_menu_item_property_get;
@@ -172,13 +179,40 @@ const char *etk_menu_item_label_get(Etk_Menu_Item *menu_item)
 }
 
 /**
+ * @brief Sets the label of the menu item from the stock id. If the menu item is an Etk_Menu_Item_Image, the image is
+ * also changed depending on the stock id.
+ * @param menu_item a menu item
+ * @param stock_id the stock id corresponding to the label and the image you want to use
+ * @see Etk_Stock
+ */
+void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_id)
+{
+   char *label;
+
+   if (!menu_item)
+      return;
+
+   label = etk_stock_label_get(stock_id);
+   etk_menu_item_label_set(menu_item, label);
+   
+   if (ETK_IS_MENU_ITEM_IMAGE(menu_item))
+   {
+      Etk_Widget *image;
+      image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
+      etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+      etk_widget_visibility_locked_set(image, ETK_TRUE);
+      etk_widget_show(image);
+   }
+}
+
+/**
  * @brief Sets the submenu of the menu item: the submenu will be popped up when the menu item is selected
  * @param menu_item a menu item
  * @param submenu the submenu to set
  */
 void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
 {
-   if (!menu_item)
+   if (!menu_item || menu_item->submenu == submenu)
       return;
    
    if (menu_item->submenu)
@@ -193,6 +227,19 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
       etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "arrow_hide");
    
    etk_widget_size_recalc_queue(ETK_WIDGET(menu_item));
+   etk_object_notify(ETK_OBJECT(menu_item), "submenu");
+}
+
+/**
+ * @brief Gets the submenu attached to the menu item
+ * @param menu_item a menu item
+ * @return Returns the submenu attached to the menu item
+ */
+Etk_Menu *etk_menu_item_submenu_get(Etk_Menu_Item *menu_item)
+{
+   if (!menu_item)
+      return NULL;
+   return menu_item->submenu;
 }
 
 /**
@@ -230,33 +277,6 @@ void etk_menu_item_activate(Etk_Menu_Item *menu_item)
    if (!menu_item)
       return;
    etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_ACTIVATED_SIGNAL], ETK_OBJECT(menu_item), NULL);
-}
-
-/**
- * @brief Sets the label of the menu item from the stock id. If the menu item is an Etk_Menu_Item_Image, the image is
- * also changed depending on the stock id.
- * @param menu_item a menu item
- * @param stock_id the stock id corresponding to the label and the image you want to use
- * @see Etk_Stock
- */
-void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_id)
-{
-   char *label;
-
-   if (!menu_item)
-      return;
-
-   label = etk_stock_label_get(stock_id);
-   etk_menu_item_label_set(menu_item, label);
-   
-   if (ETK_IS_MENU_ITEM_IMAGE(menu_item))
-   {
-      Etk_Widget *image;
-      image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
-      etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-      etk_widget_visibility_locked_set(image, ETK_TRUE);
-      etk_widget_show(image);
-   }
 }
 
 /**************************
@@ -695,6 +715,9 @@ static void _etk_menu_item_property_set(Etk_Object *object, int property_id, Etk
       case ETK_MENU_ITEM_LABEL_PROPERTY:
          etk_menu_item_label_set(menu_item, etk_property_value_string_get(value));
          break;
+      case ETK_MENU_ITEM_SUBMENU_PROPERTY:
+         etk_menu_item_submenu_set(menu_item, ETK_MENU(etk_property_value_pointer_get(value)));
+         break;
       default:
          break;
    }
@@ -712,6 +735,9 @@ static void _etk_menu_item_property_get(Etk_Object *object, int property_id, Etk
    {
       case ETK_MENU_ITEM_LABEL_PROPERTY:
          etk_property_value_string_set(value, menu_item->label);
+         break;
+      case ETK_MENU_ITEM_SUBMENU_PROPERTY:
+         etk_property_value_pointer_set(value, menu_item->submenu);
          break;
       default:
          break;
@@ -986,33 +1012,43 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
  * \par Signals:
  * @signal_name "selected": Emitted when the menu item is selected
  * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg combobox: the menu_item which has been selected
+ * @signal_arg combobox: the menu item which has been selected
  * @signal_data
  * \par
  * @signal_name "deselected": Emitted when the menu item is deselected
  * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg combobox: the menu_item which has been deselected
+ * @signal_arg combobox: the menu item which has been deselected
  * @signal_data
  * \par
  * @signal_name "activated": Emitted when the menu item is activated (mainly when it has been clicked)
  * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg combobox: the menu_item which has been activated
+ * @signal_arg combobox: the menu item which has been activated
  * @signal_data
  * \par
- * @signal_name "submenu_popped_down": Emitted when the menu item's submenu has been popped down (it is used internally)
+ * @signal_name "submenu_popped_up": Emitted when the menu item's submenu has been popped up
  * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg combobox: the menu_item whose submenu has been popped down
+ * @signal_arg combobox: the menu item whose submenu has been popped up
+ * @signal_data
+ * \par
+ * @signal_name "submenu_popped_down": Emitted when the menu item's submenu has been popped down
+ * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
+ * @signal_arg combobox: the menu item whose submenu has been popped down
  * @signal_data
  * \par
  * @signal_name "toggled" (only for Etk_Menu_Item_Check and Etk_Menu_Item_Radio):
  * Emitted when the menu item (check or radio) has been toggled
  * @signal_cb void callback(Etk_Menu_Item_Check *check_item, void *data)
- * @signal_arg combobox: the menu_item which has been toggled
+ * @signal_arg combobox: the menu item which has been toggled
  * @signal_data
  * 
  * \par Properties:
  * @prop_name "label": The text of the label of the menu item
  * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
+ * \par
+ * @prop_name "submenu": The submenu attached to the menu item
+ * @prop_type Pointer (Etk_Menu *)
  * @prop_rw
  * @prop_val NULL
  * \par

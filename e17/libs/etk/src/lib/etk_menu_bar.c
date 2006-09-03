@@ -1,22 +1,14 @@
 /** @file etk_menu_bar.c */
 
-/* TODO: 
- * remove Ecore_X from here 
- */
 #include "etk_menu_bar.h"
 #include <stdlib.h>
-#include <Ecore.h>
-
-#if BUILD_ENGINE_EE_S_X11
-#include <Ecore_X.h>
-#endif
-
 #include "etk_menu.h"
 #include "etk_menu_item.h"
 #include "etk_toplevel_widget.h"
-#include "etk_utils.h"
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Menu_Bar
@@ -28,13 +20,11 @@ static void _etk_menu_bar_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_menu_bar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_menu_bar_item_added_cb(Etk_Object *object, void *item, void *data);
 static void _etk_menu_bar_item_removed_cb(Etk_Object *object, void *item, void *data);
-static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event);
+static void _etk_menu_bar_mouse_move_cb(Etk_Event_Global event, void *data);
 static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data);
 static void _etk_menu_bar_item_deselected_cb(Etk_Object *object, void *data);
 static void _etk_menu_bar_item_mouse_up_cb(Etk_Object *object, void *event, void *data);
 static void _etk_menu_bar_item_submenu_popped_down_cb(Etk_Object *object, void *event, void *data);
-
-static Ecore_Event_Handler *_etk_menu_bar_mouse_move_handler = NULL;
 
 /**************************
  *
@@ -80,7 +70,7 @@ static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar)
    if (!menu_bar)
       return;
    
-   menu_bar->item_selected = ETK_FALSE;
+   menu_bar->move_callback = ETK_FALSE;
    ETK_WIDGET(menu_bar)->size_request = _etk_menu_bar_size_request;
    ETK_WIDGET(menu_bar)->size_allocate = _etk_menu_bar_size_allocate;
    
@@ -170,26 +160,19 @@ static void _etk_menu_bar_item_removed_cb(Etk_Object *object, void *item, void *
    etk_signal_disconnect("submenu_popped_down", item_object, ETK_CALLBACK(_etk_menu_bar_item_submenu_popped_down_cb));
 }
 
-/*
- * Called when the user moves the mouse above the menu input window of the current popped menu
- * It popups other menus if the mouse is above an item of the menu bar
- */
-static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event)
+/* Called when the user moves the mouse above the screen when a menu is popped up.
+ * It popups other menus if the mouse is above another item of the menu bar */
+static void _etk_menu_bar_mouse_move_cb(Etk_Event_Global event, void *data)
 {
-#if BUILD_ENGINE_EE_S_X11
    Etk_Menu_Bar *menu_bar;
-   Ecore_X_Event_Mouse_Move *mouse_event;
    Etk_Toplevel_Widget *toplevel;
    int tx, ty;
    Etk_Geometry item_geometry;
    Evas_List *l;
    Etk_Widget *item;
    
-   if (!(menu_bar = ETK_MENU_BAR(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(menu_bar))) ||
-      !(mouse_event = event))
-   {
-      return 1;
-   }
+   if (!(menu_bar = ETK_MENU_BAR(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(menu_bar))))
+      return;
    
    /* If the mouse pointer is above a menu item, we select it */
    etk_toplevel_widget_screen_position_get(toplevel, &tx, &ty);
@@ -198,15 +181,13 @@ static int _etk_menu_bar_mouse_move_cb(void *data, int type, void *event)
       item = ETK_WIDGET(l->data);
       etk_widget_geometry_get(item, &item_geometry.x, &item_geometry.y, &item_geometry.w, &item_geometry.h);
       
-      if ((mouse_event->x - tx) >= item_geometry.x && (mouse_event->x - tx) <= item_geometry.x + item_geometry.w &&
-         (mouse_event->y - ty) >= item_geometry.y && (mouse_event->y - ty) <= item_geometry.y + item_geometry.h)
+      if (ETK_INSIDE(event.mouse_move.pos.x - tx, event.mouse_move.pos.y - ty,
+         item_geometry.x, item_geometry.y, item_geometry.w, item_geometry.h))
       {
          etk_menu_item_select(ETK_MENU_ITEM(item));
          break;
       }
    }
-#endif   
-   return 1;
 }
 
 /* Called when the item is selected */
@@ -220,7 +201,7 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
    if (!(item = ETK_MENU_ITEM(object)) || !(menu_bar = ETK_MENU_BAR(item->parent)))
       return;
 
-   /* First, we deselect all the items that are on the same menu_bar than the item */
+   /* First, we deselect all the items that belong to the same menu bar */
    for (l = ETK_MENU_SHELL(menu_bar)->items; l; l = l->next)
    {
       if (ETK_MENU_ITEM(l->data) == item)
@@ -239,14 +220,11 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
       etk_menu_popup_at_xy(item->submenu, sx + (ix - ex), sy + (iy - ey) + ih);
    }
    
-   if (!_etk_menu_bar_mouse_move_handler)
+   if (!menu_bar->move_callback)
    {
-#if BUILD_ENGINE_EE_S_X11
-      _etk_menu_bar_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
-         _etk_menu_bar_mouse_move_cb, menu_bar);
-#endif
+      etk_event_global_callback_add(ETK_EVENT_MOUSE_MOVE, _etk_menu_bar_mouse_move_cb, menu_bar);
+      menu_bar->move_callback = ETK_TRUE;
    }
-   menu_bar->item_selected = ETK_TRUE;
 }
 
 /* Called when the item is deselected */
@@ -261,12 +239,11 @@ static void _etk_menu_bar_item_deselected_cb(Etk_Object *object, void *data)
    if (item->submenu)
       etk_menu_popdown(item->submenu);
    
-   if (_etk_menu_bar_mouse_move_handler)
+   if (menu_bar->move_callback)
    {
-      ecore_event_handler_del(_etk_menu_bar_mouse_move_handler);
-      _etk_menu_bar_mouse_move_handler = NULL;
+      etk_event_global_callback_del(ETK_EVENT_MOUSE_MOVE, _etk_menu_bar_mouse_move_cb);
+      menu_bar->move_callback = ETK_FALSE;
    }
-   menu_bar->item_selected = ETK_FALSE;
 }
 
 /* Called when the user has clicked on the item */

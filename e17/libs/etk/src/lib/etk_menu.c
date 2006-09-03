@@ -34,6 +34,7 @@ static void _etk_menu_item_mouse_up_cb(Etk_Object *object, void *event, void *da
 static void _etk_menu_item_selected_cb(Etk_Object *object, void *data);
 static void _etk_menu_item_deselected_cb(Etk_Object *object, void *data);
 static void _etk_menu_item_activated_cb(Etk_Object *object, void *data);
+static void _etk_menu_item_submenu_changed_cb(Etk_Object *object, const char *property_name, void *data);
 
 static Etk_Signal *_etk_menu_signals[ETK_MENU_NUM_SIGNALS];
 
@@ -130,7 +131,7 @@ static void _etk_menu_constructor(Etk_Menu *menu)
    ETK_WIDGET(menu)->size_request = _etk_menu_size_request;
    ETK_WIDGET(menu)->size_allocate = _etk_menu_size_allocate;
    
-   etk_signal_connect("item_added", ETK_OBJECT(menu), ETK_CALLBACK(_etk_menu_item_added_cb), NULL);
+   etk_signal_connect("item_added", ETK_OBJECT(menu), ETK_CALLBACK(_etk_menu_item_added_cb), menu);
    etk_signal_connect("item_removed", ETK_OBJECT(menu), ETK_CALLBACK(_etk_menu_item_removed_cb), NULL);
 }
 
@@ -234,6 +235,8 @@ static void _etk_menu_window_popped_up_cb(Etk_Object *object, void *data)
    
    etk_widget_show(menu_widget);
    etk_signal_emit(_etk_menu_signals[ETK_MENU_POPPED_UP_SIGNAL], ETK_OBJECT(menu_widget), NULL);
+   if (ETK_MENU_SHELL(menu_widget)->parent)
+      etk_signal_emit_by_name("submenu_popped_up", ETK_OBJECT(ETK_MENU_SHELL(menu_widget)->parent), NULL);
 }
 
 /* Called when the menu window is popped down */
@@ -279,6 +282,7 @@ static void _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data)
    etk_signal_connect("selected", item_object, ETK_CALLBACK(_etk_menu_item_selected_cb), NULL);
    etk_signal_connect("deselected", item_object, ETK_CALLBACK(_etk_menu_item_deselected_cb), NULL);
    etk_signal_connect("activated", item_object, ETK_CALLBACK(_etk_menu_item_activated_cb), NULL);
+   etk_object_notification_callback_add(item_object, "submenu", _etk_menu_item_submenu_changed_cb, data);
 }
 
 /* Called when an item is removed from the menu */
@@ -295,6 +299,7 @@ static void _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data
    etk_signal_disconnect("selected", item_object, ETK_CALLBACK(_etk_menu_item_selected_cb));
    etk_signal_disconnect("deselected", item_object, ETK_CALLBACK(_etk_menu_item_deselected_cb));
    etk_signal_disconnect("activated", item_object, ETK_CALLBACK(_etk_menu_item_activated_cb));
+   etk_object_notification_callback_remove(item_object, "submenu", _etk_menu_item_submenu_changed_cb);
 }
 
 /* Called when the mouse pointer enters the item */ 
@@ -368,6 +373,21 @@ static void _etk_menu_item_deselected_cb(Etk_Object *object, void *data)
 static void _etk_menu_item_activated_cb(Etk_Object *object, void *data)
 {
    etk_popup_window_popdown_all();
+}
+
+/* Called when the submenu of an item of the menu has been changed */
+static void _etk_menu_item_submenu_changed_cb(Etk_Object *object, const char *property_name, void *data)
+{
+   Etk_Menu *menu, *submenu;
+   Etk_Menu_Item *item;
+   
+   if (!(item = ETK_MENU_ITEM(object)) || !(menu = ETK_MENU(data)))
+      return;
+   
+   if ((submenu = etk_menu_item_submenu_get(item)))
+      etk_popup_window_parent_set(submenu->window, menu->window);
+   
+   //TODO: Remove the parent of the previous submenu
 }
 
 /** @} */

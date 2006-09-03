@@ -33,7 +33,7 @@ struct Etk_Menu_Bar
    /* Inherit from Etk_Menu_Shell */
    Etk_Menu_Shell menu_shell;
    
-   Etk_Bool item_selected;
+   Etk_Bool move_callback;
 };
 
 Etk_Type *etk_menu_bar_type_get();

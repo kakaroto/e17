@@ -6,12 +6,12 @@
 #include "etk_types.h"
 
 /* TODO/FIXME list:
- * - Sometimes, when the menu is popped down, the window stay visible, but its content is hidden
+ * - Sometimes, when the menu is popped down, the window stay visible, but its content is hidden (e17 bug probably)
  * - The width of the menu window is not correctly calculated. Probably a bug of edje_object_size_min_calc().
  * For now, 15 pixels are manually added to the calculated width
  * - Keyboard navigation!
  * - better theme grouping?
- * - Sometimes the menu is not popped up at the right place (maybe a bug ot Etk_Popup_Window)
+ * - Sometimes the menu is not popped up at the right place (probably a bug ot Etk_Popup_Window)
  */
 
 /**

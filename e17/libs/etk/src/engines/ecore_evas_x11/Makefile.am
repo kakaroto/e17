@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES = -I$(top_srcdir)/src/lib \
 	   -I$(top_srcdir)/src/engines/ecore_evas \
-	   @EVAS_CFLAGS@ @ECORE_CFLAGS@ -g
+	   @EVAS_CFLAGS@ @ECORE_CFLAGS@ -g -Wall
 
 pkgdir = $(libdir)/etk/engines
 
