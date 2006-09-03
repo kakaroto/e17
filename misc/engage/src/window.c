@@ -474,7 +474,7 @@ handle_menu_draw(void *data, Evas * e, Evas_Object * obj, void *event)
 {
   Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down *) event;
 
-#ifdef HAVE_EWL
+#ifdef HAVE_ETK
   if (ev->button == 3)
       od_config_menu_draw(ev->canvas.x, ev->canvas.y);
 #endif

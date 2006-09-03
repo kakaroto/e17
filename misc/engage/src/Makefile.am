@@ -8,14 +8,14 @@ INCLUDES = \
 @edje_cflags@ \
 @ecore_cflags@ \
 @esmart_cflags@ \
-@ewl_cflags@ \
-@imlib2_cflags@ \
-@e_cflags@
+@etk_cflags@ \
+@imlib2_cflags@
 
 bin_PROGRAMS = engage
 
 engage_SOURCES = \
 e.h \
+e_includes.h \
 e_apps.h \
 e_apps_cache.h \
 e_icon.h \
@@ -45,10 +45,10 @@ e_icon.c \
 e_intl.c
 
 if XINERAMA
-engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @imlib2_libs@ @ewl_libs@ \
+engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @imlib2_libs@ @etk_libs@ \
 					@esmart_libs@ -lesmart_trans_x11 -lXinerama
 engage_CFLAGS = -DXINERAMA
 else
-engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @imlib2_libs@ @ewl_libs@ \
+engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @imlib2_libs@ @etk_libs@ \
           @esmart_libs@ -lesmart_trans_x11
 endif

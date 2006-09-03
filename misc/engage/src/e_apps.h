@@ -85,7 +85,7 @@ struct _E_App_Autopsy
    E_App       *app;
 
    Ecore_Exe_Event_Del del;
-   E_Config_Dialog *error_dialog;   
+//   E_Config_Dialog *error_dialog;   
    Ecore_Exe_Event_Data *error, *read;
 };
 

@@ -17,7 +17,7 @@ EAPI int     restart      = 0;
 EAPI int     good         = 0;
 EAPI int     evil         = 0;
 EAPI int     starting     = 1;
-
+/*
 typedef struct _E_Util_Fake_Mouse_Up_Info E_Util_Fake_Mouse_Up_Info;
 
 struct _E_Util_Fake_Mouse_Up_Info
@@ -25,7 +25,7 @@ struct _E_Util_Fake_Mouse_Up_Info
    E_Container *con;
    int          button;
 };
-
+*/
 /* local subsystem functions */
 static void _e_util_container_fake_mouse_up_cb(void *data);
 static int _e_util_wakeup_cb(void *data);
@@ -34,7 +34,7 @@ static int _e_util_wakeup_cb(void *data);
 static Ecore_Timer *_e_util_dummy_timer = NULL;
 
 /* externally accessible functions */
-EAPI void
+/*EAPI void
 e_util_container_fake_mouse_up_later(E_Container *con, int button)
 {
    E_Util_Fake_Mouse_Up_Info *info;
@@ -62,7 +62,7 @@ e_util_container_fake_mouse_up_all_later(E_Container *con)
    e_util_container_fake_mouse_up_later(con, 2);
    e_util_container_fake_mouse_up_later(con, 3);
 }
-
+*/
 EAPI void
 e_util_wakeup(void)
 {
@@ -667,7 +667,7 @@ e_util_shell_env_path_eval(char *path)
 }
 
 /* local subsystem functions */
-static void
+/*static void
 _e_util_container_fake_mouse_up_cb(void *data)
 {
    E_Util_Fake_Mouse_Up_Info *info;
@@ -680,7 +680,7 @@ _e_util_container_fake_mouse_up_cb(void *data)
 	free(info);
      }
 }
-
+*/
 static int
 _e_util_wakeup_cb(void *data)
 {

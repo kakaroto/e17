@@ -63,14 +63,14 @@ e_intl_init(void)
 {
    char *s;
    
-//   _e_intl_input_method_config_edd = E_CONFIG_DD_NEW("input_method_config", E_Input_Method_Config);
+/*   _e_intl_input_method_config_edd = E_CONFIG_DD_NEW("input_method_config", E_Input_Method_Config);
    E_CONFIG_VAL(_e_intl_input_method_config_edd, E_Input_Method_Config, version, INT);
    E_CONFIG_VAL(_e_intl_input_method_config_edd, E_Input_Method_Config, e_im_name, STR);
    E_CONFIG_VAL(_e_intl_input_method_config_edd, E_Input_Method_Config, gtk_im_module, STR);
    E_CONFIG_VAL(_e_intl_input_method_config_edd, E_Input_Method_Config, qt_im_module, STR);
    E_CONFIG_VAL(_e_intl_input_method_config_edd, E_Input_Method_Config, xmodifiers, STR);
    E_CONFIG_VAL(_e_intl_input_method_config_edd, E_Input_Method_Config, e_im_exec, STR);
-   
+   */
 
    if ((s = getenv("LC_MESSAGES"))) _e_intl_orig_lc_messages = strdup(s);
    if ((s = getenv("LANGUAGE"))) _e_intl_orig_language = strdup(s);
@@ -97,7 +97,7 @@ e_intl_shutdown(void)
    E_FREE(_e_intl_orig_qt_im_module);
    E_FREE(_e_intl_orig_xmodifiers);
    
-   E_CONFIG_DD_FREE(_e_intl_input_method_config_edd);
+//   E_CONFIG_DD_FREE(_e_intl_input_method_config_edd);
   
    return 1;
 }

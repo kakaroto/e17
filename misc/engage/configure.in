@@ -59,11 +59,9 @@ fi
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${HOME}/.e/e/modules/${PACKAGE}", "Package installed data destination")
-    datadir="${HOME}/.e/e/modules/${PACKAGE}"
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
 else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${libdir}/enlightenment/modules/${PACKAGE}", "Package installed data destination")
-    datadir="${libdir}/enlightenment/modules/${PACKAGE}"    
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
 fi
 
 dnl Set PACKAGE_BIN_DIR in config.h.
@@ -138,32 +136,17 @@ evas_cflags=`evas-config --cflags`
 AC_SUBST(evas_libs)
 AC_SUBST(evas_cflags)
 
-have_ewl="no"
-AC_PATH_GENERIC(ewl, 0.0.1, [
-  AC_DEFINE(HAVE_EWL, [], [Enlightenment Widget Library Support])
-  have_ewl="yes"
-  AC_SUBST(ewl_libs)
-  AC_SUBST(ewl_cflags) ],
-  AC_MSG_ERROR(Cannot find ewl: Is ewl-config in path?))
-ewl_libs=`ewl-config --libs`
-ewl_cflags=`ewl-config --cflags`
-AC_SUBST(ewl_libs)
-AC_SUBST(ewl_cflags)
-
-have_e17="no"
-AC_PATH_GENERIC(enlightenment, 16.999, [
-  AC_DEFINE(HAVE_E17, [], [Development Enlightenment WindowManager Support])
-  have_e17="true"
-  AC_SUBST(e_libs)
-  AC_SUBST(e_cflags) ],
-  )
-AM_CONDITIONAL(HAVE_E17, test x$have_e17 = xtrue)
-e_libs=`enlightenment-config --libs`
-e_cflags=`enlightenment-config --cflags`
-e_modules=`enlightenment-config --module-dir`
-AC_SUBST(e_libs)
-AC_SUBST(e_cflags)
-AC_SUBST(e_modules)
+have_etk="no"
+AC_PATH_GENERIC(etk, 0.0.1, [
+  AC_DEFINE(HAVE_ETK, [], [ETK Support])
+  have_etk="yes"
+  AC_SUBST(etk_libs)
+  AC_SUBST(etk_cflags) ],
+  AC_MSG_ERROR(Cannot find etk: Is etk-config in path?))
+etk_libs=`etk-config --libs`
+etk_cflags=`etk-config --cflags`
+AC_SUBST(etk_libs)
+AC_SUBST(etk_cflags)
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 #packagesrcdir=`cd $srcdir && pwd`

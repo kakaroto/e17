@@ -2215,7 +2215,7 @@ _e_apps_cb_exit(void *data, int type, void *event)
    _e_app_change(a, E_APP_EXIT);
    return 1;
 }
-
+/*
 static int
 _e_app_cb_event_border_add(void *data, int type, void *event)
 {
@@ -2262,7 +2262,7 @@ _e_app_cb_event_border_add(void *data, int type, void *event)
      }
    return 1;
 }
-
+*/
 static int
 _e_app_cb_expire_timer(void *data)
 {

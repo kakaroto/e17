@@ -1,6 +1,8 @@
 #include "engage.h"
 #include "Ecore_X.h"
-#include "Ewl.h"
+#ifdef HAVE_ETK
+#include <Etk.h>
+#endif
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
@@ -45,7 +47,9 @@ main(int argc, char **argv)
 
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
   ecore_evas_init();
-  ewl_init(&argc, argv);
+#ifdef HAVE_ETK
+  etk_init(&argc, &argv);
+#endif
   edje_init();
   edje_frametime_set(1.0 / 30.0);
 
@@ -66,7 +70,9 @@ main(int argc, char **argv)
   ecore_main_loop_begin();
 
   edje_shutdown();
-  ewl_shutdown();
+#ifdef HAVE_ETK
+  etk_shutdown();
+#endif
   ecore_evas_shutdown();
   e_app_shutdown();
   ecore_config_save();
