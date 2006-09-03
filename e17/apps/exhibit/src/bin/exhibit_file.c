@@ -15,6 +15,21 @@ char *viewables[] =
    NULL
 };
 
+int 
+_ex_file_download_progress_cb(void *data, const char *file, long int dltotal, long int dlnow, long int ultotal, long int ulnow)
+{
+   D(("Download progress on %s\n", file));
+
+   return TRUE;
+}
+
+void 
+_ex_file_download_complete_cb(void *data, const char *file, int status)
+{
+   D(("Download of file %s is done\n", file));
+
+}
+
 int
 _ex_file_is_viewable(char *file)
 {

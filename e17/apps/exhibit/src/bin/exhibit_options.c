@@ -36,12 +36,18 @@
 static Eet_Data_Descriptor *_ex_config_options_edd = NULL;
 static Eet_Data_Descriptor *_ex_config_version_edd = NULL;
 
-static void _ex_options_set();
+static Ex_Config_Version *_ex_options_version_parse(char *version);
+static int _ex_options_version_compare(Ex_Config_Version *v1, Ex_Config_Version *v2);
 static void _ex_options_set_cancel_cb(Etk_Object *object, void *data);
 static void _ex_options_set_apply_cb(Etk_Object *object, void *data);
 static void _ex_options_set_ok_cb(Etk_Object *object, void *data);
 static Etk_Bool _ex_options_window_delete_cb(void *data);
-
+static void _ex_options_set();
+static Etk_Widget *_ex_options_page_1_create();
+static Etk_Widget *_ex_options_page_2_create();
+static void _ex_options_combobox_active_item_changed_cb(Etk_Object *object, void *data);
+static Etk_Widget *_ex_options_page_3_create();
+static Etk_Widget *_ex_options_page_4_create();
 
 int
 _ex_options_init()
@@ -99,6 +105,7 @@ _ex_options_init()
    CFG_OPTIONS_NEWI("a2_cmd", app2_cmd, EET_T_STRING);
    CFG_OPTIONS_NEWI("a3_cmd", app3_cmd, EET_T_STRING);
    CFG_OPTIONS_NEWI("a4_cmd", app4_cmd, EET_T_STRING);
+   CFG_OPTIONS_NEWI("dlp", dl_path, EET_T_STRING);
    CFG_OPTIONS_NEWI("fp", fav_path, EET_T_STRING);
    CFG_OPTIONS_NEWI("bt", blur_thresh, EET_T_DOUBLE);
    CFG_OPTIONS_NEWI("st", sharpen_thresh, EET_T_DOUBLE);
@@ -128,7 +135,7 @@ _ex_options_shutdown()
    return 1;
 }  
 
-Ex_Config_Version *
+static Ex_Config_Version *
 _ex_options_version_parse(char *version)
 {
    Ex_Config_Version *v;
@@ -148,7 +155,7 @@ _ex_options_version_parse(char *version)
  *                     return 0 if v1 == v2
  *                     return -1 if v1 < v2
  */
-int
+static int
 _ex_options_version_compare(Ex_Config_Version *v1, Ex_Config_Version *v2)
 {
    if(v1->major > v2->major)
@@ -197,6 +204,7 @@ _ex_options_default(Exhibit *e)
    e->options->app4 =     NULL;
    e->options->app4_cmd =     NULL;
    e->options->fav_path = NULL;   
+   e->options->dl_path = strdup("/tmp");   
    e->options->blur_thresh      = EX_DEFAULT_BLUR_THRESH;
    e->options->sharpen_thresh   = EX_DEFAULT_SHARPEN_THRESH;
    e->options->brighten_thresh  = EX_DEFAULT_BRIGHTEN_THRESH;
@@ -223,6 +231,7 @@ _ex_options_free(Exhibit *e)
    E_FREE(e->options->app3_cmd);
    E_FREE(e->options->app4_cmd);
    E_FREE(e->options->fav_path);
+   E_FREE(e->options->dl_path);
    E_FREE(e->options);
 }
 
@@ -252,7 +261,7 @@ _ex_options_save(Exhibit *e)
    if(!ret)
      fprintf(stderr, "Problem saving config/options!");
 
-   D(("Saving configuation (%s)\n", e->options->fav_path));
+   D(("Saving configuation (%s)\n", buf));
    
    eet_close(ef);
    return ret;   
@@ -311,10 +320,7 @@ _ex_options_load(Exhibit *e)
      }
    
    e->options = eet_data_read(ef, _ex_config_options_edd, "config/options");
-   
-   D(("Config: Loaded saved options (%s)\n", e->options->fav_path));
-
-   D(("Default view: %d\n", e->options->default_view));
+   D(("Config: Loaded saved options (%s)\n", buf));
 
    eet_close(ef);
    return 1;
@@ -359,17 +365,14 @@ _ex_options_set()
    const char *string;
    double ss_int;
    
-   
    /* STANDARD VIEW */
    if (IS_SELECTED(dialog->dv_btn_1))
      {
-	D(("Zoom 1:1 is checked\n"));
 	e->options->default_view = EX_IMAGE_ONE_TO_ONE;
 	_ex_tab_current_zoom_one_to_one(e);
      } 
    else if (IS_SELECTED(dialog->dv_btn_2))
      {
-	D(("Fit to window is checked\n"));
 	e->options->default_view = EX_IMAGE_FIT_TO_WINDOW;
 	e->cur_tab->fit_window = ETK_TRUE;
 	_ex_tab_current_fit_to_window(e);
@@ -378,14 +381,12 @@ _ex_options_set()
    /* COMMENTS */
    if (IS_SELECTED(dialog->comments_visible))
      {
-	D(("Comments EX_DEFAULT_COMMENTS_VISIBLE\n"));
 	e->options->comments_visible = EX_DEFAULT_COMMENTS_VISIBLE;
 	_ex_comment_show(e);
 	_ex_comment_load(e);
      }
    else
      {
-	D(("Comments EX_DEFAULT_COMMENTS_HIDDEN\n"));
 	e->options->comments_visible = EX_DEFAULT_COMMENTS_HIDDEN;
 	_ex_comment_hide(e);
      }
@@ -400,9 +401,7 @@ _ex_options_set()
    string = etk_entry_text_get(ETK_ENTRY(dialog->blur_thresh));
    if (string)
    {
-	D(("Setting blur thresh: %f\n", atof(string)));
 	e->options->blur_thresh = atof(string);
-
 	if (e->options->blur_thresh <= 1)
 	   _ex_main_dialog_show("One, Zero or negative value for blur tresh " \
 		 "is not recommended! ", ETK_MESSAGE_DIALOG_WARNING);
@@ -417,9 +416,7 @@ _ex_options_set()
    string = etk_entry_text_get(ETK_ENTRY(dialog->sharpen_thresh));
    if (string)
      {
-	D(("Setting sharpen thresh: %f\n", atof(string)));
 	e->options->sharpen_thresh = atof(string);
-
 	if (e->options->sharpen_thresh <= 0)
 	   _ex_main_dialog_show("Zero or negative value for sharpen tresh " \
 		 "is not recommended! ", ETK_MESSAGE_DIALOG_WARNING);
@@ -434,9 +431,7 @@ _ex_options_set()
    string = etk_entry_text_get(ETK_ENTRY(dialog->brighten_thresh));
    if (string)
      {
-	D(("Setting brighten thresh: %f\n", atof(string)));
 	e->options->brighten_thresh = atof(string);
-
 	if (e->options->brighten_thresh <= 0)
 	   _ex_main_dialog_show("Zero or negative value for brighten tresh " \
 		 "is not recommended! ", ETK_MESSAGE_DIALOG_WARNING);
@@ -455,19 +450,28 @@ _ex_options_set()
    if (string)
      {
 	ss_int = atof(string);
-	
 	if (ss_int <= 0)
 	   _ex_main_dialog_show("Zero or negative value for slideshow interval " \
 		 "is not possible, skipping! ", ETK_MESSAGE_DIALOG_WARNING);
 	else
-	  {
-	     D(("Setting slide_interval: %f\n", ss_int));
-	     e->options->slide_interval = ss_int;
-	  }
+	  e->options->slide_interval = ss_int;
      }
    else
      {
 	_ex_main_dialog_show("Missing value for slideshow interval, but still " \
+	      "saving the other options!", ETK_MESSAGE_DIALOG_WARNING);
+     }
+
+   /* DOWNLOAD PATH */
+   string = etk_entry_text_get(ETK_ENTRY(dialog->dl_path));
+   if (string)
+     {
+	E_FREE(e->options->dl_path);
+	e->options->dl_path = strdup(string);
+     }
+   else
+     {
+	_ex_main_dialog_show("Missing value for image download path, but still " \
 	      "saving the other options!", ETK_MESSAGE_DIALOG_WARNING);
      }
 
@@ -544,6 +548,17 @@ _ex_options_page_1_create()
    
    dialog->comments_visible = etk_check_button_new_with_label("Visible");
    etk_box_append(ETK_BOX(vbox2), dialog->comments_visible, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   frame = etk_frame_new("Image download");
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), hbox);
+
+   label = etk_label_new("Default storage path"); 
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
+   dialog->dl_path = etk_entry_new();
+   etk_box_append(ETK_BOX(hbox), dialog->dl_path, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    /* 
     * Start toggling/setting the correct values from loaded options 
@@ -558,8 +573,9 @@ _ex_options_page_1_create()
 
 
    sprintf(string, "%.2f", e->options->slide_interval);
-   D(("Entry gets texts for slide_interval: %s\n", string));
    etk_entry_text_set(ETK_ENTRY(dialog->slide_interval), string);
+   
+   etk_entry_text_set(ETK_ENTRY(dialog->dl_path), e->options->dl_path);
    
    return vbox;
 }
@@ -613,17 +629,11 @@ _ex_options_page_2_create()
    etk_box_append(ETK_BOX(vbox2), dialog->rotate_autosave, ETK_BOX_START,
          ETK_BOX_NONE, 0);
 
-   
    sprintf(string, "%.2f", e->options->blur_thresh);
-   D(("Entry gets texts for blur tresh: %s\n", string));
    etk_entry_text_set(ETK_ENTRY(dialog->blur_thresh), string);
-   
    sprintf(string, "%.2f", e->options->sharpen_thresh);
-   D(("Entry gets texts for sharpen tresh: %s\n", string));
    etk_entry_text_set(ETK_ENTRY(dialog->sharpen_thresh), string);
-   
    sprintf(string, "%.2f", e->options->brighten_thresh);
-   D(("Entry gets texts for brighten tresh: %s\n", string));
    etk_entry_text_set(ETK_ENTRY(dialog->brighten_thresh), string);
 
    if (e->options->rotate_autosave)
@@ -648,9 +658,6 @@ _ex_options_combobox_active_item_changed_cb(Etk_Object *object, void *data)
      e->options->default_sort_tmp = EX_SORT_BY_NAME;
    else if (item == dialog->sort_resolution)
      e->options->default_sort_tmp = EX_SORT_BY_RESOLUTION;
-
-   D(("Selected item %p, e->options->default_sort_tmp %d\n", item,
-	    e->options->default_sort_tmp));
 }
 
 static Etk_Widget *

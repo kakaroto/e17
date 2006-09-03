@@ -90,6 +90,7 @@ struct _Ex_Options
    char  *app4_cmd;
    
    char  *fav_path;
+   char  *dl_path;
    
    double blur_thresh;
    double sharpen_thresh;
@@ -121,6 +122,7 @@ struct _Ex_Options_Dialog
    Etk_Widget *rotate_autosave;
    Etk_Widget *default_sort;
    Etk_Widget *monitor_focus;
+   Etk_Widget *dl_path;
    Etk_Combobox_Item *sort_date;
    Etk_Combobox_Item *sort_size;
    Etk_Combobox_Item *sort_name;

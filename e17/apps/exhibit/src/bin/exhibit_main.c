@@ -268,6 +268,12 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 {
    Epsilon *ep;
    Etk_Tree_Row *row;
+
+   if (!file)
+     {
+	D(("ERROR: file is NULL\n"));
+	return;
+     }
    
    ep = epsilon_new(file);
    epsilon_thumb_size(ep, EPSILON_THUMB_NORMAL);
@@ -840,17 +846,12 @@ _ex_main_window_show(char *dir)
 		    0, 0, ETK_TABLE_NONE);
    etk_signal_connect("clicked", ETK_OBJECT(e->entry[1]), ETK_CALLBACK(_ex_main_goto_dir_clicked_cb), e);
 
-   if (ecore_file_download_protocol_available("http://")) 
-     {
-	D(("Protocol HTTP is available\n"));
-     }
-   
    /* create first tab but dont place it in notebook */
-   if(dir)
+   if (dir)
      {
-	if(ecore_file_is_dir(dir))	  	     
+	if (ecore_file_is_dir(dir))	  	     
 	  tab = _ex_tab_new(e, dir);   
-	else if(ecore_file_exists(dir))
+	else if (ecore_file_exists(dir))
 	  {	     
 	     char *dir2;
 	     
@@ -858,6 +859,20 @@ _ex_main_window_show(char *dir)
 	     tab = _ex_tab_new(e, dir2);
 	     E_FREE(dir2);
 	     realpath(dir, file);
+	  }
+	else if (ecore_file_download_protocol_available("http://"))
+	  {
+	     D(("Protocol HTTP is available\n"));
+	     D(("Trying to download %s to %s\n", dir, e->options->dl_path));
+	     if (ecore_file_download(dir, e->options->dl_path,
+		   _ex_file_download_complete_cb,
+		   _ex_file_download_progress_cb, NULL))
+	       {
+		  D(("Starting download\n"));
+		  tab = _ex_tab_new(e, e->options->dl_path);
+	       }
+	     else
+	       tab = _ex_tab_new(e, ".");
 	  }
 	else     
 	  tab = _ex_tab_new(e, ".");
