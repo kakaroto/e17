@@ -29,7 +29,7 @@ Empower *em;
 void _em_run_cmd(Empower *em);
 void _em_dialog_size_request_cb(Etk_Object *object, Etk_Size *size_request, void *data);
 Etk_Bool _em_dialog_delete_event_cb(void *data);
-void _em_entry_key_down(Etk_Object *object, Etk_Event_Key_Up_Down *ev, void *data);
+void _em_entry_key_down(Etk_Object *object, Etk_Event_Key_Down *ev, void *data);
 void _em_dialog_response_cb(Etk_Object *object, int response_id, void *data);
 /* end empower_cb_etk prototypes */
 

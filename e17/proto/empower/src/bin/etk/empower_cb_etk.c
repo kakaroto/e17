@@ -51,7 +51,7 @@ _em_dialog_delete_event_cb(void *data)
 }
 
 void
-_em_entry_key_down(Etk_Object *object, Etk_Event_Key_Up_Down *ev, void *data)
+_em_entry_key_down(Etk_Object *object, Etk_Event_Key_Down *ev, void *data)
 {
    Empower *em;
    
