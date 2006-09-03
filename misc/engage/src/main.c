@@ -20,19 +20,26 @@ exit_cb(void *data, int type, void *event)
 int
 main(int argc, char **argv)
 {
-  if((ecore_init()) == 0) {
-      exit(0);
+  if (ecore_init() == 0) {
+    exit(0);
   }
 
-  if((ecore_file_init()) == 0) {
-     ecore_shutdown();
-     exit(0);
+  if (ecore_file_init() == 0) {
+    ecore_shutdown();
+    exit(0);
   }
 
-  if((ecore_desktop_init()) == 0) {
-     ecore_file_shutdown();
-     ecore_shutdown();
-     exit(0);
+  if (ecore_desktop_init() == 0) {
+    ecore_file_shutdown();
+    ecore_shutdown();
+    exit(0);
+  }
+  
+  if (ecore_x_init(NULL) == 0) {
+    ecore_desktop_shutdown();
+    ecore_file_shutdown();
+    ecore_shutdown();
+    exit(0);
   }
 
   if((ecore_config_init("engage")) == ECORE_CONFIG_ERR_FAIL) {
@@ -47,20 +54,15 @@ main(int argc, char **argv)
   if (od_config_init() != ECORE_CONFIG_PARSE_CONTINUE) {
     ecore_config_shutdown();
     ecore_x_shutdown();
-     ecore_desktop_shutdown();
-     ecore_file_shutdown();
+    ecore_desktop_shutdown();
+    ecore_file_shutdown();
     ecore_shutdown();
     exit(0);
   }
 
-  if((ecore_x_init(NULL)) == 0) {
-     ecore_desktop_shutdown();
-     ecore_file_shutdown();
-     ecore_shutdown();
-     exit(0);
-  }
-
+  e_intl_init();
   e_app_init();
+  e_app_cache_init();
 
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
   ecore_evas_init();
@@ -91,7 +93,9 @@ main(int argc, char **argv)
   etk_shutdown();
 #endif
   ecore_evas_shutdown();
+  e_app_cache_shutdown();
   e_app_shutdown();
+  e_intl_shutdown();
   ecore_config_save();
   ecore_config_shutdown();
   ecore_x_shutdown();

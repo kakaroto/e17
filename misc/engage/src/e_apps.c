@@ -65,6 +65,7 @@ static void      _e_app_print(const char *path, Ecore_File_Event event);
 #endif
 static void      _e_app_check_order(const char *file);
 static int       _e_app_order_contains(E_App *a, const char *file);
+static void      _e_app_resolve_file_name(char *buf, size_t size, const char *path, const char *file);
 
 /* local subsystem globals */
 static Evas_Hash   *_e_apps = NULL;
@@ -282,17 +283,19 @@ e_app_new(const char *path, int scan_subdirs)
 		  e_app_fields_fill(a, path);
 		  
 		  /* no exe field.. not valid. drop it */
-		  if (!_e_app_exe_valid_get(a->exe))
-		    goto error;
+//		  if (!_e_app_exe_valid_get(a->exe))
+//		    goto error;
 	       }
 	     else
 	       goto error;
 	  }
 	else
-	  return NULL;
+	   {
+	      return NULL;
+	   }
 	_e_apps = evas_hash_add(_e_apps, a->path, a);
 	_e_apps_list = evas_list_prepend(_e_apps_list, a);
-	
+
 	ac = e_app_cache_generate(a);
 	e_app_cache_save(ac, a->path);
 	e_app_cache_free(ac);
@@ -319,7 +322,7 @@ e_app_empty_new(const char *path)
      {
 	char buf[4096];
 
-	snprintf(buf, sizeof(buf), "%s/_new_app_%1.1f.eap", 
+	snprintf(buf, sizeof(buf), "%s/_new_app_%1.1f.desktop", 
 		 _e_apps_all->path, ecore_time_get());
 	a->path = evas_stringshare_add(buf);
      }
@@ -388,10 +391,7 @@ e_app_subdir_scan(E_App *a, int scan_subdirs)
 
 	     a2 = NULL;
 
-	     if (s[0] == '/')
-		snprintf(buf, sizeof(buf), "%s", s);
-	     else
-	        snprintf(buf, sizeof(buf), "%s/%s", a->path, s);
+             _e_app_resolve_file_name(buf, sizeof(buf), a->path, s);
 	     if (ecore_file_exists(buf))
 	       {
 		  a2 = e_app_new(buf, scan_subdirs);
@@ -409,10 +409,7 @@ e_app_subdir_scan(E_App *a, int scan_subdirs)
 		  pl = _e_apps_repositories;
 		  while ((!a2) && (pl))
 		    {
-	               if (s[0] == '/')
-		          snprintf(buf, sizeof(buf), "%s", s);
-	               else
-		          snprintf(buf, sizeof(buf), "%s/%s", (char *)pl->data, s);
+                       _e_app_resolve_file_name(buf, sizeof(buf), (char *)pl->data, s);
 		       a2 = e_app_new(buf, scan_subdirs);
 		       pl = pl->next;
 		    }
@@ -1263,112 +1260,162 @@ _e_app_localized_val_get(Eet_File *ef, const char *lang, const char *field, int 
 EAPI void
 e_app_fields_save(E_App *a)
 {
-   Eet_File *ef;
    char buf[PATH_MAX];
-   const char *lang;
-   unsigned char tmp[1];
-//   int img;
+   const char *lang, *ext = NULL;
 
-//   if ((!a->path) || (!ecore_file_exists(a->path)))
-//     {
-	_e_app_new_save(a);
-//	img = 0;
-//     }
-//   else
-//     img = 1;
+   /* Check if it's a new one that has not been saved yet. */
+   if (a->path)
+      ext = ecore_file_get_file(a->path);
+   if ( (!a->path) || ((strncmp(ext, "_new_app_", 9) == 0) && (!ecore_file_exists(a->path))) )
+      {
+         snprintf(buf, sizeof(buf), "%s/%s.desktop", _e_apps_all->path, a->name);
+	 a->path = evas_stringshare_add(buf);
+      }
 
-   /* get our current language */
-   lang = e_intl_language_alias_get();
+   ext = strrchr(a->path, '.');
+   if ((ext) && (strcmp(ext, ".desktop") == 0))
+      {   /* It's a .desktop file. */
+         Ecore_Desktop *desktop;
+	 int created = 0;
 
-   /* if its "C" its the default - so drop it */
-   if (!strcmp(lang, "C")) lang = NULL;
+         desktop = ecore_desktop_get(a->path, NULL);
+	 if (!desktop)
+	    {
+	       desktop = E_NEW(Ecore_Desktop, 1);
+	       desktop->original_path = strdup(a->path);
+	       created = 1;
+	    }
+	 if (desktop)
+	    {
+	       desktop->eap_name = (char *) a->path;
+	       desktop->name = (char *) a->name;
+	       desktop->generic = (char *) a->generic;
+	       desktop->comment = (char *) a->comment;
 
-   ef = eet_open(a->path, EET_FILE_MODE_READ_WRITE);
-   if (!ef) return;
+	       desktop->exec = (char *) a->exe;
+	       desktop->icon_class = (char *) a->icon_class;
+               desktop->icon_path = (char *) a->icon_path;
+	       desktop->window_class = (char *) a->win_class;
+	       if (a->startup_notify)
+	          desktop->startup = "1";
+	       else
+	          desktop->startup = "0";
 
-   if (a->name)
-     {
-	/*if (lang) snprintf(buf, sizeof(buf), "app/info/name[%s]", lang);  
-	  else */
-	snprintf(buf, sizeof(buf), "app/info/name");
-	eet_write(ef, buf, a->name, strlen(a->name), 0);
-     }
-   
-   if (a->generic)
-     {
-	/*if (lang) snprintf(buf, sizeof(buf), "app/info/generic[%s]", lang);
-	  else */
-	snprintf(buf, sizeof(buf), "app/info/generic");
-	eet_write(ef, buf, a->generic, strlen(a->generic), 0);
-     }
+               desktop->type = "Application";
+//               desktop.categories = a->categories;
 
-   if (a->comment)
-     {
-	/*if (lang) snprintf(buf, sizeof(buf), "app/info/comment[%s]", lang);
-	  else*/
-	snprintf(buf, sizeof(buf), "app/info/comment");
-	eet_write(ef, buf, a->comment, strlen(a->comment), 0);
-     }
-
-   if (a->exe)
-     eet_write(ef, "app/info/exe", a->exe, strlen(a->exe), 0);
-   if (a->win_name)
-     eet_write(ef, "app/window/name", a->win_name, strlen(a->win_name), 0);
-   if (a->win_class)
-     eet_write(ef, "app/window/class", a->win_class, strlen(a->win_class), 0);
-   if (a->win_title)
-     eet_write(ef, "app/window/title", a->win_title, strlen(a->win_title), 0);
-   if (a->win_role)
-     eet_write(ef, "app/window/role", a->win_role, strlen(a->win_role), 0);
-   if (a->icon_class)
-     eet_write(ef, "app/icon/class", a->icon_class, strlen(a->icon_class), 0);
-   
-   if (a->startup_notify)
-     tmp[0] = 1;
+               ecore_desktop_save(desktop);
+	       if (created)
+	          E_FREE(desktop);
+	    }
+      }
    else
-     tmp[0] = 0;
-   eet_write(ef, "app/info/startup_notify", tmp, 1, 0);
+      {   /* Must be an .eap file. */
+         Eet_File *ef;
+         unsigned char tmp[1];
+//         int img;
+//         if ((!a->path) || (!ecore_file_exists(a->path)))
+//           {
+	      _e_app_new_save(a);
+//	      img = 0;
+//           }
+//         else
+//           img = 1;
+
+         /* get our current language */
+         lang = e_intl_language_alias_get();
+
+         /* if its "C" its the default - so drop it */
+         if (!strcmp(lang, "C")) lang = NULL;
+
+         ef = eet_open(a->path, EET_FILE_MODE_READ_WRITE);
+         if (!ef) return;
+
+         if (a->name)
+           {
+	      /*if (lang) snprintf(buf, sizeof(buf), "app/info/name[%s]", lang);  
+	        else */
+	      snprintf(buf, sizeof(buf), "app/info/name");
+	      eet_write(ef, buf, a->name, strlen(a->name), 0);
+           }
    
-   if (a->wait_exit)
-     tmp[0] = 1;
-   else
-     tmp[0] = 0;   
-   eet_write(ef, "app/info/wait_exit", tmp, 1, 0);
+         if (a->generic)
+           {
+	      /*if (lang) snprintf(buf, sizeof(buf), "app/info/generic[%s]", lang);
+	        else */
+	      snprintf(buf, sizeof(buf), "app/info/generic");
+	      eet_write(ef, buf, a->generic, strlen(a->generic), 0);
+           }
 
-   /*
-   if ((a->image) && (img))
-     {
-	int alpha;
-	Ecore_Evas *buf;
-	Evas *evasbuf;
-	Evas_Coord iw, ih;
-	Evas_Object *im;
-	const int *data;
+         if (a->comment)
+           {
+	      /*if (lang) snprintf(buf, sizeof(buf), "app/info/comment[%s]", lang);
+	        else*/
+	      snprintf(buf, sizeof(buf), "app/info/comment");
+	      eet_write(ef, buf, a->comment, strlen(a->comment), 0);
+           }
 
-	buf = ecore_evas_buffer_new(1, 1);
-	evasbuf = ecore_evas_get(buf);
-	im = evas_object_image_add(evasbuf);
-	evas_object_image_file_set(im, a->image, NULL);
-	iw = 0; ih = 0;
-	evas_object_image_size_get(im, &iw, &ih);
-	alpha = evas_object_image_alpha_get(im);
-	if (a->width <= EAP_MIN_WIDTH)
-	  a->width = EAP_MIN_WIDTH;
-	if (a->height <= EAP_MIN_HEIGHT)
-	  a->height = EAP_MIN_HEIGHT;	
-	if ((iw > 0) && (ih > 0))
-	  {
-	     ecore_evas_resize(buf, a->width, a->height);
-	     evas_object_image_fill_set(im, 0, 0, a->width, a->height);
-	     evas_object_resize(im, a->height, a->width);
-	     evas_object_move(im, 0, 0);
-	     evas_object_show(im);	     
-	     data = ecore_evas_buffer_pixels_get(buf);
-	     eet_data_image_write(ef, "images/0", (void *)data, a->width, a->height, alpha, 1, 0, 0);
-	  }
-     }
-    */
-   eet_close(ef);
+         if (a->exe)
+           eet_write(ef, "app/info/exe", a->exe, strlen(a->exe), 0);
+         if (a->win_name)
+           eet_write(ef, "app/window/name", a->win_name, strlen(a->win_name), 0);
+         if (a->win_class)
+           eet_write(ef, "app/window/class", a->win_class, strlen(a->win_class), 0);
+         if (a->win_title)
+           eet_write(ef, "app/window/title", a->win_title, strlen(a->win_title), 0);
+         if (a->win_role)
+           eet_write(ef, "app/window/role", a->win_role, strlen(a->win_role), 0);
+         if (a->icon_class)
+           eet_write(ef, "app/icon/class", a->icon_class, strlen(a->icon_class), 0);
+   
+         if (a->startup_notify)
+           tmp[0] = 1;
+         else
+           tmp[0] = 0;
+         eet_write(ef, "app/info/startup_notify", tmp, 1, 0);
+   
+         if (a->wait_exit)
+           tmp[0] = 1;
+         else
+           tmp[0] = 0;   
+         eet_write(ef, "app/info/wait_exit", tmp, 1, 0);
+
+         /*
+         if ((a->image) && (img))
+           {
+	      int alpha;
+	      Ecore_Evas *buf;
+	      Evas *evasbuf;
+	      Evas_Coord iw, ih;
+	      Evas_Object *im;
+	      const int *data;
+
+	      buf = ecore_evas_buffer_new(1, 1);
+	      evasbuf = ecore_evas_get(buf);
+	      im = evas_object_image_add(evasbuf);
+	      evas_object_image_file_set(im, a->image, NULL);
+	      iw = 0; ih = 0;
+	      evas_object_image_size_get(im, &iw, &ih);
+	      alpha = evas_object_image_alpha_get(im);
+	      if (a->width <= EAP_MIN_WIDTH)
+	        a->width = EAP_MIN_WIDTH;
+	      if (a->height <= EAP_MIN_HEIGHT)
+	        a->height = EAP_MIN_HEIGHT;	
+	      if ((iw > 0) && (ih > 0))
+	        {
+	           ecore_evas_resize(buf, a->width, a->height);
+	           evas_object_image_fill_set(im, 0, 0, a->width, a->height);
+	           evas_object_resize(im, a->height, a->width);
+	           evas_object_move(im, 0, 0);
+	           evas_object_show(im);	     
+	           data = ecore_evas_buffer_pixels_get(buf);
+	           eet_data_image_write(ef, "images/0", (void *)data, a->width, a->height, alpha, 1, 0, 0);
+	        }
+           }
+          */
+         eet_close(ef);
+      }
+
    if (a->parent)
      {
 	Evas_List *l;
@@ -1519,6 +1566,7 @@ _e_app_icon_path_add(Evas *evas, E_App *a)
    return o;
 }
 
+
 EAPI Evas_Object *
 e_app_icon_add(Evas *evas, E_App *a)
 {
@@ -1557,6 +1605,37 @@ e_app_icon_add(Evas *evas, E_App *a)
    return o;
 }
 
+/* Search order? -
+ *
+ * fixed path to icon
+ * an .edj icon in ~/.e/e/icons
+ * icon_class in theme
+ * icon from a->path in theme
+ * FDO search for icon_class
+ */
+/*
+EAPI void
+e_app_icon_add_to_menu_item(E_Menu_Item *mi, E_App *a)
+{
+   mi->app = a;
+   if ((!a->icon_path) && (a->icon_class))
+      {
+         char *v;
+
+	 * FIXME: Use a real icon size. *
+	 v = (char *) ecore_desktop_icon_find(a->icon_class, NULL, e_config->icon_theme);
+	 if (v)
+	    a->icon_path = evas_stringshare_add(v);
+      }
+
+   e_util_menu_item_edje_icon_list_set(mi, a->icon_class);
+   * e_menu_item_icon_edje_set() just tucks away the params, the actual call to edje_object_file_set() happens later. *
+   * e_menu_item_icon_file_set() just tucks away the params, the actual call to e_icon_add() happens later. *
+   e_menu_item_icon_edje_set(mi, a->path, "icon");
+   if (a->icon_path)
+      e_menu_item_icon_file_set(mi, a->icon_path);
+}
+*/
 
 /* local subsystem functions */
 
@@ -1979,10 +2058,7 @@ _e_app_subdir_rescan(E_App *app)
 	     else
 	       {
 		  /* If we still haven't found it, it is new! */
-		  if (s[0] == '/')
-		     snprintf(buf, sizeof(buf), "%s", s);
-		  else
-		     snprintf(buf, sizeof(buf), "%s/%s", app->path, s);
+                  _e_app_resolve_file_name(buf, sizeof(buf), app->path, s);
 		  a2 = e_app_new(buf, 1);
 		  if (a2)
 		    {
@@ -2004,10 +2080,7 @@ _e_app_subdir_rescan(E_App *app)
 		       pl = _e_apps_repositories;
 		       while ((!a2) && (pl))
 			 {
-		            if (s[0] == '/')
-		               snprintf(buf, sizeof(buf), "%s", s);
-		            else
-			       snprintf(buf, sizeof(buf), "%s/%s", (char *)pl->data, s);
+                            _e_app_resolve_file_name(buf, sizeof(buf), (char *)pl->data, s);
 			    a2 = e_app_new(buf, 1);
 			    pl = pl->next;
 			 }
@@ -2095,6 +2168,8 @@ _e_app_is_eapp(const char *path)
 {
    char *p;
 
+   if (!path)
+     return 0;
    p = strrchr(path, '.');
    if (!p)
      return 0;
@@ -2214,7 +2289,7 @@ _e_apps_cb_exit(void *data, int type, void *event)
 	     e_win_centered_set(dia->win, 1);
 	     e_dialog_show(dia);
 	  }
-     }*
+     }
    * Let's hope that everyhing returns this properly. *
    else if (!((ev->exited) && (ev->exit_code == EXIT_SUCCESS))) 
      {   * Show the error dialog with details from the exe. *
@@ -2356,10 +2431,7 @@ _e_app_cb_scan_cache_timer(void *data)
 //	printf("Cache scan finish.\n");
 	return 0;
      }
-   if (s[0] == '/')
-      snprintf(buf, sizeof(buf), "%s", s);
-   else
-      snprintf(buf, sizeof(buf), "%s/%s", sc->path, s);
+   _e_app_resolve_file_name(buf, sizeof(buf), sc->path, s);
    is_dir = ecore_file_is_dir(buf);
    if (_e_app_is_eapp(s) || is_dir)
      {
@@ -2413,10 +2485,7 @@ _e_app_cache_new(E_App_Cache *ac, const char *path, int scan_subdirs)
 	E_App *a2;
 	
 	ac2 = l->data;
-	if (ac2->file[0] == '/')
-	   snprintf(buf, sizeof(buf), "%s", ac2->file);
-	else
-	   snprintf(buf, sizeof(buf), "%s/%s", path, ac2->file);
+        _e_app_resolve_file_name(buf, sizeof(buf), path, ac2->file);
 	if ((ac2->is_dir) && (scan_subdirs))
 	  {
 	     a2 = e_app_new(buf, scan_subdirs);
@@ -2451,10 +2520,7 @@ _e_app_cache_new(E_App_Cache *ac, const char *path, int scan_subdirs)
 		  a2 = NULL;
 		  while ((!a2) && (pl))
 		    {
-	               if (ac2->file[0] == '/')
-	                  snprintf(buf, sizeof(buf), "%s", ac2->file);
-	               else
-		          snprintf(buf, sizeof(buf), "%s/%s", (char *)pl->data, ac2->file);
+                       _e_app_resolve_file_name(buf, sizeof(buf), (char *)pl->data, ac2->file);
 		       a2 = e_app_new(buf, scan_subdirs);
 		       pl = pl->next;
 		    }
@@ -2583,4 +2649,19 @@ _e_app_order_contains(E_App *a, const char *file)
      }
    fclose(f);
    return ret;
+}
+
+
+static void
+_e_app_resolve_file_name(char *buf, size_t size, const char *path, const char *file)
+{
+   size_t length;
+
+   length = strlen(path);
+   if (file[0] == '/')
+      snprintf(buf, size, "%s", file);
+   else if ((length > 0) && (path[length - 1] == '/'))
+      snprintf(buf, size, "%s%s", path, file);
+   else
+      snprintf(buf, size, "%s/%s", path, file);
 }
