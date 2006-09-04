@@ -276,6 +276,9 @@ draw_tree(examine_prop * prop_item)
       if (prop_item->bound & BOUND_BOUND) {
         ewl_range_minimum_value_set(EWL_RANGE(entries[1]), prop_item->min);
         ewl_range_maximum_value_set(EWL_RANGE(entries[1]), prop_item->max);
+      } else {
+        ewl_range_minimum_value_set(EWL_RANGE(entries[1]), -99999);
+        ewl_range_maximum_value_set(EWL_RANGE(entries[1]), 99999);
       }
       if (prop_item->bound & BOUND_STEPPED)
         ewl_range_step_set(EWL_RANGE(entries[1]), prop_item->step);
