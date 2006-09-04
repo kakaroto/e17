@@ -226,7 +226,6 @@ collections
 	       {
 		  name: "real_label";
 		  type: TEXT;
-		  clip_to: "fade_clip";
 		  effect: SOFT_SHADOW;
 		  description 
 		    {
@@ -384,7 +383,6 @@ collections
 	       {
 		  name: "swap_label";
 		  type: TEXT;
-		  clip_to: "fade_clip";
 		  effect: SOFT_SHADOW;
 		  description 
 		    {
