@@ -17,6 +17,7 @@ etk_test/images/test.png
 t/Etk.t
 t/Etk/Alignment.t
 t/Etk/Box.t
+t/Etk/Bin.t
 t/Etk/Button.t
 t/Etk/CheckButton.t
 t/Etk/Colorpicker.t
