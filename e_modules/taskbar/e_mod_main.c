@@ -608,9 +608,14 @@ static void
 _taskbar_icon_add(Taskbar *b, E_Border *bd)
 {
 
-   b->borders = evas_list_append(b->borders, bd);
+  b->borders = evas_list_append(b->borders, bd);
+
+  _taskbar_empty(b);
+  _taskbar_fill(b);
+  /*
    _taskbar_empty_handle(b);
    _taskbar_resize_handle(b);
+  */
 
    _gc_orient(b->inst->gcc);
 }
