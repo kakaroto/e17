@@ -1,93 +1,7 @@
 #include "EtkTypes.h"
 
+static HV * NameTranslator = NULL;
 
-#if 0
-static HV * ObjectCache = NULL;
-
-static void SetEtkObject(SV * perl_object, Etk_Object * object)
-{
-	if (!object || !SvOK(perl_object))
-		return;
-	
-#ifdef DEBUG
-	printf(">> Adding object (%p) with perl object (%p)\n", object, perl_object);
-#endif
-
-	char * key;
-	int len = 10;
-	key = (char *)malloc(sizeof(char) * 10);
-	snprintf(key, 10, "%p", object);
-	printf("\tKEY: %s\n", key);
-
-	hv_store(ObjectCache, key, len, perl_object, 0);
-	
-}
-
-static SV * GetEtkObject(Etk_Object * object) 
-{
-
-	SV * s = NULL;
-#ifdef DEBUG
-	printf(">> Trying to find object (%p)\n", object);
-#endif
-
-	char * key;
-	int len = 10;
-	SV **sv;
-	key = (char *)malloc(sizeof(char) * 10);
-	snprintf(key, 10, "%p", object);
-	printf("\tKEY: %s\n", key);
-	
-	sv = hv_fetch(ObjectCache, key, len, 0);
-	if (sv && SvOK(*sv)) 
-		s = SvREFCNT_inc(*sv);
-
-	printf("  GOT: %p\n", s);
-
-	return s;
-}
-
-void FreeEtkObject(Etk_Object *object)
-{
-	return;
-
-	char * key;
-	int len = 10;
-#ifdef DEBUG
-	printf(">> Trying to free object (%p)\n", object);
-#endif
-	
-	key = (char *)malloc(sizeof(char) * 10);
-	snprintf(key, 10, "%p", object);
-	printf("\tKEY: %s\n", key);
-	if (hv_exists(ObjectCache, key, len)){
-		SV ** sv;
-		int ref = -1;
-		sv = hv_fetch(ObjectCache, key, len, 0);
-		if (sv) {
-			SV * s;
-			s = *sv;
-			ref = SvREFCNT(s);
-			printf(">\n");
-			if (ref == 1)
-				hv_delete(ObjectCache, key, len, G_DISCARD);
-			else
-				SvREFCNT_dec(s);
-			printf(">\n");
-		}
-		printf("  DELETE ref(%i) (%p)\n", ref, *sv);
-			
-	}
-
-}
-
-void FreeObjectCache()
-{
-	hv_undef(ObjectCache);
-	ObjectCache = NULL;
-}
-
-#endif
 
 void * SvObj(SV *o, char * classname)
 {
@@ -109,7 +23,19 @@ void * SvObj(SV *o, char * classname)
 }
 
 
-SV * newSVObj(void *object, char * classname, int * newref)
+SV * newSVObject(void * object) {
+
+	if (! ETK_IS_OBJECT((Etk_Object *)object) ) return  newSVsv(&PL_sv_undef);
+
+	Etk_Type * type;
+	type = etk_object_object_type_get((Etk_Object *)object);
+	if (! type ) return newSVsv(&PL_sv_undef);
+	return newSVObj(object, getClass(type->name));
+
+}
+
+
+SV * newSVObj(void *object, char * classname)
 {
 #ifdef DEBUG
 	printf(">> Creating new object from (%p) of class (%s)\n", object, classname);
@@ -120,32 +46,107 @@ SV * newSVObj(void *object, char * classname, int * newref)
 	if (!object)
 		return newSVsv(&PL_sv_undef);
 
-	//if (newref) *newref = 0;
-
-	//previous = GetEtkObject((Etk_Object *)object);
-	//if (previous)
-	//	return previous;
-	
 	HV * h = newHV();
 	hv_store(h, "ETK", 3, newSViv((long)object), 0);
 	result = newRV((SV*)h);
 	sv_bless(result, gv_stashpv(classname, FALSE));
 	SvREFCNT_dec(h);
 
-	//SetEtkObject(result, object);
-
-	//if (newref) *newref = 1;
-	
-	//printf("\t(%p)\n", result);
 	return result;
 
 }
 
+char * getClass(char *type) {
+	SV ** sv;
+	sv = hv_fetch(NameTranslator, type, strlen(type), 0);
+	if (!sv) return "Etk::Bug";
+	return SvPV_nolen(*sv);	
+}
 
 void __etk_perl_init() {
 
-//	ObjectCache = newHV();
+	NameTranslator = newHV();
+	
+#define __(A, B)\
+	hv_store(NameTranslator, A, strlen(A), newSVpv(B, strlen(B)), 0)
 
+	__("Etk_Alignment",		"Etk::Alignment");
+	__("Etk_Bin",		"Etk::Bin");
+	__("Etk_Box",		"Etk::Box");
+	__("Etk_HBox",		"Etk::HBox");
+	__("Etk_VBox",		"Etk::VBox");
+	__("Etk_Button",		"Etk::Button");
+	__("Etk_Canvas",		"Etk::Canvas");
+	__("Etk_Check_Button",		"Etk::CheckButton");
+	__("Etk_Colorpicker",		"Etk::Colorpicker");
+	__("Etk_Combobox",		"Etk::Combobox");
+	__("Etk_Combobox_Item",		"Etk::Combobox::Item");
+	__("Etk_Container",		"Etk::Container");
+	__("Etk_Dialog",		"Etk::Dialog");
+	__("Etk_Drag",		"Etk::Drag");
+	__("Etk_Embed",		"Etk::Embed");
+	__("Etk_Entry",		"Etk::Entry");
+	__("Etk_Filechooser_Widget",		"Etk::Filechooser");
+	__("Etk_Frame",		"Etk::Frame");
+	__("Etk_Iconbox",		"Etk::Iconbox");
+	__("Etk_Iconbox_Model",		"Etk::Iconbox::Model");
+	__("Etk_Iconbox_Icon",		"Etk::Iconbox::Icon");
+	__("Etk_Iconbox_Grid",		"Etk::Iconbox::Grid");
+	__("Etk_Image",		"Etk::Image");
+	__("Etk_Label",		"Etk::Label");
+	__("Etk_Menu",		"Etk::Menu");
+	__("Etk_Menu_Bar",		"Etk::Menu::Bar");
+	__("Etk_Menu_Item",		"Etk::Menu::Item");
+	__("Etk_Menu_Item_Separator",		"Etk::Menu::Item::Separator");
+	__("Etk_Menu_Item_Image",		"Etk::Menu::Item::Image");
+	__("Etk_Menu_Item_Check",		"Etk::Menu::Item::Check");
+	__("Etk_Menu_Item_Radio",		"Etk::Menu::Item::Radio");
+	__("Etk_Menu_Shell",		"Etk::Menu::Shell");
+	__("Etk_Message_Dialog",		"Etk::MessageDialog");
+	__("Etk_Notebook",		"Etk::Notebook");
+	__("Etk_Object",		"Etk::Object");
+	__("Etk_Paned",		"Etk::Paned");
+	__("Etk_HPaned",		"Etk::HPaned");
+	__("Etk_VPaned",		"Etk::VPaned");
+	__("Etk_Popup_Window",		"Etk::PopupWindow");
+	__("Etk_Progress_Bar",		"Etk::ProgressBar");
+	__("Etk_Radio_Button",		"Etk::RadioButton");
+	__("Etk_Range",		"Etk::Range");
+	__("Etk_Scrollbar",		"Etk::Scrollbar");
+	__("Etk_HScrollbar",		"Etk::HScrollbar");
+	__("Etk_VScrollbar",		"Etk::VScrollbar");
+	__("Etk_Scrolled_View",		"Etk::ScrolledView");
+	__("Etk_Separator",		"Etk::Separator");
+	__("Etk_HSeparator",		"Etk::HSeparator");
+	__("Etk_VSeparator",		"Etk::VSeparator");
+	__("Etk_Slider",		"Etk::Slider");
+	__("Etk_HSlider",		"Etk::HSlider");
+	__("Etk_VSlider",		"Etk::VSlider");
+	__("Etk_Statusbar",		"Etk::StatusBar");
+	__("Etk_String",		"Etk::String");
+	__("Etk_Table",		"Etk::Table");
+	__("Etk_Text_View",		"Etk::TextView");
+	__("Etk_Textblock",		"Etk::TextBlock");
+	__("Etk_Textblock_Iter",		"Etk::TextBlock::Iter");
+	__("Etk_Toggle_Button",		"Etk::ToggleButton");
+	__("Etk_Tool_Button",		"Etk::Tool::Button");
+	__("Etk_Tool_Toggle_Button",		"Etk::Tool::ToggleButton");
+	__("Etk_Toolbar",		"Etk::Toolbar");
+	__("Etk_Toplevel_Widget",		"Etk::ToplevelWidget");
+	__("Etk_Tree",		"Etk::Tree");
+	__("Etk_Tree_Col",		"Etk::Tree::Col");
+	__("Etk_Tree_Row",		"Etk::Tree::Row");
+	__("Etk_Tree_Model",		"Etk::Tree::Model");
+	__("Etk_Tree_Grid",		"Etk::Tree::Grid");
+	__("Etk_Viewport",		"Etk::Viewport");
+	__("Etk_Widget",		"Etk::Widget");
+	__("Etk_Window",		"Etk::Window");
+
+	__("Ecore_Timer",		"Etk::Timer");
+	__("Evas",		"Evas");
+	__("Evas_Object",		"Evas::Object");
+	
+#undef __
 #define __(A, B)\
 	av_push(get_av("Etk::"A"::ISA", TRUE), newSVpv("Etk::"B, strlen("Etk::"B)));
 
@@ -389,7 +390,7 @@ SV * newSVEvasList(Evas_List *list) {
 
 	av = newAV();
 	for (l = list; l; l = l->next) 
-		av_push(av, newSVEtkWidgetPtr((Etk_Widget *)(l->data)));
+		av_push(av, newSVObject(l->data));
 
 	return newRV_noinc((SV*)av);
 
@@ -408,146 +409,6 @@ SV * newSVCharEvasList(Evas_List *list) {
 	return newRV_noinc((SV*)av);
 
 }
-
-SV * newSVEcoreTimerPtr(Ecore_Timer *o) { return newSVObj(o, "Etk::Timer", 0); } 
-Ecore_Timer * SvEcoreTimerPtr(SV *data) { return SvObj(data, "Etk::Timer"); }
-SV * newSVEtkAlignmentPtr(Etk_Alignment *o) { return newSVObj(o, "Etk::Alignment", 0); }
-Etk_Alignment * SvEtkAlignmentPtr(SV *data) { return SvObj(data, "Etk::Alignment"); }
-SV * newSVEtkBinPtr(Etk_Bin *o) { return newSVObj(o, "Etk::Bin", 0); }
-Etk_Bin * SvEtkBinPtr(SV *data) { return SvObj(data, "Etk::Bin"); }
-SV * newSVEtkBoxPtr(Etk_Box *o) { return newSVObj(o, "Etk::Box", 0); }
-Etk_Box * SvEtkBoxPtr(SV *data) { return SvObj(data, "Etk::Box"); }
-SV * newSVEtkButtonPtr(Etk_Button *o) { return newSVObj(o, "Etk::Button", 0); }
-Etk_Button * SvEtkButtonPtr(SV *data) { return SvObj(data, "Etk::Button"); }
-SV * newSVEtkCanvasPtr(Etk_Canvas *o) { return newSVObj(o, "Etk::Canvas", 0); }
-Etk_Canvas * SvEtkCanvasPtr(SV *data) { return SvObj(data, "Etk::Canvas"); }
-SV * newSVEtkCheckButtonPtr(Etk_Check_Button *o) { return newSVObj(o, "Etk::CheckButton", 0); }
-Etk_Check_Button * SvEtkCheckButtonPtr(SV *data) { return SvObj(data, "Etk::CheckButton"); }
-SV * newSVEtkColorpickerPtr(Etk_Colorpicker *o) { return newSVObj(o, "Etk::Colorpicker", 0); }
-Etk_Colorpicker * SvEtkColorpickerPtr(SV *data) { return SvObj(data, "Etk::Colorpicker"); }
-SV * newSVEtkComboboxPtr(Etk_Combobox *o) { return newSVObj(o, "Etk::Combobox", 0); }
-Etk_Combobox * SvEtkComboboxPtr(SV *data) { return SvObj(data, "Etk::Combobox"); }
-SV * newSVEtkContainerPtr(Etk_Container *o) { return newSVObj(o, "Etk::Container", 0); }
-Etk_Container * SvEtkContainerPtr(SV *data) { return SvObj(data, "Etk::Container"); }
-SV * newSVEtkDialogPtr(Etk_Dialog *o) { return newSVObj(o, "Etk::Dialog", 0); }
-Etk_Dialog * SvEtkDialogPtr(SV *data) { return SvObj(data, "Etk::Dialog"); }
-SV * newSVEtkDragPtr(Etk_Drag *o) { return newSVObj(o, "Etk::Drag", 0); }
-Etk_Drag * SvEtkDragPtr(SV *data) { return SvObj(data, "Etk::Drag"); }
-SV * newSVEtkEntryPtr(Etk_Entry *o) { return newSVObj(o, "Etk::Entry", 0); }
-Etk_Entry * SvEtkEntryPtr(SV *data) { return SvObj(data, "Etk::Entry"); }
-SV * newSVEtkFilechooserWidgetPtr(Etk_Filechooser_Widget *o) { return newSVObj(o, "Etk::Filechooser", 0); }
-Etk_Filechooser_Widget * SvEtkFilechooserWidgetPtr(SV *data) { return SvObj(data, "Etk::Filechooser"); }
-SV * newSVEtkFramePtr(Etk_Frame *o) { return newSVObj(o, "Etk::Frame", 0); }
-Etk_Frame * SvEtkFramePtr(SV *data) { return SvObj(data, "Etk::Frame"); }
-SV * newSVEtkHBoxPtr(Etk_HBox *o) { return newSVObj(o, "Etk::HBox", 0); }
-Etk_HBox * SvEtkHBoxPtr(SV *data) { return SvObj(data, "Etk::HBox"); }
-SV * newSVEtkHPanedPtr(Etk_HPaned *o) { return newSVObj(o, "Etk::HPaned", 0); }
-Etk_HPaned * SvEtkHPanedPtr(SV *data) { return SvObj(data, "Etk::HPaned"); }
-SV * newSVEtkHScrollbarPtr(Etk_HScrollbar *o) { return newSVObj(o, "Etk::HScrollbar", 0); }
-Etk_HScrollbar * SvEtkHScrollbarPtr(SV *data) { return SvObj(data, "Etk::HScrollbar"); }
-SV * newSVEtkHSeparatorPtr(Etk_HSeparator *o) { return newSVObj(o, "Etk::HSeparator", 0); }
-Etk_HSeparator * SvEtkHSeparatorPtr(SV *data) { return SvObj(data, "Etk::HSeparator"); }
-SV * newSVEtkHSliderPtr(Etk_HSlider *o) { return newSVObj(o, "Etk::HSlider", 0); }
-Etk_HSlider * SvEtkHSliderPtr(SV *data) { return SvObj(data, "Etk::HSlider"); }
-SV * newSVEtkIconboxPtr(Etk_Iconbox *o) { return newSVObj(o, "Etk::Iconbox", 0); }
-Etk_Iconbox * SvEtkIconboxPtr(SV *data) { return SvObj(data, "Etk::Iconbox"); }
-SV * newSVEtkImagePtr(Etk_Image *o) { return newSVObj(o, "Etk::Image", 0); }
-Etk_Image * SvEtkImagePtr(SV *data) { return SvObj(data, "Etk::Image"); }
-SV * newSVEtkLabelPtr(Etk_Label *o) { return newSVObj(o, "Etk::Label", 0); }
-Etk_Label * SvEtkLabelPtr(SV *data) { return SvObj(data, "Etk::Label"); }
-SV * newSVEtkMenuPtr(Etk_Menu *o) { return newSVObj(o, "Etk::Menu", 0); }
-Etk_Menu * SvEtkMenuPtr(SV *data) { return SvObj(data, "Etk::Menu"); }
-SV * newSVEtkMessageDialogPtr(Etk_Message_Dialog *o) { return newSVObj(o, "Etk::MessageDialog", 0); }
-Etk_Message_Dialog * SvEtkMessageDialogPtr(SV *data) { return SvObj(data, "Etk::MessageDialog"); }
-SV * newSVEtkNotebookPtr(Etk_Notebook *o) { return newSVObj(o, "Etk::Notebook", 0); }
-Etk_Notebook * SvEtkNotebookPtr(SV *data) { return SvObj(data, "Etk::Notebook"); }
-SV * newSVEtkObjectPtr(Etk_Object *o) { return newSVObj(o, "Etk::Object", 0); }
-Etk_Object * SvEtkObjectPtr(SV *data) { return SvObj(data, "Etk::Object"); }
-SV * newSVEtkPanedPtr(Etk_Paned *o) { return newSVObj(o, "Etk::Paned", 0); }
-Etk_Paned * SvEtkPanedPtr(SV *data) { return SvObj(data, "Etk::Paned"); }
-SV * newSVEtkPopupWindowPtr(Etk_Popup_Window *o) { return newSVObj(o, "Etk::PopupWindow", 0); }
-Etk_Popup_Window * SvEtkPopupWindowPtr(SV *data) { return SvObj(data, "Etk::PopupWindow"); }
-SV * newSVEtkProgressBarPtr(Etk_Progress_Bar *o) { return newSVObj(o, "Etk::ProgressBar", 0); }
-Etk_Progress_Bar * SvEtkProgressBarPtr(SV *data) { return SvObj(data, "Etk::ProgressBar"); }
-SV * newSVEtkRadioButtonPtr(Etk_Radio_Button *o) { return newSVObj(o, "Etk::RadioButton", 0); }
-Etk_Radio_Button * SvEtkRadioButtonPtr(SV *data) { return SvObj(data, "Etk::RadioButton"); }
-SV * newSVEtkRangePtr(Etk_Range *o) { return newSVObj(o, "Etk::Range", 0); }
-Etk_Range * SvEtkRangePtr(SV *data) { return SvObj(data, "Etk::Range"); }
-SV * newSVEtkScrolledViewPtr(Etk_Scrolled_View *o) { return newSVObj(o, "Etk::ScrolledView", 0); }
-Etk_Scrolled_View * SvEtkScrolledViewPtr(SV *data) { return SvObj(data, "Etk::ScrolledView"); }
-SV * newSVEtkSeparatorPtr(Etk_Separator *o) { return newSVObj(o, "Etk::Separator", 0); }
-Etk_Separator * SvEtkSeparatorPtr(SV *data) { return SvObj(data, "Etk::Separator"); }
-SV * newSVEtkStatusbarPtr(Etk_Statusbar *o) { return newSVObj(o, "Etk::StatusBar", 0); }
-Etk_Statusbar * SvEtkStatusbarPtr(SV *data) { return SvObj(data, "Etk::StatusBar"); }
-SV * newSVEtkTablePtr(Etk_Table *o) { return newSVObj(o, "Etk::Table", 0); }
-Etk_Table * SvEtkTablePtr(SV *data) { return SvObj(data, "Etk::Table"); }
-SV * newSVEtkToolbarPtr(Etk_Toolbar *o) { return newSVObj(o, "Etk::Toolbar", 0);}
-Etk_Toolbar * SvEtkToolbarPtr(SV *data) { return SvObj(data, "Etk::Toolbar");}
-SV * newSVEtkTextblockPtr(Etk_Textblock *o) { return newSVObj(o, "Etk::TextBlock", 0); }
-Etk_Textblock * SvEtkTextblockPtr(SV *data) { return SvObj(data, "Etk::TextBlock"); }
-SV * newSVEtkTextblockIterPtr(Etk_Textblock_Iter *o) { return newSVObj(o, "Etk::TextBlock::Iter", 0); }
-Etk_Textblock_Iter * SvEtkTextblockIterPtr(SV *data) { return SvObj(data, "Etk::TextBlock::Iter"); }
-SV * newSVEtkTextViewPtr(Etk_Text_View *o) { return newSVObj(o, "Etk::TextView", 0); }
-Etk_Text_View * SvEtkTextViewPtr(SV *data) { return SvObj(data, "Etk::TextView"); }
-SV * newSVEtkToggleButtonPtr(Etk_Toggle_Button *o) { return newSVObj(o, "Etk::ToggleButton", 0); }
-Etk_Toggle_Button * SvEtkToggleButtonPtr(SV *data) { return SvObj(data, "Etk::ToggleButton"); }
-SV * newSVEtkToplevelWidgetPtr(Etk_Toplevel_Widget *o) { return newSVObj(o, "Etk::ToplevelWidget", 0); }
-Etk_Toplevel_Widget * SvEtkToplevelWidgetPtr(SV *data) { return SvObj(data, "Etk::ToplevelWidget"); }
-SV * newSVEtkTreePtr(Etk_Tree *o) { return newSVObj(o, "Etk::Tree", 0); }
-Etk_Tree * SvEtkTreePtr(SV *data) { return SvObj(data, "Etk::Tree"); }
-SV * newSVEtkVBoxPtr(Etk_VBox *o) { return newSVObj(o, "Etk::VBox", 0); }
-Etk_VBox * SvEtkVBoxPtr(SV *data) { return SvObj(data, "Etk::VBox"); }
-SV * newSVEtkVPanedPtr(Etk_VPaned *o) { return newSVObj(o, "Etk::VPaned", 0); }
-Etk_VPaned * SvEtkVPanedPtr(SV *data) { return SvObj(data, "Etk::VPaned"); }
-SV * newSVEtkVScrollbarPtr(Etk_VScrollbar *o) { return newSVObj(o, "Etk::VScrollbar", 0); }
-Etk_VScrollbar * SvEtkVScrollbarPtr(SV *data) { return SvObj(data, "Etk::VScrollbar"); }
-SV * newSVEtkVSeparatorPtr(Etk_VSeparator *o) { return newSVObj(o, "Etk::VSeparator", 0); }
-Etk_VSeparator * SvEtkVSeparatorPtr(SV *data) { return SvObj(data, "Etk::VSeparator"); }
-SV * newSVEtkVSliderPtr(Etk_VSlider *o) { return newSVObj(o, "Etk::VSlider", 0); }
-Etk_VSlider * SvEtkVSliderPtr(SV *data) { return SvObj(data, "Etk::VSlider"); }
-SV * newSVEtkViewportPtr(Etk_Viewport *o) { return newSVObj(o, "Etk::Viewport", 0); }
-Etk_Viewport * SvEtkViewportPtr(SV *data) { return SvObj(data, "Etk::Viewport"); }
-SV * newSVEtkWidgetPtr(Etk_Widget *o) { return newSVObj(o, "Etk::Widget", 0); }
-Etk_Widget * SvEtkWidgetPtr(SV *data) { return SvObj(data, "Etk::Widget"); }
-SV * newSVEtkWindowPtr(Etk_Window *o) { return newSVObj(o, "Etk::Window", 0); }
-Etk_Window * SvEtkWindowPtr(SV *data) { return SvObj(data, "Etk::Window"); }
-
-
-SV * newSVEvasObjectPtr(Evas_Object *o) { return newSVObj(o, "Evas::Object", 0); }
-Evas_Object * SvEvasObjectPtr(SV *data) { return SvObj(data, "Evas::Object"); }
-
-SV * newSVEvasPtr(Evas *o) { return newSVObj(o, "Evas", 0); }
-Evas * SvEvasPtr(SV *data) { return SvObj(data, "Evas"); }
-
-SV * newSVEtkComboboxItemPtr(Etk_Combobox_Item *o) { return newSVObj(o, "Etk::Combobox::Item", 0); }
-Etk_Combobox_Item * SvEtkComboboxItemPtr(SV *data) { return SvObj(data, "Etk::Combobox::Item"); }
-
-
-SV * newSVEtkIconboxIconPtr(Etk_Iconbox_Icon *o) { return newSVObj(o, "Etk::Iconbox::Icon", 0); }
-Etk_Iconbox_Icon * SvEtkIconboxIconPtr(SV *data) { return SvObj(data, "Etk::Iconbox::Icon"); }
-SV * newSVEtkIconboxModelPtr(Etk_Iconbox_Model *o) { return newSVObj(o, "Etk::Iconbox::Model", 0); }
-Etk_Iconbox_Model * SvEtkIconboxModelPtr(SV *data) { return SvObj(data, "Etk::Iconbox::Model"); }
-SV * newSVEtkMenuBarPtr(Etk_Menu_Bar *o) { return newSVObj(o, "Etk::Menu::Bar", 0); }
-Etk_Menu_Bar * SvEtkMenuBarPtr(SV *data) { return SvObj(data, "Etk::Menu::Bar"); }
-SV * newSVEtkMenuItemPtr(Etk_Menu_Item *o) { return newSVObj(o, "Etk::Menu::Item", 0); }
-Etk_Menu_Item * SvEtkMenuItemPtr(SV *data) { return SvObj(data, "Etk::Menu::Item"); }
-SV * newSVEtkMenuShellPtr(Etk_Menu_Shell *o) { return newSVObj(o, "Etk::Menu::Shell", 0); }
-Etk_Menu_Shell * SvEtkMenuShellPtr(SV *data) { return SvObj(data, "Etk::Menu::Shell"); }
-SV * newSVEtkTreeColPtr(Etk_Tree_Col *o) { return newSVObj(o, "Etk::Tree::Col", 0); }
-Etk_Tree_Col * SvEtkTreeColPtr(SV *data) { return SvObj(data, "Etk::Tree::Col"); }
-SV * newSVEtkTreeModelPtr(Etk_Tree_Model *o) { return newSVObj(o, "Etk::Tree::Model", 0); }
-Etk_Tree_Model * SvEtkTreeModelPtr(SV *data) { return SvObj(data, "Etk::Tree::Model"); }
-SV * newSVEtkTreeRowPtr(Etk_Tree_Row *o) { return newSVObj(o, "Etk::Tree::Row", 0); }
-Etk_Tree_Row * SvEtkTreeRowPtr(SV *data) { return SvObj(data, "Etk::Tree::Row"); }
-SV * newSVEtkMenuItemCheckPtr(Etk_Menu_Item_Check *o) { return newSVObj(o, "Etk::Menu::Item::Check", 0); }
-Etk_Menu_Item_Check * SvEtkMenuItemCheckPtr(SV *data) { return SvObj(data, "Etk::Menu::Item::Check"); }
-SV * newSVEtkMenuItemImagePtr(Etk_Menu_Item_Image *o) { return newSVObj(o, "Etk::Menu::Item::Image", 0); }
-Etk_Menu_Item_Image * SvEtkMenuItemImagePtr(SV *data) { return SvObj(data, "Etk::Menu::Item::Image"); }
-SV * newSVEtkMenuItemRadioPtr(Etk_Menu_Item_Radio *o) { return newSVObj(o, "Etk::Menu::Item::Radio", 0); }
-Etk_Menu_Item_Radio * SvEtkMenuItemRadioPtr(SV *data) { return SvObj(data, "Etk::Menu::Item::Radio"); }
-SV * newSVEtkMenuItemSeparatorPtr(Etk_Menu_Item_Separator *o) { return newSVObj(o, "Etk::Menu::Item::Separator", 0); }
-Etk_Menu_Item_Separator * SvEtkMenuItemSeparatorPtr(SV *data) { return SvObj(data, "Etk::Menu::Item::Separator"); }
-
 
 #define S_STORE(A, B)\
 	if (B)\

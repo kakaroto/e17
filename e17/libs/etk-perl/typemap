@@ -102,7 +102,7 @@ Etk_Tree_Model_Image_Type			T_IV
 Etk_Tree_Row *					T_PTROBJ_ETK
 Etk_Type *					T_PTROBJ
 Etk_Type **					T_PTROBJ
-Etk_Widget *					T_PTROBJ_ETK
+Etk_Widget *					T_PTR_WIDGET
 Etk_Window *					T_PTROBJ_ETK
 Evas *						T_PTROBJ_ETK
 Evas_List *					T_PTROBJ_EVAS_LIST
@@ -143,7 +143,12 @@ T_OPAQUE_STRUCT
 T_PTROBJ_ETK
 	if (!$arg || !SvOK($arg))
 		croak(\"$var is not of type ${ntype}\");
-	$var = Sv" . ($foo=$ntype, $foo=~s/_//g, $foo) . "($arg);
+	$var = SvObj($arg, getClass(\"". ($foo=$ntype, $foo=~s/Ptr//,$foo). "\"));
+
+T_PTR_WIDGET
+	if (!$arg || !SvOK($arg))
+		croak(\"$var is not of type ${ntype}\");
+	$var = SvObj($arg, getClass(\"Etk_Widget\"));
 
 T_COLOR
 	if (!$arg || !SvOK($arg))
@@ -178,7 +183,12 @@ T_OPAQUE_STRUCT
 
 T_PTROBJ_ETK
 	do { /* hack to redefine the stack and delete class */
-	$arg = sv_2mortal(newSV@{[grep {s/_//g,1} $ntype]}($var));
+	$arg = sv_2mortal(newSVObj($var, getClass(\"@{[grep {s/Ptr//,1} $ntype]}\")));
+	} while (0);
+
+T_PTR_WIDGET
+	do { /* hack to redefine the stack and delete class */
+	$arg = sv_2mortal(newSVObject($var));
 	} while (0);
 
 T_COLOR

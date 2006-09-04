@@ -350,10 +350,10 @@ Etk_Tree_Col * col, void * data )
    cbd = data;
    
    PUSHMARK(SP);  	  
-   XPUSHs(sv_2mortal(newSVEtkTreePtr(tree)));
-   XPUSHs(sv_2mortal(newSVEtkTreeRowPtr(row1)));
-   XPUSHs(sv_2mortal(newSVEtkTreeRowPtr(row2)));
-   XPUSHs(sv_2mortal(newSVEtkTreeColPtr(col)));
+   XPUSHs(sv_2mortal(newSVObj(tree, getClass("Etk_Tree"))));
+   XPUSHs(sv_2mortal(newSVObj(row1, getClass("Etk_Tree_Row"))));
+   XPUSHs(sv_2mortal(newSVObj(row2, getClass("Etk_Tree_Row"))));
+   XPUSHs(sv_2mortal(newSVObj(col, getClass("Etk_Tree_Col"))));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));
    PUTBACK;
 
@@ -855,7 +855,7 @@ etk_combobox_item_append(combobox, ...)
 	      if(SvPOK(ST(i + 1)))
 		   ptr[i] = SvPV_nolen(ST(i + 1));
 	      else 
-		   ptr[i] = SvEtkWidgetPtr(ST(i + 1));
+		   ptr[i] = SvObj(ST(i + 1), getClass("Etk_Widget"));
 	   }
         switch(items)
         {	   
@@ -927,7 +927,7 @@ etk_combobox_item_prepend(combobox, ...)
 	      if(SvPOK(ST(i + 1)))
 		   ptr[i] = SvPV_nolen(ST(i + 1));
 	      else 
-		   ptr[i] = SvEtkWidgetPtr(ST(i + 1));
+		   ptr[i] = SvObj(ST(i + 1), getClass("Etk_Widget"));
 	   }
         switch(items)
         {	   
@@ -1003,7 +1003,7 @@ etk_combobox_item_prepend_relative(combobox, relative, ...)
 	      if(SvPOK(ST(i + 1)))
 		   ptr[i] = SvPV_nolen(ST(i + 1));
 	      else 
-		   ptr[i] = SvEtkWidgetPtr(ST(i + 1));
+		   ptr[i] = SvObj(ST(i + 1), getClass("Etk_Widget"));
 	   }
         switch(items)
         {	   
@@ -1092,7 +1092,7 @@ etk_combobox_item_append_relative(combobox, relative, ...)
 	      if(SvPOK(ST(i + 1)))
 		   ptr[i] = SvPV_nolen(ST(i + 1));
 	      else 
-		   ptr[i] = SvEtkWidgetPtr(ST(i + 1));
+		   ptr[i] = SvObj(ST(i + 1), getClass("Etk_Widget"));
 	   }
         switch(items)
         {	   
@@ -1457,17 +1457,17 @@ new(class)
 	RETVAL
 
 Etk_Bool
-etk_entry_password_get(entry)
+etk_entry_password_mode_get(entry)
 	Etk_Entry *	entry
       ALIAS:
-	PasswordGet=1
+	PasswordModeGet=1
 
 void
-etk_entry_password_set(entry, on)
+etk_entry_password_mode_set(entry, on)
 	Etk_Entry *	entry
 	Etk_Bool	on
       ALIAS:
-	PasswordSet=1
+	PasswordModeSet=1
 
 const char *
 etk_entry_text_get(entry)
@@ -3963,7 +3963,7 @@ etk_tree_col_new(tree, title, model, width)
 	modeldata = (Etk_Tree_Model *) SvObj(model, "Etk::Tree::Model");
 
 	col = etk_tree_col_new(tree, title, modeldata, width);
-	RETVAL = newSVEtkTreeColPtr(col);
+	RETVAL = newSVObj(col, getClass("Etk_Tree_Col"));
 
 	model_type = hv_fetch( (HV*)SvRV(model), "_model", 6, 0);
 	if (model_type) {
@@ -4152,7 +4152,7 @@ new(class, tree)
 	Etk_Tree_Model * model;
 	SV * ret;
 	model = etk_tree_model_checkbox_new(tree);
-	ret = newSVEtkTreeModelPtr(model);
+	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mCHECKBOX), 0);
 	XPUSHs(sv_2mortal(ret));
 
@@ -4167,7 +4167,7 @@ new(class, tree)
 	Etk_Tree_Model * model;
 	SV * ret;
 	model = etk_tree_model_double_new(tree);
-	ret = newSVEtkTreeModelPtr(model);
+	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mDOUBLE), 0);
 	XPUSHs(sv_2mortal(ret));
 
@@ -4202,7 +4202,7 @@ new(class, tree, type)
 		mod = newSViv(mICONTEXTE);
 
 	model = etk_tree_model_icon_text_new(tree, type);
-	ret = newSVEtkTreeModelPtr(model);
+	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, mod, 0);
 	XPUSHs(sv_2mortal(ret));
 
@@ -4223,7 +4223,7 @@ new(class, tree, type)
 	else
 		mod = newSViv(mIMAGEE);
 	model = etk_tree_model_image_new(tree, type);
-	ret = newSVEtkTreeModelPtr(model);
+	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, mod, 0);
 	XPUSHs(sv_2mortal(ret));
 
@@ -4237,7 +4237,7 @@ new(class, tree)
 	Etk_Tree_Model * model;
 	SV * ret;
 	model = etk_tree_model_int_new(tree);
-	ret = newSVEtkTreeModelPtr(model);
+	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mINT), 0);
 	XPUSHs(sv_2mortal(ret));
 
@@ -4253,7 +4253,7 @@ new(class, tree)
 	Etk_Tree_Model * model;
 	SV * ret;
 	model = etk_tree_model_progress_bar_new(tree);
-	ret = newSVEtkTreeModelPtr(model);
+	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mPROGRESSBAR), 0);
 	XPUSHs(sv_2mortal(ret));
 
@@ -4268,7 +4268,7 @@ new(class, tree)
 	Etk_Tree_Model * model;
 	SV * ret;
 	model = etk_tree_model_text_new(tree);
-	ret = newSVEtkTreeModelPtr(model);
+	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mTEXT), 0);
 	XPUSHs(sv_2mortal(ret));
 

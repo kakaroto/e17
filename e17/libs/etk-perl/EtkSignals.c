@@ -31,7 +31,7 @@ SV * GetSignalEvent(Etk_Object * object, void * value, Callback_Signal_Data * cb
 		   !strcmp(cbd->signal_name, "cell_value_changed")
 		   )
      {
-	event_rv = newSVEtkTreeRowPtr((Etk_Tree_Row *)value);
+	event_rv = newSVObj(value, getClass("Etk_Tree_Row"));
      }
    else if(!strcmp(cbd->signal_name, "key_down"))
      {

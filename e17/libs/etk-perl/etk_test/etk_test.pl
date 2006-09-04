@@ -268,8 +268,8 @@ sub image_window_show
     
     $table->AttachDefault($image1, 0, 0, 0, 0);
     $table->AttachDefault($image2, 1, 1, 0, 0);
-    $table->Attach($label1, 0, 0, 1, 1, 2, 0, HExpand);
-    $table->Attach($label2, 1, 1, 1, 1, 2, 0, HExpand);    
+    $table->Attach($label1, 0, 0, 1, 1, 2, 0, TableHExpand);
+    $table->Attach($label2, 1, 1, 1, 1, 2, 0, TableHExpand);    
     
     $win->Add($table);
     $win->ShowAll();
@@ -302,7 +302,7 @@ sub entry_window_show
     $button2->LabelSet("Toggle password");
     $button2->SignalConnect("clicked",
     	sub {
-		$entry->PasswordSet(!$entry->PasswordGet());
+		$entry->PasswordModeSet(!$entry->PasswordModeGet());
 	}
 	);
     $hbox->Append($button2);

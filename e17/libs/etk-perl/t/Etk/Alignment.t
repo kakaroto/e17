@@ -1,4 +1,4 @@
-use Test::More 'no_plan'; # tests => 1;
+use Test::More tests => 12;
 use Etk;
 
 my $al = Etk::Alignment->new(0.5, 0.5, 1, 1);
