@@ -33,7 +33,6 @@ enum Etk_Popup_Window_Signal_Id
 
 static void _etk_popup_window_constructor(Etk_Popup_Window *popup_window);
 
-static void _etk_popup_window_size_request_cb(Etk_Object *object, Etk_Size *requested_size, void *data);
 static void _etk_popup_window_key_down_cb(Etk_Event_Global event_info, void *data);
 static void _etk_popup_window_key_up_cb(Etk_Event_Global event_info, void *data);
 static void _etk_popup_window_mouse_move_cb(Etk_Event_Global event_info, void *data);
@@ -207,6 +206,8 @@ void etk_popup_window_popup_in_direction(Etk_Popup_Window *popup_window, Etk_Pop
  */
 void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 {
+   Etk_Size size;
+   
    if (!popup_window)
       return;
    
@@ -241,7 +242,9 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
    
    etk_popup_window_focused_window_set(popup_window);
    
+   etk_widget_size_request_full(ETK_WIDGET(popup_window), &size, ETK_FALSE);
    etk_window_move(ETK_WINDOW(popup_window), x, y);
+   etk_window_resize(ETK_WINDOW(popup_window), size.w, size.h);
    etk_widget_show(ETK_WIDGET(popup_window));
    
    _etk_popup_window_slide_timer_update(popup_window);
@@ -356,8 +359,6 @@ static void _etk_popup_window_constructor(Etk_Popup_Window *popup_window)
    popup_window->popped_child = NULL;
    etk_window_stacking_set(ETK_WINDOW(popup_window), ETK_WINDOW_ABOVE);
    etk_engine_popup_window_constructor(popup_window);
-   
-   etk_signal_connect("size_request", ETK_OBJECT(popup_window), ETK_CALLBACK(_etk_popup_window_size_request_cb), NULL);
 }
 
 /**************************
@@ -365,16 +366,6 @@ static void _etk_popup_window_constructor(Etk_Popup_Window *popup_window)
  * Handlers and callbacks
  *
  **************************/
-
-/* Called when the "size_request" signal is emitted */
-static void _etk_popup_window_size_request_cb(Etk_Object *object, Etk_Size *requested_size, void *data)
-{
-   Etk_Window *window;
-   
-   if (!(window = ETK_WINDOW(object)) || !requested_size)
-      return;
-   etk_window_resize(window, requested_size->w, requested_size->h);
-}
 
 /* Called when a key is pressed, if a popup window is popped up */
 static void _etk_popup_window_key_down_cb(Etk_Event_Global event_info, void *data)
