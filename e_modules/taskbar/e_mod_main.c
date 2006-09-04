@@ -472,8 +472,9 @@ _taskbar_resize_handle(Taskbar *b)
    Taskbar_Icon *ic;
    Evas_Coord w, h, wmin, hmin;
    int wnum, wnum2, hnum;
+   int bwmin, bhmin;
 
-   evas_object_geometry_get(b->o_box, NULL, NULL, &w, &h);
+   evas_object_geometry_get(b->inst->gcc->o_frame, NULL, NULL, &w, &h);
    if (!b->icons)
      return;
    ic = b->icons->data;
@@ -483,8 +484,8 @@ _taskbar_resize_handle(Taskbar *b)
    if (wmin < 1)
      wmin = 1;
    // calc possible items across in width
-   wnum2 = w / wmin;
 #if 0
+   wnum2 = w / wmin;
    if (wnum < wnum2)
      wnum2 = wnum;
    if (wnum2 < 1)
@@ -502,10 +503,15 @@ _taskbar_resize_handle(Taskbar *b)
 #else
 
    // todo xmax - presently unused
-   b->bwidth = wmin * wnum;
+   if (wnum > 0)
+     bwmin = w/wnum < wmin ? wmin : w/wnum;
+   else
+     bwmin = 0;
+   bhmin = hmin;
+   b->bwidth = w;
    b->bheight = h;
-   b->bwmin = wmin;
-   b->bhmin = hmin;
+   b->bwmin = bwmin;
+   b->bhmin = bhmin;
 #endif
 
    _taskbar_repack(b);
