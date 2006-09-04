@@ -254,7 +254,7 @@ void od_config_menu_draw(Evas_Coord x, Evas_Coord y) {
   }
 
   etk_menu_item_label_set(ETK_MENU_ITEM(_od_config_menu_app), label);
-  etk_menu_popup(ETK_MENU(_od_config_menu));
+  etk_menu_popup_in_direction(ETK_MENU(_od_config_menu), ETK_POPUP_ABOVE_RIGHT);
 }
 
 #endif
