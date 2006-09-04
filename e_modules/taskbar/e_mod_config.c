@@ -77,7 +77,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ////  e_widget_check_checked_set(ob, 1);
    e_widget_framelist_object_append(of, ob); 
 
-   ob = e_widget_check_add(evas, D_("Show Labels"), &(cfdata->show_label));
+   ob = e_widget_check_add(evas, D_("Show Sliding Labels"), &(cfdata->show_label));
    //if (cfdata->show_label)
    //  e_widget_check_checked_set(ob, 1);
    e_widget_framelist_object_append(of, ob);  

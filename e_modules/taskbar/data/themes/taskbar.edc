@@ -24,6 +24,7 @@ group {
       //	 item: "item_list" "item item2 item3";
    }
    parts {
+      // app icon clip
       part {
 	 name:          "item_clip";
 	 type:          RECT;
@@ -45,7 +46,7 @@ group {
 	    state:    "default" 0.0;
             min:      56 16;
             image {
-               normal: "e17_button_sm.png";
+               normal: "e17_button_sm_disabled.png";
                border: 8 8 8 8;
             }
 	 }
@@ -66,6 +67,15 @@ group {
                relative: 1.0 1.0;
             }
          }
+
+	 description {
+	    state:    "focused" 0.0;
+            inherit:  "default" 0.0;
+            image {
+               normal: "e17_button_sm2.png";
+            }
+	 }
+
       }
       part {
 	 name:          "item";
@@ -118,6 +128,7 @@ group {
 	    state:    "focused" 0.0;
             inherit:  "default" 0.0;
             visible:  1;
+
 	    color: 255 255 255 255;
 	 }
       }
@@ -139,6 +150,7 @@ group {
 	       offset:   -8    -8;
                to: "button_image";
 	    }
+            // text color on button face
 	    color: 255 255 255 255;
 	    color3: 0 0 0 42;
 	    text {
@@ -198,7 +210,7 @@ group {
 	 name:    "instant_uniconify";
 	 signal:  "instant_uniconify";
 	 source:  "";
-	 action:  STATE_SET "default" 0.0;
+	 action:  STATE_SET "focused" 0.0;
          transition: LINEAR 0.0;
 	 target:  "button_image";
       }
@@ -214,13 +226,39 @@ group {
 	 name:    "uniconify";
 	 signal:  "uniconify";
 	 source:  "";
+	 action:  STATE_SET "focused" 0.0;
+         transition: LINEAR 0.5;
+	 target:  "button_image";
+      }
+
+      program {
+	 name:    "but_focused";
+	 signal:  "focused";
+	 source:  "";
+	 action:  STATE_SET "focused" 0.0;
+         transition: LINEAR 0.5;
+	 target:  "button_image";
+      }
+      program {
+	 name:    "but_unfocused";
+	 signal:  "unfocused";
+	 source:  "";
 	 action:  STATE_SET "default" 0.0;
          transition: LINEAR 0.5;
 	 target:  "button_image";
       }
       program {
-	 name:    "instant_focused";
+	 name:    "but_instant_focused";
 	 signal:  "instant_focused";
+	 source:  "";
+	 action:  STATE_SET "focused" 0.0;
+         transition: LINEAR 0.0;
+	 target:  "button_image";
+      }
+
+      program {
+	 name:    "instant_focused";
+	 signal:  "instant_focused_xxx";
 	 source:  "";
 	 action:  STATE_SET "focused" 0.0;
          transition: LINEAR 0.0;
@@ -228,7 +266,7 @@ group {
       }
       program {
 	 name:    "instant_unfocused";
-	 signal:  "instant_unfocused";
+	 signal:  "instant_unfocused_xxxx";
 	 source:  "";
 	 action:  STATE_SET "default" 0.0;
          transition: LINEAR 0.0;
@@ -236,7 +274,7 @@ group {
       }
       program {
 	 name:    "focused";
-	 signal:  "focused";
+	 signal:  "hilight";
 	 source:  "";
 	 action:  STATE_SET "focused" 0.0;
          transition: LINEAR 0.5;
@@ -244,7 +282,7 @@ group {
       }
       program {
 	 name:    "unfocused";
-	 signal:  "unfocused";
+	 signal:  "unhilight";
 	 source:  "";
 	 action:  STATE_SET "default" 0.0;
          transition: LINEAR 0.5;

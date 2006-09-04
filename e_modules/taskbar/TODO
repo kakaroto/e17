@@ -1,0 +1,35 @@
+
+BUGS
+
+- if the horiz shelf is resized (huge, tiny) the app icons aren't layed out
+  optimally (in the vertical)
+- if shelf is set to 'scroll contents' things kind of work, but...
+    events don't always seem to be caught
+    when switched to 'scroll contents' size will be wrong
+
+- raster: taskbar doesn't want to be removed from the configure
+  shelf contents dialog
+
+- vert layout - no...
+
+TODO
+
+- In non-scroll mode, apps will fill the shelf and disappear off the end
+- Modify populate function to either sort in a deterministic way or remember
+  app order, because:
+    When you switch desktops, the order of taskbar apps can change.  This is
+    odd behavior for users who will probably expect the app order in the
+    bar to be the same as when they left the desktop.
+- Other layour options (to fit all apps on the shelf)
+    Scroll and shrink - zoom the app under the mouse, but shrink others to fit
+                        on the shelf
+    Sort apps by category and stack - Place apps of the same name under one
+                                      app icon, pop a list when clicked.
+                                      (Or on mouse over?)
+
+
+Behavior decisions
+
+- when an app is behind another app on the desktop, and you click on the
+  taskbar, the app will get focus, but be hidden.  Should we raise?
+  Should it follow current wm behavior for 'raise on click'?
