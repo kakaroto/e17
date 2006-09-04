@@ -13,17 +13,6 @@ collections
 	  {
 	     part
 	       {
-		  name:           "base";
-		  type:           RECT;
-		  mouse_events:   0;
-		  description
-		    {
-		       state: "default" 0.0;
-		       color: 255 255 255 0;
-		    }
-	       }
-	     part
-	       {
 		  name:         "icon";
 		  type:         SWALLOW;
 		  mouse_events: 0;
@@ -36,7 +25,7 @@ collections
 		       rel1
 			 {
 			    relative: 0.0 0.0;
-			    offset:   2   2;
+			    offset:   0   0;
 			 }
 		       rel2
 			 {
@@ -48,7 +37,9 @@ collections
 		  description
 		    {
 		       state:    "simple" 0.0;
-		       align:    0.5 0.5;
+		       align:    0.0 0.0;
+		       aspect:   1.0 1.0;
+		       aspect_preference: BOTH;
 		       rel1
 			 {
 			    relative: 0.0 0.0;
@@ -68,13 +59,12 @@ collections
 		  type:         TEXT;
 		  effect:       OUTLINE_SOFT_SHADOW;
 		  mouse_events: 0;
-		  //clip_to: "base";
 		  description
 		    {
 		       state: "default" 0.0;
 		       rel1
 			 {
-			    relative: 0.0 0.0;
+			    relative: 1.0 0.0;
 			    offset:   0   0;
 			    to: "icon";
 			 }
@@ -92,7 +82,7 @@ collections
 			    font:  "Vera Bold";
 			    size:  10;
 			    min:   1 1;
-			    align: 0.5 0.5;
+			    align: 1.0 0.5;
 			    text_class: "module_large";
 			 }
 		    }
@@ -102,7 +92,6 @@ collections
 		  name:         "location";
 		  type:         TEXT;
 		  effect:       OUTLINE_SOFT_SHADOW;
-		  //clip_to: "base";
 		  mouse_events: 0;
 		  description
 		    {
@@ -173,7 +162,6 @@ collections
 		  name:         "conditions";
 		  type:         TEXT;
 		  effect:       OUTLINE_SOFT_SHADOW;
-		  //clip_to: "base";
 		  mouse_events: 0;
 		  description
 		    {
