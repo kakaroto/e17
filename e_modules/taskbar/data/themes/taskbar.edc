@@ -71,12 +71,34 @@ group {
 	 description {
 	    state:    "focused" 0.0;
             inherit:  "default" 0.0;
-            image {
-               normal: "e17_button_sm2.png";
-            }
+            //image {
+              // normal: "e17_button_sm2.png";
+            //}
 	 }
 
       }
+
+      part {
+	 name:          "button_image_gold";
+	 type:          IMAGE;
+	 mouse_events:  0;
+	 description {
+	    state:    "default" 0.0;
+            min:      56 16;
+            image {
+               normal: "e17_button_sm2.png";
+               border: 8 8 8 8;
+            }
+	    color: 255 255 255 0;
+	 }
+	 description {
+	    state:    "focused" 0.0;
+            inherit:  "default" 0.0;
+	    color: 255 255 255 255;
+	 }
+      }
+
+
       part {
 	 name:          "item";
 	 type:          SWALLOW;
@@ -254,6 +276,31 @@ group {
 	 action:  STATE_SET "focused" 0.0;
          transition: LINEAR 0.0;
 	 target:  "button_image";
+      }
+
+      program {
+	 name:    "but_focused_gold";
+	 signal:  "focused";
+	 source:  "";
+	 action:  STATE_SET "focused" 0.0;
+         transition: LINEAR 0.5;
+	 target:  "button_image_gold";
+      }
+      program {
+	 name:    "but_unfocused_gold";
+	 signal:  "unfocused";
+	 source:  "";
+	 action:  STATE_SET "default" 0.0;
+         transition: LINEAR 0.5;
+	 target:  "button_image_gold";
+      }
+      program {
+	 name:    "but_instant_focused_gold";
+	 signal:  "instant_focused";
+	 source:  "";
+	 action:  STATE_SET "focused" 0.0;
+         transition: LINEAR 0.0;
+	 target:  "button_image_gold";
       }
 
       program {
