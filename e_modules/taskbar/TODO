@@ -30,6 +30,7 @@ TODO
 
 Behavior decisions
 
-- when an app is behind another app on the desktop, and you click on the
+- (Is this an Xnest problem?  It works for iamsthitha.)
+  when an app is behind another app on the desktop, and you click on the
   taskbar, the app will get focus, but be hidden.  Should we raise?
   Should it follow current wm behavior for 'raise on click'?
