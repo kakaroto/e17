@@ -192,8 +192,6 @@ static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size)
       size->w = ETK_MAX(size->w, child_size.w);
       size->h += child_size.h;
    }
-   /* TODO: FIXME: incorrect calculated width */
-   size->w += 15;
 }
 
 /* Resizes the menu to the allocated size */
@@ -224,11 +222,12 @@ static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       item = ETK_MENU_ITEM(l->data);
    
       if (items_have_submenu)
-         etk_widget_theme_signal_emit(ETK_WIDGET(item), item->submenu ? "arrow_show" : "arrow_spacer");
+         etk_widget_theme_signal_emit(ETK_WIDGET(item), item->submenu ? "arrow_show" : "arrow_spacer", ETK_TRUE);
       else
-         etk_widget_theme_signal_emit(ETK_WIDGET(item), "arrow_hide");
+         etk_widget_theme_signal_emit(ETK_WIDGET(item), "arrow_hide", ETK_TRUE);
       
-      etk_widget_theme_signal_emit(ETK_WIDGET(item), items_have_left_widget ? "left_widget_show" : "left_widget_hide");
+      etk_widget_theme_signal_emit(ETK_WIDGET(item),
+         items_have_left_widget ? "left_widget_show" : "left_widget_hide", ETK_TRUE);
    }
    
    y_offset = geometry.y;

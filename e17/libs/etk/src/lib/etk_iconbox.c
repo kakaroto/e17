@@ -1411,7 +1411,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
    label_geometry.h = model->label_height;
    
    etk_label_set(ETK_LABEL(icon_object->label), icon->label);
-   etk_widget_theme_signal_emit(icon_object->label, icon->selected ? "select" : "unselect");
+   etk_widget_theme_signal_emit(icon_object->label, icon->selected ? "select" : "unselect", ETK_FALSE);
    
    if (clip && grid->clip)
       etk_widget_clip_set(icon_object->label, grid->clip);

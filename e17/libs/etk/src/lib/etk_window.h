@@ -45,8 +45,6 @@ struct _Etk_Window
    Etk_Bool wait_size_request;
    Etk_Bool center;
    Etk_Window *center_on_window;
-   Etk_Bool modal;
-   Etk_Window *modal_for_window;
 
    void (*move_cb)(Etk_Window *window);
    void (*resize_cb)(Etk_Window *window);   

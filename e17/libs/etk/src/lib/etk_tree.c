@@ -2164,7 +2164,7 @@ static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data)
    
    if (!(tree = ETK_TREE(object)))
       return;
-   etk_widget_theme_signal_emit(tree->grid, "focus");
+   etk_widget_theme_signal_emit(tree->grid, "focus", ETK_FALSE);
 }
 
 /* Called when the tree is unfocused */
@@ -2174,7 +2174,7 @@ static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data)
    
    if (!(tree = ETK_TREE(object)))
       return;
-   etk_widget_theme_signal_emit(tree->grid, "unfocus");
+   etk_widget_theme_signal_emit(tree->grid, "unfocus", ETK_FALSE);
 }
 
 /* Called when the user presses a key */
@@ -2908,7 +2908,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
       row->selected = ETK_TRUE;
       tree->last_selected = row;
       if(tree->dnd_event)      	
-	etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
+	etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected", ETK_FALSE);
       else
 	etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
    }
@@ -2964,7 +2964,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
          tree->last_selected = row;
 	 
 	 if(tree->dnd_event)
-	   etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
+	   etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected", ETK_FALSE);
 	 else
 	   etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
       }
@@ -2976,7 +2976,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
 	    --tree->num_selected_rows;
             tree->last_selected = row;
 	    if(tree->dnd_event)      
-	      etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
+	      etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected", ETK_FALSE);
 	    else
 	      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
          }
@@ -2986,7 +2986,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
 	    ++tree->num_selected_rows;
             tree->last_selected = row;
 	    if(tree->dnd_event)      
-	      etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
+	      etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected", ETK_FALSE);
 	    else
 	      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);
          }
@@ -3000,7 +3000,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
 	    row->selected = ETK_TRUE;
 	    tree->last_selected = row;
 	    if(tree->dnd_event)      
-	      etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected");
+	      etk_widget_theme_signal_emit(ETK_WIDGET(tree), "row_selected", ETK_FALSE);
 	    else
 	      etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL, row);	    
 	 }

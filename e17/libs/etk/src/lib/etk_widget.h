@@ -165,7 +165,7 @@ void etk_widget_leave(Etk_Widget *widget);
 void etk_widget_focus(Etk_Widget *widget);
 void etk_widget_unfocus(Etk_Widget *widget);
 
-void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name);
+void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name, Etk_Bool size_recalc);
 void etk_widget_theme_part_text_set(Etk_Widget *widget, const char *part_name, const char *text);
 int  etk_widget_theme_data_get(Etk_Widget *widget, const char *data_name, const char *format, ...);
 

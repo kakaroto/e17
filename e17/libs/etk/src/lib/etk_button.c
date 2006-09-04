@@ -515,7 +515,7 @@ static void _etk_button_realize_cb(Etk_Object *object, void *data)
       return;
    
    if (button->is_pressed)
-      etk_widget_theme_signal_emit(ETK_WIDGET(button), "pressed");
+      etk_widget_theme_signal_emit(ETK_WIDGET(button), "pressed", ETK_FALSE);
 }
 
 /* Called when the image is removed from the box */
@@ -605,7 +605,7 @@ static void _etk_button_pressed_handler(Etk_Button *button)
 {
    if (!button)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(button), "pressed");
+   etk_widget_theme_signal_emit(ETK_WIDGET(button), "pressed", ETK_FALSE);
 }
 
 /* Default handler for the "released" signal */
@@ -613,7 +613,7 @@ static void _etk_button_released_handler(Etk_Button *button)
 {
    if (!button)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(button), "released");
+   etk_widget_theme_signal_emit(ETK_WIDGET(button), "released", ETK_FALSE);
 }
 
 /* Default handler for the "clicked" signal */
@@ -621,7 +621,7 @@ static void _etk_button_clicked_handler(Etk_Button *button)
 {
    if (!button)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(button), "clicked");
+   etk_widget_theme_signal_emit(ETK_WIDGET(button), "clicked", ETK_FALSE);
 }
 
 /* Creates the children of the button */

@@ -1066,24 +1066,30 @@ void etk_widget_unfocus(Etk_Widget *widget)
  * @brief Sends a signal to the theme-object of the widget
  * @param widget a widget
  * @param signal_name the name of the signal to send
+ * @param size_recalc if @a size_recalc is ETK_TRUE, etk_widget_size_recalc_queue() will be called on the widget.
+ * So, if the emitted signal is likely to change the size of the widget, @a size_recalc has to be set to ETK_TRUE.
+ * Otherwise it should be ETK_FALSE
  * @note The widget has to be realized, otherwise it will have no effect
  * @widget_implementation
  * @see edje_object_signal_emit()
  */
-void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name)
+void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name, Etk_Bool size_recalc)
 {
    if (!widget || !widget->theme_object)
       return;
    edje_object_signal_emit(widget->theme_object, signal_name, "");
    widget->need_theme_min_size_recalc = ETK_TRUE;
+   if (size_recalc)
+      etk_widget_size_recalc_queue(widget);
 }
 
 /**
- * @brief Sets the text of a text part of the widget's theme-object
+ * @brief Sets the text of a text part of the widget's theme-object.
  * @param widget a widget
  * @param part_name the name of the text part
  * @param text the text to set
  * @note The widget has to be realized, otherwise it will have no effect
+ * @note etk_widget_size_recalc_queue() is automatically called on the widget
  * @widget_implementation
  * @see edje_object_part_text_set()
  */
@@ -1093,6 +1099,7 @@ void etk_widget_theme_part_text_set(Etk_Widget *widget, const char *part_name, c
       return;
    edje_object_part_text_set(widget->theme_object, part_name, text);
    widget->need_theme_min_size_recalc = ETK_TRUE;
+   etk_widget_size_recalc_queue(widget);
 }
 
 /**
@@ -1702,7 +1709,7 @@ void etk_widget_drag_drop(Etk_Widget *widget, Etk_Event_Selection_Request *event
       return;
    
    /* TODO: FIXME: why isnt this being emitted automatically?!? */
-   etk_widget_theme_signal_emit(widget, "drag_drop");   
+   etk_widget_theme_signal_emit(widget, "drag_drop", ETK_FALSE);   
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DRAG_DROP_SIGNAL], ETK_OBJECT(widget), NULL, event);
 }
 
@@ -2066,7 +2073,7 @@ static void _etk_widget_enter_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "enter");
+   etk_widget_theme_signal_emit(widget, "enter", ETK_FALSE);
 }
 
 /* Default handler for the "leave" signal */
@@ -2074,7 +2081,7 @@ static void _etk_widget_leave_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "leave");
+   etk_widget_theme_signal_emit(widget, "leave", ETK_FALSE);
 }
 
 /* Default handler for the "focus" signal */
@@ -2082,7 +2089,7 @@ static void _etk_widget_focus_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "focus");
+   etk_widget_theme_signal_emit(widget, "focus", ETK_FALSE);
 }
 
 /* Default handler for the "unfocus" signal */
@@ -2090,7 +2097,7 @@ static void _etk_widget_unfocus_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "unfocus");
+   etk_widget_theme_signal_emit(widget, "unfocus", ETK_FALSE);
 }
 
 /* Sets the widget as visible and queues a visibility update */
@@ -2098,7 +2105,7 @@ static void _etk_widget_show_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "show");
+   etk_widget_theme_signal_emit(widget, "show", ETK_FALSE);
 }
 
 /* Default handler for the "drag_drop" signal */
@@ -2106,7 +2113,7 @@ static void _etk_widget_drag_drop_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "drag_drop");
+   etk_widget_theme_signal_emit(widget, "drag_drop", ETK_FALSE);
 }
 
 /* Default handler for the "drag_motion" signal */
@@ -2114,7 +2121,7 @@ static void _etk_widget_drag_motion_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "drag_motion");
+   etk_widget_theme_signal_emit(widget, "drag_motion", ETK_FALSE);
 }
 
 /* Default handler for the "drag_enter" signal */
@@ -2122,7 +2129,7 @@ static void _etk_widget_drag_enter_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "drag_enter");
+   etk_widget_theme_signal_emit(widget, "drag_enter", ETK_FALSE);
 }
 
 /* Default handler for the "drag_leave" signal */
@@ -2130,7 +2137,7 @@ static void _etk_widget_drag_leave_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "drag_leave");
+   etk_widget_theme_signal_emit(widget, "drag_leave", ETK_FALSE);
 }
 
 /* Default handler for the "drag_begin" signal */
@@ -2138,7 +2145,7 @@ static void _etk_widget_drag_begin_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "drag_begin");
+   etk_widget_theme_signal_emit(widget, "drag_begin", ETK_FALSE);
 }
 
 /* Default handler for the "drag_end" signal */
@@ -2146,7 +2153,7 @@ static void _etk_widget_drag_end_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_widget_theme_signal_emit(widget, "drag_end");
+   etk_widget_theme_signal_emit(widget, "drag_end", ETK_FALSE);
 }
 
 /* Evas Callback: Called when the mouse pointer enters the widget */

@@ -44,7 +44,7 @@ static void _etk_window_property_set(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_window_show_cb(Etk_Object *object, void *data);
 static void _etk_window_hide_cb(Etk_Object *object, void *data);
-static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisition, void *data);
+static void _etk_window_size_request_cb(Etk_Object *object, Etk_Size *requested_size, void *data);
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window);
 static void _etk_window_evas_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y);
 static void _etk_window_screen_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y);
@@ -530,9 +530,7 @@ static void _etk_window_constructor(Etk_Window *window)
    window->wait_size_request = ETK_TRUE;
    window->center = ETK_FALSE;
    window->center_on_window = NULL;
-   window->modal = ETK_FALSE;
-   window->modal_for_window = NULL;   
-
+   
    window->delete_event = _etk_window_delete_event_handler;
    window->move_cb = _etk_window_move_cb;
    window->resize_cb = _etk_window_resize_cb;
@@ -567,8 +565,6 @@ static void _etk_window_destructor(Etk_Window *window)
    
    if (window->center_on_window)
       etk_object_weak_pointer_remove(ETK_OBJECT(window->center_on_window), (void **)(&window->center_on_window));
-   if (window->modal_for_window)
-      etk_object_weak_pointer_remove(ETK_OBJECT(window->modal_for_window), (void **)(&window->modal_for_window));
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -687,16 +683,21 @@ static void _etk_window_hide_cb(Etk_Object *object, void *data)
    etk_engine_window_hide(window);
 }
 
-/* Called when a size request signal is emitted */
-static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisition, void *data)
+/* Called when the "size_request" signal is emitted */
+static void _etk_window_size_request_cb(Etk_Object *object, Etk_Size *requested_size, void *data)
 {
-   if (window && requisition && requisition->w >= 0 && requisition->h >= 0)
+   Etk_Window *window;
+   
+   if (!(window = ETK_WINDOW(object)) || !requested_size)
+      return;
+   
+   if (requested_size->w >= 0 && requested_size->h >= 0)
    {
-      etk_engine_window_size_min_set(window, requisition->w, requisition->h);
-      if (window->width < requisition->w || window->height < requisition->h)
+      etk_engine_window_size_min_set(window, requested_size->w, requested_size->h);
+      if (window->width < requested_size->w || window->height < requested_size->h)
       {
-         window->width = ETK_MAX(window->width, requisition->w);
-         window->height = ETK_MAX(window->height, requisition->h);
+         window->width = ETK_MAX(window->width, requested_size->w);
+         window->height = ETK_MAX(window->height, requested_size->h);
          etk_engine_window_resize(window, window->width, window->height);
       }
       
@@ -711,12 +712,6 @@ static void _etk_window_size_request_cb(Etk_Window *window, Etk_Size *requisitio
             window->center = ETK_FALSE;
             window->center_on_window = NULL;
          }
-         if (window->modal)
-         {
-            etk_window_modal_for_window(window, window->modal_for_window);
-            window->modal = ETK_FALSE;
-            window->modal_for_window = NULL;
-         }	 
       }
    }
 }

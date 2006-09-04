@@ -5,10 +5,6 @@
 #include "etk_container.h"
 #include "etk_types.h"
 #include "etk_stock.h"
-
-/* TODO/FIXME list:
- * - Fix the calc of width of the item!
- */
  
 /**
  * @defgroup Etk_Menu_Item Etk_Menu_Item

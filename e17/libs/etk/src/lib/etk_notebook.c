@@ -739,7 +739,7 @@ static void _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data)
       return;
    
    if (notebook->current_page)
-      etk_widget_theme_signal_emit(notebook->current_page->tab, "focus");
+      etk_widget_theme_signal_emit(notebook->current_page->tab, "focus", ETK_FALSE);
    notebook->tab_bar_focused = ETK_TRUE;
 }
 
@@ -752,7 +752,7 @@ static void _etk_notebook_tab_bar_unfocused_cb(Etk_Object *object, void *data)
       return;
    
    if (notebook->current_page)
-      etk_widget_theme_signal_emit(notebook->current_page->tab, "unfocus");
+      etk_widget_theme_signal_emit(notebook->current_page->tab, "unfocus", ETK_FALSE);
    notebook->tab_bar_focused = ETK_FALSE;
 }
 
@@ -878,7 +878,7 @@ static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page 
    {
       etk_widget_hide(notebook->current_page->frame);
       if (notebook->tab_bar_focused)
-         etk_widget_theme_signal_emit(notebook->current_page->tab, "unfocus");
+         etk_widget_theme_signal_emit(notebook->current_page->tab, "unfocus", ETK_FALSE);
    }
    
    ETK_WIDGET(notebook)->focus_order = evas_list_free(ETK_WIDGET(notebook)->focus_order);
@@ -892,7 +892,7 @@ static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page 
    etk_widget_raise(page->tab);
    
    if (notebook->tab_bar_focused)
-      etk_widget_theme_signal_emit(page->tab, "focus");
+      etk_widget_theme_signal_emit(page->tab, "focus", ETK_FALSE);
    
    notebook->current_page = page;
    etk_signal_emit(_etk_notebook_signals[ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL], ETK_OBJECT(notebook), NULL);

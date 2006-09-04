@@ -222,9 +222,9 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
       ETK_MENU_SHELL(menu_item->submenu)->parent = menu_item;
    
    if (menu_item->submenu)
-      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "arrow_show");
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "arrow_show", ETK_TRUE);
    else if (!menu_item->submenu)
-      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "arrow_hide");
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "arrow_hide", ETK_TRUE);
    
    etk_widget_size_recalc_queue(ETK_WIDGET(menu_item));
    etk_object_notify(ETK_OBJECT(menu_item), "submenu");
@@ -402,10 +402,10 @@ void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image)
       etk_widget_pass_mouse_events_set(menu_item->left_widget, ETK_TRUE);
       
       etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", image_widget);
-      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_show");
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_show", ETK_TRUE);
    }
    else
-      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_hide");
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_hide", ETK_TRUE);
    
    etk_widget_size_recalc_queue(ETK_WIDGET(menu_item));
 }
@@ -669,8 +669,8 @@ static void _etk_menu_item_check_constructor(Etk_Menu_Item_Check *check_item)
    etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));
    etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", menu_item->left_widget);
    
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_show");
-   etk_widget_theme_signal_emit(menu_item->left_widget, check_item->active ? "check" : "uncheck");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_show", ETK_TRUE);
+   etk_widget_theme_signal_emit(menu_item->left_widget, check_item->active ? "check" : "uncheck", ETK_FALSE);
    
    etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget),
       ETK_CALLBACK(_etk_menu_item_check_box_realize_cb), menu_item);
@@ -879,7 +879,7 @@ static void _etk_menu_item_check_box_realize_cb(Etk_Object *object, void *data)
    if (!(menu_item = ETK_MENU_ITEM(data)) || !menu_item->left_widget)
       return;
    etk_widget_theme_signal_emit(menu_item->left_widget,
-      ETK_MENU_ITEM_CHECK(menu_item)->active ? "check" : "uncheck");
+      ETK_MENU_ITEM_CHECK(menu_item)->active ? "check" : "uncheck", ETK_FALSE);
 }
 
 /* Called when the check item is activated */
@@ -897,8 +897,8 @@ static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "select");
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "select");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "select", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "select", ETK_FALSE);
 }
 
 /* Default handler for the "deselected" signal */
@@ -906,8 +906,8 @@ static void _etk_menu_item_deselected_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "deselect");
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "deselect");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "deselect", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "deselect", ETK_FALSE);
 }
 
 /* Default handler for the "activated" signal */
@@ -915,8 +915,8 @@ static void _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "activate");
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "activate");
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "activate", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "activate", ETK_FALSE);
 }
 
 /* Default handler for the "toggled" signal */
@@ -925,7 +925,7 @@ static void _etk_menu_item_check_toggled_handler(Etk_Menu_Item_Check *check_item
    if (check_item && ETK_MENU_ITEM(check_item)->left_widget)
    {
       etk_widget_theme_signal_emit(ETK_MENU_ITEM(check_item)->left_widget,
-         check_item->active ? "check" : "uncheck");
+         check_item->active ? "check" : "uncheck", ETK_FALSE);
    }
 }
 

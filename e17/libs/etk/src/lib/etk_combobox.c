@@ -1020,7 +1020,7 @@ static void _etk_combobox_focus_handler(Etk_Widget *widget)
    
    if (!(combobox = ETK_COMBOBOX(widget)))
       return;
-   etk_widget_theme_signal_emit(combobox->button, "focus");
+   etk_widget_theme_signal_emit(combobox->button, "focus", ETK_FALSE);
 }
 
 /* Default handler for the "unfocus" handler */
@@ -1030,7 +1030,7 @@ static void _etk_combobox_unfocus_handler(Etk_Widget *widget)
    
    if (!(combobox = ETK_COMBOBOX(widget)))
       return;
-   etk_widget_theme_signal_emit(combobox->button, "unfocus");
+   etk_widget_theme_signal_emit(combobox->button, "unfocus", ETK_FALSE);
 }
 
 /* Called when the combobox is realized */
@@ -1245,12 +1245,12 @@ static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox
    
    if (combobox->selected_item)
    {
-      etk_widget_theme_signal_emit(ETK_WIDGET(combobox->selected_item), "unselect");
+      etk_widget_theme_signal_emit(ETK_WIDGET(combobox->selected_item), "unselect", ETK_FALSE);
       combobox->selected_item = NULL;
    }
    if (item)
    {
-      etk_widget_theme_signal_emit(ETK_WIDGET(item), "select");
+      etk_widget_theme_signal_emit(ETK_WIDGET(item), "select", ETK_FALSE);
       combobox->selected_item = item;
    }
 }
