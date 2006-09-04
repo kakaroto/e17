@@ -75,10 +75,12 @@ od_config_init(void)
 {
   int             ret;
 
-  ecore_config_int_create("engage.options.width", 1024, 'W', "width",
-                          "The overall width of the application area");
-  ecore_config_int_create("engage.options.height", 130, 'H', "height",
-                          "The overall height of the application area");
+  ecore_config_int_create_bound("engage.options.width", 1024, 16, 10240, 1, 'W',
+                                "width",
+                                "The overall width of the application area");
+  ecore_config_int_create_bound("engage.options.height", 130, 16, 1024, 1, 'H',
+                                "height",
+                                "The overall height of the application area");
   ecore_config_theme_create("engage.options.theme", "none", 't', "theme",
                             "The theme name to use (minus path and extension)");
   /* not technically correct - iconsets should do this, but it looks better for
