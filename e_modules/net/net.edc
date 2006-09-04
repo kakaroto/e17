@@ -115,7 +115,6 @@ collections
 	       {
 		  name: "net_label";
 		  type: TEXT;
-		  clip_to: "fade_clip";
 		  effect: SOFT_SHADOW;
 		  description 
 		    {
@@ -273,7 +272,6 @@ collections
 	       {
 		  name: "rx_label";
 		  type: TEXT;
-		  clip_to: "fade_clip";
 		  effect: SOFT_SHADOW;
 		  description 
 		    {
@@ -431,7 +429,6 @@ collections
 	       {
 		  name: "tx_label";
 		  type: TEXT;
-		  clip_to: "fade_clip";
 		  effect: SOFT_SHADOW;
 		  description 
 		    {
