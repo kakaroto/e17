@@ -50,6 +50,7 @@ struct entropy_layout_gui
   Etk_Widget* popup;
   Etk_Widget* localshell;
   Etk_Widget* trackback_shell;
+  Etk_Widget* tree_shell;
   Ecore_Hash* progress_hash; /*Track progress events->dialogs*/
 
   Etk_Widget* tree_view_menu;
@@ -377,10 +378,12 @@ void entropy_etk_layout_tree_cb(Etk_Object* obj, void* data)
 void entropy_etk_layout_tree_show(entropy_layout_gui* gui, int visible)
 {
 	if (visible) {
+		etk_box_append(ETK_BOX(gui->tree_shell), gui->tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 		etk_widget_show_all(gui->tree);
 		etk_paned_position_set(ETK_PANED(gui->paned), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X);
 	} else {
 		etk_widget_hide(gui->tree);
+		etk_container_remove(ETK_CONTAINER(gui->tree_shell), gui->tree);
 		etk_paned_position_set(ETK_PANED(gui->paned), 0);
 	}
 }
@@ -723,20 +726,27 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*Tree init*/
   gui->tree = etk_tree_new();
-  etk_paned_child1_set(ETK_PANED(gui->paned), gui->tree, ETK_FALSE);
+  gui->tree_shell = etk_vbox_new(ETK_FALSE,0);
+  etk_box_append(ETK_BOX(gui->tree_shell), gui->tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0); 
+
+  etk_paned_child1_set(ETK_PANED(gui->paned), gui->tree_shell, ETK_FALSE);
   etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
   col = etk_tree_col_new(ETK_TREE(gui->tree), _("Folders"), 
 		  etk_tree_model_icon_text_new(ETK_TREE(gui->tree), ETK_TREE_FROM_FILE), 60);
   
   etk_tree_col_expand_set(col, ETK_TRUE);
   etk_tree_build(ETK_TREE(gui->tree));
+  etk_widget_size_request_set(ETK_WIDGET(gui->tree), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X, 50);
 
   /*Register to receive events related to the treeview config*/
   entropy_config_misc_callback_register("general.treeviewer", _entropy_layout_etk_simple_config_cb, gui);
 
-
-
-  etk_widget_size_request_set(ETK_WIDGET(gui->tree), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X, 50);
+  /*If we're configured not to show tree on start, don't show*/
+  if (!entropy_config_misc_is_set("general.treeviewer")) {
+	  entropy_etk_layout_tree_show(gui,0);
+  } else {
+	etk_paned_position_set(ETK_PANED(gui->paned), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X);
+  }
 
   /*LocalShell Init*/
   gui->localshell = etk_vbox_new(ETK_TRUE,0);
@@ -942,7 +952,6 @@ entropy_plugin_layout_create (entropy_core * core)
   /*Increment the window counter*/
   _etk_layout_window_count++;
 
-  etk_paned_position_set(ETK_PANED(gui->paned), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X);
   etk_window_resize(ETK_WINDOW(window), ENTROPY_ETK_WINDOW_WIDTH, ENTROPY_ETK_WINDOW_HEIGHT);
 
   return layout;
