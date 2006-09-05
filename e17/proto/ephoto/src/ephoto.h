@@ -8,7 +8,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
 
 void destroy_cb(Ewl_Widget *w, void *event, void *data);
 void populate_albums(Ewl_Widget *w, void *event, void *data);

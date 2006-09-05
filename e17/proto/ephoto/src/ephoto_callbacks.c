@@ -145,30 +145,28 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  {
   ls = ecore_file_ls(dir);
   while(!ecore_list_is_empty(ls))
-  {
+  { 
    snprintf(full_path, PATH_MAX, "%s/%s", dir, ecore_list_remove_first(ls));
-   image = strdup(full_path);
-   if (fnmatch("*.[Jj][Pp][Ee][Gg]", image, 0) == 0)
+   if (fnmatch("*.[Jj][Pp][Ee][Gg]", full_path, 0) == 0)
    {
-    ecore_list_append(images, image);
+    ecore_list_append(images, strdup(full_path));
    }
-   if (fnmatch("*.[Jj][Pp][Gg]", image, 0) == 0)
+   if (fnmatch("*.[Jj][Pp][Gg]", full_path, 0) == 0)
    {
-    ecore_list_append(images, image);
+    ecore_list_append(images, strdup(full_path));
    }
-   if (fnmatch("*.[Pp][Nn][Gg]", image, 0) == 0)
+   if (fnmatch("*.[Pp][Nn][Gg]", full_path, 0) == 0)
    {
-    ecore_list_append(images, image);
+    ecore_list_append(images, strdup(full_path));
    }
-   if (fnmatch("*.[Gg][Ii][Ff]", image, 0) == 0)
+   if (fnmatch("*.[Gg][Ii][Ff]", full_path, 0) == 0)
    {
-    ecore_list_append(images, image);
+    ecore_list_append(images, strdup(full_path));
    }
-   if (fnmatch("*.[Ss][Vv][Gg]", image, 0) == 0)
+   if (fnmatch("*.[Ss][Vv][Gg]", full_path, 0) == 0)
    {
-    ecore_list_append(images, image);
+    ecore_list_append(images, strdup(full_path));
    }
-   free(image);
   }
  }
  else
@@ -178,7 +176,7 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   {
    while(fgets(text,PATH_MAX,file_ptr) != NULL)
    {
-    if (strncmp(text, "#", 1)) ecore_list_append(images, strdup(text));
+    if (strncmp(text, "#", 1)) ecore_list_append(images, text);
    }
    fclose(file_ptr);
   }
@@ -190,7 +188,7 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   
   m->icon = ewl_icon_new();
   ewl_box_orientation_set(EWL_BOX(m->icon), EWL_ORIENTATION_VERTICAL);
-  ewl_icon_image_set(EWL_ICON(m->icon), full_path, NULL);
+  ewl_icon_image_set(EWL_ICON(m->icon), image, NULL);
   //ewl_icon_label_set(EWL_ICON(m->icon), image);
   ewl_icon_constrain_set(EWL_ICON(m->icon), 64);
   ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), m->icon);
