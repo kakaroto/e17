@@ -176,7 +176,11 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   {
    while(fgets(text,PATH_MAX,file_ptr) != NULL)
    {
-    if (strncmp(text, "#", 1)) ecore_list_append(images, text);
+    if(strncmp(text, "#", 1)) 
+    {
+     text[strlen(text)-1] = '\0';
+     ecore_list_append(images, strdup(text));
+    }
    }
    fclose(file_ptr);
   }
