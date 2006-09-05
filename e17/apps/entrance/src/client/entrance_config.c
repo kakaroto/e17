@@ -160,8 +160,7 @@ entrance_config_populate(Entrance_Config *e)
    if(xsessions)
 	   ecore_list_for_each(xsessions, _cb_xsessions_foreach, &ep);
    /* Search all the relevant FDO paths second. */
-   if(ecore_desktop_paths_xsessions)
-	   ecore_list_for_each(ecore_desktop_paths_xsessions, _cb_desktop_xsessions_foreach, &ep);
+   ecore_desktop_paths_for_each(ECORE_DESKTOP_PATHS_XSESSIONS, _cb_desktop_xsessions_foreach, &ep);
 
    num_session = ecore_config_int_get("/entrance/session/count");
    for (i = 0; i < num_session; i++)
