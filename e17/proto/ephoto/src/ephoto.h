@@ -3,13 +3,17 @@
 
 #include <Ecore_File.h>
 #include <Ewl.h>
+#include <fnmatch.h>
+#include <libgen.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 
 void destroy_cb(Ewl_Widget *w, void *event, void *data);
 void populate_albums(Ewl_Widget *w, void *event, void *data);
 void populate_browser(Ewl_Widget *w, void *event, void *data);
+void populate_images(Ewl_Widget *w, void *event, void *data);
 
 typedef struct _Main Main;
 

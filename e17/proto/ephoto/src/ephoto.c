@@ -1,5 +1,5 @@
 #include "ephoto.h"
-Main *m = NULL;
+Main *m;
 
 int
 main(int argc, char **argv)
@@ -8,18 +8,12 @@ main(int argc, char **argv)
  char *home;
  char ephoto_path[PATH_MAX];
  char ephoto_complete[PATH_MAX];
- int argint = 1;
- int i = 0;
-
+ m = NULL;
+ 
  if (!ewl_init(&argc, argv))
  {
   printf("Unable to init ewl\n");
   return 1;
- }
-
- while ( argint < argc ) 
- {
-  argint++;
  }
 
  home = getenv("HOME");
