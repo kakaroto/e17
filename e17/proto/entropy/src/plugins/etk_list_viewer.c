@@ -22,7 +22,6 @@ struct entropy_etk_file_list_viewer
   Etk_Tree_Col* tree_col1;
   Etk_Widget* parent_visual; 
 
-  Ecore_Hash* etk_list_viewer_row_hash;
   Ecore_Hash* gui_hash;
 
   Ecore_List *gui_events;
@@ -235,7 +234,7 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    Etk_Tree *tree;
    const char **types;
    unsigned int num_types;
-   Etk_Drag *drag;
+   Etk_Widget *drag;
    Etk_Widget *image;
    entropy_gui_component_instance* instance;
    entropy_etk_file_list_viewer* viewer;
@@ -319,8 +318,8 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
 
    printf("Drag buffer: %s\n", buffer);
    
-   etk_drag_types_set(drag, types, num_types);
-   etk_drag_data_set(drag, buffer, strlen(buffer)+1);
+   etk_drag_types_set(ETK_DRAG(drag), types, num_types);
+   etk_drag_data_set(ETK_DRAG(drag), buffer, strlen(buffer)+1);
 
 
 

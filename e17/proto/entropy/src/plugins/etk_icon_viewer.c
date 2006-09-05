@@ -47,6 +47,8 @@ entropy_plugin_gui_instance_new (entropy_core * core, entropy_gui_component_inst
 void
 icon_viewer_add_row (entropy_gui_component_instance * instance,
 			  entropy_generic_file * file);
+void icon_viewer_remove_row(entropy_gui_component_instance * instance,
+			  entropy_generic_file * file);
 
 
 int
@@ -85,6 +87,16 @@ gui_file_destroy (gui_file * file)
 {
   entropy_free (file);
 
+}
+
+void
+gui_file_remove_destroy_single(entropy_gui_component_instance * comp,
+		gui_file* file)
+{
+	entropy_etk_iconbox_viewer *view = comp->data;
+	ecore_hash_remove(view->gui_hash, file->file);
+	entropy_free(file);
+	
 }
 
 Ecore_List* 
@@ -202,6 +214,8 @@ void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, voi
   entropy_gui_component_instance *instance;	
   entropy_etk_iconbox_viewer *viewer;
   entropy_generic_file* file;
+  Ecore_List* selected;
+  int selected_count  =0;
   Etk_Iconbox_Icon* icon;
   Etk_Event_Mouse_Down *event;
   Etk_Bool ctrl_pressed;
@@ -209,6 +223,7 @@ void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, voi
   instance = data;
   viewer = instance->data;
   event = event_info;
+  selected_count = 0;
 
  if (!(icon = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(viewer->iconbox), 
    	event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
@@ -225,10 +240,24 @@ void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, voi
 		  }
 	  }
   } else if (event->button == 3) {
-	  if (ctrl_pressed != ETK_TRUE) etk_iconbox_unselect_all(icon->iconbox);
+	  if (ctrl_pressed != ETK_TRUE) etk_iconbox_unselect_all(ETK_ICONBOX(viewer->iconbox));
 	  etk_iconbox_icon_select(icon);
 
-	  entropy_etk_context_menu_popup(instance, file);
+	  selected = ecore_list_new();
+	  for (icon = ETK_ICONBOX(viewer->iconbox)->first_icon; icon ; icon = icon->next ) {
+	   	if (etk_iconbox_is_selected(icon)) {
+		     file = etk_iconbox_icon_data_get(icon);
+		     ecore_list_append(selected, file);
+		     selected_count++;
+		}
+	  }
+
+	  if (selected_count > 1) {
+		  entropy_etk_context_menu_popup_multi(instance,selected);
+	  } else {
+		  entropy_etk_context_menu_popup(instance, file);
+	  }
+	  ecore_list_destroy(selected);
   }
 }
 
@@ -275,9 +304,8 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	      if (el && comp) {
 		gui_file *obj;
 		entropy_thumbnail *thumb = (entropy_thumbnail *) el;
-		entropy_etk_iconbox_viewer *view = comp->data;
 	
-		obj = ecore_hash_get (view->gui_hash, thumb->parent);
+		obj = ecore_hash_get (viewer->gui_hash, thumb->parent);
 
 		if (obj) {
 		  etk_iconbox_icon_file_set(obj->icon, thumb->thumbnail_filename, NULL);
@@ -288,6 +316,12 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	      }
 	    }				//End case
 	    break;					  
+
+     case ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY:
+     case ENTROPY_NOTIFY_FILE_REMOVE:{
+	 icon_viewer_remove_row(comp, (entropy_generic_file*)el);
+     }
+     break;
   }
 }
 
@@ -312,6 +346,24 @@ icon_viewer_add_row (entropy_gui_component_instance * instance,
 	}
 
 	entropy_core_file_cache_add_reference (file->md5);
+}
+
+void icon_viewer_remove_row(entropy_gui_component_instance * instance,
+			  entropy_generic_file * file)
+{
+	entropy_etk_iconbox_viewer* viewer;
+	Etk_Iconbox_Icon* icon;
+	gui_file* event_file = NULL;
+	
+	viewer = instance->data;
+
+	if (file) {
+		event_file = ecore_hash_get(viewer->gui_hash,file);
+		if (event_file) {
+			etk_iconbox_icon_del(event_file->icon);
+			gui_file_remove_destroy_single(instance,event_file);
+		}
+	}
 }
 
 static void _entropy_etk_icon_viewer_drag_begin_cb(Etk_Object *object, void *data)
