@@ -474,9 +474,9 @@ void etk_iconbox_icon_del(Etk_Iconbox_Icon *icon)
       return;
    iconbox = icon->iconbox;
    
-   if (iconbox->first_icon)
+   if (iconbox->first_icon == icon)
       iconbox->first_icon = icon->next;
-   if (iconbox->last_icon)
+   if (iconbox->last_icon == icon)
       iconbox->last_icon = icon->prev;
    if (icon->prev)
       icon->prev->next = icon->next;
