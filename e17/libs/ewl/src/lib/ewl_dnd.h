@@ -26,6 +26,14 @@ void 		 ewl_dnd_position_windows_set(Ewl_Widget *w);
 Ewl_Dnd_Types 	*ewl_dnd_types_for_widget_get(Ewl_Widget *widget);
 int              ewl_dnd_type_supported(char *type);
 
+void		 ewl_dnd_provides_types_set(Ewl_Widget *w, const char **types);
+int		 ewl_dnd_provides_types_contains(Ewl_Widget *w, char *type);
+const char	**ewl_dnd_provides_types_get(Ewl_Widget *w);
+
+void		 ewl_dnd_accepts_types_set(Ewl_Widget *w, const char **types);
+int		 ewl_dnd_accepts_types_contains(Ewl_Widget *w, char *type);
+const char	**ewl_dnd_accepts_types_get(Ewl_Widget *w);
+
 void 		 ewl_dnd_disable(void);
 void 		 ewl_dnd_enable(void);
 

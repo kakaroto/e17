@@ -24,12 +24,17 @@ static Ecore_X_Window ewl_dnd_drag_win = 0;
 static Ewl_Widget *ewl_dnd_widget = NULL;
 
 static Ecore_Hash *ewl_dnd_position_hash;
+static Ecore_Hash *ewl_dnd_provides_hash;
+static Ecore_Hash *ewl_dnd_accepts_hash;
 static int ewl_dnd_status = 0;
 
 Ecore_Event_Handler *ewl_dnd_mouse_up_handler;
 Ecore_Event_Handler *ewl_dnd_mouse_move_handler;
 
 char *ewl_dnd_drop_types[] = { "text/uri-list", "UTF8_STRING", NULL };
+
+static char *ewl_dnd_types_encode(const char **types);
+static int ewl_dnd_types_encoded_contains(char *types, char *type);
 
 static int ewl_dnd_event_mouse_up(void *data, int type, void *event);
 static int ewl_dnd_event_dnd_move(void *data, int type, void *event);
@@ -56,6 +61,21 @@ ewl_dnd_init(void)
 	if (!ewl_dnd_position_hash)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_dnd_provides_hash = ecore_hash_new(ecore_direct_hash, 
+						ecore_direct_compare);
+	if (!ewl_dnd_provides_hash) {
+		ecore_hash_destroy(ewl_dnd_position_hash);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+
+	ewl_dnd_accepts_hash = ecore_hash_new(ecore_direct_hash, 
+						ecore_direct_compare);
+	if (!ewl_dnd_accepts_hash) {
+		ecore_hash_destroy(ewl_dnd_provides_hash);
+		ecore_hash_destroy(ewl_dnd_position_hash);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+
 	ewl_dragging_current = 0;
 	ewl_dnd_status = 1;
 
@@ -73,6 +93,8 @@ ewl_dnd_shutdown(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ecore_hash_destroy(ewl_dnd_position_hash);
+	ecore_hash_destroy(ewl_dnd_provides_hash);
+	ecore_hash_destroy(ewl_dnd_accepts_hash);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -93,6 +115,133 @@ ewl_dnd_position_windows_set(Ewl_Widget *w)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @param w: The widget to set provided types
+ * @param types: A NULL terminated array of mimetypes widget provides for DND
+ * @return Returns no value
+ * @brief: Sets the mimetypes the designated widget can provide for DND
+ */
+void
+ewl_dnd_provides_types_set(Ewl_Widget *w, const char **types)
+{
+	char *type;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	type = ecore_hash_get(ewl_dnd_provides_hash, w);
+	if (type) {
+		FREE(type);
+	}
+	ecore_hash_set(ewl_dnd_provides_hash, w, ewl_dnd_types_encode(types));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to test for an provided type
+ * @param w: The mimetype to test for provideance on a specific widget
+ * @brief: Verifies the specified widget provides the given mimetype
+ */
+int
+ewl_dnd_provides_types_contains(Ewl_Widget *w, char *type)
+{
+	char *types;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
+
+	types = ecore_hash_get(ewl_dnd_provides_hash, w);
+
+	DRETURN_INT(ewl_dnd_types_encoded_contains(types, type);, DLEVEL_STABLE);
+}
+
+
+/**
+ * @param w: The widget to retrieve provided types
+ * @return Returns a NULL terminated array of mimetypes widget provides for DND
+ * @brief: Gets the mimetypes the designated widget can provide for DND
+ */
+const char **
+ewl_dnd_provides_types_get(Ewl_Widget *w)
+{
+	const char **types;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	types = ecore_hash_get(ewl_dnd_provides_hash, w);
+
+	DRETURN_PTR(types, DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to set accepted types
+ * @param types: A NULL terminated array of mimetypes widget accepts for DND
+ * @return Returns no value
+ * @brief: Sets the mimetypes the designated widget can accept for DND
+ */
+void
+ewl_dnd_accepts_types_set(Ewl_Widget *w, const char **types)
+{
+	char *type;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	type = ecore_hash_get(ewl_dnd_accepts_hash, w);
+	if (type) {
+		FREE(type);
+	}
+	ecore_hash_set(ewl_dnd_accepts_hash, w, ewl_dnd_types_encode(types));
+
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to test for an accepted type
+ * @param w: The mimetype to test for acceptance on a specific widget
+ * @brief: Verifies the specified widget accepts the given mimetype
+ */
+int
+ewl_dnd_accepts_types_contains(Ewl_Widget *w, char *type)
+{
+	char *types;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
+
+	types = ecore_hash_get(ewl_dnd_provides_hash, w);
+
+	DRETURN_INT(ewl_dnd_types_encoded_contains(types, type);, DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to retrieve accepted types
+ * @return Returns a NULL terminated array of mimetypes widget accepts for DND
+ * @brief: Gets the mimetypes the designated widget can accept for DND
+ */
+const char **
+ewl_dnd_accepts_types_get(Ewl_Widget *w)
+{
+	const char **types;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	types = ecore_hash_get(ewl_dnd_provides_hash, w);
+
+	DRETURN_PTR(types, DLEVEL_STABLE);
+}
+
 
 /**
  * @param widget: The widget to get the types for
@@ -284,6 +433,52 @@ ewl_dnd_drag_widget_clear(void)
 	ewl_dnd_widget = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ewl_dnd_types_encoded_contains(char *types, char *type)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	while (*types) {
+		int len;
+
+		len = strlen(types);
+		if (!(strcmp(types, type)))
+			DRETURN_INT(TRUE, DLEVEL_STABLE);
+		types += len + 1;
+	}
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+
+static char *
+ewl_dnd_types_encode(const char **types)
+{
+	char *tmptype;
+	int count, i = 0;
+	int len = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	/*
+	 * Determine the length of all types.
+	 */
+	for (tmptype = (char *)types[0]; tmptype; tmptype = (char *)types[i]) {
+		len += strlen(tmptype) + 1;
+		i++;
+	}
+
+	tmptype = NEW(char, len + 1);
+	count = i;
+	for (i = 0; i < count; i++) {
+		tmptype = strcpy(tmptype, types[i]);
+		tmptype++;
+	}
+	*tmptype = '\0';
+
+	DRETURN_PTR(tmptype, DLEVEL_STABLE);
 }
 
 static int
