@@ -16,6 +16,9 @@ Ecore_Event_Handler *ewl_dnd_finished_handler = NULL;
 
 static int create_test(Ewl_Container *box);
 
+static void ewl_dnd_snoop_cb_dnd_position(Ewl_Widget *w, void *event, void *data);
+static void ewl_dnd_snoop_cb_dnd_drop(Ewl_Widget *w, void *event, void *data);
+static void ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event, void *data);
 static void ewl_dnd_snoop_cb_realize(Ewl_Widget *w, void *event, void *data);
 
 static int ewl_dnd_snoop_cb_enter(void *data, int type, void *ev);
@@ -68,6 +71,9 @@ create_test(Ewl_Container *box)
 
 	o = ewl_entry_new();
 	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_callback_append(o, EWL_CALLBACK_DND_POSITION, ewl_dnd_snoop_cb_dnd_position, NULL);
+	ewl_callback_append(o, EWL_CALLBACK_DND_DROP, ewl_dnd_snoop_cb_dnd_drop, NULL);
+	ewl_callback_append(o, EWL_CALLBACK_DND_DATA, ewl_dnd_snoop_cb_dnd_data, NULL);
 	ewl_widget_name_set(o, "entry");
 	ewl_entry_multiline_set(EWL_ENTRY(o), TRUE);
 	ewl_text_wrap_set(EWL_TEXT(o), TRUE);
@@ -111,6 +117,30 @@ ewl_dnd_snoop_output(char *buf)
 {
 	printf(buf);
 	ewl_text_text_append(EWL_TEXT(text), buf);
+}
+
+static void
+ewl_dnd_snoop_cb_dnd_position(Ewl_Widget *w, void *event, 
+						void *data __UNUSED__)
+{
+	Ewl_Event_Mouse_Move *ev = event;
+	printf("Position event on widget %p: %d %d\n", w, ev->x, ev->y);
+}
+
+static void
+ewl_dnd_snoop_cb_dnd_drop(Ewl_Widget *w, void *event, 
+						void *data __UNUSED__)
+{
+	Ewl_Event_Dnd_Drop *ev = event;
+	printf("Drop event on widget %p: %d %d %p\n", w, ev->x, ev->y, ev->data);
+}
+
+static void
+ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event, 
+						void *data __UNUSED__)
+{
+	Ewl_Event_Dnd_Data *ev = event;
+	printf("Data event on widget %p: %p lenght %d\n", w, ev->data, ev->len);
 }
 
 static void
