@@ -113,22 +113,6 @@ _e17genmenu_shutdown()
 }
 
 
-#ifdef DEBUG
-static void
-_print_theme(void *value, void *user_data)
-{
-   Ecore_Hash_Node    *node;
-   Ecore_Desktop_Icon_Theme *theme;
-   char               *key;
-
-   node = (Ecore_Hash_Node *) value;
-   key = node->key;
-   theme = node->value;
-   printf("FDO icon theme %s is in %s\n", key, theme->path);
-}
-#endif
-
-
 double convert_time = 0.0, icon_time = 0.0, cache_time = 0.0, generate_time = 0.0;
 int menu_count, item_count, reject_count, not_over_count, not_found_count;
 
@@ -137,10 +121,6 @@ main(int argc, char **argv)
 {
    char path[PATH_MAX];
    double start, begin, paths, gen;
-#ifdef DEBUG
-   char *this_path;
-   Ecore_Hash *icon_themes;
-#endif
 
    /* Init E Stuff */
    _e17genmenu_init();
@@ -156,31 +136,6 @@ main(int argc, char **argv)
    begin = ecore_time_get();
    ecore_desktop_init();
    paths = ecore_time_get() - begin;
-
-#ifdef DEBUG
-   /* You can iterate through the various path lists as needed. */
-   ecore_list_goto_first(ecore_desktop_paths_config);
-   while ((this_path = ecore_list_next(ecore_desktop_paths_config)) != NULL)
-      printf("FDO config path = %s\n", this_path);
-   ecore_list_goto_first(ecore_desktop_paths_menus);
-   while ((this_path = ecore_list_next(ecore_desktop_paths_menus)) != NULL)
-      printf("FDO menu path = %s\n", this_path);
-   ecore_list_goto_first(ecore_desktop_paths_directories);
-   while ((this_path = ecore_list_next(ecore_desktop_paths_directories)) != NULL)
-      printf("FDO directory path = %s\n", this_path);
-   ecore_list_goto_first(ecore_desktop_paths_desktops);
-   while ((this_path = ecore_list_next(ecore_desktop_paths_desktops)) != NULL)
-      printf("FDO desktop path = %s\n", this_path);
-   ecore_list_goto_first(ecore_desktop_paths_icons);
-   while ((this_path = ecore_list_next(ecore_desktop_paths_icons)) != NULL)
-      printf("FDO icon path = %s\n", this_path);
-   ecore_list_goto_first(ecore_desktop_paths_kde_legacy);
-   while ((this_path = ecore_list_next(ecore_desktop_paths_kde_legacy)) != NULL)
-      printf("FDO kde legacy path = %s\n", this_path);
-
-   if ((icon_themes = ecore_desktop_icon_theme_list()))
-      ecore_hash_for_each_node(icon_themes, _print_theme, NULL);
-#endif
 
    /* Just being paranoid, and cause people have removed these during testing. */
    snprintf(path, sizeof(path), "%s/.e/e/applications/all", ecore_desktop_home_get());

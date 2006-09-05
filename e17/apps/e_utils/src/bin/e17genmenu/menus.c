@@ -2,7 +2,6 @@
 #include "config.h"
 #include "parse.h"
 #include "menus.h"
-#include "e_fdo_menu_to_order.h"
 
 //#define DEBUG 1
 
@@ -33,17 +32,14 @@ make_menus()
               check_for_dirs(KDE_DIRS);      /* FIXME: probably obsolete. */
               check_for_dirs(DEBIAN_DIRS);   /* FIXME: may or may not be obsolete. */
 
-              ecore_list_goto_first(ecore_desktop_paths_desktops);
-              while ((this_path = ecore_list_next(ecore_desktop_paths_desktops)) != NULL)
-                 check_for_dirs(this_path);
-              ecore_list_goto_first(ecore_desktop_paths_kde_legacy);
-              while ((this_path = ecore_list_next(ecore_desktop_paths_kde_legacy)) != NULL)
-                 check_for_dirs(this_path);
+//              ecore_list_goto_first(ecore_desktop_paths_desktops);
+//              while ((this_path = ecore_list_next(ecore_desktop_paths_desktops)) != NULL)
+//                 check_for_dirs(this_path);
+//              ecore_list_goto_first(ecore_desktop_paths_kde_legacy);
+//              while ((this_path = ecore_list_next(ecore_desktop_paths_kde_legacy)) != NULL)
+//                 check_for_dirs(this_path);
               generate_time = ecore_time_get() - begin;
 	   }
-
-        printf("Converting freedesktop.org (fdo) menus.\n");
-	e_fdo_menu_to_order();
      }
 
    if (d)
