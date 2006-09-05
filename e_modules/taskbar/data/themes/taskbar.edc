@@ -44,7 +44,9 @@ group {
 	 mouse_events:  0;
 	 description {
 	    state:    "default" 0.0;
-            min:      56 16;
+            //min:      56 16;
+            // bigger so we have some room for text
+            min:      80 16;
             image {
                normal: "e17_button_sm_disabled.png";
                border: 8 8 8 8;
@@ -98,7 +100,7 @@ group {
 	 }
       }
 
-
+      // icon display region on button
       part {
 	 name:          "item";
 	 type:          SWALLOW;
@@ -120,6 +122,8 @@ group {
 	       offset:   7   -9;
 	    }
 	    color: 0 0 0 0;
+            // don't let it grow to large
+            max: 16 16;
 	 }
       }
       part {

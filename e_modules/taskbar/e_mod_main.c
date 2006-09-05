@@ -243,7 +243,7 @@ _taskbar_new(Evas *evas, E_Zone *zone)
 
    evas_object_geometry_get(b->o_box, NULL, NULL, &w, &h);
 
-   e_table_homogenous_set(b->o_box, 0);
+   e_table_homogenous_set(b->o_box, 1);
    e_table_align_set(b->o_box, 0.5, 0.5);
    b->zone = zone;
    return b;
@@ -356,10 +356,13 @@ _taskbar_fill(Taskbar *b)
 		   );
 #else
      	     e_table_pack_options_set(ic->o_holder, 1, 1,                     /* fill */
-						    0, 0,                     /* expand */
+						    1, 1,                     /* expand */
 		     				    0.5, 0.5,                 /* align */
-		     				    b->bwmin, b->bhmin,    /* min */
-		     				    b->bwidth, b->bheight     /* max */
+				      //b->bwmin, b->bhmin,    /* min */
+				      0,0,
+				      //b->bwidth, b->bheight     /* max */
+				      -1, -1
+
 		   );
 #endif
 
@@ -417,10 +420,12 @@ _taskbar_repack(Taskbar *b)
 	      );
 #else
 	e_table_pack_options_set(ic->o_holder, 1, 1,                     /* fill */
-					       0, 0,                     /* expand */
+					       1, 1,                     /* expand */
 					       0.5, 0.5,                 /* align */
-					       b->bwmin, b->bhmin,    /* min */
-				               b->bwidth, b->bheight     /* max */
+				 //b->bwmin, b->bhmin,    /* min */
+				 0,0,
+				 //b->bwidth, b->bheight     /* max */
+				 -1,-1
 	      );
 #endif
 	
@@ -472,9 +477,8 @@ _taskbar_resize_handle(Taskbar *b)
    Taskbar_Icon *ic;
    Evas_Coord w, h, wmin, hmin;
    int wnum, wnum2, hnum;
-   int bwmin, bhmin;
 
-   evas_object_geometry_get(b->inst->gcc->o_frame, NULL, NULL, &w, &h);
+   evas_object_geometry_get(b->o_box, NULL, NULL, &w, &h);
    if (!b->icons)
      return;
    ic = b->icons->data;
@@ -484,8 +488,8 @@ _taskbar_resize_handle(Taskbar *b)
    if (wmin < 1)
      wmin = 1;
    // calc possible items across in width
-#if 0
    wnum2 = w / wmin;
+#if 0
    if (wnum < wnum2)
      wnum2 = wnum;
    if (wnum2 < 1)
@@ -503,15 +507,10 @@ _taskbar_resize_handle(Taskbar *b)
 #else
 
    // todo xmax - presently unused
-   if (wnum > 0)
-     bwmin = w/wnum < wmin ? wmin : w/wnum;
-   else
-     bwmin = 0;
-   bhmin = hmin;
-   b->bwidth = w;
+   b->bwidth = wmin * wnum;
    b->bheight = h;
-   b->bwmin = bwmin;
-   b->bhmin = bhmin;
+   b->bwmin = wmin;
+   b->bhmin = hmin;
 #endif
 
    _taskbar_repack(b);
