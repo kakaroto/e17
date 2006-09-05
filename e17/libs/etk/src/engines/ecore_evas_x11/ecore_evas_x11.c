@@ -10,6 +10,8 @@
 #include "Etk_Engine_Ecore_Evas.h"
 #include "Etk_Engine_Ecore_Evas_X11.h"
 
+/* TODO: window prop notify ? */
+
 #define NUM_INPUT_HANDLERS 6
 
 typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
@@ -122,7 +124,7 @@ static Etk_Engine engine_info = {
    NULL, /* window_screen_position_get */
    NULL, /* window_size_get */
    _window_screen_geometry_get,
-   _window_modal_for_window,     
+   _window_modal_for_window,
    NULL, /* window_iconified_set */
    NULL, /* window_iconified_get */
    NULL, /* window_maximized_set */

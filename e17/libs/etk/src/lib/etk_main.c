@@ -92,11 +92,6 @@ int etk_init(int *argc, char ***argv)
       
       /* TODO: reorder ? */
       /* Initialize the subsystems of Etk */
-      if (!etk_engine_init())
-      {
-         ETK_WARNING("Etk_Engine initialization failed!");
-         return 0;
-      }
       if (!etk_config_init())
       {
 	 ETK_WARNING("Etk_Config initialization failed!");
@@ -104,6 +99,11 @@ int etk_init(int *argc, char ***argv)
       }
       etk_config_load();
       etk_theme_init();
+      if (!etk_engine_init())
+      {
+         ETK_WARNING("Etk_Engine initialization failed!");
+         return 0;
+      }
       if (!etk_engine_load(engine_name ? engine_name : "ecore_evas_software_x11"))
       {
          ETK_WARNING("Etk can not load the requested engine!");

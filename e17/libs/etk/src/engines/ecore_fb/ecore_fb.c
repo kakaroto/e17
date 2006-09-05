@@ -1,32 +1,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <limits.h>
 #include <Evas.h>
 #include <Edje.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Fb.h>
-#include <Ecore_File.h>
-
-#include "etk_types.h"
-#include "etk_engine.h"
-#include "etk_signal.h"
-#include "etk_signal_callback.h"
-#include "etk_theme.h"
-#include "etk_utils.h"
+#include <Etk.h>
+#include "Etk_Engine_Ecore_Fb.h"
 #include "config.h"
 
-#include "Etk_Engine_Ecore_Fb.h"
-
-/* TODO: prop notify ? */
-
-/* Engine specific data for Etk_Window
- * We do this to shorten the name for internal use */
 typedef Etk_Engine_Ecore_Fb_Window_Data Etk_Engine_Window_Data;
-
 
 /* General engine functions */
 Etk_Engine *engine_open();
+void engine_close();
 
 static Etk_Bool _engine_init();
 static void _engine_shutdown();
@@ -42,14 +29,34 @@ static void _window_min_size_set(Etk_Window *window, int w, int h);
 static void _window_evas_position_get(Etk_Window *window, int *x, int *y);
 static void _window_screen_position_get(Etk_Window *window, int *x, int *y);
 static void _window_size_get(Etk_Window *window, int *w, int *h);
+static void _window_screen_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
 static void _window_raise(Etk_Window *window);
 static void _window_lower(Etk_Window *window);
 
-/* Handlers and callbacks */
-static int _mouse_move_handler(void *data, int ev_type, void *ev);
 static void _window_realized_cb(Etk_Object *object, void *data);
 static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _window_titlebar_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+
+/* Event and mouse functions */
+static void _event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info));
+static void _mouse_position_get(int *x, int *y);
+static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
+static int _mouse_move_handler_cb(void *data, int ev_type, void *ev);
+
+/* Private vars */
+static Ecore_Evas *_ecore_evas = NULL;
+static Evas *_evas = NULL;
+static Evas_Object *_background_object = NULL;
+static int _fb_width = 0;
+static int _fb_height = 0;
+
+static void (*_event_callback)(Etk_Event_Type event, Etk_Event_Global event_info) = NULL;
+static int _mouse_x = 0;
+static int _mouse_y = 0;
+static Etk_Window *_window_dragged = NULL;
+static int _window_drag_offset_x = 0;
+static int _window_drag_offset_y = 0;
+
 
 static Etk_Engine engine_info = {
    
@@ -75,8 +82,7 @@ static Etk_Engine engine_info = {
    _window_evas_position_get,
    _window_screen_position_get,
    _window_size_get,
-   NULL, /* window_center_on_window */
-   NULL, /* window_move_to_mouse */
+   _window_screen_geometry_get,
    NULL, /* window_modal_for_window */
    NULL, /* window_iconified_set */
    NULL, /* window_iconified_get */
@@ -86,6 +92,8 @@ static Etk_Engine engine_info = {
    NULL, /* window_fullscreen_get */
    _window_raise,
    _window_lower,
+   NULL, /* window_stacking_set */
+   NULL, /* window_stacking_get */
    NULL, /* window_sticky_set */
    NULL, /* window_sticky_get */
    NULL, /* window_focused_set */
@@ -98,15 +106,15 @@ static Etk_Engine engine_info = {
    NULL, /* window_skip_taskbar_hint_get */
    NULL, /* window_skip_pager_hint_set */
    NULL, /* window_skip_pager_hint_get */
-   NULL, /* window_dnd_aware_set */
-   NULL, /* window_dnd_aware_get */
    NULL, /* window_pointer_set */
 
    NULL, /* popup_window_constructor */
-   NULL, /* popup_window_popup_at_xy */
    NULL, /* popup_window_popup */
    NULL, /* popup_window_popdown */
-   NULL, /* popup_window_popped_get */
+   
+   _event_callback_set,
+   _mouse_position_get,
+   _mouse_screen_geometry_get,
    
    NULL, /* drag_constructor */
    NULL, /* drag_begin */
@@ -122,25 +130,13 @@ static Etk_Engine engine_info = {
    NULL, /* _selection_clear */
 };
 
-static Ecore_Evas *_ecore_evas = NULL;
-static Evas *_evas = NULL;
-static Evas_Object *_background_object = NULL;
-static int _fb_width = 0;
-static int _fb_height = 0;
-
-static int _mouse_x = 0;
-static int _mouse_y = 0;
-static Etk_Window *_drag_window = NULL;
-static int _drag_offset_x = 0;
-static int _drag_offset_y = 0;
-
 /**************************
  *
  * General engine functions
  *
  **************************/
 
-/* Opens the engine */
+/* Called when the engine is loaded */
 Etk_Engine *engine_open()
 {
    engine_info.engine_data = NULL;
@@ -148,13 +144,15 @@ Etk_Engine *engine_open()
    return &engine_info;
 }
 
+/* Called when the engine is unloaded */
+void engine_close()
+{
+   free(engine_info.engine_name);
+}
+
 /* Initializes the engine */
 static Etk_Bool _engine_init()
 {
-   Ecore_List *files;
-   char *filename;
-   char device_path[PATH_MAX];
-   
    if (!ecore_fb_init(NULL))
    {
       ETK_WARNING("Ecore_Fb initialization failed!");
@@ -165,7 +163,7 @@ static Etk_Bool _engine_init()
       ETK_WARNING("Ecore_Evas initialization failed!");
       return ETK_FALSE;
    }
-   ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_MOVE, _mouse_move_handler, NULL);
+   ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_MOVE, _mouse_move_handler_cb, NULL);
    ecore_fb_size_get(&_fb_width, &_fb_height);
    
    /* Create the evas where all the windows will be drawn */
@@ -186,6 +184,7 @@ static Etk_Bool _engine_init()
    
    /* Create the background */
    _background_object = etk_theme_object_load(_evas, etk_theme_widget_theme_get(), "wm_background");
+   printf("Background Object: %s %p\n", etk_theme_widget_theme_get(), _background_object);
    evas_object_resize(_background_object, _fb_width, _fb_height);
    evas_object_show(_background_object);
   
@@ -199,7 +198,7 @@ static void _engine_shutdown()
    _ecore_evas = NULL;
    _evas = NULL;
    _background_object = NULL;
-   _drag_window = NULL;
+   _window_dragged = NULL;
    
    ecore_evas_shutdown();
    ecore_fb_shutdown();
@@ -337,6 +336,15 @@ static void _window_size_get(Etk_Window *window, int *w, int *h)
    if (h)   *h = engine_data->size.h;
 }
 
+/* Gets the geometry of the screen containing the window */
+static void _window_screen_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
+{
+   if (x)   *x = 0;
+   if (y)   *y = 0;
+   if (w)   *w = _fb_width;
+   if (h)   *h = _fb_height;
+}
+
 /* Raises the window */
 static void _window_raise(Etk_Window *window)
 {
@@ -355,6 +363,34 @@ static void _window_lower(Etk_Window *window)
    engine_data = window->engine_data;
    if (engine_data->border)
       evas_object_lower(engine_data->border);
+}
+
+/**************************
+ *
+ * Etk_Event's functions
+ *
+ **************************/
+
+/* Sets the function to call when an input event is received */
+static void _event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info))
+{
+   _event_callback = callback;
+}
+
+/* Gets the position of the mouse pointer */
+static void _mouse_position_get(int *x, int *y)
+{
+   if (x)   *x = _mouse_x;
+   if (y)   *y = _mouse_y;
+}
+
+/* Gets the geometry of the screen containing the mouse pointer */
+static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h)
+{
+   if (x)   *x = 0;
+   if (y)   *y = 0;
+   if (w)   *w = _fb_width;
+   if (h)   *h = _fb_height;
 }
 
 /**************************
@@ -398,9 +434,9 @@ static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const c
       return;
    engine_data = window->engine_data;
    
-   _drag_window = window;
-   _drag_offset_x = _mouse_x - engine_data->border_position.x;
-   _drag_offset_y = _mouse_y - engine_data->border_position.y;
+   _window_dragged = window;
+   _window_drag_offset_x = _mouse_x - engine_data->border_position.x;
+   _window_drag_offset_y = _mouse_y - engine_data->border_position.y;
    
    etk_window_raise(window);
 }
@@ -408,11 +444,11 @@ static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const c
 /* Called when the titlebar of the window is released */
 static void _window_titlebar_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   _drag_window = NULL;
+   _window_dragged = NULL;
 }
 
 /* Called when the mouse is moved */
-static int _mouse_move_handler(void *data, int ev_type, void *ev)
+static int _mouse_move_handler_cb(void *data, int ev_type, void *ev)
 {
    Ecore_Fb_Event_Mouse_Move *event = ev;
    
@@ -420,8 +456,8 @@ static int _mouse_move_handler(void *data, int ev_type, void *ev)
    _mouse_y = event->y;
    
    /* Move the window to drag */
-   if (_drag_window)
-      etk_window_move(_drag_window, _mouse_x - _drag_offset_x, _mouse_y - _drag_offset_y);
+   if (_window_dragged)
+      etk_window_move(_window_dragged, _mouse_x - _window_drag_offset_x, _mouse_y - _window_drag_offset_y);
    
    return 1;
 }

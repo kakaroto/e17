@@ -1,5 +1,5 @@
-#ifndef _ETK_ENGINE_ECORE_EVAS_H
-#define _ETK_ENGINE_ECORE_EVAS_H
+#ifndef _ETK_ENGINE_ECORE_EVAS_H_
+#define _ETK_ENGINE_ECORE_EVAS_H_
 
 #include <Ecore_Evas.h>
 
