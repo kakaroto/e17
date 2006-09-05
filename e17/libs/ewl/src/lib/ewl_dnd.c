@@ -156,7 +156,7 @@ ewl_dnd_provides_types_contains(Ewl_Widget *w, char *type)
 
 	types = ecore_hash_get(ewl_dnd_provides_hash, w);
 
-	DRETURN_INT(ewl_dnd_types_encoded_contains(types, type);, DLEVEL_STABLE);
+	DRETURN_INT(ewl_dnd_types_encoded_contains(types, type), DLEVEL_STABLE);
 }
 
 
@@ -220,7 +220,7 @@ ewl_dnd_accepts_types_contains(Ewl_Widget *w, char *type)
 
 	types = ecore_hash_get(ewl_dnd_provides_hash, w);
 
-	DRETURN_INT(ewl_dnd_types_encoded_contains(types, type);, DLEVEL_STABLE);
+	DRETURN_INT(ewl_dnd_types_encoded_contains(types, type), DLEVEL_STABLE);
 }
 
 /**
