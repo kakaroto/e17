@@ -242,7 +242,7 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
                     int sx, int sy, int sw, int sh,
                     int dx, int dy, int dw, int dh,
                     char antialias, char hiq, char blend, char dither_mask,
-                    ImlibColorModifier * cmod, ImlibOp op)
+                    int mat, ImlibColorModifier * cmod, ImlibOp op)
 {
    XImage             *xim = NULL, *mxim = NULL;
    Context            *ct;
@@ -256,7 +256,8 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
    ImlibScaleInfo     *scaleinfo = NULL;
    int                 psx, psy, psw, psh;
    char                shm = 0;
-   ImlibRGBAFunction   rgbaer, masker = NULL;
+   ImlibRGBAFunction   rgbaer;
+   ImlibMaskFunction   masker = NULL;
    ImlibBlendFunction  blender = NULL;
    int                 do_mmx;
 
@@ -450,7 +451,7 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
         if (m)
            masker(pointer, jump,
                   ((DATA8 *) mxim->data) + (y * (mxim->bytes_per_line)),
-                  mxim->bytes_per_line, dw, hh, dx, dy + y);
+                  mxim->bytes_per_line, dw, hh, dx, dy + y, mat);
         h -= LINESIZE;
      }
    /* free up our buffers and poit tables */
@@ -517,7 +518,7 @@ __imlib_RenderImageSkewed(Display * d, ImlibImage * im, Drawable w, Drawable m,
                           int sx, int sy, int sw, int sh, int dx, int dy,
                           int hsx, int hsy, int vsx, int vsy,
                           char antialias, char hiq, char blend,
-                          char dither_mask, ImlibColorModifier * cmod,
+                          char dither_mask, int mat, ImlibColorModifier * cmod,
                           ImlibOp op)
 {
    Context            *ct;
@@ -584,7 +585,7 @@ __imlib_RenderImageSkewed(Display * d, ImlibImage * im, Drawable w, Drawable m,
                                    cmod, op, 0, 0, 0, 0);
 
    __imlib_RenderImage(d, back, w, m, v, cm, depth, 0, 0, dw, dh,
-                       dx1, dy1, dw, dh, 0, hiq, 0, dither_mask, 0, OP_COPY);
+                       dx1, dy1, dw, dh, 0, hiq, 0, dither_mask, mat, 0, OP_COPY);
    __imlib_FreeImage(back);
 }
 

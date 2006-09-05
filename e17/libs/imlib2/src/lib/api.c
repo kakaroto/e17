@@ -103,6 +103,7 @@ struct _imlibcontext {
    Imlib_Progress_Function progress_func;
    char                progress_granularity;
    char                dither_mask;
+   int                 mask_alpha_threshold;
    Imlib_Filter        filter;
    Imlib_Rectangle     cliprect;
    Imlib_TTF_Encoding  encoding;
@@ -194,6 +195,7 @@ imlib_context_new(void)
    context->progress_func = NULL;
    context->progress_granularity = 0;
    context->dither_mask = 0;
+   context->mask_alpha_threshold = 128;
    context->filter = NULL;
    context->cliprect.x = 0;
    context->cliprect.y = 0;
@@ -476,6 +478,34 @@ imlib_context_get_dither_mask(void)
    if (!ctx)
       ctx = imlib_context_new();
    return ctx->dither_mask;
+}
+
+/**
+ * @param mask_alpha_threshold The mask alpha threshold.
+ * 
+ * Selects, if you are rendering to a mask, the alpha threshold above which
+ * mask bits are set. The default mask alpha threshold is 128, meaning that
+ * a mask bit will be set if the pixel alpha is >= 128.
+ */
+void
+imlib_context_set_mask_alpha_threshold(int mask_alpha_threshold)
+{
+   if (!ctx)
+      ctx = imlib_context_new();
+   ctx->mask_alpha_threshold = mask_alpha_threshold;
+}
+
+/** 
+ * @return The current mask mask alpha threshold.
+ *
+ * Returns the current mask alpha threshold.
+ */
+int
+imlib_context_get_mask_alpha_threshold(void)
+{
+   if (!ctx)
+      ctx = imlib_context_new();
+   return ctx->mask_alpha_threshold;
 }
 
 /**
@@ -1759,7 +1789,7 @@ imlib_render_pixmaps_for_whole_image(Pixmap * pixmap_return,
                                  ctx->depth, ctx->colormap, im, pixmap_return,
                                  mask_return, 0, 0, im->w, im->h, im->w,
                                  im->h, 0, ctx->dither, ctx->dither_mask,
-                                 ctx->color_modifier);
+                                 ctx->mask_alpha_threshold, ctx->color_modifier);
 }
 
 /**
@@ -1799,7 +1829,8 @@ imlib_render_pixmaps_for_whole_image_at_size(Pixmap * pixmap_return,
                                  ctx->depth, ctx->colormap, im, pixmap_return,
                                  mask_return, 0, 0, im->w, im->h, width,
                                  height, ctx->anti_alias, ctx->dither,
-                                 ctx->dither_mask, ctx->color_modifier);
+                                 ctx->dither_mask, ctx->mask_alpha_threshold,
+                                 ctx->color_modifier);
 }
 
 /**
@@ -1840,7 +1871,8 @@ imlib_render_image_on_drawable(int x, int y)
    __imlib_RenderImage(ctx->display, im, ctx->drawable, ctx->mask,
                        ctx->visual, ctx->colormap, ctx->depth, 0, 0, im->w,
                        im->h, x, y, im->w, im->h, 0, ctx->dither, ctx->blend,
-                       ctx->dither_mask, ctx->color_modifier, ctx->operation);
+                       ctx->dither_mask, ctx->mask_alpha_threshold,
+                       ctx->color_modifier, ctx->operation);
 }
 
 /**
@@ -1871,7 +1903,8 @@ imlib_render_image_on_drawable_at_size(int x, int y, int width, int height)
                        ctx->visual, ctx->colormap, ctx->depth, 0, 0, im->w,
                        im->h, x, y, width, height, ctx->anti_alias,
                        ctx->dither, ctx->blend, ctx->dither_mask,
-                       ctx->color_modifier, ctx->operation);
+                       ctx->mask_alpha_threshold, ctx->color_modifier,
+                       ctx->operation);
 }
 
 /**
@@ -1910,7 +1943,7 @@ imlib_render_image_part_on_drawable_at_size(int source_x, int source_y,
                        ctx->colormap, ctx->depth, source_x, source_y,
                        source_width, source_height, x, y, width, height,
                        ctx->anti_alias, ctx->dither, ctx->blend, 0,
-                       ctx->color_modifier, ctx->operation);
+                       0, ctx->color_modifier, ctx->operation);
 }
 
 DATA32
@@ -2757,7 +2790,7 @@ imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x, int y)
         __imlib_RenderImage(ctx->display, im, ctx->drawable, 0, ctx->visual,
                             ctx->colormap, ctx->depth, u->x, u->y, u->w, u->h,
                             x + u->x, y + u->y, u->w, u->h, 0, ctx->dither, 0,
-                            0, ctx->color_modifier, OP_COPY);
+                            0, 0, ctx->color_modifier, OP_COPY);
      }
    __imlib_SetMaxXImageCount(ctx->display, 0);
 }
@@ -5001,7 +5034,8 @@ imlib_render_image_on_drawable_skewed(int source_x, int source_y,
                              destination_x, destination_y, h_angle_x,
                              h_angle_y, v_angle_x, v_angle_y, ctx->anti_alias,
                              ctx->dither, ctx->blend, ctx->dither_mask,
-                             ctx->color_modifier, ctx->operation);
+                             ctx->mask_alpha_threshold, ctx->color_modifier,
+                             ctx->operation);
 }
 
 /**
@@ -5041,7 +5075,8 @@ imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
                              source_y, source_width, source_height,
                              destination_x, destination_y, angle_x, angle_y,
                              0, 0, ctx->anti_alias, ctx->dither, ctx->blend,
-                             ctx->dither_mask, ctx->color_modifier,
+                             ctx->dither_mask, ctx->mask_alpha_threshold,
+                             ctx->color_modifier,
                              ctx->operation);
 }
 #endif

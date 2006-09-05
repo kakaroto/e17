@@ -16,7 +16,7 @@ __imlib_CreatePixmapsForImage(Display * d, Drawable w, Visual * v, int depth,
                               Colormap cm, ImlibImage * im, Pixmap * p,
                               Mask * m, int sx, int sy, int sw, int sh, int dw,
                               int dh, char antialias, char hiq,
-                              char dither_mask, ImlibColorModifier * cmod)
+                              char dither_mask, int mat, ImlibColorModifier * cmod)
 {
    ImlibImagePixmap   *ip = NULL;
    Pixmap              pmap = 0;
@@ -54,7 +54,7 @@ __imlib_CreatePixmapsForImage(Display * d, Drawable w, Visual * v, int depth,
         *m = mask;
      }
    __imlib_RenderImage(d, im, pmap, mask, v, cm, depth, sx, sy, sw, sh, 0, 0,
-                       dw, dh, antialias, hiq, 0, dither_mask, cmod, OP_COPY);
+                       dw, dh, antialias, hiq, 0, dither_mask, mat, cmod, OP_COPY);
    ip = __imlib_ProduceImagePixmap();
    ip->visual = v;
    ip->depth = depth;

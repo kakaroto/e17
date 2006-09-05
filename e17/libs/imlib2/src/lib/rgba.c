@@ -2327,6 +2327,7 @@ dest += 2; src += 2; \
 
 /*****************************************************************************/
 /* MACROS for plain RGBA -> A1 conversion */
+#if 0 /* Old fixed-threshold macros - Remove? */
 
 #ifdef WORDS_BIGENDIAN
 # define WRITE1_RGBA_A1(src, dest)                   \
@@ -2340,19 +2341,38 @@ if ((x & 0x7) == 0x7) dest++;                       \
 src++
 #endif
 
+#else
+
+#ifdef WORDS_BIGENDIAN
+# define WRITE1_RGBA_A1(src, dest, threshold) \
+if ((*src >> 24) >= threshold)      \
+  *dest |= (1 << (7 - (x & 0x7)));  \
+if ((x & 0x7) == 0x7) dest++;       \
+src++
+#else
+# define WRITE1_RGBA_A1(src, dest, threshold) \
+if ((*src >> 24) >= threshold)      \
+  *dest |= (1 << (x & 0x7));        \
+if ((x & 0x7) == 0x7) dest++;       \
+src++
+#endif
+
+#endif
+
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> A1 conversion */
+/* FIXME: Mask alpha threshold is not handled (thus the default 128 is used) */
 # define DITHER_RGBA_A1_LUT(num) \
 (_dither_a1[(((x + num) & 0x7) << DM_BS1) | ((y & 0x7) << DM_BS2) | ((src[num] >> 24))])
 #ifdef WORDS_BIGENDIAN
-#define WRITE1_RGBA_A1_DITHER(src, dest)              \
+#define WRITE1_RGBA_A1_DITHER(src, dest, threshold) \
 *dest |= (DITHER_RGBA_A1_LUT(0)) << (7 - (x & 0x7)); \
-if ((x & 0x7) == 0x7) dest++;                         \
+if ((x & 0x7) == 0x7) dest++;                        \
 src++;
 #else
-#define WRITE1_RGBA_A1_DITHER(src, dest)              \
+#define WRITE1_RGBA_A1_DITHER(src, dest, threshold) \
 *dest |= (DITHER_RGBA_A1_LUT(0)) << (0 + (x & 0x7)); \
-if ((x & 0x7) == 0x7) dest++;                         \
+if ((x & 0x7) == 0x7) dest++;                        \
 src++;
 #endif
 
@@ -4696,7 +4716,7 @@ __imlib_RGBA_to_RGB1_dither(DATA32 * src, int src_jump,
 static void
 __imlib_RGBA_to_A1_fast(DATA32 * src, int src_jump,
                         DATA8 * dest, int dow,
-                        int width, int height, int dx, int dy)
+                        int width, int height, int dx, int dy, int threshold)
 {
    int                 x, y, w, h;
    int                 dest_jump = dow - (width >> 3);
@@ -4708,7 +4728,7 @@ __imlib_RGBA_to_A1_fast(DATA32 * src, int src_jump,
      {
         for (x = 0; x < w; x++)
           {
-             WRITE1_RGBA_A1(src, dest);
+             WRITE1_RGBA_A1(src, dest, threshold);
           }
         src += src_jump;
         dest += dest_jump;
@@ -4721,7 +4741,7 @@ __imlib_RGBA_to_A1_fast(DATA32 * src, int src_jump,
 static void
 __imlib_RGBA_to_A1_dither(DATA32 * src, int src_jump,
                           DATA8 * dest, int dow,
-                          int width, int height, int dx, int dy)
+                          int width, int height, int dx, int dy, int threshold)
 {
    int                 x, y, w, h;
    int                 dest_jump = dow - (width >> 3);
@@ -4733,7 +4753,7 @@ __imlib_RGBA_to_A1_dither(DATA32 * src, int src_jump,
      {
         for (x = dx; x < w; x++)
           {
-             WRITE1_RGBA_A1_DITHER(src, dest);
+             WRITE1_RGBA_A1_DITHER(src, dest, threshold);
           }
         src += src_jump;
         dest += dest_jump;
@@ -4958,7 +4978,7 @@ __imlib_GetRGBAFunction(int depth,
    return NULL;
 }
 
-ImlibRGBAFunction
+ImlibMaskFunction
 __imlib_GetMaskFunction(char hiq)
 {
    return hiq ? &__imlib_RGBA_to_A1_dither : &__imlib_RGBA_to_A1_fast;

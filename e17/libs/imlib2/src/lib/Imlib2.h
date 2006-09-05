@@ -116,6 +116,7 @@ extern "C"
    void imlib_context_set_mask(Pixmap mask);
 # endif
    void imlib_context_set_dither_mask(char dither_mask);
+   void imlib_context_set_mask_alpha_threshold(int mask_alpha_threshold);
    void imlib_context_set_anti_alias(char anti_alias);
    void imlib_context_set_dither(char dither);
    void imlib_context_set_blend(char blend);
@@ -146,6 +147,7 @@ extern "C"
 # endif
    char imlib_context_get_dither_mask(void);
    char imlib_context_get_anti_alias(void);
+   int imlib_context_get_mask_alpha_threshold(void);
    char imlib_context_get_dither(void);
    char imlib_context_get_blend(void);
    Imlib_Color_Modifier imlib_context_get_color_modifier(void);

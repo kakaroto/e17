@@ -14,11 +14,13 @@ __hidden void    __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth,
 
 typedef void (*ImlibRGBAFunction)(DATA32*, int, DATA8*,
 				  int, int, int, int, int);
+typedef void (*ImlibMaskFunction)(DATA32*, int, DATA8*,
+				  int, int, int, int, int, int);
 __hidden ImlibRGBAFunction
 __imlib_GetRGBAFunction(int depth, 
 			unsigned long rm, unsigned long gm, unsigned long bm, 
 			char hiq, DATA8 palette_type);
-__hidden ImlibRGBAFunction
+__hidden ImlibMaskFunction
 __imlib_GetMaskFunction(char hiq);
 
 #ifdef DO_MMX_ASM
