@@ -87,11 +87,38 @@ _etk_window_deleted_cb (Etk_Object * object, void *data)
 {
   entropy_gui_component_instance* instance = data;
 	
+  entropy_core_component_event_deregister (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_FILE_PROGRESS));
+
+  entropy_core_component_event_deregister (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT));
+
+  entropy_core_component_event_deregister (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_EXTENDED_STAT));
+
+  entropy_core_component_event_deregister (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_FILE_STAT));
+  entropy_core_component_event_deregister (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_FILE_STAT_AVAILABLE));
+
+  entropy_core_component_event_deregister (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_METADATA_GROUPS));
+
+  /*Deregister this layout*/
+  entropy_core_layout_deregister(instance->core, instance);
+
+
+  /*TODO: Destroy plugin children, and layout*/
+
   /*Decrement window reference counter*/
   _etk_layout_window_count--;
-
-  /*TODO - destroy this layout object, and deregister for events*/
-
+  
   etk_object_destroy(ETK_OBJECT(instance->gui_object));
   
   if (_etk_layout_window_count == 0) {

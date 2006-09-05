@@ -929,6 +929,26 @@ void entropy_core_layout_register(entropy_core* core, entropy_gui_component_inst
 	}
 }
 
+/*Deregister a layout object..*/
+void entropy_core_layout_deregister(entropy_core* core, entropy_gui_component_instance* comp) 
+{
+	Ecore_Hash* hash;
+	
+	/*First, make a new hash of event types for this new layout component, this will be the event hash*/
+	if (comp) {
+		printf("DeRegistered layout: %p\n", comp);
+		hash = ecore_hash_get(core->layout_gui_events, comp);
+		if (hash) {
+			ecore_hash_destroy(hash);
+			ecore_hash_remove(core->layout_gui_events, comp);
+		}
+		//printf("DeRegistered a layout component with the core, layout at: %p.., new hash at %p\n", comp,hash);
+	} else {
+		//printf ("Cannot deregister a null layout container\n");
+	}
+	
+}
+
 /*Register a component to get events created by others in the same layout container*/
 void entropy_core_component_event_register(entropy_gui_component_instance* comp, char* event) {
 	entropy_gui_component_instance* layout;
