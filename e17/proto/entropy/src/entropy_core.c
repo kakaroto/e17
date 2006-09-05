@@ -932,6 +932,8 @@ void entropy_core_layout_register(entropy_core* core, entropy_gui_component_inst
 /*Register a component to get events created by others in the same layout container*/
 void entropy_core_component_event_register(entropy_gui_component_instance* comp, char* event) {
 	entropy_gui_component_instance* layout;
+	entropy_gui_component_instance* iter;
+	int found = 0;
 
 
 	if (!comp->layout_parent) {
@@ -946,8 +948,6 @@ void entropy_core_component_event_register(entropy_gui_component_instance* comp,
 	/*First we have to see if this layout is currently registered with the core..*/
 	Ecore_Hash* event_hash = ecore_hash_get(core_core->layout_gui_events, layout);
 
-	//printf("   * Registering a component...\n");
-
 	if (!event_hash) {
 		printf("Alert! - tried to register events for unreg layout component, %p\n", layout);
 	} else {
@@ -955,20 +955,57 @@ void entropy_core_component_event_register(entropy_gui_component_instance* comp,
 
 		if (!event_list) {
 			//printf("No events of this type(%p) yet registered for this layout, making a new list..\n", event);
-
 			event_list = ecore_list_new();
 			ecore_hash_set(event_hash, event, event_list);
-
+		} else {
+			ecore_list_goto_first(event_list);
+			while ((iter = ecore_list_next(event_list))) {
+				if (iter == comp) {
+					found = 1;
+				}
+			}
 		}
 
-		/*Now add this component to this list*/
-		ecore_list_append(event_list, comp);
+		if (!found) {
+			/*Now add this component to this list*/
+			ecore_list_append(event_list, comp);
+			//printf("Registered interest in '%s' for this gui component\n", event);
+		}
+	}
+}
 
-		
-		
-		//printf("Registered interest in '%s' for this gui component\n", event);
-		
-		
+void entropy_core_component_event_deregister(entropy_gui_component_instance* comp, char* event)
+{
+	entropy_gui_component_instance* layout;
+	entropy_gui_component_instance* iter;
+
+	if (!comp->layout_parent) {
+		/*This must be a layout (or the programmer has messed up,
+		 * use this as the layout*/
+		layout = comp;
+	} else {
+		layout = comp->layout_parent;
+	}
+
+	/*First we have to see if this layout is currently registered with the core..*/
+	Ecore_Hash* event_hash = ecore_hash_get(core_core->layout_gui_events, layout);
+
+	if (!event_hash) {
+		printf("Alert! - tried to de-register events for unreg layout component, %p\n", layout);
+	} else {
+		Ecore_List* event_list = ecore_hash_get(event_hash, event);
+
+		if (event_list) {
+			ecore_list_goto_first(event_list);
+			while ((iter = ecore_list_current(event_list))) {
+				if (iter == comp) {
+					ecore_list_remove(event_list);
+				} else {
+					ecore_list_next(event_list);
+				}
+			}
+		}
+
 	}
 }
 

@@ -38,6 +38,27 @@ struct entropy_etk_iconbox_viewer
 void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, void *data);
 void entropy_etk_icon_viewer_icon_size_set(entropy_etk_iconbox_viewer* viewer, double value ) ;
 
+Entropy_Plugin* entropy_plugin_init (entropy_core * core);
+
+entropy_gui_component_instance * 
+entropy_plugin_gui_instance_new (entropy_core * core, entropy_gui_component_instance * 
+		layout, void *data);
+
+void
+icon_viewer_add_row (entropy_gui_component_instance * instance,
+			  entropy_generic_file * file);
+
+
+int
+entropy_plugin_type_get ();
+int
+entropy_plugin_sub_type_get ();
+char *
+entropy_plugin_identify ();
+char*
+entropy_plugin_toolkit_get() ;
+
+
 
 /*------------- boilerplate -----*/
 typedef struct gui_file gui_file;
@@ -114,26 +135,6 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 /*----- End boilerplate -----*/
 
 
-Entropy_Plugin* entropy_plugin_init (entropy_core * core);
-
-entropy_gui_component_instance * 
-entropy_plugin_gui_instance_new (entropy_core * core, entropy_gui_component_instance * 
-		layout, void *data);
-
-void
-icon_viewer_add_row (entropy_gui_component_instance * instance,
-			  entropy_generic_file * file);
-
-
-int
-entropy_plugin_type_get ();
-int
-entropy_plugin_sub_type_get ();
-char *
-entropy_plugin_identify ();
-char*
-entropy_plugin_toolkit_get() ;
-
 int
 entropy_plugin_type_get ()
 {
@@ -203,6 +204,7 @@ void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, voi
   entropy_generic_file* file;
   Etk_Iconbox_Icon* icon;
   Etk_Event_Mouse_Down *event;
+  Etk_Bool ctrl_pressed;
 
   instance = data;
   viewer = instance->data;
@@ -214,6 +216,7 @@ void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, voi
 
   
   file = etk_iconbox_icon_data_get(icon);
+  ctrl_pressed = (event->modifiers & ETK_MODIFIER_CTRL);
 
   if (event->button == 1) {
 	  if (event->flags & ETK_MOUSE_DOUBLE_CLICK) {
@@ -222,7 +225,7 @@ void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, voi
 		  }
 	  }
   } else if (event->button == 3) {
-	  etk_iconbox_unselect_all(icon->iconbox);
+	  if (ctrl_pressed != ETK_TRUE) etk_iconbox_unselect_all(icon->iconbox);
 	  etk_iconbox_icon_select(icon);
 
 	  entropy_etk_context_menu_popup(instance, file);

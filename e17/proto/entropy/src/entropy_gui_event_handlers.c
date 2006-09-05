@@ -344,7 +344,6 @@ Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_folder_change_ins
 	ev->data = request;
 
 	/*HACK/FIXME - see what happens if we expire events - this should be on request*/
-	printf("************* Calling interceptor..\n");
 	entropy_notify_event_expire_requestor_layout(requestor);
 	
 	res = entropy_plugin_filesystem_filelist_get(request);

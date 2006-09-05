@@ -52,6 +52,8 @@ struct entropy_layout_gui
   Etk_Widget* trackback_shell;
   Ecore_Hash* progress_hash; /*Track progress events->dialogs*/
 
+  Etk_Widget* tree_view_menu;
+
   Ecore_Hash* properties_request_hash; 
 
 };
@@ -429,12 +431,12 @@ _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
    ev = event;
 
    /*FIXME: How do we do modifiers now?*/
-   /*if(evas_key_modifier_is_set(ev->modifiers, "Control"))
+   if ((ev->modifiers & ETK_MODIFIER_CTRL))
    {
 	   if (!strcmp(ev->key, "q")) {
 		   layout_etk_simple_quit(instance->core);
 	   }
-   } else if (evas_key_modifier_is_set(ev->modifiers, "Alt")) {
+   } else if ((ev->modifiers & ETK_MODIFIER_ALT)) {
  	   if (!strcmp(ev->key, "i")) {
 		entropy_layout_etk_simple_local_view_set(instance, gui->iconbox_viewer);
 	   }
@@ -443,8 +445,7 @@ _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
 	   }
 
   
-   }*/
-   
+   }
 }
 
 /*Config related functions*/
@@ -843,11 +844,11 @@ entropy_plugin_layout_create (entropy_core * core)
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
   
-  menu_item = _entropy_etk_menu_check_item_new(_("Tree View"), ETK_MENU_SHELL(menu));
+  gui->tree_view_menu = _entropy_etk_menu_check_item_new(_("Tree View"), ETK_MENU_SHELL(menu));
   if (entropy_config_misc_is_set("general.treeviewer")) {
-	etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item),ETK_TRUE );
+	etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(gui->tree_view_menu),ETK_TRUE );
   }
-  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_layout_tree_cb), layout);
+  etk_signal_connect("activated", ETK_OBJECT(gui->tree_view_menu), ETK_CALLBACK(entropy_etk_layout_tree_cb), layout);
 
   menu_item = _entropy_etk_menu_check_item_new(_("Trackback view"), ETK_MENU_SHELL(menu));
   if (entropy_config_misc_is_set("general.trackback")) {
