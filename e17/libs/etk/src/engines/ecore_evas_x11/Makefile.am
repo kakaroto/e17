@@ -12,6 +12,7 @@ if BUILD_ENGINE_EE_S_X11
 
 pkg_LTLIBRARIES = ecore_evas_x11.la
 
+include_HEADERS = Etk_Engine_Ecore_Evas_X11.h
 ecore_evas_x11_la_SOURCES = \
 	ecore_evas_x11.c
 

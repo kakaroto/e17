@@ -4,6 +4,7 @@ EXTRA_DIST = address-book-new.png \
 appointment-new.png \
 bookmark-new.png \
 contact-new.png \
+dialog-apply.png \
 dialog-cancel.png \
 dialog-ok.png \
 dialog-close.png \

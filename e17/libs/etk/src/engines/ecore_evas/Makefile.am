@@ -10,6 +10,7 @@ pkgdir = $(libdir)/etk/engines
 
 pkg_LTLIBRARIES = ecore_evas.la
 
+include_HEADERS = Etk_Engine_Ecore_Evas.h
 ecore_evas_la_SOURCES = \
 	ecore_evas.c
 

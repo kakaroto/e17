@@ -12,6 +12,7 @@ if BUILD_ENGINE_E_FB
 
 pkg_LTLIBRARIES = ecore_fb.la
 
+include_HEADERS = Etk_Engine_Ecore_Fb.h
 ecore_fb_la_SOURCES = \
 	ecore_fb.c
 
