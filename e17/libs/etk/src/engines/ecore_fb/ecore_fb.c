@@ -184,7 +184,6 @@ static Etk_Bool _engine_init()
    
    /* Create the background */
    _background_object = etk_theme_object_load(_evas, etk_theme_widget_theme_get(), "wm_background");
-   printf("Background Object: %s %p\n", etk_theme_widget_theme_get(), _background_object);
    evas_object_resize(_background_object, _fb_width, _fb_height);
    evas_object_show(_background_object);
   
