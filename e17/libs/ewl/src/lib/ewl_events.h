@@ -207,6 +207,20 @@ struct Ewl_Event_Dnd_Drop
 typedef struct Ewl_Event_Dnd_Drop Ewl_Event_Dnd_Drop;
 
 /**
+ * Provides information about dnd drop data
+ */
+struct Ewl_Event_Dnd_Data
+{
+	void* data; /**< Data from drop source */
+        unsigned int len; /**< Length of received data */
+};
+
+/**
+ * The Ewl_Event_Dnd_Data type
+ */
+typedef struct Ewl_Event_Dnd_Data Ewl_Event_Dnd_Data;
+
+/**
  * The Ewl_Dialog_Evenet type
  */
 typedef struct Ewl_Dialog_Event Ewl_Dialog_Event;

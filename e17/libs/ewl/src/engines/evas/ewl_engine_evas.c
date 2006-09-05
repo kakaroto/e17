@@ -311,5 +311,5 @@ ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
 		}
 	}
 
-	DRETURN_PTR(ol, DLEVEL_STABLE)
+	DRETURN_PTR(ol, DLEVEL_STABLE);
 }

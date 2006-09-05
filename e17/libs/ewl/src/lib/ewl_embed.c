@@ -901,6 +901,39 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
 }
 
 /**
+ * @param embed: the embed where the selection data event is to occur
+ * @param data: a pointer to the data received that generated the event
+ * @param len: length of the data that generated the event
+ * @return Returns no value.
+ * @brief Sends the event for selection data received into an embed.
+ */
+void
+ewl_embed_selection_data_feed(Ewl_Embed *embed, void *data, unsigned int len)
+{
+	Ewl_Event_Dnd_Data ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	/* 
+	 * setup the event struct 
+	 */
+	ev.data = data;
+	ev.len = len;
+
+	/*
+	 * If a widget is expecting DND data, send the data to the widget
+	 */
+	if (embed->dnd_widget) {
+		ewl_callback_call_with_event_data(embed->dnd_widget, EWL_CALLBACK_DND_DATA, &ev);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param path: the font path to add to the embeds
  * @return Returns no value.
  * @brief Add a font path to all embeds after realized

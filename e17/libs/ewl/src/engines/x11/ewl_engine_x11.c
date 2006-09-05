@@ -1059,7 +1059,6 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 			} 
 			else 
 			{
-				Ecore_X_Selection_Data *data = ev->data;
 				printf("\nUnknown DND selection received, type: %d target: %s\n", data->content, ev->target);
 				printf("\tData length: %d\n", data->length);
 			}

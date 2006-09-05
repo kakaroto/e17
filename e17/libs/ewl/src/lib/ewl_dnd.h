@@ -7,6 +7,12 @@
  * @{
  */
 
+extern int EWL_CALLBACK_DND_POSITION;
+extern int EWL_CALLBACK_DND_ENTER;
+extern int EWL_CALLBACK_DND_LEAVE;
+extern int EWL_CALLBACK_DND_DROP;
+extern int EWL_CALLBACK_DND_DATA;
+
 int 		 ewl_dnd_init(void);
 void		 ewl_dnd_shutdown(void);
 

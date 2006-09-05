@@ -7,6 +7,12 @@
 
 #define EWL_DND_WINDOW_ROOT 0
 
+int EWL_CALLBACK_DND_POSITION = 0; /**< A DND position event **/
+int EWL_CALLBACK_DND_ENTER = 0; /**< On enter of a widget **/
+int EWL_CALLBACK_DND_LEAVE = 0; /**< On exit of a widget **/
+int EWL_CALLBACK_DND_DROP = 0; /**< Drop event **/
+int EWL_CALLBACK_DND_DATA = 0; /**< Data event **/
+
 static int ewl_dragging_current = 0;
 static int ewl_dnd_move_count = 0;
 static Ecore_Evas *ewl_dnd_drag_canvas;
@@ -38,6 +44,12 @@ int
 ewl_dnd_init(void) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	EWL_CALLBACK_DND_POSITION = ewl_callback_type_add();
+	EWL_CALLBACK_DND_ENTER = ewl_callback_type_add();
+	EWL_CALLBACK_DND_LEAVE = ewl_callback_type_add();
+	EWL_CALLBACK_DND_DROP = ewl_callback_type_add();
+	EWL_CALLBACK_DND_DATA = ewl_callback_type_add();
 
 	ewl_dnd_position_hash = ecore_hash_new(ecore_direct_hash, 
 						ecore_direct_compare);
