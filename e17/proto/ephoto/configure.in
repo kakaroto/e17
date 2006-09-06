@@ -113,8 +113,6 @@ AC_OUTPUT([
 Makefile 
 ephoto.spec
 src/Makefile
-data/Makefile
-data/images/Makefile
 debian/changelog
 ])
 

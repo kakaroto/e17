@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = src data
+SUBDIRS = src
 
 EXTRA_DIST = \
 	README AUTHORS COPYING ephoto.spec \
