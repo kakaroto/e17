@@ -98,7 +98,8 @@ ewl_text_init(Ewl_Text *t)
 	ewl_widget_appearance_set(EWL_WIDGET(t), EWL_TEXT_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(t), EWL_TEXT_TYPE);
 
-	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HFILL 
+							| EWL_FLAG_FILL_VFILL);
 
 	/* create the formatting tree before we do any formatting */
 	t->formatting.tree = ewl_text_tree_new();
@@ -1347,6 +1348,14 @@ ewl_text_wrap_set(Ewl_Text *t, Ewl_Text_Wrap wrap)
 	change = ewl_text_context_new();
 	change->wrap = wrap;
 
+	if (wrap == EWL_TEXT_WRAP_NONE)
+		ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HFILL 
+								| EWL_FLAG_FILL_VFILL);
+	else
+		ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HSHRINK 
+								| EWL_FLAG_FILL_HFILL
+								| EWL_FLAG_FILL_VFILL);
+
 	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_WRAP, change);
 	ewl_text_context_release(change);
 
@@ -2219,7 +2228,7 @@ ewl_text_display(Ewl_Text *t)
 	evas_textblock_cursor_text_append(cursor, "");
 
 	ewl_text_tree_walk(t);
-	evas_object_textblock_size_native_get(t->textblock, &w, &h);
+	evas_object_textblock_size_formatted_get(t->textblock, &w, &h);
 
 	/* Fallback, just in case we hit a corner case */
 	if (!h) h = 1;
@@ -2575,9 +2584,9 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	if (t->textblock)
 	{
 		evas_object_move(t->textblock, xx + t->offset.x,
-				 yy + t->offset.y);
+						 yy + t->offset.y);
 		evas_object_resize(t->textblock, ww - t->offset.x,
-				hh - t->offset.y);
+						hh - t->offset.y);
 
 		if (t->dirty)
 			ewl_text_display(t);
