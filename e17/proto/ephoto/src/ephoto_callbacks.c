@@ -190,11 +190,8 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  {
   image = ecore_list_remove_first(images);
   
-  m->icon = ewl_icon_new();
-  ewl_box_orientation_set(EWL_BOX(m->icon), EWL_ORIENTATION_VERTICAL);
-  ewl_icon_image_set(EWL_ICON(m->icon), image, NULL);
-  //ewl_icon_label_set(EWL_ICON(m->icon), image);
-  ewl_icon_constrain_set(EWL_ICON(m->icon), 64);
+  m->icon = ewl_image_thumbnail_new();
+  ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(m->icon), image);
   ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), m->icon);
   ewl_widget_show(m->icon);
  }

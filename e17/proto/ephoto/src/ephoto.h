@@ -35,7 +35,10 @@ struct _Main
  Ewl_Widget *viewer;
  Ewl_Widget *viewer_border;
  Ewl_Widget *viewer_freebox;
+ Ewl_Widget *image;
  Ewl_Widget *icon;
+ Ewl_Widget *text;
+ Ewl_Widget *entry;
 };
 
 extern Main *m;
