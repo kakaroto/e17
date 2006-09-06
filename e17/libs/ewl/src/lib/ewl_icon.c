@@ -53,7 +53,6 @@ ewl_icon_init(Ewl_Icon *icon)
 	if (!ewl_box_init(EWL_BOX(icon)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_NONE);
 	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_VERTICAL);
 	ewl_box_spacing_set(EWL_BOX(icon), 4);
 
@@ -141,7 +140,7 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 
 	icon->preview = ewl_image_thumbnail_get(EWL_IMAGE(img));
 	ewl_image_proportional_set(EWL_IMAGE(icon->preview), TRUE);
-	ewl_image_constrain_set(EWL_IMAGE(icon->preview), constrain);
+	ewl_icon_constrain_set(icon, constrain);
 	ewl_image_file_set(EWL_IMAGE(icon->preview), 
 					ewl_icon_theme_icon_path_get(
 						EWL_ICON_IMAGE_LOADING, NULL),
