@@ -268,7 +268,7 @@ int     i;
 static void deplane(DATA32 *row, int w, ILBM *ilbm, unsigned char *plane[])
 {
 unsigned long l;
-int     i, o, sl, x;
+int     i, o, x;
 unsigned char bit, r, g, b, a, v, h, *pal;
 
     pal = NULL;
@@ -395,7 +395,7 @@ unsigned char bit, r, g, b, a, v, h, *pal;
 char    load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, char immediate_load)
 {
 char    *env;
-int     cancel, full, i, j, k, n, ok, y, z, gran, nexty, prevy;
+int     cancel, full, i, n, ok, y, z, gran, nexty, prevy;
 unsigned char *plane[40];
 ILBM    ilbm;
 

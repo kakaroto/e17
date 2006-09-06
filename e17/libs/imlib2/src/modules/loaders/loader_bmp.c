@@ -126,7 +126,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    char                type[2];
    unsigned long       size, offset, headSize, comp, imgsize, j, k, l;
    unsigned short      tmpShort, planes, bitcount, ncols, skip;
-   unsigned char       tempchar, byte = 0, g, b, r;
+   unsigned char       byte = 0, g, b, r;
    unsigned long       i, w, h;
    unsigned short      x, y;
    DATA32             *ptr, *data_end;
@@ -806,7 +806,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
 {
    FILE               *f;
    Imlib_Color         pixel_color;
-   unsigned long       i, j, pad, size;
+   unsigned long       i, j, pad;
 
    if (!im->data)
       return 0;

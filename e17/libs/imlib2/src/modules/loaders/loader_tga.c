@@ -321,8 +321,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         unsigned char      *bufptr;
         DATA32             *dataptr;
 
-        int                 y, pl = 0;
-        char                pper = 0;
+        int                 y;
 
         /* allocate the destination buffer */
         im->data = malloc(im->w * im->h * sizeof(DATA32));
@@ -409,9 +408,6 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 	       }
 	     if (progress)
 	       {
-		  char                per;
-		  int                 l;
-		  
 		  progress(im, 100, 0, 0, im->w, im->h);
 	       } /* end for (each row) */
           }
@@ -519,9 +515,6 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              if (vinverted) tgaflip(im->data, im->w, im->h);
 	     if (progress)
 	       {
-		  char                per;
-		  int                 l;
-		  
 		  progress(im, 100, 0, 0, im->w, im->h);
 	       } /* end for (each row) */
           }
