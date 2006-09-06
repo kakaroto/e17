@@ -1000,6 +1000,7 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
                        action = buffer;
                     }
                }
+/* FIXME: I ws just about to go to bed when I noticed this was broken.  I'll fix it later.
              else if ((item->easy_menu->category) && (strncmp(item->easy_menu->category, "fileman/action", 14) == 0))
                {
                   E_Fm_Icon *icon;
@@ -1012,6 +1013,7 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
 
                   sd = item->easy_menu->category_data;
                }
+*/
           }
         if ((action) && (action[0] != '\0'))
           {
