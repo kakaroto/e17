@@ -322,6 +322,13 @@ DialogSetExitFunction(Dialog * d, DialogCallbackFunc * func, int val)
 }
 
 void
+DialogCallExitFunction(Dialog * d)
+{
+   if (d->exit_func)
+      d->exit_func(d, d->exit_val, NULL);
+}
+
+void
 DialogSetData(Dialog * d, void *data)
 {
    d->data = data;
@@ -630,8 +637,7 @@ _DialogClose(Dialog * d)
    if (!d)
       return;
 
-   if (d->exit_func)
-      d->exit_func(d, d->exit_val, NULL);
+   DialogCallExitFunction(d);
 
    EwinHide(d->ewin);
 }

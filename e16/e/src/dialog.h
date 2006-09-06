@@ -80,6 +80,7 @@ void                DialogSetText(Dialog * d, const char *text);
 void                DialogSetTitle(Dialog * d, const char *title);
 void                DialogSetExitFunction(Dialog * d, DialogCallbackFunc * func,
 					  int val);
+void                DialogCallExitFunction(Dialog * d);
 void                DialogSetData(Dialog * d, void *data);
 void               *DialogGetData(Dialog * d);
 

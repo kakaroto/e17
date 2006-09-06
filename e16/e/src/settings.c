@@ -656,6 +656,8 @@ CB_DlgSelect(Dialog * d, int val, void *data)
    if (!dd->fill)
       return;
 
+   DialogCallExitFunction(d);
+
    DialogItemTableEmpty(table);
    DialogKeybindingsDestroy(d);
 
