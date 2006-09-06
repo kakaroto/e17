@@ -298,7 +298,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
 }
 
 /* keep a global copy of this, so it only has to be created once */
-void
+EAPI void
 esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
 {
   Esmart_Trans_X11 *data;
@@ -357,7 +357,7 @@ esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
 
 /*** external API ***/
 
-Evas_Object *
+EAPI Evas_Object *
 esmart_trans_x11_new(Evas *e)
 {
   Evas_Object *x11_trans_object;
@@ -390,7 +390,7 @@ esmart_trans_x11_new(Evas *e)
   return x11_trans_object;
 }
 
-void
+EAPI void
 esmart_trans_x11_type_set(Evas_Object *o, Esmart_Trans_X11_Type type)
 {
    Esmart_Trans_Object *eto;
@@ -399,7 +399,7 @@ esmart_trans_x11_type_set(Evas_Object *o, Esmart_Trans_X11_Type type)
       eto->type = type;
 }
 
-Esmart_Trans_X11_Type
+EAPI Esmart_Trans_X11_Type
 esmart_trans_x11_type_get(Evas_Object *o)
 {
    Esmart_Trans_Object *eto;
@@ -410,7 +410,7 @@ esmart_trans_x11_type_get(Evas_Object *o)
       return Esmart_Trans_X11_Type_Background;
 }
 
-void
+EAPI void
 esmart_trans_x11_window_set(Evas_Object *o, Ecore_X_Window win)
 {
    Esmart_Trans_Object *eto;

@@ -110,7 +110,7 @@ static void _esmart_file_dialog_object_clip_unset (Evas_Object * o);
 /*=========================================================================*
  * Public Functions
  *=========================================================================*/
-Evas_Object *
+EAPI Evas_Object *
 esmart_file_dialog_new (Evas * e, const char *edje_file)
 {
   const char *part = NULL;
@@ -252,7 +252,7 @@ esmart_file_dialog_new (Evas * e, const char *edje_file)
   return (result);
 }
 
-Evas_Object *
+EAPI Evas_Object *
 esmart_file_dialog_edje_get (Evas_Object * efd)
 {
   Esmart_File_Dialog *fddata;
@@ -265,7 +265,7 @@ esmart_file_dialog_edje_get (Evas_Object * efd)
   return (result);
 }
 
-void
+EAPI void
 esmart_file_dialog_callback_add (Evas_Object * efd,
 				 void (*func) (void *data, Evas_Object * edje,
 					       Esmart_File_Dialog_Op type), void *data)
@@ -278,7 +278,7 @@ esmart_file_dialog_callback_add (Evas_Object * efd,
       fddata->fdata = data;
     }
 }
-Evas_List *
+EAPI Evas_List *
 esmart_file_dialog_selections_get (Evas_Object * efd)
 {
   Esmart_File_Dialog *fddata;
@@ -290,7 +290,7 @@ esmart_file_dialog_selections_get (Evas_Object * efd)
     }
   return (result);
 }
-const char *
+EAPI const char *
 esmart_file_dialog_current_directory_get (Evas_Object * efd)
 {
   Esmart_File_Dialog *fddata;

@@ -102,7 +102,7 @@ _mouse_move_cb (void *data, Evas * evas, Evas_Object * obj, void *ev)
 /*==========================================================================
  * The two external functions, new and button set
  *========================================================================*/
-Evas_Object *
+EAPI Evas_Object *
 esmart_draggies_new (Ecore_Evas * ee)
 {
   Evas_Object *o = NULL;
@@ -133,7 +133,7 @@ esmart_draggies_new (Ecore_Evas * ee)
   return (result);
 }
 
-void
+EAPI void
 esmart_draggies_button_set (Evas_Object * o, int button)
 {
   Esmart_Draggies *data = NULL;
@@ -143,7 +143,7 @@ esmart_draggies_button_set (Evas_Object * o, int button)
     }
 }
 
-void
+EAPI void
 esmart_draggies_event_callback_add (Evas_Object * o, Evas_Callback_Type type,
 				    void (*func) (void *data, Evas * e,
 						  Evas_Object * obj,

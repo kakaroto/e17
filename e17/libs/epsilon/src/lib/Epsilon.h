@@ -1,6 +1,27 @@
 #ifndef EPSILON_H
 #define EPSILON_H
 
+#ifdef EAPI
+#undef EAPI
+#endif
+#ifdef WIN32
+# ifdef BUILDING_DLL
+#  define EAPI __declspec(dllexport)
+# else
+#  define EAPI __declspec(dllimport)
+# endif
+#else
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
+# else
+#  define EAPI
+# endif
+#endif
+
 #define EPSILON_FAIL 0
 #define EPSILON_OK 1
 
@@ -38,50 +59,50 @@ enum _Epsilon_Thumb_Size
 
 typedef enum _Epsilon_Thumb_Size Epsilon_Thumb_Size;
 
-void epsilon_init (void);
+EAPI void epsilon_init (void);
 
 /* construct destruct */
-void epsilon_free (Epsilon * e);
-Epsilon *epsilon_new (const char *file);
+EAPI void epsilon_free (Epsilon * e);
+EAPI Epsilon *epsilon_new (const char *file);
 
 /* Set the part name as key (Edje for now)*/
-void epsilon_key_set (Epsilon * e, const char *key);
+EAPI void epsilon_key_set (Epsilon * e, const char *key);
 /* Set the resolution*/
-void epsilon_resolution_set (Epsilon * e, int w, int h);
+EAPI void epsilon_resolution_set (Epsilon * e, int w, int h);
 
 /*
  * the source filename
  */
-const char *epsilon_file_get (Epsilon * e);
+EAPI const char *epsilon_file_get (Epsilon * e);
 /*
  * the thumbnail filename
  */
-const char *epsilon_thumb_file_get (Epsilon * e);
+EAPI const char *epsilon_thumb_file_get (Epsilon * e);
 /* 
  * returns EPSILON_FAIL if no thumbnail exists, EPSILON_OK if it does
  */
-int epsilon_exists (Epsilon * e);
+EAPI int epsilon_exists (Epsilon * e);
 /* 
  * returns EPSILON_FAIL if no errors, EPSILON_OK if write goes ok
  */
-int epsilon_generate (Epsilon * e);
+EAPI int epsilon_generate (Epsilon * e);
 /*
  * set output thumb size
  */
-void epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size);
+EAPI void epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size);
 
 /*
  * get the meta information associated with the epsilon
  */
-Epsilon_Info *epsilon_info_get (Epsilon * e);
-void epsilon_info_free (Epsilon_Info * ei);
+EAPI Epsilon_Info *epsilon_info_get (Epsilon * e);
+EAPI void epsilon_info_free (Epsilon_Info * ei);
 
-int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, unsigned short lvl,
-					long prop);
-const char *epsilon_info_exif_props_as_string_get (Epsilon_Info * ei,
-						unsigned short lvl,
-						long prop);
-void epsilon_info_exif_props_print (Epsilon_Info * ei);
-int epsilon_info_exif_get (Epsilon_Info * ei);
+EAPI int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, unsigned short lvl,
+					     long prop);
+EAPI const char *epsilon_info_exif_props_as_string_get (Epsilon_Info * ei,
+							unsigned short lvl,
+							long prop);
+EAPI void epsilon_info_exif_props_print (Epsilon_Info * ei);
+EAPI int epsilon_info_exif_get (Epsilon_Info * ei);
 
 #endif

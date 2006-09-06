@@ -36,7 +36,7 @@ static void _e_thumb_stack_above (Evas_Object * o, Evas_Object * above);
 static void _e_thumb_stack_below (Evas_Object * o, Evas_Object * below);
 static void _e_thumb_color_set (Evas_Object * o, int r, int g, int b, int a);
 
-Evas_Object *
+EAPI Evas_Object *
 esmart_thumb_new (Evas * evas, const char *file)
 {
   char buf[PATH_MAX];
@@ -146,13 +146,13 @@ esmart_thumb_new (Evas * evas, const char *file)
   return (result);
 }
 
-void
+EAPI void
 esmart_thumb_free (Evas_Object * o)
 {
   if (o)
     evas_object_del (o);
 }
-const char *
+EAPI const char *
 esmart_thumb_file_get (Evas_Object * o)
 {
   if (o)
@@ -165,7 +165,7 @@ esmart_thumb_file_get (Evas_Object * o)
   return (NULL);
 }
 
-void
+EAPI void
 esmart_thumb_geometry_get (Evas_Object * o, int *w, int *h)
 {
   if (o)
@@ -182,7 +182,7 @@ esmart_thumb_geometry_get (Evas_Object * o, int *w, int *h)
 	}
     }
 }
-Evas_Object *
+EAPI Evas_Object *
 esmart_thumb_evas_object_get (Evas_Object * o, int orient)
 {
   Evas_Object *result = NULL;
@@ -262,7 +262,7 @@ esmart_thumb_evas_object_get (Evas_Object * o, int orient)
   return (result);
 }
 
-const char *
+EAPI const char *
 esmart_thumb_format_get (Evas_Object * o)
 {
   char *result = NULL;
@@ -281,7 +281,7 @@ esmart_thumb_format_get (Evas_Object * o)
   return (result);
 }
 
-int
+EAPI int
 esmart_thumb_freshen (Evas_Object * o)
 {
   int result = EPSILON_FAIL;
@@ -324,7 +324,7 @@ esmart_thumb_freshen (Evas_Object * o)
   return (result);
 }
 
-Evas_Object *
+EAPI Evas_Object *
 esmart_thumb_evas_object_image_get (Evas_Object * o)
 {
   Evas_Object *result = NULL;
@@ -340,7 +340,7 @@ esmart_thumb_evas_object_image_get (Evas_Object * o)
 }
 
 /*========================================================================*/
-int
+EAPI int
 esmart_thumb_exif_get (Evas_Object * o)
 {
   int result = 0;
@@ -361,7 +361,7 @@ esmart_thumb_exif_get (Evas_Object * o)
     }
   return (result);
 }
-const char *
+EAPI const char *
 esmart_thumb_exif_data_as_string_get (Evas_Object * o, int lvl, int prop)
 {
   const char *result = NULL;
@@ -386,7 +386,7 @@ esmart_thumb_exif_data_as_string_get (Evas_Object * o, int lvl, int prop)
   return (result);
 }
 
-int
+EAPI int
 esmart_thumb_exif_data_as_int_get (Evas_Object * o, int lvl, int prop)
 {
   int result = -1;

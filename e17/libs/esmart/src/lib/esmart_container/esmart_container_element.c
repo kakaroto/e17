@@ -3,7 +3,8 @@
 
 /*** element API ***/
 
-void esmart_container_element_append(Evas_Object *container, Evas_Object *element)
+EAPI void
+esmart_container_element_append(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
   Container_Element *el = NULL;
@@ -20,7 +21,8 @@ void esmart_container_element_append(Evas_Object *container, Evas_Object *elemen
   _container_elements_fix(cont);
 }
 
-void esmart_container_element_prepend(Evas_Object *container, Evas_Object *element)
+EAPI void
+esmart_container_element_prepend(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
   Container_Element *el;
@@ -37,7 +39,8 @@ void esmart_container_element_prepend(Evas_Object *container, Evas_Object *eleme
   _container_elements_fix(cont);
 }
 
-void esmart_container_element_append_relative(Evas_Object *container,
+EAPI void
+esmart_container_element_append_relative(Evas_Object *container,
                                          Evas_Object *element,
                                          Evas_Object *relative)
 {
@@ -59,7 +62,8 @@ void esmart_container_element_append_relative(Evas_Object *container,
   _container_elements_fix(cont);
 }
 
-void esmart_container_element_prepend_relative(Evas_Object *container,
+EAPI void
+esmart_container_element_prepend_relative(Evas_Object *container,
                                           Evas_Object *element,
                                           Evas_Object *relative)
 {
@@ -81,7 +85,8 @@ void esmart_container_element_prepend_relative(Evas_Object *container,
   _container_elements_fix(cont);
 }
 
-void esmart_container_element_remove(Evas_Object *container, Evas_Object *element)
+EAPI void
+esmart_container_element_remove(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
   Container_Element *el;
@@ -101,8 +106,8 @@ void esmart_container_element_remove(Evas_Object *container, Evas_Object *elemen
   _container_scale_scroll(cont, old_length);
 }
 
-void esmart_container_element_destroy(Evas_Object *container, Evas_Object 
-*element)
+EAPI void
+esmart_container_element_destroy(Evas_Object *container, Evas_Object *element)
 {
   Container *cont;
   Container_Element *el;
@@ -124,7 +129,8 @@ void esmart_container_element_destroy(Evas_Object *container, Evas_Object
   _container_scale_scroll(cont, old_length);
 }
 
-void esmart_container_empty (Evas_Object *container)
+EAPI void
+esmart_container_empty(Evas_Object *container)
 {
   Container *cont;
 

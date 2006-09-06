@@ -58,7 +58,7 @@ static int _epsilon_png_write (const char *file, DATA32 * ptr,
 			       int mtime, char *uri);
 #endif
 
-Epsilon *
+EAPI Epsilon *
 epsilon_new (const char *file)
 {
   Epsilon *result = NULL;
@@ -81,7 +81,7 @@ epsilon_new (const char *file)
   return (result);
 }
 
-void
+EAPI void
 epsilon_free (Epsilon * e)
 {
   if (e)
@@ -116,7 +116,7 @@ epsilon_plugin_load(char* path)
 }
 
 
-void
+EAPI void
 epsilon_init (void)
 {
   int i = 0;
@@ -166,7 +166,7 @@ epsilon_init (void)
   closedir(dir);
 }
 
-void
+EAPI void
 epsilon_key_set (Epsilon * e, const char *key)
 {
   if (e)
@@ -180,7 +180,7 @@ epsilon_key_set (Epsilon * e, const char *key)
     }
 }
 
-void
+EAPI void
 epsilon_resolution_set (Epsilon * e, int w, int h)
 {
   if (e && w > 0 && h > 0)
@@ -190,7 +190,7 @@ epsilon_resolution_set (Epsilon * e, int w, int h)
     }
 }
 
-const char *
+EAPI const char *
 epsilon_file_get (Epsilon * e)
 {
   char *result = NULL;
@@ -198,7 +198,8 @@ epsilon_file_get (Epsilon * e)
     result = e->src;
   return (result);
 }
-const char *
+
+EAPI const char *
 epsilon_thumb_file_get (Epsilon * e)
 {
   int i = 0;
@@ -237,6 +238,7 @@ epsilon_thumb_file_get (Epsilon * e)
     }
   return (e->thumb);
 }
+
 static char *
 epsilon_hash (const char *file)
 {
@@ -264,6 +266,7 @@ epsilon_hash (const char *file)
   md5out[2 * n] = '\0';
   return (strdup (md5out));
 }
+
 static Epsilon_Info *
 epsilon_info_new (void)
 {
@@ -273,7 +276,7 @@ epsilon_info_new (void)
   return (result);
 }
 
-void
+EAPI void
 epsilon_info_free (Epsilon_Info * info)
 {
   if (info)
@@ -287,7 +290,8 @@ epsilon_info_free (Epsilon_Info * info)
       free (info);
     }
 }
-Epsilon_Info *
+
+EAPI Epsilon_Info *
 epsilon_info_get (Epsilon * e)
 {
   FILE *fp = NULL;
@@ -388,7 +392,7 @@ epsilon_info_get (Epsilon * e)
   return (p);
 }
 
-int
+EAPI int
 epsilon_info_exif_get (Epsilon_Info * info)
 {
   if (info)
@@ -412,7 +416,7 @@ char* epsilon_mime_for_extension_get(char* extension)
 	else return NULL;
 }
 
-int
+EAPI int
 epsilon_exists (Epsilon * e)
 {
   int ok = 0, i = 0;
@@ -507,7 +511,7 @@ epsilon_exists (Epsilon * e)
 
 }
 
-int
+EAPI int
 epsilon_generate (Epsilon * e)
 {
   int len = 0;
@@ -693,7 +697,7 @@ epsilon_generate (Epsilon * e)
   return (EPSILON_FAIL);
 }
 
-void
+EAPI void
 epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size)
 {
    if (!e) return;

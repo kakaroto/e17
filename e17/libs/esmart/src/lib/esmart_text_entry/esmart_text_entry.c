@@ -38,7 +38,7 @@ typedef struct _Esmart_Text_Entry Esmart_Text_Entry;
 static Evas_Smart *esmart_text_entry_smart_get (void);
 static void esmart_text_entry_text_fix (Evas_Object * o);
 
-Evas_Object *
+EAPI Evas_Object *
 esmart_text_entry_new (Evas * e)
 {
   Evas_Object *o = NULL;
@@ -47,7 +47,7 @@ esmart_text_entry_new (Evas * e)
   return (o);
 }
 
-const char *
+EAPI const char *
 esmart_text_entry_text_get (Evas_Object * o)
 {
   Esmart_Text_Entry *e = NULL;
@@ -59,7 +59,7 @@ esmart_text_entry_text_get (Evas_Object * o)
   return (NULL);
 }
 
-void
+EAPI void
 esmart_text_entry_is_password_set (Evas_Object * o, int val)
 {
   Esmart_Text_Entry *e = NULL;
@@ -71,7 +71,7 @@ esmart_text_entry_is_password_set (Evas_Object * o, int val)
 
 }
 
-void
+EAPI void
 esmart_text_entry_edje_part_set (Evas_Object * o, Evas_Object * edje,
 				 const char *part)
 {
@@ -86,7 +86,7 @@ esmart_text_entry_edje_part_set (Evas_Object * o, Evas_Object * edje,
     }
 }
 
-Evas_Object *
+EAPI Evas_Object *
 esmart_text_entry_edje_object_get(Evas_Object * o)
 {
    Esmart_Text_Entry *e = NULL;
@@ -98,7 +98,7 @@ esmart_text_entry_edje_object_get(Evas_Object * o)
    return NULL;
 }
 
-const char *
+EAPI const char *
 esmart_text_entry_edje_part_get(Evas_Object * o)
 {
    Esmart_Text_Entry *e = NULL;
@@ -110,7 +110,7 @@ esmart_text_entry_edje_part_get(Evas_Object * o)
    return NULL;
 }
 
-void
+EAPI void
 esmart_text_entry_return_key_callback_set (Evas_Object * o,
 					   void (*func) (void *data,
 							 const char *str),
@@ -123,7 +123,7 @@ esmart_text_entry_return_key_callback_set (Evas_Object * o,
   e->return_key.arg = data;
 }
 
-void
+EAPI void
 esmart_text_entry_max_chars_set (Evas_Object * o, int max)
 {
   Esmart_Text_Entry *e = NULL;
@@ -141,7 +141,7 @@ esmart_text_entry_max_chars_set (Evas_Object * o, int max)
       snprintf (e->buf.text, strlen (buf), "%s", buf);
     }
 }
-void
+EAPI void
 esmart_text_entry_text_set (Evas_Object * o, const char *str)
 {
   Esmart_Text_Entry *e = NULL;
