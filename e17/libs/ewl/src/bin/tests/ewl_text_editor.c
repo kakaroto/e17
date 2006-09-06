@@ -140,9 +140,6 @@ create_test(Ewl_Container *box)
 	ewl_text_outline_color_set(EWL_TEXT(o), 200, 200, 200, 200);
 	ewl_text_strikethrough_color_set(EWL_TEXT(o), 0, 0, 0, 255);
 	ewl_text_glow_color_set(EWL_TEXT(o), 0, 255, 0, 128);
-
-	ewl_object_fill_policy_set(EWL_OBJECT(o), 
-				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL);
 	ewl_callback_append(o, EWL_CALLBACK_KEY_DOWN, ete_cb_key_down, NULL);
 	ewl_widget_show(o);
 
