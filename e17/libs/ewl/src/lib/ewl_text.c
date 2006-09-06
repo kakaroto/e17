@@ -2402,25 +2402,20 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 	}
 
 	/* create the alignment string */
-	if (ctx->align > 0)
-	{
-		if (ctx->align & EWL_FLAG_ALIGN_CENTER)
-			snprintf(align, sizeof(align), "align=center");
+	if (ctx->align == EWL_FLAG_ALIGN_CENTER)
+		snprintf(align, sizeof(align), "align=center");
 
-		else if (ctx->align & EWL_FLAG_ALIGN_RIGHT)
-			snprintf(align, sizeof(align), "align=right");
+	else if (ctx->align == EWL_FLAG_ALIGN_RIGHT)
+		snprintf(align, sizeof(align), "align=right");
 
-		else
-			snprintf(align, sizeof(align), "align=left");	
-	}
 	else
-		snprintf(align, sizeof(align), "align=left");
+		snprintf(align, sizeof(align), "align=left");	
 
 	ptr = ewl_theme_path_get();
 	/* create the formatting string */
 	snprintf(fmt, 2048, "+font=fonts/%s font_source=%s font_size=%d "
 			"backing_color=#%02x%02x%02x%02x color=#%02x%02x%02x%02x "
-			"%s wrap=%s %s\n", ctx->font, 
+			"%s wrap=%s %s", ctx->font, 
 			ptr, ctx->size,
 			ctx->style_colors.bg.r, ctx->style_colors.bg.g,
 			ctx->style_colors.bg.b, ctx->style_colors.bg.a,
@@ -4115,6 +4110,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	}
 
 	/* XXX grap the alignment and wrap data from the theme here */
+	tmp->align = EWL_FLAG_ALIGN_LEFT;
 
 	tx = ewl_text_context_find(tmp, EWL_TEXT_CONTEXT_MASK_NONE, NULL);
 	ewl_text_context_release(tmp);
@@ -4808,7 +4804,7 @@ ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
 
 		/* set the current context */
 		old_tx = t->formatting.current->tx;
-		t->formatting.current->tx= ewl_text_context_find(old_tx, 
+		t->formatting.current->tx = ewl_text_context_find(old_tx, 
 							context_mask, tx);
 		ewl_text_context_release(old_tx);
 	}
