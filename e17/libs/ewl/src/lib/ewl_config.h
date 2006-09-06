@@ -35,7 +35,12 @@ struct Ewl_Config
 
 	struct {
 		char *name;		/**< Theme name */
-		char *icon_theme;	/**< Icon theme name */
+
+		struct {
+			char *theme;	/**< Icon theme name */
+			char *size;	/**< Icon theme size */
+		} icon;			/**< Icon theme settings */
+
 		int cache;		/**< Cache size */
 		int cclass_override;	/**< Colour class override */
 		int print_keys;		/**< Print theme keys as accessed */

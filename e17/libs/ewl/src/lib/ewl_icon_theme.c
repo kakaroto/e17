@@ -16,9 +16,9 @@ ewl_icon_theme_theme_change(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/* check if this is an edje theme */
-	if (ewl_config.theme.icon_theme && 
-			(!strncasecmp(ewl_config.theme.icon_theme +
-				(strlen(ewl_config.theme.icon_theme) - 4),
+	if (ewl_config.theme.icon.theme && 
+			(!strncasecmp(ewl_config.theme.icon.theme +
+				(strlen(ewl_config.theme.icon.theme) - 4),
 				".edj", 4)))
 		ewl_icon_theme_is_edje = 1;
 	else
@@ -31,7 +31,8 @@ ewl_icon_theme_theme_change(void)
 
 /**
  * @param icon: The Icon Spec icon name to lookup
- * @param size: The size of the icon to retrieve
+ * @param size: The size of the icon to retrieve. A NULL value will cause
+ * the default size to be used.
  * @return Returns the path to the icon we are looking for or NULL if none found
  * @brief Retrives the full path to the specified icon, or NULL if none found
  */
@@ -39,22 +40,29 @@ const char *
 ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 {
 	const char *ret;
+	const char *icon_size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
 
 	/* make sure we have an icon theme */
-	if (!ewl_config.theme.icon_theme)
+	if (!ewl_config.theme.icon.theme)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	/* if our theme is an edje just return the .edj file */
 	if (ewl_icon_theme_is_edje)
-		DRETURN_PTR(ewl_config.theme.icon_theme, DLEVEL_STABLE);;
+		DRETURN_PTR(ewl_config.theme.icon.theme, DLEVEL_STABLE);;
 
 	/* XXX Should store a hash of these here so we don't have to keep
 	 * looking it up. Just reset the hash on theme change */
 
-	ret = ecore_desktop_icon_find(icon, size, ewl_config.theme.icon_theme);
+	if (!size)
+		icon_size = ewl_config.theme.icon.size;
+	else
+		icon_size = size;
+
+	ret = ecore_desktop_icon_find(icon, icon_size, 
+					ewl_config.theme.icon.theme);
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
