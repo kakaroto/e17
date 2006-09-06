@@ -1,4 +1,4 @@
-use Test::More 'no_plan'; # tests => 1;
+use Test::More tests => 6;
 use Etk;
 
 my $b = Etk::Label->new("test");
@@ -6,19 +6,16 @@ my $b = Etk::Label->new("test");
 ok( defined $b, 	"Label new()");
 ok( $b->isa("Etk::Label"),	"Class Check");
 
-SKIP: {
-	skip "Must be visible", 4;
-	
-	is($b->LabelGet(), "test", 	"Label Get");
+is($b->Get(), "test", 	"Label Get");
 
-	$b->LabelSet("moo");
-	is($b->LabelGet(), "moo", 	"Label Set");
+$b->Set("moo");
+is($b->Get(), "moo", 	"Label Set");
 
-	$b->AlignmentSet(0.5, 0.2);
-	
-	my @al = $b->AlignmentGet();
+$b->AlignmentSet(0.5, 0.2);
 
-	is($al[0], 0.5,	"Alignment (xalign)");
-	is($al[1], 0.2,	"Alignment (yalign)");
-}
+my @al = $b->AlignmentGet();
+
+is($al[0], 0.5,	"Alignment (xalign)");
+# XXX - hack - what's up with the rounding here?
+is(sprintf("%0.1f", $al[1]), 0.2,	"Alignment (yalign)");
 

@@ -1,4 +1,4 @@
-use Test::More 'no_plan'; # tests => 1;
+use Test::More tests => 25;
 use Etk;
 
 my $b = Etk::Iconbox->new();
@@ -52,11 +52,4 @@ is($icon->LabelGet(), "Label", 	"Label Get");
 $icon->DataSet("moo");
 is($icon->DataGet(), "moo", 	"Data set/get");
 
-$icon->Select();
-
-SKIP: {
-	skip "The icon should be shown to be selected";
-	is($icon->IsSelected(), 1, 	"Select");
-
-}
 

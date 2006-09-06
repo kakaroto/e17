@@ -2117,8 +2117,8 @@ etk_label_alignment_get(label)
 	float yalign;
 	etk_label_alignment_get(label, &xalign, &yalign);
 
-	XPUSHs(sv_2mortal(newSViv(xalign)));
-	XPUSHs(sv_2mortal(newSViv(yalign)));
+	XPUSHs(sv_2mortal(newSVnv(xalign)));
+	XPUSHs(sv_2mortal(newSVnv(yalign)));
 
 void
 etk_label_alignment_set(label, xalign, yalign)
