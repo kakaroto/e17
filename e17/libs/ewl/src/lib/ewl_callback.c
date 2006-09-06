@@ -13,8 +13,8 @@
  * the array the list won't be direct, but will have only one item.) 
  */
 
-static unsigned int ewl_callback_hash(void *key);
-static int ewl_callback_compare(void *key1, void *key2);
+static unsigned int ewl_callback_hash(const void *key);
+static int ewl_callback_compare(const void *key1, const void *key2);
 static void ewl_callback_unregister(Ewl_Callback * cb);
 static Ewl_Callback *ewl_callback_get(Ewl_Widget *w, unsigned int type, 
 						unsigned int idx);
@@ -675,7 +675,7 @@ ewl_callback_del_with_data(Ewl_Widget *w, unsigned int t,
  * Hashes the value of a callback based on it's type, function, and user data.
  */
 static unsigned int
-ewl_callback_hash(void *key)
+ewl_callback_hash(const void *key)
 {
 	Ewl_Callback *cb;
 
@@ -693,7 +693,7 @@ ewl_callback_hash(void *key)
  * match, in which case it returns 0.
  */
 static int
-ewl_callback_compare(void *key1, void *key2)
+ewl_callback_compare(const void *key1, const void *key2)
 {
 	Ewl_Callback *cb1;
 	Ewl_Callback *cb2;
