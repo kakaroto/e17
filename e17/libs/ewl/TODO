@@ -87,9 +87,6 @@
  - Should change label editing to double click on the icon instead of
    clicking on the label itself.
  
- - Need to hook up label compressing (adding ... after a certain size)
-   similar to what iconbox is currently doing.
-
 
  Ewl_Freebox 
  - On the comparator test if you add a set of icons, rename an icon and then
