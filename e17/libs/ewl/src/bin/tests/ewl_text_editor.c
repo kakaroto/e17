@@ -129,7 +129,7 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(scroll), o);
 	ewl_widget_name_set(o, "entry");
 	ewl_entry_multiline_set(EWL_ENTRY(o), TRUE);
-	ewl_text_wrap_set(EWL_TEXT(o), TRUE);
+	ewl_text_wrap_set(EWL_TEXT(o), EWL_TEXT_WRAP_WORD);
 	ewl_text_font_size_set(EWL_TEXT(o), 12);
 
 	ewl_text_underline_color_set(EWL_TEXT(o), 0, 0, 0, 255);
