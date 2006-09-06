@@ -80,6 +80,8 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
  Ewl_Widget *row;
  
  directory = data;
+ current_directory = strdup(directory);
+ ewl_text_text_set(EWL_TEXT(m->entry), current_directory);
  
  ls = ecore_list_new();
  directories = ecore_list_new();
@@ -89,14 +91,17 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
  while (!ecore_list_is_empty(ls))
  {
   file = ecore_list_remove_first(ls);
-  if (ecore_file_is_dir(file) && strncmp(file, ".", 1)) 
-	  ecore_list_append(directories, file);
+  if (strcmp(directory, "/"))
+  	snprintf(full_path, PATH_MAX, "%s/%s", directory, file);
+  else
+	snprintf(full_path, PATH_MAX, "%s%s", directory, file);
+  if (ecore_file_is_dir(full_path) && strncmp(file, ".", 1)) 
+	  ecore_list_append(directories, strdup(full_path));
  }
 
  while (!ecore_list_is_empty(directories))
  {
   file = ecore_list_remove_first(directories);
-  snprintf(full_path, PATH_MAX, "%s/%s", directory, file);
   
   hbox = ewl_hbox_new();
   ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
@@ -112,7 +117,7 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
   ewl_widget_show(image);
 
   text = ewl_text_new();
-  ewl_text_text_set(EWL_TEXT(text), file);
+  ewl_text_text_set(EWL_TEXT(text), basename(file));
   ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_ALL);
   ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
   ewl_container_child_append(EWL_CONTAINER(hbox), text);
@@ -123,7 +128,7 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
 
   row = ewl_tree_row_add(EWL_TREE(m->browser), NULL, children);
   ewl_callback_append(row, EWL_CALLBACK_CLICKED, populate_images, NULL);
-  ewl_widget_name_set(row, full_path);
+  ewl_widget_name_set(row, file);
  }
 }
 
@@ -143,6 +148,10 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  
  if (ecore_file_is_dir(dir))
  {
+  ewl_container_reset(EWL_CONTAINER(m->browser));
+  ewl_container_reset(EWL_CONTAINER(m->viewer_freebox));
+  populate_browser(NULL, NULL, strdup((char *)dir));
+  
   ls = ecore_file_ls(dir);
   while(!ecore_list_is_empty(ls))
   { 
@@ -171,6 +180,7 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  }
  else
  {
+  ewl_container_reset(EWL_CONTAINER(m->viewer_freebox));
   file_ptr = fopen(dir, "r");
   if (file_ptr != NULL)
   {
@@ -195,4 +205,23 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), m->icon);
   ewl_widget_show(m->icon);
  }
+}
+
+void go_up(Ewl_Widget *w, void *event, void *data)
+{
+ char *new_dir;
+ if (strcmp(current_directory, "/"))
+ {
+  new_dir = dirname(current_directory);
+  ewl_widget_name_set(m->viewer_freebox, new_dir);
+  populate_images(m->viewer_freebox, NULL, NULL);
+ }
+}
+
+void go_home(Ewl_Widget *w, void *event, void *data)
+{
+ char *new_dir;
+ new_dir = getenv("HOME");
+ ewl_widget_name_set(m->viewer_freebox, new_dir);
+ populate_images(m->viewer_freebox, NULL, NULL);
 }
