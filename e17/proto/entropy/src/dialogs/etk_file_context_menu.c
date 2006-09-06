@@ -164,7 +164,10 @@ _entropy_etk_context_menu_file_rename_cb(Etk_Object *object, void *data)
 static void
 _entropy_etk_context_menu_group_file_paste_cb(Etk_Object *object, void *data)
 {
+	Entropy_Selection_Type stype;
 	Ecore_List* files = entropy_core_selected_files_get();
+
+	stype = entropy_core_selection_type_get();
 
 	if (_entropy_etk_context_menu_current_file) {
 		if (!strcmp(_entropy_etk_context_menu_current_file->mime_type, "file/folder"))
@@ -175,21 +178,50 @@ _entropy_etk_context_menu_group_file_paste_cb(Etk_Object *object, void *data)
 	
 		if (_entropy_etk_context_menu_current_folder) {
 			char* f_uri = 	_entropy_etk_context_menu_current_folder->uri;
-			if (f_uri)
-				entropy_plugin_filesystem_file_copy_multi(files, f_uri, 
-						_entropy_etk_context_menu_current_instance);		
+			if (f_uri) {
+				if (stype == ENTROPY_SELECTION_COPY) {
+					entropy_plugin_filesystem_file_copy_multi(files, f_uri, 
+						_entropy_etk_context_menu_current_instance);
+				} else if (stype == ENTROPY_SELECTION_CUT) {
+					entropy_plugin_filesystem_file_move_multi(files, f_uri, 
+						_entropy_etk_context_menu_current_instance);					
+				} else {
+					printf("Unsupported copy type at context menu paste\n");
+				}
+			}
 		} else {
 			printf("Current folder is NULL at context menu\n");
 		}
 	}
 	
-	}
+}
 
 static void
 _entropy_etk_context_menu_group_file_copy_cb(Etk_Object *object, void *data)
 {
 	entropy_core_selected_files_clear();
 
+	entropy_core_selection_type_set(ENTROPY_SELECTION_COPY);
+	if (_entropy_etk_context_menu_mode == 0) {
+		entropy_core_selected_file_add(_entropy_etk_context_menu_current_file);
+	} else {
+		entropy_generic_file* file;
+
+		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
+			entropy_core_selected_file_add(file);
+		}
+		
+	}
+}
+
+/*No code reuse here - we may want to use special behaviour*/
+static void
+_entropy_etk_context_menu_group_file_cut_cb(Etk_Object *object, void *data)
+{
+	entropy_core_selected_files_clear();
+
+	entropy_core_selection_type_set(ENTROPY_SELECTION_CUT);
 	if (_entropy_etk_context_menu_mode == 0) {
 		entropy_core_selected_file_add(_entropy_etk_context_menu_current_file);
 	} else {
@@ -442,8 +474,12 @@ void entropy_etk_context_menu_init()
 		etk_signal_connect("activated", ETK_OBJECT(menu_item),
 		ETK_CALLBACK(_entropy_etk_context_menu_group_file_copy_cb),NULL);
 		
+		menu_item =
 		_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut (Ctrl-x)"), 
 		ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu),NULL);
+		etk_signal_connect("activated", ETK_OBJECT(menu_item),
+		ETK_CALLBACK(_entropy_etk_context_menu_group_file_cut_cb),NULL);
+
 		
 		menu_item =
 		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste (Ctrl-v)"), 

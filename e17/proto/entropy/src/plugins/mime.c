@@ -57,7 +57,7 @@ entropy_plugin_init (entropy_core * core)
 
   plugin = entropy_malloc(sizeof(Entropy_Plugin_Mime));
 
-  return plugin;
+  return ENTROPY_PLUGIN(plugin);
 }
 
 char *

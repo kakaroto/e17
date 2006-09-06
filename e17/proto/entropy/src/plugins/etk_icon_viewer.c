@@ -322,6 +322,19 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	 icon_viewer_remove_row(comp, (entropy_generic_file*)el);
      }
      break;
+
+     case ENTROPY_NOTIFY_FILE_CREATE:{
+      entropy_generic_file* file = el;
+      
+      /*Check that this file is the current dir we are displaying*/
+      entropy_generic_file* parent_folder = entropy_core_parent_folder_file_get(file);
+
+      if (parent_folder && parent_folder == viewer->current_folder) {
+	      icon_viewer_add_row (comp, file);				      
+      }
+     }
+     break;	
+
   }
 }
 

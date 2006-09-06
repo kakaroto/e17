@@ -884,6 +884,16 @@ void entropy_core_selection_engine_init() {
 	core_core->selected_files = ecore_list_new();
 }
 
+void entropy_core_selection_type_set(Entropy_Selection_Type stype)
+{
+	core_core->selection_type = stype;
+}
+
+Entropy_Selection_Type entropy_core_selection_type_get()
+{
+	return core_core->selection_type;
+}
+
 void entropy_core_selected_file_add(entropy_generic_file* file) {
 	ecore_list_append(core_core->selected_files, file);
 

@@ -5,6 +5,11 @@
 #include "entropy.h"
 #include "notification_engine.h"
 
+typedef enum {
+	ENTROPY_SELECTION_COPY,
+	ENTROPY_SELECTION_CUT
+} Entropy_Selection_Type;
+
 typedef struct _entropy_core_settings entropy_core_settings;
 struct _entropy_core_settings {
 	char* layout_engine;
@@ -35,6 +40,8 @@ struct entropy_core {
 	struct entropy_plugin* layout_plugin; /* The main layout plugin that we are relying on */
 
 	Ecore_List* selected_files;
+	Entropy_Selection_Type selection_type;
+	
 	Ecore_Hash* descent_hash;
 	Ecore_Hash* object_associate_hash;
 	Ecore_Hash* mime_action_hint;

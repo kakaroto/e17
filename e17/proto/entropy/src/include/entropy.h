@@ -96,6 +96,8 @@ entropy_generic_file* evfs_filereference_to_entropy_generic_file(void* ref);
 
 /*Selection engine functions*/
 void entropy_core_selection_engine_init();
+void entropy_core_selection_type_set(Entropy_Selection_Type stype);
+Entropy_Selection_Type entropy_core_selection_type_get();
 void entropy_core_selected_file_add(entropy_generic_file* file);
 Ecore_List* entropy_core_selected_files_get();
 void entropy_core_selected_files_clear();
