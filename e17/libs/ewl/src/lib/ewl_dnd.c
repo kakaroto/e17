@@ -132,9 +132,8 @@ ewl_dnd_provides_types_set(Ewl_Widget *w, const char **types)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	type = ecore_hash_get(ewl_dnd_provides_hash, w);
-	if (type) {
-		FREE(type);
-	}
+	IF_FREE(type);
+
 	ecore_hash_set(ewl_dnd_provides_hash, w, ewl_dnd_types_encode(types));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -195,11 +194,9 @@ ewl_dnd_accepts_types_set(Ewl_Widget *w, const char **types)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	type = ecore_hash_get(ewl_dnd_accepts_hash, w);
-	if (type) {
-		FREE(type);
-	}
-	ecore_hash_set(ewl_dnd_accepts_hash, w, ewl_dnd_types_encode(types));
+	IF_FREE(type);
 
+	ecore_hash_set(ewl_dnd_accepts_hash, w, ewl_dnd_types_encode(types));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
