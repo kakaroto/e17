@@ -27,6 +27,7 @@ e_user.h \
 e_utils.h \
 engage.h \
 engage_element.h \
+battery.h \
 main.c \
 config.c \
 dock.c \
@@ -35,6 +36,7 @@ wm.c \
 window.c \
 tray.c \
 userconfig.c \
+battery.c \
 e_object.c \
 e_path.c \
 e_user.c \

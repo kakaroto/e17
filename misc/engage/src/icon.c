@@ -1,6 +1,7 @@
 #include "engage.h"
 #include "limits.h"
 #include "config.h"
+#include "battery.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #ifdef HAVE_IMLIB
@@ -162,7 +163,7 @@ void
 od_icon_reload(OD_Icon * in)
 {
   const char     *icon_part = NULL;
-  char           *path, *winclass, *name, *icon_file;
+  char           *path, *winclass, *name, *icon_file, *tmp;
 
   Evas_Object    *icon = NULL;
   Evas_Object    *pic = NULL;
@@ -239,6 +240,24 @@ od_icon_reload(OD_Icon * in)
     }
     evas_object_layer_set(icon, 100);
     evas_object_show(icon);
+
+    // set tmp to be the last thing in the path
+    tmp = path;
+    while(*tmp)tmp++;
+    while(*tmp != '/' && tmp != path)tmp--;
+    if(*tmp == '/') tmp++;
+    if(!strcmp(tmp,"default_battery.edj")) {
+      // hook up battery status if it's the battery icon
+      Battery *bat = malloc(sizeof(Battery));
+      memset(bat,0,sizeof(Battery));
+      bat->object = icon;
+      bat->battery_check_mode = CHECK_NONE;
+      bat->battery_prev_drain = 1;
+      bat->battery_prev_ac = -1;
+      bat->battery_prev_battery = -1;
+      _battery_cb_check(bat);
+      bat->battery_check_timer = ecore_timer_add(5.0, _battery_cb_check, bat);
+    }
   } else {
     evas_object_del(icon);
     in->icon = NULL;
