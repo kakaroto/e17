@@ -1336,7 +1336,7 @@ ewl_text_styles_get(Ewl_Text *t, unsigned int idx)
  * @brief Sets the wrap value of the text at the given index
  */
 void
-ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap)
+ewl_text_wrap_set(Ewl_Text *t, Ewl_Text_Wrap wrap)
 {
 	Ewl_Text_Context *change;
 
@@ -1362,7 +1362,7 @@ ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap)
  * the given length of text
  */
 void
-ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
+ewl_text_wrap_apply(Ewl_Text *t, Ewl_Text_Wrap wrap, unsigned int length)
 {
 	Ewl_Text_Context *tx;
 
@@ -1391,7 +1391,7 @@ ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, unsigned int length)
  * @return Returns the wrap value of the text at the given index
  * @brief Retrives the text wrap value at the given index
  */
-unsigned int
+Ewl_Text_Wrap
 ewl_text_wrap_get(Ewl_Text *t, unsigned int idx)
 {
 	Ewl_Text_Context *tx;
@@ -2288,6 +2288,7 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 	char *ptr;
 	char style[512];
 	char align[128];
+	char wrap[128];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("ctx", ctx, NULL);
@@ -2411,17 +2412,26 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 	else
 		snprintf(align, sizeof(align), "align=left");	
 
+	if (ctx->wrap == EWL_TEXT_WRAP_WORD)
+		snprintf(wrap, sizeof(wrap), "wrap=word");
+
+	else if (ctx->wrap == EWL_TEXT_WRAP_CHAR)
+		snprintf(wrap, sizeof(wrap), "wrap=char");
+
+	else
+		snprintf(wrap, sizeof(wrap), "wrap=off");
+
 	ptr = ewl_theme_path_get();
 	/* create the formatting string */
 	snprintf(fmt, 2048, "+font=fonts/%s font_source=%s font_size=%d "
 			"backing_color=#%02x%02x%02x%02x color=#%02x%02x%02x%02x "
-			"%s wrap=%s %s", ctx->font, 
+			"%s %s %s", ctx->font, 
 			ptr, ctx->size,
 			ctx->style_colors.bg.r, ctx->style_colors.bg.g,
 			ctx->style_colors.bg.b, ctx->style_colors.bg.a,
 			ctx->color.r, ctx->color.g,
 			ctx->color.b, ctx->color.a, style, 
-			((ctx->wrap) ? "word" : "off"), align);
+			wrap, align);
 
 	IF_FREE(ptr);
 

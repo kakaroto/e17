@@ -173,10 +173,10 @@ void		 ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style,
 unsigned int	 ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, 
 							unsigned int idx);
 
-void		 ewl_text_wrap_set(Ewl_Text *t, unsigned int wrap);
-void		 ewl_text_wrap_apply(Ewl_Text *t, unsigned int wrap, 
+void		 ewl_text_wrap_set(Ewl_Text *t, Ewl_Text_Wrap wrap);
+void		 ewl_text_wrap_apply(Ewl_Text *t, Ewl_Text_Wrap wrap, 
 							unsigned int length);
-unsigned int	 ewl_text_wrap_get(Ewl_Text *t, unsigned int idx);
+Ewl_Text_Wrap	 ewl_text_wrap_get(Ewl_Text *t, unsigned int idx);
 
 void		 ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 						unsigned int b, unsigned int a);
@@ -320,7 +320,7 @@ struct Ewl_Text_Context
 	char *font;				/**< Font name */
 	unsigned int styles;			/**< Styles set in this node */
 	unsigned int align;			/**< Text alignment */
-	unsigned int wrap;			/**< Text wrap setting */
+	Ewl_Text_Wrap wrap;			/**< Text wrap setting */
 	char size;				/**< Font size */
 	Ewl_Color_Set color;			/**< Font colour */
 

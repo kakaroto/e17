@@ -706,6 +706,22 @@ enum Ewl_Sort_Direction
 typedef enum Ewl_Sort_Direction Ewl_Sort_Direction;
 
 /**
+ * @enum Ewl_Text_Wrap
+ * The text wrap setting
+ */
+enum Ewl_Text_Wrap
+{
+	EWL_TEXT_WRAP_NONE = 0,
+	EWL_TEXT_WRAP_CHAR,
+	EWL_TEXT_WRAP_WORD
+};
+
+/**
+ * The Ewl_Text_Wrap
+ */
+typedef enum Ewl_Text_Wrap Ewl_Text_Wrap;
+
+/**
  * @}
  */ 
 #endif				/* __EWL_ENUMS_H__ */
