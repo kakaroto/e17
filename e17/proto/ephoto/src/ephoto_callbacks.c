@@ -225,3 +225,18 @@ void go_home(Ewl_Widget *w, void *event, void *data)
  ewl_widget_name_set(m->viewer_freebox, new_dir);
  populate_images(m->viewer_freebox, NULL, NULL);
 }
+
+void entry_change(Ewl_Widget *w, void *event, void *data)
+{
+ char *new_dir;
+ new_dir = ewl_text_text_get(EWL_TEXT(w));
+ if (ecore_file_is_dir(new_dir))
+ {
+  ewl_widget_name_set(m->viewer_freebox, new_dir);
+  populate_images(m->viewer_freebox, NULL, NULL);
+ }
+ else
+ {
+  ewl_text_text_set(EWL_TEXT(m->entry), current_directory);
+ }
+}

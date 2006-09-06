@@ -105,6 +105,7 @@ main(int argc, char **argv)
  m->entry = ewl_entry_new();
  ewl_text_text_set(EWL_TEXT(m->entry), current_directory);
  ewl_container_child_append(EWL_CONTAINER(m->hbox), m->entry);
+ ewl_callback_append(m->entry, EWL_CALLBACK_VALUE_CHANGED, entry_change, NULL);
  ewl_widget_show(m->entry);
  
  m->hseparator = ewl_hseparator_new();

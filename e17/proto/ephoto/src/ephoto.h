@@ -16,6 +16,7 @@ void populate_browser(Ewl_Widget *w, void *event, void *data);
 void populate_images(Ewl_Widget *w, void *event, void *data);
 void go_up(Ewl_Widget *w, void *event, void *data);
 void go_home(Ewl_Widget *w, void *event, void *data);
+void entry_change(Ewl_Widget *w, void *event, void *data);
 
 typedef struct _Main Main;
 
