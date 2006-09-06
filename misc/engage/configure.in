@@ -142,7 +142,7 @@ AC_PATH_GENERIC(etk, 0.0.1, [
   have_etk="yes"
   AC_SUBST(etk_libs)
   AC_SUBST(etk_cflags) ],
-  AC_MSG_ERROR(Cannot find etk: Is etk-config in path?))
+  AC_MSG_WARN(Cannot find etk: Is etk-config in path?))
 etk_libs=`etk-config --libs`
 etk_cflags=`etk-config --cflags`
 AC_SUBST(etk_libs)
