@@ -1,4 +1,4 @@
-use Test::More 'no_plan'; # tests => 1;
+use Test::More tests => 4;
 use Etk;
 
 my $b = Etk::Colorpicker->new();
@@ -10,7 +10,7 @@ $b->CurrentColorSet( { r=>10, g=>20, b=>30 });
 
 is($b->CurrentColorGet()->{r}, 10,	"Color set and get");
 
-$b->ModeSet(1); # FIXME (constants)
+$b->ModeSet(1); 
 is($b->ModeGet(), 1,	"Mode set and get");
 
 

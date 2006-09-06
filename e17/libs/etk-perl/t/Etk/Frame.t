@@ -1,4 +1,4 @@
-use Test::More 'no_plan'; # tests => 1;
+use Test::More tests => 4;
 use Etk;
 
 my $b = Etk::Frame->new("frame");
