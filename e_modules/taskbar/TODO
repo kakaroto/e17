@@ -1,6 +1,10 @@
 
 BUGS
 
+- It's really really slow. :)  (Suspect updating (fill) to often - a side
+  effect of trying to fix the update and layout not always happening like
+  we want.)
+
 - if the horiz shelf is resized (huge, tiny) the app icons aren't layed out
   optimally (in the vertical)
 - if shelf is set to 'scroll contents' things kind of work, but...
@@ -11,6 +15,8 @@ BUGS
   shelf contents dialog
 
 - vert layout - no...
+
+- BUG: Skip Win List not applied immediately
 
 TODO
 
@@ -27,6 +33,8 @@ TODO
                                       app icon, pop a list when clicked.
                                       (Or on mouse over?)
 
+- FEATURE: Group Items By App
+- FEATURE: Remove Iconified Windows
 
 Behavior decisions
 
