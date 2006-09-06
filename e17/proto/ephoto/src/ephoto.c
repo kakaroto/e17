@@ -5,41 +5,22 @@ char *current_directory;
 int
 main(int argc, char **argv)
 {
- FILE *file;
- char *home;
  const char *icon_theme_path;
- char ephoto_path[PATH_MAX];
- char ephoto_complete[PATH_MAX];
- m = NULL;
  
+ m = NULL;
  if (!ewl_init(&argc, argv))
  {
   printf("Unable to init ewl\n");
   return 1;
  }
 
- home = getenv("HOME");
- current_directory = strdup(home);
- snprintf(ephoto_path, PATH_MAX, "%s/.ephoto", home);
- snprintf(ephoto_complete, PATH_MAX, "%s/Complete Library", ephoto_path);
+ current_directory = strdup(getenv("HOME"));
  m = calloc(1, sizeof(Main));
- 
- if (!ecore_file_exists(ephoto_path)) ecore_file_mkdir(ephoto_path);
- 
- if (!ecore_file_exists(ephoto_complete))
- {
-  file = fopen(ephoto_complete, "w");
-  if (file != NULL)
-  {
-   fputs("#Ephoto Complete Library", file);
-   fclose(file);
-  }
- }
-	 
+
  m->win = ewl_window_new();
  ewl_window_title_set(EWL_WINDOW(m->win), "Ephoto");
  ewl_window_name_set(EWL_WINDOW(m->win), "Ephoto");
- ewl_object_size_request(EWL_OBJECT(m->win), 615, 470);
+ ewl_object_size_request(EWL_OBJECT(m->win), 640, 480);
  ewl_callback_append(m->win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
  ewl_widget_show(m->win);
 
@@ -97,8 +78,9 @@ main(int argc, char **argv)
  ewl_widget_show(m->image);
 
  m->text = ewl_text_new();
- ewl_text_text_set(EWL_TEXT(m->text), "Location:");
+ ewl_text_text_set(EWL_TEXT(m->text), "  Location:");
  ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
+ ewl_object_maximum_size_set(EWL_OBJECT(m->text), 55, 15);
  ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
  ewl_widget_show(m->text);
 
@@ -168,15 +150,18 @@ main(int argc, char **argv)
  ewl_widget_show(m->viewer);
 
  m->viewer_freebox = ewl_hfreebox_new();
- ewl_freebox_layout_type_set(EWL_FREEBOX(m->viewer_freebox), EWL_FREEBOX_LAYOUT_AUTO);
+ ewl_freebox_layout_type_set(EWL_FREEBOX(m->viewer_freebox), 
+		 	EWL_FREEBOX_LAYOUT_AUTO);
  ewl_container_child_append(EWL_CONTAINER(m->viewer), m->viewer_freebox);
  ewl_object_fill_policy_set(EWL_OBJECT(m->viewer_freebox), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->viewer_freebox);
 
  ewl_callback_append(m->albums, EWL_CALLBACK_SHOW, populate_albums, NULL);
- ewl_callback_append(m->browser, EWL_CALLBACK_SHOW, populate_browser, home);
- ewl_widget_name_set(m->browser, current_directory);
- populate_images(m->browser, NULL, NULL);
+ ewl_callback_append(m->browser, EWL_CALLBACK_SHOW, populate_browser, 
+			current_directory);
+ ewl_widget_name_set(m->viewer_freebox, current_directory);
+ ewl_callback_append(m->viewer_freebox, EWL_CALLBACK_SHOW, 
+			populate_images, NULL);
  
  ewl_main();
  return 0;
