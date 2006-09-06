@@ -1,4 +1,4 @@
-use Test::More 'no_plan'; # tests => 1;
+use Test::More tests => 7;
 use Etk;
 
 my $b = Etk::Button->new();
@@ -24,4 +24,6 @@ my ($xalign, $yalign) = $b->AlignmentGet();
 is($xalign, 1, 	"Xalign");
 is($yalign, 0.5, "Yalign");
 
+$b->StyleSet(1);
+is ($b->StyleGet(), 1, 	"Style set/get");
 

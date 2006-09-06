@@ -684,6 +684,32 @@ etk_button_set_from_stock(button, stock_id)
       ALIAS:
 	SetFromStock=1
 
+void
+etk_button_style_set(button, style)
+	Etk_Button * 	button
+	Etk_Button_Style	style
+	ALIAS:
+	StyleSet=1
+
+Etk_Button_Style
+etk_button_style_get(button)
+	Etk_Button *	button
+	ALIAS:
+	StyleGet=1
+
+void
+etk_button_stock_size_set(button, size)
+	Etk_Button *	button
+	Etk_Stock_Size	size
+	ALIAS:
+	StockSizeSet=1
+
+Etk_Stock_Size
+etk_button_stock_size_get(button)
+	Etk_Button *	button
+	ALIAS:
+	StockSizeGet=1
+
 MODULE = Etk::Canvas		PACKAGE = Etk::Canvas	PREFIX = etk_canvas_
 
 Etk_Widget *

@@ -10,6 +10,7 @@ Etk_Box_Fill_Policy				T_IV
 Etk_HBox *					T_PTROBJ_ETK
 Etk_VBox *					T_PTROBJ_ETK
 Etk_Button *					T_PTROBJ_ETK
+Etk_Button_Style				T_IV
 Etk_Check_Button *				T_PTROBJ_ETK
 Etk_Canvas *					T_PTROBJ_ETK
 Etk_Color					T_COLOR

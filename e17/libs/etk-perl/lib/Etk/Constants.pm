@@ -53,6 +53,7 @@ our %EXPORT_TAGS = (
     MouseNone MouseDoubleClick MouseTripleClick/],
    toolbar	=> [qw/ToolbarIcons ToolbarText ToolbarBothVert ToolbarBothHoriz 
     ToolbarDefault ToolbarHoriz ToolbarVert/],
+   button	=> [qw/ButtonIcon ButtonText ButtonBothVert ButtonBothHoriz/],
    );
 
 my @all = ();
@@ -228,6 +229,13 @@ use constant {
 
 };
 
+#button
+use constant {
+   ButtonIcon => 0,
+   ButtonText => 1,
+   ButtonBothVert => 2,
+   ButtonBothHoriz => 3
+};
 
 
 
