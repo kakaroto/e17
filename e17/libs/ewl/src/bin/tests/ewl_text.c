@@ -183,7 +183,16 @@ create_test(Ewl_Container *box)
 			trigger_cb_mouse_out, NULL);
 
 	ewl_text_color_set(EWL_TEXT(o), 255, 0, 255, 255);
-	ewl_text_text_append(EWL_TEXT(o), "ONE MORE SEGV");
+	ewl_text_text_append(EWL_TEXT(o), "ONE MORE SEGV\n\n");
+
+	ewl_text_color_set(EWL_TEXT(o), 0, 0, 0, 255);
+	ewl_text_text_append(EWL_TEXT(o), "Align Left\n");
+
+	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
+	ewl_text_text_append(EWL_TEXT(o), "Align Center.\n");
+
+	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_RIGHT);
+	ewl_text_text_append(EWL_TEXT(o), "Align Right.\n");
 
 #if 0
 	printf("-- DUMP --\n");
