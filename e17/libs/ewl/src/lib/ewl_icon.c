@@ -122,24 +122,35 @@ ewl_icon_type_get(Ewl_Icon *icon)
 void
 ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 {
+	Ewl_Widget *img;
+	int constrain = 16;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_PARAM_PTR("file", file);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
-	if (!icon->preview)
+	if (icon->preview)
 	{
-		icon->preview = ewl_image_new();
-		ewl_image_proportional_set(EWL_IMAGE(icon->preview), TRUE);
-		ewl_object_alignment_set(EWL_OBJECT(icon->preview), 
-							EWL_FLAG_ALIGN_CENTER);
-		ewl_widget_internal_set(icon->preview, TRUE);
-		ewl_container_child_prepend(EWL_CONTAINER(icon), 
-						icon->preview);
-		ewl_widget_show(icon->preview);
+		constrain = ewl_icon_constrain_get(icon);
+		ewl_widget_destroy(icon->preview);
 	}
 
-	ewl_image_file_set(EWL_IMAGE(icon->preview), file, key);
+	img = ewl_image_new();
+	ewl_image_file_set(EWL_IMAGE(img), file, key);
+
+	icon->preview = ewl_image_thumbnail_get(EWL_IMAGE(img));
+	ewl_image_proportional_set(EWL_IMAGE(icon->preview), TRUE);
+	ewl_image_constrain_set(EWL_IMAGE(icon->preview), constrain);
+	ewl_image_file_set(EWL_IMAGE(icon->preview), 
+					ewl_icon_theme_icon_path_get(
+						EWL_ICON_IMAGE_LOADING, NULL),
+					EWL_ICON_IMAGE_LOADING);
+	ewl_object_alignment_set(EWL_OBJECT(icon->preview), 
+						EWL_FLAG_ALIGN_CENTER);
+	ewl_widget_internal_set(icon->preview, TRUE);
+	ewl_container_child_prepend(EWL_CONTAINER(icon), icon->preview);
+	ewl_widget_show(icon->preview);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
