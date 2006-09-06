@@ -55,7 +55,7 @@ static Evas_Object *engrave_canvas_part_state_rect_setup(Evas *evas,
  * 
  * @return Returns the Evas_Object that is the canvas or NULL on error.
  */
-Evas_Object *
+EAPI Evas_Object *
 engrave_canvas_new(Evas *e)
 {
     Evas_Object *res = NULL;
@@ -77,7 +77,7 @@ engrave_canvas_new(Evas *e)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_canvas_file_set(Evas_Object *o, Engrave_File *ef)
 {
     Engrave_Canvas *ec;
@@ -107,7 +107,7 @@ engrave_canvas_file_set(Evas_Object *o, Engrave_File *ef)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_canvas_current_group_set(Evas_Object *o, Engrave_Group *eg)
 {
     Engrave_Canvas *ec;

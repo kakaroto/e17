@@ -8,7 +8,7 @@
  * @return Returns a pointer to a newly allocated file object on success, NULL on
  * failure.
  */
-Engrave_File *
+EAPI Engrave_File *
 engrave_file_new(void)
 {
   Engrave_File *ef;
@@ -22,7 +22,7 @@ engrave_file_new(void)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_free(Engrave_File *ef)
 {
   Evas_List *l;
@@ -65,7 +65,7 @@ engrave_file_free(Engrave_File *ef)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_image_dir_set(Engrave_File *ef, const char *dir)
 {
   if (!ef || !dir) return;
@@ -80,7 +80,7 @@ engrave_file_image_dir_set(Engrave_File *ef, const char *dir)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_font_dir_set(Engrave_File *ef, const char *dir)
 {
   if (!ef || !dir) return;
@@ -94,7 +94,7 @@ engrave_file_font_dir_set(Engrave_File *ef, const char *dir)
  *
  * @return Returns the current image directory or NULL on failure
  */
-const char *
+EAPI const char *
 engrave_file_image_dir_get(Engrave_File *ef)
 {
   return (ef ? ef->im_dir : NULL);
@@ -106,7 +106,7 @@ engrave_file_image_dir_get(Engrave_File *ef)
  * 
  * @return Returns the current font directory
  */
-const char *
+EAPI const char *
 engrave_file_font_dir_get(Engrave_File *ef)
 {
   return (ef ? ef->font_dir : NULL);
@@ -119,7 +119,7 @@ engrave_file_font_dir_get(Engrave_File *ef)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_font_add(Engrave_File *e, Engrave_Font *ef)
 {
   if (!e || !ef) return;
@@ -134,7 +134,7 @@ engrave_file_font_add(Engrave_File *e, Engrave_Font *ef)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_style_add(Engrave_File *e, Engrave_Style *es)
 {
   if (!e || !es) return;
@@ -149,7 +149,7 @@ engrave_file_style_add(Engrave_File *e, Engrave_Style *es)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_image_add(Engrave_File *ef, Engrave_Image *ei)
 {
   if (!ef || !ei) return;
@@ -164,7 +164,7 @@ engrave_file_image_add(Engrave_File *ef, Engrave_Image *ei)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_data_add(Engrave_File *ef, Engrave_Data *ed)
 {
   if (!ef || !ed) return;
@@ -179,7 +179,7 @@ engrave_file_data_add(Engrave_File *ef, Engrave_Data *ed)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg)
 {
   if (!ef || !eg) return;
@@ -194,7 +194,7 @@ engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg)
  * @return Returns the last Engrave_Style in the engrave file @a ef or NULL
  * if there are no available groups.
  */
-Engrave_Style *
+EAPI Engrave_Style *
 engrave_file_style_last_get(Engrave_File *ef)
 {
   if (!ef) return NULL;
@@ -208,7 +208,7 @@ engrave_file_style_last_get(Engrave_File *ef)
  * @return Returns the last Engrave_Group in the engrave file @a ef or NULL
  * if there are no available groups.
  */
-Engrave_Group *
+EAPI Engrave_Group *
 engrave_file_group_last_get(Engrave_File *ef)
 {
   if (!ef) return NULL;
@@ -223,7 +223,7 @@ engrave_file_group_last_get(Engrave_File *ef)
  * @return Returns the Engrave_Group with the given @a name or NULL if no
  * corresponding group can be found.
  */
-Engrave_Group *
+EAPI Engrave_Group *
 engrave_file_group_by_name_find(Engrave_File *ef, const char *name)
 {
   Evas_List *l;
@@ -244,7 +244,7 @@ engrave_file_group_by_name_find(Engrave_File *ef, const char *name)
  * @return Returns the Engrave_Image with the given @a name or NULL if no
  * corresponding image can be found.
  */
-Engrave_Image *
+EAPI Engrave_Image *
 engrave_file_image_by_name_find(Engrave_File *ef, const char *name)
 {
   Evas_List *l;
@@ -263,7 +263,7 @@ engrave_file_image_by_name_find(Engrave_File *ef, const char *name)
  * 
  * @return Returns the number of images, 0 otherwise
  */
-int
+EAPI int
 engrave_file_images_count(Engrave_File *ef)
 {
   if (!ef) return 0;
@@ -276,7 +276,7 @@ engrave_file_images_count(Engrave_File *ef)
  * 
  * @return Returns number of data blocks, 0 otherwise
  */
-int
+EAPI int
 engrave_file_data_count(Engrave_File *ef)
 {
   if (!ef) return 0;
@@ -289,7 +289,7 @@ engrave_file_data_count(Engrave_File *ef)
  * 
  * @return Returns then number of groups, 0 otherwise
  */
-int
+EAPI int
 engrave_file_groups_count(Engrave_File *ef)
 {
   if (!ef) return 0;
@@ -302,7 +302,7 @@ engrave_file_groups_count(Engrave_File *ef)
  * 
  * @return Returns the number of styles in the file, 0 otherwise
  */
-int
+EAPI int
 engrave_file_styles_count(Engrave_File *ef)
 {
   if (!ef) return 0;
@@ -315,7 +315,7 @@ engrave_file_styles_count(Engrave_File *ef)
  * 
  * @return Returns the number of fonts in the file, 0 otherwise
  */
-int
+EAPI int
 engrave_file_fonts_count(Engrave_File *ef)
 {
   if (!ef) return 0;
@@ -330,7 +330,7 @@ engrave_file_fonts_count(Engrave_File *ef)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_image_foreach(Engrave_File *ef, 
                       void (*func)(Engrave_Image *, void *data),
                       void *data)
@@ -352,7 +352,7 @@ engrave_file_image_foreach(Engrave_File *ef,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_data_foreach(Engrave_File *ef, 
                         void (*func)(Engrave_Data *, void *data),
                         void *udata)
@@ -374,7 +374,7 @@ engrave_file_data_foreach(Engrave_File *ef,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_group_foreach(Engrave_File *ef, 
                           void (*func)(Engrave_Group *, void *data),
                           void *data)
@@ -396,7 +396,7 @@ engrave_file_group_foreach(Engrave_File *ef,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_style_foreach(Engrave_File *ef, 
                             void (*func)(Engrave_Style *, void *data), 
                             void *data)
@@ -419,7 +419,7 @@ engrave_file_style_foreach(Engrave_File *ef,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_file_font_foreach(Engrave_File *ef, 
                             void (*func)(Engrave_Font *, void *data), 
                             void *data)
@@ -441,7 +441,7 @@ engrave_file_font_foreach(Engrave_File *ef,
  * @return Returns the Engrave_Data with the matching key or NULL if no such
  * data exists.
  */
-Engrave_Data *
+EAPI Engrave_Data *
 engrave_file_data_by_key_find(Engrave_File *ef, const char *key)
 {
     Evas_List *l;
@@ -465,7 +465,7 @@ engrave_file_data_by_key_find(Engrave_File *ef, const char *key)
  * @return Returns the Engrave_Font with the matching name or NULL if no such
  * font exists.
  */
-Engrave_Font *
+EAPI Engrave_Font *
 engrave_file_font_by_name_find(Engrave_File *ef, const char *name)
 {
     Evas_List *l;

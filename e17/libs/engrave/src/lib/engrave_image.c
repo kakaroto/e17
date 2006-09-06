@@ -11,7 +11,7 @@
  * @return Returns a pointer to a newly allocated Engrave_Image object on
  * success or NULL on failure.
  */
-Engrave_Image *
+EAPI Engrave_Image *
 engrave_image_new(const char *name, Engrave_Image_Type type, double value)
 {
   Engrave_Image *image;
@@ -31,7 +31,7 @@ engrave_image_new(const char *name, Engrave_Image_Type type, double value)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_image_free(Engrave_Image *ei)
 {
   if (!ei) return;
@@ -47,7 +47,7 @@ engrave_image_free(Engrave_Image *ei)
  * @return Returns a pointer to the newly allocated Engrave_Image on success
  * or NULL on failure
  */
-Engrave_Image *
+EAPI Engrave_Image *
 engrave_image_dup(Engrave_Image *from)
 {
   Engrave_Image *to;
@@ -61,7 +61,7 @@ engrave_image_dup(Engrave_Image *from)
  * 
  * @return Returns the name of the image or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_image_name_get(Engrave_Image *ei)
 {
   return (ei ? ei->name : NULL);
@@ -74,7 +74,7 @@ engrave_image_name_get(Engrave_Image *ei)
  * @return Returns the Engrave_Image_Type associated with @a ei or
  * ENGRAVE_IMAGE_TYPE_NUM if the type is not set.
  */
-Engrave_Image_Type
+EAPI Engrave_Image_Type
 engrave_image_type_get(Engrave_Image *ei)
 {
   return (ei ? ei->type : ENGRAVE_IMAGE_TYPE_NUM);
@@ -86,7 +86,7 @@ engrave_image_type_get(Engrave_Image *ei)
  *
  * @return Returns the compression value of the image or 0 if not set.
  */
-double
+EAPI double
 engrave_image_compression_value_get(Engrave_Image *ei)
 {
   return (ei ? ei->value : 0.0);
@@ -99,7 +99,7 @@ engrave_image_compression_value_get(Engrave_Image *ei)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_image_parent_set(Engrave_Image *ei, void *ef)
 {
     if (!ei) return;
@@ -112,7 +112,7 @@ engrave_image_parent_set(Engrave_Image *ei, void *ef)
  *
  * @return Returns the pointer to the Engrave_File parent or NULL if none set
  */
-void *
+EAPI void *
 engrave_image_parent_get(Engrave_Image *ei)
 {
     return (ei ? ei->parent : NULL);

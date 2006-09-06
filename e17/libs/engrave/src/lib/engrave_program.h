@@ -50,45 +50,45 @@ struct _Engrave_Program
   void *parent;    /**< Pointer to parent */
 };
 
-Engrave_Program *engrave_program_new(void);
-void engrave_program_free(Engrave_Program *ep);
+EAPI Engrave_Program *engrave_program_new(void);
+EAPI void engrave_program_free(Engrave_Program *ep);
 
-void engrave_program_parent_set(Engrave_Program *ep, void *eg);
-void *engrave_program_parent_get(Engrave_Program *ep);
+EAPI void engrave_program_parent_set(Engrave_Program *ep, void *eg);
+EAPI void *engrave_program_parent_get(Engrave_Program *ep);
 
-void engrave_program_script_set(Engrave_Program *ep, const char *script);
-void engrave_program_name_set(Engrave_Program *ep, const char *name);
-void engrave_program_signal_set(Engrave_Program *ep, const char *signal);
-void engrave_program_source_set(Engrave_Program *ep, const char *source);
-void engrave_program_target_add(Engrave_Program *ep, const char *target);
-void engrave_program_after_add(Engrave_Program *ep, const char *after);
-void engrave_program_in_set(Engrave_Program *ep, double from, double range);
-void engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
-                                                const char *state, 
-                                                const char *state2,
-                                                double value, double value2);
-void engrave_program_transition_set(Engrave_Program *ep,
-                                Engrave_Transition trans, double duration);
+EAPI void engrave_program_script_set(Engrave_Program *ep, const char *script);
+EAPI void engrave_program_name_set(Engrave_Program *ep, const char *name);
+EAPI void engrave_program_signal_set(Engrave_Program *ep, const char *signal);
+EAPI void engrave_program_source_set(Engrave_Program *ep, const char *source);
+EAPI void engrave_program_target_add(Engrave_Program *ep, const char *target);
+EAPI void engrave_program_after_add(Engrave_Program *ep, const char *after);
+EAPI void engrave_program_in_set(Engrave_Program *ep, double from, double range);
+EAPI void engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
+                                     const char *state, 
+                                     const char *state2,
+                                     double value, double value2);
+EAPI void engrave_program_transition_set(Engrave_Program *ep,
+                                         Engrave_Transition trans, double duration);
 
-const char *engrave_program_name_get(Engrave_Program *ep);
-const char *engrave_program_signal_get(Engrave_Program *ep);
-const char *engrave_program_source_get(Engrave_Program *ep);
-void engrave_program_action_get(Engrave_Program *ep, Engrave_Action *action,
-                                    char *state, char *state2, 
-                                    int state_len, int state2_len,
-                                    double *value, double *value2);
-void engrave_program_transition_get(Engrave_Program *ep, 
-                                    Engrave_Transition *trans, double *duration);
-const char *engrave_program_script_get(Engrave_Program *ep);
-void engrave_program_in_get(Engrave_Program *ep, double *from, double *range);
+EAPI const char *engrave_program_name_get(Engrave_Program *ep);
+EAPI const char *engrave_program_signal_get(Engrave_Program *ep);
+EAPI const char *engrave_program_source_get(Engrave_Program *ep);
+EAPI void engrave_program_action_get(Engrave_Program *ep, Engrave_Action *action,
+                                     char *state, char *state2, 
+                                     int state_len, int state2_len,
+                                     double *value, double *value2);
+EAPI void engrave_program_transition_get(Engrave_Program *ep, 
+                                         Engrave_Transition *trans, double *duration);
+EAPI const char *engrave_program_script_get(Engrave_Program *ep);
+EAPI void engrave_program_in_get(Engrave_Program *ep, double *from, double *range);
 
-int engrave_program_afters_count(Engrave_Program *ep);
-int engrave_program_targets_count(Engrave_Program *ep);
+EAPI int engrave_program_afters_count(Engrave_Program *ep);
+EAPI int engrave_program_targets_count(Engrave_Program *ep);
 
-void engrave_program_target_foreach(Engrave_Program *ep,
-                                void (*func)(const char *, void *), void *data);
-void engrave_program_after_foreach(Engrave_Program *ep,
-                                void (*func)(const char *, void *), void *data);
+EAPI void engrave_program_target_foreach(Engrave_Program *ep,
+                                         void (*func)(const char *, void *), void *data);
+EAPI void engrave_program_after_foreach(Engrave_Program *ep,
+                                        void (*func)(const char *, void *), void *data);
 
 
 /**

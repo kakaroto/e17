@@ -10,7 +10,7 @@
  * @return Returns a pointer to a newly allocated Engrave_Font on success,
  * or NULL on failure.
  */
-Engrave_Font *
+EAPI Engrave_Font *
 engrave_font_new(const char *path, const char *name)
 {
   Engrave_Font *ef;
@@ -28,7 +28,7 @@ engrave_font_new(const char *path, const char *name)
  *
  * @return Returns no value
  */
-void
+EAPI void
 engrave_font_free(Engrave_Font *ef)
 {
   if (!ef) return;
@@ -44,7 +44,7 @@ engrave_font_free(Engrave_Font *ef)
  *
  * @return Returns the name of the font on success or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_font_name_get(Engrave_Font *ef)
 {
   return (ef ? ef->name : NULL);
@@ -56,7 +56,7 @@ engrave_font_name_get(Engrave_Font *ef)
  *
  * @return Returns the path of the font on success or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_font_path_get(Engrave_Font *ef)
 {
   return (ef ? ef->path : NULL);
@@ -69,7 +69,7 @@ engrave_font_path_get(Engrave_Font *ef)
  *
  * @return Retruns no value.
  */
-void
+EAPI void
 engrave_font_parent_set(Engrave_Font *font, void *ef)
 {
     if (!font) return;
@@ -82,7 +82,7 @@ engrave_font_parent_set(Engrave_Font *font, void *ef)
  * 
  * @return Returns the pointer to the parent or NULL if none set
  */
-void *
+EAPI void *
 engrave_font_parent_get(Engrave_Font *ef)
 {
     return (ef ? ef->parent : NULL);

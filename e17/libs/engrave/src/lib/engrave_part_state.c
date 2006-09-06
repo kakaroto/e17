@@ -8,7 +8,7 @@
  * @return Returns a pointer to a newly allocated Engrave_Part_State object
  * on success or NULL on failure
  */
-Engrave_Part_State *
+EAPI Engrave_Part_State *
 engrave_part_state_new(void)
 {
   Engrave_Part_State *state;
@@ -66,7 +66,7 @@ engrave_part_state_new(void)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_free(Engrave_Part_State *eps)
 {
   if (!eps) return;
@@ -96,7 +96,7 @@ engrave_part_state_free(Engrave_Part_State *eps)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_name_set(Engrave_Part_State *eps, const char *name, 
                                                           double value)
 {
@@ -113,7 +113,7 @@ engrave_part_state_name_set(Engrave_Part_State *eps, const char *name,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_visible_set(Engrave_Part_State *eps, int visible)
 {
   if (!eps) return;
@@ -128,7 +128,7 @@ engrave_part_state_visible_set(Engrave_Part_State *eps, int visible)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_align_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
@@ -144,7 +144,7 @@ engrave_part_state_align_set(Engrave_Part_State *eps, double x, double y)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_step_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
@@ -160,7 +160,7 @@ engrave_part_state_step_set(Engrave_Part_State *eps, double x, double y)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_min_size_set(Engrave_Part_State *eps, int w, int h)
 {
   if (!eps) return;
@@ -178,7 +178,7 @@ engrave_part_state_min_size_set(Engrave_Part_State *eps, int w, int h)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_fixed_size_set(Engrave_Part_State *eps, int w, int h)
 {
   if (!eps) return;
@@ -194,7 +194,7 @@ engrave_part_state_fixed_size_set(Engrave_Part_State *eps, int w, int h)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_max_size_set(Engrave_Part_State *eps, int w, int h)
 {
   if (!eps) return;
@@ -210,7 +210,7 @@ engrave_part_state_max_size_set(Engrave_Part_State *eps, int w, int h)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_aspect_set(Engrave_Part_State *eps, double w, double h)
 {
   if (!eps) return;
@@ -225,7 +225,7 @@ engrave_part_state_aspect_set(Engrave_Part_State *eps, double w, double h)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_aspect_preference_set(Engrave_Part_State *eps,
                                     Engrave_Aspect_Preference prefer)
 {
@@ -241,7 +241,7 @@ engrave_part_state_aspect_preference_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel1_relative_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
@@ -257,7 +257,7 @@ engrave_part_state_rel1_relative_set(Engrave_Part_State *eps, double x, double y
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel2_relative_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
@@ -273,7 +273,7 @@ engrave_part_state_rel2_relative_set(Engrave_Part_State *eps, double x, double y
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel1_offset_set(Engrave_Part_State *eps, int x, int y)
 {
   if (!eps) return;
@@ -289,7 +289,7 @@ engrave_part_state_rel1_offset_set(Engrave_Part_State *eps, int x, int y)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel2_offset_set(Engrave_Part_State *eps, int x, int y)
 {
   if (!eps) return;
@@ -304,7 +304,7 @@ engrave_part_state_rel2_offset_set(Engrave_Part_State *eps, int x, int y)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel1_to_x_set(Engrave_Part_State *eps, const char *to)
 {
   if (!eps) return;
@@ -319,7 +319,7 @@ engrave_part_state_rel1_to_x_set(Engrave_Part_State *eps, const char *to)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel2_to_x_set(Engrave_Part_State *eps, const char *to)
 {
   if (!eps) return;
@@ -334,7 +334,7 @@ engrave_part_state_rel2_to_x_set(Engrave_Part_State *eps, const char *to)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel1_to_y_set(Engrave_Part_State *eps, const char *to)
 {
   if (!eps) return;
@@ -349,7 +349,7 @@ engrave_part_state_rel1_to_y_set(Engrave_Part_State *eps, const char *to)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel2_to_y_set(Engrave_Part_State *eps, const char *to)
 {
   if (!eps) return;
@@ -364,7 +364,7 @@ engrave_part_state_rel2_to_y_set(Engrave_Part_State *eps, const char *to)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel1_to_set(Engrave_Part_State *eps, const char *to)
 {
   engrave_part_state_rel1_to_x_set(eps, to);
@@ -378,7 +378,7 @@ engrave_part_state_rel1_to_set(Engrave_Part_State *eps, const char *to)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_rel2_to_set(Engrave_Part_State *eps, const char *to)
 {
   engrave_part_state_rel2_to_x_set(eps, to);
@@ -392,7 +392,7 @@ engrave_part_state_rel2_to_set(Engrave_Part_State *eps, const char *to)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_image_normal_set(Engrave_Part_State *eps, 
                                       Engrave_Image *im)
 {
@@ -407,7 +407,7 @@ engrave_part_state_image_normal_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_image_tween_add(Engrave_Part_State *eps,
                                       Engrave_Image *im)
 {
@@ -425,7 +425,7 @@ engrave_part_state_image_tween_add(Engrave_Part_State *eps,
  *
  * @return Returns no value k
  */
-void
+EAPI void
 engrave_part_state_image_border_set(Engrave_Part_State *eps, 
                                 int l, int r, int t, int b)
 {
@@ -444,7 +444,7 @@ engrave_part_state_image_border_set(Engrave_Part_State *eps,
  *
  * @return Returns no value k
  */
-void
+EAPI void
 engrave_part_state_image_middle_set(Engrave_Part_State *eps, 
                                 int middle) 
 {
@@ -459,7 +459,7 @@ engrave_part_state_image_middle_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_color_class_set(Engrave_Part_State *eps, const char *class)
 {
   if (!eps) return;
@@ -477,7 +477,7 @@ engrave_part_state_color_class_set(Engrave_Part_State *eps, const char *class)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_color_set(Engrave_Part_State *eps, 
                                 int r, int g, int b, int a)
 {
@@ -498,7 +498,7 @@ engrave_part_state_color_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_color2_set(Engrave_Part_State *eps, 
                                 int r, int g, int b, int a)
 {
@@ -519,7 +519,7 @@ engrave_part_state_color2_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_color3_set(Engrave_Part_State *eps, 
                                 int r, int g, int b, int a)
 {
@@ -537,7 +537,7 @@ engrave_part_state_color3_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_fill_smooth_set(Engrave_Part_State *eps, int smooth)
 {
   if (!eps) return;
@@ -552,7 +552,7 @@ engrave_part_state_fill_smooth_set(Engrave_Part_State *eps, int smooth)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_fill_origin_relative_set(Engrave_Part_State *eps,
                                                 double x, double y)
 {
@@ -569,7 +569,7 @@ engrave_part_state_fill_origin_relative_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_fill_size_relative_set(Engrave_Part_State *eps,
                                                 double x, double y)
 {
@@ -586,7 +586,7 @@ engrave_part_state_fill_size_relative_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_fill_origin_offset_set(Engrave_Part_State *eps,
                                                       int x, int y)
 {
@@ -603,7 +603,7 @@ engrave_part_state_fill_origin_offset_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_fill_size_offset_set(Engrave_Part_State *eps,
                                                 int x, int y)
 {
@@ -619,7 +619,7 @@ engrave_part_state_fill_size_offset_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_text_set(Engrave_Part_State *eps, const char *text)
 {
   if (!eps) return;
@@ -634,7 +634,7 @@ engrave_part_state_text_text_set(Engrave_Part_State *eps, const char *text)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_text_append(Engrave_Part_State *eps, const char *text)
 {
   if (!eps) return;
@@ -655,7 +655,7 @@ engrave_part_state_text_text_append(Engrave_Part_State *eps, const char *text)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_elipsis_set(Engrave_Part_State *eps,
                                                 double val)
 {
@@ -670,7 +670,7 @@ engrave_part_state_text_elipsis_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_text_source_set(Engrave_Part_State *eps,
                                                 const char *text_source)
 {
@@ -686,7 +686,7 @@ engrave_part_state_text_text_source_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_source_set(Engrave_Part_State *eps,
                                                 const char *source)
 {
@@ -703,7 +703,7 @@ engrave_part_state_text_source_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_style_set(Engrave_Part_State *eps, const char *text_style)
 {
   if (!eps) return;
@@ -720,7 +720,7 @@ engrave_part_state_text_style_set(Engrave_Part_State *eps, const char *text_styl
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_text_class_set(Engrave_Part_State *eps,
                                                 const char *text_class)
 {
@@ -736,7 +736,7 @@ engrave_part_state_text_text_class_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_font_set(Engrave_Part_State *eps,
                                                 const char *font)
 {
@@ -752,7 +752,7 @@ engrave_part_state_text_font_set(Engrave_Part_State *eps,
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_size_set(Engrave_Part_State *eps, int size)
 {
   if (!eps) return;
@@ -767,7 +767,7 @@ engrave_part_state_text_size_set(Engrave_Part_State *eps, int size)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_fit_set(Engrave_Part_State *eps, int x, int y)
 {
   if (!eps) return;
@@ -783,7 +783,7 @@ engrave_part_state_text_fit_set(Engrave_Part_State *eps, int x, int y)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_min_set(Engrave_Part_State *eps, int x, int y)
 {
   if (!eps) return;
@@ -799,7 +799,7 @@ engrave_part_state_text_min_set(Engrave_Part_State *eps, int x, int y)
  *
  * @return Returns no value 
  */
-void
+EAPI void
 engrave_part_state_text_align_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
@@ -814,7 +814,7 @@ engrave_part_state_text_align_set(Engrave_Part_State *eps, double x, double y)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_copy(Engrave_Part_State *from, Engrave_Part_State *to)
 {
   Evas_List *l;
@@ -883,7 +883,7 @@ engrave_part_state_copy(Engrave_Part_State *from, Engrave_Part_State *to)
  *
  * @return Returns the state name, or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_name_get(Engrave_Part_State *eps, double *val)
 {
   if (val) *val = (eps ? eps->value : 0);
@@ -896,7 +896,7 @@ engrave_part_state_name_get(Engrave_Part_State *eps, double *val)
  *
  * @return Returns the visiblity of the state
  */
-int
+EAPI int
 engrave_part_state_visible_get(Engrave_Part_State *eps)
 {
   if (!eps) return 1;
@@ -911,7 +911,7 @@ engrave_part_state_visible_get(Engrave_Part_State *eps)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_align_get(Engrave_Part_State *eps, double *x, double *y)
 {
   if (x) *x = (eps ? eps->align.x : 0.5);
@@ -926,7 +926,7 @@ engrave_part_state_align_get(Engrave_Part_State *eps, double *x, double *y)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_step_get(Engrave_Part_State *eps, double *x, double *y)
 {
   if (x) *x = (eps ? eps->step.x : 0);
@@ -941,7 +941,7 @@ engrave_part_state_step_get(Engrave_Part_State *eps, double *x, double *y)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_min_size_get(Engrave_Part_State *eps, int *w, int *h)
 {
   if (w) *w = (eps ? eps->min.w : 0);
@@ -956,7 +956,7 @@ engrave_part_state_min_size_get(Engrave_Part_State *eps, int *w, int *h)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_fixed_size_get(Engrave_Part_State *eps, int *w, int *h)
 {
   if (w) *w = (eps ? eps->fixed.w : 0);
@@ -972,7 +972,7 @@ engrave_part_state_fixed_size_get(Engrave_Part_State *eps, int *w, int *h)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_max_size_get(Engrave_Part_State *eps, int *w, int *h)
 {
   if (w) *w = (eps ? eps->max.w : -1);
@@ -987,7 +987,7 @@ engrave_part_state_max_size_get(Engrave_Part_State *eps, int *w, int *h)
  * 
  * @return Returns no value
  */
-void
+EAPI void
 engrave_part_state_aspect_get(Engrave_Part_State *eps, double *w, double *h)
 {
   if (w) *w = (eps ? eps->aspect.w : 0);
@@ -1000,7 +1000,7 @@ engrave_part_state_aspect_get(Engrave_Part_State *eps, double *w, double *h)
  *
  * @return Returns the Engrave_Aspect_Preference for the state
  */
-Engrave_Aspect_Preference
+EAPI Engrave_Aspect_Preference
 engrave_part_state_aspect_preference_get(Engrave_Part_State *eps)
 {
   if (!eps) return ENGRAVE_ASPECT_PREFERENCE_NONE;
@@ -1015,7 +1015,7 @@ engrave_part_state_aspect_preference_get(Engrave_Part_State *eps)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_rel1_relative_get(Engrave_Part_State *eps, 
                                           double *x, double *y)
 {
@@ -1031,7 +1031,7 @@ engrave_part_state_rel1_relative_get(Engrave_Part_State *eps,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_rel1_offset_get(Engrave_Part_State *eps, int *x, int*y)
 {
   if (x) *x = (eps ? eps->rel1.offset.x : 0);
@@ -1044,7 +1044,7 @@ engrave_part_state_rel1_offset_get(Engrave_Part_State *eps, int *x, int*y)
  * 
  * @return Returns the to_x value or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_rel1_to_x_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->rel1.to_x : NULL);
@@ -1056,7 +1056,7 @@ engrave_part_state_rel1_to_x_get(Engrave_Part_State *eps)
  * 
  * @return Returns the to_y value or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_rel1_to_y_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->rel1.to_y : NULL);
@@ -1070,7 +1070,7 @@ engrave_part_state_rel1_to_y_get(Engrave_Part_State *eps)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_rel2_relative_get(Engrave_Part_State *eps, 
                                           double *x, double *y)
 {
@@ -1086,7 +1086,7 @@ engrave_part_state_rel2_relative_get(Engrave_Part_State *eps,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_rel2_offset_get(Engrave_Part_State *eps, int *x, int*y)
 {
   if (x) *x = (eps ? eps->rel2.offset.x : -1);
@@ -1099,7 +1099,7 @@ engrave_part_state_rel2_offset_get(Engrave_Part_State *eps, int *x, int*y)
  * 
  * @return Returns the to_x value or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_rel2_to_x_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->rel2.to_x : NULL);
@@ -1111,7 +1111,7 @@ engrave_part_state_rel2_to_x_get(Engrave_Part_State *eps)
  * 
  * @return Returns the to_y value or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_rel2_to_y_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->rel2.to_y : NULL);
@@ -1123,7 +1123,7 @@ engrave_part_state_rel2_to_y_get(Engrave_Part_State *eps)
  * 
  * @return Returns the colour class on success or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_color_class_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->color_class : NULL);
@@ -1193,7 +1193,7 @@ void engrave_part_state_color3_get(Engrave_Part_State *eps,
  * @return Returns the Engrave_Image for the normal setting or NULL on
  * failure.
  */
-Engrave_Image *
+EAPI Engrave_Image *
 engrave_part_state_image_normal_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->image.normal : NULL);
@@ -1209,7 +1209,7 @@ engrave_part_state_image_normal_get(Engrave_Part_State *eps)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_image_border_get(Engrave_Part_State *eps,
                                   int *l, int *r, int *t, int *b)
 {
@@ -1225,7 +1225,7 @@ engrave_part_state_image_border_get(Engrave_Part_State *eps,
  *
  * @return Returns the middle value.
  */
-int
+EAPI int
 engrave_part_state_image_middle_get(Engrave_Part_State *eps)
 {
   if (eps) return eps->image.middle;
@@ -1239,7 +1239,7 @@ engrave_part_state_image_middle_get(Engrave_Part_State *eps)
  *
  * @return Returns the text value on success or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_text_text_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->text.text : NULL);
@@ -1251,7 +1251,7 @@ engrave_part_state_text_text_get(Engrave_Part_State *eps)
  *
  * @return Returns the text style or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_text_style_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->text.style : NULL);
@@ -1263,7 +1263,7 @@ engrave_part_state_text_style_get(Engrave_Part_State *eps)
  *
  * @return Returns the text class or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_text_text_class_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->text.text_class : NULL);
@@ -1275,7 +1275,7 @@ engrave_part_state_text_text_class_get(Engrave_Part_State *eps)
  *
  * @return Returns the text source or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_text_text_source_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->text.text_source : NULL);
@@ -1287,7 +1287,7 @@ engrave_part_state_text_text_source_get(Engrave_Part_State *eps)
  *
  * @return Returns the source or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_text_source_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->text.source : NULL);
@@ -1299,7 +1299,7 @@ engrave_part_state_text_source_get(Engrave_Part_State *eps)
  *
  * @return Returns the font on success or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_state_text_font_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->text.font : NULL);
@@ -1311,7 +1311,7 @@ engrave_part_state_text_font_get(Engrave_Part_State *eps)
  *
  * @return Returns the font size.
  */
-int
+EAPI int
 engrave_part_state_text_size_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->text.size : 0);
@@ -1325,7 +1325,7 @@ engrave_part_state_text_size_get(Engrave_Part_State *eps)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_text_fit_get(Engrave_Part_State *eps, int *x, int *y)
 {
   if (x) *x = (eps ? eps->text.fit.x : 0);
@@ -1338,7 +1338,7 @@ engrave_part_state_text_fit_get(Engrave_Part_State *eps, int *x, int *y)
  * 
  * @return The elipsis value
  */
-double
+EAPI double
 engrave_part_state_text_elipsis_get(Engrave_Part_State *eps)
 {
   return (eps ? eps->text.elipsis : 0.0);
@@ -1352,7 +1352,7 @@ engrave_part_state_text_elipsis_get(Engrave_Part_State *eps)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_text_min_get(Engrave_Part_State *eps, int *x, int *y)
 {
   if (x) *x = (eps ? eps->text.min.x : 0);
@@ -1367,7 +1367,7 @@ engrave_part_state_text_min_get(Engrave_Part_State *eps, int *x, int *y)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_text_align_get(Engrave_Part_State *eps,
                                       double *x, double *y)
 {
@@ -1375,13 +1375,13 @@ engrave_part_state_text_align_get(Engrave_Part_State *eps,
   if (y) *y = (eps ? eps->text.align.y : 0.5);
 }
 
-int
+EAPI int
 engrave_part_state_fill_smooth_get(Engrave_Part_State *eps)
 {
     return (eps ? eps->fill.smooth : 1);
 }
 
-void
+EAPI void
 engrave_part_state_fill_origin_relative_get(Engrave_Part_State *state,
                                                 double *x, double *y)
 {
@@ -1389,7 +1389,7 @@ engrave_part_state_fill_origin_relative_get(Engrave_Part_State *state,
     if (y) *y = (state ? state->fill.pos_rel.y : 0);
 }
 
-void
+EAPI void
 engrave_part_state_fill_size_relative_get(Engrave_Part_State *eps,
                                                 double *x, double *y)
 {
@@ -1397,7 +1397,7 @@ engrave_part_state_fill_size_relative_get(Engrave_Part_State *eps,
     if (y) *y = (eps ? eps->fill.rel.y : 1);
 }
 
-void
+EAPI void
 engrave_part_state_fill_origin_offset_get(Engrave_Part_State *eps,
                                                       int *x, int *y)
 {
@@ -1418,7 +1418,7 @@ void engrave_part_state_fill_size_offset_get(Engrave_Part_State *eps,
  *
  * @return Returns number of tweens, 0 otherwise
  */
-int
+EAPI int
 engrave_part_state_tweens_count(Engrave_Part_State *eps)
 {
   if (!eps) return 0;
@@ -1433,7 +1433,7 @@ engrave_part_state_tweens_count(Engrave_Part_State *eps)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_tween_foreach(Engrave_Part_State *eps,
                 void (*func)(Engrave_Image *, void *), void *data)
 {
@@ -1451,7 +1451,7 @@ engrave_part_state_tween_foreach(Engrave_Part_State *eps,
  *
  * @return Returns the evas object that displays this state
  */
-Evas_Object *
+EAPI Evas_Object *
 engrave_part_state_evas_object_get(Engrave_Part_State *eps)
 {
     return (eps ? eps->object : NULL);
@@ -1464,7 +1464,7 @@ engrave_part_state_evas_object_get(Engrave_Part_State *eps)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_evas_object_set(Engrave_Part_State *eps, Evas_Object *o)
 {
     if (!eps) return;
@@ -1478,7 +1478,7 @@ engrave_part_state_evas_object_set(Engrave_Part_State *eps, Evas_Object *o)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_parent_set(Engrave_Part_State *eps, void *ep)
 {
     if (!eps) return;
@@ -1491,7 +1491,7 @@ engrave_part_state_parent_set(Engrave_Part_State *eps, void *ep)
  * 
  * @return Returns the Engrave_Part parent pointer, or NULL if none set.
  */
-void *
+EAPI void *
 engrave_part_state_parent_get(Engrave_Part_State *eps)
 {
     return (eps ? eps->parent : NULL);

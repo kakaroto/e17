@@ -13,9 +13,9 @@
  * @{
  */
 
-Engrave_File *engrave_load_edc(const char *file, const char *imdir, 
-                                            const char *fontdir);
-Engrave_File *engrave_load_edj(const char *filename);
+EAPI Engrave_File *engrave_load_edc(const char *file, const char *imdir, 
+                                    const char *fontdir);
+EAPI Engrave_File *engrave_load_edj(const char *filename);
 
 /**
  * @}

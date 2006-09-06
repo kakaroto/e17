@@ -15,10 +15,10 @@
  * @{
  */
 
-Evas_Object *engrave_canvas_new(Evas *e);
-void engrave_canvas_file_set(Evas_Object *o, Engrave_File *ef);
+EAPI Evas_Object *engrave_canvas_new(Evas *e);
+EAPI void engrave_canvas_file_set(Evas_Object *o, Engrave_File *ef);
 
-void engrave_canvas_current_group_set(Evas_Object *o, Engrave_Group *eg);
+EAPI void engrave_canvas_current_group_set(Evas_Object *o, Engrave_Group *eg);
 
 /**
  * @}

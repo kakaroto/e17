@@ -9,7 +9,7 @@
  * @return Returns a pointer to the newly allocated Engrave_Part on sucess
  * or NULL on failure.
  */
-Engrave_Part *
+EAPI Engrave_Part *
 engrave_part_new(Engrave_Part_Type type)
 {
   Engrave_Part *part;
@@ -26,7 +26,7 @@ engrave_part_new(Engrave_Part_Type type)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_free(Engrave_Part *ep)
 {
   Evas_List *l;
@@ -51,7 +51,7 @@ engrave_part_free(Engrave_Part *ep)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_mouse_events_set(Engrave_Part *ep, int val)
 {
   if (!ep) return;
@@ -65,7 +65,7 @@ engrave_part_mouse_events_set(Engrave_Part *ep, int val)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_repeat_events_set(Engrave_Part *ep, int val)
 {
   if (!ep) return;
@@ -79,7 +79,7 @@ engrave_part_repeat_events_set(Engrave_Part *ep, int val)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_name_set(Engrave_Part *ep, const char *name)
 {
   if (!ep) return;
@@ -93,7 +93,7 @@ engrave_part_name_set(Engrave_Part *ep, const char *name)
  * 
  * @return Returns the name of the part, or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_name_get(Engrave_Part *ep)
 {
     return (ep ? ep->name : NULL);
@@ -105,7 +105,7 @@ engrave_part_name_get(Engrave_Part *ep)
  *
  * @return Returns the Engrave_Part_Type of the part
  */
-Engrave_Part_Type
+EAPI Engrave_Part_Type
 engrave_part_type_get(Engrave_Part *ep)
 {
   /* XXX Default to RECT if non set ??? */
@@ -118,7 +118,7 @@ engrave_part_type_get(Engrave_Part *ep)
  * 
  * @return Returns the mouse events setting for the part
  */
-int
+EAPI int
 engrave_part_mouse_events_get(Engrave_Part *ep)
 {
   if (!ep) return 1;
@@ -131,7 +131,7 @@ engrave_part_mouse_events_get(Engrave_Part *ep)
  * 
  * @return Returns the repeat event setting of the part
  */
-int
+EAPI int
 engrave_part_repeat_events_get(Engrave_Part *ep)
 {
   if (!ep) return 0;
@@ -145,7 +145,7 @@ engrave_part_repeat_events_get(Engrave_Part *ep)
  * @return Returns the Engrave_Text_Effect setting for the part or
  * ENGRAVE_TEXT_EFFECT_NONE if non set
  */
-Engrave_Text_Effect
+EAPI Engrave_Text_Effect
 engrave_part_effect_get(Engrave_Part *ep)
 {
   if (!ep) return ENGRAVE_TEXT_EFFECT_NONE;
@@ -158,7 +158,7 @@ engrave_part_effect_get(Engrave_Part *ep)
  *
  * @return Returns the clip_to string for the part or NULL on failure. 
  */
-const char *
+EAPI const char *
 engrave_part_clip_to_get(Engrave_Part *ep)
 {
   return (ep ? ep->clip_to : NULL);
@@ -173,7 +173,7 @@ engrave_part_clip_to_get(Engrave_Part *ep)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_dragable_x_get(Engrave_Part *ep, int *x, int *step, int *count)
 {
   int tx, tstep, tcount;
@@ -201,7 +201,7 @@ engrave_part_dragable_x_get(Engrave_Part *ep, int *x, int *step, int *count)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_dragable_y_get(Engrave_Part *ep, int *y, int *step, int *count)
 {
   int ty, tstep, tcount;
@@ -226,7 +226,7 @@ engrave_part_dragable_y_get(Engrave_Part *ep, int *y, int *step, int *count)
  *
  * @return Returns the confine setting or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_part_dragable_confine_get(Engrave_Part *ep)
 {
   return (ep ? ep->dragable.confine : NULL);
@@ -239,7 +239,7 @@ engrave_part_dragable_confine_get(Engrave_Part *ep)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_type_set(Engrave_Part *ep, Engrave_Part_Type type)
 {
   if (!ep) return;
@@ -253,7 +253,7 @@ engrave_part_type_set(Engrave_Part *ep, Engrave_Part_Type type)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_effect_set(Engrave_Part *ep, Engrave_Text_Effect effect)
 {
   if (!ep) return;
@@ -267,7 +267,7 @@ engrave_part_effect_set(Engrave_Part *ep, Engrave_Text_Effect effect)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_clip_to_set(Engrave_Part *ep, const char *clip_to)
 {
   if (!ep) return;
@@ -284,7 +284,7 @@ engrave_part_clip_to_set(Engrave_Part *ep, const char *clip_to)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_dragable_x_set(Engrave_Part *ep, int x, int step, int count)
 {
   if (!ep) return;
@@ -302,7 +302,7 @@ engrave_part_dragable_x_set(Engrave_Part *ep, int x, int step, int count)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_dragable_y_set(Engrave_Part *ep, int y, int step, int count)
 {
   if (!ep) return;
@@ -318,7 +318,7 @@ engrave_part_dragable_y_set(Engrave_Part *ep, int y, int step, int count)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_dragable_confine_set(Engrave_Part *ep, const char *confine)
 {
   if (!ep) return;
@@ -333,7 +333,7 @@ engrave_part_dragable_confine_set(Engrave_Part *ep, const char *confine)
  * @return Returns the last @a Engrave_Part_State value in the part or NULL if no
  * such value exists.
  */
-Engrave_Part_State *
+EAPI Engrave_Part_State *
 engrave_part_state_last_get(Engrave_Part *ep)
 {
   if (!ep) return NULL;
@@ -347,7 +347,7 @@ engrave_part_state_last_get(Engrave_Part *ep)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps)
 {
   if (!ep || !eps) return;
@@ -371,7 +371,7 @@ engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps)
  * @return Returns a pointer to the Engrave_Part_State matching the given
  * criteria or NULL if not found.
  */
-Engrave_Part_State *
+EAPI Engrave_Part_State *
 engrave_part_state_by_name_value_find(Engrave_Part *ep, 
                                     const char *name, double val)
 {
@@ -401,7 +401,7 @@ engrave_part_state_by_name_value_find(Engrave_Part *ep,
  * 
  * @return Returns number of states in the part, 0 otherwise.
  */
-int
+EAPI int
 engrave_part_states_count(Engrave_Part *ep)
 {
   if (!ep) return 0;
@@ -436,7 +436,7 @@ void engrave_part_state_foreach(Engrave_Part *ep,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_part_parent_set(Engrave_Part *ep, void *eg)
 {
     if (!ep) return;
@@ -449,20 +449,20 @@ engrave_part_parent_set(Engrave_Part *ep, void *eg)
  * 
  * @return Returns the Engrave_Group pointer if set, or NULL if none set.
  */
-void *
+EAPI void *
 engrave_part_parent_get(Engrave_Part *ep)
 {
     return (ep ? ep->parent : NULL);
 }
 
-void
+EAPI void
 engrave_part_current_state_set(Engrave_Part *ep, Engrave_Part_State *eps)
 {
     if (!ep) return;
     ep->current_state = eps;
 }
 
-Engrave_Part_State *
+EAPI Engrave_Part_State *
 engrave_part_current_state_get(Engrave_Part *ep)
 {
     if (!ep) return NULL;

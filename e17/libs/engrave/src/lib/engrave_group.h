@@ -41,44 +41,44 @@ struct _Engrave_Group
   void *parent; /**< Pointer to parent */
 };
 
-Engrave_Group *engrave_group_new(void);
-void engrave_group_free(Engrave_Group *eg);
+EAPI Engrave_Group *engrave_group_new(void);
+EAPI void engrave_group_free(Engrave_Group *eg);
 
-void engrave_group_parent_set(Engrave_Group *eg, void *ef);
-void *engrave_group_parent_get(Engrave_Group *eg);
+EAPI void engrave_group_parent_set(Engrave_Group *eg, void *ef);
+EAPI void *engrave_group_parent_get(Engrave_Group *eg);
 
-void engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed);
-void engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep);
-void engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep);
+EAPI void engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed);
+EAPI void engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep);
+EAPI void engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep);
 
-void engrave_group_script_set(Engrave_Group *eg, const char *script);
-void engrave_group_name_set(Engrave_Group *eg, const char *name);
-void engrave_group_min_size_set(Engrave_Group *eg, int w, int h);
-void engrave_group_max_size_set(Engrave_Group *eg, int w, int h);
+EAPI void engrave_group_script_set(Engrave_Group *eg, const char *script);
+EAPI void engrave_group_name_set(Engrave_Group *eg, const char *name);
+EAPI void engrave_group_min_size_set(Engrave_Group *eg, int w, int h);
+EAPI void engrave_group_max_size_set(Engrave_Group *eg, int w, int h);
 
-Engrave_Part * engrave_group_part_last_get(Engrave_Group *eg);
-Engrave_Program * engrave_group_program_last_get(Engrave_Group *eg);
+EAPI Engrave_Part * engrave_group_part_last_get(Engrave_Group *eg);
+EAPI Engrave_Program * engrave_group_program_last_get(Engrave_Group *eg);
 
-const char *engrave_group_name_get(Engrave_Group *eg);
-const char *engrave_group_script_get(Engrave_Group *eg);
-void engrave_group_min_size_get(Engrave_Group *eg, int *w, int *h);
-void engrave_group_max_size_get(Engrave_Group *eg, int *w, int *h);
+EAPI const char *engrave_group_name_get(Engrave_Group *eg);
+EAPI const char *engrave_group_script_get(Engrave_Group *eg);
+EAPI void engrave_group_min_size_get(Engrave_Group *eg, int *w, int *h);
+EAPI void engrave_group_max_size_get(Engrave_Group *eg, int *w, int *h);
 
-int engrave_group_data_count(Engrave_Group *eg);
-int engrave_group_parts_count(Engrave_Group *eg);
-int engrave_group_programs_count(Engrave_Group *eg);
+EAPI int engrave_group_data_count(Engrave_Group *eg);
+EAPI int engrave_group_parts_count(Engrave_Group *eg);
+EAPI int engrave_group_programs_count(Engrave_Group *eg);
 
-void engrave_group_data_foreach(Engrave_Group *eg, 
-                        void (*func)(Engrave_Data *, void *), void *data);
-void engrave_group_parts_foreach(Engrave_Group *eg, 
-                        void (*func)(Engrave_Part *, void *), void *data);
-void engrave_group_programs_foreach(Engrave_Group *eg, 
-                        void (*func)(Engrave_Program *, void *), void *data);
+EAPI void engrave_group_data_foreach(Engrave_Group *eg, 
+                                     void (*func)(Engrave_Data *, void *), void *data);
+EAPI void engrave_group_parts_foreach(Engrave_Group *eg, 
+                                      void (*func)(Engrave_Part *, void *), void *data);
+EAPI void engrave_group_programs_foreach(Engrave_Group *eg, 
+                                         void (*func)(Engrave_Program *, void *), void *data);
 
-Engrave_Part *engrave_group_part_by_name_find(Engrave_Group *eg, 
-                                    const char *part);
-Engrave_Data *engrave_group_data_by_key_find(Engrave_Group *eg, 
-                                    const char *key);
+EAPI Engrave_Part *engrave_group_part_by_name_find(Engrave_Group *eg, 
+                                                   const char *part);
+EAPI Engrave_Data *engrave_group_data_by_key_find(Engrave_Group *eg, 
+                                                  const char *key);
 
 /**
  * @}

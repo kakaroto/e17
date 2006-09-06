@@ -8,7 +8,7 @@
  * @return Returns a pointer to a newly allocated Engrave_Style object on
  * success or NULL on failure.
  */
-Engrave_Style *
+EAPI Engrave_Style *
 engrave_style_new()
 {
   Engrave_Style *style;
@@ -23,7 +23,7 @@ engrave_style_new()
   return style;
 }
 
-Engrave_Tag *
+EAPI Engrave_Tag *
 engrave_tag_new(const char *key, const char *val)
 {
   Engrave_Tag *tag;

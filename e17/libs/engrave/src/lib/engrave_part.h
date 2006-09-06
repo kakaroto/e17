@@ -55,47 +55,47 @@ struct _Engrave_Part
   void *parent;    /**< Pointer to parent */
 };
 
-Engrave_Part * engrave_part_new(Engrave_Part_Type type);
-void engrave_part_free(Engrave_Part *ep);
+EAPI Engrave_Part * engrave_part_new(Engrave_Part_Type type);
+EAPI void engrave_part_free(Engrave_Part *ep);
 
-void engrave_part_parent_set(Engrave_Part *ep, void *eg);
-void *engrave_part_parent_get(Engrave_Part *ep);
+EAPI void engrave_part_parent_set(Engrave_Part *ep, void *eg);
+EAPI void *engrave_part_parent_get(Engrave_Part *ep);
 
-void engrave_part_current_state_set(Engrave_Part *ep, 
-                                    Engrave_Part_State *eps);
-Engrave_Part_State *engrave_part_current_state_get(Engrave_Part *ep);
+EAPI void engrave_part_current_state_set(Engrave_Part *ep, 
+                                         Engrave_Part_State *eps);
+EAPI Engrave_Part_State *engrave_part_current_state_get(Engrave_Part *ep);
 
-void engrave_part_name_set(Engrave_Part *ep, const char *name);
-void engrave_part_mouse_events_set(Engrave_Part *ep, int val);
-void engrave_part_repeat_events_set(Engrave_Part *ep, int val);
-void engrave_part_type_set(Engrave_Part *ep, Engrave_Part_Type type);
-void engrave_part_effect_set(Engrave_Part *ep, Engrave_Text_Effect effect);
-void engrave_part_clip_to_set(Engrave_Part *ep, const char *clip_to);
+EAPI void engrave_part_name_set(Engrave_Part *ep, const char *name);
+EAPI void engrave_part_mouse_events_set(Engrave_Part *ep, int val);
+EAPI void engrave_part_repeat_events_set(Engrave_Part *ep, int val);
+EAPI void engrave_part_type_set(Engrave_Part *ep, Engrave_Part_Type type);
+EAPI void engrave_part_effect_set(Engrave_Part *ep, Engrave_Text_Effect effect);
+EAPI void engrave_part_clip_to_set(Engrave_Part *ep, const char *clip_to);
 
-Engrave_Part_State *engrave_part_state_last_get(Engrave_Part *ep);
+EAPI Engrave_Part_State *engrave_part_state_last_get(Engrave_Part *ep);
 
-void engrave_part_dragable_x_set(Engrave_Part *ep, int x, int step, int count);
-void engrave_part_dragable_y_set(Engrave_Part *ep, int y, int step, int count);
-void engrave_part_dragable_confine_set(Engrave_Part *ep, const char *confine);
-void engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps);
-Engrave_Part_State * engrave_part_state_by_name_value_find(Engrave_Part *ep, 
-                                            const char *name, double val);
+EAPI void engrave_part_dragable_x_set(Engrave_Part *ep, int x, int step, int count);
+EAPI void engrave_part_dragable_y_set(Engrave_Part *ep, int y, int step, int count);
+EAPI void engrave_part_dragable_confine_set(Engrave_Part *ep, const char *confine);
+EAPI void engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps);
+EAPI Engrave_Part_State * engrave_part_state_by_name_value_find(Engrave_Part *ep, 
+                                                                const char *name, double val);
 
-const char *engrave_part_name_get(Engrave_Part *ep);
-Engrave_Part_Type engrave_part_type_get(Engrave_Part *ep);
-int engrave_part_mouse_events_get(Engrave_Part *ep);
-int engrave_part_repeat_events_get(Engrave_Part *ep);
-Engrave_Text_Effect engrave_part_effect_get(Engrave_Part *ep);
-const char *engrave_part_clip_to_get(Engrave_Part *ep);
-void engrave_part_dragable_x_get(Engrave_Part *ep, int *x, int *step, int *count);
-void engrave_part_dragable_y_get(Engrave_Part *ep, int *y, int *step, int *count);
-const char *engrave_part_dragable_confine_get(Engrave_Part *ep);
+EAPI const char *engrave_part_name_get(Engrave_Part *ep);
+EAPI Engrave_Part_Type engrave_part_type_get(Engrave_Part *ep);
+EAPI int engrave_part_mouse_events_get(Engrave_Part *ep);
+EAPI int engrave_part_repeat_events_get(Engrave_Part *ep);
+EAPI Engrave_Text_Effect engrave_part_effect_get(Engrave_Part *ep);
+EAPI const char *engrave_part_clip_to_get(Engrave_Part *ep);
+EAPI void engrave_part_dragable_x_get(Engrave_Part *ep, int *x, int *step, int *count);
+EAPI void engrave_part_dragable_y_get(Engrave_Part *ep, int *y, int *step, int *count);
+EAPI const char *engrave_part_dragable_confine_get(Engrave_Part *ep);
 
-int engrave_part_states_count(Engrave_Part *ep);
+EAPI int engrave_part_states_count(Engrave_Part *ep);
 
-void engrave_part_state_foreach(Engrave_Part *ep, 
-                    void (*func)(Engrave_Part_State *, Engrave_Part *, void *),
-                    void *data);
+EAPI void engrave_part_state_foreach(Engrave_Part *ep, 
+                                     void (*func)(Engrave_Part_State *, Engrave_Part *, void *),
+                                     void *data);
 
 /**
  * @}

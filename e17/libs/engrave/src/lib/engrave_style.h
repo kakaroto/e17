@@ -36,20 +36,20 @@ struct _Engrave_Tag
   char * val;
 };
 
-Engrave_Style *engrave_style_new();
-Engrave_Tag *engrave_tag_new(const char * key, const char * val);
-void engrave_style_name_set(Engrave_Style *es, char *name);
-void engrave_style_base_set(Engrave_Style *es, char *base);
-void engrave_style_tag_add(Engrave_Style *es, Engrave_Tag *tag);
+EAPI Engrave_Style *engrave_style_new();
+EAPI Engrave_Tag *engrave_tag_new(const char * key, const char * val);
+EAPI void engrave_style_name_set(Engrave_Style *es, char *name);
+EAPI void engrave_style_base_set(Engrave_Style *es, char *base);
+EAPI void engrave_style_tag_add(Engrave_Style *es, Engrave_Tag *tag);
 
-void engrave_style_parent_set(Engrave_Style *es, void *parent);
+EAPI void engrave_style_parent_set(Engrave_Style *es, void *parent);
 
 
-const char * engrave_style_name_get(Engrave_Style *es);
-const char * engrave_style_base_get(Engrave_Style *es);
-Evas_List * engrave_style_tag_get(Engrave_Style *es);
+EAPI const char * engrave_style_name_get(Engrave_Style *es);
+EAPI const char * engrave_style_base_get(Engrave_Style *es);
+EAPI Evas_List * engrave_style_tag_get(Engrave_Style *es);
 
-void engrave_tag_free(Engrave_Tag *tag);
+EAPI void engrave_tag_free(Engrave_Tag *tag);
 
 /**
  * @}

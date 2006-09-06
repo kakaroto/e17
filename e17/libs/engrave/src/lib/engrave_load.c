@@ -24,7 +24,7 @@ char *engrave_filename = NULL;
  * @return Returns a pointer to a newly allocated Engrave_File object on
  * success or NULL on failure.
  */
-Engrave_File *
+EAPI Engrave_File *
 engrave_load_edc(const char *file, const char *imdir, const char *fontdir)
 {
   Engrave_File *enf;
@@ -77,7 +77,7 @@ engrave_load_edc(const char *file, const char *imdir, const char *fontdir)
  * @return Returns a pointer to a newly allocated Engrave_File object on
  * success or NULL on failure.
  */
-Engrave_File *
+EAPI Engrave_File *
 engrave_load_edj(const char *filename)
 {
   Engrave_File *enf = NULL;

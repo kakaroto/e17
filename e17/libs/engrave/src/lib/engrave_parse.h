@@ -4,7 +4,7 @@
 #include "Engrave.h"
 
 Engrave_File * engrave_parse(const char *file, const char *imdir, 
-                                                const char *fontdir);
+                             const char *fontdir);
 
 void engrave_parse_font(char *file, char *name);
 void engrave_parse_image(char *name, Engrave_Image_Type type, double value);
@@ -43,8 +43,7 @@ void engrave_parse_state_min(double w, double h);
 void engrave_parse_state_fixed(double w, double h);
 void engrave_parse_state_max(double w, double h);
 void engrave_parse_state_aspect(double w, double h);
-void engrave_parse_state_aspect_preference(
-                        Engrave_Aspect_Preference prefer);
+void engrave_parse_state_aspect_preference(Engrave_Aspect_Preference prefer);
 void engrave_parse_state_rel1_relative(double x, double y);
 void engrave_parse_state_rel1_offset(int x, int y);
 void engrave_parse_state_rel1_to_x(char *to);
@@ -90,10 +89,10 @@ void engrave_parse_program_target(char *target);
 void engrave_parse_program_after(char *after);
 void engrave_parse_program_in(double from, double range);
 void engrave_parse_program_action(Engrave_Action action, char *state, 
-                                    char *state2, double value, 
-                                    double value2);
+                                  char *state2, double value, 
+                                  double value2);
 void engrave_parse_program_transition(Engrave_Transition transition, 
-                                                    double duration);
+                                      double duration);
 
 #endif
 

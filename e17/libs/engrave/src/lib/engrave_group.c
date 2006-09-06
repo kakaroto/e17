@@ -8,7 +8,7 @@
  * @return Returns a pointer to a newly allocated Engrave_Group object on success or
  * NULL on failure.
  */
-Engrave_Group *
+EAPI Engrave_Group *
 engrave_group_new(void)
 {
   Engrave_Group *group;
@@ -27,7 +27,7 @@ engrave_group_new(void)
  *
  * @return Returns no value
  */
-void
+EAPI void
 engrave_group_free(Engrave_Group *eg) 
 {
   Evas_List *l;
@@ -62,7 +62,7 @@ engrave_group_free(Engrave_Group *eg)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed)
 {
   if (!eg || !ed) return;
@@ -77,7 +77,7 @@ engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_script_set(Engrave_Group *eg, const char *script)
 {
   if (!eg) return;
@@ -92,7 +92,7 @@ engrave_group_script_set(Engrave_Group *eg, const char *script)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_name_set(Engrave_Group *eg, const char *name)
 {
   if (!eg) return;
@@ -108,7 +108,7 @@ engrave_group_name_set(Engrave_Group *eg, const char *name)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_min_size_set(Engrave_Group *eg, int w, int h)
 {
   if (!eg) return;
@@ -124,7 +124,7 @@ engrave_group_min_size_set(Engrave_Group *eg, int w, int h)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_max_size_set(Engrave_Group *eg, int w, int h)
 {
   if (!eg) return;
@@ -139,7 +139,7 @@ engrave_group_max_size_set(Engrave_Group *eg, int w, int h)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep) 
 {
   if (!eg || !ep) return;
@@ -154,7 +154,7 @@ engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep)
 {
   eg->programs = evas_list_append(eg->programs, ep);
@@ -168,7 +168,7 @@ engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep)
  * @return Returns the last Engrave_Part in the group or NULL if no such
  * part exists.
  */
-Engrave_Part *
+EAPI Engrave_Part *
 engrave_group_part_last_get(Engrave_Group *eg)
 {
   if (!eg) return NULL;
@@ -182,7 +182,7 @@ engrave_group_part_last_get(Engrave_Group *eg)
  * @return Returns the last Engrave_Program in the group or NULL if no such
  * program exists.
  */
-Engrave_Program *
+EAPI Engrave_Program *
 engrave_group_program_last_get(Engrave_Group *eg)
 {
   if (!eg) return NULL;
@@ -195,7 +195,7 @@ engrave_group_program_last_get(Engrave_Group *eg)
  * 
  * @return Returns number of data blocks, 0 otherwise.
  */
-int
+EAPI int
 engrave_group_data_count(Engrave_Group *eg)
 {
   if (!eg) return 0;
@@ -208,7 +208,7 @@ engrave_group_data_count(Engrave_Group *eg)
  * 
  * @return Returns the number of parts, 0 otherwise.
  */
-int
+EAPI int
 engrave_group_parts_count(Engrave_Group *eg)
 {
   if (!eg) return 0;
@@ -221,7 +221,7 @@ engrave_group_parts_count(Engrave_Group *eg)
  * 
  * @return Returns number of programs, 0 otherwise.
  */
-int
+EAPI int
 engrave_group_programs_count(Engrave_Group *eg)
 {
   if (!eg) return 0;
@@ -236,7 +236,7 @@ engrave_group_programs_count(Engrave_Group *eg)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_data_foreach(Engrave_Group *eg, 
                             void (*func)(Engrave_Data *, void *), void *data)
 {
@@ -255,7 +255,7 @@ engrave_group_data_foreach(Engrave_Group *eg,
  *
  * @return Returns the name of the group or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_group_name_get(Engrave_Group *eg)
 {
   return (eg ? eg->name : NULL);
@@ -267,7 +267,7 @@ engrave_group_name_get(Engrave_Group *eg)
  * 
  * @return Returns the script on success or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_group_script_get(Engrave_Group *eg)
 {
   return (eg ? eg->script : NULL);
@@ -281,7 +281,7 @@ engrave_group_script_get(Engrave_Group *eg)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_min_size_get(Engrave_Group *eg, int *w, int *h)
 {
   int width, height;
@@ -305,7 +305,7 @@ engrave_group_min_size_get(Engrave_Group *eg, int *w, int *h)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_max_size_get(Engrave_Group *eg, int *w, int *h)
 {
   int width, height;
@@ -328,7 +328,7 @@ engrave_group_max_size_get(Engrave_Group *eg, int *w, int *h)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_parts_foreach(Engrave_Group *eg, 
                              void (*func)(Engrave_Part *, void *), void *data)
 {
@@ -349,7 +349,7 @@ engrave_group_parts_foreach(Engrave_Group *eg,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_programs_foreach(Engrave_Group *eg, 
                         void (*func)(Engrave_Program *, void *), void *data)
 {
@@ -370,7 +370,7 @@ engrave_group_programs_foreach(Engrave_Group *eg,
  * @return Returns the Engrave_Data with the matching key or NULL if no such
  * data exists.
  */
-Engrave_Data *
+EAPI Engrave_Data *
 engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
 {
     Evas_List *l;
@@ -386,7 +386,7 @@ engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
     return NULL;
 }
 
-Engrave_Part *
+EAPI Engrave_Part *
 engrave_group_part_by_name_find(Engrave_Group *eg, const char *part)
 {
     Evas_List *l;
@@ -409,7 +409,7 @@ engrave_group_part_by_name_find(Engrave_Group *eg, const char *part)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_group_parent_set(Engrave_Group *eg, void *ef)
 {
     if (!eg) return;
@@ -422,7 +422,7 @@ engrave_group_parent_set(Engrave_Group *eg, void *ef)
  * 
  * @return Returns the Engrave_File parent pointer or NULL if none set
  */
-void *
+EAPI void *
 engrave_group_parent_get(Engrave_Group *eg)
 {
     return (eg ? eg->parent : NULL);

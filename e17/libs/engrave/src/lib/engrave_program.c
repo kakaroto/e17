@@ -8,7 +8,7 @@
  * @return Returns a pointer to the newly allocated Engrave_Program object
  * on success or NULL on failure.
  */
-Engrave_Program *
+EAPI Engrave_Program *
 engrave_program_new(void)
 {
   Engrave_Program *ep;
@@ -22,7 +22,7 @@ engrave_program_new(void)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_free(Engrave_Program *ep)
 {
   Evas_List *l;
@@ -57,7 +57,7 @@ engrave_program_free(Engrave_Program *ep)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_script_set(Engrave_Program *ep, const char *script)
 {
   if (!ep) return;
@@ -73,7 +73,7 @@ engrave_program_script_set(Engrave_Program *ep, const char *script)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_name_set(Engrave_Program *ep, const char *name)
 {
   if (!ep) return;
@@ -88,7 +88,7 @@ engrave_program_name_set(Engrave_Program *ep, const char *name)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_signal_set(Engrave_Program *ep, const char *signal)
 {
   if (!ep) return;
@@ -103,7 +103,7 @@ engrave_program_signal_set(Engrave_Program *ep, const char *signal)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_source_set(Engrave_Program *ep, const char *source)
 {
   if (!ep) return;
@@ -118,7 +118,7 @@ engrave_program_source_set(Engrave_Program *ep, const char *source)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_target_add(Engrave_Program *ep, const char *target)
 {
   if (!ep || !target) return;
@@ -132,7 +132,7 @@ engrave_program_target_add(Engrave_Program *ep, const char *target)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_after_add(Engrave_Program *ep, const char *after)
 {
   if (!ep || !after) return;
@@ -147,7 +147,7 @@ engrave_program_after_add(Engrave_Program *ep, const char *after)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_in_set(Engrave_Program *ep, double from, double range)
 {
   if (!ep) return;
@@ -166,7 +166,7 @@ engrave_program_in_set(Engrave_Program *ep, double from, double range)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
                                               const char *state, 
                                               const char *state2,
@@ -190,7 +190,7 @@ engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_transition_set(Engrave_Program *ep, Engrave_Transition trans,
                                                               double duration)
 {
@@ -205,7 +205,7 @@ engrave_program_transition_set(Engrave_Program *ep, Engrave_Transition trans,
  *
  * @return Returns the name of the program or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_program_name_get(Engrave_Program *ep)
 {
   return (ep ? ep->name : NULL);
@@ -217,7 +217,7 @@ engrave_program_name_get(Engrave_Program *ep)
  *
  * @return Returns the signal of the program or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_program_signal_get(Engrave_Program *ep)
 {
   return (ep ? ep->signal : NULL);
@@ -229,7 +229,7 @@ engrave_program_signal_get(Engrave_Program *ep)
  *
  * @return Returns the source of the program or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_program_source_get(Engrave_Program *ep)
 {
   return (ep ? ep->source : NULL);
@@ -248,7 +248,7 @@ engrave_program_source_get(Engrave_Program *ep)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_action_get(Engrave_Program *ep, Engrave_Action *action,
                                     char *state, char *state2, 
                                     int state_len, int state2_len,
@@ -275,7 +275,7 @@ engrave_program_action_get(Engrave_Program *ep, Engrave_Action *action,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_transition_get(Engrave_Program *ep, 
                                     Engrave_Transition *trans, double *duration)
 {
@@ -289,7 +289,7 @@ engrave_program_transition_get(Engrave_Program *ep,
  *
  * @return Returns the script or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_program_script_get(Engrave_Program *ep)
 {
   return (ep ? ep->script : NULL);
@@ -303,7 +303,7 @@ engrave_program_script_get(Engrave_Program *ep)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_in_get(Engrave_Program *ep, double *from, double *range)
 {
   double f, r;
@@ -326,7 +326,7 @@ engrave_program_in_get(Engrave_Program *ep, double *from, double *range)
  * 
  * @return Returns number of targets, 0 otherwise
  */
-int
+EAPI int
 engrave_program_targets_count(Engrave_Program *ep)
 {
   if (!ep) return 0;
@@ -339,7 +339,7 @@ engrave_program_targets_count(Engrave_Program *ep)
  * 
  * @return Returns number of afters, 0 otherwise
  */
-int
+EAPI int
 engrave_program_afters_count(Engrave_Program *ep)
 {
   if (!ep) return 0;
@@ -354,7 +354,7 @@ engrave_program_afters_count(Engrave_Program *ep)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_target_foreach(Engrave_Program *ep,
                                 void (*func)(const char *, void *), void *data)
 {
@@ -375,7 +375,7 @@ engrave_program_target_foreach(Engrave_Program *ep,
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_after_foreach(Engrave_Program *ep,
                                void (*func)(const char *, void *), void *data)
 {
@@ -395,7 +395,7 @@ engrave_program_after_foreach(Engrave_Program *ep,
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_program_parent_set(Engrave_Program *ep, void *eg)
 {
     if (!ep) return;
@@ -408,7 +408,7 @@ engrave_program_parent_set(Engrave_Program *ep, void *eg)
  * 
  * @return Returns a pointer to the Engrave_Group parent, or NULL if none set
  */
-void *
+EAPI void *
 engrave_program_parent_get(Engrave_Program *ep)
 {
     return (ep ? ep->parent : NULL);

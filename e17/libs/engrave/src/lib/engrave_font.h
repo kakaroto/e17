@@ -28,14 +28,14 @@ struct _Engrave_Font
   void *parent; /**< Pointer to parent */
 };
 
-Engrave_Font *engrave_font_new(const char *path, const char *name);
-void engrave_font_free(Engrave_Font *ef);
+EAPI Engrave_Font *engrave_font_new(const char *path, const char *name);
+EAPI void engrave_font_free(Engrave_Font *ef);
 
-void engrave_font_parent_set(Engrave_Font *font, void *ef);
-void *engrave_font_parent_get(Engrave_Font *ef);
+EAPI void engrave_font_parent_set(Engrave_Font *font, void *ef);
+EAPI void *engrave_font_parent_get(Engrave_Font *ef);
 
-const char *engrave_font_name_get(Engrave_Font *ef);
-const char *engrave_font_path_get(Engrave_Font *ef);
+EAPI const char *engrave_font_name_get(Engrave_Font *ef);
+EAPI const char *engrave_font_path_get(Engrave_Font *ef);
 
 /**
  * @}

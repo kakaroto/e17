@@ -10,7 +10,7 @@
  * @return Returns a pointer to a newly allocated data block on success, 
  * NULL on failure.
  */
-Engrave_Data *
+EAPI Engrave_Data *
 engrave_data_new(const char *key, const char *value)
 {
   Engrave_Data *data;
@@ -28,7 +28,7 @@ engrave_data_new(const char *key, const char *value)
  *
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_data_free(Engrave_Data *ed)
 {
   if (!ed) return;
@@ -44,7 +44,7 @@ engrave_data_free(Engrave_Data *ed)
  *
  * @return Returns the key for this data or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_data_key_get(Engrave_Data *ed)
 {
   return (ed ? ed->key : NULL);
@@ -56,7 +56,7 @@ engrave_data_key_get(Engrave_Data *ed)
  *
  * @return Returns the value of the data on success or NULL on failure.
  */
-const char *
+EAPI const char *
 engrave_data_value_get(Engrave_Data *ed)
 {
   return (ed ? ed->value : NULL);
@@ -68,7 +68,7 @@ engrave_data_value_get(Engrave_Data *ed)
  * 
  * @return Returns the int value of the data or 0 if its not set.
  */
-int
+EAPI int
 engrave_data_int_value_get(Engrave_Data *ed)
 {
   return (ed ? ed->int_value : 0);
@@ -81,7 +81,7 @@ engrave_data_int_value_get(Engrave_Data *ed)
  * 
  * @return Returns no value.
  */
-void
+EAPI void
 engrave_data_value_set(Engrave_Data *ed, const char *value)
 {
     if (!ed) return;
@@ -96,7 +96,7 @@ engrave_data_value_set(Engrave_Data *ed, const char *value)
  * 
  * @return Returns no value
  */
-void
+EAPI void
 engrave_data_int_value_set(Engrave_Data *ed, int value)
 {
     if (!ed) return;
@@ -112,7 +112,7 @@ engrave_data_int_value_set(Engrave_Data *ed, int value)
  * @brief This will set the parent pointer, in the case of Engrave_Data this
  * can be either an Engrave_File or an Engrave_Group.
  */
-void
+EAPI void
 engrave_data_parent_set(Engrave_Data *ed, void *parent)
 {
     if (!ed) return;
@@ -125,7 +125,7 @@ engrave_data_parent_set(Engrave_Data *ed, void *parent)
  * 
  * @return Returns the parent pointer, or NULL if none set.
  */
-void *
+EAPI void *
 engrave_data_parent_get(Engrave_Data *ed)
 {
     return (ed ? ed->parent : NULL);

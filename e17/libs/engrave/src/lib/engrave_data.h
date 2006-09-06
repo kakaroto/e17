@@ -29,18 +29,18 @@ struct _Engrave_Data
   void *parent; /**< A pointer to the parent */
 };
 
-Engrave_Data * engrave_data_new(const char *key, const char *value);
-void engrave_data_free(Engrave_Data *ed);
+EAPI Engrave_Data * engrave_data_new(const char *key, const char *value);
+EAPI void engrave_data_free(Engrave_Data *ed);
 
-void engrave_data_parent_set(Engrave_Data *ed, void *parent);
-void *engrave_data_parent_get(Engrave_Data *ed);
+EAPI void engrave_data_parent_set(Engrave_Data *ed, void *parent);
+EAPI void *engrave_data_parent_get(Engrave_Data *ed);
 
-const char *engrave_data_key_get(Engrave_Data *ed);
-const char *engrave_data_value_get(Engrave_Data *ed);
-int engrave_data_int_value_get(Engrave_Data *ed);
+EAPI const char *engrave_data_key_get(Engrave_Data *ed);
+EAPI const char *engrave_data_value_get(Engrave_Data *ed);
+EAPI int engrave_data_int_value_get(Engrave_Data *ed);
 
-void engrave_data_value_set(Engrave_Data *ed, const char *value);
-void engrave_data_int_value_set(Engrave_Data *ed, int value);
+EAPI void engrave_data_value_set(Engrave_Data *ed, const char *value);
+EAPI void engrave_data_int_value_set(Engrave_Data *ed, int value);
 
 /**
  * @}

@@ -121,7 +121,7 @@ engrave_out_data(FILE *out, char *name, char *fmt, ...)
  *
  * @return Returns 1 on success 0 otherwise.
  */
-int
+EAPI int
 engrave_edj_output(Engrave_File *engrave_file, const char *path)
 {
   static char tmpn[1024];
@@ -170,7 +170,7 @@ engrave_edj_output(Engrave_File *engrave_file, const char *path)
  *
  * @return Returns 1 on success 0 otherwise.
  */
-int
+EAPI int
 engrave_edc_output(Engrave_File *engrave_file, const char *path)
 {
   FILE *out = NULL;
