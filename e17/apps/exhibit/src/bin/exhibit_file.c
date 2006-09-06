@@ -12,6 +12,8 @@ char *viewables[] =
    ".gif",
    ".tiff",
    ".edj",
+   ".svg",
+   ".svgz",
    NULL
 };
 
