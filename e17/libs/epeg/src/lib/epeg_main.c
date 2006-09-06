@@ -32,7 +32,7 @@ static const JOCTET fake_EOI[2] = { 0xFF, JPEG_EOI };
  * 
  * See also: epeg_memory_open(), epeg_close()
  */
-Epeg_Image *
+EAPI Epeg_Image *
 epeg_file_open(const char *file)
 {
    Epeg_Image *im;
@@ -70,7 +70,7 @@ epeg_file_open(const char *file)
  * 
  * See also: epeg_file_open(), epeg_close()
  */
-Epeg_Image *
+EAPI EAPI Epeg_Image *
 epeg_memory_open(unsigned char *data, int size)
 {
    Epeg_Image *im;
@@ -96,7 +96,7 @@ epeg_memory_open(unsigned char *data, int size)
  * Returns the image size in pixels.
  * 
  */
-void
+EAPI void
 epeg_size_get(Epeg_Image *im, int *w, int *h)
 {
    if (w) *w = im->in.w;
@@ -111,7 +111,7 @@ epeg_size_get(Epeg_Image *im, int *w, int *h)
  * Returns the image color space.
  * 
  */
-void
+EAPI void
 epeg_colorspace_get(Epeg_Image *im, int *space)
 {
    if (space) *space = im->color_space;
@@ -127,7 +127,7 @@ epeg_colorspace_get(Epeg_Image *im, int *space)
  * that only decodes the pixels needed.
  * 
  */
-void
+EAPI void
 epeg_decode_size_set(Epeg_Image *im, int w, int h)
 {
    if      (im->pixels) return;
@@ -141,7 +141,7 @@ epeg_decode_size_set(Epeg_Image *im, int w, int h)
    im->out.y = 0;
 }
 
-void
+EAPI void
 epeg_decode_bounds_set(Epeg_Image *im, int x, int y, int w, int h)
 {
    if      (im->pixels) return;
@@ -166,7 +166,7 @@ epeg_decode_bounds_set(Epeg_Image *im, int x, int y, int w, int h)
  * as this is normally the native colorspace of a JPEG file, avoiding any
  * colorspace conversions for a faster load and/or save.
  */
-void
+EAPI void
 epeg_decode_colorspace_set(Epeg_Image *im, Epeg_Colorspace colorspace)
 {
    if (im->pixels) return;
@@ -194,7 +194,7 @@ epeg_decode_colorspace_set(Epeg_Image *im, Epeg_Colorspace colorspace)
  * allocations failed or the image data cannot be decoded.
  * 
  */
-const void *
+EAPI const void *
 epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
 {
    int xx, yy, ww, hh, bpp, ox, oy, ow, oh, iw, ih;
@@ -439,7 +439,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
  * allocations failed or the image data cannot be decoded.
  * 
  */
-const void *
+EAPI const void *
 epeg_pixels_get_as_RGB8(Epeg_Image *im, int x, int y,  int w, int h)
 {
    int xx, yy, ww, hh, bpp, ox, oy, ow, oh, iw, ih;
@@ -560,7 +560,7 @@ epeg_pixels_get_as_RGB8(Epeg_Image *im, int x, int y,  int w, int h)
  * image @p im by epeg_pixels_get() and mustbe called before the image is
  * closed by epeg_close().
  */
-void
+EAPI void
 epeg_pixels_free(Epeg_Image *im, const void *data)
 {
    free((void *)data);
@@ -576,7 +576,7 @@ epeg_pixels_free(Epeg_Image *im, const void *data)
  * saved with the image. Consider the string returned to be read-only.
  * 
  */
-const char *
+EAPI const char *
 epeg_comment_get(Epeg_Image *im)
 {
    return im->in.comment;
@@ -592,7 +592,7 @@ epeg_comment_get(Epeg_Image *im)
  * the @p info struct on return.
  * 
  */
-void
+EAPI void
 epeg_thumbnail_comments_get(Epeg_Image *im, Epeg_Thumbnail_Info *info)
 {
    if (!info) return;
@@ -615,7 +615,7 @@ epeg_thumbnail_comments_get(Epeg_Image *im, Epeg_Thumbnail_Info *info)
  * The default comment will be any comment loaded from the input file.
  * 
  */
-void
+EAPI void
 epeg_comment_set(Epeg_Image *im, const char *comment)
 {
    if (im->out.comment) free(im->out.comment);
@@ -636,7 +636,7 @@ epeg_comment_set(Epeg_Image *im, const char *comment)
  * The default quality is 75.
  * 
  */
-void
+EAPI void
 epeg_quality_set(Epeg_Image *im, int quality)
 {
    if      (quality < 0)   quality = 0;
@@ -653,7 +653,7 @@ epeg_quality_set(Epeg_Image *im, int quality)
  * it, and if it is 0, it will not. The default is 0.
  * 
  */
-void
+EAPI void
 epeg_thumbnail_comments_enable(Epeg_Image *im, int onoff)
 {
    im->out.thumbnail_info = onoff;
@@ -669,7 +669,7 @@ epeg_thumbnail_comments_enable(Epeg_Image *im, int onoff)
  * terminated C string conatining the path to the file to be saved to. If it is
  * NULL, the image will not be saved to a file when calling epeg_encode().
  */
-void
+EAPI void
 epeg_file_output_set(Epeg_Image *im, const char *file)
 {
    if (im->out.file) free(im->out.file);
@@ -691,7 +691,7 @@ epeg_file_output_set(Epeg_Image *im, const char *file)
  * memory block will be unaffected, as will the size.
  * 
  */
-void
+EAPI void
 epeg_memory_output_set(Epeg_Image *im, unsigned char **data, int *size)
 {
    im->out.mem.data = data;
@@ -713,7 +713,7 @@ epeg_memory_output_set(Epeg_Image *im, unsigned char **data, int *size)
  *        3 - error decode
  *        4 - error decode ( setjmp )
  */
-int
+EAPI int
 epeg_encode(Epeg_Image *im)
 {
    int ret;
@@ -732,7 +732,7 @@ epeg_encode(Epeg_Image *im)
  * 
  * FIXME: Document this.
  */
-int
+EAPI int
 epeg_trim(Epeg_Image *im)
 {
    if (_epeg_decode_for_trim(im) != 0)
@@ -753,7 +753,7 @@ epeg_trim(Epeg_Image *im)
  * by epeg_encode() nor does it guarantee to free any data recieved by
  * epeg_pixels_get(). Once an image handle is closed consider it invalid.
  */
-void
+EAPI void
 epeg_close(Epeg_Image *im)
 {
    if (!im) return;
@@ -1120,8 +1120,6 @@ struct epeg_destination_mgr
 static int
 _epeg_encode(Epeg_Image *im)
 {
-   void  *data = NULL;
-   size_t size = 0;
    struct epeg_destination_mgr *dst_mgr = NULL;
    int ok = 0;
 
