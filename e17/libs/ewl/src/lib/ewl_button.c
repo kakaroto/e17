@@ -12,22 +12,22 @@ struct
 	char *label;
 	char *image_key;
 } ewl_stock_items[] = {
-		{"Apply", 	"/stock/apply"},
-		{/*Arrow*/"Down",	"/stock/arrow/down"},
-		{/*Arrow*/"Left",	"/stock/arrow/left"},
-		{/*Arrow*/"Right",	"/stock/arrow/right"},
-		{/*Arrow*/"Up",	"/stock/arrow/up"},
-		{"Cancel", 	"/stock/cancel"},
-		{"FF", 		"/stock/ff"},
-		{"Home", 	"/stock/home"},
-		{"Ok", 		"/stock/ok"},
-		{"Open", 	"/stock/open"},
-		{"Pause", 	"/stock/pause"},
-		{"Play", 	"/stock/play"},
-		{"Quit", 	"/stock/quit"},
-		{"Rewind", 	"/stock/rewind"},
-		{"Save", 	"/stock/save"},
-		{"Stop", 	"/stock/stop"}
+		{"Apply", 	EWL_ICON_DIALOG_APPLY},
+		{/*Arrow*/"Down", 	EWL_ICON_GO_DOWN},
+		{/*Arrow*/"Left", 	EWL_ICON_GO_PREVIOUS},
+		{/*Arrow*/"Right", 	EWL_ICON_GO_NEXT},
+		{/*Arrow*/"Up",		EWL_ICON_GO_UP},
+		{"Cancel", 		EWL_ICON_DIALOG_CANCEL},
+		{"FF", 			EWL_ICON_MEDIA_SEEK_FORWARD},
+		{"Home", 	EWL_ICON_GO_HOME},
+		{"Ok", 		EWL_ICON_DIALOG_OK},
+		{"Open", 	EWL_ICON_DOCUMENT_OPEN},
+		{"Pause", 	EWL_ICON_MEDIA_PLAYBACK_PAUSE},
+		{"Play", 	EWL_ICON_MEDIA_PLAYBACK_START},
+		{"Quit", 	EWL_ICON_SYSTEM_LOG_OUT},
+		{"Rewind", 	EWL_ICON_MEDIA_SEEK_BACKWARD},
+		{"Save", 	EWL_ICON_DOCUMENT_SAVE},
+		{"Stop", 	EWL_ICON_MEDIA_PLAYBACK_STOP}
 	};
 
 /**
@@ -190,15 +190,13 @@ ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
 	ewl_button_label_set(b, ewl_stock_items[b->stock_type].label);
 
 	/* check for an image key */
-	data = ewl_theme_data_str_get(EWL_WIDGET(b), 
-				ewl_stock_items[b->stock_type].image_key);
-	if (data) {
-		char *theme;
+	data = ewl_icon_theme_icon_path_get(
+				ewl_stock_items[b->stock_type].image_key,
+				EWL_ICON_SIZE_MEDIUM);
 
-		theme = ewl_theme_path_get();
-		ewl_button_image_set(b, theme, data);
-		FREE(theme);
-	}
+	if (data) 
+		ewl_button_image_set(b, data, 
+                    ewl_stock_items[b->stock_type].image_key);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

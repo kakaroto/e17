@@ -21,6 +21,7 @@ const char	*ewl_icon_theme_icon_path_get(const char *icon,
 #define EWL_ICON_APPLICATION_EXIT "application-exit"	/**< */
 #define EWL_ICON_APPOINTMENT_NEW "appointment-new"	/**< */
 #define EWL_ICON_CONTACT_NEW "contact-new"	/**< */
+#define EWL_ICON_DIALOG_APPLY "dialog-apply"	/**< */
 #define EWL_ICON_DIALOG_CANCEL "dialog-cancel"	/**< */
 #define EWL_ICON_DIALOG_CLOSE "dialog-close"	/**< */
 #define EWL_ICON_DIALOG_OK "dialog-ok"	/**< */

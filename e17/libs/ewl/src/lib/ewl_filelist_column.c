@@ -434,6 +434,7 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file,
 	Ewl_Filelist_Column *list;
 	Ewl_Widget *icon;
 	char *stock, path[PATH_MAX];
+	const char *img;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
@@ -452,20 +453,15 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file,
 
 	snprintf(path, PATH_MAX, "%s/%s", dir, file);
 	if (ecore_file_is_dir(path))
-	{
-		stock = "/stock/open";
 		ewl_callback_append(icon, EWL_CALLBACK_CLICKED,
 				ewl_filelist_column_cb_dir_clicked, fl);
-	}
 	else
-	{
-		stock = "/stock/arrow/right";
 		ewl_callback_append(icon, EWL_CALLBACK_CLICKED,
 				ewl_filelist_column_cb_file_clicked, fl);
-	}
 
-	ewl_icon_image_set(EWL_ICON(icon), ewl_theme_path_get(),
-			ewl_theme_data_str_get(EWL_WIDGET(icon), stock));
+	stock = ewl_filelist_stock_icon_get(fl, path);
+	img = ewl_icon_theme_icon_path_get(stock, EWL_ICON_SIZE_MEDIUM);
+	ewl_icon_image_set(EWL_ICON(icon), img, stock); 
 
 	ewl_container_child_append(EWL_CONTAINER(data), icon);
 	ewl_widget_show(icon);

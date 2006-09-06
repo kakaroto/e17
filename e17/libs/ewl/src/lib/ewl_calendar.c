@@ -87,7 +87,10 @@ ewl_calendar_init(Ewl_Calendar* ib)
 
 	prev_button = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), prev_button);
-	ewl_button_label_set(EWL_BUTTON(prev_button), "<");
+	ewl_button_image_set(EWL_BUTTON(prev_button), 
+				ewl_icon_theme_icon_path_get(EWL_ICON_GO_PREVIOUS, 
+								EWL_ICON_SIZE_SMALL), 
+				EWL_ICON_GO_PREVIOUS);
 	ewl_object_maximum_size_set(EWL_OBJECT(prev_button), 20,10);
 	ewl_callback_append(prev_button, EWL_CALLBACK_MOUSE_DOWN, ewl_calendar_prev_month_cb, ib);
 	ewl_widget_show(prev_button);
@@ -100,9 +103,13 @@ ewl_calendar_init(Ewl_Calendar* ib)
 
 	next_button = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), next_button);	
-	ewl_button_label_set(EWL_BUTTON(next_button), ">");
+	ewl_button_image_set(EWL_BUTTON(next_button), 
+				ewl_icon_theme_icon_path_get(EWL_ICON_GO_NEXT, 
+							EWL_ICON_SIZE_SMALL), 
+				EWL_ICON_GO_NEXT);
 	ewl_object_maximum_size_set(EWL_OBJECT(next_button), 20,10);
-	ewl_callback_append(next_button, EWL_CALLBACK_MOUSE_DOWN, ewl_calendar_next_month_cb, ib);
+	ewl_callback_append(next_button, EWL_CALLBACK_MOUSE_DOWN, 
+					ewl_calendar_next_month_cb, ib);
 	ewl_widget_show(next_button);
 
 	ib->grid = ewl_grid_new();
