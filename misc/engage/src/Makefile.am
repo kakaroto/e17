@@ -30,6 +30,7 @@ engage_element.h \
 battery.h \
 main.c \
 config.c \
+config_menu.c \
 dock.c \
 icon.c \
 wm.c \

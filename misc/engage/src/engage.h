@@ -39,7 +39,9 @@ extern int      tray_width;
 extern E_App   *od_unmatched_app;
 
 int             od_config_init();
+#ifdef HAVE_ETK
 void            od_config_menu_draw(Evas_Coord x, Evas_Coord y);
+#endif
 
 void            od_window_init();
 void            od_window_hide();
