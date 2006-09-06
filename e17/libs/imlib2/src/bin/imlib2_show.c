@@ -276,9 +276,11 @@ main(int argc, char **argv)
         vis = DefaultVisual(disp, DefaultScreen(disp));
         depth = DefaultDepth(disp, DefaultScreen(disp));
         cm = DefaultColormap(disp, DefaultScreen(disp));
+#if 0
         /* nasty - using imlib internal function.. but it makes benchmarks fair */
         if (!interactive)
            __imlib_SetMaxXImageCount(disp, 3);
+#endif
         if (root)
            win = DefaultRootWindow(disp);
         else

@@ -165,7 +165,7 @@ __imlib_free_context(ImlibContext * context)
    ctx = next->context;
 }
 
-Imlib_Context
+EAPI Imlib_Context
 imlib_context_new(void)
 {
    ImlibContext       *context = malloc(sizeof(ImlibContext));
@@ -214,7 +214,7 @@ imlib_context_new(void)
    If context is the current context, the context below will be made the
    current context.
 */
-void
+EAPI void
 imlib_context_free(Imlib_Context context)
 {
    ImlibContext       *c = (ImlibContext *) context;
@@ -229,7 +229,7 @@ imlib_context_free(Imlib_Context context)
       c->dirty = 1;
 }
 
-void
+EAPI void
 imlib_context_push(Imlib_Context context)
 {
    ImlibContextItem   *item;
@@ -245,7 +245,7 @@ imlib_context_push(Imlib_Context context)
    ctx->references++;
 }
 
-void
+EAPI void
 imlib_context_pop(void)
 {
    ImlibContextItem   *item = contexts;
@@ -263,7 +263,7 @@ imlib_context_pop(void)
    free(item);
 }
 
-Imlib_Context
+EAPI Imlib_Context
 imlib_context_get(void)
 {
    return (Imlib_Context) ctx;
@@ -279,7 +279,7 @@ imlib_context_get(void)
  * 
  * Sets the rectangle of the current context.
  **/
-void
+EAPI void
 imlib_context_set_cliprect(int x, int y, int w, int h)
 {
    if (!ctx)
@@ -290,7 +290,7 @@ imlib_context_set_cliprect(int x, int y, int w, int h)
    ctx->cliprect.h = h;
 }
 
-void
+EAPI void
 imlib_context_get_cliprect(int *x, int *y, int *w, int *h)
 {
    if (!ctx)
@@ -314,7 +314,7 @@ imlib_context_get_cliprect(int *x, int *y, int *w, int *h)
  * and continue to render using Imlib2 without setting the display
  * pointer to NULL or something new, crashes may occur.
  */
-void
+EAPI void
 imlib_context_set_display(Display * display)
 {
    if (!ctx)
@@ -327,7 +327,7 @@ imlib_context_set_display(Display * display)
  *
  * Returns the current display used for Imlib2's display context.
  */
-Display            *
+EAPI Display            *
 imlib_context_get_display(void)
 {
    if (!ctx)
@@ -343,7 +343,7 @@ imlib_context_get_display(void)
  * render to a drawable or produce any pixmaps (this can be the default
  * visual). 
  */
-void
+EAPI void
 imlib_context_set_visual(Visual * visual)
 {
    if (!ctx)
@@ -357,7 +357,7 @@ imlib_context_set_visual(Visual * visual)
  *
  * Returns the current visual used for Imlib2's context.
  */
-Visual             *
+EAPI Visual             *
 imlib_context_get_visual(void)
 {
    if (!ctx)
@@ -372,7 +372,7 @@ imlib_context_get_visual(void)
  * colors. You must set this to the colormap you are using to render any
  * images or produce any pixmaps (this can be the default colormap). 
  */
-void
+EAPI void
 imlib_context_set_colormap(Colormap colormap)
 {
    if (!ctx)
@@ -385,7 +385,7 @@ imlib_context_set_colormap(Colormap colormap)
  *
  * Returns the current Colormap used for Imlib2's context.
  */
-Colormap
+EAPI Colormap
 imlib_context_get_colormap(void)
 {
    if (!ctx)
@@ -400,7 +400,7 @@ imlib_context_get_colormap(void)
  * a render call in Imlib2. This may be either a pixmap or a
  * window. You must set this to render anything. 
  */
-void
+EAPI void
 imlib_context_set_drawable(Drawable drawable)
 {
    if (!ctx)
@@ -413,7 +413,7 @@ imlib_context_set_drawable(Drawable drawable)
  *
  * Returns the current Drawable used for Imlib2's context.
  */
-Drawable
+EAPI Drawable
 imlib_context_get_drawable(void)
 {
    if (!ctx)
@@ -428,7 +428,7 @@ imlib_context_get_drawable(void)
  * a mask pixmap. This is only useful if the image you are rendering
  * has alpha. Set this to 0 to not render a pixmap mask. 
  */
-void
+EAPI void
 imlib_context_set_mask(Pixmap mask)
 {
    if (!ctx)
@@ -441,7 +441,7 @@ imlib_context_set_mask(Pixmap mask)
  *
  * Returns the current pixmap destination to be used to render a mask into.
  */
-Pixmap
+EAPI Pixmap
 imlib_context_get_mask(void)
 {
    if (!ctx)
@@ -458,7 +458,7 @@ imlib_context_get_mask(void)
  * dither_mask means the mask pixmap will be dithered, 0 means it will
  * not be dithered. 
  */
-void
+EAPI void
 imlib_context_set_dither_mask(char dither_mask)
 {
    if (!ctx)
@@ -472,7 +472,7 @@ imlib_context_set_dither_mask(char dither_mask)
  * Returns the current mode for dithering pixmap masks. 1 means
  * dithering is enabled and 0 means it is not. 
  */
-char
+EAPI char
 imlib_context_get_dither_mask(void)
 {
    if (!ctx)
@@ -487,7 +487,7 @@ imlib_context_get_dither_mask(void)
  * mask bits are set. The default mask alpha threshold is 128, meaning that
  * a mask bit will be set if the pixel alpha is >= 128.
  */
-void
+EAPI void
 imlib_context_set_mask_alpha_threshold(int mask_alpha_threshold)
 {
    if (!ctx)
@@ -500,7 +500,7 @@ imlib_context_set_mask_alpha_threshold(int mask_alpha_threshold)
  *
  * Returns the current mask alpha threshold.
  */
-int
+EAPI int
 imlib_context_get_mask_alpha_threshold(void)
 {
    if (!ctx)
@@ -518,7 +518,7 @@ imlib_context_get_mask_alpha_threshold(void)
  * images are scaled they will keep their smooth appearance. Passing
  * in 1 turns this on and 0 turns it off. 
  */
-void
+EAPI void
 imlib_context_set_anti_alias(char anti_alias)
 {
    if (!ctx)
@@ -532,7 +532,7 @@ imlib_context_set_anti_alias(char anti_alias)
  * Returns if Imlib2 currently will smoothly scale images. 1 means it
  * will and 0 means it will not.
  */
-char
+EAPI char
 imlib_context_get_anti_alias(void)
 {
    if (!ctx)
@@ -551,7 +551,7 @@ imlib_context_get_anti_alias(void)
  * gradients and much better quality images. setting dither to 1
  * enables it and 0 disables it. 
  */
-void
+EAPI void
 imlib_context_set_dither(char dither)
 {
    if (!ctx)
@@ -565,7 +565,7 @@ imlib_context_set_dither(char dither)
  * Returns if image data is rendered with dithering currently. 1 means
  * yes and 0 means no. 
  */
-char
+EAPI char
 imlib_context_get_dither(void)
 {
    if (!ctx)
@@ -581,7 +581,7 @@ imlib_context_get_dither(void)
  * will enable this. If the image has no alpha channel this has no
  * effect. Setting it to 0 will disable this. 
  */
-void
+EAPI void
 imlib_context_set_blend(char blend)
 {
    if (!ctx)
@@ -595,7 +595,7 @@ imlib_context_set_blend(char blend)
  * Returns if Imlib2 will blend images onto a drawable whilst
  * rendering to that drawable. 1 means yes and 0 means no. 
  */
-char
+EAPI char
 imlib_context_get_blend(void)
 {
    if (!ctx)
@@ -614,7 +614,7 @@ imlib_context_get_blend(void)
  * rendering. pass in NULL as the color_modifier to disable the color
  * modifier for rendering. 
  */
-void
+EAPI void
 imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier)
 {
    if (!ctx)
@@ -627,7 +627,7 @@ imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier)
  *
  * Returns the current color modifier being used.
  */
-Imlib_Color_Modifier
+EAPI Imlib_Color_Modifier
 imlib_context_get_color_modifier(void)
 {
    if (!ctx)
@@ -650,7 +650,7 @@ imlib_context_get_color_modifier(void)
  * DST = DST - (SRC * A) and IMLIB_OP_RESHADE does DST = DST + (((SRC -
  * 0.5) / 2) * A). 
  */
-void
+EAPI void
 imlib_context_set_operation(Imlib_Operation operation)
 {
    if (!ctx)
@@ -663,7 +663,7 @@ imlib_context_set_operation(Imlib_Operation operation)
  *
  * Returns the current operation mode.
  */
-Imlib_Operation
+EAPI Imlib_Operation
 imlib_context_get_operation(void)
 {
    if (!ctx)
@@ -677,7 +677,7 @@ imlib_context_get_operation(void)
  * Sets the current font to use when rendering text. you should load
  * the font first with imlib_load_font(). 
  */
-void
+EAPI void
 imlib_context_set_font(Imlib_Font font)
 {
    if (!ctx)
@@ -690,7 +690,7 @@ imlib_context_set_font(Imlib_Font font)
  *
  * Returns the current font.
  */
-Imlib_Font
+EAPI Imlib_Font
 imlib_context_get_font(void)
 {
    if (!ctx)
@@ -708,7 +708,7 @@ imlib_context_get_font(void)
  * IMLIB_TEXT_TO_RIGHT. If you use IMLIB_TEXT_TO_ANGLE, you will also
  * have to set the angle with imlib_context_set_angle(). 
  */
-void
+EAPI void
 imlib_context_set_direction(Imlib_Text_Direction direction)
 {
    if (!ctx)
@@ -723,7 +723,7 @@ imlib_context_set_direction(Imlib_Text_Direction direction)
  * direction has been set to IMLIB_TEXT_TO_ANGLE with
  * imlib_context_set_direction().
  */
-void
+EAPI void
 imlib_context_set_angle(double angle)
 {
    if (!ctx)
@@ -737,7 +737,7 @@ imlib_context_set_angle(double angle)
  * Returns the current angle used to render text at if the direction
  * is IMLIB_TEXT_TO_ANGLE. 
  */
-double
+EAPI double
 imlib_context_get_angle(void)
 {
    if (!ctx)
@@ -750,7 +750,7 @@ imlib_context_get_angle(void)
  *
  * Returns the current direction to render text in.
  */
-Imlib_Text_Direction
+EAPI Imlib_Text_Direction
 imlib_context_get_direction(void)
 {
    if (!ctx)
@@ -769,7 +769,7 @@ imlib_context_get_direction(void)
  * and @p alpha are between 0 and 255 - any other values have
  * undefined results.
  */
-void
+EAPI void
 imlib_context_set_color(int red, int green, int blue, int alpha)
 {
    if (!ctx)
@@ -788,7 +788,7 @@ imlib_context_set_color(int red, int green, int blue, int alpha)
  * 
  * Returns the current color for rendering text, rectangles and lines.
  */
-void
+EAPI void
 imlib_context_get_color(int *red, int *green, int *blue, int *alpha)
 {
    if (!ctx)
@@ -805,7 +805,7 @@ imlib_context_get_color(int *red, int *green, int *blue, int *alpha)
  * Returns the current color as a color struct. Do NOT free this
  * pointer. 
  */
-Imlib_Color        *
+EAPI Imlib_Color        *
 imlib_context_get_imlib_color(void)
 {
    if (!ctx)
@@ -824,7 +824,7 @@ imlib_context_get_imlib_color(void)
  * @p alpha are between 0 and 255 - any other values have undefined
  * results.
  */
-void
+EAPI void
 imlib_context_set_color_hsva(float hue, float saturation, float value,
                              int alpha)
 {
@@ -843,7 +843,7 @@ imlib_context_set_color_hsva(float hue, float saturation, float value,
  * Returns the current color for rendering text, rectangles and lines
  * in HSVA space. 
  */
-void
+EAPI void
 imlib_context_get_color_hsva(float *hue, float *saturation, float *value,
                              int *alpha)
 {
@@ -864,7 +864,7 @@ imlib_context_get_color_hsva(float *hue, float *saturation, float *value,
  * @p alpha are between 0 and 255 - any other values have undefined
  * results. 
  */
-void
+EAPI void
 imlib_context_set_color_hlsa(float hue, float lightness, float saturation,
                              int alpha)
 {
@@ -883,7 +883,7 @@ imlib_context_set_color_hlsa(float hue, float lightness, float saturation,
  * Returns the current color for rendering text, rectangles and lines
  * in HLSA space. 
  */
-void
+EAPI void
 imlib_context_get_color_hlsa(float *hue, float *lightness, float *saturation,
                              int *alpha)
 {
@@ -903,7 +903,7 @@ imlib_context_get_color_hlsa(float *hue, float *lightness, float *saturation,
  * @p alpha are between 0 and 255 - any other values have undefined
  * results. 
  */
-void
+EAPI void
 imlib_context_set_color_cmya(int cyan, int magenta, int yellow, int alpha)
 {
    if (!ctx)
@@ -923,7 +923,7 @@ imlib_context_set_color_cmya(int cyan, int magenta, int yellow, int alpha)
  * Returns the current color for rendering text, rectangles and lines
  * in CMYA space. 
  */
-void
+EAPI void
 imlib_context_get_color_cmya(int *cyan, int *magenta, int *yellow, int *alpha)
 {
    if (!ctx)
@@ -939,7 +939,7 @@ imlib_context_get_color_cmya(int *cyan, int *magenta, int *yellow, int *alpha)
  * 
  * Sets the current color range to use for rendering gradients.
  */
-void
+EAPI void
 imlib_context_set_color_range(Imlib_Color_Range color_range)
 {
    if (!ctx)
@@ -952,7 +952,7 @@ imlib_context_set_color_range(Imlib_Color_Range color_range)
  * 
  * Returns the current color range being used for gradients.
  */
-Imlib_Color_Range
+EAPI Imlib_Color_Range
 imlib_context_get_color_range(void)
 {
    if (!ctx)
@@ -967,7 +967,7 @@ imlib_context_get_color_range(void)
  * images. Set this to the function to be called, or set it to NULL to
  * disable progress callbacks whilst loading. 
  */
-void
+EAPI void
 imlib_context_set_progress_function(Imlib_Progress_Function progress_function)
 {
    if (!ctx)
@@ -980,7 +980,7 @@ imlib_context_set_progress_function(Imlib_Progress_Function progress_function)
  * 
  * Returns the current progress function being used.
  */
-Imlib_Progress_Function
+EAPI Imlib_Progress_Function
 imlib_context_get_progress_function(void)
 {
    if (!ctx)
@@ -997,7 +997,7 @@ imlib_context_get_progress_function(void)
  * 50% and 100 means only call at the end. Values outside of the range
  * 0-100 are undefined. 
  */
-void
+EAPI void
 imlib_context_set_progress_granularity(char progress_granularity)
 {
    if (!ctx)
@@ -1010,7 +1010,7 @@ imlib_context_set_progress_granularity(char progress_granularity)
  * 
  * Returns the current progress granularity being used.
  */
-char
+EAPI char
 imlib_context_get_progress_granularity(void)
 {
    if (!ctx)
@@ -1023,7 +1023,7 @@ imlib_context_get_progress_granularity(void)
  * 
  * Sets the current image Imlib2 will be using with its function calls.
  */
-void
+EAPI void
 imlib_context_set_image(Imlib_Image image)
 {
    if (!ctx)
@@ -1036,7 +1036,7 @@ imlib_context_set_image(Imlib_Image image)
  * 
  * Returns the current context image.
  */
-Imlib_Image
+EAPI Imlib_Image
 imlib_context_get_image(void)
 {
    if (!ctx)
@@ -1044,7 +1044,7 @@ imlib_context_get_image(void)
    return ctx->image;
 }
 
-void
+EAPI void
 imlib_context_set_TTF_encoding(Imlib_TTF_Encoding encoding)
 {
    if (!ctx)
@@ -1052,7 +1052,7 @@ imlib_context_set_TTF_encoding(Imlib_TTF_Encoding encoding)
    ctx->encoding = encoding;
 }
 
-Imlib_TTF_Encoding
+EAPI Imlib_TTF_Encoding
 imlib_context_get_TTF_encoding(void)
 {
    if (!ctx)
@@ -1068,7 +1068,7 @@ imlib_context_get_TTF_encoding(void)
  * Returns the current size of the image cache in bytes. The cache is
  * a unified cache used for image data AND pixmaps. 
  */
-int
+EAPI int
 imlib_get_cache_size(void)
 {
    if (!ctx)
@@ -1085,7 +1085,7 @@ imlib_get_cache_size(void)
  * flush as many old images and pixmap from the cache as needed until
  * the current cache usage is less than or equal to the cache size. 
  */
-void
+EAPI void
 imlib_set_cache_size(int bytes)
 {
    if (!ctx)
@@ -1099,7 +1099,7 @@ imlib_set_cache_size(int bytes)
  * Gets the number of colors Imlib2 currently at a maximum is allowed
  * to allocate for rendering. The default is 256.
  */
-int
+EAPI int
 imlib_get_color_usage(void)
 {
    if (!ctx)
@@ -1118,7 +1118,7 @@ imlib_get_color_usage(void)
  * for you when rendering. The default is 256. This has no effect in
  * depths greater than 8 bit.
  */
-void
+EAPI void
 imlib_set_color_usage(int max)
 {
    if (!ctx)
@@ -1138,7 +1138,7 @@ imlib_set_color_usage(int max)
  * installed a new loader and does not want to wait till Imlib2 deems
  * it an optimal time to rescan the loaders) 
  */
-void
+EAPI void
 imlib_flush_loaders(void)
 {
    if (!ctx)
@@ -1155,7 +1155,7 @@ imlib_flush_loaders(void)
  * Convenience function that returns the depth of a visual for that
  * display. 
  */
-int
+EAPI int
 imlib_get_visual_depth(Display * display, Visual * visual)
 {
    if (!ctx)
@@ -1176,7 +1176,7 @@ imlib_get_visual_depth(Display * display, Visual * visual)
  * will give you the best quality output. @p depth_return should point to
  * an int that will be filled with the depth of that visual too. 
  */
-Visual             *
+EAPI Visual             *
 imlib_get_best_visual(Display * display, int screen, int *depth_return)
 {
    if (!ctx)
@@ -1197,7 +1197,7 @@ imlib_get_best_visual(Display * display, int screen, int *depth_return)
  * @p file. Please see the section \ref loading for more
  * detail. Returns an image handle on success or NULL on failure. 
  */
-Imlib_Image
+EAPI Imlib_Image
 imlib_load_image(const char *file)
 {
    Imlib_Image         im = NULL;
@@ -1222,7 +1222,7 @@ imlib_load_image(const char *file)
  * instead of decoding being deferred until it is needed. Returns an
  * image handle on success or NULL on failure. 
  */
-Imlib_Image
+EAPI Imlib_Image
 imlib_load_image_immediately(const char *file)
 {
    Imlib_Image         im = NULL;
@@ -1246,7 +1246,7 @@ imlib_load_image_immediately(const char *file)
  * Loads the image without looking in the cache first. Returns an
  * image handle on success or NULL on failure.
  */
-Imlib_Image
+EAPI Imlib_Image
 imlib_load_image_without_cache(const char *file)
 {
    Imlib_Image         im = NULL;
@@ -1271,7 +1271,7 @@ imlib_load_image_without_cache(const char *file)
  * decoded straight away) and without looking in the cache. Returns an
  * image handle on success or NULL on failure. 
  */
-Imlib_Image
+EAPI Imlib_Image
 imlib_load_image_immediately_without_cache(const char *file)
 {
    Imlib_Image         im = NULL;
@@ -1297,7 +1297,7 @@ imlib_load_image_immediately_without_cache(const char *file)
  * a valid image handle, if not NULL is returned and @p error_return
  * is set to the detail of the error. 
  */
-Imlib_Image
+EAPI Imlib_Image
 imlib_load_image_with_error_return(const char *file,
                                    Imlib_Load_Error * error_return)
 {
@@ -1345,7 +1345,7 @@ imlib_load_image_with_error_return(const char *file,
 /**
  * Frees the image that is set as the current image in Imlib2's context.
  */
-void
+EAPI void
 imlib_free_image(void)
 {
    if (!ctx)
@@ -1359,7 +1359,7 @@ imlib_free_image(void)
  * Frees the current image in Imlib2's context AND removes it from the
  * cache.
  */
-void
+EAPI void
 imlib_free_image_and_decache(void)
 {
    ImlibImage         *im;
@@ -1376,7 +1376,7 @@ imlib_free_image_and_decache(void)
 /**
  * Returns the width in pixels of the current image in Imlib2's context.
  */
-int
+EAPI int
 imlib_image_get_width(void)
 {
    ImlibImage         *im;
@@ -1391,7 +1391,7 @@ imlib_image_get_width(void)
 /**
  * Returns the height in pixels of the current image in Imlib2's context.
  */
-int
+EAPI int
 imlib_image_get_height(void)
 {
    ImlibImage         *im;
@@ -1414,7 +1414,7 @@ imlib_image_get_height(void)
  * processing. Do not free the string pointer returned by this
  * function. 
  */
-const char         *
+EAPI const char         *
 imlib_image_get_filename(void)
 {
    ImlibImage         *im;
@@ -1445,7 +1445,7 @@ imlib_image_get_filename(void)
  * most to least significant, 8 bits per channel). You must put the
  * data back at some point. 
  */
-DATA32             *
+EAPI DATA32             *
 imlib_image_get_data(void)
 {
    ImlibImage         *im;
@@ -1471,7 +1471,7 @@ imlib_image_get_data(void)
  * is for inspection purposes only). Writing to this data has undefined
  * results. The data does not need to be put back. 
  */
-DATA32             *
+EAPI DATA32             *
 imlib_image_get_data_for_reading_only(void)
 {
    ImlibImage         *im;
@@ -1496,7 +1496,7 @@ imlib_image_get_data_for_reading_only(void)
  * by imlib_image_get_data(). This operated on the current context
  * image.  
  */
-void
+EAPI void
 imlib_image_put_back_data(DATA32 * data)
 {
    ImlibImage         *im;
@@ -1517,7 +1517,7 @@ imlib_image_put_back_data(DATA32 * data)
  * if it does not (the alpha data space is still there and available -
  * just "unused"). 
  */
-char
+EAPI char
 imlib_image_has_alpha(void)
 {
    ImlibImage         *im;
@@ -1540,7 +1540,7 @@ imlib_image_has_alpha(void)
  * compare it with the cached image when it next needs to use this
  * image in the cache.
  */
-void
+EAPI void
 imlib_image_set_changes_on_disk(void)
 {
    ImlibImage         *im;
@@ -1563,7 +1563,7 @@ imlib_image_set_changes_on_disk(void)
  * is useful for scaling bevels at the edge of images differently to
  * the image center.
  */
-void
+EAPI void
 imlib_image_get_border(Imlib_Border * border)
 {
    ImlibImage         *im;
@@ -1585,7 +1585,7 @@ imlib_image_get_border(Imlib_Border * border)
  * Sets the border of the current context image to the values contained
  * in the Imlib_Border structure @p border points to. 
  */
-void
+EAPI void
 imlib_image_set_border(Imlib_Border * border)
 {
    ImlibImage         *im;
@@ -1614,7 +1614,7 @@ imlib_image_set_border(Imlib_Border * border)
  * wish to save an image in a different format that it was loaded in,
  * or if the image currently has no file format associated with it. 
  */
-void
+EAPI void
 imlib_image_set_format(const char *format)
 {
    ImlibImage         *im;
@@ -1643,7 +1643,7 @@ imlib_image_set_format(const char *format)
  * caching purposes - by default it is. pass irrelevant as 1 to make it
  * irrelevant and 0 to make it relevant for caching. 
  */
-void
+EAPI void
 imlib_image_set_irrelevant_format(char irrelevant)
 {
    ImlibImage         *im;
@@ -1670,7 +1670,7 @@ imlib_image_set_irrelevant_format(char irrelevant)
  * purposes. By default it is. Set irrelevant to 1 to make it
  * irrelevant, and 0 to make it relevant. 
  */
-void
+EAPI void
 imlib_image_set_irrelevant_border(char irrelevant)
 {
    ImlibImage         *im;
@@ -1698,7 +1698,7 @@ imlib_image_set_irrelevant_border(char irrelevant)
  * default it is not. Set irrelevant to 1 to make it irrelevant and 0
  * to make it relevant. 
  */
-void
+EAPI void
 imlib_image_set_irrelevant_alpha(char irrelevant)
 {
    ImlibImage         *im;
@@ -1723,7 +1723,7 @@ imlib_image_set_irrelevant_alpha(char irrelevant)
  * Returns the current image's format. Do not free this
  * string. Duplicate it if you need it for later use. 
  */
-char               *
+EAPI char               *
 imlib_image_format(void)
 {
    ImlibImage         *im;
@@ -1741,7 +1741,7 @@ imlib_image_format(void)
  * Sets the alpha flag for the current image. Set @p has_alpha to 1 to
  * enable the alpha channel in the current image, or 0 to disable it. 
  */
-void
+EAPI void
 imlib_image_set_has_alpha(char has_alpha)
 {
    ImlibImage         *im;
@@ -1766,7 +1766,7 @@ imlib_image_set_has_alpha(char has_alpha)
  * @p pixmap_return and @p mask_return pixmap id's. You must free these
  * pixmaps using Imlib2's free function imlib_free_pixmap_and_mask();. 
  */
-void
+EAPI void
 imlib_render_pixmaps_for_whole_image(Pixmap * pixmap_return,
                                      Pixmap * mask_return)
 {
@@ -1804,7 +1804,7 @@ imlib_render_pixmaps_for_whole_image(Pixmap * pixmap_return,
  * is done before depth conversion so pixels used for dithering don't
  * grow large. 
  */
-void
+EAPI void
 imlib_render_pixmaps_for_whole_image_at_size(Pixmap * pixmap_return,
                                              Pixmap * mask_return, int width,
                                              int height)
@@ -1840,7 +1840,7 @@ imlib_render_pixmaps_for_whole_image_at_size(Pixmap * pixmap_return,
  * pixmap). The pixmap will remain cached until the image the pixmap
  * was generated from is dirtied or decached, or the cache is flushed. 
  */
-void
+EAPI void
 imlib_free_pixmap_and_mask(Pixmap pixmap)
 {
    if (!ctx)
@@ -1855,7 +1855,7 @@ imlib_free_pixmap_and_mask(Pixmap pixmap)
  * Renders the current image onto the current drawable at the (@p x, @p y)
  * pixel location specified without scaling. 
  */
-void
+EAPI void
 imlib_render_image_on_drawable(int x, int y)
 {
    ImlibImage         *im;
@@ -1885,7 +1885,7 @@ imlib_render_image_on_drawable(int x, int y)
  * location specified AND scale the image to the width @p width and height
  * @p height.
  */
-void
+EAPI void
 imlib_render_image_on_drawable_at_size(int x, int y, int width, int height)
 {
    ImlibImage         *im;
@@ -1922,7 +1922,7 @@ imlib_render_image_on_drawable_at_size(int x, int y, int width, int height)
  * current image onto the current drawable at the (@p x, @p y) location scaled
  * to the width @p width and height @p height.
  */
-void
+EAPI void
 imlib_render_image_part_on_drawable_at_size(int source_x, int source_y,
                                             int source_width,
                                             int source_height, int x, int y,
@@ -1946,7 +1946,7 @@ imlib_render_image_part_on_drawable_at_size(int source_x, int source_y,
                        0, ctx->color_modifier, ctx->operation);
 }
 
-DATA32
+EAPI DATA32
 imlib_render_get_pixel_color(void)
 {
    if (!ctx)
@@ -1981,7 +1981,7 @@ imlib_render_get_pixel_color(void)
  * it will also modify the destination image alpha channel, otherwise
  * the destination alpha channel is left untouched. 
  */
-void
+EAPI void
 imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha,
                              int source_x, int source_y, int source_width,
                              int source_height, int destination_x,
@@ -2032,7 +2032,7 @@ imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha,
  * is not cached. On success an image handle is returned - on failure
  * NULL is returned.
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_create_image(int width, int height)
 {
    DATA32             *data;
@@ -2065,7 +2065,7 @@ imlib_create_image(int width, int height)
  * success or NULL on failure 
  * 
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_create_image_using_data(int width, int height, DATA32 * data)
 {
    ImlibImage         *im;
@@ -2095,7 +2095,7 @@ imlib_create_image_using_data(int width, int height, DATA32 * data)
  * failure. 
  * 
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_create_image_using_copied_data(int width, int height, DATA32 * data)
 {
    ImlibImage         *im;
@@ -2142,7 +2142,7 @@ imlib_create_image_using_copied_data(int width, int height, DATA32 * data)
  * success or NULL on failure. 
  * 
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
                                  int height, char need_to_grab_x)
 {
@@ -2182,7 +2182,7 @@ imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
  * 
  * 
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_create_image_from_ximage(XImage * image, XImage * mask, int x, int y,
                                int width, int height, char need_to_grab_x)
 {
@@ -2226,7 +2226,7 @@ imlib_create_image_from_ximage(XImage * image, XImage * mask, int x, int y,
  * image handle, otherwise NULL is returned. 
  * 
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
                                         int source_y, int source_width,
                                         int source_height,
@@ -2347,7 +2347,7 @@ imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
  * server. 
  * 
  **/
-char
+EAPI char
 imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
                              int destination_x, int destination_y,
                              char need_to_grab_x)
@@ -2427,7 +2427,7 @@ imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
  * image handle on success, or NULL on failure. 
  * 
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_clone_image(void)
 {
    ImlibImage         *im, *im_old;
@@ -2480,7 +2480,7 @@ imlib_clone_image(void)
  * on failure. 
  * 
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_create_cropped_image(int x, int y, int width, int height)
 {
    ImlibImage         *im, *im_old;
@@ -2535,7 +2535,7 @@ imlib_create_cropped_image(int x, int y, int width, int height)
  * @p destination_height whilst cropping.  
  * 
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_create_cropped_scaled_image(int source_x, int source_y,
                                   int source_width, int source_height,
                                   int destination_width, int destination_height)
@@ -2588,7 +2588,7 @@ imlib_create_cropped_scaled_image(int source_x, int source_y,
  * 
  * Creates a duplicate of the updates list passed into the function.
  **/
-Imlib_Updates
+EAPI Imlib_Updates
 imlib_updates_clone(Imlib_Updates updates)
 {
    ImlibUpdate        *u;
@@ -2612,7 +2612,7 @@ imlib_updates_clone(Imlib_Updates updates)
  * handle to the modified updates list (the handle may be modified so
  * only use the new updates handle returned). 
  **/
-Imlib_Updates
+EAPI Imlib_Updates
 imlib_update_append_rect(Imlib_Updates updates, int x, int y, int w, int h)
 {
    ImlibUpdate        *u;
@@ -2635,7 +2635,7 @@ imlib_update_append_rect(Imlib_Updates updates, int x, int y, int w, int h)
  * redrawing. The new updates handle is now valid and the old one
  * passed in is not. 
  **/
-Imlib_Updates
+EAPI Imlib_Updates
 imlib_updates_merge(Imlib_Updates updates, int w, int h)
 {
    ImlibUpdate        *u;
@@ -2656,7 +2656,7 @@ imlib_updates_merge(Imlib_Updates updates, int w, int h)
  * on the spacing between update rectangles - if they are very close it
  * amalgamates 2 smaller rectangles into 1 larger one. 
  **/
-Imlib_Updates
+EAPI Imlib_Updates
 imlib_updates_merge_for_rendering(Imlib_Updates updates, int w, int h)
 {
    ImlibUpdate        *u;
@@ -2672,7 +2672,7 @@ imlib_updates_merge_for_rendering(Imlib_Updates updates, int w, int h)
  * 
  * Frees an updates list.
  **/
-void
+EAPI void
 imlib_updates_free(Imlib_Updates updates)
 {
    ImlibUpdate        *u;
@@ -2690,7 +2690,7 @@ imlib_updates_free(Imlib_Updates updates)
  * Gets the next update in the updates list relative to the one passed
  * in. 
  **/
-Imlib_Updates
+EAPI Imlib_Updates
 imlib_updates_get_next(Imlib_Updates updates)
 {
    ImlibUpdate        *u;
@@ -2710,7 +2710,7 @@ imlib_updates_get_next(Imlib_Updates updates)
  * 
  * Returns the coordinates of an update.
  **/
-void
+EAPI void
 imlib_updates_get_coordinates(Imlib_Updates updates, int *x_return,
                               int *y_return, int *width_return,
                               int *height_return)
@@ -2740,7 +2740,7 @@ imlib_updates_get_coordinates(Imlib_Updates updates, int *x_return,
  * 
  * Modifies the coordinates of an update in @p update.
  **/
-void
+EAPI void
 imlib_updates_set_coordinates(Imlib_Updates updates, int x, int y, int width,
                               int height)
 {
@@ -2766,7 +2766,7 @@ imlib_updates_set_coordinates(Imlib_Updates updates, int x, int y, int width,
  * this will render the corresponding parts of the image to the current
  * drawable at an offset of @p x, @p y in the drawable. 
  **/
-void
+EAPI void
 imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x, int y)
 {
    ImlibUpdate        *u;
@@ -2802,7 +2802,7 @@ imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x, int y)
  * Initializes an updates list before you add any updates to it or
  * merge it for rendering etc. 
  **/
-Imlib_Updates
+EAPI Imlib_Updates
 imlib_updates_init(void)
 {
    if (!ctx)
@@ -2818,7 +2818,7 @@ imlib_updates_init(void)
  * Appends @p appended_updates to the updates list @p updates and
  * returns the new list.  
  **/
-Imlib_Updates
+EAPI Imlib_Updates
 imlib_updates_append_updates(Imlib_Updates updates,
                              Imlib_Updates appended_updates)
 {
@@ -2847,7 +2847,7 @@ imlib_updates_append_updates(Imlib_Updates updates,
 /**
  * Flips/mirrors the current image horizontally.
  **/
-void
+EAPI void
 imlib_image_flip_horizontal(void)
 {
    ImlibImage         *im;
@@ -2867,7 +2867,7 @@ imlib_image_flip_horizontal(void)
 /**
  * Flips/mirrors the current image vertically.
  **/
-void
+EAPI void
 imlib_image_flip_vertical(void)
 {
    ImlibImage         *im;
@@ -2889,7 +2889,7 @@ imlib_image_flip_vertical(void)
  * 90 degree rotations if used before to after a horizontal or vertical
  * flip). 
  **/
-void
+EAPI void
 imlib_image_flip_diagonal(void)
 {
    ImlibImage         *im;
@@ -2914,7 +2914,7 @@ imlib_image_flip_diagonal(void)
  * rotates clockwise by 180 degrees, 3 rotates clockwise by 270
  * degrees. 
  **/
-void
+EAPI void
 imlib_image_orientate(int orientation)
 {
    ImlibImage         *im;
@@ -2964,7 +2964,7 @@ imlib_image_orientate(int orientation)
  * determine the blur matrix radius that determine how much to blur the
  * image. 
  **/
-void
+EAPI void
 imlib_image_blur(int radius)
 {
    ImlibImage         *im;
@@ -2987,7 +2987,7 @@ imlib_image_blur(int radius)
  * Sharpens the current image. The @p radius value affects how much to sharpen
  * by. 
  **/
-void
+EAPI void
 imlib_image_sharpen(int radius)
 {
    ImlibImage         *im;
@@ -3008,7 +3008,7 @@ imlib_image_sharpen(int radius)
  * Modifies an image so it will tile seamlessly horizontally if used
  * as a tile (i.e. drawn multiple times horizontally).
  **/
-void
+EAPI void
 imlib_image_tile_horizontal(void)
 {
    ImlibImage         *im;
@@ -3029,7 +3029,7 @@ imlib_image_tile_horizontal(void)
  * Modifies an image so it will tile seamlessly vertically if used as
  * a tile (i.e. drawn multiple times vertically).
  **/
-void
+EAPI void
 imlib_image_tile_vertical(void)
 {
    ImlibImage         *im;
@@ -3051,7 +3051,7 @@ imlib_image_tile_vertical(void)
  * vertically if used as a tile (i.e. drawn multiple times horizontally
  * and vertically).
  **/
-void
+EAPI void
 imlib_image_tile(void)
 {
    ImlibImage         *im;
@@ -3080,7 +3080,7 @@ imlib_image_tile(void)
  * blum. If the font cannot be found NULL is returned. 
  * 
  **/
-Imlib_Font
+EAPI Imlib_Font
 imlib_load_font(const char *font_name)
 {
    return imlib_font_load_joined(font_name);
@@ -3089,7 +3089,7 @@ imlib_load_font(const char *font_name)
 /**
  * Frees the current font.
  **/
-void
+EAPI void
 imlib_free_font(void)
 {
    if (!ctx)
@@ -3108,7 +3108,7 @@ imlib_free_font(void)
  * the current image at the (@p x, @p y) location (@p x, @p y denoting the top left
  * corner of the font string) 
  **/
-void
+EAPI void
 imlib_text_draw(int x, int y, const char *text)
 {
    if (!ctx)
@@ -3132,7 +3132,7 @@ imlib_text_draw(int x, int y, const char *text)
  * @p vertical_advance_return does the same for the vertical direction
  * (i.e. drawing text line by line). 
  **/
-void
+EAPI void
 imlib_text_draw_with_return_metrics(int x, int y, const char *text,
                                     int *width_return, int *height_return,
                                     int *horizontal_advance_return,
@@ -3179,7 +3179,7 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
  * Gets the width and height in pixels the @p text string would use up
  * if drawn with the current font. 
  **/
-void
+EAPI void
 imlib_get_text_size(const char *text, int *width_return, int *height_return)
 {
    ImlibFont          *fn;
@@ -3284,7 +3284,7 @@ imlib_get_text_size(const char *text, int *width_return, int *height_return)
  * the advances (which are calculated as if the text was drawn
  * horizontally from left to right) depending on the text orientation. 
  **/
-void
+EAPI void
 imlib_get_text_advance(const char *text, int *horizontal_advance_return,
                        int *vertical_advance_return)
 {
@@ -3311,7 +3311,7 @@ imlib_get_text_advance(const char *text, int *horizontal_advance_return,
  * in using the current font and returns that value in pixels. 
  * 
  **/
-int
+EAPI int
 imlib_get_text_inset(const char *text)
 {
    ImlibFont          *fn;
@@ -3330,7 +3330,7 @@ imlib_get_text_inset(const char *text)
  * Adds the directory @p path to the end of the current list of
  * directories to scan for fonts. 
  **/
-void
+EAPI void
 imlib_add_path_to_font_path(const char *path)
 {
    if (!ctx)
@@ -3345,7 +3345,7 @@ imlib_add_path_to_font_path(const char *path)
  * 
  * Removes all directories in the font path that match @p path.
  **/
-void
+EAPI void
 imlib_remove_path_from_font_path(const char *path)
 {
    if (!ctx)
@@ -3366,7 +3366,7 @@ imlib_remove_path_from_font_path(const char *path)
  * @p number_return. 
  * 
  **/
-char              **
+EAPI char              **
 imlib_list_font_path(int *number_return)
 {
    if (!ctx)
@@ -3394,7 +3394,7 @@ imlib_list_font_path(int *number_return)
  * character x, y, width and height)  are also filled in. 
  * 
  **/
-int
+EAPI int
 imlib_text_get_index_and_location(const char *text, int x, int y,
                                   int *char_x_return, int *char_y_return,
                                   int *char_width_return,
@@ -3508,7 +3508,7 @@ imlib_text_get_index_and_location(const char *text, int x, int y,
  * Gets the geometry of the character at index @p index in the @p text
  * string using the current font. 
  **/
-void
+EAPI void
 imlib_text_get_location_at_index(const char *text, int index,
                                  int *char_x_return, int *char_y_return,
                                  int *char_width_return,
@@ -3588,7 +3588,7 @@ imlib_text_get_location_at_index(const char *text, int index,
  * Returns a list of fonts imlib2 can find in its font path.
  * 
  **/
-char              **
+EAPI char              **
 imlib_list_fonts(int *number_return)
 {
    if (!ctx)
@@ -3605,7 +3605,7 @@ imlib_list_fonts(int *number_return)
  * Frees the font list returned by imlib_list_fonts().
  * 
  **/
-void
+EAPI void
 imlib_free_font_list(char **font_list, int number)
 {
    __imlib_FileFreeDirList(font_list, number);
@@ -3617,7 +3617,7 @@ imlib_free_font_list(char **font_list, int number)
  * Returns the font cache size in bytes.
  * 
  **/
-int
+EAPI int
 imlib_get_font_cache_size(void)
 {
    if (!ctx)
@@ -3633,7 +3633,7 @@ imlib_get_font_cache_size(void)
  * fonts is less than or equal to the font cache size. Setting the size
  * to 0 effectively frees all speculatively cached fonts. 
  **/
-void
+EAPI void
 imlib_set_font_cache_size(int bytes)
 {
    if (!ctx)
@@ -3645,7 +3645,7 @@ imlib_set_font_cache_size(int bytes)
  * Causes a flush of all speculatively cached fonts from the font
  * cache. 
  **/
-void
+EAPI void
 imlib_flush_font_cache(void)
 {
    if (!ctx)
@@ -3659,7 +3659,7 @@ imlib_flush_font_cache(void)
  * Returns the current font's ascent value in pixels.
  * 
  **/
-int
+EAPI int
 imlib_get_font_ascent(void)
 {
    if (!ctx)
@@ -3674,7 +3674,7 @@ imlib_get_font_ascent(void)
  * Returns the current font's descent value in pixels.
  * 
  **/
-int
+EAPI int
 imlib_get_font_descent(void)
 {
    if (!ctx)
@@ -3689,7 +3689,7 @@ imlib_get_font_descent(void)
  * Returns the current font's maximum ascent extent.
  * 
  **/
-int
+EAPI int
 imlib_get_maximum_font_ascent(void)
 {
    if (!ctx)
@@ -3704,7 +3704,7 @@ imlib_get_maximum_font_ascent(void)
  * Returns the current font's maximum descent extent.
  * 
  **/
-int
+EAPI int
 imlib_get_maximum_font_descent(void)
 {
    if (!ctx)
@@ -3720,7 +3720,7 @@ imlib_get_maximum_font_descent(void)
  * valid handle on success. NULL is returned on failure. 
  * 
  **/
-Imlib_Color_Modifier
+EAPI Imlib_Color_Modifier
 imlib_create_color_modifier(void)
 {
    if (!ctx)
@@ -3731,7 +3731,7 @@ imlib_create_color_modifier(void)
 /**
  * Frees the current color modifier.
  **/
-void
+EAPI void
 imlib_free_color_modifier(void)
 {
    if (!ctx)
@@ -3751,7 +3751,7 @@ imlib_free_color_modifier(void)
  * linear, 2.0 brightens and 0.5 darkens etc. Negative values are not
  * allowed. 
  **/
-void
+EAPI void
 imlib_modify_color_modifier_gamma(double gamma_value)
 {
    if (!ctx)
@@ -3772,7 +3772,7 @@ imlib_modify_color_modifier_gamma(double gamma_value)
  * and 1.0 will make things all white. Values in-between vary
  * brightness linearly.
  **/
-void
+EAPI void
 imlib_modify_color_modifier_brightness(double brightness_value)
 {
    if (!ctx)
@@ -3791,7 +3791,7 @@ imlib_modify_color_modifier_brightness(double brightness_value)
  * calling this repeatedly has cumulative effects. Contrast of 1.0 does
  * nothing. 0.0 will merge to gray, 2.0 will double contrast etc. 
  **/
-void
+EAPI void
 imlib_modify_color_modifier_contrast(double contrast_value)
 {
    if (!ctx)
@@ -3814,7 +3814,7 @@ imlib_modify_color_modifier_contrast(double contrast_value)
  * value to a new channel value. A normal mapping would be linear (v[0]
  * = 0, v[10] = 10, v[50] = 50, v[200] = 200, v[255] = 255). 
  **/
-void
+EAPI void
 imlib_set_color_modifier_tables(DATA8 * red_table, DATA8 * green_table,
                                 DATA8 * blue_table, DATA8 * alpha_table)
 {
@@ -3836,7 +3836,7 @@ imlib_set_color_modifier_tables(DATA8 * red_table, DATA8 * green_table,
  * pointers to mapping tables specified. They must have 256 entries and
  * be DATA8 format. 
  **/
-void
+EAPI void
 imlib_get_color_modifier_tables(DATA8 * red_table, DATA8 * green_table,
                                 DATA8 * blue_table, DATA8 * alpha_table)
 {
@@ -3851,7 +3851,7 @@ imlib_get_color_modifier_tables(DATA8 * red_table, DATA8 * green_table,
 /**
  * Resets the current color modifier to have linear mapping tables.
  **/
-void
+EAPI void
 imlib_reset_color_modifier(void)
 {
    if (!ctx)
@@ -3865,7 +3865,7 @@ imlib_reset_color_modifier(void)
  * Uses the current color modifier and modifies the current image using
  * the mapping tables in the current color modifier. 
  **/
-void
+EAPI void
 imlib_apply_color_modifier(void)
 {
    ImlibImage         *im;
@@ -3894,7 +3894,7 @@ imlib_apply_color_modifier(void)
  * Works the same way as imlib_apply_color_modifier() but only modifies
  * a selected rectangle in the current image. 
  **/
-void
+EAPI void
 imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height)
 {
    ImlibImage         *im;
@@ -3938,7 +3938,7 @@ imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height)
                          (ImlibColorModifier *) ctx->color_modifier);
 }
 
-Imlib_Updates
+EAPI Imlib_Updates
 imlib_image_draw_pixel(int x, int y, char make_updates)
 {
    ImlibImage         *im;
@@ -3979,7 +3979,7 @@ imlib_image_draw_pixel(int x, int y, char make_updates)
  * returns NULL. 
  * 
  **/
-Imlib_Updates
+EAPI Imlib_Updates
 imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
 {
    ImlibImage         *im;
@@ -4017,7 +4017,7 @@ imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
  * coordinates with a size of @p width and @p height pixels, using the
  * current color. 
  **/
-void
+EAPI void
 imlib_image_draw_rectangle(int x, int y, int width, int height)
 {
    ImlibImage         *im;
@@ -4052,7 +4052,7 @@ imlib_image_draw_rectangle(int x, int y, int width, int height)
  * coordinates with a size of @p width and @p height pixels, using the
  * current color. 
  **/
-void
+EAPI void
 imlib_image_fill_rectangle(int x, int y, int width, int height)
 {
    ImlibImage         *im;
@@ -4086,7 +4086,7 @@ imlib_image_fill_rectangle(int x, int y, int width, int height)
  * (@p x, @p y) coordinates
  * of the current image, replacing the alpha channel there. 
  **/
-void
+EAPI void
 imlib_image_copy_alpha_to_image(Imlib_Image image_source, int x, int y)
 {
    ImlibImage         *im, *im2;
@@ -4124,7 +4124,7 @@ imlib_image_copy_alpha_to_image(Imlib_Image image_source, int x, int y)
  * the source image @p image_source and replaces the alpha channel on the destination
  * image at the (@p destination_x, @p destination_y) coordinates. 
  **/
-void
+EAPI void
 imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source, int x,
                                           int y, int width, int height,
                                           int destination_x, int destination_y)
@@ -4164,7 +4164,7 @@ imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source, int x,
  * location within the current image
  * by the @p delta_x, @p delta_y distance (in pixels). 
  **/
-void
+EAPI void
 imlib_image_scroll_rect(int x, int y, int width, int height, int delta_x,
                         int delta_y)
 {
@@ -4219,7 +4219,7 @@ imlib_image_scroll_rect(int x, int y, int width, int height, int delta_x,
  * specified in the current image to a new location (@p new_x, @p new_y) in the same
  * image. 
  **/
-void
+EAPI void
 imlib_image_copy_rect(int x, int y, int width, int height, int new_x, int new_y)
 {
    ImlibImage         *im;
@@ -4242,7 +4242,7 @@ imlib_image_copy_rect(int x, int y, int width, int height, int new_x, int new_y)
  * Creates a new empty color range and returns a valid handle to that
  * color range.
  **/
-Imlib_Color_Range
+EAPI Imlib_Color_Range
 imlib_create_color_range(void)
 {
    if (!ctx)
@@ -4253,7 +4253,7 @@ imlib_create_color_range(void)
 /**
  * Frees the current color range.
  **/
-void
+EAPI void
 imlib_free_color_range(void)
 {
    if (!ctx)
@@ -4271,7 +4271,7 @@ imlib_free_color_range(void)
  * distance from the previous color in the range (if it's the first
  * color in the range this is irrelevant). 
  **/
-void
+EAPI void
 imlib_add_color_to_color_range(int distance_away)
 {
    if (!ctx)
@@ -4295,7 +4295,7 @@ imlib_add_color_to_color_range(int distance_away)
  * current color range at an angle of @p angle degrees with 0 degrees
  * being vertical from top to bottom going clockwise from there. 
  **/
-void
+EAPI void
 imlib_image_fill_color_range_rectangle(int x, int y, int width, int height,
                                        double angle)
 {
@@ -4334,7 +4334,7 @@ imlib_image_fill_color_range_rectangle(int x, int y, int width, int height,
  * 0 degrees being vertical from top to bottom going clockwise from
  * there. 
  **/
-void
+EAPI void
 imlib_image_fill_hsva_color_range_rectangle(int x, int y, int width, int height,
                                             double angle)
 {
@@ -4367,7 +4367,7 @@ imlib_image_fill_hsva_color_range_rectangle(int x, int y, int width, int height,
  * Fills the @p color_return color structure with the color of the pixel
  * in the current image that is at the (@p x, @p y) location specified. 
  **/
-void
+EAPI void
 imlib_image_query_pixel(int x, int y, Imlib_Color * color_return)
 {
    ImlibImage         *im;
@@ -4408,7 +4408,7 @@ imlib_image_query_pixel(int x, int y, Imlib_Color * color_return)
  * Gets the HSVA color of the pixel from the current image that is at
  * the (@p x, @p y) location specified. 
  **/
-void
+EAPI void
 imlib_image_query_pixel_hsva(int x, int y, float *hue, float *saturation,
                              float *value, int *alpha)
 {
@@ -4452,7 +4452,7 @@ imlib_image_query_pixel_hsva(int x, int y, float *hue, float *saturation,
  * Gets the HLSA color of the pixel from the current image that is at
  * the (@p x, @p y) location specified. 
  **/
-void
+EAPI void
 imlib_image_query_pixel_hlsa(int x, int y, float *hue, float *lightness,
                              float *saturation, int *alpha)
 {
@@ -4497,7 +4497,7 @@ imlib_image_query_pixel_hlsa(int x, int y, float *hue, float *lightness,
  * the (@p x, @p y) location specified. 
  *
  **/
-void
+EAPI void
 imlib_image_query_pixel_cmya(int x, int y, int *cyan, int *magenta, int *yellow,
                              int *alpha)
 {
@@ -4538,7 +4538,7 @@ imlib_image_query_pixel_cmya(int x, int y, int *cyan, int *magenta, int *yellow,
  * @p destructor_function function, if not NULL is called when this
  * image is freed so the destructor can free @p data, if this is needed. 
  **/
-void
+EAPI void
 imlib_image_attach_data_value(const char *key, void *data, int value,
                               Imlib_Internal_Data_Destructor_Function
                               destructor_function)
@@ -4563,7 +4563,7 @@ imlib_image_attach_data_value(const char *key, void *data, int value,
  * on the current image. 
  * 
  **/
-void               *
+EAPI void               *
 imlib_image_get_attached_data(const char *key)
 {
    ImlibImageTag      *t;
@@ -4590,7 +4590,7 @@ imlib_image_get_attached_data(const char *key)
  * key @p key. If none could be found 0 is returned. 
  * 
  **/
-int
+EAPI int
 imlib_image_get_attached_value(const char *key)
 {
    ImlibImageTag      *t;
@@ -4614,7 +4614,7 @@ imlib_image_get_attached_value(const char *key)
  * Detaches the data & value attached with the specified key @p key from the
  * current image. 
  **/
-void
+EAPI void
 imlib_image_remove_attached_data_value(const char *key)
 {
    ImlibImage         *im;
@@ -4635,7 +4635,7 @@ imlib_image_remove_attached_data_value(const char *key)
  * specified key @p key and also calls the destructor function that was
  * supplied when attaching it (see imlib_image_attach_data_value()).
  **/
-void
+EAPI void
 imlib_image_remove_and_free_attached_data_value(const char *key)
 {
    ImlibImageTag      *t;
@@ -4658,7 +4658,7 @@ imlib_image_remove_and_free_attached_data_value(const char *key)
  * Saves the current image in the format specified by the current
  * image's format settings to the filename @p filename. 
  **/
-void
+EAPI void
 imlib_save_image(const char *filename)
 {
    ImlibImage         *im;
@@ -4686,7 +4686,7 @@ imlib_save_image(const char *filename)
  * Works the same way imlib_save_image() works, but will set the
  * @p error_return to an error value if the save fails. 
  **/
-void
+EAPI void
 imlib_save_image_with_error_return(const char *filename,
                                    Imlib_Load_Error * error_return)
 {
@@ -4720,7 +4720,7 @@ imlib_save_image_with_error_return(const char *filename,
  * radians. On success it returns a valid image handle, otherwise
  * NULL. 
  **/
-Imlib_Image
+EAPI Imlib_Image
 imlib_create_rotated_image(double angle)
 {
    ImlibImage         *im, *im_old;
@@ -4864,7 +4864,7 @@ void imlib_rotate_image_from_buffer(double angle,
  * Works just like imlib_blend_image_onto_image_skewed() except you
  * cannot skew an image (@p v_angle_x and @p v_angle_y are 0). 
  **/
-void
+EAPI void
 imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
                                       char merge_alpha, int source_x,
                                       int source_y, int source_width,
@@ -4954,7 +4954,7 @@ imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
  * @endcode
  * will rotate the image `a' degrees, with its upper left corner at (50,50).
  **/
-void
+EAPI void
 imlib_blend_image_onto_image_skewed(Imlib_Image source_image,
                                     char merge_alpha, int source_x,
                                     int source_y, int source_width,
@@ -5009,7 +5009,7 @@ imlib_blend_image_onto_image_skewed(Imlib_Image source_image,
  * blends the image onto the current drawable instead of the current
  * image. 
  **/
-void
+EAPI void
 imlib_render_image_on_drawable_skewed(int source_x, int source_y,
                                       int source_width, int source_height,
                                       int destination_x, int destination_y,
@@ -5052,7 +5052,7 @@ imlib_render_image_on_drawable_skewed(int source_x, int source_y,
  * Works just like imlib_render_image_on_drawable_skewed() except you
  * cannot skew an image (@p v_angle_x and @p v_angle_y are 0). 
  **/
-void
+EAPI void
 imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
                                         int source_width, int source_height,
                                         int destination_x, int destination_y,
@@ -5081,7 +5081,7 @@ imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
 }
 #endif
 
-void
+EAPI void
 imlib_image_filter(void)
 {
    ImlibImage         *im;
@@ -5099,7 +5099,7 @@ imlib_image_filter(void)
    __imlib_FilterImage(im, (ImlibFilter *) ctx->filter);
 }
 
-Imlib_Filter
+EAPI Imlib_Filter
 imlib_create_filter(int initsize)
 {
    if (!ctx)
@@ -5107,7 +5107,7 @@ imlib_create_filter(int initsize)
    return (Imlib_Filter) __imlib_CreateFilter(initsize);
 }
 
-void
+EAPI void
 imlib_free_filter(void)
 {
    if (!ctx)
@@ -5123,7 +5123,7 @@ imlib_free_filter(void)
  * Sets the current filter to be used when applying filters to
  * images. Set this to NULL to disable filters. 
  */
-void
+EAPI void
 imlib_context_set_filter(Imlib_Filter filter)
 {
    if (!ctx)
@@ -5136,7 +5136,7 @@ imlib_context_set_filter(Imlib_Filter filter)
  *
  * Gets the current context image filter.
  */
-Imlib_Filter
+EAPI Imlib_Filter
 imlib_context_get_filter(void)
 {
    if (!ctx)
@@ -5144,7 +5144,7 @@ imlib_context_get_filter(void)
    return ctx->filter;
 }
 
-void
+EAPI void
 imlib_filter_set(int xoff, int yoff, int a, int r, int g, int b)
 {
    ImlibFilter        *fil;
@@ -5159,7 +5159,7 @@ imlib_filter_set(int xoff, int yoff, int a, int r, int g, int b)
    __imlib_FilterSetColor(&fil->blue, xoff, yoff, 0, 0, 0, b);
 }
 
-void
+EAPI void
 imlib_filter_set_alpha(int xoff, int yoff, int a, int r, int g, int b)
 {
    ImlibFilter        *fil;
@@ -5171,7 +5171,7 @@ imlib_filter_set_alpha(int xoff, int yoff, int a, int r, int g, int b)
    __imlib_FilterSetColor(&fil->alpha, xoff, yoff, a, r, g, b);
 }
 
-void
+EAPI void
 imlib_filter_set_red(int xoff, int yoff, int a, int r, int g, int b)
 {
    ImlibFilter        *fil;
@@ -5183,7 +5183,7 @@ imlib_filter_set_red(int xoff, int yoff, int a, int r, int g, int b)
    __imlib_FilterSetColor(&fil->red, xoff, yoff, a, r, g, b);
 }
 
-void
+EAPI void
 imlib_filter_set_green(int xoff, int yoff, int a, int r, int g, int b)
 {
    ImlibFilter        *fil;
@@ -5195,7 +5195,7 @@ imlib_filter_set_green(int xoff, int yoff, int a, int r, int g, int b)
    __imlib_FilterSetColor(&fil->green, xoff, yoff, a, r, g, b);
 }
 
-void
+EAPI void
 imlib_filter_set_blue(int xoff, int yoff, int a, int r, int g, int b)
 {
    ImlibFilter        *fil;
@@ -5207,7 +5207,7 @@ imlib_filter_set_blue(int xoff, int yoff, int a, int r, int g, int b)
    __imlib_FilterSetColor(&fil->blue, xoff, yoff, a, r, g, b);
 }
 
-void
+EAPI void
 imlib_filter_constants(int a, int r, int g, int b)
 {
    if (!ctx)
@@ -5216,7 +5216,7 @@ imlib_filter_constants(int a, int r, int g, int b)
    __imlib_FilterConstants((ImlibFilter *) ctx->filter, a, r, g, b);
 }
 
-void
+EAPI void
 imlib_filter_divisors(int a, int r, int g, int b)
 {
    if (!ctx)
@@ -5225,7 +5225,7 @@ imlib_filter_divisors(int a, int r, int g, int b)
    __imlib_FilterDivisors((ImlibFilter *) ctx->filter, a, r, g, b);
 }
 
-void
+EAPI void
 imlib_apply_filter(char *script, ...)
 {
    va_list             param_list;
@@ -5248,7 +5248,7 @@ imlib_apply_filter(char *script, ...)
 /**
  * Returns a new polygon object with no points set.
  **/
-ImlibPolygon
+EAPI ImlibPolygon
 imlib_polygon_new(void)
 {
    if (!ctx)
@@ -5265,7 +5265,7 @@ imlib_polygon_new(void)
  * to the end of the polygon's internal point list. The points are
  * drawn in order, from the first to the last. 
  **/
-void
+EAPI void
 imlib_polygon_add_point(ImlibPolygon poly, int x, int y)
 {
    if (!ctx)
@@ -5279,7 +5279,7 @@ imlib_polygon_add_point(ImlibPolygon poly, int x, int y)
  * 
  * Frees a polygon object.
  **/
-void
+EAPI void
 imlib_polygon_free(ImlibPolygon poly)
 {
    if (!ctx)
@@ -5297,7 +5297,7 @@ imlib_polygon_free(ImlibPolygon poly)
  * final point will be joined with the first point if @p closed is
  * non-zero. 
  **/
-void
+EAPI void
 imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed)
 {
    ImlibImage         *im;
@@ -5328,7 +5328,7 @@ imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed)
  * Fills the area defined by the polygon @p polyon the current context image
  * with the current context color. 
  **/
-void
+EAPI void
 imlib_image_fill_polygon(ImlibPolygon poly)
 {
    ImlibImage         *im;
@@ -5364,7 +5364,7 @@ imlib_image_fill_polygon(ImlibPolygon poly)
  * upper left corner of the bounding box and (@p px2, @p py2) defines it's
  * lower right corner. 
  **/
-void
+EAPI void
 imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2,
                          int *py2)
 {
@@ -5386,7 +5386,7 @@ imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2,
  * horizontal amplitude of the ellipse, and @p b defines the vertical
  * amplitude. 
  **/
-void
+EAPI void
 imlib_image_draw_ellipse(int xc, int yc, int a, int b)
 {
    ImlibImage         *im;
@@ -5424,7 +5424,7 @@ imlib_image_draw_ellipse(int xc, int yc, int a, int b)
  * horizontal amplitude of the ellipse, and @p b defines the vertical
  * amplitude. 
  **/
-void
+EAPI void
 imlib_image_fill_ellipse(int xc, int yc, int a, int b)
 {
    ImlibImage         *im;
@@ -5457,7 +5457,7 @@ imlib_image_fill_ellipse(int xc, int yc, int a, int b)
  * Returns non-zero if the point (@p x, @p y) is within the area defined by
  * the polygon @p poly.
  **/
-unsigned char
+EAPI unsigned char
 imlib_polygon_contains_point(ImlibPolygon poly, int x, int y)
 {
    if (!ctx)
@@ -5466,7 +5466,7 @@ imlib_polygon_contains_point(ImlibPolygon poly, int x, int y)
    return __imlib_polygon_contains_point((ImlibPoly) poly, x, y);
 }
 
-void
+EAPI void
 imlib_image_clear(void)
 {
    ImlibImage         *im;
@@ -5483,7 +5483,7 @@ imlib_image_clear(void)
    memset(im->data, 0, im->w * im->h * sizeof(DATA32));
 }
 
-void
+EAPI void
 imlib_image_clear_color(int r, int g, int b, int a)
 {
    ImlibImage         *im;
