@@ -468,7 +468,7 @@ etk_box_child_packing_get(box, child)
        int 	        padding;
        
        etk_box_child_packing_get(box, child, &fill, &padding);
-       EXTEND(SP, 4);
+       EXTEND(SP, 2);
        PUSHs(sv_2mortal(newSViv(fill)));
        PUSHs(sv_2mortal(newSViv(padding)));
 
@@ -480,6 +480,30 @@ etk_box_child_packing_set(box, child, fill, padding=0)
 	int	padding
       ALIAS:
 	ChildPackingSet=1
+
+void
+etk_box_child_position_get(box, child)
+	Etk_Box *	box
+	Etk_Widget *	child
+      ALIAS:
+	ChildPositionGet=1
+     PPCODE:
+       Etk_Box_Group   	group;
+       int 	        pos;
+       
+       etk_box_child_position_get(box, child, &group, &pos);
+       EXTEND(SP, 2);
+       PUSHs(sv_2mortal(newSViv(group)));
+       PUSHs(sv_2mortal(newSViv(pos)));
+
+void
+etk_box_child_position_set(box, child, group, pos)
+	Etk_Box *	box
+	Etk_Widget *	child
+	Etk_Box_Group	group
+	int	pos
+	ALIAS:
+	ChildPositionSet=1
 
 Etk_Bool
 etk_box_homogeneous_get(box)
@@ -536,6 +560,14 @@ etk_box_insert_at(box, child, group, pos, fill=ETK_BOX_NONE, padding=0)
      ALIAS:
 	InsertAt=1
 
+Etk_Widget *
+etk_box_child_get_at(box, group, pos)
+	Etk_Box *	box
+	Etk_Box_Group	group
+	int	pos
+	ALIAS:
+	ChildGetAt=1
+	
 int
 etk_box_spacing_get(box)
 	Etk_Box *	box
