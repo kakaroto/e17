@@ -51,8 +51,8 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
   ewl_widget_show(image);
 										  text = ewl_text_new();
   ewl_text_text_set(EWL_TEXT(text), album);
-  ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_ALL);
   ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+  ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
   ewl_container_child_append(EWL_CONTAINER(hbox), text);
   ewl_widget_show(text);
  
@@ -120,6 +120,7 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
   ewl_text_text_set(EWL_TEXT(text), basename(file));
   ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_ALL);
   ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+  ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
   ewl_container_child_append(EWL_CONTAINER(hbox), text);
   ewl_widget_show(text);
 
@@ -213,8 +214,8 @@ void go_up(Ewl_Widget *w, void *event, void *data)
  if (strcmp(current_directory, "/"))
  {
   new_dir = dirname(current_directory);
-  ewl_widget_name_set(m->viewer_freebox, new_dir);
-  populate_images(m->viewer_freebox, NULL, NULL);
+  ewl_widget_name_set(m->viewer, new_dir);
+  populate_images(m->viewer, NULL, NULL);
  }
 }
 
@@ -222,8 +223,8 @@ void go_home(Ewl_Widget *w, void *event, void *data)
 {
  char *new_dir;
  new_dir = getenv("HOME");
- ewl_widget_name_set(m->viewer_freebox, new_dir);
- populate_images(m->viewer_freebox, NULL, NULL);
+ ewl_widget_name_set(m->viewer, new_dir);
+ populate_images(m->viewer, NULL, NULL);
 }
 
 void entry_change(Ewl_Widget *w, void *event, void *data)
@@ -232,8 +233,8 @@ void entry_change(Ewl_Widget *w, void *event, void *data)
  new_dir = ewl_text_text_get(EWL_TEXT(w));
  if (ecore_file_is_dir(new_dir))
  {
-  ewl_widget_name_set(m->viewer_freebox, new_dir);
-  populate_images(m->viewer_freebox, NULL, NULL);
+  ewl_widget_name_set(m->viewer, new_dir);
+  populate_images(m->viewer, NULL, NULL);
  }
  else
  {

@@ -114,6 +114,7 @@ main(int argc, char **argv)
  ewl_object_fill_policy_set(EWL_OBJECT(m->browser), EWL_FLAG_FILL_ALL);
  ewl_tree_headers_visible_set(EWL_TREE(m->browser), 0);
  ewl_tree_expandable_rows_set(EWL_TREE(m->browser), FALSE);
+ ewl_tree_mode_set(EWL_TREE(m->browser), EWL_TREE_MODE_SINGLE);
  ewl_object_size_request(EWL_OBJECT(m->groups), 220, 250);
  ewl_widget_show(m->browser);
 
@@ -137,6 +138,7 @@ main(int argc, char **argv)
  ewl_object_fill_policy_set(EWL_OBJECT(m->albums), EWL_FLAG_FILL_ALL);
  ewl_tree_headers_visible_set(EWL_TREE(m->albums), 0);
  ewl_tree_expandable_rows_set(EWL_TREE(m->albums), FALSE);
+ ewl_tree_mode_set(EWL_TREE(m->albums), EWL_TREE_MODE_SINGLE);
  ewl_object_size_request(EWL_OBJECT(m->albums), 220, 250);
  ewl_widget_show(m->albums);
  
@@ -159,9 +161,8 @@ main(int argc, char **argv)
  ewl_callback_append(m->albums, EWL_CALLBACK_SHOW, populate_albums, NULL);
  ewl_callback_append(m->browser, EWL_CALLBACK_SHOW, populate_browser, 
 			current_directory);
- ewl_widget_name_set(m->viewer_freebox, current_directory);
- ewl_callback_append(m->viewer_freebox, EWL_CALLBACK_SHOW, 
-			populate_images, NULL);
+ ewl_widget_name_set(m->viewer, current_directory);
+ ewl_callback_append(m->viewer, EWL_CALLBACK_SHOW, populate_images, NULL);
  
  ewl_main();
  return 0;
