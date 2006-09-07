@@ -71,7 +71,7 @@ void display_window(int argc, char** argv)
 	ewl_object_alignment_set(EWL_OBJECT(progtext), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_minimum_size_set(EWL_OBJECT(progtext), 75, 20);
 	ewl_object_maximum_size_set(EWL_OBJECT(progtext), 125, 20);
-	ewl_text_text_set(EWL_TEXT(progtext), "Root's Password");
+	ewl_text_text_set(EWL_TEXT(progtext), "Password");
 	ewl_widget_show(progtext);
 	
 	entry = ewl_password_new();
