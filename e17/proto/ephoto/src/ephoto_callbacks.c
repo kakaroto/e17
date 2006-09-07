@@ -46,7 +46,7 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
   image_path = ewl_icon_theme_icon_path_get(EWL_ICON_IMAGE_X_GENERIC,
                                             EWL_ICON_SIZE_LARGE);  
   image = ewl_image_new();
-  ewl_image_file_set(EWL_IMAGE(image), image_path, NULL);
+  ewl_image_file_set(EWL_IMAGE(image), image_path, EWL_ICON_IMAGE_X_GENERIC);
   ewl_container_child_append(EWL_CONTAINER(hbox), image);
   ewl_widget_show(image);
 										  text = ewl_text_new();
@@ -112,7 +112,7 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
   image_path = ewl_icon_theme_icon_path_get(EWL_ICON_FOLDER, 
 	                                    EWL_ICON_SIZE_LARGE);
   image = ewl_image_new();
-  ewl_image_file_set(EWL_IMAGE(image), image_path, NULL);
+  ewl_image_file_set(EWL_IMAGE(image), image_path, EWL_ICON_FOLDER);
   ewl_container_child_append(EWL_CONTAINER(hbox), image);
   ewl_widget_show(image);
 

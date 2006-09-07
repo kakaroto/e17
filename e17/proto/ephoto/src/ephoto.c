@@ -65,7 +65,7 @@ main(int argc, char **argv)
  ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
  icon_theme_path = ewl_icon_theme_icon_path_get(EWL_ICON_GO_UP, 
 		 				EWL_ICON_SIZE_MEDIUM);
- ewl_image_file_set(EWL_IMAGE(m->image), icon_theme_path, NULL);
+ ewl_image_file_set(EWL_IMAGE(m->image), icon_theme_path, EWL_ICON_GO_UP);
  ewl_callback_append(m->image, EWL_CALLBACK_CLICKED, go_up, NULL);
  ewl_widget_show(m->image);
 
@@ -73,7 +73,7 @@ main(int argc, char **argv)
  ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
  icon_theme_path = ewl_icon_theme_icon_path_get(EWL_ICON_GO_HOME,
                                                 EWL_ICON_SIZE_MEDIUM);
- ewl_image_file_set(EWL_IMAGE(m->image), icon_theme_path, NULL);
+ ewl_image_file_set(EWL_IMAGE(m->image), icon_theme_path, EWL_ICON_GO_HOME);
  ewl_callback_append(m->image, EWL_CALLBACK_CLICKED, go_home, NULL);
  ewl_widget_show(m->image);
 
