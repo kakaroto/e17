@@ -29,14 +29,13 @@ Config = Struct.new("Config", :ipc_path, :theme, :time_display_elapsed)
 # backwards compatibility w/ DrFeelgood and earlier
 unless Xmms.respond_to?(:userconfdir)
 	def Xmms.userconfdir
-		".xmms2"
+		File.join(File.expand_path("~"), ".xmms2")
 	end
 end
 
 class Euphoria
 	DATA_DIR = "/usr/local/share/euphoria"
-	DATA_DIR_PRIV = File.join(File.expand_path("~"),
-	                          Xmms.userconfdir,
+	DATA_DIR_PRIV = File.join(Xmms.userconfdir,
 	                          "clients",
 	                          "euphoria")
 
