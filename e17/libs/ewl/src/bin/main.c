@@ -413,6 +413,7 @@ create_main_test_window(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(note), tree);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), tree, "Tests");
 	ewl_tree_headers_visible_set(EWL_TREE(tree), FALSE);
+	ewl_tree_mode_set(EWL_TREE(tree), EWL_TREE_MODE_SINGLE);
 	ewl_widget_show(tree);
 
 	/* create the test category rows */
@@ -470,6 +471,7 @@ create_main_test_window(Ewl_Container *box)
 	o2 = ewl_tree_new(3);
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
 	ewl_tree_headers_set(EWL_TREE(o2), headers);
+	ewl_tree_mode_set(EWL_TREE(o2), EWL_TREE_MODE_SINGLE);
 	ewl_widget_name_set(o2, "unit_test_tree");
 	ewl_widget_show(o2);
 
