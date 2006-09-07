@@ -20,6 +20,13 @@ void display_window(int argc, char** argv)
 	Ewl_Widget *progtext = NULL;
 	Ewl_Widget *vbox=NULL, *hbox = NULL;
 	Ewl_Widget *image = NULL;
+	uid_t user;
+	struct passwd *user_name;
+	char username[256];
+	
+	user = getuid();
+	user_name = getpwuid(user);
+	snprintf(username, 256, "%s's password", user_name->pw_name);
 	
 	int num_roots=0;
 	int root_w=0, root_h=0;
@@ -71,7 +78,7 @@ void display_window(int argc, char** argv)
 	ewl_object_alignment_set(EWL_OBJECT(progtext), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_minimum_size_set(EWL_OBJECT(progtext), 75, 20);
 	ewl_object_maximum_size_set(EWL_OBJECT(progtext), 125, 20);
-	ewl_text_text_set(EWL_TEXT(progtext), "Password");
+	ewl_text_text_set(EWL_TEXT(progtext), username);
 	ewl_widget_show(progtext);
 	
 	entry = ewl_password_new();
