@@ -16,7 +16,8 @@ struct _Config
 struct _Config_Item
 {
    const char *id;
-   int         volume;
+   
+   int card_id;
 };
 
 EAPI extern E_Module_Api e_modapi;
