@@ -19,6 +19,7 @@ void display_window(int argc, char** argv)
 	Ewl_Widget *cancel_button = NULL;
 	Ewl_Widget *progtext = NULL;
 	Ewl_Widget *vbox=NULL, *hbox = NULL;
+	Ewl_Widget *image = NULL;
 	
 	int num_roots=0;
 	int root_w=0, root_h=0;
@@ -39,9 +40,8 @@ void display_window(int argc, char** argv)
 	ewl_window_class_set(EWL_WINDOW(win), "Empower!");
 	ewl_object_size_request(EWL_OBJECT(win), WIDTH, HEIGHT);
 	ewl_window_move(EWL_WINDOW(win), xpos, ypos);
-	ewl_window_borderless_set(EWL_WINDOW(win));
+	ewl_window_dialog_set(EWL_WINDOW(win), 1);
 	ewl_window_keyboard_grab_set(EWL_WINDOW(win), 1);
-	ewl_window_pointer_grab_set(EWL_WINDOW(win), 1);
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 	ewl_callback_append(win, EWL_CALLBACK_REVEAL, reveal_cb, NULL);
 	ewl_callback_append(win, EWL_CALLBACK_KEY_DOWN, key_down_cb, NULL);
@@ -54,16 +54,27 @@ void display_window(int argc, char** argv)
 	
 	char user[256];
 	
-	snprintf(user, 256, "%s's Password:", userinfo->pw_name);
+	snprintf(user, 256, "%s's password:", userinfo->pw_name);
 	//strcat(user, userinfo->pw_name);
+
+	hbox = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
+	ewl_widget_show(hbox);
+
+        image = ewl_image_new();
+	ewl_image_file_set(EWL_IMAGE(image), 
+		ewl_icon_theme_icon_path_get(EWL_ICON_SYSTEM_LOCK_SCREEN, 
+		EWL_ICON_SIZE_LARGE), NULL);
+	ewl_container_child_append(EWL_CONTAINER(hbox), image);
+	ewl_widget_show(image);
 	
 	progtext = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), progtext);
+	ewl_container_child_append(EWL_CONTAINER(hbox), progtext);
 	ewl_text_font_size_set(EWL_TEXT(progtext), 14);
-	ewl_text_styles_set(EWL_TEXT(progtext), EWL_TEXT_STYLE_SOFT_SHADOW);
-	ewl_text_shadow_color_set(EWL_TEXT(progtext), 30,30,30,50);
 	ewl_object_padding_set(EWL_OBJECT(progtext),10,0,3,3);
 	ewl_object_minimum_size_set(EWL_OBJECT(progtext), 75, 20);
+	ewl_object_maximum_size_set(EWL_OBJECT(progtext), 125, 20);
 	ewl_text_text_set(EWL_TEXT(progtext), user);
 	ewl_widget_show(progtext);
 	
@@ -88,8 +99,8 @@ void display_window(int argc, char** argv)
 	
 	ok_button = ewl_button_new();
 	ewl_button_stock_type_set(EWL_BUTTON(ok_button), EWL_STOCK_OK);
-	ewl_object_minimum_size_set(EWL_OBJECT(ok_button), 60, 15);
-	ewl_object_maximum_size_set(EWL_OBJECT(ok_button), 60, 15);
+	ewl_object_minimum_size_set(EWL_OBJECT(ok_button), 60, 20);
+	ewl_object_maximum_size_set(EWL_OBJECT(ok_button), 60, 20);
 	ewl_object_fill_policy_set(EWL_OBJECT(ok_button), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(hbox), ok_button);
 	ewl_callback_append(ok_button, EWL_CALLBACK_CLICKED, pipe_to_sudo_cb, entry);
@@ -97,7 +108,8 @@ void display_window(int argc, char** argv)
 	
 	cancel_button = ewl_button_new();
 	ewl_button_stock_type_set(EWL_BUTTON(cancel_button), EWL_STOCK_CANCEL);
-	ewl_object_maximum_size_set(EWL_OBJECT(cancel_button), 60, 15);
+	ewl_object_minimum_size_set(EWL_OBJECT(cancel_button), 60, 20);
+	ewl_object_maximum_size_set(EWL_OBJECT(cancel_button), 60, 20);
 	ewl_object_fill_policy_set(EWL_OBJECT(cancel_button), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(hbox), cancel_button);
 	ewl_callback_append(cancel_button, EWL_CALLBACK_CLICKED, destroy_cb, NULL);

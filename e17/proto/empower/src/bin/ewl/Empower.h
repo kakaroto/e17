@@ -10,8 +10,7 @@
 //#include "../config.h"
 
 #define WIDTH 200
-#define HEIGHT 80
-
+#define HEIGHT 85
 char buf[1024];
 Ewl_Widget *win;
 char password[1024];
