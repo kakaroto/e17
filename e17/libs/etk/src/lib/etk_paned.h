@@ -5,11 +5,6 @@
 #include "etk_container.h"
 #include "etk_types.h"
 
-/* TODO/FIXME list:
- * - etk_paned_position_set() does not work if the paned is not realized
- * - add the ability to change the expand setting
- */
-
 /**
  * @defgroup Etk_Paned Etk_Paned
  * @brief The Etk_Paned widget is a container that can contain two children separated by a draggable separator
@@ -96,6 +91,10 @@ Etk_Widget *etk_paned_child2_get(Etk_Paned *paned);
 void etk_paned_position_set(Etk_Paned *paned, int position);
 int etk_paned_position_get(Etk_Paned *paned);
 
+void etk_paned_child1_expand_set(Etk_Paned *paned, Etk_Bool value);
+void etk_paned_child2_expand_set(Etk_Paned *paned, Etk_Bool value);
+Etk_Bool etk_paned_child1_expand_get(Etk_Paned *paned);
+Etk_Bool etk_paned_child2_expand_get(Etk_Paned *paned);
 /** @} */
 
 #endif

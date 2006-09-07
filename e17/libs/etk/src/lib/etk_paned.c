@@ -220,6 +220,7 @@ void etk_paned_position_set(Etk_Paned *paned, int position)
    else
       _etk_vpaned_position_calc(paned);
    
+   etk_widget_redraw_queue(ETK_WIDGET(paned));
    if (prev_position != paned->position)
       etk_object_notify(ETK_OBJECT(paned), "position");
 }
@@ -236,6 +237,58 @@ int etk_paned_position_get(Etk_Paned *paned)
       return 0;
    return paned->position;
 } 
+
+/**
+ * @brief Sets whether the first child should expands.
+ * @param paned a paned
+ * @param expand ETK_TRUE whether the first child should be expandable
+ */
+void etk_paned_child1_expand_set(Etk_Paned *paned, Etk_Bool expand)
+{
+   if (!paned)
+      return;
+
+   paned->expand1 = expand;
+}
+
+/**
+ * @brief Sets whether the second child should expands.
+ * @param paned a paned
+ * @param expand ETK_TRUE whether the second child should be expandable
+ */
+void etk_paned_child2_expand_set(Etk_Paned *paned, Etk_Bool expand)
+{
+   if (!paned)
+      return;
+
+   paned->expand2 = expand;
+}
+
+/**
+ * @brief Gets whether the first child expands.
+ * @param paned a paned
+ * @return Returns ETK_TRUE if the first child is expandable
+ */
+Etk_Bool etk_paned_child1_expand_get(Etk_Paned *paned)
+{
+   if (!paned)
+      return ETK_FALSE;
+
+   return paned->expand1;
+}
+
+/**
+ * @brief Gets whether the second child expands.
+ * @param paned a paned
+ * @return Returns ETK_TRUE if the second child is expandable
+ */
+Etk_Bool etk_paned_child2_expand_get(Etk_Paned *paned)
+{
+   if (!paned)
+      return ETK_FALSE;
+
+   return paned->expand2;
+}
 
 /**************************
  *
@@ -374,13 +427,21 @@ static void _etk_hpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       Etk_Size separator_size;
       Etk_Geometry child_geometry;
       
+      if (paned->child1->geometry.w == -1
+	  && paned->child2->geometry.w == -1
+	  && paned->separator->geometry.w == -1
+	  && paned->position != 0)
+	return;
+
       prev_size = paned->child1->geometry.w + paned->child2->geometry.w + paned->separator->geometry.w;
-      if (paned->expand1 == paned->expand2)
-         etk_paned_position_set(paned, paned->position + (geometry.w - prev_size) / 2);
+      if (prev_size <= 0 && paned->position != 0)
+	 etk_paned_position_set(paned, paned->position);
+      else if (paned->expand1 == paned->expand2)
+	 etk_paned_position_set(paned, paned->position + (geometry.w - prev_size) / 2);
       else if (paned->expand1 && !paned->expand2)
-         etk_paned_position_set(paned, geometry.w - (prev_size - paned->position));
+	 etk_paned_position_set(paned, geometry.w - (prev_size - paned->position));
       else
-         etk_paned_position_set(paned, paned->position);
+	 etk_paned_position_set(paned, paned->position);
 
       child_geometry.x = geometry.x;
       child_geometry.y = geometry.y;
@@ -423,14 +484,22 @@ static void _etk_vpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       int prev_size;
       Etk_Size separator_size;
       Etk_Geometry child_geometry;
+
+      if (paned->child1->geometry.h == -1
+	  && paned->child2->geometry.h == -1
+	  && paned->separator->geometry.h == -1
+	  && paned->position != 0)
+	return;
       
       prev_size = paned->child1->geometry.h + paned->child2->geometry.h + paned->separator->geometry.h;
-      if (paned->expand1 == paned->expand2)
-         etk_paned_position_set(paned, paned->position + (geometry.h - prev_size) / 2);
+      if (prev_size <= 0 && paned->position != 0)
+	 etk_paned_position_set(paned, paned->position);
+      else if (paned->expand1 == paned->expand2)
+	 etk_paned_position_set(paned, paned->position + (geometry.h - prev_size) / 2);
       else if (paned->expand1 && !paned->expand2)
          etk_paned_position_set(paned, geometry.h - (prev_size - paned->position));
       else
-         etk_paned_position_set(paned, paned->position);
+	 etk_paned_position_set(paned, paned->position);
 
       child_geometry.x = geometry.x;
       child_geometry.y = geometry.y;
@@ -583,6 +652,9 @@ static void _etk_hpaned_position_calc(Etk_Paned *paned)
    if (!paned)
       return;
 
+   if (paned->child1 && paned->child1->geometry.w == -1)
+      return;
+
    geometry = ETK_WIDGET(paned)->geometry;
    if (paned->child1)
       etk_widget_size_request(paned->child1, &child1_size);
@@ -618,6 +690,9 @@ static void _etk_vpaned_position_calc(Etk_Paned *paned)
    int total_size;
 
    if (!paned)
+      return;
+
+   if (paned->child1 && paned->child1->geometry.h == -1)
       return;
 
    geometry = ETK_WIDGET(paned)->geometry;
