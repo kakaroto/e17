@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-20 21:37+0200\n"
+"POT-Creation-Date: 2006-09-07 19:54+0200\n"
 "PO-Revision-Date: 2006-07-18 10:26+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -33,8 +33,8 @@ msgstr "%u 参照残っています。\n"
 
 #: src/aclass.c:291 src/backgrounds.c:1107 src/borders.c:1083
 #: src/borders.c:1206 src/buttons.c:731 src/cmclass.c:201 src/config.c:246
-#: src/cursors.c:177 src/iclass.c:519 src/iconify.c:2379 src/menus.c:1715
-#: src/menus.c:1825 src/slideout.c:425 src/tclass.c:261 src/tooltips.c:176
+#: src/cursors.c:177 src/iclass.c:519 src/menus.c:1715 src/menus.c:1825
+#: src/slideout.c:425 src/tclass.c:261 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -188,11 +188,6 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/actions.c:314 src/dialog.c:1005 src/dialog.c:2273 src/dialog.c:2300
-#: src/events.c:78 src/handlers.c:194 src/sound.c:308
-msgid "OK"
-msgstr "了解"
-
 #: src/alert.c:211
 msgid "Enlightenment Error"
 msgstr "Enlightenment エラー"
@@ -217,7 +212,7 @@ msgstr "Enlightenment 終了"
 msgid "Background Error!"
 msgstr "background エラー"
 
-#: src/backgrounds.c:1576
+#: src/backgrounds.c:1578
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -228,11 +223,11 @@ msgstr ""
 "名前: %s\n"
 "ファイル: %s\n"
 
-#: src/backgrounds.c:1577
+#: src/backgrounds.c:1579
 msgid "-NONE-"
 msgstr "なし"
 
-#: src/backgrounds.c:1754 src/backgrounds.c:1756
+#: src/backgrounds.c:1756 src/backgrounds.c:1758
 msgid ""
 "No\n"
 "Background"
@@ -240,56 +235,56 @@ msgstr ""
 "背景\n"
 "なし"
 
-#: src/backgrounds.c:1836 src/backgrounds.c:2182
+#: src/backgrounds.c:1838 src/backgrounds.c:2191
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "%2i:%02i:%02i 後に使用されていない背景を解放する"
 
-#: src/backgrounds.c:2029
+#: src/backgrounds.c:2038
 msgid "BG Colour\n"
 msgstr "背景の色\n"
 
-#: src/backgrounds.c:2037
+#: src/backgrounds.c:2046
 msgid "Move to Front\n"
 msgstr "先頭へ移動\n"
 
-#: src/backgrounds.c:2042
+#: src/backgrounds.c:2051
 msgid "Duplicate\n"
 msgstr "コピー\n"
 
-#: src/backgrounds.c:2046
+#: src/backgrounds.c:2055
 msgid "Unlist\n"
 msgstr "背景リストから消去\n"
 
-#: src/backgrounds.c:2050
+#: src/backgrounds.c:2059
 msgid "Delete File\n"
 msgstr "背景ファイルを削除\n"
 
-#: src/backgrounds.c:2058
+#: src/backgrounds.c:2067
 msgid "Red:\n"
 msgstr "赤:\n"
 
-#: src/backgrounds.c:2067
+#: src/backgrounds.c:2076
 msgid "Use background image"
 msgstr "背景に画像を使用する"
 
-#: src/backgrounds.c:2073
+#: src/backgrounds.c:2082
 msgid "Green:\n"
 msgstr "緑:\n"
 
-#: src/backgrounds.c:2082
+#: src/backgrounds.c:2091
 msgid "Keep aspect on scale"
 msgstr "縦横のサイズ比を保つ"
 
-#: src/backgrounds.c:2088
+#: src/backgrounds.c:2097
 msgid "Blue:\n"
 msgstr "青:\n"
 
-#: src/backgrounds.c:2097
+#: src/backgrounds.c:2106
 msgid "Tile image across background"
 msgstr "背景画像をタイル状に配置"
 
-#: src/backgrounds.c:2108
+#: src/backgrounds.c:2117
 msgid ""
 "Background\n"
 "Image\n"
@@ -303,46 +298,46 @@ msgstr ""
 "\n"
 "方向\n"
 
-#: src/backgrounds.c:2172
+#: src/backgrounds.c:2181
 msgid "Use dithering in Hi-Colour"
 msgstr "ハイカラー時にディザリングする"
 
-#: src/backgrounds.c:2176
+#: src/backgrounds.c:2185
 msgid "Background overrides theme"
 msgstr "背景はテーマを上書きする"
 
-#: src/backgrounds.c:2219
+#: src/backgrounds.c:2228
 msgid "Pre-scan BG's"
 msgstr "背景をスキャン"
 
-#: src/backgrounds.c:2227
+#: src/backgrounds.c:2236
 msgid "Sort by File"
 msgstr "ファイル名でソート"
 
-#: src/backgrounds.c:2232
+#: src/backgrounds.c:2241
 msgid "Sort by Attr."
 msgstr "属性でソート"
 
-#: src/backgrounds.c:2237
+#: src/backgrounds.c:2246
 msgid "Sort by Image"
 msgstr "画像名でソート"
 
-#: src/backgrounds.c:2265
+#: src/backgrounds.c:2275
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 "一般の背景透過手法に合わせてE16の背景透過機能を補正する (速度低下の可能性あ"
 "り)"
 
 #
-#: src/backgrounds.c:2271 src/config.c:332 src/mod-trans.c:192
+#: src/backgrounds.c:2281 src/config.c:332 src/mod-trans.c:192
 msgid "Background"
 msgstr "背景"
 
-#: src/backgrounds.c:2272
+#: src/backgrounds.c:2282
 msgid "Desktop Background Settings"
 msgstr "デスクトップ背景の設定"
 
-#: src/backgrounds.c:2275
+#: src/backgrounds.c:2285
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -643,11 +638,11 @@ msgstr "上"
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2454 src/pager.c:1805 src/pager.c:1830 src/pager.c:1855
+#: src/desktops.c:2454 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2460 src/pager.c:1817 src/pager.c:1842 src/pager.c:1867
+#: src/desktops.c:2460 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
 msgid "Right"
 msgstr "右"
 
@@ -717,15 +712,20 @@ msgstr ""
 "Enlightenment 仮想デスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/dialog.c:1012
+#: src/dialog.c:886 src/dialog.c:2155 src/dialog.c:2186 src/events.c:78
+#: src/handlers.c:194 src/sound.c:308
+msgid "OK"
+msgstr "了解"
+
+#: src/dialog.c:891
 msgid "Apply"
 msgstr "適用"
 
-#: src/dialog.c:1020 src/pager.c:912 config/strings.c:30 config/strings.c:166
+#: src/dialog.c:898 src/pager.c:977 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "閉じる"
 
-#: src/dialog.c:2300
+#: src/dialog.c:2186
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
@@ -839,7 +839,7 @@ msgstr "まず E アイコン、それからアプリケーションアイコン"
 msgid "First App Icon, then E Icon"
 msgstr "まずアプリケーションアイコン、それから E アイコン"
 
-#: src/focus.c:831 src/iconify.c:2329
+#: src/focus.c:831
 msgid "None"
 msgstr "なし"
 
@@ -1301,162 +1301,13 @@ msgstr ""
 "%s\n"
 "無視して処理を継続します...\n"
 
-#: src/iconify.c:1751
+#: src/iconify.c:428
 msgid "Iconbox Options"
 msgstr "アイコンボックスオプション"
 
-#: src/iconify.c:1754
-msgid "This Iconbox Settings..."
-msgstr "このアイコンボックスの設定..."
-
-#: src/iconify.c:1758
-msgid "Close Iconbox"
-msgstr "アイコンボックスを閉じる"
-
-#: src/iconify.c:1761 config/strings.c:83
-msgid "Create New Iconbox"
-msgstr "新しいアイコンボックスを作る"
-
-#
-#: src/iconify.c:1768
-msgid "Systray Options"
-msgstr "システムトレイオプション"
-
-#
-#: src/iconify.c:1771
-msgid "Systray Settings..."
-msgstr "システムトレイの設定"
-
-#: src/iconify.c:1775
-msgid "Close Systray"
-msgstr "システムトレイを閉じる"
-
-#: src/iconify.c:2132 src/iconify.c:2255
-#, c-format
-msgid "Icon size: %2d"
-msgstr "アイコンサイズ: %2d"
-
-#: src/iconify.c:2166
+#: src/iconify.c:429
 msgid "Iconbox Settings"
 msgstr "アイコンボックスの設定"
-
-#
-#: src/iconify.c:2168
-msgid "Systray Settings"
-msgstr "システムトレイの設定"
-
-#: src/iconify.c:2173
-msgid "Transparent background"
-msgstr "背景を透明にする"
-
-#: src/iconify.c:2177
-msgid "Hide inner border"
-msgstr "内側のボーダーを隠す"
-
-#: src/iconify.c:2183
-msgid "Show icon names"
-msgstr "アイコンの名前を表示する"
-
-#: src/iconify.c:2188
-msgid "Draw base image behind Icons"
-msgstr "アイコンの後ろに下地の画像を描く"
-
-#: src/iconify.c:2192
-msgid "Hide scrollbar when not needed"
-msgstr "不要ならスクロールバーを隠す"
-
-#: src/iconify.c:2196
-msgid "Automatically resize to fit Icons"
-msgstr "アイコンに合わせて大きさを自動調整する"
-
-#: src/iconify.c:2202
-msgid "Animate when iconifying to this Iconbox"
-msgstr "アニメーション表示しながらアイコン化する"
-
-#: src/iconify.c:2210
-msgid "Alignment of anchoring when automatically resizing:"
-msgstr "大きさを自動調整する時に基準となる固定位置"
-
-#: src/iconify.c:2227
-msgid "Icon image display policy (if one operation fails, try the next):"
-msgstr "アイコン画像表示ポリシー (失敗したら次を試す)"
-
-#: src/iconify.c:2232
-msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr ""
-"ウィンドウのスナップショット、アプリケーションアイコン、Enlightenment アイコ"
-"ンの順"
-
-#: src/iconify.c:2239
-msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr ""
-"アプリケーションアイコン、Enlightenment アイコン、ウィンドウのスナップショッ"
-"トの順"
-
-#: src/iconify.c:2244
-msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr "Enlightenment アイコン、ウィンドウのスナップショットの順"
-
-#: src/iconify.c:2273
-msgid "Orientation:"
-msgstr "方向"
-
-#: src/iconify.c:2278
-msgid "Scrollbar side:"
-msgstr "スクロールバーの位置"
-
-#: src/iconify.c:2283
-msgid "Scrollbar arrows:"
-msgstr "スクロールバーの矢印の位置"
-
-#: src/iconify.c:2286
-msgid "Horizontal"
-msgstr "水平"
-
-#: src/iconify.c:2291
-msgid "Left / Top"
-msgstr "左 / 上"
-
-#: src/iconify.c:2296
-msgid "Start"
-msgstr "開始"
-
-#: src/iconify.c:2301
-msgid "Vertical"
-msgstr "垂直"
-
-#: src/iconify.c:2307
-msgid "Right / Bottom"
-msgstr "右 / 下"
-
-#: src/iconify.c:2313
-msgid "Both ends"
-msgstr "両端"
-
-#: src/iconify.c:2321
-msgid "End"
-msgstr "終了"
-
-#: src/iconify.c:2341
-msgid ""
-"Enlightenment Iconbox\n"
-"Settings Dialog\n"
-msgstr ""
-"Enlightenment アイコンボックス\n"
-"設定ダイアログ\n"
-
-#
-#: src/iconify.c:3024 src/iconify.c:3034
-msgid "Systray Error!"
-msgstr "システムトレイエラー"
-
-#: src/iconify.c:3024
-msgid "Only one systray is allowed"
-msgstr "システムトレイは一つのみ可"
-
-#: src/iconify.c:3034
-msgid "Could not activate systray"
-msgstr "システムトレイが準備できません"
 
 #: src/ipc.c:307
 msgid "Message"
@@ -1736,113 +1587,126 @@ msgstr ""
 "Enlightenment 透明化対象\n"
 "設定ダイアログ\n"
 
-#: src/pager.c:905 config/strings.c:51
+#: src/pager.c:970 config/strings.c:51
 msgid "Window Options"
 msgstr "ウィンドウオプション"
 
-#: src/pager.c:908 config/strings.c:53 config/strings.c:168
+#: src/pager.c:973 config/strings.c:53 config/strings.c:168
 msgid "Iconify"
 msgstr "アイコン化"
 
-#: src/pager.c:916 config/strings.c:167
+#: src/pager.c:981 config/strings.c:167
 msgid "Annihilate"
 msgstr "強制終了"
 
-#: src/pager.c:920
+#: src/pager.c:985
 msgid "Stick / Unstick"
 msgstr "常時表示／解除"
 
-#: src/pager.c:929
+#: src/pager.c:994
 msgid "Desktop Options"
 msgstr "デスクトップオプション"
 
-#: src/pager.c:931
+#: src/pager.c:996
 msgid "Pager Settings..."
 msgstr "ページャの設定..."
 
-#: src/pager.c:936
+#: src/pager.c:1001
 msgid "Snapshotting Off"
 msgstr "スナップショット Off"
 
-#: src/pager.c:940
+#: src/pager.c:1005
 msgid "High Quality Off"
 msgstr "高解像度 Off"
 
-#: src/pager.c:942
+#: src/pager.c:1007
 msgid "High Quality On"
 msgstr "高解像度 On"
 
-#: src/pager.c:947
+#: src/pager.c:1012
 msgid "Snapshotting On"
 msgstr "スナップショット On"
 
-#: src/pager.c:951
+#: src/pager.c:1016
 msgid "Zoom Off"
 msgstr "ズーム Off"
 
-#: src/pager.c:953
+#: src/pager.c:1018
 msgid "Zoom On"
 msgstr "ズーム On"
 
-#: src/pager.c:1722 src/pager.c:1785
+#: src/pager.c:1775 src/pager.c:1866
 msgid "Pager scanning speed:"
 msgstr "ページャのスキャン速度: "
 
-#: src/pager.c:1723 src/pager.c:1786
+#: src/pager.c:1776 src/pager.c:1867
 msgid "lines per second"
 msgstr "(行／秒)"
 
-#: src/pager.c:1752
+#: src/pager.c:1805
 msgid "Enable pager display"
 msgstr "ページャを表示する"
 
-#: src/pager.c:1757
+#: src/pager.c:1815
+msgid "Pager Mode:"
+msgstr ""
+
+#: src/pager.c:1819
+#, fuzzy
+msgid "Simple"
+msgstr "さざなみ"
+
+#: src/pager.c:1825
 msgid "Make miniature snapshots of the screen"
 msgstr "画面のスナップショットを表示する"
 
-#: src/pager.c:1762
+#: src/pager.c:1832
+msgid "Live Update"
+msgstr ""
+
+#: src/pager.c:1843
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "スナップショットモードでスナップショットを滑らかな高画質にする"
 
-#: src/pager.c:1767
+#: src/pager.c:1848
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "マウスポインタが乗っているスナップショットを拡大する"
 
-#: src/pager.c:1773
+#: src/pager.c:1854
 msgid "Pop up window title when mouse is over the window"
 msgstr ""
 "マウスポインタが乗っているスナップショットのウィンドウタイトルを表示する"
 
-#: src/pager.c:1778
+#: src/pager.c:1859
 msgid "Continuously scan screen to update pager"
 msgstr "ページャの表示を更新するため画面を絶え間なくスキャンする"
 
-#: src/pager.c:1801
+#: src/pager.c:1882
 msgid "Mouse button to select and drag windows:"
 msgstr "ウィンドウの選択とドラッグに使うマウスボタン"
 
-#: src/pager.c:1811 src/pager.c:1836 src/pager.c:1861
+#: src/pager.c:1892 src/pager.c:1917 src/pager.c:1942
 msgid "Middle"
 msgstr "中央"
 
-#: src/pager.c:1826
+#: src/pager.c:1907
 msgid "Mouse button to select desktops:"
 msgstr "デスクトップを選択するマウスボタン"
 
-#: src/pager.c:1851
+#: src/pager.c:1932
 msgid "Mouse button to display pager menu:"
 msgstr "ページャメニューを表示するマウスボタン"
 
-#: src/pager.c:1875
+#: src/pager.c:1956
 #, fuzzy
 msgid "Pagers"
 msgstr "ページャの設定"
 
-#: src/pager.c:1876
+#: src/pager.c:1957
 msgid "Pager Settings"
 msgstr "ページャの設定"
 
-#: src/pager.c:1879
+#: src/pager.c:1960
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1876,11 +1740,11 @@ msgstr ""
 "\n"
 "...たぶん。\n"
 
-#: src/session.c:648
+#: src/session.c:649
 msgid "Are you sure?"
 msgstr "いいですか?"
 
-#: src/session.c:649
+#: src/session.c:651
 msgid ""
 "\n"
 "\n"
@@ -1895,49 +1759,49 @@ msgstr ""
 "\n"
 
 #
-#: src/session.c:654
+#: src/session.c:661
 msgid "  Yes, Shut Down  "
 msgstr " シャットダウンします"
 
 #
-#: src/session.c:656
+#: src/session.c:663
 msgid "  Yes, Reboot  "
 msgstr " 再起動します"
 
-#: src/session.c:659
+#: src/session.c:666
 msgid "  Yes, Log Out  "
 msgstr " ログアウトします"
 
-#: src/session.c:660
+#: src/session.c:668
 msgid "  No  "
 msgstr " いいえ、ログアウトしません "
 
-#: src/session.c:788
+#: src/session.c:796
 msgid "Enable Session Script"
 msgstr "セッションスクリプトを有効にする"
 
 #
-#: src/session.c:793
+#: src/session.c:801
 msgid "Enable Logout Dialog"
 msgstr "ログアウトダイアログを有効にする"
 
-#: src/session.c:798
+#: src/session.c:806
 msgid "Enable Reboot/Halt on Logout"
 msgstr "ログアウト時に再起動または停止できるようにする"
 
 #
-#: src/session.c:804
+#: src/session.c:812
 #, fuzzy
 msgid "Session"
 msgstr "セッションの設定"
 
 #
-#: src/session.c:805
+#: src/session.c:813
 msgid "Session Settings"
 msgstr "セッションの設定"
 
 #
-#: src/session.c:808
+#: src/session.c:816
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
@@ -2191,7 +2055,7 @@ msgstr ""
 "Enlightenment コンポジットの\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:694
+#: src/settings.c:695
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment 起動中..."
@@ -2844,6 +2708,10 @@ msgstr "次のデスクトップに移動"
 msgid "Goto Previous Desktop"
 msgstr "前のデスクトップに移動"
 
+#: config/strings.c:83
+msgid "Create New Iconbox"
+msgstr "新しいアイコンボックスを作る"
+
 #: config/strings.c:84
 msgid "Create Systray"
 msgstr "システムトレイを作成する"
@@ -3224,6 +3092,117 @@ msgstr "その他"
 #: config/strings.c:185
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment Epplets"
+
+#~ msgid "This Iconbox Settings..."
+#~ msgstr "このアイコンボックスの設定..."
+
+#~ msgid "Close Iconbox"
+#~ msgstr "アイコンボックスを閉じる"
+
+#
+#~ msgid "Systray Options"
+#~ msgstr "システムトレイオプション"
+
+#
+#~ msgid "Systray Settings..."
+#~ msgstr "システムトレイの設定"
+
+#~ msgid "Close Systray"
+#~ msgstr "システムトレイを閉じる"
+
+#~ msgid "Icon size: %2d"
+#~ msgstr "アイコンサイズ: %2d"
+
+#
+#~ msgid "Systray Settings"
+#~ msgstr "システムトレイの設定"
+
+#~ msgid "Transparent background"
+#~ msgstr "背景を透明にする"
+
+#~ msgid "Hide inner border"
+#~ msgstr "内側のボーダーを隠す"
+
+#~ msgid "Show icon names"
+#~ msgstr "アイコンの名前を表示する"
+
+#~ msgid "Draw base image behind Icons"
+#~ msgstr "アイコンの後ろに下地の画像を描く"
+
+#~ msgid "Hide scrollbar when not needed"
+#~ msgstr "不要ならスクロールバーを隠す"
+
+#~ msgid "Automatically resize to fit Icons"
+#~ msgstr "アイコンに合わせて大きさを自動調整する"
+
+#~ msgid "Animate when iconifying to this Iconbox"
+#~ msgstr "アニメーション表示しながらアイコン化する"
+
+#~ msgid "Alignment of anchoring when automatically resizing:"
+#~ msgstr "大きさを自動調整する時に基準となる固定位置"
+
+#~ msgid "Icon image display policy (if one operation fails, try the next):"
+#~ msgstr "アイコン画像表示ポリシー (失敗したら次を試す)"
+
+#~ msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
+#~ msgstr ""
+#~ "ウィンドウのスナップショット、アプリケーションアイコン、Enlightenment アイ"
+#~ "コンの順"
+
+#~ msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
+#~ msgstr ""
+#~ "アプリケーションアイコン、Enlightenment アイコン、ウィンドウのスナップ"
+#~ "ショットの順"
+
+#~ msgid "Use Enlightenment Icon, Snapshot Window"
+#~ msgstr "Enlightenment アイコン、ウィンドウのスナップショットの順"
+
+#~ msgid "Orientation:"
+#~ msgstr "方向"
+
+#~ msgid "Scrollbar side:"
+#~ msgstr "スクロールバーの位置"
+
+#~ msgid "Scrollbar arrows:"
+#~ msgstr "スクロールバーの矢印の位置"
+
+#~ msgid "Horizontal"
+#~ msgstr "水平"
+
+#~ msgid "Left / Top"
+#~ msgstr "左 / 上"
+
+#~ msgid "Start"
+#~ msgstr "開始"
+
+#~ msgid "Vertical"
+#~ msgstr "垂直"
+
+#~ msgid "Right / Bottom"
+#~ msgstr "右 / 下"
+
+#~ msgid "Both ends"
+#~ msgstr "両端"
+
+#~ msgid "End"
+#~ msgstr "終了"
+
+#~ msgid ""
+#~ "Enlightenment Iconbox\n"
+#~ "Settings Dialog\n"
+#~ msgstr ""
+#~ "Enlightenment アイコンボックス\n"
+#~ "設定ダイアログ\n"
+
+#
+#~ msgid "Systray Error!"
+#~ msgstr "システムトレイエラー"
+
+#~ msgid "Only one systray is allowed"
+#~ msgstr "システムトレイは一つのみ可"
+
+#~ msgid "Could not activate systray"
+#~ msgstr "システムトレイが準備できません"
 
 #~ msgid "Ignore"
 #~ msgstr "無視"
