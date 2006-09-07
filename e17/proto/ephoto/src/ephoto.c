@@ -77,6 +77,14 @@ main(int argc, char **argv)
  ewl_callback_append(m->image, EWL_CALLBACK_CLICKED, go_home, NULL);
  ewl_widget_show(m->image);
 
+ m->image = ewl_image_new();
+ ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
+ icon_theme_path = ewl_icon_theme_icon_path_get(EWL_ICON_EMBLEM_FAVORITE,
+                                                EWL_ICON_SIZE_MEDIUM);
+ ewl_image_file_set(EWL_IMAGE(m->image), icon_theme_path, 
+		 				EWL_ICON_EMBLEM_FAVORITE);
+ ewl_widget_show(m->image);
+      
  m->text = ewl_text_new();
  ewl_text_text_set(EWL_TEXT(m->text), "  Location:");
  ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
