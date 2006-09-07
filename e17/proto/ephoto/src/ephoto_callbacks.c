@@ -21,7 +21,7 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
  Ewl_Widget *hbox;
  Ewl_Widget *image;
  Ewl_Widget *text;
- Ewl_Widget *children[1];
+ Ewl_Widget *children[2];
  Ewl_Widget *row;
  
  home = getenv("HOME");
@@ -76,7 +76,7 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
  Ewl_Widget *hbox;
  Ewl_Widget *image;
  Ewl_Widget *text;
- Ewl_Widget *children[1];
+ Ewl_Widget *children[2];
  Ewl_Widget *row;
  
  directory = data;
