@@ -1056,6 +1056,7 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 			{
 				Ecore_X_Selection_Data_Text* text = ev->data;
 				printf("We've got some text! - '%s'\n", text->text);
+				ewl_embed_selection_data_feed(EWL_EMBED(window), ev->target, text->text, ((Ecore_X_Selection_Data *)text)->length);
 			} 
 			else 
 			{
@@ -1064,6 +1065,7 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 			}
 		}
 
+		ecore_x_dnd_send_finished();
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
