@@ -3,7 +3,7 @@
 #include "alsa_mixer.h"
 
 /* Define to 1 for testing alsa code */
-#define DEBUG 1
+#define DEBUG 0
 
 /* Gadcon Protos */
 static E_Gadcon_Client *_gc_init     (E_Gadcon * gc, const char *name, 
