@@ -4,7 +4,53 @@
 
 /* Define to 1 for testing alsa code */
 #define DEBUG 0
+#define SLIDE_LENGTH 0.5
 
+typedef struct _Instance Instance;
+typedef struct _Mixer Mixer;
+typedef struct _Mixer_Win Mixer_Win;
+typedef struct _Mixer_Win_Simple Mixer_Win_Simple;
+
+struct _Instance
+{
+   E_Gadcon_Client *gcc;
+   Mixer           *mixer;
+};
+
+struct _Mixer
+{
+   Instance    *inst;
+   Evas        *evas;
+   Mixer_Win   *win;
+   Mixer_Win_Simple *simple_win;
+   
+   Evas_Object *base;
+};
+
+struct _Mixer_Win 
+{
+   Mixer       *mixer;
+   E_Win       *window;
+
+   Evas_Object *bg_obj;
+};
+
+struct _Mixer_Win_Simple
+{
+   Mixer       *mixer;
+   E_Win       *window;
+   
+   Evas_Object *event_obj;
+   Evas_Object *bg_obj;
+   Evas_Object *slider;
+   
+   int         x, y, w, h;
+   int         popped_up;
+   int         to_top;
+   double      slide_start_time;
+   Ecore_Animator *slide_animator;
+};
+   
 /* Gadcon Protos */
 static E_Gadcon_Client *_gc_init     (E_Gadcon * gc, const char *name, 
 				      const char *id, const char *style);
@@ -21,8 +67,16 @@ static void         _mixer_menu_cb_configure (void *data, E_Menu *m,
 static void         _mixer_cb_mouse_down     (void *data, Evas *e, 
 					      Evas_Object *obj, 
 					      void *event_info);
-static void         _mixer_window_show       (void *data, int simple);
+static void         _mixer_menu_cb_configure (void *data, E_Menu *m, 
+					      E_Menu_Item *mi);
 
+static void _mixer_window_simple_pop_up      (Instance *inst);
+static int _mixer_window_simple_animator_cb  (void *data);
+static void _mixer_window_simple_mouse_up_cb (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _mixer_window_simple_changed_cb  (void *data, Evas_Object *obj, void *event_info);
+static void _mixer_window_simple_resize_cb   (E_Win *win);
+
+/* Private vars */
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
 
@@ -35,33 +89,7 @@ static const E_Gadcon_Client_Class _gc_class =
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
-typedef struct _Instance Instance;
-typedef struct _Mixer Mixer;
-typedef struct _Mixer_Win Mixer_Win;
-
-struct _Instance
-{
-   E_Gadcon_Client *gcc;
-   Mixer           *mixer;
-};
-
-struct _Mixer
-{
-   Instance    *inst;
-   Evas        *evas;
-   Mixer_Win   *win;
-   
-   Evas_Object *base;
-};
-
-struct _Mixer_Win 
-{
-   Mixer       *mixer;
-   E_Win       *window;
-
-   Evas_Object *bg_obj;
-};
-
+/* Implementation */
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
@@ -221,7 +249,7 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	else if (ev->flags == EVAS_BUTTON_NONE)
 	  {
 	     /* Call a simple window */
-	     _mixer_window_show(inst, 0);
+	     _mixer_window_simple_pop_up(inst);
 	  }
      }
 }
@@ -370,19 +398,177 @@ e_modapi_about(E_Module *m)
    return 1;
 }
 
-static void 
-_mixer_window_show(void *data, int simple) 
+/* Makes the simple window containing the slider pop up */
+static void
+_mixer_window_simple_pop_up(Instance *inst)
 {
-   /* Use simple to determine if we are showing a full mixer, 
-    * or just a simple Master/PCM slider */
+   E_Container *con;
+   Mixer_Win_Simple *win;
+   Evas_Coord ox, oy, ow, oh;
+   Evas_Coord sw, sh;
+   int cx, cy, cw, ch;
    
-   Instance    *inst;
-   Mixer       *mixer;
+   if (!inst || !inst->mixer)
+     return;
+   if (!(con = e_container_current_get(e_manager_current_get())))
+     return;
    
-   inst = data;
-   if (!inst) return;
+   evas_object_geometry_get(inst->mixer->base, &ox, &oy, &ow, &oh); 
    
-   mixer = inst->mixer;
-   if (!mixer) return;
+   if (!(win = inst->mixer->simple_win))
+     {
+        win = E_NEW(Mixer_Win_Simple, 1);
+        inst->mixer->simple_win = win;
+        win->mixer = inst->mixer;
+        win->window = e_win_new(con);
+        e_win_placed_set(win->window, 1);
+        e_win_borderless_set(win->window, 1);
+        e_win_layer_set(win->window, 255);
+        e_win_resize_callback_set(win->window, _mixer_window_simple_resize_cb);
+        win->window->data = win;
+        
+        win->event_obj = evas_object_rectangle_add(e_win_evas_get(win->window));
+        evas_object_color_set(win->event_obj, 255, 255, 255, 0);
+        evas_object_show(win->event_obj);
+        evas_object_event_callback_add(win->event_obj, EVAS_CALLBACK_MOUSE_UP,
+                                       _mixer_window_simple_mouse_up_cb, win);
+        
+        win->bg_obj = edje_object_add(e_win_evas_get(win->window));
+        e_theme_edje_object_set(win->bg_obj, "base/theme/menus",
+				"e/widgets/menu/default/background");
+	edje_object_part_text_set(win->bg_obj, "e.text.title", "Volume");
+	edje_object_signal_emit(win->bg_obj, "e,action,show,title", "e");
+        edje_object_message_signal_process(win->bg_obj);
+        evas_object_repeat_events_set(win->bg_obj, 1);
+        evas_object_show(win->bg_obj);
+        
+        win->slider = e_slider_add(e_win_evas_get(win->window));
+        e_slider_value_range_set(win->slider, 0.0, 1.0);
+        e_slider_orientation_set(win->slider, 0);
+        /* TODO: Fix this in e_slider... */
+        //e_slider_direction_set(win->slider, 1);
+        /* TODO: this has no effect: Bug in Evas ? */
+        evas_object_repeat_events_set(win->slider, 1);
+        evas_object_show(win->slider);
+        evas_object_smart_callback_add(win->slider, "changed",
+                                       _mixer_window_simple_changed_cb, win);
+        
+        e_slider_min_size_get(win->slider, &sw, &sh);
+        if (sw < ow)     sw = ow;
+        if (sh < 150)    sh = 150;
+        edje_extern_object_min_size_set(win->slider, sw, sh);
+        edje_object_part_swallow(win->bg_obj, "e.swallow.content", win->slider);
+        
+        
+        edje_object_size_min_calc(win->bg_obj, &win->w, &win->h);
+        evas_object_move(win->bg_obj, 0, 0);
+        evas_object_resize(win->bg_obj, win->w, win->h);
+     }
+   
+   e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
+   win->x = cx + ox;
+   win->y = cy + oy;
+   
+   if ((win->y - con->y) < (con->h / 2))
+     win->to_top = 0;
+   else
+     win->to_top = 1;
+   
+   switch (inst->gcc->gadcon->orient)
+     {
+        case E_GADCON_ORIENT_LEFT:
+        case E_GADCON_ORIENT_CORNER_LT:
+        case E_GADCON_ORIENT_CORNER_LB:
+          win->x += cw;
+          if (win->to_top)
+            win->y += oh;
+          break;
+        case E_GADCON_ORIENT_RIGHT:
+        case E_GADCON_ORIENT_CORNER_RT:
+        case E_GADCON_ORIENT_CORNER_RB:
+          win->x -= win->w;
+          if (win->to_top)
+            win->y += oh;
+          break;
+        default:
+          win->x += (ow - win->w) / 2;
+          if (win->x < cx)
+            win->x = cx;
+          if ((win->x + win->w) > (cx + cw))
+            win->x = cx + cw - win->w;
+          if (!win->to_top)
+            win->y += ch;
+          break;
+     }
+   
+   e_win_move(win->window, win->x, win->y);
+   e_win_resize(win->window, win->w, 0);
+   e_win_show(win->window);
+   
+   win->slide_start_time = ecore_time_get();
+   if (!win->slide_animator)
+     win->slide_animator = ecore_animator_add(_mixer_window_simple_animator_cb, win);
+}
 
+/* Makes the simple window slide */
+static int _mixer_window_simple_animator_cb(void *data)
+{
+   Mixer_Win_Simple *win;
+   double percent;
+   int prev_h, h;
+   
+   if (!(win = data))
+     return 1;
+   
+   percent = (ecore_time_get() - win->slide_start_time) / SLIDE_LENGTH;
+   percent = E_CLAMP(percent, 0.0, 1.0);
+   percent = 1.0 - (1.0 - percent) * (1.0 - percent);
+   h = percent * win->h;
+   prev_h = win->window->h;
+   
+   if (win->to_top)
+     e_win_move(win->window, win->x, win->y - h);
+   e_win_resize(win->window, win->w, h);
+   
+   if (h >= win->h)
+     {
+        win->slide_animator = NULL;
+        return 0;
+     }
+   else
+     return 1;
+}
+
+/* Called when the background object of the simple window is released */
+static void _mixer_window_simple_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Mixer_Win_Simple *win;
+   
+   if (!(win = data))
+     return;
+   
+   printf("Mouse up\n");
+}
+
+/* Called when the value of the slider of the simple window is changed */
+static void _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Mixer_Win_Simple *win;
+   
+   if (!(win = data))
+     return;
+   
+   printf("Slider value: %f\n", e_slider_value_get(obj));
+}
+
+/* Called when the simple window is resized */
+static void _mixer_window_simple_resize_cb(E_Win *win)
+{
+   Mixer_Win_Simple *simple_win;
+   
+   if (!win || !(simple_win = win->data))
+     return;
+   
+   evas_object_move(simple_win->event_obj, 0, 0);
+   evas_object_resize(simple_win->event_obj, win->w, win->h);
 }
