@@ -85,7 +85,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 		  
 	     card = c->data;
 	     if (!card) continue;
-	     printf("\nFound Card: %s\n\n", card->real);
+	     printf("\nFound Card: %s\tId: %i\n\n", card->real, card->id);
 	  }
 	alsa_free_cards(c);
      }
@@ -262,7 +262,7 @@ _mixer_config_item_get(const char *id)
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
-   ci->volume = 10;
+   ci->card_id = 0;
 
    mixer_config->items = evas_list_append(mixer_config->items, ci);
    return ci;
@@ -282,7 +282,7 @@ e_modapi_init(E_Module *m)
 #define T Config_Item
 #define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
-   E_CONFIG_VAL(D, T, volume, INT);
+   E_CONFIG_VAL(D, T, card_id, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Mixer_Config", Config);
 #undef T
@@ -300,7 +300,7 @@ e_modapi_init(E_Module *m)
 
 	ci = E_NEW(Config_Item, 1);
 	ci->id = evas_stringshare_add("0");
-	ci->volume = 10;
+	ci->card_id = 0;
 
 	mixer_config->items = evas_list_append(mixer_config->items, ci);
      }
