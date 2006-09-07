@@ -713,8 +713,9 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
 	if (widget) {
 		Ewl_Widget *parent;
-		
-		
+
+
+		embed->dnd_widget = widget;
 		if (internal) {
 			Ewl_Widget_Drag cb;
 			
@@ -728,7 +729,7 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 			/* Handle external drops */
 			ev.data = NULL;
 		}
-		
+
 		parent = widget;
 		while (parent) {
 			ewl_callback_call_with_event_data(parent,
@@ -757,7 +758,7 @@ void
 ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, int* pw, int* ph)
 {
 	Ewl_Widget *widget = NULL;
-	Ewl_Event_Mouse_Move ev;
+	Ewl_Event_Dnd_Position ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
@@ -908,7 +909,7 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
  * @brief Sends the event for selection data received into an embed.
  */
 void
-ewl_embed_selection_data_feed(Ewl_Embed *embed, void *data, unsigned int len)
+ewl_embed_selection_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned int len)
 {
 	Ewl_Event_Dnd_Data ev;
 
@@ -917,17 +918,21 @@ ewl_embed_selection_data_feed(Ewl_Embed *embed, void *data, unsigned int len)
 	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	/* 
-	 * setup the event struct 
-	 */
-	ev.data = data;
-	ev.len = len;
-
 	/*
 	 * If a widget is expecting DND data, send the data to the widget
 	 */
 	if (embed->dnd_widget) {
-		ewl_callback_call_with_event_data(embed->dnd_widget, EWL_CALLBACK_DND_DATA, &ev);
+		if (ewl_dnd_accepts_types_contains(embed->dnd_widget, type)) {
+			/* 
+			 * setup the event struct 
+			 */
+			ev.type = type;
+			ev.data = data;
+			ev.len = len;
+			ewl_callback_call_with_event_data(embed->dnd_widget,
+							  EWL_CALLBACK_DND_DATA,
+							  &ev);
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

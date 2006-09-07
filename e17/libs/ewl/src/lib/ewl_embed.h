@@ -103,6 +103,7 @@ void            ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
 void		ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y,int*,int*,int*,int*);
 void		ewl_embed_dnd_drop_feed(Ewl_Embed* embed, int x, int y, int internal);
 void		ewl_embed_dnd_data_feed(Ewl_Embed* embed, void *data, unsigned int len);
+void            ewl_embed_selection_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned int len);
 
 void            ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
 					 unsigned int modifiers);
