@@ -49,6 +49,7 @@ static void ete_cb_set(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_load(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_clear(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_key_down(Ewl_Widget *w, void *ev, void *data);
+static void ete_dnd_cb_realize(Ewl_Widget *w, void *event, void *data);
 
 void 
 test_info(Ewl_Test *test)
@@ -69,6 +70,7 @@ create_test(Ewl_Container *box)
 	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(box), hbox);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
+	ewl_callback_append(hbox, EWL_CALLBACK_REALIZE, ete_dnd_cb_realize, NULL);
 	ewl_widget_show(hbox);
 
 	{
@@ -172,6 +174,15 @@ create_test(Ewl_Container *box)
 	}
 
 	return 1;
+}
+
+static void
+ete_dnd_cb_realize(Ewl_Widget *w, void *event __UNUSED__, 
+						void *data __UNUSED__)
+{
+	Ewl_Embed *embed;
+	embed = ewl_embed_widget_find(w);
+	ecore_x_dnd_aware_set((Ecore_X_Window)embed->evas_window, TRUE);
 }
 
 static void

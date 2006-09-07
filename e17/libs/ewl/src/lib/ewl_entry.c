@@ -35,6 +35,7 @@ ewl_entry_new(void)
 int
 ewl_entry_init(Ewl_Entry *e)
 {
+	const char *text_types[] = { "UTF8_STRING", "text/plain", NULL };
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -54,6 +55,8 @@ ewl_entry_init(Ewl_Entry *e)
 
 	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_FOCUS_IN);
 	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_FOCUS_OUT);
+	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_DND_POSITION);
+	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_DND_DATA);
 
 	/* setup the cursor */
 	e->cursor = ewl_entry_cursor_new(e);
@@ -68,6 +71,7 @@ ewl_entry_init(Ewl_Entry *e)
 	 * to show the cursor */
 	ewl_entry_editable_set(e, TRUE);
 	ewl_text_selectable_set(EWL_TEXT(e), TRUE);
+	ewl_dnd_accepts_types_set(e, text_types);
 
 	/* setup callbacks */
 	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
@@ -84,6 +88,10 @@ ewl_entry_init(Ewl_Entry *e)
 				ewl_entry_cb_disable, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE,
 				ewl_entry_cb_enable, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DND_POSITION,
+				ewl_entry_cb_dnd_position, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DND_DATA,
+				ewl_entry_cb_dnd_data, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -508,6 +516,53 @@ ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* XXX do we leave the cursor at the start? or move to the end? */
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: DND positioin event
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The dnd mouse move callback
+ */
+void
+ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data __UNUSED__)
+{
+	Ewl_Event_Dnd_Position *event = ev;
+	Ewl_Text *txt = EWL_TEXT(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	ewl_widget_focus_send(w);
+	ewl_text_cursor_position_set(txt, ewl_text_coord_index_map(txt, event->x, event->y));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: DND positioin event
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The dnd mouse move callback
+ */
+void
+ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
+{
+	Ewl_Event_Dnd_Data *event = ev;
+	Ewl_Text *txt = EWL_TEXT(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	ewl_text_text_insert(txt, event->data, ewl_text_cursor_position_get(txt));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
