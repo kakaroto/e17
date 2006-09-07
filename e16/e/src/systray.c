@@ -24,7 +24,6 @@
 #include "container.h"
 #include "e16-ecore_hints.h"
 #include "xwin.h"
-#include <math.h>
 
 #define DEBUG_SYSTRAY 0
 

@@ -331,7 +331,6 @@ SoundExit(void)
 /*
  * Configuration load/save
  */
-#include "conf.h"
 
 static int
 SoundConfigLoad(FILE * fs)
