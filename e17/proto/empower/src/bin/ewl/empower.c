@@ -32,9 +32,6 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	
-	userID = getuid();
-	userinfo = getpwuid(userID);		//get users info
-	
 	display_window(argc, argv);
 	
 	return 0;

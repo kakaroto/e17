@@ -11,12 +11,10 @@
 
 #define WIDTH 200
 #define HEIGHT 85
-char buf[1024];
 Ewl_Widget *win;
 char password[1024];
+char buf[1024];
 int xpos, ypos;
-uid_t userID;		//holds the userID
-struct passwd* userinfo;	//holds the user info
 
 /* empower_cb prototypes */
 void key_down_cb(Ewl_Widget *w, void *event, void *data);

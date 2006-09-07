@@ -51,14 +51,10 @@ void display_window(int argc, char** argv)
 	ewl_container_child_append(EWL_CONTAINER(win), vbox);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 	ewl_widget_show(vbox);
-	
-	char user[256];
-	
-	snprintf(user, 256, "%s's password:", userinfo->pw_name);
-	//strcat(user, userinfo->pw_name);
 
 	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(hbox);
 
@@ -72,10 +68,10 @@ void display_window(int argc, char** argv)
 	progtext = ewl_text_new();
 	ewl_container_child_append(EWL_CONTAINER(hbox), progtext);
 	ewl_text_font_size_set(EWL_TEXT(progtext), 14);
-	ewl_object_padding_set(EWL_OBJECT(progtext),10,0,3,3);
+	ewl_object_alignment_set(EWL_OBJECT(progtext), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_minimum_size_set(EWL_OBJECT(progtext), 75, 20);
 	ewl_object_maximum_size_set(EWL_OBJECT(progtext), 125, 20);
-	ewl_text_text_set(EWL_TEXT(progtext), user);
+	ewl_text_text_set(EWL_TEXT(progtext), "Root's Password");
 	ewl_widget_show(progtext);
 	
 	entry = ewl_password_new();
