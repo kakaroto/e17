@@ -20,7 +20,6 @@ e_apps.h \
 e_apps_cache.h \
 e_icon.h \
 e_intl.h \
-e_menu.h \
 e_object.h \
 e_path.h \
 e_user.h \
