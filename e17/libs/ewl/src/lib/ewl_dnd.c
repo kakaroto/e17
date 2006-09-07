@@ -31,7 +31,7 @@ static int ewl_dnd_status = 0;
 Ecore_Event_Handler *ewl_dnd_mouse_up_handler;
 Ecore_Event_Handler *ewl_dnd_mouse_move_handler;
 
-char *ewl_dnd_drop_types[] = { "text/uri-list", "UTF8_STRING", NULL };
+char *ewl_dnd_drop_types[] = { "text/uri-list", "text/plain", NULL };
 
 static char *ewl_dnd_types_encode(const char **types);
 static int ewl_dnd_types_encoded_contains(char *types, char *type);
