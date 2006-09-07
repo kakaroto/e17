@@ -825,6 +825,15 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE));
 
+  /*We want to know if the core sends copy/cut requests*/
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_COPY_REQUEST));
+
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_CUT_REQUEST));
+
 
   
   if (!etk_callback_setup) {

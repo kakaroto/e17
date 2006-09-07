@@ -49,6 +49,8 @@ icon_viewer_add_row (entropy_gui_component_instance * instance,
 			  entropy_generic_file * file);
 void icon_viewer_remove_row(entropy_gui_component_instance * instance,
 			  entropy_generic_file * file);
+Ecore_List* 
+entropy_etk_icon_viewer_selected_get(entropy_etk_iconbox_viewer* viewer);
 
 
 int
@@ -243,19 +245,13 @@ void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, voi
 	  if (ctrl_pressed != ETK_TRUE) etk_iconbox_unselect_all(ETK_ICONBOX(viewer->iconbox));
 	  etk_iconbox_icon_select(icon);
 
-	  selected = ecore_list_new();
-	  for (icon = ETK_ICONBOX(viewer->iconbox)->first_icon; icon ; icon = icon->next ) {
-	   	if (etk_iconbox_is_selected(icon)) {
-		     file = etk_iconbox_icon_data_get(icon);
-		     ecore_list_append(selected, file);
-		     selected_count++;
-		}
-	  }
-
-	  if (selected_count > 1) {
-		  entropy_etk_context_menu_popup_multi(instance,selected);
-	  } else {
-		  entropy_etk_context_menu_popup(instance, file);
+	  selected = entropy_etk_icon_viewer_selected_get(viewer);
+	  if (ecore_list_nodes(selected)) {
+		  if (ecore_list_nodes(selected) > 1) {
+			  entropy_etk_context_menu_popup_multi(instance,selected);
+		  } else {
+			  entropy_etk_context_menu_popup(instance, file);
+		  }
 	  }
 	  ecore_list_destroy(selected);
   }
@@ -335,8 +331,48 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
      }
      break;	
 
+     case ENTROPY_NOTIFY_COPY_REQUEST: {
+	Ecore_List* selected;
+	entropy_generic_file* file;
+					       
+	printf("ICONBOX: Copy request\n");
+
+	entropy_core_selected_files_clear();
+	selected = entropy_etk_icon_viewer_selected_get(viewer);
+
+	ecore_list_goto_first(selected);
+	while ( (file = ecore_list_next(selected))) {
+		entropy_core_selected_file_add(file);
+	}
+     }
+     break;
+
+     case ENTROPY_NOTIFY_CUT_REQUEST: {
+	printf("ICONBOX: Cut request\n");					      
+     }
+     break;
+
   }
 }
+
+Ecore_List* 
+entropy_etk_icon_viewer_selected_get(entropy_etk_iconbox_viewer* viewer)
+{
+	Ecore_List* selected;
+	Etk_Iconbox_Icon* icon;
+	entropy_generic_file* file;
+	
+	  selected = ecore_list_new();
+	  for (icon = ETK_ICONBOX(viewer->iconbox)->first_icon; icon ; icon = icon->next ) {
+	   	if (etk_iconbox_is_selected(icon)) {
+		     file = etk_iconbox_icon_data_get(icon);
+		     ecore_list_append(selected, file);
+		}
+	  }
+
+	  return selected;
+}
+
 
 void
 icon_viewer_add_row (entropy_gui_component_instance * instance,
@@ -365,7 +401,6 @@ void icon_viewer_remove_row(entropy_gui_component_instance * instance,
 			  entropy_generic_file * file)
 {
 	entropy_etk_iconbox_viewer* viewer;
-	Etk_Iconbox_Icon* icon;
 	gui_file* event_file = NULL;
 	
 	viewer = instance->data;
@@ -566,6 +601,15 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE));
+
+  /*We want to know if the core sends copy/cut requests*/
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_COPY_REQUEST));
+
+  entropy_core_component_event_register (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_CUT_REQUEST));
 
 
   etk_widget_show_all(viewer->vbox);

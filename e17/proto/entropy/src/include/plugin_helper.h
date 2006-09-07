@@ -35,4 +35,8 @@ Ecore_List* entropy_plugin_filesystem_metadata_groups_retrieve() ;
 void entropy_plugin_filesystem_file_group_add(entropy_generic_file* file, char* group);
 void entropy_plugin_filesystem_file_group_remove(entropy_generic_file* file, char* group);
 
+void entropy_event_copy_request(entropy_gui_component_instance* instance);
+void entropy_event_cut_request(entropy_gui_component_instance* instance);
+void entropy_event_paste_request(entropy_gui_component_instance* instance);
+
 #endif

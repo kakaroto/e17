@@ -108,4 +108,19 @@ Entropy_Gui_Event_Handler* entropy_event_handler_metadata_groups_handler();
 Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_metadata_groups_instance_data(entropy_gui_event* event, 
 	entropy_gui_component_instance* requestor) ;
 
+/*Copy Request */
+Entropy_Gui_Event_Handler* entropy_event_handler_copy_request_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_copy_request_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) ;
+
+/*Cut request */
+Entropy_Gui_Event_Handler* entropy_event_handler_cut_request_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_cut_request_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
+
+/*Paste Request */
+Entropy_Gui_Event_Handler* entropy_event_handler_paste_request_handler();
+Entropy_Gui_Event_Handler_Instance_Data* 
+entropy_event_handler_paste_request_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor) ;
 #endif

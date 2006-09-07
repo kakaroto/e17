@@ -287,6 +287,9 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT, entropy_event_handler_user_interaction_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_EXTENDED_STAT, entropy_event_handler_extended_stat_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_METADATA_GROUPS, entropy_event_handler_metadata_groups_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_COPY_REQUEST, entropy_event_handler_copy_request_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_CUT_REQUEST, entropy_event_handler_cut_request_handler);
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_PASTE_REQUEST, entropy_event_handler_paste_request_handler);
 	
 
 	//printf("\n\nDetails of thumbnailers:\n");
@@ -594,7 +597,7 @@ void entropy_layout_run(entropy_core* core) {
 
 
 /*A function we need, unfortunately, because of the way dlopen works with string refs, and the need of ecore_hash for 
- * a pointer */
+ * a pointer. This isn't a big inefficiency - this is only called on plugin create */
 char* entropy_core_gui_event_get(char* event) {
 	if (!strcmp(event, ENTROPY_GUI_EVENT_FOLDER_CHANGE_CONTENTS)) {
 		return "entropy_gui_event_folder_change_contents";
@@ -628,9 +631,14 @@ char* entropy_core_gui_event_get(char* event) {
 		return "entropy_gui_event_extended_stat";
 	} else if (!strcmp(event,  ENTROPY_GUI_EVENT_METADATA_GROUPS)) {
 		return "entropy_gui_event_metadata_groups";
-	} else {
+	} else if (!strcmp(event, ENTROPY_GUI_EVENT_COPY_REQUEST)) {
+		return "entropy_gui_event_copy_request";
+	} else if (!strcmp(event, ENTROPY_GUI_EVENT_CUT_REQUEST)) {
+		return "entropy_gui_event_cut_request";
+	} else if (!strcmp(event, ENTROPY_GUI_EVENT_PASTE_REQUEST)) {
+		return "entropy_gui_event_paste_request";
+	} else 
 		return "";
-	}
 }
 
 void generic_file_print(entropy_generic_file* file) {
@@ -999,7 +1007,7 @@ void entropy_core_component_event_register(entropy_gui_component_instance* comp,
 		if (!found) {
 			/*Now add this component to this list*/
 			ecore_list_append(event_list, comp);
-			//printf("Registered interest in '%s' for this gui component\n", event);
+			/*printf("Registered interest in '%s' for this gui component\n", event);*/
 		}
 	}
 }
@@ -1072,9 +1080,8 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		return;
 	}
 
-	//printf ("Got layout hash %p for layout at %p\n", lay_hash, layout);
-
-	//printf("Called event call, for event: '%s'\n", event->event_type);
+	/*printf ("Got layout hash %p for layout at %p\n", lay_hash, layout);
+	printf("Called event call, for event: '%s'\n", event->event_type);*/
 
 	/*Otherwise, get the list of instances that care about this event*/
 	el = ecore_hash_get(lay_hash, event->event_type);
@@ -1093,6 +1100,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		
 		ecore_list_goto_first(handlers);
 		while ( (handler = ecore_list_next(handlers))) {
+
 			data = (*handler->notify_event_cb)(event,instance);
 			
 			if (data->notify) {

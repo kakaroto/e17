@@ -168,7 +168,6 @@ _entropy_etk_context_menu_group_file_paste_cb(Etk_Object *object, void *data)
 	Ecore_List* files = entropy_core_selected_files_get();
 
 	stype = entropy_core_selection_type_get();
-
 	if (_entropy_etk_context_menu_current_file) {
 		if (!strcmp(_entropy_etk_context_menu_current_file->mime_type, "file/folder"))
 			_entropy_etk_context_menu_current_folder = _entropy_etk_context_menu_current_file;

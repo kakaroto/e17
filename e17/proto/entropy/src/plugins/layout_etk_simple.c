@@ -75,6 +75,10 @@ void entropy_etk_layout_tree_show(entropy_layout_gui* gui, int visible);
 void entropy_layout_etk_simple_local_view_set(entropy_gui_component_instance* instance,
 		entropy_gui_component_instance* local);
 
+static void _entropy_layout_etk_cut_cb(Etk_Object* object, void* data);
+static void _entropy_layout_etk_copy_cb(Etk_Object* object, void* data);
+static void _entropy_layout_etk_paste_cb(Etk_Object* object, void* data);
+
 
 
 void layout_etk_simple_quit(entropy_core* core)
@@ -196,6 +200,28 @@ static Etk_Widget *_entropy_etk_radio_item_new(const char *label, Etk_Menu_Item_
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
    
    return menu_item;
+}
+
+
+
+/*-----*/
+/*Cut/Copy/Paste Callbacks*/
+static void _entropy_layout_etk_cut_cb(Etk_Object* object, void* data)
+{
+	printf("Cut request at layout..\n");
+	entropy_event_cut_request(data);
+}
+
+static void _entropy_layout_etk_copy_cb(Etk_Object* object, void* data)
+{
+	printf("Copy request at layout..\n");
+	entropy_event_copy_request(data);
+}
+
+static void _entropy_layout_etk_paste_cb(Etk_Object* object, void* data)
+{
+	printf("Paste request at layout..\n");
+	entropy_event_paste_request(data);
 }
 
 /*-----*/
@@ -465,6 +491,12 @@ _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
    {
 	   if (!strcmp(ev->key, "q")) {
 		   layout_etk_simple_quit(instance->core);
+	   } else if (!strcmp(ev->key, "c")) {
+		 _entropy_layout_etk_copy_cb(NULL, instance); 
+	   } else if (!strcmp(ev->key, "x")) {
+		   _entropy_layout_etk_cut_cb(NULL, instance);
+	   } else if (!strcmp(ev->key, "v")) {
+		_entropy_layout_etk_paste_cb(NULL, instance);
 	   }
    } else if ((ev->modifiers & ETK_MODIFIER_ALT)) {
  	   if (!strcmp(ev->key, "i")) {
@@ -610,8 +642,30 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	     }
 	     break;
 
-	     case ENTROPY_NOTIFY_METADATA_GROUPS: {
-		/*entropy_etk_context_menu_metadata_groups_populate((Evas_List*)eevent->return_struct);*/
+	     case ENTROPY_NOTIFY_PASTE_REQUEST: {
+		printf("Paste request..\n");
+							
+		Entropy_Selection_Type stype = entropy_core_selection_type_get();
+		entropy_generic_file* cfolder = 
+			((entropy_gui_component_instance_layout*)comp)->current_folder; 
+		Ecore_List* files = entropy_core_selected_files_get();
+		
+		if (cfolder) {
+			char* f_uri = 	cfolder->uri;
+			if (f_uri) {
+				if (stype == ENTROPY_SELECTION_COPY) {
+					entropy_plugin_filesystem_file_copy_multi(files, f_uri, 
+						comp);
+				} else if (stype == ENTROPY_SELECTION_CUT) {
+					entropy_plugin_filesystem_file_move_multi(files, f_uri, 
+						comp);					
+				} else {
+					printf("Unsupported copy type at context menu paste\n");
+				}
+			}
+		} else {
+			printf("Current folder is NULL at layout paste\n");
+		}
 	     }
 	     break;
 
@@ -705,6 +759,10 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_core_component_event_register (layout,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_METADATA_GROUPS));
+
+  entropy_core_component_event_register (layout,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_PASTE_REQUEST));
 
 
   /*Etk related init */
@@ -855,9 +913,15 @@ entropy_plugin_layout_create (entropy_core * core)
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Edit"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu), NULL);
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu), NULL);
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu), NULL);
+  
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Cut"), ETK_STOCK_EDIT_CUT, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_layout_etk_cut_cb), layout);
+  
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Copy"), ETK_STOCK_EDIT_COPY, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_layout_etk_copy_cb), layout);
+  
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Paste"), ETK_STOCK_EDIT_PASTE, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_layout_etk_paste_cb), layout);
   
   
   /*Tools menu*/

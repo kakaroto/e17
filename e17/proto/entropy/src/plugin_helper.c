@@ -61,8 +61,6 @@ int entropy_core_plugin_sub_type_get(entropy_plugin* plugin) {
 }
 
 entropy_plugin* entropy_plugin_gui_get_by_name_toolkit(char* toolkit, char* name) {
-	entropy_plugin* plugin;	
-
         entropy_plugin* list_item;
 
 	Ecore_List* plugins = entropy_core_get_core()->plugin_list;
@@ -396,6 +394,42 @@ void entropy_event_action_file(Entropy_Generic_File* file, entropy_gui_component
 	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
     gui_event->data = file;
     entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_GLOBAL); 
+}
+
+void entropy_event_copy_request(entropy_gui_component_instance* instance) 
+{
+    entropy_gui_event *gui_event;
+
+	
+    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+    gui_event->event_type =
+	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_COPY_REQUEST);
+    gui_event->data = NULL;
+    entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_LOCAL); 
+}
+
+void entropy_event_cut_request(entropy_gui_component_instance* instance) 
+{
+    entropy_gui_event *gui_event;
+
+	
+    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+    gui_event->event_type =
+	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_CUT_REQUEST);
+    gui_event->data = NULL;
+    entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_LOCAL); 
+}
+
+void entropy_event_paste_request(entropy_gui_component_instance* instance) 
+{
+    entropy_gui_event *gui_event;
+
+	
+    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+    gui_event->event_type =
+	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_PASTE_REQUEST);
+    gui_event->data = NULL;
+    entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_LOCAL); 
 }
 
 entropy_generic_file* entropy_layout_current_folder_get(entropy_gui_component_instance_layout* layout)

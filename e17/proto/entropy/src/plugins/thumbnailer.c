@@ -90,7 +90,7 @@ entropy_plugin_init(entropy_core* core)
 
 	plugin = entropy_malloc(sizeof(Entropy_Plugin_Thumbnailer_Child));
 
-	return plugin;
+	return ENTROPY_PLUGIN(plugin);
 }
 
 
