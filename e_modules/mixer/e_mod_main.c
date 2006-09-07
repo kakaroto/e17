@@ -1,5 +1,9 @@
 #include <e.h>
 #include "e_mod_main.h"
+#include "alsa_mixer.h"
+
+/* Define to 1 for testing alsa code */
+#define DEBUG 1
 
 /* Gadcon Protos */
 static E_Gadcon_Client *_gc_init     (E_Gadcon * gc, const char *name, 
@@ -12,11 +16,11 @@ static Evas_Object     *_gc_icon     (Evas * evas);
 /* Module Protos */
 static Config_Item *_mixer_config_item_get   (const char *id);
 static void         _mixer_menu_cb_post      (void *data, E_Menu *m);
+static void         _mixer_menu_cb_configure (void *data, E_Menu *m, 
+					      E_Menu_Item *mi);
 static void         _mixer_cb_mouse_down     (void *data, Evas *e, 
 					      Evas_Object *obj, 
 					      void *event_info);
-static void         _mixer_menu_cb_configure (void *data, E_Menu *m, 
-					      E_Menu_Item *mi);
 static void         _mixer_window_show       (void *data, int simple);
 
 static E_Config_DD *conf_edd = NULL;
@@ -66,6 +70,26 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Mixer           *mixer;
    E_Gadcon_Client *gcc;
    char             buf[4096];
+
+#if DEBUG
+   Evas_List *c;
+
+   c = alsa_get_cards();
+   if (c) 
+     {
+	Evas_List *l;
+	
+	for (l = c; l; l = l->next) 
+	  {
+	     Alsa_Card *card;
+		  
+	     card = c->data;
+	     if (!card) continue;
+	     printf("\nFound Card: %s\n\n", card->real);
+	  }
+	alsa_free_cards(c);
+     }
+#endif
    
    inst = E_NEW(Instance, 1);
    if (!inst) return NULL;
@@ -175,8 +199,9 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, _("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
-	// e_menu_item_callback_set (mi, _mixer_menu_cb_configure, inst);
-
+	#if DEBUG
+	e_menu_item_callback_set(mi, _mixer_menu_cb_configure, inst);
+	#endif
 	mi = e_menu_item_new(mn);
 	e_menu_item_separator_set(mi, 1);
 
@@ -207,6 +232,19 @@ _mixer_menu_cb_post(void *data, E_Menu *m)
    if (!mixer_config->menu) return;
    e_object_del(E_OBJECT(mixer_config->menu));
    mixer_config->menu = NULL;
+}
+
+static void
+_mixer_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi) 
+{
+   Instance    *inst;
+   Config_Item *ci;
+
+   inst = data;
+   if (!inst) return;
+   ci = _mixer_config_item_get(inst->gcc->id);
+   if (!ci) return;
+   _config_mixer_module(ci);
 }
 
 static Config_Item *
