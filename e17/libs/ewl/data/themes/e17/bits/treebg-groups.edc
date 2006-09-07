@@ -277,6 +277,32 @@ group {
          }
       }
       part {
+	 name: "highlight";
+	 mouse_events: 0;
+         description {
+            state:    "default" 0.0;
+            visible:  0;
+            rel1 {
+               offset: -4 -4;
+            }
+            rel2 {
+               offset: 3 3;
+            }
+            image {
+               normal: "row_select.png";
+               border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+	 description {
+	    state: "highlighted" 0.0;
+	    inherit: "default" 0.0;
+	    visible: 1;
+	 }
+      }
+      part {
          name:          "title_glint_3";
          mouse_events:  0;
          description {
@@ -322,7 +348,7 @@ group {
    programs {
       program {
          name:    "go_active_pre";
-         signal:  "mouse,in";
+         signal:  "tree-selected";
          source:  "*";
          action:  STATE_SET "default" 0.0;
          target:  "title_bar";
@@ -396,7 +422,7 @@ group {
       }
       program {
          name:    "go_passive_pre";
-         signal:  "mouse,out";
+         signal:  "tree-deselect";
          source:  "*";
          action:  STATE_SET "active" 0.0;
          target:  "title_bar";
@@ -439,7 +465,23 @@ group {
          action:     STATE_SET "even" 0.0;
          transition: LINEAR 0.0;
          target:     row_background;
-      }    
+      }
+      program {
+	 name:	     "mousein";
+	 signal:     "mouse,in";
+	 source:     "*";
+	 action:     STATE_SET "highlighted" 0.0;
+	 transition: LINEAR 0.0;
+	 target:     highlight;
+      }
+      program {
+	 name:       "mouseout";
+	 signal:     "mouse,out";
+	 source:     "*";
+	 action:     STATE_SET "default" 0.0;
+	 transition: LINEAR 0.0;
+	 target:     highlight;
+      }
    }
 }
 
