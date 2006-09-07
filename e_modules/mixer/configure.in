@@ -151,8 +151,7 @@ if test "x$enable_alsa" = "xdefault" || test "x$enable_alsa" = "xyes"; then
 		[ SOUND_CFLAGS="$ALSA_CFLAGS -DHAVE_ALSA $SOUND_CFLAGS"
 		SOUND_LDFLAGS="$ALSA_LIBS $SOUND_LDFLAGS" ],
 		[ if test "x$enable_alsa" = "xyes"; then
-		     AC_MSG_WARN([alsa library >= 1.0.9 not found])
-		     NOT_FOUND="$NOT_FOUND alsa,library,>=,1.0.9"
+		     AC_MSG_ERROR([alsa library >= 1.0.9 not found])
 	      	  fi ])
 fi  
 
