@@ -154,8 +154,12 @@ ewl_dnd_provides_types_contains(Ewl_Widget *w, char *type)
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
 
 	types = ecore_hash_get(ewl_dnd_provides_hash, w);
-
-	DRETURN_INT(ewl_dnd_types_encoded_contains(types, type), DLEVEL_STABLE);
+	if (types) {
+		DRETURN_INT(ewl_dnd_types_encoded_contains(types, type), DLEVEL_STABLE);
+	}
+	else {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 }
 
 
@@ -215,9 +219,14 @@ ewl_dnd_accepts_types_contains(Ewl_Widget *w, char *type)
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
 
-	types = ecore_hash_get(ewl_dnd_provides_hash, w);
+	types = ecore_hash_get(ewl_dnd_accepts_hash, w);
 
-	DRETURN_INT(ewl_dnd_types_encoded_contains(types, type), DLEVEL_STABLE);
+	if (types) {
+		DRETURN_INT(ewl_dnd_types_encoded_contains(types, type), DLEVEL_STABLE);
+	}
+	else {
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 }
 
 /**
@@ -453,7 +462,7 @@ ewl_dnd_types_encoded_contains(char *types, char *type)
 static char *
 ewl_dnd_types_encode(const char **types)
 {
-	char *tmptype;
+	char *type, *tmptype;
 	int count, i = 0;
 	int len = 0;
 
@@ -467,15 +476,15 @@ ewl_dnd_types_encode(const char **types)
 		i++;
 	}
 
-	tmptype = NEW(char, len + 1);
+	type = tmptype = NEW(char, len + 1);
 	count = i;
 	for (i = 0; i < count; i++) {
-		tmptype = strcpy(tmptype, types[i]);
+		tmptype = stpcpy(tmptype, types[i]);
 		tmptype++;
 	}
 	*tmptype = '\0';
 
-	DRETURN_PTR(tmptype, DLEVEL_STABLE);
+	DRETURN_PTR(type, DLEVEL_STABLE);
 }
 
 static int
