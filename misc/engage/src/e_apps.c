@@ -1183,7 +1183,7 @@ e_app_fields_fill(E_App *a, const char *path)
 	   if (desktop->comment)  a->comment = evas_stringshare_add(desktop->comment);
 
 	   if (desktop->exec)  a->exe = evas_stringshare_add(desktop->exec);
-	   if (desktop->exec_params)  a->exe = evas_stringshare_add(desktop->exec_params);
+	   if (desktop->exec_params)  a->exe_params = evas_stringshare_add(desktop->exec_params);
 	   if (desktop->icon_class)  a->icon_class = evas_stringshare_add(desktop->icon_class);
 	   if (desktop->icon_path)  a->icon_path = evas_stringshare_add(desktop->icon_path);
 	   if (desktop->window_class)  a->win_class = evas_stringshare_add(desktop->window_class);
