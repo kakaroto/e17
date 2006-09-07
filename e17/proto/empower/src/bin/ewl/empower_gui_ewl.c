@@ -65,7 +65,7 @@ void display_window(int argc, char** argv)
         image = ewl_image_new();
 	ewl_image_file_set(EWL_IMAGE(image), 
 		ewl_icon_theme_icon_path_get(EWL_ICON_SYSTEM_LOCK_SCREEN, 
-		EWL_ICON_SIZE_LARGE), NULL);
+		EWL_ICON_SIZE_LARGE), EWL_ICON_SYSTEM_LOCK_SCREEN);
 	ewl_container_child_append(EWL_CONTAINER(hbox), image);
 	ewl_widget_show(image);
 	
