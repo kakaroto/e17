@@ -28,7 +28,8 @@ pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
 		       e_mod_main.h \
 		       alsa_mixer.h \
-		       alsa_mixer.c
+		       alsa_mixer.c \
+		       e_mod_config.c
 
 module_la_LIBADD       = @e_libs@ @SOUND_LDFLAGS@
 module_la_LDFLAGS      = -module -avoid-version
