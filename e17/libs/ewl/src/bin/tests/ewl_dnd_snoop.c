@@ -46,7 +46,7 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-
+	const char *text_types[] = { "UTF8_STRING", "text/plain", NULL };
 	Ewl_Widget *scroll, *o;
 
 	/* Register DND handlers */
@@ -70,6 +70,7 @@ create_test(Ewl_Container *box)
 					ewl_dnd_snoop_cb_finished, NULL);
 
 	o = ewl_entry_new();
+	ewl_dnd_accepts_types_set(o, text_types);
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_callback_append(o, EWL_CALLBACK_DND_POSITION, ewl_dnd_snoop_cb_dnd_position, NULL);
 	ewl_callback_append(o, EWL_CALLBACK_DND_DROP, ewl_dnd_snoop_cb_dnd_drop, NULL);
@@ -140,7 +141,7 @@ ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event,
 						void *data __UNUSED__)
 {
 	Ewl_Event_Dnd_Data *ev = event;
-	printf("Data event on widget %p: %p lenght %d\n", w, ev->data, ev->len);
+	printf("Data event on widget %p: %p length %d\n", w, ev->data, ev->len);
 }
 
 static void
