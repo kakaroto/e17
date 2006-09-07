@@ -25,8 +25,10 @@ void display_window(int argc, char** argv)
 	char username[256];
 	
 	user = getuid();
-	user_name = getpwuid(user);
-	snprintf(username, 256, "%s's password", user_name->pw_name);
+	if ((user_name = getpwuid(user)) != NULL)
+		snprintf(username, 256, "%s's password", user_name->pw_name);
+	else
+		snprintf(username, 256, "Your Password");
 	
 	int num_roots=0;
 	int root_w=0, root_h=0;
