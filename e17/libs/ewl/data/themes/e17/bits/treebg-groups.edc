@@ -348,7 +348,7 @@ group {
    programs {
       program {
          name:    "go_active_pre";
-         signal:  "tree-selected";
+         signal:  "mouse,in";
          source:  "*";
          action:  STATE_SET "default" 0.0;
          target:  "title_bar";
@@ -422,7 +422,7 @@ group {
       }
       program {
          name:    "go_passive_pre";
-         signal:  "tree-deselect";
+         signal:  "mouse,out";
          source:  "*";
          action:  STATE_SET "active" 0.0;
          target:  "title_bar";
@@ -468,7 +468,7 @@ group {
       }
       program {
 	 name:	     "mousein";
-	 signal:     "mouse,in";
+	 signal:     "tree-selected";
 	 source:     "*";
 	 action:     STATE_SET "highlighted" 0.0;
 	 transition: LINEAR 0.0;
@@ -476,7 +476,7 @@ group {
       }
       program {
 	 name:       "mouseout";
-	 signal:     "mouse,out";
+	 signal:     "tree-deselect";
 	 source:     "*";
 	 action:     STATE_SET "default" 0.0;
 	 transition: LINEAR 0.0;
