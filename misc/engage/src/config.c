@@ -116,7 +116,7 @@ od_config_init(void)
                             "zoom-time",
                             "Time taken (in seconds) for icons to zoom");
 
-  ecore_config_argb_create("engage.options.bg_fore", "#7f000000", 'B', "bg-outline-color", "Background outline color");
+  ecore_config_argb_create("engage.options.bg_fore", "#ff000000", 'B', "bg-outline-color", "Background outline color");
   ecore_config_argb_create("engage.options.bg_back", "#7fffffff", 'b', "bg-main-color", "Background main color");
 
   ecore_config_float_create("engage.options.icon_appear_duration", 0.1, 'D',
