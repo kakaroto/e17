@@ -445,6 +445,7 @@ e_app_exec(E_App *a, int launch_id)
    Ecore_Exe *exe;
    E_App_Instance *inst;
    Evas_List *l;
+   char *command;
    
    E_OBJECT_CHECK_RETURN(a, 0);
    E_OBJECT_TYPE_CHECK_RETURN(a, E_APP_TYPE, 0);
@@ -453,16 +454,32 @@ e_app_exec(E_App *a, int launch_id)
     * the eapp file */
    inst = E_NEW(E_App_Instance, 1);
    if (!inst) return 0;
+
+   if (a->desktop)
+      command = ecore_desktop_get_command(a->desktop, NULL, 1);
+   else
+      command = strdup(a->exe);
+   if (!command)
+      {
+          free(inst);
+/*	  e_util_dialog_show(_("Run Error"),
+		             _("Enlightenment was unable to process a command line:<br>"
+			     "<br>"
+			     "%s %s<br>"),
+			     a->exe, (a->exe_params != NULL) ? a->exe_params : "" ); */
+          return 0;
+      }
    /* We want the stdout and stderr as lines for the error dialog if it exits abnormally. */
    exe = ecore_exe_pipe_run(a->exe, ECORE_EXE_PIPE_AUTO | ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_READ_LINE_BUFFERED | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED, inst);
 /*   if (!exe)
      {
+        free(command);
 	free(inst);
 	e_util_dialog_show(_("Run Error"),
 			   _("Enlightenment was unable to fork a child process:<br>"
 			     "<br>"
-			     "%s<br>"),
-			   a->exe);
+			     "%s %s<br>"),
+			     a->exe, (a->exe_params != NULL) ? a->exe_params : "" );
 	return 0;
      }*/
    /* 20 lines at start and end, 20x100 limit on bytes at each end. */
@@ -484,6 +501,7 @@ e_app_exec(E_App *a, int launch_id)
 	_e_app_change(a2, E_APP_EXEC);
      }
    _e_app_change(a, E_APP_EXEC);
+   free(command);
    return 1;
 }
 
@@ -1159,11 +1177,13 @@ e_app_fields_fill(E_App *a, const char *path)
       desktop = ecore_desktop_get(path, lang);
       if (desktop)
         {
+	   a->desktop = desktop;
 	   if (desktop->name)  a->name = evas_stringshare_add(desktop->name);
 	   if (desktop->generic)  a->generic = evas_stringshare_add(desktop->generic);
 	   if (desktop->comment)  a->comment = evas_stringshare_add(desktop->comment);
 
 	   if (desktop->exec)  a->exe = evas_stringshare_add(desktop->exec);
+	   if (desktop->exec_params)  a->exe = evas_stringshare_add(desktop->exec_params);
 	   if (desktop->icon_class)  a->icon_class = evas_stringshare_add(desktop->icon_class);
 	   if (desktop->icon_path)  a->icon_path = evas_stringshare_add(desktop->icon_path);
 	   if (desktop->window_class)  a->win_class = evas_stringshare_add(desktop->window_class);
@@ -1292,6 +1312,7 @@ e_app_fields_save(E_App *a)
 	       desktop->comment = (char *) a->comment;
 
 	       desktop->exec = (char *) a->exe;
+	       desktop->exec_params = (char *) a->exe_params;
 	       desktop->icon_class = (char *) a->icon_class;
                desktop->icon_path = (char *) a->icon_path;
 	       desktop->window_class = (char *) a->win_class;
@@ -1438,6 +1459,7 @@ e_app_fields_empty(E_App *a)
    if (a->generic) evas_stringshare_del(a->generic);
    if (a->comment) evas_stringshare_del(a->comment);
    if (a->exe) evas_stringshare_del(a->exe);
+   if (a->exe_params) evas_stringshare_del(a->exe_params);
    if (a->icon_class) evas_stringshare_del(a->icon_class);
    if (a->icon_path) evas_stringshare_del(a->icon_path);
    if (a->win_name) evas_stringshare_del(a->win_name);
@@ -1448,6 +1470,7 @@ e_app_fields_empty(E_App *a)
    a->generic = NULL;
    a->comment = NULL;
    a->exe = NULL;
+   a->exe_params = NULL;
    a->icon_class = NULL;
    a->icon_path = NULL;
    a->win_name = NULL;
@@ -2197,6 +2220,7 @@ _e_app_copy(E_App *dst, E_App *src)
    dst->generic = src->generic;
    dst->comment = src->comment;
    dst->exe = src->exe;
+   dst->exe_params = src->exe_params;
    dst->path = src->path;
    dst->win_name = src->win_name;
    dst->win_class = src->win_class;
