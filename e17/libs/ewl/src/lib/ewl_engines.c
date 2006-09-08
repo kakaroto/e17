@@ -806,26 +806,26 @@ ewl_engine_window_geometry_get(Ewl_Window *win, int root, int *width, int *heigh
 }
 
 /**
- * @param win: the window to work with
+ * @param embed: the embed to work with
  * @return Returns no value
  * @brief Sets the dnd awareness
  */
 void
-ewl_engine_window_dnd_aware_set(Ewl_Window *win)
+ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed)
 {
-	Ewl_Engine_Cb_Window_Dnd_Aware_Set window_dnd_aware_set;
+	Ewl_Engine_Cb_Embed_Dnd_Aware_Set embed_dnd_aware_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	if (!(win->window))
+	if (!(embed->evas_window))
 		DRETURN(DLEVEL_STABLE);
 
-	window_dnd_aware_set = ewl_engine_hook_get(EWL_EMBED(win),
-					EWL_ENGINE_WINDOW_DND_AWARE_SET);
-	if (window_dnd_aware_set)
-		window_dnd_aware_set(win);
+	embed_dnd_aware_set = ewl_engine_hook_get(EWL_EMBED(embed),
+					EWL_ENGINE_EMBED_DND_AWARE_SET);
+	if (embed_dnd_aware_set)
+		embed_dnd_aware_set(embed);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

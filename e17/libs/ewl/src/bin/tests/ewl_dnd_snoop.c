@@ -70,7 +70,7 @@ create_test(Ewl_Container *box)
 					ewl_dnd_snoop_cb_finished, NULL);
 
 	o = ewl_entry_new();
-	ewl_dnd_accepts_types_set(o, text_types);
+	ewl_dnd_accepted_types_set(o, text_types);
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_callback_append(o, EWL_CALLBACK_DND_POSITION, ewl_dnd_snoop_cb_dnd_position, NULL);
 	ewl_callback_append(o, EWL_CALLBACK_DND_DROP, ewl_dnd_snoop_cb_dnd_drop, NULL);

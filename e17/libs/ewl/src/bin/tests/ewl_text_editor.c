@@ -182,7 +182,7 @@ ete_dnd_cb_realize(Ewl_Widget *w, void *event __UNUSED__,
 {
 	Ewl_Embed *embed;
 	embed = ewl_embed_widget_find(w);
-	ecore_x_dnd_aware_set((Ecore_X_Window)embed->evas_window, TRUE);
+	ewl_embed_dnd_aware_set(embed);
 }
 
 static void

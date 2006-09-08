@@ -79,7 +79,6 @@ void            ewl_window_pointer_grab_set(Ewl_Window *win, int grab);
 int             ewl_window_pointer_grab_get(Ewl_Window *win);
 void            ewl_window_override_set(Ewl_Window *win, int override);
 int             ewl_window_override_get(Ewl_Window *win);
-void            ewl_window_dnd_aware_set(Ewl_Window *win);
 void            ewl_window_selection_text_set(Ewl_Window *win, const char *txt);
 
 /*

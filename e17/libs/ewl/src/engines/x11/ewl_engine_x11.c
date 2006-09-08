@@ -72,7 +72,7 @@ static int ee_pointer_grab(Ewl_Window *win);
 static void ee_pointer_ungrab(Ewl_Window *win);
 static void ee_window_selection_text_set(Ewl_Window *win, const char *txt);
 static void ee_window_geometry_set(Ewl_Window *win, int *width, int *height);
-static void ee_dnd_aware_set(Ewl_Window *win);
+static void ee_dnd_aware_set(Ewl_Embed *embed);
 
 static Ewl_Engine_Info engine_funcs = {
 	{
@@ -678,14 +678,13 @@ ee_window_geometry_set(Ewl_Window *win, int *width, int *height)
 }
 
 static void
-ee_dnd_aware_set(Ewl_Window *win)
+ee_dnd_aware_set(Ewl_Embed *embed)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	ecore_x_dnd_aware_set((Ecore_X_Window)win->window,
-			(!!(win->flags & EWL_FLAG_PROPERTY_DND_AWARE)));
+	ecore_x_dnd_aware_set((Ecore_X_Window)embed->evas_window, TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1056,11 +1055,14 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 			{
 				Ecore_X_Selection_Data_Text* text = ev->data;
 				printf("We've got some text! - '%s'\n", text->text);
-				ewl_embed_selection_data_feed(EWL_EMBED(window), ev->target, text->text, ((Ecore_X_Selection_Data *)text)->length);
+				ewl_embed_selection_data_feed(EWL_EMBED(window), 
+							ev->target, text->text, 
+							((Ecore_X_Selection_Data *)text)->length);
 			} 
 			else 
 			{
-				printf("\nUnknown DND selection received, type: %d target: %s\n", data->content, ev->target);
+				printf("\nUnknown DND selection received, type: %d target: %s\n", 
+								data->content, ev->target);
 				printf("\tData length: %d\n", data->length);
 			}
 		}

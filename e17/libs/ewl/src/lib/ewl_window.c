@@ -596,26 +596,6 @@ ewl_window_override_get(Ewl_Window *win)
 }
 
 /**
- * @param win: the window to remove the border
- * @return Returns no value.
- * @brief Set a window as being DND aware
- *
- * Inform ecore_x that this window is capable of receiving DND events
- */
-void
-ewl_window_dnd_aware_set(Ewl_Window *win)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-
-	win->flags |= EWL_FLAG_PROPERTY_DND_AWARE;
-	ewl_engine_window_dnd_aware_set(win);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
  * @param win: The window to set the selection on
  * @param txt: The text to set into the selection
  * @return Returns no value.
@@ -671,7 +651,7 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_engine_window_geometry_get(window, TRUE, &width, &height);
 		ewl_object_maximum_size_set(EWL_OBJECT(window), width, height);
 	}
-	ewl_engine_window_dnd_aware_set(window);
+	ewl_engine_embed_dnd_aware_set(EWL_EMBED(window));
 
 	ewl_engine_canvas_setup(window, ewl_config.evas.render_debug);
 

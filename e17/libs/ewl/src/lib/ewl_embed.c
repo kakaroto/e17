@@ -922,7 +922,7 @@ ewl_embed_selection_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned
 	 * If a widget is expecting DND data, send the data to the widget
 	 */
 	if (embed->dnd_widget) {
-		if (ewl_dnd_accepts_types_contains(embed->dnd_widget, type)) {
+		if (ewl_dnd_accepted_types_contains(embed->dnd_widget, type)) {
 			/* 
 			 * setup the event struct 
 			 */
@@ -1817,6 +1817,23 @@ void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (emb == ewl_embed_active_embed)
 		ewl_embed_active_embed = NULL;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed to set dnd aware
+ * @return Returns no value.
+ * @brief Set an embed as being DND aware
+ */
+void
+ewl_embed_dnd_aware_set(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	ewl_engine_embed_dnd_aware_set(embed);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

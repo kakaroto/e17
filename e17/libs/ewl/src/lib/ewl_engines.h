@@ -40,7 +40,7 @@ enum Ewl_Engine_Hook
 
 	EWL_ENGINE_WINDOW_SELECTION_TEXT_SET, /**< Set the selection text */
 	EWL_ENGINE_WINDOW_GEOMETRY_GET, /**< Get the window geometry */
-	EWL_ENGINE_WINDOW_DND_AWARE_SET,	 /**< Set the window 
+	EWL_ENGINE_EMBED_DND_AWARE_SET,	 /**< Set the window 
 								dnd aware */
 	EWL_ENGINE_CANVAS_SETUP, /**< Setup the render canvas */
 
@@ -147,7 +147,7 @@ void		 ewl_engine_window_selection_text_set(Ewl_Window *win,
 							const char *txt);
 void		 ewl_engine_window_geometry_get(Ewl_Window *win, int root,
 						int *width, int *height);
-void		 ewl_engine_window_dnd_aware_set(Ewl_Window *win);
+void		 ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed);
 
 void		 ewl_engine_canvas_setup(Ewl_Window *win, int debug);
 void		 ewl_engine_canvas_render(Ewl_Embed *embed);
@@ -195,7 +195,7 @@ typedef void (*Ewl_Engine_Cb_Window_Selection_Text_Set)(Ewl_Window *win,
 typedef void (*Ewl_Engine_Cb_Window_Geometry_Get)(Ewl_Window *win, 
 						int *width, int *height); /**< Get the window 
 								geometry */
-typedef void (*Ewl_Engine_Cb_Window_Dnd_Aware_Set)(Ewl_Window *win);	 /**< Set the window 
+typedef void (*Ewl_Engine_Cb_Embed_Dnd_Aware_Set)(Ewl_Embed *embed);	 /**< Set the embed 
 								dnd aware */
 typedef void (*Ewl_Engine_Cb_Canvas_Setup)(Ewl_Window *win, int debug); /**< Setup the 
 						         render canvas */

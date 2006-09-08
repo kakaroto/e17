@@ -71,7 +71,7 @@ ewl_entry_init(Ewl_Entry *e)
 	 * to show the cursor */
 	ewl_entry_editable_set(e, TRUE);
 	ewl_text_selectable_set(EWL_TEXT(e), TRUE);
-	ewl_dnd_accepts_types_set(e, text_types);
+	ewl_dnd_accepted_types_set(e, text_types);
 
 	/* setup callbacks */
 	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
@@ -523,7 +523,7 @@ ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__,
 /**
  * @internal
  * @param w: The widget to work with
- * @param ev: DND positioin event
+ * @param ev: DND position event
  * @param data: UNUSED
  * @return Returns no value
  * @brief The dnd mouse move callback
@@ -531,15 +531,20 @@ ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__,
 void
 ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Event_Dnd_Position *event = ev;
-	Ewl_Text *txt = EWL_TEXT(w);
+	Ewl_Event_Dnd_Position *event;
+	Ewl_Text *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev", ev);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	event = ev;
+	txt = EWL_TEXT(w);
+
 	ewl_widget_focus_send(w);
-	ewl_text_cursor_position_set(txt, ewl_text_coord_index_map(txt, event->x, event->y));
+	ewl_text_cursor_position_set(txt, 
+			ewl_text_coord_index_map(txt, event->x, event->y));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -547,7 +552,7 @@ ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 /**
  * @internal
  * @param w: The widget to work with
- * @param ev: DND positioin event
+ * @param ev: DND data event
  * @param data: UNUSED
  * @return Returns no value
  * @brief The dnd mouse move callback
@@ -555,14 +560,18 @@ ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 void
 ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Event_Dnd_Data *event = ev;
-	Ewl_Text *txt = EWL_TEXT(w);
+	Ewl_Event_Dnd_Data *event;
+	Ewl_Text *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev", ev);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_text_text_insert(txt, event->data, ewl_text_cursor_position_get(txt));
+	event = ev;
+	txt = EWL_TEXT(w);
+	ewl_text_text_insert(txt, event->data, 
+				ewl_text_cursor_position_get(txt));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
