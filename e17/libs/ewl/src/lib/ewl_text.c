@@ -31,24 +31,24 @@ static void ewl_text_plaintext_parse(Evas_Object *tb, char *txt);
 
 static void ewl_text_tree_walk(Ewl_Text *t);
 static void ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree,
-						unsigned int pos);
+						unsigned int char_idx, unsigned int byte_idx);
 static int ewl_text_tree_idx_start_count_get(Ewl_Text_Tree *tree, 
-					unsigned int idx, unsigned int inclusive);
-static Ewl_Text_Tree *ewl_text_tree_node_split(Ewl_Text_Tree *tree, 
-					unsigned int count, unsigned int pos, 
-					unsigned int len, unsigned int context_mask, 
+					unsigned int char_idx, unsigned int inclusive);
+static Ewl_Text_Tree *ewl_text_tree_node_split(Ewl_Text *t, Ewl_Text_Tree *tree, 
+					unsigned int count, unsigned int char_pos, 
+					unsigned int char_len, unsigned int context_mask, 
 							Ewl_Text_Context *tx);
 static void ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree);
 
 static void ewl_text_tree_shrink(Ewl_Text_Tree *tree);
 static char *ewl_text_format_get(Ewl_Text_Context *ctx);
 static Evas_Textblock_Cursor *ewl_text_textblock_cursor_position(Ewl_Text *t, 
-							unsigned int idx);
+							unsigned int char_idx);
 static unsigned int ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor);
 
 static void ewl_text_triggers_remove(Ewl_Text *t);
-static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, 
-					unsigned int len, unsigned int del);
+static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos, 
+					unsigned int char_len, unsigned int del);
 static void ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig);
 
 static void ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
@@ -56,7 +56,16 @@ static void ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 static void ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur, 
 			Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h);
 
-static void ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx);
+static void ewl_text_selection_select_to(Ewl_Text_Trigger *s, 
+						unsigned int char_idx);
+
+static void ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, 
+						unsigned int char_len,
+						unsigned int *byte_idx,
+						unsigned int *byte_len);
+static unsigned int ewl_text_char_length_get(const char *text);
+static char *ewl_text_text_next_char(const char *text, unsigned int *idx;);
+
 
 /**
  * @return Returns a new Ewl_Text widget on success, NULL on failure.
@@ -138,8 +147,8 @@ ewl_text_init(Ewl_Text *t)
 
 /**
  * @param t: The Ewl_Text to get the length from
- * @return Returns the length of the text in the widget @a t
- * @brief Retrieve the length of the text
+ * @return Returns the character length of the text in the widget @a t
+ * @brief Retrieve the character length of the text
  */
 unsigned int
 ewl_text_length_get(Ewl_Text *t)
@@ -148,7 +157,7 @@ ewl_text_length_get(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
-	DRETURN_INT(t->length, DLEVEL_STABLE);
+	DRETURN_INT(t->length.chars, DLEVEL_STABLE);
 }
 
 /**
@@ -165,11 +174,8 @@ ewl_text_offsets_get(Ewl_Text *t, int *x, int *y)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if (x)
-		*x = t->offset.x;
-
-	if (y)
-		*y = t->offset.y;
+	if (x) *x = t->offset.x;
+	if (y) *y = t->offset.y;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -197,15 +203,15 @@ ewl_text_offsets_set(Ewl_Text *t, int x, int y)
 
 /**
  * @param t: The Ewl_Text to get the geometry from
- * @param idx: The index to get the geometry for
+ * @param char_idx: The character index to get the geometry for
  * @param x: Where to put the x value
  * @param y: Where to put the y value
  * @param w: Where to put the w value
  * @param h: Where to put the h value
- * @brief Map the given index into a position in the text widget
+ * @brief Map the given character index into a position in the text widget
  */
 void
-ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y, 
+ewl_text_index_geometry_map(Ewl_Text *t, unsigned int char_idx, int *x, int *y, 
 							int *w, int *h)
 {
 	Evas_Coord tx = 0, ty = 0, tw = 0, th = 0;
@@ -228,16 +234,15 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
 	}
 
 	/* force a display of the text */
-	if (t->dirty)
-		ewl_text_display(t);
+	if (t->dirty) ewl_text_display(t);
 
-	if (idx >= t->length)
+	if (char_idx >= t->length.chars)
 	{
-		idx = ewl_text_utf_char_position_prev(t->text, t->length);
+		char_idx --;
 		shifting = 1;
 	}
 
-	cursor = ewl_text_textblock_cursor_position(t, idx);
+	cursor = ewl_text_textblock_cursor_position(t, char_idx);
 	evas_textblock_cursor_char_geometry_get(cursor, &tx, &ty, &tw, &th);
 	evas_textblock_cursor_free(cursor);
 
@@ -257,14 +262,14 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int idx, int *x, int *y,
  * @param t: The Ewl_Text to mapp the coords into
  * @param x: The x coord to map
  * @param y: The y coord to map
- * @return Returns the index of the given coordinates
+ * @return Returns the character index of the given coordinates
  * @brief Map the given coordinate into an index into the text widget
  */
 unsigned int
 ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 {
 	Evas_Textblock_Cursor *cursor;
-	unsigned int idx = 0;
+	unsigned int char_idx = 0;
 	Evas_Coord tx, ty, cx = 0, cy, cw, ch;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -275,8 +280,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
 	/* force a display of the text */
-	if (t->dirty)
-		ewl_text_display(t);
+	if (t->dirty) ewl_text_display(t);
 
 	tx = (Evas_Coord)(x - CURRENT_X(t));
 	ty = (Evas_Coord)(y - CURRENT_Y(t));
@@ -309,7 +313,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 
 				/* Increment if we're on the last line */
 				if (!txt || (strcmp(txt, "\n")))
-					idx ++;
+					char_idx ++;
 			}
 		}
 		else
@@ -323,13 +327,13 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 		 evas_textblock_cursor_char_geometry_get(cursor,
 						&cx, &cy, &cw, &ch);
 		 if (tx > (cx + ((cw + 1) >> 1)))
-			 idx ++;
+			 char_idx ++;
 	}
 
-	idx += ewl_text_textblock_cursor_to_index(cursor);
+	char_idx += ewl_text_textblock_cursor_to_index(cursor);
 	evas_textblock_cursor_free(cursor);
 
-	DRETURN_INT(idx, DLEVEL_STABLE);
+	DRETURN_INT(char_idx, DLEVEL_STABLE);
 }
 
 /**
@@ -359,32 +363,11 @@ ewl_text_clear(Ewl_Text *t)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if (t->length > 0)
+	if (t->length.chars > 0)
 	{
 		ewl_text_cursor_position_set(t, 0);
-		ewl_text_text_delete(t, t->length);
+		ewl_text_text_delete(t, t->length.chars);
 	}
-	t->text = NULL;
-	t->length = 0;
-	t->total_size = 0;
-	t->cursor_position = 0;
-
-	/* clean out the triggers */
-	if (t->triggers)
-	{
-		Ewl_Text_Trigger *trig;
-
-		while ((trig = ecore_list_remove_first(t->triggers)))
-		{
-			trig->text_parent = NULL;
-			ewl_widget_destroy(EWL_WIDGET(trig));
-		}
-	}
-
-	/* cleanup the selection */
-	if (t->selection)
-		ewl_widget_destroy(EWL_WIDGET(t->selection));
-	t->selection = NULL;
 	t->dirty = TRUE;
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -439,7 +422,7 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	ewl_text_text_insert(t, text, t->length);
+	ewl_text_text_insert(t, text, t->length.chars);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -447,68 +430,75 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 /**
  * @param t: The Ewl_Text to set the text into
  * @param text: The text to set into the widget
- * @param idx: The index to insert the text at
+ * @param char_idx: The index to insert the text at
  * @return Returns no value
  * @brief Insert the given text into the text widget
  */
 void
-ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
+ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int char_idx)
 {
-	int len = 0;
+	int char_len = 0;
+	int byte_len = 0;
+	unsigned int byte_idx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if (text) len = strlen(text);
+	if (text) 
+	{
+		byte_len = strlen(text);
+		char_len = ewl_text_char_length_get(text);
+	}
 
 	/* Limit the index to be within safe boundaries */
-	if (idx > t->length + 1)
-		idx = t->length + 1;
+	if (char_idx > t->length.chars + 1)
+		char_idx = t->length.chars + 1;
 
 	/* setup the cursor position to begin with. If this is the same
 	 * position as before nothing will change (we'll keep our current
 	 * pointer */
-	ewl_text_cursor_position_set(t, idx);
+	ewl_text_cursor_position_set(t, char_idx);
 
-	if (!text)
-	{
+	if (!text || (byte_len == 0))
 		ewl_text_clear(t);
-	}
 	else
 	{
-		unsigned int newlen;
+		unsigned int new_byte_len;
 
-		newlen = t->length + len;
-		if ((newlen + 1) >= t->total_size)
+		new_byte_len = t->length.bytes + byte_len;
+		if ((new_byte_len + 1) >= t->total_size)
 		{
 			int extend;
 
 			/*
 			 * Determine the size in blocks of EWL_TEXT_EXTEND_VAL
 			 */
-			extend = ((newlen + 1) / EWL_TEXT_EXTEND_VAL);
+			extend = ((new_byte_len + 1) / EWL_TEXT_EXTEND_VAL);
 			extend = (extend + 1) * EWL_TEXT_EXTEND_VAL;
 
 			t->text = realloc(t->text, extend * sizeof(char));
 			t->total_size = extend;
 		}
 
-		if (idx < t->length)
-			memmove(t->text + idx + len, t->text + idx, 
-							t->length - idx);
+		ewl_text_char_to_byte(t, char_idx, 0, &byte_idx, NULL);
+		if (char_idx < t->length.chars)
+			memmove(t->text + byte_idx + byte_len, 
+						t->text + byte_idx, 
+							t->length.bytes - byte_idx);
 
-		memcpy(t->text + idx, text, len);
-		t->length += len;
-		t->text[t->length] = '\0';
+		memcpy(t->text + byte_idx, text, byte_len);
+		t->length.chars += char_len;
+		t->length.bytes += byte_len;
+		t->text[t->length.bytes] = '\0';
 
-		ewl_text_tree_insert(t, idx, len);
-		ewl_text_cursor_position_set(t, idx + len);
+		ewl_text_tree_insert(t, char_idx, char_len, byte_len);
+		ewl_text_cursor_position_set(t, char_idx + char_len);
 	}
 
 	t->dirty = TRUE;
 
-	if (text) ewl_text_triggers_shift(t, idx, len, FALSE);
+	if (text) ewl_text_triggers_shift(t, char_idx, char_len, FALSE);
 	else ewl_text_triggers_remove(t);
 
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -518,44 +508,60 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int idx)
 
 /**
  * @param t: The Ewl_Text to delete the text from
- * @param length: The length of text to delete
+ * @param char_len: The length of text to delete
  * @return Returns no value
  * @brief This will delete the specified length of text from the current cursor
  * position
  */
 void
-ewl_text_text_delete(Ewl_Text *t, unsigned int length)
+ewl_text_text_delete(Ewl_Text *t, unsigned int char_len)
 {
+	unsigned int byte_idx = 0, byte_len = 0;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if ((!t->text) || (length == 0) || (t->cursor_position >= t->length))
+	if ((!t->text) || (char_len == 0) || (t->cursor_position >= t->length.chars))
 		DRETURN(DLEVEL_STABLE);
 
-	if ((t->length - t->cursor_position) < length)
-		length = t->length - t->cursor_position;
+	ewl_text_char_to_byte(t, t->cursor_position, char_len,
+						&byte_idx, &byte_len);
 
-	t->length -= length;
-	if (t->length > 0)
+	if ((t->length.chars - t->cursor_position) < char_len)
+		char_len = t->length.chars - t->cursor_position;
+
+	t->length.chars -= char_len;
+	if (t->length.chars > 0)
 	{
-		memmove(t->text + t->cursor_position, 
-				t->text + t->cursor_position + length,
-				t->length - t->cursor_position);
+		t->length.bytes -= byte_len;
+		memmove(t->text + byte_idx, 
+				t->text + byte_idx + byte_len,
+				t->length.bytes - byte_idx);
 
-		t->text[t->length] = '\0';
+		t->text[t->length.bytes] = '\0';
 
-		ewl_text_triggers_shift(t, t->cursor_position, length, TRUE);
+		ewl_text_triggers_shift(t, t->cursor_position, char_len, TRUE);
 	}
 	else
 	{
 		IF_FREE(t->text);
+		t->length.bytes = 0;
+		t->length.chars = 0;
 		t->total_size = 0;
+		t->cursor_position = 0;
 		ewl_text_triggers_remove(t);
+
+		/* cleanup the selection */
+		if (t->selection) 
+			ewl_widget_destroy(EWL_WIDGET(t->selection));
+
+		t->selection = NULL;
 	}
 
 	/* cleanup the nodes in the tree */
-	ewl_text_tree_delete(t, t->cursor_position, length);
+	ewl_text_tree_delete(t, t->cursor_position, char_len, 
+					byte_idx, byte_len);
 	t->delete_count ++;
 
 	if (t->delete_count == EWL_TEXT_TREE_CONDENSE_COUNT)
@@ -566,8 +572,8 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int length)
 
 	t->dirty = TRUE;
 
-	if (t->cursor_position > t->length)
-		ewl_text_cursor_position_set(t, t->length);
+	if (t->cursor_position > t->length.chars)
+		ewl_text_cursor_position_set(t, t->length.chars);
 
 	ewl_widget_configure(EWL_WIDGET(t));
 
@@ -634,19 +640,25 @@ char *
 ewl_text_selection_text_get(Ewl_Text *t)
 {
 	char *ret = NULL;
+	unsigned int byte_pos;
+	unsigned int byte_len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
-	if ((!t->selection) || (t->selection->len == 0))
+	if ((!t->selection) || (t->selection->char_len == 0))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ret = malloc(sizeof(char) * (t->selection->len + 1));
-	if (!ret) DRETURN_PTR(NULL, DLEVEL_STABLE);
+	ewl_text_char_to_byte(t, t->selection->char_pos, t->selection->char_len,
+							&byte_pos, &byte_len);
 
-	memcpy(ret, t->text + t->selection->pos, t->selection->len);
-	ret[t->selection->len] = '\0';
+	ret = malloc(sizeof(char) * (byte_len + 1));
+	if (!ret) 
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	memcpy(ret, t->text + byte_pos, byte_len);
+	ret[byte_len] = '\0';
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
@@ -690,25 +702,25 @@ ewl_text_has_selection(Ewl_Text *t)
 
 /**
  * @param t: The Ewl_Text widget to set the position into
- * @param pos: The position to set
+ * @param char_pos: The position to set
  * @return Returns no value.
  * @brief Set the cursor position in the text widget
  */
 void
-ewl_text_cursor_position_set(Ewl_Text *t, unsigned int pos)
+ewl_text_cursor_position_set(Ewl_Text *t, unsigned int char_pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* it's the same position, do nothing */
-	if (pos == t->cursor_position)
+	if (char_pos == t->cursor_position)
 		DRETURN(DLEVEL_STABLE);
 
 	/* make sure we aren't more then the next char past the end of the
 	 * text */
-	if (pos > t->length) pos = t->length;
-	t->cursor_position = pos;
+	if (char_pos > t->length.chars) char_pos = t->length.chars;
+	t->cursor_position = char_pos;
 
 	/* reset the current pointer */
 	ewl_text_tree_current_node_set(t, NULL);
@@ -740,7 +752,7 @@ unsigned int
 ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 {
 	Evas_Textblock_Cursor *cursor;
-	unsigned int cur_idx, idx;
+	unsigned int cur_char_idx;
 	Evas_Coord cx, cw;
 	Evas_Coord lx, ly, lw, lh;
 	int line;
@@ -749,8 +761,8 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, t->cursor_position);
 
-	cur_idx = ewl_text_cursor_position_get(t);
-	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
+	cur_char_idx = ewl_text_cursor_position_get(t);
+	cursor = ewl_text_textblock_cursor_position(t, cur_char_idx);
 	line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL, 
 								&cw, NULL);
 	line --;
@@ -770,9 +782,9 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 		}
 
 	}
-	idx = ewl_text_textblock_cursor_to_index(cursor);
+	cur_char_idx = ewl_text_textblock_cursor_to_index(cursor);
 
-	DRETURN_INT(idx, DLEVEL_STABLE);
+	DRETURN_INT(cur_char_idx, DLEVEL_STABLE);
 }
 
 /**
@@ -784,7 +796,7 @@ unsigned int
 ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 {
 	Evas_Textblock_Cursor *cursor;
-	unsigned int cur_idx, idx;
+	unsigned int cur_char_idx;
 	Evas_Coord cx, cw;
 	Evas_Coord lx, ly, lw, lh;
 	int line;
@@ -793,8 +805,8 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 	DCHECK_PARAM_PTR_RET("t", t, t->cursor_position);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, t->cursor_position);
 
-	cur_idx = ewl_text_cursor_position_get(t);
-	cursor = ewl_text_textblock_cursor_position(t, cur_idx);
+	cur_char_idx = ewl_text_cursor_position_get(t);
+	cursor = ewl_text_textblock_cursor_position(t, cur_char_idx);
 	line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL, 
 								&cw, NULL);
 	line ++;
@@ -814,9 +826,9 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 		}
 
 	}
-	idx = ewl_text_textblock_cursor_to_index(cursor);
+	cur_char_idx = ewl_text_textblock_cursor_to_index(cursor);
 
-	DRETURN_INT(idx, DLEVEL_STABLE);
+	DRETURN_INT(cur_char_idx, DLEVEL_STABLE);
 }
 
 /**
@@ -849,13 +861,13 @@ ewl_text_font_set(Ewl_Text *t, const char *font)
 /**
  * @param t: The Ewl_Text to set the font too
  * @param font: The font to set
- * @param length: The distance to set the font over
+ * @param char_len: The distance to set the font over
  * @return Returns no value
  * @brief This will apply the specfied @a font from the current cursor position to
  * the length specified
  */
 void
-ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
+ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -864,7 +876,7 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* if length is 0 we have nothing to do */
-	if (length == 0) 
+	if (char_len == 0) 
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
@@ -874,7 +886,7 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 	else tx->font = strdup(font);
 
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_FONT, tx,
-						t->cursor_position, length);
+						t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -885,12 +897,12 @@ ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int length)
 
 /**
  * @param t: The Ewl_Text to get the font from
- * @param idx: The index to get the font at
+ * @param char_idx: The index to get the font at
  * @return Returns no value
  * @brief This will retrive the font used at the specified index in the text
  */
 char *
-ewl_text_font_get(Ewl_Text *t, unsigned int idx)
+ewl_text_font_get(Ewl_Text *t, unsigned int char_idx)
 {
 	char *font = NULL;
 	Ewl_Text_Context *tx;
@@ -899,7 +911,7 @@ ewl_text_font_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 	if (tx && tx->font)
 		font = strdup(tx->font);
 
@@ -933,13 +945,13 @@ ewl_text_font_size_set(Ewl_Text *t, unsigned int size)
 /**
  * @param t: The Ewl_Text to set the size into
  * @param size: The size to set
- * @param length: Length of block to get the new size
+ * @param char_len: Length of block to get the new size
  * @return Returns no value
  * @brief This will apply the font size to the text from the current cursor
  * position for the given length
  */
 void
-ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
+ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -947,13 +959,13 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
 	tx->size = size;
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_SIZE, tx,
-						t->cursor_position, length);
+						t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -964,12 +976,12 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int length)
 
 /**
  * @param t: The Ewl_Text to get the size from
- * @param idx: The index you want to get the size for
+ * @param char_idx: The index you want to get the size for
  * @return Returns no value
  * @brief Retrieve the font size at the given index
  */
 unsigned int
-ewl_text_font_size_get(Ewl_Text *t, unsigned int idx)
+ewl_text_font_size_get(Ewl_Text *t, unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -977,7 +989,7 @@ ewl_text_font_size_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 
 	DRETURN_INT(((tx) ? tx->size : 0), DLEVEL_STABLE);
 }
@@ -1019,7 +1031,7 @@ ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: The green value to set
  * @param b: The blue value to set
  * @param a: The alpha value to set
- * @param length: The length of text to apply the colour over
+ * @param char_len: The length of text to apply the colour over
  * @return Returns no value
  * @brief This will set the given colour from the current cursor position for the
  * specified length
@@ -1027,7 +1039,7 @@ ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 void 
 ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 				unsigned int b, unsigned int a, 
-				unsigned int length)
+				unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1036,7 +1048,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	/* set this into the b-tree if we have length */
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
@@ -1046,7 +1058,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->color.a = a;
 
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_COLOR, tx,
-						t->cursor_position, length);
+						t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -1061,14 +1073,14 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
- * @param idx: The index to get the colour from 
+ * @param char_idx: The index to get the colour from 
  * @return Returns no value
  * @brief Retrives the text colour at the given index
  */
 void
 ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 				unsigned int *b, unsigned int *a,
-				unsigned int idx)
+				unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -1076,7 +1088,7 @@ ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 	if (tx)
 	{
 		if (r) *r = tx->color.r;
@@ -1115,13 +1127,13 @@ ewl_text_align_set(Ewl_Text *t, unsigned int align)
 /**
  * @param t: The Ewl_Text to apply the alignment too
  * @param align: The alignment to apply
- * @param length: The length to apply the alignment for
+ * @param char_len: The length to apply the alignment for
  * @return Returns no value
  * @brief This will set the given alignment from the current cursor position for
  * the given length of text
  */
 void
-ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
+ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1129,13 +1141,13 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
 	tx->align = align;
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_ALIGN, tx,
-						t->cursor_position, length);
+						t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -1146,12 +1158,12 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int length)
 
 /**
  * @param t: The Ewl_Text to get the alignment from
- * @param idx: The index to get the alignment from
+ * @param char_idx: The index to get the alignment from
  * @return Returns the current text alignment value
  * @brief Retrieves the alignment value from the given index
  */
 unsigned int
-ewl_text_align_get(Ewl_Text *t, unsigned int idx)
+ewl_text_align_get(Ewl_Text *t, unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -1159,7 +1171,7 @@ ewl_text_align_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 
 	DRETURN_INT(tx->align, DLEVEL_STABLE);
 }
@@ -1191,13 +1203,13 @@ ewl_text_styles_set(Ewl_Text *t, unsigned int styles)
 /**
  * @param t: The Ewl_Text to apply the style too
  * @param styles: The styles to set into the text
- * @param length: The length of text to apply the style too
+ * @param char_len: The length of text to apply the style too
  * @return Returns no value
  * @brief This will set the given style from the current cursor position for the
  * given length of text
  */
 void
-ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
+ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1205,13 +1217,13 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
 	tx->styles = styles;
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_STYLES, tx,
-						t->cursor_position, length);
+						t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -1223,19 +1235,19 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int length)
 /**
  * @param t: The text to add the style too
  * @param style: The style to add to the text
- * @param length: The lenght of text to add the style too
+ * @param char_len: The lenght of text to add the style too
  * @return Returns no value
  * @brief This will add the given style to the text from the cursor up to length
  * characters
  */
 void
-ewl_text_style_add(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
+ewl_text_style_add(Ewl_Text *t, Ewl_Text_Style style, unsigned int char_len)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
  
-	ewl_text_tree_context_style_apply(t, style, t->cursor_position, length, FALSE);
+	ewl_text_tree_context_style_apply(t, style, t->cursor_position, char_len, FALSE);
  
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1243,19 +1255,19 @@ ewl_text_style_add(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
 /**
  * @param t: The text to delete the style from
  * @param style: The style to delete from the text 
- * @param length: The lenght of text to delete the style from 
+ * @param char_len: The lenght of text to delete the style from 
  * @return Returns no value
  * @brief This will delete the given style from the text starting at the cursor up 
  * to length characters
  */
 void
-ewl_text_style_del(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
+ewl_text_style_del(Ewl_Text *t, Ewl_Text_Style style, unsigned int char_len)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
  
-	ewl_text_tree_context_style_remove(t, style, t->cursor_position, length);
+	ewl_text_tree_context_style_remove(t, style, t->cursor_position, char_len);
 	t->dirty = TRUE;
 
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -1267,19 +1279,19 @@ ewl_text_style_del(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
 /**
  * @param t: The text to invert the style on
  * @param style: The style to invert in the text 
- * @param length: The lenght of text to invert the style on 
+ * @param char_len: The lenght of text to invert the style on 
  * @return Returns no value
  * @brief This will invert the given style in the text starting at the cursor up 
  * to length characters
  */
 void
-ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
+ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style, unsigned int char_len)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
  
-	ewl_text_tree_context_style_apply(t, style, t->cursor_position, length, TRUE);
+	ewl_text_tree_context_style_apply(t, style, t->cursor_position, char_len, TRUE);
 	t->dirty = TRUE;
 
 	ewl_widget_configure(EWL_WIDGET(t));
@@ -1290,12 +1302,12 @@ ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style, unsigned int length)
 /**
  * @param t: The text to check for the style
  * @param style: The style to check for
- * @param idx: The index to check for the style
+ * @param char_idx: The index to check for the style
  * @return Returns no value
  * @brief Check if the given style is set at the given index in the text
  */
 unsigned int
-ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int idx)
+ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int char_idx)
 {
 	Ewl_Text_Tree *child;
  
@@ -1303,7 +1315,7 @@ ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, FALSE);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, FALSE);
  
-	child = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
+	child = ewl_text_tree_node_get(t->formatting.tree, char_idx, TRUE);
 	if ((!child) || (!child->tx))
 		 DRETURN_INT((0 == style), DLEVEL_STABLE);
  
@@ -1312,12 +1324,12 @@ ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int idx)
 
 /**
  * @param t: The Ewl_Text to get the style from
- * @param idx: The index to get the style from
+ * @param char_idx: The index to get the style from
  * @return Get the styles set at the given index in the text
  * @brief Retrives the styles in use at the given index
  */
 unsigned int
-ewl_text_styles_get(Ewl_Text *t, unsigned int idx)
+ewl_text_styles_get(Ewl_Text *t, unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -1325,7 +1337,7 @@ ewl_text_styles_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 
 	DRETURN_INT((tx ? tx->styles : 0), DLEVEL_STABLE);
 }
@@ -1365,13 +1377,13 @@ ewl_text_wrap_set(Ewl_Text *t, Ewl_Text_Wrap wrap)
 /**
  * @param t: The Ewl_Text to apply the wrap value too
  * @param wrap: The wrap value to apply
- * @param length: The length of text to apply the wrap value over
+ * @param char_len: The length of text to apply the wrap value over
  * @return Returns no value
  * @brief This will apply the given wrap value from the current cursor position for
  * the given length of text
  */
 void
-ewl_text_wrap_apply(Ewl_Text *t, Ewl_Text_Wrap wrap, unsigned int length)
+ewl_text_wrap_apply(Ewl_Text *t, Ewl_Text_Wrap wrap, unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1379,13 +1391,13 @@ ewl_text_wrap_apply(Ewl_Text *t, Ewl_Text_Wrap wrap, unsigned int length)
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
 	tx->wrap = wrap;
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_WRAP, tx,
-						t->cursor_position, length);
+						t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -1396,12 +1408,12 @@ ewl_text_wrap_apply(Ewl_Text *t, Ewl_Text_Wrap wrap, unsigned int length)
 
 /**
  * @param t: The Ewl_Text to get the wrap value for
- * @param idx: The index to get the wrap value from
+ * @param char_idx: The index to get the wrap value from
  * @return Returns the wrap value of the text at the given index
  * @brief Retrives the text wrap value at the given index
  */
 Ewl_Text_Wrap
-ewl_text_wrap_get(Ewl_Text *t, unsigned int idx)
+ewl_text_wrap_get(Ewl_Text *t, unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -1409,7 +1421,7 @@ ewl_text_wrap_get(Ewl_Text *t, unsigned int idx)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 
 	DRETURN_INT(tx->wrap, DLEVEL_STABLE);
 }
@@ -1451,7 +1463,7 @@ ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
- * @param length: The length of text to apply the bg colour over
+ * @param char_len: The length of text to apply the bg colour over
  * @return Returns no value
  * @brief This will set the bg colour of the text from the current cursor position
  * to the given length.
@@ -1459,7 +1471,7 @@ ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 void
 ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
-					unsigned int length)
+					unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1467,8 +1479,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	/* set this into the b-tree if we have length */
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
@@ -1478,7 +1489,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.bg.a = a;
 
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_BG_COLOR, tx,
-						t->cursor_position, length);
+						t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -1493,14 +1504,14 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
- * @param idx: The index to get the colour from
+ * @param char_idx: The index to get the colour from
  * @return Returns no value
  * @brief Get the text background colour at the given index
  */
 void
 ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
-					unsigned int idx)
+					unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -1508,7 +1519,7 @@ ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.bg.r;
@@ -1557,7 +1568,7 @@ ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
- * @param length: The length of text to apply the glow colour over
+ * @param char_len: The length of text to apply the glow colour over
  * @return Returns no value
  * @brief This will set the glow colour of the text from the current cursor position
  * to the given length.
@@ -1565,7 +1576,7 @@ ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 void
 ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
-					unsigned int length)
+					unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1573,8 +1584,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	/* set this into the b-tree if we have length */
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
@@ -1584,7 +1594,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.glow.a = a;
 
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, tx,
-							t->cursor_position, length);
+							t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -1599,14 +1609,14 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
- * @param idx: The index to get the colour from
+ * @param char_idx: The index to get the colour from
  * @return Returns no value
  * @brief Get the glow colour at the given index
  */
 void
 ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
-					unsigned int idx)
+					unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -1614,7 +1624,7 @@ ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.glow.r;
@@ -1663,7 +1673,7 @@ ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
- * @param length: The length of text to apply the outline colour over
+ * @param char_len: The length of text to apply the outline colour over
  * @return Returns no value
  * @brief This will set the outline colour of the text from the current cursor position
  * to the given length.
@@ -1671,7 +1681,7 @@ ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 void
 ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 						unsigned int b, unsigned int a,
-						unsigned int length)
+						unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1679,8 +1689,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	/* set this into the b-tree if we have length */
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
@@ -1690,7 +1699,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.outline.a = a;
 
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR, tx,
-							t->cursor_position, length);
+							t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -1705,14 +1714,14 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
- * @param idx: The index to get the colour from
+ * @param char_idx: The index to get the colour from
  * @return Returns no value
  * @brief Get the outline colour at the given index
  */
 void
 ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 						unsigned int *b, unsigned int *a,
-						unsigned int idx)
+						unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -1720,7 +1729,7 @@ ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.outline.r;
@@ -1769,7 +1778,7 @@ ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
- * @param length: The length of text to apply the shadow colour over
+ * @param char_len: The length of text to apply the shadow colour over
  * @return Returns no value
  * @brief This will set the shadow colour of the text from the current cursor position
  * to the given length.
@@ -1777,7 +1786,7 @@ ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 void
 ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 						unsigned int b, unsigned int a,
-						unsigned int length)
+						unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1785,8 +1794,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	/* set this into the b-tree if we have length */
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
@@ -1796,7 +1804,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.shadow.a = a;
 
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR, tx,
-							t->cursor_position, length);
+							t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -1811,14 +1819,14 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
- * @param idx: The index to get the colour from
+ * @param char_idx: The index to get the colour from
  * @return Returns no value
  * @brief Retrieve the shadow colour at the given index
  */
 void
 ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 						unsigned int *b, unsigned int *a,
-						unsigned int idx)
+						unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -1826,7 +1834,7 @@ ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.shadow.r;
@@ -1875,7 +1883,7 @@ ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
- * @param length: The length of text to apply the strikethrough colour over
+ * @param char_len: The length of text to apply the strikethrough colour over
  * @return Returns no value
  * @brief This will set the strikethrough colour of the text from the current cursor position
  * to the given length.
@@ -1883,7 +1891,7 @@ ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 void
 ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 						unsigned int b, unsigned int a,
-						unsigned int length)
+						unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1891,8 +1899,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	/* set this into the b-tree if we have length */
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
@@ -1902,7 +1909,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.strikethrough.a = a;
 
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR, tx,
-							t->cursor_position, length);
+							t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -1917,14 +1924,14 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
- * @param idx: The index to get the colour from
+ * @param char_idx: The index to get the colour from
  * @return Returns no value
  * @brief Retrieve the strikethrough colour at the given index
  */
 void
 ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 						unsigned int *b, unsigned int *a,
-						unsigned int idx)
+						unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -1932,7 +1939,7 @@ ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.strikethrough.r;
@@ -1981,7 +1988,7 @@ ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
- * @param length: The length of text to apply the underline colour over
+ * @param char_len: The length of text to apply the underline colour over
  * @return Returns no value
  * @brief This will set the underline colour of the text from the current cursor position
  * to the given length.
@@ -1989,7 +1996,7 @@ ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 void
 ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 						unsigned int b, unsigned int a,
-						unsigned int length)
+						unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -1997,8 +2004,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	/* set this into the b-tree if we have length */
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
@@ -2008,7 +2014,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 	tx->style_colors.underline.a = a;
 
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR, tx,
-							t->cursor_position, length);
+							t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -2023,14 +2029,14 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
- * @param idx: The index to get the colour from
+ * @param char_idx: The index to get the colour from
  * @return Returns no value
  * @brief Retrieve the underline colour at the given index
  */
 void
 ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 						unsigned int *b, unsigned int *a,
-						unsigned int idx)
+						unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -2038,7 +2044,7 @@ ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.outline.r;
@@ -2087,7 +2093,7 @@ ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  * @param g: The green value
  * @param b: The blue value
  * @param a: The alpha value
- * @param length: The length of text to apply the double underline colour over
+ * @param char_len: The length of text to apply the double underline colour over
  * @return Returns no value
  * @brief This will set the double_underline colour of the text from the current cursor position
  * to the given length.
@@ -2095,7 +2101,7 @@ ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
 void
 ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
 							unsigned int b, unsigned int a,
-							unsigned int length)
+							unsigned int char_len)
 {
 	Ewl_Text_Context *tx;
 
@@ -2103,8 +2109,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	/* set this into the b-tree if we have length */
-	if (length == 0)
+	if (char_len == 0)
 		DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
@@ -2114,7 +2119,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
 	tx->style_colors.double_underline.a = a;
 
 	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR, tx,
-							t->cursor_position, length);
+							t->cursor_position, char_len);
 	ewl_text_context_release(tx);
 	t->dirty = TRUE;
 
@@ -2129,14 +2134,14 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
  * @param g: Where to put the green value
  * @param b: Where to put the blue value
  * @param a: Where to put the alpha value
- * @param idx: The index to get the colour from
+ * @param char_idx: The index to get the colour from
  * @return Returns no value
  * @brief Retrieve the double underline colour at the given index
  */
 void
 ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 						unsigned int *b, unsigned int *a,
-						unsigned int idx)
+						unsigned int char_idx)
 {
 	Ewl_Text_Context *tx;
 
@@ -2144,7 +2149,7 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	tx = ewl_text_tree_context_get(t->formatting.tree, idx);
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
 	if (tx)
 	{
 		if (r) *r = tx->style_colors.double_underline.r;
@@ -2156,60 +2161,140 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @param text: The text to work with
- * @param pos: The position to move too
- * @return Returns the position to use
- * @brief Finds the actual text position to move to when you select the @a
- * pos
- */
-unsigned int
-ewl_text_utf_char_position_next(const char *text, unsigned int pos)
+/* This will determine the number of bytes to get to char_pos in the text
+ * and, if needed will get the number of bytes between char_pos and 
+ * char_pos + char_len */
+static void
+ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
+					unsigned int *byte_idx, unsigned int *byte_len)
 {
-	const unsigned char *t;
-	unsigned int len;
-
+	unsigned int char_count = 0, bidx = 0;
+	Ewl_Text_Tree *child, *parent;
+	  
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("text", text, 0);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if (text[0] == '\0')
-		DRETURN_INT(0, DLEVEL_STABLE);
+	child = ewl_text_tree_node_get(t->formatting.tree, char_idx, TRUE); /* XXX TRUE or FALSE? */
+	parent = child->parent;
+	while (parent)
+	{
+		Ewl_Text_Tree *sibling;
 
-	t = text;
-	len = strlen(text);
+		/* count up the siblings before us */
+		ecore_list_goto_first(parent->children);
+		while ((sibling = ecore_list_next(parent->children)) != child)
+		{
+			bidx += sibling->length.bytes;
+			char_count += sibling->length.chars;
+		}
 
-	while ((t[pos] >= 0x80) && (t[pos] <= 0xbf) && (pos < len));
-		pos++;
+		child = parent;
+		parent = child->parent;
+	}
 
-	DRETURN_INT(pos, DLEVEL_STABLE);
+	/* we still need to count within this node */
+	while (char_count < char_idx)
+	{
+		unsigned int bytes;
+
+		ewl_text_text_next_char(t->text + bidx, &bytes);
+		bidx += bytes;
+
+		char_count ++;
+	}
+
+	if (byte_len)
+	{
+		if (char_len == 0)
+			*byte_len = 0;
+
+		else
+		{
+			char *txt;
+
+			txt = t->text + bidx;
+			char_count = 0;
+			while (char_count < char_len)
+			{
+				unsigned int bytes;
+
+				txt = ewl_text_text_next_char(txt, &bytes);
+				*byte_len += bytes;
+
+				char_count ++;
+			}
+
+		}
+
+	}
+
+	if (byte_idx) *byte_idx = bidx;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @param text: The text to work with
- * @param pos: The position to move too
- * @return Returns the position to use
- * @brief Finds the actual text position to move to when you select the @a
- * pos
- */
-unsigned int
-ewl_text_utf_char_position_prev(const char *text, unsigned int pos)
+/* Counts the number of characters in the given piece of text. Assume the
+ * text is utf8 so take that into account when counting. */
+static unsigned int
+ewl_text_char_length_get(const char *text)
 {
-	const unsigned char *t;
-	unsigned int len;
+	unsigned int length = 0, idx;
+	const char *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("text", text, 0);
 
-	if (text[0] == '\0')
-		DRETURN_INT(0, DLEVEL_STABLE);
+	if (!text || (strlen(text) == 0))
+		DRETURN_INT(length, DLEVEL_STABLE);
 
 	t = text;
-	len = strlen(text);
+	while ((t = ewl_text_text_next_char(t, &idx)))
+		length ++;
 
-	while ((t[pos] >= 0x80) && (t[pos] <= 0xbf) && (pos < len));
-		pos--;
+	DRETURN_INT(length, DLEVEL_STABLE);
+}
 
-	DRETURN_INT(pos, DLEVEL_STABLE);
+/* This is stolen from evas_common_font_utf8_get_next() */
+static char *
+ewl_text_text_next_char(const char *text, int *idx)
+{
+	unsigned char d, d2, d3, d4;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	*idx = 0;
+
+	if (!text || (text[0] == '\0')) DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	d = text[(*idx)++];
+	if (!d) DRETURN_PTR(text + *idx, DLEVEL_STABLE); /* error .. */
+
+	if (d < 0x80)
+		DRETURN_PTR(text + *idx, DLEVEL_STABLE);
+
+	if ((d & 0xe0) == 0xc0)	
+	{
+		/* 2 byte */
+		if (((d2 = text[(*idx)++]) & 0xc0) != 0x80)
+			DRETURN_PTR(text + *idx, DLEVEL_STABLE); /* error .. */
+	}
+	else if ((d & 0xf0) == 0xe0)
+	{
+		/* 3 byte */
+		if ((((d2 = text[(*idx)++]) & 0xc0) != 0x80) 
+				|| (((d3 = text[(*idx)++]) & 0xc0) != 0x80))
+			DRETURN_PTR(text + *idx, DLEVEL_STABLE); /* error .. */
+	}
+	else
+	{
+		/* 4 byte */
+		if ((((d2 = text[(*idx)++]) & 0xc0) != 0x80)
+				|| (((d3 = text[(*idx)++]) & 0xc0) != 0x80)
+				|| (((d4 = text[(*idx)++]) & 0xc0) != 0x80))
+			DRETURN_PTR(text + *idx, DLEVEL_STABLE); /* error .. */
+	}
+				
+	DRETURN_PTR(text + *idx, DLEVEL_STABLE);
 }
 
 static void
@@ -2245,6 +2330,7 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 {
 	Evas_Textblock_Cursor *cursor;
 	char *tmp;
+	int idx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tb", tb);
@@ -2255,7 +2341,7 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 	/* we don't free this cursor as it is actually const
 	 * Evas_Textblock_Cursor * and i'm casting it...  */
 	cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(tb);
-	for (tmp = txt; *tmp; tmp++) 
+	for (tmp = txt; *tmp; tmp = ewl_text_text_next_char(tmp, &idx)) 
 	{
 		if (*tmp == '\n') 
 		{
@@ -2263,16 +2349,17 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 			if (*txt) evas_textblock_cursor_text_append(cursor, txt);
 			evas_textblock_cursor_format_append(cursor, "\n");
 			*tmp = '\n';
-			txt = tmp + 1;
+
+			txt = ewl_text_text_next_char(tmp, &idx);
 		}
-		else if (*tmp == '\r' && *(tmp + 1) == '\n') 
+		else if (*tmp == '\r' && *(ewl_text_text_next_char(tmp, &idx)) == '\n') 
 		{
 			*tmp = '\0';
 			if (*txt) evas_textblock_cursor_text_append(cursor, txt);
 			evas_textblock_cursor_format_append(cursor, "\n");
 			*tmp = '\r';
-			tmp++;
-			txt = tmp + 2;
+			tmp = ewl_text_text_next_char(tmp, &idx);
+			txt = ewl_text_text_next_char(tmp, &idx); // XXX was tmp + 2 is that right?
 		}
 		else if (*tmp == '\t') 
 		{
@@ -2280,7 +2367,7 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 			if (*txt) evas_textblock_cursor_text_append(cursor, txt);
 			evas_textblock_cursor_format_append(cursor, "\t");
 			*tmp = '\t';
-			txt = tmp + 1;
+			txt = ewl_text_text_next_char(tmp, &idx);
 		}
 	}
 	if (*txt) evas_textblock_cursor_text_append(cursor, txt);
@@ -2448,13 +2535,13 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 }
 
 /* This will give you a cursor into the textblock setup for your given
- * index. You _MUST_ call evas_textblock_cursor_free(cursor) on this object
- * so it won't leak */
+ * character index. You _MUST_ call evas_textblock_cursor_free(cursor) 
+ * on this object so it won't leak */
 static Evas_Textblock_Cursor *
-ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
+ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 {
 	Evas_Textblock_Cursor *cursor;
-	unsigned int cur_idx = 0;
+	unsigned int cur_char_idx = 0;
 	const char *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -2477,13 +2564,14 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 			if ((!strcmp(txt, "\n")) || (!strcmp(txt, "\t")))
 			{
 				/* will this push us past the end? */
-				if ((cur_idx + 1) > idx)
+				if ((cur_char_idx + 1) > char_idx)
 				{
-					evas_textblock_cursor_pos_set(cursor, idx - cur_idx);
+					evas_textblock_cursor_pos_set(cursor, 
+							char_idx - cur_char_idx);
 					break;
 				}
 				else
-					cur_idx ++;
+					cur_char_idx ++;
 			}
 		}
 		else
@@ -2498,12 +2586,13 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 			/* if this would move us past our index, find the
 			 * difference between our desired index and the
 			 * current index and set that */
-			if ((cur_idx + pos) > idx)
+			if ((cur_char_idx + pos) > char_idx)
 			{
-				evas_textblock_cursor_pos_set(cursor, idx - cur_idx);
+				evas_textblock_cursor_pos_set(cursor, 
+							char_idx - cur_char_idx);
 				break;
 			}
-			cur_idx += pos;
+			cur_char_idx += pos;
 		}
 
 		/* if we fail to goto the next node, just assume we're at
@@ -2517,9 +2606,9 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 
 		/* This shouldn't happen, we've moved past our index. Just
 		 * checking so the loop isn't (hopefully) infinite */
-		if (cur_idx > idx)
+		if (cur_char_idx > char_idx)
 		{
-			DWARNING("This shoudln't happen, breaking loop\n");
+			DWARNING("This shouldn't happen, breaking loop\n");
 			break;
 		}
 	}
@@ -2530,25 +2619,26 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int idx)
 static unsigned int
 ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor)
 {
-	unsigned int idx = 0;
+	unsigned int char_idx = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cursor", cursor, idx);
+	DCHECK_PARAM_PTR_RET("cursor", cursor, 0);
 
 	/* this gives the index inside the _node_ the cursor points to, we
 	 * then need to add the length of all the nodes before it plus any
 	 * formatting nodes that are \n or \t */
-	idx = evas_textblock_cursor_pos_get(cursor);
+	char_idx = evas_textblock_cursor_pos_get(cursor);
 	while (evas_textblock_cursor_node_prev(cursor))
 	{
 		const char *txt;
+
 		txt = evas_textblock_cursor_node_format_get(cursor);
-		if (!txt) idx += evas_textblock_cursor_node_text_length_get(cursor);
-		else if (!strcmp(txt, "\n")) idx ++;
-		else if (!strcmp(txt, "\t")) idx ++;
+		if (!txt) char_idx += evas_textblock_cursor_node_text_length_get(cursor);
+		else if (!strcmp(txt, "\n")) char_idx ++;
+		else if (!strcmp(txt, "\t")) char_idx ++;
 	}
 
-	DRETURN_INT(idx, DLEVEL_STABLE);
+	DRETURN_INT(char_idx, DLEVEL_STABLE);
 }
 
 /**
@@ -2641,7 +2731,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	fmt = ewl_text_format_get(ctx);
 	ewl_text_context_release(ctx);
 
-	len = strlen(fmt) + 12;  /* 12 = strlen("DEFAULT=''") + \n + \0 */
+	len = strlen(fmt) + 12;  /* 12 = DEFAULT='' + \n + \0 */
 	fmt2 = NEW(char, len);
 	snprintf(fmt2, len, "DEFAULT='%s'\n", fmt);
 	FREE(fmt);
@@ -2651,7 +2741,8 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	if (!t->textblock)
 		t->textblock = evas_object_textblock_add(emb->evas);
 
-	if (t->textblock) {
+	if (t->textblock) 
+	{
 		st = evas_textblock_style_new();
 		evas_textblock_style_set(st, fmt2);
 		evas_object_textblock_style_set(t->textblock, st);
@@ -2697,7 +2788,8 @@ ewl_text_cb_obscure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	t = EWL_TEXT(w);
 
-	if (t->textblock) {
+	if (t->textblock)
+	{
 		Ewl_Embed *emb;
 
 		emb = ewl_embed_widget_find(w);
@@ -2813,7 +2905,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Text *t;
 	Ewl_Event_Mouse_Down *event;
-	unsigned int idx = 0;
+	unsigned int char_idx = 0;
 	unsigned int modifiers;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -2842,10 +2934,10 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 		ewl_widget_show(EWL_WIDGET(t->selection));
 	}
 
-	idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+	char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
 	modifiers = ewl_ev_modifiers_get();
 	if (modifiers & EWL_KEY_MODIFIER_SHIFT)
-		ewl_text_selection_select_to(t->selection, idx);
+		ewl_text_selection_select_to(t->selection, char_idx);
 	else
 	{
 		ewl_widget_hide(EWL_WIDGET(t->selection));
@@ -2860,8 +2952,8 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 		}
 		ewl_widget_show(EWL_WIDGET(t->selection));
 
-		ewl_text_trigger_start_pos_set(t->selection, idx);
-		ewl_text_trigger_base_set(t->selection, idx);
+		ewl_text_trigger_start_pos_set(t->selection, char_idx);
+		ewl_text_trigger_base_set(t->selection, char_idx);
 		ewl_text_trigger_length_set(t->selection, 0);
 	}		   
 	t->in_select = TRUE;
@@ -2902,9 +2994,10 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	modifiers = ewl_ev_modifiers_get();
 	if (modifiers & EWL_KEY_MODIFIER_SHIFT)
 	{
-		unsigned int idx = 0;
-		idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
-		ewl_text_selection_select_to(t->selection, idx);
+		unsigned int char_idx = 0;
+
+		char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+		ewl_text_selection_select_to(t->selection, char_idx);
 	}
 	ewl_text_trigger_position(t, t->selection);
 
@@ -2934,10 +3027,10 @@ ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	if (t->in_select)
 	{
-		unsigned int idx = 0;
+		unsigned int char_idx = 0;
 
-		idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
-		ewl_text_selection_select_to(t->selection, idx);
+		char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+		ewl_text_selection_select_to(t->selection, char_idx);
 		ewl_text_trigger_position(t, t->selection);
 	}
 
@@ -2978,7 +3071,7 @@ ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
  * @internal
  * @param c: The container to work with
  * @param w: The widget to work with
- * @param idx: UNUSED
+ * @param char_idx: UNUSED
  * @return Returns no value
  * @brief The child del callback
  */
@@ -3133,18 +3226,18 @@ ewl_text_trigger_type_get(Ewl_Text_Trigger *t)
 
 /**
  * @param t: The trigger to work with
- * @param pos: The position to set
+ * @param char_pos: The position to set
  * @return Returns no value
  * @brief Sets the start position of the trigger @a t to position @a pos
  */
 void 
-ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, unsigned int pos)
+ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, unsigned int char_pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TRIGGER_TYPE);
 
-	t->pos = pos;
+	t->char_pos = char_pos;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3161,26 +3254,26 @@ ewl_text_trigger_start_pos_get(Ewl_Text_Trigger *t)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, 0);
 
-	DRETURN_INT(t->pos, DLEVEL_STABLE);
+	DRETURN_INT(t->char_pos, DLEVEL_STABLE);
 }
 
 /**
  * @param t: The trigger to work with
- * @param len: The length to set on the cursor
+ * @param char_len: The length to set on the cursor
  * @return Returns no value
  * @brief Sets the length @a len on the trigger @a t
  */
 void
-ewl_text_trigger_length_set(Ewl_Text_Trigger *t, unsigned int len)
+ewl_text_trigger_length_set(Ewl_Text_Trigger *t, unsigned int char_len)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TRIGGER_TYPE);
 
-	t->len = len;
+	t->char_len = char_len;
 
 	/* if the length is set to 0 remove the areas */
-	if (len == 0)
+	if (char_len == 0)
 	{
 		if (t->areas)
 		{
@@ -3205,23 +3298,23 @@ ewl_text_trigger_length_get(Ewl_Text_Trigger *t)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, 0);
 
-	DRETURN_INT(t->len, DLEVEL_STABLE);
+	DRETURN_INT(t->char_len, DLEVEL_STABLE);
 }
 
 /**
  * @param t: The trigger to work with
- * @param pos: The position to set as the base for the cursor
+ * @param char_pos: The position to set as the base for the cursor
  * @return Returns no value
  * @brief Sets the given position @a pos as the base for the trigger @a t
  */
 void
-ewl_text_trigger_base_set(Ewl_Text_Trigger *t, unsigned int pos)
+ewl_text_trigger_base_set(Ewl_Text_Trigger *t, unsigned int char_pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TRIGGER_TYPE);
 
-	t->base = pos;
+	t->char_base = char_pos;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3238,7 +3331,7 @@ ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, 0);
 
-	DRETURN_INT(t->base, DLEVEL_STABLE);
+	DRETURN_INT(t->char_base, DLEVEL_STABLE);
 }
 
 /**
@@ -3326,7 +3419,7 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 	DCHECK_TYPE("trig", trig, EWL_TEXT_TRIGGER_TYPE);
 
-	if (trig->len == 0) 
+	if (trig->char_len == 0) 
 		DRETURN(DLEVEL_STABLE);
 
 	/* clean out the old areas if needed */
@@ -3340,8 +3433,8 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 	else
 		trig->areas = ecore_list_new();
 
-	cur1 = ewl_text_textblock_cursor_position(t, trig->pos);
-	cur2 = ewl_text_textblock_cursor_position(t, trig->pos + trig->len - 1);
+	cur1 = ewl_text_textblock_cursor_position(t, trig->char_pos);
+	cur2 = ewl_text_textblock_cursor_position(t, trig->char_pos + trig->char_len - 1);
 
 	/* get all the rectangles and create areas with them */
 	rects = evas_textblock_cursor_range_geometry_get(cur1, cur2);
@@ -3387,8 +3480,9 @@ ewl_text_triggers_remove(Ewl_Text *t)
 /* if we move the text (insertion, deleteion, etc) we need to shift the
  * position of the current cursors so they appear in the correct positions */
 static void
-ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len,
-							unsigned int del)
+ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos, 
+					unsigned int char_len,
+					unsigned int del)
 {
 	Ewl_Text_Trigger *cur;
 
@@ -3403,22 +3497,23 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len,
 	while ((cur = ecore_list_next(t->triggers)))
 	{
 		/* check if the change is after the trigger */
-		if (pos >= (cur->pos + cur->len))
+		if (char_pos >= (cur->char_pos + cur->char_len))
 			continue;
 
 		/* change is completely before the trigger */
-		if ((pos + len) < cur->pos)
+		if ((char_pos + char_len) < cur->char_pos)
  		{
-			if (del) cur->pos -= len;
-			else cur->pos += len;
+			if (del) cur->char_pos -= char_len;
+			else cur->char_pos += char_len;
 			continue;
 		}
 
 		if (del)
 		{
 			/* delete the entire trigger? */
-			if ((pos <= cur->pos) && 
-					((pos + len) >= (cur->pos + cur->len)))
+			if ((char_pos <= cur->char_pos) && 
+					((char_pos + char_len) >= 
+					 	(cur->char_pos + cur->char_len)))
 			{
 				int index;
 				 
@@ -3430,6 +3525,7 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len,
 				else
 				{
 					index --;
+
 					/* remove the node before the
 					 * current one as _next will put us
 					 * on the next node */
@@ -3441,32 +3537,33 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int pos, unsigned int len,
 			}
 
 			/* delete part of the start of the trigger */
-			if (pos <= cur->pos)
+			if (char_pos <= cur->char_pos)
 			{
-				cur->len -= ((pos + len) - cur->pos);
+				cur->char_len -= ((char_pos + char_len) - cur->char_pos);
 				continue;
 			}
 
 			/* delete from the center of the trigger */
-			if ((pos >= cur->pos) && 
-					((pos + len) <= (cur->pos + cur->len)))
+			if ((char_pos >= cur->char_pos) && 
+					((char_pos + char_len) <= 
+					 	(cur->char_pos + cur->char_len)))
 			{
-				cur->len -= len;
+				cur->char_len -= char_len;
 				continue;
 			}
 
 			/* must be deleted from the end of the trigger then */
-			cur->len = pos - cur->pos;
+			cur->char_len = char_pos - cur->char_pos;
 		}
 		else
 		{
 			/* we are inserting, just see if we are before */
-			if (pos < cur->pos)
+			if (char_pos < cur->char_pos)
 			{
-				cur->pos += len;
+				cur->char_pos += char_len;
 				continue;
 			}
-			cur->len += len;
+			cur->char_len += char_len;
 		}
   	}
  
@@ -3633,8 +3730,8 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 
 	/* if we have no length, we start past the end of the text, or we
 	 * extend past the end of the text then return an error */
-	if ((trigger->len == 0) || (trigger->pos > t->length)
-			|| ((trigger->pos + trigger->len) > t->length))
+	if ((trigger->char_len == 0) || (trigger->char_pos > t->length.chars)
+			|| ((trigger->char_pos + trigger->char_len) > t->length.chars))
 		DRETURN(DLEVEL_STABLE);
 
 	trigger->text_parent = t;
@@ -3646,20 +3743,20 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 		ecore_list_goto_first(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
 		{
-			if (trigger->pos < cur->pos)
+			if (trigger->char_pos < cur->char_pos)
 			{
-				if ((trigger->pos + trigger->len) < cur->pos)
+				if ((trigger->char_pos + trigger->char_len) < cur->char_pos)
 					break;
-				/* overlapping triggers */
+
 				DWARNING("Overlapping triggers are not allowed.\n");
 				DRETURN(DLEVEL_STABLE);
 			}
 
-			if ((trigger->pos > (cur->pos + cur->len)))
+			if ((trigger->char_pos > (cur->char_pos + cur->char_len)))
 				continue;
 
-			/* do not allow overlapping triggers */
-			if ((trigger->pos >= cur->pos) && (trigger->pos <= (cur->pos + cur->len)))
+			if ((trigger->char_pos >= cur->char_pos) 
+						&& (trigger->char_pos <= (cur->char_pos + cur->char_len)))
 			{
 				DWARNING("Overlapping triggers are not allowed.\n");
 				DRETURN(DLEVEL_STABLE);
@@ -3670,8 +3767,8 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	if (cur)
 	{
 		/* we need to set our position to the one before the one we 
-		 * are on because the _next callin the while will have
-		 * advanced usto the next node, but we want to insert
+		 * are on because the _next call in the while will have
+		 * advanced us to the next node, but we want to insert
 	 	 * at the one before that */
 		ecore_list_goto_index(t->triggers, ecore_list_index(t->triggers) - 1);
 		ecore_list_insert(t->triggers, trigger);
@@ -3860,7 +3957,7 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
  * Selection stuff
  */
 static void
-ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
+ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
 {
 	unsigned int start_pos;
 	unsigned int base;
@@ -3873,15 +3970,15 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int idx)
 	base = ewl_text_trigger_base_get(s);
 	start_pos = ewl_text_trigger_start_pos_get(s);
 				
-	if (idx < base)
+	if (char_idx < base)
 	{
-		ewl_text_trigger_start_pos_set(s, idx);
-		ewl_text_trigger_length_set(s, base - idx);
+		ewl_text_trigger_start_pos_set(s, char_idx);
+		ewl_text_trigger_length_set(s, base - char_idx);
 	}
 	else	
 	{
 		ewl_text_trigger_start_pos_set(s, base);
-		ewl_text_trigger_length_set(s, idx - base);
+		ewl_text_trigger_length_set(s, char_idx - base);
 	}
 
 	/* set the clipboard text */
@@ -4128,7 +4225,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 				"glow/color/a");
 	}
 
-	/* XXX grap the alignment and wrap data from the theme here */
+	/* XXX grab the alignment and wrap data from the theme here */
 	tmp->align = EWL_FLAG_ALIGN_LEFT;
 
 	tx = ewl_text_context_find(tmp, EWL_TEXT_CONTEXT_MASK_NONE, NULL);
@@ -4503,23 +4600,23 @@ ewl_text_tree_free(Ewl_Text_Tree *tree)
 /**
  * @internal
  * @param tree: The tree to work with
- * @param idx: The index to get the node from
+ * @param char_idx: The character index to get the node from
  * @param inclusive: Include the edge numbers
- * @return Returns the tree rooted at the given index
- * @brief Retrieves the tree rooted at the given index
+ * @return Returns the tree rooted at the given character index
+ * @brief Retrieves the tree rooted at the given character index
  */
 Ewl_Text_Tree *
-ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int idx, 
+ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int char_idx, 
 					unsigned int inclusive)
 {
 	Ewl_Text_Tree *child = NULL, *last = NULL;
-	unsigned int count = 0;
+	unsigned int char_count = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
  	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
 
 	/* make sure the idx is in the tree */
-	if (idx > tree->length)
+	if (char_idx > tree->length.chars)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	
 	if ((!tree->children) || (ecore_list_nodes(tree->children) == 0))
@@ -4532,13 +4629,13 @@ ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int idx,
 		last = child;
 
 		/* we don't always want this to be inclusive ... */
-		if (((inclusive && ((count + child->length) >= idx)))
-				|| (!inclusive && ((count + child->length > idx))))
+		if (((inclusive && ((char_count + child->length.chars) >= char_idx)))
+				|| (!inclusive && ((char_count + child->length.chars > char_idx))))
 		{
-			child = ewl_text_tree_node_get(child, idx - count, inclusive);
+			child = ewl_text_tree_node_get(child, char_idx - char_count, inclusive);
 			break;
 		}
-		count += child->length;
+		char_count += child->length.chars;
 	}
 
 	/* we've gone to the end of hte list and didn't find anything, use
@@ -4566,7 +4663,7 @@ ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current)
  		DRETURN(DLEVEL_STABLE);
 
 	/* if the current node has no length then we can kill it off */
-	if ((t->formatting.current) && (t->formatting.current->length == 0))
+	if ((t->formatting.current) && (t->formatting.current->length.chars == 0))
  	{
 		/* remove the current node from the parent */
 		if (t->formatting.current->parent)
@@ -4598,14 +4695,16 @@ ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current)
 /**
  * @internal
  * @param t: The text to insert into
- * @param idx: The index to insert into
- * @param len: The length to insert
+ * @param char_idx: The index to insert into
+ * @param char_len: The character length to insert
+ * @param byte_len: The byte length to insert
  * @return Returns no value
- * @brief: Inserts a node into the tree at index @a idx of length @a len 
+ * @brief: Inserts a node into the tree at character index @a idx of character length @a len 
  * using the current context.
  */
 void
-ewl_text_tree_insert(Ewl_Text *t, unsigned int idx, unsigned int len)
+ewl_text_tree_insert(Ewl_Text *t, unsigned int char_idx, 
+				unsigned int char_len, unsigned int byte_len)
 {
 	Ewl_Text_Tree *parent;
 
@@ -4620,14 +4719,19 @@ ewl_text_tree_insert(Ewl_Text *t, unsigned int idx, unsigned int len)
 		parent = t->formatting.current;
 	else
  	{
-		parent = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
+		parent = ewl_text_tree_node_get(t->formatting.tree, char_idx, TRUE);
 		if (!parent)
 			DRETURN(DLEVEL_STABLE);
  	}
 
-	parent->length += len;
+	parent->length.chars += char_len;
+	parent->length.bytes += byte_len;
+
 	while ((parent = parent->parent))
-		parent->length += len;
+	{
+		parent->length.chars += char_len;
+		parent->length.bytes += byte_len;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -4635,47 +4739,59 @@ ewl_text_tree_insert(Ewl_Text *t, unsigned int idx, unsigned int len)
 /**
  * @internal
  * @param t: The ewl_text to work with
- * @param idx: The index to delete from
- * @param len: The length to delete
+ * @param char_idx: The index to delete from
+ * @param char_len: The length to delete
  * @return Returns no value
  * @brief Deletes @a len items from the tree at position @a idx
  */
 void
-ewl_text_tree_delete(Ewl_Text *t, unsigned int idx, unsigned int len)
+ewl_text_tree_delete(Ewl_Text *t, unsigned int char_idx, unsigned int char_len, 
+					unsigned int byte_idx, unsigned int byte_len)
 {
 	Ewl_Text_Tree *child = NULL, *parent = NULL;
-	int remaining = 0, removed = 0;
-	int node_remaining = 0;
-	unsigned int pos = 0;
+	int remaining_chars = 0, removed_chars = 0, remaining_bytes = 0, removed_bytes = 0;
+	int node_available_to_del_chars = 0, node_available_to_del_bytes = 0;
+	unsigned int char_pos = 0, byte_pos = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	child = ewl_text_tree_node_get(t->formatting.tree, idx, FALSE);
+	child = ewl_text_tree_node_get(t->formatting.tree, char_idx, FALSE);
 	if (!child) DRETURN(DLEVEL_STABLE);
 
-	pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, idx, TRUE);
-	node_remaining = child->length - (idx - pos);
+	char_pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, char_idx, TRUE);
+	ewl_text_char_to_byte(t, char_pos, 0, &byte_pos, NULL);
+
+	node_available_to_del_chars = child->length.bytes - (char_idx - char_pos);
+	node_available_to_del_bytes = child->length.bytes - (byte_idx - byte_pos);
 
 	/* length is fully inside the child */
-	if ((unsigned int)node_remaining >= len)
+	if ((unsigned int)node_available_to_del_chars >= char_len)
    	{
-		child->length -= len;
-		removed = len;
+		child->length.chars -= char_len;
+		child->length.bytes -= byte_len;
+
+		removed_chars = char_len;
+		removed_bytes = byte_len;
  	}
 	else 
    	{
-		remaining = len - node_remaining;
-		removed = node_remaining;
-		child->length -= removed;
+		remaining_chars = char_len - node_available_to_del_chars;
+		remaining_bytes = byte_len - node_available_to_del_bytes;
+
+		removed_chars = node_available_to_del_chars;
+		removed_bytes = node_available_to_del_bytes;
+
+		child->length.chars -= removed_chars;
+		child->length.bytes -= removed_bytes;
  	}
 
 	/* update the parents with the changed size */
 	parent = child->parent;
 
 	/* this node is empty, remove it */
-	if (child->length == 0)
+	if (child->length.chars == 0)
 		ewl_text_tree_node_delete(t, child);
 
 	/* update parents */
@@ -4684,17 +4800,18 @@ ewl_text_tree_delete(Ewl_Text *t, unsigned int idx, unsigned int len)
 		Ewl_Text_Tree *c;
 					 
 		c = parent;
-		c->length -= removed;
+		c->length.chars -= removed_chars;
+		c->length.bytes -= removed_bytes;
 		parent = c->parent;
 
 		/* remove the node if zero length */
-		if (c->length == 0)
+		if (c->length.chars == 0)
 			ewl_text_tree_node_delete(t, c);
 	}
 
 	/* we have more text to remove ... */
-	if (remaining > 0)
-		ewl_text_tree_delete(t, idx, remaining);
+	if (remaining_chars > 0)
+		ewl_text_tree_delete(t, char_idx, remaining_chars, byte_idx, remaining_bytes);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -4731,7 +4848,9 @@ ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree)
 			tree->tx= NULL;
 		}
 							 
-		tree->length = 0;
+		tree->length.chars = 0;
+		tree->length.bytes = 0;
+
 		tree->tx = ewl_text_context_default_create(t);
 
 		/* if the whole tree is gone make sure we get 
@@ -4756,7 +4875,7 @@ ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree)
 /**
  * @internal
  * @param tree: The tree to work with
- * @param idx: The node index
+ * @param char_idx: The node index
  * @return Returns the Ewl_Text_Context retrieved
  * @brief Retrieves the context at postion @a idx in the tree @a tree
  */
@@ -4802,22 +4921,25 @@ ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
 		/* if the tree is current, and it's length is greater then
 		 * zero we won't be inserting into it, so make it non current 
 		 * and lookup our node */
-		if (tree->length > 0)
+		if (tree->length.chars > 0)
 		{
 			ewl_text_tree_current_node_set(t, NULL);
-			tree = ewl_text_tree_node_get(t->formatting.tree, t->cursor_position, TRUE);
+			tree = ewl_text_tree_node_get(t->formatting.tree, 
+						t->cursor_position, TRUE);
 		}
 	}
 	else
-		tree = ewl_text_tree_node_get(t->formatting.tree, t->cursor_position, TRUE);
+		tree = ewl_text_tree_node_get(t->formatting.tree, 
+						t->cursor_position, TRUE);
 		
 	if (!tree)
 	{
-		printf("no current node in context set %d, %d\n", t->cursor_position, t->length);
+		printf("no current node in context set %d, %d\n", 
+					t->cursor_position, t->length.chars);
 		DRETURN(DLEVEL_STABLE);
 	}
 		 
-	if (tree->length == 0)
+	if (tree->length.chars == 0)
 	{
 		t->formatting.current = tree;
 
@@ -4830,11 +4952,11 @@ ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
 	else
 	{
 		Ewl_Text_Tree *current;
-		unsigned int count = 0;
+		unsigned int char_pos = 0;
 				 
-		count = ewl_text_tree_idx_start_count_get(t->formatting.tree, 
+		char_pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, 
 								t->cursor_position, TRUE);
-		current = ewl_text_tree_node_split(tree, count, 
+		current = ewl_text_tree_node_split(t, tree, char_pos, 
 						t->cursor_position, 0, 
 						context_mask, tx);
 
@@ -4849,19 +4971,19 @@ ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
  * @param t: The text to work with
  * @param context_mask: The mask to use
  * @param tx: The context to work with
- * @param idx: The index to start from
+ * @param char_idx: The index to start from
  * @param len: The length to apply over
  * @return Returns no value
  * @brief Applys the given context changes over the given length of text
  */
 void
 ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
-				Ewl_Text_Context *tx, unsigned int idx,
-				unsigned int len)
+				Ewl_Text_Context *tx, unsigned int char_idx,
+				unsigned int char_len)
  {
 	Ewl_Text_Tree *child;
-	int node_remaining = 0, remaining = 0;
-	unsigned int pos = 0, next_idx = 0;
+	int node_available_to_del_chars = 0, remaining_chars = 0;
+	unsigned int char_pos = 0, next_char_idx = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -4873,25 +4995,26 @@ ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
 
 	/* we don't want the teststo be inclusive cuz we need to move tho
 	 * the next node if we are at the right edge of a node */
-	child = ewl_text_tree_node_get(t->formatting.tree, idx, FALSE);
+	child = ewl_text_tree_node_get(t->formatting.tree, char_idx, FALSE);
 	if (!child) DRETURN(DLEVEL_STABLE);
 			 
-	pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, idx, FALSE);
-	node_remaining = child->length - (idx - pos);
+	char_pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, char_idx, FALSE);
+	node_available_to_del_chars = child->length.chars - (char_idx - char_pos);
 
 	/* length is fully inside the child */
-	if ((unsigned int)node_remaining >= len)
-		ewl_text_tree_node_split(child, pos, idx, len, context_mask, tx);
+	if ((unsigned int)node_available_to_del_chars >= char_len)
+		ewl_text_tree_node_split(t, child, char_pos, char_idx, char_len, context_mask, tx);
+
 	else 
 	{
-		ewl_text_tree_node_split(child, pos, idx, node_remaining,
+		ewl_text_tree_node_split(t, child, char_pos, char_idx, node_available_to_del_chars,
 							context_mask, tx);
-		remaining = len - node_remaining;
-		next_idx = idx + node_remaining;
+		remaining_chars = char_len - node_available_to_del_chars;
+		next_char_idx = char_idx + node_available_to_del_chars;
 			 
 		/* we have more text to apply too ... */
-		if (remaining > 0)
-			ewl_text_tree_context_apply(t, context_mask, tx, next_idx, remaining);
+		if (remaining_chars > 0)
+			ewl_text_tree_context_apply(t, context_mask, tx, next_char_idx, remaining_chars);
 	}
 			 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -4901,7 +5024,7 @@ ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
  * @internal
  * @param t: The text to work with
  * @param style: The style to set
- * @param idx: The index to start from
+ * @param char_idx: The index to start from
  * @param len: The length to work with
  * @param invert: Are we inverting the style
  * @return Returns no value
@@ -4909,12 +5032,12 @@ ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
  */
 void
 ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
-					unsigned int idx, unsigned int len,
+					unsigned int char_idx, unsigned int char_len,
 							unsigned int invert)
 {
 	Ewl_Text_Tree *child;
-	int node_remaining = 0, remaining = 0;
-	unsigned int pos = 0, next_idx = 0;
+	int node_available_to_del_chars = 0, remaining_chars = 0;
+	unsigned int char_pos = 0, next_char_idx = 0;
 	Ewl_Text_Context *tx;
 	  
   	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -4924,7 +5047,7 @@ ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
 	/* remove the current node as it isnt' valid after this */
 	ewl_text_tree_current_node_set(t, NULL);
 		 
-	child = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
+	child = ewl_text_tree_node_get(t->formatting.tree, char_idx, TRUE);
 	if (!child) DRETURN(DLEVEL_STABLE);
 		 
 	tx = ewl_text_context_new();
@@ -4933,25 +5056,26 @@ ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
 	if (invert) tx->styles ^= style;
 	else tx->styles |= style;
 
-	pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, idx, TRUE);
-	node_remaining = child->length - (idx - pos);
+	char_pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, char_idx, TRUE);
+	node_available_to_del_chars = child->length.chars - (char_idx - char_pos);
 
 	/* length is fully inside the child */
-	if ((unsigned int)node_remaining >= len)
-		ewl_text_tree_node_split(child, pos, idx, len, 
+	if ((unsigned int)node_available_to_del_chars >= char_len)
+		ewl_text_tree_node_split(t, child, char_pos, char_idx, char_len, 
 						EWL_TEXT_CONTEXT_MASK_STYLES, tx);
 	else 
 	{
-		ewl_text_tree_node_split(child, pos, idx, node_remaining,
+		ewl_text_tree_node_split(t, child, char_pos, char_idx, node_available_to_del_chars,
 						EWL_TEXT_CONTEXT_MASK_STYLES, tx);
-		remaining = len - node_remaining;
-		next_idx = idx + node_remaining;
+		remaining_chars = char_len - node_available_to_del_chars;
+		next_char_idx = char_idx + node_available_to_del_chars;
 	}
 	ewl_text_context_release(tx);
 		 
 	/* we have more text to apply too ... */
-	if (remaining > 0)
-		ewl_text_tree_context_style_apply(t, style, next_idx, remaining, invert);
+	if (remaining_chars > 0)
+		ewl_text_tree_context_style_apply(t, style, next_char_idx, 
+							remaining_chars, invert);
 		 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -4960,18 +5084,18 @@ ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
  * @internal
  * @param t: The text to work with
  * @param style: The style to remove
- * @param idx: The index to start from
+ * @param char_idx: The index to start from
  * @param len: The length to remove from
  * @return Returns no value
  * @brief Removes the given style from the text from @a idx for length @a len
  */
 void
 ewl_text_tree_context_style_remove(Ewl_Text *t, Ewl_Text_Style style, 
-					unsigned int idx, unsigned int len)
+					unsigned int char_idx, unsigned int char_len)
 {
 	Ewl_Text_Tree *child;
-	int node_remaining = 0, remaining = 0;
-	unsigned int pos = 0, next_idx = 0;
+	int node_available_to_del_chars = 0, remaining_chars = 0;
+	unsigned int char_pos = 0, next_char_idx = 0;
 	Ewl_Text_Context *tx;
 	  
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -4981,47 +5105,47 @@ ewl_text_tree_context_style_remove(Ewl_Text *t, Ewl_Text_Style style,
 	/* remove the current node as it isnt' valid after this */
 	ewl_text_tree_current_node_set(t, NULL);
 	  
-	child = ewl_text_tree_node_get(t->formatting.tree, idx, TRUE);
+	child = ewl_text_tree_node_get(t->formatting.tree, char_idx, TRUE);
 	if (!child) DRETURN(DLEVEL_STABLE);
 
 	tx = ewl_text_context_new();
 	tx->styles = child->tx->styles;
 	tx->styles &= ~style;
 
-	pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, idx, TRUE);
-	node_remaining = child->length - (idx - pos);
+	char_pos = ewl_text_tree_idx_start_count_get(t->formatting.tree, char_idx, TRUE);
+	node_available_to_del_chars = child->length.chars - (char_idx - char_pos);
 
 	/* length is fully inside the child */
-	if ((unsigned int)node_remaining >= len)
-		ewl_text_tree_node_split(child, pos, idx, len, 
+	if ((unsigned int)node_available_to_del_chars >= char_len)
+		ewl_text_tree_node_split(t, child, char_pos, char_idx, char_len, 
 						EWL_TEXT_CONTEXT_MASK_STYLES, tx);
 	else 
 	{
-		ewl_text_tree_node_split(child, pos, idx, node_remaining,
+		ewl_text_tree_node_split(t, child, char_pos, char_idx, node_available_to_del_chars,
 						EWL_TEXT_CONTEXT_MASK_STYLES, tx);
-		remaining = len - node_remaining;
-		next_idx = idx + node_remaining;
+		remaining_chars = char_len - node_available_to_del_chars;
+		next_char_idx = char_idx + node_available_to_del_chars;
 	}
 	ewl_text_context_release(tx);
 			  
 	/* we have more text to apply too ... */
-	if (remaining > 0)
-		ewl_text_tree_context_style_remove(t, style, next_idx, remaining);
+	if (remaining_chars > 0)
+		ewl_text_tree_context_style_remove(t, style, next_char_idx, remaining_chars);
 			  
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static int
-ewl_text_tree_idx_start_count_get(Ewl_Text_Tree *tree, unsigned int idx, 
+ewl_text_tree_idx_start_count_get(Ewl_Text_Tree *tree, unsigned int char_idx, 
 						unsigned int inclusive)
 {
-	int count = 0;
+	int char_count = 0;
 	Ewl_Text_Tree *child, *parent;
 	  
   	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("tree", tree, 0);
 
-	child = ewl_text_tree_node_get(tree, idx, inclusive);
+	child = ewl_text_tree_node_get(tree, char_idx, inclusive);
 	parent = child->parent;
 	while (parent)
 	{
@@ -5030,46 +5154,53 @@ ewl_text_tree_idx_start_count_get(Ewl_Text_Tree *tree, unsigned int idx,
 		/* count up the siblings before us */
 		ecore_list_goto_first(parent->children);
 		while ((sibling = ecore_list_next(parent->children)) != child)
-			count += sibling->length;
+			char_count += sibling->length.chars;
 
 		child = parent;
 		parent = child->parent;
 	}
 
-	DRETURN_INT(count, DLEVEL_STABLE);
+	DRETURN_INT(char_count, DLEVEL_STABLE);
 }
 
 static Ewl_Text_Tree * 
-ewl_text_tree_node_split(Ewl_Text_Tree *tree, unsigned int count, unsigned int pos, 
-					unsigned int len, unsigned int context_mask, 
-								Ewl_Text_Context *tx)
+ewl_text_tree_node_split(Ewl_Text *t, Ewl_Text_Tree *tree, unsigned int char_pos, 
+					unsigned int char_idx, unsigned int char_len, 
+					unsigned int context_mask, Ewl_Text_Context *tx)
 {
 	Ewl_Text_Tree *t1 = NULL, *t2 = NULL, *current = NULL;
 	Ewl_Text_Context *old_tx;
-	unsigned int diff;
-						  
+	unsigned int char_diff, byte_diff = 0;
+	unsigned int byte_count_node_1 = 0, byte_count_node_2 = 0, byte_pos = 0, byte_idx = 0;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
 	DCHECK_PARAM_PTR_RET("tx", tx, NULL);
 
-	diff = pos - count;
+	ewl_text_char_to_byte(t, char_pos, (char_idx - char_pos), &byte_pos, &byte_count_node_1);
+	ewl_text_char_to_byte(t, char_idx, char_len, &byte_idx, &byte_count_node_2);
 
-	if (diff > 0)
+	char_diff = char_idx - char_pos;
+	byte_diff = byte_idx - byte_pos;
+
+	if (char_diff > 0)
 	{
 		/* the start */
 		t1 = ewl_text_tree_new();
 		t1->parent = tree;
-		t1->length = diff;
+		t1->length.chars = char_diff;
+		t1->length.bytes = byte_count_node_1;
 		t1->tx = tree->tx;
 		ewl_text_context_acquire(t1->tx);
 	}
 
-	if ((tree->length - diff - len) > 0)
+	if ((tree->length.chars - char_diff - char_len) > 0)
 	{
 		/* the rest */
 		t2 = ewl_text_tree_new();
 		t2->parent = tree;
-		t2->length = tree->length - diff - len;
+		t2->length.chars = tree->length.chars - char_diff - char_len;
+		t2->length.bytes = tree->length.bytes - byte_diff - byte_count_node_2;
 		t2->tx = tree->tx;
 		ewl_text_context_acquire(t2->tx);
 	}
@@ -5088,7 +5219,8 @@ ewl_text_tree_node_split(Ewl_Text_Tree *tree, unsigned int count, unsigned int p
 		/* the new current node */
 		current = ewl_text_tree_new();
 		current->parent = tree;
-		current->length = len;
+		current->length.chars = char_len;
+		current->length.bytes = byte_count_node_2;
 		current->tx = ewl_text_context_find(old_tx, context_mask, tx);
 		ecore_list_append(tree->children, current);
 
@@ -5140,7 +5272,8 @@ ewl_text_tree_shrink(Ewl_Text_Tree *tree)
 			/* we must be the root and there is nothing left in
 			 * the tree, just reset everything */
 			ecore_list_destroy(tree->children);
-			tree->length = 0;
+			tree->length.chars = 0;
+			tree->length.bytes = 0;
 			tree->children = NULL;
 			tree->tx = NULL;
 		}
@@ -5184,7 +5317,7 @@ ewl_text_tree_dump(Ewl_Text_Tree *tree, const char *indent)
 	DCHECK_PARAM_PTR("tree", tree);
 
 	printf("%s---\n", indent);
-	printf("%snode (%d)\n", indent, tree->length);
+	printf("%snode (%d chars %d bytes)\n", indent, tree->length.chars, tree->length.bytes);
 
 	/* if we have a context, print it */
 	if (tree->tx) ewl_text_context_print(tree->tx, indent);
@@ -5219,13 +5352,14 @@ ewl_text_tree_walk(Ewl_Text *t)
 	if (!t->text) 
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_text_tree_node_walk(t, t->formatting.tree, 0);
+	ewl_text_tree_node_walk(t, t->formatting.tree, 0, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree, unsigned int pos)
+ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree, 
+			unsigned int char_idx, unsigned int byte_idx)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -5246,12 +5380,12 @@ ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree, unsigned int pos)
 		evas_textblock_cursor_format_append(cursor, fmt);
 		FREE(fmt);
 
-		ptr = t->text + pos;
-		tmp = *(ptr + tree->length);
-		*(ptr + tree->length) = '\0';
+		ptr = t->text + byte_idx;
+		tmp = *(ptr + tree->length.bytes);
+		*(ptr + tree->length.bytes) = '\0';
 
 		ewl_text_plaintext_parse(t->textblock, ptr);
-		*(ptr + tree->length) = tmp;	
+		*(ptr + tree->length.bytes) = tmp;
 
 		evas_textblock_cursor_format_append(cursor, "-");
 	}
@@ -5262,8 +5396,9 @@ ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree, unsigned int pos)
 		ecore_list_goto_first(tree->children);
 		while ((child = ecore_list_next(tree->children)))
 		{
-			ewl_text_tree_node_walk(t, child, pos);
-			pos += child->length;
+			ewl_text_tree_node_walk(t, child, char_idx, byte_idx);
+			char_idx += child->length.chars;
+			byte_idx += child->length.bytes;
 		}
 	}
 

@@ -108,7 +108,7 @@ create_test(Ewl_Container *box)
 	Ewl_Text_Trigger *trigger;
 	int len;
 
-       o = ewl_text_new();
+	o = ewl_text_new();
 	ewl_widget_name_set(o, "text");
 	ewl_text_selectable_set(EWL_TEXT(o), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(box), o);
@@ -196,7 +196,7 @@ create_test(Ewl_Container *box)
 
 #if 0
 	printf("-- DUMP --\n");
-	ewl_text_tree_dump((EWL_TEXT(o))->formatting, "");
+	ewl_text_tree_dump((EWL_TEXT(o))->formatting.tree, "");
 	printf("-- DUMP DONE --\n");
 #endif
 
@@ -217,8 +217,8 @@ trigger_cb_mouse_in(Ewl_Widget *w, void *ev __UNUSED__,
 
 	t = EWL_TEXT_TRIGGER(w);
 
-	ewl_text_cursor_position_set(EWL_TEXT(t->text_parent), t->pos);
-	ewl_text_color_apply(EWL_TEXT(t->text_parent), 255, 0, 0, 255, t->len);
+	ewl_text_cursor_position_set(EWL_TEXT(t->text_parent), t->char_pos);
+	ewl_text_color_apply(EWL_TEXT(t->text_parent), 255, 0, 0, 255, t->char_len);
 }
 
 static void
@@ -229,8 +229,8 @@ trigger_cb_mouse_out(Ewl_Widget *w, void *ev __UNUSED__,
 
 	t = EWL_TEXT_TRIGGER(w);
 
-	ewl_text_cursor_position_set(EWL_TEXT(t->text_parent), t->pos);
-	ewl_text_color_apply(EWL_TEXT(t->text_parent), 0, 0, 0, 255, t->len);
+	ewl_text_cursor_position_set(EWL_TEXT(t->text_parent), t->char_pos);
+	ewl_text_color_apply(EWL_TEXT(t->text_parent), 0, 0, 0, 255, t->char_len);
 }
 
 static int
