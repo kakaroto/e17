@@ -486,7 +486,6 @@ _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
 
    ev = event;
 
-   /*FIXME: How do we do modifiers now?*/
    if ((ev->modifiers & ETK_MODIFIER_CTRL))
    {
 	   if (!strcmp(ev->key, "q")) {
@@ -654,9 +653,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			char* f_uri = 	cfolder->uri;
 			if (f_uri) {
 				if (stype == ENTROPY_SELECTION_COPY) {
+					printf("Copy type..: %d:%s\n", ecore_list_nodes(files), f_uri);
 					entropy_plugin_filesystem_file_copy_multi(files, f_uri, 
 						comp);
 				} else if (stype == ENTROPY_SELECTION_CUT) {
+					printf("Cut type..:%d:%s\n", ecore_list_nodes(files), f_uri);
 					entropy_plugin_filesystem_file_move_multi(files, f_uri, 
 						comp);					
 				} else {

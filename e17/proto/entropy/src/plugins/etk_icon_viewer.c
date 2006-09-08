@@ -338,17 +338,32 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	printf("ICONBOX: Copy request\n");
 
 	entropy_core_selected_files_clear();
+	entropy_core_selection_type_set(ENTROPY_SELECTION_COPY);
 	selected = entropy_etk_icon_viewer_selected_get(viewer);
 
 	ecore_list_goto_first(selected);
 	while ( (file = ecore_list_next(selected))) {
 		entropy_core_selected_file_add(file);
 	}
+	ecore_list_destroy(selected);
      }
      break;
 
      case ENTROPY_NOTIFY_CUT_REQUEST: {
-	printf("ICONBOX: Cut request\n");					      
+	Ecore_List* selected;
+	entropy_generic_file* file;
+					       
+	printf("ICONBOX: Cut request\n");
+
+	entropy_core_selected_files_clear();
+	entropy_core_selection_type_set(ENTROPY_SELECTION_CUT);
+	selected = entropy_etk_icon_viewer_selected_get(viewer);
+
+	ecore_list_goto_first(selected);
+	while ( (file = ecore_list_next(selected))) {
+		entropy_core_selected_file_add(file);
+	}
+	ecore_list_destroy(selected);
      }
      break;
 

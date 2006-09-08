@@ -56,6 +56,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		    void *el, entropy_gui_component_instance * comp);
 void gui_file_destroy (gui_file * file);
 int entropy_plugin_type_get ();
+Ecore_List* entropy_etk_list_viewer_selected_get(entropy_etk_file_list_viewer* viewer);
 
 /*-------------*/
 
@@ -475,6 +476,27 @@ list_viewer_remove_row(entropy_gui_component_instance* instance,
 	
 }
 
+Ecore_List* entropy_etk_list_viewer_selected_get(entropy_etk_file_list_viewer* viewer)
+{
+	Evas_List* rows;
+	Ecore_List* ret_files;
+	Etk_Tree_Row* row;
+	gui_file* file;
+
+	ret_files = ecore_list_new();
+	
+	rows = etk_tree_selected_rows_get(ETK_TREE(viewer->tree));
+	for (; rows; rows = rows->next ) {
+		file = ((gui_file*)ecore_hash_get(etk_list_viewer_row_hash, rows->data));
+
+		ecore_list_append(ret_files, file->file);
+	}
+
+	evas_list_free(rows);
+
+	return ret_files;
+}
+
 void
 list_viewer_add_row (entropy_gui_component_instance * instance,
 			  entropy_generic_file * file)
@@ -713,7 +735,45 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 
 	      }
 	    }				//End case
-	    break;					    
+	    break;
+
+
+     case ENTROPY_NOTIFY_COPY_REQUEST: {
+	Ecore_List* selected;
+	entropy_generic_file* file;
+					       
+	printf("LIST: Copy request\n");
+
+	entropy_core_selected_files_clear();
+	entropy_core_selection_type_set(ENTROPY_SELECTION_COPY);
+	selected = entropy_etk_list_viewer_selected_get(viewer);
+
+	ecore_list_goto_first(selected);
+	while ( (file = ecore_list_next(selected))) {
+		entropy_core_selected_file_add(file);
+	}
+	ecore_list_destroy(selected);
+     }
+     break;
+
+     case ENTROPY_NOTIFY_CUT_REQUEST: {
+	Ecore_List* selected;
+	entropy_generic_file* file;
+					       
+	printf("LIST: Cut request\n");
+
+	entropy_core_selected_files_clear();
+	entropy_core_selection_type_set(ENTROPY_SELECTION_CUT);
+	selected = entropy_etk_list_viewer_selected_get(viewer);
+
+	ecore_list_goto_first(selected);
+	while ( (file = ecore_list_next(selected))) {
+		entropy_core_selected_file_add(file);
+	}
+	ecore_list_destroy(selected);
+
+     }
+     break;
 	      
   }
 
