@@ -2,6 +2,7 @@
 Ecore_Timer *timer;
 
 typedef struct _Slide_Config Slide_Config;
+Slide_Config *parse_slideshow_config(void);
 
 struct _Slide_Config
 {
@@ -30,7 +31,7 @@ struct _Slide_Config
  int length;
  int name_show;
  int zoom;
- int keep_apsect;
+ int keep_aspect;
  int random_order;
  int loop_slide;
  int w_size;
@@ -68,13 +69,20 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  Ewl_Widget *cell;
  Ewl_Widget *image;
  char *image_path;
+ Slide_Config *sc;
  
+ sc = parse_slideshow_config();
  image_path = ecore_dlist_goto_first(current_thumbs);
  
  if (!image_path) return;
  
  window = ewl_window_new();
- ewl_window_fullscreen_set(EWL_WINDOW(window), 1);
+ ewl_window_title_set(EWL_WINDOW(window), "Ephoto Slideshow");
+ ewl_window_name_set(EWL_WINDOW(window), "Ephoto Slideshow");
+ if (sc->full_size) 
+	ewl_window_fullscreen_set(EWL_WINDOW(window), 1);
+ if (sc->custom_size)
+ 	ewl_object_maximum_size_set(EWL_OBJECT(window), sc->w_size, sc->h_size);
  ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, destroy_slideshow, NULL);
  ewl_callback_append(window, EWL_CALLBACK_CLICKED, destroy_slideshow, NULL); 
  ewl_widget_show(window);
@@ -86,13 +94,93 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
 
  image = ewl_image_new();
  ewl_image_file_set(EWL_IMAGE(image), image_path, NULL);
- ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_ALL);
+ if (sc->zoom)
+ 	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_ALL);
+ else
+	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
+ if (sc->keep_aspect)
+	ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
  ewl_container_child_append(EWL_CONTAINER(cell), image);
  ewl_widget_show(image);
 
- timer = ecore_timer_add(3, change_picture, image);
+ timer = ecore_timer_add(sc->length, change_picture, image);
 }
 
+Slide_Config *parse_slideshow_config()
+{
+ char path[PATH_MAX];
+ FILE *file;
+ char text[PATH_MAX];
+ char *temp;
+ Slide_Config *sc;
+ 
+ sc = calloc(1, sizeof(Slide_Config));
+ snprintf(path, PATH_MAX, "%s/.ephoto/slideshow_config", getenv("HOME"));
+
+ if (!ecore_file_exists(path)) return;
+ 
+ file = fopen(path, "r");
+
+ if (file != NULL)
+ {
+  while(fgets(text,PATH_MAX,file)!=NULL)
+  {
+   if(!strncmp(text, "Fullscreen", 10))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->full_size = atoi(temp);
+   }
+   if(!strncmp(text, "Custom", 6))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->custom_size = atoi(temp);
+   }
+   if(!strncmp(text, "Width", 5))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->w_size = atoi(temp);
+   }
+   if(!strncmp(text, "Height", 6))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->h_size = atoi(temp);
+   }
+   if(!strncmp(text, "Random", 6))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->random_order = atoi(temp);
+   }
+   if(!strncmp(text, "Loop", 4))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->loop_slide = atoi(temp);
+   }
+   if(!strncmp(text, "Zoom", 4))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->zoom = atoi(temp);
+   }
+   if(!strncmp(text, "Aspect", 6))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->keep_aspect = atoi(temp);
+   }
+   if(!strncmp(text, "Length", 6))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->length = atoi(temp);
+   }
+   if(!strncmp(text, "FileName", 8))
+   {
+    temp = strrchr(text, '=')+1;
+    sc->name_show = atoi(temp);
+   }
+  }
+  fclose(file);
+ }
+ return(sc);
+}
+	
 void config_cancel(Ewl_Widget *w, void *event, void *data)
 {
  Ewl_Widget *win;
