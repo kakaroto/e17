@@ -88,7 +88,6 @@ typedef struct
    EObj               *prev;	/* Paint order */
    Pixmap              pixmap;
    int                 rcx, rcy, rcw, rch;
-   int                 bw;
    int                 mode;
    unsigned            damaged:1;
    unsigned            fading:1;
@@ -932,7 +931,7 @@ win_extents(EObj * eo)
    unsigned int        bw;
 
    /* FIXME - Get this right */
-   bw = cw->bw;
+   bw = EobjGetBW(eo);
    if (Mode_compmgr.use_pixmap)
      {
 	cw->rcx = EobjGetX(eo);
@@ -1051,7 +1050,6 @@ win_extents(EObj * eo)
 static              XserverRegion
 win_shape(EObj * eo)
 {
-   ECmWinInfo         *cw = eo->cmhook;
    XserverRegion       border;
    int                 x, y;
 
@@ -1068,8 +1066,8 @@ win_shape(EObj * eo)
      }
 
    /* translate this */
-   x = EobjGetX(eo) + cw->bw;
-   y = EobjGetY(eo) + cw->bw;
+   x = EobjGetX(eo) + EobjGetBW(eo);
+   y = EobjGetY(eo) + EobjGetBW(eo);
    ERegionTranslate(border, x, y);
 
    D2printf("shape %#lx: %d %d\n", EobjGetXwin(eo), x, y);
@@ -1444,8 +1442,6 @@ ECompMgrWinNew(EObj * eo)
 
    eo->cmhook = cw;
 
-   cw->bw = WinGetBorderWidth(eo->win);
-
    if (eo->type == EOBJ_TYPE_EXT &&
        Conf_compmgr.override_redirect.mode == ECM_OR_UNREDIRECTED)
      {
@@ -1549,7 +1545,6 @@ ECompMgrWinDamageArea(EObj * eo, int x __UNUSED__, int y __UNUSED__,
 static void
 ECompMgrWinConfigure(EObj * eo, XEvent * ev)
 {
-   ECmWinInfo         *cw = eo->cmhook;
    int                 x, y, w, h, bw;
    int                 change_xy, change_wh, change_bw;
 
@@ -1561,13 +1556,9 @@ ECompMgrWinConfigure(EObj * eo, XEvent * ev)
 
    change_xy = EobjGetX(eo) != x || EobjGetY(eo) != y;
    change_wh = EobjGetW(eo) != w || EobjGetH(eo) != h;
-   change_bw = cw->bw != bw;
+   change_bw = EobjGetBW(eo) != bw;
 
-   eo->x = x;
-   eo->y = y;
-   eo->w = w;
-   eo->h = h;
-   cw->bw = bw;
+   EWindowSetGeometry(eo->win, x, y, w, h, bw);
 
    ECompMgrWinMoveResize(eo, change_xy, change_wh, change_bw);
 }
@@ -1697,7 +1688,8 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
      {
 	parts = ERegionCreate();
 	XDamageSubtract(dpy, cw->damage, None, parts);
-	ERegionTranslate(parts, EobjGetX(eo) + cw->bw, EobjGetY(eo) + cw->bw);
+	ERegionTranslate(parts, EobjGetX(eo) + EobjGetBW(eo),
+			 EobjGetY(eo) + EobjGetBW(eo));
 #if 0				/* ENABLE_SHADOWS - FIXME - This is not right, remove? */
 	if (Mode_compmgr.shadow_mode == ECM_SHADOWS_SHARP)
 	  {

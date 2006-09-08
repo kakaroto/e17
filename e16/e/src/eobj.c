@@ -179,10 +179,6 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
      }
    eo->type = type;
    eo->win = win;
-   eo->x = x;
-   eo->y = y;
-   eo->w = w;
-   eo->h = h;
    eo->shaped = -1;
 
    if (type == EOBJ_TYPE_EXT)
@@ -248,18 +244,6 @@ EobjDestroy(EObj * eo)
    EobjFini(eo);
 
    Efree(eo);
-}
-
-void
-EobjSync(EObj * eo)
-{
-   int                 x, y, w, h;
-
-   EGetGeometry(eo->win, NULL, &x, &y, &w, &h, NULL, NULL);
-   eo->x = x;
-   eo->y = y;
-   eo->w = w;
-   eo->h = h;
 }
 
 EObj               *
@@ -387,10 +371,6 @@ EobjMoveResize(EObj * eo, int x, int y, int w, int h)
 
    move = x != EobjGetX(eo) || y != EobjGetY(eo);
    resize = w != EobjGetW(eo) || h != EobjGetH(eo);
-   eo->x = x;
-   eo->y = y;
-   eo->w = w;
-   eo->h = h;
 #if USE_COMPOSITE
    if (eo->type == EOBJ_TYPE_EWIN)
      {
@@ -436,8 +416,6 @@ EobjReparent(EObj * eo, EObj * dst, int x, int y)
    int                 move;
 
    move = x != EobjGetX(eo) || y != EobjGetY(eo);
-   eo->x = x;
-   eo->y = y;
 
    EReparentWindow(eo->win, dst->win, x, y);
    if (dst->type == EOBJ_TYPE_DESK)

@@ -714,11 +714,7 @@ DeskResize(int desk, int w, int h)
 
    dsk = _DeskGet(desk);
 
-   if (dsk->num == 0)
-     {
-	EoSync(dsk);
-     }
-   else
+   if (dsk->num != 0)
      {
 	x = (dsk->viewable) ? EoGetX(dsk) : VRoot.w;
 	EoMoveResize(dsk, x, 0, w, h);

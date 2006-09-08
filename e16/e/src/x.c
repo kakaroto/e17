@@ -21,6 +21,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_WIN 1
 #include "E.h"
 #ifdef USE_ECORE_X
 #include <Ecore_X.h>
@@ -40,41 +41,6 @@ static Visual      *argb_visual = NULL;
 static Colormap     argb_cmap = None;
 #endif
 
-typedef struct
-{
-   EventCallbackFunc  *func;
-   void               *prm;
-} EventCallbackItem;
-
-typedef struct
-{
-   int                 num;
-   EventCallbackItem  *lst;
-} EventCallbackList;
-
-struct _xwin
-{
-   struct _xwin       *next;
-   struct _xwin       *prev;
-   EventCallbackList   cbl;
-   Window              xwin;
-   Win                 parent;
-   int                 x, y, w, h;
-   int                 bw;
-   char                mapped;
-   char                in_use;
-   signed char         do_del;
-   char                attached;
-   int                 num_rect;
-   int                 ord;
-   XRectangle         *rects;
-   Visual             *visual;
-   int                 depth;
-   Colormap            cmap;
-   Pixmap              bgpmap;
-   unsigned int        bgcol;
-};
-
 typedef struct _xwin EXID;	/* FIXME -  Remove */
 
 static XContext     xid_context = 0;
@@ -82,10 +48,35 @@ static XContext     xid_context = 0;
 static EXID        *xid_first = NULL;
 static EXID        *xid_last = NULL;
 
+#if !EXPOSE_WIN
 Window
 WinGetXwin(const Win win)
 {
    return win->xwin;
+}
+
+int
+WinGetX(const Win win)
+{
+   return win->x;
+}
+
+int
+WinGetY(const Win win)
+{
+   return win->y;
+}
+
+int
+WinGetW(const Win win)
+{
+   return win->w;
+}
+
+int
+WinGetH(const Win win)
+{
+   return win->h;
 }
 
 int
@@ -111,6 +102,7 @@ WinGetCmap(const Win win)
 {
    return win->cmap;
 }
+#endif
 
 static EXID        *
 EXidCreate(void)
@@ -638,6 +630,21 @@ EWindowSync(Win win)
    xid->w = w;
    xid->h = h;
    xid->depth = depth;
+}
+
+void
+EWindowSetGeometry(Win win, int x, int y, int w, int h, int bw)
+{
+   EXID               *xid = win;
+
+   if (!xid)
+      return;
+
+   xid->x = x;
+   xid->y = y;
+   xid->w = w;
+   xid->h = h;
+   xid->bw = bw;
 }
 
 void

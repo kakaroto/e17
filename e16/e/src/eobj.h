@@ -35,8 +35,6 @@ struct _eobj
    short               ilayer;	/* Internal stacking layer */
    short               layer;	/* Stacking layer */
    Desk               *desk;	/* Belongs on desk */
-   int                 x, y;
-   int                 w, h;
    signed char         stacked;
    signed char         shaped;
    char                sticky;
@@ -68,13 +66,14 @@ struct _eobj
 
 #define EobjGetWin(eo)          ((eo)->win)
 #define EobjGetXwin(eo)         WinGetXwin((eo)->win)
+#define EobjGetX(eo)            WinGetX((eo)->win)
+#define EobjGetY(eo)            WinGetY((eo)->win)
+#define EobjGetW(eo)            WinGetW((eo)->win)
+#define EobjGetH(eo)            WinGetH((eo)->win)
+#define EobjGetBW(eo)           WinGetBorderWidth((eo)->win)
 #define EobjGetDesk(eo)         ((eo)->desk)
 #define EobjGetName(eo)         ((eo)->name)
 #define EobjGetType(eo)         ((eo)->type)
-#define EobjGetX(eo)            ((eo)->x)
-#define EobjGetY(eo)            ((eo)->y)
-#define EobjGetW(eo)            ((eo)->w)
-#define EobjGetH(eo)            ((eo)->h)
 
 #define EoObj(eo)               (&((eo)->o))
 #define EoGetWin(eo)            EobjGetWin(EoObj(eo))
@@ -116,7 +115,6 @@ struct _eobj
 #define EoInit(eo, type, win, x, y, w, h, su, name) \
 					EobjInit(EoObj(eo), type, win, x, y, w, h, su, name)
 #define EoFini(eo)			EobjFini(EoObj(eo));
-#define EoSync(eo)                      EobjSync(EoObj(eo))
 #define EoMap(eo, raise)                EobjMap(EoObj(eo), raise)
 #define EoUnmap(eo)                     EobjUnmap(EoObj(eo))
 #define EoMove(eo, x, y)                EobjMove(EoObj(eo), x, y)
@@ -132,7 +130,6 @@ void                EobjInit(EObj * eo, int type, Win win, int x, int y,
 			     int w, int h, int su, const char *name);
 void                EobjFini(EObj * eo);
 void                EobjDestroy(EObj * eo);
-void                EobjSync(EObj * eo);
 
 EObj               *EobjWindowCreate(int type, int x, int y, int w, int h,
 				     int su, const char *name);

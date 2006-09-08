@@ -24,10 +24,6 @@
 #ifndef _XWIN_H_
 #define _XWIN_H_
 
-typedef struct _xwin *Win;
-
-#define NoWin ((Win)0)
-
 Display            *EDisplayOpen(const char *dstr, int scr);
 void                EDisplayClose(void);
 void                EDisplayDisconnect(void);
@@ -45,13 +41,72 @@ Visual             *EVisualFindARGB(void);
 
 Time                EGetTimestamp(void);
 
+typedef struct _xwin *Win;
+typedef void        (EventCallbackFunc) (Win win, XEvent * ev, void *prm);
+
+#define NoWin ((Win)0)
+
+#define EXPOSE_WIN 1
+#if EXPOSE_WIN || DECLARE_WIN
+typedef struct
+{
+   EventCallbackFunc  *func;
+   void               *prm;
+} EventCallbackItem;
+
+typedef struct
+{
+   int                 num;
+   EventCallbackItem  *lst;
+} EventCallbackList;
+
+struct _xwin
+{
+   struct _xwin       *next;
+   struct _xwin       *prev;
+   EventCallbackList   cbl;
+   Window              xwin;
+   Win                 parent;
+   int                 x, y, w, h;
+   int                 bw;
+   char                mapped;
+   char                in_use;
+   signed char         do_del;
+   char                attached;
+   int                 num_rect;
+   int                 ord;
+   XRectangle         *rects;
+   Visual             *visual;
+   int                 depth;
+   Colormap            cmap;
+   Pixmap              bgpmap;
+   unsigned int        bgcol;
+};
+#endif
+
 Win                 ELookupXwin(Window xwin);
 
+#if EXPOSE_WIN
+#define             WinGetXwin(win)		((win)->xwin)
+#define             WinGetX(win)		((win)->x)
+#define             WinGetY(win)		((win)->y)
+#define             WinGetW(win)		((win)->w)
+#define             WinGetH(win)		((win)->h)
+#define             WinGetBorderWidth(win)	((win)->bw)
+#define             WinGetDepth(win)		((win)->depth)
+#define             WinGetVisual(win)		((win)->visual)
+#define             WinGetCmap(win)		((win)->cmap)
+#else
 Window              WinGetXwin(const Win win);
+int                 WinGetX(const Win win);
+int                 WinGetY(const Win win);
+int                 WinGetW(const Win win);
+int                 WinGetH(const Win win);
 int                 WinGetBorderWidth(const Win win);
 int                 WinGetDepth(const Win win);
 Visual             *WinGetVisual(const Win win);
 Colormap            WinGetCmap(const Win win);
+#endif
 
 Win                 ECreateWinFromXwin(Window xwin);
 void                EDestroyWin(Win win);
@@ -59,7 +114,6 @@ void                EDestroyWin(Win win);
 Win                 ERegisterWindow(Window xwin, XWindowAttributes * pxwa);
 void                EUnregisterWindow(Win win);
 void                EUnregisterXwin(Window xwin);
-typedef void        (EventCallbackFunc) (Win win, XEvent * ev, void *prm);
 void                EventCallbackRegister(Win win, int type,
 					  EventCallbackFunc * func, void *prm);
 void                EventCallbackUnregister(Win win, int type,
@@ -78,6 +132,8 @@ Win                 ECreateObjectWindow(Win parent, int x, int y, int w,
 Win                 ECreateEventWindow(Win parent, int x, int y, int w, int h);
 Win                 ECreateFocusWindow(Win parent, int x, int y, int w, int h);
 void                EWindowSync(Win win);
+void                EWindowSetGeometry(Win win, int x, int y, int w, int h,
+				       int bw);
 void                EWindowSetMapped(Win win, int mapped);
 void                ESelectInputAdd(Win win, long mask);
 
