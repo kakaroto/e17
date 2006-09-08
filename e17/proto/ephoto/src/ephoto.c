@@ -42,12 +42,24 @@ main(int argc, char **argv)
  ewl_widget_show(m->menu);
 
  m->menu_item = ewl_menu_item_new();
- ewl_button_label_set(EWL_BUTTON(m->menu_item), "Exit");
+ ewl_button_stock_type_set(EWL_BUTTON(m->menu_item), EWL_STOCK_QUIT);
  ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
  ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
  ewl_object_fill_policy_set(EWL_OBJECT(m->menu_item), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->menu_item);
 
+ m->menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(m->menu), "Albums");
+ ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(m->menu);
+ 
+ m->menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(m->menu), "Slideshow");
+ ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(m->menu);
+ 
  m->hseparator = ewl_hseparator_new();
  ewl_object_alignment_set(EWL_OBJECT(m->hseparator), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(m->vbox), m->hseparator);
