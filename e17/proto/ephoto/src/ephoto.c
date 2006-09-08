@@ -1,6 +1,7 @@
 #include "ephoto.h"
 Main *m;
 char *current_directory;
+Ecore_List *current_thumbs;
 
 int
 main(int argc, char **argv)
@@ -14,6 +15,7 @@ main(int argc, char **argv)
   return 1;
  }
 
+ current_thumbs = ecore_list_new();
  current_directory = strdup(getenv("HOME"));
  m = calloc(1, sizeof(Main));
 
@@ -43,6 +45,7 @@ main(int argc, char **argv)
 
  m->menu_item = ewl_menu_item_new();
  ewl_button_stock_type_set(EWL_BUTTON(m->menu_item), EWL_STOCK_QUIT);
+ ewl_object_alignment_set(EWL_OBJECT(m->menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
  ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
  ewl_object_fill_policy_set(EWL_OBJECT(m->menu_item), EWL_FLAG_FILL_ALL);
@@ -59,6 +62,18 @@ main(int argc, char **argv)
  ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
  ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
  ewl_widget_show(m->menu);
+
+ m->menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(m->menu_item), 
+		      ewl_icon_theme_icon_path_get(EWL_ICON_X_OFFICE_PRESENTATION, 
+		      				   EWL_ICON_SIZE_MEDIUM), 
+		      EWL_ICON_X_OFFICE_PRESENTATION);
+ ewl_button_label_set(EWL_BUTTON(m->menu_item), "Start Slideshow");
+ ewl_object_alignment_set(EWL_OBJECT(m->menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
+ ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, start_slideshow, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(m->menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(m->menu_item);
  
  m->hseparator = ewl_hseparator_new();
  ewl_object_alignment_set(EWL_OBJECT(m->hseparator), EWL_FLAG_ALIGN_CENTER);

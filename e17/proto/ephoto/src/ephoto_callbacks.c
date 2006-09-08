@@ -196,16 +196,23 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
    fclose(file_ptr);
   }
  }
- 
+ if(!ecore_list_is_empty(current_thumbs)) 
+ { 
+  ecore_list_destroy(current_thumbs);
+  current_thumbs = ecore_list_new();
+ }
  while(!ecore_list_is_empty(images))
  {
   image = ecore_list_remove_first(images);
+  ecore_list_append(current_thumbs, image);
   
   m->icon = ewl_image_thumbnail_new();
   ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(m->icon), image);
   ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), m->icon);
   ewl_widget_show(m->icon);
  }
+ ecore_list_destroy(ls);
+ ecore_list_destroy(images);
 }
 
 void go_up(Ewl_Widget *w, void *event, void *data)
