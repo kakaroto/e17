@@ -70,11 +70,12 @@ static void         _mixer_cb_mouse_down     (void *data, Evas *e,
 static void         _mixer_menu_cb_configure (void *data, E_Menu *m, 
 					      E_Menu_Item *mi);
 
-static void _mixer_window_simple_pop_up      (Instance *inst);
-static int _mixer_window_simple_animator_cb  (void *data);
-static void _mixer_window_simple_mouse_up_cb (void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _mixer_window_simple_changed_cb  (void *data, Evas_Object *obj, void *event_info);
-static void _mixer_window_simple_resize_cb   (E_Win *win);
+static void _mixer_window_simple_pop_up       (Instance *inst);
+static int  _mixer_window_simple_animator_cb  (void *data);
+static void _mixer_window_simple_mouse_up_cb  (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _mixer_window_simple_mouse_out_cb (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _mixer_window_simple_changed_cb   (void *data, Evas_Object *obj, void *event_info);
+static void _mixer_window_simple_resize_cb    (E_Win *win);
 
 /* Private vars */
 static E_Config_DD *conf_edd = NULL;
@@ -193,7 +194,7 @@ _gc_icon(Evas *evas)
    Evas_Object *o;
    char         buf[4096];
 
-   snprintf (buf, sizeof(buf), "%s/module.eap",
+   snprintf(buf, sizeof(buf), "%s/module.eap",
 	     e_module_dir_get(mixer_config->module));
 
    o = edje_object_add(evas);
@@ -432,7 +433,16 @@ _mixer_window_simple_pop_up(Instance *inst)
         evas_object_show(win->event_obj);
         evas_object_event_callback_add(win->event_obj, EVAS_CALLBACK_MOUSE_UP,
                                        _mixer_window_simple_mouse_up_cb, win);
-        
+
+	#ifdef DEBUG
+	/* Testing possible method for window destroy. It does work 
+	 * with an updated evas, as evas had some null check bugs
+	 * (or lack of) which I fixed. Is this the behavior we're 
+	 * looking for ? */
+        evas_object_event_callback_add(win->event_obj, EVAS_CALLBACK_MOUSE_OUT,
+                                       _mixer_window_simple_mouse_out_cb, win);
+        #endif
+	
         win->bg_obj = edje_object_add(e_win_evas_get(win->window));
         e_theme_edje_object_set(win->bg_obj, "base/theme/menus",
 				"e/widgets/menu/default/background");
@@ -511,7 +521,8 @@ _mixer_window_simple_pop_up(Instance *inst)
 }
 
 /* Makes the simple window slide */
-static int _mixer_window_simple_animator_cb(void *data)
+static int 
+_mixer_window_simple_animator_cb(void *data)
 {
    Mixer_Win_Simple *win;
    double percent;
@@ -532,6 +543,7 @@ static int _mixer_window_simple_animator_cb(void *data)
    
    if (h >= win->h)
      {
+	ecore_animator_del(win->slide_animator);
         win->slide_animator = NULL;
         return 0;
      }
@@ -540,18 +552,62 @@ static int _mixer_window_simple_animator_cb(void *data)
 }
 
 /* Called when the background object of the simple window is released */
-static void _mixer_window_simple_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void 
+_mixer_window_simple_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Mixer_Win_Simple *win;
    
-   if (!(win = data))
-     return;
+   if (!(win = data)) return;
    
    printf("Mouse up\n");
 }
 
+static void 
+_mixer_window_simple_mouse_out_cb(void *data, Evas *e, Evas_Object *obj, void *event_info) 
+{
+   Mixer_Win_Simple *win;
+   Mixer *mixer;
+   
+   if (!(win = data)) return;
+
+   if (win->slide_animator) 
+     {	
+	ecore_animator_del(win->slide_animator);
+	win->slide_animator = NULL;
+     }
+   
+   if (win->slider) 
+     {
+        evas_object_smart_callback_del(win->slider, "changed",
+                                       _mixer_window_simple_changed_cb);
+	evas_object_del(win->slider);
+     }
+   
+   if (win->bg_obj)
+     evas_object_del(win->bg_obj);
+
+   if (win->event_obj) 
+     {
+        evas_object_event_callback_del(win->event_obj, EVAS_CALLBACK_MOUSE_UP,
+                                       _mixer_window_simple_mouse_up_cb);
+        evas_object_event_callback_del(win->event_obj, EVAS_CALLBACK_MOUSE_OUT,
+                                       _mixer_window_simple_mouse_out_cb);
+	evas_object_del(win->event_obj);
+     }
+   
+   if (win->window)
+     e_object_del(E_OBJECT(win->window));
+
+   if (win->mixer) 
+     {
+	mixer = win->mixer;
+	mixer->simple_win =  NULL;
+     }
+}
+
 /* Called when the value of the slider of the simple window is changed */
-static void _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
+static void 
+_mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Mixer_Win_Simple *win;
    
@@ -562,7 +618,8 @@ static void _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *
 }
 
 /* Called when the simple window is resized */
-static void _mixer_window_simple_resize_cb(E_Win *win)
+static void 
+_mixer_window_simple_resize_cb(E_Win *win)
 {
    Mixer_Win_Simple *simple_win;
    
