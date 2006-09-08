@@ -146,6 +146,7 @@ static void _etk_tree_col_realize(Etk_Tree *tree, int col_nth);
 static Etk_Tree_Col *etk_tree_col_to_resize_get(Etk_Tree_Col *col, int x);
 
 static void _etk_tree_row_selected_rows_get(Etk_Tree_Row *row, Evas_List **selected_rows);
+static void _etk_tree_row_unselected_rows_get(Etk_Tree_Row *row, Evas_List **unselected_rows);
 static void _etk_tree_row_select_all(Etk_Tree_Row *row);
 static void _etk_tree_row_unselect_all(Etk_Tree_Row *row);
 static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifiers modifiers);
@@ -1276,6 +1277,24 @@ Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree)
       _etk_tree_row_selected_rows_get(&tree->root, &selected_rows);
 
    return selected_rows;
+}
+
+/**
+ * @brief Gets all the rows not selected of the tree
+ * @param tree a tree
+ * @return Returns an Evas_List * containing the unselected rows of the tree
+ * @warning The returned Evas_List * should be freed with @a evas_list_free()
+ */
+Evas_List *etk_tree_unselected_rows_get(Etk_Tree *tree)
+{
+   Evas_List *unselected_rows = NULL;
+
+  if (!tree)
+     return NULL;
+
+  _etk_tree_row_unselected_rows_get(&tree->root, &unselected_rows);
+
+  return unselected_rows;
 }
 
 /**
@@ -2859,6 +2878,22 @@ static void _etk_tree_row_selected_rows_get(Etk_Tree_Row *row, Evas_List **selec
       if (r->selected)
          *selected_rows = evas_list_append(*selected_rows, r);
       _etk_tree_row_selected_rows_get(r, selected_rows);
+   }
+}
+
+/* Gets the unselected child rows of the row */
+static void _etk_tree_row_unselected_rows_get(Etk_Tree_Row *row, Evas_List **unselected_rows)
+{
+   Etk_Tree_Row *r;
+   
+   if (!row || !unselected_rows)
+      return;
+   
+   for (r = row->first_child; r; r = r->next)
+   {
+      if (!r->selected)
+         *unselected_rows = evas_list_append(*unselected_rows, r);
+      _etk_tree_row_unselected_rows_get(r, unselected_rows);
    }
 }
 

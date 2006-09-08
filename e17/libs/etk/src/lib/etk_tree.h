@@ -217,6 +217,7 @@ void etk_tree_row_select(Etk_Tree_Row *row);
 void etk_tree_row_unselect(Etk_Tree_Row *row);
 Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree);
 Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree);
+Evas_List *etk_tree_unselected_rows_get(Etk_Tree *tree);
 
 void etk_tree_row_expand(Etk_Tree_Row *row);
 void etk_tree_row_collapse(Etk_Tree_Row *row);
