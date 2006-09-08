@@ -87,7 +87,7 @@ main(int argc, char **argv)
 
 			ecore_list_goto_first(tests);
 			while ((t = ecore_list_next(tests)))
-				run_window_test(t, 0, 0);
+				run_window_test(t, MAIN_WIDTH, MAIN_HEIGHT);
 		}
 		else if (!strncmp(argv[i], "-unit", 5))
 			unit_test = 1;
@@ -101,7 +101,8 @@ main(int argc, char **argv)
 				if (unit_test)
 					ret = run_unit_tests(t);
 				else
-					run_window_test(t, 0, 0);
+					run_window_test(t, MAIN_WIDTH, 
+								MAIN_HEIGHT);
 
 				ran_test ++;
 				break;
