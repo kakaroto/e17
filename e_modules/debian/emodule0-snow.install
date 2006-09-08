@@ -1,3 +1,4 @@
 debian/tmp/usr/lib/enlightenment/modules/snow/*.png
 debian/tmp/usr/lib/enlightenment/modules/snow/*.eap
 debian/tmp/usr/lib/enlightenment/modules/snow/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/snow.*

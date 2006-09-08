@@ -2,3 +2,4 @@ debian/tmp/usr/lib/enlightenment/modules/mail/*.edj
 debian/tmp/usr/lib/enlightenment/modules/mail/*.eap
 debian/tmp/usr/lib/enlightenment/modules/mail/*.png
 debian/tmp/usr/lib/enlightenment/modules/mail/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/mail.*

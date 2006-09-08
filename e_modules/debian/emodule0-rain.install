@@ -1,3 +1,4 @@
 debian/tmp/usr/lib/enlightenment/modules/rain/*.png
 debian/tmp/usr/lib/enlightenment/modules/rain/*.eap
 debian/tmp/usr/lib/enlightenment/modules/rain/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/rain.*

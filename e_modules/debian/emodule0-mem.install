@@ -2,3 +2,4 @@ debian/tmp/usr/lib/enlightenment/modules/mem/*.edj
 debian/tmp/usr/lib/enlightenment/modules/mem/*.eap
 debian/tmp/usr/lib/enlightenment/modules/mem/*.png
 debian/tmp/usr/lib/enlightenment/modules/mem/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/mem.*

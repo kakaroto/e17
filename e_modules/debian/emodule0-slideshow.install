@@ -2,3 +2,4 @@ debian/tmp/usr/lib/enlightenment/modules/slideshow/*.png
 debian/tmp/usr/lib/enlightenment/modules/slideshow/*.eap
 debian/tmp/usr/lib/enlightenment/modules/slideshow/*.edj
 debian/tmp/usr/lib/enlightenment/modules/slideshow/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/slideshow.*

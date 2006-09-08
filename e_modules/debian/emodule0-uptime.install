@@ -2,3 +2,4 @@ debian/tmp/usr/lib/enlightenment/modules/uptime/*.eap
 debian/tmp/usr/lib/enlightenment/modules/uptime/*.png
 debian/tmp/usr/lib/enlightenment/modules/uptime/*.edj
 debian/tmp/usr/lib/enlightenment/modules/uptime/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/uptime.*

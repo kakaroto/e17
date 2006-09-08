@@ -3,3 +3,4 @@ debian/tmp/usr/lib/enlightenment/modules/eveil/*.edj
 debian/tmp/usr/lib/enlightenment/modules/eveil/*.eap
 debian/tmp/usr/lib/enlightenment/modules/eveil/*.ttf
 debian/tmp/usr/lib/enlightenment/modules/eveil/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/eveil.*

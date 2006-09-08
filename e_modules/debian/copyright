@@ -9,7 +9,7 @@ http://www.enlightenment.org/cvs.html
 Upstream Authors:
 Nathan Smith <nasa01@comcast.net> (calendar)
 Matthew Mullins (cpu, mem, net, uptime, weather, wlan)
-Christopher Michael <devilhorns@comcast.net> (cpu, deskshow, mail, mbar, mem, net, screenshot, slideshow, uptime, weather, wlan)
+Christopher Michael <devilhorns@comcast.net> (cpu, deskshow, mail, mbar, mem, mixer, net, screenshot, slideshow, uptime, weather, wlan)
 David Seikel <onefang@gmail.com> (emu)
 Boldin Pavel <boldin.pavel@gmail.com> (evolume)
 Vincent Torri (flame, tclock)
@@ -21,7 +21,7 @@ Laurent 'kiwi' Ghigonis <ooookiwi@free.fr> (eveil)
 iamsthitha (taskbar)
 Ibukun Olumuyiwa (bling)
 
-Copyright (bling, calendar, cpu, deskshow, emu, evolume, flame, language, mbar, mem, moon, net, rain, screenshot, slideshow, snow, tclock, uptime, wlan, weather):
+Copyright (bling, calendar, cpu, deskshow, emu, evolume, flame, language, mbar, mem, mixer, moon, net, rain, screenshot, slideshow, snow, tclock, uptime, wlan, weather):
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to

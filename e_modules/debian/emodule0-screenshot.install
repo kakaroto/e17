@@ -2,3 +2,4 @@ debian/tmp/usr/lib/enlightenment/modules/screenshot/*.edj
 debian/tmp/usr/lib/enlightenment/modules/screenshot/*.eap
 debian/tmp/usr/lib/enlightenment/modules/screenshot/*.png
 debian/tmp/usr/lib/enlightenment/modules/screenshot/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/screenshot.*

@@ -1,3 +1,4 @@
 debian/tmp/usr/lib/enlightenment/modules/moon/*.edj
 debian/tmp/usr/lib/enlightenment/modules/moon/*.eap
 debian/tmp/usr/lib/enlightenment/modules/moon/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/moon.*

@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/enlightenment/modules/mixer/*.eap
+debian/tmp/usr/lib/enlightenment/modules/mixer/*.edj
+debian/tmp/usr/lib/enlightenment/modules/mixer/*/*.so
