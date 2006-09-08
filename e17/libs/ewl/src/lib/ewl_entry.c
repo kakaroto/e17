@@ -35,7 +35,7 @@ ewl_entry_new(void)
 int
 ewl_entry_init(Ewl_Entry *e)
 {
-	const char *text_types[] = { "UTF8_STRING", "text/plain", NULL };
+	const char *text_types[] = { "text/plain", NULL };
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -542,9 +542,12 @@ ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	event = ev;
 	txt = EWL_TEXT(w);
 
-	ewl_widget_focus_send(w);
-	ewl_text_cursor_position_set(txt, 
-			ewl_text_coord_index_map(txt, event->x, event->y));
+	if (EWL_ENTRY(w)->editable && !DISABLED(w)) {
+		ewl_widget_focus_send(w);
+		ewl_text_cursor_position_set(txt, 
+				ewl_text_coord_index_map(txt, event->x,
+					event->y));
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -570,8 +573,11 @@ ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	event = ev;
 	txt = EWL_TEXT(w);
-	ewl_text_text_insert(txt, event->data, 
-				ewl_text_cursor_position_get(txt));
+
+	if (EWL_ENTRY(w)->editable && !DISABLED(w)) {
+		ewl_text_text_insert(txt, event->data, 
+					ewl_text_cursor_position_get(txt));
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
