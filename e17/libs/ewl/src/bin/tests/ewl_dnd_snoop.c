@@ -19,7 +19,6 @@ static int create_test(Ewl_Container *box);
 static void ewl_dnd_snoop_cb_dnd_position(Ewl_Widget *w, void *event, void *data);
 static void ewl_dnd_snoop_cb_dnd_drop(Ewl_Widget *w, void *event, void *data);
 static void ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event, void *data);
-static void ewl_dnd_snoop_cb_realize(Ewl_Widget *w, void *event, void *data);
 
 static int ewl_dnd_snoop_cb_enter(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_position(void *data, int type, void *ev);
@@ -94,8 +93,6 @@ create_test(Ewl_Container *box)
 
 	scroll = ewl_scrollpane_new();
 	ewl_container_child_append(EWL_CONTAINER(box), scroll);
-	ewl_callback_append(scroll, EWL_CALLBACK_REALIZE,
-			ewl_dnd_snoop_cb_realize, NULL);
 	ewl_widget_show(scroll);
 
 	text = ewl_text_new();
@@ -142,15 +139,6 @@ ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event,
 {
 	Ewl_Event_Dnd_Data *ev = event;
 	printf("Data event on widget %p: %p length %d\n", w, ev->data, ev->len);
-}
-
-static void
-ewl_dnd_snoop_cb_realize(Ewl_Widget *w, void *event __UNUSED__, 
-						void *data __UNUSED__)
-{
-	Ewl_Embed *embed;
-	embed = ewl_embed_widget_find(w);
-	ecore_x_dnd_aware_set((Ecore_X_Window)embed->evas_window, TRUE);
 }
 
 static int
