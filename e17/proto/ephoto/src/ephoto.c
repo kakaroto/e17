@@ -15,7 +15,7 @@ main(int argc, char **argv)
   return 1;
  }
 
- current_thumbs = ecore_list_new();
+ current_thumbs = ecore_dlist_new();
  current_directory = strdup(getenv("HOME"));
  m = calloc(1, sizeof(Main));
 

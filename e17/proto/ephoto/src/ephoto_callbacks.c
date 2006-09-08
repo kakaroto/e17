@@ -196,15 +196,15 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
    fclose(file_ptr);
   }
  }
- if(!ecore_list_is_empty(current_thumbs)) 
+ if(!ecore_dlist_is_empty(current_thumbs)) 
  { 
-  ecore_list_destroy(current_thumbs);
-  current_thumbs = ecore_list_new();
+  ecore_dlist_destroy(current_thumbs);
+  current_thumbs = ecore_dlist_new();
  }
  while(!ecore_list_is_empty(images))
  {
   image = ecore_list_remove_first(images);
-  ecore_list_append(current_thumbs, image);
+  ecore_dlist_append(current_thumbs, image);
   
   m->icon = ewl_image_thumbnail_new();
   ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(m->icon), image);

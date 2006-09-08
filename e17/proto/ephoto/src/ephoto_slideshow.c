@@ -1,14 +1,20 @@
 #include "ephoto.h"
 Ecore_Timer *timer;
 
+void destroy_slideshow(Ewl_Widget *w, void *event, void *data)
+{
+ ecore_timer_del(timer);
+ ewl_widget_destroy(w);
+}
+
 int change_picture(void *data)
 {
  char *image_path;
  Ewl_Widget *w;
  
  w = data;
- ecore_list_next(current_thumbs);
- image_path = ecore_list_current(current_thumbs);
+ ecore_dlist_next(current_thumbs);
+ image_path = ecore_dlist_current(current_thumbs);
  if(image_path)
  {
   ewl_image_file_set(EWL_IMAGE(w), image_path, NULL);
@@ -27,12 +33,14 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  Ewl_Widget *image;
  char *image_path;
  
- image_path = ecore_list_goto_first(current_thumbs);
+ image_path = ecore_dlist_goto_first(current_thumbs);
  
  if (!image_path) return;
  
  window = ewl_window_new();
  ewl_window_fullscreen_set(EWL_WINDOW(window), 1);
+ ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, destroy_slideshow, NULL);
+ ewl_callback_append(window, EWL_CALLBACK_CLICKED, destroy_slideshow, NULL); 
  ewl_widget_show(window);
 
  vbox = ewl_vbox_new();
