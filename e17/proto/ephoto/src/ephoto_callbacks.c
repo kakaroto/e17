@@ -2,6 +2,8 @@
 
 void destroy_cb(Ewl_Widget *w, void *event, void *data)
 {
+ if (!ecore_dlist_is_empty(current_thumbs))
+	 ecore_dlist_destroy(current_thumbs);
  ewl_widget_destroy(w);
  ewl_main_quit();
  w = NULL;
