@@ -948,6 +948,13 @@ _e_traverse_packing_xml(Enhance *en, E_Widget *widget)
 	     else if(!strcmp("shrink", str))
 	       IF_TRUE_FALSE_ASSIGN(node->value, packing->shrink);
 	  }
+        if(str != NULL && !node->value)
+          {
+	     if (!strcmp("x_options", str))
+	       packing->x_options = strdup("");
+	     if (!strcmp("y_options", str))
+	       packing->x_options = strdup("");
+	  }
      }
    while((tag = exml_next_nomove(xml)) != NULL);
    

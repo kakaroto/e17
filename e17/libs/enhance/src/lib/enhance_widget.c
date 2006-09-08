@@ -1060,13 +1060,14 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 	       y_padding = child->packing->y_padding;
 	     if(child->packing->x_options)
 	       {
+		  /* Glade 2 compatibility */
 		  if(child->packing->x_options 
 		     && strstr(child->packing->x_options, "fill"))
 		    {
 		       fill_policy = ETK_TABLE_HFILL;
 		       flags_set = 1;
 		    }
-		  else if(child->packing->y_options
+		  else if(child->packing->x_options
 			  && strstr(child->packing->x_options, "expand"))
 		    {
 		       if(flags_set)
@@ -1091,6 +1092,43 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 			 fill_policy |= ETK_TABLE_VEXPAND;
 		       else
 			 fill_policy = ETK_TABLE_VEXPAND;
+		       flags_set = 1;
+		    }
+		  /* Glade 3 compatibility */
+		  else if(child->packing->x_options
+			  && strstr(child->packing->x_options, "GTK_EXPAND"))
+		    {
+		       fill_policy = (fill_policy ^ ETK_TABLE_HFILL) & fill_policy;
+		       flags_set = 1;
+		    }
+		  else if(child->packing->x_options
+			  && strstr(child->packing->x_options, "GTK_FILL"))
+		    {
+		       fill_policy = (fill_policy ^ ETK_TABLE_HEXPAND) & fill_policy;
+		       flags_set = 1;
+		    }
+		  else if(child->packing->x_options
+			  && strstr(child->packing->x_options, ""))
+		    {
+		       fill_policy = (fill_policy ^ (ETK_TABLE_HEXPAND | ETK_TABLE_HFILL)) & fill_policy;
+		       flags_set = 1;
+		    }
+		  else if(child->packing->y_options
+			  && strstr(child->packing->y_options, "GTK_EXPAND"))
+		    {
+		       fill_policy = (fill_policy ^ ETK_TABLE_VFILL) & fill_policy;
+		       flags_set = 1;
+		    }
+		  else if(child->packing->y_options
+			  && strstr(child->packing->y_options, "GTK_FILL"))
+		    {
+		       fill_policy = (fill_policy ^ ETK_TABLE_VEXPAND) & fill_policy;
+		       flags_set = 1;
+		    }
+		  else if(child->packing->y_options
+			  && strstr(child->packing->y_options, ""))
+		    {
+		       fill_policy = (fill_policy ^ (ETK_TABLE_VEXPAND | ETK_TABLE_VFILL)) & fill_policy;
 		       flags_set = 1;
 		    }
 	       }
