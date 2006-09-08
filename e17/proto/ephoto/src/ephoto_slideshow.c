@@ -11,6 +11,7 @@ struct _Slide_Config
  Ewl_Widget *window_border;
  Ewl_Widget *transition_border;
  Ewl_Widget *order_border;
+ Ewl_Widget *size_border;
  Ewl_Widget *fullscreen;
  Ewl_Widget *custom;
  Ewl_Widget *spinner;
@@ -20,12 +21,16 @@ struct _Slide_Config
  Ewl_Widget *text;
  Ewl_Widget *wentry;
  Ewl_Widget *hentry;
+ Ewl_Widget *zoom_image;
+ Ewl_Widget *aspect_image;
  Ewl_Widget *save;
  Ewl_Widget *cancel;
  int full_size;
  int custom_size;
  int length;
  int name_show;
+ int zoom;
+ int keep_apsect;
  int random_order;
  int loop_slide;
  int w_size;
@@ -60,7 +65,7 @@ int change_picture(void *data)
 void start_slideshow(Ewl_Widget *w, void *event, void *data)
 {
  Ewl_Widget *window;
- Ewl_Widget *vbox;
+ Ewl_Widget *cell;
  Ewl_Widget *image;
  char *image_path;
  
@@ -74,15 +79,15 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  ewl_callback_append(window, EWL_CALLBACK_CLICKED, destroy_slideshow, NULL); 
  ewl_widget_show(window);
 
- vbox = ewl_vbox_new();
- ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
- ewl_container_child_append(EWL_CONTAINER(window), vbox);
- ewl_widget_show(vbox);
+ cell = ewl_cell_new();
+ ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
+ ewl_container_child_append(EWL_CONTAINER(window), cell);
+ ewl_widget_show(cell);
 
  image = ewl_image_new();
  ewl_image_file_set(EWL_IMAGE(image), image_path, NULL);
  ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_ALL);
- ewl_container_child_append(EWL_CONTAINER(vbox), image);
+ ewl_container_child_append(EWL_CONTAINER(cell), image);
  ewl_widget_show(image);
 
  timer = ecore_timer_add(3, change_picture, image);
@@ -99,57 +104,38 @@ void save_config(Ewl_Widget *w, void *event, void *data)
 {
  FILE *file;
  Slide_Config *sc;
- char path[PATH_MAX];
  char temp[PATH_MAX];
+ char path[PATH_MAX];
 
- snprintf(path, PATH_MAX, "%s/.ephoto/slideshow_config", getenv("HOME"));
+ snprintf(temp, PATH_MAX, "%s/.ephoto", getenv("HOME"));
+ snprintf(path, PATH_MAX, "%s/slideshow_config", temp);
+ if (!ecore_file_exists(temp)) ecore_file_mkdir(temp);
+ 
  sc = data;
  
  file = fopen(path, "w");
  if (file != NULL)
  {
-  if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->fullscreen)))
-  {
-   fputs("Fullscreen=1\n", file);
-   fputs("Custom=0\n", file);
-  }
-  else
-  {
-   fputs("Fullscreen=0\n", file);
-   fputs("Custom=1\n", file);
-  }
-  snprintf(temp, PATH_MAX, "Width=%s\n", ewl_text_text_get(EWL_TEXT(sc->wentry)));
-  fputs(temp, file);
-  snprintf(temp, PATH_MAX, "Height=%s\n", ewl_text_text_get(EWL_TEXT(sc->hentry)));
-  fputs(temp, file);
-  if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->random)))
-  {
-   fputs("Random=1\n", file);
-  }
-  else
-  {
-   fputs("Random=0\n", file);
-  }
-  if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->loop)))
-  {
-   fputs("Loop=1\n", file);
-  }
-  else
-  {
-   fputs("Loop=0\n", file);
-  }
-  snprintf(temp, PATH_MAX, "Length=%d\n", ewl_range_value_get(EWL_RANGE(sc->spinner)));
-  fputs(temp, file);
-  if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->show_name)))
-  {
-   fputs("FileName=1\n", file);
-  }
-  else
-  {
-   fputs("FileName=0\n", file);
-  }
- fclose(file);
+  fprintf(file, "Fullscreen=%d\n", 
+	  ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->fullscreen)));
+  fprintf(file, "Custom=%d\n",
+	  ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->custom)));
+  fprintf(file, "Width=%s\n", ewl_text_text_get(EWL_TEXT(sc->wentry)));
+  fprintf(file, "Height=%s\n", ewl_text_text_get(EWL_TEXT(sc->hentry)));
+  fprintf(file, "Random=%d\n", 
+	  ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->random)));
+  fprintf(file, "Loop=%d\n", 
+	  ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->loop)));
+  fprintf(file, "Zoom=%d\n", 
+	  ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->zoom_image)));
+  fprintf(file, "Aspect=%d\n",
+	  ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->aspect_image)));
+  fprintf(file, "Length=%d\n", ewl_range_value_get(EWL_RANGE(sc->spinner)));
+  fprintf(file, "FileName=%d\n", 
+	  ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->show_name)));
+  fclose(file);
  }
+ ewl_widget_destroy(sc->win);
 }
 	
 void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
@@ -189,11 +175,24 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(sc->hbox), sc->order_border);
  ewl_object_alignment_set(EWL_OBJECT(sc->order_border), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(sc->order_border);
+
+ sc->hbox = ewl_hbox_new();
+ ewl_object_fill_policy_set(EWL_OBJECT(sc->hbox), EWL_FLAG_FILL_ALL);
+ ewl_container_child_append(EWL_CONTAINER(sc->vbox), sc->hbox);
+ ewl_object_alignment_set(EWL_OBJECT(sc->hbox), EWL_FLAG_ALIGN_CENTER);
+ ewl_widget_show(sc->hbox);
+ 
+ sc->size_border = ewl_border_new();
+ ewl_border_text_set(EWL_BORDER(sc->size_border), "Image Size");
+ ewl_border_label_alignment_set(EWL_BORDER(sc->size_border), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(sc->hbox), sc->size_border);
+ ewl_object_alignment_set(EWL_OBJECT(sc->size_border), EWL_FLAG_ALIGN_CENTER);
+ ewl_widget_show(sc->size_border); 
  
  sc->transition_border = ewl_border_new();
  ewl_border_text_set(EWL_BORDER(sc->transition_border), "Transitions");
  ewl_border_label_alignment_set(EWL_BORDER(sc->transition_border), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(sc->vbox), sc->transition_border);
+ ewl_container_child_append(EWL_CONTAINER(sc->hbox), sc->transition_border);
  ewl_object_alignment_set(EWL_OBJECT(sc->transition_border), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(sc->transition_border);
  
@@ -250,6 +249,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(sc->hbox), sc->hentry);
  ewl_object_size_request(EWL_OBJECT(sc->hentry), 35, 15);
  ewl_widget_disable(sc->hentry);
+ ewl_widget_show(sc->hentry);
  
  sc->loop = ewl_checkbutton_new();
  ewl_button_label_set(EWL_BUTTON(sc->loop), "Loop Slideshow");
@@ -265,11 +265,19 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_object_alignment_set(EWL_OBJECT(sc->random), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(sc->random);
  
- sc->hbox = ewl_hbox_new();
- ewl_object_fill_policy_set(EWL_OBJECT(sc->hbox), EWL_FLAG_FILL_HFILL);
- ewl_object_alignment_set(EWL_OBJECT(sc->hbox), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(sc->transition_border), sc->hbox);
- ewl_widget_show(sc->hbox);
+ sc->zoom_image = ewl_checkbutton_new();
+ ewl_button_label_set(EWL_BUTTON(sc->zoom_image), "Zoom Images to Fill Window");
+ ewl_checkbutton_checked_set(EWL_CHECKBUTTON(sc->zoom_image), FALSE);
+ ewl_container_child_append(EWL_CONTAINER(sc->size_border), sc->zoom_image);
+ ewl_object_alignment_set(EWL_OBJECT(sc->zoom_image), EWL_FLAG_ALIGN_CENTER);
+ ewl_widget_show(sc->zoom_image);     
+ 
+ sc->aspect_image = ewl_checkbutton_new();
+ ewl_button_label_set(EWL_BUTTON(sc->aspect_image), "Keep Aspect");
+ ewl_checkbutton_checked_set(EWL_CHECKBUTTON(sc->aspect_image), TRUE);
+ ewl_container_child_append(EWL_CONTAINER(sc->size_border), sc->aspect_image);
+ ewl_object_alignment_set(EWL_OBJECT(sc->aspect_image), EWL_FLAG_ALIGN_CENTER);
+ ewl_widget_show(sc->aspect_image);    
  
  sc->spinner = ewl_spinner_new();
  ewl_spinner_digits_set(EWL_SPINNER(sc->spinner), 0);
@@ -277,14 +285,15 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_range_step_set(EWL_RANGE(sc->spinner), 1);
  ewl_range_minimum_value_set(EWL_RANGE(sc->spinner), 1.0);
  ewl_range_maximum_value_set(EWL_RANGE(sc->spinner), 1000);
- ewl_container_child_append(EWL_CONTAINER(sc->hbox), sc->spinner);
+ ewl_container_child_append(EWL_CONTAINER(sc->transition_border), sc->spinner);
  ewl_object_alignment_set(EWL_OBJECT(sc->spinner), EWL_FLAG_ALIGN_CENTER);
+ ewl_object_maximum_size_set(EWL_OBJECT(sc->spinner), 70, 25);
  ewl_widget_show(sc->spinner);
  
  sc->show_name = ewl_checkbutton_new();
- ewl_button_label_set(EWL_BUTTON(sc->show_name), "Show File Name On Image Change");
+ ewl_button_label_set(EWL_BUTTON(sc->show_name), "Show File Name On Change");
  ewl_checkbutton_checked_set(EWL_CHECKBUTTON(sc->show_name), FALSE);
- ewl_container_child_append(EWL_CONTAINER(sc->hbox), sc->show_name);
+ ewl_container_child_append(EWL_CONTAINER(sc->transition_border), sc->show_name);
  ewl_object_alignment_set(EWL_OBJECT(sc->show_name), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(sc->show_name);
       
