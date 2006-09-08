@@ -243,6 +243,10 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 		b->image_object = ewl_image_new();
 		ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
 		ewl_widget_internal_set(b->image_object, TRUE);
+		ewl_object_fill_policy_set(EWL_OBJECT(b->image_object),
+					   EWL_FLAG_FILL_NONE);
+		ewl_object_alignment_set(EWL_OBJECT(b->image_object),
+					 EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(b->image_object);
 
 		ewl_container_redirect_set(EWL_CONTAINER(b), redir);
