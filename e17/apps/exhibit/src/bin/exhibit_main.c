@@ -864,19 +864,17 @@ _ex_main_window_show(char *dir)
 	else if (ecore_file_download_protocol_available("http://"))
 	  {
 	     char *ptr;
-	     char tmp_file[PATH_MAX];
+	     char *tmp_file;
 	     int i;
 	     
 	     if ((ptr = strrchr(dir, '/'))) ptr++;
-	     D(("Trying to download %s to %s/%s\n", dir, 
-		      e->options->dl_path, ptr));
-
 	     if (!_ex_file_is_viewable(ptr))
 	       {
 		  tab = _ex_tab_new(e, ".");
 	       }
 	     else
 	       {
+		  tmp_file = malloc(PATH_MAX);
 		  for (i = 0;;i++)
 		    {
 		       snprintf(tmp_file, PATH_MAX, "%s/ex_%d_%s", 
@@ -890,10 +888,10 @@ _ex_main_window_show(char *dir)
 		  
 		  if (ecore_file_download(dir, tmp_file,
 			   _ex_file_download_complete_cb,
-			   _ex_file_download_progress_cb, NULL))
+			   _ex_file_download_progress_cb, tmp_file))
 		    {
-		       D(("Starting download\n"));
-		       _ex_file_download_dialog(dir);
+		       D(("Starting download to %s\n", tmp_file));
+		       _ex_file_download_dialog(dir, tmp_file);
 		    }
 	       }
 

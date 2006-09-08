@@ -4,7 +4,7 @@
 #ifndef _EX_FILE_H
 #define _EX_FILE_H
 
-void        _ex_file_download_dialog(char *url);
+void        _ex_file_download_dialog(char *url, char *file);
 int         _ex_file_download_progress_cb(void *data, const char *file, long int dltotal, long int dlnow, long int ultotal, long int ulnow);
 void        _ex_file_download_complete_cb(void *data, const char *file, int status);
 int         _ex_file_is_viewable(char *file);

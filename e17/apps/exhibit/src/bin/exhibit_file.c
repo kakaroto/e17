@@ -29,6 +29,9 @@ _ex_file_download_dialog_response(Etk_Object *obj, int response_id, void *data)
    switch(response_id)
      {
       case ETK_RESPONSE_CANCEL:
+	 ecore_file_download_abort_all();
+	 ecore_file_unlink(data);
+	 E_FREE(data);
 	 etk_object_destroy(ETK_OBJECT(obj));
 	 break;
       default:
@@ -37,9 +40,9 @@ _ex_file_download_dialog_response(Etk_Object *obj, int response_id, void *data)
 }
 
 void
-_ex_file_download_dialog(char *url)
+_ex_file_download_dialog(char *url, char *file)
 {
-   char string[PATH_MAX + 50];
+   char string[PATH_MAX + 16];
 
    sprintf(string, "Downloading %s", url);
 
@@ -47,7 +50,7 @@ _ex_file_download_dialog(char *url)
 	 ETK_MESSAGE_DIALOG_CANCEL,
 	 string);
    etk_signal_connect("response", ETK_OBJECT(dialog),
-	 ETK_CALLBACK(_ex_file_download_dialog_response), NULL);
+	 ETK_CALLBACK(_ex_file_download_dialog_response), file);
 
    etk_container_border_width_set(ETK_CONTAINER(dialog), 4);
    etk_window_title_set(ETK_WINDOW(dialog),
@@ -65,15 +68,36 @@ int
 _ex_file_download_progress_cb(void *data, const char *file, long int dltotal, long int dlnow, long int ultotal, long int ulnow)
 {
    double fraction;
-   char text[32];
+   char text[42];
+   static long int last;
+   static double t_last;
+   long int diff;
+   double t_diff;
+   double kbytes;
+   static double total_kbytes;
 
    if (dlnow == 0 || dltotal == 0)
      return 0;
 
-   fraction = (double) ((double) dlnow) / ((double) dltotal);
-   snprintf(text, sizeof(text), "%d%% done", (int) (fraction * 100.0));
-   etk_progress_bar_text_set(ETK_PROGRESS_BAR(progressbar), text);
-   etk_progress_bar_fraction_set(ETK_PROGRESS_BAR(progressbar), fraction);
+   if (!total_kbytes)
+     total_kbytes = (double) ((((double)dltotal) / 1024));
+
+   if (last)
+     {
+	diff = dlnow - last;
+	t_diff = ecore_time_get() - t_last;
+	kbytes = (double) ((((double) diff) / 1024));
+	fraction = (double) ((double) dlnow) / ((double) dltotal);
+	etk_progress_bar_fraction_set(ETK_PROGRESS_BAR(progressbar), fraction);
+	snprintf(text, sizeof(text), "%d%% done at %.0f kb/s (%.0f of %.0f kb)", 
+	      (int) (fraction * 100.0),
+	      kbytes / t_diff,
+	      kbytes, total_kbytes);
+	etk_progress_bar_text_set(ETK_PROGRESS_BAR(progressbar), text);
+     }
+
+   t_last = ecore_time_get();
+   last = dlnow;
    
    return 0;
 }
@@ -81,8 +105,9 @@ _ex_file_download_progress_cb(void *data, const char *file, long int dltotal, lo
 void 
 _ex_file_download_complete_cb(void *data, const char *file, int status)
 {
-   etk_object_destroy(ETK_OBJECT(dialog));
    _ex_main_itree_add(file, file);
+   etk_object_destroy(ETK_OBJECT(dialog));
+   E_FREE(data);
    D(("Download of file %s is done\n", file));
 
 }
