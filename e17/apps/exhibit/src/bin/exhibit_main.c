@@ -9,7 +9,6 @@ extern Evas_List *thumb_list;
 Exhibit *e;
 Evas_List  *event_handlers;
 
-static void _ex_main_itree_add(const char *file, const char *selected_file);
 static void _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path);
 static int _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
 static void _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
@@ -263,7 +262,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    closedir(dir);
 }
 
-static void
+void
 _ex_main_itree_add(const char *file, const char *selected_file)
 {
    Epsilon *ep;
@@ -274,6 +273,9 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	D(("ERROR: file is NULL\n"));
 	return;
      }
+
+   if (ecore_file_size(file) <= 0)
+     return;
    
    ep = epsilon_new(file);
    epsilon_thumb_size(ep, EPSILON_THUMB_NORMAL);
@@ -572,7 +574,6 @@ _ex_main_window_tab_append(Ex_Tab *tab)
    etk_notebook_current_page_set(ETK_NOTEBOOK(e->notebook), evas_list_count(e->tabs) - 1);
 
    tab->num = etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook));
-   D(("Setting tab number %d\n", tab->num));
 }
 
 static void 
@@ -862,17 +863,40 @@ _ex_main_window_show(char *dir)
 	  }
 	else if (ecore_file_download_protocol_available("http://"))
 	  {
-	     D(("Protocol HTTP is available\n"));
-	     D(("Trying to download %s to %s\n", dir, e->options->dl_path));
-	     if (ecore_file_download(dir, e->options->dl_path,
-		   _ex_file_download_complete_cb,
-		   _ex_file_download_progress_cb, NULL))
+	     char *ptr;
+	     char tmp_file[PATH_MAX];
+	     int i;
+	     
+	     if ((ptr = strrchr(dir, '/'))) ptr++;
+	     D(("Trying to download %s to %s/%s\n", dir, 
+		      e->options->dl_path, ptr));
+
+	     if (!_ex_file_is_viewable(ptr))
 	       {
-		  D(("Starting download\n"));
-		  tab = _ex_tab_new(e, e->options->dl_path);
+		  tab = _ex_tab_new(e, ".");
 	       }
 	     else
-	       tab = _ex_tab_new(e, ".");
+	       {
+		  for (i = 0;;i++)
+		    {
+		       snprintf(tmp_file, PATH_MAX, "%s/ex_%d_%s", 
+			     e->options->dl_path, i, ptr);
+		       
+		       if (!ecore_file_exists(tmp_file))
+			 break;
+		    }
+		  
+		  tab = _ex_tab_new(e, e->options->dl_path);
+		  
+		  if (ecore_file_download(dir, tmp_file,
+			   _ex_file_download_complete_cb,
+			   _ex_file_download_progress_cb, NULL))
+		    {
+		       D(("Starting download\n"));
+		       _ex_file_download_dialog(dir);
+		    }
+	       }
+
 	  }
 	else     
 	  tab = _ex_tab_new(e, ".");

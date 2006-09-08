@@ -6,6 +6,7 @@
 
 void         _ex_main_statusbar_zoom_update(Exhibit *e);
 void         _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update);
+void         _ex_main_itree_add(const char *file, const char *selected_file);
 int          _ex_main_window_slideshow_next(void *data);
 void         _ex_main_window_slideshow_toggle();    
 void         _ex_main_window_tab_append(Ex_Tab *tab);
