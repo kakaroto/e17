@@ -64,7 +64,7 @@ static void ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx,
 						unsigned int *byte_idx,
 						unsigned int *byte_len);
 static unsigned int ewl_text_char_length_get(const char *text);
-static char *ewl_text_text_next_char(const char *text, unsigned int *idx;);
+static char *ewl_text_text_next_char(const char *text, unsigned int *idx);
 
 
 /**
@@ -2256,7 +2256,7 @@ ewl_text_char_length_get(const char *text)
 
 /* This is stolen from evas_common_font_utf8_get_next() */
 static char *
-ewl_text_text_next_char(const char *text, int *idx)
+ewl_text_text_next_char(const char *text, unsigned int *idx)
 {
 	unsigned char d, d2, d3, d4;
 	
@@ -2330,7 +2330,7 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 {
 	Evas_Textblock_Cursor *cursor;
 	char *tmp;
-	int idx;
+	unsigned int idx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tb", tb);
