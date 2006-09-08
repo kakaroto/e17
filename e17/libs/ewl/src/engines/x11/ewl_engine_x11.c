@@ -1129,7 +1129,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 static int
 ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Window *window;
+	Ewl_Embed *embed;
 	Ecore_X_Event_Xdnd_Enter *ev;
 	int i = 0;
 
@@ -1138,13 +1138,13 @@ ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	ev = e;
 
-	window = ewl_window_window_find((void *)ev->win);
-	if (window) {
-		window->dnd_types.num_types = ev->num_types;
-		window->dnd_types.types = malloc(sizeof(char*) * ev->num_types);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
+	if (embed) {
+		embed->dnd_types.num_types = ev->num_types;
+		embed->dnd_types.types = malloc(sizeof(char*) * ev->num_types);
 
 		for (i = 0; i < ev->num_types; i++)
-			window->dnd_types.types[i] = strdup(ev->types[i]);
+			embed->dnd_types.types[i] = strdup(ev->types[i]);
 	}
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -1152,7 +1152,7 @@ ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
 static int
 ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Window *window;
+	Ewl_Embed *embed;
 	Ecore_X_Event_Xdnd_Leave *ev;
 	int i;
 
@@ -1161,15 +1161,15 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	ev = e;
 
-	window = ewl_window_window_find((void *)ev->win);
-	if (window) {
-		if (window->dnd_types.num_types > 0) {
-			for (i = 0; i < window->dnd_types.num_types; i++)
-				FREE(window->dnd_types.types[i]);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
+	if (embed) {
+		if (embed->dnd_types.num_types > 0) {
+			for (i = 0; i < embed->dnd_types.num_types; i++)
+				FREE(embed->dnd_types.types[i]);
 
-			FREE(window->dnd_types.types);
-			window->dnd_types.types = NULL;
-			window->dnd_types.num_types = 0;
+			FREE(embed->dnd_types.types);
+			embed->dnd_types.types = NULL;
+			embed->dnd_types.num_types = 0;
 
 		}
 	}
@@ -1179,7 +1179,7 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 static int
 ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
-	Ewl_Window *window;
+	Ewl_Embed *embed;
 	Ecore_X_Event_Xdnd_Drop *ev;
 	int internal = 0;
 
@@ -1188,27 +1188,14 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	ev = e;
 
-	window = ewl_window_window_find((void *)ev->win);
-	if (window) {
-		int i;
-		int x,y,wx,wy;
-		Ewl_Embed *embed= ewl_embed_evas_window_find((void *)ev->win);
-		ewl_embed_window_position_get(EWL_EMBED(window), &wx, &wy);
+	embed = ewl_embed_evas_window_find((void *)ev->win);
+	if (embed) {
+		int x, y, wx, wy;
+		const char *type;
 
-		/* Request a DND data request */
-		for (i = 0; i < window->dnd_types.num_types; i++) {
-			if (ewl_dnd_type_supported(window->dnd_types.types[i])) {
-				ecore_x_selection_xdnd_request(ev->win,
-					window->dnd_types.types[i]);
-				break;
-			}
-		}
-		if (i == window->dnd_types.num_types)
-			printf("No matching type found\n");
+		ewl_embed_window_position_get(embed, &wx, &wy);
 
-		printf("Drop!\n");
-
-		if (ev->source == (Ecore_X_Window)window->window) {
+		if (ev->source == (Ecore_X_Window)embed->evas_window) {
 			printf("Source is dest! - Retrieving local data\n");
 			internal = 1;
 		} else {
@@ -1218,7 +1205,9 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 		x = ev->position.x - wx;
 		y = ev->position.y - wy;
 
-		ewl_embed_dnd_drop_feed(embed, x, y, internal);
+		type = ewl_embed_dnd_drop_feed(embed, x, y, internal);
+		if (type)
+			ecore_x_selection_xdnd_request(ev->win, (char *)type);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);

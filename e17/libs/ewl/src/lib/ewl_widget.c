@@ -2213,6 +2213,13 @@ ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	/*
+	 * Increment the dnd awareness counter on the embed.
+	 */
+	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_AWARE,
+				EWL_FLAGS_PROPERTY_MASK))
+		ewl_embed_dnd_aware_set(emb);
+
+	/*
 	 * Smart Object allocation
 	 */
 	if (!w->smart_object) {
@@ -2379,6 +2386,13 @@ ewl_widget_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	pc = EWL_CONTAINER(w->parent);
+
+	/*
+	 * Decrement the dnd awareness counter on the embed.
+	 */
+	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_AWARE,
+				EWL_FLAGS_PROPERTY_MASK))
+		ewl_embed_dnd_aware_remove(emb);
 
 	/*
 	 * Remove all properties on the edje and hand it back to the embed for

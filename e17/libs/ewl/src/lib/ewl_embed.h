@@ -62,19 +62,23 @@ struct Ewl_Embed
 
 	Ecore_Hash     *obj_cache;  /**< Hash of object queues for reuse */
 
-	int             focus;       /**< Indicates if it receives focus */
-
 	struct
 	{
 		Ewl_Widget *clicked; /**< Last clicked widget */
 		Ewl_Widget *focused; /**< Last focused widget */
 		Ewl_Widget *mouse_in; /**< Last widget to receive a mouse_in */
+		Ewl_Widget *drop_widget; /**< The current DND drop target */
+		Ewl_Widget *drag_widget; /**< The current DND drag source */
 	} last;			     /**< Collection of widgets to last receive events */
 
         int             x; /**< Screen relative horizontal position of window */
         int             y; /**< Screen relative vertical position of window */
 
-	Ewl_Widget *dnd_widget;	     /**< The current DND widget */
+	int             dnd_count;   /**< DND aware widget count */
+	int             focus;       /**< Indicates if it receives focus */
+
+	Ewl_Dnd_Types 	 dnd_types;	/**< The dnd type */
+	Ewl_Widget 	*dnd_last_position;	/**< The last dnd position */
 };
 
 Ewl_Widget     *ewl_embed_new(void);
@@ -101,7 +105,7 @@ void            ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
 					  unsigned int modifiers);
 
 void		ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y,int*,int*,int*,int*);
-void		ewl_embed_dnd_drop_feed(Ewl_Embed* embed, int x, int y, int internal);
+const char     *ewl_embed_dnd_drop_feed(Ewl_Embed* embed, int x, int y, int internal);
 void		ewl_embed_dnd_data_feed(Ewl_Embed* embed, void *data, unsigned int len);
 void            ewl_embed_selection_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned int len);
 
@@ -142,6 +146,7 @@ void            ewl_embed_freeze(Ewl_Embed *e);
 void            ewl_embed_thaw(Ewl_Embed *e);
 
 void            ewl_embed_dnd_aware_set(Ewl_Embed *embed);
+void            ewl_embed_dnd_aware_remove(Ewl_Embed *embed);
 
 /*
  * Internally used callbacks, override at your own risk.

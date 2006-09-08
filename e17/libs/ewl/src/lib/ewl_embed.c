@@ -671,12 +671,12 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 
 	embed->last.mouse_in = widget;
 
-	if (embed->dnd_widget && ewl_object_state_has(EWL_OBJECT(embed->dnd_widget),
+	if (embed->last.drag_widget && ewl_object_state_has(EWL_OBJECT(embed->last.drag_widget),
 								EWL_FLAG_STATE_DND))
-		ewl_callback_call_with_event_data(embed->dnd_widget,
+		ewl_callback_call_with_event_data(embed->last.drag_widget,
 						  EWL_CALLBACK_MOUSE_MOVE, &ev);
 	else
-		embed->dnd_widget = NULL;
+		embed->last.drag_widget = NULL;
 
 	if (embed->last.clicked && ewl_object_state_has(EWL_OBJECT(embed->last.clicked),
 								EWL_FLAG_STATE_PRESSED))
@@ -694,53 +694,70 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
  * @return Returns no value.
  * @brief Sends the event for a DND drop into an embed.
  */
-void
+const char *
 ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 {
 	Ewl_Widget *widget = NULL;
-	Ewl_Event_Dnd_Drop ev;
-	void *drop_data = NULL;
+	const char *result = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR_RET("embed", embed, FALSE);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, FALSE);
 
 	ewl_embed_active_set(embed, TRUE);
 
-	ev.x = x;
-	ev.y = y;
-
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
 	if (widget) {
+		int i;
 		Ewl_Widget *parent;
 
-
-		embed->dnd_widget = widget;
-		if (internal) {
-			Ewl_Widget_Drag cb;
-			
-			/* Retrieve the callback for this widget's data */
-			cb = (Ewl_Widget_Drag)ewl_widget_data_get(widget, "DROP_CB");
-			if (cb) { 
-				drop_data = (*cb)();
-				ev.data = drop_data;
+		/* Request a DND data request */
+		for (i = 0; i < embed->dnd_types.num_types; i++) {
+			if (ewl_dnd_accepted_types_contains(widget, embed->dnd_types.types[i])) {
+				result = embed->dnd_types.types[i];
+				break;
 			}
-		} else {
-			/* Handle external drops */
-			ev.data = NULL;
 		}
 
-		parent = widget;
-		while (parent) {
-			ewl_callback_call_with_event_data(parent,
-				EWL_CALLBACK_DND_DROP, &ev);
-			parent = parent->parent;
+
+		if (result) {
+			Ewl_Event_Dnd_Drop ev;
+
+			ev.x = x;
+			ev.y = y;
+
+			if (internal) {
+				Ewl_Widget_Drag cb;
+				
+				/* Retrieve the callback for widget's data */
+				/* FIXME: We shouldn't use widget data like
+				 * this, and there needs to be a data request /
+				 * send protocol with widgets anyways */
+				cb = (Ewl_Widget_Drag)ewl_widget_data_get(widget, "DROP_CB");
+				if (cb) { 
+					void *drop_data;
+					drop_data = (*cb)();
+					ev.data = drop_data;
+				}
+			} else {
+				/* Handle external drops */
+				ev.data = NULL;
+			}
+
+
+			embed->last.drag_widget = widget;
+			parent = widget;
+			while (parent) {
+				ewl_callback_call_with_event_data(parent,
+					EWL_CALLBACK_DND_DROP, &ev);
+				parent = parent->parent;
+			}
 		}
 
 		ewl_dnd_drag_widget_clear();
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_PTR(result, DLEVEL_STABLE);
 }
 
 /**
@@ -772,17 +789,13 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
 	if (widget) {
 		Ewl_Widget *parent;
-		Ewl_Window *window;
-
-		/* First see if we need to send an 'enter' to this widget */
-		window = ewl_window_window_find(embed->evas_window);
 
 		/* If the last position event was over a different widget,
 		 * feed the leaving widget a 'null' */
-		if (window->dnd_last_position != widget) {
-			if (window->dnd_last_position) {
+		if (embed->dnd_last_position != widget) {
+			if (embed->dnd_last_position) {
 
-				parent = window->dnd_last_position;
+				parent = embed->dnd_last_position;
 				while (parent) {
 					ewl_callback_call_with_event_data(parent,
 						EWL_CALLBACK_DND_LEAVE, &ev);
@@ -809,8 +822,9 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 			parent = parent->parent;
 		}
 
-		ewl_dnd_position_windows_set(EWL_WIDGET(window));
-		window->dnd_last_position = widget;
+		embed->last.drop_widget = widget;
+		ewl_dnd_position_windows_set(EWL_WIDGET(embed));
+		embed->dnd_last_position = widget;
 
 		*px = CURRENT_X(widget);
 		*py = CURRENT_Y(widget);
@@ -921,15 +935,15 @@ ewl_embed_selection_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned
 	/*
 	 * If a widget is expecting DND data, send the data to the widget
 	 */
-	if (embed->dnd_widget) {
-		if (ewl_dnd_accepted_types_contains(embed->dnd_widget, type)) {
+	if (embed->last.drop_widget) {
+		if (ewl_dnd_accepted_types_contains(embed->last.drop_widget, type)) {
 			/* 
 			 * setup the event struct 
 			 */
 			ev.type = type;
 			ev.data = data;
 			ev.len = len;
-			ewl_callback_call_with_event_data(embed->dnd_widget,
+			ewl_callback_call_with_event_data(embed->last.drop_widget,
 							  EWL_CALLBACK_DND_DATA,
 							  &ev);
 		}
@@ -1432,10 +1446,15 @@ ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
 				&& ewl_widget_parent_of(w, e->last.mouse_in)))
 		e->last.mouse_in = NULL;
 
-	if ((w == e->dnd_widget) 
+	if ((w == e->last.drop_widget) 
 			|| (RECURSIVE(w) 
-				&& ewl_widget_parent_of(w, e->dnd_widget)))
-		e->dnd_widget = NULL;
+				&& ewl_widget_parent_of(w, e->last.drop_widget)))
+		e->last.drop_widget = NULL;
+
+	if ((w == e->last.drag_widget) 
+			|| (RECURSIVE(w) 
+				&& ewl_widget_parent_of(w, e->last.drag_widget)))
+		e->last.drag_widget = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1646,6 +1665,9 @@ ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 				emb);
 	}
 
+	if (emb->dnd_count)
+		ewl_engine_embed_dnd_aware_set(emb);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1833,7 +1855,29 @@ ewl_embed_dnd_aware_set(Ewl_Embed *embed)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	ewl_engine_embed_dnd_aware_set(embed);
+	if (REALIZED(embed) && (embed->dnd_count == 0))
+		ewl_engine_embed_dnd_aware_set(embed);
+	embed->dnd_count++;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed to remove dnd aware
+ * @return Returns no value.
+ * @brief Cancels an embed as being DND aware
+ */
+void
+ewl_embed_dnd_aware_remove(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	/* FIXME: Need to remove the XdndAware property on refcount == 0
+	if (REALIZED(embed) && (embed->dnd_count == 0))
+		ewl_engine_embed_dnd_aware_set(embed); */
+	embed->dnd_count--;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

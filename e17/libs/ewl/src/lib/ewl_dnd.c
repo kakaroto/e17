@@ -34,6 +34,7 @@ Ecore_Event_Handler *ewl_dnd_mouse_move_handler;
 char *ewl_dnd_drop_types[] = { "text/uri-list", "text/plain", NULL };
 
 static char *ewl_dnd_types_encode(const char **types);
+static char * ewl_dnd_type_stpcpy(char *dst, const char *src);
 static int ewl_dnd_types_encoded_contains(char *types, char *type);
 
 static int ewl_dnd_event_mouse_up(void *data, int type, void *event);
@@ -134,7 +135,17 @@ ewl_dnd_provided_types_set(Ewl_Widget *w, const char **types)
 	type = ecore_hash_get(ewl_dnd_provided_hash, w);
 	IF_FREE(type);
 
-	ecore_hash_set(ewl_dnd_provided_hash, w, ewl_dnd_types_encode(types));
+	if (types && *types) {
+		type = ewl_dnd_types_encode(types);
+		ecore_hash_set(ewl_dnd_provided_hash, w, type);
+		ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DRAGGABLE,
+				EWL_FLAGS_PROPERTY_MASK);
+	}
+	else {
+		ewl_object_flags_remove(EWL_OBJECT(w),
+				EWL_FLAG_PROPERTY_DRAGGABLE,
+				EWL_FLAGS_PROPERTY_MASK);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -195,10 +206,32 @@ ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	type = ecore_hash_get(ewl_dnd_accepted_hash, w);
+	type = ecore_hash_remove(ewl_dnd_accepted_hash, w);
 	IF_FREE(type);
 
-	ecore_hash_set(ewl_dnd_accepted_hash, w, ewl_dnd_types_encode(types));
+	if (types && *types) {
+		type = ewl_dnd_types_encode(types);
+		ecore_hash_set(ewl_dnd_accepted_hash, w, type);
+		ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_AWARE,
+				EWL_FLAGS_PROPERTY_MASK);
+		if (REALIZED(w) && !OBSCURED(w)) {
+			Ewl_Embed *emb;
+
+			emb = ewl_embed_widget_find(w);
+			ewl_embed_dnd_aware_set(emb);
+		}
+	}
+	else {
+		ewl_object_flags_remove(EWL_OBJECT(w),
+				EWL_FLAG_PROPERTY_DND_AWARE,
+				EWL_FLAGS_PROPERTY_MASK);
+		if (REALIZED(w) && !OBSCURED(w)) {
+			Ewl_Embed *emb;
+
+			emb = ewl_embed_widget_find(w);
+			ewl_embed_dnd_aware_remove(emb);
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -267,8 +300,8 @@ ewl_dnd_types_for_widget_get(Ewl_Widget *widget)
 		parent = parent->parent;
 
 	/* Now check if this obj we found is a window */
-	if (parent && ewl_widget_type_is(parent, "window")) 
-		DRETURN_PTR(&(EWL_WINDOW(parent)->dnd_types), DLEVEL_STABLE);
+	if (parent && ewl_widget_type_is(parent, "embed")) 
+		DRETURN_PTR(&(EWL_EMBED(parent)->dnd_types), DLEVEL_STABLE);
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
@@ -474,12 +507,25 @@ ewl_dnd_types_encode(const char **types)
 	type = tmptype = NEW(char, len + 1);
 	count = i;
 	for (i = 0; i < count; i++) {
-		tmptype = stpcpy(tmptype, types[i]);
+		tmptype = ewl_dnd_type_stpcpy(tmptype, types[i]);
 		tmptype++;
 	}
 	*tmptype = '\0';
 
 	DRETURN_PTR(type, DLEVEL_STABLE);
+}
+
+static char *
+ewl_dnd_type_stpcpy(char *dst, const char *src)
+{
+	while (*src) {
+		*dst = *src;
+		dst++;
+		src++;
+	}
+	*dst = '\0';
+
+	return dst;
 }
 
 static int
@@ -531,7 +577,7 @@ ewl_dnd_event_mouse_up(void *data __UNUSED__, int type __UNUSED__,
 		pos = ecore_hash_keys(ewl_dnd_position_hash);
 		ecore_list_goto_first(pos);
 		while ((val = ecore_list_remove_first(pos))) {
-			EWL_WINDOW(val)->dnd_last_position = NULL;
+			EWL_EMBED(val)->dnd_last_position = NULL;
 			ecore_hash_remove(ewl_dnd_position_hash, val);
 		}
 		ecore_list_destroy(pos);
