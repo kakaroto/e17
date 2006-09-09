@@ -858,20 +858,11 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 void
 ewl_text_font_set(Ewl_Text *t, const char *font)
 {
-	Ewl_Text_Context *change;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	change = ewl_text_context_new();
-
-	/* null font will go back to the theme default */
-	if (!font) change->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
-	else change->font = strdup(font);
-
-	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_FONT, change);
-	ewl_text_context_release(change);
+	ewl_text_font_source_set(t, NULL, font);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -887,28 +878,11 @@ ewl_text_font_set(Ewl_Text *t, const char *font)
 void
 ewl_text_font_apply(Ewl_Text *t, const char *font, unsigned int char_len)
 {
-	Ewl_Text_Context *tx;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	/* if length is 0 we have nothing to do */
-	if (char_len == 0) 
-		DRETURN(DLEVEL_STABLE);
-
-	tx = ewl_text_context_new();
-
-	/* null font will go back to the theme default */
-	if (!font) tx->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
-	else tx->font = strdup(font);
-
-	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_FONT, tx,
-						t->cursor_position, char_len);
-	ewl_text_context_release(tx);
-	t->dirty = TRUE;
-
-	ewl_widget_configure(EWL_WIDGET(t));
+	ewl_text_font_source_apply(t, NULL, font, char_len);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -934,6 +908,100 @@ ewl_text_font_get(Ewl_Text *t, unsigned int char_idx)
 		font = strdup(tx->font);
 
 	DRETURN_PTR(font, DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Widget to set the font into
+ * @param souce: The font source to set
+ * @param font: The font to set
+ * @return Returns no value
+ * @brief This will set the current font to be used when we insert more text
+ */
+void
+ewl_text_font_source_set(Ewl_Text *t, const char *source, const char *font)
+{
+	Ewl_Text_Context *change;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+
+	change = ewl_text_context_new();
+
+	if (source) change->font_source = strdup(source);
+
+	/* null font will go back to the theme default */
+	if (!font) change->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+	else change->font = strdup(font);
+
+	ewl_text_tree_context_set(t, EWL_TEXT_CONTEXT_MASK_FONT, change);
+	ewl_text_context_release(change);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the font too
+ * @param source: The font souce
+ * @param font: The font to set
+ * @param char_len: The distance to set the font over
+ * @return Returns no value
+ * @brief This will apply the specfied @a font from the current cursor position to
+ * the length specified
+ */
+void
+ewl_text_font_source_apply(Ewl_Text *t, const char *source, const char *font, 
+							unsigned int char_len)
+{
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+
+	/* if length is 0 we have nothing to do */
+	if (char_len == 0) 
+		DRETURN(DLEVEL_STABLE);
+
+	tx = ewl_text_context_new();
+
+	if (source) tx->font_source = strdup(source);
+
+	/* null font will go back to the theme default */
+	if (!font) tx->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+	else tx->font = strdup(font);
+
+	ewl_text_tree_context_apply(t, EWL_TEXT_CONTEXT_MASK_FONT, tx,
+						t->cursor_position, char_len);
+	ewl_text_context_release(tx);
+	t->dirty = TRUE;
+
+	ewl_widget_configure(EWL_WIDGET(t));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the font from
+ * @param char_idx: The index to get the font at
+ * @return Returns no value
+ * @brief This will retrive the font source used at the specified index in the text
+ */
+char *
+ewl_text_font_source_get(Ewl_Text *t, unsigned int char_idx)
+{
+	char *source = NULL;
+	Ewl_Text_Context *tx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
+
+	tx = ewl_text_tree_context_get(t->formatting.tree, char_idx);
+	if (tx && tx->font_source)
+		source = strdup(tx->font_source);
+
+	DRETURN_PTR(source, DLEVEL_STABLE);
 }
 
 /**
@@ -2629,12 +2697,24 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 	fmt[pos].val = t;
 	fmt[pos++].free = FALSE;
 
-	fmt[pos].key = "font_source";
-	fmt[pos].val = ewl_theme_path_get();
-	fmt[pos++].free = TRUE;
-
 	t = NEW(char, 128);
-	snprintf(t, 128, "fonts/%s", ctx->font);
+
+	fmt[pos].key = "font_source";
+	if (ctx->font_source)
+	{
+		fmt[pos].val = ctx->font_source;
+		fmt[pos++].free = FALSE;
+
+		t = strdup(ctx->font);
+	}
+	else
+	{
+		fmt[pos].val = ewl_theme_path_get();
+		fmt[pos++].free = TRUE;
+
+		snprintf(t, 128, "fonts/%s", ctx->font);
+	}
+
 	fmt[pos].key = "font";
 	fmt[pos].val = t;
 	fmt[pos++].free = TRUE;
@@ -4267,6 +4347,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 
 	/* handle default values */
 	tmp->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+	tmp->font_source = NULL;
 	tmp->size = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
 
 	tmp->color.r = ewl_theme_data_int_get(EWL_WIDGET(t), "color/r");
@@ -4405,7 +4486,7 @@ ewl_text_context_name_get(Ewl_Text_Context *tx, unsigned int context_mask,
 						Ewl_Text_Context *tx_change)
 {
 	char name[2048];
-	char *t = NULL, *t2 = NULL;
+	char *t = NULL, *t2 = NULL, *s = NULL, *s2 = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("tx", tx, NULL);
@@ -4413,16 +4494,24 @@ ewl_text_context_name_get(Ewl_Text_Context *tx, unsigned int context_mask,
 	if (context_mask > 0)
 	{
 		DCHECK_PARAM_PTR_RET("tx_change", tx_change, NULL);
+
 		if (!tx_change->font) t2 = "";
 		else t2 = tx_change->font;
+
+		if (!tx_change->font_source) s2 = "";
+		else s2 = tx_change->font_source;
 	}
 
 	if (!tx->font) t = "";
 	else t = tx->font;
 
-	snprintf(name, sizeof(name), "f%ss%ds%da%dw%dr%dg%db%da%dcbg%d%d%d%dcg%d%d%d%d"
+	if (!tx->font_source) s = "";
+	else s = tx->font_source;
+
+	snprintf(name, sizeof(name), "f%s%ss%ds%da%dw%dr%dg%db%da%dcbg%d%d%d%dcg%d%d%d%d"
 				"co%d%d%d%dcs%d%d%d%dcst%d%d%d%dcu%d%d%d%dcdu%d%d%d%d", 
-		((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? t2: t),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? s2 : s),
+		((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? t2 : t),
 		((context_mask & EWL_TEXT_CONTEXT_MASK_SIZE) ? tx_change->size : tx->size),
 		((context_mask & EWL_TEXT_CONTEXT_MASK_STYLES) ? tx_change->styles : tx->styles),
 		((context_mask & EWL_TEXT_CONTEXT_MASK_ALIGN) ? tx_change->align : tx->align),
@@ -4515,6 +4604,10 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 			{
 				IF_FREE(new_tx->font);
 				new_tx->font = strdup(tx_change->font);
+
+				IF_FREE(new_tx->font_source);
+				if (tx_change->font_source)
+					new_tx->font_source = strdup(tx_change->font_source);
 			}
 			else if (context_mask & EWL_TEXT_CONTEXT_MASK_SIZE)
 				new_tx->size = tx_change->size;
@@ -4664,7 +4757,7 @@ ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b)
 static void
 ewl_text_context_print(Ewl_Text_Context *tx, const char *indent)
 {
-	char *t;
+	char *t, *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tx", tx);
@@ -4672,7 +4765,10 @@ ewl_text_context_print(Ewl_Text_Context *tx, const char *indent)
 	if (!tx->font) t = "";
 	else t = tx->font;
 
-	printf("%sfont: %s\n"
+	if (!tx->font_source) s = "";
+	else s = tx->font_source;
+
+	printf("%sfont: %s (source: %s)\n"
 		"%ssize %d\n"
 		"%sstyle %d\n"
 		"%salign %d\n"
@@ -4680,13 +4776,12 @@ ewl_text_context_print(Ewl_Text_Context *tx, const char *indent)
 		"%sred %d\n"
 		"%sgreen %d\n"
 		"%sblue %d\n" 
-		"%salpha %d\n"
-		"%s\n", 
-			indent, t, indent, tx->size, indent, 
+		"%salpha %d",
+			indent, t, s, indent, tx->size, indent, 
 			tx->styles, indent, tx->align, 
 			indent, tx->wrap, indent, tx->color.r, 
 			indent, tx->color.g, indent, tx->color.b, 
-			indent, tx->color.a, tx->format);
+			indent, tx->color.a);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

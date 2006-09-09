@@ -146,6 +146,13 @@ void		 ewl_text_font_apply(Ewl_Text *t, const char *font,
 							unsigned int char_len);
 char 		*ewl_text_font_get(Ewl_Text *t, unsigned int char_idx);
 
+void		 ewl_text_font_source_set(Ewl_Text *t, const char *source, 
+							const char *font);
+void		 ewl_text_font_source_apply(Ewl_Text *t, const char *source,
+							const char *font,
+							unsigned int char_len);
+char		*ewl_text_font_source_get(Ewl_Text *t, unsigned int char_idx);
+
 void		 ewl_text_font_size_set(Ewl_Text *t, unsigned int size);
 void		 ewl_text_font_size_apply(Ewl_Text *t, unsigned int size,
 							unsigned int char_len);
@@ -322,6 +329,7 @@ void ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 struct Ewl_Text_Context
 {
 	char *font;				/**< Font name */
+	char *font_source;			/**< The font source */
 	unsigned int styles;			/**< Styles set in this node */
 	unsigned int align;			/**< Text alignment */
 	Ewl_Text_Wrap wrap;			/**< Text wrap setting */
