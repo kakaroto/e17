@@ -30,7 +30,7 @@ epp_SOURCES = \
 	cpplib.c \
 	cppmain.c 
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I$(includedir)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)
 
 DEFS= \
 -DHAVE_STRERROR \
@@ -50,8 +50,6 @@ DEFS= \
 -DTARGET_CR=13 \
 -DTARGET_TAB=9 \
 -DTARGET_VT=11
-
-LIBS =
 
 uninstall-local:
 	for i in $(bin_PROGRAMS); do \

@@ -5,7 +5,7 @@ eesh_SOURCES = E.h comms.c main.c
 
 LDADD = $(X_LIBS) -lX11
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(X_CFLAGS)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) $(X_CFLAGS)
 
 uninstall-local:
 	for i in $(bin_PROGRAMS); do \
