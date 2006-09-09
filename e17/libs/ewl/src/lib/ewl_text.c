@@ -41,7 +41,7 @@ static Ewl_Text_Tree *ewl_text_tree_node_split(Ewl_Text *t, Ewl_Text_Tree *tree,
 static void ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree);
 
 static void ewl_text_tree_shrink(Ewl_Text_Tree *tree);
-static char *ewl_text_format_get(Ewl_Text_Context *ctx);
+static void ewl_text_format_get(Ewl_Text_Context *ctx);
 static char *ewl_text_color_string_get(int r, int g, int b, int a);
 static Evas_Textblock_Cursor *ewl_text_textblock_cursor_position(Ewl_Text *t, 
 							unsigned int char_idx);
@@ -2466,8 +2466,8 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 }
 
 /* This will give you the format string to pass to textblock based on the
- * context information. You _MUST_ free this format when your done with it */
-static char *
+ * context information. */ 
+static void
 ewl_text_format_get(Ewl_Text_Context *ctx)
 {
 	char *format, *t;
@@ -2480,7 +2480,11 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 	} fmt[128];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("ctx", ctx, NULL);
+	DCHECK_PARAM_PTR("ctx", ctx);
+
+	/* only do this once if possible */
+	if (ctx->format)
+		DRETURN(DLEVEL_STABLE);
 
 	/* create the style string */
 	if (ctx->styles != EWL_TEXT_STYLE_NONE)
@@ -2667,7 +2671,10 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 		if (fmt[i].free) FREE(fmt[i].val);
 	}
 
-	DRETURN_PTR(format, DLEVEL_STABLE);
+	ctx->format = ecore_string_instance(format);
+	FREE(format);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static char *
@@ -2856,8 +2863,6 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	Ewl_Embed *emb;
 	Ewl_Text_Context *ctx;
 	Evas_Textblock_Style *st;
-	char *fmt, *fmt2;
-	int len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -2875,15 +2880,6 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	emb = ewl_embed_widget_find(w);
 	if (!emb) DRETURN(DLEVEL_STABLE);
 
-	ctx = ewl_text_context_default_create(t);
-	fmt = ewl_text_format_get(ctx);
-	ewl_text_context_release(ctx);
-
-	len = strlen(fmt) + 12;  /* 12 = DEFAULT='' + \n + \0 */
-	fmt2 = NEW(char, len);
-	snprintf(fmt2, len, "DEFAULT='%s'\n", fmt);
-	FREE(fmt);
-
 	/* create the textblock */
 	t->textblock = ewl_embed_object_request(emb, "textblock");
 	if (!t->textblock)
@@ -2891,11 +2887,22 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	if (t->textblock) 
 	{
+		char *fmt2;
+		int len;
+
+		ctx = ewl_text_context_default_create(t);
+		ewl_text_format_get(ctx);
+
+		len = strlen(ctx->format) + 12;  /* 12 = DEFAULT='' + \n + \0 */
+		fmt2 = NEW(char, len);
+		snprintf(fmt2, len, "DEFAULT='%s'\n", ctx->format);
+
 		st = evas_textblock_style_new();
 		evas_textblock_style_set(st, fmt2);
 		evas_object_textblock_style_set(t->textblock, st);
 		evas_textblock_style_free(st);
 
+		ewl_text_context_release(ctx);
 		FREE(fmt2);
 
 		if (w->fx_clip_box)
@@ -4235,6 +4242,8 @@ ewl_text_context_dup(Ewl_Text_Context *old)
 	tx->font = ((old->font) ? strdup(old->font) : NULL);
 	tx->ref_count = 1;
 
+	tx->format = ((old->format) ? ecore_string_instance((char *)old->format) : NULL);
+
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
 
@@ -4576,6 +4585,9 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 				new_tx->style_colors.double_underline.a = tx_change->style_colors.double_underline.a;
 			}
 
+			if (new_tx->format) ecore_string_release(new_tx->format);
+			new_tx->format = NULL;
+
 			ecore_hash_set(context_hash, strdup(t), new_tx);
 		}
 	}
@@ -4625,6 +4637,7 @@ ewl_text_context_release(Ewl_Text_Context *tx)
 	ecore_hash_remove(context_hash, t);
 
 	IF_FREE(tx->font);
+	if (tx->format) ecore_string_release(tx->format);
 	FREE(tx);
 	FREE(t);
 
@@ -4667,12 +4680,13 @@ ewl_text_context_print(Ewl_Text_Context *tx, const char *indent)
 		"%sred %d\n"
 		"%sgreen %d\n"
 		"%sblue %d\n" 
-		"%salpha %d\n", 
+		"%salpha %d\n"
+		"%s\n", 
 			indent, t, indent, tx->size, indent, 
 			tx->styles, indent, tx->align, 
 			indent, tx->wrap, indent, tx->color.r, 
 			indent, tx->color.g, indent, tx->color.b, 
-			indent, tx->color.a);
+			indent, tx->color.a, tx->format);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -5569,16 +5583,15 @@ ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree,
 	/* if we have a context we have something to say */
 	if (tree->tx)
 	{
-		char *fmt, *ptr, tmp;
+		char *ptr, tmp;
 		Evas_Textblock_Cursor *cursor;
 
-		fmt = ewl_text_format_get(tree->tx);
+		ewl_text_format_get(tree->tx);
 
 		/* we don't free this cursor as it is actually const
 		 * Evas_Textblock_Cursor * and i'm casting it...  */
 		cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(t->textblock);
-		evas_textblock_cursor_format_append(cursor, fmt);
-		FREE(fmt);
+		evas_textblock_cursor_format_append(cursor, tree->tx->format);
 
 		ptr = t->text + byte_idx;
 		tmp = *(ptr + tree->length.bytes);

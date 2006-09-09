@@ -340,6 +340,7 @@ struct Ewl_Text_Context
 	} style_colors;				/**< Colour information */
 
 	unsigned int ref_count;			/**< Number of references to this context */
+	const char *format;			/**< This context's format string */
 };
 
 int  ewl_text_context_init(void);
