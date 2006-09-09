@@ -1081,6 +1081,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 	int x, y, wx, wy;
 	int px, py, pw, ph;
 	Ecore_X_Rectangle rect;
+	int will_accept = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("e", e, FALSE);
@@ -1102,25 +1103,25 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 		if (embed) {
 			/* First see if we need to send an 'enter' 
 			 * to the widget */
-			ewl_embed_dnd_position_feed(embed, x, y, &px,
-							&py, &pw, &ph);
+			if (ewl_embed_dnd_position_feed(embed, x, y, &px,
+							&py, &pw, &ph))
+				will_accept = 1;
 
-			/*rect.x = px;
-			rect.y = py;
-			rect.width = pw;
-			rect.height = ph;*/
+			if (embed->last.drop_widget) {
+				rect.x = px;
+				rect.y = py;
+				rect.width = pw;
+				rect.height = ph;
+			} else {
+				rect.x = 0;
+				rect.y = 0;
+				rect.width = 0;
+				rect.height = 0;
+			}
 
-			rect.x = 0;
-			rect.y = 0;
-			rect.width = 0;
-			rect.height = 0;
-		} else {
-			rect.x = 0;
-			rect.y = 0;
-			rect.width = 0;
-			rect.height = 0;
+			/* Don't send status for windows we don't own */
+			ecore_x_dnd_send_status(will_accept, 0, rect, ECORE_X_DND_ACTION_PRIVATE);
 		}
-		ecore_x_dnd_send_status(1, 0, rect, ECORE_X_DND_ACTION_PRIVATE);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);

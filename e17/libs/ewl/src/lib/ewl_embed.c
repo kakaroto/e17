@@ -771,15 +771,16 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
  * @return Returns no value.
  * @brief Sends the event for a DND position into an embed.
  */
-void
+const char *
 ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, int* pw, int* ph)
 {
+	const char *result = NULL;
 	Ewl_Widget *widget = NULL;
 	Ewl_Event_Dnd_Position ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
 
 	ev.x = x;
 	ev.y = y;
@@ -788,11 +789,13 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
 	if (widget) {
+		int i;
 		Ewl_Widget *parent;
 
 		/* If the last position event was over a different widget,
 		 * feed the leaving widget a 'null' */
 		if (embed->dnd_last_position != widget) {
+
 			if (embed->dnd_last_position) {
 
 				parent = embed->dnd_last_position;
@@ -826,6 +829,14 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 		ewl_dnd_position_windows_set(EWL_WIDGET(embed));
 		embed->dnd_last_position = widget;
 
+		/* Request a DND data request */
+		for (i = 0; i < embed->dnd_types.num_types; i++) {
+			if (ewl_dnd_accepted_types_contains(widget, embed->dnd_types.types[i])) {
+				result = embed->dnd_types.types[i];
+				break;
+			}
+		}
+
 		*px = CURRENT_X(widget);
 		*py = CURRENT_Y(widget);
 		*pw = CURRENT_W(widget);
@@ -834,7 +845,7 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 		DWARNING("Could not find widget for dnd position event");
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_PTR(result, DLEVEL_STABLE);
 }
 
 /**
