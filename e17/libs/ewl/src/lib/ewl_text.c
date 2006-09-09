@@ -2566,8 +2566,14 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 				/* will this push us past the end? */
 				if ((cur_char_idx + 1) > char_idx)
 				{
+					unsigned int byte_idx;
+
+					ewl_text_char_to_byte(t, 
+							char_idx - cur_char_idx,
+							0, &byte_idx,
+							NULL);
 					evas_textblock_cursor_pos_set(cursor, 
-							char_idx - cur_char_idx);
+							byte_idx);
 					break;
 				}
 				else
@@ -2588,8 +2594,11 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 			 * current index and set that */
 			if ((cur_char_idx + pos) > char_idx)
 			{
-				evas_textblock_cursor_pos_set(cursor, 
-							char_idx - cur_char_idx);
+				unsigned int byte_idx;
+
+				ewl_text_char_to_byte(t, char_idx - cur_char_idx,
+							0, &byte_idx, NULL);
+				evas_textblock_cursor_pos_set(cursor, byte_idx);
 				break;
 			}
 			cur_char_idx += pos;
