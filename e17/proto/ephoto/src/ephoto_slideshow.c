@@ -70,6 +70,7 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  Ewl_Widget *image;
  char *image_path;
  Slide_Config *sc;
+ int ew, eh;
  
  sc = parse_slideshow_config();
  image_path = ecore_dlist_goto_first(current_thumbs);
@@ -83,8 +84,10 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
 	ewl_window_fullscreen_set(EWL_WINDOW(window), 1);
  if (sc->custom_size)
  	ewl_object_maximum_size_set(EWL_OBJECT(window), sc->w_size, sc->h_size);
+	ewl_object_minimum_size_set(EWL_OBJECT(window), sc->w_size, sc->h_size);
  ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, destroy_slideshow, NULL);
  ewl_callback_append(window, EWL_CALLBACK_CLICKED, destroy_slideshow, NULL); 
+ ewl_window_dialog_set(EWL_WINDOW(window), 1);
  ewl_widget_show(window);
 
  cell = ewl_cell_new();
@@ -92,6 +95,8 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(window), cell);
  ewl_widget_show(cell);
 
+ ewl_object_current_size_get(EWL_OBJECT(window), &ew, &eh);
+ 
  image = ewl_image_new();
  ewl_image_file_set(EWL_IMAGE(image), image_path, NULL);
  if (sc->zoom)
@@ -100,10 +105,12 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
 	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
  if (sc->keep_aspect)
 	ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
+ ewl_image_size_set(EWL_IMAGE(image), ew, eh);
+ ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(cell), image);
  ewl_widget_show(image);
 
- timer = ecore_timer_add(sc->length, change_picture, image);
+ timer = ecore_timer_add(4, change_picture, image);
 }
 
 Slide_Config *parse_slideshow_config()
