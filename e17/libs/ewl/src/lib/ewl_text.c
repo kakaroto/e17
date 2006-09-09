@@ -63,6 +63,10 @@ static void ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx,
 						unsigned int char_len,
 						unsigned int *byte_idx,
 						unsigned int *byte_len);
+static void ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx, 
+						unsigned int byte_len,
+						unsigned int *char_idx,
+						unsigned int *char_len);
 static unsigned int ewl_text_char_length_get(const char *text);
 static char *ewl_text_text_next_char(const char *text, unsigned int *idx);
 
@@ -217,6 +221,7 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int char_idx, int *x, int *y,
 	Evas_Coord tx = 0, ty = 0, tw = 0, th = 0;
 	Evas_Textblock_Cursor *cursor;
 	int shifting = 0;
+	unsigned int byte_idx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -242,7 +247,8 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int char_idx, int *x, int *y,
 		shifting = 1;
 	}
 
-	cursor = ewl_text_textblock_cursor_position(t, char_idx);
+	ewl_text_char_to_byte(t, char_idx, 0, &byte_idx, NULL);
+	cursor = ewl_text_textblock_cursor_position(t, byte_idx);
 	evas_textblock_cursor_char_geometry_get(cursor, &tx, &ty, &tw, &th);
 	evas_textblock_cursor_free(cursor);
 
@@ -269,7 +275,7 @@ unsigned int
 ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 {
 	Evas_Textblock_Cursor *cursor;
-	unsigned int char_idx = 0;
+	unsigned int byte_idx = 0, char_idx = 0, ctmp = 0;
 	Evas_Coord tx, ty, cx = 0, cy, cw, ch;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -330,8 +336,11 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 			 char_idx ++;
 	}
 
-	char_idx += ewl_text_textblock_cursor_to_index(cursor);
+	byte_idx = ewl_text_textblock_cursor_to_index(cursor);
+	ewl_text_byte_to_char(t, byte_idx, 0, &ctmp, NULL);
 	evas_textblock_cursor_free(cursor);
+
+	char_idx += ctmp;
 
 	DRETURN_INT(char_idx, DLEVEL_STABLE);
 }
@@ -2166,7 +2175,7 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
  * char_pos + char_len */
 static void
 ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
-					unsigned int *byte_idx, unsigned int *byte_len)
+				unsigned int *byte_idx, unsigned int *byte_len)
 {
 	unsigned int char_count = 0, bidx = 0;
 	Ewl_Text_Tree *child, *parent;
@@ -2230,6 +2239,78 @@ ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
 	}
 
 	if (byte_idx) *byte_idx = bidx;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/* This will determine the number of chars to get to byte_idx in the text
+ * and, if needed will get the number of chars between byte_idx and 
+ * byte_idx + byte_len */
+static void
+ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx, unsigned int byte_len, 
+			unsigned int *char_idx, unsigned int *char_len)
+{
+	unsigned int byte_count = 0, cidx = 0;
+	Ewl_Text_Tree *child, *parent;
+	  
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+
+	child = ewl_text_tree_node_in_bytes_get(t->formatting.tree, 
+					byte_idx, TRUE); /* XXX TRUE or FALSE? */
+	parent = child->parent;
+	while (parent)
+	{
+		Ewl_Text_Tree *sibling;
+
+		/* count up the siblings before us */
+		ecore_list_goto_first(parent->children);
+		while ((sibling = ecore_list_next(parent->children)) != child)
+		{
+			cidx += sibling->length.chars;
+			byte_count += sibling->length.bytes;
+		}
+
+		child = parent;
+		parent = child->parent;
+	}
+
+	/* we still need to count within this node */
+	while (byte_count < byte_idx)
+	{
+		unsigned int bytes;
+
+		ewl_text_text_next_char(t->text + byte_count, &bytes);
+		byte_count += bytes;
+		cidx ++;
+	}
+
+	if (char_len)
+	{
+		if (byte_len == 0)
+			*char_len = 0;
+
+		else
+		{
+			char *txt;
+
+			txt = t->text + byte_idx;
+			byte_count = 0;
+			while (byte_count < byte_len)
+			{
+				unsigned int bytes;
+
+				txt = ewl_text_text_next_char(txt, &bytes);
+				byte_count += bytes;
+				(*char_len) ++;
+			}
+
+		}
+
+	}
+
+	if (char_idx) *char_idx = cidx;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2566,14 +2647,8 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 				/* will this push us past the end? */
 				if ((cur_char_idx + 1) > char_idx)
 				{
-					unsigned int byte_idx;
-
-					ewl_text_char_to_byte(t, 
-							char_idx - cur_char_idx,
-							0, &byte_idx,
-							NULL);
 					evas_textblock_cursor_pos_set(cursor, 
-							byte_idx);
+							char_idx - cur_char_idx);
 					break;
 				}
 				else
@@ -2594,11 +2669,8 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 			 * current index and set that */
 			if ((cur_char_idx + pos) > char_idx)
 			{
-				unsigned int byte_idx;
-
-				ewl_text_char_to_byte(t, char_idx - cur_char_idx,
-							0, &byte_idx, NULL);
-				evas_textblock_cursor_pos_set(cursor, byte_idx);
+				evas_textblock_cursor_pos_set(cursor, 
+							char_idx - cur_char_idx);
 				break;
 			}
 			cur_char_idx += pos;
@@ -4645,6 +4717,54 @@ ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int char_idx,
 			break;
 		}
 		char_count += child->length.chars;
+	}
+
+	/* we've gone to the end of hte list and didn't find anything, use
+	 * the last node in the list */
+	if (!child) child = last;
+
+	DRETURN_PTR(child, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param tree: The tree to work with
+ * @param byte_idx: The byte index to get the node from
+ * @param inclusive: Include the edge numbers
+ * @return Returns the tree rooted at the given byte index
+ * @brief Retrieves the tree rooted at the given byte index
+ */
+Ewl_Text_Tree *
+ewl_text_tree_node_in_bytes_get(Ewl_Text_Tree *tree, unsigned int byte_idx, 
+					unsigned int inclusive)
+{
+	Ewl_Text_Tree *child = NULL, *last = NULL;
+	unsigned int byte_count = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+ 	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
+
+	/* make sure the idx is in the tree */
+	if (byte_idx > tree->length.bytes)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	
+	if ((!tree->children) || (ecore_list_nodes(tree->children) == 0))
+		DRETURN_PTR(tree, DLEVEL_STABLE);
+
+	child = tree;
+	ecore_list_goto_first(tree->children);
+	while ((child = ecore_list_next(tree->children)))
+	{
+		last = child;
+
+		/* we don't always want this to be inclusive ... */
+		if (((inclusive && ((byte_count + child->length.bytes) >= byte_idx)))
+				|| (!inclusive && ((byte_count + child->length.bytes > byte_idx))))
+		{
+			child = ewl_text_tree_node_get(child, byte_idx - byte_count, inclusive);
+			break;
+		}
+		byte_count += child->length.bytes;
 	}
 
 	/* we've gone to the end of hte list and didn't find anything, use

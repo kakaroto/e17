@@ -377,6 +377,8 @@ void ewl_text_tree_dump(Ewl_Text_Tree *tree, const char *indent);
 
 Ewl_Text_Tree *ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int char_idx, 
 					unsigned int inclusive);
+Ewl_Text_Tree *ewl_text_tree_node_in_bytes_get(Ewl_Text_Tree *tree, unsigned int byte_idx, 
+					unsigned int inclusive);
 void ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current);
 void ewl_text_tree_insert(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
 								unsigned int byte_len);
