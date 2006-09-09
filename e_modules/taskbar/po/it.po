@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-15 13:03+0200\n"
-"PO-Revision-Date: 2006-08-15 13:09+0200\n"
+"POT-Creation-Date: 2006-09-09 12:25+0200\n"
+"PO-Revision-Date: 2006-09-09 12:32+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -27,29 +27,31 @@ msgid "Highlight Window on Mouse Over"
 msgstr "Evidenzia finestra al passaggio del mouse"
 
 #: e_mod_config.c:80
-msgid "Show Labels"
-msgstr "Mostra etichette"
+msgid "Show Sliding Labels"
+msgstr "Mostra etichette scorrevoli"
 
 #: e_mod_config.c:85
 msgid "Show windows from all desktops"
 msgstr "Mostra finestre da tutti i desktop"
 
-#: e_mod_main.c:206
+#: e_mod_main.c:211
 msgid "Taskbar"
 msgstr "Taskbar"
 
-#: e_mod_main.c:277 e_mod_main.c:772
+#: e_mod_main.c:282 e_mod_main.c:819
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: e_mod_main.c:1319
+#: e_mod_main.c:1366
 msgid "Enlightenment Taskbar Module"
 msgstr "Modulo Taskbar di Enlightenment"
 
-#: e_mod_main.c:1320
+#: e_mod_main.c:1367
 msgid ""
 "This is the Taskbar Iconified Application module for Enlightenment.<br>It "
-"will hold minimized applications"
+"will hold all applications and display current desktop <br>or all running "
+"apps."
 msgstr ""
-"Questo è il modulo per applicazioni iconificate di Enlightenment.<br>Esso "
-"conterrà le applicazioni minimizzate ad icona."
+"Questo è il modulo per applicazioni iconificate di Enlightenment.<br>"
+"Esso visualizzerà tutte le applicazioni in esecuzione<br>o solo quelle "
+"del desktop attuale."
