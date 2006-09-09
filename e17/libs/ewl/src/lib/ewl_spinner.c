@@ -561,16 +561,13 @@ ewl_spinner_timer(void *data)
 		velocity = 1;
 	else if (velocity > 10)
 		velocity = 10;
-	
 
 	/*
 	 * Move the value of the spinner based on the direction of it's motion
 	 * and the velocity setting.
 	 */
+	dv = velocity * s->direction * 10.0 * r->step * dt*dt;
 
-	dv = velocity  * s->direction 
-		* (r->max_val - r->min_val) / r->step / 10  * dt * dt;
-	
 	while  (r->step < abs(dv - s->last_value - step)) {
 		if (s->direction == 1) 
 			step += r->step;
