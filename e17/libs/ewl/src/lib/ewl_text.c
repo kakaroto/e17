@@ -761,7 +761,7 @@ unsigned int
 ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 {
 	Evas_Textblock_Cursor *cursor;
-	unsigned int cur_char_idx;
+	unsigned int cur_char_idx, byte_idx = 0;
 	Evas_Coord cx, cw;
 	Evas_Coord lx, ly, lw, lh;
 	int line;
@@ -771,7 +771,9 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, t->cursor_position);
 
 	cur_char_idx = ewl_text_cursor_position_get(t);
-	cursor = ewl_text_textblock_cursor_position(t, cur_char_idx);
+	ewl_text_char_to_byte(t, cur_char_idx, 0, &byte_idx, NULL);
+
+	cursor = ewl_text_textblock_cursor_position(t, byte_idx);
 	line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL, 
 								&cw, NULL);
 	line --;
@@ -791,7 +793,9 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 		}
 
 	}
-	cur_char_idx = ewl_text_textblock_cursor_to_index(cursor);
+	byte_idx = ewl_text_textblock_cursor_to_index(cursor);
+	cur_char_idx = 0;
+	ewl_text_byte_to_char(t, byte_idx, 0, &cur_char_idx, NULL);
 
 	DRETURN_INT(cur_char_idx, DLEVEL_STABLE);
 }
@@ -805,7 +809,7 @@ unsigned int
 ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 {
 	Evas_Textblock_Cursor *cursor;
-	unsigned int cur_char_idx;
+	unsigned int cur_char_idx, byte_idx = 0;
 	Evas_Coord cx, cw;
 	Evas_Coord lx, ly, lw, lh;
 	int line;
@@ -815,7 +819,9 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, t->cursor_position);
 
 	cur_char_idx = ewl_text_cursor_position_get(t);
-	cursor = ewl_text_textblock_cursor_position(t, cur_char_idx);
+	ewl_text_char_to_byte(t, cur_char_idx, 0, &byte_idx, NULL);
+
+	cursor = ewl_text_textblock_cursor_position(t, byte_idx);
 	line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL, 
 								&cw, NULL);
 	line ++;
@@ -835,7 +841,9 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 		}
 
 	}
-	cur_char_idx = ewl_text_textblock_cursor_to_index(cursor);
+	byte_idx = ewl_text_textblock_cursor_to_index(cursor);
+	cur_char_idx = 0;
+	ewl_text_byte_to_char(t, byte_idx, 0, &cur_char_idx, NULL);
 
 	DRETURN_INT(cur_char_idx, DLEVEL_STABLE);
 }
