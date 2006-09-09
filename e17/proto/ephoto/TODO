@@ -1,8 +1,9 @@
 TODO-
-Add support for recording slideshow into a movie file.
-Add fade out/ins and possibly other features for transitioning images.
-Maybe add ken burns effect?
-Make the image viewer better.
-Detatchable window controls?
-Better audio code.
-Better way to browse audio(combobox possibly).
+Add image manipulation.
+Fixup better slideshow config dialog.
+Slideshow Fixup(proportional/scaling/integration with conifg)
+Add audio.
+Add transitions(fade).
+Add sql databasing.
+Add custom edje widgets for thumb browser and possibly for images to create ken burns effect?
+Album work.
