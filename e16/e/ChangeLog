@@ -4012,3 +4012,19 @@ Fix logout dialog layout.
 Do case insensitive searching with ipc window names (vapier).
 Trivial re-wrapping of XQueryPointer().
 
+
+-------------------------------------------------------------------------------
+
+Sat Sep  9 11:05:59 CEST 2006
+(Kim)
+
+--- 0.16.8.4 0.02 ---
+Avoid having to click twice to activate menu item.
+Split iconbox into container, iconbox, and systray.
+Add live pager update mode (when composite is enabled).
+Put menus on current desk in stead of floating on root.
+Fix missing/too many draws of the background selector window.
+Fix live pager updates and pager zooming for sticky windows
+ (Invalidate named pixmap on reparent).
+Fix memory leaks in combined dialog.
+Eliminate redundant geometry caching in top-level objects.
