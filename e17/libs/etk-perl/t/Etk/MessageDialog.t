@@ -1,4 +1,4 @@
-use Test::More 'no_plan'; # tests => 1;
+use Test::More tests => 8;
 use Etk;
 use Etk::Constants qw/:messagedialog/;
 

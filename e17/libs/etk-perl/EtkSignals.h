@@ -32,7 +32,6 @@ struct _Callback_Signal_Data
 /* Carries info for the notification callback */
 struct _Notification_Callback_Data
 {
-   char		*property_name;
    Etk_Object	*object;
    SV		*perl_callback;
    void		*perl_data;

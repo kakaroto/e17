@@ -34,6 +34,8 @@ notification_callback(Etk_Object * object, const char * property_name, void * da
    ncb = data;
 
    PUSHMARK(SP);
+   XPUSHs(sv_2mortal(newSVObject(object)));
+   XPUSHs(sv_2mortal(newSVpv(property_name, strlen(property_name))));
    XPUSHs(sv_2mortal(newSVsv(ncb->perl_data)));
    PUTBACK;
 
@@ -2715,7 +2717,6 @@ etk_object_notification_callback_add(object, property_name, callback, data)
 	Notification_Callback_Data *ncb = NULL;
 
 	ncb = calloc(1, sizeof(Notification_Callback_Data));
-	ncb->property_name = strdup(property_name);
 	ncb->object = object;
 	ncb->perl_data = newSVsv(data);
 	ncb->perl_callback = newSVsv(callback);

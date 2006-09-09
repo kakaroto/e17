@@ -1,4 +1,4 @@
-use Test::More 'no_plan'; # tests => 1;
+use Test::More  tests => 9;
 use Etk;
 
 my $hb = Etk::Menu->new();
@@ -17,4 +17,15 @@ ok( $it->isa("Etk::Menu::Item"),	"Class Check");
 
 $it->LabelSet("test");
 is($it->LabelGet(), "test",	"Label set/get");
+
+my $it2 = Etk::Menu::Item->new();
+$b->Append($it);
+$b->Append($it2);
+
+my @items = @{$b->ItemsGet()};
+
+is(@items, 2, "Items Get");
+
+is($items[1]->{ETK}, $it2->{ETK}, "Items ok");
+
 

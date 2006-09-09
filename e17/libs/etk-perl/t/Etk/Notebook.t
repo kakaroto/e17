@@ -1,4 +1,4 @@
-use Test::More 'no_plan'; # tests => 1;
+use Test::More tests => 11;
 use Etk;
 
 my $b = Etk::Notebook->new();
@@ -15,7 +15,6 @@ $b->PageTabLabelSet(0, "moo");
 is($b->PageTabLabelGet(0), "moo", "PageTabLabelSet");
 
 my $child = $b->PageChildGet(0);
-bless($child, "Etk::Button"); # TODO what do we do about these?
 is($child->LabelGet(), "button", "PageChildGet");
 
 is($b->PagePrepend("test", $child), 0, "PagePrepend");

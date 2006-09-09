@@ -40,4 +40,3 @@ lib/Etk/Stock.pm
 lib/Etk/Constants.pm
 META.yml                                 Module meta-data (added by MakeMaker)
 TODO
-test.pl
