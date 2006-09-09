@@ -3493,6 +3493,7 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 {
 	Evas_Textblock_Cursor *cur1, *cur2;
 	Evas_List *rects;
+	unsigned int byte_idx = 0, byte_len = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -3514,8 +3515,11 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 	else
 		trig->areas = ecore_list_new();
 
-	cur1 = ewl_text_textblock_cursor_position(t, trig->char_pos);
-	cur2 = ewl_text_textblock_cursor_position(t, trig->char_pos + trig->char_len - 1);
+	ewl_text_char_to_byte(t, trig->char_pos, trig->char_len - 1, 
+						&byte_idx, &byte_len);
+
+	cur1 = ewl_text_textblock_cursor_position(t, byte_idx);
+	cur2 = ewl_text_textblock_cursor_position(t, byte_idx + byte_len);
 
 	/* get all the rectangles and create areas with them */
 	rects = evas_textblock_cursor_range_geometry_get(cur1, cur2);
