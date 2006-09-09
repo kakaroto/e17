@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-07 19:54+0200\n"
+"POT-Creation-Date: 2006-09-09 10:59+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -679,84 +679,84 @@ msgstr ""
 "ganz nach unten zu bringen.\n"
 
 # src/settings.c:830 src/settings.c:889
-#: src/desktops.c:2341 src/desktops.c:2380
+#: src/desktops.c:2337 src/desktops.c:2376
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
 # src/settings.c:832 src/settings.c:891
-#: src/desktops.c:2343 src/desktops.c:2382
+#: src/desktops.c:2339 src/desktops.c:2378
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
 # src/settings.c:882
-#: src/desktops.c:2375
+#: src/desktops.c:2371
 msgid "Number of virtual desktops:\n"
 msgstr "Anzahl virtueller Desktops:\n"
 
 # src/settings.c:1750
-#: src/desktops.c:2404
+#: src/desktops.c:2400
 msgid "Slide desktops around when changing"
 msgstr "Desktops gleiten beim Wechseln herum"
 
 # src/settings.c:1922
-#: src/desktops.c:2410
+#: src/desktops.c:2406
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Desktop-Gleitgeschwindigkeit (langsam)\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2424
+#: src/desktops.c:2420
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:2432
+#: src/desktops.c:2428
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:2438
+#: src/desktops.c:2434
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:2442
+#: src/desktops.c:2438
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:2448
+#: src/desktops.c:2444
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2454 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
+#: src/desktops.c:2450 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2460 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
+#: src/desktops.c:2456 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
 msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2468 src/menus-misc.c:714
+#: src/desktops.c:2464 src/menus-misc.c:714
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
 # src/settings.c:856
-#: src/desktops.c:2469
+#: src/desktops.c:2465
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:2472
+#: src/desktops.c:2468
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -765,7 +765,7 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:1007 src/settings.c:1072
-#: src/desktops.c:2555 src/desktops.c:2591
+#: src/desktops.c:2551 src/desktops.c:2587
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -775,7 +775,7 @@ msgstr ""
 "Bildschirme groﬂ"
 
 # src/settings.c:1010 src/settings.c:1075
-#: src/desktops.c:2558 src/desktops.c:2594
+#: src/desktops.c:2554 src/desktops.c:2590
 msgid ""
 "1\n"
 "Screen in size"
@@ -784,36 +784,36 @@ msgstr ""
 "Bildschirm groﬂ"
 
 # src/settings.c:1066
-#: src/desktops.c:2587
+#: src/desktops.c:2583
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuelle Desktopgrˆﬂe:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2628
+#: src/desktops.c:2624
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1127
-#: src/desktops.c:2632
+#: src/desktops.c:2628
 msgid "Enable edge flip"
 msgstr "Magische Kanten verwenden"
 
 # src/settings.c:1134
-#: src/desktops.c:2636
+#: src/desktops.c:2632
 msgid "Resistance at edge of screen:\n"
 msgstr "Widerstand der Bildschirmkante:\n"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2644
 msgid "Areas"
 msgstr ""
 
 # src/settings.c:1040
-#: src/desktops.c:2649
+#: src/desktops.c:2645
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2652
+#: src/desktops.c:2648
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -2634,17 +2634,17 @@ msgstr ""
 "Fehler beim Kontakt mit dem Audioserver (Esound). Der Ton wird\n"
 "darum wieder ausgeschaltet.\n"
 
-#: src/sound.c:363 src/sound.c:441
+#: src/sound.c:362 src/sound.c:440
 msgid "Sound"
 msgstr ""
 
 # src/settings.c:1591
-#: src/sound.c:428
+#: src/sound.c:427
 msgid "Enable sounds"
 msgstr "Kl‰nge verwenden"
 
 # src/settings.c:1600
-#: src/sound.c:434
+#: src/sound.c:433
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2653,12 +2653,12 @@ msgstr ""
 "Compilieren EsounD nicht eingebunden wurde."
 
 # src/settings.c:1566
-#: src/sound.c:442
+#: src/sound.c:441
 msgid "Audio Settings"
 msgstr "Audio-Einstellungen"
 
 # src/main.c:89
-#: src/sound.c:445
+#: src/sound.c:444
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

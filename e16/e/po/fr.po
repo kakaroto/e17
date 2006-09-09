@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-07 19:54+0200\n"
+"POT-Creation-Date: 2006-09-09 10:59+0200\n"
 "PO-Revision-Date: 2005-04-20 23:11+0300\n"
 "Last-Translator: Ludwig Noujarret <ludwig@noujarret.com>\n"
 "Language-Team:  <fr@li.org>\n"
@@ -597,67 +597,67 @@ msgid ""
 "to the bottom.\n"
 msgstr "Cliquez ici pour abaisser ce bureau.\n"
 
-#: src/desktops.c:2341 src/desktops.c:2380
+#: src/desktops.c:2337 src/desktops.c:2376
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Bureaux"
 
-#: src/desktops.c:2343 src/desktops.c:2382
+#: src/desktops.c:2339 src/desktops.c:2378
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Bureau"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2371
 msgid "Number of virtual desktops:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2404
+#: src/desktops.c:2400
 msgid "Slide desktops around when changing"
 msgstr "Faire glisser les bureaux lors des déplacements"
 
-#: src/desktops.c:2410
+#: src/desktops.c:2406
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Vitesse de glissement des bureaux: (lente)\n"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2420
 msgid "Wrap desktops around"
 msgstr "Placer les bureaux en boucle"
 
-#: src/desktops.c:2432
+#: src/desktops.c:2428
 msgid "Display desktop dragbar"
 msgstr "Afficher la barre de bureau"
 
-#: src/desktops.c:2438
+#: src/desktops.c:2434
 msgid "Drag bar position:"
 msgstr "Position de la barre de bureau:"
 
-#: src/desktops.c:2442
+#: src/desktops.c:2438
 msgid "Top"
 msgstr "Haut"
 
-#: src/desktops.c:2448
+#: src/desktops.c:2444
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2454 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
+#: src/desktops.c:2450 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2460 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
+#: src/desktops.c:2456 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2468 src/menus-misc.c:714
+#: src/desktops.c:2464 src/menus-misc.c:714
 #, fuzzy
 msgid "Desks"
 msgstr "Bureau"
 
-#: src/desktops.c:2469
+#: src/desktops.c:2465
 msgid "Multiple Desktop Settings"
 msgstr "Paramètres des Bureaux multiples"
 
-#: src/desktops.c:2472
+#: src/desktops.c:2468
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -665,7 +665,7 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux multiples\n"
 
-#: src/desktops.c:2555 src/desktops.c:2591
+#: src/desktops.c:2551 src/desktops.c:2587
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -674,7 +674,7 @@ msgstr ""
 "%i x %i\n"
 "Ecrans"
 
-#: src/desktops.c:2558 src/desktops.c:2594
+#: src/desktops.c:2554 src/desktops.c:2590
 msgid ""
 "1\n"
 "Screen in size"
@@ -682,31 +682,31 @@ msgstr ""
 "1\n"
 "Ecran"
 
-#: src/desktops.c:2587
+#: src/desktops.c:2583
 msgid "Virtual Desktop size:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2628
+#: src/desktops.c:2624
 msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
-#: src/desktops.c:2632
+#: src/desktops.c:2628
 msgid "Enable edge flip"
 msgstr "Activer les bords sensitifs"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2632
 msgid "Resistance at edge of screen:\n"
 msgstr "Sensibilité des bords:\n"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2644
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2649
+#: src/desktops.c:2645
 msgid "Virtual Desktop Settings"
 msgstr "Paramètres des Bureaux virtuels"
 
-#: src/desktops.c:2652
+#: src/desktops.c:2648
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -2263,15 +2263,15 @@ msgstr ""
 "Les sons sont activés, mais il y a eu une erreur de communication\n"
 "avec le serveur audio (Esound). Le son sera maintenant désactivé.\n"
 
-#: src/sound.c:363 src/sound.c:441
+#: src/sound.c:362 src/sound.c:440
 msgid "Sound"
 msgstr "Son"
 
-#: src/sound.c:428
+#: src/sound.c:427
 msgid "Enable sounds"
 msgstr "Activer les sons"
 
-#: src/sound.c:434
+#: src/sound.c:433
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2279,11 +2279,11 @@ msgstr ""
 "Les sons ne sont pas disponibles car Esound n'était\n"
 "pas présent lors de la compilation."
 
-#: src/sound.c:442
+#: src/sound.c:441
 msgid "Audio Settings"
 msgstr "Paramètres Audio"
 
-#: src/sound.c:445
+#: src/sound.c:444
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

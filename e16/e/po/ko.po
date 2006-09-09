@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-07 19:54+0200\n"
+"POT-Creation-Date: 2006-09-09 10:59+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -607,67 +607,67 @@ msgstr ""
 "데스크탑을 제일 밑으로 내리기 위해서는\n"
 "여기를 클릭하세요.\n"
 
-#: src/desktops.c:2341 src/desktops.c:2380
+#: src/desktops.c:2337 src/desktops.c:2376
 #, c-format
 msgid "%i Desktops"
 msgstr "%i 데스크탑"
 
-#: src/desktops.c:2343 src/desktops.c:2382
+#: src/desktops.c:2339 src/desktops.c:2378
 #, c-format
 msgid "%i Desktop"
 msgstr "%i 데스크탑"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2371
 msgid "Number of virtual desktops:\n"
 msgstr "가상 데스크탑 수:\n"
 
-#: src/desktops.c:2404
+#: src/desktops.c:2400
 msgid "Slide desktops around when changing"
 msgstr "데스크탑 바꿀 때 미끄러짐"
 
-#: src/desktops.c:2410
+#: src/desktops.c:2406
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "데스크탑 미끄러짐 속도: (느림)\n"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2420
 msgid "Wrap desktops around"
 msgstr "가상 데스크탑 이동을 반복"
 
-#: src/desktops.c:2432
+#: src/desktops.c:2428
 msgid "Display desktop dragbar"
 msgstr "데스크탑 끌기막대 표시"
 
-#: src/desktops.c:2438
+#: src/desktops.c:2434
 msgid "Drag bar position:"
 msgstr "끌기막대 위치:"
 
-#: src/desktops.c:2442
+#: src/desktops.c:2438
 msgid "Top"
 msgstr "위"
 
-#: src/desktops.c:2448
+#: src/desktops.c:2444
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:2454 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
+#: src/desktops.c:2450 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:2460 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
+#: src/desktops.c:2456 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
 msgid "Right"
 msgstr "오른쪽"
 
-#: src/desktops.c:2468 src/menus-misc.c:714
+#: src/desktops.c:2464 src/menus-misc.c:714
 #, fuzzy
 msgid "Desks"
 msgstr "데스크탑"
 
-#: src/desktops.c:2469
+#: src/desktops.c:2465
 msgid "Multiple Desktop Settings"
 msgstr "여러 데스크탑 설정"
 
-#: src/desktops.c:2472
+#: src/desktops.c:2468
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -675,7 +675,7 @@ msgstr ""
 "인라이튼먼트 여러 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/desktops.c:2555 src/desktops.c:2591
+#: src/desktops.c:2551 src/desktops.c:2587
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -684,7 +684,7 @@ msgstr ""
 "%i x %i\n"
 "화면 크기"
 
-#: src/desktops.c:2558 src/desktops.c:2594
+#: src/desktops.c:2554 src/desktops.c:2590
 msgid ""
 "1\n"
 "Screen in size"
@@ -692,31 +692,31 @@ msgstr ""
 "1\n"
 "화면 크기"
 
-#: src/desktops.c:2587
+#: src/desktops.c:2583
 msgid "Virtual Desktop size:\n"
 msgstr "가상 데스크탑 크기:\n"
 
-#: src/desktops.c:2628
+#: src/desktops.c:2624
 msgid "Wrap virtual desktops around"
 msgstr "가상 데스크탑 주변을 겹치기"
 
-#: src/desktops.c:2632
+#: src/desktops.c:2628
 msgid "Enable edge flip"
 msgstr "에지 플립 사용"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2632
 msgid "Resistance at edge of screen:\n"
 msgstr "스크린 변두리에서의 저항감:\n"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2644
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2649
+#: src/desktops.c:2645
 msgid "Virtual Desktop Settings"
 msgstr "가상 데스크탑 설정"
 
-#: src/desktops.c:2652
+#: src/desktops.c:2648
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -2290,15 +2290,15 @@ msgstr ""
 "통신 오류가 발생했습니다. 오디오는 지금부터 사용되지\n"
 "않을 것입니다.\n"
 
-#: src/sound.c:363 src/sound.c:441
+#: src/sound.c:362 src/sound.c:440
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:428
+#: src/sound.c:427
 msgid "Enable sounds"
 msgstr "사운드 사용"
 
-#: src/sound.c:434
+#: src/sound.c:433
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2306,11 +2306,11 @@ msgstr ""
 "컴파일 당시 EsounD가 없었기 때문에\n"
 "오디오는 사용할 수 없습니다."
 
-#: src/sound.c:442
+#: src/sound.c:441
 msgid "Audio Settings"
 msgstr "오디오 설정"
 
-#: src/sound.c:445
+#: src/sound.c:444
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

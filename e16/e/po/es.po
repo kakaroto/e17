@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-07 19:54+0200\n"
+"POT-Creation-Date: 2006-09-09 10:59+0200\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -601,67 +601,67 @@ msgstr ""
 "Pulse aquí para llevar este Escritorio\n"
 "hacia el fondo.\n"
 
-#: src/desktops.c:2341 src/desktops.c:2380
+#: src/desktops.c:2337 src/desktops.c:2376
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Escritorios"
 
-#: src/desktops.c:2343 src/desktops.c:2382
+#: src/desktops.c:2339 src/desktops.c:2378
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Escritorio"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2371
 msgid "Number of virtual desktops:\n"
 msgstr "Número de Escritorios Virtuales:\n"
 
-#: src/desktops.c:2404
+#: src/desktops.c:2400
 msgid "Slide desktops around when changing"
 msgstr "Desplazar escritorios al conmutar entre ellos"
 
-#: src/desktops.c:2410
+#: src/desktops.c:2406
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Velocidad de Desplazamiento de Escritorios: (lenta)\n"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2420
 msgid "Wrap desktops around"
 msgstr "Enganchar los escritorios entre ellos"
 
-#: src/desktops.c:2432
+#: src/desktops.c:2428
 msgid "Display desktop dragbar"
 msgstr "Mostrar Barra de Arrastre de Escritorios"
 
-#: src/desktops.c:2438
+#: src/desktops.c:2434
 msgid "Drag bar position:"
 msgstr "Ubicación de la Barra de Arrastre:"
 
-#: src/desktops.c:2442
+#: src/desktops.c:2438
 msgid "Top"
 msgstr "Arriba"
 
-#: src/desktops.c:2448
+#: src/desktops.c:2444
 msgid "Bottom"
 msgstr "Abajo"
 
-#: src/desktops.c:2454 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
+#: src/desktops.c:2450 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
 msgid "Left"
 msgstr "Izquierdo"
 
-#: src/desktops.c:2460 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
+#: src/desktops.c:2456 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
 msgid "Right"
 msgstr "Derecho"
 
-#: src/desktops.c:2468 src/menus-misc.c:714
+#: src/desktops.c:2464 src/menus-misc.c:714
 #, fuzzy
 msgid "Desks"
 msgstr "Escritorio"
 
-#: src/desktops.c:2469
+#: src/desktops.c:2465
 msgid "Multiple Desktop Settings"
 msgstr "Configurar Escritorios Múltiples"
 
-#: src/desktops.c:2472
+#: src/desktops.c:2468
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -669,7 +669,7 @@ msgstr ""
 "Multiples Escritorios Enlightenment\n"
 "Dálogo de Configuracion\n"
 
-#: src/desktops.c:2555 src/desktops.c:2591
+#: src/desktops.c:2551 src/desktops.c:2587
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -678,7 +678,7 @@ msgstr ""
 "%i x %i\n"
 "pantallas de tamaño"
 
-#: src/desktops.c:2558 src/desktops.c:2594
+#: src/desktops.c:2554 src/desktops.c:2590
 msgid ""
 "1\n"
 "Screen in size"
@@ -686,31 +686,31 @@ msgstr ""
 "1\n"
 "Pantalla de tamaño"
 
-#: src/desktops.c:2587
+#: src/desktops.c:2583
 msgid "Virtual Desktop size:\n"
 msgstr "Tamaño de Escritorio Virtual:\n"
 
-#: src/desktops.c:2628
+#: src/desktops.c:2624
 msgid "Wrap virtual desktops around"
 msgstr "Enganchar escritorios virtuales entre ellos"
 
-#: src/desktops.c:2632
+#: src/desktops.c:2628
 msgid "Enable edge flip"
 msgstr "Habilitar cambio de bordes"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2632
 msgid "Resistance at edge of screen:\n"
 msgstr "Resistencia al borde de la pantalla:\n"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2644
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2649
+#: src/desktops.c:2645
 msgid "Virtual Desktop Settings"
 msgstr "Configurar Escritorios Virtuales"
 
-#: src/desktops.c:2652
+#: src/desktops.c:2648
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -2279,15 +2279,15 @@ msgstr ""
 "un error de comunicación con el Servidor de Audio (Esound). El audio\n"
 "será deshabilitado.\n"
 
-#: src/sound.c:363 src/sound.c:441
+#: src/sound.c:362 src/sound.c:440
 msgid "Sound"
 msgstr "Sonido"
 
-#: src/sound.c:428
+#: src/sound.c:427
 msgid "Enable sounds"
 msgstr "Habilitar Sonidos"
 
-#: src/sound.c:434
+#: src/sound.c:433
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2295,11 +2295,11 @@ msgstr ""
 "Audio no disponible debido a que EsounD no estuvo\n"
 "disponible durante la compilación de Enlightenment."
 
-#: src/sound.c:442
+#: src/sound.c:441
 msgid "Audio Settings"
 msgstr "Configurar Audio"
 
-#: src/sound.c:445
+#: src/sound.c:444
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

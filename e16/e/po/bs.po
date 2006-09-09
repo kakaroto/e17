@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-07 19:54+0200\n"
+"POT-Creation-Date: 2006-09-09 10:59+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -609,67 +609,67 @@ msgstr ""
 "Kliknite ovdje da spustite ovaj desktop\n"
 "na dno.\n"
 
-#: src/desktops.c:2341 src/desktops.c:2380
+#: src/desktops.c:2337 src/desktops.c:2376
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktopi"
 
-#: src/desktops.c:2343 src/desktops.c:2382
+#: src/desktops.c:2339 src/desktops.c:2378
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2371
 msgid "Number of virtual desktops:\n"
 msgstr "Broj virtualnih Desktopa:\n"
 
-#: src/desktops.c:2404
+#: src/desktops.c:2400
 msgid "Slide desktops around when changing"
 msgstr "Klizaj prozore okolo kada mijenjam"
 
-#: src/desktops.c:2410
+#: src/desktops.c:2406
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Brzina klizanja Desktop-a: (sporo)\n"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2420
 msgid "Wrap desktops around"
 msgstr "Uvij prozore okolo"
 
-#: src/desktops.c:2432
+#: src/desktops.c:2428
 msgid "Display desktop dragbar"
 msgstr "Prikaŵi dektop dragbar"
 
-#: src/desktops.c:2438
+#: src/desktops.c:2434
 msgid "Drag bar position:"
 msgstr "Dragbar pozicija:"
 
-#: src/desktops.c:2442
+#: src/desktops.c:2438
 msgid "Top"
 msgstr "Vrh"
 
-#: src/desktops.c:2448
+#: src/desktops.c:2444
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2454 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
+#: src/desktops.c:2450 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2460 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
+#: src/desktops.c:2456 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2468 src/menus-misc.c:714
+#: src/desktops.c:2464 src/menus-misc.c:714
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2469
+#: src/desktops.c:2465
 msgid "Multiple Desktop Settings"
 msgstr "Osobine viŷestrukih desktopa"
 
-#: src/desktops.c:2472
+#: src/desktops.c:2468
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -677,7 +677,7 @@ msgstr ""
 "Enlightenment Viŷestruki Dektop\n"
 "dijalog osobina\n"
 
-#: src/desktops.c:2555 src/desktops.c:2591
+#: src/desktops.c:2551 src/desktops.c:2587
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -686,7 +686,7 @@ msgstr ""
 "%i x %i\n"
 "Ekrana u veliīini"
 
-#: src/desktops.c:2558 src/desktops.c:2594
+#: src/desktops.c:2554 src/desktops.c:2590
 msgid ""
 "1\n"
 "Screen in size"
@@ -694,31 +694,31 @@ msgstr ""
 "1\n"
 "Ekran u veliīini"
 
-#: src/desktops.c:2587
+#: src/desktops.c:2583
 msgid "Virtual Desktop size:\n"
 msgstr "Veliīina virtualnog Desktopa:\n"
 
-#: src/desktops.c:2628
+#: src/desktops.c:2624
 msgid "Wrap virtual desktops around"
 msgstr "Uvij vitrualne desktope okolo"
 
-#: src/desktops.c:2632
+#: src/desktops.c:2628
 msgid "Enable edge flip"
 msgstr "Ukljuīi precrtavanje ivice"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2632
 msgid "Resistance at edge of screen:\n"
 msgstr "Otpor precrtavanja ekrana:\n"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2644
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2649
+#: src/desktops.c:2645
 msgid "Virtual Desktop Settings"
 msgstr "Osobine virtualnih Desktopa"
 
-#: src/desktops.c:2652
+#: src/desktops.c:2648
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -2296,15 +2296,15 @@ msgstr ""
 "u komuniciranju sa serverom za zvuk (Esound). Zvuk �e sada biti\n"
 "iskljuīen.\n"
 
-#: src/sound.c:363 src/sound.c:441
+#: src/sound.c:362 src/sound.c:440
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:428
+#: src/sound.c:427
 msgid "Enable sounds"
 msgstr "Omogu�i zvukove"
 
-#: src/sound.c:434
+#: src/sound.c:433
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2312,11 +2312,11 @@ msgstr ""
 "Zvuk nije dostupan dok EsounD nije\n"
 "prisutan za vrijeme kompilacije."
 
-#: src/sound.c:442
+#: src/sound.c:441
 msgid "Audio Settings"
 msgstr "Audio osobine"
 
-#: src/sound.c:445
+#: src/sound.c:444
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
