@@ -707,6 +707,17 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 	ewl_embed_active_set(embed, TRUE);
 
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
+	/*
+	 * Find the lowest DND aware widget
+	 */ 
+	while (widget) {
+		if (ewl_object_flags_has(EWL_OBJECT(widget),
+					EWL_FLAG_PROPERTY_DND_AWARE,
+					EWL_FLAGS_PROPERTY_MASK))
+			break;
+		widget = widget->parent;
+	}
+
 	if (widget) {
 		int i;
 		Ewl_Widget *parent;
@@ -743,7 +754,6 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 				/* Handle external drops */
 				ev.data = NULL;
 			}
-
 
 			embed->last.drag_widget = widget;
 			parent = widget;
@@ -788,6 +798,17 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 	ewl_embed_active_set(embed, TRUE);
 
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
+	/*
+	 * Find the lowest DND aware widget
+	 */ 
+	while (widget) {
+		if (ewl_object_flags_has(EWL_OBJECT(widget),
+					EWL_FLAG_PROPERTY_DND_AWARE,
+					EWL_FLAGS_PROPERTY_MASK))
+			break;
+		widget = widget->parent;
+	}
+
 	if (widget) {
 		int i;
 		Ewl_Widget *parent;
@@ -813,7 +834,7 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 				parent = parent->parent;
 			}
 		}
-		
+
 		/*
 		 * Pass the position event up the chain
 		 */ 
