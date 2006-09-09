@@ -42,6 +42,7 @@ static void ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree);
 
 static void ewl_text_tree_shrink(Ewl_Text_Tree *tree);
 static char *ewl_text_format_get(Ewl_Text_Context *ctx);
+static char *ewl_text_color_string_get(int r, int g, int b, int a);
 static Evas_Textblock_Cursor *ewl_text_textblock_cursor_position(Ewl_Text *t, 
 							unsigned int char_idx);
 static unsigned int ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor);
@@ -2469,55 +2470,68 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 static char *
 ewl_text_format_get(Ewl_Text_Context *ctx)
 {
-	char *fmt;
-	char *ptr;
-	char style[512];
-	char align[128];
-	char wrap[128];
+	char *format, *t;
+	int pos = 0, i;
+	struct 
+	{
+		char *key;
+		char *val;
+		int free;
+	} fmt[128];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("ctx", ctx, NULL);
 
-	fmt = NEW(char, 2048);
-
-	style[0] = '\0';
-	align[0] = '\0';
-
 	/* create the style string */
-	ptr = style;
 	if (ctx->styles != EWL_TEXT_STYLE_NONE)
 	{
 		if ((ctx->styles & EWL_TEXT_STYLE_UNDERLINE) || 
 				(ctx->styles & EWL_TEXT_STYLE_DOUBLE_UNDERLINE))
 		{
-			snprintf(ptr, sizeof(style) - strlen(style), 
-					"underline=%s underline_color=#%02x%02x%02x%02x "
-					"underline2_color=#%02x%02x%02x%02x ",
-					((ctx->styles & EWL_TEXT_STYLE_UNDERLINE) ?
-					 "on" : "double"),
+			t = ((ctx->styles & EWL_TEXT_STYLE_UNDERLINE) ? "single" : "double");
+
+			fmt[pos].key = "underline_color";
+			fmt[pos].val = ewl_text_color_string_get(
 					ctx->style_colors.underline.r,
 					ctx->style_colors.underline.g,
 					ctx->style_colors.underline.b,
-					ctx->style_colors.underline.a,
-					ctx->style_colors.double_underline.r,
-					ctx->style_colors.double_underline.g,
-					ctx->style_colors.double_underline.b,
-					ctx->style_colors.double_underline.a);
+					ctx->style_colors.underline.a);
+			fmt[pos++].free = TRUE;
+
+			if (ctx->styles & EWL_TEXT_STYLE_DOUBLE_UNDERLINE)
+			{
+				fmt[pos].key = "underline2_color";
+				fmt[pos].val = ewl_text_color_string_get(
+						ctx->style_colors.double_underline.r,
+						ctx->style_colors.double_underline.g,
+						ctx->style_colors.double_underline.b,
+						ctx->style_colors.double_underline.a);
+				fmt[pos++].free = TRUE;
+			}
 		}
-		else
-			snprintf(ptr, sizeof(style) - strlen(style), "underline=off ");
-		ptr = style + strlen(style);
+		else t = "off";
+
+		fmt[pos].key = "underline";
+		fmt[pos].val = t;
+		fmt[pos++].free = FALSE;
 
 		if (ctx->styles & EWL_TEXT_STYLE_STRIKETHROUGH)
-			snprintf(ptr, sizeof(style) - strlen(style), 
-					"strikethrough=on strikethrough_color=#%02x%02x%02x%02x ",
+		{
+			t = "on";
+
+			fmt[pos].key = "strikethrough_color";
+			fmt[pos].val = ewl_text_color_string_get(
 					ctx->style_colors.strikethrough.r,
 					ctx->style_colors.strikethrough.g,
 					ctx->style_colors.strikethrough.b,
 					ctx->style_colors.strikethrough.a);
-		else
-			snprintf(ptr, sizeof(style) - strlen(style), "strkethrough=off ");
-		ptr = style + strlen(style);
+			fmt[pos++].free = TRUE;
+		}
+		else t = "off";
+
+		fmt[pos].key = "strikethrough";
+		fmt[pos].val = t;
+		fmt[pos++].free = FALSE;
 
 		if ((ctx->styles & EWL_TEXT_STYLE_SHADOW) 
 				|| (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
@@ -2525,102 +2539,147 @@ ewl_text_format_get(Ewl_Text_Context *ctx)
 				|| (ctx->styles & EWL_TEXT_STYLE_OUTLINE)
 				|| (ctx->styles & EWL_TEXT_STYLE_GLOW))
 		{
-			if (ctx->styles & EWL_TEXT_STYLE_GLOW)
-				snprintf(ptr, sizeof(style) - strlen(style), 
-						"style=glow glow_color=#%02x%02x%02x%02x ",
-						ctx->style_colors.glow.r,
-						ctx->style_colors.glow.g,
-						ctx->style_colors.glow.b,
-						ctx->style_colors.glow.a);
-
-			else if (ctx->styles & EWL_TEXT_STYLE_OUTLINE)
-			{
-				if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
-					snprintf(ptr, sizeof(style) - strlen(style), 
-							"style=outline_shadow ");
-				else if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
-					snprintf(ptr, sizeof(style) - strlen(style), 
-							"style=outline_soft_shadow ");
-				else
-					snprintf(ptr, sizeof(style) - strlen(style), 
-							"style=outline ");
-				ptr = style + strlen(style);
-				snprintf(ptr, sizeof(style) - strlen(style),
-						"outline_color=#%02x%02x%02x%02x ", 
-						ctx->style_colors.outline.r,
-						ctx->style_colors.outline.g,
-						ctx->style_colors.outline.b,
-						ctx->style_colors.outline.a);
-			}
-			else if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
-				snprintf(ptr, sizeof(style) - strlen(style), 
-						"style=shadow ");
-
-			else if (ctx->styles & EWL_TEXT_STYLE_FAR_SHADOW)
-			{
-				if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
-					snprintf(ptr, sizeof(style) - strlen(style), 
-							"style=far_soft_shadow ");
-				else
-					snprintf(ptr, sizeof(style) - strlen(style), 
-							"style=far_shadow ");
-			}
-			else if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
-			{
-				snprintf(ptr, sizeof(style) - strlen(style), 
-						"style=soft_shadow ");
-			}
-			ptr = style + strlen(style);
-			snprintf(ptr, sizeof(style) - strlen(style),
-					"shadow_color=#%02x%02x%02x%02x ",
+			fmt[pos].key = "shadow_color";
+			fmt[pos].val = ewl_text_color_string_get(
 					ctx->style_colors.shadow.r,
 					ctx->style_colors.shadow.g,
 					ctx->style_colors.shadow.b,
 					ctx->style_colors.shadow.a);
+			fmt[pos++].free = TRUE;
+
+			if (ctx->styles & EWL_TEXT_STYLE_GLOW)
+			{
+				t = "glow";
+
+				fmt[pos].key = "glow_color";
+				fmt[pos].val = ewl_text_color_string_get(
+						ctx->style_colors.glow.r,
+						ctx->style_colors.glow.g,
+						ctx->style_colors.glow.b,
+						ctx->style_colors.glow.a);
+				fmt[pos++].free = TRUE;
+			}
+			else if (ctx->styles & EWL_TEXT_STYLE_OUTLINE)
+			{
+				if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
+					t = "outline_shadow";
+				else if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
+					t = "outline_soft_shadow";
+				else t = "outline";
+
+				fmt[pos].key = "outline_color";
+				fmt[pos].val = ewl_text_color_string_get(
+						ctx->style_colors.outline.r,
+						ctx->style_colors.outline.g,
+						ctx->style_colors.outline.b,
+						ctx->style_colors.outline.a);
+				fmt[pos++].free = TRUE;
+			}
+			else if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
+				t = "shadow";
+
+			else if (ctx->styles & EWL_TEXT_STYLE_FAR_SHADOW)
+			{
+				if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
+					t = "far_soft_shadow";
+				else t = "far_shadow";
+			}
+			else if (ctx->styles & EWL_TEXT_STYLE_SOFT_SHADOW)
+				t = "soft_shadow";
 		}
-		else
-			snprintf(ptr, sizeof(style) - strlen(style), "style=off ");
-		ptr = style + strlen(style);
+		else t = "off";
+
+		fmt[pos].key = "style";
+		fmt[pos].val = t;
+		fmt[pos++].free = FALSE;
 	}
 	else
 	{
-		snprintf(style, sizeof(style), "underline=off strikethrough=off style=off ");
+		fmt[pos].key = "underline";
+		fmt[pos].val = "off";
+		fmt[pos++].free = FALSE;
+
+		fmt[pos].key = "strikethrough";
+		fmt[pos].val = "off";
+		fmt[pos++].free = FALSE;
+
+		fmt[pos].key = "style";
+		fmt[pos].val = "off";
+		fmt[pos++].free = FALSE;
 	}
 
 	/* create the alignment string */
-	if (ctx->align == EWL_FLAG_ALIGN_CENTER)
-		snprintf(align, sizeof(align), "align=center");
+	if (ctx->align == EWL_FLAG_ALIGN_CENTER) t = "center";
+	else if (ctx->align == EWL_FLAG_ALIGN_RIGHT) t = "right";
+	else t = "left";
 
-	else if (ctx->align == EWL_FLAG_ALIGN_RIGHT)
-		snprintf(align, sizeof(align), "align=right");
+	fmt[pos].key = "align";
+	fmt[pos].val = t;
+	fmt[pos++].free = FALSE;
 
-	else
-		snprintf(align, sizeof(align), "align=left");	
+	if (ctx->wrap == EWL_TEXT_WRAP_WORD) t = "word";
+	else if (ctx->wrap == EWL_TEXT_WRAP_CHAR) t = "char";
+	else t = "off";
 
-	if (ctx->wrap == EWL_TEXT_WRAP_WORD)
-		snprintf(wrap, sizeof(wrap), "wrap=word");
+	fmt[pos].key = "wrap";
+	fmt[pos].val = t;
+	fmt[pos++].free = FALSE;
 
-	else if (ctx->wrap == EWL_TEXT_WRAP_CHAR)
-		snprintf(wrap, sizeof(wrap), "wrap=char");
+	fmt[pos].key = "font_source";
+	fmt[pos].val = ewl_theme_path_get();
+	fmt[pos++].free = TRUE;
 
-	else
-		snprintf(wrap, sizeof(wrap), "wrap=off");
+	t = NEW(char, 128);
+	snprintf(t, 128, "fonts/%s", ctx->font);
+	fmt[pos].key = "font";
+	fmt[pos].val = t;
+	fmt[pos++].free = TRUE;
 
-	ptr = ewl_theme_path_get();
-	/* create the formatting string */
-	snprintf(fmt, 2048, "+font=fonts/%s font_source=%s font_size=%d "
-			"backing_color=#%02x%02x%02x%02x color=#%02x%02x%02x%02x "
-			"%s %s %s", ctx->font, 
-			ptr, ctx->size,
+	t = NEW(char, 5);
+	snprintf(t, 5, "%d", ctx->size);
+	fmt[pos].key = "font_size";
+	fmt[pos].val = t;
+	fmt[pos++].free = TRUE;
+
+	fmt[pos].key = "backing_color";
+	fmt[pos].val = ewl_text_color_string_get(
 			ctx->style_colors.bg.r, ctx->style_colors.bg.g,
-			ctx->style_colors.bg.b, ctx->style_colors.bg.a,
+			ctx->style_colors.bg.b, ctx->style_colors.bg.a);
+	fmt[pos++].free = TRUE;
+
+	fmt[pos].key = "color";
+	fmt[pos].val = ewl_text_color_string_get(
 			ctx->color.r, ctx->color.g,
-			ctx->color.b, ctx->color.a, style, 
-			wrap, align);
+			ctx->color.b, ctx->color.a);
+	fmt[pos++].free = TRUE;
 
-	IF_FREE(ptr);
+	/* create the formatting string */
+	format = NEW(char, 2048);
+	strcat(format, "+");
+	
+	for (i = 0; i < pos; i ++)
+	{
+		strcat(format, fmt[i].key);
+		strcat(format, "=");
+		strcat(format, fmt[i].val);
+		strcat(format, " ");
 
-	DRETURN_PTR(fmt, DLEVEL_STABLE);
+		if (fmt[i].free) FREE(fmt[i].val);
+	}
+
+	DRETURN_PTR(format, DLEVEL_STABLE);
+}
+
+static char *
+ewl_text_color_string_get(int r, int g, int b, int a)
+{
+	char buf[10];
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	snprintf(buf, sizeof(buf), "#%02x%02x%02x%02x", r, g, b, a);
+
+	DRETURN_PTR(strdup(buf), DLEVEL_STABLE);
 }
 
 /* This will give you a cursor into the textblock setup for your given
