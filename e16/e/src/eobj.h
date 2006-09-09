@@ -108,8 +108,10 @@ struct _eobj
 #define EoGetOpacity(eo)        (EoObj(eo)->opacity)
 #define EoGetShadow(eo)         (EoObj(eo)->shadow)
 #define EoGetNoRedirect(eo)     (EoObj(eo)->noredir)
+#define EoGetSerial(eo)         (EoObj(eo)->serial)
 #else
 #define EoSetOpacity(eo, _o)
+#define EoGetSerial(eo)         0
 #endif
 
 #define EoInit(eo, type, win, x, y, w, h, su, name) \

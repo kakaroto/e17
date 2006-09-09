@@ -286,7 +286,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    if (h < 1)
       h = 1;
 
-   serdif = EoObj(ewin)->serial - p->serial;
+   serdif = EoGetSerial(ewin) - p->serial;
 
    update = 0;
    if (!ewin->mini_pmm.pmap)
@@ -305,7 +305,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 
    Dprintf("PagerEwinUpdateMini %#lx/%#lx wxh=%dx%d ser=%#x/%#x dif=%d: %s\n",
 	   EwinGetClientXwin(ewin), EoGetXwin(ewin), w, h,
-	   EoObj(ewin)->serial, p->serial, serdif, EwinGetName(ewin));
+	   EoGetSerial(ewin), p->serial, serdif, EwinGetName(ewin));
 
    p->do_update = 1;
 
