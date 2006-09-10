@@ -213,7 +213,7 @@ void etk_range_page_size_set(Etk_Range *range, double page_size)
  * @param range a range
  * @return Returns the page size of the range
  */
-double etk_scrollbar_page_size_get(Etk_Range *range)
+double etk_range_page_size_get(Etk_Range *range)
 {
    if (!range)
       return 0.0;
