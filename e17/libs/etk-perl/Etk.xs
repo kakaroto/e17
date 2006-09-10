@@ -3814,14 +3814,14 @@ etk_tooltips_tip_get(widget)
 void
 etk_tooltips_tip_set(widget, text)
 	Etk_Widget *	widget
-	char *	text
+	const char *	text
       ALIAS:
 	TipSet=1
 
 Etk_Bool
-etk_tooltips_tip_visible()
+etk_tooltips_enabled_get()
       ALIAS:
-	TipVisible=1
+	EnabledGet=1
 
 
 MODULE = Etk::ToplevelWidget	PACKAGE = Etk::ToplevelWidget	PREFIX = etk_toplevel_widget_
