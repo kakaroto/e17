@@ -85,3 +85,22 @@ ewl_label_text_get(Ewl_Label *la)
 	DRETURN_PTR(ewl_widget_appearance_text_get(EWL_WIDGET(la)), DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns a view that can be used to display Ewl_Label widgets
+ * @brief Creates and returns a view to be used by Ewl_Label widgets
+ */
+Ewl_View *
+ewl_label_view_get(void)
+{
+	Ewl_View *view;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	view = ewl_view_new();
+	ewl_view_constructor_set(view, ewl_label_new);
+	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+
+	DRETURN_PTR(view, DLEVEL_STABLE);
+}
+
+

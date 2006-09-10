@@ -79,9 +79,7 @@ create_test(Ewl_Container *box)
         ewl_widget_show(tree);
 
         /* create a view for the first column that just has an ewl label */
-        view = ewl_view_new();
-        ewl_view_constructor_set(view, ewl_label_new);
-        ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+        view = ewl_label_view_get();
         ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
         ewl_tree2_column_append(EWL_TREE2(tree), model, view);
 

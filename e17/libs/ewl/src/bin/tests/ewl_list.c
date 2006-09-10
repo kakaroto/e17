@@ -63,10 +63,7 @@ create_test(Ewl_Container *box)
 	ecore_list_append(str_data, "fourth");
 
 	model = ewl_model_ecore_list_get();
-
-	view = ewl_view_new();
-	ewl_view_constructor_set(view, ewl_label_new);
-	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+	view = ewl_label_view_get();
 
 	list = ewl_list_new();
 	ewl_container_child_append(EWL_CONTAINER(o), list);
