@@ -163,7 +163,7 @@ void
 od_icon_reload(OD_Icon * in)
 {
   const char     *icon_part = NULL;
-  char           *path, *winclass, *name, *icon_file, *tmp;
+  char           *path, *winclass, *name, *icon_file;
 
   Evas_Object    *icon = NULL;
   Evas_Object    *pic = NULL;
@@ -183,66 +183,61 @@ od_icon_reload(OD_Icon * in)
     pic = NULL;
   }
   
-  /* if the icon file is an eet we have a sysicon */
+  edje_object_file_set(icon, path, "Main");
+  pic = edje_object_add(evas_object_evas_get(icon));
   if (in->type == system_icon) {
-    if (path)
-      free(path);
-    path = strdup(icon_file);
-  }
-
-  if (edje_object_file_set(icon, path, "Main")) {
+    edje_object_file_set(pic, icon_file, "Main");
+  } else if ((icon_part = edje_object_data_get(icon, winclass))) {
+    pic = edje_object_add(evas_object_evas_get(icon));
+    if (edje_object_file_set(pic, path, icon_part) > 0) {
 #if 0
-    fprintf(stderr, "Trying to find part for %s\n", winclass);
+      fprintf(stderr, "Found icon part for %s(%s)\n", name, icon_part);
 #endif
-    if ((icon_part = edje_object_data_get(icon, winclass))) {
-      pic = edje_object_add(evas_object_evas_get(icon));
-      if (edje_object_file_set(pic, path, icon_part) > 0) {
+    } else if (edje_object_file_set(pic, path, "Unknown") > 0) {
 #if 0
-        fprintf(stderr, "Found icon part for %s(%s)\n", name, icon_part);
+      fprintf(stderr, "Didn't Find icon part for %s\n", name);
 #endif
-      } else if (edje_object_file_set(pic, path, "Unknown") > 0) {
-#if 0
-        fprintf(stderr, "Didn't Find icon part for %s\n", name);
-#endif
-      } else {
-        evas_object_del(pic);
-        pic = NULL;
-      }
-    } else {
-      pic = e_app_icon_add(evas_object_evas_get(icon), in->a);
-    }
-
-    if (!pic) {
-      pic = evas_object_image_add(evas);
-      evas_object_image_file_set(pic, icon_file, NULL);
-      evas_object_image_alpha_set(pic, 1);
-      evas_object_image_smooth_scale_set(pic, 1);
-      evas_object_pass_events_set(pic, 1);
-      evas_object_intercept_resize_callback_add(pic,
-                                                od_object_resize_intercept_cb,
-                                                NULL);
-    }
-
-    in->pic = pic;
-    evas_object_layer_set(pic, 100);
-    evas_object_move(pic, -50, -50);
-    evas_object_resize(pic, 32, 32);
-    evas_object_show(pic);
-    if (edje_object_part_exists(icon, "EngageIcon")) {
-      edje_object_part_swallow(icon, "EngageIcon", pic);
-      evas_object_pass_events_set(pic, 1);
     } else {
       evas_object_del(pic);
-      in->pic = NULL;
+      pic = NULL;
     }
-    if (edje_object_part_exists(icon, "EngageName")) {
-      edje_object_part_text_set(icon, "EngageName", name);
-    }
-    evas_object_layer_set(icon, 100);
-    evas_object_show(icon);
+  } else {
+    pic = e_app_icon_add(evas_object_evas_get(icon), in->a);
+  }
+  if (!pic) {
+    pic = evas_object_image_add(evas);
+    evas_object_image_file_set(pic, icon_file, NULL);
+    evas_object_image_alpha_set(pic, 1);
+    evas_object_image_smooth_scale_set(pic, 1);
+    evas_object_pass_events_set(pic, 1);
+    evas_object_intercept_resize_callback_add(pic,
+                                              od_object_resize_intercept_cb,
+                                              NULL);
+  }
+  free(path);
 
+  in->pic = pic;
+  evas_object_layer_set(pic, 100);
+  evas_object_move(pic, -50, -50);
+  evas_object_resize(pic, 32, 32);
+  evas_object_show(pic);
+  if (edje_object_part_exists(icon, "EngageIcon")) {
+    edje_object_part_swallow(icon, "EngageIcon", pic);
+    evas_object_pass_events_set(pic, 1);
+  } else {
+    evas_object_del(pic);
+    in->pic = NULL;
+  }
+  if (edje_object_part_exists(icon, "EngageName")) {
+    edje_object_part_text_set(icon, "EngageName", name);
+  }
+  evas_object_layer_set(icon, 100);
+  evas_object_show(icon);
+
+  if (in->type == system_icon) {
+    char *tmp;
     // set tmp to be the last thing in the path
-    tmp = path;
+    tmp = icon_file;
     while(*tmp)tmp++;
     while(*tmp != '/' && tmp != path)tmp--;
     if(*tmp == '/') tmp++;
@@ -250,7 +245,7 @@ od_icon_reload(OD_Icon * in)
       // hook up battery status if it's the battery icon
       Battery *bat = malloc(sizeof(Battery));
       memset(bat,0,sizeof(Battery));
-      bat->object = icon;
+      bat->object = pic;
       bat->battery_check_mode = CHECK_NONE;
       bat->battery_prev_drain = 1;
       bat->battery_prev_ac = -1;
@@ -258,11 +253,7 @@ od_icon_reload(OD_Icon * in)
       _battery_cb_check(bat);
       bat->battery_check_timer = ecore_timer_add(5.0, _battery_cb_check, bat);
     }
-  } else {
-    evas_object_del(icon);
-    in->icon = NULL;
   }
-  free(path);
 
   if (in->data.applnk.count > 0)
     od_icon_arrow_show(in);
