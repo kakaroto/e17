@@ -3142,7 +3142,7 @@ Etk_Range *
 etk_scrolled_view_hscrollbar_get(scrolled_view)
 	Etk_Scrolled_View *	scrolled_view
       ALIAS:
-	HscrollbarGet=1
+	HScrollbarGet=1
 
 Etk_Scrolled_View *
 new(class)
@@ -3177,7 +3177,7 @@ Etk_Range *
 etk_scrolled_view_vscrollbar_get(scrolled_view)
 	Etk_Scrolled_View *	scrolled_view
       ALIAS:
-	VscrollbarGet=1
+	VScrollbarGet=1
 
 
 MODULE = Etk::Selection	PACKAGE = Etk::Selection	PREFIX = etk_selection_
