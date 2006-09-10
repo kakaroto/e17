@@ -3407,6 +3407,66 @@ etk_toolbar_stock_size_get(toolbar)
 	ALIAS:
 	StockSizeGet=1
 
+MODULE = Etk::ToolButton	PACKAGE = Etk::ToolButton	PREFIX = etk_tool_button_
+
+Etk_Tool_Button *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_TOOL_BUTTON(etk_tool_button_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Tool_Button *
+new_from_stock(stock_id)
+	Etk_Stock_Id	stock_id
+      ALIAS:
+	NewFromStock=1
+	CODE:
+	RETVAL = ETK_TOOL_BUTTON(etk_tool_button_new_from_stock(stock_id));
+	OUTPUT:
+	RETVAL
+
+Etk_Tool_Button *
+new_with_label(label)
+	char *	label
+      ALIAS:
+	NewWithLabel=1
+	CODE:
+	RETVAL = ETK_TOOL_BUTTON(etk_tool_button_new_with_label(label));
+	OUTPUT:
+	RETVAL
+
+MODULE = Etk::ToolToggleButton	PACKAGE = Etk::ToolToggleButton	PREFIX = etk_tool_toggle_button_
+
+Etk_Tool_Toggle_Button *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_TOOL_TOGGLE_BUTTON(etk_tool_toggle_button_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Tool_Toggle_Button *
+new_from_stock(stock_id)
+	Etk_Stock_Id	stock_id
+      ALIAS:
+	NewFromStock=1
+	CODE:
+	RETVAL = ETK_TOOL_TOGGLE_BUTTON(etk_tool_toggle_button_new_from_stock(stock_id));
+	OUTPUT:
+	RETVAL
+
+Etk_Tool_Toggle_Button *
+new_with_label(label)
+	char *	label
+      ALIAS:
+	NewWithLabel=1
+	CODE:
+	RETVAL = ETK_TOOL_TOGGLE_BUTTON(etk_tool_toggle_button_new_with_label(label));
+	OUTPUT:
+	RETVAL
+
 
 MODULE = Etk::TextView	PACKAGE = Etk::TextView	PREFIX = etk_text_view_
 

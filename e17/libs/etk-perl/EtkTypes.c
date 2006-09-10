@@ -129,8 +129,8 @@ void __etk_perl_init() {
 	__("Etk_Textblock",		"Etk::TextBlock");
 	__("Etk_Textblock_Iter",		"Etk::TextBlock::Iter");
 	__("Etk_Toggle_Button",		"Etk::ToggleButton");
-	__("Etk_Tool_Button",		"Etk::Tool::Button");
-	__("Etk_Tool_Toggle_Button",		"Etk::Tool::ToggleButton");
+	__("Etk_Tool_Button",		"Etk::ToolButton");
+	__("Etk_Tool_Toggle_Button",		"Etk::ToolToggleButton");
 	__("Etk_Toolbar",		"Etk::Toolbar");
 	__("Etk_Toplevel_Widget",		"Etk::ToplevelWidget");
 	__("Etk_Tree",		"Etk::Tree");
@@ -165,6 +165,8 @@ void __etk_perl_init() {
 					__("ToggleButton", "Button");
 						__("CheckButton", "ToggleButton");
 							__("RadioButton", "CheckButton");
+					__("ToolButton", "Button");
+					__("ToolToggleButton", "Button");
 				__("Frame", "Bin");
 				__("ScrolledView", "Bin");
 				__("ToplevelWidget", "Bin");
