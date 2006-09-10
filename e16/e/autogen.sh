@@ -21,6 +21,8 @@ echo "Running autoconf"
 autoconf || exit 1
 echo "Running autoheader"
 autoheader || exit 1
+echo "Running libtoolize"
+libtoolize --copy --automake || glibtoolize --automake || exit 1
 echo "Running automake --add-missing"
 automake --copy --add-missing || exit 1
 

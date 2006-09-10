@@ -53,6 +53,10 @@ execApplication(const char *params, int flags)
    /* Set up env stuff */
    if (flags & EXEC_SET_LANG)
       LangExport();
+#if USE_ROOTHACKLIB
+   if (Mode.wm.window)
+      Esetenv("LD_PRELOAD", ENLIGHTENMENT_LIB "/libe16_hack.so");
+#endif
 
    sh = usershell(getuid());
 

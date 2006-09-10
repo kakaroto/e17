@@ -50,6 +50,10 @@ AC_PROG_LN_S
 
 AC_HEADER_STDC
 
+AM_ENABLE_SHARED
+AC_LIBTOOL_DLOPEN
+AM_PROG_LIBTOOL
+
 AC_PATH_X
 AC_PATH_XTRA
 
@@ -113,11 +117,14 @@ else
 fi
 ENLIGHTENMENT_ROOT=`eval echo ${DATADIR}/e16`
 ENLIGHTENMENT_BIN=`eval echo ${bindir}`
+ENLIGHTENMENT_LIB=`eval echo ${libdir}`
 AC_SUBST(ENLIGHTENMENT_ROOT)
 AC_SUBST(ENLIGHTENMENT_BIN)
+AC_SUBST(ENLIGHTENMENT_LIB)
 AC_SUBST(LOCALEDIR)
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_ROOT, "$ENLIGHTENMENT_ROOT", [The installation root directory])
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_BIN, "$ENLIGHTENMENT_BIN", [The installation bin directory])
+AC_DEFINE_UNQUOTED(ENLIGHTENMENT_LIB, "$ENLIGHTENMENT_LIB", [The installation lib directory])
 AC_DEFINE_UNQUOTED(LOCALEDIR, "$LOCALEDIR",  [The installation locale directory])
 
 if test "x$enable_sound" = "xyes"; then
@@ -246,6 +253,18 @@ AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale,, [
   echo "  We highly suggest that you rectify this situation immediately."
 ])
 
+AC_ARG_ENABLE(roothacklib,
+  [  --enable-roothacklib    build window mode helper library @<:@default=yes@:>@],,
+  enable_roothacklib=yes) 
+if test "x$enable_roothacklib" = "xyes"; then
+  AC_CHECK_LIB(dl, dlopen, DLOPEN_LIBS=-ldl, enable_roothacklib=no)
+  AC_SUBST(DLOPEN_LIBS)
+fi
+if test "x$enable_roothacklib" = "xyes"; then
+  AC_DEFINE(USE_ROOTHACKLIB, 1, [Use window mode helper library])
+fi
+AM_CONDITIONAL(BUILD_ROOTHACKLIB, test "x$enable_roothacklib" = "xyes")
+
 AC_ARG_ENABLE(gcc-warnings,
   [  --enable-gcc-warnings   enable GCC compiler warnings @<:@default=no@:>@],,
   enable_gcc_warnings=no) 
@@ -262,6 +281,7 @@ dox/Makefile
 dox/E-docs/Makefile
 eesh/Makefile
 epp/Makefile
+lib/Makefile
 man/Makefile
 config/Makefile
 config/pix/Makefile
@@ -295,6 +315,7 @@ echo "  Zoom ......................... $enable_zoom"
 echo "  Xinerama ..................... $enable_xinerama"
 echo "  RandR ........................ $enable_xrandr"
 echo "  Composite .................... $enable_composite"
+echo "  Window mode helper library ... $enable_roothacklib"
 echo
 echo "Experimental options - DO NOT USE unless you know what you are doing"
 echo "  Compile with ecore/ecore_x ... $enable_ecore"

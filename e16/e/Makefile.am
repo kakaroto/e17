@@ -1,4 +1,4 @@
-SUBDIRS = intl dox eesh epp src config themes man scripts misc po
+SUBDIRS = intl dox eesh epp src lib config themes man scripts misc po
 
 EXTRA_DIST = \
 timestamp.h \
