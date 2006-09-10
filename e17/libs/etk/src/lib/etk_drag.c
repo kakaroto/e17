@@ -9,7 +9,7 @@
 #include "etk_engine.h"
 
 /**
- * @addtogroup Etk_Ddrag
+ * @addtogroup Etk_Drag
  * @{
  */
 
