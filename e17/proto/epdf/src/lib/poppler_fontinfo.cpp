@@ -12,11 +12,14 @@ epdf_font_info_new (const char *font_name, const char *font_path, unsigned char 
   Epdf_Font_Info *fi;
 
   fi = (Epdf_Font_Info *)malloc (sizeof (Epdf_Font_Info));
+  memset (fi, 0, sizeof (Epdf_Font_Info));
   if (!fi)
     return NULL;
 
-  fi->font_name = strdup (font_name);
-  fi->font_path = strdup (font_path);
+  if (font_name)
+    fi->font_name = strdup (font_name);
+  if (font_path)
+    fi->font_path = strdup (font_path);
   fi->is_embedded = is_embedded;
   fi->is_subset = is_subset;
   fi->type = type;
