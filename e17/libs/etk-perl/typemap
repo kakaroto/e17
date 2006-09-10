@@ -65,7 +65,7 @@ Etk_Property_Value *				T_PTROBJ
 Etk_Radio_Button *				T_PTROBJ_ETK
 Etk_Range *					T_PTROBJ_ETK
 Etk_Scrolled_View *				T_PTROBJ_ETK
-Etk_Scrolled_View_Policy			T_PTROBJ
+Etk_Scrolled_View_Policy			T_IV
 Etk_Scrolled_View_Policy *			T_PTROBJ
 Etk_Signal *					T_PTROBJ
 Etk_Signal_Callback *				T_PTROBJ
