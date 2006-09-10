@@ -2873,6 +2873,32 @@ etk_paned_position_set(paned, position)
       ALIAS:
 	PositionSet=1
 
+void
+etk_paned_child1_expand_set(paned, expand)
+	Etk_Paned *	paned
+	Etk_Bool	expand
+	ALIAS:
+	Child1ExpandSet=1
+
+void
+etk_paned_child2_expand_set(paned, expand)
+	Etk_Paned *	paned
+	Etk_Bool	expand
+	ALIAS:
+	Child2ExpandSet=1
+
+Etk_Bool
+etk_paned_child1_expand_get(paned)
+	Etk_Paned *	paned
+	ALIAS:
+	Child1ExpandGet=1
+
+Etk_Bool
+etk_paned_child2_expand_get(paned)
+	Etk_Paned *	paned
+	ALIAS:
+	Child2ExpandGet=1
+
 
 MODULE = Etk::PopupWindow	PACKAGE = Etk::PopupWindow	PREFIX = etk_popup_window_
 	
