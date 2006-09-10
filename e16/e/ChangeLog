@@ -4028,3 +4028,13 @@ Fix live pager updates and pager zooming for sticky windows
  (Invalidate named pixmap on reparent).
 Fix memory leaks in combined dialog.
 Eliminate redundant geometry caching in top-level objects.
+
+-------------------------------------------------------------------------------
+
+Sun Sep 10 08:57:47 CEST 2006
+(Kim)
+
+--- 0.16.8.4 0.03 ---
+Fix build without composite. 
+Avoid unnecessary library dependencies in eesh and edox. Cleanups.
+
