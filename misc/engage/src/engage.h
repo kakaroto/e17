@@ -91,7 +91,7 @@ OD_Window      *od_wm_window_prev_by_window_class_get(const char *);
 OD_Window      *od_wm_window_current_by_window_class_get(const char *);
 
 struct _OD_Options {
-  int             width, height, reserve, zoom;
+  int             width, height, reserve, zoom, stretch;
 #ifdef XINERAMA
   int             head;
 #endif

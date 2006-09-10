@@ -8,8 +8,19 @@ Etk_Widget *_od_config_menu = NULL;
 Etk_Widget *_od_config_menu_app;
 Etk_Widget *_od_config_menu_app_keep, *_od_config_menu_app_remove;
 
-void _od_config_menu_zooming_cb(Etk_Object *object, void *data) {
-  ecore_config_int_set("engage.options.zoom", options.zoom ? 0 : 1);
+void _od_config_menu_zoom_none_cb(Etk_Object *object, void *data) {
+  ecore_config_int_set("engage.options.zoom", 0);
+  ecore_config_int_set("engage.options.stretch", 0);
+}
+
+void _od_config_menu_zoom_zoom_cb(Etk_Object *object, void *data) {
+  ecore_config_int_set("engage.options.zoom", 1);
+  ecore_config_int_set("engage.options.stretch", 0);
+}
+
+void _od_config_menu_zoom_both_cb(Etk_Object *object, void *data) {
+  ecore_config_int_set("engage.options.zoom", 1);
+  ecore_config_int_set("engage.options.stretch", 1);
 }
 
 void _od_config_menu_config_cb(Etk_Object *object, void *data) {
@@ -45,9 +56,22 @@ void od_config_menu_init(void) {
 //  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_od_config_menu_app_remove_cb), NULL);
   _od_config_menu_app_remove = menu_item;
 
-  menu_item = etk_menu_item_new_with_label("Icon Zooming");
+  menu_item = etk_menu_item_image_new_with_label("Zoom Mode");
+  sub_menu = etk_menu_new();
   etk_menu_shell_append(ETK_MENU_SHELL(menu), ETK_MENU_ITEM(menu_item));
-  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_od_config_menu_zooming_cb), NULL);
+  etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(sub_menu));
+  etk_widget_show(sub_menu);
+
+  menu_item = etk_menu_item_new_with_label("None");
+  etk_menu_shell_append(ETK_MENU_SHELL(sub_menu), ETK_MENU_ITEM(menu_item));
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_od_config_menu_zoom_none_cb), NULL);
+  menu_item = etk_menu_item_new_with_label("Zoom Only");
+  etk_menu_shell_append(ETK_MENU_SHELL(sub_menu), ETK_MENU_ITEM(menu_item));
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_od_config_menu_zoom_zoom_cb), NULL);
+  menu_item = etk_menu_item_new_with_label("Zoom and Stretch");
+  etk_menu_shell_append(ETK_MENU_SHELL(sub_menu), ETK_MENU_ITEM(menu_item));
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_od_config_menu_zoom_both_cb), NULL);
+
   menu_item = etk_menu_item_image_new_from_stock(ETK_STOCK_DOCUMENT_PROPERTIES);
   etk_menu_item_label_set(ETK_MENU_ITEM(menu_item), "Configuration");
   etk_menu_shell_append(ETK_MENU_SHELL(menu), ETK_MENU_ITEM(menu_item));

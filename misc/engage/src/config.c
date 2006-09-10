@@ -24,6 +24,14 @@ zoom_listener(const char *key, const Ecore_Config_Type type, const int tag,
 }
 
 int
+stretch_listener(const char *key, const Ecore_Config_Type type, const int tag,
+                void *data)
+{ 
+  options.stretch = ecore_config_boolean_get(key);
+  return 1;
+}
+
+int
 theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
                void *data)
 {
@@ -107,8 +115,10 @@ od_config_init(void)
                           "Size of icons in default state");
   ecore_config_int_create("engage.options.spacing", 4, 'S', "spacing",
                           "Space in pixels between each icon");
+  ecore_config_boolean_create("engage.options.stretch", 0, 'y', "stretch",
+                              "Stretch the bar whilst zooming icons");
   ecore_config_boolean_create("engage.options.zoom", 1, 'z', "zoom",
-                                "Should we zoom icons?");
+                              "Should we zoom icons?");
   ecore_config_float_create("engage.options.zoom_factor", 2.0, 'Z',
                             "zoom-factor",
                             "Zoom factor of the icons - 1.0 == 100% == nozoom");
@@ -158,17 +168,19 @@ od_config_init(void)
   
   options.size = ecore_config_int_get("engage.options.size");
   options.spacing = ecore_config_int_get("engage.options.spacing");
+  options.stretch = ecore_config_boolean_get("engage.options.stretch");
+  ecore_config_listen("stretch", "engage.options.stretch", stretch_listener, 0, NULL);
   options.zoom = ecore_config_boolean_get("engage.options.zoom");
   ecore_config_listen("zoom", "engage.options.zoom", zoom_listener, 0, NULL);
   options.zoomfactor = ecore_config_float_get("engage.options.zoom_factor");
   options.dock_zoom_duration =
-    ecore_config_float_get("engage.options.zoom_duration");
+  ecore_config_float_get("engage.options.zoom_duration");
 
   options.bg_fore = ecore_config_argbint_get("engage.options.bg_fore");
-  ecore_config_listen("colour", "engage.options.bg_fore", 
+  ecore_config_listen("colourfg", "engage.options.bg_fore", 
                       colour_listener, BG_FORE, NULL);
   options.bg_back = ecore_config_argbint_get("engage.options.bg_back");
-  ecore_config_listen("colour", "engage.options.bg_back", 
+  ecore_config_listen("colourbg", "engage.options.bg_back", 
                       colour_listener, BG_BACK, NULL);
 
   options.icon_appear_duration =

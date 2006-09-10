@@ -222,21 +222,29 @@ zoom_function(double d, double *zoom, double *disp)
       ((sqrt_ff_1 - sqrt_ffxx) / (sqrt_ff_1 - f)
       )
       + 1.0;
-    *disp = (options.size + options.spacing) *
-      ((dock.zoom - 1.0) * (zoom_factor - 1.0) *
-       (range *
-        (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
-         ff * atan(x / sqrt_ffxx)) / (2.0 * (sqrt_ff_1 - f))
-       )
-       + d);
+    if (options.stretch) {
+      *disp = (options.size + options.spacing) *
+        ((dock.zoom - 1.0) * (zoom_factor - 1.0) *
+         (range *
+          (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
+           ff * atan(x / sqrt_ffxx)) / (2.0 * (sqrt_ff_1 - f))
+         )
+         + d);
+    } else {
+      *disp = d * (options.size + options.spacing);
+    }
   } else {
     *zoom = 1.0;
-    *disp = (options.size + options.spacing) *
-      ((dock.zoom - 1.0) * (zoom_factor - 1.0) *
-       (range * (sqrt_ff_1 - ff * atan(1.0 / sqrt_ff_1)) /
-        (2.0 * (sqrt_ff_1 - f))
-       )
-       + range + fabs(d) - range);
+    if (options.stretch) {
+      *disp = (options.size + options.spacing) *
+        ((dock.zoom - 1.0) * (zoom_factor - 1.0) *
+         (range * (sqrt_ff_1 - ff * atan(1.0 / sqrt_ff_1)) /
+          (2.0 * (sqrt_ff_1 - f))
+         )
+         + range + fabs(d) - range);
+    } else {
+      *disp = (range + fabs(d) - range) * (options.size + options.spacing);
+    }
     if (d < 0.0)
       *disp = -(*disp);
   }
