@@ -91,7 +91,7 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
 
   doc = page->doc;
 
-  output_dev = new SplashOutputDev(splashModeRGB8, 4, gFalse, white);
+  output_dev = new SplashOutputDev(splashModeRGB8Qt, 4, gFalse, white);
   output_dev->startDoc(doc->pdfdoc->getXRef ());
   switch (orientation) {
   case EPDF_PAGE_ORIENTATION_LANDSCAPE:
