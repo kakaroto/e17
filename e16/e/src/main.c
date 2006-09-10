@@ -443,39 +443,26 @@ EoptHelp(void)
 static void
 RunDocBrowser(void)
 {
-   char                file[FILEPATH_LEN_MAX];
+   char                buf[FILEPATH_LEN_MAX];
 
-   Esnprintf(file, sizeof(file), "%s/edox", EDirBin());
-   if (!canexec(file))
+   Esnprintf(buf, sizeof(buf), "%s/edox", EDirBin());
+   if (!canexec(buf))
       return;
-   Esnprintf(file, sizeof(file), "%s/E-docs", EDirRoot());
-   if (!canread(file))
-      return;
-
-   if (fork())
+   Esnprintf(buf, sizeof(buf), "%s/E-docs", EDirRoot());
+   if (!canread(buf))
       return;
 
-   Esnprintf(file, sizeof(file), "exec %s/edox %s/E-docs",
-	     EDirBin(), EDirRoot());
-
-   execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
-
-   exit(0);
+   Esnprintf(buf, sizeof(buf), "%s/edox %s/E-docs", EDirBin(), EDirRoot());
+   execApplication(buf, 0);
 }
 
 static void
 RunMenuGen(void)
 {
-   char                file[FILEPATH_LEN_MAX];
+   char                buf[FILEPATH_LEN_MAX];
 
-   if (fork())
-      return;
-
-   LangExport();
-
-   Esnprintf(file, sizeof(file), "exec %s/scripts/e_gen_menu", EDirRoot());
-   execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
-   exit(0);
+   Esnprintf(buf, sizeof(buf), "%s/scripts/e_gen_menu", EDirRoot());
+   execApplication(buf, EXEC_SET_LANG);
 }
 
 static void

@@ -553,7 +553,8 @@ void                ActionsHandleMotion(void);
 int                 ActionsEnd(EWin * ewin);
 void                About(void);
 
-int                 execApplication(const char *params);
+#define EXEC_SET_LANG       0x01
+int                 execApplication(const char *params, int flags);
 void                Espawn(int argc, char **argv);
 void                EspawnCmd(const char *cmd);
 

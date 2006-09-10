@@ -173,7 +173,7 @@ static void
 MiscIpcExec(const char *params, Client * c __UNUSED__)
 {
    if (params)
-      execApplication(params);
+      execApplication(params, EXEC_SET_LANG);
    else
       IpcPrintf("exec what?\n");
 }

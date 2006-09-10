@@ -26,141 +26,130 @@
 #include "file.h"
 #include "user.h"
 
-static void
-runApp(const char *exe, const char *params)
+int
+execApplication(const char *params, int flags)
 {
+   char                exe[FILEPATH_LEN_MAX];
    char               *sh;
    char               *path;
    char               *real_exec;
    int                 fd;
 
+   if (!params)
+      return -1;
+
+   sscanf(params, "%4000s", exe);
+   if (exe[0] == '\0')
+      return -1;
+
    if (fork())
-      return;
+      return 0;
 
    setsid();
    /* Close all file descriptors except the std 3 */
    for (fd = 3; fd < 1024; fd++)
       close(fd);
 
-   LangExport();
+   /* Set up env stuff */
+   if (flags & EXEC_SET_LANG)
+      LangExport();
 
    sh = usershell(getuid());
-   if (exe)
+
+   path = pathtoexec(exe);
+   if (path)
      {
-	path = pathtoexec(exe);
-	if (path)
-	  {
-	     Efree(path);
-	     real_exec = Emalloc(strlen(params) + 6);
-	     if (!real_exec)
-		return;
-	     sprintf(real_exec, "exec %s", params);
-	     execl(sh, sh, "-c", real_exec, NULL);
-	     exit(0);
-	  }
+	Efree(path);
 
-	if (!Mode.wm.startup)
-	  {
-	     path = pathtofile(exe);
-	     if (!path)
-	       {
-		  /* absolute path */
-		  if (isabspath(exe))
-		     DialogAlertOK(_
-				   ("There was an error running the program:\n"
-				    "%s\n"
-				    "This program could not be executed.\n"
-				    "This is because the file does not exist.\n"),
-				   exe);
-		  /* relative path */
-		  else
-		     DialogAlertOK(_
-				   ("There was an error running the program:\n"
-				    "%s\n"
-				    "This program could not be executed.\n"
-				    "This is most probably because this "
-				    "program is not in the\n"
-				    "path for your shell which is %s. "
-				    "I suggest you read the manual\n"
-				    "page for that shell and read up how to "
-				    "change or add to your\n"
-				    "execution path.\n"), exe, sh);
-	       }
-	     else
-		/* it is a node on the filing sys */
-	       {
-		  /* it's a file */
-		  if (isfile(path))
-		    {
-		       /* can execute it */
-		       if (canexec(path))
-			  DialogAlertOK(_
-					("There was an error running the program:\n"
-					 "%s\n"
-					 "This program could not be executed.\n"
-					 "I am unsure as to why you could not "
-					 "do this. The file exists,\n"
-					 "is a file, and you are allowed to "
-					 "execute it. I suggest you look\n"
-					 "into this.\n"), path);
-		       /* not executable file */
-		       else
-			  DialogAlertOK(_
-					("There was an error running the program:\n"
-					 "%s\n"
-					 "This program could not be executed.\n"
-					 "This is because the file exists, is a "
-					 "file, but you are unable\n"
-					 "to execute it because you do not "
-					 "have execute "
-					 "access to this file.\n"), path);
-		    }
-		  /* it's not a file */
-		  else
-		    {
-		       /* its a dir */
-		       if (isdir(path))
-			  DialogAlertOK(_
-					("There was an error running the program:\n"
-					 "%s\n"
-					 "This program could not be executed.\n"
-					 "This is because the file is in fact "
-					 "a directory.\n"), path);
-		       /* its not a file or a dir */
-		       else
-			  DialogAlertOK(_
-					("There was an error running the program:\n"
-					 "%s\n"
-					 "This program could not be executed.\n"
-					 "This is because the file is not a "
-					 "regular file.\n"), path);
-		    }
-		  Efree(path);
-	       }
-	  }
-	exit(100);
+	real_exec = Emalloc(strlen(params) + 6);
+	if (!real_exec)
+	   return -1;
+	sprintf(real_exec, "exec %s", params);
+
+	execl(sh, sh, "-c", real_exec, NULL);
+	/* We should not get here - invalid shell? */
      }
-   real_exec = Emalloc(strlen(params) + 6);
-   if (!real_exec)
-      return;
-   sprintf(real_exec, "exec %s", params);
-   execl(sh, sh, "-c", real_exec, NULL);
-   exit(0);
-}
 
-int
-execApplication(const char *params)
-{
-   char                exe[FILEPATH_LEN_MAX];
-   const char         *s = params;
-
-   if (!s)
-      return -1;
-
-   sscanf(s, "%4000s", exe);
-   runApp(exe, s);
-
-   return 0;
+   if (!Mode.wm.startup)
+     {
+	path = pathtofile(exe);
+	if (!path)
+	  {
+	     /* absolute path */
+	     if (isabspath(exe))
+		DialogAlertOK(_
+			      ("There was an error running the program:\n"
+			       "%s\n"
+			       "This program could not be executed.\n"
+			       "This is because the file does not exist.\n"),
+			      exe);
+	     /* relative path */
+	     else
+		DialogAlertOK(_
+			      ("There was an error running the program:\n"
+			       "%s\n"
+			       "This program could not be executed.\n"
+			       "This is most probably because this "
+			       "program is not in the\n"
+			       "path for your shell which is %s. "
+			       "I suggest you read the manual\n"
+			       "page for that shell and read up how to "
+			       "change or add to your\n"
+			       "execution path.\n"), exe, sh);
+	  }
+	else
+	   /* it is a node on the filing sys */
+	  {
+	     /* it's a file */
+	     if (isfile(path))
+	       {
+		  /* can execute it */
+		  if (canexec(path))
+		     DialogAlertOK(_
+				   ("There was an error running the program:\n"
+				    "%s\n"
+				    "This program could not be executed.\n"
+				    "I am unsure as to why you could not "
+				    "do this. The file exists,\n"
+				    "is a file, and you are allowed to "
+				    "execute it. I suggest you look\n"
+				    "into this.\n"), path);
+		  /* not executable file */
+		  else
+		     DialogAlertOK(_
+				   ("There was an error running the program:\n"
+				    "%s\n"
+				    "This program could not be executed.\n"
+				    "This is because the file exists, is a "
+				    "file, but you are unable\n"
+				    "to execute it because you do not "
+				    "have execute "
+				    "access to this file.\n"), path);
+	       }
+	     /* it's not a file */
+	     else
+	       {
+		  /* its a dir */
+		  if (isdir(path))
+		     DialogAlertOK(_
+				   ("There was an error running the program:\n"
+				    "%s\n"
+				    "This program could not be executed.\n"
+				    "This is because the file is in fact "
+				    "a directory.\n"), path);
+		  /* its not a file or a dir */
+		  else
+		     DialogAlertOK(_
+				   ("There was an error running the program:\n"
+				    "%s\n"
+				    "This program could not be executed.\n"
+				    "This is because the file is not a "
+				    "regular file.\n"), path);
+	       }
+	     Efree(path);
+	  }
+     }
+   exit(100);
 }
 
 void
