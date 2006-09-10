@@ -95,7 +95,6 @@ od_object_resize_intercept_cb(void *data, Evas_Object * o,
   }
   evas_object_resize(o, w, h);
 }
-									  
 
 #ifdef HAVE_IMLIB
 void
@@ -428,7 +427,7 @@ od_icon_edje_app_cb(void *data, Evas_Object * obj, const char *emission, const
       case minimised_window:
         break;
       case system_icon:
-	break;
+        break;
       }
     } else if (!strcmp(emission, "engage,app,close")) {
       if (icon->data.applnk.winclass) {
@@ -440,7 +439,6 @@ od_icon_edje_app_cb(void *data, Evas_Object * obj, const char *emission, const
         }
       }
     }
-    fprintf(stderr, "App got %s from %s\n", emission, icon->name);
   }
 }
 static void
@@ -467,7 +465,7 @@ od_icon_edje_win_minimize_cb(void *data, Evas_Object * obj,
       case minimised_window:
         break;
       case system_icon:
-	break;
+        break;
       }
     } else if (!strcmp(emission, "engage,window,minimize,all")) {
       switch (icon->type) {
@@ -522,10 +520,10 @@ od_icon_edje_win_raise_cb(void *data, Evas_Object * obj, const char *emission, c
 
         if (win->minwin == icon || win->applnk == icon) {
           od_wm_activate_window(win->id);
-	  /*
+/*
           ecore_x_window_prop_state_request(win->id,
                                             ECORE_X_WINDOW_STATE_ICONIFIED, 0);
-	  */
+*/
         }
       }
     } else if (!strcmp(emission, "engage,window,raise,next")) {
