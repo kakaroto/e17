@@ -2,6 +2,13 @@ TODO:
 	- callback system needs to convert event structs to perl equivalents 
 	- perldoc everything
 	- complete Tests
+		* Combobox
+		* TextBlock
+		* Tooltips
+		* Toplevel_Widget
+		* Tree
+		* Window
+		* Widget
 	- Check for memory usage (I'm not sure if we're leaking or not,
 	  need to do some tests for that)
 	- Fix Combobox append functions (waiting for some functionality in etk)
