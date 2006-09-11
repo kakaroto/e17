@@ -133,5 +133,11 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
+   Config_Item *ci;
+   
+   ci = cfd->data;
+   ci->card_id = cfdata->card_id;
+   ci->channel_id = cfdata->channel_id;
+   e_config_save_queue();
    return 1;
 }
