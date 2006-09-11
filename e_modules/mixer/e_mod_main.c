@@ -563,8 +563,8 @@ _mixer_window_simple_animator_up_cb(void *data)
    h = progress * win->h;
    prev_h = win->window->h;
    
-   if (win->to_top) e_popup_move(win->window, win->x, win->y - h);
    e_popup_resize(win->window, win->w, h);
+   if (win->to_top) e_popup_move(win->window, win->x, win->y - h);
    
    if (h >= win->h)
      {
@@ -590,8 +590,8 @@ _mixer_window_simple_animator_down_cb(void *data)
    h = (1.0 - progress) * (1.0 - progress) * win->h;
    prev_h = win->window->h;
    
-   if (win->to_top) e_popup_move(win->window, win->x, win->y - h);
    e_popup_resize(win->window, win->w, h);
+   if (win->to_top) e_popup_move(win->window, win->x, win->y - h);
    
    if (h <= 0)
      {
