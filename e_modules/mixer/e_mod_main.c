@@ -431,10 +431,11 @@ _mixer_window_simple_pop_up(Instance *inst)
                                        _mixer_window_simple_changed_cb, win);
 	if (inst->mixer->mix_sys->get_volume) 
 	  {
-//	     vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
-//	     vol = vol * 100;
-//	     printf("\n\nVolume: %i\n\n", vol);
-//	     e_slider_value_set(win->slider, (double)vol);
+	     double v;
+	     
+	     vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+	     v = ((double)vol) / 100;
+	     e_slider_value_set(win->slider, v);
 	  }
 	
         e_slider_min_size_get(win->slider, &sw, &sh);
@@ -580,7 +581,7 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    Mixer_Win_Simple *win;
    Mixer            *mixer;
    Config_Item      *ci;
-   long            val;
+   double            val;
    
    if (!(win = data)) return;
    
@@ -592,12 +593,17 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    ci = _mixer_config_item_get(mixer->inst->gcc->id);
    if (!ci) return;
 
-   val = 1.0 - (e_slider_value_get(obj));
-   printf("Slider value: %f\n", val);
+   val = ((1.0 - (e_slider_value_get(obj))) * 100);
    if ((ci->card_id != 0) && (ci->channel_id != 0)) 
      {
-	mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, (int)(val * 100));
-
+	int ret;
+	
+	ret = mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, val);
+	if (!ret) 
+	  {
+	     printf("\n\nVol Set Failed\n\n");
+	  }
+	
 	if ((val * 100) < 33)
 	  edje_object_signal_emit(mixer->base, "low", "");
 	else if (((val * 100) >= 34) && ((val * 100) < 66))

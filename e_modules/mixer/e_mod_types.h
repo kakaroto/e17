@@ -48,7 +48,7 @@ struct _Mixer_System
    Evas_List *(*get_channels) (void *data);
    void      *(*get_channel)  (void *data, int card_id);
 
-   int        (*set_volume)   (int card_id, int channel_id, int vol);
+   int        (*set_volume)   (int card_id, int channel_id, double vol);
    int        (*get_volume)   (int card_id, int channel_id);
    
    void       (*free_cards)   (void *data);

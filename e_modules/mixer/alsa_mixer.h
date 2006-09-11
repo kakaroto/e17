@@ -22,6 +22,6 @@ void        *alsa_card_get_channel  (void *data, int channel_id);
 void         alsa_free_cards        (void *data);
 
 int          alsa_get_volume        (int card_id, int channel_id);
-int          alsa_set_volume        (int card_id, int channel_id, int vol);
+int          alsa_set_volume        (int card_id, int channel_id, double vol);
 
 #endif

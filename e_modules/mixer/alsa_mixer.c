@@ -260,59 +260,164 @@ int
 alsa_get_volume(int card_id, int channel_id) 
 {
    Mixer_Card       *card;
-   Mixer_Channel    *chan;
-   snd_mixer_elem_t *elem;
    snd_mixer_t      *handle;
+   snd_mixer_elem_t *elem;
    snd_mixer_selem_id_t *sid;
-   int               err, i;
-   long              vol = 0;
+   int               err, range, ret = 0;
+   long              min, max, vol;
    
    card = alsa_get_card(card_id);
    if (!card) return 0;
 
-   chan = _alsa_card_get_channel(card, channel_id);
-   if (!chan) return 0;
-
-   printf("\n\nGet Volume\n");
    if ((err = snd_mixer_open(&handle, 0)) < 0) 
      {
 	printf("Cannot open mixer: %s\n", snd_strerror(err));
 	return 0;
      }
 
-   for (i = 0, elem = snd_mixer_first_elem(handle); elem; elem = snd_mixer_elem_next(elem)) 
+   if ((err = snd_mixer_attach(handle, (char *)card->name)) < 0) 
      {
+	printf("\n\nCannot Attach Mixer: %s\n\n", snd_strerror(err));
+	snd_mixer_close(handle);
+	return 0;
+     }
+
+   if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) 
+     {
+	printf("\n\nCannot Register Mixer: %s\n\n", snd_strerror(err));
+	snd_mixer_close(handle);
+	return 0;
+     }
+
+   if ((err = snd_mixer_load(handle)) < 0) 
+     {
+	printf("\n\nCannot Load Mixer: %s\n\n", snd_strerror(err));
+	snd_mixer_close(handle);
+	return 0;
+     }
+
+   for (elem = snd_mixer_first_elem(handle); elem; elem = snd_mixer_elem_next(elem)) 
+     {
+	snd_mixer_selem_id_alloca(&sid);
 	snd_mixer_selem_get_id(elem, sid);
 	if (!snd_mixer_selem_is_active(elem)) continue;
-	
+
 	if (snd_mixer_selem_has_playback_volume(elem)) 
 	  {
 	     const char *name;
+	     int id;
 	     
 	     name = snd_mixer_selem_id_get_name(sid);
-	     if (!strcmp(name, chan->name)) 
+	     id = _alsa_get_mixer_id(name);
+	     if (id == channel_id)
 	       {
 		  snd_mixer_selem_get_playback_volume(elem, 0, &vol);
+		  snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
+		  range = max - min;
+		  if (range == 0) 
+		    vol = 0;
+		  else
+		    vol -= min;
+		  ret = rint(((double)vol / ((double)range) * 100));
 		  break;
 	       }	     
 	  }
      }
-   return (int)vol;
+   
+   snd_mixer_close(handle);
+   return ret;
 }
 
 int 
-alsa_set_volume(int card_id, int channel_id, int vol) 
+alsa_set_volume(int card_id, int channel_id, double vol) 
 {
-   Mixer_Card    *card;
-   Mixer_Channel *chan;
+   Mixer_Card       *card;
+   snd_mixer_t      *handle;
+   snd_mixer_elem_t *elem;
+   snd_mixer_selem_id_t *sid;
+   int               err, range, v;
+   long              min, max;
    
    card = alsa_get_card(card_id);
    if (!card) return 0;
 
-   chan = _alsa_card_get_channel(card, channel_id);
-   if (!chan) return 0;
+   if ((err = snd_mixer_open(&handle, 0)) < 0) 
+     {
+	printf("Cannot open mixer: %s\n", snd_strerror(err));
+	return 0;
+     }
+
+   if ((err = snd_mixer_attach(handle, (char *)card->name)) < 0) 
+     {
+	printf("\n\nCannot Attach Mixer: %s\n\n", snd_strerror(err));
+	snd_mixer_close(handle);
+	return 0;
+     }
+
+   if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) 
+     {
+	printf("\n\nCannot Register Mixer: %s\n\n", snd_strerror(err));
+	snd_mixer_close(handle);
+	return 0;
+     }
+
+   if ((err = snd_mixer_load(handle)) < 0) 
+     {
+	printf("\n\nCannot Load Mixer: %s\n\n", snd_strerror(err));
+	snd_mixer_close(handle);
+	return 0;
+     }
+
+   for (elem = snd_mixer_first_elem(handle); elem; elem = snd_mixer_elem_next(elem)) 
+     {
+	snd_mixer_selem_id_alloca(&sid);
+	snd_mixer_selem_get_id(elem, sid);
+	if (!snd_mixer_selem_is_active(elem)) continue;
+
+	if (snd_mixer_selem_has_playback_volume(elem)) 
+	  {
+	     const char *name;
+	     int id;
+	     
+	     name = snd_mixer_selem_id_get_name(sid);
+	     id = _alsa_get_mixer_id(name);
+	     if (id == channel_id)
+	       {
+		  snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
+		  range = max - min;
+		  if (range == 0) 
+		    {
+		       snd_mixer_close(handle);
+		       return 0; 
+		    }
+		  snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
+		  
+		  v = (vol < 0) ? -vol: vol;
+		  if (v > 0) 
+		    {
+		       if (v > 100)
+			 v = max;
+		       else
+			 v = (((range * (v)) + (range /2)) / (100 + min));
+		       
+		       v -= min;
+		       if (v <= 0)
+			 v = 1;
+		       if (vol < 0)
+			 v = -v;
+		    }
+		  
+		  snd_mixer_selem_set_playback_volume(elem, 0, v);
+		  if (!snd_mixer_selem_is_playback_mono(elem))
+		    snd_mixer_selem_set_playback_volume(elem, 1, v);
+		  
+		  break;
+	       }	     
+	  }
+     }
    
-   printf("Set Volume: %i\n", vol);
+   snd_mixer_close(handle);
+   return 1;
 }
 
 /* Privates */
