@@ -427,7 +427,7 @@ alsa_get_mute(int card_id, int channel_id)
    snd_mixer_t          *handle;
    snd_mixer_elem_t     *elem;
    snd_mixer_selem_id_t *sid;
-   int                   id, mute = 0;
+   int                   err, id, mute = 0;
    const char           *name;
    
    card = alsa_get_card(card_id);
@@ -487,7 +487,7 @@ alsa_set_mute(int card_id, int channel_id, int mute)
    snd_mixer_t          *handle;
    snd_mixer_elem_t     *elem;
    snd_mixer_selem_id_t *sid;
-   int                   id;
+   int                   id, err;
    const char           *name;
    
    card = alsa_get_card(card_id);
