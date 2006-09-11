@@ -51,8 +51,13 @@ struct _Mixer_System
 {
    Evas_List *(*get_cards)    (void);
    void      *(*get_card)     (int id);
-   Evas_List *(*get_channels) (void *card);
-   void       (*free_cards)   (void *cards);
+   Evas_List *(*get_channels) (void *data);
+   void      *(*get_channel)  (void *data, int card_id);
+
+   int        (*set_volume)   (int card_id, int channel_id, int vol);
+   int        (*get_volume)   (int card_id, int channel_id);
+   
+   void       (*free_cards)   (void *data);
    
    Evas_List *cards;
 };
@@ -293,7 +298,11 @@ _mixer_system_init(void *data)
    sys->get_cards = alsa_get_cards;
    sys->get_card = alsa_get_card;
    sys->get_channels = alsa_card_get_channels;
+   sys->get_channel = alsa_card_get_channel;
    sys->free_cards = alsa_free_cards;
+   
+   sys->get_volume = alsa_get_volume;
+   sys->set_volume = alsa_set_volume;
    #endif
    
    mixer->mix_sys = sys;
@@ -307,8 +316,7 @@ _mixer_system_shutdown(void *data)
    sys = data;
    if (!sys) return;
 
-   if (sys->free_cards) 
-     sys->free_cards(sys->cards);
+   if (sys->free_cards) sys->free_cards(sys->cards);
 
    E_FREE(sys);
 }
@@ -426,10 +434,8 @@ _mixer_window_simple_pop_up(Instance *inst)
    Evas_Coord sw, sh;
    int cx, cy, cw, ch;
    
-   if (!inst || !inst->mixer)
-     return;
-   if (!(con = e_container_current_get(e_manager_current_get())))
-     return;
+   if (!inst || !inst->mixer) return;
+   if (!(con = e_container_current_get(e_manager_current_get()))) return;
    
    evas_object_geometry_get(inst->mixer->base, &ox, &oy, &ow, &oh); 
    
@@ -472,12 +478,11 @@ _mixer_window_simple_pop_up(Instance *inst)
                                        _mixer_window_simple_changed_cb, win);
         
         e_slider_min_size_get(win->slider, &sw, &sh);
-        if (sw < ow)     sw = ow;
-        if (sh < 150)    sh = 150;
+        if (sw < ow) sw = ow;
+        if (sh < 150) sh = 150;
         edje_extern_object_min_size_set(win->slider, sw, sh);
         edje_object_part_swallow(win->bg_obj, "e.swallow.content", win->slider);
-        
-        
+	
         edje_object_size_min_calc(win->bg_obj, &win->w, &win->h);
         evas_object_move(win->bg_obj, 0, 0);
         evas_object_resize(win->bg_obj, win->w, win->h);
@@ -498,24 +503,19 @@ _mixer_window_simple_pop_up(Instance *inst)
         case E_GADCON_ORIENT_CORNER_LT:
         case E_GADCON_ORIENT_CORNER_LB:
           win->x += cw;
-          if (win->to_top)
-            win->y += oh;
+          if (win->to_top) win->y += oh;
           break;
         case E_GADCON_ORIENT_RIGHT:
         case E_GADCON_ORIENT_CORNER_RT:
         case E_GADCON_ORIENT_CORNER_RB:
           win->x -= win->w;
-          if (win->to_top)
-            win->y += oh;
+          if (win->to_top) win->y += oh;
           break;
         default:
           win->x += (ow - win->w) / 2;
-          if (win->x < cx)
-            win->x = cx;
-          if ((win->x + win->w) > (cx + cw))
-            win->x = cx + cw - win->w;
-          if (!win->to_top)
-            win->y += ch;
+          if (win->x < cx) win->x = cx;
+          if ((win->x + win->w) > (cx + cw)) win->x = cx + cw - win->w;
+          if (!win->to_top) win->y += ch;
           break;
      }
    
@@ -524,8 +524,7 @@ _mixer_window_simple_pop_up(Instance *inst)
    e_win_show(win->window);
    
    win->start_time = ecore_time_get();
-   if (win->slide_animator)
-      ecore_animator_del(win->slide_animator);
+   if (win->slide_animator) ecore_animator_del(win->slide_animator);
    win->slide_animator = ecore_animator_add(_mixer_window_simple_animator_up_cb, win);
    win->popped_up = 1;
 }
@@ -536,12 +535,10 @@ _mixer_window_simple_pop_down(Instance *inst)
 {
    Mixer_Win_Simple *win;
    
-   if (!(win = inst->mixer->simple_win) || !win->popped_up)
-     return;
+   if (!(win = inst->mixer->simple_win) || !win->popped_up) return;
    
    win->start_time = ecore_time_get();
-   if (win->slide_animator)
-      ecore_animator_del(win->slide_animator);
+   if (win->slide_animator) ecore_animator_del(win->slide_animator);
    win->slide_animator = ecore_animator_add(_mixer_window_simple_animator_down_cb, win);
    win->popped_up = 0;
 }
@@ -554,8 +551,7 @@ _mixer_window_simple_animator_up_cb(void *data)
    double progress;
    int prev_h, h;
    
-   if (!(win = data))
-     return 1;
+   if (!(win = data)) return 1;
    
    progress = (ecore_time_get() - win->start_time) / SLIDE_LENGTH;
    progress = E_CLAMP(progress, 0.0, 1.0);
@@ -563,8 +559,7 @@ _mixer_window_simple_animator_up_cb(void *data)
    h = progress * win->h;
    prev_h = win->window->h;
    
-   if (win->to_top)
-     e_win_move(win->window, win->x, win->y - h);
+   if (win->to_top) e_win_move(win->window, win->x, win->y - h);
    e_win_resize(win->window, win->w, h);
    
    if (h >= win->h)
@@ -584,16 +579,14 @@ _mixer_window_simple_animator_down_cb(void *data)
    double progress;
    int prev_h, h;
    
-   if (!(win = data))
-     return 1;
+   if (!(win = data)) return 1;
    
    progress = (ecore_time_get() - win->start_time) / SLIDE_LENGTH;
    progress = E_CLAMP(progress, 0.0, 1.0);
    h = (1.0 - progress) * (1.0 - progress) * win->h;
    prev_h = win->window->h;
    
-   if (win->to_top)
-     e_win_move(win->window, win->x, win->y - h);
+   if (win->to_top) e_win_move(win->window, win->x, win->y - h);
    e_win_resize(win->window, win->w, h);
    
    if (h <= 0)
@@ -623,11 +616,23 @@ static void
 _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Mixer_Win_Simple *win;
+   Mixer            *mixer;
+   Config_Item      *ci;
+   double            val;
    
-   if (!(win = data))
-     return;
+   if (!(win = data)) return;
    
-   printf("Slider value: %f\n", e_slider_value_get(obj));
+   mixer = win->mixer;
+   if (!mixer) return;
+   if (!mixer->mix_sys) return;
+   if (!mixer->mix_sys->set_volume) return;
+   
+   ci = _mixer_config_item_get(mixer->inst->gcc->id);
+   if (!ci) return;
+
+   val = e_slider_value_get(obj);
+   printf("Slider value: %f\n", val);
+   mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, (int)(val * 100));
 }
 
 /* Called when the simple window is resized */
@@ -636,8 +641,7 @@ _mixer_window_simple_resize_cb(E_Win *win)
 {
    Mixer_Win_Simple *simple_win;
    
-   if (!win || !(simple_win = win->data))
-     return;
+   if (!win || !(simple_win = win->data)) return;
    
    evas_object_move(simple_win->event_obj, 0, 0);
    evas_object_resize(simple_win->event_obj, win->w, win->h);

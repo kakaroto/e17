@@ -1,10 +1,11 @@
 #include <e.h>
 #include "alsa_mixer.h"
 
-static int _alsa_get_hash      (const char *name);
-static int _alsa_get_system_id (const char *name);
-static int _alsa_get_card_id   (const char *name);
-static int _alsa_get_mixer_id  (const char *name); 
+static int   _alsa_get_hash         (const char *name);
+static int   _alsa_get_system_id    (const char *name);
+static int   _alsa_get_card_id      (const char *name);
+static int   _alsa_get_mixer_id     (const char *name); 
+static void *_alsa_card_get_channel (void *data, int channel_id);
 
 Evas_List *
 alsa_get_cards() 
@@ -237,6 +238,51 @@ alsa_card_get_channels(void *data)
    return channels;
 }
 
+void *
+alsa_card_get_channel(void *data, int channel_id) 
+{
+   Alsa_Card    *card;
+   Alsa_Channel *chan;
+   
+   card = data;
+   if (!card) return NULL;
+
+   chan = _alsa_card_get_channel(card, channel_id);
+   if (!chan) return NULL;
+
+   return chan;
+}
+
+int 
+alsa_get_volume(int card_id, int channel_id) 
+{
+   Alsa_Card    *card;
+   Alsa_Channel *chan;
+   
+   card = alsa_get_card(card_id);
+   if (!card) return 0;
+
+   chan = _alsa_card_get_channel(card, channel_id);
+   if (!chan) return 0;
+
+   printf("Get Volume\n");
+}
+
+int 
+alsa_set_volume(int card_id, int channel_id, int vol) 
+{
+   Alsa_Card    *card;
+   Alsa_Channel *chan;
+   
+   card = alsa_get_card(card_id);
+   if (!card) return 0;
+
+   chan = _alsa_card_get_channel(card, channel_id);
+   if (!chan) return 0;
+   
+   printf("Set Volume: %i\n", vol);
+}
+
 /* Privates */
 static int 
 _alsa_get_hash(const char *name) 
@@ -272,3 +318,27 @@ _alsa_get_mixer_id(const char *name)
    return _alsa_get_hash(name);
 }
 
+static void *
+_alsa_card_get_channel(void *data, int channel_id) 
+{
+   Alsa_Card    *card;
+   Evas_List    *c;
+   
+   card = data;
+   if (!card) return NULL;
+
+   if (!card->channels)
+     card->channels = alsa_card_get_channels(card);
+
+   if (!card->channels) return NULL;
+   
+   for (c = card->channels; c; c = c->next) 
+     {
+	Alsa_Channel *chan;
+	
+	chan = c->data;
+	if (!chan) continue;
+	if (chan->id == channel_id) return chan;
+     }
+   return NULL;
+}

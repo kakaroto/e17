@@ -38,6 +38,10 @@ struct _Alsa_Channel
 Evas_List   *alsa_get_cards         (void);
 void        *alsa_get_card          (int id);
 Evas_List   *alsa_card_get_channels (void *data);
+void        *alsa_card_get_channel  (void *data, int channel_id);
 void         alsa_free_cards        (void *data);
+
+int         alsa_get_volume        (int card_id, int channel_id);
+int         alsa_set_volume        (int card_id, int channel_id, int vol);
 
 #endif
