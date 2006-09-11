@@ -435,7 +435,7 @@ _mixer_window_simple_pop_up(Instance *inst)
 	     double v;
 	     
 	     vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
-	     v = ((double)vol) / 100;
+	     v = (1.0 - ((double)vol / 100));
 	     e_slider_value_set(win->slider, v);
 	  }
 	
