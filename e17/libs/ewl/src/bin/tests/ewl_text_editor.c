@@ -82,15 +82,16 @@ create_test(Ewl_Container *box)
 		struct
 		{
 			char *icon;
+			char *tooltip;
 			void (*cb)(Ewl_Widget *w, void *ev, void *data);
-		} align[] = {
-			{EWL_ICON_FORMAT_JUSTIFY_LEFT, ete_cb_justify_left},
-			{EWL_ICON_FORMAT_JUSTIFY_CENTER, ete_cb_justify_center},
-			{EWL_ICON_FORMAT_JUSTIFY_RIGHT, ete_cb_justify_right},
-			{EWL_ICON_FORMAT_TEXT_BOLD, ete_cb_bold},
-			{EWL_ICON_FORMAT_TEXT_ITALIC, ete_cb_italic},
-			{EWL_ICON_FORMAT_TEXT_UNDERLINE, ete_cb_underline},
-			{EWL_ICON_FORMAT_TEXT_STRIKETHROUGH, ete_cb_strikethrough},
+		} format[] = {
+			{EWL_ICON_FORMAT_JUSTIFY_LEFT, "Left align", ete_cb_justify_left},
+			{EWL_ICON_FORMAT_JUSTIFY_CENTER, "Center", ete_cb_justify_center},
+			{EWL_ICON_FORMAT_JUSTIFY_RIGHT, "Right align", ete_cb_justify_right},
+			{EWL_ICON_FORMAT_TEXT_BOLD, "Bold", ete_cb_bold},
+			{EWL_ICON_FORMAT_TEXT_ITALIC, "Italic", ete_cb_italic},
+			{EWL_ICON_FORMAT_TEXT_UNDERLINE, "Underline", ete_cb_underline},
+			{EWL_ICON_FORMAT_TEXT_STRIKETHROUGH, "Strikethrough", ete_cb_strikethrough},
 			{NULL, NULL}
 		};
 		
@@ -101,6 +102,30 @@ create_test(Ewl_Container *box)
 		ecore_list_append(styles, "Far Shadow");
 		ecore_list_append(styles, "Glow");
 		ecore_list_append(styles, "Outline");
+
+		for (i = 0; format[i].icon != NULL; i++)
+		{
+			o = ewl_button_new();
+			ewl_button_image_set(EWL_BUTTON(o), 
+				ewl_icon_theme_icon_path_get(format[i].icon, EWL_ICON_SIZE_SMALL),
+				format[i].icon);
+			ewl_container_child_append(EWL_CONTAINER(hbox), o);
+			ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+			ewl_callback_append(o, EWL_CALLBACK_CLICKED, format[i].cb, NULL);
+			ewl_attach_tooltip_text_set(o, format[i].tooltip);
+			ewl_widget_show(o);
+		}
+
+		o = ewl_spacer_new();
+		ewl_container_child_append(EWL_CONTAINER(hbox), o);
+		ewl_widget_show(o);
+
+		o = ewl_label_new();
+		ewl_container_child_append(EWL_CONTAINER(hbox), o);
+		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+		ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
+		ewl_label_text_set(EWL_LABEL(o), "Font Style");
+		ewl_widget_show(o);
 
 		model = ewl_model_ecore_list_get();
 		view = ewl_label_view_get();
@@ -114,27 +139,11 @@ create_test(Ewl_Container *box)
 						ete_cb_styles_changed, NULL);
 		ewl_widget_show(o);
 
-		for (i = 0; align[i].icon != NULL; i++)
-		{
-			o = ewl_button_new();
-			ewl_button_image_set(EWL_BUTTON(o), 
-				ewl_icon_theme_icon_path_get(align[i].icon, EWL_ICON_SIZE_SMALL),
-				align[i].icon);
-			ewl_container_child_append(EWL_CONTAINER(hbox), o);
-			ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-			ewl_callback_append(o, EWL_CALLBACK_CLICKED, align[i].cb, NULL);
-			ewl_widget_show(o);
-		}
-
-		o = ewl_spacer_new();
-		ewl_container_child_append(EWL_CONTAINER(hbox), o);
-		ewl_widget_show(o);
-
 		o = ewl_label_new();
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
 		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
 		ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
-		ewl_label_text_set(EWL_LABEL(o), "Font size");
+		ewl_label_text_set(EWL_LABEL(o), "Font Size");
 		ewl_widget_show(o);
 
 		o = ewl_spinner_new();
