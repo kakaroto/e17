@@ -30,9 +30,13 @@ static void _mixer_window_simple_pop_up           (Instance *inst);
 static void _mixer_window_simple_pop_down         (Instance *inst);
 static int  _mixer_window_simple_animator_up_cb   (void *data);
 static int  _mixer_window_simple_animator_down_cb (void *data);
-static void _mixer_window_simple_mouse_up_cb      (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _mixer_window_simple_changed_cb       (void *data, Evas_Object *obj, void *event_info);
 static void _mixer_window_simple_resize_cb        (E_Win *win);
+
+static int  _mixer_window_simple_mouse_move_cb    (void *data, int type, void *event);
+static int  _mixer_window_simple_mouse_down_cb    (void *data, int type, void *event);
+static int  _mixer_window_simple_mouse_up_cb      (void *data, int type, void *event);
+static int  _mixer_window_simple_mouse_wheel_cb   (void *data, int type, void *event);
 
 /* Private vars */
 static E_Config_DD *conf_edd = NULL;
@@ -386,7 +390,7 @@ _mixer_window_simple_pop_up(Instance *inst)
    Mixer_Win_Simple *win;
    Evas_Coord ox, oy, ow, oh;
    Evas_Coord sw, sh;
-   int cx, cy, cw, ch, vol;
+   int cx, cy, cw, ch;
    
    if (!inst || !inst->mixer) return;
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
@@ -411,8 +415,6 @@ _mixer_window_simple_pop_up(Instance *inst)
         win->event_obj = evas_object_rectangle_add(e_win_evas_get(win->window));
         evas_object_color_set(win->event_obj, 255, 255, 255, 0);
         evas_object_show(win->event_obj);
-        evas_object_event_callback_add(win->event_obj, EVAS_CALLBACK_MOUSE_UP,
-                                       _mixer_window_simple_mouse_up_cb, win);
 	
         win->bg_obj = edje_object_add(e_win_evas_get(win->window));
         e_theme_edje_object_set(win->bg_obj, "base/theme/menus",
@@ -433,14 +435,6 @@ _mixer_window_simple_pop_up(Instance *inst)
         evas_object_show(win->slider);
         evas_object_smart_callback_add(win->slider, "changed",
                                        _mixer_window_simple_changed_cb, win);
-	if (inst->mixer->mix_sys->get_volume) 
-	  {
-	     double v;
-	     
-	     vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
-	     v = (1.0 - ((double)vol / 100));
-	     e_slider_value_set(win->slider, v);
-	  }
 	
         e_slider_min_size_get(win->slider, &sw, &sh);
         if (sw < ow) sw = ow;
@@ -451,6 +445,48 @@ _mixer_window_simple_pop_up(Instance *inst)
         edje_object_size_min_calc(win->bg_obj, &win->w, &win->h);
         evas_object_move(win->bg_obj, 0, 0);
         evas_object_resize(win->bg_obj, win->w, win->h);
+     }
+   
+   if (win->input_window == 0)
+     {
+        Ecore_X_Window root, parent;
+        int root_x, root_y, root_w, root_h;
+        
+        root = win->window->evas_win;
+        while ((parent = ecore_x_window_parent_get(root)) != 0)
+	  root = parent;
+        
+        ecore_x_window_geometry_get(root, &root_x, &root_y, &root_w, &root_h);
+        win->input_window = ecore_x_window_input_new(root, root_x, root_y, root_w, root_h);
+        ecore_x_window_show(win->input_window);
+        //ecore_x_pointer_confine_grab(win->input_window);
+        ecore_x_keyboard_grab(win->input_window);
+        
+        win->mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
+                                                        _mixer_window_simple_mouse_move_cb, win);
+        win->mouse_down_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
+                                                        _mixer_window_simple_mouse_down_cb, win);
+        win->mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
+                                                        _mixer_window_simple_mouse_up_cb, win);
+        win->mouse_wheel_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_WHEEL,
+                                                        _mixer_window_simple_mouse_wheel_cb, win);
+        
+        win->first_mouse_up = 1;
+        
+        evas_event_feed_mouse_move(e_win_evas_get(win->window),
+                                   -100000, -100000, ecore_time_get(), NULL);
+        evas_event_feed_mouse_in(e_win_evas_get(win->window),
+                                 ecore_time_get(), NULL);
+     }
+     
+   if (inst->mixer->mix_sys->get_volume) 
+     {
+        int vol;
+        double v;
+        
+        vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+        v = (1.0 - ((double)vol / 100));
+        e_slider_value_set(win->slider, v);
      }
    
    e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
@@ -501,6 +537,19 @@ _mixer_window_simple_pop_down(Instance *inst)
    Mixer_Win_Simple *win;
    
    if (!(win = inst->mixer->simple_win) || !win->popped_up) return;
+   
+   if (win->input_window != 0)
+     {
+        //ecore_x_pointer_ungrab();
+        ecore_x_keyboard_ungrab();
+        ecore_x_window_del(win->input_window);
+        ecore_event_handler_del(win->mouse_move_handler);
+        ecore_event_handler_del(win->mouse_down_handler);
+        ecore_event_handler_del(win->mouse_up_handler);
+        ecore_event_handler_del(win->mouse_wheel_handler);
+        win->input_window = 0;
+        win->mouse_up_handler = NULL;
+     }
    
    win->start_time = ecore_time_get();
    if (win->slide_animator) ecore_animator_del(win->slide_animator);
@@ -566,16 +615,6 @@ _mixer_window_simple_animator_down_cb(void *data)
      return 1;
 }
 
-/* Called when the background object of the simple window is released */
-static void 
-_mixer_window_simple_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   Mixer_Win_Simple *win;
-   
-   if (!(win = data)) return;
-   _mixer_window_simple_pop_down(win->mixer->inst);
-}
-
 /* Called when the value of the slider of the simple window is changed */
 static void 
 _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
@@ -624,4 +663,74 @@ _mixer_window_simple_resize_cb(E_Win *win)
    
    evas_object_move(simple_win->event_obj, 0, 0);
    evas_object_resize(simple_win->event_obj, win->w, win->h);
+}
+
+/* Called when the mouse moves over the input window */
+static int
+_mixer_window_simple_mouse_move_cb(void *data, int type, void *event)
+{
+   Mixer_Win_Simple *win;
+   Ecore_X_Event_Mouse_Move *xev = event;
+   
+   if (!(win = data) || !E_INSIDE(xev->x, xev->y,
+                                  win->window->x, win->window->y,
+                                  win->window->w, win->window->h))
+     return 1;
+   
+   evas_event_feed_mouse_move(e_win_evas_get(win->window),
+                              xev->x - win->window->x, xev->y - win->window->y,
+                              xev->time, NULL);
+   
+   return 1;
+}
+
+/* Called when the input window is pressed by the mouse */
+static int
+_mixer_window_simple_mouse_down_cb(void *data, int type, void *event)
+{
+   Mixer_Win_Simple *win;
+   Ecore_X_Event_Mouse_Button_Down *xev = event;
+   
+   if (!(win = data) || !E_INSIDE(xev->x, xev->y,
+                                  win->window->x, win->window->y,
+                                  win->window->w, win->window->h))
+     return 1;
+   
+   evas_event_feed_mouse_down(e_win_evas_get(win->window),
+                              xev->button, EVAS_BUTTON_NONE,
+                              xev->time, NULL);
+   
+   return 1;
+}
+
+/* Called when the input window is released by the mouse */
+static int
+_mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
+{
+   Mixer_Win_Simple *win;
+   Ecore_X_Event_Mouse_Button_Up *xev = event;
+   
+   if (!(win = data)) return 1;
+   
+   if (E_INSIDE(xev->x, xev->y, win->window->x, win->window->y,
+                win->window->w, win->window->h))
+     {
+        evas_event_feed_mouse_up(e_win_evas_get(win->window),
+                                   xev->button, EVAS_BUTTON_NONE,
+                                   xev->time, NULL);
+     }
+   else if ((xev->button == 1)/* && !win->first_mouse_up*/)
+     _mixer_window_simple_pop_down(win->mixer->inst);
+   
+   if ((xev->button == 1) && win->first_mouse_up)
+     win->first_mouse_up = 0;
+   
+   return 1;
+}
+
+/* Called when the mouse wheel is used over the input window */
+static int
+_mixer_window_simple_mouse_wheel_cb(void *data, int type, void *event)
+{
+   return 1;
 }
