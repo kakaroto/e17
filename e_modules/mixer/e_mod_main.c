@@ -413,7 +413,7 @@ _mixer_window_simple_pop_up(Instance *inst)
         win->bg_obj = edje_object_add(e_win_evas_get(win->window));
         e_theme_edje_object_set(win->bg_obj, "base/theme/menus",
 				"e/widgets/menu/default/background");
-	edje_object_part_text_set(win->bg_obj, "e.text.title", "Volume");
+	edje_object_part_text_set(win->bg_obj, "e.text.title", _("Volume"));
 	edje_object_signal_emit(win->bg_obj, "e,action,show,title", "e");
         edje_object_message_signal_process(win->bg_obj);
         evas_object_repeat_events_set(win->bg_obj, 1);
@@ -551,8 +551,10 @@ _mixer_window_simple_animator_down_cb(void *data)
    
    if (h <= 0)
      {
-        e_win_hide(win->window);
-        win->slide_animator = NULL;
+        e_object_del(E_OBJECT(win->window));
+        win->mixer->simple_win = NULL;
+        E_FREE(win);
+        
         return 0;
      }
    else
