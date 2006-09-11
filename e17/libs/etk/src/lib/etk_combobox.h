@@ -117,6 +117,7 @@ void etk_combobox_build(Etk_Combobox *combobox);
 
 void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item);
 Etk_Combobox_Item *etk_combobox_active_item_get(Etk_Combobox *combobox);
+int etk_combobox_active_item_nth_get(Etk_Combobox *combobox);
 Etk_Combobox_Item *etk_combobox_nth_item_get(Etk_Combobox *combobox, int index);
 
 Etk_Combobox_Item *etk_combobox_item_prepend(Etk_Combobox *combobox, ...);
