@@ -473,9 +473,12 @@ _mixer_window_simple_pop_up(Instance *inst)
         int vol;
         double v;
         
-        vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
-        v = (1.0 - ((double)vol / 100));
-        e_slider_value_set(win->slider, v);
+	if ((ci->card_id != 0) && (ci->channel_id != 0)) 
+	  {
+	     vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+	     v = (1.0 - ((double)vol / 100));
+	     e_slider_value_set(win->slider, v); 
+	  }	
      }
    
    e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
