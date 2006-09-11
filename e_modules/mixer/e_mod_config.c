@@ -109,23 +109,27 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    if (mixer->mix_sys->get_card) 
      {
 	card = mixer->mix_sys->get_card(ci->card_id);
-	if (mixer->mix_sys->get_channels)
-	  card->channels = mixer->mix_sys->get_channels(card);
-	
-	of = e_widget_framelist_add(evas, _("Available Mixers"), 0);
-	mg = e_widget_radio_group_new(&cfdata->channel_id);
-	ob = e_widget_radio_add(evas, _("Unknown"), 0, mg);
-	e_widget_framelist_object_append(of, ob);
-	for (chans = card->channels; chans; chans = chans->next) 
+	if ((mixer->mix_sys->get_channels) && (card)) 
 	  {
-	     Mixer_Channel *chan;
-	     
-	     chan = chans->data;
-	     if (!chan) continue;
-	     ob = e_widget_radio_add(evas, (char *)chan->name, chan->id, mg);
-	     e_widget_framelist_object_append(of, ob);
-	  }
-	e_widget_list_object_append(o, of, 1, 1, 0.5);	
+	     card->channels = mixer->mix_sys->get_channels(card);
+	     if (card->channels) 
+	       {
+		  of = e_widget_framelist_add(evas, _("Available Mixers"), 0);
+		  mg = e_widget_radio_group_new(&cfdata->channel_id);
+		  ob = e_widget_radio_add(evas, _("Unknown"), 0, mg);
+		  e_widget_framelist_object_append(of, ob);
+		  for (chans = card->channels; chans; chans = chans->next) 
+		    {
+		       Mixer_Channel *chan;
+		  
+		       chan = chans->data;
+		       if (!chan) continue;
+		       ob = e_widget_radio_add(evas, (char *)chan->name, chan->id, mg);
+		       e_widget_framelist_object_append(of, ob);
+		    }
+		  e_widget_list_object_append(o, of, 1, 1, 0.5);
+	       }
+	  }	
      }
    return o;
 }
