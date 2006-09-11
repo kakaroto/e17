@@ -33,6 +33,8 @@
 #include <X11/Xatom.h>
 
 /* Misc atoms */
+Atom                E_XA_MANAGER = 0;
+
 Atom                E_XROOTPMAP_ID;
 Atom                E_XROOTCOLOR_PIXEL;
 
@@ -42,15 +44,13 @@ static Ecore_X_Atom ENL_INTERNAL_DESK_DATA;
 static Ecore_X_Atom ENL_WIN_DATA;
 static Ecore_X_Atom ENL_WIN_BORDER;
 
-/*
- * Functions that set X11-properties from E-internals
- */
-
 void
 HintsInit(void)
 {
    Atom                atom;
    Window              win;
+
+   E_XA_MANAGER = XInternAtom(disp, "MANAGER", False);
 
    E_XROOTPMAP_ID = XInternAtom(disp, "_XROOTPMAP_ID", False);
    E_XROOTCOLOR_PIXEL = XInternAtom(disp, "_XROOTCOLOR_PIXEL", False);
@@ -80,6 +80,10 @@ HintsInit(void)
    Mode.root.ext_pmap = HintsGetRootPixmap(VRoot.win);
    Mode.root.ext_pmap_valid = EDrawableCheck(Mode.root.ext_pmap, 0);
 }
+
+/*
+ * Functions that set X11-properties from E-internals
+ */
 
 void
 HintsSetRootHints(Win win __UNUSED__)
@@ -492,4 +496,82 @@ EHintsSetInfoOnAll(void)
 	 EHintsSetInfo(lst[i]);
 
    EHintsSetDeskInfo();
+}
+
+/*
+ * Selections.
+ */
+
+struct _selection
+{
+   Atom                atom;
+   Time                time;
+   Win                 win;
+   EventCallbackFunc  *func;
+   void               *data;
+};
+
+ESelection         *
+SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
+{
+   ESelection         *sel;
+   char                buf[128];
+
+   sel = Ecalloc(1, sizeof(ESelection));
+   if (!sel)
+      return sel;
+
+   Esnprintf(buf, sizeof(buf), "%s%d", name, VRoot.scr);
+
+   sel->atom = XInternAtom(disp, buf, False);
+   sel->time = EGetTimestamp();
+   sel->win = ECreateEventWindow(VRoot.win, -100, -100, 1, 1);
+
+   sel->func = func;
+   sel->data = data;
+
+   XSetSelectionOwner(disp, sel->atom, WinGetXwin(sel->win), sel->time);
+   if (XGetSelectionOwner(disp, sel->atom) != WinGetXwin(sel->win))
+     {
+	DialogOK(_("ERROR!"), _("Could not acquire selection: %s"), buf);
+	EDestroyWindow(sel->win);
+	Efree(sel);
+	return NULL;
+     }
+
+   if (sel->func)
+     {
+	ESelectInput(sel->win,
+		     SubstructureRedirectMask | SubstructureNotifyMask);
+	EventCallbackRegister(sel->win, 0, sel->func, sel->data);
+     }
+
+   ecore_x_client_message32_send(VRoot.xwin, E_XA_MANAGER,
+				 StructureNotifyMask, CurrentTime, sel->atom,
+				 WinGetXwin(sel->win), 0, 0);
+
+   if (EventDebug(EDBUG_TYPE_SELECTION))
+      Eprintf("Window %#lx is now %s owner, time=%lu\n",
+	      WinGetXwin(sel->win), buf, sel->time);
+
+   return sel;
+}
+
+void
+SelectionRelease(ESelection * sel)
+{
+   if (!sel)
+      return;
+
+   if (EventDebug(EDBUG_TYPE_SELECTION))
+      Eprintf("Window %#lx is no longer %s owner\n",
+	      WinGetXwin(sel->win), XGetAtomName(disp, sel->atom));
+
+   XSetSelectionOwner(disp, sel->atom, None, sel->time);
+   if (sel->func)
+     {
+	EventCallbackUnregister(sel->win, 0, sel->func, sel->data);
+     }
+   EDestroyWindow(sel->win);
+   Efree(sel);
 }

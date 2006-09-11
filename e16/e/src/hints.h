@@ -25,6 +25,8 @@
 #define _HINTS_H_
 
 /* Misc atoms */
+extern Atom         E_XA_MANAGER;
+
 extern Atom         E_XROOTPMAP_ID;
 extern Atom         E_XROOTCOLOR_PIXEL;
 
@@ -100,6 +102,11 @@ void                EHintsGetInfo(EWin * ewin);
 void                EHintsSetDeskInfo(void);
 void                EHintsGetDeskInfo(void);
 void                EHintsSetInfoOnAll(void);
+
+typedef struct _selection ESelection;
+ESelection         *SelectionAcquire(const char *name, EventCallbackFunc * func,
+				     void *data);
+void                SelectionRelease(ESelection * sel);
 
 /* icccm.c */
 void                ICCCM_Init(void);

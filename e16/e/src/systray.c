@@ -23,6 +23,7 @@
 #include "E.h"
 #include "container.h"
 #include "e16-ecore_hints.h"
+#include "hints.h"
 #include "xwin.h"
 
 #define DEBUG_SYSTRAY 0
@@ -37,19 +38,16 @@ typedef struct
 #define StObjGetWin(o) (((SWin*)(o))->win)
 #define StObjIsMapped(o) (((SWin*)(o))->mapped)
 
-/* Selection atoms */
-static Atom         E_XA_MANAGER = 0;
-
 /* XEmbed atoms */
 static Atom         E_XA__XEMBED = 0;
 static Atom         E_XA__XEMBED_INFO = 0;
 
 /* Systray atoms */
-static Atom         _NET_SYSTEM_TRAY_Sx = 0;
 static Atom         _NET_SYSTEM_TRAY_OPCODE = 0;
 static Atom         _NET_SYSTEM_TRAY_MESSAGE_DATA = 0;
-static Win          systray_sel_win = NoWin;
-static Time         systray_sel_time = 0;
+
+/* Systray selection */
+static ESelection  *systray_sel = NULL;
 
 static void         SystrayItemEvent(Win win, XEvent * ev, void *prm);
 
@@ -328,6 +326,12 @@ SystraySelectionEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 		ev->xany.window);
 	break;
 
+     case SelectionClear:
+	DialogOK(_("Systray Error!"), _("Systray went elsewhere?!?"));
+	SelectionRelease(systray_sel);
+	systray_sel = None;
+	break;
+
      case ClientMessage:
 	SystrayEventClientMessage(prm, &(ev->xclient));
 	break;
@@ -417,50 +421,32 @@ SystrayInit(Container * ct)
 
    Esnprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", VRoot.scr);
 
-   E_XA_MANAGER = XInternAtom(disp, "MANAGER", False);
    E_XA__XEMBED = XInternAtom(disp, "_XEMBED", False);
    E_XA__XEMBED_INFO = XInternAtom(disp, "_XEMBED_INFO", False);
-   _NET_SYSTEM_TRAY_Sx = XInternAtom(disp, buf, False);
    _NET_SYSTEM_TRAY_OPCODE =
       XInternAtom(disp, "_NET_SYSTEM_TRAY_OPCODE", False);
    _NET_SYSTEM_TRAY_MESSAGE_DATA =
       XInternAtom(disp, "_NET_SYSTEM_TRAY_MESSAGE_DATA", False);
 
    /* Acquire selection */
-   if (systray_sel_win != None)
+   if (systray_sel)
      {
 	DialogOK(_("Systray Error!"), _("Only one systray is allowed"));
 	return;
      }
-   systray_sel_win = ECreateEventWindow(VRoot.win, -100, -100, 1, 1);
-   systray_sel_time = EGetTimestamp();
-   XSetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx, WinGetXwin(systray_sel_win),
-		      systray_sel_time);
-   if (XGetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx) !=
-       WinGetXwin(systray_sel_win))
+
+   systray_sel =
+      SelectionAcquire("_NET_SYSTEM_TRAY_S", SystraySelectionEvent, ct);
+   if (!systray_sel)
      {
 	DialogOK(_("Systray Error!"), _("Could not activate systray"));
-	Eprintf("Failed to acquire selection %s\n", buf);
-	EDestroyWindow(systray_sel_win);
-	systray_sel_win = None;
 	return;
      }
-   if (EventDebug(EDBUG_TYPE_ICONBOX))
-      Eprintf("Window %#lx is now %s owner, time=%ld\n",
-	      WinGetXwin(systray_sel_win), buf, systray_sel_time);
-
-   ESelectInput(systray_sel_win,
-		SubstructureRedirectMask | SubstructureNotifyMask);
-   EventCallbackRegister(systray_sel_win, 0, SystraySelectionEvent, ct);
 
    win = ct->icon_win;
    ESelectInputAdd(win,
 		   SubstructureRedirectMask /* | SubstructureNotifyMask */ );
    EventCallbackRegister(win, 0, SystrayEvent, ct);
-
-   ecore_x_client_message32_send(VRoot.xwin, E_XA_MANAGER, StructureNotifyMask,
-				 CurrentTime, _NET_SYSTEM_TRAY_Sx,
-				 WinGetXwin(systray_sel_win), 0, 0);
 
    /* Container parameter setup */
    ct->wm_name = "Systray";
@@ -472,11 +458,10 @@ SystrayInit(Container * ct)
 static void
 SystrayExit(Container * ct, int wm_exit __UNUSED__)
 {
-   XSetSelectionOwner(disp, _NET_SYSTEM_TRAY_Sx, None, systray_sel_time);
-   EventCallbackUnregister(systray_sel_win, 0, SystraySelectionEvent, ct);
+   SelectionRelease(systray_sel);
+   systray_sel = None;
+
    EventCallbackUnregister(ct->win, 0, SystrayEvent, ct);
-   EDestroyWindow(systray_sel_win);
-   systray_sel_win = None;
 
    while (ct->num_objs)
      {

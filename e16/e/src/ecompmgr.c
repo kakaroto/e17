@@ -33,6 +33,7 @@
 #include "ecompmgr.h"
 #include "emodule.h"
 #include "eobj.h"
+#include "hints.h"
 #include "settings.h"
 #include "timers.h"
 #include "xwin.h"
@@ -189,6 +190,8 @@ static Picture      rootPicture;
 static Picture      rootBuffer;
 
 static XserverRegion allDamage;
+
+static ESelection  *wm_cm_sel = NULL;
 
 #define OPAQUE          0xffffffff
 #define OP32(op) ((double)(op)/OPAQUE)
@@ -2290,6 +2293,8 @@ ECompMgrStart(void)
 
    EventCallbackRegister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
 
+   wm_cm_sel = SelectionAcquire("_NET_WM_CM_S", NULL, NULL);
+
    lst = EobjListStackGet(&num);
    for (i = 0; i < num; i++)
      {
@@ -2317,6 +2322,9 @@ ECompMgrStop(void)
    Conf_compmgr.enable = Mode_compmgr.active = 0;
 
    EGrabServer();
+
+   SelectionRelease(wm_cm_sel);
+   wm_cm_sel = NULL;
 
    if (rootPicture)
       XRenderFreePicture(disp, rootPicture);
