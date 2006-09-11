@@ -459,6 +459,7 @@ _mixer_window_simple_pop_up(Instance *inst)
         ecore_x_window_geometry_get(root, &root_x, &root_y, &root_w, &root_h);
         win->input_window = ecore_x_window_input_new(root, root_x, root_y, root_w, root_h);
         ecore_x_window_show(win->input_window);
+        /* TODO: Fixme... */
         //ecore_x_pointer_confine_grab(win->input_window);
         ecore_x_keyboard_grab(win->input_window);
         
@@ -540,6 +541,7 @@ _mixer_window_simple_pop_down(Instance *inst)
    
    if (win->input_window != 0)
      {
+        /* TODO: Fixme... */
         //ecore_x_pointer_ungrab();
         ecore_x_keyboard_ungrab();
         ecore_x_window_del(win->input_window);
@@ -672,10 +674,7 @@ _mixer_window_simple_mouse_move_cb(void *data, int type, void *event)
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Move *xev = event;
    
-   if (!(win = data) || !E_INSIDE(xev->x, xev->y,
-                                  win->window->x, win->window->y,
-                                  win->window->w, win->window->h))
-     return 1;
+   if (!(win = data)) return 1;
    
    evas_event_feed_mouse_move(e_win_evas_get(win->window),
                               xev->x - win->window->x, xev->y - win->window->y,
@@ -732,5 +731,17 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
 static int
 _mixer_window_simple_mouse_wheel_cb(void *data, int type, void *event)
 {
+   Mixer_Win_Simple *win;
+   Ecore_X_Event_Mouse_Wheel *xev = event;
+   
+   if (!(win = data) || !E_INSIDE(xev->x, xev->y,
+                                  win->window->x, win->window->y,
+                                  win->window->w, win->window->h))
+     return 1;
+   
+   evas_event_feed_mouse_wheel(e_win_evas_get(win->window),
+                              xev->direction, xev->z,
+                              xev->time, NULL);
+   
    return 1;
 }
