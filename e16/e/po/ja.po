@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-09 10:59+0200\n"
-"PO-Revision-Date: 2006-07-18 10:26+0900\n"
+"POT-Creation-Date: 2006-09-11 15:06+0900\n"
+"PO-Revision-Date: 2006-09-11 15:17+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr ""
 "%s\n"
 "無視して処理を継続します...\n"
 
-#: src/actions.c:70
+#: src/actions.c:85
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -75,7 +75,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "このファイルが存在しません。\n"
 
-#: src/actions.c:78
+#: src/actions.c:93
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -93,7 +93,7 @@ msgstr ""
 "シェルのマニュアルページを読んで、シェルの実行パスの変更方法\n"
 "や追加方法を理解した方がいいと思います。\n"
 
-#: src/actions.c:98
+#: src/actions.c:113
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -110,7 +110,7 @@ msgstr ""
 "それにこのファイルを実行する権限もあります。この件は調べた方がいいと\n"
 "思います。\n"
 
-#: src/actions.c:109
+#: src/actions.c:124
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -126,7 +126,7 @@ msgstr ""
 "る\n"
 "実行権限がないので実行できません。\n"
 
-#: src/actions.c:124
+#: src/actions.c:139
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -139,7 +139,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "ファイルではなくディレクトリが指定されています。\n"
 
-#: src/actions.c:132
+#: src/actions.c:147
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -152,7 +152,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "このファイルは通常のファイルではありません。\n"
 
-#: src/actions.c:186
+#: src/actions.c:179
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -161,12 +161,12 @@ msgstr ""
 "以下のプログラムの実行中にエラーが生じました。\n"
 "%s\n"
 
-#: src/actions.c:289
+#: src/actions.c:282
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Enlightenment %s について"
 
-#: src/actions.c:299
+#: src/actions.c:292
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -1358,7 +1358,7 @@ msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示されます。\n"
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
-#: src/main.c:582
+#: src/main.c:569
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1369,7 +1369,7 @@ msgstr ""
 "致命的な状況です。\n"
 "このファイルを削除してください。\n"
 
-#: src/main.c:589
+#: src/main.c:576
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1382,7 +1382,7 @@ msgstr ""
 "このディレクトリの所有者とパーミッションを確認し、\n"
 "修正してください。\n"
 
-#: src/main.c:597
+#: src/main.c:584
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -1395,7 +1395,7 @@ msgstr ""
 "ディレクトリの所有者とパーミッションを確認し、\n"
 "修正してください。\n"
 
-#: src/main.c:604
+#: src/main.c:591
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -1408,7 +1408,7 @@ msgstr ""
 "ディレクトリの所有者とパーミッションを確認し、\n"
 "修正してください。\n"
 
-#: src/main.c:717
+#: src/main.c:704
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1437,7 +1437,7 @@ msgstr ""
 "削除したか、あるいは Enlightenment のインストールに誤りがあったことが\n"
 "考えられます。\n"
 
-#: src/main.c:731
+#: src/main.c:718
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1649,12 +1649,11 @@ msgstr "ページャを表示する"
 
 #: src/pager.c:1815
 msgid "Pager Mode:"
-msgstr ""
+msgstr "ページャーモード"
 
 #: src/pager.c:1819
-#, fuzzy
 msgid "Simple"
-msgstr "さざなみ"
+msgstr "シンプル"
 
 #: src/pager.c:1825
 msgid "Make miniature snapshots of the screen"
