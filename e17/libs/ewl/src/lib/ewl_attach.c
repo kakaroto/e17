@@ -558,7 +558,6 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	Ewl_Attach *attach;
 	Ewl_Embed *emb;
 	Ewl_Event_Mouse_Move *e;
-//	int x, y;
 	int offset;
 	char *delay_str;
 	double delay;
@@ -597,14 +596,6 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 		ewl_attach_tooltip->y = e->y - offset;
 	else
 		ewl_attach_tooltip->y = e->y + offset;
-
-#if 0 
-	emb = ewl_embed_widget_find(w);
-	ewl_window_position_get(EWL_WINDOW(emb), &x, &y);
-
-	ewl_attach_tooltip->x = x + CURRENT_X(w) + e->x + offset;
-	ewl_attach_tooltip->y = y + CURRENT_Y(w) + e->y + offset;
-#endif
 
 	delay_str = ewl_theme_data_str_get(w, "/tooltip/delay");
 	if (delay_str)
@@ -677,9 +668,9 @@ ewl_attach_cb_tooltip_timer(void *data)
 	{
 		Ewl_Container *redir;
 
-		ewl_attach_tooltip->embed = EWL_WIDGET(emb);
 #if 0
 		ewl_attach_tooltip->win = ewl_window_new();
+		ewl_attach_tooltip->embed = ewl_attach_tooltip->win;
 		ewl_window_title_set(EWL_WINDOW(ewl_attach_tooltip->win), 
 								"Tooltip");
 		ewl_window_name_set(EWL_WINDOW(ewl_attach_tooltip->win), 
@@ -691,9 +682,9 @@ ewl_attach_cb_tooltip_timer(void *data)
 		ewl_window_borderless_set(EWL_WINDOW(ewl_attach_tooltip->win));
 		ewl_window_raise(EWL_WINDOW(ewl_attach_tooltip->win));
 #endif
-
 		/* XXX this should really be in it's own window */
 		ewl_attach_tooltip->win = ewl_hbox_new();
+		ewl_attach_tooltip->embed = EWL_WIDGET(emb);
 
 		/*
 		 * Temporarily override any redirect settings as this must go
@@ -706,7 +697,6 @@ ewl_attach_cb_tooltip_timer(void *data)
 		ewl_container_redirect_set(EWL_CONTAINER(emb), redir);
 
 		ewl_widget_layer_top_set(ewl_attach_tooltip->win, TRUE);
-
 		ewl_callback_prepend(ewl_attach_tooltip->win, 
 					EWL_CALLBACK_DESTROY,
 					ewl_attach_cb_tooltip_win_destroy, 
