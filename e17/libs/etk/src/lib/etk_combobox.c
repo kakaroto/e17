@@ -324,24 +324,22 @@ Etk_Combobox_Item *etk_combobox_active_item_get(Etk_Combobox *combobox)
 /**
  * @brief Gets the index of the current active item of the combobox
  * @param combobox a combobox
- * @return Returns the index of the current active item
+ * @return Returns the index of the current active item, or -1 on failure
  */
 int etk_combobox_active_item_nth_get(Etk_Combobox *combobox)
 {
-   Evas_List *list;
-   int i = 0;
+   Evas_List *l;
+   int i;
 
-   if (!combobox)
+   if (!combobox || !combobox->active_item)
       return -1;
 
-   list = evas_list_find_list(combobox->items, combobox->active_item);
-   while (list)
-     {
-       list = evas_list_next(list);
-       i++;
-     }
-
-   return evas_list_count(combobox->items) - i;
+   for (i = 0, l = combobox->items; l; i++, l = l->next)
+   {
+      if (l->data == combobox->active_item)
+         return i;
+   }
+   return -1;
 }
 
 /**
