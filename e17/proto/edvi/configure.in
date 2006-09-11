@@ -8,21 +8,25 @@ AC_PROG_LIBTOOL
 AC_PROG_CC
 
 AC_PATH_GENERIC(DVIlib2, 2.9.0,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "The DVIlib2-config development file was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the DVIlib2-devel (or DVIlib2-dev)"
-    echo "   packages."
-    echo "2. You may have evas installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the DVIlib2-config file is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-dvilib2-config."
-    AC_MSG_ERROR([Fatal Error: no DVIlib2-config library detected.])
-   ]
+  [ AC_DEFINE(HAVE_DVILIB_2_9, 1, [have dvilib 2.9.0]) ],
+  [ AC_PATH_GENERIC(DVIlib2, 2.8.0,
+      [ ],
+      [
+       echo "ERROR:"
+       echo "The DVIlib2-config development file was not found in your execute"
+       echo "path. This may mean one of several things"
+       echo "1. You may not have installed the DVIlib2-devel (or DVIlib2-dev)"
+       echo "   packages."
+       echo "2. You may have evas installed somewhere not covered by your path."
+       echo ""
+       echo "If this is the case make sure you have the packages installed, AND"
+       echo "that the DVIlib2-config file is in your execute path (see your"
+       echo "shell's manual page on setting the \$PATH environment variable), OR"
+       echo "alternatively, specify the script to use with --with-dvilib2-config."
+       AC_MSG_ERROR([Fatal Error: no DVIlib2-config library detected.])
+      ]
+    )
+  ]
 )
 
 AC_PATH_GENERIC(evas, 0.9.9,
@@ -63,7 +67,7 @@ AC_PATH_GENERIC(ecore, 0.9.9,
 
 requirements="evas ecore"
 
-AC_PATH_GENERIC(ewl, 0.0.4, [have_ewl="yes"], [have_ewl="no"])
+AC_PATH_GENERIC(ewl, 0.0.4, [ have_ewl="yes" ], [ have_ewl="no" ])
 if test "x$have_ewl" = "xyes" ; then
    requirements="$requirements ewl"
    EWL_TEST_LIBS_DIR="`ewl-config --test-lib-dir`"
@@ -78,7 +82,7 @@ else
 fi
 AM_CONDITIONAL(BUILD_EDVI_EWL, test x$have_ewl = xyes)
 
-AC_PATH_GENERIC(etk, 0.1.0, [have_etk="yes"], [have_etk="no"])
+AC_PATH_GENERIC(etk, 0.1.0, [ have_etk="yes" ], [ have_etk="no" ])
 if test "x$have_etk" = "xyes" ; then
    requirements="$requirements etk"
 else

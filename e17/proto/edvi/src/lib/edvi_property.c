@@ -1,6 +1,12 @@
 #include <stdlib.h>
 
-#include <libdvi29.h>
+#include "config.h"
+
+#ifdef HAVE_DVILIB_2_9
+#  include <libdvi29.h>
+#else
+#  include <dvi-2_6.h>
+#endif /* HAVE_DVILIB_2_9 */
 
 #include "edvi_enum.h"
 #include "edvi_forward.h"

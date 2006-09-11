@@ -58,7 +58,7 @@ main (int argc, char *argv[])
   list = etk_tree_new ();
   etk_tree_headers_visible_set (ETK_TREE (list), FALSE);
   etk_widget_size_request_set (list, 60, -1);
-  etk_box_pack_start (ETK_BOX (hbox), list, ETK_FALSE, ETK_FALSE, 0);
+  etk_box_append (ETK_BOX (hbox), list, ETK_BOX_START, ETK_BOX_NONE, 0);
   etk_widget_show (list);
 
   etk_signal_connect ("row_selected", ETK_OBJECT (list),
@@ -81,7 +81,7 @@ main (int argc, char *argv[])
   }
   etk_tree_thaw (ETK_TREE (list));
 
-  etk_box_pack_start (ETK_BOX (hbox), dvi, ETK_FALSE, ETK_FALSE, 0);
+  etk_box_append (ETK_BOX (hbox), dvi, ETK_BOX_START, ETK_BOX_NONE, 0);
   etk_widget_show (dvi);
   
   etk_widget_show (window);

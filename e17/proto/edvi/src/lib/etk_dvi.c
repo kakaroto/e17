@@ -458,9 +458,15 @@ static void _etk_dvi_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Dvi *dvi;
    Evas *evas;
+/*    Evas_Object *o; */
 
    if (!(dvi = ETK_DVI(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(dvi))))
       return;
+
+/*    o = evas_object_rectangle_add(evas); */
+/*    evas_object_color_set(o, 255, 255, 0, 128); */
+/*    etk_widget_member_object_add(ETK_WIDGET(object), o); */
+/*    evas_object_show(o); */
    _etk_dvi_load(dvi);
 }
 
@@ -508,7 +514,6 @@ static void _etk_dvi_load(Etk_Dvi *dvi)
       if (dvi->dvi_object)
       {
 	 dvi->dvi_page = edvi_page_new (dvi->dvi_document, dvi->page);
-
 	 edvi_page_render (dvi->dvi_page, dvi->dvi_device, dvi->dvi_object);
       }
       evas_object_show(dvi->dvi_object);
