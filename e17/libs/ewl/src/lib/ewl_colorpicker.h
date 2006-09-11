@@ -100,6 +100,7 @@ void ewl_colorpicker_cb_spinner_change(Ewl_Widget *w, void *ev, void *data);
 void ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev, void *data); 
 
 void ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w, void *ev, void *data);
+void ewl_colorpicker_cb_dnd_data(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}

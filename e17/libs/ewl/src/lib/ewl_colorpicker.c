@@ -95,6 +95,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 		{"b", EWL_COLOR_MODE_RGB_BLUE, 255},
 		{NULL, EWL_COLOR_MODE_RGB_RED, 0}
 	};
+	const char *types[] = { "application/x-color", NULL };
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cp", cp, FALSE);
@@ -105,6 +106,10 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	ewl_box_orientation_set(EWL_BOX(cp), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_appearance_set(EWL_WIDGET(cp), EWL_COLORPICKER_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(cp), EWL_COLORPICKER_TYPE);
+	ewl_dnd_accepted_types_set(EWL_WIDGET(cp), types);
+
+	ewl_callback_append(EWL_WIDGET(cp), EWL_CALLBACK_DND_DATA,
+				ewl_colorpicker_cb_dnd_data, NULL);
 
 	r = g = b = 0;
 
@@ -722,6 +727,30 @@ ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w __UNUSED__,
 	cp = data;
 	ewl_colorpicker_current_rgb_set(cp, cp->previous.r, cp->previous.g, 
 							cp->previous.b);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: UNUSED
+ * @param data: The colorpicker
+ * @return Returns no value
+ * @brief Callback for when a user clicks on the previous colour
+ */
+void
+ewl_colorpicker_cb_dnd_data(Ewl_Widget *w __UNUSED__, void *ev,
+				void *data __UNUSED__)
+{
+	Ewl_Event_Dnd_Data *event = ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ev", ev);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	printf("Data %d bytes\n", event->len);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

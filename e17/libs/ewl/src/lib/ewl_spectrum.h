@@ -48,6 +48,7 @@ struct Ewl_Spectrum
 
 	Ewl_Color_Mode mode;		/**< The mode of the spectrum */
 	Ewl_Spectrum_Type type;		/**< The type of the spectrum */
+	unsigned int dirty:1;		/**< The flag to queue redraw */
 };
 
 Ewl_Widget	*ewl_spectrum_new(void);

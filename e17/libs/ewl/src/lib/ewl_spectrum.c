@@ -164,6 +164,7 @@ ewl_spectrum_mode_set(Ewl_Spectrum *sp, Ewl_Color_Mode mode)
 	DCHECK_TYPE("sp", sp, EWL_SPECTRUM_TYPE);
 
 	sp->mode = mode;
+	sp->dirty = 1;
 	ewl_widget_configure(EWL_WIDGET(sp));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -209,6 +210,7 @@ ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r,
 	if (sp->rgb.b > 255) sp->rgb.b = 255;
 
 	ewl_spectrum_hsv_from_rgb(sp);
+	sp->dirty = 1;
 	ewl_widget_configure(EWL_WIDGET(sp));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -266,6 +268,7 @@ ewl_spectrum_hsv_set(Ewl_Spectrum *sp, double h, double s, double v)
 	if (sp->hsv.v < 0.0) sp->hsv.v = 0.0;
 
 	ewl_spectrum_rgb_from_hsv(sp);
+	sp->dirty = 1;
 	ewl_widget_configure(EWL_WIDGET(sp));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -599,6 +602,9 @@ ewl_spectrum_draw(Ewl_Spectrum *sp)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
 	DCHECK_TYPE("sp", sp, EWL_SPECTRUM_TYPE);
+
+	if (!sp->dirty)
+		DRETURN(DLEVEL_STABLE);
 
 	img = EWL_IMAGE(sp->canvas)->image;
 	evas_object_image_size_set(img, CURRENT_W(sp), CURRENT_H(sp));
