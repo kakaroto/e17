@@ -7,7 +7,7 @@
 #endif
 
 /* Define to 1 for testing alsa code */
-#define DEBUG 1
+#define DEBUG 0
 #define SLIDE_LENGTH 0.5
 
 /* Gadcon Protos */
