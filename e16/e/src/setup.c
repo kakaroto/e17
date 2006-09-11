@@ -28,7 +28,6 @@
 #include "xwin.h"
 #include <signal.h>
 #include <X11/keysym.h>
-#include <signal.h>
 
 void
 MapUnmap(int start)
