@@ -5196,7 +5196,7 @@ ewl_text_tree_context_get(Ewl_Text_Tree *tree, unsigned int idx)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
 
-	child = ewl_text_tree_node_get(tree, idx, TRUE);
+	child = ewl_text_tree_node_get(tree, idx, FALSE);
 	if (!child) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	DRETURN_PTR(child->tx, DLEVEL_STABLE);

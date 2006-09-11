@@ -2,6 +2,9 @@
 
 fonts {
 	font, "e17/fonts/Vera.ttf" "Vera";
+	font, "e17/fonts/VeraBd.ttf" "Vera/Bold";
+	font, "e17/fonts/VeraIt.ttf" "Vera/Italic";
+	font, "e17/fonts/VeraBI.ttf" "Vera/Bold-Italic";
 }
 
 images {
@@ -54,13 +57,13 @@ data {
 	item, "/entry/group" "entry";
 	item, "/entry/color/a" "255";
 	item, "/entry/font" "Vera";
-	item, "/entry/font_size" "10";
+	item, "/entry/font_size" "12";
 
 	item, "/cursor/group" "cursor";
 
 	item, "/text/color/a" "255";
 	item, "/text/font" "Vera";
-	item, "/text/font_size" "10";
+	item, "/text/font_size" "12";
 	item, "/text/style" "none";
 
 	item, "/hseparator/group" "hline";
