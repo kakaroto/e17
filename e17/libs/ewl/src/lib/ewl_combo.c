@@ -120,6 +120,8 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 	if (combo->selected)
 	{
 		ewl_container_child_prepend(EWL_CONTAINER(combo), combo->selected);
+		ewl_object_fill_policy_set(EWL_OBJECT(combo->selected),
+							EWL_FLAG_FILL_VFILL);
 		ewl_widget_show(combo->selected);
 	}
 
