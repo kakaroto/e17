@@ -259,8 +259,13 @@ alsa_card_get_channel(void *data, int channel_id)
 int 
 alsa_get_volume(int card_id, int channel_id) 
 {
-   Mixer_Card    *card;
-   Mixer_Channel *chan;
+   Mixer_Card       *card;
+   Mixer_Channel    *chan;
+   snd_mixer_elem_t *elem;
+   snd_mixer_t      *handle;
+   snd_mixer_selem_id_t *sid;
+   int               err, i;
+   long              vol = 0;
    
    card = alsa_get_card(card_id);
    if (!card) return 0;
@@ -268,7 +273,31 @@ alsa_get_volume(int card_id, int channel_id)
    chan = _alsa_card_get_channel(card, channel_id);
    if (!chan) return 0;
 
-   printf("Get Volume\n");
+   printf("\n\nGet Volume\n");
+   if ((err = snd_mixer_open(&handle, 0)) < 0) 
+     {
+	printf("Cannot open mixer: %s\n", snd_strerror(err));
+	return 0;
+     }
+
+   for (i = 0, elem = snd_mixer_first_elem(handle); elem; elem = snd_mixer_elem_next(elem)) 
+     {
+	snd_mixer_selem_get_id(elem, sid);
+	if (!snd_mixer_selem_is_active(elem)) continue;
+	
+	if (snd_mixer_selem_has_playback_volume(elem)) 
+	  {
+	     const char *name;
+	     
+	     name = snd_mixer_selem_id_get_name(sid);
+	     if (!strcmp(name, chan->name)) 
+	       {
+		  snd_mixer_selem_get_playback_volume(elem, 0, &vol);
+		  break;
+	       }	     
+	  }
+     }
+   return (int)vol;
 }
 
 int 

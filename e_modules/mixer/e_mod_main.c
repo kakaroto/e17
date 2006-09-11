@@ -225,7 +225,9 @@ _mixer_config_item_get(const char *id)
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
-
+   ci->card_id = 0;
+   ci->channel_id = 0;
+   
    mixer_config->items = evas_list_append(mixer_config->items, ci);
    return ci;
 }
@@ -292,9 +294,19 @@ e_modapi_init(E_Module *m)
    E_CONFIG_LIST(D, T, items, conf_item_edd);
 
    mixer_config = e_config_domain_load("module.mixer", conf_edd);
-   if (!mixer_config)
-     mixer_config = E_NEW(Config, 1);
-
+   if (!mixer_config) 
+     {
+	Config_Item *ci;
+	
+	mixer_config = E_NEW(Config, 1);
+	ci = E_NEW(Config_Item, 1);
+	ci->id = evas_stringshare_add("0");
+	ci->card_id = 0;
+	ci->channel_id = 0;
+   
+	mixer_config->items = evas_list_append(mixer_config->items, ci);
+     }
+   
    mixer_config->module = m;
 
    e_gadcon_provider_register(&_gc_class);
@@ -366,13 +378,17 @@ static void
 _mixer_window_simple_pop_up(Instance *inst)
 {
    E_Container *con;
+   Config_Item *ci;
    Mixer_Win_Simple *win;
    Evas_Coord ox, oy, ow, oh;
    Evas_Coord sw, sh;
-   int cx, cy, cw, ch;
+   int cx, cy, cw, ch, vol;
    
    if (!inst || !inst->mixer) return;
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
+   
+   ci = _mixer_config_item_get(inst->gcc->id);
+   if (!ci) return;
    
    evas_object_geometry_get(inst->mixer->base, &ox, &oy, &ow, &oh); 
    
@@ -413,7 +429,14 @@ _mixer_window_simple_pop_up(Instance *inst)
         evas_object_show(win->slider);
         evas_object_smart_callback_add(win->slider, "changed",
                                        _mixer_window_simple_changed_cb, win);
-        
+	if (inst->mixer->mix_sys->get_volume) 
+	  {
+//	     vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+//	     vol = vol * 100;
+//	     printf("\n\nVolume: %i\n\n", vol);
+//	     e_slider_value_set(win->slider, (double)vol);
+	  }
+	
         e_slider_min_size_get(win->slider, &sw, &sh);
         if (sw < ow) sw = ow;
         if (sh < 150) sh = 150;
@@ -555,7 +578,7 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    Mixer_Win_Simple *win;
    Mixer            *mixer;
    Config_Item      *ci;
-   double            val;
+   long            val;
    
    if (!(win = data)) return;
    
