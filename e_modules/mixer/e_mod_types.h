@@ -27,7 +27,7 @@ struct _Mixer
 struct _Mixer_Win_Simple
 {
    Mixer       *mixer;
-   E_Win       *window;
+   E_Popup     *window;
    
    Ecore_X_Window       input_window;
    Ecore_Event_Handler *mouse_move_handler;
@@ -36,7 +36,6 @@ struct _Mixer_Win_Simple
    Ecore_Event_Handler *mouse_wheel_handler;
    int                  first_mouse_up;
    
-   Evas_Object *event_obj;
    Evas_Object *bg_obj;
    Evas_Object *slider;
    

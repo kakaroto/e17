@@ -31,7 +31,6 @@ static void _mixer_window_simple_pop_down         (Instance *inst);
 static int  _mixer_window_simple_animator_up_cb   (void *data);
 static int  _mixer_window_simple_animator_down_cb (void *data);
 static void _mixer_window_simple_changed_cb       (void *data, Evas_Object *obj, void *event_info);
-static void _mixer_window_simple_resize_cb        (E_Win *win);
 
 static int  _mixer_window_simple_mouse_move_cb    (void *data, int type, void *event);
 static int  _mixer_window_simple_mouse_down_cb    (void *data, int type, void *event);
@@ -405,18 +404,9 @@ _mixer_window_simple_pop_up(Instance *inst)
         win = E_NEW(Mixer_Win_Simple, 1);
         inst->mixer->simple_win = win;
         win->mixer = inst->mixer;
-        win->window = e_win_new(con);
-        e_win_placed_set(win->window, 1);
-        e_win_borderless_set(win->window, 1);
-        e_win_layer_set(win->window, 255);
-        e_win_resize_callback_set(win->window, _mixer_window_simple_resize_cb);
-        win->window->data = win;
-        
-        win->event_obj = evas_object_rectangle_add(e_win_evas_get(win->window));
-        evas_object_color_set(win->event_obj, 255, 255, 255, 0);
-        evas_object_show(win->event_obj);
+        win->window = e_popup_new(e_zone_current_get(con), 0, 0, 0, 0);
 	
-        win->bg_obj = edje_object_add(e_win_evas_get(win->window));
+        win->bg_obj = edje_object_add(win->window->evas);
         e_theme_edje_object_set(win->bg_obj, "base/theme/menus",
 				"e/widgets/menu/default/background");
 	edje_object_part_text_set(win->bg_obj, "e.text.title", _("Volume"));
@@ -425,13 +415,11 @@ _mixer_window_simple_pop_up(Instance *inst)
         evas_object_repeat_events_set(win->bg_obj, 1);
         evas_object_show(win->bg_obj);
         
-        win->slider = e_slider_add(e_win_evas_get(win->window));
+        win->slider = e_slider_add(win->window->evas);
         e_slider_value_range_set(win->slider, 0.0, 1.0);
         e_slider_orientation_set(win->slider, 0);
         /* TODO: Fix this in e_slider... */
         //e_slider_direction_set(win->slider, 1);
-        /* TODO: this has no effect: Bug in Evas ? */
-        evas_object_repeat_events_set(win->slider, 1);
         evas_object_show(win->slider);
         evas_object_smart_callback_add(win->slider, "changed",
                                        _mixer_window_simple_changed_cb, win);
@@ -474,9 +462,9 @@ _mixer_window_simple_pop_up(Instance *inst)
         
         win->first_mouse_up = 1;
         
-        evas_event_feed_mouse_move(e_win_evas_get(win->window),
+        evas_event_feed_mouse_move(win->window->evas,
                                    -100000, -100000, ecore_time_get(), NULL);
-        evas_event_feed_mouse_in(e_win_evas_get(win->window),
+        evas_event_feed_mouse_in(win->window->evas,
                                  ecore_time_get(), NULL);
      }
      
@@ -521,9 +509,9 @@ _mixer_window_simple_pop_up(Instance *inst)
           break;
      }
    
-   e_win_move(win->window, win->x, win->y);
-   e_win_resize(win->window, win->w, 0);
-   e_win_show(win->window);
+   e_popup_move(win->window, win->x, win->y);
+   e_popup_resize(win->window, win->w, 0);
+   e_popup_show(win->window);
    
    win->start_time = ecore_time_get();
    if (win->slide_animator) ecore_animator_del(win->slide_animator);
@@ -575,8 +563,8 @@ _mixer_window_simple_animator_up_cb(void *data)
    h = progress * win->h;
    prev_h = win->window->h;
    
-   if (win->to_top) e_win_move(win->window, win->x, win->y - h);
-   e_win_resize(win->window, win->w, h);
+   if (win->to_top) e_popup_move(win->window, win->x, win->y - h);
+   e_popup_resize(win->window, win->w, h);
    
    if (h >= win->h)
      {
@@ -602,8 +590,8 @@ _mixer_window_simple_animator_down_cb(void *data)
    h = (1.0 - progress) * (1.0 - progress) * win->h;
    prev_h = win->window->h;
    
-   if (win->to_top) e_win_move(win->window, win->x, win->y - h);
-   e_win_resize(win->window, win->w, h);
+   if (win->to_top) e_popup_move(win->window, win->x, win->y - h);
+   e_popup_resize(win->window, win->w, h);
    
    if (h <= 0)
      {
@@ -655,18 +643,6 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
      }
 }
 
-/* Called when the simple window is resized */
-static void 
-_mixer_window_simple_resize_cb(E_Win *win)
-{
-   Mixer_Win_Simple *simple_win;
-   
-   if (!win || !(simple_win = win->data)) return;
-   
-   evas_object_move(simple_win->event_obj, 0, 0);
-   evas_object_resize(simple_win->event_obj, win->w, win->h);
-}
-
 /* Called when the mouse moves over the input window */
 static int
 _mixer_window_simple_mouse_move_cb(void *data, int type, void *event)
@@ -676,7 +652,7 @@ _mixer_window_simple_mouse_move_cb(void *data, int type, void *event)
    
    if (!(win = data)) return 1;
    
-   evas_event_feed_mouse_move(e_win_evas_get(win->window),
+   evas_event_feed_mouse_move(win->window->evas,
                               xev->x - win->window->x, xev->y - win->window->y,
                               xev->time, NULL);
    
@@ -695,7 +671,7 @@ _mixer_window_simple_mouse_down_cb(void *data, int type, void *event)
                                   win->window->w, win->window->h))
      return 1;
    
-   evas_event_feed_mouse_down(e_win_evas_get(win->window),
+   evas_event_feed_mouse_down(win->window->evas,
                               xev->button, EVAS_BUTTON_NONE,
                               xev->time, NULL);
    
@@ -714,7 +690,7 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
    if (E_INSIDE(xev->x, xev->y, win->window->x, win->window->y,
                 win->window->w, win->window->h))
      {
-        evas_event_feed_mouse_up(e_win_evas_get(win->window),
+        evas_event_feed_mouse_up(win->window->evas,
                                    xev->button, EVAS_BUTTON_NONE,
                                    xev->time, NULL);
      }
@@ -739,7 +715,7 @@ _mixer_window_simple_mouse_wheel_cb(void *data, int type, void *event)
                                   win->window->w, win->window->h))
      return 1;
    
-   evas_event_feed_mouse_wheel(e_win_evas_get(win->window),
+   evas_event_feed_mouse_wheel(win->window->evas,
                               xev->direction, xev->z,
                               xev->time, NULL);
    
