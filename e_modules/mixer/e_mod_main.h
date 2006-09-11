@@ -28,6 +28,8 @@ EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
 EAPI int   e_modapi_about    (E_Module *m);
 
+void _config_mixer_module    (void *data, Config_Item *ci);
+
 extern Config *mixer_config;
 
 #endif

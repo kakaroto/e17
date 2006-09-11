@@ -1,9 +1,6 @@
 #include <e.h>
 #include "e_mod_main.h"
-
-#ifdef HAVE_LIBASOUND
-# include "alsa_mixer.h"
-#endif
+#include "e_mod_types.h"
 
 struct _E_Config_Dialog_Data
 {
@@ -15,21 +12,22 @@ struct _E_Config_Dialog_Data
 
 /* Protos */
 static void        *_create_data          (E_Config_Dialog * cfd);
-static void         _free_data            (E_Config_Dialog * cfd, 
-					   E_Config_Dialog_Data * cfdata);
-static Evas_Object *_basic_create_widgets (E_Config_Dialog * cfd, Evas * evas, 
-					   E_Config_Dialog_Data * cfdata);
-static int          _basic_apply_data     (E_Config_Dialog * cfd,
-					   E_Config_Dialog_Data * cfdata);
+static void         _free_data            (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata);
+static Evas_Object *_basic_create_widgets (E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data * cfdata);
+static int          _basic_apply_data     (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata);
+
+static Mixer *mixer;
 
 void
-_config_mixer_module(Config_Item *ci)
+_config_mixer_module(void *data, Config_Item *ci)
 {
    E_Config_Dialog      *cfd;
    E_Config_Dialog_View *v;
    E_Container          *con;
    char                  buf[4096];
 
+   mixer = data;
+   
    v = E_NEW(E_Config_Dialog_View, 1);
    if (!v) return;
    
@@ -78,15 +76,57 @@ static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object   *o, *ob, *of;
-   Evas_List     *cards, *c, *e;
+   Evas_List     *cards, *chans;
    Config_Item   *ci;
-   E_Radio_Group *rg;
+   E_Radio_Group *cg, *mg;
+   Mixer_Card    *card;
 
    ci = cfd->data;
 
-   o = e_widget_list_add(evas, 0, 1);	     
-   of = e_widget_framelist_add(evas, _("Available Mixers"), 0);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   o = e_widget_list_add(evas, 0, 0);
+   if (!mixer->mix_sys->cards) 
+     {
+	if (mixer->mix_sys->get_cards)
+	  mixer->mix_sys->cards = mixer->mix_sys->get_cards();
+     }
+   
+   if (mixer->mix_sys->cards)
+     {
+	of = e_widget_framelist_add(evas, _("Available Cards"), 0);
+	cg = e_widget_radio_group_new(&cfdata->card_id);
+	ob = e_widget_radio_add(evas, _("Unknown"), 0, cg);
+	e_widget_framelist_object_append(of, ob);
+	for (cards = mixer->mix_sys->cards; cards; cards = cards->next) 
+	  {
+	     card = cards->data;
+	     if (!card) continue;
+	     ob = e_widget_radio_add(evas, (char *)card->real, card->id, cg);
+	     e_widget_framelist_object_append(of, ob);
+	  }
+	e_widget_list_object_append(o, of, 1, 1, 0.5);	
+     }
+
+   if (mixer->mix_sys->get_card) 
+     {
+	card = mixer->mix_sys->get_card(ci->card_id);
+	if (mixer->mix_sys->get_channels)
+	  card->channels = mixer->mix_sys->get_channels(card);
+	
+	of = e_widget_framelist_add(evas, _("Available Mixers"), 0);
+	mg = e_widget_radio_group_new(&cfdata->channel_id);
+	ob = e_widget_radio_add(evas, _("Unknown"), 0, mg);
+	e_widget_framelist_object_append(of, ob);
+	for (chans = card->channels; chans; chans = chans->next) 
+	  {
+	     Mixer_Channel *chan;
+	     
+	     chan = chans->data;
+	     if (!chan) continue;
+	     ob = e_widget_radio_add(evas, (char *)chan->name, chan->id, mg);
+	     e_widget_framelist_object_append(of, ob);
+	  }
+	e_widget_list_object_append(o, of, 1, 1, 0.5);	
+     }
    return o;
 }
 

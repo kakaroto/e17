@@ -1,4 +1,5 @@
 #include <e.h>
+#include "e_mod_types.h"
 #include "alsa_mixer.h"
 
 static int   _alsa_get_hash         (const char *name);
@@ -27,7 +28,7 @@ alsa_get_cards()
    
    for (i = 0; i < 32; i++) 
      {
-	Alsa_Card *card;
+	Mixer_Card *card;
 	
 	snprintf(buf, sizeof(buf), "hw:%d", i);
 	if ((err = snd_mixer_attach(handle, buf)) < 0) break;
@@ -51,7 +52,7 @@ alsa_get_cards()
 	
 	snd_ctl_close(control);
 	
-	card = E_NEW(Alsa_Card, 1);
+	card = E_NEW(Mixer_Card, 1);
 	if (!card) continue;
 	card->name = evas_stringshare_add(buf);
 	card->real = evas_stringshare_add(snd_ctl_card_info_get_name(hw_info));
@@ -73,7 +74,7 @@ alsa_free_cards(void *data)
    
    while (cards) 
      {
-	Alsa_Card *card;
+	Mixer_Card *card;
 	
 	card = cards->data;
 	if (!card) continue;
@@ -81,7 +82,7 @@ alsa_free_cards(void *data)
 	if (card->real) evas_stringshare_del(card->real);
 	while (card->channels) 
 	  {
-	     Alsa_Channel *chan;
+	     Mixer_Channel *chan;
 	     
 	     chan = card->channels->data;
 	     if (!chan) continue;
@@ -114,7 +115,7 @@ alsa_get_card(int id)
 
    for (i = 0; i < 32; i++) 
      {
-	Alsa_Card *card;
+	Mixer_Card *card;
 	
 	snprintf(buf, sizeof(buf), "hw:%d", i);
 	if ((err = snd_mixer_attach(handle, buf)) < 0) break;
@@ -137,13 +138,15 @@ alsa_get_card(int id)
 	
 	snd_ctl_close(control);
 
-	card = E_NEW(Alsa_Card, 1);
+	card = E_NEW(Mixer_Card, 1);
 	if (!card) continue;
 	card->name = evas_stringshare_add(buf);
 	card->real = evas_stringshare_add(snd_ctl_card_info_get_name(hw_info));
 	card->id = _alsa_get_card_id(card->real);
 	
 	if (!_alsa_get_card_id(card->real) == id) continue;
+	
+	card->channels = alsa_card_get_channels(card);	
 	return card;
      }
    return NULL;
@@ -152,7 +155,7 @@ alsa_get_card(int id)
 Evas_List *
 alsa_card_get_channels(void *data) 
 {
-   Alsa_Card            *card;
+   Mixer_Card           *card;
    Evas_List            *channels;
      
    snd_mixer_t          *handle;
@@ -164,7 +167,7 @@ alsa_card_get_channels(void *data)
 
    card = data;   
    if (!card) return NULL;
-
+   
    channels = NULL;
    
    snd_mixer_selem_id_alloca(&sid);
@@ -219,13 +222,13 @@ alsa_card_get_channels(void *data)
 	
 	if (snd_mixer_selem_has_playback_volume(elem)) 
 	  {
-	     Alsa_Channel *ac;
+	     Mixer_Channel *ac;
 	     const char *name;
 	     
 	     name = snd_mixer_selem_id_get_name(sid);
 	     if ((!strcmp(name, "Master")) || (!strcmp(name, "PCM"))) 
 	       {
-		  ac = E_NEW(Alsa_Channel, 1);
+		  ac = E_NEW(Mixer_Channel, 1);
 		  if (!ac) continue;
 	     
 		  ac->name = evas_stringshare_add(name);
@@ -241,8 +244,8 @@ alsa_card_get_channels(void *data)
 void *
 alsa_card_get_channel(void *data, int channel_id) 
 {
-   Alsa_Card    *card;
-   Alsa_Channel *chan;
+   Mixer_Card    *card;
+   Mixer_Channel *chan;
    
    card = data;
    if (!card) return NULL;
@@ -256,8 +259,8 @@ alsa_card_get_channel(void *data, int channel_id)
 int 
 alsa_get_volume(int card_id, int channel_id) 
 {
-   Alsa_Card    *card;
-   Alsa_Channel *chan;
+   Mixer_Card    *card;
+   Mixer_Channel *chan;
    
    card = alsa_get_card(card_id);
    if (!card) return 0;
@@ -271,8 +274,8 @@ alsa_get_volume(int card_id, int channel_id)
 int 
 alsa_set_volume(int card_id, int channel_id, int vol) 
 {
-   Alsa_Card    *card;
-   Alsa_Channel *chan;
+   Mixer_Card    *card;
+   Mixer_Channel *chan;
    
    card = alsa_get_card(card_id);
    if (!card) return 0;
@@ -321,7 +324,7 @@ _alsa_get_mixer_id(const char *name)
 static void *
 _alsa_card_get_channel(void *data, int channel_id) 
 {
-   Alsa_Card    *card;
+   Mixer_Card    *card;
    Evas_List    *c;
    
    card = data;
@@ -334,7 +337,7 @@ _alsa_card_get_channel(void *data, int channel_id)
    
    for (c = card->channels; c; c = c->next) 
      {
-	Alsa_Channel *chan;
+	Mixer_Channel *chan;
 	
 	chan = c->data;
 	if (!chan) continue;

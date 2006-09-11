@@ -1,5 +1,6 @@
 #include <e.h>
 #include "e_mod_main.h"
+#include "e_mod_types.h"
 
 #ifdef HAVE_LIBASOUND
 # include "alsa_mixer.h"
@@ -8,59 +9,6 @@
 /* Define to 1 for testing alsa code */
 #define DEBUG 1
 #define SLIDE_LENGTH 0.5
-
-typedef struct _Instance Instance;
-typedef struct _Mixer Mixer;
-typedef struct _Mixer_Win_Simple Mixer_Win_Simple;
-typedef struct _Mixer_System Mixer_System;
-
-struct _Instance
-{
-   E_Gadcon_Client *gcc;
-   Mixer           *mixer;
-};
-
-struct _Mixer
-{
-   Instance     *inst;
-   Evas         *evas;
-   Mixer_System *mix_sys;
-
-   Mixer_Win_Simple *simple_win;
-   Evas_Object *base;
-};
-
-struct _Mixer_Win_Simple
-{
-   Mixer       *mixer;
-   E_Win       *window;
-   
-   Evas_Object *event_obj;
-   Evas_Object *bg_obj;
-   Evas_Object *slider;
-   
-   int          x, y, w, h;
-   int          to_top;
-   int          popped_up;
-   double       start_time;
-
-   Ecore_Animator *slide_animator;
-};
-
-struct _Mixer_System 
-{
-   Evas_List *(*get_cards)    (void);
-   void      *(*get_card)     (int id);
-   Evas_List *(*get_channels) (void *data);
-   void      *(*get_channel)  (void *data, int card_id);
-
-   int        (*set_volume)   (int card_id, int channel_id, int vol);
-   int        (*get_volume)   (int card_id, int channel_id);
-   
-   void       (*free_cards)   (void *data);
-   
-   Evas_List *cards;
-};
 
 /* Gadcon Protos */
 static E_Gadcon_Client *_gc_init     (E_Gadcon * gc, const char *name, const char *id, const char *style);
@@ -112,9 +60,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst = E_NEW(Instance, 1);
    if (!inst) return NULL;
    
-   ci = _mixer_config_item_get(id);
-   if (!ci->id) ci->id = evas_stringshare_add(id);
-   
    mixer = E_NEW(Mixer, 1);
    if (!mixer) return NULL;
    mixer->inst = inst;
@@ -130,6 +75,10 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    edje_object_signal_emit(mixer->base, "low", "");
 
    _mixer_system_init(mixer);
+
+   /* Defer this until after the mixer system has been setup */
+   ci = _mixer_config_item_get(id);
+   if (!ci->id) ci->id = evas_stringshare_add(id);
    
    gcc = e_gadcon_client_new(gc, name, id, style, mixer->base);
    gcc->data = inst;
@@ -258,7 +207,7 @@ _mixer_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    if (!inst) return;
    ci = _mixer_config_item_get(inst->gcc->id);
    if (!ci) return;
-   _config_mixer_module(ci);
+   _config_mixer_module(inst->mixer, ci);
 }
 
 static Config_Item *
@@ -276,9 +225,7 @@ _mixer_config_item_get(const char *id)
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
-   ci->card_id = 0;
-   ci->channel_id = 0;
-   
+
    mixer_config->items = evas_list_append(mixer_config->items, ci);
    return ci;
 }
@@ -294,6 +241,7 @@ _mixer_system_init(void *data)
 
    sys = E_NEW(Mixer_System, 1);
    if (!sys) return;
+   mixer->mix_sys = sys;
 
    #ifdef HAVE_LIBASOUND
    sys->get_cards = alsa_get_cards;
@@ -305,8 +253,6 @@ _mixer_system_init(void *data)
    sys->get_volume = alsa_get_volume;
    sys->set_volume = alsa_set_volume;
    #endif
-   
-   mixer->mix_sys = sys;
 }
 
 static void 
@@ -347,18 +293,8 @@ e_modapi_init(E_Module *m)
 
    mixer_config = e_config_domain_load("module.mixer", conf_edd);
    if (!mixer_config)
-     {
-	Config_Item *ci;
+     mixer_config = E_NEW(Config, 1);
 
-	mixer_config = E_NEW(Config, 1);
-
-	ci = E_NEW(Config_Item, 1);
-	ci->id = evas_stringshare_add("0");
-	ci->card_id = 0;
-	ci->channel_id = 0;
-	
-	mixer_config->items = evas_list_append(mixer_config->items, ci);
-     }
    mixer_config->module = m;
 
    e_gadcon_provider_register(&_gc_class);
@@ -631,16 +567,19 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    ci = _mixer_config_item_get(mixer->inst->gcc->id);
    if (!ci) return;
 
-   val = e_slider_value_get(obj);
+   val = 1.0 - (e_slider_value_get(obj));
    printf("Slider value: %f\n", val);
-   mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, (int)(val * 100));
+   if ((ci->card_id != 0) && (ci->channel_id != 0)) 
+     {
+	mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, (int)(val * 100));
 
-   if ((val * 100) < 33)
-     edje_object_signal_emit(mixer->base, "low", "");
-   else if (((val * 100) >= 34) && ((val * 100) < 66))
-     edje_object_signal_emit(mixer->base, "medium", "");
-   else if ((val * 100) > 66)
-     edje_object_signal_emit(mixer->base, "high", "");
+	if ((val * 100) < 33)
+	  edje_object_signal_emit(mixer->base, "low", "");
+	else if (((val * 100) >= 34) && ((val * 100) < 66))
+	  edje_object_signal_emit(mixer->base, "medium", "");
+	else if ((val * 100) > 66)
+	  edje_object_signal_emit(mixer->base, "high", ""); 
+     }
 }
 
 /* Called when the simple window is resized */
