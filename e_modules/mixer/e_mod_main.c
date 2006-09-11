@@ -285,6 +285,7 @@ e_modapi_init(E_Module *m)
 #define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, card_id, INT);
+   E_CONFIG_VAL(D, T, channel_id, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Mixer_Config", Config);
 #undef T
@@ -297,13 +298,13 @@ e_modapi_init(E_Module *m)
    if (!mixer_config) 
      {
 	Config_Item *ci;
-	
+
 	mixer_config = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
 	ci->id = evas_stringshare_add("0");
 	ci->card_id = 0;
 	ci->channel_id = 0;
-   
+
 	mixer_config->items = evas_list_append(mixer_config->items, ci);
      }
    
@@ -569,8 +570,6 @@ _mixer_window_simple_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *ev
    Mixer_Win_Simple *win;
    
    if (!(win = data)) return;
-   
-   printf("Mouse up\n");
    _mixer_window_simple_pop_down(win->mixer->inst);
 }
 
@@ -599,17 +598,16 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 	int ret;
 	
 	ret = mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, val);
-	if (!ret) 
+	if (ret)
 	  {
-	     printf("\n\nVol Set Failed\n\n");
+	     if ((val * 100) < 33)
+	       edje_object_signal_emit(mixer->base, "low", "");
+	     else if (((val * 100) >= 34) && ((val * 100) < 66))
+	       edje_object_signal_emit(mixer->base, "medium", "");
+	     else if ((val * 100) > 66)
+	       edje_object_signal_emit(mixer->base, "high", ""); 
 	  }
 	
-	if ((val * 100) < 33)
-	  edje_object_signal_emit(mixer->base, "low", "");
-	else if (((val * 100) >= 34) && ((val * 100) < 66))
-	  edje_object_signal_emit(mixer->base, "medium", "");
-	else if ((val * 100) > 66)
-	  edje_object_signal_emit(mixer->base, "high", ""); 
      }
 }
 
