@@ -254,6 +254,9 @@ _mixer_system_init(void *data)
    
    sys->get_volume = alsa_get_volume;
    sys->set_volume = alsa_set_volume;
+   
+   sys->get_mute = alsa_get_mute;
+   sys->set_mute = alsa_set_mute;
    #endif
 }
 

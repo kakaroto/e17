@@ -50,7 +50,10 @@ struct _Mixer_System
 
    int        (*set_volume)   (int card_id, int channel_id, double vol);
    int        (*get_volume)   (int card_id, int channel_id);
-   
+
+   int        (*get_mute)     (int card_id, int channel_id);
+   int        (*set_mute)     (int card_id, int channel_id, int mute);
+
    void       (*free_cards)   (void *data);
    
    Evas_List *cards;

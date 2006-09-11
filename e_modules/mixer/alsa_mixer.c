@@ -420,6 +420,18 @@ alsa_set_volume(int card_id, int channel_id, double vol)
    return 1;
 }
 
+int 
+alsa_get_mute(int card_id, int channel_id) 
+{
+   return 0;
+}
+
+int 
+alsa_set_mute(int card_id, int channel_id, int mute) 
+{
+   return 0;
+}
+
 /* Privates */
 static int 
 _alsa_get_hash(const char *name) 
