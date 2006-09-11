@@ -60,7 +60,7 @@ alsa_get_cards()
 	
 	cards = evas_list_append(cards, card);
      }
-   
+   snd_mixer_close(handle);   
    return cards;
 }
 
@@ -127,16 +127,19 @@ alsa_get_card(int id)
 	if ((err = snd_ctl_open(&control, buf, 0)) < 0) 
 	  {
 	     printf("Cannot control: %s: %s\n", buf, snd_strerror(err));
+	     snd_mixer_close(handle);
 	     continue;
 	  }
 	if ((err = snd_ctl_card_info(control, hw_info)) < 0) 
 	  {
 	     printf("Cannot get hardware info: %s: %s\n", buf, snd_strerror(err));
 	     snd_ctl_close(control);
+	     snd_mixer_close(handle);
 	     continue;
 	  }
 	
 	snd_ctl_close(control);
+	snd_mixer_close(handle);
 
 	card = E_NEW(Mixer_Card, 1);
 	if (!card) continue;
@@ -145,10 +148,12 @@ alsa_get_card(int id)
 	card->id = _alsa_get_card_id(card->real);
 	
 	if (!_alsa_get_card_id(card->real) == id) continue;
-	
-	card->channels = alsa_card_get_channels(card);	
+
+	card->channels = alsa_card_get_channels(card);
 	return card;
      }
+   snd_ctl_close(control);
+   snd_mixer_close(handle);
    return NULL;
 }
 
@@ -238,6 +243,7 @@ alsa_card_get_channels(void *data)
 	       }
 	  }
      }
+   snd_mixer_close(handle);   
    return channels;
 }
 
