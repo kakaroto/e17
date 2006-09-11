@@ -1,15 +1,18 @@
 #include <e.h>
 #include "e_mod_main.h"
-#include "alsa_mixer.h"
+
+#ifdef HAVE_LIBASOUND
+# include "alsa_mixer.h"
+#endif
 
 /* Define to 1 for testing alsa code */
-#define DEBUG 0
+#define DEBUG 1
 #define SLIDE_LENGTH 0.5
 
 typedef struct _Instance Instance;
 typedef struct _Mixer Mixer;
-typedef struct _Mixer_Win Mixer_Win;
 typedef struct _Mixer_Win_Simple Mixer_Win_Simple;
+typedef struct _Mixer_System Mixer_System;
 
 struct _Instance
 {
@@ -19,20 +22,12 @@ struct _Instance
 
 struct _Mixer
 {
-   Instance    *inst;
-   Evas        *evas;
-   Mixer_Win   *win;
+   Instance     *inst;
+   Evas         *evas;
+   Mixer_System *mix_sys;
+
    Mixer_Win_Simple *simple_win;
-   
    Evas_Object *base;
-};
-
-struct _Mixer_Win 
-{
-   Mixer       *mixer;
-   E_Win       *window;
-
-   Evas_Object *bg_obj;
 };
 
 struct _Mixer_Win_Simple
@@ -44,16 +39,26 @@ struct _Mixer_Win_Simple
    Evas_Object *bg_obj;
    Evas_Object *slider;
    
-   int         x, y, w, h;
-   int         to_top;
-   int         popped_up;
-   double      start_time;
+   int          x, y, w, h;
+   int          to_top;
+   int          popped_up;
+   double       start_time;
+
    Ecore_Animator *slide_animator;
 };
+
+struct _Mixer_System 
+{
+   Evas_List *(*get_cards)    (void);
+   void      *(*get_card)     (int id);
+   Evas_List *(*get_channels) (void *card);
+   void       (*free_cards)   (void *cards);
    
+   Evas_List *cards;
+};
+
 /* Gadcon Protos */
-static E_Gadcon_Client *_gc_init     (E_Gadcon * gc, const char *name, 
-				      const char *id, const char *style);
+static E_Gadcon_Client *_gc_init     (E_Gadcon * gc, const char *name, const char *id, const char *style);
 static void             _gc_shutdown (E_Gadcon_Client * gcc);
 static void             _gc_orient   (E_Gadcon_Client * gcc);
 static char            *_gc_label    (void);
@@ -62,13 +67,11 @@ static Evas_Object     *_gc_icon     (Evas * evas);
 /* Module Protos */
 static Config_Item *_mixer_config_item_get   (const char *id);
 static void         _mixer_menu_cb_post      (void *data, E_Menu *m);
-static void         _mixer_menu_cb_configure (void *data, E_Menu *m, 
-					      E_Menu_Item *mi);
-static void         _mixer_cb_mouse_down     (void *data, Evas *e, 
-					      Evas_Object *obj, 
-					      void *event_info);
-static void         _mixer_menu_cb_configure (void *data, E_Menu *m, 
-					      E_Menu_Item *mi);
+static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
+static void         _mixer_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
+static void         _mixer_system_init       (void *data);
+static void         _mixer_system_shutdown   (void *data);
 
 static void _mixer_window_simple_pop_up           (Instance *inst);
 static void _mixer_window_simple_pop_down         (Instance *inst);
@@ -100,26 +103,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Mixer           *mixer;
    E_Gadcon_Client *gcc;
    char             buf[4096];
-
-#if DEBUG
-   Evas_List *c;
-
-   c = alsa_get_cards();
-   if (c) 
-     {
-	Evas_List *l;
-	
-	for (l = c; l; l = l->next) 
-	  {
-	     Alsa_Card *card;
-		  
-	     card = c->data;
-	     if (!card) continue;
-	     printf("\nFound Card: %s\tId: %i\n\n", card->real, card->id);
-	  }
-	alsa_free_cards(c);
-     }
-#endif
    
    inst = E_NEW(Instance, 1);
    if (!inst) return NULL;
@@ -139,6 +122,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    mixer->base = edje_object_add(gc->evas);
    edje_object_file_set(mixer->base, buf, "e/modules/mixer/main");
    evas_object_show(mixer->base);
+
+   _mixer_system_init(mixer);
    
    gcc = e_gadcon_client_new(gc, name, id, style, mixer->base);
    gcc->data = inst;
@@ -162,13 +147,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    mixer = inst->mixer;
    if (!mixer) return;
 
-   if (mixer->win) 
-     {
-	if (mixer->win->bg_obj) evas_object_del(mixer->win->bg_obj);
-	e_object_del(E_OBJECT(mixer->win->window));
-	E_FREE(mixer->win);
-     }
-   
+   if (mixer->mix_sys) _mixer_system_shutdown(mixer->mix_sys);
    if (mixer->base) evas_object_del(mixer->base);
    
    mixer_config->instances = evas_list_remove(mixer_config->instances, inst);
@@ -229,9 +208,8 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, _("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
-	#if DEBUG
 	e_menu_item_callback_set(mi, _mixer_menu_cb_configure, inst);
-	#endif
+
 	mi = e_menu_item_new(mn);
 	e_menu_item_separator_set(mi, 1);
 
@@ -293,9 +271,46 @@ _mixer_config_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->card_id = 0;
-
+   ci->channel_id = 0;
+   
    mixer_config->items = evas_list_append(mixer_config->items, ci);
    return ci;
+}
+
+static void 
+_mixer_system_init(void *data) 
+{
+   Mixer        *mixer;
+   Mixer_System *sys;
+   
+   mixer = data;
+   if (!mixer) return;
+
+   sys = E_NEW(Mixer_System, 1);
+   if (!sys) return;
+
+   #ifdef HAVE_LIBASOUND
+   sys->get_cards = alsa_get_cards;
+   sys->get_card = alsa_get_card;
+   sys->get_channels = alsa_card_get_channels;
+   sys->free_cards = alsa_free_cards;
+   #endif
+   
+   mixer->mix_sys = sys;
+}
+
+static void 
+_mixer_system_shutdown(void *data) 
+{
+   Mixer_System *sys;
+   
+   sys = data;
+   if (!sys) return;
+
+   if (sys->free_cards) 
+     sys->free_cards(sys->cards);
+
+   E_FREE(sys);
 }
 
 EAPI E_Module_Api e_modapi =
@@ -331,7 +346,8 @@ e_modapi_init(E_Module *m)
 	ci = E_NEW(Config_Item, 1);
 	ci->id = evas_stringshare_add("0");
 	ci->card_id = 0;
-
+	ci->channel_id = 0;
+	
 	mixer_config->items = evas_list_append(mixer_config->items, ci);
      }
    mixer_config->module = m;

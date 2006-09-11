@@ -38,6 +38,33 @@ collections
 			    normal: "mixer-volume-high.png";
 			 }
 		    }
+		  description 
+		    {
+		       state: "low" 0.0;
+		       inherit: "default" 0.0;
+		       image 
+			 {
+			    normal: "mixer-volume-low.png";
+			 }
+		    }
+		  description 
+		    {
+		       state: "medium" 0.0;
+		       inherit: "default" 0.0;
+		       image 
+			 {
+			    normal: "mixer-volume-medium.png";
+			 }
+		    }
+		  description 
+		    {
+		       state: "mute" 0.0;
+		       inherit: "default" 0.0;
+		       image 
+			 {
+			    normal: "mixer-volume-muted.png";
+			 }
+		    }
 	       } /* end icon part */
 	  } /* end parts */	
      } /* end group */

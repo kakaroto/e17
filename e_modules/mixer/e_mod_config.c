@@ -1,12 +1,16 @@
 #include <e.h>
 #include "e_mod_main.h"
-#include "alsa_mixer.h"
+
+#ifdef HAVE_LIBASOUND
+# include "alsa_mixer.h"
+#endif
 
 struct _E_Config_Dialog_Data
 {
    Evas_Object *list;
    
    int card_id;
+   int channel_id;
 };
 
 /* Protos */
@@ -47,6 +51,7 @@ static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
    cfdata->card_id = ci->card_id;
+   cfdata->channel_id = ci->channel_id;
 }
 
 static void *
@@ -72,66 +77,21 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *ol, *ot, *ob, *of, *icon;
-   Evas_List   *cards, *c;
-   Config_Item *ci;
-   int          i = 0;
+   Evas_Object   *o, *ob, *of;
+   Evas_List     *cards, *c, *e;
+   Config_Item   *ci;
+   E_Radio_Group *rg;
 
    ci = cfd->data;
-     
-   cards = alsa_get_cards();
-   
-   o = e_widget_list_add(evas, 0, 1);
-   of = e_widget_framelist_add(evas, _("Sound Cards"), 0);
-   ol = e_widget_ilist_add(evas, 48, 48, NULL);
-   cfdata->list = ol;
-   e_widget_min_size_set(ol, 160, 200);
-   if (cards) 
-     {
-	for (c = cards; c; c = c->next) 
-	  {
-	     Alsa_Card *card;
-	     
-	     card = c->data;
-	     if (!card) continue;
-	     e_widget_ilist_append(ol, NULL, card->real, NULL, NULL, NULL);
-	     if (!ci) continue;
-	     if (ci->card_id == card->id)
-	       e_widget_ilist_selected_set(ol, i);
-	     i++;
-	  }
-     }
-   e_widget_ilist_go(ol);
-   e_widget_framelist_object_append(of, ol);
+
+   o = e_widget_list_add(evas, 0, 1);	     
+   of = e_widget_framelist_add(evas, _("Available Mixers"), 0);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
-   ot = e_widget_table_add(evas, 0);
-   ob = e_widget_button_add(evas, _("Configure"), NULL, NULL, NULL, NULL);
-   e_widget_disabled_set(ob, 1);
-   e_widget_table_object_append(ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
-   
-   e_widget_list_object_append(o, ot, 1, 1, 0.0);
    return o;
 }
 
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
-   Evas_List   *cards, *c;
-   Alsa_Card   *card;
-   Config_Item *ci;
-
-   ci = cfd->data;
-   if (!ci) return 0;
-   
-   cards = alsa_get_cards();
-   if (cards) 
-     {
-	card = evas_list_nth(cards, e_widget_ilist_selected_get(cfdata->list));
-	if (!card) return 0;
-	ci->card_id = card->id;
-	e_config_save_queue();
-     }
-   
    return 1;
 }
