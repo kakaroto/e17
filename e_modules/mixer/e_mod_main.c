@@ -600,11 +600,11 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 	ret = mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, val);
 	if (ret)
 	  {
-	     if ((val * 100) < 33)
+	     if (val < 33)
 	       edje_object_signal_emit(mixer->base, "low", "");
-	     else if (((val * 100) >= 34) && ((val * 100) < 66))
+	     else if ((val >= 34) && (val < 66))
 	       edje_object_signal_emit(mixer->base, "medium", "");
-	     else if ((val * 100) > 66)
+	     else if (val > 66)
 	       edje_object_signal_emit(mixer->base, "high", ""); 
 	  }
 	
