@@ -127,6 +127,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    mixer->base = edje_object_add(gc->evas);
    edje_object_file_set(mixer->base, buf, "e/modules/mixer/main");
    evas_object_show(mixer->base);
+   edje_object_signal_emit(mixer->base, "low", "");
 
    _mixer_system_init(mixer);
    
@@ -633,6 +634,13 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    val = e_slider_value_get(obj);
    printf("Slider value: %f\n", val);
    mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, (int)(val * 100));
+
+   if ((val * 100) < 33)
+     edje_object_signal_emit(mixer->base, "low", "");
+   else if (((val * 100) >= 34) && ((val * 100) < 66))
+     edje_object_signal_emit(mixer->base, "medium", "");
+   else if ((val * 100) > 66)
+     edje_object_signal_emit(mixer->base, "high", "");
 }
 
 /* Called when the simple window is resized */

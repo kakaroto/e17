@@ -66,6 +66,37 @@ collections
 			 }
 		    }
 	       } /* end icon part */
-	  } /* end parts */	
+	  } /* end parts */
+	programs 
+	  {
+	     program 
+	       {
+		  name: "go_low";
+		  signal: "low";
+		  action: STATE_SET "low" 0.0;
+		  target: "icon";
+	       }
+	     program 
+	       {
+		  name: "go_medium";
+		  signal: "medium";
+		  action: STATE_SET "medium" 0.0;
+		  target: "icon";
+	       }
+	     program 
+	       {
+		  name: "go_high";
+		  signal: "high";
+		  action: STATE_SET "default" 0.0;
+		  target: "icon";
+	       }
+	     program 
+	       {
+		  name: "go_mute";
+		  signal: "muted";
+		  action: STATE_SET "mute" 0.0;
+		  target: "icon";
+	       }
+	  } /* end programs */	
      } /* end group */
 } /* end collections */
