@@ -561,6 +561,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 		  etk_combobox_item_append(ETK_COMBOBOX(wid->wid), tok);
 	       }
 	     while ((tok = strtok(NULL, "\n")) != NULL);	     
+             free(value);
 	  }
      }	  
    
