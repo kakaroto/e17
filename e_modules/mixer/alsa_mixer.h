@@ -24,4 +24,7 @@ void         alsa_free_cards        (void *data);
 int          alsa_get_volume        (int card_id, int channel_id);
 int          alsa_set_volume        (int card_id, int channel_id, double vol);
 
+int          alsa_get_mute        (int card_id, int channel_id);
+int          alsa_set_mute        (int card_id, int channel_id, int mute);
+
 #endif
