@@ -640,8 +640,7 @@ _mixer_window_simple_pop_up(Instance *inst)
           break;
      }
    
-   e_popup_move(win->window, win->x, win->y);
-   e_popup_resize(win->window, win->w, 0);
+   e_popup_move_resize(win->window, win->x, win->y, win->w, 0);
    e_popup_show(win->window);
    
    win->start_time = ecore_time_get();
@@ -694,8 +693,16 @@ _mixer_window_simple_animator_up_cb(void *data)
    h = progress * win->h;
    prev_h = win->window->h;
    
-   if (win->to_top) e_popup_move(win->window, win->x, win->y - h);
-   e_popup_resize(win->window, win->w, h);
+   if (win->to_top)
+     {
+        e_popup_move_resize(win->window, win->x, win->y - h, win->w, h);
+        evas_object_move(win->bg_obj, 0, 0);
+     }
+   else
+     {
+        e_popup_resize(win->window, win->w, h);
+        evas_object_move(win->bg_obj, 0, h - win->h);
+     }
    
    if (h >= win->h)
      {
@@ -721,8 +728,16 @@ _mixer_window_simple_animator_down_cb(void *data)
    h = (1.0 - progress) * (1.0 - progress) * win->h;
    prev_h = win->window->h;
    
-   e_popup_resize(win->window, win->w, h);
-   if (win->to_top) e_popup_move(win->window, win->x, win->y - h);
+   if (win->to_top)
+     {
+        e_popup_move_resize(win->window, win->x, win->y - h, win->w, h);
+        evas_object_move(win->bg_obj, 0, 0);
+     }
+   else
+     {
+        e_popup_resize(win->window, win->w, h);
+        evas_object_move(win->bg_obj, 0, h - win->h);
+     }
    
    if (h <= 0)
      {

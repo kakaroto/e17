@@ -476,6 +476,7 @@ alsa_get_mute(int card_id, int channel_id)
 	id = _alsa_get_mixer_id(name);
 	if (id == channel_id)
 	  {
+             printf("MOOm: %d %d\n", snd_mixer_selem_has_playback_switch(elem), alsa_get_volume(card_id, channel_id));
 	     if (snd_mixer_selem_has_playback_switch(elem)) 
 	       {
 		  snd_mixer_selem_get_playback_switch(elem, id, &mute);
