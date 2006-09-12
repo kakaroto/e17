@@ -341,7 +341,8 @@ extern"C" {
 #include <ewl_tree2_view_plain.h>
 #include <ewl_tree2_view_scrolled.h>
 #include <ewl_list.h>
-
+#include <ewl_shadow.h>
+	
 #ifdef __cplusplus
 }
 #endif

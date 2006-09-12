@@ -20,6 +20,7 @@ e17_DEPS = \
 	e17/bits/scrollpane-groups.edc \
 	e17/bits/selection-groups.edc \
 	e17/bits/separator-groups.edc \
+	e17/bits/shadow-groups.edc \
 	e17/bits/spacer-groups.edc \
 	e17/bits/spinner-groups.edc \
 	e17/bits/stock-groups.edc \

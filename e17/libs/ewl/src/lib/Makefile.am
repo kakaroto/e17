@@ -72,6 +72,7 @@ EWLHEADERS = \
 	ewl_scrollpane.h \
 	ewl_seeker.h \
 	ewl_separator.h \
+	ewl_shadow.h \
 	ewl_spacer.h \
 	ewl_spectrum.h \
 	ewl_spinner.h \
@@ -147,6 +148,7 @@ EWLSOURCES= \
 	ewl_scrollpane.c \
 	ewl_seeker.c \
 	ewl_separator.c \
+	ewl_shadow.c \
 	ewl_spacer.c \
 	ewl_spectrum.c \
 	ewl_spinner.c \

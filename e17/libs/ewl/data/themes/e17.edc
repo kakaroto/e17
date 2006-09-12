@@ -22,6 +22,7 @@ collections {
 #include "e17/bits/progressbar-groups.edc"
 #include "e17/bits/scrollbar-groups.edc"
 #include "e17/bits/selection-groups.edc"
+#include "e17/bits/shadow-groups.edc"
 #include "e17/bits/spacer-groups.edc"
 #include "e17/bits/spinner-groups.edc"
 #include "e17/bits/stock-groups.edc"
@@ -160,6 +161,7 @@ data {
 	item, "/tooltip/group" "window";
 
 	item, "/window/group" "window";
+        item, "/shadow/group" "widget/shadow";
 
 	item, "/theme/name" "e17";
 	item, "/theme/author" "dj2 (www.everburning.com)";
