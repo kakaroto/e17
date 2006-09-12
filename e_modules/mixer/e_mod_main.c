@@ -82,6 +82,19 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    /* Defer this until after the mixer system has been setup */
    ci = _mixer_config_item_get(id);
    if (!ci->id) ci->id = evas_stringshare_add(id);
+
+   if ((mixer->mix_sys->get_volume) && (ci->card_id != 0) && (ci->channel_id != 0))
+     {
+	int ret;
+	
+	ret = mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+	if (ret < 33)
+	  edje_object_signal_emit(mixer->base, "low", "");
+	else if ((ret >= 34) && (ret < 66))
+	  edje_object_signal_emit(mixer->base, "medium", "");
+	else if (ret > 66)
+	  edje_object_signal_emit(mixer->base, "high", ""); 
+     }
    
    gcc = e_gadcon_client_new(gc, name, id, style, mixer->base);
    gcc->data = inst;
@@ -477,7 +490,13 @@ _mixer_window_simple_pop_up(Instance *inst)
 	  {
 	     vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
 	     v = (1.0 - ((double)vol / 100));
-	     e_slider_value_set(win->slider, v); 
+	     e_slider_value_set(win->slider, v);
+	     if (vol < 33)
+	       edje_object_signal_emit(inst->mixer->base, "low", "");
+	     else if ((vol >= 34) && (vol < 66))
+	       edje_object_signal_emit(inst->mixer->base, "medium", "");
+	     else if (vol > 66)
+	       edje_object_signal_emit(inst->mixer->base, "high", "");
 	  }	
      }
    
@@ -642,7 +661,6 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 	     else if (val > 66)
 	       edje_object_signal_emit(mixer->base, "high", ""); 
 	  }
-	
      }
 }
 
