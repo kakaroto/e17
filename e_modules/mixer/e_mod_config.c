@@ -2,6 +2,8 @@
 #include "e_mod_main.h"
 #include "e_mod_types.h"
 
+#define DEBUG 1
+
 struct _E_Config_Dialog_Data
 {
    Evas_Object *list;
@@ -86,6 +88,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ci = cfd->data;
 
    o = e_widget_list_add(evas, 0, 0);
+   #ifdef DEBUG
    of = e_widget_framelist_add(evas, _("Display Mode"), 0);
    dg = e_widget_radio_group_new(&cfdata->mode);
    ob = e_widget_radio_add(evas, _("Simple Mode"), SIMPLE_MODE, dg);
@@ -95,7 +98,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_radio_add(evas, _("Shelf Mode"), ONEFANG_MODE, dg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);	
-
+   #endif
+   
    if (!mixer->mix_sys->cards) 
      {
 	if (mixer->mix_sys->get_cards)
