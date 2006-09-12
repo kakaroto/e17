@@ -115,7 +115,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	     if (card->channels) 
 	       {
 		  of = e_widget_framelist_add(evas, _("Available Mixers"), 0);
-		  printf("\n\nChannel: %i\n\n", cfdata->channel_id);
 		  mg = e_widget_radio_group_new(&cfdata->channel_id);
 		  ob = e_widget_radio_add(evas, _("Unknown"), 0, mg);
 		  e_widget_framelist_object_append(of, ob);
@@ -144,8 +143,6 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    
    ci->card_id = cfdata->card_id;
    ci->channel_id = cfdata->channel_id;
-   printf("\n\nChannel: %i\n\n", cfdata->channel_id);
-   
    e_config_save_queue();
    return 1;
 }

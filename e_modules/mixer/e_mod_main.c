@@ -18,7 +18,7 @@ static char            *_gc_label    (void);
 static Evas_Object     *_gc_icon     (Evas * evas);
 
 /* Module Protos */
-static Config_Item *_mixer_config_item_get   (const char *id);
+static Config_Item *_mixer_config_item_get   (void *data, const char *id);
 static void         _mixer_menu_cb_post      (void *data, E_Menu *m);
 static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
 static void         _mixer_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -80,7 +80,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    _mixer_system_init(mixer);
 
    /* Defer this until after the mixer system has been setup */
-   ci = _mixer_config_item_get(id);
+   ci = _mixer_config_item_get(mixer, id);
    if (!ci->id) ci->id = evas_stringshare_add(id);
 
    if ((mixer->mix_sys->get_volume) && (ci->card_id != 0) && (ci->channel_id != 0))
@@ -221,17 +221,22 @@ _mixer_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 
    inst = data;
    if (!inst) return;
-   ci = _mixer_config_item_get(inst->gcc->id);
+   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
    if (!ci) return;
    _config_mixer_module(inst->mixer, ci);
 }
 
 static Config_Item *
-_mixer_config_item_get(const char *id)
+_mixer_config_item_get(void *data, const char *id)
 {
-   Evas_List   *l;
-   Config_Item *ci;
+   Mixer         *mixer;
+   Mixer_Card    *card;
+   Mixer_Channel *chan;
+   Evas_List     *l;
+   Config_Item   *ci;
 
+   mixer = data;
+   
    for (l = mixer_config->items; l; l = l->next)
      {
 	ci = l->data;
@@ -241,8 +246,51 @@ _mixer_config_item_get(const char *id)
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
-   ci->card_id = 0;
-   ci->channel_id = 0;
+   if ((!mixer) || (!mixer->mix_sys)) 
+     {
+	ci->card_id = 0;
+	ci->channel_id = 0;
+     }
+   else if (mixer->mix_sys)
+     {   
+	if (!mixer->mix_sys->cards) 
+	  {
+	     if (mixer->mix_sys->get_cards)
+	       mixer->mix_sys->cards = mixer->mix_sys->get_cards();
+	     else 
+	       {
+		  ci->card_id = 0;
+		  ci->channel_id = 0;
+		  mixer_config->items = evas_list_append(mixer_config->items, ci);
+		  return ci;
+	       }
+	  }
+	     
+	card = mixer->mix_sys->cards->data;
+	if (!card) 
+	  {
+	     ci->card_id = 0;
+	     ci->channel_id = 0;
+	     mixer_config->items = evas_list_append(mixer_config->items, ci);
+	     return ci;
+	  }
+	else 
+	  {
+	     ci->card_id = card->id;
+	     if (!card->channels) 
+	       {
+		  if (mixer->mix_sys->get_channels) 
+		    card->channels = mixer->mix_sys->get_channels(card);
+	       }
+	     if (card->channels) 
+	       {	     
+		  chan = card->channels->data;
+		  ci->channel_id = chan->id;
+	       }
+	     else 
+	       ci->channel_id = 0;
+	  }
+     }
    
    mixer_config->items = evas_list_append(mixer_config->items, ci);
    return ci;
@@ -377,7 +425,7 @@ e_modapi_save(E_Module *m)
 	Config_Item *ci;
 
 	inst = l->data;
-	ci = _mixer_config_item_get(inst->gcc->id);
+	ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
 	if (ci->id) evas_stringshare_del(ci->id);
 	ci->id = evas_stringshare_add(inst->gcc->id);
      }
@@ -407,7 +455,7 @@ _mixer_window_simple_pop_up(Instance *inst)
    if (!inst || !inst->mixer) return;
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
    
-   ci = _mixer_config_item_get(inst->gcc->id);
+   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
    if (!ci) return;
    
    evas_object_geometry_get(inst->mixer->base, &ox, &oy, &ow, &oh); 
@@ -643,7 +691,7 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    if (!mixer->mix_sys) return;
    if (!mixer->mix_sys->set_volume) return;
    
-   ci = _mixer_config_item_get(mixer->inst->gcc->id);
+   ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
    if (!ci) return;
 
    val = ((1.0 - (e_slider_value_get(obj))) * 100);
