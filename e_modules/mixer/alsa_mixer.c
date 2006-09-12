@@ -476,8 +476,7 @@ alsa_get_mute(int card_id, int channel_id)
 	id = _alsa_get_mixer_id(name);
 	if (id == channel_id)
 	  {
-             printf("MOOm: %d %d\n", snd_mixer_selem_has_playback_switch(elem), alsa_get_volume(card_id, channel_id));
-	     if (snd_mixer_selem_has_playback_switch(elem)) 
+             if (snd_mixer_selem_has_playback_switch(elem)) 
 	       {
 		  snd_mixer_selem_get_playback_switch(elem, id, &mute);
 		  break;
@@ -495,7 +494,7 @@ alsa_get_mute(int card_id, int channel_id)
      }
    
    snd_mixer_close(handle);
-   return (mute == 1 ? 0: 1);
+   return mute;
 }
 
 int 
@@ -549,7 +548,7 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 	if (id == channel_id)
 	  {
 	     if (snd_mixer_selem_has_playback_switch_joined(elem)) 
-	       snd_mixer_selem_set_playback_switch(elem, id, (mute == 1 ? 0: 1));
+	       snd_mixer_selem_set_playback_switch(elem, id, mute);
 	     else 
 	       {
 		  snd_mixer_close(handle);
