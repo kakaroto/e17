@@ -2,7 +2,7 @@
 #include "e_mod_main.h"
 #include "e_mod_types.h"
 
-#define DEBUG 0
+//#define DEBUG 1
 
 struct _E_Config_Dialog_Data
 {
