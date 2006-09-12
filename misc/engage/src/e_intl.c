@@ -53,8 +53,8 @@ static Evas_Bool 	 _e_intl_locale_hash_free_cb(Evas_Hash *hash, const char *key,
 
 /* Input Method Configuration and Management */
 static int 		 _e_intl_cb_exit(void *data, int type, void *event);
-static Evas_List 	*_e_intl_imc_path_scan(E_Path *path);
-static Evas_List 	*_e_intl_imc_dir_scan(const char *dir);
+/*static Evas_List 	*_e_intl_imc_path_scan(E_Path *path);
+static Evas_List 	*_e_intl_imc_dir_scan(const char *dir);*/
 static E_Input_Method_Config *_e_intl_imc_find(Evas_List *imc_list, char *name);
 
 
@@ -947,7 +947,7 @@ _e_intl_locale_search_order_get(char *locale)
        } 
    return search_list;
 }
-
+/*
 static Evas_List *
 _e_intl_imc_path_scan(E_Path *path)
 {
@@ -1030,7 +1030,7 @@ _e_intl_imc_dir_scan(const char *dir)
      }
    return imcs;
 }
-
+*/
 static E_Input_Method_Config *
 _e_intl_imc_find(Evas_List *imc_list, char *name)
 {
