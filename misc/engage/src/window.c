@@ -60,7 +60,7 @@ od_window_input_shape_set_extents()
    od_window_input_shape_rectangle_set(win, 
          (int)dock.left_pos, 
          options.height-options.size, 
-         (int)dock.right_pos - (int)dock.left_pos, 
+         ((int)dock.right_pos - (int)dock.left_pos) + tray_width, 
          options.size); 
          
   input_shape_full_area = 0;       
@@ -254,10 +254,9 @@ od_window_init()
 
 #ifdef ShapeInput  
   if(options.use_composite)
-  {
+  { 
+  	ecore_evas_override_set(ee, 1);
     ecore_evas_alpha_set(ee, 1);
-    Ecore_X_Window win = ecore_evas_software_x11_window_get(ee);
-    ecore_x_window_override_set(win,1); 
   }
   else
 #endif 

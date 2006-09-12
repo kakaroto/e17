@@ -174,7 +174,11 @@ od_tray_init()
                                 selection_atom, od_window, 0, 0);
   }
 
-  tray_container = ecore_x_window_new(od_window, 0, options.height - 48, 96, 
+  if(options.use_composite)
+     tray_container = ecore_x_window_argb_new(od_window, 0, options.height - 48, 96, 
+                                      48);
+  else
+     tray_container = ecore_x_window_new(od_window, 0, options.height - 48, 96, 
                                       48);
   ecore_x_window_container_manage(tray_container);
 #if 1 /* Nono */
