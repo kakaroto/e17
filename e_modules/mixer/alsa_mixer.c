@@ -487,6 +487,7 @@ alsa_get_mute(int card_id, int channel_id)
 	       {
 		  snd_mixer_close(handle);
 		  mute = alsa_get_volume(card_id, channel_id);
+		  printf("\n\nVolume from alsa mute: %i\n\n", mute);
 		  if (mute <= 0) 
 		    return 1;
 		  else
