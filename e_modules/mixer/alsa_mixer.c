@@ -483,12 +483,11 @@ alsa_get_mute(int card_id, int channel_id)
 	       }
 	     else
 	       {
-		  int m;
 		  snd_mixer_close(handle);
-		  m = alsa_get_volume(card_id, channel_id);
-		  if (m <= 0) 
+		  mute = alsa_get_volume(card_id, channel_id);
+		  if (mute <= 0) 
 		    return 1;
-		  else 
+		  else
 		    return 0;
 	       }
 	  }
@@ -554,7 +553,7 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 	       {
 		  snd_mixer_close(handle);
 		  if (mute)
-		    alsa_set_volume(card_id, channel_id, 0.0);
+		    alsa_set_volume(card_id, channel_id, (0.0 * 100));
 		  else
 		    alsa_set_volume(card_id, channel_id, (0.5 * 100));
 		  return 1;
