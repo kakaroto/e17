@@ -478,7 +478,6 @@ _mixer_window_simple_pop_up(Instance *inst)
    ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
    if (!ci) return;
    
-   printf("PopUp\n");
    evas_object_geometry_get(inst->mixer->base, &ox, &oy, &ow, &oh); 
    
    if (!(win = inst->mixer->simple_win))
@@ -820,7 +819,6 @@ _mixer_window_simple_mute_cb(void *data, Evas_Object *obj, void *event_info)
    ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
    if (!ci) return;
 
-   printf("MuteCb\n");
    m = e_widget_check_checked_get(win->check);
    mixer->mix_sys->set_mute(ci->card_id, ci->channel_id, m);
    if (m) 
@@ -864,7 +862,6 @@ _mixer_window_simple_mouse_down_cb(void *data, int type, void *event)
    
    if (!(win = data) || (win->slide_timer)) return 1;
    
-   printf("MouseDown\n");
    evas_event_feed_mouse_down(win->window->evas,
                               xev->button, EVAS_BUTTON_NONE,
                               xev->time, NULL);
@@ -889,7 +886,6 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
    inside = E_INSIDE(xev->x, xev->y, win->window->x, win->window->y,
                      win->window->w, win->window->h);
    
-   printf("MouseUp\n");
    if ((xev->button == 1)/* && (!win->first_mouse_up)*/ && !inside)
      _mixer_window_simple_pop_down(win->mixer->inst);
    
