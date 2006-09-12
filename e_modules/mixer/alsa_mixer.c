@@ -494,7 +494,7 @@ alsa_get_mute(int card_id, int channel_id)
      }
    
    snd_mixer_close(handle);
-   return mute;
+   return (mute == 1 ? 0: 1);
 }
 
 int 
@@ -548,7 +548,7 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 	if (id == channel_id)
 	  {
 	     if (snd_mixer_selem_has_playback_switch_joined(elem)) 
-	       snd_mixer_selem_set_playback_switch(elem, id, mute);
+	       snd_mixer_selem_set_playback_switch(elem, id, (mute == 1 ? 0: 1));
 	     else 
 	       {
 		  snd_mixer_close(handle);
