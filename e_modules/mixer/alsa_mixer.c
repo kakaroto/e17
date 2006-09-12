@@ -60,6 +60,8 @@ alsa_get_cards()
 	
 	cards = evas_list_append(cards, card);
      }
+
+snd_ctl_card_info_free(hw_info);     
    snd_mixer_close(handle);   
    return cards;
 }
@@ -152,6 +154,7 @@ alsa_get_card(int id)
 	card->channels = alsa_card_get_channels(card);
 	return card;
      }
+snd_ctl_card_info_free(hw_info);     
    snd_ctl_close(control);
    snd_mixer_close(handle);
    return NULL;
@@ -471,15 +474,27 @@ alsa_get_mute(int card_id, int channel_id)
 	snd_mixer_selem_id_alloca(&sid);
 	snd_mixer_selem_get_id(elem, sid);
 	if (!snd_mixer_selem_is_active(elem)) continue;
-	     
-	name = snd_mixer_selem_id_get_name(sid);
+
+	name = snd_mixer_selem_id_get_name(sid);	
 	id = _alsa_get_mixer_id(name);
 	if (id == channel_id)
 	  {
-	     if (snd_mixer_selem_has_playback_switch_joined(elem))
-	       snd_mixer_selem_get_playback_switch(elem, 0, &mute);
-	     break;
-	  }	     
+	     if (snd_mixer_selem_has_playback_switch(elem)) 
+	       {
+		  snd_mixer_selem_get_playback_switch(elem, id, &mute);
+		  break;
+	       }
+	     else
+	       {
+		  int m;
+		  snd_mixer_close(handle);
+		  m = alsa_get_volume(card_id, channel_id);
+		  if (m <= 0) 
+		    return 1;
+		  else 
+		    return 0;
+	       }
+	  }
      }
    
    snd_mixer_close(handle);
@@ -531,13 +546,22 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 	snd_mixer_selem_id_alloca(&sid);
 	snd_mixer_selem_get_id(elem, sid);
 	if (!snd_mixer_selem_is_active(elem)) continue;
-	     
+
 	name = snd_mixer_selem_id_get_name(sid);
 	id = _alsa_get_mixer_id(name);
 	if (id == channel_id)
 	  {
-	     if (snd_mixer_selem_has_playback_switch_joined(elem))
-	       snd_mixer_selem_set_playback_switch_all(elem, mute);
+	     if (snd_mixer_selem_has_playback_switch_joined(elem)) 
+	       snd_mixer_selem_set_playback_switch(elem, id, mute);
+	     else 
+	       {
+		  snd_mixer_close(handle);
+		  if (mute)
+		    alsa_set_volume(card_id, channel_id, 0.0);
+		  else
+		    alsa_set_volume(card_id, channel_id, (0.5 * 100));
+		  return 1;
+	       }
 	     break;
 	  }	     
      }

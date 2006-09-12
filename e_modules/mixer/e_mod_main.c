@@ -95,6 +95,17 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	  edje_object_signal_emit(mixer->base, "medium", "");
 	else if (ret > 66)
 	  edje_object_signal_emit(mixer->base, "high", ""); 
+	else if (ret <= 0) 
+	  edje_object_signal_emit(mixer->base, "muted", ""); 
+     }
+
+   if ((mixer->mix_sys->get_mute) && (ci->card_id != 0) && (ci->channel_id != 0))
+     {
+        int m;
+
+	m = mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
+	if (m) 
+	  edje_object_signal_emit(mixer->base, "muted", "");
      }
    
    gcc = e_gadcon_client_new(gc, name, id, style, mixer->base);
@@ -551,7 +562,7 @@ _mixer_window_simple_pop_up(Instance *inst)
         evas_event_feed_mouse_in(win->window->evas,
                                  ecore_time_get(), NULL);
      }
-     
+   
    if (inst->mixer->mix_sys->get_volume) 
      {
         int vol;
@@ -559,6 +570,8 @@ _mixer_window_simple_pop_up(Instance *inst)
         
 	if ((ci->card_id != 0) && (ci->channel_id != 0)) 
 	  {
+	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
+				     "e,state,enabled", "e");
 	     vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
 	     v = (1.0 - ((double)vol / 100));
 	     e_slider_value_set(win->slider, v);
@@ -568,7 +581,32 @@ _mixer_window_simple_pop_up(Instance *inst)
 	       edje_object_signal_emit(inst->mixer->base, "medium", "");
 	     else if (vol > 66)
 	       edje_object_signal_emit(inst->mixer->base, "high", "");
+	     else if (vol <= 0) 
+	       {
+		  edje_object_signal_emit(inst->mixer->base, "muted", ""); 
+		  edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
+					  "e,state,disabled", "e");
+	       }
 	  }	
+     }
+
+   if (inst->mixer->mix_sys->get_mute) 
+     {
+        int m;
+
+	m = inst->mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
+	e_widget_check_checked_set(win->check, m);
+	if (m) 
+	  {
+	     edje_object_signal_emit(inst->mixer->base, "muted", ""); 
+	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
+				     "e,state,disabled", "e");
+	  }
+	else 
+	  {
+	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
+				     "e,state,enabled", "e");
+	  }
      }
    
    e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
@@ -706,17 +744,22 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    Mixer            *mixer;
    Config_Item      *ci;
    double            val;
+   int               m;
    
    if (!(win = data)) return;
    
    mixer = win->mixer;
    if (!mixer) return;
    if (!mixer->mix_sys) return;
+   if (!mixer->mix_sys->get_mute) return;
    if (!mixer->mix_sys->set_volume) return;
    
    ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
    if (!ci) return;
 
+   m = mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
+   if (m) return;
+   
    val = ((1.0 - (e_slider_value_get(obj))) * 100);
    if ((ci->card_id != 0) && (ci->channel_id != 0)) 
      {
@@ -731,6 +774,8 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 	       edje_object_signal_emit(mixer->base, "medium", "");
 	     else if (val > 66)
 	       edje_object_signal_emit(mixer->base, "high", ""); 
+	     else if (val <= 0)
+	       edje_object_signal_emit(mixer->base, "muted", "");
 	  }
      }
 }
@@ -740,10 +785,38 @@ static void
 _mixer_window_simple_mute_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Mixer_Win_Simple *win;
+   Mixer            *mixer;
+   Config_Item      *ci;
+   double            val;
+   int               m;
    
    if (!(win = data)) return;
    
-   printf("Mute: %d\n", e_widget_check_checked_get(win->check));
+   mixer = win->mixer;
+   if (!mixer) return;
+   if (!mixer->mix_sys) return;
+   if (!mixer->mix_sys->set_mute) return;
+   if (!mixer->mix_sys->get_volume) return;
+   
+   ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
+   if (!ci) return;
+
+   m = e_widget_check_checked_get(win->check);
+   mixer->mix_sys->set_mute(ci->card_id, ci->channel_id, m);
+   if (m) 
+     {
+	edje_object_signal_emit(mixer->base, "muted", "");
+	e_slider_value_set(win->slider, 1.0);
+	edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
+				"e,state,disabled", "e");
+     }
+   else 
+     {
+	edje_object_signal_emit(mixer->base, "medium", "");
+	e_slider_value_set(win->slider, 0.5);
+	edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
+				"e,state,enabled", "e");	
+     }
 }
 
 /* Called when the mouse moves over the input window */
@@ -797,7 +870,7 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
                                    xev->button, EVAS_BUTTON_NONE,
                                    xev->time, NULL);
      }
-   else if ((xev->button == 1) && !win->first_mouse_up)
+   else if (xev->button == 1) //&& !win->first_mouse_up)
      _mixer_window_simple_pop_down(win->mixer->inst);
    
    if ((xev->button == 1) && win->first_mouse_up)

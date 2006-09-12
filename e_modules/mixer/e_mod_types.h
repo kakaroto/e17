@@ -48,7 +48,7 @@ struct _Mixer_Win_Simple
    int          popped_up;
    double       start_time;
    int          mute;
-
+   
    Ecore_Animator *slide_animator;
 };
 
