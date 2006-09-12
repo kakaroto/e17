@@ -587,7 +587,7 @@ _mixer_window_simple_pop_up(Instance *inst)
 		  edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
 					  "e,state,disabled", "e");
 	       }
-	  }	
+	  }
      }
 
    if (inst->mixer->mix_sys->get_mute) 
@@ -842,10 +842,7 @@ _mixer_window_simple_mouse_down_cb(void *data, int type, void *event)
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Button_Down *xev = event;
    
-   if (!(win = data) || !E_INSIDE(xev->x, xev->y,
-                                  win->window->x, win->window->y,
-                                  win->window->w, win->window->h))
-     return 1;
+   if (!(win = data)) return 1;
    
    evas_event_feed_mouse_down(win->window->evas,
                               xev->button, EVAS_BUTTON_NONE,
@@ -860,17 +857,18 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
 {
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Button_Up *xev = event;
+   int inside;
    
    if (!(win = data)) return 1;
+      
+   evas_event_feed_mouse_up(win->window->evas,
+                            xev->button, EVAS_BUTTON_NONE,
+                            xev->time, NULL);
    
-   if (E_INSIDE(xev->x, xev->y, win->window->x, win->window->y,
-                win->window->w, win->window->h))
-     {
-        evas_event_feed_mouse_up(win->window->evas,
-                                   xev->button, EVAS_BUTTON_NONE,
-                                   xev->time, NULL);
-     }
-   else if ((xev->button == 1) && (!win->first_mouse_up))
+   inside = E_INSIDE(xev->x, xev->y, win->window->x, win->window->y,
+                     win->window->w, win->window->h);
+   
+   if ((xev->button == 1) && (!win->first_mouse_up) && !inside)
      _mixer_window_simple_pop_down(win->mixer->inst);
    
    if ((xev->button == 1) && win->first_mouse_up)
@@ -886,10 +884,7 @@ _mixer_window_simple_mouse_wheel_cb(void *data, int type, void *event)
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Wheel *xev = event;
    
-   if (!(win = data) || !E_INSIDE(xev->x, xev->y,
-                                  win->window->x, win->window->y,
-                                  win->window->w, win->window->h))
-     return 1;
+   if (!(win = data)) return 1;
    
    evas_event_feed_mouse_wheel(win->window->evas,
                               xev->direction, xev->z,
