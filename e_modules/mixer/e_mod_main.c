@@ -31,6 +31,7 @@ static void _mixer_window_simple_pop_down         (Instance *inst);
 static int  _mixer_window_simple_animator_up_cb   (void *data);
 static int  _mixer_window_simple_animator_down_cb (void *data);
 static void _mixer_window_simple_changed_cb       (void *data, Evas_Object *obj, void *event_info);
+static void _mixer_window_simple_mute_cb          (void *data, Evas_Object *obj, void *event_info);
 
 static int  _mixer_window_simple_mouse_move_cb    (void *data, int type, void *event);
 static int  _mixer_window_simple_mouse_down_cb    (void *data, int type, void *event);
@@ -456,7 +457,7 @@ _mixer_window_simple_pop_up(Instance *inst)
    Config_Item *ci;
    Mixer_Win_Simple *win;
    Evas_Coord ox, oy, ow, oh;
-   Evas_Coord sw, sh;
+   Evas_Coord mw, mh;
    int cx, cy, cw, ch;
    
    if (!inst || !inst->mixer) return;
@@ -480,8 +481,11 @@ _mixer_window_simple_pop_up(Instance *inst)
 	edje_object_part_text_set(win->bg_obj, "e.text.title", _("Volume"));
 	edje_object_signal_emit(win->bg_obj, "e,action,show,title", "e");
         edje_object_message_signal_process(win->bg_obj);
-        evas_object_repeat_events_set(win->bg_obj, 1);
         evas_object_show(win->bg_obj);
+        
+        win->vbox = e_box_add(win->window->evas);
+        e_box_freeze(win->vbox);
+        e_box_orientation_set(win->vbox, 0);
         
         win->slider = e_slider_add(win->window->evas);
         e_slider_value_range_set(win->slider, 0.0, 1.0);
@@ -489,14 +493,26 @@ _mixer_window_simple_pop_up(Instance *inst)
         /* TODO: Fix this in e_slider... */
         //e_slider_direction_set(win->slider, 1);
         evas_object_show(win->slider);
+        e_slider_min_size_get(win->slider, &mw, &mh);
+        e_box_pack_start(win->vbox, win->slider);
+        e_box_pack_options_set(win->slider, 1, 1, 1, 1, 0.5, 0.5,
+                               mw, mh, 9999, 9999);
         evas_object_smart_callback_add(win->slider, "changed",
                                        _mixer_window_simple_changed_cb, win);
+        
+        win->check = e_widget_check_add(win->window->evas, _("Mute"), &win->mute);
+        evas_object_show(win->check);
+        e_widget_min_size_get(win->check, &mw, &mh);
+        e_box_pack_end(win->vbox, win->check);
+        e_box_pack_options_set(win->check, 0, 0, 0, 0, 0.5, 0.5, mw, mh, mw, mh);
+        evas_object_smart_callback_add(win->check, "changed",
+                                       _mixer_window_simple_mute_cb, win);
 	
-        e_slider_min_size_get(win->slider, &sw, &sh);
-        if (sw < ow) sw = ow;
-        if (sh < 150) sh = 150;
-        edje_extern_object_min_size_set(win->slider, sw, sh);
-        edje_object_part_swallow(win->bg_obj, "e.swallow.content", win->slider);
+        e_box_min_size_get(win->vbox, &mw, &mh);
+        if (mw < ow)  mw = ow;
+        if (mh < 150) mh = 150;
+        edje_extern_object_min_size_set(win->vbox, mw, mh);
+        edje_object_part_swallow(win->bg_obj, "e.swallow.content", win->vbox);
 	
         edje_object_size_min_calc(win->bg_obj, &win->w, &win->h);
         evas_object_move(win->bg_obj, 0, 0);
@@ -640,8 +656,8 @@ _mixer_window_simple_animator_up_cb(void *data)
    h = progress * win->h;
    prev_h = win->window->h;
    
-   e_popup_resize(win->window, win->w, h);
    if (win->to_top) e_popup_move(win->window, win->x, win->y - h);
+   e_popup_resize(win->window, win->w, h);
    
    if (h >= win->h)
      {
@@ -717,6 +733,17 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 	       edje_object_signal_emit(mixer->base, "high", ""); 
 	  }
      }
+}
+
+/* Called when the "mute" checkbox is toggled */
+static void 
+_mixer_window_simple_mute_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Mixer_Win_Simple *win;
+   
+   if (!(win = data)) return;
+   
+   printf("Mute: %d\n", e_widget_check_checked_get(win->check));
 }
 
 /* Called when the mouse moves over the input window */

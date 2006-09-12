@@ -39,11 +39,15 @@ struct _Mixer_Win_Simple
    
    Evas_Object *bg_obj;
    Evas_Object *slider;
+   Evas_Object *check;
+   Evas_Object *hbox;
+   Evas_Object *vbox;
    
    int          x, y, w, h;
    int          to_top;
    int          popped_up;
    double       start_time;
+   int          mute;
 
    Ecore_Animator *slide_animator;
 };
