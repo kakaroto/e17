@@ -682,7 +682,7 @@ _DlgFillConfiguration(Dialog * d, DItem * table, void *data __UNUSED__)
      {
 	di = DialogAddItem(buttons, DITEM_BUTTON);
 	DialogItemSetPadding(di, 2, 2, 0, 0);
-	DialogItemSetText(di, dialogs[i]->label);
+	DialogItemSetText(di, _(dialogs[i]->label));
 	DialogItemSetCallback(di, CB_DlgSelect, i, content);
      }
 
