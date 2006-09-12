@@ -870,7 +870,7 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
                                    xev->button, EVAS_BUTTON_NONE,
                                    xev->time, NULL);
      }
-   else if (xev->button == 1) //&& !win->first_mouse_up)
+   else if ((xev->button == 1) && (!win->first_mouse_up))
      _mixer_window_simple_pop_down(win->mixer->inst);
    
    if ((xev->button == 1) && win->first_mouse_up)
