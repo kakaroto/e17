@@ -9,6 +9,7 @@
 /* Define to 1 for testing alsa code */
 #define DEBUG 0
 #define SLIDE_LENGTH 0.5
+#define SLIDE_FRAMERATE (1.0 / 75.0)
 
 /* Gadcon Protos */
 static E_Gadcon_Client *_gc_init     (E_Gadcon * gc, const char *name, const char *id, const char *style);
@@ -28,8 +29,8 @@ static void         _mixer_system_shutdown   (void *data);
 
 static void _mixer_window_simple_pop_up           (Instance *inst);
 static void _mixer_window_simple_pop_down         (Instance *inst);
-static int  _mixer_window_simple_animator_up_cb   (void *data);
-static int  _mixer_window_simple_animator_down_cb (void *data);
+static int  _mixer_window_simple_timer_up_cb   (void *data);
+static int  _mixer_window_simple_timer_down_cb (void *data);
 static void _mixer_window_simple_changed_cb       (void *data, Evas_Object *obj, void *event_info);
 static void _mixer_window_simple_mute_cb          (void *data, Evas_Object *obj, void *event_info);
 
@@ -644,8 +645,9 @@ _mixer_window_simple_pop_up(Instance *inst)
    e_popup_show(win->window);
    
    win->start_time = ecore_time_get();
-   if (win->slide_animator) ecore_animator_del(win->slide_animator);
-   win->slide_animator = ecore_animator_add(_mixer_window_simple_animator_up_cb, win);
+   if (win->slide_timer) ecore_timer_del(win->slide_timer);
+   win->slide_timer = ecore_timer_add(SLIDE_FRAMERATE,
+                                      _mixer_window_simple_timer_up_cb, win);
    win->popped_up = 1;
 }
 
@@ -672,14 +674,15 @@ _mixer_window_simple_pop_down(Instance *inst)
      }
    
    win->start_time = ecore_time_get();
-   if (win->slide_animator) ecore_animator_del(win->slide_animator);
-   win->slide_animator = ecore_animator_add(_mixer_window_simple_animator_down_cb, win);
+   if (win->slide_timer) ecore_timer_del(win->slide_timer);
+   win->slide_timer = ecore_timer_add(SLIDE_FRAMERATE,
+                                      _mixer_window_simple_timer_down_cb, win);
    win->popped_up = 0;
 }
 
 /* Makes the window slide when it pops up */
 static int 
-_mixer_window_simple_animator_up_cb(void *data)
+_mixer_window_simple_timer_up_cb(void *data)
 {
    Mixer_Win_Simple *win;
    double progress;
@@ -706,7 +709,7 @@ _mixer_window_simple_animator_up_cb(void *data)
    
    if (h >= win->h)
      {
-        win->slide_animator = NULL;
+        win->slide_timer = NULL;
         return 0;
      }
    else
@@ -715,7 +718,7 @@ _mixer_window_simple_animator_up_cb(void *data)
 
 /* Makes the simple window pops down in animation */
 static int 
-_mixer_window_simple_animator_down_cb(void *data)
+_mixer_window_simple_timer_down_cb(void *data)
 {
    Mixer_Win_Simple *win;
    double progress;

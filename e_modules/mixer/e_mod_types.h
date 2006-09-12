@@ -49,7 +49,7 @@ struct _Mixer_Win_Simple
    double       start_time;
    int          mute;
    
-   Ecore_Animator *slide_animator;
+   Ecore_Animator *slide_timer;
 };
 
 struct _Mixer_System 
