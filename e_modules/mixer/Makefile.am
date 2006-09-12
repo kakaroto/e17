@@ -11,7 +11,11 @@ mixer.edj
 
 EXTRA_DIST = \
 $(files_DATA) \
-mixer.edc
+mixer.edc \
+mixer-volume-high.png \
+mixer-volume-medium.png \
+mixer-volume-low.png \
+mixer-volume-muted.png
 
 # data files for the module
 filesdir = $(datadir)
@@ -43,4 +47,3 @@ clean-local:
 	 rm -rf *.edj *~
 uninstall:
 	rm -rf $(datadir)
-
