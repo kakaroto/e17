@@ -844,7 +844,7 @@ _mixer_window_simple_mouse_move_cb(void *data, int type, void *event)
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Move *xev = event;
    
-   if (!(win = data)) return 1;
+   if (!(win = data) || (win->slide_timer)) return 1;
    
    evas_event_feed_mouse_move(win->window->evas,
                               xev->x - win->window->x, xev->y - win->window->y,
@@ -860,7 +860,7 @@ _mixer_window_simple_mouse_down_cb(void *data, int type, void *event)
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Button_Down *xev = event;
    
-   if (!(win = data)) return 1;
+   if (!(win = data) || (win->slide_timer)) return 1;
    
    evas_event_feed_mouse_down(win->window->evas,
                               xev->button, EVAS_BUTTON_NONE,
@@ -877,7 +877,7 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
    Ecore_X_Event_Mouse_Button_Up *xev = event;
    int inside;
    
-   if (!(win = data)) return 1;
+   if (!(win = data) || (win->slide_timer)) return 1;
       
    evas_event_feed_mouse_up(win->window->evas,
                             xev->button, EVAS_BUTTON_NONE,
@@ -886,7 +886,7 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
    inside = E_INSIDE(xev->x, xev->y, win->window->x, win->window->y,
                      win->window->w, win->window->h);
    
-   if ((xev->button == 1) && (!win->first_mouse_up) && !inside)
+   if ((xev->button == 1)/* && (!win->first_mouse_up)*/ && !inside)
      _mixer_window_simple_pop_down(win->mixer->inst);
    
    if ((xev->button == 1) && win->first_mouse_up)
@@ -902,7 +902,7 @@ _mixer_window_simple_mouse_wheel_cb(void *data, int type, void *event)
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Wheel *xev = event;
    
-   if (!(win = data)) return 1;
+   if (!(win = data) || (win->slide_timer)) return 1;
    
    evas_event_feed_mouse_wheel(win->window->evas,
                               xev->direction, xev->z,
