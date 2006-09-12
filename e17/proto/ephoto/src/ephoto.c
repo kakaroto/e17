@@ -127,7 +127,7 @@ main(int argc, char **argv)
  m->text = ewl_text_new();
  ewl_text_text_set(EWL_TEXT(m->text), "  Location:");
  ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
- ewl_object_maximum_size_set(EWL_OBJECT(m->text), 55, 15);
+ ewl_object_maximum_size_set(EWL_OBJECT(m->text), 66, 15);
  ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
  ewl_widget_show(m->text);
 
