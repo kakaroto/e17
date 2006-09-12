@@ -25,9 +25,11 @@ e_path.h \
 e_user.h \
 e_utils.h \
 engage.h \
+order.h \
 engage_element.h \
 battery.h \
 main.c \
+order.c \
 config.c \
 config_menu.c \
 dock.c \
