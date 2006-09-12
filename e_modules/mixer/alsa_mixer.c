@@ -60,9 +60,7 @@ alsa_get_cards()
 	
 	cards = evas_list_append(cards, card);
      }
-
-snd_ctl_card_info_free(hw_info);     
-   snd_mixer_close(handle);   
+   snd_mixer_close(handle);
    return cards;
 }
 
@@ -154,7 +152,6 @@ alsa_get_card(int id)
 	card->channels = alsa_card_get_channels(card);
 	return card;
      }
-snd_ctl_card_info_free(hw_info);     
    snd_ctl_close(control);
    snd_mixer_close(handle);
    return NULL;
