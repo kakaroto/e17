@@ -19,6 +19,7 @@ struct _Config_Item
    
    int card_id;
    int channel_id;
+   int mode;
 };
 
 EAPI extern E_Module_Api e_modapi;

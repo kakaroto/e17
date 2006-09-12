@@ -8,6 +8,7 @@ struct _E_Config_Dialog_Data
    
    int card_id;
    int channel_id;
+   int mode;
 };
 
 /* Protos */
@@ -50,6 +51,7 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
    cfdata->card_id = ci->card_id;
    cfdata->channel_id = ci->channel_id;
+   cfdata->mode = ci->mode;
 }
 
 static void *
@@ -78,12 +80,22 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    Evas_Object   *o, *ob, *of;
    Evas_List     *cards, *chans;
    Config_Item   *ci;
-   E_Radio_Group *cg, *mg;
+   E_Radio_Group *cg, *mg, *dg;
    Mixer_Card    *card;
 
    ci = cfd->data;
 
    o = e_widget_list_add(evas, 0, 0);
+   of = e_widget_framelist_add(evas, _("Display Mode"), 0);
+   dg = e_widget_radio_group_new(&cfdata->mode);
+   ob = e_widget_radio_add(evas, _("Simple Mode"), SIMPLE_MODE, dg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, _("Full Mode"), FULL_MODE, dg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, _("Shelf Mode"), ONEFANG_MODE, dg);
+   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);	
+
    if (!mixer->mix_sys->cards) 
      {
 	if (mixer->mix_sys->get_cards)
@@ -143,6 +155,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    
    ci->card_id = cfdata->card_id;
    ci->channel_id = cfdata->channel_id;
+   ci->mode = cfdata->mode;
+   
    e_config_save_queue();
    return 1;
 }

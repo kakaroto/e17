@@ -7,6 +7,7 @@ typedef struct _Mixer_Win_Simple Mixer_Win_Simple;
 typedef struct _Mixer_System Mixer_System;
 typedef struct _Mixer_Card Mixer_Card;
 typedef struct _Mixer_Channel Mixer_Channel;
+typedef enum   _Mixer_Mode Mixer_Mode;
 
 struct _Instance
 {
@@ -80,6 +81,13 @@ struct _Mixer_Channel
    int id, card_id;
    
    const char *name;
+};
+
+enum _Mixer_Mode 
+{
+   SIMPLE_MODE,
+     FULL_MODE,
+     ONEFANG_MODE
 };
 
 #endif

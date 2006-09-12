@@ -195,7 +195,9 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      {
 	if (ev->flags == EVAS_BUTTON_DOUBLE_CLICK) 
 	  {
-	     /* Call full mixer window */
+	     /* Call full mixer window. 
+	      For now just call simple till this mode is made */
+	     _mixer_window_simple_pop_up(inst);
 	  }
 	else if (ev->flags == EVAS_BUTTON_NONE)
 	  {
@@ -250,6 +252,7 @@ _mixer_config_item_get(void *data, const char *id)
      {
 	ci->card_id = 0;
 	ci->channel_id = 0;
+	ci->mode = SIMPLE_MODE;
      }
    else if (mixer->mix_sys)
      {   
@@ -261,6 +264,7 @@ _mixer_config_item_get(void *data, const char *id)
 	       {
 		  ci->card_id = 0;
 		  ci->channel_id = 0;
+		  ci->mode = SIMPLE_MODE;
 		  mixer_config->items = evas_list_append(mixer_config->items, ci);
 		  return ci;
 	       }
@@ -271,6 +275,7 @@ _mixer_config_item_get(void *data, const char *id)
 	  {
 	     ci->card_id = 0;
 	     ci->channel_id = 0;
+	     ci->mode = SIMPLE_MODE;
 	     mixer_config->items = evas_list_append(mixer_config->items, ci);
 	     return ci;
 	  }
@@ -291,7 +296,8 @@ _mixer_config_item_get(void *data, const char *id)
 	       ci->channel_id = 0;
 	  }
      }
-   
+
+   ci->mode = SIMPLE_MODE;
    mixer_config->items = evas_list_append(mixer_config->items, ci);
    return ci;
 }
@@ -353,6 +359,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, card_id, INT);
    E_CONFIG_VAL(D, T, channel_id, INT);
+   E_CONFIG_VAL(D, T, mode, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Mixer_Config", Config);
 #undef T
@@ -371,7 +378,7 @@ e_modapi_init(E_Module *m)
 	ci->id = evas_stringshare_add("0");
 	ci->card_id = 0;
 	ci->channel_id = 0;
-
+	ci->mode = SIMPLE_MODE;
 	mixer_config->items = evas_list_append(mixer_config->items, ci);
      }
    
