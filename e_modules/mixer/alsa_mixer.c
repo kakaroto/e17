@@ -231,7 +231,9 @@ alsa_card_get_channels(void *data)
 	     const char *name;
 	     
 	     name = snd_mixer_selem_id_get_name(sid);
-	     if ((!strcmp(name, "Master")) || (!strcmp(name, "PCM"))) 
+	     if ((!strcmp(name, "Master")) || 
+		 (!strcmp(name, "PCM")) || 
+		 (!strcmp(name, "DAC")) 
 	       {
 		  ac = E_NEW(Mixer_Channel, 1);
 		  if (!ac) continue;
