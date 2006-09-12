@@ -8,7 +8,7 @@
 
 /* Define to 1 for testing alsa code */
 #define DEBUG 0
-#define SLIDE_LENGTH 0.2
+#define SLIDE_LENGTH 0.5
 
 /* Gadcon Protos */
 static E_Gadcon_Client *_gc_init     (E_Gadcon * gc, const char *name, const char *id, const char *style);
