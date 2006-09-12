@@ -96,8 +96,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	  edje_object_signal_emit(mixer->base, "medium", "");
 	else if (ret > 66)
 	  edje_object_signal_emit(mixer->base, "high", ""); 
-	else if (ret <= 0) 
-	  edje_object_signal_emit(mixer->base, "muted", ""); 
      }
 
    if ((mixer->mix_sys->get_mute) && (ci->card_id != 0) && (ci->channel_id != 0))
@@ -786,8 +784,6 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 	       edje_object_signal_emit(mixer->base, "medium", "");
 	     else if (val > 66)
 	       edje_object_signal_emit(mixer->base, "high", ""); 
-	     else if (val <= 0)
-	       edje_object_signal_emit(mixer->base, "muted", "");
 	  }
      }
 }
