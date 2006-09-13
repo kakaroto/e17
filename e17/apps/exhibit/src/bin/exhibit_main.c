@@ -868,6 +868,10 @@ _ex_main_window_show(char *dir)
 	     int i;
 	     
 	     if ((ptr = strrchr(dir, '/'))) ptr++;
+
+	     if (!ptr)
+	       ptr = dir;
+
 	     if (!_ex_file_is_viewable(ptr))
 	       {
 		  tab = _ex_tab_new(e, ".");
@@ -957,6 +961,30 @@ _ex_main_window_show(char *dir)
 int
 main(int argc, char *argv[])
 {
+   int i;
+
+   for (i = 1; i < argc; i++)
+     {
+	if (((!strcmp(argv[i], "-h")) ||
+		 (!strcmp(argv[i], "--help"))))
+	  {
+	     printf("Usage\n");
+	     printf("  %s <image>\n", PACKAGE);
+	     printf("  %s <path>\n", PACKAGE);
+	     printf("  %s <url>\n\n", PACKAGE);
+	     printf("  -h, --help\t\t display this help and exit\n");
+	     printf("  -v, --version\t\t output version information and exit\n\n");
+	     exit(1);
+	  }
+	else if (((!strcmp(argv[i], "-v")) ||
+		 (!strcmp(argv[i], "--version"))))
+	  {
+	     printf("%s version %s\n", PACKAGE, VERSION);
+	     exit(1);
+	  }
+
+     }
+   
    if (!etk_init(&argc, &argv))
      {
 	fprintf(stderr, "Could not init etk. Exiting...\n");
