@@ -49,12 +49,5 @@ ewl_shadow_init(Ewl_Shadow * s)
 	ewl_widget_appearance_set(EWL_WIDGET(s), EWL_SHADOW_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(s), EWL_SHADOW_TYPE);
 
-	s->body = ewl_vbox_new();
-	ewl_widget_internal_set(s->body, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(s), s->body);
-	ewl_widget_show(s->body);
-
-	ewl_container_redirect_set(EWL_CONTAINER(s), EWL_CONTAINER(s->body));
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
