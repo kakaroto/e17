@@ -1,0 +1,18 @@
+accumulate forces
+  springs
+  gravity
+  collisions
+  etc
+verlet integrate all particles
+satisfy constraints
+  resolve lengths
+  (repeat)
+  
+/*
+ * Possible optimizations
+ *
+ * o bound mass to 2^n and shift instead of dividing
+ * o rtree / prtree for collision detection
+ * o optimize the collide function!
+ *
+ */

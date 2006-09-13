@@ -1,0 +1,7 @@
+#! /bin/sh
+
+aclocal $ACLOCAL_FLAGS -I m4 \
+&& libtoolize --automake --force \
+&& automake --gnu --add-missing \
+&& autoconf 
+

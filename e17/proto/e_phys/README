@@ -1,0 +1,22 @@
+========================
+EFL Physics Engine v 0.1
+========================
+
+Prerequisites
+-------------
+Evas - for lists and the demo app
+Ecore - for timers
+
+Inspiration
+-----------
+Akamaru (http://people.freedesktop.org/~krh/akamaru.git/)
+Advance Character Physics, Thomas Jakobsen. (http://www.teknikus.dk/tj/gdc2001.htm)
+
+Installation
+------------
+./bootstrap # only needed if from git/cvs/etc
+./configure
+make
+#make install 
+
+(for now, run the demo from the src/bin dir. it won't work when installed due to an image path being hard coded)
