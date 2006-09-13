@@ -8,14 +8,14 @@ AC_PROG_LIBTOOL
 AC_PROG_CC
 
 PKG_CHECK_MODULES(POPPLER, \
-   poppler >= 0.5.1,
+   poppler >= 0.5.3,
    [have_poppler=yes],
   [
     echo "ERROR:"
     echo "The poppler.pc development file was not found in your pkg-config"
     echo "path. This may mean one of several things"
     echo "1. You may not have installed the CVS version of poppler (current"
-    echo "   0.5 version)."
+    echo "   0.5.3 version)."
     echo "2. You may not have installed the poppler-devel (or poppler-dev)"
     echo "   packages."
     echo "3. You may have evas installed somewhere not covered by your path."
