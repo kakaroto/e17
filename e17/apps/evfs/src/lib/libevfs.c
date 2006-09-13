@@ -1,4 +1,5 @@
 #include "evfs.h"
+#include <ctype.h>
 
 #define MAX_ATTEMPTS 5
 
@@ -129,6 +130,8 @@ evfs_server_data(void *data, int type, void *event)
                }
           }
      }
+
+   return 1;
 }
 
 int
@@ -249,7 +252,6 @@ evfs_tokenize_uri(char *uri)
    char tmp_tok[255];           /*This need to be longer? */
    int i = 0;
    int j = 1;
-   char c = '1';
    int len = 0;
    char tagged = 0;
 
@@ -278,7 +280,7 @@ evfs_tokenize_uri(char *uri)
 
    while (j <= strlen(dup_uri))
      {
-	new_alpha = isalnum(l_uri[i]) | l_uri[i] == '.';
+	new_alpha = (isalnum(l_uri[i]) | l_uri[i] == '.');
 
         len = 0;
 	tagged = 0;
@@ -456,10 +458,7 @@ evfs_parse_uri(char* uri)
 evfs_filereference *
 evfs_parse_uri_single(char *uri)
 {
-   char *pos;
-   char *tok;
    evfs_uri_token *token;
-   int i;
    evfs_filereference *ref = NULL, *new_ref = NULL, *root_ref =
       NULL, *bottom_ref = NULL;
    Ecore_DList *tokens;

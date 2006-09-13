@@ -210,6 +210,7 @@ evfs_client_disconnect(evfs_client * client)
 {
    printf("Received disconnect for client at evfs_fs_posix.c for client %d\n",
           client->id);
+   return 0;
 }
 
 int
@@ -300,8 +301,10 @@ evfs_file_write(evfs_filereference * file, char *bytes, long size)
 {
 	if (file->plugin) {
 		return (*EVFS_PLUGIN_FILE(posix_plugin)->functions->evfs_file_write) (file, bytes, size);
-	} else
+	} else {
 		printf("Trash file not opened with trash plugin\n");
+		return -1;
+	}
 }
 
 void evfs_file_notify_create(evfs_filereference* ref)
@@ -407,4 +410,6 @@ evfs_file_mkdir(evfs_filereference * file)
 	ecore_hash_set(trash_dir_mapping, strdup(file->path), strdup(par->path));
 
 	evfs_cleanup_filereference(par);
+
+	return 1;
 }

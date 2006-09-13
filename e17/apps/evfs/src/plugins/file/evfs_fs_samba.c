@@ -229,6 +229,8 @@ smb_evfs_file_rename(evfs_client* client, evfs_command* command)
 	err = smb_context->rename(smb_context, command->file_command.files[0]->path, 
 			smb_context,
 			command->file_command.files[1]->path);
+
+	return 0;
 }
 
 int
@@ -293,10 +295,7 @@ smb_evfs_dir_list(evfs_client * client, evfs_filereference * file,
 
    char dir_path[PATH_MAX];
 
-   int fd, dh1, dh2, dh3, dsize, dirc;
    int size;
-   char dirbuf[8192];
-   char *dirp;
    SMBCFILE *dir = NULL;
    struct smbc_dirent *entry = NULL;
    Ecore_List *files = ecore_list_new();
@@ -429,6 +428,7 @@ evfs_file_remove(char *file)
    else
      {
         printf("Could not stat '%s'\n", file_smb);
+	return 1;
      }
 
 }
