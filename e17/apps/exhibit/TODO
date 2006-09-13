@@ -8,8 +8,11 @@ o TODO:
 - Close tab
 - Create window
 - Close window
-- menus
-  * release notes    
+- Rightclick menu on thumbs (rightclick without having to select, would be
+nice if you want to delete an image without viewing it in fullsize and then 
+you wont have to wait for the loading if it for example is a big image).
+
+- Fix sorting menu (on statusbar)
 
 o DONE:
  ------
@@ -66,7 +69,8 @@ o TODO:
 =======
 * BUGS:
 =======
-
+- when rotating images and saving it doesnt update in the thumb listing.
+- when sorting on name right after adding a new image it doesnt sort correct.
 - fix autocomplete (combobox?)
 - if we're looking at a LOT of images and change dir before they have
   finished loading, then the images will thumbnail and load in the current dir
