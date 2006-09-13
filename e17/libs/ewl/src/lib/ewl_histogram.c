@@ -3,8 +3,13 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static void ewl_histogram_cb_data_load(Ewl_Widget *w, void *ev, void *h);
 static void ewl_histogram_draw(Ewl_Histogram *hist);
 
+/**
+ * @return Returns a new Ewl_Histogram widget.
+ * @brief Create a new Ewl_Histogram widget.
+ */
 Ewl_Widget *
 ewl_histogram_new(void)
 {
@@ -14,13 +19,17 @@ ewl_histogram_new(void)
 
 	hist = calloc(1, sizeof(Ewl_Histogram));
 	if (!ewl_histogram_init(hist)) {
-		free(hist);
-		hist = NULL;
+		FREE(hist);
 	}
 
 	DRETURN_PTR(EWL_WIDGET(hist), DLEVEL_STABLE);
 }
 
+/**
+ * @param hist: the histogram widget to initialize
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Initialize a histogram widget to starting values.
+ */
 int
 ewl_histogram_init(Ewl_Histogram *hist)
 {
@@ -32,56 +41,176 @@ ewl_histogram_init(Ewl_Histogram *hist)
 
 	result = ewl_image_init(EWL_IMAGE(hist));
 	if (result) {
+		ewl_widget_appearance_set(w, EWL_HISTOGRAM_TYPE);
+		ewl_widget_inherit(w, EWL_HISTOGRAM_TYPE);
 		ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				    ewl_histogram_cb_configure, NULL);
 		ewl_object_preferred_inner_size_set(EWL_OBJECT(hist), 256, 256);
+		hist->channel = EWL_HISTOGRAM_CHANNEL_R;
 	}
 
 	DRETURN_INT(result, DLEVEL_STABLE);
 }
 
+/**
+ * @param hist: the histogram widget to change display color
+ * @param r: red value for histogram drawing color
+ * @param g: green value for histogram drawing color
+ * @param b: blue value for histogram drawing color
+ * @param a: apha value for histogram drawing color
+ * @return Returns no value.
+ * @brief Changes the drawing color of a histogram.
+ */
 void
-ewl_histogram_color_set(Ewl_Histogram *hist, char r, char g, char b, char a)
+ewl_histogram_color_set(Ewl_Histogram *hist, int r, int g, int b, int a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("hist", hist);
 
-	hist->r = r;
-	hist->g = g;
-	hist->b = b;
-	hist->a = a;
+	hist->color.r = r;
+	hist->color.g = g;
+	hist->color.b = b;
+	hist->color.a = a;
 	ewl_widget_configure(EWL_WIDGET(hist));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/* FIXME: Handle different histogram types, currently only outputs the Y
- * component of a YIQ conversion, need to handle separate RGB, HSV, CMYK, etc.
-void
-ewl_histogram_type_set(Ewl_Histogram *hist, int type)
-{
-}
+/**
+ * @param hist: the histogram widget to retrieve display color
+ * @param r: red value for histogram drawing color
+ * @param g: green value for histogram drawing color
+ * @param b: blue value for histogram drawing color
+ * @param a: apha value for histogram drawing color
+ * @return Returns no value.
+ * @brief Get the current color values for drawing the histogram.
  */
+void
+ewl_histogram_color_get(Ewl_Histogram *hist, int *r, int *g, int *b, int *a)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("hist", hist);
 
-/* a = ((*data) >> 24) & 0xFF; */
+	if (r)
+		*r = hist->color.r;
+	if (g)
+		*g = hist->color.g;
+	if (b)
+		*b = hist->color.b;
+	if (a)
+		*a = hist->color.a;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param hist: the histogram to change the channel drawn
+ * @param channel: the color channel to draw in the histogram
+ * @return Returns no value.
+ * @brief Sets the color channel to graph in the histogram.
+ */
+void
+ewl_histogram_channel_set(Ewl_Histogram *hist, Ewl_Histogram_Channel channel)
+{
+	/*
+	 * FIXME: Handle different histogram types, currently only outputs the Y
+	 * component of a YIQ conversion and RGB channels, need to handle HSV,
+	 * CMYK, etc.
+	 */
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("hist", hist);
+	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
+
+	hist->channel = channel;
+	if (hist->source && REALIZED(hist->source))
+		ewl_histogram_cb_data_load(EWL_WIDGET(hist), NULL, hist);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param hist: the histogram to change the channel drawn
+ * @param channel: the color channel to draw in the histogram
+ * @return Returns the currently drawn color channel.
+ * @brief Sets the color channel to graph in the histogram.
+ */
+Ewl_Histogram_Channel 
+ewl_histogram_channel_get(Ewl_Histogram *hist)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("hist", hist, EWL_HISTOGRAM_CHANNEL_Y);
+	DCHECK_TYPE_RET("hist", hist, EWL_HISTOGRAM_TYPE, EWL_HISTOGRAM_CHANNEL_Y);
+
+	DRETURN_INT(hist->channel, DLEVEL_STABLE);
+}
+
+/**
+ * @param hist: the histogram to change source image
+ * @param image: the new source image for the histogram
+ * @return Returns no value.
+ * @brief Change the source image used to generate the histogram
+ */
+void
+ewl_histogram_image_set(Ewl_Histogram *hist, Ewl_Image *image)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("hist", hist);
+	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
+	DCHECK_PARAM_PTR("image", image);
+	DCHECK_TYPE("image", image, EWL_IMAGE_TYPE);
+
+	hist->source = image;
+	if (REALIZED(image)) {
+		ewl_histogram_cb_data_load(EWL_WIDGET(hist), NULL, hist);
+	}
+
+	/* Append the callback to catch an obscure/reveal */
+	ewl_callback_append(EWL_WIDGET(image), EWL_CALLBACK_REVEAL,
+			ewl_histogram_cb_data_load, hist);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param hist: the histogram to get source image
+ * @return Returns a pointer to the current source image.
+ * @brief Get the source image used to generate the histogram
+ */
+Ewl_Image *
+ewl_histogram_image_get(Ewl_Histogram *hist)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("hist", hist, NULL);
+	DCHECK_TYPE_RET("hist", hist, EWL_HISTOGRAM_TYPE, NULL);
+
+	DRETURN_PTR(EWL_IMAGE(hist->source), DLEVEL_STABLE);
+}
+
 #define A_CALC(color) ((color) >> 24)
 #define R_CALC(color) ((color << 8) >> 24)
 #define G_CALC(color) ((color << 16) >> 24)
 #define B_CALC(color) ((color << 24) >> 24)
-/* r = ((color) >> 16) & 0xFF; */
-/* g = ((color) >> 8) & 0xFF; */
-/* b = (color) & 0xFF; */
-/* brightness = (unsigned char)(((r * 299) + (g * 587) + (b * 114)) / 1000); */
 #define Y_CALC(color) (((R_CALC(color) * 299) + (G_CALC(color) * 587) + (B_CALC(color) * 114)) / 1000)
 
-void
-ewl_histogram_data_set(Ewl_Histogram *hist, unsigned int *data, int width, int height)
+static void
+ewl_histogram_cb_data_load(Ewl_Widget *w, void *ev __UNUSED__, void *h __UNUSED__)
 {
 	int x, y;
 	int maxv = 0;
+	unsigned int *data;
+	Evas_Coord width, height;
+	Ewl_Histogram *hist = EWL_HISTOGRAM(h);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("hist", hist);
+	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
+
+	if (!hist->source || !REALIZED(hist->source))
+		DRETURN(DLEVEL_STABLE);
+
+	data = evas_object_image_data_get(hist->source->image, 0);
+	evas_object_image_size_get(hist->source->image, &width, &height);
 
 	hist->data = data;
 	hist->width = width;
@@ -93,7 +222,22 @@ ewl_histogram_data_set(Ewl_Histogram *hist, unsigned int *data, int width, int h
 			unsigned char brightness;
 
 			color = *data;
-			brightness = Y_CALC(color);
+			switch (hist->channel) {
+
+				case EWL_HISTOGRAM_CHANNEL_R:
+					brightness = R_CALC(color);
+					break;
+				case EWL_HISTOGRAM_CHANNEL_G:
+					brightness = G_CALC(color);
+					break;
+				case EWL_HISTOGRAM_CHANNEL_B:
+					brightness = B_CALC(color);
+					break;
+				case EWL_HISTOGRAM_CHANNEL_Y:
+				default:
+					brightness = Y_CALC(color);
+					break;
+			}
 			hist->graph[brightness]++;
 			data++;
 		}
@@ -145,10 +289,28 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 	if (!data)
 		return;
 
-	if (!hist->a)
-		color = (unsigned int)(255 << 24);
+	/*
+	 * If no color specified, choose a sane default for the channel
+	 * represented.
+	 */
+	if (!hist->color.a) {
+		color = (unsigned int)(128 << 24);
+		switch (hist->channel) {
+			case EWL_HISTOGRAM_CHANNEL_R:
+				color |= (unsigned int)(255 << 16);
+				break;
+			case EWL_HISTOGRAM_CHANNEL_G:
+				color |= (unsigned int)(255 << 8);
+				break;
+			case EWL_HISTOGRAM_CHANNEL_B:
+				color |= (unsigned int)(255);
+				break;
+			default:
+				break;
+		}
+	}
 	else
-		color = (unsigned int)(hist->a << 24 | hist->r << 16 | hist->g << 8 | hist->b);
+		color = (unsigned int)(hist->color.a << 24 | hist->color.r << 16 | hist->color.g << 8 | hist->color.b);
 
 	for (y = 0; y < img_h; y++) {
 		for (x = 0; x < img_w; x++) {

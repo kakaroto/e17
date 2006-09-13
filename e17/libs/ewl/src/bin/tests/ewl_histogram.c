@@ -2,7 +2,7 @@
 #include "ewl_test_private.h"
 
 static int create_test(Ewl_Container *box);
-static void ewl_cb_load(Ewl_Widget *w, void *event, void *data);
+static void ewl_histogram_test_cb_configure(Ewl_Widget *w, void *event, void *data);
 
 void 
 test_info(Ewl_Test *test)
@@ -17,35 +17,65 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
+	Ewl_Widget *overlay;
+	Ewl_Widget *img;
 	Ewl_Widget *hist;
 
+	overlay = ewl_overlay_new();
+	ewl_container_child_append(EWL_CONTAINER(box), overlay);
+	ewl_object_fill_policy_set(EWL_OBJECT(overlay), EWL_FLAG_FILL_ALL);
+ 	ewl_callback_append(EWL_WIDGET(overlay), EWL_CALLBACK_CONFIGURE,
+			ewl_histogram_test_cb_configure, NULL);
+	ewl_widget_show(overlay);
+
+	img = ewl_image_new();
+	ewl_image_file_path_set(EWL_IMAGE(img),
+			PACKAGE_DATA_DIR "/images/entrance.png");
+	ewl_image_proportional_set(EWL_IMAGE(img), TRUE);
+	ewl_container_child_append(EWL_CONTAINER(overlay), img);
+	ewl_object_fill_policy_set(EWL_OBJECT(img), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(img);
+
 	hist = ewl_histogram_new();
-	ewl_histogram_color_set(EWL_HISTOGRAM(hist), 64, 64, 64, 128);
-	ewl_widget_name_set(hist, "histogram");
-	ewl_container_child_append(EWL_CONTAINER(box), hist);
-	ewl_object_fill_policy_set(EWL_OBJECT(hist), EWL_FLAG_FILL_FILL);
+	ewl_histogram_channel_set(EWL_HISTOGRAM(hist), EWL_HISTOGRAM_CHANNEL_Y);
+	ewl_histogram_image_set(EWL_HISTOGRAM(hist), EWL_IMAGE(img));
+	ewl_container_child_append(EWL_CONTAINER(overlay), hist);
+	ewl_object_fill_policy_set(EWL_OBJECT(hist), EWL_FLAG_FILL_ALL);
 	ewl_widget_show(hist);
 
-	ewl_callback_append(EWL_WIDGET(hist), EWL_CALLBACK_REALIZE, ewl_cb_load,
-			PACKAGE_DATA_DIR "/images/entrance.png");
+	hist = ewl_histogram_new();
+	ewl_histogram_channel_set(EWL_HISTOGRAM(hist), EWL_HISTOGRAM_CHANNEL_R);
+	ewl_histogram_image_set(EWL_HISTOGRAM(hist), EWL_IMAGE(img));
+	ewl_container_child_append(EWL_CONTAINER(overlay), hist);
+	ewl_object_fill_policy_set(EWL_OBJECT(hist), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(hist);
+
+	hist = ewl_histogram_new();
+	ewl_histogram_channel_set(EWL_HISTOGRAM(hist), EWL_HISTOGRAM_CHANNEL_G);
+	ewl_histogram_image_set(EWL_HISTOGRAM(hist), EWL_IMAGE(img));
+	ewl_container_child_append(EWL_CONTAINER(overlay), hist);
+	ewl_object_fill_policy_set(EWL_OBJECT(hist), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(hist);
+
+	hist = ewl_histogram_new();
+	ewl_histogram_channel_set(EWL_HISTOGRAM(hist), EWL_HISTOGRAM_CHANNEL_B);
+	ewl_histogram_image_set(EWL_HISTOGRAM(hist), EWL_IMAGE(img));
+	ewl_container_child_append(EWL_CONTAINER(overlay), hist);
+	ewl_object_fill_policy_set(EWL_OBJECT(hist), EWL_FLAG_FILL_ALL);
+	ewl_widget_show(hist);
 
 	return 1;
 }
 
 static void
-ewl_cb_load(Ewl_Widget *w, void *event, void *data)
+ewl_histogram_test_cb_configure(Ewl_Widget *w, void *event, void *data)
 {
-	Ewl_Embed *e;
-	Ewl_Widget *hist;
-	Evas_Object *img;
-	int width = 0, height = 0;
+	Ewl_Widget *child;
+	Ewl_Container *c = EWL_CONTAINER(w);
 
-	e = ewl_embed_widget_find(w);
-
-	hist = ewl_widget_name_find("histogram");
-	img = evas_object_image_add(e->evas);
-	evas_object_image_file_set(img, (const char *)data, NULL);
-	evas_object_image_size_get(img, &width, &height);
-
-	ewl_histogram_data_set(EWL_HISTOGRAM(hist), evas_object_image_data_get(img, 0), width, height);
+	ewl_container_child_iterate_begin(c);
+	while ((child = ewl_container_child_next(c))) {
+		ewl_object_place(EWL_OBJECT(child), CURRENT_X(c), CURRENT_Y(c),
+				CURRENT_W(c), CURRENT_H(c));
+	}
 }
