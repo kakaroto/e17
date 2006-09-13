@@ -11,5 +11,4 @@ libephys_la_SOURCES = \
 	e_phys_particle.c \
 	e_phys_world.c
 
-libephys__la_LDADD = @EVAS_LIBS@ @ECORE_LIBS@
-libephys_la_LIBADD = -lm
+libephys_la_LIBADD = @EVAS_LIBS@ @ECORE_LIBS@ -lm
