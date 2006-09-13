@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-09-11 15:06+0900\n"
-"PO-Revision-Date: 2006-09-11 15:17+0900\n"
+"PO-Revision-Date: 2006-09-13 16:46+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -649,11 +649,11 @@ msgstr "右"
 #
 #: src/desktops.c:2464 src/menus-misc.c:714
 msgid "Desks"
-msgstr "デスク"
+msgstr "マルチデスクトップ"
 
 #: src/desktops.c:2465
 msgid "Multiple Desktop Settings"
-msgstr "マルチデスクトップ設定"
+msgstr "マルチデスクトップの設定"
 
 #: src/desktops.c:2468
 msgid ""
@@ -698,7 +698,7 @@ msgstr "画面の端に達した時の移動抵抗値\n"
 
 #: src/desktops.c:2644
 msgid "Areas"
-msgstr ""
+msgstr "デスクトップサイズ"
 
 #: src/desktops.c:2645
 msgid "Virtual Desktop Settings"
@@ -844,13 +844,12 @@ msgid "None"
 msgstr "なし"
 
 #: src/focus.c:839
-#, fuzzy
 msgid "Focus"
-msgstr "フォーカスしない"
+msgstr "フォーカス"
 
 #: src/focus.c:840
 msgid "Focus Settings"
-msgstr "フォーカス設定"
+msgstr "フォーカスの設定"
 
 #: src/focus.c:843
 msgid ""
@@ -982,7 +981,7 @@ msgstr ""
 
 #: src/fx.c:1005
 msgid "Special FX Settings"
-msgstr "特殊効果設定"
+msgstr "特殊効果の設定"
 
 #: src/fx.c:1008
 msgid ""
@@ -1104,7 +1103,7 @@ msgstr "一緒にシェード/アイコン化/常時表示化する"
 
 #: src/groups.c:898
 msgid "Window Group Settings"
-msgstr "ウィンドウグループ設定"
+msgstr "ウィンドウグループの設定"
 
 #: src/groups.c:901
 msgid ""
@@ -1472,7 +1471,6 @@ msgstr "マウスポインタはメニューの移動に追随する"
 
 #
 #: src/menus.c:2046
-#, fuzzy
 msgid "Menus"
 msgstr "メニュー"
 
@@ -1569,9 +1567,8 @@ msgid "Glass"
 msgstr "ガラス"
 
 #: src/mod-trans.c:268
-#, fuzzy
 msgid "Transparency"
-msgstr "テーマの透明度: %2d"
+msgstr "透明化"
 
 #
 #: src/mod-trans.c:269
@@ -1697,9 +1694,8 @@ msgid "Mouse button to display pager menu:"
 msgstr "ページャメニューを表示するマウスボタン"
 
 #: src/pager.c:1956
-#, fuzzy
 msgid "Pagers"
-msgstr "ページャの設定"
+msgstr "ページャ"
 
 #: src/pager.c:1957
 msgid "Pager Settings"
@@ -1790,9 +1786,8 @@ msgstr "ログアウト時に再起動または停止できるようにする"
 
 #
 #: src/session.c:812
-#, fuzzy
 msgid "Session"
-msgstr "セッションの設定"
+msgstr "セッション"
 
 #
 #: src/session.c:813
@@ -1859,9 +1854,8 @@ msgstr "移動中もウィンドウを更新する"
 
 #
 #: src/settings.c:166
-#, fuzzy
 msgid "Move/Resize"
-msgstr "サイズ変更"
+msgstr "移動/サイズ変更"
 
 #: src/settings.c:167
 msgid "Move & Resize Settings"
@@ -1937,7 +1931,7 @@ msgstr "画面が一杯なら別のディスプレイにウィンドウを配置する"
 
 #: src/settings.c:384
 msgid "Placement"
-msgstr ""
+msgstr "ウィンドウ配置"
 
 #: src/settings.c:385
 msgid "Window Placement Settings"
@@ -1960,9 +1954,8 @@ msgid "Autoraise delay:"
 msgstr "オートレイズするまでの遅延時間"
 
 #: src/settings.c:436
-#, fuzzy
 msgid "Autoraise"
-msgstr "オートレイズするまでの遅延時間"
+msgstr "オートレイズ"
 
 #: src/settings.c:437
 msgid "Autoraise Settings"
@@ -2044,7 +2037,7 @@ msgstr "フェーディング速度"
 #: src/settings.c:604
 #, fuzzy
 msgid "Composite"
-msgstr "コンポジットを有効にする"
+msgstr "コンポジット"
 
 #: src/settings.c:608
 msgid ""
@@ -2055,9 +2048,8 @@ msgstr ""
 "設定ダイアログ\n"
 
 #: src/settings.c:695
-#, fuzzy
 msgid "Enlightenment Settings"
-msgstr "Enlightenment 起動中..."
+msgstr "Enlightenment の設定"
 
 #: src/setup.c:130
 msgid ""
@@ -2231,13 +2223,12 @@ msgstr "現在のウィンドウで設定を記憶してあるものはありません。"
 
 #
 #: src/snaps.c:1084
-#, fuzzy
 msgid "Remember"
-msgstr "記憶する..."
+msgstr "記憶"
 
 #: src/snaps.c:1085
 msgid "Remembered Windows Settings"
-msgstr "記憶されたウィンドウの設定"
+msgstr "ウィンドウの記憶内容の設定"
 
 #: src/snaps.c:1088
 msgid ""
@@ -2393,13 +2384,12 @@ msgstr "ツールチップが表示されるまでの時間\n"
 
 #
 #: src/tooltips.c:893
-#, fuzzy
 msgid "Tooltips"
 msgstr "ツールチップ"
 
 #: src/tooltips.c:894
 msgid "Tooltip Settings"
-msgstr "ツールチップ設定"
+msgstr "ツールチップの設定"
 
 #: src/tooltips.c:897
 msgid ""
@@ -2762,9 +2752,8 @@ msgid "Settings"
 msgstr "設定"
 
 #: config/strings.c:96
-#, fuzzy
 msgid "Enlightenment Settings ..."
-msgstr "Enlightenment 起動中..."
+msgstr "Enlightenment の設定..."
 
 #
 #: config/strings.c:97
