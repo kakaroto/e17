@@ -1,0 +1,5 @@
+.deps
+.libs
+Makefile
+Makefile.in
+e_phys_demo
