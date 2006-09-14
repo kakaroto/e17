@@ -65,8 +65,8 @@ ewl_progressbar_init(Ewl_Progressbar *p)
 	ewl_container_child_append(EWL_CONTAINER(p), p->bar);
 	ewl_widget_show(p->bar);
 
-	p->label = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(p->label), NULL);
+	p->label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(p->label), NULL);
 	ewl_widget_layer_priority_set(p->label, 1);
 	ewl_object_alignment_set(EWL_OBJECT(p->label), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(p), p->label);
@@ -98,7 +98,7 @@ ewl_progressbar_label_set(Ewl_Progressbar *p, char *label)
 	p->auto_label = FALSE;
 	
 	if (label)
-		ewl_text_text_set(EWL_TEXT(p->label), label);
+		ewl_label_text_set(EWL_LABEL(p->label), label);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -124,7 +124,7 @@ ewl_progressbar_custom_label_set(Ewl_Progressbar *p, char *format_string)
 
 	if (format_string) {
 		snprintf (label, PATH_MAX, format_string, r->value, r->max_val);
-		ewl_text_text_set(EWL_TEXT(p->label), label);
+		ewl_label_text_set(EWL_LABEL(p->label), label);
 	}
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -143,7 +143,7 @@ ewl_progressbar_label_hide(Ewl_Progressbar *p)
 	DCHECK_TYPE("p", p, EWL_PROGRESSBAR_TYPE);
 	
 	p->auto_label = FALSE;
-	ewl_text_text_set(EWL_TEXT(p->label), "");
+	ewl_label_text_set(EWL_LABEL(p->label), "");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -238,7 +238,7 @@ ewl_progressbar_value_changed_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 */
 		snprintf (c, sizeof (c), "%.0lf%%", (r->value / 
 					(r->max_val - r->min_val)) * 100);
-		ewl_text_text_set(EWL_TEXT(p->label), c);
+		ewl_label_text_set(EWL_LABEL(p->label), c);
 	}
 	 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
