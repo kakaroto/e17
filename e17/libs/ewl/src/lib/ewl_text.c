@@ -24,7 +24,6 @@ static char *ewl_text_context_name_get(Ewl_Text_Context *tx,
 			unsigned int context_mask, Ewl_Text_Context *tx_change);
 static Ewl_Text_Context *ewl_text_context_find(Ewl_Text_Context *tx,
 			unsigned int context_mask, Ewl_Text_Context *tx_change);
-static Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
 
 static void ewl_text_display(Ewl_Text *t);
 static void ewl_text_plaintext_parse(Evas_Object *tb, char *txt);
@@ -41,6 +40,7 @@ static Ewl_Text_Tree *ewl_text_tree_node_split(Ewl_Text *t, Ewl_Text_Tree *tree,
 static void ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree);
 
 static void ewl_text_tree_shrink(Ewl_Text_Tree *tree);
+static void ewl_tree_gather_leaves(Ewl_Text_Tree *tree, Ecore_List *list);
 static void ewl_text_format_get(Ewl_Text_Context *ctx);
 static char *ewl_text_color_string_get(int r, int g, int b, int a);
 static Evas_Textblock_Cursor *ewl_text_textblock_cursor_position(Ewl_Text *t, 
@@ -2247,6 +2247,93 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param text: The text to serialize
+ * @return Returns an array of nodes that defines the tree
+ * @brief This will return the array of nodes that make up the
+ * formatting for the tree
+ */
+Ecore_List *
+ewl_text_serialize(Ewl_Text *t)
+{
+	Ecore_List *list = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
+
+	list = ecore_list_new();
+	ewl_tree_gather_leaves(t->formatting.tree, list);
+
+	DRETURN_PTR(list, DLEVEL_STABLE);
+}
+
+/**
+ * @param text: The tree to build
+ * @param nodes: The array of nodes to use in the tree
+ * @param text: The text to set in the tree
+ * @return Returns no value
+ * @brief Builds the tree formatting from the given array of nodes
+ */
+void
+ewl_text_deserialize(Ewl_Text *t, Ecore_List *nodes, const char *text)
+{
+	Ewl_Text_Tree *node = NULL;
+	unsigned int extend = 0, byte_len = 0, byte_idx = 0;
+	unsigned int char_len = 0, char_idx = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_PARAM_PTR("nodes", nodes);
+	DCHECK_PARAM_PTR("text", text);
+
+	ewl_text_clear(t);
+
+	/* make sure we have room for the text */
+	byte_len = strlen(text);
+	extend = EWL_TEXT_EXTEND_VAL;
+	if (extend < byte_len) extend += byte_len;
+	t->text = realloc(t->text, extend * sizeof(char));
+
+	/* copy the text */
+	memcpy(t->text, text, byte_len);
+
+	ewl_text_byte_to_char(t, 0, byte_len, NULL, &char_len);
+	t->formatting.tree->length.bytes = byte_len;
+	t->formatting.tree->length.chars = char_len;
+
+	ecore_list_goto_first(nodes);
+	while ((node = ecore_list_remove_first(nodes)))
+	{
+		char_idx = 0;
+		char_len = 0;
+
+		ewl_text_byte_to_char(t, byte_idx, node->length.bytes, 
+						&char_idx, &char_len);
+
+		ewl_text_tree_context_apply(t, 
+				EWL_TEXT_CONTEXT_MASK_FONT |
+				EWL_TEXT_CONTEXT_MASK_SIZE |
+				EWL_TEXT_CONTEXT_MASK_STYLES |
+				EWL_TEXT_CONTEXT_MASK_ALIGN |
+				EWL_TEXT_CONTEXT_MASK_WRAP |
+				EWL_TEXT_CONTEXT_MASK_COLOR |
+				EWL_TEXT_CONTEXT_MASK_BG_COLOR |
+				EWL_TEXT_CONTEXT_MASK_GLOW_COLOR |
+				EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR |
+				EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR |
+				EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR |
+				EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR |
+				EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR,
+				node->tx, char_idx, char_len);
+
+		byte_idx += node->length.bytes;
+		ewl_text_tree_free(node);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /* This will determine the number of bytes to get to char_pos in the text
  * and, if needed will get the number of bytes between char_pos and 
  * char_pos + char_len */
@@ -4327,7 +4414,7 @@ ewl_text_context_dup(Ewl_Text_Context *old)
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
 
-static Ewl_Text_Context *
+Ewl_Text_Context *
 ewl_text_context_default_create(Ewl_Text *t)
 {
 	Ewl_Text_Context *tx = NULL, *tmp;
@@ -5708,6 +5795,29 @@ ewl_text_tree_node_walk(Ewl_Text *t, Ewl_Text_Tree *tree,
 			char_idx += child->length.chars;
 			byte_idx += child->length.bytes;
 		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/* gather all of the leaf nodes of the tree into an array */
+static void
+ewl_tree_gather_leaves(Ewl_Text_Tree *tree, Ecore_List *list)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_PARAM_PTR("list", list);
+
+	if (tree->tx)
+		ecore_list_append(list, tree);
+
+	else
+	{
+		Ewl_Text_Tree *child;
+
+		ecore_list_goto_first(tree->children);
+		while ((child = ecore_list_next(tree->children)))
+			ewl_tree_gather_leaves(child, list);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

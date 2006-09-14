@@ -119,7 +119,7 @@ void		 ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl,
 						Ewl_Scrollpane_Flags h);
 Ewl_Scrollpane_Flags ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl);
 
-char 		*ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path);
+const char	*ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path);
 
 char 		*ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir);
 void 		 ewl_filelist_directory_read(Ewl_Filelist *fl, 

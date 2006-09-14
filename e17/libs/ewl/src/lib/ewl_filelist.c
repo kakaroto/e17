@@ -3,9 +3,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-static Ecore_Hash *ewl_filelist_ext_icon = NULL;
-
-static int ewl_filelist_strcasecompare(const void *key1, const void *key2);
 static void ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c,
 						int add, const char *signal, 
 						int a_idx, Ewl_Widget *a, 
@@ -20,32 +17,6 @@ ewl_filelist_init(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fl", fl, FALSE);
-
-	if (!ewl_filelist_ext_icon)
-	{
-		ewl_filelist_ext_icon = ecore_hash_new(ecore_str_hash, 
-							ewl_filelist_strcasecompare);
-
-		ecore_hash_set(ewl_filelist_ext_icon, ".png", EWL_ICON_IMAGE_X_GENERIC);
-		ecore_hash_set(ewl_filelist_ext_icon, ".jpg", EWL_ICON_IMAGE_X_GENERIC);
-		ecore_hash_set(ewl_filelist_ext_icon, ".gif", EWL_ICON_IMAGE_X_GENERIC);
-
-		ecore_hash_set(ewl_filelist_ext_icon, ".wmv", EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_filelist_ext_icon, ".mpg", EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_filelist_ext_icon, ".mpeg", EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_filelist_ext_icon, ".avi", EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_filelist_ext_icon, ".mov", EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_filelist_ext_icon, ".asf", EWL_ICON_VIDEO_X_GENERIC);
-
-		ecore_hash_set(ewl_filelist_ext_icon, ".mp3", EWL_ICON_AUDIO_X_GENERIC);
-
-		ecore_hash_set(ewl_filelist_ext_icon, ".html", EWL_ICON_TEXT_HTML);
-		ecore_hash_set(ewl_filelist_ext_icon, ".htm", EWL_ICON_TEXT_HTML);
-
-		ecore_hash_set(ewl_filelist_ext_icon, ".pl", EWL_ICON_TEXT_X_SCRIPT);
-		ecore_hash_set(ewl_filelist_ext_icon, ".sh", EWL_ICON_TEXT_X_SCRIPT);
-		ecore_hash_set(ewl_filelist_ext_icon, ".ksh", EWL_ICON_TEXT_X_SCRIPT);
-	}
 
 	if (!ewl_box_init(EWL_BOX(fl)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -634,10 +605,11 @@ ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl)
 	DRETURN_INT(fl->scroll_flags.h, DLEVEL_STABLE);
 }
 
-char *
+const char *
 ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path)
 {
-	char *ret = NULL, *ptr = NULL;
+	const char *ret = NULL;
+	char *ptr = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
@@ -648,7 +620,7 @@ ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path)
 		DRETURN_PTR(EWL_ICON_FOLDER, DLEVEL_STABLE);
 
 	ptr = strrchr(path, '.');
-	ret = ecore_hash_get(ewl_filelist_ext_icon, ptr);
+	ret = ewl_io_manager_extension_icon_name_get(ptr);
 	if (ret) DRETURN_PTR(ret, DLEVEL_STABLE);
 
 	if (ecore_file_can_exec(path))
@@ -1079,23 +1051,4 @@ ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-static int
-ewl_filelist_strcasecompare(const void *key1, const void *key2)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (!key1 || !key2)
-	{
-		DRETURN_INT(ecore_direct_compare(key1, key2), DLEVEL_STABLE);
-	}
-	else if (key1 == key2)
-	{
-		DRETURN_INT(0, DLEVEL_STABLE);
-	}
-
-	DRETURN_INT(strcasecmp((const char *)key1, 
-				(const char *)key2), DLEVEL_STABLE);
-}
-
 

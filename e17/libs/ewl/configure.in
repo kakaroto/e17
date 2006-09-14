@@ -252,6 +252,7 @@ src/bin/Makefile
 src/bin/tests/Makefile
 src/lib/Makefile
 src/engines/Makefile
+src/plugins/Makefile
 src/engines/x11/Makefile
 src/engines/evas/Makefile
 src/engines/evas_software_x11/Makefile

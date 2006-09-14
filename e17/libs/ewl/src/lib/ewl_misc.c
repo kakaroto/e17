@@ -148,6 +148,12 @@ ewl_init(int *argc, char **argv)
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
+	if (!ewl_io_manager_init()) {
+		DERROR("Could not init io manager data.\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
+
 	ewl_init_parse_options(argc, argv);
 
 	/* we create the engine we will be working with here so that it is
@@ -285,6 +291,7 @@ ewl_shutdown(void)
 	ewl_engines_shutdown();
 	ewl_config_shutdown();
 	ewl_dnd_shutdown();
+	ewl_io_manager_shutdown();
 
 	/*
 	 * Free internal accounting lists.

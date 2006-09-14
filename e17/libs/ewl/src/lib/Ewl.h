@@ -282,6 +282,8 @@ extern"C" {
 #include <ewl_config.h>
 #include <ewl_theme.h>
 
+#include <ewl_io_manager.h>
+
 #include <ewl_label.h>
 #include <ewl_button.h>
 #include <ewl_floater.h>

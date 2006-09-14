@@ -242,8 +242,8 @@ ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir, char *file,
 {
 	Ewl_Filelist_Icon *list;
 	Ewl_Widget *icon;
-	char *stock, path[PATH_MAX];
-	const char *img;
+	const char *img, *stock;
+	char path[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);

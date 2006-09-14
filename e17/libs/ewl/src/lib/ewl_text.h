@@ -254,6 +254,9 @@ void 		 ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsign
 							unsigned int *b, unsigned int *a,
 							unsigned int char_idx);
 
+Ecore_List	*ewl_text_serialize(Ewl_Text *t);
+void		 ewl_text_deserialize(Ewl_Text *t, Ecore_List *nodes, const char *text);
+
 /**
  * Inherits from Ewl_Widget and extends to provide a trigger for the text
  * widget
@@ -355,6 +358,7 @@ int  ewl_text_context_init(void);
 void ewl_text_context_shutdown(void);
 
 Ewl_Text_Context *ewl_text_context_new(void);
+Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
 
 void ewl_text_context_acquire(Ewl_Text_Context *tx);
 void ewl_text_context_release(Ewl_Text_Context *tx);
