@@ -149,17 +149,26 @@ ewl_io_manager_uri_mime_type_get(const char *uri)
 	ptr = strrchr(uri, '.');
 	if (!ptr) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!strcmp(ptr, ".txt") || !strcmp(ptr, ".c") || !strcmp(ptr, ".h"))
+	if (!strcasecmp(ptr, ".txt") || !strcasecmp(ptr, ".c") 
+			|| !strcasecmp(ptr, ".h"))
 	{
 		DRETURN_PTR("text/plain", DLEVEL_STABLE);
 	}
-	else if (!strcmp(ptr, ".rtf"))
+	else if (!strcasecmp(ptr, ".rtf"))
 	{
 		DRETURN_PTR("application/rtf", DLEVEL_STABLE);
 	}
-	else if (!strcmp(ptr, ".html"))
+	else if (!strcasecmp(ptr, ".html"))
 	{
 		DRETURN_PTR("text/html", DLEVEL_STABLE);
+	}
+	else if (!strcasecmp(ptr, ".png"))
+	{
+		DRETURN_PTR("image/png", DLEVEL_STABLE);
+	}
+	else if (!strcasecmp(ptr, ".jpeg") || !strcasecmp(ptr, ".jpg"))
+	{
+		DRETURN_PTR("image/jpeg", DLEVEL_STABLE);
 	}
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);

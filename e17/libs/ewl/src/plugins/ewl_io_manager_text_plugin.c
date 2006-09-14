@@ -55,7 +55,7 @@ ewl_io_manager_plugin_uri_write(Ewl_Widget *data, const char *uri)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, FALSE);
 	DCHECK_PARAM_PTR_RET("uri", uri, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_WIDGET_TYPE, FALSE);
+	DCHECK_TYPE_RET("data", data, EWL_TEXT_TYPE, FALSE);
 
 	file = fopen(uri, "w");
 	if (file)
@@ -79,7 +79,7 @@ ewl_io_manager_plugin_string_write(Ewl_Widget *data, const char **string)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_WIDGET_TYPE, FALSE);
+	DCHECK_TYPE_RET("data", data, EWL_TEXT_TYPE, FALSE);
 
 	*string = ewl_text_text_get(EWL_TEXT(data));
 

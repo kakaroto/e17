@@ -43,8 +43,6 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(o2);
 
 	o = ewl_scrollpane_new();
-	ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(o),
-						EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
 	ewl_container_child_append(box, o);
 	ewl_widget_name_set(o, "scroll");
 	ewl_widget_show(o);
@@ -95,7 +93,7 @@ cb_open(Ewl_Widget *w, void *ev, void *data)
 	t = ewl_io_manager_uri_read(path);
 	if (!t)
 	{
-		printf("Unable to create text widget from file (%s)\n", path);
+		printf("Unable to create widget from file (%s)\n", path);
 		return;
 	}
 	ewl_container_child_append(EWL_CONTAINER(scroll), t);
