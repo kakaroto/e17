@@ -5,8 +5,10 @@
 
 #include <dlfcn.h>
 
+static Ecore_Hash *ewl_io_manager_plugins = NULL;
 static Ecore_Hash *ewl_io_manager_ext_icon_map = NULL;
 static int ewl_io_manager_strcasecompare(const void *key1, const void *key2);
+static void ewl_io_manager_cb_free_plugin(void *data);
 
 static Ewl_IO_Manager_Plugin *ewl_io_manager_plugin_get(const char *mime);
 
@@ -23,26 +25,47 @@ ewl_io_manager_init(void)
 	{
 		/* XXX this is a dumb way to do this.... */
 		ewl_io_manager_ext_icon_map = ecore_hash_new(ecore_str_hash,
-							ewl_io_manager_strcasecompare);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".png", EWL_ICON_IMAGE_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".jpg", EWL_ICON_IMAGE_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".gif", EWL_ICON_IMAGE_X_GENERIC);
+						ewl_io_manager_strcasecompare);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".png", 
+						EWL_ICON_IMAGE_X_GENERIC);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".jpg", 
+						EWL_ICON_IMAGE_X_GENERIC);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".gif", 
+						EWL_ICON_IMAGE_X_GENERIC);
 
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".wmv", EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpg", EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpeg", EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".avi", EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mov", EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".asf", EWL_ICON_VIDEO_X_GENERIC);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".wmv", 
+						EWL_ICON_VIDEO_X_GENERIC);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpg", 
+						EWL_ICON_VIDEO_X_GENERIC);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpeg", 
+						EWL_ICON_VIDEO_X_GENERIC);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".avi", 
+						EWL_ICON_VIDEO_X_GENERIC);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mov", 
+						EWL_ICON_VIDEO_X_GENERIC);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".asf", 
+						EWL_ICON_VIDEO_X_GENERIC);
 
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mp3", EWL_ICON_AUDIO_X_GENERIC);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mp3", 
+						EWL_ICON_AUDIO_X_GENERIC);
 
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".html", EWL_ICON_TEXT_HTML);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".htm", EWL_ICON_TEXT_HTML);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".html", 
+						EWL_ICON_TEXT_HTML);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".htm", 
+						EWL_ICON_TEXT_HTML);
 
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".pl", EWL_ICON_TEXT_X_SCRIPT);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".sh", EWL_ICON_TEXT_X_SCRIPT);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".ksh", EWL_ICON_TEXT_X_SCRIPT);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".pl", 
+						EWL_ICON_TEXT_X_SCRIPT);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".sh", 
+						EWL_ICON_TEXT_X_SCRIPT);
+                ecore_hash_set(ewl_io_manager_ext_icon_map, ".ksh", 
+						EWL_ICON_TEXT_X_SCRIPT);
+
+		ewl_io_manager_plugins = ecore_hash_new(ecore_str_hash, 
+							ecore_str_compare);
+		ecore_hash_set_free_key(ewl_io_manager_plugins, free);
+		ecore_hash_set_free_value(ewl_io_manager_plugins,
+						ewl_io_manager_cb_free_plugin);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -62,6 +85,12 @@ ewl_io_manager_shutdown(void)
 		ecore_hash_destroy(ewl_io_manager_ext_icon_map);
 		ewl_io_manager_ext_icon_map = NULL;
 	}	
+
+	if (ewl_io_manager_plugins)
+	{
+		ecore_hash_destroy(ewl_io_manager_plugins);
+		ewl_io_manager_plugins = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -96,7 +125,7 @@ ewl_io_manager_mime_type_icon_name_get(const char *mime)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mime", mime, NULL);
 
-	DWARNING("NOT WRITTEN");
+	DWARNING("NOT WRITTEN\n");
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
@@ -154,18 +183,46 @@ ewl_io_manager_uri_read(const char *uri)
 	mime = ewl_io_manager_uri_mime_type_get(uri);
 	if (!mime)
 	{
-		DWARNING("Unable to determine mime type for %s", uri);
+		DWARNING("Unable to determine mime type for %s\n", uri);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
 	plugin = ewl_io_manager_plugin_get(mime);
 	if (!plugin)
 	{
-		DWARNING("No plugin available to read mime type: %s.", mime);
+		DWARNING("No plugin available to read mime type: %s.\n", mime);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	ret = plugin->read(uri);
+	ret = plugin->uri_read(uri);
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @param string: The string to read
+ * @param mime: The mime type to interpret the string as
+ * @return Returns a widget representing the string in the given mime type
+ * @brief Reads the given string and interprets it as the given mime type
+ */
+Ewl_Widget *
+ewl_io_manager_string_read(const char *string, const char *mime)
+{
+	Ewl_IO_Manager_Plugin *plugin = NULL;
+	Ewl_Widget *ret = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("string", string, NULL);
+	DCHECK_PARAM_PTR_RET("mime", mime, NULL);
+
+	plugin = ewl_io_manager_plugin_get(mime);
+	if (!plugin)
+	{
+		DWARNING("No plugin available to read mime type: %s\n", mime);
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+
+	ret = plugin->string_read(string);
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
@@ -174,34 +231,67 @@ ewl_io_manager_uri_read(const char *uri)
  * @param data: The data to write
  * @param uri: The URI to write the data too
  * @param mime: The mime type to write the data out as 
- * @return Returns no value.
+ * @return Returns TRUE on success, FALSE otherwise
  * @brief Writes the given @a data out to @a uri as mime type @a mime
  */
-void
-ewl_io_manager_uri_write(Ewl_Widget *data, const char *uri, const char *mime)
+int
+ewl_io_manager_uri_write(Ewl_Widget *data, const char *uri, 
+							const char *mime)
 {
 	Ewl_IO_Manager_Plugin *plugin = NULL;
+	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_PARAM_PTR("uri", uri);
-	DCHECK_PARAM_PTR("mime", mime);
-	DCHECK_TYPE("data", data, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR_RET("data", data, FALSE);
+	DCHECK_PARAM_PTR_RET("uri", uri, FALSE);
+	DCHECK_PARAM_PTR_RET("mime", mime, FALSE);
+	DCHECK_TYPE_RET("data", data, EWL_WIDGET_TYPE, FALSE);
 
 	plugin = ewl_io_manager_plugin_get(mime);
 	if (!plugin)
 	{
-		DWARNING("No plugin available to write mime type: %s.", mime);
-		DRETURN(DLEVEL_STABLE);
+		DWARNING("No plugin available to write mime type: %s.\n", mime);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	plugin->write(data, uri);
+	ret = plugin->uri_write(data, uri);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
-static
-Ewl_IO_Manager_Plugin *ewl_io_manager_plugin_get(const char *mime)
+/**
+ * @param data: The data to write
+ * @param string: Where to write
+ * @param mime: The mime type to write as
+ * @return Returns TRUE if the write is successful, FALSE otherwise
+ * @brief Writes the given data into the given string pointer
+ */
+int
+ewl_io_manager_string_write(Ewl_Widget *data, char **string, 
+						const char *mime)
+{
+	Ewl_IO_Manager_Plugin *plugin = NULL;
+	int ret = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("data", data, FALSE);
+	DCHECK_PARAM_PTR_RET("mime", mime, FALSE);
+	DCHECK_TYPE_RET("data", data, EWL_WIDGET_TYPE, FALSE);
+
+	plugin = ewl_io_manager_plugin_get(mime);
+	if (!plugin)
+	{
+		DWARNING("No plugin available to write mime type: %s.\n", mime);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+
+	ret = plugin->string_write(data, string);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
+}
+
+static Ewl_IO_Manager_Plugin *
+ewl_io_manager_plugin_get(const char *mime)
 {
 	Ewl_IO_Manager_Plugin *plugin = NULL;
 	char file[PATH_MAX];
@@ -210,15 +300,34 @@ Ewl_IO_Manager_Plugin *ewl_io_manager_plugin_get(const char *mime)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mime", mime, NULL);
 
+	/* see if this was already cached */
+	plugin = ecore_hash_get(ewl_io_manager_plugins, mime);
+	if (plugin) 
+		DRETURN_PTR(plugin, DLEVEL_STABLE);
+
 	m = strdup(mime);
 	while ((ptr = strchr(m, '/')))
 		*ptr = '_';
 
-	snprintf(file, sizeof(file), "%s/plugins/ewl_io_manager_%s_plugin.so", PACKAGE_LIB_DIR, m);
+	snprintf(file, sizeof(file), 
+		"%s/plugins/ewl_io_manager_%s_plugin.so", PACKAGE_LIB_DIR, m);
 	FREE(m);
 
 	if (!ecore_file_exists(file))
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	{
+		m = strdup(mime);
+		plugin = NULL;
+
+		/* check for fallback plugins */
+		ptr = strrchr(m, '/');
+		if (ptr)
+		{
+			*ptr = '\0';
+			plugin = ewl_io_manager_plugin_get(m);
+		}
+		FREE(m);
+		DRETURN_PTR(plugin, DLEVEL_STABLE);
+	}
 
 	plugin = NEW(Ewl_IO_Manager_Plugin, 1);
 	plugin->handle = dlopen(file, RTLD_LAZY | RTLD_GLOBAL);
@@ -228,13 +337,24 @@ Ewl_IO_Manager_Plugin *ewl_io_manager_plugin_get(const char *mime)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	plugin->read = dlsym(plugin->handle, "ewl_io_manager_plugin_read");
-	plugin->write = dlsym(plugin->handle, "ewl_io_manager_plugin_write");
-	if (!plugin->read || !plugin->write)
+	plugin->uri_read = 
+		dlsym(plugin->handle, "ewl_io_manager_plugin_uri_read");
+	plugin->string_read = 
+		dlsym(plugin->handle, "ewl_io_manager_plugin_string_read");
+
+	plugin->uri_write = 
+		dlsym(plugin->handle, "ewl_io_manager_plugin_uri_write");
+	plugin->string_write = 
+		dlsym(plugin->handle, "ewl_io_manager_plugin_string_write");
+
+	if (!plugin->uri_read || !plugin->uri_write 
+			|| !plugin->uri_write || !plugin->string_write)
 	{
 		FREE(plugin);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
+
+	ecore_hash_set(ewl_io_manager_plugins, strdup(mime), plugin);
 
 	DRETURN_PTR(plugin, DLEVEL_STABLE);
 }
@@ -257,4 +377,25 @@ ewl_io_manager_strcasecompare(const void *key1, const void *key2)
 				(const char *)key2), DLEVEL_STABLE);
 }
 
+static void
+ewl_io_manager_cb_free_plugin(void *data)
+{
+	Ewl_IO_Manager_Plugin *plugin;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	plugin = data;
+	if (plugin->handle)
+		dlclose(plugin->handle);
+
+	plugin->handle = NULL;
+	plugin->uri_write = NULL;
+	plugin->uri_read = NULL;
+	plugin->string_read = NULL;
+	plugin->string_write = NULL;
+	FREE(plugin);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
