@@ -1528,46 +1528,59 @@ MoveTableBy(Dialog * d, DItem * di, int dx, int dy)
 	DItem              *dii;
 
 	dii = di->item.table.items[i];
+
+	if (dii->type == DITEM_TABLE)
+	  {
+	     MoveTableBy(d, dii, dx, dy);
+	     continue;
+	  }
+
 	dii->x += dx;
 	dii->y += dy;
-	if (dii->type == DITEM_TABLE)
-	   MoveTableBy(d, dii, dx, dy);
+
 	if (dii->win)
 	   EMoveWindow(dii->win, dii->x, dii->y);
-	if (dii->type == DITEM_CHECKBUTTON)
-	   EMoveWindow(dii->item.check_button.check_win, dii->x,
-		       dii->y +
-		       ((dii->h - dii->item.check_button.check_orig_h) / 2));
-	if (dii->type == DITEM_RADIOBUTTON)
-	   EMoveWindow(dii->item.radio_button.radio_win, dii->x,
-		       dii->y +
-		       ((dii->h - dii->item.radio_button.radio_orig_h) / 2));
-	if (dii->type == DITEM_SLIDER)
+
+	switch (dii->type)
 	  {
-	     if (dii->item.slider.base_win)
-		EMoveResizeWindow(dii->item.slider.base_win,
-				  dii->x + dii->item.slider.base_x,
-				  dii->y + dii->item.slider.base_y,
-				  dii->item.slider.base_w,
-				  dii->item.slider.base_h);
-	     if (dii->item.slider.knob_win)
-		EMoveResizeWindow(dii->item.slider.knob_win,
-				  dii->x + dii->item.slider.knob_x,
-				  dii->y + dii->item.slider.knob_y,
-				  dii->item.slider.knob_w,
-				  dii->item.slider.knob_h);
-	     if (dii->item.slider.border_win)
-		EMoveResizeWindow(dii->item.slider.border_win,
-				  dii->x + dii->item.slider.border_x,
-				  dii->y + dii->item.slider.border_y,
-				  dii->item.slider.border_w,
-				  dii->item.slider.border_h);
-	     if (dii->win)
-		EMoveResizeWindow(dii->win,
-				  dii->x + dii->item.slider.numeric_x,
-				  dii->y + dii->item.slider.numeric_y,
-				  dii->item.slider.numeric_w,
-				  dii->item.slider.numeric_h);
+	  case DITEM_CHECKBUTTON:
+	     EMoveWindow(dii->item.check_button.check_win, dii->x,
+			 dii->y +
+			 ((dii->h - dii->item.check_button.check_orig_h) / 2));
+	     break;
+	  case DITEM_RADIOBUTTON:
+	     EMoveWindow(dii->item.radio_button.radio_win, dii->x,
+			 dii->y +
+			 ((dii->h - dii->item.radio_button.radio_orig_h) / 2));
+	     break;
+	  case DITEM_SLIDER:
+	     {
+		if (dii->item.slider.base_win)
+		   EMoveResizeWindow(dii->item.slider.base_win,
+				     dii->x + dii->item.slider.base_x,
+				     dii->y + dii->item.slider.base_y,
+				     dii->item.slider.base_w,
+				     dii->item.slider.base_h);
+		if (dii->item.slider.knob_win)
+		   EMoveResizeWindow(dii->item.slider.knob_win,
+				     dii->x + dii->item.slider.knob_x,
+				     dii->y + dii->item.slider.knob_y,
+				     dii->item.slider.knob_w,
+				     dii->item.slider.knob_h);
+		if (dii->item.slider.border_win)
+		   EMoveResizeWindow(dii->item.slider.border_win,
+				     dii->x + dii->item.slider.border_x,
+				     dii->y + dii->item.slider.border_y,
+				     dii->item.slider.border_w,
+				     dii->item.slider.border_h);
+		if (dii->win)
+		   EMoveResizeWindow(dii->win,
+				     dii->x + dii->item.slider.numeric_x,
+				     dii->y + dii->item.slider.numeric_y,
+				     dii->item.slider.numeric_w,
+				     dii->item.slider.numeric_h);
+		break;
+	     }
 	  }
      }
 }
