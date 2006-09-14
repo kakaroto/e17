@@ -399,9 +399,12 @@ static void
 _mem_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
   Instance *inst;
+  Config_Item *ci;
 
   inst = data;
-  edje_object_signal_emit (inst->mem_obj, "label_active", "");
+  ci = _mem_config_item_get (inst->gcc->id);
+  if (!ci->always_text)
+    edje_object_signal_emit (inst->mem_obj, "label_active", "");
 }
 
 static void
