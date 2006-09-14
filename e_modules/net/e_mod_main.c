@@ -443,10 +443,13 @@ _net_update_tx (void *data, int value)
 static void
 _net_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-  Instance *inst;
-
-  inst = data;
-  edje_object_signal_emit (inst->net_obj, "label_active", "");
+   Instance *inst;
+   Config_Item *ci;
+   
+   inst = data;
+   ci = _net_config_item_get(inst->gcc->id);
+   if (!ci->always_text)
+     edje_object_signal_emit (inst->net_obj, "label_active", "");
 }
 
 static void

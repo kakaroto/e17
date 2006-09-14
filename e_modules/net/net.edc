@@ -480,16 +480,6 @@ collections
 		  target: "rx_label";
 		  target: "tx_label";
 		  target: "net_label";
-		  //after: "go_passive2";
-	       }
-	     program 
-	       {
-		  name: "go_passive2";
-		  signal: "label_passive2";
-		  source: "";
-		  action: ACTION_STOP;
-		  target: "go_active";
-		  //after: "go_passive2";
 	       }
 	     program 
 	       {
