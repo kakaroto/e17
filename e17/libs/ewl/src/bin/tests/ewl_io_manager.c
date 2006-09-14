@@ -9,6 +9,8 @@ static int mime_to_icon_name_test(char *buf, int len);
 static int uri_mime_type_get_test(char *buf, int len);
 
 static void cb_clicked(Ewl_Widget *w, void *ev, void *data);
+static void cb_open(Ewl_Widget *w, void *ev, void *data);
+static void cb_fd_delete(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Unit_Test io_manager_unit_tests[] = {
 		{"extension to icon name mapping", ext_to_icon_name_test},
@@ -31,22 +33,13 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget *o, *o2, *hbox;
-
-	hbox = ewl_hbox_new();
-	ewl_container_child_append(box, hbox);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-	ewl_widget_show(hbox);
-
-	o = ewl_entry_new();
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_widget_show(o);
+	Ewl_Widget *o, *o2;
 
 	o2 = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o2), "fetch");
-	ewl_container_child_append(EWL_CONTAINER(hbox), o2);
-	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, cb_clicked, o);
+	ewl_button_stock_type_set(EWL_BUTTON(o2), EWL_STOCK_OPEN);
+	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, cb_clicked, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(box, o2);
 	ewl_widget_show(o2);
 
 	o = ewl_scrollpane_new();
@@ -62,25 +55,51 @@ create_test(Ewl_Container *box)
 static void
 cb_clicked(Ewl_Widget *w, void *ev, void *data)
 {
-	Ewl_Widget *scroll, *t, *entry;
-	char *s;
+	Ewl_Widget *fd;
 
-	entry = data;
+	fd = ewl_filedialog_new();
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "txt", "*.txt");
+	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW, cb_fd_delete, NULL);
+	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, cb_open, NULL);
+	ewl_widget_show(fd);
+}
+
+static void
+cb_fd_delete(Ewl_Widget *w, void *ev, void *data)
+{
+	ewl_widget_destroy(w);
+}
+
+static void
+cb_open(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Dialog_Event *e;
+	Ewl_Filedialog *fd;
+	Ewl_Widget *scroll, *t;
+	char *s, path[1024];
+
+	e = ev;
+
+	if (e->response == EWL_STOCK_CANCEL)
+		return;
+
+	fd = EWL_FILEDIALOG(w);
+	s = ewl_filedialog_selected_file_get(fd);
+	snprintf(path, sizeof(path), "%s/%s", ewl_filedialog_directory_get(fd), s);
+	if (s) free(s);
+	ewl_widget_destroy(w);
 
 	scroll = ewl_widget_name_find("scroll");
 	ewl_container_reset(EWL_CONTAINER(scroll));
 
-	s = ewl_text_text_get(EWL_TEXT(entry));
-	t = ewl_io_manager_uri_read(s);
+	t = ewl_io_manager_uri_read(path);
 	if (!t)
 	{
-		printf("Unable to create text widget from file (%s)", s);
+		printf("Unable to create text widget from file (%s)\n", path);
 		return;
 	}
 	ewl_container_child_append(EWL_CONTAINER(scroll), t);
 	ewl_widget_show(t);
-
-	if (s) free(s);
 }
 
 static int
