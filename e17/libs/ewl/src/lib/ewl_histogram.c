@@ -212,10 +212,6 @@ ewl_histogram_cb_data_load(Ewl_Widget *w, void *ev __UNUSED__, void *h __UNUSED_
 	data = evas_object_image_data_get(hist->source->image, 0);
 	evas_object_image_size_get(hist->source->image, &width, &height);
 
-	hist->data = data;
-	hist->width = width;
-	hist->height = height;
-
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
 			unsigned int color;

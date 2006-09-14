@@ -44,8 +44,6 @@ struct Ewl_Histogram
 	Ewl_Image *source; /**< Source image used for data graph */
 	Ewl_Color_Set color; /**< Color for drawing the histogram */
 
-	const unsigned int *data; /**< Image data for calculating values */
-	int width, height; /**< Dimensions of the image data */
 	int graph[256]; /**< Calculated histogram points */
 	int maxv; /**< Largest data point in graph */
 	Ewl_Histogram_Channel channel; /**< Channel of data for graphing */
