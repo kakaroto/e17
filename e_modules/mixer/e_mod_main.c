@@ -2,8 +2,10 @@
 #include "e_mod_main.h"
 #include "e_mod_types.h"
 
-#ifdef HAVE_LIBASOUND
+#if defined(HAVE_ALSA)
 # include "alsa_mixer.h"
+#elif defined(HAVE_OSS)
+# include "oss_mixer.h"
 #endif
 
 /* Define to 1 for testing alsa code */
@@ -325,8 +327,8 @@ _mixer_system_init(void *data)
    sys = E_NEW(Mixer_System, 1);
    if (!sys) return;
    mixer->mix_sys = sys;
-
-   #ifdef HAVE_LIBASOUND
+   
+#if defined(HAVE_ALSA)
    sys->get_cards = alsa_get_cards;
    sys->get_card = alsa_get_card;
    sys->get_channels = alsa_card_get_channels;
@@ -338,7 +340,19 @@ _mixer_system_init(void *data)
    
    sys->get_mute = alsa_get_mute;
    sys->set_mute = alsa_set_mute;
-   #endif
+#elif defined(HAVE_OSS)
+   sys->get_cards = oss_get_cards;
+   sys->get_card = oss_get_card;
+   sys->get_channels = oss_card_get_channels; 
+   sys->get_channel = oss_card_get_channel;
+   sys->free_cards = oss_free_cards;
+   
+   sys->get_volume = oss_get_volume;
+   sys->set_volume = oss_set_volume;
+   
+   sys->get_mute = oss_get_mute;
+   sys->set_mute = oss_set_mute;   
+#endif
 }
 
 static void 
@@ -769,7 +783,7 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 
    m = mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
    if (m) return;
-   
+      
    val = ((1.0 - (e_slider_value_get(obj))) * 100);
    if ((ci->card_id != 0) && (ci->channel_id != 0)) 
      {

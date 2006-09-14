@@ -1,4 +1,6 @@
 #include <e.h>
+#include "config.h"
+#ifdef HAVE_ALSA
 #include "e_mod_types.h"
 #include "alsa_mixer.h"
 
@@ -627,3 +629,5 @@ _alsa_card_get_channel(void *data, int channel_id)
      }
    return NULL;
 }
+
+#endif
