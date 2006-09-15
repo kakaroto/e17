@@ -10,6 +10,7 @@
 #include <Ecore_File.h>
 #include <Ecore_X_Cursor.h>
 #include <Evas.h>
+#include <Edje.h>
 #include <Ecore_Evas.h>
 #include <Epsilon.h>
 #include <etk/Etk.h>
@@ -197,7 +198,7 @@ struct _Exhibit
    Etk_Widget    *zoom_out[2];
    Etk_Widget    *fit[2];
    Etk_Widget    *original[2];
-   Etk_Widget    *sort;
+   Etk_Widget    *sort_bar;
    Etk_Widget    *sizebar;
    Etk_Widget    *resbar;
    Etk_Widget    *zoombar;
@@ -284,6 +285,7 @@ struct _Ex_Config_Version
 #include "exhibit_favorites.h"
 #include "exhibit_options.h"
 #include "exhibit_comment.h"
+#include "exhibit_model_wobbly.h"
 
 extern Exhibit *e;
 

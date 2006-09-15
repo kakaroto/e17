@@ -57,8 +57,8 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_tree_multiple_select_set(ETK_TREE(tab->itree), ETK_TRUE);
    etk_signal_connect("row_selected", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_item_clicked_cb), e);
    etk_signal_connect("key_down", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_key_down_cb), e);
-   imodel = etk_tree_model_icon_text_new(ETK_TREE(tab->itree), ETK_TREE_FROM_FILE);
-   etk_tree_model_icon_text_icon_width_set(imodel, 80);
+   imodel = _ex_tree_model_wobbly_new(ETK_TREE(tab->itree), ETK_TREE_FROM_FILE);   
+   _ex_tree_model_wobbly_icon_width_set(imodel, 80);
    tab->icol = etk_tree_col_new(ETK_TREE(tab->itree), "Files", imodel, 10);
    etk_tree_headers_visible_set(ETK_TREE(tab->itree), 0);
    etk_tree_row_height_set(ETK_TREE(tab->itree), 60);
@@ -73,7 +73,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->alignment = etk_alignment_new(0.5, 0.5, 0.0, 0.0);   
    
    tab->image = etk_image_new();
-   etk_widget_theme_file_set(tab->image, PACKAGE_DATA_DIR"/images/images.edj");
+   etk_widget_theme_file_set(tab->image, PACKAGE_DATA_DIR"/gui.edj");
    etk_widget_theme_group_set(tab->image, "image_bg");
    etk_signal_connect("mouse_down", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_down), e);
    etk_signal_connect("mouse_up", ETK_OBJECT(tab->image), ETK_CALLBACK(_ex_image_mouse_up), e);

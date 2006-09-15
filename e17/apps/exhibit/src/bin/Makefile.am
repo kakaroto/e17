@@ -21,7 +21,8 @@ exhibit_slideshow.h \
 exhibit_favorites.h \
 exhibit_options.h \
 exhibit_comment.h \
-exhibit_comment_jpeg.h
+exhibit_comment_jpeg.h \
+exhibit_model_wobbly.h
 
 exhibit_SOURCES = \
 exhibit_file.c \
@@ -36,6 +37,7 @@ exhibit_favorites.c \
 exhibit_options.c \
 exhibit_comment.c \
 exhibit_comment_jpeg.c \
+exhibit_model_wobbly.c \
 $(exhibit_INCLUDES)
 
 exhibit_LDADD = @my_libs@

@@ -806,7 +806,7 @@ _ex_main_window_show(char *dir)
      }   
    
    e->zoom_in[0] = etk_button_new();
-   e->zoom_in[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "zoom_in");
+   e->zoom_in[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/gui.edj", "zoom_in");
    etk_button_image_set(ETK_BUTTON(e->zoom_in[0]), ETK_IMAGE(e->zoom_in[1]));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->zoom_in[0]), ETK_CALLBACK(_ex_tab_current_zoom_in), e);
    etk_table_attach(ETK_TABLE(e->table), e->zoom_in[0],
@@ -814,7 +814,7 @@ _ex_main_window_show(char *dir)
 		    0, 0, ETK_TABLE_NONE);
 
    e->zoom_out[0] = etk_button_new();
-   e->zoom_out[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "zoom_out");
+   e->zoom_out[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/gui.edj", "zoom_out");
    etk_button_image_set(ETK_BUTTON(e->zoom_out[0]), ETK_IMAGE(e->zoom_out[1]));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->zoom_out[0]), ETK_CALLBACK(_ex_tab_current_zoom_out), e);
    etk_table_attach(ETK_TABLE(e->table), e->zoom_out[0],
@@ -822,7 +822,7 @@ _ex_main_window_show(char *dir)
 		    0, 0, ETK_TABLE_NONE);
 
    e->fit[0] = etk_button_new();
-   e->fit[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "fit_to_window");
+   e->fit[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/gui.edj", "fit_to_window");
    etk_button_image_set(ETK_BUTTON(e->fit[0]), ETK_IMAGE(e->fit[1]));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->fit[0]), ETK_CALLBACK(_ex_tab_current_fit_to_window), e);
    etk_table_attach(ETK_TABLE(e->table), e->fit[0],
@@ -830,7 +830,7 @@ _ex_main_window_show(char *dir)
 		    0, 0, ETK_TABLE_NONE);
 
    e->original[0] = etk_button_new();
-   e->original[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/images/images.edj", "one_to_one");
+   e->original[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/gui.edj", "one_to_one");
    etk_button_image_set(ETK_BUTTON(e->original[0]), ETK_IMAGE(e->original[1]));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->original[0]), ETK_CALLBACK(_ex_tab_current_zoom_one_to_one), e);
    etk_table_attach(ETK_TABLE(e->table), e->original[0],
@@ -913,22 +913,23 @@ _ex_main_window_show(char *dir)
 	 ETK_CALLBACK(_ex_main_window_tab_toggled_cb), NULL);
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);
-   e->sort = etk_label_new("Sort by date");
+   e->sort_bar = etk_statusbar_new();
+   etk_statusbar_push(ETK_STATUSBAR(e->sort_bar), "Sort by date", 0);
+   etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->sort_bar), ETK_FALSE);
    etk_box_append(ETK_BOX(e->vbox), e->hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
-   etk_box_append(ETK_BOX(e->hbox), e->sort, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(e->hbox), e->sort_bar, ETK_BOX_START, ETK_BOX_NONE, 0);
      {
 	Etk_Widget *menu;
 	Etk_Widget *menu_item;
 
 	menu = etk_menu_new();
-	etk_signal_connect("mouse_down", ETK_OBJECT(e->sort), ETK_CALLBACK(_ex_sort_label_mouse_down_cb), menu);
+	etk_signal_connect("mouse_down", ETK_OBJECT(e->sort_bar), ETK_CALLBACK(_ex_sort_label_mouse_down_cb), menu);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by name"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by date"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by resolution"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);	
 	_ex_menu_item_new(EX_MENU_ITEM_CHECK, _("Ascending"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
-	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
      }
    
    e->statusbar[0] = etk_statusbar_new();

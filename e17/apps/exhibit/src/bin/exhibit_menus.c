@@ -77,7 +77,7 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 	     Etk_Widget *image;
 	     
 	     image = etk_image_new_from_edje(PACKAGE_DATA_DIR
-					     "/images/images.edj",
+					     "/gui.edj",
 					     ex_images[stock_id]);
 	     etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
 	  }
