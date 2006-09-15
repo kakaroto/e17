@@ -112,7 +112,6 @@ void *oss_get_card(int id)
 
    if((hw_cards = _oss_scan_devices("Installed Devices")))
      {
-	Evas_List *l;
 	int i = 0;	
 	char *real;
 	int size;
@@ -124,7 +123,7 @@ void *oss_get_card(int id)
 	     real = malloc(size);
 	     snprintf(real, size, "/dev/mixer%d", i);
 	     card = E_NEW(Mixer_Card, 1);
-	     card->name = evas_stringshare_add(l->data);
+	     card->name = evas_stringshare_add(name);
 	     card->real = evas_stringshare_add(real);
 	     card->id = id;
 	     free(real);
