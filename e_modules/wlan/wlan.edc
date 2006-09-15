@@ -251,7 +251,7 @@ collections
 			 }
 		       text 
 			 {
-			    text: "Real:";
+			    text: "Quality:";
 			    font: "VeraMono";
 			    size: 9;
 			    min: 1 1;
@@ -409,7 +409,7 @@ collections
 			 }
 		       text 
 			 {
-			    text: "Swap:";
+			    text: "Level:";
 			    font: "VeraMono";
 			    size: 9;
 			    min: 1 1;
