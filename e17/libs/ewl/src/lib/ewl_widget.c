@@ -2260,8 +2260,11 @@ ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 * Attempt to load the theme object
 		 */
 		evas_object_repeat_events_set(w->theme_object, 1);
-		edje_object_file_set(w->theme_object, w->bit_path,
-							w->bit_group);
+		if (!edje_object_file_set(w->theme_object, w->bit_path,
+								w->bit_group))
+			DWARNING("Error setting edje object %s, %s\n",
+							w->bit_path, w->bit_group);
+
 		/*
 		 * If the file failed to load, destroy the unnecessary evas
 		 * object.
