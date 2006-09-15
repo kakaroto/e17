@@ -77,9 +77,6 @@ data {
 
 	item, "/freebox/auto/padding" "5";
 
-	item, "/tree/group" "tree_background";
-	item, "/tree2/group" "tree_background";
-
 	item, "/tree_header/group" "tree_header";
 	item, "/tree_header/button/group" "tree_header_label";
 	item, "/tree_header/grabber/vertical/group" "vline";
