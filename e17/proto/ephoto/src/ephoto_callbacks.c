@@ -144,7 +144,8 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  char text[PATH_MAX];
  Ecore_List *ls;
  Ecore_List *images;
-
+ Ewl_Widget *shadow;
+ 
  ls = ecore_list_new();
  images = ecore_list_new();
  dir = ewl_widget_name_get(w);
@@ -208,9 +209,17 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   image = ecore_list_remove_first(images);
   ecore_dlist_append(current_thumbs, image);
   
+  shadow = ewl_shadow_new();
+  ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), shadow);
+  ewl_object_minimum_size_set(EWL_OBJECT(shadow), 124, 124);
+  ewl_object_maximum_size_set(EWL_OBJECT(shadow), 124, 124);
+  ewl_widget_show(shadow);
+
   m->icon = ewl_image_thumbnail_new();
   ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(m->icon), image);
-  ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), m->icon);
+  ewl_container_child_append(EWL_CONTAINER(shadow), m->icon);
+  ewl_image_size_set(EWL_IMAGE(m->icon), 100, 100);
+  ewl_theme_data_str_set(m->icon, "/image_thumbnail/group", "entry");
   ewl_widget_show(m->icon);
  }
  ecore_list_destroy(ls);
