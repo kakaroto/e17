@@ -219,7 +219,8 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(m->icon), image);
   ewl_container_child_append(EWL_CONTAINER(shadow), m->icon);
   ewl_image_size_set(EWL_IMAGE(m->icon), 100, 100);
-  ewl_theme_data_str_set(m->icon, "/image_thumbnail/group", "entry");
+  ewl_theme_data_str_set(m->icon, "/image_thumbnail/group",
+		         ewl_theme_data_str_get(m->entry, "group"));
   ewl_widget_show(m->icon);
  }
  ecore_list_destroy(ls);
