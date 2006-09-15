@@ -357,6 +357,7 @@ e_modapi_init (E_Module * m)
   E_CONFIG_VAL (D, T, type, INT);
   E_CONFIG_VAL (D, T, port, INT);
   E_CONFIG_VAL (D, T, ssl, UCHAR);
+  E_CONFIG_VAL (D, T, local, UCHAR);   
   E_CONFIG_VAL (D, T, host, STR);
   E_CONFIG_VAL (D, T, user, STR);
   E_CONFIG_VAL (D, T, pass, STR);

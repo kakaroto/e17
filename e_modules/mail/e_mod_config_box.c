@@ -8,6 +8,7 @@ struct _E_Config_Dialog_Data
   int use_exec;
   char *port;
   int ssl;
+   int local;
   char *host;
   char *user;
   char *pass;
@@ -70,6 +71,7 @@ _fill_data (Config_Box * cb, E_Config_Dialog_Data * cfdata)
       cfdata->type = 0;
       cfdata->ssl = 0;
       cfdata->use_exec = 0;
+       cfdata->local = 0;
       snprintf (buf, sizeof (buf), "110");
       cfdata->port = strdup (buf);
       return;
@@ -81,7 +83,8 @@ _fill_data (Config_Box * cb, E_Config_Dialog_Data * cfdata)
   cfdata->type = cb->type;
   cfdata->ssl = cb->ssl;
   cfdata->use_exec = cb->use_exec;
-
+   cfdata->local = cb->local;
+   
   snprintf (buf, sizeof (buf), "%d", cb->port);
   cfdata->port = strdup (buf);
 
@@ -183,8 +186,13 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   ob = e_widget_entry_add (evas, &cfdata->port);
   cfdata->port_entry = ob;
   e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
-  e_widget_list_object_append (o, of, 1, 1, 0.5);
 
+  ob = e_widget_label_add (evas, D_("Local:"));
+  e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
+  ob = e_widget_check_add (evas, "", &(cfdata->local));
+  e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 0, 0, 1, 0);   
+   e_widget_list_object_append (o, of, 1, 1, 0.5);
+   
   of = e_widget_frametable_add (evas, D_("Mailbox Settings"), 1);
   ob = e_widget_label_add (evas, D_("Name:"));
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
@@ -250,6 +258,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
       cb->type = 0;
       cb->port = 110;
       cb->ssl = 0;
+       cb->local = 0;
       is_new = 1;
     }
 
@@ -263,6 +272,8 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   cb->type = cfdata->type;
   cb->port = atoi (cfdata->port);
   cb->ssl = cfdata->ssl;
+   cb->local = cfdata->local;
+   
   cb->use_exec = cfdata->use_exec;
   if (cb->exec)
     evas_stringshare_del (cb->exec);

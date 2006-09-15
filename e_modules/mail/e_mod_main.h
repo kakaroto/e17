@@ -58,6 +58,7 @@ struct _Config_Box
 
    int type;   
    int port;
+   unsigned char local;
    unsigned char ssl;
    const char *host;
    const char *user;

@@ -14,9 +14,9 @@ static Evas_List *iservers;
 void
 _mail_imap_check_mail (void *data)
 {
-  Ecore_Con_Type type = ECORE_CON_REMOTE_SYSTEM;
-  Evas_List *l, *j;
-  ImapClient *ic;
+   Ecore_Con_Type type;
+   Evas_List *l, *j;
+   ImapClient *ic;
 
   for (l = iservers; l; l = l->next)
     {
@@ -44,7 +44,12 @@ _mail_imap_check_mail (void *data)
 	      ic = j->data;
 	      if (!ic->server->server)
 		{
-		  if (ecore_con_ssl_available_get () && (ic->config->ssl))
+		   if (ic->config->local)
+		     type = ECORE_CON_LOCAL_SYSTEM;
+		   else
+		     type = ECORE_CON_REMOTE_SYSTEM;
+		     
+		   if (ecore_con_ssl_available_get () && (ic->config->ssl))
 		    type |= ECORE_CON_USE_SSL;
 		  ic->server->state = IMAP_STATE_DISCONNECTED;
 		  ic->server->server =
