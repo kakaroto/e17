@@ -1832,8 +1832,8 @@ _DlgFillPagers(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Live Update"));
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 2);
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_mode);
 #endif
+   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_pager_mode);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
