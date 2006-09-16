@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Etk;
 
 my $b = Etk::ScrolledView->new();
@@ -19,11 +19,7 @@ $r->IncrementsSet(0.1, 0.4);
 my ($s, $p) = $r->IncrementsGet();
 ok( $s == 0.1 && $p == 0.4, "Increments Set/Get");
 
-SKIP: {
-	skip 1, "huh?";
 $r->PageSizeSet(0.3);
 is($r->PageSizeGet(), 0.3, "PageSize Set/Get");
-
-}
 
 
