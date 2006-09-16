@@ -233,6 +233,7 @@ _mixer_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Config_Item *ci;
    Mixer *mixer;
    int vol;
+   int dir = 0;
    int step = 4;
    double val;
 
@@ -245,8 +246,9 @@ _mixer_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
    if (!ci) return;
 
+   dir = -ev->z;
    vol = mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
-   val = ((double)vol + ev->z * step);
+   val = ((double)vol + dir * step);
    _mixer_simple_volume_change(mixer, ci, val);
 }
 
