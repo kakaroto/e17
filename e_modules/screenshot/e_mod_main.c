@@ -603,7 +603,6 @@ _get_filename (Config_Item * ci)
 	    snprintf (buff, sizeof (buff), "%s%i.png", ext, c);;
 	}
     }
-   printf("\n\nFilename: %s\n\n", buff);
   return strdup (buff);
 }
 
