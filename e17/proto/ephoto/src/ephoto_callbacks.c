@@ -51,7 +51,8 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
   ewl_image_file_set(EWL_IMAGE(image), image_path, EWL_ICON_IMAGE_X_GENERIC);
   ewl_container_child_append(EWL_CONTAINER(hbox), image);
   ewl_widget_show(image);
-										  text = ewl_text_new();
+  
+  text = ewl_text_new();
   ewl_text_text_set(EWL_TEXT(text), album);
   ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
   ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
@@ -145,6 +146,7 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  Ecore_List *ls;
  Ecore_List *images;
  Ewl_Widget *shadow;
+ Ewl_Widget *icon;
  
  ls = ecore_list_new();
  images = ecore_list_new();
@@ -215,13 +217,13 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   ewl_object_maximum_size_set(EWL_OBJECT(shadow), 124, 124);
   ewl_widget_show(shadow);
 
-  m->icon = ewl_image_thumbnail_new();
-  ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(m->icon), image);
-  ewl_container_child_append(EWL_CONTAINER(shadow), m->icon);
-  ewl_image_size_set(EWL_IMAGE(m->icon), 100, 100);
-  ewl_theme_data_str_set(m->icon, "/image_thumbnail/group",
+  icon = ewl_image_thumbnail_new();
+  ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(icon), image);
+  ewl_container_child_append(EWL_CONTAINER(shadow), icon);
+  ewl_image_size_set(EWL_IMAGE(icon), 100, 100);
+  ewl_theme_data_str_set(icon, "/image_thumbnail/group",
 		         ewl_theme_data_str_get(m->entry, "group"));
-  ewl_widget_show(m->icon);
+  ewl_widget_show(icon);
  }
  ecore_list_destroy(ls);
  ecore_list_destroy(images);

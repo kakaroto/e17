@@ -1,4 +1,5 @@
 #include "ephoto.h"
+
 Main *m;
 char *current_directory;
 Ecore_List *current_thumbs;
@@ -7,14 +8,16 @@ int
 main(int argc, char **argv)
 {
  const char *icon_theme_path;
+ Ewl_Widget *vbox, *hbox, *border, *menubar, *menu, *menu_item;
+ Ewl_Widget *hseparator, *vseparator, *image, *text;
  
- m = NULL;
  if (!ewl_init(&argc, argv))
  {
   printf("Unable to init ewl\n");
   return 1;
  }
 
+ m = NULL;
  current_thumbs = ecore_dlist_new();
  current_directory = strdup(getenv("HOME"));
  m = calloc(1, sizeof(Main));
@@ -26,162 +29,169 @@ main(int argc, char **argv)
  ewl_callback_append(m->win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
  ewl_widget_show(m->win);
 
- m->vbox = ewl_vbox_new();
- ewl_box_spacing_set(EWL_BOX(m->vbox), 1);
- ewl_container_child_append(EWL_CONTAINER(m->win), m->vbox);
- ewl_object_fill_policy_set(EWL_OBJECT(m->vbox), EWL_FLAG_FILL_ALL);
- ewl_widget_show(m->vbox);
+ vbox = ewl_vbox_new();
+ ewl_box_spacing_set(EWL_BOX(vbox), 1);
+ ewl_container_child_append(EWL_CONTAINER(m->win), vbox);
+ ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(vbox);
 
- m->menubar = ewl_hmenubar_new();
- ewl_container_child_append(EWL_CONTAINER(m->vbox), m->menubar);
- ewl_object_fill_policy_set(EWL_OBJECT(m->menubar), EWL_FLAG_FILL_HFILL);
- ewl_widget_show(m->menubar);
+ menubar = ewl_hmenubar_new();
+ ewl_container_child_append(EWL_CONTAINER(vbox), menubar);
+ ewl_object_fill_policy_set(EWL_OBJECT(menubar), EWL_FLAG_FILL_HFILL);
+ ewl_widget_show(menubar);
 
- m->menu = ewl_menu_new();
- ewl_button_label_set(EWL_BUTTON(m->menu), "File");
- ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
- ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
- ewl_widget_show(m->menu);
+ menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(menu), "File");
+ ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(menu);
 
- m->menu_item = ewl_menu_item_new();
- ewl_button_stock_type_set(EWL_BUTTON(m->menu_item), EWL_STOCK_QUIT);
- ewl_object_alignment_set(EWL_OBJECT(m->menu_item), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
- ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
- ewl_object_fill_policy_set(EWL_OBJECT(m->menu_item), EWL_FLAG_FILL_ALL);
- ewl_widget_show(m->menu_item);
+ menu_item = ewl_menu_item_new();
+ ewl_button_stock_type_set(EWL_BUTTON(menu_item), EWL_STOCK_QUIT);
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
 
- m->menu = ewl_menu_new();
- ewl_button_label_set(EWL_BUTTON(m->menu), "Albums");
- ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
- ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
- ewl_widget_show(m->menu);
+ menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(menu), "Albums");
+ ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(menu);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Add Album");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
  
- m->menu = ewl_menu_new();
- ewl_button_label_set(EWL_BUTTON(m->menu), "Slideshow");
- ewl_container_child_append(EWL_CONTAINER(m->menubar), m->menu);
- ewl_object_fill_policy_set(EWL_OBJECT(m->menu), EWL_FLAG_FILL_NONE);
- ewl_widget_show(m->menu);
+ menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(menu), "Slideshow");
+ ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(menu);
 
- m->menu_item = ewl_menu_item_new();
- ewl_button_image_set(EWL_BUTTON(m->menu_item), 
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item), 
 		      ewl_icon_theme_icon_path_get(EWL_ICON_PREFERENCES_SYSTEM, 
 		      EWL_ICON_SIZE_MEDIUM), EWL_ICON_PREFERENCES_SYSTEM);
- ewl_button_label_set(EWL_BUTTON(m->menu_item), "Configure Slideshow");
- ewl_object_alignment_set(EWL_OBJECT(m->menu_item), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
- ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, create_slideshow_config, NULL);
- ewl_object_fill_policy_set(EWL_OBJECT(m->menu_item), EWL_FLAG_FILL_ALL);
- ewl_widget_show(m->menu_item);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Configure Slideshow");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, create_slideshow_config, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
        
  
- m->menu_item = ewl_menu_item_new();
- ewl_button_image_set(EWL_BUTTON(m->menu_item), 
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item), 
 		      ewl_icon_theme_icon_path_get(EWL_ICON_X_OFFICE_PRESENTATION, 
 		      				   EWL_ICON_SIZE_MEDIUM), 
 		      EWL_ICON_X_OFFICE_PRESENTATION);
- ewl_button_label_set(EWL_BUTTON(m->menu_item), "Start Slideshow");
- ewl_object_alignment_set(EWL_OBJECT(m->menu_item), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->menu), m->menu_item);
- ewl_callback_append(m->menu_item, EWL_CALLBACK_CLICKED, start_slideshow, NULL);
- ewl_object_fill_policy_set(EWL_OBJECT(m->menu_item), EWL_FLAG_FILL_ALL);
- ewl_widget_show(m->menu_item);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Start Slideshow");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, start_slideshow, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
  
- m->hseparator = ewl_hseparator_new();
- ewl_object_alignment_set(EWL_OBJECT(m->hseparator), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->vbox), m->hseparator);
- ewl_object_fill_policy_set(EWL_OBJECT(m->hseparator), EWL_FLAG_FILL_ALL);
- ewl_widget_show(m->hseparator);
+ hseparator = ewl_hseparator_new();
+ ewl_object_alignment_set(EWL_OBJECT(hseparator), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), hseparator);
+ ewl_object_fill_policy_set(EWL_OBJECT(hseparator), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(hseparator);
  
- m->hbox = ewl_hbox_new();
- ewl_box_spacing_set(EWL_BOX(m->hbox), 5);
- ewl_container_child_append(EWL_CONTAINER(m->vbox), m->hbox);
- ewl_object_fill_policy_set(EWL_OBJECT(m->hbox), EWL_FLAG_FILL_HFILL |
+ hbox = ewl_hbox_new();
+ ewl_box_spacing_set(EWL_BOX(hbox), 5);
+ ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+ ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL |
 		 				 EWL_FLAG_FILL_VSHRINK);
- ewl_widget_show(m->hbox);
+ ewl_widget_show(hbox);
 
- m->image = ewl_image_new();
- ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
+ image = ewl_image_new();
+ ewl_container_child_append(EWL_CONTAINER(hbox), image);
  icon_theme_path = ewl_icon_theme_icon_path_get(EWL_ICON_GO_UP, 
 		 				EWL_ICON_SIZE_MEDIUM);
- ewl_image_file_set(EWL_IMAGE(m->image), icon_theme_path, EWL_ICON_GO_UP);
- ewl_callback_append(m->image, EWL_CALLBACK_CLICKED, go_up, NULL);
- ewl_widget_show(m->image);
+ ewl_image_file_set(EWL_IMAGE(image), icon_theme_path, EWL_ICON_GO_UP);
+ ewl_callback_append(image, EWL_CALLBACK_CLICKED, go_up, NULL);
+ ewl_widget_show(image);
 
- m->image = ewl_image_new();
- ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
+ image = ewl_image_new();
+ ewl_container_child_append(EWL_CONTAINER(hbox), image);
  icon_theme_path = ewl_icon_theme_icon_path_get(EWL_ICON_GO_HOME,
                                                 EWL_ICON_SIZE_MEDIUM);
- ewl_image_file_set(EWL_IMAGE(m->image), icon_theme_path, EWL_ICON_GO_HOME);
- ewl_callback_append(m->image, EWL_CALLBACK_CLICKED, go_home, NULL);
- ewl_widget_show(m->image);
+ ewl_image_file_set(EWL_IMAGE(image), icon_theme_path, EWL_ICON_GO_HOME);
+ ewl_callback_append(image, EWL_CALLBACK_CLICKED, go_home, NULL);
+ ewl_widget_show(image);
 
- m->image = ewl_image_new();
- ewl_container_child_append(EWL_CONTAINER(m->hbox), m->image);
+ image = ewl_image_new();
+ ewl_container_child_append(EWL_CONTAINER(hbox), image);
  icon_theme_path = ewl_icon_theme_icon_path_get(EWL_ICON_EMBLEM_FAVORITE,
                                                 EWL_ICON_SIZE_MEDIUM);
- ewl_image_file_set(EWL_IMAGE(m->image), icon_theme_path, 
+ ewl_image_file_set(EWL_IMAGE(image), icon_theme_path, 
 		 				EWL_ICON_EMBLEM_FAVORITE);
- ewl_widget_show(m->image);
+ ewl_widget_show(image);
       
- m->text = ewl_text_new();
- ewl_text_text_set(EWL_TEXT(m->text), "  Location:");
- ewl_object_alignment_set(EWL_OBJECT(m->text), EWL_FLAG_ALIGN_CENTER);
- ewl_object_maximum_size_set(EWL_OBJECT(m->text), 66, 15);
- ewl_container_child_append(EWL_CONTAINER(m->hbox), m->text);
- ewl_widget_show(m->text);
+ text = ewl_text_new();
+ ewl_text_text_set(EWL_TEXT(text), "  Location:");
+ ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+ ewl_object_maximum_size_set(EWL_OBJECT(text), 66, 15);
+ ewl_container_child_append(EWL_CONTAINER(hbox), text);
+ ewl_widget_show(text);
 
  m->entry = ewl_entry_new();
  ewl_text_text_set(EWL_TEXT(m->entry), current_directory);
- ewl_container_child_append(EWL_CONTAINER(m->hbox), m->entry);
+ ewl_container_child_append(EWL_CONTAINER(hbox), m->entry);
  ewl_callback_append(m->entry, EWL_CALLBACK_VALUE_CHANGED, entry_change, NULL);
  ewl_widget_show(m->entry);
  
- m->hseparator = ewl_hseparator_new();
- ewl_object_alignment_set(EWL_OBJECT(m->hseparator), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->vbox), m->hseparator);
- ewl_object_fill_policy_set(EWL_OBJECT(m->hseparator), EWL_FLAG_FILL_ALL);
- ewl_widget_show(m->hseparator);
+ hseparator = ewl_hseparator_new();
+ ewl_object_alignment_set(EWL_OBJECT(hseparator), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), hseparator);
+ ewl_object_fill_policy_set(EWL_OBJECT(hseparator), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(hseparator);
  
- m->hpaned = ewl_hbox_new();
- ewl_object_alignment_set(EWL_OBJECT(m->hpaned), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->vbox), m->hpaned);
- ewl_object_fill_policy_set(EWL_OBJECT(m->hpaned), EWL_FLAG_FILL_ALL);
- ewl_widget_show(m->hpaned);
+ hbox = ewl_hbox_new();
+ ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+ ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(hbox);
 
- m->groups = ewl_vbox_new();
- ewl_container_child_append(EWL_CONTAINER(m->hpaned), m->groups);
- ewl_object_fill_policy_set(EWL_OBJECT(m->groups), EWL_FLAG_FILL_ALL);
- ewl_object_size_request(EWL_OBJECT(m->groups), 220, 250);
- ewl_object_maximum_size_set(EWL_OBJECT(m->groups), 195, 999999);
- ewl_widget_show(m->groups);
+ vbox = ewl_vbox_new();
+ ewl_container_child_append(EWL_CONTAINER(hbox), vbox);
+ ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+ ewl_object_size_request(EWL_OBJECT(vbox), 220, 250);
+ ewl_object_maximum_size_set(EWL_OBJECT(vbox), 195, 999999);
+ ewl_widget_show(vbox);
 
  m->browser = ewl_tree_new(1);
- ewl_container_child_append(EWL_CONTAINER(m->groups), m->browser);
+ ewl_container_child_append(EWL_CONTAINER(vbox), m->browser);
  ewl_object_fill_policy_set(EWL_OBJECT(m->browser), EWL_FLAG_FILL_ALL);
  ewl_tree_headers_visible_set(EWL_TREE(m->browser), 0);
  ewl_tree_expandable_rows_set(EWL_TREE(m->browser), FALSE);
  ewl_tree_mode_set(EWL_TREE(m->browser), EWL_TREE_MODE_SINGLE);
- ewl_object_size_request(EWL_OBJECT(m->groups), 220, 250);
+ ewl_object_size_request(EWL_OBJECT(m->browser), 220, 250);
  ewl_widget_show(m->browser);
 
- m->hseparator = ewl_hseparator_new();
- ewl_object_alignment_set(EWL_OBJECT(m->hseparator), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->groups), m->hseparator);
- ewl_object_fill_policy_set(EWL_OBJECT(m->hseparator), EWL_FLAG_FILL_ALL);
- ewl_widget_show(m->hseparator);
+ hseparator = ewl_hseparator_new();
+ ewl_object_alignment_set(EWL_OBJECT(hseparator), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), hseparator);
+ ewl_object_fill_policy_set(EWL_OBJECT(hseparator), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(hseparator);
 
- m->albums_border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(m->albums_border), "Albums");
- ewl_border_label_alignment_set(EWL_BORDER(m->albums_border), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(m->groups), m->albums_border);
- ewl_object_alignment_set(EWL_OBJECT(m->albums_border), EWL_FLAG_ALIGN_CENTER);
- ewl_object_fill_policy_set(EWL_OBJECT(m->albums_border), EWL_FLAG_FILL_ALL);
- ewl_object_size_request(EWL_OBJECT(m->albums_border), 220, 250);
- ewl_widget_show(m->albums_border);
+ border = ewl_border_new();
+ ewl_border_text_set(EWL_BORDER(border), "Albums");
+ ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), border);
+ ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
+ ewl_object_fill_policy_set(EWL_OBJECT(border), EWL_FLAG_FILL_ALL);
+ ewl_object_size_request(EWL_OBJECT(border), 220, 250);
+ ewl_widget_show(border);
 
  m->albums = ewl_tree_new(1);
- ewl_container_child_append(EWL_CONTAINER(m->albums_border), m->albums);
+ ewl_container_child_append(EWL_CONTAINER(border), m->albums);
  ewl_object_fill_policy_set(EWL_OBJECT(m->albums), EWL_FLAG_FILL_ALL);
  ewl_tree_headers_visible_set(EWL_TREE(m->albums), 0);
  ewl_tree_expandable_rows_set(EWL_TREE(m->albums), FALSE);
@@ -189,12 +199,12 @@ main(int argc, char **argv)
  ewl_object_size_request(EWL_OBJECT(m->albums), 220, 250);
  ewl_widget_show(m->albums);
  
- m->vsep = ewl_vseparator_new();
- ewl_container_child_append(EWL_CONTAINER(m->hpaned), m->vsep);
- ewl_widget_show(m->vsep);
+ vseparator = ewl_vseparator_new();
+ ewl_container_child_append(EWL_CONTAINER(hbox), vseparator);
+ ewl_widget_show(vseparator);
  
  m->viewer = ewl_scrollpane_new();
- ewl_container_child_append(EWL_CONTAINER(m->hpaned), m->viewer);
+ ewl_container_child_append(EWL_CONTAINER(hbox), m->viewer);
  ewl_object_fill_policy_set(EWL_OBJECT(m->viewer), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->viewer);
 
