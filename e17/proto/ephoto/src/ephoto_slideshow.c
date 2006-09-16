@@ -17,6 +17,7 @@ struct _Slide_Config
  Ewl_Widget *hentry;
  Ewl_Widget *zoom_image;
  Ewl_Widget *aspect_image;
+ Ewl_Widget *image;
  int full_size;
  int custom_size;
  int length;
@@ -38,19 +39,36 @@ void destroy_slideshow(Ewl_Widget *w, void *event, void *data)
 int change_picture(void *data)
 {
  char *image_path;
- Ewl_Widget *w;
+ Slide_Config *sc;
  
- w = data;
+ sc = data;
  ecore_dlist_next(current_thumbs);
  image_path = ecore_dlist_current(current_thumbs);
  if(image_path)
  {
-  ewl_image_file_set(EWL_IMAGE(w), image_path, NULL);
+  ewl_image_file_set(EWL_IMAGE(sc->image), image_path, NULL);
  }
- else 
+ else
  {
-  ecore_timer_del(timer);
-  ewl_widget_destroy(w->parent->parent);
+  if (sc->loop_slide)
+  {
+   ecore_list_goto_first(current_thumbs);
+   image_path = ecore_dlist_current(current_thumbs);
+   if(image_path)
+   {
+    ewl_image_file_set(EWL_IMAGE(sc->image), image_path, NULL);
+   }
+   else
+   {
+    ecore_timer_del(time);
+    ewl_widget_destroy(sc->image->parent->parent);
+   }
+  }
+  else 
+  {
+   ecore_timer_del(timer);
+   ewl_widget_destroy(sc->image->parent->parent);
+  }
  }
 }
  
@@ -101,7 +119,8 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(cell), image);
  ewl_widget_show(image);
 
- timer = ecore_timer_add(4, change_picture, image);
+ sc->image = image;
+ timer = ecore_timer_add(4, change_picture, sc);
 }
 
 Slide_Config *parse_slideshow_config()
