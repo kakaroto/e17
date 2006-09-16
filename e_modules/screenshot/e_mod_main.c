@@ -565,16 +565,23 @@ _get_filename (Config_Item * ci)
       e_config_save_queue ();
     }
 
-  if ((!ci->filename) || (ci->filename == NULL))
+   t = time (NULL);
+   loctime = localtime (&t);
+
+   if ((!ci->filename) || (ci->filename == NULL))
     {
-      t = time (NULL);
-      loctime = localtime (&t);
       strftime (buff, sizeof (buff), "%Y-%m-%d-%H%M%S", loctime);
       snprintf (buff, sizeof (buff), "%s.png", strdup (buff));
     }
   else
     {
-      if (ecore_file_is_dir (ci->location))
+       if (strstr(ci->filename, "%")) 
+	 {
+	    strftime(buff, sizeof(buff), ci->filename, loctime);
+	    if (!strrchr (ci->filename, '.'))
+	      snprintf (buff, sizeof (buff), "%s.png", strdup(buff));
+	 }
+      else if (ecore_file_is_dir (ci->location))
 	{
 	  ext = ecore_file_strip_ext (ci->filename);
 	  fl = ecore_file_ls (ci->location);
@@ -596,6 +603,7 @@ _get_filename (Config_Item * ci)
 	    snprintf (buff, sizeof (buff), "%s%i.png", ext, c);;
 	}
     }
+   printf("\n\nFilename: %s\n\n", buff);
   return strdup (buff);
 }
 
