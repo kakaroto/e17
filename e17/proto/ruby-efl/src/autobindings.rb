@@ -112,18 +112,20 @@ class Autobindings
         #~ puts "--------------------------------"
         tree = parser.parse(@data)
                         
-        @enums   = {}
-        @types   = []
-        @synon   = {}
-        @decls   = []
-        @structs = []
-        @protos  = {}
+        @enums      = {}
+        @types      = []
+        @decls      = []
+        @structs    = []
+        @protos     = {}
+        @synon      = {}
+        @all_synon  = {}
         
         tree.entities.each { |e|
             if !(C::Declaration === e)
                 puts "Skipping #{e.class.to_s}" if @debug
                 next
             end
+
             if e.typedef?
                 # check if this a typedef defining a pointer to function, which we will use for callbacks
                 fp = FunctionPtr.parse(e)
@@ -132,18 +134,18 @@ class Autobindings
                 else
                     name = e.type.to_s
                     name << e.declarators[0].indirect_type.to_s if C::Pointer === e.declarators[0].indirect_type
-                    @synon[name] = e.declarators[0].name
+                    @all_synon[name] = e.declarators[0].name
                 end 
             end
             
             # -- ENUMERATION
             if C::Enum === e.type then
-                
-                if e.type.name.nil?
+                                
+                if e.type.name.nil? # and !e.typedef? <<< todo: work more on this, see comment below too
                     puts "Skipping anonymous enum" if @debug
                     next
                 end
-                
+
                 next if e.type.members.nil? # the enum was already defined, this is just the typedef. todo: refactor into the typedef case
 
                 @types << 'enum ' + e.type.name
@@ -151,6 +153,7 @@ class Autobindings
                 en = (@enums[e.type.name] = {})
 
                 e.type.members.each { |mem|
+                    
                     if mem.val.nil? then 
                         en[mem.name] = lv.to_i
                         lv += 1
@@ -174,38 +177,39 @@ class Autobindings
                     end
                 }
         
-                # -- STRUCTURE (todo: not yet implemented)
-                elsif C::Struct === e.type then
-                    @types << 'struct ' + e.type.name
-                    @structs << [e.type.name, []]
-                    # st = (@structs[e.type.name] = [])
-                    # e.type.members.each { |mem|
-                    #	#todo: nested structures, initializers, etc
-                    #	st << [mem.declarators[0].name, mem.declarators[0].type.to_s]
-                    #}
-        
-                # -- FUNCTION DECLARATION
-                elsif e.declarators.length > 0 && C::Function === e.declarators[0].type
-                    functype = e.declarators[0].indirect_type
-                    decl = {}
-                    decl[:name] = e.declarators[0].name
-                    decl[:varargs] = e.declarators[0].type.var_args?
-                    decl[:full] = e.type.to_s + FunctionPtr.pointers(functype.type)
-                    decl[:full] << ' ' << decl[:name] << ' ('
-                    
-                    functype.params.each_with_index { |p,i|
+            # -- STRUCTURE (todo: not yet implemented)
+            elsif C::Struct === e.type then
+                @types << 'struct ' + e.type.name
+                @structs << [e.type.name, []]
+                @synon[e.type.to_s] = @all_synon[e.type.to_s]
+                # st = (@structs[e.type.name] = [])
+                # e.type.members.each { |mem|
+                #	#todo: nested structures, initializers, etc
+                #	st << [mem.declarators[0].name, mem.declarators[0].type.to_s]
+                #}
+    
+            # -- FUNCTION DECLARATION
+            elsif e.declarators.length > 0 && C::Function === e.declarators[0].type
+                functype = e.declarators[0].indirect_type
+                decl = {}
+                decl[:name] = e.declarators[0].name
+                decl[:varargs] = e.declarators[0].type.var_args?
+                decl[:full] = e.type.to_s + FunctionPtr.pointers(functype.type)
+                decl[:full] << ' ' << decl[:name] << ' ('
+                
+                functype.params.each_with_index { |p,i|
 
-                        if (C::CustomType === p.type && p.type.name == 'va_list') then
-                            decl[:varargs] = true 
-                            next # we leave this last va_args param out since it's a placeholder for the actual varargs params anyway
-                        end
-            
-                        decl[:full] << ((i != 0) ? ', ' : '')
-                                            
-                        if C::Pointer === p.type && 
-                           (C::Int === p.type.direct_type || C::Float === p.type.direct_type) then
-                           decl[:full] << p.type.direct_type.to_s << ' ref'
-                        else
+                    if (C::CustomType === p.type && p.type.name == 'va_list') then
+                        decl[:varargs] = true 
+                        next # we leave this last va_args param out since it's a placeholder for the actual varargs params anyway
+                    end
+        
+                    decl[:full] << ((i != 0) ? ', ' : '')
+                                        
+                    if C::Pointer === p.type && 
+                       (C::Int === p.type.direct_type || C::Float === p.type.direct_type) then
+                       decl[:full] << p.type.direct_type.to_s << ' ref'
+                    else
                         fp = FunctionPtr.parse(p)
                         if fp.nil? then decl[:full] << p.type.to_s
                         else
@@ -224,6 +228,8 @@ class Autobindings
                 decl[:full] << ")"
                 #breakpoint if functype.params.length > 0 unless functype.params.nil?
                 @decls << decl
+            else
+                @synon[e.type.to_s] = @all_synon[e.type.to_s]
             end
         }
         
@@ -329,6 +335,11 @@ class Autobindings
             "\ttypealias '#{typ}', '#{talias}'" 
         }
 
+        internal_aliases = ""
+        @synon.each { |name, typ| 
+            internal_aliases << "\ttypealias '#{typ}', '#{name}'\n" 
+        }
+
         prototypes = ''
         @protos.each { |name, decl| 
             prototypes << "\tprototype '#{decl}'\n" unless ignored?(name)
@@ -395,6 +406,12 @@ class Autobindings
                 handmade << IO.read(@handmade) 
         end
 
+        libname = @config[:library_name]
+        libname = "lib#{@config[:module_base_name].downcase}" if libname.nil?
+        
+        basename = @config[:root_call_prefix]
+        basename = @config[:module_base_name].downcase if basename.nil?
+
         dl = <<-END_DL_CODE
 #-------------------------------------------------------
 # This piece of wrapper code was automatically generated
@@ -405,8 +422,8 @@ require File.dirname(File.expand_path(__FILE__)) + '/../dl_auto.rb'
 
 module Lib#{@config[:module_base_name]}
 	extend DL::Importable
-	dlload 'lib#{@config[:module_base_name].downcase}.so'
-	BASE_NAME = '#{@config[:module_base_name].downcase}'
+	dlload '#{libname}.so'
+	BASE_NAME = '#{basename}'
 
     # Type aliases (from external types)
     #
@@ -419,6 +436,10 @@ module Lib#{@config[:module_base_name]}
     # Type aliases (from structures)
     #
 #{struct_aliases}
+
+    # Type aliases (internal from the headers)
+    #
+#{internal_aliases}
 
     # Function declarations
     #
@@ -460,8 +481,8 @@ END_DL_CODE
         o = ''
         o += title "#{@types.length} Types:" + @types.join(" | ") + "\n"
                         
-        o += title "#{@synon.length} Type aliases:"
-        @synon.each { |syn,syn_to|
+        o += title "#{@all_synon.length} Type aliases:"
+        @all_synon.each { |syn,syn_to|
             o += "#{syn} => #{syn_to}\n"
         }
         o += "\n"
@@ -517,7 +538,6 @@ END_DL_CODE
             cfg = IO::read(config_file);
             cfg = eval(cfg);
             @config = cfg
-
             puts "Preprocessing the headers"
             run_preprocessor
             puts "Parsing the C code"
