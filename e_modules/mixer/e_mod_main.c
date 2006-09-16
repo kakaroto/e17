@@ -21,10 +21,13 @@ static char            *_gc_label    (void);
 static Evas_Object     *_gc_icon     (Evas * evas);
 
 /* Module Protos */
+static void         _mixer_simple_volume_change(Mixer *mixer, Config_Item *ci, double val);
+static void         _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val);
 static Config_Item *_mixer_config_item_get   (void *data, const char *id);
 static void         _mixer_menu_cb_post      (void *data, E_Menu *m);
 static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
 static void         _mixer_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void         _mixer_cb_mouse_wheel    (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
 static void         _mixer_system_init       (void *data);
 static void         _mixer_system_shutdown   (void *data);
@@ -115,6 +118,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    evas_object_event_callback_add(mixer->base, EVAS_CALLBACK_MOUSE_DOWN, 
 				  _mixer_cb_mouse_down, inst);
+   evas_object_event_callback_add(mixer->base, EVAS_CALLBACK_MOUSE_WHEEL, 
+				  _mixer_cb_mouse_wheel, inst->mixer);
+   evas_object_propagate_events_set(mixer->base, 0);
    
    mixer_config->instances = evas_list_append(mixer_config->instances, inst);
    return gcc;
@@ -218,6 +224,30 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	     _mixer_window_simple_pop_up(inst);
 	  }
      }
+}
+
+static void 
+_mixer_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Event_Mouse_Wheel *ev;
+   Config_Item *ci;
+   Mixer *mixer;
+   int vol;
+   int step = 4;
+   double val;
+
+   ev = event_info;
+   if (!(mixer = data)) return;
+   if (!mixer) return;
+   if (!mixer->mix_sys) return;
+   if (!mixer->mix_sys->get_volume) return;
+
+   ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
+   if (!ci) return;
+
+   vol = mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+   val = ((double)vol + ev->z * step);
+   _mixer_simple_volume_change(mixer, ci, val);
 }
 
 static void
@@ -471,6 +501,48 @@ e_modapi_about(E_Module *m)
    e_module_dialog_show(m, _("Mixer"), 
 			_("Mixer module lets you change volume."));
    return 1;
+}
+
+/* Changes the volume for the main channel*/
+static void 
+_mixer_simple_volume_change(Mixer *mixer, Config_Item *ci, double val)
+{
+   if (!mixer) return;
+   if (!ci) return;
+
+   _mixer_volume_change(mixer, ci, ci->channel_id, val);
+}
+
+/* Changes the volume of the given channel*/
+static void 
+_mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val)
+{
+   int               m;
+   
+   if (!mixer) return;
+   if (!mixer->mix_sys) return;
+   if (!mixer->mix_sys->get_mute) return;
+   if (!mixer->mix_sys->set_volume) return;
+   if (!ci) return;
+
+   m = mixer->mix_sys->get_mute(ci->card_id, channel_id);
+   if (m) return;
+      
+   if ((ci->card_id != 0) && (channel_id != 0)) 
+     {
+	int ret;
+	
+	ret = mixer->mix_sys->set_volume(ci->card_id, channel_id, val);
+	if (ret)
+	  {
+	     if (val < 33)
+	       edje_object_signal_emit(mixer->base, "low", "");
+	     else if ((val >= 34) && (val < 66))
+	       edje_object_signal_emit(mixer->base, "medium", "");
+	     else if (val > 66)
+	       edje_object_signal_emit(mixer->base, "high", ""); 
+	  }
+     }
 }
 
 /* Makes the simple window containing the slider pop up */
@@ -781,25 +853,8 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
    if (!ci) return;
 
-   m = mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
-   if (m) return;
-      
    val = ((1.0 - (e_slider_value_get(obj))) * 100);
-   if ((ci->card_id != 0) && (ci->channel_id != 0)) 
-     {
-	int ret;
-	
-	ret = mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, val);
-	if (ret)
-	  {
-	     if (val < 33)
-	       edje_object_signal_emit(mixer->base, "low", "");
-	     else if ((val >= 34) && (val < 66))
-	       edje_object_signal_emit(mixer->base, "medium", "");
-	     else if (val > 66)
-	       edje_object_signal_emit(mixer->base, "high", ""); 
-	  }
-     }
+   _mixer_simple_volume_change(mixer, ci, val);
 }
 
 /* Called when the "mute" checkbox is toggled */
