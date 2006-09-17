@@ -3,11 +3,11 @@ Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0), autotools-dev, libecore0-dev, libewl0-dev, libimlib2-dev, libpng12-dev, libevfs0-dev, libetk0-dev, libetk0-dev
-Standards-Version: 3.6.2
+Standards-Version: 3.7.2
 
 Package: entropy
 Architecture: any
-Depends: ${shlibs:Depends}, libevfs0, libetk0 | libewl0, libecore0, libimlib2, libpng12-0, libevfs0-plugin-posix, evfs0-bin
+Depends: ${shlibs:Depends}, libevfs0, libetk0 | libewl0, libecore0, libimlib2, libpng12-0, libevfs0-plugin-file-posix, evfs0-bin
 Suggests: libevfs0-plugins-all
 Description: Entropy is a file manager based on the EFL
  Entropy is a file manager based on the EFL and using evfs.
