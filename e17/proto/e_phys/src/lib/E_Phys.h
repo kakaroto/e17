@@ -14,6 +14,8 @@ typedef struct _E_Phys_Force E_Phys_Force;
 typedef struct _E_Phys_Force_Gravity E_Phys_Force_Gravity;
 typedef struct _E_Phys_Force_Spring E_Phys_Force_Spring;
 typedef struct _E_Phys_Force_Collision E_Phys_Force_Collision;
+typedef struct _E_Phys_Force_Uniform E_Phys_Force_Constant;
+typedef struct _E_Phys_Force_Uniform E_Phys_Force_Uniform;
 typedef struct _E_Phys_Constraint_Boundary E_Phys_Constraint_Boundary;
 typedef struct _E_Phys_Constraint_Stick E_Phys_Constraint_Stick;
 typedef struct _E_Phys_Constraint_Anchor E_Phys_Constraint_Anchor;
@@ -47,6 +49,8 @@ E_Phys_Force_Spring    *e_phys_force_spring_add(E_Phys_World *world,
 E_Phys_Force_Spring    *e_phys_force_modified_spring_add(E_Phys_World *world,
                           E_Phys_Particle *p1, E_Phys_Particle *p2, int k, int len);
 E_Phys_Force_Gravity   *e_phys_force_gravity_add(E_Phys_World *world, float g);
+E_Phys_Force_Constant  *e_phys_force_constant_add(E_Phys_World *world, E_Phys_Vector force, int is_acceleration);
+E_Phys_Force_Uniform   *e_phys_force_uniform_add(E_Phys_World *world, E_Phys_Vector (*force_func) (float t), int is_acceleration);
 
 
 void e_phys_constraint_init(E_Phys_Constraint *con, E_Phys_World *world,
@@ -115,6 +119,13 @@ struct _E_Phys_Force_Gravity {
   float g;
 };
 
+struct _E_Phys_Force_Uniform {
+  E_Phys_Force force;
+  E_Phys_Vector const_force;
+  E_Phys_Vector (*force_func) (float t);
+  int is_acceleration;
+};
+
 struct _E_Phys_Constraint_Boundary {
   E_Phys_Constraint con;
   float e; // elasticity (0 fully inelastic -> 1 fully elastic)
@@ -143,6 +154,8 @@ struct _E_Phys_World
   Evas_List *constraints;
 
   Ecore_Timer *timer;
+
+  float time;
 
   float dt;
   int constraint_iter;

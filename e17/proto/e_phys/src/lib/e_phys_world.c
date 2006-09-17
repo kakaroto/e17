@@ -47,7 +47,12 @@ e_phys_world_timer(void *data)
   E_Phys_World *world;
   int i;
 
+  // XXX right now, each timeslice is world->dt apart. it would probably
+  // be better to get the current clock time and figure out how far (real time)
+  // actually elapsed between slices. (then if a slice takes longer than dt to
+  // calc, the frame rate will drop, the physical motion will remain 'at speed'
   world = data;
+  world->time += world->dt;
   e_phys_world_accumulate_forces(world);
   e_phys_world_verlet_integrate(world);
   for (i = 0; i < world->constraint_iter; i++)

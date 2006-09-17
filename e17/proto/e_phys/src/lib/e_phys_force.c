@@ -5,7 +5,22 @@ static void e_phys_force_collision_helper(E_Phys_Particle *p1,
 static void e_phys_force_collision_apply(E_Phys_Force *force);
 static void e_phys_force_gravity_apply(E_Phys_Force *force);
 static void e_phys_force_spring_apply(E_Phys_Force *force);
+static void e_phys_force_uniform_apply(E_Phys_Force *force);
 
+/**
+ * Initialize an E_Phys_Force struct
+ *
+ * All forces should inherit from E_Phys_Force, and then call this function
+ * to set up the common parameters
+ *
+ * @param force - The force to initialize
+ * @param world - The world the force lives in
+ * @param apply_func - A function that applies the force
+ * @param free_func - A function to free the force struct. If NULL is passed,
+ *                    a generic free function will be used. This is sufficient
+ *                    if there are no allocated fields in the inheriting
+ *                    structure.
+ */
 void
 e_phys_force_init(E_Phys_Force *force, E_Phys_World *world, void (*apply_func) (E_Phys_Force *force), void (*free_func) (E_Phys_Force *force))
 {
@@ -20,12 +35,29 @@ e_phys_force_init(E_Phys_Force *force, E_Phys_World *world, void (*apply_func) (
     force->free = e_phys_force_free;
 }
 
+/**
+ * Free an E_Phys_Force struct
+ */
 void
 e_phys_force_free(E_Phys_Force *force)
 {
   if (force) free(force);
 }
 
+/**
+ * Add particle-particle collisions to the world.
+ * This will cause any particles with size set to bounce off of eachother when
+ * they attempt to occupy the same space.
+ *
+ * A few qualifications (possible fixmes):
+ *  - Assumes rectangular particles with no friction on the colliding faces
+ *  - Only checks for collision at end of timeslice. Quick moving particles can
+ *    pass over each other.
+ *  - It is possible, after all forces are applied for particles to end up
+ *    overlapping.
+ *   
+ * @param world
+ */
 E_Phys_Force_Collision *
 e_phys_force_collision_add(E_Phys_World *world)
 {
@@ -94,10 +126,7 @@ e_phys_force_collision_helper(E_Phys_Particle *p1, E_Phys_Particle *p2, int axis
   p2->prev.y = p2->cur.y - v2.y;
 }
 
-/**
- * Apply collisions between particles
- * XXX honor elasticity param (coll->e)
- */
+/* XXX honor elasticity parameter */
 static void
 e_phys_force_collision_apply(E_Phys_Force *force)
 {
@@ -145,6 +174,16 @@ e_phys_force_collision_apply(E_Phys_Force *force)
   }
 }
 
+/**
+ * Add particle-particle gravity to a world with gravitational constant g.
+ * 
+ * Applies F=-g*m1*m2/r^2 to all pairs of particles in the supplied world.
+ * Here m1 and m2 are the masses of the two particles, and r is the distance
+ * separating them.
+ * 
+ * @param world
+ * @param g - Gravitational constant
+ */
 E_Phys_Force_Gravity *
 e_phys_force_gravity_add(E_Phys_World *world, float g)
 {
@@ -199,7 +238,12 @@ e_phys_force_gravity_apply(E_Phys_Force *force)
 }
 
 /**
- * Add a spring between two particles <p1> and <p2> with spring constant <k>.
+ * Add a spring between two particles <p1> and <p2> with spring constant <k> 
+ * and natural length <len>.
+ *
+ * F = k * (len - r)
+ * positive F directed away from the center point of the particles
+ * negative F is directed towards
  */
 E_Phys_Force_Spring *
 e_phys_force_spring_add(E_Phys_World *world, E_Phys_Particle *p1, E_Phys_Particle *p2, int k, int len)
@@ -214,6 +258,12 @@ e_phys_force_spring_add(E_Phys_World *world, E_Phys_Particle *p1, E_Phys_Particl
   return f;
 }
 
+/**
+ * Add a modified spring force between two particles.
+ *
+ * F = (k * (len - r)) / r
+ * e.g. 1/r * the standard spring force
+ */
 E_Phys_Force_Spring *
 e_phys_force_modified_spring_add(E_Phys_World *world, E_Phys_Particle *p1, E_Phys_Particle *p2, int k, int len)
 {
@@ -259,4 +309,70 @@ e_phys_force_spring_apply(E_Phys_Force *force)
   sp->p1->force.y += f.y;
   sp->p2->force.x -= f.x;
   sp->p2->force.y -= f.y;
+}
+
+/**
+ * Add a constant force or acceleration to all particles in the given world
+ *
+ * @param force - A vector specifying the force
+ * @param is_accel - If 1, treat 'force' as an acceleration instead of a force
+ */
+E_Phys_Force_Constant *
+e_phys_force_constant_add(E_Phys_World *world, E_Phys_Vector force, int is_acceleration) 
+{
+  E_Phys_Force_Constant *f = malloc(sizeof(E_Phys_Force_Uniform));
+  e_phys_force_init(E_PHYS_FORCE(f), world, e_phys_force_uniform_apply, NULL);
+  f->const_force = force;
+  f->force_func = NULL;
+  f->is_acceleration = is_acceleration;
+}
+
+
+/**
+ * Add a uniform (but time dependant) force or acceleration to all particles in 
+ * the given world
+ *
+ * @param force_func - A function of time returning the current force 
+ * @param is_accel - If 1, treat the return value of force_func as an
+ *                   acceleration instead of a force
+ */
+E_Phys_Force_Uniform *
+e_phys_force_uniform_add(E_Phys_World *world, E_Phys_Vector (*force_func) (float t), int is_acceleration)
+{
+  E_Phys_Force_Uniform *f = malloc(sizeof(E_Phys_Force_Uniform));
+  e_phys_force_init(E_PHYS_FORCE(f), world, e_phys_force_uniform_apply, NULL);
+  f->force_func = force_func;
+  f->is_acceleration = is_acceleration;
+}
+
+static void
+e_phys_force_uniform_apply(E_Phys_Force *force)
+{
+  E_Phys_Force_Uniform *uni = (E_Phys_Force_Uniform *)force;
+  E_Phys_Vector f;
+
+  Evas_List *l;
+
+  if (!force || !force->world) return;
+
+  if (uni->force_func)
+    f = uni->force_func(force->world->time);
+  else
+    f = uni->const_force;
+
+  for (l = force->world->particles; l; l = l->next)
+  {
+    E_Phys_Particle *p;
+    p = l->data;
+    if (uni->is_acceleration)
+    {
+      p->force.x += f.x * p->m;
+      p->force.y += f.y * p->m;
+    }
+    else
+    {
+      p->force.x += f.x;
+      p->force.y += f.y;
+    }
+  }
 }

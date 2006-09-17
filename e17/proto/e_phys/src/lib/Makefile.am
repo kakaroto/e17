@@ -1,6 +1,7 @@
 INCLUDES =  \
 @EVAS_CFLAGS@ \
-@ECORE_CFLAGS@
+@ECORE_CFLAGS@ \
+-g -Werror
 
 lib_LTLIBRARIES = libephys.la
 

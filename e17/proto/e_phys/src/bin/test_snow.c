@@ -1,17 +1,7 @@
 #include "demo.h"
 
 static void      snow_test_constraint_wrap_around_apply(E_Phys_Constraint *con);
-
-int
-cb_wind_timer(void *data)
-{
-  E_Phys_Particle *wind = data;
-
-  wind->m = rand_range_f(-1e14, 1e14);
-
-  //printf("snow time, mass: %f\n", wind->m);
-  return 1;
-}
+static E_Phys_Vector snow_test_wind(float time);
 
 void
 init_snow_test(E_Phys_World *world)
@@ -19,23 +9,33 @@ init_snow_test(E_Phys_World *world)
   E_Phys_Constraint_Boundary *bound;
   E_Phys_Particle *p, *c, *w;
   Constraint_Wrap *cw;
+  E_Phys_Vector g;
 
   int i, num = 300;
 
-  c = e_phys_particle_add(world, 1e13, world->w / 2, 1e5, 0, 0);
-  e_phys_particle_size_set(c, 0, 0);
+  int padding = 10;
+  
+  g.x = 0;
+  g.y = 1;
 
-  w = e_phys_particle_add(world, 1, 1e5, world->h / 2, 0, 0);
   for (i = 0; i < num; i++)
   {
-    p = e_phys_particle_add(world, rand_range_f(3.0, 6.0), rand_range(-10, world->w + 10), rand_range(-10, 610), rand_range_f(-0.1, 0.1), rand_range_f(0.0, 0.1));
+    E_Phys_Vector pos, v0;
+
+    pos.x = rand_range(-1 * padding, world->w + padding);
+    pos.y = rand_range(-1 * padding, world->h + padding);
+
+    v0.x = 0;
+    v0.y = sqrt(2 * g.y * pos.y) * world->dt;
+
+    p = e_phys_particle_add(world, rand_range(3, 5), pos.x, pos.y, v0.x, v0.y);
     e_phys_particle_size_set(p, p->m, p->m);
   }
 
-  e_phys_force_gravity_add(world, .001);
+
   cw = snow_test_constraint_wrap_around_add(world, 10);
-  snow_test_constraint_wrap_around_exclude(cw, c);
-  snow_test_constraint_wrap_around_exclude(cw, w);
+  e_phys_force_constant_add(world, g, 1);
+  e_phys_force_uniform_add(world, snow_test_wind, 0);
 
   printf("init snow\n");
 }
@@ -92,12 +92,23 @@ snow_test_constraint_wrap_around_apply(E_Phys_Constraint *con)
     }
 
     /* when flakes fall off the bottom, start them over at the top */
-    if (p->cur.y > world->h + cw->margin)
+    if (p->cur.y > world->h)
     {
-      float vy;
-      vy = p->cur.y - p->prev.y;
-      p->cur.y = -1 * cw->margin + (p->cur.y - (world->h + cw->margin));
-      p->prev.y = p->cur.y; // - vy;
+      p->cur.x = rand_range(-1 * cw->margin, world->w + cw->margin);
+      p->cur.y = -1 * cw->margin;
+      p->prev.x = p->cur.x; 
+      p->prev.y = p->cur.y; 
     }
   }
+}
+
+static E_Phys_Vector
+snow_test_wind(float time)
+{
+  E_Phys_Vector f;
+
+
+  f.x = rand_range(-50, 50);
+  f.y = 0;
+  return f;
 }

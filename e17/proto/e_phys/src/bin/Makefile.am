@@ -2,7 +2,8 @@ MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I$(top_srcdir)/src/lib \
 @EVAS_CFLAGS@ \
-@ECORE_CFLAGS@ 
+@ECORE_CFLAGS@ \
+-g -Werror
 
 bin_PROGRAMS = e_phys_demo 
 
