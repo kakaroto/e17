@@ -1,3 +1,7 @@
+FIXME: for the icon .edj, start bouncing between the two states on "show"/"load" signals.
+
+FIXME: emu clients can be left runnnig on E shutdown.
+
 FIXME: Once in a blue moon, the menus don't show up.
 
 Add internal actions, same things that can be bound to keys can be 
