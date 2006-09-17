@@ -496,7 +496,11 @@ evfs_file_create(evfs_filereference * file)
    file->fd_p =
       smb_context->open(smb_context, dir_path, O_CREAT | O_TRUNC | O_RDWR,
                         S_IRUSR | S_IWUSR);
-   return 0;
+   if (file->fd_p) {
+	   file->fd = smb_fd_get_next(file->fd_p);
+	   return file->fd;
+   } else
+	   return 0;
 }
 
 int
