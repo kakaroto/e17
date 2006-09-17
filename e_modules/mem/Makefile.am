@@ -11,7 +11,8 @@ EDJE_FLAGS = -v \
 filesdir = $(datadir)
 
 files_DATA = module_icon.png \
-			module.eap \
+			module.desktop \
+			module.edj \
 			mem.edj
 
 EXTRA_DIST= e_modules-mem.spec \
@@ -74,7 +75,7 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/mem.edj
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf *.edj *~
+	 rm -rf mem.edj *~
 uninstall:
 	rm -rf $(datadir)
 

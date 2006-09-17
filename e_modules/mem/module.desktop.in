@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Mem
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=mem,gadget
+Icon=./module.edj

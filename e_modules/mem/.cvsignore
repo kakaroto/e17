@@ -21,4 +21,5 @@ stamp-h1
 *.la
 *.spec
 *.tar.gz
-*.edj
+mem.edj
+module.desktop
