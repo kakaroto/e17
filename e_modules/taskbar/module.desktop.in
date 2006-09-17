@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=Taskbar
+Exec=enlightenment
+X-Enlightenment-IconClass=taskbar,gadget
+Icon=./module.edj

@@ -159,6 +159,7 @@ AC_SUBST(e_modules)
 
 AC_OUTPUT([
 Makefile
+module.desktop
 data/Makefile
 data/themes/Makefile
 po/Makefile

@@ -4,7 +4,7 @@ SUBDIRS = data po
 
 # data files for the module
 filesdir = $(datadir)
-files_DATA = module.eap
+files_DATA = module.desktop module.edj
 
 EXTRA_DIST = $(files_DATA)
 
