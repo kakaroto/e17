@@ -9,7 +9,8 @@ EDJE_FLAGS = -v \
 
 filesdir = $(datadir)
 files_DATA = module_icon.png \
-	     module.eap \
+	     module.desktop \
+	     module.edj \
 	     tclock.edj
 
 EXTRA_DIST = $(files_DATA) \
@@ -38,6 +39,6 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/tclock.edj
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf *.edj *~
+	 rm -rf tclock.edj *~
 uninstall:
 	rm -rf $(datadir)

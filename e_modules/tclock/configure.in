@@ -97,6 +97,7 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 Makefile
 e_modules-tclock.spec
+module.desktop
 po/Makefile
 ],[
 ])

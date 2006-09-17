@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=TClock
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=tclock,gadget
+Icon=./module.edj
