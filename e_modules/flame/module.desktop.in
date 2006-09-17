@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Flame
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=flame,gadget
+Icon=./module.edj
