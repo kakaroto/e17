@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Deskshow
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=deskshow,gadget
+Icon=./module.edj
