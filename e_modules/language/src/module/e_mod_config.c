@@ -99,7 +99,7 @@ _lang_configure_language_module(Config *conf)
    v->advanced.apply_cfdata   = _apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
-   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(language_config->module));
+   snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(language_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     D_("Language Module Settings"), "Language", "_e_modules_language_config_dialog", buf, 0, v, conf);
    conf->config_dialog = cfd;

@@ -170,6 +170,7 @@ AC_CHECK_HEADERS(X11/extensions/XKBrules.h,, AC_MSG_ERROR([Cannot find XKBrules.
 AC_OUTPUT([
 e_modules-language.spec
 Makefile
+module.desktop
 src/Makefile
 src/module/Makefile
 data/Makefile

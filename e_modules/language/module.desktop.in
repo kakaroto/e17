@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Language
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=language,gadget
+Icon=./module.edj
