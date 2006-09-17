@@ -4,7 +4,7 @@ Makefile
 Makefile.in
 *.lo
 *.la
-*.edj
+winselector.edj
 aclocal.m4
 autom4te.cache
 config.guess
@@ -21,3 +21,4 @@ libtool
 missing
 ltmain.sh
 stamp-h1
+module.desktop
