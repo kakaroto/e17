@@ -1,5 +1,4 @@
 Makefile
 Makefile.in
 *.edj
-module.eap
-
+module.desktop

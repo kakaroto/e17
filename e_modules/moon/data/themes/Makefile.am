@@ -12,7 +12,8 @@ EDJE_FLAGS = \
 # data files for the module
 filesdir = $(moduledir)/$(PACKAGE)
 files_DATA = \
-module.eap \
+module.desktop \
+module.edj \
 moon.edj
 
 EXTRA_DIST = \
@@ -24,17 +25,11 @@ moon.edj: Makefile $(EXTRA_DIST)
 	 $(top_srcdir)/data/themes/moon.edc \
 	 moon.edj
 
-module.eap: Makefile $(EXTRA_DIST)
+module.edj: Makefile $(EXTRA_DIST)
 	 $(EDJE_CC) $(EDJE_FLAGS) \
 	 $(top_srcdir)/data/themes/icon.edc \
-	 module.eap
-	 enlightenment_eapp module.eap \
-	 -set-name "Moon" \
-	 -set-generic "gadget" \
-	 -set-comment "Moon phase module for e17" \
-	 -set-exe "null" \
-	 -set-icon-class "null"
+	 module.edj
 
 clean-local:
-	 rm -rf *.edj; rm -rf *.eap
+	 rm -rf *.edj; rm -rf *.desktop
 
