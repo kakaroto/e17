@@ -137,7 +137,7 @@ _gc_icon(Evas *evas)
 
    if (!cpu_conf->module) return NULL;
    
-   snprintf(buf, sizeof(buf), "%s/module.eap", 
+   snprintf(buf, sizeof(buf), "%s/module.edj", 
 	    e_module_dir_get(cpu_conf->module));
    
    o = edje_object_add(evas);

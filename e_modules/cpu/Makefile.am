@@ -7,14 +7,16 @@ EDJE_FLAGS = -v \
 
 files_DATA = \
 module_icon.png \
-module.eap \
+module.desktop \
+module.edj \
 cpu.edj
 
 EXTRA_DIST = $(files_DATA) \
 cpu.edc \
 VeraMono.ttf \
 cpu.png \
-module.eap
+module.desktop \
+module.edj
 
 # data files for the module
 filesdir = $(datadir)
@@ -38,7 +40,7 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf *.edj *~
+	 rm -rf cpu.edj *~
 uninstall:
 	rm -rf $(datadir)
 
