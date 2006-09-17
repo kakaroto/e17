@@ -187,7 +187,7 @@ _gc_icon (Evas * evas)
   char buf[4096];
 
   o = edje_object_add (evas);
-  snprintf (buf, sizeof (buf), "%s/module.eap",
+  snprintf (buf, sizeof (buf), "%s/module.edj",
 	    e_module_dir_get (mail_config->module));
   edje_object_file_set (o, buf, "icon");
   return o;
@@ -220,7 +220,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 	{
 	  E_Menu_Item *mm;
 
-	  snprintf (buf, sizeof (buf), "%s/module.eap",
+	  snprintf (buf, sizeof (buf), "%s/module.edj",
 		    e_module_dir_get (mail_config->module));
 	  mm = e_menu_item_new (mn);
 	  e_menu_item_label_set (mm, D_("Mailboxes"));

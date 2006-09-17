@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Mail
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=mail,gadget
+Icon=./module.edj
