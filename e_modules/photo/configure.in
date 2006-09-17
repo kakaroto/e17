@@ -153,6 +153,7 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 e_modules-photo.spec
 Makefile
+module.desktop
 data/Makefile
 data/images/Makefile
 data/theme/Makefile

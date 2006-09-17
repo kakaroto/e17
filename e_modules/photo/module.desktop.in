@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Photo
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=photo,gadget
+Icon=./module.edj

@@ -202,7 +202,7 @@ _gc_icon(Evas *evas)
    char buf[4096];
    
    o = edje_object_add(evas);
-   snprintf(buf, sizeof(buf), "%s/module.eap",
+   snprintf(buf, sizeof(buf), "%s/module.edj",
 	    e_module_dir_get(photo->module));
    edje_object_file_set(o, buf, "icon");
    return o;

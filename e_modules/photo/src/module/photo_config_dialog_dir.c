@@ -33,7 +33,7 @@ int  photo_config_dialog_dir_show(Picture_Local_Dir *dir)
    v->basic.apply_cfdata = _basic_apply_data;
    v->basic.create_widgets = _basic_create_widgets;
    
-   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(photo->module));
+   snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(photo->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     _("Photo Directory Configuration"), "Photo", "_e_modules_photo_dir_config_dialog", buf, 0, v, dir);
 
