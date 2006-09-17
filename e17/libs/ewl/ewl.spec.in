@@ -32,6 +32,14 @@ Requires: evas-devel edje-devel emotion-devel
 %description devel
 EWL development files
 
+%package plugins
+Summary: EWL plugins libraries.
+Group: User Interface/X
+Requires: %{name} = %{version}
+
+%description plugins
+Plugins for EWL
+
 %prep
 %setup -q
 
@@ -75,4 +83,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_bindir}/ewl_embed_test
 %{_bindir}/ewl_simple_test
 
+%files plugins
+%{_libdir}/ewl/plugins/*
 %changelog
