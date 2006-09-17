@@ -3,5 +3,5 @@ Name=Bling
 Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
-X-Enlightenment-IconClass=bling.gadget
+X-Enlightenment-IconClass=bling,gadget
 Icon=./module.edj
