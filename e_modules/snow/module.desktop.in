@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Snow
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=snow,gadget
+Icon=./module.edj
