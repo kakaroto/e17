@@ -154,6 +154,7 @@ AC_OUTPUT([
 Makefile
 po/Makefile
 e_modules-eveil.spec
+module.desktop
 ],[
 ])
 

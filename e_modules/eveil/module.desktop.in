@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Eveil
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=eveil,gadget
+Icon=./module.edj

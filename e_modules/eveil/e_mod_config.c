@@ -70,7 +70,7 @@ void eveil_config_module(void)
    v->advanced.apply_cfdata = _advanced_apply_data;
    v->advanced.create_widgets = _advanced_create_widgets;
 
-   snprintf(buf, sizeof(buf), "%s/module.eap", e_module_dir_get(eveil_config->module));
+   snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(eveil_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     D_("Eveil Configuration"), "Eveil", "_e_modules_eveil_config_dialog", buf, 0, v, NULL);
    eveil_config->config_dialog = cfd;

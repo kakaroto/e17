@@ -8,7 +8,7 @@ EDJE_FLAGS = -v \
 -fd $(top_srcdir)/fonts
 
 filesdir = $(datadir)
-files_DATA = module.eap \
+files_DATA = module.edj module.desktop\
 			$(wildcard eveil.ed?) \
 			$(wildcard fonts/*.ttf) \
 			$(wildcard images/*.png)
@@ -38,5 +38,5 @@ eveil.edj: Makefile eveil.edc
 	   $(top_builddir)/eveil.edj
 	   
 clean-local:
-	    rm -rf *.edj *~
+	    rm -rf eveil.edj *~
 	    
