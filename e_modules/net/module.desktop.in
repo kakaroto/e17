@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Net
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=net,gadget
+Icon=./module.edj
