@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Wlan
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=wlan,gadget
+Icon=./module.edj

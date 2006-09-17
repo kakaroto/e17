@@ -38,7 +38,7 @@ _config_wlan_module (Config_Item * ci)
   v->basic.apply_cfdata = _basic_apply_data;
   v->basic.create_widgets = _basic_create_widgets;
 
-  snprintf (buf, sizeof (buf), "%s/module.eap",
+  snprintf (buf, sizeof (buf), "%s/module.edj",
 	    e_module_dir_get (wlan_config->module));
   con = e_container_current_get (e_manager_current_get ());
   cfd = e_config_dialog_new (con, D_ ("Wlan Configuration"), "Wlan", "_e_modules_wlan_config_dialog", buf, 0, v, ci);
