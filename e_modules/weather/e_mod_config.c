@@ -33,7 +33,7 @@ _config_weather_module (Config_Item * ci)
   v->basic.create_widgets = _basic_create_widgets;
   v->override_auto_apply = 1;
 
-  snprintf (buf, sizeof (buf), "%s/module.eap",
+  snprintf (buf, sizeof (buf), "%s/module.edj",
 	    e_module_dir_get (weather_config->module));
   con = e_container_current_get (e_manager_current_get ());
   cfd =
