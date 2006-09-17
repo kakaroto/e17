@@ -64,7 +64,7 @@ _config_screenshot_module (Config_Item * ci)
   v->advanced.apply_cfdata = _advanced_apply_data;
   v->advanced.create_widgets = _advanced_create_widgets;
 
-  snprintf (buf, sizeof (buf), "%s/module.eap",
+  snprintf (buf, sizeof (buf), "%s/module.edj",
 	    e_module_dir_get (ss_config->module));
   /* create config diaolg */
   con = e_container_current_get (e_manager_current_get ());
