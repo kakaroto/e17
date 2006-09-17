@@ -16,3 +16,4 @@ mkinstalldirs
 *.la
 *.lo
 *.tar.gz
+module.desktop

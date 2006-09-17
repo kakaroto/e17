@@ -4,7 +4,8 @@ MAINTAINERCLEANFILES = Makefile.in
 filesdir = $(datadir)
 files_DATA = \
 module_icon.png \
-module.eap
+module.desktop \
+module.edj
 
 EXTRA_DIST = $(files_DATA)
 
