@@ -152,6 +152,7 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 Makefile
 e_modules-uptime.spec
+module.desktop
 po/Makefile
 ],[
 ])

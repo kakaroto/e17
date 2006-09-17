@@ -11,7 +11,8 @@ EDJE_FLAGS = -v \
 filesdir = $(datadir)
 files_DATA = \
 uptime.edj \
-module.eap \
+module.desktop \
+module.edj \
 uptime.png
 
 EXTRA_DIST = $(files_DATA) \
@@ -41,7 +42,7 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf *.edj *~
+	 rm -rf uptime.edj *~
 uninstall:
 	rm -rf $(datadir)
 

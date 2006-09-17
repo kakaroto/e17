@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Uptime
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=uptime,gadget
+Icon=./module.edj
