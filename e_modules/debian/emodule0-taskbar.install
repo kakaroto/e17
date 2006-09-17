@@ -1,4 +1,4 @@
-debian/tmp/usr/lib/enlightenment/modules/taskbar/*.eap
+debian/tmp/usr/lib/enlightenment/modules/taskbar/*.desktop
 debian/tmp/usr/lib/enlightenment/modules/taskbar/*.edj
 debian/tmp/usr/lib/enlightenment/modules/taskbar/*/*.so
 debian/tmp/usr/share/locale/*/LC_MESSAGES/taskbar.*

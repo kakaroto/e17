@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libesmart-dev, libembryo-dev, libexml-dev
-Standards-Version: 3.6.2.2
+Standards-Version: 3.7.2
 
 Package: emodule0-bling
 Architecture: any
@@ -11,19 +11,6 @@ Depends: ${shlibs:Depends}, enlightenment
 Provides: emodule-bling
 Description: An E17 module providing a Composite Manager
  An E17 module which acts as a Composite Manager.
-
-Package: emodule0-calendar
-Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
-Provides: emodule-calendar
-Description: Draws a nice calendar on your E17 desktop
- An E17 module which displays a highly configurable calendar on the
- desktop. Features are:
- - today highlights (depending on color scheme)
- - display previous and future years/months
- - two distinct themes (switchable via menu)
- - one with a top image & one without
- - change the 1st Day of the week.
 
 Package: emodule0-cpu
 Architecture: any
@@ -42,13 +29,6 @@ Description: E17 module which minimizes all windows
  An E17 module which minimizes all windows in order to show the
  desktop.
  
-Package: emodule0-devian
-Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
-Provides: emodule-devian
-Description: E17 monitor module for displaying logs and rss feeds
- An E17 module which displays rss feeds and system logs.
- 
 Package: emodule0-emu
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -66,14 +46,6 @@ Provides: emodule-eveil
 Description: An E17 module for setting timers and alarms
  Eveil is an E17 module which manages user defined timers and
  alarms.
-
-Package: emodule0-evolume
-Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
-Provides: emodule-evolume
-Description: An E17 audio mixer module
- Evolume is an E17 module which allows the user to adjust the sound
- volume.
 
 Package: emodule0-flame
 Architecture: any
@@ -97,14 +69,6 @@ Depends: ${shlibs:Depends}, enlightenment
 Provides: emodule-mail
 Description: An E17 module for checking mailboxes
  Mail is an E17 module which checks pop3, imap, mailbox and mdir mailboxes.
- 
-Package: emodule0-mbar
-Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
-Provides: emodule-mbar
-Description: An E17 mount bar module
- Mbar is an E17 module which displays a list of devices which can be
- mounted or unmounted by clicking on them.
  
 Package: emodule0-mem
 Architecture: any
@@ -251,24 +215,20 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-devian, emodule0-emu, emodule0-eveil, emodule0-evolume, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mbar, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
+Depends: enlightenment, emodule0-bling, emodule0-cpu, emodule0-deskshow, emodule0-emu, emodule0-eveil, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install the following modules:
  Bling       : EFLized Composite Manager for E17.
- Calendar    : Draws a nice calendar on your e17 desktop.
  Cpu         : Monitor module for the CPU load.
  Deskshow    : A module that minimizes all windows to show the desktop.
- dEvian      : Displays images and rss feeds on your e17 desktop.
  Emu         : A module front end that runs arbitrary back ends
                written in any language.
  Eveil       : A module to set Timer and Alarms.
- Evolume     : An audio mixer module.
  Flame       : Displays flames at the bottom of the screen.
  Language    : Allows to control keyboard layout, model and variant.
  Mail        : A mail module supporting pop3, imap, mailbox and mdir.
- Mbar        : A bar for mounting and unmounting devices.
  Mem         : Monitors memory usage.
  Mixer       : Sound mixer module.
  Moon        : Moon Clock module for Enlightenment.

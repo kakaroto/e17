@@ -1,5 +1,5 @@
 debian/tmp/usr/lib/enlightenment/modules/wlan/*.png
-debian/tmp/usr/lib/enlightenment/modules/wlan/*.eap
+debian/tmp/usr/lib/enlightenment/modules/wlan/*.desktop
 debian/tmp/usr/lib/enlightenment/modules/wlan/*.edj
 debian/tmp/usr/lib/enlightenment/modules/wlan/*/*.so
 debian/tmp/usr/share/locale/*/LC_MESSAGES/wlan.*
