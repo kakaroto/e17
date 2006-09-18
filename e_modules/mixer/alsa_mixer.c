@@ -124,7 +124,7 @@ alsa_get_card(int id)
 	if ((err = snd_mixer_detach(handle, buf)) < 0) 
 	  {
 	     snd_mixer_close(handle);
-	     break;
+	     continue;
 	  }
 	if ((err = snd_ctl_open(&control, buf, 0)) < 0) 
 	  {
@@ -154,7 +154,7 @@ alsa_get_card(int id)
 	card->channels = alsa_card_get_channels(card);
 	return card;
      }
-   snd_ctl_close(control);
+   //snd_ctl_close(control);
    snd_mixer_close(handle);
    return NULL;
 }
@@ -235,7 +235,8 @@ alsa_card_get_channels(void *data)
 	     name = snd_mixer_selem_id_get_name(sid);
 	     if ((!strcmp(name, "Master")) || 
 		 (!strcmp(name, "PCM")) || 
-		 (!strcmp(name, "DAC"))) 
+		 (!strcmp(name, "DAC")) || 
+		 !(strcmp(name, "Wave"))) 
 	       {
 		  ac = E_NEW(Mixer_Channel, 1);
 		  if (!ac) continue;
