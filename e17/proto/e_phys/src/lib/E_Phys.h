@@ -5,6 +5,11 @@
 #include <stdio.h>
 #include <math.h>
 
+struct _E_Phys_Point
+{
+  float x, y;
+};
+
 typedef struct _E_Phys_Point E_Phys_Point;
 typedef struct _E_Phys_Point E_Phys_Vector;
 typedef struct _E_Phys_Particle E_Phys_Particle;
@@ -73,11 +78,6 @@ E_Phys_Constraint_Anchor   *e_phys_constraint_anchor_add(
 
 #define E_PHYS_CONSTRAINT(x) ((E_Phys_Constraint *)x)
 #define E_PHYS_FORCE(x) ((E_Phys_Force *)x)
-
-struct _E_Phys_Point
-{
-  float x, y;
-};
 
 struct _E_Phys_Particle {
   E_Phys_World *world;
