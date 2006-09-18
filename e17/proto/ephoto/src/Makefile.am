@@ -11,7 +11,7 @@ ephoto_SOURCES = ephoto.c ephoto_callbacks.c ephoto_slideshow.c
 ephoto_CFLAGS = @ewl_cflags@
 
 ephoto_LDADD =  $(INTLLIBS) \
-		@ewl_libs@ -lsqlite3
+		@ewl_libs@
 
 EXTRA_DIST = \
 	     ephoto.h
