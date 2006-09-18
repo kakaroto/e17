@@ -130,12 +130,7 @@ _button_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 
       zone = e_util_zone_current_get (e_manager_current_get ());
       if (zone)
-	{
-	   e_desk_deskshow(zone);
-	}
-
-//      evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
-//                               EVAS_BUTTON_NONE, ev->timestamp, NULL);
+	 e_desk_deskshow(zone);
     }
 }
 
@@ -145,7 +140,6 @@ _deskshow_cb_event_desk_show(void *data, int type, void *event)
    E_Event_Desk_Show *ev;
    E_Desk *desk;
    Instance *inst;
-   Evas *evas;
    
    inst = data;
    ev = event;
