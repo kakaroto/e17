@@ -31,5 +31,5 @@ module.edj: Makefile $(EXTRA_DIST)
 	 module.edj
 
 clean-local:
-	 rm -rf *.edj; rm -rf *.desktop
+	 rm -rf moon.edj; rm -rf *.desktop
 
