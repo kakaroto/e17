@@ -49,6 +49,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   snprintf (buf, sizeof (buf), "%s/deskshow.edj",
 	    e_module_dir_get (desk_module));
+   
   o = edje_object_add (gc->evas);
   if (!e_theme_edje_object_set
       (o, "base/theme/modules/deskshow", "modules/deskshow/main"))
@@ -81,8 +82,13 @@ _gc_shutdown (E_Gadcon_Client * gcc)
   Instance *inst;
 
   inst = gcc->data;
+  while (handlers) 
+    {
+       ecore_event_handler_del(handlers->data);
+       handlers = evas_list_remove_list(handlers, handlers);
+    }
   evas_object_del (inst->o_button);
-  free (inst);
+  E_FREE (inst);
 }
 
 static void
@@ -139,11 +145,12 @@ _deskshow_cb_event_desk_show(void *data, int type, void *event)
    E_Event_Desk_Show *ev;
    E_Desk *desk;
    Instance *inst;
-
+   Evas *evas;
+   
    inst = data;
    ev = event;
    desk = ev->desk;
-
+   
    if (desk->deskshow_toggle)
      edje_object_signal_emit(inst->o_button, "active", "");
    else
@@ -168,11 +175,6 @@ EAPI int
 e_modapi_shutdown (E_Module * m)
 {
   desk_module = NULL;
-  while (handlers) 
-    {
-       ecore_event_handler_del(handlers->data);
-       handlers = evas_list_remove_list(handlers, handlers);
-    }
   e_gadcon_provider_unregister (&_gadcon_class);
   return 1;
 }
