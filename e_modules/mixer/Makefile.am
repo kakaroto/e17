@@ -15,7 +15,9 @@ mixer.edc \
 mixer-volume-high.png \
 mixer-volume-medium.png \
 mixer-volume-low.png \
-mixer-volume-muted.png
+mixer-volume-muted.png \
+e_modules-mixer.spec.in \
+e_modules-mixer.spec
 
 # data files for the module
 filesdir = $(datadir)
