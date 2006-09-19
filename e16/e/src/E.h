@@ -411,6 +411,7 @@ typedef struct
       char                argb_clients;
       char                argb_clients_inherit_attr;
       char                use_sync;
+      int                 mask_alpha_threshold;
    } testing;
 
    char                autosave;

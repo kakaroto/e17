@@ -45,6 +45,10 @@ EImageInit(Display * dpy)
    imlib_context_set_visual(_default_vis);
    imlib_context_set_colormap(_default_cmap);
 
+#ifdef HAVE_IMLIB_CONTEXT_SET_MASK_ALPHA_THRESHOLD
+   imlib_context_set_mask_alpha_threshold(Conf.testing.mask_alpha_threshold);
+#endif
+
    imlib_context_set_dither(1);
 }
 

@@ -24,6 +24,7 @@
 #include "E.h"
 #include "desktops.h"
 #include "dialog.h"
+#include "eimage.h"
 #include "emodule.h"
 #include "file.h"
 #include "hints.h"
@@ -244,6 +245,7 @@ main(int argc, char **argv)
    MapUnmap(0);
 
    /* Move elsewhere? */
+   EImageInit(disp);
    HintsInit();
    CommsInit();
    SessionInit();

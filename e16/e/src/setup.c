@@ -22,7 +22,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "eimage.h"
 #include "ewins.h"
 #include "screen.h"
 #include "xwin.h"
@@ -229,9 +228,6 @@ SetupX(const char *dstr)
 	VRoot.w = RRoot.w;
 	VRoot.h = RRoot.h;
      }
-
-   /* Initialise image handling */
-   EImageInit(disp);
 
    /* Initialise event handling */
    EventsInit();
