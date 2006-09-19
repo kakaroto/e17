@@ -1,9 +1,7 @@
 TODO-
 Add image manipulation.
-Fixup better slideshow config dialog.
-Slideshow Fixup(proportional/scaling/integration with conifg)
 Add audio.
 Add transitions(fade).
 Add sql databasing.
-Add custom edje widgets for thumb browser and possibly for images to create ken burns effect?
+Add edje widgets for images to create ken burns effect?
 Album work.
