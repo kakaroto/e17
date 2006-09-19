@@ -2,12 +2,12 @@ Summary: ephoto
 Name: @PACKAGE@
 Version: @VERSION@
 Release: 0.%(date '+%Y%m%d')
-License: GPL
+License: BSD
 Group: Applications/Multimedia
-URL: http://www.enlightenment.org.au/
+URL: http://www.ecoding.org
 Source: %{name}-%{version}.tar.gz
-Packager: %{?_packager:%{_packager}}%{!?_packager:Stephen Houston <linux15@assistix.org>}
-Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org.au/)}
+Packager: %{?_packager:%{_packager}}%{!?_packager:Stephen Houston <linuxtitan@gmail.com>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:Ecoding Project (http://www.ecoding.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: evas-devel ecore-devel ewl-devel epsilon-devel emotion-devel
