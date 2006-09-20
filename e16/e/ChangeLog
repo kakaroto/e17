@@ -4038,3 +4038,22 @@ Sun Sep 10 08:57:47 CEST 2006
 Fix build without composite. 
 Avoid unnecessary library dependencies in eesh and edox. Cleanups.
 
+
+-------------------------------------------------------------------------------
+
+Wed Sep 20 18:56:15 CEST 2006
+(Kim)
+
+--- 0.16.8.4 0.04 ---
+Refactor/simplify, use execApplication in stead of plain fork/exec.
+Add hack to make apps lauched from e16 in window mode appear in the virtual
+ root in stead of the real root.
+Japanese translation update (Yasufumi Haga).
+Generalize selection handling. Manage _NET_WM_CM_Sx selection.
+- Should fix issues with recent gtk ARGB windows.
+Fix translation of button labels in combined settings dialog.
+Fix bug in dialog layout (table positioning) causing trouble (unselectable
+ items) primarily in combined settings dialog.
+Fix setting pager mode when compiled without composite.
+Set mask alpha threshold, if possible.
+
