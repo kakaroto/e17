@@ -683,7 +683,11 @@ ewl_attach_cb_tooltip_timer(void *data)
 		ewl_window_raise(EWL_WINDOW(ewl_attach_tooltip->win));
 #endif
 		/* XXX this should really be in it's own window */
-		ewl_attach_tooltip->win = ewl_hbox_new();
+		ewl_attach_tooltip->win = ewl_floater_new();
+		ewl_box_orientation_set(EWL_BOX(ewl_attach_tooltip->win), 
+				EWL_ORIENTATION_HORIZONTAL);
+		ewl_floater_follow_set(EWL_FLOATER(ewl_attach_tooltip->win),
+				EWL_WIDGET(emb));
 		ewl_attach_tooltip->embed = EWL_WIDGET(emb);
 
 		/*
@@ -755,7 +759,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 		ewl_widget_show(o);
 	}
 
-	ewl_object_position_request(EWL_OBJECT(ewl_attach_tooltip->win), 
+	ewl_floater_position_set(EWL_FLOATER(ewl_attach_tooltip->win), 
 					ewl_attach_tooltip->x, ewl_attach_tooltip->y);
 
 	ewl_widget_show(ewl_attach_tooltip->win);
