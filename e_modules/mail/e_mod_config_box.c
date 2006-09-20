@@ -7,6 +7,7 @@ struct _E_Config_Dialog_Data
   int type;
   int use_exec;
   char *port;
+  int monitor;
   int ssl;
    int local;
   char *host;
@@ -24,6 +25,7 @@ struct _E_Config_Dialog_Data
   Evas_Object *new_path_entry;
   Evas_Object *cur_path_label;
   Evas_Object *cur_path_entry;
+  Evas_Object *monitor_check;
 };
 
 static void *_create_data (E_Config_Dialog * cfd);
@@ -34,6 +36,7 @@ static int _basic_apply_data (E_Config_Dialog * cfd,
 			      E_Config_Dialog_Data * cfdata);
 static void _type_cb_change (void *data, Evas_Object * obj);
 static void _use_exec_cb_change (void *data, Evas_Object * obj);
+static void _monitor_cb_change (void *data, Evas_Object * obj);
 
 static E_Config_Dialog *prev_dlg;
 static Config_Item *mail_ci;
@@ -69,6 +72,7 @@ _fill_data (Config_Box * cb, E_Config_Dialog_Data * cfdata)
   if (!cb)
     {
       cfdata->type = 0;
+      cfdata->monitor = 1;
       cfdata->ssl = 0;
       cfdata->use_exec = 0;
        cfdata->local = 0;
@@ -81,6 +85,7 @@ _fill_data (Config_Box * cb, E_Config_Dialog_Data * cfdata)
     cfdata->name = strdup (cb->name);
 
   cfdata->type = cb->type;
+  cfdata->monitor = cb->monitor;
   cfdata->ssl = cb->ssl;
   cfdata->use_exec = cb->use_exec;
    cfdata->local = cb->local;
@@ -170,8 +175,23 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   e_widget_framelist_object_append (of, ob);
   ob = e_widget_radio_add (evas, D_("Mbox"), 3, rg);
   e_widget_on_change_hook_set (ob, _type_cb_change, cfdata);
-  e_widget_framelist_object_append (of, ob);
-  e_widget_list_object_append (o, of, 1, 1, 0.5);
+  e_widget_framelist_object_append (of, ob); 
+  cfdata->monitor_check = e_widget_check_add (evas, D_("Monitor Mbox file permanently"),
+			   &(cfdata->monitor));
+  e_widget_on_change_hook_set (cfdata->monitor_check, _monitor_cb_change, cfdata);
+  if (cfdata->type == 3)
+    {
+      e_widget_check_checked_set (cfdata->monitor_check, cfdata->monitor);
+      e_widget_disabled_set (cfdata->monitor_check, 0);
+    }
+  else
+    {
+      e_widget_check_checked_set (cfdata->monitor_check, 0);
+      e_widget_disabled_set (cfdata->monitor_check, 1);
+    }
+  e_widget_framelist_object_append (of, cfdata->monitor_check);
+
+  e_widget_list_object_append (o, of, 1, 1, 0.5); 
 
   of = e_widget_frametable_add (evas, D_("Port Settings"), 1);
 
@@ -257,6 +277,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
       cb = E_NEW (Config_Box, 1);
       cb->type = 0;
       cb->port = 110;
+      cb->monitor = 1;
       cb->ssl = 0;
        cb->local = 0;
       is_new = 1;
@@ -271,10 +292,12 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 
   cb->type = cfdata->type;
   cb->port = atoi (cfdata->port);
+  cb->monitor = cfdata->monitor;
   cb->ssl = cfdata->ssl;
    cb->local = cfdata->local;
    
   cb->use_exec = cfdata->use_exec;
+
   if (cb->exec)
     evas_stringshare_del (cb->exec);
   if (cfdata->exec != NULL)
@@ -318,11 +341,14 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
     cb->cur_path = evas_stringshare_add ("");
 
   if (!is_new)
-    e_config_save_queue ();
+    {
+      e_config_save_queue ();
+      _mail_mbox_check_monitors ();
+    }
 
   if (is_new)
     {
-//      cfd->data = cb;
+/*       cfd->data = cb; */
       mail_ci->boxes = evas_list_append (mail_ci->boxes, cb);
       e_config_save_queue ();
       _mail_box_added (mail_ci->id, cb->name);
@@ -330,6 +356,17 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 
   _mail_box_config_updated (prev_dlg);
   return 1;
+}
+
+static void
+_monitor_cb_change (void *data, Evas_Object * obj)
+{
+  E_Config_Dialog_Data *cfdata;
+
+  cfdata = data;
+  if (cfdata->type == MAIL_TYPE_MBOX)
+    {
+    }
 }
 
 static void
@@ -383,6 +420,17 @@ _type_cb_change (void *data, Evas_Object * obj)
       e_widget_disabled_set (cfdata->cur_path_label, 0);
       e_widget_disabled_set (cfdata->cur_path_entry, 0);
       e_widget_entry_text_set (cfdata->port_entry, "");
+    }
+
+  if (cfdata->type == 3)
+    {
+      e_widget_check_checked_set (cfdata->monitor_check, 1);
+      e_widget_disabled_set (cfdata->monitor_check, 0);
+    }
+  else
+    {
+      e_widget_check_checked_set (cfdata->monitor_check, 0);
+      e_widget_disabled_set (cfdata->monitor_check, 1);
     }
 }
 

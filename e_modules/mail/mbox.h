@@ -16,5 +16,6 @@ struct _MboxClient
 void _mail_mbox_add_mailbox(void *data, void *data2);
 void _mail_mbox_del_mailbox(void *data);
 void _mail_mbox_shutdown();
-
+void _mail_mbox_check_mail(void *data);
+void _mail_mbox_check_monitors ();
 #endif
