@@ -160,6 +160,7 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 Makefile
 module.desktop
+e_modules-taskbar.spec
 data/Makefile
 data/themes/Makefile
 po/Makefile

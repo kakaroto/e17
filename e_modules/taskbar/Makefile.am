@@ -6,7 +6,8 @@ SUBDIRS = data po
 filesdir = $(datadir)
 files_DATA = module.desktop module.edj
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) \
+	     e_modules-taskbar.spec
 
 # the module .so file
 INCLUDES               = -I. \
