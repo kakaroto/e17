@@ -17,8 +17,7 @@ VeraMono.ttf \
 cpu.png \
 module.desktop \
 module.edj \
-e_modules-cpu.spec \
-e_modules-cpu.spec.in
+e_modules-cpu.spec
 
 # data files for the module
 filesdir = $(datadir)
