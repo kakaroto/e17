@@ -72,7 +72,9 @@ E_Phys_Constraint_Stick    *e_phys_constraint_stick_add(
 E_Phys_Constraint_Anchor   *e_phys_constraint_anchor_add(
                               E_Phys_Particle *p, float x, float y);
 
-
+E_Phys_Particle            *e_phys_particle_map_insert(
+                              E_Phys_Particle *head,
+                              E_Phys_Particle *p);
 
 
 

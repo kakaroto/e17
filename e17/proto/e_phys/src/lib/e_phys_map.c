@@ -1,6 +1,6 @@
 #include "E_Phys.h"
 
-E_Phys_Particle *particle_map_insert(E_Phys_Particle *head, E_Phys_Particle *p)
+E_Phys_Particle *e_phys_particle_map_insert(E_Phys_Particle *head, E_Phys_Particle *p)
 {
         int hd, vd;
         E_Phys_Particle *newhead;
