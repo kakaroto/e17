@@ -45,6 +45,7 @@ static int
 e_phys_world_timer(void *data)
 {
   E_Phys_World *world;
+  float now;
   int i;
 
   // XXX right now, each timeslice is world->dt apart. it would probably
@@ -52,7 +53,9 @@ e_phys_world_timer(void *data)
   // actually elapsed between slices. (then if a slice takes longer than dt to
   // calc, the frame rate will drop, the physical motion will remain 'at speed'
   world = data;
-  world->time += world->dt;
+  now = ecore_time_get();
+  world->elapsed = now - world->time;
+  world->time = now;
   e_phys_world_accumulate_forces(world);
   e_phys_world_verlet_integrate(world);
   for (i = 0; i < world->constraint_iter; i++)
@@ -65,6 +68,7 @@ e_phys_world_timer(void *data)
 void
 e_phys_world_go(E_Phys_World *world)
 {
+  world->time = ecore_time_get();
   world->timer = ecore_timer_add(world->dt, e_phys_world_timer, world);
 }
 
@@ -155,8 +159,8 @@ e_phys_world_verlet_integrate(E_Phys_World *world)
     tmp.y = p->cur.y;
 
     //printf("force: (%0.2f, %0.2f)\n", p->force.x, p->force.y);
-    p->cur.x = (2 - world->friction) * p->cur.x - (1 - world->friction) * p->prev.x + p->force.x * world->dt * world->dt / p->m;
-    p->cur.y = (2 - world->friction) * p->cur.y - (1 - world->friction) *p->prev.y + p->force.y * world->dt * world->dt / p->m;
+    p->cur.x = (2 - world->friction) * p->cur.x - (1 - world->friction) * p->prev.x + p->force.x * world->elapsed * world->elapsed / p->m;
+    p->cur.y = (2 - world->friction) * p->cur.y - (1 - world->friction) *p->prev.y + p->force.y * world->elapsed * world->elapsed / p->m;
 
     p->prev.x = tmp.x;
     p->prev.y = tmp.y;

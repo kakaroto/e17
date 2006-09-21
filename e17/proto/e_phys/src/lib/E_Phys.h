@@ -79,6 +79,16 @@ E_Phys_Constraint_Anchor   *e_phys_constraint_anchor_add(
 #define E_PHYS_CONSTRAINT(x) ((E_Phys_Constraint *)x)
 #define E_PHYS_FORCE(x) ((E_Phys_Force *)x)
 
+enum _E_Phys_Particle_Direction {
+        E_PHYS_PARTICLE_DIRECTION_LEFT,
+        E_PHYS_PARTICLE_DIRECTION_RIGHT,
+        E_PHYS_PARTICLE_DIRECTION_ABOVE,
+        E_PHYS_PARTICLE_DIRECTION_BELOW,
+        E_PHYS_PARTICLE_DIRECTION_MAX
+};
+
+typedef enum _E_Phys_Particle_Direction E_Phys_Particle_Direction;
+
 struct _E_Phys_Particle {
   E_Phys_World *world;
   float m;
@@ -86,6 +96,8 @@ struct _E_Phys_Particle {
   E_Phys_Point cur;
   E_Phys_Point prev;
   E_Phys_Vector force;
+  unsigned int steps;
+  E_Phys_Particle *neighbor[E_PHYS_PARTICLE_DIRECTION_MAX];
 };
 
 struct _E_Phys_Constraint {
@@ -158,6 +170,7 @@ struct _E_Phys_World
   float time;
 
   float dt;
+  float elapsed;
   int constraint_iter;
   float friction;
 
