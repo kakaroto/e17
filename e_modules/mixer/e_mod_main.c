@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_types.h"
@@ -23,6 +26,8 @@ static Evas_Object     *_gc_icon     (Evas * evas);
 /* Module Protos */
 static void         _mixer_simple_volume_change(Mixer *mixer, Config_Item *ci, double val);
 static void         _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val);
+static void         _mixer_simple_mute_toggle(Mixer *mixer, Config_Item *ci);
+static void         _mixer_mute_toggle(Mixer *mixer, Config_Item *ci, int channel_id);
 static Config_Item *_mixer_config_item_get   (void *data, const char *id);
 static void         _mixer_menu_cb_post      (void *data, E_Menu *m);
 static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
@@ -209,6 +214,15 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 			      1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
 	evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
 				 EVAS_BUTTON_NONE, ev->timestamp, NULL);
+     }
+   else if (ev->button == 2)
+     {
+	Config_Item *ci;
+
+	ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
+	if (!ci) return;
+
+	_mixer_simple_mute_toggle(inst->mixer, ci);
      }
    else if (ev->button == 1) 
      {
@@ -547,6 +561,52 @@ _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val)
      }
 }
 
+/* Mutes the main channel */
+static void        
+_mixer_simple_mute_toggle(Mixer *mixer, Config_Item *ci)
+{
+   if (!mixer) return;
+   if (!ci) return;
+
+   _mixer_mute_toggle(mixer, ci, ci->channel_id);
+}
+
+/* Mute the given channel */
+static void         
+_mixer_mute_toggle(Mixer *mixer, Config_Item *ci, int channel_id)
+{
+   int m;
+   Mixer_Win_Simple *win;
+
+   if (!ci) return;
+   if (!mixer) return;
+   if (!mixer->mix_sys) return;
+   if (!mixer->mix_sys->get_mute) return;
+   if (!mixer->mix_sys->set_mute) return;
+   if (!mixer->mix_sys->get_volume) return;
+
+   win = mixer->simple_win;
+   m = mixer->mix_sys->get_mute(ci->card_id, channel_id);
+   m = m ? 0 : 1;
+   mixer->mix_sys->set_mute(ci->card_id, ci->channel_id, m);
+   if (m) 
+     {
+	edje_object_signal_emit(mixer->base, "muted", "");
+	if (win) {
+	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
+		   "e,state,disabled", "e");
+	}
+     }
+   else 
+     {
+	edje_object_signal_emit(mixer->base, "medium", "");
+	if (win) {
+	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
+		   "e,state,enabled", "e");	
+	}
+     }
+}
+
 /* Makes the simple window containing the slider pop up */
 static void
 _mixer_window_simple_pop_up(Instance *inst)
@@ -866,36 +926,14 @@ _mixer_window_simple_mute_cb(void *data, Evas_Object *obj, void *event_info)
    Mixer_Win_Simple *win;
    Mixer            *mixer;
    Config_Item      *ci;
-   double            val;
-   int               m;
    
    if (!(win = data)) return;
    
    mixer = win->mixer;
-   if (!mixer) return;
-   if (!mixer->mix_sys) return;
-   if (!mixer->mix_sys->set_mute) return;
-   if (!mixer->mix_sys->get_volume) return;
-   
    ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
    if (!ci) return;
 
-   m = e_widget_check_checked_get(win->check);
-   mixer->mix_sys->set_mute(ci->card_id, ci->channel_id, m);
-   if (m) 
-     {
-	edje_object_signal_emit(mixer->base, "muted", "");
-	e_slider_value_set(win->slider, 1.0);
-	edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
-				"e,state,disabled", "e");
-     }
-   else 
-     {
-	edje_object_signal_emit(mixer->base, "medium", "");
-	e_slider_value_set(win->slider, 0.5);
-	edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
-				"e,state,enabled", "e");	
-     }
+   _mixer_simple_mute_toggle(mixer, ci);
 }
 
 /* Called when the mouse moves over the input window */
