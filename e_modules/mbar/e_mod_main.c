@@ -290,12 +290,8 @@ _mbar_new ()
       char *homedir;
 
       homedir = e_user_homedir_get ();
-      if (homedir)
-	{
-	  snprintf (buf, sizeof (buf), "%s/.e/e/applications/%s", homedir,
-		    mb->conf->appdir);
-	  free (homedir);
-	}
+      snprintf (buf, sizeof (buf), "%s/.e/e/applications/%s", homedir,
+		mb->conf->appdir);
     }
   else
     strcpy (buf, mb->conf->appdir);

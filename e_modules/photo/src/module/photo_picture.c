@@ -226,11 +226,10 @@ char *photo_picture_infos_get(Picture *p)
 void photo_picture_setbg_add(const char *name)
 {
    char buf[4096];
-   char *home;
+   const char *home;
 
    home = e_user_homedir_get();
    snprintf(buf, sizeof(buf), "%s/.e/e/backgrounds/%s.edj", home, name);
-   free(home);
 
    photo->setbg_topurge = evas_list_append(photo->setbg_topurge, strdup(buf));
 }

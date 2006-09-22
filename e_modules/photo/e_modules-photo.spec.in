@@ -42,9 +42,9 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files -f %{module_name}.lang
 %defattr(-, root, root)
 %doc AUTHORS ChangeLog COPYING* INSTALL NEWS README
-if "%{module_name}" == "emu"
+%if "%{module_name}" == "emu"
 %{_bindir}/%{module_name}*
-endif
+%endif
 %{_libdir}/enlightenment/modules/%{module_name}*
 
 %changelog

@@ -542,14 +542,13 @@ _cb_timer_picture_change(void *data)
 static void
 _was_set_bg_add(Source_Picture *source, char *name)
 {
-   char *home;
+   const char *home;
    char *file_edj;
 
    file_edj = E_NEW(char, DEVIAN_MAX_PATH);
 
    home = e_user_homedir_get();
    snprintf(file_edj, DEVIAN_MAX_PATH, "%s/.e/e/backgrounds/%s.edj", home, name);
-   free(home);
 
    source->was_set_bg = evas_list_append(source->was_set_bg, file_edj);
 }
