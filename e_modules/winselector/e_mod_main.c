@@ -43,6 +43,7 @@ static void _win_menu_item_create(E_Border *bd, E_Menu *m, Instance *inst);
 static int _window_cb_focus_in(void *data, int type, void *event);
 static int _window_cb_focus_out(void *data, int type, void *event);
 static int _window_cb_icon_change(void *data, int type, void *event);
+static int _window_cb_border_remove(void *data, int type, void *event);
 static void _focus_in(E_Border *bd, Instance *inst);
 static void _focus_out(Instance *inst);
 
@@ -82,6 +83,8 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 	(ECORE_X_EVENT_WINDOW_FOCUS_OUT, _window_cb_focus_out, inst));
   handlers = evas_list_append (handlers, ecore_event_handler_add
 	(E_EVENT_BORDER_ICON_CHANGE, _window_cb_icon_change, inst));
+  handlers = evas_list_append (handlers, ecore_event_handler_add
+	(E_EVENT_BORDER_REMOVE, _window_cb_border_remove, inst));
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 	_button_cb_mouse_down, inst);
   return gcc;
@@ -217,6 +220,7 @@ _win_menu_new(Instance *inst)
    E_Menu *m;
 
    m = e_menu_new();
+   e_menu_title_set(m, _("Applications"));
    e_menu_pre_activate_callback_set(m, _win_menu_pre_cb, inst);
    return m;
 }
@@ -428,6 +432,21 @@ _window_cb_icon_change(void *data, int type, void *event)
    if (!(bd = ev->border)) return 1;
 
    _focus_in(bd, inst);
+   return 1;
+}
+
+static int _window_cb_border_remove(void *data, int type, void *event)
+{ 
+   E_Event_Border_Remove *ev;
+   E_Border *bd;
+   Instance *inst;
+
+   ev = event;
+   inst = data;
+   if (!(bd = ev->border)) return 1;
+
+   _focus_out(inst);
+
    return 1;
 }
 
