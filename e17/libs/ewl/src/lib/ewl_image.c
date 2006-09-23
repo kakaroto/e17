@@ -743,6 +743,7 @@ ewl_image_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	i = EWL_IMAGE(w);
 	if (emb && i->image) {
+		evas_object_image_file_set(i->image, NULL, NULL);
 		ewl_embed_object_cache(emb, i->image);
 		i->image = NULL;
 	}
