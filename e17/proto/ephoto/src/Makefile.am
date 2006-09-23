@@ -6,7 +6,7 @@ INCLUDES = \
 
 bin_PROGRAMS = ephoto
 
-ephoto_SOURCES = ephoto.c ephoto_callbacks.c ephoto_slideshow.c
+ephoto_SOURCES = ephoto.c ephoto_callbacks.c ephoto_slideshow.c ephoto_viewer.c
 
 ephoto_CFLAGS = @ewl_cflags@
 

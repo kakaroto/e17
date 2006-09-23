@@ -21,6 +21,7 @@ void go_favorites(Ewl_Widget *w, void *event, void *data);
 void entry_change(Ewl_Widget *w, void *event, void *data);
 void create_slideshow_config(Ewl_Widget *w, void *event, void *data);
 void start_slideshow(Ewl_Widget *w, void *event, void *data);
+void view_images(Ewl_Widget *w, void *event, void *data);
 
 typedef struct _Main Main;
 
@@ -37,5 +38,6 @@ struct _Main
 extern Main *m;
 extern char *current_directory;
 extern Ecore_List *current_thumbs;
+extern Ewl_Widget *vwin;
 
 #endif
