@@ -18,7 +18,6 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
  char *home;
  char path[PATH_MAX];
  char full_path[PATH_MAX];
- const char *image_path;
  Ecore_List *albums;
  Ewl_Widget *hbox;
  Ewl_Widget *image;
@@ -45,10 +44,9 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
   ewl_box_spacing_set(EWL_BOX(hbox), 5);
   ewl_widget_show(hbox);
 
-  image_path = ewl_icon_theme_icon_path_get(EWL_ICON_IMAGE_X_GENERIC,
-                                            EWL_ICON_SIZE_LARGE);  
   image = ewl_image_new();
-  ewl_image_file_set(EWL_IMAGE(image), image_path, EWL_ICON_IMAGE_X_GENERIC);
+  ewl_image_file_set(EWL_IMAGE(image), 
+		     PACKAGE_DATA_DIR "/images/image.png", NULL);
   ewl_container_child_append(EWL_CONTAINER(hbox), image);
   ewl_widget_show(image);
   
@@ -73,7 +71,6 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
  char *directory;
  char *file;
  char full_path[PATH_MAX];
- const char *image_path;
  Ecore_List *ls;
  Ecore_List *directories;
  Ewl_Widget *hbox;
@@ -112,10 +109,9 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
   ewl_box_spacing_set(EWL_BOX(hbox), 5);
   ewl_widget_show(hbox);
 
-  image_path = ewl_icon_theme_icon_path_get(EWL_ICON_FOLDER, 
-	                                    EWL_ICON_SIZE_LARGE);
   image = ewl_image_new();
-  ewl_image_file_set(EWL_IMAGE(image), image_path, EWL_ICON_FOLDER);
+  ewl_image_file_set(EWL_IMAGE(image), 
+		     PACKAGE_DATA_DIR "/images/folder.png", NULL);
   ewl_container_child_append(EWL_CONTAINER(hbox), image);
   ewl_widget_show(image);
 

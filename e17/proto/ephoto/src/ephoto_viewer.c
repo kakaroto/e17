@@ -49,7 +49,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  vwin = ewl_window_new();
  ewl_window_title_set(EWL_WINDOW(vwin), "Ephoto Image Viewer");
  ewl_window_name_set(EWL_WINDOW(vwin), "Ephoto Image Viewer");
- ewl_object_size_request(EWL_OBJECT(vwin), 640, 480);
+ ewl_object_size_request(EWL_OBJECT(vwin), 480, 480);
  ewl_callback_append(vwin, EWL_CALLBACK_DELETE_WINDOW, destroy_vwin, NULL);
  ewl_widget_show(vwin);
 

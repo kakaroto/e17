@@ -7,7 +7,6 @@ Ecore_List *current_thumbs;
 int
 main(int argc, char **argv)
 {
- const char *icon_theme_path;
  Ewl_Widget *vbox, *hbox, *border, *menubar, *menu, *menu_item;
  Ewl_Widget *hseparator, *vseparator, *image, *text;
  
@@ -47,7 +46,9 @@ main(int argc, char **argv)
  ewl_widget_show(menu);
 
  menu_item = ewl_menu_item_new();
- ewl_button_stock_type_set(EWL_BUTTON(menu_item), EWL_STOCK_QUIT);
+ ewl_button_image_set(EWL_BUTTON(menu_item), 
+		      PACKAGE_DATA_DIR "/images/exit.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Exit");
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
@@ -75,8 +76,7 @@ main(int argc, char **argv)
 
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item), 
-		      ewl_icon_theme_icon_path_get(EWL_ICON_PREFERENCES_SYSTEM, 
-		      EWL_ICON_SIZE_MEDIUM), EWL_ICON_PREFERENCES_SYSTEM);
+		      PACKAGE_DATA_DIR "/images/preferences-system.png", NULL);
  ewl_button_label_set(EWL_BUTTON(menu_item), "Configure Slideshow");
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
@@ -87,9 +87,7 @@ main(int argc, char **argv)
  
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item), 
-		      ewl_icon_theme_icon_path_get(EWL_ICON_X_OFFICE_PRESENTATION, 
-		      				   EWL_ICON_SIZE_MEDIUM), 
-		      EWL_ICON_X_OFFICE_PRESENTATION);
+		      PACKAGE_DATA_DIR "/images/x-office-presentation.png", NULL);
  ewl_button_label_set(EWL_BUTTON(menu_item), "Start Slideshow");
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
@@ -112,26 +110,22 @@ main(int argc, char **argv)
 
  image = ewl_image_new();
  ewl_container_child_append(EWL_CONTAINER(hbox), image);
- icon_theme_path = ewl_icon_theme_icon_path_get(EWL_ICON_GO_UP, 
-		 				EWL_ICON_SIZE_MEDIUM);
- ewl_image_file_set(EWL_IMAGE(image), icon_theme_path, EWL_ICON_GO_UP);
+ ewl_image_file_set(EWL_IMAGE(image), 
+		    PACKAGE_DATA_DIR "/images/go-up.png", NULL);
  ewl_callback_append(image, EWL_CALLBACK_CLICKED, go_up, NULL);
  ewl_widget_show(image);
 
  image = ewl_image_new();
  ewl_container_child_append(EWL_CONTAINER(hbox), image);
- icon_theme_path = ewl_icon_theme_icon_path_get(EWL_ICON_GO_HOME,
-                                                EWL_ICON_SIZE_MEDIUM);
- ewl_image_file_set(EWL_IMAGE(image), icon_theme_path, EWL_ICON_GO_HOME);
+ ewl_image_file_set(EWL_IMAGE(image), 
+		    PACKAGE_DATA_DIR "/images/go-home.png", NULL);
  ewl_callback_append(image, EWL_CALLBACK_CLICKED, go_home, NULL);
  ewl_widget_show(image);
 
  image = ewl_image_new();
  ewl_container_child_append(EWL_CONTAINER(hbox), image);
- icon_theme_path = ewl_icon_theme_icon_path_get(EWL_ICON_EMBLEM_FAVORITE,
-                                                EWL_ICON_SIZE_MEDIUM);
- ewl_image_file_set(EWL_IMAGE(image), icon_theme_path, 
-		 				EWL_ICON_EMBLEM_FAVORITE);
+ ewl_image_file_set(EWL_IMAGE(image), 
+		    PACKAGE_DATA_DIR "/images/emblem-favorite.png", NULL);
  ewl_widget_show(image);
       
  text = ewl_text_new();

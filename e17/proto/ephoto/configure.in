@@ -124,6 +124,8 @@ AC_SUBST(epsilon_libs)
 AC_OUTPUT([
 Makefile 
 ephoto.spec
+data/Makefile
+data/images/Makefile
 src/Makefile
 debian/changelog
 ])
