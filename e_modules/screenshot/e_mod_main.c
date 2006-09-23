@@ -600,7 +600,7 @@ _get_filename (Config_Item * ci)
 	  if (!strrchr (ci->filename, '.'))
 	    snprintf (buff, sizeof (buff), "%s%i.png", ci->filename, c);
 	  else
-	    snprintf (buff, sizeof (buff), "%s%i.png", ext, c);;
+	    snprintf (buff, sizeof (buff), "%s", ci->filename);
 	}
     }
   return strdup (buff);
