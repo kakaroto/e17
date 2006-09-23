@@ -39,10 +39,21 @@ void destroy_slideshow(Ewl_Widget *w, void *event, void *data)
 int change_picture(void *data)
 {
  char *image_path;
+ int total;
+ int temp;
  Slide_Config *sc;
  
  sc = data;
- ecore_dlist_next(current_thumbs);
+ if (sc->random_order)
+ {
+  total = ecore_dlist_nodes(current_thumbs);
+  temp = rand()%total;
+  ecore_dlist_goto_index(current_thumbs, temp);
+ }
+ else
+ {
+  ecore_dlist_next(current_thumbs);
+ }
  image_path = ecore_dlist_current(current_thumbs);
  if(image_path)
  {
@@ -85,6 +96,8 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  image_path = ecore_dlist_goto_first(current_thumbs);
  
  if (!image_path) return;
+ 
+ srand((unsigned int)time((time_t *)NULL));
  
  window = ewl_window_new();
  ewl_window_title_set(EWL_WINDOW(window), "Ephoto Slideshow");
