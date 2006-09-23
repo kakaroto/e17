@@ -2,8 +2,8 @@ MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
-	-id images \
-	-fd fonts
+	-id $(top_srcdir)/data/theme/images \
+	-fd $(top_srcdir)/data/theme/fonts
 
 EXTRA_DIST = \
 photo.edc \
@@ -16,7 +16,9 @@ photo_popi_programs.edc \
 photo_popw.edc \
 photo_popw_parts.edc \
 photo_popw_programs.edc \
-photo_icon.edc
+photo_icon.edc \
+$(wildcard fonts/*.ttf) \
+$(wildcard images/*.png)
 
 filesdir = $(datadir)
 files_DATA = photo.edj
@@ -26,5 +28,5 @@ photo.edj: Makefile $(EXTRA_DIST)
 	$(top_srcdir)/data/theme/photo.edc \
 	$(top_builddir)/data/theme/photo.edj
 
-clean:
+clean-local:
 	rm -f photo.edj
