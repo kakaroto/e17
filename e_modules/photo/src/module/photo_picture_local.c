@@ -30,8 +30,8 @@ struct _Picture_Local_List
   struct
   {
      int nb;
-    Popup_Warn *popup;
-    int         popup_show;
+     Popup_Warn *popup;
+     int         popup_show;
   } thumb;
 
    /* ecore idler to load in background */
@@ -378,6 +378,9 @@ _load_idler(void *data)
    /* no more files in the current loader.dirs item */
    if ( !pl->loader.odir || !(fs = readdir(pl->loader.odir)) )
      {
+        /* if the E thumbnailer is still busy, wait */
+        if (pl->thumb.nb) return 1;
+
         DD(("removing %s", (char *)evas_list_data(pl->loader.dirs)));
         /* go to next dir */
         closedir(pl->loader.odir);
@@ -429,7 +432,7 @@ _load_timer(void *data)
    pl = pictures_local;
 
    rounds = 0;
-   while(pl->loader.queue)// && (rounds < 50))
+   while(pl->loader.queue)// && (rounds < 50)) //FIXME
      {
         file = pl->loader.queue->data;
 

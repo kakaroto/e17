@@ -27,6 +27,8 @@ void photo_popup_warn_shutdown(void)
      {
         Popup_Warn *p;
         p = evas_list_data(l);
+        if (p->func_close)
+          p->func_close(p, p->data);
         photo_popup_warn_del(p);
      }
    evas_list_free(_popups_warn);
