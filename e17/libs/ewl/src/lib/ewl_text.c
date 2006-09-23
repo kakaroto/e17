@@ -18,6 +18,21 @@ static Ewl_Text_Context *ewl_text_default_context = NULL;
  */
 static Ecore_Hash *context_hash = NULL;
 
+static const char ewl_text_trailing_bytes[256] = {
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+        2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3, 4,4,4,4,4,4,4,4,5,5,5,5,6,6,6,6
+};
+
+/* returns length of next utf-8 sequence */
+#define EWL_TEXT_CHAR_BYTE_LEN(s) \
+        (ewl_text_trailing_bytes[(unsigned int)(unsigned char)((s)[0])])
+
 static void ewl_text_context_cb_free(void *data);
 static void ewl_text_context_print(Ewl_Text_Context *tx, const char *indent);
 static char *ewl_text_context_name_get(Ewl_Text_Context *tx, 
@@ -68,8 +83,11 @@ static void ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx,
 						unsigned int byte_len,
 						unsigned int *char_idx,
 						unsigned int *char_len);
-static unsigned int ewl_text_char_length_get(const char *text);
-static char *ewl_text_text_next_char(const char *text, unsigned int *idx);
+static char *ewl_text_text_next_char(const char *text, 
+						unsigned int *idx);
+static char *ewl_text_text_utf8_validate(const char *text, 
+					unsigned int *char_len,
+					unsigned int *byte_len);
 
 
 /**
@@ -331,9 +349,9 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 	}
 	else 
 	{
-		 evas_textblock_cursor_char_geometry_get(cursor,
+		evas_textblock_cursor_char_geometry_get(cursor,
 						&cx, &cy, &cw, &ch);
-		 if (tx > (cx + ((cw + 1) >> 1)))
+		if (tx > (cx + ((cw + 1) >> 1)))
 			 char_idx ++;
 	}
 
@@ -450,16 +468,15 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int char_idx)
 	int char_len = 0;
 	int byte_len = 0;
 	unsigned int byte_idx;
+	char *valid_text = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	if (text) 
-	{
-		byte_len = strlen(text);
-		char_len = ewl_text_char_length_get(text);
-	}
+	if (text)
+		valid_text = ewl_text_text_utf8_validate(text, &char_len,
+								&byte_len);
 
 	/* Limit the index to be within safe boundaries */
 	if (char_idx > t->length.chars + 1)
@@ -497,7 +514,8 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int char_idx)
 						t->text + byte_idx, 
 							t->length.bytes - byte_idx);
 
-		memcpy(t->text + byte_idx, text, byte_len);
+		memcpy(t->text + byte_idx, valid_text, byte_len);
+		FREE(valid_text);
 		t->length.chars += char_len;
 		t->length.bytes += byte_len;
 		t->text[t->length.bytes] = '\0';
@@ -2348,7 +2366,7 @@ ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
-	child = ewl_text_tree_node_get(t->formatting.tree, char_idx, TRUE); /* XXX TRUE or FALSE? */
+	child = ewl_text_tree_node_get(t->formatting.tree, char_idx, TRUE);
 	parent = child->parent;
 	while (parent)
 	{
@@ -2422,7 +2440,7 @@ ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx, unsigned int byte_len,
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	child = ewl_text_tree_node_in_bytes_get(t->formatting.tree, 
-					byte_idx, TRUE); /* XXX TRUE or FALSE? */
+							byte_idx, TRUE);
 	parent = child->parent;
 	while (parent)
 	{
@@ -2479,67 +2497,144 @@ ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx, unsigned int byte_len,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/* Counts the number of characters in the given piece of text. Assume the
- * text is utf8 so take that into account when counting. */
-static unsigned int
-ewl_text_char_length_get(const char *text)
+/*
+ * This function checks if a given character is a utf character.
+ * It only checks the first character in the string.
+ */
+static int
+ewl_text_char_is_legal_utf8(const char *c)
 {
-	unsigned int length = 0, idx;
-	const char *t;
+	unsigned const char *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, FALSE);
 
-	if (!text || (strlen(text) == 0))
-		DRETURN_INT(length, DLEVEL_STABLE);
+	t = c;
+	if (!t) DRETURN_INT(FALSE, DLEVEL_STABLE);
+	
+	if (t[0] < 0x80)
+	{
+		/* 
+		 * this a noraml 7-bit ASCII character
+		 * -> legal utf8
+		 */
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
 
-	t = text;
-	while ((t = ewl_text_text_next_char(t, &idx)))
-		length ++;
+	switch (EWL_TEXT_CHAR_BYTE_LEN(t)) 
+	{
+		case 2:
+			/* 2 byte */
+	        	if ((t[1] & 0xc0) != 0x80)
+	          		DRETURN_INT(FALSE, DLEVEL_STABLE);
+			break;
+		
+		case 3:
+			/* 3 byte */
+			if (((t[1] & 0xc0) != 0x80)
+					|| ((t[2] & 0xc0) != 0x80))
+	          		DRETURN_INT(FALSE, DLEVEL_STABLE);
+			break;
 
-	DRETURN_INT(length, DLEVEL_STABLE);
+		case 4:
+			/* 4 byte */
+			if (((t[1] & 0xc0) != 0x80)
+					|| ((t[2] & 0xc0) != 0x80)
+					|| ((t[3] & 0xc0) != 0x80))
+				DRETURN_INT(FALSE, DLEVEL_STABLE);
+			break;
+
+		default:
+			/* 
+			 * this is actually:
+			 * case 1: 
+			 * 	We already checked if it is a 7-bit ASCII character,
+			 * 	so anything else with the length of 1 byte is not
+			 * 	a valid utf8 character
+			 * case 5: case 6:
+			 * 	Although a character sequences of the length 5 or 6
+			 * 	is possible it is not a legal utf8 character
+			 */
+			return FALSE;
+	}
+	
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-/* This is stolen from evas_common_font_utf8_get_next() */
+/*
+ * This function return the next character of a utf string.
+ * The text pointer should point on the leading byte of the
+ * current character, otherwise it will return the adress of
+ * the next byte. 
+ */
 static char *
 ewl_text_text_next_char(const char *text, unsigned int *idx)
 {
-	unsigned char d, d2, d3, d4;
-	
+	int len;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("text", text, NULL);
 
-	*idx = 0;
+	len = EWL_TEXT_CHAR_BYTE_LEN(text);
+	if (idx) *idx = len;
 
-	if (!text || (text[0] == '\0')) DRETURN_PTR(NULL, DLEVEL_STABLE);
+	DRETURN_PTR(text + len, DLEVEL_STABLE);
+}
 
-	d = text[(*idx)++];
-	if (!d) DRETURN_PTR(text + *idx, DLEVEL_STABLE); /* error .. */
+/*
+ * This function valdiates a a given utf-string and return a copy
+ * of it. Should the string contain illegal bytes, it will replace
+ * them with a question mark. This function doesn't check if the 
+ * correspondending unicode exists for the single character nor
+ * if the font provides it.
+ */
+static char *
+ewl_text_text_utf8_validate(const char *text, unsigned int *char_len,
+					unsigned int *byte_len)
+{
+	char *t, *new_t;
+	unsigned int idx;
+	unsigned int c_len;
 
-	if (d < 0x80)
-		DRETURN_PTR(text + *idx, DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("text", text, NULL);
+	
+	new_t = t = strdup(text);
+	c_len = 0;
 
-	if ((d & 0xe0) == 0xc0)	
+	while (*t) 
 	{
-		/* 2 byte */
-		if (((d2 = text[(*idx)++]) & 0xc0) != 0x80)
-			DRETURN_PTR(text + *idx, DLEVEL_STABLE); /* error .. */
+		if (ewl_text_char_is_legal_utf8(t)) 
+		{
+			/*
+			 * the current character is valid utf-character
+			 * so we can jump to the next character
+			 */
+			t = ewl_text_text_next_char(t, &idx);
+		}
+		else 
+		{
+			/*
+			 * oops, we found a illegal utf-character, or better
+			 * something else. Replace this byte and hope
+			 * the next one will be better :)
+			 */
+			*t = '?';
+			t++;
+
+			printf("found a non utf8 character\n");
+		}
+		c_len++;
 	}
-	else if ((d & 0xf0) == 0xe0)
-	{
-		/* 3 byte */
-		if ((((d2 = text[(*idx)++]) & 0xc0) != 0x80) 
-				|| (((d3 = text[(*idx)++]) & 0xc0) != 0x80))
-			DRETURN_PTR(text + *idx, DLEVEL_STABLE); /* error .. */
-	}
-	else
-	{
-		/* 4 byte */
-		if ((((d2 = text[(*idx)++]) & 0xc0) != 0x80)
-				|| (((d3 = text[(*idx)++]) & 0xc0) != 0x80)
-				|| (((d4 = text[(*idx)++]) & 0xc0) != 0x80))
-			DRETURN_PTR(text + *idx, DLEVEL_STABLE); /* error .. */
-	}
-				
-	DRETURN_PTR(text + *idx, DLEVEL_STABLE);
+	
+	/*
+	 * Well this is just a by-product, so we can use it
+	 * without doing this loop again
+	 */
+	if (char_len) *char_len = c_len;
+	if (byte_len) *byte_len = t - new_t;
+
+	DRETURN_PTR(new_t, DLEVEL_STABLE);
 }
 
 static void
@@ -2597,7 +2692,7 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
 
 			txt = ewl_text_text_next_char(tmp, &idx);
 		}
-		else if (*tmp == '\r' && *(ewl_text_text_next_char(tmp, &idx)) == '\n') 
+		else if (*tmp == '\r' && *(tmp + 1) == '\n') 
 		{
 			*tmp = '\0';
 			if (*txt) evas_textblock_cursor_text_append(cursor, txt);
