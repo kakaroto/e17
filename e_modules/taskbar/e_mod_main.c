@@ -33,42 +33,42 @@ typedef struct _Taskbar_Icon Taskbar_Icon;
 
 struct _Instance
 {
-   E_Gadcon_Client *gcc;
-   Evas_Object *o_taskbar;
-   Taskbar *taskbar;
+   E_Gadcon_Client *gcc;        // The gadcon client
+   Evas_Object *o_taskbar;      // Same as o_gccbox below
+   Taskbar *taskbar;            // The taskbar
 };
 
 struct _Taskbar
 {
-   Instance *inst;
-   Evas_Object *o_box;
-   Evas_Object *o_gccbox;
-   Evas_Object *o_empty;
-   Evas_List *icons;
-   Evas_List *borders;
-   E_Zone *zone;
-   int xpos;
-   int ypos;
-   int xmax;
-   int ymax;
-   int bwidth;
-   int bheight;
-   int bwmin;
-   int bhmin;
-   int gccw;
-   int gcch;
-   int expand;
+   Instance *inst;              // The instance
+   Evas_Object *o_box;          // The icons swallow
+   Evas_Object *o_gccbox;       // The entire taskbar
+   Evas_Object *o_empty;        // When the taskbar is empty
+   Evas_List *icons;            // List of icons
+   Evas_List *borders;          // List of borders
+   E_Zone *zone;                // Current Zone
+   int xpos;		        // Position of the current
+   int ypos;	                // icon in the table
+   int xmax;                    // Total number of 
+   int ymax;                    // cells available
+   int bwidth;                  // Width of taskbar
+   int bheight;                 // Height of taskbar
+   int bwmin;                   // Minimum Width... I think
+   int bhmin;                   // Minimum Height
+   int gccw;                    // Width of the available gcc space
+   int gcch;                    // Height of the available gcc space
+   int expand;                  // Should icons expand to fill space
 };
 
 struct _Taskbar_Icon
 {
-   Taskbar *taskbar;
-   Evas_Object *o_holder;
-   Evas_Object *o_icon;
-   Evas_Object *o_holder2;
-   Evas_Object *o_icon2;
-   E_Border *border;
-   char *label;
+   Taskbar *taskbar;            // Parent taskbar
+   Evas_Object *o_holder;       // The edje theme object
+   Evas_Object *o_icon;         // The icon
+   Evas_Object *o_holder2;      // Overlay theme object
+   Evas_Object *o_icon2;        // Overlay icon
+   E_Border *border;            // The border this icon points to
+   char *label;                 // label taken from the border
 };
 
 static Taskbar *_taskbar_new(Evas *evas, E_Zone *zone);
@@ -513,7 +513,7 @@ _taskbar_resize_handle(Taskbar *b)
    if (wmin < 1)
      wmin = 1;
 
-   // todo xmax - presently unused
+   // TODO xmax - presently unused
    /* TODO orient */
    if (wnum > 0)
      bwmin = w/wnum < wmin ? wmin : w/wnum;

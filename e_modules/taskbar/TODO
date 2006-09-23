@@ -16,7 +16,9 @@ BUGS
 
 - vert layout - no...
 
-- BUG: Skip Win List not applied immediately
+- BUG: Skip Win List not applied immediately - For this we need e17 to trigger an event e_int_border_menu.c
+
+- taskbar2.edj seems to have issues staying in one place
 
 TODO
 
