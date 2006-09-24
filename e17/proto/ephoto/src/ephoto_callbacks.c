@@ -136,13 +136,14 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
 {
  FILE *file_ptr;
  const char *dir;
- char *image;
+ char *image_path;
  char full_path[PATH_MAX];
  char text[PATH_MAX];
  Ecore_List *ls;
  Ecore_List *images;
  Ewl_Widget *shadow;
- Ewl_Widget *icon;
+ Ewl_Widget *image;
+ Ewl_Widget *cell;
  
  ls = ecore_list_new();
  images = ecore_list_new();
@@ -204,23 +205,30 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  }
  while(!ecore_list_is_empty(images))
  {
-  image = ecore_list_remove_first(images);
-  ecore_dlist_append(current_thumbs, image);
+  image_path = ecore_list_remove_first(images);
+  ecore_dlist_append(current_thumbs, image_path);
   
   shadow = ewl_shadow_new();
   ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), shadow);
-  ewl_object_minimum_size_set(EWL_OBJECT(shadow), 124, 124);
-  ewl_object_maximum_size_set(EWL_OBJECT(shadow), 124, 124);
+  ewl_object_minimum_size_set(EWL_OBJECT(shadow), 125, 105);
+  ewl_object_maximum_size_set(EWL_OBJECT(shadow), 125, 105);
   ewl_widget_show(shadow);
 
-  icon = ewl_image_thumbnail_new();
-  ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(icon), image);
-  ewl_container_child_append(EWL_CONTAINER(shadow), icon);
-  ewl_image_size_set(EWL_IMAGE(icon), 100, 100);
-  ewl_theme_data_str_set(icon, "/image_thumbnail/group",
+  cell = ewl_cell_new();
+  ewl_container_child_append(EWL_CONTAINER(shadow), cell);
+  ewl_object_minimum_size_set(EWL_OBJECT(cell), 100, 85);
+  ewl_object_maximum_size_set(EWL_OBJECT(cell), 100, 85);
+  ewl_theme_data_str_set(cell, "/cell/group",
 		         ewl_theme_data_str_get(m->entry, "group"));
-  ewl_callback_append(icon, EWL_CALLBACK_CLICKED, view_images, image);
-  ewl_widget_show(icon);
+  ewl_callback_append(cell, EWL_CALLBACK_CLICKED, view_images, image_path);
+  ewl_widget_show(cell);
+  
+  image = ewl_image_thumbnail_new();
+  ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(image), image_path);
+  ewl_container_child_append(EWL_CONTAINER(cell), image);
+  ewl_image_size_set(EWL_IMAGE(image), 97, 83);
+  ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
+  ewl_widget_show(image);
  }
  ecore_list_destroy(ls);
  ecore_list_destroy(images);
