@@ -13,9 +13,15 @@ if (UTIL_TEST_PARENT(var, parent, ITEM_ACTION_LABEL , ITEM_ACTION_PARENT))  \
 if (UTIL_TEST_PARENT(var, parent, ITEM_ACTION_INFOS , ITEM_ACTION_PARENT))  \
   photo_item_action_infos(pi);                                              \
 if (UTIL_TEST_PARENT(var, parent, ITEM_ACTION_PREV , ITEM_ACTION_PARENT))   \
-  photo_item_action_change(pi, -1);                                         \
+{                                                                           \
+   photo_item_action_change(pi, -1);                                        \
+   photo_item_timer_set(pi, pi->config->timer_active, 0);                   \
+}                                                                           \
 if (UTIL_TEST_PARENT(var, parent, ITEM_ACTION_NEXT , ITEM_ACTION_PARENT))   \
-  photo_item_action_change(pi, 1);                                          \
+{                                                                           \
+   photo_item_action_change(pi, 1);                                         \
+   photo_item_timer_set(pi, pi->config->timer_active, 0);                   \
+}                                                                           \
 if (UTIL_TEST_PARENT(var, parent, ITEM_ACTION_PAUSE , ITEM_ACTION_PARENT))  \
   photo_item_action_pause_toggle(pi);                                       \
 if (UTIL_TEST_PARENT(var, parent, ITEM_ACTION_SETBG , ITEM_ACTION_PARENT))  \

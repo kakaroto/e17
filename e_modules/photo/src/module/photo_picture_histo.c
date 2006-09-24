@@ -202,6 +202,7 @@ _cb_menu_select(void *data, E_Menu *m, E_Menu_Item *mi)
    photo_item_action_change(pi,
                             pi->histo.pos -
                             (evas_list_count(pi->histo.list) - (no+1)));
+   photo_item_timer_set(pi, pi->config->timer_active, 0);
 }
 
 static void
