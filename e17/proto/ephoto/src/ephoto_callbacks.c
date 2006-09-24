@@ -141,7 +141,6 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  char text[PATH_MAX];
  Ecore_List *ls;
  Ecore_List *images;
- Ewl_Widget *shadow;
  Ewl_Widget *image;
  Ewl_Widget *cell;
  
@@ -207,15 +206,9 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  {
   image_path = ecore_list_remove_first(images);
   ecore_dlist_append(current_thumbs, image_path);
-  
-  shadow = ewl_shadow_new();
-  ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), shadow);
-  ewl_object_minimum_size_set(EWL_OBJECT(shadow), 125, 105);
-  ewl_object_maximum_size_set(EWL_OBJECT(shadow), 125, 105);
-  ewl_widget_show(shadow);
 
   cell = ewl_cell_new();
-  ewl_container_child_append(EWL_CONTAINER(shadow), cell);
+  ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), cell);
   ewl_object_minimum_size_set(EWL_OBJECT(cell), 100, 85);
   ewl_object_maximum_size_set(EWL_OBJECT(cell), 100, 85);
   ewl_theme_data_str_set(cell, "/cell/group",
