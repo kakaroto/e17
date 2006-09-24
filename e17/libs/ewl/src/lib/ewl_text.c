@@ -465,8 +465,8 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 void
 ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int char_idx)
 {
-	int char_len = 0;
-	int byte_len = 0;
+	unsigned int char_len = 0;
+	unsigned int byte_len = 0;
 	unsigned int byte_idx;
 	char *valid_text = NULL;
 
