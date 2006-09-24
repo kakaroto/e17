@@ -114,6 +114,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
   ewl_container_child_append(EWL_CONTAINER(cell), image);
   ewl_image_size_set(EWL_IMAGE(image), 48, 48);
   ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
+  ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
   ewl_widget_show(image);
   
   ecore_dlist_next(view_thumbs);

@@ -282,7 +282,24 @@ void save_config(Ewl_Widget *w, void *event, void *data)
  }
  ewl_widget_destroy(sc->win);
 }
- 
+
+void change_radio(Ewl_Widget *w, void *event, void *data)
+{
+ Slide_Config *sc;
+ sc = data;
+
+ if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->custom)))
+ {
+  ewl_widget_enable(sc->wentry);
+  ewl_widget_enable(sc->hentry);
+ }
+ else if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(sc->fullscreen)))
+ {
+  ewl_widget_disable(sc->wentry);
+  ewl_widget_disable(sc->hentry);
+ }
+}
+
 void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
 {
  char temp[PATH_MAX];
@@ -331,6 +348,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(hbox), sc->fullscreen);
  ewl_radiobutton_checked_set(EWL_RADIOBUTTON(sc->fullscreen), sc->full_size);
  ewl_object_alignment_set(EWL_OBJECT(sc->fullscreen), EWL_FLAG_ALIGN_LEFT);
+ ewl_callback_append(sc->fullscreen, EWL_CALLBACK_CLICKED, change_radio, sc);
  ewl_widget_show(sc->fullscreen);	
  
  sc->custom = ewl_radiobutton_new();
@@ -340,6 +358,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_radiobutton_chain_set(EWL_RADIOBUTTON(sc->fullscreen), 
 		 	   EWL_RADIOBUTTON(sc->custom));
  ewl_object_alignment_set(EWL_OBJECT(sc->custom), EWL_FLAG_ALIGN_RIGHT);
+ ewl_callback_append(sc->custom, EWL_CALLBACK_CLICKED, change_radio, sc);
  ewl_widget_show(sc->custom);
 
  hbox = ewl_hbox_new();
