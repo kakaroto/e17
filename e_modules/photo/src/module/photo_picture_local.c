@@ -314,6 +314,9 @@ _load_idler(void *data)
 
    DD(("o"));
 
+   /* if the E thumbnailer is too busy, wait */
+   if (pl->thumb.nb >= 2) return 1;
+
    /* no more dirs in the current_dir */
    if (!evas_list_count(pl->loader.dirs))
      {
@@ -378,9 +381,6 @@ _load_idler(void *data)
    /* no more files in the current loader.dirs item */
    if ( !pl->loader.odir || !(fs = readdir(pl->loader.odir)) )
      {
-        /* if the E thumbnailer is still busy, wait */
-        if (pl->thumb.nb) return 1;
-
         DD(("removing %s", (char *)evas_list_data(pl->loader.dirs)));
         /* go to next dir */
         closedir(pl->loader.odir);
