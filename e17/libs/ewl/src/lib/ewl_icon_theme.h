@@ -8,6 +8,9 @@
  * @{
  */
 
+int		 ewl_icon_theme_init(void);
+void		 ewl_icon_theme_shutdown(void);
+
 void	 	 ewl_icon_theme_theme_change(void);
 
 const char	*ewl_icon_theme_icon_path_get(const char *icon, 

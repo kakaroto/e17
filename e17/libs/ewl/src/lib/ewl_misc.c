@@ -222,6 +222,12 @@ ewl_init(int *argc, char **argv)
 		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
 	}
 
+	if (!ewl_icon_theme_init()) {
+		DERROR("Could not init icon theme system.\n");
+		ewl_shutdown();
+		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	}
+
 	if (!(ewl_embed_list = ecore_list_new())) {
 		DERROR("Could not allocate embed list, out of memory?\n");
 		ewl_shutdown();
@@ -287,6 +293,7 @@ ewl_shutdown(void)
 	 */
 	ewl_embed_shutdown();
 	ewl_callbacks_shutdown();
+	ewl_icon_theme_shutdown();
 	ewl_theme_shutdown();
 	ewl_engines_shutdown();
 	ewl_config_shutdown();
