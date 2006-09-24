@@ -26,26 +26,13 @@
 #include "file.h"
 #include "user.h"
 
-int
-execApplication(const char *params, int flags)
+static void
+ExecSetupEnv(int flags)
 {
-   char                exe[FILEPATH_LEN_MAX];
-   char               *sh;
-   char               *path;
-   char               *real_exec;
    int                 fd;
 
-   if (!params)
-      return -1;
-
-   sscanf(params, "%4000s", exe);
-   if (exe[0] == '\0')
-      return -1;
-
-   if (fork())
-      return 0;
-
    setsid();
+
    /* Close all file descriptors except the std 3 */
    for (fd = 3; fd < 1024; fd++)
       close(fd);
@@ -57,6 +44,27 @@ execApplication(const char *params, int flags)
    if (Mode.wm.window)
       Esetenv("LD_PRELOAD", ENLIGHTENMENT_LIB "/libe16_hack.so");
 #endif
+}
+
+int
+execApplication(const char *params, int flags)
+{
+   char                exe[FILEPATH_LEN_MAX];
+   char               *sh;
+   char               *path;
+   char               *real_exec;
+
+   if (!params)
+      return -1;
+
+   sscanf(params, "%4000s", exe);
+   if (exe[0] == '\0')
+      return -1;
+
+   if (fork())
+      return 0;
+
+   ExecSetupEnv(flags);
 
    sh = usershell(getuid());
 
@@ -159,20 +167,13 @@ execApplication(const char *params, int flags)
 void
 Espawn(int argc __UNUSED__, char **argv)
 {
-   int                 fd;
-
    if (!argv || !argv[0])
       return;
 
    if (fork())
       return;
 
-   setsid();
-   /* Close all file descriptors except the std 3 */
-   for (fd = 3; fd < 1024; fd++)
-      close(fd);
-
-   LangExport();
+   ExecSetupEnv(EXEC_SET_LANG);
 
    execvp(argv[0], argv);
 
