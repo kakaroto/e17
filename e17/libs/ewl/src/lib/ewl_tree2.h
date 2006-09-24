@@ -82,14 +82,12 @@ typedef struct Ewl_Tree2 Ewl_Tree2;
  */
 struct Ewl_Tree2
 {
-	Ewl_Box box; 		/**< Inherit from ewl_box. */
+	Ewl_MVC mvc; 		/**< Inherit from ewl_mvc. */
 
 	Ewl_Widget *header;	 /**< The tree header */
 	Ewl_Widget *rows;	 /**< The rows of the tree */
-	Ewl_View *view;	 	 /**< Holds the view of the tree */
 
 	Ecore_List *columns;     /**< The tree columns. */
-	void *data;              /**< Data provided to the tree */
 
 	int *rowcache;           /**< Cache of row sizes */
 	Ecore_List *selected; 	 /**< The list of selected cells */
@@ -98,7 +96,6 @@ struct Ewl_Tree2
 
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
-	unsigned char dirty:1;    /**< Has the data changed? */
 };
 
 /**
@@ -120,7 +117,7 @@ struct Ewl_Tree2_Column
 	Ewl_Model *model;	/**< The model for the column */
 	Ewl_View  *view;	/**< The view for the column */
 	
-	Ewl_Tree2 *parent;	/**< The tree this column is for */
+	Ewl_MVC *parent;	/**< The mvc this column is for */
 	Ewl_Sort_Direction sort; /**< direction the column is sorted in */
 };
 
@@ -129,12 +126,6 @@ struct Ewl_Tree2_Column
  */
 Ewl_Widget 	*ewl_tree2_new(void);
 int 		 ewl_tree2_init(Ewl_Tree2 *tree);
-
-void		 ewl_tree2_view_set(Ewl_Tree2 *t, Ewl_View *view);
-Ewl_View	*ewl_tree2_view_get(Ewl_Tree2 *t);
-
-void		 ewl_tree2_data_set(Ewl_Tree2 *m, void *data);
-void		*ewl_tree2_data_get(Ewl_Tree2 *m);
 
 void		 ewl_tree2_column_append(Ewl_Tree2 *t, Ewl_Model *m, 
 							Ewl_View *v);
@@ -158,9 +149,6 @@ void 		 ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree_Mode mode);
 void		 ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, unsigned int fixed);
 unsigned int	 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 
-void		 ewl_tree2_dirty_set(Ewl_Tree2 *tree2, unsigned int dirty);
-unsigned int	 ewl_tree2_dirty_get(Ewl_Tree2 *tree2);
-
 Ewl_Widget	*ewl_tree2_view_widget_get(Ewl_Tree2 *tree);
 
 /*
@@ -182,8 +170,8 @@ Ewl_Model 		*ewl_tree2_column_model_get(Ewl_Tree2_Column *c);
 void			 ewl_tree2_column_view_set(Ewl_Tree2_Column *c, Ewl_View *v);
 Ewl_View		*ewl_tree2_column_view_get(Ewl_Tree2_Column *c);
 
-void			 ewl_tree2_column_tree_set(Ewl_Tree2_Column *c, Ewl_Tree2 *tree);
-Ewl_Tree2 		*ewl_tree2_column_tree_get(Ewl_Tree2_Column *c);
+void			 ewl_tree2_column_mvc_set(Ewl_Tree2_Column *c, Ewl_MVC *mvc);
+Ewl_MVC 		*ewl_tree2_column_mvc_get(Ewl_Tree2_Column *c);
 
 void			 ewl_tree2_column_sort_direction_set(Ewl_Tree2_Column *c, 
 								Ewl_Sort_Direction sort);

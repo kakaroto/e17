@@ -27,9 +27,9 @@
  * combo = ewl_combo_new();
  * ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
  * 				combo_value_changed, NULL);
- * ewl_combo_model_set(EWL_COMBO(combo), model);
- * ewl_combo_view_set(EWL_COMBO(combo), view);
- * ewl_combo_data_set(EWL_COMBO(combo), data);
+ * ewl_mvc_model_set(EWL_MVC(combo), model);
+ * ewl_mvc_view_set(EWL_MVC(combo), view);
+ * ewl_mvc_data_set(EWL_MVC(combo), data);
  * ewl_widget_show(combo);
  * @endcode
  * 
@@ -130,9 +130,9 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(hbox), combo);
 	ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
 					combo_value_changed, NULL);
-	ewl_combo_model_set(EWL_COMBO(combo), model);
-	ewl_combo_view_set(EWL_COMBO(combo), view);
-	ewl_combo_data_set(EWL_COMBO(combo), data);
+	ewl_mvc_model_set(EWL_MVC(combo), model);
+	ewl_mvc_view_set(EWL_MVC(combo), view);
+	ewl_mvc_data_set(EWL_MVC(combo), data);
 	ewl_widget_show(combo);
 
 	/* create the view for ewl_image widgets */
@@ -146,9 +146,9 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(hbox), combo);
 	ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
 					combo_value_changed, NULL);
-	ewl_combo_model_set(EWL_COMBO(combo), model);
-	ewl_combo_view_set(EWL_COMBO(combo), view);
-	ewl_combo_data_set(EWL_COMBO(combo), data);
+	ewl_mvc_model_set(EWL_MVC(combo), model);
+	ewl_mvc_view_set(EWL_MVC(combo), view);
+	ewl_mvc_data_set(EWL_MVC(combo), data);
 	ewl_widget_show(combo);
 
 	/* create the editable model/view */
@@ -168,9 +168,9 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(hbox), combo);
 	ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
 					combo_value_changed, NULL);
-	ewl_combo_model_set(EWL_COMBO(combo), model);
-	ewl_combo_view_set(EWL_COMBO(combo), view);
-	ewl_combo_data_set(EWL_COMBO(combo), data);
+	ewl_mvc_model_set(EWL_MVC(combo), model);
+	ewl_mvc_view_set(EWL_MVC(combo), view);
+	ewl_mvc_data_set(EWL_MVC(combo), data);
 	ewl_combo_editable_set(EWL_COMBO(combo), TRUE);
 	ewl_widget_show(combo);
 
@@ -240,7 +240,7 @@ combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	Combo_Test_Data *d;
 	int idx;
 
-	d = ewl_combo_data_get(EWL_COMBO(w));
+	d = ewl_mvc_data_get(EWL_MVC(w));
 	idx = ewl_combo_selected_get(EWL_COMBO(w));
 	if (idx > -1)
 		printf("value changed to %d (%s)\n", idx, d->data[idx]);
@@ -257,7 +257,7 @@ combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	int s;
 
 	c = ewl_widget_name_find("combo_label");
-	d = ewl_combo_data_get(EWL_COMBO(c));
+	d = ewl_mvc_data_get(EWL_MVC(c));
 
 	s = d->count;
 	d->count += 2;
@@ -266,10 +266,10 @@ combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	d->data[s] = strdup(PACKAGE_DATA_DIR "/images/Package.png");
 	d->data[s + 1] = strdup(PACKAGE_DATA_DIR "/images/Open.png");
 
-	ewl_combo_dirty_set(EWL_COMBO(c), 1);
+	ewl_mvc_dirty_set(EWL_MVC(c), 1);
 
 	c = ewl_widget_name_find("combo_image");
-	ewl_combo_dirty_set(EWL_COMBO(c), 1);
+	ewl_mvc_dirty_set(EWL_MVC(c), 1);
 }
 
 static Ewl_Widget *

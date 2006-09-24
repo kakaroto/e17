@@ -33,23 +33,18 @@ typedef struct Ewl_Combo Ewl_Combo;
 #define EWL_COMBO(combo) ((Ewl_Combo *) combo)
 
 /**
- * Inherits from the Ewl_Menu_Base and does not extend the structure, but
- * provides policy for drawing on the current evas.
+ * Inherits from the Ewl_MVC widget 
  */
 struct Ewl_Combo
 {
-	Ewl_Box box; /**< Inherit from box */
+	Ewl_MVC mvc; /**< Inherit from Ewl_MVC */
+
 	Ewl_Menu_Base *popup; /**< Use a menu to display with. */
 
 	Ewl_Widget *button; /**< expand/contract button */
 	Ewl_Widget *selected; /**< Selected widget */
 	int selected_idx; /**< The selected row */
 
-	Ewl_Model *model; /**< The model for the combo */
-	Ewl_View *view;   /**< The view for the combo */
-
-	void *data;	  /**< The data for the combo */
-	unsigned char dirty:1; /**< The combo's data is dirty */
 	unsigned char editable:1; /**< Is the combo editable */
 };
 
@@ -58,18 +53,6 @@ int		 ewl_combo_init(Ewl_Combo *combo);
 
 int		 ewl_combo_selected_get(Ewl_Combo *combo);
 void		 ewl_combo_selected_set(Ewl_Combo *combo, int);
-
-void		 ewl_combo_model_set(Ewl_Combo *combo, Ewl_Model *model);
-Ewl_Model	*ewl_combo_model_get(Ewl_Combo *combo);
-
-void		 ewl_combo_view_set(Ewl_Combo *combo, Ewl_View *view);
-Ewl_View	*ewl_combo_view_get(Ewl_Combo *combo);
-
-void		 ewl_combo_data_set(Ewl_Combo *combo, void *data);
-void		*ewl_combo_data_get(Ewl_Combo *combo);
-
-void		 ewl_combo_dirty_set(Ewl_Combo *combo, unsigned int dirty);
-unsigned int	 ewl_combo_dirty_get(Ewl_Combo *combo);
 
 void		 ewl_combo_editable_set(Ewl_Combo *combo, 
 						unsigned int editable);

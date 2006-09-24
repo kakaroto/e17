@@ -68,9 +68,9 @@ create_test(Ewl_Container *box)
 	list = ewl_list_new();
 	ewl_container_child_append(EWL_CONTAINER(o), list);
 	ewl_box_orientation_set(EWL_BOX(list), EWL_ORIENTATION_HORIZONTAL);
-	ewl_list_model_set(EWL_LIST(list), model);
-	ewl_list_view_set(EWL_LIST(list), view);
-	ewl_list_data_set(EWL_LIST(list), str_data);
+	ewl_mvc_model_set(EWL_MVC(list), model);
+	ewl_mvc_view_set(EWL_MVC(list), view);
+	ewl_mvc_data_set(EWL_MVC(list), str_data);
 	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED, 
 					list_cb_value_changed, NULL);
 	ewl_widget_show(list);
@@ -95,9 +95,9 @@ create_test(Ewl_Container *box)
 
 	list = ewl_list_new();
 	ewl_container_child_append(EWL_CONTAINER(o), list);
-	ewl_list_model_set(EWL_LIST(list), model);
-	ewl_list_view_set(EWL_LIST(list), view);
-	ewl_list_data_set(EWL_LIST(list), data);
+	ewl_mvc_model_set(EWL_MVC(list), model);
+	ewl_mvc_view_set(EWL_MVC(list), view);
+	ewl_mvc_data_set(EWL_MVC(list), data);
 	ewl_widget_show(list);
 
 
@@ -196,7 +196,7 @@ list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	Ecore_List *el;
 
 	list = EWL_LIST(w);
-	el = ewl_list_data_get(list);
+	el = ewl_mvc_data_get(EWL_MVC(list));
 
 	ecore_list_goto_index(el, ewl_list_selected_index_get(list));
 	printf("Selected (%s)\n", (char *)ecore_list_current(el));

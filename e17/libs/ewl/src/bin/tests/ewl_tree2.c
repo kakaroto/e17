@@ -330,7 +330,7 @@ ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	else
 		view = ewl_tree2_view_scrolled_get();
 
-	ewl_tree2_view_set(tree, view);
+	ewl_mvc_view_set(EWL_MVC(tree), view);
 }
 
 static void
@@ -342,10 +342,10 @@ ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data)
 	tree = ewl_widget_name_find("tree");
 	spinner = ewl_widget_name_find("rows_spinner");
 
-	d = ewl_tree2_data_get(EWL_TREE2(tree));
+	d = ewl_mvc_data_get(EWL_MVC(tree));
 	d->count = ewl_range_value_get(EWL_RANGE(spinner));
 
-	ewl_tree2_dirty_set(EWL_TREE2(tree), TRUE);
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 }
 
 

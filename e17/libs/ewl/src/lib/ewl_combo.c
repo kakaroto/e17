@@ -39,7 +39,7 @@ ewl_combo_init(Ewl_Combo *combo)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("combo", combo, FALSE);
 
-	if (!ewl_box_init(EWL_BOX(combo)))
+	if (!ewl_mvc_init(EWL_MVC(combo)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_inherit(EWL_WIDGET(combo), EWL_COMBO_TYPE);
@@ -92,9 +92,17 @@ ewl_combo_init(Ewl_Combo *combo)
 void
 ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 {
+	Ewl_View *view;
+	Ewl_Model *model;
+	void *mvc_data;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("combo", combo);
 	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
+
+	view = ewl_mvc_view_get(EWL_MVC(combo));
+	model = ewl_mvc_model_get(EWL_MVC(combo));
+	mvc_data = ewl_mvc_data_get(EWL_MVC(combo));
 
 	/* we don't bail out early as the user could have prepended widgets
 	 * to their data, so the selected_idx will be the same but the
@@ -109,12 +117,12 @@ ewl_combo_selected_set(Ewl_Combo *combo, int idx)
 	 * the header */
 	if ((idx > -1) && (!combo->editable))
 	{
-		combo->selected = combo->view->construct();
-		combo->view->assign(combo->selected, 
-				combo->model->fetch(combo->data, idx, 0));
+		combo->selected = view->construct();
+		view->assign(combo->selected, 
+				model->fetch(mvc_data, idx, 0));
 	}
-	else if (combo->view && combo->view->header_fetch)
-		combo->selected = combo->view->header_fetch(combo->data, 
+	else if (view && view->header_fetch)
+		combo->selected = view->header_fetch(mvc_data, 
 							combo->selected_idx);
 
 	if (combo->selected)
@@ -142,145 +150,6 @@ ewl_combo_selected_get(Ewl_Combo *combo)
 	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, -1);
 
 	DRETURN_INT(combo->selected_idx, DLEVEL_STABLE);
-}
-
-/**
- * @param combo: The Ewl_Combo to work with
- * @param model: The Ewl_Model to set into the combo
- * @return Returns no value.
- * @brief Associates the given model with the combo
- */
-void
-ewl_combo_model_set(Ewl_Combo *combo, Ewl_Model *model)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("combo", combo);
-	DCHECK_PARAM_PTR("model", model);
-	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
-
-	combo->model = model;
-	ewl_combo_dirty_set(combo, TRUE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param combo: The Ewl_Combo to get the model from
- * @return Returns the model currently set into this combo
- * @brief Retrieves the model set into the combo box
- */
-Ewl_Model *
-ewl_combo_model_get(Ewl_Combo *combo)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("combo", combo, NULL);
-	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, NULL);
-
-	DRETURN_PTR(combo->model, DLEVEL_STABLE);
-}
-
-/**
- * @param combo: The Ewl_Combo to set the view into 
- * @param view: The Ewl_View to set into the combo
- * @return Returns no value.
- * @brief Set the view for the combo to @a view
- */
-void
-ewl_combo_view_set(Ewl_Combo *combo, Ewl_View *view)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("combo", combo);
-	DCHECK_PARAM_PTR("view", view);
-	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
-
-	combo->view = view;
-	ewl_combo_dirty_set(combo, TRUE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param combo: The Ewl_Combo to use.
- * @return Returns the view currently set in the combo
- * @brief Retrieves the view currently set into the combo
- */
-Ewl_View *
-ewl_combo_view_get(Ewl_Combo *combo)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("combo", combo, NULL);
-	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, NULL);
-
-	DRETURN_PTR(combo->view, DLEVEL_STABLE);
-}
-
-/**
- * @param combo: The Ewl_Combo to work with
- * @param data: The data to set into the combo
- * @return Returns no value.
- * @brief This sets the data for the combo into the combo itself.
- */
-void
-ewl_combo_data_set(Ewl_Combo *combo, void *data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("combo", combo);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
-
-	combo->data = data;
-	ewl_combo_dirty_set(combo, TRUE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param combo: The Ewl_Combo to get the data from
- * @return Returns the data set into the combo
- * @brief This returns the data used in the combo 
- */
-void *
-ewl_combo_data_get(Ewl_Combo *combo)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("combo", combo, NULL);
-	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, NULL);
-
-	DRETURN_PTR(combo->data, DLEVEL_STABLE);
-}
-
-/**
- * @param combo: The Ewl_Combo to work with
- * @param dirty: Set to TRUE if the data in the combo has changed
- * @return Returns no value
- * @brief Setting this to TRUE tells the combo that it's data has changed
- * and it will need to re-create it's drop down.
- */
-void
-ewl_combo_dirty_set(Ewl_Combo *combo, unsigned int dirty)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("combo", combo);
-	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
-
-	combo->dirty = !!dirty;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param combo: The Ewl_Combo to use
- * @return Returns the dirty status of the combo
- * @brief Returns if the combo is currently dirty or not
- */
-unsigned int
-ewl_combo_dirty_get(Ewl_Combo *combo)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("combo", combo, FALSE);
-	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, FALSE);
-
-	DRETURN_INT(combo->dirty, DLEVEL_STABLE);
 }
 
 /**
@@ -371,15 +240,21 @@ void
 ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
 	Ewl_Combo *combo;
+	Ewl_Model *model;
+	Ewl_View *view;
+	void *mvc_data;
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
 
 	combo = data;
+	model = ewl_mvc_model_get(EWL_MVC(combo));
+	view = ewl_mvc_view_get(EWL_MVC(combo));
+	mvc_data = ewl_mvc_data_get(EWL_MVC(combo));
 
 	/* nothing to do if we have no model/view or data */
-	if ((!combo->model) || (!combo->view))
+	if (!model || !view)
 		DRETURN(DLEVEL_STABLE);
 
 	/* XXX put checks to make sure all the needed module and view
@@ -401,24 +276,23 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 						combo->popup->popup);
 	}
 
-	if (!combo->dirty)
+	if (!ewl_mvc_dirty_get(EWL_MVC(combo)))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_container_reset(EWL_CONTAINER(combo->popup));
-	for (i = 0; i < combo->model->count(combo->data); i++)
+	for (i = 0; i < model->count(mvc_data); i++)
 	{
 		Ewl_Widget *item;
 
-		item = combo->view->construct();
-		combo->view->assign(item, 
-				combo->model->fetch(combo->data, i, 0));
+		item = view->construct();
+		view->assign(item, model->fetch(mvc_data, i, 0));
 		ewl_container_child_append(EWL_CONTAINER(combo->popup), item);
 		ewl_callback_append(item, EWL_CALLBACK_CLICKED,
 					ewl_combo_cb_item_clicked, combo);
 		ewl_widget_show(item);
 	}
 
-	combo->dirty = 0;
+	ewl_mvc_dirty_set(EWL_MVC(combo), FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -91,9 +91,9 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 
 	fp->path_combo = ewl_combo_new();
 	ewl_container_child_append(EWL_CONTAINER(fp), fp->path_combo);
-	ewl_combo_model_set(EWL_COMBO(fp->path_combo), model);
-	ewl_combo_view_set(EWL_COMBO(fp->path_combo), view);
-	ewl_combo_data_set(EWL_COMBO(fp->path_combo), fp->path);
+	ewl_mvc_model_set(EWL_MVC(fp->path_combo), model);
+	ewl_mvc_view_set(EWL_MVC(fp->path_combo), view);
+	ewl_mvc_data_set(EWL_MVC(fp->path_combo), fp->path);
 	ewl_callback_append(fp->path_combo, EWL_CALLBACK_VALUE_CHANGED,
 					ewl_filepicker_cb_path_change, fp);
 	ewl_widget_show(fp->path_combo);
@@ -141,9 +141,9 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_view_header_fetch_set(view, ewl_filepicker_cb_type_header);
 
 	fp->type_combo = ewl_combo_new();
-	ewl_combo_model_set(EWL_COMBO(fp->type_combo), model);
-	ewl_combo_view_set(EWL_COMBO(fp->type_combo), view);
-	ewl_combo_data_set(EWL_COMBO(fp->type_combo), fp);
+	ewl_mvc_model_set(EWL_MVC(fp->type_combo), model);
+	ewl_mvc_view_set(EWL_MVC(fp->type_combo), view);
+	ewl_mvc_data_set(EWL_MVC(fp->type_combo), fp);
 	ewl_combo_selected_set(EWL_COMBO(fp->type_combo), 0);
 	ewl_combo_editable_set(EWL_COMBO(fp->type_combo), TRUE);
 	ewl_callback_append(fp->type_combo, EWL_CALLBACK_VALUE_CHANGED,
@@ -711,7 +711,7 @@ ewl_filepicker_path_populate(Ewl_Filepicker *fp, char *path)
 	if (p && (*(p + 1) != '\0'))
 		ecore_list_prepend(fp->path, strdup(path));
 
-	ewl_combo_dirty_set(EWL_COMBO(fp->path_combo), TRUE);
+	ewl_mvc_dirty_set(EWL_MVC(fp->path_combo), TRUE);
 	ewl_combo_selected_set(EWL_COMBO(fp->path_combo), 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

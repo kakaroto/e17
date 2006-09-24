@@ -26,34 +26,17 @@
 typedef struct Ewl_List Ewl_List;
 
 /**
- * Inherits from Ewl_Box and extends to provide a list widget
+ * Inherits from Ewl_MVC and extends to provide a list widget
  */
 struct Ewl_List
 {
-	Ewl_Box box;		/**< The box parent */
-
-	Ewl_Model *model;	/**< The model for the list */
-	Ewl_View *view;		/**< The view for the list */
-	void *data;		/**< The data for the list */
+	Ewl_MVC mvc;		/**< The mvc parent */
 
 	Ewl_Widget *selected;	/**< The selected widget */
-	unsigned char dirty:1;	/**< Has the model changed? */
 };
 
 Ewl_Widget 	*ewl_list_new(void);
 int 		 ewl_list_init(Ewl_List *list);
-
-void		 ewl_list_model_set(Ewl_List *list, Ewl_Model *model);
-Ewl_Model	*ewl_list_model_get(Ewl_List *list);
-
-void		 ewl_list_view_set(Ewl_List *list, Ewl_View *view);
-Ewl_View	*ewl_list_view_get(Ewl_List *list);
-
-void		 ewl_list_data_set(Ewl_List *list, void *data);
-void		*ewl_list_data_get(Ewl_List *list);
-
-void		 ewl_list_dirty_set(Ewl_List *list, unsigned int dirty);
-unsigned int	 ewl_list_dirty_get(Ewl_List *list);
 
 void		 ewl_list_selected_widget_set(Ewl_List *list, Ewl_Widget *w);
 Ewl_Widget	*ewl_list_selected_widget_get(Ewl_List *list);

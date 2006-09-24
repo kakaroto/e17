@@ -270,6 +270,7 @@ extern"C" {
 #include <ewl_misc.h>
 
 #include <ewl_box.h>
+#include <ewl_mvc.h>
 #include <ewl_freebox.h>
 #include <ewl_border.h>
 
