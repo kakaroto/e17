@@ -42,7 +42,7 @@ struct Epsilon_Ipc_End
 Epsilon_Message *epsilon_message_new(int clientid, char *path, char *dst, int status);
 
 int epsilon_ipc_client_send(Ecore_Con_Client *cl, Epsilon_Message *msg);
-int epsilon_ipc_server_send(Ecore_Con_Client *cl, Epsilon_Message *msg);
+int epsilon_ipc_server_send(Ecore_Con_Server *cl, Epsilon_Message *msg);
 
 Epsilon_Message *epsilon_ipc_consume(Epsilon_Ipc_End *end);
 
