@@ -21,8 +21,6 @@
 - Menus will activate on tab, but it jumps to the submenu instead of
   each menu item
 
-- The text widget dosen't handle the wrap flag correctly.
-
 - We auto add things to the tab order as they are realized. We need to make
   sure the things we are adding aren't already in the tab order as we will
   then remove them. Should possibly add a flag to deactive this behaviour if
@@ -70,12 +68,7 @@
   and any ecore_x calls out of there.
 
   Ewl_Icon
- - Need to add the constrain stuff in like iconbox does at the moment.
-   Figure out the constrain size by first checking the max size of the widget
-   and falling back to check /icon/constrain/size from the theme, then
-   falling back to a default 64 if no theme value set
- 
- - Clicking on the label 'Draw (Editable)' then clicking again will case a
+ - Clicking on the label 'Draw (Editable)' then clicking again will cause a
    warning to print. I _think_ the move event is getting fired for the text
    widget after I've deleted it in the Ewl_Icon code. Need to confirm/fix
    this.
@@ -114,10 +107,6 @@
 - Need to return a context when items are pushed onto the status bar so that
   a context can be removed without popping off the stack
 
-- The placement of the tooltips needs to be smarter. Currently it just
-  places off of the right bottom, but that should be adjusted depending on
-  where we are relative to the window border
-
 - Need to do some work on the tree.
   - add ability to wrap text in tree nodes
   - add ability to clear all rows under a parent row
@@ -148,8 +137,5 @@
 - Ewl_Spectrum:: implement a triangle selection mode
 
 - Ewl_Seeker:: Add value labels and hash marks.
-
-- Ewl_Text:: need a way to handle fonts that aren't in the theme .edj
-
 
  */
