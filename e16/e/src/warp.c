@@ -470,7 +470,6 @@ WarplistSighan(int sig, void *prm __UNUSED__)
 }
 
 static const CfgItem WarplistCfgItems[] = {
-   CFG_ITEM_INT(Conf.warplist, icon_mode, 3),
    CFG_ITEM_BOOL(Conf.warplist, enable, 1),
    CFG_ITEM_BOOL(Conf.warplist, showsticky, 1),
    CFG_ITEM_BOOL(Conf.warplist, showshaded, 1),
@@ -478,6 +477,7 @@ static const CfgItem WarplistCfgItems[] = {
    CFG_ITEM_BOOL(Conf.warplist, warpfocused, 1),
    CFG_ITEM_BOOL(Conf.warplist, raise_on_select, 1),
    CFG_ITEM_BOOL(Conf.warplist, warp_on_select, 0),
+   CFG_ITEM_INT(Conf.warplist, icon_mode, 3),
 };
 #define N_CFG_ITEMS (sizeof(WarplistCfgItems)/sizeof(CfgItem))
 
