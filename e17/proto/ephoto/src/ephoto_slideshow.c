@@ -377,7 +377,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_text_text_set(EWL_TEXT(sc->wentry), "640");
  ewl_container_child_append(EWL_CONTAINER(hbox), sc->wentry);
  ewl_object_size_request(EWL_OBJECT(sc->wentry), 35, 15);
- ewl_widget_disable(sc->wentry);
+ if (!sc->custom_size) ewl_widget_disable(sc->wentry);
  ewl_widget_show(sc->wentry);
 
  text = ewl_text_new();
@@ -391,7 +391,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_text_text_set(EWL_TEXT(sc->hentry), "480");
  ewl_container_child_append(EWL_CONTAINER(hbox), sc->hentry);
  ewl_object_size_request(EWL_OBJECT(sc->hentry), 35, 15);
- ewl_widget_disable(sc->hentry);
+ if (!sc->custom_size) ewl_widget_disable(sc->hentry);
  ewl_widget_show(sc->hentry);
 
  border = ewl_border_new();
