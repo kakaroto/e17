@@ -3,10 +3,24 @@
 #include <Esmart_Preview.h>
 #include "Entrance_Widgets.h"
 
-Entrance_Widget
+Entrance_Preview
+_ew_preview_new(void)
+{
+	Entrance_Preview ep = calloc(1, sizeof(*ep));
+	if(ep)
+	{
+		ep->owner = NULL;
+		ep->box = NULL;
+		ep->preview_smart = NULL;
+	}
+
+	return ep;
+}
+
+Entrance_Preview
 ew_preview_new(int w, int h)
 {
-	Entrance_Widget ep = ew_new();
+	Entrance_Preview ep = _ew_preview_new();
 	if(!ep)
 		return NULL;
 
@@ -17,7 +31,7 @@ ew_preview_new(int w, int h)
 }
 
 Evas*
-ew_preview_evas_get(Entrance_Widget ep, int w, int h, int vw, int vh)
+ew_preview_evas_get(Entrance_Preview ep, int w, int h, int vw, int vh)
 {
 	if(ep->preview_smart)
 		esmart_preview_evas_get(ep->preview_smart);

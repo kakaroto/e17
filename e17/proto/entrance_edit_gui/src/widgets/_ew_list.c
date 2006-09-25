@@ -3,10 +3,24 @@
 
 static void _ew_list_cb_row_clicked(Etk_Object *, Etk_Tree_Row *, Etk_Event_Mouse_Down *, void *);
 
-Entrance_Widget
+Entrance_List
+__ew_list_new(void)
+{
+	Entrance_List el = calloc(1, sizeof(*el));
+	if(el) 
+	{
+		el->owner = NULL;
+		el->box = NULL;
+		el->col = NULL;
+	}
+
+	return el;
+}
+
+Entrance_List
 _ew_list_new(const char *title, int w, int h, int r_h)
 {
-   Entrance_Widget ew = ew_new();
+   Entrance_List ew = __ew_list_new();
    if(!ew) {
 	   return NULL;
    }
@@ -19,14 +33,14 @@ _ew_list_new(const char *title, int w, int h, int r_h)
    etk_tree_headers_visible_set(ETK_TREE(ew->owner), ETK_FALSE);
    etk_tree_row_height_set(ETK_TREE(ew->owner), r_h);
    
-  ew->list_col = NULL;
+  ew->col = NULL;
 
    return ew;
 
 }
 
-Entrance_Widget
-_ew_list_buildtree(Entrance_Widget ew)
+Entrance_List
+_ew_list_buildtree(Entrance_List ew)
 {
 	etk_tree_build(ETK_TREE(ew->owner));
 
@@ -62,14 +76,14 @@ ew_listdata_new(void)
 }
 
 void
-ew_list_first_row_select(Entrance_Widget el)
+ew_list_first_row_select(Entrance_List el)
 {
 	Etk_Tree_Row *row = etk_tree_first_row_get(ETK_TREE(el->owner));
 	etk_tree_row_select(row);
 }
 
 void* 
-ew_list_selected_data_get(Entrance_Widget el)
+ew_list_selected_data_get(Entrance_List el)
 {
 	Etk_Tree_Row *row = etk_tree_selected_row_get(ETK_TREE(el->owner));
 	if(!row) {

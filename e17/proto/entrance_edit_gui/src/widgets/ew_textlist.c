@@ -5,21 +5,21 @@
 
 static void _ew_tree_cb_row_clicked(Etk_Object *, Etk_Tree_Row *, Etk_Event_Mouse_Down *, void *);
 
-Entrance_Widget
+Entrance_List
 ew_textlist_new(const char *title, int w, int h, int r_h, int c_w)
 {
-   Entrance_Widget ew = _ew_list_new(title, w, h, r_h);
+   Entrance_List ew = _ew_list_new(title, w, h, r_h);
    if(!ew) {
 	   return NULL;
    }
 
-   ew->list_col = etk_tree_col_new(ETK_TREE(ew->owner), NULL, etk_tree_model_text_new(ETK_TREE(ew->owner)), c_w);
+   ew->col = etk_tree_col_new(ETK_TREE(ew->owner), NULL, etk_tree_model_text_new(ETK_TREE(ew->owner)), c_w);
 
    return _ew_list_buildtree(ew);
 }
 
 void
-ew_textlist_add(Entrance_Widget ew, const char *label, void *data, size_t size,
+ew_textlist_add(Entrance_List ew, const char *label, void *data, size_t size,
                               void (*func) (void))
 {
    Etk_Tree_Row *row;

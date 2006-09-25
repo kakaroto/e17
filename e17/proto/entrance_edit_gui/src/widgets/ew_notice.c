@@ -4,10 +4,10 @@
 static void _ew_cb_destroy(void *);
 static void _ew_cb_emit_response(Etk_Object *, void *data);
 
-Entrance_Widget 
+Entrance_Dialog 
 ew_notice_new(const char *title)
 {
-	Entrance_Widget ew = ew_dialog_new(title, EW_FALSE);
+	Entrance_Dialog ew = ew_dialog_new(title, EW_FALSE);
 	if(!ew) 
 	{
 		return NULL;
@@ -18,13 +18,13 @@ ew_notice_new(const char *title)
 }
 
 void 
-ew_notice_show(Entrance_Widget ew)
+ew_notice_show(Entrance_Dialog ew)
 {
 	ew_dialog_show(ew);
 }
 
 Entrance_Widget
-ew_notice_group_add(Entrance_Widget d, const char *title, int direction)
+ew_notice_group_add(Entrance_Dialog d, const char *title, int direction)
 {
 	Entrance_Widget ew = ew_group_new(title, direction);
 	if(!ew) 
@@ -38,7 +38,7 @@ ew_notice_group_add(Entrance_Widget d, const char *title, int direction)
 }
 
 void 
-ew_notice_button_add(Entrance_Widget ew, const char *name, int response_id, void (*response_event)(void *, int, void *), void *data)
+ew_notice_button_add(Entrance_Dialog ew, const char *name, int response_id, void (*response_event)(void *, int, void *), void *data)
 {
 	Etk_Widget *btn = etk_dialog_button_add(ETK_DIALOG(ew->owner), name, response_id);
 	if(response_event && !ew->extra) {
@@ -48,40 +48,40 @@ ew_notice_button_add(Entrance_Widget ew, const char *name, int response_id, void
 }
 
 void 
-ew_notice_close_button_add(Entrance_Widget ew, void (*response_event)(void *, int, void *), void *data)
+ew_notice_close_button_add(Entrance_Dialog ew, void (*response_event)(void *, int, void *), void *data)
 {
 	ew_notice_button_add(ew, _("Close"), EW_NOTICE_CLOSE_BUTTON, response_event, data);
 }
 
 void 
-ew_notice_apply_button_add(Entrance_Widget ew, void (*response_event)(void *, int, void *), void *data)
+ew_notice_apply_button_add(Entrance_Dialog ew, void (*response_event)(void *, int, void *), void *data)
 {
 	ew_notice_button_add(ew, _("Apply"), EW_NOTICE_APPLY_BUTTON, response_event, data);
 }
 
 void 
-ew_notice_ok_button_add(Entrance_Widget ew, void (*response_event)(void *, int, void *), void *data)
+ew_notice_ok_button_add(Entrance_Dialog ew, void (*response_event)(void *, int, void *), void *data)
 {
 	ew_notice_button_add(ew, _("Ok"), EW_NOTICE_OK_BUTTON, response_event, data);
 }
 
 void
-ew_notice_yes_button_add(Entrance_Widget ew, void (*response_event)(void *, int, void *), void *data) {
+ew_notice_yes_button_add(Entrance_Dialog ew, void (*response_event)(void *, int, void *), void *data) {
 	ew_notice_button_add(ew, _("Yes"), EW_NOTICE_YES_BUTTON, response_event, data);
 }
 
 void
-ew_notice_no_button_add(Entrance_Widget ew, void (*response_event)(void *, int, void *), void *data) {
+ew_notice_no_button_add(Entrance_Dialog ew, void (*response_event)(void *, int, void *), void *data) {
 	ew_notice_button_add(ew, _("No"), EW_NOTICE_NO_BUTTON, response_event, data);
 }
 
 void
-ew_notice_cancel_button_add(Entrance_Widget ew, void (*response_event)(void *, int, void *), void *data) {
+ew_notice_cancel_button_add(Entrance_Dialog ew, void (*response_event)(void *, int, void *), void *data) {
 	ew_notice_button_add(ew, _("Cancel"), EW_NOTICE_CANCEL_BUTTON, response_event, data);
 }
 
 void
-ew_notice_destroy(Entrance_Widget ew)
+ew_notice_destroy(Entrance_Dialog ew)
 {
 	ew_dialog_destroy(ew);
 }
