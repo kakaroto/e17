@@ -459,6 +459,7 @@ create_main_test_window(Ewl_Container *box)
 
 	o = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(note), o);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_ALL);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o, "UI Test");
 	ewl_widget_name_set(o, "execute_box");
 	ewl_widget_show(o);
