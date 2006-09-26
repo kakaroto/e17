@@ -83,7 +83,7 @@ edd_spawn_entrance(Entranced_Display *d)
    else
       snprintf(entrance_cmd, PATH_MAX, "%s -d %s -z %d", ENTRANCE, d->name,
                                                          getpid());
-   printf("Starting command: %s\n", entrance_cmd);
+   /*printf("Starting command: %s\n", entrance_cmd);*/
    d->e_exe = ecore_exe_run(entrance_cmd, d);
    d->client.pid = ecore_exe_pid_get(d->e_exe);
 }

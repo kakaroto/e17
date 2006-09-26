@@ -479,15 +479,38 @@ entrance_session_start_user_session(Entrance_Session * e)
         exit(0);
      default:
         syslog(LOG_NOTICE, "Replacing Entrance with simple login program to wait for session end.");
-	wait(NULL); 
+#ifdef HAVE_PAM
+        if (e->config->auth == ENTRANCE_USE_PAM)
+        {
+           snprintf(buf, sizeof(buf), "%s/%s/entrance_login %i %s %s",
+                    PACKAGE_LIB_DIR, PACKAGE, (int) pid, pwent->pw_name, 
+		    e->display);
+        }
+        else
+#endif
+        {
+           snprintf(buf, sizeof(buf), "%s/%s/entrance_login %i",
+                    PACKAGE_LIB_DIR, PACKAGE, (int) pid);
+        }
+        shell = strdup("/bin/sh");
+        /* this bypasses a race condition where entrance loses its x
+           connection before the wm gets it and x goes and resets itself */
+        sleep(10);
+        /*
+         * FIXME These should be called!
         ecore_x_shutdown();
         ecore_shutdown();
+        */
         break;
    }
    struct_passwd_free(pwent);
    entrance_session_free(e);
    if (shell) free(shell);
    if (user) free(user);
+   /* replace this process with a clean small one that just waits for its */
+   /* child to exit.. passed on the cmd-line */
+
+   execl("/bin/sh", "/bin/sh", "-l", "-c", buf, NULL);
    if (buf) free(buf);
 }
 
