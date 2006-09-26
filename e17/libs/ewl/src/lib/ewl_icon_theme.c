@@ -3,6 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+#define NOMATCH ((char *)0xdeadbeef)
+
 static int ewl_icon_theme_is_edje = 0;
 
 static Ecore_Hash *ewl_icon_theme_cache = NULL;
@@ -82,7 +84,7 @@ ewl_icon_theme_theme_change(void)
 const char *
 ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 {
-	const char *ret;
+	char *ret;
 	const char *icon_size;
 	char key[256];
 
@@ -109,8 +111,13 @@ ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 		ret = ecore_desktop_icon_find(icon, icon_size, 
 					ewl_config.theme.icon.theme);
 
-		ecore_hash_set(ewl_icon_theme_cache, strdup(key), (void *)ret);
+		if (!ret) ret = NOMATCH;
+
+		ecore_hash_set(ewl_icon_theme_cache, strdup(key), ret);
 	}
+	
+	if (ret == NOMATCH)
+		ret = NULL;
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
@@ -119,6 +126,9 @@ static void
 ewl_icon_theme_cb_free(void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (data == NOMATCH)
+		DRETURN(DLEVEL_STABLE);
 
 	IF_FREE(data);
 
