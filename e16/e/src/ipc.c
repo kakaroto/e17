@@ -100,6 +100,8 @@ IpcFindEwins(const char *match, int *pnum, int *pflags)
    if (!strcmp(match, "*") || !strcmp(match, "=") || !strcmp(match, "current"))
      {
 	ewin = GetContextEwin();
+	if (!ewin)
+	   ewin = GetFocusEwin();
 	if (match[0] == '=')
 	   flags = 1;		/* Nogroup */
 	goto do_one;
