@@ -712,7 +712,7 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 	 */ 
 	while (widget) {
 		if (ewl_object_flags_has(EWL_OBJECT(widget),
-					EWL_FLAG_PROPERTY_DND_AWARE,
+					EWL_FLAG_PROPERTY_DND_TARGET,
 					EWL_FLAGS_PROPERTY_MASK))
 			break;
 		widget = widget->parent;
@@ -803,7 +803,7 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 	 */ 
 	while (widget) {
 		if (ewl_object_flags_has(EWL_OBJECT(widget),
-					EWL_FLAG_PROPERTY_DND_AWARE,
+					EWL_FLAG_PROPERTY_DND_TARGET,
 					EWL_FLAGS_PROPERTY_MASK))
 			break;
 		widget = widget->parent;

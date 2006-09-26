@@ -250,7 +250,7 @@ ewl_widget_unrealize(Ewl_Widget *w)
 	 * Notify parent of hidden state.
 	 */
 	pc = EWL_CONTAINER(w->parent);
-	if (pc)
+	if (pc && VISIBLE(w))
 		ewl_container_child_hide_call(pc, w);
 
 	ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
@@ -2215,7 +2215,7 @@ ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Increment the dnd awareness counter on the embed.
 	 */
-	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_AWARE,
+	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_TARGET,
 				EWL_FLAGS_PROPERTY_MASK))
 		ewl_embed_dnd_aware_set(emb);
 
@@ -2393,7 +2393,7 @@ ewl_widget_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Decrement the dnd awareness counter on the embed.
 	 */
-	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_AWARE,
+	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_TARGET,
 				EWL_FLAGS_PROPERTY_MASK))
 		ewl_embed_dnd_aware_remove(emb);
 
@@ -3017,7 +3017,7 @@ ewl_widget_drag_down_cb(Ewl_Widget *w, void *ev_data ,
 	{
 		ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_STATE_DND_WAIT, 
 							EWL_FLAGS_STATE_MASK);
-		ewl_widget_dnd_drag_move_count=0;		
+		ewl_widget_dnd_drag_move_count = 0;		
 		ewl_widget_drag_widget = w;
 	}
 
@@ -3040,14 +3040,14 @@ ewl_widget_drag_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 
 	if (!ewl_dnd_status_get())
 		DRETURN(DLEVEL_STABLE);
-	
+
 	if (ewl_widget_drag_widget 
 			&& ewl_object_flags_has(EWL_OBJECT(ewl_widget_drag_widget), 
 						EWL_FLAG_STATE_DND_WAIT, 
 						EWL_FLAGS_STATE_MASK)) 
 	{
 		ewl_widget_dnd_drag_move_count++;
-		
+
 		if (ewl_widget_dnd_drag_move_count > 2) 
 		{
 			ewl_object_flags_remove(EWL_OBJECT(ewl_widget_drag_widget), 
@@ -3056,7 +3056,7 @@ ewl_widget_drag_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 			ewl_object_flags_add(EWL_OBJECT(ewl_widget_drag_widget), 
 						EWL_FLAG_STATE_DND,
 						EWL_FLAGS_STATE_MASK);
-		
+
 			ewl_dnd_drag_start(ewl_widget_drag_widget);	
 		}
 	}
@@ -3106,11 +3106,11 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 
 	if (val) { 
 		if (!ewl_object_flags_has(EWL_OBJECT(w), 
-					EWL_FLAG_PROPERTY_DRAGGABLE, 
+					EWL_FLAG_PROPERTY_DND_SOURCE, 
 					EWL_FLAGS_PROPERTY_MASK)) 
 		{
 			ewl_object_flags_add(EWL_OBJECT(w), 
-						EWL_FLAG_PROPERTY_DRAGGABLE, 
+						EWL_FLAG_PROPERTY_DND_SOURCE, 
 						EWL_FLAGS_PROPERTY_MASK );
 
 			ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, 
@@ -3128,7 +3128,7 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 	else 
 	{
 		if (ewl_object_flags_has(EWL_OBJECT(w), 
-						EWL_FLAG_PROPERTY_DRAGGABLE, 
+						EWL_FLAG_PROPERTY_DND_SOURCE, 
 						EWL_FLAGS_PROPERTY_MASK)) 
 		{
 			ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, 
@@ -3139,7 +3139,7 @@ ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
 						ewl_widget_drag_up_cb);
 
 			ewl_object_flags_remove(EWL_OBJECT(w), 
-						EWL_FLAG_PROPERTY_DRAGGABLE,  
+						EWL_FLAG_PROPERTY_DND_SOURCE,  
 						EWL_FLAGS_PROPERTY_MASK);
 
 		}
