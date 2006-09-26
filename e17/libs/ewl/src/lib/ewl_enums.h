@@ -128,38 +128,37 @@ enum Ewl_Flags
 	/*
 	 * Behavior modifying properties.
 	 */
-	EWL_FLAG_PROPERTY_RECURSIVE = 0x1000,	/**< Widget is recursive */
-	EWL_FLAG_PROPERTY_TOPLEVEL = 0x2000,	/**< Widget is a top level widget */
-	EWL_FLAG_PROPERTY_INTERNAL = 0x4000,	/**< Widget is internal */
+	EWL_FLAG_PROPERTY_RECURSIVE 	= 0x1000,	/**< Widget is recursive */
+	EWL_FLAG_PROPERTY_TOPLEVEL 	= 0x2000,	/**< Widget is a top level widget */
+	EWL_FLAG_PROPERTY_INTERNAL 	= 0x4000,	/**< Widget is internal */
 	EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS = 0x8000,	/**< Widget will block tab focus changes */
-	EWL_FLAG_PROPERTY_FOCUSABLE = 0x10000,	/**< Widget is focusable */
-	EWL_FLAG_PROPERTY_IN_TAB_LIST = 0x20000, /**< Widget is in the tab order */
+	EWL_FLAG_PROPERTY_FOCUSABLE 	= 0x10000,	/**< Widget is focusable */
+	EWL_FLAG_PROPERTY_IN_TAB_LIST 	= 0x20000, 	/**< Widget is in the tab order */
+	EWL_FLAG_PROPERTY_DND_TARGET	= 0x40000,	/**< Widget is DND aware */
+	EWL_FLAG_PROPERTY_DND_SOURCE	= 0x80000,	/**< Widget is dragable */
 
 	/*
 	 * Flags to indicate queues this object is on.
 	 */
-	EWL_FLAG_QUEUED_CSCHEDULED = 0x40000,	/**< Configure scheduled */
-	EWL_FLAG_QUEUED_RSCHEDULED = 0x80000,	/**< Reveal scheduled */
-	EWL_FLAG_QUEUED_DSCHEDULED = 0x100000,	/**< Delete scheduled */
+	EWL_FLAG_QUEUED_CSCHEDULED = 0x100000,	/**< Configure scheduled */
+	EWL_FLAG_QUEUED_RSCHEDULED = 0x200000,	/**< Reveal scheduled */
+	EWL_FLAG_QUEUED_DSCHEDULED = 0x400000,	/**< Delete scheduled */
 
-	EWL_FLAG_QUEUED_CPROCESS = 0x200000,	/**< Configure in progress */
-	EWL_FLAG_QUEUED_RPROCESS = 0x400000,	/**< Reveal in progress */
-	EWL_FLAG_QUEUED_DPROCESS = 0x800000,	/**< Delete in progress */
+	EWL_FLAG_QUEUED_CPROCESS = 0x800000,	/**< Configure in progress */
+	EWL_FLAG_QUEUED_RPROCESS = 0x1000000,	/**< Reveal in progress */
+	EWL_FLAG_QUEUED_DPROCESS = 0x2000000,	/**< Delete in progress */
 
 	/*
 	 * The state enum specifies the current state of a widget, ie. has it
 	 * been clicked, does it have the keyboard focus, etc.
 	 */
-	EWL_FLAG_STATE_NORMAL = 0,		/**< Widget state normal */
-	EWL_FLAG_STATE_MOUSE_IN = 0x1000000,	/**< Mouse is in the widget */
-	EWL_FLAG_STATE_PRESSED = 0x2000000,	/**< Widget is pressed */
-	EWL_FLAG_STATE_FOCUSED = 0x40000000,	/**< Widget has focus */
-	EWL_FLAG_STATE_DND = 0x8000000,		/**< Widget is engaged in DND */
-	EWL_FLAG_STATE_DISABLED = 0x10000000,	/**< Widget is disabled */
-
-	EWL_FLAG_PROPERTY_DND_TARGET	= 0x20000000,	/**< Widget is DND aware */
-	EWL_FLAG_PROPERTY_DND_SOURCE	= 0x40000000,	/**< Widget is dragable */
-	EWL_FLAG_STATE_DND_WAIT		= 0x80000000,	/**< Widget is in DND wait state */
+	EWL_FLAG_STATE_NORMAL 	= 0,		/**< Widget state normal */
+	EWL_FLAG_STATE_MOUSE_IN = 0x4000000,	/**< Mouse is in the widget */
+	EWL_FLAG_STATE_PRESSED 	= 0x8000000,	/**< Widget is pressed */
+	EWL_FLAG_STATE_FOCUSED 	= 0x10000000,	/**< Widget has focus */
+	EWL_FLAG_STATE_DISABLED = 0x20000000,	/**< Widget is disabled */
+	EWL_FLAG_STATE_DND 	= 0x40000000,	/**< Widget is engaged in DND */
+	EWL_FLAG_STATE_DND_WAIT	= 0x80000000,	/**< Widget is in DND wait state */
 };
 
 /**

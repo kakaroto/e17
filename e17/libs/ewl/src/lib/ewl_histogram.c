@@ -18,6 +18,9 @@ ewl_histogram_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	hist = calloc(1, sizeof(Ewl_Histogram));
+	if (!hist)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 	if (!ewl_histogram_init(hist)) {
 		FREE(hist);
 	}
@@ -33,23 +36,22 @@ ewl_histogram_new(void)
 int
 ewl_histogram_init(Ewl_Histogram *hist)
 {
-	int result;
 	Ewl_Widget *w = EWL_WIDGET(hist);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("hist", hist, FALSE);
 
-	result = ewl_image_init(EWL_IMAGE(hist));
-	if (result) {
-		ewl_widget_appearance_set(w, EWL_HISTOGRAM_TYPE);
-		ewl_widget_inherit(w, EWL_HISTOGRAM_TYPE);
-		ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-				    ewl_histogram_cb_configure, NULL);
-		ewl_object_preferred_inner_size_set(EWL_OBJECT(hist), 256, 256);
-		hist->channel = EWL_HISTOGRAM_CHANNEL_R;
-	}
+	if (!ewl_image_init(EWL_IMAGE(hist)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	DRETURN_INT(result, DLEVEL_STABLE);
+	ewl_widget_appearance_set(w, EWL_HISTOGRAM_TYPE);
+	ewl_widget_inherit(w, EWL_HISTOGRAM_TYPE);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+				    ewl_histogram_cb_configure, NULL);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(hist), 256, 256);
+	hist->channel = EWL_HISTOGRAM_CHANNEL_R;
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -91,14 +93,10 @@ ewl_histogram_color_get(Ewl_Histogram *hist, int *r, int *g, int *b, int *a)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("hist", hist);
 
-	if (r)
-		*r = hist->color.r;
-	if (g)
-		*g = hist->color.g;
-	if (b)
-		*b = hist->color.b;
-	if (a)
-		*a = hist->color.a;
+	if (r) *r = hist->color.r;
+	if (g) *g = hist->color.g;
+	if (b) *b = hist->color.b;
+	if (a) *a = hist->color.a;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -156,14 +154,13 @@ ewl_histogram_image_set(Ewl_Histogram *hist, Ewl_Image *image)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("hist", hist);
-	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
 	DCHECK_PARAM_PTR("image", image);
+	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
 	DCHECK_TYPE("image", image, EWL_IMAGE_TYPE);
 
 	hist->source = image;
-	if (REALIZED(image)) {
+	if (REALIZED(image))
 		ewl_histogram_cb_data_load(EWL_WIDGET(hist), NULL, hist);
-	}
 
 	/* Append the callback to catch an obscure/reveal */
 	ewl_callback_append(EWL_WIDGET(image), EWL_CALLBACK_REVEAL,
@@ -187,6 +184,19 @@ ewl_histogram_image_get(Ewl_Histogram *hist)
 	DRETURN_PTR(EWL_IMAGE(hist->source), DLEVEL_STABLE);
 }
 
+void
+ewl_histogram_cb_configure(Ewl_Widget *w, void *event __UNUSED__, 
+						void *data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	ewl_histogram_draw(EWL_HISTOGRAM(w));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 #define A_CALC(color) ((color) >> 24)
 #define R_CALC(color) ((color << 8) >> 24)
 #define G_CALC(color) ((color << 16) >> 24)
@@ -194,7 +204,7 @@ ewl_histogram_image_get(Ewl_Histogram *hist)
 #define Y_CALC(color) (((R_CALC(color) * 299) + (G_CALC(color) * 587) + (B_CALC(color) * 114)) / 1000)
 
 static void
-ewl_histogram_cb_data_load(Ewl_Widget *w, void *ev __UNUSED__, void *h __UNUSED__)
+ewl_histogram_cb_data_load(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *h)
 {
 	int x, y;
 	int maxv = 0;
@@ -254,16 +264,6 @@ ewl_histogram_cb_data_load(Ewl_Widget *w, void *ev __UNUSED__, void *h __UNUSED_
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_histogram_cb_configure(Ewl_Widget *w, void *event, void *data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ewl_histogram_draw(EWL_HISTOGRAM(w));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 static void
 ewl_histogram_draw(Ewl_Histogram *hist)
 {
@@ -274,6 +274,8 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 	Evas_Object *img;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("hist", hist);
+	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
 
 	img = EWL_IMAGE(hist)->image;
 
@@ -283,7 +285,7 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 
 	dst = data = evas_object_image_data_get(img, 1);
 	if (!data)
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * If no color specified, choose a sane default for the channel
@@ -306,7 +308,10 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 		}
 	}
 	else
-		color = (unsigned int)(hist->color.a << 24 | hist->color.r << 16 | hist->color.g << 8 | hist->color.b);
+		color = (unsigned int)(hist->color.a << 24 | 
+					hist->color.r << 16 | 
+					hist->color.g << 8 |
+					hist->color.b);
 
 	for (y = 0; y < img_h; y++) {
 		for (x = 0; x < img_w; x++) {
@@ -331,7 +336,8 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 			cutoff = hist->graph[index];
 
 			/* Determine if this index should be weighted */
-			if (x_scale != w1 && index < 255 && (cutoff || hist->graph[index + 1])) {
+			if ((x_scale != w1) && (index < 255)
+					&& (cutoff || hist->graph[index + 1])) {
 				cutoff = (cutoff * (w2 - x_scale));
 				cutoff += (hist->graph[index + 1] * (x_scale - w1));
 				cutoff = (cutoff / (w2 - w1));
@@ -349,3 +355,4 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
