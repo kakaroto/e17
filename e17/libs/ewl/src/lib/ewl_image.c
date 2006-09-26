@@ -608,8 +608,11 @@ ewl_image_thumbnail_complete_cb(void *data __UNUSED__, int type __UNUSED__,
 	ev = event;
 	thumb = ev->data;
 
-	if (thumb) {
-		ewl_image_file_path_set(EWL_IMAGE(thumb), ev->dest);
+	if (thumb) 
+	{
+		if (ev->dest)
+			ewl_image_file_path_set(EWL_IMAGE(thumb), ev->dest);
+
 		thumb->thumb = NULL;
 	}
 
