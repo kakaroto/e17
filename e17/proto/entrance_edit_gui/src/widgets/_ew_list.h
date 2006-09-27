@@ -2,8 +2,9 @@
 #define _EW_LIST_H
 
 typedef struct _Entrance_List_Data {
-	void (*func)(void);
+	void (*func)(void*);
 	void *data;
+	void *funcdata;
 } *Entrance_List_Data;
 
 
@@ -42,6 +43,10 @@ else \
 		if(ewld->data) \
 		{ \
 			free(ewld->data); \
+		} \
+		if(ewld->funcdata) \
+		{ \
+			free(ewld->funcdata); \
 		} \
 		free(ewld); \
 	} \

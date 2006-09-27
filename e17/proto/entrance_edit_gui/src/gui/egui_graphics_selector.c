@@ -12,109 +12,129 @@
 #define PREVIEW_V_WIDTH 1024
 #define PREVIEW_V_HEIGHT 768
 
-static void _gs_cb_selected(void);
+static void _gs_cb_selected(void*);
 static void _gs_cb_ok(void *, void *);
 static void _gs_cb_apply(void *, void *);
 static void _gs_cb_close(void *, void *);
 static void _gs_cb_browse(void*, void*);
 
-static char* _gs_get_path(const char *);
-static void _gs_close(void);
-static int _gs_apply(void);
-static char* _gs_populate_list(void);
-static void _gs_load_preview(const char *);
+static char* _gs_get_path(Egui_Graphics_Dialog, const char *);
+static void _gs_close(void*);
+static int _gs_apply(void*);
+static char* _gs_populate_list(Egui_Graphics_Dialog);
+static void _gs_load_preview(Egui_Graphics_Dialog, const char *);
 
-static Entrance_Dialog win;
-static Entrance_Preview img_preview;
-static Entrance_Widget pointer_preview;
-static Entrance_List list_thumbs;
-static Entrance_Entry browse_entry;
-static Entrance_Widget browse_button;
-static Entrance_Widget pointer_browse_button;
-static Entrance_Widget group_graphics;
-static Entrance_Widget group_preview;
-static Entrance_Widget group_options;
-static Entrance_Widget group_pointer;
+static Egui_Graphics_Dialog _egui_gd_create_widgets(Egui_Graphics_Dialog egd);
 
-static Egui_Graphics_Selector egs;
 
-void
-egui_gs_dialog_show(Egui_Graphics_Selector _egs)
+Egui_Graphics_Dialog
+egui_gd_new(Egui_Graphics_Selector egs)
 {
-   egs = _egs;
-   
-   win = ew_dialog_new(egs.dialog_title, EW_FALSE);
+   Egui_Graphics_Dialog egd = calloc(1, sizeof(*egd));
+   if(!egd)
+	   return NULL;
 
+   egd->egs = egs;
+   egd = _egui_gd_create_widgets(egd);
 
-   group_preview = ew_dialog_group_add(win, _("Preview"), EW_GROUP_VERTICAL);
+   return egd;
+}
 
-   img_preview = ew_preview_new(PREVIEW_WIDTH, PREVIEW_HEIGHT);
-   ew_group_add(group_preview, img_preview);
+Egui_Graphics_Dialog
+_egui_gd_create_widgets(Egui_Graphics_Dialog egd)
+{
+	if(!egd)
+		return NULL;
 
-   group_graphics = ew_dialog_group_add(win, egs.list_title, EW_GROUP_VERTICAL);
+   egd->win = ew_dialog_new(egd->egs.dialog_title, EW_FALSE);
 
-   list_thumbs = ew_textlist_new(NULL, PREVIEW_WIDTH, 140, 20, 90);
+   egd->group_preview = ew_dialog_group_add(egd->win, _("Preview"), EW_GROUP_VERTICAL);
+
+   egd->img_preview = ew_preview_new(PREVIEW_WIDTH, PREVIEW_HEIGHT);
+   ew_group_add(egd->group_preview, egd->img_preview);
+
+   egd->group_graphics = ew_dialog_group_add(egd->win, egd->egs.list_title, EW_GROUP_VERTICAL);
+
+   egd->list_thumbs = ew_textlist_new(NULL, PREVIEW_WIDTH, 140, 20, 90);
    
       
-   ew_group_add(group_graphics, list_thumbs);
+   ew_group_add(egd->group_graphics, egd->list_thumbs);
 
    char t[PATH_MAX];
-   snprintf(t, PATH_MAX, "Browse system for %ss", egs.name);
-   group_options = ew_dialog_group_add(win, t, EW_GROUP_HORIZONTAL);
+   snprintf(t, PATH_MAX, "Browse system for %ss", egd->egs.name);
+   egd->group_options = ew_dialog_group_add(egd->win, t, EW_GROUP_HORIZONTAL);
 
-   browse_entry = ew_entry_new(NULL, NULL, EW_FALSE);
-   ew_group_add(group_options, browse_entry);
+   egd->browse_entry = ew_entry_new(NULL, NULL, EW_FALSE);
+   ew_group_add(egd->group_options, egd->browse_entry);
 
-   browse_button = ew_button_new(_("Browse..."), _gs_cb_browse, NULL);
-   ew_group_add(group_options, browse_button);
+   egd->browse_button = ew_button_new(_("Browse..."), _gs_cb_browse, egd);
+   ew_group_add(egd->group_options, egd->browse_button);
 
-   if(egs.show_pointer_options)
+   if(egd->egs.show_pointer_options)
    {
-	   group_pointer = ew_dialog_group_add(win, _("Pointer Options"), EW_GROUP_HORIZONTAL);
+	   egd->group_pointer = ew_dialog_group_add(egd->win, _("Pointer Options"), EW_GROUP_HORIZONTAL);
 
-	   pointer_preview = ew_image_new(100, 50);
-	   ew_group_add(group_pointer, pointer_preview);
+	   egd->pointer_preview = ew_image_new(100, 50);
+	   ew_group_add(egd->group_pointer, egd->pointer_preview);
 
-	   pointer_browse_button = ew_button_new(_("Browse..."), _gs_cb_browse, NULL);
-	   ew_group_add(group_pointer, pointer_browse_button);
+	   egd->pointer_browse_button = ew_button_new(_("Browse..."), _gs_cb_browse, egd);
+	   ew_group_add(egd->group_pointer, egd->pointer_browse_button);
    }
-   
-   ew_dialog_close_button_add(win, _gs_cb_close, NULL);
-   ew_dialog_apply_button_add(win, _gs_cb_apply, NULL);
-   ew_dialog_ok_button_add(win, _gs_cb_ok, NULL);
-   
-   ew_dialog_show(win);
 
+   egd->first = _gs_populate_list(egd);
+   
+   ew_dialog_close_button_add(egd->win, _gs_cb_close, egd);
+   ew_dialog_apply_button_add(egd->win, _gs_cb_apply, egd);
+   ew_dialog_ok_button_add(egd->win, _gs_cb_ok, egd);
 
-   char *first = _gs_populate_list();
-	_gs_load_preview(first);
+   egd->newly_created = 1;
+   return egd;
+}
+ 
+void
+egui_gd_show(Egui_Graphics_Dialog egd)
+{
+	if(!egd)
+		return;
+  
+   if(egd->win == NULL)
+	   egd = _egui_gd_create_widgets(egd);
+
+   ew_dialog_show(egd->win);
+   _gs_load_preview(egd, egd->first);
+   egd->newly_created = 0;
 }
 
 static void
-_gs_cb_selected()
+_gs_cb_selected(void *data)
 {
-	char* graphic = ew_list_selected_data_get(list_thumbs);
-	_gs_load_preview(graphic);
+	Egui_Graphics_Dialog egd = data;
+	if(!egd)
+		return;
+
+	char* graphic = ew_list_selected_data_get(egd->list_thumbs);
+	_gs_load_preview(egd, graphic);
 }
 
 
 static void
 _gs_cb_ok(void *object, void *data)
 {
-   if(_gs_apply()) 
-	   _gs_close();
+   if(_gs_apply(data)) 
+	   _gs_close(data);
 }
 
 static void
 _gs_cb_apply(void *object, void *data)
 {
-   _gs_apply();
+   _gs_apply(data);
 }
 
 static void
 _gs_cb_close(void *object, void *data)
 {
-	_gs_close();
+	_gs_close(data);
+	data = NULL;
 }
 
 static void
@@ -124,39 +144,45 @@ _gs_cb_browse(void *object, void* data)
 }
 
 static char*
-_gs_get_path(const char *t)
+_gs_get_path(Egui_Graphics_Dialog egd, const char *t)
 {
+	if(!egd)
+		return NULL;
+
 	char *path = calloc(PATH_MAX, sizeof(*path));
-	snprintf(path, PATH_MAX, "%s/%s", egs.files_path, t);
+	snprintf(path, PATH_MAX, "%s/%s", egd->egs.files_path, t);
 
 	return path;
 }
 
 static int
-_gs_apply(void)
+_gs_apply(void* data)
 {
 	char msg[PATH_MAX];
+	Egui_Graphics_Dialog egd = data;
+	if(!egd)
+		return;
 
-    char *graphic = ew_list_selected_data_get(list_thumbs);
+    char *graphic = ew_list_selected_data_get(egd->list_thumbs);
 	if(!graphic) 
 	{
-		snprintf(msg, PATH_MAX, "Please select a %s first", egs.name);
+		snprintf(msg, PATH_MAX, "Please select a %s first", egd->egs.name);
 		ew_messagebox_ok("Entrance Config - Error", msg, EW_MESSAGEBOX_ICON_ERROR);
 		return 0;
 	}
 
-	if(egs.use_full_path)
+	if(egd->egs.use_full_path)
 	{
-		char *full_path = _gs_get_path(graphic);
-		entrance_edit_string_set(egs.entrance_edit_key, full_path);
+		char *full_path = _gs_get_path(egd, graphic);
+		entrance_edit_string_set(egd->egs.entrance_edit_key, full_path);
 		free(full_path);
 	}
 	else 
-		entrance_edit_string_set(egs.entrance_edit_key, graphic);
+		entrance_edit_string_set(egd->egs.entrance_edit_key, graphic);
 
 	if(!entrance_edit_save())
 	{
-		snprintf(msg, PATH_MAX, "Can not set %s. Please check your permissions", egs.name);
+		snprintf(msg, PATH_MAX, "Can not set %s. Please check your permissions", egd->egs.name);
 		ew_messagebox_ok("Entrance Config - Error", msg, EW_MESSAGEBOX_ICON_ERROR);
 		return 0;
 	}
@@ -165,15 +191,19 @@ _gs_apply(void)
 }
 
 static void
-_gs_close(void)
+_gs_close(void* data)
 {
-	ew_dialog_destroy(win);
+	Egui_Graphics_Dialog egd = data;
+	if(!egd)
+		return;
+	ew_dialog_destroy(egd->win);
+	egd->win = NULL;
 }
 
 static char*
-_gs_populate_list(void)
+_gs_populate_list(Egui_Graphics_Dialog egd)
 {
-   Ecore_List *glist = ecore_file_ls(egs.files_path);
+   Ecore_List *glist = ecore_file_ls(egd->egs.files_path);
    char* first;
 
    if(glist && !ecore_list_is_empty(glist))
@@ -186,7 +216,7 @@ _gs_populate_list(void)
 	   while((graphic = ecore_list_next(glist)))
 		 {
 			char *graphic_no_ext = ecore_file_strip_ext(graphic);
-			ew_textlist_add(list_thumbs, graphic_no_ext, graphic, strlen(graphic) + 1, _gs_cb_selected);
+			ew_textlist_add(egd->list_thumbs, graphic_no_ext, graphic, strlen(graphic) + 1, _gs_cb_selected, egd);
 			free(graphic_no_ext);
 		 }
 
@@ -197,10 +227,15 @@ _gs_populate_list(void)
 }
 
 static void
-_gs_load_preview(const char *graphic)
+_gs_load_preview(Egui_Graphics_Dialog egd, const char *graphic)
 {
-   char *file = _gs_get_path(graphic);
-   Evas *evas = ew_preview_evas_get(img_preview, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
+	if(!egd)
+		return;
+
+   char *file = _gs_get_path(egd, graphic);
+   static Evas *evas = NULL;
+   if(evas == NULL || egd->newly_created == 1) 
+	   evas = ew_preview_evas_get(egd->img_preview, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
 
    /*TODO: currently, i'm just grabbing *file and displaying blindly, which mean, I won't be able to 
 	* preview different background and themes, the below commented code should be filled out to
@@ -209,7 +244,10 @@ _gs_load_preview(const char *graphic)
    /*char *bg_path = _gs_get_bg_path();
    char *theme_path = _gs_get_theme_path();*/
 
-   Evas_Object *es  = es_new(evas);
+   static Evas_Object *es  = NULL;
+   if(es == NULL || egd->newly_created == 1) 
+	   es = es_new(evas);
+
    es_background_edje_set(es, file);
    es_main_edje_set(es, file);
    evas_object_resize(es, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
@@ -218,4 +256,6 @@ _gs_load_preview(const char *graphic)
    free(file);
    /*FIXME: selecting the first row doesn't work - maybe we select first row while adding elements to the list:(*/
    /*ew_list_first_row_select(list_thumbs);*/
+
+   return;
 }

@@ -85,8 +85,11 @@ es_background_edje_set(Evas_Object *o, const char *file)
 	Evas *e = evas_object_evas_get(o);
 	if(!e)
 		return;
+	if(es->background)
+		evas_object_del(es->background);
+
 	es->background = edje_object_add(e);
-	if(!es->background)
+	if(es->background == NULL)
 		return;
 
 	if(!edje_object_file_set(es->background, file, "Background"))
@@ -103,8 +106,12 @@ es_main_edje_set(Evas_Object *o, const char *file)
 	Evas *e = evas_object_evas_get(o);
 	if(!e)
 		return;
+
+	if(es->main)
+		evas_object_del(es->main);
+
 	es->main = edje_object_add(e);
-	if(!es->main)
+	if(es->main == NULL)
 		return;
 
 	if(!edje_object_file_set(es->main, file, "Main"))

@@ -4,7 +4,7 @@
 #include "_ew_list.h"
 
 Entrance_List ew_textlist_new(const char*, int, int, int, int);
-void ew_textlist_add(Entrance_List, const char *, void *, size_t, void (*) (void));
+void ew_textlist_add(Entrance_List, const char *, void *, size_t, void (*) (void*), void*);
 
 
 #endif

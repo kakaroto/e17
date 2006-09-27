@@ -7,7 +7,7 @@
 
 
 void
-egui_theme_dialog_show()
+egui_theme_dialog_show(void *data)
 {
 	Egui_Graphics_Selector theme_egs = {
 		"theme",
@@ -21,6 +21,10 @@ egui_theme_dialog_show()
 	};
 
 
-	egui_gs_dialog_show(theme_egs);
-
+	static Egui_Graphics_Dialog egd = NULL;
+	if(!egd)
+	{
+		egd = egui_gd_new(theme_egs);
+	}
+	egui_gd_show(egd);
 }

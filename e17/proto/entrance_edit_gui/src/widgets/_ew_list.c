@@ -69,6 +69,7 @@ ew_listdata_new(void)
 	if(ewld) 
 	{
 		ewld->func = NULL;
+		ewld->funcdata = NULL;
 		ewld->data = calloc(255, sizeof(char));
 	}
 
@@ -100,9 +101,8 @@ _ew_list_cb_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_D
 {  
    Entrance_List_Data ewld =  etk_tree_row_data_get(row);
 
-   /*TODO: call ewld->func and pass it ewld->data? */
    if(ewld->func)
-     ewld->func();
+     ewld->func(ewld->funcdata);
 }
 
 

@@ -19,7 +19,7 @@ ew_edjelist_new(const char *title, int w, int h, int r_h, int c_w)
 }
 
 void
-ew_edjelist_add(Entrance_List ew, const char *label, const char *edje, const char *group, void *data,  size_t size, void (*func) (void))
+ew_edjelist_add(Entrance_List ew, const char *label, const char *edje, const char *group, void *data,  size_t size, void (*func) (void*), void* funcdata)
 {
    Etk_Tree_Row *row;
    etk_tree_freeze(ETK_TREE(ew->owner));
@@ -34,6 +34,7 @@ ew_edjelist_add(Entrance_List ew, const char *label, const char *edje, const cha
 	   {
 		   memcpy(ewld->data, data, size);
 	   }
+	   ewld->funcdata = funcdata;
    }
    
    etk_tree_row_data_set(row, ewld);

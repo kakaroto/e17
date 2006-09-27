@@ -4,7 +4,7 @@
 #include "Egui.h"
 
 void
-egui_behavior_dialog_show() {
+egui_behavior_dialog_show(void *data) {
 	Ecore_List *groups = ecore_list_new();
 
 	/* Autologin group */

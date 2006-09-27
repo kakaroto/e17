@@ -20,7 +20,7 @@ ew_textlist_new(const char *title, int w, int h, int r_h, int c_w)
 
 void
 ew_textlist_add(Entrance_List ew, const char *label, void *data, size_t size,
-                              void (*func) (void))
+                              void (*func) (void*), void* funcdata)
 {
    Etk_Tree_Row *row;
    
@@ -39,6 +39,7 @@ ew_textlist_add(Entrance_List ew, const char *label, void *data, size_t size,
 		   int c = strlen(s);
 		   memcpy(ewld->data, data, size);
 	   }
+	   ewld->funcdata = funcdata;
    }
 
    etk_tree_row_data_set(row, ewld);

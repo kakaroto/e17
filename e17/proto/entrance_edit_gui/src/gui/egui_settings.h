@@ -9,10 +9,10 @@
 #define EGUI_TYPE_STR 5
 
 typedef struct _Egui_Settings_Item {
-	void *widget;
-	int widget_type;
+	void *widget; 
+	int widget_type; /*BUTTON, ENTRY, LABEL, or LIST*/
 	const char *entrance_edit_key;
-	int key_type; /*BUTTON, ENTRY, LABEL, or LIST*/
+	int key_type; 
 } Egui_Settings_Item;
 
 typedef struct _Egui_Settings_Group {
@@ -21,6 +21,7 @@ typedef struct _Egui_Settings_Group {
 	Ecore_List *items;
 } *Egui_Settings_Group;
 
+void egui_init(void);
 void es_dialog_show(char *title, Ecore_List *groups);
 
 Egui_Settings_Group es_group_new(const char* name, int direction);

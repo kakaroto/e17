@@ -4,7 +4,7 @@
 #include "Egui.h"
 
 void
-egui_layout_dialog_show() 
+egui_layout_dialog_show(void *data) 
 {
 
 	Egui_Settings_Group group_greeting = es_group_new("Greetings", EW_GROUP_VERTICAL);

@@ -8,8 +8,10 @@
 
 
 void
-egui_x_settings_dialog_show() 
+egui_x_settings_dialog_show(void *data) 
 {
+	egui_init();
+
 	Egui_Settings_Group group_daemon = es_group_new("Daemon Settings", EW_GROUP_VERTICAL);
 
 	Egui_Settings_Item item_attempts = {
