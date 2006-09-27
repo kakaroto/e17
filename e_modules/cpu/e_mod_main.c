@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include <e.h>
 #include "e_mod_main.h"
 
@@ -157,7 +160,8 @@ _config_item_get(const char *id)
 	ci = l->data;
 	if (!ci->id) continue;
 	if (!strcmp(ci->id, id))
-	  {  update_interval = ci->interval;
+	  {
+	     update_interval = ci->interval;
 	     return ci;
 	  }
      }
