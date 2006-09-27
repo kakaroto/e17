@@ -821,53 +821,23 @@ _entrance_session_execute_in_shell(char *user,char *shell,char *buf)
    int res=0;
 
    /* If the user's passwd entry has a shell try to run it in login mode */
-   if (shell != "") {
-      switch (pid=fork()) {
-         case 0:
-            res=execl(shell, shell, "-l", "-c", buf, NULL);
-            break;
-         case -1:
-            return;
-         default:
-    	    wait(&status);
-	    break;
-      }
-   }
+   if (shell != "") { 
+	   execl(shell, shell, "-l", "-c", buf, NULL);
+   } else {
+	   res = execl("/bin/sh", "/bin/sh", "-l", "-c", buf, NULL);
 
-   /* If that didn't work try to run /bin/sh in login mode */
-   if (WEXITSTATUS(status)==2 || res == -1 || shell == "") {
-      switch(pid=fork()) {
-         case 0: 
-   	    execl("/bin/sh", "/bin/sh", "-l", "-c", buf, NULL);
-	    break;
-         case -1:
-	    return;
-	 default: 
-	    wait(&status);
-	    break;
-      }
-   }
+	   /* Getting here means the previous didn't work 
+	   	* If /bin/sh isn't a login shell run /bin/sh without loading the profile
+		* Also log a warning because this will probably not behave correctly */
+	   if (res == -1) { 
+		  /*TODO: should actually hit the user in the face with this message*/
+		  syslog(LOG_NOTICE, "Neither '%s' or '/bin/sh' are working login shells for user '%s'. Your session may not function properly. ",shell,user);
+		  execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
+	   }
 
-
-   /* If /bin/sh isn't a login shell run /bin/sh without loading the profile
-    * Also log a warning because this will probably not behave correctly */
-   if (WEXITSTATUS(status)==2) { 
-      syslog(LOG_NOTICE, "Neither '%s' or '/bin/sh' are working login shells for user '%s'. Your session may not function properly. ",shell,user);
-      switch(pid=fork()) {
- 	 case 0:
-	    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
-	 break;
-       case -1:
-	  return;
-       default:
-	  wait(&status);
-	  break;
-      }
-   }
-
-   /* Damn, that didn't work either.
-    * Bye! We call it quits and log an error */
-   if (WEXITSTATUS(status)==2) {
-      syslog(LOG_CRIT, "Entrance could not find a working shell to start the session for user: \"%s\".",user);
+	   /* Damn, that didn't work either.
+		* Bye! We call it quits and log an error 
+		* TODO: Also hit the user in the face with this! (ouch!)*/
+		syslog(LOG_CRIT, "Entrance could not find a working shell to start the session for user: \"%s\".",user);
    }
 }
