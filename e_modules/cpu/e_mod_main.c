@@ -47,6 +47,7 @@ Config *cpu_conf = NULL;
 
 static int cpu_count;
 static int cpu_stats[4];
+static float update_interval;
 
 static const E_Gadcon_Client_Class _gc_class = 
 {
@@ -155,12 +156,16 @@ _config_item_get(const char *id)
      {
 	ci = l->data;
 	if (!ci->id) continue;
-	if (!strcmp(ci->id, id)) return ci;
+	if (!strcmp(ci->id, id))
+	  {  update_interval = ci->interval;
+	     return ci;
+	  }
      }
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->interval = 1;
+   update_interval = ci->interval;
    
    cpu_conf->items = evas_list_append(cpu_conf->items, ci);
    return ci;
@@ -245,7 +250,7 @@ _get_cpu_load(void)
    new_used = cp_time[CP_USER] + cp_time[CP_NICE] + cp_time[CP_SYS];
    new_tot = new_used + cp_time[CP_IDLE];
 
-   cpu_stats[0] = 100 * (float)(new_used - old_used) / (float)(new_tot - old_tot);
+   cpu_stats[0] = (100 * (float)(new_used - old_used) / (float)(new_tot - old_tot)) / update_interval;
 
    old_tot = new_tot;
    old_used = new_used; 
@@ -287,7 +292,7 @@ _get_cpu_load(void)
 	     tmp_s = ((new_s - old_s[i]));
 	  }
 	
-	cpu_stats[i] = (tmp_u + tmp_n + tmp_s);
+	cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / update_interval;
 
 	old_u[i] = new_u;
 	old_n[i] = new_n;
