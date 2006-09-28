@@ -9,7 +9,7 @@
 void
 egui_background_dialog_show(void* data)
 {
-	Egui_Graphics_Selector background_egs = {
+	Egui_Graphics_Dialog_Settings background_settings = {
 		"background",
 		"/usr/share/enlightenment/data/backgrounds",
 		"desktop/background",
@@ -22,6 +22,6 @@ egui_background_dialog_show(void* data)
 
 	static Egui_Graphics_Dialog egd = NULL;
 	if(!egd)
-		egd = egui_gd_new(background_egs);
+		egd = egui_gd_new(background_settings);
 	egui_gd_show(egd);
 }

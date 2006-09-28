@@ -9,7 +9,7 @@
 void
 egui_theme_dialog_show(void *data)
 {
-	Egui_Graphics_Selector theme_egs = {
+	Egui_Graphics_Dialog_Settings theme_settings = {
 		"theme",
 		"/usr/share/entrance/themes",
 		"Preview",
@@ -24,7 +24,7 @@ egui_theme_dialog_show(void *data)
 	static Egui_Graphics_Dialog egd = NULL;
 	if(!egd)
 	{
-		egd = egui_gd_new(theme_egs);
+		egd = egui_gd_new(theme_settings);
 	}
 	egui_gd_show(egd);
 }

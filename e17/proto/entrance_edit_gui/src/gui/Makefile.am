@@ -9,7 +9,8 @@ entrance_edit_gui_SOURCES=main.c \
 						  sessions.c \
 						  theme.c \
 						  x_settings.c \
-						  egui_graphics_selector.c \
+						  egui_graphics_dialog.c \
+						  egui_graphics_dialog.h \
 						  egui_settings.c \
 						  egui_settings.h \
 						  Egui.h 
