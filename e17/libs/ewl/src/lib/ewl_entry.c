@@ -1,4 +1,6 @@
 #include <Ewl.h>
+#include <Ecore_Txt.h>
+#include <langinfo.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
@@ -35,7 +37,7 @@ ewl_entry_new(void)
 int
 ewl_entry_init(Ewl_Entry *e)
 {
-	const char *text_types[] = { "text/plain", NULL };
+	const char *text_types[] = { "UTF8_STRING", "text/plain", NULL };
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -575,7 +577,25 @@ ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	txt = EWL_TEXT(w);
 
 	if (EWL_ENTRY(w)->editable && !DISABLED(w)) {
-		ewl_text_text_insert(txt, event->data, 
+		if (!strcmp(event->type, "text/plain") 
+				&& strcmp(nl_langinfo(CODESET), "UTF-8")) {
+			char *text;
+
+			text = ecore_txt_convert(nl_langinfo(CODESET), "UTF-8",
+					event->data);
+			if (text) {
+				ewl_text_text_insert(txt, text,
+					ewl_text_cursor_position_get(txt));
+			}
+			else {
+				ewl_text_text_insert(txt, event->data,
+					ewl_text_cursor_position_get(txt));
+			}
+
+			IF_FREE(text);
+		}
+		else
+			ewl_text_text_insert(txt, event->data, 
 					ewl_text_cursor_position_get(txt));
 	}
 
