@@ -142,7 +142,6 @@ configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		void *user_data __UNUSED__)
 {
 	int x, y;
-	int width, height;
 	int i;
 
 	x = CURRENT_X(w);
@@ -150,28 +149,17 @@ configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * place the first row of buttons
 	 */
-	ewl_object_preferred_size_get(EWL_OBJECT(button_row1[0]), 
-			&width, &height);
-	for (i = 0; i < 20; i++) {
-		ewl_object_place(EWL_OBJECT(button_row1[i]),
-						i * 5 + x, i * 5 + y,
-						width, height);
-	}
-	
+	for (i = 0; i < 20; i++)
+		ewl_object_position_request(EWL_OBJECT(button_row1[i]),
+						i * 5 + x, i * 5 + y);
 	/*
 	 * place the second row
 	 */
-	ewl_object_preferred_size_get(EWL_OBJECT(button_row2[0]), 
-			&width, &height);
-	for (i = 0; i < 20; i++) {
+	for (i = 0; i < 20; i++)
 		ewl_object_position_request(EWL_OBJECT(button_row2[i]),
 						i * 5 + 40 + x, i * 5 + y);
-		ewl_object_size_request(EWL_OBJECT(button_row2[i]),
-						width, height);
-	}
 
 	ewl_object_position_request(EWL_OBJECT(dbutton[0]), 180 + x, 0 + y);
 	ewl_object_position_request(EWL_OBJECT(dbutton[1]), 220 + x, 20 + y);
-
 }
 
