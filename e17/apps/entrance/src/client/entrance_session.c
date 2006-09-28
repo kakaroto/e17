@@ -378,7 +378,7 @@ void
 entrance_session_start_user_session(Entrance_Session * e)
 {
    pid_t pid;
-   char buf[PATH_MAX];
+   char buf[PATH_MAX], pids[128];
    char *shell = NULL;
    char *user = NULL;
    struct passwd *pwent = NULL;
@@ -472,7 +472,7 @@ entrance_session_start_user_session(Entrance_Session * e)
         /* replace this process with a clean small one that just waits for its */
         /* child to exit.. passed on the cmd-line */
 
-        _entrance_session_execute_in_shell(user,shell,buf);
+        _entrance_session_execute_in_shell(user, shell, buf);
         break;
      case -1:
         syslog(LOG_INFO, "FORK FAILED, UH OH");
@@ -482,20 +482,20 @@ entrance_session_start_user_session(Entrance_Session * e)
 #ifdef HAVE_PAM
         if (e->config->auth == ENTRANCE_USE_PAM)
         {
-           snprintf(buf, sizeof(buf), "%s/%s/entrance_login %i %s %s",
+           snprintf(buf, sizeof(buf), "%s/%s/entrance_login",
                     PACKAGE_LIB_DIR, PACKAGE, (int) pid, pwent->pw_name, 
 		    e->display);
         }
         else
 #endif
         {
-           snprintf(buf, sizeof(buf), "%s/%s/entrance_login %i",
+           snprintf(buf, sizeof(buf), "%s/%s/entrance_login",
                     PACKAGE_LIB_DIR, PACKAGE, (int) pid);
         }
         shell = strdup("/bin/sh");
         /* this bypasses a race condition where entrance loses its x
            connection before the wm gets it and x goes and resets itself */
-        sleep(10);
+        sleep(30);
         /*
          * FIXME These should be called!
         ecore_x_shutdown();
@@ -503,14 +503,31 @@ entrance_session_start_user_session(Entrance_Session * e)
         */
         break;
    }
+/* no need to free - we are goign to exec ourselves and be replaced   
    struct_passwd_free(pwent);
    entrance_session_free(e);
    if (shell) free(shell);
    if (user) free(user);
+ */
    /* replace this process with a clean small one that just waits for its */
    /* child to exit.. passed on the cmd-line */
 
-   execl("/bin/sh", "/bin/sh", "-l", "-c", buf, NULL);
+   /* this causes entreance to reset - bad bad bad */
+   snprintf(pids, sizeof(pids), "%i", (int)pid);
+   snprintf(buf, sizeof(buf), "%s/%s/entrance_login", PACKAGE_LIB_DIR, PACKAGE);
+#ifdef HAVE_PAM
+   if (e->config->auth == ENTRANCE_USE_PAM)
+     {
+	syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s %s %s", buf, pids, pwent->pw_name, e->display);
+	execl(buf, buf, pids, pwent->pw_name, e->display, NULL);
+     }
+   else
+#endif
+     {
+	syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s", buf, pids);
+	execl(buf, buf, pids, NULL);
+     }
+   pause();
    if (buf) free(buf);
 }
 
