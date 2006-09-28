@@ -184,6 +184,7 @@ draw_flame(void)
       flame[(y * 40) + 39] = 0;
    for (y = 0; y < 40; y++)
       flame[(y * 40) + 38] /= 2;
+
    rgb = Epplet_get_rgb_pointer(buf);
    for (y = 0; y < 40; y++)
      {
@@ -450,9 +451,9 @@ main(int argc, char **argv)
    atexit(Epplet_cleanup);
 
    cpus = count_cpus();
-   load_val = malloc(sizeof(int) * cpus);
-   prev_val = malloc(sizeof(double) * cpus);
-   prev_val_nice = malloc(sizeof(double) * cpus);
+   load_val = calloc(cpus, sizeof(int));
+   prev_val = calloc(cpus, sizeof(double));
+   prev_val_nice = calloc(cpus, sizeof(double));
 
    Epplet_Init("E-Cpu", "0.1", "Enlightenment CPU Epplet", 3, 3, argc, argv, 0);
    Epplet_load_config();

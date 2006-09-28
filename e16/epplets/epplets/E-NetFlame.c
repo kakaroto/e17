@@ -134,11 +134,10 @@ draw_flame(void)
    /* initialize the flame if it isn't done already */
    if (!flame)
      {
-	vspread = malloc(40 * sizeof(int));
-	hspread = malloc(40 * sizeof(int));
-	residual = malloc(40 * sizeof(int));
-	flame = malloc(sizeof(int) * WIDTH * HEIGHT);
-	memset(flame, 0, sizeof(int) * WIDTH * HEIGHT);
+	vspread = malloc(WIDTH * sizeof(int));
+	hspread = malloc(WIDTH * sizeof(int));
+	residual = malloc(WIDTH * sizeof(int));
+	flame = calloc(WIDTH * HEIGHT, sizeof(int));
      }
    /* move to the bottom left of the drawing area */
    ptr = flame + ((HEIGHT - 1) * WIDTH);
@@ -147,12 +146,12 @@ draw_flame(void)
      {
 	/* adjust spreads and residual values to reflect the
 	 * load values... */
-	vspread[x] = VSPREAD + (load_val[(x * DIVISIONS) / HEIGHT] / 50);
+	vspread[x] = VSPREAD + (load_val[(x * DIVISIONS) / WIDTH] / 50);
 	hspread[x] = HSPREAD + (load_val[(x * DIVISIONS) / WIDTH] / 50);
-	residual[x] = RESIDUAL + (load_val[(x * DIVISIONS) / HEIGHT] / 50);
+	residual[x] = RESIDUAL + (load_val[(x * DIVISIONS) / WIDTH] / 50);
 	/* assign a random value to the pixel according to the
 	 * load ... gives randomness to flames */
-	ptr[x] = (rand() % ((load_val[(x * DIVISIONS) / 40]) + 155));
+	ptr[x] = (rand() % ((load_val[(x * DIVISIONS) / WIDTH]) + 155));
 	/* bounds checking */
 	if (ptr[x] > MAX)
 	  {
@@ -238,7 +237,7 @@ draw_flame(void)
    rgb = Epplet_get_rgb_pointer(buf);
    for (y = 0; y < HEIGHT; y++)
      {
-	ptr = flame + (y * WIDTH) + 1;
+	ptr = flame + (y * WIDTH);
 	rptr = rgb + (y * WIDTH * 4);
 	for (x = 0; x < WIDTH; x++)
 	  {
@@ -428,8 +427,8 @@ main(int argc, char **argv)
    setpriority(PRIO_PROCESS, getpid(), prio + 10);
    atexit(Epplet_cleanup);
 
-   load_val = malloc(sizeof(int) * DIVISIONS);
-   prev_val = malloc(sizeof(double) * DIVISIONS);
+   load_val = calloc(DIVISIONS, sizeof(int));
+   prev_val = calloc(DIVISIONS, sizeof(double));
 
    Epplet_Init("E-NetFlame", "0.3", "E Net-Flame Epplet", 3, 3, argc, argv, 0);
    Epplet_load_config();
