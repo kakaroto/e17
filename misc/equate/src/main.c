@@ -100,10 +100,11 @@ Usage: equate [options]");
    equate.conf.mode = ecore_config_int_get("/settings/mode");
    equate.conf.theme = ecore_config_theme_get("/settings/theme");
 
+   equate_init(&equate);
+   equate_init_gui(&equate, argc, argv);
+
    ecore_config_listen("gui_mode", "/settings/mode", gui_listener, 0, NULL);
    ecore_config_listen("gui_theme", "/settings/theme", gui_listener, 1, NULL);
 
-   equate_init(&equate);
-   equate_init_gui(&equate, argc, argv);
    return 0;
 }

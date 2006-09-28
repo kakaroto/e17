@@ -374,7 +374,7 @@ draw_ewl(Mode draw_mode)
    /* layout the display area, the table helps align the display even when in
     * basic mode */
    Ewl_Widget     *disp_table;
-   Ewl_Widget     *disp_cell[2];
+   Ewl_Widget     *disp_cell[3];
 
    disp_table = ewl_grid_new();
    if (calc_mode == SCI)
