@@ -999,7 +999,7 @@ setup_ecore_evas(int wx, int wy, int ww, int wh, int fullscreen)
       background = edje_object_add(evas);
 
       if (!edje_object_file_set(background, bg_file, "Background"))
-	 if (!edje_object_file_set(background, bg_file, "desktop/background"))
+	 if (!edje_object_file_set(background, bg_file, "e/desktop/background"))
 	    syslog(LOG_INFO, "Failed to load background from %s", bg_file);
 
       evas_object_move(background, sx, sy);
