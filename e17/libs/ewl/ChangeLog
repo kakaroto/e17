@@ -1,5 +1,5 @@
 Fri Sep 29 01:28:00 2006 Nathan Ingersoll <ningerso@gmail.com>
-	* Version 0.0.5 includes a large number of bug fixes as well as:
+	* Version 0.5.0 includes a large number of bug fixes as well as:
 	  - extensive documentation
 	  - improved overall stability
 	  - Model View Controller based widgets
