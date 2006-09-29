@@ -955,7 +955,7 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
  * @brief Sends the event for selection data received into an embed.
  */
 void
-ewl_embed_selection_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned int len)
+ewl_embed_dnd_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned int len, unsigned int format)
 {
 	Ewl_Event_Dnd_Data ev;
 
@@ -975,6 +975,7 @@ ewl_embed_selection_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned
 			ev.type = type;
 			ev.data = data;
 			ev.len = len;
+			ev.format= format;
 			ewl_callback_call_with_event_data(embed->last.drop_widget,
 							  EWL_CALLBACK_DND_DATA,
 							  &ev);

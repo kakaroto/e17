@@ -1046,25 +1046,29 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
                 window = ewl_window_window_find((void *)ev->win);
 		if (window) 
 		{
-			if (data->content == ECORE_X_SELECTION_CONTENT_FILES) 
+			if (data->content == ECORE_X_SELECTION_CONTENT_FILES)
 			{
 				Ecore_X_Selection_Data_Files* files = ev->data;
-				ewl_embed_selection_data_feed(EWL_EMBED(window), 
-							ev->target, files->files, 
-							files->num_files);
+				ewl_embed_dnd_data_feed(EWL_EMBED(window),
+							ev->target,
+							files->files, 
+							files->num_files,
+							data->format);
 			} 
 			else if (data->content == ECORE_X_SELECTION_CONTENT_TEXT)
 			{
 				Ecore_X_Selection_Data_Text* text = ev->data;
-				ewl_embed_selection_data_feed(EWL_EMBED(window), 
+				ewl_embed_dnd_data_feed(EWL_EMBED(window),
 							ev->target, text->text, 
-							((Ecore_X_Selection_Data *)text)->length);
+							data->length,
+							data->format);
 			} 
-			else 
+			else
 			{
-				ewl_embed_selection_data_feed(EWL_EMBED(window), 
+				ewl_embed_dnd_data_feed(EWL_EMBED(window),
 							ev->target, data->data, 
-							data->length);
+							data->length,
+							data->format);
 			}
 		}
 

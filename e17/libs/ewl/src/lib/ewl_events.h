@@ -228,6 +228,7 @@ struct Ewl_Event_Dnd_Data
 	char *type; /**< Type of data from drop source */
 	void *data; /**< Data from drop source */
         unsigned int len; /**< Length of received data */
+        unsigned int format; /**< Bit format of received data */
 };
 
 /**
