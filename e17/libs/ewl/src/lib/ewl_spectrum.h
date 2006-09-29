@@ -77,6 +77,7 @@ void ewl_spectrum_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 void ewl_spectrum_cb_mouse_move(Ewl_Widget *w, void *ev, void *data);
 void ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
+void ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @}
