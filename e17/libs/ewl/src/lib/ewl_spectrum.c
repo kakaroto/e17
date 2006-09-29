@@ -95,6 +95,8 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 	ewl_container_child_append(EWL_CONTAINER(sp), sp->canvas);
 	ewl_object_fill_policy_set(EWL_OBJECT(sp->canvas), EWL_FLAG_FILL_FILL);
 	ewl_widget_internal_set(sp->canvas, TRUE);
+	ewl_callback_append(EWL_WIDGET(sp->canvas), EWL_CALLBACK_REVEAL, 
+				ewl_spectrum_canvas_cb_reveal, sp);
 	ewl_widget_show(sp->canvas);
 
 	/* create the cross hairs to draw on the spectrum */
@@ -407,6 +409,21 @@ ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 	sp = EWL_SPECTRUM(w);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE,
 			 ewl_spectrum_cb_mouse_move);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Spectrum *sp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_SPECTRUM_TYPE);
+
+	sp = EWL_SPECTRUM(data);
+	sp->dirty = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
