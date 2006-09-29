@@ -134,6 +134,7 @@ static void
 _gd_cb_close(void *object, void *data)
 {
 	_gd_close(data);
+	/*TODO: neccessary?*/
 	data = NULL;
 }
 
@@ -256,6 +257,5 @@ _gd_load_preview(Egui_Graphics_Dialog egd, const char *graphic)
    free(file);
    /*FIXME: selecting the first row doesn't work - maybe we select first row while adding elements to the list:(*/
    /*ew_list_first_row_select(list_thumbs);*/
-
-   return;
 }
+

@@ -10,6 +10,8 @@ ew_group_new(const char *title, int direction)
 		return NULL;
 	}
 
+	ew->title = strdup(title);
+
 	if(title)
 	  ew->owner = etk_frame_new(title);
 	else

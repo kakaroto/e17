@@ -11,8 +11,8 @@ entrance_edit_gui_SOURCES=main.c \
 						  x_settings.c \
 						  egui_graphics_dialog.c \
 						  egui_graphics_dialog.h \
-						  egui_settings.c \
-						  egui_settings.h \
+						  egui_settings_dialog.c \
+						  egui_settings_dialog.h \
 						  Egui.h 
 
 

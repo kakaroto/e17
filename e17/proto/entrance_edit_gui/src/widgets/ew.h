@@ -4,6 +4,7 @@
 typedef struct _Entrance_Widget {
 	Etk_Widget *owner;
 	Etk_Widget *box;
+	char *title;
 } *Entrance_Widget;
 
 
@@ -18,6 +19,10 @@ typedef struct _Entrance_Widget {
 		if(ew->box) \
 		{ \
 			free(ew->box); \
+		} \
+		if(ew->title) \
+		{ \
+			free(ew->title); \
 		} \
 		free(ew); \
 	} \

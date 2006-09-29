@@ -12,7 +12,7 @@ egui_background_dialog_show(void* data)
 	Egui_Graphics_Dialog_Settings background_settings = {
 		"background",
 		"/usr/share/enlightenment/data/backgrounds",
-		"desktop/background",
+		"e/desktop/background",
 		"Entrance Configuration - Background",
 		"Backgrounds",
 		ENTRANCE_EDIT_KEY_CLIENT_BACKGROUND_STR,

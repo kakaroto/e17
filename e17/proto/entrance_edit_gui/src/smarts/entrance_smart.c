@@ -93,7 +93,7 @@ es_background_edje_set(Evas_Object *o, const char *file)
 		return;
 
 	if(!edje_object_file_set(es->background, file, "Background"))
-		if(!edje_object_file_set(es->background, file, "desktop/background"))
+		if(!edje_object_file_set(es->background, file, "e/desktop/background"))
 			return;
 
 	evas_object_clip_set(es->background, es->clip);
