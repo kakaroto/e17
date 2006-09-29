@@ -38,5 +38,6 @@ void ew_main(void);
 void ew_main_quit(void);
 
 Entrance_Widget ew_new(void);
+void ew_title_set(Entrance_Widget ew, char *title);
 
 #endif

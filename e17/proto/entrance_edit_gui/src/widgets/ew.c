@@ -32,6 +32,7 @@ ew_new(void)
 	Entrance_Widget ew = calloc(1, sizeof(*ew));
 	if(ew) 
 	{
+		ew->title = NULL;
 		ew->owner = NULL;
 		ew->box = NULL;
 	}
@@ -39,6 +40,17 @@ ew_new(void)
 	return ew;
 }
 
+void
+ew_title_set(Entrance_Widget ew, char *title)
+{
+	if(!title)
+		return;
+
+	if(ew->title)
+		free(ew->title);
+
+	ew->title = strdup(title);
+}
 
 
 /* privates */

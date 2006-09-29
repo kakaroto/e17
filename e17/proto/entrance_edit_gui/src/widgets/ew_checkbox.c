@@ -9,6 +9,7 @@ ew_checkbox_new(char *label) {
 		return NULL;
 
 	ew->owner = etk_check_button_new();
+	ew_title_set(ew, label);
 	if(label)
 		ew_button_label_set(ew, label);
 

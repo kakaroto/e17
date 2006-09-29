@@ -10,10 +10,11 @@ ew_group_new(const char *title, int direction)
 		return NULL;
 	}
 
-	ew->title = strdup(title);
-
+	ew_title_set(ew, title);
 	if(title)
-	  ew->owner = etk_frame_new(title);
+	{
+		ew->owner = etk_frame_new(title);
+	}
 	else
 	  ew->owner = etk_vbox_new(ETK_FALSE, 0);
 

@@ -45,6 +45,9 @@ Entrance_Dialog
 ew_messagebox_ok(const char *title, const char *message, const char *icon) 
 {
 	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	if(!ew)
+		return NULL;
+
 	ew_notice_ok_button_add(ew, _ew_messagebox_cb_ok, ew);
 	ew_notice_show(ew);
 
@@ -54,6 +57,8 @@ ew_messagebox_ok(const char *title, const char *message, const char *icon)
 Entrance_Dialog
 ew_messagebox_ok_cancel(const char *title, const char *message, const char *icon, void (*funct)(void *, int, void *)) {
 	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	if(!ew)
+		return NULL;
 	ew_notice_ok_button_add(ew, funct, NULL);
 	ew_notice_cancel_button_add(ew, NULL, NULL);
 
@@ -64,6 +69,8 @@ ew_messagebox_ok_cancel(const char *title, const char *message, const char *icon
 Entrance_Dialog
 ew_messagebox_yes_no(const char *title, const char *message, const char *icon, void (*funct)(void *, int, void *)) {
 	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	if(!ew)
+		return NULL;
 	ew_notice_yes_button_add(ew, funct, NULL);
 	ew_notice_no_button_add(ew, NULL, NULL);
 
@@ -74,6 +81,8 @@ ew_messagebox_yes_no(const char *title, const char *message, const char *icon, v
 Entrance_Dialog
 ew_messagebox_yes_no_cancel(const char *title, const char *message, const char *icon, void (*funct)(void *, int, void *)) {
 	Entrance_Dialog ew = _ew_messagebox_new(title, message, icon);
+	if(!ew)
+		return NULL;
 	ew_notice_yes_button_add(ew, funct, NULL);
 	ew_notice_no_button_add(ew, NULL, NULL);
 	ew_notice_cancel_button_add(ew, NULL, NULL);

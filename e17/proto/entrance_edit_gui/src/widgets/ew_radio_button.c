@@ -15,6 +15,8 @@ ew_radio_button_new(char *label, Entrance_Widget rb, void (*function)(void *, vo
 	else
 		ew->owner = etk_radio_button_new(NULL);
 
+	ew_title_set(ew, label);
+
 	if(label)
 		ew_button_label_set(ew, label);
 

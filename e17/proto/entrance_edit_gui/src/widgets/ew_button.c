@@ -11,7 +11,15 @@ ew_button_new(const char *label, void (*func)(void *, void*), void *data)
 		return NULL;
 	}
 
-	ew->owner = etk_button_new_with_label(label);
+	ew_title_set(ew, label);
+
+	if(label)
+	{
+		ew->owner = etk_button_new_with_label(label);
+	}
+	else
+		ew->owner = etk_button_new();
+
 	ew_button_onclick_set(ew, func, data);
 
 	return ew;
@@ -26,6 +34,9 @@ ew_button_onclick_set(Entrance_Widget ew, void (*func)(void*, void*), void *data
 
 void
 ew_button_label_set(Entrance_Widget ew, char *label) {
+	if(!label)
+		return;
+	ew_title_set(ew, label);
 	etk_button_label_set(ETK_BUTTON(ew->owner), label);
 }
 
