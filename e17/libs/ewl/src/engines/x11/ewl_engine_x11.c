@@ -1049,21 +1049,22 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 			if (data->content == ECORE_X_SELECTION_CONTENT_FILES) 
 			{
 				Ecore_X_Selection_Data_Files* files = ev->data;
-				printf("We've got some files! - '%s'\n", files->files[0]);
+				ewl_embed_selection_data_feed(EWL_EMBED(window), 
+							ev->target, files->files, 
+							files->num_files);
 			} 
 			else if (data->content == ECORE_X_SELECTION_CONTENT_TEXT)
 			{
 				Ecore_X_Selection_Data_Text* text = ev->data;
-				printf("We've got some text! - '%s'\n", text->text);
 				ewl_embed_selection_data_feed(EWL_EMBED(window), 
 							ev->target, text->text, 
 							((Ecore_X_Selection_Data *)text)->length);
 			} 
 			else 
 			{
-				printf("\nUnknown DND selection received, type: %d target: %s\n", 
-								data->content, ev->target);
-				printf("\tData length: %d\n", data->length);
+				ewl_embed_selection_data_feed(EWL_EMBED(window), 
+							ev->target, data->data, 
+							data->length);
 			}
 		}
 
