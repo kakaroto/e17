@@ -85,7 +85,8 @@ cb_open(Ewl_Widget *w, void *ev, void *data)
 
 	fd = EWL_FILEDIALOG(w);
 	s = ewl_filedialog_selected_file_get(fd);
-	snprintf(path, sizeof(path), "%s/%s", ewl_filedialog_directory_get(fd), s);
+	snprintf(path, sizeof(path), "%s/%s", 
+			ewl_filedialog_directory_get(fd), s);
 	if (s) free(s);
 	ewl_widget_destroy(w);
 
