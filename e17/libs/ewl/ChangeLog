@@ -1,3 +1,17 @@
+Fri Sep 29 01:28:00 2006 Nathan Ingersoll <ningerso@gmail.com>
+	* Version 0.0.5 includes a large number of bug fixes as well as:
+	  - extensive documentation
+	  - improved overall stability
+	  - Model View Controller based widgets
+	  - expanded text encoding handling
+	  - rewritten table/grid containers
+	  - significant theme changes
+	  - additional image and data display widgets
+	  - expanded debugging information
+	  - new test framework
+	  - abstracted window system engines
+	  - DND support
+
 Thu Jun 29 14:12:00 2006 dan sinclair <dj2@everburning.com>
 	* This ChangeLog is terribly out of date. Use the CVS history to see
  	  any file changes. The ChangeLog will be used to record any
