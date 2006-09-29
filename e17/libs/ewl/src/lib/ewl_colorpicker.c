@@ -740,17 +740,33 @@ ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w __UNUSED__,
  * @brief Callback for when a user clicks on the previous colour
  */
 void
-ewl_colorpicker_cb_dnd_data(Ewl_Widget *w __UNUSED__, void *ev,
+ewl_colorpicker_cb_dnd_data(Ewl_Widget *w, void *ev,
 				void *data __UNUSED__)
 {
+	int i;
+	int curcolors[4];
+	unsigned short *colors;
+	Ewl_Colorpicker *cp = EWL_COLORPICKER(w);
 	Ewl_Event_Dnd_Data *event = ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev", ev);
-	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	printf("Data %d bytes\n", event->len);
+	colors = event->data;
+	printf("Color: %d %d %d %d\n", colors[0], colors[1], colors[2], colors[3]);
+	ewl_colorpicker_current_rgb_get(cp, &curcolors[0], &curcolors[1],
+			&curcolors[2]);
+	curcolors[3] = ewl_colorpicker_alpha_get(cp);
+
+	for (i = 0; i < event->len && i < 4; i++)
+		curcolors[i] = colors[i] >> 8;
+
+	ewl_colorpicker_current_rgb_set(cp, curcolors[0], curcolors[1],
+			curcolors[2]);
+	ewl_colorpicker_alpha_set(cp, curcolors[3]);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
