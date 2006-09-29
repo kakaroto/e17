@@ -419,8 +419,8 @@ ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w, void *ev, void *data)
 	Ewl_Spectrum *sp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_SPECTRUM_TYPE);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_SPECTRUM_TYPE);
 
 	sp = EWL_SPECTRUM(data);
 	sp->dirty = TRUE;
