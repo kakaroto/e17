@@ -16,6 +16,7 @@ char *viewables[] =
    ".edj",
    ".svg",
    ".svgz",
+   ".xpm",
    NULL
 };
 
