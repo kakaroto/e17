@@ -16,17 +16,33 @@
  * @themekey /pdf/group
  */
 
+/**
+ * @def EWL_PDF_TYPE
+ * The type name for the Ewl_Pdf widget
+ */
+#define EWL_PDF_TYPE "pdf"
+
+/**
+ * The Ewl_Pdf widget
+ */
 typedef struct Ewl_Pdf Ewl_Pdf;
 
+/**
+ * @def EWL_PDF(pdf)
+ * Typecase a pointer to an Ewl_Pdf widget
+ */
 #define EWL_PDF(pdf) ((Ewl_Pdf *) pdf)
 
 /**
- * @struct Ewl_Pdf
- *
+ * Inherits from Ewl_Widget and extends to provide a pdf widget
  */
 struct Ewl_Pdf
 {
-	Ewl_Image             image;
+	Ewl_Widget            widget;
+	Evas_Object          *image;
+	char                 *filename;
+	int                   ow;
+	int                   oh;
 	int                   page;
 	int                   page_length;
 
@@ -76,7 +92,9 @@ void                  ewl_pdf_page_page_previous (Ewl_Pdf *pdf);
 /*
  * Internally used callbacks, override at your own risk.
  */
+void ewl_pdf_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_pdf_reveal_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_pdf_obscure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_pdf_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data );
 
 /**
