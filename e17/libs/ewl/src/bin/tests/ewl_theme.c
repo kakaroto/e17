@@ -76,13 +76,11 @@ create_test(Ewl_Container *box)
 static void
 cb_select_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 {
-	Ewl_Widget *n;
 	char theme_filename[PATH_MAX];
 	
-	n = ewl_widget_name_find("notebook");
 	snprintf(theme_filename, sizeof(theme_filename), 
 			PACKAGE_DATA_DIR "/themes/%s", (char *)data);
-	ewl_theme_data_str_set(n, "/file", theme_filename);
+	ewl_theme_theme_set(theme_filename);
 }
 
 static Ewl_Widget *

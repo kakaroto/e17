@@ -3,48 +3,41 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-enum Ewl_Config_Types 
-{
-	EWL_CONFIG_DEBUG_ENABLE,
-	EWL_CONFIG_DEBUG_LEVEL,
-	EWL_CONFIG_ENGINE_NAME,
-	EWL_CONFIG_EVAS_FONT_CACHE,
-	EWL_CONFIG_EVAS_IMAGE_CACHE,
-	EWL_CONFIG_THEME_ICON_THEME_NAME,
-	EWL_CONFIG_THEME_ICON_THEME_SIZE,
-	EWL_CONFIG_THEME_NAME,
-	EWL_CONFIG_THEME_CACHE,
-	EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE,
-	EWL_CONFIG_THEME_PRINT_KEYS,
-	EWL_CONFIG_THEME_PRINT_SIGNALS,
-};
+#include <fcntl.h>
+
+Ewl_Config *ewl_config = NULL;
+Ewl_Config_Cache ewl_config_cache;
 
 extern Ecore_List *ewl_embed_list;
 
-static void ewl_config_defaults_set(void);
-static void ewl_config_config_read(void);
+static void ewl_config_load(Ewl_Config *cfg);
+static void ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, 
+							const char *file);
+static void ewl_config_parse(Ewl_Config *cfg, Ecore_Hash *hash, char *data);
 
-static int ewl_config_listener(const char *key, const Ecore_Config_Type type, 
-						    const int tag, void *data);
+static Ecore_Hash *ewl_config_create_hash(void);
+static void ewl_config_create_instance_hash(Ewl_Config *cfg);
+static void ewl_config_create_system_hash(Ewl_Config *cfg);
+static void ewl_config_create_user_hash(Ewl_Config *cfg);
 
-Ewl_Config ewl_config;
+static Ecore_Hash *ewl_config_set_hash_get(Ewl_Config *cfg, 
+					Ewl_State_Type state);
+static const char *ewl_config_get(Ewl_Config *cfg, const char *key);
+static char *ewl_config_trim(char *v);
 
 /**
  * @internal
  * @return Returns true on success, false on failure.
  * @brief Initialize the configuration system
- *
- * This sets up the necessary configuration variables.
  */
 int
 ewl_config_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ecore_config_system_init();
-	ecore_config_load();
-	memset(&ewl_config, 0, sizeof(Ewl_Config));
-	ewl_config_config_read();
+	ewl_config = ewl_config_new("ewl");
+	if (!ewl_config)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -58,34 +51,133 @@ void
 ewl_config_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	IF_FREE(ewl_config.theme.name);
-	ecore_config_system_shutdown();
+	
+	ewl_config_destroy(ewl_config);
+	ewl_config = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
+ * @internal
+ * @return Returns no value
+ * @brief Initializes the debug system configuration
+ */
+void
+ewl_config_cache_init(void)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_config_cache.enable = ewl_config_int_get(ewl_config, 
+					EWL_CONFIG_DEBUG_ENABLE);
+	ewl_config_cache.segv = ewl_config_int_get(ewl_config,
+					EWL_CONFIG_DEBUG_SEGV);
+	ewl_config_cache.backtrace = ewl_config_int_get(ewl_config,
+					EWL_CONFIG_DEBUG_BACKTRACE);
+	ewl_config_cache.evas_render = ewl_config_int_get(ewl_config,
+					EWL_CONFIG_DEBUG_EVAS_RENDER);
+	ewl_config_cache.gc_reap = ewl_config_int_get(ewl_config,
+					EWL_CONFIG_DEBUG_GC_REAP);
+	ewl_config_cache.level = ewl_config_int_get(ewl_config,
+					EWL_CONFIG_DEBUG_LEVEL);
+
+	ewl_config_cache.print_signals = ewl_config_int_get(ewl_config,
+					EWL_CONFIG_THEME_PRINT_SIGNALS);
+	ewl_config_cache.print_keys = ewl_config_int_get(ewl_config,
+					EWL_CONFIG_THEME_PRINT_KEYS);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param app_name: The name of the app to open the config for
+ * @return Returns the Ewl_Config struct for this app
+ * @brief Creats the Ewl_Config file for the given application
+ */
+Ewl_Config *
+ewl_config_new(const char *app_name)
+{
+	Ewl_Config *cfg;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("app_name", app_name, NULL);
+
+	cfg = NEW(Ewl_Config, 1);
+	cfg->app_name = strdup(app_name);
+
+	ewl_config_load(cfg);
+
+	/* XXX need to hookup to dbus here? */
+
+	DRETURN_PTR(cfg, DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to destroy
+ * @return Returns no value
+ * @brief Destroys the given config structure
+ */
+void
+ewl_config_destroy(Ewl_Config *cfg)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cfg", cfg);
+	
+	if (cfg->data.user) ecore_hash_destroy(cfg->data.user);
+	cfg->data.user = NULL;
+
+	if (cfg->data.system) ecore_hash_destroy(cfg->data.system);
+	cfg->data.system = NULL;
+
+	if (cfg->data.instance) ecore_hash_destroy(cfg->data.instance);
+	cfg->data.instance = NULL;
+
+	IF_FREE(cfg->app_name);
+	FREE(cfg);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to work with
  * @param k: the key to set in the configuration database
  * @param v: the string value that will be associated with the key
- * @return Returns TRUE on success, FALSE on failure.
+ * @return Returns no value.
  * @brief set the value of key to the specified string
  *
  * Sets the string value associated with the key @a k to @a v in the
  * configuration database.
  */
-int
-ewl_config_str_set(const char *k, char *v)
+void
+ewl_config_string_set(Ewl_Config *cfg, const char *k, const char *v,
+						Ewl_State_Type state)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("k", k, FALSE);
+	DCHECK_PARAM_PTR("k", k);
 
-	ecore_config_string_set(k, v);
+	ecore_hash_set(ewl_config_set_hash_get(cfg, state), 
+						strdup(k), strdup(v));
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
+ * @param cfg: The Ewl_Config to work with
+ * @param k: the key to search
+ * @return Returns the found string value on success, NULL on failure.
+ * @brief Retrieve string value associated with a key
+ */
+const char *
+ewl_config_string_get(Ewl_Config *cfg, const char *k)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("k", k, NULL);
+
+	DRETURN_PTR(ewl_config_get(cfg, k), DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to work with
  * @param k: the key to set in the configuration database
  * @param v: the integer value that will be associated with the key
  * @return Returns TRUE on success, FALSE on failure.
@@ -94,416 +186,407 @@ ewl_config_str_set(const char *k, char *v)
  * Sets the integer value associated with the key @a k to @a v in the
  * configuration database.
  */
-int ewl_config_int_set(const char *k, int v)
+void
+ewl_config_int_set(Ewl_Config *cfg, const char *k, int v,
+					Ewl_State_Type state)
 {
+	char buf[128];
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("k", k, FALSE);
+	DCHECK_PARAM_PTR("k", k);
 
-	ecore_config_int_set(k, v);
+	snprintf(buf, sizeof(buf), "%d", v);
+	ecore_hash_set(ewl_config_set_hash_get(cfg, state), 
+					strdup(k), strdup(buf));
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param k: the key to set in the configuration database
- * @param v: the float value that will be associated with the key
- * @return Returns TRUE on success, FALSE on failure.
- * @brief Set the value of key to the specified float
- *
- * Sets the float value associated with the key @a k to @a v in the
- * configuration database.
- */
-int
-ewl_config_float_set(const char *k, float v)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("k", k, FALSE);
-
-	ecore_config_float_set(k, v);
-
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-/**
- * @param k: the key to search
- * @return Returns the found string value on success, NULL on failure.
- * @brief Retrieve string value associated with a key
- */
-char *
-ewl_config_str_get(const char *k)
-{
-	char *ret = NULL;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("k", k, NULL);
-
-	ret = ecore_config_string_get(k);
-
-	DRETURN_PTR(ret, DLEVEL_STABLE);
-}
-
-/**
+ * @param cfg: The Ewl_Config to work with
  * @param k: the key to search
  * @return Returns the found integer value on success, 0 on failure.
  * @brief Retrieve integer value associated with a key
  */
 int
-ewl_config_int_get(const char *k)
+ewl_config_int_get(Ewl_Config *cfg, const char *k)
 {
+	const char *val;
 	int v = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, 0);
 
-	v = ecore_config_int_get(k);
+	val = ewl_config_get(cfg, k);
+	if (val) v = atoi(val);
 
 	DRETURN_INT(v, DLEVEL_STABLE);
 }
 
 /**
+ * @param cfg: The Ewl_Config to work with
+ * @param k: the key to set in the configuration database
+ * @param v: the float value that will be associated with the key
+ * @return Returns no value
+ * @brief Set the value of key to the specified float
+ *
+ * Sets the float value associated with the key @a k to @a v in the
+ * configuration database.
+ */
+void
+ewl_config_float_set(Ewl_Config *cfg, const char *k, float v,
+					Ewl_State_Type state)
+{
+	char buf[128];
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("k", k);
+
+	snprintf(buf, sizeof(buf), "%f", v);
+	ecore_hash_set(ewl_config_set_hash_get(cfg, state), 
+					strdup(k), strdup(buf));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to work with
  * @param k: the key to search
  * @return Returns the found float value on success, 0.0 on failure.
  * @brief Retrieve floating point value associated with a key
  */
 float
-ewl_config_float_get(const char *k)
+ewl_config_float_get(Ewl_Config *cfg, const char *k)
 {
+	const char *val;
 	float v = 0.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, 0.0);
 
-	v = ecore_config_float_get(k);
+	val = ewl_config_get(cfg, k);
+	if (val) v = atof(val);
 
 	DRETURN_FLOAT(v, DLEVEL_STABLE);
 }
 
 static void
-ewl_config_config_read(void)
+ewl_config_load(Ewl_Config *cfg)
 {
-	int cc;
-	Ewl_Config nc;
-	Ecore_Config_Prop *prop;
+	char *fname = NULL, *p;
+	char cfg_filename[PATH_MAX];
+	int is_ewl = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cfg", cfg);
 
-	ewl_config_defaults_set();
+	if (!strcmp(cfg->app_name, "ewl"))
+		is_ewl = TRUE;
 
-	nc.debug.enable = ewl_config_int_get("/ewl/debug/enable");
-	nc.debug.level = ewl_config_int_get("/ewl/debug/level");
-	nc.evas.font_cache = ewl_config_int_get("/ewl/evas/font_cache");
-	nc.evas.image_cache = ewl_config_int_get("/ewl/evas/image_cache");
-	nc.engine_name = ewl_config_str_get("/ewl/engine_name");
-	nc.theme.name = ewl_config_str_get("/ewl/theme/name");
-	nc.theme.icon.theme = ewl_config_str_get("/ewl/theme/icon/name");
-	nc.theme.icon.size = ewl_config_str_get("/ewl/theme/icon/size");
-	nc.theme.cache = ewl_config_int_get("/ewl/theme/cache");
-	nc.theme.print_keys = ewl_config_int_get("/ewl/theme/print_keys");
-	nc.theme.print_signals = ewl_config_int_get("/ewl/theme/print_signals");
-	nc.theme.cclass_override = 
-			ewl_config_int_get("/ewl/theme/color_classes/override");
-
-	if (nc.theme.cclass_override) {
-		int i;
-
-		cc = ewl_config_int_get("/ewl/theme/color_classes/count");
-		prop = ecore_config_get("/ewl/theme/color_classes/count");
-		prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-		prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-		for (i = 0; i < cc; i++) {
-			char *name;
-			char key[PATH_MAX];
-
-			snprintf(key, PATH_MAX,
-					"/ewl/theme/color_classes/%d/name", i);
-			name = ewl_config_str_get(key);
-			prop = ecore_config_get(key);
-			prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-			prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-			if (name) {
-				int r, g, b, a;
-				int r2, g2, b2, a2;
-				int r3, g3, b3, a3;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/r", i);
-				r = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/g", i);
-				g = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/b", i);
-				b = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/a", i);
-				a = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/r2", i);
-				r2 = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/g2", i);
-				g2 = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/b2", i);
-				b2 = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/a2", i);
-				a2 = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/r3", i);
-				r3 = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/g3", i);
-				g3 = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/b3", i);
-				b3 = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				snprintf(key, PATH_MAX,
-						"/ewl/theme/color_classes/%d/a3", i);
-				a3 = ewl_config_int_get(key);
-				prop = ecore_config_get(key);
-				prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-				prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-
-				edje_color_class_set(name, r, g, b, a,
-						r2, g2, b2, a2,
-						r3, g3, b3, a3);
-				FREE(name);
-			}
-		}
+	/* convert all whitespace, / or \ characters to _ */
+	fname = strdup(cfg->app_name);
+	for(p = fname; *p != '\0'; p++)
+	{
+		if (isspace(*p) || (*p == '/') || (*p == '\\'))
+			*p = '_';
 	}
 
-	if (ewl_embed_list && !ecore_list_is_empty(ewl_embed_list)) {
+	/* load the global data */
+	snprintf(cfg_filename, sizeof(cfg_filename),
+			"%s/config/%s%s.cfg", PACKAGE_DATA_DIR, 
+			(is_ewl ? "" : "apps/"), fname);
+	ewl_config_file_load(cfg, TRUE, cfg_filename);
+
+	/* load the user specific config data */
+	snprintf(cfg_filename, sizeof(cfg_filename),
+			"%s/.ewl/config/%s%s.cfg", 
+			(getenv("HOME") ?  getenv("HOME") : "/tmp"), 
+			(is_ewl ? "" : "apps/"),
+			fname);
+	ewl_config_file_load(cfg, FALSE, cfg_filename);
+
+	/* update the evas info for the embeds */
+	if (ewl_embed_list && !ecore_list_is_empty(ewl_embed_list)) 
+	{
 		Ewl_Embed *e;
 
 		ecore_list_goto_first(ewl_embed_list);
+		while ((e = ecore_list_next(ewl_embed_list)) != NULL) 
+		{
+			if (!e->evas) continue;
 
-		while ((e = ecore_list_next(ewl_embed_list)) != NULL) {
-			if (!e->evas)
-				continue;
+			evas_font_cache_flush(e->evas);
+			evas_font_cache_set(e->evas, 
+					ewl_config_int_get(ewl_config, 
+						EWL_CONFIG_CACHE_EVAS_FONT));
 
-			if (nc.evas.font_cache) {
-				evas_font_cache_flush(e->evas);
-				evas_font_cache_set(e->evas, 0);
-			}
-
-			if (nc.evas.image_cache) {
-				evas_image_cache_flush(e->evas);
-				evas_image_cache_set(e->evas,
-						     nc.evas.image_cache);
-			}
+			evas_image_cache_flush(e->evas);
+			evas_image_cache_set(e->evas,
+				 	ewl_config_int_get(ewl_config,
+						EWL_CONFIG_CACHE_EVAS_IMAGE));
 		}
 	}
 
-	ewl_config.debug.enable = nc.debug.enable;
-	ewl_config.debug.level = nc.debug.level;
-	ewl_config.evas.font_cache = nc.evas.font_cache;
-	ewl_config.evas.image_cache = nc.evas.image_cache;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
-	IF_FREE(ewl_config.engine_name);
-	ewl_config.engine_name = nc.engine_name;
+static Ecore_Hash *
+ewl_config_create_hash(void)
+{
+	Ecore_Hash *hash;
 
-	IF_FREE(ewl_config.theme.name);
-	ewl_config.theme.name = nc.theme.name;
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	IF_FREE(ewl_config.theme.icon.theme);
-	ewl_config.theme.icon.theme = nc.theme.icon.theme;
+	hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	ecore_hash_set_free_key(hash, free);
+	ecore_hash_set_free_value(hash, free);
 
-	IF_FREE(ewl_config.theme.icon.size);
-	ewl_config.theme.icon.size = nc.theme.icon.size;
+	DRETURN_PTR(hash, DLEVEL_STABLE);
+}
 
-	ewl_config.theme.cache = nc.theme.cache;
-	ewl_config.theme.print_keys = nc.theme.print_keys;
-	ewl_config.theme.print_signals = nc.theme.print_signals;
-	ewl_config.theme.cclass_override = nc.theme.cclass_override;
+static void
+ewl_config_create_user_hash(Ewl_Config *cfg)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cfg", cfg);
+
+	if (!cfg->data.user)
+		cfg->data.user = ewl_config_create_hash();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_config_defaults_set(void)
+ewl_config_create_system_hash(Ewl_Config *cfg)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cfg", cfg);
 
-	ecore_config_int_default("/ewl/debug/enable", 0);
-	ecore_config_int_default("/ewl/debug/level", 0);
-	ecore_config_string_default("/ewl/engine_name", "evas_software_x11");
-	ecore_config_int_default("/ewl/evas/font_cache", 2097152);
-	ecore_config_int_default("/ewl/evas/image_cache", 8388608);
-	ecore_config_theme_default("/ewl/theme/name", "default");
-	ecore_config_string_default("/ewl/theme/icon/name", "Tango");
-	ecore_config_string_default("/ewl/theme/icon/size", EWL_ICON_SIZE_MEDIUM);
-	ecore_config_int_default("/ewl/theme/cache", 0);
-	ecore_config_int_default("/ewl/theme/color_classes/override", 0);
-	ecore_config_int_default("/ewl/theme/print_keys", 0);
-	ecore_config_int_default("/ewl/theme/print_signals", 0);
+	if (!cfg->data.system)
+		cfg->data.system = ewl_config_create_hash();
 
-	/* need to set each of these keys into the system section */
-	{
-		Ecore_Config_Prop *prop = NULL;
-		int i = 0;
-		char *keys [] = {
-		    "/ewl/debug/enable",
-		    "/ewl/debug/level",
-		    "/ewl/engine_name",
-		    "/ewl/evas/font_cache",
-		    "/ewl/evas/image_cache",
-		    "/ewl/theme/name",
-		    "/ewl/theme/icon/name",
-		    "/ewl/theme/icon/size",
-		    "/ewl/theme/cache",
-		    "/ewl/theme/color_classes/override",
-		    "/ewl/theme/print_keys",
-		    "/ewl/theme/print_signals",
-		    NULL
-		};
-
-		for(i = 0; keys[i] != NULL; i++) {
-			prop = ecore_config_get(keys[i]);
-			prop->flags &= ~ECORE_CONFIG_FLAG_MODIFIED;
-			prop->flags |= ECORE_CONFIG_FLAG_SYSTEM;
-		}
-
-		ecore_config_listen("ewl_debug_enable", "/ewl/debug/enable",
-		    ewl_config_listener, EWL_CONFIG_DEBUG_ENABLE, NULL);
-		ecore_config_listen("ewl_debug_level", "/ewl/debug/level",
-		    ewl_config_listener, EWL_CONFIG_DEBUG_LEVEL, NULL);
-		ecore_config_listen("ewl_engine_name", "/ewl/engine_name",
-		    ewl_config_listener, EWL_CONFIG_ENGINE_NAME, NULL);
-		ecore_config_listen("ewl_font_cache", "/ewl/evas/font_cache",
-		    ewl_config_listener, EWL_CONFIG_EVAS_FONT_CACHE, NULL);
-		ecore_config_listen("ewl_image_cache", "/ewl/evas/image_cache",
-		    ewl_config_listener, EWL_CONFIG_EVAS_IMAGE_CACHE, NULL);
-		ecore_config_listen("ewl_theme_name", "/ewl/theme/name",
-		    ewl_config_listener, EWL_CONFIG_THEME_NAME, NULL);
-		ecore_config_listen("ewl_theme_icon_name", "/ewl/theme/icon/name",
-		    ewl_config_listener, EWL_CONFIG_THEME_ICON_THEME_NAME, NULL);
-		ecore_config_listen("ewl_theme_icon_size", "/ewl/theme/icon/size",
-		    ewl_config_listener, EWL_CONFIG_THEME_ICON_THEME_SIZE, NULL);
-		ecore_config_listen("ewl_theme_cache", "/ewl/theme/cache",
-		    ewl_config_listener, EWL_CONFIG_THEME_CACHE, NULL);
-		ecore_config_listen("ewl_theme_print_keys", "/ewl/theme/print_keys",
-		    ewl_config_listener, EWL_CONFIG_THEME_PRINT_KEYS, NULL);
-		ecore_config_listen("ewl_theme_print_signals", "/ewl/theme/print_signals",
-		    ewl_config_listener, EWL_CONFIG_THEME_PRINT_SIGNALS, NULL);
-		ecore_config_listen("ewl_theme_cclases_override", 
-					"/ewl/theme/color_classes/override",
-		    ewl_config_listener, EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE, NULL);
-	}
-
-	DRETURN(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int
-ewl_config_listener(const char *key, 
-			const Ecore_Config_Type type __UNUSED__, 
-			const int tag, void *data __UNUSED__)
+static void
+ewl_config_create_instance_hash(Ewl_Config *cfg)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("key", key, 0);
+	DCHECK_PARAM_PTR("cfg", cfg);
 
-	switch(tag) {
-		case EWL_CONFIG_DEBUG_ENABLE:
-			ewl_config.debug.enable = ewl_config_int_get(key);
-			break;
+	if (!cfg->data.instance)
+		cfg->data.instance = ewl_config_create_hash();
 
-		case EWL_CONFIG_DEBUG_LEVEL:
-			ewl_config.debug.level = ewl_config_int_get(key);
-			break;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
-		case EWL_CONFIG_ENGINE_NAME:
-			IF_FREE(ewl_config.engine_name);
-			ewl_config.engine_name = ewl_config_str_get(key);
-			break;
+static Ecore_Hash *
+ewl_config_set_hash_get(Ewl_Config *cfg, Ewl_State_Type state)
+{
+	Ecore_Hash *hash = NULL;
 
-		case EWL_CONFIG_EVAS_FONT_CACHE:
-			ewl_config.evas.font_cache = ewl_config_int_get(key);
-			break;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
 
-		case EWL_CONFIG_EVAS_IMAGE_CACHE:
-			ewl_config.evas.image_cache = ewl_config_int_get(key);
-			break;
-
-		case EWL_CONFIG_THEME_NAME:
-			IF_FREE(ewl_config.theme.name);
-			ewl_config.theme.name = ewl_config_str_get(key);
-			break;
-	
-		case EWL_CONFIG_THEME_ICON_THEME_NAME:
-			IF_FREE(ewl_config.theme.icon.theme);
-			ewl_config.theme.icon.theme = ewl_config_str_get(key);
-			ewl_icon_theme_theme_change();
-			break;
-
-		case EWL_CONFIG_THEME_ICON_THEME_SIZE:
-			IF_FREE(ewl_config.theme.icon.size);
-			ewl_config.theme.icon.size = ewl_config_str_get(key);
-			break;
-
-		case EWL_CONFIG_THEME_CACHE:
-			ewl_config.theme.cache = ewl_config_int_get(key);
-			break;
-			
-		case EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE:
-			ewl_config.theme.cclass_override = ewl_config_int_get(key);
-			break;
-
-		case EWL_CONFIG_THEME_PRINT_KEYS:
-			ewl_config.theme.print_keys = ewl_config_int_get(key);
-			break;
-
-		case EWL_CONFIG_THEME_PRINT_SIGNALS:
-			ewl_config.theme.print_signals = ewl_config_int_get(key);
-			break;
+	if (state == EWL_STATE_TRANSIENT)
+	{
+		ewl_config_create_instance_hash(cfg);
+		hash = cfg->data.instance;
+	}
+	else
+	{
+		ewl_config_create_user_hash(cfg);
+		hash = cfg->data.instance;
 	}
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	DRETURN_PTR(hash, DLEVEL_STABLE);
+}
+
+/* try to find the given key in our config. We check instance data first,
+ * then user data, then system data. */
+static const char *
+ewl_config_get(Ewl_Config *cfg, const char *key)
+{
+	const char *val = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
+	DCHECK_PARAM_PTR_RET("key", key, NULL);
+
+	if (cfg->data.instance 
+			&& (val = ecore_hash_get(cfg->data.instance, key)))
+	{
+		/* we got our value, just NOP */
+	}
+	else if (cfg->data.user
+			&& (val = ecore_hash_get(cfg->data.user, key)))
+	{
+		/* we got our value, just NOP */
+	}
+	else if (cfg->data.system
+			&& (val = ecore_hash_get(cfg->data.system, key)))
+	{
+		/* we got our value, just NOP */
+	}
+
+	DRETURN_PTR(val, DLEVEL_STABLE);
+}
+
+/* open the given file and add it's key/value pairs to the config structure.
+ * Overwrite any current values that are set.
+ */
+static void
+ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
+{
+	Ecore_Hash *hash;
+	int fd;
+	char *data;
+	struct flock fl;
+	struct stat buf;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cfg", cfg);
+	DCHECK_PARAM_PTR("file", file);
+
+	/* make sure the config file exists */
+	if (!ecore_file_exists(file))
+		DRETURN(DLEVEL_STABLE);
+
+	fd = open(file, O_RDONLY, S_IRUSR);
+	if (fd == -1) 
+	{
+		DWARNING("Unable to open cfg file %s\n", file);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	fl.l_type = F_RDLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+
+	if (fcntl(fd, F_SETLKW, &fl) == -1)
+	{
+		DWARNING("Unable to lock %s for read\n", file);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* read the file into memory 
+	 * 
+	 * XXX we may want to do this in chunks as the config could be 
+	 * large ... 
+	 */
+	stat(file, &buf);
+	data = malloc(sizeof(char) * (buf.st_size + 1));
+	read(fd, data, buf.st_size);
+	data[buf.st_size] = '\0';
+
+	/* release the lock as the file is in memory */
+	fl.l_type = F_UNLCK;
+	fcntl(fd, F_SETLK, &fl);
+	close(fd);
+
+
+	/* create the hash to store the values */
+	if (is_system)
+	{
+		ewl_config_create_system_hash(cfg);
+		hash = cfg->data.system;
+	}
+	else
+	{
+		ewl_config_create_user_hash(cfg);
+		hash = cfg->data.user;
+	}
+
+	ewl_config_parse(cfg, hash, data);
+	FREE(data);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_config_parse(Ewl_Config *cfg, Ecore_Hash *hash, char *data)
+{
+	char *start;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cfg", cfg);
+	DCHECK_PARAM_PTR("hash", hash);
+	DCHECK_PARAM_PTR("data", data);
+
+	start = data;
+	while (start)
+	{
+		char *middle = NULL, *end, *key = NULL, *val = NULL;
+
+		/* skip over blank space */
+		while (isspace(*start) && (*start != '\0')) 
+			start ++;
+		if (*start == '\0') break;
+
+		/* skip over comment lines */
+		if (*start == '#')
+		{
+			while ((*start != '\n') && (*start != '\0')) 
+				start ++;
+			if (*start == '\0') break;
+
+			start ++;
+
+			continue;
+		}
+
+		/* at this point we should have an actual key/value pair */
+		end = start;
+		while ((*end != '\0') && (*end != '\n') && (*end != '\r'))
+		{
+			if (*end == '=')
+			{
+				middle = end;
+				*middle = '\0';
+			}
+			end ++;
+		}
+		*end = '\0';
+
+		if (start && middle && end)
+		{
+			key = strdup(start);
+			key = ewl_config_trim(key);
+
+			val = strdup(middle + 1);
+			val = ewl_config_trim(val);
+
+			ecore_hash_set(hash, key, val);
+		}
+
+		start = end + 1;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static char *
+ewl_config_trim(char *v2)
+{
+	char *end, *old, *v;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("v2", v2, NULL);
+
+	old = v2;
+	v = v2;
+	end = v + strlen(v);
+
+	/* strip from beginning */
+	while (isspace(*v) && (*v != '\0')) v++;
+	while ((isspace(*end) || (*end == '\0')) && (end != v)) end --;
+	*(++end) = '\0';
+
+	v2 = strdup(v);
+	FREE(old);
+
+	DRETURN_PTR(v2, DLEVEL_STABLE);
 }
 
 

@@ -277,6 +277,7 @@ src/engines/evas_gl_x11/Makefile
 src/engines/evas_fb/Makefile
 src/engines/evas_buffer/Makefile
 data/Makefile
+data/config/Makefile
 data/images/Makefile
 data/themes/Makefile
 debian/changelog

@@ -653,7 +653,8 @@ ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	}
 	ewl_engine_embed_dnd_aware_set(EWL_EMBED(window));
 
-	ewl_engine_canvas_setup(window, ewl_config.evas.render_debug);
+	ewl_engine_canvas_setup(window, ewl_config_int_get(ewl_config, 
+					EWL_CONFIG_DEBUG_EVAS_RENDER));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

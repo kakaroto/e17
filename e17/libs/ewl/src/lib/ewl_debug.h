@@ -18,12 +18,13 @@ void ewl_backtrace(void);
 
 #ifdef DEBUG
 
+#define DEBUGGING(lvl) (ewl_config_cache.enable && (ewl_config_cache.level >= (lvl)))
+
 #define DENTER_FUNCTION(lvl) \
 { \
-	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
+	if (DEBUGGING(lvl)) \
 	  { \
-		char *indent = ewl_debug_get_indent(); \
-		ewl_config.debug.indent_lvl ++; \
+		char *indent = ewl_debug_indent_get(1); \
 		fprintf(stderr, "%s--> %s:%i\tEntering %s();\n", \
 			indent, __FILE__, __LINE__, __func__); \
 		FREE(indent); \
@@ -32,11 +33,10 @@ void ewl_backtrace(void);
 
 #define DLEAVE_FUNCTION(lvl) \
 { \
-	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
+	if (DEBUGGING(lvl)) \
 	  { \
 		char *indent; \
-	        ewl_config.debug.indent_lvl --; \
-		indent = ewl_debug_get_indent(); \
+		indent = ewl_debug_indent_get(-1); \
 		fprintf(stderr, "%s<--  %s:%i\tLeaving  %s();\n", \
 			indent, __FILE__, __LINE__, __func__); \
 		FREE(indent); \
@@ -46,10 +46,10 @@ void ewl_backtrace(void);
 #define DRETURN(lvl) \
 { \
 	DLEAVE_FUNCTION(lvl); \
-	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
+	if (DEBUGGING(lvl)) \
 	  { \
 		char *indent; \
-		indent = ewl_debug_get_indent(); \
+		indent = ewl_debug_indent_get(0); \
 		fprintf(stderr, "%s<--  %s:%i\tReturn in %s();\n", \
 			indent, __FILE__, __LINE__, __func__); \
 		FREE(indent); \
@@ -60,10 +60,10 @@ void ewl_backtrace(void);
 #define DRETURN_PTR(ptr, lvl) \
 { \
 	DLEAVE_FUNCTION(lvl); \
-	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
+	if (DEBUGGING(lvl)) \
 	  { \
 		char *indent; \
-		indent = ewl_debug_get_indent(); \
+		indent = ewl_debug_indent_get(0); \
 		fprintf(stderr, "%s<--  %s:%i\tReturning %p in %s();\n", \
 			indent, __FILE__, __LINE__, (void *) (ptr), __func__); \
 		FREE(indent); \
@@ -74,10 +74,10 @@ void ewl_backtrace(void);
 #define DRETURN_FLOAT(num, lvl) \
 { \
 	DLEAVE_FUNCTION(lvl); \
-	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
+	if (DEBUGGING(lvl)) \
 	  { \
 		char *indent; \
-		indent = ewl_debug_get_indent(); \
+		indent = ewl_debug_indent_get(0); \
 		fprintf(stderr, "%s<--  %s:%i\tReturning %f in %s();\n", \
 			indent, __FILE__, __LINE__, (float) (num), __func__); \
 		FREE(indent); \
@@ -88,10 +88,10 @@ void ewl_backtrace(void);
 #define DRETURN_INT(num, lvl) \
 { \
 	DLEAVE_FUNCTION(lvl); \
-	if (ewl_config.debug.enable && (ewl_config.debug.level >= (lvl))) \
+	if (DEBUGGING(lvl)) \
 	  { \
 		char *indent; \
-		indent = ewl_debug_get_indent(); \
+		indent = ewl_debug_indent_get(0); \
 		fprintf(stderr, "%s<--  %s:%i\tReturning %i in %s();\n", \
 			indent, __FILE__, __LINE__, (int) (num), __func__); \
 		FREE(indent); \

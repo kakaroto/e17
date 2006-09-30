@@ -55,4 +55,25 @@
 #define __UNUSED__
 #endif
 
+/* config keys used by EWL */
+#define EWL_CONFIG_DEBUG_ENABLE "/ewl/debug/enable"
+#define EWL_CONFIG_DEBUG_LEVEL "/ewl/debug/level"
+#define EWL_CONFIG_DEBUG_SEGV "/ewl/debug/segv"
+#define EWL_CONFIG_DEBUG_BACKTRACE "/ewl/debug/backtrace"
+#define EWL_CONFIG_DEBUG_EVAS_RENDER "/ewl/debug/evas/render"
+#define EWL_CONFIG_DEBUG_GC_REAP "/ewl/debug/gc/reap"
+
+#define EWL_CONFIG_CACHE_EVAS_FONT "/ewl/cache/evas/font"
+#define EWL_CONFIG_CACHE_EVAS_IMAGE "/ewl/cache/evas/image"
+
+#define EWL_CONFIG_ENGINE_NAME "/ewl/engine/name"
+#define EWL_CONFIG_THEME_NAME "/ewl/theme/name"
+#define EWL_CONFIG_THEME_ICON_THEME "/ewl/theme/icon/theme"
+#define EWL_CONFIG_THEME_ICON_SIZE "/ewl/theme/icon/size"
+#define EWL_CONFIG_THEME_PRINT_KEYS "/ewl/theme/print/keys"
+#define EWL_CONFIG_THEME_PRINT_SIGNALS "/ewl/theme/print/signals"
+
+#define EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE "/ewl/theme/color/classes/override"
+#define EWL_CONFIG_THEME_COLOR_CLASSES_COUNT "/ewl/theme/color/classes/count"
+
 #endif

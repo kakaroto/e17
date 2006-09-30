@@ -5,7 +5,7 @@ exec_prefix=@exec_prefix@
 exec_prefix_set=no
 
 usage="\
-Usage: ewl-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--libs] [--cflags] [--test-lib-dir] [--test-src-dir]"
+Usage: ewl-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--libs] [--cflags] [--test-lib-dir] [--test-src-dir] [--app-config-dir]"
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
@@ -53,6 +53,9 @@ while test $# -gt 0; do
       ;;
     --test-src-dir)
       echo @prefix@/share/ewl/examples
+      ;;
+    --app-config-dir)
+      echo @prefix@/share/ewl/config/apps
       ;;
     *)
       echo "${usage}" 1>&2

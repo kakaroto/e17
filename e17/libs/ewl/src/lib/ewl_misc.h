@@ -27,7 +27,7 @@ void            ewl_realize_phase_exit(void);
 int             ewl_in_realize_phase(void);
 void            ewl_evas_destroy(Evas *evas);
 void            ewl_evas_object_destroy(Evas_Object *obj);
-char 	       *ewl_debug_get_indent(void);
+char 	       *ewl_debug_indent_get(int mod_dir);
 
 #undef DEBUG_MALLOCDEBUG
 #ifdef DEBUG_MALLOCDEBUG

@@ -724,9 +724,10 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 		w->bit_state = ecore_string_instance((char *)state);
 
 	if (w->theme_object) {
-		if (ewl_config.theme.print_signals)
+		if (ewl_config_cache.print_signals)
 			printf("Emitting: %s to %p (%s)\n", state, w, 
 							w->appearance);
+
 		edje_object_signal_emit(w->theme_object, state, "EWL");
 	} 
 

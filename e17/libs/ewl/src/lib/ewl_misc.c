@@ -62,7 +62,7 @@ ewl_print_warning(void)
 void
 ewl_segv(void)
 {
-	if (ewl_config.debug.segv) {
+	if (ewl_config_cache.segv) {
 		char *null = NULL;
 		*null = '\0';
 	}
@@ -81,7 +81,8 @@ ewl_backtrace(void)
 	char **strings;
 	size_t i;
 		
-	if (!ewl_config.debug.backtrace) return;
+	if (!ewl_config_cache.backtrace)
+		return;
 
 	fprintf(stderr, "\n***** Backtrace *****\n");
 	size = backtrace(array, 128);
@@ -156,9 +157,13 @@ ewl_init(int *argc, char **argv)
 
 	ewl_init_parse_options(argc, argv);
 
+	/* initialize this _after_ we've handled the command line options */
+	ewl_config_cache_init();
+
 	/* we create the engine we will be working with here so that it is
 	 * initialized before we start to use it. */
-	if (!ewl_engine_new(ewl_config.engine_name))
+	if (!ewl_engine_new(ewl_config_string_get(ewl_config, 
+					EWL_CONFIG_ENGINE_NAME)))
 	{
 		DERROR("Unable to initialize engine.\n");
 		ewl_shutdown();
@@ -455,17 +460,16 @@ ewl_idle_render(void *data __UNUSED__)
 			double render_time = 0;
 
 			ewl_embed_thaw(emb);
-			if (ewl_config.evas.render_debug) {
+			if (ewl_config_cache.evas_render) {
 				printf("Entering render\n");
 				render_time = ecore_time_get();
 			}
 
 			ewl_engine_canvas_render(emb);
 
-			if (ewl_config.evas.render_debug) {
+			if (ewl_config_cache.evas_render)
 				printf("Render time: %f seconds\n",
 						ecore_time_get() - render_time);
-			}
 		}
 	}
 
@@ -519,44 +523,61 @@ ewl_init_parse_options(int *argc, char **argv)
 	i = 0;
 	while (i < *argc) {
 		if (!strcmp(argv[i], "--ewl-segv")) {
-			ewl_config.debug.segv = 1;
+			ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_SEGV, 
+						1, EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-backtrace")) {
-			ewl_config.debug.backtrace = 1;
+			ewl_config_int_set(ewl_config, 
+					EWL_CONFIG_DEBUG_BACKTRACE, 1,
+					EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-theme")) {
 			if (i + 1 < *argc) {
-				ewl_theme_name_set(argv[i + 1]);
+				ewl_theme_theme_set(argv[i + 1]);
 				matched++;
 			}
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-theme-keys")) {
-			ewl_config.theme.print_keys = 1;
+			ewl_config_int_set(ewl_config, 
+					EWL_CONFIG_THEME_PRINT_KEYS, 1,
+					EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-theme-signals")) {
-			ewl_config.theme.print_signals = 1;
+			ewl_config_int_set(ewl_config, 
+					EWL_CONFIG_THEME_PRINT_SIGNALS, 1,
+					EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-gc-reap")) {
-			ewl_config.debug.gc_reap = 1;
+			ewl_config_int_set(ewl_config, 
+					EWL_CONFIG_DEBUG_GC_REAP, 1,
+					EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-debug")) {
 			if (i + i < *argc) {
-				ewl_config.debug.level = atoi(argv[i + 1]);
+				ewl_config_int_set(ewl_config, 
+					EWL_CONFIG_DEBUG_LEVEL, atoi(argv[i + 1]),
+					EWL_STATE_TRANSIENT);
 				matched++;
 			} else {
-				ewl_config.debug.level = 1;
+				ewl_config_int_set(ewl_config, 
+					EWL_CONFIG_DEBUG_LEVEL, 1,
+					EWL_STATE_TRANSIENT);
 			}
-			ewl_config.debug.enable = 1;
+			ewl_config_int_set(ewl_config, 
+					EWL_CONFIG_DEBUG_ENABLE, 1,
+					EWL_STATE_TRANSIENT);
 			matched ++;
 		}
 		else if (!strcmp(argv[i], "--ewl-debug-paint")) {
-			ewl_config.evas.render_debug = 1;
+			ewl_config_int_set(ewl_config, 
+					EWL_CONFIG_DEBUG_EVAS_RENDER, 1,
+					EWL_STATE_TRANSIENT);
 			matched ++;
 		}
 		else if (!strcmp(argv[i], "--ewl-help")) {
@@ -584,8 +605,9 @@ ewl_init_parse_options(int *argc, char **argv)
 				{
 					if (!strcmp(eng, name))
 					{
-						IF_FREE(ewl_config.engine_name);
-						ewl_config.engine_name = strdup(name);
+						ewl_config_string_set(ewl_config, 
+							EWL_CONFIG_ENGINE_NAME, name,
+							EWL_STATE_TRANSIENT);
 						matched ++;
 
 						break;
@@ -1058,9 +1080,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	cleanup = 0;
-
-	if (ewl_config.debug.gc_reap)
-		printf("---\n");
+	if (ewl_config_cache.gc_reap) printf("---\n");
 
 	while ((cleanup < EWL_GC_LIMIT) &&
 			(w = ecore_list_remove_first(destroy_list))) {
@@ -1074,18 +1094,17 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		cleanup++;
 	}
 
-	if (ewl_config.debug.gc_reap)
+	if (ewl_config_cache.gc_reap) 
 		printf("Destroyed %d EWL objects\n", cleanup);
-
 	cleanup = 0;
 
 	while ((obj = ecore_list_remove_first(free_evas_object_list))) {
 		evas_object_del(obj);
 		cleanup++;
 	}
-	if (ewl_config.debug.gc_reap)
-		printf("Destroyed %d Evas Objects\n", cleanup);
 
+	if (ewl_config_cache.gc_reap) 
+		printf("Destroyed %d Evas Objects\n", cleanup);
 	cleanup = 0;
 
 	/* make sure the widget and object lists are clear before trying to
@@ -1098,11 +1117,8 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		}
 	}
 
-	if (ewl_config.debug.gc_reap)
-		printf("Destroyed %d Evas\n", cleanup);
-
-	if (ewl_config.debug.gc_reap)
-		printf("---\n");
+	if (ewl_config_cache.gc_reap) 
+		printf("Destroyed %d Evas\n---\n", cleanup);
 
 	if (!ecore_list_nodes(destroy_list))
 		ewl_garbage_collect = NULL;
@@ -1139,15 +1155,21 @@ strdup(const char *str)
  * @brief Creates a string used to indent debug messages
  */
 char *
-ewl_debug_get_indent(void)
+ewl_debug_indent_get(int mod_dir)
 {
+	static int ewl_debug_indent_lvl = 0;
 	char *indent = NULL;
-	
-	if (ewl_config.debug.indent_lvl < 0)
-		ewl_config.debug.indent_lvl = 0;
 
-	indent = calloc((ewl_config.debug.indent_lvl * 2) + 2, sizeof(char *)); 
-	memset(indent, ' ', (ewl_config.debug.indent_lvl * 2) + 1);
+	if (mod_dir < 0) ewl_debug_indent_lvl --;
+
+	if (ewl_debug_indent_lvl < 0)
+		ewl_debug_indent_lvl = 0;
+
+	indent = calloc((ewl_debug_indent_lvl << 1) + 2, sizeof(char *)); 
+	memset(indent, ' ', (ewl_debug_indent_lvl << 1) + 1);
+
+	if (mod_dir > 0) ewl_debug_indent_lvl ++;
+
 	return indent;
 }
 
