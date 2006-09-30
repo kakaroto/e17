@@ -57,6 +57,7 @@ int change_picture(void *data)
  image_path = ecore_dlist_current(current_thumbs);
  if(image_path)
  {
+  ewl_container_reset(EWL_CONTAINER(sc->image));
   ewl_image_file_set(EWL_IMAGE(sc->image), image_path, NULL);
  }
  else
@@ -67,6 +68,7 @@ int change_picture(void *data)
    image_path = ecore_dlist_current(current_thumbs);
    if(image_path)
    {
+    ewl_container_reset(EWL_CONTAINER(sc->image));
     ewl_image_file_set(EWL_IMAGE(sc->image), image_path, NULL);
    }
    else
@@ -90,7 +92,8 @@ void show_first_image(Ewl_Widget *w, void *event, void *data)
 
  sc = data;
  image_path = ecore_dlist_goto_first(current_thumbs);
- ewl_image_file_set(EWL_IMAGE(w), image_path, NULL);
+ ewl_container_reset(EWL_CONTAINER(sc->image));
+ ewl_image_file_set(EWL_IMAGE(sc->image), image_path, NULL);
 
  timer = ecore_timer_add(sc->length, change_picture, sc);
 }
@@ -98,6 +101,7 @@ void show_first_image(Ewl_Widget *w, void *event, void *data)
 void start_slideshow(Ewl_Widget *w, void *event, void *data)
 {
  Ewl_Widget *window;
+ Ewl_Widget *vbox;
  Ewl_Widget *cell;
  Ewl_Widget *image;
  Slide_Config *sc;
@@ -119,18 +123,27 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  ewl_window_dialog_set(EWL_WINDOW(window), 1);
  ewl_widget_show(window);
 
+ vbox = ewl_vbox_new();
+ ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+ ewl_object_alignment_set(EWL_OBJECT(vbox), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(window), vbox);
+ ewl_widget_show(vbox);
+ 
  cell = ewl_cell_new();
  ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
- ewl_container_child_append(EWL_CONTAINER(window), cell);
+ ewl_object_alignment_set(EWL_OBJECT(cell), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), cell);
  ewl_widget_show(cell);
 
  image = ewl_image_new();
  if (sc->zoom)
  	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_ALL);
- else
+ if (!sc->zoom)
 	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
  if (sc->keep_aspect)
 	ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
+ ewl_theme_data_str_set(image, "/image/group", 
+		 	ewl_theme_data_str_get(m->entry, "group"));
  ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(cell), image);
  ewl_widget_show(image);
