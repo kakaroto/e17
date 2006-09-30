@@ -73,12 +73,65 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(ibox);
  
  image_view = ewl_image_new();
+ ewl_theme_data_str_set(image_view, "/image/group", 
+		 	ewl_theme_data_str_get(m->entry, "group"));
  ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
  ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(image_view);
+
+ hbox = ewl_hbox_new();
+ ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+ ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
+ ewl_widget_show(hbox);
+
+ button = ewl_button_new();
+ ewl_button_image_set(EWL_BUTTON(button), 
+		      PACKAGE_DATA_DIR "/images/search.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(button), "In");
+ ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_widget_show(button);
  
+ button = ewl_button_new();
+ ewl_button_image_set(EWL_BUTTON(button), 
+		      PACKAGE_DATA_DIR "/images/search.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(button), "Out");
+ ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_widget_show(button);
+
+ button = ewl_button_new();
+ ewl_button_image_set(EWL_BUTTON(button), 
+		      PACKAGE_DATA_DIR "/images/search.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(button), "1:1");
+ ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_widget_show(button);
+
+ button = ewl_button_new();
+ ewl_button_image_set(EWL_BUTTON(button), 
+		      PACKAGE_DATA_DIR "/images/undo.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(button), "Left");
+ ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_widget_show(button);
+
+ button = ewl_button_new();
+ ewl_button_image_set(EWL_BUTTON(button), 
+		      PACKAGE_DATA_DIR "/images/redo.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(button), "Right");
+ ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_widget_show(button);
+
  ecore_dlist_goto_first(view_thumbs);
  while (ecore_dlist_current(view_thumbs))
  {
@@ -102,6 +155,10 @@ void view_images(Ewl_Widget *w, void *event, void *data)
   ewl_widget_show(image);
   
   ecore_dlist_next(view_thumbs);
- }  
- ewl_callback_append(vbox, EWL_CALLBACK_SHOW, change_image, data);
+ }
+ if (data) 
+ 	ewl_callback_append(vbox, EWL_CALLBACK_SHOW, change_image, data);
+ if (!data)
+	ewl_callback_append(vbox, EWL_CALLBACK_SHOW, change_image, 
+			    (char *)ecore_dlist_goto_first(view_thumbs));
 }

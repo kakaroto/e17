@@ -62,12 +62,39 @@ main(int argc, char **argv)
  ewl_widget_show(menu);
 
  menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+		      PACKAGE_DATA_DIR "/images/add.png", NULL);
  ewl_button_label_set(EWL_BUTTON(menu_item), "Add Album");
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
  ewl_widget_show(menu_item);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/remove.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Remove Album");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
  
+ menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(menu), "Viewer");
+ ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(menu);     
+ 
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+		      PACKAGE_DATA_DIR "/images/emblem-photos.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Image Viewer");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, view_images, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item); 
+
  menu = ewl_menu_new();
  ewl_button_label_set(EWL_BUTTON(menu), "Slideshow");
  ewl_container_child_append(EWL_CONTAINER(menubar), menu);
@@ -84,7 +111,6 @@ main(int argc, char **argv)
  ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
  ewl_widget_show(menu_item);
        
- 
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item), 
 		      PACKAGE_DATA_DIR "/images/x-office-presentation.png", NULL);
