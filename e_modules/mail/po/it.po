@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mail\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-16 13:29+0200\n"
+"POT-Creation-Date: 2006-09-30 08:29+0200\n"
 "PO-Revision-Date: 2006-08-26 21:07+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -39,98 +39,102 @@ msgstr "Caselle di posta"
 msgid "Configure..."
 msgstr "Configura..."
 
-#: e_mod_config_box.c:61
+#: e_mod_config_box.c:64
 msgid "Mailbox Configuration"
 msgstr "Configurazione casella di posta"
 
-#: e_mod_config_box.c:143
+#: e_mod_config_box.c:148
 msgid "Start Program When New Mail Arrives"
 msgstr "Avvia programma all'arrivo di nuova posta"
 
-#: e_mod_config_box.c:148
+#: e_mod_config_box.c:153
 msgid "Program:"
 msgstr "Programma:"
 
-#: e_mod_config_box.c:160
+#: e_mod_config_box.c:165
 msgid "Mailbox Type"
 msgstr "Tipo di casella"
 
-#: e_mod_config_box.c:162
+#: e_mod_config_box.c:167
 msgid "Pop3"
 msgstr "Pop3"
 
-#: e_mod_config_box.c:165
+#: e_mod_config_box.c:170
 msgid "Imap"
 msgstr "Imap"
 
-#: e_mod_config_box.c:168
+#: e_mod_config_box.c:173
 msgid "Maildir"
 msgstr "Maildir"
 
-#: e_mod_config_box.c:171
+#: e_mod_config_box.c:176
 msgid "Mbox"
 msgstr "Mbox"
 
-#: e_mod_config_box.c:176
+#: e_mod_config_box.c:179
+msgid "Monitor Mbox file permanently"
+msgstr "Monitorizza file Mbox permanentemente"
+
+#: e_mod_config_box.c:196
 msgid "Port Settings"
 msgstr "Impostazioni porta"
 
-#: e_mod_config_box.c:178
+#: e_mod_config_box.c:198
 msgid "Use SSL:"
 msgstr "Usa SSL:"
 
-#: e_mod_config_box.c:184
+#: e_mod_config_box.c:204
 msgid "Port:"
 msgstr "Porta:"
 
-#: e_mod_config_box.c:190
+#: e_mod_config_box.c:210
 msgid "Local:"
 msgstr "Locale:"
 
-#: e_mod_config_box.c:196
+#: e_mod_config_box.c:216
 msgid "Mailbox Settings"
 msgstr "Impostazioni account"
 
-#: e_mod_config_box.c:197
+#: e_mod_config_box.c:217
 msgid "Name:"
 msgstr "Nome:"
 
-#: e_mod_config_box.c:202
+#: e_mod_config_box.c:222
 msgid "Mail Host:"
 msgstr "Server remoto:"
 
-#: e_mod_config_box.c:207
+#: e_mod_config_box.c:227
 msgid "Username:"
 msgstr "Nome utente:"
 
-#: e_mod_config_box.c:212
+#: e_mod_config_box.c:232
 msgid "Password:"
 msgstr "Password:"
 
-#: e_mod_config_box.c:217
+#: e_mod_config_box.c:237
 msgid "New Mail Path:"
 msgstr "Percorso nuova posta:"
 
-#: e_mod_config_box.c:229
+#: e_mod_config_box.c:249
 msgid "Current Mail Path:"
 msgstr "Percorso posta corrente:"
 
-#: e_mod_config_box.c:367
+#: e_mod_config_box.c:404
 msgid "Inbox"
 msgstr "Posta in arrivo"
 
-#: e_mod_main.c:180
+#: e_mod_main.c:187
 msgid "Mail"
 msgstr "Posta"
 
-#: e_mod_main.c:226
+#: e_mod_main.c:233
 msgid "Mailboxes"
 msgstr "Caselle postali"
 
-#: e_mod_main.c:508
+#: e_mod_main.c:516
 msgid "Enlightenment Mail Module"
 msgstr "Modulo Mail di Enlightenment"
 
-#: e_mod_main.c:509
+#: e_mod_main.c:517
 msgid "This is a module to notify when you have new mail."
 msgstr "Questo è un modulo per notificare l'arrivo di nuova posta"
