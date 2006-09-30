@@ -414,7 +414,8 @@ ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 void
-ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w, void *ev, void *data)
+ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
 {
 	Ewl_Spectrum *sp;
 

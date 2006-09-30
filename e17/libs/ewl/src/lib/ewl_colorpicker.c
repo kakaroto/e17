@@ -743,7 +743,7 @@ void
 ewl_colorpicker_cb_dnd_data(Ewl_Widget *w, void *ev,
 				void *data __UNUSED__)
 {
-	int i;
+	unsigned int i;
 	unsigned int curcolors[4];
 	Ewl_Colorpicker *cp = EWL_COLORPICKER(w);
 	Ewl_Event_Dnd_Data *event = ev;
