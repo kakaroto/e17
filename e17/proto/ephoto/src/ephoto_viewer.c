@@ -74,8 +74,6 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  
  image_view = ewl_image_new();
  ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
- ewl_theme_data_str_set(image_view, "/image/group", 
-		 	ewl_theme_data_str_get(m->entry, "group"));
  ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_CENTER);

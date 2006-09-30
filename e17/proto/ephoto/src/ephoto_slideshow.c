@@ -142,8 +142,6 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
 	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
  if (sc->keep_aspect)
 	ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
- ewl_theme_data_str_set(image, "/image/group", 
-		 	ewl_theme_data_str_get(m->entry, "group"));
  ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(cell), image);
  ewl_widget_show(image);
