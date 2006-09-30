@@ -45,37 +45,37 @@ ewl_dvi_new(void)
  * @return Returns no value.
  * @brief Initialize an dvi widget to default values and callbacks
  *
- * Sets the fields and callbacks of @a i to their default values.
+ * Sets the fields and callbacks of @a dvi to their default values.
  */
 int
 ewl_dvi_init(Ewl_Dvi *dvi)
 {
 	Ewl_Widget *w;
-	Ewl_Image  *i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("dvi", dvi, FALSE);
 
 	w = EWL_WIDGET(dvi);
-	i = EWL_IMAGE(dvi);
 
-	if (!ewl_image_init(i))
+	if (!ewl_widget_init(w))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(w, "dvi");
-	ewl_widget_inherit(w, "dvi");
+	ewl_widget_appearance_set(w, EWL_DVI_TYPE);
+	ewl_widget_inherit(w, EWL_DVI_TYPE);
 
 	/*
 	 * Append necessary callbacks.
 	 */
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_dvi_configure_cb,
+			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_dvi_reveal_cb,
+			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_OBSCURE, ewl_dvi_obscure_cb,
 			    NULL);
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_dvi_destroy_cb,
 			    NULL);
 
-	i->type = EWL_IMAGE_TYPE_NORMAL;
-
-	i->path = NULL;
+	dvi->filename = NULL;
 	dvi->page = 0;
 	dvi->page_length = 10;
 
@@ -102,7 +102,7 @@ ewl_dvi_page_get(Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("dvi", dvi, 0);
-	DCHECK_TYPE_RET("dvi", dvi, "dvi", 0);
+	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, 0);
 
 	DRETURN_INT(dvi->page, DLEVEL_STABLE);
 }
@@ -113,7 +113,7 @@ ewl_dvi_page_get(Ewl_Dvi *dvi)
  * @return Returns no value.
  * @brief Change the dvi file displayed by an dvi widget
  *
- * Set the dvi displayed by @a dvi to the one found at the path @a im. If an
+ * Set the dvi displayed by @a dvi to the one found at the path @a filename. If an
  * edje is used, a minimum size should be specified in the edje or the code.
  */
 void
@@ -124,12 +124,17 @@ ewl_dvi_file_set(Ewl_Dvi *dvi, const char *filename)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	w = EWL_WIDGET(dvi);
 	emb = ewl_embed_widget_find(w);
 
-	ewl_image_file_set(EWL_IMAGE(dvi), filename, NULL);
+	if (dvi->filename != filename) {
+		IF_FREE(dvi->filename);
+	}
+	if (filename) {
+		dvi->filename = strdup(filename);
+	}
 
 	if (dvi->dvi_document) {
 		if (dvi->dvi_page)
@@ -163,7 +168,7 @@ void ewl_dvi_page_set(Ewl_Dvi *dvi, int page)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi->dvi_document ||
 	    (page >= edvi_document_page_count_get (dvi->dvi_document)) ||
@@ -184,8 +189,8 @@ void ewl_dvi_page_set(Ewl_Dvi *dvi, int page)
 Edvi_Document *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dvi", dvi, 0);
-	DCHECK_TYPE_RET("dvi", dvi, "dvi", 0);
+	DCHECK_PARAM_PTR_RET("dvi", dvi, NULL);
+	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, NULL);
 
 	DRETURN_PTR(dvi->dvi_document, DLEVEL_STABLE);
 }
@@ -198,8 +203,8 @@ Edvi_Document *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi)
 Edvi_Page *ewl_dvi_dvi_page_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dvi", dvi, 0);
-	DCHECK_TYPE_RET("dvi", dvi, "dvi", 0);
+	DCHECK_PARAM_PTR_RET("dvi", dvi, NULL);
+	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, NULL);
 
 	DRETURN_PTR(dvi->dvi_page, DLEVEL_STABLE);
 }
@@ -215,7 +220,7 @@ void ewl_dvi_dvi_size_get (Ewl_Dvi *dvi, int *width, int *height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi) {
 		if (width) *width = 0;
@@ -234,7 +239,7 @@ ewl_dvi_orientation_set (Ewl_Dvi *dvi, Edvi_Page_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi || !dvi->dvi_page || (dvi->orientation == o))
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -249,8 +254,8 @@ Edvi_Page_Orientation
 ewl_dvi_orientation_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dvi", dvi, FALSE);
-	DCHECK_TYPE_RET("dvi", dvi, "dvi", 0);
+	DCHECK_PARAM_PTR_RET("dvi", dvi, EDVI_PAGE_ORIENTATION_PORTRAIT);
+	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, EDVI_PAGE_ORIENTATION_PORTRAIT);
 
 	if (!dvi || !dvi->dvi_page)
 		DRETURN_INT(EDVI_PAGE_ORIENTATION_PORTRAIT, DLEVEL_STABLE);
@@ -263,7 +268,7 @@ ewl_dvi_scale_set (Ewl_Dvi *dvi, double hscale, double vscale)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -280,7 +285,7 @@ ewl_dvi_scale_get (Ewl_Dvi *dvi, double *hscale, double *vscale)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi) {
 		if (hscale) *hscale = 1.0;
@@ -301,7 +306,7 @@ ewl_dvi_page_next (Ewl_Dvi *dvi)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -321,7 +326,7 @@ ewl_dvi_page_previous (Ewl_Dvi *dvi)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -339,7 +344,7 @@ ewl_dvi_page_page_length_set (Ewl_Dvi *dvi, int page_length)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi || (page_length <= 0) || (dvi->page_length == page_length))
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -354,7 +359,7 @@ ewl_dvi_page_page_length_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("dvi", dvi, 0);
-	DCHECK_TYPE_RET("dvi", dvi, "dvi", 0);
+	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, 0);
 
 	if (!dvi)
 		DRETURN_INT(0, DLEVEL_STABLE);
@@ -369,7 +374,7 @@ ewl_dvi_page_page_next (Ewl_Dvi *dvi)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -389,7 +394,7 @@ ewl_dvi_page_page_previous (Ewl_Dvi *dvi)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, "dvi");
+	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -407,68 +412,110 @@ ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		  void *user_data __UNUSED__)
 {
 	Ewl_Dvi   *dvi;
-	Ewl_Image *i;
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	dvi = EWL_DVI(w);
-	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
 
 	/*
 	 * Load the dvi
 	 */
-	if (!i->image)
-	  i->image = ewl_embed_object_request(emb, "dvi");
-	if (!i->image)
-	  i->image = evas_object_image_add(emb->evas);
-	if (!i->image)
+	if (!dvi->image)
+	  dvi->image = ewl_embed_object_request(emb, "dvi");
+	if (!dvi->image)
+	  dvi->image = evas_object_image_add(emb->evas);
+	if (!dvi->image)
 	  DRETURN(DLEVEL_STABLE);
 
 	if (dvi->dvi_document) {
 		if (dvi->dvi_page)
 			edvi_page_delete (dvi->dvi_page);
 		dvi->dvi_page = edvi_page_new (dvi->dvi_document, dvi->page);
-		edvi_page_render (dvi->dvi_page, dvi->dvi_device, i->image);
+		edvi_page_render (dvi->dvi_page, dvi->dvi_device, dvi->image);
 	}
-	evas_object_image_size_get(i->image, &i->ow, &i->oh);
+	evas_object_image_size_get(dvi->image, &dvi->ow, &dvi->oh);
 
-	evas_object_smart_member_add(i->image, w->smart_object);
+	evas_object_smart_member_add(dvi->image, w->smart_object);
 	if (w->fx_clip_box)
-		evas_object_clip_set(i->image, w->fx_clip_box);
+		evas_object_stack_below(dvi->image, w->fx_clip_box);
 
-	evas_object_pass_events_set(i->image, TRUE);
-	evas_object_show(i->image);
+	if (w->fx_clip_box)
+		evas_object_clip_set(dvi->image, w->fx_clip_box);
 
-	if (!i->ow)
-		i->ow = 1;
-	if (!i->oh)
-		i->oh = 1;
+	evas_object_pass_events_set(dvi->image, TRUE);
+	evas_object_show(dvi->image);
 
-	if (i->aw || i->ah) {
-		ewl_image_size_set(i, i->aw, i->ah);
+	if (!dvi->ow)
+		dvi->ow = 1;
+	if (!dvi->oh)
+		dvi->oh = 1;
+
+	ewl_object_preferred_inner_w_set(EWL_OBJECT(w), dvi->ow);
+	ewl_object_preferred_inner_h_set(EWL_OBJECT(w), dvi->oh);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_dvi_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
+{
+	Ewl_Dvi *dvi;
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	emb = ewl_embed_widget_find(w);
+
+	dvi = EWL_DVI(w);
+	if (emb && dvi->image) {
+		ewl_embed_object_cache(emb, dvi->image);
+		dvi->image = NULL;
 	}
-	else {
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
-		ewl_object_preferred_inner_h_set(EWL_OBJECT(i), i->oh);
-		ewl_image_scale_set(i, i->sw, i->sh);
-	}
 
-	/*Constrain settings*/
-	if (i->cs && (i->ow > i->cs || i->oh > i->cs)) {
-		double cp = 0;
-		if (i->ow > i->oh)
-			cp = i->cs / (double)i->ow;
-		else
-			cp = i->cs / (double)i->oh;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
-		ewl_image_scale_set(i, cp, cp);
-		ewl_image_tile_set(i, 0, 0, cp*i->ow, cp*i->oh);
+void
+ewl_dvi_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
+{
+	Ewl_Dvi *dvi;
+	Ewl_Embed *emb;
+	int ww, hh;
+	int dx = 0, dy = 0;
 
-	}
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	dvi = EWL_DVI(w);
+	if (!dvi->image)
+		DRETURN(DLEVEL_STABLE);
+
+	emb = ewl_embed_widget_find(w);
+
+	ww = CURRENT_W(w);
+	hh = CURRENT_H(w);
+	if (ww > dvi->ow)
+		ww = dvi->ow;
+	if (hh > dvi->oh)
+		hh = dvi->oh;
+
+	dx = (CURRENT_W(w) - ww) / 2;
+	dy = (CURRENT_H(w) - hh) / 2;
+
+	evas_object_image_fill_set(dvi->image, 0, 0,
+				ww, hh);
+
+	evas_object_move(dvi->image, CURRENT_X(w) + dx, CURRENT_Y(w) + dy);
+	evas_object_resize(dvi->image, ww, hh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

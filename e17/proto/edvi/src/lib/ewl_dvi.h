@@ -16,18 +16,33 @@
  * @themekey /dvi/group
  */
 
+/**
+ * @def EWL_DVI_TYPE
+ * The type name for the Ewl_Dvi widget
+ */
+#define EWL_DVI_TYPE "dvi"
+
+/**
+ * The Ewl_Dvi widget
+ */
 typedef struct Ewl_Dvi Ewl_Dvi;
 
+/**
+ * @def EWL_DVI(dvi)
+ * Typecase a pointer to an Ewl_Dvi widget
+ */
 #define EWL_DVI(dvi) ((Ewl_Dvi *) dvi)
 
 /**
- * @struct Ewl_Dvi
- *
+ * Inherits from Ewl_Widget and extends to provide a dvi widget
  */
 struct Ewl_Dvi
 {
-	Ewl_Image             image;
+	Ewl_Widget            widget;
+	Evas_Object          *image;
 	char                 *filename;
+	int                   ow;
+	int                   oh;
 	int                   page;
 	int                   page_length;
 
@@ -65,7 +80,9 @@ void                  ewl_dvi_page_page_previous (Ewl_Dvi *dvi);
 /*
  * Internally used callbacks, override at your own risk.
  */
+void ewl_dvi_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_dvi_obscure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_dvi_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data );
 
 /**
