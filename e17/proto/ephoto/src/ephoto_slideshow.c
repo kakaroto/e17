@@ -82,20 +82,28 @@ int change_picture(void *data)
   }
  }
 }
+
+void show_first_image(Ewl_Widget *w, void *event, void *data)
+{
+ char *image_path;
+ Slide_Config *sc;
+
+ sc = data;
+ image_path = ecore_dlist_goto_first(current_thumbs);
+ ewl_image_file_set(EWL_IMAGE(w), image_path, NULL);
+
+ timer = ecore_timer_add(sc->length, change_picture, sc);
+}
  
 void start_slideshow(Ewl_Widget *w, void *event, void *data)
 {
  Ewl_Widget *window;
  Ewl_Widget *cell;
  Ewl_Widget *image;
- char *image_path;
  Slide_Config *sc;
  int ew, eh;
  
  sc = parse_slideshow_config();
- image_path = ecore_dlist_goto_first(current_thumbs);
- 
- if (!image_path) return;
  
  srand((unsigned int)time((time_t *)NULL));
  
@@ -105,8 +113,7 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  if (sc->full_size) 
 	ewl_window_fullscreen_set(EWL_WINDOW(window), 1);
  if (sc->custom_size)
- 	ewl_object_maximum_size_set(EWL_OBJECT(window), sc->w_size, sc->h_size);
-	ewl_object_minimum_size_set(EWL_OBJECT(window), sc->w_size, sc->h_size);
+ 	ewl_object_size_request(EWL_OBJECT(window), sc->w_size, sc->h_size);
  ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, destroy_slideshow, NULL);
  ewl_callback_append(window, EWL_CALLBACK_CLICKED, destroy_slideshow, NULL); 
  ewl_window_dialog_set(EWL_WINDOW(window), 1);
@@ -117,23 +124,19 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(window), cell);
  ewl_widget_show(cell);
 
- ewl_object_current_size_get(EWL_OBJECT(window), &ew, &eh);
- 
  image = ewl_image_new();
- ewl_image_file_set(EWL_IMAGE(image), image_path, NULL);
  if (sc->zoom)
  	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_ALL);
  else
 	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
  if (sc->keep_aspect)
 	ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
- ewl_image_size_set(EWL_IMAGE(image), ew, eh);
  ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(cell), image);
  ewl_widget_show(image);
 
  sc->image = image;
- timer = ecore_timer_add(sc->length, change_picture, sc);
+ ewl_callback_append(image, EWL_CALLBACK_SHOW, show_first_image, sc);
 }
 
 void initial_config()
