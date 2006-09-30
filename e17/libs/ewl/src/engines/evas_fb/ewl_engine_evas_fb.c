@@ -4,15 +4,6 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-/*
- * In general all of the X event handlers should find their matching window
- * with ewl_window_window_find, and not ewl_embed_evas_window_find. If the
- * embed function is used, then we get duplicate events for apps that setup
- * their own handlers and embed EWL. The exception to this is selection events
- * such as copy/paste and DND. These events need to be handled for embedded
- * EWL, but have no equivalent in the Evas callback namespace.
- */
-
 static int ewl_ev_fb_key_down(void *data, int type, void *_ev);
 static int ewl_ev_fb_key_up(void *data, int type, void *_ev);
 static int ewl_ev_fb_mouse_down(void *data, int type, void *_ev);
@@ -112,7 +103,7 @@ ee_init(Ewl_Engine *engine)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	engine->name = strdup("evas_software_x11");
+	engine->name = strdup("evas_fb");
 	engine->functions = &engine_funcs;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -163,7 +154,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	evas = evas_new();
-	evas_output_method_set(evas, evas_render_method_lookup("gl_x11"));
+	evas_output_method_set(evas, evas_render_method_lookup("fb"));
 
 	info = evas_engine_info_get(evas);
 	if (!info) 

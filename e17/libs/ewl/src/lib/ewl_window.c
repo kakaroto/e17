@@ -924,11 +924,11 @@ ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	else
 		ewl_engine_window_resize(win);
 
-	evas_output_size_set(EWL_EMBED(win)->evas, width, height);
-	evas_output_viewport_set(EWL_EMBED(win)->evas,
-				 ewl_object_current_x_get(EWL_OBJECT(w)),
-				 ewl_object_current_y_get(EWL_OBJECT(w)),
-				 width, height);
+	ewl_engine_canvas_output_set(EWL_EMBED(win),
+			ewl_object_current_x_get(EWL_OBJECT(win)),
+			ewl_object_current_y_get(EWL_OBJECT(win)),
+			ewl_object_current_w_get(EWL_OBJECT(win)),
+			ewl_object_current_h_get(EWL_OBJECT(win)));
 
 	/*
 	 * Adjust the minimum and maximum window bounds to match the widget.

@@ -853,6 +853,28 @@ ewl_engine_canvas_setup(Ewl_Window *win, int debug)
 }
 
 /**
+ * @param win: the window to work with
+ * @return Returns no value
+ * @brief Sets up the canvas
+ */
+void
+ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
+{
+	Ewl_Engine_Cb_Canvas_Output_Set canvas_output_set;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("emb", emb);
+	DCHECK_TYPE("emb", emb, EWL_EMBED_TYPE);
+
+	canvas_output_set = ewl_engine_hook_get(emb,
+					EWL_ENGINE_CANVAS_OUTPUT_SET);
+	if (canvas_output_set)
+		canvas_output_set(emb, x, y, width, height);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param win: the embed to work with
  * @return Returns no value
  * @brief Renders the canvas

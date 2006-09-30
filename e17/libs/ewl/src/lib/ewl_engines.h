@@ -43,6 +43,7 @@ enum Ewl_Engine_Hook
 	EWL_ENGINE_EMBED_DND_AWARE_SET,	 /**< Set the window 
 								dnd aware */
 	EWL_ENGINE_CANVAS_SETUP, /**< Setup the render canvas */
+	EWL_ENGINE_CANVAS_OUTPUT_SET, /**< Set the canvas size */
 
 	EWL_ENGINE_CANVAS_RENDER,
 	EWL_ENGINE_CANVAS_FREEZE,
@@ -150,6 +151,8 @@ void		 ewl_engine_window_geometry_get(Ewl_Window *win, int root,
 void		 ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed);
 
 void		 ewl_engine_canvas_setup(Ewl_Window *win, int debug);
+void		 ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y,
+					      int width, int height);
 void		 ewl_engine_canvas_render(Ewl_Embed *embed);
 void		 ewl_engine_canvas_freeze(Ewl_Embed *embed);
 void		 ewl_engine_canvas_thaw(Ewl_Embed *embed);
@@ -199,6 +202,8 @@ typedef void (*Ewl_Engine_Cb_Embed_Dnd_Aware_Set)(Ewl_Embed *embed);	 /**< Set t
 								dnd aware */
 typedef void (*Ewl_Engine_Cb_Canvas_Setup)(Ewl_Window *win, int debug); /**< Setup the 
 						         render canvas */
+typedef void  (*Ewl_Engine_Cb_Canvas_Output_Set)(Ewl_Embed *emb, int x, int y,
+						 int width, int height); 
 typedef void  (*Ewl_Engine_Cb_Canvas_Render)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Canvas_Freeze)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Canvas_Thaw)(Ewl_Embed *embed);
