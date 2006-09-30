@@ -27,16 +27,16 @@ ewl_menu_base_init(Ewl_Menu_Base *menu)
 	ewl_widget_inherit(EWL_WIDGET(menu), EWL_MENU_BASE_TYPE);
 
 	ewl_callback_del(EWL_WIDGET(menu), EWL_CALLBACK_CLICKED,
-					ewl_menu_item_clicked_cb);
+					ewl_menu_item_cb_clicked);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
-					ewl_menu_base_expand_cb, NULL);
+					ewl_menu_base_cb_expand, NULL);
 	
 	/*ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_OUT,
-					ewl_menu_base_collapse_cb, NULL);*/
+					ewl_menu_base_cb_collapse, NULL);*/
 
 
 	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_DESTROY,
-					ewl_menu_base_destroy_cb, NULL);
+					ewl_menu_base_cb_destroy, NULL);
 
 	/*
 	 * The popbox actually holds the children, and is simply added to the
@@ -46,7 +46,7 @@ ewl_menu_base_init(Ewl_Menu_Base *menu)
 	ewl_object_alignment_set(EWL_OBJECT(menu->popbox),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 	ewl_callback_append(menu->popbox, EWL_CALLBACK_KEY_DOWN,
-			    ewl_menu_base_popbox_key_down_cb, NULL);
+			    ewl_menu_base_cb_popbox_key_down, NULL);
 	ewl_widget_show(menu->popbox);
 
 	/*
@@ -69,7 +69,7 @@ ewl_menu_base_init(Ewl_Menu_Base *menu)
  * @brief The expand callback
  */
 void
-ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_base_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Widget *child;
@@ -91,10 +91,10 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (item->inmenu) {
 		if (!REALIZED(menu->popup)) {
 			ewl_callback_append(menu->popup, EWL_CALLBACK_SHOW,
-					    ewl_menu_base_popup_show_cb,
+					    ewl_menu_base_cb_popup_show,
 					    item->inmenu);
 			ewl_callback_append(menu->popup, EWL_CALLBACK_HIDE,
-					    ewl_menu_base_popup_hide_cb,
+					    ewl_menu_base_cb_popup_hide,
 					    item->inmenu);
 		}
 		ewl_object_minimum_w_set(EWL_OBJECT(menu->popup),
@@ -129,7 +129,7 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The collapse callback
  */
 void
-ewl_menu_base_collapse_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_base_cb_collapse(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Menu_Base *menu;
@@ -157,7 +157,7 @@ ewl_menu_base_collapse_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The popup hide callback
  */
 void
-ewl_menu_base_popup_hide_cb(Ewl_Widget *w __UNUSED__,
+ewl_menu_base_cb_popup_hide(Ewl_Widget *w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Widget *ppop;
@@ -180,7 +180,7 @@ ewl_menu_base_popup_hide_cb(Ewl_Widget *w __UNUSED__,
  * @brief The popup show callback
  */
 void
-ewl_menu_base_popup_show_cb(Ewl_Widget *w __UNUSED__,
+ewl_menu_base_cb_popup_show(Ewl_Widget *w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Widget *ppop;
@@ -203,7 +203,7 @@ ewl_menu_base_popup_show_cb(Ewl_Widget *w __UNUSED__,
  * @brief The popup key down callback
  */
 void
-ewl_menu_base_popbox_key_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, 
+ewl_menu_base_cb_popbox_key_down(Ewl_Widget *w __UNUSED__, void *ev_data, 
 					void *user_data __UNUSED__)
 {
 	Ewl_Event_Key_Down *ev;
@@ -237,7 +237,7 @@ ewl_menu_base_popbox_key_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data,
  * @brief The destroy callback
  */
 void
-ewl_menu_base_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_base_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Menu_Base *menu;

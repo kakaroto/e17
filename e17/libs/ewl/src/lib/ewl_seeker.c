@@ -99,7 +99,7 @@ ewl_seeker_init(Ewl_Seeker *s)
 				EWL_FLAG_FILL_HSHRINK);
 
 	ewl_container_show_notify_set(EWL_CONTAINER(w),
-				      ewl_seeker_child_show_cb);
+				      ewl_seeker_cb_child_show);
 
 	/*
 	 * Create and add the button portion of the seeker
@@ -118,27 +118,27 @@ ewl_seeker_init(Ewl_Seeker *s)
 	/*
 	 * Add necessary configuration callbacks
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_seeker_configure_cb,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_seeker_cb_configure,
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_seeker_mouse_down_cb, NULL);
+			    ewl_seeker_cb_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
-			    ewl_seeker_mouse_up_cb, NULL);
+			    ewl_seeker_cb_mouse_up, NULL);
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-			    ewl_seeker_mouse_up_cb, NULL);
+			    ewl_seeker_cb_mouse_up, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-			    ewl_seeker_mouse_move_cb, NULL);
+			    ewl_seeker_cb_mouse_move, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
-			    ewl_seeker_key_down_cb, NULL);
+			    ewl_seeker_cb_key_down, NULL);
 
 	/*
 	 * Append a callback for catching mouse movements on the button and
 	 * add the button to the seeker
 	 */
 	ewl_callback_append(s->button, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_seeker_button_mouse_down_cb, NULL);
+			    ewl_seeker_cb_button_mouse_down, NULL);
 	ewl_callback_append(s->button, EWL_CALLBACK_MOUSE_UP,
-			    ewl_seeker_button_mouse_up_cb, NULL);
+			    ewl_seeker_cb_button_mouse_up, NULL);
 
 	/*
 	 * We want to catch mouse movement events from the button.
@@ -256,7 +256,7 @@ ewl_seeker_autohide_get(Ewl_Seeker *s)
  * position.
  */
 void
-ewl_seeker_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Seeker *s;
@@ -335,7 +335,7 @@ ewl_seeker_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The button mouse down callback
  */
 void
-ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
+ewl_seeker_cb_button_mouse_down(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
 	Ewl_Event_Mouse_Down *ev;
@@ -369,7 +369,7 @@ ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
  * @brief The button mouse up callback
  */
 void
-ewl_seeker_button_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_seeker_cb_button_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -390,7 +390,7 @@ ewl_seeker_button_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Move the cursor to the correct position
  */
 void
-ewl_seeker_mouse_move_cb(Ewl_Widget *w, void *ev_data,
+ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 			 void *user_data __UNUSED__)
 {
 	Ewl_Event_Mouse_Move *ev;
@@ -448,7 +448,7 @@ ewl_seeker_mouse_move_cb(Ewl_Widget *w, void *ev_data,
  * @brief The mouse down callback
  */
 void
-ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data,
+ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 				void *user_data __UNUSED__)
 {
 	Ewl_Seeker *s;
@@ -516,7 +516,7 @@ ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data,
  * @brief The mouse up callback
  */
 void
-ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_seeker_cb_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Seeker *s = EWL_SEEKER(w);
@@ -544,7 +544,7 @@ ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The key down callback
  */
 void
-ewl_seeker_key_down_cb(Ewl_Widget *w, void *ev_data,
+ewl_seeker_cb_key_down(Ewl_Widget *w, void *ev_data,
 				void *user_data __UNUSED__)
 {
 	Ewl_Range *r;
@@ -601,7 +601,7 @@ ewl_seeker_key_down_cb(Ewl_Widget *w, void *ev_data,
  * @brief The child show callback
  */
 void
-ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget *w)
+ewl_seeker_cb_child_show(Ewl_Container *p, Ewl_Widget *w)
 {
 	int pw, ph;
 	Ewl_Range *r;

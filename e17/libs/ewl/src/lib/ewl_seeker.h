@@ -63,16 +63,16 @@ int             ewl_seeker_autohide_get(Ewl_Seeker *s);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_seeker_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_seeker_button_mouse_down_cb(Ewl_Widget *w, void *ev_data,
+void ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_seeker_cb_button_mouse_down(Ewl_Widget *w, void *ev_data,
 						void *user_data);
-void ewl_seeker_button_mouse_up_cb(Ewl_Widget *w, void *ev_data,
+void ewl_seeker_cb_button_mouse_up(Ewl_Widget *w, void *ev_data,
 					      void *user_data);
-void ewl_seeker_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_seeker_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_seeker_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_seeker_key_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_seeker_child_show_cb(Ewl_Container *p, Ewl_Widget * w);
+void ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_seeker_cb_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_seeker_cb_key_down(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_seeker_cb_child_show(Ewl_Container *p, Ewl_Widget * w);
 
 /**
  * @}

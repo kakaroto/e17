@@ -46,23 +46,23 @@ ewl_container_init(Ewl_Container *c)
 	 * children with necessary window and evas information.
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			    ewl_container_configure_cb, NULL);
+			    ewl_container_cb_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_OBSCURE,
-			    ewl_container_obscure_cb, NULL);
+			    ewl_container_cb_obscure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REVEAL,
-			    ewl_container_reveal_cb, NULL);
+			    ewl_container_cb_reveal, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    ewl_container_reveal_cb, NULL);
+			    ewl_container_cb_reveal, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    ewl_container_realize_cb, NULL);
+			    ewl_container_cb_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE,
-			    ewl_container_unrealize_cb, NULL);
+			    ewl_container_cb_unrealize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT,
-			    ewl_container_reparent_cb, NULL);
+			    ewl_container_cb_reparent, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE,
-			    ewl_container_enable_cb, NULL);
+			    ewl_container_cb_enable, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
-			    ewl_container_disable_cb, NULL);
+			    ewl_container_cb_disable, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -1241,7 +1241,7 @@ ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc)
  * information about the container, such as the evas.
  */
 void
-ewl_container_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_container_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Widget *child;
@@ -1273,7 +1273,7 @@ ewl_container_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief When enabling a container, pass the signal to the children.
  */
 void
-ewl_container_enable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_container_cb_enable(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Widget *child;
@@ -1305,7 +1305,7 @@ ewl_container_enable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief When enabling a container, pass the signal to the children.
  */
 void
-ewl_container_disable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_container_cb_disable(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Widget *child;
@@ -1337,7 +1337,7 @@ ewl_container_disable_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Callback for when the container is obscured
  */
 void
-ewl_container_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 			 void *user_data __UNUSED__)
 {
 	Ewl_Embed *e;
@@ -1382,7 +1382,7 @@ ewl_container_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Callback for when the container is revealed
  */
 void 
-ewl_container_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__, 
 			void *user_data __UNUSED__)
 {
 	Ewl_Embed *e;
@@ -1433,7 +1433,7 @@ ewl_container_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * clip boxes.
  */
 void
-ewl_container_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data __UNUSED__)
 {
 	int i = 0;
@@ -1475,7 +1475,7 @@ ewl_container_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_container_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_container_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1505,7 +1505,7 @@ ewl_container_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Callback for when the container is unrealized
  */
 void
-ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Container *c;

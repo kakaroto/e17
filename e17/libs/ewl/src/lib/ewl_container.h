@@ -161,14 +161,14 @@ void            ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_container_reveal_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_container_obscure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_container_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_container_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_container_reparent_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_container_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_container_enable_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_container_disable_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_configure(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_container_cb_reparent(Ewl_Widget * w, void *ev_data, void *user_data);
+void ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_enable(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_disable(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

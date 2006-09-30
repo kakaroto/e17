@@ -77,9 +77,9 @@ ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 	 */
 	if (f->follows) {
 		ewl_callback_del_with_data(f->follows, EWL_CALLBACK_CONFIGURE,
-				 ewl_floater_follow_configure_cb, f);
+				 ewl_floater_cb_follow_configure, f);
 		ewl_callback_del_with_data(EWL_WIDGET(f->follows), EWL_CALLBACK_DESTROY,
-			    ewl_floater_follow_destroy_cb, f);
+			    ewl_floater_cb_follow_destroy, f);
 	}
 
 	/*
@@ -88,9 +88,9 @@ ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 	 */
 	if (p) {
 		ewl_callback_append(p, EWL_CALLBACK_CONFIGURE,
-				    ewl_floater_follow_configure_cb, f);
+				    ewl_floater_cb_follow_configure, f);
 		ewl_callback_prepend(p, EWL_CALLBACK_DESTROY,
-				    ewl_floater_follow_destroy_cb, f);
+				    ewl_floater_cb_follow_destroy, f);
 	}
 
 	f->follows = p;
@@ -172,7 +172,7 @@ ewl_floater_relative_set(Ewl_Floater *f, Ewl_Widget *w)
 	 */
 	if (f->follows)
 		ewl_callback_del(f->follows, EWL_CALLBACK_CONFIGURE,
-				 ewl_floater_follow_configure_cb);
+				 ewl_floater_cb_follow_configure);
 
 	/*
 	 * Set the widget that the floater follows.
@@ -194,7 +194,7 @@ ewl_floater_relative_set(Ewl_Floater *f, Ewl_Widget *w)
  * parent/window gets configured.
  */
 void
-ewl_floater_follow_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_floater_cb_follow_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 							void *user_data)
 {
 	int align, x, y;
@@ -261,7 +261,7 @@ ewl_floater_follow_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Callback when the followed widget is destroyed
  */
 void
-ewl_floater_follow_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_floater_cb_follow_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

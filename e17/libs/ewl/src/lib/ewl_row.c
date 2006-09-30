@@ -45,14 +45,15 @@ ewl_row_init(Ewl_Row *row)
 	ewl_widget_appearance_set(EWL_WIDGET(row), EWL_ROW_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(row), EWL_ROW_TYPE);
 
-	ewl_container_show_notify_set(EWL_CONTAINER(row), ewl_row_child_show_cb);
-	ewl_container_hide_notify_set(EWL_CONTAINER(row), ewl_row_child_hide_cb);
-	ewl_container_resize_notify_set(EWL_CONTAINER(row), ewl_row_resize_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(row), ewl_row_cb_child_show);
+	ewl_container_hide_notify_set(EWL_CONTAINER(row), ewl_row_cb_child_hide);
+	ewl_container_resize_notify_set(EWL_CONTAINER(row), 
+					ewl_row_cb_child_resize);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
-				ewl_row_configure_cb, NULL);
+				ewl_row_cb_configure, NULL);
 
 	ewl_widget_focusable_set(EWL_WIDGET(row), FALSE);
 
@@ -120,7 +121,7 @@ ewl_row_column_get(Ewl_Row *row, short n)
  * @brief The configure callback
  */
 void
-ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_row_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Row *row;
@@ -252,7 +253,7 @@ ewl_row_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The header configure callback
  */
 void
-ewl_row_header_configure_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+ewl_row_cb_header_configure(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 							void *user_data)
 {
 	Ewl_Row *row;
@@ -276,7 +277,7 @@ ewl_row_header_configure_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
  * @brief The header destroy callback
  */
 void
-ewl_row_header_destroy_cb(Ewl_Widget *w __UNUSED__,
+ewl_row_cb_header_destroy(Ewl_Widget *w __UNUSED__,
 			void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Row *row;
@@ -299,7 +300,7 @@ ewl_row_header_destroy_cb(Ewl_Widget *w __UNUSED__,
  * @brief The child show callback
  */
 void
-ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_row_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Row *row;
 
@@ -325,7 +326,7 @@ ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
  * @brief The child hide callback
  */
 void
-ewl_row_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_row_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Row *row;
 
@@ -350,10 +351,10 @@ ewl_row_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
  * @param size: The child size
  * @param o: The orientation
  * @return Returns no value
- * @brief The child show callback
+ * @brief The child resize callback
  */
 void
-ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
+ewl_row_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
 				int size, Ewl_Orientation o)
 {
 	Ewl_Row *row;

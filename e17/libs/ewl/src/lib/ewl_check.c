@@ -54,9 +54,9 @@ ewl_check_init(Ewl_Check *cb)
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 20, 20);
 
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, 
-				ewl_check_clicked_cb, NULL);
+				ewl_check_cb_clicked, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,
-				ewl_check_update_check_cb, NULL);
+				ewl_check_cb_update_check, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -78,7 +78,7 @@ ewl_check_checked_set(Ewl_Check *cb, int c)
 	DCHECK_TYPE("cb", cb, EWL_CHECK_TYPE);
 
 	cb->checked = !!c;
-	ewl_check_update_check_cb(EWL_WIDGET(cb), NULL, NULL);
+	ewl_check_cb_update_check(EWL_WIDGET(cb), NULL, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -107,7 +107,7 @@ ewl_check_is_checked(Ewl_Check *cb)
  * @brief The clicked callback for the check widget
  */
 void
-ewl_check_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_check_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__, 
 				void *user_data __UNUSED__)
 {
 	Ewl_Check *cb;
@@ -118,7 +118,7 @@ ewl_check_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	cb = EWL_CHECK(w);
 	cb->checked ^= 1;
-	ewl_check_update_check_cb(w, NULL, NULL);
+	ewl_check_cb_update_check(w, NULL, NULL);
 	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -133,7 +133,7 @@ ewl_check_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Callback to update the checkmark
  */
 void
-ewl_check_update_check_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_check_cb_update_check(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Check *cb;

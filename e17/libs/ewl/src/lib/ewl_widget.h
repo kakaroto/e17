@@ -243,23 +243,23 @@ void 		ewl_widget_dnd_reset(void);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_widget_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_reveal_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_obscure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_reparent_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_enable_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_disable_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_mouse_in_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_mouse_out_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_widget_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_show(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_hide(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_reparent(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_enable(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_disable(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_focus_in(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_focus_out(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_mouse_in(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_mouse_out(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

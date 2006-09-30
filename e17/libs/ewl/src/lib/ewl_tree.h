@@ -119,25 +119,25 @@ Ewl_Widget 	*ewl_tree_row_find(Ewl_Tree *tree, int row);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_node_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_node_toggle_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_cb_node_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_cb_node_toggle(Ewl_Widget *w, void *ev_data, void *user_data);
 
-void ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
-void ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w);
-void ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+void ewl_tree_cb_node_child_show(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree_cb_node_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 						     Ewl_Orientation o);
 
-void ewl_tree_header_change_cb(Ewl_Widget *w, void *ev, void *data);
-void ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_header_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_tree_child_resize_cb(Ewl_Container *c);
-void ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w);
-void ewl_tree_node_child_del_cb(Ewl_Container *c, Ewl_Widget *w, int idx);
+void ewl_tree_cb_header_change(Ewl_Widget *w, void *ev, void *data);
+void ewl_tree_cb_row_select(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_cb_row_hide(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_cb_header_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_cb_hscroll(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree_cb_child_resize(Ewl_Container *c);
+void ewl_tree_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
 
 /**
  * @}

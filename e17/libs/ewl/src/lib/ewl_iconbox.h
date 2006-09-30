@@ -153,19 +153,19 @@ Ecore_List	*ewl_iconbox_get_selection(Ewl_Iconbox *ib);
 /* 
  * Internal callbacks 
  */
-void ewl_iconbox_dnd_drop_cb(Ewl_Widget *item, void *ev_data, void *user_data);
-void ewl_iconbox_dnd_position_cb(Ewl_Widget *item, void *ev_data, void *user_data);
-void ewl_iconbox_arrange_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_icon_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_icon_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data ,void *user_data );
-void ewl_iconbox_key_press_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_dnd_drop(Ewl_Widget *item, void *ev_data, void *user_data);
+void ewl_iconbox_cb_dnd_position(Ewl_Widget *item, void *ev_data, void *user_data);
+void ewl_iconbox_cb_arrange(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_pane_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_icon_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_icon_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_icon_label_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_iconbox_cb_icon_destroy(Ewl_Widget *w, void *ev_data ,void *user_data );
+void ewl_iconbox_cb_key_press(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

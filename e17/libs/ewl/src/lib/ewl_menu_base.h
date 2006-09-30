@@ -47,15 +47,15 @@ int ewl_menu_base_init(Ewl_Menu_Base *menu);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_menu_base_collapse_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_menu_base_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_base_cb_expand(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_base_cb_collapse(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_base_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
 
-void ewl_menu_base_popup_show_cb(Ewl_Widget *w, void *ev_data, 
+void ewl_menu_base_cb_popup_show(Ewl_Widget *w, void *ev_data, 
 						void *user_data);
-void ewl_menu_base_popup_hide_cb(Ewl_Widget *w, void *ev_data, 
+void ewl_menu_base_cb_popup_hide(Ewl_Widget *w, void *ev_data, 
 						void *user_data);
-void ewl_menu_base_popbox_key_down_cb(Ewl_Widget *w, void *ev_data, 
+void ewl_menu_base_cb_popbox_key_down(Ewl_Widget *w, void *ev_data, 
 						void *user_data);
 
 /**

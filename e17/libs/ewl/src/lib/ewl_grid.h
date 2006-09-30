@@ -134,11 +134,11 @@ unsigned int 	ewl_grid_vhomogeneous_get(Ewl_Grid *g);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_grid_destroy_cb(Ewl_Widget *w, void *ev_data , void *user_data);
-void ewl_grid_child_add_cb(Ewl_Container *p, Ewl_Widget *c);
-void ewl_grid_child_remove_cb(Ewl_Container *p, Ewl_Widget *c, int idx);
-void ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child,
+void ewl_grid_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_grid_cb_destroy(Ewl_Widget *w, void *ev_data , void *user_data);
+void ewl_grid_cb_child_add(Ewl_Container *p, Ewl_Widget *c);
+void ewl_grid_cb_child_remove(Ewl_Container *p, Ewl_Widget *c, int idx);
+void ewl_grid_cb_child_resize(Ewl_Container *p, Ewl_Widget *child,
 						int size, Ewl_Orientation o);
 
 /**

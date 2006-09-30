@@ -54,9 +54,9 @@ void            ewl_floater_position_set(Ewl_Floater *parent, int x, int y);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_floater_follow_configure_cb(Ewl_Widget *w, void *ev_data,
+void ewl_floater_cb_follow_configure(Ewl_Widget *w, void *ev_data,
 				     void *user_data);
-void ewl_floater_follow_destroy_cb(Ewl_Widget *w, void *ev_data,
+void ewl_floater_cb_follow_destroy(Ewl_Widget *w, void *ev_data,
 				   void *user_data);
 
 /**

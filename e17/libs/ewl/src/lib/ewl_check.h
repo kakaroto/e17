@@ -48,9 +48,9 @@ void            ewl_check_checked_set(Ewl_Check *c, int checked);
 /*
  * Internally used callbacks.
  */
-void            ewl_check_clicked_cb(Ewl_Widget *w, void *ev_data,
+void            ewl_check_cb_clicked(Ewl_Widget *w, void *ev_data,
 				    void *user_data);
-void            ewl_check_update_check_cb(Ewl_Widget *w, void *ev_data,
+void            ewl_check_cb_update_check(Ewl_Widget *w, void *ev_data,
 					  void *user_data);
 
 /**

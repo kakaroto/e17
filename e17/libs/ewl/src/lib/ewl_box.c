@@ -160,14 +160,14 @@ ewl_box_init(Ewl_Box * b)
 	/*
 	 * Setup the container size change handlers.
 	 */
-	ewl_container_resize_notify_set(EWL_CONTAINER(b), ewl_box_child_resize_cb);
-	ewl_container_show_notify_set(EWL_CONTAINER(b), ewl_box_child_show_cb);
-	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_child_hide_cb);
+	ewl_container_resize_notify_set(EWL_CONTAINER(b), ewl_box_cb_child_resize);
+	ewl_container_show_notify_set(EWL_CONTAINER(b), ewl_box_cb_child_show);
+	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_cb_child_hide);
 
 	/*
 	 * Attach the default layout callback.
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_box_configure_cb,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_box_cb_configure,
 			    NULL);
 
 	/*
@@ -240,7 +240,7 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 	c = EWL_CONTAINER(b);
 	ecore_dlist_goto_first(c->children);
 	while((child = ecore_dlist_next(c->children)))
-		ewl_box_child_show_cb(c, child);
+		ewl_box_cb_child_show(c, child);
 
 	ewl_widget_configure(EWL_WIDGET(b));
 
@@ -285,23 +285,23 @@ ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 
 	if (h) {
 		ewl_callback_del(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
-				ewl_box_configure_cb);
+				ewl_box_cb_configure);
 		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
-				ewl_box_configure_homogeneous_cb, NULL);
+				ewl_box_cb_configure_homogeneous, NULL);
 		ewl_container_show_notify_set(EWL_CONTAINER(b),
-					  ewl_box_child_homogeneous_show_cb);
+					  ewl_box_cb_child_homogeneous_show);
 		ewl_container_hide_notify_set(EWL_CONTAINER(b),
-					  ewl_box_child_homogeneous_show_cb);
+					  ewl_box_cb_child_homogeneous_show);
 	}
 	else {
 		ewl_callback_del(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
-				ewl_box_configure_homogeneous_cb);
+				ewl_box_cb_configure_homogeneous);
 		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
-				ewl_box_configure_cb, NULL);
+				ewl_box_cb_configure, NULL);
 		ewl_container_show_notify_set(EWL_CONTAINER(b),
-					  ewl_box_child_show_cb);
+					  ewl_box_cb_child_show);
 		ewl_container_hide_notify_set(EWL_CONTAINER(b),
-					  ewl_box_child_hide_cb);
+					  ewl_box_cb_child_hide);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -368,7 +368,7 @@ ewl_box_spacing_set(Ewl_Box * b, int s)
  * 4. Layout the position of all children based on the sizes accepted.
  */
 void
-ewl_box_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
 {
 	Ewl_Box *b;
@@ -449,7 +449,7 @@ ewl_box_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Configure a homegeneous box
  */
 void
-ewl_box_configure_homogeneous_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	int i, num;
@@ -777,7 +777,7 @@ ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c,
  * @brief When a child gets added to the box update it's size.
  */
 void
-ewl_box_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_box_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
 	int space = 0;
 	int width, height;
@@ -830,7 +830,7 @@ ewl_box_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
  * @brief Update the container when a widget is shown in homegeneous mode
  */
 void
-ewl_box_child_homogeneous_show_cb(Ewl_Container *c, 
+ewl_box_cb_child_homogeneous_show(Ewl_Container *c, 
 					Ewl_Widget *w __UNUSED__)
 {
 	int numc;
@@ -867,7 +867,7 @@ ewl_box_child_homogeneous_show_cb(Ewl_Container *c,
  * @brief When a child is hidden update the container
  */
 void
-ewl_box_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_box_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
 	int space = 0;
 	Ewl_Box *b = EWL_BOX(c);
@@ -911,7 +911,7 @@ ewl_box_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
  * @brief The container resize callback used by the box 
  */
 void
-ewl_box_child_resize_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
+ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
 			int size, Ewl_Orientation o)
 {
 	int align_size, fill_size;

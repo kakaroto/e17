@@ -99,17 +99,17 @@ ewl_embed_init(Ewl_Embed *w)
 	ewl_object_toplevel_set(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
 
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
-			     ewl_embed_realize_cb, NULL);
+			     ewl_embed_cb_realize, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
-			     ewl_embed_unrealize_cb, NULL);
+			     ewl_embed_cb_unrealize, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
-			     ewl_embed_destroy_cb, NULL);
+			     ewl_embed_cb_destroy, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			     ewl_embed_configure_cb, NULL);
+			     ewl_embed_cb_configure, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_FOCUS_OUT,
-			     ewl_embed_focus_out_cb, NULL);
+			     ewl_embed_cb_focus_out, NULL);
 	ewl_callback_del(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			     ewl_overlay_configure_cb);
+			     ewl_overlay_cb_configure);
 
 	ecore_list_append(ewl_embed_list, w);
 
@@ -1641,7 +1641,7 @@ ewl_embed_thaw(Ewl_Embed *e)
  * @brief Callback for the realize event
  */
 void
-ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_embed_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
@@ -1713,7 +1713,7 @@ ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Callback for the unrealize event
  */
 void
-ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_embed_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
@@ -1747,7 +1747,7 @@ ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_embed_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
@@ -1799,7 +1799,7 @@ ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Callback for when the embed loses focus
  */
 void
-ewl_embed_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_embed_cb_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
@@ -1827,7 +1827,7 @@ ewl_embed_focus_out_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @return Returns no value
  * @brief The destroy callback
  */
-void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+void ewl_embed_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;

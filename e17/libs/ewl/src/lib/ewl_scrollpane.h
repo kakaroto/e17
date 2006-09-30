@@ -71,16 +71,16 @@ double          ewl_scrollpane_vscrollbar_step_get(Ewl_Scrollpane *s);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data,
+void ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data,
 							void *user_data);
-void ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data,
+void ewl_scrollpane_cb_focus_jump(Ewl_Widget *w, void *ev_data,
                                   void *user_data);
-void ewl_scrollpane_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_scrollpane_vscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *w, void *ev_data,
+void ewl_scrollpane_cb_hscroll(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_scrollpane_cb_vscroll(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_scrollpane_cb_wheel_scroll(Ewl_Widget *w, void *ev_data,
 							void *user_data);
 
-void ewl_scrollpane_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child);
+void ewl_scrollpane_cb_child_resize(Ewl_Container *parent, Ewl_Widget *child);
 
 /**
  * @}

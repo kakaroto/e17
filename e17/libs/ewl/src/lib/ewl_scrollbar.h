@@ -82,9 +82,9 @@ void            ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_scrollbar_scroll_start_cb(Ewl_Widget *w, void *ev_data,
+void ewl_scrollbar_cb_scroll_start(Ewl_Widget *w, void *ev_data,
 					  void *user_data);
-void ewl_scrollbar_scroll_stop_cb(Ewl_Widget *w, void *ev_data,
+void ewl_scrollbar_cb_scroll_stop(Ewl_Widget *w, void *ev_data,
 					 void *user_data);
 
 /**

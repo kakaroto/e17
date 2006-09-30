@@ -48,9 +48,10 @@ ewl_overlay_init(Ewl_Overlay *w)
 	ewl_widget_appearance_set(EWL_WIDGET(w), EWL_OVERLAY_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(w), EWL_OVERLAY_TYPE);
 
-	ewl_container_show_notify_set(EWL_CONTAINER(w), ewl_overlay_child_show_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(w), 
+					ewl_overlay_cb_child_show);
 	ewl_container_resize_notify_set(EWL_CONTAINER(w),
-				    ewl_overlay_child_resize_cb);
+					ewl_overlay_cb_child_resize);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 
@@ -59,7 +60,7 @@ ewl_overlay_init(Ewl_Overlay *w)
 	 * has special needs for placement.
 	 */
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			     ewl_overlay_configure_cb, NULL);
+			     ewl_overlay_cb_configure, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -73,7 +74,7 @@ ewl_overlay_init(Ewl_Overlay *w)
  * @brief The configure callback
  */
 void
-ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Object *o;
@@ -115,7 +116,7 @@ ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The child show callback
  */
 void
-ewl_overlay_child_show_cb(Ewl_Container *o, Ewl_Widget *child)
+ewl_overlay_cb_child_show(Ewl_Container *o, Ewl_Widget *child)
 {
 	int size;
 
@@ -149,7 +150,7 @@ ewl_overlay_child_show_cb(Ewl_Container *o, Ewl_Widget *child)
  * @brief The child resize callback
  */
 void
-ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
+ewl_overlay_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 	       int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	int maxw = 0, maxh = 0;

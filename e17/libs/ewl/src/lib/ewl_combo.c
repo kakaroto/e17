@@ -267,7 +267,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	ewl_callback_append(combo->button, EWL_CALLBACK_CLICKED,
 				ewl_combo_cb_increment_clicked, combo);
 
-	ewl_menu_base_expand_cb(EWL_WIDGET(combo->popup), ev, NULL);
+	ewl_menu_base_cb_expand(EWL_WIDGET(combo->popup), ev, NULL);
 	if (!REALIZED(combo->popup->popup))
 	{
 		Ewl_Embed *emb;

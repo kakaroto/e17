@@ -47,14 +47,14 @@ ewl_menu_init(Ewl_Menu *menu)
 	ewl_widget_inherit(EWL_WIDGET(menu), EWL_MENU_TYPE);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_MOUSE_MOVE,
-			    ewl_menu_expand_mouse_move_cb, NULL);
+			    ewl_menu_cb_expand_mouse_move, NULL);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
-			    ewl_menu_expand_cb, NULL);
+			    ewl_menu_cb_expand, NULL);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_REALIZE,
-			    ewl_menu_realize_cb, NULL);
+			    ewl_menu_cb_realize, NULL);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CONFIGURE,
-			    ewl_menu_configure_cb, NULL);
+			    ewl_menu_cb_configure, NULL);
 
 	menu->menubar_parent = NULL;
 
@@ -74,15 +74,15 @@ ewl_menu_init(Ewl_Menu *menu)
 	ewl_object_alignment_set(EWL_OBJECT(menu->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 	ewl_callback_append(menu->base.popup, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_menu_hide_cb, menu);
+			    ewl_menu_cb_hide, menu);
 
 	ewl_callback_append(menu->base.popup, EWL_CALLBACK_MOUSE_MOVE,
-				ewl_menu_mouse_move_cb, menu);
+				ewl_menu_cb_mouse_move, menu);
 			   
 	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_DESTROY,
-				ewl_menu_destroy_cb, NULL);
+				ewl_menu_cb_destroy, NULL);
 	ewl_callback_prepend(menu->base.popup, EWL_CALLBACK_DESTROY,
-				ewl_menu_popup_destroy_cb, menu);
+				ewl_menu_cb_popup_destroy, menu);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -96,7 +96,7 @@ ewl_menu_init(Ewl_Menu *menu)
  * @brief The realize callback
  */
 void
-ewl_menu_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Menu *menu;
@@ -107,14 +107,14 @@ ewl_menu_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	menu = EWL_MENU(w);
 
-	ewl_menu_popup_move_cb(menu->base.popup, NULL, w);
+	ewl_menu_cb_popup_move(menu->base.popup, NULL, w);
 
 	/*
 	 * Position the popup menu relative to the menu.
 	 */
 	ewl_callback_append(EWL_WIDGET(EWL_WINDOW(menu->base.popup)),
 				       EWL_CALLBACK_CONFIGURE,
-				       ewl_menu_popup_move_cb, w);
+				       ewl_menu_cb_popup_move, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -128,7 +128,7 @@ ewl_menu_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	int x, y;
@@ -146,7 +146,7 @@ ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	menu->popup_x = x + CURRENT_X(w);
 	menu->popup_y = y + CURRENT_Y(w);
 
-	ewl_menu_popup_move_cb(menu->base.popup, NULL, w);
+	ewl_menu_cb_popup_move(menu->base.popup, NULL, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -160,7 +160,7 @@ ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The expand mouse move callback
  */
 void
-ewl_menu_expand_mouse_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_cb_expand_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__) 
 {
 	Ewl_Menu *menu;
@@ -206,7 +206,7 @@ ewl_menu_expand_mouse_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The expand callback
  */
 void
-ewl_menu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Menu *menu;
@@ -233,7 +233,7 @@ ewl_menu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The popup move callback
  */
 void
-ewl_menu_popup_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_cb_popup_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data)
 {
         Ewl_Widget *menu;
@@ -267,7 +267,7 @@ ewl_menu_popup_move_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The mouse move callback
  */
 void
-ewl_menu_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data) 
+ewl_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data) 
 {
 	Ewl_Event_Mouse_Move *ev;
 	Ewl_Menu *menu;
@@ -311,7 +311,7 @@ ewl_menu_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
  * @brief The hide callback
  */
 void
-ewl_menu_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_cb_hide(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -333,7 +333,7 @@ ewl_menu_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The popup destroy callback
  */
 void
-ewl_menu_popup_destroy_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+ewl_menu_cb_popup_destroy(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data)
 {
 	Ewl_Menu *m;
@@ -356,7 +356,7 @@ ewl_menu_popup_destroy_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
  * @brief The destroy callback
  */
 void
-ewl_menu_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+ewl_menu_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Menu *menu;
 
@@ -367,7 +367,7 @@ ewl_menu_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	menu = EWL_MENU(w);
 	if (menu->base.popup)
 		ewl_callback_del(menu->base.popup, EWL_CALLBACK_DESTROY, 
-						ewl_menu_popup_destroy_cb);
+						ewl_menu_cb_popup_destroy);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

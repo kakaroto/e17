@@ -52,9 +52,9 @@ ewl_radiobutton_init(Ewl_Radiobutton *rb)
 	ewl_widget_appearance_set(w, EWL_RADIOBUTTON_TYPE);
 	ewl_widget_inherit(w, EWL_RADIOBUTTON_TYPE);
 	ewl_widget_appearance_set(cb->check, "radio");
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_clicked_cb,
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_cb_clicked,
 			    NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_destroy_cb,
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_cb_destroy,
 			    NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -106,7 +106,7 @@ ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb)
  * @brief The clicked callback
  */
 void
-ewl_radiobutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_radiobutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Checkbutton *cb;
@@ -146,7 +146,7 @@ ewl_radiobutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The destroy callback
  */
 void
-ewl_radiobutton_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_radiobutton_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Radiobutton *rb;

@@ -59,27 +59,27 @@ unsigned char   ewl_spinner_digits_get(Ewl_Spinner *s);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_spinner_realize_cb(Ewl_Widget *widget, void *ev_data,
+void ewl_spinner_cb_realize(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
-void ewl_spinner_value_changed_cb(Ewl_Widget *widget, void *ev_data,
+void ewl_spinner_cb_value_changed(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
-void ewl_spinner_configure_cb(Ewl_Widget *widget, void *ev_data,
+void ewl_spinner_cb_configure(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
-void ewl_spinner_key_down_cb(Ewl_Widget *widget, void *ev_data,
+void ewl_spinner_cb_key_down(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
-void ewl_spinner_focus_out_cb(Ewl_Widget *w, void *ev_data,
+void ewl_spinner_cb_focus_out(Ewl_Widget *w, void *ev_data,
 						void *user_data);
-void ewl_spinner_wheel_cb(Ewl_Widget *w, void *ev_data, 
+void ewl_spinner_cb_wheel(Ewl_Widget *w, void *ev_data, 
 						void *user_data);
 
-void ewl_spinner_increase_value_cb(Ewl_Widget *widget, void *ev_data,
+void ewl_spinner_cb_increase_value(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
-void ewl_spinner_decrease_value_cb(Ewl_Widget *widget, void *ev_data,
+void ewl_spinner_cb_decrease_value(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
-void ewl_spinner_value_stop_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_spinner_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_spinner_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
-void ewl_spinner_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+void ewl_spinner_cb_value_stop(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_spinner_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_spinner_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
+void ewl_spinner_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 					Ewl_Orientation o);
 /**
  * @}

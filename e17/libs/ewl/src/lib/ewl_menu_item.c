@@ -56,7 +56,7 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
 			EWL_FLAG_FILL_HFILL);
 
 	ewl_callback_append(EWL_WIDGET(item), EWL_CALLBACK_CLICKED,
-			ewl_menu_item_clicked_cb, NULL);
+			ewl_menu_item_cb_clicked, NULL);
 
 	/*
 	 * Intercept mouse events this will cause callbacks to children of
@@ -79,7 +79,7 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
  * @brief The clicked callback
  */
 void
-ewl_menu_item_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_item_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
 		void *user_data __UNUSED__)
 {       
 	Ewl_Menu_Item *item;

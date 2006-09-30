@@ -47,10 +47,10 @@ int             ewl_overlay_init(Ewl_Overlay *win);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_overlay_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 
-void ewl_overlay_child_show_cb(Ewl_Container *emb, Ewl_Widget *child);
-void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+void ewl_overlay_cb_child_show(Ewl_Container *emb, Ewl_Widget *child);
+void ewl_overlay_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 			       Ewl_Orientation o);
 
 /**

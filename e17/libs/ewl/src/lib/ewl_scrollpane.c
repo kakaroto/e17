@@ -52,12 +52,12 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
 
 	ewl_container_show_notify_set(EWL_CONTAINER(s),
-					ewl_scrollpane_child_resize_cb);
+					ewl_scrollpane_cb_child_resize);
 	ewl_container_resize_notify_set(EWL_CONTAINER(s),
 					(Ewl_Child_Resize)
-					ewl_scrollpane_child_resize_cb);
+					ewl_scrollpane_cb_child_resize);
 	ewl_container_hide_notify_set(EWL_CONTAINER(s),
-					ewl_scrollpane_child_resize_cb);
+					ewl_scrollpane_cb_child_resize);
 
 	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_IN);
 	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_OUT);
@@ -105,20 +105,20 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 	 * Append necessary callbacks for the scrollpane.
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-			ewl_scrollpane_configure_cb, NULL);
+			ewl_scrollpane_cb_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
-			ewl_scrollpane_focus_jump_cb, NULL);
+			ewl_scrollpane_cb_focus_jump, NULL);
 
 	/*
 	 * We need to know whent he scrollbars have value changes in order to
 	 * know when to scroll.
 	 */
 	ewl_callback_append(s->hscrollbar, EWL_CALLBACK_VALUE_CHANGED,
-					ewl_scrollpane_hscroll_cb, s);
+					ewl_scrollpane_cb_hscroll, s);
 	ewl_callback_append(s->vscrollbar, EWL_CALLBACK_VALUE_CHANGED,
-					ewl_scrollpane_vscroll_cb, s);
+					ewl_scrollpane_cb_vscroll, s);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_WHEEL,
-				ewl_scrollpane_wheel_scroll_cb, NULL);
+				ewl_scrollpane_cb_wheel_scroll, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -322,7 +322,7 @@ ewl_scrollpane_vscrollbar_step_get(Ewl_Scrollpane *s)
  * @brief Move the contents of the scrollbar into place
  */
 void
-ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Scrollpane *s;
@@ -486,7 +486,7 @@ ewl_scrollpane_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The focus jump callback
  */
 void
-ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_scrollpane_cb_focus_jump(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	int endcoord = 0;
@@ -569,7 +569,7 @@ ewl_scrollpane_focus_jump_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * contents of the scrollpane horizontally.
  */
 void
-ewl_scrollpane_hscroll_cb(Ewl_Widget *w __UNUSED__,
+ewl_scrollpane_cb_hscroll(Ewl_Widget *w __UNUSED__,
 		void *ev_data __UNUSED__, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -593,7 +593,7 @@ ewl_scrollpane_hscroll_cb(Ewl_Widget *w __UNUSED__,
  * contents of the scrollpane vertically.
  */
 void
-ewl_scrollpane_vscroll_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+ewl_scrollpane_cb_vscroll(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 						void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -614,7 +614,7 @@ ewl_scrollpane_vscroll_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
  * @brief The wheel scroll callback
  */
 void
-ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data,
+ewl_scrollpane_cb_wheel_scroll(Ewl_Widget *cb, void *ev_data,
 				void *user_data __UNUSED__)
 {
 	Ewl_Scrollpane *s;
@@ -641,7 +641,7 @@ ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data,
  * @brief This handles all of the various size affecting callbacks.
  */
 void
-ewl_scrollpane_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child)
+ewl_scrollpane_cb_child_resize(Ewl_Container *parent, Ewl_Widget *child)
 {
 	int pw, ph;
 	Ewl_Scrollpane *s;

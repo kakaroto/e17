@@ -8,7 +8,7 @@
 #endif
 
 static void ewl_media_size_update(Ewl_Media *m);
-static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void
+static void ewl_media_cb_update_timer(void *data, Evas_Object *obj, void
 		*event_info);
 
 /**
@@ -59,13 +59,13 @@ ewl_media_init(Ewl_Media *m)
 	ewl_widget_appearance_set(w, EWL_MEDIA_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(w), EWL_MEDIA_TYPE);
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_media_realize_cb,
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_media_cb_realize,
 									NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_media_reveal_cb,
+	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_media_cb_reveal,
 									NULL);
-	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_media_unrealize_cb,
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_media_cb_unrealize,
 									NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_media_configure_cb,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_media_cb_configure,
 									NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -471,7 +471,7 @@ ewl_media_audio_volume_set(Ewl_Media *m, double v)
  * @brief The realize callback
  */
 void
-ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_media_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Media *m;
@@ -515,7 +515,7 @@ ewl_media_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The reveal callback
  */
 void
-ewl_media_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_media_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Media *m;
@@ -546,7 +546,7 @@ ewl_media_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The unrealize callback
  */
 void
-ewl_media_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_media_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Media *m;
@@ -572,7 +572,7 @@ ewl_media_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_media_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_media_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 		void *user_data __UNUSED__)
 {
 	Ewl_Media *m;
@@ -590,7 +590,7 @@ ewl_media_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		evas_object_move(m->video, CURRENT_X(w), CURRENT_Y(w));
 		evas_object_resize(m->video, CURRENT_W(w), CURRENT_H(w));
 		evas_object_smart_callback_add(m->video, "frame_decode",
-				ewl_media_update_timer_cb, m);
+				ewl_media_cb_update_timer, m);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -616,7 +616,7 @@ ewl_media_size_update(Ewl_Media *m)
 }
 
 static void
-ewl_media_update_timer_cb(void *data,
+ewl_media_cb_update_timer(void *data,
 		Evas_Object *obj __UNUSED__,
 		void *event_info __UNUSED__)
 {

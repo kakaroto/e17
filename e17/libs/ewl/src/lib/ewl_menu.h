@@ -50,15 +50,16 @@ int		 ewl_menu_init(Ewl_Menu *menu);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_menu_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_menu_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_menu_popup_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_menu_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_menu_destroy_cb(Ewl_Widget *w, void *ev, void *data);
-void ewl_menu_popup_destroy_cb(Ewl_Widget *w, void *ev, void *data);
-void ewl_menu_expand_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_menu_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_cb_popup_move(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_cb_hide(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+void ewl_menu_cb_popup_destroy(Ewl_Widget *w, void *ev, void *data);
+void ewl_menu_cb_expand_mouse_move(Ewl_Widget *w, void *ev_data, 
+							void *user_data);
+void ewl_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

@@ -59,20 +59,20 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	ewl_widget_inherit(EWL_WIDGET(tree), EWL_TREE_TYPE);
 
 	ewl_container_show_notify_set(EWL_CONTAINER(tree),
-				      (Ewl_Child_Show)ewl_tree_child_resize_cb);
+				      (Ewl_Child_Show)ewl_tree_cb_child_resize);
 	ewl_container_hide_notify_set(EWL_CONTAINER(tree),
-				      (Ewl_Child_Hide)ewl_tree_child_resize_cb);
+				      (Ewl_Child_Hide)ewl_tree_cb_child_resize);
 	ewl_container_resize_notify_set(EWL_CONTAINER(tree),
-				    (Ewl_Child_Resize)ewl_tree_child_resize_cb);
+				    (Ewl_Child_Resize)ewl_tree_cb_child_resize);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_SHRINK |
 				   EWL_FLAG_FILL_FILL);
 	tree->selected = ecore_list_new();
 
 	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
-			    ewl_tree_configure_cb, NULL);
+			    ewl_tree_cb_configure, NULL);
 
 	ewl_callback_prepend(EWL_WIDGET(tree), EWL_CALLBACK_DESTROY,
-			    ewl_tree_destroy_cb, NULL);
+			    ewl_tree_cb_destroy, NULL);
 
 	tree->ncols = columns;
 
@@ -91,7 +91,7 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	ewl_container_child_append(EWL_CONTAINER(tree), header);
 	ewl_callback_append(header, EWL_CALLBACK_VALUE_CHANGED,
-					ewl_tree_header_change_cb, tree);
+					ewl_tree_cb_header_change, tree);
 	ewl_widget_appearance_set(EWL_WIDGET(header), "tree_header");
 	ewl_widget_show(header);
 	tree->header = header;
@@ -99,14 +99,14 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	tree->scrollarea = ewl_scrollpane_new();
 	ewl_container_child_append(EWL_CONTAINER(tree), tree->scrollarea);
 	ewl_callback_append(tree->scrollarea, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_tree_hscroll_cb, tree);
+			    ewl_tree_cb_hscroll, tree);
 	ewl_widget_show(tree->scrollarea);
 
 	ewl_container_redirect_set(EWL_CONTAINER(tree),
 				   EWL_CONTAINER(tree->scrollarea));
 
 	ewl_callback_append(EWL_WIDGET(tree->header), EWL_CALLBACK_CONFIGURE,
-				ewl_tree_header_configure_cb, tree->scrollarea);
+				ewl_tree_cb_header_configure, tree->scrollarea);
 	ewl_tree_headers_visible_set(tree, 1);
 	ewl_tree_expandable_rows_set(tree, 1);
 
@@ -291,9 +291,9 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	EWL_TREE_NODE(node)->row = row;
 	ewl_container_child_append(EWL_CONTAINER(node), row);
 	ewl_callback_append(row, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_tree_row_select_cb, NULL);
+			    ewl_tree_cb_row_select, NULL);
 	ewl_callback_append(row, EWL_CALLBACK_HIDE,
-			    ewl_tree_row_hide_cb, NULL);
+			    ewl_tree_cb_row_hide, NULL);
 
 	/*
 	 * Pretty basic here, build up the rows and add the widgets to them.
@@ -736,7 +736,7 @@ ewl_tree_row_walk_signal(Ewl_Tree *tree)
  * @brief The configure callback
  */
 void
-ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_tree_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	int x, width, height;
@@ -775,7 +775,7 @@ ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The header configure callback
  */
 void
-ewl_tree_header_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_tree_cb_header_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Widget *scrollarea = user_data;
@@ -798,7 +798,7 @@ ewl_tree_header_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The destroy callback
  */
 void
-ewl_tree_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_tree_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Tree *tree;
@@ -820,7 +820,7 @@ ewl_tree_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The child resize callback
  */
 void
-ewl_tree_child_resize_cb(Ewl_Container *c)
+ewl_tree_cb_child_resize(Ewl_Container *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -875,23 +875,23 @@ ewl_tree_node_init(Ewl_Tree_Node *node)
 	ewl_widget_inherit(EWL_WIDGET(node), EWL_TREE_NODE_TYPE);
 	
 	ewl_container_show_notify_set(EWL_CONTAINER(node),
-				  ewl_tree_node_child_show_cb);
+				  ewl_tree_cb_node_child_show);
 	ewl_container_hide_notify_set(EWL_CONTAINER(node),
-				  ewl_tree_node_child_hide_cb);
+				  ewl_tree_cb_node_child_hide);
 	ewl_container_resize_notify_set(EWL_CONTAINER(node),
-				    ewl_tree_node_resize_cb);
+				    ewl_tree_cb_node_resize);
 	ewl_container_add_notify_set(EWL_CONTAINER(node),
-				    ewl_tree_node_child_add_cb);
+				    ewl_tree_cb_node_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(node),
-				    ewl_tree_node_child_del_cb);
+				    ewl_tree_cb_node_child_del);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(node), EWL_FLAG_FILL_HFILL |
 							EWL_FLAG_FILL_HSHRINK);
 
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
-			ewl_tree_node_configure_cb, NULL);
+			ewl_tree_cb_node_configure, NULL);
 	ewl_callback_prepend(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
-			    ewl_tree_node_destroy_cb, NULL);
+			    ewl_tree_cb_node_destroy, NULL);
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
@@ -925,7 +925,7 @@ ewl_tree_node_expandable_set(Ewl_Tree_Node *node, int expand)
 				EWL_FLAG_ALIGN_TOP);
 		ewl_container_child_prepend(EWL_CONTAINER(node), node->handle);
 		ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
-				    ewl_tree_node_toggle_cb, node);
+				    ewl_tree_cb_node_toggle, node);
 		ewl_widget_show(node->handle);
 	}
 	else if (node->handle) {
@@ -1063,7 +1063,7 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
  * @brief The tree node configure callback
  */
 void
-ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Tree_Node *node;
@@ -1119,7 +1119,7 @@ ewl_tree_node_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The tree node destroy callback
  */
 void
-ewl_tree_node_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_tree_cb_node_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 					 void *user_data __UNUSED__)
 {
 	Ewl_Tree *tree;
@@ -1150,7 +1150,7 @@ ewl_tree_node_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The tree node toggle callback
  */
 void
-ewl_tree_node_toggle_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+ewl_tree_cb_node_toggle(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 							void *user_data)
 {
 	Ewl_Tree_Node *node;
@@ -1180,7 +1180,7 @@ ewl_tree_node_toggle_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
  * @brief The child add callback
  */
 void
-ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
+ewl_tree_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
 	Ewl_Tree_Node *node;
 
@@ -1212,13 +1212,13 @@ ewl_tree_node_child_add_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
  * @brief The child del callback
  */
 void
-ewl_tree_node_child_del_cb(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
+ewl_tree_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
-	ewl_tree_node_child_add_cb(c, w);
+	ewl_tree_cb_node_child_add(c, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1231,7 +1231,7 @@ ewl_tree_node_child_del_cb(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
  * @brief The tree node child show callback
  */
 void
-ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
+ewl_tree_cb_node_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
 	Ewl_Tree_Node *node;
 
@@ -1274,7 +1274,7 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
  * @brief The tree node child hide callback
  */
 void
-ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_tree_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
 	int width;
 	Ewl_Tree_Node *node;
@@ -1315,7 +1315,7 @@ ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
  * @brief The tree node resize callback
  */
 void
-ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w,
+ewl_tree_cb_node_resize(Ewl_Container *c, Ewl_Widget *w,
 		int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1324,7 +1324,7 @@ ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_tree_node_child_show_cb(c, w);
+	ewl_tree_cb_node_child_show(c, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1338,7 +1338,7 @@ ewl_tree_node_resize_cb(Ewl_Container *c, Ewl_Widget *w,
  * @brief The tree row select callback
  */
 void
-ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data,
+ewl_tree_cb_row_select(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
 	Ewl_Tree *tree;
@@ -1375,7 +1375,7 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data,
  * @brief The tree node hide callback
  */
 void
-ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_tree_cb_row_hide(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Tree *tree;
@@ -1406,7 +1406,7 @@ ewl_tree_row_hide_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The tree hscroll callback
  */
 void
-ewl_tree_hscroll_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+ewl_tree_cb_hscroll(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 					void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1426,7 +1426,7 @@ ewl_tree_hscroll_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
  * @brief Callback for when the header grabbers are moved
  */
 void
-ewl_tree_header_change_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_tree_cb_header_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 								void *data)
 {
 	Ewl_Tree *tree;

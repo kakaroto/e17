@@ -54,11 +54,11 @@ ewl_grid_init(Ewl_Grid *g)
 	ewl_widget_appearance_set(EWL_WIDGET(g), EWL_GRID_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(g), EWL_GRID_TYPE);
 
-	ewl_container_add_notify_set(EWL_CONTAINER(g), ewl_grid_child_add_cb);
+	ewl_container_add_notify_set(EWL_CONTAINER(g), ewl_grid_cb_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(g), 
-						ewl_grid_child_remove_cb);
+						ewl_grid_cb_child_remove);
 	ewl_container_resize_notify_set(EWL_CONTAINER(g),
-						ewl_grid_child_resize_cb);
+						ewl_grid_cb_child_resize);
 
 	/*
 	 * the smallest size where a grid make sense
@@ -74,9 +74,9 @@ ewl_grid_init(Ewl_Grid *g)
 	 * Append callbacks
 	 */
 	ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_CONFIGURE,
-					ewl_grid_configure_cb, NULL);
+					ewl_grid_cb_configure, NULL);
 	ewl_callback_prepend(EWL_WIDGET(g), EWL_CALLBACK_DESTROY, 
-					ewl_grid_destroy_cb, NULL);
+					ewl_grid_cb_destroy, NULL);
 
 	ewl_widget_focusable_set(EWL_WIDGET(g), FALSE);
 
@@ -891,7 +891,7 @@ ewl_grid_row_h_remove(Ewl_Grid *g, int row)
  * @brief The configure callback
  */
 void
-ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_grid_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Grid *g;
@@ -977,7 +977,7 @@ ewl_grid_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The destroy callback
  */
 void
-ewl_grid_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_grid_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Grid *g;
@@ -1492,7 +1492,7 @@ ewl_grid_map_start_position_get(Ewl_Grid *g, int *c, int *r)
  * @brief Notify the grid that a child has been added.
  */
 void 
-ewl_grid_child_add_cb(Ewl_Container *p, Ewl_Widget *c)
+ewl_grid_cb_child_add(Ewl_Container *p, Ewl_Widget *c)
 {
 	Ewl_Grid *g;
 	
@@ -1527,7 +1527,7 @@ ewl_grid_child_add_cb(Ewl_Container *p, Ewl_Widget *c)
  * @brief The child del callback
  */
 void
-ewl_grid_child_remove_cb(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
+ewl_grid_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
 	Ewl_Grid_Child *child;
 	Ewl_Grid *g;
@@ -1566,7 +1566,7 @@ ewl_grid_child_remove_cb(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
  * @brief Catch notification of child resizes.
  */
 void
-ewl_grid_child_resize_cb(Ewl_Container *p, Ewl_Widget *child, 
+ewl_grid_cb_child_resize(Ewl_Container *p, Ewl_Widget *child, 
 				int size __UNUSED__,
 			        Ewl_Orientation o __UNUSED__)
 {

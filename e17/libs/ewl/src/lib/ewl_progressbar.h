@@ -58,12 +58,12 @@ void 		 ewl_progressbar_label_hide(Ewl_Progressbar *p);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_progressbar_configure_cb(Ewl_Widget *w, void *ev_data,
+void ewl_progressbar_cb_configure(Ewl_Widget *w, void *ev_data,
 				  void *user_data);
-void ewl_progressbar_value_changed_cb(Ewl_Widget *w, void *ev_data,
+void ewl_progressbar_cb_value_changed(Ewl_Widget *w, void *ev_data,
 				  void *user_data);
-void ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w);
-void ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size,
+void ewl_progressbar_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
+void ewl_progressbar_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 				     Ewl_Orientation o);
 
 /**

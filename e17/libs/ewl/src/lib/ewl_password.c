@@ -59,9 +59,9 @@ ewl_password_init(Ewl_Password *e)
 	 */
 	ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN, ewl_entry_cb_key_down);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_entry_cb_mouse_down);
-	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, ewl_password_key_down_cb,
+	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, ewl_password_cb_key_down,
 			    NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_password_destroy_cb,
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_password_cb_destroy,
 			    NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -211,7 +211,7 @@ ewl_password_text_insert(Ewl_Password *e, const char *s)
  * @brief Handle key events to modify the text of the password widget.
  */
 void
-ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
+ewl_password_cb_key_down(Ewl_Widget *w, void *ev_data,
 				void *user_data __UNUSED__)
 {
 	int len;
@@ -261,7 +261,7 @@ ewl_password_key_down_cb(Ewl_Widget *w, void *ev_data,
  * @brief The destroy callback
  */
 void
-ewl_password_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_password_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Password *p;

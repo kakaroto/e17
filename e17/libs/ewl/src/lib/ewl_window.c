@@ -55,25 +55,25 @@ ewl_window_init(Ewl_Window *w)
 	w->classname  = strdup("EWL");
 
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
-			     ewl_window_realize_cb, NULL);
+			     ewl_window_cb_realize, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
-			     ewl_window_postrealize_cb, NULL);
+			     ewl_window_cb_postrealize, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
-			     ewl_window_unrealize_cb, NULL);
+			     ewl_window_cb_unrealize, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_SHOW,
-			    ewl_window_show_cb, NULL);
+			    ewl_window_cb_show, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_EXPOSE,
-			    ewl_window_expose_cb, NULL);
+			    ewl_window_cb_expose, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_HIDE,
-			    ewl_window_hide_cb, NULL);
+			    ewl_window_cb_hide, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
-			     ewl_window_destroy_cb, NULL);
+			     ewl_window_cb_destroy, NULL);
 	/*
 	 * Override the default configure callbacks since the window
 	 * has special needs for placement.
 	 */
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			     ewl_window_configure_cb, NULL);
+			     ewl_window_cb_configure, NULL);
 
 	ecore_list_append(ewl_window_list, w);
 
@@ -425,7 +425,7 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 		else
 			ewl_callback_append(EWL_WIDGET(forwin),
 					    EWL_CALLBACK_REALIZE,
-					    ewl_window_realize_transient_cb,
+					    ewl_window_cb_realize_transient,
 					    win);
 	}
 	else if (win->window) 
@@ -624,7 +624,7 @@ ewl_window_selection_text_set(Ewl_Window *win, const char *txt)
  * @brief The realize callback
  */
 void
-ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Window *window;
@@ -667,7 +667,7 @@ ewl_window_realize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The postrealize callback
  */
 void
-ewl_window_postrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_window_cb_postrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -690,7 +690,7 @@ ewl_window_postrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The realize transient callback
  */
 void
-ewl_window_realize_transient_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_window_cb_realize_transient(Ewl_Widget *w, void *ev_data __UNUSED__,
 				     void *user_data)
 {
 	Ewl_Window *win;
@@ -711,7 +711,7 @@ ewl_window_realize_transient_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Both windows realized so no need to keep the callback.
 	 */
 	ewl_callback_del(EWL_WIDGET(win), EWL_CALLBACK_REALIZE,
-			 ewl_window_realize_transient_cb);
+			 ewl_window_cb_realize_transient);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -725,7 +725,7 @@ ewl_window_realize_transient_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The unrealize callback
  */
 void
-ewl_window_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_window_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Window *win;
@@ -759,7 +759,7 @@ ewl_window_unrealize_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The show callback
  */
 void
-ewl_window_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_window_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Window *win;
@@ -798,7 +798,7 @@ ewl_window_show_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The expose callback
  */
 void
-ewl_window_expose_cb(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_window_cb_expose(Ewl_Widget *w, void *ev __UNUSED__, 
 				void *user_data __UNUSED__)
 {
 	Ewl_Window *win;
@@ -834,7 +834,7 @@ ewl_window_expose_cb(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief The hide callback
  */
 void
-ewl_window_hide_cb(Ewl_Widget *widget, void *ev_data __UNUSED__,
+ewl_window_cb_hide(Ewl_Widget *widget, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Window *win;
@@ -864,7 +864,7 @@ ewl_window_hide_cb(Ewl_Widget *widget, void *ev_data __UNUSED__,
  * @brief The destroy callback
  */
 void
-ewl_window_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_window_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Window *win;
@@ -894,7 +894,7 @@ ewl_window_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_window_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Window *win;

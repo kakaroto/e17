@@ -48,10 +48,10 @@ int		 ewl_datepicker_init(Ewl_Datepicker* datepicker);
 /*
  * Internally used callbacks, override at your risk
  */
-void ewl_datepicker_destroy_cb(Ewl_Widget *w, void *ev, void *user_data);
-void ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev, void *user_data);
-void ewl_datepicker_value_changed_cb(Ewl_Widget *w, void *ev, void *user_data);
-void ewl_datepicker_realize_cb(Ewl_Widget *w, void *ev, void *user_data);
+void ewl_datepicker_cb_destroy(Ewl_Widget *w, void *ev, void *user_data);
+void ewl_datepicker_cb_configure(Ewl_Widget *w, void *ev, void *user_data);
+void ewl_datepicker_cb_value_changed(Ewl_Widget *w, void *ev, void *user_data);
+void ewl_datepicker_cb_realize(Ewl_Widget *w, void *ev, void *user_data);
 
 /**
  * @}

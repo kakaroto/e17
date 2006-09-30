@@ -4,7 +4,7 @@
 #include "ewl_macros.h"
 
 static void ewl_datepicker_calendar_position_set(Ewl_Datepicker *dp);
-static void ewl_datepicker_dropdown_cb(Ewl_Widget *w, void *ev_data, 
+static void ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev_data, 
 							void *user_data); 
 
 /**
@@ -63,17 +63,17 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 							dp->calendar);
 	ewl_callback_append(EWL_WIDGET(dp->calendar), 
 				EWL_CALLBACK_VALUE_CHANGED, 
-				ewl_datepicker_value_changed_cb, dp);
+				ewl_datepicker_cb_value_changed, dp);
 	ewl_widget_show(dp->calendar);
 
 	ewl_datepicker_calendar_position_set(dp);
 
 	ewl_callback_prepend(EWL_WIDGET(dp), EWL_CALLBACK_DESTROY, 
-				ewl_datepicker_destroy_cb, dp);
+				ewl_datepicker_cb_destroy, dp);
 	ewl_callback_append(EWL_WIDGET(dp), EWL_CALLBACK_CONFIGURE,
-	                            ewl_datepicker_configure_cb, NULL);
+	                            ewl_datepicker_cb_configure, NULL);
 	ewl_callback_append(EWL_WIDGET(dp), EWL_CALLBACK_MOUSE_DOWN, 
-				ewl_datepicker_dropdown_cb, NULL);
+				ewl_datepicker_cb_dropdown, NULL);
 	
 	ewl_callback_call(EWL_WIDGET(dp->calendar), EWL_CALLBACK_VALUE_CHANGED);
 
@@ -89,7 +89,7 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
  * @brief The destroy callback
  */
 void
-ewl_datepicker_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__,
+ewl_datepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 					void *user_data __UNUSED__) 
 {
 	Ewl_Datepicker *dp;
@@ -114,7 +114,7 @@ ewl_datepicker_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_datepicker_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *user_data __UNUSED__) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -135,7 +135,7 @@ ewl_datepicker_configure_cb(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Callback for when the datepicker calendar window value changes
  */
 void
-ewl_datepicker_value_changed_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_datepicker_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 							void *user_data) 
 {
 	char *date;
@@ -163,7 +163,7 @@ ewl_datepicker_value_changed_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
  * @brief Realize callback
  */
 void
-ewl_datepicker_realize_cb(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_datepicker_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, 
 						void *user_data __UNUSED__) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -199,7 +199,7 @@ ewl_datepicker_calendar_position_set(Ewl_Datepicker *dp)
 }
 
 static void
-ewl_datepicker_dropdown_cb(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *user_data __UNUSED__) 
 {
 	Ewl_Datepicker *dp;

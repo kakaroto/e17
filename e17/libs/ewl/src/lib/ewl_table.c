@@ -60,7 +60,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	ewl_widget_inherit(EWL_WIDGET(t), EWL_TABLE_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_FILL);
 
-	ewl_container_show_notify_set(EWL_CONTAINER(t), ewl_table_child_show_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(t), ewl_table_cb_child_show);
 	
 	/*
 	 * Create a new grid
@@ -110,7 +110,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	 * Append callbacks
 	 */
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
-			    ewl_table_configure_cb, NULL); 
+			    ewl_table_cb_configure, NULL); 
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -150,7 +150,7 @@ ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
 			     start_col, end_col, start_row, end_row);
 
 	ewl_callback_prepend(EWL_WIDGET(cell), EWL_CALLBACK_MOUSE_UP,
-			     ewl_table_child_select_cb, table);
+			     ewl_table_cb_child_select, table);
 
 	ewl_widget_show(EWL_WIDGET(cell));
 
@@ -435,7 +435,7 @@ ewl_table_selected_get(Ewl_Table *t)
  * @brief The child select callback
  */
 void
-ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_table_cb_child_select(Ewl_Widget *w, void *ev_data __UNUSED__,
 							void *user_data)
 {
 	Ewl_Table *t;
@@ -465,7 +465,7 @@ ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_table_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_table_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	/*---------------------------------
@@ -511,7 +511,7 @@ ewl_table_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The child show callback
  */
 void
-ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
+ewl_table_cb_child_show(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 {
 	Ewl_Table *table; 
 	int width_g, height_g; 

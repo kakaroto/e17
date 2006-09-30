@@ -46,9 +46,9 @@ ewl_imenu_init(Ewl_Imenu *menu)
 	ewl_widget_inherit(EWL_WIDGET(menu), EWL_IMENU_TYPE);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
-			    ewl_imenu_expand_cb, NULL);
+			    ewl_imenu_cb_expand, NULL);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CONFIGURE,
-			    ewl_imenu_configure_cb, NULL);
+			    ewl_imenu_cb_configure, NULL);
 
 	/*
 	 * Create the popup menu portion of the widget.
@@ -66,9 +66,9 @@ ewl_imenu_init(Ewl_Imenu *menu)
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 
 	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_DESTROY,
-				ewl_imenu_destroy_cb, NULL);
+				ewl_imenu_cb_destroy, NULL);
 	ewl_callback_prepend(menu->base.popup, EWL_CALLBACK_DESTROY,
-				ewl_imenu_popup_destroy_cb, menu);
+				ewl_imenu_cb_popup_destroy, menu);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -82,7 +82,7 @@ ewl_imenu_init(Ewl_Imenu *menu)
  * @brief The configure callback
  */
 void
-ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_imenu_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Imenu *menu;
@@ -116,7 +116,7 @@ ewl_imenu_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The expand callback
  */
 void
-ewl_imenu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_imenu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Imenu *menu;
@@ -146,7 +146,7 @@ ewl_imenu_expand_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The popup destroy callback
  */
 void
-ewl_imenu_popup_destroy_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+ewl_imenu_cb_popup_destroy(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 				void *data)
 {
 	Ewl_Imenu *menu;
@@ -169,7 +169,7 @@ ewl_imenu_popup_destroy_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
  * @brief The destroy callback
  */
 void
-ewl_imenu_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+ewl_imenu_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Imenu *menu;
 
@@ -180,7 +180,7 @@ ewl_imenu_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	menu = EWL_IMENU(w);
 	if (menu->base.popup)
 		ewl_callback_del(menu->base.popup, EWL_CALLBACK_DESTROY, 
-						ewl_imenu_popup_destroy_cb);
+						ewl_imenu_cb_popup_destroy);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -8,12 +8,12 @@
 #include <Epsilon_Request.h>
 
 static Ecore_Event_Handler *ewl_image_epsilon_handler = NULL;
-static int ewl_image_thumbnail_complete_cb(void *data, int type, void *event);
+static int ewl_image_thumbnail_cb_complete(void *data, int type, void *event);
 #endif
 
 
 static Ewl_Image_Type  ewl_image_type_get(const char *i);
-static void ewl_image_thumb_destroy_cb(Ewl_Widget *w, void *ev, void *data);
+static void ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 
 /**
  * @return Returns a pointer to a new image widget on success, NULL on failure.
@@ -69,19 +69,19 @@ ewl_image_init(Ewl_Image *i)
 	/*
 	 * Append necessary callbacks.
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_image_reveal_cb,
+	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_image_cb_reveal,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_OBSCURE, ewl_image_obscure_cb,
+	ewl_callback_append(w, EWL_CALLBACK_OBSCURE, ewl_image_cb_obscure,
 			    NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_image_destroy_cb,
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_image_cb_destroy,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_image_configure_cb,
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_image_cb_configure,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, ewl_image_mouse_down_cb,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, ewl_image_cb_mouse_down,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, ewl_image_mouse_up_cb,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, ewl_image_cb_mouse_up,
 			    NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, ewl_image_mouse_move_cb,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, ewl_image_cb_mouse_move,
 			    NULL);
 
 	i->sw = 1.0;
@@ -534,14 +534,14 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 	ewl_widget_inherit(EWL_WIDGET(image), EWL_IMAGE_THUMBNAIL_TYPE);
 
 	ewl_callback_prepend(EWL_WIDGET(image), EWL_CALLBACK_DESTROY,
-			    ewl_image_thumb_destroy_cb, NULL);
+			    ewl_image_thumbnail_cb_destroy, NULL);
 
 #ifdef BUILD_EPSILON_SUPPORT
 	if (!ewl_image_epsilon_handler) {
 		epsilon_thumb_init();
 		ewl_image_epsilon_handler =
 			ecore_event_handler_add(EPSILON_EVENT_DONE,
-					ewl_image_thumbnail_complete_cb,
+					ewl_image_thumbnail_cb_complete,
 					NULL);
 	}
 #endif
@@ -574,7 +574,7 @@ ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 }
 
 static void
-ewl_image_thumb_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
 					void *data __UNUSED__)
 {
 	Ewl_Image_Thumbnail *thumb;
@@ -596,7 +596,7 @@ ewl_image_thumb_destroy_cb(Ewl_Widget *w, void *ev __UNUSED__,
 
 #ifdef BUILD_EPSILON_SUPPORT
 static int
-ewl_image_thumbnail_complete_cb(void *data __UNUSED__, int type __UNUSED__, 
+ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__, 
 								void *event)
 {
 	Ewl_Image_Thumbnail *thumb;
@@ -629,7 +629,7 @@ ewl_image_thumbnail_complete_cb(void *data __UNUSED__, int type __UNUSED__,
  * @brief The reveal callback
  */
 void
-ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
@@ -732,7 +732,7 @@ ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The obscure callback
  */
 void
-ewl_image_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_image_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
@@ -763,7 +763,7 @@ ewl_image_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The destroy callback
  */
 void
-ewl_image_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_image_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 					  void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
@@ -789,7 +789,7 @@ ewl_image_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The reparent callback
  */
 void
-ewl_image_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_image_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
@@ -814,7 +814,7 @@ ewl_image_reparent_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_image_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
@@ -924,7 +924,7 @@ ewl_image_type_get(const char *i)
  * @brief The mouse down callback
  */
 void
-ewl_image_mouse_down_cb(Ewl_Widget *w, void *ev_data,
+ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
@@ -957,7 +957,7 @@ ewl_image_mouse_down_cb(Ewl_Widget *w, void *ev_data,
  * @brief The mouse up callback
  */
 void
-ewl_image_mouse_up_cb(Ewl_Widget *w, void *ev_data,
+ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
@@ -990,7 +990,7 @@ ewl_image_mouse_up_cb(Ewl_Widget *w, void *ev_data,
  * @brief The mouse move callback
  */
 void
-ewl_image_mouse_move_cb(Ewl_Widget *w, void *ev_data,
+ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
 	Ewl_Image *i;

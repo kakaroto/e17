@@ -66,8 +66,8 @@ void            ewl_radiobutton_chain_set(Ewl_Radiobutton *w, Ewl_Radiobutton *c
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_radiobutton_clicked_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_radiobutton_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_radiobutton_cb_clicked(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_radiobutton_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

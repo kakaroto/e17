@@ -81,16 +81,16 @@ void            ewl_window_selection_text_set(Ewl_Window *win, const char *txt);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_window_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_window_postrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_window_realize_transient_cb(Ewl_Widget *w, void *ev_data,
+void ewl_window_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_cb_postrealize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_cb_realize_transient(Ewl_Widget *w, void *ev_data,
 					        void *user_data);
-void ewl_window_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_window_show_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_window_expose_cb(Ewl_Widget *w, void *ev, void *user_data);
-void ewl_window_hide_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_window_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_window_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_cb_unrealize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_cb_show(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_cb_expose(Ewl_Widget *w, void *ev, void *user_data);
+void ewl_window_cb_hide(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_window_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

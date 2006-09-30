@@ -151,11 +151,11 @@ void            ewl_embed_dnd_aware_remove(Ewl_Embed *embed);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_embed_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_embed_focus_out_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_embed_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_embed_cb_unrealize(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_embed_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_embed_cb_focus_out(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_embed_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

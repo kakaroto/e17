@@ -47,7 +47,7 @@ int		 ewl_menu_item_init(Ewl_Menu_Item *menu);
 /*
  * internally used callbacks, override at your risk
  */
-void ewl_menu_item_clicked_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_item_cb_clicked(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

@@ -134,15 +134,15 @@ ewl_scrollbar_init(Ewl_Scrollbar *s)
 	 * events.
 	 */
 	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_scrollbar_scroll_start_cb, s);
+			    ewl_scrollbar_cb_scroll_start, s);
 	ewl_callback_append(s->increment, EWL_CALLBACK_MOUSE_UP,
-			    ewl_scrollbar_scroll_stop_cb, s);
+			    ewl_scrollbar_cb_scroll_stop, s);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_scrollbar_scroll_start_cb, s);
+			    ewl_scrollbar_cb_scroll_start, s);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_MOUSE_UP,
-			    ewl_scrollbar_scroll_stop_cb, s);
+			    ewl_scrollbar_cb_scroll_stop, s);
 	ewl_callback_append(s->decrement, EWL_CALLBACK_DESTROY,
-			    ewl_scrollbar_scroll_stop_cb, s);
+			    ewl_scrollbar_cb_scroll_stop, s);
 
 	/*
 	 * Set the default alignment for the buttons.
@@ -476,7 +476,7 @@ ewl_scrollbar_step_set(Ewl_Scrollbar *s, double v)
  * @brief Decrement the value of the scrollbar's seeker portion
  */
 void
-ewl_scrollbar_scroll_start_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_scrollbar_cb_scroll_start(Ewl_Widget *w, void *ev_data __UNUSED__,
 							void *user_data)
 {
 	Ewl_Scrollbar *s;
@@ -514,7 +514,7 @@ ewl_scrollbar_scroll_start_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The scroll stop callback
  */
 void
-ewl_scrollbar_scroll_stop_cb(Ewl_Widget *w __UNUSED__,
+ewl_scrollbar_cb_scroll_stop(Ewl_Widget *w __UNUSED__,
 			     void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Scrollbar *s;

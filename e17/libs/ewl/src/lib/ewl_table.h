@@ -87,9 +87,9 @@ unsigned int    ewl_table_vhomogeneous_get(Ewl_Table *table);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_table_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_table_child_select_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_table_child_show_cb(Ewl_Container *p, Ewl_Widget *c); 
+void ewl_table_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_table_cb_child_select(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_table_cb_child_show(Ewl_Container *p, Ewl_Widget *c); 
 
 /**
  * @}

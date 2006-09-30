@@ -40,7 +40,7 @@ ewl_iconbox_icon_label_height_calculate(Ewl_Iconbox_Icon* icon)
 }
 
 void
-ewl_iconbox_overlay_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
+ewl_iconbox_cb_overlay_configure(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
 {
 
 	int nx, ny;
@@ -251,7 +251,7 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_scrollpane), ib->ewl_iconbox_pane_inner);
 	ewl_callback_prepend(EWL_WIDGET(ib->ewl_iconbox_pane_inner),
 			     EWL_CALLBACK_CONFIGURE,
-			     ewl_iconbox_overlay_configure_cb, ib);
+			     ewl_iconbox_cb_overlay_configure, ib);
 
 	/*** Context menu **/
 	/*Make the menu floater */
@@ -277,7 +277,7 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ib->ewl_iconbox_context_menu_item = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(ib->ewl_iconbox_context_menu_item), "Auto-Arrange");
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_view_menu), ib->ewl_iconbox_context_menu_item);
-	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_arrange_cb, ib);
+	ewl_callback_append(ib->ewl_iconbox_context_menu_item, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_cb_arrange, ib);
 	ewl_widget_show(ib->ewl_iconbox_context_menu_item);
 
 	ewl_widget_show(ib->ewl_iconbox_view_menu);
@@ -395,15 +395,15 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 
 
 	/** Internal Callbacks */
-	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_MOVE, ewl_iconbox_mouse_move_cb, ib);
-	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_pane_mouse_down_cb, ib);
-	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_mouse_up_cb, ib);
-	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_POSITION, ewl_iconbox_dnd_position_cb, ib);
-	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_DROP, ewl_iconbox_dnd_drop_cb, ib);
+	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_MOVE, ewl_iconbox_cb_mouse_move, ib);
+	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_DOWN, ewl_iconbox_cb_pane_mouse_down, ib);
+	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_MOUSE_UP, ewl_iconbox_cb_mouse_up, ib);
+	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_POSITION, ewl_iconbox_cb_dnd_position, ib);
+	ewl_callback_append(ib->ewl_iconbox_pane_inner, EWL_CALLBACK_DND_DROP, ewl_iconbox_cb_dnd_drop, ib);
 	ewl_container_callback_notify(EWL_CONTAINER(ib), EWL_CALLBACK_KEY_DOWN);
-	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_KEY_DOWN, ewl_iconbox_key_press_cb, ib);
-	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_configure_cb, NULL);
-	ewl_callback_prepend(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY, ewl_iconbox_destroy_cb, NULL);
+	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_KEY_DOWN, ewl_iconbox_cb_key_press, ib);
+	ewl_callback_append(EWL_WIDGET(ib), EWL_CALLBACK_CONFIGURE, ewl_iconbox_cb_configure, NULL);
+	ewl_callback_prepend(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY, ewl_iconbox_cb_destroy, NULL);
 
 	/*Timing setup*/
 	ib->lasttime.tv_sec = 0;
@@ -1061,16 +1061,16 @@ ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_fi
 
 	/* Add the callbacks for mouse */
 	ewl_callback_prepend(EWL_ICONBOX_ICON(ib)->image, EWL_CALLBACK_MOUSE_DOWN,
-						ewl_iconbox_icon_mouse_down_cb, ib);
+						ewl_iconbox_cb_icon_mouse_down, ib);
 	ewl_callback_prepend(EWL_ICONBOX_ICON(ib)->image, EWL_CALLBACK_MOUSE_UP, 
-						ewl_iconbox_icon_mouse_up_cb, ib);
+						ewl_iconbox_cb_icon_mouse_up, ib);
 	
 	/* Add a callback to the border box label, for editing purposes... */
 	ewl_callback_prepend(EWL_ICONBOX_ICON(ib)->w_label, EWL_CALLBACK_MOUSE_DOWN, 
-						ewl_iconbox_icon_label_mouse_down_cb, ib);
+						ewl_iconbox_cb_icon_label_mouse_down, ib);
 
 	ewl_callback_prepend(EWL_WIDGET(ib), EWL_CALLBACK_DESTROY,
-				   ewl_iconbox_icon_destroy_cb, NULL);
+				   ewl_iconbox_cb_icon_destroy, NULL);
 
 	/* Add this icon to the icon list */
 	ecore_list_append(iconbox->ewl_iconbox_icon_list, ib);
@@ -1144,7 +1144,7 @@ ewl_iconbox_clear(Ewl_Iconbox *ib)
  * @brief The drag and drop drop callback
  */
 void
-ewl_iconbox_dnd_drop_cb(Ewl_Widget *item __UNUSED__, 
+ewl_iconbox_cb_dnd_drop(Ewl_Widget *item __UNUSED__, 
 			void *ev_data, void *user_data) 
 {
 	int ibx, iby, px, py, fw, fh;
@@ -1197,7 +1197,7 @@ ewl_iconbox_dnd_drop_cb(Ewl_Widget *item __UNUSED__,
  * @brief The drag and drop position callback
  */
 void
-ewl_iconbox_dnd_position_cb(Ewl_Widget *item __UNUSED__, 
+ewl_iconbox_cb_dnd_position(Ewl_Widget *item __UNUSED__, 
 		void *ev_data __UNUSED__, void *user_data) 
 {
 	int ibx, iby, px, py, fw, fh;
@@ -1241,7 +1241,7 @@ ewl_iconbox_dnd_position_cb(Ewl_Widget *item __UNUSED__,
  * @brief The destroy callback
  */
 void
-ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
+ewl_iconbox_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
 {
 	Ewl_Iconbox *ib;
 
@@ -1264,7 +1264,7 @@ ewl_iconbox_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data 
  * @return Returns no value
  * @brief The realize callback
  */
-void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+void ewl_iconbox_cb_icon_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Iconbox_Icon *icon;
@@ -1290,7 +1290,7 @@ void ewl_iconbox_icon_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The arrange callback
  */
 void
-ewl_iconbox_arrange_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
+ewl_iconbox_cb_arrange(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Iconbox* ib;
 
@@ -1313,7 +1313,7 @@ ewl_iconbox_arrange_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void 
  * @brief The mouse move callback
  */
 void
-ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
+ewl_iconbox_cb_mouse_move(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 	Ewl_Iconbox *ib;
 	Ewl_Event_Mouse_Move *ev;
@@ -1444,7 +1444,7 @@ ewl_iconbox_mouse_move_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_da
  * @brief The pane mouse down callback
  */
 void
-ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
+ewl_iconbox_cb_pane_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 	Ewl_Iconbox *ib;
 	Ewl_Event_Mouse_Down *ev;
@@ -1508,7 +1508,7 @@ ewl_iconbox_pane_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
  * @brief The icon mouse down callback
  */
 void
-ewl_iconbox_icon_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
+ewl_iconbox_cb_icon_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 	int ibx, iby, px, py, sx, sy;
 	Ewl_Iconbox_Icon *ib;
@@ -1569,7 +1569,7 @@ ewl_iconbox_icon_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *us
  * @brief The icon mouse up callback
  */
 void
-ewl_iconbox_icon_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data , void *user_data)
+ewl_iconbox_cb_icon_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data , void *user_data)
 {
 	Ewl_Event_Mouse_Down *ev;
 	Ewl_Iconbox_Icon *ib;
@@ -1605,7 +1605,7 @@ ewl_iconbox_icon_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data , void *use
  * @brief The mouse up callback
  */
 void
-ewl_iconbox_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
+ewl_iconbox_cb_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data)
 {
 	Ewl_Event_Mouse_Up *ev;
 	Ewl_Iconbox *ib;
@@ -1639,7 +1639,7 @@ ewl_iconbox_mouse_up_cb(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data
  * @brief The icon label mouse down callback
  */
 void
-ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
+ewl_iconbox_cb_icon_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Iconbox_Icon *ib;
 
@@ -1664,7 +1664,7 @@ ewl_iconbox_icon_label_mouse_down_cb(Ewl_Widget *w __UNUSED__, void *ev_data __U
  * @brief The configure callback
  */
 void
-ewl_iconbox_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
+ewl_iconbox_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
 {
 	Ewl_Iconbox *ib;
 
@@ -1726,7 +1726,7 @@ ewl_iconbox_icon_distance(Ewl_Iconbox_Icon *i1, Ewl_Iconbox_Icon *i2)
  * @brief The key press callback
  */
 void
-ewl_iconbox_key_press_cb (Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data) 
+ewl_iconbox_cb_key_press(Ewl_Widget *w __UNUSED__, void *ev_data, void *user_data) 
 {
 	Ewl_Event_Key_Down *event;
 	Ewl_Iconbox *ib;

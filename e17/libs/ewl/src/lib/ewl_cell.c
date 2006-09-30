@@ -47,12 +47,12 @@ ewl_cell_init(Ewl_Cell *cell)
 	ewl_widget_appearance_set(EWL_WIDGET(cell), EWL_CELL_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(cell), EWL_CELL_TYPE);
 
-	ewl_container_show_notify_set(EWL_CONTAINER(cell), ewl_cell_child_show_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(cell), ewl_cell_cb_child_show);
 	ewl_container_resize_notify_set(EWL_CONTAINER(cell),
-				    ewl_cell_child_resize_cb);
+				    ewl_cell_cb_child_resize);
 
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
-			    ewl_cell_configure_cb, NULL);
+			    ewl_cell_cb_configure, NULL);
 	ewl_container_callback_notify(EWL_CONTAINER(cell), EWL_CALLBACK_FOCUS_IN);
 	ewl_container_callback_notify(EWL_CONTAINER(cell), EWL_CALLBACK_FOCUS_OUT);
 
@@ -68,7 +68,7 @@ ewl_cell_init(Ewl_Cell *cell)
  * @brief The configure callback for the cell widget
  */
 void
-ewl_cell_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_cell_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
 					void *user_data __UNUSED__)
 {
 	Ewl_Container *c;
@@ -96,7 +96,7 @@ ewl_cell_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Update the container when a child widget is shown
  */
 void
-ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_cell_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_Widget *child;
 
@@ -133,7 +133,7 @@ ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
  * @brief Callback for when a child widget is resized within the container
  */
 void
-ewl_cell_child_resize_cb(Ewl_Container *c, Ewl_Widget *w, 
+ewl_cell_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, 
 			int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

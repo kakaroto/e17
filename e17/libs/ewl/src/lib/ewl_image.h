@@ -132,13 +132,13 @@ void             ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb,
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_image_reveal_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_obscure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_image_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data );
+void ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_cb_obscure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_image_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data );
 
 /**
  * @}

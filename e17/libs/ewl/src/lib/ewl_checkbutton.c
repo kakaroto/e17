@@ -54,7 +54,7 @@ ewl_checkbutton_init(Ewl_Checkbutton *cb)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-				ewl_checkbutton_clicked_cb, NULL);
+				ewl_checkbutton_cb_clicked, NULL);
 
 	cb->label_position = EWL_POSITION_RIGHT;
 
@@ -63,7 +63,7 @@ ewl_checkbutton_init(Ewl_Checkbutton *cb)
 	 */
 	cb->check = ewl_check_new();
 	ewl_widget_internal_set(cb->check, TRUE);
-	ewl_callback_del(cb->check, EWL_CALLBACK_CLICKED, ewl_check_clicked_cb);
+	ewl_callback_del(cb->check, EWL_CALLBACK_CLICKED, ewl_check_cb_clicked);
 	ewl_container_child_prepend(EWL_CONTAINER(cb), cb->check);
 	ewl_widget_show(cb->check);
 
@@ -159,7 +159,7 @@ ewl_checkbutton_label_position_set(Ewl_Checkbutton *cb, Ewl_Position p)
  * @brief The clicked callback for the checkbutton
  */
 void
-ewl_checkbutton_clicked_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_checkbutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__, 
 						void *user_data __UNUSED__)
 {
 	Ewl_Checkbutton *cb;

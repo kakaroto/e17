@@ -50,9 +50,9 @@ ewl_progressbar_init(Ewl_Progressbar *p)
 	ewl_widget_inherit(w, EWL_PROGRESSBAR_TYPE);
 
 	ewl_container_show_notify_set(EWL_CONTAINER(w),
-				  ewl_progressbar_child_show_cb);
+				  ewl_progressbar_cb_child_show);
 	ewl_container_resize_notify_set(EWL_CONTAINER(w),
-				    ewl_progressbar_child_resize_cb);
+				    ewl_progressbar_cb_child_resize);
 
 	p->bar = NEW(Ewl_Widget, 1);
 	if (!p->bar)
@@ -75,9 +75,9 @@ ewl_progressbar_init(Ewl_Progressbar *p)
 	p->auto_label = TRUE;
 	
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
-			ewl_progressbar_configure_cb, NULL);
+			ewl_progressbar_cb_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED, 
-			ewl_progressbar_value_changed_cb, NULL);
+			ewl_progressbar_cb_value_changed, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -176,7 +176,7 @@ ewl_progressbar_label_show (Ewl_Progressbar *p)
  * size and position.
  */
 void
-ewl_progressbar_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_progressbar_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Progressbar *p;
@@ -218,7 +218,7 @@ ewl_progressbar_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief the value changed callback
  */
 void
-ewl_progressbar_value_changed_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_progressbar_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Progressbar *p;
@@ -279,7 +279,7 @@ ewl_progressbar_child_handle(Ewl_Container *c,
  * @brief The child show callback
  */
 void
-ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
+ewl_progressbar_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -302,7 +302,7 @@ ewl_progressbar_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
  * @brief The child resize callback
  */
 void
-ewl_progressbar_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
+ewl_progressbar_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 				int size __UNUSED__,
 				Ewl_Orientation o __UNUSED__)
 {
