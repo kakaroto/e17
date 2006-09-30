@@ -7,16 +7,16 @@ Ecore_List *ewl_embed_list = NULL;
 static Evas_Smart *embedded_smart = NULL;
 static Ewl_Embed *ewl_embed_active_embed = NULL;
 
-static void ewl_embed_smart_add_cb(Evas_Object *obj);
-static void ewl_embed_smart_del_cb(Evas_Object *obj);
-static void ewl_embed_smart_move_cb(Evas_Object *obj, Evas_Coord x,
+static void ewl_embed_smart_cb_add(Evas_Object *obj);
+static void ewl_embed_smart_cb_del(Evas_Object *obj);
+static void ewl_embed_smart_cb_move(Evas_Object *obj, Evas_Coord x,
 				    Evas_Coord y);
-static void ewl_embed_smart_resize_cb(Evas_Object *obj, Evas_Coord w,
+static void ewl_embed_smart_cb_resize(Evas_Object *obj, Evas_Coord w,
 				      Evas_Coord h);
-static void ewl_embed_smart_show_cb(Evas_Object *obj);
-static void ewl_embed_smart_hide_cb(Evas_Object *obj);
-static void ewl_embed_smart_clip_set_cb(Evas_Object *obj, Evas_Object *clip);
-static void ewl_embed_smart_clip_unset_cb(Evas_Object *obj);
+static void ewl_embed_smart_cb_show(Evas_Object *obj);
+static void ewl_embed_smart_cb_hide(Evas_Object *obj);
+static void ewl_embed_smart_cb_clip_set(Evas_Object *obj, Evas_Object *clip);
+static void ewl_embed_smart_cb_clip_unset(Evas_Object *obj);
 
 static void ewl_embed_tab_order_change(Ewl_Embed *e, 
 					 void *(*change)(Ecore_DList *list),
@@ -25,23 +25,23 @@ static void ewl_embed_tab_order_change(Ewl_Embed *e,
 /*
  * Catch mouse events processed through the evas
  */
-static void ewl_embed_evas_mouse_out_cb(void *data, Evas *e, Evas_Object *obj,
+static void ewl_embed_evas_cb_mouse_out(void *data, Evas *e, Evas_Object *obj,
 					void *event_info);
-static void ewl_embed_evas_mouse_down_cb(void *data, Evas *e, Evas_Object *obj,
+static void ewl_embed_evas_cb_mouse_down(void *data, Evas *e, Evas_Object *obj,
 					 void *event_info);
-static void ewl_embed_evas_mouse_up_cb(void *data, Evas *e, Evas_Object *obj,
+static void ewl_embed_evas_cb_mouse_up(void *data, Evas *e, Evas_Object *obj,
 				       void *event_info);
-static void ewl_embed_evas_mouse_move_cb(void *data, Evas *e, Evas_Object *obj,
+static void ewl_embed_evas_cb_mouse_move(void *data, Evas *e, Evas_Object *obj,
 					 void *event_info);
-static void ewl_embed_evas_mouse_wheel_cb(void *data, Evas *e, Evas_Object *obj,
+static void ewl_embed_evas_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj,
 					  void *event_info);
 
 /*
  * Catch key events processed through the evas
  */
-static void ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
+static void ewl_embed_evas_cb_key_down(void *data, Evas *e, Evas_Object *obj,
 				       void *event_info);
-static void ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
+static void ewl_embed_evas_cb_key_up(void *data, Evas *e, Evas_Object *obj,
 				     void *event_info);
 
 /**
@@ -164,16 +164,16 @@ ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Evas_Window *evas_windo
 
 	if (!embedded_smart) {
 		embedded_smart = evas_smart_new(name,
-			ewl_embed_smart_add_cb,
-			ewl_embed_smart_del_cb,
+			ewl_embed_smart_cb_add,
+			ewl_embed_smart_cb_del,
 			NULL, NULL, NULL, NULL, NULL,
-			ewl_embed_smart_move_cb,
-			ewl_embed_smart_resize_cb,
-			ewl_embed_smart_show_cb,
-			ewl_embed_smart_hide_cb,
+			ewl_embed_smart_cb_move,
+			ewl_embed_smart_cb_resize,
+			ewl_embed_smart_cb_show,
+			ewl_embed_smart_cb_hide,
 			NULL,
-			ewl_embed_smart_clip_set_cb,
-			ewl_embed_smart_clip_unset_cb, NULL);
+			ewl_embed_smart_cb_clip_set,
+			ewl_embed_smart_cb_clip_unset, NULL);
 	}
 
 	if (emb->smart) {
@@ -1673,28 +1673,28 @@ ewl_embed_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 */
 		evas_object_event_callback_add(emb->smart,
 				EVAS_CALLBACK_MOUSE_OUT,
-				ewl_embed_evas_mouse_out_cb, emb);
+				ewl_embed_evas_cb_mouse_out, emb);
 		evas_object_event_callback_add(emb->smart,
 				EVAS_CALLBACK_MOUSE_DOWN,
-				ewl_embed_evas_mouse_down_cb, emb);
+				ewl_embed_evas_cb_mouse_down, emb);
 		evas_object_event_callback_add(emb->smart,
 				EVAS_CALLBACK_MOUSE_UP,
-				ewl_embed_evas_mouse_up_cb, emb);
+				ewl_embed_evas_cb_mouse_up, emb);
 		evas_object_event_callback_add(emb->smart,
 				EVAS_CALLBACK_MOUSE_MOVE,
-				ewl_embed_evas_mouse_move_cb, emb);
+				ewl_embed_evas_cb_mouse_move, emb);
 		evas_object_event_callback_add(emb->smart,
 				EVAS_CALLBACK_MOUSE_WHEEL,
-				ewl_embed_evas_mouse_wheel_cb, emb);
+				ewl_embed_evas_cb_mouse_wheel, emb);
 
 		/*
 		 * Catch key events processed through the evas
 		 */
 		evas_object_event_callback_add(emb->smart,
 				EVAS_CALLBACK_KEY_DOWN,
-				ewl_embed_evas_key_down_cb, emb);
+				ewl_embed_evas_cb_key_down, emb);
 		evas_object_event_callback_add(emb->smart,
-				EVAS_CALLBACK_KEY_UP, ewl_embed_evas_key_up_cb,
+				EVAS_CALLBACK_KEY_UP, ewl_embed_evas_cb_key_up,
 				emb);
 	}
 
@@ -1916,7 +1916,7 @@ ewl_embed_dnd_aware_remove(Ewl_Embed *embed)
 }
 
 static void
-ewl_embed_smart_add_cb(Evas_Object *obj __UNUSED__)
+ewl_embed_smart_cb_add(Evas_Object *obj __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -1928,7 +1928,7 @@ ewl_embed_smart_add_cb(Evas_Object *obj __UNUSED__)
 }
 
 static void
-ewl_embed_smart_del_cb(Evas_Object *obj)
+ewl_embed_smart_cb_del(Evas_Object *obj)
 {
 	Ewl_Embed *emb;
 
@@ -1944,7 +1944,7 @@ ewl_embed_smart_del_cb(Evas_Object *obj)
 }
 
 static void
-ewl_embed_smart_move_cb(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
+ewl_embed_smart_cb_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
 	Ewl_Embed *emb;
 
@@ -1959,7 +1959,7 @@ ewl_embed_smart_move_cb(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 }
 
 static void
-ewl_embed_smart_resize_cb(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
+ewl_embed_smart_cb_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
 	Ewl_Embed *emb;
 
@@ -1973,7 +1973,7 @@ ewl_embed_smart_resize_cb(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 }
 
 static void
-ewl_embed_smart_show_cb(Evas_Object *obj)
+ewl_embed_smart_cb_show(Evas_Object *obj)
 {
 	Ewl_Embed *emb;
 
@@ -1987,7 +1987,7 @@ ewl_embed_smart_show_cb(Evas_Object *obj)
 }
 
 static void
-ewl_embed_smart_hide_cb(Evas_Object *obj)
+ewl_embed_smart_cb_hide(Evas_Object *obj)
 {
 	Ewl_Embed *emb;
 
@@ -2001,7 +2001,7 @@ ewl_embed_smart_hide_cb(Evas_Object *obj)
 }
 
 static void
-ewl_embed_smart_clip_set_cb(Evas_Object *obj, Evas_Object *clip)
+ewl_embed_smart_cb_clip_set(Evas_Object *obj, Evas_Object *clip)
 {
 	Ewl_Embed *emb;
 	Ewl_Widget *w;
@@ -2017,7 +2017,7 @@ ewl_embed_smart_clip_set_cb(Evas_Object *obj, Evas_Object *clip)
 }
 
 static void
-ewl_embed_smart_clip_unset_cb(Evas_Object *obj)
+ewl_embed_smart_cb_clip_unset(Evas_Object *obj)
 {
 	Ewl_Embed *emb;
 	Ewl_Widget *w;
@@ -2033,7 +2033,7 @@ ewl_embed_smart_clip_unset_cb(Evas_Object *obj)
 }
 
 static void
-ewl_embed_evas_mouse_out_cb(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_out(void *data, Evas *e __UNUSED__, 
 				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2056,7 +2056,7 @@ ewl_embed_evas_mouse_out_cb(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_mouse_down_cb(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_down(void *data, Evas *e __UNUSED__, 
 				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2073,7 +2073,7 @@ ewl_embed_evas_mouse_down_cb(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_mouse_up_cb(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_up(void *data, Evas *e __UNUSED__, 
 				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2090,7 +2090,7 @@ ewl_embed_evas_mouse_up_cb(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_mouse_move_cb(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_move(void *data, Evas *e __UNUSED__, 
 				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2107,7 +2107,7 @@ ewl_embed_evas_mouse_move_cb(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_mouse_wheel_cb(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_wheel(void *data, Evas *e __UNUSED__, 
 				Evas_Object *obj __UNUSED__,
 				void *event_info)
 {
@@ -2126,7 +2126,7 @@ ewl_embed_evas_mouse_wheel_cb(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_key_down_cb(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_key_down(void *data, Evas *e __UNUSED__, 
 			Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2164,7 +2164,7 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_key_up_cb(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_key_up(void *data, Evas *e __UNUSED__, 
 			Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
