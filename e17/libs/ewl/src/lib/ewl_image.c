@@ -184,14 +184,12 @@ ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
 {
 	int old_type;
 	Ewl_Widget *w;
-	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
 	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
 
 	w = EWL_WIDGET(i);
-	emb = ewl_embed_widget_find(w);
 
 	if (i->path != im) {
 		IF_FREE(i->path);
@@ -818,7 +816,6 @@ ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Image *i;
-	Ewl_Embed *emb;
 	int ww, hh;
 	int dx = 0, dy = 0;
 
@@ -829,8 +826,6 @@ ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	i = EWL_IMAGE(w);
 	if (!i->image)
 		DRETURN(DLEVEL_STABLE);
-
-	emb = ewl_embed_widget_find(w);
 
 	ww = CURRENT_W(w);
 	hh = CURRENT_H(w);
