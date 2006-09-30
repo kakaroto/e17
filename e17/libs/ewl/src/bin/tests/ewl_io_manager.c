@@ -4,20 +4,10 @@
 #include "ewl_test_private.h"
 
 static int create_test(Ewl_Container *box);
-static int ext_to_icon_name_test(char *buf, int len);
-static int mime_to_icon_name_test(char *buf, int len);
-static int uri_mime_type_get_test(char *buf, int len);
 
 static void cb_clicked(Ewl_Widget *w, void *ev, void *data);
 static void cb_open(Ewl_Widget *w, void *ev, void *data);
 static void cb_fd_delete(Ewl_Widget *w, void *ev, void *data);
-
-static Ewl_Unit_Test io_manager_unit_tests[] = {
-		{"extension to icon name mapping", ext_to_icon_name_test},
-		{"mime type to icon name mapping", mime_to_icon_name_test},
-		{"uri mime type get", uri_mime_type_get_test},
-		{NULL, NULL}
-	};
 
 void 
 test_info(Ewl_Test *test)
@@ -27,7 +17,6 @@ test_info(Ewl_Test *test)
 	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
-	test->unit_tests = io_manager_unit_tests;
 }
 
 static int
@@ -51,7 +40,8 @@ create_test(Ewl_Container *box)
 }
 
 static void
-cb_clicked(Ewl_Widget *w, void *ev, void *data)
+cb_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Widget *fd;
 
@@ -65,13 +55,13 @@ cb_clicked(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-cb_fd_delete(Ewl_Widget *w, void *ev, void *data)
+cb_fd_delete(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	ewl_widget_destroy(w);
 }
 
 static void
-cb_open(Ewl_Widget *w, void *ev, void *data)
+cb_open(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Dialog_Event *e;
 	Ewl_Filedialog *fd;
@@ -101,24 +91,6 @@ cb_open(Ewl_Widget *w, void *ev, void *data)
 	}
 	ewl_container_child_append(EWL_CONTAINER(scroll), t);
 	ewl_widget_show(t);
-}
-
-static int
-ext_to_icon_name_test(char *buf, int len)
-{
-	return 1;
-}
-
-static int
-mime_to_icon_name_test(char *buf, int len)
-{
-	return 1;
-}
-
-static int
-uri_mime_type_get_test(char *buf, int len)
-{
-	return 1;
 }
 
 

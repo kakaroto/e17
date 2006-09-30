@@ -92,7 +92,7 @@ create_test(Ewl_Container *box)
 			{EWL_ICON_FORMAT_TEXT_ITALIC, "Italic", ete_cb_italic},
 			{EWL_ICON_FORMAT_TEXT_UNDERLINE, "Underline", ete_cb_underline},
 			{EWL_ICON_FORMAT_TEXT_STRIKETHROUGH, "Strikethrough", ete_cb_strikethrough},
-			{NULL, NULL}
+			{NULL, NULL, NULL}
 		};
 		
 		styles = ecore_list_new();
@@ -281,7 +281,8 @@ ete_cb_styles_changed(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ete_cb_strikethrough(Ewl_Widget *w, void *ev, void *data)
+ete_cb_strikethrough(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ewl_Widget *entry;
 
@@ -290,7 +291,8 @@ ete_cb_strikethrough(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-ete_cb_underline(Ewl_Widget *w, void *ev, void *data)
+ete_cb_underline(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ewl_Widget *entry;
 

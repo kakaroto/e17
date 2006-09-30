@@ -334,7 +334,8 @@ ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 }
 
 static void
-ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data)
+ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ewl_Widget *spinner, *tree;
 	Tree2_Test_Data *d;

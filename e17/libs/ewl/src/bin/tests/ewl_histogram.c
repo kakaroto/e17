@@ -68,7 +68,8 @@ create_test(Ewl_Container *box)
 }
 
 static void
-ewl_histogram_test_cb_configure(Ewl_Widget *w, void *event, void *data)
+ewl_histogram_test_cb_configure(Ewl_Widget *w, void *event __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ewl_Widget *child;
 	Ewl_Container *c = EWL_CONTAINER(w);
@@ -79,3 +80,4 @@ ewl_histogram_test_cb_configure(Ewl_Widget *w, void *event, void *data)
 				CURRENT_W(c), CURRENT_H(c));
 	}
 }
+
