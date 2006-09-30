@@ -294,7 +294,7 @@ ewl_dnd_types_for_widget_get(Ewl_Widget *widget)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
 	DCHECK_TYPE_RET("widget", widget, EWL_WIDGET_TYPE, NULL);
-	
+
 	/* We need to get the top-level window widget.  Note
 	 * that we assume here that a widget is
 	 * a) Parented, and
@@ -330,7 +330,7 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	ewl_dragging_current = 1;
 	ewl_dnd_widget = w;
 	ewl_dnd_move_count = 0;
-	
+
 	ewl_dnd_mouse_up_handler = ecore_event_handler_add(
 						ECORE_X_EVENT_MOUSE_BUTTON_UP,
 						ewl_dnd_event_mouse_up, NULL);
@@ -351,7 +351,7 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 							ewl_dnd_drag_canvas);
 	ecore_x_window_resize(ewl_dnd_evas_win, 64, 64);
 	ecore_evas_override_set(ewl_dnd_drag_canvas, 1);
-	
+
 	/* ecore_evas_software_x11_direct_resize_set(ewl_dnd_drag_evas, 1); */
 	ecore_evas_ignore_events_set(ewl_dnd_drag_canvas, 1);
 
@@ -379,7 +379,7 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	ecore_x_dnd_aware_set(ewl_dnd_drag_win, 1);
 	ecore_x_dnd_aware_set(ewl_dnd_evas_win, 1);
 	ecore_x_mwm_borderless_set(ewl_dnd_evas_win, 1);
-	
+
 	/* Start the drag operation */
 	ecore_x_dnd_types_set(ewl_dnd_drag_win, ewl_dnd_drop_types, 1);
 	ecore_x_dnd_begin(ewl_dnd_drag_win, NULL, 0);
@@ -570,7 +570,7 @@ ewl_dnd_event_mouse_up(void *data __UNUSED__, int type __UNUSED__,
 
 		ecore_event_handler_del(ewl_dnd_mouse_up_handler);
 		ecore_event_handler_del(ewl_dnd_mouse_move_handler);
-	
+
 		ecore_evas_free(ewl_dnd_drag_canvas);
 		ewl_dnd_drag_canvas = NULL;
 		ecore_x_window_del(ewl_dnd_drag_win);
