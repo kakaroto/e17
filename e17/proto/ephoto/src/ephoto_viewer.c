@@ -21,7 +21,7 @@ void change_image(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
  ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
- ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
+ ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(image_view);
 
  ewl_widget_configure(ibox);
@@ -64,7 +64,7 @@ void original_size(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
  ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
- ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
+ ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(image_view);
  
  ewl_widget_configure(ibox);
@@ -128,7 +128,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
  ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
- ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
+ ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(image_view);
 
  hbox = ewl_hbox_new();
