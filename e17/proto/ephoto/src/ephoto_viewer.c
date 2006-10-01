@@ -1,6 +1,5 @@
 #include "ephoto.h"
 Ewl_Widget *vwin;
-Ewl_Widget *vbox;
 Ewl_Widget *ibox;
 Ewl_Widget *image_view;
 
@@ -15,76 +14,35 @@ void change_image(Ewl_Widget *w, void *event, void *data)
 
  path = data;
 
- ewl_widget_destroy(ibox);
  ewl_widget_destroy(image_view);
  
- ibox = ewl_scrollpane_new();
- ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
- ewl_object_alignment_set(EWL_OBJECT(ibox), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
- ewl_widget_show(ibox);
-
  image_view = ewl_image_new();
  ewl_image_file_set(EWL_IMAGE(image_view), path, NULL);
  ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
  ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
- ewl_widget_show(image_view); 
+ ewl_widget_show(image_view);
 }
 
 void zoom_in(Ewl_Widget *w, void *event, void *data)
 {
- const char *path;
  int ow, oh;
  
- path = ewl_image_file_path_get(EWL_IMAGE(image_view));
  ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh);
  
- ewl_widget_destroy(ibox);
- ewl_widget_destroy(image_view); 
-
- ibox = ewl_scrollpane_new();
- ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
- ewl_object_alignment_set(EWL_OBJECT(ibox), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
- ewl_widget_show(ibox);
-
- image_view = ewl_image_new();
- ewl_image_file_set(EWL_IMAGE(image_view), path, NULL);
- ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
- ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_image_size_set(EWL_IMAGE(image_view), ow*1.5, oh*1.5);
- ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
- ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
- ewl_widget_show(image_view); 
+ ewl_widget_reparent(image_view); 
 }
 
 void zoom_out(Ewl_Widget *w, void *event, void *data)
 {
- const char *path;
  int ow, oh;
  
- path = ewl_image_file_path_get(EWL_IMAGE(image_view));
  ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh);
  
- ewl_widget_destroy(ibox);
- ewl_widget_destroy(image_view);
- 
- ibox = ewl_scrollpane_new();
- ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
- ewl_object_alignment_set(EWL_OBJECT(ibox), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
- ewl_widget_show(ibox);
-
- image_view = ewl_image_new();
- ewl_image_file_set(EWL_IMAGE(image_view), path, NULL);
- ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
- ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_image_size_set(EWL_IMAGE(image_view), ow/1.5, oh/1.5);
- ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
- ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
- ewl_widget_show(image_view); 
+ ewl_widget_reparent(image_view);
 }
 
 void original_size(Ewl_Widget *w, void *event, void *data)
@@ -93,28 +51,22 @@ void original_size(Ewl_Widget *w, void *event, void *data)
 
  path = ewl_image_file_path_get(EWL_IMAGE(image_view));
 
- ewl_widget_destroy(ibox);
  ewl_widget_destroy(image_view);
  
- ibox = ewl_scrollpane_new();
- ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
- ewl_object_alignment_set(EWL_OBJECT(ibox), EWL_FLAG_ALIGN_CENTER);
- ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
- ewl_widget_show(ibox);
-
  image_view = ewl_image_new();
  ewl_image_file_set(EWL_IMAGE(image_view), path, NULL);
  ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
  ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
- ewl_widget_show(image_view); 
+ ewl_widget_show(image_view);
 }
 
 void view_images(Ewl_Widget *w, void *event, void *data)
 {
  char *current_image;
  Ewl_Widget *button;
+ Ewl_Widget *vbox;
  Ewl_Widget *scrollpane;
  Ewl_Widget *freebox;
  Ewl_Widget *icon;
