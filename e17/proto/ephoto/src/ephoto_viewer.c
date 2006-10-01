@@ -23,6 +23,8 @@ void change_image(Ewl_Widget *w, void *event, void *data)
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
  ewl_widget_show(image_view);
+
+ ewl_widget_configure(ibox);
 }
 
 void zoom_in(Ewl_Widget *w, void *event, void *data)
@@ -33,6 +35,8 @@ void zoom_in(Ewl_Widget *w, void *event, void *data)
  
  ewl_image_size_set(EWL_IMAGE(image_view), ow*1.5, oh*1.5);
  ewl_widget_reparent(image_view); 
+
+ ewl_widget_configure(ibox);
 }
 
 void zoom_out(Ewl_Widget *w, void *event, void *data)
@@ -43,6 +47,8 @@ void zoom_out(Ewl_Widget *w, void *event, void *data)
  
  ewl_image_size_set(EWL_IMAGE(image_view), ow/1.5, oh/1.5);
  ewl_widget_reparent(image_view);
+
+ ewl_widget_configure(ibox);
 }
 
 void original_size(Ewl_Widget *w, void *event, void *data)
@@ -60,6 +66,8 @@ void original_size(Ewl_Widget *w, void *event, void *data)
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
  ewl_widget_show(image_view);
+ 
+ ewl_widget_configure(ibox);
 }
 
 void view_images(Ewl_Widget *w, void *event, void *data)
