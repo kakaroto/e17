@@ -48,8 +48,8 @@ struct Ewl_Config_Cache
 	unsigned char print_keys:1;	/**< Print theem keys */
 };
 
-extern Ewl_Config *ewl_config;	/**< The global configuration data */
-extern Ewl_Config_Cache ewl_config_cache; /**< global debug data */
+extern Ewl_Config *ewl_config;	/**< The system configuration data */
+extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 
 int		 ewl_config_init(void);
 void		 ewl_config_shutdown(void);
@@ -71,6 +71,10 @@ void		 ewl_config_float_set(Ewl_Config *cfg, const char *k,
 						float v,
 						Ewl_State_Type state);
 float		 ewl_config_float_get(Ewl_Config *cfg, const char *k);
+
+int		 ewl_config_can_save_system(Ewl_Config *cfg);
+int		 ewl_config_system_save(Ewl_Config *cfg);
+int		 ewl_config_user_save(Ewl_Config *cfg);
 
 /**
  * @}

@@ -280,6 +280,8 @@ data/Makefile
 data/config/Makefile
 data/images/Makefile
 data/themes/Makefile
+tools/Makefile
+tools/ewl_config/Makefile
 debian/changelog
 ], [
 chmod +x ewl-config

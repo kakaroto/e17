@@ -1,559 +1,806 @@
 #include <Ewl.h>
-#include <ewl-config.h>
+#include "ewl_private.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <dirent.h>
 
-struct _ewl_config_main
+#define EC_WIN_ABOUT "ec/window/about"
+#define EC_EWL_THEME "ec/ewl/theme"
+#define EC_ICON_THEME "ec/icon/theme"
+#define EC_ICON_SIZE "ec/icon/size"
+#define EC_SAVE_SYSTEM  "ec/save/system"
+#define EC_ENGINE_NAME "ec/engine/name"
+#define EC_EVAS_IMAGE_CACHE "ec/evas/image/cache"
+#define EC_EVAS_FONT_CACHE "ec/evas/font/cache"
+#define EC_DEBUG_ENABLE "ec/debug/enable"
+#define EC_DEBUG_LEVEL "ec/debug/level"
+#define EC_DEBUG_SEGV "ec/debug/segv"
+#define EC_DEBUG_BACKTRACE "ec/debug/backtrace"
+#define EC_DEBUG_EVAS_RENDER "ec/debug/evas/render"
+#define EC_DEBUG_GARBAGE "ec/debug/garbage"
+#define EC_THEME_KEYS "ec/theme/keys"
+#define EC_THEME_SIGNALS "ec/theme/signals"
+
+static void usage(void);
+static void ec_main_win(int save_system);
+
+static void ec_menubar_setup(Ewl_Menubar *m);
+static void ec_theme_page_setup(Ewl_Notebook *n);
+static void ec_engine_page_setup(Ewl_Notebook *n);
+static void ec_debug_page_setup(Ewl_Notebook *n);
+
+static void ec_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
+static void ec_cb_about(Ewl_Widget *w, void *ev, void *data);
+static void ec_cb_apply(Ewl_Widget *w, void *ev, void *data);
+static void ec_cb_revert(Ewl_Widget *w, void *ev, void *data);
+static void ec_cb_win_hide(Ewl_Widget *w, void *ev, void *data);
+
+typedef struct Ec_Gui_Menu_Item Ec_Gui_Menu_Item;
+struct Ec_Gui_Menu_Item
 {
-	Ewl_Widget *main_win;
-	Ewl_Widget *main_vbox;
-	Ewl_Widget *button_hbox;
-	Ewl_Widget *button_save;
-	Ewl_Widget *button_restore;
-	Ewl_Widget *button_defaults;
-	Ewl_Widget *button_exit;
-	Ewl_Widget *notebook;
+	char *name; 
+	void (*cb)(Ewl_Widget *w, void *ev, void *data);
+};		
+		 
+typedef struct Ec_Gui_Menu Ec_Gui_Menu;
+struct Ec_Gui_Menu 
+{			
+	char *name;
+	Ec_Gui_Menu_Item *items;
+};  
 
-	Ewl_Widget *page_evas_label;
-	Ewl_Widget *page_evas;
-	Ewl_Widget *render_method_label;
-	Ewl_Widget *render_method_software_x11;
-	Ewl_Widget *render_method_gl_x11;
-	Ewl_Widget *font_cache_label;
-	Ewl_Widget *font_cache;
-	Ewl_Widget *image_cache_label;
-	Ewl_Widget *image_cache;
-
-	Ewl_Widget *page_debug_label;
-	Ewl_Widget *page_debug;
-	Ewl_Widget *enable_debug;
-	Ewl_Widget *debug_level_label;
-	Ewl_Widget *debug_level;
-
-	Ewl_Widget *page_fx_label;
-	Ewl_Widget *page_fx;
-	Ewl_Widget *global_label;
-	Ewl_Widget *fx_separator1;
-	Ewl_Widget *plugins_label;
-	Ewl_Widget *effects_table;
-
-	Ewl_Widget *page_theme_label;
-	Ewl_Widget *page_theme;
-	Ewl_Widget *theme_name_label;
-	Ewl_Widget *theme_name;
-	Ewl_Widget *theme_cache_label;
-	Ewl_Widget *theme_cache;
-}
-e_conf;
-
-struct _confirm_win
-{
-	Ewl_Widget *win;
-	Ewl_Widget *main_vbox, *button_hbox;
-	Ewl_Widget *text;
-	Ewl_Widget *button_save, *button_exit, *button_cancel;
-}
-confirm;
-
-Ewl_Config user_settings;
-Ewl_Config init_settings;
-Ewl_Config default_settings;
-
-void ewl_config_read_configs(void);
-int ewl_config_read_config(Ewl_Config * conf);
-void ewl_set_settings(Ewl_Config * c);
-Ewl_Config *ewl_get_settings(void);
-void ewl_save_user_config(Ewl_Config * c);
-
-void ewl_config_save_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_config_restore_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_config_defaults_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_config_exit_cb(Ewl_Widget * w, void *ev_data, void *user_data);
-void ewl_config_create_confirm_dialog(void);
-void ewl_config_destroy_confirm_dialog(Ewl_Widget * w, void *ev_data,
-				       void *user_data);
-int
-main(int argc, char **argv)
-{
-
-	memset(&e_conf, 0, sizeof(struct _ewl_config_main));
-	memset(&confirm, 0, sizeof(struct _confirm_win));
-
-	ewl_init(&argc, argv);
-
-	ewl_config_read_configs();
-
-	e_conf.main_win = ewl_window_new();
-	ewl_window_set_title(EWL_WINDOW(e_conf.main_win),
-			"EWL Configuration Program");
-	ewl_callback_append(e_conf.main_win, EWL_CALLBACK_DELETE_WINDOW,
-			    ewl_config_exit_cb, NULL);
-	ewl_widget_show(e_conf.main_win);
-
-	e_conf.main_vbox = ewl_vbox_new();
-	ewl_box_set_spacing(EWL_BOX(e_conf.main_vbox), 10);
-	ewl_container_append_child(EWL_CONTAINER(e_conf.main_win),
-				   e_conf.main_vbox);
-	ewl_widget_show(e_conf.main_vbox);
-
-	e_conf.notebook = ewl_notebook_new();
-	ewl_container_append_child(EWL_CONTAINER(e_conf.main_vbox),
-				   e_conf.notebook);
-	ewl_widget_show(e_conf.notebook);
-
-	e_conf.button_hbox = ewl_hbox_new();
-	ewl_box_set_spacing(EWL_BOX(e_conf.button_hbox), 5);
-	ewl_object_set_alignment(EWL_OBJECT(e_conf.button_hbox),
-				 EWL_FLAG_ALIGN_CENTER);
-	ewl_object_set_fill_policy(EWL_OBJECT(e_conf.button_hbox),
-				   EWL_FLAG_FILL_NORMAL);
-	ewl_container_append_child(EWL_CONTAINER(e_conf.main_vbox),
-				   e_conf.button_hbox);
-	ewl_widget_show(e_conf.button_hbox);
-
-	e_conf.button_save = ewl_button_new("Save");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.button_hbox),
-				   e_conf.button_save);
-	ewl_callback_append(e_conf.button_save, EWL_CALLBACK_CLICKED,
-			    ewl_config_save_cb, NULL);
-	ewl_widget_show(e_conf.button_save);
-
-	e_conf.button_restore = ewl_button_new("Restore");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.button_hbox),
-				   e_conf.button_restore);
-	ewl_callback_append(e_conf.button_restore, EWL_CALLBACK_CLICKED,
-			    ewl_config_restore_cb, NULL);
-	ewl_widget_show(e_conf.button_restore);
-
-	e_conf.button_defaults = ewl_button_new("Defaults");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.button_hbox),
-				   e_conf.button_defaults);
-	ewl_callback_append(e_conf.button_defaults, EWL_CALLBACK_CLICKED,
-			    ewl_config_defaults_cb, NULL);
-	ewl_widget_show(e_conf.button_defaults);
-
-	e_conf.button_exit = ewl_button_new("Exit");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.button_hbox),
-				   e_conf.button_exit);
-	ewl_callback_append(e_conf.button_exit, EWL_CALLBACK_CLICKED,
-			    ewl_config_exit_cb, NULL);
-	ewl_widget_show(e_conf.button_exit);
-
-	/* Evas Page */
-
-	e_conf.page_evas_label = ewl_text_new("Evas Settings");
-	ewl_widget_show(e_conf.page_evas_label);
-
-	e_conf.page_evas = ewl_vbox_new();
-	ewl_box_set_spacing(EWL_BOX(e_conf.page_evas), 5);
-	ewl_widget_show(e_conf.page_evas);
-
-	e_conf.render_method_label = ewl_text_new("Render Method");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.render_method_label);
-	ewl_widget_show(e_conf.render_method_label);
-
-	e_conf.render_method_software_x11 =
-		ewl_radiobutton_new("Software X11 Engine");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.render_method_software_x11);
-	ewl_widget_show(e_conf.render_method_software_x11);
-
-	e_conf.render_method_gl_x11 = ewl_radiobutton_new("GL X11 Engine");
-	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(e_conf.render_method_gl_x11),
-				  EWL_RADIOBUTTON(e_conf.render_method_software_x11));
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.render_method_gl_x11);
-	ewl_widget_show(e_conf.render_method_gl_x11);
-
-	e_conf.font_cache_label = ewl_text_new("Font Cache (kB)");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.font_cache_label);
-	ewl_widget_show(e_conf.font_cache_label);
-
-	e_conf.font_cache = ewl_spinner_new();
-	ewl_spinner_set_min_val(EWL_SPINNER(e_conf.font_cache), (1024.0 * 0.5));
-	ewl_spinner_set_max_val(EWL_SPINNER(e_conf.font_cache), (1024.0 * 256));
-	ewl_spinner_set_digits(EWL_SPINNER(e_conf.font_cache), 0);
-	ewl_spinner_set_step(EWL_SPINNER(e_conf.font_cache), 1.0);
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.font_cache);
-	ewl_widget_show(e_conf.font_cache);
-
-	e_conf.image_cache_label = ewl_text_new("Image Cache (kB)");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.image_cache_label);
-	ewl_widget_show(e_conf.image_cache_label);
-
-	e_conf.image_cache = ewl_spinner_new();
-	ewl_spinner_set_min_val(EWL_SPINNER(e_conf.image_cache),
-			(1024.0 * 0.5));
-	ewl_spinner_set_max_val(EWL_SPINNER(e_conf.image_cache),
-			(1024.0 * 256));
-	ewl_spinner_set_digits(EWL_SPINNER(e_conf.image_cache), 0);
-	ewl_spinner_set_step(EWL_SPINNER(e_conf.image_cache), 1.0);
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.image_cache);
-	ewl_widget_show(e_conf.image_cache);
-
-	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook),
-			e_conf.page_evas_label, e_conf.page_evas);
-
-	/* Debug Page */
-
-	e_conf.page_debug_label = ewl_text_new("Debug Settings");
-	ewl_widget_show(e_conf.page_debug_label);
-
-	e_conf.page_debug = ewl_vbox_new();
-	ewl_box_set_spacing(EWL_BOX(e_conf.page_debug), 5);
-	ewl_widget_show(e_conf.page_debug);
-
-	e_conf.enable_debug = ewl_checkbutton_new("Enable Debug ?");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_debug),
-				   e_conf.enable_debug);
-	ewl_widget_show(e_conf.enable_debug);
-
-	e_conf.debug_level_label = ewl_text_new("Debug Level");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_debug),
-				   e_conf.debug_level_label);
-	ewl_widget_show(e_conf.debug_level_label);
-
-	e_conf.debug_level = ewl_spinner_new();
-	ewl_spinner_set_min_val(EWL_SPINNER(e_conf.debug_level), 0.0);
-	ewl_spinner_set_max_val(EWL_SPINNER(e_conf.debug_level), 20.0);
-	ewl_spinner_set_digits(EWL_SPINNER(e_conf.debug_level), 0);
-	ewl_spinner_set_step(EWL_SPINNER(e_conf.debug_level), 1);
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_debug),
-				   e_conf.debug_level);
-	ewl_widget_show(e_conf.debug_level);
-
-	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook),
-			e_conf.page_debug_label, e_conf.page_debug);
-
-	/* Theme Page */
-	e_conf.page_theme_label = ewl_text_new("Theme Settings");
-	ewl_widget_show(e_conf.page_theme_label);
-
-	e_conf.page_theme = ewl_vbox_new();
-	ewl_box_set_spacing(EWL_BOX(e_conf.page_theme), 5);
-	ewl_widget_show(e_conf.page_theme);
-
-
-	e_conf.theme_name_label = ewl_text_new("Theme Name");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_theme),
-				   e_conf.theme_name_label);
-	ewl_widget_show(e_conf.theme_name_label);
-
-	e_conf.theme_name = ewl_entry_new(NULL);
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_theme),
-				   e_conf.theme_name);
-	ewl_widget_show(e_conf.theme_name);
-
-	e_conf.theme_cache = ewl_checkbutton_new("Cache Theme Data?");
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_theme),
-				   e_conf.theme_cache);
-	ewl_widget_show(e_conf.theme_cache);
-
-	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook),
-			e_conf.page_theme_label, e_conf.page_theme);
-
-	ewl_set_settings(&init_settings);
-
-	ewl_main();
-
-	exit(1);
-}
-
-void
-ewl_config_read_configs(void)
-{
-	int user_read;
-
-	user_read = ewl_config_read_config(&user_settings);
-
-	if (user_read != -1)
-		ewl_config_read_config(&init_settings);
-	else if (user_read == -1)
-	  {
-		  printf("Couldnt open user config, please check permissions\n");
-		  exit(-1);
-	  }
-}
 
 int
-ewl_config_read_config(Ewl_Config * conf)
+main(int argc, char ** argv)
 {
-	if (!conf)
-		return -1;
+	int ret = 1, i, did_something = 0, save_system = 0;
 
-	/* Evas stuff */
-	conf->evas.render_method =
-		ewl_config_get_str("system", "/evas/render_method");
-	if (!conf->evas.render_method)
-		conf->evas.render_method = strdup("software_x11");
+	if (!ewl_init(&argc, argv))
+	{
+		fprintf(stderr, "Unable to init ewl.\n");
+		goto EXIT;
+	}
 
-	conf->evas.font_cache =
-		ewl_config_get_int("system", "/evas/font_cache");
-	if (!conf->evas.font_cache)
-		conf->evas.font_cache = 1024.0 * 1024.0 * 2.0;
+	for (i = 1; i < argc; i++)
+	{
+		if ((!strncmp(argv[i], "-s", 2)) 
+				|| (!strncmp(argv[i], "-set", 4)))
+		{
+			if (++i < argc)
+			{
+				char *t, *key, *val;
 
-	conf->evas.image_cache =
-		ewl_config_get_int("system", "/evas/image_cache");
-	if (!conf->evas.image_cache)
-		conf->evas.image_cache = 1024.0 * 1024.0 * 8.0;
+				t = strdup(argv[i]);
+				key = t;
+				val = strchr(t, '=');
 
-	/* Debug stuff */
-	conf->debug.enable = ewl_config_get_int("system", "/debug/enable");
+				if (!val)
+				{
+					usage();
+					goto EWL_SHUTDOWN;
+				}
 
-	conf->debug.level = ewl_config_get_int("system", "/debug/level");
-	if (!conf->debug.level)
-		conf->debug.level = 0;
+				*val = '\0';
+				val++;
 
-	/* Theme stuff */
-	conf->theme.name = ewl_config_get_str("system", "/theme/name");
-	if (!conf->theme.name)
-		conf->theme.name = strdup("default");
+				ewl_config_string_set(ewl_config, key, val, 
+							EWL_STATE_PERSISTENT);
+				free(t);
 
-	conf->theme.cache = ewl_config_get_int("system", "/theme/cache");
+				did_something = 1;
+			}
+			else
+			{
+				usage();
+				goto EWL_SHUTDOWN;
+			}
+		}
+		else if ((!strncmp(argv[i], "-g", 2)) 
+				|| (!strncmp(argv[i], "-get", 4)))
+		{
+			if (++i < argc)
+			{
+				const char *val;
 
-	return 1;
-}
+				val = ewl_config_string_get(ewl_config, argv[i]);
+				printf("%s = %s\n", argv[i], val);
 
-void
-ewl_set_settings(Ewl_Config * c)
-{
-	if (c->evas.render_method
-	    && !strncasecmp(c->evas.render_method, "software_x11", 8))
-		ewl_radiobutton_set_checked(e_conf.render_method_software_x11, 1);
-	else if (c->evas.render_method
-		 && !strncasecmp(c->evas.render_method, "gl_x11", 8))
-		ewl_radiobutton_set_checked(e_conf.render_method_gl_x11, 1);
+				did_something = 1;
+			}
+			else
+			{
+				usage();
+				goto EWL_SHUTDOWN;
+			}
+		}
+		else if (!strncmp(argv[i], "-r", 2))
+		{
+			if (!ewl_config_can_save_system(ewl_config))
+			{
+				fprintf(stderr, "Insufficient permission to save "
+						"system configuration.\n");
+				goto EWL_SHUTDOWN;
+			}
+			save_system = 1;
+		}
+		else if ((!strncmp(argv[i], "-h", 2))
+				|| (!strncasecmp(argv[i], "--help", 6)))
+		{
+			usage();
+			ret = 0;
+			goto EWL_SHUTDOWN;
+		}
+	}
+
+	if (did_something)
+	{
+		if (save_system)
+			ewl_config_system_save(ewl_config);
+		else
+			ewl_config_user_save(ewl_config);
+	}
 	else
-		ewl_radiobutton_set_checked(e_conf.render_method_software_x11, 1);
+	{
+		ec_main_win(save_system);
+		ewl_main();
+	}
 
-	ewl_spinner_set_value(EWL_SPINNER(e_conf.font_cache),
-			      (double) (c->evas.font_cache) / 1024.0);
-	ewl_spinner_set_value(EWL_SPINNER(e_conf.image_cache),
-			      (double) (c->evas.image_cache) / 1024.0);
+	ret = 0;
 
-	ewl_checkbutton_set_checked(EWL_CHECKBUTTON(e_conf.enable_debug),
-			c->debug.enable);
-	ewl_spinner_set_value(EWL_SPINNER(e_conf.debug_level),
-			(double) (c->debug.level));
-
-	ewl_entry_set_text(EWL_ENTRY(e_conf.theme_name), c->theme.name);
-
-	ewl_checkbutton_set_checked(EWL_CHECKBUTTON(e_conf.theme_cache),
-			c->theme.cache);
+EWL_SHUTDOWN:
+	ewl_shutdown();
+EXIT:
+	return ret;
 }
 
-Ewl_Config *
-ewl_get_settings(void)
+static void
+usage(void)
 {
-	Ewl_Config *c;
-
-	c = NEW(Ewl_Config, 1);
-	memset(c, 0, sizeof(Ewl_Config));
-
-	if (ewl_radiobutton_is_checked(e_conf.render_method_software_x11))
-		c->evas.render_method = strdup("software_x11");
-	else if (ewl_radiobutton_is_checked(e_conf.render_method_gl_x11))
-		c->evas.render_method = strdup("gl_x11");
-
-	c->evas.font_cache =
-		(float)(ewl_spinner_get_value(EWL_SPINNER(e_conf.font_cache)))
-		* 1024.0;
-	c->evas.image_cache =
-		(float)(ewl_spinner_get_value(EWL_SPINNER(e_conf.image_cache)))
-		* 1024.0;
-
-	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(e_conf.enable_debug)))
-		c->debug.enable = 1;
-	else
-	  {
-		  c->debug.enable = 0;
-		  c->debug.level = 0;
-	  }
-
-	if (c->debug.enable)
-		c->debug.level =
-			(int)(ewl_spinner_get_value(EWL_SPINNER(e_conf.debug_level)));
-
-	c->theme.name = ewl_entry_get_text(EWL_ENTRY(e_conf.theme_name));
-
-	if (!c->theme.name)
-		c->theme.name = strdup("default");
-
-	c->theme.cache = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(e_conf.theme_cache));
-
-	return c;
+	printf("\n"
+		"ewl_config [OPTIONS] [-set key=value] [-get key]\n"
+		" OPTIONS\n"
+		"  -r                    \t - Save the system configuration file\n"
+		"  -h|--help             \t - Print help information\n"
+		"\n");
 }
 
-void
-ewl_save_config(Ewl_Config * c)
+static void
+ec_main_win(int save_system)
 {
-	if (!c)
+	Ewl_Widget *box, *o2, *o;
+
+	o = ewl_window_new();
+	ewl_window_title_set(EWL_WINDOW(o), "EWL Config");
+	ewl_window_class_set(EWL_WINDOW(o), "ewl_config");
+	ewl_window_name_set(EWL_WINDOW(o), "ewl_config");
+	ewl_object_size_request(EWL_OBJECT(o), 450, 250);
+	ewl_callback_append(o, EWL_CALLBACK_DELETE_WINDOW, 
+					ec_cb_delete_window, NULL);
+	ewl_widget_show(o);
+
+	box = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(o), box);
+	ewl_widget_show(box);
+
+	o = ewl_hmenubar_new();
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ec_menubar_setup(EWL_MENUBAR(o));
+	ewl_object_fill_policy_set(EWL_OBJECT(o), 
+			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+	ewl_widget_show(o);
+
+	o = ewl_notebook_new();
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_notebook_tabbar_alignment_set(EWL_NOTEBOOK(o), EWL_FLAG_ALIGN_LEFT);
+	ewl_widget_show(o);
+
+	ec_theme_page_setup(EWL_NOTEBOOK(o));
+	ec_engine_page_setup(EWL_NOTEBOOK(o));
+	ec_debug_page_setup(EWL_NOTEBOOK(o));
+
+	o2 = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(box), o2);
+	ewl_object_fill_policy_set(EWL_OBJECT(o2), 
+			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+	ewl_widget_show(o2);
+
+	o = ewl_button_new();
+	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_APPLY);
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ec_cb_apply, NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_widget_show(o);
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Revert");
+	ewl_button_image_set(EWL_BUTTON(o), 
+			ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_CANCEL, 
+							EWL_ICON_SIZE_MEDIUM),
+			EWL_ICON_DIALOG_CANCEL);
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ec_cb_revert, NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_widget_show(o);
+
+	o = ewl_button_new();
+	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_QUIT);
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ec_cb_delete_window, NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_widget_show(o);
+
+	o = ewl_spacer_new();
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_widget_show(o);
+
+	o = ewl_checkbutton_new();
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), save_system);
+	ewl_checkbutton_label_position_set(EWL_CHECKBUTTON(o), EWL_POSITION_RIGHT);
+	ewl_button_label_set(EWL_BUTTON(o), "Save as system config");
+	ewl_widget_name_set(o, EC_SAVE_SYSTEM);
+	ewl_widget_show(o);
+
+	if (!ewl_config_can_save_system(ewl_config))
+		ewl_widget_disable(o);
+}
+
+static void
+ec_cb_delete_window(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	ewl_main_quit();
+}
+
+static void
+ec_menubar_setup(Ewl_Menubar *m)
+{
+	Ewl_Widget *menu, *o;
+	int i;
+
+	Ec_Gui_Menu_Item file_menu[] = {
+	{"save", ec_cb_apply},
+	{"revert", ec_cb_revert},
+		{"quit", ec_cb_delete_window},
+		{NULL, NULL}
+	};
+
+	Ec_Gui_Menu_Item help_menu[] = {
+	{"about", ec_cb_about},
+		{NULL, NULL}
+	};
+
+	Ec_Gui_Menu menus[] = {
+		{"file", file_menu},
+	{"help", help_menu},
+		{NULL, NULL}
+	};
+
+	for (i = 0; menus[i].name != NULL; i++)
+	{
+		int k;
+
+		/* pack in a spacer before the help text */
+		if (menus[i + 1].name == NULL)
+		{
+			o = ewl_spacer_new();
+			ewl_container_child_append(EWL_CONTAINER(m), o);
+			ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
+			ewl_widget_show(o);
+		}
+
+		menu = ewl_menu_new();
+		ewl_button_label_set(EWL_BUTTON(menu), menus[i].name);
+		ewl_container_child_append(EWL_CONTAINER(m), menu);
+		ewl_object_fill_policy_set(EWL_OBJECT(menu),
+				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+		ewl_widget_show(menu);
+
+		for (k = 0; menus[i].items[k].name != NULL; k++)
+		{
+			o = ewl_menu_item_new();
+			ewl_button_label_set(EWL_BUTTON(o), menus[i].items[k].name);
+			ewl_container_child_append(EWL_CONTAINER(menu), o);
+			ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+							menus[i].items[k].cb, NULL);
+			ewl_widget_show(o);
+		}
+	}
+}
+
+static void
+ec_theme_page_setup(Ewl_Notebook *n)
+{
+	Ewl_Widget *box, *o, *o2, *o3;
+	DIR *rep;
+	struct dirent *file;
+	Ecore_List *list;
+	const char *v;
+	int i = 0, sel = 0;
+
+	box = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(n), box);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(n), box, "Theme");
+	ewl_widget_show(box);
+
+	o2 = ewl_border_new();
+	ewl_border_text_set(EWL_BORDER(o2), "EWL Theme");
+	ewl_container_child_append(EWL_CONTAINER(box), o2);
+	ewl_widget_show(o2);
+
+	o3 = ewl_scrollpane_new();
+	ewl_container_child_append(EWL_CONTAINER(o2), o3);
+	ewl_widget_show(o3);
+
+	o = ewl_list_new();
+	list = ecore_list_new();
+	ewl_widget_name_set(o, EC_EWL_THEME);
+	ewl_container_child_append(EWL_CONTAINER(o3), o);
+	ewl_mvc_model_set(EWL_MVC(o), ewl_model_ecore_list_get());
+	ewl_mvc_view_set(EWL_MVC(o), ewl_label_view_get());
+	ewl_mvc_data_set(EWL_MVC(o), list);
+	ewl_widget_show(o);
+
+	i = 0;
+	v = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_NAME);
+	rep = opendir(PACKAGE_DATA_DIR "/themes");
+	while ((file = readdir(rep)))
+	{	   
+		int len;
+				
+		len = strlen(file->d_name);
+		if ((len >= 4) && (!strcmp(file->d_name + len - 4, ".edj")))
+		{
+			char *t;
+
+			t = strdup(file->d_name);
+			*(t + len - 4) = '\0';
+
+			if (!strcmp(t, v)) sel = i;
+
+			ecore_list_append(list, t);
+			i++;
+		}
+	}
+	closedir(rep);
+
+	ewl_list_selected_index_set(EWL_LIST(o), sel);
+	ewl_mvc_dirty_set(EWL_MVC(o), TRUE);
+
+	o2 = ewl_border_new();
+	ewl_border_text_set(EWL_BORDER(o2), "Icon Theme");
+	ewl_container_child_append(EWL_CONTAINER(box), o2);
+	ewl_widget_show(o2);
+
+	box = ewl_table_new(2, 2, NULL);
+	ewl_container_child_append(EWL_CONTAINER(o2), box);
+	ewl_table_homogeneous_set(EWL_TABLE(box), FALSE);
+	ewl_widget_show(box);
+
+	o = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o), "Theme name");
+	ewl_table_add(EWL_TABLE(box), o, 0, 0, 0, 0);
+	ewl_widget_show(o);
+
+	o = ewl_entry_new();
+	ewl_widget_name_set(o, EC_ICON_THEME);
+	ewl_table_add(EWL_TABLE(box), o, 1, 1, 0, 0);
+	ewl_text_text_set(EWL_TEXT(o), 
+		ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_ICON_THEME));
+	ewl_widget_show(o);
+
+	o = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o), "Icon Size");
+	ewl_table_add(EWL_TABLE(box), o, 0, 0, 1, 1);
+	ewl_widget_show(o);
+
+	list = ecore_list_new();
+	ecore_list_append(list, EWL_ICON_SIZE_SMALL);
+	ecore_list_append(list, EWL_ICON_SIZE_MEDIUM);
+	ecore_list_append(list, EWL_ICON_SIZE_LARGE);
+
+	v = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE);
+	sel = 0;
+
+	if (!strcmp(v, EWL_ICON_SIZE_MEDIUM))
+		sel = 1;
+
+	else if (!strcmp(v, EWL_ICON_SIZE_LARGE))
+		sel = 2;
+
+	o = ewl_combo_new();
+	ewl_widget_name_set(o, EC_ICON_SIZE);
+	ewl_mvc_model_set(EWL_MVC(o), ewl_model_ecore_list_get());
+	ewl_mvc_view_set(EWL_MVC(o), ewl_label_view_get());
+	ewl_mvc_data_set(EWL_MVC(o), list);
+	ewl_table_add(EWL_TABLE(box), o, 1, 1, 1, 1);
+	ewl_combo_selected_set(EWL_COMBO(o), sel);
+	ewl_widget_show(o);
+}
+
+static void
+ec_engine_page_setup(Ewl_Notebook *n)
+{
+	Ewl_Widget *box, *o, *o2;
+
+	box = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(n), box);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(n), box, "Engine");
+	ewl_widget_show(box);
+
+	o2 = ewl_table_new(2, 3, NULL);
+	ewl_container_child_append(EWL_CONTAINER(box), o2);
+	ewl_widget_show(o2);
+
+	o = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o), "Engine name");
+	ewl_table_add(EWL_TABLE(o2), o, 0, 0, 0, 0);
+	ewl_widget_show(o);
+
+	o = ewl_entry_new();
+	ewl_widget_name_set(o, EC_ENGINE_NAME);
+	ewl_text_text_set(EWL_TEXT(o),
+		ewl_config_string_get(ewl_config, EWL_CONFIG_ENGINE_NAME));
+	ewl_table_add(EWL_TABLE(o2), o, 1, 1, 0, 0);
+	ewl_widget_show(o);
+
+	o = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o), "Evas font cache size");
+	ewl_table_add(EWL_TABLE(o2), o, 0, 0, 1, 1);
+	ewl_widget_show(o);
+
+	o = ewl_entry_new();
+	ewl_widget_name_set(o, EC_EVAS_FONT_CACHE);
+	ewl_text_text_set(EWL_TEXT(o),
+		ewl_config_string_get(ewl_config, EWL_CONFIG_CACHE_EVAS_FONT));
+	ewl_table_add(EWL_TABLE(o2), o, 1, 1, 1, 1);
+	ewl_widget_show(o);
+
+	o = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o), "Evas image cache size");
+	ewl_table_add(EWL_TABLE(o2), o, 0, 0, 2, 2);
+	ewl_widget_show(o);
+
+	o = ewl_entry_new();
+	ewl_widget_name_set(o, EC_EVAS_IMAGE_CACHE);
+	ewl_text_text_set(EWL_TEXT(o),
+		ewl_config_string_get(ewl_config, EWL_CONFIG_CACHE_EVAS_IMAGE));
+	ewl_table_add(EWL_TABLE(o2), o, 1, 1, 2, 2);
+	ewl_widget_show(o);
+}
+
+static void
+ec_debug_page_setup(Ewl_Notebook *n)
+{
+	Ewl_Widget *box, *o2;
+	int i, row = 0;
+
+	struct 
+	{
+		char *label;
+		char *key;
+		char *name;
+		int spinner;
+	} buttons[] = {
+		{"Enabled", EWL_CONFIG_DEBUG_ENABLE, EC_DEBUG_ENABLE, 0},
+		{"Level", EWL_CONFIG_DEBUG_LEVEL, EC_DEBUG_LEVEL, 1},
+		{"Segv", EWL_CONFIG_DEBUG_SEGV, EC_DEBUG_SEGV, 0},
+		{"Backtrace", EWL_CONFIG_DEBUG_BACKTRACE, EC_DEBUG_BACKTRACE, 0},
+		{"Evas rendering", EWL_CONFIG_DEBUG_EVAS_RENDER, EC_DEBUG_EVAS_RENDER, 0},
+		{"Garbage Collection", EWL_CONFIG_DEBUG_GC_REAP, EC_DEBUG_GARBAGE, 0},
+		{"Print theme keys", EWL_CONFIG_THEME_PRINT_KEYS, EC_THEME_KEYS, 0},
+		{"Print theme signals", EWL_CONFIG_THEME_PRINT_SIGNALS, EC_THEME_SIGNALS, 0},
+		{NULL, NULL, NULL, 0}
+	};
+
+	box = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(n), box);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(n), box, "Debug");
+	ewl_widget_show(box);
+
+	o2 = ewl_table_new(2, 8, NULL);
+	ewl_container_child_append(EWL_CONTAINER(box), o2);
+	ewl_widget_show(o2);
+
+	for (i = 0; buttons[i].label != NULL; i++)
+	{
+		Ewl_Widget *o;
+
+		if (buttons[i].spinner)
+		{
+			Ewl_Widget *s;
+
+			o = ewl_hbox_new();
+			ewl_widget_show(o);
+
+			s = ewl_label_new();
+			ewl_label_text_set(EWL_LABEL(s), buttons[i].label);
+			ewl_container_child_append(EWL_CONTAINER(o), s);
+			ewl_widget_show(s);
+
+			s = ewl_spinner_new();
+			ewl_widget_name_set(s, buttons[i].name);
+			ewl_spinner_digits_set(EWL_SPINNER(s), 0);
+			ewl_range_minimum_value_set(EWL_RANGE(s), 0);
+			ewl_range_maximum_value_set(EWL_RANGE(s), 100);
+			ewl_range_step_set(EWL_RANGE(s), 1);
+			ewl_range_value_set(EWL_RANGE(s),
+				ewl_config_int_get(ewl_config, buttons[i].key));
+			ewl_container_child_append(EWL_CONTAINER(o), s);
+			ewl_widget_show(s);
+		}
+		else
+		{
+			o = ewl_checkbutton_new();
+			ewl_widget_name_set(o, buttons[i].name);
+			ewl_button_label_set(EWL_BUTTON(o), buttons[i].label);
+			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o),
+				ewl_config_int_get(ewl_config, buttons[i].key));
+			ewl_widget_show(o);
+		}
+		ewl_table_add(EWL_TABLE(o2), o, i % 2, i % 2, row, row);
+
+		if ((i != 0) && (((i + 1) % 2) == 0)) row ++;
+	}
+}
+
+static void
+ec_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	Ewl_Widget *about, *box, *o;
+
+	about = ewl_widget_name_find(EC_WIN_ABOUT);
+	if (about)
+	{
+		ewl_widget_show(about);
 		return;
+	}
 
-	ewl_config_set_int("system", "/evas/font_cache", c->evas.font_cache);
-	ewl_config_set_int("system", "/evas/image_cache",
-			   c->evas.image_cache);
-	ewl_config_set_str("system", "/evas/render_method",
-			   c->evas.render_method);
-	ewl_config_set_int("system", "/debug/enable", c->debug.enable);
-	ewl_config_set_int("system", "/debug/level", c->debug.level);
+	about = ewl_window_new();
+	ewl_window_title_set(EWL_WINDOW(about), "EWL Config");
+	ewl_window_name_set(EWL_WINDOW(about), "ewl_config");
+	ewl_window_class_set(EWL_WINDOW(about), "ewl_config");
+	ewl_widget_name_set(about, EC_WIN_ABOUT);
+	ewl_object_size_request(EWL_OBJECT(about), 210, 140);
+	ewl_callback_append(about, EWL_CALLBACK_DELETE_WINDOW,
+							ec_cb_win_hide, about);
+	ewl_widget_show(about);
 
-	ewl_config_set_str("system", "/theme/name", c->theme.name);
-	ewl_config_set_int("system", "/theme/cache", c->theme.cache);
+	box = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(about), box);
+	ewl_widget_show(box);
+
+	o = ewl_text_new();
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_widget_show(o);
+
+	ewl_text_wrap_set(EWL_TEXT(o), EWL_TEXT_WRAP_WORD);
+
+	ewl_text_font_size_set(EWL_TEXT(o), 25);
+	ewl_text_font_set(EWL_TEXT(o), "Vera/Bold");
+	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
+	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_SOFT_SHADOW);
+	ewl_text_text_set(EWL_TEXT(o), "EWL Config\n");
+
+	ewl_text_font_size_set(EWL_TEXT(o), 10);
+	ewl_text_font_set(EWL_TEXT(o), "Vera");
+	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_NONE);
+	ewl_text_text_append(EWL_TEXT(o), "\n");
+	ewl_text_text_append(EWL_TEXT(o), "Configure your EWL install.\n");
+	ewl_text_text_append(EWL_TEXT(o), "\n");
+
+	o = ewl_button_new();
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_OK);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ec_cb_win_hide, about);
+	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
+	ewl_widget_show(o);
 }
 
-void
-ewl_config_save_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+ec_cb_win_hide(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 {
-	Ewl_Config *c;
-	char *home;
-	char pe[1024];
-
-	home = getenv("HOME");
-
-	if (!home)
-	  {
-		  printf("ERROR: Environment variable $HOME was not found.\n"
-			 "Try export HOME in a bash-like environment\n"
-			 "or setenv HOME in a sh like environment.\n");
-		  exit(-1);
-	  }
-
-	snprintf(pe, 1024, "%s/.e", home);
-	mkdir(pe, 0755);
-	snprintf(pe, 1024, "%s/.e/ewl", home);
-	mkdir(pe, 0755);
-	snprintf(pe, 1024, "%s/.e/ewl/config", home);
-	mkdir(pe, 0755);
-
-	c = ewl_get_settings();
-
-	ewl_save_config(c);
-
-	FREE(c->evas.render_method);
-	FREE(c->theme.name);
-	FREE(c);
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
+	ewl_widget_hide(EWL_WIDGET(data));
 }
 
-void
-ewl_config_restore_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
-	ewl_set_settings(&init_settings);
+	Ewl_Widget *o;
+	Ecore_List *list;
+	const char *val, *lval;
+	int sel = 0;
 
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
+	struct
+	{
+		char *name;
+		char *key;
+	} checks[] = {
+		{EC_DEBUG_ENABLE, EWL_CONFIG_DEBUG_ENABLE},
+		{EC_DEBUG_SEGV, EWL_CONFIG_DEBUG_SEGV},
+		{EC_DEBUG_BACKTRACE, EWL_CONFIG_DEBUG_BACKTRACE},
+		{EC_DEBUG_EVAS_RENDER, EWL_CONFIG_DEBUG_EVAS_RENDER},
+		{EC_DEBUG_GARBAGE, EWL_CONFIG_DEBUG_GC_REAP},
+		{EC_THEME_KEYS, EWL_CONFIG_THEME_PRINT_KEYS},
+		{EC_THEME_SIGNALS, EWL_CONFIG_THEME_PRINT_SIGNALS},
+		{NULL, NULL}
+	};
+
+	struct
+	{
+		char *name;
+		char *key;
+	} strings[] = {
+		{EC_ICON_THEME, EWL_CONFIG_THEME_ICON_THEME},
+		{EC_ENGINE_NAME, EWL_CONFIG_ENGINE_NAME},
+		{EC_EVAS_IMAGE_CACHE, EWL_CONFIG_CACHE_EVAS_IMAGE},
+		{EC_EVAS_FONT_CACHE, EWL_CONFIG_CACHE_EVAS_FONT},
+		{NULL, NULL}
+	};
+
+	o = ewl_widget_name_find(EC_EWL_THEME);
+	list = ewl_mvc_data_get(EWL_MVC(o));
+	val = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_NAME);
+
+	ecore_list_goto_first(list);
+	while ((lval = ecore_list_next(list)))
+	{
+		if (!strcmp(val, lval))
+			break;
+		sel++;
+	}
+	ewl_list_selected_index_set(EWL_LIST(o), sel);
+
+	o = ewl_widget_name_find(EC_ICON_SIZE);
+	list = ewl_mvc_data_get(EWL_MVC(o));
+	val = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE);
+
+	sel = 0;
+	ecore_list_goto_first(list);
+	while ((lval = ecore_list_next(list)))
+	{
+		if (!strcmp(val, lval))
+			break;
+		sel ++;
+	}
+	ewl_combo_selected_set(EWL_COMBO(o), sel);
+
+	for (sel = 0; strings[sel].name != NULL; sel++)
+	{
+		o = ewl_widget_name_find(strings[sel].name);
+		ewl_text_text_set(EWL_TEXT(o),
+			ewl_config_string_get(ewl_config, strings[sel].key));
+	}
+
+	o = ewl_widget_name_find(EC_DEBUG_LEVEL);
+	ewl_range_value_set(EWL_RANGE(o),
+		ewl_config_int_get(ewl_config, EWL_CONFIG_DEBUG_LEVEL));
+
+	for (sel = 0; checks[sel].name != NULL; sel++)
+	{
+		o = ewl_widget_name_find(checks[sel].name);
+		ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o),
+			ewl_config_int_get(ewl_config, checks[sel].key));
+	}
 }
 
-void
-ewl_config_defaults_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+static void
+ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
-}
+	Ewl_Widget *o;
+	Ecore_List *list;
+	char *val;
+	int i;
 
-void
-ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
-{
-	Ewl_Config *nc, oc;
+	struct
+	{
+		char *name;
+		char *key;
+	} checks[] = {
+		{EC_DEBUG_ENABLE, EWL_CONFIG_DEBUG_ENABLE},
+		{EC_DEBUG_SEGV, EWL_CONFIG_DEBUG_SEGV},
+		{EC_DEBUG_BACKTRACE, EWL_CONFIG_DEBUG_BACKTRACE},
+		{EC_DEBUG_EVAS_RENDER, EWL_CONFIG_DEBUG_EVAS_RENDER},
+		{EC_DEBUG_GARBAGE, EWL_CONFIG_DEBUG_GC_REAP},
+		{EC_THEME_KEYS, EWL_CONFIG_THEME_PRINT_KEYS},
+		{EC_THEME_SIGNALS, EWL_CONFIG_THEME_PRINT_SIGNALS},
+		{NULL, NULL}
+	};
 
-	nc = ewl_get_settings();
-	ewl_config_read_config(&oc);
+	struct
+	{
+		char *name;
+		char *key;
+	} strings[] = {
+		{EC_ICON_THEME, EWL_CONFIG_THEME_ICON_THEME},
+		{EC_ENGINE_NAME, EWL_CONFIG_ENGINE_NAME},
+		{EC_EVAS_IMAGE_CACHE, EWL_CONFIG_CACHE_EVAS_IMAGE},
+		{EC_EVAS_FONT_CACHE, EWL_CONFIG_CACHE_EVAS_FONT},
+		{NULL, NULL}
+	};
 
-	if ((nc->debug.enable != oc.debug.enable ||
-	     nc->debug.level != oc.debug.level ||
-	     nc->evas.font_cache != oc.evas.font_cache ||
-	     nc->evas.image_cache != oc.evas.image_cache ||
-	     strcasecmp(nc->evas.render_method, oc.evas.render_method) ||
-	     strcmp(nc->theme.name, oc.theme.name) ||
-	     nc->theme.cache != oc.theme.cache) &&
-			!confirm.win)
-		ewl_config_create_confirm_dialog();
+	for (i = 0; checks[i].name != NULL; i++)
+	{
+		o = ewl_widget_name_find(checks[i].name);
+		if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)) != 
+				ewl_config_int_get(ewl_config, checks[i].key))
+			ewl_config_int_set(ewl_config, checks[i].key, 
+					ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)),
+					EWL_STATE_PERSISTENT);
+	}
+
+	for (i = 0; strings[i].name != NULL; i++)
+	{
+		char *new;
+
+		o = ewl_widget_name_find(strings[i].name);
+		new = ewl_text_text_get(EWL_TEXT(o));
+		if (strcmp(new, ewl_config_string_get(ewl_config, 
+						strings[i].key)))
+		{
+			ewl_config_string_set(ewl_config, 
+					strings[i].key, new,
+					EWL_STATE_PERSISTENT);
+		}
+	}
+
+	o = ewl_widget_name_find(EC_DEBUG_LEVEL);
+	if (ewl_range_value_get(EWL_RANGE(o)) != 
+			ewl_config_int_get(ewl_config, EWL_CONFIG_DEBUG_LEVEL))
+	{
+		ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_LEVEL, 
+					ewl_range_value_get(EWL_RANGE(o)),
+					EWL_STATE_PERSISTENT);
+	}
+
+	o = ewl_widget_name_find(EC_ICON_SIZE);
+	list = ewl_mvc_data_get(EWL_MVC(o));
+	i = ewl_combo_selected_get(EWL_COMBO(o));
+
+	ecore_list_goto_index(list, i);
+	val = ecore_list_current(list);
+	if (strcmp(val, ewl_config_string_get(ewl_config,
+					EWL_CONFIG_THEME_ICON_SIZE)))
+	{
+		ewl_config_string_set(ewl_config, 
+				EWL_CONFIG_THEME_ICON_SIZE, val,
+				EWL_STATE_PERSISTENT);
+	}
+
+	o = ewl_widget_name_find(EC_EWL_THEME);
+	list = ewl_mvc_data_get(EWL_MVC(o));
+	i = ewl_list_selected_index_get(EWL_LIST(o));
+	if (i > -1)
+	{
+		ecore_list_goto_index(list, i);
+		val = ecore_list_current(list);
+
+		if (strcmp(val, ewl_config_string_get(ewl_config,
+						EWL_CONFIG_THEME_NAME)))
+		{
+			ewl_config_string_set(ewl_config,
+					EWL_CONFIG_THEME_NAME, val,
+					EWL_STATE_PERSISTENT);
+		}
+	}
+
+	o = ewl_widget_name_find(EC_SAVE_SYSTEM);
+	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)))
+	{
+		if (!ewl_config_can_save_system(ewl_config))
+			fprintf(stderr, "Cannot save system config.\n");
+		else
+			ewl_config_system_save(ewl_config);
+	}
 	else
-	  {
-		  ewl_widget_destroy(e_conf.main_win);
-
-		  ewl_main_quit();
-	  }
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
+		ewl_config_user_save(ewl_config);
 }
 
-void
-ewl_config_create_confirm_dialog(void)
-{
-	confirm.win = ewl_window_new();
-	ewl_widget_show(confirm.win);
 
-	confirm.main_vbox = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(confirm.win),
-				   confirm.main_vbox);
-	ewl_widget_show(confirm.main_vbox);
-
-	confirm.text = ewl_text_new("You have made modifications."
-			"What would you like to do?");
-	ewl_object_set_alignment(EWL_OBJECT(confirm.text),
-				 EWL_FLAG_ALIGN_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(confirm.main_vbox),
-				   confirm.text);
-	ewl_widget_show(confirm.text);
-
-	confirm.button_hbox = ewl_hbox_new();
-	ewl_box_set_spacing(EWL_BOX(confirm.button_hbox), 5);
-	ewl_object_set_alignment(EWL_OBJECT(confirm.button_hbox),
-				 EWL_FLAG_ALIGN_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(confirm.main_vbox),
-				   confirm.button_hbox);
-	ewl_widget_show(confirm.button_hbox);
-
-	confirm.button_save = ewl_button_new("Save & Exit");
-	ewl_container_append_child(EWL_CONTAINER(confirm.button_hbox),
-				   confirm.button_save);
-	ewl_callback_append(confirm.button_save, EWL_CALLBACK_CLICKED,
-			    ewl_config_save_cb, NULL);
-	ewl_callback_append(confirm.button_save, EWL_CALLBACK_CLICKED,
-			    ewl_config_exit_cb, NULL);
-	ewl_widget_show(confirm.button_save);
-
-	confirm.button_exit = ewl_button_new("Exit without saving");
-	ewl_container_append_child(EWL_CONTAINER(confirm.button_hbox),
-				   confirm.button_exit);
-	ewl_callback_append(confirm.button_exit, EWL_CALLBACK_CLICKED,
-			    ewl_config_exit_cb, NULL);
-	ewl_widget_show(confirm.button_exit);
-
-	confirm.button_cancel = ewl_button_new("Cancel");
-	ewl_container_append_child(EWL_CONTAINER(confirm.button_hbox),
-				   confirm.button_cancel);
-	ewl_callback_append(confirm.button_cancel, EWL_CALLBACK_CLICKED,
-			    ewl_config_destroy_confirm_dialog, NULL);
-	ewl_widget_show(confirm.button_cancel);
-}
-
-void
-ewl_config_destroy_confirm_dialog(Ewl_Widget * w, void *ev_data,
-				  void *user_data)
-{
-	if (confirm.win)
-		ewl_widget_destroy(confirm.win);
-
-	confirm.win = NULL;
-
-	return;
-	w = NULL;
-	ev_data = NULL;
-	user_data = NULL;
-}

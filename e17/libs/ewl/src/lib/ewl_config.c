@@ -24,6 +24,11 @@ static Ecore_Hash *ewl_config_set_hash_get(Ewl_Config *cfg,
 					Ewl_State_Type state);
 static const char *ewl_config_get(Ewl_Config *cfg, const char *key);
 static char *ewl_config_trim(char *v);
+static char *ewl_config_file_name_user_get(Ewl_Config *cfg);
+static char *ewl_config_file_name_system_get(Ewl_Config *cfg);
+static char *ewl_config_file_name_clean(Ewl_Config *cfg);
+static int ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, 
+						const char *file);
 
 /**
  * @internal
@@ -270,18 +275,163 @@ ewl_config_float_get(Ewl_Config *cfg, const char *k)
 	DRETURN_FLOAT(v, DLEVEL_STABLE);
 }
 
-static void
-ewl_config_load(Ewl_Config *cfg)
+/**
+ * @param cfg: The Ewl_Config to work with
+ * @return Returns TRUE if the user can write to the system conf file, FALSE
+ * otherwise
+ * @brief Determines if the user can write the system config file
+ */
+int
+ewl_config_can_save_system(Ewl_Config *cfg)
 {
-	char *fname = NULL, *p;
-	char cfg_filename[PATH_MAX];
-	int is_ewl = FALSE;
+	char *fname;
+	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cfg", cfg);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
 
-	if (!strcmp(cfg->app_name, "ewl"))
-		is_ewl = TRUE;
+	fname = ewl_config_file_name_system_get(cfg);
+	ret = access(fname, W_OK);
+	FREE(fname);
+
+	DRETURN_INT((!ret ? TRUE : FALSE), DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to work with
+ * @return Returns TRUE on success or FALSE on failure
+ * @brief Writes out the user config to the users config file
+ */
+int
+ewl_config_user_save(Ewl_Config *cfg)
+{
+	char *fname;
+	int ret;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
+
+	fname = ewl_config_file_name_user_get(cfg);
+	ret = ewl_config_save(cfg, cfg->data.user, fname);
+	FREE(fname);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to save
+ * @return Returns TRUE on success, FALSE on failure
+ * @brief Writes out the system and user data to the system config file
+ */
+int
+ewl_config_system_save(Ewl_Config *cfg)
+{
+	char *fname, *key;
+	int ret;
+	Ecore_Hash *hash;
+	Ecore_List *keys;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
+
+	if (!ewl_config_can_save_system(cfg))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+	/* add all the system data */
+	keys = ecore_hash_keys(cfg->data.system);
+	ecore_list_goto_first(keys);
+	while ((key = ecore_list_next(keys)))
+	{
+		ecore_hash_set(hash, key, 
+				ecore_hash_get(cfg->data.system, key)); 
+	}
+	ecore_list_destroy(keys);
+
+	/* set the user data over top */
+	keys = ecore_hash_keys(cfg->data.user);
+	ecore_list_goto_first(keys);
+	while ((key = ecore_list_next(keys)))
+	{
+		ecore_hash_set(hash, key,
+				ecore_hash_get(cfg->data.user, key));
+	}
+	ecore_list_destroy(keys);
+
+	fname = ewl_config_file_name_system_get(cfg);
+	ret = ewl_config_save(cfg, hash, fname);
+	FREE(fname);
+
+	ecore_hash_destroy(hash);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
+}
+
+static int
+ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
+{
+	Ecore_List *keys;
+	char *key, data[512];
+	struct flock fl;
+	int fd;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
+	DCHECK_PARAM_PTR_RET("file", file, FALSE);
+
+	/* if the hash doesn't exist then treat it is empty */
+	if (!hash)
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 
+			S_IRWXU | S_IRGRP | S_IROTH);
+	if (fd == -1) 
+	{
+		DWARNING("Unable to open cfg file %s\n", file);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+
+	fl.l_type = F_WRLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+
+	if (fcntl(fd, F_SETLKW, &fl) == -1)
+	{
+		DWARNING("Unable to lock %s for write\n", file);
+		close(fd);
+
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+	
+	keys = ecore_hash_keys(hash);
+	ecore_list_goto_first(keys);
+	while ((key = ecore_list_next(keys)))
+	{
+		int len;
+		
+		len = snprintf(data, sizeof(data), "%s = %s\n", key, 
+					(char *)ecore_hash_get(hash, key));
+
+		write(fd, data, len);
+	}
+
+	/* release the lock */
+	fl.l_type = F_UNLCK;
+	fcntl(fd, F_SETLK, &fl);
+	close(fd);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+static char *
+ewl_config_file_name_clean(Ewl_Config *cfg)
+{
+	char *fname = NULL, *p;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
 
 	/* convert all whitespace, / or \ characters to _ */
 	fname = strdup(cfg->app_name);
@@ -291,20 +441,74 @@ ewl_config_load(Ewl_Config *cfg)
 			*p = '_';
 	}
 
-	/* load the global data */
+	DRETURN_PTR(fname, DLEVEL_STABLE);
+}
+
+static char *
+ewl_config_file_name_system_get(Ewl_Config *cfg)
+{
+	char cfg_filename[PATH_MAX], *fname;
+	int is_ewl = FALSE;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
+
+	if (!strcmp(cfg->app_name, "ewl"))
+		is_ewl = TRUE;
+
+	fname = ewl_config_file_name_clean(cfg);
 	snprintf(cfg_filename, sizeof(cfg_filename),
 			"%s/config/%s%s.cfg", PACKAGE_DATA_DIR, 
 			(is_ewl ? "" : "apps/"), fname);
-	ewl_config_file_load(cfg, TRUE, cfg_filename);
 
-	/* load the user specific config data */
+	FREE(fname);
+
+	DRETURN_PTR(strdup(cfg_filename), DLEVEL_STABLE);
+}
+
+static char *
+ewl_config_file_name_user_get(Ewl_Config *cfg)
+{
+	char cfg_filename[PATH_MAX], *fname;
+	int is_ewl = FALSE;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
+
+	if (!strcmp(cfg->app_name, "ewl"))
+		is_ewl = TRUE;
+
+	fname = ewl_config_file_name_clean(cfg);
 	snprintf(cfg_filename, sizeof(cfg_filename),
 			"%s/.ewl/config/%s%s.cfg", 
 			(getenv("HOME") ?  getenv("HOME") : "/tmp"), 
 			(is_ewl ? "" : "apps/"),
 			fname);
-	ewl_config_file_load(cfg, FALSE, cfg_filename);
 
+	FREE(fname);
+
+	DRETURN_PTR(strdup(cfg_filename), DLEVEL_STABLE);
+}
+
+static void
+ewl_config_load(Ewl_Config *cfg)
+{
+	char *fname = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cfg", cfg);
+
+	fname = ewl_config_file_name_system_get(cfg);
+	ewl_config_file_load(cfg, TRUE, fname);
+	FREE(fname);
+
+	fname = ewl_config_file_name_user_get(cfg);
+	ewl_config_file_load(cfg, FALSE, fname);
+	FREE(fname);
+
+	/* XXX deal with the colour classes */
+
+	/* XXX not sure if this is in the right spot ... */
 	/* update the evas info for the embeds */
 	if (ewl_embed_list && !ecore_list_is_empty(ewl_embed_list)) 
 	{
@@ -396,7 +600,7 @@ ewl_config_set_hash_get(Ewl_Config *cfg, Ewl_State_Type state)
 	else
 	{
 		ewl_config_create_user_hash(cfg);
-		hash = cfg->data.instance;
+		hash = cfg->data.user;
 	}
 
 	DRETURN_PTR(hash, DLEVEL_STABLE);
@@ -467,6 +671,8 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 	if (fcntl(fd, F_SETLKW, &fl) == -1)
 	{
 		DWARNING("Unable to lock %s for read\n", file);
+
+		close(fd);
 		DRETURN(DLEVEL_STABLE);
 	}
 
