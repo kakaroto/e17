@@ -1,5 +1,7 @@
 #include "ephoto.h"
 Ewl_Widget *vwin;
+Ewl_Widget *vbox;
+Ewl_Widget *ibox;
 Ewl_Widget *image_view;
 
 void destroy_vwin(Ewl_Widget *w, void *event, void *data)
@@ -12,9 +14,101 @@ void change_image(Ewl_Widget *w, void *event, void *data)
  char *path;
 
  path = data;
+
+ ewl_widget_destroy(ibox);
+ ewl_widget_destroy(image_view);
  
- ewl_container_reset(EWL_CONTAINER(image_view));
- ewl_image_file_set(EWL_IMAGE(image_view), path, NULL);	  
+ ibox = ewl_scrollpane_new();
+ ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
+ ewl_object_alignment_set(EWL_OBJECT(ibox), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
+ ewl_widget_show(ibox);
+
+ image_view = ewl_image_new();
+ ewl_image_file_set(EWL_IMAGE(image_view), path, NULL);
+ ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
+ ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
+ ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
+ ewl_widget_show(image_view); 
+}
+
+void zoom_in(Ewl_Widget *w, void *event, void *data)
+{
+ const char *path;
+ int ow, oh;
+ 
+ path = ewl_image_file_path_get(EWL_IMAGE(image_view));
+ ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh);
+ 
+ ewl_widget_destroy(ibox);
+ ewl_widget_destroy(image_view); 
+
+ ibox = ewl_scrollpane_new();
+ ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
+ ewl_object_alignment_set(EWL_OBJECT(ibox), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
+ ewl_widget_show(ibox);
+
+ image_view = ewl_image_new();
+ ewl_image_file_set(EWL_IMAGE(image_view), path, NULL);
+ ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
+ ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
+ ewl_image_size_set(EWL_IMAGE(image_view), ow*1.5, oh*1.5);
+ ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
+ ewl_widget_show(image_view); 
+}
+
+void zoom_out(Ewl_Widget *w, void *event, void *data)
+{
+ const char *path;
+ int ow, oh;
+ 
+ path = ewl_image_file_path_get(EWL_IMAGE(image_view));
+ ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh);
+ 
+ ewl_widget_destroy(ibox);
+ ewl_widget_destroy(image_view);
+ 
+ ibox = ewl_scrollpane_new();
+ ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
+ ewl_object_alignment_set(EWL_OBJECT(ibox), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
+ ewl_widget_show(ibox);
+
+ image_view = ewl_image_new();
+ ewl_image_file_set(EWL_IMAGE(image_view), path, NULL);
+ ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
+ ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
+ ewl_image_size_set(EWL_IMAGE(image_view), ow/1.5, oh/1.5);
+ ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
+ ewl_widget_show(image_view); 
+}
+
+void original_size(Ewl_Widget *w, void *event, void *data)
+{
+ const char *path;
+
+ path = ewl_image_file_path_get(EWL_IMAGE(image_view));
+
+ ewl_widget_destroy(ibox);
+ ewl_widget_destroy(image_view);
+ 
+ ibox = ewl_scrollpane_new();
+ ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
+ ewl_object_alignment_set(EWL_OBJECT(ibox), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
+ ewl_widget_show(ibox);
+
+ image_view = ewl_image_new();
+ ewl_image_file_set(EWL_IMAGE(image_view), path, NULL);
+ ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
+ ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
+ ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
+ ewl_widget_show(image_view); 
 }
 
 void view_images(Ewl_Widget *w, void *event, void *data)
@@ -25,8 +119,6 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  Ewl_Widget *freebox;
  Ewl_Widget *icon;
  Ewl_Widget *image;
- Ewl_Widget *vbox;
- Ewl_Widget *ibox;
  Ewl_Widget *hbox;
  Ewl_Widget *cell;
  Ecore_List *view_thumbs;
@@ -66,19 +158,17 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_object_maximum_size_set(EWL_OBJECT(freebox), 99999, 75);
  ewl_widget_show(freebox);
  
- ibox = ewl_cell_new();
+ ibox = ewl_scrollpane_new();
  ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
  ewl_object_alignment_set(EWL_OBJECT(ibox), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
  ewl_widget_show(ibox);
  
  image_view = ewl_image_new();
- ewl_theme_data_str_set(image_view, "/image/group", 
-		 	ewl_theme_data_str_get(m->entry, "group"));
  ewl_container_child_append(EWL_CONTAINER(ibox), image_view);
  ewl_image_proportional_set(EWL_IMAGE(image_view), TRUE);
  ewl_object_fill_policy_set(EWL_OBJECT(image_view), EWL_FLAG_FILL_SHRINK);
- ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_CENTER);
+ ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_LEFT);
  ewl_widget_show(image_view);
 
  hbox = ewl_hbox_new();
@@ -94,6 +184,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_callback_append(button, EWL_CALLBACK_CLICKED, zoom_in, image_view);
  ewl_widget_show(button);
  
  button = ewl_button_new();
@@ -103,6 +194,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_callback_append(button, EWL_CALLBACK_CLICKED, zoom_out, image_view);
  ewl_widget_show(button);
 
  button = ewl_button_new();
@@ -112,6 +204,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_callback_append(button, EWL_CALLBACK_CLICKED, original_size, image_view);
  ewl_widget_show(button);
 
  button = ewl_button_new();
