@@ -513,7 +513,24 @@ static void _etk_dvi_load(Etk_Dvi *dvi)
 	 edvi_page_delete (dvi->dvi_page);
       if (dvi->dvi_object)
       {
+         unsigned int *m;
+         int w;
+         int h;
+
 	 dvi->dvi_page = edvi_page_new (dvi->dvi_document, dvi->page);
+
+         w = edvi_page_width_get (dvi->dvi_page);
+         h = edvi_page_height_get (dvi->dvi_page);
+         evas_object_image_size_set (dvi->dvi_object, w, h);
+         evas_object_image_fill_set (dvi->dvi_object, 0, 0, w, h);
+         m = (unsigned int *)evas_object_image_data_get (dvi->dvi_object, 1);
+         if (!m)
+            return;
+
+         memset(m, (255 << 24) | (255 << 16) | (255 << 8) | 255, w * h * 4);
+         evas_object_image_data_update_add (dvi->dvi_object, 0, 0, w, h);
+         evas_object_resize (dvi->dvi_object, w, h);
+
 	 edvi_page_render (dvi->dvi_page, dvi->dvi_device, dvi->dvi_object);
       }
       evas_object_show(dvi->dvi_object);

@@ -432,9 +432,26 @@ ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	  DRETURN(DLEVEL_STABLE);
 
 	if (dvi->dvi_document) {
+		unsigned int *m;
+		int w;
+		int h;
+
 		if (dvi->dvi_page)
 			edvi_page_delete (dvi->dvi_page);
 		dvi->dvi_page = edvi_page_new (dvi->dvi_document, dvi->page);
+
+		w = edvi_page_width_get (dvi->dvi_page);
+		h = edvi_page_height_get (dvi->dvi_page);
+		evas_object_image_size_set (dvi->image, w, h);
+		evas_object_image_fill_set (dvi->image, 0, 0, w, h);
+		m = (unsigned int *)evas_object_image_data_get (dvi->image, 1);
+                if (!m)
+			DRETURN(DLEVEL_STABLE);
+
+		memset(m, (255 << 24) | (255 << 16) | (255 << 8) | 255, w * h * 4);
+		evas_object_image_data_update_add (dvi->image, 0, 0, w, h);
+		evas_object_resize (dvi->image, w, h);
+
 		edvi_page_render (dvi->dvi_page, dvi->dvi_device, dvi->image);
 	}
 	evas_object_image_size_get(dvi->image, &dvi->ow, &dvi->oh);
