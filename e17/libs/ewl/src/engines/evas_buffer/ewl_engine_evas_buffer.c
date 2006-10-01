@@ -108,6 +108,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 
 	bufinfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_ARGB32;
 	bufinfo->info.dest_buffer = NULL;
+	bufinfo->info.dest_buffer_row_bytes = 0;
 	bufinfo->info.use_color_key = 0;
 	bufinfo->info.alpha_threshold = 0;
 	bufinfo->info.func.new_update_region = NULL;
@@ -151,8 +152,9 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 
 	o = EWL_OBJECT(emb);
 	bufinfo = (Evas_Engine_Info_Buffer *)info;
+	bufinfo->info.dest_buffer_row_bytes = sizeof(int) * width;
 	bufinfo->info.dest_buffer = realloc(bufinfo->info.dest_buffer,
-			width * height * 4 * sizeof(char));
+			bufinfo->info.dest_buffer_row_bytes * height);
 
 	evas_engine_info_set(evas, info);
 	evas_output_size_set(evas, width, height);
