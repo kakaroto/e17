@@ -714,8 +714,11 @@ filelist_get (entropy_file_request * request)
   char posix_name[1024];
   char *md5;
   int filetype = -1;
+  int showhidden;
   evfs_file_uri_path *dir_path;
   entropy_file_listener *listener;
+
+  showhidden = entropy_config_misc_is_set("general.hiddenbackup");
 
   if ((!strcmp (request->file->uri_base, URI_POSIX)) && !request->drill_down
       && !request->file->parent) {
@@ -755,7 +758,7 @@ filelist_get (entropy_file_request * request)
     dir = opendir (dire);
     while ((de = readdir (dir))) {
       if (strcmp (de->d_name, ".") && strcmp (de->d_name, "..")
-	  && (!NO_HIDDEN || de->d_name[0] != '.')) {
+	  && (de->d_name[0] != '.') || showhidden) {
 	snprintf (full_name, 1024, "%s/%s", dire, de->d_name);
 	stat (full_name, &st);
 	if (S_ISDIR (st.st_mode)) {
