@@ -1,5 +1,5 @@
-#include "ewl_private.h"
 #include <Ewl.h>
+#include "ewl_private.h"
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
@@ -2509,7 +2509,7 @@ ewl_text_char_is_legal_utf8(const char *c)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
 
-	t = c;
+	t = (unsigned const char *)c;
 	if (!t) DRETURN_INT(FALSE, DLEVEL_STABLE);
 	
 	if (t[0] < 0x80)

@@ -27,30 +27,6 @@ struct Ewl_Config
 	} data;
 };
 
-/**
- * The Ewl_Config_Cache structure
- */
-typedef struct Ewl_Config_Cache Ewl_Config_Cache;
-
-/**
- * The Ewl_Config_Cache struct holds cached configuration data
- */
-struct Ewl_Config_Cache
-{
-	int level;			/**< Debug level */
-	unsigned char enable:1;		/**< Enable debugging */
-	unsigned char segv:1;		/**< Segv on D* messages */
-	unsigned char backtrace:1;	/**< Print backtrace on D* messages */
-	unsigned char evas_render:1;	/**< Debug evas render calls */
-	unsigned char gc_reap:1;	/**< Debug garbage collection */
-
-	unsigned char print_signals:1;	/**< Print theme signals */
-	unsigned char print_keys:1;	/**< Print theem keys */
-};
-
-extern Ewl_Config *ewl_config;	/**< The system configuration data */
-extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
-
 int		 ewl_config_init(void);
 void		 ewl_config_shutdown(void);
 void 		 ewl_config_cache_init(void);
