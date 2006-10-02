@@ -57,6 +57,10 @@ ewl_grid_init(Ewl_Grid *g)
 	ewl_container_add_notify_set(EWL_CONTAINER(g), ewl_grid_cb_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(g), 
 						ewl_grid_cb_child_remove);
+	ewl_container_show_notify_set(EWL_CONTAINER(g),
+						ewl_grid_cb_child_show);
+	ewl_container_hide_notify_set(EWL_CONTAINER(g),
+						ewl_grid_cb_child_show);
 	ewl_container_resize_notify_set(EWL_CONTAINER(g),
 						ewl_grid_cb_child_resize);
 
@@ -1474,7 +1478,7 @@ ewl_grid_map_start_position_get(Ewl_Grid *g, int *c, int *r)
 	*c = 0;
 	*r = 0;
 	
-	if (*g->map != 0) {
+	if (g->map && *g->map != 0) {
 		if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
 			ewl_grid_hmap_position_next(g, c, r);
 		else
@@ -1552,6 +1556,30 @@ ewl_grid_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 	IF_FREE(g->map);
 	g->map = NULL;
 	g->data_dirty = TRUE;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param p: The container to work with
+ * @param child: The widget to work with
+ * @param size: The new child size
+ * @param o: The orientation
+ * @return Returns no value
+ * @brief Catch notification of child shows.
+ */
+void
+ewl_grid_cb_child_show(Ewl_Container *p, Ewl_Widget *child)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_PARAM_PTR("child", child);
+	DCHECK_TYPE("p", p, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
+
+	EWL_GRID(p)->data_dirty = TRUE;
+	ewl_grid_child_data_collect(EWL_GRID(p));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
