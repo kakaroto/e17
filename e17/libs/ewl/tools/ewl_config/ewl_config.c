@@ -210,7 +210,8 @@ ec_main_win(int save_system)
 	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_APPLY);
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ec_cb_apply, NULL);
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_VFILL |
+			EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(o);
 
 	o = ewl_button_new();
@@ -221,14 +222,16 @@ ec_main_win(int save_system)
 			EWL_ICON_DIALOG_CANCEL);
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ec_cb_revert, NULL);
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_VFILL |
+			EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(o);
 
 	o = ewl_button_new();
 	ewl_button_stock_type_set(EWL_BUTTON(o), EWL_STOCK_QUIT);
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ec_cb_delete_window, NULL);
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_VFILL |
+			EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(o);
 
 	o = ewl_spacer_new();
