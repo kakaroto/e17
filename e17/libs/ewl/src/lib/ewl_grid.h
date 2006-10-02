@@ -138,6 +138,7 @@ void ewl_grid_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_grid_cb_destroy(Ewl_Widget *w, void *ev_data , void *user_data);
 void ewl_grid_cb_child_add(Ewl_Container *p, Ewl_Widget *c);
 void ewl_grid_cb_child_remove(Ewl_Container *p, Ewl_Widget *c, int idx);
+void ewl_grid_cb_child_show(Ewl_Container *p, Ewl_Widget *child);
 void ewl_grid_cb_child_resize(Ewl_Container *p, Ewl_Widget *child,
 						int size, Ewl_Orientation o);
 
