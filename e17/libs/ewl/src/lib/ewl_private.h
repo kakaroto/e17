@@ -63,9 +63,6 @@
 #define EWL_CONFIG_DEBUG_EVAS_RENDER "/ewl/debug/evas/render"
 #define EWL_CONFIG_DEBUG_GC_REAP "/ewl/debug/gc/reap"
 
-#define EWL_CONFIG_CACHE_EVAS_FONT "/ewl/cache/evas/font"
-#define EWL_CONFIG_CACHE_EVAS_IMAGE "/ewl/cache/evas/image"
-
 #define EWL_CONFIG_ENGINE_NAME "/ewl/engine/name"
 #define EWL_CONFIG_THEME_NAME "/ewl/theme/name"
 #define EWL_CONFIG_THEME_ICON_THEME "/ewl/theme/icon/theme"
@@ -76,29 +73,7 @@
 #define EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE "/ewl/theme/color/classes/override"
 #define EWL_CONFIG_THEME_COLOR_CLASSES_COUNT "/ewl/theme/color/classes/count"
 
-/**
- * The Ewl_Config_Cache structure
- */
-typedef struct Ewl_Config_Cache Ewl_Config_Cache;
-
-/**
- * The Ewl_Config_Cache struct holds cached configuration data
- */
-struct Ewl_Config_Cache
-{
-	int level;			/**< Debug level */
-	unsigned char enable:1;		/**< Enable debugging */
-	unsigned char segv:1;		/**< Segv on D* messages */
-	unsigned char backtrace:1;	/**< Print backtrace on D* messages */
-	unsigned char evas_render:1;	/**< Debug evas render calls */
-	unsigned char gc_reap:1;	/**< Debug garbage collection */
-
-	unsigned char print_signals:1;	/**< Print theme signals */
-	unsigned char print_keys:1;	/**< Print theem keys */
-};
-
 extern Ewl_Config *ewl_config;	/**< The system configuration data */
-extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 
 #endif
 

@@ -1,5 +1,6 @@
 #include <Ewl.h>
 #include "ewl_private.h"
+#include "ewl_debug.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
