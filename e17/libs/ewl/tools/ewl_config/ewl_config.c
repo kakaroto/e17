@@ -432,10 +432,12 @@ ec_engine_page_setup(Ewl_Notebook *n)
 
 	o2 = ewl_table_new(2, 3, NULL);
 	ewl_container_child_append(EWL_CONTAINER(box), o2);
+	ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(o2);
 
 	o = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(o), "Engine name");
+	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 	ewl_table_add(EWL_TABLE(o2), o, 0, 0, 0, 0);
 	ewl_widget_show(o);
 
@@ -448,6 +450,7 @@ ec_engine_page_setup(Ewl_Notebook *n)
 
 	o = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(o), "Evas font cache size");
+	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 	ewl_table_add(EWL_TABLE(o2), o, 0, 0, 1, 1);
 	ewl_widget_show(o);
 
@@ -460,6 +463,7 @@ ec_engine_page_setup(Ewl_Notebook *n)
 
 	o = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(o), "Evas image cache size");
+	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 	ewl_table_add(EWL_TABLE(o2), o, 0, 0, 2, 2);
 	ewl_widget_show(o);
 
