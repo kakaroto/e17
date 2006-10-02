@@ -63,6 +63,9 @@
 #define EWL_CONFIG_DEBUG_EVAS_RENDER "/ewl/debug/evas/render"
 #define EWL_CONFIG_DEBUG_GC_REAP "/ewl/debug/gc/reap"
 
+#define EWL_CONFIG_CACHE_EVAS_FONT "/ewl/cache/evas/font"
+#define EWL_CONFIG_CACHE_EVAS_IMAGE "/ewl/cache/evas/image"
+
 #define EWL_CONFIG_ENGINE_NAME "/ewl/engine/name"
 #define EWL_CONFIG_THEME_NAME "/ewl/theme/name"
 #define EWL_CONFIG_THEME_ICON_THEME "/ewl/theme/icon/theme"

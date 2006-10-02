@@ -18,9 +18,6 @@ void ewl_backtrace(void);
 
 #ifdef DEBUG
 
-#define EWL_CONFIG_CACHE_EVAS_FONT "/ewl/cache/evas/font"
-#define EWL_CONFIG_CACHE_EVAS_IMAGE "/ewl/cache/evas/image"
-
 /**
  * The Ewl_Config_Cache structure
  */
