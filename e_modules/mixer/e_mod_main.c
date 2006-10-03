@@ -24,10 +24,11 @@ static char            *_gc_label    (void);
 static Evas_Object     *_gc_icon     (Evas * evas);
 
 /* Module Protos */
-static void         _mixer_simple_volume_change(Mixer *mixer, Config_Item *ci, double val);
-static void         _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val);
-static void         _mixer_simple_mute_toggle(Mixer *mixer, Config_Item *ci);
-static void         _mixer_mute_toggle(Mixer *mixer, Config_Item *ci, int channel_id);
+static void         _mixer_simple_volume_change (Mixer *mixer, Config_Item *ci, double val);
+static void         _mixer_volume_change        (Mixer *mixer, Config_Item *ci, int channel_id, double val);
+static void         _mixer_simple_mute_toggle   (Mixer *mixer, Config_Item *ci);
+static void         _mixer_mute_toggle          (Mixer *mixer, Config_Item *ci, int channel_id);
+
 static Config_Item *_mixer_config_item_get   (void *data, const char *id);
 static void         _mixer_menu_cb_post      (void *data, E_Menu *m);
 static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
@@ -37,17 +38,17 @@ static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item
 static void         _mixer_system_init       (void *data);
 static void         _mixer_system_shutdown   (void *data);
 
-static void _mixer_window_simple_pop_up           (Instance *inst);
-static void _mixer_window_simple_pop_down         (Instance *inst);
+static void _mixer_window_simple_pop_up        (Instance *inst);
+static void _mixer_window_simple_pop_down      (Instance *inst);
 static int  _mixer_window_simple_timer_up_cb   (void *data);
 static int  _mixer_window_simple_timer_down_cb (void *data);
-static void _mixer_window_simple_changed_cb       (void *data, Evas_Object *obj, void *event_info);
-static void _mixer_window_simple_mute_cb          (void *data, Evas_Object *obj, void *event_info);
+static void _mixer_window_simple_changed_cb    (void *data, Evas_Object *obj, void *event_info);
+static void _mixer_window_simple_mute_cb       (void *data, Evas_Object *obj, void *event_info);
 
-static int  _mixer_window_simple_mouse_move_cb    (void *data, int type, void *event);
-static int  _mixer_window_simple_mouse_down_cb    (void *data, int type, void *event);
-static int  _mixer_window_simple_mouse_up_cb      (void *data, int type, void *event);
-static int  _mixer_window_simple_mouse_wheel_cb   (void *data, int type, void *event);
+static int  _mixer_window_simple_mouse_move_cb  (void *data, int type, void *event);
+static int  _mixer_window_simple_mouse_down_cb  (void *data, int type, void *event);
+static int  _mixer_window_simple_mouse_up_cb    (void *data, int type, void *event);
+static int  _mixer_window_simple_mouse_wheel_cb (void *data, int type, void *event);
 
 /* Private vars */
 static E_Config_DD *conf_edd = NULL;
@@ -182,9 +183,13 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance              *inst;
    Evas_Event_Mouse_Down *ev;
+   Config_Item           *ci;
 
    inst = data;
    if (!inst) return;
+
+   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
+   if (!ci) return;
    
    ev = event_info;
    if ((ev->button == 3) && (!mixer_config->menu))
@@ -216,27 +221,18 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 				 EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }
    else if (ev->button == 2)
-     {
-	Config_Item *ci;
-
-	ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-	if (!ci) return;
-
-	_mixer_simple_mute_toggle(inst->mixer, ci);
-     }
+     _mixer_simple_mute_toggle(inst->mixer, ci);
    else if (ev->button == 1) 
      {
 	if (ev->flags == EVAS_BUTTON_DOUBLE_CLICK) 
 	  {
-	     /* Call full mixer window. 
-	      For now just call simple till this mode is made */
-	     _mixer_window_simple_pop_up(inst);
+	     if ((ci->use_app) && (ci->app != NULL))
+	       ecore_exe_run(ci->app, NULL);
+	     else
+	       _mixer_window_simple_pop_up(inst);
 	  }
 	else if (ev->flags == EVAS_BUTTON_NONE)
-	  {
-	     /* Call a simple window */
-	     _mixer_window_simple_pop_up(inst);
-	  }
+	  _mixer_window_simple_pop_up(inst);
      }
 }
 
@@ -312,6 +308,7 @@ _mixer_config_item_get(void *data, const char *id)
 	ci->card_id = 0;
 	ci->channel_id = 0;
 	ci->mode = SIMPLE_MODE;
+	ci->app = NULL;
      }
    else if (mixer->mix_sys)
      {   
@@ -324,6 +321,7 @@ _mixer_config_item_get(void *data, const char *id)
 		  ci->card_id = 0;
 		  ci->channel_id = 0;
 		  ci->mode = SIMPLE_MODE;
+		  ci->app = NULL;
 		  mixer_config->items = evas_list_append(mixer_config->items, ci);
 		  return ci;
 	       }
@@ -335,6 +333,7 @@ _mixer_config_item_get(void *data, const char *id)
 	     ci->card_id = 0;
 	     ci->channel_id = 0;
 	     ci->mode = SIMPLE_MODE;
+	     ci->app = NULL;
 	     mixer_config->items = evas_list_append(mixer_config->items, ci);
 	     return ci;
 	  }
@@ -356,7 +355,6 @@ _mixer_config_item_get(void *data, const char *id)
 	  }
      }
 
-   ci->mode = SIMPLE_MODE;
    mixer_config->items = evas_list_append(mixer_config->items, ci);
    return ci;
 }
@@ -431,6 +429,8 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, card_id, INT);
    E_CONFIG_VAL(D, T, channel_id, INT);
    E_CONFIG_VAL(D, T, mode, INT);
+   E_CONFIG_VAL(D, T, app, STR);
+   E_CONFIG_VAL(D, T, use_app, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Mixer_Config", Config);
 #undef T
@@ -450,6 +450,8 @@ e_modapi_init(E_Module *m)
 	ci->card_id = 0;
 	ci->channel_id = 0;
 	ci->mode = SIMPLE_MODE;
+	ci->app = NULL;
+	ci->use_app = 0;
 	mixer_config->items = evas_list_append(mixer_config->items, ci);
      }
    
@@ -483,6 +485,7 @@ e_modapi_shutdown(E_Module *m)
 	mixer_config->items = evas_list_remove_list(mixer_config->items, 
 						    mixer_config->items);
 	if (ci->id) evas_stringshare_del(ci->id);
+	if (ci->app) evas_stringshare_del(ci->app);
 	E_FREE(ci);
      }
 
@@ -533,7 +536,7 @@ _mixer_simple_volume_change(Mixer *mixer, Config_Item *ci, double val)
 static void 
 _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val)
 {
-   int               m;
+   int m;
    
    if (!mixer) return;
    if (!mixer->mix_sys) return;
@@ -742,10 +745,8 @@ _mixer_window_simple_pop_up(Instance *inst)
 					       "e,state,disabled", "e");
 		    }
 		  else 
-		    {
-		       edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
-					       "e,state,enabled", "e");
-		    }
+		    edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
+					    "e,state,enabled", "e");
 	       }
 	  }
      }
