@@ -761,24 +761,32 @@ _mixer_window_simple_pop_up(Instance *inst)
    
    switch (inst->gcc->gadcon->orient)
      {
-        case E_GADCON_ORIENT_LEFT:
-        case E_GADCON_ORIENT_CORNER_LT:
-        case E_GADCON_ORIENT_CORNER_LB:
-          win->x += cw;
-          if (win->to_top) win->y += oh;
-          break;
-        case E_GADCON_ORIENT_RIGHT:
-        case E_GADCON_ORIENT_CORNER_RT:
-        case E_GADCON_ORIENT_CORNER_RB:
-          win->x -= win->w;
-          if (win->to_top) win->y += oh;
-          break;
-        default:
-          win->x += (ow - win->w) / 2;
-          if (win->x < cx) win->x = cx;
-          if ((win->x + win->w) > (cx + cw)) win->x = cx + cw - win->w;
-          if (!win->to_top) win->y += ch;
-          break;
+      case E_GADCON_ORIENT_LEFT:
+      case E_GADCON_ORIENT_CORNER_LT:
+      case E_GADCON_ORIENT_CORNER_LB:
+	win->x += ox + ow;
+	if (win->to_top) win->y += oh;
+	break;
+      case E_GADCON_ORIENT_RIGHT:
+      case E_GADCON_ORIENT_CORNER_RT:
+      case E_GADCON_ORIENT_CORNER_RB:
+	win->x -= (win->w - ((cx + cw) - (ox + ow)) + 5);
+	if (win->to_top) win->y += oh;
+	break;
+      case E_GADCON_ORIENT_TOP:
+      case E_GADCON_ORIENT_CORNER_TL:
+      case E_GADCON_ORIENT_CORNER_TR:
+	win->x += ((ow - win->w) / 2);
+	if (win->x < cx) win->x = cx;
+	if ((win->x + win->w) > (cx + cw)) win->x = cx + cw - win->w;
+	if (!win->to_top) win->y += oh;
+	break;
+      default:
+	win->x += ((ow - win->w) / 2);
+	if (win->x < cx) win->x = cx;
+	if ((win->x + win->w) > (cx + cw)) win->x = cx + cw - win->w;
+	if (!win->to_top) win->y += (cy + ch);
+	break;
      }
    
    e_popup_move_resize(win->window, win->x, win->y, win->w, 0);
