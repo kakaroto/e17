@@ -88,9 +88,7 @@ struct Ewl_Tree2
 	Ewl_Widget *rows;	 /**< The rows of the tree */
 
 	Ecore_List *columns;     /**< The tree columns. */
-
 	int *rowcache;           /**< Cache of row sizes */
-	Ecore_List *selected; 	 /**< The list of selected cells */
 
 	Ewl_Tree_Mode mode;	 /**< The mode of the tree */
 
@@ -140,9 +138,6 @@ void		 ewl_tree2_headers_visible_set(Ewl_Tree2 *tree,
 					       unsigned char visible);
 unsigned int	 ewl_tree2_headers_visible_get(Ewl_Tree2 *tree);
 
-Ecore_List 	*ewl_tree2_selected_cells_get(Ewl_Tree2 *tree);
-void 		 ewl_tree2_selected_cells_clear(Ewl_Tree2 *tree);
-
 Ewl_Tree_Mode 	 ewl_tree2_mode_get(Ewl_Tree2 *tree);
 void 		 ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree_Mode mode);
 
@@ -157,6 +152,7 @@ Ewl_Widget	*ewl_tree2_view_widget_get(Ewl_Tree2 *tree);
 void ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_tree2_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev, void *data);
+void ewl_tree2_cb_selected_change(Ewl_MVC *mvc);
 
 /*
  * Ewl_Tree2_Column stuff

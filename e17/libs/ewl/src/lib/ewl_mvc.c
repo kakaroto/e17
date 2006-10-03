@@ -20,6 +20,9 @@ ewl_mvc_init(Ewl_MVC *mvc)
 	ewl_widget_inherit(EWL_WIDGET(mvc), EWL_MVC_TYPE);
 	ewl_box_orientation_set(EWL_BOX(mvc), EWL_ORIENTATION_VERTICAL);
 
+	ewl_callback_append(EWL_WIDGET(mvc), EWL_CALLBACK_DESTROY,
+					ewl_mvc_cb_destroy, NULL);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -535,6 +538,29 @@ ewl_mvc_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	idx = ewl_container_child_index_get(c, w);
 	if (idx > -1 && ewl_mvc_is_selected(EWL_MVC(c), idx))
 		ewl_mvc_selected_rm(EWL_MVC(c), idx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The wiget to destroy
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief Cleans up the given widget
+ */
+void
+ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	Ewl_MVC *mvc;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	mvc = EWL_MVC(w);
+	if (mvc->selected.items)
+		FREE(mvc->selected.items);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

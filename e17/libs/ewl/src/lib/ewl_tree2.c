@@ -52,6 +52,9 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	ewl_widget_appearance_set(EWL_WIDGET(tree), EWL_TREE2_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(tree), EWL_TREE2_TYPE);
 
+	ewl_mvc_selected_change_cb_set(EWL_MVC(tree), 
+					ewl_tree2_cb_selected_change);
+
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), 
 				EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_FILL);
 
@@ -261,41 +264,6 @@ ewl_tree2_headers_visible_get(Ewl_Tree2 *tree)
 }
 
 /**
- * @param tree: The tree to get the selected cells from
- * @return Returns an Ecore_List of cells selected in the tree
- * @brief Get the selected cells from the tree
- */
-Ecore_List *
-ewl_tree2_selected_cells_get(Ewl_Tree2 *tree)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, FALSE);
-
-	DRETURN_PTR(tree->selected, DLEVEL_STABLE);
-}
-
-/**
- * @param tree: The tree to clear the selected cells from
- * @return Returns no value.
- * @brief Clear the selected cells in the tree
- */
-void
-ewl_tree2_selected_cells_clear(Ewl_Tree2 *tree)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
-
-	if (tree->mode == EWL_TREE_MODE_NONE)
-		DRETURN(DLEVEL_STABLE);
-
-	ecore_list_clear(tree->selected);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
  * @param tree: The tree to get the mode from
  * @return Returns the current Ewl_Tree_Mode of the tree
  * @brief Get the mode from the tree
@@ -331,13 +299,7 @@ ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree_Mode mode)
 	/* if the mode is none then we don't care about the selected list */
 	if (tree->mode == EWL_TREE_MODE_NONE)
 	{
-		if (tree->selected)
-			ecore_list_destroy(tree->selected);
-	}
-	else
-	{
-		if (!tree->selected)
-			tree->selected = ecore_list_new();
+		ewl_mvc_selected_list_set(EWL_MVC(tree), NULL);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -412,7 +374,6 @@ ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	t = EWL_TREE2(w);
 
 	ecore_list_destroy(t->columns);
-	if (t->selected) ecore_list_destroy(t->selected);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -442,6 +403,7 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_tree2_build_tree(tree);
+	ewl_tree2_cb_selected_change(EWL_MVC(tree));
 	ewl_mvc_dirty_set(EWL_MVC(tree), FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -664,6 +626,19 @@ ewl_tree2_cb_header_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+void
+ewl_tree2_cb_selected_change(Ewl_MVC *mvc)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	/* XXX handle highlighting here */
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 /*
  * Ewl_Tree2_Column stuff

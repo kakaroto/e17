@@ -90,5 +90,7 @@ void		 ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 void 		 ewl_mvc_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
 void		 ewl_mvc_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 
+void		 ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+
 #endif
 
