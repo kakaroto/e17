@@ -221,19 +221,14 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 				 EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }
    else if (ev->button == 2)
-     _mixer_simple_mute_toggle(inst->mixer, ci);
-   else if (ev->button == 1) 
      {
-	if (ev->flags == EVAS_BUTTON_DOUBLE_CLICK) 
-	  {
-	     if ((ci->use_app) && (ci->app != NULL))
-	       ecore_exe_run(ci->app, NULL);
-	     else
-	       _mixer_window_simple_pop_up(inst);
-	  }
-	else if (ev->flags == EVAS_BUTTON_NONE)
-	  _mixer_window_simple_pop_up(inst);
+	if ((ci->use_app) && (ci->app != NULL))
+	  ecore_exe_run(ci->app, NULL);
+	else
+	  _mixer_window_simple_pop_up(inst);	
      }
+   else if (ev->button == 1) 
+     _mixer_window_simple_pop_up(inst);
 }
 
 static void 
