@@ -58,26 +58,18 @@ MyRoot(Display * dpy)
 
 /* XCreateWindow intercept hack */
 Window
-XCreateWindow(Display * display,
-	      Window parent,
-	      int x, int y,
+XCreateWindow(Display * display, Window parent, int x, int y,
 	      unsigned int width, unsigned int height,
 	      unsigned int border_width,
-	      int depth,
-	      unsigned int class,
-	      Visual * visual,
+	      int depth, unsigned int class, Visual * visual,
 	      unsigned long valuemask, XSetWindowAttributes * attributes)
 {
    static              Window(*func)
-      (Display * display,
-       Window parent,
-       int x, int y,
-       unsigned int width, unsigned int height,
-       unsigned int border_width,
-       int depth,
-       unsigned int class,
-       Visual * visual,
-       unsigned long valuemask, XSetWindowAttributes * attributes) = NULL;
+      (Display * _display, Window _parent, int _x, int _y,
+       unsigned int _width, unsigned int _height,
+       unsigned int _border_width,
+       int _depth, unsigned int _class, Visual * _visual,
+       unsigned long _valuemask, XSetWindowAttributes * _attributes) = NULL;
 
    /* find the real Xlib and the real X function */
    if (!lib_xlib)
@@ -94,20 +86,16 @@ XCreateWindow(Display * display,
 
 /* XCreateSimpleWindow intercept hack */
 Window
-XCreateSimpleWindow(Display * display,
-		    Window parent,
-		    int x, int y,
+XCreateSimpleWindow(Display * display, Window parent, int x, int y,
 		    unsigned int width, unsigned int height,
 		    unsigned int border_width,
 		    unsigned long border, unsigned long background)
 {
    static              Window(*func)
-      (Display * display,
-       Window parent,
-       int x, int y,
-       unsigned int width, unsigned int height,
-       unsigned int border_width,
-       unsigned long border, unsigned long background) = NULL;
+      (Display * _display, Window _parent, int _x, int _y,
+       unsigned int _width, unsigned int _height,
+       unsigned int _border_width,
+       unsigned long _border, unsigned long _background) = NULL;
 
    /* find the real Xlib and the real X function */
    if (!lib_xlib)
@@ -127,7 +115,8 @@ int
 XReparentWindow(Display * display, Window window, Window parent, int x, int y)
 {
    static int          (*func)
-      (Display * display, Window window, Window parent, int x, int y) = NULL;
+      (Display * _display, Window _window, Window _parent, int _x, int _y) =
+      NULL;
 
    /* find the real Xlib and the real X function */
    if (!lib_xlib)
