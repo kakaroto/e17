@@ -222,7 +222,7 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
    else if (ev->button == 2)
      {
-	if ((ci->use_app) && (ci->app != NULL))
+	if ((ci->use_app) && (ci->app != NULL) && (ecore_file_app_installed(ci->app))
 	  ecore_exe_run(ci->app, NULL);
 	else
 	  _mixer_window_simple_pop_up(inst);	
@@ -303,7 +303,7 @@ _mixer_config_item_get(void *data, const char *id)
 	ci->card_id = 0;
 	ci->channel_id = 0;
 	ci->mode = SIMPLE_MODE;
-	ci->app = NULL;
+	ci->app = evas_stringshare_add("");
      }
    else if (mixer->mix_sys)
      {   
@@ -316,7 +316,7 @@ _mixer_config_item_get(void *data, const char *id)
 		  ci->card_id = 0;
 		  ci->channel_id = 0;
 		  ci->mode = SIMPLE_MODE;
-		  ci->app = NULL;
+		  ci->app = evas_stringshare_add("");
 		  mixer_config->items = evas_list_append(mixer_config->items, ci);
 		  return ci;
 	       }
@@ -328,7 +328,7 @@ _mixer_config_item_get(void *data, const char *id)
 	     ci->card_id = 0;
 	     ci->channel_id = 0;
 	     ci->mode = SIMPLE_MODE;
-	     ci->app = NULL;
+	     ci->app = evas_stringshare_add("");
 	     mixer_config->items = evas_list_append(mixer_config->items, ci);
 	     return ci;
 	  }
@@ -445,7 +445,7 @@ e_modapi_init(E_Module *m)
 	ci->card_id = 0;
 	ci->channel_id = 0;
 	ci->mode = SIMPLE_MODE;
-	ci->app = NULL;
+	ci->app = evas_stringshare_add("");
 	ci->use_app = 0;
 	mixer_config->items = evas_list_append(mixer_config->items, ci);
      }
