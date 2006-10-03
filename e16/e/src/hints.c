@@ -541,8 +541,7 @@ SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
 
    if (sel->func)
      {
-	ESelectInput(sel->win,
-		     SubstructureRedirectMask | SubstructureNotifyMask);
+	ESelectInput(sel->win, SubstructureNotifyMask);
 	EventCallbackRegister(sel->win, 0, sel->func, sel->data);
      }
 
