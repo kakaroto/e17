@@ -222,7 +222,8 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
    else if (ev->button == 2)
      {
-	if ((ci->use_app) && (ci->app != NULL) && (ecore_file_app_installed(ci->app))
+	if ((ci->use_app) && (ci->app != NULL) && 
+	    (ecore_file_app_installed(ci->app)))
 	  ecore_exe_run(ci->app, NULL);
 	else
 	  _mixer_window_simple_pop_up(inst);	
