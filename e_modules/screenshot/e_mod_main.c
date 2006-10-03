@@ -679,8 +679,11 @@ _ss_take_shot (void *data)
   if (!p)
     snprintf (buf, sizeof (buf), "%s.png", inst->filename);
 
-  snprintf (buf, sizeof (buf), "%s %s %s/%s", cmd, opt, ci->location,
+  snprintf (buf, sizeof (buf), "%s %s %s/%s", cmd, opt, ci->location, 
 	    inst->filename);
+   
+   printf("\n\nBuf: %s\n\n", buf);
+   
   ss_config->exe_exit_handler =
     ecore_event_handler_add (ECORE_EXE_EVENT_DEL, _ss_exe_cb_exit, NULL);
   if (ci->delay_time > 0)
@@ -739,6 +742,6 @@ _cb_entry_ok (char *text, void *data)
       e_config_save_queue ();
     }
 
-  inst->filename = evas_stringshare_add (text);
+  inst->filename = evas_stringshare_add (ecore_file_get_file(text));
   _ss_take_shot (inst);
 }
