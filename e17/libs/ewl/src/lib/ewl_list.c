@@ -63,18 +63,18 @@ ewl_list_init(Ewl_List *list)
 void
 ewl_list_selected_widget_set(Ewl_List *list, Ewl_Widget *w)
 {
+	int idx;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("list", list);
 	DCHECK_TYPE("list", list, EWL_LIST_TYPE);
 
-	if (list->selected == w)
-		DRETURN(DLEVEL_STABLE);
+	if (!w)
+		idx = -1;
+	else
+		idx = ewl_container_child_index_get(EWL_CONTAINER(list), w);
 
-	/* XXX probably need to do some theme thing here to highlight as
-	 * selected */
-	list->selected = w;
-
-	ewl_callback_call(EWL_WIDGET(list), EWL_CALLBACK_VALUE_CHANGED);
+	ewl_list_selected_index_set(list, idx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -91,7 +91,11 @@ ewl_list_selected_widget_get(Ewl_List *list)
 	DCHECK_PARAM_PTR_RET("list", list, NULL);
 	DCHECK_TYPE_RET("list", list, EWL_LIST_TYPE, NULL);
 
-	DRETURN_PTR(list->selected, DLEVEL_STABLE);
+	if (list->selected == -1)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	DRETURN_PTR(ewl_container_child_get(EWL_CONTAINER(list), 
+				list->selected), DLEVEL_STABLE);
 }
 
 /**
@@ -107,14 +111,12 @@ ewl_list_selected_index_set(Ewl_List *list, int idx)
 	DCHECK_PARAM_PTR("list", list);
 	DCHECK_TYPE("list", list, EWL_LIST_TYPE);
 
-	if (idx < 0)
-	{
-		ewl_list_selected_widget_set(list, NULL);
+	if (list->selected == idx)
 		DRETURN(DLEVEL_STABLE);
-	}
 
-	ewl_list_selected_widget_set(list, 
-			ewl_container_child_get(EWL_CONTAINER(list), idx));
+	list->selected = idx;
+
+	ewl_callback_call(EWL_WIDGET(list), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -127,18 +129,11 @@ ewl_list_selected_index_set(Ewl_List *list, int idx)
 int
 ewl_list_selected_index_get(Ewl_List *list)
 {
-	int idx;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("list", list, -1);
 	DCHECK_TYPE_RET("list", list, EWL_LIST_TYPE, -1);
 
-	if (!list->selected)
-		DRETURN_INT(-1, DLEVEL_STABLE);
-
-	idx = ewl_container_child_index_get(EWL_CONTAINER(list), list->selected);
-
-	DRETURN_INT(idx, DLEVEL_STABLE);
+	DRETURN_INT(list->selected, DLEVEL_STABLE);
 }
 
 /**
@@ -188,6 +183,8 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		ewl_container_child_append(EWL_CONTAINER(list), o);
 	}
 
+	/* XXX mark the selected widget here */
+
 	ewl_mvc_dirty_set(EWL_MVC(list), FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -224,19 +221,17 @@ ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
  * @brief Removes the selected status from the widget
  */
 void
-ewl_list_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
+ewl_list_cb_child_del(Ewl_Container *c, Ewl_Widget *w __UNUSED__, int idx)
 {
 	Ewl_List *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	list = EWL_LIST(c);
-	if (list->selected == w)
-		ewl_list_selected_widget_set(list, NULL);
+	if (list->selected == idx)
+		ewl_list_selected_index_set(list, -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -252,6 +247,7 @@ void
 ewl_list_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
 	Ewl_List *list;
+	Ewl_Widget *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -260,8 +256,9 @@ ewl_list_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	list = EWL_LIST(c);
-	if (list->selected == w)
-		ewl_list_selected_widget_set(list, NULL);
+	sel = ewl_list_selected_widget_get(list);
+	if (sel == w)
+		ewl_list_selected_index_set(list, -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

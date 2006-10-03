@@ -31,8 +31,7 @@ typedef struct Ewl_List Ewl_List;
 struct Ewl_List
 {
 	Ewl_MVC mvc;		/**< The mvc parent */
-
-	Ewl_Widget *selected;	/**< The selected widget */
+	int selected;		/**< The selected widget */
 };
 
 Ewl_Widget 	*ewl_list_new(void);

@@ -532,11 +532,11 @@ ewl_container_child_internal_get(Ewl_Container *parent, int index)
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
-static unsigned int
+static int
 ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w, 
 							unsigned int skip)
 {
-	unsigned int idx = 0;
+	unsigned int idx = 0, ret = -1;
 	Ewl_Container *container;
 	Ewl_Widget *child;
 
@@ -552,23 +552,28 @@ ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w,
 	ecore_dlist_goto_first(container->children);
 	while ((child = ecore_dlist_next(container->children))) {
 		if (skip && ewl_widget_internal_is(child)) continue;
-		if (child == w) break;
+		if (child == w) 
+		{
+			ret = idx;
+			break;
+		}
 		idx ++;
 	}
 
-	DRETURN_INT(idx, DLEVEL_STABLE);
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
 /**
  * @param parent: The container to search
  * @param w: The child to search for
- * @return Returns the index of the child in the parent
- * @brief Retrieves the index of the given child in the container
+ * @return Returns the index of the child in the parent or -1 if not found
+ * @brief Retrieves the index of the given child in the container or -1 if
+ * not found
  */
-unsigned int
+int
 ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
 {
-	unsigned int idx = 0;
+	int idx = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("parent", parent, idx);
@@ -585,14 +590,14 @@ ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
  * @param parent: The container to search
  * @param w: The child to search for
  * @return Returns the index of the child in the parent including internal
- * widgets
+ * widgets or -1 if not found
  * @brief Retrieves the index of the given child in the container taking
- * internal widgets into account 
+ * internal widgets into account or -1 if not found
  */
-unsigned int
+int
 ewl_container_child_index_internal_get(Ewl_Container *parent, Ewl_Widget *w)
 {
-	unsigned int idx = 0;
+	int idx = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("parent", parent, idx);
