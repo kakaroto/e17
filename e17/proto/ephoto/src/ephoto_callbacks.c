@@ -64,7 +64,6 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
   ewl_callback_append(row, EWL_CALLBACK_CLICKED, populate_images, NULL);
   ewl_widget_name_set(row, full_path);
  }
- ewl_widget_configure(m->albums);
 }
 
 void populate_browser(Ewl_Widget *w, void *event, void *data)
@@ -131,7 +130,6 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
   ewl_callback_append(row, EWL_CALLBACK_CLICKED, populate_images, NULL);
   ewl_widget_name_set(row, file);
  }
- ewl_widget_configure(m->browser);
 }
 
 void populate_images(Ewl_Widget *w, void *event, void *data)
@@ -226,6 +224,8 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
   ewl_widget_show(image);
  }
+ ewl_widget_configure(m->albums);
+ ewl_widget_configure(m->browser);
  ewl_widget_configure(m->viewer_freebox);
  ewl_widget_configure(m->viewer);
  ecore_list_destroy(ls);

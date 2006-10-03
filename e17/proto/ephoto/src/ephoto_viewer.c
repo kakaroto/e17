@@ -33,7 +33,7 @@ void zoom_in(Ewl_Widget *w, void *event, void *data)
  
  ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh);
  
- ewl_image_size_set(EWL_IMAGE(image_view), ow*1.5, oh*1.5);
+ ewl_image_size_set(EWL_IMAGE(image_view), ow*2, oh*2);
  ewl_widget_reparent(image_view); 
 
  ewl_widget_configure(ibox);
@@ -45,7 +45,7 @@ void zoom_out(Ewl_Widget *w, void *event, void *data)
  
  ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh);
  
- ewl_image_size_set(EWL_IMAGE(image_view), ow/1.5, oh/1.5);
+ ewl_image_size_set(EWL_IMAGE(image_view), ow/2, oh/2);
  ewl_widget_reparent(image_view);
 
  ewl_widget_configure(ibox);
