@@ -402,6 +402,37 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
 }
 
 /**
+ * @param mvc: The MVC to work with
+ * @param idx: The index to remove
+ * @return Returns no value
+ * @brief Removes the given index from the list of selected indices
+ */
+void
+ewl_mvc_selected_rm(Ewl_MVC *mvc, int idx)
+{
+	int i;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	for (i = 0; i < mvc->selected.count; i++)
+	{
+		if (mvc->selected.items[i] == idx)
+		{
+			mvc->selected.count --;
+			memmove((mvc->selected.items + i), 
+					(mvc->selected.items + i + 1),
+					((mvc->selected.count - i) * sizeof(int)));
+			mvc->selected.items[mvc->selected.count] = -1;
+			break;
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param mvc: The MVC widget to work with
  * @return Returns the number of items selected in the MVC
  * @brief Retrives the number of items selected in the widget
@@ -417,6 +448,31 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 }
 
 /**
+ * @param mvc: The MVC to work with
+ * @param idx: The index to check for
+ * @return Returns TRUE if the index is selected, FALSE otherwise
+ * @brief Checks if the given index is selected or not.
+ */
+unsigned int
+ewl_mvc_is_selected(Ewl_MVC *mvc, int idx)
+{
+	int i;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, FALSE);
+
+	for (i = 0; i < mvc->selected.count; i++)
+	{
+		if (mvc->selected.items[i] == idx)
+			DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
  * @param mvc: The MVC to set the callback into
  * @param cb: The callback to set
  * @return Returns no value
@@ -432,6 +488,53 @@ ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc))
 	mvc->cb.selected_change = cb;
 	if (mvc->selected.count > 0)
 		cb(mvc);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/** 
+ * @internal
+ * @param c: The container
+ * @param w: UNUSED
+ * @param idx: The index removed from
+ * @return Returns no value
+ * @brief Checks if the given widget index is in the selected array and
+ * removes it
+ */
+void
+ewl_mvc_cb_child_del(Ewl_Container *c, Ewl_Widget *w __UNUSED__, int idx)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+
+	if (ewl_mvc_is_selected(EWL_MVC(c), idx))
+		ewl_mvc_selected_rm(EWL_MVC(c), idx);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget
+ * @return Returns no value
+ * @brief Checks if the widget is in the selected list and removes it
+ */
+void
+ewl_mvc_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
+{
+	int idx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	idx = ewl_container_child_index_get(c, w);
+	if (idx > -1 && ewl_mvc_is_selected(EWL_MVC(c), idx))
+		ewl_mvc_selected_rm(EWL_MVC(c), idx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

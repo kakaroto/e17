@@ -76,8 +76,10 @@ void		 ewl_mvc_selected_range_set(Ewl_MVC *mvc, int start, int end);
 void		 ewl_mvc_selected_set(Ewl_MVC *mvc, int i);
 void		 ewl_mvc_selected_add(Ewl_MVC *mvc, int i);
 int		 ewl_mvc_selected_get(Ewl_MVC *mvc);
+void		 ewl_mvc_selected_rm(Ewl_MVC *mvc, int idx);
 
 int		 ewl_mvc_selected_count_get(Ewl_MVC *mvc);
+unsigned int	 ewl_mvc_is_selected(Ewl_MVC *mvc, int idx);
 
 /* 
  * internal
@@ -85,6 +87,8 @@ int		 ewl_mvc_selected_count_get(Ewl_MVC *mvc);
 void		 ewl_mvc_view_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 void		 ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 
+void 		 ewl_mvc_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
+void		 ewl_mvc_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 
 #endif
 

@@ -367,7 +367,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	}
 	closedir(rep);
 
-	ewl_list_selected_index_set(EWL_LIST(o), sel);
+	ewl_mvc_selected_set(EWL_MVC(o), sel);
 	ewl_mvc_dirty_set(EWL_MVC(o), TRUE);
 
 	o2 = ewl_border_new();
@@ -660,7 +660,7 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 			break;
 		sel++;
 	}
-	ewl_list_selected_index_set(EWL_LIST(o), sel);
+	ewl_mvc_selected_set(EWL_MVC(o), sel);
 
 	o = ewl_widget_name_find(EC_ICON_SIZE);
 	list = ewl_mvc_data_get(EWL_MVC(o));
@@ -781,7 +781,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	o = ewl_widget_name_find(EC_EWL_THEME);
 	list = ewl_mvc_data_get(EWL_MVC(o));
-	i = ewl_list_selected_index_get(EWL_LIST(o));
+	i = ewl_mvc_selected_get(EWL_MVC(o));
 	if (i > -1)
 	{
 		ecore_list_goto_index(list, i);

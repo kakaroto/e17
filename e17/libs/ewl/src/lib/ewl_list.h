@@ -31,17 +31,10 @@ typedef struct Ewl_List Ewl_List;
 struct Ewl_List
 {
 	Ewl_MVC mvc;		/**< The mvc parent */
-	int selected;		/**< The selected widget */
 };
 
 Ewl_Widget 	*ewl_list_new(void);
 int 		 ewl_list_init(Ewl_List *list);
-
-void		 ewl_list_selected_widget_set(Ewl_List *list, Ewl_Widget *w);
-Ewl_Widget	*ewl_list_selected_widget_get(Ewl_List *list);
-
-void		 ewl_list_selected_index_set(Ewl_List *list, int idx);
-int		 ewl_list_selected_index_get(Ewl_List *list);
 
 /*
  * Internal stuff.
@@ -49,8 +42,7 @@ int		 ewl_list_selected_index_get(Ewl_List *list);
 void ewl_list_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev, void *data);
 void ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
-void ewl_list_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
-void ewl_list_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
+void ewl_list_cb_selected_change(Ewl_MVC *mvc);
 
 /**
  * @}
