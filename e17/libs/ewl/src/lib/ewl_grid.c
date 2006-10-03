@@ -1056,6 +1056,9 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 	DCHECK_PARAM_PTR("g", g);
 	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
 
+	if (!g->map)
+		ewl_grid_map_recalc(g);
+
 	/*
 	 * setup the position stuff for the floating
 	 * widgets
