@@ -39,20 +39,14 @@ struct Ewl_Combo
 {
 	Ewl_MVC mvc; /**< Inherit from Ewl_MVC */
 
-	Ewl_Menu_Base *popup; /**< Use a menu to display with. */
-
-	Ewl_Widget *button; /**< expand/contract button */
-	Ewl_Widget *selected; /**< Selected widget */
-	int selected_idx; /**< The selected row */
-
+	Ewl_Menu_Base *popup; 	/**< Use a menu to display with. */
+	Ewl_Widget *button; 	/**< expand/contract button */
+	Ewl_Widget *header; 	/**< The combo header widget */
 	unsigned char editable:1; /**< Is the combo editable */
 };
 
 Ewl_Widget 	*ewl_combo_new(void);
 int		 ewl_combo_init(Ewl_Combo *combo);
-
-int		 ewl_combo_selected_get(Ewl_Combo *combo);
-void		 ewl_combo_selected_set(Ewl_Combo *combo, int);
 
 void		 ewl_combo_editable_set(Ewl_Combo *combo, 
 						unsigned int editable);
@@ -65,6 +59,8 @@ void ewl_combo_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_decrement_clicked(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_increment_clicked(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_item_clicked(Ewl_Widget *w, void *ev, void *data);
+
+void ewl_combo_cb_selected_change(Ewl_MVC *mvc);
 
 /**
  * @}

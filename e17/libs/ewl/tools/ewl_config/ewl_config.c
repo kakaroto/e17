@@ -417,7 +417,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	ewl_mvc_view_set(EWL_MVC(o), ewl_label_view_get());
 	ewl_mvc_data_set(EWL_MVC(o), list);
 	ewl_table_add(EWL_TABLE(box), o, 1, 1, 1, 1);
-	ewl_combo_selected_set(EWL_COMBO(o), sel);
+	ewl_mvc_selected_set(EWL_MVC(o), sel);
 	ewl_widget_show(o);
 }
 
@@ -674,7 +674,7 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 			break;
 		sel ++;
 	}
-	ewl_combo_selected_set(EWL_COMBO(o), sel);
+	ewl_mvc_selected_set(EWL_MVC(o), sel);
 
 	for (sel = 0; strings[sel].name != NULL; sel++)
 	{
@@ -767,7 +767,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	o = ewl_widget_name_find(EC_ICON_SIZE);
 	list = ewl_mvc_data_get(EWL_MVC(o));
-	i = ewl_combo_selected_get(EWL_COMBO(o));
+	i = ewl_mvc_selected_get(EWL_MVC(o));
 
 	ecore_list_goto_index(list, i);
 	val = ecore_list_current(list);

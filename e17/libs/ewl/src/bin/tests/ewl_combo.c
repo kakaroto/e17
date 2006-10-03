@@ -241,7 +241,8 @@ combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	int idx;
 
 	d = ewl_mvc_data_get(EWL_MVC(w));
-	idx = ewl_combo_selected_get(EWL_COMBO(w));
+	idx = ewl_mvc_selected_get(EWL_MVC(w));
+
 	if (idx > -1)
 		printf("value changed to %d (%s)\n", idx, d->data[idx]);
 	else

@@ -133,7 +133,7 @@ create_test(Ewl_Container *box)
 		ewl_mvc_model_set(EWL_MVC(o), model);
 		ewl_mvc_view_set(EWL_MVC(o), view);
 		ewl_mvc_data_set(EWL_MVC(o), styles);
-		ewl_combo_selected_set(EWL_COMBO(o), 0);
+		ewl_mvc_selected_set(EWL_MVC(o), 0);
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
 		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
 						ete_cb_styles_changed, NULL);
@@ -254,9 +254,9 @@ ete_cb_styles_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	int idx;
 	char *str;
 
-	idx = ewl_combo_selected_get(EWL_COMBO(w));
+	idx = ewl_mvc_selected_get(EWL_MVC(w));
 	str = ecore_list_goto_index(ewl_mvc_data_get(EWL_MVC(w)), 
-					ewl_combo_selected_get(EWL_COMBO(w)));
+					ewl_mvc_selected_get(EWL_MVC(w)));
 
 	entry = ewl_widget_name_find("entry");
 	if (!strcmp(str, "None"))

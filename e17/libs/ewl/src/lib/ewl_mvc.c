@@ -192,3 +192,248 @@ ewl_mvc_dirty_get(Ewl_MVC *mvc)
 	DRETURN_INT(mvc->dirty, DLEVEL_STABLE);
 }
 
+/**
+ * @param mvc: The MVC widget to use
+ * @param multi: Is this widget multiselect capable
+ * @return Returns no value
+ * @brief Sets the multiselect capabilities of the mvc widget
+ */
+void
+ewl_mvc_multiselect_set(Ewl_MVC *mvc, unsigned int multi)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	mvc->multiselect = !!multi;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC widget to use
+ * @return Returns the multiselect setting of the mvc widget
+ * @brief Retrieves the multiselect setting of the widget
+ */
+unsigned int
+ewl_mvc_multiselect_get(Ewl_MVC *mvc)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, FALSE);
+
+	DRETURN_INT(mvc->multiselect, DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC to work with
+ * @param list: The list of indicies to set selected, list is -1 terminated
+ * @return Returns no value
+ * @brief Sets the list of indices selected 
+ */
+void
+ewl_mvc_selected_list_set(Ewl_MVC *mvc, int *list)
+{
+	int i, size;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	if (!list)
+	{
+		mvc->selected.count = 0;
+		mvc->selected.items = realloc(mvc->selected.items, 2 * (sizeof(int)));
+		mvc->selected.items[0] = -1;
+	}
+	else if (mvc->multiselect)
+	{
+		mvc->selected.count = 0;
+		for (i = 0; list[i] != -1; i++)
+			mvc->selected.count ++;
+
+		size = (mvc->selected.count + 1) * (sizeof(int));
+		mvc->selected.items = realloc(mvc->selected.items, size);
+		mvc->selected.items[mvc->selected.count] = -1;
+	
+		if (mvc->selected.count > 0)
+			memcpy(mvc->selected.items, list, size);
+	}
+	else
+	{
+		mvc->selected.count = 1;
+		mvc->selected.items = realloc(mvc->selected.items, 2 * sizeof(int));
+		mvc->selected.items[0] = list[0];
+		mvc->selected.items[1] = -1;
+	}
+
+	if (mvc->cb.selected_change)
+		mvc->cb.selected_change(mvc);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC to get the list from
+ * @return Returns the list of selected indices, list is -1 terminated.
+ * @brief Retrieves the list of selected indicies
+ */
+const int *
+ewl_mvc_selected_list_get(Ewl_MVC *mvc)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+
+	DRETURN_PTR(mvc->selected.items, DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC to set the list into
+ * @param start: The range start
+ * @param end: The range end
+ * @return Returns no value
+ * @brief Sets the given range, inclusive, as selected in the mvc
+ */
+void
+ewl_mvc_selected_range_set(Ewl_MVC *mvc, int start, int end)
+{
+	int t;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	if (start < 0) start = 0;
+	if (end < 0) end = 0;
+
+	/* make sure the start comes first */
+	if (end < start)
+	{
+		t = start;
+		start = end;
+		end = t;
+	}
+
+	/* this isn't multiselect so make this one item, the start */
+	if (!mvc->multiselect)
+		end = start;
+
+	t = (end - start) + 1;
+	mvc->selected.count = t;
+	mvc->selected.items = realloc(mvc->selected.items, (t + 1) * sizeof(int));
+	mvc->selected.items[mvc->selected.count] = -1;
+
+	for (t = 0; t < mvc->selected.count; t++)
+		mvc->selected.items[t] = start + t;
+
+	if (mvc->cb.selected_change)
+		mvc->cb.selected_change(mvc);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC to work with
+ * @param i: The index to set selected
+ * @return Returns no value
+ * @brief Sets the given index as selected
+ */
+void
+ewl_mvc_selected_set(Ewl_MVC *mvc, int i)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	mvc->selected.count = 1;
+	mvc->selected.items = realloc(mvc->selected.items, 2 * sizeof(int));
+	mvc->selected.items[0] = i;
+	mvc->selected.items[1] = -1;
+
+	if (mvc->cb.selected_change)
+		mvc->cb.selected_change(mvc);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC to work with
+ * @param i: The index to add to the selected list
+ * @return Returns no value
+ * @brief Adds the given index to the selected list
+ */
+void
+ewl_mvc_selected_add(Ewl_MVC *mvc, int i)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	mvc->selected.count ++;
+	mvc->selected.items = realloc(mvc->selected.items, 
+				(mvc->selected.count + 1) * sizeof(int));
+	mvc->selected.items[mvc->selected.count - 1] = i;
+	mvc->selected.items[mvc->selected.count] = -1;
+
+	if (mvc->cb.selected_change)
+		mvc->cb.selected_change(mvc);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC to get the data from
+ * @return Returns the last selected item
+ * @brief Retrieves the last selected item
+ */
+int
+ewl_mvc_selected_get(Ewl_MVC *mvc)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("mvc", mvc, -1);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, -1);
+
+	if (mvc->selected.count == 0)
+		DRETURN_INT(-1, DLEVEL_STABLE);
+
+	DRETURN_INT(mvc->selected.items[mvc->selected.count - 1], 
+							DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC widget to work with
+ * @return Returns the number of items selected in the MVC
+ * @brief Retrives the number of items selected in the widget
+ */
+int
+ewl_mvc_selected_count_get(Ewl_MVC *mvc)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("mvc", mvc, 0);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, 0);
+
+	DRETURN_INT(mvc->selected.count, DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC to set the callback into
+ * @param cb: The callback to set
+ * @return Returns no value
+ * @brief Sets the given callback into the MVC widget
+ */
+void
+ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc))
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	mvc->cb.selected_change = cb;
+	if (mvc->selected.count > 0)
+		cb(mvc);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+

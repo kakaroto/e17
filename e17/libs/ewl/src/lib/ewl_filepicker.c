@@ -144,7 +144,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_mvc_model_set(EWL_MVC(fp->type_combo), model);
 	ewl_mvc_view_set(EWL_MVC(fp->type_combo), view);
 	ewl_mvc_data_set(EWL_MVC(fp->type_combo), fp);
-	ewl_combo_selected_set(EWL_COMBO(fp->type_combo), 0);
+	ewl_mvc_selected_set(EWL_MVC(fp->type_combo), 0);
 	ewl_combo_editable_set(EWL_COMBO(fp->type_combo), TRUE);
 	ewl_callback_append(fp->type_combo, EWL_CALLBACK_VALUE_CHANGED,
 					ewl_filepicker_cb_type_change, fp);
@@ -712,7 +712,7 @@ ewl_filepicker_path_populate(Ewl_Filepicker *fp, char *path)
 		ecore_list_prepend(fp->path, strdup(path));
 
 	ewl_mvc_dirty_set(EWL_MVC(fp->path_combo), TRUE);
-	ewl_combo_selected_set(EWL_COMBO(fp->path_combo), 0);
+	ewl_mvc_selected_set(EWL_MVC(fp->path_combo), 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -730,7 +730,7 @@ ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev __UNUSED__,
 
 	fp = data;
 	ecore_list_goto_index(fp->path,
-			ewl_combo_selected_get(EWL_COMBO(w)));
+			ewl_mvc_selected_get(EWL_MVC(w)));
 	ewl_filepicker_directory_set(fp, ecore_list_current(fp->path));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -766,7 +766,7 @@ ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	fp = data;
-	idx = ewl_combo_selected_get(EWL_COMBO(w));
+	idx = ewl_mvc_selected_get(EWL_MVC(w));
 	if (idx > -1)
 	{
 		ecore_list_goto_index(fp->filters, idx);
