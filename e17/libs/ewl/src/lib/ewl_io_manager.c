@@ -149,10 +149,14 @@ ewl_io_manager_uri_mime_type_get(const char *uri)
 	ptr = strrchr(uri, '.');
 	if (!ptr) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!strcasecmp(ptr, ".txt") || !strcasecmp(ptr, ".c") 
-			|| !strcasecmp(ptr, ".h"))
+	if (!strcasecmp(ptr, ".txt")) 
 	{
 		DRETURN_PTR("text/plain", DLEVEL_STABLE);
+	}
+	if (!strcasecmp(ptr, ".c") || !strcasecmp(ptr, ".h")
+		|| !strcasecmp(ptr, ".cpp"))
+	{
+		DRETURN_PTR("text/c", DLEVEL_STABLE);
 	}
 	else if (!strcasecmp(ptr, ".rtf"))
 	{

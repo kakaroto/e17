@@ -13,6 +13,7 @@ INCLUDES		=	-I$(top_srcdir)/src/lib \
 pkgdir                  = $(libdir)/ewl/plugins
 
 pkg_LTLIBRARIES		= ewl_io_manager_text_plugin.la \
+ewl_io_manager_text_c_plugin.la \
 ewl_io_manager_image_plugin.la
 
 ewl_io_manager_text_plugin_la_SOURCES   = ewl_io_manager_text_plugin.c
@@ -21,6 +22,13 @@ ewl_io_manager_text_plugin_la_LDFLAGS	= -module -avoid-version \
 			  -L$(top_builddir)/src/lib \
 			  -L$(top_builddir)/src/lib/.libs
 ewl_io_manager_text_plugin_la_DEPENDENCIES = 
+
+ewl_io_manager_text_c_plugin_la_SOURCES   = ewl_io_manager_text_c_plugin.c
+ewl_io_manager_text_c_plugin_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
+ewl_io_manager_text_c_plugin_la_LDFLAGS	= -module -avoid-version \
+			  -L$(top_builddir)/src/lib \
+			  -L$(top_builddir)/src/lib/.libs
+ewl_io_manager_text_c_plugin_la_DEPENDENCIES = 
 
 ewl_io_manager_image_plugin_la_SOURCES   = ewl_io_manager_image_plugin.c
 ewl_io_manager_image_plugin_la_LIBADD    = $(top_builddir)/src/lib/libewl.la

@@ -110,7 +110,7 @@ ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 	else
 		icon_size = size;
 
-	snprintf(key, sizeof(key), "%s@%s", icon, size);
+	snprintf(key, sizeof(key), "%s@%s", icon, icon_size);
 	ret = ecore_hash_get(ewl_icon_theme_cache, key);
 	if (!ret)
 	{
