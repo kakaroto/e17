@@ -1,6 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 FILES = add.png \
-	emblem-favorite.png \
+	dialog-close.png \
+        emblem-favorite.png \
 	emblem-photos.png \
 	exit.png \
 	folder.png \
@@ -11,6 +12,7 @@ FILES = add.png \
 	redo.png \
 	remove.png \
 	search.png \
+        stock_save.png \
 	undo.png \
 	x-office-presentation.png
 imagedir = $(pkgdatadir)/images
