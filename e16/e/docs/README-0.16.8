@@ -18,6 +18,7 @@ Contents
 - Session Scripts
 - Composite manager notes
 - Default keybindings
+- Configuration options
 - Using e16 with GNOME
 - Using e16 with KDE
 - Migrating from Enlightenment 0.16.7 to 0.16.8 
@@ -217,7 +218,7 @@ Applications unintentionally using an ARGB visual will normally not be
 rendered properly at all and should be started with the environment variable
 XLIB_SKIP_ARGB_VISUALS set.
 To fix border rendering on "real" ARGB windows it is required to use imlib2
-with version > 1.2.2 (i.e. CVS, atm.).
+with version >= 1.3.0.
 
 Tweaks:
 
@@ -274,6 +275,311 @@ Alt-Ctrl   b		Toggle visibility of theme buttons
 Alt-Ctrl   c		Toggle visibility of configuration buttons
 Alt-Ctrl   d		Switch dragbar position
 Alt-Ctrl   o		Switch dragbar button ordering
+
+
+Configuration options
+---------------------
+The available configuration options are shown below. Values are the defaults.
+
+# [bool] High quality background rendering
+backgrounds.hiquality = 1
+# [bool] Prefer user selected backgrounds over theme settings
+backgrounds.user = 1
+# [int] Time out for unused background image pixmaps
+backgrounds.timeout = 240
+
+# [bool] Enable composite manager
+compmgr.enable = 0
+# [int] Composite manager mode (always 2 atm)
+compmgr.mode = 2
+# [int] Dropshadow mode (0: off, 1: sharp, 2: blurry, 3: echo)
+compmgr.shadows.mode = 0
+# [int] Dropshadow offset
+compmgr.shadows.offset_x = 3
+compmgr.shadows.offset_y = 5
+# [int] Blurry dropshadow radius
+compmgr.shadows.blur.radius = 5
+# [int] Blurry dropshadow opacity(%)
+compmgr.shadows.blur.opacity = 75
+# [int] Sharp dropshadow opacity(%)
+compmgr.shadows.sharp.opacity = 30
+# [bool] Hack to fix problems with resize on old xorg servers
+compmgr.resize_fix_enable = 0
+# [bool] Experimental - leave at 0
+compmgr.use_name_pixmap = 0
+# [bool] Enable fading
+compmgr.fading.enable = 1
+# [int] Fading time step(us)
+compmgr.fading.dt_us = 10000
+# [int] Fading opacity step
+compmgr.fading.step = 0x10000000
+# [int] Composite redirection of override-redirect windows (0: off, 1: on map, ...: testing)
+# Should normally be 1 but 0 may be a partial workaround of problems with vanishing
+# pop-ups on certain X-server/toolkit versions.
+compmgr.override_redirect.mode = 1
+# [int] Opacity of override-redirect windows (pop-up's, etc)
+compmgr.override_redirect.opacity = 90
+
+# [int] Number of desktops
+desktops.num = 2
+# [int] Desktop dragging direction
+desktops.dragdir = 2
+# [int] Desktop dragbar width (0: disable)
+desktops.dragbar_width = 16
+# [int] Desktop dragbar length (0: full)
+desktops.dragbar_length = 0
+# [int] Desktop dragbar button ordering
+desktops.dragbar_ordering = 1
+# [bool] Wrap around on desk switch (last <-> first on next/prev)
+desktops.desks_wraparound = 0
+# [bool] Slide desks in when switching
+desktops.slidein = 1
+# [int] Desk slide speed
+desktops.slidespeed = 6000
+# [int] Size of virtual desktop
+desktops.areas_nx = 2
+desktops.areas_ny = 1
+# [bool] Wrap around on area switch (last <-> first on next/prev)
+desktops.areas_wraparound = 0
+# [int] Edge flip resistance(pixels)
+desktops.edge_flip_resistance = 25
+
+# [bool] Enable ripples effect
+effects.ripples.enabled = 0
+# [bool] Enable waves effect
+effects.waves.enabled = 0
+
+# [int] Focus mode (0: pointer, 1: sloppy, 2: click)
+focus.mode = 1
+# [bool] Raise window when clicked
+focus.clickraises = 1
+# [bool] Transients are placed where leader is
+focus.transientsfollowleader = 1
+# [bool] When a transient is mapped the desk/area is switched to where the transient appears
+focus.switchfortransientmap = 1
+# [bool] Focus new windows
+focus.all_new_windows_get_focus = 0
+# [bool] Focus new transients
+focus.new_transients_get_focus = 0
+# [bool] Focus new transients if group is focused
+focus.new_transients_get_focus_if_group_focused = 1
+# [bool] Raise window on focus next
+focus.raise_on_next = 1
+# [bool] Warp pointer to window on focus next
+focus.warp_on_next = 0
+# [bool] Always warp pointer into window when new window is focused
+focus.warp_always = 0
+# [bool] Enable autoraise
+focus.autoraise.enable = 0
+# [int] Autoraise delay(ms)
+focus.autoraise.delay = 500
+
+# [bool] Default group settings
+groups.dflt.iconify = 1
+groups.dflt.kill = 0
+groups.dflt.mirror = 1
+groups.dflt.move = 1
+groups.dflt.raise = 0
+groups.dflt.set_border = 1
+groups.dflt.stick = 1
+groups.dflt.shade = 1
+groups.swapmove = 1
+
+# [string] Language used by e16 (dialogs, tooltips, etc.)
+# Inherit from environment if not set
+locale.internal = 
+# [string] Language exported when starting applications
+# Inherit from environment if not set
+locale.exported = 
+
+# [bool] Animate menus
+menus.animate = 0
+# [bool] Keep menus on-screen
+menus.onscreen = 1
+# [bool] Warp pointer when sliding menus
+menus.warp = 1
+# [bool] Enable icons in menus
+menus.show_icons = 1
+# [int] Menu icon size(pixels)
+menus.icon_size = 16
+# [int] Menu navigation keycodes
+menus.key.left = 0xff51
+menus.key.right = 0xff53
+menus.key.up = 0xff52
+menus.key.down = 0xff54
+menus.key.escape = 0xff1b
+menus.key.ret = 0xff0d
+
+# [int] Button move resistance(pixels)
+misc.buttons.move_resistance = 10
+
+# [bool] Show headers in dialogs
+misc.dialogs.headers = 0
+# [bool] Enable images on dialog buttons
+misc.dialogs.button_image = 0
+
+# [bool] Enable docking of dockapps
+misc.dock.enable = 1
+# [bool] Make all dockapps sticky
+misc.dock.sticky = 1
+# [int] Dock direction
+misc.dock.dirmode = 3
+# [int] Dock start position
+misc.dock.startx = 0
+misc.dock.starty = 0
+
+# [bool] Enable desktop background compatibility mode
+# Fixes background in many apps using pseudotransparency
+# May cause major slowdowns in certain setups
+misc.hints.set_xroot_info_on_root_window = 0
+
+# [int] Move mode (0: opaque, 1: technical, 2: box, 3: shaded, 4: semi-solid, 5: translucent)
+misc.movres.mode_move = 0
+# [int] Resize mode (0: opaque, 1: technical, 2: box, 3: shaded, 4: semi-solid)
+misc.movres.mode_resize = 2
+# [int] Geometry indicator mode (0: off, 1: window center, 2: screen corner)
+misc.movres.mode_info = 1
+# [bool] Send synthetic ConfigureNotify's while moving
+# Causes pseudotransparent apps to update while moving (expensive)
+misc.movres.update_while_moving = 0
+
+# [int] Composite opacity of menu windows
+misc.opacity.menus = 85
+# [int] Composite opacity of windows being moved
+misc.opacity.movres = 60
+# [int] Composite opacity of tooltip windows
+misc.opacity.tooltips = 80
+
+# [bool] Place windows manually
+misc.place.manual = 0
+# [bool] Place windows under pointer
+misc.place.manual_mouse_pointer = 0
+# [bool] Slide windows in
+misc.place.slidein = 0
+# [bool] Slide windows around while cleaning up
+misc.place.cleanupslide = 1
+# [int] Window slide-in mode (0: opaque, 1: technical, 2: box, 3: shaded, 4: semi-solid)
+misc.place.slidemode = 0
+# [int] Window slide-in speed
+misc.place.slidespeedmap = 6000
+# [int] Window cleanup slidespeed
+misc.place.slidespeedcleanup = 8000
+# [bool] Ignore windows with struts (e.g. panels) when placing new window
+misc.place.ignore_struts = 0
+# [bool] Raise fullscreen windows (increase stacking level while fullscreen)
+misc.place.raise_fullscreen = 0
+
+# [bool] Enable session scripts
+misc.session.enable_script = 0
+# [string] Session script
+misc.session.script = $EROOT/scripts/session.sh
+# [bool] Enable logout dialog
+misc.session.enable_logout_dialog = 1
+# [bool] Enable reboot/halt in logout dialog
+misc.session.enable_reboot_halt = 0
+# [string] Reboot command
+misc.session.cmd_reboot = reboot
+# [string] Halt command
+misc.session.cmd_halt = poweroff
+
+# [bool] Enable animation of window shading
+misc.shading.animate = 1
+# [int] Shading speed
+misc.shading.speed = 8000
+
+# [bool] Enable resistance when moving windows
+misc.snap.enable = 1
+# [int] Resistance at other window edge
+misc.snap.edge_snap_dist = 8
+# [int] Resistance at screen edge
+misc.snap.screen_snap_dist = 32
+
+# [bool] First time flag
+misc.startup.firsttime = 0
+# [bool] Enable sliding startup windows
+misc.startup.animate = 1
+
+# [bool] Test options (do not change)
+misc.testing.argb_internal_objects = 0
+misc.testing.argb_internal_clients = 0
+misc.testing.argb_clients = 0
+misc.testing.argb_clients_inherit_attr = 0
+misc.testing.use_sync = 0
+misc.testing.mask_alpha_threshold = 8
+
+# [bool] Save configuration changes
+misc.autosave = 1
+# [bool] Keep memory usage down (should probably always be 1)
+misc.memory_paranoia = 1
+# [bool] Use save-unders when appropriate
+misc.save_under = 0
+
+# [bool] Enable pagers
+pagers.enable = 1
+# [bool] Enable zooming of pager snapshot windows
+pagers.zoom = 1
+# [bool] Show window name pop-ups
+pagers.title = 1
+# [bool] Enable high quality snapshots
+pagers.hiq = 1
+# [int] Pager mode (0: simple, 1: snap, 2: live)
+pagers.mode = 1
+# [int] Scan/update speed (lines/updates per second. Used only in snap or live mode)
+pagers.scanspeed = 10
+# [int] Pager buttons
+pagers.sel_button = 2
+pagers.win_button = 1
+pagers.menu_button = 3
+
+# [bool] Enable sound
+sound.enable = 0
+# [string] Use sounds from theme (not implemented)
+sound.theme = 
+
+# [string] Theme
+theme.name = winter
+# [string] Colon separated list of directories containing e16 themes
+theme.extra_path = /mnt/fc4/src/E/themes/e16
+# [string] Colon separated list of additional TrueType font directories
+theme.ttfont_path = 
+
+# [bool] Enable tooltips
+tooltips.enable = 1
+# [bool] Enable root window tooltips
+tooltips.showroottooltip = 1
+# [int] Tooltip delay
+tooltips.delay = 1500
+
+# [int] Theme transparency(0-255)
+transparency.alpha = 0
+# [int] Item transparencies (0: off, 1: background, 2: glass)
+transparency.menu = 1
+transparency.menu_item = 1
+transparency.tooltip = 2
+transparency.widget = 1
+transparency.hilight = 0
+transparency.border = 1
+transparency.iconbox = 1
+transparency.dialog = 1
+transparency.pager = 1
+transparency.warplist = 1
+
+# [bool] Enable focus list (alt-tab)
+warplist.enable = 1
+# [bool] Show sticky windows
+warplist.showsticky = 1
+# [bool] Show shaded windows
+warplist.showshaded = 1
+# [bool] Show iconified windows
+warplist.showiconified = 0
+# [bool] Warp pointer to focused window
+warplist.warpfocused = 1
+# [bool] Raise window while selecting
+warplist.raise_on_select = 1
+# [bool] Warp pointer to window while selecting
+warplist.warp_on_select = 0
+# [bool] Icon mode (0: none, 3: e/app/snap, 4: app/e/snap)
+warplist.icon_mode = 3
 
 
 Using e16 with GNOME
@@ -352,9 +658,21 @@ collisions with the new enlightenment DR17.
    executable `enlightenment` must be edited to the new e16 program.
 
 
-Note! The section below is obsolete as of 0.16.8.1.
-
 A few themes have to be tweaked to work with 0.16.8.
+
+Some themes (Maw, Black E) have an actionclasses.cfg like:
+
+#include <definitions>
+__E_CFG_VERSION 0
+#include </usr/local/enlightenment/config/actionclasses.cfg>
+#include </usr/share/enlightenment/config/actionclasses.cfg>
+
+The absolute path is obviously no longer valid.
+The most sensible fix for these themes is to remove the themes
+actionclasses.cfg. e16 will then fall back to the default one.
+
+
+Note! The section below is obsolete as of 0.16.8.1.
 
 For the AQUA theme (and derivatives) this can be done as follows:
 
