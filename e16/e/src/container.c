@@ -50,10 +50,25 @@ static void         ContainerEventIconWin(Win win, XEvent * ev, void *prm);
 
 Ecore_List         *container_list = NULL;
 
+static int
+_ContainerMatchName(const void *data, const void *match)
+{
+   return strcmp(((const Container *)data)->name, match);
+}
+
+static Container   *
+ContainerFind(const char *name)
+{
+   return ecore_list_find(container_list, _ContainerMatchName, name);
+}
+
 static Container   *
 ContainerCreate(const char *name)
 {
    Container          *ct;
+
+   if (ContainerFind(name))
+      return NULL;
 
    ct = Ecalloc(1, sizeof(Container));
    if (!ct)
@@ -64,7 +79,7 @@ ContainerCreate(const char *name)
    ecore_list_append(container_list, ct);
 
    ct->name = Estrdup(name);
-   ct->type = (name && !strncmp(name, "_ST_", 4)) ?
+   ct->type = (name && !strcmp(name, "_ST_")) ?
       IB_TYPE_SYSTRAY : IB_TYPE_ICONBOX;
    ct->orientation = 0;
    ct->scrollbar_side = 1;
@@ -167,18 +182,6 @@ ContainerDestroy(Container * ct, int exiting)
 
    if (!exiting)
       ContainersConfigSave();
-}
-
-static int
-_ContainerMatchName(const void *data, const void *match)
-{
-   return strcmp(((const Container *)data)->name, match);
-}
-
-static Container   *
-ContainerFind(const char *name)
-{
-   return ecore_list_find(container_list, _ContainerMatchName, name);
 }
 
 static void
@@ -291,6 +294,9 @@ static void
 ContainerShow(Container * ct)
 {
    EWin               *ewin;
+
+   if (!ct)
+      return;
 
    HintsSetWindowName(ct->win, ct->wm_name);
    HintsSetWindowClass(ct->win, ct->name, "Enlightenment_IconBox");
