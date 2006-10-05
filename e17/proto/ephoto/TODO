@@ -1,7 +1,10 @@
 TODO-
-Add image manipulation.
+===General===
+Multiple Language Support.
+SQL Databasing and Album work.
+===Image Viewer===
+Add Adjust controls(Blur/Sharpen/Histogram).
+===Slideshow===
 Add audio.
 Add transitions(fade).
-Add sql databasing.
 Add edje widgets for images to create ken burns effect?
-Album work.
