@@ -34,8 +34,7 @@ void zoom_in(Ewl_Widget *w, void *event, void *data)
  ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh);
  
  ewl_image_size_set(EWL_IMAGE(image_view), ow*2, oh*2);
- ewl_widget_reparent(image_view); 
-
+ 
  ewl_widget_configure(ibox);
 }
 
@@ -46,8 +45,7 @@ void zoom_out(Ewl_Widget *w, void *event, void *data)
  ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh);
  
  ewl_image_size_set(EWL_IMAGE(image_view), ow/2, oh/2);
- ewl_widget_reparent(image_view);
-
+ 
  ewl_widget_configure(ibox);
 }
 
@@ -70,6 +68,76 @@ void original_size(Ewl_Widget *w, void *event, void *data)
  ewl_widget_configure(ibox);
 }
 
+void rotate_left(Ewl_Widget *w, void *event, void *data)
+{
+ unsigned int *im_data, *im_data_new;
+ int index, ind, i, j, ni, nj, ew, eh, nw, nh;
+
+ im_data = evas_object_image_data_get(EWL_IMAGE(image_view)->image, FALSE);
+ evas_object_image_size_get(EWL_IMAGE(image_view)->image, &ew, &eh);
+ index = 0;
+ 
+ im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+ 
+ nw = eh;
+ nh = ew;
+ 
+ for (i = 0; i < nh; i++)
+ {
+  for (j = 0; j <  nw; j++)
+  {
+   ni = j;
+   nj = nh - i - 1;
+
+   ind = ni * nh + nj;
+   
+   im_data_new[index] = im_data[ind];
+   index++;
+  }
+ }
+
+ evas_object_image_size_set(EWL_IMAGE(image_view)->image, nw, nh);
+ evas_object_image_data_set(EWL_IMAGE(image_view)->image, im_data_new);
+ evas_object_image_data_update_add(EWL_IMAGE(image_view)->image, 0, 0, nw, nh);
+ ewl_widget_configure(image_view);
+ ewl_widget_configure(ibox);
+}
+
+void rotate_right(Ewl_Widget *w, void *event, void *data)
+{
+ unsigned int *im_data, *im_data_new;
+ int index, ind, i, j, ni, nj, ew, eh, nw, nh;
+
+ im_data = evas_object_image_data_get(EWL_IMAGE(image_view)->image, FALSE);
+ evas_object_image_size_get(EWL_IMAGE(image_view)->image, &ew, &eh);
+ index = 0;
+
+ im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+
+ nw = eh;
+ nh = ew;
+
+ for (i = 0; i < nh; i++)
+ {
+  for (j = 0; j < nw; j++)
+  {
+   ni = nw - j - 1;
+   nj = i;
+
+   ind = ni * nh + nj;
+
+   im_data_new[index] = im_data[ind];
+   index++;
+  }
+ }
+
+ evas_object_image_size_set(EWL_IMAGE(image_view)->image, nw, nh);
+ evas_object_image_data_set(EWL_IMAGE(image_view)->image, im_data_new);
+ evas_object_image_data_update_add(EWL_IMAGE(image_view)->image, 0, 0, nw, nh);
+ ewl_widget_configure(image_view);
+ ewl_widget_configure(ibox); 
+}
+ 
 void view_images(Ewl_Widget *w, void *event, void *data)
 {
  char *current_image;
@@ -174,6 +242,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_callback_append(button, EWL_CALLBACK_CLICKED, rotate_left, NULL);
  ewl_widget_show(button);
 
  button = ewl_button_new();
@@ -183,6 +252,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_callback_append(button, EWL_CALLBACK_CLICKED, rotate_right, NULL);
  ewl_widget_show(button);
 
  ecore_dlist_goto_first(view_thumbs);
