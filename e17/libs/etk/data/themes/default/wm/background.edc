@@ -1,5 +1,5 @@
 group {
-   name: "wm_background";
+   name: "etk/wm_background";
    parts {
       part {
 	 name: "background_image";

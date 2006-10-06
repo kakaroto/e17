@@ -7,7 +7,7 @@
 
 /**
  * @defgroup Etk_Frame Etk_Frame
- * @brief A frame is a bin container with a label. It's useful to group widgets that logically need to be together
+ * @brief A frame is a bin container with a label. It may be useful to group widgets that are logically related
  * @{
  */
 
@@ -19,7 +19,7 @@
 #define ETK_IS_FRAME(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_FRAME_TYPE))
 
 /**
- * @brief @widget The structure of a frame
+ * @brief @widget A bin container with a label
  * @structinfo
  */
 struct Etk_Frame
@@ -31,10 +31,10 @@ struct Etk_Frame
    char *label;
 };
 
-Etk_Type *etk_frame_type_get();
+Etk_Type   *etk_frame_type_get();
 Etk_Widget *etk_frame_new(const char *label);
 
-void etk_frame_label_set(Etk_Frame *frame, const char *label);
+void        etk_frame_label_set(Etk_Frame *frame, const char *label);
 const char *etk_frame_label_get(Etk_Frame *frame);
 
 /** @} */

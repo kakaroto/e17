@@ -8,7 +8,7 @@
 
 /**
  * @defgroup Etk_Canvas Etk_Canvas
- * @brief The Etk_Canvas widget can contain any sort of Evas_Object
+ * @brief The Etk_Canvas widget can contain any type of Evas_Object
  * @{
  */
 
@@ -20,7 +20,7 @@
 #define ETK_IS_CANVAS(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CANVAS_TYPE))
 
 /**
- * @brief @widget The structure of a canvas
+ * @brief @widget A widget that can contain any type of Evas_Object
  * @structinfo
  */
 struct Etk_Canvas

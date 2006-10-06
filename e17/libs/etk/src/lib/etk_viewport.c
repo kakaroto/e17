@@ -29,6 +29,7 @@ static void _etk_viewport_child_removed_cb(Etk_Object *object, void *child, void
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Viewport
  * @return Returns the type on an Etk_Viewport
  */
@@ -194,7 +195,6 @@ static void _etk_viewport_realize_cb(Etk_Object *object, void *data)
       return;
 
    viewport->clip = evas_object_rectangle_add(evas);
-   //TODO: printf("Viewport Clip: %p\n", viewport->clip);
    etk_widget_member_object_add(ETK_WIDGET(viewport), viewport->clip);
    if ((child = etk_bin_child_get(ETK_BIN(viewport))))
    {

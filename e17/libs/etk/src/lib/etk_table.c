@@ -37,6 +37,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Table
  * @return Returns the type on an Etk_Table
  */

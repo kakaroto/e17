@@ -39,6 +39,7 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Scrolled_View
  * @return Returns the type of an Etk_Scrolled_View
  */
@@ -115,7 +116,7 @@ void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_W
    {
       viewport = etk_viewport_new();
       etk_container_add(ETK_CONTAINER(scrolled_view), viewport);
-      etk_widget_visibility_locked_set(viewport, ETK_TRUE);
+      etk_widget_internal_set(viewport, ETK_TRUE);
       etk_widget_show(viewport);
    }
 
@@ -182,12 +183,15 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    scrolled_view->vpolicy = ETK_POLICY_AUTO;
 
    scrolled_view->hscrollbar = etk_hscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
-   etk_widget_visibility_locked_set(scrolled_view->hscrollbar, ETK_TRUE);
+   etk_widget_theme_parent_set(scrolled_view->hscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_parent_set(scrolled_view->hscrollbar, ETK_WIDGET(scrolled_view));
+   etk_widget_internal_set(scrolled_view->hscrollbar, ETK_TRUE);
    etk_widget_show(scrolled_view->hscrollbar);
+   
    scrolled_view->vscrollbar = etk_vscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
-   etk_widget_visibility_locked_set(scrolled_view->vscrollbar, ETK_TRUE);
+   etk_widget_theme_parent_set(scrolled_view->vscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_parent_set(scrolled_view->vscrollbar, ETK_WIDGET(scrolled_view));
+   etk_widget_internal_set(scrolled_view->vscrollbar, ETK_TRUE);
    etk_widget_show(scrolled_view->vscrollbar);
 
    ETK_WIDGET(scrolled_view)->size_request = _etk_scrolled_view_size_request;
@@ -322,14 +326,14 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    scrollbar_size.h = hscrollbar_size.h;
    child->scroll_size_get(child, scrollview_size, scrollbar_size, &scroll_size);
    
-   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > scrollview_size.w) ||
-      scrolled_view->hpolicy == ETK_POLICY_SHOW)
+   if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > scrollview_size.w)
+      || scrolled_view->hpolicy == ETK_POLICY_SHOW)
    {
       show_hscrollbar = ETK_TRUE;
    }
-   if ((scrolled_view->vpolicy == ETK_POLICY_AUTO &&
-      scroll_size.h > (scrollview_size.h - (show_hscrollbar ? hscrollbar_size.h : 0))) ||
-      scrolled_view->vpolicy == ETK_POLICY_SHOW)
+   if ((scrolled_view->vpolicy == ETK_POLICY_AUTO
+         && scroll_size.h > (scrollview_size.h - (show_hscrollbar ? hscrollbar_size.h : 0)))
+      || scrolled_view->vpolicy == ETK_POLICY_SHOW)
    {
       show_vscrollbar = ETK_TRUE;
       if (scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > (scrollview_size.w - vscrollbar_size.w))

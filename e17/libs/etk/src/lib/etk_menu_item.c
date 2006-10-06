@@ -19,8 +19,6 @@ enum Etk_Menu_Item_Signal_Id
    ETK_MENU_ITEM_SELECTED_SIGNAL,
    ETK_MENU_ITEM_DESELECTED_SIGNAL,
    ETK_MENU_ITEM_ACTIVATED_SIGNAL,
-   ETK_MENU_ITEM_SUBMENU_POPPED_UP_SIGNAL,
-   ETK_MENU_ITEM_SUBMENU_POPPED_DOWN_SIGNAL,
    ETK_MENU_ITEM_NUM_SIGNALS
 };
 
@@ -76,6 +74,7 @@ static Etk_Signal *_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_NUM_SIGNALS]
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Menu_Item
  * @return Returns the type of an Etk_Menu_Item
  */
@@ -94,10 +93,6 @@ Etk_Type *etk_menu_item_type_get()
          menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, deselected), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_menu_item_signals[ETK_MENU_ITEM_ACTIVATED_SIGNAL] = etk_signal_new("activated",
          menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, activated), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_menu_item_signals[ETK_MENU_ITEM_SUBMENU_POPPED_UP_SIGNAL] = etk_signal_new("submenu_popped_up",
-         menu_item_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_menu_item_signals[ETK_MENU_ITEM_SUBMENU_POPPED_DOWN_SIGNAL] = etk_signal_new("submenu_popped_down",
-         menu_item_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
       etk_type_property_add(menu_item_type, "label", ETK_MENU_ITEM_LABEL_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -112,9 +107,9 @@ Etk_Type *etk_menu_item_type_get()
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item with an empty label
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new menu-item with an empty label
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_new()
 {
@@ -122,10 +117,10 @@ Etk_Widget *etk_menu_item_new()
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item and sets its label to @a label
+ * @brief Creates a new menu-item and sets its label to @a label
  * @param label the label to set to the new menu item
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_new_with_label(const char *label)
 {
@@ -133,10 +128,10 @@ Etk_Widget *etk_menu_item_new_with_label(const char *label)
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item with its label defined by the stock id
- * @param stock_id the stock id corresponding to the label
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new menu-item with a label defined by the stock-id
+ * @param stock_id the stock-id corresponding to the label
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  * @see Etk_Stock
  */
 Etk_Widget *etk_menu_item_new_from_stock(Etk_Stock_Id stock_id)
@@ -150,8 +145,8 @@ Etk_Widget *etk_menu_item_new_from_stock(Etk_Stock_Id stock_id)
 }
 
 /**
- * @brief Sets the label of the menu item
- * @param menu_item a menu item
+ * @brief Sets the label of the menu-item
+ * @param menu_item a menu-item
  * @param label the label to set
  */
 void etk_menu_item_label_set(Etk_Menu_Item *menu_item, const char *label)
@@ -161,15 +156,15 @@ void etk_menu_item_label_set(Etk_Menu_Item *menu_item, const char *label)
    
    free(menu_item->label);
    menu_item->label = label ? strdup(label) : NULL;
-   etk_widget_theme_part_text_set(ETK_WIDGET(menu_item), "label", label ? label : "");
+   etk_widget_theme_part_text_set(ETK_WIDGET(menu_item), "etk.text.label", label ? label : "");
    
    etk_object_notify(ETK_OBJECT(menu_item), "label");
 }
 
 /**
- * @brief Gets the label of the menu item
- * @param menu_item a menu item
- * @return Returns the label of the menu item
+ * @brief Gets the label of the menu-item
+ * @param menu_item a menu-item
+ * @return Returns the label of the menu-item
  */
 const char *etk_menu_item_label_get(Etk_Menu_Item *menu_item)
 {
@@ -179,10 +174,10 @@ const char *etk_menu_item_label_get(Etk_Menu_Item *menu_item)
 }
 
 /**
- * @brief Sets the label of the menu item from the stock id. If the menu item is an Etk_Menu_Item_Image, the image is
- * also changed depending on the stock id.
- * @param menu_item a menu item
- * @param stock_id the stock id corresponding to the label and the image you want to use
+ * @brief Sets the label of the menu-item from a stock-id. If the menu-item is an Etk_Menu_Item_Image,
+ * the image is also changed depending on the stock-id
+ * @param menu_item a menu-item
+ * @param stock_id the stock-id corresponding to the label and the image you want to use
  * @see Etk_Stock
  */
 void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_id)
@@ -198,17 +193,18 @@ void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_i
    if (ETK_IS_MENU_ITEM_IMAGE(menu_item))
    {
       Etk_Widget *image;
+      
       image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
       etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-      etk_widget_visibility_locked_set(image, ETK_TRUE);
+      etk_widget_internal_set(image, ETK_TRUE);
       etk_widget_show(image);
    }
 }
 
 /**
- * @brief Sets the submenu of the menu item: the submenu will be popped up when the menu item is selected
- * @param menu_item a menu item
- * @param submenu the submenu to set
+ * @brief Sets the submenu of the menu-item: the submenu will be popped up when the menu-item is selected
+ * @param menu_item a menu-item
+ * @param submenu the submenu to attach to the menu-item
  */
 void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
 {
@@ -216,24 +212,30 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
       return;
    
    if (menu_item->submenu)
-      ETK_MENU_SHELL(menu_item->submenu)->parent = NULL;
+   {
+      menu_item->submenu->parent_item = NULL;
+      etk_object_notify(ETK_OBJECT(menu_item->submenu), "parent_item");
+   }
    menu_item->submenu = submenu;
    if (menu_item->submenu)
-      ETK_MENU_SHELL(menu_item->submenu)->parent = menu_item;
+   {
+      menu_item->submenu->parent_item = menu_item;
+      etk_object_notify(ETK_OBJECT(menu_item->submenu), "parent_item");
+   }
    
    if (menu_item->submenu)
-      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "arrow_show", ETK_TRUE);
-   else if (!menu_item->submenu)
-      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "arrow_hide", ETK_TRUE);
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,action,show,arrow", ETK_TRUE);
+   else
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,action,hide,arrow", ETK_TRUE);
    
    etk_widget_size_recalc_queue(ETK_WIDGET(menu_item));
    etk_object_notify(ETK_OBJECT(menu_item), "submenu");
 }
 
 /**
- * @brief Gets the submenu attached to the menu item
- * @param menu_item a menu item
- * @return Returns the submenu attached to the menu item
+ * @brief Gets the submenu attached to the menu-item
+ * @param menu_item a menu-item
+ * @return Returns the submenu attached to the menu-item
  */
 Etk_Menu *etk_menu_item_submenu_get(Etk_Menu_Item *menu_item)
 {
@@ -243,8 +245,8 @@ Etk_Menu *etk_menu_item_submenu_get(Etk_Menu_Item *menu_item)
 }
 
 /**
- * @brief Selects the menu item
- * @param menu_item a menu_item
+ * @brief Selects the menu-item
+ * @param menu_item a menu-item
  */
 void etk_menu_item_select(Etk_Menu_Item *menu_item)
 {
@@ -256,8 +258,8 @@ void etk_menu_item_select(Etk_Menu_Item *menu_item)
 }
 
 /**
- * @brief Deselects the menu item
- * @param menu_item a menu_item
+ * @brief Deselects the menu-item
+ * @param menu_item a menu-item
  */
 void etk_menu_item_deselect(Etk_Menu_Item *menu_item)
 {
@@ -269,8 +271,8 @@ void etk_menu_item_deselect(Etk_Menu_Item *menu_item)
 }
 
 /**
- * @brief Activates the menu item
- * @param menu_item a menu_item
+ * @brief Activates the menu-item
+ * @param menu_item a menu-item
  */
 void etk_menu_item_activate(Etk_Menu_Item *menu_item)
 {
@@ -284,6 +286,7 @@ void etk_menu_item_activate(Etk_Menu_Item *menu_item)
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Menu_Item_Separator
  * @return Returns the type of an Etk_Menu_Item_Separator
  */
@@ -301,9 +304,9 @@ Etk_Type *etk_menu_item_separator_type_get()
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Separator
- * @return Returns the new menu separator widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new separator menu-item
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_separator_new()
 {
@@ -315,6 +318,7 @@ Etk_Widget *etk_menu_item_separator_new()
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Menu_Item_Image
  * @return Returns the type of an Etk_Menu_Item_Image
  */
@@ -338,9 +342,9 @@ Etk_Type *etk_menu_item_image_type_get()
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Image with an empty label
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new image menu-item with an empty label
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_image_new()
 {
@@ -348,10 +352,10 @@ Etk_Widget *etk_menu_item_image_new()
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Image and sets its label to @a label
- * @param label the label to set to the new menu item
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new image menu-item and sets its label to @a label
+ * @param label the label to set to the new menu-item
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_image_new_with_label(const char *label)
 {
@@ -360,10 +364,10 @@ Etk_Widget *etk_menu_item_image_new_with_label(const char *label)
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Image with its label and its image defined by the stock id
- * @param stock_id the stock id corresponding to the label and the image
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new image menu-item with the label and the image defined by the stock-id
+ * @param stock_id the stock-id corresponding to the label and the image
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  * @see Etk_Stock
  */
 Etk_Widget *etk_menu_item_image_new_from_stock(Etk_Stock_Id stock_id)
@@ -377,9 +381,9 @@ Etk_Widget *etk_menu_item_image_new_from_stock(Etk_Stock_Id stock_id)
 }
 
 /**
- * @brief Sets the image of the menu item. The image will be displayed on the left of the label
- * @param image_item an image menu item
- * @param image the image to set (NULL to unset the image)
+ * @brief Sets the image of the menu-item. The image will be displayed on the left of the label
+ * @param image_item an image menu-item
+ * @param image the image to set (NULL to remove the image)
  */
 void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image)
 {
@@ -401,11 +405,11 @@ void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image)
       etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));
       etk_widget_pass_mouse_events_set(menu_item->left_widget, ETK_TRUE);
       
-      etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", image_widget);
-      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_show", ETK_TRUE);
+      etk_widget_swallow_widget(ETK_WIDGET(menu_item), "etk.swallow.left_widget", image_widget);
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,action,show,left_widget", ETK_TRUE);
    }
    else
-      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_hide", ETK_TRUE);
+      etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,action,hide,left_widget", ETK_TRUE);
    
    etk_widget_size_recalc_queue(ETK_WIDGET(menu_item));
 }
@@ -415,6 +419,7 @@ void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image)
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Menu_Item_Check
  * @return Returns the type of an Etk_Menu_Item_Check
  */
@@ -441,9 +446,9 @@ Etk_Type *etk_menu_item_check_type_get()
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Check with an empty label
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new check menu-item with an empty label
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_check_new()
 {
@@ -451,10 +456,10 @@ Etk_Widget *etk_menu_item_check_new()
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Check and sets its label to @a label
- * @param label the label to set to the new menu item
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new check menu-item and sets the label to @a label
+ * @param label the label to set to the new menu-item
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_check_new_with_label(const char *label)
 {
@@ -464,8 +469,8 @@ Etk_Widget *etk_menu_item_check_new_with_label(const char *label)
 
 /**
  * @brief Sets whether or not the check menu item is active (i.e. checked)
- * @param check_item a check menu item
- * @param active if @a active == ETK_TRUE, the check menu item will be active
+ * @param check_item a check menu-item
+ * @param active if @a active == ETK_TRUE, the check menu-item will be active
  */
 void etk_menu_item_check_active_set(Etk_Menu_Item_Check *check_item, Etk_Bool active)
 {
@@ -475,8 +480,8 @@ void etk_menu_item_check_active_set(Etk_Menu_Item_Check *check_item, Etk_Bool ac
 }
 
 /**
- * @brief Gets whether the check menu item is active
- * @param check_item a check menu item
+ * @brief Gets whether the check menu-item is active
+ * @param check_item a check menu-item
  * @return Returns ETK_TRUE if @a check_item is active, ETK_FALSE otherwise
  */
 Etk_Bool etk_menu_item_check_active_get(Etk_Menu_Item_Check *check_item)
@@ -491,6 +496,7 @@ Etk_Bool etk_menu_item_check_active_get(Etk_Menu_Item_Check *check_item)
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Menu_Item_Radio
  * @return Returns the type of an Etk_Menu_Item_Radio
  */
@@ -514,11 +520,11 @@ Etk_Type *etk_menu_item_radio_type_get()
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Radio with an empty label
- * @param group the group which the radio menu item will be added to
- * (NULL if the radio menu item should create its own group)
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new radio menu-item with an empty label
+ * @param group the group which the radio menu-item will be added to
+ * (NULL if the radio menu-item should create its own group)
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_radio_new(Evas_List **group)
 {
@@ -527,10 +533,10 @@ Etk_Widget *etk_menu_item_radio_new(Evas_List **group)
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Radio with an empty label and adds it to the group of another radio menu item
- * @param radio_item the radio menu item whose group will be used for the new radio menu item
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new radio menu-item with an empty label and adds it to the group of another radio menu-item
+ * @param radio_item the radio menu-item whose group will be used for the new radio menu-item
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_radio_new_from_widget(Etk_Menu_Item_Radio *radio_item)
 {
@@ -539,12 +545,12 @@ Etk_Widget *etk_menu_item_radio_new_from_widget(Etk_Menu_Item_Radio *radio_item)
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Radio and sets its label to @a label
- * @param label the label to set to the new menu item
- * @param group the group which the radio menu item will be added to
- * (NULL if the radio menu item should create its own group)
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @brief Creates a new radio menu-item and sets its label to @a label
+ * @param label the label to set to the new menu-item
+ * @param group the group which the radio menu-item will be added to
+ * (NULL if the radio menu-item should create its own group)
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_radio_new_with_label(const char *label, Evas_List **group)
 {
@@ -553,12 +559,12 @@ Etk_Widget *etk_menu_item_radio_new_with_label(const char *label, Evas_List **gr
 }
 
 /**
- * @brief Creates a new Etk_Menu_Item_Radio and sets its label to @a label.
+ * @brief Creates a new radio menu-item and sets its label to @a label.
  * It is then added to the group of @a radio_item
- * @param label the label to set to the new menu item
- * @param radio_item the radio menu item whose group will be used for the new radio menu item
- * @return Returns the new menu item widget
- * @note Unlike the other widgets, you don't need to call etk_widget_show(), the widget is automatically shown.
+ * @param label the label to set to the new menu-item
+ * @param radio_item the radio menu-item whose group will be used for the new radio menu-item
+ * @return Returns the new menu-item widget
+ * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
 Etk_Widget *etk_menu_item_radio_new_with_label_from_widget(const char *label, Etk_Menu_Item_Radio *radio_item)
 {
@@ -567,8 +573,8 @@ Etk_Widget *etk_menu_item_radio_new_with_label_from_widget(const char *label, Et
 }
 
 /**
- * @brief Sets the group of the radio menu item
- * @param radio_item a radio menu item
+ * @brief Sets the group of the radio menu-item
+ * @param radio_item a radio menu-item
  * @param group the group to set
  */
 void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Evas_List **group)
@@ -607,9 +613,9 @@ void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Evas_List **
 }
 
 /**
- * @brief Gets the group of the radio menu item
- * @param radio_item a radio menu item
- * @return Returns the group of the radio menu item
+ * @brief Gets the group of the radio menu-item
+ * @param radio_item a radio menu-item
+ * @return Returns the group of the radio menu-item
  */
 Evas_List **etk_menu_item_radio_group_get(Etk_Menu_Item_Radio *radio_item)
 {
@@ -635,7 +641,7 @@ static void _etk_menu_item_constructor(Etk_Menu_Item *menu_item)
    menu_item->activated = _etk_menu_item_activated_handler;
    
    menu_item->submenu = NULL;
-   menu_item->parent = NULL;
+   menu_item->parent_shell = NULL;
    menu_item->label = NULL;
    menu_item->left_widget = NULL;
    menu_item->is_selected = ETK_FALSE;
@@ -665,12 +671,15 @@ static void _etk_menu_item_check_constructor(Etk_Menu_Item_Check *check_item)
    
    menu_item->left_widget = etk_widget_new(ETK_WIDGET_TYPE,
       "theme_group", ETK_IS_MENU_ITEM_RADIO(check_item) ? "radiobox" : "checkbox",
-      "pass_mouse_events", ETK_TRUE, "visible", ETK_TRUE, NULL);
+      "theme_parent", check_item, "pass_mouse_events", ETK_TRUE, "visible", ETK_TRUE, NULL);
    etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));
-   etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", menu_item->left_widget);
+   etk_widget_swallow_widget(ETK_WIDGET(menu_item), "etk.swallow.left_widget", menu_item->left_widget);
    
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "left_widget_show", ETK_TRUE);
-   etk_widget_theme_signal_emit(menu_item->left_widget, check_item->active ? "check" : "uncheck", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,action,show,left_widget", ETK_TRUE);
+   if (check_item->active)
+      etk_widget_theme_signal_emit(menu_item->left_widget, "etk,state,on", ETK_FALSE);
+   else
+      etk_widget_theme_signal_emit(menu_item->left_widget, "etk,state,off", ETK_FALSE);
    
    etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget),
       ETK_CALLBACK(_etk_menu_item_check_box_realize_cb), menu_item);
@@ -866,9 +875,10 @@ static void _etk_menu_item_realize_cb(Etk_Object *object, void *data)
    if (!(menu_item = ETK_MENU_ITEM(object)))
       return;
    
-   etk_widget_theme_part_text_set(ETK_WIDGET(menu_item), "label", menu_item->label ? menu_item->label : "");
+   etk_widget_theme_part_text_set(ETK_WIDGET(menu_item), "etk.text.label", menu_item->label ? menu_item->label : "");
    if (menu_item->left_widget)
-      etk_widget_swallow_widget(ETK_WIDGET(menu_item), "left_widget_swallow", menu_item->left_widget);
+      etk_widget_swallow_widget(ETK_WIDGET(menu_item), "etk.swallow.left_widget", menu_item->left_widget);
+   /* TODO: emit "show left_widget", "show arrow", ... ?? */
 }
 
 /* Called when the checkbox of the check item is realized */
@@ -878,8 +888,11 @@ static void _etk_menu_item_check_box_realize_cb(Etk_Object *object, void *data)
 
    if (!(menu_item = ETK_MENU_ITEM(data)) || !menu_item->left_widget)
       return;
-   etk_widget_theme_signal_emit(menu_item->left_widget,
-      ETK_MENU_ITEM_CHECK(menu_item)->active ? "check" : "uncheck", ETK_FALSE);
+   
+   if (ETK_MENU_ITEM_CHECK(menu_item)->active)
+      etk_widget_theme_signal_emit(menu_item->left_widget, "etk,state,on", ETK_FALSE);
+   else
+      etk_widget_theme_signal_emit(menu_item->left_widget, "etk,state,off", ETK_FALSE);
 }
 
 /* Called when the check item is activated */
@@ -897,8 +910,8 @@ static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "select", ETK_FALSE);
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "select", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,state,selected", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "etk,state,selected", ETK_FALSE);
 }
 
 /* Default handler for the "deselected" signal */
@@ -906,8 +919,8 @@ static void _etk_menu_item_deselected_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "deselect", ETK_FALSE);
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "deselect", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,state,deselected", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "etk,state,deselected", ETK_FALSE);
 }
 
 /* Default handler for the "activated" signal */
@@ -915,8 +928,10 @@ static void _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "activate", ETK_FALSE);
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "activate", ETK_FALSE);
+   
+   /* TODO: rename signal */
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,state,activate", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "etk,state,activate", ETK_FALSE);
 }
 
 /* Default handler for the "toggled" signal */
@@ -924,8 +939,10 @@ static void _etk_menu_item_check_toggled_handler(Etk_Menu_Item_Check *check_item
 {
    if (check_item && ETK_MENU_ITEM(check_item)->left_widget)
    {
-      etk_widget_theme_signal_emit(ETK_MENU_ITEM(check_item)->left_widget,
-         check_item->active ? "check" : "uncheck", ETK_FALSE);
+      if (check_item->active)
+         etk_widget_theme_signal_emit(ETK_MENU_ITEM(check_item)->left_widget, "etk,state,on", ETK_FALSE);
+      else
+         etk_widget_theme_signal_emit(ETK_MENU_ITEM(check_item)->left_widget, "etk,state,off", ETK_FALSE);
    }
 }
 
@@ -1012,33 +1029,23 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
  * \par Signals:
  * @signal_name "selected": Emitted when the menu item is selected
  * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg combobox: the menu item which has been selected
+ * @signal_arg menu_item: the menu item which has been selected
  * @signal_data
  * \par
  * @signal_name "deselected": Emitted when the menu item is deselected
  * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg combobox: the menu item which has been deselected
+ * @signal_arg menu_item: the menu item which has been deselected
  * @signal_data
  * \par
  * @signal_name "activated": Emitted when the menu item is activated (mainly when it has been clicked)
  * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg combobox: the menu item which has been activated
- * @signal_data
- * \par
- * @signal_name "submenu_popped_up": Emitted when the menu item's submenu has been popped up
- * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg combobox: the menu item whose submenu has been popped up
- * @signal_data
- * \par
- * @signal_name "submenu_popped_down": Emitted when the menu item's submenu has been popped down
- * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg combobox: the menu item whose submenu has been popped down
+ * @signal_arg menu_item: the menu item which has been activated
  * @signal_data
  * \par
  * @signal_name "toggled" (only for Etk_Menu_Item_Check and Etk_Menu_Item_Radio):
  * Emitted when the menu item (check or radio) has been toggled
  * @signal_cb void callback(Etk_Menu_Item_Check *check_item, void *data)
- * @signal_arg combobox: the menu item which has been toggled
+ * @signal_arg menu_item: the menu item which has been toggled
  * @signal_data
  * 
  * \par Properties:

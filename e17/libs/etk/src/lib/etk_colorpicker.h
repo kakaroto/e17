@@ -8,7 +8,7 @@
 
 /**
  * @defgroup Etk_Colorpicker Etk_Colorpicker
- * @brief TODO: doc
+ * @brief The colorpicker is a widget that allows the user to select a color
  * @{
  */
 
@@ -18,6 +18,7 @@
 #define ETK_COLORPICKER(obj)        (ETK_OBJECT_CAST((obj), ETK_COLORPICKER_TYPE, Etk_Colorpicker))
 /** Check if the object is an Etk_Colorpicker */
 #define ETK_IS_COLORPICKER(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_COLORPICKER_TYPE))
+
 
 /** @brief The color modes used by the colorpicker */
 typedef enum Etk_Colorpicker_Mode
@@ -31,7 +32,7 @@ typedef enum Etk_Colorpicker_Mode
 } Etk_Colorpicker_Mode;
 
 /**
- * @brief @widget The structure of a colorpicker
+ * @brief @widget A widget that allows the user to select a color
  * @structinfo
  */
 struct Etk_Colorpicker
@@ -90,13 +91,13 @@ struct Etk_Colorpicker
    Etk_Color current_color;
 };
 
-Etk_Type *etk_colorpicker_type_get();
+Etk_Type   *etk_colorpicker_type_get();
 Etk_Widget *etk_colorpicker_new();
 
-void etk_colorpicker_mode_set(Etk_Colorpicker *cp, Etk_Colorpicker_Mode mode);
+void                 etk_colorpicker_mode_set(Etk_Colorpicker *cp, Etk_Colorpicker_Mode mode);
 Etk_Colorpicker_Mode etk_colorpicker_mode_get(Etk_Colorpicker *cp);
 
-void etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color);
+void      etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color);
 Etk_Color etk_colorpicker_current_color_get(Etk_Colorpicker *cp);
 
 /** @} */

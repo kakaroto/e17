@@ -6,9 +6,13 @@
 #include "etk_widget.h"
 #include "etk_stock.h"
 
+/* TODO/FIXME list:
+ * - Add new/set_from_data()
+ */
+
 /**
  * @defgroup Etk_Image Etk_Image
- * @brief A image is a simple widget that can load and display an image
+ * @brief An Etk_Image is a widget that can load and display an image from various sources
  * @{
  */
 
@@ -20,7 +24,7 @@
 #define ETK_IS_IMAGE(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_IMAGE_TYPE))
 
 /**
- * @brief @widget The structure of an image
+ * @brief @widget A widget that can load and display an image
  * @structinfo
  */
 struct Etk_Image
@@ -42,13 +46,13 @@ struct Etk_Image
    Etk_Bool object_type_changed;
 };
 
-Etk_Type *etk_image_type_get();
+Etk_Type   *etk_image_type_get();
 Etk_Widget *etk_image_new();
 Etk_Widget *etk_image_new_from_file(const char *filename);
 Etk_Widget *etk_image_new_from_edje(const char *edje_filename, const char *edje_group);
 Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id, Etk_Stock_Size stock_size);
 
-void etk_image_set_from_file(Etk_Image *image, const char *filename);
+void        etk_image_set_from_file(Etk_Image *image, const char *filename);
 const char *etk_image_file_get(Etk_Image *image);
 
 void etk_image_set_from_edje(Etk_Image *image, const char *edje_filename, const char *edje_group);
@@ -59,8 +63,8 @@ void etk_image_stock_get(Etk_Image *image, Etk_Stock_Id *stock_id, Etk_Stock_Siz
 
 void etk_image_copy(Etk_Image *dest_image, Etk_Image *src_image);
 
-void etk_image_size_get(Etk_Image *image, int *width, int *height);
-void etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect);
+void     etk_image_size_get(Etk_Image *image, int *width, int *height);
+void     etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect);
 Etk_Bool etk_image_keep_aspect_get(Etk_Image *image);
 
 /** @} */

@@ -1,5 +1,5 @@
 group {
-   name: "statusbar";
+   name: "etk/statusbar";
    min: 0 21;
    parts {
       part {
@@ -24,7 +24,7 @@ group {
          }
       }
       part {
-         name: "resize_grip";
+         name: "etk.event.resize";
          description {
             state: "default" 0.0;
             visible: 1;
@@ -54,7 +54,7 @@ group {
          }
       }
       part {
-         name: "message";
+         name: "etk.text.message";
          type: TEXT;
          mouse_events: 0;
          description {
@@ -68,7 +68,7 @@ group {
             rel2 {
                relative: 0.0 1.0;
                offset: -1 -1;
-               to_x: "resize_grip";
+               to_x: "etk.event.resize";
                to_y: "bar";
             }
             text {
@@ -83,18 +83,18 @@ group {
    }
    programs {
       program {
-         name: "show_resize_grip";
-         signal: "show_resize_grip";
-         source: "";
+         name: "status_show_resize_grip";
+         signal: "etk,action,show,resize_grip";
+         source: "etk";
          action: STATE_SET "default" 0.0;
-         target: "resize_grip";
+         target: "etk.event.resize";
       }
       program {
-         name: "hide_resize_grip";
-         signal: "hide_resize_grip";
-         source: "";
+         name: "status_hide_resize_grip";
+         signal: "etk,action,hide,resize_grip";
+         source: "etk";
          action: STATE_SET "hidden" 0.0;
-         target: "resize_grip";
+         target: "etk.event.resize";
       }
    }
 }

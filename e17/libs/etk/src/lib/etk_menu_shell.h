@@ -8,7 +8,7 @@
 
 /**
  * @defgroup Etk_Menu_Shell Etk_Menu_Shell
- * @brief Etk_Menu_Shell is the base class used to derive Etk_Menu and Etk_Menu_Bar
+ * @brief Etk_Menu_Shell is the base class used by Etk_Menu and Etk_Menu_Bar
  * @{
  */
 
@@ -20,7 +20,7 @@
 #define ETK_IS_MENU_SHELL(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_SHELL_TYPE))
 
 /**
- * @brief @widget The structure of a menu shell
+ * @brief @widget A base class used by Etk_Menu and Etk_Menu_Bar
  * @structinfo
  */
 struct Etk_Menu_Shell
@@ -29,7 +29,6 @@ struct Etk_Menu_Shell
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
    
-   Etk_Menu_Item *parent;
    Evas_List *items;
 };
 
@@ -41,6 +40,7 @@ void etk_menu_shell_prepend_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *
 void etk_menu_shell_append_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, Etk_Menu_Item *relative);
 void etk_menu_shell_insert(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, int position);
 void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
+
 Evas_List *etk_menu_shell_items_get(Etk_Menu_Shell *menu_shell);
 
 /** @} */

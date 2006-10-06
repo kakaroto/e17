@@ -25,6 +25,7 @@ static void _etk_drag_property_set(Etk_Object *object, int property_id, Etk_Prop
 static void _etk_drag_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Drag
  * @return Returns the type on an Etk_Drag
  */

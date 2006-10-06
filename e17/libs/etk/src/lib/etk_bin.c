@@ -2,9 +2,9 @@
 #include "etk_bin.h"
 #include <stdlib.h>
 #include <Evas.h>
-#include "etk_utils.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Bin
@@ -83,7 +83,7 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
    if (child)
    {
       etk_widget_parent_set(child, ETK_WIDGET(bin));
-      etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", child);
+      etk_widget_swallow_widget(ETK_WIDGET(bin), "etk.swallow.child", child);
       bin->child = child;
       
       etk_signal_emit_by_name("child_added", ETK_OBJECT(bin), NULL, child);
@@ -245,7 +245,7 @@ static void _etk_bin_realize_cb(Etk_Object *object, void *data)
 
    if (!(bin = ETK_BIN(object)) || !bin->child)
       return;
-   etk_widget_swallow_widget(ETK_WIDGET(bin), "swallow_area", bin->child);
+   etk_widget_swallow_widget(ETK_WIDGET(bin), "etk.swallow.child", bin->child);
 }
 
 /** @} */

@@ -35,22 +35,5 @@
  * Implementation
  *
  **************************/
- 
-/**
- * @brief Inits the drag and drop system
- * @return Returns ETK_TRUE on success, ETK_FALSE on failure
- */
-Etk_Bool etk_dnd_init()
-{
-   return etk_engine_dnd_init();   
-}
-
-/**
- * @brief Shutdowns the drag and drop system
- */
-void etk_dnd_shutdown()
-{
-   etk_engine_dnd_shutdown();   
-}
 
 /** @} */

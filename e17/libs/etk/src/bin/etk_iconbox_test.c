@@ -42,6 +42,8 @@ void etk_test_iconbox_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
    Etk_Widget *iconbox;
+   Etk_Iconbox_Model *mini_model;
+   int i;
    
    if (win)
    {
@@ -51,7 +53,6 @@ void etk_test_iconbox_window_create(void *data)
   
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Iconbox Test");
-   etk_widget_size_request_set(ETK_WIDGET(win), 100, 100);
    etk_window_resize(ETK_WINDOW(win), 600, 330);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
@@ -72,7 +73,7 @@ static void _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_
    
    if (!(iconbox = ETK_ICONBOX(object)))
       return;
-   if (event->button != 1 || !(event->flags & ETK_MOUSE_DOUBLE_CLICK))
+   if (event->button != 1 || !(event->flags & ETK_MOUSE_DOUBLE_CLICK) || (event->flags & ETK_MOUSE_TRIPLE_CLICK))
       return;
    if (!(icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
       return;
@@ -98,7 +99,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
       return;
    
    etk_iconbox_clear(iconbox);
-   etk_iconbox_append(iconbox, etk_theme_icon_theme_get(), "actions/go-up_48", "..");
+   etk_iconbox_append(iconbox, etk_theme_icon_get(), "actions/go-up_48", "..");
    
    /* First, add the folders */
    ecore_list_goto_first(files);
@@ -111,7 +112,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
       if (!ecore_file_is_dir(file_path))
          continue;
       
-      etk_iconbox_append(iconbox, etk_theme_icon_theme_get(), "places/folder_48", filename);
+      etk_iconbox_append(iconbox, etk_theme_icon_get(), "places/folder_48", filename);
    }
    
    /* Then the files */
@@ -141,7 +142,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
          }
       }
       
-      etk_iconbox_append(iconbox, etk_theme_icon_theme_get(), icon ? icon : "mimetypes/text-x-generic_48", filename);
+      etk_iconbox_append(iconbox, etk_theme_icon_get(), icon ? icon : "mimetypes/text-x-generic_48", filename);
    }
    
    ecore_list_destroy(files);

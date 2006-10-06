@@ -257,7 +257,7 @@ void etk_engine_window_destructor(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to show a window
+ * @brief Calls the engine's method to show a window
  * @param window a window
  */
 void etk_engine_window_show(Etk_Window *window)
@@ -268,7 +268,7 @@ void etk_engine_window_show(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to hide a window
+ * @brief Calls the engine's method to hide a window
  * @param window a window
  */
 void etk_engine_window_hide(Etk_Window *window)
@@ -279,7 +279,7 @@ void etk_engine_window_hide(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to get the evas of a window
+ * @brief Calls the engine's method to get the evas of a window
  * @param window a window
  * @return Returns the evas of the window, or NULL on failure
  */
@@ -291,7 +291,7 @@ Evas *etk_engine_window_evas_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set the title of a window
+ * @brief Calls the engine's method to set the title of a window
  * @param window a window
  * @param title the title to set to the window
  */
@@ -303,7 +303,7 @@ void etk_engine_window_title_set(Etk_Window *window, const char *title)
 }
 
 /**
- * @brief Calls the engines's method to get the title of a window
+ * @brief Calls the engine's method to get the title of a window
  * @param window a window
  * @return Returns the title of the window, or NULL on failure
  */
@@ -315,7 +315,7 @@ const char *etk_engine_window_title_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set the window name and the window class of a window
+ * @brief Calls the engine's method to set the window name and the window class of a window
  * @param window a window
  * @param window_name the window name to set
  * @param window_class the window class to set
@@ -328,7 +328,7 @@ void etk_engine_window_wmclass_set(Etk_Window *window, const char *window_name, 
 }
 
 /**
- * @brief Calls the engines's method to move a window
+ * @brief Calls the engine's method to move a window
  * @param window a window
  * @param x the x position
  * @param y the y position
@@ -341,7 +341,7 @@ void etk_engine_window_move(Etk_Window *window, int x, int y)
 }
 
 /**
- * @brief Calls the engines's method to resize a window
+ * @brief Calls the engine's method to resize a window
  * @param window a window
  * @param w the new width of the window
  * @param h the new height of the window
@@ -354,7 +354,7 @@ void etk_engine_window_resize(Etk_Window *window, int w, int h)
 }
 
 /**
- * @brief Calls the engines's method to set the minimum size of a window
+ * @brief Calls the engine's method to set the minimum size of a window
  * @param window a window
  * @param w the minimum width of the window
  * @param h the minimum height of the window
@@ -367,7 +367,7 @@ void etk_engine_window_size_min_set(Etk_Window *window, int w, int h)
 }
 
 /**
- * @brief Calls the engines's method to get the position of a window, relative to the evas where it is drawn
+ * @brief Calls the engine's method to get the position of a window, relative to the evas where it is drawn
  * @param window a window
  * @param x the location where to store the x evas position of the window
  * @param y the location where to store the y evas position of the window
@@ -383,7 +383,7 @@ void etk_engine_window_evas_position_get(Etk_Window *window, int *x, int *y)
 }
 
 /**
- * @brief Calls the engines's method to get the position of a window, relative to the screen
+ * @brief Calls the engine's method to get the position of a window, relative to the screen
  * @param window a window
  * @param x the location where to store the x screen position of the window
  * @param y the location where to store the y screen position of the window
@@ -399,7 +399,7 @@ void etk_engine_window_screen_position_get(Etk_Window *window, int *x, int *y)
 }
 
 /**
- * @brief Calls the engines's method to get the size of a window
+ * @brief Calls the engine's method to get the size of a window
  * @param window a window
  * @param w the location where to store the width of the window
  * @param h the location where to store the height of the window
@@ -415,7 +415,7 @@ void etk_engine_window_size_get(Etk_Window *window, int *w, int *h)
 }
 
 /**
- * @brief Calls the engines's method to get the geometry of the screen containing @a window
+ * @brief Calls the engine's method to get the geometry of the screen containing @a window
  * @param window a window
  * @param x the location where to store x position of the screen
  * @param y the location where to store y position of the screen
@@ -435,7 +435,7 @@ void etk_engine_window_screen_geometry_get(Etk_Window *window, int *x, int *y, i
    
 }
 /**
- * @brief Calls the engines's method to make a window modal for another window
+ * @brief Calls the engine's method to make a window modal for another window
  * @param window_to_modal the window to make modal
  * @param window the window on which @a window_to_modal will modal'ed on, or NULL to disable the modal state
  */
@@ -447,7 +447,7 @@ void etk_engine_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window 
 }
 
 /**
- * @brief Calls the engines's method to set whether or not a window is iconified
+ * @brief Calls the engine's method to set whether or not a window is iconified
  * @param window a window
  * @param iconified ETK_TRUE to iconify the window, ETK_FALSE to de-iconify it
  */
@@ -459,7 +459,7 @@ void etk_engine_window_iconified_set(Etk_Window *window, Etk_Bool iconified)
 }
 
 /**
- * @brief Calls the engines's method to get whether or not a window is iconified
+ * @brief Calls the engine's method to get whether or not a window is iconified
  * @param window a window
  * @return Returns ETK_TRUE if the window is iconified, ETK_FALSE if not
  */
@@ -471,7 +471,7 @@ Etk_Bool etk_engine_window_iconified_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set whether or not a window is maximized
+ * @brief Calls the engine's method to set whether or not a window is maximized
  * @param window a window
  * @param maximized ETK_TRUE to maximize the window, ETK_FALSE to unmaximize it
  */
@@ -483,7 +483,7 @@ void etk_engine_window_maximized_set(Etk_Window *window, Etk_Bool maximized)
 }
 
 /**
- * @brief Calls the engines's method to get whether or not a window is maximized
+ * @brief Calls the engine's method to get whether or not a window is maximized
  * @param window a window
  * @return Returns ETK_TRUE if the window is maximized, ETK_FALSE if not
  */
@@ -495,7 +495,7 @@ Etk_Bool etk_engine_window_maximized_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set whether or not a window is in fullscreen mode
+ * @brief Calls the engine's method to set whether or not a window is in fullscreen mode
  * @param window a window
  * @param fullscreen ETK_TRUE to place the window in the fullscreen state, ETK_FALSE to toggle off the fullscreen state
  */
@@ -507,7 +507,7 @@ void etk_engine_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen)
 }
 
 /**
- * @brief Calls the engines's method to get whether a window is in fullscreen mode
+ * @brief Calls the engine's method to get whether a window is in fullscreen mode
  * @param window a window
  * @return Returns ETK_TRUE if the window is in fullscreen mode, ETK_FALSE otherwise
  */
@@ -519,7 +519,7 @@ Etk_Bool etk_engine_window_fullscreen_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to raise a window. The window will be stacked above all the existing windows
+ * @brief Calls the engine's method to raise a window. The window will be stacked above all the existing windows
  * @param window the window to raise
  */
 void etk_engine_window_raise(Etk_Window *window)
@@ -530,7 +530,7 @@ void etk_engine_window_raise(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to lower a window. The window will be stacked below all the existing windows
+ * @brief Calls the engine's method to lower a window. The window will be stacked below all the existing windows
  * @param window the window to lower
  */
 void etk_engine_window_lower(Etk_Window *window)
@@ -541,7 +541,7 @@ void etk_engine_window_lower(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set the stacking layer of the window
+ * @brief Calls the engine's method to set the stacking layer of the window
  * @param window a window
  * @param stacking the stacking layer to use
  */
@@ -553,7 +553,7 @@ void etk_engine_window_stacking_set(Etk_Window *window, Etk_Window_Stacking stac
 }
 
 /**
- * @brief Calls the engines's method to get the stacking layer of the window
+ * @brief Calls the engine's method to get the stacking layer of the window
  * @param window a window
  * @return Returns the stacking layer of the window
  */
@@ -565,7 +565,7 @@ Etk_Window_Stacking etk_engine_window_stacking_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set whether a window is sticky. A sticky window is a window that appears on all
+ * @brief Calls the engine's method to set whether a window is sticky. A sticky window is a window that appears on all
  * the virtual desktops
  * @param window a window
  * @param sticky ETK_TRUE to make the window sticky, ETK_FALSE otherwise
@@ -578,7 +578,7 @@ void etk_engine_window_sticky_set(Etk_Window *window, Etk_Bool sticky)
 }
 
 /**
- * @brief Calls the engines's method to get whether a window is sticky
+ * @brief Calls the engine's method to get whether a window is sticky
  * the virtual desktops
  * @param window a window
  * @return Returns ETK_TRUE if the window is sticky, ETK_FALSE otherwise
@@ -591,7 +591,7 @@ Etk_Bool etk_engine_window_sticky_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set whether a window is focused or not
+ * @brief Calls the engine's method to set whether a window is focused or not
  * @param window a window
  * @param focused ETK_TRUE to focus the window, ETK_FALSE to unfocus it
  */
@@ -603,7 +603,7 @@ void etk_engine_window_focused_set(Etk_Window *window, Etk_Bool focused)
 }
 
 /**
- * @brief Calls the engines's method to get whether a window is focused or not
+ * @brief Calls the engine's method to get whether a window is focused or not
  * @param window a window
  * @return Returns ETK_TRUE if the window is focused, ETK_FALSE otherwise
  */
@@ -615,7 +615,7 @@ Etk_Bool etk_engine_window_focused_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set whether the window should be decorated or not
+ * @brief Calls the engine's method to set whether the window should be decorated or not
  * @param window a window
  * @param decorated ETK_TRUE to make the window decorated, ETK_FALSE to make it undecorated
  */
@@ -627,7 +627,7 @@ void etk_engine_window_decorated_set(Etk_Window *window, Etk_Bool decorated)
 }
 
 /**
- * @brief Calls the engines's method to get whether a window is decorated or not
+ * @brief Calls the engine's method to get whether a window is decorated or not
  * @param window a window
  * @return Returns ETK_TRUE if the window is decorated, ETK_FALSE otherwise
  */
@@ -639,7 +639,7 @@ Etk_Bool etk_engine_window_decorated_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set whether the window is shaped or not. A shaped window can be non-rectangular
+ * @brief Calls the engine's method to set whether the window is shaped or not. A shaped window can be non-rectangular
  * @param window a window
  * @param shaped ETK_TRUE to make the window shaped, ETK_FALSE to make it rectangular
  */
@@ -651,7 +651,7 @@ void etk_engine_window_shaped_set(Etk_Window *window, Etk_Bool shaped)
 }
 
 /**
- * @brief Calls the engines's method to get whether the window is shaped or not
+ * @brief Calls the engine's method to get whether the window is shaped or not
  * @param window a window
  * @return Returns ETK_TRUE if the window is shaped, ETK_FALSE otherwise
  */
@@ -663,7 +663,7 @@ Etk_Bool etk_engine_window_shaped_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set whether or not the window should appear in the taskbar
+ * @brief Calls the engine's method to set whether or not the window should appear in the taskbar
  * @param window a window
  * @param skip_taskbar_hint ETK_TRUE to prevent the window from appearing in the taskbar, ETK_FALSE otherwise
  */
@@ -675,7 +675,7 @@ void etk_engine_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_t
 }
 
 /**
- * @brief Calls the engines's method to get whether or not the window appears in the taskbar
+ * @brief Calls the engine's method to get whether or not the window appears in the taskbar
  * @param window a window
  * @return ETK_TRUE if the window does not appear in the taskbar, ETK_FALSE otherwise
  */
@@ -687,7 +687,7 @@ Etk_Bool etk_engine_window_skip_taskbar_hint_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set whether or not the window should appear in the pager
+ * @brief Calls the engine's method to set whether or not the window should appear in the pager
  * @param window a window
  * @param skip_pager_hint ETK_TRUE to prevent the window from appearing in the pager, ETK_FALSE otherwise
  */
@@ -699,7 +699,7 @@ void etk_engine_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pag
 }
 
 /**
- * @brief Calls the engines's method to get whether or not the window appears in the pager
+ * @brief Calls the engine's method to get whether or not the window appears in the pager
  * @param window a window
  * @return ETK_TRUE if the window does not appear in the pager, ETK_FALSE otherwise
  */
@@ -711,7 +711,7 @@ Etk_Bool etk_engine_window_skip_pager_hint_get(Etk_Window *window)
 }
 
 /**
- * @brief Calls the engines's method to set the mouse pointer to use when the pointer is inside the window
+ * @brief Calls the engine's method to set the mouse pointer to use when the pointer is inside the window
  * @param window a window
  * @param pointer_type the type of mouse pointer to use
  */
@@ -758,8 +758,7 @@ void etk_engine_event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Ev
 }
 
 /**
- * @brief Calls the engines's method to get the position of the mouse pointer, relative to the screen
- * @param window a window
+ * @brief Calls the engine's method to get the position of the mouse pointer, relative to the screen
  * @param x the location where to store the x position of the mouse pointer
  * @param y the location where to store the y position of the mouse pointer
  */
@@ -774,7 +773,7 @@ void etk_engine_mouse_position_get(int *x, int *y)
 }
 
 /**
- * @brief Calls the engines's method to get the geometry of the screen containing the mouse pointer
+ * @brief Calls the engine's method to get the geometry of the screen containing the mouse pointer
  * @param x the location where to store x position of the screen
  * @param y the location where to store y position of the screen
  * @param w the location where to store the width of the screen
@@ -792,6 +791,43 @@ void etk_engine_mouse_screen_geometry_get(int *x, int *y, int *w, int *h)
    return _engine->mouse_screen_geometry_get(x, y, w, h);
 }
 
+/**
+ * @brief Calls the engine's method to set the text of the given selection
+ * @param selection the selection type whose text should be set
+ * @param text the text to set
+ */
+void etk_engine_selection_text_set(Etk_Selection_Type selection, const char *text)
+{
+   if (!_engine || !_engine->selection_text_set)
+      return;
+   _engine->selection_text_set(selection, text);
+}
+
+/**
+ * @brief Calls the engine's method to requests the text from a selection
+ * @param selection the selection you want to request the text from
+ * @param target the widget that will receive the selection
+ */
+void etk_engine_selection_text_request(Etk_Selection_Type selection, Etk_Widget *target)
+{
+   if (!_engine || !_engine->selection_text_request || !target)
+      return;
+   _engine->selection_text_request(selection, target);
+}
+
+/**
+ * @brief Calls the engine's method to clear the given selection
+ * @param selection the selection to clear
+ */
+void etk_engine_selection_clear(Etk_Selection_Type selection)
+{
+   if (!_engine || !_engine->selection_clear)
+      return;
+   _engine->selection_clear(selection);
+}
+
+/* From here: TODOC/TODO: rethink the API and the dnd system... */
+
 void etk_engine_drag_constructor(Etk_Drag *drag)
 {
    if (!_engine || !_engine->drag_constructor || !drag)
@@ -804,55 +840,6 @@ void etk_engine_drag_begin(Etk_Drag *drag)
    if (!_engine || !_engine->drag_begin || !drag)
       return;
    return _engine->drag_begin(drag);
-}
-
-Etk_Bool etk_engine_dnd_init()
-{
-   if (!_engine || !_engine->dnd_init)
-           return ETK_TRUE;
-   return _engine->dnd_init();
-}
-
-void etk_engine_dnd_shutdown()
-{
-   if (!_engine || !_engine->dnd_shutdown)
-      return;
-   _engine->dnd_shutdown();
-}
-
-void etk_engine_clipboard_text_request(Etk_Widget *widget)
-{
-   if (!_engine || !_engine->clipboard_text_request || !widget)
-      return;
-   _engine->clipboard_text_request(widget);
-}
-
-void etk_engine_clipboard_text_set(Etk_Widget *widget, const char *text, int length)
-{
-   if (!_engine || !_engine->clipboard_text_set || !widget)
-      return;
-   _engine->clipboard_text_set(widget, text, length);
-}
-
-void etk_engine_selection_text_request(Etk_Widget *widget)
-{
-   if (!_engine || !_engine->clipboard_text_request || !widget)
-      return;
-   _engine->selection_text_request(widget);
-}
-
-void etk_engine_selection_text_set(Etk_Widget *widget, const char *text, int length)
-{
-   if (!_engine || !_engine->clipboard_text_set || !widget)
-      return;
-   _engine->selection_text_set(widget, text, length);
-}
-
-void etk_engine_selection_clear()
-{
-   if (!_engine || !_engine->selection_clear)
-      return;
-   _engine->selection_clear();
 }
 
 /**************************
@@ -917,18 +904,12 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(mouse_position_get);
    INHERIT(mouse_screen_geometry_get);
    
+   INHERIT(selection_text_set);
+   INHERIT(selection_text_request);
+   INHERIT(selection_clear);
+   
    INHERIT(drag_constructor);
    INHERIT(drag_begin);
-   
-   INHERIT(dnd_init);
-   INHERIT(dnd_shutdown);
-   
-   INHERIT(clipboard_text_request);
-   INHERIT(clipboard_text_set);
-   
-   INHERIT(selection_text_request);
-   INHERIT(selection_text_set);
-   INHERIT(selection_clear);
 }
 
 /** @} */

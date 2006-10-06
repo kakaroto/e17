@@ -98,8 +98,8 @@ static Etk_Test_Example _etk_test_examples[] =
       ETK_TEST_BASIC_WIDGET
    },
    {
-      "X Drag / Drop",
-      etk_test_xdnd_window_create,
+      "Drag and Drop",
+      etk_test_dnd_window_create,
       ETK_TEST_MISC
    },
    {

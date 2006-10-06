@@ -12,7 +12,7 @@
  */
 
 
-/** @brief The different type of input events */
+/** @brief The different types of input events */
 typedef enum Etk_Event_Type
 {
    ETK_EVENT_MOUSE_MOVE,         /**< Emitted when the mouse is moved */
@@ -23,7 +23,6 @@ typedef enum Etk_Event_Type
    ETK_EVENT_KEY_UP,             /**< Emitted when a key of the keyboard is released */
    ETK_EVENT_NUM_EVENTS
 } Etk_Event_Type;
-
 
 /** @brief The keyboard modifiers active when the event has been emitted */
 typedef enum Etk_Modifiers

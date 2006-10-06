@@ -4,10 +4,21 @@
 
 #include "Evas.h"
 #include "etk_event.h"
-#include "etk_toplevel_widget.h"
+#include "etk_toplevel.h"
 #include "etk_window.h"
+#include "etk_selection.h"
 #include "etk_types.h"
 
+/**
+ * @defgroup Etk_Engine Etk_Engine
+ * @brief Etk is based on engines that are used for specific tasks such as creating a window or handling copy/paste...
+ * @{
+ */
+ 
+/**
+ * @brief @widget The structure of an engine regrouping the different methods to call
+ * @structinfo
+ */
 struct Etk_Engine
 {
    void *engine_data;
@@ -66,18 +77,13 @@ struct Etk_Engine
    void (*mouse_position_get)(int *x, int *y);
    void (*mouse_screen_geometry_get)(int *x, int *y, int *w, int *h);
    
+   void (*selection_text_set)(Etk_Selection_Type selection, const char *text);
+   void (*selection_text_request)(Etk_Selection_Type selection, Etk_Widget *target);
+   void (*selection_clear)(Etk_Selection_Type selection);
+   
+   
    void (*drag_constructor)(Etk_Drag *drag);
    void (*drag_begin)(Etk_Drag *drag);
-   
-   Etk_Bool (*dnd_init)(void);
-   void (*dnd_shutdown)(void);
-   
-   void (*clipboard_text_request)(Etk_Widget *widget);
-   void (*clipboard_text_set)(Etk_Widget *widget, const char *text, int length);
-   
-   void (*selection_text_request)(Etk_Widget *widget);
-   void (*selection_text_set)(Etk_Widget *widget, const char *text, int length);
-   void (*selection_clear)(void);
 };
 
 Etk_Bool etk_engine_init();
@@ -139,18 +145,13 @@ void etk_engine_event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Ev
 void etk_engine_mouse_position_get(int *x, int *y);
 void etk_engine_mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
 
+void etk_engine_selection_text_set(Etk_Selection_Type selection, const char *text);
+void etk_engine_selection_text_request(Etk_Selection_Type selection, Etk_Widget *target);
+void etk_engine_selection_clear(Etk_Selection_Type selection);
+
+
 void etk_engine_drag_constructor(Etk_Drag *drag);
-void etk_engine_drag_begin(Etk_Drag *drag);  
-
-Etk_Bool etk_engine_dnd_init();
-void etk_engine_dnd_shutdown();
-
-void etk_engine_clipboard_text_request(Etk_Widget *widget);
-void etk_engine_clipboard_text_set(Etk_Widget *widget, const char *text, int length);
-
-void etk_engine_selection_text_request(Etk_Widget *widget);
-void etk_engine_selection_text_set(Etk_Widget *widget, const char *text, int length);
-void etk_engine_selection_clear();
+void etk_engine_drag_begin(Etk_Drag *drag);
 
 /** @} */
 

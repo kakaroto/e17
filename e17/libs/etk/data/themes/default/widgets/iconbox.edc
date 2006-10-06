@@ -1,12 +1,12 @@
 group {
-   name: "iconbox";
+   name: "etk/iconbox";
    data {
       item: "selected_icon_color" "191 178 147 255";
    }
 }
 
 group {
-   name: "iconbox/scrolled_view";
+   name: "etk/iconbox/scrolled_view";
    min: 120 18;
    data {
       item: "inset" "6 6 6 6";
@@ -77,21 +77,20 @@ group {
    programs {
       program {
          name: "text_view_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          FOCUS_GLOW_ACTION
       }
       program {
          name: "text_view_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_GLOW_ACTION
       }
    }
 }
-
 group {
-   name: "iconbox/scrolled_view/hscrollbar";
+   name: "etk/iconbox/scrolled_view/hscrollbar";
    min: 68 18;
    parts {
       part {
@@ -115,13 +114,13 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 1.0 0.5;
-               offset: -6 5;
-               to_x: "left_left_arrow";
+               offset: 1 5;
+               to_x: "left_arrow";
             }
             rel2 {
                relative: 0.0 0.5;
-               offset: 5 6;
-               to_x: "right_left_arrow";
+               offset: -2 6;
+               to_x: "right_arrow";
             }
             image {
                normal: "hscrollbar_trough2.png";
@@ -137,29 +136,29 @@ group {
             visible: 0;
             rel1 {
                relative: 0.0 0.5;
-               offset: 10 13;
+               offset: -1 13;
+               to_x: "trough";
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -28 13;
+               offset: 0 13;
+               to_x: "trough";
             }
          }
       }
-      SCROLLBAR_DRAG("drag", 20, 16, 1, 0, "scrollbar_hdrag1.png", "scrollbar_hdrag2.png", "scrollbar_hdrag_thumb.png", "clip")
-      SCROLLBAR_BUTTON("left_left_arrow", 0.0, 0.5, -6, -2, "scrollbar_button_left1.png", "scrollbar_button_left2.png", "clip")
-      SCROLLBAR_BUTTON("right_left_arrow", 1.0, 0.5, -27, -2, "scrollbar_button_left1.png", "scrollbar_button_left2.png", "clip")
-      SCROLLBAR_BUTTON("right_right_arrow", 1.0, 0.5, -11, -2, "scrollbar_button_right1.png", "scrollbar_button_right2.png", "clip")
+      SCROLLBAR_DRAG("etk.dragable.bar", 20, 16, 1, 0, "scrollbar_hdrag1.png", "scrollbar_hdrag2.png", "scrollbar_hdrag_thumb.png", "clip")
+      SCROLLBAR_BUTTON("left_arrow", 0.0, 0.5, -6, -2, "scrollbar_button_left1.png", "scrollbar_button_left2.png", "clip")
+      SCROLLBAR_BUTTON("right_arrow", 1.0, 0.5, -11, -2, "scrollbar_button_right1.png", "scrollbar_button_right2.png", "clip")
    }
    programs {
-      SCROLLBAR_DRAG_PROG("drag")
-      SCROLLBAR_BUTTON_PROG("left_left_arrow", "left")
-      SCROLLBAR_BUTTON_PROG("right_left_arrow", "left")
-      SCROLLBAR_BUTTON_PROG("right_right_arrow", "right")
+      SCROLLBAR_DRAG_PROG("etk.dragable.bar")
+      SCROLLBAR_BUTTON_PROG("left_arrow", "left")
+      SCROLLBAR_BUTTON_PROG("right_arrow", "right")
    }
 }
 
 group {
-   name: "iconbox/scrolled_view/vscrollbar";
+   name: "etk/iconbox/scrolled_view/vscrollbar";
    min: 18 68;
    parts {
       part {
@@ -183,13 +182,13 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.5 1.0;
-               offset: 5 -6;
-               to_y: "up_up_arrow";
+               offset: 5 1;
+               to_y: "up_arrow";
             }
             rel2 {
                relative: 0.5 0.0;
-               offset: 6 5;
-               to_y: "down_up_arrow";
+               offset: 6 -2;
+               to_y: "down_arrow";
             }
             image {
                normal: "vscrollbar_trough2.png";
@@ -205,29 +204,29 @@ group {
             visible: 0;
             rel1 {
                relative: 0.5 0.0;
-               offset: 13 10;
+               offset: 13 -1;
+               to_y: "trough";
             }
             rel2 {
                relative: 0.5 1.0;
-               offset: 13 -28;
+               offset: 13 0;
+               to_y: "trough";
             }
          }
       }
-      SCROLLBAR_DRAG("drag", 16, 20, 0, 1, "scrollbar_vdrag1.png", "scrollbar_vdrag2.png", "scrollbar_vdrag_thumb.png", "clip")
-      SCROLLBAR_BUTTON("up_up_arrow", 0.5, 0.0, -2, -6, "scrollbar_button_up1.png", "scrollbar_button_up2.png", "clip")
-      SCROLLBAR_BUTTON("down_up_arrow", 0.5, 1.0, -2, -27, "scrollbar_button_up1.png", "scrollbar_button_up2.png", "clip")
-      SCROLLBAR_BUTTON("down_down_arrow", 0.5, 1.0, -2, -11, "scrollbar_button_down1.png", "scrollbar_button_down2.png", "clip")
+      SCROLLBAR_DRAG("etk.dragable.bar", 16, 20, 0, 1, "scrollbar_vdrag1.png", "scrollbar_vdrag2.png", "scrollbar_vdrag_thumb.png", "clip")
+      SCROLLBAR_BUTTON("up_arrow", 0.5, 0.0, -2, -6, "scrollbar_button_up1.png", "scrollbar_button_up2.png", "clip")
+      SCROLLBAR_BUTTON("down_arrow", 0.5, 1.0, -2, -11, "scrollbar_button_down1.png", "scrollbar_button_down2.png", "clip")
    }
    programs {
-      SCROLLBAR_DRAG_PROG("drag")
-      SCROLLBAR_BUTTON_PROG("up_up_arrow", "up")
-      SCROLLBAR_BUTTON_PROG("down_up_arrow", "up")
-      SCROLLBAR_BUTTON_PROG("down_down_arrow", "down")
+      SCROLLBAR_DRAG_PROG("etk.dragable.bar")
+      SCROLLBAR_BUTTON_PROG("up_arrow", "up")
+      SCROLLBAR_BUTTON_PROG("down_arrow", "down")
    }
 }
 
 group {
-   name: "iconbox/label";
+   name: "etk/iconbox/label";
    data {
       item: "inset" "8 6 0 0";
    }
@@ -263,16 +262,16 @@ group {
    }
    programs {
       program {
-         name: "select";
-         signal: "select";
-         source: "";
+         name: "iconbox_label_select";
+         signal: "etk,state,selected";
+         source: "etk";
          action: STATE_SET "selected" 0.0;
          target: "background";
       }
       program {
-         name: "unselect";
-         signal: "unselect";
-         source: "";
+         name: "iconbox_label_unselect";
+         signal: "etk,state,unselected";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "background";
       }
@@ -280,7 +279,7 @@ group {
 }
 
 group {
-   name: "iconbox/selection";
+   name: "etk/iconbox/selection";
    parts {
       part {
          name: "border";

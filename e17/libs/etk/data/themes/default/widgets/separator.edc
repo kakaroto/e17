@@ -1,5 +1,5 @@
 group {
-   name: "hseparator";
+   name: "etk/hseparator";
    min: 2 2;
    parts {
       part {
@@ -25,7 +25,7 @@ group {
    }
 }
 group {
-   name: "vseparator";
+   name: "etk/vseparator";
    min: 2 2;
    parts {
       part {

@@ -111,18 +111,12 @@ static Etk_Engine engine_info = {
    NULL, /* mouse_position_get */
    NULL, /* mouse_screen_geometry_get */
    
+   NULL, /* selection_text_set */
+   NULL, /* selection_text_request */
+   NULL, /* selection_clear */
+   
    NULL, /* drag_constructor */
    NULL, /* drag_begin */
-   
-   NULL, /* dnd_init */
-   NULL, /* dnd_shutdown */
-   
-   NULL, /* clipboard_text_request */
-   NULL, /* clipboard_text_set */
-   
-   NULL, /* selection_text_request */
-   NULL, /* selection_text_set */
-   NULL  /* selection_clear */     
 };
 
 /**************************
@@ -175,7 +169,7 @@ static void _window_constructor(Etk_Window *window)
    
    engine_data = window->engine_data;
 
-   ETK_TOPLEVEL_WIDGET(window)->evas = ecore_evas_get(engine_data->ecore_evas);
+   ETK_TOPLEVEL(window)->evas = ecore_evas_get(engine_data->ecore_evas);
    ecore_evas_data_set(engine_data->ecore_evas, "_Etk_Engine::Window", window);
    ecore_evas_callback_move_set(engine_data->ecore_evas, _window_move_cb);
    ecore_evas_callback_resize_set(engine_data->ecore_evas, _window_resize_cb);

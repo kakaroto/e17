@@ -22,15 +22,12 @@ static void _etk_label_constructor(Etk_Label *label);
 static void _etk_label_destructor(Etk_Label *label);
 static void _etk_label_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_label_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
+static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *requested_size);
 static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_label_clip_set(Etk_Widget *widget, Evas_Object *clip);
 static void _etk_label_clip_unset(Etk_Widget *widget);
 static void _etk_label_realize_cb(Etk_Object *object, void *data);
 static void _etk_label_unrealize_cb(Etk_Object *object, void *data);
-
-static Evas_Textblock_Style *_etk_label_style = NULL;
-static int _etk_label_style_use = 0;
 
 /**************************
  *
@@ -39,6 +36,7 @@ static int _etk_label_style_use = 0;
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Label
  * @return Returns the type of an Etk_Label
  */
@@ -72,7 +70,7 @@ Etk_Type *etk_label_type_get()
  */
 Etk_Widget *etk_label_new(const char *text)
 {
-   return etk_widget_new(ETK_LABEL_TYPE, "label", text, NULL);
+   return etk_widget_new(ETK_LABEL_TYPE, "label", text, "theme_group", "label", NULL);
 }
 
 /**
@@ -82,21 +80,14 @@ Etk_Widget *etk_label_new(const char *text)
  */
 void etk_label_set(Etk_Label *label, const char *text)
 {
-   char *old_label;
-
-   if (!label)
+   if (!label || label->text == text)
       return;
 
-   old_label = label->text;
-   /* TODO: etk_label_set: " " if the length of the label is 0 */
-   if (!text || *text == 0)
-      label->text = strdup(" ");
-   else
-      label->text = strdup(text);
-   free(old_label);
+   free(label->text);
+   label->text = (text && *text != '\0') ? strdup(text) : NULL;
 
    if (label->text_object)
-      evas_object_textblock_text_markup_set(label->text_object, label->text);
+      evas_object_textblock_text_markup_set(label->text_object, label->text ? label->text : " ");
    
    etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
@@ -250,17 +241,17 @@ static void _etk_label_property_get(Etk_Object *object, int property_id, Etk_Pro
 }
 
 /* Calculates the ideal size of the label */
-static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
+static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *requested_size)
 {
    Etk_Label *label;
 
-   if (!(label = ETK_LABEL(widget)) || !size_requisition)
+   if (!(label = ETK_LABEL(widget)) || !requested_size)
       return;
 
-   size_requisition->w = 0;
-   size_requisition->h = 0;
+   requested_size->w = 0;
+   requested_size->h = 0;
    if (label->text_object)
-      evas_object_textblock_size_native_get(label->text_object, &size_requisition->w, &size_requisition->h);
+      evas_object_textblock_size_native_get(label->text_object, &requested_size->w, &requested_size->h);
 }
 
 /* Resizes the label to the allocated size */
@@ -312,42 +303,43 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Label *label;
    Evas *evas;
+   Evas_Textblock_Style *style;
 
    if (!(label = ETK_LABEL(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(label))))
       return;
 
-   if (!_etk_label_style)
-   {
-      _etk_label_style = evas_textblock_style_new();
-      evas_textblock_style_set(_etk_label_style,
-         "DEFAULT='font=Vera font_size=10 align=left color=#000000 wrap=word style=shadow shadow_color=#ffffff80'"
-         "center='+ align=center'"
-         "/center='- \n'"
-         "right='+ align=right'"
-         "/right='- \n'"
-         "h1='+ font_size=20'"
-	 "b='+font=Vera-Bold'"
-	 "i='+font=Vera-Italic'"			       
-         "glow='+ style=glow color=#fff glow2_color=#fe87 glow_color=#fa14'"
-         "link='+ underline=on underline_color=#0000aa color=#0000aa'"       			       
-         "red='+ color=#ff0000'"
-         "br='\n'"
-         "tab='\t'");
-      _etk_label_style_use = 0;
-   }
+   style = evas_textblock_style_new();
+   /* TODO: make the label themable... */
+   evas_textblock_style_set(style,
+      "DEFAULT='font=Vera font_size=10 align=left color=#000000 wrap=word style=shadow shadow_color=#ffffff80'"
+      "left='+ align=left'"
+      "/left='- \n'"
+      "center='+ align=center'"
+      "/center='- \n'"
+      "right='+ align=right'"
+      "/right='- \n'"
+      "h1='+ font_size=20'"
+      "b='+font=Vera-Bold'"
+      "i='+font=Vera-Italic'"
+      "bi='+font=Vera-Bold-Italic'"
+      "glow='+ style=glow color=#fff glow2_color=#fe87 glow_color=#fa14'"
+      "link='+ underline=on underline_color=#0000aa color=#0000aa'"       
+      "red='+ color=#ff0000'"
+      "br='\n'"
+      "tab='\t'");
 
    label->clip = evas_object_rectangle_add(evas);
    evas_object_show(label->clip);
    etk_widget_member_object_add(ETK_WIDGET(label), label->clip);
    
    label->text_object = evas_object_textblock_add(evas);
-   evas_object_textblock_style_set(label->text_object, _etk_label_style);
+   evas_object_textblock_style_set(label->text_object, style);
+   evas_textblock_style_free(style);
    evas_object_show(label->text_object);
    etk_widget_member_object_add(ETK_WIDGET(label), label->text_object);
    evas_object_clip_set(label->text_object, label->clip);
-   _etk_label_style_use++;
 
-   evas_object_textblock_text_markup_set(label->text_object, label->text);
+   evas_object_textblock_text_markup_set(label->text_object, label->text ? label->text : " ");
    etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
 
@@ -358,13 +350,7 @@ static void _etk_label_unrealize_cb(Etk_Object *object, void *data)
    
    if (!(label = ETK_LABEL(object)))
       return;
-
-   _etk_label_style_use--;
-   if (_etk_label_style_use <= 0 && _etk_label_style)
-   {
-      evas_textblock_style_free(_etk_label_style);
-      _etk_label_style = NULL;
-   }
+   
    label->text_object = NULL;
    label->clip = NULL;
 }
@@ -381,9 +367,21 @@ static void _etk_label_unrealize_cb(Etk_Object *object, void *data)
  * @addtogroup Etk_Label
  *
  * @image html widgets/label.png
- * You can use html-like tags to format the text of the label. For example, "<b>Text</b>" makes <b>Text</b> bold. @n
- * Here is the list of the supported tags: @n
- * TODO: [Doc] List of the tags for the label
+ * You can use html-like tags to format the text of the label. For example, "<b>Text</b>" makes
+ * <b>Text</b> bold. @n
+ * Here is the list of the supported tags:
+ * - <b>"<left>Text</left>":</b> Align left
+ * - <b>"<right>Text</right>":</b> Align right
+ * - <b>"<center>Text</center>":</b> Align center
+ * - <b>"<h1>Text</h1>":</b> Large text
+ * - <b>"<b>Text</b>":</b> Bold
+ * - <b>"<b>Text</b>":</b> Italic
+ * - <b>"<bi>Text</bi>":</b> Bold-Italic
+ * - <b>"<color=#rrggbbaa>Text</>":</b> Set the color of the text
+ * - <b>"<font_size=16>Text</>":</b> Set the size of the text
+ * - <b>"<glow>Text</glow>":</b> Make the the text glow
+ * - <b>"<br>":</b> End of line
+ * - <b>"<tab>":</b> Add a tab @n @n
  *
  * \par Object Hierarchy:
  * - Etk_Object

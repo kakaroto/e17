@@ -34,6 +34,7 @@ static void _etk_progress_bar_realize_cb(Etk_Object *object, void *data);
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Progress_Bar
  * @return Returns the type of an Etk_Progress_Bar
  */
@@ -144,7 +145,7 @@ double etk_progress_bar_fraction_get(Etk_Progress_Bar *progress_bar)
 }
 
 /**
- * @brief Causes the progress bar to enter pulse mode, subsequent calls simple move the bar around
+ * @brief Causes the progress bar to enter pulse mode, subsequent calls simply move the bar around
  * @param progress_bar a progress bar
  */
 void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar)
@@ -184,8 +185,8 @@ void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar)
 }
 
 /**
- * @brief Set the step size for the pulse mode, between 0.0 and 1.0.
- * The step size is the fraction of total progress to move the filler when it is pulsed.
+ * @brief Set the step-size for the pulse mode, between 0.0 and 1.0.
+ * The step-size is the fraction of total progress to move the filler when it is pulsed.
  * @param progress_bar a progress bar
  * @param pulse_step the step size
  */
@@ -203,9 +204,9 @@ void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double puls
 }
 
 /**
- * @brief Get the step size for the pulse mode
+ * @brief Get the step-size for the pulse mode
  * @param progress_bar a progress bar
- * @return Returns the step size of the pulse mode
+ * @return Returns the step-size of the pulse mode
  */
 double etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar)
 {
@@ -269,7 +270,6 @@ static void _etk_progress_bar_destructor(Etk_Progress_Bar *progress_bar)
 {
    if (!progress_bar)
       return;
-   
    free(progress_bar->text);
 }
 
@@ -360,18 +360,18 @@ static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar)
    if (!progress_bar->is_pulsing)
    {
       if (progress_bar->direction == ETK_PROGRESS_BAR_LEFT_TO_RIGHT)
-         edje_object_part_drag_value_set(widget->theme_object, "filler", 0.0, 0.0);
+         edje_object_part_drag_value_set(widget->theme_object, "etk.dragable.filler", 0.0, 0.0);
       else
-         edje_object_part_drag_value_set(widget->theme_object, "filler", 1.0, 0.0);
-      edje_object_part_drag_size_set(widget->theme_object, "filler", progress_bar->fraction, 0.0);
+         edje_object_part_drag_value_set(widget->theme_object, "etk.dragable.filler", 1.0, 0.0);
+      edje_object_part_drag_size_set(widget->theme_object, "etk.dragable.filler", progress_bar->fraction, 0.0);
    }
    else
    {
-      edje_object_part_drag_value_set(widget->theme_object, "filler", progress_bar->pulse_pos, 0.0);
-      edje_object_part_drag_size_set(widget->theme_object, "filler", progress_bar->filler_pulse_w, 0.0);
+      edje_object_part_drag_value_set(widget->theme_object, "etk.dragable.filler", progress_bar->pulse_pos, 0.0);
+      edje_object_part_drag_size_set(widget->theme_object, "etk.dragable.filler", progress_bar->filler_pulse_w, 0.0);
    }
    
-   etk_widget_theme_part_text_set(widget, "text", progress_bar->text ? progress_bar->text : "");
+   etk_widget_theme_part_text_set(widget, "etk.text.text", progress_bar->text ? progress_bar->text : "");
 }
 
 /** @} */
@@ -387,13 +387,13 @@ static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar)
  *
  * @image html widgets/progress_bar.png
  * A progress bar can work in two different modes: the progress mode and the pulse mode.
- * - In the progress mode, the progress bar has a growing bar that indicates the current progress of the operation.
+ * - In the progress mode, the progress bar has a growing bar that indicates the progress of the current operation.
  * You can change the fraction of the total progress with etk_progress_bar_fraction_set(). This mode is used when you
  * can have an accurate value of the progress.
- * - In the pulse mode, the bar has a constance width and bounces inside the progress bar. It is moved each time you call
- * etk_progress_bar_pulse(). You can also set the pulse step with etk_progress_bar_pulse_step_set(). This mode is used
+ * - In the pulse mode, the bar has a constant width and bounces inside the progress bar. It is moved each time you call
+ * etk_progress_bar_pulse(). You can also set the pulse-step with etk_progress_bar_pulse_step_set(). This mode is used
  * when you can't know the progress of the operation (for example, it can be used for a download when you can't know the
- * size of the file)
+ * total size of the file) @n
  * 
  * \par Object Hierarchy:
  * - Etk_Object

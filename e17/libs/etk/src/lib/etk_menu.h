@@ -8,7 +8,6 @@
 
 /* TODO/FIXME list:
  * - Keyboard navigation!
- * - better theme grouping?
  * - Sometimes an item is selected when the menu is popped up. Probably a bug in Etk_Popup_Window's feeding code
  */
 
@@ -26,7 +25,7 @@
 #define ETK_IS_MENU(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_TYPE))
 
 /**
- * @brief @widget The structure of a menu
+ * @brief @widget A menu shell implemented in a popup window
  * @structinfo
  */
 struct Etk_Menu
@@ -36,10 +35,13 @@ struct Etk_Menu
    Etk_Menu_Shell menu_shell;
    
    Etk_Popup_Window *window;
+   Etk_Menu_Item *parent_item;
 };
 
-Etk_Type *etk_menu_type_get();
+Etk_Type   *etk_menu_type_get();
 Etk_Widget *etk_menu_new();
+
+Etk_Menu_Item *etk_menu_parent_item_get(Etk_Menu *menu);
 
 void etk_menu_popup(Etk_Menu *menu);
 void etk_menu_popup_in_direction(Etk_Menu *menu, Etk_Popup_Direction direction);

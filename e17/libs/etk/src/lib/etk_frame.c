@@ -29,6 +29,7 @@ static void _etk_frame_realized_cb(Etk_Object *object, void *data);
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Frame
  * @return Returns the type of an Etk_Frame
  */
@@ -82,13 +83,13 @@ void etk_frame_label_set(Etk_Frame *frame, const char *label)
    {
       if (!frame->label || *frame->label == '\0')
       {
-         etk_widget_theme_part_text_set(ETK_WIDGET(frame), "label", "");
-         etk_widget_theme_signal_emit(ETK_WIDGET(frame), "hide_label", ETK_TRUE);
+         etk_widget_theme_part_text_set(ETK_WIDGET(frame), "etk.text.label", "");
+         etk_widget_theme_signal_emit(ETK_WIDGET(frame), "etk,action,hide,label", ETK_TRUE);
       }
       else
       {
-         etk_widget_theme_part_text_set(ETK_WIDGET(frame), "label", frame->label);
-         etk_widget_theme_signal_emit(ETK_WIDGET(frame), "show_label", ETK_TRUE);
+         etk_widget_theme_part_text_set(ETK_WIDGET(frame), "etk.text.label", frame->label);
+         etk_widget_theme_signal_emit(ETK_WIDGET(frame), "etk,action,show,label", ETK_TRUE);
       }
    }
 }

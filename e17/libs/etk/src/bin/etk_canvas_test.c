@@ -31,7 +31,8 @@ void etk_test_canvas_window_create(void *data)
    etk_widget_size_request_set(canvas, 300, 200);
    etk_box_append(ETK_BOX(vbox), canvas, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-   button = etk_button_new_with_label("Add object");
+   button = etk_button_new_from_stock(ETK_STOCK_LIST_ADD);
+   etk_button_label_set(ETK_BUTTON(button), "Add object");
    etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_canvas_object_add), canvas);
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
@@ -71,6 +72,8 @@ static void _etk_test_canvas_object_add(void *data)
       g = rand() % 255;
       b = rand() % 255;
       a = ETK_MAX(rand() % 255, 40);
+      evas_color_argb_premul(a, &r, &g, &b);
+      
       evas_object_color_set(object, r, g, b, a);
    }
    /* Or add an image */

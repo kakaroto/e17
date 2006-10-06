@@ -178,7 +178,7 @@ static void _etk_test_embed_update()
    
    evas_object_move(panel_clip, 0, y);
    evas_object_resize(panel_clip, win_w, win_h - y);
-   evas_object_color_set(panel_clip, 255, 255, 255, alpha);
+   evas_object_color_set(panel_clip, alpha, alpha, alpha, alpha);
    
    etk_widget_size_request(embed, &embed_size);
    evas_object_move(embed_object, (win_w - embed_size.w) / 2, y + 20);

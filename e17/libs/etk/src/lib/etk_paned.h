@@ -54,7 +54,7 @@ struct Etk_Paned
 };
 
 /**
- * @brief @widget An horizontal paned
+ * @brief @widget A horizontal paned
  * @structinfo
  */
 struct Etk_HPaned
@@ -91,8 +91,8 @@ Etk_Widget *etk_paned_child2_get(Etk_Paned *paned);
 void etk_paned_position_set(Etk_Paned *paned, int position);
 int etk_paned_position_get(Etk_Paned *paned);
 
-void etk_paned_child1_expand_set(Etk_Paned *paned, Etk_Bool value);
-void etk_paned_child2_expand_set(Etk_Paned *paned, Etk_Bool value);
+void     etk_paned_child1_expand_set(Etk_Paned *paned, Etk_Bool expand);
+void     etk_paned_child2_expand_set(Etk_Paned *paned, Etk_Bool expand);
 Etk_Bool etk_paned_child1_expand_get(Etk_Paned *paned);
 Etk_Bool etk_paned_child2_expand_get(Etk_Paned *paned);
 /** @} */

@@ -1,5 +1,5 @@
 group {
-   name: "wm_border";
+   name: "etk/wm_border";
    parts {
       part {
 	 name: "shadow";

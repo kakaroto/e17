@@ -7,6 +7,17 @@
 #include <stdarg.h>
 #include "etk_types.h"
 
+/* TODO/FIXME list:
+ * - Implement dnd
+ * - Support emblems
+ * - Support "vertically-filled" iconboxes
+ * - Better documentation of model settings
+ * - More insertion function (prepend, insert, ...)
+ * - Key navigation
+ * - focus the grid, the scrolled view, ... when focused
+ * - support long labels
+ */
+
 /**
  * @defgroup Etk_Iconbox Etk_Iconbox
  * @brief An Etk_Iconbox is a widget that can display icons aligned on a grid
@@ -22,7 +33,8 @@
 
 /**
  * @brief Describes the model of an iconbox: it includes the position and the size of the cell, of the icon and
- * of the label. An iconbox can have several models, and you can change its current model to change the view
+ * of the label. An iconbox can have several models, and, at any moment, you can change the current model to
+ * change the view
  * @structinfo
  */
 struct Etk_Iconbox_Model
@@ -97,8 +109,6 @@ struct Etk_Iconbox
    Etk_Bool frozen;
 };
 
-/* TODO: scrolled_view_get() */
-
 Etk_Type   *etk_iconbox_type_get();
 Etk_Widget *etk_iconbox_new();
 
@@ -136,6 +146,8 @@ void     etk_iconbox_unselect_all(Etk_Iconbox *iconbox);
 void     etk_iconbox_icon_select(Etk_Iconbox_Icon *icon);
 void     etk_iconbox_icon_unselect(Etk_Iconbox_Icon *icon);
 Etk_Bool etk_iconbox_is_selected(Etk_Iconbox_Icon *icon);
+
+Etk_Scrolled_View *etk_iconbox_scrolled_view_get(Etk_Iconbox *iconbox);
 
 /** @} */
 

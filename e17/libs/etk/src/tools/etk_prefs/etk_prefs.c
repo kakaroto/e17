@@ -1,3 +1,4 @@
+#include <string.h>
 #include <limits.h>
 #include <Ecore_File.h>
 #include <Ecore_Data.h>
@@ -94,7 +95,7 @@ void etk_prefs_standard_item_add(Etk_Widget *tree,
    const char *file;
    Etk_Tree_Row *row;
    
-   file = etk_theme_icon_theme_get();   
+   file = etk_theme_icon_get();   
    row = etk_tree_append(ETK_TREE(tree), etk_tree_nth_col_get(ETK_TREE(tree),
 							      0),
                          file, icon, label, NULL);
@@ -159,7 +160,7 @@ static Etk_Widget *_etk_prefs_theme_tab_create()
    etk_tree_build(ETK_TREE(theme_list));   
    
    /* scan for themes and add them to the list */
-   themes = etk_theme_widget_theme_available_get();
+   themes = etk_theme_widget_available_themes_get();
    for(l = themes; l; l = l->next)
      {
         const char *widget_theme = etk_config_widget_theme_get();

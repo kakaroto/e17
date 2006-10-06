@@ -36,6 +36,7 @@ static int _etk_scrollbar_step_increment_cb(void *data);
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Scrollbar
  * @return Returns the type of an Etk_Scrollbar
  */
@@ -53,6 +54,7 @@ Etk_Type *etk_scrollbar_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_HScrollbar
  * @return Returns the type on an Etk_HScrollbar
  */
@@ -69,6 +71,7 @@ Etk_Type *etk_hscrollbar_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_VScrollbar
  * @return Returns the type of an Etk_VScrollbar
  */
@@ -159,7 +162,7 @@ static void _etk_scrollbar_realize_cb(Etk_Object *object, void *data)
       return;
 
    _etk_scrollbar_value_changed_handler(ETK_RANGE(object), ETK_RANGE(object)->value);
-   edje_object_signal_callback_add(theme_object, "drag*", "drag", _etk_scrollbar_drag_dragged_cb, object);
+   edje_object_signal_callback_add(theme_object, "drag*", "etk.dragable.bar", _etk_scrollbar_drag_dragged_cb, object);
    edje_object_signal_callback_add(theme_object, "scroll_*_start", "", _etk_scrollbar_scroll_start_cb, object);
    edje_object_signal_callback_add(theme_object, "scroll_stop", "", _etk_scrollbar_scroll_stop_cb, object);
 }
@@ -180,9 +183,9 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
    else if (strcmp(emission, "drag") == 0)
    {
       if (ETK_IS_HSCROLLBAR(range))
-         edje_object_part_drag_value_get(obj, "drag", &percent, NULL);
+         edje_object_part_drag_value_get(obj, "etk.dragable.bar", &percent, NULL);
       else
-         edje_object_part_drag_value_get(obj, "drag", NULL, &percent);
+         edje_object_part_drag_value_get(obj, "etk.dragable.bar", NULL, &percent);
       etk_range_value_set(range, range->lower + percent * (range->upper - range->lower - range->page_size));
    }
 }
@@ -216,9 +219,9 @@ static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value)
    if (!scrollbar->dragging)
    {
       if (ETK_IS_HSCROLLBAR(scrollbar))
-         edje_object_part_drag_value_set(theme_object, "drag", percent, 0.0);
+         edje_object_part_drag_value_set(theme_object, "etk.dragable.bar", percent, 0.0);
       else
-         edje_object_part_drag_value_set(theme_object, "drag", 0.0, percent);
+         edje_object_part_drag_value_set(theme_object, "etk.dragable.bar", 0.0, percent);
    }
 }
 
@@ -234,9 +237,9 @@ static void _etk_scrollbar_page_size_changed_cb(Etk_Object *object, const char *
 
    new_drag_size = (double)range->page_size / (range->upper - range->lower);
    if (ETK_IS_HSCROLLBAR(range))
-      edje_object_part_drag_size_set(theme_object, "drag", new_drag_size, 0.0);
+      edje_object_part_drag_size_set(theme_object, "etk.dragable.bar", new_drag_size, 0.0);
    else
-      edje_object_part_drag_size_set(theme_object, "drag", 0.0, new_drag_size);
+      edje_object_part_drag_size_set(theme_object, "etk.dragable.bar", 0.0, new_drag_size);
 }
 
 /* Called when the range of the scrollbar is changed */
@@ -256,16 +259,16 @@ static void _etk_scrollbar_range_changed_cb(Etk_Object *object, const char *prop
    else
       percent = 0.0;
    if (ETK_IS_HSCROLLBAR(range))
-      edje_object_part_drag_value_set(theme_object, "drag", percent, 0.0);
+      edje_object_part_drag_value_set(theme_object, "etk.dragable.bar", percent, 0.0);
    else
-      edje_object_part_drag_value_set(theme_object, "drag", 0.0, percent);
+      edje_object_part_drag_value_set(theme_object, "etk.dragable.bar", 0.0, percent);
    
    /* Update the size of the drag button */
    new_drag_size = (double)range->page_size / (range->upper - range->lower);
    if (ETK_IS_HSCROLLBAR(range))
-      edje_object_part_drag_size_set(theme_object, "drag", new_drag_size, 0.0);
+      edje_object_part_drag_size_set(theme_object, "etk.dragable.bar", new_drag_size, 0.0);
    else
-      edje_object_part_drag_size_set(theme_object, "drag", 0.0, new_drag_size);
+      edje_object_part_drag_size_set(theme_object, "etk.dragable.bar", 0.0, new_drag_size);
 }
 
 /* Called when the user starts to press an arrow of the scrollbar */
@@ -356,7 +359,7 @@ static int _etk_scrollbar_step_increment_cb(void *data)
  * @addtogroup Etk_Scrollbar
  *
  * @image html scrollbar.png
- * Etk_Scrollbar is an abstract class for two derived widgets: Etk_HScrollbar (an horizontal scrollbar)
+ * Etk_Scrollbar is an abstract class for two derived widgets: Etk_HScrollbar (a horizontal scrollbar)
  * and Etk_VScrollbar (a vertical scrollbar). @n
  * You usually do not need to use Etk_Scrollbar directly. In most of the cases, you can use Etk_Scrolled_View instead.
  * 

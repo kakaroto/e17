@@ -6,7 +6,6 @@
 #include <limits.h>
 
 #include <Ecore.h>
-#include <Ecore_Job.h>
 #include <Evas.h>
 #include <Edje.h>
 #include "etk_argument.h"
@@ -14,7 +13,7 @@
 #include "etk_type.h"
 #include "etk_signal.h"
 #include "etk_object.h"
-#include "etk_toplevel_widget.h"
+#include "etk_toplevel.h"
 #include "etk_utils.h"
 #include "etk_config.h"
 #include "etk_theme.h"
@@ -28,14 +27,13 @@
  * @{
  */
 
-static void _etk_main_iterate_job_cb(void *data);
+static int _etk_main_idle_enterer_cb(void *data);
 static void _etk_main_size_request_recursive(Etk_Widget *widget);
 static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_top_level);
 
-static Evas_List *_etk_main_toplevel_widgets = NULL;
 static Etk_Bool _etk_main_running = ETK_FALSE;
 static int _etk_main_init_count = 0;
-static Ecore_Job *_etk_main_iterate_job = NULL;
+static Ecore_Idle_Enterer *_etk_main_idle_enterer = NULL;
 
 /**************************
  *
@@ -45,9 +43,10 @@ static Ecore_Job *_etk_main_iterate_job = NULL;
 
 /**
  * @brief Initializes Etk. This function needs to be called before any other call to an etk_* function. @n
- * You can call safely etk_init() several times, it will only have an effect the first time you call it. The other times,
- * it will just increment a counter. etk_shutdown() will decrement this counter and will effectively shutdown Etk when
- * the counter reaches 0. So you need to call etk_shutdown() the same number of times as etk_init().
+ * You can call safely etk_init() several times, it will only have an effect the first time you call it. The other
+ * times, it will just increment the init counter. etk_shutdown() will decrement this counter and will effectively
+ * shutdown Etk only when the counter reaches 0. So you need to call etk_shutdown() the same number of times
+ * you've called etk_init().
  * @param argc the location of the "argc" parameter passed to main(). It is used to parse the arguments specific to Etk.
  * It can be set to NULL.
  * @param argv the location of the "argv" parameter passed to main(). It is used to parse the arguments specific to Etk.
@@ -70,7 +69,7 @@ int etk_init(int *argc, char ***argv)
       /* Parse the arguments */
       if (argc && argv)
       {
-         etk_argument_value_get(argc, argv, "etk-engine", 'e', ETK_TRUE, &engine_name);
+         etk_argument_value_get(argc, argv, "etk-engine", 0, ETK_TRUE, &engine_name);
       }
       
       /* Initialize the EFL */
@@ -90,7 +89,10 @@ int etk_init(int *argc, char ***argv)
          return 0;
       }
       
-      /* TODO: reorder ? */
+      /* TODO: maybe we should do this in etk_main().
+       * Problem: if we do this, a program that uses directly ecore_main_loop_begin() and not etk_main() won't work */
+      _etk_main_idle_enterer = ecore_idle_enterer_add(_etk_main_idle_enterer_cb, NULL);
+      
       /* Initialize the subsystems of Etk */
       if (!etk_config_init())
       {
@@ -110,11 +112,6 @@ int etk_init(int *argc, char ***argv)
          return 0;
       }
       etk_event_init();
-      if (!etk_dnd_init())
-      {
-         ETK_WARNING("Etk_dnd initialization failed!");
-         return 0;
-      }
       etk_tooltips_init();
       
       /* Initialize Gettext */
@@ -129,9 +126,9 @@ int etk_init(int *argc, char ***argv)
 }
 
 /**
- * @brief Shuts down Etk. It decrements the counter of initializations. If the counter reaches 0, it frees all the
- * resources used by Etk. @n
- * @return Returns the new number of times Etk has been initialized. 0 means that the resources has been freed.
+ * @brief Shuts down Etk. It decrements the init-counter. If the counter reaches 0, it frees all the resources used by Etk
+ * @return Returns the new value of the init-counter. If 0 is returned, it means that the resources has effectively
+ * been freed.
  */
 int etk_shutdown()
 {
@@ -141,20 +138,19 @@ int etk_shutdown()
    _etk_main_init_count--;
    if (_etk_main_init_count == 0)
    {
+      ecore_idle_enterer_del(_etk_main_idle_enterer);
+      _etk_main_idle_enterer = NULL;
+      
       /* Shutdown the subsystems of Etk */
       etk_object_shutdown();
       etk_signal_shutdown();
       etk_type_shutdown();
       
       etk_tooltips_shutdown();
-      etk_dnd_shutdown();
       etk_event_shutdown();
       etk_engine_shutdown();
       etk_config_shutdown();
       etk_theme_shutdown();
-      
-      evas_list_free(_etk_main_toplevel_widgets);
-      _etk_main_toplevel_widgets = NULL;
       
       /* Shutdown the EFL*/
       edje_shutdown();
@@ -190,9 +186,6 @@ void etk_main_quit()
 
    ecore_main_loop_quit();
    _etk_main_running = ETK_FALSE;
-   if (_etk_main_iterate_job)
-      ecore_job_del(_etk_main_iterate_job);
-   _etk_main_iterate_job = NULL;
 }
 
 /**
@@ -202,63 +195,23 @@ void etk_main_quit()
 void etk_main_iterate()
 {
    Evas_List *l;
-   Etk_Widget *widget;
+   Etk_Toplevel *toplevel;
 
    if (_etk_main_init_count <= 0)
       return;
    
    etk_object_purge();
 
-   /* TODO: only update the toplevel widgets that need to be updated */
-   for (l = _etk_main_toplevel_widgets; l; l = l->next)
+   for (l = etk_toplevel_widgets_get(); l; l = l->next)
    {
-      widget = ETK_WIDGET(l->data);
-      _etk_main_size_request_recursive(widget);
-      _etk_main_size_allocate_recursive(widget, ETK_TRUE);
+      toplevel = ETK_TOPLEVEL(l->data);
+      if (toplevel->need_update)
+      {
+         toplevel->need_update = ETK_FALSE;
+         _etk_main_size_request_recursive(ETK_WIDGET(toplevel));
+         _etk_main_size_allocate_recursive(ETK_WIDGET(toplevel), ETK_TRUE);
+      }
    }
-}
-
-/**
- * @internal
- * @brief Queues an iteration: it will run an iteration as soon as possible
- */
-void etk_main_iteration_queue()
-{
-   if (!_etk_main_iterate_job)
-      _etk_main_iterate_job = ecore_job_add(_etk_main_iterate_job_cb, NULL);
-}
-
-/**
- * @internal
- * @brief Adds the widget to the list of toplevel widgets
- * @param widget the toplevel widget to add
- */
-void etk_main_toplevel_widget_add(Etk_Toplevel_Widget *widget)
-{
-   if (!widget)
-      return;
-   _etk_main_toplevel_widgets = evas_list_append(_etk_main_toplevel_widgets, widget);
-}
-
-/**
- * @internal
- * @brief Removes the widget from the list of toplevel widgets
- * @param widget the toplevel widget to remove
- */
-void etk_main_toplevel_widget_remove(Etk_Toplevel_Widget *widget)
-{
-   if (!widget)
-      return;
-   _etk_main_toplevel_widgets = evas_list_remove(_etk_main_toplevel_widgets, widget);
-}
-
-/**
- * @brief Gets the list of the created toplevel widgets (windows, embed widgets, ...)
- * @return Returns the list of the created toplevel widgets
- */
-Evas_List *etk_main_toplevel_widgets_get()
-{
-   return _etk_main_toplevel_widgets;
 }
 
 /**************************
@@ -267,11 +220,11 @@ Evas_List *etk_main_toplevel_widgets_get()
  *
  **************************/
 
-/* Runs an iteration (used as callback for an ecore_job) */
-static void _etk_main_iterate_job_cb(void *data)
+/* Called each time the process enters the idle state: it runs an iteration */
+static int _etk_main_idle_enterer_cb(void *data)
 {
    etk_main_iterate();
-   _etk_main_iterate_job = NULL;
+   return 1;
 }
 
 /* Recursively requests the size of all the widgets */
@@ -299,8 +252,8 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
    
    if (is_top_level)
    {
-      etk_toplevel_widget_evas_position_get(ETK_TOPLEVEL_WIDGET(widget), &geometry.x, &geometry.y);
-      etk_toplevel_widget_size_get(ETK_TOPLEVEL_WIDGET(widget), &geometry.w, &geometry.h);
+      etk_toplevel_evas_position_get(ETK_TOPLEVEL(widget), &geometry.x, &geometry.y);
+      etk_toplevel_size_get(ETK_TOPLEVEL(widget), &geometry.w, &geometry.h);
    }
    else
       etk_widget_geometry_get(widget, &geometry.x, &geometry.y, &geometry.w, &geometry.h);
@@ -311,3 +264,21 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
 }
 
 /** @} */
+
+/*************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Main
+ *
+ * Every Etk program should call at least two Etk functions:
+ * - etk_init() which initializes Etk. If you don't call it, the program will crash when you call any Etk function
+ * - etk_shutdown() which shutdowns Etk and frees the allocated resources. If you don't call it, the memory allocated
+ * by Etk won't be freed. @n
+ *
+ * Most of the time, you will also have to call the function etk_main() which runs the main loop, and etk_main_quit()
+ * which quits the main loop (for example, when the menu-item "Quit" is clicked)
+ */

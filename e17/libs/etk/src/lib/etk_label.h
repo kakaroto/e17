@@ -7,9 +7,9 @@
 
 /*
  * TODO/FIXME list:
- * - The style has to be defined by the theme
- * - Fix bad size_request and bad rendering (evas_textblock bug?)
- * - Document the different style tags
+ * - Fix bad size_request (evas_textblock bug?): (does this bug still exist?)
+ * - Add more style tags
+ * - Make labels themeable
  */
 
 /**
@@ -26,7 +26,7 @@
 #define ETK_IS_LABEL(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_LABEL_TYPE))
 
 /**
- * @brief @widget The structure of a label
+ * @brief @widget A simple widget that can display text
  * @structinfo
  */
 struct Etk_Label
@@ -43,10 +43,10 @@ struct Etk_Label
    float yalign;
 };
 
-Etk_Type *etk_label_type_get();
+Etk_Type   *etk_label_type_get();
 Etk_Widget *etk_label_new(const char *text);
 
-void etk_label_set(Etk_Label *label, const char *text);
+void        etk_label_set(Etk_Label *label, const char *text);
 const char *etk_label_get(Etk_Label *label);
 
 void etk_label_alignment_set(Etk_Label *label, float xalign, float yalign);

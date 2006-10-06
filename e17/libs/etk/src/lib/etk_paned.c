@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <Evas.h>
 #include "etk_separator.h"
-#include "etk_toplevel_widget.h"
+#include "etk_toplevel.h"
 #include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
@@ -46,6 +46,7 @@ static void _etk_vpaned_position_calc(Etk_Paned *paned);
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Paned
  * @return Returns the type of an Etk_Paned
  */
@@ -66,6 +67,7 @@ Etk_Type *etk_paned_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_HPaned
  * @return Returns the type of an Etk_HPaned
  */
@@ -83,6 +85,7 @@ Etk_Type *etk_hpaned_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_VPaned
  * @return Returns the type of an Etk_VPaned
  */
@@ -239,54 +242,50 @@ int etk_paned_position_get(Etk_Paned *paned)
 } 
 
 /**
- * @brief Sets whether the first child should expands.
+ * @brief Sets whether the first child should expand as much as possible
  * @param paned a paned
- * @param expand ETK_TRUE whether the first child should be expandable
+ * @param expand ETK_TRUE whether the first child expand as much as possible
  */
 void etk_paned_child1_expand_set(Etk_Paned *paned, Etk_Bool expand)
 {
    if (!paned)
       return;
-
    paned->expand1 = expand;
 }
 
 /**
- * @brief Sets whether the second child should expands.
+ * @brief Sets whether the second child should expand as much as possible
  * @param paned a paned
- * @param expand ETK_TRUE whether the second child should be expandable
+ * @param expand ETK_TRUE whether the second child should expand as much as possible
  */
 void etk_paned_child2_expand_set(Etk_Paned *paned, Etk_Bool expand)
 {
    if (!paned)
       return;
-
    paned->expand2 = expand;
 }
 
 /**
- * @brief Gets whether the first child expands.
+ * @brief Gets whether the first child expands
  * @param paned a paned
- * @return Returns ETK_TRUE if the first child is expandable
+ * @return Returns ETK_TRUE if the first child expands
  */
 Etk_Bool etk_paned_child1_expand_get(Etk_Paned *paned)
 {
    if (!paned)
       return ETK_FALSE;
-
    return paned->expand1;
 }
 
 /**
- * @brief Gets whether the second child expands.
+ * @brief Gets whether the second child expands
  * @param paned a paned
- * @return Returns ETK_TRUE if the second child is expandable
+ * @return Returns ETK_TRUE if the second child expands
  */
 Etk_Bool etk_paned_child2_expand_get(Etk_Paned *paned)
 {
    if (!paned)
       return ETK_FALSE;
-
    return paned->expand2;
 }
 
@@ -311,9 +310,9 @@ static void _etk_paned_constructor(Etk_Paned *paned)
    ETK_CONTAINER(paned)->child_remove = _etk_paned_child_remove;
    ETK_CONTAINER(paned)->children_get = _etk_paned_children_get;
 
-   paned->separator = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "separator", NULL);
+   paned->separator = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "separator", "theme_parent", paned, NULL);
    etk_widget_parent_set(paned->separator, ETK_WIDGET(paned));
-   etk_widget_visibility_locked_set(paned->separator, ETK_TRUE);
+   etk_widget_internal_set(paned->separator, ETK_TRUE);
 
    etk_signal_connect("mouse_in", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_in_cb), paned);
    etk_signal_connect("mouse_out", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_out_cb), paned);
@@ -356,21 +355,30 @@ static void _etk_hpaned_size_request(Etk_Widget *widget, Etk_Size *size)
       return;
 
    if (paned->child1)
+   {
       etk_widget_size_request(paned->child1, &child1_size);
+      if (paned->child1->geometry.w < child1_size.w)
+         etk_widget_redraw_queue(widget);
+   }
    else
    {
       child1_size.w = 0;
       child1_size.h = 0;
    }
+   
    if (paned->child2)
+   {
       etk_widget_size_request(paned->child2, &child2_size);
+      if (paned->child2->geometry.w < child2_size.w)
+         etk_widget_redraw_queue(widget);
+   }
    else
    {
       child2_size.w = 0;
       child2_size.h = 0;
    }
+   
    etk_widget_size_request(paned->separator, &separator_size);
-
    size->w = child1_size.w + child2_size.w + separator_size.w;
    size->h = ETK_MAX(child1_size.h, ETK_MAX(child2_size.h, separator_size.h));
 }
@@ -385,21 +393,30 @@ static void _etk_vpaned_size_request(Etk_Widget *widget, Etk_Size *size)
       return;
 
    if (paned->child1)
+   {
       etk_widget_size_request(paned->child1, &child1_size);
+      if (paned->child1->geometry.h < child1_size.h)
+         etk_widget_redraw_queue(widget);
+   }
    else
    {
       child1_size.w = 0;
       child1_size.h = 0;
    }
+   
    if (paned->child2)
+   {
       etk_widget_size_request(paned->child2, &child2_size);
+      if (paned->child2->geometry.h < child2_size.h)
+         etk_widget_redraw_queue(widget);
+   }
    else
    {
       child2_size.w = 0;
       child2_size.h = 0;
    }
+   
    etk_widget_size_request(paned->separator, &separator_size);
-
    size->w = ETK_MAX(child1_size.w, ETK_MAX(child2_size.w, separator_size.w));
    size->h = child1_size.h + child2_size.h + separator_size.h;
 }
@@ -575,9 +592,9 @@ static void _etk_paned_separator_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse
       return;
 
    if (ETK_IS_HPANED(paned))
-      etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_H_DOUBLE_ARROW);
+      etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_H_DOUBLE_ARROW);
    else
-      etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_V_DOUBLE_ARROW);
+      etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_V_DOUBLE_ARROW);
 }
 
 /* Called when the mouse leaves the paned separator */
@@ -590,9 +607,9 @@ static void _etk_paned_separator_mouse_out_cb(Etk_Object *object, Etk_Event_Mous
       return;
 
    if (ETK_IS_HPANED(paned))
-      etk_toplevel_widget_pointer_pop(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_H_DOUBLE_ARROW);
+      etk_toplevel_pointer_pop(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_H_DOUBLE_ARROW);
    else
-      etk_toplevel_widget_pointer_pop(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_V_DOUBLE_ARROW);
+      etk_toplevel_pointer_pop(etk_widget_toplevel_parent_get(separator_widget), ETK_POINTER_V_DOUBLE_ARROW);
 }
 
 /* Called when the user presses the paned separator */

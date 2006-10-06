@@ -51,6 +51,7 @@ static Etk_Box_Cell *_etk_box_cell_get(Etk_Box *box, Etk_Widget *widget);
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Box
  * @return Returns the type of an Etk_Box
  */
@@ -76,6 +77,7 @@ Etk_Type *etk_box_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_HBox
  * @return Returns the type of an Etk_HBox
  */
@@ -93,6 +95,7 @@ Etk_Type *etk_hbox_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_VBox
  * @return Returns the type of an Etk_VBox
  */
@@ -668,7 +671,7 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       ratio = (float)allocated_size.w / requested_size.w;
       for (i = 0; i < 2; i++)
       {
-         j = 0;
+         j = (i == ETK_BOX_START) ? 0 : (evas_list_count(box->cells[i]) - 1);
          l = (i == ETK_BOX_START) ? box->cells[i] : evas_list_last(box->cells[i]);
          while (l)
          {
@@ -893,7 +896,7 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       ratio = (float)allocated_size.h / requested_size.h;
       for (i = 0; i < 2; i++)
       {
-         j = 0;
+         j = (i == ETK_BOX_START) ? 0 : (evas_list_count(box->cells[i]) - 1);
          l = (i == ETK_BOX_START) ? box->cells[i] : evas_list_last(box->cells[i]);
          while (l)
          {
@@ -955,7 +958,7 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
       for (i = 0; i < 2; i++)
       {
-         j = 0;
+         j = (i == ETK_BOX_START) ? 0 : (evas_list_count(box->cells[i]) - 1);
          l = (i == ETK_BOX_START) ? box->cells[i] : evas_list_last(box->cells[i]);
          while (l)
          {
@@ -1082,14 +1085,13 @@ static Etk_Box_Cell *_etk_box_cell_get(Etk_Box *box, Etk_Widget *widget)
  *
  * Etk_Box is the base class for Etk_HBox and Etk_VBox:
  * in an Etk_HBox, the children are packed horizontally, and in an Etk_VBox, the children are packed vertically. @n
- * You can pack a child in two differen groups of widgets: the start-group and the end-group. The children of the
+ * You can pack a child in two different groups of widgets: the start-group and the end-group. The children of the
  * start-group are packed at the start of the box (left for the hbox, top for the vbox) and the children of the
- * end are packed at the end of the box (right for the hbox, bottom for the vbox). @n
+ * end-group are packed at the end of the box (right for the hbox, bottom for the vbox). @n
  * Widgets can be packed with the functions etk_box_prepend(), etk_box_append(), etk_box_insert() and
  * etk_box_insert_at(). @n @n
  * The "homogeneous" setting determines whether or not all the children of the box take up the same amount of space. @n
  * The "spacing" setting determines the amount of space between two children.
- *
  * 
  * \par Object Hierarchy:
  * - Etk_Object

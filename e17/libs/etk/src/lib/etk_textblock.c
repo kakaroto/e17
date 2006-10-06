@@ -173,6 +173,7 @@ static const char *_etk_tb_escapes[] =
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Textblock
  * @return Returns the type of an Etk_Textblock
  */
@@ -1115,9 +1116,9 @@ void etk_textblock_object_wrap_set(Evas_Object *tbo, Etk_Textblock_Wrap wrap)
    /* TODO: Does this code work, and do we really need this (with the future optimizations)?? */
    for (line = tbo_sd->lines; line; line = line->next)
    {
-      if (line->object && line->node && line->node->parent &&
-         line->node->parent->type == ETK_TEXTBLOCK_NODE_PARAGRAPH &&
-         line->node->parent->tag.params.p.wrap == ETK_TEXTBLOCK_WRAP_DEFAULT)
+      if (line->object && line->node && line->node->parent
+         && line->node->parent->type == ETK_TEXTBLOCK_NODE_PARAGRAPH
+         && line->node->parent->tag.params.p.wrap == ETK_TEXTBLOCK_WRAP_DEFAULT)
       {
          Evas_Textblock_Cursor *cur;
          const char *format;
@@ -1272,9 +1273,9 @@ int etk_textblock_unicode_length_get(const char *unicode_string)
 Etk_Bool etk_textblock_is_white_char(int c)
 {
    /* Imported from Evas */
-   return ((c == 0x20) || ((c >= 0x9) && (c <= 0xd)) || (c == 0x85) ||
-       (c == 0xa0) || (c == 0x1680) || (c == 0x180e) || ((c >= 0x2000) && (c <= 0x200a)) ||
-       (c == 0x2028) || (c == 0x2029) || (c == 0x202f) || (c == 0x205f) || (c == 0x3000));
+   return ((c == 0x20) || ((c >= 0x9) && (c <= 0xd)) || (c == 0x85)
+      || (c == 0xa0) || (c == 0x1680) || (c == 0x180e) || ((c >= 0x2000) && (c <= 0x200a))
+      || (c == 0x2028) || (c == 0x2029) || (c == 0x202f) || (c == 0x205f) || (c == 0x3000));
 }
 
 /**
@@ -2526,8 +2527,8 @@ static Etk_Bool _etk_textblock_iter_is_valid(Etk_Textblock *tb, Etk_Textblock_It
       ETK_WARNING("The node of the iterator is not a leaf");
       return ETK_FALSE;
    }
-   else if (iter->pos < 0 || iter->pos > iter->node->unicode_length ||
-      iter->index < 0 || iter->index > etk_string_length_get(iter->node->text))
+   else if (iter->pos < 0 || iter->pos > iter->node->unicode_length
+      || iter->index < 0 || iter->index > etk_string_length_get(iter->node->text))
    {
       ETK_WARNING("The pos or the index of the iterator are incorrect");
       return ETK_FALSE;

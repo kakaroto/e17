@@ -252,9 +252,8 @@ void etk_event_global_callback_add(Etk_Event_Type event, void (*callback)(Etk_Ev
 
 /**
  * @brief Removes a callback connected to the given given input event
- * @param event the type of event to monitor
- * @param callback the callback to call when a corresponding event is emitted
- * @param data the data to pass to the callback
+ * @param event the type of event to remove
+ * @param callback the callback to remove
  */
 void etk_event_global_callback_del(Etk_Event_Type event, void (*callback)(Etk_Event_Global event, void *data))
 {
@@ -365,3 +364,31 @@ static void _etk_event_mouse_flags_wrap(Evas_Button_Flags evas_flags, Etk_Mouse_
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Event
+ *
+ * There are two kinds of events in Etk:
+ *   - The widget-events that are received by every widget: for example, when a button is clicked, when the mouse wheel
+ * is used over a widget... @n
+ * You can connect a callback to one of these events by calling etk_signal_connect() on
+ * the widget with the given signal. For example:
+ * @code
+ * //_image_clicked_cb() will be called when the image is clicked
+ * etk_signal_connect(ETK_OBJECT(image), "mouse_clicked", _image_clicked_cb, NULL);
+ * @endcode
+ *   - The global-events that are emitted each time an input event occurs, even if the event was not for a widget: for
+ * example, when the user clicks somewhere on the screen, when he moves the mouse... You will rarely have to use these
+ * events. @n
+ * You can connect a callback to this kind of events with the function etk_event_global_callback_add(). For example:
+ * @code
+ * //_mouse_down_cb() will be called each time the user presses the mouse
+ * etk_event_global_callback_add(ETK_EVENT_MOUSE_DOWN, _mouse_down_cb, NULL);
+ * @endcode
+ */

@@ -2,12 +2,13 @@
 #ifndef _ETK_EMBED_H_
 #define _ETK_EMBED_H_
 
-#include "etk_toplevel_widget.h"
+#include "etk_toplevel.h"
 #include "etk_types.h"
 
 /**
  * @defgroup Etk_Embed Etk_Embed
- * @brief The Etk_Embed widget is a toplevel widget attached to an evas.
+ * @brief The Etk_Embed widget is a toplevel widget that can be embed in an existing Evas and can be
+ * manipulated as a normal evas object.
  * @{
  */
 
@@ -19,20 +20,20 @@
 #define ETK_IS_EMBED(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_EMBED_TYPE))
 
 /**
- * @brief @widget The structure of an embed widget
+ * @brief @widget A toplevel widget that can be manipulated as a normal evas object.
  * @structinfo
  */
 struct Etk_Embed
 {
    /* private: */
-   /* Inherit from Etk_Toplevel_Widget */
-   Etk_Toplevel_Widget toplevel_widget;
+   /* Inherit from Etk_Toplevel */
+   Etk_Toplevel toplevel;
    
    void (*window_position_get)(void *window_data, int *x, int *y);
    void *window_data;
 };
 
-Etk_Type *etk_embed_type_get();
+Etk_Type   *etk_embed_type_get();
 Etk_Widget *etk_embed_new(Evas *evas, void (*window_position_get)(void *window_data, int *x, int *y), void *window_data);
 
 Evas_Object *etk_embed_object_get(Etk_Embed *embed_widget);

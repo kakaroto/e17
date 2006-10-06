@@ -882,11 +882,12 @@ static void etk_tree_model_checkbox_cell_data_get(Etk_Tree_Model *model, void *c
 /* Checkbox: objects_create */
 static void etk_tree_model_checkbox_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas)
 {
-   if (!cell_objects || !evas)
+   if (!model || !cell_objects || !evas)
       return;
    
-   if ((cell_objects[0] = etk_theme_object_load_from_parent(evas, ETK_WIDGET(model->tree), NULL, "checkbox")))
-      evas_object_event_callback_add(cell_objects[0], EVAS_CALLBACK_MOUSE_UP, etk_tree_model_checkbox_clicked_cb, model);
+   cell_objects[0] = edje_object_add(evas);
+   etk_theme_edje_object_set_from_parent(cell_objects[0], "checkbox", ETK_WIDGET(model->tree));
+   evas_object_event_callback_add(cell_objects[0], EVAS_CALLBACK_MOUSE_UP, etk_tree_model_checkbox_clicked_cb, model);
 }
 
 /* Checkbox: Render */
@@ -899,9 +900,9 @@ static void etk_tree_model_checkbox_render(Etk_Tree_Model *model, Etk_Tree_Row *
       return;
    
    if (*checked)
-      edje_object_signal_emit(cell_objects[0], "activate", "");
+      edje_object_signal_emit(cell_objects[0], "etk,state,on", "etk");
    else
-      edje_object_signal_emit(cell_objects[0], "deactivate", "");
+      edje_object_signal_emit(cell_objects[0], "etk,state,off", "etk");
    
    evas_object_data_set(cell_objects[0], "_Etk_Tree_Model_Checkbox::Row", row);
    edje_object_size_min_get(cell_objects[0], &w, &h);
@@ -983,10 +984,11 @@ static void etk_tree_model_progress_bar_cell_data_get(Etk_Tree_Model *model, voi
 /* Progressbar: objects_create */
 static void etk_tree_model_progress_bar_objects_create(Etk_Tree_Model *model, Evas_Object **cell_objects, Evas *evas)
 {
-   if (!cell_objects || !evas)
+   if (!model || !cell_objects || !evas)
       return;
    
-   cell_objects[0] = etk_theme_object_load_from_parent(evas, ETK_WIDGET(model->tree), NULL, "progress_bar");
+   cell_objects[0] = edje_object_add(evas);
+   etk_theme_edje_object_set_from_parent(cell_objects[0], "progress_bar", ETK_WIDGET(model->tree));
 }
 
 /* Progressbar: Render */
@@ -998,10 +1000,10 @@ static void etk_tree_model_progress_bar_render(Etk_Tree_Model *model, Etk_Tree_R
    if (!(pbar_data = cell_data) || !cell_objects[0])
       return;
    
-   edje_object_part_drag_value_set(cell_objects[0], "filler", 0.0, 0.0);
-   edje_object_part_drag_size_set(cell_objects[0], "filler", pbar_data->fraction, 0.0);
+   edje_object_part_drag_value_set(cell_objects[0], "etk.dragable.filler", 0.0, 0.0);
+   edje_object_part_drag_size_set(cell_objects[0], "etk.dragable.filler", pbar_data->fraction, 0.0);
    
-   edje_object_part_text_set(cell_objects[0], "text", pbar_data->text ? pbar_data->text : "");
+   edje_object_part_text_set(cell_objects[0], "etk.text.text", pbar_data->text ? pbar_data->text : "");
    
    evas_object_data_set(cell_objects[0], "_Etk_Tree_Model_Progressbar::Row", row);
    edje_object_size_min_get(cell_objects[0], &w, &h);

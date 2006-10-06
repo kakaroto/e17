@@ -3,7 +3,7 @@
 #define _ETK_WINDOW_H_
 
 #include <Ecore.h>
-#include "etk_toplevel_widget.h"
+#include "etk_toplevel.h"
 #include "etk_types.h"
 
 /**
@@ -33,8 +33,8 @@ typedef enum Etk_Window_Stacking
 struct _Etk_Window
 {
    /* private: */
-   /* Inherit from Etk_Toplevel_Widget */
-   Etk_Toplevel_Widget toplevel_widget;
+   /* Inherit from Etk_Toplevel */
+   Etk_Toplevel toplevel;
 
    void *engine_data;
    

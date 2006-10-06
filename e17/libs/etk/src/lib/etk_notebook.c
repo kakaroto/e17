@@ -57,6 +57,7 @@ static Etk_Signal *_etk_notebook_signals[ETK_NOTEBOOK_NUM_SIGNALS];
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Notebook
  * @return Returns the type of an Etk_Notebook
  */
@@ -739,7 +740,7 @@ static void _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data)
       return;
    
    if (notebook->current_page)
-      etk_widget_theme_signal_emit(notebook->current_page->tab, "focus", ETK_FALSE);
+      etk_widget_theme_signal_emit(notebook->current_page->tab, "etk,state,focused", ETK_FALSE);
    notebook->tab_bar_focused = ETK_TRUE;
 }
 
@@ -752,7 +753,7 @@ static void _etk_notebook_tab_bar_unfocused_cb(Etk_Object *object, void *data)
       return;
    
    if (notebook->current_page)
-      etk_widget_theme_signal_emit(notebook->current_page->tab, "unfocus", ETK_FALSE);
+      etk_widget_theme_signal_emit(notebook->current_page->tab, "etk,state,unfocused", ETK_FALSE);
    notebook->tab_bar_focused = ETK_FALSE;
 }
 
@@ -806,7 +807,7 @@ static void _etk_notebook_tab_bar_create(Etk_Notebook *notebook)
    
    notebook->tab_bar = etk_widget_new(ETK_WIDGET_TYPE, "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
    etk_widget_parent_set(notebook->tab_bar, ETK_WIDGET(notebook));
-   etk_widget_visibility_locked_set(notebook->tab_bar, ETK_TRUE);
+   etk_widget_internal_set(notebook->tab_bar, ETK_TRUE);
    etk_widget_show(notebook->tab_bar);
    
    etk_signal_connect("focus", ETK_OBJECT(notebook->tab_bar),
@@ -834,28 +835,24 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, cons
    new_page = malloc(sizeof(Etk_Notebook_Page));
    prev_page = notebook->pages ? notebook->pages->data : NULL;
    new_page->tab = etk_widget_new(ETK_RADIO_BUTTON_TYPE,
-      "theme_group", "tab", "label", tab_label, "repeat_mouse_events", ETK_TRUE,
+      "theme_group", "tab", "theme_parent", notebook, "label", tab_label, "repeat_mouse_events", ETK_TRUE,
       "group", prev_page ? etk_radio_button_group_get(ETK_RADIO_BUTTON(prev_page->tab)) : NULL, NULL);
    etk_object_data_set(ETK_OBJECT(new_page->tab), "_Etk_Notebook::Page", new_page);
    etk_widget_parent_set(new_page->tab, ETK_WIDGET(notebook->tab_bar));
-   etk_widget_visibility_locked_set(new_page->tab, ETK_TRUE);
+   etk_widget_internal_set(new_page->tab, ETK_TRUE);
    etk_widget_show(new_page->tab);
    etk_signal_connect("toggled", ETK_OBJECT(new_page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
    
-   
-   if (notebook->tab_bar_visible)
-      new_page->frame = etk_widget_new(ETK_BIN_TYPE, "theme_group", "frame", NULL);
-   else
-      new_page->frame = etk_widget_new(ETK_BIN_TYPE, NULL);
+   new_page->frame = etk_widget_new(ETK_BIN_TYPE, "theme_parent", notebook,
+      "theme_group", notebook->tab_bar_visible ? "frame" : NULL, NULL);
    etk_widget_parent_set(new_page->frame, ETK_WIDGET(notebook));
-   etk_widget_visibility_locked_set(new_page->frame, ETK_TRUE);
+   etk_widget_internal_set(new_page->frame, ETK_TRUE);
    etk_widget_hide(new_page->frame);
    
    etk_signal_connect("child_added", ETK_OBJECT(new_page->frame),
       ETK_CALLBACK(_etk_notebook_frame_child_added_cb), notebook);
    etk_signal_connect("child_removed", ETK_OBJECT(new_page->frame),
       ETK_CALLBACK(_etk_notebook_frame_child_removed_cb), notebook);
-   
    
    etk_bin_child_set(ETK_BIN(new_page->frame), page_child);
    
@@ -878,7 +875,7 @@ static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page 
    {
       etk_widget_hide(notebook->current_page->frame);
       if (notebook->tab_bar_focused)
-         etk_widget_theme_signal_emit(notebook->current_page->tab, "unfocus", ETK_FALSE);
+         etk_widget_theme_signal_emit(notebook->current_page->tab, "etk,state,unfocused", ETK_FALSE);
    }
    
    ETK_WIDGET(notebook)->focus_order = evas_list_free(ETK_WIDGET(notebook)->focus_order);
@@ -892,7 +889,7 @@ static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page 
    etk_widget_raise(page->tab);
    
    if (notebook->tab_bar_focused)
-      etk_widget_theme_signal_emit(page->tab, "focus", ETK_FALSE);
+      etk_widget_theme_signal_emit(page->tab, "etk,state,focused", ETK_FALSE);
    
    notebook->current_page = page;
    etk_signal_emit(_etk_notebook_signals[ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL], ETK_OBJECT(notebook), NULL);

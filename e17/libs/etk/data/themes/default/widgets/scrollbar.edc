@@ -1,5 +1,5 @@
 group {
-   name: "hscrollbar";
+   name: "etk/hscrollbar";
    min: 68 18;
    parts {
       part {
@@ -44,13 +44,13 @@ group {
             rel1 {
                relative: 1.0 0.5;
                offset: 1 -1;
-               to_x: "left_left_arrow";
+               to_x: "left_arrow";
                to_y: "trough";
             }
             rel2 {
                relative: 0.0 0.5;
                offset: -2 0;
-               to_x: "right_left_arrow";
+               to_x: "right_arrow";
                to_y: "trough";
             }
             image {
@@ -67,29 +67,29 @@ group {
             visible: 0;
             rel1 {
                relative: 0.0 0.5;
-               offset: 16 7;
+               offset: -1 7;
+               to_x: "trough_bar";
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -34 7;
+               offset: 0 7;
+               to_x: "trough_bar";
             }
          }
       }
-      SCROLLBAR_DRAG("drag", 20, 16, 1, 0, "scrollbar_hdrag1.png", "scrollbar_hdrag2.png", "scrollbar_hdrag_thumb.png", "clip")
-      SCROLLBAR_BUTTON("left_left_arrow", 0.0, 0.5, 0, -8, "scrollbar_button_left1.png", "scrollbar_button_left2.png", "clip")
-      SCROLLBAR_BUTTON("right_left_arrow", 1.0, 0.5, -33, -8, "scrollbar_button_left1.png", "scrollbar_button_left2.png", "clip")
-      SCROLLBAR_BUTTON("right_right_arrow", 1.0, 0.5, -17, -8, "scrollbar_button_right1.png", "scrollbar_button_right2.png", "clip")
+      SCROLLBAR_DRAG("etk.dragable.bar", 20, 16, 1, 0, "scrollbar_hdrag1.png", "scrollbar_hdrag2.png", "scrollbar_hdrag_thumb.png", "clip")
+      SCROLLBAR_BUTTON("left_arrow", 0.0, 0.5, 0, -8, "scrollbar_button_left1.png", "scrollbar_button_left2.png", "clip")
+      SCROLLBAR_BUTTON("right_arrow", 1.0, 0.5, -17, -8, "scrollbar_button_right1.png", "scrollbar_button_right2.png", "clip")
    }
    programs {
-      SCROLLBAR_DRAG_PROG("drag")
-      SCROLLBAR_BUTTON_PROG("left_left_arrow", "left")
-      SCROLLBAR_BUTTON_PROG("right_left_arrow", "left")
-      SCROLLBAR_BUTTON_PROG("right_right_arrow", "right")
+      SCROLLBAR_DRAG_PROG("etk.dragable.bar")
+      SCROLLBAR_BUTTON_PROG("left_arrow", "left")
+      SCROLLBAR_BUTTON_PROG("right_arrow", "right")
    }
 }
 
 group {
-   name: "vscrollbar";
+   name: "etk/vscrollbar";
    min: 18 68;
    parts {
       part {
@@ -135,13 +135,13 @@ group {
                relative: 0.5 1.0;
                offset: -1 1;
                to_x: "trough";
-               to_y: "up_up_arrow";
+               to_y: "up_arrow";
             }
             rel2 {
                relative: 0.5 0.0;
                offset: 0 -2;
                to_x: "trough";
-               to_y: "down_up_arrow";
+               to_y: "down_arrow";
             }
             image {
                normal: "vscrollbar_trough2.png";
@@ -157,23 +157,23 @@ group {
             visible: 0;
             rel1 {
                relative: 0.5 0.0;
-               offset: 7 16;
+               offset: 7 -1;
+               to_y: "trough_bar";
             }
             rel2 {
                relative: 0.5 1.0;
-               offset: 7 -34;
+               offset: 7 0;
+               to_y: "trough_bar";
             }
          }
       }
-      SCROLLBAR_DRAG("drag", 16, 20, 0, 1, "scrollbar_vdrag1.png", "scrollbar_vdrag2.png", "scrollbar_vdrag_thumb.png", "clip")
-      SCROLLBAR_BUTTON("up_up_arrow", 0.5, 0.0, -8, 0, "scrollbar_button_up1.png", "scrollbar_button_up2.png", "clip")
-      SCROLLBAR_BUTTON("down_up_arrow", 0.5, 1.0, -8, -33, "scrollbar_button_up1.png", "scrollbar_button_up2.png", "clip")
-      SCROLLBAR_BUTTON("down_down_arrow", 0.5, 1.0, -8, -17, "scrollbar_button_down1.png", "scrollbar_button_down2.png", "clip")
+      SCROLLBAR_DRAG("etk.dragable.bar", 16, 20, 0, 1, "scrollbar_vdrag1.png", "scrollbar_vdrag2.png", "scrollbar_vdrag_thumb.png", "clip")
+      SCROLLBAR_BUTTON("up_arrow", 0.5, 0.0, -8, 0, "scrollbar_button_up1.png", "scrollbar_button_up2.png", "clip")
+      SCROLLBAR_BUTTON("down_arrow", 0.5, 1.0, -8, -17, "scrollbar_button_down1.png", "scrollbar_button_down2.png", "clip")
    }
    programs {
-      SCROLLBAR_DRAG_PROG("drag")
-      SCROLLBAR_BUTTON_PROG("up_up_arrow", "up")
-      SCROLLBAR_BUTTON_PROG("down_up_arrow", "up")
-      SCROLLBAR_BUTTON_PROG("down_down_arrow", "down")
+      SCROLLBAR_DRAG_PROG("etk.dragable.bar")
+      SCROLLBAR_BUTTON_PROG("up_arrow", "up")
+      SCROLLBAR_BUTTON_PROG("down_arrow", "down")
    }
 }

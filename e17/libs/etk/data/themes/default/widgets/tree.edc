@@ -1,5 +1,5 @@
 group {
-   name: "tree/grid";
+   name: "etk/tree/grid";
    data {
       item: "inset" "8 8 8 8";
       item: "separator_color" "204 204 204 140";
@@ -52,38 +52,38 @@ group {
    programs {
       program {
          name: "tree_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          FOCUS_GLOW_ACTION
       }
       program {
          name: "tree_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_GLOW_ACTION
       }
       program {
          name: "drag_enter";
          signal: "drag_enter";
-         source: "";
+         source: "etk";
          DRAG_ENTER_ACTION
       }
       program {
          name: "drag_leave";
          signal: "drag_leave";
-         source: "";
+         source: "etk";
          DRAG_LEAVE_ACTION
       }
       program {
          name: "drag_drop";
          signal: "drag_drop";
-         source: "";
+         source: "etk";
          DRAG_LEAVE_ACTION
       }
    }
 }
 group {
-   name: "tree/row";
+   name: "etk/tree/row";
    parts {
       part {
          name: "row";
@@ -143,37 +143,37 @@ group {
    }
    programs {
       program {
-         name: "even";
-         signal: "even";
-         source: "";
+         name: "row_even";
+         signal: "etk,state,even";
+         source: "etk";
          action: STATE_SET "even" 0.0;
          target: "row";
       }
       program {
-         name: "odd";
-         signal: "odd";
-         source: "";
+         name: "row_odd";
+         signal: "etk,state,odd";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "row";
       }
       program {
-         name: "selected";
-         signal: "selected";
-         source: "";
+         name: "row_select";
+         signal: "etk,state,selected";
+         source: "etk";
          action: STATE_SET "selected" 0.0;
          target: "select_rect";
       }
       program {
-         name: "unselected";
-         signal: "unselected";
-         source: "";
+         name: "row_unselect";
+         signal: "etk,state,unselected";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "select_rect";
       }
    }
 }
 group {
-   name: "tree/expander";
+   name: "etk/tree/expander";
    parts {
       part {
          name: "expander_arrow";
@@ -195,7 +195,7 @@ group {
             }
          }
          description {
-            state: "expand" 0.0;
+            state: "expanded" 0.0;
             inherit: "default" 0.0;
             image {
                normal: "tree_expander_unfold.png";
@@ -208,23 +208,23 @@ group {
    }
    programs {
       program {
-         name: "collapse";
-         signal: "collapse";
-         source: "";
+         name: "expander_fold";
+         signal: "etk,action,fold";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "expander_arrow";
       }
       program {
-         name: "expand";
-         signal: "expand";
-         source: "";
-         action: STATE_SET "expand" 0.0;
+         name: "expander_unfold";
+         signal: "etk,action,unfold";
+         source: "etk";
+         action: STATE_SET "expanded" 0.0;
          target: "expander_arrow";
       }
    }
 }
 group {
-   name: "tree/header";
+   name: "etk/tree/header";
    data {
       item: "inset" "5 5 5 5";
    }
@@ -265,22 +265,22 @@ group {
    programs {
       program {
          name: "header_enter";
-         signal: "enter";
-         source: "";
+         signal: "etk,state,enter";
+         source: "etk";
          action: STATE_SET "over" 0.0;
          target: "tree_header";
       }
       program {
          name: "header_leaver";
-         signal: "leave";
-         source: "";
+         signal: "etk,state,leave";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "tree_header";
       }
    }
 }
 group {
-   name: "tree/checkbox";
+   name: "etk/tree/checkbox";
    min: 20 20;
    parts {
       part {
@@ -340,15 +340,15 @@ group {
    programs {
       program {
          name: "tree_checkbox_activate";
-         signal: "activate";
-         source: "";
+         signal: "etk,state,on";
+         source: "etk";
          action: STATE_SET "on" 0.0;
          target: "checkbox";
       }
       program {
          name: "tree_checkbox_desactivate";
-         signal: "deactivate";
-         source: "";
+         signal: "etk,state,off";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "checkbox";
       }

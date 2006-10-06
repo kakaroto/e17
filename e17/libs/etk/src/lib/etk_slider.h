@@ -46,7 +46,7 @@ struct _Etk_Slider
 
 /**
  * @struct Etk_HSlider
- * @brief An horizontal slider
+ * @brief A horizontal slider
  */
 struct _Etk_HSlider
 {
@@ -67,11 +67,10 @@ struct _Etk_VSlider
 };
 
 Etk_Type *etk_slider_type_get();
-
-Etk_Type *etk_hslider_type_get();
-Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment);
-
 Etk_Type *etk_vslider_type_get();
+Etk_Type *etk_hslider_type_get();
+
+Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment);
 Etk_Widget *etk_vslider_new(double lower, double upper, double value, double step_increment, double page_increment);
 
 /** @} */

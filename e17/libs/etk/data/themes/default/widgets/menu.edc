@@ -1,5 +1,5 @@
 group {
-   name: "menu";
+   name: "etk/menu";
    parts {
       part {
 	 name: "menu_bg1";
@@ -67,8 +67,9 @@ group {
       }
    }
 }
+
 group {
-   name: "menu/menu_item";
+   name: "etk/menu/menu_item";
    parts {
       part {
          name: "item_rect";
@@ -87,7 +88,7 @@ group {
          }
       }
       part {
-         name: "left_widget_swallow";
+         name: "etk.swallow.left_widget";
          type: SWALLOW;
          mouse_events: 0;
          description {
@@ -169,7 +170,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "left_widget_swallow";
+               to_x: "etk.swallow.left_widget";
             }
             rel2 {
                relative: 0.0 1.0;
@@ -202,7 +203,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "left_widget_swallow";
+               to_x: "etk.swallow.left_widget";
             }
             rel2 {
                relative: 0.0 1.0;
@@ -234,7 +235,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "left_widget_swallow";
+               to_x: "etk.swallow.left_widget";
             }
             rel2 {
                relative: 0.0 1.0;
@@ -266,7 +267,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "left_widget_swallow";
+               to_x: "etk.swallow.left_widget";
             }
             rel2 {
                relative: 0.0 1.0;
@@ -289,7 +290,7 @@ group {
          }
       }
       part {
-         name: "label";
+         name: "etk.text.label";
          type: TEXT;
          mouse_events:   0;
          description {
@@ -298,7 +299,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 13 6;
-               to_x: "left_widget_swallow";
+               to_x: "etk.swallow.left_widget";
             }
             rel2 {
                relative: 0.0 1.0;
@@ -314,178 +315,60 @@ group {
             }
          }
       }
-      part {
-         name: "glint_clip";
-         type: RECT;
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            color: 255 255 255 255;
-            rel1 {
-               offset: 3 3;
-               to: "item_highlight";
-            }
-            rel2 {
-               offset: -4 -4;
-               to: "item_highlight";
-            }
-         }
-      }
-      part {
-         name: "glint1";
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            align: 0.0 0.0;
-            max: 34 13;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 2 2;
-               to: "item_highlight";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -3 -3;
-               to: "item_highlight";
-            }
-            image {
-               normal: "glint1.png";
-               border: 5 0 5 0;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-         description {
-            state: "active" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-         }
-      }
-      part {
-         name: "glint2";
-         mouse_events: 0;
-         clip_to: "glint_clip";
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            align: 1.0 0.5;
-            max: 0 0;
-            fixed: 1 1;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 3 3;
-               to: "item_highlight";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: 3 -4;
-               to: "item_highlight";
-            }
-            image {
-               normal: "glint2.png";
-               border: 0 0 5 5;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-         description {
-            state: "active" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-            max: 169 9999;
-            min: 169 8;
-            align: 0.5 0.5;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 3 3;
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: 3 -4;
-            }
-         }
-         description {
-            state: "active2" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 128;
-            max: 169 9999;
-            min: 169 8;
-            align: 0.5 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: -4 3;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -4 -4;
-            }
-         }
-         description {
-            state: "active3" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            max: 169 9999;
-            min: 169 8;
-            align: 0.0 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: -4 3;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -4 -4;
-            }
-         }
-      }
-      part {
-         name: "glint3";
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            align: 1.0 1.0;
-            max: 34 13;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 2 2;
-               to: "item_highlight";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -3 -3;
-               to: "item_highlight";
-            }
-            image {
-               normal: "glint3.png";
-               border: 0 5 0 5;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-         description {
-            state: "active" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-         }
-      }
+      GLINT_PART("item_highlight");
    }
    programs {
       program {
+         name: "item_select";
+         signal: "etk,state,selected";
+         source: "etk";
+         after: "go_active_pre";
+      }
+      program {
+         name: "item_unselect";
+         signal: "etk,state,unselected";
+         source: "etk";
+         after: "go_passive_pre";
+      }
+      program {
+         name: "item_left_widget_show";
+         signal: "etk,action,show,left_widget";
+         source: "etk";
+         action: STATE_SET "visible" 0.0;
+         target: "etk.swallow.left_widget";
+      }
+      program {
+         name: "item_left_widget_hide";
+         signal: "etk,action,hide,left_widget";
+         source: "etk";
+         action: STATE_SET "default" 0.0;
+         target: "etk.swallow.left_widget";
+      }
+      program {
+         name: "item_arrow_show";
+         signal: "etk,action,show,arrow";
+         source: "etk";
+         action: STATE_SET "visible" 0.0;
+         target: "arrow";
+      }
+      program {
+         name: "item_arrow_space_show";
+         signal: "etk,action,show,arrow_space";
+         source: "etk";
+         action: STATE_SET "spacer" 0.0;
+         target: "arrow";
+      }
+      program {
+         name: "item_arrow_hide";
+         signal: "etk,action,hide,arrow";
+         source: "etk";
+         action: STATE_SET "default" 0.0;
+         target: "arrow";
+      }
+      
+      
+      program {
          name: "go_active_pre";
-         signal: "select";
-         source: "";
          action: STATE_SET "default" 0.0;
          target: "item_outline";
          target: "item_highlight";
@@ -507,7 +390,7 @@ group {
          target: "item_shadow1";
          transition: LINEAR 0.05;
          after: "go_active3";
-         after: "go_active3b";
+         GLINT_ACTION
       }
       program {
          name: "go_active3";
@@ -515,54 +398,11 @@ group {
          target: "item_shadow2";
          transition: LINEAR 0.05;
       }
-      program {
-         name: "go_active3b";
-         action: STATE_SET "active" 0.0;
-         target: "glint1";
-         target: "glint2";
-         transition: LINEAR 0.05;
-         after: "go_active4";
-         after: "go_active4b";
-      }
-      program {
-         name: "go_active4";
-         action: STATE_SET "active2" 0.0;
-         target: "glint2";
-         transition: LINEAR 0.2;
-         after: "go_active5";
-         after: "go_active5b";
-      }
-      program {
-         name: "go_active4b";
-         action: STATE_SET "active" 0.0;
-         target: "glint3";
-         transition: LINEAR 0.2;
-      }
-      program {
-         name: "go_active5";
-         action: STATE_SET "active3" 0.0;
-         target: "glint2";
-         transition: LINEAR 0.05;
-      }
-      program {
-         name: "go_active5b";
-         action: STATE_SET "default" 0.0;
-         target: "glint3";
-         transition: LINEAR 0.1;
-         after: "go_active6";
-      }
-      program {
-         name: "go_active6";
-         action: STATE_SET "default" 0.0;
-         target: "glint1";
-         target: "glint2";
-         target: "glint3";
-      }
 
       program {
          name: "go_passive_pre";
-         signal: "deselect";
-         source: "";
+         signal: "etk,state,deselected";
+         source: "etk";
          action: STATE_SET "active" 0.0;
          target: "item_outline";
          target: "item_highlight";
@@ -592,46 +432,13 @@ group {
          transition: LINEAR 0.1;
       }
       
-      program {
-         name: "left_widget_show";
-         signal: "left_widget_show";
-         source: "";
-         action: STATE_SET "visible" 0.0;
-         target: "left_widget_swallow";
-      }
-      program {
-         name: "left_widget_hide";
-         signal: "left_widget_hide";
-         source: "";
-         action: STATE_SET "default" 0.0;
-         target: "left_widget_swallow";
-      }
-
-      program {
-         name: "arrow_show";
-         signal: "arrow_show";
-         source: "";
-         action: STATE_SET "visible" 0.0;
-         target: "arrow";
-      }
-      program {
-         name: "arrow_spacer";
-         signal: "arrow_spacer";
-         source: "";
-         action: STATE_SET "spacer" 0.0;
-         target: "arrow";
-      }
-      program {
-         name: "arrow_hide";
-         signal: "arrow_hide";
-         source: "";
-         action: STATE_SET "default" 0.0;
-         target: "arrow";
-      }
+      GLINT_PROGRAM
    }
 }
+
 group {
-   name: "menu_bar";
+   name: "etk/menu_bar";
+   min: 0 18;
    parts {
       part {
          name: "menu_bar";
@@ -656,8 +463,9 @@ group {
       }
    }
 }
+
 group {
-   name: "menu_bar/menu_item";
+   name: "etk/menu_bar/menu_item";
    parts {
       part {
          name: "item_rect";
@@ -676,7 +484,7 @@ group {
          }
       }
       part {
-         name: "left_widget_swallow";
+         name: "etk.swallow.left_widget";
          type: SWALLOW;
          mouse_events: 0;
          description {
@@ -713,7 +521,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "left_widget_swallow";
+               to_x: "etk.swallow.left_widget";
             }
             rel2 {
                relative: 1.0 1.0;
@@ -744,7 +552,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "left_widget_swallow";
+               to_x: "etk.swallow.left_widget";
             }
             rel2 {
                relative: 1.0 1.0;
@@ -775,7 +583,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 0 0;
-               to_x: "left_widget_swallow";
+               to_x: "etk.swallow.left_widget";
             }
             rel2 {
                relative: 1.0 1.0;
@@ -797,7 +605,7 @@ group {
          }
       }
       part {
-         name: "label";
+         name: "etk.text.label";
          type: TEXT;
          mouse_events:   0;
          description {
@@ -806,7 +614,7 @@ group {
             rel1 {
                relative: 1.0 0.0;
                offset: 13 6;
-               to_x: "left_widget_swallow";
+               to_x: "etk.swallow.left_widget";
             }
             rel2 {
                relative: 1.0 1.0;
@@ -821,177 +629,39 @@ group {
             }
          }
       }
-      part {
-         name: "glint_clip";
-         type: RECT;
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            color: 255 255 255 255;
-            rel1 {
-               offset: 3 3;
-               to: "item_highlight";
-            }
-            rel2 {
-               offset: -4 -4;
-               to: "item_highlight";
-            }
-         }
-      }
-      part {
-         name: "glint1";
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            align: 0.0 0.0;
-            max: 34 13;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 2 2;
-               to: "item_highlight";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -3 -3;
-               to: "item_highlight";
-            }
-            image {
-               normal: "glint1.png";
-               border: 5 0 5 0;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-         description {
-            state: "active" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-         }
-      }
-      part {
-         name: "glint2";
-         mouse_events: 0;
-         clip_to: "glint_clip";
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            align: 1.0 0.5;
-            max: 0 0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 3 3;
-               to: "item_highlight";
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: 3 -4;
-               to: "item_highlight";
-            }
-            image {
-               normal: "glint2.png";
-               border: 0 0 5 5;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-         description {
-            state: "active" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-            max: 169 9999;
-            min: 169 8;
-            align: 0.5 0.5;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 3 3;
-            }
-            rel2 {
-               relative: 0.0 1.0;
-               offset: 3 -4;
-            }
-         }
-         description {
-            state: "active2" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 128;
-            max: 169 9999;
-            min: 169 8;
-            align: 0.5 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: -4 3;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -4 -4;
-            }
-         }
-         description {
-            state: "active3" 0.0;
-            inherit: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            max: 169 9999;
-            min: 169 8;
-            align: 0.0 0.5;
-            rel1 {
-               relative: 1.0 0.0;
-               offset: -4 3;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -4 -4;
-            }
-         }
-      }
-      part {
-         name: "glint3";
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            visible: 0;
-            color: 255 255 255 0;
-            align: 1.0 1.0;
-            max: 34 13;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 2 2;
-               to: "item_highlight";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -3 -3;
-               to: "item_highlight";
-            }
-            image {
-               normal: "glint3.png";
-               border: 0 5 0 5;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-         description {
-            state: "active" 0.0;
-            inherit: "default" 0.0;
-            visible: 1;
-            color: 255 255 255 255;
-         }
-      }
+      GLINT_PART("item_highlight");
    }
    programs {
       program {
+         name: "item_select";
+         signal: "etk,state,selected";
+         source: "etk";
+         after: "go_active_pre";
+      }
+      program {
+         name: "item_unselect";
+         signal: "etk,state,unselected";
+         source: "etk";
+         after: "go_passive_pre";
+      }
+      program {
+         name: "item_left_widget_show";
+         signal: "etk,action,show,left_widget";
+         source: "etk";
+         action: STATE_SET "visible" 0.0;
+         target: "etk.swallow.left_widget";
+      }
+      program {
+         name: "item_left_widget_hide";
+         signal: "etk,action,hide,left_widget";
+         source: "etk";
+         action: STATE_SET "invisible" 0.0;
+         target: "etk.swallow.left_widget";
+      }
+      
+      
+      program {
          name: "go_active_pre";
-         signal: "select";
-         source: "";
          action: STATE_SET "default" 0.0;
          target: "item_highlight";
          target: "item_shadow1";
@@ -1011,7 +681,7 @@ group {
          target: "item_shadow1";
          transition: LINEAR 0.05;
          after: "go_active3";
-         after: "go_active3b";
+         GLINT_ACTION
       }
       program {
          name: "go_active3";
@@ -1019,54 +689,11 @@ group {
          target: "item_shadow2";
          transition: LINEAR 0.05;
       }
-      program {
-         name: "go_active3b";
-         action: STATE_SET "active" 0.0;
-         target: "glint1";
-         target: "glint2";
-         transition: LINEAR 0.05;
-         after: "go_active4";
-         after: "go_active4b";
-      }
-      program {
-         name: "go_active4";
-         action: STATE_SET "active2" 0.0;
-         target: "glint2";
-         transition: LINEAR 0.2;
-         after: "go_active5";
-         after: "go_active5b";
-      }
-      program {
-         name: "go_active4b";
-         action: STATE_SET "active" 0.0;
-         target: "glint3";
-         transition: LINEAR 0.2;
-      }
-      program {
-         name: "go_active5";
-         action: STATE_SET "active3" 0.0;
-         target: "glint2";
-         transition: LINEAR 0.05;
-      }
-      program {
-         name: "go_active5b";
-         action: STATE_SET "default" 0.0;
-         target: "glint3";
-         transition: LINEAR 0.1;
-         after: "go_active6";
-      }
-      program {
-         name: "go_active6";
-         action: STATE_SET "default" 0.0;
-         target: "glint1";
-         target: "glint2";
-         target: "glint3";
-      }
 
       program {
          name: "go_passive_pre";
-         signal: "deselect";
-         source: "";
+         signal: "etk,state,deselected";
+         source: "etk";
          action: STATE_SET "active" 0.0;
          target: "item_highlight";
          target: "item_shadow1";
@@ -1094,24 +721,12 @@ group {
          transition: LINEAR 0.1;
       }
       
-      program {
-         name: "left_widget_show";
-         signal: "left_widget_show";
-         source: "";
-         action: STATE_SET "visible" 0.0;
-         target: "left_widget_swallow";
-      }
-      program {
-         name: "left_widget_hide";
-         signal: "left_widget_hide";
-         source: "";
-         action: STATE_SET "invisible" 0.0;
-         target: "left_widget_swallow";
-      }
+      GLINT_PROGRAM
    }
 }
+
 group {
-   name: "menu_item/checkbox";
+   name: "etk/menu/menu_item/checkbox";
    parts {
       part {
          name: "check";
@@ -1143,23 +758,23 @@ group {
    }
    programs {
       program {
-         name: "check";
-         signal: "check";
-         source: "";
+         name: "check_activate";
+         signal: "etk,state,on";
+         source: "etk";
          action: STATE_SET "checked" 0.0;
          target: "check";
       }
       program {
-         name: "uncheck";
-         signal: "uncheck";
-         source: "";
+         name: "uncheck_deactivate";
+         signal: "etk,state,off";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "check";
       }
    }
 }
 group {
-   name: "menu_item/radiobox";
+   name: "etk/menu/menu_item/radiobox";
    parts {
       part {
          name: "radio";
@@ -1191,23 +806,23 @@ group {
    }
    programs {
       program {
-         name: "check";
-         signal: "check";
-         source: "";
+         name: "radio_activate";
+         signal: "etk,state,on";
+         source: "etk";
          action: STATE_SET "on" 0.0;
          target: "radio";
       }
       program {
-         name: "uncheck";
-         signal: "uncheck";
-         source: "";
+         name: "radio_deactivate";
+         signal: "etk,state,off";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "radio";
       }
    }
 }
 group {
-   name: "menu/separator";
+   name: "etk/menu/separator";
    parts {
       part {
          name: "separator";

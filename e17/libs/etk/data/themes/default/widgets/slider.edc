@@ -1,5 +1,5 @@
 group {
-   name: "hslider";
+   name: "etk/hslider";
    min: 30 18;
    parts {
       part {
@@ -42,7 +42,7 @@ group {
          }
       }
       part {
-         name: "drag";
+         name: "etk.dragable.slider";
          dragable {
             confine: "slider_bar_confine";
             x: 1 1 1;
@@ -69,19 +69,19 @@ group {
          }
       }
       part {
-         name: "drag_thumb";
+         name: "dragable_thumb";
          mouse_events: 0;
          description {
             state: "default" 0.0;
             rel1 {
                relative: 0.5 0.5;
                offset: -9 -4;
-               to: "drag";
+               to: "etk.dragable.slider";
             }
             rel2 {
                relative: 0.5 0.5;
                offset: 6 1;
-               to: "drag";
+               to: "etk.dragable.slider";
             }
             image {
                normal: "hhandle_thumb.png";
@@ -107,29 +107,29 @@ group {
       program {
          name: "hslider_drag_down";
          signal: "mouse,down,1*";
-         source: "drag";
+         source: "etk.dragable.slider";
          action: STATE_SET "down" 0.0;
-         target: "drag";
-         target: "drag_thumb";
+         target: "etk.dragable.slider";
+         target: "dragable_thumb";
       }
       program {
          name: "hslider_drag_up";
          signal: "mouse,up,1";
-         source: "drag";
+         source: "etk.dragable.slider";
          action: STATE_SET "default" 0.0;
-         target: "drag";
-         target: "drag_thumb";
+         target: "etk.dragable.slider";
+         target: "dragable_thumb";
       }
       program {
          name: "hslider_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          FOCUS_GLOW_ACTION
       }
       program {
          name: "hslider_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_GLOW_ACTION
       }
    }
@@ -137,7 +137,7 @@ group {
 
 
 group {
-   name: "vslider";
+   name: "etk/vslider";
    min: 18 30;
    parts {
       part {
@@ -181,7 +181,7 @@ group {
          }
       }
       part {
-         name: "drag";
+         name: "etk.dragable.slider";
          dragable {
             confine: "slider_bar_confine";
             x: 0 0 0;
@@ -208,19 +208,19 @@ group {
          }
       }
       part {
-         name: "drag_thumb";
+         name: "dragable_thumb";
          mouse_events: 0;
          description {
             state: "default" 0.0;
             rel1 {
                relative: 0.5 0.5;
                offset: -4 -9;
-               to: "drag";
+               to: "etk.dragable.slider";
             }
             rel2 {
                relative: 0.5 0.5;
                offset: 1 6;
-               to: "drag";
+               to: "etk.dragable.slider";
             }
             image {
                normal: "vhandle_thumb.png";
@@ -246,29 +246,29 @@ group {
       program {
          name: "vslider_drag_down";
          signal: "mouse,down,1*";
-         source: "drag";
+         source: "etk.dragable.slider";
          action: STATE_SET "down" 0.0;
-         target: "drag";
-         target: "drag_thumb";
+         target: "etk.dragable.slider";
+         target: "dragable_thumb";
       }
       program {
          name: "vslider_drag_up";
          signal: "mouse,up,1";
-         source: "drag";
+         source: "etk.dragable.slider";
          action: STATE_SET "default" 0.0;
-         target: "drag";
-         target: "drag_thumb";
+         target: "etk.dragable.slider";
+         target: "dragable_thumb";
       }
       program {
          name: "vslider_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          FOCUS_GLOW_ACTION
       }
       program {
          name: "vslider_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_GLOW_ACTION
       }
    }

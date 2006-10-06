@@ -2,10 +2,10 @@
 #include "etk_dialog.h"
 #include <stdlib.h>
 #include <string.h>
-#include "etk_theme.h"
 #include "etk_box.h"
 #include "etk_separator.h"
 #include "etk_button.h"
+#include "etk_theme.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 
@@ -35,6 +35,7 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data);
   
 static Etk_Signal *_etk_dialog_signals[ETK_DIALOG_NUM_SIGNALS];
 
+
 /**************************
  *
  * Implementation
@@ -42,6 +43,7 @@ static Etk_Signal *_etk_dialog_signals[ETK_DIALOG_NUM_SIGNALS];
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Dialog
  * @return Returns the type of an Etk_Dialog
  */
@@ -77,58 +79,67 @@ Etk_Widget *etk_dialog_new()
 }
 
 /**
- * @brief Packs a widget in the main area of the dialog (above the buttons and the separator)
+ * @brief Packs a widget into the dialog's main area (above the buttons and the separator).
+ * The widget will be appended in the main area's vbox (see etk_box_append())
  * @param dialog a dialog
  * @param widget the widget to pack
- * @param expand ETK_TRUE will make the widget ask for as much space as possible
- * @param fill ETK_TRUE if the widget should fill all the size allocated for it
+ * @param expand ETK_TRUE to make the widget expand as much as possible
+ * @param fill ETK_TRUE to make the widget fill all the size allocated for it
  * @param padding the amount of space in pixels to put between the widget and its neighbors
- * @param pack_at_end if ETK_TRUE, the widget will be packed at the end (at the bottom) of the vbox of the main area
- * @see etk_box_pack_start
- * @see etk_box_pack_end
+ * @param pack_at_end if ETK_TRUE, the widget will be packed in the end-group of the vbox (at the bottom). Otherwise,
+ * it will be packed at the start (at the top)
+ * @see etk_box_append()
  */
 void etk_dialog_pack_in_main_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_at_end)
 {
+   Etk_Box_Fill_Policy fill_policy;
+   Etk_Box_Group group;
+   
    if (!dialog || !widget)
       return;
    
-   if (pack_at_end)
-      etk_box_prepend(ETK_BOX(dialog->main_area_vbox), widget, ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
-   else
-      etk_box_append(ETK_BOX(dialog->main_area_vbox), widget, ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
+   fill_policy = ETK_DIALOG_FILL_POLICY(fill, expand);
+   group = pack_at_end ? ETK_BOX_END : ETK_BOX_START;
+   etk_box_append(ETK_BOX(dialog->main_area_vbox), widget, group, fill_policy, padding);
 }
 
 /**
- * @brief Packs a widget in the action area of the dialog (at the bottom of the dialog)
+ * @brief Packs a widget into the dialog's action area (at the bottom of the dialog).
+ * The widget will be appended in the action area's hbox (see etk_box_append())
  * @param dialog a dialog
  * @param widget the widget to pack
- * @param expand ETK_TRUE will make the widget ask for as much space as possible
- * @param fill ETK_TRUE if the widget should fill all the size allocated for it
+ * @param expand ETK_TRUE to make the widget expand as much as possible
+ * @param fill ETK_TRUE to make the widget fill all the size allocated for it
  * @param padding the amount of space in pixels to put between the widget and its neighbors
- * @param pack_at_end if ETK_TRUE, the widget will be packed at the end (on the right) of the hbox of the action area
- * @see etk_box_pack_start
- * @see etk_box_pack_end
+ * @param pack_at_end if ETK_TRUE, the widget will be packed in the end-group of the hbox (on the right). Otherwise,
+ * it will be packed at the start (on the left)
+ * @see etk_box_append()
  */
 void etk_dialog_pack_widget_in_action_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_at_end)
 {
+   Etk_Box_Fill_Policy fill_policy;
+   Etk_Box_Group group;
+   
    if (!dialog || !widget)
       return;
    
-   if (pack_at_end)
-      etk_box_prepend(ETK_BOX(dialog->action_area_hbox), widget, ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
-   else
-      etk_box_append(ETK_BOX(dialog->action_area_hbox), widget, ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
+   fill_policy = ETK_DIALOG_FILL_POLICY(fill, expand);
+   group = pack_at_end ? ETK_BOX_END : ETK_BOX_START;
+   etk_box_append(ETK_BOX(dialog->action_area_hbox), widget, group, fill_policy, padding);
 }
 
 /**
- * @brief Pack a pre-created button into the dialog's action area
- * @param dialog the dialog we want to pack into
- * @param button the button we want to pack
- * @param response_id the response id of the button (see Etk_Dialog_Response_ID for common IDs)
- * @param expand ETK_TRUE will make the button ask for as much space as possible
- * @param fill ETK_TRUE if the button should fill all the size allocated for it
- * @param padding the amount of space in pixels to put between the widget and its neighbors
- * @param pack_at_end if true, the button will be packed at the end of button box
+ * @brief Packs a pre-created button into the dialog's action area (at the bottom of the dialog).
+ * The button will be appended in the action area's hbox (see etk_box_append())
+ * @param dialog a dialog
+ * @param button the button to pack
+ * @param response_id the response id to associate to the button (see Etk_Dialog_Response_ID for common IDs)
+ * @param expand ETK_TRUE to make the button expand as much as possible
+ * @param fill ETK_TRUE to make the button fill all the size allocated for it
+ * @param padding the amount of space in pixels to put between the button and its neighbors
+ * @param pack_at_end if ETK_TRUE, the button will be packed in the end-group of the hbox (on the right). Otherwise,
+ * it will be packed at the start (on the left)
+ * @see etk_box_append()
  */
 void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *button, int response_id, Etk_Bool expand, Etk_Bool fill, int padding, Etk_Bool pack_at_end)
 {
@@ -140,19 +151,14 @@ void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *butto
    id = malloc(sizeof(int));
    *id = response_id;
    etk_object_data_set_full(ETK_OBJECT(button), "_Etk_Dialog::response_id", id, free);
-   
-   if (pack_at_end)
-      etk_box_prepend(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), ETK_BOX_END, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
-   else
-      etk_box_append(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), ETK_BOX_START, ETK_DIALOG_FILL_POLICY(fill, expand), padding);
-   
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
+   
+   etk_dialog_pack_widget_in_action_area(dialog, ETK_WIDGET(button), expand, fill, padding, pack_at_end);
 }
 
 /**
  * @brief Adds a button to the dialog's action area.
- * The button will be packed at the end of the hbox of the action area.
- * Repeated calls of etk_dialog_button_add() will packs the button from the right to the left.
+ * The button will be packed at the end of the hbox of the action area
  * @param dialog a dialog
  * @param label the button's label
  * @param response_id the response id to associate to the button (see Etk_Dialog_Response_ID for common IDs)
@@ -174,8 +180,7 @@ Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int res
 
 /**
  * @brief Adds a button created from a stock id to the dialog's action area.
- * The button will be packed at the end of the hbox of the action area.
- * Repeated calls of etk_dialog_button_add_from_stock() will packs the button from the right to the left.
+ * The button will be packed at the end of the hbox of the action area
  * @param dialog a dialog
  * @param stock_id the button's stock id
  * @param response_id the response id to associate to the button (see Etk_Dialog_Response_ID for common IDs)
@@ -196,7 +201,7 @@ Etk_Widget *etk_dialog_button_add_from_stock(Etk_Dialog *dialog, int stock_id, i
 }
 
 /**
- * @brief Sets whether the dialog has a horizontal separator between the main area and the action area
+ * @brief Sets whether the dialog has a horizontal separator between its main area and its action area
  * @param dialog a dialog
  * @param has_separator ETK_TRUE to show the separator
  */
@@ -214,9 +219,9 @@ void etk_dialog_has_separator_set(Etk_Dialog *dialog, Etk_Bool has_separator)
 }
 
 /**
- * @brief Gets whether the dialog has a horizontal separator between the main area and the action area
+ * @brief Gets whether or not the horizontal separator of the dialog is visible
  * @param dialog a dialog
- * @return Returns whether the dialog has a separator
+ * @return Returns ETK_TRUE if the horizontal separator of the dialog is visible, ETK_FALSE otherwise
  */
 Etk_Bool etk_dialog_has_separator_get(Etk_Dialog *dialog)
 {
@@ -243,18 +248,19 @@ static void _etk_dialog_constructor(Etk_Dialog *dialog)
    etk_widget_show(dialog->dialog_vbox);
    
    dialog->main_area_vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_widget_visibility_locked_set(dialog->main_area_vbox, ETK_TRUE);
    etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->main_area_vbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_widget_internal_set(dialog->main_area_vbox, ETK_TRUE);
    etk_widget_show(dialog->main_area_vbox);
    
    dialog->separator = etk_hseparator_new();
-   etk_widget_visibility_locked_set(dialog->separator, ETK_TRUE);
    etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->separator, ETK_BOX_START, ETK_BOX_FILL, 6);
+   etk_widget_theme_parent_set(dialog->separator, ETK_WIDGET(dialog));
+   etk_widget_internal_set(dialog->separator, ETK_TRUE);
    etk_widget_show(dialog->separator);
 
    dialog->action_area_hbox = etk_hbox_new(ETK_FALSE, 6);
-   etk_widget_visibility_locked_set(dialog->action_area_hbox, ETK_TRUE);
    etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->action_area_hbox, ETK_BOX_END, ETK_BOX_FILL, 0);
+   etk_widget_internal_set(dialog->action_area_hbox, ETK_TRUE);
    etk_widget_show(dialog->action_area_hbox);
 
    dialog->has_separator = ETK_TRUE;
@@ -309,7 +315,6 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
    
    if (!(response_id = (int *)etk_object_data_get(object, "_Etk_Dialog::response_id")))
       return;
-
    etk_signal_emit(_etk_dialog_signals[ETK_DIALOG_RESPONSE_SIGNAL], ETK_OBJECT(data), NULL, *response_id);
 }
 
@@ -326,20 +331,20 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
  *
  * @image html widgets/dialog.png
  * The dialog's window is split vertically in two area: the top area, called "main area", is an Etk_VBox where you can
- * pack any type of widgets; the bottom area, called "action area", is a Etk_HBox where you can pack any type of widgets,
- * but mostly buttons. Those buttons could be associated to a response id, which will be passed when the button is clicked
- * though the @b "response" signal of the dialog. @n @n
+ * pack any type of widgets; the bottom area, called "action area", is an Etk_HBox where you can pack any type of
+ * widgets, but mostly buttons. Those buttons can be associated to a response id, which will be passed when the button
+ * is clicked through the @b "response" signal of the dialog. @n @n
  * You can pack widgets in the main area with etk_dialog_pack_in_main_area(). @n
- * You can pack widgets in the action area wih etk_dialog_pack_widget_in_action_area(), etk_dialog_pack_button_in_action_area(),
- * etk_dialog_button_add(), etk_dialog_button_add_from_stock(). @n @n
- * A horizontal separator can also separate the button area from the upper area (enabled by default)
+ * You can pack widgets in the action area with etk_dialog_pack_widget_in_action_area(),
+ * etk_dialog_pack_button_in_action_area(), etk_dialog_button_add() and etk_dialog_button_add_from_stock(). @n @n
+ * A horizontal separator can also separate the action area from the main area (visible by default)
  * 
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget
  *     - Etk_Container
  *       - Etk_Bin
- *         - Etk_Toplevel_Widget
+ *         - Etk_Toplevel
  *           - Etk_Window
  *             - Etk_Dialog
  *
@@ -351,7 +356,7 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
  * @signal_data
  *
  * \par Properties:
- * @prop_name "has_separator": Whether or not there is a horizontal separator between the main area and the action area
+ * @prop_name "has_separator": Whether or not the horizontal separator is visible
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_TRUE

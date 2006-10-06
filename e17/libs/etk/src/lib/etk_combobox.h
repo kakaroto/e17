@@ -110,14 +110,14 @@ Etk_Widget *etk_combobox_new();
 Etk_Widget *etk_combobox_new_default();
 
 void etk_combobox_item_height_set(Etk_Combobox *combobox, int item_height);
-int etk_combobox_item_height_get(Etk_Combobox *combobox);
+int  etk_combobox_item_height_get(Etk_Combobox *combobox);
 
 void etk_combobox_column_add(Etk_Combobox *combobox, Etk_Combobox_Column_Type col_type, int size, Etk_Bool expand, Etk_Bool hfill, Etk_Bool vfill, float xalign, float yalign);
 void etk_combobox_build(Etk_Combobox *combobox);
 
-void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item);
+void               etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item);
 Etk_Combobox_Item *etk_combobox_active_item_get(Etk_Combobox *combobox);
-int etk_combobox_active_item_nth_get(Etk_Combobox *combobox);
+int                etk_combobox_active_item_nth_get(Etk_Combobox *combobox);
 Etk_Combobox_Item *etk_combobox_nth_item_get(Etk_Combobox *combobox, int index);
 
 Etk_Combobox_Item *etk_combobox_item_prepend(Etk_Combobox *combobox, ...);
@@ -133,10 +133,10 @@ Etk_Combobox_Item *etk_combobox_item_append_relative_valist(Etk_Combobox *combob
 void etk_combobox_item_remove(Etk_Combobox *combobox, Etk_Combobox_Item *item);
 void etk_combobox_clear(Etk_Combobox *combobox);
 
-void etk_combobox_item_data_set(Etk_Combobox_Item *item, void *data);
-void etk_combobox_item_data_set_full(Etk_Combobox_Item *item, void *data, void (*free_cb)(void *data));
+void  etk_combobox_item_data_set(Etk_Combobox_Item *item, void *data);
+void  etk_combobox_item_data_set_full(Etk_Combobox_Item *item, void *data, void (*free_cb)(void *data));
 void *etk_combobox_item_data_get(Etk_Combobox_Item *item);
-void etk_combobox_item_activate(Etk_Combobox_Item *item);
+void  etk_combobox_item_activate(Etk_Combobox_Item *item);
 
 /** @} */
 

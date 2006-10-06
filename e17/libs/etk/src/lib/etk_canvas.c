@@ -25,6 +25,7 @@ static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj,
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Canvas
  * @return Returns the type of an Etk_Canvas
  */
@@ -51,9 +52,9 @@ Etk_Widget *etk_canvas_new()
 }
 
 /**
- * @brief Adds an evas object to the canvas. The object will be moved to the top left corner of the canvas,
+ * @brief Adds an evas object to the canvas. The object will be moved to the top left corner of the canvas
  * and will be resized to 32x32. The object will also be clipped against the canvas. @n
- * You can then use any function of evas to control the object
+ * You can then use any Evas function to control the object
  * @param canvas a canvas
  * @param object the object to add
  * @return Returns ETK_TRUE on success, or ETK_FALSE on failure

@@ -1,5 +1,5 @@
 group {
-   name: "colorpicker/picker";
+   name: "etk/colorpicker/picker";
    min: 205 180;
    parts {
       part {
@@ -78,8 +78,9 @@ group {
       }
    }
 }
+
 group {
-   name: "colorpicker/hslider";
+   name: "etk/colorpicker/hslider";
    min: 140 24;
    parts {
       part {
@@ -140,7 +141,7 @@ group {
          }
       }
       part {
-         name: "drag";
+         name: "etk.dragable.slider";
          dragable {
             confine: "confine";
             x: 1 1 1;
@@ -159,20 +160,21 @@ group {
    programs {
       program {
          name: "colorpicker_hslider_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          FOCUS_GLOW_ACTION
       }
       program {
          name: "colorpicker_hslider_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_GLOW_ACTION
       }
    }
 }
+
 group {
-   name: "colorpicker/color_preview";
+   name: "etk/colorpicker/color_preview";
    min: 40 18;
    parts {
       part {

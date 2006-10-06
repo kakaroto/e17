@@ -8,7 +8,7 @@
  
 /**
  * @defgroup Etk_Menu_Item Etk_Menu_Item
- * @brief The Etk_Menu_Item widget is used as a child of a menu shell (Etk_Menu or Etk_Menu_Bar)
+ * @brief The Etk_Menu_Item widget is an item that can be packed in a menu shell (Etk_Menu or Etk_Menu_Bar)
  * @{
  */
 
@@ -40,15 +40,15 @@
 /** Checks if the object is an Etk_Menu_Item_Check */
 #define ETK_IS_MENU_ITEM_CHECK(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_CHECK_TYPE))
 
-/** @brief Gets the type of a menu item radio */
+/** Gets the type of a menu item radio */
 #define ETK_MENU_ITEM_RADIO_TYPE       (etk_menu_item_radio_type_get())
-/** @brief Casts the object to an Etk_Menu_Item_Radio */
+/** Casts the object to an Etk_Menu_Item_Radio */
 #define ETK_MENU_ITEM_RADIO(obj)       (ETK_OBJECT_CAST((obj), ETK_MENU_ITEM_RADIO_TYPE, Etk_Menu_Item_Radio))
-/** @brief Radios if the object is an Etk_Menu_Item_Radio */
+/** Radios if the object is an Etk_Menu_Item_Radio */
 #define ETK_IS_MENU_ITEM_RADIO(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_RADIO_TYPE))
 
 /**
- * @brief @widget The structure of a menu item
+ * @brief @widget An item that can be packed in a menu shell
  * @structinfo
  */
 struct Etk_Menu_Item
@@ -61,7 +61,7 @@ struct Etk_Menu_Item
    void (*deselected)(Etk_Menu_Item *menu_item);
    void (*activated)(Etk_Menu_Item *menu_item);
    
-   Etk_Menu_Shell *parent;
+   Etk_Menu_Shell *parent_shell;
    Etk_Menu *submenu;
    
    char *label;
@@ -71,7 +71,7 @@ struct Etk_Menu_Item
 };
 
 /**
- * @brief @widget The structure of a menu separator
+ * @brief @widget A menu-item used to separate two other items (looks like an horizontal bar in a menu)
  * @structinfo
  */
 struct Etk_Menu_Item_Separator
@@ -82,7 +82,7 @@ struct Etk_Menu_Item_Separator
 };
 
 /**
- * @brief @widget The structure of a menu item with an image
+ * @brief @widget A menu-item with an image at the left of the label
  * @structinfo
  */
 struct Etk_Menu_Item_Image
@@ -93,7 +93,7 @@ struct Etk_Menu_Item_Image
 };
 
 /**
- * @brief @widget The structure of a menu item with a checkbox
+ * @brief @widget A menu-item with a checkbox at the left of the label
  * @structinfo
  */
 struct Etk_Menu_Item_Check
@@ -108,7 +108,7 @@ struct Etk_Menu_Item_Check
 };
 
 /**
- * @brief @widget The structure of a radio
+ * @brief @widget A menu-item with a radiobox at the left of the label
  * @structinfo
  */
 struct Etk_Menu_Item_Radio
@@ -120,6 +120,7 @@ struct Etk_Menu_Item_Radio
    Evas_List **group;
    Etk_Bool can_uncheck;
 };
+
 
 /* Etk_Menu_Item */
 Etk_Type   *etk_menu_item_type_get();

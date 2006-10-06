@@ -46,10 +46,10 @@ static void _etk_window_show_cb(Etk_Object *object, void *data);
 static void _etk_window_hide_cb(Etk_Object *object, void *data);
 static void _etk_window_size_request_cb(Etk_Object *object, Etk_Size *requested_size, void *data);
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window);
-static void _etk_window_evas_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y);
-static void _etk_window_screen_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y);
-static void _etk_window_size_get(Etk_Toplevel_Widget *toplevel, int *w, int *h);
-static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type);
+static void _etk_window_evas_position_get(Etk_Toplevel *toplevel, int *x, int *y);
+static void _etk_window_screen_position_get(Etk_Toplevel *toplevel, int *x, int *y);
+static void _etk_window_size_get(Etk_Toplevel *toplevel, int *w, int *h);
+static void _etk_window_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
 
 static void _etk_window_move_cb(Etk_Window *window);
 static void _etk_window_resize_cb(Etk_Window *window);
@@ -67,6 +67,7 @@ static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Window
  * @return Returns the type on an Etk_Window
  */
@@ -76,7 +77,7 @@ Etk_Type *etk_window_type_get()
 
    if (!window_type)
    {
-       window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_WIDGET_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor));
+       window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor));
    
       _etk_window_signals[ETK_WINDOW_MOVE_SIGNAL] = etk_signal_new("move", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL] = etk_signal_new("resize", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
@@ -186,8 +187,8 @@ void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h)
 {
    if (!window)
       return;
-   etk_toplevel_widget_screen_position_get(ETK_TOPLEVEL_WIDGET(window), x, y);
-   etk_toplevel_widget_size_get(ETK_TOPLEVEL_WIDGET(window), w, h);
+   etk_toplevel_screen_position_get(ETK_TOPLEVEL(window), x, y);
+   etk_toplevel_size_get(ETK_TOPLEVEL(window), w, h);
 }
 
 /**
@@ -541,14 +542,14 @@ static void _etk_window_constructor(Etk_Window *window)
    
    etk_engine_window_constructor(window);
    
-   ETK_TOPLEVEL_WIDGET(window)->pointer_set = _etk_window_pointer_set;
-   ETK_TOPLEVEL_WIDGET(window)->evas_position_get = _etk_window_evas_position_get;
-   ETK_TOPLEVEL_WIDGET(window)->screen_position_get = _etk_window_screen_position_get;
-   ETK_TOPLEVEL_WIDGET(window)->size_get = _etk_window_size_get;
-   ETK_TOPLEVEL_WIDGET(window)->evas = etk_engine_window_evas_get(window);
+   ETK_TOPLEVEL(window)->pointer_set = _etk_window_pointer_set;
+   ETK_TOPLEVEL(window)->evas_position_get = _etk_window_evas_position_get;
+   ETK_TOPLEVEL(window)->screen_position_get = _etk_window_screen_position_get;
+   ETK_TOPLEVEL(window)->size_get = _etk_window_size_get;
+   ETK_TOPLEVEL(window)->evas = etk_engine_window_evas_get(window);
    
    /* TODO: remove the font path */
-   evas_font_path_append(ETK_TOPLEVEL_WIDGET(window)->evas, PACKAGE_DATA_DIR "/fonts/");
+   evas_font_path_append(ETK_TOPLEVEL(window)->evas, PACKAGE_DATA_DIR "/fonts/");
    etk_signal_connect("size_request", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_size_request_cb), NULL);
    etk_signal_connect("show", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_show_cb), NULL);
    etk_signal_connect("hide", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_hide_cb), NULL);
@@ -723,27 +724,27 @@ static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window)
 }
 
 /* Gets the evas position of the window */
-static void _etk_window_evas_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y)
+static void _etk_window_evas_position_get(Etk_Toplevel *toplevel, int *x, int *y)
 {
    etk_engine_window_evas_position_get(ETK_WINDOW(toplevel), x, y);
 }
 
 /* Gets the screen position of the window */
-static void _etk_window_screen_position_get(Etk_Toplevel_Widget *toplevel, int *x, int *y)
+static void _etk_window_screen_position_get(Etk_Toplevel *toplevel, int *x, int *y)
 {
    etk_engine_window_screen_position_get(ETK_WINDOW(toplevel), x, y);
 }
 
 /* Gets the size of the window */
-static void _etk_window_size_get(Etk_Toplevel_Widget *toplevel, int *w, int *h)
+static void _etk_window_size_get(Etk_Toplevel *toplevel, int *w, int *h)
 {
    etk_engine_window_size_get(ETK_WINDOW(toplevel), w, h);
 }
 
 /* Sets the mouse pointer of the window */
-static void _etk_window_pointer_set(Etk_Toplevel_Widget *toplevel_widget, Etk_Pointer_Type pointer_type)
+static void _etk_window_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type)
 {
-   etk_engine_window_pointer_set(ETK_WINDOW(toplevel_widget), pointer_type);
+   etk_engine_window_pointer_set(ETK_WINDOW(toplevel), pointer_type);
 }
 
 /* Called when the window is moved by the engine */

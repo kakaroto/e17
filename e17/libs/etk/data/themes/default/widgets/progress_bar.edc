@@ -1,5 +1,5 @@
 group {
-   name: "progress_bar";
+   name: "etk/progress_bar";
    min: 120 18;
    data {      
       item: "filler_pulse_width" "0.3";
@@ -42,7 +42,7 @@ group {
          }
       }
       part { 
-	 name: "filler";
+	 name: "etk.dragable.filler";
 	 mouse_events: 0;
 	 dragable { 
 	    confine: "progress_bar"; 
@@ -73,7 +73,7 @@ group {
 	 } 
       }
       part {
-         name: "text";
+         name: "etk.text.text";
          type: TEXT;
 	 clip_to: "clip";
          mouse_events: 0;

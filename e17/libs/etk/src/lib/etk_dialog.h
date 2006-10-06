@@ -6,8 +6,9 @@
 #include "etk_types.h"
 
 /* TODO/FIXME list:
- * - We should certainly set some X hints to make the dialogs not only simple windows
+ * - We should certainly set some X hints to make dialogs not only simple windows
  * - Find a way to make modal dialogs
+ * - Make the stacking of the separator defined by the theme
  */
 
 /**
@@ -40,7 +41,7 @@ typedef enum Etk_Dialog_Response_ID
 } Etk_Dialog_Response_ID;
 
 /**
- * @brief @widget The structure of a dialog
+ * @brief @widget A window with buttons in its bottom area to allow the user to respond to a request
  * @structinfo
  */
 struct Etk_Dialog
@@ -67,7 +68,7 @@ void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *butto
 Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int response_id);
 Etk_Widget *etk_dialog_button_add_from_stock(Etk_Dialog *dialog, int stock_id, int response_id);
 
-void etk_dialog_has_separator_set(Etk_Dialog *dialog, Etk_Bool has_separator);
+void     etk_dialog_has_separator_set(Etk_Dialog *dialog, Etk_Bool has_separator);
 Etk_Bool etk_dialog_has_separator_get(Etk_Dialog *dialog);
 
 /** @} */

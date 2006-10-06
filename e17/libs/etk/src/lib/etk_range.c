@@ -40,6 +40,7 @@ static Etk_Signal *_etk_range_signals[ETK_RANGE_NUM_SIGNALS];
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Range
  * @return Returns the type of an Etk_Range
  */

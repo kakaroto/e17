@@ -10,7 +10,7 @@
 #include "etk_tree_model.h"
 #include "etk_scrolled_view.h"
 #include "etk_button.h"
-#include "etk_toplevel_widget.h"
+#include "etk_toplevel.h"
 #include "etk_window.h"
 #include "etk_drag.h"
 #include "etk_event.h"
@@ -273,17 +273,17 @@ Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, Etk_Tree_Model
    new_col->model->col = new_col;
 
    /* Creates the header widget */
-   new_header = etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "header", "label", title, "xalign", 0.0,
-      "repeat_mouse_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
+   new_header = etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "header", "theme_parent", tree, "label",
+      title, "xalign", 0.0, "repeat_mouse_events", ETK_TRUE, "internal", ETK_TRUE, NULL);
+   etk_widget_parent_set(new_header, ETK_WIDGET(tree));
+   etk_widget_show(new_header);
+   if (tree->headers_clip)
+      etk_widget_clip_set(new_header, tree->headers_clip);
    etk_signal_connect("mouse_down", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_down_cb), new_col);
    etk_signal_connect("mouse_up", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_up_cb), new_col);
    etk_signal_connect("mouse_move", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_move_cb), new_col);
    etk_signal_connect("mouse_in", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_in_cb), new_col);
    etk_signal_connect("mouse_out", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree_header_mouse_out_cb), new_col);
-   etk_widget_parent_set(new_header, ETK_WIDGET(tree));
-   etk_widget_show(new_header);
-   if (tree->headers_clip)
-      etk_widget_clip_set(new_header, tree->headers_clip);
    new_col->header = new_header;
 
    tree->num_cols++;
@@ -1345,7 +1345,7 @@ void etk_tree_row_collapse(Etk_Tree_Row *row)
 
 /**
  * @brief Gets the scrolled view of the tree.
- * It can be used to change the scrollbars' policy, or to get the scroll value
+ * It can be used to change the scrollbars' policy, or to get the scroll-value
  * @param tree a tree
  * @return Returns the scrolled view of the tree
  */
@@ -1628,13 +1628,14 @@ static void _etk_tree_constructor(Etk_Tree *tree)
       return;
    
    tree->scrolled_view = etk_scrolled_view_new();
-   etk_widget_visibility_locked_set(tree->scrolled_view, ETK_TRUE);
-   etk_widget_repeat_mouse_events_set(tree->scrolled_view, ETK_TRUE);
+   etk_widget_theme_parent_set(tree->scrolled_view, ETK_WIDGET(tree));
    etk_widget_parent_set(tree->scrolled_view, ETK_WIDGET(tree));
+   etk_widget_internal_set(tree->scrolled_view, ETK_TRUE);
+   etk_widget_repeat_mouse_events_set(tree->scrolled_view, ETK_TRUE);
    etk_widget_show(tree->scrolled_view);
    
    tree->grid = etk_widget_new(ETK_TREE_GRID_TYPE, "theme_group", "grid", "theme_parent", ETK_WIDGET(tree),
-      "repeat_mouse_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
+      "repeat_mouse_events", ETK_TRUE, "internal", ETK_TRUE, NULL);
    ETK_TREE_GRID(tree->grid)->tree = tree;
    etk_container_add(ETK_CONTAINER(tree->scrolled_view), tree->grid);
    etk_widget_show(tree->grid);
@@ -1930,11 +1931,13 @@ static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data)
 
    if (etk_widget_theme_data_get(grid, "separator_color", "%d %d %d %d", &tree->separator_color.r, &tree->separator_color.g, &tree->separator_color.b, &tree->separator_color.a) != 4)
    {
-      tree->separator_color.r = 255;
-      tree->separator_color.g = 255;
-      tree->separator_color.b = 255;
+      tree->separator_color.r = 0;
+      tree->separator_color.g = 0;
+      tree->separator_color.b = 0;
       tree->separator_color.a = 0;
    }
+   else
+      evas_color_argb_premul(tree->separator_color.a, &tree->separator_color.r, &tree->separator_color.g, &tree->separator_color.b);
 
    if (tree->use_default_row_height || tree->row_height < ETK_TREE_MIN_ROW_HEIGHT)
    {
@@ -2183,7 +2186,7 @@ static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data)
    
    if (!(tree = ETK_TREE(object)))
       return;
-   etk_widget_theme_signal_emit(tree->grid, "focus", ETK_FALSE);
+   etk_widget_theme_signal_emit(tree->grid, "etk,state,focused", ETK_FALSE);
 }
 
 /* Called when the tree is unfocused */
@@ -2193,7 +2196,7 @@ static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data)
    
    if (!(tree = ETK_TREE(object)))
       return;
-   etk_widget_theme_signal_emit(tree->grid, "unfocus", ETK_FALSE);
+   etk_widget_theme_signal_emit(tree->grid, "etk,state,unfocused", ETK_FALSE);
 }
 
 /* Called when the user presses a key */
@@ -2330,12 +2333,12 @@ static void _etk_tree_header_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_M
       show_resize_pointer = (etk_tree_col_to_resize_get(col, event->cur.widget.x) != NULL);
       if (show_resize_pointer && !col->tree->resize_pointer_shown)
       {
-         etk_toplevel_widget_pointer_push(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
+         etk_toplevel_pointer_push(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
          col->tree->resize_pointer_shown = ETK_TRUE;
       }
       else if (!show_resize_pointer && col->tree->resize_pointer_shown)
       {
-         etk_toplevel_widget_pointer_pop(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
+         etk_toplevel_pointer_pop(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
          col->tree->resize_pointer_shown = ETK_FALSE;
       }
    }
@@ -2353,12 +2356,12 @@ static void _etk_tree_header_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In 
    show_resize_pointer = (etk_tree_col_to_resize_get(col, event->widget.x) != NULL);
    if (show_resize_pointer && !col->tree->resize_pointer_shown)
    {
-      etk_toplevel_widget_pointer_push(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
+      etk_toplevel_pointer_push(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
       col->tree->resize_pointer_shown = ETK_TRUE;
    }
    else if (!show_resize_pointer && col->tree->resize_pointer_shown)
    {
-      etk_toplevel_widget_pointer_pop(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
+      etk_toplevel_pointer_pop(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
       col->tree->resize_pointer_shown = ETK_FALSE;
    }
 }
@@ -2371,7 +2374,7 @@ static void _etk_tree_header_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Ou
    if (!(col = data) || !col->tree->resize_pointer_shown)
       return;
    
-   etk_toplevel_widget_pointer_pop(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
+   etk_toplevel_pointer_pop(ETK_WIDGET(col->tree)->toplevel_parent, ETK_POINTER_H_DOUBLE_ARROW);
    col->tree->resize_pointer_shown = ETK_FALSE;
 }
 
@@ -2536,14 +2539,17 @@ static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Row *parent_row, Evas_Li
          evas_object_show(row_objects->background);
          
          if ((first_row_color + i) % 2 == 0)
-            edje_object_signal_emit(row_objects->background, "odd" , "");
+            edje_object_signal_emit(row_objects->background, "etk,state,odd" , "etk");
          else
-            edje_object_signal_emit(row_objects->background, "even" , "");
+            edje_object_signal_emit(row_objects->background, "etk,state,even" , "etk");
          
          if (row->selected)
-            edje_object_signal_emit(row_objects->background, "selected" , "");
+            edje_object_signal_emit(row_objects->background, "etk,state,selected" , "etk");
          else
-            edje_object_signal_emit(row_objects->background, "unselected" , "");
+            edje_object_signal_emit(row_objects->background, "etk,state,unselected" , "etk");
+         
+         /* TODO: more general problem?? */
+         edje_object_message_signal_process(row_objects->background);
          
 //	 etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SHOWN_SIGNAL], ETK_OBJECT(tree), NULL, row);
 	 
@@ -2558,7 +2564,8 @@ static int _etk_tree_rows_draw(Etk_Tree *tree, Etk_Tree_Row *parent_row, Evas_Li
                }
                evas_object_move(row_objects->expander, x + xoffset, item_y + (tree->row_height - tree->expander_size + 1) / 2);
                evas_object_resize(row_objects->expander, tree->expander_size, tree->expander_size);
-               edje_object_signal_emit(row_objects->expander, row->expanded ? "expand" : "collapse", "");
+               edje_object_signal_emit(row_objects->expander,
+                  row->expanded ? "etk,action,unfold" : "etk,action,fold", "etk");
                evas_object_show(row_objects->expander);
             }
             else
@@ -2740,29 +2747,26 @@ static Etk_Tree_Row_Objects *_etk_tree_row_objects_new(Etk_Tree *tree)
    new_row_objects->row = NULL;
    
    /* Creates the background object of the row */
-   
-   if ((new_row_objects->background = etk_theme_object_load_from_parent(evas, ETK_WIDGET(tree), NULL, "row")))
-   {
-      evas_object_repeat_events_set(new_row_objects->background, 1);
-      evas_object_clip_set(new_row_objects->background, ETK_TREE_GRID(tree->grid)->clip);
-      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_DOWN, _etk_tree_row_pressed_cb, new_row_objects);
-      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_UP, _etk_tree_row_clicked_cb, new_row_objects);
-      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_MOVE, _etk_tree_row_mouse_move_cb, new_row_objects);
-      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_IN, _etk_tree_row_mouse_in_cb, new_row_objects);
-      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_OUT, _etk_tree_row_mouse_out_cb, new_row_objects);
-      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_SHOW, _etk_tree_row_show_cb, new_row_objects);
-      evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_HIDE, _etk_tree_row_hide_cb, new_row_objects);      
-      etk_widget_member_object_add(tree->grid, new_row_objects->background);
-   }
+   new_row_objects->background = edje_object_add(evas);
+   etk_theme_edje_object_set_from_parent(new_row_objects->background, "row", ETK_WIDGET(tree));
+   evas_object_repeat_events_set(new_row_objects->background, 1);
+   evas_object_clip_set(new_row_objects->background, ETK_TREE_GRID(tree->grid)->clip);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_DOWN, _etk_tree_row_pressed_cb, new_row_objects);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_UP, _etk_tree_row_clicked_cb, new_row_objects);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_MOVE, _etk_tree_row_mouse_move_cb, new_row_objects);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_IN, _etk_tree_row_mouse_in_cb, new_row_objects);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_MOUSE_OUT, _etk_tree_row_mouse_out_cb, new_row_objects);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_SHOW, _etk_tree_row_show_cb, new_row_objects);
+   evas_object_event_callback_add(new_row_objects->background, EVAS_CALLBACK_HIDE, _etk_tree_row_hide_cb, new_row_objects);      
+   etk_widget_member_object_add(tree->grid, new_row_objects->background);
    
    /* Creates the expander of the row */
    if (tree->mode == ETK_TREE_MODE_TREE)
    {
-      if ((new_row_objects->expander = etk_theme_object_load_from_parent(evas, ETK_WIDGET(tree), NULL, "expander")))
-      {
-         evas_object_event_callback_add(new_row_objects->expander, EVAS_CALLBACK_MOUSE_UP, _etk_tree_expander_clicked_cb, new_row_objects);
-         etk_widget_member_object_add(tree->grid, new_row_objects->expander);
-      }
+      new_row_objects->expander = edje_object_add(evas);
+      etk_theme_edje_object_set_from_parent(new_row_objects->expander, "expander", ETK_WIDGET(tree));
+      evas_object_event_callback_add(new_row_objects->expander, EVAS_CALLBACK_MOUSE_UP, _etk_tree_expander_clicked_cb, new_row_objects);
+      etk_widget_member_object_add(tree->grid, new_row_objects->expander);
    }
    else
       new_row_objects->expander = NULL;
@@ -3076,7 +3080,7 @@ static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int
 static void _etk_tree_drag_drop_cb(Etk_Object *object, void *event, void *data)
 {
 #if HAVE_ECORE_X      
-   Etk_Toplevel_Widget *win;
+   Etk_Toplevel *win;
       
    win = etk_widget_toplevel_parent_get(ETK_WIDGET(object));
    if(ETK_IS_WINDOW(win))
@@ -3086,12 +3090,12 @@ static void _etk_tree_drag_drop_cb(Etk_Object *object, void *event, void *data)
       tree = ETK_TREE(object);
       tree->dnd_event = ETK_TRUE;
             
-      evas_event_feed_mouse_down(etk_toplevel_widget_evas_get(win), 1,
+      evas_event_feed_mouse_down(etk_toplevel_evas_get(win), 1,
 				 EVAS_BUTTON_NONE,
 				 ecore_x_current_time_get(),
 				 NULL);
       
-      evas_event_feed_mouse_up(etk_toplevel_widget_evas_get(win), 1,
+      evas_event_feed_mouse_up(etk_toplevel_evas_get(win), 1,
 			       EVAS_BUTTON_NONE,
 			       ecore_x_current_time_get(),
 			       NULL);      

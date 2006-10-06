@@ -1,5 +1,5 @@
 group {
-   name: "frame";
+   name: "etk/frame";
    min: 60 30;
    data {
       item: "inset" "8 8 20 8";
@@ -13,7 +13,7 @@ group {
             rel1 {
                relative: 0.0 0.5;
                offset: 2 -1;
-               to_y: "label";
+               to_y: "etk.text.label";
             }
             rel2 {
                relative: 1.0 1.0;
@@ -59,7 +59,7 @@ group {
          }
       }
       part {
-         name: "label";
+         name: "etk.text.label";
          type: TEXT;
          mouse_events: 0;
          description {
@@ -97,12 +97,12 @@ group {
             rel1 {
                relative: 0.0 0.0;
                offset: -5 -4;
-               to: "label";
+               to: "etk.text.label";
             }
             rel2 {
                relative: 1.0 1.0;
                offset: 2 2;
-               to: "label";
+               to: "etk.text.label";
             }
             image {
                normal: "frame_label_over.png";
@@ -121,20 +121,20 @@ group {
    }
    programs {
       program {
-         name: "show_label";
-         signal: "show_label";
-         source: "";
+         name: "frame_show_label";
+         signal: "etk,action,show,label";
+         source: "etk";
          action: STATE_SET "default" 0.0;
-         target: "label";
+         target: "etk.text.label";
          target: "label_over";
          target: "label_under";
       }
       program {
-         name: "hide_label";
-         signal: "hide_label";
-         source: "";
+         name: "frame_hide_label";
+         signal: "etk,action,hide,label";
+         source: "etk";
          action: STATE_SET "hidden" 0.0;
-         target: "label";
+         target: "etk.text.label";
          target: "label_over";
          target: "label_under";
       }

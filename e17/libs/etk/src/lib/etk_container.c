@@ -36,6 +36,7 @@ static Etk_Signal *_etk_container_signals[ETK_CONTAINER_NUM_SIGNALS];
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Container
  * @return Returns the type of an Etk_Container
  */
@@ -64,7 +65,7 @@ Etk_Type *etk_container_type_get()
 }
 
 /**
- * @brief Adds a child to the container. It simply calls the "child_add" function of the corresponding container
+ * @brief Adds a child to the container. It simply calls the "child_add()" function corresponding to the container
  * @param container a container
  * @param widget the widget to add
  */
@@ -76,7 +77,8 @@ void etk_container_add(Etk_Container *container, Etk_Widget *widget)
 }
 
 /**
- * @brief Removes a child from the container It simply calls the "child_remove" function of the corresponding container
+ * @brief Removes a child from the container It simply calls the "child_remove()" function corresponding
+ * to the container. The child won't be destroyed, it is just unpacked
  * @param container a container
  * @param widget the widget to remove
  */
@@ -85,6 +87,23 @@ void etk_container_remove(Etk_Container *container, Etk_Widget *widget)
    if (!container || !widget || !container->child_remove)
       return;
    container->child_remove(container, widget);
+}
+
+/**
+ * @brief Unpacks all the children of the container
+ * @param container a container
+ */
+void etk_container_remove_all(Etk_Container *container)
+{
+   Evas_List *children, *l;
+   
+   if (!container)
+      return;
+   
+   children = etk_container_children_get(container);
+   for (l = children; l; l = l->next)
+      etk_container_remove(container, ETK_WIDGET(l->data));
+   evas_list_free(children);
 }
 
 /**
@@ -116,7 +135,7 @@ int etk_container_border_width_get(Etk_Container *container)
 
 /**
  * @brief Gets the list of the children of the container.
- * It simply calls the "childrend_get" function of the corresponding container. @n
+ * It simply calls the "childrend_get()" function corresponding to the container. @n
  * The list will have to be freed with evas_list_free()
  * @param container a container
  * @return Returns the list of the children of @a container
@@ -188,11 +207,12 @@ void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(E
 }
 
 /**
- * @brief Resizes the allocated space acoording to the fill policy. It is a utility function used by other containers
+ * @brief A utility function that resizes the allocated space acoording to the fill policy.
+ * It is mainly used by container implementations
  * @param child a child
- * @param child_space the allocated space for the child. It will be modified to correspond to the fill options
- * @param hfill if hfill == ETK_TRUE, the child should fill the space horizontally
- * @param vfill if vfill == ETK_TRUE, the child should fill the space vertically
+ * @param child_space the allocated space for the child. It will be modified according to the fill options
+ * @param hfill if hfill == ETK_TRUE, the child will fill the space horizontally
+ * @param vfill if vfill == ETK_TRUE, the child will fill the space vertically
  * @param xalign the horizontal alignment of the child widget in the child space (has no effect if @a hfill is ETK_TRUE)
  * @param yalign the vertical alignment of the child widget in the child space (has no effect if @a vfill is ETK_TRUE)
  */
@@ -295,12 +315,13 @@ static void _etk_container_property_get(Etk_Object *object, int property_id, Etk
 /**
  * @addtogroup Etk_Container
  *
- * Etk_Container is an abstract class which allows the user to add or remove children to a deriving widget. @n @n
- * etk_container_add() calls the @a "child_add" function of the deriving widget, such as etk_bin_child_set() for Etk_Bin,
- * or etk_box_pack_start for Etk_Box. But, you will often have to call directly a function of the API of the deriving
- * widget, in order to add the child at a specific place. For example, you'll have to call directly etk_box_pack_end() to
- * pack a child at the end of a box (since etk_container_add() only call etk_box_pack_start()). @n
- * etk_container_remove() calls the @a "child_remove" function of the deriving widget, which will remove the child
+ * Etk_Container is an abstract class which allows the user to add or remove children to a inheriting widget. @n @n
+ * etk_container_add() calls the @a child_add() function of the inheriting widget, such as etk_bin_child_set()
+ * for Etk_Bin, or etk_box_append() for Etk_Box. But, you will often have to call directly a function of the API
+ * of the inheriting widget, in order to add the child at a specific place. For example, you'll have to call directly
+ * etk_box_append() with the ETK_BOX_END paramater to pack a child at the end of a box (since etk_container_add() packs
+ * the child at the start of the box by default). @n
+ * etk_container_remove() calls the @a child_remove() function of the inheriting widget, which will remove the child
  * from the container. @n @n
  * You can also get the list of the children of the container with etk_container_children_get().
  * 

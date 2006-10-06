@@ -1,5 +1,5 @@
 group {
-   name: "text_view";
+   name: "etk/text_view";
    min: 120 18;
    data {
       item: "inset" "6 6 6 6";
@@ -67,14 +67,14 @@ group {
    programs {
       program {
          name: "text_view_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          FOCUS_GLOW_ACTION
       }
       program {
          name: "text_view_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_GLOW_ACTION
       }
    }

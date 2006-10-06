@@ -223,7 +223,6 @@ static void _etk_test_im_editor_key_down_cb(Etk_Object *object, Etk_Event_Key_Do
       iter = etk_textblock_iter_new(message_tb);
       etk_textblock_iter_forward_end(iter);
       
-      /* TODO: we need to wrap the modifiers! */
       if (event->modifiers & ETK_MODIFIER_SHIFT)
       {
          cursor = etk_text_view_cursor_get(ETK_TEXT_VIEW(object));

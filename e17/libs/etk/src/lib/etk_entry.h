@@ -41,6 +41,7 @@ Etk_Widget *etk_entry_new();
 
 void        etk_entry_text_set(Etk_Entry *entry, const char *text);
 const char *etk_entry_text_get(Etk_Entry *entry);
+void        etk_entry_clear(Etk_Entry *entry);
 void        etk_entry_password_mode_set(Etk_Entry *entry, Etk_Bool password_mode);
 Etk_Bool    etk_entry_password_mode_get(Etk_Entry *entry);
 

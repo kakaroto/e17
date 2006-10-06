@@ -116,18 +116,12 @@ static Etk_Engine engine_info = {
    _mouse_position_get,
    _mouse_screen_geometry_get,
    
+   NULL, /* selection_text_set */
+   NULL, /* selection_text_request */
+   NULL, /* selection_clear */
+   
    NULL, /* drag_constructor */
    NULL, /* drag_begin */
-   
-   NULL, /* dnd_init */
-   NULL, /* dnd_shutdown */
-   
-   NULL, /* clipboard_text_request */
-   NULL, /* clipboard_text_set */
-   
-   NULL, /* selection_text_request */
-   NULL, /* selection_text_set */
-   NULL, /* _selection_clear */
 };
 
 /**************************
@@ -183,7 +177,8 @@ static Etk_Bool _engine_init()
    ecore_evas_show(_ecore_evas);
    
    /* Create the background */
-   _background_object = etk_theme_object_load(_evas, etk_theme_widget_theme_get(), "wm_background");
+   _background_object = edje_object_add(_evas);
+   etk_theme_edje_object_set(_background_object, etk_theme_widget_get(), "wm_background", NULL);
    evas_object_resize(_background_object, _fb_width, _fb_height);
    evas_object_show(_background_object);
   
@@ -226,7 +221,7 @@ static void _window_constructor(Etk_Window *window)
    engine_data->border = NULL;
    window->engine_data = engine_data;
    
-   ETK_TOPLEVEL_WIDGET(window)->evas = _evas;
+   ETK_TOPLEVEL(window)->evas = _evas;
    etk_signal_connect("realize", ETK_OBJECT(window), ETK_CALLBACK(_window_realized_cb), NULL);
 }
 
@@ -409,7 +404,8 @@ static void _window_realized_cb(Etk_Object *object, void *data)
       return;
    engine_data = window->engine_data;
    
-   engine_data->border = etk_theme_object_load_from_parent(_evas, ETK_WIDGET(window), NULL, "wm_border");
+   engine_data->border = edje_object_add(_evas);
+   etk_theme_edje_object_set(engine_data->border, etk_widget_theme_file_get(ETK_WIDGET(window)), "wm_border", NULL);
    edje_extern_object_min_size_set(ETK_WIDGET(window)->smart_object, engine_data->size.w, engine_data->size.h);
    edje_object_part_swallow(engine_data->border, "content", ETK_WIDGET(window)->smart_object);
    edje_object_size_min_calc(engine_data->border, &border_w, &border_h);

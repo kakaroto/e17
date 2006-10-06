@@ -31,7 +31,7 @@ typedef enum Etk_Progress_Bar_Direction
 } Etk_Progress_Bar_Direction;
 
 /**
- * @brief @widget The structure of a progress bar
+ * @brief @widget A widget used to indicates the progress of an operation
  * @structinfo
  */
 struct Etk_Progress_Bar
@@ -50,21 +50,21 @@ struct Etk_Progress_Bar
    Etk_Bool is_pulsing;
 };
 
-Etk_Type *etk_progress_bar_type_get();
+Etk_Type   *etk_progress_bar_type_get();
 Etk_Widget *etk_progress_bar_new();
 Etk_Widget *etk_progress_bar_new_with_text(const char *label);
 
-void etk_progress_bar_text_set(Etk_Progress_Bar *progress_bar, const char *label);
+void        etk_progress_bar_text_set(Etk_Progress_Bar *progress_bar, const char *label);
 const char *etk_progress_bar_text_get(Etk_Progress_Bar *progress_bar);
 
-void etk_progress_bar_fraction_set(Etk_Progress_Bar *progress_bar, double fraction);
+void   etk_progress_bar_fraction_set(Etk_Progress_Bar *progress_bar, double fraction);
 double etk_progress_bar_fraction_get(Etk_Progress_Bar *progress_bar);
 
-void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar);
-void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double pulse_step);
+void   etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar);
+void   etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double pulse_step);
 double etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar);
 
-void etk_progress_bar_direction_set(Etk_Progress_Bar *progress_bar, Etk_Progress_Bar_Direction direction);
+void                       etk_progress_bar_direction_set(Etk_Progress_Bar *progress_bar, Etk_Progress_Bar_Direction direction);
 Etk_Progress_Bar_Direction etk_progress_bar_direction_get(Etk_Progress_Bar *progress_bar);
   
 /** @} */

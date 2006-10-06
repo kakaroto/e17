@@ -68,11 +68,11 @@ void etk_test_tree_window_create(void *data)
    etk_tree_freeze(ETK_TREE(tree));
    for (i = 0; i < 1000; i++)
    {
-      row = etk_tree_append(ETK_TREE(tree), col1, etk_theme_icon_theme_get(), "places/user-home_16", "Row1",
+      row = etk_tree_append(ETK_TREE(tree), col1, etk_theme_icon_get(), "places/user-home_16", "Row1",
          col2, 10.0, col3, PACKAGE_DATA_DIR "/images/1star.png", col4, ETK_FALSE, NULL);
-      row = etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "places/folder_16", "Row2",
+      row = etk_tree_append_to_row(row, col1, etk_theme_icon_get(), "places/folder_16", "Row2",
          col2, 20.0, col3, PACKAGE_DATA_DIR "/images/2stars.png", col4, ETK_FALSE, NULL);
-      etk_tree_append_to_row(row, col1, etk_theme_icon_theme_get(), "mimetypes/text-x-generic_16", "Row3",
+      etk_tree_append_to_row(row, col1, etk_theme_icon_get(), "mimetypes/text-x-generic_16", "Row3",
          col2, 30.0, col3, PACKAGE_DATA_DIR "/images/3stars.png", col4, ETK_FALSE, NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));

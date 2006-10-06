@@ -25,7 +25,6 @@ etk_button.h \
 etk_cache.h \
 etk_canvas.h \
 etk_check_button.h \
-etk_clipboard.h \
 etk_colorpicker.h \
 etk_combobox.h \
 etk_config.h \
@@ -76,7 +75,7 @@ etk_toggle_button.h \
 etk_tool_button.h \
 etk_toolbar.h \
 etk_tooltips.h \
-etk_toplevel_widget.h \
+etk_toplevel.h \
 etk_tree_model.h \
 etk_tree.h \
 etk_type.h \
@@ -95,7 +94,6 @@ etk_button.c \
 etk_cache.c \
 etk_canvas.c \
 etk_check_button.c \
-etk_clipboard.c \
 etk_colorpicker.c \
 etk_combobox.c \
 etk_config.c \
@@ -146,7 +144,7 @@ etk_toggle_button.c \
 etk_tool_button.c \
 etk_toolbar.c \
 etk_tooltips.c \
-etk_toplevel_widget.c \
+etk_toplevel.c \
 etk_tree_model.c \
 etk_tree.c \
 etk_type.c \

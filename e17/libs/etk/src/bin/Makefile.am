@@ -34,7 +34,7 @@ etk_menu_test.c \
 etk_filechooser_test.c \
 etk_notebook_test.c \
 etk_progress_bar_test.c \
-etk_xdnd_test.c \
+etk_dnd_test.c \
 etk_combobox_test.c \
 etk_iconbox_test.c \
 etk_text_view_test.c \

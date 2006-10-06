@@ -65,6 +65,7 @@ static Etk_Signal *_etk_combobox_signals[ETK_COMBOBOX_NUM_SIGNALS];
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Combobox
  * @return Returns the type of an Etk_Combobox
  */
@@ -93,6 +94,7 @@ Etk_Type *etk_combobox_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Combobox_Item
  * @return Returns the type of an Etk_Combobox_Item
  */
@@ -153,8 +155,8 @@ void etk_combobox_item_height_set(Etk_Combobox *combobox, int item_height)
    }
    else if (combobox->item_height_set)
    {
-      if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->item_height) != 1 ||
-         combobox->item_height <= 0)
+      if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->item_height) != 1
+         || combobox->item_height <= 0)
       {
          combobox->item_height = ETK_COMBOBOX_DEFAULT_ITEM_HEIGHT;
       }
@@ -223,7 +225,7 @@ void etk_combobox_build(Etk_Combobox *combobox)
       return;
    
    combobox->active_item_widget = etk_widget_new(ETK_WIDGET_TYPE, "pass_mouse_events", ETK_TRUE,
-      "visible", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
+      "visible", ETK_TRUE, "internal", ETK_TRUE, NULL);
    combobox->active_item_widget->size_request = _etk_combobox_active_item_size_request;
    combobox->active_item_widget->size_allocate = _etk_combobox_active_item_size_allocate;
    etk_object_data_set(ETK_OBJECT(combobox->active_item_widget), "_Etk_Combobox_Window::Combobox", combobox);
@@ -251,9 +253,9 @@ void etk_combobox_build(Etk_Combobox *combobox)
          default:
             break;
       }
-      etk_widget_visibility_locked_set(combobox->active_item_children[j], ETK_TRUE);
-      etk_widget_show(combobox->active_item_children[j]);
       etk_widget_parent_set(combobox->active_item_children[j], combobox->active_item_widget);
+      etk_widget_internal_set(combobox->active_item_children[j], ETK_TRUE);
+      etk_widget_show(combobox->active_item_children[j]);
       j++;
    }
    
@@ -392,7 +394,7 @@ Etk_Combobox_Item *etk_combobox_item_prepend(Etk_Combobox *combobox, ...)
  * See etk_combobox_item_prepend()'s "..." argument for more information
  * @return Returns the new item
  * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show()
- * @see etk_combobox_item_prepend
+ * @see etk_combobox_item_prepend()
  */
 Etk_Combobox_Item *etk_combobox_item_prepend_valist(Etk_Combobox *combobox, va_list args)
 {
@@ -419,7 +421,7 @@ Etk_Combobox_Item *etk_combobox_item_prepend_valist(Etk_Combobox *combobox, va_l
  * See etk_combobox_item_prepend()'s "..." argument for more information
  * @return Returns the new item
  * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show()
- * @see etk_combobox_item_prepend
+ * @see etk_combobox_item_prepend()
  */
 Etk_Combobox_Item *etk_combobox_item_append(Etk_Combobox *combobox, ...)
 {
@@ -443,7 +445,7 @@ Etk_Combobox_Item *etk_combobox_item_append(Etk_Combobox *combobox, ...)
  * See etk_combobox_item_prepend()'s "..." argument for more information
  * @return Returns the new item
  * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show()
- * @see etk_combobox_item_prepend
+ * @see etk_combobox_item_prepend()
  */
 Etk_Combobox_Item *etk_combobox_item_append_valist(Etk_Combobox *combobox, va_list args)
 {
@@ -472,7 +474,7 @@ Etk_Combobox_Item *etk_combobox_item_append_valist(Etk_Combobox *combobox, va_li
  * See etk_combobox_item_prepend()'s "..." argument for more information
  * @return Returns the new item
  * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show()
- * @see etk_combobox_item_prepend
+ * @see etk_combobox_item_prepend()
  */
 Etk_Combobox_Item *etk_combobox_item_prepend_relative(Etk_Combobox *combobox, Etk_Combobox_Item *relative, ...)
 {
@@ -498,7 +500,7 @@ Etk_Combobox_Item *etk_combobox_item_prepend_relative(Etk_Combobox *combobox, Et
  * See etk_combobox_item_prepend()'s "..." argument for more information
  * @return Returns the new item
  * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show()
- * @see etk_combobox_item_prepend
+ * @see etk_combobox_item_prepend()
  */
 Etk_Combobox_Item *etk_combobox_item_prepend_relative_valist(Etk_Combobox *combobox, Etk_Combobox_Item *relative, va_list args)
 {
@@ -553,7 +555,7 @@ Etk_Combobox_Item *etk_combobox_item_append_relative(Etk_Combobox *combobox, Etk
  * See etk_combobox_item_prepend()'s "..." argument for more information
  * @return Returns the new item
  * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show()
- * @see etk_combobox_item_prepend
+ * @see etk_combobox_item_prepend()
  */
 Etk_Combobox_Item *etk_combobox_item_append_relative_valist(Etk_Combobox *combobox, Etk_Combobox_Item *relative, va_list args)
 {
@@ -675,13 +677,13 @@ static void _etk_combobox_constructor(Etk_Combobox *combobox)
    if (!combobox)
       return;
    
-   combobox->button = etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "button", "visible", ETK_TRUE,
-      "repeat_mouse_events", ETK_TRUE, "visibility_locked", ETK_TRUE, NULL);
+   combobox->button = etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "button", "theme_parent", combobox,
+      "visible", ETK_TRUE, "repeat_mouse_events", ETK_TRUE, "internal", ETK_TRUE, NULL);
    etk_widget_parent_set(combobox->button, ETK_WIDGET(combobox));
    etk_signal_connect("toggled", ETK_OBJECT(combobox->button), ETK_CALLBACK(_etk_combobox_button_toggled_cb), combobox);
    
-   combobox->window = ETK_POPUP_WINDOW(etk_widget_new(ETK_POPUP_WINDOW_TYPE, "theme_group", "window", NULL));
-   etk_widget_theme_parent_set(ETK_WIDGET(combobox->window), ETK_WIDGET(combobox));
+   combobox->window = ETK_POPUP_WINDOW(etk_widget_new(ETK_POPUP_WINDOW_TYPE,
+      "theme_group", "window", "theme_parent", combobox, NULL));
    etk_object_data_set(ETK_OBJECT(combobox->window), "_Etk_Combobox_Window::Combobox", combobox);
    etk_signal_connect("popped_down", ETK_OBJECT(combobox->window), ETK_CALLBACK(_etk_combobox_window_popped_down_cb), combobox);
    etk_signal_connect("key_down", ETK_OBJECT(combobox->window), ETK_CALLBACK(_etk_combobox_window_key_down_cb), combobox);
@@ -1041,7 +1043,7 @@ static void _etk_combobox_focus_handler(Etk_Widget *widget)
    
    if (!(combobox = ETK_COMBOBOX(widget)))
       return;
-   etk_widget_theme_signal_emit(combobox->button, "focus", ETK_FALSE);
+   etk_widget_theme_signal_emit(combobox->button, "etk,state,focused", ETK_FALSE);
 }
 
 /* Default handler for the "unfocus" handler */
@@ -1051,7 +1053,7 @@ static void _etk_combobox_unfocus_handler(Etk_Widget *widget)
    
    if (!(combobox = ETK_COMBOBOX(widget)))
       return;
-   etk_widget_theme_signal_emit(combobox->button, "unfocus", ETK_FALSE);
+   etk_widget_theme_signal_emit(combobox->button, "etk,state,unfocused", ETK_FALSE);
 }
 
 /* Called when the combobox is realized */
@@ -1064,8 +1066,8 @@ static void _etk_combobox_realize_cb(Etk_Object *object, void *data)
    
    if (!combobox->item_height_set)
    {
-      if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->item_height) != 1 ||
-         combobox->item_height <= 0)
+      if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->item_height) != 1
+         || combobox->item_height <= 0)
       {
          combobox->item_height = ETK_COMBOBOX_DEFAULT_ITEM_HEIGHT;
       }
@@ -1094,7 +1096,7 @@ static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
    int ex, ey, sx, sy;
    int bx, by, bw, bh;
    Etk_Combobox *combobox;
-   Etk_Toplevel_Widget *toplevel;
+   Etk_Toplevel *toplevel;
    
    if (!(combobox = ETK_COMBOBOX(data)) || !(toplevel = etk_widget_toplevel_parent_get(combobox->button)))
       return;
@@ -1102,8 +1104,8 @@ static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
    if (etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(combobox->button)))
    {
       etk_widget_geometry_get(combobox->button, &bx, &by, &bw, &bh);
-      etk_toplevel_widget_evas_position_get(toplevel, &ex, &ey);
-      etk_toplevel_widget_screen_position_get(toplevel, &sx, &sy);
+      etk_toplevel_evas_position_get(toplevel, &ex, &ey);
+      etk_toplevel_screen_position_get(toplevel, &sx, &sy);
       etk_popup_window_popup_at_xy(combobox->window, sx + (bx - ex), sy + (by - ey) + bh);
       etk_window_resize(ETK_WINDOW(combobox->window), bw, 0);
    }
@@ -1148,8 +1150,8 @@ static void _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_D
       else
          _etk_combobox_selected_item_set(combobox, ETK_COMBOBOX_ITEM(l->prev->data));
    }
-   else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "space") == 0 ||
-      strcmp(event->keyname, "KP_Enter") == 0)
+   else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "space") == 0
+      || strcmp(event->keyname, "KP_Enter") == 0)
    {
       if (combobox->selected_item)
       {
@@ -1220,8 +1222,7 @@ static Etk_Combobox_Item *_etk_combobox_item_new_valist(Etk_Combobox *combobox, 
    }
    
    item = ETK_COMBOBOX_ITEM(etk_widget_new(ETK_COMBOBOX_ITEM_TYPE,
-      "theme_group", "combobox_item", "visible", ETK_TRUE, NULL));
-   etk_widget_theme_parent_set(ETK_WIDGET(item), ETK_WIDGET(combobox));
+      "theme_group", "item", "theme_parent", combobox, "visible", ETK_TRUE, NULL));
    item->combobox = combobox;
    item->data = NULL;
    item->data_free_cb = NULL;
@@ -1266,12 +1267,12 @@ static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox
    
    if (combobox->selected_item)
    {
-      etk_widget_theme_signal_emit(ETK_WIDGET(combobox->selected_item), "unselect", ETK_FALSE);
+      etk_widget_theme_signal_emit(ETK_WIDGET(combobox->selected_item), "etk,state,unselected", ETK_FALSE);
       combobox->selected_item = NULL;
    }
    if (item)
    {
-      etk_widget_theme_signal_emit(ETK_WIDGET(item), "select", ETK_FALSE);
+      etk_widget_theme_signal_emit(ETK_WIDGET(item), "etk,state,selected", ETK_FALSE);
       combobox->selected_item = item;
    }
 }

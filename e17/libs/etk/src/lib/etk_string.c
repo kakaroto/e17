@@ -23,6 +23,7 @@ static void _etk_string_destructor(Etk_String *string);
 static char *_etk_string_vprintf(const char *format, va_list args);
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_String
  * @return Returns the type of an Etk_String
  */

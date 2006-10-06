@@ -36,6 +36,7 @@ static Etk_Signal *_etk_toggle_button_signals[ETK_TOGGLE_BUTTON_NUM_SIGNALS];
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Toggle_Button
  * @return Returns the type on an Etk_Toggle_Button
  */
@@ -180,7 +181,8 @@ static void _etk_toggle_button_realize_cb(Etk_Object *object, void *data)
 
    if (!(toggle_button = ETK_TOGGLE_BUTTON(object)))
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button), toggle_button->active ? "activate" : "deactivate", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button),
+      toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
 }
 
 /* Default handler for the "toggled" signal */
@@ -188,7 +190,8 @@ static void _etk_toggle_button_toggled_handler(Etk_Toggle_Button *toggle_button)
 {
    if (!toggle_button)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button), toggle_button->active ? "activate" : "deactivate", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button),
+      toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
 }
 
 /**************************

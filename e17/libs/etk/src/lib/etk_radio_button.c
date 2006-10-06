@@ -21,6 +21,7 @@ static void _etk_radio_button_property_get(Etk_Object *object, int property_id, 
 static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool active);
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Radio_Button
  * @return Returns the type of an Etk_Radio_Button
  */

@@ -42,6 +42,7 @@ static void _etk_image_load(Etk_Image *image);
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Image
  * @return Returns the type of an Etk_Image
  */
@@ -63,7 +64,7 @@ Etk_Type *etk_image_type_get()
       etk_type_property_add(image_type, "keep_aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(image_type, "use_edje", ETK_IMAGE_USE_EDJE_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE, etk_property_value_bool(ETK_FALSE));
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE, NULL);
       etk_type_property_add(image_type, "stock_id", ETK_IMAGE_STOCK_ID_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_NO_STOCK));
       etk_type_property_add(image_type, "stock_size", ETK_IMAGE_STOCK_SIZE_PROPERTY,
@@ -260,7 +261,7 @@ void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock
       return;
    
    if ((key = etk_stock_key_get(stock_id, stock_size)))
-      etk_image_set_from_edje(image, etk_theme_icon_theme_get(), key);
+      etk_image_set_from_edje(image, etk_theme_icon_get(), key);
    image->stock_id = stock_id;
    image->stock_size = stock_size;
    
@@ -562,9 +563,8 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 static void _etk_image_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Image *image;
-   Evas *evas;
-
-   if (!(image = ETK_IMAGE(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(image))))
+   
+   if (!(image = ETK_IMAGE(object)))
       return;
    _etk_image_load(image);
 }
@@ -607,6 +607,7 @@ static void _etk_image_load(Etk_Image *image)
 
       if (!image->image_object && (evas = etk_widget_toplevel_evas_get(widget)))
       {
+         /* TODO: FIXME: the image might not be realized here... */
          image->image_object = evas_object_image_add(evas);
          etk_widget_member_object_add(widget, image->image_object);
       }

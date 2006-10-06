@@ -18,7 +18,7 @@
  *               - Etk_Radio_Button
  *         - Etk_Frame
  *         - Etk_Scrolled_View
- *         - Etk_Toplevel_Widget
+ *         - Etk_Toplevel
  *           - Etk_Embed
  *           - Etk_Window
  *             - Etk_Dialog

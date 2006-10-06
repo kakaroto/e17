@@ -75,9 +75,6 @@
             normal: "glint2.png"; \
             border: 0 0 5 5; \
          } \
-         fill { \
-            smooth: 0; \
-         } \
       } \
       description { \
          state: "active" 0.0; \

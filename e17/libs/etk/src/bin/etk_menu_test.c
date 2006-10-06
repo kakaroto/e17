@@ -242,12 +242,12 @@ static void _etk_test_menu_item_selected_cb(Etk_Object *object, void *data)
    
    if (!(item = ETK_MENU_ITEM(object)))
       return;
-   etk_statusbar_push(ETK_STATUSBAR(_etk_test_menu_statusbar), etk_menu_item_label_get(item), 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(_etk_test_menu_statusbar), etk_menu_item_label_get(item), 0);
 }
 
 /* Called when a menu item is deselected */
 static void _etk_test_menu_item_deselected_cb(Etk_Object *object, void *data)
 {
-   etk_statusbar_pop(ETK_STATUSBAR(_etk_test_menu_statusbar), 0);
+   etk_statusbar_message_pop(ETK_STATUSBAR(_etk_test_menu_statusbar), 0);
 }
 

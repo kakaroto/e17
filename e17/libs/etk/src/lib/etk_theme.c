@@ -6,59 +6,61 @@
 #include <Ecore_File.h>
 #include <Edje.h>
 #include "etk_widget.h"
-#include "etk_string.h"
 #include "etk_config.h"
 #include "config.h"
 
-#define ETK_THEME_PARENT_GET(widget)      ((widget)->theme_parent ? (widget)->theme_parent : (widget)->parent)
-
 static char *_etk_theme_find(const char *subdir, const char *file);
 
-static char *_etk_theme_default_widget_theme = NULL;
-static char *_etk_theme_widget_theme = NULL;
-static char *_etk_theme_default_icon_theme = NULL;
-static char *_etk_theme_icon_theme = NULL;
+static char *_etk_theme_widget_default = NULL;
+static char *_etk_theme_widget_current = NULL;
+static char *_etk_theme_icon_default = NULL;
+static char *_etk_theme_icon_current = NULL;
 
-/** @brief Initializes the theming system of Etk. Do not call it manually, etk_init() calls it! */
+/**
+ * @internal
+ * @brief Initializes the themz system of Etk
+ */
 void etk_theme_init()
 {
-   _etk_theme_default_widget_theme = _etk_theme_find("themes", "default");
-   _etk_theme_default_icon_theme = _etk_theme_find("icons", "default");
+   _etk_theme_widget_default = _etk_theme_find("themes", "default");
+   _etk_theme_icon_default = _etk_theme_find("icons", "default");
    
-   /* TODO: etk_config: add support of non default themes */
-   etk_theme_widget_theme_set(etk_config_widget_theme_get());
-   etk_theme_icon_theme_set("default");
+   etk_theme_widget_set(etk_config_widget_theme_get());
+   etk_theme_icon_set("default");
 }
 
-/** @brief Shutdowns the theming system of Etk. Do not call it manually, etk_shutdown() calls it! */
+/**
+ * @internal
+ * @brief Shutdowns the theme system of Etk
+ */
 void etk_theme_shutdown()
 {
-   free(_etk_theme_default_widget_theme);
-   _etk_theme_default_widget_theme = NULL;
-   free(_etk_theme_widget_theme);
-   _etk_theme_widget_theme = NULL;
+   free(_etk_theme_widget_default);
+   free(_etk_theme_widget_current);
+   free(_etk_theme_icon_default);
+   free(_etk_theme_icon_current);
    
-   free(_etk_theme_default_icon_theme);
-   _etk_theme_default_icon_theme = NULL;
-   free(_etk_theme_icon_theme);
-   _etk_theme_icon_theme = NULL;
+   _etk_theme_widget_default = NULL;
+   _etk_theme_widget_current = NULL;
+   _etk_theme_icon_default = NULL;
+   _etk_theme_icon_current = NULL;
 }
 
 /**
- * @brief Gets the widget theme file of Etk
- * @return Returns the path of the widget theme file
+ * @brief Gets the path of the current widget-theme file of Etk
+ * @return Returns the path of the current widget-theme file
  */
-const char *etk_theme_widget_theme_get()
+const char *etk_theme_widget_get()
 {
-   return _etk_theme_widget_theme;
+   return _etk_theme_widget_current;
 }
 
 /**
- * @brief Sets the theme to use for the widgets of Etk
- * @param theme_name the name of the theme to use
- * @return Returns ETK_TRUE if the theme has been found, or ETK_FALSE otherwize
+ * @brief Sets the theme that will be used by new widgets
+ * @param theme_name the name of the widget-theme to use
+ * @return Returns ETK_TRUE if the theme has been found, or ETK_FALSE otherwise
  */
-Etk_Bool etk_theme_widget_theme_set(const char *theme_name)
+Etk_Bool etk_theme_widget_set(const char *theme_name)
 {
    char *path;
    
@@ -67,27 +69,19 @@ Etk_Bool etk_theme_widget_theme_set(const char *theme_name)
    
    if ((path = _etk_theme_find("themes", theme_name)))
    {
-      free(_etk_theme_widget_theme);
-      _etk_theme_widget_theme = path;
+      free(_etk_theme_widget_current);
+      _etk_theme_widget_current = path;
       return ETK_TRUE;
    }
    return ETK_FALSE;
 }
 
 /**
- * @brief Gets the default widget theme file of Etk
- * @return Returns the path of the default widget theme file
+ * @brief Gets the list of available widget-themes
+ * @return Returns an Evas_List of available widget-themes.
+ * The items of the list will have to be freed with free(), and the list will have to be freed with evas_list_free()
  */
-const char *etk_theme_default_widget_theme_get()
-{
-   return _etk_theme_default_widget_theme;
-}
-
-/**
- * @brief Gets the list of available widget themes
- * @return Returns an Evas_List of available widget themes
- */
-Evas_List *etk_theme_widget_theme_available_get()
+Evas_List *etk_theme_widget_available_themes_get()
 {
    Ecore_List *files;
    Evas_List *themes = NULL;
@@ -104,40 +98,40 @@ Evas_List *etk_theme_widget_theme_available_get()
       if (files)
       {
 	 ecore_list_goto_first(files);
-	 while((file = ecore_list_next(files)))      
-	   themes = evas_list_append(themes, ecore_file_strip_ext(file));
+	 while ((file = ecore_list_next(files)))      
+	    themes = evas_list_append(themes, ecore_file_strip_ext(file));
+         ecore_list_destroy(files);
       }
       free(path);
    }
    
-   path = malloc(strlen(PACKAGE_DATA_DIR"/themes/") + 1);
-   sprintf(path, PACKAGE_DATA_DIR"/themes/");
-   files = ecore_file_ls(path);
+   files = ecore_file_ls(PACKAGE_DATA_DIR "/themes/");
    if (files)
    {
       ecore_list_goto_first(files);
-      while((file = ecore_list_next(files)))
-	themes = evas_list_append(themes, ecore_file_strip_ext(file));
+      while ((file = ecore_list_next(files)))
+	 themes = evas_list_append(themes, ecore_file_strip_ext(file));
+      ecore_list_destroy(files);
    }
-   free(path);
+   
    return themes;
 }
 
 /**
- * @brief Gets the icon theme file of Etk
- * @return Returns the path of the icon theme file
+ * @brief Gets the path of the current icon-theme file of Etk
+ * @return Returns the path of the current icon-theme file
  */
-const char *etk_theme_icon_theme_get()
+const char *etk_theme_icon_get()
 {
-   return _etk_theme_icon_theme;
+   return _etk_theme_icon_current;
 }
 
 /**
- * @brief Sets the theme to use for the icons of Etk
- * @param theme_name the name of the theme to use
- * @return Returns ETK_TRUE if the theme has been found, or ETK_FALSE otherwize
+ * @brief Sets the theme that will be used by new icons
+ * @param theme_name the name of the icon-theme to use
+ * @return Returns ETK_TRUE if the theme has been found, or ETK_FALSE otherwise
  */
-Etk_Bool etk_theme_icon_theme_set(const char *theme_name)
+Etk_Bool etk_theme_icon_set(const char *theme_name)
 {
    char *path;
    
@@ -146,115 +140,185 @@ Etk_Bool etk_theme_icon_theme_set(const char *theme_name)
    
    if ((path = _etk_theme_find("icons", theme_name)))
    {
-      free(_etk_theme_icon_theme);
-      _etk_theme_icon_theme = path;
+      free(_etk_theme_icon_current);
+      _etk_theme_icon_current = path;
       return ETK_TRUE;
    }
    return ETK_FALSE;
 }
 
 /**
- * @brief Gets the default icon theme file of Etk
- * @return Returns the path of the default icon theme file
+ * @brief Gets the list of available icon-themes
+ * @return Returns an Evas_List of available icon-themes.
+ * The items of the list will have to be freed with free(), and the list will have to be freed with evas_list_free()
  */
-const char *etk_theme_icon_default_theme_get()
+Evas_List *etk_theme_icon_available_themes_get()
 {
-   return _etk_theme_default_icon_theme;
+   Ecore_List *files;
+   Evas_List *themes = NULL;
+   char *home;
+   char *path;
+   char *file;
+   
+   if ((home = getenv("HOME")))
+   {
+      /* TODO: etk_config_dir_get? */
+      path = malloc(strlen(home) + strlen("/.e/etk/icons/") + 1);
+      sprintf(path, "%s/.e/etk/icons/", home);
+      files = ecore_file_ls(path);
+      if (files)
+      {
+	 ecore_list_goto_first(files);
+	 while ((file = ecore_list_next(files)))      
+	    themes = evas_list_append(themes, ecore_file_strip_ext(file));
+         ecore_list_destroy(files);
+      }
+      free(path);
+   }
+   
+   files = ecore_file_ls(PACKAGE_DATA_DIR "/icons/");
+   if (files)
+   {
+      ecore_list_goto_first(files);
+      while ((file = ecore_list_next(files)))
+	 themes = evas_list_append(themes, ecore_file_strip_ext(file));
+      ecore_list_destroy(files);
+   }
+   
+   return themes;
 }
 
 /**
- * @brief Creates and loads an edje object from the file "filename" and the group "group"
- * @param evas the canvas where the new object will be added
- * @param filename the .edj file which you want to load the edje object from
- * @param group the edje group to load
- * @return Returns the new edje object, or NULL on failure
+ * @brief Checks whether the given theme-group exists. The edje-group to check is named
+ * "etk/parent_group/group" if @a parent_group is not NULL, or "etk/group" if @a parent_group is NULL
+ * @param file the path of a theme-file. If @a file is NULL, the current Etk's theme-file is used
+ * @param group the main theme-group
+ * @param parent_group the parent theme-group. It can be NULL
+ * @return Returns ETK_TRUE if the theme-group exists, ETK_FALSE otherwise
  */
-Evas_Object *etk_theme_object_load(Evas *evas, const char *filename, const char *group)
+Etk_Bool etk_theme_group_exists(const char *file, const char *group, const char *parent_group)
 {
-   Evas_Object *object;
+   char *full_group;
    
-   if (!evas || !filename || !group)
-      return NULL;
+   if (!file)
+      file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
+   if (!group || *group == '\0' || !file)
+      return ETK_FALSE;
    
-   if (!(object = edje_object_add(evas)))
-      return NULL;
-   
-   if (!edje_object_file_set(object, filename, group))
+   if (parent_group && *parent_group)
    {
-      evas_object_del(object);
-      return NULL;
-   }
-   return object;
-}
-
-/**
- * @brief Loads the theme object from a theme parent widget
- * @param evas the canvas where the new object will be added
- * @param theme_parent the theme parent
- * @param filename the .edj file that contains the object to load: if filename is NULL, then the theme file of the theme @n
- * parent will be used. If no parent have a non-null theme file or if the file doesn't contain the object, the default theme @n
- * file of Etk will be used.
- * @param group the group of the object to load. If a theme parent has been given, the group will also inherit the theme group @n
- * of this parent: for example, if @a group is "button" and the theme parent's theme group is "combobox", then the edje group used @n
- * will be "combobox/button"
- */
-Evas_Object *etk_theme_object_load_from_parent(Evas *evas, Etk_Widget *theme_parent, const char *filename, const char *group)
-{
-   const char *edje_files[3];
-   Etk_String *edje_group_str;
-   char *edje_group, *grp;
-   Etk_Widget *parent;
-   Evas_Object *object;
-   int i;
-   
-   if (!evas || !group)
-      return NULL;
-   
-   /* Build the edje group string */
-   edje_group_str = etk_string_new(group);
-   for (parent = theme_parent; parent; parent = ETK_THEME_PARENT_GET(parent))
-   {
-      if (parent->theme_group)
-         etk_string_prepend_printf(edje_group_str, "%s/", parent->theme_group);
-   }
-   edje_group = strdup(etk_string_get(edje_group_str));
-   etk_object_destroy(ETK_OBJECT(edje_group_str));
-   
-   /* Build the list of theme files */
-   edje_files[0] = filename;
-   for (parent = theme_parent; parent && !edje_files[0]; parent = ETK_THEME_PARENT_GET(parent))
-      edje_files[0] = parent->theme_file;
-   if (!edje_files[0])
-   {
-      edje_files[0] = etk_theme_widget_theme_get();
-      edje_files[1] = etk_theme_default_widget_theme_get();
-      edje_files[2] = NULL;
+      full_group = malloc(strlen("etk//") + strlen(parent_group) + strlen(group) + 1);
+      sprintf(full_group, "etk/%s/%s", parent_group, group);
    }
    else
    {
-      edje_files[1] = etk_theme_widget_theme_get();
-      edje_files[2] = etk_theme_default_widget_theme_get();
+      full_group = malloc(strlen("etk/") + strlen(group) + 1);
+      sprintf(full_group, "etk/%s", group);
    }
    
-   /* Try to load the theme object from the files */
-   object = NULL;
-   for (i = 0; i < 3 && !object; i++)
+   /* Checks if the theme-group exists */
+   if (edje_file_group_exists(file, full_group))
    {
-      if (!edje_files[i])
-         continue;
+      free(full_group);
+      return ETK_TRUE;
+   }
+   else
+   {
+      char *alias;
+      char *alt_group;
+      int ret;
       
-      grp = edje_group;
-      while (grp && !object)
+      alias = malloc(strlen("alias: ") + strlen(full_group) + 1);
+      sprintf(alias, "alias: %s", full_group);
+      alt_group = edje_file_data_get(file, alias);
+      free(full_group);
+      free(alias);
+      
+      ret = edje_file_group_exists(file, alt_group);
+      free(alt_group);
+      
+      return ret;
+   }
+}
+
+/**
+ * @brief Loads an edje-group from a theme-file and sets it to the object. The edje-group to load is named
+ * "etk/parent_group/group" if @a parent_group is not NULL, or "etk/group" if @a parent_group is NULL
+ * @param object an Edje object
+ * @param file the path of the theme-file. If @a file is NULL, the current Etk's theme-file is used
+ * @param group the theme-group of the object
+ * @param parent_group the theme-group of the parent of the object. It can be NULL
+ * @return Returns ETK_TRUE on success, ETK_FALSE on failure
+ */
+Etk_Bool etk_theme_edje_object_set(Evas_Object *object, const char *file, const char *group, const char *parent_group)
+{
+   char *full_group;
+   
+   if (!object)
+      return ETK_FALSE;
+   
+   if (!file)
+      file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
+   if (!group || *group == '\0' || !file)
+   {
+      edje_object_file_set(object, NULL, NULL);
+      return ETK_FALSE;
+   }
+   
+   if (parent_group && *parent_group)
+   {
+      full_group = malloc(strlen("etk//") + strlen(parent_group) + strlen(group) + 1);
+      sprintf(full_group, "etk/%s/%s", parent_group, group);
+   }
+   else
+   {
+      full_group = malloc(strlen("etk/") + strlen(group) + 1);
+      sprintf(full_group, "etk/%s", group);
+   }
+   
+   /* Load the object */
+   if (edje_object_file_set(object, file, full_group))
+   {
+      free(full_group);
+      return ETK_TRUE;
+   }
+   else
+   {
+      char *alias;
+      char *alt_group;
+      int ret;
+      
+      alias = malloc(strlen("alias: ") + strlen(full_group) + 1);
+      sprintf(alias, "alias: %s", full_group);
+      alt_group = edje_file_data_get(file, alias);
+      free(full_group);
+      free(alias);
+      
+      ret = edje_object_file_set(object, file, alt_group);
+      free(alt_group);
+      
+      if (ret)
+         return ETK_TRUE;
+      else
       {
-         object = etk_theme_object_load(evas, edje_files[i], grp);
-         
-         if ((grp = strchr(grp, '/')))
-            grp++;
+         edje_object_file_set(object, NULL, NULL);
+         return ETK_FALSE;
       }
    }
-   
-   free(edje_group);
-   return object;
+}
+
+/**
+ * @brief Loads an edje-group from a theme-file and sets it to the object.
+ * Equivalent to etk_theme_edje_object_set(object, etk_widget_theme_file_get(parent), group, etk_widget_theme_group_get(parent))
+ * @param group the theme-group of the object
+ * @param parent the theme-parent of the object
+ * @return Returns ETK_TRUE on success, ETK_FALSE on failure
+ */
+Etk_Bool etk_theme_edje_object_set_from_parent(Evas_Object *object, const char *group, Etk_Widget *parent)
+{
+   if (!object)
+      return ETK_FALSE;
+   return etk_theme_edje_object_set(object, etk_widget_theme_file_get(parent), group, etk_widget_theme_group_get(parent));
 }
 
 /**************************

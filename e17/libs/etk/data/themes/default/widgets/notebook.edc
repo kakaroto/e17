@@ -1,5 +1,5 @@
 group {
-   name: "notebook/tab";
+   name: "etk/notebook/tab";
    min: 20 26;
    parts {
       part {
@@ -79,7 +79,7 @@ group {
          }
       }
       part {
-         name: "swallow_area";
+         name: "etk.swallow.child";
          type: SWALLOW;
          mouse_events: 0;
          description {
@@ -154,8 +154,8 @@ group {
    programs {
       program {
          name: "tab_activate";
-         signal: "activate";
-         source: "";
+         signal: "etk,state,on";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          transition: LINEAR 0.2;
          target: "label_under";
@@ -163,8 +163,8 @@ group {
       }
       program {
          name: "tab_deactivate";
-         signal: "deactivate";
-         source: "";
+         signal: "etk,state,off";
+         source: "etk";
          action: STATE_SET "inactive" 0.0;
          transition: LINEAR 0.2;
          target: "label_under";
@@ -172,34 +172,34 @@ group {
       }
       program {
          name: "tab_pressed";
-         signal: "pressed";
-         source: "";
+         signal: "etk,state,pressed";
+         source: "etk";
          action: STATE_SET "down" 0.0;
          target: "label_under_rect";
       }
       program {
          name: "tab_released";
-         signal: "released";
-         source: "";
+         signal: "etk,state,released";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "label_under_rect";
       }
       program {
          name: "tab_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          FOCUS_RECT_ACTION
       }
       program {
          name: "tab_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_RECT_ACTION
       }
    }
 }
 group {
-   name: "notebook/frame";
+   name: "etk/notebook/frame";
    data {
       item: "inset" "6 6 6 6";
    }

@@ -1,5 +1,5 @@
 group {
-   name: "button";
+   name: "etk/button";
    min: 0 32;
    parts {
       part {
@@ -31,7 +31,7 @@ group {
          }
       }
       part {
-         name: "swallow_area";
+         name: "etk.swallow.child";
          type: SWALLOW;
          mouse_events: 0;
          description {
@@ -52,29 +52,29 @@ group {
    }
    programs {
       program {
-         name: "button_pressed";
-         signal: "pressed";
-         source: "";
+         name: "button_press";
+         signal: "etk,state,pressed";
+         source: "etk";
          action: STATE_SET "down" 0.0;
          target: "button";
       }
       program {
-         name: "button_released";
-         signal: "released";
-         source: "";
+         name: "button_release";
+         signal: "etk,state,released";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "button";
       }
       program {
          name: "button_enter";
-         signal: "enter";
-         source: "";
+         signal: "etk,state,enter";
+         source: "etk";
          GLINT_ACTION
       }
       program {
          name: "button_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          GLINT_ACTION
          after: "button_focus_prog";
       }
@@ -85,26 +85,26 @@ group {
       }
       program {
          name: "button_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_GLOW_ACTION
       }
       program {
-         name: "drag_enter";
+         name: "button_drag_enter";
          signal: "drag_enter";
-         source: "";
+         source: "etk";
          DRAG_ENTER_ACTION
       }
       program {
-         name: "drag_leave";
+         name: "button_drag_leave";
          signal: "drag_leave";
-         source: "";
+         source: "etk";
          DRAG_LEAVE_ACTION
       }
       program {
-         name: "drag_drop";
+         name: "button_drag_drop";
          signal: "drag_drop";
-         source: "";
+         source: "etk";
          DRAG_LEAVE_ACTION
       }
       GLINT_PROGRAM

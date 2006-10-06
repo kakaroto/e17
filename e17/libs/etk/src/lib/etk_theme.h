@@ -3,7 +3,8 @@
 #define _ETK_THEME_H_
 
 /**
- * @defgroup Etk_Theme Etk_Theme
+ * @defgroup Etk_Theme The theme system of Etk
+ * @brief The theme system of Etk
  * @{
  */
 
@@ -13,17 +14,17 @@
 void etk_theme_init();
 void etk_theme_shutdown();
 
-const char *etk_theme_widget_theme_get();
-Etk_Bool etk_theme_widget_theme_set(const char *theme_name);
-const char *etk_theme_default_widget_theme_get();
-Evas_List *etk_theme_widget_theme_available_get();
+const char *etk_theme_widget_get();
+Etk_Bool    etk_theme_widget_set(const char *theme_name);
+Evas_List  *etk_theme_widget_available_themes_get();
 
-const char *etk_theme_icon_theme_get();
-Etk_Bool etk_theme_icon_theme_set(const char *theme_name);
-const char *etk_theme_default_icon_theme_get();
+const char *etk_theme_icon_get();
+Etk_Bool    etk_theme_icon_set(const char *theme_name);
+Evas_List  *etk_theme_icon_available_themes_get();
 
-Evas_Object *etk_theme_object_load(Evas *evas, const char *filename, const char *group);
-Evas_Object *etk_theme_object_load_from_parent(Evas *evas, Etk_Widget *theme_parent, const char *filename, const char *group);
+Etk_Bool etk_theme_group_exists(const char *file, const char *group, const char *parent_group);
+Etk_Bool etk_theme_edje_object_set(Evas_Object *object, const char *file, const char *group, const char *parent_group);
+Etk_Bool etk_theme_edje_object_set_from_parent(Evas_Object *object, const char *group, Etk_Widget *parent);
 
 /** @} */
 

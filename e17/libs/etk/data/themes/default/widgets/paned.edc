@@ -1,5 +1,5 @@
 group {
-   name: "hpaned/separator";
+   name: "etk/hpaned/separator";
    min: 7 60;
    parts {
       part {
@@ -73,9 +73,6 @@ group {
       PANED_ARROW("right_arrow4", 66, 6, 20, 28, "handle", "right")
    }
    programs {
-      PANED_ARROWS_PROG("left")
-      PANED_ARROWS_PROG("right")
-
       program {
          name: "separator_in";
          signal: "mouse,in";
@@ -88,11 +85,13 @@ group {
          source: "separator";
          PANED_ARROWS_HIDE_ACTION("left", "right")
       }
+      PANED_ARROWS_PROG("left")
+      PANED_ARROWS_PROG("right")
    }
 }
 
 group {
-   name: "vpaned/separator";
+   name: "etk/vpaned/separator";
    min: 60 7;
    parts {
       part {
@@ -166,9 +165,6 @@ group {
       PANED_ARROW("down_arrow4", 6, 66, 28, 20, "handle", "down")
    }
    programs {
-      PANED_ARROWS_PROG("up")
-      PANED_ARROWS_PROG("down")
-
       program {
          name: "separator_in";
          signal: "mouse,in";
@@ -181,5 +177,7 @@ group {
          source: "separator";
          PANED_ARROWS_HIDE_ACTION("up", "down")
       }
+      PANED_ARROWS_PROG("up")
+      PANED_ARROWS_PROG("down")
    }
 }

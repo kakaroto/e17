@@ -7,12 +7,13 @@
 
 /**
  * @defgroup Etk_Editable Etk_Editable
- * @brief An editable object is an evas smart object that display a single-line text
- * and allows the user to select and edit it. It is use by widgets such as entry, spinner, ...
+ * @brief An editable object is an evas smart-object that displays a single-line text and
+ * allows the user to select and edit it. It is used by widgets such as the entry, the spinner, ...
  * @{
  */
 
 Evas_Object *etk_editable_add(Evas *evas);
+void         etk_editable_theme_set(Evas_Object *editable, const char *file, const char *group);
 
 void     etk_editable_password_mode_set(Evas_Object *editable, Etk_Bool password_mode);
 Etk_Bool etk_editable_password_mode_get(Evas_Object *editable);
@@ -39,10 +40,10 @@ void etk_editable_selection_move_to_start(Evas_Object *editable);
 void etk_editable_selection_move_to_end(Evas_Object *editable);
 void etk_editable_selection_move_left(Evas_Object *editable);
 void etk_editable_selection_move_right(Evas_Object *editable);
-void etk_editable_selection_show(Evas_Object *editable);
-void etk_editable_selection_hide(Evas_Object *editable);
 void etk_editable_select_all(Evas_Object *editable);
 void etk_editable_unselect_all(Evas_Object *editable);
+void etk_editable_selection_show(Evas_Object *editable);
+void etk_editable_selection_hide(Evas_Object *editable);
 
 int  etk_editable_pos_get_from_coords(Evas_Object *editable, int x, int y);
 void etk_editable_char_size_get(Evas_Object *editable, int *w, int *h);

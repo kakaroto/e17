@@ -14,6 +14,7 @@
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Separator
  * @return Returns the type of an Etk_Separator
  */
@@ -28,6 +29,7 @@ Etk_Type *etk_separator_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_HSeparator
  * @return Returns the type of an Etk_HSeparator
  */
@@ -42,6 +44,7 @@ Etk_Type *etk_hseparator_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_VSeparator
  * @return Returns the type of an Etk_VSeparator
  */

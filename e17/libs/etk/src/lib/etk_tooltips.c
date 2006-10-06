@@ -77,7 +77,7 @@ void etk_tooltips_shutdown()
  */ 
 void etk_tooltips_enable()
 {
-   _etk_tooltips_enabled = ETK_TRUE;
+   //_etk_tooltips_enabled = ETK_TRUE;
 }
 
 /**
@@ -190,7 +190,7 @@ void etk_tooltips_pop_up(Etk_Widget *widget)
    const char *text = NULL;
    int x, y;
    char *key;
-   Etk_Toplevel_Widget *toplevel;
+   Etk_Toplevel *toplevel;
    Evas *evas;
    int pt_x, pt_y;
    int win_x, win_y;

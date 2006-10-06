@@ -36,6 +36,7 @@ static Etk_Signal *_etk_text_view_signals[ETK_TEXT_VIEW_NUM_SIGNALS];
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Text_View
  * @return Returns the type of an Etk_Text_View
  */

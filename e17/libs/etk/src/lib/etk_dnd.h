@@ -55,9 +55,6 @@ struct _Etk_Selection_Data_Targets
    char **targets;
    int num_targets;
 };
-
-Etk_Bool etk_dnd_init();  
-void etk_dnd_shutdown();
   
 /** @} */
 

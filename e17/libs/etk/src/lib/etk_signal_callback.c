@@ -84,8 +84,8 @@ void etk_signal_callback_call_valist(Etk_Signal_Callback *callback, Etk_Object *
 {
    Etk_Marshaller marshaller;
 
-   if (!callback || !callback->callback || !callback->signal ||
-      !object || !(marshaller = etk_signal_marshaller_get(callback->signal)))
+   if (!callback || !callback->callback || !callback->signal
+      || !object || !(marshaller = etk_signal_marshaller_get(callback->signal)))
    {
       return;
    }

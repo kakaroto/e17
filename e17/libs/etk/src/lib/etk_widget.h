@@ -20,7 +20,7 @@
 
 
 /**
- * @brief The code corresponding to the error that occurs during the last call of
+ * @brief The code corresponding to the error that occured during the last call of
  * etk_widget_swallow_widget() or etk_widget_swallow_object()
  */
 typedef enum Etk_Widget_Swallow_Error
@@ -43,7 +43,7 @@ struct _Etk_Widget
    Etk_Object object;
 
    char *name;
-   Etk_Toplevel_Widget *toplevel_parent;
+   Etk_Toplevel *toplevel_parent;
    Etk_Widget *parent;
    void *child_properties;
    Evas_List *children;
@@ -53,6 +53,7 @@ struct _Etk_Widget
    int theme_min_width, theme_min_height;
    char *theme_file;
    char *theme_group;
+   char *theme_group_full;
    Etk_Widget *theme_parent;
    Evas_List *theme_children;
 
@@ -65,8 +66,8 @@ struct _Etk_Widget
    int left_inset, right_inset, top_inset, bottom_inset;
    Etk_Geometry geometry;
    Etk_Geometry inner_geometry;
-   Etk_Size requested_size;             /* The size requested by the user */
-   Etk_Size last_size_requisition;      /* The result of the last call to etk_widget_size_request() */
+   Etk_Size requested_size;
+   Etk_Size last_calced_size;
    void (*size_request)(Etk_Widget *widget, Etk_Size *size_requisition);
    void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry);
 
@@ -96,7 +97,7 @@ struct _Etk_Widget
    unsigned int realized : 1;
    unsigned int swallowed : 1;
    unsigned int visible : 1;
-   unsigned int visibility_locked : 1;
+   unsigned int internal : 1;
    unsigned int repeat_mouse_events : 1;
    unsigned int pass_mouse_events : 1;
    unsigned int has_event_object : 1;
@@ -122,12 +123,13 @@ const char *etk_widget_name_get(Etk_Widget *widget);
 void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
 void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
 
-Etk_Toplevel_Widget *etk_widget_toplevel_parent_get(Etk_Widget *widget);
-Evas                *etk_widget_toplevel_evas_get(Etk_Widget *widget);
-void                 etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent);
-void                 etk_widget_parent_set_full(Etk_Widget *widget, Etk_Widget *parent, Etk_Bool remove_from_container);
-Etk_Widget          *etk_widget_parent_get(Etk_Widget *widget);
+Etk_Toplevel *etk_widget_toplevel_parent_get(Etk_Widget *widget);
+Evas         *etk_widget_toplevel_evas_get(Etk_Widget *widget);
+void          etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent);
+void          etk_widget_parent_set_full(Etk_Widget *widget, Etk_Widget *parent, Etk_Bool remove_from_container);
+Etk_Widget   *etk_widget_parent_get(Etk_Widget *widget);
 
+void        etk_widget_theme_set(Etk_Widget *widget, const char *theme_file, const char *theme_group);
 void        etk_widget_theme_file_set(Etk_Widget *widget, const char *theme_file);
 const char *etk_widget_theme_file_get(Etk_Widget *widget);
 void        etk_widget_theme_group_set(Etk_Widget *widget, const char *theme_group);
@@ -142,13 +144,14 @@ Etk_Bool etk_widget_repeat_mouse_events_get(Etk_Widget *widget);
 void     etk_widget_pass_mouse_events_set(Etk_Widget *widget, Etk_Bool pass_mouse_events);
 Etk_Bool etk_widget_pass_mouse_events_get(Etk_Widget *widget);
 
+void     etk_widget_internal_set(Etk_Widget *widget, Etk_Bool internal);
+Etk_Bool etk_widget_internal_get(Etk_Widget *widget);
+
 void     etk_widget_show(Etk_Widget *widget);
 void     etk_widget_show_all(Etk_Widget *widget);
 void     etk_widget_hide(Etk_Widget *widget);
 void     etk_widget_hide_all(Etk_Widget *widget);
 Etk_Bool etk_widget_is_visible(Etk_Widget *widget);
-void     etk_widget_visibility_locked_set(Etk_Widget *widget, Etk_Bool visibility_locked);
-Etk_Bool etk_widget_visibility_locked_get(Etk_Widget *widget);
 
 void etk_widget_raise(Etk_Widget *widget);
 void etk_widget_lower(Etk_Widget *widget);
@@ -160,10 +163,11 @@ void etk_widget_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition, Etk_Bool hidden_has_no_size);
 void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
-void etk_widget_enter(Etk_Widget *widget);
-void etk_widget_leave(Etk_Widget *widget);
-void etk_widget_focus(Etk_Widget *widget);
-void etk_widget_unfocus(Etk_Widget *widget);
+void     etk_widget_enter(Etk_Widget *widget);
+void     etk_widget_leave(Etk_Widget *widget);
+void     etk_widget_focus(Etk_Widget *widget);
+void     etk_widget_unfocus(Etk_Widget *widget);
+Etk_Bool etk_widget_focused_get(Etk_Widget *widget);
 
 void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name, Etk_Bool size_recalc);
 void etk_widget_theme_part_text_set(Etk_Widget *widget, const char *part_name, const char *text);
@@ -208,9 +212,6 @@ void etk_widget_drag_enter(Etk_Widget *widget);
 void etk_widget_drag_leave(Etk_Widget *widget);
 void etk_widget_drag_begin(Etk_Widget *widget);
 void etk_widget_drag_end(Etk_Widget *widget);
-
-void etk_widget_selection_received(Etk_Widget *widget, Etk_Event_Selection_Request *event);
-void etk_widget_clipboard_received(Etk_Widget *widget, Etk_Event_Selection_Request *event);
 
 /** @} */
 

@@ -28,8 +28,9 @@ static void _etk_slider_range_changed_cb(Etk_Object *object, const char *propert
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Slider
- * @return Returns the type on an Etk_Slider
+ * @return Returns the type of an Etk_Slider
  */
 Etk_Type *etk_slider_type_get()
 {
@@ -42,8 +43,9 @@ Etk_Type *etk_slider_type_get()
 }
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_HSlider
- * @return Returns the type on an Etk_HSlider
+ * @return Returns the type of an Etk_HSlider
  */
 Etk_Type *etk_hslider_type_get()
 {
@@ -56,18 +58,9 @@ Etk_Type *etk_hslider_type_get()
 }
 
 /**
- * @brief Creates a new horizontal slider
- * @return Returns the new horizontal slider widget
- */
-Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment)
-{
-   return etk_widget_new(ETK_HSLIDER_TYPE, "theme_group", "hslider", "focusable", ETK_TRUE, "lower", lower, "upper", upper,
-      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
-}
-
-/**
+ * @internal
  * @brief Gets the type of an Etk_VSlider
- * @return Returns the type on an Etk_VSlider
+ * @return Returns the type of an Etk_VSlider
  */
 Etk_Type *etk_vslider_type_get()
 {
@@ -77,6 +70,16 @@ Etk_Type *etk_vslider_type_get()
       vslider_type = etk_type_new("Etk_VSlider", ETK_SLIDER_TYPE, sizeof(Etk_VSlider), NULL, NULL);
 
    return vslider_type;
+}
+
+/**
+ * @brief Creates a new horizontal slider
+ * @return Returns the new horizontal slider widget
+ */
+Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment)
+{
+   return etk_widget_new(ETK_HSLIDER_TYPE, "theme_group", "hslider", "focusable", ETK_TRUE, "lower", lower, "upper", upper,
+      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**
@@ -125,7 +128,7 @@ static void _etk_slider_realize_cb(Etk_Object *object, void *data)
       return;
 
    _etk_slider_value_changed_handler(ETK_RANGE(object), ETK_RANGE(object)->value);
-   edje_object_signal_callback_add(theme_object, "drag*", "drag", _etk_slider_cursor_dragged_cb, object);
+   edje_object_signal_callback_add(theme_object, "drag*", "etk.dragable.slider", _etk_slider_cursor_dragged_cb, object);
 }
 
 /* Called when the user presses a key */
@@ -184,9 +187,9 @@ static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const ch
    else if (strcmp(emission, "drag") == 0)
    {
       if (ETK_IS_HSLIDER(range))
-         edje_object_part_drag_value_get(obj, "drag", &v, NULL);
+         edje_object_part_drag_value_get(obj, "etk.dragable.slider", &v, NULL);
       else
-         edje_object_part_drag_value_get(obj, "drag", NULL, &v);
+         edje_object_part_drag_value_get(obj, "etk.dragable.slider", NULL, &v);
       etk_range_value_set(range, range->lower + v * (range->upper - range->lower));
    }
 }
@@ -209,9 +212,9 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
    if (!slider->dragging)
    {
       if (ETK_IS_HSLIDER(slider))
-         edje_object_part_drag_value_set(theme_object, "drag", percent, 0.0);
+         edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", percent, 0.0);
       else
-         edje_object_part_drag_value_set(theme_object, "drag", 0.0, percent);
+         edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", 0.0, percent);
    }
 }
 
@@ -231,9 +234,9 @@ static void _etk_slider_range_changed_cb(Etk_Object *object, const char *propert
    else
       percent = 0.0;
    if (ETK_IS_HSLIDER(range))
-      edje_object_part_drag_value_set(theme_object, "drag", percent, 0.0);
+      edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", percent, 0.0);
    else
-      edje_object_part_drag_value_set(theme_object, "drag", 0.0, percent);
+      edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", 0.0, percent);
 }
 
 /** @} */

@@ -1,31 +1,40 @@
 /** @file etk_toolbar.c */
-
 #include "etk_toolbar.h"
 #include <stdlib.h>
-
-#include "etk_widget.h"
-#include "etk_signal.h"
+#include "etk_box.h"
 #include "etk_button.h"
+#include "etk_tool_button.h"
 #include "etk_separator.h"
+#include "etk_theme.h"
+#include "etk_signal.h"
+#include "etk_signal_callback.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Toolbar
  * @{
  */
 
+#define ETK_IS_TOOL_ITEM(obj) \
+   (ETK_IS_TOOL_BUTTON(obj) || ETK_IS_TOOL_TOGGLE_BUTTON(obj))
+
 enum Etk_Window_Property_Id
 {
    ETK_TOOLBAR_ORIENTATION_PROPERTY,
-   ETK_TOOLBAR_STYLE_PROPERTY, 
-   ETK_TOOLBAR_STOCK_SIZE_PROPERTY     
-};     
+   ETK_TOOLBAR_STYLE_PROPERTY,
+   ETK_TOOLBAR_STOCK_SIZE_PROPERTY
+};
 
 static void _etk_toolbar_constructor(Etk_Toolbar *toolbar);
-static void _etk_toolbar_destructor(Etk_Toolbar *toolbar);
 static void _etk_toolbar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toolbar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toolbar_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_toolbar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
+void _etk_toolbar_child_add(Etk_Container *container, Etk_Widget *widget);
+void _etk_toolbar_child_remove(Etk_Container *container, Etk_Widget *widget);
+Evas_List *_etk_toolbar_children_get(Etk_Container *container);
+static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data);
+static void _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
 
 /**************************
  *
@@ -37,188 +46,134 @@ static void _etk_toolbar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry
  * @brief Gets the type of an Etk_Toolbar
  * @return Returns the type of an Etk_Toolbar
  */
-Etk_Type *etk_toolbar_type_get()
+Etk_Type *etk_toolbar_type_get(void)
 {
    static Etk_Type *toolbar_type = NULL;
 
    if (!toolbar_type)
    {
-      toolbar_type = etk_type_new("Etk_Toolbar", ETK_WIDGET_TYPE, sizeof(Etk_Toolbar),
-         ETK_CONSTRUCTOR(_etk_toolbar_constructor), ETK_DESTRUCTOR(_etk_toolbar_destructor));
-
-      etk_type_property_add(toolbar_type, "orientation", ETK_TOOLBAR_ORIENTATION_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_HORIZ));
-      etk_type_property_add(toolbar_type, "style", ETK_TOOLBAR_STYLE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_BOTH_VERT));
-      etk_type_property_add(toolbar_type, "stock_size", ETK_TOOLBAR_STOCK_SIZE_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_STOCK_SMALL));
+      toolbar_type = etk_type_new("Etk_Toolbar", ETK_CONTAINER_TYPE, sizeof(Etk_Toolbar),
+         ETK_CONSTRUCTOR(_etk_toolbar_constructor), NULL);
+      
+      etk_type_property_add(toolbar_type, "orientation", ETK_TOOLBAR_ORIENTATION_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_HORIZ));
+      etk_type_property_add(toolbar_type, "style", ETK_TOOLBAR_STYLE_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_BOTH_VERT));
+      etk_type_property_add(toolbar_type, "stock_size", ETK_TOOLBAR_STOCK_SIZE_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_MEDIUM));
       
       toolbar_type->property_set = _etk_toolbar_property_set;
       toolbar_type->property_get = _etk_toolbar_property_get;
    }
-
+   
    return toolbar_type;
 }
 
 /**
- * @brief Creates a new toolbar
+ * @brief Creates a new toolbar (horizontal by default)
+ * @return Returns the new toolbar
  */
-Etk_Widget *etk_toolbar_new()
+Etk_Widget *etk_toolbar_new(void)
 {
-   return etk_widget_new(ETK_TOOLBAR_TYPE, "theme_group", "toolbar", NULL);
+   return etk_widget_new(ETK_TOOLBAR_TYPE, "theme_group", "htoolbar", NULL);
 }
 
 /**
  * @brief Appends an item to the start of the toolbar
- * @param toolbar the toolbar
+ * @param toolbar a toolbar
  * @param widget the item to append
  */
 void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget)
 {
    if (!toolbar || !widget)
       return;
-   
-   if (ETK_IS_BUTTON(widget))
-   {
-      Etk_Button_Style button_style;
-           
-      switch(toolbar->style)
-      {
-         case ETK_TOOLBAR_ICONS:
-            button_style = ETK_BUTTON_ICON;
-            break;
-         case ETK_TOOLBAR_TEXT:
-            button_style = ETK_BUTTON_TEXT;
-            break;
-         case ETK_TOOLBAR_BOTH_VERT:
-            button_style = ETK_BUTTON_BOTH_VERT;
-            break;
-         case ETK_TOOLBAR_BOTH_HORIZ:
-            button_style = ETK_BUTTON_BOTH_HORIZ;
-            break;
-         default:
-            button_style = ETK_BUTTON_ICON;
-            break;      
-      }      
-      etk_button_style_set(ETK_BUTTON(widget), button_style);
-      etk_button_stock_size_set(ETK_BUTTON(widget), toolbar->stock_size);
-   }
    etk_box_append(ETK_BOX(toolbar->box), widget, ETK_BOX_START, ETK_BOX_NONE, 0);
 }
 
 /**
  * @brief Prepends an item to the end of the toolbar
- * @param toolbar the toolbar
+ * @param toolbar a toolbar
  * @param widget the item to append
  */
 void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget)
 {
    if (!toolbar || !widget)
       return;
-   
-   if (ETK_IS_BUTTON(widget))
-   {
-      Etk_Button_Style button_style;
-           
-      switch(toolbar->style)
-      {
-         case ETK_TOOLBAR_ICONS:
-            button_style = ETK_BUTTON_ICON;
-            break;
-         case ETK_TOOLBAR_TEXT:
-            button_style = ETK_BUTTON_TEXT;
-            break;
-         case ETK_TOOLBAR_BOTH_VERT:
-            button_style = ETK_BUTTON_BOTH_VERT;
-            break;
-         case ETK_TOOLBAR_BOTH_HORIZ:
-            button_style = ETK_BUTTON_BOTH_HORIZ;
-            break;
-         default:
-            button_style = ETK_BUTTON_ICON;
-            break;      
-      }      
-      etk_button_style_set(ETK_BUTTON(widget), button_style);
-   }   
    etk_box_prepend(ETK_BOX(toolbar->box), widget, ETK_BOX_START, ETK_BOX_NONE, 0);
 }
 
 /**
  * @brief Sets the toolbar's orientation (horizontal or vertical)
- * @param toolbar the toolbar
- * @param orientation the orientation
+ * @param toolbar a toolbar
+ * @param orientation the orientation to set
  */
 void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation orientation)
 {
-   Evas_List *children;
-   Evas_List *l;
+   Evas_List *children, *l;
+   Etk_Widget *prev_box;
    
    if (!toolbar || toolbar->orientation == orientation)
       return;
    
-   children = etk_container_children_get(ETK_CONTAINER(toolbar->box));
-      
-   for (l = children; l; l = l->next)
-      etk_container_remove(ETK_CONTAINER(toolbar->box), ETK_WIDGET(l->data));
-   
-   etk_object_destroy(ETK_OBJECT(toolbar->box));
-   
+   toolbar->reorientating = ETK_TRUE;
+   prev_box = toolbar->box;
    toolbar->orientation = orientation;
    if (toolbar->orientation == ETK_TOOLBAR_VERT)
       toolbar->box = etk_vbox_new(ETK_FALSE, 0);
    else
-      toolbar->box = etk_hbox_new(ETK_FALSE, 0);           
-   
-   etk_widget_parent_set(toolbar->box, ETK_WIDGET(toolbar));
-   etk_widget_visibility_locked_set(ETK_WIDGET(toolbar->box), ETK_TRUE);
+      toolbar->box = etk_hbox_new(ETK_FALSE, 0);
+   etk_widget_internal_set(toolbar->box, ETK_TRUE);
    etk_widget_show(toolbar->box);
    
+   etk_signal_connect("child_added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
+   etk_signal_connect("child_removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
+   
+   
+   children = etk_container_children_get(ETK_CONTAINER(prev_box));
    for (l = children; l; l = l->next)
-   {
-      if (ETK_IS_VSEPARATOR(l->data) && toolbar->orientation == ETK_TOOLBAR_HORIZ)
-      {
-	 etk_object_destroy(ETK_OBJECT(l->data));
-	 l->data = etk_hseparator_new();
-      } 
-      else if (ETK_IS_HSEPARATOR(l->data) && toolbar->orientation == ETK_TOOLBAR_VERT)
-      {
-	 etk_object_destroy(ETK_OBJECT(l->data));
-	 l->data = etk_vseparator_new();
-      }
-      etk_box_append(ETK_BOX(toolbar->box), ETK_WIDGET(l->data), ETK_BOX_START, ETK_BOX_NONE, 0);
-   }
+      etk_toolbar_append(toolbar, ETK_WIDGET(l->data));
+   evas_list_free(children);
+   etk_object_destroy(ETK_OBJECT(prev_box));
+   
+   if (toolbar->orientation == ETK_TOOLBAR_VERT)
+      etk_widget_theme_group_set(ETK_WIDGET(toolbar), "vtoolbar");
+   else
+      etk_widget_theme_group_set(ETK_WIDGET(toolbar), "htoolbar");
+   etk_widget_parent_set(toolbar->box, ETK_WIDGET(toolbar));
+   
+   toolbar->reorientating = ETK_FALSE;
+   etk_object_notify(ETK_OBJECT(toolbar), "orientation");
 }
 
 /**
  * @brief Gets the toolbar's orientation (horizontal or vertical)
- * @param toolbar the toolbar
- * @return the orientation
+ * @param toolbar a toolbar
+ * @return Returns the orientation of the toolbar
  */
 Etk_Toolbar_Orientation etk_toolbar_orientation_get(Etk_Toolbar *toolbar)
 {
    if (!toolbar)
       return ETK_FALSE;
-   
    return toolbar->orientation;
 }
 
 /**
- * @brief Sets the toolbar's style (icons, text, both, both vertical)
- * @param toolbar the toolbar
- * @param style the style
+ * @brief Sets the style of toolbar's tool-buttons (icon, text, both vertically, both horizontally)
+ * @param toolbar a toolbar
+ * @param style the style to set
  */
 void etk_toolbar_style_set(Etk_Toolbar *toolbar, Etk_Toolbar_Style style)
 {
-   Evas_List *children;
-   Evas_List *l;
+   Evas_List *children, *l;
    Etk_Button_Style button_style;
    
    if (!toolbar || toolbar->style == style)
       return;
    
-   children = etk_container_children_get(ETK_CONTAINER(toolbar->box));
-      
    toolbar->style = style;
-   switch(style)
+   switch (style)
    {
-      case ETK_TOOLBAR_ICONS:
+      case ETK_TOOLBAR_ICON:
          button_style = ETK_BUTTON_ICON;
          break;
       case ETK_TOOLBAR_TEXT:
@@ -231,73 +186,69 @@ void etk_toolbar_style_set(Etk_Toolbar *toolbar, Etk_Toolbar_Style style)
          button_style = ETK_BUTTON_BOTH_HORIZ;
          break;
       default:
-         button_style = ETK_BUTTON_ICON;
+         button_style = ETK_BUTTON_BOTH_VERT;
          break;      
    }
+   
+   children = etk_container_children_get(ETK_CONTAINER(toolbar->box));
    for (l = children; l; l = l->next)
    {
-      if (ETK_IS_BUTTON(l->data))
+      if (ETK_IS_TOOL_ITEM(l->data))
 	 etk_button_style_set(ETK_BUTTON(l->data), button_style);
    }
+   evas_list_free(children);
+   
+   etk_object_notify(ETK_OBJECT(toolbar), "style");
 }
 
 /**
- * @brief Gets the toolbar's style (icons, text, both, both vertical)
- * @param toolbar the toolbar
- * @return the style
+ * @brief Gets the style of toolbar's tool-buttons (icon, text, both vertically, both horizontally)
+ * @param toolbar a toolbar
+ * @return Returns the style of toolbar's tool-buttons
  */
 Etk_Toolbar_Style etk_toolbar_style_get(Etk_Toolbar *toolbar)
 {
    if (!toolbar)
       return ETK_TOOLBAR_DEFAULT;
-   
    return toolbar->style;
 }
 
 /**
- * @brief Sets the toolbar's stock size
+ * @brief Sets the stock-size of the toolbar's tool-buttons
  * @param toolbar a toolbar
- * @param style the stock size
+ * @param size the stock-size to use
  */
 void etk_toolbar_stock_size_set(Etk_Toolbar *toolbar, Etk_Stock_Size size)
 {
-   Evas_List *child;
-   Etk_Button *button;
+   Evas_List *children, *l;
 
-   if (!toolbar)
-     return;
-
-   if (toolbar->stock_size == size)
-     return;
+   if (!toolbar || toolbar->stock_size == size)
+      return;
 
    toolbar->stock_size = size;
-
-   child = etk_container_children_get(ETK_CONTAINER(toolbar->box));
-
-   while (child)
+   children = etk_container_children_get(ETK_CONTAINER(toolbar->box));
+   for (l = children; l; l = l->next)
    {
-      if (ETK_IS_BUTTON(evas_list_data(child)))
-      {
-	 button = ETK_BUTTON(evas_list_data(child));
-	 etk_button_stock_size_set(button, size);
-      }
-      child = evas_list_next(child);
+      if (ETK_IS_TOOL_ITEM(l->data))
+	 etk_button_stock_size_set(ETK_BUTTON(l->data), size);
    }
+   evas_list_free(children);
+   
    etk_object_notify(ETK_OBJECT(toolbar), "stock_size");
 }
 
 /**
- * @brief Gets the size of the toolbar's stock
+ * @brief Gets the stock-size of the toolbar's tool-buttons
  * @param toolbar a toolbar
- * @return Returns the toolbar's stock size
+ * @return Returns the stock-size of the toolbar's tool-buttons
  */
 Etk_Stock_Size etk_toolbar_stock_size_get(Etk_Toolbar *toolbar)
 {
    if (!toolbar)
-      return ETK_STOCK_SMALL;
-
+      return ETK_STOCK_MEDIUM;
    return toolbar->stock_size;
 }
+
 /**************************
  *
  * Etk specific functions
@@ -312,25 +263,22 @@ static void _etk_toolbar_constructor(Etk_Toolbar *toolbar)
 
    toolbar->style = ETK_TOOLBAR_BOTH_VERT;
    toolbar->orientation = ETK_TOOLBAR_HORIZ;
-   toolbar->stock_size = ETK_STOCK_SMALL;
-      
+   toolbar->stock_size = ETK_STOCK_MEDIUM;
+   toolbar->reorientating = ETK_FALSE;
+   
    ETK_WIDGET(toolbar)->size_request = _etk_toolbar_size_request;
    ETK_WIDGET(toolbar)->size_allocate = _etk_toolbar_size_allocate;
+   ETK_CONTAINER(toolbar)->child_add = _etk_toolbar_child_add;
+   ETK_CONTAINER(toolbar)->child_remove = _etk_toolbar_child_remove;
+   ETK_CONTAINER(toolbar)->children_get = _etk_toolbar_children_get;
 
    toolbar->box = etk_hbox_new(ETK_FALSE, 0);
    etk_widget_parent_set(toolbar->box, ETK_WIDGET(toolbar));
-   etk_widget_visibility_locked_set(ETK_WIDGET(toolbar->box), ETK_TRUE);
+   etk_widget_internal_set(ETK_WIDGET(toolbar->box), ETK_TRUE);
    etk_widget_show(toolbar->box);
-}
-
-/* Destroys the toolbar */
-static void _etk_toolbar_destructor(Etk_Toolbar *toolbar)
-{
-   if (!toolbar)
-     return;
    
-   etk_object_destroy(ETK_OBJECT(toolbar->box));
-   toolbar->box = NULL;
+   etk_signal_connect("child_added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
+   etk_signal_connect("child_removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -348,7 +296,7 @@ static void _etk_toolbar_property_set(Etk_Object *object, int property_id, Etk_P
          break;
       case ETK_TOOLBAR_STYLE_PROPERTY:
          etk_toolbar_style_set(toolbar, etk_property_value_int_get(value));
-         break;      
+         break;
       case ETK_TOOLBAR_STOCK_SIZE_PROPERTY:
          etk_toolbar_stock_size_set(toolbar, etk_property_value_int_get(value));
          break;      
@@ -375,20 +323,19 @@ static void _etk_toolbar_property_get(Etk_Object *object, int property_id, Etk_P
          break;      
       case ETK_TOOLBAR_STOCK_SIZE_PROPERTY:
          etk_property_value_int_set(value, toolbar->stock_size);
-         break;      
+         break;
       default:
          break;
    }
 }
 
-/* Resizes the toolbar  */
+/* Calculates the ideal size of the toolbar */
 static void _etk_toolbar_size_request(Etk_Widget *widget, Etk_Size *size)
 {
    Etk_Toolbar *toolbar;
    
    if (!(toolbar = ETK_TOOLBAR(widget)) || !size)
       return;
-         
    etk_widget_size_request(ETK_WIDGET(toolbar->box), size);
 }
 
@@ -399,12 +346,127 @@ static void _etk_toolbar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry
    Etk_Size size;
    
    if (!(toolbar = ETK_TOOLBAR(widget)))
-      return;   
+      return;
    
    etk_widget_size_request(toolbar->box, &size);
    geometry.w = ETK_MAX(geometry.w, size.w);
-   geometry.h = ETK_MAX(geometry.h, size.h);
    etk_widget_size_allocate(ETK_WIDGET(toolbar->box), geometry);
+}
+
+/* Adds a child to the toolbar */
+void _etk_toolbar_child_add(Etk_Container *container, Etk_Widget *widget)
+{
+   Etk_Toolbar *toolbar;
+   
+   if (!(toolbar = ETK_TOOLBAR(container)) || !widget)
+      return;
+   etk_toolbar_append(toolbar, widget);
+}
+
+/* Removes the child from the toolbar */
+void _etk_toolbar_child_remove(Etk_Container *container, Etk_Widget *widget)
+{
+   Etk_Toolbar *toolbar;
+   
+   if (!(toolbar = ETK_TOOLBAR(container)) || !widget)
+      return;
+   etk_container_remove(ETK_CONTAINER(toolbar->box), widget);
+}
+
+/* Gets the list of the children of the toolbar */
+Evas_List *_etk_toolbar_children_get(Etk_Container *container)
+{
+   Etk_Toolbar *toolbar;
+   
+   if (!(toolbar = ETK_TOOLBAR(container)))
+      return NULL;
+   return etk_container_children_get(ETK_CONTAINER(toolbar->box));
+}
+
+/**************************
+ *
+ * Callbacks and handlers
+ *
+ **************************/
+
+/* Called when a widget is added to the toolbar's box */
+static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data)
+{
+   Etk_Toolbar *toolbar;
+   
+   if (!(toolbar = ETK_TOOLBAR(data)) || !child)
+      return;
+   
+   /* Sets the style and the stock size if the new child is a tool-item */
+   if (ETK_IS_TOOL_ITEM(child))
+   {
+      Etk_Button_Style button_style;
+      
+      switch (toolbar->style)
+      {
+         case ETK_TOOLBAR_ICON:
+            button_style = ETK_BUTTON_ICON;
+            break;
+         case ETK_TOOLBAR_TEXT:
+            button_style = ETK_BUTTON_TEXT;
+            break;
+         case ETK_TOOLBAR_BOTH_VERT:
+            button_style = ETK_BUTTON_BOTH_VERT;
+            break;
+         case ETK_TOOLBAR_BOTH_HORIZ:
+            button_style = ETK_BUTTON_BOTH_HORIZ;
+            break;
+         default:
+            button_style = ETK_BUTTON_BOTH_VERT;
+            break;
+      }
+      etk_button_style_set(ETK_BUTTON(child), button_style);
+      etk_button_stock_size_set(ETK_BUTTON(child), toolbar->stock_size);
+   }
+   /* Reorientate the separators */
+   else if (toolbar->reorientating
+      && (((toolbar->orientation == ETK_TOOLBAR_HORIZ) && ETK_IS_VSEPARATOR(child))
+         || ((toolbar->orientation == ETK_TOOLBAR_VERT) && ETK_IS_HSEPARATOR(child))))
+   {
+      Etk_Bool visible;
+      Etk_Box_Fill_Policy policy;
+      Etk_Box_Group group;
+      int pos, padding;
+      
+      visible = etk_widget_is_visible(child);
+      etk_box_child_position_get(ETK_BOX(toolbar->box), child, &group, &pos);
+      etk_box_child_packing_get(ETK_BOX(toolbar->box), child, &policy, &padding);
+      
+      etk_object_destroy(ETK_OBJECT(child));
+      if (toolbar->orientation == ETK_TOOLBAR_HORIZ)
+         child = etk_vseparator_new();
+      else
+         child = etk_hseparator_new();
+      
+      etk_box_insert_at(ETK_BOX(toolbar->box), child, group, pos, policy, padding);
+      if (visible)
+         etk_widget_show(child);
+   }
+   
+   if (etk_theme_group_exists(etk_widget_theme_file_get(ETK_WIDGET(toolbar)),
+      etk_widget_theme_group_get(child), etk_widget_theme_group_get(ETK_WIDGET(toolbar))))
+   {
+      etk_widget_theme_parent_set(child, ETK_WIDGET(toolbar));
+   }
+   etk_signal_emit_by_name("child_added", ETK_OBJECT(toolbar), NULL, child);
+}
+
+/* Called when a widget is removed from the toolbar's box */
+static void _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
+{
+   Etk_Toolbar *toolbar;
+   
+   if (!(toolbar = ETK_TOOLBAR(data)) || !child)
+      return;
+   
+   if (etk_widget_theme_parent_get(child) == ETK_WIDGET(toolbar))
+      etk_widget_theme_parent_set(child, NULL);
+   etk_signal_emit_by_name("child_removed", ETK_OBJECT(toolbar), NULL, child);
 }
 
 /** @} */

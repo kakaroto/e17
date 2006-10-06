@@ -30,6 +30,7 @@ static void _etk_message_dialog_property_get(Etk_Object *object, int property_id
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Message_Dialog
  * @return Returns the type of an Etk_Message_Dialog
  */
@@ -217,17 +218,17 @@ static void _etk_message_dialog_constructor(Etk_Message_Dialog *dialog)
 
    dialog->main_area_hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), dialog->main_area_hbox, ETK_FALSE, ETK_FALSE, 4, ETK_FALSE);
-   etk_widget_visibility_locked_set(dialog->main_area_hbox, ETK_TRUE);
+   etk_widget_internal_set(dialog->main_area_hbox, ETK_TRUE);
    etk_widget_show(dialog->main_area_hbox);
    
    dialog->image = etk_image_new_from_stock(ETK_STOCK_DIALOG_INFORMATION, ETK_STOCK_BIG);
    etk_box_append(ETK_BOX(dialog->main_area_hbox), dialog->image, ETK_BOX_START, ETK_BOX_NONE, 3);
-   etk_widget_visibility_locked_set(dialog->image, ETK_TRUE);
+   etk_widget_internal_set(dialog->image, ETK_TRUE);
    etk_widget_show(dialog->image);
 
    dialog->label = etk_label_new(NULL);
    etk_box_append(ETK_BOX(dialog->main_area_hbox), dialog->label, ETK_BOX_START, ETK_BOX_NONE, 2);
-   etk_widget_visibility_locked_set(dialog->label, ETK_TRUE);
+   etk_widget_internal_set(dialog->label, ETK_TRUE);
    etk_widget_show(dialog->label);
 
    dialog->buttons_type = ETK_MESSAGE_DIALOG_NONE;
@@ -308,7 +309,7 @@ static void _etk_message_dialog_property_get(Etk_Object *object, int property_id
  *   - Etk_Widget
  *     - Etk_Container
  *       - Etk_Bin
- *         - Etk_Toplevel_Widget
+ *         - Etk_Toplevel
  *           - Etk_Window
  *             - Etk_Dialog
  *               - Etk_Message_Dialog

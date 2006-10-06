@@ -72,18 +72,12 @@ static Etk_Engine engine_info = {
    NULL, /* mouse_position_get */
    NULL, /* mouse_screen_geometry_get */
    
+   NULL, /* selection_text_set */
+   NULL, /* selection_text_request */
+   NULL, /* selection_clear */
+   
    NULL, /* drag_constructor */
    NULL, /* drag_begin */
-   
-   NULL, /* dnd_init */
-   NULL, /* dnd_shutdown */
-   
-   NULL, /* clipboard_text_request */
-   NULL, /* clipboard_text_set */
-   
-   NULL, /* selection_text_request */
-   NULL, /* selection_text_set */
-   NULL  /* selection_clear */
 };
 
 /**************************

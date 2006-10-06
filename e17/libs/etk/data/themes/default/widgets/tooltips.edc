@@ -1,5 +1,5 @@
 group {
-   name: "tooltip";
+   name: "etk/tooltip";
    data {   
       item: "inset" "5 5 5 5";
    }
@@ -69,10 +69,9 @@ group {
 	 }
       }
       part {
-	 name: "text";
+	 name: "etk.swallow.text";
 	 type: SWALLOW;
-         effect: SHADOW;
-	 description {
+         description {
 	    state: "default" 0.0;
 	    color: 0 0 0 255;
 	    rel1 {

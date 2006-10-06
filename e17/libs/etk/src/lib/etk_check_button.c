@@ -14,6 +14,7 @@
  **************************/
 
 /**
+ * @internal
  * @brief Gets the type of an Etk_Check_Button
  * @return Returns the type of an Etk_Check_Button
  */

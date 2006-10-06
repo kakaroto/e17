@@ -5,7 +5,7 @@
 #include "etk_container.h"
 #include "etk_types.h"
 
-/* TODO: Etk_Bin
+/* TODO/FIXME list:
  - The "swallow" code should be included in Etk_Widget.c
  */
 

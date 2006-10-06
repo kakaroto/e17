@@ -47,6 +47,13 @@ static int _event_input_handler_cb(void *data, int type, void *event);
 static void _mouse_position_get(int *x, int *y);
 static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
 
+/* Etk_Selection functions */
+static void _selection_text_set(Etk_Selection_Type selection, const char *text);
+static void _selection_text_request(Etk_Selection_Type selection, Etk_Widget *target);
+static void _selection_clear(Etk_Selection_Type selection);
+static int _selection_notify_handler_cb(void *data, int type, void *event);
+
+
 /* Etk_Drag functions */
 static void _drag_constructor(Etk_Drag *drag);
 static void _drag_begin(Etk_Drag *drag);
@@ -54,9 +61,7 @@ static int  _drag_mouse_up_cb(void *data, int type, void *event);
 static int  _drag_mouse_move_cb(void *data, int type, void *event);
 
 /* Etk_Dnd functions */
-static Etk_Bool _dnd_init();
-static void _dnd_shutdown();
-static void _dnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list);
+static void _dnd_container_get_widgets_at(Etk_Toplevel *top, int x, int y, int offx, int offy, Evas_List **list);
 static int _dnd_enter_handler(void *data, int type, void *event);
 static int _dnd_position_handler(void *data, int type, void *event);
 static int _dnd_drop_handler(void *data, int type, void *event);
@@ -65,15 +70,6 @@ static int _dnd_selection_handler(void *data, int type, void *event);
 static int _dnd_status_handler(void *data, int type, void *event);
 static int _dnd_finished_handler(void *data, int type, void *event);
 
-/* Etk_Clipboard functions */
-static void _clipboard_text_request(Etk_Widget *widget);
-static void _clipboard_text_set(Etk_Widget *widget, const char *text, int length);
-
-/* Etk_Selection functions */
-static void _selection_text_request(Etk_Widget *widget);
-static void _selection_text_set(Etk_Widget *widget, const char *text, int length);
-static void _selection_clear(void);
-
 /* Private functions */
 static void _window_netwm_state_active_set(Etk_Window *window, Ecore_X_Window_State state, Etk_Bool active);
 static Etk_Bool _window_netwm_state_active_get(Etk_Window *window, Ecore_X_Window_State state);
@@ -81,16 +77,19 @@ static void _event_global_modifiers_locks_wrap(int xmodifiers, Etk_Modifiers *mo
 
 
 /* Private vars */
+static Evas_List *_popup_window_popped_windows = NULL;
+static Ecore_X_Window _popup_window_input_window = 0;
+
 static void (*_event_callback)(Etk_Event_Type event, Etk_Event_Global event_info) = NULL;
 static Ecore_Event_Handler *_event_input_handlers[NUM_INPUT_HANDLERS];
 
-static Evas_List *_popup_window_popped_windows = NULL;
-static Ecore_X_Window _popup_window_input_window = 0;
+static Etk_Widget *_selection_widget = NULL;
+static Ecore_Event_Handler *_selection_notify_handler = NULL;
+
 
 static Ecore_Event_Handler *_drag_mouse_move_handler;
 static Ecore_Event_Handler *_drag_mouse_up_handler;
 
-extern Etk_Widget  *_etk_selection_widget;
 extern Etk_Widget  *_etk_drag_widget;
 static char       **_dnd_types          = NULL;
 static int          _dnd_types_num      = 0;
@@ -157,18 +156,12 @@ static Etk_Engine engine_info = {
    _mouse_position_get,
    _mouse_screen_geometry_get,
    
+   _selection_text_set,
+   _selection_text_request,
+   _selection_clear,
+   
    _drag_constructor,
    _drag_begin,
-   
-   _dnd_init,
-   _dnd_shutdown,
-   
-   _clipboard_text_request,
-   _clipboard_text_set,
-   
-   _selection_text_request,
-   _selection_text_set,
-   _selection_clear
 };
 
 /**************************
@@ -208,6 +201,16 @@ static Etk_Bool _engine_init()
    _event_input_handlers[4] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _event_input_handler_cb, NULL);
    _event_input_handlers[5] = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_WHEEL, _event_input_handler_cb, NULL);
    
+   _selection_notify_handler = ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _selection_notify_handler_cb, NULL);
+   
+   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_ENTER, _dnd_enter_handler, NULL));
+   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, _dnd_position_handler, NULL));
+   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _dnd_drop_handler, NULL));
+   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_LEAVE, _dnd_leave_handler, NULL));
+   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _dnd_selection_handler, NULL));
+   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_STATUS, _dnd_status_handler, NULL));
+   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_FINISHED, _dnd_finished_handler, NULL));
+   
    return ETK_TRUE;
 }
 
@@ -223,6 +226,15 @@ static void _engine_shutdown()
          ecore_event_handler_del(_event_input_handlers[i]);
          _event_input_handlers[i] = NULL;
       }
+   }
+   
+   ecore_event_handler_del(_selection_notify_handler);
+   _selection_notify_handler = NULL;
+   
+   while (_dnd_handlers)
+   {
+      ecore_event_handler_del(_dnd_handlers->data);
+      _dnd_handlers = evas_list_remove_list(_dnd_handlers, _dnd_handlers);
    }
    
    ecore_x_shutdown();
@@ -294,23 +306,25 @@ static void _window_screen_geometry_get(Etk_Window *window, int *x, int *y, int 
 /* Makes the window modal for another window */
 static void _window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
-   Etk_Engine_Window_Data *engine_data;  
+   Etk_Engine_Window_Data *win_to_modal_data;
    
    if (!window_to_modal)
      return;
    
-   engine_data = window_to_modal->engine_data;
+   win_to_modal_data = window_to_modal->engine_data;
    
    if (window)
    {
-      Etk_Engine_Window_Data *engine_data2 = window->engine_data; 
-      Ecore_X_Window_State states[] = { ECORE_X_WINDOW_STATE_MODAL };
+      Etk_Engine_Window_Data *win_data = window->engine_data;
       
-      ecore_x_icccm_transient_for_set(engine_data->x_window, engine_data2->x_window);
-      /* TODO: Should we get the previous state here?? */
-      ecore_x_netwm_window_state_set(engine_data->x_window, states, 1);
+      ecore_x_icccm_transient_for_set(win_to_modal_data->x_window, win_data->x_window);
+      _window_netwm_state_active_set(window_to_modal, ECORE_X_WINDOW_STATE_MODAL, ETK_TRUE);
    }
-   //TODO: else...
+   else
+   {
+      ecore_x_icccm_transient_for_unset(win_to_modal_data->x_window);
+      _window_netwm_state_active_set(window_to_modal, ECORE_X_WINDOW_STATE_MODAL, ETK_FALSE);
+   }
 }
 
 /* Sets the stacking layer of the window ("normal", "always on top" or "always below") */
@@ -344,42 +358,12 @@ static Etk_Window_Stacking _window_stacking_get(Etk_Window *window)
 }
 
 /* Sets whether or not the window should appear in the taskbar */
-/* TODO: maybe there is a better way to do this? */
 static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint)
 {
-   Etk_Engine_Window_Data *engine_data;
-      
-   if (!window || skip_taskbar_hint == etk_window_skip_taskbar_hint_get(window))
+   if (!window)
      return;
    
-   engine_data = window->engine_data;   
-   if (skip_taskbar_hint)
-     {
-	if (etk_window_skip_pager_hint_get(window))
-	  {
-	     Ecore_X_Window_State states[2];
-	     states[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
-	     states[1] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
-	     ecore_x_netwm_window_state_set(engine_data->x_window, states, 2);
-	  }
-	else
-	  {
-	     Ecore_X_Window_State state[1];
-	     state[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
-	     ecore_x_netwm_window_state_set(engine_data->x_window, state, 1);
-	  }
-     }
-   else
-     {
-	if (etk_window_skip_pager_hint_get(window))
-	  {
-	     Ecore_X_Window_State state[1];
-	     state[0] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
-	     ecore_x_netwm_window_state_set(engine_data->x_window, state, 1);
-	  }
-	else
-	  ecore_x_netwm_window_state_set(engine_data->x_window, NULL, 0);
-     }
+   _window_netwm_state_active_set(window, ECORE_X_WINDOW_STATE_SKIP_TASKBAR, skip_taskbar_hint);
    etk_object_notify(ETK_OBJECT(window), "skip_taskbar");
 }
 
@@ -390,42 +374,12 @@ static Etk_Bool _window_skip_taskbar_hint_get(Etk_Window *window)
 }
 
 /* Sets whether or not the window should appear in the pager */
-/* TODO: maybe there is a better way to do this? */
 static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint)
 {
-   Etk_Engine_Window_Data *engine_data;
-        
-   if (!window || skip_pager_hint == etk_window_skip_pager_hint_get(window))
+   if (!window)
      return;
    
-   engine_data = window->engine_data;   
-   if (skip_pager_hint)
-   {
-      if (etk_window_skip_taskbar_hint_get(window))
-       {
-	  Ecore_X_Window_State states[2];
-	  states[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
-	  states[1] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
-	  ecore_x_netwm_window_state_set(engine_data->x_window, states, 2);
-       }
-      else
-      {
-	 Ecore_X_Window_State state[1];
-	 state[0] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
-	 ecore_x_netwm_window_state_set(engine_data->x_window, state, 1);
-      }
-   }
-   else
-   {
-      if (etk_window_skip_taskbar_hint_get(window))
-      {
-	 Ecore_X_Window_State state[1];
-	 state[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
-	 ecore_x_netwm_window_state_set(engine_data->x_window, state, 1);
-      }
-      else
-	ecore_x_netwm_window_state_set(engine_data->x_window, NULL, 0);
-   }
+   _window_netwm_state_active_set(window, ECORE_X_WINDOW_STATE_SKIP_PAGER, skip_pager_hint);
    etk_object_notify(ETK_OBJECT(window), "skip_pager");
 }
 
@@ -526,19 +480,30 @@ static void _popup_window_popup(Etk_Popup_Window *popup_window)
    
    if (_popup_window_input_window == 0)
    {
-      Ecore_X_Window root, parent;
+      Ecore_X_Window root, win;
       int root_x, root_y, root_w, root_h;
+      int mx, my;
       
+      /* Release all the buttons of the mouse */
+      ecore_x_pointer_last_xy_get(&mx, &my);
+      if ((win = ecore_x_window_at_xy_get(mx, my)) != 0)
+      {
+         int i;
+         
+         ecore_x_pointer_xy_get(win, &mx, &my);
+         for (i = 1; i <= 32; i++)
+            ecore_x_mouse_up_send(win, mx, my, i);
+      }
+      
+      /* Create the input window */
       root = engine_data->x_window;
-
-      while ((parent = ecore_x_window_parent_get(root)) != 0)
-	root = parent;
+      while ((win = ecore_x_window_parent_get(root)) != 0)
+	 root = win;
       
       ecore_x_window_geometry_get(root, &root_x, &root_y, &root_w, &root_h);
       _popup_window_input_window = ecore_x_window_input_new(root, root_x, root_y, root_w, root_h);
       ecore_x_window_show(_popup_window_input_window);
-      /* TODO: fixme pointer_grab!! */
-      /* ecore_x_pointer_confine_grab(_popup_window_input_window); */
+      ecore_x_pointer_confine_grab(_popup_window_input_window);
       ecore_x_keyboard_grab(_popup_window_input_window);
    }
    _popup_window_popped_windows = evas_list_append(_popup_window_popped_windows, popup_window);
@@ -551,8 +516,7 @@ static void _popup_window_popdown(Etk_Popup_Window *popup_window)
    
    if (!_popup_window_popped_windows)
    {
-      /* TODO: FIXME: pointer ungrab */
-      /* ecore_x_pointer_ungrab(); */
+      ecore_x_pointer_ungrab();
       ecore_x_keyboard_ungrab();
       ecore_x_window_del(_popup_window_input_window);
       _popup_window_input_window = 0;
@@ -609,6 +573,62 @@ static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h)
 
 /**************************
  *
+ * Etk_Selection's functions
+ *
+ **************************/
+
+/* Sets the text of the given selection */
+static void _selection_text_set(Etk_Selection_Type selection, const char *text)
+{
+   int len;
+   Ecore_X_Window win;
+   
+   if (!text)
+      return;
+   
+   win = ecore_x_window_root_first_get();
+   len = strlen(text) + 1;
+   if (selection == ETK_SELECTION_PRIMARY)
+      ecore_x_selection_primary_set(win, text, len);
+   else if (selection == ETK_SELECTION_SECONDARY)
+      ecore_x_selection_secondary_set(win, text, len);
+   else if (selection == ETK_SELECTION_CLIPBOARD)
+      ecore_x_selection_clipboard_set(win, text, len);
+   
+}  
+
+/* Requests the text from a selection */
+static void _selection_text_request(Etk_Selection_Type selection, Etk_Widget *target)
+{
+   Etk_Engine_Window_Data *engine_data;
+   Etk_Toplevel *toplevel;
+   
+   if (!(toplevel = etk_widget_toplevel_parent_get(target)) || !ETK_IS_WINDOW(toplevel))
+      return;
+   
+   _selection_widget = target;
+   engine_data = ETK_WINDOW(toplevel)->engine_data;
+   if (selection == ETK_SELECTION_PRIMARY)
+      ecore_x_selection_primary_request(engine_data->x_window, ECORE_X_SELECTION_TARGET_UTF8_STRING);
+   else if (selection == ETK_SELECTION_SECONDARY)
+      ecore_x_selection_secondary_request(engine_data->x_window, ECORE_X_SELECTION_TARGET_UTF8_STRING);
+   else if (selection == ETK_SELECTION_CLIPBOARD)
+      ecore_x_selection_clipboard_request(engine_data->x_window, ECORE_X_SELECTION_TARGET_UTF8_STRING);
+}
+
+/* Clears the given selection */
+static void _selection_clear(Etk_Selection_Type selection)
+{
+   if (selection == ETK_SELECTION_PRIMARY)
+      ecore_x_selection_primary_clear();
+   else if (selection == ETK_SELECTION_SECONDARY)
+      ecore_x_selection_secondary_clear();
+   else if (selection == ETK_SELECTION_CLIPBOARD)
+      ecore_x_selection_clipboard_clear();
+}
+
+/**************************
+ *
  * Etk_Drag's functions
  *
  **************************/
@@ -641,103 +661,6 @@ static void _drag_begin(Etk_Drag *drag)
 
    _drag_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _drag_mouse_move_cb, drag);
    _drag_mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, _drag_mouse_up_cb, drag);
-}
-
-/**************************
- *
- * Etk_Dnd's functions
- *
- **************************/
-
-/* TODOC */
-static Etk_Bool _dnd_init()
-{
-   if (_dnd_handlers)
-     return ETK_TRUE;
-   
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_ENTER, _dnd_enter_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, _dnd_position_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _dnd_drop_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_LEAVE, _dnd_leave_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _dnd_selection_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_STATUS, _dnd_status_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_FINISHED, _dnd_finished_handler, NULL));
-   
-   return ETK_TRUE;   
-}
-
-/* TODOC */
-static void _dnd_shutdown()
-{
-   while (_dnd_handlers)
-   {
-      ecore_event_handler_del(_dnd_handlers->data);
-      _dnd_handlers = evas_list_remove(_dnd_handlers, _dnd_handlers->data);
-   }
-}
-
-/**************************
- *
- * Etk_Clipboard's functions
- *
- **************************/
-
-/* TODOC */
-static void _clipboard_text_request(Etk_Widget *widget)
-{
-   Etk_Engine_Window_Data *engine_data;
-   Ecore_X_Window win;
-   
-   engine_data = ETK_WINDOW(widget->toplevel_parent)->engine_data;
-   win = engine_data->x_window;   
-   _etk_selection_widget = widget;
-   ecore_x_selection_clipboard_request(win, ECORE_X_SELECTION_TARGET_UTF8_STRING);
-}  
-
-/* TODOC */
-static void _clipboard_text_set(Etk_Widget *widget, const char *text, int length)
-{  
-   Etk_Engine_Window_Data *engine_data;
-   Ecore_X_Window win;
-   
-   engine_data = ETK_WINDOW(widget->toplevel_parent)->engine_data;
-   win = engine_data->x_window;
-   ecore_x_selection_clipboard_set(win, (char *)text, length);
-}
-
-/**************************
- *
- * Etk_Selection's functions
- *
- **************************/
-
-/* TODOC */
-static void _selection_text_request(Etk_Widget *widget)
-{
-   Etk_Engine_Window_Data *engine_data;
-   Ecore_X_Window win;
-   
-   engine_data = ETK_WINDOW(widget->toplevel_parent)->engine_data;
-   win = engine_data->x_window;   
-   _etk_selection_widget = widget;
-   ecore_x_selection_primary_request(win, ECORE_X_SELECTION_TARGET_UTF8_STRING);
-}  
-
-/* TODOC */
-static void _selection_text_set(Etk_Widget *widget, const char *text, int length)
-{
-   Etk_Engine_Window_Data *engine_data;
-   Ecore_X_Window win;
-   
-   engine_data = ETK_WINDOW(widget->toplevel_parent)->engine_data;
-   win = engine_data->x_window;
-   ecore_x_selection_primary_set(win, (char *)text, length);
-}
-
-/* TODOC */
-static void _selection_clear()
-{
-   ecore_x_selection_primary_clear();
 }
 
 /**************************
@@ -839,6 +762,41 @@ static int _event_input_handler_cb(void *data, int type, void *event)
    return 1;
 }
 
+/* Called when the content of the selection/clipboard has been received */
+static int _selection_notify_handler_cb(void *data, int type, void *event)
+{
+   Ecore_X_Event_Selection_Notify *ev;
+   Ecore_X_Selection_Data *sel_data;
+   Etk_Selection_Event etk_event;
+   
+   if (!_selection_widget)
+      return 1;
+   
+   ev = event;
+   sel_data = ev->data;
+   
+   if (ev->selection == ECORE_X_SELECTION_PRIMARY)
+      etk_event.from = ETK_SELECTION_PRIMARY;
+   else if (ev->selection == ECORE_X_SELECTION_SECONDARY)
+      etk_event.from = ETK_SELECTION_SECONDARY;
+   else if (ev->selection == ECORE_X_SELECTION_CLIPBOARD)
+      etk_event.from = ETK_SELECTION_CLIPBOARD;
+   else
+      return 1;
+   
+   if (sel_data->content == ECORE_X_SELECTION_CONTENT_TEXT)
+   {
+      Ecore_X_Selection_Data_Text *text_data = (Ecore_X_Selection_Data_Text *)sel_data;
+      
+      etk_event.type = ETK_SELECTION_TEXT;
+      etk_event.data.text = text_data->text;
+      
+      etk_signal_emit_by_name("selection_received", ETK_OBJECT(_selection_widget), NULL, &etk_event);
+   }
+   
+   return 1;
+}
+
 /* TODOC */
 static int _drag_mouse_up_cb(void *data, int type, void *event)
 {
@@ -850,7 +808,7 @@ static int _drag_mouse_up_cb(void *data, int type, void *event)
    ecore_event_handler_del(_drag_mouse_up_handler);
    ecore_x_dnd_drop();   
    etk_widget_drag_end(ETK_WIDGET(drag));   
-   etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(drag->widget), ETK_POINTER_DEFAULT);
+   etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(drag->widget), ETK_POINTER_DEFAULT);
    
    return 1;
 }
@@ -870,7 +828,7 @@ static int _drag_mouse_move_cb(void *data, int type, void *event)
 }
 
 /* Searchs the container recursively for the widget that accepts xdnd */
-static void _dnd_container_get_widgets_at(Etk_Toplevel_Widget *top, int x, int y, int offx, int offy, Evas_List **list)
+static void _dnd_container_get_widgets_at(Etk_Toplevel *top, int x, int y, int offx, int offy, Evas_List **list)
 {
 
    Evas_List *l;
@@ -943,7 +901,7 @@ static int _dnd_position_handler(void *data, int type, void *event)
    //printf("position!\n");
    
    /* loop top level widgets (windows) */
-   for (l = etk_main_toplevel_widgets_get(); l; l = l->next)
+   for (l = etk_toplevel_widgets_get(); l; l = l->next)
    {
       if (!ETK_IS_WINDOW(l->data))
          continue;
@@ -958,7 +916,7 @@ static int _dnd_position_handler(void *data, int type, void *event)
       etk_window_geometry_get(window, &x, &y, NULL, NULL);
 
       /* find the widget we want to drop on */
-      _dnd_container_get_widgets_at(ETK_TOPLEVEL_WIDGET(window), ev->position.x, ev->position.y, x, y, &children);
+      _dnd_container_get_widgets_at(ETK_TOPLEVEL(window), ev->position.x, ev->position.y, x, y, &children);
       
       /* check if we're leaving a widget */
       if (_dnd_widget)
@@ -1083,54 +1041,14 @@ static int _dnd_leave_handler(void *data, int type, void *event)
 static int _dnd_selection_handler(void *data, int type, void *event)
 {
    Ecore_X_Event_Selection_Notify *ev;
-   Ecore_X_Selection_Data *sel;
    Ecore_X_Selection_Data_Files *files;
    Ecore_X_Selection_Data_Text *text;
-   Ecore_X_Selection_Data_Targets *targets;
    //int i;
 
    //printf("selection\n"); 
    ev = event;
    switch (ev->selection) 
    {
-      case ECORE_X_SELECTION_PRIMARY:
-         if (!strcmp(ev->target, ECORE_X_SELECTION_TARGET_TARGETS)) 
-	 {
-	    /* printf("primary: %s\n", ev->target); */
-	    targets = ev->data;
-	    /* 
-	    for (i = 0; i < targets->num_targets; i++)
-	       printf("target: %s\n", targets->targets[i]);
-	    */
-         } 
-	 else 
-	 {	    
-	    /* emit signal to widget that the clipboard text is sent to it */
-	    Etk_Event_Selection_Request event;
-	    Etk_Selection_Data_Text     event_text;
-	    
-	    text = ev->data;
-	   
-	    if (!_etk_selection_widget)
-	      break;	    
-	    
-	    event_text.text = text->text;
-	    event_text.data.data = text->data.data;
-	    event_text.data.length = text->data.length;
-	    event_text.data.free = text->data.free;
-	    
-	    event.data = &event_text;
-	    event.content = ETK_SELECTION_CONTENT_TEXT;	    	    
-	    
-	    etk_widget_selection_received(_etk_selection_widget, &event);
-	 }
-	 break;
-      
-      case ECORE_X_SELECTION_SECONDARY:
-         sel = ev->data;
-         //printf("secondary: %s %s\n", ev->target, sel->data);
-         break;
-      
       case ECORE_X_SELECTION_XDND:
         if(!strcmp(ev->target, "text/uri-list"))
 	 {
@@ -1192,50 +1110,6 @@ static int _dnd_selection_handler(void *data, int type, void *event)
 	 
          ecore_x_dnd_send_finished();
          break;
-	
-      case ECORE_X_SELECTION_CLIPBOARD:
-         if (!strcmp(ev->target, ECORE_X_SELECTION_TARGET_TARGETS)) 
-	 {
-	    /* REDO THIS CODE!!!
-	    
-	    Etk_Event_Selection_Get event;
-	    Etk_Selection_Data_Targets _targets;
-	    
-	    event.content = ETK_SELECTION_CONTENT_TARGETS;
-
-	    targets = ev->data;
-	    
-            _targets.num_targets = targets->num_targets;
-	    _targets.targets = targets->targets;
-	    
-	    //printf("clipboard: %s\n", ev->target);
-	    //for (i = 0; i < targets->num_targets; i++)
-	    //  printf("target: %s\n", targets->targets[i]);
-	    
-	    */
-         } 
-         else 
-	 {
-	    /* emit signal to widget that the clipboard text is sent to it */
-	    Etk_Event_Selection_Request event;
-	    Etk_Selection_Data_Text     event_text;
-	    
-	    text = ev->data;
-	   
-	    if (!_etk_selection_widget)
-	      break;	    
-	    
-	    event_text.text = text->text;
-	    event_text.data.data = text->data.data;
-	    event_text.data.length = text->data.length;
-	    event_text.data.free = text->data.free;
-	    
-	    event.data = &event_text;
-	    event.content = ETK_SELECTION_CONTENT_TEXT;	    
-	    
-	    etk_widget_clipboard_received(_etk_selection_widget, &event);
-	 }
-	 break;
          
       default:
          break;
@@ -1258,11 +1132,11 @@ static int _dnd_status_handler(void *data, int type, void *event)
    if (ev->win != x_window) return 1;	  
    if(!ev->will_accept)
    {
-      etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(etk_drag_parent_widget_get(ETK_DRAG(_etk_drag_widget))), ETK_POINTER_DEFAULT);
+      etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(etk_drag_parent_widget_get(ETK_DRAG(_etk_drag_widget))), ETK_POINTER_DEFAULT);
       return 1;
    }
    
-   etk_toplevel_widget_pointer_push(etk_widget_toplevel_parent_get(etk_drag_parent_widget_get(ETK_DRAG(_etk_drag_widget))), ETK_POINTER_DND_DROP);
+   etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(etk_drag_parent_widget_get(ETK_DRAG(_etk_drag_widget))), ETK_POINTER_DND_DROP);
    return 1;
 }
 
@@ -1281,32 +1155,99 @@ static int _dnd_finished_handler(void *data, int type, void *event)
 /* Sets whether or not the given netwm state is active */
 static void _window_netwm_state_active_set(Etk_Window *window, Ecore_X_Window_State state, Etk_Bool active)
 {
-   int num_states;
+   Etk_Engine_Window_Data *engine_data;
+   Ecore_Evas *ecore_evas;
    
+   if (!window)
+     return;
+   
+   engine_data = window->engine_data;
+   ecore_evas = ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas;
+   
+   if (ecore_evas_visibility_get(ecore_evas))
+   {
+      Ecore_X_Window root, parent;
+      
+      root = engine_data->x_window;
+      while ((parent = ecore_x_window_parent_get(root)) != 0)
+	 root = parent;
+      
+      ecore_x_netwm_state_request_send(engine_data->x_window, root, state, -1, active);
+   }
+   else
+   {
+      int cur_num, new_num;
+      int i, j;
+      Ecore_X_Window_State *cur_state, *new_state;
+      Etk_Bool is_set = ETK_FALSE;
+      
+      ecore_x_netwm_window_state_get(engine_data->x_window, &cur_state, &cur_num);
+      if (cur_state)
+      {
+         for (i = 0; i < cur_num; i++)
+         {
+            if (cur_state[i] == state)
+            {
+               is_set = ETK_TRUE;
+               break;
+            }
+         }
+         
+         if (is_set != active)
+         {
+            new_num = active ? (cur_num + 1) : (cur_num - 1);
+            if (new_num > 0)
+            {
+               new_state = malloc(new_num * sizeof(Ecore_X_Window_State));
+               
+               for (i = 0, j = 0; i < cur_num; i++)
+               {
+                  if (cur_state[i] == state)
+                     continue;
+                  
+                  new_state[j] = cur_state[i];
+                  j++;
+               }
+               
+               if (active)
+                  new_state[new_num - 1] = state;
+               
+               ecore_x_netwm_window_state_set(engine_data->x_window, new_state, new_num);
+               free(new_state);
+            }
+            else
+               ecore_x_netwm_window_state_set(engine_data->x_window, NULL, 0);
+         }
+         
+         free(cur_state);
+      }
+   }
 }
 
 /* Gets whether or not the given netwm state is active */
 static Etk_Bool _window_netwm_state_active_get(Etk_Window *window, Ecore_X_Window_State state)
 {
-   unsigned int num_states, i;
-   Ecore_X_Window_State *states;
+   unsigned int num, i;
+   Ecore_X_Window_State *cur_state;
    Etk_Engine_Window_Data *engine_data;
    
    if (!window)
      return ETK_FALSE;
    
-   engine_data = window->engine_data;   
-   ecore_x_netwm_window_state_get(engine_data->x_window, &states, &num_states);
-   for (i = 0; i < num_states; i++)
+   engine_data = window->engine_data;
+   ecore_x_netwm_window_state_get(engine_data->x_window, &cur_state, &num);
+   if (cur_state)
    {
-      if (states[i] == state)
+      for (i = 0; i < num; i++)
       {
-	 free(states);
-	 return ETK_TRUE;
+         if (cur_state[i] == state)
+         {
+            free(cur_state);
+            return ETK_TRUE;
+         }
       }
+      free(cur_state);
    }
-   if (num_states > 0)
-     free(states);
    
    return ETK_FALSE;
 }

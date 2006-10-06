@@ -1,12 +1,12 @@
 group {
-   name: "radio_button";
+   name: "etk/radio_button";
    min: 20 20;
    data {
       item: "inset" "20 3 0 0";
    }
    parts {
       part {
-         name: "bg";
+         name: "background";
          type: RECT;
          description {
             state: "default" 0.0;
@@ -54,48 +54,48 @@ group {
             }
          }
       }
-      FOCUS_GLOW(0.0, 0.0, 0, 0, "bg", 1.0, 1.0, -1, -1, "bg")
+      FOCUS_GLOW(0.0, 0.0, 0, 0, "background", 1.0, 1.0, -1, -1, "background")
    }
    programs {
       program {
          name: "radio_button_activate";
-         signal: "activate";
-         source: "";
+         signal: "etk,state,on";
+         source: "etk";
          action: STATE_SET "on" 0.0;
          target: "radio";
       }
       program {
          name: "radio_button_deactivate";
-         signal: "deactivate";
-         source: "";
+         signal: "etk,state,off";
+         source: "etk";
          action: STATE_SET "default" 0.0;
          target: "radio";
       }
       program {
          name: "radio_button_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          FOCUS_GLOW_ACTION
       }
       program {
          name: "radio_button_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_GLOW_ACTION
       }
       program {
          name: "radio_button_enter";
-         signal: "enter";
-         source: "";
+         signal: "etk,state,enter";
+         source: "etk";
          action: STATE_SET "over" 0.0;
-         target: "bg";
+         target: "background";
       }
       program {
          name: "radio_button_leave";
-         signal: "leave";
-         source: "";
+         signal: "etk,state,leave";
+         source: "etk";
          action: STATE_SET "default" 0.0;
-         target: "bg";
+         target: "background";
       }
    }
 }
