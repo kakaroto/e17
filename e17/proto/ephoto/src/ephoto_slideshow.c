@@ -490,7 +490,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  save = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(save), 
 		      PACKAGE_DATA_DIR "/images/stock_save.png", NULL);
- ewl_button_label_set(EWL_BUTTON(save), "save");
+ ewl_button_label_set(EWL_BUTTON(save), gettext("save"));
  ewl_container_child_append(EWL_CONTAINER(hbox), save);
  ewl_object_fill_policy_set(EWL_OBJECT(save), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(save), EWL_FLAG_ALIGN_CENTER);
@@ -500,7 +500,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  cancel = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(cancel), 
 		           PACKAGE_DATA_DIR "/images/dialog-close.png", NULL);
- ewl_button_label_set(EWL_BUTTON(cancel), "cancel");
+ ewl_button_label_set(EWL_BUTTON(cancel), gettext("cancel"));
  ewl_container_child_append(EWL_CONTAINER(hbox), cancel);
  ewl_object_fill_policy_set(EWL_OBJECT(cancel), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(cancel), EWL_FLAG_ALIGN_CENTER);
