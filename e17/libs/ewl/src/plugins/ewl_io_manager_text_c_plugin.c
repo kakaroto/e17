@@ -194,7 +194,7 @@ text_set(Ewl_Text *t, char *text)
 		else if (isdigit(*tx1))
 			mode = NUMBER;
 			
-		else if (*tx1 == '\"')
+		else if (*tx1 == '\"' && !( tx1 != text && *(tx1 - 1) == '\\'))
 			mode = STRING;
 
 		else
