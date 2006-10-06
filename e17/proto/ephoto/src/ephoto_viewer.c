@@ -5,7 +5,9 @@ Ewl_Widget *image_view;
 
 void destroy_vwin(Ewl_Widget *w, void *event, void *data)
 {
- ewl_widget_destroy(w);
+ Ewl_Widget *win;
+ win = data;
+ ewl_widget_destroy(win);
 }
 
 void change_image(Ewl_Widget *w, void *event, void *data)
@@ -220,7 +222,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_window_title_set(EWL_WINDOW(vwin), gettext("Ephoto Image Viewer"));
  ewl_window_name_set(EWL_WINDOW(vwin), "Ephoto Image Viewer");
  ewl_object_size_request(EWL_OBJECT(vwin), 480, 480);
- ewl_callback_append(vwin, EWL_CALLBACK_DELETE_WINDOW, destroy_vwin, NULL);
+ ewl_callback_append(vwin, EWL_CALLBACK_DELETE_WINDOW, destroy_vwin, vwin);
  ewl_widget_show(vwin);
 
  vbox = ewl_vbox_new();
@@ -256,7 +258,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_button_label_set(EWL_BUTTON(menu_item), "Exit");
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
- ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, destroy_vwin, NULL);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, destroy_vwin, vwin);
  ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
  ewl_widget_show(menu_item);
 
