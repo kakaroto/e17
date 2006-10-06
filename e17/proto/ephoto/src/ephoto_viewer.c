@@ -68,6 +68,68 @@ void original_size(Ewl_Widget *w, void *event, void *data)
  ewl_widget_configure(ibox);
 }
 
+void flip_horizontal(Ewl_Widget *w, void *event, void *data)
+{
+ unsigned int *im_data, *im_data_new;
+ int index, ind, i, j, ni, nj, ew, eh;
+
+ im_data = evas_object_image_data_get(EWL_IMAGE(image_view)->image, FALSE);
+ evas_object_image_size_get(EWL_IMAGE(image_view)->image, &ew, &eh);
+ index = 0;
+ 
+ im_data_new = malloc(sizeof(unsigned int) * ew * eh);    
+ 
+ for (i = 0; i < eh; i++)
+ {
+  for (j = 0; j < ew; j++)
+  {
+   ni = i;
+   nj = ew - j - 1;
+
+   ind = ni * ew + nj;
+   im_data_new[index] = im_data[ind];
+   index++;
+  }
+ }
+ 
+ evas_object_image_size_set(EWL_IMAGE(image_view)->image, ew, eh);
+ evas_object_image_data_set(EWL_IMAGE(image_view)->image, im_data_new);
+ evas_object_image_data_update_add(EWL_IMAGE(image_view)->image, 0, 0, ew, eh);
+ ewl_widget_configure(image_view);
+ ewl_widget_configure(ibox);      
+}
+
+void flip_vertical(Ewl_Widget *w, void *event, void *data)
+{
+ unsigned int *im_data, *im_data_new;
+ int index, ind, i, j, ni, nj, ew, eh;
+
+ im_data = evas_object_image_data_get(EWL_IMAGE(image_view)->image, FALSE);
+ evas_object_image_size_get(EWL_IMAGE(image_view)->image, &ew, &eh);
+ index = 0;
+
+ im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+
+ for (i = 0; i < eh; i++)
+ {
+  for (j = 0; j < ew; j++)
+  {
+   ni = eh - i - 1;
+   nj = j;
+
+   ind = ni * ew + nj;
+   im_data_new[index] = im_data[ind];
+   index++;
+  }
+ }
+
+ evas_object_image_size_set(EWL_IMAGE(image_view)->image, ew, eh);
+ evas_object_image_data_set(EWL_IMAGE(image_view)->image, im_data_new);
+ evas_object_image_data_update_add(EWL_IMAGE(image_view)->image, 0, 0, ew, eh);
+ ewl_widget_configure(image_view);
+ ewl_widget_configure(ibox);
+}
+
 void rotate_left(Ewl_Widget *w, void *event, void *data)
 {
  unsigned int *im_data, *im_data_new;
@@ -141,14 +203,8 @@ void rotate_right(Ewl_Widget *w, void *event, void *data)
 void view_images(Ewl_Widget *w, void *event, void *data)
 {
  char *current_image;
- Ewl_Widget *button;
- Ewl_Widget *vbox;
- Ewl_Widget *scrollpane;
- Ewl_Widget *freebox;
- Ewl_Widget *icon;
- Ewl_Widget *image;
- Ewl_Widget *hbox;
- Ewl_Widget *cell;
+ Ewl_Widget *button, *vbox, *scrollpane, *freebox, *icon;
+ Ewl_Widget *image, *hbox, *cell, *menubar, *menu, *menu_item;
  Ecore_List *view_thumbs;
  
  view_thumbs = current_thumbs;
@@ -172,7 +228,114 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_container_child_append(EWL_CONTAINER(vwin), vbox);
  ewl_box_spacing_set(EWL_BOX(vbox), 10);
  ewl_widget_show(vbox);
- 
+
+ menubar = ewl_hmenubar_new();
+ ewl_container_child_append(EWL_CONTAINER(vbox), menubar);
+ ewl_object_fill_policy_set(EWL_OBJECT(menubar), EWL_FLAG_FILL_HFILL);
+ ewl_widget_show(menubar);
+
+ menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(menu), "File");
+ ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(menu);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/stock_save.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Save Image");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ //ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, destroy_vwin, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/exit.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Exit");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, destroy_vwin, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
+
+ menu = ewl_menu_new();
+ ewl_button_label_set(EWL_BUTTON(menu), "Actions");
+ ewl_container_child_append(EWL_CONTAINER(menubar), menu);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+ ewl_widget_show(menu);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/search.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Zoom In");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, zoom_in, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/search.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Zoom Out");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, zoom_out, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/search.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Zoom 1:1");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, zoom_out, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/go-next.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Flip Horizontally");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, flip_horizontal, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/go-down.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Flip Vertically");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, flip_vertical, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/undo.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Rotate Left");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, rotate_left, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
+
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
+                      PACKAGE_DATA_DIR "/images/redo.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), "Rotate Right");
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, rotate_right, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);
+
  scrollpane = ewl_scrollpane_new();
  ewl_container_child_append(EWL_CONTAINER(vbox), scrollpane);
  ewl_object_fill_policy_set(EWL_OBJECT(scrollpane), EWL_FLAG_FILL_ALL);

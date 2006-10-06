@@ -7,6 +7,8 @@ FILES = add.png \
 	folder.png \
 	go-up.png \
 	go-home.png \
+	go-down.png \
+	go-next.png \
 	image.png \
 	preferences-system.png \
 	redo.png \
