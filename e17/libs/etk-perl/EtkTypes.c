@@ -132,7 +132,7 @@ void __etk_perl_init() {
 	__("Etk_Tool_Button",		"Etk::ToolButton");
 	__("Etk_Tool_Toggle_Button",		"Etk::ToolToggleButton");
 	__("Etk_Toolbar",		"Etk::Toolbar");
-	__("Etk_Toplevel_Widget",		"Etk::ToplevelWidget");
+	__("Etk_Toplevel",		"Etk::Toplevel");
 	__("Etk_Tree",		"Etk::Tree");
 	__("Etk_Tree_Col",		"Etk::Tree::Col");
 	__("Etk_Tree_Row",		"Etk::Tree::Row");
@@ -169,8 +169,8 @@ void __etk_perl_init() {
 					__("ToolToggleButton", "Button");
 				__("Frame", "Bin");
 				__("ScrolledView", "Bin");
-				__("ToplevelWidget", "Bin");
-					__("Window", "ToplevelWidget");
+				__("Toplevel", "Bin");
+					__("Window", "Toplevel");
 						__("Dialog", "Window");
 							__("MessageDialog", "Dialog");
 						__("PopupWindow", "Window");

@@ -1,5 +1,9 @@
 Revision history for Perl extension Etk.
 
+0.05  Mon Sep 18 22:53:15 GMT+2 2006
+	- follow changes of etk
+	- finish most tests (make test now works)
+
 0.04  Sun Aug 20 12:19:10 GMT+2 2006
 	- Followed etk changes
 	- fixed Tree implementation

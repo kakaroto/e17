@@ -1296,6 +1296,12 @@ etk_combobox_item_remove(combobox, item)
 MODULE = Etk::Container	PACKAGE = Etk::Container	PREFIX = etk_container_
 
 void
+etk_container_remove_all(container)
+	Etk_Container * container
+	ALIAS:
+	RemoveAll=1
+
+void
 etk_container_add(container, widget)
 	Etk_Container *	container
 	Etk_Widget *	widget
@@ -1774,6 +1780,13 @@ etk_iconbox_icon_get_at_xy(iconbox, x, y, over_cell, over_icon, over_label)
       ALIAS:
 	IconGetAtXy=1
 
+Etk_Scrolled_View *
+etk_iconbox_scrolled_view_get(iconbox)
+	Etk_Iconbox * iconbox
+	ALIAS:
+	ScrolledViewGet=1
+
+	
 MODULE = Etk::Iconbox::Icon	PACKAGE = Etk::Iconbox::Icon	PREFIX = etk_iconbox_icon_
 
 SV *
@@ -2176,23 +2189,6 @@ void
 etk_main_quit()
       ALIAS:
 	Quit=1
-
-void
-etk_main_toplevel_widget_add(widget)
-	Etk_Toplevel_Widget *	widget
-      ALIAS:
-	ToplevelWidgetAdd=1
-
-void
-etk_main_toplevel_widget_remove(widget)
-	Etk_Toplevel_Widget *	widget
-      ALIAS:
-	ToplevelWidgetRemove=1
-
-Evas_List *
-etk_main_toplevel_widgets_get()
-      ALIAS:
-	ToplevelWidgetsGet=1
 
 
 MODULE = Etk::Menu::Bar	PACKAGE = Etk::Menu::Bar	PREFIX = etk_menu_bar_
@@ -3183,19 +3179,24 @@ etk_scrolled_view_vscrollbar_get(scrolled_view)
 MODULE = Etk::Selection	PACKAGE = Etk::Selection	PREFIX = etk_selection_
 
 void
-etk_selection_text_request(widget)
+etk_selection_text_request(selection, widget)
+	Etk_Selection_Type selection
 	Etk_Widget *	widget
       ALIAS:
 	TextRequest=1
 
 void
-etk_selection_text_set(widget, data, length)
-	Etk_Widget *	widget
-	char *	data
-	int	length
+etk_selection_text_set(selection, text)
+	Etk_Selection_Type selection
+	char *	text
       ALIAS:
 	TextSet=1
 
+void
+etk_selection_clear(selection)
+	Etk_Selection_Type selection
+	ALIAS:
+	Clear=1
 	
 MODULE = Etk::Signal	PACKAGE = Etk::Signal	PREFIX = etk_signal_
 	
@@ -3241,26 +3242,42 @@ new(class)
 	RETVAL
 
 void
-etk_statusbar_pop(statusbar, context_id)
+etk_statusbar_message_pop(statusbar, context_id)
 	Etk_Statusbar *	statusbar
 	int	context_id
       ALIAS:
-	Pop=1
+	MessagePop=1
 
 int
-etk_statusbar_push(statusbar, message, context_id)
+etk_statusbar_message_push(statusbar, message, context_id)
 	Etk_Statusbar *	statusbar
 	char *	message
 	int	context_id
       ALIAS:
-	Push=1
+	MessagePush=1
 
 void
-etk_statusbar_remove(statusbar, message_id)
+etk_statusbar_message_remove(statusbar, message_id)
 	Etk_Statusbar *	statusbar
 	int	message_id
       ALIAS:
-	Remove=1
+	MessageRemove=1
+
+void
+etk_statusbar_message_get(statusbar)
+	Etk_Statusbar *	statusbar
+      ALIAS:
+	MessageGet=1
+	PPCODE:
+	const char ** message;
+	int mid;
+	int cid;
+	etk_statusbar_message_get(statusbar, message, &mid, &cid);
+	EXTEND(SP, 3);
+	PUSHs(sv_2mortal(newSVpv(*message, strlen(*message))));
+	PUSHs(sv_2mortal(newSViv(mid)));
+	PUSHs(sv_2mortal(newSViv(cid)));
+	
 
 MODULE = Etk::Stock	PACKAGE = Etk::Stock	PREFIX = etk_stock_
 	
@@ -3672,48 +3689,10 @@ etk_textblock_delete_range(tb, iter1, iter2)
 
 MODULE = Etk::Theme	PACKAGE = Etk::Theme	PREFIX = etk_theme_
 	
-const char *
-etk_theme_default_icon_theme_get()
-      ALIAS:
-	DefaultIconThemeGet=1
-
-const char *
-etk_theme_default_widget_theme_get()
-      ALIAS:
-	DefaultWidgetThemeGet=1
-
-const char *
-etk_theme_icon_theme_get()
-      ALIAS:
-	IconThemeGet=1
-
-Etk_Bool
-etk_theme_icon_theme_set(theme_name)
-	char *	theme_name
-      ALIAS:
-	IconThemeSet=1
-
 void
 etk_theme_init()
-      ALIAS:
+	ALIAS:
 	Init=1
-
-Evas_Object *
-etk_theme_object_load(evas, filename, group)
-	Evas *	evas
-	char *	filename
-	char *	group
-      ALIAS:
-	ObjectLoad=1
-
-Evas_Object *
-etk_theme_object_load_from_parent(evas, theme_parent, filename, group)
-	Evas *	evas
-	Etk_Widget *	theme_parent
-	char *	filename
-	char *	group
-      ALIAS:
-	ObjectLoadFromParent=1
 
 void
 etk_theme_shutdown()
@@ -3721,15 +3700,36 @@ etk_theme_shutdown()
 	Shutdown=1
 
 const char *
-etk_theme_widget_theme_get()
+etk_theme_widget_get()
       ALIAS:
-	WidgetThemeGet=1
+	WidgetGet=1
 
 Etk_Bool
-etk_theme_widget_theme_set(theme_name)
+etk_theme_widget_set(theme_name)
 	char *	theme_name
       ALIAS:
-	WidgetThemeSet=1
+	WidgetSet=1
+
+
+
+const char *
+etk_theme_icon_get()
+	ALIAS:
+	IconGet=1
+
+Etk_Bool
+etk_theme_icon_set(theme)
+	const char * theme
+	ALIAS:
+	IconSet=1
+
+Etk_Bool
+etk_theme_group_exists(file, group, parent)
+	const char * file
+	const char * group
+	const char * parent
+	ALIAS:
+	GroupExists=1
 
 
 MODULE = Etk::ToggleButton	PACKAGE = Etk::ToggleButton	PREFIX = etk_toggle_button_
@@ -3824,42 +3824,42 @@ etk_tooltips_enabled_get()
 	EnabledGet=1
 
 
-MODULE = Etk::ToplevelWidget	PACKAGE = Etk::ToplevelWidget	PREFIX = etk_toplevel_widget_
+MODULE = Etk::Toplevel	PACKAGE = Etk::Toplevel	PREFIX = etk_toplevel_
 
 Evas *
-etk_toplevel_widget_evas_get(toplevel_widget)
-	Etk_Toplevel_Widget *	toplevel_widget
+etk_toplevel_evas_get(toplevel_widget)
+	Etk_Toplevel *	toplevel_widget
       ALIAS:
 	EvasGet=1
 
 Etk_Widget *
-etk_toplevel_widget_focused_widget_get(toplevel_widget)
-	Etk_Toplevel_Widget *	toplevel_widget
+etk_toplevel_focused_widget_get(toplevel_widget)
+	Etk_Toplevel *	toplevel_widget
       ALIAS:
 	FocusedWidgetGet=1
 
 Etk_Widget *
-etk_toplevel_widget_focused_widget_next_get(toplevel_widget)
-	Etk_Toplevel_Widget *	toplevel_widget
+etk_toplevel_focused_widget_next_get(toplevel_widget)
+	Etk_Toplevel *	toplevel_widget
       ALIAS:
 	FocusedWidgetNextGet=1
 
 Etk_Widget *
-etk_toplevel_widget_focused_widget_prev_get(toplevel_widget)
-	Etk_Toplevel_Widget *	toplevel_widget
+etk_toplevel_focused_widget_prev_get(toplevel_widget)
+	Etk_Toplevel *	toplevel_widget
       ALIAS:
 	FocusedWidgetPrevGet=1
 
 void
-etk_toplevel_widget_focused_widget_set(toplevel_widget, widget)
-	Etk_Toplevel_Widget *	toplevel_widget
+etk_toplevel_focused_widget_set(toplevel_widget, widget)
+	Etk_Toplevel *	toplevel_widget
 	Etk_Widget *	widget
       ALIAS:
 	FocusedWidgetSet=1
 
 void
-etk_toplevel_widget_geometry_get(toplevel_widget, x, y, w, h)
-	Etk_Toplevel_Widget *	toplevel_widget
+etk_toplevel_geometry_get(toplevel_widget, x, y, w, h)
+	Etk_Toplevel *	toplevel_widget
       ALIAS:
 	GeometryGet=1
 	PPCODE:
@@ -3867,7 +3867,7 @@ etk_toplevel_widget_geometry_get(toplevel_widget, x, y, w, h)
 	int 	y;
 	int 	w;
 	int 	h;
-	etk_toplevel_widget_geometry_get(toplevel_widget, &x, &y, &w, &h);
+	etk_toplevel_geometry_get(toplevel_widget, &x, &y, &w, &h);
 	EXTEND(SP, 4);
 	PUSHs(sv_2mortal(newSViv(x)));
 	PUSHs(sv_2mortal(newSViv(y)));
@@ -3875,15 +3875,15 @@ etk_toplevel_widget_geometry_get(toplevel_widget, x, y, w, h)
 	PUSHs(sv_2mortal(newSViv(h)));
 
 void
-etk_toplevel_widget_pointer_pop(toplevel_widget, pointer_type)
-	Etk_Toplevel_Widget *	toplevel_widget
+etk_toplevel_pointer_pop(toplevel_widget, pointer_type)
+	Etk_Toplevel *	toplevel_widget
 	Etk_Pointer_Type	pointer_type
       ALIAS:
 	PointerPop=1
 
 void
-etk_toplevel_widget_pointer_push(toplevel_widget, pointer_type)
-	Etk_Toplevel_Widget *	toplevel_widget
+etk_toplevel_pointer_push(toplevel_widget, pointer_type)
+	Etk_Toplevel *	toplevel_widget
 	Etk_Pointer_Type	pointer_type
       ALIAS:
 	PointerPush=1
@@ -5276,7 +5276,7 @@ etk_widget_toplevel_evas_get(widget)
       ALIAS:
 	ToplevelEvasGet=1
 
-Etk_Toplevel_Widget *
+Etk_Toplevel *
 etk_widget_toplevel_parent_get(widget)
 	Etk_Widget *	widget
       ALIAS:
@@ -5296,17 +5296,17 @@ etk_widget_unswallow_widget(swallowing_widget, widget)
 	UnswallowWidget=1
 
 Etk_Bool
-etk_widget_visibility_locked_get(widget)
+etk_widget_internal_get(widget)
 	Etk_Widget *	widget
       ALIAS:
-	VisibilityLockedGet=1
+	InternalGet=1
 
 void
-etk_widget_visibility_locked_set(widget, visibility_locked)
+etk_widget_internal_set(widget, internal)
 	Etk_Widget *	widget
-	Etk_Bool	visibility_locked
+	Etk_Bool	internal
       ALIAS:
-	VisibilityLockedSet=1
+	InternalSet=1
 
 
 MODULE = Etk::Window	PACKAGE = Etk::Window	PREFIX = etk_window_
