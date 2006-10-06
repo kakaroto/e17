@@ -104,10 +104,10 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook type)
 	caller = EWL_ENGINE(embed->engine);
 	if (!caller->functions->engine_hooks[type] && caller->dependancies)
 	{
-		Ecore_List *deps;
+		Ecore_DList *deps;
 
 		deps = caller->dependancies;
-		ecore_list_goto_first(deps);
+		ecore_dlist_goto_first(deps);
 		while ((caller = ecore_dlist_next(deps)))
 		{
 			if (caller->functions->engine_hooks[type])
@@ -232,7 +232,7 @@ ewl_engine_new(const char *name)
 			Ewl_Engine *parent;
 
 			parent = ewl_engine_new(name);
-			ecore_list_append(deps, parent);
+			ecore_dlist_append(deps, parent);
 		}
 		ecore_list_destroy(dep_list);
 	}
