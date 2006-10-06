@@ -723,6 +723,7 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 	Ecore_X_Event_Window_Configure *ev;
 	Ewl_Window *window;
 	Ewl_Embed *embed;
+	int config = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -735,11 +736,15 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 	/*
 	 * Save coords and queue a configure event if the window is moved.
 	 */
-	if ((ev->from_wm) && (ev->x != embed->x))
+	if ((ev->from_wm) && (ev->x != embed->x)) {
 		embed->x = ev->x;
+		config = 1;
+	}
 
-	if ((ev->from_wm) && (ev->y != embed->y))
+	if ((ev->from_wm) && (ev->y != embed->y)) {
 		embed->y = ev->y;
+		config = 1;
+	}
 
 	window = ewl_window_window_find((void *)ev->win);
 	/*
@@ -748,7 +753,8 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	ewl_widget_configure(EWL_WIDGET(window));
+	if (config)
+		ewl_widget_configure(EWL_WIDGET(window));
 
 	/*
 	 * Configure events really only need to occur on resize.
@@ -763,7 +769,7 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 		 * add this back in to limit the # of window resizes occuring. 
 		 * (As long as it doesn't break initial size.)
 		 */
-		/* if (ev->from_wm) window->flags |= EWL_WINDOW_USER_CONFIGURE; */
+		// if (ev->from_wm) window->flags |= EWL_WINDOW_USER_CONFIGURE;
 		ewl_object_geometry_request(EWL_OBJECT(window), 0, 0, ev->w,
 									ev->h);
 	}
