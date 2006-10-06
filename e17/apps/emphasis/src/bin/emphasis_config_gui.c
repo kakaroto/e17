@@ -49,8 +49,11 @@ emphasis_configgui_autoset(Emphasis_Config_Gui *configgui)
 
   config = config_load();
 
-  etk_entry_text_set(ETK_ENTRY(configgui->hostname),
-                     config->hostname);
+  if(config->hostname)
+    {
+      etk_entry_text_set(ETK_ENTRY(configgui->hostname),
+                         config->hostname);
+    }
   if(config->password)
     {
       etk_entry_text_set(ETK_ENTRY(configgui->password),

@@ -18,17 +18,17 @@ mpc_init(const char *hostname, int port, const char *password)
     {
       mpd_send_password(mo);
       timer = ecore_timer_add(0.2, mpc_update, NULL);
+      if (!mpd_server_check_version(mo, 0, 12, 0))
+        {
+          fprintf(stderr, "Wrong server version. Emphasis require MPD 0.12.0\n");
+          mpc_disconnect();
+          ecore_timer_del(timer);
+          timer = NULL;
+        }
     }
   else
     {
       timer = NULL;
-    }
-
-  if (!mpd_server_check_version(mo, 0, 12, 0))
-    {
-      fprintf(stderr, "Wrong server version. Emphasis require MPD 0.12.0\n");
-      mpc_disconnect();
-      exit(-1);
     }
 
   return timer;

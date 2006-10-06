@@ -778,7 +778,6 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
           mpc_playlist_delete(list);
         }
     }
-  etk_widget_redraw_queue(ETK_WIDGET(player->media.pls));
 }
 
 /**
@@ -950,7 +949,7 @@ cb_config_show(Etk_Object *object, void *data)
   configgui = gui->config_gui;
 
   emphasis_configgui_autoset(configgui);
-  etk_widget_show_all(configgui->window);
+  etk_widget_show(configgui->window);
 }
 
 Etk_Bool
@@ -961,7 +960,7 @@ cb_config_hide(Etk_Object *object, void *data)
 
   configgui = data;
 
-  etk_widget_hide_all(configgui->window);
+  etk_widget_hide(configgui->window);
   return ETK_FALSE;
 }
 
