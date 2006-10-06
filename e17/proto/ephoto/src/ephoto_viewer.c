@@ -26,6 +26,7 @@ void change_image(Ewl_Widget *w, void *event, void *data)
  ewl_object_alignment_set(EWL_OBJECT(image_view), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(image_view);
 
+ ewl_widget_configure(image_view);
  ewl_widget_configure(ibox);
 }
 
@@ -44,10 +45,22 @@ void zoom_out(Ewl_Widget *w, void *event, void *data)
 {
  int ow, oh;
  
- ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh);
+ ewl_object_current_size_get(EWL_OBJECT(image_view), &ow, &oh); 
  
  ewl_image_size_set(EWL_IMAGE(image_view), ow/2, oh/2);
  
+ ewl_widget_configure(ibox);
+}
+
+void zoom_fit(Ewl_Widget *w, void *event, void *data)
+{
+ int ew, eh;
+
+ ewl_object_current_size_get(EWL_OBJECT(ibox), &ew, &eh);
+
+ ewl_image_proportional_set(EWL_IMAGE(image_view), FALSE); 
+ ewl_image_size_set(EWL_IMAGE(image_view), ew-16, eh-16);
+
  ewl_widget_configure(ibox);
 }
 
@@ -290,6 +303,16 @@ void view_images(Ewl_Widget *w, void *event, void *data)
 
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
+		      PACKAGE_DATA_DIR "/images/search.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Zoom To Fit"));
+ ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, zoom_fit, NULL);
+ ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_widget_show(menu_item);	
+ 
+ menu_item = ewl_menu_item_new();
+ ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/search.png", NULL);
  ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Zoom 1:1"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
@@ -390,6 +413,16 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_callback_append(button, EWL_CALLBACK_CLICKED, zoom_out, image_view);
  ewl_widget_show(button);
 
+ button = ewl_button_new();
+ ewl_button_image_set(EWL_BUTTON(button),
+		 PACKAGE_DATA_DIR "/images/search.png", NULL);
+ ewl_button_label_set(EWL_BUTTON(button), "Fit");
+ ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+ ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+ ewl_container_child_append(EWL_CONTAINER(hbox), button);
+ ewl_callback_append(button, EWL_CALLBACK_CLICKED, zoom_fit, image_view);
+ ewl_widget_show(button);	
+ 
  button = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(button), 
 		      PACKAGE_DATA_DIR "/images/search.png", NULL);
