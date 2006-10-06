@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-10-03 02:26+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ephoto.c:163
+msgid "  Location:"
+msgstr ""
+
+#: ephoto.c:72
+msgid "Add Album"
+msgstr ""
+
+#: ephoto.c:64 ephoto.c:210
+msgid "Albums"
+msgstr ""
+
+#: ephoto.c:112
+msgid "Configure Slideshow"
+msgstr ""
+
+#: ephoto.c:56
+msgid "Exit"
+msgstr ""
+
+#: ephoto.c:48
+msgid "File"
+msgstr ""
+
+#: ephoto.c:96
+msgid "Image Viewer"
+msgstr ""
+
+#: ephoto.c:81
+msgid "Remove Album"
+msgstr ""
+
+#: ephoto.c:104
+msgid "Slideshow"
+msgstr ""
+
+#: ephoto.c:122
+msgid "Start Slideshow"
+msgstr ""
+
+#: ephoto.c:88
+msgid "Viewer"
+msgstr ""
+
+#: ephoto_viewer.c:96
+msgid "Ephoto Image Viewer"
+msgstr ""
+
+#: ephoto_viewer.c:143
+msgid "In"
+msgstr ""
+
+#: ephoto_viewer.c:173
+msgid "Left"
+msgstr ""
+
+#: ephoto_viewer.c:153
+msgid "Out"
+msgstr ""
+
+#: ephoto_viewer.c:182
+msgid "Right"
+msgstr ""
+
+#: ephoto_slideshow.c:369
+msgid "Custom"
+msgstr ""
+
+#: ephoto_slideshow.c:115
+msgid "Ephoto Slideshow"
+msgstr ""
+
+#: ephoto_slideshow.c:361
+msgid "Fullscreen"
+msgstr ""
+
+#: ephoto_slideshow.c:398
+msgid "Height"
+msgstr ""
+
+#: ephoto_slideshow.c:439
+msgid "Image Size"
+msgstr ""
+
+#: ephoto_slideshow.c:453
+msgid "Keep Aspect"
+msgstr ""
+
+#: ephoto_slideshow.c:419
+msgid "Loop Slideshow"
+msgstr ""
+
+#: ephoto_slideshow.c:412
+msgid "Order"
+msgstr ""
+
+#: ephoto_slideshow.c:426
+msgid "Random Order"
+msgstr ""
+
+#: ephoto_slideshow.c:478
+msgid "Show File Name On Change"
+msgstr ""
+
+#: ephoto_slideshow.c:329
+msgid "Slideshow Configuration"
+msgstr ""
+
+#: ephoto_slideshow.c:460
+msgid "Transitions"
+msgstr ""
+
+#: ephoto_slideshow.c:384
+msgid "Width"
+msgstr ""
+
+#: ephoto_slideshow.c:348
+msgid "Window Size"
+msgstr ""
+
+#: ephoto_slideshow.c:446
+msgid "Zoom Images to Fill Window"
+msgstr ""

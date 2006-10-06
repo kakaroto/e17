@@ -161,7 +161,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
   }
  }
  vwin = ewl_window_new();
- ewl_window_title_set(EWL_WINDOW(vwin), "Ephoto Image Viewer");
+ ewl_window_title_set(EWL_WINDOW(vwin), gettext("Ephoto Image Viewer"));
  ewl_window_name_set(EWL_WINDOW(vwin), "Ephoto Image Viewer");
  ewl_object_size_request(EWL_OBJECT(vwin), 480, 480);
  ewl_callback_append(vwin, EWL_CALLBACK_DELETE_WINDOW, destroy_vwin, NULL);
@@ -208,7 +208,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  button = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(button), 
 		      PACKAGE_DATA_DIR "/images/search.png", NULL);
- ewl_button_label_set(EWL_BUTTON(button), "In");
+ ewl_button_label_set(EWL_BUTTON(button), gettext("In"));
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
@@ -218,7 +218,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  button = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(button), 
 		      PACKAGE_DATA_DIR "/images/search.png", NULL);
- ewl_button_label_set(EWL_BUTTON(button), "Out");
+ ewl_button_label_set(EWL_BUTTON(button), gettext("Out"));
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
@@ -238,7 +238,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  button = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(button), 
 		      PACKAGE_DATA_DIR "/images/undo.png", NULL);
- ewl_button_label_set(EWL_BUTTON(button), "Left");
+ ewl_button_label_set(EWL_BUTTON(button), gettext("Left"));
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
@@ -248,7 +248,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  button = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(button), 
 		      PACKAGE_DATA_DIR "/images/redo.png", NULL);
- ewl_button_label_set(EWL_BUTTON(button), "Right");
+ ewl_button_label_set(EWL_BUTTON(button), gettext("Right"));
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);

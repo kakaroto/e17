@@ -15,7 +15,12 @@ main(int argc, char **argv)
   printf("Unable to init ewl\n");
   return 1;
  }
-
+ 
+ /* NLS */
+ setlocale( LC_ALL, "" );
+ bindtextdomain( "ephoto", "/usr/share/locale" );
+ textdomain( "ephoto" );
+ 
  m = NULL;
  current_thumbs = ecore_dlist_new();
  current_directory = strdup(getenv("HOME"));
@@ -40,7 +45,7 @@ main(int argc, char **argv)
  ewl_widget_show(menubar);
 
  menu = ewl_menu_new();
- ewl_button_label_set(EWL_BUTTON(menu), "File");
+ ewl_button_label_set(EWL_BUTTON(menu), gettext("File"));
  ewl_container_child_append(EWL_CONTAINER(menubar), menu);
  ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
  ewl_widget_show(menu);
@@ -48,7 +53,7 @@ main(int argc, char **argv)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item), 
 		      PACKAGE_DATA_DIR "/images/exit.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), "Exit");
+ ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Exit"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
@@ -56,7 +61,7 @@ main(int argc, char **argv)
  ewl_widget_show(menu_item);
 
  menu = ewl_menu_new();
- ewl_button_label_set(EWL_BUTTON(menu), "Albums");
+ ewl_button_label_set(EWL_BUTTON(menu), gettext("Albums"));
  ewl_container_child_append(EWL_CONTAINER(menubar), menu);
  ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
  ewl_widget_show(menu);
@@ -64,7 +69,7 @@ main(int argc, char **argv)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
 		      PACKAGE_DATA_DIR "/images/add.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), "Add Album");
+ ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Add Album"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
@@ -73,14 +78,14 @@ main(int argc, char **argv)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/remove.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), "Remove Album");
+ ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Remove Album"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
  ewl_widget_show(menu_item);
  
  menu = ewl_menu_new();
- ewl_button_label_set(EWL_BUTTON(menu), "Viewer");
+ ewl_button_label_set(EWL_BUTTON(menu), gettext("Viewer"));
  ewl_container_child_append(EWL_CONTAINER(menubar), menu);
  ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
  ewl_widget_show(menu);     
@@ -88,7 +93,7 @@ main(int argc, char **argv)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
 		      PACKAGE_DATA_DIR "/images/emblem-photos.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), "Image Viewer");
+ ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Image Viewer"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, view_images, NULL);
@@ -96,7 +101,7 @@ main(int argc, char **argv)
  ewl_widget_show(menu_item); 
 
  menu = ewl_menu_new();
- ewl_button_label_set(EWL_BUTTON(menu), "Slideshow");
+ ewl_button_label_set(EWL_BUTTON(menu), gettext("Slideshow"));
  ewl_container_child_append(EWL_CONTAINER(menubar), menu);
  ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
  ewl_widget_show(menu);
@@ -104,7 +109,7 @@ main(int argc, char **argv)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item), 
 		      PACKAGE_DATA_DIR "/images/preferences-system.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), "Configure Slideshow");
+ ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Configure Slideshow"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, create_slideshow_config, NULL);
@@ -114,7 +119,7 @@ main(int argc, char **argv)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item), 
 		      PACKAGE_DATA_DIR "/images/x-office-presentation.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), "Start Slideshow");
+ ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Start Slideshow"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, start_slideshow, NULL);
@@ -155,7 +160,7 @@ main(int argc, char **argv)
  ewl_widget_show(image);
       
  text = ewl_text_new();
- ewl_text_text_set(EWL_TEXT(text), "  Location:");
+ ewl_text_text_set(EWL_TEXT(text), gettext("  Location:"));
  ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
  ewl_object_maximum_size_set(EWL_OBJECT(text), 66, 15);
  ewl_container_child_append(EWL_CONTAINER(hbox), text);
@@ -202,7 +207,7 @@ main(int argc, char **argv)
  ewl_widget_show(hseparator);
 
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), "Albums");
+ ewl_border_text_set(EWL_BORDER(border), gettext("Albums"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(vbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
@@ -244,4 +249,3 @@ main(int argc, char **argv)
  ewl_main();
  return 0;
 }
-

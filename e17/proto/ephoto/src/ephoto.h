@@ -12,6 +12,10 @@
 #include <string.h>
 #include "config.h"
 
+/* NLS */
+#include <libintl.h>
+#include <locale.h>
+
 void destroy_cb(Ewl_Widget *w, void *event, void *data);
 void populate_browser(Ewl_Widget *w, void *event, void *data);
 void populate_albums(Ewl_Widget *w, void *event, void *data);
