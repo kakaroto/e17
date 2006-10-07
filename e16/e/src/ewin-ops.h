@@ -71,6 +71,7 @@ typedef enum
    EWIN_OP_INH_USER_SIZE,
    EWIN_OP_INH_WM_FOCUS,
 
+   EWIN_OP_FADE,
    EWIN_OP_SHADOW,
    EWIN_OP_NO_REDIRECT,
 } winop_e;

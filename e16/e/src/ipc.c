@@ -882,6 +882,12 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	break;
 
 #if USE_COMPOSITE
+     case EWIN_OP_FADE:
+	on = EoGetFade(ewin);
+	if (SetEwinBoolean(wop->name, &on, param1, 1))
+	   EoSetFade(ewin, on);
+	break;
+
      case EWIN_OP_SHADOW:
 	on = EoGetShadow(ewin);
 	if (SetEwinBoolean(wop->name, &on, param1, 1))
@@ -1134,7 +1140,7 @@ EwinShowInfo(const EWin * ewin)
 	     "State        %i   Shown        %i   Visibility   %i   Active       %i\n"
 	     "Member of groups        %i\n"
 #if USE_COMPOSITE
-	     "Opacity    %3i(%x)  Shadow       %i   NoRedirect   %i\n"
+	     "Opacity    %3i(%x)  Shadow       %i   Fade         %i   NoRedirect   %i\n"
 #else
 	     "Opacity    %3i\n"
 #endif
@@ -1180,7 +1186,8 @@ EwinShowInfo(const EWin * ewin)
 	     ewin->state.visibility, ewin->state.active, ewin->num_groups,
 	     OpacityToPercent(ewin->ewmh.opacity)
 #if USE_COMPOSITE
-	     , EoGetOpacity(ewin), EoGetShadow(ewin), EoGetNoRedirect(ewin)
+	     , EoGetOpacity(ewin), EoGetShadow(ewin), EoGetFade(ewin),
+	     EoGetNoRedirect(ewin)
 #endif
       );
 }
@@ -1409,6 +1416,9 @@ static const IpcItem IPCArray[] = {
     "  win_op <windowid> title <title>\n"
     "  win_op <windowid> <close/kill>\n"
     "  win_op <windowid> <focus/iconify/shade/stick>\n"
+#if USE_COMPOSITE
+    "  win_op <windowid> <fade/shadow>\n"
+#endif
     "  win_op <windowid> desk <desktochangeto/next/prev>\n"
     "  win_op <windowid> area <x> <y>\n"
     "  win_op <windowid> <move/size> <x> <y>\n"
@@ -1426,7 +1436,6 @@ static const IpcItem IPCArray[] = {
     "  win_op <windowid> <no_app_focus/move/size>\n"
     "  win_op <windowid> <no_user_close/move/size>\n"
     "  win_op <windowid> <no_wm_focus>\n"
-    "  win_op <windowid> noshadow\n"
     "<windowid> may be substituted with \"current\" to use the current window\n"},
    {
     IPC_WinList,

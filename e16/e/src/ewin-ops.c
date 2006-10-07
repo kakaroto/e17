@@ -87,6 +87,7 @@ static const WinOp  winops[] = {
    {"no_user_size", 0, 1, 1, EWIN_OP_INH_USER_SIZE},
    {"no_wm_focus", 0, 1, 1, EWIN_OP_INH_WM_FOCUS},
 
+   {"fade", 0, 1, 1, EWIN_OP_FADE},
    {"noredir", 4, 1, 1, EWIN_OP_NO_REDIRECT},
 
    {NULL, 0, 0, 0, EWIN_OP_INVALID}	/* Terminator */

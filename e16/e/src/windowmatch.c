@@ -767,6 +767,10 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	break;
 
 #if USE_COMPOSITE
+     case EWIN_OP_FADE:
+	WINOP_SET_BOOL(ewin->o.fade, args);
+	break;
+
      case EWIN_OP_SHADOW:
 	WINOP_SET_BOOL(ewin->o.shadow, args);
 	break;

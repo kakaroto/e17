@@ -106,6 +106,7 @@ struct _eobj
 #if USE_COMPOSITE
 #define EoSetOpacity(eo, _o)    EoObj(eo)->opacity = (_o)
 #define EoGetOpacity(eo)        (EoObj(eo)->opacity)
+#define EoGetFade(eo)           (EoObj(eo)->fade)
 #define EoGetShadow(eo)         (EoObj(eo)->shadow)
 #define EoGetNoRedirect(eo)     (EoObj(eo)->noredir)
 #define EoGetSerial(eo)         (EoObj(eo)->serial)
