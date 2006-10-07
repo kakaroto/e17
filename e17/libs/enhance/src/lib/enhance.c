@@ -622,7 +622,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	        image = etk_image_new_from_stock(id, ETK_STOCK_SMALL);
 		etk_button_image_set(ETK_BUTTON(wid->wid), ETK_IMAGE(image));
 		etk_widget_show(image);
-		etk_widget_visibility_locked_set(image, ETK_TRUE);
+		etk_widget_internal_set(image, ETK_TRUE);
 	      }
 	    else
 	      {
@@ -676,7 +676,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	        image = etk_image_new_from_stock(id, ETK_STOCK_SMALL);
 		etk_button_image_set(ETK_BUTTON(wid->wid), ETK_IMAGE(image));
 		etk_widget_show(image);
-		etk_widget_visibility_locked_set(image, ETK_TRUE);
+		etk_widget_internal_set(image, ETK_TRUE);
 	      }
 	    else
 	      {
@@ -770,7 +770,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    else if(!strcmp(name, "toolbar_style"))
      {
 	     PROPERTY_STR;
-	     Etk_Toolbar_Style style = ETK_TOOLBAR_ICONS;
+	     Etk_Toolbar_Style style = ETK_TOOLBAR_ICON;
 
 	     if (value)
 	       {
