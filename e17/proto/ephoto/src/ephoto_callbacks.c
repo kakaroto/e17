@@ -142,7 +142,7 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
  Ecore_List *ls;
  Ecore_List *images;
  Ewl_Widget *image;
- Ewl_Widget *cell;
+ Ewl_Widget *shadow;
  
  ls = ecore_list_new();
  images = ecore_list_new();
@@ -207,16 +207,16 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   image_path = ecore_list_remove_first(images);
   ecore_dlist_append(current_thumbs, image_path);
 
-  cell = ewl_shadow_new();
-  ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), cell);
-  ewl_object_minimum_size_set(EWL_OBJECT(cell), 115, 95);
-  ewl_object_maximum_size_set(EWL_OBJECT(cell), 115, 95);
-  ewl_callback_append(cell, EWL_CALLBACK_CLICKED, view_images, image_path);
-  ewl_widget_show(cell);
+  shadow = ewl_shadow_new();
+  ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), shadow);
+  ewl_object_minimum_size_set(EWL_OBJECT(shadow), 115, 95);
+  ewl_object_maximum_size_set(EWL_OBJECT(shadow), 115, 95);
+  ewl_callback_append(shadow, EWL_CALLBACK_CLICKED, view_images, image_path);
+  ewl_widget_show(shadow);
   
   image = ewl_image_thumbnail_new();
   ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(image), image_path);
-  ewl_container_child_append(EWL_CONTAINER(cell), image);
+  ewl_container_child_append(EWL_CONTAINER(shadow), image);
   ewl_image_size_set(EWL_IMAGE(image), 97, 83);
   ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
   ewl_theme_data_str_set(image, "/image_thumbnail/group",

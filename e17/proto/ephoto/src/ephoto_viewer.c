@@ -218,8 +218,8 @@ void rotate_right(Ewl_Widget *w, void *event, void *data)
 void view_images(Ewl_Widget *w, void *event, void *data)
 {
  char *current_image;
- Ewl_Widget *button, *vbox, *scrollpane, *freebox, *icon;
- Ewl_Widget *image, *hbox, *cell, *menubar, *menu, *menu_item;
+ Ewl_Widget *button, *vbox, *scrollpane, *freebox, *image;
+ Ewl_Widget *hbox, *shadow, *menubar, *menu, *menu_item;
  Ecore_List *view_thumbs;
  
  view_thumbs = current_thumbs;
@@ -317,7 +317,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Zoom 1:1"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
- ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, zoom_out, NULL);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, original_size, NULL);
  ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
  ewl_widget_show(menu_item);
 
@@ -458,21 +458,21 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  {
   current_image = ecore_dlist_current(view_thumbs);    
 
-  cell = ewl_cell_new();
-  ewl_container_child_append(EWL_CONTAINER(freebox), cell);
-  ewl_object_minimum_size_set(EWL_OBJECT(cell), 50, 50);
-  ewl_object_maximum_size_set(EWL_OBJECT(cell), 50, 50);
-  ewl_theme_data_str_set(cell, "/cell/group",
-                         ewl_theme_data_str_get(m->entry, "group"));
-  ewl_callback_append(cell, EWL_CALLBACK_CLICKED, change_image, current_image);
-  ewl_widget_show(cell);
+  shadow = ewl_shadow_new();
+  ewl_container_child_append(EWL_CONTAINER(freebox), shadow);
+  ewl_object_minimum_size_set(EWL_OBJECT(shadow), 60, 60);
+  ewl_object_maximum_size_set(EWL_OBJECT(shadow), 60, 60);
+  ewl_callback_append(shadow, EWL_CALLBACK_CLICKED, change_image, current_image);
+  ewl_widget_show(shadow);
   
   image = ewl_image_thumbnail_new();
   ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(image), current_image);
-  ewl_container_child_append(EWL_CONTAINER(cell), image);
+  ewl_container_child_append(EWL_CONTAINER(shadow), image);
   ewl_image_size_set(EWL_IMAGE(image), 48, 48);
   ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
   ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
+  ewl_theme_data_str_set(image, "/image_thumbnail/group", 
+		         ewl_theme_data_str_get(m->win, "group"));
   ewl_widget_show(image);
   
   ecore_dlist_next(view_thumbs);
