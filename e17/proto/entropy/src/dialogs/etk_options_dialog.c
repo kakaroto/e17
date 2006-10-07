@@ -181,7 +181,7 @@ void entropy_etk_options_dialog_create()
 	
 	toolbar = etk_toolbar_new();
 	etk_toolbar_orientation_set(ETK_TOOLBAR(toolbar), ETK_TOOLBAR_HORIZ);
-	etk_toolbar_style_set(ETK_TOOLBAR(toolbar), ETK_TOOLBAR_ICONS);
+	etk_toolbar_style_set(ETK_TOOLBAR(toolbar), ETK_TOOLBAR_ICON);
 	etk_box_append(ETK_BOX(vbox), toolbar, ETK_BOX_START, ETK_BOX_NONE, 0);
 
 	etk_box_append(ETK_BOX(vbox),_entropy_etk_options_local_box , ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
