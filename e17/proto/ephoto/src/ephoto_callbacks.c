@@ -207,12 +207,10 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   image_path = ecore_list_remove_first(images);
   ecore_dlist_append(current_thumbs, image_path);
 
-  cell = ewl_cell_new();
+  cell = ewl_shadow_new();
   ewl_container_child_append(EWL_CONTAINER(m->viewer_freebox), cell);
-  ewl_object_minimum_size_set(EWL_OBJECT(cell), 100, 85);
-  ewl_object_maximum_size_set(EWL_OBJECT(cell), 100, 85);
-  ewl_theme_data_str_set(cell, "/cell/group",
-		         ewl_theme_data_str_get(m->entry, "group"));
+  ewl_object_minimum_size_set(EWL_OBJECT(cell), 115, 95);
+  ewl_object_maximum_size_set(EWL_OBJECT(cell), 115, 95);
   ewl_callback_append(cell, EWL_CALLBACK_CLICKED, view_images, image_path);
   ewl_widget_show(cell);
   
@@ -221,6 +219,8 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   ewl_container_child_append(EWL_CONTAINER(cell), image);
   ewl_image_size_set(EWL_IMAGE(image), 97, 83);
   ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
+  ewl_theme_data_str_set(image, "/image_thumbnail/group",
+                         ewl_theme_data_str_get(m->win, "group"));
   ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
   ewl_widget_show(image);
  }
