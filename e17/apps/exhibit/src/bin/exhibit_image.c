@@ -81,7 +81,7 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
 	e->mouse.x = ev->canvas.x;
 	e->mouse.y = ev->canvas.y;
 	
-        etk_toplevel_widget_pointer_push(ETK_TOPLEVEL_WIDGET(e->win), ETK_POINTER_MOVE);
+        etk_toplevel_pointer_push(ETK_TOPLEVEL(e->win), ETK_POINTER_MOVE);
      }
    else if(ev->button == 2)
      {
@@ -147,7 +147,7 @@ _ex_image_mouse_up(Etk_Object *object, void *event, void *data)
    if(ev->button == 1)
      {
 	e->mouse.down = 0;
-        etk_toplevel_widget_pointer_pop(ETK_TOPLEVEL_WIDGET(e->win), ETK_POINTER_MOVE);
+        etk_toplevel_pointer_pop(ETK_TOPLEVEL(e->win), ETK_POINTER_MOVE);
      }
 }
 

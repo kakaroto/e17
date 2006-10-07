@@ -22,27 +22,27 @@ _ex_main_statusbar_zoom_update(Exhibit *e)
 {
    if (e->cur_tab->fit_window)
      {
-        etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
-        etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), _("Fit to window"), 0);
+        etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
+        etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[2]), _("Fit to window"), 0);
      }
    else if(e->zoom > 0)
      {
 	char zoom[6];
-	etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
+	etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
 	snprintf(zoom, sizeof(zoom), "%d:1", abs(e->zoom));
-	etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), zoom, 0);
+	etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[2]), zoom, 0);
      }
    else if(e->zoom < 0)
      {
 	char zoom[6];
-	etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
+	etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
 	snprintf(zoom, sizeof(zoom), "1:%d", abs(e->zoom));
-	etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), zoom, 0);;
+	etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[2]), zoom, 0);;
      }
    else
      {
-	etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
-	etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
+	etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[2]), 0);
+	etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
      }      
 }
 
@@ -58,10 +58,10 @@ _ex_main_image_unset()
    E_FREE(tab->cur_file);
    tab->image_loaded = ETK_FALSE;
    
-   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[0]), 0);
-   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[0]), NULL, 0);
-   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
-   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[1]), NULL, 0);
+   etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[0]), 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[0]), NULL, 0);
+   etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[1]), NULL, 0);
 
    /* Just hide the image as if we deleted it */
    etk_widget_hide(ETK_WIDGET(tab->image));
@@ -113,13 +113,13 @@ _ex_main_image_set(Exhibit *e, char *image)
    
    bytes = ecore_file_size(image);
    snprintf(size, sizeof(size), "%d K", (int)(bytes/1024));
-   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[0]), 0);
-   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[0]), size, 0);
+   etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[0]), 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[0]), size, 0);
       
    etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);   
    snprintf(size, sizeof(size), "( %d x %d )", w, h);
-   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
-   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);
+   etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);
    
    hs = etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view));
    vs = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view));
@@ -164,7 +164,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
      {
 	snprintf(back, PATH_MAX, "..");
 	etk_tree_append(ETK_TREE(e->cur_tab->dtree), e->cur_tab->dcol, 
-	      etk_theme_icon_theme_get(), "actions/go-up_16", back, NULL);
+	      etk_theme_icon_get(), "actions/go-up_16", back, NULL);
      }
 
    if (e->cur_tab->monitor)
@@ -207,7 +207,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	     if(S_ISDIR(st.st_mode))
 	       {
 		  etk_tree_append(ETK_TREE(e->cur_tab->dtree), e->cur_tab->dcol,
-			etk_theme_icon_theme_get(),
+			etk_theme_icon_get(),
 			"places/folder_16",
 			dir_entry->d_name, NULL);
 		  e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, dir_entry->d_name);
@@ -914,7 +914,7 @@ _ex_main_window_show(char *dir)
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);
    e->sort_bar = etk_statusbar_new();
-   etk_statusbar_push(ETK_STATUSBAR(e->sort_bar), "Sort by date", 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->sort_bar), "Sort by date", 0);
    etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->sort_bar), ETK_FALSE);
    etk_box_append(ETK_BOX(e->vbox), e->hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
    etk_box_append(ETK_BOX(e->hbox), e->sort_bar, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -945,9 +945,9 @@ _ex_main_window_show(char *dir)
    etk_box_append(ETK_BOX(e->hbox), e->statusbar[2], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    if (e->options->default_view == EX_IMAGE_ONE_TO_ONE) 
-      etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
+      etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[2]), "1:1", 0);
    else if (e->options->default_view == EX_IMAGE_FIT_TO_WINDOW)
-      etk_statusbar_push(ETK_STATUSBAR(e->statusbar[2]), "Fit to window", 0);
+      etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[2]), "Fit to window", 0);
    
    e->statusbar[3] = etk_statusbar_new();
    etk_box_append(ETK_BOX(e->hbox), e->statusbar[3], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);

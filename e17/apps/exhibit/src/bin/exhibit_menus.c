@@ -224,8 +224,8 @@ _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
    _ex_image_flip_diagonal(ETK_IMAGE(e->cur_tab->image), 1);
    etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);
    snprintf(size, sizeof(size), "( %d x %d )", w, h);
-   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
-   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);
+   etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);
 }
 
 void
@@ -242,8 +242,8 @@ _ex_menu_rot_counter_clockwise_cb(Etk_Object *obj, void *data)
    _ex_image_flip_diagonal(ETK_IMAGE(e->cur_tab->image), 2);
    etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);
    snprintf(size, sizeof(size), "( %d x %d )", w, h);
-   etk_statusbar_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
-   etk_statusbar_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);   
+   etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);   
 }
 
 void
