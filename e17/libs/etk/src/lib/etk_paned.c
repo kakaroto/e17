@@ -355,11 +355,7 @@ static void _etk_hpaned_size_request(Etk_Widget *widget, Etk_Size *size)
       return;
 
    if (paned->child1)
-   {
       etk_widget_size_request(paned->child1, &child1_size);
-      if (paned->child1->geometry.w < child1_size.w)
-         etk_widget_redraw_queue(widget);
-   }
    else
    {
       child1_size.w = 0;
@@ -367,11 +363,7 @@ static void _etk_hpaned_size_request(Etk_Widget *widget, Etk_Size *size)
    }
    
    if (paned->child2)
-   {
       etk_widget_size_request(paned->child2, &child2_size);
-      if (paned->child2->geometry.w < child2_size.w)
-         etk_widget_redraw_queue(widget);
-   }
    else
    {
       child2_size.w = 0;
@@ -381,6 +373,10 @@ static void _etk_hpaned_size_request(Etk_Widget *widget, Etk_Size *size)
    etk_widget_size_request(paned->separator, &separator_size);
    size->w = child1_size.w + child2_size.w + separator_size.w;
    size->h = ETK_MAX(child1_size.h, ETK_MAX(child2_size.h, separator_size.h));
+   
+   /* We force the paned to redraw */
+   /* TODO: maybe a smarter way to fix the redraw bug */
+   etk_widget_redraw_queue(widget);
 }
 
 /* Calculates the ideal size of the vpaned */
@@ -393,11 +389,7 @@ static void _etk_vpaned_size_request(Etk_Widget *widget, Etk_Size *size)
       return;
 
    if (paned->child1)
-   {
       etk_widget_size_request(paned->child1, &child1_size);
-      if (paned->child1->geometry.h < child1_size.h)
-         etk_widget_redraw_queue(widget);
-   }
    else
    {
       child1_size.w = 0;
@@ -405,11 +397,7 @@ static void _etk_vpaned_size_request(Etk_Widget *widget, Etk_Size *size)
    }
    
    if (paned->child2)
-   {
       etk_widget_size_request(paned->child2, &child2_size);
-      if (paned->child2->geometry.h < child2_size.h)
-         etk_widget_redraw_queue(widget);
-   }
    else
    {
       child2_size.w = 0;
@@ -419,6 +407,10 @@ static void _etk_vpaned_size_request(Etk_Widget *widget, Etk_Size *size)
    etk_widget_size_request(paned->separator, &separator_size);
    size->w = ETK_MAX(child1_size.w, ETK_MAX(child2_size.w, separator_size.w));
    size->h = child1_size.h + child2_size.h + separator_size.h;
+   
+   /* We force the paned to redraw */
+   /* TODO: maybe a smarter way to fix the redraw bug */
+   etk_widget_redraw_queue(widget);
 }
 
 /* Resizes the hpaned to the allocated size */
