@@ -43,7 +43,7 @@ static void _etk_popup_window_slide_timer_update(Etk_Popup_Window *popup_window)
 static Etk_Popup_Window_Screen_Edge _etk_popup_window_edge_get(Etk_Popup_Window *popup_window);
 static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_edge_get();
 
-static int _etk_popup_window_popup_timestamp = 0;
+static unsigned int _etk_popup_window_popup_timestamp = 0;
 static Ecore_Timer *_etk_popup_window_slide_timer = NULL;
 static Evas_List *_etk_popup_window_popped_parents = NULL;
 static Etk_Popup_Window *_etk_popup_window_focused_window = NULL;
@@ -373,7 +373,7 @@ static void _etk_popup_window_key_down_cb(Etk_Event_Global event_info, void *dat
 {
    if (!_etk_popup_window_focused_window)
       return;
-   if (event_info.key_down.timestamp < (int)_etk_popup_window_popup_timestamp)
+   if (event_info.key_down.timestamp < _etk_popup_window_popup_timestamp)
       return;
    
    evas_event_feed_key_down(ETK_TOPLEVEL(_etk_popup_window_focused_window)->evas, event_info.key_down.keyname,
@@ -386,7 +386,7 @@ static void _etk_popup_window_key_up_cb(Etk_Event_Global event_info, void *data)
 {
    if (!_etk_popup_window_focused_window)
       return;
-   if (event_info.key_up.timestamp < (int)_etk_popup_window_popup_timestamp)
+   if (event_info.key_up.timestamp < _etk_popup_window_popup_timestamp)
       return;
    
    evas_event_feed_key_up(ETK_TOPLEVEL(_etk_popup_window_focused_window)->evas, event_info.key_up.keyname,
@@ -400,7 +400,7 @@ static void _etk_popup_window_mouse_move_cb(Etk_Event_Global event_info, void *d
    Etk_Popup_Window *pop;
    int px, py;
    
-   if (event_info.mouse_move.timestamp < (int)_etk_popup_window_popup_timestamp)
+   if (event_info.mouse_move.timestamp < _etk_popup_window_popup_timestamp)
       return;
    
    pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));
@@ -422,10 +422,12 @@ static void _etk_popup_window_mouse_up_cb(Etk_Event_Global event_info, void *dat
    Etk_Popup_Window *pop;
    Etk_Bool pointer_over_window = ETK_FALSE;
    
-   if (event_info.mouse_up.timestamp < (int)_etk_popup_window_popup_timestamp)
+   if (event_info.mouse_up.timestamp < _etk_popup_window_popup_timestamp)
+   {
+      printf("Up Timestamps: %d %d\n", event_info.mouse_up.timestamp, _etk_popup_window_popup_timestamp);
       return;
+   }
    
-   printf("PopWin: Mouse Up: %d %d\n", event_info.mouse_up.pos.x, event_info.mouse_up.pos.y);
    /* If the user clicks on a popped window, we feed the event */
    pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));
    for ( ; pop; pop = pop->popped_child)
@@ -433,7 +435,6 @@ static void _etk_popup_window_mouse_up_cb(Etk_Event_Global event_info, void *dat
       int px, py, pw, ph;
       
       etk_window_geometry_get(ETK_WINDOW(pop), &px, &py, &pw, &ph);
-      printf("PopWin: Mouse Up2: %d %d %d %d\n", px, py, pw, ph);
       if (ETK_INSIDE(event_info.mouse_up.pos.x, event_info.mouse_up.pos.y, px, py, pw, ph))
       {
 	 pointer_over_window = ETK_TRUE;
@@ -445,7 +446,7 @@ static void _etk_popup_window_mouse_up_cb(Etk_Event_Global event_info, void *dat
    
    /* Otherwise, we pop down the popup windows */
    if (!pointer_over_window
-      && ((int)event_info.mouse_up.timestamp - _etk_popup_window_popup_timestamp) >= ETK_POPUP_WINDOW_MIN_POP_TIME)
+      && (event_info.mouse_up.timestamp - _etk_popup_window_popup_timestamp) >= ETK_POPUP_WINDOW_MIN_POP_TIME)
    {
       pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));
       etk_popup_window_popdown(pop);
