@@ -425,6 +425,7 @@ static void _etk_popup_window_mouse_up_cb(Etk_Event_Global event_info, void *dat
    if (event_info.mouse_up.timestamp < (int)_etk_popup_window_popup_timestamp)
       return;
    
+   printf("PopWin: Mouse Up: %d %d\n", event_info.mouse_up.pos.x, event_info.mouse_up.pos.y);
    /* If the user clicks on a popped window, we feed the event */
    pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));
    for ( ; pop; pop = pop->popped_child)
@@ -432,6 +433,7 @@ static void _etk_popup_window_mouse_up_cb(Etk_Event_Global event_info, void *dat
       int px, py, pw, ph;
       
       etk_window_geometry_get(ETK_WINDOW(pop), &px, &py, &pw, &ph);
+      printf("PopWin: Mouse Up2: %d %d %d %d\n", px, py, pw, ph);
       if (ETK_INSIDE(event_info.mouse_up.pos.x, event_info.mouse_up.pos.y, px, py, pw, ph))
       {
 	 pointer_over_window = ETK_TRUE;

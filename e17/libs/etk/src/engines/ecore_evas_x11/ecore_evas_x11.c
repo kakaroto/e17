@@ -501,6 +501,7 @@ static void _popup_window_popup(Etk_Popup_Window *popup_window)
 	 root = win;
       
       ecore_x_window_geometry_get(root, &root_x, &root_y, &root_w, &root_h);
+      printf("Engine: Popup: %d %d %d %d\n", root_x, root_y, root_w, root_h);
       _popup_window_input_window = ecore_x_window_input_new(root, root_x, root_y, root_w, root_h);
       ecore_x_window_show(_popup_window_input_window);
       ecore_x_pointer_confine_grab(_popup_window_input_window);
@@ -516,6 +517,7 @@ static void _popup_window_popdown(Etk_Popup_Window *popup_window)
    
    if (!_popup_window_popped_windows)
    {
+      printf("Engine: Popdown\n");
       ecore_x_pointer_ungrab();
       ecore_x_keyboard_ungrab();
       ecore_x_window_del(_popup_window_input_window);
@@ -721,6 +723,7 @@ static int _event_input_handler_cb(void *data, int type, void *event)
       ev.mouse_up.pos.x = xev->x + x;
       ev.mouse_up.pos.y = xev->y + y;
       ev.mouse_up.timestamp = xev->time;
+      printf("Engine: Mouse Up: %d %d (%d %d)\n", ev.mouse_up.pos.x, ev.mouse_up.pos.y, x, y);
       _event_callback(ETK_EVENT_MOUSE_UP, ev);
    }
    else if (type == ECORE_X_EVENT_MOUSE_WHEEL)
