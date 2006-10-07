@@ -290,7 +290,7 @@ collections {
    }
    
    group {
-      name: "etk/preview";
+      name: "preview";
       parts {
 	 part {
 	    name: "image";
