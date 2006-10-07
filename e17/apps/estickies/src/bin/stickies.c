@@ -16,7 +16,7 @@ static void _e_sticky_focus_in_cb(Etk_Object *object, void *data);
 static void _e_sticky_focus_out_cb(Etk_Object *object, void *data);
 static void _e_sticky_sticky_cb(Etk_Object *object, const char *property_name, void *data);
 static void _e_sticky_delete_confirm_cb(Etk_Object *obj, int response_id, void *data);  
-static void _e_sticky_clipboard_text_request_cb(Etk_Object *object, void *event, void *data);
+static void _e_sticky_selection_text_request_cb(Etk_Object *object, void *event, void *data);
 
 static void
 _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
@@ -61,7 +61,7 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 	     
 	     if(string && (text = etk_string_get(string)))
 	       {		  
-		  etk_clipboard_text_set(s->textview, text, strlen(text) + 1);
+		  etk_selection_text_set(ETK_SELECTION_CLIPBOARD, text);
 		  etk_object_destroy(ETK_OBJECT(string));
 	       }
 	     
@@ -71,7 +71,7 @@ _e_sticky_key_down_cb(Etk_Object *object, void *event, void *data)
 	  }
 	else if(!strcmp(ev->key, "v"))
 	  {
-	     etk_clipboard_text_request(ETK_WIDGET(s->win));
+	     etk_selection_text_request(ETK_SELECTION_CLIPBOARD, ETK_WIDGET(s->win));
 	  }
 	else if(!strcmp(ev->key, "a"))
 	  {
@@ -358,7 +358,7 @@ _e_sticky_window_add(E_Sticky *s)
    
    etk_container_add(ETK_CONTAINER(s->win), vbox);
    etk_widget_focus(s->textview);
-   etk_signal_connect("clipboard_received", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_clipboard_text_request_cb), s);
+   etk_signal_connect("selection_received", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_selection_text_request_cb), s);
 }
 
 E_Sticky *
@@ -555,16 +555,14 @@ _e_sticky_delete_confirm_cb(Etk_Object *obj, int response_id, void *data)
    etk_object_destroy(obj);
 }
 
-static void _e_sticky_clipboard_text_request_cb(Etk_Object *object, void *event, void *data)
+static void _e_sticky_selection_text_request_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Selection_Request *ev;
-   Etk_Selection_Data_Text *ev_text;
+   Etk_Selection_Event *ev = event;
    Etk_Textblock_Iter *cursor;
    Etk_Textblock_Iter *selection;   
    E_Sticky *s;
    
-   ev = event;
-   if(!(s = data) || !(ev_text = ev->data) || !(ev_text->text))
+   if(!(ev = event) || (ev->type != ETK_SELECTION_TEXT))
      return;
 	     
    cursor = etk_textblock_object_cursor_get(ETK_TEXT_VIEW(s->textview)->textblock_object);
@@ -573,7 +571,7 @@ static void _e_sticky_clipboard_text_request_cb(Etk_Object *object, void *event,
    etk_textblock_delete_range(etk_text_view_textblock_get(ETK_TEXT_VIEW(s->textview)),
 			      cursor, selection);      
    etk_textblock_insert(etk_text_view_textblock_get(ETK_TEXT_VIEW(s->textview)), cursor,
-			ev_text->text, strlen(ev_text->text));
+			ev->data.text, -1);
 }
 
 int main(int argc, char **argv)
