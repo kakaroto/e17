@@ -194,9 +194,8 @@ ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
 				ewl_stock_items[b->stock_type].image_key,
 				EWL_ICON_SIZE_MEDIUM);
 
-	if (data) 
-		ewl_button_image_set(b, data, 
-                    ewl_stock_items[b->stock_type].image_key);
+	ewl_button_image_set(b, data, 
+                ewl_stock_items[b->stock_type].image_key);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -228,8 +227,16 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
-	DCHECK_PARAM_PTR("file", file);
 	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+
+	if (!file)
+	{
+		if (b->image_object)
+			ewl_widget_destroy(b->image_object);
+		b->image_object = NULL;
+		
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	if (!b->image_object) {
 		Ewl_Container *redir;
