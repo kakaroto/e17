@@ -382,9 +382,6 @@ doPagerUpdate(Pager * p)
    vx = cx * VRoot.w;
    vy = cy * VRoot.h;
 
-   if (p->x1 >= p->x2 || p->y1 >= p->y2)
-      return;
-
    update_screen_included = update_screen_only = 0;
    if (pager_mode == PAGER_MODE_SNAP && p->dsk == DesksGetCurrent()
        && Mode.mode == 0)
