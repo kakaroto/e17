@@ -4,6 +4,7 @@
 #include "ewl_private.h"
 
 #include <fcntl.h>
+#include <libgen.h>
 
 Ewl_Config *ewl_config = NULL;
 Ewl_Config_Cache ewl_config_cache;
@@ -372,13 +373,23 @@ static int
 ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 {
 	Ecore_List *keys;
-	char *key, data[512];
+	char *key, data[512], *path;
 	struct flock fl;
 	int fd;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
 	DCHECK_PARAM_PTR_RET("file", file, FALSE);
+
+	/* make sure the config directory exists */
+	path = strdup(file);
+	key = dirname(path);
+	if (!ecore_file_exists(key) && !ecore_file_mkpath(key))
+	{
+		DWARNING("Unable to create %s directory path.\n", key);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+	FREE(path);
 
 	/* if the hash doesn't exist then treat it is empty */
 	if (!hash)
