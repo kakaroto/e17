@@ -192,7 +192,9 @@ ewl_histogram_cb_configure(Ewl_Widget *w, void *event __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_histogram_draw(EWL_HISTOGRAM(w));
+	/* Only bother drawing if we've seen some usable data. */
+	if (EWL_HISTOGRAM(w)->maxv)
+		ewl_histogram_draw(EWL_HISTOGRAM(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
