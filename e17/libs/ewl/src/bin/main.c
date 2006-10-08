@@ -115,7 +115,7 @@ main(int argc, char **argv)
 	{
 		Ewl_Test test;
 
-		test.name = "The Enlightend Widget Library Test App";
+		test.name = "The Enlightened Widget Library Test App";
 		test.func = create_main_test_window;
 		test.filename = NULL;
 		test.tip = NULL;
