@@ -32,12 +32,12 @@ struct Ewl_Icon
 {
 	Ewl_Box box;		/**< Inherit from Ewl_Box */
 	Ewl_Widget *label;	/**< The icons label */
-	Ewl_Widget *preview;	/**< The icons preview */
+	Ewl_Widget *image;	/**< The icons image */
+	Ewl_Widget *alt;	/**< The icons alt text */
 	Ewl_Widget *menu;	/**< The icons menu */
 	Ewl_Widget *extended;	/**< The icons extended information */
 
 	char *label_text;	/**< The label text */
-	char *alt_text;		/**< The alternate text */
 
 	Ewl_Icon_Type type;		/**< The icons type */
 	unsigned char editable:1;	/**< Is the icon editable? */

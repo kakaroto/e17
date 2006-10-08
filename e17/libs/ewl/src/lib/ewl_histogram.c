@@ -272,7 +272,7 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 	int x, y;
 	unsigned int color;
 	unsigned int *data, *dst;
-	Evas_Coord img_w, img_h;
+	Evas_Coord img_w = 0, img_h = 0;
 	Evas_Object *img;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);

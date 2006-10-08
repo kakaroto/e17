@@ -609,7 +609,10 @@ ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__,
 	if (thumb) 
 	{
 		if (ev->dest)
+		{
 			ewl_image_file_path_set(EWL_IMAGE(thumb), ev->dest);
+			ewl_callback_call(thumb, EWL_CALLBACK_VALUE_CHANGED);
+		}
 
 		thumb->thumb = NULL;
 	}

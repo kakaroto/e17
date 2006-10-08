@@ -12,6 +12,8 @@ static void ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev,
 							void *data);
 static void ewl_icon_cb_entry_value_changed(Ewl_Widget *w, void *ev,
 							void *data);
+static void ewl_icon_cb_thumb_value_changed(Ewl_Widget *w, void *ev,
+							void *data);
 
 static void ewl_icon_update_label(Ewl_Icon *icon);
 
@@ -129,28 +131,35 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 	DCHECK_PARAM_PTR("file", file);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
-	if (icon->preview)
+	if (icon->image)
 	{
-		if (ewl_widget_type_is(icon->preview, EWL_IMAGE_TYPE))
-			constrain = ewl_icon_constrain_get(icon);
-		ewl_widget_destroy(icon->preview);
+		constrain = ewl_icon_constrain_get(icon);
+		ewl_widget_destroy(icon->image);
 	}
 
 	img = ewl_image_new();
 	ewl_image_file_set(EWL_IMAGE(img), file, key);
 
-	icon->preview = ewl_image_thumbnail_get(EWL_IMAGE(img));
-	ewl_image_proportional_set(EWL_IMAGE(icon->preview), TRUE);
+	icon->image = ewl_image_thumbnail_get(EWL_IMAGE(img));
+	ewl_image_proportional_set(EWL_IMAGE(icon->image), TRUE);
+	ewl_callback_append(icon->image, EWL_CALLBACK_VALUE_CHANGED,
+					ewl_icon_cb_thumb_value_changed, icon);
 	ewl_icon_constrain_set(icon, constrain);
-	ewl_image_file_set(EWL_IMAGE(icon->preview), 
+	ewl_object_alignment_set(EWL_OBJECT(icon->image), 
+						EWL_FLAG_ALIGN_CENTER);
+	ewl_widget_internal_set(icon->image, TRUE);
+	ewl_container_child_prepend(EWL_CONTAINER(icon), icon->image);
+
+	if (!icon->alt)
+	{
+		ewl_image_file_set(EWL_IMAGE(icon->image), 
 					ewl_icon_theme_icon_path_get(
 						EWL_ICON_IMAGE_LOADING, NULL),
 					EWL_ICON_IMAGE_LOADING);
-	ewl_object_alignment_set(EWL_OBJECT(icon->preview), 
-						EWL_FLAG_ALIGN_CENTER);
-	ewl_widget_internal_set(icon->preview, TRUE);
-	ewl_container_child_prepend(EWL_CONTAINER(icon), icon->preview);
-	ewl_widget_show(icon->preview);
+		ewl_widget_show(icon->image);
+	}
+	else
+		ewl_widget_show(icon->alt);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -170,8 +179,8 @@ ewl_icon_image_file_get(Ewl_Icon *icon)
 	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
 	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, NULL);
 
-	if (icon->preview)
-		file = ewl_image_file_path_get(EWL_IMAGE(icon->preview));
+	if (icon->image)
+		file = ewl_image_file_path_get(EWL_IMAGE(icon->image));
 
 	DRETURN_PTR(file, DLEVEL_STABLE);
 }
@@ -255,13 +264,13 @@ ewl_icon_label_set(Ewl_Icon *icon, const char *label)
 
 		ewl_widget_show(icon->label);
 
-		/* if we have a preview make sure we are after it, but
-		 * before anything that is after the preview */
-		if (icon->preview && icon->extended)
+		/* if we have a image make sure we are after it, but
+		 * before anything that is after the image */
+		if (icon->image && icon->extended)
 		{
 			int idx;
 			idx = ewl_container_child_index_get(EWL_CONTAINER(icon),
-							icon->preview);
+							icon->image);
 			ewl_container_child_insert_internal(EWL_CONTAINER(icon),
 						icon->label, idx + 1);
 		}
@@ -391,8 +400,8 @@ ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
-	if (icon->preview)
-		ewl_image_constrain_set(EWL_IMAGE(icon->preview), val);
+	if (icon->image)
+		ewl_image_constrain_set(EWL_IMAGE(icon->image), val);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -411,10 +420,7 @@ ewl_icon_constrain_get(Ewl_Icon *icon)
 	DCHECK_PARAM_PTR_RET("icon", icon, 0);
 	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, 0);
 
-	if (!ewl_widget_type_is(icon->preview, EWL_IMAGE_TYPE))
-		DRETURN_INT(constrain, DLEVEL_STABLE);
-
-	constrain = ewl_image_constrain_get(EWL_IMAGE(icon->preview));
+	constrain = ewl_image_constrain_get(EWL_IMAGE(icon->image));
 
 	DRETURN_INT(constrain, DLEVEL_STABLE);
 }
@@ -466,30 +472,33 @@ ewl_icon_label_compressed_get(Ewl_Icon *icon)
 void
 ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt)
 {
+	const char *img, *file;
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
-	IF_FREE(icon->alt_text);
-	if (!txt && icon->preview && 
-			ewl_widget_type_is(icon->preview, EWL_LABEL_TYPE))
+	if (icon->alt)
 	{
-		ewl_widget_destroy(icon->preview);
-		icon->preview = NULL;
-
+		ewl_label_text_set(EWL_LABEL(icon->alt), txt);
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	icon->alt_text = strdup(txt);
-	if (!icon->preview)
+	icon->alt = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(icon->alt), txt);
+	ewl_object_alignment_set(EWL_OBJECT(icon->alt), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(icon->alt), EWL_FLAG_FILL_VFILL);
+	ewl_container_child_prepend(EWL_CONTAINER(icon), icon->alt);
+
+	/* if the image displayed is the loading image then we switch to the
+	 * alt text */
+	img = ewl_icon_theme_icon_path_get(EWL_ICON_IMAGE_LOADING, NULL);
+	file = ewl_icon_image_file_get(icon);
+	if (!icon->image || !strcmp(img, file))
 	{
-		icon->preview = ewl_label_new();
-		ewl_label_text_set(EWL_LABEL(icon->preview), icon->alt_text);
-		ewl_container_child_prepend(EWL_CONTAINER(icon), icon->preview);
-		ewl_widget_show(icon->preview);
+		ewl_widget_hide(icon->image);
+		ewl_widget_show(icon->alt);
 	}
-	else if (ewl_widget_type_is(icon->preview, EWL_LABEL_TYPE))
-		ewl_label_text_set(EWL_LABEL(icon->preview), icon->alt_text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -506,7 +515,7 @@ ewl_icon_alt_text_get(Ewl_Icon *icon)
 	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
 	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, NULL);
 
-	DRETURN_PTR(icon->alt_text, DLEVEL_STABLE);
+	DRETURN_PTR(ewl_label_text_get(EWL_LABEL(icon->alt)), DLEVEL_STABLE);
 }
 
 /**
@@ -638,5 +647,26 @@ ewl_icon_update_label(Ewl_Icon *icon)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+static void
+ewl_icon_cb_thumb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
+{
+	Ewl_Icon *icon;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	icon = EWL_ICON(data);
+	if (icon->alt && VISIBLE(icon->alt))
+		ewl_widget_hide(icon->alt);
+
+	if (!VISIBLE(icon->image))
+		ewl_widget_show(icon->image);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 
