@@ -42,8 +42,6 @@ void etk_test_iconbox_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
    Etk_Widget *iconbox;
-   Etk_Iconbox_Model *mini_model;
-   int i;
    
    if (win)
    {

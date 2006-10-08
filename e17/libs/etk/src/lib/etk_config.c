@@ -139,6 +139,18 @@ void etk_config_shutdown()
 {
    FREED(_etk_config_gen_edd);
    FREED(_etk_config_ver_edd);   
+   if (_etk_config)
+   {
+      free(_etk_config->version);
+      if (_etk_config->general);
+      {
+         free(_etk_config->general->widget_theme);
+         free(_etk_config->general->font);
+         free(_etk_config->general->engine);
+         free(_etk_config->general);
+      }
+      free(_etk_config);
+   }
 }
 
 /**
@@ -206,9 +218,11 @@ Etk_Bool etk_config_load()
 	  {
 	     ETK_WARNING("Your version / configuration of Etk is not valid!");
 	     eet_close(ef);
+	     free(v);
 	     _etk_config_defaults_apply();
 	     return ETK_FALSE;
 	  }
+	free(v);
      }
    
    _etk_config->general = eet_data_read(ef, _etk_config_gen_edd, "config/general");
