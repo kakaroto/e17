@@ -668,8 +668,8 @@ char *
 ewl_text_selection_text_get(Ewl_Text *t)
 {
 	char *ret = NULL;
-	unsigned int byte_pos;
-	unsigned int byte_len;
+	unsigned int byte_pos = 0;
+	unsigned int byte_len = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
