@@ -652,6 +652,7 @@ MenuRealize(Menu * m)
 	EventCallbackRegister(m->win, 0, MenuHandleEvents, m);
 	if (m->title)
 	   HintsSetWindowName(m->win, _(m->title));
+	HintsSetWindowClass(m->win, m->name, "Enlightenment_Menu");
      }
 
    maxh = maxw = 0;

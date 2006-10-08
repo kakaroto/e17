@@ -157,6 +157,9 @@ HintsSetActiveWindow(Window win)
 void
 HintsSetWindowName(Win win, const char *name)
 {
+   if (!name)
+      name = "NoTitle";
+
    ecore_x_icccm_title_set(WinGetXwin(win), name);
 
    EWMH_SetWindowName(WinGetXwin(win), name);
@@ -166,6 +169,11 @@ void
 HintsSetWindowClass(Win win, const char *name, const char *clss)
 {
    XClassHint         *xch;
+
+   if (!name)
+      name = "NoName";
+   if (!clss)
+      clss = "NoClass";
 
    xch = XAllocClassHint();
    xch->res_name = (char *)name;

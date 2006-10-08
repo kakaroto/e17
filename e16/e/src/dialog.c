@@ -312,6 +312,7 @@ DialogSetTitle(Dialog * d, const char *title)
    if (d->title)
       Efree(d->title);
    d->title = Estrdup(title);
+   HintsSetWindowName(d->win, d->title);
 }
 
 void
@@ -543,12 +544,6 @@ DialogEwinInit(EWin * ewin, void *ptr)
 void
 DialogArrange(Dialog * d, int resize)
 {
-   if (d->title)
-     {
-	HintsSetWindowName(d->win, d->title);
-	HintsSetWindowClass(d->win, d->name, "Enlightenment_Dialog");
-     }
-
    if (d->item)
       DialogItemsRealize(d);
 
@@ -582,6 +577,8 @@ DialogShowArranged(Dialog * d, int center)
 	EwinShow(ewin);
 	return;
      }
+
+   HintsSetWindowClass(d->win, d->name, "Enlightenment_Dialog");
 
    ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG, d,
 			      DialogEwinInit);

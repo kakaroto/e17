@@ -727,6 +727,8 @@ PagerShow(Pager * p)
 	return;
      }
 
+   Esnprintf(s, sizeof(s), "Pager-%i", p->dsk->num);
+   HintsSetWindowName(p->win, s);
    Esnprintf(s, sizeof(s), "%i", p->dsk->num);
    HintsSetWindowClass(p->win, s, "Enlightenment_Pager");
 
@@ -1218,15 +1220,12 @@ static void
 NewPagerForDesktop(Desk * dsk)
 {
    Pager              *p;
-   char                s[128];
 
    p = PagerCreate();
    if (!p)
       return;
 
    p->dsk = dsk;
-   Esnprintf(s, sizeof(s), "Pager-%i", dsk->num);
-   HintsSetWindowName(p->win, s);
    PagerShow(p);
 }
 
@@ -2015,6 +2014,8 @@ PagersSighan(int sig, void *prm)
 	break;
 
      case ESIGNAL_DESK_ADDED:
+	if (Mode.wm.startup)
+	   break;
 	NewPagerForDesktop(prm);
 	break;
      case ESIGNAL_DESK_REMOVED:
