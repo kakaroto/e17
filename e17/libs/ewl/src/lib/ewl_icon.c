@@ -131,7 +131,8 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 
 	if (icon->preview)
 	{
-		constrain = ewl_icon_constrain_get(icon);
+		if (ewl_widget_type_is(icon->preview, EWL_IMAGE_TYPE))
+			constrain = ewl_icon_constrain_get(icon);
 		ewl_widget_destroy(icon->preview);
 	}
 
@@ -390,7 +391,8 @@ ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
-	ewl_image_constrain_set(EWL_IMAGE(icon->preview), val);
+	if (icon->preview)
+		ewl_image_constrain_set(EWL_IMAGE(icon->preview), val);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -403,11 +405,14 @@ ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
 unsigned int
 ewl_icon_constrain_get(Ewl_Icon *icon)
 {
-	unsigned int constrain;
+	unsigned int constrain = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("icon", icon, 0);
 	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, 0);
+
+	if (!ewl_widget_type_is(icon->preview, EWL_IMAGE_TYPE))
+		DRETURN_INT(constrain, DLEVEL_STABLE);
 
 	constrain = ewl_image_constrain_get(EWL_IMAGE(icon->preview));
 
@@ -450,6 +455,58 @@ ewl_icon_label_compressed_get(Ewl_Icon *icon)
 	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, FALSE);
 
 	DRETURN_INT(icon->compress_label, DLEVEL_STABLE);
+}
+
+/**
+ * @param icon: The icon to work with
+ * @param txt: The text to set as the alternate text
+ * @return Returns no value
+ * @brief Sets the given text as the alternate text for the icon
+ */
+void
+ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("icon", icon);
+	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+
+	IF_FREE(icon->alt_text);
+	if (!txt && icon->preview && 
+			ewl_widget_type_is(icon->preview, EWL_LABEL_TYPE))
+	{
+		ewl_widget_destroy(icon->preview);
+		icon->preview = NULL;
+
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	icon->alt_text = strdup(txt);
+	if (!icon->preview)
+	{
+		icon->preview = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(icon->preview), icon->alt_text);
+		ewl_container_child_prepend(EWL_CONTAINER(icon), icon->preview);
+		ewl_widget_show(icon->preview);
+	}
+	else if (ewl_widget_type_is(icon->preview, EWL_LABEL_TYPE))
+		ewl_label_text_set(EWL_LABEL(icon->preview), icon->alt_text);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param icon: The icon to work with
+ * @return Returns the alternate text set on the icon
+ * @brief Retrieves the alternate text set on the icon
+ */
+const char *
+ewl_icon_alt_text_get(Ewl_Icon *icon)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
+	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, NULL);
+
+	DRETURN_PTR(icon->alt_text, DLEVEL_STABLE);
 }
 
 /**

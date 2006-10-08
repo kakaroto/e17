@@ -94,6 +94,15 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 
+	o = ewl_hseparator_new();
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_widget_show(o);
+
+	o = ewl_icon_new();
+	ewl_icon_alt_text_set(EWL_ICON(o), "Icon Alt Text");
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_widget_show(o);
+
 	return 1;
 }
 
