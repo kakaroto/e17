@@ -104,8 +104,6 @@ epsilon_plugin_load(char* path)
 	void* dl_ref;
 	Epsilon_Plugin* (*epsilon_plugin_init)();
 
-	printf ("Loading plugin '%s'...\n", path);
-
 	dl_ref = dlopen(path, RTLD_LAZY);
 	if (dl_ref) {
 		epsilon_plugin_init = dlsym(dl_ref, "epsilon_plugin_init");
