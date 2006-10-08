@@ -39,7 +39,7 @@ group {
             }
             rel2 {
                relative: 0.0 0.5;
-               offset: 16 9;
+               offset: 15 7;
             }
             image {
                normal: "e17_scrollbar_left_arrow.png";
@@ -139,7 +139,7 @@ group {
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: 0 9;
+               offset: -1 7;
             }
             image {
                normal: "e17_scrollbar_right_arrow.png";
@@ -317,7 +317,7 @@ group {
             }
             rel2 {
                relative: 0.5 0.0;
-               offset: 9 16;
+               offset: 7 15;
             }
             image {
                normal: "e17_scrollbar_top_arrow.png";
@@ -366,7 +366,7 @@ group {
             }
             rel2 {
                relative: 0.5 1.0;
-               offset: 9 0;
+               offset: 7 0;
             }
             image {
                normal: "e17_scrollbar_bottom_arrow.png";
