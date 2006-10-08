@@ -238,7 +238,7 @@ static const IpcItem MiscIpcArray[] = {
 #define N_IPC_FUNCS (sizeof(MiscIpcArray)/sizeof(IpcItem))
 
 /* Stuff not elsewhere */
-const const EModule ModMisc = {
+const EModule       ModMisc = {
    "misc", NULL,
    NULL,
    {N_IPC_FUNCS, MiscIpcArray}
