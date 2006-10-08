@@ -230,7 +230,7 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
       if (!popup_window->parent || !popup_window->parent->popped_up)
       {
          _etk_popup_window_popped_parents = evas_list_append(_etk_popup_window_popped_parents, popup_window);
-         _etk_popup_window_popup_timestamp = etk_current_time_get();
+         _etk_popup_window_popup_timestamp = etk_engine_event_timestamp_get();
       }
       if (popup_window->parent)
       {
@@ -400,8 +400,8 @@ static void _etk_popup_window_mouse_move_cb(Etk_Event_Global event_info, void *d
    Etk_Popup_Window *pop;
    int px, py;
    
-   if (event_info.mouse_move.timestamp < _etk_popup_window_popup_timestamp)
-      return;
+   /*if (event_info.mouse_move.timestamp < _etk_popup_window_popup_timestamp)
+      return;*/
    
    pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));
    for ( ; pop; pop = pop->popped_child)
@@ -529,7 +529,7 @@ static int _etk_popup_window_slide_timer_cb(void *data)
       /* We feed a mouse-move event since the relative position between the mouse pointer
        * and the popup window has changed */
       etk_engine_mouse_position_get(&mx, &my);
-      evas_event_feed_mouse_move(ETK_TOPLEVEL(pwin)->evas, mx - x, my - y, etk_current_time_get(), NULL);
+      evas_event_feed_mouse_move(ETK_TOPLEVEL(pwin)->evas, mx - x, my - y, etk_engine_event_timestamp_get(), NULL);
    }
    
    return 1;

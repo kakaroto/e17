@@ -41,9 +41,12 @@ static void _popup_window_constructor(Etk_Popup_Window *popup_window);
 static void _popup_window_popup(Etk_Popup_Window *popup_window);
 static void _popup_window_popdown(Etk_Popup_Window *popup_window);
 
-/* Event and mouse functions */
+/* Event functions */
 static void _event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info));
+static unsigned int _event_timestamp_get(void);
 static int _event_input_handler_cb(void *data, int type, void *event);
+
+/* Mouse functions */
 static void _mouse_position_get(int *x, int *y);
 static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
 
@@ -153,6 +156,8 @@ static Etk_Engine engine_info = {
    _popup_window_popdown,
    
    _event_callback_set,
+   _event_timestamp_get,
+   
    _mouse_position_get,
    _mouse_screen_geometry_get,
    
@@ -534,6 +539,18 @@ static void _event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event
 {
    _event_callback = callback;
 }
+
+/* Gets the current event timestamp */
+static unsigned int _event_timestamp_get(void)
+{
+   return ecore_x_current_time_get();
+}
+
+/**************************
+ *
+ * Mouse's functions
+ *
+ **************************/
 
 /* Gets the position of the mouse pointer */
 static void _mouse_position_get(int *x, int *y)
@@ -1176,7 +1193,7 @@ static void _window_netwm_state_active_set(Etk_Window *window, Ecore_X_Window_St
    }
    else
    {
-      int cur_num, new_num;
+      unsigned int cur_num, new_num;
       int i, j;
       Ecore_X_Window_State *cur_state, *new_state;
       Etk_Bool is_set = ETK_FALSE;

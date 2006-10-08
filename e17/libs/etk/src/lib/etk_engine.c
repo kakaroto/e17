@@ -745,7 +745,7 @@ void etk_engine_popup_window_popdown(Etk_Popup_Window *popup_window)
 
 /**
  * @internal
- * @brief Sets the callback to call when an input event is emitted
+ * @brief Calls the engine's method to set the callback to call when an input event is emitted
  * @param callback the function to call
  * @param data the data to pass to the callback
  * @note This function is already used by Etk_Event, you must not use it. Use etk_event_global_callback_add() instead
@@ -755,6 +755,17 @@ void etk_engine_event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Ev
    if (!_engine || !_engine->event_callback_set)
       return;
    _engine->event_callback_set(callback);
+}
+
+/**
+ * @brief Calls the engine's method to get the current timestamp used by the events
+ * @return Returns the current event timestamp
+ */
+unsigned int etk_engine_event_timestamp_get(void)
+{
+   if (!_engine || !_engine->event_timestamp_get)
+      return 0;
+   return _engine->event_timestamp_get();
 }
 
 /**
@@ -901,6 +912,8 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(popup_window_popdown);
    
    INHERIT(event_callback_set);
+   INHERIT(event_timestamp_get);
+   
    INHERIT(mouse_position_get);
    INHERIT(mouse_screen_geometry_get);
    

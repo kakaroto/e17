@@ -113,6 +113,8 @@ static Etk_Engine engine_info = {
    NULL, /* popup_window_popdown */
    
    _event_callback_set,
+   NULL, /* event_timestamp_get */
+   
    _mouse_position_get,
    _mouse_screen_geometry_get,
    
