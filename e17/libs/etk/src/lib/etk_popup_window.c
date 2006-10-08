@@ -373,8 +373,6 @@ static void _etk_popup_window_key_down_cb(Etk_Event_Global event_info, void *dat
 {
    if (!_etk_popup_window_focused_window)
       return;
-   if (event_info.key_down.timestamp < _etk_popup_window_popup_timestamp)
-      return;
    
    evas_event_feed_key_down(ETK_TOPLEVEL(_etk_popup_window_focused_window)->evas, event_info.key_down.keyname,
       event_info.key_down.key, event_info.key_down.string, NULL, event_info.key_down.timestamp, NULL);
@@ -385,8 +383,6 @@ static void _etk_popup_window_key_down_cb(Etk_Event_Global event_info, void *dat
 static void _etk_popup_window_key_up_cb(Etk_Event_Global event_info, void *data)
 {
    if (!_etk_popup_window_focused_window)
-      return;
-   if (event_info.key_up.timestamp < _etk_popup_window_popup_timestamp)
       return;
    
    evas_event_feed_key_up(ETK_TOPLEVEL(_etk_popup_window_focused_window)->evas, event_info.key_up.keyname,
@@ -399,9 +395,6 @@ static void _etk_popup_window_mouse_move_cb(Etk_Event_Global event_info, void *d
 {
    Etk_Popup_Window *pop;
    int px, py;
-   
-   /*if (event_info.mouse_move.timestamp < _etk_popup_window_popup_timestamp)
-      return;*/
    
    pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));
    for ( ; pop; pop = pop->popped_child)
@@ -422,12 +415,6 @@ static void _etk_popup_window_mouse_up_cb(Etk_Event_Global event_info, void *dat
    Etk_Popup_Window *pop;
    Etk_Bool pointer_over_window = ETK_FALSE;
    
-   if (event_info.mouse_up.timestamp < _etk_popup_window_popup_timestamp)
-   {
-      printf("Up Timestamps: %d %d\n", event_info.mouse_up.timestamp, _etk_popup_window_popup_timestamp);
-      return;
-   }
-   
    /* If the user clicks on a popped window, we feed the event */
    pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));
    for ( ; pop; pop = pop->popped_child)
@@ -445,7 +432,7 @@ static void _etk_popup_window_mouse_up_cb(Etk_Event_Global event_info, void *dat
    }
    
    /* Otherwise, we pop down the popup windows */
-   if (!pointer_over_window
+   if (!pointer_over_window && event_info.mouse_up.timestamp >= _etk_popup_window_popup_timestamp
       && (event_info.mouse_up.timestamp - _etk_popup_window_popup_timestamp) >= ETK_POPUP_WINDOW_MIN_POP_TIME)
    {
       pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));

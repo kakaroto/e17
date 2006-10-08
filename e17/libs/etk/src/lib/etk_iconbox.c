@@ -212,6 +212,11 @@ void etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *mode
       return;
    
    iconbox->current_model = model;
+   etk_range_increments_set(etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(iconbox->scrolled_view)),
+      model->width * 0.75, model->width * 3.0);
+   etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(iconbox->scrolled_view)),
+      model->height * 0.75, model->height * 3.0);
+   
    etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
 }
@@ -824,7 +829,8 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    etk_widget_show(iconbox->grid);
 
    iconbox->models = NULL;
-   iconbox->current_model = etk_iconbox_model_new(iconbox);
+   iconbox->current_model = NULL;
+   etk_iconbox_current_model_set(iconbox, etk_iconbox_model_new(iconbox));
    
    iconbox->num_icons = 0;
    iconbox->first_icon = NULL;
