@@ -29,7 +29,7 @@ main(int argc, char **argv)
  m->win = ewl_window_new();
  ewl_window_title_set(EWL_WINDOW(m->win), "Ephoto");
  ewl_window_name_set(EWL_WINDOW(m->win), "Ephoto");
- ewl_object_size_request(EWL_OBJECT(m->win), 620, 480);
+ ewl_object_size_request(EWL_OBJECT(m->win), 620, 475);
  ewl_callback_append(m->win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
  ewl_widget_show(m->win);
 

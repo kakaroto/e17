@@ -461,7 +461,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
   shadow = ewl_shadow_new();
   ewl_container_child_append(EWL_CONTAINER(freebox), shadow);
   ewl_object_minimum_size_set(EWL_OBJECT(shadow), 60, 60);
-  ewl_object_maximum_size_set(EWL_OBJECT(shadow), 60, 60);
+  ewl_object_maximum_size_set(EWL_OBJECT(shadow), 55, 55);
   ewl_callback_append(shadow, EWL_CALLBACK_CLICKED, change_image, current_image);
   ewl_widget_show(shadow);
   
@@ -471,8 +471,9 @@ void view_images(Ewl_Widget *w, void *event, void *data)
   ewl_image_size_set(EWL_IMAGE(image), 48, 48);
   ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
   ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
-  ewl_theme_data_str_set(image, "/image_thumbnail/group", 
-		         ewl_theme_data_str_get(m->win, "group"));
+  ewl_theme_data_str_set(image, "/image_thumbnail/file",
+		         PACKAGE_DATA_DIR "/images/image_bg.edj");
+  ewl_theme_data_str_set(image, "/image_thumbnail/group", "image_bg");
   ewl_widget_show(image);
   
   ecore_dlist_next(view_thumbs);
