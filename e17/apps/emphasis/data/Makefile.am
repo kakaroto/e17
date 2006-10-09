@@ -6,8 +6,7 @@ filesdir = $(pkgdatadir)
 files_DATA = $(FILES)
 EXTRA_DIST = $(FILES)
 
-SUBDIRS = images \
-			 eap
+SUBDIRS = images 
 
 MAINTAINERCLEANFILES = Makefile.in \
 							  emphasis.gladep config.gladep \

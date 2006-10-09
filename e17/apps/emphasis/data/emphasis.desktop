@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=Emphasis
+Name[fr]=Emphasis
+Name[nl]=Emphasis
+Name[pl]=Emphasis
+Name[ru]=Emphasis
+Comment=An ETK frontend for the mpd daemon
+Comment[fr]=Une interface ETK pour le démon mpd
+Comment[nl]=Een ETK front-end voor de Music Player Daemon
+Comment[pl]=Nakładka ETK na demona mpd
+Comment[ru]=Интерфейс демона MPD для среды ETK
+Exec=emphasis
+Terminal=false
+Type=Application
+Icon=emphasis.png
+Categories=ENLIGHTENMENT;Application;AudioVideo;
+StartupNotify=true
+Encoding=UTF-8
