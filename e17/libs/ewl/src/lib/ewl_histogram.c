@@ -297,13 +297,13 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 		color = (unsigned int)(128 << 24);
 		switch (hist->channel) {
 			case EWL_HISTOGRAM_CHANNEL_R:
-				color |= (unsigned int)(255 << 16);
+				color |= (unsigned int)(128 << 16);
 				break;
 			case EWL_HISTOGRAM_CHANNEL_G:
-				color |= (unsigned int)(255 << 8);
+				color |= (unsigned int)(128 << 8);
 				break;
 			case EWL_HISTOGRAM_CHANNEL_B:
-				color |= (unsigned int)(255);
+				color |= (unsigned int)(128);
 				break;
 			default:
 				break;
