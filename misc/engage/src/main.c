@@ -34,6 +34,9 @@ main(int argc, char **argv)
     ecore_shutdown();
     exit(0);
   }
+  ecore_desktop_paths_extras_clear();
+  ecore_desktop_paths_prepend_user(ECORE_DESKTOP_PATHS_ICONS, "~/.e/e/icons");
+  ecore_desktop_paths_regen();
   
   if (ecore_x_init(NULL) == 0) {
     ecore_desktop_shutdown();
