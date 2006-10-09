@@ -234,10 +234,13 @@ ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
 void
 ewl_image_constrain_set(Ewl_Image *i, unsigned int size)
 {
+	unsigned int osize;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
 	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
 
+	osize = i->cs;
 	i->cs = size;
 	if (size) {
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), size);
@@ -248,6 +251,12 @@ ewl_image_constrain_set(Ewl_Image *i, unsigned int size)
 	}
 	else if (i->aw != i->ow || i->ah != i->oh) {
 		ewl_image_size_set(i, i->aw, i->ah);
+	}
+	else {
+		if (ewl_object_preferred_inner_w_get(EWL_OBJECT(i)) == osize)
+			ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
+		if (ewl_object_preferred_inner_h_get(EWL_OBJECT(i)) == osize)
+			ewl_object_preferred_inner_h_set(EWL_OBJECT(i), i->oh);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -611,7 +620,8 @@ ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__,
 		if (ev->dest)
 		{
 			ewl_image_file_path_set(EWL_IMAGE(thumb), ev->dest);
-			ewl_callback_call(thumb, EWL_CALLBACK_VALUE_CHANGED);
+			ewl_callback_call(EWL_WIDGET(thumb),
+					EWL_CALLBACK_VALUE_CHANGED);
 		}
 
 		thumb->thumb = NULL;
