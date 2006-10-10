@@ -278,6 +278,69 @@ ewl_config_float_get(Ewl_Config *cfg, const char *k)
 
 /**
  * @param cfg: The Ewl_Config to work with
+ * @param k: the key to set in the configuration database
+ * @param r: the red value that will be associated with the key
+ * @param g: the green value that will be associated with the key
+ * @param b: the blue value that will be associated with the key
+ * @param a: the alpha value that will be associated with the key
+ * @return Returns no value
+ * @brief Set the value of key to the specified color
+ *
+ * Sets the color value associated with the key @a k to @a v in the
+ * configuration database.
+ */
+void
+ewl_config_color_set(Ewl_Config *cfg, const char *k, int r, int g,
+					int b, int a,
+					Ewl_State_Type state)
+{
+	char buf[128];
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("k", k);
+
+	snprintf(buf, sizeof(buf), "%i %i %i %i", r, g, b, a);
+	ecore_hash_set(ewl_config_set_hash_get(cfg, state), 
+					strdup(k), strdup(buf));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to work with
+ * @param k: the key to search
+ * @param r: the red value that is associated with the key
+ * @param g: the green value that is associated with the key
+ * @param b: the blue value that is associated with the key
+ * @param a: the alpha value that is associated with the key
+ * @return Returns no value
+ * @brief Retrieve color associated with a key
+ */
+void
+ewl_config_color_get(Ewl_Config *cfg, const char *k, int *r, int *g,
+						int *b, int *a)
+{
+	const char *val;
+	int tmp_r = 0, tmp_g = 0, tmp_b = 0, tmp_a = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("k", k);
+
+	val = ewl_config_get(cfg, k);
+	if (val)
+		sscanf(val, "%i %i %i %i", &tmp_r, &tmp_g, &tmp_b, &tmp_a);
+
+	if (r) *r = tmp_r;
+	if (g) *g = tmp_g;
+	if (b) *b = tmp_b;
+	if (a) *a = tmp_a;
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+/**
+ * @param cfg: The Ewl_Config to work with
  * @return Returns TRUE if the user can write to the system conf file, FALSE
  * otherwise
  * @brief Determines if the user can write the system config file

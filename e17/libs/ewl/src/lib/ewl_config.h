@@ -48,6 +48,13 @@ void		 ewl_config_float_set(Ewl_Config *cfg, const char *k,
 						Ewl_State_Type state);
 float		 ewl_config_float_get(Ewl_Config *cfg, const char *k);
 
+void		 ewl_config_color_set(Ewl_Config *cfg, const char *k, 
+						int r, int g, int b, int a,
+						Ewl_State_Type state);
+void		 ewl_config_color_get(Ewl_Config *cfg, const char *k,
+						int *r, int *g,
+						int *b, int *a);
+
 int		 ewl_config_can_save_system(Ewl_Config *cfg);
 int		 ewl_config_system_save(Ewl_Config *cfg);
 int		 ewl_config_user_save(Ewl_Config *cfg);
