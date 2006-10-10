@@ -178,7 +178,7 @@ _smart_add(Evas_Object *o)
   evas = evas_object_evas_get(o);
 
   s->grad = evas_object_gradient_add(evas);
-  evas_object_gradient_angle_set(s->grad, 90);
+  evas_object_gradient_angle_set(s->grad, 270);
   evas_object_gradient_color_stop_add(s->grad, 0, 255, 0, 255, 0);
   evas_object_gradient_color_stop_add(s->grad, 0, 0, 0, 255, 1);
   evas_object_smart_member_add(s->grad, o);
@@ -216,7 +216,7 @@ _smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
   s = evas_object_smart_data_get(o);
   if (!s) return;
   evas_object_resize(s->grad, w, h);
-  evas_object_gradient_fill_set(s->grad, 0, 0, h, w);
+  evas_object_gradient_fill_set(s->grad, 0, 0, w, h);
 }
 
 static void
