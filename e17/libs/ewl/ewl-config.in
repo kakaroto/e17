@@ -55,7 +55,7 @@ while test $# -gt 0; do
       echo @prefix@/share/ewl/examples
       ;;
     --app-config-dir)
-      echo @prefix@/share/ewl/config/apps
+      echo @sysconfdir@/ewl/config/apps
       ;;
     *)
       echo "${usage}" 1>&2
