@@ -6,7 +6,8 @@ EDJE_FLAGS = -v \
 -fd $(top_srcdir)
 
 files_DATA = \
-module.eap \
+module.desktop \
+module.edj \
 mixer.edj
 
 EXTRA_DIST = \
@@ -44,10 +45,10 @@ module_la_LIBADD       = @e_libs@ @SOUND_LDFLAGS@
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
-%.edj:  %.edc
+mixer.edj:  mixer.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf *.edj *~
+	 rm -rf mixer.edj *~
 uninstall:
 	rm -rf $(datadir)

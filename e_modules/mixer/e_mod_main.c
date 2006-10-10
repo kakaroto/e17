@@ -170,7 +170,7 @@ _gc_icon(Evas *evas)
    Evas_Object *o;
    char         buf[4096];
 
-   snprintf(buf, sizeof(buf), "%s/module.eap",
+   snprintf(buf, sizeof(buf), "%s/module.edj",
 	     e_module_dir_get(mixer_config->module));
 
    o = edje_object_add(evas);

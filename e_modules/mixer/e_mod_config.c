@@ -42,7 +42,7 @@ _config_mixer_module(void *data, Config_Item *ci)
    v->advanced.apply_cfdata = NULL;
    v->advanced.create_widgets = NULL;
    
-   snprintf(buf, sizeof(buf), "%s/module.eap",
+   snprintf(buf, sizeof(buf), "%s/module.edj",
 	     e_module_dir_get(mixer_config->module));
 
    con = e_container_current_get(e_manager_current_get());

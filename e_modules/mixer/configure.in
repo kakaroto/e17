@@ -241,6 +241,7 @@ AC_SUBST(SOUND_LDFLAGS)
 AC_OUTPUT([
 Makefile
 e_modules-mixer.spec
+module.desktop
 ],[
 ])
 
