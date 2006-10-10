@@ -726,11 +726,11 @@ typedef enum Ewl_Text_Wrap Ewl_Text_Wrap;
  */
 enum Ewl_Rotate
 {
-	EWL_ROTATE_CW_90,
-	EWL_ROTATE_180,
-	EWL_ROTATE_CW_270,
-	EWL_ROTATE_CC_90,
-	EWL_ROTATE_CC_270
+	EWL_ROTATE_CW_90,	/**< 90 degree clockwise rotation */
+	EWL_ROTATE_180,		/**< 180 degree rotation */
+	EWL_ROTATE_CW_270,	/**< 270 degree clockwise rotation */
+	EWL_ROTATE_CC_90,	/**< 90 degree counter-clockwise rotation */
+	EWL_ROTATE_CC_270	/**< 270 degree counter-clockwise rotation */
 };
 
 /**
