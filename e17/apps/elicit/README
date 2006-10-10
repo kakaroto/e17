@@ -1,4 +1,4 @@
-Elicit 0.9.1
+Elicit 0.9.2
 ------------
 
 Elicit is a screen zoomer / color picker written with the Enlightenment Foundation Libraries (http://www.enlightnement.org). It depends on a large number of libraries that are only available in CVS at the moment, see http://rephorm.com/rephorm/code/efl for installation instructions.

@@ -94,20 +94,20 @@ elicit_spectrum_color_set(Evas_Object *o, int r, int g, int b, int h, float s, f
   sp = evas_object_smart_data_get(o);
   if (!sp) return;
 
-  evas_object_gradient_colors_clear(sp->grad);
+  evas_object_gradient_clear(sp->grad);
   switch(sp->mode)
   {
     case ELICIT_SPECTRUM_R:
-      evas_object_gradient_color_add(sp->grad, 0, g, b, 255, 0);
-      evas_object_gradient_color_add(sp->grad, 255, g, b, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, 0, g, b, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, 255, g, b, 255, 1);
       break;
     case ELICIT_SPECTRUM_G:
-      evas_object_gradient_color_add(sp->grad, r, 0, b, 255, 0);
-      evas_object_gradient_color_add(sp->grad, r, 255, b, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, r, 0, b, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, r, 255, b, 255, 1);
       break;
     case ELICIT_SPECTRUM_B:
-      evas_object_gradient_color_add(sp->grad, r, g, 0, 255, 0);
-      evas_object_gradient_color_add(sp->grad, r, g, 255, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, r, g, 0, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, r, g, 255, 255, 1);
       break;
     case ELICIT_SPECTRUM_H:
 /*
@@ -122,25 +122,25 @@ elicit_spectrum_color_set(Evas_Object *o, int r, int g, int b, int h, float s, f
  */
       evas_color_hsv_to_rgb(0, s, v, &max, &min, NULL);
 
-      evas_object_gradient_color_add(sp->grad, max, min, min, 255, 0);
-      evas_object_gradient_color_add(sp->grad, max, max, min, 255, 1);
-      evas_object_gradient_color_add(sp->grad, min, max, min, 255, 1);
-      evas_object_gradient_color_add(sp->grad, min, max, max, 255, 1);
-      evas_object_gradient_color_add(sp->grad, min, min, max, 255, 1);
-      evas_object_gradient_color_add(sp->grad, max, min, max, 255, 1);
-      evas_object_gradient_color_add(sp->grad, max, min, min, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, max, min, min, 255, 0);
+      evas_object_gradient_color_stop_add(sp->grad, max, max, min, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, min, max, min, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, min, max, max, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, min, min, max, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, max, min, max, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, max, min, min, 255, 1);
       break;
     case ELICIT_SPECTRUM_S:
       evas_color_hsv_to_rgb(h, 0, v, &r, &g, &b);
-      evas_object_gradient_color_add(sp->grad, r, g, b, 255, 0);
+      evas_object_gradient_color_stop_add(sp->grad, r, g, b, 255, 0);
       evas_color_hsv_to_rgb(h, 1, v, &r, &g, &b);
-      evas_object_gradient_color_add(sp->grad, r, g, b, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, r, g, b, 255, 1);
       break;
     case ELICIT_SPECTRUM_V:
       evas_color_hsv_to_rgb(h, s, 0, &r, &g, &b);
-      evas_object_gradient_color_add(sp->grad, r, g, b, 255, 0);
+      evas_object_gradient_color_stop_add(sp->grad, r, g, b, 255, 0);
       evas_color_hsv_to_rgb(h, s, 1, &r, &g, &b);
-      evas_object_gradient_color_add(sp->grad, r, g, b, 255, 1);
+      evas_object_gradient_color_stop_add(sp->grad, r, g, b, 255, 1);
       break;
   }
 }
@@ -179,8 +179,8 @@ _smart_add(Evas_Object *o)
 
   s->grad = evas_object_gradient_add(evas);
   evas_object_gradient_angle_set(s->grad, 90);
-  evas_object_gradient_color_add(s->grad, 0, 255, 0, 255, 0);
-  evas_object_gradient_color_add(s->grad, 0, 0, 0, 255, 1);
+  evas_object_gradient_color_stop_add(s->grad, 0, 255, 0, 255, 0);
+  evas_object_gradient_color_stop_add(s->grad, 0, 0, 0, 255, 1);
   evas_object_smart_member_add(s->grad, o);
 }
 
