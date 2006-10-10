@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makfile.in
 
-configdir = $(pkgdatadir)/config/
+configdir = $(sysconfdir)/ewl
 config_DATA = ewl.cfg
 
 EXTRA_DIST = $(config_DATA)

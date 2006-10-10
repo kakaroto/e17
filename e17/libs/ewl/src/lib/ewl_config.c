@@ -532,7 +532,7 @@ ewl_config_file_name_system_get(Ewl_Config *cfg)
 
 	fname = ewl_config_file_name_clean(cfg);
 	snprintf(cfg_filename, sizeof(cfg_filename),
-			"%s/config/%s%s.cfg", PACKAGE_DATA_DIR, 
+			"%s/ewl/%s%s.cfg", PACKAGE_SYSCONF_DIR, 
 			(is_ewl ? "" : "apps/"), fname);
 
 	FREE(fname);
