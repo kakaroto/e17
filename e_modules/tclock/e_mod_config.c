@@ -3,7 +3,6 @@
 
 struct _E_Config_Dialog_Data
 {
-  int resolution;
   int show_date;
   int show_time;
   char *time_format;
@@ -45,7 +44,6 @@ _config_tclock_module (Config_Item * ci)
 static void
 _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 {
-  cfdata->resolution = ci->resolution;
   cfdata->show_time = ci->show_time;
   cfdata->show_date = ci->show_date;
   cfdata->time_format = strdup (ci->time_format);
@@ -84,14 +82,6 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   E_Radio_Group *rg;
 
   o = e_widget_list_add (evas, 0, 0);
-
-  of = e_widget_framelist_add (evas, D_ ("Resolution"), 0);
-  rg = e_widget_radio_group_new (&(cfdata->resolution));
-  ob = e_widget_radio_add (evas, D_ ("1 Minute"), RESOLUTION_MINUTE, rg);
-  e_widget_framelist_object_append (of, ob);
-  ob = e_widget_radio_add (evas, D_ ("1 Second"), RESOLUTION_SECOND, rg);
-  e_widget_framelist_object_append (of, ob);
-  e_widget_list_object_append (o, of, 1, 1, 0.5);
 
   of = e_widget_frametable_add (evas, D_ ("Date"), 1);
   date_check =
@@ -142,15 +132,6 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   if (ci->date_format)
     evas_stringshare_del (ci->date_format);
   ci->date_format = evas_stringshare_add (cfdata->date_format);
-  ci->resolution = cfdata->resolution;
-  if (cfdata->resolution == RESOLUTION_MINUTE)
-    ci->poll_time = 60.0;
-  else
-    ci->poll_time = 1.0;
-
-  /* If we're not showing time, no reason to update every second */
-  if (!cfdata->show_time)
-    ci->poll_time = 60.0;
 
   e_config_save_queue ();
 

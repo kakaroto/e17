@@ -12,24 +12,22 @@
 #endif
 
 /* Func Proto Requirements for Gadcon */
-static E_Gadcon_Client *_gc_init (E_Gadcon * gc, const char *name,
-				  const char *id, const char *style);
-static void _gc_shutdown (E_Gadcon_Client * gcc);
-static void _gc_orient (E_Gadcon_Client * gcc);
-static char *_gc_label (void);
-static Evas_Object *_gc_icon (Evas * evas);
+static E_Gadcon_Client *_gc_init     (E_Gadcon *gc, const char *name, const char *id, const char *style);
+static void             _gc_shutdown (E_Gadcon_Client *gcc);
+static void             _gc_orient   (E_Gadcon_Client *gcc);
+static char            *_gc_label    (void);
+static Evas_Object     *_gc_icon     (Evas *evas);
 
 /* Module Protos */
-static void _tclock_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
-				   void *event_info);
-static void _tclock_menu_cb_configure (void *data, E_Menu * m,
-				       E_Menu_Item * mi);
-static void _tclock_menu_cb_post (void *data, E_Menu * m);
-static int _tclock_cb_check (void *data);
-static Config_Item *_tclock_config_item_get (const char *id);
+static void         _tclock_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void         _tclock_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
+static void         _tclock_menu_cb_post      (void *data, E_Menu *m);
+static int          _tclock_cb_check          (void *data);
+static Config_Item *_tclock_config_item_get   (const char *id);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
+static Ecore_Timer *check_timer;
 
 Config *tclock_config = NULL;
 
@@ -45,7 +43,6 @@ struct _Instance
 {
   E_Gadcon_Client *gcc;
   Evas_Object *tclock;
-  Ecore_Timer *check_timer;
 };
 
 static E_Gadcon_Client *
@@ -83,7 +80,8 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
     evas_list_append (tclock_config->instances, inst);
 
   _tclock_cb_check (inst);
-  inst->check_timer = ecore_timer_add (ci->poll_time, _tclock_cb_check, inst);
+   if (!check_timer)
+     check_timer = ecore_timer_add (1.0, _tclock_cb_check, NULL);
   return gcc;
 }
 
@@ -93,15 +91,21 @@ _gc_shutdown (E_Gadcon_Client * gcc)
   Instance *inst;
 
   inst = gcc->data;
-  if (inst->check_timer)
-    ecore_timer_del (inst->check_timer);
-  tclock_config->instances =
-    evas_list_remove (tclock_config->instances, inst);
-
+     
   evas_object_event_callback_del (inst->tclock, EVAS_CALLBACK_MOUSE_DOWN,
 				  _tclock_cb_mouse_down);
 
   evas_object_del (inst->tclock);
+
+   tclock_config->instances =
+    evas_list_remove (tclock_config->instances, inst);
+
+   if (evas_list_count(tclock_config->instances) <= 0) 
+     {	
+	ecore_timer_del (check_timer);
+	check_timer = NULL;
+     }
+   
   free (inst);
   inst = NULL;
 }
@@ -227,14 +231,6 @@ _tclock_config_updated (const char *id)
 
 	  _tclock_cb_check (inst);
 
-	  if (inst->check_timer)
-	    ecore_timer_interval_set (inst->check_timer,
-				      (double) ci->poll_time);
-	  else
-	    inst->check_timer =
-	      ecore_timer_add ((double) ci->poll_time, _tclock_cb_check,
-			       inst);
-
 	  break;
 	}
     }
@@ -243,36 +239,40 @@ _tclock_config_updated (const char *id)
 static int
 _tclock_cb_check (void *data)
 {
-  Instance *inst;
-  Config_Item *ci;
-  time_t current_time;
-  struct tm *local_time;
-  char buf[1024];
+   Instance *inst;
+   Config_Item *ci;
+   Evas_List *l;
+   time_t current_time;
+   struct tm *local_time;
+   char buf[1024];
 
-  inst = data;
-  ci = _tclock_config_item_get (inst->gcc->id);
+   for (l = tclock_config->instances; l; l = l->next) 
+     {
+	inst = l->data;
+	ci = _tclock_config_item_get (inst->gcc->id);
 
-  if (!ci->show_time)
-    edje_object_signal_emit (inst->tclock, "time_hidden", "");
-  else
-    edje_object_signal_emit (inst->tclock, "time_visible", "");
-  edje_object_message_signal_process (inst->tclock);
-
-  if (!ci->show_date)
-    edje_object_signal_emit (inst->tclock, "date_hidden", "");
-  else
-    edje_object_signal_emit (inst->tclock, "date_visible", "");
-  edje_object_message_signal_process (inst->tclock);
-
-  memset (buf, 0, sizeof (buf));
-  current_time = time (NULL);
-  local_time = localtime (&current_time);
-
-  strftime (buf, 1024, ci->time_format, local_time);
-  edje_object_part_text_set (inst->tclock, "tclock_time", buf);
-  strftime (buf, 1024, ci->date_format, local_time);
-  edje_object_part_text_set (inst->tclock, "tclock_date", buf);
-
+	if (!ci->show_time)
+	  edje_object_signal_emit (inst->tclock, "time_hidden", "");
+	else
+	  edje_object_signal_emit (inst->tclock, "time_visible", "");
+	edje_object_message_signal_process (inst->tclock);
+	
+	if (!ci->show_date)
+	  edje_object_signal_emit (inst->tclock, "date_hidden", "");
+	else
+	  edje_object_signal_emit (inst->tclock, "date_visible", "");
+	edje_object_message_signal_process (inst->tclock);
+	
+	memset (buf, 0, sizeof (buf));
+	current_time = time (NULL);
+	local_time = localtime (&current_time);
+	
+	strftime (buf, 1024, ci->time_format, local_time);
+	edje_object_part_text_set (inst->tclock, "tclock_time", buf);
+	strftime (buf, 1024, ci->date_format, local_time);
+	edje_object_part_text_set (inst->tclock, "tclock_date", buf);
+     }
+   
   return 1;
 }
 
@@ -293,8 +293,6 @@ _tclock_config_item_get (const char *id)
 
   ci = E_NEW (Config_Item, 1);
   ci->id = evas_stringshare_add (id);
-  ci->poll_time = 1.0;
-  ci->resolution = RESOLUTION_SECOND;
   ci->show_date = 1;
   ci->show_time = 1;
   ci->time_format = evas_stringshare_add ("%T");
@@ -321,8 +319,6 @@ e_modapi_init (E_Module * m)
 #define T Config_Item
 #define D conf_item_edd
   E_CONFIG_VAL (D, T, id, STR);
-  E_CONFIG_VAL (D, T, poll_time, DOUBLE);
-  E_CONFIG_VAL (D, T, resolution, INT);
   E_CONFIG_VAL (D, T, show_date, INT);
   E_CONFIG_VAL (D, T, show_time, INT);
   E_CONFIG_VAL (D, T, date_format, STR);
@@ -344,8 +340,6 @@ e_modapi_init (E_Module * m)
 
       ci = E_NEW (Config_Item, 1);
       ci->id = evas_stringshare_add ("0");
-      ci->poll_time = 1.0;
-      ci->resolution = RESOLUTION_SECOND;
       ci->show_date = 1;
       ci->show_time = 1;
       ci->time_format = evas_stringshare_add ("%T");
