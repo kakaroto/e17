@@ -721,6 +721,24 @@ enum Ewl_Text_Wrap
 typedef enum Ewl_Text_Wrap Ewl_Text_Wrap;
 
 /**
+ * @enum Ewl_Rotate
+ * The rotate values
+ */
+enum Ewl_Rotate
+{
+	EWL_ROTATE_CW_90,
+	EWL_ROTATE_180,
+	EWL_ROTATE_CW_270,
+	EWL_ROTATE_CC_90,
+	EWL_ROTATE_CC_270
+};
+
+/**
+ * The Ewl_Rotate
+ */
+typedef enum Ewl_Rotate Ewl_Rotate;
+
+/**
  * @}
  */ 
 #endif				/* __EWL_ENUMS_H__ */

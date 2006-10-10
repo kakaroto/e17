@@ -122,6 +122,9 @@ void		 ewl_image_tile_set(Ewl_Image *i, int x, int y,
 void 		 ewl_image_constrain_set(Ewl_Image *i, unsigned int size);
 unsigned int	 ewl_image_constrain_get(Ewl_Image *i);
 
+void		 ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient);
+void		 ewl_image_rotate(Ewl_Image *i, Ewl_Rotate rotate);
+
 Ewl_Widget      *ewl_image_thumbnail_get(Ewl_Image *i);
 
 Ewl_Widget      *ewl_image_thumbnail_new(void);

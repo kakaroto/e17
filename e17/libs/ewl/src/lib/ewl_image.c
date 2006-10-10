@@ -15,6 +15,9 @@ static int ewl_image_thumbnail_cb_complete(void *data, int type, void *event);
 static Ewl_Image_Type  ewl_image_type_get(const char *i);
 static void ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 
+static void ewl_image_rotate_180(Ewl_Image *img);
+static void ewl_image_rotate_90(Ewl_Image *img, int cc);
+
 /**
  * @return Returns a pointer to a new image widget on success, NULL on failure.
  * @brief Load an image widget with specified image contents
@@ -470,6 +473,97 @@ ewl_image_tile_set(Ewl_Image *i, int x, int y, int w, int h)
 	i->tile.y = y;
 	i->tile.w = w;
 	i->tile.h = h;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param img: The image to flip
+ * @param orient: The orientation to flip
+ * @return Returns no value
+ * @brief Flips the given image in the given direction
+ */
+void
+ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient)
+{
+	int ix, iy, ox, oy, mx, my, i, j, w, h;
+	int *ia, *ib, *oa, *ob, s;
+	unsigned int *in;
+	unsigned int tmp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("img", img);
+	DCHECK_TYPE("img", img, EWL_IMAGE_TYPE);
+
+	evas_object_image_size_get(img->image, &w, &h);
+	in = evas_object_image_data_get(img->image, TRUE);
+
+	if (orient == EWL_ORIENTATION_VERTICAL) 
+	{
+		mx = w;
+		my = h / 2;
+		ia = &iy;
+		ib = &ix;
+		oa = &oy;
+		ob = &ox;
+		s = h;
+	}
+	else
+	{
+		mx = w / 2;
+		my = h;
+		ia = &ix;
+		ib = &iy;
+		oa = &ox;
+		ob = &oy;
+		s = w;
+	}
+
+	for (iy = 0; iy < my; iy++) 
+	{
+		for (ix = 0; ix < mx; ix++) 
+		{
+			*oa = s - 1 - *ia;
+			*ob = *ib;
+
+			i = iy * w + ix;
+			j = oy * w + ox;
+
+			tmp = in[j];
+			in[j] = in[i];
+			in[i] = tmp;
+		}
+	}
+
+	evas_object_image_data_set(img->image, in);
+	evas_object_image_data_update_add(img->image, 0, 0, w, h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param i: The image to rotate
+ * @param rotate: The amount to rotate the image
+ * @return Returns no value
+ * @brief Rotates the given image by the given @a rotate value
+ */
+void
+ewl_image_rotate(Ewl_Image *i, Ewl_Rotate rotate)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("i", i);
+	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+
+	if (rotate == EWL_ROTATE_180)
+		ewl_image_rotate_180(i);
+
+	else if ((rotate == EWL_ROTATE_CW_90) ||
+			(rotate == EWL_ROTATE_CC_270))
+		ewl_image_rotate_90(i, FALSE);
+
+	else
+		ewl_image_rotate_90(i, TRUE);
+
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1017,6 +1111,103 @@ ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 		evas_event_feed_mouse_move(emb->evas, ev->x, ev->y, 
 				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
 				NULL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_image_rotate_90(Ewl_Image *img, int cc)
+{
+	int i, j, w = 0, h = 0, ix, iy, ox, oy, os, ow, oh;
+	int *ia, *ib, *oa, *ob;
+	unsigned int *in, *out;
+ 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("img", img);
+	DCHECK_TYPE("img", img, EWL_IMAGE_TYPE);
+
+	evas_object_image_size_get(img->image, &w, &h);
+	in = evas_object_image_data_get(img->image, FALSE);
+
+	out = malloc(w * h * sizeof(unsigned int));
+
+	ow = h;
+	oh = w;
+
+	/* these pointers pull the invarient conditional out of the loop */
+	if (cc)
+	{
+		oa = &oy;
+		ob = &ox;
+		ia = &iy;
+		ib = &ix;
+		os = oh;
+	}
+	else
+	{
+		oa = &ox;
+		ob = &oy;
+		ia = &ix;
+		ib = &iy;
+		os = ow;
+	}
+
+	for (i = 0; i < (w * h); i++)
+	{
+		ix = i % w;
+		iy = i / w;
+
+		/* rotate */
+		*oa = os - 1 - *ib;
+		*ob = *ia;
+
+		/* convert back to array index */
+		j = oy * ow + ox;
+
+		out[j] = in[i];
+	}
+
+	img->ow = ow;
+	img->oh = oh;
+
+	evas_object_image_size_set(img->image, ow, oh);
+	evas_object_image_data_set(img->image, out);
+	evas_object_image_data_update_add(img->image, 0, 0, ow, oh);
+
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(img), ow, oh);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_image_rotate_180(Ewl_Image *img)
+{
+	int ix, iy, ox, oy, i, j, size, w, h;
+	unsigned int *in, tmp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("img", img);
+	DCHECK_TYPE("img", img, EWL_IMAGE_TYPE);
+
+	evas_object_image_size_get(img->image, &w, &h);
+	in = evas_object_image_data_get(img->image, TRUE);
+
+	size = w * h / 2;
+	for (i = 0; i < size; i++) 
+	{
+		ix = i % w;
+		iy = i / w;
+		ox = w - 1 - ix;
+		oy = h - 1 - iy;
+		j = oy * w + ox;
+
+		tmp = in[j];
+		in[j] = in[i];
+		in[i] = tmp;
+	}
+
+	evas_object_image_data_set(img->image, in);
+	evas_object_image_data_update_add(img->image, 0, 0, w, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
