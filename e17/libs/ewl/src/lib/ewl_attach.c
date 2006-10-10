@@ -504,6 +504,10 @@ ewl_attach_tooltip_attach(Ewl_Widget *w, Ewl_Attach *attach)
 				ewl_attach_cb_tooltip_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,
 				ewl_attach_cb_tooltip_mouse_out, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_HIDE,
+				ewl_attach_cb_tooltip_mouse_out, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_OBSCURE,
+				ewl_attach_cb_tooltip_mouse_out, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -615,9 +619,7 @@ ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	attach = ewl_attach_list_get(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
-	if (!attach)
-		DRETURN(DLEVEL_STABLE);
-
+	if (!attach) DRETURN(DLEVEL_STABLE);
 	ewl_attach_tooltip_detach(attach);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -632,9 +634,7 @@ ewl_attach_cb_tooltip_mouse_out(Ewl_Widget *w __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	attach = ewl_attach_list_get(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
-	if (!attach)
-		DRETURN(DLEVEL_STABLE);
-
+	if (!attach) DRETURN(DLEVEL_STABLE);
 	ewl_attach_tooltip_detach(attach);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -676,7 +676,8 @@ ewl_attach_cb_tooltip_timer(void *data)
 		ewl_window_borderless_set(EWL_WINDOW(ewl_attach_tooltip->win));
 		ewl_window_raise(EWL_WINDOW(ewl_attach_tooltip->win));
 #endif
-		/* XXX this should really be in it's own window */
+
+		/* XXX this should really be in its own window */
 		ewl_attach_tooltip->win = ewl_floater_new();
 		ewl_box_orientation_set(EWL_BOX(ewl_attach_tooltip->win), 
 				EWL_ORIENTATION_HORIZONTAL);
@@ -699,8 +700,9 @@ ewl_attach_cb_tooltip_timer(void *data)
 					EWL_CALLBACK_DESTROY,
 					ewl_attach_cb_tooltip_win_destroy, 
 					NULL);
-		ewl_object_fill_policy_set(EWL_OBJECT(ewl_attach_tooltip->win), 
-							EWL_FLAG_FILL_NONE);
+		ewl_object_fill_policy_set(
+				EWL_OBJECT(ewl_attach_tooltip->win), 
+						EWL_FLAG_FILL_NONE);
 
 		ewl_widget_appearance_set(ewl_attach_tooltip->win,
 						EWL_ATTACH_TOOLTIP_TYPE);
@@ -724,7 +726,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 
 			ewl_attach_tooltip->embed = EWL_WIDGET(emb);
 			ewl_container_child_append(EWL_CONTAINER(emb), 
-							ewl_attach_tooltip->win);
+						ewl_attach_tooltip->win);
 		}
 	}
 	ewl_widget_show(ewl_attach_tooltip->win);
@@ -732,15 +734,19 @@ ewl_attach_cb_tooltip_timer(void *data)
 	if (!(ewl_attach_tooltip->box))
 	{
 		ewl_attach_tooltip->box = ewl_hbox_new();
-		ewl_container_child_append(EWL_CONTAINER(ewl_attach_tooltip->win), 
-							ewl_attach_tooltip->box);
+		ewl_container_child_append(
+				EWL_CONTAINER(ewl_attach_tooltip->win), 
+						ewl_attach_tooltip->box);
 	}
 	ewl_widget_show(ewl_attach_tooltip->box);
 
-	if (ewl_attach_tooltip->attach->data_type == EWL_ATTACH_DATA_TYPE_WIDGET)
+	if (ewl_attach_tooltip->attach->data_type == 
+			EWL_ATTACH_DATA_TYPE_WIDGET)
 	{
-		ewl_container_child_append(EWL_CONTAINER(ewl_attach_tooltip->box), 
-					EWL_WIDGET(ewl_attach_tooltip->attach->data));
+		ewl_container_child_append(
+				EWL_CONTAINER(ewl_attach_tooltip->box),
+				EWL_WIDGET(ewl_attach_tooltip->attach->data));
+
 		ewl_widget_show(EWL_WIDGET(ewl_attach_tooltip->attach->data));
 	}
 	else
@@ -748,13 +754,16 @@ ewl_attach_cb_tooltip_timer(void *data)
 		Ewl_Widget *o;
 
 		o = ewl_label_new();
-		ewl_label_text_set(EWL_LABEL(o), ewl_attach_tooltip->attach->data);
-		ewl_container_child_append(EWL_CONTAINER(ewl_attach_tooltip->box), o);
+		ewl_label_text_set(EWL_LABEL(o), 
+				ewl_attach_tooltip->attach->data);
+		ewl_container_child_append(
+				EWL_CONTAINER(ewl_attach_tooltip->box), o);
 		ewl_widget_show(o);
 	}
 
 	ewl_floater_position_set(EWL_FLOATER(ewl_attach_tooltip->win), 
-					ewl_attach_tooltip->x, ewl_attach_tooltip->y);
+					ewl_attach_tooltip->x,
+					ewl_attach_tooltip->y);
 
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
