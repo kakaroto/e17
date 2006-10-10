@@ -504,8 +504,6 @@ ewl_attach_tooltip_attach(Ewl_Widget *w, Ewl_Attach *attach)
 				ewl_attach_cb_tooltip_mouse_down, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,
 				ewl_attach_cb_tooltip_mouse_out, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_HIDE,
-				ewl_attach_cb_tooltip_mouse_out, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_OBSCURE,
 				ewl_attach_cb_tooltip_mouse_out, NULL);
 
