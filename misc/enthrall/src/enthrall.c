@@ -94,7 +94,7 @@ on_timer (void *udata)
 		b = XQueryPointer (e->disp, e->window.id, &dw, &childw,
 		                   &unused1, &unused1, &ptr_x, &ptr_y, &unused2);
 
-		if (b == True && childw != None)
+		if (b == True)
 			imlib_blend_image_onto_image (e->cursor.id, true, 0, 0,
 			                              e->cursor.w, e->cursor.h,
 			                              ptr_x, ptr_y,
