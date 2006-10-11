@@ -76,6 +76,7 @@ collections
 			 }
 		       color:  255 255 255 255;
 		       color3:   0   0   0  70;
+		       color_class: "module_label";
 		       text
 			 {
 			    text:  "";
@@ -110,6 +111,7 @@ collections
 			 }
 		       color:  255 255 255 255;
 		       color3:   0   0   0  50;
+		       color_class: "module_label";
 		       text
 			 {
 			    text:  "Taunton";
@@ -180,6 +182,7 @@ collections
 			 }
 		       color:  255 255 255 255;
 		       color3:   0   0   0  60;
+		       color_class: "module_label";
 		       text
 			 {
 			    text:  "";
@@ -208,6 +211,7 @@ collections
 			 }
 		       color:  255 255 255 255;
 		       color3:   0   0   0  60;
+		       color_class: "module_label";
 		       text
 			 {
 			    text:  "";
