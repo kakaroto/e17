@@ -46,9 +46,9 @@ lang_register_module_actions()
    E_Action *act;
 
    e_action_predef_name_set(LANG_ACTION_GROUP, LANG_ACTION_NEXT_LANGUAGE, LANG_NEXT_ACTION,
-				 NULL, NULL, ACT_EDIT_RESTRICT_ACTION | ACT_EDIT_RESTRICT_PARAMS);
+				 NULL, NULL, 0);
    e_action_predef_name_set(LANG_ACTION_GROUP, LANG_ACTION_PREV_LANGUAGE, LANG_PREV_ACTION,
-				 NULL, NULL, ACT_EDIT_RESTRICT_ACTION | ACT_EDIT_RESTRICT_PARAMS);
+				 NULL, NULL, 0);
 
    // these two are strongly connected with LANG_NEXT_ACTION and LANG_PREV_ACTION
    ACT_GO(switch_next_language);
