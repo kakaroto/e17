@@ -266,6 +266,7 @@ collections
 		       visible: 1;
 		       color: 255 255 255 255;
 		       color3: 0 0 0 42;
+		       color_class: "module_label";
 		    }
 	       }
 	     part
@@ -424,6 +425,7 @@ collections
 		       visible: 1;
 		       color: 255 255 255 255;
 		       color3: 0 0 0 42;
+		       color_class: "module_label";
 		    }
 	       }	     
 	  }
@@ -438,7 +440,6 @@ collections
 		  transition: SINUSOIDAL 0.5;
 		  target: "qual_label";
 		  target: "level_label";
-		  //after: "go_passive2";
 	       }
 	     program 
 	       {
@@ -447,7 +448,6 @@ collections
 		  source: "";
 		  action: ACTION_STOP;
 		  target: "go_active";
-		  //after: "go_passive2";
 	       }
 	     program 
 	       {
