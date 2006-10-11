@@ -45,10 +45,10 @@ lang_register_module_actions()
 {
    E_Action *act;
 
-   e_register_action_predef_name(LANG_ACTION_GROUP, LANG_ACTION_NEXT_LANGUAGE, LANG_NEXT_ACTION,
-				 NULL, EDIT_RESTRICT_ACTION | EDIT_RESTRICT_PARAMS, 0);
-   e_register_action_predef_name(LANG_ACTION_GROUP, LANG_ACTION_PREV_LANGUAGE, LANG_PREV_ACTION,
-				 NULL, EDIT_RESTRICT_ACTION | EDIT_RESTRICT_PARAMS, 0);
+   e_action_predef_name_set(LANG_ACTION_GROUP, LANG_ACTION_NEXT_LANGUAGE, LANG_NEXT_ACTION,
+				 NULL, NULL, ACT_EDIT_RESTRICT_ACTION | ACT_EDIT_RESTRICT_PARAMS);
+   e_action_predef_name_set(LANG_ACTION_GROUP, LANG_ACTION_PREV_LANGUAGE, LANG_PREV_ACTION,
+				 NULL, NULL, ACT_EDIT_RESTRICT_ACTION | ACT_EDIT_RESTRICT_PARAMS);
 
    // these two are strongly connected with LANG_NEXT_ACTION and LANG_PREV_ACTION
    ACT_GO(switch_next_language);
@@ -63,8 +63,8 @@ lang_unregister_module_actions()
    e_action_del(LANG_NEXT_ACTION);
    e_action_del(LANG_PREV_ACTION);
 
-   e_unregister_action_predef_name(LANG_ACTION_GROUP, LANG_ACTION_NEXT_LANGUAGE); 
-   e_unregister_action_predef_name(LANG_ACTION_GROUP, LANG_ACTION_PREV_LANGUAGE);
+   e_action_predef_name_del(LANG_ACTION_GROUP, LANG_ACTION_NEXT_LANGUAGE); 
+   e_action_predef_name_del(LANG_ACTION_GROUP, LANG_ACTION_PREV_LANGUAGE);
    e_config_save();
 
    return 1;
