@@ -22,7 +22,6 @@
  */
 #include "E.h"
 #include "e16-ecore_list.h"
-#include "parse.h"
 
 typedef struct
 {
