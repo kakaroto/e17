@@ -317,6 +317,7 @@ collections
 		       state: "default" 0.0;
 		       color: 255 255 255 255;
 		       color3: 0 0 0 32;
+		       color_class: "module_label";
 		       visible: 0;
 		       rel1
 			 {

@@ -682,8 +682,6 @@ _ss_take_shot (void *data)
   snprintf (buf, sizeof (buf), "%s %s %s/%s", cmd, opt, ci->location, 
 	    inst->filename);
    
-   printf("\n\nBuf: %s\n\n", buf);
-   
   ss_config->exe_exit_handler =
     ecore_event_handler_add (ECORE_EXE_EVENT_DEL, _ss_exe_cb_exit, NULL);
   if (ci->delay_time > 0)
