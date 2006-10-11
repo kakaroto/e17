@@ -330,7 +330,8 @@ typedef enum Ewl_Key_Modifiers Ewl_Key_Modifiers;
  * @enum Ewl_State_Type
  * The state type
  */
-enum Ewl_State_Type {
+enum Ewl_State_Type 
+{
 	EWL_STATE_TRANSIENT,
 	EWL_STATE_PERSISTENT
 };
@@ -452,7 +453,7 @@ enum Ewl_Attach_Type
 	EWL_ATTACH_TYPE_COLOR,
 	EWL_ATTACH_TYPE_NAME,
 	EWL_ATTACH_TYPE_MOUSE_CURSOR,
-	EWL_ATTACH_TYPE_NOTEBOOK_DATA
+	EWL_ATTACH_TYPE_WIDGET_ASSOCIATION
 };
 
 /**

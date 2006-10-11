@@ -258,7 +258,7 @@ ewl_notebook_visible_page_set(Ewl_Notebook *n, Ewl_Widget *page)
 	{
 		Ewl_Widget *w;
 
-		t = ewl_attach_notebook_data_get(n->cur_page);
+		t = ewl_attach_widget_association_get(n->cur_page);
 		if (t) ewl_widget_state_set(t, "default", EWL_STATE_PERSISTENT);
 
 		/* make sure we set n->cur_page null first or the hide
@@ -271,7 +271,7 @@ ewl_notebook_visible_page_set(Ewl_Notebook *n, Ewl_Widget *page)
 	n->cur_page = page;
 	ewl_widget_show(n->cur_page);
 
-	t = ewl_attach_notebook_data_get(n->cur_page);
+	t = ewl_attach_widget_association_get(n->cur_page);
 	if (t) ewl_widget_state_set(t, "selected", EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -371,15 +371,15 @@ ewl_notebook_page_tab_widget_set(Ewl_Notebook *n, Ewl_Widget *page,
 		ewl_widget_show(tab);
 	}
 
-	t = ewl_attach_notebook_data_get(page);
+	t = ewl_attach_widget_association_get(page);
 	if (!t)
 	{
 		int idx = 0;
 
 		t = ewl_hbox_new();
 		ewl_widget_appearance_set(t, "tab");
-		ewl_attach_notebook_data_set(page, t);
-		ewl_attach_notebook_data_set(t, page);
+		ewl_attach_widget_association_set(page, t);
+		ewl_attach_widget_association_set(t, page);
 		ewl_widget_show(t);
 
 		ewl_callback_append(t, EWL_CALLBACK_CLICKED,
@@ -415,7 +415,7 @@ ewl_notebook_page_tab_widget_get(Ewl_Notebook *n, Ewl_Widget *page)
 	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, NULL);
 	DCHECK_TYPE_RET("page", page, EWL_WIDGET_TYPE, NULL);
 
-	t = ewl_attach_notebook_data_get(page);
+	t = ewl_attach_widget_association_get(page);
 	if (!t)
 	{
 		DWARNING("We have a notebook page with no tab, bad, very bad.\n");
@@ -541,7 +541,7 @@ ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w,
 	n = EWL_NOTEBOOK(EWL_WIDGET(c)->parent);
 
 	/* we still have a tab, delete it */
-	t = ewl_attach_notebook_data_get(w);
+	t = ewl_attach_widget_association_get(w);
 	if (t) 
 	{
 		idx = ewl_container_child_index_get(
@@ -565,7 +565,7 @@ ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w,
 
 		if (new_tab)
 		{
-			page = ewl_attach_notebook_data_get(new_tab);
+			page = ewl_attach_widget_association_get(new_tab);
 			if (page)
 				ewl_notebook_visible_page_set(
 						EWL_NOTEBOOK(n), page);
@@ -595,7 +595,7 @@ ewl_notebook_cb_tab_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	n = data;
-	page = ewl_attach_notebook_data_get(w);
+	page = ewl_attach_widget_association_get(w);
 	ewl_notebook_visible_page_set(n, page);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
