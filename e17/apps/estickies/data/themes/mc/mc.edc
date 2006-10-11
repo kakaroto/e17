@@ -46,7 +46,7 @@ collections {
    IMAGE("button_lock");
    IMAGE("button_stick");
    group {
-      name: "window";
+      name: "etk/window";
       data {
 	 item: "inset" "6 6 6 6";
       }
@@ -96,7 +96,7 @@ collections {
    }
    
    group {
-      name: "button";
+      name: "etk/button";
       min: 0 16;
       data {
 	 item: "inset" "1 1 1 1";
@@ -141,29 +141,29 @@ collections {
       programs {      
 	 program {
 	    name: "button_pressed";
-	    signal: "pressed";
-	    source: "";
+	    signal: "etk,state,pressed";
+	    source: "etk";
 	    action: STATE_SET "down" 0.0;
 	    target: "button";
 	 }
 	 program {
 	    name: "button_released";
-	    signal: "released";
-	    source: "";
+	    signal: "etk,state,released";
+	    source: "etk";
 	    action: STATE_SET "default" 0.0;
 	    target: "button";
 	 }
 	 program {
 	    name: "button_enter";
-	    signal: "enter";
-	    source: "";
+	    signal: "etk,state,enter";
+	    source: "etk";
 	    action: STATE_SET "over" 0.0;
 	    target: "button";
 	 }
 	 program {
 	    name: "button_leave";
-	    signal: "leave";
-	    source: "";
+	    signal: "etk,state,leave";
+	    source: "etk";
 	    action: STATE_SET "default" 0.0;
 	    target: "button";
 	 }
@@ -171,7 +171,7 @@ collections {
    }
    
    group {
-      name: "toggle_button";
+      name: "etk/toggle_button";
       min: 0 16;
       data {
 	 item: "inset" "1 1 1 1";
@@ -223,47 +223,47 @@ collections {
       programs {
 	 program {
 	    name: "toggle_button_activate";
-	    signal: "activate";
-	    source: "";
+	    signal: "etk,state,on";
+	    source: "etk";
 	    script {
 	       activate();
 	    }
 	 }
 	 program {
 	    name: "toggle_button_deactivate";
-	    signal: "deactivate";
-	    source: "";
+	    signal: "etk,state,off";
+	    source: "etk";
 	    script {
 	       deactivate();
 	    }
 	 }
 	 program {
 	    name: "toggle_button_pressed";
-	    signal: "pressed";
-	    source: "";
+	    signal: "etk,state,pressed";
+	    source: "etk";
 	    action: STATE_SET "down" 0.0;
 	    target: "toggle_button";
 	 }
 	 program {
 	    name: "toggle_button_released";
-	    signal: "released";
-	    source: "";
+	    signal: "etk,state,released";
+	    source: "etk";
 	    script {
 	       up();
 	    }
 	 }
 	 program {
 	    name: "toggle_button_enter";
-	    signal: "enter";
-	    source: "";
+	    signal: "etk,state,enter";
+	    source: "etk";
 	    script {
 	       enter();
 	    }
 	 }
 	 program {
 	    name: "toggle_button_leave";
-	    signal: "leave";
-	    source: "";
+	    signal: "etk,state,leave";
+	    source: "etk";
 	    script {
 	       leave();
 	    }
@@ -305,7 +305,7 @@ collections {
    }
    
    group {
-      name: "text_view";
+      name: "etk/text_view";
       min: 120 18;
       data {
 	 item: "inset" "0 0 11 11";
