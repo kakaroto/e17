@@ -1,7 +1,0 @@
-program{
-	name: "name_shade_1";
-	action: STATE_SET "shaded" 0.0;
-	transition: DECELERATE 0.8;
-	target: "name";
-}
-

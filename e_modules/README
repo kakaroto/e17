@@ -7,8 +7,6 @@ cpu - A module to monitor cpu load.
 deskshow - A module to iconify/uniconify all current windows to show the
 desktop.
 
-devian - A module to display images and rss feeds.
-
 emu - Experimental generic scriptable module for E17.
 
 eveil - Sets reminders and timer

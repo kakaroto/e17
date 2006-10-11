@@ -1,7 +1,0 @@
-program{
-	name: "button_previous_up";
-	signal: "mouse,up,1";
-	source: "button_previous";
-	action: STATE_SET "default" 0.0;
-	target: "button_previous";
-}

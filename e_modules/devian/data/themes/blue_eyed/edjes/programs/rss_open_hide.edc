@@ -1,6 +1,0 @@
-program{
-	name: "open_hide";
-	action: STATE_SET "default" 0.0;
-	target: "open";
-}
-
