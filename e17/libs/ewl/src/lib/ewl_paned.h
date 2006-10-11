@@ -39,20 +39,20 @@ typedef struct Ewl_Paned Ewl_Paned;
  */
 struct Ewl_Paned
 {
-        Ewl_Container container;        /**< Inherit from Ewl_Container */
-        Ewl_Orientation orientation;    /**< The orientation of the paned */
+	Ewl_Container container;        /**< Inherit from Ewl_Container */
+	Ewl_Orientation orientation;    /**< The orientation of the paned */
 
 	Ecore_List *new_panes;		/**< List of unplaced panes */
 	unsigned short updating_grabbers:1; /**< are we updating the grabbers */
 };
 
-Ewl_Widget      *ewl_paned_new(void);
-Ewl_Widget      *ewl_hpaned_new(void);
-Ewl_Widget      *ewl_vpaned_new(void);
-int              ewl_paned_init(Ewl_Paned *p);
+Ewl_Widget	*ewl_paned_new(void);
+Ewl_Widget	*ewl_hpaned_new(void);
+Ewl_Widget	*ewl_vpaned_new(void);
+int		 ewl_paned_init(Ewl_Paned *p);
 
-void             ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o);
-Ewl_Orientation  ewl_paned_orientation_get(Ewl_Paned *p);
+void		 ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o);
+Ewl_Orientation	 ewl_paned_orientation_get(Ewl_Paned *p);
 
 /*
  * Internal functions. Override at your risk.
