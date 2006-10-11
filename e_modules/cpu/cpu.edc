@@ -73,6 +73,7 @@ collections
 			 }
 		       color: 255 255 255 255;
 		       color3: 0 0 0 42;
+		       color_class: "module_label";
 		       text
 			 {
 			    text: "0%";
