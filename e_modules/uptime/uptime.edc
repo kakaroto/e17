@@ -32,6 +32,7 @@ collections
 		       color: 255 255 255 255;
 		       color2: 0 0 0 96;
 		       color3: 0 0 0 32;
+		       color_class: "module_label";
 		       text
 			 {
 			    text: "uptime";
@@ -66,6 +67,7 @@ collections
 		       color: 255 255 255 255;
 		       color2: 0 0 0 96;
 		       color3: 0 0 0 32;
+		       color_class: "module_label";
 		       text
 			 {
 			    text: "load average";
@@ -100,6 +102,7 @@ collections
 		       color: 255 255 255 255;
 		       color2: 0 0 0 96;
 		       color3: 0 0 0 32;
+		       color_class: "module_label";
 		       text
 			 {
 			    text: "users";
