@@ -151,6 +151,7 @@ collections
 		       visible: 1;
 		       color: 255 255 255 255;
 		       color3: 0 0 0 42;
+		       color_class: "module_label";
 		    }
 	       }
 	     part
@@ -308,6 +309,7 @@ collections
 		       visible: 1;
 		       color: 255 255 255 255;
 		       color3: 0 0 0 42;
+		       color_class: "module_label";
 		    }
 	       }
 	     part
@@ -465,6 +467,7 @@ collections
 		       visible: 1;
 		       color: 255 255 255 255;
 		       color3: 0 0 0 42;
+		       color_class: "module_label";
 		    }
 	       }	     
 	  }
