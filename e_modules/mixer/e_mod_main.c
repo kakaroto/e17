@@ -161,7 +161,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void)
 {
-   return _("Mixer");
+   return D_("Mixer");
 }
 
 static Evas_Object *
@@ -415,6 +415,9 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    conf_item_edd = E_CONFIG_DD_NEW("Mixer_Config_Item", Config_Item);
 #undef T
 #undef D
@@ -512,8 +515,8 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-   e_module_dialog_show(m, _("Mixer"), 
-			_("Mixer module lets you change volume."));
+   e_module_dialog_show(m, D_("Mixer"), 
+			D_("Mixer module lets you change volume."));
    return 1;
 }
 
@@ -634,7 +637,7 @@ _mixer_window_simple_pop_up(Instance *inst)
         win->bg_obj = edje_object_add(win->window->evas);
         e_theme_edje_object_set(win->bg_obj, "base/theme/menus",
 				"e/widgets/menu/default/background");
-	edje_object_part_text_set(win->bg_obj, "e.text.title", _("Volume"));
+	edje_object_part_text_set(win->bg_obj, "e.text.title", D_("Volume"));
 	edje_object_signal_emit(win->bg_obj, "e,action,show,title", "e");
         edje_object_message_signal_process(win->bg_obj);
         evas_object_show(win->bg_obj);
@@ -656,7 +659,7 @@ _mixer_window_simple_pop_up(Instance *inst)
         evas_object_smart_callback_add(win->slider, "changed",
                                        _mixer_window_simple_changed_cb, win);
         
-        win->check = e_widget_check_add(win->window->evas, _("Mute"), &win->mute);
+        win->check = e_widget_check_add(win->window->evas, D_("Mute"), &win->mute);
         evas_object_show(win->check);
         e_widget_min_size_get(win->check, &mw, &mh);
         e_box_pack_end(win->vbox, win->check);

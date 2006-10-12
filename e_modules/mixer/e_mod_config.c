@@ -46,7 +46,7 @@ _config_mixer_module(void *data, Config_Item *ci)
 	     e_module_dir_get(mixer_config->module));
 
    con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, _("Mixer Configuration"), "Mixer", 
+   cfd = e_config_dialog_new(con, D_("Mixer Configuration"), "Mixer", 
 			     "_mixer_config_dialog", buf, 0, v, ci);
    mixer_config->config_dialog = cfd;
 }
@@ -95,8 +95,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o = e_widget_list_add(evas, 0, 0);
 
-   ot = e_widget_frametable_add(evas, _("Mixer Application"), 1);
-   ob = e_widget_check_add(evas, _("Launch Mixer App"), &(cfdata->use_app));
+   ot = e_widget_frametable_add(evas, D_("Mixer Application"), 1);
+   ob = e_widget_check_add(evas, D_("Launch Mixer App"), &(cfdata->use_app));
    e_widget_frametable_object_append(ot, ob, 0, 0, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &cfdata->app);
    e_widget_frametable_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
@@ -111,7 +111,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    
    if ((mixer->mix_sys->cards) && (evas_list_count(mixer->mix_sys->cards) > 1))
      {
-	of = e_widget_framelist_add(evas, _("Available Cards"), 0);
+	of = e_widget_framelist_add(evas, D_("Available Cards"), 0);
 	cg = e_widget_radio_group_new(&cfdata->card_id);
 	for (cards = mixer->mix_sys->cards; cards; cards = cards->next) 
 	  {
@@ -131,7 +131,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	     card->channels = mixer->mix_sys->get_channels(card);
 	     if (card->channels) 
 	       {
-		  of = e_widget_framelist_add(evas, _("Available Mixers"), 0);
+		  of = e_widget_framelist_add(evas, D_("Available Mixers"), 0);
 		  mg = e_widget_radio_group_new(&cfdata->channel_id);
 		  for (chans = card->channels; chans; chans = chans->next) 
 		    {

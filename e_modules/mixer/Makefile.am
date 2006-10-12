@@ -1,3 +1,5 @@
+SUBDIRS = po
+
 MAINTAINERCLEANFILES = Makefile.in
 
 EDJE_CC = @edje_cc@
