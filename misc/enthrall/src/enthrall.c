@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (C) 2004 Tilman Sauerbeck (tilman at code-monkey de)
+ * Copyright (C) 2004-2006 Tilman Sauerbeck (tilman at code-monkey de)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
