@@ -74,10 +74,8 @@ static void ee_window_selection_text_set(Ewl_Window *win, const char *txt);
 static void ee_window_geometry_set(Ewl_Window *win, int *width, int *height);
 static void ee_dnd_aware_set(Ewl_Embed *embed);
 
-static Ewl_Engine_Info engine_funcs = {
+static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
 	{
-		ee_init,
-		ee_shutdown,
 		ee_window_new,
 		ee_window_destroy,
 		ee_window_move,
@@ -100,10 +98,8 @@ static Ewl_Engine_Info engine_funcs = {
 		ee_pointer_ungrab,
 		ee_window_selection_text_set,
 		ee_window_geometry_set,
-		ee_dnd_aware_set,
-		NULL	
-	}
-};
+		ee_dnd_aware_set
+	};
 
 Ecore_DList *
 ewl_engine_dependancies(void)
@@ -136,6 +132,8 @@ ewl_engine_create(void)
 static int
 ee_init(Ewl_Engine *engine)
 {
+	Ewl_Engine_Info *info;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("engine", engine, FALSE);
 
@@ -229,8 +227,13 @@ ee_init(Ewl_Engine *engine)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
+	info = NEW(Ewl_Engine_Info, 1);
+	info->init = ee_init;
+	info->shutdown = ee_shutdown;
+	info->hooks.window = window_funcs;
+
 	engine->name = strdup("x11");
-	engine->functions = &engine_funcs;
+	engine->functions = info;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

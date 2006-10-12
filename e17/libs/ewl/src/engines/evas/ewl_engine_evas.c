@@ -20,20 +20,17 @@ static void ee_canvas_layer_update(Ewl_Widget *w);
 static Evas_Object *ewl_widget_layer_neighbor_find_above(Ewl_Widget *w);
 static Evas_Object *ewl_widget_layer_neighbor_find_below(Ewl_Widget *w);
 
-static Ewl_Engine_Info engine_funcs = {
+static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] = 
 	{
-		ee_init,
-		NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL,
+		NULL,
 		ee_canvas_output_set,
 		ee_canvas_render,
 		ee_canvas_freeze,
-		ee_canvas_thaw,
+		ee_canvas_thaw
+	};
+
+static void *theme_funcs[EWL_ENGINE_THEME_MAX] =
+	{
 		NULL, NULL, NULL,
 		ee_canvas_smart_new,
 		NULL,
@@ -53,8 +50,7 @@ static Ewl_Engine_Info engine_funcs = {
 		evas_object_color_set,
 		ee_canvas_stack_add,
 		ee_canvas_layer_update,
-	}
-};
+	};
 
 Ecore_DList *
 ewl_engine_dependancies(void)
@@ -87,11 +83,18 @@ ewl_engine_create(void)
 static int
 ee_init(Ewl_Engine *engine)
 {
+	Ewl_Engine_Info *info;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("engine", engine, FALSE);
 
+	info = NEW(Ewl_Engine_Info, 1);
+	info->init = ee_init;
+	info->hooks.canvas = canvas_funcs;
+	info->hooks.theme = theme_funcs;
+
 	engine->name = strdup("evas");
-	engine->functions = &engine_funcs;
+	engine->functions = info;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -109,9 +112,8 @@ ee_canvas_render(Ewl_Embed *embed)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
-	if (embed->evas) {
+	if (embed->evas)
 		evas_render(embed->evas);
-	}
 
 	DRETURN(DLEVEL_STABLE);
 }

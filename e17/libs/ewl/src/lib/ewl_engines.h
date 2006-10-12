@@ -3,11 +3,8 @@
 
 #include <Ewl.h>
 
-enum Ewl_Engine_Hook
+enum Ewl_Engine_Window_Hooks
 {
-	EWL_ENGINE_INIT,	/**< Initialize the engine */
-	EWL_ENGINE_SHUTDOWN,	/**< Shutdown the engine */
-
 	EWL_ENGINE_WINDOW_NEW,	/**< Create the window */
 	EWL_ENGINE_WINDOW_DESTROY,/**< Destroy the window */
 
@@ -40,15 +37,24 @@ enum Ewl_Engine_Hook
 
 	EWL_ENGINE_WINDOW_SELECTION_TEXT_SET, /**< Set the selection text */
 	EWL_ENGINE_WINDOW_GEOMETRY_GET, /**< Get the window geometry */
-	EWL_ENGINE_EMBED_DND_AWARE_SET,	 /**< Set the window 
-								dnd aware */
+
+	EWL_ENGINE_WINDOW_DND_AWARE_SET,	 /**< Set the window dnd aware */
+	EWL_ENGINE_WINDOW_MAX
+};
+
+enum Ewl_Engine_Canvas_Hooks
+{
 	EWL_ENGINE_CANVAS_SETUP, /**< Setup the render canvas */
 	EWL_ENGINE_CANVAS_OUTPUT_SET, /**< Set the canvas size */
 
 	EWL_ENGINE_CANVAS_RENDER,
 	EWL_ENGINE_CANVAS_FREEZE,
 	EWL_ENGINE_CANVAS_THAW,
+	EWL_ENGINE_CANVAS_MAX
+};
 
+enum Ewl_Engine_Theme_Hooks
+{
 	EWL_ENGINE_THEME_FREEZE,
 	EWL_ENGINE_THEME_THAW,
 
@@ -79,10 +85,12 @@ enum Ewl_Engine_Hook
 
 	EWL_ENGINE_THEME_WIDGET_STACK_ADD,
 	EWL_ENGINE_THEME_WIDGET_LAYER_UPDATE,
-	EWL_ENGINE_MAX,
+	EWL_ENGINE_THEME_MAX,
 };
 
-typedef enum Ewl_Engine_Hook Ewl_Engine_Hook;
+typedef enum Ewl_Engine_Window_Hooks Ewl_Engine_Window_Hooks;
+typedef enum Ewl_Engine_Theme_Hooks Ewl_Engine_Theme_Hooks;
+typedef enum Ewl_Engine_Canvas_Hooks Ewl_Engine_Canvas_Hooks;
 
 #define EWL_ENGINE(engine) ((Ewl_Engine *)engine)
 typedef struct Ewl_Engine Ewl_Engine;
@@ -90,7 +98,15 @@ typedef struct Ewl_Engine Ewl_Engine;
 typedef struct Ewl_Engine_Info Ewl_Engine_Info;
 struct Ewl_Engine_Info
 {
-	void *engine_hooks[EWL_ENGINE_MAX];	/**< The engine hooks */
+	int (*init)(Ewl_Engine *engine);	/**< Initialize the engine */
+	void (*shutdown)(Ewl_Engine *engine);	/**< Shutdown the engine */
+
+	struct
+	{
+		void **window;
+		void **canvas;
+		void **theme;
+	} hooks;
 };
 
 struct Ewl_Engine
@@ -114,9 +130,6 @@ void		 ewl_engine_event_handlers_init(void);
 void		 ewl_engine_event_handlers_shutdown(void);
 
 void		 ewl_engine_engine_shutdown(Ewl_Window *win);
-
-void            *ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook type);
-Ecore_List      *ewl_engine_hook_chain_get(Ewl_Embed *embed, Ewl_Engine_Hook type);
 
 void		 ewl_engine_window_new(Ewl_Window *win);
 void		 ewl_engine_window_destroy(Ewl_Window *win);
@@ -162,8 +175,6 @@ void		 ewl_engine_canvas_thaw(Ewl_Embed *embed);
  * engine.
  */
 
-typedef int (*Ewl_Engine_Cb_Init)(Ewl_Engine *engine);	/**< Initialize the engine */
-typedef void (*Ewl_Engine_Cb_Shutdown)(Ewl_Engine *engine);	/**< Shutdown the engine */
 typedef void (*Ewl_Engine_Cb_Window_New)(Ewl_Window *win);	/**< Create the window */
 typedef void (*Ewl_Engine_Cb_Window_Destroy)(Ewl_Window *win);/**< Destroy the window */
 typedef void (*Ewl_Engine_Cb_Window_Move)(Ewl_Window *win);	/**< Move the window to 
@@ -198,7 +209,7 @@ typedef void (*Ewl_Engine_Cb_Window_Selection_Text_Set)(Ewl_Window *win,
 typedef void (*Ewl_Engine_Cb_Window_Geometry_Get)(Ewl_Window *win, 
 						int *width, int *height); /**< Get the window 
 								geometry */
-typedef void (*Ewl_Engine_Cb_Embed_Dnd_Aware_Set)(Ewl_Embed *embed);	 /**< Set the embed 
+typedef void (*Ewl_Engine_Cb_Window_Dnd_Aware_Set)(Ewl_Embed *embed);	 /**< Set the embed 
 								dnd aware */
 typedef void (*Ewl_Engine_Cb_Canvas_Setup)(Ewl_Window *win, int debug); /**< Setup the 
 						         render canvas */

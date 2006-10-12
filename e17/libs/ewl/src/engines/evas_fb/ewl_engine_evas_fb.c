@@ -20,19 +20,11 @@ static void ee_canvas_setup(Ewl_Window *win, int debug);
 static int ee_init(Ewl_Engine *engine);
 static void ee_shutdown(Ewl_Engine *engine);
 
-static Ewl_Engine_Info engine_funcs = {
+static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] = 
 	{
-		ee_init,
-		ee_shutdown,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL, NULL, NULL,
-		ee_canvas_setup
-	}
-};
+		ee_canvas_setup,
+		NULL, NULL, NULL, NULL
+	};
 
 Ecore_DList *
 ewl_engine_dependancies(void)
@@ -70,6 +62,8 @@ ewl_engine_create(void)
 static int
 ee_init(Ewl_Engine *engine)
 {
+	Ewl_Engine_Info *info;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("engine", engine, TRUE);
 
@@ -103,8 +97,13 @@ ee_init(Ewl_Engine *engine)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
+	info = NEW(Ewl_Engine_Info, 1);
+	info->init = ee_init;
+	info->shutdown = ee_shutdown;
+	info->hooks.canvas = canvas_funcs;
+
 	engine->name = strdup("evas_fb");
-	engine->functions = &engine_funcs;
+	engine->functions = info;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
