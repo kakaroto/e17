@@ -45,6 +45,13 @@
  */
 #define FILE_FMT "enthrall_dump%.5lu"
 
+#define IMG_FROM_RECT(r) \
+	imlib_create_image_from_drawable (0, \
+	                                  (r).x, (r).y, (r).width, (r).height, \
+	                                  true)
+#define MIN(a, b) (a) < (b) ? (a) : (b)
+#define MAX(a, b) (a) > (b) ? (a) : (b)
+
 typedef struct {
 	Ecore_X_Display *disp;
 
@@ -62,6 +69,11 @@ typedef struct {
 		int w, h;
 	} cursor;
 
+	Imlib_Image prev_img;
+	Ecore_X_Rectangle damage;
+	bool damage_valid;
+	char last_written[PATH_MAX];
+
 	unsigned long frame_count;
 } Enthrall;
 
@@ -69,7 +81,7 @@ static int
 on_timer (void *udata)
 {
 	Enthrall *e = udata;
-	Imlib_Image im;
+	Imlib_Image tmp;
 	Bool b;
 	int ptr_x = 0, ptr_y = 0, unused1;
 	unsigned int unused2;
@@ -84,10 +96,27 @@ on_timer (void *udata)
 	snprintf (buf, sizeof (buf), "%s/"FILE_FMT".jpeg",
 	          e->output_dir, e->frame_count);
 
-	im = imlib_create_image_from_drawable (0, 0, 0,
-	                                       e->window.w, e->window.h,
-	                                       true);
-	imlib_context_set_image (im);
+	/* was there any change at all?
+	 * if not, just link the last written frame to the current.
+	 */
+	if (!e->damage_valid) {
+		symlink (e->last_written, buf);
+		goto out;
+	}
+
+	/* grab the damaged rectangle */
+	tmp = IMG_FROM_RECT (e->damage);
+
+	/* and blend it onto the previous shot */
+	imlib_blend_image_onto_image (tmp, true,
+	                              0, 0, e->damage.width, e->damage.height,
+	                              e->damage.x, e->damage.y,
+	                              e->damage.width, e->damage.height);
+
+	/* free the temporary grab */
+	imlib_context_set_image (tmp);
+	imlib_free_image ();
+	imlib_context_set_image (e->prev_img);
 
 	/* if we have a cursor, find out where it's at */
 	if (e->cursor.id) {
@@ -105,11 +134,49 @@ on_timer (void *udata)
 	imlib_image_set_format ("jpeg");
 
 	imlib_save_image (buf);
-	imlib_free_image ();
+	strcpy (e->last_written, buf);
 
+	e->damage_valid = false;
+
+out:
 	e->frame_count++;
 
 	return 1; /* keep going */
+}
+
+static inline void
+combine_rects (Ecore_X_Rectangle *a, Ecore_X_Rectangle *b)
+{
+	int ax2 = a->x + a->width;
+	int ay2 = a->y + a->height;
+
+	int bx2 = b->x + b->width;
+	int by2 = b->y + b->height;
+
+	a->x = MIN (a->x, b->x);
+	a->y = MIN (a->y, b->y);
+
+	a->width = MAX (ax2, bx2) - a->x;
+	a->height = MAX (ay2, by2) - a->y;
+}
+
+static int
+on_damage (void *udata, int type, void *event)
+{
+	Enthrall *e = udata;
+	Ecore_X_Event_Damage *ev = event;
+
+	if (e->damage_valid)
+		combine_rects (&e->damage, &ev->area);
+	else {
+		e->damage.x = ev->area.x;
+		e->damage.y = ev->area.y;
+		e->damage.width = ev->area.width;
+		e->damage.height = ev->area.height;
+		e->damage_valid = true;
+	}
+
+	return 0;
 }
 
 static void
@@ -237,6 +304,12 @@ main (int argc, char **argv)
 	ecore_init ();
 	ecore_x_init (NULL);
 
+	if (!ecore_x_damage_query ()) {
+		fprintf (stderr, "Error: X damage extension not available.\n");
+
+		return EXIT_FAILURE;
+	}
+
 	start = ecore_time_get ();
 
 	e.disp = ecore_x_display_get ();
@@ -251,9 +324,23 @@ main (int argc, char **argv)
 	ecore_x_window_geometry_get (e.window.id, NULL, NULL,
 	                             &e.window.w, &e.window.h);
 
+	ecore_x_damage_new (e.window.id,
+		                ECORE_X_DAMAGE_REPORT_RAW_RECTANGLES);
+
 	init_imlib (&e);
 
 	ecore_timer_add (1.0 / e.fps, on_timer, &e);
+
+	ecore_event_handler_add (ECORE_X_EVENT_DAMAGE_NOTIFY,
+	                         on_damage, &e);
+
+	e.damage.x = e.damage.y = 0;
+	e.damage.width = e.window.w;
+	e.damage.height = e.window.h;
+	e.damage_valid = true;
+
+	e.prev_img = IMG_FROM_RECT (e.damage);
+	imlib_context_set_image (e.prev_img);
 
 	ecore_main_loop_begin ();
 
@@ -264,6 +351,9 @@ main (int argc, char **argv)
 		imlib_context_set_image (e.cursor.id);
 		imlib_free_image ();
 	}
+
+	imlib_context_set_image (e.prev_img);
+	imlib_free_image ();
 
 	printf ("Wrote %lu frames in %f seconds.\n\n", e.frame_count,
 	        ecore_time_get () - start);
