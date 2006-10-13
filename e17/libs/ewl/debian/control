@@ -3,67 +3,121 @@ Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>> 4.0.0), cdbs, automake1.9, libtool, libevas0-dev, libevas0-all, libecore0-dev, libedje0-dev, libemotion0-dev, edje0-bin, embryo0-bin, libepsilon0-dev
-Standards-Version: 3.6.2.2
+Standards-Version: 3.7.2
 
 Package: libewl0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, libewl0-engine-evas-software-x11
+Depends: ${shlibs:Depends}, libewl0-engine-evas-software-x11, libevas0-engine-software-x11
 Provides: libewl
-Suggests: ewl0-bin, libewl0-engines-all  
+Suggests: ewl0-bin
+Recommends: libewl0-engines-all
 Description: The Enlightened Widget Library (EWL)
  EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the EWL runtime library including a basic software
+ X11 render engine.
 
 Package: libewl0-dev
 Architecture: any
 Section: devel
 Depends: libewl0 (= ${Source-Version}), libc6-dev | libc-dev, libevas-dev, libecore-dev, libemotion-dev
 Provides: libewl-dev
-Conflicts: libewl-dev
 Description: Development files for EWL
  EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package contains headers, static libraries and examples for
+ development with EWL.
 
 Package: libewl0-engines-all
 Section: libs
 Architecture: any
-Depends: libewl0-engine-evas-fb, libewl0-engine-evas-software-x11, libewl0-engine-x11, libewl0-engine-evas
+Depends: libewl0-engine-evas-fb, libewl0-engine-evas-software-x11, libewl0-engine-x11, libewl0-engine-evas, libewl0-engine-evas-xrender, libewl0-engine-evas-buffer
 Provides: libewl-engines-all
 Description: virtual package providing all available EWL engines
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides all available render engines for EWL.
 
 Package: libewl0-engine-evas
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, libewl0, libevas0-engine-fb
+Depends: ${shlibs:Depends}, libevas0
 Provides: libewl-engine-evas
 Description: The main EVAS engine for EWL
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the main EVAS engine for EWL.
+
+Package: libewl0-engine-evas-buffer
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, libevas0-engine-buffer
+Provides: libewl-engine-evas-buffer
+Description: The buffer engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides buffer render engine for EWL.
 
 Package: libewl0-engine-evas-fb
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, libewl0, libevas0-engine-fb, libewl0-engine-evas
+Depends: ${shlibs:Depends}, libevas0-engine-fb
 Provides: libewl-engine-evas-fb
 Description: The framebuffer engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the framebuffer render engine for EWL.
 
 Package: libewl0-engine-evas-software-x11
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, libewl0, libewl0-engine-x11, libevas0-engine-software-x11, libewl0-engine-evas
+Depends: ${shlibs:Depends}, libevas0-engine-software-x11
 Provides: libewl-engine-evas-software-x11
 Description: The software X11 engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the software X11 render for EWL.
 
 Package: libewl0-engine-evas-gl-x11
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, libewl0, libewl0-engine-x11, libevas0-engine-gl-x11, libewl0-engine-evas
+Depends: ${shlibs:Depends}, libevas0-engine-gl-x11
 Provides: libewl-engine-evas-gl-x11
 Description: The OpenGL X11 engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides an experimental OpenGL render engine for EWL.
+
+Package: libewl0-engine-evas-xrender
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, libevas0-engine-xrender
+Provides: libewl-engine-evas-xrender
+Description: The Xrender X11 engine for EWL provided by EVAS 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the Xrender engine for EWL.
 
 Package: libewl0-engine-x11
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, libewl0
+Depends: ${shlibs:Depends}, libx11-6
 Provides: libewl-engine-x11
 Description: The base X11 engine for EWL 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides the base X11 engine for EWL.
+
+Package: libewl0-plugins
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: libewl-plugins
+Description: The base X11 engine for EWL 
+ EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides plugins for EWL.
 
 Package: ewl0-bin
 Section: graphics
@@ -71,6 +125,6 @@ Architecture: any
 Depends: ${shlibs:Depends}
 Provides: ewl-bin
 Description: Programs for EWL
- This package provides programs packaged with EWL.
- .
  EWL is a widget library based on the Enlightenment Foundation Libraries
+ .
+ This package provides test programs packaged with EWL.

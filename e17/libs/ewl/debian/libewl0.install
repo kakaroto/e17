@@ -1,2 +1,3 @@
+debian/tmp/etc/ewl/*
 debian/tmp/usr/lib/lib*.so.*
 debian/tmp/usr/share/ewl/themes/e17.edj

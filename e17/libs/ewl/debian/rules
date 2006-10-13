@@ -1,10 +1,15 @@
 #!/usr/bin/make -f
 
-DEB_TAR_SRCDIR                  := ewl-0.0.4.007
-DEB_AUTO_CLEANUP_RCS            := yes
-
-include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/tarball.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
-include /usr/share/cdbs/1/rules/utils.mk 
+include /usr/share/cdbs/1/class/autotools.mk
+
+DEB_MAKE_CLEAN_TARGET := clean
+
+clean::
+	if [ -f $(CURDIR)/../../snapshot ]; then ./autogen.sh --prefix=/usr; fi
+
+
+install/libewl0-dev::
+	mkdir -p debian/libewl0-dev/usr/share/doc/libewl0-dev/
+	cp -a debian/tmp/usr/share/ewl/examples debian/libewl0-dev/usr/share/doc/libewl0-dev/
+	

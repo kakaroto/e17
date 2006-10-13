@@ -16,14 +16,17 @@ EXTRA_DIST = README AUTHORS COPYING ewl.m4 ewl.spec ewl.pc.in \
 	     debian/changelog \
 	     debian/copyright \
 	     debian/changelog.in \
-	     debian/libewl0.install \
 	     debian/ewl0-bin.install \
 	     debian/libewl0-dev.install \
-	     debian/libewl0-engine-x11.install \
-	     debian/libewl0-engines-all.install \
+	     debian/libewl0-engine-evas-buffer.install \
 	     debian/libewl0-engine-evas-fb.install \
 	     debian/libewl0-engine-evas-gl-x11.install \
-	     debian/libewl0-engine-evas-software-x11.install
+	     debian/libewl0-engine-evas.install \
+	     debian/libewl0-engine-evas-software-x11.install \
+	     debian/libewl0-engine-evas-xrender.install \
+	     debian/libewl0-engines-all.install \
+	     debian/libewl0-engine-x11.install \
+	     debian/libewl0.install
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = ewl.m4
