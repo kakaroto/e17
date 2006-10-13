@@ -729,6 +729,10 @@ ee_pointer_free(Ewl_Embed *embed, int pointer)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/*
+ * FIXME: No function to poll the active pointer yet, and we probably want to
+ * add size get/set hooks as well.
+ */
 static int
 ee_pointer_get(Ewl_Embed *embed)
 {
