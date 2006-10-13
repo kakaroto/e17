@@ -604,6 +604,7 @@ MenuEmpty(Menu * m, int destroying)
       Efree(m->items);
    m->items = NULL;
    m->num = 0;
+   m->sel_item = NULL;
 }
 
 void
