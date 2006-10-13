@@ -80,14 +80,6 @@ ewl_embed_init(Ewl_Embed *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 
-	w->engine = ewl_engine_new(ewl_config_string_get(ewl_config, 
-						EWL_CONFIG_ENGINE_NAME));
-	if (!w->engine)
-	{
-		DERROR("Error creating engine ...\n");
-		exit(-1);
-	}
-
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
@@ -95,6 +87,10 @@ ewl_embed_init(Ewl_Embed *w)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	ewl_widget_appearance_set(EWL_WIDGET(w), EWL_EMBED_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(w), EWL_EMBED_TYPE);
+
+	if (!ewl_embed_engine_name_set(w, ewl_config_string_get(ewl_config,
+				EWL_CONFIG_ENGINE_NAME)))
+		exit(-1);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_toplevel_set(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
@@ -118,6 +114,59 @@ ewl_embed_init(Ewl_Embed *w)
 	w->obj_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: Embed to change engines
+ * @param engine: Name of the new engine to use for the embed.
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Changes the current engine on an embed to the specified engine.
+ */
+int
+ewl_embed_engine_name_set(Ewl_Embed *embed, const char *engine)
+{
+	int realize = FALSE;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, FALSE);
+	DCHECK_PARAM_PTR_RET("engine", engine, FALSE);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, FALSE);
+
+	if (REALIZED(embed)) {
+		ewl_widget_unrealize(EWL_WIDGET(embed));
+		realize = TRUE;
+	}
+
+	if (embed->engine_name)
+		ecore_string_release(embed->engine_name);
+	embed->engine_name = ecore_string_instance(engine);
+
+	embed->engine = ewl_engine_new(engine);
+	if (!embed->engine)
+	{
+		DERROR("Error creating engine ...\n");
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+
+	if (realize)
+		ewl_widget_realize(EWL_WIDGET(embed));
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: Embed to get engine name
+ * @return Returns the name of the engine to use for the embed.
+ * @brief Get the current engine on an embed.
+ */
+const char *
+ewl_embed_engine_name_get(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
+
+	DRETURN_PTR(embed->engine_name, DLEVEL_STABLE);
 }
 
 /**
