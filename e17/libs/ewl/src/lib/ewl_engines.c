@@ -1183,8 +1183,8 @@ ewl_engine_pointer_data_new(Ewl_Embed *embed, unsigned int *data, int w, int h)
 }
 
 /**
- * @return Returns a pointer id on success, zero on failure.
- * @brief Creates a new pointer from ARGB data.
+ * @return Returns no value.
+ * @brief Change the current pointer to the one identified.
  */
 void
 ewl_engine_pointer_set(Ewl_Embed *embed, int pointer)
@@ -1200,6 +1200,28 @@ ewl_engine_pointer_set(Ewl_Embed *embed, int pointer)
 					EWL_ENGINE_POINTER_SET);
 	if (pointer_set)
 		pointer_set(embed, pointer);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns no value.
+ * @brief Free the identified pointer.
+ */
+void
+ewl_engine_pointer_free(Ewl_Embed *embed, int pointer)
+{
+	Ewl_Engine_Cb_Pointer_Set pointer_free;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	pointer_free = ewl_engine_hook_get(embed,
+					EWL_ENGINE_HOOK_TYPE_POINTER,
+					EWL_ENGINE_POINTER_FREE);
+	if (pointer_free)
+		pointer_free(embed, pointer);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1296,7 +1318,7 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook_Type type, int hook)
 }
 
 /**
- * @param embed: The embeddow to lookup the engine chain for hook matching
+ * @param embed: The embed to lookup the engine chain for hook matching
  * @param type: The Ewl_Engine_Hook type to find the best matching function
  * @return Returns a list of engine hooks matching on success.
  * @brief Retrieves a list of dependent engine callbacks for the specified type.

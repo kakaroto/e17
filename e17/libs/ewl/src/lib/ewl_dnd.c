@@ -489,7 +489,7 @@ ewl_dnd_types_decode(const char *types)
 		while (*tmp) tmp++;
 	}
 
-	list = calloc(count + 1, sizeof(char *));
+	list = NEW(char *, count + 1);
 	for (tmp = types, count = 0; *tmp; tmp++, count++) {
 		list[count] = strdup(tmp);
 		while (*tmp) tmp++;

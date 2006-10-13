@@ -1165,7 +1165,7 @@ ewl_debug_indent_get(int mod_dir)
 	if (ewl_debug_indent_lvl < 0)
 		ewl_debug_indent_lvl = 0;
 
-	indent = calloc((ewl_debug_indent_lvl << 1) + 2, sizeof(char *)); 
+	indent = NEW(char *, (ewl_debug_indent_lvl << 1) + 2); 
 	memset(indent, ' ', (ewl_debug_indent_lvl << 1) + 1);
 
 	if (mod_dir > 0) ewl_debug_indent_lvl ++;

@@ -17,7 +17,7 @@ ewl_histogram_new(void)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	hist = calloc(1, sizeof(Ewl_Histogram));
+	hist = NEW(Ewl_Histogram, 1);
 	if (!hist)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
