@@ -31,9 +31,8 @@ static int ewl_dnd_status = 0;
 Ecore_Event_Handler *ewl_dnd_mouse_up_handler;
 Ecore_Event_Handler *ewl_dnd_mouse_move_handler;
 
-char *ewl_dnd_drop_types[] = { "text/uri-list", "text/plain", NULL };
-
 static char *ewl_dnd_types_encode(const char **types);
+static char **ewl_dnd_types_decode(const char *types);
 static char * ewl_dnd_type_stpcpy(char *dst, const char *src);
 static int ewl_dnd_types_encoded_contains(char *types, char *type);
 
@@ -180,18 +179,17 @@ ewl_dnd_provided_types_contains(Ewl_Widget *w, char *type)
  * @return Returns a NULL terminated array of mimetypes widget provides for DND
  * @brief: Gets the mimetypes the designated widget can provide for DND
  */
-const char **
+char **
 ewl_dnd_provided_types_get(Ewl_Widget *w)
 {
-	const char **types;
+	const char *types;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	types = ecore_hash_get(ewl_dnd_provided_hash, w);
-
-	DRETURN_PTR(types, DLEVEL_STABLE);
+	DRETURN_PTR(ewl_dnd_types_decode(types), DLEVEL_STABLE);
 }
 
 /**
@@ -269,7 +267,7 @@ ewl_dnd_accepted_types_contains(Ewl_Widget *w, char *type)
 const char **
 ewl_dnd_accepted_types_get(Ewl_Widget *w)
 {
-	const char **types;
+	const char *types;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -277,38 +275,9 @@ ewl_dnd_accepted_types_get(Ewl_Widget *w)
 
 	types = ecore_hash_get(ewl_dnd_provided_hash, w);
 
-	DRETURN_PTR(types, DLEVEL_STABLE);
+	DRETURN_PTR(ewl_dnd_types_decode(types), DLEVEL_STABLE);
 }
 
-
-/**
- * @param widget: The widget to get the types for
- * @return Returns the Ewl_Dnd_Types for the given widget
- * @brief Get the Ewl_Dnd_Types for the given widget
- */
-Ewl_Dnd_Types *
-ewl_dnd_types_for_widget_get(Ewl_Widget *widget)
-{
-	Ewl_Widget *parent = NULL;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("widget", widget, NULL);
-	DCHECK_TYPE_RET("widget", widget, EWL_WIDGET_TYPE, NULL);
-
-	/* We need to get the top-level window widget.  Note
-	 * that we assume here that a widget is
-	 * a) Parented, and
-	 * b) It's top-level parent is a window */
-	parent = widget->parent;
-	while (parent && parent->parent)
-		parent = parent->parent;
-
-	/* Now check if this obj we found is a window */
-	if (parent && ewl_widget_type_is(parent, "embed")) 
-		DRETURN_PTR(&(EWL_EMBED(parent)->dnd_types), DLEVEL_STABLE);
-
-	DRETURN_PTR(NULL, DLEVEL_STABLE);
-}
 
 /**
  * @param w: The widget to start dragging
@@ -381,30 +350,11 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	ecore_x_mwm_borderless_set(ewl_dnd_evas_win, 1);
 
 	/* Start the drag operation */
-	ecore_x_dnd_types_set(ewl_dnd_drag_win, ewl_dnd_drop_types, 1);
+	ecore_x_dnd_types_set(ewl_dnd_drag_win, ewl_dnd_provided_types_get(w),
+			1);
 	ecore_x_dnd_begin(ewl_dnd_drag_win, NULL, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param type: The type to check for
- * @return Returns TRUE if the given type is supported, FALSE otherwise
- * @brief Checks if the given type @a type is supported 
- */
-int
-ewl_dnd_type_supported(char *type)
-{
-	char **check;
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("type", type, FALSE);
-
-	for (check = ewl_dnd_drop_types; *check; check++) {
-		if (!strcmp(type, *check))
-			DRETURN_INT(TRUE, DLEVEL_STABLE);
-	}
-
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -517,6 +467,35 @@ ewl_dnd_types_encode(const char **types)
 	*tmptype = '\0';
 
 	DRETURN_PTR(type, DLEVEL_STABLE);
+}
+
+static char **
+ewl_dnd_types_decode(const char *types)
+{
+	int count;
+	const char *tmp;
+	char **list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (!types)
+		DRETURN_PTR(types, DLEVEL_STABLE);
+
+	/*
+	 * Short lists so iterate over multiple times rather than incur
+	 * allocation overhead.
+	 */
+	for (tmp = types, count = 0; *tmp; tmp++, count++) {
+		while (*tmp) tmp++;
+	}
+
+	list = calloc(count + 1, sizeof(char *));
+	for (tmp = types, count = 0; *tmp; tmp++, count++) {
+		list[count] = strdup(tmp);
+		while (*tmp) tmp++;
+	}
+
+	DRETURN_PTR(list, DLEVEL_STABLE);
 }
 
 static char *

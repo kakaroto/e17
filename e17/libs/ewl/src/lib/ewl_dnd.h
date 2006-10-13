@@ -23,12 +23,10 @@ Ewl_Widget	*ewl_dnd_drag_widget_get(void);
 int 		 ewl_dnd_status_get(void);
 
 void 		 ewl_dnd_position_windows_set(Ewl_Widget *w);
-Ewl_Dnd_Types 	*ewl_dnd_types_for_widget_get(Ewl_Widget *widget);
-int              ewl_dnd_type_supported(char *type);
 
 void		 ewl_dnd_provided_types_set(Ewl_Widget *w, const char **types);
 int		 ewl_dnd_provided_types_contains(Ewl_Widget *w, char *type);
-const char	**ewl_dnd_provided_types_get(Ewl_Widget *w);
+char	       **ewl_dnd_provided_types_get(Ewl_Widget *w);
 
 void		 ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types);
 int		 ewl_dnd_accepted_types_contains(Ewl_Widget *w, char *type);

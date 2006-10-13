@@ -1203,7 +1203,6 @@ ewl_iconbox_cb_dnd_position(Ewl_Widget *item __UNUSED__,
 	int ibx, iby, px, py, fw, fh;
 	Ewl_Iconbox *ib;
 	Ewl_Iconbox_Icon *list_item;
-	Ewl_Dnd_Types *types;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
@@ -1220,14 +1219,6 @@ ewl_iconbox_cb_dnd_position(Ewl_Widget *item __UNUSED__,
 
 	fw= ewl_object_preferred_w_get(EWL_OBJECT(list_item->image));
 	fh= ewl_object_preferred_h_get(EWL_OBJECT(list_item->image));
-	
-	/* Get types */
-	if ((types = ewl_dnd_types_for_widget_get(EWL_WIDGET(ib)))) {
-		/*printf("We have %d types!\n", types->num_types);
-		if (types->num_types > 0) {
-			printf("First type is '%s'\n", types->types[0]);
-		}*/
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);	
 }
