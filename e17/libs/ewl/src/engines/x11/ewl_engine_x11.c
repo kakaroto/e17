@@ -106,7 +106,7 @@ static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
 		ee_dnd_aware_set
 	};
 
-static void *pointer_funcs[EWL_ENGINE_WINDOW_MAX] =
+static void *pointer_funcs[EWL_ENGINE_POINTER_MAX] =
 	{
 		ee_pointer_data_new,
 		ee_pointer_free,
