@@ -58,7 +58,7 @@ struct Ewl_Attach
  */
 #define ewl_attach_mouse_cursor_set(w, data) \
 	ewl_attach_other_set(EWL_WIDGET(w), EWL_ATTACH_TYPE_MOUSE_CURSOR, \
-			(int *)ecore_x_cursor_shape_get(data))
+			(int *)data)
 
 /**
  * @def ewl_attach_color_set(w, data)

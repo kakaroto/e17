@@ -74,6 +74,11 @@ static void ee_window_selection_text_set(Ewl_Window *win, const char *txt);
 static void ee_window_geometry_set(Ewl_Window *win, int *width, int *height);
 static void ee_dnd_aware_set(Ewl_Embed *embed);
 
+static int ee_pointer_data_new(Ewl_Embed *embed, int *data, int w, int h);
+static void ee_pointer_free(Ewl_Embed *embed, int pointer);
+static void ee_pointer_set(Ewl_Embed *embed, int pointer);
+static int ee_pointer_get(Ewl_Embed *embed);
+
 static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
 	{
 		ee_window_new,
@@ -99,6 +104,14 @@ static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
 		ee_window_selection_text_set,
 		ee_window_geometry_set,
 		ee_dnd_aware_set
+	};
+
+static void *pointer_funcs[EWL_ENGINE_WINDOW_MAX] =
+	{
+		ee_pointer_data_new,
+		ee_pointer_free,
+		ee_pointer_get,
+		ee_pointer_set,
 	};
 
 Ecore_DList *
@@ -231,6 +244,7 @@ ee_init(Ewl_Engine *engine)
 	info->init = ee_init;
 	info->shutdown = ee_shutdown;
 	info->hooks.window = window_funcs;
+	info->hooks.pointer = pointer_funcs;
 
 	engine->name = strdup("x11");
 	engine->functions = info;
@@ -688,6 +702,52 @@ ee_dnd_aware_set(Ewl_Embed *embed)
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
 	ecore_x_dnd_aware_set((Ecore_X_Window)embed->evas_window, TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ee_pointer_data_new(Ewl_Embed *embed, int *data, int w, int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, 0);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, 0);
+
+	DRETURN_INT(ecore_x_cursor_new((Ecore_X_Window)embed->evas_window,
+				data, w, h, 0, 0), DLEVEL_STABLE);
+}
+
+static void
+ee_pointer_free(Ewl_Embed *embed, int pointer)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	ecore_x_cursor_free(pointer);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ee_pointer_get(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, 0);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, 0);
+
+	DRETURN_INT(ecore_x_cursor_size_get(), DLEVEL_STABLE);
+}
+
+static void
+ee_pointer_set(Ewl_Embed *embed, int pointer)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	ecore_x_window_cursor_set((Ecore_X_Window)embed->evas_window,
+				ecore_x_cursor_shape_get(pointer));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

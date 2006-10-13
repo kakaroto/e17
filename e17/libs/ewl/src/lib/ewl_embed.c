@@ -1532,7 +1532,7 @@ ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy, int *x, int *y)
 void
 ewl_embed_mouse_cursor_set(Ewl_Widget *w)
 {
-	Ecore_X_Cursor pointer;
+	int pointer;
 	Ewl_Embed *embed;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1542,12 +1542,10 @@ ewl_embed_mouse_cursor_set(Ewl_Widget *w)
 	embed = ewl_embed_widget_find(w);
 	if (!embed) DRETURN(DLEVEL_STABLE);
 
-	if ((pointer = (Ecore_X_Cursor)ewl_attach_get(w,
-					EWL_ATTACH_TYPE_MOUSE_CURSOR)))
-		ecore_x_window_cursor_set((Ecore_X_Window)embed->evas_window, pointer);
+	if ((pointer = (int)ewl_attach_get(w, EWL_ATTACH_TYPE_MOUSE_CURSOR)))
+		ewl_engine_pointer_set(embed, pointer);
 	else
-		ecore_x_window_cursor_set((Ecore_X_Window)embed->evas_window,
-					ecore_x_cursor_shape_get(EWL_MOUSE_CURSOR_LEFT_PTR));
+		ewl_engine_pointer_set(embed, EWL_MOUSE_CURSOR_LEFT_PTR);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

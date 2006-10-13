@@ -11,7 +11,8 @@ enum Ewl_Engine_Hook_Type
 {
 	EWL_ENGINE_HOOK_TYPE_WINDOW,
 	EWL_ENGINE_HOOK_TYPE_CANVAS,
-	EWL_ENGINE_HOOK_TYPE_THEME
+	EWL_ENGINE_HOOK_TYPE_THEME,
+	EWL_ENGINE_HOOK_TYPE_POINTER
 };
 typedef enum Ewl_Engine_Hook_Type Ewl_Engine_Hook_Type;
 
@@ -1159,6 +1160,72 @@ ewl_engine_theme_object_file_set(Ewl_Embed *embed, void *obj, char *file, char *
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns a pointer id on success, zero on failure.
+ * @brief Creates a new pointer from ARGB data.
+ */
+int
+ewl_engine_pointer_data_new(Ewl_Embed *embed, unsigned int *data, int w, int h)
+{
+	Ewl_Engine_Cb_Pointer_Data_New pointer_data_new;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, 0);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, 0);
+
+	pointer_data_new = ewl_engine_hook_get(embed,
+					EWL_ENGINE_HOOK_TYPE_POINTER,
+					EWL_ENGINE_POINTER_DATA_NEW);
+	if (pointer_data_new)
+		DRETURN_INT(pointer_data_new(embed, data, w, h), DLEVEL_STABLE);
+
+	DRETURN_INT(0, DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a pointer id on success, zero on failure.
+ * @brief Creates a new pointer from ARGB data.
+ */
+void
+ewl_engine_pointer_set(Ewl_Embed *embed, int pointer)
+{
+	Ewl_Engine_Cb_Pointer_Set pointer_set;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	pointer_set = ewl_engine_hook_get(embed,
+					EWL_ENGINE_HOOK_TYPE_POINTER,
+					EWL_ENGINE_POINTER_SET);
+	if (pointer_set)
+		pointer_set(embed, pointer);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a pointer id on success, zero on failure.
+ * @brief Retrieve the currently used pointer.
+ */
+int
+ewl_engine_pointer_get(Ewl_Embed *embed)
+{
+	Ewl_Engine_Cb_Pointer_Get pointer_get;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, 0);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, 0);
+
+	pointer_get = ewl_engine_hook_get(embed,
+					EWL_ENGINE_HOOK_TYPE_POINTER,
+					EWL_ENGINE_POINTER_GET);
+	if (pointer_get)
+		DRETURN_INT(pointer_get(embed), DLEVEL_STABLE);
+
+	DRETURN_INT(0, DLEVEL_STABLE);
+}
+
 static void **
 ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type)
 {
@@ -1179,6 +1246,9 @@ ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type)
 
 		case EWL_ENGINE_HOOK_TYPE_THEME:
 			hooks = engine->functions->hooks.theme;
+			break;
+		case EWL_ENGINE_HOOK_TYPE_POINTER:
+			hooks = engine->functions->hooks.pointer;
 			break;
 
 		default:

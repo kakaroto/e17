@@ -88,9 +88,19 @@ enum Ewl_Engine_Theme_Hooks
 	EWL_ENGINE_THEME_MAX,
 };
 
+enum Ewl_Engine_Pointer_Hooks
+{
+	EWL_ENGINE_POINTER_DATA_NEW, /**< Create pointer from ARGB data */
+	EWL_ENGINE_POINTER_FREE, /**< Free a created pointer */
+	EWL_ENGINE_POINTER_GET, /**< Get the current pointer */
+	EWL_ENGINE_POINTER_SET, /**< Set the current pointer */
+	EWL_ENGINE_POINTER_MAX
+};
+
 typedef enum Ewl_Engine_Window_Hooks Ewl_Engine_Window_Hooks;
 typedef enum Ewl_Engine_Theme_Hooks Ewl_Engine_Theme_Hooks;
 typedef enum Ewl_Engine_Canvas_Hooks Ewl_Engine_Canvas_Hooks;
+typedef enum Ewl_Engine_Pointer_Hooks Ewl_Engine_Pointer_Hooks;
 
 #define EWL_ENGINE(engine) ((Ewl_Engine *)engine)
 typedef struct Ewl_Engine Ewl_Engine;
@@ -106,6 +116,7 @@ struct Ewl_Engine_Info
 		void **window;
 		void **canvas;
 		void **theme;
+		void **pointer;
 	} hooks;
 };
 
@@ -169,6 +180,11 @@ void		 ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y,
 void		 ewl_engine_canvas_render(Ewl_Embed *embed);
 void		 ewl_engine_canvas_freeze(Ewl_Embed *embed);
 void		 ewl_engine_canvas_thaw(Ewl_Embed *embed);
+int 		 ewl_engine_pointer_data_new(Ewl_Embed *embed,
+					     unsigned int *data, int w, int h);
+void		 ewl_engine_pointer_free(Ewl_Embed *embed, int pointer);
+void		 ewl_engine_pointer_set(Ewl_Embed *embed, int pointer);
+int 		 ewl_engine_pointer_get(Ewl_Embed *embed);
 
 /**
  * Internal engine hook typedefs, you only need these if you're writing an
@@ -250,6 +266,13 @@ typedef void  (*Ewl_Engine_Cb_Theme_Clip_Del)(void *clip);
 typedef void *(*Ewl_Engine_Cb_Theme_Clip_Clipees_Get)(void *clip);
 typedef void  (*Ewl_Engine_Cb_Theme_Clip_Color_Set)(void *clip, int r, int g, 
 								int b, int a);
+
+typedef int   (*Ewl_Engine_Cb_Pointer_Data_New)(Ewl_Embed *embed,
+						unsigned int *data,
+						int w, int h);
+typedef void  (*Ewl_Engine_Cb_Pointer_Free)(Ewl_Embed *embed, int pointer);
+typedef void  (*Ewl_Engine_Cb_Pointer_Set)(Ewl_Embed *embed, int pointer);
+typedef int   (*Ewl_Engine_Cb_Pointer_Get)(Ewl_Embed *embed);
 
 #endif
 
