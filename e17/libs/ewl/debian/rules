@@ -12,4 +12,7 @@ clean::
 install/libewl0-dev::
 	mkdir -p debian/libewl0-dev/usr/share/doc/libewl0-dev/
 	cp -a debian/tmp/usr/share/ewl/examples debian/libewl0-dev/usr/share/doc/libewl0-dev/
-	
+
+install/libewl0::
+	mkdir -p debian/libewl0/etc/ewl
+	mv debian/tmp/usr/etc/ewl/ewl.cfg debian/libewl0/etc/ewl/
