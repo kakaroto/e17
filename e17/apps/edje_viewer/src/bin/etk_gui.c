@@ -174,6 +174,7 @@ void main_window_show(char *file)
 	file = edje_viewer_config_last_get();
 	list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
 	      ETK_CANVAS(gui->canvas));
+	etk_window_title_set(ETK_WINDOW(gui->win), file);
      }
    etk_signal_connect("delete_event", ETK_OBJECT(gui->win), 
 	   ETK_CALLBACK(_gui_main_window_deleted_cb), NULL);
@@ -256,7 +257,7 @@ static void _gui_menu_item_selected_cb(Etk_Object *obj, void *data)
      return;
    if (!(gui = data)) return;
 
-   etk_statusbar_push(ETK_STATUSBAR(gui->status),
+   etk_statusbar_message_push(ETK_STATUSBAR(gui->status),
 	   etk_menu_item_label_get(item), 0);
 
 }
@@ -266,7 +267,7 @@ static void _gui_menu_item_deselected_cb(Etk_Object *obj, void *data)
    Gui *gui;
 
    if (!(gui = data)) return;
-   etk_statusbar_pop(ETK_STATUSBAR(gui->status), 0);
+   etk_statusbar_message_pop(ETK_STATUSBAR(gui->status), 0);
 }
 
 static void _gui_menu_item_clicked_cb(Etk_Object *obj, void *data)
@@ -379,6 +380,7 @@ static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
    list_entries(gui->path, ETK_TREE(gui->tree), ETK_TREE(gui->output),
 	 ETK_CANVAS(gui->canvas));
    etk_window_hide_on_delete(ETK_OBJECT(gui->fm_dialog), NULL);
+   etk_window_title_set(ETK_WINDOW(gui->win), gui->path);
 }
 
 static void _gui_fm_cancel_clicked_cb(Etk_Object *obj, void *data)
