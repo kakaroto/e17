@@ -445,17 +445,17 @@ sub tree_window_show
     for(my $i = 0; $i < 1000; $i++)
     {
 	my $row = $tree->Append();
-	$row->FieldsSet($col1, Etk::Theme::IconThemeGet(), "places/user-home_16", "Row1");
+	$row->FieldsSet($col1, Etk::Theme::IconGet(), "places/user-home_16", "Row1");
 	$row->FieldsSet($col2, 10);
 	$row->FieldsSet($col3, "images/1star.png");
 
 	my $row2 = $row->AppendToRow();
-	$row2->FieldsSet($col1, Etk::Theme::IconThemeGet(), "places/folder_16", "Row2");
+	$row2->FieldsSet($col1, Etk::Theme::IconGet(), "places/folder_16", "Row2");
 	$row2->FieldsSet($col2, 20);
 	$row2->FieldsSet($col3, "images/2stars.png");
 
 	my $row3 = $row2->AppendToRow();
-	$row3->FieldsSet($col1, Etk::Theme::IconThemeGet(), "mimetypes/text-x-generic_16", "Row3");
+	$row3->FieldsSet($col1, Etk::Theme::IconGet(), "mimetypes/text-x-generic_16", "Row3");
 	$row3->FieldsSet($col2, 30);
 	$row3->FieldsSet($col3, "images/3stars.png");
     }
@@ -713,9 +713,9 @@ sub _menu_test_item_new
     my $menu_item = Etk::Menu::Item::new_with_label($label);
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
-    	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
+    	sub { $statusbar->MessagePush($menu_item->LabelGet(), 0) });
     $menu_item->SignalConnect("deselected", 
-    	sub { $statusbar->Pop(0) });
+    	sub { $statusbar->MessagePop(0) });
     
     return $menu_item;
 }
@@ -729,9 +729,9 @@ sub _menu_test_stock_item_new
     $menu_item->Set($image);
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
-    	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
+    	sub { $statusbar->MessagePush($menu_item->LabelGet(), 0) });
     $menu_item->SignalConnect("deselected", 
-    	sub { $statusbar->Pop(0) });
+    	sub { $statusbar->MessagePop(0) });
 
     return $menu_item;
 
@@ -744,9 +744,9 @@ sub _menu_test_check_item_new
     my $menu_item = Etk::Menu::Item::Check::new_with_label($label);
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
-    	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
+    	sub { $statusbar->MessagePush($menu_item->LabelGet(), 0) });
     $menu_item->SignalConnect("deselected", 
-    	sub { $statusbar->Pop(0) });
+    	sub { $statusbar->MessagePop(0) });
 
     return $menu_item;
 }
@@ -766,9 +766,9 @@ sub _menu_test_radio_item_new
     }
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
-    	sub { $statusbar->Push($menu_item->LabelGet(), 0) });
+    	sub { $statusbar->MessagePush($menu_item->LabelGet(), 0) });
     $menu_item->SignalConnect("deselected", 
-    	sub { $statusbar->Pop(0) });
+    	sub { $statusbar->MessagePop(0) });
 
     return $menu_item;
 }
@@ -879,7 +879,7 @@ sub _iconbox_folder_set
     return if($folder eq "");      
     
     $iconbox->Clear();
-    $iconbox->Append(Etk::Theme::icon_theme_get(), "actions/go-up_48", "..");
+    $iconbox->Append(Etk::Theme::IconGet(), "actions/go-up_48", "..");
     
     # Add directories
     opendir(DIR, $_iconbox_folder."/".$folder) or 
@@ -887,7 +887,7 @@ sub _iconbox_folder_set
     while (defined($file = readdir(DIR))) {
 	if (-d "$_iconbox_folder/$folder/$file" && $file  !~ /^\./)
 	{
-	    $iconbox->Append(Etk::Theme::icon_theme_get(), 
+	    $iconbox->Append(Etk::Theme::IconGet(), 
 		"places/folder_48", $file);
 	}
     }
@@ -903,12 +903,12 @@ sub _iconbox_folder_set
 	    $parts[-1] =~ tr [A-Z] [a-z];
 	    if($_iconbox_types{$parts[-1]})
 	    {
-		$iconbox->Append(Etk::Theme::icon_theme_get(), 
+		$iconbox->Append(Etk::Theme::IconGet(), 
 		    $_iconbox_types{$parts[-1]}, $file);
 	    }
 	    else
 	    {
-		$iconbox->Append(Etk::Theme::icon_theme_get(), 
+		$iconbox->Append(Etk::Theme::IconGet(), 
 		    "mimetypes/text-x-generic_48", $file);
 	    }
 	}
