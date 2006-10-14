@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-09 10:59+0200\n"
+"POT-Creation-Date: 2006-10-14 10:45+0200\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -28,7 +28,7 @@ msgstr ""
 
 #: src/aclass.c:291 src/backgrounds.c:1107 src/borders.c:1083
 #: src/borders.c:1206 src/buttons.c:731 src/cmclass.c:201 src/config.c:246
-#: src/cursors.c:177 src/iclass.c:519 src/menus.c:1715 src/menus.c:1825
+#: src/cursors.c:177 src/iclass.c:519 src/menus.c:1717 src/menus.c:1827
 #: src/slideout.c:425 src/tclass.c:261 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
@@ -37,7 +37,7 @@ msgstr "CONFIG: a ignorar dados extra em \"%s\"\n"
 
 #: src/aclass.c:299 src/backgrounds.c:1115 src/borders.c:1089
 #: src/borders.c:1212 src/buttons.c:739 src/cmclass.c:209 src/config.c:254
-#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1720 src/menus.c:1831
+#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1722 src/menus.c:1833
 #: src/slideout.c:431 src/tclass.c:267 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
@@ -57,7 +57,7 @@ msgstr ""
 "%s\n"
 "Serão ignoradas, continuando...\n"
 
-#: src/actions.c:70
+#: src/actions.c:93
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -70,7 +70,7 @@ msgstr ""
 "Este programa não pode ser executado\n"
 "porque o ficheiro não existe.\n"
 
-#: src/actions.c:78
+#: src/actions.c:101
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -89,7 +89,7 @@ msgstr ""
 "do manual para esta shell e veja como mudar ou adicionar\n"
 "ao seu path de execução.\n"
 
-#: src/actions.c:98
+#: src/actions.c:121
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -106,7 +106,7 @@ msgstr ""
 "é um ficheiro, e está autorizado a executa-lo. Sugiro que veja este\n"
 "problema com mais profundidade.\n"
 
-#: src/actions.c:109
+#: src/actions.c:132
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -121,7 +121,7 @@ msgstr ""
 "Isto deve-se a que o ficheiro existe, é um ficheiro, mas não o\n"
 "pode executar porque não tem permissão de execução para este ficheiro.\n"
 
-#: src/actions.c:124
+#: src/actions.c:147
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -134,7 +134,7 @@ msgstr ""
 "Este programa não pode ser executado.\n"
 "Acontece que o ficheiro é na realidade uma directoria.\n"
 
-#: src/actions.c:132
+#: src/actions.c:155
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -147,19 +147,19 @@ msgstr ""
 "Este programa não pode ser executado.\n"
 "Isto aconteceu porque o ficheiro não é um ficheiro regular.\n"
 
-#: src/actions.c:186
+#: src/actions.c:180
 #, c-format
 msgid ""
 "There was an error running the program:\n"
 "%s\n"
 msgstr ""
 
-#: src/actions.c:289
+#: src/actions.c:283
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Sobre o Enlightenment %s"
 
-#: src/actions.c:299
+#: src/actions.c:293
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -197,7 +197,7 @@ msgstr "Ignorar"
 msgid "Restart Enlightenment"
 msgstr "Reiniciar o Enlightenment"
 
-#: src/alert.c:574 src/setup.c:261
+#: src/alert.c:574 src/setup.c:256
 msgid "Quit Enlightenment"
 msgstr "Sair do Enlightenment"
 
@@ -462,7 +462,7 @@ msgstr ""
 msgid "Menu style"
 msgstr "Tipo de janelas"
 
-#: src/config.c:317 src/menus.c:1938
+#: src/config.c:317 src/menus.c:1940
 msgid "Menu"
 msgstr ""
 
@@ -630,11 +630,11 @@ msgstr "Topo"
 msgid "Bottom"
 msgstr "Baixo"
 
-#: src/desktops.c:2450 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
+#: src/desktops.c:2450 src/pager.c:1900 src/pager.c:1925 src/pager.c:1950
 msgid "Left"
 msgstr "Esquerda"
 
-#: src/desktops.c:2456 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
+#: src/desktops.c:2456 src/pager.c:1912 src/pager.c:1937 src/pager.c:1962
 msgid "Right"
 msgstr "Direita"
 
@@ -700,20 +700,20 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:886 src/dialog.c:2155 src/dialog.c:2186 src/events.c:78
+#: src/dialog.c:883 src/dialog.c:2166 src/dialog.c:2197 src/events.c:78
 #: src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "OK"
 
-#: src/dialog.c:891
+#: src/dialog.c:888
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/dialog.c:898 src/pager.c:977 config/strings.c:30 config/strings.c:166
+#: src/dialog.c:895 src/pager.c:994 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "Fechar"
 
-#: src/dialog.c:2186
+#: src/dialog.c:2197
 msgid "Attention !!!"
 msgstr "Atenção !!!"
 
@@ -1283,11 +1283,11 @@ msgstr "Opções da Caixa de Icones"
 msgid "Iconbox Settings"
 msgstr "Opções da Caixa de Ícones"
 
-#: src/ipc.c:307
+#: src/ipc.c:309
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:1022
+#: src/ipc.c:1030
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1296,12 +1296,12 @@ msgstr ""
 "Versão do Enlightenment : %s\n"
 "data do actual código   : %s\n"
 
-#: src/ipc.c:1633
+#: src/ipc.c:1644
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Ajuda de comandos do IPC do Enlightenment"
 
-#: src/ipc.c:1637
+#: src/ipc.c:1648
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1312,28 +1312,28 @@ msgstr ""
 "use \"help <comando>\" para uma descrição individual\n"
 "\n"
 
-#: src/ipc.c:1639 src/ipc.c:1659 src/ipc.c:1671
+#: src/ipc.c:1650 src/ipc.c:1670 src/ipc.c:1682
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "comandos actualmente disponíveis:\n"
 
-#: src/ipc.c:1657
+#: src/ipc.c:1668
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1658
+#: src/ipc.c:1669
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "use \"help <comando>\" para uma descrição individual\n"
 
-#: src/ipc.c:1660 src/ipc.c:1672
+#: src/ipc.c:1671 src/ipc.c:1683
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<comando> : <descrição>\n"
 
-#: src/main.c:582
+#: src/main.c:571
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1344,7 +1344,7 @@ msgstr ""
 "Esta é uma condição fatal.\n"
 "Por favor remova este ficheiro\n"
 
-#: src/main.c:589
+#: src/main.c:578
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1357,7 +1357,7 @@ msgstr ""
 "Por favor verifique as permissões desta\n"
 "directoria e faça as correcções necessárias.\n"
 
-#: src/main.c:597
+#: src/main.c:586
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -1370,7 +1370,7 @@ msgstr ""
 "Por favor verifique as permissões desta\n"
 "directoria e faça as correcções necessárias.\n"
 
-#: src/main.c:604
+#: src/main.c:593
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -1383,7 +1383,7 @@ msgstr ""
 "Por favor verifique as permissões desta\n"
 "directoria e faça as correcções necessárias.\n"
 
-#: src/main.c:717
+#: src/main.c:706
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1412,7 +1412,7 @@ msgstr ""
 "estarem mal formados, alguém realmente apagou o programa ou\n"
 "houve um erro ao instalar o Enlightenment.\n"
 
-#: src/main.c:731
+#: src/main.c:720
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1433,29 +1433,29 @@ msgstr ""
 "Por favor, rectifique esta situação e assegure-se que o dox\n"
 "está instalado.\n"
 
-#: src/menus.c:2030
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Mostrar menus animados"
 
-#: src/menus.c:2035
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "Mostrar sempre menus no ecrã"
 
-#: src/menus.c:2040
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "Posicionar ponteiro após mover menus"
 
-#: src/menus.c:2046
+#: src/menus.c:2048
 #, fuzzy
 msgid "Menus"
 msgstr "Tipo de janelas"
 
-#: src/menus.c:2047
+#: src/menus.c:2049
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Opções do Som"
 
-#: src/menus.c:2050
+#: src/menus.c:2052
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1555,125 +1555,125 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Caixa de Diálogo do Enlightement"
 
-#: src/pager.c:970 config/strings.c:51
+#: src/pager.c:987 config/strings.c:51
 msgid "Window Options"
 msgstr "Opções da Janela"
 
-#: src/pager.c:973 config/strings.c:53 config/strings.c:168
+#: src/pager.c:990 config/strings.c:53 config/strings.c:168
 msgid "Iconify"
 msgstr "Minimizar"
 
-#: src/pager.c:981 config/strings.c:167
+#: src/pager.c:998 config/strings.c:167
 msgid "Annihilate"
 msgstr "Aniquilar"
 
-#: src/pager.c:985
+#: src/pager.c:1002
 msgid "Stick / Unstick"
 msgstr "Colar / Descolar"
 
-#: src/pager.c:994
+#: src/pager.c:1011
 msgid "Desktop Options"
 msgstr "Opções do Desktop"
 
-#: src/pager.c:996
+#: src/pager.c:1013
 msgid "Pager Settings..."
 msgstr "Opções do Pager..."
 
-#: src/pager.c:1001
+#: src/pager.c:1018
 msgid "Snapshotting Off"
 msgstr "Desligar Miniaturização"
 
-#: src/pager.c:1005
+#: src/pager.c:1022
 msgid "High Quality Off"
 msgstr "Desligar Alta Qualidade"
 
-#: src/pager.c:1007
+#: src/pager.c:1024
 msgid "High Quality On"
 msgstr "Ligar Alta Qualidade"
 
-#: src/pager.c:1012
+#: src/pager.c:1029
 msgid "Snapshotting On"
 msgstr "Ligar Miniaturização"
 
-#: src/pager.c:1016
+#: src/pager.c:1033
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1018
+#: src/pager.c:1035
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1775 src/pager.c:1866
+#: src/pager.c:1789 src/pager.c:1880
 msgid "Pager scanning speed:"
 msgstr "Velocidade de varrimento do pager"
 
-#: src/pager.c:1776 src/pager.c:1867
+#: src/pager.c:1790 src/pager.c:1881
 msgid "lines per second"
 msgstr "linhas por segundo"
 
-#: src/pager.c:1805
+#: src/pager.c:1819
 msgid "Enable pager display"
 msgstr "Activar o pager"
 
-#: src/pager.c:1815
+#: src/pager.c:1829
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1819
+#: src/pager.c:1833
 #, fuzzy
 msgid "Simple"
 msgstr "Tamanho"
 
-#: src/pager.c:1825
+#: src/pager.c:1839
 msgid "Make miniature snapshots of the screen"
 msgstr "Criar imagem miniatura do ecrã"
 
-#: src/pager.c:1832
+#: src/pager.c:1846
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1843
+#: src/pager.c:1857
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Miniaturas de alta qualidade, no modo de miniaturização"
 
-#: src/pager.c:1848
+#: src/pager.c:1862
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Aumentar as janelas do pager quando o ponteiro está em cima delas"
 
-#: src/pager.c:1854
+#: src/pager.c:1868
 msgid "Pop up window title when mouse is over the window"
 msgstr "Mostrar titulo da janela quando o ponteiro está sobre a janela"
 
-#: src/pager.c:1859
+#: src/pager.c:1873
 msgid "Continuously scan screen to update pager"
 msgstr "Varrer continuamente o ecrã para actualizar o pager"
 
-#: src/pager.c:1882
+#: src/pager.c:1896
 msgid "Mouse button to select and drag windows:"
 msgstr "Botão do rato para seleccionar e arrastar janelas:"
 
-#: src/pager.c:1892 src/pager.c:1917 src/pager.c:1942
+#: src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
 msgid "Middle"
 msgstr "Centro"
 
-#: src/pager.c:1907
+#: src/pager.c:1921
 msgid "Mouse button to select desktops:"
 msgstr "Botão do rato para selecionar desktops:"
 
-#: src/pager.c:1932
+#: src/pager.c:1946
 msgid "Mouse button to display pager menu:"
 msgstr "Botão do rato para mostrar menu do pager"
 
-#: src/pager.c:1956
+#: src/pager.c:1970
 #, fuzzy
 msgid "Pagers"
 msgstr "Opções do Pager"
 
-#: src/pager.c:1957
+#: src/pager.c:1971
 msgid "Pager Settings"
 msgstr "Opções do Pager"
 
-#: src/pager.c:1960
+#: src/pager.c:1974
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -2016,7 +2016,7 @@ msgstr "Caixa de Diálogo do Enlightement"
 msgid "Enlightenment Settings"
 msgstr "Inicializando o Enlightenment ..."
 
-#: src/setup.c:130
+#: src/setup.c:128
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2040,15 +2040,15 @@ msgstr ""
 "vendedor do servidor de X ou então leia os manuais do X, xdm e\n"
 "startx, antes de prosseguir.\n"
 
-#: src/setup.c:260
+#: src/setup.c:255
 msgid "X server version error"
 msgstr "Erro na versão do servidor de X"
 
-#: src/setup.c:260
+#: src/setup.c:255
 msgid "Ignore this error"
 msgstr "Ignorar este erro"
 
-#: src/setup.c:262
+#: src/setup.c:257
 #, c-format
 msgid ""
 "WARNING:\n"

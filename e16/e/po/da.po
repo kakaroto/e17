@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-09 10:59+0200\n"
+"POT-Creation-Date: 2006-10-14 10:45+0200\n"
 "PO-Revision-Date: 2000-03-02 16:23+0100\n"
 "Last-Translator: Birger Langkjer <birger.langkjer@image.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -28,7 +28,7 @@ msgstr ""
 
 #: src/aclass.c:291 src/backgrounds.c:1107 src/borders.c:1083
 #: src/borders.c:1206 src/buttons.c:731 src/cmclass.c:201 src/config.c:246
-#: src/cursors.c:177 src/iclass.c:519 src/menus.c:1715 src/menus.c:1825
+#: src/cursors.c:177 src/iclass.c:519 src/menus.c:1717 src/menus.c:1827
 #: src/slideout.c:425 src/tclass.c:261 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
@@ -37,7 +37,7 @@ msgstr "KONFIG: ignorerer ekstra data i \"%s\"\n"
 
 #: src/aclass.c:299 src/backgrounds.c:1115 src/borders.c:1089
 #: src/borders.c:1212 src/buttons.c:739 src/cmclass.c:209 src/config.c:254
-#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1720 src/menus.c:1831
+#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1722 src/menus.c:1833
 #: src/slideout.c:431 src/tclass.c:267 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
@@ -57,7 +57,7 @@ msgstr ""
 "%s\n"
 "Ignorerer og fortsætter...\n"
 
-#: src/actions.c:70
+#: src/actions.c:93
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -70,7 +70,7 @@ msgstr ""
 "Dette program kunne ikke køres.\n"
 "Det er fordi filen ikke eksisterer.\n"
 
-#: src/actions.c:78
+#: src/actions.c:101
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -89,7 +89,7 @@ msgstr ""
 "din skal, og finder ud af hvordan du ændrer eller udvider den\n"
 "søgesti som skallen leder efter programmer i.\n"
 
-#: src/actions.c:98
+#: src/actions.c:121
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -106,7 +106,7 @@ msgstr ""
 "er en fil, og du har tilladelse til at køre den. Jeg foreslår\n"
 "at du ser nærmere på dette.\n"
 
-#: src/actions.c:109
+#: src/actions.c:132
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -121,7 +121,7 @@ msgstr ""
 "Det er fordi filen eksisterer, er en fil, men du kan ikke køre\n"
 "den fordi du ikke har kørerettigheder til denne fil.\n"
 
-#: src/actions.c:124
+#: src/actions.c:147
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -134,7 +134,7 @@ msgstr ""
 "Dette program kunne ikke køres.\n"
 "Det er fordi filen er en mappe.\n"
 
-#: src/actions.c:132
+#: src/actions.c:155
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -147,19 +147,19 @@ msgstr ""
 "Dette program kunne ikke køres.\n"
 "Dette er fordi filen ikke er en normal fil.\n"
 
-#: src/actions.c:186
+#: src/actions.c:180
 #, c-format
 msgid ""
 "There was an error running the program:\n"
 "%s\n"
 msgstr ""
 
-#: src/actions.c:289
+#: src/actions.c:283
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Om Enlightenment %s"
 
-#: src/actions.c:299
+#: src/actions.c:293
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -197,7 +197,7 @@ msgstr "Ignorér dette"
 msgid "Restart Enlightenment"
 msgstr "Genstart Enlightenment"
 
-#: src/alert.c:574 src/setup.c:261
+#: src/alert.c:574 src/setup.c:256
 msgid "Quit Enlightenment"
 msgstr "Afslut Enlightenment"
 
@@ -446,7 +446,7 @@ msgstr ""
 msgid "Menu style"
 msgstr "Rammestil"
 
-#: src/config.c:317 src/menus.c:1938
+#: src/config.c:317 src/menus.c:1940
 msgid "Menu"
 msgstr ""
 
@@ -592,11 +592,11 @@ msgstr "Top"
 msgid "Bottom"
 msgstr "Bund"
 
-#: src/desktops.c:2450 src/pager.c:1886 src/pager.c:1911 src/pager.c:1936
+#: src/desktops.c:2450 src/pager.c:1900 src/pager.c:1925 src/pager.c:1950
 msgid "Left"
 msgstr "Venstre"
 
-#: src/desktops.c:2456 src/pager.c:1898 src/pager.c:1923 src/pager.c:1948
+#: src/desktops.c:2456 src/pager.c:1912 src/pager.c:1937 src/pager.c:1962
 msgid "Right"
 msgstr "Højre"
 
@@ -662,20 +662,20 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:886 src/dialog.c:2155 src/dialog.c:2186 src/events.c:78
+#: src/dialog.c:883 src/dialog.c:2166 src/dialog.c:2197 src/events.c:78
 #: src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Ok"
 
-#: src/dialog.c:891
+#: src/dialog.c:888
 msgid "Apply"
 msgstr "Anvend"
 
-#: src/dialog.c:898 src/pager.c:977 config/strings.c:30 config/strings.c:166
+#: src/dialog.c:895 src/pager.c:994 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "Luk"
 
-#: src/dialog.c:2186
+#: src/dialog.c:2197
 msgid "Attention !!!"
 msgstr "Vigtigt !!!"
 
@@ -1159,11 +1159,11 @@ msgstr "Ikonboks opsætning"
 msgid "Iconbox Settings"
 msgstr "Ikonboksopsætning"
 
-#: src/ipc.c:307
+#: src/ipc.c:309
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:1022
+#: src/ipc.c:1030
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1172,12 +1172,12 @@ msgstr ""
 "Enlightenment version : %s\n"
 "kode er fra dato      : %s\n"
 
-#: src/ipc.c:1633
+#: src/ipc.c:1644
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment ipc-kommandohjælp"
 
-#: src/ipc.c:1637
+#: src/ipc.c:1648
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1188,28 +1188,28 @@ msgstr ""
 "Brug \"help <kommando>\" for en individuel beskrivelse\n"
 "\n"
 
-#: src/ipc.c:1639 src/ipc.c:1659 src/ipc.c:1671
+#: src/ipc.c:1650 src/ipc.c:1670 src/ipc.c:1682
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "kommandoer tilgængelige lige nu:\n"
 
-#: src/ipc.c:1657
+#: src/ipc.c:1668
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1658
+#: src/ipc.c:1669
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "brug \"help <kommando>\" for individuel beskrivelse\n"
 
-#: src/ipc.c:1660 src/ipc.c:1672
+#: src/ipc.c:1671 src/ipc.c:1683
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<kommando> : <beskrivelse>\n"
 
-#: src/main.c:582
+#: src/main.c:571
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1220,7 +1220,7 @@ msgstr ""
 "Det er en fatal omstændighed.\n"
 "Fjern venligst denne fil.\n"
 
-#: src/main.c:589
+#: src/main.c:578
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1229,7 +1229,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/main.c:597
+#: src/main.c:586
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -1238,7 +1238,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/main.c:604
+#: src/main.c:593
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -1247,7 +1247,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/main.c:717
+#: src/main.c:706
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1264,7 +1264,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/main.c:731
+#: src/main.c:720
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1277,29 +1277,29 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/menus.c:2030
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Animeret visning af menuer"
 
-#: src/menus.c:2035
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr ""
 
-#: src/menus.c:2040
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2046
+#: src/menus.c:2048
 #, fuzzy
 msgid "Menus"
 msgstr "Rammestil"
 
-#: src/menus.c:2047
+#: src/menus.c:2049
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Lydopsætning"
 
-#: src/menus.c:2050
+#: src/menus.c:2052
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1399,125 +1399,125 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Enlightenment meddelelsesdialog"
 
-#: src/pager.c:970 config/strings.c:51
+#: src/pager.c:987 config/strings.c:51
 msgid "Window Options"
 msgstr "Vinduesopsætning"
 
-#: src/pager.c:973 config/strings.c:53 config/strings.c:168
+#: src/pager.c:990 config/strings.c:53 config/strings.c:168
 msgid "Iconify"
 msgstr "Ikonificér"
 
-#: src/pager.c:981 config/strings.c:167
+#: src/pager.c:998 config/strings.c:167
 msgid "Annihilate"
 msgstr "Dræb"
 
-#: src/pager.c:985
+#: src/pager.c:1002
 msgid "Stick / Unstick"
 msgstr "Klæb / klæb ikke"
 
-#: src/pager.c:994
+#: src/pager.c:1011
 msgid "Desktop Options"
 msgstr "Skrivebordsopsætning"
 
-#: src/pager.c:996
+#: src/pager.c:1013
 msgid "Pager Settings..."
 msgstr "Skærmoversigtsindstillinger..."
 
-#: src/pager.c:1001
+#: src/pager.c:1018
 msgid "Snapshotting Off"
 msgstr "Billedtagning fra"
 
-#: src/pager.c:1005
+#: src/pager.c:1022
 msgid "High Quality Off"
 msgstr "Høj kvalitet fra"
 
-#: src/pager.c:1007
+#: src/pager.c:1024
 msgid "High Quality On"
 msgstr "Høj kvalitet på"
 
-#: src/pager.c:1012
+#: src/pager.c:1029
 msgid "Snapshotting On"
 msgstr "Billedtagning på"
 
-#: src/pager.c:1016
+#: src/pager.c:1033
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1018
+#: src/pager.c:1035
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1775 src/pager.c:1866
+#: src/pager.c:1789 src/pager.c:1880
 msgid "Pager scanning speed:"
 msgstr "Skærmoversigts-skanningshastighed:"
 
-#: src/pager.c:1776 src/pager.c:1867
+#: src/pager.c:1790 src/pager.c:1881
 msgid "lines per second"
 msgstr "linier pr sekund"
 
-#: src/pager.c:1805
+#: src/pager.c:1819
 msgid "Enable pager display"
 msgstr "Brug Skærmoversigt"
 
-#: src/pager.c:1815
+#: src/pager.c:1829
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1819
+#: src/pager.c:1833
 #, fuzzy
 msgid "Simple"
 msgstr "Størrelse"
 
-#: src/pager.c:1825
+#: src/pager.c:1839
 msgid "Make miniature snapshots of the screen"
 msgstr "Lav miniaturebilleder af skærmen"
 
-#: src/pager.c:1832
+#: src/pager.c:1846
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1843
+#: src/pager.c:1857
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr ""
 
-#: src/pager.c:1848
+#: src/pager.c:1862
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoom ind på skærmoversigtsvinduer når musen er over"
 
-#: src/pager.c:1854
+#: src/pager.c:1868
 msgid "Pop up window title when mouse is over the window"
 msgstr ""
 
-#: src/pager.c:1859
+#: src/pager.c:1873
 msgid "Continuously scan screen to update pager"
 msgstr "Skan skærmen kontinuerligt for at opdatere oversigt"
 
-#: src/pager.c:1882
+#: src/pager.c:1896
 msgid "Mouse button to select and drag windows:"
 msgstr "Museknap til at vælge og trække vinduer:"
 
-#: src/pager.c:1892 src/pager.c:1917 src/pager.c:1942
+#: src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
 msgid "Middle"
 msgstr "Midt"
 
-#: src/pager.c:1907
+#: src/pager.c:1921
 msgid "Mouse button to select desktops:"
 msgstr "Museknap til at vælge skriveborde:"
 
-#: src/pager.c:1932
+#: src/pager.c:1946
 msgid "Mouse button to display pager menu:"
 msgstr "Museknap til at vise oversigtsmenu:"
 
-#: src/pager.c:1956
+#: src/pager.c:1970
 #, fuzzy
 msgid "Pagers"
 msgstr "Oversigtsindstillinger"
 
-#: src/pager.c:1957
+#: src/pager.c:1971
 msgid "Pager Settings"
 msgstr "Oversigtsindstillinger"
 
-#: src/pager.c:1960
+#: src/pager.c:1974
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1846,7 +1846,7 @@ msgstr "Enlightenment meddelelsesdialog"
 msgid "Enlightenment Settings"
 msgstr "Enlightenment starter..."
 
-#: src/setup.c:130
+#: src/setup.c:128
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1860,15 +1860,15 @@ msgid ""
 "startx manual pages before proceeding.\n"
 msgstr ""
 
-#: src/setup.c:260
+#: src/setup.c:255
 msgid "X server version error"
 msgstr "X-tjener versionsfejl"
 
-#: src/setup.c:260
+#: src/setup.c:255
 msgid "Ignore this error"
 msgstr "Ignorér denne fejl"
 
-#: src/setup.c:262
+#: src/setup.c:257
 #, c-format
 msgid ""
 "WARNING:\n"
