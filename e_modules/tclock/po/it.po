@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tclock\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-21 10:14+0200\n"
+"POT-Creation-Date: 2006-10-12 18:44+0200\n"
 "PO-Revision-Date: 2006-05-21 10:21+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,23 +14,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:36
+#: e_mod_config.c:40
 msgid "Tclock Configuration"
 msgstr "Configurazione di Tclock"
 
-#: e_mod_config.c:79
-msgid "Resolution"
-msgstr "Risoluzione"
-
-#: e_mod_config.c:81
-msgid "1 Minute"
-msgstr "1 minuto"
-
-#: e_mod_config.c:83
-msgid "1 Second"
-msgstr "1 secondo"
-
-#: e_mod_config.c:87
+#: e_mod_config.c:86
 msgid "Date"
 msgstr "Data"
 
@@ -38,30 +26,30 @@ msgstr "Data"
 msgid "Show Date"
 msgstr "Mostra data"
 
-#: e_mod_config.c:97 e_mod_config.c:111
+#: e_mod_config.c:98 e_mod_config.c:114
 msgid "Consult strftime(3) for format syntax"
 msgstr "Consulta strftime(3) per sintassi formato"
 
-#: e_mod_config.c:101
+#: e_mod_config.c:102
 msgid "Time"
 msgstr "Ora"
 
-#: e_mod_config.c:102
+#: e_mod_config.c:104
 msgid "Show Time"
 msgstr "Mostra ora"
 
-#: e_mod_main.c:107
+#: e_mod_main.c:127
 msgid "TClock"
 msgstr "TClock"
 
-#: e_mod_main.c:142
+#: e_mod_main.c:163
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: e_mod_main.c:403
+#: e_mod_main.c:418
 msgid "Simple Digital Clock"
 msgstr "Semplice orologio digitale"
 
-#: e_mod_main.c:404
+#: e_mod_main.c:419
 msgid "Displays a digital clock on the desktop"
 msgstr "Visualizza un orologio digitale sul desktop."
