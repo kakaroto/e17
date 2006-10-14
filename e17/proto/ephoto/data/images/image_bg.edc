@@ -1,25 +1,25 @@
 collections {
-group {
-    name, "image_bg";
+   group {
+      name, "image_bg";
 
-    parts {
-       part {
-           name, "background";
-           mouse_events, 0;
-           type: RECT;
-           description {
+      parts {
+         part {
+            name, "background";
+            mouse_events, 0;
+            type: RECT;
+            description {
                state, "default" 0.0;
                rel1 {
-                   relative: 0.0  0.0;
-                   offset:   1    1;
+                  relative: 0.0  0.0;
+                  offset:   1    1;
                }
                rel2 {
-                   relative: 1.0  1.0;
-                   offset:   -2   -2;
+                  relative: 1.0  1.0;
+                  offset:   -2   -2;
                }
                color: 255 255 255 255;
-           }
-       }
+            }
+         }
+      }
    }
-}
 }
