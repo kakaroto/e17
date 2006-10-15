@@ -1,0 +1,142 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-10-03 02:26+0200\n"
+"PO-Revision-Date: 2006-10-06 20:21+0100\n"
+"Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ephoto.c:163
+msgid "  Location:"
+msgstr "  Ort:"
+
+#: ephoto.c:72
+msgid "Add Album"
+msgstr "Album hinzufügen"
+
+#: ephoto.c:64
+#: ephoto.c:210
+msgid "Albums"
+msgstr "Alben"
+
+#: ephoto.c:112
+msgid "Configure Slideshow"
+msgstr "Diavorführung Konfigurieren"
+
+#: ephoto.c:56
+msgid "Exit"
+msgstr "Beenden"
+
+#: ephoto.c:48
+msgid "File"
+msgstr "Datei"
+
+#: ephoto.c:96
+msgid "Image Viewer"
+msgstr "Bildbetrachter"
+
+#: ephoto.c:81
+msgid "Remove Album"
+msgstr "Album entfernen"
+
+#: ephoto.c:104
+msgid "Slideshow"
+msgstr "Diavorführung"
+
+#: ephoto.c:122
+msgid "Start Slideshow"
+msgstr "Diavorführung starten"
+
+#: ephoto.c:88
+msgid "Viewer"
+msgstr "Bildbetrachter"
+
+#: ephoto_viewer.c:96
+msgid "Ephoto Image Viewer"
+msgstr "Ephoto Bildbetrachter"
+
+#: ephoto_viewer.c:143
+msgid "In"
+msgstr ""
+
+#: ephoto_viewer.c:173
+msgid "Left"
+msgstr "links"
+
+#: ephoto_viewer.c:153
+msgid "Out"
+msgstr ""
+
+#: ephoto_viewer.c:182
+msgid "Right"
+msgstr "rechts"
+
+#: ephoto_slideshow.c:369
+msgid "Custom"
+msgstr "Benutzerdefiniert"
+
+#: ephoto_slideshow.c:115
+msgid "Ephoto Slideshow"
+msgstr "Ephoto Diavorführung"
+
+#: ephoto_slideshow.c:361
+msgid "Fullscreen"
+msgstr "Vollbild"
+
+#: ephoto_slideshow.c:398
+msgid "Height"
+msgstr "Höhe"
+
+#: ephoto_slideshow.c:439
+msgid "Image Size"
+msgstr "Bildgröße"
+
+#: ephoto_slideshow.c:453
+msgid "Keep Aspect"
+msgstr "Behalte Proportionen"
+
+#: ephoto_slideshow.c:419
+msgid "Loop Slideshow"
+msgstr ""
+
+#: ephoto_slideshow.c:412
+msgid "Order"
+msgstr "Reihenfolge"
+
+#: ephoto_slideshow.c:426
+msgid "Random Order"
+msgstr "Zufallsfolge"
+
+#: ephoto_slideshow.c:478
+msgid "Show File Name On Change"
+msgstr "Zeige Dateinamen beim Wechsel"
+
+#: ephoto_slideshow.c:329
+msgid "Slideshow Configuration"
+msgstr "Diavorführung Konfiguration"
+
+#: ephoto_slideshow.c:460
+msgid "Transitions"
+msgstr "Übergänge"
+
+#: ephoto_slideshow.c:384
+msgid "Width"
+msgstr "Weite"
+
+#: ephoto_slideshow.c:348
+msgid "Window Size"
+msgstr "Fenstergröße"
+
+#: ephoto_slideshow.c:446
+msgid "Zoom Images to Fill Window"
+msgstr "Bild in Fenster einpassen"
+

@@ -17,10 +17,11 @@ main(int argc, char **argv)
  }
  
  /* NLS */
- setlocale( LC_ALL, "" );
- bindtextdomain( "ephoto", "/usr/share/locale" );
- textdomain( "ephoto" );
- 
+#ifdef ENABLE_NLS
+ setlocale(LC_MESSAGES, "");
+ bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
+ textdomain(PACKAGE);
+#endif
  m = NULL;
  current_thumbs = ecore_dlist_new();
  current_directory = strdup(getenv("HOME"));
