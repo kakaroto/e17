@@ -48,7 +48,7 @@ struct Ewl_Tree
 	Ewl_Widget    *header;     /**< Array of widgets in the header */
 	Ewl_Widget    *scrollarea; /**< Scrollable area of rows */
 	Ecore_List    *selected;   /**< The currently selected rows */
-	Ewl_Tree_Mode  mode;       /**< Mode for selecting rows */
+	Ewl_Selection_Mode  mode;       /**< Mode for selecting rows */
 	unsigned short ncols;      /**< Number of columns in tree */
 	unsigned short headers_visible; /**< Are the headers visible */
 	unsigned short expands_visible; /**< Are the rows expandable */
@@ -104,8 +104,8 @@ Ecore_List 	*ewl_tree_selected_get(Ewl_Tree *tree);
 void 		 ewl_tree_selected_clear(Ewl_Tree *tree);
 Ewl_Widget	*ewl_tree_row_column_get(Ewl_Row *row, int i);
 
-Ewl_Tree_Mode  	 ewl_tree_mode_get(Ewl_Tree *tree);
-void 		 ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Tree_Mode mode);
+Ewl_Selection_Mode  	 ewl_tree_mode_get(Ewl_Tree *tree);
+void 		 ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Selection_Mode mode);
 
 Ewl_Widget 	*ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow,
 					     Ewl_Widget **children);

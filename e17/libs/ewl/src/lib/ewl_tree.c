@@ -548,7 +548,7 @@ ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
  * @return Returns no value.
  */
 void
-ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Tree_Mode mode)
+ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Selection_Mode mode)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -559,7 +559,7 @@ ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Tree_Mode mode)
 
 	tree->mode = mode;
 
-	if (mode == EWL_TREE_MODE_NONE)
+	if (mode == EWL_SELECTION_MODE_NONE)
 		ewl_tree_selected_clear(tree);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -570,12 +570,12 @@ ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Tree_Mode mode)
  * @brief Retrieve the current selection mode of a tree.
  * @return Returns the current selection mode of the tree.
  */
-Ewl_Tree_Mode
+Ewl_Selection_Mode
 ewl_tree_mode_get(Ewl_Tree *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, EWL_TREE_MODE_NONE);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, EWL_TREE_MODE_NONE);
+	DCHECK_PARAM_PTR_RET("tree", tree, EWL_SELECTION_MODE_NONE);
+	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, EWL_SELECTION_MODE_NONE);
 
 	DRETURN_INT(tree->mode, DLEVEL_STABLE);
 }
@@ -1353,11 +1353,11 @@ ewl_tree_cb_row_select(Ewl_Widget *w, void *ev_data,
 	node = EWL_TREE_NODE(w->parent);
 	tree = node->tree;
 
-	if (tree->mode == EWL_TREE_MODE_SINGLE ||
+	if (tree->mode == EWL_SELECTION_MODE_SINGLE ||
 	    !(ev->modifiers & EWL_KEY_MODIFIER_SHIFT))
 		ewl_tree_selected_clear(tree);
 
-	if (tree->mode != EWL_TREE_MODE_NONE) {
+	if (tree->mode != EWL_SELECTION_MODE_NONE) {
 		if (ecore_list_goto(tree->selected, w) == NULL)
 			ecore_list_append(tree->selected, w);
 		ewl_widget_state_set(w, "tree-selected", EWL_STATE_PERSISTENT);

@@ -153,9 +153,6 @@ ewl_combo_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		ewl_floater_position_set(EWL_FLOATER(combo->popup->popup),
 						0, CURRENT_H(w));
 
-//	if (combo->selected_idx < -1)
-//		ewl_combo_selected_set(combo, -1);
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -278,10 +275,8 @@ ewl_combo_cb_item_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	combo = data;
 
 	i = ewl_container_child_index_get(EWL_CONTAINER(combo->popup), w);
-	ewl_mvc_selected_set(EWL_MVC(combo), i);
+	ewl_mvc_selected_set(EWL_MVC(combo), i, 0);
 	ewl_combo_cb_increment_clicked(NULL, NULL, data);
-
-	ewl_callback_call(EWL_WIDGET(combo), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -289,7 +284,6 @@ ewl_combo_cb_item_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 void
 ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 {
-	int idx;
 	Ewl_View *view;
 	Ewl_Model *model;
 	Ewl_Combo *combo;
@@ -304,22 +298,24 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 	model = ewl_mvc_model_get(mvc);
 	mvc_data = ewl_mvc_data_get(mvc);
 
+	if (!mvc_data)
+		DRETURN(DLEVEL_STABLE);
+
 	/* remove the previously selected value */
 	if (combo->header)
 		ewl_widget_destroy(combo->header);
 
-	idx = ewl_mvc_selected_get(mvc);
-
-	/* if we have a selected value then show it in the top, else show
-	 * the header */
-	if ((idx > -1) && (!combo->editable))
+	if (ewl_mvc_selected_count_get(mvc))
 	{
+		Ewl_Selection_Idx *idx;
+
+		idx = ewl_mvc_selected_get(mvc);
 		combo->header = view->construct();
 		view->assign(combo->header, 
-				model->fetch(mvc_data, idx, 0));
+				model->fetch(mvc_data, idx->row, 0));
 	}
-	else if (view && view->header_fetch)
-		combo->header = view->header_fetch(mvc_data, idx);
+	else
+		combo->header = view->header_fetch(mvc_data, -1);
 
 	if (combo->header)
 	{

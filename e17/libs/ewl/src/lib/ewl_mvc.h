@@ -14,6 +14,37 @@
  */
 #define EWL_MVC_TYPE "mvc"
 
+#define EWL_SELECTION(x) ((Ewl_Selection *)x)
+typedef struct Ewl_Selection Ewl_Selection;
+struct Ewl_Selection
+{
+	Ewl_Selection_Type type;
+};
+
+#define EWL_SELECTION_IDX(x) ((Ewl_Selection_Idx *)x)
+typedef struct Ewl_Selection_Idx Ewl_Selection_Idx;
+struct Ewl_Selection_Idx
+{
+	Ewl_Selection sel;
+
+	unsigned int row;
+	unsigned int column;
+};
+
+#define EWL_SELECTION_RANGE(x) ((Ewl_Selection_Range *)x)
+typedef struct Ewl_Selection_Range Ewl_Selection_Range;
+struct Ewl_Selection_Range
+{
+	Ewl_Selection sel;
+
+	struct
+	{
+		unsigned int row;
+		unsigned int column;
+	} start,
+	  end;
+};
+
 /**
  * A simple mvc base class
  */
@@ -41,13 +72,9 @@ struct Ewl_MVC
 		void (*selected_change)(Ewl_MVC *mvc);
 	} cb;
 
-	struct
-	{
-		int *items;		/**< Selected items */
-		int count;		/**< Number of selected */
-	} selected;			/**< The selected info */
+	Ecore_List *selected;		/**< The selected cells */
 
-	unsigned char multiselect:1;	/**< is the widget multiselect capable */
+	Ewl_Selection_Mode selection_mode;	/**< The widget selection mode*/
 	unsigned char dirty:1;		/**< Is the data dirty */
 };
 
@@ -65,30 +92,32 @@ void 		*ewl_mvc_data_get(Ewl_MVC *mvc);
 void		 ewl_mvc_dirty_set(Ewl_MVC *mvc, unsigned int dirty);
 unsigned int	 ewl_mvc_dirty_get(Ewl_MVC *mvc);
 
-void		 ewl_mvc_multiselect_set(Ewl_MVC *mvc, unsigned int multi);
-unsigned int	 ewl_mvc_multiselect_get(Ewl_MVC *mvc);
+void		 ewl_mvc_selection_mode_set(Ewl_MVC *mvc, 
+					Ewl_Selection_Mode mode);
+Ewl_Selection_Mode ewl_mvc_selection_mode_get(Ewl_MVC *mvc);
 
-void		 ewl_mvc_selected_list_set(Ewl_MVC *mvc, int *list);
-const int	*ewl_mvc_selected_list_get(Ewl_MVC *mvc);
+void		 ewl_mvc_selected_clear(Ewl_MVC *mvc);
 
-void		 ewl_mvc_selected_range_set(Ewl_MVC *mvc, int start, int end);
+void		 ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list);
+Ecore_List	*ewl_mvc_selected_list_get(Ewl_MVC *mvc);
 
-void		 ewl_mvc_selected_set(Ewl_MVC *mvc, int i);
-void		 ewl_mvc_selected_add(Ewl_MVC *mvc, int i);
-int		 ewl_mvc_selected_get(Ewl_MVC *mvc);
-void		 ewl_mvc_selected_rm(Ewl_MVC *mvc, int idx);
+void		 ewl_mvc_selected_range_add(Ewl_MVC *mvc, 
+						int srow, int scolumn,
+						int erow, int ecolumn);
+
+void		 ewl_mvc_selected_set(Ewl_MVC *mvc, int row, int column);
+void		 ewl_mvc_selected_add(Ewl_MVC *mvc, int row, int column);
+Ewl_Selection_Idx *ewl_mvc_selected_get(Ewl_MVC *mvc);
+void		 ewl_mvc_selected_rm(Ewl_MVC *mvc, int row, int column);
 
 int		 ewl_mvc_selected_count_get(Ewl_MVC *mvc);
-unsigned int	 ewl_mvc_is_selected(Ewl_MVC *mvc, int idx);
+unsigned int	 ewl_mvc_is_selected(Ewl_MVC *mvc, int row, int column);
 
 /* 
  * internal
  */
 void		 ewl_mvc_view_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 void		 ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
-
-void 		 ewl_mvc_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
-void		 ewl_mvc_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 
 void		 ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 

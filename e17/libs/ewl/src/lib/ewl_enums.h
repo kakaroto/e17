@@ -493,22 +493,6 @@ enum Ewl_Media_Module_Type
 typedef enum Ewl_Media_Module_Type Ewl_Media_Module_Type;
 
 /**
- * @enum Ewl_Tree_Mode
- * The possible tree mode settings
- */
-enum Ewl_Tree_Mode
-{
-	EWL_TREE_MODE_NONE,
-	EWL_TREE_MODE_SINGLE,
-	EWL_TREE_MODE_MULTI
-};
-
-/**
- * The Ewl_Tree_Mode type
- */
-typedef enum Ewl_Tree_Mode Ewl_Tree_Mode;
-
-/**
  * @enum Ewl_Text_Context_Mask
  * The possible context masks for the ewl_text
  */
@@ -739,6 +723,28 @@ enum Ewl_Rotate
  * The Ewl_Rotate
  */
 typedef enum Ewl_Rotate Ewl_Rotate;
+
+enum Ewl_Selection_Type
+{
+	EWL_SELECTION_TYPE_INDEX,
+	EWL_SELECTION_TYPE_RANGE
+};
+typedef enum Ewl_Selection_Type Ewl_Selection_Type;
+
+enum Ewl_Selection_Mode
+{
+	EWL_SELECTION_MODE_NONE,
+	EWL_SELECTION_MODE_SINGLE,
+	EWL_SELECTION_MODE_MULTI
+};
+typedef enum Ewl_Selection_Mode Ewl_Selection_Mode;
+
+enum Ewl_Tree_Selection_Type
+{
+	EWL_TREE_SELECT_ROW,
+	EWL_TREE_SELECT_CELL
+};
+typedef enum Ewl_Tree_Selection_Type Ewl_Tree_Selection_Type;
 
 /**
  * @}

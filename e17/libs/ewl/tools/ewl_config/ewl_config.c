@@ -367,7 +367,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	}
 	closedir(rep);
 
-	ewl_mvc_selected_set(EWL_MVC(o), sel);
+	ewl_mvc_selected_set(EWL_MVC(o), sel, 0);
 	ewl_mvc_dirty_set(EWL_MVC(o), TRUE);
 
 	o2 = ewl_border_new();
@@ -417,7 +417,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	ewl_mvc_view_set(EWL_MVC(o), ewl_label_view_get());
 	ewl_mvc_data_set(EWL_MVC(o), list);
 	ewl_table_add(EWL_TABLE(box), o, 1, 1, 1, 1);
-	ewl_mvc_selected_set(EWL_MVC(o), sel);
+	ewl_mvc_selected_set(EWL_MVC(o), sel, 0);
 	ewl_widget_show(o);
 }
 
@@ -660,7 +660,7 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 			break;
 		sel++;
 	}
-	ewl_mvc_selected_set(EWL_MVC(o), sel);
+	ewl_mvc_selected_set(EWL_MVC(o), sel, 0);
 
 	o = ewl_widget_name_find(EC_ICON_SIZE);
 	list = ewl_mvc_data_get(EWL_MVC(o));
@@ -674,7 +674,7 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 			break;
 		sel ++;
 	}
-	ewl_mvc_selected_set(EWL_MVC(o), sel);
+	ewl_mvc_selected_set(EWL_MVC(o), sel, 0);
 
 	for (sel = 0; strings[sel].name != NULL; sel++)
 	{
@@ -703,6 +703,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ecore_List *list;
 	char *val;
 	int i;
+	Ewl_Selection_Idx *idx;
 
 	struct
 	{
@@ -767,9 +768,9 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	o = ewl_widget_name_find(EC_ICON_SIZE);
 	list = ewl_mvc_data_get(EWL_MVC(o));
-	i = ewl_mvc_selected_get(EWL_MVC(o));
+	idx = ewl_mvc_selected_get(EWL_MVC(o));
 
-	ecore_list_goto_index(list, i);
+	ecore_list_goto_index(list, idx->row);
 	val = ecore_list_current(list);
 	if (strcmp(val, ewl_config_string_get(ewl_config,
 					EWL_CONFIG_THEME_ICON_SIZE)))
@@ -781,10 +782,10 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	o = ewl_widget_name_find(EC_EWL_THEME);
 	list = ewl_mvc_data_get(EWL_MVC(o));
-	i = ewl_mvc_selected_get(EWL_MVC(o));
-	if (i > -1)
+	idx = ewl_mvc_selected_get(EWL_MVC(o));
+	if (idx)
 	{
-		ecore_list_goto_index(list, i);
+		ecore_list_goto_index(list, idx->row);
 		val = ecore_list_current(list);
 
 		if (strcmp(val, ewl_config_string_get(ewl_config,

@@ -149,10 +149,9 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_TYPE("data", data, EWL_LIST_TYPE);
 
 	list = data;
-	ewl_mvc_selected_set(EWL_MVC(list), 
-		ewl_container_child_index_get(EWL_CONTAINER(list), w));
 
-	ewl_callback_call(EWL_WIDGET(list), EWL_CALLBACK_VALUE_CHANGED);
+	ewl_mvc_selected_set(EWL_MVC(list), 
+		ewl_container_child_index_get(EWL_CONTAINER(list), w), 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

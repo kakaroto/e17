@@ -61,7 +61,7 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	tree->columns = ecore_list_new();
 	ecore_list_set_free_cb(tree->columns, ewl_tree2_cb_column_free);
 
-	tree->mode = EWL_TREE_MODE_NONE;
+	tree->mode = EWL_SELECTION_MODE_NONE;
 
 	tree->header = ewl_hpaned_new();
 	ewl_container_child_append(EWL_CONTAINER(tree), tree->header);
@@ -268,12 +268,12 @@ ewl_tree2_headers_visible_get(Ewl_Tree2 *tree)
  * @return Returns the current Ewl_Tree_Mode of the tree
  * @brief Get the mode from the tree
  */
-Ewl_Tree_Mode 
-ewl_tree2_mode_get(Ewl_Tree2 *tree)
+Ewl_Selection_Mode 
+ewl_tree2_selection_mode_get(Ewl_Tree2 *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, EWL_TREE_MODE_NONE);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, EWL_TREE_MODE_NONE);
+	DCHECK_PARAM_PTR_RET("tree", tree, EWL_SELECTION_MODE_NONE);
+	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, EWL_SELECTION_MODE_NONE);
 
 	DRETURN_INT(tree->mode, DLEVEL_STABLE);
 }
@@ -285,7 +285,7 @@ ewl_tree2_mode_get(Ewl_Tree2 *tree)
  * @brief Set the mode of the tree
  */
 void 
-ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree_Mode mode)
+ewl_tree2_selection_mode_set(Ewl_Tree2 *tree, Ewl_Selection_Mode mode)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -297,7 +297,7 @@ ewl_tree2_mode_set(Ewl_Tree2 *tree, Ewl_Tree_Mode mode)
 	tree->mode = mode;
  
 	/* if the mode is none then we don't care about the selected list */
-	if (tree->mode == EWL_TREE_MODE_NONE)
+	if (tree->mode == EWL_SELECTION_MODE_NONE)
 	{
 		ewl_mvc_selected_list_set(EWL_MVC(tree), NULL);
 	}

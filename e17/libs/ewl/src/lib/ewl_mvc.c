@@ -3,6 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+static void ewl_mvc_selected_change_notify(Ewl_MVC *mvc);
+
 /**
  * @param mvc: The MVC to initialize
  * @return Returns TRUE on success or FALSE if unsuccessful
@@ -22,6 +24,8 @@ ewl_mvc_init(Ewl_MVC *mvc)
 
 	ewl_callback_append(EWL_WIDGET(mvc), EWL_CALLBACK_DESTROY,
 					ewl_mvc_cb_destroy, NULL);
+
+	ewl_mvc_selection_mode_set(mvc, EWL_SELECTION_MODE_SINGLE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -140,6 +144,10 @@ ewl_mvc_data_set(Ewl_MVC *mvc, void *data)
 	mvc->data = data;
 	ewl_mvc_dirty_set(mvc, TRUE);
 
+	/* let the inheriting widget know that the data has changed */
+	if (mvc->cb.selected_change)
+		mvc->cb.selected_change(mvc);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -197,239 +205,331 @@ ewl_mvc_dirty_get(Ewl_MVC *mvc)
 
 /**
  * @param mvc: The MVC widget to use
- * @param multi: Is this widget multiselect capable
+ * @param mode: The selection mode to set
  * @return Returns no value
- * @brief Sets the multiselect capabilities of the mvc widget
+ * @brief Sets the selection capabilities of the mvc widget
  */
 void
-ewl_mvc_multiselect_set(Ewl_MVC *mvc, unsigned int multi)
+ewl_mvc_selection_mode_set(Ewl_MVC *mvc, Ewl_Selection_Mode mode)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	mvc->multiselect = !!multi;
+	mvc->selection_mode = mode;
+	if (mode == EWL_SELECTION_MODE_NONE)
+	{
+		if (mvc->selected)
+			ecore_list_destroy(mvc->selected);
+		mvc->selected = NULL;
+	}
+	else if (!mvc->selected)
+		mvc->selected = ecore_list_new();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * @param mvc: The MVC widget to use
- * @return Returns the multiselect setting of the mvc widget
- * @brief Retrieves the multiselect setting of the widget
+ * @return Returns the selection mode of the mvc widget
+ * @brief Retrieves the selection mode of the widget
  */
-unsigned int
-ewl_mvc_multiselect_get(Ewl_MVC *mvc)
+Ewl_Selection_Mode
+ewl_mvc_selection_mode_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET("mvc", mvc, EWL_SELECTION_MODE_NONE);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, EWL_SELECTION_MODE_NONE);
 
-	DRETURN_INT(mvc->multiselect, DLEVEL_STABLE);
+	DRETURN_INT(mvc->selection_mode, DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The mvc to clear
+ * @return Returns no value
+ * @brief clears the selection list 
+ */
+void
+ewl_mvc_selected_clear(Ewl_MVC *mvc)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	
+	ecore_list_clear(mvc->selected);
+	ewl_mvc_selected_change_notify(mvc);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * @param mvc: The MVC to work with
- * @param list: The list of indicies to set selected, list is -1 terminated
+ * @param list: The list of items to set selected.
  * @return Returns no value
- * @brief Sets the list of indices selected 
+ * @brief Sets the list of items to select. This will remove any items it
+ * needs from the list.
  */
 void
-ewl_mvc_selected_list_set(Ewl_MVC *mvc, int *list)
+ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list)
 {
-	int i, size;
-
+	Ewl_Selection *sel;
+		
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	if (!list)
-	{
-		mvc->selected.count = 0;
-		mvc->selected.items = realloc(mvc->selected.items, 2 * (sizeof(int)));
-		mvc->selected.items[0] = -1;
-	}
-	else if (mvc->multiselect)
-	{
-		mvc->selected.count = 0;
-		for (i = 0; list[i] != -1; i++)
-			mvc->selected.count ++;
+	/* make sure we're selecting and received items to select */
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN(DLEVEL_STABLE);
 
-		size = (mvc->selected.count + 1) * (sizeof(int));
-		mvc->selected.items = realloc(mvc->selected.items, size);
-		mvc->selected.items[mvc->selected.count] = -1;
-	
-		if (mvc->selected.count > 0)
-			memcpy(mvc->selected.items, list, size);
-	}
-	else
+	ecore_list_clear(mvc->selected);
+
+	if (!list || (ecore_list_nodes(list) == 0))
+		DRETURN(DLEVEL_STABLE);
+
+	sel = ecore_list_remove_first(list);
+	ecore_list_append(mvc->selected, sel);
+
+	if (mvc->selection_mode == EWL_SELECTION_MODE_MULTI)
 	{
-		mvc->selected.count = 1;
-		mvc->selected.items = realloc(mvc->selected.items, 2 * sizeof(int));
-		mvc->selected.items[0] = list[0];
-		mvc->selected.items[1] = -1;
+		while ((sel = ecore_list_remove_first(list)))
+			ecore_list_append(mvc->selected, sel);
 	}
 
-	if (mvc->cb.selected_change)
-		mvc->cb.selected_change(mvc);
+	ewl_mvc_selected_change_notify(mvc);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * @param mvc: The MVC to get the list from
- * @return Returns the list of selected indices, list is -1 terminated.
- * @brief Retrieves the list of selected indicies
+ * @return Returns the list of selected indices
+ * @brief Retrieves the list of selected indicies. DO NOT remove or change
+ * items in this list.
  */
-const int *
+Ecore_List *
 ewl_mvc_selected_list_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
 	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
 
-	DRETURN_PTR(mvc->selected.items, DLEVEL_STABLE);
+	DRETURN_PTR(mvc->selected, DLEVEL_STABLE);
 }
 
 /**
  * @param mvc: The MVC to set the list into
- * @param start: The range start
- * @param end: The range end
+ * @param srow: The start row
+ * @param scolumn:  The start column
+ * @param erow: The end row
+ * @param ecolumn: The end column
  * @return Returns no value
  * @brief Sets the given range, inclusive, as selected in the mvc
  */
 void
-ewl_mvc_selected_range_set(Ewl_MVC *mvc, int start, int end)
+ewl_mvc_selected_range_add(Ewl_MVC *mvc, int srow, int scolumn,
+					 int erow, int ecolumn)
 {
-	int t;
+	Ewl_Selection *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	if (start < 0) start = 0;
-	if (end < 0) end = 0;
-
-	/* make sure the start comes first */
-	if (end < start)
+	if (mvc->selection_mode == EWL_SELECTION_MODE_SINGLE)
 	{
-		t = start;
-		start = end;
-		end = t;
+		Ewl_Selection_Idx *si;
+
+		si = NEW(Ewl_Selection_Idx, 1);
+		si->sel.type = EWL_SELECTION_TYPE_INDEX;
+		si->row = srow;
+		si->column = scolumn;
+
+		sel = EWL_SELECTION(si);
+	}
+	else
+	{
+		Ewl_Selection_Range *si;
+
+		si = NEW(Ewl_Selection_Range, 1);
+		si->sel.type = EWL_SELECTION_TYPE_RANGE;
+		si->start.row = srow;
+		si->start.column = scolumn;
+		si->end.row = erow;
+		si->end.column = ecolumn;
+
+		sel = EWL_SELECTION(si);
 	}
 
-	/* this isn't multiselect so make this one item, the start */
-	if (!mvc->multiselect)
-		end = start;
-
-	t = (end - start) + 1;
-	mvc->selected.count = t;
-	mvc->selected.items = realloc(mvc->selected.items, (t + 1) * sizeof(int));
-	mvc->selected.items[mvc->selected.count] = -1;
-
-	for (t = 0; t < mvc->selected.count; t++)
-		mvc->selected.items[t] = start + t;
-
-	if (mvc->cb.selected_change)
-		mvc->cb.selected_change(mvc);
+	ecore_list_append(mvc->selected, sel);
+	ewl_mvc_selected_change_notify(mvc);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * @param mvc: The MVC to work with
- * @param i: The index to set selected
+ * @param row: The row to set
+ * @param column: The column to set
  * @return Returns no value
  * @brief Sets the given index as selected
  */
 void
-ewl_mvc_selected_set(Ewl_MVC *mvc, int i)
+ewl_mvc_selected_set(Ewl_MVC *mvc, int row, int column)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	mvc->selected.count = 1;
-	mvc->selected.items = realloc(mvc->selected.items, 2 * sizeof(int));
-	mvc->selected.items[0] = i;
-	mvc->selected.items[1] = -1;
-
-	if (mvc->cb.selected_change)
-		mvc->cb.selected_change(mvc);
+	ecore_list_clear(mvc->selected);
+	ewl_mvc_selected_add(mvc, row, column);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * @param mvc: The MVC to work with
- * @param i: The index to add to the selected list
+ * @param row: The row to add
+ * @param column: The column to add
  * @return Returns no value
  * @brief Adds the given index to the selected list
  */
 void
-ewl_mvc_selected_add(Ewl_MVC *mvc, int i)
+ewl_mvc_selected_add(Ewl_MVC *mvc, int row, int column)
 {
+	Ewl_Selection_Idx *si;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	mvc->selected.count ++;
-	mvc->selected.items = realloc(mvc->selected.items, 
-				(mvc->selected.count + 1) * sizeof(int));
-	mvc->selected.items[mvc->selected.count - 1] = i;
-	mvc->selected.items[mvc->selected.count] = -1;
+	si = NEW(Ewl_Selection_Idx, 1);
+	si->sel.type = EWL_SELECTION_TYPE_INDEX;
+	si->row = row;
+	si->column = column;
 
-	if (mvc->cb.selected_change)
-		mvc->cb.selected_change(mvc);
+	ecore_list_append(mvc->selected, si);
+	ewl_mvc_selected_change_notify(mvc);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * @param mvc: The MVC to get the data from
- * @return Returns the last selected item
- * @brief Retrieves the last selected item
+ * @return Returns the last selected item. Return must be free'd
+ * @brief Retrieves the last selected item. Return must be free'd.
  */
-int
+Ewl_Selection_Idx *
 ewl_mvc_selected_get(Ewl_MVC *mvc)
 {
+	Ewl_Selection *sel;
+	Ewl_Selection_Idx *ret;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, -1);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, -1);
+	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
 
-	if (mvc->selected.count == 0)
-		DRETURN_INT(-1, DLEVEL_STABLE);
+	ecore_list_goto_last(mvc->selected);
+	sel = ecore_list_current(mvc->selected);
+	if (!sel) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	DRETURN_INT(mvc->selected.items[mvc->selected.count - 1], 
-							DLEVEL_STABLE);
+	ret = NEW(Ewl_Selection_Idx, 1);
+	ret->sel.type = EWL_SELECTION_TYPE_INDEX;
+
+	if (sel->type == EWL_SELECTION_TYPE_INDEX)
+	{
+		Ewl_Selection_Idx *si;
+
+		si = EWL_SELECTION_IDX(sel);
+		ret->row = si->row;
+		ret->column = si->column;
+	}
+	else
+	{
+		Ewl_Selection_Range *si;
+
+		si = EWL_SELECTION_RANGE(sel);
+		ret->row = si->start.row;
+		ret->column = si->start.column;
+	}
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 /**
  * @param mvc: The MVC to work with
- * @param idx: The index to remove
+ * @param int row: The row to remove
+ * @param int colum: The column to remove
  * @return Returns no value
  * @brief Removes the given index from the list of selected indices
  */
 void
-ewl_mvc_selected_rm(Ewl_MVC *mvc, int idx)
+ewl_mvc_selected_rm(Ewl_MVC *mvc, int row, int column)
 {
-	int i;
+	Ewl_Selection *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	for (i = 0; i < mvc->selected.count; i++)
+	/* XXX should this check for the same selected area bein in the list
+	 * twice? What if the user does a box select on the tree, then
+	 * another, larger, box select? */
+	ecore_list_goto_first(mvc->selected);
+	while ((sel = ecore_list_current(mvc->selected)))
 	{
-		if (mvc->selected.items[i] == idx)
+		if (sel->type == EWL_SELECTION_TYPE_INDEX)
 		{
-			mvc->selected.count --;
-			memmove((mvc->selected.items + i), 
-					(mvc->selected.items + i + 1),
-					((mvc->selected.count - i) * sizeof(int)));
-			mvc->selected.items[mvc->selected.count] = -1;
-			break;
+			Ewl_Selection_Idx *si;
+
+			si = EWL_SELECTION_IDX(sel);
+			if ((si->row == row) && (si->column == column))
+			{
+				ecore_list_remove(mvc->selected);
+				break;
+			}
 		}
+		else
+		{
+			Ewl_Selection_Range *si;
+			int tmp;
+
+			si = EWL_SELECTION_RANGE(sel);
+				
+			/* verify the range has the top/left most
+			 * cell first */
+			if (si->end.row < si->start.row)
+			{
+				tmp = si->end.row;
+				si->end.row = si->start.row;
+				si->start.row = tmp;
+			}
+	
+			if (si->end.column < si->start.column)
+			{
+				tmp = si->end.column;
+				si->end.column = si->start.column;
+				si->start.column = tmp;
+			}
+
+			if ((si->start.row <= row) 
+					&& (si->end.row >= row)
+					&& (si->start.column <= column) 
+					&& (si->end.column >= column))
+			{
+				ecore_list_remove(mvc->selected);
+
+				DWARNING("Can't rm from range's yet\n");
+				/* find top cells */
+				/* find left cells */
+				/* find right cells */
+				/* find bottom cells */
+
+				break;
+			}
+		}
+
+		ecore_list_next(mvc->selected);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -447,7 +547,7 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 	DCHECK_PARAM_PTR_RET("mvc", mvc, 0);
 	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, 0);
 
-	DRETURN_INT(mvc->selected.count, DLEVEL_STABLE);
+	DRETURN_INT(ecore_list_nodes(mvc->selected), DLEVEL_STABLE);
 }
 
 /**
@@ -457,21 +557,64 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
  * @brief Checks if the given index is selected or not.
  */
 unsigned int
-ewl_mvc_is_selected(Ewl_MVC *mvc, int idx)
+ewl_mvc_is_selected(Ewl_MVC *mvc, int row, int column)
 {
-	int i;
+	Ewl_Selection *sel;
+	int ret = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
 	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, FALSE);
 
-	for (i = 0; i < mvc->selected.count; i++)
+	ecore_list_goto_first(mvc->selected);
+	while ((sel = ecore_list_next(mvc->selected)))
 	{
-		if (mvc->selected.items[i] == idx)
-			DRETURN_INT(TRUE, DLEVEL_STABLE);
+		if (sel->type == EWL_SELECTION_TYPE_INDEX)
+		{
+			Ewl_Selection_Idx *si;
+
+			si = EWL_SELECTION_IDX(sel);
+			if ((si->row == row) && (si->column == column))
+			{
+				ret = TRUE;
+				break;
+			}
+		}
+		else
+		{
+			int tmp;
+			Ewl_Selection_Range *si;
+
+			si = EWL_SELECTION_RANGE(sel);
+				
+			/* verify the range has the top/left most
+			 * cell first */
+			if (si->end.row < si->start.row)
+			{
+				tmp = si->end.row;
+				si->end.row = si->start.row;
+				si->start.row = tmp;
+			}
+	
+			if (si->end.column < si->start.column)
+			{
+				tmp = si->end.column;
+				si->end.column = si->start.column;
+				si->start.column = tmp;
+			}
+
+			if ((si->start.row <= row) 
+					&& (si->end.row >= row)
+					&& (si->start.column <= column) 
+					&& (si->end.column >= column))
+			{
+				ret = TRUE;
+				break;
+			}
+		}
 	}
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -489,55 +632,8 @@ ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc))
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
 	mvc->cb.selected_change = cb;
-	if (mvc->selected.count > 0)
+	if (mvc->selected && (ecore_list_nodes(mvc->selected) > 0))
 		cb(mvc);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/** 
- * @internal
- * @param c: The container
- * @param w: UNUSED
- * @param idx: The index removed from
- * @return Returns no value
- * @brief Checks if the given widget index is in the selected array and
- * removes it
- */
-void
-ewl_mvc_cb_child_del(Ewl_Container *c, Ewl_Widget *w __UNUSED__, int idx)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-
-	if (ewl_mvc_is_selected(EWL_MVC(c), idx))
-		ewl_mvc_selected_rm(EWL_MVC(c), idx);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param c: The container to work with
- * @param w: The widget
- * @return Returns no value
- * @brief Checks if the widget is in the selected list and removes it
- */
-void
-ewl_mvc_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
-{
-	int idx;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	idx = ewl_container_child_index_get(c, w);
-	if (idx > -1 && ewl_mvc_is_selected(EWL_MVC(c), idx))
-		ewl_mvc_selected_rm(EWL_MVC(c), idx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -559,8 +655,25 @@ ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DCHECK_PARAM_PTR("w", w);
 
 	mvc = EWL_MVC(w);
-	if (mvc->selected.items)
-		FREE(mvc->selected.items);
+	if (mvc->selected)
+		ecore_list_destroy(mvc->selected);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_mvc_selected_change_notify(Ewl_MVC *mvc)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	/* notify any inheriting widgets */
+	if (mvc->cb.selected_change)
+		mvc->cb.selected_change(mvc);
+
+	/* notify the app */
+	ewl_callback_call(EWL_WIDGET(mvc), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
