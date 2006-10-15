@@ -4057,3 +4057,19 @@ Fix bug in dialog layout (table positioning) causing trouble (unselectable
 Fix setting pager mode when compiled without composite.
 Set mask alpha threshold, if possible.
 
+
+-------------------------------------------------------------------------------
+
+Sun Oct 15 19:51:10 CEST 2006
+(Kim)
+
+--- 0.16.8.4 ---
+Set correct environment when starting remembered applications at startup.
+Fix pager updates in certain combinations of modes.
+Fix segv when creating second systray.
+Notes on configuration options, and other info bits.
+Add ipc/match bits to enable/disable fading of particular windows.
+Fix applying matches to internal client windows in certain situations.
+Fix potential segv when showing menu.
+Fix dialog image rendering in certain situations.
+
