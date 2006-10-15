@@ -101,6 +101,7 @@ foreach(@files) {
 foreach(@changed) {
 
 	$filename = $_;
+	next if ($filename =~ /\.po$/);
 
 	my @tmp = `cvs -f diff -u3 -r $oldrevs{$filename} -r $newrevs{$filename} $filename 2>/dev/null`;
 
