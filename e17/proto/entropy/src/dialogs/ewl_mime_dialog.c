@@ -155,7 +155,7 @@ void entropy_ewl_mime_dialog_display() {
 	/*Init the mime tree*/
 	mime_tree = ewl_tree_new(2);
 
-	ewl_tree_mode_set(EWL_TREE(mime_tree), EWL_TREE_MODE_SINGLE);
+	ewl_tree_mode_set(EWL_TREE(mime_tree), EWL_SELECTION_MODE_SINGLE);
 	ewl_object_minimum_size_set(EWL_OBJECT(window), 530, 400);
 	ewl_window_title_set(EWL_WINDOW(window), "Edit MIME Actions..");
 	ewl_container_child_append(EWL_CONTAINER(window), box);

@@ -480,7 +480,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   instance->layout_parent = layout;
 
   viewer->list = ewl_tree_new (4);
-  ewl_tree_mode_set (EWL_TREE (viewer->list), EWL_TREE_MODE_MULTI);
+  ewl_tree_mode_set (EWL_TREE (viewer->list), EWL_SELECTION_MODE_MULTI);
 
   headers[0] = "Icon";
   headers[1] = "Filename";
