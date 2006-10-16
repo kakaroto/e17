@@ -25,7 +25,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(scrollpane);
 
 	button = ewl_button_new();
-	ewl_object_size_request(EWL_OBJECT(button), 500, 500);
+	ewl_object_minimum_size_set(EWL_OBJECT(button), 500, 500);
 	ewl_object_padding_set(EWL_OBJECT(button), 20, 20, 20, 20);
 	ewl_container_child_append(EWL_CONTAINER(scrollpane), button);
 	ewl_widget_show(button);
