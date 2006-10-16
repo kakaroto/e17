@@ -151,13 +151,13 @@ _etk_fe_gui_slow_timer_handler_cb(void *data)
    
    if(gui->ex->cddb.status == EX_STATUS_DOING)
      {
-	etk_statusbar_pop(ETK_STATUSBAR(gui->statusbar3), 0);
-	etk_statusbar_push(ETK_STATUSBAR(gui->statusbar3), _("Cddb lookup..."), 0);
+	etk_statusbar_message_pop(ETK_STATUSBAR(gui->statusbar3), 0);
+	etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar3), _("Cddb lookup..."), 0);
      }
    if(gui->ex->cddb.status == EX_STATUS_DONE)
      {
-	etk_statusbar_pop(ETK_STATUSBAR(gui->statusbar3), 0);
-	etk_statusbar_push(ETK_STATUSBAR(gui->statusbar3), _("Cddb lookup done."), 0);
+	etk_statusbar_message_pop(ETK_STATUSBAR(gui->statusbar3), 0);
+	etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar3), _("Cddb lookup done."), 0);
      }
 
    if(gui->ex->rip.curr_track.number > 0)
@@ -176,13 +176,13 @@ _etk_fe_gui_slow_timer_handler_cb(void *data)
 	size = strlen(_("Rip")) + strlen(_("Track")) + strlen(num) +  19;
 	str = calloc(size, sizeof(char));
 	snprintf(str, size, "%s: %s %s [%d / %d ]", _("Rip"), _("Track"), num, gui->ex->rip.num_done + 1, gui->ex->rip.num_total);
-	etk_statusbar_pop(ETK_STATUSBAR(gui->statusbar1), 0);	
-	etk_statusbar_push(ETK_STATUSBAR(gui->statusbar1), str, 0);
+	etk_statusbar_message_pop(ETK_STATUSBAR(gui->statusbar1), 0);
+	etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar1), str, 0);
      }
    else
      {
-	etk_statusbar_pop(ETK_STATUSBAR(gui->statusbar1), 0);		
-	etk_statusbar_push(ETK_STATUSBAR(gui->statusbar1), "Rip: Idle", 0);
+	etk_statusbar_message_pop(ETK_STATUSBAR(gui->statusbar1), 0);
+	etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar1), "Rip: Idle", 0);
      }
    
    if(gui->ex->encode.curr_track.number > 0)
@@ -201,13 +201,13 @@ _etk_fe_gui_slow_timer_handler_cb(void *data)
 	size = strlen(_("Encode")) + strlen(_("Track")) + strlen(num) + 19;
 	str = calloc(size, sizeof(char));
 	snprintf(str, size, "%s: %s %s [%d / %d ]", _("Encode"), _("Track"), num, gui->ex->encode.num_done + 1, gui->ex->encode.num_total);
-	etk_statusbar_pop(ETK_STATUSBAR(gui->statusbar2), 0);	
-	etk_statusbar_push(ETK_STATUSBAR(gui->statusbar2), str, 0);
+	etk_statusbar_message_pop(ETK_STATUSBAR(gui->statusbar2), 0);	
+	etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar2), str, 0);
      }
    else
      {	 
-	etk_statusbar_pop(ETK_STATUSBAR(gui->statusbar2), 0);
-	etk_statusbar_push(ETK_STATUSBAR(gui->statusbar2), "Encode: Idle", 0);
+	etk_statusbar_message_pop(ETK_STATUSBAR(gui->statusbar2), 0);
+	etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar2), "Encode: Idle", 0);
      }
    
    return 1;
@@ -571,8 +571,8 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    gui->image_about = enhance_var_get(en, "image_about");
    etk_image_set_from_file(ETK_IMAGE(gui->image_about), ICON_FILE),
 
-   etk_statusbar_push(ETK_STATUSBAR(gui->statusbar1), "Rip: Idle", 0);
-   etk_statusbar_push(ETK_STATUSBAR(gui->statusbar2), "Encode: Idle", 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar1), "Rip: Idle", 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar2), "Encode: Idle", 0);
 
    etk_combobox_column_add(ETK_COMBOBOX(gui->ripper_combo), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
    etk_combobox_build(ETK_COMBOBOX(gui->ripper_combo));   
