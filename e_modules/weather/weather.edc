@@ -75,7 +75,8 @@ collections
 			    to:       "icon";
 			 }
 		       color:  255 255 255 255;
-		       color3:   0   0   0  70;
+		       color2: 0 0 0 96;
+		       color3: 0 0 0 32;
 		       color_class: "module_label";
 		       text
 			 {
@@ -110,7 +111,8 @@ collections
 			    to_y:     "line";
 			 }
 		       color:  255 255 255 255;
-		       color3:   0   0   0  50;
+		       color2: 0 0 0 96;
+		       color3: 0 0 0 32;
 		       color_class: "module_label";
 		       text
 			 {
@@ -181,7 +183,8 @@ collections
 			    offset:   -1  -1;
 			 }
 		       color:  255 255 255 255;
-		       color3:   0   0   0  60;
+		       color2: 0 0 0 96;
+		       color3: 0 0 0 32;
 		       color_class: "module_label";
 		       text
 			 {
