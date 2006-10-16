@@ -13,8 +13,21 @@
 #include "config.h"
 
 /* NLS */
-#include <libintl.h>
-#include <locale.h>
+#ifdef ENABLE_NLS
+# include <libintl.h>
+# include <locale.h>
+# define _(str) gettext(str)
+# define gettext_noop(str) str
+# define N_(str) gettext_noop(str)
+#else
+# define _(str) (str)
+# define gettext_noop(str) str
+# define N_(str) gettext_noop(str)
+# define gettext(str) ((char*) (str))
+#endif
+
+char *sgettext(const char *s);
+#define S_(str) sgettext(str)
 
 void destroy_cb(Ewl_Widget *w, void *event, void *data);
 void populate_browser(Ewl_Widget *w, void *event, void *data);

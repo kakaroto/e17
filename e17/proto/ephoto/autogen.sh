@@ -17,6 +17,7 @@ xgettext \
 -d ephoto \
 -p po \
 --foreign-user \
+-k -k_ -kN_ -kS_ \
 -o ephoto.pot \
 `find . -name "*.[ch]" -print` || exit 1
 

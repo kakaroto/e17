@@ -112,7 +112,7 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  srand((unsigned int)time((time_t *)NULL));
  
  window = ewl_window_new();
- ewl_window_title_set(EWL_WINDOW(window), gettext("Ephoto Slideshow"));
+ ewl_window_title_set(EWL_WINDOW(window), _("Ephoto Slideshow"));
  ewl_window_name_set(EWL_WINDOW(window), "Ephoto Slideshow");
  if (sc->full_size) 
 	ewl_window_fullscreen_set(EWL_WINDOW(window), 1);
@@ -326,7 +326,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  sc = parse_slideshow_config();
  
  sc->win = ewl_window_new();
- ewl_window_title_set(EWL_WINDOW(sc->win), gettext("Slideshow Configuration"));
+ ewl_window_title_set(EWL_WINDOW(sc->win), _("Slideshow Configuration"));
  ewl_window_name_set(EWL_WINDOW(sc->win), "Slideshow Configuration");
  ewl_window_dialog_set(EWL_WINDOW(sc->win), 1);
  ewl_object_size_request(EWL_OBJECT(sc->win), 400, 200);
@@ -345,7 +345,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(main_hbox);
       
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), gettext("Window Size"));
+ ewl_border_text_set(EWL_BORDER(border), _("Window Size"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(main_hbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
@@ -358,7 +358,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(hbox);
 
  sc->fullscreen = ewl_radiobutton_new();
- ewl_button_label_set(EWL_BUTTON(sc->fullscreen), gettext("Fullscreen"));
+ ewl_button_label_set(EWL_BUTTON(sc->fullscreen), _("Fullscreen"));
  ewl_container_child_append(EWL_CONTAINER(hbox), sc->fullscreen);
  ewl_radiobutton_checked_set(EWL_RADIOBUTTON(sc->fullscreen), sc->full_size);
  ewl_object_alignment_set(EWL_OBJECT(sc->fullscreen), EWL_FLAG_ALIGN_LEFT);
@@ -366,7 +366,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(sc->fullscreen);	
  
  sc->custom = ewl_radiobutton_new();
- ewl_button_label_set(EWL_BUTTON(sc->custom), gettext("Custom"));
+ ewl_button_label_set(EWL_BUTTON(sc->custom), _("Custom"));
  ewl_container_child_append(EWL_CONTAINER(hbox), sc->custom);
  ewl_radiobutton_checked_set(EWL_RADIOBUTTON(sc->custom), sc->custom_size);
  ewl_radiobutton_chain_set(EWL_RADIOBUTTON(sc->fullscreen), 
@@ -381,7 +381,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(hbox);
  
  text = ewl_text_new();
- ewl_text_text_set(EWL_TEXT(text), gettext("Width"));
+ ewl_text_text_set(EWL_TEXT(text), _("Width"));
  ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), text);
@@ -395,7 +395,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(sc->wentry);
 
  text = ewl_text_new();
- ewl_text_text_set(EWL_TEXT(text), gettext("Height"));
+ ewl_text_text_set(EWL_TEXT(text), _("Height"));
  ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), text);
@@ -409,21 +409,21 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(sc->hentry);
 
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), gettext("Order"));
+ ewl_border_text_set(EWL_BORDER(border), _("Order"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(main_hbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(border);
 
  sc->loop = ewl_checkbutton_new();
- ewl_button_label_set(EWL_BUTTON(sc->loop), gettext("Loop Slideshow"));
+ ewl_button_label_set(EWL_BUTTON(sc->loop), _("Loop Slideshow"));
  ewl_checkbutton_checked_set(EWL_CHECKBUTTON(sc->loop), sc->loop_slide);
  ewl_container_child_append(EWL_CONTAINER(border), sc->loop);
  ewl_object_alignment_set(EWL_OBJECT(sc->loop), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(sc->loop);
 
  sc->random = ewl_checkbutton_new();
- ewl_button_label_set(EWL_BUTTON(sc->random), gettext("Random Order"));
+ ewl_button_label_set(EWL_BUTTON(sc->random), _("Random Order"));
  ewl_checkbutton_checked_set(EWL_CHECKBUTTON(sc->random), sc->random_order);
  ewl_container_child_append(EWL_CONTAINER(border), sc->random);
  ewl_object_alignment_set(EWL_OBJECT(sc->random), EWL_FLAG_ALIGN_CENTER);
@@ -436,28 +436,28 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(hbox);
  
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), gettext("Image Size"));
+ ewl_border_text_set(EWL_BORDER(border), _("Image Size"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(border); 
  
  sc->zoom_image = ewl_checkbutton_new();
- ewl_button_label_set(EWL_BUTTON(sc->zoom_image), gettext("Zoom Images to Fill Window"));
+ ewl_button_label_set(EWL_BUTTON(sc->zoom_image), _("Zoom Images to Fill Window"));
  ewl_checkbutton_checked_set(EWL_CHECKBUTTON(sc->zoom_image), sc->zoom);
  ewl_container_child_append(EWL_CONTAINER(border), sc->zoom_image);
  ewl_object_alignment_set(EWL_OBJECT(sc->zoom_image), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(sc->zoom_image);     
  
  sc->aspect_image = ewl_checkbutton_new();
- ewl_button_label_set(EWL_BUTTON(sc->aspect_image), gettext("Keep Aspect"));
+ ewl_button_label_set(EWL_BUTTON(sc->aspect_image), _("Keep Aspect"));
  ewl_checkbutton_checked_set(EWL_CHECKBUTTON(sc->aspect_image), sc->keep_aspect);
  ewl_container_child_append(EWL_CONTAINER(border), sc->aspect_image);
  ewl_object_alignment_set(EWL_OBJECT(sc->aspect_image), EWL_FLAG_ALIGN_CENTER);
  ewl_widget_show(sc->aspect_image);  
 
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), gettext("Transitions"));
+ ewl_border_text_set(EWL_BORDER(border), _("Transitions"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
@@ -475,7 +475,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(sc->spinner);
  
  sc->show_name = ewl_checkbutton_new();
- ewl_button_label_set(EWL_BUTTON(sc->show_name), gettext("Show File Name On Change"));
+ ewl_button_label_set(EWL_BUTTON(sc->show_name), _("Show File Name On Change"));
  ewl_checkbutton_checked_set(EWL_CHECKBUTTON(sc->show_name), sc->name_show);
  ewl_container_child_append(EWL_CONTAINER(border), sc->show_name);
  ewl_object_alignment_set(EWL_OBJECT(sc->show_name), EWL_FLAG_ALIGN_CENTER);
@@ -490,7 +490,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  save = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(save), 
 		      PACKAGE_DATA_DIR "/images/stock_save.png", NULL);
- ewl_button_label_set(EWL_BUTTON(save), gettext("save"));
+ ewl_button_label_set(EWL_BUTTON(save), _("save"));
  ewl_container_child_append(EWL_CONTAINER(hbox), save);
  ewl_object_fill_policy_set(EWL_OBJECT(save), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(save), EWL_FLAG_ALIGN_CENTER);
@@ -500,7 +500,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  cancel = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(cancel), 
 		           PACKAGE_DATA_DIR "/images/dialog-close.png", NULL);
- ewl_button_label_set(EWL_BUTTON(cancel), gettext("cancel"));
+ ewl_button_label_set(EWL_BUTTON(cancel), _("cancel"));
  ewl_container_child_append(EWL_CONTAINER(hbox), cancel);
  ewl_object_fill_policy_set(EWL_OBJECT(cancel), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(cancel), EWL_FLAG_ALIGN_CENTER);

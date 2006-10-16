@@ -232,7 +232,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
   }
  }
  vwin = ewl_window_new();
- ewl_window_title_set(EWL_WINDOW(vwin), gettext("Ephoto Image Viewer"));
+ ewl_window_title_set(EWL_WINDOW(vwin), _("Ephoto Image Viewer"));
  ewl_window_name_set(EWL_WINDOW(vwin), "Ephoto Image Viewer");
  ewl_object_size_request(EWL_OBJECT(vwin), 480, 480);
  ewl_callback_append(vwin, EWL_CALLBACK_DELETE_WINDOW, destroy_vwin, vwin);
@@ -250,7 +250,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(menubar);
 
  menu = ewl_menu_new();
- ewl_button_label_set(EWL_BUTTON(menu), gettext("File"));
+ ewl_button_label_set(EWL_BUTTON(menu), S_("Menu|File"));
  ewl_container_child_append(EWL_CONTAINER(menubar), menu);
  ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
  ewl_widget_show(menu);
@@ -258,7 +258,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/stock_save.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Save Image"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), S_("Menu|File|Save Image"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  //ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, destroy_vwin, NULL);
@@ -268,7 +268,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/exit.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Exit"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), S_("Menu|File|Exit"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, destroy_vwin, vwin);
@@ -276,7 +276,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(menu_item);
 
  menu = ewl_menu_new();
- ewl_button_label_set(EWL_BUTTON(menu), gettext("Actions"));
+ ewl_button_label_set(EWL_BUTTON(menu), S_("Menu|Actions"));
  ewl_container_child_append(EWL_CONTAINER(menubar), menu);
  ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
  ewl_widget_show(menu);
@@ -284,7 +284,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/search.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Zoom In"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), S_("Menu|Actions|Zoom In"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, zoom_in, NULL);
@@ -294,7 +294,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/search.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Zoom Out"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), S_("Menu|Actions|Zoom Out"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, zoom_out, NULL);
@@ -304,7 +304,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
 		      PACKAGE_DATA_DIR "/images/search.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Zoom To Fit"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), S_("Menu|Actions|Zoom To Fit"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, zoom_fit, NULL);
@@ -314,7 +314,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/search.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Zoom 1:1"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), S_("Menu|Actions|Zoom 1:1"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, original_size, NULL);
@@ -324,7 +324,8 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/go-next.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Flip Horizontally"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), 
+                      S_("Menu|Actions|Flip Horizontally"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, flip_horizontal, NULL);
@@ -334,7 +335,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/go-down.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Flip Vertically"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), S_("Menu|Actions|Flip Vertically"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, flip_vertical, NULL);
@@ -344,7 +345,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/undo.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Rotate Left"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), S_("Menu|Actions|Rotate Left"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, rotate_left, NULL);
@@ -354,7 +355,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  menu_item = ewl_menu_item_new();
  ewl_button_image_set(EWL_BUTTON(menu_item),
                       PACKAGE_DATA_DIR "/images/redo.png", NULL);
- ewl_button_label_set(EWL_BUTTON(menu_item), gettext("Rotate Right"));
+ ewl_button_label_set(EWL_BUTTON(menu_item), S_("Menu|Actions|Rotate Right"));
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, rotate_right, NULL);
@@ -396,7 +397,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  button = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(button), 
 		      PACKAGE_DATA_DIR "/images/search.png", NULL);
- ewl_button_label_set(EWL_BUTTON(button), gettext("In"));
+ ewl_button_label_set(EWL_BUTTON(button), _("In"));
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
@@ -406,7 +407,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  button = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(button), 
 		      PACKAGE_DATA_DIR "/images/search.png", NULL);
- ewl_button_label_set(EWL_BUTTON(button), gettext("Out"));
+ ewl_button_label_set(EWL_BUTTON(button), _("Out"));
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
@@ -436,7 +437,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  button = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(button), 
 		      PACKAGE_DATA_DIR "/images/undo.png", NULL);
- ewl_button_label_set(EWL_BUTTON(button), gettext("Left"));
+ ewl_button_label_set(EWL_BUTTON(button), _("Left"));
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
@@ -446,7 +447,7 @@ void view_images(Ewl_Widget *w, void *event, void *data)
  button = ewl_button_new();
  ewl_button_image_set(EWL_BUTTON(button), 
 		      PACKAGE_DATA_DIR "/images/redo.png", NULL);
- ewl_button_label_set(EWL_BUTTON(button), gettext("Right"));
+ ewl_button_label_set(EWL_BUTTON(button), _("Right"));
  ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
  ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), button);
