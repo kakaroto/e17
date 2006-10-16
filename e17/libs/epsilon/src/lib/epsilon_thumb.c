@@ -293,7 +293,7 @@ epsilon_add(char *path, char *dst, int size, void *data)
 
 	if (!epsilon_server) {
 		if (!epsilon_client_connect()) {
-			if (debug) printf("Failed to connect to server\n");
+			fprintf(stderr, "Failed to connect to server\n");
 			exit(0);
 		}
 	}
