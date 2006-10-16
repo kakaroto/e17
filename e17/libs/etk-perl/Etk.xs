@@ -1565,7 +1565,7 @@ etk_filechooser_widget_current_folder_set(filechooser_widget, folder)
 	CurrentFolderSet=1
 
 Etk_Filechooser_Widget *
-etk_filechooser_widget_new(class)
+new(class)
 	SV * class
       ALIAS:
 	New=1
