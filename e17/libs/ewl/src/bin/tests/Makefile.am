@@ -35,6 +35,7 @@ SUBDIRS				= \
 	menu \
 	menubar \
 	modal \
+	mvc \
 	notebook \
 	paned \
 	password \

@@ -301,6 +301,7 @@ src/bin/tests/media/Makefile
 src/bin/tests/menu/Makefile
 src/bin/tests/menubar/Makefile
 src/bin/tests/modal/Makefile
+src/bin/tests/mvc/Makefile
 src/bin/tests/notebook/Makefile
 src/bin/tests/paned/Makefile
 src/bin/tests/password/Makefile
