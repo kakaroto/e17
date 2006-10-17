@@ -111,7 +111,7 @@ Ewl_Selection_Idx *ewl_mvc_selected_get(Ewl_MVC *mvc);
 void		 ewl_mvc_selected_rm(Ewl_MVC *mvc, int row, int column);
 
 int		 ewl_mvc_selected_count_get(Ewl_MVC *mvc);
-unsigned int	 ewl_mvc_is_selected(Ewl_MVC *mvc, int row, int column);
+unsigned int	 ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column);
 
 /* 
  * internal

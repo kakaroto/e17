@@ -331,10 +331,26 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, int srow, int scolumn,
 					 int erow, int ecolumn)
 {
 	Ewl_Selection *sel;
+	int tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	/* make sure the start comes before the end */
+	if (erow < srow)
+	{
+		tmp = erow;
+		erow = srow;
+		srow = tmp;
+	}
+
+	if (ecolumn < scolumn)
+	{
+		tmp = ecolumn;
+		ecolumn = scolumn;
+		scolumn = tmp;
+	}
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_SINGLE)
 	{
@@ -543,11 +559,41 @@ ewl_mvc_selected_rm(Ewl_MVC *mvc, int row, int column)
 int
 ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 {
+	int count = 0;
+	Ewl_Selection *sel;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mvc", mvc, 0);
 	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, 0);
 
-	DRETURN_INT(ecore_list_nodes(mvc->selected), DLEVEL_STABLE);
+	/* make sure we only return 1 or 0 for the single select case */
+	if (mvc->selection_mode == EWL_SELECTION_MODE_SINGLE)
+	{
+		if (ecore_list_nodes(mvc->selected))
+			DRETURN_INT(1, DLEVEL_STABLE);
+
+		DRETURN_INT(0, DLEVEL_STABLE);
+	}
+
+	ecore_list_goto_first(mvc->selected);
+	while ((sel = ecore_list_next(mvc->selected)))
+	{
+		if (sel->type == EWL_SELECTION_TYPE_INDEX)
+			count ++;
+		else if (sel->type == EWL_SELECTION_TYPE_RANGE)
+		{
+			Ewl_Selection_Range *r;
+			int rows = 0, columns = 0;
+
+			r = EWL_SELECTION_RANGE(sel);
+			rows = (r->end.row - r->start.row) + 1;
+			columns = (r->end.column - r->start.column) + 1;
+
+			count += (rows * columns);
+		}
+	}
+
+	DRETURN_INT(count, DLEVEL_STABLE);
 }
 
 /**
@@ -557,7 +603,7 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
  * @brief Checks if the given index is selected or not.
  */
 unsigned int
-ewl_mvc_is_selected(Ewl_MVC *mvc, int row, int column)
+ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column)
 {
 	Ewl_Selection *sel;
 	int ret = FALSE;
