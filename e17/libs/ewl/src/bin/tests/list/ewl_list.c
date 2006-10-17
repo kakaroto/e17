@@ -194,11 +194,13 @@ list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	Ewl_List *list;
 	Ecore_List *el;
+	Ewl_Selection_Idx *idx;
 
 	list = EWL_LIST(w);
 	el = ewl_mvc_data_get(EWL_MVC(list));
+	idx = ewl_mvc_selected_get(EWL_MVC(list));
 
-	ecore_list_goto_index(el, ewl_mvc_selected_get(EWL_MVC(list)));
+	ecore_list_goto_index(el, idx->row);
 	printf("Selected (%s)\n", (char *)ecore_list_current(el));
 }
 
