@@ -238,13 +238,15 @@ combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 				void *data __UNUSED__)
 {
 	Combo_Test_Data *d;
-	Ewl_Selection_Idx *idx;
+	int idx;
 
 	d = ewl_mvc_data_get(EWL_MVC(w));
 	idx = ewl_mvc_selected_get(EWL_MVC(w));
 
-	printf("value changed to %d (%s)\n", 
-			idx->row, d->data[idx->row]);
+	if (idx > -1)
+		printf("value changed to %d (%s)\n", idx, d->data[idx]);
+	else
+		printf("Nothing selected.\n");
 }
 
 static void

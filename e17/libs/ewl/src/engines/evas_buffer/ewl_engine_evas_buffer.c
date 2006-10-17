@@ -140,7 +140,6 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 	DCHECK_TYPE("emb", emb, EWL_EMBED_TYPE);
 
 	evas = emb->evas;
-	evas_output_method_set(evas, evas_render_method_lookup("buffer"));
 
 	info = evas_engine_info_get(evas);
 	if (!info) 
@@ -155,6 +154,7 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 	bufinfo->info.dest_buffer = realloc(bufinfo->info.dest_buffer,
 			bufinfo->info.dest_buffer_row_bytes * height);
 
+	emb->evas_window = bufinfo->info.dest_buffer;
 	evas_engine_info_set(evas, info);
 	evas_output_size_set(evas, width, height);
 	evas_output_viewport_set(evas, x, y, width, height);

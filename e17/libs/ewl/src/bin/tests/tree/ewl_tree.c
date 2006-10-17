@@ -39,7 +39,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(hbox);
 
 	tree = ewl_tree_new(COLS);
-	ewl_tree_mode_set(EWL_TREE(tree), EWL_SELECTION_MODE_SINGLE);
+	ewl_tree_mode_set(EWL_TREE(tree), EWL_TREE_MODE_SINGLE);
 	
 	button = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(button), "Number of selected rows");
