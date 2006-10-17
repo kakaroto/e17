@@ -1,0 +1,16 @@
+This file provides details of modules that are currently broken and will
+not compile.  These modules may be removed if they stay broken for a
+long time.
+
+
+calendar - Broke when the long advertised move from gadman to gadcon was
+completed and the gadman code was removed from E17.  The author plans to
+get back to it, but has no idea when.
+
+engage - Broke when the long advertised move from gadman to gadcon was
+completed and the gadman code was removed from E17.  The author plans to
+get back to it, but has no idea when.  Both the e_modules maintainers
+have expresed an interest in fixing it, but all three of us have this as
+a low priority task, and have many other higher priority tasks to take
+care of.  In the mean time, the standalone version is in misc/engage,
+and it will be kept limping along for now.
