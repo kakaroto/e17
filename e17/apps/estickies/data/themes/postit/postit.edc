@@ -45,7 +45,7 @@ collections {
    IMAGE("button_lock");
    IMAGE("button_stick");
    group {
-      name: "window";
+      name: "etk/window";
       data {
 	 item: "inset" "6 6 6 6";
       }
@@ -73,7 +73,7 @@ collections {
    }
    
    group {
-      name: "button";
+      name: "etk/button";
       min: 0 16;
       data {
 	 item: "inset" "1 1 1 1";
@@ -148,7 +148,7 @@ collections {
    }
    
    group {
-      name: "toggle_button";
+      name: "etk/toggle_button";
       min: 0 16;
       data {
 	 item: "inset" "1 1 1 1";
@@ -282,7 +282,7 @@ collections {
    }
    
    group {
-      name: "text_view";
+      name: "etk/text_view";
       min: 120 18;
       data {
 	 item: "inset" "0 0 11 11";
