@@ -12,7 +12,8 @@ bin_PROGRAMS = estickies
 estickies_INCLUDES = \
 stickies.h \
 conf.h \
-theme_chooser.h
+theme_chooser.h \
+about.h
 
 estickies_SOURCES = \
 stickies.c \
