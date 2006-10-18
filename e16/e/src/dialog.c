@@ -544,7 +544,7 @@ DialogEwinInit(EWin * ewin, void *ptr)
 void
 DialogArrange(Dialog * d, int resize)
 {
-   if (d->item)
+   if (resize)
       DialogItemsRealize(d);
 
    ICCCM_SetSizeConstraints(d->ewin, d->w, d->h, d->w, d->h, 0, 0, 1, 1,
@@ -577,6 +577,8 @@ DialogShowArranged(Dialog * d, int center)
 	EwinShow(ewin);
 	return;
      }
+
+   DialogItemsRealize(d);
 
    HintsSetWindowClass(d->win, d->name, "Enlightenment_Dialog");
 
@@ -1854,6 +1856,7 @@ DialogItemsRealize(Dialog * d)
    pad = ImageclassGetPadding(d->iclass);
    d->w = d->item->w + pad->left + pad->right;
    d->h = d->item->h + pad->top + pad->bottom;
+   EResizeWindow(d->win, d->w, d->h);
 }
 
 void
