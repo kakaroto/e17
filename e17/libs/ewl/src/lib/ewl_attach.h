@@ -89,7 +89,7 @@ struct Ewl_Attach
 	ewl_attach_get(EWL_WIDGET(w), EWL_ATTACH_TYPE_NAME)
 
 /**
- * @def ewl_attach_association_set(w, data)
+ * @def ewl_attach_widget_association_set(w, data)
  * Convenience method to attach data to a notebook item
  */
 #define ewl_attach_widget_association_set(w, data) \
@@ -97,7 +97,7 @@ struct Ewl_Attach
 			EWL_ATTACH_TYPE_WIDGET_ASSOCIATION, data)
 
 /**
- * @def ewl_attach_association_get(w)
+ * @def ewl_attach_widget_association_get(w)
  * Convenience method to get the data attached to a notebook item
  */
 #define ewl_attach_widget_association_get(w) \

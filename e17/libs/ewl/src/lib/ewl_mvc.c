@@ -3,7 +3,23 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+/* XXX There is a bit of behaviour that maybe considered a bug in here. If
+ * the user has a list of say 4 items. The user clicks on item 2 then
+ * control clicks on item one, then shift clicks on item 4. Item 2 will now
+ * be in the selected list twice. A rm _should_ remove both instances, but
+ * this could be confusing for the user. 
+ *
+ * The only solution is to do a selected_is for each index that is added to
+ * the selected list, and for each range, check if that range intersects
+ * anything else in the selected list. This could be slow and painful.
+ *
+ * Leaving it with the same item possibly in the list multiple times for
+ * now.
+ */
+
 static void ewl_mvc_selected_change_notify(Ewl_MVC *mvc);
+static void ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, 
+						int row, int column);
 
 /**
  * @param mvc: The MVC to initialize
@@ -144,9 +160,8 @@ ewl_mvc_data_set(Ewl_MVC *mvc, void *data)
 	mvc->data = data;
 	ewl_mvc_dirty_set(mvc, TRUE);
 
-	/* let the inheriting widget know that the data has changed */
-	if (mvc->cb.selected_change)
-		mvc->cb.selected_change(mvc);
+	/* new data, clear out the old selection list */
+	ewl_mvc_selected_clear(mvc);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -255,7 +270,10 @@ ewl_mvc_selected_clear(Ewl_MVC *mvc)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
-	
+
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN(DLEVEL_STABLE);	
+
 	ecore_list_clear(mvc->selected);
 	ewl_mvc_selected_change_notify(mvc);
 
@@ -278,7 +296,6 @@ ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list)
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	/* make sure we're selecting and received items to select */
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
 
@@ -314,6 +331,9 @@ ewl_mvc_selected_list_get(Ewl_MVC *mvc)
 	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
 	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
 
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);	
+
 	DRETURN_PTR(mvc->selected, DLEVEL_STABLE);
 }
 
@@ -337,6 +357,9 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, int srow, int scolumn,
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN(DLEVEL_STABLE);	
+
 	/* make sure the start comes before the end */
 	if (erow < srow)
 	{
@@ -353,29 +376,10 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, int srow, int scolumn,
 	}
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_SINGLE)
-	{
-		Ewl_Selection_Idx *si;
+		sel = ewl_mvc_selection_index_new(srow, scolumn);
 
-		si = NEW(Ewl_Selection_Idx, 1);
-		si->sel.type = EWL_SELECTION_TYPE_INDEX;
-		si->row = srow;
-		si->column = scolumn;
-
-		sel = EWL_SELECTION(si);
-	}
 	else
-	{
-		Ewl_Selection_Range *si;
-
-		si = NEW(Ewl_Selection_Range, 1);
-		si->sel.type = EWL_SELECTION_TYPE_RANGE;
-		si->start.row = srow;
-		si->start.column = scolumn;
-		si->end.row = erow;
-		si->end.column = ecolumn;
-
-		sel = EWL_SELECTION(si);
-	}
+		sel = ewl_mvc_selection_range_new(srow, scolumn, erow, ecolumn);
 
 	ecore_list_append(mvc->selected, sel);
 	ewl_mvc_selected_change_notify(mvc);
@@ -397,6 +401,9 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, int row, int column)
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN(DLEVEL_STABLE);	
+
 	ecore_list_clear(mvc->selected);
 	ewl_mvc_selected_add(mvc, row, column);
 
@@ -413,17 +420,16 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, int row, int column)
 void
 ewl_mvc_selected_add(Ewl_MVC *mvc, int row, int column)
 {
-	Ewl_Selection_Idx *si;
+	Ewl_Selection *si;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	si = NEW(Ewl_Selection_Idx, 1);
-	si->sel.type = EWL_SELECTION_TYPE_INDEX;
-	si->row = row;
-	si->column = column;
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN(DLEVEL_STABLE);
 
+	si = ewl_mvc_selection_index_new(row, column);
 	ecore_list_append(mvc->selected, si);
 	ewl_mvc_selected_change_notify(mvc);
 
@@ -445,13 +451,15 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
 	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
 	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
 
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 	ecore_list_goto_last(mvc->selected);
 	sel = ecore_list_current(mvc->selected);
 	if (!sel) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ret = NEW(Ewl_Selection_Idx, 1);
 	ret->sel.type = EWL_SELECTION_TYPE_INDEX;
-
 	if (sel->type == EWL_SELECTION_TYPE_INDEX)
 	{
 		Ewl_Selection_Idx *si;
@@ -488,9 +496,13 @@ ewl_mvc_selected_rm(Ewl_MVC *mvc, int row, int column)
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	/* XXX should this check for the same selected area bein in the list
-	 * twice? What if the user does a box select on the tree, then
-	 * another, larger, box select? */
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN(DLEVEL_STABLE);	
+
+	/* We walk the entire list. The reason for this is that you can have
+	 * the same cell in the list multiple times. This can happen if
+	 * they've single selected something, then did a multiselection over
+	 * top of it again. */
 	ecore_list_goto_first(mvc->selected);
 	while ((sel = ecore_list_current(mvc->selected)))
 	{
@@ -501,52 +513,28 @@ ewl_mvc_selected_rm(Ewl_MVC *mvc, int row, int column)
 			si = EWL_SELECTION_IDX(sel);
 			if ((si->row == row) && (si->column == column))
 			{
-				ecore_list_remove(mvc->selected);
-				break;
+				ewl_mvc_selected_rm_item(mvc, sel, row, column);
+				continue;
 			}
 		}
 		else
 		{
 			Ewl_Selection_Range *si;
-			int tmp;
 
 			si = EWL_SELECTION_RANGE(sel);
-				
-			/* verify the range has the top/left most
-			 * cell first */
-			if (si->end.row < si->start.row)
-			{
-				tmp = si->end.row;
-				si->end.row = si->start.row;
-				si->start.row = tmp;
-			}
-	
-			if (si->end.column < si->start.column)
-			{
-				tmp = si->end.column;
-				si->end.column = si->start.column;
-				si->start.column = tmp;
-			}
-
 			if ((si->start.row <= row) 
 					&& (si->end.row >= row)
 					&& (si->start.column <= column) 
 					&& (si->end.column >= column))
 			{
-				ecore_list_remove(mvc->selected);
-
-				DWARNING("Can't rm from range's yet\n");
-				/* find top cells */
-				/* find left cells */
-				/* find right cells */
-				/* find bottom cells */
-
-				break;
+				ewl_mvc_selected_rm_item(mvc, sel, row, column);
+				continue;
 			}
 		}
 
 		ecore_list_next(mvc->selected);
 	}
+	ewl_mvc_selected_change_notify(mvc);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -565,6 +553,9 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mvc", mvc, 0);
 	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, 0);
+
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN_INT(0, DLEVEL_STABLE);	
 
 	/* make sure we only return 1 or 0 for the single select case */
 	if (mvc->selection_mode == EWL_SELECTION_MODE_SINGLE)
@@ -612,6 +603,9 @@ ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column)
 	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
 	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, FALSE);
 
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);	
+
 	ecore_list_goto_first(mvc->selected);
 	while ((sel = ecore_list_next(mvc->selected)))
 	{
@@ -628,27 +622,9 @@ ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column)
 		}
 		else
 		{
-			int tmp;
 			Ewl_Selection_Range *si;
 
 			si = EWL_SELECTION_RANGE(sel);
-				
-			/* verify the range has the top/left most
-			 * cell first */
-			if (si->end.row < si->start.row)
-			{
-				tmp = si->end.row;
-				si->end.row = si->start.row;
-				si->start.row = tmp;
-			}
-	
-			if (si->end.column < si->start.column)
-			{
-				tmp = si->end.column;
-				si->end.column = si->start.column;
-				si->start.column = tmp;
-			}
-
 			if ((si->start.row <= row) 
 					&& (si->end.row >= row)
 					&& (si->start.column <= column) 
@@ -661,6 +637,112 @@ ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column)
 	}
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
+}
+
+Ewl_Selection *
+ewl_mvc_selection_index_new(int row, int column)
+{
+	Ewl_Selection_Idx *sel;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	sel = NEW(Ewl_Selection_Idx, 1);
+	sel->sel.type = EWL_SELECTION_TYPE_INDEX;
+	sel->row = row;
+	sel->column = column;
+
+	DRETURN_PTR(sel, DLEVEL_STABLE);
+}
+
+Ewl_Selection *
+ewl_mvc_selection_range_new(int srow, int scolumn, int erow, int ecolumn)
+{
+	Ewl_Selection_Range *sel;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	sel = NEW(Ewl_Selection_Range, 1);
+	sel->sel.type = EWL_SELECTION_TYPE_RANGE;
+	sel->start.row = srow;
+	sel->start.column = scolumn;
+	sel->end.row = erow;
+	sel->end.column = ecolumn;
+
+	DRETURN_PTR(sel, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param mvc: The mvc to work with
+ * @param row: The row to add
+ * @param column: The column to add
+ * @return Returns no value
+ * @brief Handles the click of the given cell
+ */
+void
+ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
+{
+	unsigned int modifiers;
+	int multi_select = FALSE;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	if (ewl_mvc_selection_mode_get(mvc) == EWL_SELECTION_MODE_MULTI)
+		multi_select = TRUE;
+
+	modifiers = ewl_ev_modifiers_get();
+        if (multi_select && (modifiers & EWL_KEY_MODIFIER_SHIFT))
+	{
+		/* is this the first click? */
+		if (ewl_mvc_selected_count_get(mvc) > 0)
+		{
+			Ewl_Selection *sel;
+			int srow, scolumn;
+
+			/* A shift will add the current position into a 
+			 * range with the last selected item. If the 
+			 * last selected is a range, it will take the 
+			 * start position */
+			sel = ecore_list_goto_last(mvc->selected);
+			if (sel->type == EWL_SELECTION_TYPE_INDEX)
+			{
+				Ewl_Selection_Idx *idx;
+
+				idx = EWL_SELECTION_IDX(sel);
+				srow = idx->row;
+				scolumn = idx->column;
+			}
+			else
+			{
+				Ewl_Selection_Range *idx;
+
+				idx = EWL_SELECTION_RANGE(sel);
+				srow = idx->start.row;
+				scolumn = idx->start.column;
+			}
+
+			/* remove the original and add the extended one to
+			 * the list */
+			ecore_list_remove(mvc->selected);
+			ewl_mvc_selected_range_add(mvc, srow, scolumn,
+							row, column);
+		}
+		else
+			ewl_mvc_selected_set(mvc, row, column);
+	}
+        else if (multi_select && (modifiers & EWL_KEY_MODIFIER_CTRL))
+        {
+                if (ewl_mvc_selected_is(mvc, row, column))
+                        ewl_mvc_selected_rm(mvc, row, column);
+                else
+                        ewl_mvc_selected_add(mvc, row, column);
+        }
+        else
+                ewl_mvc_selected_set(mvc, row, column);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -720,6 +802,123 @@ ewl_mvc_selected_change_notify(Ewl_MVC *mvc)
 
 	/* notify the app */
 	ewl_callback_call(EWL_WIDGET(mvc), EWL_CALLBACK_VALUE_CHANGED);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/* This will remove @a sel from the mvc widget @a mvc. Then, if @a sel is a
+ * range selection it will remove @a row/@a column from the given selection
+ * and add up to 4 new ranges into the @a mvc widget.
+ * 
+ * The range remove works like this:
+ *   - first allocate as much space off the top to the first range.
+ *     - this will go from the top left corner, to the selected (row - 1)
+ *       and far right edge.
+ *   - second, from the deletion row, far left to bottom row and (deletion column - 1) 
+ *     make this the second range
+ *   - third, from the deletoin row, (deletion column + 1) to the bottom
+ *     right corner this is the third range
+ *   - fourth, from deletion row + 1, deletion column to bottom row,
+ *     deletion column, this is the fourth range
+ * 
+ * If a range would be only one item, we make it an Ewl_Selection_Index as
+ * needed. Steps can be skipped if they would result in a zero item range.
+ */
+static void
+ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
+{
+	Ewl_Selection_Range *si;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_PARAM_PTR("sel", sel);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	ecore_list_goto(mvc->selected, sel);
+	ecore_list_remove(mvc->selected);
+
+	/* done if this is an index */
+	if (sel->type != EWL_SELECTION_TYPE_RANGE)
+		DRETURN(DLEVEL_STABLE);
+
+	si = EWL_SELECTION_RANGE(sel);
+
+	/* find top cells */
+	if (row > si->start.row)
+	{
+		Ewl_Selection *n;
+		int erow;
+
+		erow = (row - 1);
+
+		/* one item left in the grouping */
+		if ((((si->start.row - erow) + 1) * 
+				((si->start.column - si->end.column) + 1)) == 1)
+			n = ewl_mvc_selection_index_new(si->start.row,
+							si->start.column);
+
+		else
+			n = ewl_mvc_selection_range_new(si->start.row,
+							si->start.column,
+							erow, si->end.column);
+		
+		ecore_list_append(mvc->selected, n);
+	}
+
+	/* find left cells */
+	if (column > si->start.column)
+	{
+		Ewl_Selection *n;
+		int ecolumn;
+
+		ecolumn = (column - 1);
+		if ((((si->end.row - row) + 1) * 
+				((si->start.column - ecolumn) + 1)) == 1)
+			n = ewl_mvc_selection_index_new(row, si->start.column);
+
+		else
+			n = ewl_mvc_selection_range_new(row, si->start.column,
+							si->end.row, ecolumn);
+
+		ecore_list_append(mvc->selected, n);
+	}
+
+	/* find right cells */
+	if (column < si->end.column)
+	{
+		Ewl_Selection *n;
+		int scolumn;
+
+		scolumn = column + 1;
+		if ((((si->end.row - row) + 1) * 
+				((scolumn - si->end.column) + 1)) == 1)
+			n = ewl_mvc_selection_index_new(row, si->end.column);
+
+		else
+			n = ewl_mvc_selection_range_new(row, scolumn,
+							si->end.row,
+							si->end.column);
+
+		ecore_list_append(mvc->selected, n);
+	}
+
+	/* find bottom cells */
+	if (row < si->end.row)
+	{
+		Ewl_Selection *n;
+		int srow;
+
+		srow = row + 1;
+		if ((((srow - si->end.row) + 1) * 
+				((column - column) + 1)) == 1)
+			n = ewl_mvc_selection_index_new(si->end.row, column);
+
+		else
+			n = ewl_mvc_selection_range_new(srow, column,
+							si->end.row, column);
+
+		ecore_list_append(mvc->selected, n);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

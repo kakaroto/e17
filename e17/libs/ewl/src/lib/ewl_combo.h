@@ -60,8 +60,6 @@ void ewl_combo_cb_decrement_clicked(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_increment_clicked(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_item_clicked(Ewl_Widget *w, void *ev, void *data);
 
-void ewl_combo_cb_selected_change(Ewl_MVC *mvc);
-
 /**
  * @}
  */

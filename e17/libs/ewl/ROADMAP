@@ -1,18 +1,21 @@
 EWL ROADMAP
 ===========
 
-0.0.5 
+0.6.0 
 -----
-- either the table/grid gets finished or tree2 is done and is
-   flexible enough to do that work
+- tree2 complete
+- remove imenu. 
+  - the window creation call should be picked up by the engine if it can't
+    handle multiple windows and return evas buffer engines to draw into. 
+  - this will handle imenu, combos, tooltips. anything that requires a new
+    window.
 - fixup the theme changing code. (Unrealize/realize causing some sizing
   changes that they shouldn't)
 - fixup submenu/menu interaction
-- fixup imenu to work like menu
+- better notebook theme
 
-
-0.0.6
+0.7.0
 -----
-- tree2
-- finish ewl_freebox and ewl_icon and port iconbox to use them
+- finish ewl_freebox and ewl_icon and remove iconbox
+- filedialog able to return directories along with files
 

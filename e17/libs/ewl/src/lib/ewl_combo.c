@@ -3,6 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static void ewl_combo_cb_selected_change(Ewl_MVC *mvc);
+
 /**
  * @return Returns a pointer to a new combo on success, NULL on failure.
  * @brief Create a new combo box
@@ -275,13 +277,13 @@ ewl_combo_cb_item_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	combo = data;
 
 	i = ewl_container_child_index_get(EWL_CONTAINER(combo->popup), w);
-	ewl_mvc_selected_set(EWL_MVC(combo), i, 0);
+	ewl_mvc_selected_set(EWL_MVC(combo), i, -1);
 	ewl_combo_cb_increment_clicked(NULL, NULL, data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
+static void
 ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 {
 	Ewl_View *view;
@@ -314,7 +316,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 		view->assign(combo->header, 
 				model->fetch(mvc_data, idx->row, 0));
 	}
-	else
+	else if (view->header_fetch)
 		combo->header = view->header_fetch(mvc_data, -1);
 
 	if (combo->header)

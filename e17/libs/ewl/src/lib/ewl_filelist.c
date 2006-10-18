@@ -605,6 +605,12 @@ ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl)
 	DRETURN_INT(fl->scroll_flags.h, DLEVEL_STABLE);
 }
 
+/**
+ * @param fl: The filelist to work with
+ * @param path: The path to get the icon for
+ * @return Returns the stock icon for the given file
+ * @brief Retrieves the stock icon for the given file
+ */
 const char *
 ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path)
 {

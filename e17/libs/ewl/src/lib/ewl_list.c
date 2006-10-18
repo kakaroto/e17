@@ -123,6 +123,10 @@ ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	if (ewl_mvc_selection_mode_get(EWL_MVC(c)) ==
+					EWL_SELECTION_MODE_NONE)
+		DRETURN(DLEVEL_STABLE);
+
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, 
 				ewl_list_cb_item_clicked, c);
 
@@ -140,7 +144,7 @@ ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 void
 ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
-	Ewl_List *list;
+	int row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -148,10 +152,8 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 	DCHECK_TYPE("data", data, EWL_LIST_TYPE);
 
-	list = data;
-
-	ewl_mvc_selected_set(EWL_MVC(list), 
-		ewl_container_child_index_get(EWL_CONTAINER(list), w), 0);
+	row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
+	ewl_mvc_handle_click(EWL_MVC(data), row, -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -173,5 +175,4 @@ ewl_list_cb_selected_change(Ewl_MVC *mvc)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 

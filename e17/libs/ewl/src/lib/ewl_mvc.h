@@ -27,8 +27,8 @@ struct Ewl_Selection_Idx
 {
 	Ewl_Selection sel;
 
-	unsigned int row;
-	unsigned int column;
+	int row;
+	int column;
 };
 
 #define EWL_SELECTION_RANGE(x) ((Ewl_Selection_Range *)x)
@@ -39,8 +39,8 @@ struct Ewl_Selection_Range
 
 	struct
 	{
-		unsigned int row;
-		unsigned int column;
+		int row;
+		int column;
 	} start,
 	  end;
 };
@@ -113,6 +113,10 @@ void		 ewl_mvc_selected_rm(Ewl_MVC *mvc, int row, int column);
 int		 ewl_mvc_selected_count_get(Ewl_MVC *mvc);
 unsigned int	 ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column);
 
+Ewl_Selection	*ewl_mvc_selection_index_new(int row, int column);
+Ewl_Selection	*ewl_mvc_selection_range_new(int srow, int scolumn,
+						int erow, int ecolumn);
+
 /* 
  * internal
  */
@@ -120,6 +124,12 @@ void		 ewl_mvc_view_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 void		 ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 
 void		 ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+
+void		 ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column);
+
+/**
+ * @}
+ */
 
 #endif
 

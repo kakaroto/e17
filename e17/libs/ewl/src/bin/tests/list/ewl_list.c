@@ -22,11 +22,13 @@ static int create_test(Ewl_Container *win);
 
 static void *list_test_data_setup(void);
 static void list_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
+static void list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data);
 
 static void list_test_assign_set(Ewl_Widget *w, void *data);
 static void *list_test_data_fetch(void *data, unsigned int row, 
 						unsigned int column);
 static int list_test_data_count_get(void *data);
+static void list_cb_select_none(Ewl_Widget *w, void *ev, void *data);
 
 void 
 test_info(Ewl_Test *test)
@@ -52,7 +54,7 @@ create_test(Ewl_Container *box)
 
 	/* create a list using an ecore_list of strings of labels */
 	o = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(o), "Label List");
+	ewl_border_text_set(EWL_BORDER(o), "Label List (single select)");
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 
@@ -75,6 +77,22 @@ create_test(Ewl_Container *box)
 					list_cb_value_changed, NULL);
 	ewl_widget_show(list);
 
+	/* create a list using an ecore_list of strings of labels */
+	o = ewl_border_new();
+	ewl_border_text_set(EWL_BORDER(o), "Label List (multi select)");
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_widget_show(o);
+
+	list = ewl_list_new();
+	ewl_container_child_append(EWL_CONTAINER(o), list);
+	ewl_box_orientation_set(EWL_BOX(list), EWL_ORIENTATION_HORIZONTAL);
+	ewl_mvc_model_set(EWL_MVC(list), model);
+	ewl_mvc_view_set(EWL_MVC(list), view);
+	ewl_mvc_data_set(EWL_MVC(list), str_data);
+	ewl_mvc_selection_mode_set(EWL_MVC(list), EWL_SELECTION_MODE_MULTI);
+	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED, 
+					list_cb_multi_value_changed, NULL);
+	ewl_widget_show(list);
 
 	/* Create a list from a custom array with a custom assign on the
 	 * view */
@@ -98,6 +116,9 @@ create_test(Ewl_Container *box)
 	ewl_mvc_model_set(EWL_MVC(list), model);
 	ewl_mvc_view_set(EWL_MVC(list), view);
 	ewl_mvc_data_set(EWL_MVC(list), data);
+	ewl_mvc_selection_mode_set(EWL_MVC(list), EWL_SELECTION_MODE_NONE);
+	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED,
+					list_cb_select_none, NULL);
 	ewl_widget_show(list);
 
 
@@ -110,6 +131,9 @@ create_test(Ewl_Container *box)
 
 	list = ewl_list_new();
 	ewl_container_child_append(EWL_CONTAINER(o), list);
+	ewl_mvc_selection_mode_set(EWL_MVC(list), EWL_SELECTION_MODE_NONE);
+	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED,
+					list_cb_select_none, NULL);
 	ewl_widget_show(list);
 
 	for (i = 0; strs[i]; i++)
@@ -202,6 +226,51 @@ list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 
 	ecore_list_goto_index(el, idx->row);
 	printf("Selected (%s)\n", (char *)ecore_list_current(el));
+}
+
+static void
+list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data)
+{
+	Ecore_List *selected, *el;
+	Ewl_Selection *sel;
+
+	printf("Selected:\n");
+
+	el = ewl_mvc_data_get(EWL_MVC(w));
+	selected = ewl_mvc_selected_list_get(EWL_MVC(w));
+
+	ecore_list_goto_first(selected);
+	while ((sel = ecore_list_next(selected)))
+	{
+		if (sel->type == EWL_SELECTION_TYPE_INDEX)
+		{
+			Ewl_Selection_Idx *idx;
+
+			idx = EWL_SELECTION_IDX(sel);
+			ecore_list_goto_index(el, idx->row);
+			printf("    %d (%s)\n", idx->row, 
+					(char *)ecore_list_current(el));
+		}
+		else
+		{
+			Ewl_Selection_Range *idx;
+			int i;
+
+			idx = EWL_SELECTION_RANGE(sel);
+			for (i = idx->start.row; i <= idx->end.row; i++)
+			{
+				ecore_list_goto_index(el, i);
+				printf("    %d (%s)\n", i, 
+					(char *)ecore_list_current(el));
+			}
+		}
+	}
+}
+
+static void
+list_cb_select_none(Ewl_Widget *w, void *ev, void *data)
+{
+	printf("ERROR, shouldn't get selection changed callbacks.\n");
 }
 
 

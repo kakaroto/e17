@@ -999,8 +999,10 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
 
 /**
  * @param embed: the embed where the selection data event is to occur
+ * @param type: The type to feed
  * @param data: a pointer to the data received that generated the event
  * @param len: length of the data that generated the event
+ * @param format: The bit format of the data 
  * @return Returns no value.
  * @brief Sends the event for selection data received into an embed.
  */

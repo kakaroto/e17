@@ -148,6 +148,7 @@ ewl_config_destroy(Ewl_Config *cfg)
  * @param cfg: The Ewl_Config to work with
  * @param k: the key to set in the configuration database
  * @param v: the string value that will be associated with the key
+ * @param state: The state of the key being set, persistent or transient
  * @return Returns no value.
  * @brief set the value of key to the specified string
  *
@@ -186,6 +187,7 @@ ewl_config_string_get(Ewl_Config *cfg, const char *k)
  * @param cfg: The Ewl_Config to work with
  * @param k: the key to set in the configuration database
  * @param v: the integer value that will be associated with the key
+ * @param state: The state of the key being set, persistent or transient
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Set the value of key to the specified integer
  *
@@ -233,6 +235,7 @@ ewl_config_int_get(Ewl_Config *cfg, const char *k)
  * @param cfg: The Ewl_Config to work with
  * @param k: the key to set in the configuration database
  * @param v: the float value that will be associated with the key
+ * @param state: The state of the key being set, persistent or transient
  * @return Returns no value
  * @brief Set the value of key to the specified float
  *
@@ -283,6 +286,7 @@ ewl_config_float_get(Ewl_Config *cfg, const char *k)
  * @param g: the green value that will be associated with the key
  * @param b: the blue value that will be associated with the key
  * @param a: the alpha value that will be associated with the key
+ * @param state: The state of the key being set, persistent or transient
  * @return Returns no value
  * @brief Set the value of key to the specified color
  *

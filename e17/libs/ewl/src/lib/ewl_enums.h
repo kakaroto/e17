@@ -724,30 +724,55 @@ enum Ewl_Rotate
  */
 typedef enum Ewl_Rotate Ewl_Rotate;
 
+/**
+ * @enum Ewl_Selection_Type
+ * The selection type enum
+ */
 enum Ewl_Selection_Type
 {
-	EWL_SELECTION_TYPE_INDEX,
-	EWL_SELECTION_TYPE_RANGE
+	EWL_SELECTION_TYPE_INDEX,	/**< Single index */
+	EWL_SELECTION_TYPE_RANGE	/**< Range of indices */
 };
+
+/**
+ * Ewl_Selection_Type
+ */
 typedef enum Ewl_Selection_Type Ewl_Selection_Type;
 
+/**
+ * @enum Ewl_Selection_Mode
+ * The slecetion mode enum
+ */
 enum Ewl_Selection_Mode
 {
-	EWL_SELECTION_MODE_NONE,
-	EWL_SELECTION_MODE_SINGLE,
-	EWL_SELECTION_MODE_MULTI
+	EWL_SELECTION_MODE_NONE,	/**< No selection allowed */
+	EWL_SELECTION_MODE_SINGLE,	/**< Single select only */
+	EWL_SELECTION_MODE_MULTI	/**< Multi select mode */
 };
+
+/**
+ * Ewl_Selection_Mode
+ */
 typedef enum Ewl_Selection_Mode Ewl_Selection_Mode;
 
+/**
+ * @enum Ewl_Tree_Selection_Type
+ * The tree selection type 
+ */
 enum Ewl_Tree_Selection_Type
 {
-	EWL_TREE_SELECT_ROW,
-	EWL_TREE_SELECT_CELL
+	EWL_TREE_SELECTION_TYPE_ROW,	/**< Row selection */
+	EWL_TREE_SELECTION_TYPE_CELL	/**< Cell selection */
 };
+
+/**
+ * Ewl_Tree_Selection_Type
+ */
 typedef enum Ewl_Tree_Selection_Type Ewl_Tree_Selection_Type;
 
 /**
  * @}
  */ 
-#endif				/* __EWL_ENUMS_H__ */
+
+#endif
 

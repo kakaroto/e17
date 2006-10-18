@@ -90,7 +90,7 @@ struct Ewl_Tree2
 	Ecore_List *columns;     /**< The tree columns. */
 	int *rowcache;           /**< Cache of row sizes */
 
-	Ewl_Selection_Mode mode;	 /**< The mode of the tree */
+	Ewl_Tree_Selection_Type type;	 /**< The selection type of the tree */
 
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
@@ -138,9 +138,9 @@ void		 ewl_tree2_headers_visible_set(Ewl_Tree2 *tree,
 					       unsigned char visible);
 unsigned int	 ewl_tree2_headers_visible_get(Ewl_Tree2 *tree);
 
-Ewl_Selection_Mode ewl_tree2_selection_mode_get(Ewl_Tree2 *tree);
-void 		 ewl_tree2_selection_mode_set(Ewl_Tree2 *tree, 
-						Ewl_Selection_Mode mode);
+Ewl_Tree_Selection_Type ewl_tree2_selection_type_get(Ewl_Tree2 *tree);
+void 		 ewl_tree2_selection_type_set(Ewl_Tree2 *tree, 
+						Ewl_Tree_Selection_Type type);
 
 void		 ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, unsigned int fixed);
 unsigned int	 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);

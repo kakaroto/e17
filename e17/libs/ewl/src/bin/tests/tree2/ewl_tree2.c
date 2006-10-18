@@ -35,6 +35,8 @@ static int tree2_test_data_count_get(void *data);
 static void ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data);
+static void tree2_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
+static void tree2_cb_select_mode_change(Ewl_Widget *w, void *ev, void *data);
 
 void 
 test_info(Ewl_Test *test)
@@ -74,7 +76,10 @@ create_test(Ewl_Container *box)
 	tree = ewl_tree2_new();
 	ewl_container_child_append(EWL_CONTAINER(box), tree);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
+	ewl_callback_append(tree, EWL_CALLBACK_VALUE_CHANGED,
+					tree2_cb_value_changed, NULL);
 	ewl_mvc_data_set(EWL_MVC(tree), data);
+	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_MULTI);
 	ewl_widget_name_set(tree, "tree");
 	ewl_widget_show(tree);
 
@@ -132,6 +137,13 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 				ewl_tree2_cb_set_rows_clicked, NULL);
+	ewl_widget_show(o);
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Row select");
+	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+				tree2_cb_select_mode_change, NULL);
 	ewl_widget_show(o);
 
 	return 1;
@@ -349,5 +361,59 @@ ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 }
 
+static void
+tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	Ecore_List *selected;
+	Ewl_Selection *sel;
 
+	printf("Selected:\n");
+	selected = ewl_mvc_selected_list_get(EWL_MVC(w));
+	ecore_list_goto_first(selected);
+	while ((sel = ecore_list_next(selected)))
+	{
+		if (sel->type == EWL_SELECTION_TYPE_INDEX)
+		{
+			Ewl_Selection_Idx *idx;
+
+			idx = EWL_SELECTION_IDX(sel);
+			printf("    %d %d\n", idx->row, idx->column);
+		}
+		else
+		{
+			Ewl_Selection_Range *idx;
+			int i, k;
+
+			idx = EWL_SELECTION_RANGE(sel);
+			for (i = idx->start.row; i <= idx->end.row; i++)
+			{
+				for (k = idx->start.column; k <=
+							idx->end.column; k++)
+					printf("    %d %d\n", i, k);
+			}
+		}
+	}
+}
+
+static void
+tree2_cb_select_mode_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
+{
+	Ewl_Widget *tree;
+
+	tree = ewl_widget_name_find("tree");
+	if (!strcmp(ewl_button_label_get(EWL_BUTTON(w)), "Row select"))
+	{
+		ewl_button_label_set(EWL_BUTTON(w), "Cell select");
+		ewl_tree2_selection_type_set(EWL_TREE2(tree),
+					EWL_TREE_SELECTION_TYPE_ROW);
+	}
+	else
+	{
+		ewl_button_label_set(EWL_BUTTON(w), "Row select");
+		ewl_tree2_selection_type_set(EWL_TREE2(tree),
+					EWL_TREE_SELECTION_TYPE_CELL);
+	}
+}
 

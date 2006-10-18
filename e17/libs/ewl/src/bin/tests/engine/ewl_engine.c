@@ -8,7 +8,7 @@
  * @section text_tut Tutorial
  *
  * The embed allows for overriding the engine used for rendering and display
- * so that an application have multiple target engines. This is most commonly
+ * so that an application can have multiple target engines. This is most commonly
  * used through the window layer as the embed itself does not create windows in
  * the display system. The reason it is not implemented at the window level is
  * that the embed will need the correct engine information in order to interact

@@ -154,7 +154,8 @@ ewl_dnd_provided_types_set(Ewl_Widget *w, const char **types)
 
 /**
  * @param w: The widget to test for an provided type
- * @param w: The mimetype to test for provideance on a specific widget
+ * @param type: The mimetype to test for provideance on a specific widget
+ * @return Returns TRUE if the types contains the given type, FALSE otherwise
  * @brief: Verifies the specified widget provides the given mimetype
  */
 int
@@ -240,7 +241,8 @@ ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types)
 
 /**
  * @param w: The widget to test for an accepted type
- * @param w: The mimetype to test for acceptance on a specific widget
+ * @param type: The mimetype to test for acceptance on a specific widget
+ * @return Returns TRUE if the widget accepts the given type, FALSE otherwise
  * @brief: Verifies the specified widget accepts the given mimetype
  */
 int
