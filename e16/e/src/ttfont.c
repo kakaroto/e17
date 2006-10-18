@@ -26,10 +26,7 @@
 #include "tclass.h"
 #include <Imlib2.h>
 
-struct _efont
-{
-   Imlib_Font         *face;
-};
+#if FONT_TYPE_IFT
 
 static void
 EFonts_Init(void)
@@ -48,56 +45,12 @@ EFonts_Init(void)
 #endif
 }
 
-#if 0				/* Unused - Remove? */
-void
-EFont_draw_string(Win win, Drawable draw, Efont * f, int x, int y,
-		  int r, int g, int b, const char *text)
-{
-   EImage             *im;
-   int                 w, h, ascent, descent;
-
-   Efont_extents(f, text, &ascent, &descent, &w, NULL, NULL, NULL, NULL);
-   h = ascent + descent;
-
-   im = EImageGrabDrawable(draw, None, x, y - ascent, w, h, 0);
-   imlib_context_set_image(im);
-   imlib_context_set_color(r, g, b, 255);
-   imlib_context_set_font(f->face);
-   imlib_text_draw(0, 0, text);
-   EImageRenderOnDrawable(im, win, draw, x, y - ascent, w, h, 0);
-   EImageFree(im);
-}
-#endif
-
-void
-EFont_draw_string(EImage * im, Efont * f, int x, int y,
-		  int r, int g, int b, const char *text)
-{
-   imlib_context_set_image(im);
-   imlib_context_set_color(r, g, b, 255);
-   imlib_context_set_font(f->face);
-   imlib_text_draw(x, y - imlib_get_font_ascent(), text);
-}
-
-void
-Efont_free(Efont * f)
-{
-   if (!f)
-      return;
-
-   imlib_context_set_font(f->face);
-   imlib_free_font();
-
-   Efree(f);
-}
-
-Efont              *
+static EFont       *
 Efont_load(const char *file, int size)
 {
    static char         ttfont_path_set = 0;
    char                s[4096];
-   Efont              *f;
-   Imlib_Font         *ff;
+   EFont              *f;
 
    if (!ttfont_path_set)
      {
@@ -106,40 +59,123 @@ Efont_load(const char *file, int size)
      }
 
    Esnprintf(s, sizeof(s), "%s/%d", file, size);
-   ff = imlib_load_font(s);
-   if (ff == NULL)
-      return NULL;
-
-   f = Emalloc(sizeof(Efont));
-   f->face = ff;
+   f = imlib_load_font(s);
 
    return f;
 }
 
-void
-Efont_extents(Efont * f, const char *text, int *font_ascent_return,
-	      int *font_descent_return, int *width_return,
-	      int *max_ascent_return, int *max_descent_return,
-	      int *lbearing_return __UNUSED__, int *rbearing_return __UNUSED__)
+static void
+Efont_free(EFont * f)
 {
-   int                 w, h;
-
-   if (!f)
-      return;
-
-   imlib_context_set_font(f->face);
-   imlib_get_text_advance(text, &w, &h);
-   if (width_return)
-      *width_return = w;
-   if (font_ascent_return)
-      *font_ascent_return = imlib_get_font_ascent();
-   if (font_descent_return)
-      *font_descent_return = imlib_get_font_descent();
-   if (max_ascent_return)
-      *max_ascent_return = imlib_get_maximum_font_ascent();
-   if (max_descent_return)
-      *max_descent_return = imlib_get_maximum_font_descent();
+   imlib_context_set_font(f);
+   imlib_free_font();
 }
+
+static void
+Efont_extents(EFont * f, const char *text, int len __UNUSED__,
+	      int *width, int *height, int *ascent)
+{
+   int                 h, asc, dsc;
+
+   imlib_context_set_font(f);
+   imlib_get_text_advance(text, width, &h);
+   asc = imlib_get_font_ascent();
+   dsc = imlib_get_font_descent();
+   *height = asc + dsc;
+   *ascent = asc;
+}
+
+static void
+EFont_draw_string(EImage * im, EFont * f, int x, int y,
+		  int r, int g, int b, const char *text)
+{
+   imlib_context_set_image(im);
+   imlib_context_set_color(r, g, b, 255);
+   imlib_context_set_font(f);
+   imlib_text_draw(x, y - imlib_get_font_ascent(), text);
+}
+
+extern const FontOps FontOpsIft;
+
+/*
+ * Imlib2/FreeType
+ */
+extern const FontOps FontOpsIft;
+
+static int
+IftLoad(TextState * ts)
+{
+   char                s[4096], *s2, *ss;
+
+   s2 = Estrdup(ts->fontname);
+   if (!s2)
+      return -1;
+   ss = strchr(s2, '/');
+   if (ss)
+     {
+	*ss++ = '\0';
+	Esnprintf(s, sizeof(s), "%s.ttf", s2);
+	ts->f.ift.font = Efont_load(s2, atoi(ss));
+     }
+   Efree(s2);
+
+   if (!ts->f.ift.font)
+      return -1;
+
+   ts->need_utf8 = 1;
+   ts->type = FONT_TYPE_IFT;
+   ts->ops = &FontOpsIft;
+   return 0;
+}
+
+static void
+IftUnload(TextState * ts)
+{
+   Efont_free(ts->f.ift.font);
+}
+
+static void
+IftTextSize(TextState * ts, const char *text, int len,
+	    int *width, int *height, int *ascent)
+{
+   Efont_extents(ts->f.ift.font, text, len, width, height, ascent);
+}
+
+static void
+IftTextDraw(TextState * ts, FontDrawContext * fdc, int x, int y,
+	    const char *text, int len __UNUSED__)
+{
+   EFont_draw_string(fdc->im, ts->f.ift.font, x, y, fdc->r, fdc->g, fdc->b,
+		     text);
+}
+
+static void
+IftFdcInit(TextState * ts __UNUSED__, FontDrawContext * fdc __UNUSED__,
+	   Win win __UNUSED__)
+{
+}
+
+static void
+IftFdcSetColor(TextState * ts __UNUSED__, FontDrawContext * fdc, XColor * xc)
+{
+   EGetColor(xc, &(fdc->r), &(fdc->g), &(fdc->b));
+}
+
+#if 0				/* Well... */
+static void
+IftTextMangle(TextState * ts, char **ptext, int *pw, int textwidth_limit)
+{
+   ts = NULL;
+   ptext = NULL;
+   pw = NULL;
+   textwidth_limit = 0;
+}
+#endif
+
+const FontOps       FontOpsIft = {
+   IftLoad, IftUnload, IftTextSize, NULL, IftTextDraw,
+   IftFdcInit, IftFdcSetColor
+};
 
 #if TEST_TTFONT
 #include <time.h>
@@ -196,3 +232,5 @@ EGetColor(const XColor * pxc, int *pr, int *pg, int *pb)
 }
 
 #endif
+
+#endif /* FONT_TYPE_IFT */

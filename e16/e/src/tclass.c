@@ -55,12 +55,8 @@ TextstateCreate(void)
    if (!ts)
       return NULL;
 
-   ts->fontname = NULL;
    ts->style.mode = MODE_WRAP_CHAR;
    ts->style.orientation = FONT_TO_RIGHT;
-   ts->efont = NULL;
-   ts->xfont = NULL;
-   ts->xfontset = 0;
 
    return ts;
 }
@@ -70,10 +66,8 @@ TextStateDestroy(TextState * ts)
 {
    if (ts->fontname)
       Efree(ts->fontname);
-   if (ts->xfont)
-      XFreeFont(disp, ts->xfont);
-   if (ts->efont)
-      Efont_free(ts->efont);
+   if (ts->ops)
+      ts->ops->Destroy(ts);
    Efree(ts);
 }
 
@@ -440,7 +434,7 @@ TextclassConfigLoad(FILE * fs)
 	     break;
 	  case TEXT_EFFECT:
 	     if (ts)
-		ts->effect = atoi(s2);
+		ts->style.effect = atoi(s2);
 	     break;
 	  case TEXT_FG_COL:
 	     if (ts)

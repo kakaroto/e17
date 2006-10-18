@@ -26,8 +26,31 @@
 #include "tclass.h"
 #include "xwin.h"
 
-#define ExTextExtents XmbTextExtents
-#define ExDrawString XmbDrawString
+#if FONT_TYPE_IFT
+extern const FontOps FontOpsIft;
+#endif
+
+static              GC
+_get_gc(Win win)
+{
+   static GC           gc = None;
+   static Visual      *last_vis = NULL;
+   Visual             *vis;
+
+   vis = WinGetVisual(win);
+   if (vis != last_vis)
+     {
+	if (gc)
+	   EXFreeGC(gc);
+	gc = None;
+	last_vis = vis;
+     }
+
+   if (!gc)
+      gc = EXCreateGC(WinGetXwin(win), 0, NULL);
+
+   return gc;
+}
 
 static void
 TextDrawRotTo(Win win, Drawable src, Drawable dst, int x, int y,
@@ -95,6 +118,7 @@ TextDrawRotBack(Win win, Drawable dst, Drawable src, int x, int y,
      }
 }
 
+#if FONT_TYPE_IFT
 static EImage      *
 TextImageGet(Win win __UNUSED__, Drawable src, int x, int y, int w, int h,
 	     TextState * ts)
@@ -154,6 +178,7 @@ TextImagePut(EImage * im, Win win, Drawable dst, int x, int y,
      }
    EImageFree(im);
 }
+#endif /* FONT_TYPE_IFT */
 
 TextState          *
 TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
@@ -229,6 +254,379 @@ TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
    return NULL;
 }
 
+#if FONT_TYPE_XFS
+/*
+ * XFontSet - XCreateFontSet
+ */
+extern const FontOps FontOpsXfs;
+
+static int
+XfsLoad(TextState * ts)
+{
+   int                 i, missing_cnt, font_cnt;
+   char              **missing_list, *def_str, **fn;
+   XFontStruct       **fs;
+
+   ts->f.xfs.font = XCreateFontSet(disp, ts->fontname, &missing_list,
+				   &missing_cnt, &def_str);
+   if (missing_cnt)
+      XFreeStringList(missing_list);
+
+   if (!ts->f.xfs.font)
+     {
+	ts->f.xfs.font = XCreateFontSet(disp, "fixed", &missing_list,
+					&missing_cnt, &def_str);
+	if (missing_cnt)
+	   XFreeStringList(missing_list);
+     }
+
+   if (!ts->f.xfs.font)
+      return -1;
+
+   if (EventDebug(EDBUG_TYPE_FONTS))
+     {
+	Eprintf("- XBaseFontNameListOfFontSet %s\n",
+		XBaseFontNameListOfFontSet(ts->f.xfs.font));
+	font_cnt = XFontsOfFontSet(ts->f.xfs.font, &fs, &fn);
+	for (i = 0; i < font_cnt; i++)
+	   Eprintf("- XFontsOfFontSet %d: %s\n", i, fn[i]);
+     }
+
+   ts->f.xfs.ascent = 0;
+   font_cnt = XFontsOfFontSet(ts->f.xfs.font, &fs, &fn);
+   for (i = 0; i < font_cnt; i++)
+      ts->f.xfs.ascent = MAX(fs[i]->ascent, ts->f.xfs.ascent);
+
+   ts->type = FONT_TYPE_XFS;
+   ts->ops = &FontOpsXfs;
+   return 0;
+}
+
+static void
+XfsUnload(TextState * ts)
+{
+   XFreeFontSet(disp, ts->f.xfs.font);
+}
+
+static void
+XfsTextSize(TextState * ts, const char *text, int len,
+	    int *width, int *height, int *ascent)
+{
+   XRectangle          ret2;
+
+   if (len == 0)
+      len = strlen(text);
+   XmbTextExtents(ts->f.xfs.font, text, len, NULL, &ret2);
+   *height = ret2.height;
+   *width = ret2.width;
+   *ascent = ts->f.xfs.ascent;
+}
+
+static void
+XfsTextDraw(TextState * ts, FontDrawContext * fdc, int x, int y,
+	    const char *text, int len)
+{
+   XmbDrawString(disp, fdc->draw, ts->f.xfs.font, fdc->gc, x, y, text, len);
+}
+
+static void
+XfsFdcInit(TextState * ts __UNUSED__, FontDrawContext * fdc, Win win)
+{
+   fdc->win = win;
+   fdc->gc = _get_gc(win);
+}
+
+static void
+XfsFdcSetColor(TextState * ts __UNUSED__, FontDrawContext * fdc, XColor * xc)
+{
+   EAllocColor(WinGetCmap(fdc->win), xc);
+   XSetForeground(disp, fdc->gc, xc->pixel);
+}
+
+static void
+XfsTextMangle(TextState * ts, char **ptext, int *pw, int textwidth_limit)
+{
+   char               *text = *ptext;
+   int                 hh, ascent;
+   char               *new_line;
+   int                 nuke_count = 0;
+   int                 len;
+   wchar_t            *wc_line = NULL;
+   int                 wc_len;
+
+   len = strlen(text);
+   new_line = Emalloc(len + 10);
+   if (!new_line)
+      return;
+
+   wc_len = mbstowcs(NULL, text, 0);
+   if (wc_len > 0)
+     {
+	wc_line = (wchar_t *) Emalloc((wc_len + 1) * sizeof(wchar_t));
+	mbstowcs(wc_line, text, len);
+	wc_line[wc_len] = (wchar_t) '\0';
+     }
+
+   while (*pw > textwidth_limit)
+     {
+	nuke_count++;
+	if (nuke_count > wc_len)
+	  {
+	     int                 mlen;
+
+	     new_line[0] = 0;
+	     if (MB_CUR_MAX > 1 && wc_len > 0)
+	       {		/* if multibyte locale,... */
+		  mlen = mblen(text, MB_CUR_MAX);
+		  if (mlen < 0)
+		     mlen = 1;
+	       }
+	     else
+		mlen = 1;
+
+	     strncat(new_line, text, mlen);
+	     strcat(new_line, "...");
+	     break;
+	  }
+	new_line[0] = 0;
+	if (MB_CUR_MAX > 1 && wc_len > 0)
+	  {
+	     int                 j, k, len_mb;
+
+	     for (j = k = 0; k < (wc_len - nuke_count) / 2; k++)
+	       {
+		  len_mb = wctomb(new_line + j, wc_line[k]);
+		  if (len_mb > 0)
+		     j += len_mb;
+	       }
+	     new_line[j] = '\0';
+	     strcat(new_line, "...");
+	     j += 3;
+	     len_mb = wcstombs(new_line + j,
+			       wc_line + (wc_len - nuke_count) / 2 +
+			       nuke_count, len + 10 - j);
+	     if (len_mb > 0)
+		j += len_mb;
+	     new_line[j] = '\0';
+	  }
+	else
+	  {
+	     strncat(new_line, text, (len - nuke_count) / 2);
+	     strcat(new_line, "...");
+	     strcat(new_line, text + ((len - nuke_count) / 2) + nuke_count);
+	  }
+	ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
+     }
+   Efree(text);
+   *ptext = new_line;
+   if (wc_line)
+      Efree(wc_line);
+}
+
+const FontOps       FontOpsXfs = {
+   XfsLoad, XfsUnload, XfsTextSize, XfsTextMangle, XfsTextDraw,
+   XfsFdcInit, XfsFdcSetColor
+};
+#endif /* FONT_TYPE_XFS */
+
+#if FONT_TYPE_XFONT
+/*
+ * XFontStruct - XLoadQueryFont
+ */
+extern const FontOps FontOpsXfont;
+
+static int
+XfontLoad(TextState * ts)
+{
+   if (strchr(ts->fontname, ',') == NULL)
+      ts->f.xf.font = XLoadQueryFont(disp, ts->fontname);
+   if (ts->f.xf.font)
+      goto done;
+
+   /* This one really should succeed! */
+   ts->f.xf.font = XLoadQueryFont(disp, "fixed");
+   if (ts->f.xf.font)
+      goto done;
+
+   return -1;			/* Failed */
+
+ done:
+   ts->type = FONT_TYPE_XFONT;
+   ts->ops = &FontOpsXfont;
+   return -1;
+}
+
+static void
+XfontUnload(TextState * ts __UNUSED__)
+{
+   if (ts->f.xf.font)
+      XFreeFont(disp, ts->f.xf.font);
+}
+
+static void
+XfontTextSize(TextState * ts, const char *text, int len,
+	      int *width, int *height, int *ascent)
+{
+   if (len == 0)
+      len = strlen(text);
+   if (ts->f.xf.font->min_byte1 == 0 && ts->f.xf.font->max_byte1 == 0)
+      *width = XTextWidth(ts->f.xf.font, text, len);
+   else
+      *width = XTextWidth16(ts->f.xf.font, (XChar2b *) text, len / 2);
+   *height = ts->f.xf.font->ascent + ts->f.xf.font->descent;
+   *ascent = ts->f.xf.font->ascent;
+}
+
+static void
+XfontTextDraw(TextState * ts, FontDrawContext * fdc, int x, int y,
+	      const char *text, int len)
+{
+   if (ts->f.xf.font->min_byte1 == 0 && ts->f.xf.font->max_byte1 == 0)
+      XDrawString(disp, fdc->draw, fdc->gc, x, y, text, len);
+   else
+      XDrawString16(disp, fdc->draw, fdc->gc, x, y, (XChar2b *) text, len);
+}
+
+static void
+XfontFdcInit(TextState * ts __UNUSED__, FontDrawContext * fdc, Win win)
+{
+   fdc->win = win;
+   fdc->gc = _get_gc(win);
+
+   XSetFont(disp, fdc->gc, ts->f.xf.font->fid);
+}
+
+static void
+XfontFdcSetColor(TextState * ts __UNUSED__, FontDrawContext * fdc, XColor * xc)
+{
+   EAllocColor(WinGetCmap(fdc->win), xc);
+   XSetForeground(disp, fdc->gc, xc->pixel);
+}
+
+static void
+XfontTextMangle(TextState * ts, char **ptext, int *pw, int textwidth_limit)
+{
+   char               *text = *ptext;
+   int                 hh, ascent;
+   char               *new_line;
+   int                 nuke_count = 0;
+   int                 len;
+
+   if (1)
+     {
+	len = strlen(text);
+	new_line = Emalloc(len + 10);
+	if (!new_line)
+	   return;
+
+	while (*pw > textwidth_limit)
+	  {
+	     nuke_count++;
+	     if (nuke_count > len)
+	       {
+		  new_line[0] = 0;
+		  strncat(new_line, text, 1);
+		  strcat(new_line, "...");
+		  break;
+	       }
+	     new_line[0] = 0;
+	     strncat(new_line, text, (len - nuke_count) / 2);
+	     strcat(new_line, "...");
+	     strcat(new_line, text + ((len - nuke_count) / 2) + nuke_count);
+	     ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
+	  }
+     }
+   else
+     {
+	len = strlen(text);
+	new_line = Emalloc(len + 20);
+	if (!new_line)
+	   return;
+
+	while (*pw > textwidth_limit)
+	  {
+	     nuke_count += 2;
+	     if (nuke_count > len)
+	       {
+		  new_line[0] = 0;
+		  strncat(new_line, text, 1);
+		  strcat(new_line, ". . . ");
+		  break;
+	       }
+	     new_line[0] = 0;
+	     strncat(new_line, text, (len - nuke_count) / 4);
+	     strcat(new_line, ". . . ");
+	     strcat(new_line, text + ((len - nuke_count) / 4) + nuke_count);
+	     ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
+	  }
+     }
+   Efree(text);
+   *ptext = new_line;
+}
+
+const FontOps       FontOpsXfont = {
+   XfontLoad, XfontUnload, XfontTextSize, XfontTextMangle, XfontTextDraw,
+   XfontFdcInit, XfontFdcSetColor
+};
+#endif /* FONT_TYPE_XFONT */
+
+#if FONT_TYPE_IFT
+static void
+IftTextMangle(TextState * ts, char **ptext, int *pw, int textwidth_limit)
+{
+   char               *text = *ptext;
+   int                 hh, ascent;
+   char               *new_line;
+   int                 nuke_count = 0;
+   int                 len;
+
+   len = strlen(text);
+   new_line = Emalloc(len + 10);
+   if (!new_line)
+      return;
+
+   while (*pw > textwidth_limit)
+     {
+	nuke_count++;
+	if (nuke_count > len)
+	  {
+	     new_line[0] = 0;
+	     strncat(new_line, text, 1);
+	     strcat(new_line, "...");
+	     break;
+	  }
+	new_line[0] = 0;
+	strncat(new_line, text, (len - nuke_count) / 2);
+	strcat(new_line, "...");
+	strcat(new_line, text + ((len - nuke_count) / 2) + nuke_count);
+	ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
+     }
+   Efree(text);
+   *ptext = new_line;
+}
+#endif /* FONT_TYPE_IFT */
+
+static void
+TsTextDraw(TextState * ts, FontDrawContext * fdc, int x, int y,
+	   const char *text, int len)
+{
+   if (ts->style.effect == 1)
+     {
+	ts->ops->FdcSetColor(ts, fdc, &(ts->bg_col));
+	ts->ops->TextDraw(ts, fdc, x + 1, y + 1, text, len);
+     }
+   else if (ts->style.effect == 2)
+     {
+	ts->ops->FdcSetColor(ts, fdc, &(ts->bg_col));
+	ts->ops->TextDraw(ts, fdc, x - 1, y, text, len);
+	ts->ops->TextDraw(ts, fdc, x + 1, y, text, len);
+	ts->ops->TextDraw(ts, fdc, x, y - 1, text, len);
+	ts->ops->TextDraw(ts, fdc, x, y + 1, text, len);
+     }
+   ts->ops->FdcSetColor(ts, fdc, &(ts->fg_col));
+   ts->ops->TextDraw(ts, fdc, x, y, text, len);
+}
+
 static void
 TextStateLoadFont(TextState * ts)
 {
@@ -236,73 +634,27 @@ TextStateLoadFont(TextState * ts)
       return;
 
    /* Quit if already done */
-   if ((ts->efont) || (ts->xfont) || (ts->xfontset))
+   if (ts->type)
       return;
 
    ts->need_utf8 = Mode.locale.utf8_int;
 
-   /* Try FreeType */
-   {
-      char                s[4096], *s2, *ss;
-
-      s2 = Estrdup(ts->fontname);
-      if (!s2)
-	 return;
-      ss = strchr(s2, '/');
-      if (ss)
-	{
-	   *ss++ = '\0';
-	   Esnprintf(s, sizeof(s), "%s.ttf", s2);
-	   ts->efont = Efont_load(s2, atoi(ss));
-	}
-      Efree(s2);
-
-      if (ts->efont)
-	 ts->need_utf8 = 1;
-   }
-   if (ts->efont)
+#if FONT_TYPE_IFT
+   if (!FontOpsIft.Load(ts))	/* Imlib2/FreeType */
       goto done;
-
-   /* Try X11 XCreateFontSet */
-   {
-      int                 i, missing_cnt, font_cnt;
-      char              **missing_list, *def_str, **fn;
-      XFontStruct       **fs;
-
-      ts->xfontset = XCreateFontSet(disp, ts->fontname, &missing_list,
-				    &missing_cnt, &def_str);
-      if (missing_cnt)
-	 XFreeStringList(missing_list);
-
-      if (!ts->xfontset)
-	{
-	   ts->xfontset = XCreateFontSet(disp, "fixed", &missing_list,
-					 &missing_cnt, &def_str);
-	   if (missing_cnt)
-	      XFreeStringList(missing_list);
-	}
-
-      if (ts->xfontset)
-	{
-	   ts->xfontset_ascent = 0;
-	   font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
-	   for (i = 0; i < font_cnt; i++)
-	      ts->xfontset_ascent = MAX(fs[i]->ascent, ts->xfontset_ascent);
-	}
-   }
-   if (ts->xfontset)
+#endif
+#if FONT_TYPE_XFS
+   if (!FontOpsXfs.Load(ts))	/* XFontSet - XCreateFontSet */
       goto done;
-
-   /* Try X11 XLoadQueryFont */
-   if (strchr(ts->fontname, ',') == NULL)
-      ts->xfont = XLoadQueryFont(disp, ts->fontname);
-   if (ts->xfont)
+#endif
+#if FONT_TYPE_XFONT
+   if (!FontOpsXfont.Load(ts))	/* XFontStruct - XLoadQueryFont */
       goto done;
-
-   /* This one really should succeed! */
-   ts->xfont = XLoadQueryFont(disp, "fixed");
+#endif
 
  done:
+   if (EventDebug(EDBUG_TYPE_FONTS))
+      Eprintf("TextStateLoadFont %s: type=%d\n", ts->fontname, ts->type);
    return;
 }
 
@@ -312,7 +664,7 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 {
    const char         *str;
    char              **lines;
-   int                 i, num_lines;
+   int                 i, num_lines, ww, hh, asc;
    TextState          *ts;
 
    *width = 0;
@@ -326,6 +678,8 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
       return;
 
    TextStateLoadFont(ts);
+   if (!ts->ops)
+      return;
 
    /* Do encoding conversion, if necessary */
    str = EstrInt2Enc(text, ts->need_utf8);
@@ -334,88 +688,15 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
    if (!lines)
       return;
 
-   if (ts->efont)
+   for (i = 0; i < num_lines; i++)
      {
-	for (i = 0; i < num_lines; i++)
-	  {
-	     int                 ascent, descent, wid;
-
-	     Efont_extents(ts->efont, lines[i], &ascent, &descent, &wid, NULL,
-			   NULL, NULL, NULL);
-	     *height += ascent + descent;
-	     if (wid > *width)
-		*width = wid;
-	  }
+	ts->ops->TextSize(ts, lines[i], strlen(lines[i]), &ww, &hh, &asc);
+	*height += hh;
+	if (ww > *width)
+	   *width = ww;
      }
-   else if (ts->xfontset)
-     {
-	for (i = 0; i < num_lines; i++)
-	  {
-	     XRectangle          ret1, ret2;
 
-	     ExTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
-			   &ret2);
-	     *height += ret2.height;
-	     if (ret2.width > *width)
-		*width = ret2.width;
-	  }
-     }
-   else if ((ts->xfont) && (ts->xfont->min_byte1 == 0)
-	    && (ts->xfont->max_byte1 == 0))
-     {
-	for (i = 0; i < num_lines; i++)
-	  {
-	     int                 wid;
-
-	     wid = XTextWidth(ts->xfont, lines[i], strlen(lines[i]));
-	     *height += ts->xfont->ascent + ts->xfont->descent;
-	     if (wid > *width)
-		*width = wid;
-	  }
-     }
-   else if ((ts->xfont))
-     {
-	for (i = 0; i < num_lines; i++)
-	  {
-	     int                 wid;
-
-	     wid = XTextWidth16(ts->xfont, (XChar2b *) lines[i],
-				strlen(lines[i]) / 2);
-	     *height += ts->xfont->ascent + ts->xfont->descent;
-	     if (wid > *width)
-		*width = wid;
-	  }
-     }
    StrlistFree(lines, num_lines);
-}
-
-static              GC
-_get_gc(Win win)
-{
-   static GC           gc = None;
-   static Visual      *last_vis = NULL;
-   Visual             *vis;
-
-   vis = WinGetVisual(win);
-   if (vis != last_vis)
-     {
-	if (gc)
-	   EXFreeGC(gc);
-	gc = None;
-	last_vis = vis;
-     }
-
-   if (!gc)
-      gc = EXCreateGC(WinGetXwin(win), 0, NULL);
-
-   return gc;
-}
-
-static void
-_set_gc_color(Win win, GC gc, XColor * pxc)
-{
-   EAllocColor(WinGetCmap(win), pxc);
-   XSetForeground(disp, gc, pxc->pixel);
 }
 
 void
@@ -426,15 +707,17 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
    const char         *str;
    char              **lines;
    int                 i, num_lines;
-   int                 xx, yy;
    int                 textwidth_limit, offset_x, offset_y;
-   GC                  gc;
+   int                 xx, yy, ww, hh, ascent;
    Pixmap              drawable;
+   FontDrawContext     fdc;
 
    if (w <= 0 || h <= 0)
       return;
 
    TextStateLoadFont(ts);
+   if (!ts->ops)
+      return;
 
    /* Do encoding conversion, if necessary */
    str = EstrInt2Enc(text, ts->need_utf8);
@@ -470,287 +753,73 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 	textwidth_limit = h;
      }
 
+#if 0
+   Eprintf("TextstateDrawText %d,%d %dx%d(%d): %s\n", x, y, w, h,
+	   textwidth_limit, text);
+#endif
+
    xx = x;
    yy = y;
 
-   if (ts->efont)
+#if FONT_TYPE_IFT
+   if (ts->type == FONT_TYPE_IFT)
      {
-	EImage             *im;
-	int                 r, g, b;
+	ts->ops->FdcInit(ts, &fdc, win);
 
 	for (i = 0; i < num_lines; i++)
 	  {
-	     int                 ascent, descent, wid;
+	     ts->ops->TextSize(ts, lines[i], 0, &ww, &hh, &ascent);
+	     if (ww > textwidth_limit)
+#if 0
+		ts->ops->TextMangle(ts, &lines[i], &ww, textwidth_limit);
+#else
+		IftTextMangle(ts, &lines[i], &ww, textwidth_limit);
+#endif
 
-	     Efont_extents(ts->efont, lines[i], &ascent, &descent, &wid, NULL,
-			   NULL, NULL, NULL);
-	     if (wid > textwidth_limit)
-	       {
-		  char               *new_line;
-		  int                 nuke_count = 0;
-		  int                 len;
-
-		  len = strlen(lines[i]);
-		  new_line = Emalloc(len + 10);
-		  if (!new_line)
-		     goto done;
-		  while (wid > textwidth_limit)
-		    {
-		       nuke_count++;
-		       if (nuke_count > len)
-			 {
-			    new_line[0] = 0;
-			    strncat(new_line, lines[i], 1);
-			    strcat(new_line, "...");
-			    break;
-			 }
-		       new_line[0] = 0;
-		       strncat(new_line, lines[i], (len - nuke_count) / 2);
-		       strcat(new_line, "...");
-		       strcat(new_line,
-			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
-		       Efont_extents(ts->efont, new_line, &ascent, &descent,
-				     &wid, NULL, NULL, NULL, NULL);
-		    }
-		  Efree(lines[i]);
-		  lines[i] = new_line;
-	       }
 	     if (i == 0)
 		yy += ascent;
-	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
+	     xx = x + (((textwidth_limit - ww) * justification) >> 10);
 
-	     im = TextImageGet(win, draw, xx - 1, yy - 1 - ascent,
-			       wid + 2, ascent + descent + 2, ts);
-	     if (!im)
+	     fdc.im = TextImageGet(win, draw, xx - 1, yy - 1 - ascent,
+				   ww + 2, hh + 2, ts);
+	     if (!fdc.im)
 		break;
 
 	     offset_x = 1;
 	     offset_y = ascent + 1;
 
-	     if (ts->effect == 1)
-	       {
-		  EGetColor(&(ts->bg_col), &r, &g, &b);
-		  EFont_draw_string(im, ts->efont, offset_x + 1,
-				    offset_y + 1, r, g, b, lines[i]);
-	       }
-	     else if (ts->effect == 2)
-	       {
-		  EGetColor(&(ts->bg_col), &r, &g, &b);
-		  EFont_draw_string(im, ts->efont, offset_x - 1,
-				    offset_y, r, g, b, lines[i]);
-		  EFont_draw_string(im, ts->efont, offset_x + 1,
-				    offset_y, r, g, b, lines[i]);
-		  EFont_draw_string(im, ts->efont, offset_x,
-				    offset_y - 1, r, g, b, lines[i]);
-		  EFont_draw_string(im, ts->efont, offset_x,
-				    offset_y + 1, r, g, b, lines[i]);
-	       }
-	     EGetColor(&(ts->fg_col), &r, &g, &b);
-	     EFont_draw_string(im, ts->efont, offset_x, offset_y,
-			       r, g, b, lines[i]);
+	     TsTextDraw(ts, &fdc, offset_x, offset_y, lines[i],
+			strlen(lines[i]));
 
-	     TextImagePut(im, win, draw, xx - 1, yy - 1 - ascent,
-			  wid + 2, ascent + descent + 2, ts);
+	     TextImagePut(fdc.im, win, draw, xx - 1, yy - 1 - ascent,
+			  ww + 2, hh + 2, ts);
 
-	     yy += ascent + descent;
+	     yy += hh;
 	  }
      }
-   else if (ts->xfontset)
+   else
+#endif /* FONT_TYPE_IFT */
      {
-	gc = _get_gc(win);
+	ts->ops->FdcInit(ts, &fdc, win);
 
 	for (i = 0; i < num_lines; i++)
 	  {
-	     XRectangle          ret1, ret2;
+	     ts->ops->TextSize(ts, lines[i], 0, &ww, &hh, &ascent);
+	     if (ww > textwidth_limit)
+		ts->ops->TextMangle(ts, &lines[i], &ww, textwidth_limit);
 
-	     ExTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
-			   &ret2);
-	     if (ret2.width > textwidth_limit)
-	       {
-		  char               *new_line;
-		  int                 nuke_count = 0;
-		  int                 len;
-		  wchar_t            *wc_line = NULL;
-		  int                 wc_len;
-
-		  len = strlen(lines[i]);
-		  new_line = Emalloc(len + 10);
-		  if (!new_line)
-		     goto done;
-		  wc_len = mbstowcs(NULL, lines[i], 0);
-		  if (wc_len > 0)
-		    {
-		       wc_line =
-			  (wchar_t *) Emalloc((wc_len + 1) * sizeof(wchar_t));
-		       mbstowcs(wc_line, lines[i], len);
-		       wc_line[wc_len] = (wchar_t) '\0';
-		    }
-
-		  while (ret2.width > textwidth_limit)
-		    {
-		       nuke_count++;
-		       if (nuke_count > wc_len)
-			 {
-			    int                 mlen;
-
-			    new_line[0] = 0;
-			    if (MB_CUR_MAX > 1 && wc_len > 0)
-			      {	/* if multibyte locale,... */
-				 mlen = mblen(lines[i], MB_CUR_MAX);
-				 if (mlen < 0)
-				    mlen = 1;
-			      }
-			    else
-			       mlen = 1;
-
-			    strncat(new_line, lines[i], mlen);
-			    strcat(new_line, "...");
-			    break;
-			 }
-		       new_line[0] = 0;
-		       if (MB_CUR_MAX > 1 && wc_len > 0)
-			 {
-			    int                 j, k, len_mb;
-
-			    for (j = k = 0; k < (wc_len - nuke_count) / 2; k++)
-			      {
-				 len_mb = wctomb(new_line + j, wc_line[k]);
-				 if (len_mb > 0)
-				    j += len_mb;
-			      }
-			    new_line[j] = '\0';
-			    strcat(new_line, "...");
-			    j += 3;
-			    len_mb =
-			       wcstombs(new_line + j,
-					wc_line + (wc_len - nuke_count) / 2 +
-					nuke_count, len + 10 - j);
-			    if (len_mb > 0)
-			       j += len_mb;
-			    new_line[j] = '\0';
-			 }
-		       else
-			 {
-			    strncat(new_line, lines[i], (len - nuke_count) / 2);
-			    strcat(new_line, "...");
-			    strcat(new_line,
-				   lines[i] + ((len - nuke_count) / 2) +
-				   nuke_count);
-			 }
-		       ExTextExtents(ts->xfontset, new_line, strlen(new_line),
-				     &ret1, &ret2);
-		    }
-		  Efree(lines[i]);
-		  lines[i] = new_line;
-		  if (wc_len > 0)
-		     Efree(wc_line);
-	       }
 	     if (i == 0)
-		yy += ts->xfontset_ascent;
-	     xx = x + (((textwidth_limit - ret2.width) * justification) >> 10);
+		yy += ascent;
+	     xx = x + (((textwidth_limit - ww) * justification) >> 10);
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable =
-		   ECreatePixmap(win, ret2.width + 2, ret2.height + 2, 0);
+		drawable = ECreatePixmap(win, ww + 2, hh + 2, 0);
 	     else
 		drawable = draw;
-	     TextDrawRotTo(win, draw, drawable, xx - 1,
-			   yy - (ts->xfontset_ascent) - 1, ret2.width + 2,
-			   ret2.height + 2, ts);
-	     if (ts->style.orientation == FONT_TO_RIGHT)
-	       {
-		  offset_x = xx;
-		  offset_y = yy;
-	       }
-	     else
-	       {
-		  offset_x = 1;
-		  offset_y = ts->xfontset_ascent + 1;
-	       }
+	     fdc.draw = drawable;
+	     TextDrawRotTo(win, draw, drawable, xx - 1, yy - 1 - ascent,
+			   ww + 2, hh + 2, ts);
 
-	     if (ts->effect == 1)
-	       {
-		  _set_gc_color(win, gc, &ts->bg_col);
-		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
-			       offset_y + 1, lines[i], strlen(lines[i]));
-	       }
-	     else if (ts->effect == 2)
-	       {
-		  _set_gc_color(win, gc, &ts->bg_col);
-		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x - 1,
-			       offset_y, lines[i], strlen(lines[i]));
-		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
-			       offset_y, lines[i], strlen(lines[i]));
-		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x,
-			       offset_y - 1, lines[i], strlen(lines[i]));
-		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x,
-			       offset_y + 1, lines[i], strlen(lines[i]));
-	       }
-	     _set_gc_color(win, gc, &ts->fg_col);
-	     ExDrawString(disp, drawable, ts->xfontset, gc, offset_x, offset_y,
-			  lines[i], strlen(lines[i]));
-
-	     TextDrawRotBack(win, draw, drawable, xx - 1,
-			     yy - (ts->xfontset_ascent) - 1, ret2.width + 2,
-			     ret2.height + 2, ts);
-	     if (drawable != draw)
-		EFreePixmap(drawable);
-	     yy += ret2.height;
-	  }
-     }
-   else if ((ts->xfont) && (ts->xfont->min_byte1 == 0)
-	    && (ts->xfont->max_byte1 == 0))
-     {
-	gc = _get_gc(win);
-
-	XSetFont(disp, gc, ts->xfont->fid);
-	for (i = 0; i < num_lines; i++)
-	  {
-	     int                 wid, ascent, descent;
-
-	     wid = XTextWidth(ts->xfont, lines[i], strlen(lines[i]));
-	     ascent = ts->xfont->ascent;
-	     descent = ts->xfont->descent;
-	     if (wid > textwidth_limit)
-	       {
-		  char               *new_line;
-		  int                 nuke_count = 0;
-		  int                 len;
-
-		  len = strlen(lines[i]);
-		  new_line = Emalloc(len + 10);
-		  if (!new_line)
-		     goto done;
-		  while (wid > textwidth_limit)
-		    {
-		       nuke_count++;
-		       if (nuke_count > len)
-			 {
-			    new_line[0] = 0;
-			    strncat(new_line, lines[i], 1);
-			    strcat(new_line, "...");
-			    break;
-			 }
-		       new_line[0] = 0;
-		       strncat(new_line, lines[i], (len - nuke_count) / 2);
-		       strcat(new_line, "...");
-		       strcat(new_line,
-			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
-		       wid = XTextWidth(ts->xfont, new_line, strlen(new_line));
-		    }
-		  Efree(lines[i]);
-		  lines[i] = new_line;
-	       }
-	     if (i == 0)
-		yy += ts->xfont->ascent;
-	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
-
-	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable = ECreatePixmap(win, wid + 2, ascent + descent + 2, 0);
-	     else
-		drawable = draw;
-	     TextDrawRotTo(win, draw, drawable, xx - 1, yy - ascent - 1,
-			   wid + 2, ascent + descent + 2, ts);
 	     if (ts->style.orientation == FONT_TO_RIGHT)
 	       {
 		  offset_x = xx;
@@ -762,131 +831,18 @@ TextstateDrawText(TextState * ts, Win win, Drawable draw, const char *text,
 		  offset_y = ascent + 1;
 	       }
 
-	     if (ts->effect == 1)
-	       {
-		  _set_gc_color(win, gc, &ts->bg_col);
-		  XDrawString(disp, drawable, gc, offset_x + 1, offset_y + 1,
-			      lines[i], strlen(lines[i]));
-	       }
-	     else if (ts->effect == 2)
-	       {
-		  _set_gc_color(win, gc, &ts->bg_col);
-		  XDrawString(disp, drawable, gc, offset_x - 1, offset_y,
-			      lines[i], strlen(lines[i]));
-		  XDrawString(disp, drawable, gc, offset_x + 1, offset_y,
-			      lines[i], strlen(lines[i]));
-		  XDrawString(disp, drawable, gc, offset_x, offset_y - 1,
-			      lines[i], strlen(lines[i]));
-		  XDrawString(disp, drawable, gc, offset_x, offset_y + 1,
-			      lines[i], strlen(lines[i]));
-	       }
-	     _set_gc_color(win, gc, &ts->fg_col);
-	     XDrawString(disp, drawable, gc, offset_x, offset_y, lines[i],
-			 strlen(lines[i]));
+	     TsTextDraw(ts, &fdc, offset_x, offset_y, lines[i],
+			strlen(lines[i]));
 
 	     TextDrawRotBack(win, draw, drawable, xx - 1, yy - 1 - ascent,
-			     wid + 2, ascent + descent + 2, ts);
+			     ww + 2, hh + 2, ts);
 	     if (drawable != draw)
 		EFreePixmap(drawable);
-	     yy += ts->xfont->ascent + ts->xfont->descent;
+
+	     yy += hh;
 	  }
      }
-   else if ((ts->xfont))
-     {
-	gc = _get_gc(win);
 
-	XSetFont(disp, gc, ts->xfont->fid);
-	for (i = 0; i < num_lines; i++)
-	  {
-	     int                 wid, ascent, descent;
-
-	     wid = XTextWidth16(ts->xfont, (XChar2b *) lines[i],
-				strlen(lines[i]) / 2);
-	     ascent = ts->xfont->ascent;
-	     descent = ts->xfont->descent;
-	     if (wid > textwidth_limit)
-	       {
-		  char               *new_line;
-		  int                 nuke_count = 0;
-		  int                 len;
-
-		  len = strlen(lines[i]);
-		  new_line = Emalloc(len + 20);
-		  if (!new_line)
-		     goto done;
-		  while (wid > textwidth_limit)
-		    {
-		       nuke_count += 2;
-		       if (nuke_count > len)
-			 {
-			    new_line[0] = 0;
-			    strncat(new_line, lines[i], 1);
-			    strcat(new_line, ". . . ");
-			    break;
-			 }
-		       new_line[0] = 0;
-		       strncat(new_line, lines[i], (len - nuke_count) / 4);
-		       strcat(new_line, ". . . ");
-		       strcat(new_line,
-			      lines[i] + ((len - nuke_count) / 4) + nuke_count);
-		       wid =
-			  XTextWidth16(ts->xfont, (XChar2b *) new_line,
-				       strlen(new_line) / 2);
-		    }
-		  Efree(lines[i]);
-		  lines[i] = new_line;
-	       }
-	     if (i == 0)
-		yy += ts->xfont->ascent;
-	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
-
-	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable = ECreatePixmap(win, wid + 2, ascent + descent + 2, 0);
-	     else
-		drawable = draw;
-	     TextDrawRotTo(win, draw, drawable, xx - 1, yy - ascent - 1,
-			   wid + 2, ascent + descent + 2, ts);
-	     if (ts->style.orientation == FONT_TO_RIGHT)
-	       {
-		  offset_x = xx;
-		  offset_y = yy;
-	       }
-	     else
-	       {
-		  offset_x = 1;
-		  offset_y = ascent + 1;
-	       }
-
-	     if (ts->effect == 1)
-	       {
-		  _set_gc_color(win, gc, &ts->bg_col);
-		  XDrawString16(disp, drawable, gc, offset_x + 1, offset_y + 1,
-				(XChar2b *) lines[i], strlen(lines[i]) / 2);
-	       }
-	     else if (ts->effect == 2)
-	       {
-		  _set_gc_color(win, gc, &ts->bg_col);
-		  XDrawString16(disp, drawable, gc, offset_x - 1, offset_y,
-				(XChar2b *) lines[i], strlen(lines[i]) / 2);
-		  XDrawString16(disp, drawable, gc, offset_y + 1, offset_y,
-				(XChar2b *) lines[i], strlen(lines[i]) / 2);
-		  XDrawString16(disp, drawable, gc, offset_x, offset_y - 1,
-				(XChar2b *) lines[i], strlen(lines[i]) / 2);
-		  XDrawString16(disp, drawable, gc, offset_x, offset_y + 1,
-				(XChar2b *) lines[i], strlen(lines[i]) / 2);
-	       }
-	     _set_gc_color(win, gc, &ts->fg_col);
-	     XDrawString16(disp, drawable, gc, offset_x, offset_y,
-			   (XChar2b *) lines[i], strlen(lines[i]) / 2);
-
-	     TextDrawRotBack(win, draw, drawable, xx - 1, yy - 1 - ascent,
-			     wid + 2, ascent + descent + 2, ts);
-	     if (drawable != draw)
-		EFreePixmap(drawable);
-	     yy += ts->xfont->ascent + ts->xfont->descent;
-	  }
-     }
- done:
    StrlistFree(lines, num_lines);
 }
 

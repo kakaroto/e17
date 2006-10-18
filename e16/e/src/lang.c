@@ -243,8 +243,8 @@ LangInit(void)
    if (EventDebug(EDBUG_TYPE_VERBOSE))
      {
 	Eprintf("Locale: %s\n", setlocale(LC_ALL, NULL));
-	Eprintf("Character encoding: locale=%s internal=%s\n", enc_loc,
-		enc_int);
+	Eprintf("Character encoding: locale=%s internal=%s MB_CUR_MAX=%d\n",
+		enc_loc, enc_int, MB_CUR_MAX);
      }
 
    if (!strcasecmp(enc_loc, "utf8") || !strcasecmp(enc_loc, "utf-8"))

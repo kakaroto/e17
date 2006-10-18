@@ -27,33 +27,85 @@
 #include "etypes.h"
 #include "xwin.h"
 
-#define MODE_VERBATIM  0
-#define MODE_WRAP_CHAR 1
-#define MODE_WRAP_WORD 2
+#define MODE_VERBATIM     0
+#define MODE_WRAP_CHAR    1
+#define MODE_WRAP_WORD    2
 
-#define FONT_TO_RIGHT 0
-#define FONT_TO_DOWN  1
-#define FONT_TO_UP    2
-#define FONT_TO_LEFT  3
+#define FONT_TO_RIGHT     0
+#define FONT_TO_DOWN      1
+#define FONT_TO_UP        2
+#define FONT_TO_LEFT      3
 
-typedef struct _efont Efont;
+#define FONT_TYPE_UNKNOWN 0
+#define FONT_TYPE_IFT     1	/* Imlib2/FreeType */
+#define FONT_TYPE_XFS     2	/* XFontSet        */
+#define FONT_TYPE_XFONT   3	/* XFontStruct     */
+
+#if FONT_TYPE_IFT
+typedef void        EFont;
+#endif
+
+typedef struct
+{
+   Win                 win;
+   EImage             *im;
+   Drawable            draw;
+   GC                  gc;
+   int                 r, g, b;
+} FontDrawContext;
+
+typedef struct
+{
+   int                 (*Load) (TextState * ts);
+   void                (*Destroy) (TextState * ts);
+   void                (*TextSize) (TextState * ts, const char *text, int len,
+				    int *width, int *height, int *ascent);
+   void                (*TextMangle) (TextState * ts, char **ptext,
+				      int *pwidth, int textwidth_limit);
+   void                (*TextDraw) (TextState * ts, FontDrawContext * ctx,
+				    int x, int y, const char *text, int len);
+   void                (*FdcInit) (TextState * ts, FontDrawContext * ctx,
+				   Win win);
+   void                (*FdcSetColor) (TextState * ts, FontDrawContext * ctx,
+				       XColor * xc);
+} FontOps;
 
 struct _textstate
 {
    char               *fontname;
+   char                type;
+   char                need_utf8;
    struct
    {
       char                mode;
       char                orientation;
+      char                effect;
    } style;
    XColor              fg_col;
    XColor              bg_col;
-   int                 effect;
-   Efont              *efont;
-   XFontStruct        *xfont;
-   XFontSet            xfontset;
-   int                 xfontset_ascent;
-   char                need_utf8;
+   union
+   {
+#if FONT_TYPE_IFT
+      struct
+      {
+	 EFont              *font;
+      } ift;
+#endif
+#if FONT_TYPE_XFS
+      struct
+      {
+	 XFontSet            font;
+	 int                 ascent;
+      } xfs;
+#endif
+#if FONT_TYPE_XFONT
+      struct
+      {
+	 XFontStruct        *font;
+      } xf;
+#endif
+   } f;
+   const FontOps      *ops;
 };
 
 struct _textclass
@@ -93,17 +145,5 @@ void                TextDraw(TextClass * tclass, Win win, Drawable draw,
 			     int active, int sticky, int state,
 			     const char *text, int x, int y, int w, int h,
 			     int fsize, int justification);
-
-/* ttfont.c */
-void                Efont_extents(Efont * f, const char *text,
-				  int *font_ascent_return,
-				  int *font_descent_return, int *width_return,
-				  int *max_ascent_return,
-				  int *max_descent_return, int *lbearing_return,
-				  int *rbearing_return);
-Efont              *Efont_load(const char *file, int size);
-void                Efont_free(Efont * f);
-void                EFont_draw_string(EImage * im, Efont * f, int x, int y,
-				      int r, int g, int b, const char *text);
 
 #endif /* _TCLASS_H */

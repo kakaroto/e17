@@ -673,6 +673,7 @@ void                EdgeWindowsHide(void);
 #define EDBUG_TYPE_SYNC         145
 #define EDBUG_TYPE_PAGER        146
 #define EDBUG_TYPE_SELECTION    147
+#define EDBUG_TYPE_FONTS        148
 
 int                 EventDebug(unsigned int type);
 void                EventDebugSet(unsigned int type, int value);
