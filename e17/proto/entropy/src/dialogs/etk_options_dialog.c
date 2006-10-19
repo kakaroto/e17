@@ -252,17 +252,17 @@ void entropy_etk_options_dialog_create()
 	   
 
 	/*Advanced*/
-	/*button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
+	button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
 	etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
 	frame = etk_frame_new("Advanced Settings");
-	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);*/
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);
 
 	/*Thumbnail*/
-	/*button = etk_tool_button_new_from_stock(ETK_STOCK_IMAGE_X_GENERIC);
+	button = etk_tool_button_new_from_stock(ETK_STOCK_IMAGE_X_GENERIC);
 	etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
 
 	frame = etk_frame_new("Thumbnail Settings");
-	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);	*/
+	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);	
 
 
 	//etk_widget_size_request_set(_entropy_etk_options_dialog, 560, 460);
