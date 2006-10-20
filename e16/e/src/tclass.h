@@ -39,7 +39,7 @@
 #define FONT_TYPE_UNKNOWN 0
 #define FONT_TYPE_IFT     1	/* Imlib2/FreeType */
 #define FONT_TYPE_XFS     2	/* XFontSet        */
-#define FONT_TYPE_XFONT   3	/* XFontStruct     */
+#define FONT_TYPE_XFONT   0	/* XFontStruct     */
 
 #if FONT_TYPE_IFT
 typedef void        EFont;

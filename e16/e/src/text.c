@@ -653,7 +653,9 @@ TextStateLoadFont(TextState * ts)
 #endif
 
  done:
-   if (EventDebug(EDBUG_TYPE_FONTS))
+   if (!ts->ops)
+      Eprintf("*** Unable to load font \"%s\"\n", ts->fontname);
+   else if (EventDebug(EDBUG_TYPE_FONTS))
       Eprintf("TextStateLoadFont %s: type=%d\n", ts->fontname, ts->type);
    return;
 }
