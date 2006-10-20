@@ -313,6 +313,7 @@ extern"C" {
 #include <ewl_spacer.h>
 #include <ewl_spinner.h>
 #include <ewl_image.h>
+#include <ewl_highlight.h>
 #include <ewl_histogram.h>
 #include <ewl_spectrum.h>
 #include <ewl_menu_item.h>

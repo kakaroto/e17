@@ -413,6 +413,14 @@ ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev: UNUSED
+ * @param data: The spectrum widget
+ * @return Returns no value
+ * @brief Restore the spectrum after a REVEAL callback
+ */
 void
 ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 								void *data)

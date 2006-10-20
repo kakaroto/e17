@@ -4,13 +4,13 @@
 typedef struct Ewl_IO_Manager_Plugin Ewl_IO_Manager_Plugin;
 struct Ewl_IO_Manager_Plugin
 {
-	void *handle;
+	void *handle;			/**< The libray handle */
 
-	Ewl_Widget *(*uri_read)(const char *uri);
-	Ewl_Widget *(*string_read)(const char *string);
+	Ewl_Widget *(*uri_read)(const char *uri);	/**< The URI read fuction */
+	Ewl_Widget *(*string_read)(const char *string); /**< The string read function */
 
-	int (*uri_write)(Ewl_Widget *data, const char *uri);
-	int (*string_write)(Ewl_Widget *data, char **string);
+	int (*uri_write)(Ewl_Widget *data, const char *uri); /**< The URI write function */
+	int (*string_write)(Ewl_Widget *data, char **string); /**< The string write function */
 };
 
 int		 ewl_io_manager_init(void);

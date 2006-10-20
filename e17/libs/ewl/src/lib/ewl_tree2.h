@@ -153,7 +153,6 @@ Ewl_Widget	*ewl_tree2_view_widget_get(Ewl_Tree2 *tree);
 void ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_tree2_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev, void *data);
-void ewl_tree2_cb_selected_change(Ewl_MVC *mvc);
 
 /*
  * Ewl_Tree2_Column stuff

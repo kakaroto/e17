@@ -225,7 +225,7 @@ list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	idx = ewl_mvc_selected_get(EWL_MVC(list));
 
 	ecore_list_goto_index(el, idx->row);
-	printf("Selected (%s)\n", (char *)ecore_list_current(el));
+	printf("Selected (%d) (%s)\n", idx->row, (char *)ecore_list_current(el));
 }
 
 static void

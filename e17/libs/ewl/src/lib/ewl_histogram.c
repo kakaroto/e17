@@ -129,7 +129,6 @@ ewl_histogram_channel_set(Ewl_Histogram *hist, Ewl_Histogram_Channel channel)
 
 /**
  * @param hist: the histogram to change the channel drawn
- * @param channel: the color channel to draw in the histogram
  * @return Returns the currently drawn color channel.
  * @brief Sets the color channel to graph in the histogram.
  */
@@ -184,6 +183,14 @@ ewl_histogram_image_get(Ewl_Histogram *hist)
 	DRETURN_PTR(EWL_IMAGE(hist->source), DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget being configured
+ * @param event: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief Configures the histogram
+ */
 void
 ewl_histogram_cb_configure(Ewl_Widget *w, void *event __UNUSED__, 
 						void *data __UNUSED__)

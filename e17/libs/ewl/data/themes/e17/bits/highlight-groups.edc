@@ -1,0 +1,15 @@
+group {
+   name, "highlight";
+   parts {
+      part {
+         name, "bg";
+         type, RECT;
+         description {
+            state, "default" 0.0;
+
+            color, 250 185 87 69;
+         }
+      }
+   }
+}
+

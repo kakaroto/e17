@@ -16,6 +16,7 @@ collections {
 #include "e17/bits/label-groups.edc"
 #include "e17/bits/button-groups.edc"
 #include "e17/bits/entry-groups.edc"
+#include "e17/bits/highlight-groups.edc"
 #include "e17/bits/icon-groups.edc"
 #include "e17/bits/menu-groups.edc"
 #include "e17/bits/paned-groups.edc"
@@ -66,6 +67,8 @@ data {
 	item, "/text/font" "Vera";
 	item, "/text/font_size" "12";
 	item, "/text/style" "none";
+
+	item, "/highlight/group" "highlight";
 
 	item, "/hseparator/group" "hline";
 	item, "/vseparator/group" "vline";

@@ -17,9 +17,14 @@
  * now.
  */
 
+static void ewl_mvc_highlight_do(Ewl_MVC *mvc, Ewl_Container *c, 
+				Ewl_Selection *sel, Ewl_Widget *w);
 static void ewl_mvc_selected_change_notify(Ewl_MVC *mvc);
 static void ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, 
 						int row, int column);
+static void ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev, 
+							void *data);
+static void ewl_mvc_cb_sel_free(void *data);
 
 /**
  * @param mvc: The MVC to initialize
@@ -185,7 +190,7 @@ ewl_mvc_data_get(Ewl_MVC *mvc)
  * @param mvc: The MVC widget to work with
  * @param dirty: The dirty status to set
  * @return Returns no value.
- * @brief Sets the dirty status of the MVC widget @a mvc to the @dirty state
+ * @brief Sets the dirty status of the MVC widget @a mvc to the @a dirty state
  */
 void
 ewl_mvc_dirty_set(Ewl_MVC *mvc, unsigned int dirty)
@@ -239,7 +244,10 @@ ewl_mvc_selection_mode_set(Ewl_MVC *mvc, Ewl_Selection_Mode mode)
 		mvc->selected = NULL;
 	}
 	else if (!mvc->selected)
+	{
 		mvc->selected = ecore_list_new();
+		ecore_list_set_free_cb(mvc->selected, ewl_mvc_cb_sel_free);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -267,6 +275,8 @@ ewl_mvc_selection_mode_get(Ewl_MVC *mvc)
 void
 ewl_mvc_selected_clear(Ewl_MVC *mvc)
 {
+	Ewl_Selection *sel;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
@@ -274,7 +284,9 @@ ewl_mvc_selected_clear(Ewl_MVC *mvc)
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);	
 
-	ecore_list_clear(mvc->selected);
+	while ((sel = ecore_list_remove_first(mvc->selected)))
+		ewl_mvc_cb_sel_free(sel);
+
 	ewl_mvc_selected_change_notify(mvc);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -299,7 +311,8 @@ ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list)
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_list_clear(mvc->selected);
+	while ((sel = ecore_list_remove_first(mvc->selected)))
+		ewl_mvc_cb_sel_free(sel);
 
 	if (!list || (ecore_list_nodes(list) == 0))
 		DRETURN(DLEVEL_STABLE);
@@ -397,6 +410,8 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, int srow, int scolumn,
 void
 ewl_mvc_selected_set(Ewl_MVC *mvc, int row, int column)
 {
+	Ewl_Selection *sel;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
@@ -404,7 +419,9 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, int row, int column)
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);	
 
-	ecore_list_clear(mvc->selected);
+	while ((sel = ecore_list_remove_first(mvc->selected)))
+		ewl_mvc_cb_sel_free(sel);
+
 	ewl_mvc_selected_add(mvc, row, column);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -482,8 +499,8 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
 
 /**
  * @param mvc: The MVC to work with
- * @param int row: The row to remove
- * @param int colum: The column to remove
+ * @param row: The row to remove
+ * @param column: The column to remove
  * @return Returns no value
  * @brief Removes the given index from the list of selected indices
  */
@@ -531,7 +548,6 @@ ewl_mvc_selected_rm(Ewl_MVC *mvc, int row, int column)
 				continue;
 			}
 		}
-
 		ecore_list_next(mvc->selected);
 	}
 	ewl_mvc_selected_change_notify(mvc);
@@ -589,7 +605,8 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 
 /**
  * @param mvc: The MVC to work with
- * @param idx: The index to check for
+ * @param row: The row to check for
+ * @param column: The column to check for
  * @return Returns TRUE if the index is selected, FALSE otherwise
  * @brief Checks if the given index is selected or not.
  */
@@ -639,6 +656,12 @@ ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column)
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
+/**
+ * @param row: The row to create the index selection for
+ * @param column: The column to create the index for
+ * @return Returns a new Ewl_Selection_Idx based on the @a row and @a column
+ * @brief Creates a new index selection based on given values
+ */
 Ewl_Selection *
 ewl_mvc_selection_index_new(int row, int column)
 {
@@ -654,6 +677,14 @@ ewl_mvc_selection_index_new(int row, int column)
 	DRETURN_PTR(sel, DLEVEL_STABLE);
 }
 
+/**
+ * @param srow: The start row
+ * @param scolumn: The start column
+ * @param erow: The end row
+ * @param ecolumn: The end column
+ * @return Returns a new Ewl_Selection_Range based on given values
+ * @brief Creates a new range selection based on given values
+ */
 Ewl_Selection *
 ewl_mvc_selection_range_new(int srow, int scolumn, int erow, int ecolumn)
 {
@@ -713,19 +744,49 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
 				idx = EWL_SELECTION_IDX(sel);
 				srow = idx->row;
 				scolumn = idx->column;
+
+				if (sel->highlight)
+					ewl_widget_destroy(sel->highlight);
 			}
 			else
 			{
 				Ewl_Selection_Range *idx;
+				int i, k;
 
 				idx = EWL_SELECTION_RANGE(sel);
 				srow = idx->start.row;
 				scolumn = idx->start.column;
+
+				if (sel->highlight)
+				{
+					Ewl_Widget *w;
+
+					while ((w = ecore_list_remove_first(sel->highlight)))
+						ewl_widget_destroy(w);
+				}
+
+				/* XXX this is not good. We probably want to
+				 * find a better way to determine duplicates
+				 * then what this is doing.
+				 * 
+				 * determine if any of the range's widgets 
+				 * are in the list already. if so we need 
+				 * to remove them from the range. 
+				 * Do a selected_rm on all the duplicate 
+				 * points until we have no duplicates */
+				for (i = srow; i <= row; i++)
+				{
+					for (k = scolumn; k <= column; k++)
+					{
+						if (ewl_mvc_selected_is(mvc, i, k))
+							ewl_mvc_selected_rm(mvc, i, k);
+					}
+				}
+
 			}
 
-			/* remove the original and add the extended one to
-			 * the list */
 			ecore_list_remove(mvc->selected);
+
 			ewl_mvc_selected_range_add(mvc, srow, scolumn,
 							row, column);
 		}
@@ -740,7 +801,68 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
                         ewl_mvc_selected_add(mvc, row, column);
         }
         else
-                ewl_mvc_selected_set(mvc, row, column);
+		ewl_mvc_selected_set(mvc, row, column);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param mvc: The Ewl_MVC widget to highlight
+ * @param c: The Ewl_Container to put the highlight widgets into
+ * @param widget: The callback to get the widget for a given index
+ * @return Returns no value
+ * @brief This will run through the list of selected widgets and create a
+ * highlight widget for each if needed.
+ */
+void
+ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
+	Ewl_Widget *(*widget)(Ewl_MVC *mvc, int row, int column))
+{
+	Ewl_Selection *sel;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+
+	if (!mvc->selected || !REALIZED(mvc)) 
+		DRETURN(DLEVEL_STABLE);
+
+	ecore_list_goto_first(mvc->selected);
+	while ((sel = ecore_list_next(mvc->selected)))
+	{
+		Ewl_Widget *w;
+
+		/* if it's already highlighted we can skip it */
+		if (sel->highlight) continue;
+
+		if (sel->type == EWL_SELECTION_TYPE_INDEX)
+		{
+			Ewl_Selection_Idx *idx;
+
+			idx = EWL_SELECTION_IDX(sel);
+			w = widget(mvc, idx->row, idx->column);
+			if (w) ewl_mvc_highlight_do(mvc, c, sel, w);
+		}
+		else
+		{
+			int i, k;
+			Ewl_Selection_Range *idx;
+
+			idx = EWL_SELECTION_RANGE(sel);
+			for (i = idx->start.row; i <= idx->end.row; i++)
+			{
+				for (k = idx->start.column; 
+						k <= idx->end.column; k++)
+				{
+					w = widget(mvc, i, k);
+					if (w) ewl_mvc_highlight_do(mvc, c,
+								sel, w);
+				}
+			}
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -839,7 +961,26 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 
 	/* done if this is an index */
 	if (sel->type != EWL_SELECTION_TYPE_RANGE)
+	{
+		if (sel->highlight)
+			ewl_widget_destroy(sel->highlight);
+		sel->highlight = NULL;
+
 		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* Clear out the highlights. 
+	 * 
+	 * XXX Might want to make this smarter and move the highlight widgets 
+	 * into the correct range arrays as needed 
+	 */
+	if (sel->highlight)
+	{
+		Ewl_Widget *w;
+
+		while ((w = ecore_list_remove_first(sel->highlight)))
+			ewl_widget_destroy(w);
+	}
 
 	si = EWL_SELECTION_RANGE(sel);
 
@@ -919,6 +1060,66 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 
 		ecore_list_append(mvc->selected, n);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_mvc_highlight_do(Ewl_MVC *mvc, Ewl_Container *c, Ewl_Selection *sel, 
+								Ewl_Widget *w)
+{
+	Ewl_Widget *h;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sel", sel);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	h = ewl_highlight_new();
+	ewl_highlight_follow_set(EWL_HIGHLIGHT(h), w);
+	ewl_container_child_append(EWL_CONTAINER(c), h);
+	ewl_callback_append(h, EWL_CALLBACK_DESTROY,
+				ewl_mvc_cb_highlight_destroy, mvc);
+	ewl_widget_show(h);
+
+	if (sel->type == EWL_SELECTION_TYPE_INDEX)
+		sel->highlight = h;
+	else
+	{
+		if (!sel->highlight)
+			sel->highlight = ecore_list_new();
+
+		ecore_list_append(sel->highlight, h);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_mvc_cb_sel_free(void *data)
+{
+	Ewl_Selection *sel;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("data", data);
+
+	sel = data;
+	if (sel->type == EWL_SELECTION_TYPE_INDEX)
+		ewl_widget_destroy(sel->highlight);
+	else
+	{
+		if (sel->highlight)
+		{
+			Ewl_Widget *w;
+			while ((w = ecore_list_remove_first(sel->highlight)))
+				ewl_widget_destroy(w);
+
+			ecore_list_destroy(sel->highlight);
+		}
+		sel->highlight = NULL;
+	}
+
+	FREE(data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

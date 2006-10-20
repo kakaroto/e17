@@ -100,7 +100,8 @@ selected_set(char *buf, int len)
 
 	if ((idx->row != 1) || (idx->column != 2))
 	{
-		snprintf(buf, len, "Incorrect row/column setting");
+		snprintf(buf, len, "Incorrect row/column setting: "
+				"(%d %d) vs (1, 2)", idx->row, idx->column);
 		return FALSE;
 	}
 

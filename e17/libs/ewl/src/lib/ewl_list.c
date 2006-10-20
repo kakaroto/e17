@@ -3,6 +3,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static Ewl_Widget *ewl_list_widget_at(Ewl_MVC *mvc, int row, int column);
+
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure
  * @brief Creates and initializes a new Ewl_List widget
@@ -153,6 +155,20 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_TYPE("data", data, EWL_LIST_TYPE);
 
 	row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
+	if (row == -1) 
+	{
+		if (!ewl_widget_type_is(w, EWL_HIGHLIGHT_TYPE))
+		{
+			DWARNING("Unknown widget clicked for container.\n");
+			DRETURN(DLEVEL_STABLE);
+		}
+
+		/* our row is the index that corresponds to the followed
+		 * widget for this highlight widget */
+		row = ewl_container_child_index_get(EWL_CONTAINER(data),
+				ewl_highlight_follow_get(EWL_HIGHLIGHT(w)));
+	}
+
 	ewl_mvc_handle_click(EWL_MVC(data), row, -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -171,8 +187,22 @@ ewl_list_cb_selected_change(Ewl_MVC *mvc)
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	/* XXX selection highlight code here */
+	ewl_mvc_highlight(mvc, EWL_CONTAINER(mvc), ewl_list_widget_at);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_list_widget_at(Ewl_MVC *mvc, int row, int column __UNUSED__)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+
+	w = ewl_container_child_get(EWL_CONTAINER(mvc), row);
+	
+	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 

@@ -1567,8 +1567,6 @@ ewl_grid_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
  * @internal
  * @param p: The container to work with
  * @param child: The widget to work with
- * @param size: The new child size
- * @param o: The orientation
  * @return Returns no value
  * @brief Catch notification of child shows.
  */

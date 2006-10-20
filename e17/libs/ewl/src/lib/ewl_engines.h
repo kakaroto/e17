@@ -113,11 +113,11 @@ struct Ewl_Engine_Info
 
 	struct
 	{
-		void **window;
-		void **canvas;
-		void **theme;
-		void **pointer;
-	} hooks;
+		void **window;		/**< The window hooks */
+		void **canvas;		/**< The canvas hooks */
+		void **theme;		/**< The theme hooks */
+		void **pointer;		/**< The pointer hooks */
+	} hooks;			/**< The engine hooks */
 };
 
 struct Ewl_Engine

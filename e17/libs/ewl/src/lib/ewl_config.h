@@ -24,7 +24,7 @@ struct Ewl_Config
 		Ecore_Hash *user;	/**< User data */
 		Ecore_Hash *system;	/**< System data */
 		Ecore_Hash *instance;	/**< Data for this instance only */
-	} data;
+	} data;				/**< The config data */
 };
 
 int		 ewl_config_init(void);

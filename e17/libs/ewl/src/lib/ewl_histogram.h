@@ -2,7 +2,7 @@
 #define EWL_HISTOGRAM_H
 
 /**
- * @addtogroup Ew_lHistogram Ewl_Histogram: A Simple Histogram widget
+ * @addtogroup Ewl_Histogram Ewl_Histogram: A Simple Histogram widget
  *
  * @{
  */
@@ -13,6 +13,10 @@
  */
 #define EWL_HISTOGRAM_TYPE "histogram"
 
+/**
+ * @enum Ewl_Histogram_Channel
+ * The histogram channels
+ */
 enum Ewl_Histogram_Channel
 {
 	EWL_HISTOGRAM_CHANNEL_Y,
@@ -22,6 +26,9 @@ enum Ewl_Histogram_Channel
 	EWL_HISTOGRAM_CHANNEL_MAX
 };
 
+/**
+ * Ewl_Histogram_Channel
+ */
 typedef enum Ewl_Histogram_Channel Ewl_Histogram_Channel;
 
 /**

@@ -1150,6 +1150,7 @@ strdup(const char *str)
 #endif
 
 /**
+ * @param mod_dir: do we add or remove from the indent 
  * @return Returns a string with a number of spaces equal to the current
  * debug level
  * @brief Creates a string used to indent debug messages

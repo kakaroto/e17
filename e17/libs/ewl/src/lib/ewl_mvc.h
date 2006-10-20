@@ -14,15 +14,41 @@
  */
 #define EWL_MVC_TYPE "mvc"
 
+/** 
+ * @def EWL_SELECTION(x)
+ * Typecast a pointer to an Ewl_Selection pointer
+ */
 #define EWL_SELECTION(x) ((Ewl_Selection *)x)
+
+/**
+ * Ewl_Selection 
+ */
 typedef struct Ewl_Selection Ewl_Selection;
+
+/**
+ * Structure to store information on selections
+ */
 struct Ewl_Selection
 {
 	Ewl_Selection_Type type;
+
+	void *highlight;
 };
 
+/**
+ * @def EWL_SELECTION_IDX(x)
+ * Typecast a pointer to an Ewl_Selection_Idx pointer
+ */
 #define EWL_SELECTION_IDX(x) ((Ewl_Selection_Idx *)x)
+
+ /**
+  * Ewl_Selection_Idx
+  */
 typedef struct Ewl_Selection_Idx Ewl_Selection_Idx;
+
+/**
+ * Structure to store information on a single index selection
+ */
 struct Ewl_Selection_Idx
 {
 	Ewl_Selection sel;
@@ -31,8 +57,20 @@ struct Ewl_Selection_Idx
 	int column;
 };
 
+/**
+ * @def EWL_SELECTION_RANGE(x)
+ * Typecasts a pointer to an Ewl_Selection_Range
+ */
 #define EWL_SELECTION_RANGE(x) ((Ewl_Selection_Range *)x)
+
+/**
+ * Ewl_Selection_Range
+ */
 typedef struct Ewl_Selection_Range Ewl_Selection_Range;
+
+/**
+ * Structure to store a range of selected cells
+ */
 struct Ewl_Selection_Range
 {
 	Ewl_Selection sel;
@@ -74,7 +112,8 @@ struct Ewl_MVC
 
 	Ecore_List *selected;		/**< The selected cells */
 
-	Ewl_Selection_Mode selection_mode;	/**< The widget selection mode*/
+	Ewl_Selection_Mode selection_mode;	/**< The widget 
+							selection mode*/
 	unsigned char dirty:1;		/**< Is the data dirty */
 };
 
@@ -116,6 +155,10 @@ unsigned int	 ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column);
 Ewl_Selection	*ewl_mvc_selection_index_new(int row, int column);
 Ewl_Selection	*ewl_mvc_selection_range_new(int srow, int scolumn,
 						int erow, int ecolumn);
+
+void 		 ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
+					Ewl_Widget *(*widget)(Ewl_MVC *mvc, 
+						int row, int column));
 
 /* 
  * internal

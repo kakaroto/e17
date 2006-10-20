@@ -930,7 +930,7 @@ ewl_text_font_get(Ewl_Text *t, unsigned int char_idx)
 
 /**
  * @param t: The Ewl_Widget to set the font into
- * @param souce: The font source to set
+ * @param source: The font source to set
  * @param font: The font to set
  * @return Returns no value
  * @brief This will set the current font to be used when we insert more text
@@ -2266,7 +2266,7 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 }
 
 /**
- * @param text: The text to serialize
+ * @param t: The text to serialize
  * @return Returns an array of nodes that defines the tree
  * @brief This will return the array of nodes that make up the
  * formatting for the tree
@@ -2287,7 +2287,7 @@ ewl_text_serialize(Ewl_Text *t)
 }
 
 /**
- * @param text: The tree to build
+ * @param t: The tree to build
  * @param nodes: The array of nodes to use in the tree
  * @param text: The text to set in the tree
  * @return Returns no value
@@ -3488,7 +3488,7 @@ ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
  * @internal
  * @param c: The container to work with
  * @param w: The widget to work with
- * @param char_idx: UNUSED
+ * @param idx: UNUSED
  * @return Returns no value
  * @brief The child del callback
  */
@@ -4509,6 +4509,11 @@ ewl_text_context_dup(Ewl_Text_Context *old)
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The Ewl_Text to work with
+ * @return Returns the default Ewl_Text_Context
+ * @brief Retrieves the default Ewl_Text_Context.
+ */
 Ewl_Text_Context *
 ewl_text_context_default_create(Ewl_Text *t)
 {
@@ -5232,6 +5237,8 @@ ewl_text_tree_insert(Ewl_Text *t, unsigned int char_idx,
  * @param t: The ewl_text to work with
  * @param char_idx: The index to delete from
  * @param char_len: The length to delete
+ * @param byte_idx: The byte index to delete from
+ * @param byte_len: The byte length to delete 
  * @return Returns no value
  * @brief Deletes @a len items from the tree at position @a idx
  */
@@ -5366,7 +5373,7 @@ ewl_text_tree_node_delete(Ewl_Text *t, Ewl_Text_Tree *tree)
 /**
  * @internal
  * @param tree: The tree to work with
- * @param char_idx: The node index
+ * @param idx: The node index
  * @return Returns the Ewl_Text_Context retrieved
  * @brief Retrieves the context at postion @a idx in the tree @a tree
  */
@@ -5463,7 +5470,7 @@ ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
  * @param context_mask: The mask to use
  * @param tx: The context to work with
  * @param char_idx: The index to start from
- * @param len: The length to apply over
+ * @param char_len: The character length
  * @return Returns no value
  * @brief Applys the given context changes over the given length of text
  */
@@ -5516,7 +5523,7 @@ ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
  * @param t: The text to work with
  * @param style: The style to set
  * @param char_idx: The index to start from
- * @param len: The length to work with
+ * @param char_len: The character length
  * @param invert: Are we inverting the style
  * @return Returns no value
  * @brief Applys the given style to the tree
@@ -5576,7 +5583,7 @@ ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
  * @param t: The text to work with
  * @param style: The style to remove
  * @param char_idx: The index to start from
- * @param len: The length to remove from
+ * @param char_len: The character length
  * @return Returns no value
  * @brief Removes the given style from the text from @a idx for length @a len
  */

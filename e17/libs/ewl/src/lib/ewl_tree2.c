@@ -11,6 +11,8 @@ static void ewl_tree2_cb_header_changed(Ewl_Widget *w, void *ev,
 
 static void ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree2_cb_selected_change(Ewl_MVC *mvc);
+static Ewl_Widget *ewl_tree2_widget_at(Ewl_MVC *mvc, int row, int column);
 
 /**
  * @return Returns NULL on failure, a new tree widget on success.
@@ -284,7 +286,7 @@ ewl_tree2_selection_type_get(Ewl_Tree2 *tree)
 
 /**
  * @param tree: The Ewl_Tree to set the mode into
- * @param mode: The Ewl_Tree_Mode to set into the tree
+ * @param type: The Ewl_Tree_Selection_Mode to set into the tree
  * @return Returns no value.
  * @brief Set the mode of the tree
  */
@@ -634,16 +636,85 @@ ewl_tree2_cb_header_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
+static void
+ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	Ewl_Tree2 *tree;
+	int row;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	tree = ewl_attach_widget_association_get(w);
+	if (tree->type != EWL_TREE_SELECTION_TYPE_ROW)
+		DRETURN(DLEVEL_STABLE);
+
+	row = ewl_container_child_index_get(EWL_CONTAINER(tree->rows), w);
+	ewl_mvc_handle_click(EWL_MVC(tree), row, -1);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	Ewl_Row *row;
+	Ewl_Tree2 *tree;
+	int r, column;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	row = ewl_attach_widget_association_get(w);
+	tree = ewl_attach_widget_association_get(row);
+	if (tree->type != EWL_TREE_SELECTION_TYPE_CELL)
+		DRETURN(DLEVEL_STABLE);
+
+	r = ewl_container_child_index_get(EWL_CONTAINER(tree->rows), 
+						EWL_WIDGET(row));
+	column = ewl_container_child_index_get(EWL_CONTAINER(row), w);
+
+	ewl_mvc_handle_click(EWL_MVC(tree), r, column);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
 ewl_tree2_cb_selected_change(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
-	/* XXX handle highlighting here */
+	ewl_mvc_highlight(mvc, EWL_CONTAINER(EWL_TREE2(mvc)->rows), 
+						ewl_tree2_widget_at);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_tree2_widget_at(Ewl_MVC *mvc, int row, int column)
+{
+	Ewl_Widget *r, *w;
+	Ewl_Tree2 *tree;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+
+	tree = EWL_TREE2(mvc);
+	r = ewl_container_child_get(EWL_CONTAINER(tree->rows), row);
+
+	if (tree->type == EWL_TREE_SELECTION_TYPE_ROW)
+		w = r;
+	else
+		w = ewl_container_child_get(EWL_CONTAINER(r), column);
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 
@@ -773,6 +844,21 @@ ewl_tree2_column_mvc_set(Ewl_Tree2_Column *c, Ewl_MVC *mvc)
 
 /**
  * @param c: The Ewl_Tree2_Column to work with
+ * @return Returns the MVC parent or NULL if none set
+ * @brief Retrives the MVC parent
+ */
+Ewl_MVC *
+ewl_tree2_column_mvc_get(Ewl_Tree2_Column *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, NULL);
+	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, NULL);
+
+	DRETURN_PTR(c->parent, DLEVEL_STABLE);
+}
+
+/**
+ * @param c: The Ewl_Tree2_Column to work with
  * @return Returns the parent tree for this column or NULL if none set
  * @brief Retrieves the parent tree for this column or NULL if none set
  */
@@ -815,51 +901,5 @@ ewl_tree2_column_sort_direction_get(Ewl_Tree2_Column *c)
 	DCHECK_PARAM_PTR_RET("c", c, EWL_SORT_DIRECTION_NONE);
 
 	DRETURN_INT(c->sort, DLEVEL_STABLE);
-}
-
-static void
-ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev __UNUSED__, 
-					void *data __UNUSED__)
-{
-	Ewl_Tree2 *tree;
-	int row;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	tree = ewl_attach_widget_association_get(w);
-	if (tree->type != EWL_TREE_SELECTION_TYPE_ROW)
-		DRETURN(DLEVEL_STABLE);
-
-	row = ewl_container_child_index_get(EWL_CONTAINER(tree->rows), w);
-	ewl_mvc_handle_click(EWL_MVC(tree), row, -1);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, 
-					void *data __UNUSED__)
-{
-	Ewl_Row *row;
-	Ewl_Tree2 *tree;
-	int r, column;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	row = ewl_attach_widget_association_get(w);
-	tree = ewl_attach_widget_association_get(row);
-	if (tree->type != EWL_TREE_SELECTION_TYPE_CELL)
-		DRETURN(DLEVEL_STABLE);
-
-	r = ewl_container_child_index_get(EWL_CONTAINER(tree->rows), 
-						EWL_WIDGET(row));
-	column = ewl_container_child_index_get(EWL_CONTAINER(row), w);
-	ewl_mvc_handle_click(EWL_MVC(tree), r, column);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
