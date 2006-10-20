@@ -8,6 +8,7 @@
 static void ee_canvas_setup(Ewl_Window *win, int debug);
 static void ee_canvas_output_set(Ewl_Embed *embed, int x, int y, int width,
 		int height);
+static void ee_canvas_render(Ewl_Embed *emb);
 static int ee_init(Ewl_Engine *engine);
 static void ee_shutdown(Ewl_Engine *engine);
 
@@ -15,7 +16,7 @@ static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
 	{
 		ee_canvas_setup,
 		ee_canvas_output_set, 
-		NULL, NULL, NULL
+		ee_canvas_render, NULL, NULL
 	};
 
 Ecore_DList *
@@ -141,6 +142,10 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 
 	evas = emb->evas;
 
+	evas_output_size_set(evas, width, height);
+	evas_output_viewport_set(evas, x, y, width, height);
+	evas_damage_rectangle_add(evas, 0, 0, width, height);
+
 	info = evas_engine_info_get(evas);
 	if (!info) 
 	{
@@ -154,10 +159,24 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 	bufinfo->info.dest_buffer = realloc(bufinfo->info.dest_buffer,
 			bufinfo->info.dest_buffer_row_bytes * height);
 
-	emb->evas_window = bufinfo->info.dest_buffer;
 	evas_engine_info_set(evas, info);
-	evas_output_size_set(evas, width, height);
-	evas_output_viewport_set(evas, x, y, width, height);
+
+	emb->evas_window = bufinfo->info.dest_buffer;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+static void
+ee_canvas_render(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+
+	if (embed->evas)
+		evas_render(embed->evas);
+
+	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_VALUE_CHANGED);
+
+	DRETURN(DLEVEL_STABLE);
+}
+
