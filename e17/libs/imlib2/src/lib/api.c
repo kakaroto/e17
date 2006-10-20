@@ -1764,7 +1764,7 @@ imlib_image_set_has_alpha(char has_alpha)
  * Creates a pixmap of the current image (and a mask if the image has
  * an alpha value) and return the id's of the pixmap and mask to 
  * @p pixmap_return and @p mask_return pixmap id's. You must free these
- * pixmaps using Imlib2's free function imlib_free_pixmap_and_mask();. 
+ * pixmaps using Imlib2's free function imlib_free_pixmap_and_mask(). 
  */
 EAPI void
 imlib_render_pixmaps_for_whole_image(Pixmap * pixmap_return,
@@ -1778,8 +1778,6 @@ imlib_render_pixmaps_for_whole_image(Pixmap * pixmap_return,
                        ctx->image);
    CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image",
                        "pixmap_return", pixmap_return);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image", "mask_return",
-                       mask_return);
    CAST_IMAGE(im, ctx->image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
@@ -1817,8 +1815,6 @@ imlib_render_pixmaps_for_whole_image_at_size(Pixmap * pixmap_return,
                        "image", ctx->image);
    CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size",
                        "pixmap_return", pixmap_return);
-   CHECK_PARAM_POINTER("imlib_render_pixmaps_for_whole_image_at_size",
-                       "mask_return", mask_return);
    CAST_IMAGE(im, ctx->image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
