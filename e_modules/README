@@ -15,7 +15,7 @@ documented in README.BROKEN.  Modules that are broken for the long term
 may be removed.
 
 
-bling - EFLized Composite Manager for E17. (not for users right now)
+bling - EFLized Composite Manager for E17. (Not for users right now).
 
 calendar - A module to display a desktop calendar.
 
@@ -28,7 +28,7 @@ emu - Experimental generic scriptable module for E17.
 
 engage - Icon bar / task bar / system tray.
 
-eveil - Sets reminders and timer
+eveil - Sets reminders and timer.  (Will be replaced by something better.)
 
 flame - A module to display flames on the desktop.
 
@@ -38,9 +38,9 @@ mail - A module to periodically check for new email.
 
 mem - A module to monitor memory and swap usage.
 
-mixer - A module to control volume for some mixers.
+mixer - A module to control volume for some mixers.  (Will be replaced by something better.)
 
-moon - A module to display moon phase information
+moon - A module to display moon phase information.
 
 net - A module to monitor traffic on a network device.
 
@@ -54,7 +54,7 @@ slideshow - A module to cycle desktop backgrounds.
 
 snow - A module to display snow on the desktop.
 
-taskbar - A taskbar module.
+taskbar - A taskbar module.  (Will be replaced by something better.)
 
 tclock - A module to display a digital clock on the desktop.
 
@@ -62,6 +62,6 @@ uptime - A module to monitor computer uptime.
 
 weather - A module to display a weather forecast.
 
-winselector - A module to show menu-based access to open windows
+winselector - A module to show menu-based access to open windows.
 
 wlan - A module to monitor a wlan device.
