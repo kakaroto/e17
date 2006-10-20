@@ -94,10 +94,6 @@ AC_ARG_ENABLE(hints-gnome,
   [  --enable-hints-gnome    compile with GNOME(<2.0) hints support @<:@default=no@:>@],,
   enable_hints_gnome=no)
 
-AC_ARG_ENABLE(ecore,
-  [  --enable-ecore          use ecore functions (for testing only - DO NOT USE!) @<:@default=no@:>@],,
-  enable_ecore=no)
-
 if test "x$enable_hints_gnome" = "xyes"; then
   AC_DEFINE(ENABLE_GNOME, 1, [GNOME(<2.0) Hints])
 fi
@@ -137,18 +133,14 @@ fi
 LDFLAGS="$LDFLAGS -L$prefix/lib"
 
 PKG_CHECK_MODULES(IMLIB2, imlib2 >= 1.2.0, have_good_imlib2=yes)
-IMLIB_LIBS=`imlib2-config --libs`
-IMLIB_CFLAGS=`imlib2-config --cflags`
-AC_SUBST(IMLIB_LIBS)
-AC_SUBST(IMLIB_CFLAGS)
-AC_CHECK_LIB(Imlib2, imlib_create_image, dummy=1,
-  AC_MSG_ERROR([Cannot find Imlib2: Is imlib2-config in path?]),
-  $IMLIB_LIBS)
 AC_CHECK_LIB(Imlib2, imlib_context_set_mask_alpha_threshold,
   AC_DEFINE(HAVE_IMLIB_CONTEXT_SET_MASK_ALPHA_THRESHOLD, 1,
             [Imlib2 has imlib_context_set_mask_alpha_threshold]),,
-  $IMLIB_LIBS)
+  $IMLIB2_LIBS)
 
+AC_ARG_ENABLE(ecore,
+  [  --enable-ecore          use ecore functions (for testing only - DO NOT USE!) @<:@default=no@:>@],,
+  enable_ecore=no)
 if test "x$enable_ecore" = "xyes"; then
   AC_CHECK_LIB(ecore_x, ecore_x_init,
     [
