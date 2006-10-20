@@ -246,6 +246,32 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
 
                        per_inc = 100.0 / (((float)w) * h);
 
+                       if (im->loader || immediate_load || progress)
+                         {
+                            im->data =
+                                (DATA32 *) malloc(sizeof(DATA32) * im->w *
+                                                  im->h);
+                            if (!im->data)
+                              {
+                                 free(cmap);
+                                 free(line);
+                                 fclose(f);
+                                 xpm_parse_done();
+                                 return 0;
+                              }
+                            ptr = im->data;
+                            end = ptr + (sizeof(DATA32) * w * h);
+                            pixels = w * h;
+                         }
+                       else
+                         {
+                            free(cmap);
+                            free(line);
+                            fclose(f);
+                            xpm_parse_done();
+                            return 1;
+                         }
+
                        j = 0;
                        context++;
                     }
@@ -362,32 +388,6 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                        else
                          {
                             UNSET_FLAG(im->flags, F_HAS_ALPHA);
-                         }
-
-                       if (im->loader || immediate_load || progress)
-                         {
-                            im->data =
-                                (DATA32 *) malloc(sizeof(DATA32) * im->w *
-                                                  im->h);
-                            if (!im->data)
-                              {
-                                 free(cmap);
-                                 free(line);
-                                 fclose(f);
-                                 xpm_parse_done();
-                                 return 0;
-                              }
-                            ptr = im->data;
-                            end = ptr + (sizeof(DATA32) * w * h);
-                            pixels = w * h;
-                         }
-                       else
-                         {
-                            free(cmap);
-                            free(line);
-                            fclose(f);
-                            xpm_parse_done();
-                            return 1;
                          }
                     }
                   else
