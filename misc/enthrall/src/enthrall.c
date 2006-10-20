@@ -1,6 +1,4 @@
 /*
- * $Id$
- *
  * Copyright (C) 2004-2006 Tilman Sauerbeck (tilman at code-monkey de)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -33,10 +31,12 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <dirent.h>
 
 #define _GNU_SOURCE
 #include <getopt.h>
+
+#include "theora.h"
+#include "rgb2yuv420.h"
 
 #define VERSION "0.0.2"
 
@@ -55,10 +55,6 @@
 typedef struct {
 	Ecore_X_Display *disp;
 
-	int fps;
-	int quality;
-	char output_dir[PATH_MAX];
-
 	struct {
 		Ecore_X_Window id;
 		int w, h;
@@ -72,9 +68,12 @@ typedef struct {
 	Imlib_Image prev_img;
 	Ecore_X_Rectangle damage;
 	bool damage_valid;
-	char last_written[PATH_MAX];
 
 	unsigned long frame_count;
+
+	EnthrallTheora theora;
+
+	uint8_t *y, *u, *v;
 } Enthrall;
 
 static int
@@ -85,7 +84,7 @@ on_timer (void *udata)
 	Bool b;
 	int ptr_x = 0, ptr_y = 0, unused1;
 	unsigned int unused2;
-	char buf[PATH_MAX];
+	uint32_t *data;
 	Window dw, childw = None;
 
 	/* FIXME: check whether e->window.id still points to a
@@ -93,14 +92,17 @@ on_timer (void *udata)
 	 *        done every time we enter this function.
 	 */
 
-	snprintf (buf, sizeof (buf), "%s/"FILE_FMT".jpeg",
-	          e->output_dir, e->frame_count);
-
 	/* was there any change at all?
 	 * if not, just link the last written frame to the current.
 	 */
 	if (!e->damage_valid) {
-		symlink (e->last_written, buf);
+		/* FIXME:
+		 * According to this ticket
+		 * https://trac.xiph.org/changeset/11119
+		 * it seems we can just put in an empty packet to repeat
+		 * the last frame.
+		 */
+		enthrall_theora_encode_frame (&e->theora, false);
 		goto out;
 	}
 
@@ -130,11 +132,12 @@ on_timer (void *udata)
 			                              e->cursor.w, e->cursor.h);
 	}
 
-	imlib_image_attach_data_value ("quality", NULL, e->quality, NULL);
-	imlib_image_set_format ("jpeg");
+	data = imlib_image_get_data_for_reading_only ();
+	rgb2yuv420 (data, e->window.w, e->window.h, e->y, e->u, e->v,
+	            e->theora.yuv.y_stride, e->theora.yuv.uv_stride);
+	imlib_image_put_back_data (data);
 
-	imlib_save_image (buf);
-	strcpy (e->last_written, buf);
+	enthrall_theora_encode_frame (&e->theora, false);
 
 	e->damage_valid = false;
 
@@ -187,12 +190,12 @@ show_usage ()
 	        "Options:\n"
 	        "  -f, --fps=FPS               "
 	        "frames per second (1-50, default: 25)\n"
-	        "  -o, --output-directory=DIR  "
-	        "output directory (default: working directory)\n"
+	        "  -o, --output-file=F         "
+	        "output file\n"
 	        "  -p, --pointer=FILE          "
 	        "path to pointer image file\n"
 	        "  -q, --quality=QUALITY       "
-	        "JPEG quality (0-100, default: 90)\n"
+	        "video quality (0-100, default: 90)\n"
 	        "  -w, --window=WINDOW         "
 	        "window to grab\n");
 }
@@ -226,13 +229,14 @@ int
 main (int argc, char **argv)
 {
 	Enthrall e;
-	DIR *d;
-	char pointer_img[PATH_MAX];
+	char pointer_img[PATH_MAX], output_file[PATH_MAX] = {0};
 	double start;
+	bool s;
+	int fps = 25, quality = 90;
 	struct option options[] = {
 		{"help", no_argument, NULL, 'h'},
 		{"fps", required_argument, NULL, 'f'},
-		{"output-directory", required_argument, NULL, 'o'},
+		{"output-file", required_argument, NULL, 'o'},
 		{"pointer", required_argument, NULL, 'p'},
 		{"quality", required_argument, NULL, 'q'},
 		{"window", required_argument, NULL, 'w'},
@@ -240,11 +244,6 @@ main (int argc, char **argv)
 	int c;
 
 	memset (&e, 0, sizeof (Enthrall));
-
-	e.fps = 25;
-	e.quality = 90;
-
-	strcpy (e.output_dir, ".");
 
 	while ((c = getopt_long (argc, argv, "hf:o:p:q:w:", options, NULL)) != -1) {
 		int base;
@@ -254,10 +253,10 @@ main (int argc, char **argv)
 				show_usage ();
 				return EXIT_SUCCESS;
 			case 'f':
-				e.fps = atoi (optarg);
+				fps = atoi (optarg);
 				break;
 			case 'o':
-				snprintf (e.output_dir, sizeof (e.output_dir), "%s",
+				snprintf (output_file, sizeof (output_file), "%s",
 				          optarg);
 				break;
 			case 'p':
@@ -265,7 +264,7 @@ main (int argc, char **argv)
 				          optarg);
 				break;
 			case 'q':
-				e.quality = atoi (optarg);
+				quality = atoi (optarg);
 				break;
 			case 'w':
 				base = strncasecmp (optarg, "0x", 2) ? 10 : 16;
@@ -274,32 +273,23 @@ main (int argc, char **argv)
 		}
 	}
 
-	if (!e.window.id) {
+	if (!e.window.id || !*output_file) {
 		show_usage ();
 
 		return EXIT_FAILURE;
 	}
 
-	if (e.quality < 0 || e.quality > 100) {
+	if (quality < 0 || quality > 100) {
 		show_usage ();
 
 		return EXIT_FAILURE;
 	}
 
-	if (e.fps < 1 || e.fps > 50) {
+	if (fps < 1 || fps > 50) {
 		show_usage ();
 
 		return EXIT_FAILURE;
 	}
-
-	d = opendir (e.output_dir);
-	if (!d) {
-		fprintf (stderr, "Error: cannot open output directory.\n");
-
-		return EXIT_FAILURE;
-	}
-
-	closedir (d);
 
 	ecore_init ();
 	ecore_x_init (NULL);
@@ -329,7 +319,16 @@ main (int argc, char **argv)
 
 	init_imlib (&e);
 
-	ecore_timer_add (1.0 / e.fps, on_timer, &e);
+	s = enthrall_theora_init (&e.theora, output_file,
+	                          quality, e.window.w, e.window.h,
+	                          &e.y, &e.u, &e.v);
+	if (!s) {
+		fprintf (stderr, "Error: Cannot initialize theora encoder.\n");
+
+		return EXIT_FAILURE;
+	}
+
+	ecore_timer_add (1.0 / fps, on_timer, &e);
 
 	ecore_event_handler_add (ECORE_X_EVENT_DAMAGE_NOTIFY,
 	                         on_damage, &e);
@@ -342,7 +341,11 @@ main (int argc, char **argv)
 	e.prev_img = IMG_FROM_RECT (e.damage);
 	imlib_context_set_image (e.prev_img);
 
+	printf ("Starting recording...\n");
 	ecore_main_loop_begin ();
+
+	enthrall_theora_encode_frame (&e.theora, true);
+	enthrall_theora_finish (&e.theora);
 
 	ecore_x_shutdown ();
 	ecore_shutdown ();
@@ -357,12 +360,6 @@ main (int argc, char **argv)
 
 	printf ("Wrote %lu frames in %f seconds.\n\n", e.frame_count,
 	        ecore_time_get () - start);
-	printf ("Suggested MEncoder call to encode the video:\n\n"
-	        "mencoder \"mf://%s/*.jpeg\" \\\n"
-	        "    -mf w=%i:h=%i:fps=%i:type=jpeg -ovc lavc \\\n"
-	        "    -lavcopts vcodec=mpeg4:vbitrate=16000:vhq:autoaspect \\\n"
-	        "    -o out.avi\n\n",
-	        e.output_dir, e.window.w, e.window.h, e.fps);
 
 	return EXIT_SUCCESS;
 }
