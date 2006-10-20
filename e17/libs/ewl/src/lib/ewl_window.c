@@ -649,7 +649,9 @@ ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if ((width == EWL_OBJECT_MAX_SIZE) && (width == height))
 	{
 		ewl_engine_window_geometry_get(window, TRUE, &width, &height);
-		ewl_object_maximum_size_set(EWL_OBJECT(window), width, height);
+		if (width > 1 && height > 1)
+			ewl_object_maximum_size_set(EWL_OBJECT(window), width,
+					height);
 	}
 	ewl_engine_embed_dnd_aware_set(EWL_EMBED(window));
 
