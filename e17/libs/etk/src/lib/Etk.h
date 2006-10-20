@@ -59,6 +59,7 @@ extern "C" {
 #include "etk_scrolled_view.h"
 #include "etk_selection.h"
 #include "etk_separator.h"
+#include "etk_shadow.h"
 #include "etk_slider.h"
 #include "etk_statusbar.h"
 #include "etk_stock.h"

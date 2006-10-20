@@ -2,7 +2,7 @@
 
 #define ETK_TEST_NUM_COLS 2
 
-typedef enum _Etk_Test_Categories
+typedef enum Etk_Test_Categories
 {
    ETK_TEST_BASIC_WIDGET,
    ETK_TEST_ADVANCED_WIDGET,

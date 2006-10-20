@@ -24,7 +24,6 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget);
 static Evas_List *_etk_bin_children_get(Etk_Container *container);
 static void _etk_bin_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_bin_realize_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -57,18 +56,6 @@ Etk_Type *etk_bin_type_get()
 }
 
 /**
- * @brief Gets the child of the bin
- * @param bin a bin
- * @return Returns the child of the bin or NULL if it doesn't have a child
- */
-Etk_Widget *etk_bin_child_get(Etk_Bin *bin)
-{
-   if (!bin)
-      return NULL;
-   return bin->child;
-}
-
-/**
  * @brief Sets the child of the bin
  * @param bin a bin
  * @param child the child to set
@@ -83,12 +70,23 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
    if (child)
    {
       etk_widget_parent_set(child, ETK_WIDGET(bin));
-      etk_widget_swallow_widget(ETK_WIDGET(bin), "etk.swallow.child", child);
       bin->child = child;
       
       etk_signal_emit_by_name("child_added", ETK_OBJECT(bin), NULL, child);
       etk_object_notify(ETK_OBJECT(bin), "child");
    }
+}
+
+/**
+ * @brief Gets the child of the bin
+ * @param bin a bin
+ * @return Returns the child of the bin or NULL if it doesn't have a child
+ */
+Etk_Widget *etk_bin_child_get(Etk_Bin *bin)
+{
+   if (!bin)
+      return NULL;
+   return bin->child;
 }
 
 /**************************
@@ -109,8 +107,6 @@ static void _etk_bin_constructor(Etk_Bin *bin)
    ETK_CONTAINER(bin)->children_get = _etk_bin_children_get;
    ETK_WIDGET(bin)->size_request = _etk_bin_size_request;
    ETK_WIDGET(bin)->size_allocate = _etk_bin_size_allocate;
-   
-   etk_signal_connect("realize", ETK_OBJECT(bin), ETK_CALLBACK(_etk_bin_realize_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -159,14 +155,14 @@ static void _etk_bin_size_request(Etk_Widget *widget, Etk_Size *size)
       return;
    container = ETK_CONTAINER(bin);
 
-   if (!bin->child || etk_widget_is_swallowed(bin->child))
+   if (!bin->child)
    {
       size->w = 0;
       size->h = 0;
    }
    else
       etk_widget_size_request(bin->child, size);
-
+   
    size->w += 2 * etk_container_border_width_get(container);
    size->h += 2 * etk_container_border_width_get(container);
 }
@@ -182,7 +178,7 @@ static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       return;
    container = ETK_CONTAINER(widget);
    
-   if (bin->child && !etk_widget_is_swallowed(bin->child))
+   if (bin->child)
    {
       border = etk_container_border_width_get(container);
       geometry.x += border;
@@ -230,22 +226,6 @@ static Evas_List *_etk_bin_children_get(Etk_Container *container)
       children = evas_list_append(children, bin->child);
    
    return children;
-}
-
-/**************************
- *
- * Callbacks and handlers
- *
- **************************/
-
-/* Called when the bin is realized */
-static void _etk_bin_realize_cb(Etk_Object *object, void *data)
-{
-   Etk_Bin *bin;
-
-   if (!(bin = ETK_BIN(object)) || !bin->child)
-      return;
-   etk_widget_swallow_widget(ETK_WIDGET(bin), "etk.swallow.child", bin->child);
 }
 
 /** @} */

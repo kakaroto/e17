@@ -1,5 +1,8 @@
 #include "etk_test.h"
 
+static void _etk_test_paned_child1_expand_toggled_cb(Etk_Object *object, void *data);
+static void _etk_test_paned_child2_expand_toggled_cb(Etk_Object *object, void *data);
+
 /* Creates the window for the paned test */
 void etk_test_paned_window_create(void *data)
 {
@@ -25,6 +28,7 @@ void etk_test_paned_window_create(void *data)
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
    
+   
    /* Paned Area */
    vpaned = etk_vpaned_new();
    etk_box_append(ETK_BOX(vbox), vpaned, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
@@ -47,7 +51,8 @@ void etk_test_paned_window_create(void *data)
    hseparator = etk_hseparator_new();
    etk_box_append(ETK_BOX(vbox), hseparator, ETK_BOX_START, ETK_BOX_NONE, 6);
    
-   /* Properties Area */
+   
+   /* Hpaned's properties frame */
    hbox = etk_hbox_new(ETK_TRUE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
    
@@ -55,21 +60,57 @@ void etk_test_paned_window_create(void *data)
    etk_box_append(ETK_BOX(hbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    vbox = etk_vbox_new(ETK_TRUE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox);
+   
    check_button = etk_check_button_new_with_label("Child 1 Expand");
    etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(check_button), ETK_TRUE);
+   etk_signal_connect("toggled", ETK_OBJECT(check_button),
+      ETK_CALLBACK(_etk_test_paned_child1_expand_toggled_cb), hpaned);
+   
    etk_box_append(ETK_BOX(vbox), check_button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    check_button = etk_check_button_new_with_label("Child 2 Expand");
    etk_box_append(ETK_BOX(vbox), check_button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_signal_connect("toggled", ETK_OBJECT(check_button),
+      ETK_CALLBACK(_etk_test_paned_child2_expand_toggled_cb), hpaned);
    
+   
+   /* Vpaned's properties frame */
    frame = etk_frame_new("VPaned Properties");
    etk_box_append(ETK_BOX(hbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    vbox = etk_vbox_new(ETK_TRUE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox);
+   
    check_button = etk_check_button_new_with_label("Child 1 Expand");
    etk_box_append(ETK_BOX(vbox), check_button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_signal_connect("toggled", ETK_OBJECT(check_button),
+      ETK_CALLBACK(_etk_test_paned_child1_expand_toggled_cb), vpaned);
+   
    check_button = etk_check_button_new_with_label("Child 2 Expand");
    etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(check_button), ETK_TRUE);
    etk_box_append(ETK_BOX(vbox), check_button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_signal_connect("toggled", ETK_OBJECT(check_button),
+      ETK_CALLBACK(_etk_test_paned_child2_expand_toggled_cb), vpaned);
    
    etk_widget_show_all(win);
+}
+
+/* Called when one of the two "Child 1 expand" checkboxes is toggled */
+static void _etk_test_paned_child1_expand_toggled_cb(Etk_Object *object, void *data)
+{
+   Etk_Toggle_Button *check;
+   Etk_Paned *paned;
+   
+   if (!(check = ETK_TOGGLE_BUTTON(object)) || !(paned = ETK_PANED(data)))
+      return;
+   etk_paned_child1_expand_set(paned, etk_toggle_button_active_get(check));
+}
+
+/* Called when one of the two "Child 2 expand" checkboxes is toggled */
+static void _etk_test_paned_child2_expand_toggled_cb(Etk_Object *object, void *data)
+{
+   Etk_Toggle_Button *check;
+   Etk_Paned *paned;
+   
+   if (!(check = ETK_TOGGLE_BUTTON(object)) || !(paned = ETK_PANED(data)))
+      return;
+   etk_paned_child2_expand_set(paned, etk_toggle_button_active_get(check));
 }

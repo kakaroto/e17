@@ -8,20 +8,18 @@
 
 /**
  * @defgroup Etk_Toplevel Etk_Toplevel
+ * @brief A toplevel widget is a widget that can't have a parent (such as a window or an embed widget)
  * @{
  */
 
-/** @brief Gets the type of a toplevel widget */
+/** Gets the type of a toplevel widget */
 #define ETK_TOPLEVEL_TYPE       (etk_toplevel_type_get())
-/** @brief Casts the object to an Etk_Toplevel */
+/** Casts the object to an Etk_Toplevel */
 #define ETK_TOPLEVEL(obj)       (ETK_OBJECT_CAST((obj), ETK_TOPLEVEL_TYPE, Etk_Toplevel))
-/** @brief Checks if the object is an Etk_Toplevel */
+/** Checks if the object is an Etk_Toplevel */
 #define ETK_IS_TOPLEVEL(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TOPLEVEL_TYPE))
 
-/**
- * @enum Etk_Pointer_Type
- * @brief The different types of mouse pointer
- */
+/** @brief The different types of mouse pointer */
 typedef enum Etk_Pointer_Type
 {
    ETK_POINTER_DEFAULT,
@@ -42,10 +40,10 @@ typedef enum Etk_Pointer_Type
 } Etk_Pointer_Type;
 
 /**
- * @struct Etk_Toplevel
- * @brief A toplevel widget is a widget that can't have a parent widget 
+ * @brief @widget A widget that can't have a parent
+ * @structinfo
  */
-struct _Etk_Toplevel
+struct Etk_Toplevel
 {
    /* private: */
    /* Inherit from Etk_Bin */
@@ -64,14 +62,16 @@ struct _Etk_Toplevel
    Etk_Bool need_update;
 };
 
+
 Etk_Type *etk_toplevel_type_get();
+
 Evas *etk_toplevel_evas_get(Etk_Toplevel *toplevel);
 
 void etk_toplevel_evas_position_get(Etk_Toplevel *toplevel, int *x, int *y);
 void etk_toplevel_screen_position_get(Etk_Toplevel *toplevel, int *x, int *y);
 void etk_toplevel_size_get(Etk_Toplevel *toplevel, int *w, int *h);
 
-void etk_toplevel_focused_widget_set(Etk_Toplevel *toplevel, Etk_Widget *widget);
+void        etk_toplevel_focused_widget_set(Etk_Toplevel *toplevel, Etk_Widget *widget);
 Etk_Widget *etk_toplevel_focused_widget_get(Etk_Toplevel *toplevel);
 Etk_Widget *etk_toplevel_focused_widget_next_get(Etk_Toplevel *toplevel);
 Etk_Widget *etk_toplevel_focused_widget_prev_get(Etk_Toplevel *toplevel);

@@ -1,15 +1,19 @@
 /** @file etk_toplevel.c */
 #include "etk_toplevel.h"
 #include <stdlib.h>
+#include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Toplevel
  * @{
  */
 
-enum _Etk_Toplevel_Property_Id
+#define ETK_TOPLEVEL_FOCUS_ORDER(widget)    ((widget)->focus_order ? (widget)->focus_order : (widget)->children)
+
+enum Etk_Toplevel_Property_Id
 {
    ETK_TOPLEVEL_EVAS_PROPERTY,
    ETK_TOPLEVEL_FOCUSED_WIDGET_PROPERTY
@@ -20,8 +24,10 @@ static void _etk_toplevel_destructor(Etk_Toplevel *toplevel);
 static void _etk_toplevel_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toplevel_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toplevel_realize_cb(Etk_Object *object, void *data);
-static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Widget *widget, Etk_Widget *after);
-static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Widget *widget, Etk_Widget *before);
+static void _etk_toplevel_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget);
+static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget);
 
 static Evas_List *_etk_toplevel_widgets = NULL;
 
@@ -34,7 +40,7 @@ static Evas_List *_etk_toplevel_widgets = NULL;
 /**
  * @internal
  * @brief Gets the type of an Etk_Toplevel
- * @return Returns the type on an Etk_Toplevel
+ * @return Returns the type of an Etk_Toplevel
  */
 Etk_Type *etk_toplevel_type_get()
 {
@@ -42,10 +48,13 @@ Etk_Type *etk_toplevel_type_get()
 
    if (!toplevel_type)
    {
-      toplevel_type = etk_type_new("Etk_Toplevel", ETK_BIN_TYPE, sizeof(Etk_Toplevel), ETK_CONSTRUCTOR(_etk_toplevel_constructor), ETK_DESTRUCTOR(_etk_toplevel_destructor));
+      toplevel_type = etk_type_new("Etk_Toplevel", ETK_BIN_TYPE, sizeof(Etk_Toplevel),
+         ETK_CONSTRUCTOR(_etk_toplevel_constructor), ETK_DESTRUCTOR(_etk_toplevel_destructor));
       
-      etk_type_property_add(toplevel_type, "evas", ETK_TOPLEVEL_EVAS_PROPERTY, ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE, etk_property_value_pointer(NULL));
-      etk_type_property_add(toplevel_type, "focused_widget", ETK_TOPLEVEL_FOCUSED_WIDGET_PROPERTY, ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+      etk_type_property_add(toplevel_type, "evas", ETK_TOPLEVEL_EVAS_PROPERTY,
+         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE, etk_property_value_pointer(NULL));
+      etk_type_property_add(toplevel_type, "focused_widget", ETK_TOPLEVEL_FOCUSED_WIDGET_PROPERTY,
+         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
    
       toplevel_type->property_set = _etk_toplevel_property_set;
       toplevel_type->property_get = _etk_toplevel_property_get;
@@ -121,9 +130,10 @@ void etk_toplevel_size_get(Etk_Toplevel *toplevel, int *w, int *h)
 }
 
 /**
- * @brief Sets the focused widget of the toplevel widget. Only for widget implementations. If you want to focus a widget, use etk_widget_focus()
+ * @brief Sets the focused widget of the toplevel widget. If you want to focus a widget, use etk_widget_focus() rather
  * @param toplevel a toplevel widget
  * @param widget the widget to set as focused
+ * @widget_implementation
  */
 void  etk_toplevel_focused_widget_set(Etk_Toplevel *toplevel, Etk_Widget *widget)
 {
@@ -147,39 +157,39 @@ Etk_Widget *etk_toplevel_focused_widget_get(Etk_Toplevel *toplevel)
 }
 
 /**
- * @brief Gets the previous widget to focus.  Mainly for widget implementations
+ * @brief Gets the previous widget to focus
  * @param toplevel a toplevel widget
  * @return Returns the previous widget to focus
+ * @widget_implementation
  */
 Etk_Widget *etk_toplevel_focused_widget_prev_get(Etk_Toplevel *toplevel)
 {
-   Etk_Widget *focused_parent;
-
+   Etk_Widget *prev;
+   
    if (!toplevel)
       return NULL;
-
-   if (toplevel->focused_widget && (focused_parent = toplevel->focused_widget->parent))
-      return _etk_toplevel_prev_to_focus_get(focused_parent, toplevel->focused_widget);
-   else
-      return _etk_toplevel_prev_to_focus_get(ETK_WIDGET(toplevel), NULL);
+   
+   prev = toplevel->focused_widget;
+   while ((prev = _etk_toplevel_prev_to_focus_get(toplevel, prev)) && !prev->focusable);
+   return prev;
 }
 
 /**
- * @brief Gets the next widget to focus. Mainly for widget implementations
+ * @brief Gets the next widget to focus
  * @param toplevel a toplevel widget
  * @return Returns the next widget to focus
+ * @widget_implementation
  */
 Etk_Widget *etk_toplevel_focused_widget_next_get(Etk_Toplevel *toplevel)
 {
-   Etk_Widget *focused_parent;
-
+   Etk_Widget *next;
+   
    if (!toplevel)
       return NULL;
-
-   if (toplevel->focused_widget && (focused_parent = toplevel->focused_widget->parent))
-      return _etk_toplevel_next_to_focus_get(focused_parent, toplevel->focused_widget);
-   else
-      return _etk_toplevel_next_to_focus_get(ETK_WIDGET(toplevel), NULL);
+   
+   next = toplevel->focused_widget;
+   while ((next = _etk_toplevel_next_to_focus_get(toplevel, next)) && !next->focusable);
+   return next;
 }
 
 /**
@@ -205,9 +215,10 @@ void etk_toplevel_pointer_push(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_
 }
 
 /**
- * @brief Pops a pointer type out of the pointer stack. It may change the pointer shape if the popped pointer type was on the top of the stack
+ * @brief Pops out of the pointer stack the first pointer of the stack whose type corresponds to @a pointer_type.
+ * It will change the pointer shape if the pointer to pop out is the one currently on the top of the stack
  * @param toplevel a toplevel widget
- * @param pointer_type the type of pointer to pop out of the stack. -1 to pop the last pointer on the stack
+ * @param pointer_type the type of pointer to pop out of the stack. -1 to pop the top pointer of the stack
  */ 
 void etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type)
 {
@@ -256,6 +267,7 @@ void etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_t
 /**
  * @brief Gets a list of all the created toplevel widgets
  * @return Returns a list of all the created toplevel widgets
+ * @note This list should not be modified or freed
  */
 Evas_List *etk_toplevel_widgets_get(void)
 {
@@ -350,13 +362,53 @@ static void _etk_toplevel_property_get(Etk_Object *object, int property_id, Etk_
 /* Called when the toplevel widget is realized */
 static void _etk_toplevel_realize_cb(Etk_Object *object, void *data)
 {
-   Etk_Toplevel *toplevel;
+   Etk_Widget *widget;
+   Evas_Object *obj;
 
-   if (!(toplevel = ETK_TOPLEVEL(object)))
+   if (!(widget = ETK_WIDGET(object)) || !(obj = widget->smart_object))
       return;
 
-   if (!toplevel->focused_widget && ETK_WIDGET(toplevel)->smart_object)
-      evas_object_focus_set(ETK_WIDGET(toplevel)->smart_object, 1);
+   evas_object_focus_set(obj, 1);
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_KEY_DOWN, _etk_toplevel_key_down_cb, widget);
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_KEY_UP, _etk_toplevel_key_up_cb, widget);
+}
+
+/* Called when a key of the keyboard is pressed (if the toplevel widget is focused) */
+static void _etk_toplevel_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Toplevel *toplevel;
+   Etk_Widget *focused, *widget;
+   Etk_Event_Key_Down event;
+   Etk_Bool propagate = ETK_TRUE;
+
+   if (!(toplevel = ETK_TOPLEVEL(data)))
+      return;
+   
+   focused = toplevel->focused_widget ? toplevel->focused_widget : ETK_WIDGET(toplevel);
+   for (widget = focused; widget && propagate; widget = widget->parent)
+   {
+      etk_event_key_down_wrap(widget, event_info, &event);
+      propagate = etk_signal_emit_by_name("key_down", ETK_OBJECT(widget), NULL, &event);
+   }
+}
+
+/* Called when a key of the keyboard is released (if the toplevel widget is focused) */
+static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Toplevel *toplevel;
+   Etk_Widget *focused, *widget;
+   Etk_Event_Key_Up event;
+   Etk_Bool propagate = ETK_TRUE;
+
+   if (!(toplevel = ETK_TOPLEVEL(data)))
+      return;
+   
+   focused = toplevel->focused_widget ? toplevel->focused_widget : ETK_WIDGET(toplevel);
+   for (widget = focused; widget && propagate; widget = widget->parent)
+   {
+      etk_event_key_up_wrap(widget, event_info, &event);
+      propagate = etk_signal_emit_by_name("key_up", ETK_OBJECT(widget), NULL, &event);
+   }
 }
 
 /**************************
@@ -365,56 +417,145 @@ static void _etk_toplevel_realize_cb(Etk_Object *object, void *data)
  *
  **************************/
 
-/* Gets recursively the next widget to focus */
-static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Widget *node, Etk_Widget *from)
+/* Gets the previous widget to focus */
+static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget)
 {
-   Evas_List *focus_order;
-   Evas_List *l;
-
-   if (!node)
-      return NULL;
-   if (node->focusable)
-      return node;
+   Etk_Widget *prev;
+   Evas_List *focus_order, *l;
    
-   focus_order = node->use_focus_order ? node->focus_order : node->children;
-   if (!focus_order)
-      return _etk_toplevel_next_to_focus_get(node->parent, node);
-
-   if (from && (l = evas_list_find_list(focus_order, from)))
+   if (!toplevel)
+      return NULL;
+   if (!widget)
    {
-      if (l->next)
-         return _etk_toplevel_next_to_focus_get(ETK_WIDGET(l->next->data), NULL);
-      else
-         return _etk_toplevel_next_to_focus_get(node->parent, node);
+      widget = ETK_WIDGET(toplevel);
+      while (!widget->focusable && (focus_order = ETK_TOPLEVEL_FOCUS_ORDER(widget)))
+         widget = ETK_WIDGET(evas_list_last(focus_order)->data);
+      if (widget->focusable)
+         return widget;
    }
-   else 
-      return _etk_toplevel_next_to_focus_get(ETK_WIDGET(focus_order->data), NULL);
+   
+   prev = NULL;
+   for ( ; widget->parent; widget = widget->parent)
+   {
+      focus_order = ETK_TOPLEVEL_FOCUS_ORDER(widget->parent);
+      if ((l = evas_list_find_list(focus_order, widget)))
+      {
+         if (l->prev)
+         {
+            prev = ETK_WIDGET(l->prev->data);
+            while (!prev->focusable)
+            {
+               if (!(focus_order = ETK_TOPLEVEL_FOCUS_ORDER(prev)))
+                  break;
+               prev = ETK_WIDGET(evas_list_last(focus_order)->data);
+            }
+            break;
+         }
+      }
+      else
+         break;
+   }
+   
+   return prev;
 }
 
-/* Gets recursively the previous widget to focus */
-static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Widget *node, Etk_Widget *from)
+/* Gets the next widget to focus */
+static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget)
 {
-   Evas_List *focus_order;
-   Evas_List *l;
-
-   if (!node)
-      return NULL;
-   if (node->focusable)
-      return node;
+   Etk_Widget *next;
+   Evas_List *focus_order, *l;
    
-   focus_order = node->use_focus_order ? node->focus_order : node->children;
-   if (!focus_order)
-      return _etk_toplevel_prev_to_focus_get(node->parent, node);
-
-   if (from && (l = evas_list_find_list(focus_order, from)))
+   if (!toplevel)
+      return NULL;
+   if (!widget)
    {
-      if (l->prev)
-         return _etk_toplevel_prev_to_focus_get(ETK_WIDGET(l->prev->data), NULL);
-      else
-         return _etk_toplevel_prev_to_focus_get(node->parent, node);
+      widget = ETK_WIDGET(toplevel);
+      while (!widget->focusable && (focus_order = ETK_TOPLEVEL_FOCUS_ORDER(widget)))
+         widget = ETK_WIDGET(focus_order->data);
+      if (widget->focusable)
+         return widget;
    }
-   else 
-      return _etk_toplevel_prev_to_focus_get(ETK_WIDGET(evas_list_data(evas_list_last(focus_order))), NULL);
+   
+   next = NULL;
+   for ( ; widget->parent; widget = widget->parent)
+   {
+      focus_order = ETK_TOPLEVEL_FOCUS_ORDER(widget->parent);
+      if ((l = evas_list_find_list(focus_order, widget)))
+      {
+         if (l->next)
+         {
+            next = ETK_WIDGET(l->next->data);
+            while (!next->focusable)
+            {
+               if (!(focus_order = ETK_TOPLEVEL_FOCUS_ORDER(next)))
+                  break;
+               next = ETK_WIDGET(focus_order->data);
+            }
+            break;
+         }
+      }
+      else
+         break;
+   }
+   
+   return next;
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Toplevel
+ *
+ * A toplevel widget has also to provide the Evas that will be used by all its children. @n
+ * You can use the toplevel parent of a widget to change the shape of the mouse pointer with
+ * etk_toplevel_pointer_push() and etk_toplevel_pointer_pop(). @n
+ * For example, to change the mouse pointer when the mouse is above a button:
+ * @code
+ * //Called when the button is entered: change the mouse pointer to ETK_POINTER_MOVE
+ * void _button_enter_cb(Etk_Widget *widget, void *data)
+ * {
+ *    Etk_Toplevel *toplevel;
+ *
+ *    if (!(toplevel = etk_widget_toplevel_parent_get(widget)))
+ *       return;
+ *    etk_toplevel_pointer_push(toplevel, ETK_POINTER_MOVE);
+ * }
+ *
+ * //Called when the button is left: restore the mouse pointer
+ * void _button_leave_cb(Etk_Widget *widget, void *data)
+ * {
+ *    Etk_Toplevel *toplevel;
+ *
+ *    if (!(toplevel = etk_widget_toplevel_parent_get(widget)))
+ *       return;
+ *    etk_toplevel_pointer_pop(toplevel, ETK_POINTER_MOVE);
+ * }
+ *
+ * etk_signal_connect("enter", ETK_OBJECT(button), ETK_CALLBACK(_button_enter_cb), NULL);
+ * etk_signal_connect("leave", ETK_OBJECT(button), ETK_CALLBACK(_button_leave_cb), NULL);
+ * @endcode @n
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *       - Etk_Bin
+ *         - Etk_Toplevel
+ *
+ * \par Properties:
+ * @prop_name "evas": The Evas of the toplevel widget
+ * @prop_type Pointer (Evas *)
+ * @prop_ro
+ * @prop_val NULL
+ * \par
+ * @prop_name "focused_widget": The focused widget of the toplevel widget
+ * @prop_type Pointer (Etk_Widget *)
+ * @prop_rw
+ * @prop_val NULL
+ */

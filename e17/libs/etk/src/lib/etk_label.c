@@ -24,8 +24,6 @@ static void _etk_label_property_set(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_label_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *requested_size);
 static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_label_clip_set(Etk_Widget *widget, Evas_Object *clip);
-static void _etk_label_clip_unset(Etk_Widget *widget);
 static void _etk_label_realize_cb(Etk_Object *object, void *data);
 static void _etk_label_unrealize_cb(Etk_Object *object, void *data);
 
@@ -177,8 +175,6 @@ static void _etk_label_constructor(Etk_Label *label)
 
    widget->size_request = _etk_label_size_request;
    widget->size_allocate = _etk_label_size_allocate;
-   widget->clip_set = _etk_label_clip_set;
-   widget->clip_unset = _etk_label_clip_unset;
 
    etk_signal_connect("realize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_unrealize_cb), NULL);
@@ -270,26 +266,6 @@ static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
    evas_object_move(label->clip, geometry.x, geometry.y);
    evas_object_resize(label->clip, geometry.w, geometry.h);
-}
-
-/* Clips the label against "clip" */
-static void _etk_label_clip_set(Etk_Widget *widget, Evas_Object *clip)
-{
-   Etk_Label *label;
-   
-   if (!(label = ETK_LABEL(widget)) || !label->clip || !clip)
-      return;
-   evas_object_clip_set(label->clip, clip);
-}
-
-/* Unclips the label */
-static void _etk_label_clip_unset(Etk_Widget *widget)
-{
-   Etk_Label *label;
-   
-   if (!(label = ETK_LABEL(widget)) || !label->clip)
-      return;
-   evas_object_clip_unset(label->clip);
 }
 
 /**************************

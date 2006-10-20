@@ -2,7 +2,7 @@
 
 static void _etk_test_slider_value_changed(Etk_Object *object, double value, void *data);
 
-/* Creates the window for the paned test */
+/* Creates the window for the slider test */
 void etk_test_slider_window_create(void *data)
 {
    static Etk_Widget *win = NULL;

@@ -30,6 +30,7 @@ enum Etk_Statusbar_Property_Id
 
 static void _etk_statusbar_constructor(Etk_Statusbar *statusbar);
 static void _etk_statusbar_destructor(Etk_Statusbar *statusbar);
+static void _etk_statusbar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_statusbar_realize_cb(Etk_Object *object, void *data);
 static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -61,6 +62,7 @@ Etk_Type *etk_statusbar_type_get()
       etk_type_property_add(statusbar_type, "has_resize_grip", ETK_STATUSBAR_HAS_RESIZE_GRIP_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       
+      statusbar_type->property_set = _etk_statusbar_property_set;
       statusbar_type->property_get = _etk_statusbar_property_get;
    }
 
@@ -134,7 +136,7 @@ int etk_statusbar_message_push(Etk_Statusbar *statusbar, const char *message, in
 /**
  * @brief Pops from the statusbar's message-stack the first message whose context-id matchs
  * @param statusbar a statusbar
- * @param context-id the context id of the message to pop
+ * @param context_id the context-id of the message to pop
  */
 void etk_statusbar_message_pop(Etk_Statusbar *statusbar, int context_id)
 {
@@ -282,6 +284,25 @@ static void _etk_statusbar_destructor(Etk_Statusbar *statusbar)
       statusbar->msg_stack = evas_list_remove_list(statusbar->msg_stack, statusbar->msg_stack);
    }
 }
+
+/* Sets the property whose id is "property_id" to the value "value" */
+static void _etk_statusbar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)
+{
+   Etk_Statusbar *statusbar;
+
+   if (!(statusbar = ETK_STATUSBAR(object)) || !value)
+      return;
+
+   switch (property_id)
+   {
+      case ETK_STATUSBAR_HAS_RESIZE_GRIP_PROPERTY:
+         etk_statusbar_has_resize_grip_set(statusbar, etk_property_value_bool_get(value));
+         break;
+      default:
+         break;
+   }
+}
+
 /* Gets the value of the property whose id is "property_id" */
 static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value)
 {

@@ -59,7 +59,7 @@ group {
          }
       }
       part {
-         name: "etk.swallow.child";
+         name: "etk.swallow.content";
          type: SWALLOW;
          mouse_events: 0;
          description {
@@ -110,6 +110,7 @@ group {
          action: STATE_SET "down" 0.0;
          target: "toggle_button_clip";
          target: "toggle_button_down";
+         target: "etk.swallow.content";
       }
       program {
          name: "toggle_button_released";
@@ -118,6 +119,7 @@ group {
          action: STATE_SET "default" 0.0;
          target: "toggle_button_clip";
          target: "toggle_button_down";
+         target: "etk.swallow.content";
       }
       program {
          name: "toggle_button_enter";

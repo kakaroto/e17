@@ -15,7 +15,6 @@
 #include "etk_tree_model.h"
 #include "etk_paned.h"
 #include "etk_box.h"
-#include "etk_tooltips.h"
 #include "config.h"
 
 /* OS-specific to list the mount points */
@@ -63,8 +62,6 @@ static void _etk_filechooser_widget_size_allocate(Etk_Widget *widget, Etk_Geomet
 static void _etk_filechooser_widget_place_activated_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_filechooser_widget_fav_activated_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_filechooser_widget_file_activated_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
-static void _etk_filechooser_files_tree_row_mouse_in_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
-static void _etk_filechooser_files_tree_row_mouse_out_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_filechooser_widget_places_tree_fill(Etk_Filechooser_Widget *fcw);
 static void _etk_filechooser_widget_favs_tree_fill(Etk_Filechooser_Widget *fcw);
 
@@ -93,9 +90,6 @@ static int _etk_filechooser_num_icons = sizeof(_etk_filechooser_icons) / sizeof 
 static char *_etk_filechooser_unsupported_fs[] = { "proc", "sysfs", "tmpfs", "devpts", "usbfs", "procfs", "devfs" };
 static int _etk_filechooser_num_unsupported_fs = sizeof(_etk_filechooser_unsupported_fs) / sizeof (_etk_filechooser_unsupported_fs[0]);
 /* static Etk_Signal *_etk_filechooser_widget_signals[ETK_FILECHOOSER_WIDGET_NUM_SIGNALS]; */
-
-static Ecore_Timer *_etk_filechooser_timer = NULL;
-static char _etk_filechooser_tooltip_text[PATH_MAX + 128];
 
 /**************************
  *
@@ -386,9 +380,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_widget_show(fcw->files_tree);
    etk_widget_internal_set(fcw->files_tree, ETK_TRUE);
    etk_signal_connect("row_activated", ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_activated_cb), fcw);
-   etk_signal_connect("row_mouse_in", ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_files_tree_row_mouse_in_cb), fcw);
-   etk_signal_connect("row_mouse_out", ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_files_tree_row_mouse_out_cb), fcw);
-
+   
    _etk_filechooser_widget_places_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));
    _etk_filechooser_widget_favs_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));
    
@@ -516,11 +508,6 @@ static void _etk_filechooser_widget_file_activated_cb(Etk_Object *object, Etk_Tr
 
    etk_tree_row_fields_get(row, filechooser_widget->files_name_col, NULL, NULL, &selected_file, NULL);
    snprintf(file_path, PATH_MAX, "%s/%s", filechooser_widget->current_folder, selected_file);
-
-   if(_etk_filechooser_timer)
-     ecore_timer_del(_etk_filechooser_timer);
-   _etk_filechooser_timer = NULL;
-   etk_tooltips_pop_down();
    
    if (ecore_file_exists(file_path))
    {
@@ -529,54 +516,6 @@ static void _etk_filechooser_widget_file_activated_cb(Etk_Object *object, Etk_Tr
       else /* TODO */
          ;
    }
-}
-
-static int _etk_filechooser_timer_cb(void *data)
-{
-   Etk_Filechooser_Widget *fcw;
-   
-   _etk_filechooser_timer = NULL;
-   
-   if (!(fcw = ETK_FILECHOOSER_WIDGET(data)) || !_etk_filechooser_tooltip_text)
-     return 0;
-   
-   etk_tooltips_tip_set(ETK_WIDGET(fcw), _etk_filechooser_tooltip_text);
-   return 0;
-}
-
-/* Called when the mouse enters a row */
-static void _etk_filechooser_files_tree_row_mouse_in_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
-{
-   Etk_Filechooser_Widget *fcw;
-   char *selected_file;
-   char file_path[PATH_MAX];
-   
-   if (!(fcw = ETK_FILECHOOSER_WIDGET(data)))
-     return;   
-   
-   etk_tree_row_fields_get(row, fcw->files_name_col, NULL, NULL, &selected_file, NULL);      
-   
-   snprintf(file_path, PATH_MAX, "%s/%s", fcw->current_folder, selected_file);
-   if(!ecore_file_exists(file_path))
-     return;
-   
-   snprintf(_etk_filechooser_tooltip_text, sizeof(_etk_filechooser_tooltip_text), " %s <br> %d Kb <br> ", selected_file, ecore_file_size(file_path) / 1024);
-
-   _etk_filechooser_timer = ecore_timer_add(0.08, _etk_filechooser_timer_cb, fcw);
-}
-
-/* Called when the mouse leaves a row */
-static void _etk_filechooser_files_tree_row_mouse_out_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
-{
-   Etk_Filechooser_Widget *fcw;
-      
-   if (!(fcw = ETK_FILECHOOSER_WIDGET(data)))
-     return;   
-   
-   if(_etk_filechooser_timer)
-     ecore_timer_del(_etk_filechooser_timer);
-   _etk_filechooser_timer = NULL;
-   etk_tooltips_tip_set(ETK_WIDGET(fcw), NULL);
 }
 
 /**************************

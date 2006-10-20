@@ -310,6 +310,7 @@ Etk_Bool etk_theme_edje_object_set(Evas_Object *object, const char *file, const 
 /**
  * @brief Loads an edje-group from a theme-file and sets it to the object.
  * Equivalent to etk_theme_edje_object_set(object, etk_widget_theme_file_get(parent), group, etk_widget_theme_group_get(parent))
+ * @param object an Edje object
  * @param group the theme-group of the object
  * @param parent the theme-parent of the object
  * @return Returns ETK_TRUE on success, ETK_FALSE on failure

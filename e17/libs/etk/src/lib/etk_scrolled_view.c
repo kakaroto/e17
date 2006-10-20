@@ -311,8 +311,8 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
       vscrollbar_size.h = 0;
    }
    
-   scrollview_size.w = geometry.w - child->left_inset - child->right_inset;
-   scrollview_size.h = geometry.h - child->top_inset - child->bottom_inset;
+   scrollview_size.w = geometry.w - child->inset.left - child->inset.right;
+   scrollview_size.h = geometry.h - child->inset.top - child->inset.bottom;
    if (child->scroll_margins_get)
    {
       Etk_Size margins_size;

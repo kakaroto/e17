@@ -1,6 +1,6 @@
 group {
    name: "etk/entry";
-   min: 120 18;
+   min: 120 20;
    parts {
       part {
          name: "entry";
@@ -8,11 +8,11 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.5;
-               offset: 0 -9;
+               offset: 0 -10;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -1 8;
+               offset: -1 9;
             }
             image {
                normal: "entry.png";

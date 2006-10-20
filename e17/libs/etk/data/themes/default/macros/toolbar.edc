@@ -98,7 +98,7 @@
          } \
       } \
       part { \
-         name: "etk.swallow.child"; \
+         name: "etk.swallow.content"; \
          type: SWALLOW; \
          description { \
             state: "active" 0.0; \
@@ -136,7 +136,7 @@
 	 source: "etk"; \
 	 action: STATE_SET "down" 0.0; \
          target: "button_shadow2"; \
-         target: "etk.swallow.child"; \
+         target: "etk.swallow.content"; \
       } \
       program { \
 	 name: "button_released"; \
@@ -144,7 +144,7 @@
 	 source: "etk"; \
 	 action: STATE_SET "active" 0.0; \
          target: "button_shadow2"; \
-         target: "etk.swallow.child"; \
+         target: "etk.swallow.content"; \
       } \
       program { \
          name: "button_enter"; \
@@ -222,4 +222,4 @@
       } \
        \
       GLINT_PROGRAM \
-   } \
+   }

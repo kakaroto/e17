@@ -5,10 +5,6 @@
 #include "etk_container.h"
 #include "etk_types.h"
 
-/* TODO/FIXME list:
- - The "swallow" code should be included in Etk_Widget.c
- */
-
 /**
  * @defgroup Etk_Bin Etk_Bin
  * @brief The Etk_Bin widget is a container that can contain only one child
@@ -37,8 +33,8 @@ struct Etk_Bin
 
 Etk_Type *etk_bin_type_get();
 
-Etk_Widget *etk_bin_child_get(Etk_Bin *bin);
 void        etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child);
+Etk_Widget *etk_bin_child_get(Etk_Bin *bin);
 
 /** @} */
 

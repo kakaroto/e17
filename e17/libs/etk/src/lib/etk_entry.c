@@ -260,7 +260,7 @@ static void _etk_entry_realize_cb(Etk_Object *object, void *data)
       etk_widget_theme_group_get(ETK_WIDGET(entry)));
    etk_editable_text_set(entry->editable_object, entry->text);
    etk_editable_password_mode_set(entry->editable_object, entry->password_mode);
-   if (!etk_widget_focused_get(ETK_WIDGET(entry)))
+   if (!etk_widget_is_focused(ETK_WIDGET(entry)))
    {
       etk_editable_cursor_hide(entry->editable_object);
       etk_editable_selection_hide(entry->editable_object);

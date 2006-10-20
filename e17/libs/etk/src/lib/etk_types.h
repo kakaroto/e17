@@ -93,6 +93,7 @@ typedef struct Etk_Selection_Event Etk_Selection_Event;
 typedef struct Etk_Separator Etk_Separator;
 typedef struct Etk_HSeparator Etk_HSeparator;
 typedef struct Etk_VSeparator Etk_VSeparator;
+typedef struct Etk_Shadow Etk_Shadow;
 typedef struct _Etk_Slider Etk_Slider;
 typedef struct _Etk_HSlider Etk_HSlider;
 typedef struct _Etk_VSlider Etk_VSlider;
@@ -104,7 +105,7 @@ typedef struct Etk_Textblock_Format Etk_Textblock_Format;
 typedef struct Etk_Textblock_Iter Etk_Textblock_Iter;
 typedef struct Etk_Textblock_Node Etk_Textblock_Node;
 typedef struct _Etk_Toggle_Button Etk_Toggle_Button;
-typedef struct _Etk_Toplevel Etk_Toplevel;
+typedef struct Etk_Toplevel Etk_Toplevel;
 typedef struct Etk_Toolbar Etk_Toolbar;
 typedef struct _Etk_Tool_Button Etk_Tool_Button;
 typedef struct _Etk_Tool_Toggle_Button Etk_Tool_Toggle_Button;
@@ -113,7 +114,7 @@ typedef struct _Etk_Tree_Col Etk_Tree_Col;
 typedef struct _Etk_Tree_Model Etk_Tree_Model;
 typedef struct _Etk_Tree_Row Etk_Tree_Row;
 typedef struct _Etk_Viewport Etk_Viewport;
-typedef struct _Etk_Widget Etk_Widget;
+typedef struct Etk_Widget Etk_Widget;
 typedef struct _Etk_Window Etk_Window;
 
 /**

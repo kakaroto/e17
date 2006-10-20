@@ -8,14 +8,15 @@
 
 /**
  * @defgroup Etk_Widget Etk_Widget
+ * @brief Etk_Widget is the base class for all the widgets of Etk
  * @{
  */
 
-/** @brief Gets the type of a widget */
+/** Gets the type of a widget */
 #define ETK_WIDGET_TYPE       (etk_widget_type_get())
-/** @brief Casts the object to an Etk_Widget */
+/** Casts the object to an Etk_Widget */
 #define ETK_WIDGET(obj)       (ETK_OBJECT_CAST((obj), ETK_WIDGET_TYPE, Etk_Widget))
-/** @brief Check if the object is an Etk_Widget */
+/** Check if the object is an Etk_Widget */
 #define ETK_IS_WIDGET(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_WIDGET_TYPE))
 
 
@@ -33,16 +34,15 @@ typedef enum Etk_Widget_Swallow_Error
 } Etk_Widget_Swallow_Error;
 
 /**
- * @struct Etk_Widget
- * @brief All the Etk widgets inherits from an Etk_Widget.
+ * @brief @widget The base class for all the widgets of Etk
+ * @structinfo
  */
-struct _Etk_Widget
+struct Etk_Widget
 {
    /* private: */
    /* Inherit from Etk_Object */
    Etk_Object object;
 
-   char *name;
    Etk_Toplevel *toplevel_parent;
    Etk_Widget *parent;
    void *child_properties;
@@ -50,7 +50,6 @@ struct _Etk_Widget
    Evas_List *focus_order;
    
    Evas_Object *theme_object;
-   int theme_min_width, theme_min_height;
    char *theme_file;
    char *theme_group;
    char *theme_group_full;
@@ -59,24 +58,27 @@ struct _Etk_Widget
 
    Evas_Object *smart_object;
    Evas_Object *event_object;
+   Evas_Object *content_object;
    Evas_Object *clip;
    Evas_List *member_objects;
    Evas_List *swallowed_objects;
 
-   int left_inset, right_inset, top_inset, bottom_inset;
+   struct
+   {
+      int left, right, top, bottom;
+   } inset;
    Etk_Geometry geometry;
    Etk_Geometry inner_geometry;
+   Etk_Size theme_min_size;
    Etk_Size requested_size;
    Etk_Size last_calced_size;
+   
    void (*size_request)(Etk_Widget *widget, Etk_Size *size_requisition);
    void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry);
 
    void (*scroll_size_get)(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
    void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
-   
-   void (*clip_set)(Etk_Widget *widget, Evas_Object *clip);
-   void (*clip_unset)(Etk_Widget *widget);
 
    void (*show)(Etk_Widget *widget);
    void (*enter)(Etk_Widget *widget);
@@ -106,7 +108,7 @@ struct _Etk_Widget
    unsigned int use_focus_order : 1;
    unsigned int need_size_recalc : 1;
    unsigned int need_redraw : 1;
-   unsigned int need_theme_min_size_recalc : 1;
+   unsigned int need_theme_size_recalc : 1;
    unsigned int accepts_dnd : 1;
    unsigned int dnd_source : 1;
    unsigned int dnd_dest : 1;
@@ -116,9 +118,6 @@ struct _Etk_Widget
 
 Etk_Type   *etk_widget_type_get();
 Etk_Widget *etk_widget_new(Etk_Type *widget_type, const char *first_property, ...);
-
-void        etk_widget_name_set(Etk_Widget *widget, const char *name);
-const char *etk_widget_name_get(Etk_Widget *widget);
 
 void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
 void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
@@ -165,9 +164,12 @@ void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
 void     etk_widget_enter(Etk_Widget *widget);
 void     etk_widget_leave(Etk_Widget *widget);
+
+void     etk_widget_focusable_set(Etk_Widget *widget, Etk_Bool focusable);
+Etk_Bool etk_widget_focusable_get(Etk_Widget *widget);
 void     etk_widget_focus(Etk_Widget *widget);
 void     etk_widget_unfocus(Etk_Widget *widget);
-Etk_Bool etk_widget_focused_get(Etk_Widget *widget);
+Etk_Bool etk_widget_is_focused(Etk_Widget *widget);
 
 void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name, Etk_Bool size_recalc);
 void etk_widget_theme_part_text_set(Etk_Widget *widget, const char *part_name, const char *text);
@@ -178,7 +180,7 @@ void                     etk_widget_unswallow_widget(Etk_Widget *swallower, Etk_
 Etk_Bool                 etk_widget_is_swallowed(Etk_Widget *widget);
 Etk_Bool                 etk_widget_swallow_object(Etk_Widget *swallower, const char *part, Evas_Object *object);
 void                     etk_widget_unswallow_object(Etk_Widget *swallower, Evas_Object *object);
-Etk_Widget_Swallow_Error etk_widget_swallow_error_get();
+Etk_Widget_Swallow_Error etk_widget_swallow_error_get(void);
 
 Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object);
 void     etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object);

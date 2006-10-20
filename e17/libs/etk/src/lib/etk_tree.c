@@ -1476,9 +1476,9 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
       
             etk_widget_size_request(tree->columns[i]->header, &header_requested_size);
             if (tree->columns[i] == first_visible_col)
-               header_requested_size.w -= widget->left_inset;
+               header_requested_size.w -= widget->inset.left;
             if (tree->columns[i] == last_visible_col)
-               header_requested_size.w -= widget->right_inset;
+               header_requested_size.w -= widget->inset.right;
             tree->columns[i]->width = ETK_MAX(header_requested_size.w, tree->columns[i]->requested_width);
          }
          else
@@ -1534,7 +1534,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
       {
          child_geometry.x = ETK_WIDGET(tree)->inner_geometry.x + tree->columns[i]->xoffset;
          if (tree->columns[i] != first_visible_col)
-            child_geometry.x += widget->left_inset;
+            child_geometry.x += widget->inset.left;
          child_geometry.y = ETK_WIDGET(tree)->inner_geometry.y;
 
          if (tree->columns[i] == last_visible_col)
@@ -1543,7 +1543,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
          {
             child_geometry.w = tree->columns[i]->visible_width;
             if (tree->columns[i] == first_visible_col)
-               child_geometry.w += tree->grid->left_inset;
+               child_geometry.w += tree->grid->inset.left;
          }
          
          etk_widget_size_allocate(tree->columns[i]->header, child_geometry);
@@ -2314,7 +2314,7 @@ static void _etk_tree_header_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_M
    {
       new_size = col->tree->col_to_resize_initial_width + event->cur.canvas.x - col->tree->col_to_resize_initial_x;
       if (col->tree->column_to_resize->place == 0)
-         new_size -= col->tree->grid->left_inset;
+         new_size -= col->tree->grid->inset.left;
 
       new_size = ETK_MAX(new_size, ETK_TREE_MIN_HEADER_WIDTH);
       if (new_size != col->tree->column_to_resize->requested_width)
@@ -2850,7 +2850,7 @@ static Etk_Tree_Col *etk_tree_col_to_resize_get(Etk_Tree_Col *col, int x)
    if (!col)
       return NULL;
 
-   if ((x + col->header->left_inset <= 3) && col->place >= 1)
+   if ((x + col->header->inset.left <= 3) && col->place >= 1)
    {
       for (i = 0; i < col->tree->num_cols; i++)
       {
@@ -2863,7 +2863,7 @@ static Etk_Tree_Col *etk_tree_col_to_resize_get(Etk_Tree_Col *col, int x)
          }
       }
    }
-   else if ((col->header->geometry.w - (x + col->header->left_inset) <= 3) && col->resizable)
+   else if ((col->header->geometry.w - (x + col->header->inset.left) <= 3) && col->resizable)
       return col;
 
    return NULL;

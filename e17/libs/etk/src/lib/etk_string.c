@@ -108,7 +108,7 @@ Etk_String *etk_string_copy(const Etk_String *string)
 }
 
 /**
- * @param Gets the string as an array of char
+ * @brief Gets the string as an array of char
  * @param string a string
  * @param Returns the string as an array of char (a pointer on the first character)
  */

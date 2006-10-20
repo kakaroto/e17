@@ -25,14 +25,23 @@ enum Etk_Object_Signal_Id
    ETK_OBJECT_NUM_SIGNALS
 };
 
+enum Etk_Object_Property_Id
+{
+   ETK_OBJECT_NAME_PROPERTY
+};
+
 static void _etk_object_constructor(Etk_Object *object);
 static void _etk_object_destructor(Etk_Object *object);
+static void _etk_object_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
+static void _etk_object_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
+
 static void _etk_object_free(Etk_Object *object);
 static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
 static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
 
 static Etk_Object *_etk_object_objects = NULL;
 static Etk_Object *_etk_object_last_object = NULL;
+static Evas_Hash *_etk_object_name_hash = NULL;
 static Etk_Signal *_etk_object_signals[ETK_OBJECT_NUM_SIGNALS];
 
 /**************************
@@ -49,6 +58,8 @@ void etk_object_shutdown()
 {
    while (_etk_object_objects)
       _etk_object_free(_etk_object_objects);
+   evas_hash_free(_etk_object_name_hash);
+   _etk_object_name_hash = NULL;
 }
 /**
  * @internal
@@ -83,6 +94,12 @@ Etk_Type *etk_object_type_get()
 
       _etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL] = etk_signal_new("destroyed",
          object_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      
+      etk_type_property_add(object_type, "name", ETK_OBJECT_NAME_PROPERTY,
+         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      
+      object_type->property_set = _etk_object_property_set;
+      object_type->property_get = _etk_object_property_get;
    }
 
    return object_type;
@@ -154,6 +171,8 @@ void etk_object_destroy(Etk_Object *object)
    if (!object || object->destroy_me)
       return;
 
+   etk_object_name_set(object, NULL);
+   
    /* Sets the weak pointers to NULL */
    while (object->weak_pointers_list)
    {
@@ -167,12 +186,73 @@ void etk_object_destroy(Etk_Object *object)
 }
 
 /**
+ * @brief Sets the name of the object. The object can then be retrieved from this name with etk_object_name_find()
+ * @param object an object
+ * @param name the name to set
+ * @see etk_object_name_find()
+ */
+void etk_object_name_set(Etk_Object *object, const char *name)
+{
+   Etk_Object *object2;
+   
+   if (!object || object->destroy_me || object->name == name)
+      return;
+
+   if (name)
+   {
+      if ((object2 = etk_object_name_find(name)))
+      {
+         if (object == object2)
+            return;
+         else
+            etk_object_name_set(object2, NULL);
+      }
+      
+      free(object->name);
+      object->name = strdup(name);
+      _etk_object_name_hash = evas_hash_add(_etk_object_name_hash, object->name, object);
+   }
+   else
+   {
+      _etk_object_name_hash = evas_hash_del(_etk_object_name_hash, object->name, object);
+      free(object->name);
+      object->name = NULL;
+   }
+   
+   etk_object_notify(object, "name");
+}
+
+/**
+ * @brief Gets the name of the object
+ * @param object a object
+ * @return Returns the name of the object
+ */
+const char *etk_object_name_get(Etk_Object *object)
+{
+   if (!object || object->destroy_me)
+      return NULL;
+   return object->name;
+}
+
+/**
+ * @brief Finds the object called @a name
+ * @param name the name of the object to find
+ * @return Returns the object called @a name
+ */
+Etk_Object *etk_object_name_find(const char *name)
+{
+   if (!name)
+      return NULL;
+   return ETK_OBJECT(evas_hash_find(_etk_object_name_hash, name));
+}
+
+/**
  * @brief Checks if @a object can be cast to @a type.
  * If @a object doesn't inherit from @a type, a warning is displayed in the console but the object is returned anyway.
  * @param object the object to cast
  * @param type the type to which we cast the object
  * @return Returns the object
- * @note You usually do not need to call this function, use specific macros instead (ETK_WIDGET() for example)
+ * @note You usually do not need to call this function, use specific macros instead (ETK_IS_WIDGET() for example)
  */
 Etk_Object *etk_object_check_cast(Etk_Object *object, Etk_Type *type)
 {
@@ -424,12 +504,10 @@ void etk_object_properties_set_valist(Etk_Object *object, const char *first_prop
    {
       if (etk_type_property_find(object->type, property_name, &type, &property))
       {
+         property_value = etk_property_value_create_valist(etk_property_type_get(property), &args2);
          if (type->property_set)
-         {
-            property_value = etk_property_value_create_valist(etk_property_type_get(property), &args2);
             type->property_set(object, property->id, property_value);
-            etk_property_value_delete(property_value);
-         }
+         etk_property_value_delete(property_value);
       }
       else
       {
@@ -613,6 +691,7 @@ static void _etk_object_constructor(Etk_Object *object)
    if (!object)
       return;
 
+   object->name = NULL;
    object->data_hash = NULL;
    object->before_signal_callbacks_list = NULL;
    object->after_signal_callbacks_list = NULL;
@@ -654,6 +733,38 @@ static void _etk_object_destructor(Etk_Object *object)
    
    evas_hash_foreach(object->notification_callbacks_hash, _etk_object_notification_callbacks_free_cb, NULL);
    evas_hash_free(object->notification_callbacks_hash);
+}
+
+/* Sets the property whose id is "property_id" to the value "value" */
+static void _etk_object_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)
+{
+   if (!object || !value)
+      return;
+
+   switch (property_id)
+   {
+      case ETK_OBJECT_NAME_PROPERTY:
+         etk_object_name_set(object, etk_property_value_string_get(value));
+         break;
+      default:
+         break;
+   }
+}
+
+/* Gets the value of the property whose id is "property_id" */
+static void _etk_object_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value)
+{
+   if (!object || !value)
+      return;
+
+   switch (property_id)
+   {
+      case ETK_OBJECT_NAME_PROPERTY:
+         etk_property_value_string_set(value, object->name);
+         break;
+      default:
+         break;
+   }
 }
 
 /**************************
@@ -802,4 +913,10 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * @signal_cb void callback(Etk_Object *object, void *data)
  * @signal_arg object: the object which is about to be destroyed
  * @signal_data
+ *
+ * \par Properties:
+ * @prop_name "name": The name of the object
+ * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
  */

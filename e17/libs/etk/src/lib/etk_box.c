@@ -1029,7 +1029,6 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
    
    if (!after)
    {
-      box->cells[group] = evas_list_prepend(box->cells[group], cell);
       if (group == ETK_BOX_START)
          box_widget->focus_order = evas_list_prepend(box_widget->focus_order, child);
       else
@@ -1039,11 +1038,12 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
          else
             box_widget->focus_order = evas_list_append(box_widget->focus_order, child);
       }
+      box->cells[group] = evas_list_prepend(box->cells[group], cell);
    }
    else
    {
-      box->cells[group] = evas_list_append_relative(box->cells[group], cell, after);
       box_widget->focus_order = evas_list_append_relative(box_widget->focus_order, child, after->child);
+      box->cells[group] = evas_list_append_relative(box->cells[group], cell, after);
    }
    
    etk_widget_parent_set(child, ETK_WIDGET(box));
