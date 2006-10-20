@@ -281,31 +281,45 @@ sub entry_window_show
     $win->TitleSet("Etk-Perl Entry Test");
     my $vbox = Etk::VBox->new(0, 0);    
     $win->Add($vbox);
-    my $hbox = Etk::HBox->new(0, 0);
-    $vbox->Append($hbox);
-    my $label = Etk::Label->new("");
-    $vbox->Append($label);
 
-    my $entry = Etk::Entry->new();
-    $hbox->Append($entry);
+    my $frame = Etk::Frame->new("Normal Entry");
+    $vbox->Append($frame, BoxStart, BoxExpandFill, 0);
 
-    my $button = Etk::Button->new();
-    $button->LabelSet("Print text");
-    $button->SignalConnect("clicked",
-    	sub {
-		$label->Set($entry->TextGet());
-	}
-	);
-    $hbox->Append($button);
+    my $table = Etk::Table->new(2, 2, 0);
+    $frame->Add($table);
 
-    my $button2 = Etk::ToggleButton->new();
-    $button2->LabelSet("Toggle password");
-    $button2->SignalConnect("clicked",
-    	sub {
-		$entry->PasswordModeSet(!$entry->PasswordModeGet());
-	}
-	);
-    $hbox->Append($button2);
+    my $entry_normal = Etk::Entry->new();
+    $entry_normal->TextSet("Here is some text");
+    $table->Attach($entry_normal, 0, 0, 0, 0, 0, 0, TableHExpand | TableHFill);
+
+    my $button = Etk::Button->new("Print Text");
+    $table->Attach($button, 1, 1, 0, 0, 0, 0, TableNone);
+
+    my $label_normal = Etk::Label->new("");
+    $table->Attach($label_normal, 0, 1, 1, 1, 0, 0, TableHExpand | TableHFill);
+
+    $button->SignalConnect("clicked", sub {
+	    $label_normal->Set( $entry_normal->TextGet() )
+    });
+
+    $vbox->Append( Etk::HSeparator->new(), BoxStart, BoxNone, 6);
+
+    $frame = Etk::Frame->new("Password Entry");
+    $vbox->Append($frame, BoxStart, BoxExpandFill, 0);
+    $vbox = Etk::VBox->new(0, 0);
+    $frame->Add($vbox);
+
+    my $password_entry = Etk::Entry->new();
+    $password_entry->TextSet("Password");
+    $password_entry->PasswordModeSet(1);
+    $vbox->Append($password_entry, BoxStart, BoxFill, 0);
+
+    $button = Etk::CheckButton->new("Password Visible");
+    $vbox->Append($button, BoxStart, BoxFill, 0);
+    $button->SignalConnect("toggled", sub {
+	    $password_entry->PasswordModeSet( ! $password_entry->PasswordModeGet() )
+    });
+
 
     $win->ShowAll();
 }

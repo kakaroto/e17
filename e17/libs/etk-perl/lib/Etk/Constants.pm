@@ -54,6 +54,8 @@ our %EXPORT_TAGS = (
    toolbar	=> [qw/ToolbarIcons ToolbarText ToolbarBothVert ToolbarBothHoriz 
     ToolbarDefault ToolbarHoriz ToolbarVert/],
    button	=> [qw/ButtonIcon ButtonText ButtonBothVert ButtonBothHoriz/],
+   shadow	=> [qw/ShadowNone ShadowInside ShadowOutside ShadowNoEdge ShadowLeft ShadowAll
+    ShadowRight ShadowTop ShadowBottom ShadowLeftRight ShadowTopBottom/],
    );
 
 my @all = ();
@@ -237,6 +239,26 @@ use constant {
    ButtonBothHoriz => 3
 };
 
+
+#shadow
+use constant {
+   ShadowNone => 0,
+   ShadowInside => 1,
+   ShadowOutside => 2,
+
+   ShadowNoEdge => 0,
+   ShadowLeft => 1 << 0,
+   ShadowRight => 1 << 1,
+   ShadowTop => 1 << 2,
+   ShadowBottom => 1 << 3   
+};
+use constant {
+   ShadowLeftRight => ShadowLeft | ShadowRight,
+   ShadowTopBottom => ShadowTop | ShadowBottom
+};
+use constant {
+   ShadowAll => ShadowLeftRight | ShadowTopBottom
+};
 
 
 

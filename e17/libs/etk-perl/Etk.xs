@@ -2825,6 +2825,25 @@ signal_disconnect(object, signal_name, callback)
 	else
  	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
 
+const char *
+etk_object_name_get(object)
+	Etk_Object *	object
+      ALIAS:
+	NameGet=1
+
+Etk_Object *
+etk_object_name_find(name)
+	const char * name
+	ALIAS:
+	NameFind=1
+
+void
+etk_object_name_set(object, name)
+	Etk_Object *	object
+	char *	name
+      ALIAS:
+	NameSet=1
+
 
 MODULE = Etk::Paned	PACKAGE = Etk::Paned	PREFIX = etk_paned_
 	
@@ -4774,6 +4793,18 @@ etk_widget_dnd_files_get(e)
 	for (i=0; i<*num_files; i++)
 		XPUSHs(sv_2mortal(newSVpv(files[i], strlen(files[i]))));
 	
+void
+etk_widget_focusable_set(widget, focusable)
+	Etk_Widget * widget
+	Etk_Bool focusable
+	ALIAS:
+	FocusableSet=1
+
+Etk_Bool
+etk_widget_focusable_get(widget)
+	Etk_Widget * widget
+	ALIAS:
+	FocusableGet=1
 
 Etk_Bool
 etk_widget_dnd_internal_get(widget)
@@ -5037,19 +5068,6 @@ etk_widget_member_object_stack_below(widget, object, below)
       ALIAS:
 	MemberObjectStackBelow=1
 
-const char *
-etk_widget_name_get(widget)
-	Etk_Widget *	widget
-      ALIAS:
-	NameGet=1
-
-void
-etk_widget_name_set(widget, name)
-	Etk_Widget *	widget
-	char *	name
-      ALIAS:
-	NameSet=1
-
 Etk_Widget *
 etk_widget_new(widget_type, first_property, ...)
 	Etk_Type *	widget_type
@@ -5288,6 +5306,12 @@ etk_widget_unfocus(widget)
       ALIAS:
 	Unfocus=1
 
+Etk_Bool
+etk_widget_is_focused(widget)
+	Etk_Widget *	widget
+      ALIAS:
+	IsFocused=1
+
 void
 etk_widget_unswallow_widget(swallowing_widget, widget)
 	Etk_Widget *	swallowing_widget
@@ -5307,6 +5331,18 @@ etk_widget_internal_set(widget, internal)
 	Etk_Bool	internal
       ALIAS:
 	InternalSet=1
+
+	 
+MODULE = Etk::Shadow	PACKAGE = Etk::Shadow	PREFIX = etk_shadow_
+
+Etk_Shadow *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_SHADOW(etk_shadow_new());
+	OUTPUT:
+	RETVAL
+
 
 
 MODULE = Etk::Window	PACKAGE = Etk::Window	PREFIX = etk_window_
@@ -5541,7 +5577,6 @@ etk_window_wmclass_set(window, window_name, window_class)
 	char *	window_class
       ALIAS:
 	WmclassSet=1
-	 
 
 MODULE = Etk::Timer	PACKAGE = Etk::Timer 
 
