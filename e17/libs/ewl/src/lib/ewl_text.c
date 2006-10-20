@@ -5057,6 +5057,7 @@ Ewl_Text_Tree *
 ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int char_idx, 
 					unsigned int inclusive)
 {
+	Ecore_List *children = NULL;
 	Ewl_Text_Tree *child = NULL, *last = NULL;
 	unsigned int char_count = 0;
 
@@ -5071,8 +5072,9 @@ ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int char_idx,
 		DRETURN_PTR(tree, DLEVEL_STABLE);
 
 	child = tree;
-	ecore_list_goto_first(tree->children);
-	while ((child = ecore_list_next(tree->children)))
+	children = child->children;
+	ecore_list_goto_first(children);
+	while ((child = ecore_list_next(children)))
 	{
 		last = child;
 
@@ -5080,8 +5082,22 @@ ewl_text_tree_node_get(Ewl_Text_Tree *tree, unsigned int char_idx,
 		if (((inclusive && ((char_count + child->length.chars) >= char_idx)))
 				|| (!inclusive && ((char_count + child->length.chars > char_idx))))
 		{
-			child = ewl_text_tree_node_get(child, char_idx - char_count, inclusive);
-			break;
+			char_idx -= char_count;
+			char_count = 0;
+
+			if (char_idx > child->length.chars)
+			{
+				child = NULL;
+				break;
+			}
+
+			if ((!child->children) 
+					|| (ecore_list_nodes(child->children) == 0))
+				break;
+
+			children = child->children;
+			ecore_list_goto_first(children);
+			continue;
 		}
 		char_count += child->length.chars;
 	}
@@ -5107,6 +5123,7 @@ ewl_text_tree_node_in_bytes_get(Ewl_Text_Tree *tree, unsigned int byte_idx,
 {
 	Ewl_Text_Tree *child = NULL, *last = NULL;
 	unsigned int byte_count = 0;
+	Ecore_List *children;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
  	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
@@ -5119,8 +5136,9 @@ ewl_text_tree_node_in_bytes_get(Ewl_Text_Tree *tree, unsigned int byte_idx,
 		DRETURN_PTR(tree, DLEVEL_STABLE);
 
 	child = tree;
-	ecore_list_goto_first(tree->children);
-	while ((child = ecore_list_next(tree->children)))
+	children = child->children;
+	ecore_list_goto_first(children);
+	while ((child = ecore_list_next(children)))
 	{
 		last = child;
 
@@ -5128,8 +5146,22 @@ ewl_text_tree_node_in_bytes_get(Ewl_Text_Tree *tree, unsigned int byte_idx,
 		if (((inclusive && ((byte_count + child->length.bytes) >= byte_idx)))
 				|| (!inclusive && ((byte_count + child->length.bytes > byte_idx))))
 		{
-			child = ewl_text_tree_node_get(child, byte_idx - byte_count, inclusive);
-			break;
+			byte_idx -= byte_count;
+			byte_count = 0;
+
+			if (byte_idx > child->length.bytes)
+			{
+				child = NULL;
+				break;
+			}
+
+			if ((!child->children) 
+					|| (ecore_list_nodes(child->children) == 0))
+				break;
+
+			children = child->children;
+			ecore_list_goto_first(children);
+			continue;
 		}
 		byte_count += child->length.bytes;
 	}

@@ -5,6 +5,10 @@
 
 static Ewl_View *ewl_tree2_view_scrolled_view = NULL;
 
+/**
+ * @return Returns the view for this widget
+ * @brief Retrieves the view for this widget
+ */
 Ewl_View *
 ewl_tree2_view_scrolled_get(void)
 {
@@ -20,6 +24,10 @@ ewl_tree2_view_scrolled_get(void)
 	DRETURN_PTR(ewl_tree2_view_scrolled_view, DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns a new Ewl_Widget on success or NULL on failure
+ * @brief Creates and initializes a new Ewl_Tree2_View_Scrolled widget
+ */
 Ewl_Widget *
 ewl_tree2_view_scrolled_new(void)
 {
@@ -40,6 +48,11 @@ ewl_tree2_view_scrolled_new(void)
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
+/**
+ * @param tv: The view to work with
+ * @return Returns TRUE on success or FALSE on failure
+ * @brief Initialies a tree view to default values
+ */
 int
 ewl_tree2_view_scrolled_init(Ewl_Tree2_View_Scrolled *tv)
 {
@@ -65,7 +78,7 @@ ewl_tree2_view_scrolled_init(Ewl_Tree2_View_Scrolled *tv)
 }
 
 /**
- * @param tree: The tree to work with
+ * @param view: The view to work with
  * @param scroll: If the headers should be scrolled
  * @return Returns no value
  * @brief Sets if the headers should be scrolled with the tree

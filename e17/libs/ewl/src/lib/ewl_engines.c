@@ -22,8 +22,10 @@ static void ewl_engines_cb_engine_free(void *data);
 static void **ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type);
 static void *ewl_engine_hook_get(Ewl_Embed *embed, 
 				Ewl_Engine_Hook_Type type, int hook);
+#if 0
 static Ecore_List *ewl_engine_hook_chain_get(Ewl_Embed *embed, 
 				Ewl_Engine_Hook_Type type, int hook);
+#endif
 
 /**
  * @return Returns no value
@@ -1317,6 +1319,7 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook_Type type, int hook)
 	DRETURN_PTR(match, DLEVEL_STABLE);
 }
 
+#if 0
 /**
  * @param embed: The embed to lookup the engine chain for hook matching
  * @param type: The Ewl_Engine_Hook type to find the best matching function
@@ -1366,6 +1369,7 @@ ewl_engine_hook_chain_get(Ewl_Embed *embed, Ewl_Engine_Hook_Type type, int hook)
 
 	DRETURN_PTR(matches, DLEVEL_STABLE);
 }
+#endif
 
 static void
 ewl_engine_free(Ewl_Engine *engine)

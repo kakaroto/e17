@@ -30,9 +30,8 @@ typedef struct Ewl_Selection Ewl_Selection;
  */
 struct Ewl_Selection
 {
-	Ewl_Selection_Type type;
-
-	void *highlight;
+	Ewl_Selection_Type type;	/**< The type of selection */
+	void *highlight;		/**< highlight widgets for the MVC */
 };
 
 /**
@@ -51,10 +50,10 @@ typedef struct Ewl_Selection_Idx Ewl_Selection_Idx;
  */
 struct Ewl_Selection_Idx
 {
-	Ewl_Selection sel;
+	Ewl_Selection sel;		/**< Inherit from Ewl_Selection */
 
-	int row;
-	int column;
+	int row;			/**< Index row */
+	int column;			/**< Index column */
 };
 
 /**
@@ -73,14 +72,14 @@ typedef struct Ewl_Selection_Range Ewl_Selection_Range;
  */
 struct Ewl_Selection_Range
 {
-	Ewl_Selection sel;
+	Ewl_Selection sel;	/**< Inherit from Ewl_Selection */;
 
 	struct
 	{
-		int row;
-		int column;
-	} start,
-	  end;
+		int row;	/**< Index row */
+		int column; 	/**< Index column */
+	} start,		/**< Start of range */
+	  end;			/**< End of range */
 };
 
 /**
@@ -106,9 +105,9 @@ struct Ewl_MVC
 	Ewl_Model *model;	/**< The model for the mvc */
 
 	struct {
-		void (*view_change)(Ewl_MVC *mvc);
-		void (*selected_change)(Ewl_MVC *mvc);
-	} cb;
+		void (*view_change)(Ewl_MVC *mvc); 	/**< View change callback */
+		void (*selected_change)(Ewl_MVC *mvc);	/**< Selected change callback */
+	} cb;			/**< Callbacks to the inheriting widgets */
 
 	Ecore_List *selected;		/**< The selected cells */
 

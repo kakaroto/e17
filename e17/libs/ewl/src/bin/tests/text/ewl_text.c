@@ -193,13 +193,11 @@ create_test(Ewl_Container *box)
 
 	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_RIGHT);
 	ewl_text_text_append(EWL_TEXT(o), "Align Right.\n");
-
 #if 0
 	printf("-- DUMP --\n");
 	ewl_text_tree_dump((EWL_TEXT(o))->formatting.tree, "");
 	printf("-- DUMP DONE --\n");
 #endif
-
 	return 1;
 }
 

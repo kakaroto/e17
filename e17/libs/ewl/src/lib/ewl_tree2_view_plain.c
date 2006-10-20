@@ -5,6 +5,10 @@
 
 static Ewl_View *ewl_tree2_view_plain_view = NULL;
 
+/**
+ * @return Returns a default Ewl_Tree2_View_Plain struct
+ * @brief Retrieves a shared Ewl_Tree2_View_Plain widget
+ */
 Ewl_View *
 ewl_tree2_view_plain_get(void)
 {
@@ -20,6 +24,10 @@ ewl_tree2_view_plain_get(void)
 	DRETURN_PTR(ewl_tree2_view_plain_view, DLEVEL_STABLE);
 }
 
+/**
+ * @return Returns a new Ewl_Widget on success or NULL on failure
+ * @brief Creates a new Ewl_Tree2_View_Plain_View
+ */
 Ewl_Widget *
 ewl_tree2_view_plain_new(void)
 {
@@ -40,6 +48,11 @@ ewl_tree2_view_plain_new(void)
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
+/**
+ * @param tv: The tree view to work with
+ * @return Returns TRUE on success or FALSE on failure
+ * @brief Initializes an Ewl_Tree2_View_Plain to default values
+ */
 int
 ewl_tree2_view_plain_init(Ewl_Tree2_View_Plain *tv)
 {

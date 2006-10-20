@@ -3,6 +3,11 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/**
+ * @param v: The view to initialize
+ * @return Returns TRUE on success or FALSE on failure
+ * @brief Initializes an Ewl_Tree2_View to default values
+ */
 int
 ewl_tree2_view_init(Ewl_Tree2_View *v)
 {
@@ -15,6 +20,12 @@ ewl_tree2_view_init(Ewl_Tree2_View *v)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param v: The view to work with
+ * @param t: The tree to set
+ * @return Returns no value
+ * @brief Sets the @a t tree into the @a v view
+ */
 void
 ewl_tree2_view_tree2_set(Ewl_Tree2_View *v, Ewl_Tree2 *t)
 {
@@ -29,6 +40,11 @@ ewl_tree2_view_tree2_set(Ewl_Tree2_View *v, Ewl_Tree2 *t)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param v: The view to work with
+ * @return Returns the Ewl_Tree2 parent
+ * @brief Retrieves the tree parent set into the view
+ */
 Ewl_Tree2 *
 ewl_tree2_view_tree2_get(Ewl_Tree2_View *v)
 {

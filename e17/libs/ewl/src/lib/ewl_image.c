@@ -237,7 +237,7 @@ ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
 void
 ewl_image_constrain_set(Ewl_Image *i, unsigned int size)
 {
-	unsigned int osize;
+	int osize;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("i", i);
