@@ -22,8 +22,10 @@ static void ewl_mvc_highlight_do(Ewl_MVC *mvc, Ewl_Container *c,
 static void ewl_mvc_selected_change_notify(Ewl_MVC *mvc);
 static void ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, 
 						int row, int column);
+/* XXX This function is currently not implemented
 static void ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev, 
 							void *data);
+*/
 static void ewl_mvc_cb_sel_free(void *data);
 
 /**
@@ -1078,8 +1080,8 @@ ewl_mvc_highlight_do(Ewl_MVC *mvc, Ewl_Container *c, Ewl_Selection *sel,
 	h = ewl_highlight_new();
 	ewl_highlight_follow_set(EWL_HIGHLIGHT(h), w);
 	ewl_container_child_append(EWL_CONTAINER(c), h);
-	ewl_callback_append(h, EWL_CALLBACK_DESTROY,
-				ewl_mvc_cb_highlight_destroy, mvc);
+//	ewl_callback_append(h, EWL_CALLBACK_DESTROY,
+//				ewl_mvc_cb_highlight_destroy, mvc);
 	ewl_widget_show(h);
 
 	if (sel->type == EWL_SELECTION_TYPE_INDEX)
