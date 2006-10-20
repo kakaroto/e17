@@ -1194,7 +1194,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
 		       EXCopyArea(pmm.pmap, pmap, 0, 0, w, h, 0, 0);
 		    }
 
-		  TextstateDrawText(ts, win, pmap, text, 0, 0, w, h,
+		  TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
 				    &(ic->padding), 0,
 				    TextclassGetJustification(tc));
 	       }

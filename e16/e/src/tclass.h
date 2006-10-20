@@ -60,12 +60,14 @@ typedef struct
    void                (*Destroy) (TextState * ts);
    void                (*TextSize) (TextState * ts, const char *text, int len,
 				    int *width, int *height, int *ascent);
-   void                (*TextMangle) (TextState * ts, char **ptext,
-				      int *pwidth, int textwidth_limit);
+   void                (*TextFit) (TextState * ts, char **ptext,
+				   int *pwidth, int textwidth_limit);
    void                (*TextDraw) (TextState * ts, FontDrawContext * ctx,
 				    int x, int y, const char *text, int len);
-   void                (*FdcInit) (TextState * ts, FontDrawContext * ctx,
-				   Win win);
+   int                 (*FdcInit) (TextState * ts, FontDrawContext * ctx,
+				   Win win, Drawable draw);
+   void                (*FdcSetDrawable) (TextState * ts, FontDrawContext * ctx,
+					  Drawable draw);
    void                (*FdcSetColor) (TextState * ts, FontDrawContext * ctx,
 				       XColor * xc);
 } FontOps;
@@ -134,7 +136,9 @@ TextClass          *TextclassFind(const char *name, int fallback);
 /* text.c */
 TextState          *TextclassGetTextState(TextClass * tclass, int state,
 					  int active, int sticky);
-void                TextstateDrawText(TextState * ts, Win win, Drawable draw,
+void                TextstateTextFitMB(TextState * ts, char **ptext, int *pw,
+				       int textwidth_limit);
+void                TextstateTextDraw(TextState * ts, Win win, Drawable draw,
 				      const char *text, int x, int y, int w,
 				      int h, const EImageBorder * pad,
 				      int fsize, int justification);

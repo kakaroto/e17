@@ -149,10 +149,11 @@ IftTextDraw(TextState * ts, FontDrawContext * fdc, int x, int y,
 		     text);
 }
 
-static void
+static int
 IftFdcInit(TextState * ts __UNUSED__, FontDrawContext * fdc __UNUSED__,
-	   Win win __UNUSED__)
+	   Win win __UNUSED__, Drawable draw __UNUSED__)
 {
+   return 0;
 }
 
 static void
@@ -161,20 +162,9 @@ IftFdcSetColor(TextState * ts __UNUSED__, FontDrawContext * fdc, XColor * xc)
    EGetColor(xc, &(fdc->r), &(fdc->g), &(fdc->b));
 }
 
-#if 0				/* Well... */
-static void
-IftTextMangle(TextState * ts, char **ptext, int *pw, int textwidth_limit)
-{
-   ts = NULL;
-   ptext = NULL;
-   pw = NULL;
-   textwidth_limit = 0;
-}
-#endif
-
 const FontOps       FontOpsIft = {
-   IftLoad, IftUnload, IftTextSize, NULL, IftTextDraw,
-   IftFdcInit, IftFdcSetColor
+   IftLoad, IftUnload, IftTextSize, TextstateTextFitMB, IftTextDraw,
+   IftFdcInit, NULL, IftFdcSetColor
 };
 
 #if TEST_TTFONT
