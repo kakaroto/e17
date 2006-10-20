@@ -439,17 +439,19 @@ SessionGetInfo(EWin * ewin, Atom atom_change)
    Ecore_X_Window      win;
    int                 num;
 
-   if (ewin->session_id)
-     {
-	Efree(ewin->session_id);
-	ewin->session_id = NULL;
-     }
-
    /* We can comply with the ICCCM because gtk is working correctly */
    if ((atom_change) &&
        (!(atom_change == atom_sm_client_id ||
 	  atom_change == atom_wm_client_leader)))
       return;
+   if (!atom_sm_client_id || !atom_wm_client_leader)
+      return;
+
+   if (ewin->session_id)
+     {
+	Efree(ewin->session_id);
+	ewin->session_id = NULL;
+     }
 
    num = ecore_x_window_prop_window_get(EwinGetClientXwin(ewin),
 					atom_wm_client_leader, &win, 1);
