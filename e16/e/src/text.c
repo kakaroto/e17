@@ -260,79 +260,99 @@ TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
  */
 extern const FontOps FontOpsXfs;
 
-static int
-XfsLoad(TextState * ts)
+typedef struct
 {
+   XFontSet            font;
+   int                 ascent;
+   Win                 win;
+   Drawable            draw;
+   GC                  gc;
+} FontCtxXfs;
+
+static int
+_xfs_Load(TextState * ts)
+{
+   XFontSet            font;
+   FontCtxXfs         *fdc;
    int                 i, missing_cnt, font_cnt;
    char              **missing_list, *def_str, **fn;
    XFontStruct       **fs;
 
-   ts->f.xfs.font = XCreateFontSet(disp, ts->fontname, &missing_list,
-				   &missing_cnt, &def_str);
+   font = XCreateFontSet(disp, ts->fontname, &missing_list,
+			 &missing_cnt, &def_str);
    if (missing_cnt)
       XFreeStringList(missing_list);
 
-   if (!ts->f.xfs.font)
+   if (!font)
      {
-	ts->f.xfs.font = XCreateFontSet(disp, "fixed", &missing_list,
-					&missing_cnt, &def_str);
+	font = XCreateFontSet(disp, "fixed", &missing_list,
+			      &missing_cnt, &def_str);
 	if (missing_cnt)
 	   XFreeStringList(missing_list);
      }
 
-   if (!ts->f.xfs.font)
+   if (!font)
       return -1;
 
    if (EventDebug(EDBUG_TYPE_FONTS))
      {
 	Eprintf("- XBaseFontNameListOfFontSet %s\n",
-		XBaseFontNameListOfFontSet(ts->f.xfs.font));
-	font_cnt = XFontsOfFontSet(ts->f.xfs.font, &fs, &fn);
+		XBaseFontNameListOfFontSet(font));
+	font_cnt = XFontsOfFontSet(font, &fs, &fn);
 	for (i = 0; i < font_cnt; i++)
 	   Eprintf("- XFontsOfFontSet %d: %s\n", i, fn[i]);
      }
 
-   ts->f.xfs.ascent = 0;
-   font_cnt = XFontsOfFontSet(ts->f.xfs.font, &fs, &fn);
+   fdc = Emalloc(sizeof(FontCtxXfs));
+   if (!fdc)
+      return -1;
+   fdc->font = font;
+   ts->fdc = fdc;
+   fdc->ascent = 0;
+   font_cnt = XFontsOfFontSet(font, &fs, &fn);
    for (i = 0; i < font_cnt; i++)
-      ts->f.xfs.ascent = MAX(fs[i]->ascent, ts->f.xfs.ascent);
-
+      fdc->ascent = MAX(fs[i]->ascent, fdc->ascent);
    ts->type = FONT_TYPE_XFS;
    ts->ops = &FontOpsXfs;
    return 0;
 }
 
 static void
-XfsUnload(TextState * ts)
+_xfs_Unload(TextState * ts)
 {
-   XFreeFontSet(disp, ts->f.xfs.font);
+   FontCtxXfs         *fdc = (FontCtxXfs *) ts->fdc;
+
+   XFreeFontSet(disp, fdc->font);
 }
 
 static void
-XfsTextSize(TextState * ts, const char *text, int len,
-	    int *width, int *height, int *ascent)
+_xfs_TextSize(TextState * ts, const char *text, int len,
+	      int *width, int *height, int *ascent)
 {
+   FontCtxXfs         *fdc = (FontCtxXfs *) ts->fdc;
    XRectangle          ret2;
 
    if (len == 0)
       len = strlen(text);
-   XmbTextExtents(ts->f.xfs.font, text, len, NULL, &ret2);
+   XmbTextExtents(fdc->font, text, len, NULL, &ret2);
    *height = ret2.height;
    *width = ret2.width;
-   *ascent = ts->f.xfs.ascent;
+   *ascent = fdc->ascent;
 }
 
 static void
-XfsTextDraw(TextState * ts, FontDrawContext * fdc, int x, int y,
-	    const char *text, int len)
+_xfs_TextDraw(TextState * ts, int x, int y, const char *text, int len)
 {
-   XmbDrawString(disp, fdc->draw, ts->f.xfs.font, fdc->gc, x, y, text, len);
+   FontCtxXfs         *fdc = (FontCtxXfs *) ts->fdc;
+
+   XmbDrawString(disp, fdc->draw, fdc->font, fdc->gc, x, y, text, len);
 }
 
 static int
-XfsFdcInit(TextState * ts __UNUSED__, FontDrawContext * fdc, Win win,
-	   Drawable draw)
+_xfs_FdcInit(TextState * ts, Win win, Drawable draw)
 {
+   FontCtxXfs         *fdc = (FontCtxXfs *) ts->fdc;
+
    fdc->win = win;
    fdc->draw = draw;
    fdc->gc = _get_gc(win);
@@ -340,22 +360,25 @@ XfsFdcInit(TextState * ts __UNUSED__, FontDrawContext * fdc, Win win,
 }
 
 static void
-XfsFdcSetDrawable(TextState * ts __UNUSED__, FontDrawContext * fdc,
-		  Drawable draw)
+_xfs_FdcSetDrawable(TextState * ts, unsigned long draw)
 {
+   FontCtxXfs         *fdc = (FontCtxXfs *) ts->fdc;
+
    fdc->draw = draw;
 }
 
 static void
-XfsFdcSetColor(TextState * ts __UNUSED__, FontDrawContext * fdc, XColor * xc)
+_xfs_FdcSetColor(TextState * ts, XColor * xc)
 {
+   FontCtxXfs         *fdc = (FontCtxXfs *) ts->fdc;
+
    EAllocColor(WinGetCmap(fdc->win), xc);
    XSetForeground(disp, fdc->gc, xc->pixel);
 }
 
 const FontOps       FontOpsXfs = {
-   XfsLoad, XfsUnload, XfsTextSize, TextstateTextFitMB, XfsTextDraw,
-   XfsFdcInit, XfsFdcSetDrawable, XfsFdcSetColor
+   _xfs_Load, _xfs_Unload, _xfs_TextSize, TextstateTextFitMB, _xfs_TextDraw,
+   _xfs_FdcInit, NULL, _xfs_FdcSetDrawable, _xfs_FdcSetColor
 };
 #endif /* FONT_TYPE_XFS */
 
@@ -365,94 +388,119 @@ const FontOps       FontOpsXfs = {
  */
 extern const FontOps FontOpsXfont;
 
-static int
-XfontLoad(TextState * ts)
+typedef struct
 {
+   XFontStruct        *font;
+   Win                 win;
+   Drawable            draw;
+   GC                  gc;
+} FontCtxXfont;
+
+static int
+_xfont_Load(TextState * ts)
+{
+   XFontStruct        *font = NULL;
+   FontCtxXfont       *fdc;
+
    if (strchr(ts->fontname, ',') == NULL)
-      ts->f.xf.font = XLoadQueryFont(disp, ts->fontname);
-   if (ts->f.xf.font)
+      font = XLoadQueryFont(disp, ts->fontname);
+   if (font)
       goto done;
 
    /* This one really should succeed! */
-   ts->f.xf.font = XLoadQueryFont(disp, "fixed");
-   if (ts->f.xf.font)
+   font = XLoadQueryFont(disp, "fixed");
+   if (font)
       goto done;
 
    return -1;			/* Failed */
 
  done:
+   fdc = Emalloc(sizeof(FontCtxXfont));
+   if (!fdc)
+      return -1;
+   fdc->font = font;
+   ts->fdc = fdc;
    ts->type = FONT_TYPE_XFONT;
    ts->ops = &FontOpsXfont;
    return -1;
 }
 
 static void
-XfontUnload(TextState * ts __UNUSED__)
+_xfont_Unload(TextState * ts __UNUSED__)
 {
-   if (ts->f.xf.font)
-      XFreeFont(disp, ts->f.xf.font);
+   FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
+
+   XFreeFont(disp, fdc->font);
 }
 
 static void
-XfontTextSize(TextState * ts, const char *text, int len,
-	      int *width, int *height, int *ascent)
+_xfont_TextSize(TextState * ts, const char *text, int len,
+		int *width, int *height, int *ascent)
 {
+   FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
+
    if (len == 0)
       len = strlen(text);
-   if (ts->f.xf.font->min_byte1 == 0 && ts->f.xf.font->max_byte1 == 0)
-      *width = XTextWidth(ts->f.xf.font, text, len);
+   if (fdc->font->min_byte1 == 0 && fdc->font->max_byte1 == 0)
+      *width = XTextWidth(fdc->font, text, len);
    else
-      *width = XTextWidth16(ts->f.xf.font, (XChar2b *) text, len / 2);
-   *height = ts->f.xf.font->ascent + ts->f.xf.font->descent;
-   *ascent = ts->f.xf.font->ascent;
+      *width = XTextWidth16(fdc->font, (XChar2b *) text, len / 2);
+   *height = fdc->font->ascent + fdc->font->descent;
+   *ascent = fdc->font->ascent;
 }
 
 static void
-XfontTextDraw(TextState * ts, FontDrawContext * fdc, int x, int y,
-	      const char *text, int len)
+_xfont_TextDraw(TextState * ts, int x, int y, const char *text, int len)
 {
-   if (ts->f.xf.font->min_byte1 == 0 && ts->f.xf.font->max_byte1 == 0)
+   FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
+
+   if (fdc->font->min_byte1 == 0 && fdc->font->max_byte1 == 0)
       XDrawString(disp, fdc->draw, fdc->gc, x, y, text, len);
    else
       XDrawString16(disp, fdc->draw, fdc->gc, x, y, (XChar2b *) text, len);
 }
 
 static int
-XfontFdcInit(TextState * ts __UNUSED__, FontDrawContext * fdc, Win win,
-	     Drawable draw)
+_xfont_FdcInit(TextState * ts, Win win, Drawable draw)
 {
+   FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
+
    fdc->win = win;
    fdc->draw = draw;
    fdc->gc = _get_gc(win);
 
-   XSetFont(disp, fdc->gc, ts->f.xf.font->fid);
+   XSetFont(disp, fdc->gc, fdc->font->fid);
    return 0;
 }
 
 static void
-XfontFdcSetDrawable(TextState * ts __UNUSED__, FontDrawContext * fdc,
-		    Drawable draw)
+_xfont_FdcSetDrawable(TextState * ts, unsigned long draw)
 {
+   FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
+
    fdc->draw = draw;
 }
 
 static void
-XfontFdcSetColor(TextState * ts __UNUSED__, FontDrawContext * fdc, XColor * xc)
+_xfont_FdcSetColor(TextState * ts, XColor * xc)
 {
+   FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
+
    EAllocColor(WinGetCmap(fdc->win), xc);
    XSetForeground(disp, fdc->gc, xc->pixel);
 }
 
 static void
-XfontTextFit(TextState * ts, char **ptext, int *pw, int textwidth_limit)
+_xfont_TextFit(TextState * ts, char **ptext, int *pw, int textwidth_limit)
 {
+   FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
    char               *text = *ptext;
    int                 hh, ascent;
    char               *new_line;
    int                 nuke_count = 0;
    int                 len;
 
-   if (1)
+   if (fdc->font->min_byte1 == 0 && fdc->font->max_byte1 == 0)
      {
 	len = strlen(text);
 	new_line = Emalloc(len + 10);
@@ -505,30 +553,29 @@ XfontTextFit(TextState * ts, char **ptext, int *pw, int textwidth_limit)
 }
 
 const FontOps       FontOpsXfont = {
-   XfontLoad, XfontUnload, XfontTextSize, XfontTextFit, XfontTextDraw,
-   XfontFdcInit, XfontFdcSetDrawable, XfontFdcSetColor
+   _xfont_Load, _xfont_Unload, _xfont_TextSize, _xfont_TextFit, _xfont_TextDraw,
+   _xfont_FdcInit, NULL, _xfont_FdcSetDrawable, _xfont_FdcSetColor
 };
 #endif /* FONT_TYPE_XFONT */
 
 static void
-TsTextDraw(TextState * ts, FontDrawContext * fdc, int x, int y,
-	   const char *text, int len)
+TsTextDraw(TextState * ts, int x, int y, const char *text, int len)
 {
    if (ts->style.effect == 1)
      {
-	ts->ops->FdcSetColor(ts, fdc, &(ts->bg_col));
-	ts->ops->TextDraw(ts, fdc, x + 1, y + 1, text, len);
+	ts->ops->FdcSetColor(ts, &(ts->bg_col));
+	ts->ops->TextDraw(ts, x + 1, y + 1, text, len);
      }
    else if (ts->style.effect == 2)
      {
-	ts->ops->FdcSetColor(ts, fdc, &(ts->bg_col));
-	ts->ops->TextDraw(ts, fdc, x - 1, y, text, len);
-	ts->ops->TextDraw(ts, fdc, x + 1, y, text, len);
-	ts->ops->TextDraw(ts, fdc, x, y - 1, text, len);
-	ts->ops->TextDraw(ts, fdc, x, y + 1, text, len);
+	ts->ops->FdcSetColor(ts, &(ts->bg_col));
+	ts->ops->TextDraw(ts, x - 1, y, text, len);
+	ts->ops->TextDraw(ts, x + 1, y, text, len);
+	ts->ops->TextDraw(ts, x, y - 1, text, len);
+	ts->ops->TextDraw(ts, x, y + 1, text, len);
      }
-   ts->ops->FdcSetColor(ts, fdc, &(ts->fg_col));
-   ts->ops->TextDraw(ts, fdc, x, y, text, len);
+   ts->ops->FdcSetColor(ts, &(ts->fg_col));
+   ts->ops->TextDraw(ts, x, y, text, len);
 }
 
 static void
@@ -696,7 +743,6 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
    int                 textwidth_limit, offset_x, offset_y;
    int                 xx, yy, ww, hh, ascent;
    Pixmap              drawable;
-   FontDrawContext     fdc;
 
    if (w <= 0 || h <= 0)
       return;
@@ -747,7 +793,7 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
    xx = x;
    yy = y;
 
-   if (ts->ops->FdcInit(ts, &fdc, win, draw))
+   if (ts->ops->FdcInit(ts, win, draw))
       return;
 
 #if FONT_TYPE_IFT
@@ -755,6 +801,8 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
      {
 	for (i = 0; i < num_lines; i++)
 	  {
+	     EImage             *im;
+
 	     ts->ops->TextSize(ts, lines[i], 0, &ww, &hh, &ascent);
 	     if (ww > textwidth_limit)
 		ts->ops->TextFit(ts, &lines[i], &ww, textwidth_limit);
@@ -763,18 +811,19 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 		yy += ascent;
 	     xx = x + (((textwidth_limit - ww) * justification) >> 10);
 
-	     fdc.im = TextImageGet(win, draw, xx - 1, yy - 1 - ascent,
-				   ww + 2, hh + 2, ts);
-	     if (!fdc.im)
+	     im = TextImageGet(win, draw, xx - 1, yy - 1 - ascent,
+			       ww + 2, hh + 2, ts);
+	     if (!im)
 		break;
 
 	     offset_x = 1;
 	     offset_y = ascent + 1;
 
-	     TsTextDraw(ts, &fdc, offset_x, offset_y, lines[i],
-			strlen(lines[i]));
+	     ts->ops->FdcSetDrawable(ts, (unsigned long)im);
 
-	     TextImagePut(fdc.im, win, draw, xx - 1, yy - 1 - ascent,
+	     TsTextDraw(ts, offset_x, offset_y, lines[i], strlen(lines[i]));
+
+	     TextImagePut(im, win, draw, xx - 1, yy - 1 - ascent,
 			  ww + 2, hh + 2, ts);
 
 	     yy += hh;
@@ -812,10 +861,9 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 	       }
 
 	     if (drawable != draw)
-		ts->ops->FdcSetDrawable(ts, &fdc, drawable);
+		ts->ops->FdcSetDrawable(ts, drawable);
 
-	     TsTextDraw(ts, &fdc, offset_x, offset_y, lines[i],
-			strlen(lines[i]));
+	     TsTextDraw(ts, offset_x, offset_y, lines[i], strlen(lines[i]));
 
 	     TextDrawRotBack(win, draw, drawable, xx - 1, yy - 1 - ascent,
 			     ww + 2, hh + 2, ts);

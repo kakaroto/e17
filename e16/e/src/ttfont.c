@@ -28,6 +28,8 @@
 
 #if FONT_TYPE_IFT
 
+typedef void        EFont;
+
 static void
 EFonts_Init(void)
 {
@@ -102,26 +104,40 @@ extern const FontOps FontOpsIft;
  */
 extern const FontOps FontOpsIft;
 
-static int
-IftLoad(TextState * ts)
+typedef struct
 {
-   char                s[4096], *s2, *ss;
+   EFont              *font;
+   EImage             *im;
+   int                 r, g, b;
+} FontCtxIft;
 
-   s2 = Estrdup(ts->fontname);
-   if (!s2)
+static int
+_ift_Load(TextState * ts)
+{
+   EFont              *font;
+   FontCtxIft         *fdc;
+   char                s[1024], *ss;
+   int                 len;
+
+   ss = strchr(ts->fontname, '/');
+   if (!ss)
       return -1;
-   ss = strchr(s2, '/');
-   if (ss)
-     {
-	*ss++ = '\0';
-	Esnprintf(s, sizeof(s), "%s.ttf", s2);
-	ts->f.ift.font = Efont_load(s2, atoi(ss));
-     }
-   Efree(s2);
-
-   if (!ts->f.ift.font)
+   len = ss - ts->fontname;
+   if (len > 1000)
       return -1;
 
+   Esnprintf(s, sizeof(s) - 8, "%s.ttf", ts->fontname);
+   strncpy(s, ts->fontname, len);
+   strcpy(s + len, ".ttf");
+   font = Efont_load(s, atoi(ss + 1));
+   if (!font)
+      return -1;
+
+   fdc = Emalloc(sizeof(FontCtxIft));
+   if (!fdc)
+      return -1;
+   fdc->font = font;
+   ts->fdc = fdc;
    ts->need_utf8 = 1;
    ts->type = FONT_TYPE_IFT;
    ts->ops = &FontOpsIft;
@@ -129,42 +145,57 @@ IftLoad(TextState * ts)
 }
 
 static void
-IftUnload(TextState * ts)
+_ift_Unload(TextState * ts)
 {
-   Efont_free(ts->f.ift.font);
+   FontCtxIft         *fdc = (FontCtxIft *) ts->fdc;
+
+   Efont_free(fdc->font);
 }
 
 static void
-IftTextSize(TextState * ts, const char *text, int len,
-	    int *width, int *height, int *ascent)
+_ift_TextSize(TextState * ts, const char *text, int len,
+	      int *width, int *height, int *ascent)
 {
-   Efont_extents(ts->f.ift.font, text, len, width, height, ascent);
+   FontCtxIft         *fdc = (FontCtxIft *) ts->fdc;
+
+   Efont_extents(fdc->font, text, len, width, height, ascent);
 }
 
 static void
-IftTextDraw(TextState * ts, FontDrawContext * fdc, int x, int y,
-	    const char *text, int len __UNUSED__)
+_ift_TextDraw(TextState * ts, int x, int y, const char *text,
+	      int len __UNUSED__)
 {
-   EFont_draw_string(fdc->im, ts->f.ift.font, x, y, fdc->r, fdc->g, fdc->b,
-		     text);
+   FontCtxIft         *fdc = (FontCtxIft *) ts->fdc;
+
+   EFont_draw_string(fdc->im, fdc->font, x, y, fdc->r, fdc->g, fdc->b, text);
 }
 
 static int
-IftFdcInit(TextState * ts __UNUSED__, FontDrawContext * fdc __UNUSED__,
-	   Win win __UNUSED__, Drawable draw __UNUSED__)
+_ift_FdcInit(TextState * ts __UNUSED__, Win win __UNUSED__,
+	     Drawable draw __UNUSED__)
 {
    return 0;
 }
 
 static void
-IftFdcSetColor(TextState * ts __UNUSED__, FontDrawContext * fdc, XColor * xc)
+_ift_FdcSetDrawable(TextState * ts, unsigned long draw)
 {
+   FontCtxIft         *fdc = (FontCtxIft *) ts->fdc;
+
+   fdc->im = (EImage *) draw;
+}
+
+static void
+_ift_FdcSetColor(TextState * ts __UNUSED__, XColor * xc)
+{
+   FontCtxIft         *fdc = (FontCtxIft *) ts->fdc;
+
    EGetColor(xc, &(fdc->r), &(fdc->g), &(fdc->b));
 }
 
 const FontOps       FontOpsIft = {
-   IftLoad, IftUnload, IftTextSize, TextstateTextFitMB, IftTextDraw,
-   IftFdcInit, NULL, IftFdcSetColor
+   _ift_Load, _ift_Unload, _ift_TextSize, TextstateTextFitMB, _ift_TextDraw,
+   _ift_FdcInit, NULL, _ift_FdcSetDrawable, _ift_FdcSetColor
 };
 
 #if TEST_TTFONT

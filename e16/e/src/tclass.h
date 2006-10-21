@@ -41,19 +41,6 @@
 #define FONT_TYPE_XFS     2	/* XFontSet        */
 #define FONT_TYPE_XFONT   0	/* XFontStruct     */
 
-#if FONT_TYPE_IFT
-typedef void        EFont;
-#endif
-
-typedef struct
-{
-   Win                 win;
-   EImage             *im;
-   Drawable            draw;
-   GC                  gc;
-   int                 r, g, b;
-} FontDrawContext;
-
 typedef struct
 {
    int                 (*Load) (TextState * ts);
@@ -62,14 +49,12 @@ typedef struct
 				    int *width, int *height, int *ascent);
    void                (*TextFit) (TextState * ts, char **ptext,
 				   int *pwidth, int textwidth_limit);
-   void                (*TextDraw) (TextState * ts, FontDrawContext * ctx,
-				    int x, int y, const char *text, int len);
-   int                 (*FdcInit) (TextState * ts, FontDrawContext * ctx,
-				   Win win, Drawable draw);
-   void                (*FdcSetDrawable) (TextState * ts, FontDrawContext * ctx,
-					  Drawable draw);
-   void                (*FdcSetColor) (TextState * ts, FontDrawContext * ctx,
-				       XColor * xc);
+   void                (*TextDraw) (TextState * ts, int x, int y,
+				    const char *text, int len);
+   int                 (*FdcInit) (TextState * ts, Win win, Drawable draw);
+   void                (*FdcFini) (TextState * ts);
+   void                (*FdcSetDrawable) (TextState * ts, unsigned long draw);
+   void                (*FdcSetColor) (TextState * ts, XColor * xc);
 } FontOps;
 
 struct _textstate
@@ -85,28 +70,7 @@ struct _textstate
    } style;
    XColor              fg_col;
    XColor              bg_col;
-   union
-   {
-#if FONT_TYPE_IFT
-      struct
-      {
-	 EFont              *font;
-      } ift;
-#endif
-#if FONT_TYPE_XFS
-      struct
-      {
-	 XFontSet            font;
-	 int                 ascent;
-      } xfs;
-#endif
-#if FONT_TYPE_XFONT
-      struct
-      {
-	 XFontStruct        *font;
-      } xf;
-#endif
-   } f;
+   void               *fdc;
    const FontOps      *ops;
 };
 
