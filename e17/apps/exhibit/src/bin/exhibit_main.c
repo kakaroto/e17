@@ -1006,7 +1006,8 @@ main(int argc, char *argv[])
      _ex_main_window_show(NULL);   
      
    etk_main();
-   _ex_options_save(e);
+   if(e)
+     _ex_options_save(e);
    _ex_options_shutdown();
    ecore_file_shutdown();
    etk_shutdown();

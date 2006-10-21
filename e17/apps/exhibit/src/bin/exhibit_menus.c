@@ -179,8 +179,11 @@ _ex_menu_quit_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
 
-   if (e)     
-     E_FREE(e);     
+   if (e)
+     {
+       _ex_options_save(e);
+       E_FREE(e);     
+     }
 
    etk_main_quit();   
 }
