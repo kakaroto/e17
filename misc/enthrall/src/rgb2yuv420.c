@@ -36,8 +36,7 @@
  */
 void
 rgb2yuv420 (uint32_t *data_rgb, int width, int height,
-            uint8_t *data_y, uint8_t *data_u, uint8_t *data_v,
-            int y_stride, int uv_stride)
+            uint8_t *data_y, uint8_t *data_u, uint8_t *data_v)
 {
 	int x, y, row_stride = width * 4;
 	uint8_t *rgb, *Y = data_y, *U = data_u, *V = data_v;
@@ -57,8 +56,6 @@ rgb2yuv420 (uint32_t *data_rgb, int width, int height,
 	int32_t GtoVCoeff = (int32_t) (-94.154 * 256 + 0.5);
 	int32_t BtoVCoeff = (int32_t) (-18.285 * 256 + 0.5);
 
-	int y_edge = y_stride - width, uv_edge = uv_stride - (width / 2);
-
 	/* Y plane */
 	rgb = (uint8_t *) data_rgb;
 
@@ -72,8 +69,6 @@ rgb2yuv420 (uint32_t *data_rgb, int width, int height,
 			Y++;
 			rgb += 4;
 		}
-
-		Y += y_edge;
 	}
 
 	/* U and V planes */
@@ -122,7 +117,5 @@ rgb2yuv420 (uint32_t *data_rgb, int width, int height,
 		}
 
 		rgb += row_stride;
-		U += uv_edge;
-		V += uv_edge;
 	}
 }

@@ -25,7 +25,6 @@
 #define __RGB2YUV420_H
 
 void rgb2yuv420 (uint32_t *data_rgb, int width, int height,
-                 uint8_t *data_y, uint8_t *data_u, uint8_t *data_v,
-                 int y_stride, int uv_stride);
+                 uint8_t *data_y, uint8_t *data_u, uint8_t *data_v);
 
 #endif

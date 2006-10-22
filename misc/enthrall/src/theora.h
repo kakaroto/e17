@@ -26,7 +26,8 @@ typedef struct {
 } EnthrallTheora;
 
 bool enthrall_theora_init (EnthrallTheora *et, const char *filename,
-                           int quality, int width, int height,
+                           int quality, int *width, int *height,
+                           int *offset_x, int *offset_y,
                            uint8_t **y, uint8_t **u, uint8_t **v);
 
 void enthrall_theora_encode_frame (EnthrallTheora *et, bool final_frame);

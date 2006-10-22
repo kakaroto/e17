@@ -57,7 +57,8 @@ typedef struct {
 
 	struct {
 		Ecore_X_Window id;
-		int w, h;
+		int w, h, w16, h16;
+		int offset_x, offset_y;
 	} window;
 
 	struct {
@@ -110,9 +111,10 @@ on_timer (void *udata)
 	tmp = IMG_FROM_RECT (e->damage);
 
 	/* and blend it onto the previous shot */
-	imlib_blend_image_onto_image (tmp, true,
-	                              0, 0, e->damage.width, e->damage.height,
-	                              e->damage.x, e->damage.y,
+	imlib_blend_image_onto_image (tmp, true, 0, 0,
+	                              e->damage.width, e->damage.height,
+	                              e->damage.x + e->window.offset_x,
+	                              e->damage.y + e->window.offset_y,
 	                              e->damage.width, e->damage.height);
 
 	/* free the temporary grab */
@@ -128,13 +130,13 @@ on_timer (void *udata)
 		if (b == True)
 			imlib_blend_image_onto_image (e->cursor.id, true, 0, 0,
 			                              e->cursor.w, e->cursor.h,
-			                              ptr_x, ptr_y,
+			                              ptr_x + e->window.offset_x,
+			                              ptr_y + e->window.offset_y,
 			                              e->cursor.w, e->cursor.h);
 	}
 
 	data = imlib_image_get_data_for_reading_only ();
-	rgb2yuv420 (data, e->window.w, e->window.h, e->y, e->u, e->v,
-	            e->theora.yuv.y_stride, e->theora.yuv.uv_stride);
+	rgb2yuv420 (data, e->window.w16, e->window.h16, e->y, e->u, e->v);
 	imlib_image_put_back_data (data);
 
 	enthrall_theora_encode_frame (&e->theora, false);
@@ -229,7 +231,9 @@ int
 main (int argc, char **argv)
 {
 	Enthrall e;
+	Imlib_Image tmp;
 	char pointer_img[PATH_MAX], output_file[PATH_MAX] = {0};
+	uint32_t *data;
 	double start;
 	bool s;
 	int fps = 25, quality = 90;
@@ -319,8 +323,12 @@ main (int argc, char **argv)
 
 	init_imlib (&e);
 
+	e.window.w16 = e.window.w;
+	e.window.h16 = e.window.h;
+
 	s = enthrall_theora_init (&e.theora, output_file,
-	                          quality, e.window.w, e.window.h,
+	                          quality, &e.window.w16, &e.window.h16,
+	                          &e.window.offset_x, &e.window.offset_y,
 	                          &e.y, &e.u, &e.v);
 	if (!s) {
 		fprintf (stderr, "Error: Cannot initialize theora encoder.\n");
@@ -338,8 +346,19 @@ main (int argc, char **argv)
 	e.damage.height = e.window.h;
 	e.damage_valid = true;
 
-	e.prev_img = IMG_FROM_RECT (e.damage);
+	e.prev_img = imlib_create_image (e.window.w16, e.window.h16);
 	imlib_context_set_image (e.prev_img);
+
+	/* init image data */
+	data = imlib_image_get_data ();
+	memset (data, 0, e.window.w16 * e.window.h16 * 4);
+	imlib_image_put_back_data (data);
+
+	tmp = IMG_FROM_RECT (e.damage);
+	imlib_blend_image_onto_image (tmp, true, 0, 0,
+	                              e.window.w, e.window.h,
+	                              e.window.offset_x, e.window.offset_y,
+	                              e.window.w, e.window.h);
 
 	printf ("Starting recording...\n");
 	ecore_main_loop_begin ();

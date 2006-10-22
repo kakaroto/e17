@@ -70,7 +70,8 @@ enthrall_theora_encode_frame (EnthrallTheora *et,
 
 bool
 enthrall_theora_init (EnthrallTheora *et, const char *filename,
-                      int quality, int width, int height,
+                      int quality, int *width, int *height,
+                      int *offset_x, int *offset_y,
                       uint8_t **y, uint8_t **u, uint8_t **v)
 {
 	ogg_stream_state vo;
@@ -78,7 +79,7 @@ enthrall_theora_init (EnthrallTheora *et, const char *filename,
 	ogg_packet op; /* one raw packet of data for decode */
 	theora_info ti;
 	theora_comment tc;
-	int serial1, serial2, offs;
+	int serial1, serial2;
 
 	et->file = fopen (filename, "wb");
 	if (!et->file)
@@ -100,22 +101,22 @@ enthrall_theora_init (EnthrallTheora *et, const char *filename,
 	/* Set up Theora encoder */
 	theora_info_init (&ti);
 
-	ti.frame_width = width;
-	ti.frame_height = height;
+	ti.frame_width = *width;
+	ti.frame_height = *height;
 
 	/* Theora has a divisible-by-sixteen restriction for the encoded
 	 * video size.
 	 * scale the frame size up to the nearest /16 and calculate offsets.
 	 */
-	ti.width = (width + 15) & ~15;
-	ti.height = (height + 15) & ~15;
+	ti.width = *width = (ti.frame_width + 15) & ~15;
+	ti.height = *height = (ti.frame_height + 15) & ~15;
 
 	/* We force the offset to be even.
 	 * This ensures that the chroma samples align properly with
 	 * the luma samples.
 	 */
-	ti.offset_x = ((ti.width - width) / 2) & ~1;
-	ti.offset_y = ((ti.height - height) / 2) & ~1;
+	ti.offset_x = *offset_x = ((ti.width - ti.frame_width) / 2) & ~1;
+	ti.offset_y = *offset_y = ((ti.height - ti.frame_height) / 2) & ~1;
 
 	/* 25 fps */
 	ti.fps_numerator = 25;
@@ -147,11 +148,6 @@ enthrall_theora_init (EnthrallTheora *et, const char *filename,
 	et->yuv.u = *u = malloc (ti.width * ti.height / 4);
 	et->yuv.v = *v = malloc (ti.width * ti.height / 4);
 
-	/* black border */
-	memset (et->yuv.y, 16, ti.width * ti.height);
-	memset (et->yuv.u, 128, ti.width * ti.height / 4);
-	memset (et->yuv.v, 128, ti.width * ti.height / 4);
-
 	et->yuv.y_width = ti.width;
 	et->yuv.y_height = ti.height;
 	et->yuv.y_stride = et->yuv.y_width;
@@ -159,13 +155,6 @@ enthrall_theora_init (EnthrallTheora *et, const char *filename,
 	et->yuv.uv_width = ti.width / 2;
 	et->yuv.uv_height = ti.height / 2;
 	et->yuv.uv_stride = et->yuv.uv_width;
-
-	offs = ti.offset_x + (et->yuv.y_stride * ti.offset_y);
-	*y += offs;
-
-	offs = (ti.offset_x / 2) + (et->yuv.uv_stride * (ti.offset_y / 2));
-	*u += offs;
-	*v += offs;
 
 	theora_info_clear (&ti);
 
