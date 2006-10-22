@@ -492,8 +492,11 @@ _cb_xsessions_foreach(void *list_data, void *data)
       return;
 
    Entrance_X_Session *exs = NULL;
+   char *command;
 
-    if ((exs = entrance_x_session_new(ed->name, ed->icon, ed->exec)))
+   /* Get the full command. */
+   command = ecore_desktop_get_command(ed, NULL, 1);
+   if ((exs = entrance_x_session_new(ed->name, ed->icon, command)))
     {
        /* Sessions found earlier in the FDO search sequence override those found later. */
        if (evas_hash_find(e->sessions.hash, exs->name) == NULL)
