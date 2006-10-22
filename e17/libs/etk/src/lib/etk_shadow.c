@@ -131,6 +131,82 @@ Etk_Widget *etk_shadow_new(void)
    return etk_widget_new(ETK_SHADOW_TYPE, NULL);
 }
 
+/* TODOC */
+void etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_Edges edges, int radius, int offset_x, int offset_y, int opacity)
+{
+   if (!shadow)
+      return;
+   
+   shadow->type = type;
+   shadow->edges = edges;
+   shadow->radius = ETK_CLAMP(radius, 0, 255);
+   shadow->offset_x = offset_x;
+   shadow->offset_y = offset_y;
+   shadow->color.a = ETK_CLAMP(opacity, 0, 255);
+   
+   /* TODO: notify */
+   
+   shadow->shadow_need_recalc = ETK_TRUE;
+   etk_widget_size_recalc_queue(ETK_WIDGET(shadow));
+}
+
+/* TODOC */
+void etk_shadow_shadow_get(Etk_Shadow *shadow, Etk_Shadow_Type *type, Etk_Shadow_Edges *edges, int *radius, int *offset_x, int *offset_y, int *opacity)
+{
+   if (!shadow)
+      return;
+   
+   if (type)       *type = shadow->type;
+   if (edges)      *edges = shadow->edges;
+   if (radius)     *radius = shadow->radius;
+   if (offset_x)   *offset_x = shadow->offset_x;
+   if (offset_y)   *offset_y = shadow->offset_y;
+   if (opacity)    *opacity = shadow->color.a;
+}
+
+/**
+ * @brief Sets the color of the shadow
+ * @param shadow a shadow container
+ * @param r the red component of the color to set (from 0 to 255)
+ * @param g the green component of the color to set (from 0 to 255)
+ * @param b the blue component of the color to set (from 0 to 255)
+ */
+void etk_shadow_shadow_color_set(Etk_Shadow *shadow, int r, int g, int b)
+{
+   int i;
+   
+   if (!shadow)
+      return;
+   
+   shadow->color.r = r;
+   shadow->color.g = g;
+   shadow->color.b = b;
+   
+   evas_color_argb_premul(shadow->color.a, &r, &g, &b);
+   for (i = 0; i < 4; i++)
+   {
+      if (shadow->shadow_objs[i])
+         evas_object_color_set(shadow->shadow_objs[i], r, g, b, shadow->color.a);
+   }
+}
+
+/**
+ * @brief Gets the color of the shadow
+ * @param shadow a shadow container
+ * @param r the location where to store the red component of the color
+ * @param g the location where to store the green component of the color
+ * @param b the location where to store the blue component of the color
+ */
+void etk_shadow_shadow_color_get(Etk_Shadow *shadow, int *r, int *g, int *b)
+{
+   if (!shadow)
+      return;
+   
+   if (r)   *r = shadow->color.r;
+   if (g)   *g = shadow->color.g;
+   if (b)   *b = shadow->color.b;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -150,6 +226,10 @@ static void _etk_shadow_constructor(Etk_Shadow *shadow)
    shadow->offset_x = 0;
    shadow->offset_y = 0;
    shadow->radius = 30;
+   shadow->color.r = 0;
+   shadow->color.g = 0;
+   shadow->color.b = 0;
+   shadow->color.a = 180;
    
    shadow->shadow_need_recalc = ETK_FALSE;
    shadow->border_need_recalc = ETK_FALSE;
@@ -419,6 +499,7 @@ static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow)
    int prev_id, next_id;
    int size, prev_size, next_size;
    Etk_Size shadow_size;
+   Etk_Color color;
    
    if (!shadow || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(shadow))))
       return;
@@ -458,6 +539,9 @@ static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow)
          offsets[i] = -offsets[i];
    }
    
+   color = shadow->color;
+   evas_color_argb_premul(color.a, &color.r, &color.g, &color.b);
+   
    for (i = 0; i < 4; i++)
    {
       prev_id = (i == 0) ? 3 : (i - 1);
@@ -491,7 +575,7 @@ static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow)
       shadow->shadow_objs[i] = obj;
       etk_widget_member_object_add(ETK_WIDGET(shadow), obj);
       evas_object_pass_events_set(obj, 1);
-      evas_object_color_set(obj, 0, 0, 0, 255 * 0.60);
+      evas_object_color_set(obj, color.r, color.g, color.b, color.a);
       evas_object_clip_set(obj, shadow->clip);
       evas_object_show(obj);
       

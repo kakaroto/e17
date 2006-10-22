@@ -52,6 +52,7 @@ struct Etk_Shadow
    
    Etk_Shadow_Type type;
    Etk_Shadow_Edges edges;
+   Etk_Color color;
    int offset_x;
    int offset_y;
    int radius;
@@ -66,6 +67,11 @@ struct Etk_Shadow
 
 Etk_Type   *etk_shadow_type_get();
 Etk_Widget *etk_shadow_new(void);
+
+void etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_Edges edges, int radius, int offset_x, int offset_y, int opacity);
+void etk_shadow_shadow_get(Etk_Shadow *shadow, Etk_Shadow_Type *type, Etk_Shadow_Edges *edges, int *radius, int *offset_x, int *offset_y, int *opacity);
+void etk_shadow_shadow_color_set(Etk_Shadow *shadow, int r, int g, int b);
+void etk_shadow_shadow_color_get(Etk_Shadow *shadow, int *r, int *g, int *b);
 
 /** @} */
 
