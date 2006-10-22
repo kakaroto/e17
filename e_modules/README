@@ -19,10 +19,10 @@ bling - EFLized Composite Manager for E17. (Not for users right now).
 
 calendar - A module to display a desktop calendar.
 
-cpu - A module to monitor cpu load.
+cpu - A module to monitor cpu load.  (Will be replaced by something better.)
 
 deskshow - A module to iconify/uniconify all current windows to show the
-desktop.
+desktop.  This is probably obsolete, the functionality is now in E.
 
 emu - Experimental generic scriptable module for E17.
 
@@ -36,13 +36,13 @@ language - A module to control active keyboard/keyboard layout/layout variant.
 
 mail - A module to periodically check for new email.
 
-mem - A module to monitor memory and swap usage.
+mem - A module to monitor memory and swap usage.  (Will be replaced by something better.)
 
 mixer - A module to control volume for some mixers.  (Will be replaced by something better.)
 
 moon - A module to display moon phase information.
 
-net - A module to monitor traffic on a network device.
+net - A module to monitor traffic on a network device.  (Will be replaced by something better.)
 
 photo - A module to display pictures on the desktop.
 
@@ -56,7 +56,7 @@ snow - A module to display snow on the desktop.
 
 taskbar - A taskbar module.  (Will be replaced by something better.)
 
-tclock - A module to display a digital clock on the desktop.
+tclock - A module to display a digital clock on the desktop.  (Will be replaced by something better.)
 
 uptime - A module to monitor computer uptime.
 

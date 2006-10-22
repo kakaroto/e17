@@ -1,0 +1,65 @@
+This file will summarise who is currently responsible for maintaining
+each module.  See the individual AUTHORS files in each module for the
+complete list of credits.
+
+bling - xcomp?
+
+calendar - NASA (Nathan Smith) <nasa01@comcast.net>  [Currently inactive]
+
+cpu - e_module maintainers.
+
+deskshow - e_module maintainers.
+
+emu - onefang (David Seikel) <onefang@gmail.com>
+
+engage - e_module maintainers.
+
+eveil - Laurent 'kiwi' Ghigonis <ooookiwi@gmail.com>
+
+flame - e_module maintainers.
+
+language - Aleksej 'sndev' Struk <astruk@gmail.com>
+
+mail - Christopher 'devilhorns' Michael <devilhorns@comcast.net>
+
+mem - e_module maintainers
+
+mixer - Christopher 'devilhorns' Michael <devilhorns@comcast.net>
+        Simon 'MoOm' Treny <simon.treny@laposte.net>
+
+moon - e-taro?
+
+net - e_module maintainers.
+
+photo - Laurent 'kiwi' Ghigonis <ooookiwi@gmail.com>
+
+rain - e_module maintainers
+
+screenshot - Christopher 'devilhorns' Michael <devilhorns@comcast.net>
+
+slideshow - Christopher 'devilhorns' Michael <devilhorns@comcast.net>
+
+snow - e_module maintainers.
+
+taskbar - iamsthitha (Sthithaprajna Garapaty) <iamsthitha@gmail.com>
+
+tclock - e_module maintainers.
+
+uptime - e_module maintainers.
+
+weather - e_module maintainers.
+
+winselector - urandom?
+
+wlan - e_module maintainers.
+
+
+These are not modules, but part of it all anyway.
+
+debian packager - kaethorn?
+
+RPM packager - mej?
+
+top level autofoo - vapier?
+
+translations - e-taro? maiurana? maxerba? troback?
