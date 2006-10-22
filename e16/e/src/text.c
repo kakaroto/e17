@@ -25,6 +25,10 @@
 #include "eimage.h"
 #include "tclass.h"
 #include "xwin.h"
+#if FONT_TYPE_XFT
+#include <X11/extensions/Xrender.h>
+#include <X11/Xft/Xft.h>
+#endif
 
 #if FONT_TYPE_IFT
 extern const FontOps FontOpsIft;
@@ -254,6 +258,149 @@ TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
    return NULL;
 }
 
+#if FONT_TYPE_XFT
+/*
+ * Xft
+ */
+extern const FontOps FontOpsXft;
+
+typedef struct
+{
+   XftFont            *font;
+   Win                 win;
+   Drawable            draw;
+   XftDraw            *xftd;
+   XftColor            xftc;
+} FontCtxXft;
+
+static int
+_xft_Load(TextState * ts, int fallback __UNUSED__)
+{
+   XftFont            *font;
+   FontCtxXft         *fdc;
+
+   if (strchr(ts->fontname, '/'))
+      return -1;
+
+   if (ts->fontname[0] == '-')
+      font = XftFontOpenXlfd(disp, VRoot.scr, ts->fontname);
+   else
+      font = XftFontOpenName(disp, VRoot.scr, ts->fontname);
+
+   if (!font)
+      return -1;
+
+#if 0				/* Debug */
+   {
+      FT_Face             ftf = XftLockFace(font);
+
+      if (ftf == NULL)
+	 return -1;
+      Eprintf("Font %s family_name=%s style_name=%s\n", ts->fontname,
+	      ftf->family_name, ftf->style_name);
+      XftUnlockFace(font);
+   }
+#endif
+
+   fdc = Emalloc(sizeof(FontCtxXft));
+   if (!fdc)
+      return -1;
+   fdc->font = font;
+   ts->fdc = fdc;
+   ts->type = FONT_TYPE_XFT;
+   ts->ops = &FontOpsXft;
+   return 0;
+}
+
+static void
+_xft_Unload(TextState * ts)
+{
+   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
+
+   XftFontClose(disp, fdc->font);
+}
+
+static void
+_xft_TextSize(TextState * ts, const char *text, int len,
+	      int *width, int *height, int *ascent)
+{
+   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
+   XGlyphInfo          gi;
+
+   if (len == 0)
+      len = strlen(text);
+   XftTextExtents8(disp, fdc->font, (XftChar8 *) text, len, &gi);
+   *width = gi.xOff;
+   *height = fdc->font->height;
+   *ascent = fdc->font->ascent;
+#if 0
+   Eprintf("asc/dsc/h=%d/%d/%d x,y=%2d,%d wxh=%dx%d ox,y=%3d,%d: (%d)%s\n",
+	   fdc->font->ascent, fdc->font->descent, fdc->font->height, gi.x, gi.y,
+	   gi.width, gi.height, gi.xOff, gi.yOff, len, text);
+#endif
+}
+
+static void
+_xft_TextDraw(TextState * ts, int x, int y, const char *text, int len)
+{
+   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
+
+   XftDrawString8(fdc->xftd, &(fdc->xftc), fdc->font, x, y, (XftChar8 *) text,
+		  len);
+}
+
+static int
+_xft_FdcInit(TextState * ts, Win win, Drawable draw)
+{
+   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
+
+   fdc->win = win;
+
+   fdc->xftd = XftDrawCreate(disp, draw, WinGetVisual(win), WinGetCmap(win));
+   if (!fdc->xftd)
+      return -1;
+   return 0;
+}
+
+static void
+_xft_FdcFini(TextState * ts)
+{
+   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
+
+   XftDrawDestroy(fdc->xftd);
+}
+
+static void
+_xft_FdcSetDrawable(TextState * ts, unsigned long draw)
+{
+   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
+
+   if (fdc->draw == draw)
+      return;
+   XftDrawChange(fdc->xftd, draw);
+}
+
+static void
+_xft_FdcSetColor(TextState * ts, XColor * xc)
+{
+   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
+   XRenderColor        xrc;
+
+   xrc.red = xc->red * 256;
+   xrc.green = xc->green * 256;
+   xrc.blue = xc->blue * 256;
+   xrc.alpha = 65535;
+
+   XftColorAllocValue(disp, WinGetVisual(fdc->win), WinGetCmap(fdc->win),
+		      &xrc, &(fdc->xftc));
+}
+
+const FontOps       FontOpsXft = {
+   _xft_Load, _xft_Unload, _xft_TextSize, TextstateTextFitMB, _xft_TextDraw,
+   _xft_FdcInit, _xft_FdcFini, _xft_FdcSetDrawable, _xft_FdcSetColor
+};
+#endif /* FONT_TYPE_XFT */
+
 #if FONT_TYPE_XFS
 /*
  * XFontSet - XCreateFontSet
@@ -270,7 +417,7 @@ typedef struct
 } FontCtxXfs;
 
 static int
-_xfs_Load(TextState * ts)
+_xfs_Load(TextState * ts, int fallback)
 {
    XFontSet            font;
    FontCtxXfs         *fdc;
@@ -283,7 +430,7 @@ _xfs_Load(TextState * ts)
    if (missing_cnt)
       XFreeStringList(missing_list);
 
-   if (!font)
+   if (!font && fallback)
      {
 	font = XCreateFontSet(disp, "fixed", &missing_list,
 			      &missing_cnt, &def_str);
@@ -397,7 +544,7 @@ typedef struct
 } FontCtxXfont;
 
 static int
-_xfont_Load(TextState * ts)
+_xfont_Load(TextState * ts, int fallback __UNUSED__)
 {
    XFontStruct        *font = NULL;
    FontCtxXfont       *fdc;
@@ -591,15 +738,23 @@ TextStateLoadFont(TextState * ts)
    ts->need_utf8 = Mode.locale.utf8_int;
 
 #if FONT_TYPE_IFT
-   if (!FontOpsIft.Load(ts))	/* Imlib2/FreeType */
+   if (!FontOpsIft.Load(ts, 0))	/* Imlib2/FreeType */
       goto done;
 #endif
 #if FONT_TYPE_XFS
-   if (!FontOpsXfs.Load(ts))	/* XFontSet - XCreateFontSet */
+   if (!FontOpsXfs.Load(ts, 0))	/* XFontSet - XCreateFontSet */
+      goto done;
+#endif
+#if FONT_TYPE_XFT
+   if (!FontOpsXft.Load(ts, 0))	/* Xft */
+      goto done;
+#endif
+#if FONT_TYPE_XFS
+   if (!FontOpsXfs.Load(ts, 1))	/* XFontSet - XCreateFontSet */
       goto done;
 #endif
 #if FONT_TYPE_XFONT
-   if (!FontOpsXfont.Load(ts))	/* XFontStruct - XLoadQueryFont */
+   if (!FontOpsXfont.Load(ts, 1))	/* XFontStruct - XLoadQueryFont */
       goto done;
 #endif
 
@@ -873,6 +1028,9 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 	     yy += hh;
 	  }
      }
+
+   if (ts->ops->FdcFini)
+      ts->ops->FdcFini(ts);
 
    StrlistFree(lines, num_lines);
 }

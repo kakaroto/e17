@@ -112,7 +112,7 @@ typedef struct
 } FontCtxIft;
 
 static int
-_ift_Load(TextState * ts)
+_ift_Load(TextState * ts, int fallback __UNUSED__)
 {
    EFont              *font;
    FontCtxIft         *fdc;

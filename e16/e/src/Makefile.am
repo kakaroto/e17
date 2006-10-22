@@ -143,6 +143,7 @@ LDADD = \
 	@ecore_libs@		\
 	$(ESD_LIBS) 		\
 	$(IMLIB2_LIBS) 		\
+	$(XFT_LIBS) 		\
 	$(X_PRE_LIBS) 		\
 	$(X_LIBS) 		\
 	$(XINERAMA_LIBS) 	\
@@ -150,7 +151,7 @@ LDADD = \
 	$(E_X_LIBS) 		\
 	-lX11 -lm
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/intl @ecore_cflags@ $(ESD_CFLAGS) $(IMLIB2_CFLAGS) $(X_CFLAGS)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/intl @ecore_cflags@ $(ESD_CFLAGS) $(IMLIB2_CFLAGS) $(XFT_CFLAGS) $(X_CFLAGS)
 
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes

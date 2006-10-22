@@ -38,12 +38,13 @@
 
 #define FONT_TYPE_UNKNOWN 0
 #define FONT_TYPE_IFT     1	/* Imlib2/FreeType */
-#define FONT_TYPE_XFS     2	/* XFontSet        */
+#define FONT_TYPE_XFT     2	/* Xft             */
+#define FONT_TYPE_XFS     3	/* XFontSet        */
 #define FONT_TYPE_XFONT   0	/* XFontStruct     */
 
 typedef struct
 {
-   int                 (*Load) (TextState * ts);
+   int                 (*Load) (TextState * ts, int fallback);
    void                (*Destroy) (TextState * ts);
    void                (*TextSize) (TextState * ts, const char *text, int len,
 				    int *width, int *height, int *ascent);
