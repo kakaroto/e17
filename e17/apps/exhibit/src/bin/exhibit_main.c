@@ -905,10 +905,15 @@ _ex_main_window_show(char *dir)
      }
    else
      tab = _ex_tab_new(e, ".");
-   	
+   
+   e->hpaned_shadow = etk_shadow_new();
+   etk_shadow_shadow_set(ETK_SHADOW(e->hpaned_shadow), ETK_SHADOW_INSIDE,
+     ETK_SHADOW_LEFT, 5, 2, 0, 115);
+   etk_paned_child2_set(ETK_PANED(e->hpaned), e->hpaned_shadow, ETK_TRUE);
+   
    e->notebook = etk_notebook_new();
    etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);
-   etk_paned_child2_set(ETK_PANED(e->hpaned), e->notebook, ETK_TRUE);
+   etk_container_add(ETK_CONTAINER(e->hpaned_shadow), e->notebook);
    etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), 
 	 ETK_CALLBACK(_ex_main_window_tab_toggled_cb), NULL);
       

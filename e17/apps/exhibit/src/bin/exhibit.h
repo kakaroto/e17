@@ -193,6 +193,7 @@ struct _Exhibit
    Etk_Widget    *table;
    Etk_Widget    *hpaned;
    Etk_Widget    *vpaned;
+   Etk_Widget    *hpaned_shadow;
    Etk_Widget    *entry[2];
    Etk_Widget    *zoom_in[2];
    Etk_Widget    *zoom_out[2];
