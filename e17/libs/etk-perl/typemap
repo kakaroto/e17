@@ -115,7 +115,7 @@ Evas_List **					T_PTROBJ
 Evas_Object *					T_PTROBJ_ETK
 Etk_Shadow *					T_PTROBJ_ETK
 Etk_Shadow_Type					T_IV
-Etk_Shadow_Edge					T_IV
+Etk_Shadow_Edges				T_IV
 const Etk_String *				T_PTROBJ
 char *						T_PV
 const char *					T_PV

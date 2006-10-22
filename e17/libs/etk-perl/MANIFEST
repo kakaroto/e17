@@ -42,6 +42,7 @@ t/Etk/Range.t
 t/Etk/Scrollbar.t
 t/Etk/ScrolledView.t
 t/Etk/Separator.t
+t/Etk/Shadow.t
 t/Etk/Slider.t
 t/Etk/StatusBar.t
 t/Etk/Table.t
