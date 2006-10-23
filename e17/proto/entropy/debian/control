@@ -12,7 +12,7 @@ Suggests: libevfs0-plugins-all
 Description: Entropy is a file manager based on the EFL
  Entropy is a file manager based on the EFL and using evfs.
  Features are:
- - Support of two widget libraries: ETK and Ewl
+ - Support for two widget libraries: ETK and Ewl
  - File types handling through evfs plugins: tar, gzip, samba and more
  - Three view modes: Tree, List and Icon
  - Thumbnail support
