@@ -39,6 +39,7 @@ SUBDIRS				= \
 	notebook \
 	paned \
 	password \
+	pointer \
 	progressbar \
 	puzzle \
 	scrollbar \

@@ -305,6 +305,7 @@ src/bin/tests/mvc/Makefile
 src/bin/tests/notebook/Makefile
 src/bin/tests/paned/Makefile
 src/bin/tests/password/Makefile
+src/bin/tests/pointer/Makefile
 src/bin/tests/progressbar/Makefile
 src/bin/tests/puzzle/Makefile
 src/bin/tests/scrollbar/Makefile
