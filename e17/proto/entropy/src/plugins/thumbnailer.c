@@ -32,6 +32,7 @@ entropy_thumbnailer_plugin_mime_types_get ()
     ecore_list_append (types, "video/mpeg");
     ecore_list_append (types, "video/x-msvideo");
     ecore_list_append (types, "video/quicktime");
+    ecore_list_append (types, "image/tga");
 
 
   }
