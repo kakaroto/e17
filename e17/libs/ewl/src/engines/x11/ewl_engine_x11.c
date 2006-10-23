@@ -746,12 +746,17 @@ ee_pointer_get(Ewl_Embed *embed)
 static void
 ee_pointer_set(Ewl_Embed *embed, int pointer)
 {
+	Ecore_X_Cursor cur;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	ecore_x_window_cursor_set((Ecore_X_Window)embed->evas_window,
-				ecore_x_cursor_shape_get(pointer));
+	if (pointer >= EWL_MOUSE_CURSOR_MAX)
+		cur = pointer;
+	else
+		cur = ecore_x_cursor_shape_get(pointer);
+	ecore_x_window_cursor_set((Ecore_X_Window)embed->evas_window, cur);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
