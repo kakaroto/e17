@@ -172,10 +172,16 @@ ee_canvas_render(Ewl_Embed *embed)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
-	if (embed->evas)
-		evas_render(embed->evas);
+	if (embed->evas) {
+		Evas_List *updates;
 
-	ewl_callback_call(EWL_WIDGET(embed), EWL_CALLBACK_VALUE_CHANGED);
+		updates = evas_render_updates(embed->evas);
+		if (updates) {
+			ewl_callback_call(EWL_WIDGET(embed),
+					EWL_CALLBACK_VALUE_CHANGED);
+			evas_render_updates_free(updates);
+		}
+	}
 
 	DRETURN(DLEVEL_STABLE);
 }
