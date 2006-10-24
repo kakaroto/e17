@@ -64,6 +64,13 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
+AC_CHECK_HEADERS(sqlite3.h,
+		 SQLITE_LIBS="$SQLITE_LIBS -lsqlite3",
+		 AC_MSG_ERROR([Ephoto needs sqlite3 to compile.])
+		 )
+AC_SUBST(SQLITE_LIBS)
+
+
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
 if test -z "$EVAS_CONFIG" ; then
@@ -134,3 +141,37 @@ src/Makefile
 debian/changelog
 po/Makefile
 ])
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "    ________   ________  ___  ___  ________  ________  ________"
+echo "   /  _____/  /  __   / /  / /  / /  __   / /__  ___/ /  __   /"
+echo "  /  /____   /  /_/  / /  /_/  / /  / /  /    / /    /  / /  / "
+echo " /  _____/  /  _____/ /  __   / /  / /  /    / /    /  / /  /  "
+echo "/  /_____  /  /      /  / /  / /  /_/  /    / /    /  /_/  /   "
+echo "________/ /__/      /__/ /__/ /_______/    /_/    /_______/    "
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Sqlite3 .........: Yes"
+echo "  Evas ............: Yes"
+echo "  Ecore ...........: Yes"
+echo "  Edje ............: Yes"
+echo "  Epsilon .........: Yes"
+echo "  EWL .............: Yes"
+echo
+echo "Installation Path.........: $prefix"
+echo
+echo "Compilation...............: make"
+echo "Installation..............: make install"
+echo
