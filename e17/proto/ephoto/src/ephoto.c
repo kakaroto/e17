@@ -9,7 +9,8 @@ main(int argc, char **argv)
 {
  Ewl_Widget *vbox, *hbox, *border, *menubar, *menu, *menu_item;
  Ewl_Widget *hseparator, *vseparator, *image, *text;
- 
+ sqlite3 *db;
+
  if (!ewl_init(&argc, argv))
  {
   printf("Unable to init ewl\n");
@@ -23,6 +24,7 @@ main(int argc, char **argv)
  bind_textdomain_codeset(PACKAGE, "UTF-8");
  textdomain(PACKAGE);
 #endif
+
  m = NULL;
  current_thumbs = ecore_dlist_new();
  current_directory = strdup(getenv("HOME"));
@@ -75,6 +77,7 @@ main(int argc, char **argv)
  ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(menu), menu_item);
  ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+ ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, add_album, NULL);
  ewl_widget_show(menu_item);
 
  menu_item = ewl_menu_item_new();
@@ -242,12 +245,15 @@ main(int argc, char **argv)
  ewl_object_fill_policy_set(EWL_OBJECT(m->viewer_freebox), EWL_FLAG_FILL_ALL);
  ewl_widget_show(m->viewer_freebox);
 
- ewl_callback_append(m->albums, EWL_CALLBACK_SHOW, populate_albums, NULL);
  ewl_callback_append(m->browser, EWL_CALLBACK_SHOW, populate_browser, 
 			current_directory);
  ewl_widget_name_set(m->viewer, current_directory);
  ewl_callback_append(m->viewer, EWL_CALLBACK_SHOW, populate_images, NULL);
  
+ db = ephoto_db_init();
+ ephoto_db_list_albums(db);
+ ephoto_db_close(db);
+
  ewl_main();
  return 0;
 }
