@@ -178,7 +178,6 @@ static struct
    EObj               *eo_last;
    XserverRegion       rgn_screen;
    int                 shadow_mode;
-   unsigned int        opac_or;	/* 0 -> 0xffffffff */
    double              opac_blur;	/* 0. -> 1. */
    double              opac_sharp;	/* 0. -> 1. */
 } Mode_compmgr;
@@ -1464,7 +1463,7 @@ ECompMgrWinNew(EObj * eo)
      }
 
    if (eo->type == EOBJ_TYPE_EXT)
-      eo->opacity = Mode_compmgr.opac_or;
+      eo->opacity = OpacityFromPercent(Conf_compmgr.override_redirect.opacity);
    if (eo->opacity == 0)
       eo->opacity = 0xFFFFFFFF;
 
@@ -2258,8 +2257,6 @@ ECompMgrStart(void)
 
    Conf_compmgr.override_redirect.opacity =
       OpacityFix(Conf_compmgr.override_redirect.opacity);
-   Mode_compmgr.opac_or =
-      OpacityFromPercent(Conf_compmgr.override_redirect.opacity);
 
    pa.subwindow_mode = IncludeInferiors;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
