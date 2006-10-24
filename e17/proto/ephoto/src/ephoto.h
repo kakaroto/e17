@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sqlite3.h>
 #include "config.h"
 
 /* NLS */
@@ -29,10 +30,11 @@
 char *sgettext(const char *s);
 #define S_(str) sgettext(str)
 
+/* Main Window Calls */
 void destroy_cb(Ewl_Widget *w, void *event, void *data);
 void populate_browser(Ewl_Widget *w, void *event, void *data);
-void populate_albums(Ewl_Widget *w, void *event, void *data);
 void populate_images(Ewl_Widget *w, void *event, void *data);
+void add_album(Ewl_Widget *w, void *event, void *data);
 void go_up(Ewl_Widget *w, void *event, void *data);
 void go_home(Ewl_Widget *w, void *event, void *data);
 void go_favorites(Ewl_Widget *w, void *event, void *data);
@@ -40,6 +42,12 @@ void entry_change(Ewl_Widget *w, void *event, void *data);
 void create_slideshow_config(Ewl_Widget *w, void *event, void *data);
 void start_slideshow(Ewl_Widget *w, void *event, void *data);
 void view_images(Ewl_Widget *w, void *event, void *data);
+
+/* Databasing calls */
+sqlite3 *ephoto_db_init(void);
+void ephoto_db_close(sqlite3 *db);
+void ephoto_db_add_album(sqlite3 *db, char *name, char *description);
+void ephoto_db_list_albums(sqlite3 *db);
 
 typedef struct _Main Main;
 
