@@ -12,17 +12,17 @@ REMOTE_THUMBNAILER_L = remote_thumbnailer.la
 DISTRIB_THUMBNAILER_L = distrib_thumbnailer.la
 POSIX_L = posix.la
 
-if HAVE_EWL
-LAYOUT_L = layout_ewl_simple.la
-EWL_LOCAL_ICON_L = ewl_local_icon.la
-EWL_LIST_L = ewl_list.la
-STRUCTURE_VIEWER_L = structure_viewer.la
-else
+#if HAVE_EWL
+#LAYOUT_L = layout_ewl_simple.la
+#EWL_LOCAL_ICON_L = ewl_local_icon.la
+#EWL_LIST_L = ewl_list.la
+#STRUCTURE_VIEWER_L = structure_viewer.la
+#else
 LAYOUT_L =
 EWL_LOCAL_ICON_L =
 EWL_LIST_L =
 STRUCTURE_VIEWER_L =
-endif
+#endif
 
 SYSTEM_THUMBNAILER_L = system_thumbnailer.la
 ACTION_SIMPLE_L = action_simple.la
