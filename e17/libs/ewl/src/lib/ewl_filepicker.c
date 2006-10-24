@@ -676,7 +676,8 @@ ewl_filepicker_cb_type_header(void *data, int col)
 	filter = ecore_list_current(fp->filters);
 
 	w = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(w), filter->name);
+	if (filter)
+		ewl_text_text_set(EWL_TEXT(w), filter->name);
 	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_filepicker_cb_filter_change, fp);
 	ewl_widget_show(w);
