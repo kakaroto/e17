@@ -25,7 +25,7 @@ extern void user_selected_cb(void *data, Evas_Object * o,
 extern void user_unselected_cb(void *data, Evas_Object * o,
                                const char *emission, const char *source);
 static void _entrance_session_user_list_fix(Entrance_Session * e);
-static void _entrance_session_execute_in_shell(char *user,char *shell,char *buf);
+static void _entrance_session_execute_in_shell(char *user, char *shell, char *session_cmd, char *session_name);
 
 /**
  * entrance_session_new: allocate a new  Entrance_Session
@@ -378,9 +378,12 @@ void
 entrance_session_start_user_session(Entrance_Session * e)
 {
    pid_t pid;
-   char buf[PATH_MAX], pids[128];
+   char pids[128];
    char *shell = NULL;
    char *user = NULL;
+   char *session_cmd = NULL;
+   char *session_name = NULL;
+   char *monitor_cmd = PACKAGE_LIB_DIR"/"PACKAGE"/entrance_login";
    struct passwd *pwent = NULL;
    Entrance_X_Session *exs = NULL;
 
@@ -391,26 +394,37 @@ entrance_session_start_user_session(Entrance_Session * e)
    if ((exs->session) && (exs->session[0] != 0))
    {
       if (!strcmp(exs->session, "default"))
-         snprintf(buf, PATH_MAX, "%s", e->config->xsession);
+         session_cmd = strdup(e->config->xsession);
       else if (exs->session[0] == '/')
-         snprintf(buf, PATH_MAX, "%s", exs->session);
+         session_cmd = strdup(exs->session);
       else
-         snprintf(buf, PATH_MAX, "%s %s", e->config->xsession, exs->session);
+      {
+         session_cmd = strdup(e->config->xsession);
+         session_name = strdup(exs->session);
+      }
    }
    else
    {
       /* Default session */
-      snprintf(buf, PATH_MAX, "%s", e->config->xsession);
+      session_cmd = strdup(e->config->xsession);
    }
 
    if (e->testing)
    {
-      printf("Would have executed: %s\n", buf);
+      printf("Selected session command: %s", session_cmd);
+      if (session_name)
+         printf(" %s", session_name);
+      printf("\n");
       fflush(stdout);
-      snprintf(buf, PATH_MAX, "xterm");
+      session_cmd = strdup("xterm");
+      if (session_name) free(session_name);
+      session_name = NULL;
    }
 
-   syslog(LOG_INFO, "Executing %s", buf);
+   if (session_name)
+      syslog(LOG_INFO, "Executing %s %s", session_cmd, session_name);
+   else
+      syslog(LOG_INFO, "Executing %s", session_cmd);
 
    if (e->ee)
    {
@@ -472,35 +486,21 @@ entrance_session_start_user_session(Entrance_Session * e)
         /* replace this process with a clean small one that just waits for its */
         /* child to exit.. passed on the cmd-line */
 
-        _entrance_session_execute_in_shell(user, shell, buf);
+        _entrance_session_execute_in_shell(user, shell, session_cmd, session_name);
         break;
      case -1:
         syslog(LOG_INFO, "FORK FAILED, UH OH");
         exit(0);
      default:
         syslog(LOG_NOTICE, "Replacing Entrance with simple login program to wait for session end.");
-#ifdef HAVE_PAM
-        if (e->config->auth == ENTRANCE_USE_PAM)
-        {
-           snprintf(buf, sizeof(buf), "%s/%s/entrance_login",
-                    PACKAGE_LIB_DIR, PACKAGE, (int) pid, pwent->pw_name, 
-		    e->display);
-        }
-        else
-#endif
-        {
-           snprintf(buf, sizeof(buf), "%s/%s/entrance_login",
-                    PACKAGE_LIB_DIR, PACKAGE, (int) pid);
-        }
-        shell = strdup("/bin/sh");
         /* this bypasses a race condition where entrance loses its x
            connection before the wm gets it and x goes and resets itself */
         sleep(30);
-        /*
-         * FIXME These should be called!
+        
+        /* FIXME These should be called! */
         ecore_x_shutdown();
         ecore_shutdown();
-        */
+        
         break;
    }
 /* no need to free - we are goign to exec ourselves and be replaced   
@@ -514,21 +514,19 @@ entrance_session_start_user_session(Entrance_Session * e)
 
    /* this causes entreance to reset - bad bad bad */
    snprintf(pids, sizeof(pids), "%i", (int)pid);
-   snprintf(buf, sizeof(buf), "%s/%s/entrance_login", PACKAGE_LIB_DIR, PACKAGE);
 #ifdef HAVE_PAM
    if (e->config->auth == ENTRANCE_USE_PAM)
      {
-	syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s %s %s", buf, pids, pwent->pw_name, e->display);
-	execl(buf, buf, pids, pwent->pw_name, e->display, NULL);
+	syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s %s %s", monitor_cmd, pids, pwent->pw_name, e->display);
+	execl(monitor_cmd, monitor_cmd, pids, pwent->pw_name, e->display, NULL);
      }
    else
 #endif
      {
-	syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s", buf, pids);
-	execl(buf, buf, pids, NULL);
+	syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s", monitor_cmd, pids);
+	execl(monitor_cmd, monitor_cmd, pids, NULL);
      }
    pause();
-   if (buf) free(buf);
 }
 
 
@@ -831,30 +829,36 @@ _entrance_session_user_list_fix(Entrance_Session * e)
 }
 
 static void
-_entrance_session_execute_in_shell(char *user,char *shell,char *buf)
+_entrance_session_execute_in_shell(char *user, char *shell, char *session_cmd, char *session_name)
 {
-   int pid;
-   int status;
-   int res=0;
+   int res = 0;
+   char *shell_cmd;
+   char buf[PATH_MAX];
 
    /* If the user's passwd entry has a shell try to run it in login mode */
-   if (shell != "") { 
-	   execl(shell, shell, "-l", "-c", buf, NULL);
-   } else {
-	   res = execl("/bin/sh", "/bin/sh", "-l", "-c", buf, NULL);
+   if (shell && (strlen(shell) > 0))
+      shell_cmd = shell;
+   else
+      shell_cmd = strdup("/bin/sh");
 
-	   /* Getting here means the previous didn't work 
-	   	* If /bin/sh isn't a login shell run /bin/sh without loading the profile
-		* Also log a warning because this will probably not behave correctly */
-	   if (res == -1) { 
-		  /*TODO: should actually hit the user in the face with this message*/
-		  syslog(LOG_NOTICE, "Neither '%s' or '/bin/sh' are working login shells for user '%s'. Your session may not function properly. ",shell,user);
-		  execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
-	   }
+   if (session_name)
+      snprintf(buf, sizeof(buf), "%s %s", session_cmd, session_name);
+   else
+      snprintf(buf, sizeof(buf), "%s", session_cmd);
 
-	   /* Damn, that didn't work either.
-		* Bye! We call it quits and log an error 
-		* TODO: Also hit the user in the face with this! (ouch!)*/
-		syslog(LOG_CRIT, "Entrance could not find a working shell to start the session for user: \"%s\".",user);
-   }
+	res = execlp(shell_cmd, shell_cmd, "-l", "-c", "--", buf, NULL);
+
+	/* Getting here means the previous didn't work 
+		* If /bin/sh isn't a login shell run /bin/sh without loading the profile
+	* Also log a warning because this will probably not behave correctly */
+	if (res == -1)  
+	  /*TODO: should actually hit the user in the face with this message*/
+	  syslog(LOG_NOTICE, "Neither '%s' or '/bin/sh' are working login shells for user '%s'. Your session may not function properly. ",shell,user);
+	res = execlp(shell_cmd, shell_cmd, "-c", buf, NULL);
+
+	/* Damn, that didn't work either.
+	* Bye! We call it quits and log an error 
+	* TODO: Also hit the user in the face with this! (ouch!)*/
+	syslog(LOG_CRIT, "Entrance could not find a working shell to start the session for user: \"%s\".",user);
 }
+
