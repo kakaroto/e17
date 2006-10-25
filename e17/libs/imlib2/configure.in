@@ -10,7 +10,7 @@ AM_CONFIG_HEADER(config.h)
 
 AC_C_BIGENDIAN
 AC_PROG_CC
-
+AM_PROG_AS
 
 case $host_os in
 solaris*)
