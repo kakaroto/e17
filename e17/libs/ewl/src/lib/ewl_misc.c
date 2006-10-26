@@ -310,6 +310,9 @@ ewl_shutdown(void)
 	while ((shutdown = ecore_list_remove_first(shutdown_queue)))
 		shutdown();
 
+	ecore_list_destroy(shutdown_queue);
+	shutdown_queue = NULL;
+
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 }
 
