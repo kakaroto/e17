@@ -19,6 +19,7 @@ Contents
 - Composite manager notes
 - Default keybindings
 - Configuration options
+- Fonts
 - Using e16 with GNOME
 - Using e16 with KDE
 - Migrating from Enlightenment 0.16.7 to 0.16.8 
@@ -581,6 +582,29 @@ warplist.warp_on_select = 0
 # [bool] Icon mode (0: none, 3: e/app/snap, 4: app/e/snap)
 warplist.icon_mode = 3
 
+
+Fonts
+-----
+The fonts in the default theme (winter) and core themes (BlueSteel,
+BrushedMetal-Tigert, Ganymede, and ShinyMetal) are configured (indirectly)
+in fonts.cfg. Directory search order is (typically):
+~/.e16, <theme-dir>, and /usr/share/e16/config/fonts.cfg).
+Other themes are likely to have font references more or less scattered around
+in TextClass definitions in the theme configuration files.
+
+There are three different ways to specify a font:
+
+1) "<font name>/<size>", e.g. "Vera/8".
+In this case e16 must be able to find "Vera.ttf" in its TrueType font path.
+The e16 default TrueType font path is <theme dir>/ttfont, additional paths
+may be given via the theme.ttfont_path configuration setting.
+
+2) XLFD font sets, e.g. "-*-lucida-medium-r-normal-*-12-120-*-*-*-*-*-*,-*-gulim*-medium-r-normal-*-12-120-*-*-*-*-ksc5601.1987-*".
+xfontsel, xlsfonts, and xfd can be used to select and show these fonts.
+
+3) Fontconfig font names, e.g. "Luxi Sans-10:bold".
+fc-list and xfd can be used to select and show these fonts.
+NB! This possibility (Xft support) was added after the 0.16.8.4 release.
 
 Using e16 with GNOME
 --------------------
