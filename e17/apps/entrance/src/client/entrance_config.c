@@ -13,7 +13,7 @@
 struct _Entrance_Config_And_Path
 {
    Entrance_Config *e;
-   const char      *path;
+   const char *path;
 };
 
 
@@ -47,7 +47,8 @@ _entrance_config_defaults_set()
 {
    ecore_config_string_default("/entrance/theme", "default.edj");
    ecore_config_string_default("/entrance/background", "");
-   ecore_config_string_default("/entrance/pointer", PACKAGE_DATA_DIR "/images/pointer.png");
+   ecore_config_string_default("/entrance/pointer",
+                               PACKAGE_DATA_DIR "/images/pointer.png");
    ecore_config_string_default("/entrance/greeting/before", "Welcome to");
    ecore_config_string_default("/entrance/greeting/after", "");
    ecore_config_string_default("/entrance/date_format", "%x");
@@ -84,7 +85,7 @@ _entrance_config_defaults_set()
  * @param e Valid Entrance_Config struct
  */
 static void
-entrance_config_populate(Entrance_Config *e)
+entrance_config_populate(Entrance_Config * e)
 {
    Entrance_User *eu = NULL;
    char *user = NULL;
@@ -98,7 +99,8 @@ entrance_config_populate(Entrance_Config *e)
    char buf[PATH_MAX];
    struct _Entrance_Config_And_Path ep;
 
-   if (!e) return;
+   if (!e)
+      return;
 
    /* strings 'n things */
    e->theme = ecore_config_string_get("/entrance/theme");
@@ -110,7 +112,8 @@ entrance_config_populate(Entrance_Config *e)
    e->time.string = ecore_config_string_get("/entrance/time_format");
 
    e->autologin.mode = ecore_config_int_get("/entrance/autologin/mode");
-   e->autologin.username = ecore_config_string_get("/entrance/autologin/user");
+   e->autologin.username =
+      ecore_config_string_get("/entrance/autologin/user");
 
    e->presel.mode = ecore_config_int_get("/entrance/presel/mode");
    e->presel.prevuser = ecore_config_string_get("/entrance/presel/prevuser");
@@ -134,8 +137,8 @@ entrance_config_populate(Entrance_Config *e)
          icon = ecore_config_string_get(buf);
          snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
          session = ecore_config_string_get(buf);
-	    
-	    printf("%s %s %s\n", user, icon, session);
+
+         printf("%s %s %s\n", user, icon, session);
 
          if ((eu = entrance_user_new(user, icon, session)))
          {
@@ -157,10 +160,12 @@ entrance_config_populate(Entrance_Config *e)
    ep.e = e;
    ep.path = ENTRANCE_SESSIONS_DIR;
    Ecore_List *xsessions = ecore_file_ls(ENTRANCE_SESSIONS_DIR);
-   if(xsessions)
-	   ecore_list_for_each(xsessions, _cb_xsessions_foreach, &ep);
+
+   if (xsessions)
+      ecore_list_for_each(xsessions, _cb_xsessions_foreach, &ep);
    /* Search all the relevant FDO paths second. */
-   ecore_desktop_paths_for_each(ECORE_DESKTOP_PATHS_XSESSIONS, _cb_desktop_xsessions_foreach, &ep);
+   ecore_desktop_paths_for_each(ECORE_DESKTOP_PATHS_XSESSIONS,
+                                _cb_desktop_xsessions_foreach, &ep);
 
    num_session = ecore_config_int_get("/entrance/session/count");
    for (i = 0; i < num_session; i++)
@@ -175,11 +180,10 @@ entrance_config_populate(Entrance_Config *e)
       if ((exs = entrance_x_session_new(title, icon, session)))
       {
          e->sessions.keys = evas_list_append(e->sessions.keys, title);
-         e->sessions.hash =
-            evas_hash_add(e->sessions.hash, exs->name, exs);
+         e->sessions.hash = evas_hash_add(e->sessions.hash, exs->name, exs);
       }
    }
-   
+
 
 #if 0
    if (!e_db_int_get(db, "/entrance/xinerama/screens/w", &(e->screens.w)))
@@ -307,7 +311,7 @@ entrance_config_print(Entrance_Config * e)
 }
 
 void
-entrance_config_store(Entrance_Config *e)
+entrance_config_store(Entrance_Config * e)
 {
    int i = 0;
    char buf[PATH_MAX];
@@ -377,7 +381,7 @@ entrance_config_store(Entrance_Config *e)
 }
 
 int
-entrance_config_save(Entrance_Config *e, const char *file)
+entrance_config_save(Entrance_Config * e, const char *file)
 {
    if (file)
    {
@@ -429,7 +433,8 @@ entrance_config_user_list_save(Entrance_Config * e, const char *file)
    Entrance_User *eu = NULL;
    char buf[PATH_MAX];
 
-   if (!e->users.remember) return;
+   if (!e->users.remember)
+      return;
 
    for (i = 0, l = e->users.keys; l && i < e->users.remember_n;
         l = l->next, i++)
@@ -470,26 +475,28 @@ entrance_config_prevuser_save(char *user, const char *file)
    ecore_config_file_save(file);
 }
 
-static void 
+static void
 _cb_xsessions_foreach(void *list_data, void *data)
 {
-   const char* filename = list_data;
+   const char *filename = list_data;
    struct _Entrance_Config_And_Path *ep = data;
    Entrance_Config *e;
    Ecore_List *commands;
 
-   if(!filename)
+   if (!filename)
       return;
 
    e = ep->e;
-   if(!e)
+   if (!e)
       return;
 
    char path[PATH_MAX];
+
    snprintf(path, PATH_MAX, "%s/%s", ep->path, filename);
 
    Ecore_Desktop *ed = ecore_desktop_get(path, NULL);
-   if(!ed)
+
+   if (!ed)
       return;
 
    Entrance_X_Session *exs = NULL;
@@ -508,35 +515,36 @@ _cb_xsessions_foreach(void *list_data, void *data)
 	ecore_list_destroy(commands);
      }
    if ((exs = entrance_x_session_new(ed->name, ed->icon, command)))
-    {
-       /* Sessions found earlier in the FDO search sequence override those found later. */
-       if (evas_hash_find(e->sessions.hash, exs->name) == NULL)
-          {
-             e->sessions.keys = evas_list_append(e->sessions.keys, ed->name);
-             e->sessions.hash = evas_hash_add(e->sessions.hash, exs->name, exs);
-	  }
-       else
-          {
-             entrance_x_session_free(exs);
-	  }
-    }
+   {
+      /* Sessions found earlier in the FDO search sequence override those
+         found later. */
+      if (evas_hash_find(e->sessions.hash, exs->name) == NULL)
+      {
+         e->sessions.keys = evas_list_append(e->sessions.keys, ed->name);
+         e->sessions.hash = evas_hash_add(e->sessions.hash, exs->name, exs);
+      }
+      else
+      {
+         entrance_x_session_free(exs);
+      }
+   }
 
-	ecore_desktop_destroy(ed);
+   ecore_desktop_destroy(ed);
 }
 
-static void 
+static void
 _cb_desktop_xsessions_foreach(void *list_data, void *data)
 {
-   const char* path = list_data;
+   const char *path = list_data;
    struct _Entrance_Config_And_Path *ep = data;
    Ecore_List *xsessions;
 
-   if(!path)
+   if (!path)
       return;
 
    ep->path = path;
    xsessions = ecore_file_ls(path);
-   if(xsessions)
+   if (xsessions)
       ecore_list_for_each(xsessions, _cb_xsessions_foreach, ep);
 }
 

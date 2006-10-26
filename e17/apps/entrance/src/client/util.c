@@ -78,45 +78,51 @@ entrance_debug(char *msg)
       printf("%s\n", msg);
 }
 
-char* theme_normalize_path(char *theme, const char * filename)
+char *
+theme_normalize_path(char *theme, const char *filename)
 {
-   char* t = strchr((const char *) filename, '/');
+   char *t = strchr((const char *) filename, '/');
+
    if (t)
-	  theme = strdup(filename);
+      theme = strdup(filename);
    else
    {
-	  theme = calloc(1, PATH_MAX);
-	  t = strrchr((const char *) filename, '.');
-	  if (t && !strcmp(t, ".edj"))
-		 snprintf(theme, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
-				  filename);
-	  else
-		 snprintf(theme, PATH_MAX, "%s/themes/%s.edj",
-				  PACKAGE_DATA_DIR, filename);
+      theme = calloc(1, PATH_MAX);
+      t = strrchr((const char *) filename, '.');
+      if (t && !strcmp(t, ".edj"))
+         snprintf(theme, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
+                  filename);
+      else
+         snprintf(theme, PATH_MAX, "%s/themes/%s.edj", PACKAGE_DATA_DIR,
+                  filename);
    }
 
    return theme;
 }
- 
 
-char* gstr_is_valid(const char* gstr)
+
+char *
+gstr_is_valid(const char *gstr)
 {
-	char *t = strchr((const char *) gstr, 'x');
-	if (!t || t >= (gstr + strlen(gstr)))
-	{
-	  return NULL;
-	}
+   char *t = strchr((const char *) gstr, 'x');
 
-	return strdup(t);
+   if (!t || t >= (gstr + strlen(gstr)))
+   {
+      return NULL;
+   }
+
+   return strdup(t);
 }
 
-void atog(const char* gstr, int *x, int *y)
+void
+atog(const char *gstr, int *x, int *y)
 {
-	char* sep = gstr_is_valid(gstr);
+   char *sep = gstr_is_valid(gstr);
 
-	if(sep) {
-	  	*x = atoi((const char *) gstr);
-	  	*y = atoi((const char *) (sep + 1));
-		free(sep);
-	}
+   if (sep)
+   {
+      *x = atoi((const char *) gstr);
+      *y = atoi((const char *) (sep + 1));
+      free(sep);
+   }
 }

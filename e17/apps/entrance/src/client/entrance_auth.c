@@ -255,7 +255,7 @@ entrance_auth_cmp_crypt(Entrance_Auth * e)
 {
    char *encrypted;
    char *correct;
-   
+
    correct = e->pw->pw_passwd;
 
    /* Only successfully auth blank password *if* a blank password is given */
@@ -274,7 +274,7 @@ entrance_auth_cmp_shadow(Entrance_Auth * e)
    char *encrypted;
    char *correct;
    struct spwd *sp;
-   
+
    sp = getspnam(e->pw->pw_name);
    endspent();
 
@@ -285,7 +285,7 @@ entrance_auth_cmp_shadow(Entrance_Auth * e)
       syslog(LOG_CRIT, "FATAL: Unable to fetch shadow password.");
       return AUTH_FAIL;
    }
-   
+
    /* Don't authenticate blank password unless blank password is given */
    if ((!correct || !correct[0]) && !strcmp(e->pass, ""))
       return AUTH_SUCCESS;
@@ -321,7 +321,8 @@ entrance_auth_cmp(Entrance_Auth * e, const char *display, int mode)
         return (entrance_auth_cmp_crypt(e));
         break;
      default:
-        syslog(LOG_CRIT, "FATAL: Invalid authentication mode %d requested", mode);
+        syslog(LOG_CRIT, "FATAL: Invalid authentication mode %d requested",
+               mode);
         break;
    }
    return AUTH_FAIL;

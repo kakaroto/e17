@@ -65,7 +65,7 @@ edd_spawn_x(Entranced_Display * d)
  * @param d The spawner display context that this session will use
  */
 void
-edd_spawn_entrance(Entranced_Display *d)
+edd_spawn_entrance(Entranced_Display * d)
 {
    char entrance_cmd[PATH_MAX];
 
@@ -78,12 +78,12 @@ edd_spawn_entrance(Entranced_Display *d)
 
    snprintf(entrance_cmd, PATH_MAX, "%s -d %s", ENTRANCE, d->name);
    if (d->config)
-      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -c \"%s\" -z %d", 
-               ENTRANCE, d->name, d->config, getpid());
+      snprintf(entrance_cmd, PATH_MAX, "%s -d %s -c \"%s\" -z %d", ENTRANCE,
+               d->name, d->config, getpid());
    else
       snprintf(entrance_cmd, PATH_MAX, "%s -d %s -z %d", ENTRANCE, d->name,
-                                                         getpid());
-   /*printf("Starting command: %s\n", entrance_cmd);*/
+               getpid());
+   /* printf("Starting command: %s\n", entrance_cmd); */
    d->e_exe = ecore_exe_run(entrance_cmd, d);
    d->client.pid = ecore_exe_pid_get(d->e_exe);
 }
@@ -106,10 +106,10 @@ edd_x_restart(Entranced_Display * d)
    return 1;
 }
 
-void 
+void
 edd_x_ready_set(unsigned char i)
 {
-	x_ready = i;
+   x_ready = i;
 }
 
 /*privates*/
@@ -119,15 +119,17 @@ edd_x_ready_set(unsigned char i)
  * @return The status of the display context after the launch attempt
  */
 static pid_t
-_start_server_once(Entranced_Display * d) /*seems private*/
+_start_server_once(Entranced_Display * d)	/* seems 
+	   private */
 {
    double start_time;
    char x_cmd[PATH_MAX];
 
    int i;
-   char *x_cmd_argv[32]; 
+   char *x_cmd_argv[32];
 
-   for (i=0;i<32;i++) x_cmd_argv[i]=NULL;
+   for (i = 0; i < 32; i++)
+      x_cmd_argv[i] = NULL;
 
    /* Ecore_Exe *x_exe; */
    pid_t xpid;
@@ -138,15 +140,16 @@ _start_server_once(Entranced_Display * d) /*seems private*/
 
    /* Create server auth cookie */
 
-   if(d->auth_en)
+   if (d->auth_en)
    {
       if (!entranced_auth_display_secure(d))
       {
          syslog(LOG_CRIT, "Failed to generate auth cookie for X Server.");
          return -1;
       }
-   
-      snprintf(x_cmd, PATH_MAX, "%s -auth %s %s", d->xprog, d->authfile, d->name);
+
+      snprintf(x_cmd, PATH_MAX, "%s -auth %s %s", d->xprog, d->authfile,
+               d->name);
    }
    else
    {
@@ -166,12 +169,13 @@ _start_server_once(Entranced_Display * d) /*seems private*/
         sigemptyset(&_entrance_x_sa.sa_mask);
         sigaction(SIGUSR1, &_entrance_x_sa, NULL);
 
-	x_cmd_argv[0]=strtok(x_cmd," ");
-	i=1;
+        x_cmd_argv[0] = strtok(x_cmd, " ");
+        i = 1;
 
-	while ((x_cmd_argv[i]=strtok(NULL," "))!=NULL) {
-	   i++;
-	}
+        while ((x_cmd_argv[i] = strtok(NULL, " ")) != NULL)
+        {
+           i++;
+        }
 
         execvp(x_cmd_argv[0], x_cmd_argv);
         syslog(LOG_WARNING, "Could not execute X server.");
@@ -186,12 +190,13 @@ _start_server_once(Entranced_Display * d) /*seems private*/
            usleep(100000);
            current_time = ecore_time_get();
            if ((current_time - start_time) > 5.0)
-	     break;
+              break;
         }
 
         if (!x_ready)
         {
-           entranced_debug("Entranced_Start_Server_Once: Attempt to start X server failed.\n");
+           entranced_debug
+              ("Entranced_Start_Server_Once: Attempt to start X server failed.\n");
            d->status = NOT_RUNNING;
         }
         else

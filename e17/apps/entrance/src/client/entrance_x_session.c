@@ -83,43 +83,46 @@ entrance_x_session_icon_load(Evas_Object * o, const char *file)
 }
 
 Evas_Object *
-entrance_x_session_button_new(Entrance_X_Session *exs, Evas_Object *edje)
+entrance_x_session_button_new(Entrance_X_Session * exs, Evas_Object * edje)
 {
-	  Evas_Coord w, h;
+   Evas_Coord w, h;
 
-	  Evas *evas = evas_object_evas_get(edje);
-	  if(!evas)
-		  return NULL;
+   Evas *evas = evas_object_evas_get(edje);
 
-	  const char *themefile = NULL;
-	  edje_object_file_get(edje, &themefile, NULL);
-	  if(!themefile)
-		  return NULL;
+   if (!evas)
+      return NULL;
 
-	  Evas_Object *b = edje_object_add(evas);
-	  if(!b)
-		  return NULL;
+   const char *themefile = NULL;
 
-	  edje_object_file_set(b, themefile, "Session"); 
-	  evas_object_move(b, 0, 0);
+   edje_object_file_get(edje, &themefile, NULL);
+   if (!themefile)
+      return NULL;
 
-	  edje_object_size_min_get(b, &w, &h);
-	  evas_object_resize(b, w, h);
+   Evas_Object *b = edje_object_add(evas);
+
+   if (!b)
+      return NULL;
+
+   edje_object_file_set(b, themefile, "Session");
+   evas_object_move(b, 0, 0);
+
+   edje_object_size_min_get(b, &w, &h);
+   evas_object_resize(b, w, h);
 
 
-      if (edje_object_part_exists(b, "entrance.xsession.title"))
-      {
-         edje_object_part_text_set(b, "entrance.xsession.title", exs->name);
-      }
-	  
-      edje_object_signal_callback_add(b, "entrance,xsession,selected", "",
-                                      session_item_selected_cb, exs);
-      edje_object_signal_callback_add(b, "SessionUnSelected", "",
-                                      session_item_selected_cb, exs);
+   if (edje_object_part_exists(b, "entrance.xsession.title"))
+   {
+      edje_object_part_text_set(b, "entrance.xsession.title", exs->name);
+   }
 
-	  evas_object_show(b);
+   edje_object_signal_callback_add(b, "entrance,xsession,selected", "",
+                                   session_item_selected_cb, exs);
+   edje_object_signal_callback_add(b, "SessionUnSelected", "",
+                                   session_item_selected_cb, exs);
 
-	  return b;
+   evas_object_show(b);
+
+   return b;
 }
 
 
@@ -141,7 +144,7 @@ entrance_x_session_edje_get(Entrance_X_Session * e, Evas_Object * o,
    if (edje_object_file_set(edje, themefile, "Session") > 0)
    {
       evas_object_move(edje, -9999, -9999);
-	  evas_object_layer_set(edje, 1);
+      evas_object_layer_set(edje, 1);
       edje_object_size_min_get(edje, &w, &h);
       if ((w > 0) && (h > 0))
          evas_object_resize(result, w, h);

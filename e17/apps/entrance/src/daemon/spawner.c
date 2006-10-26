@@ -23,37 +23,38 @@ static void _fork_and_exit(void);
 
 static int _timer_cb_respawn_reset(void *);
 
-static void * _filter_cb_start(void *);
-static int _filter_cb_loop(void *, void *, int , void *);
+static void *_filter_cb_start(void *);
+static int _filter_cb_loop(void *, void *, int, void *);
 static void _filter_cb_end(void *, void *);
 
 
 static void _sigaction_cb_sigusr(int);
 
-static int _event_cb_exited(void *, int , void *);
-static int _event_cb_signal_exit(void *, int , void *);
+static int _event_cb_exited(void *, int, void *);
+static int _event_cb_signal_exit(void *, int, void *);
 static void _cb_atexit(void);
 
 
-void usage(char* name)
+void
+usage(char *name)
 {
    /* This should probably in a separate usage function, but bleh */
    printf("Entranced - Launcher for the Entrance Display Manager\n");
    printf("Usage: %s [OPTION] ...\n\n", name);
    printf
-	  ("--------------------------------------------------------------------------\n");
+      ("--------------------------------------------------------------------------\n");
    printf("  -c CONFIG          Specify config file for greeter\n");
    printf("  -d DISPLAY         Connect to an existing X server\n");
    printf("  -help              Display this help message\n");
-   /*printf("  -verbose           Display extra debugging info\n");*/
+   /* printf(" -verbose Display extra debugging info\n"); */
    printf
-	  ("  -nodaemon          Don't fork to background (useful for init scripts)\n");
+      ("  -nodaemon          Don't fork to background (useful for init scripts)\n");
    printf
-	  ("==========================================================================\n\n");
+      ("==========================================================================\n\n");
    printf
-	  ("Note: if you're launching Entrance from within an existing X session, don't\n");
+      ("Note: if you're launching Entrance from within an existing X session, don't\n");
    printf
-	  ("try to use entranced or you may get unexpected results. Instead, launch\n");
+      ("try to use entranced or you may get unexpected results. Instead, launch\n");
    printf("entrance directly by typing \"entrance\".\n\n");
    exit(0);
 }
@@ -116,19 +117,18 @@ main(int argc, char **argv)
            nodaemon = 1;
            break;
         case 'h':
-			usage(argv[0]);
-        /*case 'v':
-           config.debuglevel = 1;*/
+           usage(argv[0]);
+           /* case 'v': config.debuglevel = 1; */
 
       }
    }
 
    if (!d->name)
       d->name = strdup(X_DISP);
-   
+
    str = strstr(d->name, ":");
 
-   if(!str || str >= (d->name + strlen(d->name) - 1))
+   if (!str || str >= (d->name + strlen(d->name) - 1))
       d->dispnum = 0;
    else
       d->dispnum = atoi(str + 1);
@@ -167,11 +167,8 @@ main(int argc, char **argv)
    if (!nodaemon)
    {
       /* This causes socket communication issues, yet unidentified */
-      /*
-      close(0);
-      close(1);
-      close(2);
-      */
+      /* 
+         close(0); close(1); close(2); */
       freopen("/dev/null", "r", stdin);
       freopen("/dev/null", "w", stdout);
       freopen("/dev/null", "w", stderr);
@@ -204,7 +201,8 @@ main(int argc, char **argv)
    {
       free(d);
       syslog(LOG_CRIT, "Could not start X server.");
-      fprintf(stderr, "Entrance could not start the X server. Please check your config.\n");
+      fprintf(stderr,
+              "Entrance could not start the X server. Please check your config.\n");
       exit(1);
    }
 
@@ -374,9 +372,10 @@ _event_cb_exited(void *data, int type, void *event)
       if (!d->client.connected)
       {
          syslog(LOG_CRIT, "Entrance GUI initialization failure. Aborting.");
-         fprintf(stderr, "Entrance has detected that the GUI is failing to launch properly.\n");
+         fprintf(stderr,
+                 "Entrance has detected that the GUI is failing to launch properly.\n");
          fprintf(stderr, "Please check your installation. Aborting.\n\n");
-         ecore_main_loop_quit(); 
+         ecore_main_loop_quit();
       }
 
       /* Session exited or crashed */
@@ -419,7 +418,7 @@ _event_cb_exited(void *data, int type, void *event)
          exit(1);
 
    }
-   else 
+   else
    {
       return 1;
    }

@@ -25,7 +25,9 @@ extern void user_selected_cb(void *data, Evas_Object * o,
 extern void user_unselected_cb(void *data, Evas_Object * o,
                                const char *emission, const char *source);
 static void _entrance_session_user_list_fix(Entrance_Session * e);
-static void _entrance_session_execute_in_shell(char *user, char *shell, char *session_cmd, char *session_name);
+static void _entrance_session_execute_in_shell(char *user, char *shell,
+                                               char *session_cmd,
+                                               char *session_name);
 
 /**
  * entrance_session_new: allocate a new  Entrance_Session
@@ -53,7 +55,7 @@ entrance_session_new(const char *config, const char *display, int testing)
    {
       if (!getenv("DISPLAY"))
       {
-         syslog(LOG_CRIT, "entrance_session_new: Unexpected error occured." );
+         syslog(LOG_CRIT, "entrance_session_new: Unexpected error occured.");
          exit(EXITCODE);
       }
       e->display = strdup(getenv("DISPLAY"));
@@ -144,7 +146,7 @@ entrance_session_free(Entrance_Session * e)
       {
          free(e->db);
          e->db = NULL;
-      } 
+      }
       if (e->ee)
       {
          ecore_evas_hide(e->ee);
@@ -177,13 +179,18 @@ entrance_session_run(Entrance_Session * e)
    {
      case ENTRANCE_AUTOLOGIN_NONE:
         ecore_evas_show(e->ee);
-	if (e->config->presel.mode==ENTRANCE_PRESEL_PREV && strlen(e->config->presel.prevuser)) {
-           Evas_Object *oo = evas_object_name_find(evas_object_evas_get(e->edje), "entrance.entry.user");
-	   if (oo) {
+        if (e->config->presel.mode == ENTRANCE_PRESEL_PREV
+            && strlen(e->config->presel.prevuser))
+        {
+           Evas_Object *oo =
+              evas_object_name_find(evas_object_evas_get(e->edje),
+                                    "entrance.entry.user");
+           if (oo)
+           {
               esmart_text_entry_text_set(oo, e->config->presel.prevuser);
               entrance_session_user_set(e, e->config->presel.prevuser);
-	   }
-	}
+           }
+        }
         break;
      case ENTRANCE_AUTOLOGIN_DEFAULT:
         if ((eu =
@@ -277,8 +284,7 @@ entrance_session_user_set(Entrance_Session * e, const char *user)
          if ((eu = evas_hash_find(e->config->users.hash, user)) == NULL)
             eu = entrance_user_new(strdup(user), NULL, e->session);
 
-         if (!(e->session_selected) && (eu->session) 
-               && (eu->session[0] != 0))
+         if (!(e->session_selected) && (eu->session) && (eu->session[0] != 0))
          {
             if ((exs = evas_hash_find(e->config->sessions.hash, eu->session)))
             {
@@ -383,7 +389,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    char *user = NULL;
    char *session_cmd = NULL;
    char *session_name = NULL;
-   char *monitor_cmd = PACKAGE_LIB_DIR"/"PACKAGE"/entrance_login";
+   char *monitor_cmd = PACKAGE_LIB_DIR "/" PACKAGE "/entrance_login";
    struct passwd *pwent = NULL;
    Entrance_X_Session *exs = NULL;
 
@@ -417,7 +423,8 @@ entrance_session_start_user_session(Entrance_Session * e)
       printf("\n");
       fflush(stdout);
       session_cmd = strdup("xterm");
-      if (session_name) free(session_name);
+      if (session_name)
+         free(session_name);
       session_name = NULL;
    }
 
@@ -443,7 +450,8 @@ entrance_session_start_user_session(Entrance_Session * e)
       /* Tell PAM that session has begun */
       if (pam_open_session(e->auth->pam.handle, 0) != PAM_SUCCESS)
       {
-         syslog(LOG_NOTICE, "Cannot open pam session for user \"%s\".", e->auth->user);
+         syslog(LOG_NOTICE, "Cannot open pam session for user \"%s\".",
+                e->auth->user);
          if (!e->config->autologin.mode)
          {
             syslog(LOG_CRIT, "Unable to open PAM session. Aborting.");
@@ -470,7 +478,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    ecore_config_shutdown();
    ecore_x_sync();
    entrance_ipc_shutdown();
-   
+
    switch ((pid = fork()))
    {
      case 0:
@@ -483,24 +491,27 @@ entrance_session_start_user_session(Entrance_Session * e)
            syslog(LOG_CRIT, "Unable to set user id.");
         shell = strdup(pwent->pw_shell);
 
-        /* replace this process with a clean small one that just waits for its */
+        /* replace this process with a clean small one that just waits for
+           its */
         /* child to exit.. passed on the cmd-line */
 
-        _entrance_session_execute_in_shell(user, shell, session_cmd, session_name);
+        _entrance_session_execute_in_shell(user, shell, session_cmd,
+                                           session_name);
         break;
      case -1:
         syslog(LOG_INFO, "FORK FAILED, UH OH");
         exit(0);
      default:
-        syslog(LOG_NOTICE, "Replacing Entrance with simple login program to wait for session end.");
+        syslog(LOG_NOTICE,
+               "Replacing Entrance with simple login program to wait for session end.");
         /* this bypasses a race condition where entrance loses its x
            connection before the wm gets it and x goes and resets itself */
         sleep(30);
-        
+
         /* FIXME These should be called! */
         ecore_x_shutdown();
         ecore_shutdown();
-        
+
         break;
    }
 /* no need to free - we are goign to exec ourselves and be replaced   
@@ -513,19 +524,21 @@ entrance_session_start_user_session(Entrance_Session * e)
    /* child to exit.. passed on the cmd-line */
 
    /* this causes entreance to reset - bad bad bad */
-   snprintf(pids, sizeof(pids), "%i", (int)pid);
+   snprintf(pids, sizeof(pids), "%i", (int) pid);
 #ifdef HAVE_PAM
    if (e->config->auth == ENTRANCE_USE_PAM)
-     {
-	syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s %s %s", monitor_cmd, pids, pwent->pw_name, e->display);
-	execl(monitor_cmd, monitor_cmd, pids, pwent->pw_name, e->display, NULL);
-     }
+   {
+      syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s %s %s",
+             monitor_cmd, pids, pwent->pw_name, e->display);
+      execl(monitor_cmd, monitor_cmd, pids, pwent->pw_name, e->display, NULL);
+   }
    else
 #endif
-     {
-	syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s", monitor_cmd, pids);
-	execl(monitor_cmd, monitor_cmd, pids, NULL);
-     }
+   {
+      syslog(LOG_NOTICE, "Exec entrance login replacement: %s %s",
+             monitor_cmd, pids);
+      execl(monitor_cmd, monitor_cmd, pids, NULL);
+   }
    pause();
 }
 
@@ -651,9 +664,9 @@ entrance_session_xsession_list_add(Entrance_Session * e)
          key = (const char *) l->data;
          if ((exs = evas_hash_find(e->config->sessions.hash, key)))
          {
-		    edje = entrance_x_session_button_new(exs, e->edje);
-			if(edje) 
-				esmart_container_element_append(container, edje);
+            edje = entrance_x_session_button_new(exs, e->edje);
+            if (edje)
+               esmart_container_element_append(container, edje);
          }
 
       }
@@ -809,7 +822,8 @@ _entrance_session_user_list_fix(Entrance_Session * e)
             if ((eu = evas_hash_find(e->config->users.hash, e->auth->user)))
             {
                e->config->users.keys =
-                  evas_list_prepend(evas_list_remove(e->config->users.keys, eu->name),
+                  evas_list_prepend(evas_list_remove
+                                    (e->config->users.keys, eu->name),
                                     eu->name);
                entrance_config_user_list_save(e->config, e->db);
                return;
@@ -829,7 +843,8 @@ _entrance_session_user_list_fix(Entrance_Session * e)
 }
 
 static void
-_entrance_session_execute_in_shell(char *user, char *shell, char *session_cmd, char *session_name)
+_entrance_session_execute_in_shell(char *user, char *shell, char *session_cmd,
+                                   char *session_name)
 {
    int res = 0;
    char *shell_cmd;
@@ -846,19 +861,21 @@ _entrance_session_execute_in_shell(char *user, char *shell, char *session_cmd, c
    else
       snprintf(buf, sizeof(buf), "%s", session_cmd);
 
-	res = execlp(shell_cmd, shell_cmd, "-l", "-c", "--", buf, NULL);
+   res = execlp(shell_cmd, shell_cmd, "-l", "-c", "--", buf, NULL);
 
-	/* Getting here means the previous didn't work 
-		* If /bin/sh isn't a login shell run /bin/sh without loading the profile
-	* Also log a warning because this will probably not behave correctly */
-	if (res == -1)  
-	  /*TODO: should actually hit the user in the face with this message*/
-	  syslog(LOG_NOTICE, "Neither '%s' or '/bin/sh' are working login shells for user '%s'. Your session may not function properly. ",shell,user);
-	res = execlp(shell_cmd, shell_cmd, "-c", buf, NULL);
+   /* Getting here means the previous didn't work * If /bin/sh isn't a login 
+      shell run /bin/sh without loading the profile * Also log a warning
+      because this will probably not behave correctly */
+   if (res == -1)
+      /* TODO: should actually hit the user in the face with this message */
+      syslog(LOG_NOTICE,
+             "Neither '%s' or '/bin/sh' are working login shells for user '%s'. Your session may not function properly. ",
+             shell, user);
+   res = execlp(shell_cmd, shell_cmd, "-c", buf, NULL);
 
-	/* Damn, that didn't work either.
-	* Bye! We call it quits and log an error 
-	* TODO: Also hit the user in the face with this! (ouch!)*/
-	syslog(LOG_CRIT, "Entrance could not find a working shell to start the session for user: \"%s\".",user);
+   /* Damn, that didn't work either. * Bye! We call it quits and log an error 
+    * TODO: Also hit the user in the face with this! (ouch!)*/
+   syslog(LOG_CRIT,
+          "Entrance could not find a working shell to start the session for user: \"%s\".",
+          user);
 }
-

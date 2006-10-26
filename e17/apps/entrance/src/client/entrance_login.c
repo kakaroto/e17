@@ -32,7 +32,7 @@ entrance_end_user_session(Entrance_Auth * e)
 #endif
 
 static void
-child(int sig, siginfo_t *si, void *foo)
+child(int sig, siginfo_t * si, void *foo)
 {
    syslog(LOG_INFO, "Child exit signal.");
 }
