@@ -31,7 +31,7 @@ ewl_theme_init(void)
 	if (!ewl_theme_theme_set(ewl_config_string_get(ewl_config, 
 						EWL_CONFIG_THEME_NAME)))
 	{
-		fprintf(stderr, "No usable theme found, exiting.\n");
+		DWARNING("No usable theme found, exiting.");
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
@@ -95,6 +95,8 @@ ewl_theme_theme_set(const char *theme_name)
 
 	/* get the new theme path and setup the font path */
 	ewl_theme_path = ewl_theme_path_find(theme_name);
+	if (!ewl_theme_path) DRETURN_INT(FALSE, DLEVEL_STABLE); 
+
 	ewl_theme_font_path_init();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
