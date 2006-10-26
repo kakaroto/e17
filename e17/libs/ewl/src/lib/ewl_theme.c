@@ -3,8 +3,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-#define NOMATCH ((char *)0xdeadbeef)
-
 static char *ewl_theme_path = NULL;
 
 static Ecore_List *ewl_theme_font_paths = NULL;
@@ -289,7 +287,7 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 			ret = ecore_hash_get(w->theme, temp);
 
 		if (ret) {
-			if (ret != NOMATCH)
+			if (ret != EWL_THEME_KEY_NOMATCH)
 				ret = strdup(ret);
 			break;
 		}
@@ -310,7 +308,7 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 		while (temp && !ret) {
 			ret = ecore_hash_get(ewl_theme_def_data, temp);
 			if (ret) {
-				if (ret != NOMATCH)
+				if (ret != EWL_THEME_KEY_NOMATCH)
 					ret = strdup(ret);
 				break;
 			}
@@ -336,13 +334,14 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 	 * Mark unmatched keys in the cache.
 	 */
 	if (!ret) {
-		ecore_hash_set(ewl_theme_def_data, strdup(key), NOMATCH);
+		ecore_hash_set(ewl_theme_def_data, strdup(key),
+				EWL_THEME_KEY_NOMATCH);
 	}
 
 	/*
 	 * Fixup unmatched keys in the cache.
 	 */
-	if (ret == NOMATCH)
+	if (ret == EWL_THEME_KEY_NOMATCH)
 		ret = NULL;
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
@@ -396,10 +395,10 @@ ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
 		ecore_hash_set_free_value(w->theme, ewl_theme_data_free);
 	}
 
-	if (v)
+	if (v && v != EWL_THEME_KEY_NOMATCH)
 		ecore_hash_set(w->theme, strdup(k), strdup(v));
 	else
-		ecore_hash_set(w->theme, strdup(k), NOMATCH);
+		ecore_hash_set(w->theme, strdup(k), EWL_THEME_KEY_NOMATCH);
 
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
@@ -557,7 +556,7 @@ ewl_theme_data_free(void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!data || data == (void *)NOMATCH)
+	if (!data || data == (void *)EWL_THEME_KEY_NOMATCH)
 		DRETURN(DLEVEL_STABLE);
 
 	FREE(data);

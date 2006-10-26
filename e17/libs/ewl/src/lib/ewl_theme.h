@@ -46,6 +46,8 @@ void            ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v);
 int             ewl_theme_data_int_get(Ewl_Widget *w, char *k);
 void            ewl_theme_data_int_set(Ewl_Widget *w, char *k, int v);
 
+#define EWL_THEME_KEY_NOMATCH ((char *)0xdeadbeef)
+
 /**
  * @}
  */
