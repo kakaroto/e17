@@ -275,7 +275,6 @@ struct Ewl_Filelist_Event
 	Ewl_Filelist_Event_Type type;	/**< The type of event */
 };
 
-int		ewl_ev_init(void);
 unsigned int 	ewl_ev_modifiers_get(void);
 void 		ewl_ev_modifiers_set(unsigned int modifiers);
 

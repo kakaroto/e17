@@ -7,19 +7,6 @@ extern Ecore_List *ewl_embed_list;
 static unsigned int key_modifiers = 0;
 
 /**
- * @internal
- * @return Returns true or false to indicate success in initializing events.
- * @brief Initialize the event handlers for dispatching to proper widgets
- */
-int
-ewl_ev_init(void)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-/**
  * @return Returns the current mask of modifier keys.
  * @brief Retrieve the current mask of modifiers that are set.
  */

@@ -19,6 +19,11 @@ static Ecore_Idle_Enterer *idle_enterer = NULL;
 static Ecore_Idler *ewl_garbage_collect = NULL;
 static int ewl_init_count = 0;
 
+/* 
+ * store a list of shutdown functions to call 
+ */
+static Ecore_List *shutdown_queue = NULL;
+
 /*
  * Queues for scheduling various actions.
  */
@@ -106,82 +111,53 @@ ewl_backtrace(void)
 int
 ewl_init(int *argc, char **argv)
 {
+	int frozen = FALSE;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/* check if we are already initialized */
 	if (++ewl_init_count > 1)
 		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 
-	if (!evas_init()) {
-		DERROR("Could not init evas....\n");
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	shutdown_queue = ecore_list_new();
+	if (!shutdown_queue) {
+		fprintf(stderr, "Could not create Ewl shutdown queue.\n");
+		goto ERROR;
 	}
+
+	if (!evas_init()) {
+		fprintf(stderr, "Could not initialize Evas.\n");
+		goto ERROR;
+	}
+	ecore_list_prepend(shutdown_queue, evas_shutdown);
 
 	if (!ecore_init()) {
-		DERROR("Could not init ecore....\n");
-		evas_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+		fprintf(stderr, "Could not initialize Ecore.\n");
+		goto ERROR;
 	}
+	ecore_list_prepend(shutdown_queue, ecore_shutdown);
 
 	if (!ecore_desktop_init()) {
-		DERROR("Could not init ecore_desktop...\n");
-		evas_shutdown();
-		ecore_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+		fprintf(stderr, "Could not initialize Ecore Desktop.\n");
+		goto ERROR;
 	}
 
 	if (!ecore_string_init()) {
-		DERROR("Could not init ecore strings....\n");
-		evas_shutdown();
-		ecore_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
-	}
-
-	if (!ewl_config_init()) {
-		DERROR("Could not init config data.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
-	}
-
-	if (!ewl_engines_init()) {
-		DERROR("Could not init engine data.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
-	}
-
-	if (!ewl_io_manager_init()) {
-		DERROR("Could not init io manager data.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
-	}
-
-	ewl_init_parse_options(argc, argv);
-
-	/* initialize this _after_ we've handled the command line options */
-	ewl_config_cache_init();
-
-	/* we create the engine we will be working with here so that it is
-	 * initialized before we start to use it. */
-	if (!ewl_engine_new(ewl_config_string_get(ewl_config, 
-					EWL_CONFIG_ENGINE_NAME)))
-	{
-		DERROR("Unable to initialize engine.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+		fprintf(stderr, "Could not initialize Ecore Strings.\n");
+		goto ERROR;
 	}
 
 	if (!edje_init()) {
-		DERROR("Could not init edje....\n");
-		evas_shutdown();
-		ecore_string_shutdown();
-		ecore_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+		fprintf(stderr, "Could not initialize Edje.\n");
+		goto ERROR;
 	}
+	ecore_list_prepend(shutdown_queue, edje_shutdown);
 
 	/*
 	 * Global freeze on edje events while edje's are being manipulated.
 	 */
 	edje_freeze();
+	frozen = TRUE;
 
 	reveal_list = ecore_list_new();
 	obscure_list = ecore_list_new();
@@ -191,72 +167,90 @@ ewl_init(int *argc, char **argv)
 	free_evas_list = ecore_list_new();
 	free_evas_object_list = ecore_list_new();
 	child_add_list = ecore_list_new();
+	ewl_embed_list = ecore_list_new();
+	ewl_window_list = ecore_list_new();
 	if ((!reveal_list) || (!obscure_list) || (!configure_list)
 			|| (!realize_list) || (!destroy_list)
 			|| (!free_evas_list) || (!free_evas_object_list)
-			|| (!child_add_list)) {
-		DERROR("Unable to create internal configuration, out of memory?\n");
-		evas_shutdown();
-		ecore_string_shutdown();
-		ecore_shutdown();
-		edje_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+			|| (!child_add_list) || (!ewl_embed_list)
+			|| (!ewl_window_list)) {
+		fprintf(stderr, "Unable to initialize internal configuration."
+				" Out of memory?\n");
+		goto ERROR;
+	}
+
+	if (!ewl_config_init()) {
+		fprintf(stderr, "Could not initilaize Ewl Config.\n");
+		goto ERROR;
+	}
+	ecore_list_prepend(shutdown_queue, ewl_config_shutdown);
+
+	if (!ewl_engines_init()) {
+		fprintf(stderr, "Could not intialize Ewl Engines.\n");
+		goto ERROR;
+	}
+	ecore_list_prepend(shutdown_queue, ewl_engines_shutdown);
+
+	/* handle any command line options */
+	ewl_init_parse_options(argc, argv);
+
+	/* initialize this _after_ we've handled the command line options */
+	ewl_config_cache_init();
+
+	/* we create the engine we will be working with here so that it is
+	 * initialized before we start to use it. */
+	if (!ewl_engine_new(ewl_config_string_get(ewl_config, 
+					EWL_CONFIG_ENGINE_NAME))) {
+		fprintf(stderr, "Could not initialize Ewl Engine.\n");
+		goto ERROR;
 	}
 
 	if (!ewl_dnd_init()) {
-		DERROR("Count not init dnd.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+		fprintf(stderr, "Could not initialize Ewl DND support.\n");
+		goto ERROR;
 	}
-
-	if (!ewl_ev_init()) {
-		DERROR("Could not init event data.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
-	}
+	ecore_list_prepend(shutdown_queue, ewl_dnd_shutdown);
 
 	if (!ewl_callbacks_init()) {
-		DERROR("Could not init callback system.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+		fprintf(stderr, "Could not initialize Ewl Callback system.\n");
+		goto ERROR;
 	}
+	ecore_list_prepend(shutdown_queue, ewl_callbacks_shutdown);
 
 	if (!ewl_theme_init()) {
-		DERROR("Could not setup theme system.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+		fprintf(stderr, "Could not setup Ewl Theme system.\n");
+		goto ERROR;
 	}
+	ecore_list_prepend(shutdown_queue, ewl_theme_shutdown);
 
 	if (!ewl_icon_theme_init()) {
-		DERROR("Could not init icon theme system.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+		fprintf(stderr, "Could not initialize Ewl Icon Theme system.\n");
+		goto ERROR;
 	}
+	ecore_list_prepend(shutdown_queue, ewl_icon_theme_shutdown);
 
-	if (!(ewl_embed_list = ecore_list_new())) {
-		DERROR("Could not allocate embed list, out of memory?\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+	if (!ewl_io_manager_init()) {
+		fprintf(stderr, "Could not initialize Ewl IO Manager.\n");
+		goto ERROR;
 	}
-
-	if (!(ewl_window_list = ecore_list_new())) {
-		DERROR("Could not allocate window list, out of memory?\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
-	}
-
-	if (!(idle_enterer = ecore_idle_enterer_add(ewl_idle_render, NULL))) {
-		DERROR("Could not create idle enterer.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
-	}
+	ecore_list_prepend(shutdown_queue, ewl_io_manager_shutdown);
 
 	if (!ewl_text_context_init()) {
-		DERROR("Could not init text context system.\n");
-		ewl_shutdown();
-		DRETURN_INT(--ewl_init_count, DLEVEL_STABLE);
+		fprintf(stderr, "Could not initialize Ewl Text Context system.\n");
+		goto ERROR;
+	}
+	ecore_list_prepend(shutdown_queue, ewl_text_context_shutdown);
+
+	if (!(idle_enterer = ecore_idle_enterer_add(ewl_idle_render, NULL))) {
+		fprintf(stderr, "Could not create Idle Enterer.\n");
+		goto ERROR;
 	}
 
+	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
+
+ERROR:
+	if (frozen) edje_thaw();
+	ewl_shutdown();
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 }
 
@@ -269,72 +263,52 @@ ewl_init(int *argc, char **argv)
 int
 ewl_shutdown(void)
 {
+	void (*shutdown)(void);
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (--ewl_init_count)
 		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
+
 	/*
 	 * Destroy all existing widgets.
 	 */
-	if (ewl_embed_list) {
+	if (ewl_embed_list) 
+	{
 		Ewl_Widget *emb;
 
 		while ((emb = ecore_list_remove_first(ewl_embed_list)))
 			ewl_widget_destroy(emb);
-		while (ewl_garbage_collect_idler(NULL) > 0);
+
+		while (ewl_garbage_collect_idler(NULL) > 0)
+			;
+
 		ecore_list_destroy(ewl_embed_list);
 		ewl_embed_list = NULL;
 	}
 
-	ewl_text_context_shutdown();
-
-	if (idle_enterer) {
+	if (idle_enterer) 
+	{
 		ecore_idle_enterer_del(idle_enterer);
 		idle_enterer = NULL;
 	}
 
 	/*
-	 * Shut down the various EWL subsystems cleanly.
-	 */
-	ewl_embed_shutdown();
-	ewl_callbacks_shutdown();
-	ewl_icon_theme_shutdown();
-	ewl_theme_shutdown();
-	ewl_engines_shutdown();
-	ewl_config_shutdown();
-	ewl_dnd_shutdown();
-	ewl_io_manager_shutdown();
-
-	/*
 	 * Free internal accounting lists.
 	 */
-	if (ewl_window_list) {
-		ecore_list_destroy(ewl_window_list);
-		ewl_window_list = NULL;
-	}
-	ecore_list_destroy(reveal_list);
-	reveal_list = NULL;
-	ecore_list_destroy(obscure_list);
-	obscure_list = NULL;
-	ecore_list_destroy(configure_list);
-	configure_list = NULL;
-	ecore_list_destroy(realize_list);
-	realize_list = NULL;
-	ecore_list_destroy(destroy_list);
-	destroy_list = NULL;
-	ecore_list_destroy(free_evas_list);
-	free_evas_list = NULL;
-	ecore_list_destroy(free_evas_object_list);
-	free_evas_object_list = NULL;
-	ecore_list_destroy(child_add_list);
-	child_add_list = NULL;
+	IF_FREE_LIST(ewl_window_list);
+	IF_FREE_LIST(reveal_list);
+	IF_FREE_LIST(obscure_list);
+	IF_FREE_LIST(configure_list);
+	IF_FREE_LIST(realize_list);
+	IF_FREE_LIST(destroy_list);
+	IF_FREE_LIST(free_evas_list);
+	IF_FREE_LIST(free_evas_object_list);
+	IF_FREE_LIST(child_add_list);
 
-	edje_shutdown();
-	evas_shutdown();
-
-	ecore_string_shutdown();
-	ecore_desktop_shutdown();
-	ecore_shutdown();
+	/* shutdown all the subsystems */
+	while ((shutdown = ecore_list_remove_first(shutdown_queue)))
+		shutdown();
 
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 }
@@ -398,9 +372,8 @@ ewl_idle_render(void *data __UNUSED__)
 	 * Freeze events on the evases to reduce overhead
 	 */
 	ecore_list_goto_first(ewl_embed_list);
-	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
+	while ((emb = ecore_list_next(ewl_embed_list)) != NULL)
 		ewl_embed_freeze(emb);
-	}
 
 	/*
 	 * Clean out the unused widgets first, to avoid them being drawn or
@@ -428,9 +401,8 @@ ewl_idle_render(void *data __UNUSED__)
 			 * revealed so that the obscure will succeed (and mark
 			 * it obscured again.
 			 */
-			if (!OBSCURED(w)) {
+			if (!OBSCURED(w))
 				ewl_widget_obscure(w);
-			}
 		}
 
 		/*
@@ -440,9 +412,8 @@ ewl_idle_render(void *data __UNUSED__)
 			/*
 			 * Follow the same logic as the obscure loop.
 			 */
-			if (OBSCURED(w)) {
+			if (OBSCURED(w))
 				ewl_widget_reveal(w);
-			}
 		}
 	}
 

@@ -50,6 +50,14 @@
 	if (dat) FREE(dat); \
 }
 
+#define IF_FREE_LIST(list) \
+{ \
+	if (list) { \
+		ecore_list_destroy(list); \
+		list = NULL; \
+	} \
+}
+
 #undef ZERO
 /**
  * @def ZERO(ptr, type, num)
