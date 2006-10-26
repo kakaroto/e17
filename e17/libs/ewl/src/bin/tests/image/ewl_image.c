@@ -219,8 +219,8 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(image_box), scrollpane);
 	ewl_widget_show(scrollpane);
 
-	if ((image_exists(PACKAGE_DATA_DIR "/images/e-logo.png")) != -1)
-		image_file = strdup(PACKAGE_DATA_DIR "/images/e-logo.png");
+	if ((image_exists(PACKAGE_DATA_DIR "/ewl/images/e-logo.png")) != -1)
+		image_file = strdup(PACKAGE_DATA_DIR "/ewl/images/e-logo.png");
 	else if ((image_exists(PACKAGE_SOURCE_DIR "/data/images/e-logo.png")) != -1)
 		image_file = strdup(PACKAGE_SOURCE_DIR "/data/images/e-logo.png");
 	else if ((image_exists("./data/images/e-logo.png")) != -1)

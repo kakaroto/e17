@@ -50,22 +50,22 @@ add_icons_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ib = ewl_widget_name_find("ib");
 
 	icon = ewl_iconbox_icon_add(EWL_ICONBOX(ib), "Draw", 
-				PACKAGE_DATA_DIR "/images/Draw.png");
+				PACKAGE_DATA_DIR "/ewl/images/Draw.png");
 	ewl_callback_prepend(EWL_WIDGET(icon), EWL_CALLBACK_CLICKED, 
 					icon_click_cb, NULL);
 
 	ewl_iconbox_icon_arrange(EWL_ICONBOX(ib));
 
 	ewl_iconbox_icon_add(EWL_ICONBOX(ib),"End", 
-				PACKAGE_DATA_DIR "/images/End.png");
+				PACKAGE_DATA_DIR "/ewl/images/End.png");
 	ewl_iconbox_icon_add(EWL_ICONBOX(ib),"Card", 
-				PACKAGE_DATA_DIR "/images/NewBCard.png");
+				PACKAGE_DATA_DIR "/ewl/images/NewBCard.png");
 	ewl_iconbox_icon_add(EWL_ICONBOX(ib),"Open", 
-				PACKAGE_DATA_DIR "/images/Open.png");
+				PACKAGE_DATA_DIR "/ewl/images/Open.png");
 	ewl_iconbox_icon_add(EWL_ICONBOX(ib),"Package", 
-				PACKAGE_DATA_DIR "/images/Package.png");
+				PACKAGE_DATA_DIR "/ewl/images/Package.png");
 	ewl_iconbox_icon_add(EWL_ICONBOX(ib),"World", 
-				PACKAGE_DATA_DIR "/images/World.png");
+				PACKAGE_DATA_DIR "/ewl/images/World.png");
 }
 
 static void 

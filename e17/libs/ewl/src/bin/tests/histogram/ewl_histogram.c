@@ -30,7 +30,7 @@ create_test(Ewl_Container *box)
 
 	img = ewl_image_new();
 	ewl_image_file_path_set(EWL_IMAGE(img),
-			PACKAGE_DATA_DIR "/images/entrance.png");
+			PACKAGE_DATA_DIR "/ewl/images/entrance.png");
 	ewl_image_proportional_set(EWL_IMAGE(img), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(overlay), img);
 	ewl_object_fill_policy_set(EWL_OBJECT(img), EWL_FLAG_FILL_ALL);

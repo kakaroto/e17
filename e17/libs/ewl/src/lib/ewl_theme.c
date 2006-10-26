@@ -475,7 +475,7 @@ ewl_theme_path_find(const char *name)
 	 */
 	if (!theme_found_path) {
 		snprintf(theme_tmp_path, PATH_MAX, PACKAGE_DATA_DIR
-				"/themes/%s.edj", name);
+				"/ewl/themes/%s.edj", name);
 		if (((stat(theme_tmp_path, &st)) == 0) && S_ISREG(st.st_mode))
 			theme_found_path = strdup(theme_tmp_path);
 	}

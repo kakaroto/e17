@@ -16,9 +16,6 @@ int EWL_CALLBACK_DND_DATA = 0; /**< Data event **/
 static int ewl_dragging_current = 0;
 static int ewl_dnd_move_count = 0;
 static Ecore_Evas *ewl_dnd_drag_canvas;
-static Evas *ewl_dnd_drag_evas;
-static Evas_Object *ewl_dnd_drag_image;
-static Ecore_X_Window ewl_dnd_evas_win;
 static Ecore_X_Window ewl_dnd_drag_win = 0;
 
 static Ewl_Widget *ewl_dnd_widget = NULL;
@@ -38,6 +35,8 @@ static int ewl_dnd_types_encoded_contains(char *types, char *type);
 
 static int ewl_dnd_event_mouse_up(void *data, int type, void *event);
 static int ewl_dnd_event_dnd_move(void *data, int type, void *event);
+
+static void ewl_dnd_cb_render(Ewl_Widget *w, void *event, void *data);
 
 /**
  * @internal
@@ -289,7 +288,8 @@ ewl_dnd_accepted_types_get(Ewl_Widget *w)
 void
 ewl_dnd_drag_start(Ewl_Widget *w) 
 {
-	int width, height;
+	Ewl_Widget *win;
+	Ewl_Widget *image;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -302,59 +302,25 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	ewl_dnd_widget = w;
 	ewl_dnd_move_count = 0;
 
-	ewl_dnd_mouse_up_handler = ecore_event_handler_add(
-						ECORE_X_EVENT_MOUSE_BUTTON_UP,
-						ewl_dnd_event_mouse_up, NULL);
-	ewl_dnd_mouse_move_handler = ecore_event_handler_add(
-						ECORE_X_EVENT_MOUSE_MOVE, 
-						ewl_dnd_event_dnd_move, NULL);
+	win = ewl_window_new();
+	ewl_embed_engine_name_set(EWL_EMBED(win), "buffer");
+	ewl_callback_append(win, EWL_CALLBACK_VALUE_CHANGED, ewl_dnd_cb_render,
+			ewl_embed_widget_find(w));
+	ewl_widget_show(win);
 
-	/* XXX This needs to be changed ot correctly go through the engine */
-	ewl_dnd_drag_canvas = ecore_evas_software_x11_new(NULL, 
-							EWL_DND_WINDOW_ROOT, 
-							64, 64, 64, 64); 
-	ewl_dnd_drag_evas = ecore_evas_get(ewl_dnd_drag_canvas);
-
-	ecore_evas_shaped_set(ewl_dnd_drag_canvas, 1);
-	ecore_evas_software_x11_direct_resize_set(ewl_dnd_drag_canvas, 1);
-
-	ewl_dnd_evas_win = ecore_evas_software_x11_window_get(
-							ewl_dnd_drag_canvas);
-	ecore_x_window_resize(ewl_dnd_evas_win, 64, 64);
-	ecore_evas_override_set(ewl_dnd_drag_canvas, 1);
-
-	/* ecore_evas_software_x11_direct_resize_set(ewl_dnd_drag_evas, 1); */
-	ecore_evas_ignore_events_set(ewl_dnd_drag_canvas, 1);
-
-	/* XXX Setup a cursor (This needs to become generic) */
-	ewl_dnd_drag_image = evas_object_image_add(ewl_dnd_drag_evas);
-	evas_object_image_file_set(ewl_dnd_drag_image, PACKAGE_DATA_DIR 
-						"/images/World.png", 0);
- 	evas_object_image_fill_set(ewl_dnd_drag_image, 0, 0, 50, 50);
-	evas_object_resize(ewl_dnd_drag_image, 50, 50);
-	evas_object_show(ewl_dnd_drag_image);
-
-	/* Setup the dnd event capture window */
-	ecore_x_window_geometry_get(EWL_DND_WINDOW_ROOT, NULL, NULL, 
-							&width,  &height);
-	ewl_dnd_drag_win = ecore_x_window_input_new(EWL_DND_WINDOW_ROOT, 0, 0,
-								width, height);
-
-	/* Finally show the drag window */
-	ecore_x_window_show(ewl_dnd_drag_win);
-
-	/* Confine the pointer to our event windows */	
-	ecore_x_pointer_confine_grab(ewl_dnd_drag_win);
-	ecore_x_keyboard_grab(ewl_dnd_drag_win);
-
-	ecore_x_dnd_aware_set(ewl_dnd_drag_win, 1);
-	ecore_x_dnd_aware_set(ewl_dnd_evas_win, 1);
-	ecore_x_mwm_borderless_set(ewl_dnd_evas_win, 1);
+	image = ewl_image_new();
+	ewl_image_file_path_set(EWL_IMAGE(image), PACKAGE_DATA_DIR
+			"/ewl/images/World.png");
+	ewl_object_custom_size_set(EWL_OBJECT(image), 64, 64);
+	ewl_container_child_append(EWL_CONTAINER(win), image);
+	ewl_widget_show(image);
 
 	/* Start the drag operation */
+	/*
 	ecore_x_dnd_types_set(ewl_dnd_drag_win, ewl_dnd_provided_types_get(w),
 			1);
 	ecore_x_dnd_begin(ewl_dnd_drag_win, NULL, 0);
+	*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -421,6 +387,24 @@ ewl_dnd_drag_widget_clear(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ewl_dnd_widget = NULL;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_dnd_cb_render(Ewl_Widget *w, void *event, void *data)
+{
+	int handle;
+	Ewl_Embed *embed = EWL_EMBED(data);
+	Ewl_Embed *cursor_win = EWL_EMBED(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	handle = ewl_engine_pointer_data_new(embed, cursor_win->evas_window,
+			ewl_object_current_w_get(EWL_OBJECT(cursor_win)),
+			ewl_object_current_h_get(EWL_OBJECT(cursor_win)));
+	ewl_engine_pointer_set(embed, handle);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

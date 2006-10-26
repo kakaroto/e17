@@ -38,7 +38,7 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(box2), list);
 	ewl_widget_show(list);
 	
-	rep = opendir(PACKAGE_DATA_DIR "/themes");
+	rep = opendir(PACKAGE_DATA_DIR "/ewl/themes");
 	while ((file = readdir(rep))) 
 	{
 		char *name;
@@ -79,7 +79,7 @@ cb_select_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 	char theme_filename[PATH_MAX];
 	
 	snprintf(theme_filename, sizeof(theme_filename), 
-			PACKAGE_DATA_DIR "/themes/%s", (char *)data);
+			PACKAGE_DATA_DIR "/ewl/themes/%s", (char *)data);
 	ewl_theme_theme_set(theme_filename);
 }
 

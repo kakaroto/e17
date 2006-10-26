@@ -25,44 +25,20 @@ case "$host" in
 esac
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${PACKAGE}/locale", [Locale data directory])
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${PACKAGE}/locale", [Locale data directory])
-fi
+# if test "x${prefix}" = "xNONE"; then
+#   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${PACKAGE}/locale", [Locale data directory])
+# else
+#   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${PACKAGE}/locale", [Locale data directory])
+# fi
 
 dnl Set PACKAGE_SYSCONF_DIR in config.h.
-if test "x${sysconfdir}" = 'x${prefix}/etc'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_SYSCONF_DIR, "${ac_default_prefix}/etc", [System Configuration Directory])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_SYSCONF_DIR, "${prefix}/etc", [System Configuration Directory])
-  fi
-else
-    AC_DEFINE_UNQUOTED(PACKAGE_SYSCONF_DIR, "${sysconfdir}", [System Configuration Directory])
-fi
+AC_DEFINE_DIR([PACKAGE_SYSCONF_DIR], [sysconfdir], [System Configuration Directory.])
 
 dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
-  fi
-else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}", [Shared Data Directory])
-fi
+AC_DEFINE_DIR([PACKAGE_DATA_DIR], [datadir], [Shared Data Directory.])
 
 dnl Set PACKAGE_LIB_DIR in config.h.
-if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib/${PACKAGE}", [Library module directory])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib/${PACKAGE}", [Library module directory])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}/${PACKAGE}", [Library module directory])
-fi
+AC_DEFINE_DIR([PACKAGE_LIB_DIR], [libdir], [Library Module Directory.])
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`

@@ -323,7 +323,8 @@ ewl_io_manager_plugin_get(const char *mime)
 		*ptr = '_';
 
 	snprintf(file, sizeof(file), 
-		"%s/plugins/ewl_io_manager_%s_plugin.so", PACKAGE_LIB_DIR, m);
+		"%s/ewl/plugins/ewl_io_manager_%s_plugin.so", PACKAGE_LIB_DIR,
+		m);
 	FREE(m);
 
 	if (!ecore_file_exists(file))

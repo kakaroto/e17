@@ -99,11 +99,11 @@ main(int argc, char **argv)
 	edje = edje_object_add(evas);
 
 	if (!edje_object_file_set(edje, 
-			PACKAGE_DATA_DIR "/themes/ewl_embed_test.edj", 
+			PACKAGE_DATA_DIR "/ewl/themes/ewl_embed_test.edj", 
 			"main")) 
 	{
 		fprintf(stderr, "Error in: %s\n", 
-			PACKAGE_DATA_DIR"/themes/ewl_embed_test.edj");
+			PACKAGE_DATA_DIR "/ewl/themes/ewl_embed_test.edj");
 		return 1;
 	}
 

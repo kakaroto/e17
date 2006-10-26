@@ -302,7 +302,7 @@ ewl_test_setup_tests(void)
 	list2 = ecore_list_new();
 	if (!list2) return 0;
 
-	snprintf(buf, sizeof(buf), "%s", PACKAGE_LIB_DIR "/tests");
+	snprintf(buf, sizeof(buf), "%s", PACKAGE_LIB_DIR "/ewl/tests");
 	list = ecore_file_ls(buf);
 	if (list && ecore_list_nodes(list) > 0)
 	{
@@ -536,7 +536,7 @@ fill_source_text(Ewl_Test *test)
 	struct stat buf;
 	char filename[PATH_MAX];
 
-	snprintf(filename, sizeof(filename), PACKAGE_DATA_DIR "/examples/%s", 
+	snprintf(filename, sizeof(filename), PACKAGE_DATA_DIR "/ewl/examples/%s", 
 								test->filename);
 	file = fopen(filename, "r");
 	if (file)

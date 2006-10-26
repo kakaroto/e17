@@ -192,9 +192,9 @@ combo_test_data_setup(void)
 	data->count = 3;
 
 	data->data = calloc(3, sizeof(char *));
-	data->data[0] = strdup(PACKAGE_DATA_DIR "/images/Draw.png");
-	data->data[1] = strdup(PACKAGE_DATA_DIR "/images/End.png");
-	data->data[2] = strdup(PACKAGE_DATA_DIR "/images/World.png");
+	data->data[0] = strdup(PACKAGE_DATA_DIR "/ewl/images/Draw.png");
+	data->data[1] = strdup(PACKAGE_DATA_DIR "/ewl/images/End.png");
+	data->data[2] = strdup(PACKAGE_DATA_DIR "/ewl/images/World.png");
 
 	return data;
 }

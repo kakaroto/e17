@@ -159,23 +159,23 @@ tree2_test_data_setup(void)
 	dt = calloc(TREE2_DATA_ELEMENTS, sizeof(Tree2_Test_Row_Data *));
 
 	dt[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
-	dt[0]->image = strdup(PACKAGE_DATA_DIR"/images/e-logo.png");
+	dt[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
 	dt[0]->text = strdup("The E logo");
 
 	dt[1] = calloc(1, sizeof(Tree2_Test_Row_Data));
-	dt[1]->image = strdup(PACKAGE_DATA_DIR"/images/elicit.png");
+	dt[1]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/elicit.png");
 	dt[1]->text = strdup("The Elicit image");
 
 	dt[2] = calloc(1, sizeof(Tree2_Test_Row_Data));
-	dt[2]->image = strdup(PACKAGE_DATA_DIR"/images/entrance.png");
+	dt[2]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/entrance.png");
 	dt[2]->text = strdup("The Entrance image");
 
 	dt[3] = calloc(1, sizeof(Tree2_Test_Row_Data));
-	dt[3]->image = strdup(PACKAGE_DATA_DIR"/images/End.png");
+	dt[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/End.png");
 	dt[3]->text = strdup("Zebra");
 	
 	dt[4] = calloc(1, sizeof(Tree2_Test_Row_Data));
-	dt[4]->image = strdup(PACKAGE_DATA_DIR"/images/banner-top.png");
+	dt[4]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/banner-top.png");
 	dt[4]->text = strdup("Ant");
 
 	data->rows = dt;

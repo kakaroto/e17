@@ -148,12 +148,12 @@ ewl_freebox_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		char *name;
 		char *path;
 	} files[] = {
-		{"Draw", PACKAGE_DATA_DIR "/images/Draw.png"},
-		{"End", PACKAGE_DATA_DIR "/images/End.png"},
-		{"Card", PACKAGE_DATA_DIR "/images/NewBCard.png"},
-		{"Open", PACKAGE_DATA_DIR "/images/Open.png"},
-		{"Package", PACKAGE_DATA_DIR "/images/Package.png"},
-		{"World", PACKAGE_DATA_DIR "/images/World.png"},
+		{"Draw", PACKAGE_DATA_DIR "/ewl/images/Draw.png"},
+		{"End", PACKAGE_DATA_DIR "/ewl/images/End.png"},
+		{"Card", PACKAGE_DATA_DIR "/ewl/images/NewBCard.png"},
+		{"Open", PACKAGE_DATA_DIR "/ewl/images/Open.png"},
+		{"Package", PACKAGE_DATA_DIR "/ewl/images/Package.png"},
+		{"World", PACKAGE_DATA_DIR "/ewl/images/World.png"},
 		{NULL, NULL}
 	};
 

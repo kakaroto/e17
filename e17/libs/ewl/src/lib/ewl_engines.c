@@ -71,7 +71,8 @@ ewl_engine_names_get(void)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	snprintf(dir, sizeof(dir), "%s/%s", PACKAGE_LIB_DIR, EWL_ENGINE_DIR);
+	snprintf(dir, sizeof(dir), "%s/ewl/%s", PACKAGE_LIB_DIR,
+						EWL_ENGINE_DIR);
 	if (!ecore_file_exists(dir))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
@@ -124,7 +125,8 @@ ewl_engine_new(const char *name)
 	if (engine)
 		DRETURN_PTR(engine, DLEVEL_STABLE);
 
-	snprintf(filename, sizeof(filename), "%s/%s/%s.so", PACKAGE_LIB_DIR, 
+	snprintf(filename, sizeof(filename), "%s/ewl/%s/%s.so",
+							PACKAGE_LIB_DIR, 
 							EWL_ENGINE_DIR, name);
 	if (!ecore_file_exists(filename))
 	{

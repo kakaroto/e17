@@ -68,7 +68,7 @@ create_test(Ewl_Container *box)
 	 */
 	w = ewl_image_new();
 	ewl_image_file_path_set(EWL_IMAGE(w), PACKAGE_DATA_DIR
-						"/images/e-logo.png");
+						"/ewl/images/e-logo.png");
 	ewl_image_proportional_set(EWL_IMAGE(w), FALSE);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 	ewl_container_child_append(EWL_CONTAINER(hbox), w);
@@ -130,7 +130,7 @@ puzzle_grid_fill(Ewl_Grid *grid)
 		char buf[PATH_MAX];
 		
 		snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR
-				"/images/e-logo-%i.png", unsort[random][i]);
+				"/ewl/images/e-logo-%i.png", unsort[random][i]);
 		
 		w = ewl_image_new();
 		ewl_image_file_path_set(EWL_IMAGE(w), buf);

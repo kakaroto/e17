@@ -37,8 +37,8 @@ create_test(Ewl_Container *box)
 
 	image_box = EWL_WIDGET(box);
 
-	if ((ecore_file_exists(PACKAGE_DATA_DIR "/images/e-logo.png")) != -1)
-		image_file = strdup(PACKAGE_DATA_DIR "/images/e-logo.png");
+	if ((ecore_file_exists(PACKAGE_DATA_DIR "/ewl/images/e-logo.png")) != -1)
+		image_file = strdup(PACKAGE_DATA_DIR "/ewl/images/e-logo.png");
 	else if ((ecore_file_exists(PACKAGE_SOURCE_DIR "/data/images/e-logo.png")) != -1)
 		image_file = strdup(PACKAGE_SOURCE_DIR "/data/images/e-logo.png");
 	else if ((ecore_file_exists("./data/images/e-logo.png")) != -1)
@@ -53,8 +53,8 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(image_box), image);
 	ewl_widget_show(image);
 
-	if ((ecore_file_exists(PACKAGE_DATA_DIR "/images/Draw.png")) != -1)
-		icon_file = strdup(PACKAGE_DATA_DIR "/images/Draw.png");
+	if ((ecore_file_exists(PACKAGE_DATA_DIR "/ewl/images/Draw.png")) != -1)
+		icon_file = strdup(PACKAGE_DATA_DIR "/ewl/images/Draw.png");
 	else if ((ecore_file_exists(PACKAGE_SOURCE_DIR "/data/images/Draw.png")) != -1)
 		icon_file = strdup(PACKAGE_SOURCE_DIR "/data/images/Draw.png");
 	else if ((ecore_file_exists("./data/images/Draw.png")) != -1)
