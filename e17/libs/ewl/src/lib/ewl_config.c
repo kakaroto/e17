@@ -11,8 +11,8 @@ Ewl_Config_Cache ewl_config_cache;
 
 extern Ecore_List *ewl_embed_list;
 
-static void ewl_config_load(Ewl_Config *cfg);
-static void ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, 
+static int ewl_config_load(Ewl_Config *cfg);
+static int ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, 
 							const char *file);
 static void ewl_config_parse(Ewl_Config *cfg, Ecore_Hash *hash, char *data);
 
@@ -111,7 +111,11 @@ ewl_config_new(const char *app_name)
 	cfg = NEW(Ewl_Config, 1);
 	cfg->app_name = strdup(app_name);
 
-	ewl_config_load(cfg);
+	if (!ewl_config_load(cfg))
+	{
+		FREE(cfg);
+		cfg = NULL;
+	}
 
 	/* XXX need to hookup to dbus here? */
 
@@ -568,21 +572,26 @@ ewl_config_file_name_user_get(Ewl_Config *cfg)
 	DRETURN_PTR(strdup(cfg_filename), DLEVEL_STABLE);
 }
 
-static void
+static int
 ewl_config_load(Ewl_Config *cfg)
 {
 	char *fname = NULL;
+	int sys_ret, user_ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cfg", cfg);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
 
 	fname = ewl_config_file_name_system_get(cfg);
-	ewl_config_file_load(cfg, TRUE, fname);
+	sys_ret = ewl_config_file_load(cfg, TRUE, fname);
 	FREE(fname);
 
 	fname = ewl_config_file_name_user_get(cfg);
-	ewl_config_file_load(cfg, FALSE, fname);
+	user_ret = ewl_config_file_load(cfg, FALSE, fname);
 	FREE(fname);
+
+	/* if we failed to load both config files we're in trouble */
+	if (!sys_ret && !user_ret)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/* XXX deal with the colour classes */
 
@@ -609,7 +618,7 @@ ewl_config_load(Ewl_Config *cfg)
 		}
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 static Ecore_Hash *
@@ -717,7 +726,7 @@ ewl_config_get(Ewl_Config *cfg, const char *key)
 /* open the given file and add it's key/value pairs to the config structure.
  * Overwrite any current values that are set.
  */
-static void
+static int
 ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 {
 	Ecore_Hash *hash;
@@ -727,18 +736,18 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 	struct stat buf;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cfg", cfg);
-	DCHECK_PARAM_PTR("file", file);
+	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
+	DCHECK_PARAM_PTR_RET("file", file, FALSE);
 
 	/* make sure the config file exists */
 	if (!ecore_file_exists(file))
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	fd = open(file, O_RDONLY, S_IRUSR);
 	if (fd == -1) 
 	{
 		DWARNING("Unable to open cfg file %s\n", file);
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
 	fl.l_type = F_RDLCK;
@@ -751,7 +760,7 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 		DWARNING("Unable to lock %s for read\n", file);
 
 		close(fd);
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
 	/* read the file into memory 
@@ -769,7 +778,6 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 	fcntl(fd, F_SETLK, &fl);
 	close(fd);
 
-
 	/* create the hash to store the values */
 	if (is_system)
 	{
@@ -785,7 +793,7 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 	ewl_config_parse(cfg, hash, data);
 	FREE(data);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 static void
