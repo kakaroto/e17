@@ -45,6 +45,11 @@ ewl_config_init(void)
 	if (!ewl_config)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	if ((!ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_NAME)) 
+			|| (!ewl_config_string_get(ewl_config, 
+						EWL_CONFIG_ENGINE_NAME)))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -110,12 +115,7 @@ ewl_config_new(const char *app_name)
 
 	cfg = NEW(Ewl_Config, 1);
 	cfg->app_name = strdup(app_name);
-
-	if (!ewl_config_load(cfg))
-	{
-		FREE(cfg);
-		cfg = NULL;
-	}
+	ewl_config_load(cfg);
 
 	/* XXX need to hookup to dbus here? */
 
@@ -596,6 +596,9 @@ ewl_config_load(Ewl_Config *cfg)
 	/* XXX deal with the colour classes */
 
 	/* XXX not sure if this is in the right spot ... */
+	/* XXX This is very much the wrong spot for this. This will happen
+	 * on all config inits, we just want this to happen on EWL config
+	 * init ... */
 	/* update the evas info for the embeds */
 	if (ewl_embed_list && !ecore_list_is_empty(ewl_embed_list)) 
 	{
