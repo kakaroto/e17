@@ -56,6 +56,7 @@ struct Ewl_Embed
 
 	Evas           *evas;        /**< Evas where drawing takes place. */
 	void           *evas_window; /**< The window holding the evas. */
+	int             cursor;      /**< Id for current cursor in use */
 
 	Evas_Object    *smart;       /**< Manipulate Ewl_Embed from evas */
 	Evas_Object    *ev_clip;     /**< Clip box to receive evas events */
