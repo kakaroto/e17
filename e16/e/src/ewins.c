@@ -835,7 +835,6 @@ AddToFamily(EWin * ewin, Window xwin)
 	     EQueryPointer(NULL, &rx, &ry, NULL, NULL);
 	     Mode.events.x = rx;
 	     Mode.events.y = ry;
-	     ewin->state.placed = 1;
 
 	     /* try to center the window on the mouse pointer */
 	     newWinX = rx;
@@ -855,11 +854,23 @@ AddToFamily(EWin * ewin, Window xwin)
 	     x = newWinX;
 	     y = newWinY;
 	  }
+	else if (ewin->ewmh.type.b.dialog)
+	  {
+	     /* Center unplaced dialogs on parent(if transient) or root */
+	     Win                 parent;
+
+	     ewin2 = NULL;
+	     if (EwinGetTransientFor(ewin) != None)
+		ewin2 = EwinFindByClient(EwinGetTransientFor(ewin));
+	     parent = (ewin2) ? EoGetWin(ewin) : VRoot.win;
+	     x = (WinGetW(parent) - EoGetW(ewin)) / 2;
+	     y = (WinGetH(parent) - EoGetH(ewin)) / 2;
+	  }
 	else
 	  {
-	     ewin->state.placed = 1;
 	     ArrangeEwinXY(ewin, &x, &y);
 	  }
+	ewin->state.placed = 1;
      }
 
    /* if the window asked to be iconified at the start */

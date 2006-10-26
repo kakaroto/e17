@@ -205,6 +205,21 @@ struct _ewin
       XID                 sync_request_counter;
       long long           sync_request_count;
 #endif
+      union
+      {
+	 unsigned char       all;
+	 struct
+	 {
+	    unsigned            desktop:1;
+	    unsigned            dock:1;
+	    unsigned            toolbar:1;
+	    unsigned            menu:1;
+	    unsigned            utility:1;
+	    unsigned            splash:1;
+	    unsigned            dialog:1;
+	    unsigned            normal:1;
+	 } b;
+      } type;
    } ewmh;
    struct
    {

@@ -564,11 +564,19 @@ EWMH_GetWindowType(EWin * ewin)
    Ecore_X_Atom       *p_atoms, atom;
    int                 n_atoms;
 
+   ewin->ewmh.type.all = 0;
+
    n_atoms = ecore_x_window_prop_atom_list_get(EwinGetClientXwin(ewin),
 					       ECORE_X_ATOM_NET_WM_WINDOW_TYPE,
 					       &p_atoms);
    if (n_atoms <= 0)
-      return;
+     {
+	if (EwinIsTransient(ewin))
+	   ewin->ewmh.type.b.dialog = 1;
+	else
+	   ewin->ewmh.type.b.normal = 1;
+	return;
+     }
 
    atom = p_atoms[0];
    if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP)
@@ -581,6 +589,7 @@ EWMH_GetWindowType(EWin * ewin)
 	EwinInhSetUser(ewin, size, 1);
 	ewin->props.donthide = 1;
 	ewin->props.no_border = 1;
+	ewin->ewmh.type.b.desktop = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK)
      {
@@ -589,6 +598,7 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->props.skip_focuslist = 1;
 	EoSetSticky(ewin, 1);
 	ewin->props.donthide = 1;
+	ewin->ewmh.type.b.dock = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY)
      {
@@ -598,24 +608,28 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->props.skip_focuslist = 1;
 	ewin->props.never_use_area = 1;
 	ewin->props.donthide = 1;
+	ewin->ewmh.type.b.utility = 1;
      }
-#if 0				/* Not used by E (yet?) */
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_TOOLBAR)
      {
+	ewin->ewmh.type.b.toolbar = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_MENU)
      {
+	ewin->ewmh.type.b.menu = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_SPLASH)
      {
+	ewin->ewmh.type.b.splash = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DIALOG)
      {
+	ewin->ewmh.type.b.dialog = 1;
      }
    else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_NORMAL)
      {
+	ewin->ewmh.type.b.normal = 1;
      }
-#endif
    Efree(p_atoms);
 }
 
