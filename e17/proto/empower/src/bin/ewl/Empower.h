@@ -9,7 +9,7 @@
 #include "Ewl.h"
 //#include "../config.h"
 
-#define WIDTH 200
+#define WIDTH 0
 #define HEIGHT 85
 Ewl_Widget *win;
 char password[1024];
