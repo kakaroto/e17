@@ -713,7 +713,6 @@ ewl_filepicker_path_populate(Ewl_Filepicker *fp, char *path)
 		ecore_list_prepend(fp->path, strdup(path));
 
 	ewl_mvc_dirty_set(EWL_MVC(fp->path_combo), TRUE);
-	ewl_mvc_selected_set(EWL_MVC(fp->path_combo), 0, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
