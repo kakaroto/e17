@@ -50,6 +50,11 @@
 	if (dat) FREE(dat); \
 }
 
+#undef IF_FREE_LIST
+/**
+ * @def IF_FREE_LIST(list)
+ * If @a list is non-NULL, free @a list and set it NULL.
+ */
 #define IF_FREE_LIST(list) \
 { \
 	if (list) { \
