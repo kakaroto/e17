@@ -155,7 +155,11 @@ ee_init(Ewl_Engine *engine)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	if (!ecore_x_init(NULL))
+	{
+		fprintf(stderr, "Unable to initialize Ecore X.\n"
+				"Is your DISPLAY variable set correctly?\n\n");
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
 
 	ee_expose_handler = ecore_event_handler_add(
 					ECORE_X_EVENT_WINDOW_DAMAGE,
@@ -237,6 +241,7 @@ ee_init(Ewl_Engine *engine)
 	{
 		ee_shutdown(EWL_ENGINE(engine));
 
+		fprintf(stderr, "Unable to create Ecore X event handlers.\n");
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 

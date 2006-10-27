@@ -2,8 +2,10 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#if 0
 #include <Ecore_Evas.h>
 #include <Ecore_X.h>
+#endif
 
 #define EWL_DND_WINDOW_ROOT 0
 
@@ -15,8 +17,10 @@ int EWL_CALLBACK_DND_DATA = 0; /**< Data event **/
 
 static int ewl_dragging_current = 0;
 static int ewl_dnd_move_count = 0;
+#if 0
 static Ecore_Evas *ewl_dnd_drag_canvas;
 static Ecore_X_Window ewl_dnd_drag_win = 0;
+#endif
 
 static Ewl_Widget *ewl_dnd_widget = NULL;
 
@@ -33,8 +37,10 @@ static char **ewl_dnd_types_decode(const char *types);
 static char * ewl_dnd_type_stpcpy(char *dst, const char *src);
 static int ewl_dnd_types_encoded_contains(char *types, char *type);
 
+#if 0
 static int ewl_dnd_event_mouse_up(void *data, int type, void *event);
 static int ewl_dnd_event_dnd_move(void *data, int type, void *event);
+#endif
 
 static void ewl_dnd_cb_render(Ewl_Widget *w, void *event, void *data);
 
@@ -392,7 +398,7 @@ ewl_dnd_drag_widget_clear(void)
 }
 
 static void
-ewl_dnd_cb_render(Ewl_Widget *w, void *event, void *data)
+ewl_dnd_cb_render(Ewl_Widget *w, void *event __UNUSED__, void *data)
 {
 	int handle;
 	Ewl_Embed *embed = EWL_EMBED(data);
@@ -497,6 +503,7 @@ ewl_dnd_type_stpcpy(char *dst, const char *src)
 	return dst;
 }
 
+#if 0
 static int
 ewl_dnd_event_dnd_move(void *data __UNUSED__, int type __UNUSED__, 
 							void *event)
@@ -557,4 +564,5 @@ ewl_dnd_event_mouse_up(void *data __UNUSED__, int type __UNUSED__,
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+#endif
 

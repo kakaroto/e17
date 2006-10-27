@@ -13,8 +13,6 @@ extern Ecore_List *ewl_window_list;
 /*
  * Configuration and option related flags.
  */
-static unsigned int phase_status = 0;
-
 static Ecore_Idle_Enterer *idle_enterer = NULL;
 static Ecore_Idler *ewl_garbage_collect = NULL;
 static int ewl_init_count = 0;
@@ -40,10 +38,13 @@ static Ecore_List *child_add_list= NULL;
 static Ecore_List *free_evas_list = NULL;
 static Ecore_List *free_evas_object_list = NULL;
 
-int ewl_idle_render(void *data);
+static int ewl_idle_render(void *data);
 static void ewl_init_parse_options(int *argc, char **argv);
 static void ewl_init_remove_option(int *argc, char **argv, int i);
-int ewl_ecore_exit(void *data, int type, void *event);
+static void ewl_configure_queue(void);
+static void ewl_realize_queue(void);
+static int ewl_garbage_collect_idler(void *data);
+static void ewl_configure_cancel_request(Ewl_Widget *w);
 
 /**
  * @return Returns no value.
@@ -355,7 +356,7 @@ ewl_main(void)
  * 8. Render the display.
  * 9. Repeat steps 2-6 until program exits.
  */
-int
+static int
 ewl_idle_render(void *data __UNUSED__)
 {
 	Ewl_Widget *w;
@@ -387,7 +388,7 @@ ewl_idle_render(void *data __UNUSED__)
 			!ecore_list_is_empty(free_evas_list) ||
 			!ecore_list_is_empty(free_evas_object_list))
 		ewl_garbage_collect = ecore_idler_add(ewl_garbage_collect_idler,
-						      NULL);;
+						      NULL);
 
 	if (!ecore_list_is_empty(realize_list))
 		ewl_realize_queue();
@@ -430,7 +431,7 @@ ewl_idle_render(void *data __UNUSED__)
 	 */
 	ecore_list_goto_first(ewl_embed_list);
 	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
-		if (REALIZED(emb) && emb->evas) {
+		if (REALIZED(emb)) {
 			double render_time = 0;
 
 			ewl_embed_thaw(emb);
@@ -483,8 +484,7 @@ ewl_main_quit(void)
 static void
 ewl_init_parse_options(int *argc, char **argv)
 {
-	int i;
-	int matched = 0;
+	int i, matched = 0;
 	Ecore_List *engines;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -533,7 +533,7 @@ ewl_init_parse_options(int *argc, char **argv)
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-debug")) {
-			if (i + i < *argc) {
+			if ((i + 1) < *argc) {
 				ewl_config_int_set(ewl_config, 
 					EWL_CONFIG_DEBUG_LEVEL, atoi(argv[i + 1]),
 					EWL_STATE_TRANSIENT);
@@ -556,9 +556,12 @@ ewl_init_parse_options(int *argc, char **argv)
 		}
 		else if (!strcmp(argv[i], "--ewl-help")) {
 			ewl_print_help();
-			ecore_list_destroy(engines);
-			exit(0);
 			matched ++;
+
+			/* this has to exit. otherwise we end up returning
+			 * FALSE from ewl_init which triggers the app to
+			 * spit out an error */
+			exit(0);
 		}
 		else if (!strncmp(argv[i], "--ewl-", 6)) {
 			unsigned int len;
@@ -603,7 +606,7 @@ ewl_init_parse_options(int *argc, char **argv)
 	}
 	ecore_list_destroy(engines);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN(DLEVEL_STABLE);
 }
 
 static void
@@ -644,8 +647,7 @@ ewl_print_help(void)
 		" AVAILABLE ENGINES\n");
 			
 	names = ewl_engine_names_get();
-	ecore_list_goto_first(names);
-	while ((name = ecore_list_next(names)))
+	while ((name = ecore_list_remove_first(names)))
 	{
 		char *t;
 		while ((t = strchr(name, '_')))
@@ -724,7 +726,7 @@ ewl_configure_request(Ewl_Widget * w)
  * @return Returns no value
  * @brief Configure all the widgets that need to be configured
  */
-void
+static void
 ewl_configure_queue(void)
 {
 	Ewl_Widget *w;
@@ -782,7 +784,7 @@ ewl_configure_queue(void)
  *
  * Remove the widget @a w from the list of widgets that need to be configured.
  */
-void
+static void
 ewl_configure_cancel_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_TESTING);
@@ -861,14 +863,12 @@ ewl_realize_cancel_request(Ewl_Widget *w)
  * @return Returns no value
  * @brief Realize all widgets that need to be realized
  */
-void
+static void
 ewl_realize_queue(void)
 {
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ewl_realize_phase_enter();
 
 	/*
 	 * First realize any widgets that require it, this looping should
@@ -876,7 +876,6 @@ ewl_realize_queue(void)
 	 * can't be placed on this list unless their parent has been realized
 	 * or they are a toplevel widget.
 	 */
-	ecore_list_goto_first(realize_list);
 	while ((w = ecore_list_remove_first(realize_list))) {
 		if (VISIBLE(w) && !REALIZED(w)) {
 			ewl_object_queued_add(EWL_OBJECT(w), 
@@ -916,52 +915,7 @@ ewl_realize_queue(void)
 					 EWL_FLAG_QUEUED_RSCHEDULED);
 	}
 
-	ewl_realize_phase_exit();
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @return Returns no value.
- * @brief Marks that EWL is currently realizing a widget.
- */
-void
-ewl_realize_phase_enter(void)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	phase_status |= EWL_FLAG_QUEUED_RSCHEDULED;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @return Returns no value.
- * @brief Marks that EWL is not realizing a widget.
- */
-void
-ewl_realize_phase_exit(void)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	phase_status &= ~EWL_FLAG_QUEUED_RSCHEDULED;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @return Returns TRUE if currently realizing a widget, FALSE otherwise.
- * @brief Checks if EWL is currently in the process of realizing widgets.
- */
-int
-ewl_in_realize_phase(void)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	DRETURN_INT((phase_status & EWL_FLAG_QUEUED_RSCHEDULED), DLEVEL_STABLE);
 }
 
 /**
@@ -1043,7 +997,7 @@ ewl_evas_object_destroy(Evas_Object *obj)
  * @return Returns TRUE if objects remain to be freed, otherwise false.
  * @brief Free's all widgets that have been marked for destruction.
  */
-int
+static int
 ewl_garbage_collect_idler(void *data __UNUSED__)
 {
 	Evas *evas;
@@ -1098,17 +1052,6 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		ewl_garbage_collect = NULL;
 
 	DRETURN_INT(ecore_list_nodes(destroy_list), DLEVEL_STABLE);
-}
-
-int
-ewl_ecore_exit(void *data __UNUSED__, int type __UNUSED__,
-					void *event __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ewl_main_quit();
-
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 #ifdef DEBUG_MALLOCDEBUG

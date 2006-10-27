@@ -163,6 +163,8 @@ ewl_engine_new(const char *name)
 			Ewl_Engine *parent;
 
 			parent = ewl_engine_new(name);
+			if (!parent) DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 			ecore_dlist_append(deps, parent);
 		}
 		ecore_list_destroy(dep_list);
@@ -178,7 +180,7 @@ ewl_engine_new(const char *name)
 	engine = EWL_ENGINE(create_engine());
 	if (!engine)
 	{
-		DWARNING("Unable to create engine.\n");
+		fprintf(stderr, "Unable to create engine.\n");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
