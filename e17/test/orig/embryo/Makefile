@@ -6,11 +6,9 @@ all: $(BINS)
 
 embryo_SRCS = embryo_main.c
 embryo_OBJS = $(embryo_SRCS:.c=.o)
-
-### link
 embryo: $(embryo_OBJS)
 	$(RM) $@
-	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $< -o $@
+	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $(embryo_OBJS) -o $@
 
 ############################################################################
 #### boilerplate
