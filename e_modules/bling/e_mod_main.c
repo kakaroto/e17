@@ -234,6 +234,7 @@ _bling_init(E_Module *m)
       ecore_idle_enterer_add(_bling_composite_restart, b);
    else if (!composite_init(b))
    {
+      E_CONFIG_DD_FREE(b->conf_edd); 
       E_FREE(b);
       return NULL;
    }
