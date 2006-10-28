@@ -38,6 +38,7 @@ static E_Menu * _win_menu_new(Instance *inst);
 static void _win_menu_pre_cb(void *data, E_Menu *m);
 static void _win_menu_item_cb(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _win_menu_icon_cb(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _win_menu_item_drag(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _win_menu_free_hook(void *obj);
 static void _win_menu_item_create(E_Border *bd, E_Menu *m, Instance *inst);
 static int _window_cb_focus_in(void *data, int type, void *event);
@@ -354,8 +355,42 @@ _win_menu_icon_cb(void *data, E_Menu *m, E_Menu_Item *mi)
 
    o = e_icon_add(m->evas);
    e_icon_object_set(o, e_border_icon_add(bd, m->evas));
+   e_menu_item_drag_callback_set(mi, _win_menu_item_drag, bd);
 
    mi->icon_object = o;
+}
+
+static void
+_win_menu_item_drag(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   E_Border *bd;
+
+   if (!(bd = data)) return;
+   if (!mi->icon_object) return;
+
+   E_Drag *drag;
+   Evas_Object *o = NULL;
+   Evas_Coord x, y, w, h;
+   const char *file = NULL, *part = NULL;
+   const char *drag_types[] = { "enlightenment/border" };
+
+   evas_object_geometry_get(mi->icon_object,
+			    &x, &y, &w, &h);
+   drag = e_drag_new(
+      m->zone->container, x, y,
+      drag_types, 1, bd, -1, NULL);
+
+   o = e_icon_add(drag->evas);
+   e_icon_object_set(o, e_border_icon_add(bd, drag->evas));
+   e_drag_object_set(drag, o);
+
+   e_drag_resize(drag, w, h);
+   e_drag_start(drag, mi->drag.x + w, mi->drag.y + h);
+   e_util_evas_fake_mouse_up_later(bd->bg_evas, 1);
+   //			    evas_event_feed_mouse_up(bd->bg_evas, 1,
+   //						     EVAS_BUTTON_NONE, ev->time, 
+   //						     NULL);
+
 }
 
 static void
