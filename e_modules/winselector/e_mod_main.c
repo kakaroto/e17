@@ -386,11 +386,6 @@ _win_menu_item_drag(void *data, E_Menu *m, E_Menu_Item *mi)
 
    e_drag_resize(drag, w, h);
    e_drag_start(drag, mi->drag.x + w, mi->drag.y + h);
-   e_util_evas_fake_mouse_up_later(bd->bg_evas, 1);
-   //			    evas_event_feed_mouse_up(bd->bg_evas, 1,
-   //						     EVAS_BUTTON_NONE, ev->time, 
-   //						     NULL);
-
 }
 
 static void
