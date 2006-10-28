@@ -103,6 +103,7 @@ Application Window Properties
 Window Manager Protocols
 ~~~~~~~~~~~~~~~~~~~~~~~~
 [ ] _NET_WM_PING
+[+] _NET_WM_SYNC_REQUEST
 
 
 GNOME Compliance (_WIN_... hints)

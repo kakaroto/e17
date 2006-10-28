@@ -195,8 +195,8 @@ if test "x$enable_zoom" = "xyes"; then
 fi
 
 AC_ARG_ENABLE(xsync,
-  [  --enable-xsync          compile with SYNC support (experimental!) @<:@default=no@:>@],,
-  enable_xsync=no)
+  [  --enable-xsync          compile with SYNC support @<:@default=yes@:>@],,
+  enable_xsync=yes)
 if test "x$enable_xsync" = "xyes"; then
   AC_CHECK_LIB(Xext, XSyncQueryExtension,
     AC_DEFINE(HAS_XSYNC, 1, [SYNC support]),
@@ -318,12 +318,12 @@ echo "  Zoom ......................... $enable_zoom"
 echo "  Xft .......................... $enable_xft"
 echo "  Xinerama ..................... $enable_xinerama"
 echo "  RandR ........................ $enable_xrandr"
+echo "  Sync ......................... $enable_xsync"
 echo "  Composite .................... $enable_composite"
 echo "  Window mode helper library ... $enable_roothacklib"
 echo
 echo "Experimental options - DO NOT USE unless you know what you are doing"
 echo "  Compile with ecore/ecore_x ... $enable_ecore"
-echo "  Sync ......................... $enable_xsync"
 echo "  ScreenSaver .................. $enable_xscrnsaver"
 echo
 echo "Installation Path .............. $prefix"

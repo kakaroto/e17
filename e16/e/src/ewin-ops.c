@@ -298,7 +298,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 {
    static int          call_depth = 0;
    int                 dx, dy, sw, sh, xo, yo;
-   char                move, resize, reparent, raise, floating;
+   char                move, resize, reparent, raise, floating, configure;
    EWin              **lst;
    int                 i, num;
    Desk               *pdesk;
@@ -461,6 +461,16 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
    else
       EoMoveResize(ewin, x, y, w, h);
 
+   configure = 0;
+   if (Mode.mode == MODE_NONE || resize || Conf.movres.update_while_moving)
+     {
+	configure = 1;
+#if USE_XSYNC
+	if (Conf.testing.use_sync)
+	   EwinSyncRequestSend(ewin);
+#endif
+     }
+
    if (flags & MRF_RESIZE)
      {
 	if (!ewin->state.shaded)
@@ -490,6 +500,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	if (resize && ewin->state.shaped)
 	   ewin->update.shape = 1;
      }
+
    EwinPropagateShapes(ewin);
 
    if (raise)
@@ -498,8 +509,15 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	EwinRaise(ewin);
      }
 
-   if (Mode.mode == MODE_NONE || Conf.movres.update_while_moving)
-      ICCCM_Configure(ewin);
+   if (configure)
+     {
+	if (!resize)
+	   ICCCM_Configure(ewin);
+#if USE_XSYNC
+	if (Conf.testing.use_sync)
+	   EwinSyncRequestWait(ewin);
+#endif
+     }
 
    if (flags & (MRF_DESK | MRF_MOVE | MRF_FLOAT | MRF_UNFLOAT))
      {

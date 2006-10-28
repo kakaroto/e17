@@ -777,8 +777,7 @@ EwinSyncRequestSend(EWin * ewin)
 {
    long long           count;
 
-   if (!Conf.testing.use_sync || !ewin->ewmh.sync_request_enable ||
-       EServerIsGrabbed())
+   if (!ewin->ewmh.sync_request_enable || EServerIsGrabbed())
       return 0;
 
    count = ++ewin->ewmh.sync_request_count;
@@ -801,8 +800,7 @@ EwinSyncRequestWait(EWin * ewin)
    XSyncWaitCondition  xswc[2];
    double              t;
 
-   if (!Conf.testing.use_sync || !ewin->ewmh.sync_request_enable ||
-       EServerIsGrabbed())
+   if (!ewin->ewmh.sync_request_enable || EServerIsGrabbed())
       return;
 
    xswc[0].trigger.counter = ewin->ewmh.sync_request_counter;
@@ -815,7 +813,7 @@ EwinSyncRequestWait(EWin * ewin)
 
    xswc[1].trigger.counter = Mode.display.server_time;
    xswc[1].trigger.value_type = XSyncRelative;
-   XSyncIntsToValue(&xswc[1].trigger.wait_value, 1000, 0);	/* 1 sec */
+   XSyncIntsToValue(&xswc[1].trigger.wait_value, 200, 0);	/* 200 ms */
    xswc[1].trigger.test_type = XSyncPositiveComparison;
    XSyncIntsToValue(&xswc[1].event_threshold, 0, 0);
 
