@@ -1,20 +1,44 @@
-FLAGS = `eet-config --cflags`
-LIBS  = `eet-config --libs`
+FLAGS = `ecore-config --cflags`
+LIBS  = `ecore-config --libs`
 
-BINS  = eet eet_bench
+BINS  = ecore_config ecore_evas_test ecore_test ecore_dbus_test ecore_dbus_hal_test ecore_dbus_receiver_test
 all: $(BINS)
 
-eet_SRCS = eet_main.c
-eet_OBJS = $(eet_SRCS:.c=.o)
-eet: $(eet_OBJS)
+ecore_config_SRCS = ecore_config.c
+ecore_config_OBJS = $(ecore_config_SRCS:.c=.o)
+ecore_config: $(ecore_config_OBJS)
 	$(RM) $@
-	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $(eet_OBJS) -o $@
+	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $(ecore_config_OBJS) -o $@
 
-eet_bench_SRCS = eet_bench_main.c
-eet_bench_OBJS = $(eet_bench_SRCS:.c=.o)
-eet_bench: $(eet_bench_OBJS)
+ecore_evas_test_SRCS = ecore_evas_test.c ecore_evas_test_app.c ecore_evas_test_bg.c ecore_evas_test_calibrate.c
+ecore_evas_test_OBJS = $(ecore_evas_test_SRCS:.c=.o)
+ecore_evas_test: $(ecore_evas_test_OBJS)
 	$(RM) $@
-	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $(eet_bench_OBJS) -o $@
+	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $(ecore_evas_test_OBJS) -o $@
+
+ecore_test_SRCS = ecore_test.c
+ecore_test_OBJS = $(ecore_test_SRCS:.c=.o)
+ecore_test: $(ecore_test_OBJS)
+	$(RM) $@
+	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $(ecore_test_OBJS) -o $@
+
+ecore_dbus_test_SRCS = ecore_dbus_test.c
+ecore_dbus_test_OBJS = $(ecore_dbus_test_SRCS:.c=.o)
+ecore_dbus_test: $(ecore_dbus_test_OBJS)
+	$(RM) $@
+	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $(ecore_dbus_test_OBJS) -o $@
+
+ecore_dbus_hal_test_SRCS = ecore_dbus_hal_test.c
+ecore_dbus_hal_test_OBJS = $(ecore_dbus_hal_test_SRCS:.c=.o)
+ecore_dbus_hal_test: $(ecore_dbus_hal_test_OBJS)
+	$(RM) $@
+	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $(ecore_dbus_hal_test_OBJS) -o $@
+
+ecore_dbus_receiver_test_SRCS = ecore_dbus_receiver_test.c
+ecore_dbus_receiver_test_OBJS = $(ecore_dbus_receiver_test_SRCS:.c=.o)
+ecore_dbus_receiver_test: $(ecore_dbus_receiver_test_OBJS)
+	$(RM) $@
+	$(CC) $(LIBS) $(CFLAGS) $(LDFLAGS) $(ecore_dbus_receiver_test_OBJS) -o $@
 
 ############################################################################
 #### boilerplate

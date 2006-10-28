@@ -3,8 +3,6 @@
  */
 #include "ecore_dbus_test.h"
 
-#ifdef BUILD_ECORE_DBUS
-
 static int ecore_dbus_event_server_add(void *udata, int ev_type, void *ev);
 static int ecore_dbus_event_server_del(void *udata, int ev_type, void *ev);
 
@@ -160,11 +158,3 @@ event_type_get(Ecore_DBus_Message_Type type)
      }
    return "UNKNOWN";
 }
-#else
-int
-main(int argc, const char **argv)
-{
-   printf("Ecore_DBus module not compiled. This program is empty.\n");
-   return -1;
-}
-#endif

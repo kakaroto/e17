@@ -1,17 +1,14 @@
-#include "config.h"
 #include "Ecore.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-#ifdef BUILD_ECORE_CONFIG
 #include <unistd.h>
 #include <getopt.h>
 #include <Eet.h>
-#include "Ecore_Config.h"
-#include "Ecore_Data.h"
-#include "ecore_config_private.h"
+#include <Ecore_Config.h>
+#include <Ecore_Data.h>
 
 // strcmp for paths - for sorting folders before files
 int
@@ -326,11 +323,3 @@ main(int argc, char * const argv[])
 
    return ret;
 }
-#else
-int
-main(int argc, const char **argv)
-{
-   printf("Ecore_config module not compiled. This program is empty.\n");
-   return -1;
-}
-#endif

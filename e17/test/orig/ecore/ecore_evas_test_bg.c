@@ -1,7 +1,5 @@
 #include "ecore_evas_test.h"
 
-#ifdef BUILD_ECORE_EVAS
-
 Evas_Object *o_bg_rect  = NULL;
 Evas_Object *o_logo     = NULL;
 Ecore_Timer *anim_timer = NULL;
@@ -364,40 +362,33 @@ bg_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
    if (!strcmp(ev->keyname, "Up"))
      {
-#ifdef BUILD_ECORE_FB
 #if 0
 	double br;
 	
 	br = ecore_fb_backlight_brightness_get();
 	ecore_fb_backlight_brightness_set(br + 0.1);
 #endif
-#endif	
      }
    if (!strcmp(ev->keyname, "Down"))
      {
-#ifdef BUILD_ECORE_FB
 #if 0
 	double br;
 	
 	br = ecore_fb_backlight_brightness_get();
 	ecore_fb_backlight_brightness_set(br - 0.1);
 #endif
-#endif	
      }
    if (!strcmp(ev->keyname, "F2"))
      {
-#ifdef BUILD_ECORE_FB
 #if 0
 	if (ecore_fb_backlight_get())
 	  ecore_fb_backlight_set(0);
 	else
 	  ecore_fb_backlight_set(1);
 #endif
-#endif	
      }
    if (!strcmp(ev->keyname, "F3"))
      {
-#ifdef BUILD_ECORE_FB
 #if 0
 	static int v = 0;
 	
@@ -406,23 +397,18 @@ bg_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	if (!v) v = 1;
 	else v = 0;
 #endif
-#endif	
      }
    if (!strcmp(ev->keyname, "Left"))
      {
-#ifdef BUILD_ECORE_FB
 #if 0
 	ecore_fb_led_blink_set(0.1);
 #endif
-#endif	
      }
    if (!strcmp(ev->keyname, "Right"))
      {
-#ifdef BUILD_ECORE_FB
 #if 0
 	ecore_fb_led_blink_set(0.5);
 #endif
-#endif	
      }
    if ((!strcmp(ev->keyname, "p")) ||
        (!strcmp(ev->keyname, "Return")))
@@ -434,11 +420,9 @@ bg_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	  ecore_evas_cursor_set(ee, PT"mouse_pointer.png", 1000000, 2, 2);
 	else
 	  ecore_evas_cursor_set(ee, NULL, 0, 0, 0);
-#ifdef BUILD_ECORE_FB
 #if 0
 	printf("%3.3f\n", ecore_fb_light_sensor_get());
 #endif
-#endif	
      }
 }
 
@@ -450,4 +434,3 @@ bg_cb_key_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ev = event_info;
    printf("UP %s\n", ev->keyname);
 }
-#endif

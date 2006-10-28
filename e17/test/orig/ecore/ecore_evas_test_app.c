@@ -1,7 +1,5 @@
 #include "ecore_evas_test.h"
    
-#ifdef BUILD_ECORE_EVAS
-
 double       start_time = 0.0;
 Ecore_Evas  *ee         = NULL;
 Evas        *evas       = NULL;
@@ -131,13 +129,7 @@ app_start(int argc, const char **argv)
 	return 0;
      }
    else {
-#ifdef BUILD_ECORE_X
 	ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 240, 320);	 
-#else
-#ifdef BUILD_ECORE_FB
-	ee = ecore_evas_fb_new(NULL, 270,  240, 320);
-#endif
-#endif   
 	evas = ecore_evas_get(ee);
      }
    if (!ee) return -1;
@@ -180,5 +172,3 @@ app_delete_request(Ecore_Evas *ee)
 {
    ecore_main_loop_quit();
 }
-
-#endif

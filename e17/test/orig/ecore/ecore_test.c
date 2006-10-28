@@ -1,23 +1,10 @@
-#include "config.h"
-#include "Ecore.h"
-#ifdef BUILD_ECORE_JOB
-#include "Ecore_Job.h"
-#endif
-#ifdef BUILD_ECORE_X
-#include "Ecore_X.h"
-#endif
-#ifdef BUILD_ECORE_FB
-#include "Ecore_Fb.h"
-#endif
-#ifdef BUILD_ECORE_EVAS
-#include "Ecore_Evas.h"
-#endif
-#ifdef BUILD_ECORE_CON
-#include "Ecore_Con.h"
-#endif
-#ifdef BUILD_ECORE_IPC
-#include "Ecore_Ipc.h"
-#endif
+#include <Ecore.h>
+#include <Ecore_Job.h>
+#include <Ecore_X.h>
+#include <Ecore_Fb.h>
+#include <Ecore_Evas.h>
+#include <Ecore_Con.h>
+#include <Ecore_Ipc.h>
 
 #include <math.h>
 #include <stdlib.h>
@@ -50,32 +37,27 @@ handler_signal_exit(void *data, int ev_type, void *ev)
 int
 handler_ipc_client_add(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_IPC
    Ecore_Ipc_Event_Client_Add *e;
    
    e = event;
    printf("!!! client %p connected to server!\n", e->client);
    return 1;
-#endif   
 }
 
 int
 handler_ipc_client_del(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_IPC
    Ecore_Ipc_Event_Client_Del *e;
    
    e = event;
    printf("!!! client %p disconnected from server!\n", e->client);
    return 1;
-#endif   
 }
 
 
 int
 handler_ipc_client_data(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_IPC
    Ecore_Ipc_Event_Client_Data *e;
    
    e = event;
@@ -86,26 +68,22 @@ handler_ipc_client_data(void *data, int type, void *event)
    /* or we can end a server by: */
    /* ecore_ipc_server_del(ecore_ipc_client_server_get(e->client)); */
    return 1;
-#endif   
 }
 
 
 int
 handler_ipc_server_add(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_IPC
    Ecore_Ipc_Event_Server_Add *e;
    
    e = event;
    printf("!!! client made successful connect to server %p!\n", e->server);
    return 1;
-#endif
 }
 
 int
 handler_ipc_server_del(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_IPC
    Ecore_Ipc_Event_Server_Del *e;
    
    e = event;
@@ -113,13 +91,11 @@ handler_ipc_server_del(void *data, int type, void *event)
    /* clean up our server connection since it went away */
    ecore_ipc_server_del(e->server);
    return 1;
-#endif   
 }
 
 int
 handler_ipc_server_data(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_IPC
    Ecore_Ipc_Event_Server_Data *e;
    static int count = 0;
    
@@ -133,39 +109,33 @@ handler_ipc_server_data(void *data, int type, void *event)
 	ecore_ipc_server_del(e->server);
      }
    return 1;
-#endif   
 }
 
 /**** ECORE_CON TEST CODE */
 int
 handler_client_add(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_CON
    Ecore_Con_Event_Client_Add *e;
    
    e = event;
    printf("!!! client %p connected to server!\n", e->client);
    return 1;
-#endif   
 }
 
 int
 handler_client_del(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_CON
    Ecore_Con_Event_Client_Del *e;
    
    e = event;
    printf("!!! client %p disconnected from server!\n", e->client);
    return 1;
-#endif   
 }
 
 
 int
 handler_client_data(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_CON
    Ecore_Con_Event_Client_Data *e;
    
    e = event;
@@ -176,26 +146,22 @@ handler_client_data(void *data, int type, void *event)
    /* or we can end a server by: */
    /* ecore_con_server_del(ecore_con_client_server_get(e->client)); */
    return 1;
-#endif   
 }
 
 
 int
 handler_server_add(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_CON
    Ecore_Con_Event_Server_Add *e;
    
    e = event;
    printf("!!! client made successful connect to server %p!\n", e->server);
    return 1;
-#endif   
 }
 
 int
 handler_server_del(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_CON
    Ecore_Con_Event_Server_Del *e;
    
    e = event;
@@ -203,13 +169,11 @@ handler_server_del(void *data, int type, void *event)
    /* clean up our server connection since it went away */
    ecore_con_server_del(e->server);
    return 1;
-#endif   
 }
 
 int
 handler_server_data(void *data, int type, void *event)
 {
-#ifdef BUILD_ECORE_CON
    Ecore_Con_Event_Server_Data *e;
    static int count = 0;
    
@@ -223,18 +187,15 @@ handler_server_data(void *data, int type, void *event)
 	ecore_con_server_del(e->server);
      }
    return 1;
-#endif   
 }
 
 
 /* NB: also tests ECORE_JOB */
-#ifdef BUILD_ECORE_JOB
 void
 job_call(void *data)
 {
    printf("!! Job done \"%s\"!\n", (char *)data);
 }
-#endif
 
 int
 idle_enterer(void *data)
@@ -255,11 +216,9 @@ timer(void *data)
 {
    printf("Q- Timer tick %3.8f\n", ecore_time_get() - start_time);
    /* test ecore_job */
-#ifdef BUILD_ECORE_JOB   
    ecore_job_add(job_call, "1");
    ecore_job_add(job_call, "2");
    ecore_job_add(job_call, "3");
-#endif   
    return 1;
 }
 
@@ -271,7 +230,6 @@ setup_ecore_test(void)
    ecore_timer_add(2.0, timer, NULL);
 }
 
-#ifdef BUILD_ECORE_X
 /**** ECORE_X TEST CODE */
 
 Ecore_X_Window win = 0;
@@ -593,9 +551,7 @@ setup_ecore_x_test(void)
    */
 
 }
-#endif
 
-#ifdef BUILD_ECORE_EVAS
 /* choose: TEST_X, TEST_FB */
 #define TEST_X 
 
@@ -773,7 +729,6 @@ setup_ecore_evas_test(void)
    ecore_evas_show(ee);
    return 1;
 }
-#endif
 
 /**** MAIN */
 int
@@ -792,7 +747,6 @@ main(int argc, const char **argv)
    setup_ecore_test();
 #endif
 
-#ifdef BUILD_ECORE_CON 
 #if 0   
    /* init ecore_con */
    ecore_con_init();
@@ -827,9 +781,7 @@ main(int argc, const char **argv)
 	  }
      }
 #endif   
-#endif
 
-#ifdef BUILD_ECORE_IPC
 #if 1   
    /* init ecore_ipc */
    ecore_ipc_init();
@@ -861,42 +813,29 @@ main(int argc, const char **argv)
 	  }
      }
 #endif   
-#endif
    
-#ifdef BUILD_ECORE_EVAS   
    /* init ecore_evas */
 /*   if (!ecore_evas_init()) return -1; */
-#endif
    
    /* setup a callback to handle a systsme signal to quit */
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, handler_signal_exit, NULL);
    
-#ifdef BUILD_ECORE_X
    /* setup to test ecore_x module things */
    if (!ecore_x_init(NULL)) return -1;
    setup_ecore_x_test();
-#endif
 
-#ifdef BUILD_ECORE_EVAS
    /* setup to test ecore_evas module */
 /*   if (!setup_ecore_evas_test()) return -1; */
-#endif
    
    /* run the main loop */
    ecore_main_loop_begin();
 
-#ifdef BUILD_ECORE_EVAS
    /* shut down ecore_evas */
    ecore_evas_shutdown();
-#endif   
-#ifdef BUILD_ECORE_IPC
    /* shut down ecore_ipc */
    ecore_ipc_shutdown();
-#endif
-#ifdef BUILD_ECORE_CON 
    /* shut down ecore_con */
    ecore_con_shutdown();
-#endif
    /* shut down ecore */
    ecore_shutdown();
    return 0;

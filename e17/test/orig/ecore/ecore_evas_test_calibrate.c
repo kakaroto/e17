@@ -1,7 +1,5 @@
 #include "ecore_evas_test.h"
 
-#ifdef BUILD_ECORE_EVAS
-
 static Evas_Object *o_events = NULL;
 static Evas_Object *o_crosshair = NULL;
 static Evas_Object *o_text = NULL;
@@ -92,11 +90,9 @@ calibrate_finish(void)
    
    if (rot == 0)
      {
-#ifdef BUILD_ECORE_FB
 #if 0
 	ecore_fb_touch_screen_calibrate_set(xscale, xtrans, yscale, ytrans, xyswap);
 #endif
-#endif	
      }
    else if (rot == 270)
      {
@@ -104,10 +100,8 @@ calibrate_finish(void)
 	
 	evas_output_size_get(evas, &ow, &oh);
 	ytrans = oh - (ytrans + ((oh * yscale) / 256));
-#ifdef BUILD_ECORE_FB	
 #if 0
 	ecore_fb_touch_screen_calibrate_set(yscale, ytrans, xscale, xtrans, xyswap);
-#endif	
 #endif	
      }
      
@@ -126,11 +120,9 @@ calibrate_start(void)
 {
    Evas_Object *o;
    
-#ifdef BUILD_ECORE_FB	
 #if 0
    ecore_fb_touch_screen_calibrate_set(256, 0, 256, 0, 0);
 #endif	
-#endif
    
    o = evas_object_rectangle_add(evas);
    evas_object_layer_set(o, 1000000); 
@@ -288,4 +280,3 @@ calibrate_cb_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
    tmp_input[((tmp_input_count & 0x7) * 2) + 1] = ev->cur.output.y;
    tmp_input_count++;
 }
-#endif

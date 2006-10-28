@@ -3,8 +3,6 @@
  */
 #include "ecore_dbus_test.h"
 
-#ifdef BUILD_ECORE_DBUS
-
 static int ecore_dbus_event_server_add(void *udata, int ev_type, void *ev);
 static int ecore_dbus_event_server_del(void *udata, int ev_type, void *ev);
 static int ecore_dbus_event_method_call(void *udata, int ev_type, void *ev);
@@ -141,12 +139,3 @@ _test_object_init(Ecore_DBus_Server *svr)
    obj = ecore_dbus_object_add(svr, "/org/enlightenment/test");
    ecore_dbus_object_method_add(obj, "org.enlightenment.Test", "Test", _test_object_test, NULL);
 }
-
-#else
-int
-main(int argc, const char **argv)
-{
-   printf("Ecore_DBus module not compiled. This program is empty.\n");
-   return -1;
-}
-#endif

@@ -1,7 +1,5 @@
 #include "ecore_evas_test.h"
    
-#ifdef BUILD_ECORE_EVAS
-
 int
 main(int argc, const char **argv)
 {
@@ -17,11 +15,3 @@ main(int argc, const char **argv)
    
    return 0;
 }
-#else
-int
-main(int argc, const char **argv)
-{
-   printf("Ecore_evas module not compiled. This program is empty.\n");
-   return -1;
-}
-#endif
