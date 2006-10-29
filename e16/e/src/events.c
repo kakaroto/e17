@@ -108,7 +108,7 @@ ExtInitSync(int available)
    XSyncFreeSystemCounterList(xssc);
 
    if (Mode.display.server_time == None)
-      Conf.testing.use_sync = 0;
+      Conf.movres.enable_sync_request = 0;
 }
 #endif
 

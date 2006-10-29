@@ -323,6 +323,7 @@ typedef struct
       int                 mode_resize;
       int                 mode_info;
       char                update_while_moving;
+      char                enable_sync_request;
    } movres;
    struct
    {
@@ -410,7 +411,6 @@ typedef struct
       char                argb_internal_clients;
       char                argb_clients;
       char                argb_clients_inherit_attr;
-      char                use_sync;
       int                 mask_alpha_threshold;
    } testing;
 

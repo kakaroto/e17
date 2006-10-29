@@ -29,6 +29,7 @@ static int          tmp_move;
 static int          tmp_resize;
 static int          tmp_geominfo;
 static char         tmp_update_while_moving;
+static char         tmp_sync_request;
 
 static void
 CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -39,6 +40,7 @@ CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.movres.mode_resize = tmp_resize;
 	Conf.movres.mode_info = tmp_geominfo;
 	Conf.movres.update_while_moving = tmp_update_while_moving;
+	Conf.movres.enable_sync_request = tmp_sync_request;
      }
    autosave();
 }
@@ -52,6 +54,7 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    tmp_resize = Conf.movres.mode_resize;
    tmp_geominfo = Conf.movres.mode_info;
    tmp_update_while_moving = Conf.movres.update_while_moving;
+   tmp_sync_request = Conf.movres.enable_sync_request;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
@@ -159,6 +162,11 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Update window while moving"));
    DialogItemCheckButtonSetPtr(di, &tmp_update_while_moving);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Synchronize move/resize with application"));
+   DialogItemCheckButtonSetPtr(di, &tmp_sync_request);
 }
 
 const DialogDef     DlgMoveResize = {

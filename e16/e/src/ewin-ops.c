@@ -466,7 +466,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
      {
 	configure = 1;
 #if USE_XSYNC
-	if (Conf.testing.use_sync)
+	if (Conf.movres.enable_sync_request)
 	   EwinSyncRequestSend(ewin);
 #endif
      }
@@ -514,7 +514,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	if (!resize)
 	   ICCCM_Configure(ewin);
 #if USE_XSYNC
-	if (Conf.testing.use_sync)
+	if (Conf.movres.enable_sync_request)
 	   EwinSyncRequestWait(ewin);
 #endif
      }
