@@ -482,8 +482,9 @@ _cb_xsessions_foreach(void *list_data, void *data)
    struct _Entrance_Config_And_Path *ep = data;
    Entrance_Config *e;
    Entrance_X_Session *exs = NULL;
-   char *command = NULL;
-
+   Ecore_List *commands;
+   char *command;
+   char path[PATH_MAX];
 
    if (!filename)
       return;
@@ -491,8 +492,6 @@ _cb_xsessions_foreach(void *list_data, void *data)
    e = ep->e;
    if (!e)
       return;
-
-   char path[PATH_MAX];
 
    snprintf(path, PATH_MAX, "%s/%s", ep->path, filename);
 
@@ -503,7 +502,18 @@ _cb_xsessions_foreach(void *list_data, void *data)
 
    /* Get the full command. */
    /* We are not passing a list of files, so we only expect one command. */
-   command = ecore_desktop_get_command(ed, NULL, 1);
+   commands = ecore_desktop_get_command(ed, NULL, 1);
+   if (commands)
+   {
+      char *temp;
+      
+      temp = ecore_list_first(commands);
+      if (temp)
+	command = strdup(temp);
+      ecore_list_destroy(commands);
+   }
+   if (!command)
+     return;
    if ((exs = entrance_x_session_new(ed->name, ed->icon, command)))
    {
       /* Sessions found earlier in the FDO search sequence override those
