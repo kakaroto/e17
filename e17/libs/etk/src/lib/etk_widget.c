@@ -1176,9 +1176,11 @@ void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name, E
    if (!widget || !widget->theme_object)
       return;
    edje_object_signal_emit(widget->theme_object, signal_name, "etk");
-   widget->need_theme_size_recalc = ETK_TRUE;
    if (size_recalc)
+   {
+      widget->need_theme_size_recalc = ETK_TRUE;
       etk_widget_size_recalc_queue(widget);
+   }
 }
 
 /**
@@ -2734,6 +2736,7 @@ static void _etk_widget_theme_min_size_calc(Etk_Widget *widget, int *w, int *h, 
          }
          
          /* Calculate the min size of the theme-object */
+         edje_object_message_signal_process(widget->theme_object);
          edje_object_size_min_calc(widget->theme_object, &min_calc_width, &min_calc_height);
          edje_object_size_min_get(widget->theme_object, &min_get_width, &min_get_height);
          widget->theme_min_size.w = ETK_MAX(min_calc_width, min_get_width);

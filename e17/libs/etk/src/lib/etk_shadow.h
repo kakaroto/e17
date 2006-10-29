@@ -57,6 +57,9 @@ struct Etk_Shadow
    int offset_y;
    int radius;
    
+   int border_width;
+   Etk_Color border_color;
+   
    Etk_Bool shadow_need_recalc;
    Etk_Bool border_need_recalc;
    
@@ -72,6 +75,11 @@ void etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_
 void etk_shadow_shadow_get(Etk_Shadow *shadow, Etk_Shadow_Type *type, Etk_Shadow_Edges *edges, int *radius, int *offset_x, int *offset_y, int *opacity);
 void etk_shadow_shadow_color_set(Etk_Shadow *shadow, int r, int g, int b);
 void etk_shadow_shadow_color_get(Etk_Shadow *shadow, int *r, int *g, int *b);
+
+void etk_shadow_border_set(Etk_Shadow *shadow, int border_width);
+int  etk_shadow_border_get(Etk_Shadow *shadow);
+void etk_shadow_border_color_set(Etk_Shadow *shadow, int r, int g, int b, int a);
+void etk_shadow_border_color_get(Etk_Shadow *shadow, int *r, int *g, int *b, int *a);
 
 /** @} */
 

@@ -35,7 +35,14 @@ typedef enum Etk_Shadow_Object_Id
 enum Etk_Shadow_Property_Id
 {
    ETK_SHADOW_SHADOW_TYPE_PROPERTY,
-   ETK_SHADOW_HAS_BORDER_PROPERTY,
+   ETK_SHADOW_SHADOW_EDGES_PROPERTY,
+   ETK_SHADOW_SHADOW_COLOR_PROPERTY,
+   ETK_SHADOW_SHADOW_OFFSET_X_PROPERTY,
+   ETK_SHADOW_SHADOW_OFFSET_Y_PROPERTY,
+   ETK_SHADOW_SHADOW_RADIUS_PROPERTY,
+   ETK_SHADOW_SHADOW_OPACITY_PROPERTY,
+   ETK_SHADOW_BORDER_PROPERTY,
+   ETK_SHADOW_BORDER_COLOR_PROPERTY
 };
 
 static void _etk_shadow_constructor(Etk_Shadow *shadow);
@@ -46,6 +53,7 @@ static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 static void _etk_shadow_realized_cb(Etk_Object *object, void *data);
 static void _etk_shadow_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow);
+static void _etk_shadow_border_recalc(Etk_Shadow *shadow);
 static Etk_Bool _etk_shadow_edge_visible(Etk_Shadow *shadow, Etk_Shadow_Object_Id object_id);
 
 static int _etk_shadow_gaussian_values[] = {
@@ -109,11 +117,25 @@ Etk_Type *etk_shadow_type_get()
    {
       shadow_type = etk_type_new("Etk_Shadow", ETK_BIN_TYPE, sizeof(Etk_Shadow),
          ETK_CONSTRUCTOR(_etk_shadow_constructor), NULL);
-
+      
       etk_type_property_add(shadow_type, "shadow_type", ETK_SHADOW_SHADOW_TYPE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SHADOW_NONE));
-      etk_type_property_add(shadow_type, "has_border", ETK_SHADOW_HAS_BORDER_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(shadow_type, "shadow_edges", ETK_SHADOW_SHADOW_EDGES_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SHADOW_ALL));
+      etk_type_property_add(shadow_type, "shadow_color", ETK_SHADOW_SHADOW_COLOR_PROPERTY,
+         ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
+      etk_type_property_add(shadow_type, "shadow_offset_x", ETK_SHADOW_SHADOW_OFFSET_X_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
+      etk_type_property_add(shadow_type, "shadow_offset_y", ETK_SHADOW_SHADOW_OFFSET_Y_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
+      etk_type_property_add(shadow_type, "shadow_radius", ETK_SHADOW_SHADOW_RADIUS_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(20));
+      etk_type_property_add(shadow_type, "shadow_opacity", ETK_SHADOW_SHADOW_OPACITY_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(155));
+      etk_type_property_add(shadow_type, "border", ETK_SHADOW_BORDER_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
+      etk_type_property_add(shadow_type, "border_color", ETK_SHADOW_BORDER_COLOR_PROPERTY,
+         ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
       
       shadow_type->property_set = _etk_shadow_property_set;
       shadow_type->property_get = _etk_shadow_property_get;
@@ -131,26 +153,67 @@ Etk_Widget *etk_shadow_new(void)
    return etk_widget_new(ETK_SHADOW_TYPE, NULL);
 }
 
-/* TODOC */
+/**
+ * @brief Sets the different settings of the shadow cast by the shadow container
+ * @param shadow a shadow container
+ * @param type the type of shadow to cast: ETK_SHADOW_NONE to cast no shadow, ETK_SHADOW_OUTSIDE to cast the shadow
+ * outside of the container, ETK_SHADOW_INSIDE to cast the shadow inside the container on the child.
+ * @param edges the edges of the container where the shadow should be cast (ETK_SHADOW_ALL most of the time)
+ * @param radius the blur radius of the shadow to cast, from 0 to 255
+ * @param offset_x the horizontal offset of the shadow
+ * @param offset_y the vertical offset of the shadow
+ * @param opacity the opacity of the shadow to cast, from 0 (totally transparent) to 255 (totally opaque)
+ */
 void etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_Edges edges, int radius, int offset_x, int offset_y, int opacity)
 {
    if (!shadow)
       return;
    
-   shadow->type = type;
-   shadow->edges = edges;
-   shadow->radius = ETK_CLAMP(radius, 0, 255);
-   shadow->offset_x = offset_x;
-   shadow->offset_y = offset_y;
-   shadow->color.a = ETK_CLAMP(opacity, 0, 255);
-   
-   /* TODO: notify */
+   if (shadow->type != type)
+   {
+      shadow->type = type;
+      etk_object_notify(ETK_OBJECT(shadow), "shadow_type");
+   }
+   if (shadow->edges != edges)
+   {
+      shadow->edges = edges;
+      etk_object_notify(ETK_OBJECT(shadow), "shadow_edges");
+   }
+   if (shadow->radius != ETK_CLAMP(radius, 0, 255))
+   {
+      shadow->radius = ETK_CLAMP(radius, 0, 255);
+      etk_object_notify(ETK_OBJECT(shadow), "shadow_radius");
+   }
+   if (shadow->offset_x != offset_x)
+   {
+      shadow->offset_x = offset_x;
+      etk_object_notify(ETK_OBJECT(shadow), "shadow_offset_x");
+   }
+   if (shadow->offset_y != offset_y)
+   {
+      shadow->offset_y = offset_y;
+      etk_object_notify(ETK_OBJECT(shadow), "shadow_offset_y");
+   }
+   if (shadow->color.a != ETK_CLAMP(opacity, 0, 255))
+   {
+      shadow->color.a = ETK_CLAMP(opacity, 0, 255);
+      etk_object_notify(ETK_OBJECT(shadow), "shadow_opacity");
+   }
    
    shadow->shadow_need_recalc = ETK_TRUE;
    etk_widget_size_recalc_queue(ETK_WIDGET(shadow));
 }
 
-/* TODOC */
+/**
+ * @brief Gets the different settings of the shadow cast by the shadow container
+ * @param shadow a shadow container
+ * @param type the location where to store the type of the cast shadow
+ * @param edges the location where to store the edges where the shadow is cast
+ * @param radius the location where to store the blur radius of the cast shadow
+ * @param offset_x the location where to store the horizontal offset of the shadow
+ * @param offset_y the location where to store the vertical offset of the shadow
+ * @param opacity the location where to store the opacity of the shadow
+ */
 void etk_shadow_shadow_get(Etk_Shadow *shadow, Etk_Shadow_Type *type, Etk_Shadow_Edges *edges, int *radius, int *offset_x, int *offset_y, int *opacity)
 {
    if (!shadow)
@@ -167,9 +230,9 @@ void etk_shadow_shadow_get(Etk_Shadow *shadow, Etk_Shadow_Type *type, Etk_Shadow
 /**
  * @brief Sets the color of the shadow
  * @param shadow a shadow container
- * @param r the red component of the color to set (from 0 to 255)
- * @param g the green component of the color to set (from 0 to 255)
- * @param b the blue component of the color to set (from 0 to 255)
+ * @param r the red component of the color to set, from 0 to 255
+ * @param g the green component of the color to set, from 0 to 255
+ * @param b the blue component of the color to set, from 0 to 255
  */
 void etk_shadow_shadow_color_set(Etk_Shadow *shadow, int r, int g, int b)
 {
@@ -178,16 +241,21 @@ void etk_shadow_shadow_color_set(Etk_Shadow *shadow, int r, int g, int b)
    if (!shadow)
       return;
    
-   shadow->color.r = r;
-   shadow->color.g = g;
-   shadow->color.b = b;
+   shadow->color.r = ETK_CLAMP(r, 0, 255);
+   shadow->color.g = ETK_CLAMP(g, 0, 255);
+   shadow->color.b = ETK_CLAMP(b, 0, 255);
    
    evas_color_argb_premul(shadow->color.a, &r, &g, &b);
    for (i = 0; i < 4; i++)
    {
       if (shadow->shadow_objs[i])
-         evas_object_color_set(shadow->shadow_objs[i], r, g, b, shadow->color.a);
+      {
+         evas_object_color_set(shadow->shadow_objs[i], shadow->color.r,
+            shadow->color.g, shadow->color.b, shadow->color.a);
+      }
    }
+   
+   etk_object_notify(ETK_OBJECT(shadow), "shadow_color");
 }
 
 /**
@@ -207,6 +275,87 @@ void etk_shadow_shadow_color_get(Etk_Shadow *shadow, int *r, int *g, int *b)
    if (b)   *b = shadow->color.b;
 }
 
+/**
+ * @brief Sets the width of the border of the shadow container
+ * @param shadow a shadow container
+ * @param border_width the width of the border. If it is <= 0, the border is disabled
+ */
+void etk_shadow_border_set(Etk_Shadow *shadow, int border_width)
+{
+   if (!shadow || shadow->border_width == ETK_MAX(0, border_width))
+      return;
+   
+   shadow->border_width = ETK_MAX(0, border_width);
+   etk_object_notify(ETK_OBJECT(shadow), "border");
+   
+   shadow->border_need_recalc = ETK_TRUE;
+   etk_widget_size_recalc_queue(ETK_WIDGET(shadow));
+}
+
+/**
+ * @brief Gets the width of the border of the shadow container
+ * @param shadow a shadow container
+ * @return Returns the width of the border of the shadow container, 0 meaning it has no border
+ */
+int etk_shadow_border_get(Etk_Shadow *shadow)
+{
+   if (!shadow)
+      return 0;
+   return shadow->border_width;
+}
+
+/**
+ * @brief Sets the color of the border of the shadow container. The color has to be pre-multiplied
+ * (i.e. the @a r, @a g, @a b components have to be multiplied by @a a and divided by 255)
+ * @param shadow a shadow container
+ * @param r the red component of the border, from 0 to 255
+ * @param g the green component of the border, from 0 to 255
+ * @param b the blue component of the border, from 0 to 255
+ * @param a the alpha component of the border, from 0 to 255
+ */
+void etk_shadow_border_color_set(Etk_Shadow *shadow, int r, int g, int b, int a)
+{
+   int i;
+   
+   if (!shadow)
+      return;
+   
+   shadow->border_color.r = ETK_CLAMP(r, 0, 255);
+   shadow->border_color.g = ETK_CLAMP(g, 0, 255);
+   shadow->border_color.b = ETK_CLAMP(b, 0, 255);
+   shadow->border_color.a = ETK_CLAMP(a, 0, 255);
+   
+   for (i = 0; i < 4; i++)
+   {
+      if (shadow->border_objs[i])
+      {
+         evas_object_color_set(shadow->border_objs[i], shadow->border_color.r,
+            shadow->border_color.g, shadow->border_color.b, shadow->border_color.a);
+      }
+   }
+   
+   etk_object_notify(ETK_OBJECT(shadow), "border_color");
+}
+
+/**
+ * @brief Gets the color of the border of the shadow container
+ * @param shadow a shadow container
+ * @param r the location where to store the red component of the border
+ * @param g the location where to store the green component of the border
+ * @param b the location where to store the blue component of the border
+ * @param a the location where to store the alpha component of the border
+ */
+void etk_shadow_border_color_get(Etk_Shadow *shadow, int *r, int *g, int *b, int *a)
+{
+   if (!shadow)
+      return;
+   
+   if (r)   *r = shadow->border_color.r;
+   if (g)   *g = shadow->border_color.g;
+   if (b)   *b = shadow->border_color.b;
+   if (a)   *a = shadow->border_color.a;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -221,15 +370,20 @@ static void _etk_shadow_constructor(Etk_Shadow *shadow)
    if (!shadow)
       return;
    
-   shadow->type = ETK_SHADOW_OUTSIDE;
+   shadow->type = ETK_SHADOW_NONE;
    shadow->edges = ETK_SHADOW_ALL;
    shadow->offset_x = 0;
    shadow->offset_y = 0;
-   shadow->radius = 30;
+   shadow->radius = 20;
    shadow->color.r = 0;
    shadow->color.g = 0;
    shadow->color.b = 0;
-   shadow->color.a = 180;
+   shadow->color.a = 155;
+   shadow->border_width = 0;
+   shadow->border_color.r = 0;
+   shadow->border_color.g = 0;
+   shadow->border_color.b = 0;
+   shadow->border_color.a = 255;
    
    shadow->shadow_need_recalc = ETK_FALSE;
    shadow->border_need_recalc = ETK_FALSE;
@@ -259,8 +413,31 @@ static void _etk_shadow_property_set(Etk_Object *object, int property_id, Etk_Pr
    switch (property_id)
    {
       case ETK_SHADOW_SHADOW_TYPE_PROPERTY:
+         etk_shadow_shadow_set(shadow, etk_property_value_int_get(value), shadow->edges,
+            shadow->radius, shadow->offset_x, shadow->offset_y, shadow->color.a);
          break;
-      case ETK_SHADOW_HAS_BORDER_PROPERTY:
+      case ETK_SHADOW_SHADOW_EDGES_PROPERTY:
+         etk_shadow_shadow_set(shadow, shadow->type, etk_property_value_int_get(value),
+            shadow->radius, shadow->offset_x, shadow->offset_y, shadow->color.a);
+         break;
+      case ETK_SHADOW_SHADOW_OFFSET_X_PROPERTY:
+         etk_shadow_shadow_set(shadow, shadow->type, shadow->edges, shadow->radius,
+            etk_property_value_int_get(value), shadow->offset_y, shadow->color.a);
+         break;
+      case ETK_SHADOW_SHADOW_OFFSET_Y_PROPERTY:
+         etk_shadow_shadow_set(shadow, shadow->type, shadow->edges, shadow->radius,
+            shadow->offset_x, etk_property_value_int_get(value), shadow->color.a);
+         break;
+      case ETK_SHADOW_SHADOW_RADIUS_PROPERTY:
+         etk_shadow_shadow_set(shadow, shadow->type, shadow->edges, etk_property_value_int_get(value),
+            shadow->offset_x, shadow->offset_y, shadow->color.a);
+         break;
+      case ETK_SHADOW_SHADOW_OPACITY_PROPERTY:
+         etk_shadow_shadow_set(shadow, shadow->type, shadow->edges, shadow->radius,
+            shadow->offset_x, shadow->offset_y, etk_property_value_int_get(value));
+         break;
+      case ETK_SHADOW_BORDER_PROPERTY:
+         etk_shadow_border_set(shadow, etk_property_value_int_get(value));
          break;
       default:
          break;
@@ -278,8 +455,25 @@ static void _etk_shadow_property_get(Etk_Object *object, int property_id, Etk_Pr
    switch (property_id)
    {
       case ETK_SHADOW_SHADOW_TYPE_PROPERTY:
+         etk_property_value_int_set(value, shadow->type);
          break;
-      case ETK_SHADOW_HAS_BORDER_PROPERTY:
+      case ETK_SHADOW_SHADOW_EDGES_PROPERTY:
+         etk_property_value_int_set(value, shadow->edges);
+         break;
+      case ETK_SHADOW_SHADOW_OFFSET_X_PROPERTY:
+         etk_property_value_int_set(value, shadow->offset_x);
+         break;
+      case ETK_SHADOW_SHADOW_OFFSET_Y_PROPERTY:
+         etk_property_value_int_set(value, shadow->offset_y);
+         break;
+      case ETK_SHADOW_SHADOW_RADIUS_PROPERTY:
+         etk_property_value_int_set(value, shadow->radius);
+         break;
+      case ETK_SHADOW_SHADOW_OPACITY_PROPERTY:
+         etk_property_value_int_set(value, shadow->color.a);
+         break;
+      case ETK_SHADOW_BORDER_PROPERTY:
+         etk_property_value_int_set(value, shadow->border_width);
          break;
       default:
          break;
@@ -291,6 +485,7 @@ static void _etk_shadow_size_request(Etk_Widget *widget, Etk_Size *size)
 {
    Etk_Shadow *shadow;
    Etk_Widget *child;
+   int container_width;
 
    if (!(shadow = ETK_SHADOW(widget)) || !size)
       return;
@@ -305,7 +500,10 @@ static void _etk_shadow_size_request(Etk_Widget *widget, Etk_Size *size)
       size->w = 0;
       size->h = 0;
    }
-   /* TODO: add border width */
+   
+   container_width = etk_container_border_width_get(ETK_CONTAINER(shadow));
+   size->w += 2 * (shadow->border_width + container_width);
+   size->h += 2 * (shadow->border_width + container_width);
 
    if ((child = etk_bin_child_get(ETK_BIN(shadow))))
    {
@@ -322,6 +520,7 @@ static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Shadow *shadow;
    Etk_Widget *child;
+   Evas_Object *obj;
 
    if (!(shadow = ETK_SHADOW(widget)))
       return;
@@ -331,11 +530,10 @@ static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    
    if (shadow->shadow_need_recalc)
       _etk_shadow_shadow_recalc(shadow);
-   /* TODO:
    if (shadow->border_need_recalc)
-      _etk_shadow_border_recalc(shadow);*/
+      _etk_shadow_border_recalc(shadow);
    
-   /* Render the shadow objects */
+   /* Render the shadow */
    if (shadow->type != ETK_SHADOW_NONE)
    {
       Etk_Geometry geometries[4];
@@ -413,14 +611,14 @@ static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          }
       }
       
-      /* Render the object */
+      /* Render the shadow objects */
       for (i = 0; i < 4; i++)
       {
-         if (shadow->shadow_objs[i])
+         if ((obj = shadow->shadow_objs[i]))
          {
-            evas_object_move(shadow->shadow_objs[i], geometries[i].x, geometries[i].y);
-            evas_object_resize(shadow->shadow_objs[i], geometries[i].w, geometries[i].h);
-            evas_object_image_fill_set(shadow->shadow_objs[i], 0, 0, geometries[i].w, geometries[i].h);
+            evas_object_move(obj, geometries[i].x, geometries[i].y);
+            evas_object_resize(obj, geometries[i].w, geometries[i].h);
+            evas_object_image_fill_set(obj, 0, 0, geometries[i].w, geometries[i].h);
          }
       }
       
@@ -433,10 +631,51 @@ static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       }
    }
    
-   /* TODO: render border */
+   
+   /* Render the border */
+   if (shadow->border_width > 0)
+   {
+      if ((obj = shadow->border_objs[ETK_SHADOW_LEFT_OBJECT]))
+      {
+         evas_object_move(obj, geometry.x, geometry.y);
+         evas_object_resize(obj, shadow->border_width, geometry.h);
+      }
+      if ((obj = shadow->border_objs[ETK_SHADOW_RIGHT_OBJECT]))
+      {
+         evas_object_move(obj, geometry.x + geometry.w - shadow->border_width, geometry.y);
+         evas_object_resize(obj, shadow->border_width, geometry.h);
+      }
+      if ((obj = shadow->border_objs[ETK_SHADOW_TOP_OBJECT]))
+      {
+         evas_object_move(obj, geometry.x + shadow->border_width, geometry.y);
+         evas_object_resize(obj, geometry.w - (2 * shadow->border_width), shadow->border_width);
+      }
+      if ((obj = shadow->border_objs[ETK_SHADOW_BOTTOM_OBJECT]))
+      {
+         evas_object_move(obj, geometry.x + shadow->border_width, geometry.y + geometry.h - shadow->border_width);
+         evas_object_resize(obj, geometry.w - (2 * shadow->border_width), shadow->border_width);
+      }
+      
+      geometry.x += shadow->border_width;
+      geometry.y += shadow->border_width;
+      geometry.w -= 2 * shadow->border_width;
+      geometry.h -= 2 * shadow->border_width;
+   }
 
+   
+   /* Allocate size for the child */
    if ((child = etk_bin_child_get(ETK_BIN(shadow))))
+   {
+      int container_border;
+      
+      container_border = etk_container_border_width_get(ETK_CONTAINER(shadow));
+      geometry.x += container_border;
+      geometry.y += container_border;
+      geometry.w -= 2 * container_border;
+      geometry.h -= 2 * container_border;
+      
       etk_widget_size_allocate(child, geometry);
+   }
 }
 
 /**************************
@@ -501,7 +740,9 @@ static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow)
    Etk_Size shadow_size;
    Etk_Color color;
    
-   if (!shadow || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(shadow))))
+   if (!shadow || !shadow->shadow_need_recalc)
+      return;
+   if (!(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(shadow))))
       return;
    
    for (i = 0; i < 4; i++)
@@ -510,11 +751,6 @@ static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow)
       {
          evas_object_del(shadow->shadow_objs[i]);
          shadow->shadow_objs[i] = NULL;
-      }
-      if (shadow->border_objs[i])
-      {
-         evas_object_del(shadow->border_objs[i]);
-         shadow->border_objs[i] = NULL;
       }
    }
    
@@ -544,6 +780,9 @@ static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow)
    
    for (i = 0; i < 4; i++)
    {
+      if (!_etk_shadow_edge_visible(shadow, i))
+         continue;
+      
       prev_id = (i == 0) ? 3 : (i - 1);
       next_id = (i + 1) % 4;
       
@@ -670,6 +909,42 @@ static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow)
    shadow->shadow_need_recalc = ETK_FALSE;
 }
 
+/* Creates the border objects of the shadow container */
+static void _etk_shadow_border_recalc(Etk_Shadow *shadow)
+{
+   Evas *evas;
+   Evas_Object *obj;
+   int i;
+   
+   if (!shadow || !shadow->border_need_recalc)
+      return;
+   if (!(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(shadow))))
+      return;
+   
+   /* Create or destroy the border objects */
+   for (i = 0; i < 4; i++)
+   {
+      if (shadow->border_objs[i] && shadow->border_width <= 0)
+      {
+         evas_object_del(shadow->border_objs[i]);
+         shadow->border_objs[i] = NULL;
+      }
+      else if (!shadow->border_objs[i] && shadow->border_width > 0)
+      {
+         obj = evas_object_rectangle_add(evas);
+         shadow->border_objs[i] = obj;
+         etk_widget_member_object_add(ETK_WIDGET(shadow), obj);
+         evas_object_pass_events_set(obj, 1);
+         evas_object_color_set(obj, shadow->border_color.r, shadow->border_color.g,
+            shadow->border_color.b, shadow->border_color.a);
+         evas_object_clip_set(obj, shadow->clip);
+         evas_object_show(obj);
+      }
+   }
+   
+   shadow->border_need_recalc = ETK_FALSE;
+}
+
 /* Gets whether the given edge is visible */
 static Etk_Bool _etk_shadow_edge_visible(Etk_Shadow *shadow, Etk_Shadow_Object_Id object_id)
 {
@@ -711,7 +986,7 @@ static Etk_Bool _etk_shadow_edge_visible(Etk_Shadow *shadow, Etk_Shadow_Object_I
 /**
  * @addtogroup Etk_Shadow
  *
- * Description
+ * TODOC: Description
  *
  * \par Object Hierarchy:
  * - Etk_Object

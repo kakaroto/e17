@@ -6,6 +6,7 @@
       description { \
          state: "default" 0.0; \
          color: 255 255 255 255; \
+         fixed: 1 1; \
          rel1 { \
             offset: 3 3; \
             to: rect_part; \
@@ -25,6 +26,7 @@
          color: 255 255 255 0; \
          align: 0.0 0.0; \
          max: 34 13; \
+         fixed: 1 1; \
          rel1 { \
             relative: 0.0 0.0; \
             offset: 2 2; \
@@ -137,6 +139,7 @@
          color: 255 255 255 0; \
          align: 1.0 1.0; \
          max: 34 13; \
+         fixed: 1 1; \
          rel1 { \
             relative: 0.0 0.0; \
             offset: 2 2; \

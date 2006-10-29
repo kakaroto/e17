@@ -121,6 +121,11 @@ static Etk_Test_Example _etk_test_examples[] =
       "Embed Widget",
       etk_test_embed_window_create,
       ETK_TEST_CONTAINER
+   },
+   {
+      "Shadow",
+      etk_test_shadow_window_create,
+      ETK_TEST_MISC
    }
 };
 static int _etk_test_num_examples = sizeof(_etk_test_examples) / sizeof (_etk_test_examples[0]);

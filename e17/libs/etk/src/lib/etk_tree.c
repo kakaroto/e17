@@ -2186,6 +2186,8 @@ static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data)
    
    if (!(tree = ETK_TREE(object)))
       return;
+   
+   etk_widget_theme_signal_emit(tree->scrolled_view, "etk,state,focused", ETK_FALSE);
    etk_widget_theme_signal_emit(tree->grid, "etk,state,focused", ETK_FALSE);
 }
 
@@ -2196,6 +2198,8 @@ static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data)
    
    if (!(tree = ETK_TREE(object)))
       return;
+   
+   etk_widget_theme_signal_emit(tree->scrolled_view, "etk,state,unfocused", ETK_FALSE);
    etk_widget_theme_signal_emit(tree->grid, "etk,state,unfocused", ETK_FALSE);
 }
 
