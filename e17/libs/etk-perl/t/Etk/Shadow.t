@@ -24,5 +24,18 @@ ok(
   $sp[5] == 5) , "ShadowSet/Get");
 
 
+$s->BorderSet(10);
+
+is($s->BorderGet(), 10, "Border Set/Get");
+
+$s->BorderColorSet(10, 20, 30, 40);
+@sp = $s->BorderColorGet();
+
+ok(
+ ($sp[0] == 10 &&
+  $sp[1] == 20 &&
+  $sp[2] == 30 &&
+  $sp[3] == 40) , "BorderColorSet/Get");
+
 
 

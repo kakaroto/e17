@@ -5401,6 +5401,42 @@ etk_shadow_shadow_color_get(shadow)
 	PUSHs(sv_2mortal(newSViv(g)));
 	PUSHs(sv_2mortal(newSViv(b)));
 
+void 
+etk_shadow_border_set(shadow, border_width)
+	Etk_Shadow *shadow
+	int border_width
+	ALIAS:
+	BorderSet=1
+
+int
+etk_shadow_border_get(shadow)
+	Etk_Shadow * shadow
+	ALIAS:
+	BorderGet=1
+
+void
+etk_shadow_border_color_set(shadow, r, g, b, a)
+	Etk_Shadow *shadow
+	int r
+	int g
+	int b
+	int a
+	ALIAS:
+	BorderColorSet=1
+
+void
+etk_shadow_border_color_get(shadow)
+	Etk_Shadow *shadow
+	ALIAS:
+	BorderColorGet=1
+	PPCODE:
+	int r, g, b, a;
+	etk_shadow_border_color_get(shadow, &r, &g, &b, &a);
+	EXTEND(SP, 4);
+	PUSHs(sv_2mortal(newSViv(r)));
+	PUSHs(sv_2mortal(newSViv(g)));
+	PUSHs(sv_2mortal(newSViv(b)));
+	PUSHs(sv_2mortal(newSViv(a)));
 
 
 MODULE = Etk::Window	PACKAGE = Etk::Window	PREFIX = etk_window_
