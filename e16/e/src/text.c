@@ -307,6 +307,7 @@ _xft_Load(TextState * ts, int fallback __UNUSED__)
       return -1;
    fdc->font = font;
    ts->fdc = fdc;
+   ts->need_utf8 = 1;
    ts->type = FONT_TYPE_XFT;
    ts->ops = &FontOpsXft;
    return 0;
@@ -329,7 +330,7 @@ _xft_TextSize(TextState * ts, const char *text, int len,
 
    if (len == 0)
       len = strlen(text);
-   XftTextExtents8(disp, fdc->font, (XftChar8 *) text, len, &gi);
+   XftTextExtentsUtf8(disp, fdc->font, (const XftChar8 *)text, len, &gi);
    *width = gi.xOff;
    *height = fdc->font->height;
    *ascent = fdc->font->ascent;
@@ -345,8 +346,8 @@ _xft_TextDraw(TextState * ts, int x, int y, const char *text, int len)
 {
    FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
 
-   XftDrawString8(fdc->xftd, &(fdc->xftc), fdc->font, x, y, (XftChar8 *) text,
-		  len);
+   XftDrawStringUtf8(fdc->xftd, &(fdc->xftc), fdc->font, x, y,
+		     (const XftChar8 *)text, len);
 }
 
 static int
