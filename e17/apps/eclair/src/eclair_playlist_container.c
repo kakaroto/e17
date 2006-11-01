@@ -79,11 +79,13 @@ void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char
    color_string = edje_file_data_get(entry_theme_path, "normal_entry_bg_color");
    if (!color_string || sscanf(color_string, "%d %d %d %d", &color->r, &color->g, &color->b, &color->a) != 4)
    {
-      color->r = 255;
-      color->g = 255;
-      color->b = 255;
+      color->r = 0;
+      color->g = 0;
+      color->b = 0;
       color->a = 0;
    }
+   else
+      evas_color_argb_premul(color->a, &color->r, &color->g, &color->b);
    free(color_string);
 
    color = &playlist_container->normal_entry_fg_color;
@@ -95,6 +97,8 @@ void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char
       color->b = 255;
       color->a = 255;
    }
+   else
+      evas_color_argb_premul(color->a, &color->r, &color->g, &color->b);
    free(color_string);
 
    color = &playlist_container->selected_entry_bg_color;
@@ -107,6 +111,8 @@ void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char
       color->b = color2->b;
       color->a = color2->a;
    }
+   else
+      evas_color_argb_premul(color->a, &color->r, &color->g, &color->b);
    free(color_string);
 
    color = &playlist_container->selected_entry_fg_color;
@@ -119,6 +125,8 @@ void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char
       color->b = color2->b;
       color->a = color2->a;
    }
+   else
+      evas_color_argb_premul(color->a, &color->r, &color->g, &color->b);
    free(color_string);
 
    color = &playlist_container->current_entry_bg_color;
@@ -131,6 +139,8 @@ void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char
       color->b = color2->b;
       color->a = color2->a;
    }
+   else
+      evas_color_argb_premul(color->a, &color->r, &color->g, &color->b);
    free(color_string);
 
    color = &playlist_container->current_entry_fg_color;
@@ -143,6 +153,8 @@ void eclair_playlist_container_set_entry_theme_path(Evas_Object *obj, const char
       color->b = color2->b;
       color->a = color2->a;
    }
+   else
+      evas_color_argb_premul(color->a, &color->r, &color->g, &color->b);
    free(color_string);
 
    evas_object_del(entry);
