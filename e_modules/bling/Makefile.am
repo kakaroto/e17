@@ -7,7 +7,9 @@ module_icon.png \
 module.desktop \
 module.edj
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) \
+e_modules-bling.spec \
+compmgr.h
 
 # the module .so file
 INCLUDES               = -I. \
