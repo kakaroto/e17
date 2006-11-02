@@ -4073,3 +4073,21 @@ Fix applying matches to internal client windows in certain situations.
 Fix potential segv when showing menu.
 Fix dialog image rendering in certain situations.
 
+
+-------------------------------------------------------------------------------
+
+Thu Nov  2 21:12:57 CET 2006
+(Kim)
+
+--- 0.16.8.5 0.01 ---
+Correct initial sizing of dialog window.
+Refactor font drawing code.
+Disable text rendering using XDrawString(16).
+- The code should never come in play anyway because of the "fixed" fallback
+  in the XCreateFontSet case.
+Add Xft support.
+Japanese translation update (Yasufumi Haga).
+No need to restart when changing override-redirect window opacity.
+Center unplaced dialogs on "parent"(if transient) or root.
+Add _NET_WM_SYNC_REQUEST support.
+
