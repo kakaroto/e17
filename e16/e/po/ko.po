@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-14 10:45+0200\n"
+"POT-Creation-Date: 2006-10-29 22:06+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -20,7 +20,7 @@ msgid "ActionClass Error!"
 msgstr "TextClass 오류!"
 
 #: src/aclass.c:206 src/backgrounds.c:241 src/borders.c:647 src/buttons.c:192
-#: src/cmclass.c:84 src/cursors.c:126 src/iclass.c:331 src/tclass.c:104
+#: src/cmclass.c:84 src/cursors.c:126 src/iclass.c:331 src/tclass.c:98
 #: src/tooltips.c:139
 #, c-format
 msgid "%u references remain\n"
@@ -29,7 +29,7 @@ msgstr "%u개의 참조가 남아있습니다\n"
 #: src/aclass.c:291 src/backgrounds.c:1107 src/borders.c:1083
 #: src/borders.c:1206 src/buttons.c:731 src/cmclass.c:201 src/config.c:246
 #: src/cursors.c:177 src/iclass.c:519 src/menus.c:1717 src/menus.c:1827
-#: src/slideout.c:425 src/tclass.c:261 src/tooltips.c:176
+#: src/slideout.c:425 src/tclass.c:255 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -38,7 +38,7 @@ msgstr "CONFIG: \"%s\"에 있는 더 많은 데이타는 무시합니다\n"
 #: src/aclass.c:299 src/backgrounds.c:1115 src/borders.c:1089
 #: src/borders.c:1212 src/buttons.c:739 src/cmclass.c:209 src/config.c:254
 #: src/cursors.c:183 src/iclass.c:524 src/menus.c:1722 src/menus.c:1833
-#: src/slideout.c:431 src/tclass.c:267 src/tooltips.c:182
+#: src/slideout.c:431 src/tclass.c:261 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
@@ -724,20 +724,20 @@ msgstr ""
 "인라이튼먼트 가상 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/dialog.c:883 src/dialog.c:2166 src/dialog.c:2197 src/events.c:78
+#: src/dialog.c:885 src/dialog.c:2169 src/dialog.c:2200 src/events.c:78
 #: src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "확인"
 
-#: src/dialog.c:888
+#: src/dialog.c:890
 msgid "Apply"
 msgstr "적용"
 
-#: src/dialog.c:895 src/pager.c:994 config/strings.c:30 config/strings.c:166
+#: src/dialog.c:897 src/pager.c:994 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "닫기"
 
-#: src/dialog.c:2197
+#: src/dialog.c:2200
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
@@ -1565,7 +1565,7 @@ msgstr "E 대화상자:"
 msgid "Tooltips:"
 msgstr "도움말:"
 
-#: src/mod-trans.c:164 src/settings.c:69 src/settings.c:74 src/settings.c:290
+#: src/mod-trans.c:164 src/settings.c:72 src/settings.c:77 src/settings.c:298
 msgid "Opaque"
 msgstr "불투명"
 
@@ -1742,11 +1742,11 @@ msgstr ""
 "\n"
 "... 그러길 바랍니다.\n"
 
-#: src/session.c:649
+#: src/session.c:651
 msgid "Are you sure?"
 msgstr "확실한가요?"
 
-#: src/session.c:651
+#: src/session.c:653
 msgid ""
 "\n"
 "\n"
@@ -1760,48 +1760,48 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:661
+#: src/session.c:663
 #, fuzzy
 msgid "  Yes, Shut Down  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:663
+#: src/session.c:665
 #, fuzzy
 msgid "  Yes, Reboot  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:666
+#: src/session.c:668
 msgid "  Yes, Log Out  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:668
+#: src/session.c:670
 msgid "  No  "
 msgstr "  아니오  "
 
-#: src/session.c:796
+#: src/session.c:798
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:801
+#: src/session.c:803
 #, fuzzy
 msgid "Enable Logout Dialog"
 msgstr "대화상자 머리 사용"
 
-#: src/session.c:806
+#: src/session.c:808
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:812
+#: src/session.c:814
 #, fuzzy
 msgid "Session"
 msgstr "기타 설정"
 
-#: src/session.c:813
+#: src/session.c:815
 #, fuzzy
 msgid "Session Settings"
 msgstr "기타 설정"
 
-#: src/session.c:816
+#: src/session.c:818
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
@@ -1810,65 +1810,69 @@ msgstr ""
 "인라이튼먼트 포커스\n"
 "설정 대화상자\n"
 
-#: src/settings.c:61
+#: src/settings.c:64
 msgid "Move Methods:"
 msgstr "이동 방법:"
 
-#: src/settings.c:66
+#: src/settings.c:69
 msgid "Resize Methods:"
 msgstr "크기조정 방법:"
 
-#: src/settings.c:79 src/settings.c:84 src/settings.c:295
+#: src/settings.c:82 src/settings.c:87 src/settings.c:303
 msgid "Technical"
 msgstr "공예"
 
-#: src/settings.c:89 src/settings.c:94 src/settings.c:300
+#: src/settings.c:92 src/settings.c:97 src/settings.c:308
 msgid "Box"
 msgstr "상자"
 
-#: src/settings.c:99 src/settings.c:104 src/settings.c:305
+#: src/settings.c:102 src/settings.c:107 src/settings.c:313
 msgid "Shaded"
 msgstr "음영"
 
-#: src/settings.c:109 src/settings.c:114 src/settings.c:310
+#: src/settings.c:112 src/settings.c:117 src/settings.c:318
 msgid "Semi-Solid"
 msgstr "반고체"
 
-#: src/settings.c:120
+#: src/settings.c:123
 msgid "Translucent"
 msgstr "반투명"
 
-#: src/settings.c:134
+#: src/settings.c:137
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "이동/크기변경 위치 정보:"
 
-#: src/settings.c:138
+#: src/settings.c:141
 msgid "Window Center (O/T/B Methods)"
 msgstr "화면 가운데 (O/T/B 메소드)"
 
-#: src/settings.c:144
+#: src/settings.c:147
 msgid "Always Screen corner"
 msgstr "항상 화면의 가장자리"
 
-#: src/settings.c:150
+#: src/settings.c:153
 msgid "Don't show"
 msgstr "보이지 않음"
 
-#: src/settings.c:160
+#: src/settings.c:163
 #, fuzzy
 msgid "Update window while moving"
 msgstr "바꾸는 동안에 창 포커스"
 
-#: src/settings.c:166
+#: src/settings.c:168
+msgid "Synchronize move/resize with application"
+msgstr ""
+
+#: src/settings.c:174
 #, fuzzy
 msgid "Move/Resize"
 msgstr "크기"
 
-#: src/settings.c:167
+#: src/settings.c:175
 msgid "Move & Resize Settings"
 msgstr "이동과 크기조정 설정"
 
-#: src/settings.c:170
+#: src/settings.c:178
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -1876,74 +1880,74 @@ msgstr ""
 "인라이튼먼트 이동과 크기조정\n"
 "방법 설정 대화상자\n"
 
-#: src/settings.c:254
+#: src/settings.c:262
 msgid "Dialog windows appear together with their owner"
 msgstr "대화상자는 그 소유자와 함께 나타남"
 
-#: src/settings.c:259
+#: src/settings.c:267
 msgid "Switch to desktop where dialog appears"
 msgstr "대화상자가 나타난 데스크탑으로 전환"
 
-#: src/settings.c:267
+#: src/settings.c:275
 msgid "Place windows manually"
 msgstr "창을 수동으로 배치"
 
-#: src/settings.c:272
+#: src/settings.c:280
 msgid "Place windows under mouse"
 msgstr "창을 마우스 아래에 배치"
 
-#: src/settings.c:277
+#: src/settings.c:285
 msgid "Slide windows in when they appear"
 msgstr "창이 나타날 때 미끄러짐"
 
-#: src/settings.c:282
+#: src/settings.c:290
 msgid "Slide windows around when cleaning up"
 msgstr "깨끗하게 할 때 창 미끄러짐"
 
-#: src/settings.c:287
+#: src/settings.c:295
 msgid "Slide Method:"
 msgstr "미끄러짐 방법:"
 
-#: src/settings.c:320
+#: src/settings.c:328
 #, fuzzy
 msgid "Appear Slide speed:"
 msgstr "나타남 미끄러짐 속도: (느림)\n"
 
-#: src/settings.c:331
+#: src/settings.c:339
 #, fuzzy
 msgid "Cleanup Slide speed:"
 msgstr "청소 미끄러짐 속도: (느림)\n"
 
-#: src/settings.c:344
+#: src/settings.c:352
 msgid "Animate shading and unshading of windows"
 msgstr "창 접고 펼칠 때 에니메이트"
 
-#: src/settings.c:350
+#: src/settings.c:358
 #, fuzzy
 msgid "Window Shading speed:"
 msgstr "창 접기 속도: (느림)\n"
 
-#: src/settings.c:363
+#: src/settings.c:371
 msgid "Ignore struts"
 msgstr "무시"
 
-#: src/settings.c:368
+#: src/settings.c:376
 msgid "Raise fullscreen windows"
 msgstr ""
 
-#: src/settings.c:376
+#: src/settings.c:384
 msgid "Place windows on another head when full"
 msgstr "다른창 보다 위에 배치"
 
-#: src/settings.c:384
+#: src/settings.c:392
 msgid "Placement"
 msgstr ""
 
-#: src/settings.c:385
+#: src/settings.c:393
 msgid "Window Placement Settings"
 msgstr "창 배치 설정"
 
-#: src/settings.c:388
+#: src/settings.c:396
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1951,24 +1955,24 @@ msgstr ""
 "인라이튼먼트 창 위치\n"
 "설정 대화상자\n"
 
-#: src/settings.c:419
+#: src/settings.c:427
 msgid "Raise Windows Automatically"
 msgstr "창을 자동으로 올리기"
 
-#: src/settings.c:425
+#: src/settings.c:433
 msgid "Autoraise delay:"
 msgstr "자동올리기 지연:"
 
-#: src/settings.c:436
+#: src/settings.c:444
 #, fuzzy
 msgid "Autoraise"
 msgstr "자동올리기 지연:"
 
-#: src/settings.c:437
+#: src/settings.c:445
 msgid "Autoraise Settings"
 msgstr "자동올리기 설정"
 
-#: src/settings.c:440
+#: src/settings.c:448
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -1976,33 +1980,33 @@ msgstr ""
 "인라이튼먼트 창 자동 올리기\n"
 "설정 대화상자\n"
 
-#: src/settings.c:477
+#: src/settings.c:485
 msgid "Enable Dialog Headers"
 msgstr "대화상자 머리 사용"
 
-#: src/settings.c:482
+#: src/settings.c:490
 #, fuzzy
 msgid "Enable Button Images"
 msgstr "사운드 사용"
 
-#: src/settings.c:490
+#: src/settings.c:498
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:498
+#: src/settings.c:506
 msgid "Use saveunders to reduce window exposures"
 msgstr "창 노출을 줄이기 위해 세이브언더 사용"
 
-#: src/settings.c:504 config/strings.c:179
+#: src/settings.c:512 config/strings.c:179
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "기타 설정"
 
-#: src/settings.c:505
+#: src/settings.c:513
 msgid "Miscellaneous Settings"
 msgstr "기타 설정"
 
-#: src/settings.c:508
+#: src/settings.c:516
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -2010,47 +2014,47 @@ msgstr ""
 "인라이튼먼트 기타\n"
 "설정 대화상자\n"
 
-#: src/settings.c:540 src/settings.c:605
+#: src/settings.c:548 src/settings.c:613
 #, fuzzy
 msgid "Composite Settings"
 msgstr "툴팁 설정"
 
-#: src/settings.c:551
+#: src/settings.c:559
 #, fuzzy
 msgid "Enable Composite"
 msgstr "사운드 사용"
 
-#: src/settings.c:559
+#: src/settings.c:567
 #, fuzzy
 msgid "Enable Fading"
 msgstr "에지 플립 사용"
 
-#: src/settings.c:567
+#: src/settings.c:575
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:573
+#: src/settings.c:581
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:579
+#: src/settings.c:587
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:585
+#: src/settings.c:593
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:593
+#: src/settings.c:601
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:604
+#: src/settings.c:612
 #, fuzzy
 msgid "Composite"
 msgstr "사운드 사용"
 
-#: src/settings.c:608
+#: src/settings.c:616
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -2059,7 +2063,7 @@ msgstr ""
 "인라이튼먼트 툴팁\n"
 "설정 대화상자\n"
 
-#: src/settings.c:695
+#: src/settings.c:703
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "인라이튼먼트 시작중..."
@@ -2113,7 +2117,7 @@ msgstr ""
 "인라이튼먼트의 저자가 들어보지도 못했거나 사용해 보지\n"
 "못한 것임에 분명합니다.\n"
 
-#: src/slideout.c:455 src/tclass.c:462
+#: src/slideout.c:455 src/tclass.c:456
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2318,7 +2322,7 @@ msgstr ""
 "인라이튼먼트 오디오\n"
 "설정 대화상자\n"
 
-#: src/tclass.c:104
+#: src/tclass.c:98
 #, fuzzy
 msgid "Textclass Error!"
 msgstr "TextClass 오류!"

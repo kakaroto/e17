@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-14 10:45+0200\n"
+"POT-Creation-Date: 2006-10-29 22:06+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -19,7 +19,7 @@ msgid "ActionClass Error!"
 msgstr ""
 
 #: src/aclass.c:206 src/backgrounds.c:241 src/borders.c:647 src/buttons.c:192
-#: src/cmclass.c:84 src/cursors.c:126 src/iclass.c:331 src/tclass.c:104
+#: src/cmclass.c:84 src/cursors.c:126 src/iclass.c:331 src/tclass.c:98
 #: src/tooltips.c:139
 #, c-format
 msgid "%u references remain\n"
@@ -28,7 +28,7 @@ msgstr ""
 #: src/aclass.c:291 src/backgrounds.c:1107 src/borders.c:1083
 #: src/borders.c:1206 src/buttons.c:731 src/cmclass.c:201 src/config.c:246
 #: src/cursors.c:177 src/iclass.c:519 src/menus.c:1717 src/menus.c:1827
-#: src/slideout.c:425 src/tclass.c:261 src/tooltips.c:176
+#: src/slideout.c:425 src/tclass.c:255 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -37,7 +37,7 @@ msgstr ""
 #: src/aclass.c:299 src/backgrounds.c:1115 src/borders.c:1089
 #: src/borders.c:1212 src/buttons.c:739 src/cmclass.c:209 src/config.c:254
 #: src/cursors.c:183 src/iclass.c:524 src/menus.c:1722 src/menus.c:1833
-#: src/slideout.c:431 src/tclass.c:267 src/tooltips.c:182
+#: src/slideout.c:431 src/tclass.c:261 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
@@ -594,20 +594,20 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:883 src/dialog.c:2166 src/dialog.c:2197 src/events.c:78
+#: src/dialog.c:885 src/dialog.c:2169 src/dialog.c:2200 src/events.c:78
 #: src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr ""
 
-#: src/dialog.c:888
+#: src/dialog.c:890
 msgid "Apply"
 msgstr ""
 
-#: src/dialog.c:895 src/pager.c:994 config/strings.c:30 config/strings.c:166
+#: src/dialog.c:897 src/pager.c:994 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr ""
 
-#: src/dialog.c:2197
+#: src/dialog.c:2200
 msgid "Attention !!!"
 msgstr ""
 
@@ -1313,7 +1313,7 @@ msgstr ""
 msgid "Tooltips:"
 msgstr ""
 
-#: src/mod-trans.c:164 src/settings.c:69 src/settings.c:74 src/settings.c:290
+#: src/mod-trans.c:164 src/settings.c:72 src/settings.c:77 src/settings.c:298
 msgid "Opaque"
 msgstr ""
 
@@ -1472,11 +1472,11 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:649
+#: src/session.c:651
 msgid "Are you sure?"
 msgstr ""
 
-#: src/session.c:651
+#: src/session.c:653
 msgid ""
 "\n"
 "\n"
@@ -1485,275 +1485,279 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/session.c:661
+#: src/session.c:663
 msgid "  Yes, Shut Down  "
 msgstr ""
 
-#: src/session.c:663
+#: src/session.c:665
 msgid "  Yes, Reboot  "
 msgstr ""
 
-#: src/session.c:666
+#: src/session.c:668
 msgid "  Yes, Log Out  "
 msgstr ""
 
-#: src/session.c:668
+#: src/session.c:670
 msgid "  No  "
 msgstr ""
 
-#: src/session.c:796
+#: src/session.c:798
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:801
+#: src/session.c:803
 msgid "Enable Logout Dialog"
 msgstr ""
 
-#: src/session.c:806
+#: src/session.c:808
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:812
+#: src/session.c:814
 msgid "Session"
 msgstr ""
 
-#: src/session.c:813
+#: src/session.c:815
 msgid "Session Settings"
 msgstr ""
 
-#: src/session.c:816
+#: src/session.c:818
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:61
+#: src/settings.c:64
 msgid "Move Methods:"
 msgstr ""
 
-#: src/settings.c:66
+#: src/settings.c:69
 msgid "Resize Methods:"
 msgstr ""
 
-#: src/settings.c:79 src/settings.c:84 src/settings.c:295
+#: src/settings.c:82 src/settings.c:87 src/settings.c:303
 msgid "Technical"
 msgstr ""
 
-#: src/settings.c:89 src/settings.c:94 src/settings.c:300
+#: src/settings.c:92 src/settings.c:97 src/settings.c:308
 msgid "Box"
 msgstr ""
 
-#: src/settings.c:99 src/settings.c:104 src/settings.c:305
+#: src/settings.c:102 src/settings.c:107 src/settings.c:313
 msgid "Shaded"
 msgstr ""
 
-#: src/settings.c:109 src/settings.c:114 src/settings.c:310
+#: src/settings.c:112 src/settings.c:117 src/settings.c:318
 msgid "Semi-Solid"
 msgstr ""
 
-#: src/settings.c:120
+#: src/settings.c:123
 msgid "Translucent"
 msgstr ""
 
-#: src/settings.c:134
+#: src/settings.c:137
 msgid "Move/Resize Geometry Info Postion:"
 msgstr ""
 
-#: src/settings.c:138
+#: src/settings.c:141
 msgid "Window Center (O/T/B Methods)"
 msgstr ""
 
-#: src/settings.c:144
+#: src/settings.c:147
 msgid "Always Screen corner"
 msgstr ""
 
-#: src/settings.c:150
+#: src/settings.c:153
 msgid "Don't show"
 msgstr ""
 
-#: src/settings.c:160
+#: src/settings.c:163
 msgid "Update window while moving"
 msgstr ""
 
-#: src/settings.c:166
+#: src/settings.c:168
+msgid "Synchronize move/resize with application"
+msgstr ""
+
+#: src/settings.c:174
 msgid "Move/Resize"
 msgstr ""
 
-#: src/settings.c:167
+#: src/settings.c:175
 msgid "Move & Resize Settings"
 msgstr ""
 
-#: src/settings.c:170
+#: src/settings.c:178
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:254
+#: src/settings.c:262
 msgid "Dialog windows appear together with their owner"
 msgstr ""
 
-#: src/settings.c:259
+#: src/settings.c:267
 msgid "Switch to desktop where dialog appears"
 msgstr ""
 
-#: src/settings.c:267
+#: src/settings.c:275
 msgid "Place windows manually"
 msgstr ""
 
-#: src/settings.c:272
+#: src/settings.c:280
 msgid "Place windows under mouse"
 msgstr ""
 
-#: src/settings.c:277
+#: src/settings.c:285
 msgid "Slide windows in when they appear"
 msgstr ""
 
-#: src/settings.c:282
+#: src/settings.c:290
 msgid "Slide windows around when cleaning up"
 msgstr ""
 
-#: src/settings.c:287
+#: src/settings.c:295
 msgid "Slide Method:"
 msgstr ""
 
-#: src/settings.c:320
+#: src/settings.c:328
 msgid "Appear Slide speed:"
 msgstr ""
 
-#: src/settings.c:331
+#: src/settings.c:339
 msgid "Cleanup Slide speed:"
 msgstr ""
 
-#: src/settings.c:344
+#: src/settings.c:352
 msgid "Animate shading and unshading of windows"
 msgstr ""
 
-#: src/settings.c:350
+#: src/settings.c:358
 msgid "Window Shading speed:"
 msgstr ""
 
-#: src/settings.c:363
+#: src/settings.c:371
 msgid "Ignore struts"
 msgstr ""
 
-#: src/settings.c:368
+#: src/settings.c:376
 msgid "Raise fullscreen windows"
 msgstr ""
 
-#: src/settings.c:376
+#: src/settings.c:384
 msgid "Place windows on another head when full"
 msgstr ""
 
-#: src/settings.c:384
+#: src/settings.c:392
 msgid "Placement"
 msgstr ""
 
-#: src/settings.c:385
+#: src/settings.c:393
 msgid "Window Placement Settings"
 msgstr ""
 
-#: src/settings.c:388
+#: src/settings.c:396
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:419
+#: src/settings.c:427
 msgid "Raise Windows Automatically"
 msgstr ""
 
-#: src/settings.c:425
+#: src/settings.c:433
 msgid "Autoraise delay:"
 msgstr ""
 
-#: src/settings.c:436
+#: src/settings.c:444
 msgid "Autoraise"
 msgstr ""
 
-#: src/settings.c:437
+#: src/settings.c:445
 msgid "Autoraise Settings"
 msgstr ""
 
-#: src/settings.c:440
+#: src/settings.c:448
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:477
+#: src/settings.c:485
 msgid "Enable Dialog Headers"
 msgstr ""
 
-#: src/settings.c:482
+#: src/settings.c:490
 msgid "Enable Button Images"
 msgstr ""
 
-#: src/settings.c:490
+#: src/settings.c:498
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:498
+#: src/settings.c:506
 msgid "Use saveunders to reduce window exposures"
 msgstr ""
 
-#: src/settings.c:504 config/strings.c:179
+#: src/settings.c:512 config/strings.c:179
 msgid "Miscellaneous"
 msgstr ""
 
-#: src/settings.c:505
+#: src/settings.c:513
 msgid "Miscellaneous Settings"
 msgstr ""
 
-#: src/settings.c:508
+#: src/settings.c:516
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:540 src/settings.c:605
+#: src/settings.c:548 src/settings.c:613
 msgid "Composite Settings"
 msgstr ""
 
-#: src/settings.c:551
+#: src/settings.c:559
 msgid "Enable Composite"
 msgstr ""
 
-#: src/settings.c:559
+#: src/settings.c:567
 msgid "Enable Fading"
 msgstr ""
 
-#: src/settings.c:567
+#: src/settings.c:575
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:573
+#: src/settings.c:581
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:579
+#: src/settings.c:587
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:585
+#: src/settings.c:593
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:593
+#: src/settings.c:601
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:604
+#: src/settings.c:612
 msgid "Composite"
 msgstr ""
 
-#: src/settings.c:608
+#: src/settings.c:616
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/settings.c:695
+#: src/settings.c:703
 msgid "Enlightenment Settings"
 msgstr ""
 
@@ -1800,7 +1804,7 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 
-#: src/slideout.c:455 src/tclass.c:462
+#: src/slideout.c:455 src/tclass.c:456
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -1979,7 +1983,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/tclass.c:104
+#: src/tclass.c:98
 msgid "Textclass Error!"
 msgstr ""
 
