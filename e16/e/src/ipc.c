@@ -45,6 +45,17 @@ static size_t       bufsiz;
 static char        *bufptr;
 
 static void
+OpacityTimeout(int val, void *data __UNUSED__)
+{
+   EWin               *ewin;
+
+   ewin = EwinFindByClient(val);
+   if (ewin)
+      if (ewin->state.active)
+	 EoChangeOpacity(ewin, ewin->props.focused_opacity);
+}
+
+static void
 IpcPrintInit(void)
 {
    bufsiz = 0;
@@ -780,22 +791,40 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	break;
 
      case EWIN_OP_OPACITY:
-	val = OpacityToPercent(ewin->ewmh.opacity);
+	a = OpacityToPercent(ewin->ewmh.opacity);
 	if (!strcmp(param1, "?"))
 	  {
-	     IpcPrintf("opacity: %u", val);
+	     IpcPrintf("opacity: %u", a);
 	     goto done;
 	  }
-	if (!strcmp(param1, "opaque_when_focused"))
+	b = a;
+	sscanf(param1, "%i", &b);
+	if ((param1[0] == '+') || (param1[0] == '-'))
+	   b += a;
+	a = (b < 0) ? 1 : (b > 100) ? 100 : b;
+	EwinOpSetOpacity(ewin, OPSRC_USER, a);
+	if (ewin->state.active)
 	  {
-	     ewin->props.opaque_when_focused = !ewin->props.opaque_when_focused;
+	     EoChangeOpacity(ewin, OpacityFromPercent(a));
+	     if (ewin->props.focused_opacity)
+		DoIn("OPACITY_TIMEOUT", 0.001 * 700, OpacityTimeout,
+		     EwinGetClientXwin(ewin), NULL);
 	  }
-	else
+	break;
+
+     case EWIN_OP_FOCUSED_OPACITY:
+	a = OpacityToPercent(ewin->props.focused_opacity);
+	if (!strcmp(param1, "?"))
 	  {
-	     sscanf(param1, "%i", &val);
-	     val = OpacityFix(val);
+	     IpcPrintf("focused_opacity: %u", a);
+	     goto done;
 	  }
-	EwinOpSetOpacity(ewin, OPSRC_USER, val);
+	b = a;
+	sscanf(param1, "%i", &b);
+	if ((param1[0] == '+') || (param1[0] == '-'))
+	   b += a;
+	a = (b < 0) ? 0 : (b > 100) ? 100 : b;
+	EwinOpSetFocusedOpacity(ewin, OPSRC_USER, a);
 	break;
 
      case EWIN_OP_SNAP:
@@ -1140,7 +1169,8 @@ EwinShowInfo(const EWin * ewin)
 	     "State        %i   Shown        %i   Visibility   %i   Active       %i\n"
 	     "Member of groups        %i\n"
 #if USE_COMPOSITE
-	     "Opacity    %3i(%x)  Shadow       %i   Fade         %i   NoRedirect   %i\n"
+	     "Opacity    %3i(%x)  Focused Opacity     %3i\n"
+	     "Shadow       %i   Fade         %i   NoRedirect   %i\n"
 #else
 	     "Opacity    %3i\n"
 #endif
@@ -1186,8 +1216,9 @@ EwinShowInfo(const EWin * ewin)
 	     ewin->state.visibility, ewin->state.active, ewin->num_groups,
 	     OpacityToPercent(ewin->ewmh.opacity)
 #if USE_COMPOSITE
-	     , EoGetOpacity(ewin), EoGetShadow(ewin), EoGetFade(ewin),
-	     EoGetNoRedirect(ewin)
+	     , EoGetOpacity(ewin),
+	     OpacityToPercent(ewin->props.focused_opacity), EoGetShadow(ewin),
+	     EoGetFade(ewin), EoGetNoRedirect(ewin)
 #endif
       );
 }
@@ -1428,7 +1459,8 @@ static const IpcItem IPCArray[] = {
     "  win_op <windowid> <fullscreen/zoom>\n"
     "  win_op <windowid> layer <0-100,4=normal>\n"
     "  win_op <windowid> <raise/lower>\n"
-    "  win_op <windowid> opacity <1-100(100=opaque),opaque_when_focused>\n"
+    "  win_op <windowid> opacity <1-100(100=opaque)>\n"
+    "  win_op <windowid> focused_opacity <0-100(0=follow opacity, 100=opaque)>\n"
     "  win_op <windowid> snap <what>\n"
     "         <what>: all, none, border, command, desktop, dialog, group, icon,\n"
     "                 layer, location, opacity, shade, shadow, size, sticky\n"

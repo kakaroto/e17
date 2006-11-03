@@ -55,6 +55,7 @@ typedef enum
    EWIN_OP_LOWER,
 
    EWIN_OP_OPACITY,
+   EWIN_OP_FOCUSED_OPACITY,
 
    EWIN_OP_SNAP,
 

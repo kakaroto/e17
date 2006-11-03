@@ -65,7 +65,7 @@ struct _snapshot
    char                skipwinlist;
 #if USE_COMPOSITE
    int                 opacity;
-   char                opaque_when_focused;
+   int                 focused_opacity;
    char                shadow;
 #endif
 };
@@ -462,7 +462,7 @@ static void
 SnapEwinOpacity(Snapshot * sn, const EWin * ewin)
 {
    sn->opacity = OpacityToPercent(ewin->ewmh.opacity);
-   sn->opaque_when_focused = ewin->props.opaque_when_focused;
+   sn->focused_opacity = OpacityToPercent(ewin->props.focused_opacity);
 }
 
 static void
@@ -1158,7 +1158,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 	 fprintf(f, "FLAGS: %#x\n", sn->flags);
 #if USE_COMPOSITE
       if (sn->use_flags & SNAP_USE_OPACITY)
-	 fprintf(f, "OPACITY: %i %i\n", sn->opacity, sn->opaque_when_focused);
+	 fprintf(f, "OPACITY: %i %i\n", sn->opacity, sn->focused_opacity);
       if (sn->use_flags & SNAP_USE_SHADOW)
 	 fprintf(f, "SHADOW: %i\n", sn->shadow);
 #endif
@@ -1385,10 +1385,12 @@ LoadSnapInfo(void)
 	       {
 		  sn->use_flags |= SNAP_USE_OPACITY;
 		  a = 100;
-		  b = 1;
+		  b = 100;
 		  sscanf(s, "%i %i", &a, &b);
+		  if (b == 1)
+		     b = 100;	/* BW compat - focused is opaque */
 		  sn->opacity = a;
-		  sn->opaque_when_focused = b;
+		  sn->focused_opacity = b;
 	       }
 	     else if (!strcmp(buf, "SHADOW"))
 	       {
@@ -1503,9 +1505,10 @@ SnapshotEwinApply(EWin * ewin)
 #if USE_COMPOSITE
    if (use_flags & SNAP_USE_OPACITY)
      {
-	sn->opacity = OpacityFix(sn->opacity);
+	sn->opacity = OpacityFix(sn->opacity, 100);
+	sn->focused_opacity = OpacityFix(sn->focused_opacity, 0);
 	ewin->ewmh.opacity = OpacityFromPercent(sn->opacity);
-	ewin->props.opaque_when_focused = sn->opaque_when_focused;
+	ewin->props.focused_opacity = OpacityFromPercent(sn->focused_opacity);
      }
 
    if (use_flags & SNAP_USE_SHADOW)

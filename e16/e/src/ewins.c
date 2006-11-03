@@ -134,7 +134,7 @@ EwinCreate(int type)
    ewin->place.gravity = -1;
 
    ewin->ewmh.opacity = 0;	/* If 0, ignore */
-   ewin->props.opaque_when_focused = 1;
+   ewin->props.focused_opacity = 0;
 
    return ewin;
 }
@@ -1798,11 +1798,12 @@ EwinUpdateOpacity(EWin * ewin)
 {
    unsigned int        opacity;
 
+   opacity = 0;
    if (ewin->state.moving || ewin->state.resizing)
       opacity = OpacityFromPercent(Conf.opacity.movres);
-   else if (ewin->state.active && ewin->props.opaque_when_focused)
-      opacity = 0xffffffff;
-   else
+   else if (ewin->state.active)
+      opacity = ewin->props.focused_opacity;
+   if (opacity == 0)
       opacity = ewin->ewmh.opacity;
 
    EoChangeOpacity(ewin, opacity);

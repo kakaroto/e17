@@ -2198,10 +2198,10 @@ ECompMgrShadowsInit(int mode, int cleanup)
    Mode_compmgr.shadow_mode = mode;
 
    Conf_compmgr.shadows.blur.opacity =
-      OpacityFix(Conf_compmgr.shadows.blur.opacity);
+      OpacityFix(Conf_compmgr.shadows.blur.opacity, 100);
    Mode_compmgr.opac_blur = .01 * Conf_compmgr.shadows.blur.opacity;
    Conf_compmgr.shadows.sharp.opacity =
-      OpacityFix(Conf_compmgr.shadows.sharp.opacity);
+      OpacityFix(Conf_compmgr.shadows.sharp.opacity, 100);
    Mode_compmgr.opac_sharp = .01 * Conf_compmgr.shadows.sharp.opacity;
 
    if (gaussianMap)
@@ -2256,7 +2256,7 @@ ECompMgrStart(void)
    Conf_compmgr.enable = Mode_compmgr.active = 1;
 
    Conf_compmgr.override_redirect.opacity =
-      OpacityFix(Conf_compmgr.override_redirect.opacity);
+      OpacityFix(Conf_compmgr.override_redirect.opacity, 100);
 
    pa.subwindow_mode = IncludeInferiors;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);

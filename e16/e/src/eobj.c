@@ -30,9 +30,11 @@
 #include "xwin.h"
 
 int
-OpacityFix(int op)
+OpacityFix(int op, int op_0)
 {
-   if (op <= 0 || op > 255)
+   if (op <= 0)
+      op = op_0;
+   else if (op > 255)
       op = 100;
    else if (op > 100)		/* Hack to convert old 0-255 range */
       op = (100 * op) / 255;
@@ -46,7 +48,7 @@ OpacityFromPercent(int opx)
 
    /* op is 0-100, extend to 32 bit */
    /* op <= 0 and op > 100 is mapped to 100 (opaque) */
-   if (op == 0 || op >= 100)
+   if (op >= 100)
       return 0xffffffff;
    return op * 42949672;
 }

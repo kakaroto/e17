@@ -45,6 +45,7 @@ static const WinOp  winops[] = {
    {"kill", 0, 1, 0, EWIN_OP_KILL},
    {"iconify", 2, 1, 1, EWIN_OP_ICONIFY},
    {"opacity", 2, 1, 1, EWIN_OP_OPACITY},
+   {"focused_opacity", 0, 1, 1, EWIN_OP_FOCUSED_OPACITY},
    {"shadow", 0, 1, 1, EWIN_OP_SHADOW},	/* Place before "shade" */
    {"shade", 2, 1, 1, EWIN_OP_SHADE},
    {"stick", 2, 1, 1, EWIN_OP_STICK},
@@ -1835,6 +1836,17 @@ EwinOpSetOpacity(EWin * ewin, int source __UNUSED__, int opacity)
    op = OpacityFromPercent(opacity);
    ewin->ewmh.opacity = op;
    HintsSetWindowOpacity(ewin);
+   EwinUpdateOpacity(ewin);
+   SnapshotEwinUpdate(ewin, SNAP_USE_OPACITY);
+}
+
+void
+EwinOpSetFocusedOpacity(EWin * ewin, int source __UNUSED__, int opacity)
+{
+   unsigned int        op;
+
+   op = OpacityFromPercent(opacity);
+   ewin->props.focused_opacity = op;
    EwinUpdateOpacity(ewin);
    SnapshotEwinUpdate(ewin, SNAP_USE_OPACITY);
 }

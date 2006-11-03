@@ -139,7 +139,7 @@ struct _ewin
       unsigned            autosave:1;
       unsigned            no_border:1;	/* Never apply border */
       unsigned            focus_when_mapped:1;
-      unsigned            opaque_when_focused:1;
+      unsigned int        focused_opacity;
    } props;
    EWinInhibit         inh_app;
    EWinInhibit         inh_user;
@@ -394,6 +394,8 @@ void                EwinOpShade(EWin * ewin, int source, int on);
 void                EwinOpSetLayer(EWin * ewin, int source, int layer);
 void                EwinOpSetBorder(EWin * ewin, int source, const char *name);
 void                EwinOpSetOpacity(EWin * ewin, int source, int opacity);
+void                EwinOpSetFocusedOpacity(EWin * ewin, int source,
+					    int opacity);
 void                EwinOpMoveToDesk(EWin * ewin, int source, Desk * dsk,
 				     int inc);
 void                EwinOpFullscreen(EWin * ewin, int source, int on);
