@@ -389,12 +389,15 @@ entrance_auth_setup_environment(Entrance_Auth * e, const char *display)
       return;
 
 /* clearenv() is only availble in glibc */
+   /* FIXME: this will nuke any PATH from the system or anything else we try
+    * and inherit - disable for now. we basically end up with things like an
+    * emprt $PATH for logins for people
 #if HAVE_CLEARENV
    clearenv();
 #else
    environ = NULL;
 #endif
-
+    */
    e->env = environ;
    snprintf(buf, PATH_MAX, "%s/.Xauthority", e->pw->pw_dir);
    setenv("XAUTHORITY", buf, 1);

@@ -871,6 +871,8 @@ _entrance_session_execute_in_shell(char *user, char *shell, char *session_cmd,
       syslog(LOG_NOTICE,
              "Neither '%s' or '/bin/sh' are working login shells for user '%s'. Your session may not function properly. ",
              shell, user);
+      shell_cmd = strdup("/bin/sh");
+   
    res = execlp(shell_cmd, shell_cmd, "-c", buf, NULL);
 
    /* Damn, that didn't work either. * Bye! We call it quits and log an error 

@@ -31,6 +31,11 @@ case "$1" in
   start)
 	echo -n "Becoming entranced: entrance"
         @PAM_CONFIG@
+	set +e
+	if pam_getenv -l PATH; then
+		export PATH=`pam_getenv -l PATH`
+	fi
+	set -e
 	$DAEMON
 	echo "."
   ;;
