@@ -1151,11 +1151,22 @@ EwinEventMap(EWin * ewin, XEvent * ev)
 }
 
 static void
-EwinEventUnmap(EWin * ewin)
+EwinEventUnmap(EWin * ewin, XEvent * ev)
 {
    if (EventDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventUnmap %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetName(ewin));
+
+   if (ewin->state.state == EWIN_STATE_NEW)
+     {
+	Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
+		EwinGetClientXwin(ewin));
+	return;
+     }
+
+   /* Ignore synthetic events */
+   if (ev->xany.send_event)
+      return;
 
    if (ewin->state.state == EWIN_STATE_WITHDRAWN)
       return;
@@ -2070,15 +2081,7 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
      case EX_EVENT_UNMAP_GONE:
 	EoSetGone(ewin);
      case UnmapNotify:
-#if 0
-	if (ewin->state.state == EWIN_STATE_NEW)
-	  {
-	     Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
-		     EwinGetClientXwin(ewin));
-	     break;
-	  }
-#endif
-	EwinEventUnmap(ewin);
+	EwinEventUnmap(ewin, ev);
 	break;
 
      case MapNotify:
@@ -2194,7 +2197,7 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 	   break;
 	if (ev->type == EX_EVENT_UNMAP_GONE)
 	   EoSetGone(ewin);
-	EwinEventUnmap(ewin);
+	EwinEventUnmap(ewin, ev);
 	break;
 
      case DestroyNotify:
