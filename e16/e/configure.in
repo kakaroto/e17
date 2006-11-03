@@ -63,6 +63,8 @@ AC_CHECK_HEADERS(alloca.h stdarg.h wctype.h)
 AC_TYPE_SIGNAL
 
 AC_C_BIGENDIAN
+AC_C_CONST
+AC_C_INLINE
 AC_C___ATTRIBUTE__
 AC_CHECK_SIZEOF(int, 4)
 AC_CHECK_SIZEOF(long, 4)
@@ -78,6 +80,9 @@ AC_CHECK_FUNCS(strdup strndup)
 AC_CHECK_FUNCS(blumfrub)
 AC_CHECK_FUNCS(buckets_of_erogenous_nym)
 AC_CHECK_FUNCS(buttox)
+
+AM_ICONV
+AM_LANGINFO_CODESET
 
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION([0.12.1])
@@ -99,25 +104,19 @@ if test "x$enable_hints_gnome" = "xyes"; then
 fi
 AM_CONDITIONAL(ENABLE_GNOME, test "x$enable_hints_gnome" = "xyes")
 
-dnl The following test must come after AM_GNU_GETTEXT as it relies on
-dnl ${DATADIRNAME} being defined.
-
 if test "x$enable_fsstd" = "xyes"; then
-  DATADIR=${prefix}/${DATADIRNAME}
-  LOCALEDIR=${prefix}/${DATADIRNAME}/locale
+  LOCALEDIR=`eval echo ${datadir}/locale`
 else
   datadir=${prefix}
-  DATADIR=${datadir}
   exec_prefix=${prefix}/e16
   LOCALEDIR=${prefix}/e16/locale
 fi
-ENLIGHTENMENT_ROOT=`eval echo ${DATADIR}/e16`
+ENLIGHTENMENT_ROOT=`eval echo ${datadir}/e16`
 ENLIGHTENMENT_BIN=`eval echo ${bindir}`
 ENLIGHTENMENT_LIB=`eval echo ${libdir}`
 AC_SUBST(ENLIGHTENMENT_ROOT)
 AC_SUBST(ENLIGHTENMENT_BIN)
 AC_SUBST(ENLIGHTENMENT_LIB)
-AC_SUBST(LOCALEDIR)
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_ROOT, "$ENLIGHTENMENT_ROOT", [The installation root directory])
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_BIN, "$ENLIGHTENMENT_BIN", [The installation bin directory])
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_LIB, "$ENLIGHTENMENT_LIB", [The installation lib directory])
