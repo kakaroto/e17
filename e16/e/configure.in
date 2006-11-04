@@ -111,7 +111,8 @@ else
   exec_prefix=${prefix}/e16
   LOCALEDIR=${prefix}/e16/locale
 fi
-ENLIGHTENMENT_ROOT=`eval echo ${datadir}/e16`
+DATADIR=`eval echo ${datadir}`
+ENLIGHTENMENT_ROOT=`eval echo ${DATADIR}/e16`
 ENLIGHTENMENT_BIN=`eval echo ${bindir}`
 ENLIGHTENMENT_LIB=`eval echo ${libdir}`
 AC_SUBST(ENLIGHTENMENT_ROOT)
