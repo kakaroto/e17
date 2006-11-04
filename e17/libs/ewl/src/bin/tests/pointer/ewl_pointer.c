@@ -52,6 +52,7 @@ create_test(Ewl_Container *box)
 
 	o = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(pointer_win), o);
+	ewl_widget_color_set(EWL_WIDGET(o), 255, 255, 255, 200);
 	ewl_widget_show(o);
 
 	cur_timer = ecore_timer_add(2.0, timer_cb_in, o);

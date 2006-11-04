@@ -38,8 +38,6 @@ typedef struct Ewl_Menu Ewl_Menu;
 struct Ewl_Menu
 {
 	Ewl_Menu_Base  base;		/**< Inherit from Ewl_Menu_Base */
-        int            popup_x;		/**< Popup X position */
-        int            popup_y;		/**< Popup Y position */
 
 	Ewl_Widget    *menubar_parent;	/**< Parent menu bar */
 };
@@ -53,7 +51,6 @@ int		 ewl_menu_init(Ewl_Menu *menu);
 void ewl_menu_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_menu_cb_popup_move(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_cb_hide(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_menu_cb_popup_destroy(Ewl_Widget *w, void *ev, void *data);

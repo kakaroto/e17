@@ -112,6 +112,7 @@ data {
 	item, "/stock/save" "stock/save";
 	item, "/stock/stop" "stock/stop";
 
+	item, "/combo/popup/group" "menu";
 	item, "/combo/decrement/group" "spinner-down";
 	item, "/combo/decrement/body/group" "spinnerdown";
 	item, "/combo/increment/group" "spinner-up";
@@ -156,7 +157,8 @@ data {
 
 	item, "/statusbar/group" "statusbar";
 
-	item, "/tooltip/offset" 15;
+	item, "/popup/voffset" 10;
+	item, "/popup/hoffset" 10;
 	item, "/tooltip/delay" "1.0";
 	item, "/tooltip/group" "window";
 

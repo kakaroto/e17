@@ -68,6 +68,7 @@ EWLHEADERS = \
 	ewl_overlay.h \
 	ewl_paned.h \
 	ewl_password.h \
+	ewl_popup.h \
 	ewl_progressbar.h \
 	ewl_radiobutton.h \
 	ewl_range.h \
@@ -148,6 +149,7 @@ EWLSOURCES= \
 	ewl_overlay.c \
 	ewl_paned.c \
 	ewl_password.c \
+	ewl_popup.c \
 	ewl_progressbar.c \
 	ewl_radiobutton.c \
 	ewl_range.c \

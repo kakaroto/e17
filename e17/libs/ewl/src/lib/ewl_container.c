@@ -1186,7 +1186,7 @@ ewl_container_destroy(Ewl_Container *c)
 Ewl_Container *
 ewl_container_end_redirect_get(Ewl_Container *c)
 {
-	Ewl_Container *rc;
+	Ewl_Container *rc = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, NULL);

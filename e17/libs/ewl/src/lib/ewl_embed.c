@@ -1649,6 +1649,26 @@ ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y)
 }
 
 /**
+ * @param e: the embed to query for window-position
+ * @param w: a pointer to the integer that should receive the width
+ * @param h: a pointer to the integer that should receive the height
+ * @return Returns no value.
+ * @brief Retrieve the size of the root window
+ *
+ * Stores the root window size into the parameters @a w and @a h.
+ */
+void
+ewl_embed_desktop_size_get(Ewl_Embed *e, int *w, int *h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
+	
+	ewl_engine_desktop_size_get(e, w, h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+/**
  * @param e: the embed to freeze redraws and canvas events
  * @return Returns no value.
  * @brief Freeze redraws and events on the specified embed.

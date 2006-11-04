@@ -57,7 +57,7 @@ unsigned int	 ewl_combo_editable_get(Ewl_Combo *combo);
  */
 void ewl_combo_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_decrement_clicked(Ewl_Widget *w, void *ev, void *data);
-void ewl_combo_cb_increment_clicked(Ewl_Widget *w, void *ev, void *data);
+void ewl_combo_cb_popup_mouse_down(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_item_clicked(Ewl_Widget *w, void *ev, void *data);
 
 /**

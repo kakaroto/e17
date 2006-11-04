@@ -263,6 +263,23 @@ enum Ewl_Window_Flags
 typedef enum Ewl_Window_Flags Ewl_Window_Flags;
 
 /**
+ * @enum Ewl_Popup_Types
+ * The possible popup types
+ */
+enum Ewl_Popup_Type
+{
+	EWL_POPUP_TYPE_NONE,
+	EWL_POPUP_TYPE_MOUSE,
+	EWL_POPUP_TYPE_MENU_HORIZONTAL,
+	EWL_POPUP_TYPE_MENU_VERTICAL
+};
+
+/**
+ * The Ewl_Popup_Types type
+ */
+typedef enum Ewl_Popup_Type Ewl_Popup_Type;
+
+/**
  * @enum Ewl_Tree_Node_Flags
  * The available tree node states
  */

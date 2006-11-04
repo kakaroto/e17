@@ -51,8 +51,6 @@ ewl_menu_init(Ewl_Menu *menu)
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
 			    ewl_menu_cb_expand, NULL);
-	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_REALIZE,
-			    ewl_menu_cb_realize, NULL);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CONFIGURE,
 			    ewl_menu_cb_configure, NULL);
 
@@ -61,18 +59,16 @@ ewl_menu_init(Ewl_Menu *menu)
 	/*
 	 * Create the popup menu portion of the widget.
 	 */
-	menu->base.popup = ewl_window_new();
+	menu->base.popup = ewl_popup_new();
 	ewl_window_keyboard_grab_set(EWL_WINDOW(menu->base.popup), TRUE);
 	ewl_window_pointer_grab_set(EWL_WINDOW(menu->base.popup), TRUE);
+	ewl_popup_follow_set(EWL_POPUP(menu->base.popup), EWL_WIDGET(menu));
 	
-	ewl_window_override_set(EWL_WINDOW(menu->base.popup), TRUE); 
-	ewl_window_borderless_set(EWL_WINDOW(menu->base.popup));
 	ewl_widget_internal_set(menu->base.popup, TRUE);
 	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), EWL_MENU_TYPE);
-	ewl_object_fill_policy_set(EWL_OBJECT(menu->base.popup),
-				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(menu->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
+	
 	ewl_callback_append(menu->base.popup, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_menu_cb_hide, menu);
 
@@ -93,60 +89,26 @@ ewl_menu_init(Ewl_Menu *menu)
  * @param ev_data: UNUSED
  * @param user_data: UNUSED
  * @return Returns no value
- * @brief The realize callback
- */
-void
-ewl_menu_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
-{
-	Ewl_Menu *menu;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	menu = EWL_MENU(w);
-
-	ewl_menu_cb_popup_move(menu->base.popup, NULL, w);
-
-	/*
-	 * Position the popup menu relative to the menu.
-	 */
-	ewl_callback_append(EWL_WIDGET(EWL_WINDOW(menu->base.popup)),
-				       EWL_CALLBACK_CONFIGURE,
-				       ewl_menu_cb_popup_move, w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
  * @brief The configure callback
  */
 void
 ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	int x, y;
 	Ewl_Menu *menu;
-	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	menu = EWL_MENU(w);
-	emb = ewl_embed_widget_find(w);
-
-	ewl_embed_window_position_get(EWL_EMBED(emb), &x, &y);
-	menu->popup_x = x + CURRENT_X(w);
-	menu->popup_y = y + CURRENT_Y(w);
-
-	ewl_menu_cb_popup_move(menu->base.popup, NULL, w);
+	
+	if (EWL_MENU_ITEM(menu)->inmenu) 
+		ewl_popup_type_set(EWL_POPUP(menu->base.popup), 
+					EWL_POPUP_TYPE_MENU_HORIZONTAL);
+	else 
+		ewl_popup_type_set(EWL_POPUP(menu->base.popup), 
+					EWL_POPUP_TYPE_MENU_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -230,40 +192,6 @@ ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @param ev_data: UNUSED
  * @param user_data: UNUSED
  * @return Returns no value
- * @brief The popup move callback
- */
-void
-ewl_menu_cb_popup_move(Ewl_Widget *w, void *ev_data __UNUSED__,
-						void *user_data)
-{
-        Ewl_Widget *menu;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	menu = EWL_WIDGET (user_data);
-	if (EWL_MENU_ITEM(menu)->inmenu) {
-		ewl_window_move(EWL_WINDOW(w),
-				EWL_MENU(menu)->popup_x + CURRENT_W(menu),
-				EWL_MENU(menu)->popup_y);
-	}
-	else {
-		ewl_window_move(EWL_WINDOW(w), 
-				EWL_MENU(menu)->popup_x,
-				EWL_MENU(menu)->popup_y + CURRENT_H(menu));
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
  * @brief The mouse move callback
  */
 void
@@ -317,7 +245,7 @@ ewl_menu_cb_hide(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
+	
 	if (w == ewl_embed_focused_widget_get(EWL_EMBED(w)))
 		ewl_widget_hide(w);
 

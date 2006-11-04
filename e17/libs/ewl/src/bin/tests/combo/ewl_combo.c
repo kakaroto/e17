@@ -243,8 +243,10 @@ combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	d = ewl_mvc_data_get(EWL_MVC(w));
 	idx = ewl_mvc_selected_get(EWL_MVC(w));
 
-	printf("value changed to %d (%s)\n",
-			idx->row, d->data[idx->row]);
+	/*
+	printf("value changed to %d %p)\n",
+		idx->row, d->data[idx->row]);
+	*/
 }
 
 static void

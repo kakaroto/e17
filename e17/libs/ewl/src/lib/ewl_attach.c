@@ -555,9 +555,7 @@ static void
 ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Attach *attach;
-	Ewl_Embed *emb;
 	Ewl_Event_Mouse_Move *e;
-	int offset;
 	char *delay_str;
 	double delay = 1.0;
 
@@ -578,23 +576,10 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	ewl_attach_tooltip->attach = attach;
 	ewl_attach_tooltip->to = w;
-
-	offset = ewl_theme_data_int_get(w, "/tooltip/offset");
-
-	/*
-	 * Position the tooltip on the side with the most available space
-	 */
-	emb = ewl_embed_widget_find(w);
-	if ((e->x - CURRENT_X(emb)) > (CURRENT_X(emb) + CURRENT_W(emb) - e->x))
-		ewl_attach_tooltip->x = e->x - offset;
-	else
-		ewl_attach_tooltip->x = e->x + offset;
-
-	if ((e->y - CURRENT_Y(emb)) > (CURRENT_Y(emb) + CURRENT_H(emb) - e->y))
-		ewl_attach_tooltip->y = e->y - offset;
-	else
-		ewl_attach_tooltip->y = e->y + offset;
-
+	
+	ewl_attach_tooltip->x = e->x;
+	ewl_attach_tooltip->y = e->y;
+	
 	delay_str = ewl_theme_data_str_get(w, "/tooltip/delay");
 	if (delay_str)
 	{
@@ -658,49 +643,17 @@ ewl_attach_cb_tooltip_timer(void *data)
 
 	if (!(ewl_attach_tooltip->win))
 	{
-		Ewl_Container *redir;
 
-#if 0
-		ewl_attach_tooltip->win = ewl_window_new();
-		ewl_attach_tooltip->embed = ewl_attach_tooltip->win;
-		ewl_window_title_set(EWL_WINDOW(ewl_attach_tooltip->win), 
-								"Tooltip");
-		ewl_window_name_set(EWL_WINDOW(ewl_attach_tooltip->win), 
-								"Tooltip");
-		ewl_window_class_set(EWL_WINDOW(ewl_attach_tooltip->win), 
-								"Tooltip");
-		ewl_window_transient_for(EWL_WINDOW(emb), 
-					EWL_WINDOW(ewl_attach_tooltip->win));
-		ewl_window_borderless_set(EWL_WINDOW(ewl_attach_tooltip->win));
-		ewl_window_raise(EWL_WINDOW(ewl_attach_tooltip->win));
-#endif
-
-		/* XXX this should really be in its own window */
-		ewl_attach_tooltip->win = ewl_floater_new();
-		ewl_box_orientation_set(EWL_BOX(ewl_attach_tooltip->win), 
-				EWL_ORIENTATION_HORIZONTAL);
-		ewl_floater_follow_set(EWL_FLOATER(ewl_attach_tooltip->win),
-				EWL_WIDGET(emb));
+		ewl_attach_tooltip->win = ewl_popup_new();
+		ewl_popup_type_set(EWL_POPUP(ewl_attach_tooltip->win),
+					EWL_POPUP_TYPE_MOUSE);
+		ewl_popup_follow_set(EWL_POPUP(ewl_attach_tooltip->win),
+							EWL_WIDGET(emb));
 		ewl_attach_tooltip->embed = EWL_WIDGET(emb);
-
-		/*
-		 * Temporarily override any redirect settings as this must go
-		 * into the top level of the embed.
-		 */
-		redir = ewl_container_redirect_get(EWL_CONTAINER(emb));
-		ewl_container_redirect_set(EWL_CONTAINER(emb), NULL);
-		ewl_container_child_append(EWL_CONTAINER(emb), 
-						ewl_attach_tooltip->win);
-		ewl_container_redirect_set(EWL_CONTAINER(emb), redir);
-
-		ewl_widget_layer_top_set(ewl_attach_tooltip->win, TRUE);
 		ewl_callback_prepend(ewl_attach_tooltip->win, 
 					EWL_CALLBACK_DESTROY,
 					ewl_attach_cb_tooltip_win_destroy, 
 					NULL);
-		ewl_object_fill_policy_set(
-				EWL_OBJECT(ewl_attach_tooltip->win), 
-						EWL_FLAG_FILL_NONE);
 
 		ewl_widget_appearance_set(ewl_attach_tooltip->win,
 						EWL_ATTACH_TOOLTIP_TYPE);
@@ -714,17 +667,9 @@ ewl_attach_cb_tooltip_timer(void *data)
 				|| (ewl_attach_tooltip->embed 
 							!= EWL_WIDGET(emb))) 
 		{
-			/* remove from the old embed */
-			if (ewl_attach_tooltip->embed)
-			{
-				ewl_container_child_remove(
-					EWL_CONTAINER(ewl_attach_tooltip->embed),
-					ewl_attach_tooltip->win);
-			} 
-
 			ewl_attach_tooltip->embed = EWL_WIDGET(emb);
-			ewl_container_child_append(EWL_CONTAINER(emb), 
-						ewl_attach_tooltip->win);
+			ewl_popup_follow_set(EWL_POPUP(ewl_attach_tooltip->win),
+						ewl_attach_tooltip->embed);
 		}
 	}
 	ewl_widget_show(ewl_attach_tooltip->win);
@@ -759,7 +704,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 		ewl_widget_show(o);
 	}
 
-	ewl_floater_position_set(EWL_FLOATER(ewl_attach_tooltip->win), 
+	ewl_popup_mouse_position_set(EWL_POPUP(ewl_attach_tooltip->win), 
 					ewl_attach_tooltip->x,
 					ewl_attach_tooltip->y);
 

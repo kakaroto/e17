@@ -787,6 +787,31 @@ ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed)
 }
 
 /**
+ * @param embed: the embed to work with
+ * @parm w: a pointer where the width of the desktop will be stored
+ * @parm h: a pointer where the height pf the desktop will be stored
+ * @return Returns no value
+ * @brief Sets the dnd awareness
+ */
+void
+ewl_engine_desktop_size_get(Ewl_Embed *embed, int *w, int *h)
+{
+	Ewl_Engine_Cb_Window_Desktop_Size_Get desktop_size_get;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	desktop_size_get = ewl_engine_hook_get(EWL_EMBED(embed),
+					EWL_ENGINE_HOOK_TYPE_WINDOW,
+					EWL_ENGINE_WINDOW_DESKTOP_SIZE_GET);
+	if (desktop_size_get)
+		desktop_size_get(embed, w, h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param win: the window to work with
  * @return Returns no value
  * @brief Sets up the canvas

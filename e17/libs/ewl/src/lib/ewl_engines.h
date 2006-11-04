@@ -39,6 +39,7 @@ enum Ewl_Engine_Window_Hooks
 	EWL_ENGINE_WINDOW_GEOMETRY_GET, /**< Get the window geometry */
 
 	EWL_ENGINE_WINDOW_DND_AWARE_SET,	 /**< Set the window dnd aware */
+	EWL_ENGINE_WINDOW_DESKTOP_SIZE_GET, /**< Get the size of the desktop */
 	EWL_ENGINE_WINDOW_MAX
 };
 
@@ -173,6 +174,7 @@ void		 ewl_engine_window_selection_text_set(Ewl_Window *win,
 void		 ewl_engine_window_geometry_get(Ewl_Window *win, int root,
 						int *width, int *height);
 void		 ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed);
+void		 ewl_engine_desktop_size_get(Ewl_Embed *embed, int *w, int *h);
 
 void		 ewl_engine_canvas_setup(Ewl_Window *win, int debug);
 void		 ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y,
@@ -227,6 +229,9 @@ typedef void (*Ewl_Engine_Cb_Window_Geometry_Get)(Ewl_Window *win,
 								geometry */
 typedef void (*Ewl_Engine_Cb_Window_Dnd_Aware_Set)(Ewl_Embed *embed);	 /**< Set the embed 
 								dnd aware */
+typedef void (*Ewl_Engine_Cb_Window_Desktop_Size_Get)(Ewl_Embed *embed, 
+							int *w, int *h); /**< Get the desktop
+								size */
 typedef void (*Ewl_Engine_Cb_Canvas_Setup)(Ewl_Window *win, int debug); /**< Setup the 
 						         render canvas */
 typedef void  (*Ewl_Engine_Cb_Canvas_Output_Set)(Ewl_Embed *emb, int x, int y,

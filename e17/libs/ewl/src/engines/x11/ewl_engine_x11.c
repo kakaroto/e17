@@ -73,6 +73,7 @@ static void ee_pointer_ungrab(Ewl_Window *win);
 static void ee_window_selection_text_set(Ewl_Window *win, const char *txt);
 static void ee_window_geometry_set(Ewl_Window *win, int *width, int *height);
 static void ee_dnd_aware_set(Ewl_Embed *embed);
+static void ee_desktop_size_get(Ewl_Embed *embed, int *w, int *h);
 
 static int ee_pointer_data_new(Ewl_Embed *embed, int *data, int w, int h);
 static void ee_pointer_free(Ewl_Embed *embed, int pointer);
@@ -103,7 +104,8 @@ static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
 		ee_pointer_ungrab,
 		ee_window_selection_text_set,
 		ee_window_geometry_set,
-		ee_dnd_aware_set
+		ee_dnd_aware_set,
+		ee_desktop_size_get,
 	};
 
 static void *pointer_funcs[EWL_ENGINE_POINTER_MAX] =
@@ -707,6 +709,18 @@ ee_dnd_aware_set(Ewl_Embed *embed)
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
 	ecore_x_dnd_aware_set((Ecore_X_Window)embed->evas_window, TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_desktop_size_get(Ewl_Embed *embed, int *w, int *h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	ecore_x_window_size_get(0, w, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
