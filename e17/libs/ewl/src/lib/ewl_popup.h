@@ -30,11 +30,12 @@ typedef struct Ewl_Popup Ewl_Popup;
  */
 struct Ewl_Popup
 {
-	Ewl_Window      window; /**< Inherit from Ewl_Window */
-	Ewl_Popup_Type  type;   /**< The Popup type */
-	Ewl_Widget     *follow;
-	int             x;
-	int             y;
+	Ewl_Window window; /**< Inherit from Ewl_Window */
+
+	Ewl_Popup_Type type;   /**< The Popup type */
+	Ewl_Widget *follow;	/**< The object to follow */
+	int x;			/**< The x position */
+	int y;			/**< The y position */
 };
 
 Ewl_Widget     *ewl_popup_new(void);
@@ -44,8 +45,9 @@ Ewl_Popup_Type  ewl_popup_type_get(Ewl_Popup *p);
 void		ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w);
 
 void            ewl_popup_mouse_position_set(Ewl_Popup *p, int x, int y);
-/**
- * @}
+
+/*
+ * Internal, override at your own risk
  */
 void ewl_popup_cb_show(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
@@ -53,5 +55,9 @@ void ewl_popup_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 					Ewl_Orientation o);
 void ewl_popup_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_popup_cb_follow_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
-#endif
 
+/**
+ * @}
+ */
+
+#endif

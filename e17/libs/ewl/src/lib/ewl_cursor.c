@@ -7,6 +7,35 @@
 static void ewl_cursor_cb_render(Ewl_Widget *w, void *ev, void *data);
 static void ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 
+/**
+ * @return Returns a new Ewl_Cursor on success, or NULL on failure
+ * @brief Creates and initializes a new Ewl_Cursor widget
+ */
+Ewl_Widget *
+ewl_cursor_new(void)
+{
+	Ewl_Widget *w = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	w = NEW(Ewl_Cursor, 1);
+	if (!w)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	if (!ewl_cursor_init(EWL_CURSOR(w)))
+	{
+		ewl_widget_destroy(w);
+		w = NULL;
+	}
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
+/**
+ * @param cursor: The Ewl_Cursor to initialize
+ * @return Returns TRUE on success, FALSE on failure
+ * @brief Initializes an Ewl_Cursor widget
+ */
 int
 ewl_cursor_init(Ewl_Cursor *cursor)
 {
@@ -33,7 +62,7 @@ ewl_cursor_init(Ewl_Cursor *cursor)
 }
 
 static void
-ewl_cursor_cb_render(Ewl_Widget *w, void *ev, void *data)
+ewl_cursor_cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
        	int handle;
 	int width, height;
@@ -76,7 +105,8 @@ ewl_cursor_cb_render(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev, void *data)
+ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Cursor *cursor = EWL_CURSOR(w);
 
@@ -86,3 +116,4 @@ ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev, void *data)
 		*/
 	cursor->handle = 0;
 }
+

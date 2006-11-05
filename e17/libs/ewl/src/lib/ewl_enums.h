@@ -263,15 +263,15 @@ enum Ewl_Window_Flags
 typedef enum Ewl_Window_Flags Ewl_Window_Flags;
 
 /**
- * @enum Ewl_Popup_Types
+ * @enum Ewl_Popup_Type
  * The possible popup types
  */
 enum Ewl_Popup_Type
 {
-	EWL_POPUP_TYPE_NONE,
-	EWL_POPUP_TYPE_MOUSE,
-	EWL_POPUP_TYPE_MENU_HORIZONTAL,
-	EWL_POPUP_TYPE_MENU_VERTICAL
+	EWL_POPUP_TYPE_NONE,		/**< No popup type */
+	EWL_POPUP_TYPE_MOUSE,		/**< Popup off the mouse */
+	EWL_POPUP_TYPE_MENU_HORIZONTAL,	/**< Popup with horizontal data */
+	EWL_POPUP_TYPE_MENU_VERTICAL	/**< Popup with vertical data */
 };
 
 /**

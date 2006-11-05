@@ -81,7 +81,7 @@ void		 ewl_notebook_page_tab_widget_set(Ewl_Notebook *n,
 Ewl_Widget	*ewl_notebook_page_tab_widget_get(Ewl_Notebook *n,
 						Ewl_Widget *page);
 
-/**
+/*
  * Internal stuff.
  */
 void ewl_notebook_cb_child_show(Ewl_Container *c, Ewl_Widget *w);

@@ -29,7 +29,7 @@ ewl_popup_new(void)
 }
 
 /**
- * @param s: the popup to initialize
+ * @param p: the popup to initialize
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize the popup and inherited fields
  *
@@ -68,7 +68,7 @@ ewl_popup_init(Ewl_Popup *p)
 
 /**
  * @param p: The popup to set the type for
- * @parma type: the type
+ * @param type: the type
  * @return Returns no value
  * @brief This is to set the type of the popup. The type defines how the
  * popup will handle the positioning
@@ -120,9 +120,11 @@ ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w)
 	if (p->follow)
 		ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
 						ewl_popup_cb_follow_destroy, p);
+
 	if (w)
 		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
 					ewl_popup_cb_follow_destroy, p);
+
 	p->follow = w;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -130,8 +132,8 @@ ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w)
 
 /**
  * @param p: The popup to set the mouse position for
- * @parma x: the x coordinate
- * @parma y: the y coordinate
+ * @param x: the x coordinate
+ * @param y: the y coordinate
  * @return Returns no value
  * @brief This is to set the mouse coordinates to the popup,
  * where it get placed relative to.
@@ -167,13 +169,11 @@ ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	ewl_popup_position_check(EWL_POPUP(w));
 
-
-	if (ewl_window_pointer_grab_get(EWL_WINDOW(w))) {
+	if (ewl_window_pointer_grab_get(EWL_WINDOW(w)))
 		ewl_window_pointer_grab_set(EWL_WINDOW(w), TRUE);
-	}
-	if (ewl_window_keyboard_grab_get(EWL_WINDOW(w))) {
+
+	if (ewl_window_keyboard_grab_get(EWL_WINDOW(w)))
 		ewl_window_keyboard_grab_set(EWL_WINDOW(w), TRUE);
-	}
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -197,10 +197,10 @@ ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	p = EWL_POPUP(w);
-
 	if (p->follow)
 		ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
 					ewl_popup_cb_follow_destroy, p);
+
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -223,7 +223,6 @@ ewl_popup_cb_follow_destroy(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
         DCHECK_TYPE("user_data", user_data, EWL_POPUP_TYPE);
 
 	p = EWL_POPUP(user_data);
-
 	p->follow = NULL;
 
 	if (p->type != EWL_POPUP_TYPE_NONE)
