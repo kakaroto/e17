@@ -85,6 +85,13 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                      &interlace_type, NULL, NULL);
         im->w = (int)w32;
         im->h = (int)h32;
+	if ((w32 < 1) || (h32 < 1) || (w32 > 8192) || (h32 > 8192))
+	  {
+             png_read_end(png_ptr, info_ptr);
+             png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
+             fclose(f);
+             return 0;
+	  }
         if (color_type == PNG_COLOR_TYPE_PALETTE)
 	  {
 	     png_set_expand(png_ptr);

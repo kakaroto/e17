@@ -72,6 +72,11 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                }
              w = gif->Image.Width;
              h = gif->Image.Height;
+	     if ((w < 1) || (h < 1) || (w > 8192) || (h > 8192))
+	       {
+                  DGifCloseFile(gif);
+                  return 0;
+	       }
              rows = malloc(h * sizeof(GifRowType *));
              if (!rows)
                {

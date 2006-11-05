@@ -421,7 +421,10 @@ ILBM    ilbm;
 
         im->w = L2RWORD(ilbm.bmhd.data);
         im->h = L2RWORD(ilbm.bmhd.data + 2);
-        if (im->w <= 0 || im->h <= 0) ok = 0;
+	if ((im->w < 1) || (im->h < 1) || (im->w > 8192) || (im->h > 8192))
+	  {
+	     ok = 0;
+	  }
 
         ilbm.depth = ilbm.bmhd.data[8];
         if (ilbm.depth < 1 || (ilbm.depth > 8 && ilbm.depth != 24 && ilbm.depth != 32)) ok = 0; /* Only 1 to 8, 24, or 32 planes. */

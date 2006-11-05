@@ -92,6 +92,12 @@ load(ImlibImage * im, ImlibProgressFunction progress,
      {
         im->w = w = cinfo.output_width;
         im->h = h = cinfo.output_height;
+	if ((w < 1) || (h < 1) || (w > 8192) || (h > 8192))
+	  {
+             jpeg_destroy_decompress(&cinfo);
+             fclose(f);
+             return 0;
+	  }
         UNSET_FLAG(im->flags, F_HAS_ALPHA);
         im->format = strdup("jpeg");
      }

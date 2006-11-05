@@ -47,6 +47,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
            fclose(f);
            return 0;
         }
+      if ((w < 1) || (h < 1) || (w > 8192) || (h > 8192))
+	{
+           fclose(f);
+           return 0;
+	}
       im->w = w;
       im->h = h;
       if (!im->format)

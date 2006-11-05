@@ -107,7 +107,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                }
           }
      }
-   if ((w <= 0) || (w > 8192) || (h <= 0) || (h > 8192) || (v < 0) || (v > 255))
+   if ((v < 0) || (v > 255))
      {
         fclose(f);
         return 0;
@@ -115,6 +115,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    im->w = w;
    im->h = h;
+   if ((w < 1) || (h < 1) || (w > 8192) || (h > 8192))
+     {
+	fclose(f);
+	return 0;
+     }
    if (!im->format)
      {
         if (p == '8')
