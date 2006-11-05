@@ -232,6 +232,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   ob = e_widget_label_add (evas, D_("Password:"));
   e_widget_frametable_object_append (of, ob, 0, 3, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->pass);
+  e_widget_entry_password_set (ob, 1);
   e_widget_frametable_object_append (of, ob, 1, 3, 1, 1, 0, 0, 1, 0);
 
   cfdata->new_path_label = e_widget_label_add (evas, D_("New Mail Path:"));
