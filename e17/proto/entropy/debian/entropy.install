@@ -1,3 +1,0 @@
-debian/entropy/usr/share/entropy/icons/*
-debian/entropy/usr/share/entropy/plugins/*.so
-debian/entropy/usr/bin/*

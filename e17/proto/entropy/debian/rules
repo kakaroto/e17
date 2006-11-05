@@ -8,3 +8,7 @@ DEB_MAKE_CLEAN_TARGET := clean
 clean::
 	if [ -f $(CURDIR)/../../snapshot ]; then ./autogen.sh --prefix=/usr; fi
 
+install/entropy::
+	find debian/entropy/ -name '*.la' -exec rm {} \;
+	find debian/entropy/ -name '*.a' -exec rm {} \;
+
