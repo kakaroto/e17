@@ -41,6 +41,12 @@ ew_dialog_new(const char *title, int toplevel)
 	return ew;
 }
 
+void
+ew_dialog_onclose_set(Entrance_Dialog ew, void (*func)(void*, void*), void *data)
+{
+	etk_signal_connect("destroyed", ETK_OBJECT(ew->owner), ETK_CALLBACK(func), data);
+}
+
 void 
 ew_dialog_show(Entrance_Dialog ew)
 {

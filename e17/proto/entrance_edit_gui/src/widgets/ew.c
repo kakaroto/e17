@@ -1,3 +1,4 @@
+#include <string.h>
 #include <etk/Etk.h>
 #include "Entrance_Widgets.h"
 
@@ -41,7 +42,7 @@ ew_new(void)
 }
 
 void
-ew_title_set(Entrance_Widget ew, char *title)
+ew_title_set(Entrance_Widget ew, const char *title)
 {
 	if(!title)
 		return;

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Entrance
+Comment=Settings manager for Entrance Login Manager
+Icon=@prefix@/share/icons/entrance_edit_gui.png
+Exec=@prefix@/bin/entrance_edit_gui
+TryExec=@prefix@/bin/entrance_edit_gui
+Terminal=0
+Type=Application
+Categories=Application;Settings;

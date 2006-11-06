@@ -36,6 +36,8 @@ void ew_dialog_add(Entrance_Dialog, Entrance_Widget);
 void ew_dialog_close_button_add(Entrance_Dialog ew, void (*func)(void *, void*), void *);
 void ew_dialog_apply_button_add(Entrance_Dialog ew, void (*func)(void *, void*), void *);
 void ew_dialog_ok_button_add(Entrance_Dialog ew, void (*func)(void *, void*), void *);
+void ew_dialog_onclose_set(Entrance_Dialog ew, void (*func)(void*, void*), void *data);
+
 Entrance_Widget ew_dialog_group_add(Entrance_Dialog, const char *, int);
 
 #endif

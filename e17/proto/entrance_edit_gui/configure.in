@@ -196,5 +196,6 @@ AC_OUTPUT([
 			 data/icons/48x48/devices/Makefile \
 			 data/icons/48x48/status/Makefile \
 			 data/icons/48x48/mimetypes/Makefile \
+			 data/entrance_edit_gui.desktop \
 			 debian/changelog
 			 ])

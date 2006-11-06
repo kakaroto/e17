@@ -1,3 +1,4 @@
+#include <string.h>
 #include <Etk.h>
 #include "Entrance_Widgets.h"
 

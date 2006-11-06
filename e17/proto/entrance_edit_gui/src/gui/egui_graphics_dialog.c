@@ -1,4 +1,5 @@
 #include <limits.h>
+#include <string.h>
 #include <Evas.h>
 #include <Ecore_File.h>
 #include <Ecore_Data.h>
@@ -86,6 +87,7 @@ _egui_gd_create_widgets(Egui_Graphics_Dialog egd)
    ew_dialog_close_button_add(egd->win, _gd_cb_close, egd);
    ew_dialog_apply_button_add(egd->win, _gd_cb_apply, egd);
    ew_dialog_ok_button_add(egd->win, _gd_cb_ok, egd);
+   ew_dialog_onclose_set(egd->win, _gd_cb_close, egd);
 
    egd->newly_created = 1;
    return egd;
@@ -97,6 +99,8 @@ egui_gd_show(Egui_Graphics_Dialog egd)
 	if(!egd)
 		return;
   
+	printf("egd->win = %s\n", egd->win);
+
    if(egd->win == NULL)
 	   egd = _egui_gd_create_widgets(egd);
 
@@ -135,7 +139,6 @@ _gd_cb_close(void *object, void *data)
 {
 	_gd_close(data);
 	/*TODO: neccessary?*/
-	data = NULL;
 }
 
 static void
@@ -199,6 +202,7 @@ _gd_close(void* data)
 		return;
 	ew_dialog_destroy(egd->win);
 	egd->win = NULL;
+	printf("egd->win has been set to null\n");
 }
 
 static char*
