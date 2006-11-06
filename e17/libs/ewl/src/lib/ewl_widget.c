@@ -772,7 +772,7 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
 	tmp = p;
 	while (tmp) {
 		if (tmp == w) {
-			DWARNING("ERROR: Recursivly nested widgets.\n");
+			DWARNING("ERROR: Recursivly nested widgets.");
 			DRETURN(DLEVEL_STABLE);
 		}
 		tmp = tmp->parent;
@@ -1969,14 +1969,14 @@ ewl_widget_layer_update(Ewl_Widget *w)
 		Evas_Object *above;
 		
 		if (!(above = ewl_widget_layer_neighbor_find_above(w)))
-			DWARNING("Have not found an object above");
+			DWARNING("Have not found an object above.");
 		evas_object_stack_above(w->smart_object, above);
 	}
 	else {
 		Evas_Object *below;
 
 		if (!(below = ewl_widget_layer_neighbor_find_below(w)))
-			DWARNING("Have not found an object below");
+			DWARNING("Have not found an object below.");
 		evas_object_stack_below(w->smart_object, below);
 	}
 
@@ -2266,7 +2266,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 		evas_object_repeat_events_set(w->theme_object, 1);
 		if (!edje_object_file_set(w->theme_object, w->bit_path,
 								w->bit_group))
-			DWARNING("Error setting edje object %s, %s\n",
+			DWARNING("Error setting edje object %s, %s.",
 							w->bit_path, w->bit_group);
 
 		/*

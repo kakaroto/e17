@@ -355,7 +355,7 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 	 * check bounds
 	 */
 	if (start_col < 0) {
-		DWARNING("start_col out of bounds. min is 0\n");
+		DWARNING("start_col out of bounds. min is 0.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 
@@ -365,7 +365,7 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 		new_cols = g->cols;
 	
 	if (start_row < 0) {
-		DWARNING("start_row out of bounds. min is 0\n");
+		DWARNING("start_row out of bounds. min is 0.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 
@@ -528,7 +528,7 @@ ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width)
 	 * check bounds
 	 */
 	if (col < 0) {
-		DWARNING("parameter 'col' is out of bounds\n");
+		DWARNING("parameter 'col' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 	else if (col >= g->cols) {
@@ -583,7 +583,7 @@ ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw)
 	 * check bounds
 	 */
 	if (col < 0) {
-		DWARNING("parameter 'col' is out of bounds\n");
+		DWARNING("parameter 'col' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 	else if (col >= g->cols) {
@@ -637,7 +637,7 @@ ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col)
 	 * check bounds
 	 */
 	if (col < 0) {
-		DWARNING("parameter 'col' is out of bounds\n");
+		DWARNING("parameter 'col' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 	else if (col >= g->cols) {
@@ -670,7 +670,7 @@ ewl_grid_column_w_remove(Ewl_Grid *g, int col)
 	 * check bounds
 	 */
 	if (col < 0) {
-		DWARNING("parameter 'col' is out of bounds\n");
+		DWARNING("parameter 'col' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 	else if (col >= g->cols) {
@@ -725,7 +725,7 @@ ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height)
 	 * check bounds
 	 */
 	if (row < 0) {
-		DWARNING("parameter 'row' is out of bounds\n");
+		DWARNING("parameter 'row' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 	else if (row >= g->rows) {
@@ -780,7 +780,7 @@ ewl_grid_row_relative_h_set(Ewl_Grid *g, int row, float relh)
 	 * check bounds
 	 */
 	if (row < 0) {
-		DWARNING("parameter 'row' is out of bounds\n");
+		DWARNING("parameter 'row' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 	else if (row >= g->rows) {
@@ -834,7 +834,7 @@ ewl_grid_row_preferred_h_use(Ewl_Grid *g, int row)
 	 * check bounds
 	 */
 	if (row < 0) {
-		DWARNING("parameter 'row' is out of bounds\n");
+		DWARNING("parameter 'row' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 	else if (row >= g->rows) {
@@ -867,7 +867,7 @@ ewl_grid_row_h_remove(Ewl_Grid *g, int row)
 	 * check bounds
 	 */
 	if (row < 0) {
-		DWARNING("parameter 'row' is out of bounds\n");
+		DWARNING("parameter 'row' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
 	else if (row >= g->rows) {

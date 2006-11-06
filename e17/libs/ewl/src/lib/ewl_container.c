@@ -188,7 +188,7 @@ ewl_container_child_append(Ewl_Container *pc, Ewl_Widget *child)
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_widget_parent_of(child, EWL_WIDGET(pc))) {
-		DWARNING("Attempting to make a child a parent of itself");
+		DWARNING("Attempting to make a child a parent of itself.");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -223,7 +223,7 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_widget_parent_of(child, EWL_WIDGET(pc))) {
-		DWARNING("Attempting to make a child a parent of itself");
+		DWARNING("Attempting to make a child a parent of itself.");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -255,7 +255,7 @@ ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_widget_parent_of(child, EWL_WIDGET(pc))) {
-		DWARNING("Attempting to make a child a parent of itself");
+		DWARNING("Attempting to make a child a parent of itself.");
 		DRETURN(DLEVEL_STABLE);
 	}
 

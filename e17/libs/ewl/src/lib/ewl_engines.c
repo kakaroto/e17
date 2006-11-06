@@ -130,14 +130,14 @@ ewl_engine_new(const char *name)
 							EWL_ENGINE_DIR, name);
 	if (!ecore_file_exists(filename))
 	{
-		DWARNING("Given engine name dosen't exist.\n");
+		DWARNING("Given engine name dosen't exist.");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
 	handle = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL);
 	if (!handle) 
 	{
-		DWARNING("Unable to dlopen engine file.\n");
+		DWARNING("Unable to dlopen engine file.");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
@@ -145,7 +145,7 @@ ewl_engine_new(const char *name)
 	if (!dependancies)
 	{
 		DWARNING("Unable to find ewl_engine_dependancies in "
-				"engine file.\n");
+				"engine file.");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
@@ -173,7 +173,7 @@ ewl_engine_new(const char *name)
 	create_engine = dlsym(handle, "ewl_engine_create");
 	if (!create_engine)
 	{
-		DWARNING("Unable to find ewl_engine_create in engine file.\n");
+		DWARNING("Unable to find ewl_engine_create in engine file.");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
@@ -1305,7 +1305,7 @@ ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type)
 			break;
 
 		default:
-			DWARNING("Unknown hook type\n");
+			DWARNING("Unknown hook type.");
 			DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 

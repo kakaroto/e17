@@ -418,7 +418,7 @@ ewl_notebook_page_tab_widget_get(Ewl_Notebook *n, Ewl_Widget *page)
 	t = ewl_attach_widget_association_get(page);
 	if (!t)
 	{
-		DWARNING("We have a notebook page with no tab, bad, very bad.\n");
+		DWARNING("We have a notebook page with no tab, bad, very bad.");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 

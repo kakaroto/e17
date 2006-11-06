@@ -128,6 +128,7 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	fprintf(stderr, "\tIn function:\n\n" \
 			"\t%s();\n\n", __func__); \
 	fprintf(stderr, fmt, ## args); \
+	fprintf(stderr, "\n"); \
 	ewl_backtrace(); \
 	ewl_segv(); \
 }

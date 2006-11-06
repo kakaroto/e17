@@ -130,7 +130,7 @@ ewl_iconbox_new(void)
 	}
 
 	if (!ewl_iconbox_init(ib)) {
-		DWARNING("Failed iconbox init...\n");
+		DWARNING("Failed iconbox init.");
 		FREE(ib);
 		ib = NULL;
 	}
@@ -151,12 +151,12 @@ ewl_iconbox_icon_new(void)
 
 	icon = NEW(Ewl_Iconbox_Icon, 1);
 	if (!icon) {
-		DWARNING("Failed to init icon..\n");
+		DWARNING("Failed to init icon.");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
 	if (!ewl_iconbox_icon_init(icon)) {
-		DWARNING("Failed iconbox init...\n");
+		DWARNING("Failed iconbox init.");
 		FREE(icon);
 		icon = NULL;
 	}

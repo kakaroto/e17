@@ -457,7 +457,7 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 	key = dirname(path);
 	if (!ecore_file_exists(key) && !ecore_file_mkpath(key))
 	{
-		DWARNING("Unable to create %s directory path.\n", key);
+		DWARNING("Unable to create %s directory path.", key);
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 	FREE(path);
@@ -470,7 +470,7 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 			S_IRWXU | S_IRGRP | S_IROTH);
 	if (fd == -1) 
 	{
-		DWARNING("Unable to open cfg file %s\n", file);
+		DWARNING("Unable to open cfg file %s.", file);
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
@@ -481,7 +481,7 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 
 	if (fcntl(fd, F_SETLKW, &fl) == -1)
 	{
-		DWARNING("Unable to lock %s for write\n", file);
+		DWARNING("Unable to lock %s for write.", file);
 		close(fd);
 
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -749,7 +749,7 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 	fd = open(file, O_RDONLY, S_IRUSR);
 	if (fd == -1) 
 	{
-		DWARNING("Unable to open cfg file %s\n", file);
+		DWARNING("Unable to open cfg file %s.", file);
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
@@ -760,7 +760,7 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 
 	if (fcntl(fd, F_SETLKW, &fl) == -1)
 	{
-		DWARNING("Unable to lock %s for read\n", file);
+		DWARNING("Unable to lock %s for read.", file);
 
 		close(fd);
 		DRETURN_INT(FALSE, DLEVEL_STABLE);

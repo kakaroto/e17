@@ -95,7 +95,7 @@ ewl_tree2_view_scrolled_scroll_headers_set(Ewl_Tree2_View *view,
 
 	if (!view->parent)
 	{
-		DWARNING("Need parent tree before setting headers scrolled\n");
+		DWARNING("Need parent tree before setting headers scrolled.");
 		DRETURN(DLEVEL_STABLE);
 	}
 

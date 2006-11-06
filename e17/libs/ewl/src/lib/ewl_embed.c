@@ -913,7 +913,7 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 		*pw = CURRENT_W(widget);
 		*ph = CURRENT_H(widget);
 	} else {
-		DWARNING("Could not find widget for dnd position event");
+		DWARNING("Could not find widget for dnd position event.");
 	}
 
 	DRETURN_PTR(result, DLEVEL_STABLE);

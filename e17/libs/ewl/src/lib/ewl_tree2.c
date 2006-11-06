@@ -114,7 +114,7 @@ ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 	c = ewl_tree2_column_new();
 	if (!c)
 	{
-		DWARNING("Unable to create new tree column.\n");
+		DWARNING("Unable to create new tree column.");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -149,7 +149,7 @@ ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 	c = ewl_tree2_column_new();
 	if (!c)
 	{
-		DWARNING("Unable to create new tree column.\n");
+		DWARNING("Unable to create new tree column.");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -186,7 +186,7 @@ ewl_tree2_column_insert(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 	c = ewl_tree2_column_new();
 	if (!c)
 	{
-		DWARNING("Unable to create new tree column.\n");
+		DWARNING("Unable to create new tree column.");
 		DRETURN(DLEVEL_STABLE);
 	}
 

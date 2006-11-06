@@ -444,7 +444,7 @@ ewl_freebox_layout_comparator(Ewl_Freebox *fb)
 	{
 		DWARNING("No comparator set and using "
 			 "EWL_FREEBOX_LAYOUT_COMPARATOR. "
-			 "Bad programmer, bad.\n");
+			 "Bad programmer, bad.");
 		DRETURN(DLEVEL_STABLE);
 	}
 

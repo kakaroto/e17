@@ -159,7 +159,7 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	{
 		if (!ewl_widget_type_is(w, EWL_HIGHLIGHT_TYPE))
 		{
-			DWARNING("Unknown widget clicked for container.\n");
+			DWARNING("Unknown widget clicked for container.");
 			DRETURN(DLEVEL_STABLE);
 		}
 

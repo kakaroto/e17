@@ -125,7 +125,7 @@ ewl_io_manager_mime_type_icon_name_get(const char *mime)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mime", mime, NULL);
 
-	DWARNING("NOT WRITTEN\n");
+	DWARNING("NOT WRITTEN");
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
@@ -196,14 +196,14 @@ ewl_io_manager_uri_read(const char *uri)
 	mime = ewl_io_manager_uri_mime_type_get(uri);
 	if (!mime)
 	{
-		DWARNING("Unable to determine mime type for %s\n", uri);
+		DWARNING("Unable to determine mime type for %s.", uri);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
 	plugin = ewl_io_manager_plugin_get(mime);
 	if (!plugin)
 	{
-		DWARNING("No plugin available to read mime type: %s.\n", mime);
+		DWARNING("No plugin available to read mime type: %s.", mime);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
@@ -231,7 +231,7 @@ ewl_io_manager_string_read(const char *string, const char *mime)
 	plugin = ewl_io_manager_plugin_get(mime);
 	if (!plugin)
 	{
-		DWARNING("No plugin available to read mime type: %s\n", mime);
+		DWARNING("No plugin available to read mime type: %s.", mime);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
@@ -263,7 +263,7 @@ ewl_io_manager_uri_write(Ewl_Widget *data, const char *uri,
 	plugin = ewl_io_manager_plugin_get(mime);
 	if (!plugin)
 	{
-		DWARNING("No plugin available to write mime type: %s.\n", mime);
+		DWARNING("No plugin available to write mime type: %s.", mime);
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
@@ -294,7 +294,7 @@ ewl_io_manager_string_write(Ewl_Widget *data, char **string,
 	plugin = ewl_io_manager_plugin_get(mime);
 	if (!plugin)
 	{
-		DWARNING("No plugin available to write mime type: %s.\n", mime);
+		DWARNING("No plugin available to write mime type: %s.", mime);
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
