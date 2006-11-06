@@ -9,9 +9,25 @@
 void
 egui_background_dialog_show(void* data)
 {
+	Ecore_List *bg_paths = ecore_list_new();
+	char e_bg_path[PATH_MAX];
+
+	char* home_dir = getenv("HOME");
+	if(home_dir != NULL)
+	{
+		snprintf(e_bg_path, PATH_MAX, "%s/.e/e/backgrounds", home_dir);
+		ecore_list_append(bg_paths, e_bg_path);
+	}
+
+	/*TODO: do not add this yet, the preview is still wrong, it should eventually show
+	 * currently choosen bg/theme on presently configured theme/bg*/
+	/*ecore_list_append(bg_paths, PREFIX "/share/entrance/themes");*/
+
 	Egui_Graphics_Dialog_Settings background_settings = {
 		"background",
-		"/usr/share/enlightenment/data/backgrounds",
+		/*this is an artifact that will have to go, once ew_*list can handle selected first member automagically*/
+		PREFIX "/share/enlightenment/data/backgrounds",
+		bg_paths,
 		"e/desktop/background",
 		"Entrance Configuration - Background",
 		"Backgrounds",

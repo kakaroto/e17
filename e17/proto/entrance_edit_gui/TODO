@@ -16,12 +16,10 @@ GUI
 - There's a todo above some commented code in egui_graphics_dialog.c related to making the preview even more awesome.
 - We should have a way to show a COMPLETE entrance preview i think in the main ui screen or something, that shows the greetings, etc... so when we change stuff, we can see how it looks like. This is different from the theme and background previews, which only show what the theme and background look like, but hey, maybe we should combine them? Dunno... not critical, just a nice to have feature.
 - If we click on a file in the file selector let it appear in the Preview object of the theme/background dialog.
-- Background selector should have different sections - E17 System backgrounds, Entrance System Backgrounds, Browse.
 	
 ***SHOW STOPPERS - TOP PRIORITY
 ============================
 - fileselector integration into theme and background dialogs.
-- ability for theme and background dialog to read background and themes from multiple locations.
 - Entrance_List needs to be refactored to use as common a base as possible. Also, we need to select the first row by default when adding to a list.
 
 Issues that MUST go before tree relocates to entrance's tree

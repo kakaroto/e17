@@ -1,5 +1,6 @@
 #ifndef _EGUI_H
 #define _EGUI_H
+#include "../config.h"
 #include "egui_graphics_dialog.h"
 
 #define EGUI_TYPE_BUTTON 0

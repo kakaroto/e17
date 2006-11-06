@@ -19,11 +19,14 @@ static void _gd_cb_apply(void *, void *);
 static void _gd_cb_close(void *, void *);
 static void _gd_cb_browse(void*, void*);
 
+static void _cb_dirs(void *list_data, void *data);
+
 static char* _gd_get_path(Egui_Graphics_Dialog, const char *);
 static void _gd_close(void*);
 static int _gd_apply(void*);
 static char* _gd_populate_list(Egui_Graphics_Dialog);
 static void _gd_load_preview(Egui_Graphics_Dialog, const char *);
+static char* _gd_process_dir(Egui_Graphics_Dialog, char *dir);
 
 static Egui_Graphics_Dialog _egui_gd_create_widgets(Egui_Graphics_Dialog egd);
 
@@ -99,8 +102,6 @@ egui_gd_show(Egui_Graphics_Dialog egd)
 	if(!egd)
 		return;
   
-	printf("egd->win = %s\n", egd->win);
-
    if(egd->win == NULL)
 	   egd = _egui_gd_create_widgets(egd);
 
@@ -175,13 +176,14 @@ _gd_apply(void* data)
 		return 0;
 	}
 
-	if(egd->egds.use_full_path)
+
+	/*if(egd->egds.use_full_path)
 	{
 		char *full_path = _gd_get_path(egd, graphic);
 		entrance_edit_string_set(egd->egds.entrance_edit_key, full_path);
 		free(full_path);
 	}
-	else 
+	else */
 		entrance_edit_string_set(egd->egds.entrance_edit_key, graphic);
 
 	if(!entrance_edit_save())
@@ -202,13 +204,20 @@ _gd_close(void* data)
 		return;
 	ew_dialog_destroy(egd->win);
 	egd->win = NULL;
-	printf("egd->win has been set to null\n");
 }
 
 static char*
-_gd_populate_list(Egui_Graphics_Dialog egd)
+_gd_process_dir(Egui_Graphics_Dialog egd, char *dir)
 {
-   Ecore_List *glist = ecore_file_ls(egd->egds.files_path);
+	char full_path[PATH_MAX];
+
+   if(dir == NULL)
+	   return;
+
+   if(egd == NULL)
+	   return;
+
+   Ecore_List *glist = ecore_file_ls(dir);
    char* first;
 
    if(glist && !ecore_list_is_empty(glist))
@@ -218,18 +227,56 @@ _gd_populate_list(Egui_Graphics_Dialog egd)
 	   char* graphic;
 	   first = strdup(ecore_list_first(glist));
 
+
 	   while((graphic = ecore_list_next(glist)))
 		 {
 			char *graphic_no_ext = ecore_file_strip_ext(graphic);
-			ew_textlist_add(egd->list_thumbs, graphic_no_ext, graphic, strlen(graphic) + 1, _gd_cb_selected, egd);
+			if(egd->egds.use_full_path)
+				snprintf(full_path, PATH_MAX, "%s/%s", dir, graphic);
+			else
+				snprintf(full_path, PATH_MAX, "%s", graphic);
+
+			ew_textlist_add(egd->list_thumbs, graphic_no_ext, full_path, strlen(full_path) + 1, _gd_cb_selected, egd);
 			free(graphic_no_ext);
 		 }
 
 	   ecore_list_destroy(glist);
    }
 
+   char *res = calloc(sizeof(char), PATH_MAX);
+   if (egd->egds.use_full_path)
+	   snprintf(res, PATH_MAX, "%s/%s", dir, first);
+   else
+	   snprintf(res, PATH_MAX, "%s", first);
+
+   return res;
+}
+
+static char*
+_gd_populate_list(Egui_Graphics_Dialog egd)
+{
+
+   char* first = _gd_process_dir(egd, egd->egds.files_path);
+
+   if (egd->egds.extra_file_paths != NULL)
+   {
+	   ecore_list_for_each(egd->egds.extra_file_paths, _cb_dirs, egd);
+   }
+
+
    return first;
 }
+
+static void 
+_cb_dirs(void *list_data, void *data)
+{
+	char* apath = list_data;
+	Egui_Graphics_Dialog egd = data;
+
+   _gd_process_dir(egd, apath);
+}
+
+
 
 static void
 _gd_load_preview(Egui_Graphics_Dialog egd, const char *graphic)
@@ -237,7 +284,13 @@ _gd_load_preview(Egui_Graphics_Dialog egd, const char *graphic)
 	if(!egd)
 		return;
 
-   char *file = _gd_get_path(egd, graphic);
+   char *file = NULL;
+
+   if(egd->egds.use_full_path)
+	   file = strdup(graphic);
+   else
+	   file = _gd_get_path(egd, graphic);
+
    static Evas *evas = NULL;
    if(evas == NULL || egd->newly_created == 1) 
 	   evas = ew_preview_evas_get(egd->img_preview, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
@@ -262,4 +315,3 @@ _gd_load_preview(Egui_Graphics_Dialog egd, const char *graphic)
    /*FIXME: selecting the first row doesn't work - maybe we select first row while adding elements to the list:(*/
    /*ew_list_first_row_select(list_thumbs);*/
 }
-

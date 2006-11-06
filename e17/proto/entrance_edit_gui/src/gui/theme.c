@@ -11,7 +11,8 @@ egui_theme_dialog_show(void *data)
 {
 	Egui_Graphics_Dialog_Settings theme_settings = {
 		"theme",
-		"/usr/share/entrance/themes",
+		PREFIX "/share/entrance/themes",
+		NULL,
 		"Preview",
 		"Entrance Configuration - Themes",
 		"Themes",

@@ -13,7 +13,7 @@ AM_INIT_AUTOMAKE(entrance_edit_gui, 0.0.1)
 
 AC_PREREQ(2.52)
 
-AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER(src/config.h)
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -23,6 +23,12 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 LIBS=""
+
+if test "x${prefix}" = "xNONE"; then
+	prefix="${ac_default_prefix}"
+fi
+
+AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [Install prefix])
 
 if test "x${exec_prefix}" = "xNONE"; then
   if test "x${prefix}" = "xNONE"; then

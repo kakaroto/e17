@@ -1,9 +1,12 @@
 #ifndef _EGUI_GRAPHICS_DIALOG_H
 #define _EGUI_GRAPHICS_DIALOG_H
 
+#include <Ecore_Data.h>
+
 typedef struct {
 	char *name;
 	char *files_path;
+	Ecore_List *extra_file_paths;
 	char *preview_edje_part;
 	char *dialog_title;
 	char *list_title;
