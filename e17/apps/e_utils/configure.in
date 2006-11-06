@@ -134,7 +134,6 @@ AC_PATH_GENERIC(epsilon, 0.3.0,
   [have_epsilon="no"]
 )
 
-build_e17genmenu="no"
 build_eap_edit="no"
 build_e17setroot="no"
 build_entangle="no"
@@ -142,10 +141,6 @@ build_exige="no"
 
 if test "x$have_ewl" = "xyes" -a "x$have_engrave" = "xyes"; then
   build_eap_edit="yes"
-fi
-
-if test "x$have_eet" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_engrave" = "xyes"; then
-  build_e17genmenu="yes"
 fi
 
 if test "x$have_imlib2" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_engrave" = "xyes" -a "x$have_enlightenment" = "xyes"; then
@@ -160,7 +155,6 @@ if test "x$have_eet" = "xyes" -a "x$have_evas" = "xyes" -a "x$have_ecore" = "xye
   build_exige="yes"
 fi
 
-AM_CONDITIONAL(BUILD_E17GENMENU, test "x$build_e17genmenu" = "xyes")
 AM_CONDITIONAL(BUILD_EAP_EDIT, test "x$build_eap_edit" = "xyes")
 AM_CONDITIONAL(BUILD_E17SETROOT, test "x$build_e17setroot" = "xyes")
 AM_CONDITIONAL(BUILD_ENTANGLE, test "x$build_entangle" = "xyes")
@@ -185,15 +179,12 @@ AC_OUTPUT([
 Makefile
 e_utils.spec
 data/Makefile
-data/e17genmenu/Makefile
-data/e17genmenu/icons/Makefile
 data/entangle/Makefile
 data/entangle/default/Makefile
 data/exige/Makefile
 data/exige/default/Makefile
 src/Makefile
 src/bin/Makefile
-src/bin/e17genmenu/Makefile
 src/bin/eapp_edit/Makefile
 src/bin/e17setroot/Makefile
 src/bin/entangle/Makefile
@@ -227,7 +218,6 @@ echo "  Enlightenment...: "$have_enlightenment
 echo
 echo "Utilities that will be built:"
 echo
-echo "  e17genmenu......: "$build_e17genmenu
 echo "  eap_edit........: "$build_eap_edit
 echo "  E17 Setroot.....: "$build_e17setroot
 echo "  Entangle........: "$build_entangle

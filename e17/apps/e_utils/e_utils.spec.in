@@ -53,14 +53,6 @@ Requires: enlightenment >= 0.16.999
 %description exige
 A run dialog box for Enlightenment.
 
-%package e17genmenu
-Summary:  A menu generator for e17
-Group: User Interface/Desktops
-Requires: enlightenment >= 0.16.999
-
-%description e17genmenu
-A menu generator for e17
-
 %prep
 %setup -q
 
@@ -103,11 +95,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_bindir}/exige
 %{_datadir}/%{name}/data/exige/*
-
-%files e17genmenu
-%defattr(-, root, root)
-%{_bindir}/e17genmenu
-%{_datadir}/%{name}/data/e17genmenu/icons/*
 
 
 %changelog
