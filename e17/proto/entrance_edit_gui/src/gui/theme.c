@@ -18,7 +18,8 @@ egui_theme_dialog_show(void *data)
 		"Themes",
 		ENTRANCE_EDIT_KEY_CLIENT_THEME_STR,
 		0,
-		1
+		1,
+		EGDS_BACKGROUND
 	};
 
 

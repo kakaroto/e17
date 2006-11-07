@@ -13,7 +13,6 @@ Entrance Widgets
 GUI
 ==================
 - implement sessions screen
-- There's a todo above some commented code in egui_graphics_dialog.c related to making the preview even more awesome.
 - We should have a way to show a COMPLETE entrance preview i think in the main ui screen or something, that shows the greetings, etc... so when we change stuff, we can see how it looks like. This is different from the theme and background previews, which only show what the theme and background look like, but hey, maybe we should combine them? Dunno... not critical, just a nice to have feature.
 - If we click on a file in the file selector let it appear in the Preview object of the theme/background dialog.
 	

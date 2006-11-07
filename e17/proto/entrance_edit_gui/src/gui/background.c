@@ -33,7 +33,8 @@ egui_background_dialog_show(void* data)
 		"Backgrounds",
 		ENTRANCE_EDIT_KEY_CLIENT_BACKGROUND_STR,
 		1,
-		0
+		0,
+		EGDS_THEME
 	};
 
 	static Egui_Graphics_Dialog egd = NULL;

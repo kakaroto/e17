@@ -67,3 +67,22 @@ egui_save_checkbox(void *w, const char *key, int ktype)
 	if(ktype == EGUI_TYPE_INT)
 		entrance_edit_int_set(key, ew_checkbox_is_active(w));
 }
+
+char*
+egui_get_current_bg(void)
+{
+	return entrance_edit_string_get(ENTRANCE_EDIT_KEY_CLIENT_BACKGROUND_STR);
+}
+
+char*
+egui_get_current_theme(void)
+{
+	char *res = calloc(PATH_MAX, sizeof(*res));
+	if(!res)
+		return NULL;
+
+	char* theme = entrance_edit_string_get(ENTRANCE_EDIT_KEY_CLIENT_THEME_STR);
+	snprintf(res, PATH_MAX, PREFIX "/share/entrance/themes/%s", theme);
+
+	return res;
+}

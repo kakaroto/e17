@@ -27,4 +27,7 @@ void egui_save_entry(void *w, const char *key, int ktype);
 void egui_save_checkbox(void *w, const char *key, int ktype);
 void egui_save_list(void *w, const char *key, int ktype);
 
+char* egui_get_current_bg(void);
+char* egui_get_current_theme(void);
+
 #endif

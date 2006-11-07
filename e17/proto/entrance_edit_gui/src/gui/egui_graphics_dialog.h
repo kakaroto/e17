@@ -3,6 +3,9 @@
 
 #include <Ecore_Data.h>
 
+#define EGDS_BACKGROUND 0
+#define EGDS_THEME 1
+
 typedef struct {
 	char *name;
 	char *files_path;
@@ -14,6 +17,7 @@ typedef struct {
 
 	int use_full_path;
 	int show_pointer_options;
+	int keep_part;
 } Egui_Graphics_Dialog_Settings;
 
 typedef struct {

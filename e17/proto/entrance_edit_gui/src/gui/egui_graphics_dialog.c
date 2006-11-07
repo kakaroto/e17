@@ -177,14 +177,7 @@ _gd_apply(void* data)
 	}
 
 
-	/*if(egd->egds.use_full_path)
-	{
-		char *full_path = _gd_get_path(egd, graphic);
-		entrance_edit_string_set(egd->egds.entrance_edit_key, full_path);
-		free(full_path);
-	}
-	else */
-		entrance_edit_string_set(egd->egds.entrance_edit_key, graphic);
+	entrance_edit_string_set(egd->egds.entrance_edit_key, graphic);
 
 	if(!entrance_edit_save())
 	{
@@ -295,22 +288,28 @@ _gd_load_preview(Egui_Graphics_Dialog egd, const char *graphic)
    if(evas == NULL || egd->newly_created == 1) 
 	   evas = ew_preview_evas_get(egd->img_preview, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
 
-   /*TODO: currently, i'm just grabbing *file and displaying blindly, which mean, I won't be able to 
-	* preview different background and themes, the below commented code should be filled out to
-	* pick up the most recently selected combo of bg and theme, and use that instead*/
-
-   /*char *bg_path = _gd_get_bg_path();
-   char *theme_path = _gd_get_theme_path();*/
+   char *bg_path = egui_get_current_bg();
+   char *theme_path = egui_get_current_theme();
 
    static Evas_Object *es  = NULL;
    if(es == NULL || egd->newly_created == 1) 
 	   es = es_new(evas);
 
-   es_background_edje_set(es, file);
-   es_main_edje_set(es, file);
+   if(egd->egds.keep_part == EGDS_BACKGROUND)
+	   es_background_edje_set(es, bg_path);
+   else
+	   es_background_edje_set(es, file);
+
+   if(egd->egds.keep_part == EGDS_THEME)
+	   es_main_edje_set(es, theme_path); 
+   else 
+	   es_main_edje_set(es, file);
+
    evas_object_resize(es, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
    evas_object_show(es);
 
+   free(bg_path);
+   free(theme_path);
    free(file);
    /*FIXME: selecting the first row doesn't work - maybe we select first row while adding elements to the list:(*/
    /*ew_list_first_row_select(list_thumbs);*/
