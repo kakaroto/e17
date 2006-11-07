@@ -120,7 +120,6 @@ create_test(Ewl_Container *box)
 	ewl_object_padding_set(EWL_OBJECT(entry[0]), 5, 5, 5, 0);
 	ewl_container_child_append(EWL_CONTAINER(entry_box), entry[0]);
 	ewl_widget_show(entry[0]);
-ewl_text_fmt_dump(entry[0]);
 
 	entry[1] = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(entry[1]), "E W L ! ! !");
