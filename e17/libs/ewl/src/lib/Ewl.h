@@ -249,8 +249,6 @@ extern"C" {
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_Data.h>
-#include <Ecore_X.h>
-#include <Ecore_X_Cursor.h>
 
 #include <ewl_enums.h>
 
