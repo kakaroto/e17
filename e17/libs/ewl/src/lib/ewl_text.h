@@ -44,12 +44,7 @@
 #define EWL_TEXT(x) ((Ewl_Text *)x)
 
 /**
- * A tree containing the text information
- */
-typedef struct Ewl_Text_Tree Ewl_Text_Tree;
-
-/**
- * A context node for the tree, contains formatting information
+ * A context node for formatting information
  */
 typedef struct Ewl_Text_Context Ewl_Text_Context;
 
@@ -86,8 +81,13 @@ struct Ewl_Text
 
 	struct
 	{
-		Ewl_Text_Tree *tree;	  /**< The formatting tree */
-		Ewl_Text_Tree *current;	  /**< The current formatting node */
+		Ecore_DList *nodes;	  /**< The formatting nodes */
+
+		struct
+		{
+			Ewl_Text_Context *tx; /**< The current formatting context */
+			unsigned int char_idx; /**< The current char index */
+		} current;	/**< Current text info */
 	} formatting;	  /**< Holds the formatting information */
 
 	Ecore_List *triggers;	  	  /**< The list of triggers */
@@ -309,9 +309,7 @@ void 		 ewl_text_double_underline_color_get(Ewl_Text *t,
 							unsigned int *a,
 							unsigned int char_idx);
 
-Ecore_List	*ewl_text_serialize(Ewl_Text *t);
-void		 ewl_text_deserialize(Ewl_Text *t, Ecore_List *nodes, 
-							const char *text);
+void ewl_text_fmt_dump(Ewl_Text *t);
 
 /**
  * Inherits from Ewl_Widget and extends to provide a trigger for the text
@@ -383,7 +381,7 @@ void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 
 /**
- * Stores context information for the different nodes in the formatting tree
+ * Stores context information for the different formatting nodes
  */
 struct Ewl_Text_Context
 {
@@ -421,59 +419,6 @@ void ewl_text_context_release(Ewl_Text_Context *tx);
 
 int ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b);
 Ewl_Text_Context *ewl_text_context_dup(Ewl_Text_Context *old);
-
-/**
- * The text formatting tree nodes
- */
-struct Ewl_Text_Tree
-{
-	Ewl_Text_Tree *parent;	/**< Our parent tree */
-
-	struct 
-	{
-		unsigned int chars;	/**< Character length */
-		unsigned int bytes;	/**< Byte length */
-	} length;			/**< Node lengths */
-
-	Ecore_List *children;	/**< Our child nodes */
-	Ewl_Text_Context *tx;	/**< The context to use for this node */
-};
-
-Ewl_Text_Tree *ewl_text_tree_new(void);
-void ewl_text_tree_free(Ewl_Text_Tree *tree);
-void ewl_text_tree_condense(Ewl_Text_Tree *tree);
-void ewl_text_tree_dump(Ewl_Text_Tree *tree, const char *indent);
-
-Ewl_Text_Tree *ewl_text_tree_node_get(Ewl_Text_Tree *tree, 
-					unsigned int char_idx, 
-					unsigned int inclusive);
-Ewl_Text_Tree *ewl_text_tree_node_in_bytes_get(Ewl_Text_Tree *tree, 
-						unsigned int byte_idx, 
-					unsigned int inclusive);
-void ewl_text_tree_current_node_set(Ewl_Text *t, Ewl_Text_Tree *current);
-void ewl_text_tree_insert(Ewl_Text *t, unsigned int char_idx, 
-					unsigned int char_len,
-					unsigned int byte_len);
-void ewl_text_tree_delete(Ewl_Text *t, unsigned int char_idx, 
-					unsigned int char_len,
-					unsigned int byte_idx, 
-					unsigned int byte_count);
-
-Ewl_Text_Context *ewl_text_tree_context_get(Ewl_Text_Tree *tree, 
-						unsigned int char_idx);
-void ewl_text_tree_context_set(Ewl_Text *t, unsigned int context_mask,
-						Ewl_Text_Context *tx);
-void ewl_text_tree_context_apply(Ewl_Text *t, unsigned int context_mask,
-	                                	Ewl_Text_Context *tx, 
-						unsigned int char_idx,
-						unsigned int char_len);
-void ewl_text_tree_context_style_apply(Ewl_Text *t, Ewl_Text_Style style,
-							unsigned int char_idx,
-							unsigned int char_len,
-							unsigned int invert);
-void ewl_text_tree_context_style_remove(Ewl_Text *t, Ewl_Text_Style style,
-                                        	unsigned int char_idx, 
-						unsigned int char_len);
 
 /**
  * Typdef for the Ewl_Text_Trigger_Area struct
