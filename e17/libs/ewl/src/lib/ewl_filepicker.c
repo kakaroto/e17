@@ -579,7 +579,7 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 
 		dir = strdup(ewl_filelist_directory_get(fl));
 		ewl_filepicker_path_populate(fp, dir);
-		ewl_text_text_set(EWL_TEXT(fp->file_entry), NULL);
+		ewl_text_clear(EWL_TEXT(fp->file_entry));
 
 		FREE(dir);
 	}
