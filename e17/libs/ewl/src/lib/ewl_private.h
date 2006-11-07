@@ -1,10 +1,9 @@
 #ifndef _EWL_PRIVATE_H
 #define _EWL_PRIVATE_H
 
-#include <Ecore_Config.h>
+#include <Edje.h>
 #include <Ecore_File.h>
 #include <Ecore_Desktop.h>
-#include <Edje.h>
 
 #include <stdio.h>
 #include <stdlib.h>
