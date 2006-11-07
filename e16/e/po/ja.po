@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-29 22:06+0100\n"
-"PO-Revision-Date: 2006-10-23 01:20+0900\n"
+"POT-Creation-Date: 2006-11-06 02:29+0900\n"
+"PO-Revision-Date: 2006-11-06 02:41+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1308,11 +1308,11 @@ msgstr "アイコンボックスオプション"
 msgid "Iconbox Settings"
 msgstr "アイコンボックスの設定"
 
-#: src/ipc.c:309
+#: src/ipc.c:320
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/ipc.c:1030
+#: src/ipc.c:1059
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1322,12 +1322,12 @@ msgstr ""
 "コードバージョン        : %s\n"
 
 #
-#: src/ipc.c:1644
+#: src/ipc.c:1676
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC コマンド ヘルプ\n"
 
 #
-#: src/ipc.c:1648
+#: src/ipc.c:1680
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1338,22 +1338,22 @@ msgstr ""
 "\n"
 
 #
-#: src/ipc.c:1650 src/ipc.c:1670 src/ipc.c:1682
+#: src/ipc.c:1682 src/ipc.c:1702 src/ipc.c:1714
 msgid "Commands currently available:\n"
 msgstr "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:1668
+#: src/ipc.c:1700
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 "\"help full\" ですべてのコマンドについて各々詳しい説明が表示されます。\n"
 
 #
-#: src/ipc.c:1669
+#: src/ipc.c:1701
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示されます。\n"
 
 #
-#: src/ipc.c:1671 src/ipc.c:1683
+#: src/ipc.c:1703 src/ipc.c:1715
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
@@ -1854,7 +1854,7 @@ msgstr "移動中もウィンドウを更新する"
 
 #: src/settings.c:168
 msgid "Synchronize move/resize with application"
-msgstr ""
+msgstr "移動やサイズ変更をアプリケーションに同期させる"
 
 #
 #: src/settings.c:174
