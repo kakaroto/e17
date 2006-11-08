@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Alarm
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=alarm,gadget
+Icon=./module.edj
