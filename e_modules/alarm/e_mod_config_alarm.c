@@ -238,7 +238,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
 
    of2 = e_widget_frametable_add(evas, D_("One day"), 0);
 
-   ob = e_widget_radio_add(evas, D_(""), ALARM_SCHED_DAY, rg);
+   ob = e_widget_radio_add(evas, "", ALARM_SCHED_DAY, rg);
    e_widget_frametable_object_append(of2, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    ob = e_widget_label_add(evas, D_("Date (YYYY/MM/DD)"));
    e_widget_frametable_object_append(of2, ob, 0, 1, 1, 1, 1, 1, 1, 1);
