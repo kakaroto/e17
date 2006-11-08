@@ -4,8 +4,8 @@
 /**
  * @file Ewl.h
  * @brief The file that should be included by any project using EWL.
- * It provides all the necessary headers and includes to work with EWL,
- * it is discouraged to include each header file individually.
+ * Provides all the necessary headers and includes to work with EWL.
+ * It is discouraged to include each header file individually.
  */
 
 /**
@@ -16,7 +16,7 @@
  * The Enlightened Widget Library (EWL) is a widget toolkit based on the
  * libraries developed for Enlightenment 17. Rendering is performed
  * using Evas, a fast abstracted canvas library that supports multiple
- * backends. The appearances of the widgets are described by Edje files,
+ * backends. The appearance of the widgets are described by Edje files,
  * which are essentially files containing a collection of images and
  * descriptions for laying out those images. The goal of EWL is to abstract
  * the use of these backends and to present an easy to use object model to the
@@ -24,15 +24,15 @@
  *
  * Overall, EWL is similar in design and functionality to other common
  * toolkits such as GTK+ and QT. The API's differ, but the overall concepts
- * and ideas are similar. If you are familiar with these other toolkits,
+ * and ideas are similar. If you are familiar with these other toolkits
  * getting into EWL should be relatively simple.
  *
- * EWL uses the concept of inheritance for describing it's widgets. When a
+ * EWL uses the concept of inheritance for describing its widgets. When a
  * class inherits from another class, the functions that operated on the base
  * class can also operate on the inheriting class. For example, in EWL the
  * class Ewl_Button inherits from Ewl_Box, which inherits from Ewl_Container.
  * This means you can add widgets to the button, just like you could to the
- * box or any other container by using ewl_container_append. Since EWL is
+ * box or any other container by using ewl_container functions. Since EWL is
  * written in C, it uses a very simple single inheritance system. The first
  * field of the inheriting struct must be the inherited struct, and note, it's
  * not a pointer to the inherited struct. For example:
@@ -52,14 +52,15 @@
  *
  * @section model The Object Model
  *
- * The basis for all widgets in EWL is the Ewl_Object. Ewl_Objects are never
+ * The basis for all widgets in EWL is Ewl_Object. Ewl_Objects are never
  * allocated outside of another widget, it provides size and position
- * information for the widget as well as info about its padding and insets.
- * There are also fields for indicating object alignment and fill policies.
+ * information for the widget as well as info about the widgets padding and 
+ * insets. There are also fields for indicating object alignment and fill 
+ * policies.
  *
- * The next step above the Ewl_Object is the Ewl_Widget. Again, these are
- * never allocated by themselves, but are part of all the other widgets
- * available in EWL. The Ewl_Widget class provides necessary information about
+ * The next step above Ewl_Object is Ewl_Widget. Again, Ewl_Widgets are 
+ * usually not allocated by themselves, but are part of all the other widgets
+ * available in EWL. The Ewl_Widget class provides the necessary information about
  * a widget that relates to its appearance, its parent container, event
  * handling, as well as a few miscellaneous tasks common to all widgets. The
  * Ewl_Widget structure also contains information on the inheritance of any
@@ -67,14 +68,14 @@
  * your code.
  *
  * A necessary class that some widgets inherit from is Ewl_Container. This is
- * used for holding collections of widgets and laying them out. Containers are
- * the building blocks of the widget set, they allow for creating heirarchies
- * of widgets that are bounded within their parent containers. The class
- * inherits from Ewl_Widget, so that any container can also be treated as a
+ * used for holding collections of widgets and specifiying their layout. Containers 
+ * are the building blocks of the widget set. They allow for creating heirarchies
+ * of widgets that are bounded within their parent containers. Ewl_Container
+ * inherits from Ewl_Widget, so any container can also be treated as a
  * widget, and thus you can put containers within other containers. Examples
- * of inheriting classes are Ewl_Window and Ewl_Box. In the case of the
+ * of inheriting classes are Ewl_Window and Ewl_Box. In the case of 
  * Ewl_Window, widgets inside the window are given any position they request
- * within the insets of the window. For the Ewl_Box, contained widgets are
+ * within the insets of the window. For Ewl_Box, contained widgets are
  * layed out either from top to bottom, or from left to right, depending on
  * the box orientation.
  *
@@ -83,7 +84,7 @@
  * To do work in a GUI, it is necessary to know when certain actions occur.
  * EWL handles notification of actions using a common technique called
  * callbacks. When the end programmer wants to know when a specific event
- * occurs to a widget, they can add a callback to it using ewl_callback_append
+ * occurs to a widget, they can add a callback to it using ewl_callback_append()
  * or one of the similar functions. One of the arguments to these functions is
  * a pointer to a function. This function will get called when EWL receives
  * the specified event on that widget. You can attach callbacks to any widget,
@@ -96,10 +97,11 @@
  * actually do very little work, but trigger specific callbacks. This feature
  * allows for overriding specific actions on a widget, or for ordering user
  * specified callbacks relative to internal ones.
- * Example Application Walk-through
+ *
+ * @section example Example Application Walk-through
  *
  * One of the easiest applications to build for EWL is a simple image viewer.
- * The basic image viewer needs a window, and an image widget. The following
+ * The basic image viewer needs a window and an image widget. The following
  * app is a fully functional simple image viewer based on code written by Ben
  * Rockwood of Cuddletech. The first part necessary for creating an EWL
  * application is to include the necessary header Ewl.h. Following the include
@@ -132,11 +134,11 @@
  * }
  * @endcode
  *
- * For this simple application, that is the only necessary callback, now we
+ * For this application that is the only callback, now we
  * have the main function.  This is where EWL is initialized,
  * widgets are created, and the main EWL loop is started.  First,
  * declare the main function and check to be sure that an image
- * file was specified, then initialize the EWL library.
+ * file was specified. Then, initialize EWL.
  *
  * @code
  * int main (int argc, char **argv)
@@ -145,12 +147,15 @@
  *		fprintf(stderr, "Usage: %s <image>\n", argv[0]);
  *		return 1;
  * 	}
- *	ewl_init(&argc, argv);
+ *	if (!ewl_init(&argc, argv)) {
+ * 		fprintf(stderr, "Unable to initialize EWL.\n");
+ * 		return 1;
+ *	}
  * @endcode
  *
- * Next allocate the window, set it's title and attach a callback to catch it's
- * delete event.  Also, set a minimum size on the window, also mark it to be
- * auto-sized, and visible.  Marking it auto-sized will cause the widget to
+ * Next allocate the window, set its title and attach a callback to catch its
+ * delete event.  Also, set a minimum size on the window, mark it to be
+ * auto-sized, and set visible.  Marking it auto-sized will cause the widget to
  * resize to fit the contents.
  *
  * @code
@@ -162,8 +167,8 @@
  * 	ewl_widget_show(main_win);
  * @endcode
  *
- * Now we create a box for holding the image, this is not really necessary for
- * this app, but it demonstrates further how to use containers, and makes it
+ * Next we create a box to hold the image. This isn't really necessary for
+ * this app but demonstrates further how to use containers and makes it
  * easier to add more widgets later.
  *
  * @code
@@ -172,10 +177,10 @@
  * 	ewl_widget_show(main_box);
  * @endcode
  *
- * Next, create the image widget, we just attempt to load the image
- * file that was specified on the command line, and add it to the
- * box in the window. The second argument is NULL for normal images, but can
- * be set to the name of the group to load for an edje.
+ * Next, create the image widget. We just attempt to load the image
+ * file that was specified on the command line and add it to the
+ * box in the window. The second argument is NULL for normal images but can
+ * be set to the name of the group to load for an Edje file.
  *
  * @code
  * 	image = ewl_image_new();
@@ -185,7 +190,7 @@
  * @endcode
  *
  * Finally, we call the main function that starts the EWL event
- * processing loop, and with that our app is complete.
+ * processing loop. With that, our app is complete.
  *
  * @code
  * 	ewl_main();
@@ -198,15 +203,17 @@
  * compiled. This is fairly simple with EWL, if you name the app
  * simple_viewer.c just use the command:
  *
+ * @code
  * gcc -o simple_viewer `ewl-config --cflags --libs` simple_viewer.c
+ * @endcode
  *
  * @section conclusion Conclusion
  *
- * Obviously, creating a simple image viewer does not take much
- * effort at all, but it is a good basis for understanding the
+ * Obviously, creating a simple image viewer doesn't take much
+ * effort but it's a good basis for understanding the
  * basics of EWL.  Hopefully, readers will extend this app, and
  * possibly create more robust image viewers, and with any luck,
- * other applications to demonstrate EWL's capabilities.
+ * other applications to demonstrate EWLs capabilities.
  *
  * If you have questions, corrections, or improvements, please send
  * them to <a href="mailto: rbdpngn@users.sourceforge.net">RbdPngn</a>. 
@@ -216,14 +223,14 @@
  * @page layering Layering Scheme
  *
  * As widgets are placed inside containers, there becomes the issue of
- * specifying which gets drawn on top. It is important that the widgets placed
- * inside of a container are above the container's background, or the user
+ * specifying which widget gets drawn on top. It's important that the widgets placed
+ * inside of a container are above the containers background, or the user
  * would be unable to view the placed widgets.
  *
  * EWL handles the layering so the programmer dosen't need to worry about
  * it. In some cases it is necessary for a widget to overlap another widget
  * with the same parent. In this case you set the layer priority of the
- * widget to a higher value (negitive values are possible.
+ * widget to a higher value (negitive values are possible).
  *
  * If you want a widget to be placed over top of all other widgets, like
  * imenu for example, you can set the widget to be 'top layered'. This
@@ -237,7 +244,7 @@
  *
  * @image html object_fields.png
  *
- * Diagram describing how Ewl_Object fields affect sizing
+ * Diagram describing how Ewl_Object fields affect sizing.
  *
  * @image html object_sizing.png
  */

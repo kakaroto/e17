@@ -3,13 +3,13 @@
 The Enlightened Widget Library (EWL) is a toolkit for creating graphical user 
 interfaces based on the Enlightenment Foundation Libraries (EFL). The library
 aims to ease the pain of creating graphical interfaces through the simplicity
-and consistency of it's APIs.
+and consistency of its APIs.
 
-EWL is still very much in a development state. We do, sometimes, break APIs
+EWL is still very much in a development state. We do, sometimes, break the API
 when we feel that something could be designed a bit better. We try to
-minimize this breakable, but it does happen. If you see something you think
+minimize this breakage, but it does happen. If you see something you think
 is inconsistent or have some APIs you think would be useful, please send us
-an email (or, if possible a patch) and we'll gladly take a look.
+an email, possibly with a patch, and we'll gladly take a look.
 
 
  INSTALLING EWL
@@ -23,14 +23,19 @@ functionality. These include:
   Epsilon (optional)
   Emotion (optional)
 
-EWL has been setup to use, if available, the OpenGL, framebuffer or software
+  Tango (The Tango icon set is used by EWL. If it isn't installed 
+  	 EWL will still work, you just won't see any icons displayed.
+	 We plan to add some fallback icons, we just have to get them
+	 created.)
+
+EWL has been setup to use, if available, OpenGL, framebuffer or software
 X11 support in Evas. You only require one of these engines to function but
-can have all of them compiled in if desired. (NOTE, the framebuffer and
+can have all of them compiled in, if desired. (NOTE, the framebuffer and
 OpenGL engines have had a lot less testing then the software engine, so your
 mileage may vary in their usage. About 90% of the code in the OpenGL engine
 is shared with the software engine so it should be pretty stable.)
 
-Once you have the pre-requisites installed you can the install EWL. This is
+Once you have the pre-requisites installed you can install EWL. This is
 done with your standard set of procedures:
 
   ./autogen.sh    (if you've checked out from cvs)
@@ -44,51 +49,50 @@ You can check that everything is working correctly by running:
 
 This is the main test application for EWL. It contains source code and
 tutorials for the different widgets. (These tutorials are currently only
-available for a few widgets, if you'd like to add some please send us
-patches.) 
+available for a few widgets. If you'd like to add a widget tutorial please 
+send us a patch.) 
 
 
  PROGRAMMING EWL
 =================
 It would take too much space to explain all of the APIs and concepts behind
-EWL, luckily there are other great resources for this purpose already. If
-you have CVS checked up there is a e17/docs/ewlbook which is the main EWL
+EWL. Luckily there are other great resources for this purpose already. If
+you have CVS checked out there is an e17/docs/ewlbook which is the main EWL
 documentation. (This can also be found at:
 http://enlightenment.sourceforge.net/docs/ewlbook.html or as a PDF: 
 http://enlightenment.sourceforge.net/docs/ewlbook.pdf)
 
 The system is also fully documented with Doxygen. You can generate these
-docs by executing: 
+docs with: 
 
   sh gendoc
 
-in the main libs/ewl directory of CVS, or view the pre-generated docs online
+in the main libs/ewl directory. The API docs can also be viewed online
 at http://enlightenment.sourceforge.net/doxy/ewl/index.html.
 
-There is also a quick introductory page on EWL available at: 
+There is a quick introductory page on EWL available at: 
 http://www.enlightenment.org/pages/ewl.html.
 
 EWL also provides a set of built in tutorials and source code examples.
-These are provided through the ewl_test application. As you run tests you
-can switch to the Source or Tutorial tabs to see a listing for that test and
-some information on that widget. (Note, only a few widgets have tutorials at
-the moment. We are working on filling in more. If you'd like to contribute
-please feel free to send patches adding tutorials. These tutorials also show
-up in the main EWL documentation for each widget.)
+These examples are provided through the ewl_test application. As you run the
+tests you can switch to the Source or Tutorial tabs to see a source listing 
+for that test and some information on that widget. (Note, only a few widgets 
+have tutorials at the moment. We are working on filling in more. If you'd 
+like to contribute please feel free to send patches adding tutorials. 
+These tutorials also show up in the main EWL documentation for each widget.)
 
 EWL also fully supports being embedded into an Evas application. So, if
 you're writing an application in Evas/Edje and just require a simple text
-entry, or some buttons, you can embed the EWL widgets into you're
-application. Saves you the effort of writing them yourself. Examples of
-this embedding can be see in the ewl/src/bin/ewl_embed_test.c file.
+entry, or some buttons, you can embed the EWL widgets into your
+application. Saves you the effort of writing the widget yourself. Examples of
+embedding EWL can be seen in ewl/src/bin/ewl_embed_test.c.
 
 
  EWL HELP
 ==========
 If you've taken a look at this documentation and still have a few questions,
-or just want to discuss some of the design decisions you can usually find
+or just want to discuss some of the design decisions, you can usually find
 someone either on IRC (in #edevelop or #ewl) or on the main
-enlightenment-devel mailing list available off of the Sourceforge project
-page.
-
+enlightenment-devel mailing list (available off of the Sourceforge project
+page).
 
