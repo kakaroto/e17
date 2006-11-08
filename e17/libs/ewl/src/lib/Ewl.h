@@ -296,6 +296,7 @@ extern"C" {
 #include <ewl_overlay.h>
 #include <ewl_embed.h>
 #include <ewl_window.h>
+#include <ewl_cursor.h>
 #include <ewl_dialog.h>
 #include <ewl_popup.h>
 #include <ewl_filelist.h>

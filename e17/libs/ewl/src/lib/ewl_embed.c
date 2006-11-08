@@ -1584,6 +1584,7 @@ void
 ewl_embed_mouse_cursor_set(Ewl_Widget *w)
 {
 	int pointer;
+	Ewl_Cursor *argb;
 	Ewl_Embed *embed;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1592,6 +1593,10 @@ ewl_embed_mouse_cursor_set(Ewl_Widget *w)
 
 	embed = ewl_embed_widget_find(w);
 	if (!embed) DRETURN(DLEVEL_STABLE);
+	if ((argb = ewl_attach_get(w, EWL_ATTACH_TYPE_MOUSE_ARGB_CURSOR))) {
+		pointer = argb->handle;
+		ewl_attach_mouse_cursor_set(w, pointer);
+	}
 
 	if (!(pointer = (int)ewl_attach_get(w, EWL_ATTACH_TYPE_MOUSE_CURSOR)))
 		pointer = EWL_MOUSE_CURSOR_LEFT_PTR;

@@ -61,6 +61,14 @@ struct Ewl_Attach
 			(int *)data)
 
 /**
+ * @def ewl_attach_mouse_argb_cursor_set(w, cursor)
+ * Convenience method to attach data to a notebook item
+ */
+#define ewl_attach_mouse_argb_cursor_set(w, cursor) \
+	ewl_attach_other_set(EWL_WIDGET(w), \
+			EWL_ATTACH_TYPE_MOUSE_ARGB_CURSOR, cursor)
+
+/**
  * @def ewl_attach_color_set(w, data)
  * Convenience method to set a colour widget attachment
  */

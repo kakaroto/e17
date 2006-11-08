@@ -43,15 +43,15 @@ ewl_cursor_init(Ewl_Cursor *cursor)
 
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 	DCHECK_PARAM_PTR_RET("cursor", cursor, FALSE);
-	DCHECK_TYPE_RET("cursor", cursor, EWL_CURSOR_TYPE, FALSE);
 
 	if (!ewl_window_init(EWL_WINDOW(cursor)))
 		DRETURN_INT(FALSE, DLEVEL_UNSTABLE);
 
 	ewl_widget_appearance_set(w, EWL_CURSOR_TYPE);
+	ewl_widget_inherit(w, EWL_CURSOR_TYPE);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_ALL);
-	ewl_object_size_request(EWL_OBJECT(w), 64, 64);
+	ewl_object_size_request(EWL_OBJECT(w), 32, 32);
 	ewl_embed_engine_name_set(EWL_EMBED(cursor), "evas_buffer");
 	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
 			ewl_cursor_cb_render, NULL);
@@ -84,20 +84,16 @@ ewl_cursor_cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	if (parent)
 		parent = EWL_WIDGET(ewl_embed_widget_find(parent));
 
-	if (parent)
-		old = EWL_EMBED(parent)->cursor;
+	if (!parent)
+		DRETURN(DLEVEL_UNSTABLE);
+
+	old = EWL_EMBED(parent)->cursor;
 
 	if (cursor->handle)
 		ewl_engine_pointer_free(EWL_EMBED(parent), cursor->handle);
 
 	handle = ewl_engine_pointer_data_new(EWL_EMBED(parent),
 			EWL_EMBED(cursor)->evas_window, width, height);
-
-	/* FIXME: Needs to be done for all widgets with this cursor
-	ewl_attach_mouse_cursor_set(parent, handle);
-	if (EWL_EMBED(parent)->cursor == old)
-		ewl_embed_mouse_cursor_set(entry);
-	*/
 
 	cursor->handle = handle;
 

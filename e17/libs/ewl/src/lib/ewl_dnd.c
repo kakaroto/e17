@@ -2,10 +2,6 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
-#if 0
-#include <Ecore_Evas.h>
-#include <Ecore_X.h>
-#endif
 
 #define EWL_DND_WINDOW_ROOT 0
 
