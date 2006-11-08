@@ -8,8 +8,7 @@ EDJE_FLAGS = -v \
 -fd $(top_srcdir)
 
 filesdir = $(datadir)
-files_DATA = module_icon.png \
-	     module.desktop \
+files_DATA = module.desktop \
 	     module.edj \
 	     tclock.edj
 

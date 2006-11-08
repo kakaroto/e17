@@ -6,7 +6,6 @@ EDJE_FLAGS = -v \
 -fd $(top_srcdir)
 
 files_DATA = \
-module_icon.png \
 module.desktop \
 module.edj \
 cpu.edj

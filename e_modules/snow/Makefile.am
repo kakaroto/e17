@@ -9,7 +9,6 @@ tree.png \
 flake-s.png \
 flake-m.png \
 flake-l.png \
-module_icon.png \
 module.desktop \
 module.edj
 

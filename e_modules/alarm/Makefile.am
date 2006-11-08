@@ -8,7 +8,7 @@ EDJE_FLAGS = -v \
 -fd $(top_srcdir)/fonts
 
 filesdir = $(datadir)
-files_DATA = module_icon.png module.edj module.desktop\
+files_DATA = module.edj module.desktop\
 			$(wildcard alarm.ed?) \
 			$(wildcard fonts/*.ttf) \
 			$(wildcard images/*.png)

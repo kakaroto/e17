@@ -9,7 +9,6 @@ cloud.png \
 drop-s.png \
 drop-m.png \
 drop-l.png \
-module_icon.png \
 module.desktop \
 module.edj
 

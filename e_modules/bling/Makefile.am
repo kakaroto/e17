@@ -3,7 +3,6 @@ MAINTAINERCLEANFILES = Makefile.in
 # data files for the module
 filesdir = $(datadir)
 files_DATA = \
-module_icon.png \
 module.desktop \
 module.edj
 

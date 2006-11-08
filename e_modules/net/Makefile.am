@@ -10,8 +10,7 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir = $(datadir)
 
-files_DATA = module_icon.png \
-			module.desktop \
+files_DATA = module.desktop \
 			module.edj \
 			net.edj
 
