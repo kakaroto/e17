@@ -11,6 +11,7 @@ EDJE_FLAGS = -v \
 filesdir =  $(datadir)
 
 files_DATA = \
+module_icon.png \
 module.desktop \
 module.edj \
 slideshow.edj
