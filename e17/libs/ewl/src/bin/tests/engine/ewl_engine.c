@@ -88,7 +88,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-cb_configure(Ewl_Widget *w, void *ev, void *data)
+cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Evas_Object *eimg;
 	int width, height;
@@ -105,7 +105,7 @@ cb_configure(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
+cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	int x, y;
 	Ewl_Widget *pointer_win;
@@ -123,7 +123,7 @@ cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
+cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	int x, y;
 	Ewl_Widget *pointer_win;
@@ -141,7 +141,7 @@ cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
+cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	int x, y;
 	Ewl_Widget *pointer_win;

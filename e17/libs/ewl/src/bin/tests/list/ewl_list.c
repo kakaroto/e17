@@ -225,11 +225,13 @@ list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	idx = ewl_mvc_selected_get(EWL_MVC(list));
 
 	ecore_list_goto_index(el, idx->row);
-	printf("Selected (%d) (%s)\n", idx->row, (char *)ecore_list_current(el));
+	printf("Selected (%d) (%s)\n", idx->row, 
+			(char *)ecore_list_current(el));
 }
 
 static void
-list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data)
+list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	Ecore_List *selected, *el;
 	Ewl_Selection *sel;
@@ -268,7 +270,8 @@ list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-list_cb_select_none(Ewl_Widget *w, void *ev, void *data)
+list_cb_select_none(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+						void *data __UNUSED__)
 {
 	printf("ERROR, shouldn't get selection changed callbacks.\n");
 }

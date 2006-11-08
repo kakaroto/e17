@@ -18,7 +18,7 @@ ewl_io_manager_plugin_uri_read(const char *uri)
 }
 
 Ewl_Widget *
-ewl_io_manager_plugin_string_read(const char *string)
+ewl_io_manager_plugin_string_read(const char *string __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -48,7 +48,8 @@ ewl_io_manager_plugin_uri_write(Ewl_Widget *data, const char *uri)
 }
 
 int
-ewl_io_manager_plugin_string_write(Ewl_Widget *data, const char **string)
+ewl_io_manager_plugin_string_write(Ewl_Widget *data, 
+				const char **string __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, FALSE);

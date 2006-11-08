@@ -83,7 +83,7 @@ ee_shutdown(Ewl_Engine *engine)
 }
 
 static void
-ee_canvas_setup(Ewl_Window *win, int debug)
+ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 {
 	Evas *evas;
 	Evas_Engine_Info *info = NULL;
@@ -100,7 +100,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 	info = evas_engine_info_get(evas);
 	if (!info) 
 	{
-		fprintf(stderr, "Unable to use buffer engine for rendering, ");
+		fprintf(stderr, "Unable to use buffer engine for rendering.\n");
 		exit(-1);
 	}  
 
@@ -149,7 +149,7 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 	info = evas_engine_info_get(evas);
 	if (!info) 
 	{
-		fprintf(stderr, "Unable to use buffer engine for rendering, ");
+		fprintf(stderr, "Unable to use buffer engine for rendering.\n");
 		exit(-1);
 	}  
 

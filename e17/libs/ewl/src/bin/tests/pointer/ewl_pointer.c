@@ -85,7 +85,7 @@ timer_cb_out(void *data)
 }
 
 static void
-cb_render(Ewl_Widget *w, void *ev, void *data)
+cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	int old, handle;
 	int width, height;
@@ -111,7 +111,8 @@ cb_render(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-cb_destroy(Ewl_Widget *w, void *ev, void *data)
+cb_destroy(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	if (cur_timer)
 		ecore_timer_del(cur_timer);
