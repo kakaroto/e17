@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <pwd.h>
+#include "Ecore_X.h"
 #include "Ewl.h"
-//#include "../config.h"
 
 #define WIDTH 0
 #define HEIGHT 85
