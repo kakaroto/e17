@@ -61,7 +61,7 @@ data {
 	item, "/entry/font" "Vera";
 	item, "/entry/font_size" "12";
 
-	item, "/cursor/group" "cursor";
+	item, "/entry/cursor/group" "cursor";
 
 	item, "/text/color/a" "255";
 	item, "/text/font" "Vera";
