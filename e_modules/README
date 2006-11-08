@@ -15,6 +15,8 @@ documented in README.BROKEN.  Modules that are broken for the long term
 may be removed.
 
 
+alarm - Sets reminders and timer.  (Replaces eveil.)
+
 bling - EFLized Composite Manager for E17. (Not for users right now).
 
 calendar - A module to display a desktop calendar.
@@ -27,8 +29,6 @@ desktop.  This is probably obsolete, the functionality is now in E.
 emu - Experimental generic scriptable module for E17.
 
 engage - Icon bar / task bar / system tray.
-
-eveil - Sets reminders and timer.  (Will be replaced by something better.)
 
 flame - A module to display flames on the desktop.
 

@@ -2,6 +2,8 @@ This file will summarise who is currently responsible for maintaining
 each module.  See the individual AUTHORS files in each module for the
 complete list of credits.
 
+alarm - Laurent 'kiwi' Ghigonis <ooookiwi@gmail.com>
+
 bling - Ibukun Olumuyiwa <ibukun@xcomputerman.com>
 
 calendar - NASA (Nathan Smith) <nasa01@comcast.net>  [Currently inactive]
@@ -13,8 +15,6 @@ deskshow - e_module maintainers.
 emu - onefang (David Seikel) <onefang@gmail.com>
 
 engage - e_module maintainers.
-
-eveil - Laurent 'kiwi' Ghigonis <ooookiwi@gmail.com>
 
 flame - e_module maintainers.
 
