@@ -407,7 +407,7 @@ ewl_button_fill_policy_get(Ewl_Button *b)
 void
 ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Event_Key_Down *event;
+	Ewl_Event_Key_Up *event;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
