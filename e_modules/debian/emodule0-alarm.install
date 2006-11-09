@@ -1,0 +1,6 @@
+debian/tmp/usr/lib/enlightenment/modules/alarm/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/alarm/*.edj
+debian/tmp/usr/lib/enlightenment/modules/alarm/*.png
+debian/tmp/usr/lib/enlightenment/modules/alarm/*.ttf
+debian/tmp/usr/lib/enlightenment/modules/alarm/*/*.so
+debian/tmp/usr/share/locale/*/LC_MESSAGES/alarm.*

@@ -5,6 +5,13 @@ Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libesmart-dev, libembryo-dev, libexml-dev
 Standards-Version: 3.7.2
 
+Package: emodule0-alarm
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-alarm
+Description: The E17 Alarm Module
+ A module to set Alarms in Enlightenment 17.
+
 Package: emodule0-bling
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -39,14 +46,6 @@ Description: An E17 module front end
  to some of the things that modules typically do.  The backends can
  be written by anybody in any language.
  
-Package: emodule0-eveil
-Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
-Provides: emodule-eveil
-Description: An E17 module for setting timers and alarms
- Eveil is an E17 module which manages user defined timers and
- alarms.
-
 Package: emodule0-flame
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -215,17 +214,17 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-bling, emodule0-cpu, emodule0-deskshow, emodule0-emu, emodule0-eveil, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
+Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-cpu, emodule0-deskshow, emodule0-emu, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install the following modules:
+ Alarm       : Enlightenment Alarm Module
  Bling       : EFLized Composite Manager for E17.
  Cpu         : Monitor module for the CPU load.
  Deskshow    : A module that minimizes all windows to show the desktop.
  Emu         : A module front end that runs arbitrary back ends
                written in any language.
- Eveil       : A module to set Timer and Alarms.
  Flame       : Displays flames at the bottom of the screen.
  Language    : Allows to control keyboard layout, model and variant.
  Mail        : A mail module supporting pop3, imap, mailbox and mdir.
@@ -245,4 +244,5 @@ Description: A dummy package for installing all modules for E17
  Tclock      : Simple text Clock module.
  Uptime      : Monitors the uptime.
  Weather     : A module for displaying weather reports.
+ Winselector : A module providing menu-based access to all windows.
  Wlan        : Monitors WLAN activity.

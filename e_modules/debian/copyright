@@ -7,21 +7,20 @@ tree. For more information, see:
 http://www.enlightenment.org/cvs.html
 
 Upstream Authors:
-Nathan Smith <nasa01@comcast.net> (calendar)
+Laurent Ghigonis <ooookiwi@gmail.com> (alarm)
 Matthew Mullins (cpu, mem, net, uptime, weather, wlan)
-Christopher Michael <devilhorns@comcast.net> (cpu, deskshow, mail, mbar, mem, mixer, net, screenshot, slideshow, uptime, weather, wlan)
+Christopher Michael <devilhorns@comcast.net> (cpu, deskshow, mail, mixer, net, screenshot, slideshow, uptime, weather, wlan)
 David Seikel <onefang@gmail.com> (emu)
-Boldin Pavel <boldin.pavel@gmail.com> (evolume)
 Vincent Torri (flame, tclock)
 Team Ninjapirates <http://www.dxdstudio.com/npn/> (rain)
 Andrew Williams <http://handyande.co.uk/> (snow)
 David Stevenson <david.35472@gmail.com> (moon)
 Aleksej 'sndev' Struk <astruk@gmail.com> (language)
-Laurent 'kiwi' Ghigonis <ooookiwi@free.fr> (eveil)
 iamsthitha (taskbar)
 Ibukun Olumuyiwa (bling)
+Viktor Kojouharov <vkojouharov@gmail.com> (winselector)
 
-Copyright (bling, calendar, cpu, deskshow, emu, evolume, flame, language, mbar, mem, mixer, moon, net, rain, screenshot, slideshow, snow, tclock, uptime, wlan, weather):
+Copyright (bling, cpu, deskshow, emu, flame, language, mem, mixer, moon, net, rain, screenshot, slideshow, snow, tclock, uptime, wlan, weather, winselector):
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -51,7 +50,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-Copyright (devian, mail, taskbar):
+Copyright (mail, taskbar):
 
 You are free to distribute this software under the terms of
 the GNU General Public License.

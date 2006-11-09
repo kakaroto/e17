@@ -2,3 +2,4 @@ debian/tmp/usr/lib/enlightenment/modules/emu/*.desktop
 debian/tmp/usr/lib/enlightenment/modules/emu/*.edj
 debian/tmp/usr/lib/enlightenment/modules/emu/*/*.so
 debian/tmp/usr/bin/emu*
+debian/tmp/usr/share/locale/*/LC_MESSAGES/emu.*

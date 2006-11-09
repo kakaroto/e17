@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/mbar/*.edj
-debian/tmp/usr/lib/enlightenment/modules/mbar/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/mbar/*.png
-debian/tmp/usr/lib/enlightenment/modules/mbar/*/*.so
