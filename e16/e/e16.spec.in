@@ -1,4 +1,4 @@
-Summary: The Enlightenment window manager.
+Summary: The Enlightenment window manager, DR16.
 Name: @PACKAGE@
 Version: @ENLIGHTENMENT_VERSION@
 Release: @RPM_REVISION@%{?_rpm_add_date:.%(date '+%y%m%d')}%{?_vendorsuffix:.%{_vendorsuffix}}
