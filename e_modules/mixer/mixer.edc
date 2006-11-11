@@ -100,3 +100,5 @@ collections
 	  } /* end programs */	
      } /* end group */
 } /* end collections */
+
+#include "pulsar.edc"

@@ -15,10 +15,13 @@ mixer.edj
 EXTRA_DIST = \
 $(files_DATA) \
 mixer.edc \
+pulsar.edc \
 mixer-volume-high.png \
 mixer-volume-medium.png \
 mixer-volume-low.png \
 mixer-volume-muted.png \
+pulsar.png \
+vol.png \
 e_modules-mixer.spec.in \
 e_modules-mixer.spec
 
@@ -41,6 +44,8 @@ module_la_SOURCES      = e_mod_main.c \
 		       alsa_mixer.c \
 		       oss_mixer.h \
 		       oss_mixer.c \
+				 e_mod_keybindings.h \
+				 e_mod_keybindings.c \
 		       e_mod_config.c
 
 module_la_LIBADD       = @e_libs@ @SOUND_LDFLAGS@

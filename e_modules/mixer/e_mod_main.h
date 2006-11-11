@@ -13,6 +13,10 @@ struct _Config
    E_Menu          *menu;
    Evas_List       *instances;
    Evas_List       *items;
+
+   E_Config_Binding_Key	decrease_vol_key;
+   E_Config_Binding_Key	increase_vol_key;
+   E_Config_Binding_Key	mute_key;
 };
 
 struct _Config_Item
