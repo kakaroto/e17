@@ -1,189 +1,130 @@
-# Italian translation for E17 eveil module.
+# Italian translation for E17 alarm module.
 # This file is put in the public domain.
 # Massimo Maiurana <maiurana@inwind.it>, 2006.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Eveil\n"
+"Project-Id-Version: Alarm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-11 20:39+0200\n"
-"PO-Revision-Date: 2006-06-11 20:00+0200\n"
+"POT-Creation-Date: 2006-11-11 12:30+0100\n"
+"PO-Revision-Date: 2006-11-11 18:51+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:73
-msgid "Eveil Configuration"
-msgstr "Configurazione di Eveil"
+#: e_mod_config.c:54
+msgid "Alarm Configuration"
+msgstr "Configurazione di Alarm"
 
-#: e_mod_config.c:186
+#: e_mod_config.c:154 e_mod_main.c:175
 msgid "Alarm"
-msgstr "Allarmi"
+msgstr "Alarm"
 
-#: e_mod_config.c:188 e_mod_config_alarm.c:169
+#: e_mod_config.c:156 e_mod_config_alarm.c:190
 msgid "Active"
-msgstr "Attivo"
+msgstr "Attiva"
 
-#: e_mod_config.c:207
-msgid "Timer"
-msgstr "Timer"
-
-#: e_mod_config.c:210 e_mod_main.c:581
-#, c-format
-msgid "%1.0f hours"
-msgstr "%1.0f ore"
-
-#: e_mod_config.c:218
-#, c-format
-msgid "%1.0f min"
-msgstr "%1.0f min"
-
-#: e_mod_config.c:226
-#, c-format
-msgid "%1.0f sec"
-msgstr "%1.0f sec"
-
-#: e_mod_config.c:235
-msgid "Start !"
-msgstr "Avvia !"
-
-#: e_mod_config.c:240
-msgid "Stop !"
-msgstr "Ferma !"
-
-#: e_mod_config.c:245
-msgid "Zero"
-msgstr "Azzera"
-
-#: e_mod_config.c:305
+#: e_mod_config.c:224
 msgid "Alarm Options"
-msgstr "Opzioni della sveglia"
+msgstr "Opzioni di Alarm"
 
-#: e_mod_config.c:307 e_mod_config.c:353
-msgid "Show icon"
-msgstr "Mostra icona"
+#: e_mod_config.c:236
+msgid "Show next alarm"
+msgstr "Mostra prossimo allarme"
 
-#: e_mod_config.c:310 e_mod_config.c:320 e_mod_config.c:356 e_mod_config.c:366
-msgid "Never"
-msgstr "Mai"
+#: e_mod_config.c:242
+msgid "Alarms Defaults"
+msgstr "Valori predefiniti opzioni"
 
-#: e_mod_config.c:312 e_mod_config.c:322 e_mod_config.c:358 e_mod_config.c:368
-msgid "When enabled"
-msgstr "Se abilitata"
-
-#: e_mod_config.c:314 e_mod_config.c:324 e_mod_config.c:360 e_mod_config.c:370
-msgid "Always"
-msgstr "Sempre"
-
-#: e_mod_config.c:317 e_mod_config.c:363
-msgid "Show details"
-msgstr "Mostra dettagli"
-
-#: e_mod_config.c:327 e_mod_config.c:373 e_mod_config_alarm.c:363
+#: e_mod_config.c:244 e_mod_config_alarm.c:401
 msgid "Open popup"
 msgstr "Apri popup"
 
-#: e_mod_config.c:330 e_mod_config.c:376
+#: e_mod_config.c:247
 msgid "Run program"
 msgstr "Avvia programma"
 
-#: e_mod_config.c:337
-msgid "Remove alarm after the date"
-msgstr "Rimuovi allarme dopo l'evento"
+#: e_mod_config.c:254
+msgid "Auto-Remove alarms after its passed"
+msgstr "Rimuovi allarmi dopo l'evento"
 
-#: e_mod_config.c:340
-msgid "Time format"
-msgstr "Formato orologio"
+#: e_mod_config_alarm.c:71
+msgid "Alarm Alarm Configuration"
+msgstr "Configurazione allarme di Alarm"
 
-#: e_mod_config.c:343
-msgid "12h"
-msgstr "12h"
-
-#: e_mod_config.c:345
-msgid "24h"
-msgstr "24h"
-
-#: e_mod_config.c:351
-msgid "Timer Options"
-msgstr "Opzioni del timer"
-
-#: e_mod_config_alarm.c:68
-msgid "Eveil Alarm Configuration"
-msgstr "Configurazione allarme Eveil"
-
-#: e_mod_config_alarm.c:167
+#: e_mod_config_alarm.c:188
 msgid "Informations"
 msgstr "Informazioni"
 
-#: e_mod_config_alarm.c:176
+#: e_mod_config_alarm.c:197
 msgid "Description"
 msgstr "Descrizione"
 
-#: e_mod_config_alarm.c:186
+#: e_mod_config_alarm.c:207
 msgid "Schedule"
 msgstr "Programmazione"
 
-#: e_mod_config_alarm.c:188
+#: e_mod_config_alarm.c:209
 #, c-format
 msgid "%1.0f hour"
 msgstr "%1.0f ore"
 
-#: e_mod_config_alarm.c:191
+#: e_mod_config_alarm.c:212
 #, c-format
 msgid "%1.0f minute"
 msgstr "%1.0f minuti"
 
-#: e_mod_config_alarm.c:197
+#: e_mod_config_alarm.c:218
 msgid "Days of the week"
 msgstr "Giorni della settimana"
 
-#: e_mod_config_alarm.c:199
+#: e_mod_config_alarm.c:222
 msgid "Monday"
 msgstr "Lunedì"
 
-#: e_mod_config_alarm.c:201
+#: e_mod_config_alarm.c:224
 msgid "Tuesday"
 msgstr "Martedì"
 
-#: e_mod_config_alarm.c:203
+#: e_mod_config_alarm.c:226
 msgid "Wenesday"
 msgstr "Mercoledì"
 
-#: e_mod_config_alarm.c:205
+#: e_mod_config_alarm.c:228
 msgid "Thursday"
 msgstr "Giovedì"
 
-#: e_mod_config_alarm.c:207
+#: e_mod_config_alarm.c:230
 msgid "Friday"
 msgstr "Venerdì"
 
-#: e_mod_config_alarm.c:209
+#: e_mod_config_alarm.c:232
 msgid "Saturday"
 msgstr "Sabato"
 
-#: e_mod_config_alarm.c:211
+#: e_mod_config_alarm.c:234
 msgid "Sunday"
 msgstr "Domenica"
 
-#: e_mod_config_alarm.c:214
+#: e_mod_config_alarm.c:239
 msgid "One day"
 msgstr "Giornata singola"
 
-#: e_mod_config_alarm.c:216
+#: e_mod_config_alarm.c:243
 msgid "Date (YYYY/MM/DD)"
 msgstr "Data (AAAA/MM/GG)"
 
-#: e_mod_config_alarm.c:221
+#: e_mod_config_alarm.c:248
 msgid "Today"
 msgstr "Oggi"
 
-#: e_mod_config_alarm.c:223
+#: e_mod_config_alarm.c:250
 msgid "Tomorrow"
 msgstr "Domani"
 
-#: e_mod_config_alarm.c:259
+#: e_mod_config_alarm.c:288
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
 "in the informations / schedule of your alarm"
@@ -191,7 +132,7 @@ msgstr ""
 "<hilight>Errore, l'allarme non è stato aggiunto!</hilight><br><br>C'è un "
 "errore nelle sue informazioni/programmazione"
 
-#: e_mod_config_alarm.c:264
+#: e_mod_config_alarm.c:293
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
 "a name for the alarm"
@@ -199,7 +140,7 @@ msgstr ""
 "<hilight>Errore, l'allarme non è stato aggiunto!</hilight><br><br>Occorre "
 "inserire un nome per l'allarme"
 
-#: e_mod_config_alarm.c:269
+#: e_mod_config_alarm.c:298
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
 "select at least one day in the week"
@@ -207,7 +148,7 @@ msgstr ""
 "<hilight>Errore, l'allarme non è stato aggiunto!</hilight><br><br>Occorre "
 "selezionare almeno un giorno"
 
-#: e_mod_config_alarm.c:274
+#: e_mod_config_alarm.c:303
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
 "entered for the alarm has incorrect syntax<br><br>You have to respect this "
@@ -219,7 +160,7 @@ msgstr ""
 "<br>   AAAA/MM/GG<br>AAAA è l'anno in 4 cifre, MM è il mese in 2 cifre<br>e "
 "GG è il giorno in 2 cifre<br>"
 
-#: e_mod_config_alarm.c:284
+#: e_mod_config_alarm.c:313
 msgid ""
 "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
 "entered is before now"
@@ -227,133 +168,128 @@ msgstr ""
 "<hilight>Errore, l'allarme non è stato aggiunto!</hilight><br><br>La data "
 "inserita è già trascorsa"
 
-#: e_mod_config_alarm.c:288 e_mod_main.c:347
-msgid "Eveil Module Error"
-msgstr "Errore del modulo Eveil"
+#: e_mod_config_alarm.c:317 e_mod_main.c:373
+msgid "Alarm Module Error"
+msgstr "Errore del modulo Alarm"
 
-#: e_mod_config_alarm.c:321 e_mod_config_alarm.c:394
+#: e_mod_config_alarm.c:351 e_mod_config_alarm.c:439
 msgid "Test this alarm"
 msgstr "Prova quest'allarme"
 
-#: e_mod_config_alarm.c:349
+#: e_mod_config_alarm.c:379
 msgid "Ring Options"
-msgstr "Opzioni sveglia"
+msgstr "Opzioni dell'allarme"
 
-#: e_mod_config_alarm.c:351
+#: e_mod_config_alarm.c:381
 msgid "Remove alarm"
 msgstr "Rimuovi allarme"
 
-#: e_mod_config_alarm.c:358 e_mod_config_alarm.c:370 e_mod_config_alarm.c:382
-msgid "Use general settings"
-msgstr "Usa impostazioni generali"
-
-#: e_mod_config_alarm.c:375
+#: e_mod_config_alarm.c:421
 msgid "Run a program"
 msgstr "Avvia un programma"
 
-#: e_mod_config_alarm.c:384
+#: e_mod_config_alarm.c:428
+msgid "Run default one"
+msgstr "Avvia il predefinito"
+
+#: e_mod_config_alarm.c:430
 msgid "Run this program"
 msgstr "Avvia questo programma"
 
-#: e_mod_config_alarm.c:428
+#: e_mod_config_alarm.c:475
+msgid ""
+"<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE "
+"the alarms<br>via the 'Active' check button on the<br>main Alarm "
+"configuration panel."
+msgstr ""
+"<hilight>Il test dell'allarme è RIUSCITO!</hilight><br><br>Ma NON DIMENTICATE "
+"di ATTIVARE gli allarmi attraverso<br>la casella di opzione 'Attiva' nella "
+"finestra di<br>configurazione principale di Alarm."
+
+#: e_mod_config_alarm.c:481
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
 msgstr "<hilight>Test allarme RIUSCITO!</hilight>"
 
-#: e_mod_config_alarm.c:433
+#: e_mod_config_alarm.c:486
 msgid "<hilight>Alarm test FAILED !</hilight>"
 msgstr "<hilight>Test allarme FALLITO!</hilight>"
 
-#: e_mod_config_alarm.c:435
-msgid "Eveil Module Test Report"
-msgstr "Rapporto test modulo Eveil"
+#: e_mod_config_alarm.c:488
+msgid "Alarm Module Test Report"
+msgstr "Rapporto test modulo Alarm"
 
-#: e_mod_main.c:183
-msgid "Eveil"
-msgstr "Eveil"
-
-#: e_mod_main.c:318
+#: e_mod_main.c:345
 #, c-format
 msgid "<hilight>Alarm : %s</hilight><br><br>%s"
 msgstr "<hilight>Allarme: %s</hilight><br><br>%s"
 
-#: e_mod_main.c:321 e_mod_main.c:940
-msgid "Eveil Module Popup"
-msgstr "Popup modulo Eveil"
+#: e_mod_main.c:348
+msgid "Alarm Module Popup"
+msgstr "Popup modulo Alarm"
 
-#: e_mod_main.c:345
+#: e_mod_main.c:371
 msgid ""
-"<hilight>Failed !</hilight><br><br>Eveil couln't launch the program you "
+"<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
 msgstr ""
-"<hilight>Fallito!</hilight><br><br>Eveil non ha potuto lanciare il programma "
-"specificato"
+"<hilight>Fallito!</hilight><br><br>Alarm non ha potuto lanciare il "
+"programma specificato"
 
-#: e_mod_main.c:577 e_mod_main.c:753
+#: e_mod_main.c:601 e_mod_main.c:780
 #, c-format
 msgid "Snooze %s"
 msgstr "Rinvia %s"
 
-#: e_mod_main.c:584
+#: e_mod_main.c:605
+#, c-format
+msgid "%1.0f hours"
+msgstr "%1.0f ore"
+
+#: e_mod_main.c:608
 #, c-format
 msgid "%1.0f minutes"
 msgstr "%1.0f minuti"
 
-#: e_mod_main.c:761
+#: e_mod_main.c:788
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
 msgstr "Rinvia %.14s di %.2d:%.2d"
 
-#: e_mod_main.c:775
+#: e_mod_main.c:802
 msgid "Snooze (No alarm to delay)"
 msgstr "Rinvio (nulla da rinviare)"
 
-#: e_mod_main.c:782
+#: e_mod_main.c:809
 msgid "Add an alarm"
 msgstr "Aggiungi allarme"
 
-#: e_mod_main.c:791
-msgid "Start the timer"
-msgstr "Avvia timer"
-
-#: e_mod_main.c:798
-msgid "Stop the timer"
-msgstr "Ferma timer"
-
-#: e_mod_main.c:938
-msgid "<hilight>Timer elapsed !</hilight><br><br>Time for pastas :D"
-msgstr "<hilight>Tempo scaduto!</hilight><br><br>La pasta è pronta :D"
-
-#: e_mod_main.c:1082
+#: e_mod_main.c:988
 #, c-format
 msgid ""
-"<hilight>Eveil module : Configuration Upgraded</hilight><br><br>Your "
-"configuration of eveil module<br>has been upgraded<br>Your settings were "
-"removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+"<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
+"configuration of alarm module<br>has been upgraded<br>Your settings and "
+"alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
 msgstr ""
-"<hilight>Modulo Eveil: aggiornamento configurazione</hilight><br><br>La "
-"configurazione del modulo Eveil è stata<br>aggiornata e le vostre "
+"<hilight>Modulo Alarm: aggiornamento configurazione</hilight><br><br>"
+"La configurazione del modulo Alarm è stata<br>aggiornata e le vostre "
 "impostazioni rimosse.<br>Ci scusiamo per l'inconveniente<br><br>(%d -> %d)"
 
-#: e_mod_main.c:1088 e_mod_main.c:1102 e_mod_main.c:1213
-msgid "Eveil Module version "
-msgstr "Modulo Eveil versione "
+#: e_mod_main.c:994 e_mod_main.c:1008 e_mod_main.c:1116
+msgid "Alarm Module version "
+msgstr "Modulo Alarm versione "
 
-#: e_mod_main.c:1096
+#: e_mod_main.c:1002
 #, c-format
 msgid ""
-"<hilight>Eveil module : Configuration Downgraded</hilight><br><br>Your "
-"configuration of Eveil module<br>has been downgraded<br>Your settings were "
-"removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+"<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "
+"configuration of Alarm module<br>has been downgraded<br>Your settings and "
+"alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
 msgstr ""
-"<hilight>Modulo Eveil: ripristino configurazione</hilight><br><br>La "
-"configurazione del modulo Eveil è stata<br>ripristinata e le vostre "
+"<hilight>Modulo Alarm: ripristino configurazione</hilight><br><br>La "
+"configurazione del modulo Alarm è stata<br>ripristinata e le vostre "
 "impostazioni rimosse.<br>Ci scusiamo per l'inconveniente<br><br>(%d -> %d)"
 
-#: e_mod_main.c:1214
-msgid ""
-"A module to set timers and alarms to alert you<br> when youre pastas are "
-"ready<br>or when you need to wake up<br><br>http://oooo.zapto."
-"org<br>ooookiwi@free.fr"
+#: e_mod_main.c:1117
+msgid "An alarm clock module<br><br>http://oooo.zapto.org<br>ooookiwi@gmail.fr"
 msgstr ""
-"Un modulo per impostare timer e allarmi in modo<br>da svegliarci o avvisarci "
-"quando la pasta è pronta<br><br>http://oooo.zapto.org<br>ooookiwi@free.fr"
+"Un modulo per programmare allarmi<br><br>http://oooo.zapto.org<br>ooookiwi@gmail.fr"
