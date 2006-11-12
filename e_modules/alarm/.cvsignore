@@ -3,6 +3,7 @@
 Makefile
 Makefile.in
 aclocal.m4
+alarm.edj
 autom4te.cache
 config.guess
 config.h
@@ -20,3 +21,4 @@ module.desktop
 ltmain.sh
 stamp-h1
 *.la
+*.lo
