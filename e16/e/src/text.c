@@ -375,11 +375,10 @@ TextstateTextFitMB(TextState * ts, char **ptext, int *pw, int textwidth_limit)
 	  {
 	     int                 mlen;
 
-	     mlen = mblen(text, MB_CUR_MAX);
+	     mlen = EwcWcsToStr(wc_line, 1, new_line, MB_CUR_MAX);
 	     if (mlen < 0)
 		mlen = 1;
 
-	     memcpy(new_line, text, mlen);
 	     strcpy(new_line + mlen, "...");
 	     break;
 	  }
