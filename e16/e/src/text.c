@@ -258,6 +258,151 @@ TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
    return NULL;
 }
 
+static void
+TextstateTextFit1(TextState * ts, char **ptext, int *pw, int textwidth_limit)
+{
+   char               *text = *ptext;
+   int                 hh, ascent;
+   char               *new_line;
+   int                 nuke_count = 0, nc2;
+   int                 len;
+
+   len = strlen(text);
+   if (len <= 1)
+      return;
+   new_line = Emalloc(len + 10);
+   if (!new_line)
+      return;
+
+   while (*pw > textwidth_limit)
+     {
+	nuke_count++;
+
+	if (nuke_count >= len - 1)
+	  {
+	     new_line[0] = text[0];
+	     memcpy(new_line + 1, "...", 4);
+	     break;
+	  }
+
+	nc2 = (len - nuke_count) / 2;
+	memcpy(new_line, text, nc2);
+	memcpy(new_line + nc2, "...", 3);
+	strcpy(new_line + nc2 + 3, text + nc2 + nuke_count);
+
+	ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
+     }
+
+   Efree(text);
+   *ptext = new_line;
+}
+
+#if FONT_TYPE_XFONT
+static void
+TextstateTextFit2(TextState * ts, char **ptext, int *pw, int textwidth_limit)
+{
+   char               *text = *ptext;
+   int                 hh, ascent;
+   char               *new_line;
+   int                 nuke_count = 0;
+   int                 len;
+
+   len = strlen(text);
+   new_line = Emalloc(len + 20);
+   if (!new_line)
+      return;
+
+   while (*pw > textwidth_limit)
+     {
+	nuke_count += 2;
+
+	if (nuke_count > len)
+	  {
+	     memcpy(new_line, text, 2);
+	     memcpy(new_line + 2, ". . . ", 7);
+	     break;
+	  }
+
+	new_line[0] = 0;
+	strncat(new_line, text, (len - nuke_count) / 4);
+	strcat(new_line, ". . . ");
+	strcat(new_line, text + ((len - nuke_count) / 4) + nuke_count);
+
+	ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
+     }
+
+   Efree(text);
+   *ptext = new_line;
+}
+#endif /* FONT_TYPE_XFONT */
+
+static void
+TextstateTextFitMB(TextState * ts, char **ptext, int *pw, int textwidth_limit)
+{
+   char               *text = *ptext;
+   int                 hh, ascent;
+   char               *new_line;
+   int                 nuke_count = 0, nc2;
+   int                 len;
+   wchar_t            *wc_line = NULL;
+   int                 wc_len;
+
+   if (EwcOpen(ts->need_utf8 || Mode.locale.utf8_int))
+      return;
+
+   len = strlen(text);
+   wc_len = EwcStrToWcs(text, len, NULL, 0);
+   if (wc_len <= 1)
+      goto done;
+
+   wc_line = (wchar_t *) Emalloc((wc_len + 1) * sizeof(wchar_t));
+   if (!wc_line)
+      goto done;
+
+   if (EwcStrToWcs(text, len, wc_line, wc_len) <= 0)
+      goto done;
+
+   new_line = Emalloc(len + 10);
+   if (!new_line)
+      goto done;
+
+   while (*pw > textwidth_limit)
+     {
+	nuke_count++;
+	int                 len_mb;
+
+	if (nuke_count >= wc_len - 1)
+	  {
+	     int                 mlen;
+
+	     mlen = mblen(text, MB_CUR_MAX);
+	     if (mlen < 0)
+		mlen = 1;
+
+	     memcpy(new_line, text, mlen);
+	     strcpy(new_line + mlen, "...");
+	     break;
+	  }
+
+	nc2 = (wc_len - nuke_count) / 2;
+	len_mb = EwcWcsToStr(wc_line, nc2, new_line, len + 10);
+	memcpy(new_line + len_mb, "...", 3);
+	len_mb += 3;
+	len_mb += EwcWcsToStr(wc_line + nc2 + nuke_count,
+			      wc_len - nc2 - nuke_count,
+			      new_line + len_mb, len + 10 - len_mb);
+	new_line[len_mb] = '\0';
+
+	ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
+     }
+   Efree(text);
+   *ptext = new_line;
+ done:
+   if (wc_line)
+      Efree(wc_line);
+   EwcClose();
+}
+
 #if FONT_TYPE_XFT
 /*
  * Xft
@@ -397,7 +542,7 @@ _xft_FdcSetColor(TextState * ts, XColor * xc)
 }
 
 const FontOps       FontOpsXft = {
-   _xft_Load, _xft_Unload, _xft_TextSize, TextstateTextFitMB, _xft_TextDraw,
+   _xft_Load, _xft_Unload, _xft_TextSize, TextstateTextFit, _xft_TextDraw,
    _xft_FdcInit, _xft_FdcFini, _xft_FdcSetDrawable, _xft_FdcSetColor
 };
 #endif /* FONT_TYPE_XFT */
@@ -525,7 +670,7 @@ _xfs_FdcSetColor(TextState * ts, XColor * xc)
 }
 
 const FontOps       FontOpsXfs = {
-   _xfs_Load, _xfs_Unload, _xfs_TextSize, TextstateTextFitMB, _xfs_TextDraw,
+   _xfs_Load, _xfs_Unload, _xfs_TextSize, TextstateTextFit, _xfs_TextDraw,
    _xfs_FdcInit, NULL, _xfs_FdcSetDrawable, _xfs_FdcSetColor
 };
 #endif /* FONT_TYPE_XFS */
@@ -642,62 +787,11 @@ static void
 _xfont_TextFit(TextState * ts, char **ptext, int *pw, int textwidth_limit)
 {
    FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
-   char               *text = *ptext;
-   int                 hh, ascent;
-   char               *new_line;
-   int                 nuke_count = 0;
-   int                 len;
 
    if (fdc->font->min_byte1 == 0 && fdc->font->max_byte1 == 0)
-     {
-	len = strlen(text);
-	new_line = Emalloc(len + 10);
-	if (!new_line)
-	   return;
-
-	while (*pw > textwidth_limit)
-	  {
-	     nuke_count++;
-	     if (nuke_count > len)
-	       {
-		  new_line[0] = 0;
-		  strncat(new_line, text, 1);
-		  strcat(new_line, "...");
-		  break;
-	       }
-	     new_line[0] = 0;
-	     strncat(new_line, text, (len - nuke_count) / 2);
-	     strcat(new_line, "...");
-	     strcat(new_line, text + ((len - nuke_count) / 2) + nuke_count);
-	     ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
-	  }
-     }
+      TextstateTextFit1(ts, ptext, pw, textwidth_limit);
    else
-     {
-	len = strlen(text);
-	new_line = Emalloc(len + 20);
-	if (!new_line)
-	   return;
-
-	while (*pw > textwidth_limit)
-	  {
-	     nuke_count += 2;
-	     if (nuke_count > len)
-	       {
-		  new_line[0] = 0;
-		  strncat(new_line, text, 1);
-		  strcat(new_line, ". . . ");
-		  break;
-	       }
-	     new_line[0] = 0;
-	     strncat(new_line, text, (len - nuke_count) / 4);
-	     strcat(new_line, ". . . ");
-	     strcat(new_line, text + ((len - nuke_count) / 4) + nuke_count);
-	     ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
-	  }
-     }
-   Efree(text);
-   *ptext = new_line;
+      TextstateTextFit2(ts, ptext, pw, textwidth_limit);
 }
 
 const FontOps       FontOpsXfont = {
@@ -809,83 +903,12 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 }
 
 void
-TextstateTextFitMB(TextState * ts, char **ptext, int *pw, int textwidth_limit)
+TextstateTextFit(TextState * ts, char **ptext, int *pw, int textwidth_limit)
 {
-   char               *text = *ptext;
-   int                 hh, ascent;
-   char               *new_line;
-   int                 nuke_count = 0;
-   int                 len;
-   wchar_t            *wc_line = NULL;
-   int                 wc_len;
-
-   len = strlen(text);
-   new_line = Emalloc(len + 10);
-   if (!new_line)
-      return;
-
-   wc_len = mbstowcs(NULL, text, 0);
-   if (wc_len > 0)
-     {
-	wc_line = (wchar_t *) Emalloc((wc_len + 1) * sizeof(wchar_t));
-	mbstowcs(wc_line, text, len);
-	wc_line[wc_len] = (wchar_t) '\0';
-     }
-
-   while (*pw > textwidth_limit)
-     {
-	nuke_count++;
-	if (nuke_count > wc_len)
-	  {
-	     int                 mlen;
-
-	     new_line[0] = 0;
-	     if (MB_CUR_MAX > 1 && wc_len > 0)
-	       {		/* if multibyte locale,... */
-		  mlen = mblen(text, MB_CUR_MAX);
-		  if (mlen < 0)
-		     mlen = 1;
-	       }
-	     else
-		mlen = 1;
-
-	     strncat(new_line, text, mlen);
-	     strcat(new_line, "...");
-	     break;
-	  }
-	new_line[0] = 0;
-	if (MB_CUR_MAX > 1 && wc_len > 0)
-	  {
-	     int                 j, k, len_mb;
-
-	     for (j = k = 0; k < (wc_len - nuke_count) / 2; k++)
-	       {
-		  len_mb = wctomb(new_line + j, wc_line[k]);
-		  if (len_mb > 0)
-		     j += len_mb;
-	       }
-	     new_line[j] = '\0';
-	     strcat(new_line, "...");
-	     j += 3;
-	     len_mb = wcstombs(new_line + j,
-			       wc_line + (wc_len - nuke_count) / 2 +
-			       nuke_count, len + 10 - j);
-	     if (len_mb > 0)
-		j += len_mb;
-	     new_line[j] = '\0';
-	  }
-	else
-	  {
-	     strncat(new_line, text, (len - nuke_count) / 2);
-	     strcat(new_line, "...");
-	     strcat(new_line, text + ((len - nuke_count) / 2) + nuke_count);
-	  }
-	ts->ops->TextSize(ts, new_line, 0, pw, &hh, &ascent);
-     }
-   Efree(text);
-   *ptext = new_line;
-   if (wc_line)
-      Efree(wc_line);
+   if (ts->need_utf8 || MB_CUR_MAX > 1)
+      TextstateTextFitMB(ts, ptext, pw, textwidth_limit);
+   else
+      TextstateTextFit1(ts, ptext, pw, textwidth_limit);
 }
 
 void

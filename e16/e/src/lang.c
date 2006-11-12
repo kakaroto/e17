@@ -143,6 +143,125 @@ EstrInt2EncFree(const char *str, int want_utf8)
 #endif
 }
 
+/*
+ * Stuff to do mb/utf8 <-> wc conversions.
+ */
+#if HAVE_ICONV
+static iconv_t      iconv_cd_str2wcs = NULL;
+static iconv_t      iconv_cd_wcs2str = NULL;
+#endif
+
+int
+EwcOpen(int utf8)
+{
+#if HAVE_ICONV
+   const char         *enc;
+
+   if (utf8)
+      enc = "UTF-8";
+   else
+      enc = nl_langinfo(CODESET);
+
+   iconv_cd_str2wcs = iconv_open("WCHAR_T", enc);
+   iconv_cd_wcs2str = iconv_open(enc, "WCHAR_T");
+
+   if (iconv_cd_str2wcs && iconv_cd_wcs2str)
+      return 0;
+
+   EwcClose();
+   return -1;
+#else
+   /* NB! This case will not work properly if needed MB encoding is utf8
+    * but locale isn't */
+   utf8 = 0;
+   return 0;
+#endif
+}
+
+void
+EwcClose(void)
+{
+#if HAVE_ICONV
+   if (iconv_cd_str2wcs)
+      iconv_close(iconv_cd_str2wcs);
+   iconv_cd_str2wcs = NULL;
+   if (iconv_cd_wcs2str)
+      iconv_close(iconv_cd_wcs2str);
+   iconv_cd_wcs2str = NULL;
+#endif
+}
+
+int
+EwcStrToWcs(const char *str, int len, wchar_t * wcs, int wcl)
+{
+#if HAVE_ICONV
+   size_t              ni, no, rc;
+
+   if (!wcs)
+     {
+	char                buf[4096], *po;
+
+	ni = len;
+	no = 4096;
+	po = buf;
+	rc = iconv(iconv_cd_str2wcs, (char **)(&str), &ni, &po, &no);
+	if (rc == (size_t) (-1) || no == 0)
+	   return -1;
+	wcl = (4096 - no) / sizeof(wchar_t);
+	return wcl;
+     }
+
+   ni = len;
+   no = wcl * sizeof(wchar_t);
+   rc = iconv(iconv_cd_str2wcs, (char **)(&str), &ni, (char **)(&wcs), &no);
+   if (rc == (size_t) (-1))
+      return 0;
+   return wcl - no / sizeof(wchar_t);
+#else
+   if (!wcs)
+      return mbstowcs(NULL, str, 0);
+
+   mbstowcs(wcs, str, wcl);
+   wcs[wcl] = (wchar_t) '\0';
+
+   len = 0;
+   return wcl;
+#endif
+}
+
+int
+EwcWcsToStr(const wchar_t * wcs, int wcl, char *str, int len)
+{
+#if HAVE_ICONV
+   size_t              ni, no, rc;
+
+   ni = wcl * sizeof(wchar_t);
+   no = len;
+   rc = iconv(iconv_cd_wcs2str, (char **)(&wcs), &ni, &str, &no);
+   if (rc == (size_t) (-1))
+      return 0;
+   return len - no;
+#else
+   int                 i, j, n;
+
+   j = 0;
+   for (i = 0; i < wcl; i++)
+     {
+	if (j + (int)MB_CUR_MAX > len)
+	   break;
+	n = wctomb(str + j, wcs[i]);
+	if (n > 0)
+	   j += n;
+     }
+   str[j] = '\0';
+   return j;
+#endif
+}
+
+/*
+ * Setup
+ */
+
 static struct
 {
    char               *internal;

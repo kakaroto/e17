@@ -101,8 +101,8 @@ TextClass          *TextclassFind(const char *name, int fallback);
 /* text.c */
 TextState          *TextclassGetTextState(TextClass * tclass, int state,
 					  int active, int sticky);
-void                TextstateTextFitMB(TextState * ts, char **ptext, int *pw,
-				       int textwidth_limit);
+void                TextstateTextFit(TextState * ts, char **ptext, int *pw,
+				     int textwidth_limit);
 void                TextstateTextDraw(TextState * ts, Win win, Drawable draw,
 				      const char *text, int x, int y, int w,
 				      int h, const EImageBorder * pad,
