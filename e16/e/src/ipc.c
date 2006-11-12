@@ -1427,7 +1427,11 @@ static const IpcItem IPCArray[] = {
     IPC_Exit,
     "exit", "q",
     "Exit Enlightenment",
-    NULL},
+    "  exit                 Exit immediately\n"
+    "  exit logout          Show logout dialog\n"
+    "  exit restart         Restart\n"
+    "  exit theme <theme>   Restart with new theme\n"
+    "  exit exec <program>  Exit and start program\n"},
    {
     IPC_ForceSave,
     "save_config", "s",
@@ -1437,12 +1441,11 @@ static const IpcItem IPCArray[] = {
     IPC_WinOps,
     "win_op", "wop",
     "Change a property of a specific window",
-    "Use \"win_op <windowid> <property> <value>\" to change the "
-    "property of a window\nYou can use the \"window_list\" "
-    "command to retrieve a list of available windows\n"
+    "Use \"win_op <windowid> <property> <value>\" to change the property of a window\n"
+    "You can use the \"window_list\" command to retrieve a list of available windows\n"
     "You can use ? after most of these commands to receive the current\n"
     "status of that flag\n"
-    "available win_op commands are:\n"
+    "Available win_op commands are:\n"
     "  win_op <windowid> border <BORDERNAME>\n"
     "  win_op <windowid> title <title>\n"
     "  win_op <windowid> <close/kill>\n"
@@ -1459,8 +1462,10 @@ static const IpcItem IPCArray[] = {
     "  win_op <windowid> <fullscreen/zoom>\n"
     "  win_op <windowid> layer <0-100,4=normal>\n"
     "  win_op <windowid> <raise/lower>\n"
-    "  win_op <windowid> opacity <1-100(100=opaque)>\n"
-    "  win_op <windowid> focused_opacity <0-100(0=follow opacity, 100=opaque)>\n"
+    "  win_op <windowid> opacity [+|-]<1-100(100=opaque)>   (+/-: incremental change)\n"
+#if USE_COMPOSITE
+    "  win_op <windowid> focused_opacity [+|-]<0-100(0=follow opacity, 100=opaque)>\n"
+#endif
     "  win_op <windowid> snap <what>\n"
     "         <what>: all, none, border, command, desktop, dialog, group, icon,\n"
     "                 layer, location, opacity, shade, shadow, size, sticky\n"
@@ -1472,12 +1477,12 @@ static const IpcItem IPCArray[] = {
    {
     IPC_WinList,
     "window_list", "wl",
-    "Get a list of currently open windows",
-    "the list will be returned in the following "
-    "format - \"window_id : title\"\n"
-    "you can get an extended list using \"window_list extended\"\n"
-    "returns the following format:\n\"window_id : title :: "
-    "desktop : area_x area_y : x_coordinate y_coordinate\"\n"},
+    "Get a list of managed application windows",
+    "The window list can be shown in a number of different formats:\n"
+    "  window_list       \"windowid : title\"\n"
+    "  window_list all   \"windowid : x y w x h :: desk : area_x area_y : title\"\n"
+    "  window_list ext   \"windowid : title :: desk : area_x area_y : x y wxh\"\n"
+    "  window_list prop  \"windowid : x y w x h :: desk : name class Title\"\n"},
    {
     IPC_MoveResize,
     "movres", "mr",
@@ -1489,7 +1494,7 @@ static const IpcItem IPCArray[] = {
     IPC_DialogOK,
     "dialog_ok", "dok",
     "Pop up a dialog box with an OK button",
-    "use \"dialog_ok <message>\" to pop up a dialog box\n"},
+    "Use \"dialog_ok <message>\" to pop up a dialog box\n"},
    {
     IPC_Border, "border", NULL, "List available borders", NULL},
    {
