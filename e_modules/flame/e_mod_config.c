@@ -72,7 +72,7 @@ _free_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 
   f = cfd->data;
   f->config_dialog = NULL;
-  free (cfdata);
+  if (cfdata) free (cfdata);
   cfdata = NULL;
 }
 
