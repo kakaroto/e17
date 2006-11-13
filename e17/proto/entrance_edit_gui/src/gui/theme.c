@@ -13,7 +13,7 @@ egui_theme_dialog_show(void *data)
 		"theme",
 		PREFIX "/share/entrance/themes",
 		NULL,
-		"Preview",
+		/*"Preview",*/
 		"Entrance Configuration - Themes",
 		"Themes",
 		ENTRANCE_EDIT_KEY_CLIENT_THEME_STR,

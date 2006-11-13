@@ -10,7 +10,6 @@ typedef struct {
 	char *name;
 	char *files_path;
 	Ecore_List *extra_file_paths;
-	char *preview_edje_part;
 	char *dialog_title;
 	char *list_title;
 	char *entrance_edit_key;
@@ -35,6 +34,9 @@ typedef struct {
 	Entrance_Widget group_pointer;
 
 	Egui_Graphics_Dialog_Settings egds;
+
+	Evas *preview_evas;
+	Evas_Object *preview_smart;
 
 	char *first;
 	int newly_created;

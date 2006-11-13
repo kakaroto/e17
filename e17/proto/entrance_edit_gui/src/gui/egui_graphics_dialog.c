@@ -197,6 +197,10 @@ _gd_close(void* data)
 		return;
 	ew_dialog_destroy(egd->win);
 	egd->win = NULL;
+	evas_free(egd->preview_evas);
+	egd->preview_evas = NULL;
+	es_free(egd->preview_smart);
+	egd->preview_smart = NULL;
 }
 
 static char*
@@ -284,33 +288,36 @@ _gd_load_preview(Egui_Graphics_Dialog egd, const char *graphic)
    else
 	   file = _gd_get_path(egd, graphic);
 
-   static Evas *evas = NULL;
-   if(evas == NULL || egd->newly_created == 1) 
-	   evas = ew_preview_evas_get(egd->img_preview, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
+   if(egd->preview_evas == NULL || egd->newly_created == 1) 
+	   egd->preview_evas = ew_preview_evas_get(egd->img_preview, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
+ 
 
    char *bg_path = egui_get_current_bg();
    char *theme_path = egui_get_current_theme();
 
-   static Evas_Object *es  = NULL;
-   if(es == NULL || egd->newly_created == 1) 
-	   es = es_new(evas);
+   /*static Evas_Object *es  = NULL;*/
+   if(egd->preview_smart == NULL || egd->newly_created == 1) 
+	   egd->preview_smart = es_new(egd->preview_evas);
+   /*Evas_Object *es = es_new(egd->preview_evas);*/
 
    if(egd->egds.keep_part == EGDS_BACKGROUND)
-	   es_background_edje_set(es, bg_path);
+	   es_background_edje_set(egd->preview_smart, bg_path);
    else
-	   es_background_edje_set(es, file);
+	   es_background_edje_set(egd->preview_smart, file);
 
    if(egd->egds.keep_part == EGDS_THEME)
-	   es_main_edje_set(es, theme_path); 
+	   es_main_edje_set(egd->preview_smart, theme_path); 
    else 
-	   es_main_edje_set(es, file);
+	   es_main_edje_set(egd->preview_smart, file);
 
-   evas_object_resize(es, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
-   evas_object_show(es);
+   evas_object_resize(egd->preview_smart, PREVIEW_V_WIDTH, PREVIEW_V_HEIGHT);
+   evas_object_show(egd->preview_smart);
 
    free(bg_path);
    free(theme_path);
    free(file);
+
+
    /*FIXME: selecting the first row doesn't work - maybe we select first row while adding elements to the list:(*/
    /*ew_list_first_row_select(list_thumbs);*/
 }

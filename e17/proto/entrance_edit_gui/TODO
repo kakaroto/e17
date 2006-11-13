@@ -15,7 +15,6 @@ GUI
 - implement sessions screen
 - We should have a way to show a COMPLETE entrance preview i think in the main ui screen or something, that shows the greetings, etc... so when we change stuff, we can see how it looks like. This is different from the theme and background previews, which only show what the theme and background look like, but hey, maybe we should combine them? Dunno... not critical, just a nice to have feature.
 - If we click on a file in the file selector let it appear in the Preview object of the theme/background dialog.
-- When we open both the background and theme settings dialogs, clicking the different options from the two lists, only updates the lattest open dialog preview. Should be fixed to be properly isolated.
 	
 ***SHOW STOPPERS - TOP PRIORITY
 ============================

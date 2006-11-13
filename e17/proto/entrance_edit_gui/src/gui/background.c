@@ -28,7 +28,7 @@ egui_background_dialog_show(void* data)
 		/*this is an artifact that will have to go, once ew_*list can handle selected first member automagically*/
 		PREFIX "/share/enlightenment/data/backgrounds",
 		bg_paths,
-		"e/desktop/background",
+		/*"e/desktop/background",*/
 		"Entrance Configuration - Background",
 		"Backgrounds",
 		ENTRANCE_EDIT_KEY_CLIENT_BACKGROUND_STR,

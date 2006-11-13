@@ -79,6 +79,20 @@ es_new(Evas *e)
 }
 
 void
+es_free(Evas_Object *o)
+{
+	ENTRANCE_SMART_OBJECT_GET(es, o);
+
+	evas_object_del(es->background);
+	evas_object_del(es->main);
+	evas_object_del(es->session);
+	evas_object_del(es->clip);
+
+	free(es);
+	evas_object_del(o);
+}
+
+void
 es_background_edje_set(Evas_Object *o, const char *file)
 {
 	ENTRANCE_SMART_OBJECT_GET(es, o);
