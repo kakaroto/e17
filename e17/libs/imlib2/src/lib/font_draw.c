@@ -99,7 +99,7 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
 
    ascent = imlib_font_max_ascent_get(fn);
 
-   imlib_font_draw(im2, col, fn, 0, ascent, text, &nx, &ny, clx, cly, clw, clh);
+   imlib_font_draw(im2, col, fn, 0, ascent, text, &nx, &ny, 0, 0, w, h);
 
    /* OK, now we have small ImlibImage with text rendered, 
     * have to blend it on im */
