@@ -346,26 +346,30 @@ ec_theme_page_setup(Ewl_Notebook *n)
 
 	i = 0;
 	v = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_NAME);
-	rep = opendir(PACKAGE_DATA_DIR "/themes");
-	while ((file = readdir(rep)))
-	{	   
-		int len;
-				
-		len = strlen(file->d_name);
-		if ((len >= 4) && (!strcmp(file->d_name + len - 4, ".edj")))
-		{
-			char *t;
+	rep = opendir(PACKAGE_DATA_DIR "/ewl/themes");
+	if (rep)
+	{
+		while ((file = readdir(rep)))
+		{	   
+			int len;
 
-			t = strdup(file->d_name);
-			*(t + len - 4) = '\0';
+			len = strlen(file->d_name);
+			if ((len >= 4) && 
+					(!strcmp(file->d_name + len - 4, ".edj")))
+			{
+				char *t;
 
-			if (!strcmp(t, v)) sel = i;
+				t = strdup(file->d_name);
+				*(t + len - 4) = '\0';
 
-			ecore_list_append(list, t);
-			i++;
+				if (!strcmp(t, v)) sel = i;
+
+				ecore_list_append(list, t);
+				i++;
+			}
 		}
+		closedir(rep);
 	}
-	closedir(rep);
 
 	ewl_mvc_selected_set(EWL_MVC(o), sel, 0);
 	ewl_mvc_dirty_set(EWL_MVC(o), TRUE);
