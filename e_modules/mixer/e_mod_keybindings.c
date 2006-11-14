@@ -219,28 +219,10 @@ _mixer_register_module_keybinding(E_Config_Binding_Key *key, const char *action)
 
 /*************** Private ********************/
 
-void
-dbg_key(E_Config_Binding_Key key)
-{
-   printf("context   : %d\n"
-	  "modifiers : %d\n"
-	  "key       : %s\n"
-	  "action    : %s\n"
-	  "params    : %s\n"
-	  "any_mod   : %c\n\n",
-	  key.context,
-	  key.modifiers,
-	  key.key,
-	  key.action,
-	  key.params,
-	  key.any_mod);
-}
-
 ACT_FN_GO(decrease_volume)
 {
    Instance *inst;
 
-   dbg_key(mixer_config->decrease_vol_key);
    inst = evas_list_data(mixer_config->instances);
    if (!inst) return;
    mixer_vol_decrease(inst);
@@ -250,7 +232,6 @@ ACT_FN_GO(increase_volume)
 {
    Instance *inst;
 
-   dbg_key(mixer_config->increase_vol_key);
    inst = evas_list_data(mixer_config->instances);
    if (!inst) return;
    mixer_vol_increase(inst);
@@ -259,9 +240,7 @@ ACT_FN_GO(increase_volume)
 ACT_FN_GO(mute)
 {
    Instance *inst;
-   Config_Item *ci;
    
-   dbg_key(mixer_config->mute_key);
    inst = evas_list_data(mixer_config->instances);
    if (!inst) return;
    mixer_mute_toggle(inst);
