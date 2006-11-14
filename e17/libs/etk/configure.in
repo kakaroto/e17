@@ -258,6 +258,7 @@ src/engines/Makefile
 src/engines/ecore_evas/Makefile
 src/engines/ecore_evas_x11/Makefile
 src/engines/ecore_evas_software_x11/Makefile
+src/engines/ecore_evas_gl_x11/Makefile
 src/engines/ecore_fb/Makefile
 src/bin/Makefile
 src/tools/Makefile
