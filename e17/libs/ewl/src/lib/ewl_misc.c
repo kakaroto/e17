@@ -206,12 +206,6 @@ ewl_init(int *argc, char **argv)
 		goto ERROR;
 	}
 
-	if (!ewl_dnd_init()) {
-		fprintf(stderr, "Could not initialize Ewl DND support.\n");
-		goto ERROR;
-	}
-	ecore_list_prepend(shutdown_queue, ewl_dnd_shutdown);
-
 	if (!ewl_callbacks_init()) {
 		fprintf(stderr, "Could not initialize Ewl Callback system.\n");
 		goto ERROR;
@@ -229,6 +223,12 @@ ewl_init(int *argc, char **argv)
 		goto ERROR;
 	}
 	ecore_list_prepend(shutdown_queue, ewl_icon_theme_shutdown);
+
+	if (!ewl_dnd_init()) {
+		fprintf(stderr, "Could not initialize Ewl DND support.\n");
+		goto ERROR;
+	}
+	ecore_list_prepend(shutdown_queue, ewl_dnd_shutdown);
 
 	if (!ewl_io_manager_init()) {
 		fprintf(stderr, "Could not initialize Ewl IO Manager.\n");
