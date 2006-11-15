@@ -2887,6 +2887,11 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
 	if (DISABLED(w))
 		DRETURN(DLEVEL_STABLE);
 
+	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DND)) {
+		ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAG_STATE_DND);
+		/* FIXME: Stop DND here */
+	}
+
 	snprintf(state, 14, "mouse,up,%i", e->button);
 	ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
 
@@ -2923,11 +2928,23 @@ void
 ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
+	Ewl_Object *o;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	o = EWL_OBJECT(w);
+
 	ewl_widget_state_set(w, "mouse,move", EWL_STATE_TRANSIENT);
+	if (ewl_object_state_has(o, EWL_FLAG_STATE_PRESSED) &&
+			ewl_object_flags_has(o, EWL_FLAG_PROPERTY_DND_SOURCE,
+				EWL_FLAGS_PROPERTY_MASK)) {
+		if (!ewl_object_state_has(o, EWL_FLAG_STATE_DND)) {
+			ewl_object_state_add(o, EWL_FLAG_STATE_DND);
+			/* FIXME: Start DND here. */
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
