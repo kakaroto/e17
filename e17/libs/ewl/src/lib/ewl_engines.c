@@ -1231,6 +1231,7 @@ ewl_engine_pointer_set(Ewl_Embed *embed, int pointer)
 					EWL_ENGINE_POINTER_SET);
 	if (pointer_set)
 		pointer_set(embed, pointer);
+	embed->cursor = pointer;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
