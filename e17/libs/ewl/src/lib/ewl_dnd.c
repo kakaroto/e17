@@ -5,25 +5,22 @@
 
 #define EWL_DND_WINDOW_ROOT 0
 
-int EWL_CALLBACK_DND_POSITION = 0; /**< A DND position event **/
-int EWL_CALLBACK_DND_ENTER = 0; /**< On enter of a widget **/
-int EWL_CALLBACK_DND_LEAVE = 0; /**< On exit of a widget **/
-int EWL_CALLBACK_DND_DROP = 0; /**< Drop event **/
-int EWL_CALLBACK_DND_DATA = 0; /**< Data event **/
+int EWL_CALLBACK_DND_POSITION; /**< A DND position event **/
+int EWL_CALLBACK_DND_ENTER; /**< On enter of a widget **/
+int EWL_CALLBACK_DND_LEAVE; /**< On exit of a widget **/
+int EWL_CALLBACK_DND_DROP; /**< Drop event **/
+int EWL_CALLBACK_DND_DATA; /**< Data event **/
 
-static int ewl_dragging_current = 0;
-static int ewl_dnd_move_count = 0;
-#if 0
-static Ecore_Evas *ewl_dnd_drag_canvas;
-static Ecore_X_Window ewl_dnd_drag_win = 0;
-#endif
+static int ewl_dragging_current;
+static int ewl_dnd_move_count;
 
-static Ewl_Widget *ewl_dnd_widget = NULL;
+static Ewl_Widget *ewl_dnd_widget;
+static Ewl_Widget *ewl_dnd_default_cursor;
 
 static Ecore_Hash *ewl_dnd_position_hash;
 static Ecore_Hash *ewl_dnd_provided_hash;
 static Ecore_Hash *ewl_dnd_accepted_hash;
-static int ewl_dnd_status = 0;
+static int ewl_dnd_status;
 
 Ecore_Event_Handler *ewl_dnd_mouse_up_handler;
 Ecore_Event_Handler *ewl_dnd_mouse_move_handler;
@@ -37,8 +34,6 @@ static int ewl_dnd_types_encoded_contains(char *types, char *type);
 static int ewl_dnd_event_mouse_up(void *data, int type, void *event);
 static int ewl_dnd_event_dnd_move(void *data, int type, void *event);
 #endif
-
-static void ewl_dnd_cb_render(Ewl_Widget *w, void *event, void *data);
 
 /**
  * @internal
@@ -57,30 +52,58 @@ ewl_dnd_init(void)
 	EWL_CALLBACK_DND_DROP = ewl_callback_type_add();
 	EWL_CALLBACK_DND_DATA = ewl_callback_type_add();
 
+	ewl_dnd_widget = NULL;
+	ewl_dnd_status = 0;
+	ewl_dragging_current = 0;
+	ewl_dnd_move_count = 0;
+
 	ewl_dnd_position_hash = ecore_hash_new(ecore_direct_hash, 
 						ecore_direct_compare);
 	if (!ewl_dnd_position_hash)
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+		goto position_error;
 
 	ewl_dnd_provided_hash = ecore_hash_new(ecore_direct_hash, 
 						ecore_direct_compare);
-	if (!ewl_dnd_provided_hash) {
-		ecore_hash_destroy(ewl_dnd_position_hash);
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
+	if (!ewl_dnd_provided_hash)
+		goto provided_error;
 
 	ewl_dnd_accepted_hash = ecore_hash_new(ecore_direct_hash, 
 						ecore_direct_compare);
-	if (!ewl_dnd_accepted_hash) {
-		ecore_hash_destroy(ewl_dnd_provided_hash);
-		ecore_hash_destroy(ewl_dnd_position_hash);
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
+	if (!ewl_dnd_accepted_hash)
+		goto accepted_error;
+
+	/*
+	 * Create a fallback cursor to display during DND operations.
+	 */
+	ewl_dnd_default_cursor = ewl_cursor_new();
+	if (!ewl_dnd_default_cursor)
+		goto cursor_error;
+
+	/*
+	 * Add a theme point as these tend to be a specialized class of cursors.
+	 */
+	ewl_widget_appearance_set(ewl_dnd_default_cursor, "dndcursor");
+	ewl_widget_show(ewl_dnd_default_cursor);
 
 	ewl_dragging_current = 0;
 	ewl_dnd_status = 1;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+
+	/*
+	 * Error handlers.
+	 */
+cursor_error:
+	ecore_hash_destroy(ewl_dnd_accepted_hash);
+	ewl_dnd_accepted_hash = NULL;
+accepted_error:
+	ecore_hash_destroy(ewl_dnd_provided_hash);
+	ewl_dnd_provided_hash= NULL;
+provided_error:
+	ecore_hash_destroy(ewl_dnd_position_hash);
+	ewl_dnd_position_hash = NULL;
+position_error:
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -290,9 +313,6 @@ ewl_dnd_accepted_types_get(Ewl_Widget *w)
 void
 ewl_dnd_drag_start(Ewl_Widget *w) 
 {
-	Ewl_Widget *win;
-	Ewl_Widget *image;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
@@ -303,19 +323,6 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	ewl_dragging_current = 1;
 	ewl_dnd_widget = w;
 	ewl_dnd_move_count = 0;
-
-	win = ewl_window_new();
-	ewl_embed_engine_name_set(EWL_EMBED(win), "buffer");
-	ewl_callback_append(win, EWL_CALLBACK_VALUE_CHANGED, ewl_dnd_cb_render,
-			ewl_embed_widget_find(w));
-	ewl_widget_show(win);
-
-	image = ewl_image_new();
-	ewl_image_file_path_set(EWL_IMAGE(image), PACKAGE_DATA_DIR
-			"/ewl/images/World.png");
-	ewl_object_custom_size_set(EWL_OBJECT(image), 64, 64);
-	ewl_container_child_append(EWL_CONTAINER(win), image);
-	ewl_widget_show(image);
 
 	/* Start the drag operation */
 	/*
@@ -393,24 +400,9 @@ ewl_dnd_drag_widget_clear(void)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-ewl_dnd_cb_render(Ewl_Widget *w, void *event __UNUSED__, void *data)
-{
-	int handle;
-	Ewl_Embed *embed = EWL_EMBED(data);
-	Ewl_Embed *cursor_win = EWL_EMBED(w);
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	handle = ewl_engine_pointer_data_new(embed, cursor_win->evas_window,
-			ewl_object_current_w_get(EWL_OBJECT(cursor_win)),
-			ewl_object_current_h_get(EWL_OBJECT(cursor_win)));
-	ewl_engine_pointer_set(embed, handle);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
+/*
+ * Search a nil separated string for a specific string match.
+ */
 static int
 ewl_dnd_types_encoded_contains(char *types, char *type)
 {
@@ -428,7 +420,10 @@ ewl_dnd_types_encoded_contains(char *types, char *type)
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
-
+/*
+ * Allocates a char array and encodes a char * array into a single string in the
+ * format "foo\0bar\0baz".
+ */
 static char *
 ewl_dnd_types_encode(const char **types)
 {
@@ -457,6 +452,9 @@ ewl_dnd_types_encode(const char **types)
 	DRETURN_PTR(type, DLEVEL_STABLE);
 }
 
+/*
+ * Decodes a string of the format "foo\0bar\0baz" into a char * array.
+ */
 static char **
 ewl_dnd_types_decode(const char *types)
 {
@@ -486,6 +484,11 @@ ewl_dnd_types_decode(const char *types)
 	DRETURN_PTR(list, DLEVEL_STABLE);
 }
 
+/*
+ * Implementation of stpcpy for portability.
+ * Similar to strcpy but returns the last character of the destination rather
+ * than the first.
+ */
 static char *
 ewl_dnd_type_stpcpy(char *dst, const char *src)
 {
