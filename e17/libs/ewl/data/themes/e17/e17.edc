@@ -163,6 +163,7 @@ data {
 	item, "/tooltip/group" "window";
 
 	item, "/window/group" "window";
+	item, "/popup/group" "window";
         item, "/shadow/group" "widget/shadow";
 
 	item, "/theme/name" "e17";

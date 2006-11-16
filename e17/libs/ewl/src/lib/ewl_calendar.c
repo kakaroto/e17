@@ -77,8 +77,6 @@ ewl_calendar_init(Ewl_Calendar* ib)
 
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(ib), vbox);
-	ewl_object_minimum_w_set(EWL_OBJECT(vbox), 150);
-	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_VSHRINK);
 	ewl_widget_show(vbox);
 
 	top_hbox = ewl_hbox_new();
@@ -87,27 +85,32 @@ ewl_calendar_init(Ewl_Calendar* ib)
 
 	prev_button = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), prev_button);
+	ewl_object_fill_policy_set(EWL_OBJECT(prev_button), EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(prev_button), EWL_FLAG_ALIGN_LEFT);
 	ewl_button_image_set(EWL_BUTTON(prev_button), 
 				ewl_icon_theme_icon_path_get(EWL_ICON_GO_PREVIOUS, 
 								EWL_ICON_SIZE_SMALL), 
 				EWL_ICON_GO_PREVIOUS);
-	ewl_object_maximum_size_set(EWL_OBJECT(prev_button), 20,10);
 	ewl_callback_append(prev_button, EWL_CALLBACK_MOUSE_DOWN, ewl_calendar_prev_month_cb, ib);
 	ewl_widget_show(prev_button);
 
 	ib->month_label = ewl_label_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(ib->month_label), 
+						EWL_FLAG_FILL_FILL);
+	ewl_object_alignment_set(EWL_OBJECT(ib->month_label), 
+						EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), ib->month_label);
 	ewl_label_text_set(EWL_LABEL(ib->month_label), "Disp");
-	ewl_object_maximum_h_set(EWL_OBJECT(ib->month_label), 10);
 	ewl_widget_show(ib->month_label);
 
 	next_button = ewl_button_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(next_button), EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(next_button), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), next_button);	
 	ewl_button_image_set(EWL_BUTTON(next_button), 
 				ewl_icon_theme_icon_path_get(EWL_ICON_GO_NEXT, 
 							EWL_ICON_SIZE_SMALL), 
 				EWL_ICON_GO_NEXT);
-	ewl_object_maximum_size_set(EWL_OBJECT(next_button), 20,10);
 	ewl_callback_append(next_button, EWL_CALLBACK_MOUSE_DOWN, 
 					ewl_calendar_next_month_cb, ib);
 	ewl_widget_show(next_button);
@@ -116,7 +119,6 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	ewl_grid_dimensions_set(EWL_GRID(ib->grid), 7, 7);
 	ewl_container_child_append(EWL_CONTAINER(vbox), EWL_WIDGET(ib->grid));
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->grid), EWL_FLAG_FILL_FILL);
-	ewl_object_minimum_h_set(EWL_OBJECT(ib->grid), 100);
 	ewl_widget_show(ib->grid);
 
 	/* Get the start time.. */

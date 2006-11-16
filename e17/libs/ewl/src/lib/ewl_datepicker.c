@@ -3,7 +3,6 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
-static void ewl_datepicker_calendar_position_set(Ewl_Datepicker *dp);
 static void ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev_data, 
 							void *user_data); 
 
@@ -45,20 +44,27 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 	if (!ewl_text_init(EWL_TEXT(dp)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_text_text_set(EWL_TEXT(dp), "Date Test");
-
-	/* Init ewl setup */
 	ewl_widget_appearance_set(EWL_WIDGET(dp), EWL_DATEPICKER_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(dp), EWL_DATEPICKER_TYPE);
+	ewl_object_fill_policy_set(EWL_OBJECT(dp), EWL_FLAG_FILL_HFILL |
+							EWL_FLAG_FILL_NONE);
 
-	dp->calendar_window = ewl_window_new();
-	ewl_object_custom_size_set(EWL_OBJECT(dp->calendar_window), 159, 170);
+	dp->calendar_window = ewl_popup_new();
+	ewl_widget_appearance_set(dp->calendar_window, EWL_DATEPICKER_TYPE"/"
+							EWL_POPUP_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar_window), 
-						EWL_FLAG_FILL_FILL);
-	ewl_widget_layer_top_set(dp->calendar_window, TRUE);
-	ewl_window_borderless_set(EWL_WINDOW(dp->calendar_window));
+						EWL_FLAG_FILL_NONE);
+	ewl_popup_type_set(EWL_POPUP(dp->calendar_window), 
+					EWL_POPUP_TYPE_MENU_VERTICAL);
+	ewl_popup_follow_set(EWL_POPUP(dp->calendar_window), EWL_WIDGET(dp));
+	ewl_window_keyboard_grab_set(EWL_WINDOW(dp->calendar_window), TRUE);
+	ewl_window_pointer_grab_set(EWL_WINDOW(dp->calendar_window), TRUE);
+	ewl_callback_append(dp->calendar_window, EWL_CALLBACK_MOUSE_DOWN,
+				ewl_datepicker_cb_window_mouse_down, dp);
 
 	dp->calendar = ewl_calendar_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar), 
+							EWL_FLAG_FILL_NONE);
 	ewl_container_child_append(EWL_CONTAINER(dp->calendar_window), 
 							dp->calendar);
 	ewl_callback_append(EWL_WIDGET(dp->calendar), 
@@ -66,12 +72,8 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 				ewl_datepicker_cb_value_changed, dp);
 	ewl_widget_show(dp->calendar);
 
-	ewl_datepicker_calendar_position_set(dp);
-
 	ewl_callback_prepend(EWL_WIDGET(dp), EWL_CALLBACK_DESTROY, 
 				ewl_datepicker_cb_destroy, dp);
-	ewl_callback_append(EWL_WIDGET(dp), EWL_CALLBACK_CONFIGURE,
-	                            ewl_datepicker_cb_configure, NULL);
 	ewl_callback_append(EWL_WIDGET(dp), EWL_CALLBACK_MOUSE_DOWN, 
 				ewl_datepicker_cb_dropdown, NULL);
 	
@@ -100,28 +102,6 @@ ewl_datepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 	dp = EWL_DATEPICKER(w);
 	ewl_widget_destroy(dp->calendar_window);
-	ewl_widget_destroy(dp->calendar);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The configure callback
- */
-void
-ewl_datepicker_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
-					void *user_data __UNUSED__) 
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	ewl_datepicker_calendar_position_set(EWL_DATEPICKER(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -156,44 +136,22 @@ ewl_datepicker_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 /**
  * @internal
- * @param w: The widget to work with
+ * @param w: the calendar window
  * @param ev: UNUSED
- * @param user_data: UNUSED
+ * @param user_data: The datepicker
  * @return Returns no value
- * @brief Realize callback
+ * @brief Callback to hide the calendar window
  */
 void
-ewl_datepicker_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, 
-						void *user_data __UNUSED__) 
+ewl_datepicker_cb_window_mouse_down(Ewl_Widget *w, void *ev __UNUSED__,
+							void *user_data) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_datepicker_calendar_position_set(EWL_DATEPICKER(w));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_datepicker_calendar_position_set(Ewl_Datepicker *dp) 
-{
-	int x, y;
-	int sx, sy;
-	Ewl_Embed *emb;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dp", dp);
-	DCHECK_TYPE("dp", dp, EWL_DATEPICKER_TYPE);
-
-	/* Get the position of the parent */
-	emb = ewl_embed_widget_find(EWL_WIDGET(dp));
-	if (emb) {
-		ewl_embed_window_position_get(EWL_EMBED(emb), &x, &y);
-		ewl_object_current_size_get(EWL_OBJECT(dp), &sx, &sy);
-		ewl_window_move(EWL_WINDOW(dp->calendar_window), x + (sx / 4), 
-								y + sy + 3);
-	}
+	if (w == ewl_embed_focused_widget_get(EWL_EMBED(w)))
+		ewl_widget_hide(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -211,7 +169,6 @@ ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev __UNUSED__,
 	dp = EWL_DATEPICKER(w);
 	ewl_widget_show(dp->calendar_window);
 	ewl_window_raise(EWL_WINDOW(dp->calendar_window));
-	ewl_datepicker_calendar_position_set(dp);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
