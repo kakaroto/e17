@@ -509,7 +509,10 @@ ewl_init_parse_options(int *argc, char **argv)
 		}
 		else if (!strcmp(argv[i], "--ewl-theme")) {
 			if (i + 1 < *argc) {
-				ewl_theme_theme_set(argv[i + 1]);
+				ewl_config_string_set(ewl_config, 
+							EWL_CONFIG_THEME_NAME,
+							argv[i + 1], 
+							EWL_STATE_TRANSIENT);
 				matched++;
 			}
 			matched++;
