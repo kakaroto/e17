@@ -2961,6 +2961,16 @@ ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 	/*
 	 * Read in the padding values from the edje file
 	 */
+	key = edje_object_data_get(w->theme_object, "pad");
+	if (key) {
+		int val = atoi(key);
+
+		if (l) *l = val;
+		if (r) *r = val;
+		if (t) *t = val;
+		if (b) *b = val;
+	}
+
 	key = edje_object_data_get(w->theme_object, "pad/left");
 	if (key && l)
 		*l = atoi(key);
@@ -2992,6 +3002,16 @@ ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 	/*
 	 * Read in the inset values from the edje file
 	 */
+	key = edje_object_data_get(w->theme_object, "inset");
+	if (key) {
+		int val = atoi(key);
+
+		if (l) *l = val;
+		if (r) *r = val;
+		if (t) *t = val;
+		if (b) *b = val;
+	}
+
 	key = edje_object_data_get(w->theme_object, "inset/left");
 	if (key && l)
 		*l = atoi(key);
