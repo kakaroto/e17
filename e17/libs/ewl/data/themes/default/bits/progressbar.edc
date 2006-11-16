@@ -1,7 +1,0 @@
-images {
-#include "progressbar-images.edc"
-}
-
-collections {
-#include "progressbar-groups.edc"
-}

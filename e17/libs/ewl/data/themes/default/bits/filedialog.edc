@@ -1,7 +1,0 @@
-images {
-#include "filedialog-images.edc"
-}
-
-collections {
-#include "filedialog-groups.edc"
-}

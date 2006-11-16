@@ -1,7 +1,0 @@
-images {
-#include "misc-images.edc"
-}
-
-collections {
-#include "misc-groups.edc"
-}

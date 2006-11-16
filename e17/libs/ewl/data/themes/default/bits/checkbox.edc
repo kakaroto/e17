@@ -1,7 +1,0 @@
-images {
-#include "checkbox-images.edc"
-}
-
-collections {
-#include "checkbox-groups.edc"
-}

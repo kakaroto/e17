@@ -1,7 +1,0 @@
-images {
-#include "button-images.edc"
-}
-
-collections {
-#include "button-groups.edc"
-}
