@@ -1,10 +1,10 @@
 #include "macros/button-macros.edc"
 
 fonts {
-	font, "fonts/Vera.ttf" "Vera";
-	font, "fonts/VeraBd.ttf" "Vera/Bold";
-	font, "fonts/VeraIt.ttf" "Vera/Italic";
-	font, "fonts/VeraBI.ttf" "Vera/Bold-Italic";
+	font, "fonts/DejaVuSerif.ttf" "ewl/default";
+	font, "fonts/DejaVuSerif-Bold.ttf" "ewl/default/bold";
+	font, "fonts/DejaVuSerif-Oblique.ttf" "ewl/default/italic";
+	font, "fonts/DejaVuSerif-BoldOblique.ttf" "ewl/default/bold-italic";
 }
 
 images {
@@ -58,13 +58,13 @@ data {
 
 	item, "/entry/group" "entry";
 	item, "/entry/color/a" "255";
-	item, "/entry/font" "Vera";
+	item, "/entry/font" "ewl/default";
 	item, "/entry/font_size" "12";
 
 	item, "/entry/cursor/group" "cursor";
 
 	item, "/text/color/a" "255";
-	item, "/text/font" "Vera";
+	item, "/text/font" "ewl/default";
 	item, "/text/font_size" "12";
 	item, "/text/style" "none";
 

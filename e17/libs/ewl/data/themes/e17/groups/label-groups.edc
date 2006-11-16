@@ -31,7 +31,7 @@
                   color3, 255 255 255 32;
                   text {
                       text, "text";
-                      font, "Vera";
+                      font, "ewl/default";
                       size, 10;
                       min, 1 1;
                       align, 0.5 0.5;

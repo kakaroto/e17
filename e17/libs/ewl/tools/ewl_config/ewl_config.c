@@ -589,13 +589,13 @@ ec_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_text_wrap_set(EWL_TEXT(o), EWL_TEXT_WRAP_WORD);
 
 	ewl_text_font_size_set(EWL_TEXT(o), 25);
-	ewl_text_font_set(EWL_TEXT(o), "Vera/Bold");
+	ewl_text_font_set(EWL_TEXT(o), "ewl/default/bold");
 	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_SOFT_SHADOW);
 	ewl_text_text_set(EWL_TEXT(o), "EWL Config\n");
 
 	ewl_text_font_size_set(EWL_TEXT(o), 10);
-	ewl_text_font_set(EWL_TEXT(o), "Vera");
+	ewl_text_font_set(EWL_TEXT(o), "ewl/default");
 	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_LEFT);
 	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_NONE);
 	ewl_text_text_append(EWL_TEXT(o), "\n");

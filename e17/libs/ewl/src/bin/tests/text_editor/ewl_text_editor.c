@@ -367,19 +367,19 @@ ete_font_apply(char *font)
 		of = ewl_text_font_get(EWL_TEXT(t), 
 				ewl_text_cursor_position_get(EWL_TEXT(t)));
 
-	if (!strcmp(of, "Vera/Bold-Italic"))
+	if (!strcmp(of, "ewl/default/bold-italic"))
 	{
-		if (!strcmp(font, "Vera/Bold"))
-			font = "Vera/Italic";
-		else if (!strcmp(font, "Vera/Italic"))
-			font = "Vera/Bold";
+		if (!strcmp(font, "ewl/default/bold"))
+			font = "ewl/default/italic";
+		else if (!strcmp(font, "ewl/default/italic"))
+			font = "ewl/default/bold";
 	}
-	else if ((!strcmp(of, "Vera/Italic") && !strcmp(font, "Vera/Bold")) 
-			|| ((!strcmp(of, "Vera/Bold") && (!strcmp(font, "Vera/Italic")))))
-		font = "Vera/Bold-Italic";
+	else if ((!strcmp(of, "ewl/default/italic") && !strcmp(font, "ewl/default/bold")) 
+			|| ((!strcmp(of, "ewl/default/bold") && (!strcmp(font, "ewl/default/italic")))))
+		font = "ewl/default/bold-italic";
 
 	else if (!strcmp(of, font))
-		font = "Vera";
+		font = "ewl/default";
 
 	if (ewl_text_has_selection(t))
 	{
@@ -405,14 +405,14 @@ static void
 ete_cb_bold(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 					void *data __UNUSED__)
 {
-	ete_font_apply("Vera/Bold");
+	ete_font_apply("ewl/default/bold");
 }
 
 static void
 ete_cb_italic(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 					void *data __UNUSED__)
 {
-	ete_font_apply("Vera/Italic");
+	ete_font_apply("ewl/default/italic");
 }
 
 static void

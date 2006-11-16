@@ -222,7 +222,7 @@ group {
               color3, 255 255 255 128;
               text {
                   text, "text";
-                  font, "Vera";
+                  font, "ewl/default";
                   size, 10;
                   min, 1 1;
                   align, 0.0 0.5;
@@ -736,7 +736,7 @@ group {
               color3, 255 255 255 128;
               text {
                   text, "text";
-                  font, "Vera";
+                  font, "ewl/default";
                   size, 10;
                   min, 1 1;
                   align, 0.0 0.5;
