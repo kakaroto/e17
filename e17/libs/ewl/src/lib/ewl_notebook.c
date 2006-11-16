@@ -56,7 +56,7 @@ ewl_notebook_init(Ewl_Notebook *n)
 	ewl_object_alignment_set(EWL_OBJECT(n->body.tabbar), 
 						EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_internal_set(n->body.tabbar, TRUE);
-	ewl_widget_appearance_set(n->body.tabbar, "tabbar");
+	ewl_widget_appearance_set(n->body.tabbar, "top/tabbar");
 	ewl_widget_show(n->body.tabbar);
 
 	n->body.pages = ewl_vbox_new();
@@ -164,6 +164,23 @@ ewl_notebook_tabbar_position_set(Ewl_Notebook *n, Ewl_Position pos)
 									&pw, &ph);
 
 			ewl_object_preferred_inner_size_set(EWL_OBJECT(n), pw, ph + t);
+
+			break;
+	}
+
+	switch (pos)
+	{
+		case EWL_POSITION_LEFT:
+			ewl_widget_appearance_set(n->body.tabbar, "left/tabbar");
+			break;
+		case EWL_POSITION_RIGHT:
+			ewl_widget_appearance_set(n->body.tabbar, "right/tabbar");
+			break;
+		case EWL_POSITION_TOP:
+			ewl_widget_appearance_set(n->body.tabbar, "top/tabbar");
+			break;
+		case EWL_POSITION_BOTTOM:
+			ewl_widget_appearance_set(n->body.tabbar, "bottom/tabbar");
 			break;
 	}
 
