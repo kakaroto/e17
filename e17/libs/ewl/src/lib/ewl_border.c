@@ -19,7 +19,10 @@ ewl_border_new(void)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	ewl_border_init(b);
+	if (!ewl_border_init(b)) {
+		ewl_widget_destroy(EWL_WIDGET(b));
+		b = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
@@ -74,7 +77,7 @@ ewl_border_init(Ewl_Border * b)
  * Change the text of the border label to the string @a t.
  */
 void
-ewl_border_text_set(Ewl_Border * b, char *t)
+ewl_border_text_set(Ewl_Border *b, const char *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -90,8 +93,8 @@ ewl_border_text_set(Ewl_Border * b, char *t)
  * @return Returns the border label text on success, NULL on failure.
  * @brief Get the text label from a border widget
  */
-char *
-ewl_border_text_get(Ewl_Border * b)
+const char *
+ewl_border_text_get(Ewl_Border *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, NULL);

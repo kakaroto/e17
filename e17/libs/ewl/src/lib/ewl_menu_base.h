@@ -36,10 +36,10 @@ typedef struct Ewl_Menu_Base Ewl_Menu_Base;
  */
 struct Ewl_Menu_Base
 {
-	Ewl_Menu_Item   item;   /**< Inherit from Ewl_Menu_Item */
-	Ewl_Widget     *popup;  /**< The popup portion of the menu */
-	Ewl_Widget     *popbox; /**< Box for layout in popup */
-	int             hold;   /**< Indicates not to hide this on a deselect */
+	Ewl_Menu_Item item;   	/**< Inherit from Ewl_Menu_Item */
+	Ewl_Widget *popup;  	/**< The popup portion of the menu */
+	Ewl_Widget *popbox; 	/**< Box for layout in popup */
+	int hold; 		/**< Indicates not to hide this on a deselect */
 };
 
 int ewl_menu_base_init(Ewl_Menu_Base *menu);

@@ -141,7 +141,7 @@ ee_shutdown(Ewl_Engine *engine)
 }
 
 static void
-ee_canvas_setup(Ewl_Window *win, int debug)
+ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 {
 	Evas *evas;
 	Evas_Engine_Info *info = NULL;

@@ -39,7 +39,7 @@ struct Ewl_Menu
 {
 	Ewl_Menu_Base  base;		/**< Inherit from Ewl_Menu_Base */
 
-	Ewl_Widget    *menubar_parent;	/**< Parent menu bar */
+	Ewl_Widget *menubar_parent;	/**< Parent menu bar */
 };
 
 Ewl_Widget	*ewl_menu_new(void);

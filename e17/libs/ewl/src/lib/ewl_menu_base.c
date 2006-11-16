@@ -31,10 +31,6 @@ ewl_menu_base_init(Ewl_Menu_Base *menu)
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
 					ewl_menu_base_cb_expand, NULL);
 	
-	/*ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_OUT,
-					ewl_menu_base_cb_collapse, NULL);*/
-
-
 	ewl_callback_prepend(EWL_WIDGET(menu), EWL_CALLBACK_DESTROY,
 					ewl_menu_base_cb_destroy, NULL);
 

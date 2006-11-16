@@ -247,10 +247,8 @@ ewl_spinner_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	
 	pvw = ewl_object_preferred_w_get(EWL_OBJECT(s->vbox));
 
-	ewl_object_place(EWL_OBJECT(s->vbox), cx + cw - pvw, cy, pvw, 
-							ch);
-	ewl_object_place(EWL_OBJECT(s->entry), cx, cy, cw - pvw, 
-							ch);
+	ewl_object_place(EWL_OBJECT(s->vbox), cx + cw - pvw, cy, pvw, ch);
+	ewl_object_place(EWL_OBJECT(s->entry), cx, cy, cw - pvw, ch);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -342,8 +340,8 @@ ewl_spinner_cb_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (str && strlen(str)) {
 		val = atof(str);
-
 		ewl_range_value_set(EWL_RANGE(s), (double) (val));
+
 	} else if (str)
 		FREE(str);
 

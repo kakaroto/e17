@@ -43,7 +43,6 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
 	if (!ewl_button_init(EWL_BUTTON(item)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-//	ewl_box_orientation_set(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
 	ewl_button_fill_policy_set(EWL_BUTTON(item), EWL_FLAG_FILL_HFILL);
 	ewl_button_alignment_set(EWL_BUTTON(item), EWL_FLAG_ALIGN_LEFT);
 	ewl_button_label_set(EWL_BUTTON(item), "");

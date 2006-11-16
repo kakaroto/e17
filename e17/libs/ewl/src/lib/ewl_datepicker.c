@@ -144,7 +144,7 @@ ewl_datepicker_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
  */
 void
 ewl_datepicker_cb_window_mouse_down(Ewl_Widget *w, void *ev __UNUSED__,
-							void *user_data) 
+						void *user_data __UNUSED__) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

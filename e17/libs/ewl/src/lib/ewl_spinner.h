@@ -38,23 +38,23 @@ typedef struct Ewl_Spinner Ewl_Spinner;
  */
 struct Ewl_Spinner
 {
-	Ewl_Range   	range; /**< Inherit from Ewl_Range */
-	unsigned char   digits; /**< Number of digits displayed after decimal */
-	Ewl_Widget     *entry; /**< The Ewl_Entry displaying value */
-	Ewl_Widget     *vbox;  /**< Ewl_Box to hold the buttons */
-	Ewl_Widget     *increment; /**< Ewl_Button to add value */
-	Ewl_Widget     *decrement; /**< Ewl_Button to subtract value */
-	double          start_time; /**< Time the spinner was pressed */
-	double          last_value; /**< The last value while spinning */
-	int             direction; /**< Indicate increasing/decreasing value */
-	Ecore_Timer    *timer; /**< Timer for tracking mouse button held down */
+	Ewl_Range range; 	/**< Inherit from Ewl_Range */
+	unsigned char digits; 	/**< Number of digits displayed after decimal */
+	Ewl_Widget *entry; 	/**< The Ewl_Entry displaying value */
+	Ewl_Widget *vbox;  	/**< Ewl_Box to hold the buttons */
+	Ewl_Widget *increment; 	/**< Ewl_Button to add value */
+	Ewl_Widget *decrement; 	/**< Ewl_Button to subtract value */
+	double start_time; 	/**< Time the spinner was pressed */
+	double last_value; 	/**< The last value while spinning */
+	int direction; 		/**< Indicate increasing/decreasing value */
+	Ecore_Timer *timer; 	/**< Timer for tracking mouse button held down */
 };
 
-Ewl_Widget     *ewl_spinner_new(void);
-int             ewl_spinner_init(Ewl_Spinner *s);
+Ewl_Widget 	*ewl_spinner_new(void);
+int 		 ewl_spinner_init(Ewl_Spinner *s);
 
-void            ewl_spinner_digits_set(Ewl_Spinner *s, unsigned char digits);
-unsigned char   ewl_spinner_digits_get(Ewl_Spinner *s);
+void 		 ewl_spinner_digits_set(Ewl_Spinner *s, unsigned char digits);
+unsigned char 	 ewl_spinner_digits_get(Ewl_Spinner *s);
 
 /*
  * Internally used callbacks, override at your own risk.

@@ -32,7 +32,7 @@ typedef struct Ewl_Shadow Ewl_Shadow;
 #define EWL_SHADOW(shadow) ((Ewl_Shadow *) shadow)
 
 /**
- * @brief Inherits from Ewl_Container to allow drawing a border and shadow
+ * @brief Inherits from Ewl_Box to allow drawing a border and shadow
  * decoration around widgets.
  */
 struct Ewl_Shadow

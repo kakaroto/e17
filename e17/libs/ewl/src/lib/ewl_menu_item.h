@@ -37,8 +37,8 @@ typedef struct Ewl_Menu_Item Ewl_Menu_Item;
  */
 struct Ewl_Menu_Item
 {
-        Ewl_Button      button; /**< Inherit from Ewl_Button */
-        Ewl_Widget     *inmenu; /**< Set if inside a menu */
+        Ewl_Button button; 	/**< Inherit from Ewl_Button */
+        Ewl_Widget *inmenu; 	/**< Set if inside a menu */
 };
 
 Ewl_Widget	*ewl_menu_item_new(void);
