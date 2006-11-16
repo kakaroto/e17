@@ -158,7 +158,7 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 	info = evas_engine_info_get(evas);
 	if (!info) 
 	{
-		fprintf(stderr, "Unable to use gl_x11 engine for rendering, ");
+		fprintf(stderr, "Unable to use evas_fb engine for rendering, ");
 		exit(-1);
 	}  
 
