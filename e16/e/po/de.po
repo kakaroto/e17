@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-29 22:06+0100\n"
+"POT-Creation-Date: 2006-11-13 00:31+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -1517,12 +1517,12 @@ msgstr "Iconbox-Optionen"
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
-#: src/ipc.c:309
+#: src/ipc.c:320
 msgid "Message"
 msgstr "Mitteilung"
 
 # src/ipc.c:4890
-#: src/ipc.c:1030
+#: src/ipc.c:1059
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1532,13 +1532,13 @@ msgstr ""
 "Code aktuell bis     : %s\n"
 
 # src/ipc.c:4737
-#: src/ipc.c:1644
+#: src/ipc.c:1681
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4743
-#: src/ipc.c:1648
+#: src/ipc.c:1685
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1550,25 +1550,25 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:1650 src/ipc.c:1670 src/ipc.c:1682
+#: src/ipc.c:1687 src/ipc.c:1707 src/ipc.c:1719
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "Momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:1668
+#: src/ipc.c:1705
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
 # src/ipc.c:4781
-#: src/ipc.c:1669
+#: src/ipc.c:1706
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:1671 src/ipc.c:1683
+#: src/ipc.c:1708 src/ipc.c:1720
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"

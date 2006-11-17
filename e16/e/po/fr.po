@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-29 22:06+0100\n"
+"POT-Creation-Date: 2006-11-13 00:31+0100\n"
 "PO-Revision-Date: 2005-04-20 23:11+0300\n"
 "Last-Translator: Ludwig Noujarret <ludwig@noujarret.com>\n"
 "Language-Team:  <fr@li.org>\n"
@@ -1304,11 +1304,11 @@ msgstr "Options de la Boîte à icônes"
 msgid "Iconbox Settings"
 msgstr "Paramètres de la Boîte à icônes"
 
-#: src/ipc.c:309
+#: src/ipc.c:320
 msgid "Message"
 msgstr "Message"
 
-#: src/ipc.c:1030
+#: src/ipc.c:1059
 #, fuzzy, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1317,11 +1317,11 @@ msgstr ""
 "Version d'Enlightenment: %s\n"
 "Code courant:            %s\n"
 
-#: src/ipc.c:1644
+#: src/ipc.c:1681
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Aide des commandes IPC\n"
 
-#: src/ipc.c:1648
+#: src/ipc.c:1685
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1331,19 +1331,19 @@ msgstr ""
 "Tapez \"help <commande>\" pour une description individuelle\n"
 "\n"
 
-#: src/ipc.c:1650 src/ipc.c:1670 src/ipc.c:1682
+#: src/ipc.c:1687 src/ipc.c:1707 src/ipc.c:1719
 msgid "Commands currently available:\n"
 msgstr "Commandes disponibles actuellement:\n"
 
-#: src/ipc.c:1668
+#: src/ipc.c:1705
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Tapez \"help full\" pour une description de toutes les commandes\n"
 
-#: src/ipc.c:1669
+#: src/ipc.c:1706
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 
-#: src/ipc.c:1671 src/ipc.c:1683
+#: src/ipc.c:1708 src/ipc.c:1720
 msgid "         <command>     : <description>\n"
 msgstr "      <commande>   : <description>\n"
 

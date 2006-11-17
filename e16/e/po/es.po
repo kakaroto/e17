@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-29 22:06+0100\n"
+"POT-Creation-Date: 2006-11-13 00:31+0100\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -1322,11 +1322,11 @@ msgstr "Opciones del Portaíconos"
 msgid "Iconbox Settings"
 msgstr "Configurar Portaíconos"
 
-#: src/ipc.c:309
+#: src/ipc.c:320
 msgid "Message"
 msgstr "Mensaje"
 
-#: src/ipc.c:1030
+#: src/ipc.c:1059
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1335,11 +1335,11 @@ msgstr ""
 "Versión de Enlightenment: %s\n"
 "Código actualizado al   : %s\n"
 
-#: src/ipc.c:1644
+#: src/ipc.c:1681
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Ayuda de los Comandos IPC de Enlightenment\n"
 
-#: src/ipc.c:1648
+#: src/ipc.c:1685
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1349,19 +1349,19 @@ msgstr ""
 "Use \"Ayuda <comando>\" para obtener descripciones individuales\n"
 "\n"
 
-#: src/ipc.c:1650 src/ipc.c:1670 src/ipc.c:1682
+#: src/ipc.c:1687 src/ipc.c:1707 src/ipc.c:1719
 msgid "Commands currently available:\n"
 msgstr "Comandos disponibles:\n"
 
-#: src/ipc.c:1668
+#: src/ipc.c:1705
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Use \"help full\" para descripciones totales de cada comando\n"
 
-#: src/ipc.c:1669
+#: src/ipc.c:1706
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Use \"Ayuda <comando>\" para obtener una descripción individual\n"
 
-#: src/ipc.c:1671 src/ipc.c:1683
+#: src/ipc.c:1708 src/ipc.c:1720
 msgid "         <command>     : <description>\n"
 msgstr "        <comando>   : <descripción>\n"
 

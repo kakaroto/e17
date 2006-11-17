@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-29 22:06+0100\n"
+"POT-Creation-Date: 2006-11-13 00:31+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -1296,11 +1296,11 @@ msgstr "Iconbox"
 msgid "Iconbox Settings"
 msgstr "Установки Iconbox"
 
-#: src/ipc.c:309
+#: src/ipc.c:320
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:1030
+#: src/ipc.c:1059
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1309,12 +1309,12 @@ msgstr ""
 "Версия Enlightenment : %s\n"
 "Код текущий на       : %s\n"
 
-#: src/ipc.c:1644
+#: src/ipc.c:1681
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Справка по командам Enlightenment IPC"
 
-#: src/ipc.c:1648
+#: src/ipc.c:1685
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1325,23 +1325,23 @@ msgstr ""
 "\"help <команда>\": описание команды\n"
 "\n"
 
-#: src/ipc.c:1650 src/ipc.c:1670 src/ipc.c:1682
+#: src/ipc.c:1687 src/ipc.c:1707 src/ipc.c:1719
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "доступные команды:\n"
 
-#: src/ipc.c:1668
+#: src/ipc.c:1705
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1669
+#: src/ipc.c:1706
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание команды\n"
 
-#: src/ipc.c:1671 src/ipc.c:1683
+#: src/ipc.c:1708 src/ipc.c:1720
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
