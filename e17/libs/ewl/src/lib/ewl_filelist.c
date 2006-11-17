@@ -626,8 +626,11 @@ ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path)
 		DRETURN_PTR(EWL_ICON_FOLDER, DLEVEL_STABLE);
 
 	ptr = strrchr(path, '.');
-	ret = ewl_io_manager_extension_icon_name_get(ptr);
-	if (ret) DRETURN_PTR(ret, DLEVEL_STABLE);
+	if (ptr) 
+	{
+		ret = ewl_io_manager_extension_icon_name_get(ptr);
+		if (ret) DRETURN_PTR(ret, DLEVEL_STABLE);
+	}
 
 	if (ecore_file_can_exec(path))
 		ret = EWL_ICON_APPLICATION_X_EXECUTABLE;
