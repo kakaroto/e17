@@ -199,7 +199,7 @@ ewl_filelist_selected_file_set(Ewl_Filelist *fl, const char *file)
 	/* clean out the old set of selected files */
 	if (fl->selected_unselect) fl->selected_unselect(fl);
 	ecore_list_clear(fl->selected);
-	if (fl->selected_file_add) fl->selected_file_add(fl, file);
+	if (fl->selected_file_add && file) fl->selected_file_add(fl, file);
 
 	ewl_filelist_selected_files_change_notify(fl);
 
