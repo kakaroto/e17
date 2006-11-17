@@ -1102,7 +1102,7 @@ ewl_mvc_cb_sel_free(void *data)
 	DCHECK_PARAM_PTR("data", data);
 
 	sel = data;
-	if (sel->type == EWL_SELECTION_TYPE_INDEX)
+	if ((sel->type == EWL_SELECTION_TYPE_INDEX) && sel->highlight)
 		ewl_widget_destroy(sel->highlight);
 	else
 	{
