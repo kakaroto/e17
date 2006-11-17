@@ -43,7 +43,6 @@ ecore_dbus_receiver_test: $(ecore_dbus_receiver_test_OBJS)
 ############################################################################
 #### boilerplate
 .c.o:
-	$(CC) $(FALGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(FLAGS) $(CFLAGS) -c $< -o $@
 clean::
 	rm -rf $(BINS) *.o *~
-	

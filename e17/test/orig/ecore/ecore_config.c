@@ -1,12 +1,13 @@
-#include "Ecore.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 #include <unistd.h>
 #include <getopt.h>
+
 #include <Eet.h>
+
+#include <Ecore.h>
 #include <Ecore_Config.h>
 #include <Ecore_Data.h>
 
