@@ -2838,15 +2838,15 @@ ewl_text_display(Ewl_Text *t)
 
 	evas_object_textblock_clear(t->textblock);
 
+	cursor = (Evas_Textblock_Cursor *)
+		evas_object_textblock_cursor_get(t->textblock);
+	evas_textblock_cursor_text_append(cursor, "");
+	
 	if (t->length.chars > 0)
 	{
 		Ewl_Text_Context *cur_tx;
 		Ewl_Text_Fmt *cur_fmt;
 		unsigned int cur_pos;
-
-		cursor = (Evas_Textblock_Cursor *)
-			evas_object_textblock_cursor_get(t->textblock);
-		evas_textblock_cursor_text_append(cursor, "");
 
 		/* save these so we can restore the list state */
 		cur_pos = ewl_text_cursor_position_get(t);
