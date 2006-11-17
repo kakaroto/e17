@@ -740,6 +740,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int char_len)
 		{
 			char_len -= fmt->char_len;
 			ecore_dlist_remove(t->formatting.nodes);
+			fmt = ecore_dlist_current(t->formatting.nodes);
 		}
 	}
 	t->dirty = TRUE;
