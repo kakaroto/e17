@@ -325,7 +325,12 @@ data/config/Makefile
 data/images/Makefile
 data/themes/Makefile
 data/themes/e17/Makefile
+data/themes/e17/fonts/Makefile
+data/themes/e17/images/Makefile
+data/themes/e17/groups/Makefile
+data/themes/e17/macros/Makefile
 data/themes/ewl_embed_test/Makefile
+data/themes/ewl_embed_test/images/Makefile
 tools/Makefile
 tools/ewl_config/Makefile
 debian/changelog

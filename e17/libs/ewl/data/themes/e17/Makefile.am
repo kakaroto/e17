@@ -1,4 +1,8 @@
 MAINTAINERCLEANFILES = Makefile.in
+SUBDIRS = groups \
+	  macros \
+	  fonts \
+	  images
 
 EDCS =  e17.edc
 EDJS = $(EDCS:%.edc=%.edj)
@@ -27,7 +31,8 @@ e17_DEPS = \
 	groups/treehead-groups.edc \
 	groups/window-groups.edc
 
-EXTRA_DIST = $(EDCS) $(basename $(EDCS))
+EXTRA_DIST = $(EDCS) 
+
 CLEANFILES = $(EDJS)
 
 themedir = $(pkgdatadir)/themes/

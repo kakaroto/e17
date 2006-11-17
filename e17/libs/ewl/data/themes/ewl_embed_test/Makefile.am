@@ -1,9 +1,12 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+SUBDIRS = images
+
 EDCS = ewl_embed_test.edc
 EDJS = $(EDCS:%.edc=%.edj)
 
-EXTRA_DIST = $(EDCS) $(basename $(EDCS))
+EXTRA_DIST = $(EDCS) 
+
 CLEANFILES = $(EDJS)
 
 themedir = $(pkgdatadir)/themes/
