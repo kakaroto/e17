@@ -4091,3 +4091,19 @@ No need to restart when changing override-redirect window opacity.
 Center unplaced dialogs on "parent"(if transient) or root.
 Add _NET_WM_SYNC_REQUEST support.
 
+
+-------------------------------------------------------------------------------
+
+Fri Nov 17 19:42:09 CET 2006
+(Kim)
+
+--- 0.16.8.5 0.02 ---
+Ignore bogus unmap events (before window is mapped) and synthetic unmap events.
+- Either would fix trouble with misbehaving client (gnome-terminal
+  configuration window).
+Enable setting focused/non-focused opacity independently.
+- Based on patch from Grant Wier.
+Fix shortening text to fit available space in certain combinations of locale
+ and font type.
+Update help for a number of IPC commands.
+
