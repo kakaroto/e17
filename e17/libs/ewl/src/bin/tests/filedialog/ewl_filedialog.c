@@ -107,7 +107,10 @@ fd_cb_value_changed(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	/* nothing to do on a cancel */
 	if (e->response == EWL_STOCK_CANCEL)
+	{
+		ewl_widget_destroy(w);
 		return;
+	}
 
 	fd = EWL_FILEDIALOG(w);
 	if (ewl_filedialog_multiselect_get(fd))
