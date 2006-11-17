@@ -431,8 +431,8 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_frametable_object_append(of, ob, 0, 7, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_entry_add(evas, &(cfdata->program));
-   e_widget_min_size_set(ob, 150, 25);
-   e_widget_frametable_object_append(of, ob, 1, 7, 1, 1, 1, 1, 1, 1);
+   e_widget_min_size_set(ob, 100, 25);
+   e_widget_frametable_object_append(of, ob, 0, 8, 1, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, of, 1, 1, 1, 1, 1, 1, 1, 1);
 

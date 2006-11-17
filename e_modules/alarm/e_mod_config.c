@@ -248,10 +248,10 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_entry_add(evas, &(cfdata->alarms_program_default));
-   e_widget_min_size_set(ob, 110, 25);
+   e_widget_min_size_set(ob, 80, 25);
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_check_add(evas, D_("Auto-Remove alarms after its passed"), &(cfdata->alarms_autoremove_default));
+   ob = e_widget_check_add(evas, D_("Auto-Remove alarms"), &(cfdata->alarms_autoremove_default));
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, of, 1, 1, 1, 1, 1, 0, 1, 0);
