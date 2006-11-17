@@ -494,7 +494,7 @@ ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt)
 	 * alt text */
 	img = ewl_icon_theme_icon_path_get(EWL_ICON_IMAGE_LOADING, NULL);
 	file = ewl_icon_image_file_get(icon);
-	if (!icon->image || !strcmp(img, file))
+	if (icon->image && !strcmp(img, file))
 	{
 		ewl_widget_hide(icon->image);
 		ewl_widget_show(icon->alt);
