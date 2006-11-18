@@ -188,30 +188,6 @@ widgets_build(void)
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, "Menus");
 	ewl_widget_show(vbox);
 	
-	misc = ewl_imenu_new();
-	ewl_button_label_set(EWL_BUTTON(misc), "Imenu");
-	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
-	ewl_widget_show(misc);
-
-	for (i = 0; i < 3; i++) 
-	{
-		item = ewl_menu_item_new();
-		if (menus[i].name)
-			ewl_button_label_set(EWL_BUTTON(item), 
-						menus[i].name);
-
-		if (menus[i].image)
-			ewl_button_image_set(EWL_BUTTON(item), 
-						menus[i].image, NULL);
-
-		ewl_container_child_append(EWL_CONTAINER(misc), item);
-		ewl_widget_show(item);
-	}
-	
-	misc = ewl_hseparator_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
-	ewl_widget_show(misc);
-	
 	misc = ewl_menu_new();
 	ewl_button_label_set(EWL_BUTTON(misc), "Menu");
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);

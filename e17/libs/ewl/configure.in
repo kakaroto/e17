@@ -282,7 +282,6 @@ src/bin/tests/icon_theme/Makefile
 src/bin/tests/iconbox/Makefile
 src/bin/tests/image/Makefile
 src/bin/tests/image_thumbnail/Makefile
-src/bin/tests/imenu/Makefile
 src/bin/tests/io_manager/Makefile
 src/bin/tests/layer/Makefile
 src/bin/tests/list/Makefile

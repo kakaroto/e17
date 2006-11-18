@@ -133,7 +133,7 @@ int main(int argc, char ** argv) {
     {
         Ewl_Widget *file = NULL;
 
-        file = ewl_imenu_new(NULL, "file");
+        file = ewl_menu_new(NULL, "file");
         ewl_container_child_append(EWL_CONTAINER(menu_box), file);
         ewl_object_fill_policy_set(EWL_OBJECT(file), EWL_FLAG_FILL_SHRINK);
         ewl_object_padding_set(EWL_OBJECT(file), 2, 2, 2, 0);

@@ -233,7 +233,7 @@
  * widget to a higher value (negitive values are possible).
  *
  * If you want a widget to be placed over top of all other widgets, like
- * imenu for example, you can set the widget to be 'top layered'. This
+ * floater for example, you can set the widget to be 'top layered'. This
  * setting will also effect the children of that widget.
  */
 
@@ -325,7 +325,6 @@ extern"C" {
 #include <ewl_spectrum.h>
 #include <ewl_menu_item.h>
 #include <ewl_menu_base.h>
-#include <ewl_imenu.h>
 #include <ewl_menu.h>
 #include <ewl_menubar.h>
 #include <ewl_combo.h>

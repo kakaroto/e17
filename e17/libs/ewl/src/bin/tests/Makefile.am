@@ -27,7 +27,6 @@ SUBDIRS				= \
 	iconbox \
 	image \
 	image_thumbnail \
-	imenu \
 	io_manager \
 	layer \
 	list \

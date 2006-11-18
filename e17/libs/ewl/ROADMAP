@@ -4,10 +4,9 @@ EWL ROADMAP
 0.6.0 
 -----
 - tree2 complete
-- remove imenu. 
-  - the window creation call should be picked up by the engine if it can't
+- Need to move window creation calls so their picked up by the engine if it can't
     handle multiple windows and return evas buffer engines to draw into. 
-  - this will handle imenu, combos, tooltips. anything that requires a new
+  - this will handle menus, combos, tooltips. anything that requires a new
     window.
 - fixup the theme changing code. (Unrealize/realize causing some sizing
   changes that they shouldn't)
