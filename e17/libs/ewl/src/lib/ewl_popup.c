@@ -61,7 +61,8 @@ ewl_popup_init(Ewl_Popup *p)
 	
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, ewl_popup_cb_show, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_popup_cb_show, NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_popup_cb_destroy, NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_popup_cb_destroy, 
+									NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -117,13 +118,19 @@ ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w)
 	if (p->follow == w)
 		DRETURN(DLEVEL_STABLE);
 	
-	if (p->follow)
+	if (p->follow) {
 		ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
 						ewl_popup_cb_follow_destroy, p);
-
-	if (w)
+		ewl_callback_del_with_data(p->follow, EWL_CALLBACK_CONFIGURE,
+						ewl_popup_cb_follow_configure,
+						p);
+	}
+	if (w) {
 		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
 					ewl_popup_cb_follow_destroy, p);
+		ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+					ewl_popup_cb_follow_configure, p);
+	}
 
 	p->follow = w;
 
@@ -200,6 +207,30 @@ ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (p->follow)
 		ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
 					ewl_popup_cb_follow_destroy, p);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: UNUSED
+ * @param ev_data: UNUSED
+ * @param user_data: the popup
+ * @return Returns no value
+ * @brief The configure callback
+ */
+void
+ewl_popup_cb_follow_configure(Ewl_Widget *w __UNUSED__, 
+				void *ev_data __UNUSED__, void *user_data)
+{
+        Ewl_Popup *p;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("user_data", user_data);
+        DCHECK_TYPE("user_data", user_data, EWL_POPUP_TYPE);
+
+	p = EWL_POPUP(user_data);
+	ewl_popup_position_check(p);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

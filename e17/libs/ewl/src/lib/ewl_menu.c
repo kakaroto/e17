@@ -96,14 +96,18 @@ ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Menu *menu;
+	Ewl_Box *parent;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	menu = EWL_MENU(w);
+	parent = EWL_BOX(menu->menubar_parent);
 	
-	if (EWL_MENU_ITEM(menu)->inmenu) 
+	if ((parent && (ewl_box_orientation_get(parent) 
+				== EWL_ORIENTATION_VERTICAL))
+		|| EWL_MENU_ITEM(menu)->inmenu)
 		ewl_popup_type_set(EWL_POPUP(menu->base.popup), 
 					EWL_POPUP_TYPE_MENU_HORIZONTAL);
 	else 

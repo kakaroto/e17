@@ -55,6 +55,8 @@ void ewl_popup_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 					Ewl_Orientation o);
 void ewl_popup_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_popup_cb_follow_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_popup_cb_follow_configure(Ewl_Widget *w, void *ev_data, 
+					void *user_data);
 
 /**
  * @}
