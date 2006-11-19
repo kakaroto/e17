@@ -2781,6 +2781,10 @@ DesksIpcDesk(const char *params, Client * c __UNUSED__)
      {
 	EwinsShowDesktop(!Mode.showing_desktop);
      }
+   else if (!strncmp(cmd, "arrange", 3))
+     {
+	ArrangeEwins(prm);
+     }
 }
 
 static void
@@ -2857,6 +2861,7 @@ static const IpcItem DesksIpcArray[] = {
     "  desk raise <d>       Raise desktop\n"
     "  desk dragbar pos     Set dragbar position\n"
     "  desk dragbar order   Set dragbar button order\n"
+    "  desk arrange         Arrange windows on desktop\"\n"
     "  desk clear           \"Show Desktop\"\n"}
    ,
    {

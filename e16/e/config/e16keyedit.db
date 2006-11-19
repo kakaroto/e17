@@ -18,7 +18,7 @@
 
 "Toggle Deskrays", 0, NULL
 
-"Cleanup Windows", 0, "misc arrange size"
+"Cleanup Windows", 0, "desk arrange size"
 
 "Scroll Windows to left", 0, NULL
 "Scroll Windows to right", 0, NULL

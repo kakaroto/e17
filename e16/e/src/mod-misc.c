@@ -216,10 +216,6 @@ MiscIpcConfig(const char *params, Client * c __UNUSED__)
 	else if (prm[0] == '\0')
 	   SettingsConfiguration();
      }
-   else if (!strncmp(cmd, "arrange", 3))
-     {
-	ArrangeEwins(prm);
-     }
 }
 
 static const IpcItem MiscIpcArray[] = {
