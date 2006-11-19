@@ -195,11 +195,12 @@ int
 EwcStrToWcs(const char *str, int len, wchar_t * wcs, int wcl)
 {
 #if HAVE_ICONV
+   char               *pi, *po;
    size_t              ni, no, rc;
 
    if (!wcs)
      {
-	char                buf[4096], *po;
+	char                buf[4096];
 
 	ni = len;
 	no = 4096;
@@ -211,9 +212,11 @@ EwcStrToWcs(const char *str, int len, wchar_t * wcs, int wcl)
 	return wcl;
      }
 
+   pi = (char *)str;
    ni = len;
+   po = (char *)wcs;
    no = wcl * sizeof(wchar_t);
-   rc = iconv(iconv_cd_str2wcs, (char **)(&str), &ni, (char **)(&wcs), &no);
+   rc = iconv(iconv_cd_str2wcs, &pi, &ni, &po, &no);
    if (rc == (size_t) (-1))
       return 0;
    return wcl - no / sizeof(wchar_t);
@@ -233,11 +236,13 @@ int
 EwcWcsToStr(const wchar_t * wcs, int wcl, char *str, int len)
 {
 #if HAVE_ICONV
+   char               *pi;
    size_t              ni, no, rc;
 
+   pi = (char *)wcs;
    ni = wcl * sizeof(wchar_t);
    no = len;
-   rc = iconv(iconv_cd_wcs2str, (char **)(&wcs), &ni, &str, &no);
+   rc = iconv(iconv_cd_wcs2str, &pi, &ni, &str, &no);
    if (rc == (size_t) (-1))
       return 0;
    return len - no;
