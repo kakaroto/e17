@@ -68,7 +68,7 @@ struct _windowmatch
 #define MATCH_OP_ICON           2
 #define MATCH_OP_WINOP          3
 
-static int          WindowMatchEwinOpsParse(EWin * ewin, const char *ops);
+static int          WindowMatchEobjOpsParse(EObj * eo, const char *ops);
 
 static Ecore_List  *wm_list = NULL;
 
@@ -421,7 +421,7 @@ WindowMatchDecode(const char *line)
 	break;
 
      case MATCH_OP_WINOP:
-	if (WindowMatchEwinOpsParse(NULL, args))
+	if (WindowMatchEobjOpsParse(NULL, args))
 	  {
 	     Eprintf("WindowMatchDecode: Error (%s): %s\n", args, line);
 	     err = 1;
@@ -519,7 +519,7 @@ WindowMatchConfigLoad2(FILE * fs)
 }
 
 static int
-WindowMatchTest(const EWin * ewin, const WindowMatch * wm)
+WindowMatchEwinTest(const WindowMatch * wm, const EWin * ewin)
 {
    int                 match;
 
@@ -579,6 +579,33 @@ WindowMatchTest(const EWin * ewin, const WindowMatch * wm)
    return match;
 }
 
+#if USE_COMPOSITE
+static int
+WindowMatchEobjTest(const WindowMatch * wm, const EObj * eo)
+{
+   int                 match;
+
+   match = 0;
+
+   switch (wm->match)
+     {
+     case MATCH_TYPE_TITLE:
+	return matchregexp(wm->value, eo->name);
+#if 0
+     case MATCH_TYPE_WM_NAME:
+	return matchregexp(wm->value, eo->icccm.wm_res_name);
+
+     case MATCH_TYPE_WM_CLASS:
+	return matchregexp(wm->value, eo->icccm.wm_res_class);
+#endif
+     }
+
+   if (wm->qual)
+      match = !match;
+   return match;
+}
+#endif
+
 typedef struct
 {
    int                 type;
@@ -591,7 +618,7 @@ WindowMatchTypeMatch(const void *data, const void *match)
    const WindowMatch  *wm = data;
    const wmatch_type_data *wmtd = match;
 
-   return !(wm->op == wmtd->type && WindowMatchTest(wmtd->ewin, wm));
+   return !(wm->op == wmtd->type && WindowMatchEwinTest(wm, wmtd->ewin));
 }
 
 static WindowMatch *
@@ -788,8 +815,40 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
      }
 }
 
+#if USE_COMPOSITE
+static void
+WindowMatchEobjOpsAction(EObj * eo, int op, const char *args)
+{
+   int                 a;
+
+   switch (op)
+     {
+     default:
+	/* We should not get here */
+	return;
+
+     case EWIN_OP_OPACITY:
+	a = atoi(args);
+	eo->opacity = OpacityFromPercent(OpacityFix(a, 100));
+	break;
+
+     case EWIN_OP_FADE:
+	WINOP_SET_BOOL(eo->fade, args);
+	break;
+
+     case EWIN_OP_SHADOW:
+	WINOP_SET_BOOL(eo->shadow, args);
+	break;
+
+     case EWIN_OP_NO_REDIRECT:
+	WINOP_SET_BOOL(eo->noredir, args);
+	break;
+     }
+}
+#endif
+
 static int
-WindowMatchEwinOpsParse(EWin * ewin, const char *ops)
+WindowMatchEobjOpsParse(EObj * eo, const char *ops)
 {
    int                 err, len;
    const WinOp        *wop;
@@ -822,9 +881,17 @@ WindowMatchEwinOpsParse(EWin * ewin, const char *ops)
 	     break;
 	  }
 
-	/* If ewin is NULL, we are validating the configuration */
-	if (ewin)
-	   WindowMatchEwinOpsAction(ewin, wop->op, p);
+	/* If eo is NULL, we are validating the configuration */
+	if (!eo)
+	   continue;
+#if USE_COMPOSITE
+	if (eo->type == EOBJ_TYPE_EWIN)
+	   WindowMatchEwinOpsAction((EWin *) eo, wop->op, p);
+	else
+	   WindowMatchEobjOpsAction(eo, wop->op, p);
+#else
+	WindowMatchEwinOpsAction((EWin *) eo, wop->op, p);
+#endif
      }
 
    Efree(ops2);
@@ -839,13 +906,30 @@ WindowMatchEwinOps(EWin * ewin)
 
    ECORE_LIST_FOR_EACH(wm_list, wm)
    {
-      if (wm->op != MATCH_OP_WINOP || !WindowMatchTest(ewin, wm))
+      if (wm->op != MATCH_OP_WINOP || !WindowMatchEwinTest(wm, ewin))
 	 continue;
 
       /* Match found - do the ops */
-      WindowMatchEwinOpsParse(ewin, wm->args);
+      WindowMatchEobjOpsParse(EoObj(ewin), wm->args);
    }
 }
+
+#if USE_COMPOSITE
+void
+WindowMatchEobjOps(EObj * eo)
+{
+   const WindowMatch  *wm;
+
+   ECORE_LIST_FOR_EACH(wm_list, wm)
+   {
+      if (wm->op != MATCH_OP_WINOP || !WindowMatchEobjTest(wm, eo))
+	 continue;
+
+      /* Match found - do the ops */
+      WindowMatchEobjOpsParse(eo, wm->args);
+   }
+}
+#endif
 
 /*
  * Winmatch module

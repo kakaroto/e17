@@ -37,6 +37,7 @@
 #include "hints.h"
 #include "settings.h"
 #include "timers.h"
+#include "windowmatch.h"
 #include "xwin.h"
 
 #include <stdlib.h>
@@ -1475,6 +1476,9 @@ ECompMgrWinNew(EObj * eo)
      {
 	ESelectInputAdd(eo->win, VisibilityChangeMask);
      }
+
+   if (eo->type != EOBJ_TYPE_EWIN)
+      WindowMatchEobjOps(eo);
 
    cw->opacity = 0xdeadbeef;
    ECompMgrWinSetOpacity(eo, eo->opacity);

@@ -31,4 +31,6 @@ Border             *WindowMatchEwinBorder(const EWin * ewin);
 const char         *WindowMatchEwinIcon(const EWin * ewin);
 void                WindowMatchEwinOps(EWin * ewin);
 
+void                WindowMatchEobjOps(EObj * eo);
+
 #endif /* _WINDOWMATCH_H_ */
