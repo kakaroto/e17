@@ -197,11 +197,10 @@ EwcStrToWcs(const char *str, int len, wchar_t * wcs, int wcl)
 #if HAVE_ICONV
    char               *pi, *po;
    size_t              ni, no, rc;
+   char                buf[4096];
 
    if (!wcs)
      {
-	char                buf[4096];
-
 	ni = len;
 	no = 4096;
 	po = buf;

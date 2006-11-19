@@ -97,8 +97,6 @@ EFont_draw_string(EImage * im, EFont * f, int x, int y,
    imlib_text_draw(x, y - imlib_get_font_ascent(), text);
 }
 
-extern const FontOps FontOpsIft;
-
 /*
  * Imlib2/FreeType
  */

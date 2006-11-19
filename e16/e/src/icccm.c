@@ -789,7 +789,8 @@ EwinSyncRequestSend(EWin * ewin)
 				 StructureNotifyMask,
 				 ECORE_X_ATOM_NET_WM_SYNC_REQUEST,
 				 Mode.events.time,
-				 count & 0xffffffff, count >> 32, 0);
+				 (long)(count & 0xffffffff),
+				 (long)(count >> 32), 0);
 
    return 1;
 }
