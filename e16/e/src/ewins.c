@@ -2163,6 +2163,13 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 
    switch (ev->type)
      {
+     case ButtonRelease:
+	ActionsEnd(NULL);
+	break;
+     case MotionNotify:
+	ActionsHandleMotion();
+	break;
+
      case MapRequest:
 	EwinEventMapRequest(NULL, ev->xmaprequest.window);
 	break;

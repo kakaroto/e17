@@ -273,8 +273,6 @@ HandleEvent(XEvent * ev)
 	Mode.events.py = Mode.events.y;
 	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
 	Mode.events.on_screen = ev->xmotion.same_screen;
-
-	ActionsHandleMotion();
 	break;
 
      case EnterNotify:
@@ -334,7 +332,6 @@ HandleEvent(XEvent * ev)
 	break;
      case ButtonRelease:	/*  5 */
 	SoundPlay("SOUND_BUTTON_RAISE");
-	ActionsEnd(NULL);
 	break;
      }
 
