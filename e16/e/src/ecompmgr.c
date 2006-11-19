@@ -1434,7 +1434,10 @@ ECompMgrWinNew(EObj * eo)
       return;
 
    if (eo->inputonly || eo->win == VRoot.win)
-      return;
+     {
+	eo->noredir = 1;
+	return;
+     }
 
    cw = Ecalloc(1, sizeof(ECmWinInfo));
    if (!cw)
