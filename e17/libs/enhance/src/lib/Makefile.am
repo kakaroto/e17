@@ -10,12 +10,13 @@ enhance_headers = Enhance.h
 
 libenhance_la_INCLUDES = \
 enhance_private.h \
-enhance_widget.h
+enhance_widget.h \
+$(enhance_headers)
 
 libenhance_la_SOURCES = \
 enhance.c \
 enhance_widget.c \
-$(libenhance_la__INCLUDES)
+$(libenhance_la_INCLUDES)
 
 installed_headersdir = $(prefix)/include
 installed_headers_DATA = $(enhance_headers)
