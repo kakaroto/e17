@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-13 00:31+0100\n"
+"POT-Creation-Date: 2006-11-19 23:01+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -14,150 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=cp1251\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/aclass.c:206
-msgid "ActionClass Error!"
-msgstr "ActionClass Грешка!"
-
-#: src/aclass.c:206 src/backgrounds.c:241 src/borders.c:647 src/buttons.c:192
-#: src/cmclass.c:84 src/cursors.c:126 src/iclass.c:331 src/tclass.c:98
-#: src/tooltips.c:139
-#, c-format
-msgid "%u references remain\n"
-msgstr "%u отпратки остават\n"
-
-#: src/aclass.c:291 src/backgrounds.c:1107 src/borders.c:1083
-#: src/borders.c:1206 src/buttons.c:731 src/cmclass.c:201 src/config.c:246
-#: src/cursors.c:177 src/iclass.c:519 src/menus.c:1717 src/menus.c:1827
-#: src/slideout.c:425 src/tclass.c:255 src/tooltips.c:176
-#: src/windowmatch.c:160
-#, c-format
-msgid "CONFIG: ignoring extra data in \"%s\"\n"
-msgstr "CONFIG: игнорираме екстра данни в \"%s\"\n"
-
-#: src/aclass.c:299 src/backgrounds.c:1115 src/borders.c:1089
-#: src/borders.c:1212 src/buttons.c:739 src/cmclass.c:209 src/config.c:254
-#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1722 src/menus.c:1833
-#: src/slideout.c:431 src/tclass.c:261 src/tooltips.c:182
-#: src/windowmatch.c:165
-#, c-format
-msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr "CONFIG: в \"%s\" липсват нужните данни\n"
-
-#: src/aclass.c:496
-#, c-format
-msgid ""
-"Warning: unable to determine what to do with\n"
-"the following text in the middle of current ActionClass definition:\n"
-"%s\n"
-"Will ignore and continue...\n"
-msgstr ""
-"Предупреждение: невъзможно е да се определи какво да се прави\n"
-"със следният текст в текущото определение ActionClass:\n"
-"%s\n"
-"Ще се игнорира и продължи...\n"
-
-#: src/actions.c:93
-#, c-format
-msgid ""
-"There was an error running the program:\n"
-"%s\n"
-"This program could not be executed.\n"
-"This is because the file does not exist.\n"
-msgstr ""
-"Има грешка при изпълнение на програмата:\n"
-"%s\n"
-"Програмата не може да бъде пусната,\n"
-"защото файлът не съществува.\n"
-
-#: src/actions.c:101
-#, c-format
-msgid ""
-"There was an error running the program:\n"
-"%s\n"
-"This program could not be executed.\n"
-"This is most probably because this program is not in the\n"
-"path for your shell which is %s. I suggest you read the manual\n"
-"page for that shell and read up how to change or add to your\n"
-"execution path.\n"
-msgstr ""
-"Има грешка при изпълнение на програмата:\n"
-"%s\n"
-"Програмата не може да бъде пусната.\n"
-"Най-вероятно защото програмата не се намира\n"
-"в пътеката на вашата обвивка (%s). Предлагаме ви да прочетете\n"
-"пъководството на обвивката за да разберете как\n"
-"да промените пътеката за стартиращите файлове.\n"
-
-#: src/actions.c:121
-#, c-format
-msgid ""
-"There was an error running the program:\n"
-"%s\n"
-"This program could not be executed.\n"
-"I am unsure as to why you could not do this. The file exists,\n"
-"is a file, and you are allowed to execute it. I suggest you look\n"
-"into this.\n"
-msgstr ""
-"Има грешка при изпълнение на програмата:\n"
-"%s\n"
-"Не се знае защо програмата не е стартирала. Файлът съществува,\n"
-"и вие имате права да го стартирате. \n"
-"Трабва да разберете сами защо става така.\n"
-
-#: src/actions.c:132
-#, c-format
-msgid ""
-"There was an error running the program:\n"
-"%s\n"
-"This program could not be executed.\n"
-"This is because the file exists, is a file, but you are unable\n"
-"to execute it because you do not have execute access to this file.\n"
-msgstr ""
-"Има грешка при изпълнение на програмата:\n"
-"%s\n"
-"Програмата не може да бъде пусната.\n"
-"Файл действително существува, файл е, но вие\n"
-"не можете да го стартирате, защото нямате тези права.\n"
-
-#: src/actions.c:147
-#, c-format
-msgid ""
-"There was an error running the program:\n"
-"%s\n"
-"This program could not be executed.\n"
-"This is because the file is in fact a directory.\n"
-msgstr ""
-"Има грешка при изпълнение на програмата:\n"
-"%s\n"
-"Програмата не може да бъде пусната,\n"
-"защото файлът всъщност е директория.\n"
-
-#: src/actions.c:155
-#, c-format
-msgid ""
-"There was an error running the program:\n"
-"%s\n"
-"This program could not be executed.\n"
-"This is because the file is not a regular file.\n"
-msgstr ""
-"Има грешка при изпълнение на програмата:\n"
-"%s\n"
-"Програмата не може да бъде пусната,\n"
-"защото файлът не е обичаен.\n"
-
-#: src/actions.c:180
-#, c-format
-msgid ""
-"There was an error running the program:\n"
-"%s\n"
-msgstr ""
-
-#: src/actions.c:283
+#: src/about.c:33
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "За Enlightenment %s"
 
-#: src/actions.c:293
+#: src/about.c:43
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -194,6 +56,144 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
+#: src/aclass.c:208
+msgid "ActionClass Error!"
+msgstr "ActionClass Грешка!"
+
+#: src/aclass.c:208 src/backgrounds.c:241 src/borders.c:651 src/buttons.c:194
+#: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:331 src/tclass.c:98
+#: src/tooltips.c:139
+#, c-format
+msgid "%u references remain\n"
+msgstr "%u отпратки остават\n"
+
+#: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1087
+#: src/borders.c:1210 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
+#: src/cursors.c:178 src/iclass.c:519 src/menus.c:1718 src/menus.c:1828
+#: src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
+#: src/windowmatch.c:161
+#, c-format
+msgid "CONFIG: ignoring extra data in \"%s\"\n"
+msgstr "CONFIG: игнорираме екстра данни в \"%s\"\n"
+
+#: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1093
+#: src/borders.c:1216 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
+#: src/cursors.c:184 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
+#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:182
+#: src/windowmatch.c:166
+#, c-format
+msgid "CONFIG: missing required data in \"%s\"\n"
+msgstr "CONFIG: в \"%s\" липсват нужните данни\n"
+
+#: src/aclass.c:498
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current ActionClass definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Предупреждение: невъзможно е да се определи какво да се прави\n"
+"със следният текст в текущото определение ActionClass:\n"
+"%s\n"
+"Ще се игнорира и продължи...\n"
+
+#: src/actions.c:92
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file does not exist.\n"
+msgstr ""
+"Има грешка при изпълнение на програмата:\n"
+"%s\n"
+"Програмата не може да бъде пусната,\n"
+"защото файлът не съществува.\n"
+
+#: src/actions.c:100
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is most probably because this program is not in the\n"
+"path for your shell which is %s. I suggest you read the manual\n"
+"page for that shell and read up how to change or add to your\n"
+"execution path.\n"
+msgstr ""
+"Има грешка при изпълнение на програмата:\n"
+"%s\n"
+"Програмата не може да бъде пусната.\n"
+"Най-вероятно защото програмата не се намира\n"
+"в пътеката на вашата обвивка (%s). Предлагаме ви да прочетете\n"
+"пъководството на обвивката за да разберете как\n"
+"да промените пътеката за стартиращите файлове.\n"
+
+#: src/actions.c:120
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"I am unsure as to why you could not do this. The file exists,\n"
+"is a file, and you are allowed to execute it. I suggest you look\n"
+"into this.\n"
+msgstr ""
+"Има грешка при изпълнение на програмата:\n"
+"%s\n"
+"Не се знае защо програмата не е стартирала. Файлът съществува,\n"
+"и вие имате права да го стартирате. \n"
+"Трабва да разберете сами защо става така.\n"
+
+#: src/actions.c:131
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file exists, is a file, but you are unable\n"
+"to execute it because you do not have execute access to this file.\n"
+msgstr ""
+"Има грешка при изпълнение на програмата:\n"
+"%s\n"
+"Програмата не може да бъде пусната.\n"
+"Файл действително существува, файл е, но вие\n"
+"не можете да го стартирате, защото нямате тези права.\n"
+
+#: src/actions.c:146
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is in fact a directory.\n"
+msgstr ""
+"Има грешка при изпълнение на програмата:\n"
+"%s\n"
+"Програмата не може да бъде пусната,\n"
+"защото файлът всъщност е директория.\n"
+
+#: src/actions.c:154
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is not a regular file.\n"
+msgstr ""
+"Има грешка при изпълнение на програмата:\n"
+"%s\n"
+"Програмата не може да бъде пусната,\n"
+"защото файлът не е обичаен.\n"
+
+#: src/actions.c:179
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+msgstr ""
+
 #: src/alert.c:211
 msgid "Enlightenment Error"
 msgstr "Грешка на Enlightenment"
@@ -210,7 +210,7 @@ msgstr "Игнорирайте това"
 msgid "Restart Enlightenment"
 msgstr "Рестартирайте Enlightenment"
 
-#: src/alert.c:574 src/setup.c:256
+#: src/alert.c:574 src/setup.c:251
 msgid "Quit Enlightenment"
 msgstr "Излезте от Enlightenment"
 
@@ -332,7 +332,7 @@ msgstr "или по картина"
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2281 src/config.c:332 src/mod-trans.c:192
+#: src/backgrounds.c:2281 src/config.c:334 src/mod-trans.c:192
 msgid "Background"
 msgstr "Фон"
 
@@ -348,11 +348,11 @@ msgstr ""
 "Е: Фон\n"
 "Диалог за настройки\n"
 
-#: src/borders.c:647
+#: src/borders.c:651
 msgid "Border Error!"
 msgstr "Border Грешка!"
 
-#: src/buttons.c:192
+#: src/buttons.c:194
 msgid "Button Error!"
 msgstr "Button Грешка!"
 
@@ -394,7 +394,7 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:174
+#: src/config.c:176
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -403,19 +403,19 @@ msgstr ""
 "Предупреждение:  Конфигурационна грешка в %s блок.\n"
 "Резултатът е съмнителен...\n"
 
-#: src/config.c:262
+#: src/config.c:264
 msgid "Theme versioning ERROR"
 msgstr "ГРЕШКА във версията на темата"
 
-#: src/config.c:263
+#: src/config.c:265
 msgid "Restart with Defaults"
 msgstr "Рестартирайте \"по подразбиране\""
 
-#: src/config.c:264
+#: src/config.c:266
 msgid "Abort and Exit"
 msgstr "Прекъснете и излезте"
 
-#: src/config.c:265
+#: src/config.c:267
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -451,71 +451,71 @@ msgstr ""
 "сигурно не сте подновявали Enlightenment наскоро, а тази тема\n"
 "се възползва от нови свойства в новата-версия.\n"
 
-#: src/config.c:292
+#: src/config.c:294
 msgid "Image class"
 msgstr "Image клас"
 
-#: src/config.c:297
+#: src/config.c:299
 msgid "Tooltip"
 msgstr "Съвети:"
 
-#: src/config.c:302
+#: src/config.c:304
 msgid "Font"
 msgstr "Шрифт"
 
-#: src/config.c:307
+#: src/config.c:309
 msgid "Text class"
 msgstr "Text клас"
 
-#: src/config.c:312
+#: src/config.c:314
 msgid "Menu style"
 msgstr "Стил на рамката"
 
-#: src/config.c:317 src/menus.c:1940
+#: src/config.c:319 src/menus.c:1941
 msgid "Menu"
 msgstr "Менюта:"
 
-#: src/config.c:322
+#: src/config.c:324
 msgid "Border"
 msgstr "Рамки:"
 
-#: src/config.c:327
+#: src/config.c:329
 msgid "Button"
 msgstr "Бутон"
 
-#: src/config.c:337
+#: src/config.c:339
 msgid "Window match"
 msgstr "Подобни прозорци"
 
-#: src/config.c:347
+#: src/config.c:349
 msgid "Action class"
 msgstr "Action клас"
 
-#: src/config.c:352
+#: src/config.c:354
 msgid "Slideout"
 msgstr ""
 
-#: src/config.c:566
+#: src/config.c:568
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment стартира..."
 
-#: src/config.c:601
+#: src/config.c:603
 msgid "Recover system config?"
 msgstr "Да се възстановят ли системните настройки?"
 
-#: src/config.c:601
+#: src/config.c:603
 msgid "Yes, Attempt recovery"
 msgstr "Да, Пробвай да възстановиш..."
 
-#: src/config.c:602
+#: src/config.c:604
 msgid "Restart and try again"
 msgstr "Рестартирай и пробвай пак"
 
-#: src/config.c:602
+#: src/config.c:604
 msgid "Quit and give up"
 msgstr "Излез и се откажи"
 
-#: src/config.c:604
+#: src/config.c:606
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -535,15 +535,15 @@ msgstr ""
 "Искате ли Enlightenment да възстанови своите оригинални\n"
 "системни настройки и да опита пак?\n"
 
-#: src/cursors.c:126
+#: src/cursors.c:127
 msgid "ECursor Error!"
 msgstr "Ecursor Грешка!"
 
-#: src/cursors.c:237
+#: src/cursors.c:238
 msgid "Cursor"
 msgstr "Показател!"
 
-#: src/desktops.c:117
+#: src/desktops.c:120
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -561,7 +561,7 @@ msgstr ""
 "Щтракнете със средния бутон за списък с всички\n"
 "работещи в момента приложения.\n"
 
-#: src/desktops.c:128
+#: src/desktops.c:131
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -577,7 +577,7 @@ msgstr ""
 "Щтракнете със средния бутон за списък с всички\n"
 "работещи в момента приложения.\n"
 
-#: src/desktops.c:148
+#: src/desktops.c:151
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -585,7 +585,7 @@ msgstr ""
 "Щтракнете тук за да вдигнете това\n"
 "поле най-горе.\n"
 
-#: src/desktops.c:162
+#: src/desktops.c:165
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -593,67 +593,67 @@ msgstr ""
 "Щтракнете тук за да свалите това\n"
 "поле най-долу.\n"
 
-#: src/desktops.c:2337 src/desktops.c:2376
+#: src/desktops.c:2340 src/desktops.c:2379
 #, c-format
 msgid "%i Desktops"
 msgstr "%i работни полета"
 
-#: src/desktops.c:2339 src/desktops.c:2378
+#: src/desktops.c:2342 src/desktops.c:2381
 #, c-format
 msgid "%i Desktop"
 msgstr "%i поле"
 
-#: src/desktops.c:2371
+#: src/desktops.c:2374
 msgid "Number of virtual desktops:\n"
 msgstr "Брой на виртуални работни полета:\n"
 
-#: src/desktops.c:2400
+#: src/desktops.c:2403
 msgid "Slide desktops around when changing"
 msgstr "Плъзгай полетата когато ги сменяте"
 
-#: src/desktops.c:2406
+#: src/desktops.c:2409
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Бързина на плъзгане на полето: (бавно)\n"
 
-#: src/desktops.c:2420
+#: src/desktops.c:2423
 msgid "Wrap desktops around"
 msgstr "Застъпете полетата"
 
-#: src/desktops.c:2428
+#: src/desktops.c:2431
 msgid "Display desktop dragbar"
 msgstr "Показвай Dragbar-ът"
 
-#: src/desktops.c:2434
+#: src/desktops.c:2437
 msgid "Drag bar position:"
 msgstr "Позиция на Dragbar-ът"
 
-#: src/desktops.c:2438
+#: src/desktops.c:2441
 msgid "Top"
 msgstr "Отгоре"
 
-#: src/desktops.c:2444
+#: src/desktops.c:2447
 msgid "Bottom"
 msgstr "Отдолу"
 
-#: src/desktops.c:2450 src/pager.c:1900 src/pager.c:1925 src/pager.c:1950
+#: src/desktops.c:2453 src/pager.c:1901 src/pager.c:1926 src/pager.c:1951
 msgid "Left"
 msgstr "Левият"
 
-#: src/desktops.c:2456 src/pager.c:1912 src/pager.c:1937 src/pager.c:1962
+#: src/desktops.c:2459 src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
 msgid "Right"
 msgstr "Десният"
 
-#: src/desktops.c:2464 src/menus-misc.c:714
+#: src/desktops.c:2467 src/menus-misc.c:715
 #, fuzzy
 msgid "Desks"
 msgstr "Поле"
 
-#: src/desktops.c:2465
+#: src/desktops.c:2468
 msgid "Multiple Desktop Settings"
 msgstr "Настройки за много работни полета"
 
-#: src/desktops.c:2468
+#: src/desktops.c:2471
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -661,7 +661,7 @@ msgstr ""
 "Е: Много работни полета\n"
 "Диалог за настройки\n"
 
-#: src/desktops.c:2551 src/desktops.c:2587
+#: src/desktops.c:2554 src/desktops.c:2590
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -670,7 +670,7 @@ msgstr ""
 "%i x %i\n"
 "Екрани с размер"
 
-#: src/desktops.c:2554 src/desktops.c:2590
+#: src/desktops.c:2557 src/desktops.c:2593
 msgid ""
 "1\n"
 "Screen in size"
@@ -678,37 +678,37 @@ msgstr ""
 "1\n"
 "Екран с размер"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2586
 msgid "Virtual Desktop size:\n"
 msgstr "Размер на виртуалното поле:\n"
 
-#: src/desktops.c:2624
+#: src/desktops.c:2627
 msgid "Wrap virtual desktops around"
 msgstr "Застъпвай виртуалните полета"
 
-#: src/desktops.c:2628
+#: src/desktops.c:2631
 msgid "Enable edge flip"
 msgstr "Разрешавай обръщането през ръбовете"
 
-#: src/desktops.c:2632
+#: src/desktops.c:2635
 msgid "Resistance at edge of screen:\n"
 msgstr "\"Съпротивление\" на ръбовете на екрана:\n"
 
-#: src/desktops.c:2644
+#: src/desktops.c:2647
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2645
+#: src/desktops.c:2648
 msgid "Virtual Desktop Settings"
 msgstr "Настройки на виртуални полета"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2651
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr "Е: Виртуални полетаДиалог за настройки\n"
 
-#: src/dialog.c:885 src/dialog.c:2169 src/dialog.c:2200 src/events.c:78
+#: src/dialog.c:885 src/dialog.c:2169 src/dialog.c:2200 src/events.c:79
 #: src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "Да"
@@ -717,7 +717,7 @@ msgstr "Да"
 msgid "Apply"
 msgstr "Приложи"
 
-#: src/dialog.c:897 src/pager.c:994 config/strings.c:30 config/strings.c:166
+#: src/dialog.c:897 src/pager.c:995 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "Затвори"
 
@@ -725,11 +725,11 @@ msgstr "Затвори"
 msgid "Attention !!!"
 msgstr "Внимание !!!"
 
-#: src/events.c:78
+#: src/events.c:79
 msgid "X server setup error"
 msgstr "Грешка в настройките на X-сървъра"
 
-#: src/events.c:79
+#: src/events.c:80
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -750,105 +750,105 @@ msgstr ""
 "\n"
 "Излиза се.\n"
 
-#: src/focus.c:708
+#: src/focus.c:711
 msgid "Focus follows pointer"
 msgstr "Фокусът следи показалеца"
 
-#: src/focus.c:714
+#: src/focus.c:717
 msgid "Focus follows pointer sloppily"
 msgstr "Фокусът следи показалеца небрежно"
 
-#: src/focus.c:720
+#: src/focus.c:723
 msgid "Focus follows mouse clicks"
 msgstr "Фокусът следи щраквания на мишката"
 
-#: src/focus.c:730
+#: src/focus.c:733
 msgid "Clicking in a window always raises it"
 msgstr "Щракване върху прозорец винаги го вдига"
 
-#: src/focus.c:738
+#: src/focus.c:741
 msgid "All new windows first get the focus"
 msgstr "Всички нови прозорци първи взимат фокуса"
 
-#: src/focus.c:743
+#: src/focus.c:746
 msgid "Only new dialog windows get the focus"
 msgstr "Само нови диалогови прозорци взимат фокуса"
 
-#: src/focus.c:750
+#: src/focus.c:753
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Само нови диалози чиито притежатели са фокусирани получават фокуса"
 
-#: src/focus.c:755
+#: src/focus.c:758
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Фокусирай прозореца докато сменяте"
 
-#: src/focus.c:761
+#: src/focus.c:764
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
 
-#: src/focus.c:767
+#: src/focus.c:770
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
 
-#: src/focus.c:775
+#: src/focus.c:778
 msgid "Display and use focus list"
 msgstr "Показвай и използвай списъкът за фокус"
 
-#: src/focus.c:780
+#: src/focus.c:783
 msgid "Include sticky windows in focus list"
 msgstr "Включвай залепени прозорци в списъкът за фокус"
 
-#: src/focus.c:785
+#: src/focus.c:788
 msgid "Include shaded windows in focus list"
 msgstr "Включвай навити прозорци в списъкът за фокус"
 
-#: src/focus.c:790
+#: src/focus.c:793
 msgid "Include iconified windows in focus list"
 msgstr "Включвай скрити прозорци в списъкът за фокус"
 
-#: src/focus.c:795
+#: src/focus.c:798
 msgid "Focus windows while switching"
 msgstr "Фокусирай прозореца докато сменяте"
 
-#: src/focus.c:800
+#: src/focus.c:803
 msgid "Raise windows after focus switch"
 msgstr "Вдигай прозореца след смяната на фокус"
 
-#: src/focus.c:805
+#: src/focus.c:808
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Показалецът на мишката се праща при прозореца след смяна на фокуса"
 
-#: src/focus.c:815
+#: src/focus.c:818
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Поведение на картините във Фокусната листа\n"
 "(ако едната операция се провали, да се пробва със следващата):"
 
-#: src/focus.c:819
+#: src/focus.c:822
 msgid "First E Icon, then App Icon"
 msgstr "Първо Е икони, после икони на програмата"
 
-#: src/focus.c:825
+#: src/focus.c:828
 msgid "First App Icon, then E Icon"
 msgstr "Първо икони на програмата, после Е икони"
 
-#: src/focus.c:831
+#: src/focus.c:834
 msgid "None"
 msgstr "Никъде"
 
-#: src/focus.c:839
+#: src/focus.c:842
 #, fuzzy
 msgid "Focus"
 msgstr "Никога не фокусирай"
 
-#: src/focus.c:840
+#: src/focus.c:843
 msgid "Focus Settings"
 msgstr "Настройки за фокуса"
 
-#: src/focus.c:843
+#: src/focus.c:846
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1132,7 +1132,7 @@ msgstr "Глобални настройки"
 msgid "Swap Window Locations"
 msgstr "Размени мястото на прозорците"
 
-#: src/groups.c:1012 src/menus-misc.c:774
+#: src/groups.c:1012 src/menus-misc.c:775
 #, fuzzy
 msgid "Groups"
 msgstr "Група %i"
@@ -1307,11 +1307,11 @@ msgstr "Опции за Iconbox"
 msgid "Iconbox Settings"
 msgstr "Настройки за Iconbox"
 
-#: src/ipc.c:320
+#: src/ipc.c:321
 msgid "Message"
 msgstr "Съобщение"
 
-#: src/ipc.c:1059
+#: src/ipc.c:1060
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1320,11 +1320,11 @@ msgstr ""
 "Версия на Enlightenment : %s\n"
 "Кода е текущ на         : %s\n"
 
-#: src/ipc.c:1681
+#: src/ipc.c:1682
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Помощ за командите на Enlightenment IPC\n"
 
-#: src/ipc.c:1685
+#: src/ipc.c:1686
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1334,23 +1334,23 @@ msgstr ""
 "\"help <команда>\": описание за дадена команда\n"
 "\n"
 
-#: src/ipc.c:1687 src/ipc.c:1707 src/ipc.c:1719
+#: src/ipc.c:1688 src/ipc.c:1708 src/ipc.c:1720
 msgid "Commands currently available:\n"
 msgstr "Достъпни команди:\n"
 
-#: src/ipc.c:1705
+#: src/ipc.c:1706
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "\"help full\": пълно описания за всяка команда\n"
 
-#: src/ipc.c:1706
+#: src/ipc.c:1707
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание за дадена команда\n"
 
-#: src/ipc.c:1708 src/ipc.c:1720
+#: src/ipc.c:1709 src/ipc.c:1721
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
-#: src/main.c:571
+#: src/main.c:574
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1361,7 +1361,7 @@ msgstr ""
 "Това е фатална грешка.\n"
 "Моля махнете този файл.\n"
 
-#: src/main.c:578
+#: src/main.c:581
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1374,7 +1374,7 @@ msgstr ""
 "Моля, проверете притешателството и правата на тази\n"
 "доректория и я оправете.\n"
 
-#: src/main.c:586
+#: src/main.c:589
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -1387,7 +1387,7 @@ msgstr ""
 "Моля, проверете притешателството и правата на тази\n"
 "доректория и я оправете.\n"
 
-#: src/main.c:593
+#: src/main.c:596
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -1400,7 +1400,7 @@ msgstr ""
 "Моля, проверете притешателството и правата на тази\n"
 "доректория и я оправете.\n"
 
-#: src/main.c:706
+#: src/main.c:709
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1429,7 +1429,7 @@ msgstr ""
 "създадени пакети, някой ръчно е изтрил програмата или е имало\n"
 "грешка при инсталирането на Enlightenment.\n"
 
-#: src/main.c:720
+#: src/main.c:723
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1450,29 +1450,29 @@ msgstr ""
 "Моля, коригирайте тази ситуация и се осигурете че е инсталирана\n"
 "правилно.\n"
 
-#: src/menus.c:2032
+#: src/menus.c:2033
 msgid "Animated display of menus"
 msgstr "Анимирай менютата"
 
-#: src/menus.c:2037
+#: src/menus.c:2038
 msgid "Always pop up menus on screen"
 msgstr "Винаги показвай менютата върху екрана"
 
-#: src/menus.c:2042
+#: src/menus.c:2043
 msgid "Warp pointer after moving menus"
 msgstr "Застъпвай показалеца след движение на менютата"
 
-#: src/menus.c:2048
+#: src/menus.c:2049
 #, fuzzy
 msgid "Menus"
 msgstr "Менюта:"
 
-#: src/menus.c:2049
+#: src/menus.c:2050
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Други настройки"
 
-#: src/menus.c:2052
+#: src/menus.c:2053
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1481,34 +1481,34 @@ msgstr ""
 "Е: Фокус\n"
 "Диалог за настройкию\n"
 
-#: src/menus-misc.c:586 config/strings.c:119
+#: src/menus-misc.c:587 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "Некоректна тема"
 
-#: src/menus-misc.c:674
+#: src/menus-misc.c:675
 #, fuzzy
 msgid "Window List"
 msgstr "Лист за пропускане на прозорци"
 
-#: src/menus-misc.c:696
+#: src/menus-misc.c:697
 msgid "Go to this Desktop"
 msgstr "Отиди на това поле"
 
-#: src/menus-misc.c:700 src/menus-misc.c:796
+#: src/menus-misc.c:701 src/menus-misc.c:797
 #, c-format
 msgid "Desktop %i"
 msgstr "Поле %i"
 
-#: src/menus-misc.c:743
+#: src/menus-misc.c:744
 msgid "Show/Hide this group"
 msgstr "Покажи/скрий тази група"
 
-#: src/menus-misc.c:748
+#: src/menus-misc.c:749
 msgid "Iconify this group"
 msgstr "Игнорирай тази група"
 
-#: src/menus-misc.c:759
+#: src/menus-misc.c:760
 #, c-format
 msgid "Group %i"
 msgstr "Група %i"
@@ -1571,125 +1571,125 @@ msgstr ""
 "Е: Избирателна прозрачност\n"
 "Диалог за настройки\n"
 
-#: src/pager.c:987 config/strings.c:51
+#: src/pager.c:988 config/strings.c:51
 msgid "Window Options"
 msgstr "Опции за прозореца"
 
-#: src/pager.c:990 config/strings.c:53 config/strings.c:168
+#: src/pager.c:991 config/strings.c:53 config/strings.c:168
 msgid "Iconify"
 msgstr "Скрий"
 
-#: src/pager.c:998 config/strings.c:167
+#: src/pager.c:999 config/strings.c:167
 msgid "Annihilate"
 msgstr "Унижтожи"
 
-#: src/pager.c:1002
+#: src/pager.c:1003
 msgid "Stick / Unstick"
 msgstr "Залепи / Отлепи"
 
-#: src/pager.c:1011
+#: src/pager.c:1012
 msgid "Desktop Options"
 msgstr "Опции за олето"
 
-#: src/pager.c:1013
+#: src/pager.c:1014
 msgid "Pager Settings..."
 msgstr "Настройки за Pager-а..."
 
-#: src/pager.c:1018
+#: src/pager.c:1019
 msgid "Snapshotting Off"
 msgstr "Изключване на снимки на екрана"
 
-#: src/pager.c:1022
+#: src/pager.c:1023
 msgid "High Quality Off"
 msgstr "Ниско качество"
 
-#: src/pager.c:1024
+#: src/pager.c:1025
 msgid "High Quality On"
 msgstr "Високо качество"
 
-#: src/pager.c:1029
+#: src/pager.c:1030
 msgid "Snapshotting On"
 msgstr "Включване на снимки на екрана"
 
-#: src/pager.c:1033
+#: src/pager.c:1034
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1035
+#: src/pager.c:1036
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1789 src/pager.c:1880
+#: src/pager.c:1790 src/pager.c:1881
 msgid "Pager scanning speed:"
 msgstr "Скорост на сканиране на Pager-a:"
 
-#: src/pager.c:1790 src/pager.c:1881
+#: src/pager.c:1791 src/pager.c:1882
 msgid "lines per second"
 msgstr "линии в секунда"
 
-#: src/pager.c:1819
+#: src/pager.c:1820
 msgid "Enable pager display"
 msgstr "Включи Pager-а"
 
-#: src/pager.c:1829
+#: src/pager.c:1830
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1833
+#: src/pager.c:1834
 #, fuzzy
 msgid "Simple"
 msgstr "Вълнение"
 
-#: src/pager.c:1839
+#: src/pager.c:1840
 msgid "Make miniature snapshots of the screen"
 msgstr "Прави малки изображения на екрана"
 
-#: src/pager.c:1846
+#: src/pager.c:1847
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1857
+#: src/pager.c:1858
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Плавни висококачествени снимки в снимков режим"
 
-#: src/pager.c:1862
+#: src/pager.c:1863
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Увеличавай прозорците в Pager-а когато мишката преминава над тях"
 
-#: src/pager.c:1868
+#: src/pager.c:1869
 msgid "Pop up window title when mouse is over the window"
 msgstr "Показвай заглавието на прозореца, когато мишката мине над него"
 
-#: src/pager.c:1873
+#: src/pager.c:1874
 msgid "Continuously scan screen to update pager"
 msgstr "Непрекъснато сканирайте екрана за промени"
 
-#: src/pager.c:1896
+#: src/pager.c:1897
 msgid "Mouse button to select and drag windows:"
 msgstr "Кой бутон на мишката избира и влече прозорци:"
 
-#: src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
+#: src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
 msgid "Middle"
 msgstr "Средният"
 
-#: src/pager.c:1921
+#: src/pager.c:1922
 msgid "Mouse button to select desktops:"
 msgstr "Кой бутон на мишката избира работни полетеа:"
 
-#: src/pager.c:1946
+#: src/pager.c:1947
 msgid "Mouse button to display pager menu:"
 msgstr "Кой бутон на мишката да показва менюто на Pager-a:"
 
-#: src/pager.c:1970
+#: src/pager.c:1971
 #, fuzzy
 msgid "Pagers"
 msgstr "Настройки на Pager-а"
 
-#: src/pager.c:1971
+#: src/pager.c:1972
 msgid "Pager Settings"
 msgstr "Настройки на Pager-а"
 
-#: src/pager.c:1974
+#: src/pager.c:1975
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -2044,7 +2044,7 @@ msgstr ""
 msgid "Enlightenment Settings"
 msgstr "Enlightenment стартира..."
 
-#: src/setup.c:128
+#: src/setup.c:129
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2066,15 +2066,15 @@ msgstr ""
 "с вашият системен администратор, или прочетете ръководствата на Х, xdm\n"
 "и startx преди да продължитежите.\n"
 
-#: src/setup.c:255
+#: src/setup.c:250
 msgid "X server version error"
 msgstr "Грешка версия на X-сървъра"
 
-#: src/setup.c:255
+#: src/setup.c:250
 msgid "Ignore this error"
 msgstr "Игнорирай тази грешка"
 
-#: src/setup.c:257
+#: src/setup.c:252
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2090,7 +2090,7 @@ msgstr ""
 "или няма да го прави правилно. Ако сървърът е по-нов от Х11, то\n"
 "авторът нито има достъп до него, нито е чувал за него.\n"
 
-#: src/slideout.c:455 src/tclass.c:456
+#: src/slideout.c:457 src/tclass.c:456
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2389,7 +2389,7 @@ msgstr ""
 "Е: Съветване\n"
 "Диалог за настройки\n"
 
-#: src/windowmatch.c:303
+#: src/windowmatch.c:304
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
