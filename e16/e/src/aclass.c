@@ -24,10 +24,12 @@
 #include "E.h"
 #include "aclass.h"
 #include "conf.h"
+#include "cursors.h"
 #include "e16-ecore_list.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "file.h"
+#include "grabs.h"
 #include "parse.h"
 #include <ctype.h>
 

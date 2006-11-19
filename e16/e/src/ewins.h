@@ -293,6 +293,31 @@ struct _ewin
 #define EwinGetClientWin(ewin)		((ewin)->client.win)
 #define EwinGetContainerWin(ewin)	((ewin)->win_container)
 
+/* arrange.c */
+#define ARRANGE_VERBATIM    0
+#define ARRANGE_BY_SIZE     1
+#define ARRANGE_BY_POSITION 2
+
+void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx,
+			     int *new_dy);
+void                ArrangeEwin(EWin * ewin);
+void                ArrangeEwinCentered(EWin * ewin);
+void                ArrangeEwinXY(EWin * ewin, int *px, int *py);
+void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
+
+void                ArrangeEwins(const char *params);
+
+/* coords.c */
+void                CoordsShow(EWin * ewin);
+void                CoordsHide(void);
+
+/* dock.c */
+void                DockIt(EWin * ewin);
+
+/* draw.c */
+void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
+				  int h, char firstlast);
+
 /* ewins.c */
 #define EWIN_CHANGE_NAME        (1<<0)
 #define EWIN_CHANGE_ICON_NAME   (1<<1)
@@ -413,6 +438,21 @@ EWin              **EwinListTransientFor(const EWin * ewin, int *num);
 int                 EwinSyncRequestSend(EWin * ewin);
 void                EwinSyncRequestWait(EWin * ewin);
 #endif
+
+/* moveresize.c */
+int                 ActionMoveStart(EWin * ewin, int grab, char constrained,
+				    int nogroup);
+int                 ActionMoveEnd(EWin * ewin);
+int                 ActionMoveSuspend(void);
+int                 ActionMoveResume(void);
+void                ActionMoveHandleMotion(void);
+int                 ActionResizeStart(EWin * ewin, int grab, int hv);
+int                 ActionResizeEnd(EWin * ewin);
+void                ActionResizeHandleMotion(void);
+int                 ActionsSuspend(void);
+int                 ActionsResume(void);
+void                ActionsHandleMotion(void);
+int                 ActionsEnd(EWin * ewin);
 
 /* session.c */
 void                SessionGetInfo(EWin * ewin, Atom atom_change);

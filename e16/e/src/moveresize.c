@@ -22,9 +22,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "cursors.h"
 #include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "focus.h"
+#include "grabs.h"
 #include "groups.h"
 #include "hints.h"
 #include "timers.h"
@@ -792,4 +795,86 @@ ActionResizeHandleMotion(void)
      default:
 	break;
      }
+}
+
+void
+ActionsHandleMotion(void)
+{
+   switch (Mode.mode)
+     {
+     case MODE_MOVE_PENDING:
+     case MODE_MOVE:
+	ActionMoveHandleMotion();
+	break;
+
+     case MODE_RESIZE:
+     case MODE_RESIZE_H:
+     case MODE_RESIZE_V:
+	ActionResizeHandleMotion();
+	break;
+
+     default:
+	break;
+     }
+}
+
+int
+ActionsSuspend(void)
+{
+   switch (Mode.mode)
+     {
+     case MODE_MOVE_PENDING:
+     case MODE_MOVE:
+	ActionMoveSuspend();
+	break;
+     case MODE_RESIZE:
+     case MODE_RESIZE_H:
+     case MODE_RESIZE_V:
+	ActionResizeEnd(NULL);
+	break;
+     }
+
+   return 0;
+}
+
+int
+ActionsResume(void)
+{
+   switch (Mode.mode)
+     {
+     case MODE_MOVE_PENDING:
+     case MODE_MOVE:
+	ActionMoveResume();
+	break;
+     }
+
+   return 0;
+}
+
+int
+ActionsEnd(EWin * ewin)
+{
+   int                 did_end = 1;
+
+   switch (Mode.mode)
+     {
+     case MODE_RESIZE:
+     case MODE_RESIZE_H:
+     case MODE_RESIZE_V:
+	ActionResizeEnd(ewin);
+	Mode.action_inhibit = 1;
+	break;
+
+     case MODE_MOVE_PENDING:
+     case MODE_MOVE:
+	ActionMoveEnd(ewin);
+	Mode.action_inhibit = 1;
+	break;
+
+     default:
+	did_end = 0;
+	break;
+     }
+
+   return did_end;
 }

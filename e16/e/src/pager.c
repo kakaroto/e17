@@ -29,6 +29,7 @@
 #include "ecompmgr.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "focus.h"
 #include "groups.h"
 #include "hints.h"
 #include "hiwin.h"
@@ -40,7 +41,7 @@
 
 #define DEBUG_PAGER 1
 #if DEBUG_PAGER
-#define Dprintf(fmt...) if(EventDebug(EDBUG_TYPE_PAGER))Eprintf(fmt)
+#define Dprintf(fmt...) if(EDebug(EDBUG_TYPE_PAGER))Eprintf(fmt)
 #else
 #define Dprintf(fmt...)
 #endif

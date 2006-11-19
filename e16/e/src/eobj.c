@@ -209,14 +209,14 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
    if (EobjGetXwin(eo) != VRoot.xwin)
       EobjListStackAdd(eo, 1);
 
-   if (EventDebug(EDBUG_TYPE_EWINS))
+   if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EobjInit: %#lx %s\n", EobjGetXwin(eo), eo->name);
 }
 
 void
 EobjFini(EObj * eo)
 {
-   if (EventDebug(EDBUG_TYPE_EWINS))
+   if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EobjFini: %#lx %s\n", EobjGetXwin(eo), eo->name);
 
    EobjListStackDel(eo);
@@ -241,7 +241,7 @@ EobjFini(EObj * eo)
 void
 EobjDestroy(EObj * eo)
 {
-   if (EventDebug(EDBUG_TYPE_EWINS))
+   if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EobjDestroy: %#lx %s\n", EobjGetXwin(eo), eo->name);
 
    EobjFini(eo);

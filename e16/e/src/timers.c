@@ -58,7 +58,7 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
    if (!qe)
       return;
 
-   if (EventDebug(EDBUG_TYPE_EVENTS))
+   if (EDebug(EDBUG_TYPE_EVENTS))
       Eprintf("DoIn %8.3f: %s\n", in_time, name);
 
    qe->name = Estrdup(name);
@@ -120,7 +120,7 @@ TimersRun(void)
    if (!q_first)
       return;
 
-   if (EventDebug(EDBUG_TYPE_EVENTS))
+   if (EDebug(EDBUG_TYPE_EVENTS))
       Eprintf("EventsMain - Timers (%s)\n", qe->name);
 
    /* remove it */

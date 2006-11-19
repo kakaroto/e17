@@ -51,7 +51,7 @@ EobjListShow(const char *txt, EobjList * ewl)
    int                 i;
    EObj               *eo;
 
-   if (!EventDebug(EDBUG_TYPE_STACKING))
+   if (!EDebug(EDBUG_TYPE_STACKING))
       return;
 
    Eprintf("%s-%s:\n", ewl->name, txt);

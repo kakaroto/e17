@@ -29,6 +29,7 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "ewin-ops.h"
+#include "grabs.h"
 #include "hints.h"		/* FIXME - Should not be here */
 #include "parse.h"
 #include "screen.h"
@@ -1077,7 +1078,7 @@ IPC_Debug(const char *params, Client * c __UNUSED__)
 
    if (!strncmp(param, "event", 2))
      {
-	EventDebugInit(p);
+	EDebugInit(p);
      }
    else if (!strncmp(param, "grab", 2))
      {
@@ -1582,7 +1583,7 @@ HandleIPC(const char *params, Client * c)
    char                w[FILEPATH_LEN_MAX];
    const IpcItem     **lst, *ipc;
 
-   if (EventDebug(EDBUG_TYPE_IPC))
+   if (EDebug(EDBUG_TYPE_IPC))
       Eprintf("HandleIPC: %s\n", params);
 
    IpcPrintInit();

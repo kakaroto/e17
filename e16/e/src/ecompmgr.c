@@ -33,6 +33,7 @@
 #include "ecompmgr.h"
 #include "emodule.h"
 #include "eobj.h"
+#include "events.h"
 #include "hints.h"
 #include "settings.h"
 #include "timers.h"
@@ -62,10 +63,10 @@
 #define EDBUG_TYPE_COMPMGR2 162
 #define EDBUG_TYPE_COMPMGR3 163
 #define EDBUG_TYPE_COMPMGR4 164
-#define D1printf(fmt...) if(EventDebug(EDBUG_TYPE_COMPMGR))Eprintf(fmt)
-#define D2printf(fmt...) if(EventDebug(EDBUG_TYPE_COMPMGR2))Eprintf(fmt)
-#define D3printf(fmt...) if(EventDebug(EDBUG_TYPE_COMPMGR3))Eprintf(fmt)
-#define D4printf(fmt...) if(EventDebug(EDBUG_TYPE_COMPMGR4))Eprintf(fmt)
+#define D1printf(fmt...) if(EDebug(EDBUG_TYPE_COMPMGR))Eprintf(fmt)
+#define D2printf(fmt...) if(EDebug(EDBUG_TYPE_COMPMGR2))Eprintf(fmt)
+#define D3printf(fmt...) if(EDebug(EDBUG_TYPE_COMPMGR3))Eprintf(fmt)
+#define D4printf(fmt...) if(EDebug(EDBUG_TYPE_COMPMGR4))Eprintf(fmt)
 #else
 #define D1printf(fmt...)
 #define D2printf(fmt...)
@@ -601,7 +602,7 @@ ECompMgrDamageMerge(XserverRegion damage, int destroy)
 {
    if (allDamage != None)
      {
-	if (EventDebug(EDBUG_TYPE_COMPMGR3))
+	if (EDebug(EDBUG_TYPE_COMPMGR3))
 	   ERegionShow("ECompMgrDamageMerge add:", damage);
 
 	ERegionUnion(allDamage, damage);
@@ -617,7 +618,7 @@ ECompMgrDamageMerge(XserverRegion damage, int destroy)
 	allDamage = damage;
      }
 
-   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+   if (EDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("ECompMgrDamageMerge all:", allDamage);
 }
 
@@ -1031,7 +1032,7 @@ win_extents(EObj * eo)
 
    rgn = ERegionCreateRect(r.x, r.y, r.width, r.height);
 
-   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+   if (EDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("extents", rgn);
 
 #if 0				/* FIXME - Set picture clip region */
@@ -1073,7 +1074,7 @@ win_shape(EObj * eo)
    ERegionTranslate(border, x, y);
 
    D2printf("shape %#lx: %d %d\n", EobjGetXwin(eo), x, y);
-   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+   if (EDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("shape", border);
 
    return border;
@@ -1516,7 +1517,7 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
    /* Invalidate old window region */
    damage = cw->extents;
    cw->extents = None;
-   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+   if (EDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("old-extents:", damage);
 
 #if 0				/* FIXME - We shouldn't have to update clip if transparent */
@@ -1578,7 +1579,7 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
 	    EobjGetX(eo), EobjGetY(eo), change_xy);
 
    /* Invalidate old window region */
-   if (EventDebug(EDBUG_TYPE_COMPMGR3))
+   if (EDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("old-extents:", cw->extents);
    ECompMgrDamageMergeObject(eo, cw->extents, change_xy);
    if (change_xy)
@@ -1724,7 +1725,7 @@ ECompMgrWinDumpInfo(const char *txt, EObj * eo, XserverRegion rgn, int force)
 	return;
      }
 
-   if (force || EventDebug(EDBUG_TYPE_COMPMGR3))
+   if (force || EDebug(EDBUG_TYPE_COMPMGR3))
      {
 	Eprintf(" - pict=%#lx pmap=%#lx\n", cw->picture, cw->pixmap);
 
@@ -1964,7 +1965,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case WINDOW_UNREDIR:
 	  case WINDOW_SOLID:
 	     clip = ECompMgrRepaintObjSetClip(rgn_clip, region, cw->clip, x, y);
-	     if (EventDebug(EDBUG_TYPE_COMPMGR2))
+	     if (EDebug(EDBUG_TYPE_COMPMGR2))
 		ECompMgrWinDumpInfo("ECompMgrRepaintObj solid", eo, clip, 0);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 	     XRenderComposite(dpy, PictOpSrc, cw->picture, None, pbuf,
@@ -1986,7 +1987,7 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
 	  case WINDOW_TRANS:
 	  case WINDOW_ARGB:
 	     clip = ECompMgrRepaintObjSetClip(rgn_clip, region, cw->clip, x, y);
-	     if (EventDebug(EDBUG_TYPE_COMPMGR2))
+	     if (EDebug(EDBUG_TYPE_COMPMGR2))
 		ECompMgrWinDumpInfo("ECompMgrRepaintObj trans", eo, clip, 0);
 	     XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, clip);
 	     if (cw->opacity != OPAQUE && !cw->pict_alpha)
@@ -2065,7 +2066,7 @@ ECompMgrRepaint(void)
 
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
 	    rootBuffer, rootPicture);
-   if (EventDebug(EDBUG_TYPE_COMPMGR))
+   if (EDebug(EDBUG_TYPE_COMPMGR))
       ERegionShow("allDamage", allDamage);
 
    if (!rootBuffer)
@@ -2089,7 +2090,7 @@ ECompMgrRepaint(void)
 #if 0				/* FIXME - NoBg? */
    Picture             pict;
 
-   if (EventDebug(EDBUG_TYPE_COMPMGR2))
+   if (EDebug(EDBUG_TYPE_COMPMGR2))
       ERegionShow("after opaque", region);
 
    /* Repaint background, clipped by damage region and opaque windows */

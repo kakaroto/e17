@@ -31,6 +31,7 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "file.h"
+#include "grabs.h"
 #include "hints.h"
 #include "iclass.h"
 #include "menus.h"

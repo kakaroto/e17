@@ -25,6 +25,7 @@
 #include "eimage.h"
 #include "ewins.h"
 #include "icons.h"
+#include "windowmatch.h"
 #include "xwin.h"
 
 static int

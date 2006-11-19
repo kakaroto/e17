@@ -30,10 +30,12 @@
 #include "file.h"
 #include "iclass.h"
 #include "menus.h"
+#include "progress.h"
 #include "session.h"
 #include "tclass.h"
 #include "tooltips.h"
 #include "user.h"
+#include "windowmatch.h"
 
 void
 SkipTillEnd(FILE * ConfigFile)
@@ -161,7 +163,7 @@ GetLine(char *s, int size, FILE * f)
    if (so != si)
       *so = '\0';
 
-   if (EventDebug(EDBUG_TYPE_CONFIG) > 1)
+   if (EDebug(EDBUG_TYPE_CONFIG) > 1)
       Eprintf("GetLine %s\n", s);
 
    return s;
@@ -182,7 +184,7 @@ ConfigFilePreparse(const char *path, const char *dest)
    const char         *epp_path = ENLIGHTENMENT_BIN "/epp";
    char               *def_home, *def_user, *def_shell;
 
-   if (EventDebug(EDBUG_TYPE_CONFIG))
+   if (EDebug(EDBUG_TYPE_CONFIG))
       Eprintf("ConfigFilePreparse %s -> %s\n", path, dest);
 
    def_home = homedir(getuid());
@@ -501,7 +503,7 @@ ConfigFileLoad(const char *name, const char *themepath,
    char               *file;
    FILE               *fs;
 
-   if (EventDebug(EDBUG_TYPE_CONFIG))
+   if (EDebug(EDBUG_TYPE_CONFIG))
       Eprintf("ConfigFileLoad %s\n", name);
 
    file = ConfigFileFind(name, themepath, preparse);

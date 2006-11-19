@@ -22,6 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "cursors.h"
+#include "grabs.h"
 
 int
 GrabKeyboardSet(Win win)
@@ -66,7 +68,7 @@ GrabPointerSet(Win win, unsigned int csr, int confine)
    Mode.grabs.pointer_grab_window = WinGetXwin(win);
    Mode.grabs.pointer_grab_active = 1;
 
-   if (EventDebug(EDBUG_TYPE_GRABS))
+   if (EDebug(EDBUG_TYPE_GRABS))
       Eprintf("GrabPointerSet: %#lx, ret=%d\n", Mode.grabs.pointer_grab_window,
 	      ret);
 
@@ -78,7 +80,7 @@ GrabPointerRelease(void)
 {
    XUngrabPointer(disp, CurrentTime);
 
-   if (EventDebug(EDBUG_TYPE_GRABS))
+   if (EDebug(EDBUG_TYPE_GRABS))
       Eprintf("GrabPointerRelease: %#lx\n", Mode.grabs.pointer_grab_window);
 
    Mode.grabs.pointer_grab_active = 0;

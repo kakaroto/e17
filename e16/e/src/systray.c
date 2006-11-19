@@ -23,6 +23,7 @@
 #include "E.h"
 #include "container.h"
 #include "e16-ecore_hints.h"
+#include "events.h"
 #include "hints.h"
 #include "xwin.h"
 
@@ -169,7 +170,7 @@ SystrayObjAdd(Container * ct, Window xwin)
 	Eprintf("SystrayObjAdd: Hmm.. No _XEMBED_INFO?\n");
 	break;
      default:
-	if (EventDebug(EDBUG_TYPE_ICONBOX))
+	if (EDebug(EDBUG_TYPE_ICONBOX))
 	   Eprintf("SystrayObjAdd: _XEMBED_INFO: %#lx: %d %d\n", xwin,
 		   xembed_info[0], xembed_info[1]);
 	break;
@@ -218,7 +219,7 @@ SystrayObjDel(Container * ct, Win win, int gone)
    if (i < 0)
       return;
 
-   if (EventDebug(EDBUG_TYPE_ICONBOX))
+   if (EDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("SystrayObjDel %#lx\n", WinGetXwin(win));
 
    swin = ct->objs[i].obj;
@@ -246,7 +247,7 @@ SystrayObjMapUnmap(Container * ct, Window win)
 
    if (SystrayGetXembedInfo(win, xembed_info) >= 0)
      {
-	if (EventDebug(EDBUG_TYPE_ICONBOX))
+	if (EDebug(EDBUG_TYPE_ICONBOX))
 	   Eprintf("SystrayObjMapUnmap: _XEMBED_INFO: %#lx: %d %d\n", win,
 		   xembed_info[0], xembed_info[1]);
 
@@ -261,7 +262,7 @@ SystrayObjMapUnmap(Container * ct, Window win)
      }
    else
      {
-	if (EventDebug(EDBUG_TYPE_ICONBOX))
+	if (EDebug(EDBUG_TYPE_ICONBOX))
 	   Eprintf("SystrayObjMapUnmap: _XEMBED_INFO: %#lx: gone?\n", win);
 
 	map = 0;
@@ -278,7 +279,7 @@ SystrayEventClientMessage(Container * ct, XClientMessageEvent * ev)
 {
    Window              win;
 
-   if (EventDebug(EDBUG_TYPE_ICONBOX))
+   if (EDebug(EDBUG_TYPE_ICONBOX))
       Eprintf
 	 ("SystrayEventClientMessage: ev->type=%ld ev->data.l: %#lx %#lx %#lx %#lx\n",
 	  ev->message_type, ev->data.l[0], ev->data.l[1], ev->data.l[2],
@@ -294,7 +295,7 @@ SystrayEventClientMessage(Container * ct, XClientMessageEvent * ev)
      }
    else if (ev->message_type == _NET_SYSTEM_TRAY_MESSAGE_DATA)
      {
-	if (EventDebug(EDBUG_TYPE_ICONBOX))
+	if (EDebug(EDBUG_TYPE_ICONBOX))
 	   Eprintf("SystrayEventClientMessage: Got data message\n");
      }
  done:
@@ -304,7 +305,7 @@ SystrayEventClientMessage(Container * ct, XClientMessageEvent * ev)
 static void
 SystrayEventClientProperty(Container * ct, XPropertyEvent * ev)
 {
-   if (EventDebug(EDBUG_TYPE_ICONBOX))
+   if (EDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("SystrayEventClientProperty %#lx %ld\n", ev->window, ev->atom);
 
    if (ev->atom == E_XA__XEMBED_INFO)
@@ -316,7 +317,7 @@ SystrayEventClientProperty(Container * ct, XPropertyEvent * ev)
 static void
 SystraySelectionEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 {
-   if (EventDebug(EDBUG_TYPE_ICONBOX))
+   if (EDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("SystraySelectionEvent %2d %#lx\n", ev->type, ev->xany.window);
 
    switch (ev->type)
@@ -341,7 +342,7 @@ SystraySelectionEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 static void
 SystrayEvent(Win _win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 {
-   if (EventDebug(EDBUG_TYPE_ICONBOX))
+   if (EDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("SystrayEvent %2d %#lx\n", ev->type, ev->xany.window);
 
 #if 0				/* FIXME - Need this one at all? ConfigureRequest? */
@@ -378,7 +379,7 @@ SystrayItemEvent(Win win, XEvent * ev, void *prm)
 {
    Container          *ct = prm;
 
-   if (EventDebug(EDBUG_TYPE_ICONBOX))
+   if (EDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("SystrayItemEvent %2d %#lx\n", ev->type, ev->xany.window);
 
    switch (ev->type)

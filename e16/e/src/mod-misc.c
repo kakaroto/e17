@@ -248,7 +248,7 @@ autosave(void)
    if (!Mode.wm.save_ok)
       return;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("autosave\n");
 
    Real_SaveSnapInfo(0, NULL);

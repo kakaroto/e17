@@ -23,6 +23,7 @@
 #include "E.h"
 #include "eobj.h"
 #include "iclass.h"
+#include "progress.h"
 #include "tclass.h"
 #include "xwin.h"
 

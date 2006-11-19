@@ -231,7 +231,7 @@ CfgItemLoad(E_DB_File * edf, const char *prefix, const CfgItem * ci)
    else
       name = ci->name;
 
-   if (EventDebug(EDBUG_TYPE_CONFIG))
+   if (EDebug(EDBUG_TYPE_CONFIG))
       Eprintf("CfgItemLoad %s\n", name);
 
    if (!ci->ptr)
@@ -274,7 +274,7 @@ CfgItemSave(E_DB_File * edf, const char *prefix, const CfgItem * ci)
    else
       name = ci->name;
 
-   if (EventDebug(EDBUG_TYPE_CONFIG))
+   if (EDebug(EDBUG_TYPE_CONFIG))
       Eprintf("CfgItemSave %s\n", name);
 
    if (!ci->ptr)

@@ -34,6 +34,8 @@
 #include "E.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "focus.h"
+#include "grabs.h"
 #include "iclass.h"
 #include "icons.h"
 #include "screen.h"

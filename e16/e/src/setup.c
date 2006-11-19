@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "events.h"
 #include "ewins.h"
 #include "screen.h"
 #include "xwin.h"
@@ -232,12 +233,6 @@ SetupX(const char *dstr)
    /* Initialise event handling */
    EventsInit();
 
-   /* just in case - set them up again */
-   /* set up an error handler for then E would normally have fatal X errors */
-   XSetErrorHandler((XErrorHandler) HandleXError);
-   /* set up a handler for when the X Connection goes down */
-   XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
-
    /* select all the root window events to start managing */
    Mode.wm.xselect = 1;
    mask =
@@ -245,8 +240,8 @@ SetupX(const char *dstr)
       ButtonMotionMask | PropertyChangeMask | SubstructureRedirectMask |
       PointerMotionMask | StructureNotifyMask | SubstructureNotifyMask;
    ESelectInput(VRoot.win, mask);
-
    ESync();
+
    Mode.wm.xselect = 0;
 
    /* warn, if necessary about X version problems */

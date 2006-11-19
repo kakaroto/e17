@@ -24,6 +24,7 @@
 #include "E.h"
 #include "aclass.h"
 #include "emodule.h"
+#include "events.h"
 #include "session.h"
 #include "timers.h"
 #include "xwin.h"
@@ -99,7 +100,7 @@ ExtInitSync(int available)
      {
 	if (!strcmp(xssc[i].name, "SERVERTIME"))
 	   Mode.display.server_time = xssc[i].counter;
-	if (EventDebug(EDBUG_TYPE_SYNC))
+	if (EDebug(EDBUG_TYPE_SYNC))
 	   Eprintf(" Sync counter %2d: %10s %#lx %#x:%#x\n", i,
 		   xssc[i].name, xssc[i].counter,
 		   XSyncValueHigh32(xssc[i].resolution),
@@ -119,7 +120,7 @@ ExtInitSS(int available)
    if (!available)
       return;
 
-   if (EventDebug(EDBUG_TYPE_VERBOSE))
+   if (EDebug(EDBUG_TYPE_VERBOSE))
      {
 	XScreenSaverInfo   *xssi = XScreenSaverAllocInfo();
 
@@ -178,7 +179,7 @@ ExtQuery(const EServerExt * ext)
 
 	ext->query_ver(disp, &(exd->major), &(exd->minor));
 
-	if (EventDebug(EDBUG_TYPE_VERBOSE))
+	if (EDebug(EDBUG_TYPE_VERBOSE))
 	   Eprintf("Found extension %-10s version %d.%d -"
 		   " Event/error base = %d/%d\n", ext->name,
 		   exd->major, exd->minor, exd->event_base, exd->error_base);
@@ -233,7 +234,7 @@ HandleEvent(XEvent * ev)
    Win                 win;
 
 #if ENABLE_DEBUG_EVENTS
-   if (EventDebug(ev->type))
+   if (EDebug(ev->type))
       EventShow(ev);
 #endif
 
@@ -363,7 +364,7 @@ EventsCompress(XEvent * evq, int count)
 
 #if ENABLE_DEBUG_EVENTS
    /* Debug - should be taken out */
-   if (EventDebug(EDBUG_TYPE_COMPRESSION))
+   if (EDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
 	 if (evq[i].type)
 	    Eprintf("EventsCompress-1 %3d %s w=%#lx\n", i,
@@ -395,7 +396,7 @@ EventsCompress(XEvent * evq, int count)
 		    }
 	       }
 #if ENABLE_DEBUG_EVENTS
-	     if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
+	     if (n && EDebug(EDBUG_TYPE_COMPRESSION))
 		Eprintf("EventsCompress n=%4d %s %#lx x,y = %d,%d\n",
 			n, EventName(ev->type), ev->xmotion.window,
 			ev->xmotion.x, ev->xmotion.y);
@@ -485,7 +486,7 @@ EventsCompress(XEvent * evq, int count)
 		  ev->xexpose.height = yb - ya;
 	       }
 #if ENABLE_DEBUG_EVENTS
-	     if (EventDebug(EDBUG_TYPE_COMPRESSION))
+	     if (EDebug(EDBUG_TYPE_COMPRESSION))
 		Eprintf("EventsCompress n=%4d %s %#lx x=%4d-%4d y=%4d-%4d\n",
 			n, EventName(ev->type), ev->xexpose.window,
 			xa, xb, ya, yb);
@@ -505,7 +506,7 @@ EventsCompress(XEvent * evq, int count)
 		    }
 	       }
 #if ENABLE_DEBUG_EVENTS
-	     if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
+	     if (n && EDebug(EDBUG_TYPE_COMPRESSION))
 		Eprintf("EventsCompress n=%4d %s %#lx\n",
 			n, EventName(ev->type), ev->xmotion.window);
 #endif
@@ -524,7 +525,7 @@ EventsCompress(XEvent * evq, int count)
 
 #if ENABLE_DEBUG_EVENTS
    /* Debug - should be taken out */
-   if (EventDebug(EDBUG_TYPE_COMPRESSION))
+   if (EDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
 	 if (evq[i].type)
 	    Eprintf("EventsCompress-2 %3d %s w=%#lx\n", i,
@@ -585,7 +586,7 @@ EventsProcess(XEvent ** evq_p, int *evq_n, int *evq_f)
    n = EventsFetch(evq_p, evq_n);
    evq = *evq_p;
 
-   if (EventDebug(EDBUG_TYPE_EVENTS))
+   if (EDebug(EDBUG_TYPE_EVENTS))
       Eprintf("EventsProcess-B %d\n", n);
 
    for (i = count = 0; i < n; i++)
@@ -593,7 +594,7 @@ EventsProcess(XEvent ** evq_p, int *evq_n, int *evq_f)
 	if (evq[i].type == 0)
 	   continue;
 
-	if (EventDebug(EDBUG_TYPE_EVENTS) > 1)
+	if (EDebug(EDBUG_TYPE_EVENTS) > 1)
 	   EventShow(evq + i);
 
 	count++;
@@ -601,7 +602,7 @@ EventsProcess(XEvent ** evq_p, int *evq_n, int *evq_f)
 	evq[i].type = 0;
      }
 
-   if (EventDebug(EDBUG_TYPE_EVENTS))
+   if (EDebug(EDBUG_TYPE_EVENTS))
       Eprintf("EventsProcess-E %d/%d\n", count, n);
 
    if (n > *evq_f)
@@ -635,7 +636,7 @@ EventsMain(void)
 	pfetch = 0;
 	count = EventsProcess(&evq_ptr, &evq_alloc, &pfetch);
 
-	if (EventDebug(EDBUG_TYPE_EVENTS))
+	if (EDebug(EDBUG_TYPE_EVENTS))
 	   Eprintf("EventsMain - Idlers\n");
 	IdlersRun();
 
@@ -643,7 +644,7 @@ EventsMain(void)
 	  {
 	     evq_fetch =
 		(pfetch > evq_fetch) ? pfetch : (3 * evq_fetch + pfetch) / 4;
-	     if (EventDebug(EDBUG_TYPE_EVENTS))
+	     if (EDebug(EDBUG_TYPE_EVENTS))
 		Eprintf("EventsMain - Alloc/fetch/pfetch/peak=%d/%d/%d/%d)\n",
 			evq_alloc, evq_fetch, pfetch, count);
 	     if ((evq_ptr) && ((evq_alloc - evq_fetch) > 64))
@@ -694,7 +695,7 @@ EventsMain(void)
 	     count = select(fdsize, &fdset, NULL, NULL, NULL);
 	  }
 
-	if (EventDebug(EDBUG_TYPE_EVENTS))
+	if (EDebug(EDBUG_TYPE_EVENTS))
 	   Eprintf
 	      ("EventsMain - count=%d xfd=%d:%d smfd=%d:%d dt=%lf time2=%lf\n",
 	       count, xfd, FD_ISSET(xfd, &fdset), smfd,
@@ -704,7 +705,7 @@ EventsMain(void)
 	  {
 	     if ((smfd >= 0) && (FD_ISSET(smfd, &fdset)))
 	       {
-		  if (EventDebug(EDBUG_TYPE_EVENTS))
+		  if (EDebug(EDBUG_TYPE_EVENTS))
 		     Eprintf("EventsMain - ICE\n");
 		  ProcessICEMSGS();
 	       }
@@ -716,61 +717,6 @@ EventsMain(void)
 /*
  * Event debug stuff
  */
-#define N_DEBUG_FLAGS 256
-static char         ev_debug;
-static char         ev_debug_flags[N_DEBUG_FLAGS];
-
-/*
- * param is <EventNumber>[:<EventNumber> ... ]
- */
-void
-EventDebugInit(const char *param)
-{
-   const char         *s;
-   int                 ix, onoff;
-
-   if (!param)
-      return;
-
-   for (;;)
-     {
-	s = strchr(param, ':');
-	if (!param[0])
-	   break;
-	ev_debug = 1;
-	ix = strtol(param, NULL, 0);
-	onoff = (ix >= 0);
-	if (ix < 0)
-	   ix = -ix;
-	if (ix < N_DEBUG_FLAGS)
-	  {
-	     if (onoff)
-		ev_debug_flags[ix]++;
-	     else
-		ev_debug_flags[ix] = 0;
-	  }
-	if (!s)
-	   break;
-	param = s + 1;
-     }
-}
-
-int
-EventDebug(unsigned int type)
-{
-   return (ev_debug &&
-	   (type < sizeof(ev_debug_flags))) ? ev_debug_flags[type] : 0;
-}
-
-void
-EventDebugSet(unsigned int type, int value)
-{
-   if (type >= sizeof(ev_debug_flags))
-      return;
-
-   ev_debug = 1;
-   ev_debug_flags[type] += value;
-}
 
 static const char  *const TxtEventNames[] = {
    "Error", "Reply", "KeyPress", "KeyRelease", "ButtonPress",
@@ -983,12 +929,4 @@ EventShow(const XEvent * ev)
 	break;
      }
 }
-
-#else
-
-void
-EventDebugInit(const char *param __UNUSED__)
-{
-}
-
 #endif /* ENABLE_DEBUG_EVENTS */

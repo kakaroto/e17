@@ -100,7 +100,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
    SmProp             *props[7];
    char                bufs[32], bufm[32], bufx[32];
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("set_save_props\n");
 
    programProp.name = (char *)SmProgram;
@@ -228,7 +228,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
    /* SM specs require SmCloneCommand excludes "--sm-client-id" option */
    cloneProp.num_vals = restartProp.num_vals - 2;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       for (i = 0; i < restartProp.num_vals; i++)
 	 Eprintf("restartVal[i]: %2d: %s\n", restartVal[i].length,
 		 (char *)restartVal[i].value);
@@ -257,7 +257,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
 static void
 callback_save_yourself2(SmcConn smc_conn, SmPointer client_data __UNUSED__)
 {
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_yourself2\n");
 
    set_save_props(smc_conn, Mode.wm.master);
@@ -271,7 +271,7 @@ callback_save_yourself(SmcConn smc_conn, SmPointer client_data __UNUSED__,
 		       int save_style __UNUSED__, Bool shutdown __UNUSED__,
 		       int interact_style __UNUSED__, Bool fast __UNUSED__)
 {
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_yourself\n");
 
    SmcRequestSaveYourselfPhase2(smc_conn, callback_save_yourself2, NULL);
@@ -280,7 +280,7 @@ callback_save_yourself(SmcConn smc_conn, SmPointer client_data __UNUSED__,
 static void
 callback_die(SmcConn smc_conn __UNUSED__, SmPointer client_data __UNUSED__)
 {
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_die\n");
 
    SessionExit(EEXIT_EXIT, NULL);
@@ -290,14 +290,14 @@ static void
 callback_save_complete(SmcConn smc_conn __UNUSED__,
 		       SmPointer client_data __UNUSED__)
 {
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_save_complete\n");
 }
 
 static void
 callback_shutdown_cancelled(SmcConn smc_conn, SmPointer client_data __UNUSED__)
 {
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("callback_shutdown_cancelled\n");
 
    SmcSaveYourselfDone(smc_conn, False);
@@ -311,7 +311,7 @@ static IceConn      ice_conn;
 static void
 ice_io_error_handler(IceConn connection __UNUSED__)
 {
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("ice_io_error_handler\n");
 
    /* The less we do here the better - the default handler does an
@@ -476,7 +476,7 @@ SetSMID(const char *smid)
 void
 SessionSave(int shutdown)
 {
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SessionSave(%d)\n", shutdown);
 
    /* dont' need anymore */
@@ -507,7 +507,7 @@ doSMExit(int mode, const char *params)
    char                s[1024];
    const char         *ss;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("doSMExit: mode=%d prm=%p\n", mode, params);
 
    restarting = True;
@@ -543,7 +543,7 @@ doSMExit(int mode, const char *params)
 	EDisplayClose();
 
 	Esnprintf(s, sizeof(s), "exec %s", params);
-	if (EventDebug(EDBUG_TYPE_SESSION))
+	if (EDebug(EDBUG_TYPE_SESSION))
 	   Eprintf("doSMExit: %s\n", s);
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	break;
@@ -576,7 +576,7 @@ doSMExit(int mode, const char *params)
 	if (ss)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -t %s", ss);
 
-	if (EventDebug(EDBUG_TYPE_SESSION))
+	if (EDebug(EDBUG_TYPE_SESSION))
 	   Eprintf("doSMExit: %s\n", s);
 
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
@@ -682,7 +682,7 @@ SessionExit(int mode, const char *param)
    if (getpid() != Mode.wm.pid)
       return;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SessionExit: mode=%d(%d) prm=%s\n", mode, Mode.wm.exit_mode,
 	      param);
 
@@ -738,7 +738,7 @@ SessionRunProg(const char *prog, const char *params)
      {
 	s = prog;
      }
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SessionRunProg: %s\n", s);
    system(s);
 }

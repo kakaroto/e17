@@ -364,7 +364,7 @@ LangInit(void)
       enc_int = enc_loc;
 
    Mode.locale.lang = setlocale(LC_MESSAGES, NULL);
-   if (EventDebug(EDBUG_TYPE_VERBOSE))
+   if (EDebug(EDBUG_TYPE_VERBOSE))
      {
 	Eprintf("Locale: %s\n", setlocale(LC_ALL, NULL));
 	Eprintf("Character encoding: locale=%s internal=%s MB_CUR_MAX=%d\n",

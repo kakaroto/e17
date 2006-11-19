@@ -24,6 +24,7 @@
 #include "E.h"
 #include "X11/cursorfont.h"
 #include "conf.h"
+#include "cursors.h"
 #include "e16-ecore_list.h"
 #include "emodule.h"
 #include "xwin.h"

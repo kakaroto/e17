@@ -304,7 +304,7 @@ EventCallbacksProcess(Win win, XEvent * ev)
    eci = ecl->lst;
    for (i = 0; i < ecl->num; i++, eci++)
      {
-	if (EventDebug(EDBUG_TYPE_DISPATCH))
+	if (EDebug(EDBUG_TYPE_DISPATCH))
 	   Eprintf("EventDispatch: type=%d win=%#lx func=%p prm=%p\n",
 		   ev->type, ev->xany.window, eci->func, eci->prm);
 	eci->func(xid, ev, eci->prm);
@@ -767,7 +767,7 @@ EUnregisterWindow(Win win)
 
    if (xid->cbl.lst)
      {
-	if (EventDebug(1))
+	if (EDebug(1))
 	   Eprintf("EUnregisterWindow(%#lx) Ignored (%d callbacks remain)\n",
 		   xid->xwin, xid->cbl.num);
 	return;
@@ -1669,7 +1669,7 @@ EGrabServer(void)
 {
    if (Mode.grabs.server_grabbed <= 0)
      {
-	if (EventDebug(EDBUG_TYPE_GRABS))
+	if (EDebug(EDBUG_TYPE_GRABS))
 	   Eprintf("EGrabServer\n");
 	XGrabServer(disp);
      }
@@ -1683,7 +1683,7 @@ EUngrabServer(void)
      {
 	XUngrabServer(disp);
 	XFlush(disp);
-	if (EventDebug(EDBUG_TYPE_GRABS))
+	if (EDebug(EDBUG_TYPE_GRABS))
 	   Eprintf("EUngrabServer\n");
      }
    Mode.grabs.server_grabbed--;

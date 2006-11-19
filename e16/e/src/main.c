@@ -22,11 +22,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "cursors.h"
 #include "desktops.h"
 #include "dialog.h"
 #include "eimage.h"
 #include "emodule.h"
+#include "events.h"
 #include "file.h"
+#include "grabs.h"
 #include "hints.h"
 #include "session.h"
 #include "snaps.h"
@@ -112,7 +115,7 @@ main(int argc, char **argv)
 
    str = getenv("EDEBUG");
    if (str)
-      EventDebugInit(str);
+      EDebugInit(str);
    str = getenv("EDEBUG_COREDUMP");
    if (str)
       Mode.wm.coredump = 1;
@@ -194,7 +197,7 @@ main(int argc, char **argv)
 	     exit(0);
 	     break;
 	  case 'v':
-	     EventDebugSet(EDBUG_TYPE_VERBOSE, 1);
+	     EDebugSet(EDBUG_TYPE_VERBOSE, 1);
 	     break;
 	  case 'w':
 	     sscanf(eoptarg, "%dx%d", &VRoot.w, &VRoot.h);
@@ -309,7 +312,7 @@ EExit(int exitcode)
 {
    int                 i;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("EExit(%d)\n", exitcode);
 
    if (disp)

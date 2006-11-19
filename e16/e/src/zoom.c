@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "focus.h"
 #include "xwin.h"
 
 #ifdef WITH_ZOOM

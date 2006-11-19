@@ -364,7 +364,7 @@ EHintsSetInfo(const EWin * ewin)
    ecore_x_window_prop_string_set(EwinGetClientXwin(ewin), ENL_WIN_BORDER,
 				  ewin->normal_border->name);
 
-   if (EventDebug(EDBUG_TYPE_SNAPS))
+   if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap set einf  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
@@ -410,7 +410,7 @@ EHintsGetInfo(EWin * ewin)
       EwinSetBorderByName(ewin, str);
    Efree(str);
 
-   if (EventDebug(EDBUG_TYPE_SNAPS))
+   if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
@@ -495,7 +495,7 @@ EHintsSetInfoOnAll(void)
    int                 i, num;
    EWin               *const *lst;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SetEInfoOnAll\n");
 
    lst = EwinListGetAll(&num);
@@ -557,7 +557,7 @@ SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
 				 StructureNotifyMask, CurrentTime, sel->atom,
 				 WinGetXwin(sel->win), 0, 0);
 
-   if (EventDebug(EDBUG_TYPE_SELECTION))
+   if (EDebug(EDBUG_TYPE_SELECTION))
       Eprintf("Window %#lx is now %s owner, time=%lu\n",
 	      WinGetXwin(sel->win), buf, sel->time);
 
@@ -570,7 +570,7 @@ SelectionRelease(ESelection * sel)
    if (!sel)
       return;
 
-   if (EventDebug(EDBUG_TYPE_SELECTION))
+   if (EDebug(EDBUG_TYPE_SELECTION))
       Eprintf("Window %#lx is no longer %s owner\n",
 	      WinGetXwin(sel->win), XGetAtomName(disp, sel->atom));
 

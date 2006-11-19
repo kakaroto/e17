@@ -22,8 +22,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "cursors.h"
 #include "eobj.h"
+#include "events.h"
 #include "ewins.h"
+#include "grabs.h"
 #include "hiwin.h"
 #include "iclass.h"
 #include "xwin.h"

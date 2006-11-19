@@ -38,7 +38,7 @@ ExtInitWinMain(void)
    int                 i;
    XSetWindowAttributes attr;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinMain enter\n");
 
    disp = EDisplayOpen(NULL, -1);
@@ -112,7 +112,7 @@ ExtInitWinMain(void)
 	      i = 1;
 
 	   Esnprintf(s, sizeof(s), "pix/wait%i.png", i);
-	   if (EventDebug(EDBUG_TYPE_SESSION))
+	   if (EDebug(EDBUG_TYPE_SESSION))
 	      Eprintf("ExtInitWinCreate - child %s\n", s);
 
 	   im = EImageLoad(s);
@@ -137,7 +137,7 @@ ExtInitWinMain(void)
 	}
    }
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinMain exit\n");
 
    EDisplayClose();
@@ -152,7 +152,7 @@ ExtInitWinCreate(void)
    Window              win;
    Atom                a;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinCreate\n");
 
    a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
@@ -165,7 +165,7 @@ ExtInitWinCreate(void)
 
 	for (;;)
 	  {
-	     if (EventDebug(EDBUG_TYPE_SESSION))
+	     if (EDebug(EDBUG_TYPE_SESSION))
 		Eprintf("ExtInitWinCreate - parent\n");
 
 	     /* Hack to give the child some space. Not foolproof. */
@@ -176,7 +176,7 @@ ExtInitWinCreate(void)
 	  }
 
 	win = win_ex;
-	if (EventDebug(EDBUG_TYPE_SESSION))
+	if (EDebug(EDBUG_TYPE_SESSION))
 	   Eprintf("ExtInitWinCreate - parent - %#lx\n", win);
 
 	return win;
@@ -184,7 +184,7 @@ ExtInitWinCreate(void)
 
    /* Child - Create the init window */
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinCreate - child\n");
 
    /* Clean up inherited stuff */
@@ -220,7 +220,7 @@ ExtInitWinKill(void)
    if (!disp || init_win_ext == None)
       return;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("Kill init window %#lx\n", init_win_ext);
    XKillClient(disp, init_win_ext);
    init_win_ext = None;

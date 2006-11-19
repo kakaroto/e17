@@ -15,80 +15,58 @@ SRCS_ECOMPMGR = ecompmgr.c ecompmgr.h
 endif
 e16_SOURCES = \
 	E.h			\
-	aclass.c		\
-	aclass.h		\
+	about.c			\
+	aclass.c		aclass.h		\
 	actions.c		\
-	alert.c			\
-	alert.h			\
+	alert.c			alert.h			\
 	arrange.c		\
-	backgrounds.c		\
-	backgrounds.h		\
-	borders.c		\
-	borders.h		\
-	buttons.c		\
-	buttons.h		\
+	backgrounds.c		backgrounds.h		\
+	borders.c		borders.h		\
+	buttons.c		buttons.h		\
 	cmclass.c		\
 	comms.c			\
 	conf.h			\
 	config.c		\
-	container.c		\
-	container.h		\
+	container.c		container.h		\
 	coords.c                \
-	cursors.c		\
-	desktops.c		\
-	desktops.h		\
-	dialog.c	        \
-	dialog.h	        \
+	cursors.c		cursors.h		\
+	desktops.c		desktops.h		\
+	dialog.c	        dialog.h	        \
 	dock.c			\
 	draw.c			\
-	e16-ecore_hints.c	\
-	e16-ecore_hints.h	\
-	e16-ecore_list.c	\
-	e16-ecore_list.h	\
-	econfig.c		\
-	econfig.h		\
+	e16-ecore_hints.c	e16-ecore_hints.h	\
+	e16-ecore_list.c	e16-ecore_list.h	\
+	econfig.c		econfig.h		\
+	edebug.h		\
 	edge.c			\
-	eimage.c		\
-	eimage.h		\
-	emodule.c		\
-	emodule.h		\
-	eobj.c			\
-	eobj.h			\
+	eimage.c		eimage.h		\
+	emodule.c		emodule.h		\
+	eobj.c			eobj.h			\
 	etypes.h		\
-	events.c		\
-	ewins.c			\
-	ewins.h			\
-	ewin-ops.c		\
-	ewin-ops.h		\
+	events.c		events.h		\
+	ewins.c			ewins.h			\
+	ewin-ops.c		ewin-ops.h		\
 	ewmh.c			\
 	extinitwin.c		\
-	file.c		        \
-	file.h		        \
+	file.c		        file.h		        \
 	finders.c		\
-	focus.c 		\
+	focus.c 		focus.h			\
 	fonts.c 		\
 	fx.c                    \
-	grabs.c			\
-	groups.c		\
-	groups.h		\
+	grabs.c			grabs.h			\
+	groups.c		groups.h		\
 	handlers.c		\
-	hints.c			\
-	hints.h			\
-	hiwin.c			\
-	hiwin.h			\
+	hints.c			hints.h			\
+	hiwin.c			hiwin.h			\
 	icccm.c			\
-	iclass.c		\
-	iclass.h		\
+	iclass.c		iclass.h		\
 	iconify.c		\
-	icons.c			\
-	icons.h			\
+	icons.c			icons.h			\
 	ipc.c			\
-	lang.c			\
-	lang.h			\
+	lang.c			lang.h			\
 	main.c			\
 	memory.c		\
-	menus.c			\
-	menus.h			\
+	menus.c			menus.h			\
 	menus-misc.c		\
 	misc.c			\
 	mod-misc.c		\
@@ -96,41 +74,31 @@ e16_SOURCES = \
 	moveresize.c		\
 	mwm.c			\
 	pager.c                 \
-	parse.c                 \
-	parse.h                 \
-	progress.c		\
+	parse.c                 parse.h                 \
+	progress.c		progress.h		\
 	regex.c			\
-	screen.c                \
-	screen.h                \
-	session.c               \
-	session.h               \
-	settings.c              \
-	settings.h              \
+	screen.c                screen.h                \
+	session.c               session.h               \
+	settings.c              settings.h              \
 	setup.c			\
 	size.c			\
 	slideout.c		\
-	snaps.c                 \
-	snaps.h			\
+	snaps.c                 snaps.h			\
 	sound.c			\
 	stacking.c		\
 	startup.c		\
 	systray.c		\
-	tclass.c		\
-	tclass.h		\
+	tclass.c		tclass.h		\
 	text.c			\
 	theme.c                 \
-	timers.c		\
-	timers.h		\
-	tooltips.c		\
-	tooltips.h		\
-	user.c			\
-	user.h			\
+	timers.c		timers.h		\
+	tooltips.c		tooltips.h		\
+	user.c			user.h			\
 	util.h			\
 	ttfont.c		\
 	warp.c			\
-	windowmatch.c   	\
-	x.c                     \
-	xwin.h			\
+	windowmatch.c   	windowmatch.h		\
+	x.c                     xwin.h			\
 	zoom.c			\
 	$(SRCS_GNOME) 		\
 	$(SRCS_ECOMPMGR)	\

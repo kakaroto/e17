@@ -28,6 +28,7 @@
 #include "eobj.h"
 #include "ewins.h"
 #include "ewin-ops.h"
+#include "focus.h"
 #include "groups.h"
 #include "hints.h"
 #include "iclass.h"		/* FIXME - Should not be here */
@@ -308,7 +309,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
       return;
    call_depth++;
 
-   if (EventDebug(EDBUG_TYPE_MOVERESIZE))
+   if (EDebug(EDBUG_TYPE_MOVERESIZE))
       Eprintf("doEwinMoveResize(%d,%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
 	      call_depth, Mode.mode, EwinGetClientXwin(ewin), flags,
 	      (dsk) ? (int)dsk->num : -1, x, y, w, h, EwinGetName(ewin));

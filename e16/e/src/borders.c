@@ -24,13 +24,17 @@
 #include "E.h"
 #include "aclass.h"
 #include "borders.h"
+#include "cursors.h"
 #include "e16-ecore_list.h"
 #include "ewins.h"
+#include "focus.h"
+#include "grabs.h"
 #include "hints.h"
 #include "iclass.h"
 #include "snaps.h"
 #include "tclass.h"
 #include "tooltips.h"
+#include "windowmatch.h"
 #include "xwin.h"
 
 #define EWIN_BORDER_PART_EVENT_MASK \

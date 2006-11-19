@@ -1,4 +1,5 @@
 # List of source files containing translatable strings.
+src/about.c
 src/aclass.c
 src/actions.c
 src/alert.c

@@ -221,7 +221,7 @@ ClientHandleComms(XClientMessageEvent * ev)
    if (!s)
       return;
 
-   if (EventDebug(EDBUG_TYPE_IPC))
+   if (EDebug(EDBUG_TYPE_IPC))
       Eprintf("ClientHandleComms: %s\n", s);
 
    if (!strncmp(s, "set ", 4))

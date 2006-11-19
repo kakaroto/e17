@@ -30,6 +30,7 @@
 #include "ewins.h"
 #include "ewin-ops.h"
 #include "parse.h"
+#include "windowmatch.h"
 
 typedef struct _windowmatch WindowMatch;
 

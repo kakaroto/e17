@@ -232,3 +232,72 @@ Eprintf(const char *fmt, ...)
 }
 
 #endif
+
+#if ENABLE_DEBUG_EVENTS
+/*
+ * Event debug stuff
+ */
+#define N_DEBUG_FLAGS 256
+static char         ev_debug;
+static char         ev_debug_flags[N_DEBUG_FLAGS];
+
+/*
+ * param is <ItemNumber>[:<ItemNumber> ... ]
+ *
+ * ItemNumber:
+ * 0            : Verbose flag
+ * 1            : X11 errors
+ * [   2;  35 [ : X11 event codes, see /usr/include/X11/X.h
+ * [  64; ... [ : Remapped X11 events, see events.h
+ * [ 128; 256 [ : E events, see E.h
+ */
+void
+EDebugInit(const char *param)
+{
+   const char         *s;
+   int                 ix, onoff;
+
+   if (!param)
+      return;
+
+   for (;;)
+     {
+	s = strchr(param, ':');
+	if (!param[0])
+	   break;
+	ev_debug = 1;
+	ix = strtol(param, NULL, 0);
+	onoff = (ix >= 0);
+	if (ix < 0)
+	   ix = -ix;
+	if (ix < N_DEBUG_FLAGS)
+	  {
+	     if (onoff)
+		ev_debug_flags[ix]++;
+	     else
+		ev_debug_flags[ix] = 0;
+	  }
+	if (!s)
+	   break;
+	param = s + 1;
+     }
+}
+
+int
+EDebug(unsigned int type)
+{
+   return (ev_debug &&
+	   (type < sizeof(ev_debug_flags))) ? ev_debug_flags[type] : 0;
+}
+
+void
+EDebugSet(unsigned int type, int value)
+{
+   if (type >= sizeof(ev_debug_flags))
+      return;
+
+   ev_debug = 1;
+   ev_debug_flags[type] += value;
+}
+
+#endif

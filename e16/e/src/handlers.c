@@ -36,7 +36,7 @@ SignalHandler(int sig)
 
    Mode.wm.in_signal_handler = 1;
 
-   if (EventDebug(EDBUG_TYPE_SESSION))
+   if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SignalHandler signal=%d\n", sig);
 
    switch (sig)
@@ -199,7 +199,7 @@ HandleXError(Display * d __UNUSED__, XErrorEvent * ev)
 	  }
      }
 
-   if (EventDebug(1))
+   if (EDebug(1))
      {
 	XGetErrorText(disp, ev->error_code, buf, 63);
 	Eprintf("*** ERROR: xid=%#lx error=%i req=%i/%i: %s\n",

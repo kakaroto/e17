@@ -22,10 +22,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "cursors.h"
 #include "desktops.h"		/* FIXME - Should not be here */
 #include "dialog.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "focus.h"
+#include "grabs.h"
 #include "hints.h"
 #include "timers.h"
 #include "xwin.h"
@@ -53,7 +56,7 @@ FocusEnable(int on)
 	focus_inhibit++;
      }
 
-   if (EventDebug(EDBUG_TYPE_FOCUS))
+   if (EDebug(EDBUG_TYPE_FOCUS))
       Eprintf("FocusEnable inhibit=%d\n", focus_inhibit);
 }
 
@@ -219,7 +222,7 @@ FocusEwinSetGrabs(EWin * ewin)
 	  {
 	     GrabButtonSet(AnyButton, AnyModifier, EwinGetContainerWin(ewin),
 			   ButtonPressMask, ECSR_PGRAB, 1);
-	     if (EventDebug(EDBUG_TYPE_GRABS))
+	     if (EDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx set %s\n",
 			EwinGetClientXwin(ewin), EwinGetName(ewin));
 	     ewin->state.click_grab_isset = 1;
@@ -231,7 +234,7 @@ FocusEwinSetGrabs(EWin * ewin)
 	  {
 	     GrabButtonRelease(AnyButton, AnyModifier,
 			       EwinGetContainerWin(ewin));
-	     if (EventDebug(EDBUG_TYPE_GRABS))
+	     if (EDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx unset %s\n",
 			EwinGetClientXwin(ewin), EwinGetName(ewin));
 	     ewin->state.click_grab_isset = 0;
@@ -288,7 +291,7 @@ doFocusToEwin(EWin * ewin, int why)
    if (focus_inhibit)
       return;
 
-   if (EventDebug(EDBUG_TYPE_FOCUS))
+   if (EDebug(EDBUG_TYPE_FOCUS))
       Eprintf("doFocusToEWin %#lx %s why=%d\n",
 	      (ewin) ? EwinGetClientXwin(ewin) : 0,
 	      (ewin) ? EwinGetName(ewin) : "None", why);
@@ -451,7 +454,7 @@ doFocusToEwin(EWin * ewin, int why)
 void
 FocusToEWin(EWin * ewin, int why)
 {
-   if (EventDebug(EDBUG_TYPE_FOCUS))
+   if (EDebug(EDBUG_TYPE_FOCUS))
       Eprintf("FocusToEWin(%d) %#lx %s why=%d\n", focus_inhibit,
 	      (ewin) ? EwinGetClientXwin(ewin) : 0,
 	      (ewin) ? EwinGetName(ewin) : "None", why);
@@ -616,7 +619,7 @@ FocusHandleClick(EWin * ewin, Win win)
       FocusToEWin(ewin, FOCUS_CLICK);
 
    /* Allow click to pass thorugh */
-   if (EventDebug(EDBUG_TYPE_GRABS))
+   if (EDebug(EDBUG_TYPE_GRABS))
       Eprintf("FocusHandleClick %#lx %#lx\n", WinGetXwin(win),
 	      EwinGetContainerXwin(ewin));
    if (win == EwinGetContainerWin(ewin))

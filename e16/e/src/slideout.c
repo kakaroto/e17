@@ -25,11 +25,13 @@
 #include "aclass.h"
 #include "borders.h"
 #include "buttons.h"
+#include "cursors.h"
 #include "desktops.h"
 #include "e16-ecore_list.h"
 #include "emodule.h"
 #include "eobj.h"
 #include "ewins.h"
+#include "grabs.h"
 #include "xwin.h"
 
 #define SLIDEOUT_EVENT_MASK \

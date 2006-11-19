@@ -360,7 +360,7 @@ ICCCM_Cmap(EWin * ewin)
 void
 ICCCM_Focus(const EWin * ewin)
 {
-   if (EventDebug(EDBUG_TYPE_FOCUS))
+   if (EDebug(EDBUG_TYPE_FOCUS))
      {
 	if (ewin)
 	   Eprintf("ICCCM_Focus T=%#lx %#lx %s\n", Mode.events.time,
@@ -524,7 +524,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    ewin->props.no_resize_h = (ewin->icccm.width.min == ewin->icccm.width.max);
    ewin->props.no_resize_v = (ewin->icccm.height.min == ewin->icccm.height.max);
 
-   if (EventDebug(EDBUG_TYPE_SNAPS))
+   if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get icccm %#lx: %4d+%4d %4dx%4d: %s\n",
 	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
@@ -819,7 +819,7 @@ EwinSyncRequestWait(EWin * ewin)
 
    t = GetTime();
    XSyncAwait(disp, xswc, 2);
-   if (EventDebug(EDBUG_TYPE_SYNC))
+   if (EDebug(EDBUG_TYPE_SYNC))
       Eprintf("Sync t=%#lx c=%llx: Delay=%8.6lf us\n",
 	      xswc[0].trigger.counter, ewin->ewmh.sync_request_count,
 	      GetTime() - t);

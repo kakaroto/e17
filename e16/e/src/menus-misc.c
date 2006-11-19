@@ -31,6 +31,7 @@
 #include "iclass.h"
 #include "menus.h"
 #include "parse.h"
+#include "progress.h"
 #include <errno.h>
 #include <sys/stat.h>
 

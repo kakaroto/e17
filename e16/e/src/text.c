@@ -586,7 +586,7 @@ _xfs_Load(TextState * ts, int fallback)
    if (!font)
       return -1;
 
-   if (EventDebug(EDBUG_TYPE_FONTS))
+   if (EDebug(EDBUG_TYPE_FONTS))
      {
 	Eprintf("- XBaseFontNameListOfFontSet %s\n",
 		XBaseFontNameListOfFontSet(font));
@@ -855,7 +855,7 @@ TextStateLoadFont(TextState * ts)
  done:
    if (!ts->ops)
       Eprintf("*** Unable to load font \"%s\"\n", ts->fontname);
-   else if (EventDebug(EDBUG_TYPE_FONTS))
+   else if (EDebug(EDBUG_TYPE_FONTS))
       Eprintf("TextStateLoadFont %s: type=%d\n", ts->fontname, ts->type);
    return;
 }

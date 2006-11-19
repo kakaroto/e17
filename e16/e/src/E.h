@@ -28,6 +28,7 @@
 #include "config.h"
 
 #include "alert.h"
+#include "edebug.h"
 #include "lang.h"
 #include "util.h"
 
@@ -547,30 +548,14 @@ EMode;
  * Function prototypes
  */
 
-/* actions.c */
-int                 ActionsSuspend(void);
-int                 ActionsResume(void);
-void                ActionsHandleMotion(void);
-int                 ActionsEnd(EWin * ewin);
+/* about.c */
 void                About(void);
 
+/* actions.c */
 #define EXEC_SET_LANG       0x01
 int                 execApplication(const char *params, int flags);
 void                Espawn(int argc, char **argv);
 void                EspawnCmd(const char *cmd);
-
-/* arrange.c */
-#define ARRANGE_VERBATIM    0
-#define ARRANGE_BY_SIZE     1
-#define ARRANGE_BY_POSITION 2
-
-void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx,
-			     int *new_dy);
-void                ArrangeEwin(EWin * ewin);
-void                ArrangeEwinCentered(EWin * ewin);
-void                ArrangeEwinXY(EWin * ewin, int *px, int *py);
-void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
-void                ArrangeEwins(const char *params);
 
 /* comms.c */
 void                CommsInit(void);
@@ -595,38 +580,11 @@ int                 ConfigFileRead(FILE * fs);
 int                 ThemeConfigLoad(void);
 void                RecoverUserConfig(void);
 
-/* coords.c */
-void                CoordsShow(EWin * ewin);
-void                CoordsHide(void);
-
-/* cursors.c */
-#define ECSR_NONE           0
-#define ECSR_ROOT           1
-#define ECSR_GRAB           2
-#define ECSR_PGRAB          3
-#define ECSR_ACT_MOVE       4
-#define ECSR_ACT_RESIZE     5
-#define ECSR_COUNT          6
-
-ECursor            *ECursorFind(const char *name);
-void                ECursorApply(ECursor * ec, Win win);
-void                ECursorIncRefcount(ECursor * ec);
-void                ECursorDecRefcount(ECursor * ec);
-Cursor              ECsrGet(int which);
-void                ECsrApply(int which, Window win);
-
 /* dialog.c */
 void                DialogOK(const char *title, const char *fmt, ...);
 void                DialogOKstr(const char *title, const char *txt);
 void                DialogAlert(const char *fmt, ...);
 void                DialogAlertOK(const char *fmt, ...);
-
-/* dock.c */
-void                DockIt(EWin * ewin);
-
-/* draw.c */
-void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
-				  int h, char firstlast);
 
 /* econfig.c */
 void                ConfigurationLoad(void);
@@ -639,99 +597,16 @@ void                EdgeCheckMotion(int x, int y);
 void                EdgeWindowsShow(void);
 void                EdgeWindowsHide(void);
 
-/* events.c */
-/* Re-mapped X-events */
-#define EX_EVENT_CREATE_GONE             64
-#define EX_EVENT_UNMAP_GONE              65
-#define EX_EVENT_MAP_GONE                66
-#define EX_EVENT_MAPREQUEST_GONE         67
-#define EX_EVENT_REPARENT_GONE           68
-
-#define EX_EVENT_SHAPE_NOTIFY            72
-#define EX_EVENT_SCREEN_CHANGE_NOTIFY    73
-#define EX_EVENT_DAMAGE_NOTIFY           74
-
-#define ENABLE_DEBUG_EVENTS 1
-#if ENABLE_DEBUG_EVENTS
-#define EDBUG_TYPE_EWINS        128
-#define EDBUG_TYPE_FOCUS        129
-#define EDBUG_TYPE_COMPRESSION  130
-#define EDBUG_TYPE_STACKING     131
-#define EDBUG_TYPE_RAISELOWER   132
-#define EDBUG_TYPE_MOVERESIZE   133
-#define EDBUG_TYPE_SESSION      134
-#define EDBUG_TYPE_SNAPS        135
-#define EDBUG_TYPE_DESKS        136
-#define EDBUG_TYPE_GRABS        137
-#define EDBUG_TYPE_DISPATCH     138
-#define EDBUG_TYPE_MODULES      139
-#define EDBUG_TYPE_CONFIG       140
-#define EDBUG_TYPE_IPC          141
-#define EDBUG_TYPE_EVENTS       142
-#define EDBUG_TYPE_ICONBOX      143
-#define EDBUG_TYPE_VERBOSE      144
-#define EDBUG_TYPE_SYNC         145
-#define EDBUG_TYPE_PAGER        146
-#define EDBUG_TYPE_SELECTION    147
-#define EDBUG_TYPE_FONTS        148
-
-int                 EventDebug(unsigned int type);
-void                EventDebugSet(unsigned int type, int value);
-#else
-#define             EventDebug(type) 0
-#define             EventDebugSet(type, value)
-#endif
-void                EventsInit(void);
-void                EventsMain(void);
-void                EventDebugInit(const char *s);
-void                EventShow(const XEvent * ev);
-
 /* extinitwin.c */
 Window              ExtInitWinCreate(void);
 void                ExtInitWinSet(Window win);
 Window              ExtInitWinGet(void);
 void                ExtInitWinKill(void);
 
-/* focus.c */
-#define FOCUS_NOP         0
-#define FOCUS_INIT        1
-#define FOCUS_SET         2
-#define FOCUS_NONE        3
-#define FOCUS_ENTER       4
-#define FOCUS_LEAVE       5
-#define FOCUS_EWIN_NEW    6
-#define FOCUS_EWIN_UNMAP  7
-#define FOCUS_DESK_ENTER  8
-#define FOCUS_DESK_LEAVE  9
-#define FOCUS_NEXT       10
-#define FOCUS_PREV       11
-#define FOCUS_CLICK      12
-
-void                FocusEnable(int on);
-void                FocusToEWin(EWin * ewin, int why);
-void                FocusHandleEnter(EWin * ewin, XEvent * ev);
-void                FocusHandleLeave(EWin * ewin, XEvent * ev);
-void                FocusHandleChange(EWin * ewin, XEvent * ev);
-void                FocusHandleClick(EWin * ewin, Win win);
-void                FocusNewDeskBegin(void);
-void                FocusNewDesk(void);
-void                FocusGrabsUpdate(void);
-
 /* fonts.c */
 int                 FontConfigLoad(FILE * fs);
 void                FontConfigUnload(void);
 const char         *FontLookup(const char *name);
-
-/* grabs.c */
-int                 GrabKeyboardSet(Win win);
-int                 GrabKeyboardRelease(void);
-int                 GrabPointerSet(Win win, unsigned int csr, int confine);
-void                GrabPointerRelease(void);
-void                GrabButtonSet(unsigned int button, unsigned int modifiers,
-				  Win win, unsigned int event_mask,
-				  unsigned int csr, int confine);
-void                GrabButtonRelease(unsigned int button,
-				      unsigned int modifiers, Win win);
 
 /* handlers.c */
 void                SignalsSetup(void);
@@ -764,26 +639,6 @@ int                 ETimedLoopNext(void);
 /* mod-misc.c */
 void                autosave(void);
 
-/* moveresize.c */
-int                 ActionMoveStart(EWin * ewin, int grab, char constrained,
-				    int nogroup);
-int                 ActionMoveEnd(EWin * ewin);
-int                 ActionMoveSuspend(void);
-int                 ActionMoveResume(void);
-void                ActionMoveHandleMotion(void);
-int                 ActionResizeStart(EWin * ewin, int grab, int hv);
-int                 ActionResizeEnd(EWin * ewin);
-void                ActionResizeHandleMotion(void);
-
-/* progress.c */
-typedef struct _progressbar Progressbar;
-
-Progressbar        *ProgressbarCreate(const char *name, int width, int height);
-void                ProgressbarDestroy(Progressbar * p);
-void                ProgressbarSet(Progressbar * p, int progress);
-void                ProgressbarShow(Progressbar * p);
-void                ProgressbarHide(Progressbar * p);
-
 /* regex.c */
 int                 matchregexp(const char *rx, const char *s);
 
@@ -804,15 +659,6 @@ void                StartupWindowsOpen(void);
 /* theme.c */
 void                ThemePathFind(void);
 char              **ThemesList(int *num);
-
-/* warp.c */
-void                WarpFocus(int delta);
-
-/* windowmatch.c */
-int                 WindowMatchConfigLoad(FILE * fs);
-Border             *WindowMatchEwinBorder(const EWin * ewin);
-const char         *WindowMatchEwinIcon(const EWin * ewin);
-void                WindowMatchEwinOps(EWin * ewin);
 
 /*
  * Global vars

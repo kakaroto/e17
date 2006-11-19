@@ -1174,7 +1174,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 
    Esnprintf(buf, sizeof(buf), "%s.snapshots", EGetSavePrefix());
 
-   if (EventDebug(EDBUG_TYPE_SNAPS))
+   if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Real_SaveSnapInfo: %s\n", buf);
    E_mv(s, buf);
    if (!isfile(buf))
@@ -1515,7 +1515,7 @@ SnapshotEwinApply(EWin * ewin)
       EoSetShadow(ewin, sn->shadow);
 #endif
 
-   if (EventDebug(EDBUG_TYPE_SNAPS))
+   if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get snap  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
 	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
