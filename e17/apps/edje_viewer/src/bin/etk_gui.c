@@ -4,9 +4,9 @@
 
 #include "edje_viewer.h"
 
-static Etk_Widget *_gui_menubar_item_new(Gui *gui, const char *label, 
+static Etk_Widget *_gui_menubar_item_new(Gui *gui, const char *label,
 	Etk_Menu_Shell *menu_shell);
-static Etk_Widget *_gui_menu_stock_item_new(Gui *gui, const char *label, 
+static Etk_Widget *_gui_menu_stock_item_new(Gui *gui, const char *label,
 	Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell);
 static Etk_Widget *_gui_menu_item_new(Gui *gui, const char *label,
       Etk_Menu_Shell *menu_shell);
@@ -55,7 +55,7 @@ void main_window_show(char *file)
    etk_container_add(ETK_CONTAINER(gui->win), vbox);
 
    menubar = etk_menu_bar_new();
-   etk_box_append(ETK_BOX(vbox), menubar, 
+   etk_box_append(ETK_BOX(vbox), menubar,
 	   ETK_BOX_START, ETK_BOX_NONE, 0);
 
    menuitem = _gui_menubar_item_new(gui, _("File"), ETK_MENU_SHELL(menubar));
@@ -74,7 +74,7 @@ void main_window_show(char *file)
    menu = etk_menu_new();
    etk_menu_item_submenu_set(ETK_MENU_ITEM(menuitem), ETK_MENU(menu));
    count = edje_viewer_config_count_get();
-   for (i = 0; i < count; i++) 
+   for (i = 0; i < count; i++)
      {
 	recent = edje_viewer_config_recent_get(i+1);
 	_gui_menu_stock_item_new(gui, recent, ETK_STOCK_X_OFFICE_DOCUMENT,
@@ -157,7 +157,7 @@ void main_window_show(char *file)
    send_button = etk_button_new_with_label("Send");
    etk_button_alignment_set(ETK_BUTTON(send_button), 1.0, 0.5);
    etk_box_append(ETK_BOX(hbox), send_button, ETK_BOX_END, ETK_BOX_NONE, 0);
-   etk_signal_connect("clicked", ETK_OBJECT(send_button), 
+   etk_signal_connect("clicked", ETK_OBJECT(send_button),
 	   ETK_CALLBACK(_gui_send_clicked_cb), gui);
 
    gui->status = etk_statusbar_new();
@@ -169,20 +169,23 @@ void main_window_show(char *file)
    check = edje_viewer_config_open_last_get();
    if (file) list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
 	 ETK_CANVAS(gui->canvas));
-   else if (check) 
+   else if (check)
      {
 	file = edje_viewer_config_last_get();
-	list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
-	      ETK_CANVAS(gui->canvas));
-	etk_window_title_set(ETK_WINDOW(gui->win), file);
+	if (file)
+	  {
+	     list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+		   ETK_CANVAS(gui->canvas));
+	     etk_window_title_set(ETK_WINDOW(gui->win), file);
+	  }
      }
-   etk_signal_connect("delete_event", ETK_OBJECT(gui->win), 
+   etk_signal_connect("delete_event", ETK_OBJECT(gui->win),
 	   ETK_CALLBACK(_gui_main_window_deleted_cb), NULL);
    etk_signal_connect("cell_value_changed", ETK_OBJECT(col2),
 	 ETK_CALLBACK(_gui_tree_checkbox_toggled_cb), gui);
 }
 
-static Etk_Widget *_gui_menubar_item_new (Gui *gui, const char *label, 
+static Etk_Widget *_gui_menubar_item_new (Gui *gui, const char *label,
 	Etk_Menu_Shell *menu_shell)
 {
    Etk_Widget *menu_item = NULL;
@@ -201,7 +204,7 @@ static Etk_Widget *_gui_menubar_item_new (Gui *gui, const char *label,
    return menu_item;
 }
 
-static Etk_Widget *_gui_menu_stock_item_new(Gui *gui, const char *label, 
+static Etk_Widget *_gui_menu_stock_item_new(Gui *gui, const char *label,
 	Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell)
 {
    Etk_Widget *menu_item;
@@ -317,7 +320,7 @@ static void _gui_sort_parts_clicked_cb(Etk_Object *obj, void *data)
    edje_viewer_config_sort_parts_set(check);
 }
 
-static Etk_Bool _gui_main_window_deleted_cb(void *data) 
+static Etk_Bool _gui_main_window_deleted_cb(void *data)
 {
    etk_main_quit();
    return 1;
@@ -350,13 +353,13 @@ static void _gui_open_edje_file_cb(Gui *gui)
    etk_dialog_pack_in_main_area(ETK_DIALOG(gui->fm_dialog), gui->fm_chooser,
 	   ETK_TRUE, ETK_TRUE, 0, ETK_FALSE);
 
-   button = etk_dialog_button_add_from_stock(ETK_DIALOG(gui->fm_dialog), 
+   button = etk_dialog_button_add_from_stock(ETK_DIALOG(gui->fm_dialog),
 	   ETK_STOCK_DIALOG_OK, 1);
-   etk_signal_connect("clicked", ETK_OBJECT(button), 
+   etk_signal_connect("clicked", ETK_OBJECT(button),
 	   ETK_CALLBACK(_gui_fm_ok_clicked_cb), gui);
-   button = etk_dialog_button_add_from_stock(ETK_DIALOG(gui->fm_dialog), 
+   button = etk_dialog_button_add_from_stock(ETK_DIALOG(gui->fm_dialog),
 	   ETK_STOCK_DIALOG_CLOSE, 2);
-   etk_signal_connect("clicked", ETK_OBJECT(button), 
+   etk_signal_connect("clicked", ETK_OBJECT(button),
 	   ETK_CALLBACK(_gui_fm_cancel_clicked_cb), gui);
 
    etk_widget_show_all(gui->fm_dialog);
@@ -427,7 +430,7 @@ static void _gui_send_clicked_cb(Etk_Object *obj, void *data)
   for(l = visible_elements_get(); l; l = l->next) {
     Demo_Edje *de;
 
-    de = l->data; 
+    de = l->data;
     if (!de) continue;
     edje_object_signal_emit(de->edje, sig, src);
   }
