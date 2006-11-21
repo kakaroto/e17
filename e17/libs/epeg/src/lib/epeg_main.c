@@ -205,6 +205,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
      }
    
    if (!im->pixels) return NULL;
+   if ((im->out.w < 1) || (im->out.h < 1)) return NULL;
    
    bpp = im->in.jinfo.output_components;
    iw = im->out.w;
@@ -450,7 +451,8 @@ epeg_pixels_get_as_RGB8(Epeg_Image *im, int x, int y,  int w, int h)
      }
 	
    if (!im->pixels) return NULL;
-		
+   if ((im->out.w < 1) || (im->out.h < 1)) return NULL;
+   
    bpp = im->in.jinfo.output_components;
    iw = im->out.w;
    ih = im->out.h;
@@ -821,8 +823,8 @@ _epeg_open_header(Epeg_Image *im)
    jpeg_read_header(&(im->in.jinfo), TRUE);
    im->in.w = im->in.jinfo.image_width;
    im->in.h = im->in.jinfo.image_height;
-   if (im->in.w <= 1) goto error;
-   if (im->in.h <= 1) goto error;
+   if (im->in.w < 1) goto error;
+   if (im->in.h < 1) goto error;
    
    im->out.w = im->in.w;
    im->out.h = im->in.h;
@@ -889,6 +891,7 @@ _epeg_decode(Epeg_Image *im)
    JDIMENSION old_output_scanline = 1;
    
    if (im->pixels) return 1;
+   if ((im->out.w < 1) || (im->out.h < 1)) return 1;
    
    scalew = im->in.w / im->out.w;
    scaleh = im->in.h / im->out.h;
@@ -942,7 +945,7 @@ _epeg_decode(Epeg_Image *im)
 #endif
 
    if (setjmp(im->jerr.setjmp_buffer))
-	return 2;
+     return 2;
 
    jpeg_calc_output_dimensions(&(im->in.jinfo));
    
@@ -962,18 +965,18 @@ _epeg_decode(Epeg_Image *im)
    for (y = 0; y < im->in.jinfo.output_height; y++)
      im->lines[y] = im->pixels + (y * im->in.jinfo.output_components * im->in.jinfo.output_width);
    
-   while (im->in.jinfo.output_scanline < im->in.jinfo.output_height) {
-     if (old_output_scanline == im->in.jinfo.output_scanline) {
-       jpeg_abort_decompress(&(im->in.jinfo));
-       return 1;
+   while (im->in.jinfo.output_scanline < im->in.jinfo.output_height)
+     {
+	if (old_output_scanline == im->in.jinfo.output_scanline)
+	  {
+	     jpeg_abort_decompress(&(im->in.jinfo));
+	     return 1;
+	  }
+	old_output_scanline = im->in.jinfo.output_scanline;
+	jpeg_read_scanlines(&(im->in.jinfo), 
+			    &(im->lines[im->in.jinfo.output_scanline]), 
+			    im->in.jinfo.rec_outbuf_height);
      }
-
-     old_output_scanline = im->in.jinfo.output_scanline;
-
-     jpeg_read_scanlines(&(im->in.jinfo), 
-			 &(im->lines[im->in.jinfo.output_scanline]), 
-			 im->in.jinfo.rec_outbuf_height);
-   }
    
    jpeg_finish_decompress(&(im->in.jinfo));
    
@@ -989,6 +992,8 @@ _epeg_scale(Epeg_Image *im)
    if ((im->in.w == im->out.w) && (im->in.h == im->out.h)) return 0;
    if (im->scaled) return 0;
    
+   if ((im->out.w < 1) || (im->out.h < 1)) return 0;
+   
    im->scaled = 1;
    w = im->out.w;
    h = im->out.h;
@@ -1000,10 +1005,8 @@ _epeg_scale(Epeg_Image *im)
 	for (x = 0; x < im->out.w; x++)
 	  {
 	     src = row + (((x * im->in.jinfo.output_width) / w) * im->in.jinfo.output_components);
-	     
 	     for (i = 0; i < im->in.jinfo.output_components; i++)
 	       dst[i] = src[i];
-	     
 	     dst += im->in.jinfo.output_components;
 	  }
      }
@@ -1123,6 +1126,7 @@ _epeg_encode(Epeg_Image *im)
    struct epeg_destination_mgr *dst_mgr = NULL;
    int ok = 0;
 
+   if ((im->out.w < 1) || (im->out.h < 1)) return 1;
    if (im->out.f) return 1;
    
    if (im->out.file)
@@ -1167,6 +1171,12 @@ _epeg_encode(Epeg_Image *im)
 	dst_mgr->dst_mgr.term_destination = _jpeg_term_destination;
 	dst_mgr->im = im;
 	dst_mgr->buf = malloc(65536);
+	if (!dst_mgr->buf)
+	  {
+	     ok = 1;
+	     im->error = 1;
+	     goto done;
+	  }
    	im->out.jinfo.dest = (struct jpeg_destination_mgr *)dst_mgr;
      }
    im->out.jinfo.image_width      = im->out.w;
@@ -1216,15 +1226,15 @@ _epeg_encode(Epeg_Image *im)
 
    done:
    if ((im->in.f) || (im->in.mem.data != NULL)) jpeg_destroy_decompress(&(im->in.jinfo));
-   if ((im->in.f) && (im->in.file))         fclose(im->in.f);
+   if ((im->in.f) && (im->in.file)) fclose(im->in.f);
    if (dst_mgr)
      {
-	free(dst_mgr->buf);
+	if (dst_mgr->buf) free(dst_mgr->buf);
 	free(dst_mgr);
 	im->out.jinfo.dest = NULL;
      }
    jpeg_destroy_compress(&(im->out.jinfo));
-   if ((im->out.f) && (im->out.file))       fclose(im->out.f); 
+   if ((im->out.f) && (im->out.file)) fclose(im->out.f); 
    im->in.f = NULL;
    im->out.f = NULL;
    
@@ -1261,7 +1271,6 @@ _jpeg_fill_input_buffer(j_decompress_ptr cinfo)
    /* Insert a fake EOI marker */
    cinfo->src->next_input_byte = fake_EOI;
    cinfo->src->bytes_in_buffer = sizeof(fake_EOI);
-   
    return TRUE;
 }
 
@@ -1303,12 +1312,15 @@ _jpeg_empty_output_buffer(j_compress_ptr cinfo)
    dst_mgr = (struct epeg_destination_mgr *)cinfo->dest;
    psize = *(dst_mgr->im->out.mem.size);
    *(dst_mgr->im->out.mem.size) += 65536;
-   *(dst_mgr->im->out.mem.data) = realloc(*(dst_mgr->im->out.mem.data),
-					  *(dst_mgr->im->out.mem.size));
-   p = *(dst_mgr->im->out.mem.data);
-   memcpy(p + psize, dst_mgr->buf, 65536);
-   dst_mgr->dst_mgr.free_in_buffer = 65536;
-   dst_mgr->dst_mgr.next_output_byte = (JOCTET *)dst_mgr->buf;
+   p = realloc(*(dst_mgr->im->out.mem.data), *(dst_mgr->im->out.mem.size));
+   if (p)
+     {
+	memcpy(p + psize, dst_mgr->buf, 65536);
+	dst_mgr->dst_mgr.free_in_buffer = 65536;
+	dst_mgr->dst_mgr.next_output_byte = (JOCTET *)dst_mgr->buf;
+     }
+   else
+     return FALSE;
    return TRUE;
 }
 
@@ -1322,10 +1334,12 @@ _jpeg_term_destination(j_compress_ptr cinfo)
    dst_mgr = (struct epeg_destination_mgr *)cinfo->dest;
    psize = *(dst_mgr->im->out.mem.size);
    *(dst_mgr->im->out.mem.size) += 65536 - dst_mgr->dst_mgr.free_in_buffer;
-   *(dst_mgr->im->out.mem.data) = realloc(*(dst_mgr->im->out.mem.data), 
-					  *(dst_mgr->im->out.mem.size));
-   p = *(dst_mgr->im->out.mem.data);
-   memcpy(p + psize, dst_mgr->buf, 65536 - dst_mgr->dst_mgr.free_in_buffer);
+   p = realloc(*(dst_mgr->im->out.mem.data), *(dst_mgr->im->out.mem.size));
+   if (p)
+     {
+	*(dst_mgr->im->out.mem.data) = p;
+	memcpy(p + psize, dst_mgr->buf, 65536 - dst_mgr->dst_mgr.free_in_buffer);
+     }
 }
 
 /* be noisy - not */
