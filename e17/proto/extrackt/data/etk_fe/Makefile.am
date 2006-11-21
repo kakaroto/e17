@@ -1,5 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST = etk_fe.edc extrackt.glade
+EXTRA_DIST = etk_fe.edc extrackt.glade $(wildcard images/*.png)
 
 EDJE_CC = edje_cc
 EDJE_FLAGS = \
