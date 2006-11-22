@@ -3965,6 +3965,9 @@ ewl_text_fmt_apply(Ewl_Text *t, unsigned int context_mask,
 		fmt = ecore_dlist_current(t->formatting.nodes);
 	}
 
+	/* make sure we're still pointing at a node */
+	if (!fmt) fmt = ecore_dlist_goto_last(t->formatting.nodes);
+
 	/* put the cursor at the end of the formatted area */
 	ewl_text_cursor_position_set(t, char_idx + char_len);
 
