@@ -2584,16 +2584,37 @@ ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
 
 	/*
 	 * Select the closest search point, first node, last node or last
-	 * accessed node.
+	 * accessed node. (XXX Just does current node at the moment)
 	 */
-	ecore_dlist_goto_first(t->formatting.nodes);
-	while ((fmt = ecore_dlist_next(t->formatting.nodes)))
+	if (t->formatting.current.char_idx < char_idx)
 	{
-		if ((char_count + fmt->char_len) > char_idx)
-			break;
+		char_count = t->formatting.current.char_idx;
+		bidx = t->formatting.current.byte_idx;
 
-		char_count += fmt->char_len;
-		bidx += fmt->byte_len;
+		/* walk forward until we cover the given position */
+		fmt = ecore_dlist_current(t->formatting.nodes);
+		while ((fmt->char_len + char_count) < char_idx)
+		{
+			char_count += fmt->char_len;
+			bidx += fmt->byte_len;
+
+			ecore_dlist_next(t->formatting.nodes);
+			fmt = ecore_dlist_current(t->formatting.nodes);
+			if (!fmt) break;
+		}
+	}
+	else
+	{
+		/* walk back until we're less then the given position */
+		while (char_count > char_idx)
+		{
+			ecore_dlist_previous(t->formatting.nodes);
+			fmt = ecore_dlist_current(t->formatting.nodes);
+			if (!fmt) break;
+
+			char_count -= fmt->char_len;
+			bidx -= fmt->byte_len;
+		}
 	}
 
 	/* we still need to count within this node */
@@ -2653,14 +2674,36 @@ ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx, unsigned int byte_len,
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	current = ecore_dlist_current(t->formatting.nodes);
-	ecore_dlist_goto_first(t->formatting.nodes);
-	while ((fmt = ecore_dlist_next(t->formatting.nodes)))
-	{
-		if ((byte_count + fmt->byte_len) > byte_idx)
-			break;
 
-		byte_count += fmt->byte_len;
-		cidx += fmt->char_len;
+	if (t->formatting.current.byte_idx < byte_idx)
+	{
+		byte_count = t->formatting.current.byte_idx;
+		cidx = t->formatting.current.char_idx;
+
+		/* walk forward until we cover the given position */
+		fmt = ecore_dlist_current(t->formatting.nodes);
+		while ((fmt->byte_len + byte_count) < byte_idx)
+		{
+			byte_count += fmt->byte_len;
+			cidx += fmt->char_len;
+
+			ecore_dlist_next(t->formatting.nodes);
+			fmt = ecore_dlist_current(t->formatting.nodes);
+			if (!fmt) break;
+		}
+	}
+	else
+	{
+		/* walk back until we're less then the given position */
+		while (byte_count > byte_idx)
+		{
+			ecore_dlist_previous(t->formatting.nodes);
+			fmt = ecore_dlist_current(t->formatting.nodes);
+			if (!fmt) break;
+
+			byte_count -= fmt->byte_len;
+			cidx -= fmt->char_len;
+		}
 	}
 
 	/* we still need to count within this node */
@@ -5173,6 +5216,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
 
+#if 0
 static unsigned int
 ewl_text_context_hash_key(void *ctx)
 {
@@ -5222,6 +5266,7 @@ ewl_text_context_hash_key(void *ctx)
 
 	DRETURN_INT(key, DLEVEL_STABLE);
 }
+#endif
 
 static char *
 ewl_text_context_name_get(Ewl_Text_Context *tx, unsigned int context_mask,
