@@ -405,6 +405,7 @@ ewl_text_clear(Ewl_Text *t)
 
 	t->formatting.current.tx = ewl_text_context_default_create(t);
 	t->formatting.current.char_idx = 0;
+	t->formatting.current.byte_idx = 0;
 
 	/* make sure this list is empty */
 	while ((fmt = ecore_dlist_remove_first(t->formatting.nodes)))
@@ -731,6 +732,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int char_len)
 			 * to the correct index */
 			fmt = ecore_dlist_next(t->formatting.nodes);
 			t->formatting.current.char_idx += left;
+			t->formatting.current.byte_idx += blen;
 		}
 		else
 		{
@@ -745,11 +747,16 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int char_len)
 	if (!fmt)
 	{
 		fmt = ecore_dlist_goto_last(t->formatting.nodes);
-		if (fmt)
+		if (fmt) {
 			t->formatting.current.char_idx = 
 				t->length.chars - fmt->char_len;
-		else
+			t->formatting.current.char_idx = 
+				t->length.bytes - fmt->byte_len;
+		}
+		else {
 			t->formatting.current.char_idx = 0;
+			t->formatting.current.byte_idx = 0;
+		}
 	}
 
 	if (ecore_dlist_nodes(t->formatting.nodes) == 0)
@@ -929,6 +936,7 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int char_pos)
 	if (char_pos == 0)
 	{
 		t->formatting.current.char_idx = 0;
+		t->formatting.current.byte_idx = 0;
 		ecore_dlist_goto_first(t->formatting.nodes);
 
 		fmt = ecore_dlist_current(t->formatting.nodes);
@@ -941,6 +949,8 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int char_pos)
 		fmt = ecore_dlist_goto_last(t->formatting.nodes);
 		t->formatting.current.char_idx = 
 			t->length.chars - fmt->char_len;;
+		t->formatting.current.byte_idx = 
+			t->length.bytes - fmt->byte_len;;
 
 		fmt = ecore_dlist_current(t->formatting.nodes);
 		if (!fmt) DWARNING("Current format node is NULL.");
@@ -964,6 +974,7 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int char_pos)
 		while ((fmt->char_len + t->formatting.current.char_idx) < char_pos)
 		{
 			t->formatting.current.char_idx += fmt->char_len;
+			t->formatting.current.byte_idx += fmt->byte_len;
 
 			ecore_dlist_next(t->formatting.nodes);
 			fmt = ecore_dlist_current(t->formatting.nodes);
@@ -979,6 +990,7 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int char_pos)
 			if (!fmt) break;
 
 			t->formatting.current.char_idx -= fmt->char_len;
+			t->formatting.current.byte_idx -= fmt->byte_len;
 		}
 	}
 
@@ -2565,6 +2577,11 @@ ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 
 	current = ecore_dlist_current(t->formatting.nodes);
+
+	/*
+	 * Select the closest search point, first node, last node or last
+	 * accessed node.
+	 */
 	ecore_dlist_goto_first(t->formatting.nodes);
 	while ((fmt = ecore_dlist_next(t->formatting.nodes)))
 	{
@@ -3494,6 +3511,7 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	t->formatting.nodes = NULL;
 	t->formatting.current.tx = NULL;
 	t->formatting.current.char_idx = 0;
+	t->formatting.current.byte_idx = 0;
 
 	IF_FREE(t->text);
 
@@ -3812,6 +3830,7 @@ ewl_text_fmt_apply(Ewl_Text *t, unsigned int context_mask,
 			char_len -= fmt->char_len;
 			ecore_dlist_next(t->formatting.nodes);
 			t->formatting.current.char_idx += fmt->char_len;
+			t->formatting.current.byte_idx += fmt->byte_len;
 
 			FREE(new);
 		}
@@ -3835,6 +3854,7 @@ ewl_text_fmt_apply(Ewl_Text *t, unsigned int context_mask,
 
 			ecore_dlist_next(t->formatting.nodes);
 			t->formatting.current.char_idx += new->char_len;
+			t->formatting.current.byte_idx += new->byte_len;
 
 			char_idx += new->char_len;
 			char_len -= new->char_len;
@@ -3857,6 +3877,7 @@ ewl_text_fmt_apply(Ewl_Text *t, unsigned int context_mask,
 			ecore_dlist_next(t->formatting.nodes);
 
 			t->formatting.current.char_idx += new->char_len;
+			t->formatting.current.char_idx += new->byte_len;
 
 			fmt->tx = ewl_text_context_find(fmt->tx,
 						context_mask, change);
@@ -3872,6 +3893,7 @@ ewl_text_fmt_apply(Ewl_Text *t, unsigned int context_mask,
 
 				ecore_dlist_next(t->formatting.nodes);
 				t->formatting.current.char_idx += fmt->char_len;
+				t->formatting.current.byte_idx += fmt->byte_len;
 			}
 			/* we need to split the node */
 			else
@@ -3891,6 +3913,7 @@ ewl_text_fmt_apply(Ewl_Text *t, unsigned int context_mask,
 				ecore_dlist_insert(t->formatting.nodes, new);
 				ecore_dlist_next(t->formatting.nodes);
 				t->formatting.current.char_idx += new->char_len;
+				t->formatting.current.byte_idx += new->byte_len;
 
 				fmt->tx = tx;
 				ewl_text_context_acquire(fmt->tx);
@@ -5144,6 +5167,56 @@ ewl_text_context_default_create(Ewl_Text *t)
 	ewl_text_context_acquire(tx);
 
 	DRETURN_PTR(tx, DLEVEL_STABLE);
+}
+
+static unsigned int
+ewl_text_context_hash_key(void *ctx)
+{
+	unsigned int key;
+	Ewl_Text_Context *tx = ctx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	key = 0;
+	if (tx->font)
+		key ^= ecore_str_hash(tx->font);
+	if (tx->font_source)
+		key ^= ecore_str_hash(tx->font_source);
+	key ^= (tx->size << 13);
+	key ^= (tx->styles << 7);
+
+	key ^= ((tx->color.r | tx->color.g | tx->color.b | tx->color.a));
+
+	key ^= ((tx->style_colors.bg.r |
+				tx->style_colors.bg.g |
+				tx->style_colors.bg.b |
+				tx->style_colors.bg.a) << 1);
+	key ^= ((tx->style_colors.glow.r |
+				tx->style_colors.glow.g |
+				tx->style_colors.glow.b |
+				tx->style_colors.glow.a) >> 1);
+	key ^= ((tx->style_colors.outline.r |
+				tx->style_colors.outline.g |
+				tx->style_colors.outline.b |
+				tx->style_colors.outline.a) << 3);
+	key ^= ((tx->style_colors.shadow.r |
+				tx->style_colors.shadow.g |
+				tx->style_colors.shadow.b |
+				tx->style_colors.shadow.a) >> 3);
+	key ^= ((tx->style_colors.strikethrough.r |
+				tx->style_colors.strikethrough.g |
+				tx->style_colors.strikethrough.b |
+				tx->style_colors.strikethrough.a) << 5);
+	key ^= ((tx->style_colors.underline.r |
+				tx->style_colors.underline.g |
+				tx->style_colors.underline.b |
+				tx->style_colors.underline.a) >> 5);
+	key ^= ((tx->style_colors.double_underline.r |
+				tx->style_colors.double_underline.g |
+				tx->style_colors.double_underline.b |
+				tx->style_colors.double_underline.a) << 7);
+
+	DRETURN_INT(key, DLEVEL_STABLE);
 }
 
 static char *

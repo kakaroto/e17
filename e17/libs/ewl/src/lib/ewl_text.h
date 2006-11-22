@@ -87,6 +87,7 @@ struct Ewl_Text
 		{
 			Ewl_Text_Context *tx; 	/**< The current formatting context */
 			unsigned int char_idx; 	/**< The current char index */
+			unsigned int byte_idx; 	/**< The current byte index */
 		} current;			/**< Current text info */
 	} formatting;	  			/**< Holds the formatting information */
 
