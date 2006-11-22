@@ -90,10 +90,6 @@ static void ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx,
 						unsigned int *char_len);
 static char *ewl_text_text_next_char(const char *text, 
 						unsigned int *idx);
-static char *ewl_text_text_utf8_validate(const char *text, 
-					unsigned int *char_len,
-					unsigned int *byte_len);
-
 
 /**
  * @return Returns a new Ewl_Text widget on success, NULL on failure.
@@ -2771,62 +2767,6 @@ ewl_text_text_next_char(const char *text, unsigned int *idx)
 	DRETURN_PTR(text + len, DLEVEL_STABLE);
 }
 
-/*
- * This function valdiates a a given utf-string and return a copy
- * of it. Should the string contain illegal bytes, it will replace
- * them with a question mark. This function doesn't check if the 
- * correspondending unicode exists for the single character nor
- * if the font provides it.
- */
-static char *
-ewl_text_text_utf8_validate(const char *text, unsigned int *char_len,
-					unsigned int *byte_len)
-{
-	char *t, *new_t;
-	unsigned int idx;
-	unsigned int c_len;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("text", text, NULL);
-
-	new_t = t = strdup(text);
-	c_len = 0;
-
-	while (*t) 
-	{
-		if (ewl_text_char_is_legal_utf8(t)) 
-		{
-			/*
-			 * the current character is valid utf-character
-			 * so we can jump to the next character
-			 */
-			t = ewl_text_text_next_char(t, &idx);
-		}
-		else 
-		{
-			/*
-			 * oops, we found a illegal utf-character, or better
-			 * something else. Replace this byte and hope
-			 * the next one will be better :)
-			 */
-			*t = '?';
-			t++;
-
-			DWARNING("Found a non-UTF8 character.");
-		}
-		c_len++;
-	}
-
-	/*
-	 * Well this is just a by-product, so we can use it
-	 * without doing this loop again
-	 */
-	if (char_len) *char_len = c_len;
-	if (byte_len) *byte_len = t - new_t;
-
-	DRETURN_PTR(new_t, DLEVEL_STABLE);
-}
-
 static void
 ewl_text_display(Ewl_Text *t)
 {
@@ -3979,7 +3919,7 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt, unsigned int char_idx
 			unsigned int *char_len, unsigned int *byte_len)
 {
 	unsigned int new_byte_len, clen = 0, blen = 0, bidx = 0;
-	char *valid_txt;
+	char *tmp, *ptr;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -3988,7 +3928,16 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt, unsigned int char_idx
 	/* nothign to do if no text */
 	if (!txt) DRETURN(DLEVEL_STABLE);
 
-	valid_txt = ewl_text_text_utf8_validate(txt, &clen, &blen);
+	/* count the number of chars in the text */
+	tmp = (char *)txt;
+	while (*tmp) 
+	{
+		if (ewl_text_char_is_legal_utf8(tmp)) 
+			tmp = ewl_text_text_next_char(tmp, NULL);
+
+		clen++;
+	}
+	blen = tmp - txt;
 
 	new_byte_len = t->length.bytes + blen;
 	if ((new_byte_len + 1) >= t->total_size)
@@ -4010,9 +3959,30 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt, unsigned int char_idx
 		memmove(t->text + bidx + blen, t->text + bidx, 
 					t->length.bytes - bidx);
 
-	memcpy(t->text + bidx, valid_txt, blen);
-	FREE(valid_txt);
+	/* copy the text over, replace invalid UTF-8 chars */
+	tmp = (char *)txt;
+	ptr = t->text + bidx;
+	while (*tmp) 
+	{
+		if (ewl_text_char_is_legal_utf8(tmp)) 
+		{
+			char *s;
 
+			s = tmp;
+			tmp = ewl_text_text_next_char(tmp, NULL);
+			for ( ; s != tmp; s++, ptr++)
+				*ptr = *s;
+		}
+		else 
+		{
+			*ptr = '?';
+			tmp++;
+
+			DWARNING("Found a non-UTF8 character.");
+		}
+	}
+
+	/* update the text information */
 	t->length.chars += clen;
 	t->length.bytes += blen;
 	t->text[t->length.bytes] = '\0';
