@@ -747,13 +747,15 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int char_len)
 	if (!fmt)
 	{
 		fmt = ecore_dlist_goto_last(t->formatting.nodes);
-		if (fmt) {
+		if (fmt) 
+		{
 			t->formatting.current.char_idx = 
 				t->length.chars - fmt->char_len;
-			t->formatting.current.char_idx = 
+			t->formatting.current.byte_idx = 
 				t->length.bytes - fmt->byte_len;
 		}
-		else {
+		else 
+		{
 			t->formatting.current.char_idx = 0;
 			t->formatting.current.byte_idx = 0;
 		}
@@ -937,6 +939,7 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int char_pos)
 	{
 		t->formatting.current.char_idx = 0;
 		t->formatting.current.byte_idx = 0;
+
 		ecore_dlist_goto_first(t->formatting.nodes);
 
 		fmt = ecore_dlist_current(t->formatting.nodes);
@@ -947,6 +950,7 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int char_pos)
 	else if (char_pos >= t->length.chars)
 	{
 		fmt = ecore_dlist_goto_last(t->formatting.nodes);
+
 		t->formatting.current.char_idx = 
 			t->length.chars - fmt->char_len;;
 		t->formatting.current.byte_idx = 
@@ -3877,7 +3881,7 @@ ewl_text_fmt_apply(Ewl_Text *t, unsigned int context_mask,
 			ecore_dlist_next(t->formatting.nodes);
 
 			t->formatting.current.char_idx += new->char_len;
-			t->formatting.current.char_idx += new->byte_len;
+			t->formatting.current.byte_idx += new->byte_len;
 
 			fmt->tx = ewl_text_context_find(fmt->tx,
 						context_mask, change);
