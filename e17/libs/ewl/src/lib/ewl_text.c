@@ -2573,8 +2573,10 @@ static void
 ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
 				unsigned int *byte_idx, unsigned int *byte_len)
 {
-	Ewl_Text_Fmt *current, *fmt;
+	Ewl_Text_Fmt *current, *fmt = NULL;
 	unsigned int char_count = 0, bidx = 0;
+	int dir;
+	void *(*move)(Ecore_DList *list);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -2602,6 +2604,8 @@ ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
 			fmt = ecore_dlist_current(t->formatting.nodes);
 			if (!fmt) break;
 		}
+
+		dir = 1;
 	}
 	else
 	{
@@ -2615,6 +2619,8 @@ ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
 			char_count -= fmt->char_len;
 			bidx -= fmt->byte_len;
 		}
+
+		dir = -1;
 	}
 
 	/* we still need to count within this node */
@@ -2654,7 +2660,16 @@ ewl_text_char_to_byte(Ewl_Text *t, unsigned int char_idx, unsigned int char_len,
 
 	if (byte_idx) *byte_idx = bidx;
 
-	ecore_dlist_goto(t->formatting.nodes, current);
+	/* restore the original list position */
+	if (dir > 0) move = ecore_dlist_previous;
+	else move = ecore_dlist_next;
+
+	fmt = ecore_dlist_current(t->formatting.nodes);
+	while (fmt != current)
+	{
+		move(t->formatting.nodes);
+		fmt = ecore_dlist_current(t->formatting.nodes);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2666,8 +2681,10 @@ static void
 ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx, unsigned int byte_len, 
 			unsigned int *char_idx, unsigned int *char_len)
 {
-	Ewl_Text_Fmt *current, *fmt;
+	Ewl_Text_Fmt *current, *fmt = NULL;
 	unsigned int byte_count = 0, cidx = 0;
+	int dir;
+	void *(*move)(Ecore_DList *list);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -2691,10 +2708,16 @@ ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx, unsigned int byte_len,
 			fmt = ecore_dlist_current(t->formatting.nodes);
 			if (!fmt) break;
 		}
+
+		dir = 1;
+	
+		if (!fmt)
+			ecore_dlist_goto_last(t->formatting.nodes);
 	}
 	else
 	{
 		/* walk back until we're less then the given position */
+		fmt = ecore_dlist_current(t->formatting.nodes);
 		while (byte_count > byte_idx)
 		{
 			ecore_dlist_previous(t->formatting.nodes);
@@ -2704,6 +2727,11 @@ ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx, unsigned int byte_len,
 			byte_count -= fmt->byte_len;
 			cidx -= fmt->char_len;
 		}
+
+		dir = -1;
+
+		if (!fmt)
+			ecore_dlist_goto_first(t->formatting.nodes);
 	}
 
 	/* we still need to count within this node */
@@ -2742,7 +2770,16 @@ ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx, unsigned int byte_len,
 
 	if (char_idx) *char_idx = cidx;
 
-	ecore_dlist_goto(t->formatting.nodes, current);
+	/* restore the original list position */
+	if (dir > 0) move = ecore_dlist_previous;
+	else move = ecore_dlist_next;
+
+	fmt = ecore_dlist_current(t->formatting.nodes);
+	while (fmt != current)
+	{
+		move(t->formatting.nodes);
+		fmt = ecore_dlist_current(t->formatting.nodes);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
