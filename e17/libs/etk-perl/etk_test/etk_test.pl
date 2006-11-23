@@ -1,3 +1,4 @@
+#!/usr/bin/perl -w
 use strict;
 use POSIX;
 use Etk::Simple;
@@ -889,7 +890,7 @@ sub _iconbox_folder_set
     my $folder = shift;
     my $file = undef;
     
-    $folder = %ENV->{HOME} if($folder eq "");
+    $folder = $ENV{HOME} if($folder eq "");
     return if($folder eq "");      
     
     $iconbox->Clear();
