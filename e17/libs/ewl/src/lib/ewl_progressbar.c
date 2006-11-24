@@ -256,7 +256,7 @@ ewl_progressbar_child_handle(Ewl_Container *c,
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	r = EWL_RANGE(c);
-	value = r->value / (r->max_val - r->min_val);
+	value = r->step / (r->max_val - r->min_val);
 
 	if (value < 0.01)
 		value = 0.01;
