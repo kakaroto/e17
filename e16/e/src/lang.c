@@ -42,10 +42,12 @@
 #if HAVE_ICONV
 
 #include <iconv.h>
-static iconv_t      iconv_cd_int2utf8 = NULL;
-static iconv_t      iconv_cd_utf82int = NULL;
-static iconv_t      iconv_cd_int2loc = NULL;
-static iconv_t      iconv_cd_loc2int = NULL;
+#define BAD_CD ((iconv_t)-1)
+
+static iconv_t      iconv_cd_int2utf8 = BAD_CD;
+static iconv_t      iconv_cd_utf82int = BAD_CD;
+static iconv_t      iconv_cd_int2loc = BAD_CD;
+static iconv_t      iconv_cd_loc2int = BAD_CD;
 
 static char        *
 Eiconv(iconv_t icd, const char *txt, size_t len)
@@ -80,7 +82,7 @@ EstrLoc2Int(const char *str, int len)
       return NULL;
 
 #if HAVE_ICONV
-   if (iconv_cd_loc2int)
+   if (iconv_cd_loc2int != BAD_CD)
       return Eiconv(iconv_cd_loc2int, str, len);
 #endif
 
@@ -97,7 +99,7 @@ EstrUtf82Int(const char *str, int len)
       return NULL;
 
 #if HAVE_ICONV
-   if (iconv_cd_utf82int)
+   if (iconv_cd_utf82int != BAD_CD)
       return Eiconv(iconv_cd_utf82int, str, len);
 #endif
 
@@ -147,8 +149,8 @@ EstrInt2EncFree(const char *str, int want_utf8)
  * Stuff to do mb/utf8 <-> wc conversions.
  */
 #if HAVE_ICONV
-static iconv_t      iconv_cd_str2wcs = NULL;
-static iconv_t      iconv_cd_wcs2str = NULL;
+static iconv_t      iconv_cd_str2wcs = BAD_CD;
+static iconv_t      iconv_cd_wcs2str = BAD_CD;
 #endif
 
 int
@@ -165,7 +167,7 @@ EwcOpen(int utf8)
    iconv_cd_str2wcs = iconv_open("WCHAR_T", enc);
    iconv_cd_wcs2str = iconv_open(enc, "WCHAR_T");
 
-   if (iconv_cd_str2wcs && iconv_cd_wcs2str)
+   if (iconv_cd_str2wcs != BAD_CD && iconv_cd_wcs2str != BAD_CD)
       return 0;
 
    EwcClose();
@@ -182,12 +184,12 @@ void
 EwcClose(void)
 {
 #if HAVE_ICONV
-   if (iconv_cd_str2wcs)
+   if (iconv_cd_str2wcs != BAD_CD)
       iconv_close(iconv_cd_str2wcs);
-   iconv_cd_str2wcs = NULL;
-   if (iconv_cd_wcs2str)
+   iconv_cd_str2wcs = BAD_CD;
+   if (iconv_cd_wcs2str != BAD_CD)
       iconv_close(iconv_cd_wcs2str);
-   iconv_cd_wcs2str = NULL;
+   iconv_cd_wcs2str = BAD_CD;
 #endif
 }
 
@@ -199,20 +201,20 @@ EwcStrToWcs(const char *str, int len, wchar_t * wcs, int wcl)
    size_t              ni, no, rc;
    char                buf[4096];
 
+   pi = (char *)str;
+   ni = len;
+
    if (!wcs)
      {
-	ni = len;
 	no = 4096;
 	po = buf;
-	rc = iconv(iconv_cd_str2wcs, (char **)(&str), &ni, &po, &no);
+	rc = iconv(iconv_cd_str2wcs, &pi, &ni, &po, &no);
 	if (rc == (size_t) (-1) || no == 0)
 	   return -1;
 	wcl = (4096 - no) / sizeof(wchar_t);
 	return wcl;
      }
 
-   pi = (char *)str;
-   ni = len;
    po = (char *)wcs;
    no = wcl * sizeof(wchar_t);
    rc = iconv(iconv_cd_str2wcs, &pi, &ni, &po, &no);
@@ -380,11 +382,11 @@ LangInit(void)
      {
 	iconv_cd_loc2int = iconv_open("UTF-8", enc_loc);
 	iconv_cd_int2loc = iconv_open(enc_loc, "UTF-8");
-	iconv_cd_utf82int = iconv_cd_int2utf8 = NULL;
+	iconv_cd_utf82int = iconv_cd_int2utf8 = BAD_CD;
      }
    else
      {
-	iconv_cd_loc2int = iconv_cd_int2loc = NULL;
+	iconv_cd_loc2int = iconv_cd_int2loc = BAD_CD;
 	iconv_cd_utf82int = iconv_open(enc_loc, "UTF-8");
 	iconv_cd_int2utf8 = iconv_open("UTF-8", enc_loc);
      }
@@ -395,16 +397,16 @@ void
 LangExit(void)
 {
 #if HAVE_ICONV
-   if (iconv_cd_int2utf8)
+   if (iconv_cd_int2utf8 != BAD_CD)
       iconv_close(iconv_cd_int2utf8);
-   if (iconv_cd_utf82int)
+   if (iconv_cd_utf82int != BAD_CD)
       iconv_close(iconv_cd_utf82int);
-   if (iconv_cd_int2loc)
+   if (iconv_cd_int2loc != BAD_CD)
       iconv_close(iconv_cd_int2loc);
-   if (iconv_cd_loc2int)
+   if (iconv_cd_loc2int != BAD_CD)
       iconv_close(iconv_cd_loc2int);
-   iconv_cd_int2utf8 = iconv_cd_utf82int = NULL;
-   iconv_cd_int2loc = iconv_cd_loc2int = NULL;
+   iconv_cd_int2utf8 = iconv_cd_utf82int = BAD_CD;
+   iconv_cd_int2loc = iconv_cd_loc2int = BAD_CD;
 #endif
 
    LangEnvironmentSetup(NULL);
