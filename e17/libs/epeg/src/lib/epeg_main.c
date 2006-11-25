@@ -207,6 +207,8 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
    if (!im->pixels) return NULL;
    if ((im->out.w < 1) || (im->out.h < 1)) return NULL;
    
+   if (_epeg_scale(im) != 0) return NULL;
+   
    bpp = im->in.jinfo.output_components;
    iw = im->out.w;
    ih = im->out.h;
