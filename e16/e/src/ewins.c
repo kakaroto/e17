@@ -224,7 +224,7 @@ EwinManage(EWin * ewin)
 	   ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);
 
 	EoInit(ewin, EOBJ_TYPE_EWIN, frame, ewin->client.x, ewin->client.y,
-	       ewin->client.w, ewin->client.h, 1, EwinGetIcccmName(ewin));
+	       ewin->client.w, ewin->client.h, 1, NULL);
 
 	EobjListFocusAdd(&ewin->o, 1);
 	EobjListOrderAdd(&ewin->o);
@@ -387,12 +387,6 @@ EwinDestroy(EWin * ewin)
 
    HintsSetClientList();
 
-   if (EwinGetIcccmName(ewin))
-      Efree(EwinGetIcccmName(ewin));
-   if (EwinGetIcccmCName(ewin))
-      Efree(EwinGetIcccmCName(ewin));
-   if (EwinGetIcccmClass(ewin))
-      Efree(EwinGetIcccmClass(ewin));
    if (ewin->icccm.wm_icon_name)
       Efree(ewin->icccm.wm_icon_name);
    if (ewin->icccm.wm_role)

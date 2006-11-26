@@ -590,14 +590,13 @@ WindowMatchEobjTest(const WindowMatch * wm, const EObj * eo)
    switch (wm->match)
      {
      case MATCH_TYPE_TITLE:
-	return matchregexp(wm->value, eo->name);
-#if 0
+	return matchregexp(wm->value, EobjGetName(eo));
+
      case MATCH_TYPE_WM_NAME:
-	return matchregexp(wm->value, eo->icccm.wm_res_name);
+	return matchregexp(wm->value, EobjGetCName(eo));
 
      case MATCH_TYPE_WM_CLASS:
-	return matchregexp(wm->value, eo->icccm.wm_res_class);
-#endif
+	return matchregexp(wm->value, EobjGetClass(eo));
      }
 
    if (wm->qual)

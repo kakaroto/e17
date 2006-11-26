@@ -184,14 +184,19 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
    eo->shaped = -1;
 
    if (type == EOBJ_TYPE_EXT)
-      eo->name = ecore_x_icccm_title_get(WinGetXwin(win));
+     {
+	eo->icccm.wm_name = ecore_x_icccm_title_get(WinGetXwin(win));
+	ecore_x_icccm_name_class_get(WinGetXwin(win),
+				     &eo->icccm.wm_res_name,
+				     &eo->icccm.wm_res_class);
+     }
    else if (name)
-      eo->name = Estrdup(name);
-   if (!eo->name)
-      eo->name = Estrdup("-?-");
+      eo->icccm.wm_name = Estrdup(name);
+   if (!eo->icccm.wm_name)
+      eo->icccm.wm_name = Estrdup("-?-");
 
    if (type != EOBJ_TYPE_EWIN && type != EOBJ_TYPE_EXT)
-      HintsSetWindowName(eo->win, eo->name);
+      HintsSetWindowName(eo->win, eo->icccm.wm_name);
 
 #if USE_COMPOSITE
    eo->fade = 1;
@@ -234,8 +239,12 @@ EobjFini(EObj * eo)
    else
       EDestroyWindow(eo->win);
 
-   if (eo->name)
-      Efree(eo->name);
+   if (eo->icccm.wm_name)
+      Efree(eo->icccm.wm_name);
+   if (eo->icccm.wm_res_name)
+      Efree(eo->icccm.wm_res_name);
+   if (eo->icccm.wm_res_class)
+      Efree(eo->icccm.wm_res_class);
 }
 
 void

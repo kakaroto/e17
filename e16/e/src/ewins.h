@@ -146,9 +146,6 @@ struct _ewin
    EWinInhibit         inh_wm;
    struct
    {
-      char               *wm_name;
-      char               *wm_res_name;
-      char               *wm_res_class;
       char               *wm_icon_name;
       char               *wm_role;
       char               *wm_command;
@@ -293,9 +290,9 @@ struct _ewin
 #define EwinGetClientWin(ewin)		((ewin)->client.win)
 #define EwinGetContainerWin(ewin)	((ewin)->win_container)
 
-#define EwinGetIcccmName(ewin)          ((ewin)->icccm.wm_name)
-#define EwinGetIcccmCName(ewin)         ((ewin)->icccm.wm_res_name)
-#define EwinGetIcccmClass(ewin)         ((ewin)->icccm.wm_res_class)
+#define EwinGetIcccmName(ewin)          EoGetName(ewin)
+#define EwinGetIcccmCName(ewin)         EoGetCName(ewin)
+#define EwinGetIcccmClass(ewin)         EoGetClass(ewin)
 
 /* arrange.c */
 #define ARRANGE_VERBATIM    0

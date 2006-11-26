@@ -52,7 +52,12 @@ struct _eobj
    void               *cmhook;
    unsigned int        serial;
 #endif
-   char               *name;
+   struct
+   {
+      char               *wm_name;
+      char               *wm_res_name;
+      char               *wm_res_class;
+   } icccm;
 };
 
 #define EOBJ_TYPE_EWIN      0
@@ -71,16 +76,20 @@ struct _eobj
 #define EobjGetW(eo)            WinGetW((eo)->win)
 #define EobjGetH(eo)            WinGetH((eo)->win)
 #define EobjGetBW(eo)           WinGetBorderWidth((eo)->win)
-#define EobjGetDesk(eo)         ((eo)->desk)
-#define EobjGetName(eo)         ((eo)->name)
 #define EobjGetType(eo)         ((eo)->type)
+#define EobjGetDesk(eo)         ((eo)->desk)
+#define EobjGetName(eo)         ((eo)->icccm.wm_name)
+#define EobjGetCName(eo)        ((eo)->icccm.wm_res_name)
+#define EobjGetClass(eo)        ((eo)->icccm.wm_res_class)
 
 #define EoObj(eo)               (&((eo)->o))
 #define EoGetWin(eo)            EobjGetWin(EoObj(eo))
 #define EoGetXwin(eo)           EobjGetXwin(EoObj(eo))
+#define EoGetType(eo)           EobjGetType(EoObj(eo))
 #define EoGetDesk(eo)           EobjGetDesk(EoObj(eo))
 #define EoGetName(eo)           EobjGetName(EoObj(eo))
-#define EoGetType(eo)           EobjGetType(EoObj(eo))
+#define EoGetCName(eo)          EobjGetCName(EoObj(eo))
+#define EoGetClass(eo)          EobjGetClass(EoObj(eo))
 #define EoGetX(eo)              EobjGetX(EoObj(eo))
 #define EoGetY(eo)              EobjGetY(EoObj(eo))
 #define EoGetW(eo)              EobjGetW(EoObj(eo))
@@ -93,7 +102,6 @@ struct _eobj
 #define EoGetLayer(eo)          (EoObj(eo)->layer)
 #define EoGetPixmap(eo)         EobjGetPixmap(EoObj(eo))
 
-#define EoSetName(eo, _x)       EoObj(eo)->name = (_x)
 #define EoSetGone(eo)           EoObj(eo)->gone = 1
 #define EoSetSticky(eo, _x)     EoObj(eo)->sticky = ((_x)?1:0)
 #define EoSetFloating(eo, _f)   EobjSetFloating(EoObj(eo), (_f))
