@@ -697,15 +697,15 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 
 	if (!strcmp(param1, "ptr"))
 	  {
-	     ActionResizeStart(ewin, 0, MODE_RESIZE);
+	     ActionResizeStart(ewin, 1, MODE_RESIZE);
 	  }
 	else if (!strcmp(param1, "ptr-h"))
 	  {
-	     ActionResizeStart(ewin, 0, MODE_RESIZE_H);
+	     ActionResizeStart(ewin, 1, MODE_RESIZE_H);
 	  }
 	else if (!strcmp(param1, "ptr-v"))
 	  {
-	     ActionResizeStart(ewin, 0, MODE_RESIZE_V);
+	     ActionResizeStart(ewin, 1, MODE_RESIZE_V);
 	  }
 	else if (!strcmp(param1, "?"))
 	  {

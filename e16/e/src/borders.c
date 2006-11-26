@@ -917,7 +917,7 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
    /* Beware! Actions may destroy the current border */
    wbit->left = 0;
 
-   if (WinGetXwin(wbit->win) == Mode.events.last_bpress && !left &&
+   if (ev && WinGetXwin(wbit->win) == Mode.events.last_bpress && !left &&
        ewin->border->part[part].aclass)
       ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
 }
@@ -963,6 +963,25 @@ BorderWinpartEventLeave(EWinBit * wbit, XEvent * ev)
 	BorderWinpartChange(ewin, part, 0);
 	if (ewin->border->part[part].aclass)
 	   ActionclassEvent(ewin->border->part[part].aclass, ev, ewin);
+     }
+}
+
+void
+BorderCheckState(EWin * ewin, XEvent * ev)
+{
+   int                 i;
+
+   for (i = 0; i < ewin->border->num_winparts; i++)
+     {
+	switch (ev->type)
+	  {
+	  default:
+	     break;
+
+	  case ButtonRelease:
+	     BorderWinpartEventMouseUp(ewin->bits + i, NULL);
+	     break;
+	  }
      }
 }
 

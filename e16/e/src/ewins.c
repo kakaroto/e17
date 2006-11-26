@@ -2028,7 +2028,9 @@ EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
 	ActionsCheck("BUTTONBINDINGS", ewin, ev);
 	break;
      case ButtonRelease:
+	ActionsEnd(NULL);
 	ActionsCheck("BUTTONBINDINGS", ewin, ev);
+	BorderCheckState(ewin, ev);
 	break;
      case EnterNotify:
 	FocusHandleEnter(ewin, ev);
@@ -2037,6 +2039,7 @@ EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
 	FocusHandleLeave(ewin, ev);
 	break;
      case MotionNotify:
+	ActionsHandleMotion();
 	break;
      default:
 #if DEBUG_EWIN_EVENTS

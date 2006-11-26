@@ -80,10 +80,7 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    SoundPlay("SOUND_MOVE_START");
 
    if (grab)
-     {
-	GrabPointerRelease();
-	GrabPointerSet(VRoot.win, ECSR_ACT_MOVE, 1);
-     }
+      GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
 
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
@@ -271,6 +268,7 @@ int
 ActionResizeStart(EWin * ewin, int grab, int hv)
 {
    int                 x, y, w, h, ww, hh;
+   unsigned int        csr;
 
    if (!ewin || ewin->state.inhibit_resize)
       return 0;
@@ -294,14 +292,9 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 	EwinUpdateOpacity(ewin);
      }
 
-   if (grab)
-     {
-	GrabPointerRelease();
-	GrabPointerSet(VRoot.win, ECSR_ACT_RESIZE, 1);
-     }
-
    switch (hv)
      {
+     default:
      case MODE_RESIZE:
 	Mode.mode = hv;
 	x = Mode.events.x - EoGetX(ewin);
@@ -311,14 +304,27 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 	ww = EoGetW(ewin) / 6;
 	hh = EoGetH(ewin) / 6;
 
+	csr = ECSR_ACT_RESIZE;
 	if ((x < w) && (y < h))
-	   Mode_mr.resize_detail = 0;
-	if ((x >= w) && (y < h))
-	   Mode_mr.resize_detail = 1;
-	if ((x < w) && (y >= h))
-	   Mode_mr.resize_detail = 2;
-	if ((x >= w) && (y >= h))
-	   Mode_mr.resize_detail = 3;
+	  {
+	     Mode_mr.resize_detail = 0;
+	     csr = ECSR_ACT_RESIZE_TL;
+	  }
+	else if ((x >= w) && (y < h))
+	  {
+	     Mode_mr.resize_detail = 1;
+	     csr = ECSR_ACT_RESIZE_TR;
+	  }
+	else if ((x < w) && (y >= h))
+	  {
+	     Mode_mr.resize_detail = 2;
+	     csr = ECSR_ACT_RESIZE_BL;
+	  }
+	else if ((x >= w) && (y >= h))
+	  {
+	     Mode_mr.resize_detail = 3;
+	     csr = ECSR_ACT_RESIZE_BR;
+	  }
 
 	/* The following four if statements added on 07/22/04 by Josh Holtrop.
 	 * They allow strictly horizontal or vertical resizing when the
@@ -327,21 +333,25 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 	  {
 	     Mode.mode = MODE_RESIZE_V;
 	     Mode_mr.resize_detail = 0;
+	     csr = ECSR_ACT_RESIZE_V;
 	  }
 	else if ((abs(x - w) < (w >> 1)) && (y > (EoGetH(ewin) - hh)))
 	  {
 	     Mode.mode = MODE_RESIZE_V;
 	     Mode_mr.resize_detail = 1;
+	     csr = ECSR_ACT_RESIZE_V;
 	  }
 	else if ((abs(y - h) < (h >> 1)) && (x < ww))
 	  {
 	     Mode.mode = MODE_RESIZE_H;
 	     Mode_mr.resize_detail = 0;
+	     csr = ECSR_ACT_RESIZE_H;
 	  }
 	else if ((abs(y - h) < (h >> 1)) && (x > (EoGetW(ewin) - ww)))
 	  {
 	     Mode.mode = MODE_RESIZE_H;
 	     Mode_mr.resize_detail = 1;
+	     csr = ECSR_ACT_RESIZE_H;
 	  }
 	break;
 
@@ -353,6 +363,7 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 	   Mode_mr.resize_detail = 0;
 	else
 	   Mode_mr.resize_detail = 1;
+	csr = ECSR_ACT_RESIZE_H;
 	break;
 
      case MODE_RESIZE_V:
@@ -363,6 +374,7 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 	   Mode_mr.resize_detail = 0;
 	else
 	   Mode_mr.resize_detail = 1;
+	csr = ECSR_ACT_RESIZE_V;
 	break;
      }
 
@@ -372,6 +384,10 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
    Mode_mr.win_y = EoGetY(ewin);
    Mode_mr.win_w = ewin->client.w;
    Mode_mr.win_h = ewin->client.h;
+
+   if (grab)
+      GrabPointerSet(EoGetWin(ewin), csr, 1);
+
    EwinShapeSet(ewin);
    ewin->state.show_coords = 1;
    DrawEwinShape(ewin, Conf.movres.mode_resize, EoGetX(ewin), EoGetY(ewin),

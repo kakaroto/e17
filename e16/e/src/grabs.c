@@ -57,7 +57,7 @@ int
 GrabPointerSet(Win win, unsigned int csr, int confine)
 {
    int                 ret = -1;
-   Window              confine_to = (confine) ? WinGetXwin(win) : None;
+   Window              confine_to = (confine) ? VRoot.xwin : None;
 
    ret = XGrabPointer(disp, WinGetXwin(win), False,
 		      ButtonPressMask | ButtonReleaseMask | PointerMotionMask |

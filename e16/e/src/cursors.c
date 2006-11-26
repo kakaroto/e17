@@ -256,17 +256,20 @@ ECursorApply(ECursor * ec, Win win)
 }
 
 static              Cursor
-ECursorGetByName(const char *name, unsigned int fallback)
+ECursorGetByName(const char *name, const char *name2, unsigned int fallback)
 {
    ECursor            *ec;
 
    ec = ECursorFind(name);
-   if (!ec)
-      return XCreateFontCursor(disp, fallback);
+   if (!ec && name2)
+      ec = ECursorFind(name2);
+   if (ec)
+     {
+	ECursorIncRefcount(ec);
+	return ec->cursor;
+     }
 
-   ECursorIncRefcount(ec);
-
-   return ec->cursor;
+   return XCreateFontCursor(disp, fallback);
 }
 
 void
@@ -312,11 +315,23 @@ static void
 CursorsInit(void)
 {
    ECsrs[ECSR_NONE] = None;
-   ECsrs[ECSR_ROOT] = ECursorGetByName("DEFAULT", XC_left_ptr);
-   ECsrs[ECSR_GRAB] = ECursorGetByName("GRAB", XC_crosshair);
-   ECsrs[ECSR_PGRAB] = ECursorGetByName("PGRAB", XC_X_cursor);
-   ECsrs[ECSR_ACT_MOVE] = ECursorGetByName("GRAB_MOVE", XC_fleur);
-   ECsrs[ECSR_ACT_RESIZE] = ECursorGetByName("GRAB_RESIZE", XC_sizing);
+   ECsrs[ECSR_ROOT] = ECursorGetByName("DEFAULT", NULL, XC_left_ptr);
+   ECsrs[ECSR_GRAB] = ECursorGetByName("GRAB", NULL, XC_crosshair);
+   ECsrs[ECSR_PGRAB] = ECursorGetByName("PGRAB", NULL, XC_X_cursor);
+   ECsrs[ECSR_ACT_MOVE] = ECursorGetByName("GRAB_MOVE", NULL, XC_fleur);
+   ECsrs[ECSR_ACT_RESIZE] = ECursorGetByName("GRAB_RESIZE", NULL, XC_sizing);
+   ECsrs[ECSR_ACT_RESIZE_H] =
+      ECursorGetByName("RESIZE_H", NULL, XC_sb_h_double_arrow);
+   ECsrs[ECSR_ACT_RESIZE_V] =
+      ECursorGetByName("RESIZE_V", NULL, XC_sb_v_double_arrow);
+   ECsrs[ECSR_ACT_RESIZE_TL] =
+      ECursorGetByName("RESIZE_TL", "RESIZE_BR", XC_top_left_corner);
+   ECsrs[ECSR_ACT_RESIZE_TR] =
+      ECursorGetByName("RESIZE_TR", "RESIZE_BL", XC_top_right_corner);
+   ECsrs[ECSR_ACT_RESIZE_BL] =
+      ECursorGetByName("RESIZE_BL", "RESIZE_TR", XC_bottom_left_corner);
+   ECsrs[ECSR_ACT_RESIZE_BR] =
+      ECursorGetByName("RESIZE_BR", "RESIZE_TL", XC_bottom_right_corner);
 }
 
 /*

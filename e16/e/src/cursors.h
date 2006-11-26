@@ -33,7 +33,13 @@
 #define ECSR_PGRAB          3
 #define ECSR_ACT_MOVE       4
 #define ECSR_ACT_RESIZE     5
-#define ECSR_COUNT          6
+#define ECSR_ACT_RESIZE_H   6
+#define ECSR_ACT_RESIZE_V   7
+#define ECSR_ACT_RESIZE_TL  8
+#define ECSR_ACT_RESIZE_TR  9
+#define ECSR_ACT_RESIZE_BL 10
+#define ECSR_ACT_RESIZE_BR 11
+#define ECSR_COUNT         12
 
 ECursor            *ECursorFind(const char *name);
 void                ECursorApply(ECursor * ec, Win win);
