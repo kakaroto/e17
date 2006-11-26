@@ -224,7 +224,7 @@ EwinManage(EWin * ewin)
 	   ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);
 
 	EoInit(ewin, EOBJ_TYPE_EWIN, frame, ewin->client.x, ewin->client.y,
-	       ewin->client.w, ewin->client.h, 1, ewin->icccm.wm_name);
+	       ewin->client.w, ewin->client.h, 1, EwinGetIcccmName(ewin));
 
 	EobjListFocusAdd(&ewin->o, 1);
 	EobjListOrderAdd(&ewin->o);
@@ -387,14 +387,14 @@ EwinDestroy(EWin * ewin)
 
    HintsSetClientList();
 
-   if (ewin->icccm.wm_name)
-      Efree(ewin->icccm.wm_name);
+   if (EwinGetIcccmName(ewin))
+      Efree(EwinGetIcccmName(ewin));
+   if (EwinGetIcccmCName(ewin))
+      Efree(EwinGetIcccmCName(ewin));
+   if (EwinGetIcccmClass(ewin))
+      Efree(EwinGetIcccmClass(ewin));
    if (ewin->icccm.wm_icon_name)
       Efree(ewin->icccm.wm_icon_name);
-   if (ewin->icccm.wm_res_class)
-      Efree(ewin->icccm.wm_res_class);
-   if (ewin->icccm.wm_res_name)
-      Efree(ewin->icccm.wm_res_name);
    if (ewin->icccm.wm_role)
       Efree(ewin->icccm.wm_role);
    if (ewin->icccm.wm_command)
@@ -1509,7 +1509,7 @@ EwinGetTitle(const EWin * ewin)
    name = ewin->ewmh.wm_name;
    if (name)
       goto done;
-   name = ewin->icccm.wm_name;
+   name = EwinGetIcccmName(ewin);
    if (name)
       goto done;
 

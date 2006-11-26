@@ -1131,7 +1131,7 @@ GroupShow(Group * g)
    int                 j;
 
    for (j = 0; j < g->num_members; j++)
-      IpcPrintf("%d: %s\n", g->index, g->members[j]->icccm.wm_name);
+      IpcPrintf("%d: %s\n", g->index, EwinGetIcccmName(g->members[j]));
 
    IpcPrintf("        index: %d\n" "  num_members: %d\n"
 	     "      iconify: %d\n" "         kill: %d\n"

@@ -147,9 +147,9 @@ struct _ewin
    struct
    {
       char               *wm_name;
-      char               *wm_icon_name;
       char               *wm_res_name;
       char               *wm_res_class;
+      char               *wm_icon_name;
       char               *wm_role;
       char               *wm_command;
       char               *wm_machine;
@@ -292,6 +292,10 @@ struct _ewin
 
 #define EwinGetClientWin(ewin)		((ewin)->client.win)
 #define EwinGetContainerWin(ewin)	((ewin)->win_container)
+
+#define EwinGetIcccmName(ewin)          ((ewin)->icccm.wm_name)
+#define EwinGetIcccmCName(ewin)         ((ewin)->icccm.wm_res_name)
+#define EwinGetIcccmClass(ewin)         ((ewin)->icccm.wm_res_class)
 
 /* arrange.c */
 #define ARRANGE_VERBATIM    0

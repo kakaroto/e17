@@ -84,9 +84,9 @@ ICCCM_GetTitle(EWin * ewin, Atom atom_change)
    if (atom_change && atom_change != ECORE_X_ATOM_WM_NAME)
       return;
 
-   _EFREE(ewin->icccm.wm_name);
+   _EFREE(EwinGetIcccmName(ewin));
 
-   ewin->icccm.wm_name = ecore_x_icccm_title_get(EwinGetClientXwin(ewin));
+   EwinGetIcccmName(ewin) = ecore_x_icccm_title_get(EwinGetClientXwin(ewin));
 
    EwinChange(ewin, EWIN_CHANGE_NAME);
 }
@@ -537,16 +537,16 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 {
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLASS)
      {
-	_EFREE(ewin->icccm.wm_res_name);
-	_EFREE(ewin->icccm.wm_res_class);
+	_EFREE(EwinGetIcccmCName(ewin));
+	_EFREE(EwinGetIcccmClass(ewin));
 
 	ecore_x_icccm_name_class_get(EwinGetClientXwin(ewin),
-				     &ewin->icccm.wm_res_name,
-				     &ewin->icccm.wm_res_class);
-	if (!ewin->icccm.wm_res_name && TryGroup(ewin))
+				     &EwinGetIcccmCName(ewin),
+				     &EwinGetIcccmClass(ewin));
+	if (!EwinGetIcccmCName(ewin) && TryGroup(ewin))
 	   ecore_x_icccm_name_class_get(ewin->icccm.group,
-					&ewin->icccm.wm_res_name,
-					&ewin->icccm.wm_res_class);
+					&EwinGetIcccmCName(ewin),
+					&EwinGetIcccmClass(ewin));
      }
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_COMMAND)

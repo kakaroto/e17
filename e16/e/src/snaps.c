@@ -169,15 +169,15 @@ SnapshotEwinMatch(const Snapshot * sn, const EWin * ewin)
       return 0;
 
    if (sn->match_flags & SNAP_MATCH_TITLE
-       && !SEQ(sn->win_title, ewin->icccm.wm_name))
+       && !SEQ(sn->win_title, EwinGetIcccmName(ewin)))
       return 0;
 
    if (sn->match_flags & SNAP_MATCH_NAME
-       && !SEQ(sn->win_name, ewin->icccm.wm_res_name))
+       && !SEQ(sn->win_name, EwinGetIcccmCName(ewin)))
       return 0;
 
    if (sn->match_flags & SNAP_MATCH_CLASS
-       && !SEQ(sn->win_class, ewin->icccm.wm_res_class))
+       && !SEQ(sn->win_class, EwinGetIcccmClass(ewin)))
       return 0;
 
    if (sn->match_flags & SNAP_MATCH_ROLE)
@@ -252,17 +252,17 @@ SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
    if (sn)
       return sn;
 
-   if ((match_flags & SNAP_MATCH_TITLE) && !ewin->icccm.wm_name)
+   if ((match_flags & SNAP_MATCH_TITLE) && !EwinGetIcccmName(ewin))
       match_flags ^= SNAP_MATCH_TITLE;
-   if ((match_flags & SNAP_MATCH_NAME) && !ewin->icccm.wm_res_name)
+   if ((match_flags & SNAP_MATCH_NAME) && !EwinGetIcccmCName(ewin))
       match_flags ^= SNAP_MATCH_NAME;
-   if ((match_flags & SNAP_MATCH_CLASS) && !ewin->icccm.wm_res_class)
+   if ((match_flags & SNAP_MATCH_CLASS) && !EwinGetIcccmClass(ewin))
       match_flags ^= SNAP_MATCH_CLASS;
    if ((match_flags & SNAP_MATCH_ROLE) && !ewin->icccm.wm_role)
       match_flags ^= SNAP_MATCH_ROLE;
    if (match_flags == 0)
      {
-	if (!ewin->icccm.wm_name)
+	if (!EwinGetIcccmName(ewin))
 	   return NULL;
 	match_flags = SNAP_MATCH_TITLE;
      }
@@ -273,11 +273,11 @@ SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
 
    sn->match_flags = match_flags;
    if (match_flags & SNAP_MATCH_TITLE)
-      sn->win_title = Estrdup(ewin->icccm.wm_name);
+      sn->win_title = Estrdup(EwinGetIcccmName(ewin));
    if (match_flags & SNAP_MATCH_NAME)
-      sn->win_name = Estrdup(ewin->icccm.wm_res_name);
+      sn->win_name = Estrdup(EwinGetIcccmCName(ewin));
    if (match_flags & SNAP_MATCH_CLASS)
-      sn->win_class = Estrdup(ewin->icccm.wm_res_class);
+      sn->win_class = Estrdup(EwinGetIcccmClass(ewin));
    if (match_flags & SNAP_MATCH_ROLE)
      {
 	s = SnapGetRole(ewin->icccm.wm_role, buf, sizeof(buf));
@@ -293,7 +293,7 @@ SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
    else if (sn->win_title)
       Esnprintf(buf, sizeof(buf), "TITLE.%s", sn->win_title);
    else				/* We should not go here */
-      Esnprintf(buf, sizeof(buf), "TITLE.%s", ewin->icccm.wm_name);
+      Esnprintf(buf, sizeof(buf), "TITLE.%s", EwinGetIcccmName(ewin));
    sn->name = Estrdup(buf);
 
    if (!(sn->match_flags & SNAP_MATCH_MULTIPLE))
@@ -722,7 +722,7 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
      }
    else
      {
-	if (ewin->icccm.wm_res_name)
+	if (EwinGetIcccmCName(ewin))
 	  {
 	     sd->match.name = 1;
 	     sd->match.class = 1;
@@ -730,7 +730,7 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
 	  }
 	else
 	  {
-	     sd->match.title = ewin->icccm.wm_name != NULL;
+	     sd->match.title = EwinGetIcccmName(ewin) != NULL;
 	  }
      }
 
@@ -745,9 +745,9 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 3);
    DialogItemSetAlign(di, 1024, 512);
-   DialogItemSetText(di, ewin->icccm.wm_name);
+   DialogItemSetText(di, EwinGetIcccmName(ewin));
 
-   if (ewin->icccm.wm_res_name)
+   if (EwinGetIcccmCName(ewin))
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetAlign(di, 0, 512);
@@ -757,10 +757,10 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
 	DialogItemSetAlign(di, 1024, 512);
-	DialogItemSetText(di, ewin->icccm.wm_res_name);
+	DialogItemSetText(di, EwinGetIcccmCName(ewin));
      }
 
-   if (ewin->icccm.wm_res_class)
+   if (EwinGetIcccmClass(ewin))
      {
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetAlign(di, 0, 512);
@@ -770,7 +770,7 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
 	DialogItemSetAlign(di, 1024, 512);
-	DialogItemSetText(di, ewin->icccm.wm_res_class);
+	DialogItemSetText(di, EwinGetIcccmClass(ewin));
      }
 
    if (ewin->icccm.wm_role)

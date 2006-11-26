@@ -171,14 +171,14 @@ IpcFindEwins(const char *match, int *pnum, int *pflags)
 	  }
 	else if (type == 'w')	/* Wildcard */
 	  {
-	     if (!matchregexp(match, ewin->icccm.wm_name))
+	     if (!matchregexp(match, EwinGetIcccmName(ewin)))
 		continue;
 	  }
 	else			/* Match name (substring) */
 	  {
 	     const char         *name;
 
-	     name = ewin->icccm.wm_name;
+	     name = EwinGetIcccmName(ewin);
 	     if (!name)
 		continue;
 	     if (!strcasestr(name, match))
@@ -464,12 +464,12 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	  {
 	  case '\0':
 	     IpcPrintf("%#lx : %s\n", EwinGetClientXwin(e),
-		       SS(e->icccm.wm_name));
+		       SS(EwinGetIcccmName(e)));
 	     break;
 
 	  default:
 	     IpcPrintf("%#lx : %s :: %d : %d %d : %d %d %dx%d\n",
-		       EwinGetClientXwin(e), SS(e->icccm.wm_name),
+		       EwinGetClientXwin(e), SS(EwinGetIcccmName(e)),
 		       (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e), e->area_x,
 		       e->area_y, EoGetX(e), EoGetY(e), EoGetW(e), EoGetH(e));
 	     break;
@@ -478,7 +478,7 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 	     IpcPrintf("%#10lx : %5d %5d %4dx%4d :: %2d : %d %d : %s\n",
 		       EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
 		       EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
-		       e->area_x, e->area_y, SS(e->icccm.wm_name));
+		       e->area_x, e->area_y, SS(EwinGetIcccmName(e)));
 	     break;
 
 	  case 'g':
@@ -487,7 +487,7 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 		 EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
 		 EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
 		 TxtPG[e->place.gravity & 3], e->place.gx, e->place.gy,
-		 e->place.ax, e->place.ay, SS(e->icccm.wm_name));
+		 e->place.ax, e->place.ay, SS(EwinGetIcccmName(e)));
 	     break;
 
 	  case 'p':
@@ -495,8 +495,8 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 		("%#10lx : %5d %5d %4dx%4d :: %2d : \"%s\" \"%s\" \"%s\"\n",
 		 EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
 		 EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
-		 SS(e->icccm.wm_res_name), SS(e->icccm.wm_res_class),
-		 SS(e->icccm.wm_name));
+		 SS(EwinGetIcccmCName(e)), SS(EwinGetIcccmClass(e)),
+		 SS(EwinGetIcccmName(e)));
 	     break;
 	  }
      }
@@ -570,7 +570,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	  }
 	if (!strcmp(prm, "?"))
 	  {
-	     IpcPrintf("title: %s", ewin->icccm.wm_name);
+	     IpcPrintf("title: %s", EwinGetIcccmName(ewin));
 	     goto done;
 	  }
 	HintsSetWindowName(EwinGetClientWin(ewin), prm);
@@ -1173,9 +1173,9 @@ EwinShowInfo(const EWin * ewin)
 	     "Opacity    %3i\n"
 #endif
 	     ,
-	     SS(ewin->icccm.wm_name),
+	     SS(EwinGetIcccmName(ewin)),
 	     SS(ewin->icccm.wm_icon_name),
-	     SS(ewin->icccm.wm_res_name), SS(ewin->icccm.wm_res_class),
+	     SS(EwinGetIcccmCName(ewin)), SS(EwinGetIcccmClass(ewin)),
 	     SS(ewin->icccm.wm_role),
 	     SS(ewin->icccm.wm_command),
 	     SS(ewin->icccm.wm_machine),

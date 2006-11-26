@@ -528,13 +528,13 @@ WindowMatchEwinTest(const WindowMatch * wm, const EWin * ewin)
    switch (wm->match)
      {
      case MATCH_TYPE_TITLE:
-	return matchregexp(wm->value, ewin->icccm.wm_name);
+	return matchregexp(wm->value, EwinGetIcccmName(ewin));
 
      case MATCH_TYPE_WM_NAME:
-	return matchregexp(wm->value, ewin->icccm.wm_res_name);
+	return matchregexp(wm->value, EwinGetIcccmCName(ewin));
 
      case MATCH_TYPE_WM_CLASS:
-	return matchregexp(wm->value, ewin->icccm.wm_res_class);
+	return matchregexp(wm->value, EwinGetIcccmClass(ewin));
 
      case MATCH_TYPE_SIZE:
 	match = (ewin->client.w >= wm->width.min &&
@@ -689,8 +689,8 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	return;
 
      case EWIN_OP_TITLE:
-	_EFREE(ewin->icccm.wm_name);
-	ewin->icccm.wm_name = Estrdup(args);
+	_EFREE(EwinGetIcccmName(ewin));
+	EwinGetIcccmName(ewin) = Estrdup(args);
 	break;
 
      case EWIN_OP_ICONIFY:
