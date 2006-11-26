@@ -1246,6 +1246,8 @@ IPC_EwinInfo(const char *params, Client * c __UNUSED__)
 	if (i != num - 1)
 	   IpcPrintf("\n");
      }
+
+   Efree(lst);
 }
 
 static void
