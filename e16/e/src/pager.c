@@ -319,7 +319,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 
    Dprintf("PagerEwinUpdateMini %#lx/%#lx wxh=%dx%d ser=%#x/%#x dif=%d: %s\n",
 	   EwinGetClientXwin(ewin), EoGetXwin(ewin), w, h,
-	   EoGetSerial(ewin), p->serial, serdif, EwinGetName(ewin));
+	   EoGetSerial(ewin), p->serial, serdif, EwinGetTitle(ewin));
 
    p->do_update = 1;
 

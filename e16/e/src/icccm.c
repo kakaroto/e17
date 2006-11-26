@@ -364,7 +364,7 @@ ICCCM_Focus(const EWin * ewin)
      {
 	if (ewin)
 	   Eprintf("ICCCM_Focus T=%#lx %#lx %s\n", Mode.events.time,
-		   EwinGetClientXwin(ewin), EwinGetName(ewin));
+		   EwinGetClientXwin(ewin), EwinGetTitle(ewin));
 	else
 	   Eprintf("ICCCM_Focus None T=%#lx\n", Mode.events.time);
      }
@@ -527,7 +527,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get icccm %#lx: %4d+%4d %4dx%4d: %s\n",
 	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
-	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
+	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
 }
 
 #define TryGroup(e) (((e)->icccm.group != None) && ((e)->icccm.group != EwinGetClientXwin(e)))

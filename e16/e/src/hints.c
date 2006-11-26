@@ -361,7 +361,7 @@ EHintsSetInfo(const EWin * ewin)
    if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap set einf  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
-	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
+	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
 }
 
 void
@@ -407,7 +407,7 @@ EHintsGetInfo(EWin * ewin)
    if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
-	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
+	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
 }
 
 void

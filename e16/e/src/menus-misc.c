@@ -633,7 +633,7 @@ MenuCreateFromBorders(const char *name, MenuStyle * ms)
 static int
 MenuCheckShowEwinDesk(EWin * ewin, void *prm)
 {
-   if (!EwinGetName(ewin) || ewin->props.skip_winlist)
+   if (!EwinGetTitle(ewin) || ewin->props.skip_winlist)
       return 0;
    return prm == NULL || EwinGetDesk(ewin) == prm;
 }
@@ -653,7 +653,7 @@ MenuLoadFromEwins(Menu * m, int (*f) (EWin * ewin, void *prm), void *prm)
 	   continue;
 
 	Esnprintf(s, sizeof(s), "wop %#lx focus", EwinGetClientXwin(lst[i]));
-	mi = MenuItemCreate(EwinGetName(lst[i]), NULL, s, NULL);
+	mi = MenuItemCreate(EwinGetTitle(lst[i]), NULL, s, NULL);
 	MenuAddItem(m, mi);
      }
 }
@@ -753,7 +753,7 @@ MenuLoadFromGroups(Menu * m)
 	  {
 	     Esnprintf(s, sizeof(s), "wop %#lx focus",
 		       EwinGetClientXwin(lst[i]->members[j]));
-	     mi = MenuItemCreate(EwinGetName(lst[i]->members[j]), NULL,
+	     mi = MenuItemCreate(EwinGetTitle(lst[i]->members[j]), NULL,
 				 s, NULL);
 	     MenuAddItem(mm, mi);
 	  }

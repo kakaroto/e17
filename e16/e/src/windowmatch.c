@@ -639,7 +639,7 @@ WindowMatchEwinBorder(const EWin * ewin)
 
    wm = WindowMatchType(ewin, MATCH_OP_BORDER);
 #if 0
-   Eprintf("WindowMatchEwinBorder %s %s\n", EwinGetName(ewin),
+   Eprintf("WindowMatchEwinBorder %s %s\n", EwinGetTitle(ewin),
 	   (wm) ? BorderGetName(wm->border) : "???");
 #endif
    if (wm)
@@ -654,7 +654,7 @@ WindowMatchEwinIcon(const EWin * ewin)
 
    wm = WindowMatchType(ewin, MATCH_OP_ICON);
 #if 0
-   Eprintf("WindowMatchEwinIcon %s %s\n", EwinGetName(ewin),
+   Eprintf("WindowMatchEwinIcon %s %s\n", EwinGetTitle(ewin),
 	   (wm) ? wm->args : "???");
 #endif
    if (wm)

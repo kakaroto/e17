@@ -131,7 +131,7 @@ WarpFocusWinShow(WarpFocusWin * fw)
 	   fmt = "=%s=";
 	else
 	   fmt = "%s";
-	Esnprintf(s, sizeof(s), fmt, EwinGetName(wi->ewin));
+	Esnprintf(s, sizeof(s), fmt, EwinGetTitle(wi->ewin));
 	wi->txt = strdup(s);
 	TextSize(fw->tc, 0, 0, 0, wi->txt, &ww, &hh, 17);
 	if (ww > w)

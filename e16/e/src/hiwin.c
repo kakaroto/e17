@@ -246,7 +246,7 @@ HiwinEwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
    Hiwin              *phi = prm;
 
 #if DEBUG_HIWIN
-   Eprintf("HiwinEwinEvent type=%d %s\n", ev->type, EwinGetName(phi->ewin));
+   Eprintf("HiwinEwinEvent type=%d %s\n", ev->type, EwinGetTitle(phi->ewin));
 #endif
 
    switch (ev->type)
@@ -298,7 +298,7 @@ HiwinInit(Hiwin * phi, EWin * ewin)
    if (phi->ewin)
      {
 #if DEBUG_HIWIN
-	Eprintf("Unregister %s\n", EwinGetName(phi->ewin));
+	Eprintf("Unregister %s\n", EwinGetTitle(phi->ewin));
 #endif
 	EventCallbackUnregister(EoGetWin(phi->ewin), 0, HiwinEwinEvent, phi);
      }
@@ -310,7 +310,7 @@ HiwinInit(Hiwin * phi, EWin * ewin)
    if (phi->ewin)
      {
 #if DEBUG_HIWIN
-	Eprintf("Register %s\n", EwinGetName(phi->ewin));
+	Eprintf("Register %s\n", EwinGetTitle(phi->ewin));
 #endif
 	EventCallbackRegister(EoGetWin(phi->ewin), 0, HiwinEwinEvent, phi);
      }

@@ -541,7 +541,7 @@ SnapshotEwinUpdate(const EWin * ewin, unsigned int flags)
       return;
 
 #if 0
-   Eprintf("SnapshotEwinUpdate %s: %#x\n", EwinGetName(ewin), flags);
+   Eprintf("SnapshotEwinUpdate %s: %#x\n", EwinGetTitle(ewin), flags);
 #endif
 
    if (flags & sn->use_flags)
@@ -1040,7 +1040,7 @@ _DlgFillRemember(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
       DialogItemSetColSpan(di, 2);
       DialogItemSetAlign(di, 0, 512);
       if (sn->used)
-	 s = EwinGetName(sn->used);
+	 s = EwinGetTitle(sn->used);
       else if (sn->win_title)
 	 s = sn->win_title;
       else
@@ -1518,7 +1518,7 @@ SnapshotEwinApply(EWin * ewin)
    if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get snap  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
-	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
+	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
 }
 
 /* Detach snapshot from ewin */

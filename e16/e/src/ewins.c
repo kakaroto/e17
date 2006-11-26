@@ -170,7 +170,7 @@ EwinGetAttributes(EWin * ewin, Win win, Window xwin)
    if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get attr  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      EwinGetClientXwin(ewin), ewin->client.x, ewin->client.y,
-	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
+	      ewin->client.w, ewin->client.h, EwinGetTitle(ewin));
 
    return 0;
 }
@@ -336,7 +336,7 @@ EwinConfigure(EWin * ewin)
 
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinConfigure %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
-	      ewin->state.state, EwinGetName(ewin));
+	      ewin->state.state, EwinGetTitle(ewin));
 }
 
 static void
@@ -356,7 +356,7 @@ EwinDestroy(EWin * ewin)
 
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinDestroy %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
-	      ewin->state.state, EwinGetName(ewin));
+	      ewin->state.state, EwinGetTitle(ewin));
 
    EventCallbackUnregister(EoGetWin(ewin), 0, EwinHandleEventsToplevel, ewin);
    EventCallbackUnregister(ewin->win_container, 0, EwinHandleEventsContainer,
@@ -537,7 +537,7 @@ GetContextEwin(void)
  done:
 #if 0
    Eprintf("GetContextEwin %#lx %s\n", EwinGetClientXwin(ewin),
-	   EwinGetName(ewin));
+	   EwinGetTitle(ewin));
 #endif
    return ewin;
 }
@@ -549,7 +549,7 @@ SetContextEwin(EWin * ewin)
       return;
 #if 0
    Eprintf("SetContextEwin %#lx %s\n", EwinGetClientXwin(ewin),
-	   EwinGetName(ewin));
+	   EwinGetTitle(ewin));
 #endif
    Mode.context_ewin = ewin;
 }
@@ -1040,7 +1040,7 @@ EwinWithdraw(EWin * ewin, Win to)
 
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinWithdraw %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
-	      ewin->state.state, EwinGetName(ewin));
+	      ewin->state.state, EwinGetTitle(ewin));
 
    EGrabServer();
 
@@ -1103,7 +1103,7 @@ EwinEventDestroy(EWin * ewin)
 {
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventDestroy %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
-	      ewin->state.state, EwinGetName(ewin));
+	      ewin->state.state, EwinGetTitle(ewin));
 
    EwinDestroy(ewin);
 }
@@ -1123,7 +1123,7 @@ EwinEventReparent(EWin * ewin)
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventReparent %#lx st=%d parent=%#lx: %s\n",
 	      EwinGetClientXwin(ewin), ewin->state.state, parent,
-	      EwinGetName(ewin));
+	      EwinGetTitle(ewin));
    if (parent != EwinGetContainerXwin(ewin))
       EwinDestroy(ewin);
 
@@ -1144,7 +1144,7 @@ EwinEventMap(EWin * ewin, XEvent * ev)
 
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventMap %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
-	      ewin->state.state, EwinGetName(ewin));
+	      ewin->state.state, EwinGetTitle(ewin));
 
    /* If first time we may want to focus it (unless during startup) */
    if (old_state == EWIN_STATE_NEW)
@@ -1160,7 +1160,7 @@ EwinEventUnmap(EWin * ewin, XEvent * ev)
 {
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinEventUnmap %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
-	      ewin->state.state, EwinGetName(ewin));
+	      ewin->state.state, EwinGetTitle(ewin));
 
    if (ewin->state.state == EWIN_STATE_NEW)
      {
@@ -1377,7 +1377,7 @@ EwinRaise(EWin * ewin)
 
    if (EDebug(EDBUG_TYPE_RAISELOWER))
       Eprintf("EwinRaise(%d) %#lx %s n=%d\n", call_depth,
-	      EwinGetClientXwin(ewin), EwinGetName(ewin), num);
+	      EwinGetClientXwin(ewin), EwinGetTitle(ewin), num);
 
    if (num == 0)		/* Quit if stacking is unchanged */
       goto done;
@@ -1410,7 +1410,7 @@ EwinLower(EWin * ewin)
 
    if (EDebug(EDBUG_TYPE_RAISELOWER))
       Eprintf("EwinLower(%d) %#lx %s n=%d\n", call_depth,
-	      EwinGetClientXwin(ewin), EwinGetName(ewin), num);
+	      EwinGetClientXwin(ewin), EwinGetTitle(ewin), num);
 
    if (num == 0)		/* Quit if stacking is unchanged */
       goto done;
@@ -1500,7 +1500,7 @@ EwinKill(EWin * ewin)
 }
 
 const char         *
-EwinGetName(const EWin * ewin)
+EwinGetTitle(const EWin * ewin)
 {
    const char         *name;
 
@@ -1529,7 +1529,7 @@ EwinGetIconName(const EWin * ewin)
    if (name)
       goto done;
 
-   return EwinGetName(ewin);
+   return EwinGetTitle(ewin);
 
  done:
    return (name && strlen(name)) ? name : NULL;
@@ -1684,7 +1684,7 @@ EwinSetPlacementGravity(EWin * ewin, int x, int y)
 #if 0				/* Debug */
    Eprintf("Set gravity %d,%d %d,%d %d %d,%d %d,%d: %s\n", ax, ay, x, y,
 	   ewin->place.gravity, ewin->place.ax, ewin->place.ay,
-	   ewin->place.gx, ewin->place.gy, EwinGetName(ewin));
+	   ewin->place.gx, ewin->place.gy, EwinGetTitle(ewin));
 #endif
 }
 
@@ -1753,7 +1753,7 @@ EwinReposition(EWin * ewin)
       yn = y;
 
 #if 0				/* Debug */
-   Eprintf("Reposition %d,%d -> %d,%d: %s\n", x, y, xn, yn, EwinGetName(ewin));
+   Eprintf("Reposition %d,%d -> %d,%d: %s\n", x, y, xn, yn, EwinGetTitle(ewin));
 #endif
 
    xn += ax * wdn;
@@ -2047,7 +2047,7 @@ EwinHandleEventsToplevel(Win win __UNUSED__, XEvent * ev, void *prm)
      default:
 #if DEBUG_EWIN_EVENTS
 	Eprintf("EwinHandleEventsToplevel: type=%2d win=%#lx: %s\n",
-		ev->type, EwinGetClientXwin(ewin), EwinGetName(ewin));
+		ev->type, EwinGetClientXwin(ewin), EwinGetTitle(ewin));
 #endif
 	break;
      }
@@ -2060,7 +2060,7 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 
 #if 0
    Eprintf("EwinHandleEventsContainer: type=%2d win=%#lx: %s\n",
-	   ev->type, EwinGetClientXwin(ewin), EwinGetName(ewin));
+	   ev->type, EwinGetClientXwin(ewin), EwinGetTitle(ewin));
 #endif
    switch (ev->type)
      {
@@ -2107,7 +2107,7 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 
      default:
 	Eprintf("EwinHandleEventsContainer: type=%2d win=%#lx: %s\n",
-		ev->type, EwinGetClientXwin(ewin), EwinGetName(ewin));
+		ev->type, EwinGetClientXwin(ewin), EwinGetTitle(ewin));
 	break;
      }
 }
@@ -2155,7 +2155,7 @@ EwinHandleEventsClient(Win win __UNUSED__, XEvent * ev, void *prm)
      default:
 #if DEBUG_EWIN_EVENTS
 	Eprintf("EwinHandleEventsClient: type=%2d win=%#lx: %s\n",
-		ev->type, EwinGetClientXwin(ewin), EwinGetName(ewin));
+		ev->type, EwinGetClientXwin(ewin), EwinGetTitle(ewin));
 #endif
 	break;
      }

@@ -83,7 +83,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 #if 0				/* Debug */
    Eprintf("BorderWpITApply: %#lx %#lx %2d %d %s\n",
 	   EwinGetClientXwin(ewin), EoGetWin(ewin), i, force,
-	   EwinGetName(ewin));
+	   EwinGetTitle(ewin));
 #endif
 
    is = ImageclassGetImageState(ewin->border->part[i].iclass, ewb->state,
@@ -94,7 +94,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
    switch (ewin->border->part[i].flags)
      {
      case FLAG_TITLE:
-	txt = EwinGetName(ewin);
+	txt = EwinGetTitle(ewin);
 	if (txt && ewin->border->part[i].tclass)
 	   ts = TextclassGetTextState(ewin->border->part[i].tclass, ewb->state,
 				      ewin->state.active, EoIsSticky(ewin));
@@ -283,7 +283,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	tclass = ewin->border->part[i].tclass;
 	pad = ImageclassGetPadding(iclass);
 	TextSize(tclass, ewin->state.active, EoIsSticky(ewin),
-		 ewin->bits[i].state, EwinGetName(ewin), &max, &dummywidth,
+		 ewin->bits[i].state, EwinGetTitle(ewin), &max, &dummywidth,
 		 w - (pad->top + pad->bottom));
 	max += pad->left + pad->right;
 	if (h > max)
@@ -331,7 +331,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	     tclass = ewin->border->part[i].tclass;
 	     pad = ImageclassGetPadding(iclass);
 	     TextSize(tclass, ewin->state.active, EoIsSticky(ewin),
-		      ewin->bits[i].state, EwinGetName(ewin), &max,
+		      ewin->bits[i].state, EwinGetTitle(ewin), &max,
 		      &dummyheight, h - (pad->top + pad->bottom));
 	     max += pad->left + pad->right;
 

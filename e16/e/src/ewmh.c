@@ -655,7 +655,7 @@ EWMH_GetWindowIcons(EWin * ewin)
      {
 	Eprintf
 	   ("*** EWMH_GetWindowIcons Icon data/size mismatch (ignoring): %s: N=%d WxH=%dx%d\n",
-	    EwinGetName(ewin), num, val[0], (num >= 2) ? val[1] : 0);
+	    EwinGetTitle(ewin), num, val[0], (num >= 2) ? val[1] : 0);
 	Efree(val);
 	return;
      }

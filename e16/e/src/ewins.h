@@ -352,7 +352,7 @@ EWin               *AddInternalToFamily(Win win, const char *bname, int type,
 					void *ptr,
 					void (*init) (EWin * ewin, void *ptr));
 void                EwinReparent(EWin * ewin, Win parent);
-const char         *EwinGetName(const EWin * ewin);
+const char         *EwinGetTitle(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
 const char         *EwinBorderGetName(const EWin * ewin);
 void                EwinBorderGetSize(const EWin * ewin, int *bl, int *br,

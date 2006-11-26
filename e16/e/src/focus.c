@@ -71,7 +71,7 @@ FocusEwinValid(EWin * ewin, int want_on_screen, int click, int want_visible)
 
 #if 0
    Eprintf("FocusEwinValid %#lx %s: st=%d sh=%d inh=%d cl=%d(%d) vis=%d(%d)\n",
-	   EwinGetClientXwin(ewin), EwinGetName(ewin),
+	   EwinGetClientXwin(ewin), EwinGetTitle(ewin),
 	   ewin->state.state, EoIsShown(ewin), ewin->state.inhibit_focus,
 	   click, ewin->props.focusclick, want_visible, ewin->state.visibility);
 #endif
@@ -224,7 +224,7 @@ FocusEwinSetGrabs(EWin * ewin)
 			   ButtonPressMask, ECSR_PGRAB, 1);
 	     if (EDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx set %s\n",
-			EwinGetClientXwin(ewin), EwinGetName(ewin));
+			EwinGetClientXwin(ewin), EwinGetTitle(ewin));
 	     ewin->state.click_grab_isset = 1;
 	  }
      }
@@ -236,7 +236,7 @@ FocusEwinSetGrabs(EWin * ewin)
 			       EwinGetContainerWin(ewin));
 	     if (EDebug(EDBUG_TYPE_GRABS))
 		Eprintf("FocusEwinSetGrabs: %#lx unset %s\n",
-			EwinGetClientXwin(ewin), EwinGetName(ewin));
+			EwinGetClientXwin(ewin), EwinGetTitle(ewin));
 	     ewin->state.click_grab_isset = 0;
 	  }
      }
@@ -294,7 +294,7 @@ doFocusToEwin(EWin * ewin, int why)
    if (EDebug(EDBUG_TYPE_FOCUS))
       Eprintf("doFocusToEWin %#lx %s why=%d\n",
 	      (ewin) ? EwinGetClientXwin(ewin) : 0,
-	      (ewin) ? EwinGetName(ewin) : "None", why);
+	      (ewin) ? EwinGetTitle(ewin) : "None", why);
 
    switch (why)
      {
@@ -457,7 +457,7 @@ FocusToEWin(EWin * ewin, int why)
    if (EDebug(EDBUG_TYPE_FOCUS))
       Eprintf("FocusToEWin(%d) %#lx %s why=%d\n", focus_inhibit,
 	      (ewin) ? EwinGetClientXwin(ewin) : 0,
-	      (ewin) ? EwinGetName(ewin) : "None", why);
+	      (ewin) ? EwinGetTitle(ewin) : "None", why);
 
    switch (why)
      {
@@ -605,7 +605,7 @@ FocusHandleChange(EWin * ewin __UNUSED__, XEvent * ev __UNUSED__)
 {
 #if 0				/* Debug */
    if (ewin == Mode.focuswin && ev->type == FocusOut)
-      Eprintf("??? Lost focus: %s\n", EwinGetName(ewin));
+      Eprintf("??? Lost focus: %s\n", EwinGetTitle(ewin));
 #endif
 }
 

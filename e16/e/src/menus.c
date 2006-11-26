@@ -359,7 +359,7 @@ MenuShow(Menu * m, char noshow)
 	Mode_menus.context_ewin = GetContextEwin();
 #if 0
 	Eprintf("Mode_menus.context_ewin set %s\n",
-		EwinGetName(Mode_menus.context_ewin));
+		EwinGetTitle(Mode_menus.context_ewin));
 #endif
 	ESync();
 	Mode_menus.first = m;

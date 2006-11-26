@@ -377,7 +377,7 @@ GetWinGroupMemberNames(Group ** groups, int num)
 	for (j = 0; j < groups[i]->num_members; j++)
 	  {
 	     strcat(group_member_strings[i],
-		    EwinGetName(groups[i]->members[j]));
+		    EwinGetTitle(groups[i]->members[j]));
 	     strcat(group_member_strings[i], "\n");
 	  }
      }

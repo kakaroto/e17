@@ -312,7 +312,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
    if (EDebug(EDBUG_TYPE_MOVERESIZE))
       Eprintf("doEwinMoveResize(%d,%d) %#lx f=%x d=%d %d+%d %d*%d %s\n",
 	      call_depth, Mode.mode, EwinGetClientXwin(ewin), flags,
-	      (dsk) ? (int)dsk->num : -1, x, y, w, h, EwinGetName(ewin));
+	      (dsk) ? (int)dsk->num : -1, x, y, w, h, EwinGetTitle(ewin));
 
    pdesk = (ewin->o.stacked >= 0) ? EoGetDesk(ewin) : NULL;
    reparent = move = resize = raise = 0;
