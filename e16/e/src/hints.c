@@ -168,18 +168,12 @@ HintsSetWindowName(Win win, const char *name)
 void
 HintsSetWindowClass(Win win, const char *name, const char *clss)
 {
-   XClassHint         *xch;
-
    if (!name)
       name = "NoName";
    if (!clss)
       clss = "NoClass";
 
-   xch = XAllocClassHint();
-   xch->res_name = (char *)name;
-   xch->res_class = (char *)clss;
-   XSetClassHint(disp, WinGetXwin(win), xch);
-   XFree(xch);
+   ecore_x_icccm_name_class_set(WinGetXwin(win), name, clss);
 }
 
 void

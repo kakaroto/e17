@@ -1722,7 +1722,8 @@ ECompMgrWinDumpInfo(const char *txt, EObj * eo, XserverRegion rgn, int force)
    ECmWinInfo         *cw = eo->cmhook;
 
    Eprintf("%s %#lx: %d,%d %dx%d: %s\n", txt, EobjGetXwin(eo),
-	   EobjGetX(eo), EobjGetY(eo), EobjGetW(eo), EobjGetH(eo), eo->name);
+	   EobjGetX(eo), EobjGetY(eo), EobjGetW(eo), EobjGetH(eo),
+	   EobjGetName(eo));
    if (!cw)
      {
 	Eprintf("Not managed\n");
@@ -1877,7 +1878,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	  case WINDOW_SOLID:
 	     D4printf("-   clip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
 		      cw->clip, EobjGetX(eo), EobjGetY(eo), EobjGetW(eo),
-		      EobjGetH(eo), eo->name);
+		      EobjGetH(eo), EobjGetName(eo));
 #if USE_CLIP_RELATIVE_TO_DESK
 	     ERegionUnionOffset(clip, 0, 0, cw->shape);
 #else
@@ -1888,7 +1889,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	  default:
 	     D4printf("- noclip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
 		      cw->clip, EobjGetX(eo), EobjGetY(eo), EobjGetW(eo),
-		      EobjGetH(eo), eo->name);
+		      EobjGetH(eo), EobjGetName(eo));
 	     break;
 	  }
 

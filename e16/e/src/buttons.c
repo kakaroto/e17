@@ -217,7 +217,7 @@ ButtonDestroy(Button * b)
 static int
 _ButtonMatchName(const void *data, const void *match)
 {
-   return strcmp(((const Button *)data)->o.name, match);
+   return strcmp(EoGetName((const Button *)data), match);
 }
 
 Button             *

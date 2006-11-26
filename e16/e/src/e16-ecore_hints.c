@@ -769,6 +769,40 @@ ecore_x_icccm_title_get(Ecore_X_Window win)
    return ecore_x_window_prop_string_get(win, ECORE_X_ATOM_WM_NAME);
 }
 
+void
+ecore_x_icccm_name_class_set(Ecore_X_Window win, const char *name,
+			     const char *clss)
+{
+   XClassHint         *xch;
+
+   xch = XAllocClassHint();
+   if (!xch)
+      return;
+   xch->res_name = (char *)name;
+   xch->res_class = (char *)clss;
+   XSetClassHint(_ecore_x_disp, win, xch);
+   XFree(xch);
+}
+
+void
+ecore_x_icccm_name_class_get(Ecore_X_Window win, char **name, char **clss)
+{
+   XClassHint          xch;
+
+   *name = *clss = NULL;
+   xch.res_name = NULL;
+   xch.res_class = NULL;
+   if (XGetClassHint(_ecore_x_disp, win, &xch))
+     {
+	if (name && xch.res_name)
+	   *name = strdup(xch.res_name);
+	if (clss && xch.res_class)
+	   *clss = strdup(xch.res_class);
+	XFree(xch.res_name);
+	XFree(xch.res_class);
+     }
+}
+
 #endif /* USE_ECORE_X */
 
 #ifndef USE_ECORE_X

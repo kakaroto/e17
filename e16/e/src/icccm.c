@@ -537,19 +537,16 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 {
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLASS)
      {
-	XClassHint          hint;
-
 	_EFREE(ewin->icccm.wm_res_name);
 	_EFREE(ewin->icccm.wm_res_class);
 
-	if (XGetClassHint(disp, EwinGetClientXwin(ewin), &hint) ||
-	    (TryGroup(ewin) && XGetClassHint(disp, ewin->icccm.group, &hint)))
-	  {
-	     ewin->icccm.wm_res_name = Estrdup(hint.res_name);
-	     ewin->icccm.wm_res_class = Estrdup(hint.res_class);
-	     XFree(hint.res_name);
-	     XFree(hint.res_class);
-	  }
+	ecore_x_icccm_name_class_get(EwinGetClientXwin(ewin),
+				     &ewin->icccm.wm_res_name,
+				     &ewin->icccm.wm_res_class);
+	if (!ewin->icccm.wm_res_name && TryGroup(ewin))
+	   ecore_x_icccm_name_class_get(ewin->icccm.group,
+					&ewin->icccm.wm_res_name,
+					&ewin->icccm.wm_res_class);
      }
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_COMMAND)

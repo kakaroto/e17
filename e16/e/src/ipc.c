@@ -573,10 +573,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	     IpcPrintf("title: %s", ewin->icccm.wm_name);
 	     goto done;
 	  }
-	_EFREE(ewin->icccm.wm_name);
-	ewin->icccm.wm_name = Estrdup(prm);
-	XStoreName(disp, EwinGetClientXwin(ewin), ewin->icccm.wm_name);
-	EwinBorderUpdateInfo(ewin);
+	HintsSetWindowName(EwinGetClientWin(ewin), prm);
 	break;
 
      case EWIN_OP_CLOSE:
@@ -1275,7 +1272,7 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
 #else
 	    0, 0
 #endif
-	    , eo->name);
+	    , EobjGetName(eo));
      }
 }
 

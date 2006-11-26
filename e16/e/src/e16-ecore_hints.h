@@ -141,6 +141,11 @@ void                ecore_x_icccm_take_focus_send(Ecore_X_Window win,
 void                ecore_x_icccm_title_set(Ecore_X_Window win,
 					    const char *title);
 char               *ecore_x_icccm_title_get(Ecore_X_Window win);
+void                ecore_x_icccm_name_class_set(Ecore_X_Window win,
+						 const char *name,
+						 const char *clss);
+void                ecore_x_icccm_name_class_get(Ecore_X_Window win,
+						 char **name, char **clss);
 
 /* NETWM (EWMH) */
 extern Ecore_X_Atom ECORE_X_ATOM_NET_SUPPORTED;

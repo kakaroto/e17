@@ -204,7 +204,7 @@ ProgressbarShow(Progressbar * p)
    EobjMap(p->p_win, 0);
 
    pad = ImageclassGetPadding(p->inc);
-   TextDraw(p->tc, p->win->win, None, 0, 0, STATE_NORMAL, p->win->name,
+   TextDraw(p->tc, p->win->win, None, 0, 0, STATE_NORMAL, EobjGetName(p->win),
 	    pad->left, pad->top, p->w - (p->h * 5) - (pad->left + pad->right),
 	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
 	    TextclassGetJustification(p->tnc));

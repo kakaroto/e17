@@ -210,14 +210,14 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
       EobjListStackAdd(eo, 1);
 
    if (EDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EobjInit: %#lx %s\n", EobjGetXwin(eo), eo->name);
+      Eprintf("EobjInit: %#lx %s\n", EobjGetXwin(eo), EobjGetName(eo));
 }
 
 void
 EobjFini(EObj * eo)
 {
    if (EDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EobjFini: %#lx %s\n", EobjGetXwin(eo), eo->name);
+      Eprintf("EobjFini: %#lx %s\n", EobjGetXwin(eo), EobjGetName(eo));
 
    EobjListStackDel(eo);
 
@@ -242,7 +242,7 @@ void
 EobjDestroy(EObj * eo)
 {
    if (EDebug(EDBUG_TYPE_EWINS))
-      Eprintf("EobjDestroy: %#lx %s\n", EobjGetXwin(eo), eo->name);
+      Eprintf("EobjDestroy: %#lx %s\n", EobjGetXwin(eo), EobjGetName(eo));
 
    EobjFini(eo);
 
@@ -316,7 +316,7 @@ EobjRegister(Window xwin, int type)
 #endif
 #if 0
    Eprintf("EobjRegister: %#lx type=%d or=%d: %s\n", xwin, type,
-	   attr.override_redirect, eo->name);
+	   attr.override_redirect, EobjGetName(eo));
 #endif
 
    return eo;
@@ -326,7 +326,8 @@ void
 EobjUnregister(EObj * eo)
 {
 #if 0
-   Eprintf("EobjUnregister: %#lx type=%d: %s\n", eo->win, eo->type, eo->name);
+   Eprintf("EobjUnregister: %#lx type=%d: %s\n", eo->win, eo->type,
+	   EobjGetName(eo));
 #endif
    EobjDestroy(eo);
 }
