@@ -4107,3 +4107,25 @@ Fix shortening text to fit available space in certain combinations of locale
  and font type.
 Update help for a number of IPC commands.
 
+
+-------------------------------------------------------------------------------
+
+Mon Nov 27 21:21:37 CET 2006
+(Kim)
+
+--- 0.16.8.5 0.03 ---
+IPC command "misc arrange" -> "desk arrange".
+Move move/resize event handling to more appropriate location.
+Split up, shuffle around, rename.
+Enable window matches on override-redirect windows (for compositing options).
+Set no-redirect flag on input-only windows (cosmetic/debug, has no real effect).
+Bad iconv conversion descriptor is not NULL but (iconv_t)(-1).
+Rewrap stuff related to WM_NAME/CLASS.
+EwinGetName -> EwinGetTitle.
+Rewrap more stuff related to WM_NAME/CLASS.
+Enable matching override-redirect windows by WM_CLASS.
+By default set opaque and fading off on xscreensaver window.
+Clean up move/resize event handling.
+Allow disabling theme localisation.
+Add Xft font configuration example.
+
