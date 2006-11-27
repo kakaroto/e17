@@ -88,8 +88,8 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   o = e_widget_list_add (evas, 0, 0);
   of = e_widget_framelist_add (evas, D_ ("Flame Color"), 0);
   rg = e_widget_radio_group_new (&(cfdata->palette));
-  ob = e_widget_radio_add (evas, D_ ("Gold"), GOLD_PALETTE, rg);
-  e_widget_framelist_object_append (of, ob);
+//  ob = e_widget_radio_add (evas, D_ ("Gold"), GOLD_PALETTE, rg);
+//  e_widget_framelist_object_append (of, ob);
   ob = e_widget_radio_add (evas, D_ ("Fire"), FIRE_PALETTE, rg);
   e_widget_framelist_object_append (of, ob);
   ob = e_widget_radio_add (evas, D_ ("Plasma"), PLASMA_PALETTE, rg);
@@ -116,8 +116,8 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   switch (cfdata->palette)
     {
     case 1:
-      f->conf->palette_type = GOLD_PALETTE;	// Gold
-      break;
+//      f->conf->palette_type = GOLD_PALETTE;	// Gold
+//      break;
     case 2:
       f->conf->palette_type = FIRE_PALETTE;	//Fire
       f->conf->r = 0;
