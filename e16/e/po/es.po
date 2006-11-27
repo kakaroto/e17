@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-19 23:01+0100\n"
+"POT-Creation-Date: 2006-11-26 16:02+0100\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -66,8 +66,8 @@ msgstr "Error en Actionclass!"
 msgid "%u references remain\n"
 msgstr "%u referencias restantes\n"
 
-#: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1087
-#: src/borders.c:1210 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
+#: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1106
+#: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
 #: src/cursors.c:178 src/iclass.c:519 src/menus.c:1718 src/menus.c:1828
 #: src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
 #: src/windowmatch.c:161
@@ -75,8 +75,8 @@ msgstr "%u referencias restantes\n"
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: ignorando datos extras en \"%s\"\n"
 
-#: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1093
-#: src/borders.c:1216 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
+#: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1112
+#: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
 #: src/cursors.c:184 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
 #: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:182
 #: src/windowmatch.c:166
@@ -1326,7 +1326,7 @@ msgstr "Configurar Portaíconos"
 msgid "Message"
 msgstr "Mensaje"
 
-#: src/ipc.c:1060
+#: src/ipc.c:1057
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1335,11 +1335,11 @@ msgstr ""
 "Versión de Enlightenment: %s\n"
 "Código actualizado al   : %s\n"
 
-#: src/ipc.c:1682
+#: src/ipc.c:1681
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Ayuda de los Comandos IPC de Enlightenment\n"
 
-#: src/ipc.c:1686
+#: src/ipc.c:1685
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1349,19 +1349,19 @@ msgstr ""
 "Use \"Ayuda <comando>\" para obtener descripciones individuales\n"
 "\n"
 
-#: src/ipc.c:1688 src/ipc.c:1708 src/ipc.c:1720
+#: src/ipc.c:1687 src/ipc.c:1707 src/ipc.c:1719
 msgid "Commands currently available:\n"
 msgstr "Comandos disponibles:\n"
 
-#: src/ipc.c:1706
+#: src/ipc.c:1705
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Use \"help full\" para descripciones totales de cada comando\n"
 
-#: src/ipc.c:1707
+#: src/ipc.c:1706
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Use \"Ayuda <comando>\" para obtener una descripción individual\n"
 
-#: src/ipc.c:1709 src/ipc.c:1721
+#: src/ipc.c:1708 src/ipc.c:1720
 msgid "         <command>     : <description>\n"
 msgstr "        <comando>   : <descripción>\n"
 

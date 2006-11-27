@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-19 23:01+0100\n"
+"POT-Creation-Date: 2006-11-26 16:02+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -73,8 +73,8 @@ msgstr "TextClass greŷka!"
 msgid "%u references remain\n"
 msgstr "%u referenca ostaje\n"
 
-#: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1087
-#: src/borders.c:1210 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
+#: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1106
+#: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
 #: src/cursors.c:178 src/iclass.c:519 src/menus.c:1718 src/menus.c:1828
 #: src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
 #: src/windowmatch.c:161
@@ -82,8 +82,8 @@ msgstr "%u referenca ostaje\n"
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: ignoriŷem dodatni sadrŵaj u \"%s\"\n"
 
-#: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1093
-#: src/borders.c:1216 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
+#: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1112
+#: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
 #: src/cursors.c:184 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
 #: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:182
 #: src/windowmatch.c:166
@@ -1325,7 +1325,7 @@ msgstr "Iconbox Osobine"
 msgid "Message"
 msgstr "Poruka"
 
-#: src/ipc.c:1060
+#: src/ipc.c:1057
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1334,12 +1334,12 @@ msgstr ""
 "Enlightenment verzija : %s\n"
 "kod je trenutno na    : %s\n"
 
-#: src/ipc.c:1682
+#: src/ipc.c:1681
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Comande Pomo?"
 
-#: src/ipc.c:1686
+#: src/ipc.c:1685
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1350,23 +1350,23 @@ msgstr ""
 "koristite \"help <command>\" za pojedinaīni opis\n"
 "\n"
 
-#: src/ipc.c:1688 src/ipc.c:1708 src/ipc.c:1720
+#: src/ipc.c:1687 src/ipc.c:1707 src/ipc.c:1719
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "trenutno dostupne komande:\n"
 
-#: src/ipc.c:1706
+#: src/ipc.c:1705
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1707
+#: src/ipc.c:1706
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "koristi \"help <command>\" za individualni opis\n"
 
-#: src/ipc.c:1709 src/ipc.c:1721
+#: src/ipc.c:1708 src/ipc.c:1720
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"

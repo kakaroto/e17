@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-19 23:01+0100\n"
+"POT-Creation-Date: 2006-11-26 16:02+0100\n"
 "PO-Revision-Date: 2006-11-06 02:41+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -58,8 +58,8 @@ msgstr "actionclass エラー"
 msgid "%u references remain\n"
 msgstr "%u 参照残っています。\n"
 
-#: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1087
-#: src/borders.c:1210 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
+#: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1106
+#: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
 #: src/cursors.c:178 src/iclass.c:519 src/menus.c:1718 src/menus.c:1828
 #: src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
 #: src/windowmatch.c:161
@@ -67,8 +67,8 @@ msgstr "%u 参照残っています。\n"
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" にある余分なデータは無視します。\n"
 
-#: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1093
-#: src/borders.c:1216 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
+#: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1112
+#: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
 #: src/cursors.c:184 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
 #: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:182
 #: src/windowmatch.c:166
@@ -1312,7 +1312,7 @@ msgstr "アイコンボックスの設定"
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/ipc.c:1060
+#: src/ipc.c:1057
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1322,12 +1322,12 @@ msgstr ""
 "コードバージョン        : %s\n"
 
 #
-#: src/ipc.c:1682
+#: src/ipc.c:1681
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC コマンド ヘルプ\n"
 
 #
-#: src/ipc.c:1686
+#: src/ipc.c:1685
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1338,22 +1338,22 @@ msgstr ""
 "\n"
 
 #
-#: src/ipc.c:1688 src/ipc.c:1708 src/ipc.c:1720
+#: src/ipc.c:1687 src/ipc.c:1707 src/ipc.c:1719
 msgid "Commands currently available:\n"
 msgstr "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:1706
+#: src/ipc.c:1705
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 "\"help full\" ですべてのコマンドについて各々詳しい説明が表示されます。\n"
 
 #
-#: src/ipc.c:1707
+#: src/ipc.c:1706
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示されます。\n"
 
 #
-#: src/ipc.c:1709 src/ipc.c:1721
+#: src/ipc.c:1708 src/ipc.c:1720
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
