@@ -130,7 +130,6 @@ e_phys_force_collision_helper(E_Phys_Particle *p1, E_Phys_Particle *p2, int axis
 static void
 e_phys_force_collision_apply(E_Phys_Force *force)
 {
-  E_Phys_Force_Collision *coll = (E_Phys_Force_Collision *)force;
   Evas_List *l, *l2;
   float x11, x12, x21, x22;
   float y11, y12, y21, y22;
@@ -325,6 +324,8 @@ e_phys_force_constant_add(E_Phys_World *world, E_Phys_Vector force, int is_accel
   f->const_force = force;
   f->force_func = NULL;
   f->is_acceleration = is_acceleration;
+
+  return f;
 }
 
 
@@ -343,6 +344,8 @@ e_phys_force_uniform_add(E_Phys_World *world, E_Phys_Vector (*force_func) (float
   e_phys_force_init(E_PHYS_FORCE(f), world, e_phys_force_uniform_apply, NULL);
   f->force_func = force_func;
   f->is_acceleration = is_acceleration;
+
+  return f;
 }
 
 static void
