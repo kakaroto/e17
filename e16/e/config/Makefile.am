@@ -12,7 +12,8 @@ bindings.cfg \
 definitions \
 matches.cfg \
 menus.cfg \
-e16keyedit.db
+e16keyedit.db \
+fonts.cfg-xft_example
 
 configdatadir = $(ENLIGHTENMENT_ROOT)/config
 

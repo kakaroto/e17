@@ -1,0 +1,32 @@
+/* Xft font example */
+#include <definitions>
+__E_CFG_VERSION 1
+__FONTS __BGN
+
+font-default		"Sans-8:Bold"
+
+font-border		"Sans-8:Bold"
+
+font-coords		"Sans-8:Bold"
+
+font-dialog		"Sans-8"
+font-dialog-hilite	"Sans-9"	/* ??? */
+
+font-epplet		"Sans-6"
+font-epplet-small	"Sans-6"
+font-epplet-medium	"Sans-8"
+font-epplet-large	"Sans-10"
+
+font-focus	"Sans-8:Bold"
+
+font-iconbox	"Sans-8:Bold"
+
+font-init	"Sans-9:Bold"
+
+font-menu	"Sans-8"
+
+font-pager	"Sans-8:Bold"
+
+font-tooltip	"Sans-8:Bold"
+
+__END
