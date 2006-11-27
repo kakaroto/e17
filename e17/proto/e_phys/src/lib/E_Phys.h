@@ -169,10 +169,10 @@ struct _E_Phys_World
 
   Ecore_Timer *timer;
 
-  float time;
+  double time;
 
-  float dt;
-  float elapsed;
+  double dt;
+  double elapsed;
   int constraint_iter;
   float friction;
 
