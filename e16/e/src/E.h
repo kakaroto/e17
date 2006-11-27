@@ -374,6 +374,7 @@ typedef struct
    } startup;
    struct
    {
+      char                localise;
       char               *name;
       char               *extra_path;
       char               *ttfont_path;

@@ -499,6 +499,7 @@ static const IpcItem ThemeIpcArray[] = {
 #define N_IPC_FUNCS (sizeof(ThemeIpcArray)/sizeof(IpcItem))
 
 static const CfgItem ThemeCfgItems[] = {
+   CFG_ITEM_BOOL(Conf.theme, localise, 1),
    CFG_ITEM_STR(Conf.theme, name),
    CFG_ITEM_STR(Conf.theme, extra_path),
    CFG_ITEM_STR(Conf.theme, ttfont_path),

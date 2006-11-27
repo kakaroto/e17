@@ -462,7 +462,7 @@ ConfigFileFind(const char *name, const char *themepath, int pp)
    char               *fullname, *file, *ppfile;
    int                 i, err;
 
-   fullname = FindFile(name, themepath, 1);
+   fullname = FindFile(name, themepath, Conf.theme.localise);
    if (!fullname)
       return NULL;
 
