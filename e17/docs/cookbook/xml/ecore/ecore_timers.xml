@@ -56,7 +56,7 @@ static int timer_two_cb(void *data) {
 
 <para>
 The creation of the timers is as simple as calling <function>ecore_timer_add()</function>.
-This will return an <literal>Ecore_Timer</literal> strut on success or NULL on failure.
+This will return an <literal>Ecore_Timer</literal> struct on success or NULL on failure.
 In this case I'm ignoring the return value. The three parameters are:
 <itemizedlist mark="bullet" spacing="compact">
  <listitem><para>double timeout</para></listitem>
