@@ -52,8 +52,12 @@ static void ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
 
 static void ewl_text_context_cb_free(void *data);
 static void ewl_text_context_print(Ewl_Text_Context *tx, const char *indent);
+#if 0
 static char *ewl_text_context_name_get(Ewl_Text_Context *tx, 
 			unsigned int context_mask, Ewl_Text_Context *tx_change);
+#endif
+static void ewl_text_context_merge(Ewl_Text_Context *tx, unsigned int context_mask,
+			Ewl_Text_Context *tx_change);
 static Ewl_Text_Context *ewl_text_context_find(Ewl_Text_Context *tx,
 			unsigned int context_mask, Ewl_Text_Context *tx_change);
 static void ewl_text_context_format_string_create(Ewl_Text_Context *ctx);
@@ -90,6 +94,8 @@ static void ewl_text_byte_to_char(Ewl_Text *t, unsigned int byte_idx,
 						unsigned int *char_len);
 static char *ewl_text_text_next_char(const char *text, 
 						unsigned int *idx);
+static unsigned int ewl_text_context_hash_key(const void *ctx);
+static int ewl_text_context_hash_cmp(const void *ctx1, const void *ctx2);
 
 /**
  * @return Returns a new Ewl_Text widget on success, NULL on failure.
@@ -5020,8 +5026,8 @@ ewl_text_context_init(void)
 
 	if (!context_hash) 
 	{
-		context_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-		ecore_hash_set_free_key(context_hash, free);
+		context_hash = ecore_hash_new(ewl_text_context_hash_key,
+				ewl_text_context_hash_cmp);
 		ecore_hash_set_free_value(context_hash, ewl_text_context_cb_free);
 	}
 
@@ -5253,12 +5259,11 @@ ewl_text_context_default_create(Ewl_Text *t)
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
 
-#if 0
 static unsigned int
-ewl_text_context_hash_key(void *ctx)
+ewl_text_context_hash_key(const void *ctx)
 {
 	unsigned int key;
-	Ewl_Text_Context *tx = ctx;
+	const Ewl_Text_Context *tx = ctx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -5267,44 +5272,152 @@ ewl_text_context_hash_key(void *ctx)
 		key ^= ecore_str_hash(tx->font);
 	if (tx->font_source)
 		key ^= ecore_str_hash(tx->font_source);
-	key ^= (tx->size << 13);
+	key ^= (tx->size << 5);
 	key ^= (tx->styles << 7);
 
-	key ^= ((tx->color.r | tx->color.g | tx->color.b | tx->color.a));
+#define COLOR_HASH(r, g, b, a) (r << 24 | g << 16 | b << 8 | a)
+	key ^= COLOR_HASH(tx->color.r, tx->color.g, tx->color.b, tx->color.a);
 
-	key ^= ((tx->style_colors.bg.r |
-				tx->style_colors.bg.g |
-				tx->style_colors.bg.b |
+	key ^= (COLOR_HASH(tx->style_colors.bg.r,
+				tx->style_colors.bg.g,
+				tx->style_colors.bg.b,
 				tx->style_colors.bg.a) << 1);
-	key ^= ((tx->style_colors.glow.r |
-				tx->style_colors.glow.g |
-				tx->style_colors.glow.b |
+	key ^= (COLOR_HASH(tx->style_colors.glow.r,
+				tx->style_colors.glow.g,
+				tx->style_colors.glow.b,
 				tx->style_colors.glow.a) >> 1);
-	key ^= ((tx->style_colors.outline.r |
-				tx->style_colors.outline.g |
-				tx->style_colors.outline.b |
+	key ^= (COLOR_HASH(tx->style_colors.outline.r,
+				tx->style_colors.outline.g,
+				tx->style_colors.outline.b,
 				tx->style_colors.outline.a) << 3);
-	key ^= ((tx->style_colors.shadow.r |
-				tx->style_colors.shadow.g |
-				tx->style_colors.shadow.b |
+	key ^= (COLOR_HASH(tx->style_colors.shadow.r,
+				tx->style_colors.shadow.g,
+				tx->style_colors.shadow.b,
 				tx->style_colors.shadow.a) >> 3);
-	key ^= ((tx->style_colors.strikethrough.r |
-				tx->style_colors.strikethrough.g |
-				tx->style_colors.strikethrough.b |
+	key ^= (COLOR_HASH(tx->style_colors.strikethrough.r,
+				tx->style_colors.strikethrough.g,
+				tx->style_colors.strikethrough.b,
 				tx->style_colors.strikethrough.a) << 5);
-	key ^= ((tx->style_colors.underline.r |
-				tx->style_colors.underline.g |
-				tx->style_colors.underline.b |
+	key ^= (COLOR_HASH(tx->style_colors.underline.r,
+				tx->style_colors.underline.g,
+				tx->style_colors.underline.b,
 				tx->style_colors.underline.a) >> 5);
-	key ^= ((tx->style_colors.double_underline.r |
-				tx->style_colors.double_underline.g |
-				tx->style_colors.double_underline.b |
+	key ^= (COLOR_HASH(tx->style_colors.double_underline.r,
+				tx->style_colors.double_underline.g,
+				tx->style_colors.double_underline.b,
 				tx->style_colors.double_underline.a) << 7);
 
 	DRETURN_INT(key, DLEVEL_STABLE);
 }
-#endif
 
+static int
+ewl_text_context_hash_cmp(const void *ctx1, const void *ctx2)
+{
+	unsigned int key1, key2;
+	const Ewl_Text_Context *tx1 = ctx1;
+	const Ewl_Text_Context *tx2 = ctx2;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+#define KEY_COMPARE(k1, k2) if (k1 > k2) goto CTX1_LARGER; else if (k2 > k1) goto CTX2_LARGER;
+	key1 = 0;
+	key2 = 0;
+
+	if (tx1->font)
+		key1 = ecore_str_hash(tx1->font);
+	if (tx2->font)
+		key2 = ecore_str_hash(tx2->font);
+
+	KEY_COMPARE(key1, key2);
+
+	KEY_COMPARE(tx1->size, tx2->size);
+	KEY_COMPARE(tx1->styles, tx2->styles);
+
+	key1 = (tx1->color.r | tx1->color.g | tx1->color.b | tx1->color.a);
+	key2 = (tx2->color.r | tx2->color.g | tx2->color.b | tx2->color.a);
+
+	KEY_COMPARE(key1, key2);
+
+	key1 = (tx1->style_colors.bg.r |
+				tx1->style_colors.bg.g |
+				tx1->style_colors.bg.b |
+				tx1->style_colors.bg.a);
+
+	key2 = (tx2->style_colors.bg.r |
+				tx2->style_colors.bg.g |
+				tx2->style_colors.bg.b |
+				tx2->style_colors.bg.a);
+
+	KEY_COMPARE(key1, key2);
+
+	key1 = (tx1->style_colors.outline.r |
+				tx1->style_colors.outline.g |
+				tx1->style_colors.outline.b |
+				tx1->style_colors.outline.a);
+
+	key2 = (tx2->style_colors.outline.r |
+				tx2->style_colors.outline.g |
+				tx2->style_colors.outline.b |
+				tx2->style_colors.outline.a);
+
+	KEY_COMPARE(key1, key2);
+
+	key1 = (tx1->style_colors.shadow.r |
+				tx1->style_colors.shadow.g |
+				tx1->style_colors.shadow.b |
+				tx1->style_colors.shadow.a);
+
+	key2 = (tx2->style_colors.shadow.r |
+				tx2->style_colors.shadow.g |
+				tx2->style_colors.shadow.b |
+				tx2->style_colors.shadow.a);
+
+	KEY_COMPARE(key1, key2);
+
+	key1 = (tx1->style_colors.strikethrough.r |
+				tx1->style_colors.strikethrough.g |
+				tx1->style_colors.strikethrough.b |
+				tx1->style_colors.strikethrough.a);
+
+	key2 = (tx2->style_colors.strikethrough.r |
+				tx2->style_colors.strikethrough.g |
+				tx2->style_colors.strikethrough.b |
+				tx2->style_colors.strikethrough.a);
+
+	KEY_COMPARE(key1, key2);
+
+	key1 = (tx1->style_colors.underline.r |
+				tx1->style_colors.underline.g |
+				tx1->style_colors.underline.b |
+				tx1->style_colors.underline.a);
+
+	key2 = (tx2->style_colors.underline.r |
+				tx2->style_colors.underline.g |
+				tx2->style_colors.underline.b |
+				tx2->style_colors.underline.a);
+
+	KEY_COMPARE(key1, key2);
+
+	key1 = (tx1->style_colors.double_underline.r |
+				tx1->style_colors.double_underline.g |
+				tx1->style_colors.double_underline.b |
+				tx1->style_colors.double_underline.a);
+
+	key2 = (tx2->style_colors.double_underline.r |
+				tx2->style_colors.double_underline.g |
+				tx2->style_colors.double_underline.b |
+				tx2->style_colors.double_underline.a);
+
+	KEY_COMPARE(key1, key2);
+
+	DRETURN_INT(0, DLEVEL_STABLE);
+CTX1_LARGER:
+	DRETURN_INT(-1, DLEVEL_STABLE);
+CTX2_LARGER:
+	DRETURN_INT(1, DLEVEL_STABLE);
+}
+
+#if 0
 static char *
 ewl_text_context_name_get(Ewl_Text_Context *tx, unsigned int context_mask,
 						Ewl_Text_Context *tx_change)
@@ -5403,12 +5516,90 @@ ewl_text_context_name_get(Ewl_Text_Context *tx, unsigned int context_mask,
 
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
+#endif
+
+static void
+ewl_text_context_merge(Ewl_Text_Context *tx, unsigned int context_mask,
+						Ewl_Text_Context *tx_change)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tx", tx);
+
+	tx->font = ((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? tx_change->font : tx->font);
+	tx->font_source = ((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? tx_change->font_source : tx->font_source);
+	tx->size = ((context_mask & EWL_TEXT_CONTEXT_MASK_SIZE) ? tx_change->size : tx->size);
+	tx->styles = ((context_mask & EWL_TEXT_CONTEXT_MASK_STYLES) ? tx_change->styles : tx->styles),
+	tx->align = ((context_mask & EWL_TEXT_CONTEXT_MASK_ALIGN) ? tx_change->align : tx->align);
+	tx->wrap = ((context_mask & EWL_TEXT_CONTEXT_MASK_WRAP) ? tx_change->wrap : tx->wrap);
+	tx->color.r = ((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.r : tx->color.r);
+	tx->color.g = ((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.g : tx->color.g);
+	tx->color.b = ((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.b : tx->color.b);
+	tx->color.a = ((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.a : tx->color.a);
+	tx->style_colors.bg.r = ((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
+		 			tx_change->style_colors.bg.r : tx->style_colors.bg.r);
+	tx->style_colors.bg.g = ((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
+		 			tx_change->style_colors.bg.g : tx->style_colors.bg.g);
+	tx->style_colors.bg.b = ((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
+		 			tx_change->style_colors.bg.b : tx->style_colors.bg.b);
+	tx->style_colors.bg.a = ((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
+		 			tx_change->style_colors.bg.a : tx->style_colors.bg.a);
+	tx->style_colors.glow.r = ((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
+		 			tx_change->style_colors.glow.r : tx->style_colors.glow.r);
+	tx->style_colors.glow.g = ((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
+		 			tx_change->style_colors.glow.g : tx->style_colors.glow.g);
+	tx->style_colors.glow.b = ((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
+		 			tx_change->style_colors.glow.b : tx->style_colors.glow.b);
+	tx->style_colors.glow.a = ((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
+		 			tx_change->style_colors.glow.a : tx->style_colors.glow.a);
+	tx->style_colors.outline.r = ((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
+		 			tx_change->style_colors.outline.r : tx->style_colors.outline.r);
+	tx->style_colors.outline.g = ((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
+		 			tx_change->style_colors.outline.g : tx->style_colors.outline.g);
+	tx->style_colors.outline.b = ((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
+		 			tx_change->style_colors.outline.b : tx->style_colors.outline.b);
+	tx->style_colors.outline.a = ((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
+		 			tx_change->style_colors.outline.a : tx->style_colors.outline.a);
+	tx->style_colors.shadow.r = ((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
+		 			tx_change->style_colors.shadow.r : tx->style_colors.shadow.r);
+	tx->style_colors.shadow.g = ((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
+		 			tx_change->style_colors.shadow.g : tx->style_colors.shadow.g);
+	tx->style_colors.shadow.b = ((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
+		 			tx_change->style_colors.shadow.b : tx->style_colors.shadow.b);
+	tx->style_colors.shadow.a = ((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
+		 			tx_change->style_colors.shadow.a : tx->style_colors.shadow.a);
+	tx->style_colors.strikethrough.r = ((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
+		 			tx_change->style_colors.strikethrough.r : tx->style_colors.strikethrough.r);
+	tx->style_colors.strikethrough.g = ((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
+		 			tx_change->style_colors.strikethrough.g : tx->style_colors.strikethrough.g);
+	tx->style_colors.strikethrough.b = ((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
+		 			tx_change->style_colors.strikethrough.b : tx->style_colors.strikethrough.b);
+	tx->style_colors.strikethrough.a = ((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
+		 			tx_change->style_colors.strikethrough.a : tx->style_colors.strikethrough.a);
+	tx->style_colors.underline.r = ((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.underline.r : tx->style_colors.underline.r),
+	tx->style_colors.underline.g = ((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.underline.g : tx->style_colors.underline.g),
+	tx->style_colors.underline.b = ((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.underline.b : tx->style_colors.underline.b),
+	tx->style_colors.underline.a = ((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.underline.a : tx->style_colors.underline.a),
+	tx->style_colors.double_underline.r = ((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.double_underline.r : tx->style_colors.double_underline.r),
+	tx->style_colors.double_underline.g = ((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.double_underline.g : tx->style_colors.double_underline.g),
+	tx->style_colors.double_underline.b = ((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.double_underline.b : tx->style_colors.double_underline.b),
+	tx->style_colors.double_underline.a = ((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
+		 			tx_change->style_colors.double_underline.a : tx->style_colors.double_underline.a);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
 static Ewl_Text_Context *
 ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 					Ewl_Text_Context *tx_change)
 {
-	char *t;
+	Ewl_Text_Context tmp_tx;
 	Ewl_Text_Context *new_tx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -5418,8 +5609,9 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 	if (context_mask > 0)
 		DCHECK_PARAM_PTR_RET("tx_change", tx_change, NULL);
 
-	t = ewl_text_context_name_get(tx, context_mask, tx_change);
-	new_tx = ecore_hash_get(context_hash, t);
+	memcpy(&tmp_tx, tx, sizeof(Ewl_Text_Context));
+	ewl_text_context_merge(&tmp_tx, context_mask, tx_change);
+	new_tx = ecore_hash_get(context_hash, &tmp_tx);
 	if (!new_tx)
 	{
 		if ((new_tx = ewl_text_context_dup(tx)))
@@ -5505,11 +5697,10 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 			if (new_tx->format) ecore_string_release(new_tx->format);
 			new_tx->format = NULL;
 
-			ecore_hash_set(context_hash, strdup(t), new_tx);
+			ecore_hash_set(context_hash, new_tx, new_tx);
 		}
 	}
 	if (new_tx) ewl_text_context_acquire(new_tx);
-	FREE(t);
 
 	DRETURN_PTR(new_tx, DLEVEL_STABLE);
 }
@@ -5542,21 +5733,17 @@ ewl_text_context_acquire(Ewl_Text_Context *tx)
 void
 ewl_text_context_release(Ewl_Text_Context *tx)
 {
-	char *t;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tx", tx);
 
 	tx->ref_count --;
 	if (tx->ref_count > 0) return;
 
-	t = ewl_text_context_name_get(tx, 0, NULL);
-	ecore_hash_remove(context_hash, t);
+	ecore_hash_remove(context_hash, tx);
 
 	IF_FREE(tx->font);
 	if (tx->format) ecore_string_release(tx->format);
 	FREE(tx);
-	FREE(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
