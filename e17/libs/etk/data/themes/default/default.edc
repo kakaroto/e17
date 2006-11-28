@@ -31,6 +31,7 @@ collections {
    #include "widgets/entry.edc"
    #include "widgets/text_view.edc"
    #include "widgets/slider.edc"
+   #include "widgets/spinner.edc"
    #include "widgets/scrollbar.edc"
    #include "widgets/tree.edc"
    #include "widgets/separator.edc"

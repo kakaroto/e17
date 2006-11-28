@@ -11,6 +11,7 @@ void etk_test_slider_window_create(void *data);
 void etk_test_colorpicker_window_create(void *data);
 void etk_test_canvas_window_create(void *data);
 void etk_test_tree_window_create(void *data);
+void etk_test_tree2_window_create(void *data);
 void etk_test_paned_window_create(void *data);
 void etk_test_scrolled_view_window_create(void *data);
 void etk_test_menu_window_create(void *data);

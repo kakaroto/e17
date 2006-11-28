@@ -2472,6 +2472,11 @@ static void _etk_widget_realize(Etk_Widget *widget)
          evas_object_color_set(widget->content_object, 0, 0, 0, 0);
          evas_object_show(widget->content_object);
          edje_object_part_swallow(widget->theme_object, ETK_WIDGET_CONTENT_PART, widget->content_object);
+         
+         widget->inset.left = 0;
+         widget->inset.right = 0;
+         widget->inset.top = 0;
+         widget->inset.bottom = 0;
       }
    }
    else

@@ -22,7 +22,7 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
 static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value);
 static void _etk_scrollbar_page_size_changed_cb(Etk_Object *object, const char *property_name, void *data);
 static void _etk_scrollbar_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
-static void _etk_scrollbar_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
+static void _etk_scrollbar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 
 static void _etk_scrollbar_scroll_start_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_scrollbar_scroll_stop_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -141,7 +141,7 @@ static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar)
    scrollbar->dragging = ETK_FALSE;
    ETK_RANGE(scrollbar)->value_changed = _etk_scrollbar_value_changed_handler;
    etk_signal_connect("realize", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_realize_cb), NULL);
-   etk_signal_connect("mouse_wheel", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_mouse_wheel), NULL);
+   etk_signal_connect("mouse_wheel", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_mouse_wheel_cb), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "page_size", _etk_scrollbar_page_size_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "lower", _etk_scrollbar_range_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "upper", _etk_scrollbar_range_changed_cb, NULL);
@@ -161,8 +161,9 @@ static void _etk_scrollbar_realize_cb(Etk_Object *object, void *data)
    if (!object || !(theme_object = ETK_WIDGET(object)->theme_object))
       return;
 
-   _etk_scrollbar_value_changed_handler(ETK_RANGE(object), ETK_RANGE(object)->value);
+   _etk_scrollbar_range_changed_cb(object, NULL, NULL);
    edje_object_signal_callback_add(theme_object, "drag*", "etk.dragable.bar", _etk_scrollbar_drag_dragged_cb, object);
+   /* TODO: change the signal name to "etk,action,scroll,down/up,start" and "etk,action,scroll,stop" */
    edje_object_signal_callback_add(theme_object, "scroll_*_start", "", _etk_scrollbar_scroll_start_cb, object);
    edje_object_signal_callback_add(theme_object, "scroll_stop", "", _etk_scrollbar_scroll_stop_cb, object);
 }
@@ -191,7 +192,7 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
 }
 
 /* Called when the user wants to scroll the scrollbar with the mouse wheel */
-static void _etk_scrollbar_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
+static void _etk_scrollbar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Range *scrollbar_range;
    
@@ -235,7 +236,10 @@ static void _etk_scrollbar_page_size_changed_cb(Etk_Object *object, const char *
    if (!(range = ETK_RANGE(object)) || !(theme_object = ETK_WIDGET(range)->theme_object))
       return;
 
-   new_drag_size = (double)range->page_size / (range->upper - range->lower);
+   if (range->upper > range->lower)
+      new_drag_size = (double)range->page_size / (range->upper - range->lower);
+   else
+      new_drag_size = 1.0;
    if (ETK_IS_HSCROLLBAR(range))
       edje_object_part_drag_size_set(theme_object, "etk.dragable.bar", new_drag_size, 0.0);
    else
@@ -264,7 +268,10 @@ static void _etk_scrollbar_range_changed_cb(Etk_Object *object, const char *prop
       edje_object_part_drag_value_set(theme_object, "etk.dragable.bar", 0.0, percent);
    
    /* Update the size of the drag button */
-   new_drag_size = (double)range->page_size / (range->upper - range->lower);
+   if (range->upper > range->lower)
+      new_drag_size = (double)range->page_size / (range->upper - range->lower);
+   else
+      new_drag_size = 1.0;
    if (ETK_IS_HSCROLLBAR(range))
       edje_object_part_drag_size_set(theme_object, "etk.dragable.bar", new_drag_size, 0.0);
    else
@@ -285,16 +292,11 @@ static void _etk_scrollbar_scroll_start_cb(void *data, Evas_Object *obj, const c
       scrollbar->scrolling_timer = NULL;
    }
 
+   scrollbar->first_scroll = ETK_TRUE;
    if (strcmp(emission, "scroll_left_start") == 0 || strcmp(emission, "scroll_up_start") == 0)
-   {
       scrollbar->scrolling_timer = ecore_timer_add(0.0, _etk_scrollbar_step_decrement_cb, scrollbar);
-      scrollbar->first_scroll = ETK_TRUE;
-   }
    else if (strcmp(emission, "scroll_right_start") == 0 || strcmp(emission, "scroll_down_start") == 0)
-   {
       scrollbar->scrolling_timer = ecore_timer_add(0.0, _etk_scrollbar_step_increment_cb, scrollbar);
-      scrollbar->first_scroll = ETK_TRUE;
-   }
 }
 
 /* Called when the user stops pressing an arrow of the scrollbar */

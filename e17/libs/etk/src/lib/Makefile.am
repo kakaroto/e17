@@ -65,6 +65,7 @@ etk_shadow.h \
 etk_signal.h \
 etk_signal_callback.h \
 etk_slider.h \
+etk_spinner.h \
 etk_statusbar.h \
 etk_stock.h \
 etk_string.h \
@@ -79,6 +80,8 @@ etk_tooltips.h \
 etk_toplevel.h \
 etk_tree.h \
 etk_tree_model.h \
+etk_tree2.h \
+etk_tree2_model.h \
 etk_type.h \
 etk_types.h \
 etk_utils.h \
@@ -135,6 +138,7 @@ etk_shadow.c \
 etk_signal.c \
 etk_signal_callback.c \
 etk_slider.c \
+etk_spinner.c \
 etk_statusbar.c \
 etk_stock.c \
 etk_string.c \
@@ -149,6 +153,8 @@ etk_tooltips.c \
 etk_toplevel.c \
 etk_tree.c \
 etk_tree_model.c \
+etk_tree2.c \
+etk_tree2_model.c \
 etk_type.c \
 etk_utils.c \
 etk_viewport.c \

@@ -9,6 +9,7 @@ void etk_test_slider_window_create(void *data)
    Etk_Widget *table;
    Etk_Widget *slider;
    Etk_Widget *label;
+   Etk_Widget *spinner;
    
    if (win)
    {
@@ -21,7 +22,7 @@ void etk_test_slider_window_create(void *data)
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
-   table = etk_table_new(2, 2, ETK_FALSE);
+   table = etk_table_new(2, 3, ETK_FALSE);
    etk_container_add(ETK_CONTAINER(win), table);
    
    slider = etk_hslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
@@ -32,6 +33,10 @@ void etk_test_slider_window_create(void *data)
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 0, 0, ETK_TABLE_NONE);
    etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(_etk_test_slider_value_changed), label);
    
+   spinner = etk_spinner_new(0.0, 255.0, 128.00, 1.0, 10.0);
+   etk_table_attach(ETK_TABLE(table), spinner, 0, 0, 2, 2, 0, 0, ETK_TABLE_NONE);
+   //etk_signal_connect("value_changed", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_test_spinner_value_changed), label);
+   
    slider = etk_vslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
    etk_widget_size_request_set(slider, 130, 130);
    etk_table_attach_default(ETK_TABLE(table), slider, 1, 1, 0, 0);
@@ -39,6 +44,10 @@ void etk_test_slider_window_create(void *data)
    label = etk_label_new("128.00");
    etk_table_attach(ETK_TABLE(table), label, 1, 1, 1, 1, 0, 0, ETK_TABLE_NONE);
    etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(_etk_test_slider_value_changed), label);
+   
+   spinner = etk_spinner_new(0.0, 255.0, 128.00, 1.0, 10.0);
+   etk_table_attach(ETK_TABLE(table), spinner, 1, 1, 2, 2, 0, 0, ETK_TABLE_NONE);
+   //etk_signal_connect("value_changed", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_test_spinner_value_changed), label);
    
    etk_widget_show_all(win);
 }

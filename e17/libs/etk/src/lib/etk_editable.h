@@ -14,9 +14,10 @@
 
 Evas_Object *etk_editable_add(Evas *evas);
 void         etk_editable_theme_set(Evas_Object *editable, const char *file, const char *group);
-
-void     etk_editable_password_mode_set(Evas_Object *editable, Etk_Bool password_mode);
-Etk_Bool etk_editable_password_mode_get(Evas_Object *editable);
+void         etk_editable_align_set(Evas_Object *editable, float align);
+float        etk_editable_align_get(Evas_Object *editable);
+void         etk_editable_password_mode_set(Evas_Object *editable, Etk_Bool password_mode);
+Etk_Bool     etk_editable_password_mode_get(Evas_Object *editable);
 
 void         etk_editable_text_set(Evas_Object *editable, const char *text);
 const char  *etk_editable_text_get(Evas_Object *editable);

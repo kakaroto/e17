@@ -73,7 +73,7 @@ Etk_Type *etk_entry_type_get()
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
       
       entry_type->property_set = _etk_entry_property_set;
-      entry_type->property_get = _etk_entry_property_get;      
+      entry_type->property_get = _etk_entry_property_get;
    }
 
    return entry_type;
@@ -481,7 +481,7 @@ static void _etk_entry_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event
    
    if (!(entry = ETK_ENTRY(object)))
       return;
-   entry->selection_dragging = ETK_FALSE;
+   
    if (event->button == 1)
    {
       entry->selection_dragging = ETK_FALSE;
@@ -609,6 +609,12 @@ static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selec
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
 
 /**
  * @addtogroup Etk_Entry

@@ -32,6 +32,7 @@ typedef struct Etk_Editable_Smart_Data
    Etk_String *text;
    int unicode_length;
    
+   float align;
    int cursor_width;
    Etk_Bool selection_on_fg;
    int average_char_w;
@@ -127,6 +128,36 @@ void etk_editable_theme_set(Evas_Object *editable, const char *file, const char 
    
    _etk_editable_text_update(editable);
    _etk_editable_cursor_update(editable);
+}
+
+/**
+ * @brief Sets the alignment of the text inside the editable object
+ * @param editable an editable object
+ * @param align the alignment of the text, from 0.0 (left alignment) to 1.0 (right alignment)
+ */
+void etk_editable_align_set(Evas_Object *editable, float align)
+{
+   Etk_Editable_Smart_Data *sd;
+   
+   if (!editable || !(sd = evas_object_smart_data_get(editable)))
+      return;
+   
+   sd->align = ETK_CLAMP(align, 0.0, 1.0);
+   _etk_editable_text_position_update(editable, -1);
+}
+
+/**
+ * @brief Gets the alignment of the text inside the editable object
+ * @param editable an editable object
+ * @return Returns the alignment of the text, from 0.0 (left alignment) to 1.0 (right alignment)
+ */
+float etk_editable_align_get(Evas_Object *editable)
+{
+   Etk_Editable_Smart_Data *sd;
+   
+   if (!editable || !(sd = evas_object_smart_data_get(editable)))
+      return 0.0;
+   return sd->align;
 }
 
 /**
@@ -914,6 +945,8 @@ static void _etk_editable_text_position_update(Evas_Object *editable, int real_w
       else if ((tx + tw + offset_x) < (ox + ow))
          offset_x = (ox + ow) - (tx + tw);
    }
+   else
+      offset_x += (ow - tw) * sd->align;
    
    new_ty = oy + ((oh - th) / 2);
    evas_object_move(sd->text_object, tx + offset_x, new_ty);
@@ -1004,6 +1037,7 @@ static void _etk_editable_smart_add(Evas_Object *object)
    sd->average_char_w = -1;
    sd->average_char_h = -1;
    
+   sd->align = 0.0;
    sd->cursor_pos = 0;
    sd->cursor_visible = ETK_TRUE;
    sd->selection_pos = 0;

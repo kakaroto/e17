@@ -1,6 +1,6 @@
 group {
-   name: "spin_button";
-   min: 120 18;
+   name: "etk/spinner";
+   min: 60 18;
    parts {
       part {
          name: "spinner";
@@ -15,7 +15,7 @@ group {
                offset: -1 8;
             }
             image {
-               normal: "entry.png";
+               normal: "spinner_bg.png";
                border: 8 8 8 8;
             }
             fill {
@@ -38,6 +38,24 @@ group {
 	    }
 	 }
       }      
+      part {
+         name: "etk.swallow.text";
+         type: SWALLOW;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 4 3;
+               to: "spinner";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -17 -1;
+               to: "spinner";
+            }
+         }
+      }
+      FOCUS_GLOW(0.0, 0.0, 0, 0, "spinner", 1.0, 1.0, -1, -1, "spinner")
       part {
 	 name: "up_arrow";
          clip_to: "clip";	 
@@ -91,37 +109,19 @@ group {
 	       normal: "spinner_button_down2.png";
 	    }
 	 }	 
-      }            
-      part {
-         name: "text_area";
-         type: SWALLOW;
-         description {
-            state: "default" 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 4 3;
-               to: "spinner";
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -15 -3;
-               to: "spinner";
-            }
-         }
       }
-      FOCUS_GLOW(0.0, 0.0, -1, -1, "spinner", 1.0, 1.0, 0, 0, "spinner")
    }
    programs {
       program {
          name: "spinner_focus";
-         signal: "focus";
-         source: "";
+         signal: "etk,state,focused";
+         source: "etk";
          FOCUS_GLOW_ACTION
       }
       program {
          name: "button_unfocus";
-         signal: "unfocus";
-         source: "";
+         signal: "etk,state,unfocused";
+         source: "etk";
          UNFOCUS_GLOW_ACTION
       }
       program {  
@@ -156,25 +156,121 @@ group {
 	 name: "up_arrow_pressed"; 
 	 source: "up_arrow";
 	 signal: "mouse,down,1*"; 
-	 action: SIGNAL_EMIT "scroll_up_start" ""; 
+	 action: SIGNAL_EMIT "etk,action,increment,start" ""; 
       } 
       program {
 	 name: "up_arrow_released"; 
 	 source: "up_arrow";
 	 signal: "mouse,up,1"; 
-	 action: SIGNAL_EMIT "scroll_stop" "";
+	 action: SIGNAL_EMIT "etk,action,increment,stop" "";
       }
       program {       
 	 name: "down_arrow_pressed"; 
 	 source: "down_arrow";
 	 signal: "mouse,down,1*"; 
-	 action: SIGNAL_EMIT "scroll_down_start" ""; 
+	 action: SIGNAL_EMIT "etk,action,decrement,start" ""; 
       } 
       program {
 	 name: "down_arrow_released"; 
 	 source: "down_arrow";
 	 signal: "mouse,up,1"; 
-	 action: SIGNAL_EMIT "scroll_stop" "";
+	 action: SIGNAL_EMIT "etk,action,decrement,stop" "";
       }      
+   }
+}
+
+group {
+   name: "etk/spinner/text";
+   parts {
+      part {
+         name: "etk.text.text";
+	 type: TEXT;
+	 mouse_events: 0;
+	 description {
+	    state: "default" 0.0;
+	    color: 0 0 0 255;
+	    text {
+	       text: "Entry";
+	       font: "Vera";
+	       size: 10;
+	       min: 1 1;
+	       align: 0.0 0.5;
+               text_class: "spinner";
+	    }
+	 }
+      }
+   }
+}
+
+group {
+   name: "etk/spinner/cursor";
+   min: 1 0;
+   parts {
+      part {
+         name: "cursor";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            visible: 0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "on_cursor_show";
+	 signal:  "etk,action,show,cursor";
+	 source:  "etk";
+         action: ACTION_STOP;
+         target: "cursor_show";
+         target: "cursor_hide";
+         target: "cursor_show_timer";
+         target: "cursor_hide_timer";
+         after: "cursor_show";
+      }
+      program {
+         name: "cursor_show";
+         action: STATE_SET "visible" 0.0;
+         target: "cursor";
+         after: "cursor_show_timer";
+      }
+      program {
+         name: "cursor_hide";
+         action: STATE_SET "default" 0.0;
+         target: "cursor";
+         after: "cursor_hide_timer";
+      }
+      program {
+         name: "cursor_show_timer";
+         in: 1.0 0.0;
+         after: "cursor_hide";
+      }
+      program {
+         name: "cursor_hide_timer";
+         in: 0.25 0.0;
+         after: "cursor_show";
+      }
+   }
+}
+
+group {
+   name: "etk/spinner/selection";
+   data {
+      item: "on_foreground" "1";
+   }
+   parts {
+      part {
+         name: "selection";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 245 205 109 102;
+         }
+      }
    }
 }

@@ -28,6 +28,7 @@ etk_slider_test.c \
 etk_canvas_test.c \
 etk_colorpicker_test.c \
 etk_tree_test.c \
+etk_tree2_test.c \
 etk_paned_test.c \
 etk_scrolled_view_test.c \
 etk_menu_test.c \
