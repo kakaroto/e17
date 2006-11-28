@@ -67,6 +67,7 @@ EXTRA_DIST = \
             scrollbar_vdrag1.png \
             scrollbar_vdrag2.png \
             scrollbar_vdrag_thumb.png \
+            spinner_bg.png \
             spinner_button_down1.png \
             spinner_button_down2.png \
             spinner_button_up1.png \
