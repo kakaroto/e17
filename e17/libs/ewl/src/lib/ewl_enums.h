@@ -39,7 +39,6 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_FOCUS_OUT, /**< Widget was deselected by mouse or key */
 	EWL_CALLBACK_VALUE_CHANGED, /**< Value in widget changed */
 	EWL_CALLBACK_STATE_CHANGED, /**< Alter the state of the appearance */
-	EWL_CALLBACK_APPEARANCE_CHANGED, /**< Theme key of widget changed */
 	EWL_CALLBACK_WIDGET_ENABLE, /**< Widget has been re-enabled */
 	EWL_CALLBACK_WIDGET_DISABLE, /**< Widget no longer takes input */
 
