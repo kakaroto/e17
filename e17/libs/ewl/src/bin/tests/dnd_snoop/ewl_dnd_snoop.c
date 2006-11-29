@@ -99,12 +99,26 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(scroll), text);
 	ewl_widget_show(text);
 
+	o = ewl_hbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+	ewl_container_child_append(box, o);
+	ewl_widget_show(o);
+
+	box = EWL_CONTAINER(o);
+
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Clear");
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					ewl_dnd_snoop_cb_clear, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_widget_show(o);
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Drag This");
+	ewl_dnd_provided_types_set(o, text_types);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+	ewl_container_child_append(box, o);
 	ewl_widget_show(o);
 
 	return 1;
