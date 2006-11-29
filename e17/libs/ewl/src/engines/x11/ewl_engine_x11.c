@@ -74,6 +74,9 @@ static void ee_window_selection_text_set(Ewl_Window *win, const char *txt);
 static void ee_window_geometry_set(Ewl_Window *win, int *width, int *height);
 static void ee_dnd_aware_set(Ewl_Embed *embed);
 static void ee_desktop_size_get(Ewl_Embed *embed, int *w, int *h);
+static void ee_dnd_drag_types_set(Ewl_Embed *embed, const char **types, unsigned int num);
+static void ee_dnd_drag_begin(Ewl_Embed *embed);
+static void ee_dnd_drag_drop(Ewl_Embed *embed);
 
 static int ee_pointer_data_new(Ewl_Embed *embed, int *data, int w, int h);
 static void ee_pointer_free(Ewl_Embed *embed, int pointer);
@@ -106,6 +109,9 @@ static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
 		ee_window_geometry_set,
 		ee_dnd_aware_set,
 		ee_desktop_size_get,
+		ee_dnd_drag_types_set,
+		ee_dnd_drag_begin,
+		ee_dnd_drag_drop,
 	};
 
 static void *pointer_funcs[EWL_ENGINE_POINTER_MAX] =
@@ -721,6 +727,45 @@ ee_desktop_size_get(Ewl_Embed *embed, int *w, int *h)
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
 	ecore_x_window_size_get(0, w, h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_dnd_drag_types_set(Ewl_Embed *embed, const char **types, unsigned int num)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	ecore_x_dnd_aware_set((Ecore_X_Window)embed->evas_window,
+			      (num > 0 ? 1 : 0));
+	ecore_x_dnd_types_set((Ecore_X_Window)embed->evas_window, (char **)types, num);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_dnd_drag_begin(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	ecore_x_dnd_begin((Ecore_X_Window)embed->evas_window, "dnd data",
+			strlen("dnd data") + 1);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_dnd_drag_drop(Ewl_Embed *embed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	ecore_x_dnd_drop();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

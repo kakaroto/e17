@@ -313,6 +313,10 @@ ewl_dnd_accepted_types_get(Ewl_Widget *w)
 void
 ewl_dnd_drag_start(Ewl_Widget *w) 
 {
+	unsigned int i;
+	char **types;
+	Ewl_Embed *emb;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
@@ -320,16 +324,62 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	if (!ewl_dnd_status || ewl_dragging_current) 
 		DRETURN(DLEVEL_STABLE);
 
+	emb = ewl_embed_widget_find(w);
+
 	ewl_dragging_current = 1;
 	ewl_dnd_widget = w;
 	ewl_dnd_move_count = 0;
 
-	/* Start the drag operation */
+	types = ewl_dnd_provided_types_get(w);
 	/*
-	ecore_x_dnd_types_set(ewl_dnd_drag_win, ewl_dnd_provided_types_get(w),
-			1);
-	ecore_x_dnd_begin(ewl_dnd_drag_win, NULL, 0);
-	*/
+	 * Count the number of mime types set on the widget.
+	 */
+	for (i = 0; types && types[i]; i++);
+
+	/*
+	 * Flag the provided DND types on the embed and begin the DND process.
+	 */
+	ewl_engine_embed_dnd_drag_types_set(emb, types, i);
+	ewl_engine_embed_dnd_drag_start(emb);
+
+	/*
+	 * FIXME: Display the default cursor for now. Needs to check for a
+	 * custom DND cursor from the widget.
+	 */
+	ewl_attach_mouse_argb_cursor_set(emb, ewl_dnd_default_cursor);
+	ewl_embed_mouse_cursor_set(EWL_WIDGET(emb));
+
+	printf("Began drag process on %p\n", w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The widget to start dragging
+ * @return Returns no value
+ * @brief Tells the widget to start dragging
+ */
+void
+ewl_dnd_drag_drop(Ewl_Widget *w) 
+{
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	emb = ewl_embed_widget_find(w);
+
+	ewl_dragging_current = 0;
+	ewl_dnd_widget = NULL;
+	ewl_dnd_move_count = 0;
+
+	/*
+	 * FIXME: Reset the cursor here.
+	 */
+	// ewl_embed_mouse_cursor_set(EWL_WIDGET(emb));
+
+	printf("Finished drag process on %p\n", w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

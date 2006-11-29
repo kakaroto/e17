@@ -788,6 +788,84 @@ ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed)
 
 /**
  * @param embed: the embed to work with
+ * @return Returns no value
+ * @brief Sets the dnd types provided by this embed.
+ */
+void
+ewl_engine_embed_dnd_drag_types_set(Ewl_Embed *embed, char **types, unsigned int num)
+{
+	Ewl_Engine_Cb_Window_Dnd_Drag_Types_Set embed_dnd_drag_types_set;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	if (!(embed->evas_window))
+		DRETURN(DLEVEL_STABLE);
+
+	embed_dnd_drag_types_set = ewl_engine_hook_get(EWL_EMBED(embed),
+					EWL_ENGINE_HOOK_TYPE_WINDOW,
+					EWL_ENGINE_WINDOW_DND_DRAG_TYPES_SET);
+	if (embed_dnd_drag_types_set)
+		embed_dnd_drag_types_set(embed, types, num);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed to work with
+ * @return Returns no value
+ * @brief Starts the dnd process on an embed.
+ */
+void
+ewl_engine_embed_dnd_drag_start(Ewl_Embed *embed)
+{
+	Ewl_Engine_Cb_Window_Dnd_Drag_Start embed_dnd_drag_start;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	if (!(embed->evas_window))
+		DRETURN(DLEVEL_STABLE);
+
+	embed_dnd_drag_start = ewl_engine_hook_get(EWL_EMBED(embed),
+					EWL_ENGINE_HOOK_TYPE_WINDOW,
+					EWL_ENGINE_WINDOW_DND_DRAG_START);
+	if (embed_dnd_drag_start)
+		embed_dnd_drag_start(embed);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed to work with
+ * @return Returns no value
+ * @brief Completes the dnd process on an embed.
+ */
+void
+ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed)
+{
+	Ewl_Engine_Cb_Window_Dnd_Drag_Drop embed_dnd_drag_drop;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	if (!(embed->evas_window))
+		DRETURN(DLEVEL_STABLE);
+
+	embed_dnd_drag_drop = ewl_engine_hook_get(EWL_EMBED(embed),
+					EWL_ENGINE_HOOK_TYPE_WINDOW,
+					EWL_ENGINE_WINDOW_DND_DRAG_DROP);
+	if (embed_dnd_drag_drop)
+		embed_dnd_drag_drop(embed);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed to work with
  * @parm w: a pointer where the width of the desktop will be stored
  * @parm h: a pointer where the height pf the desktop will be stored
  * @return Returns no value
