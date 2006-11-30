@@ -81,6 +81,7 @@ EWLHEADERS = \
 	ewl_spectrum.h \
 	ewl_spinner.h \
 	ewl_statusbar.h \
+	ewl_stock.h \
 	ewl_text.h \
 	ewl_table.h \
 	ewl_tree.h \
@@ -161,6 +162,7 @@ EWLSOURCES= \
 	ewl_spectrum.c \
 	ewl_spinner.c \
 	ewl_statusbar.c \
+	ewl_stock.c \
 	ewl_table.c \
 	ewl_text.c \
 	ewl_theme.c \

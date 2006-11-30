@@ -34,16 +34,15 @@ typedef struct Ewl_Button Ewl_Button;
 
 /**
  * @brief A simple Ewl_Widget to provide for a clickable button in the UI.
- * Provides easy facilities for adding a Ewl_Text label to the button, and
+ * Provides easy facilities for adding a Ewl_Label label to the button, and
  * a Ewl_Image but allows for placing any number of Ewl_Widget's in the Ewl_Button.
  */
 struct Ewl_Button
 {
-	Ewl_Box         box; 		/**< Inherit from the box for adding widgets */
+	Ewl_Stock       stock; 		/**< Inherit from the box for adding widgets */
 	Ewl_Widget     *body;		/**< The body of the button */
 	Ewl_Widget     *label_object;	/**< Labels are common, make it easy */
 	Ewl_Widget     *image_object;	/**< Add an image to the button if needed */
-	Ewl_Stock_Type	stock_type;	/**< The stock type of the button */
 };
 
 Ewl_Widget	*ewl_button_new(void);

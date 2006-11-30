@@ -30,7 +30,7 @@ typedef struct Ewl_Icon Ewl_Icon;
  */
 struct Ewl_Icon
 {
-	Ewl_Box box;		/**< Inherit from Ewl_Box */
+	Ewl_Stock   stock;	/**< Inherit from Ewl_Box */
 	Ewl_Widget *label;	/**< The icons label */
 	Ewl_Widget *image;	/**< The icons image */
 	Ewl_Widget *alt;	/**< The icons alt text */

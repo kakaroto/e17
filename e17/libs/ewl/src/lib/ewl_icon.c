@@ -3,6 +3,11 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static Ewl_Stock_Funcs stock_funcs = {
+	(void*) ewl_icon_label_set,
+	(void*) ewl_icon_image_set
+};
+
 /* XXX may want to make this configurable, possibly per icon? */
 #define EWL_ICON_COMPRESS_SIZE 10
 
@@ -52,8 +57,11 @@ ewl_icon_init(Ewl_Icon *icon)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("icon", icon, FALSE);
 
-	if (!ewl_box_init(EWL_BOX(icon)))
+	if (!ewl_stock_init(EWL_STOCK((icon))))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	
+	EWL_STOCK(icon)->stock_funcs = &stock_funcs;
+	ewl_stock_type_set(EWL_STOCK(icon), EWL_STOCK_NONE);
 
 	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_VERTICAL);
 	ewl_box_spacing_set(EWL_BOX(icon), 4);

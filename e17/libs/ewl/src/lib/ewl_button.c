@@ -3,32 +3,10 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-/*
- * this array needs to have it's items in the same order as they
- * appear in the Ewl_Stock_Type enum
- */
-struct 
-{
-	char *label;
-	char *image_key;
-} ewl_stock_items[] = {
-		{"Apply", 	EWL_ICON_DIALOG_APPLY},
-		{/*Arrow*/"Down", 	EWL_ICON_GO_DOWN},
-		{/*Arrow*/"Left", 	EWL_ICON_GO_PREVIOUS},
-		{/*Arrow*/"Right", 	EWL_ICON_GO_NEXT},
-		{/*Arrow*/"Up",		EWL_ICON_GO_UP},
-		{"Cancel", 		EWL_ICON_DIALOG_CANCEL},
-		{"FF", 			EWL_ICON_MEDIA_SEEK_FORWARD},
-		{"Home", 	EWL_ICON_GO_HOME},
-		{"Ok", 		EWL_ICON_DIALOG_OK},
-		{"Open", 	EWL_ICON_DOCUMENT_OPEN},
-		{"Pause", 	EWL_ICON_MEDIA_PLAYBACK_PAUSE},
-		{"Play", 	EWL_ICON_MEDIA_PLAYBACK_START},
-		{"Quit", 	EWL_ICON_SYSTEM_LOG_OUT},
-		{"Rewind", 	EWL_ICON_MEDIA_SEEK_BACKWARD},
-		{"Save", 	EWL_ICON_DOCUMENT_SAVE},
-		{"Stop", 	EWL_ICON_MEDIA_PLAYBACK_STOP}
-	};
+static Ewl_Stock_Funcs stock_funcs = {
+	(void*) ewl_button_label_set,
+	(void*) ewl_button_image_set
+};
 
 /**
  * @return Returns NULL on failure, a pointer to a new button on success
@@ -70,12 +48,13 @@ ewl_button_init(Ewl_Button *b)
 
 	w = EWL_WIDGET(b);
 
-	if (!ewl_box_init(EWL_BOX(b))) {
+	if (!ewl_stock_init(EWL_STOCK(b))) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_widget_inherit(w, EWL_BUTTON_TYPE);
 
-	ewl_button_stock_type_set(b, EWL_STOCK_NONE);
+	ewl_widget_inherit(w, EWL_BUTTON_TYPE);
+	EWL_STOCK(b)->stock_funcs = &stock_funcs;
+	ewl_stock_type_set(EWL_STOCK(b), EWL_STOCK_NONE);
 
 	ewl_box_orientation_set(EWL_BOX(b), EWL_ORIENTATION_VERTICAL);
 	ewl_container_callback_notify(EWL_CONTAINER(b), EWL_CALLBACK_FOCUS_IN);
@@ -171,32 +150,11 @@ ewl_button_label_get(Ewl_Button *b)
 void
 ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
 {
-	const char *data;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
 
-	if (stock == b->stock_type) {
-		DRETURN(DLEVEL_STABLE);
-	}
-	b->stock_type = stock;
-
-	/* we're done if it's none */
-	if (b->stock_type == EWL_STOCK_NONE) {
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	ewl_button_label_set(b, ewl_stock_items[b->stock_type].label);
-
-	/* check for an image key */
-	data = ewl_icon_theme_icon_path_get(
-				ewl_stock_items[b->stock_type].image_key,
-				EWL_ICON_SIZE_MEDIUM);
-
-	ewl_button_image_set(b, data, 
-                ewl_stock_items[b->stock_type].image_key);
-
+	ewl_stock_type_set(EWL_STOCK(b), stock);
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -212,7 +170,7 @@ ewl_button_stock_type_get(Ewl_Button *b)
 	DCHECK_PARAM_PTR_RET("b", b, EWL_STOCK_NONE);
 	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, EWL_STOCK_NONE);
 
-	DRETURN_INT(b->stock_type, DLEVEL_STABLE);
+	DRETURN_INT(ewl_stock_type_get(EWL_STOCK(b)), DLEVEL_STABLE);
 }
 
 /**
