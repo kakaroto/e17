@@ -25,7 +25,7 @@ create_test(Ewl_Container *box)
 	Ewl_Widget *o, *o2;
 
 	o2 = ewl_button_new();
-	ewl_button_stock_type_set(EWL_BUTTON(o2), EWL_STOCK_OPEN);
+	ewl_stock_type_set(EWL_STOCK(o2), EWL_STOCK_OPEN);
 	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, cb_clicked, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(box, o2);

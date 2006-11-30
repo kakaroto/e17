@@ -291,7 +291,7 @@ create_media_window(Ewl_Media_Module_Type type)
 
 		for(i = 0; controls[i].name != EWL_STOCK_NONE; i++) {
 			o = ewl_button_new();
-			ewl_button_stock_type_set(EWL_BUTTON(o), controls[i].name);
+			ewl_stock_type_set(EWL_STOCK(o), controls[i].name);
 			ewl_container_child_append(EWL_CONTAINER(b), o);
 			ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					controls[i].func, NULL);

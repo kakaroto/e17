@@ -53,7 +53,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new();
-	ewl_button_stock_type_set(EWL_BUTTON(item), EWL_STOCK_OK);
+	ewl_stock_type_set(EWL_STOCK(item), EWL_STOCK_OK);
 	ewl_container_child_append(EWL_CONTAINER(menu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_CLICKED, cb_menu_clicked, NULL);
 	ewl_widget_show(item);

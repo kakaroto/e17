@@ -75,14 +75,14 @@ run_dialog(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_dialog_active_area_set(EWL_DIALOG(dialog), EWL_POSITION_BOTTOM);
 
 	button = ewl_button_new();
-	ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_OK);
+	ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_OK);
 	ewl_container_child_append(EWL_CONTAINER(dialog), button);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 			dialog_response_cb, dialog);
 	ewl_widget_show(button);
 
 	button = ewl_button_new();
-	ewl_button_stock_type_set(EWL_BUTTON(button), EWL_STOCK_CANCEL);
+	ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_CANCEL);
 	ewl_container_child_append(EWL_CONTAINER(dialog), button);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 			dialog_response_cb, dialog);
@@ -99,7 +99,7 @@ dialog_response_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	Ewl_Widget *o;
 
 	o = ewl_widget_name_find("dialog_label");
-	response = ewl_button_stock_type_get(EWL_BUTTON(w));
+	response = ewl_stock_type_get(EWL_STOCK(w));
 	if (response == EWL_STOCK_OK)
 		ewl_label_text_set(EWL_LABEL(o), "OK button clicked.");
 	else
