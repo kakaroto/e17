@@ -262,6 +262,8 @@ ewl_icon_label_set(Ewl_Icon *icon, const char *label)
 	if (!icon->label)
 	{
 		icon->label = ewl_text_new();
+		ewl_object_fill_policy_set(EWL_OBJECT(icon->label), 
+						EWL_FLAG_FILL_NONE);
 		ewl_object_alignment_set(EWL_OBJECT(icon->label), 
 						EWL_FLAG_ALIGN_CENTER);
 
