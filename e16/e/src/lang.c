@@ -164,8 +164,13 @@ EwcOpen(int utf8)
    else
       enc = nl_langinfo(CODESET);
 
+#if SIZEOF_WCHAR_T == 4
+   iconv_cd_str2wcs = iconv_open("UCS-4", enc);
+   iconv_cd_wcs2str = iconv_open(enc, "UCS-4");
+#else
    iconv_cd_str2wcs = iconv_open("WCHAR_T", enc);
    iconv_cd_wcs2str = iconv_open(enc, "WCHAR_T");
+#endif
 
    if (iconv_cd_str2wcs != BAD_CD && iconv_cd_wcs2str != BAD_CD)
       return 0;
