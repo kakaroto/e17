@@ -27,6 +27,13 @@ group {
         }
     }
     programs {
+	program {
+            name, "reset";
+            signal, "show";
+            source, "*";
+            action, STATE_SET "default" 0.0;
+            target, "overlay";
+        }
         program {
             name, "select";
             signal, "icon,select";
