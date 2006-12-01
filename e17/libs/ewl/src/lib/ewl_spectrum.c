@@ -166,7 +166,7 @@ ewl_spectrum_mode_set(Ewl_Spectrum *sp, Ewl_Color_Mode mode)
 	DCHECK_TYPE("sp", sp, EWL_SPECTRUM_TYPE);
 
 	sp->mode = mode;
-	sp->dirty = 1;
+	sp->dirty = TRUE;
 	ewl_widget_configure(EWL_WIDGET(sp));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -212,7 +212,7 @@ ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r,
 	if (sp->rgb.b > 255) sp->rgb.b = 255;
 
 	ewl_spectrum_hsv_from_rgb(sp);
-	sp->dirty = 1;
+	sp->dirty = TRUE;
 	ewl_widget_configure(EWL_WIDGET(sp));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -270,7 +270,7 @@ ewl_spectrum_hsv_set(Ewl_Spectrum *sp, double h, double s, double v)
 	if (sp->hsv.v < 0.0) sp->hsv.v = 0.0;
 
 	ewl_spectrum_rgb_from_hsv(sp);
-	sp->dirty = 1;
+	sp->dirty = TRUE;
 	ewl_widget_configure(EWL_WIDGET(sp));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -329,6 +329,12 @@ ewl_spectrum_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	ewl_spectrum_draw(sp);
 	ewl_spectrum_cross_hairs_draw(sp);
+
+	/*
+	 * FIXME: The dirty flag is unused right now, some debugging work is
+	 * needed to get this to fix the initial color
+	 * sp->dirty = FALSE;
+	 */
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -433,6 +439,7 @@ ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	sp = EWL_SPECTRUM(data);
 	sp->dirty = TRUE;
+	ewl_widget_configure(EWL_WIDGET(sp));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -654,6 +661,7 @@ ewl_spectrum_draw(Ewl_Spectrum *sp)
 
 	evas_object_image_data_set(img, data);
 	evas_object_image_data_update_add(img, 0, 0, img_w, img_h);
+	ewl_widget_configure(sp->canvas);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
