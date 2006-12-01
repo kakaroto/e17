@@ -273,6 +273,9 @@ ewl_combo_cb_item_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	i = ewl_container_child_index_get(EWL_CONTAINER(combo->popup), w);
 	ewl_mvc_selected_set(EWL_MVC(combo), i, -1);
 
+	ewl_widget_hide(combo->popup->popup);
+	ewl_widget_appearance_set(combo->button, "decrement");
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
