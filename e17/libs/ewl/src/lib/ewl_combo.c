@@ -69,10 +69,13 @@ ewl_combo_init(Ewl_Combo *combo)
 						EWL_WIDGET(combo));
 	ewl_popup_type_set(EWL_POPUP(combo->popup->popup),
 						EWL_POPUP_TYPE_MENU_VERTICAL);
+	ewl_popup_fit_to_follow_set(EWL_POPUP(combo->popup->popup), TRUE);
 	ewl_window_keyboard_grab_set(EWL_WINDOW(combo->popup->popup), TRUE);
 	ewl_window_pointer_grab_set(EWL_WINDOW(combo->popup->popup), TRUE);
 	ewl_widget_appearance_set(combo->popup->popup, EWL_COMBO_TYPE
 					"/"EWL_POPUP_TYPE);
+	ewl_object_fill_policy_set(EWL_OBJECT(combo->popup->popup), 
+					EWL_FLAG_FILL_HFILL);
 	ewl_object_alignment_set(EWL_OBJECT(combo->popup->popup),
 				EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 	ewl_callback_append(combo->popup->popup, EWL_CALLBACK_MOUSE_DOWN,
