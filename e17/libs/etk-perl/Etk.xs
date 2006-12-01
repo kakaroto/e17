@@ -5672,6 +5672,33 @@ etk_window_wmclass_set(window, window_name, window_class)
       ALIAS:
 	WmclassSet=1
 
+MODULE = Etk::Spinner	PACKAGE = Etk::Spinner	PREFIX = etk_spinner_
+
+Etk_Spinner *
+new(class, lower, upper, value, step_increment, page_increment)
+	SV * class
+	double lower
+	double upper
+	double value
+	double step_increment
+	double page_increment
+	CODE:
+	RETVAL = ETK_SPINNER(etk_spinner_new(lower, upper, value, step_increment, page_increment));
+
+void
+etk_spinner_digits_set(spinner, digits)
+	Etk_Spinner * spinner
+	int digits
+	ALIAS:
+	DigitsSet=1
+
+int
+etk_spinner_digits_get(spinner)
+	Etk_Spinner * spinner
+	ALIAS:
+	DigitsGet=1
+
+	
 MODULE = Etk::Timer	PACKAGE = Etk::Timer 
 
 Ecore_Timer *

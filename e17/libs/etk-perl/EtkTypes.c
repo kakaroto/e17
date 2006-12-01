@@ -124,6 +124,7 @@ void __etk_perl_init() {
 	__("Etk_VSlider",		"Etk::VSlider");
 	__("Etk_Statusbar",		"Etk::StatusBar");
 	__("Etk_String",		"Etk::String");
+	__("Etk_Spinner",		"Etk::Spinner");
 	__("Etk_Shadow",		"Etk::Shadow");
 	__("Etk_Table",		"Etk::Table");
 	__("Etk_Text_View",		"Etk::TextView");
@@ -210,6 +211,7 @@ void __etk_perl_init() {
 			__("Scrollbar", "Range");
 				__("HScrollbar", "Scrollbar");
 				__("VScrollbar", "Scrollbar");
+			__("Spinner", "Range");
 		__("Spearator", "Widget");
 			__("HSeparator", "Spearator");
 			__("VSeparator", "Spearator");
