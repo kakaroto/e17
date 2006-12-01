@@ -595,7 +595,7 @@ ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 							void *data)
 {
 	Ewl_Filepicker *fp;
-	Ewl_Button *b;
+	Ewl_Stock *s;
 	Ewl_Filepicker_Event e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -604,9 +604,9 @@ ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	fp = data;
-	b = EWL_BUTTON(w);
+	s = EWL_STOCK(w);
 
-	e.response = ewl_stock_type_get(b);
+	e.response = ewl_stock_type_get(s);
 
 	if (e.response == EWL_STOCK_CANCEL)
 	{
