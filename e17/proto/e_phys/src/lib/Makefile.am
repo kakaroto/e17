@@ -5,6 +5,8 @@ INCLUDES =  \
 
 lib_LTLIBRARIES = libephys.la
 
+include_HEADERS = E_Phys.h
+
 libephys_la_SOURCES = \
 	E_Phys.h \
 	e_phys_constraint.c \
