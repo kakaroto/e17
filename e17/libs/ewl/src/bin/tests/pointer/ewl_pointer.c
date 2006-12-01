@@ -27,8 +27,6 @@ create_test(Ewl_Container *box)
 	Ewl_Widget *o;
 
 	pointer_win = ewl_cursor_new();
-	ewl_callback_append(pointer_win, EWL_CALLBACK_DESTROY,
-			cb_destroy, o);
 	ewl_widget_show(pointer_win);
 
 	o = ewl_button_new();
@@ -46,6 +44,8 @@ create_test(Ewl_Container *box)
 	ewl_entry_editable_set(EWL_ENTRY(o), FALSE);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_callback_append(pointer_win, EWL_CALLBACK_DESTROY,
+			cb_destroy, o);
 	ewl_widget_show(o);
 
 	return 1;

@@ -30,12 +30,21 @@ struct
 		{"Stop", 	EWL_ICON_MEDIA_PLAYBACK_STOP}
 	};
 
+/**
+ * @param s: the stock widget to initialize
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Initialize the stock widget and inherited fields
+ *
+ * Clears the contents of the stock widget and stores the
+ * default values.
+ */
+int
 ewl_stock_init(Ewl_Stock *s)
 {
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, NULL);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	w = EWL_WIDGET(s);
 
