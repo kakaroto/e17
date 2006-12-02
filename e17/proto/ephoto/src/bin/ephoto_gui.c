@@ -38,7 +38,7 @@ void init_gui(void)
         ewl_window_name_set(EWL_WINDOW(win), "Ephoto!");
         ewl_window_borderless_set(EWL_WINDOW(win));
 	ewl_widget_state_set(win, "splash", EWL_STATE_PERSISTENT);
-	ewl_object_size_request(EWL_OBJECT(win), 600, 400);
+	ewl_object_size_request(EWL_OBJECT(win), 325, 240);
         ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
         ewl_widget_show(win);
 
@@ -46,6 +46,13 @@ void init_gui(void)
         ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
         ewl_container_child_append(EWL_CONTAINER(win), vbox);
         ewl_widget_show(vbox);
+
+	text = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(text), "Version 2.15");
+	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(EWL_CONTAINER(vbox), text);
+	ewl_widget_show(text);
 
 	image = ewl_image_new();
 	ewl_image_file_set(EWL_IMAGE(image), 
@@ -55,9 +62,8 @@ void init_gui(void)
 	ewl_widget_show(image);
 
 	text = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(text), "Ephoto 2.15 - By Stephen Houston\n"
-					  "    Icons by the Tango project  \n"
-					  "  (http://tango.freedesktop.org)\n");
+	ewl_text_text_set(EWL_TEXT(text), "          Ephoto    \n"
+					  "By Stephen Houston");
 	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(vbox), text);
@@ -167,9 +173,7 @@ static void create_main_gui(void)
 	Ewl_Widget *win, *atree, *btree, *vbox, *menu_bar, *menu, *nb, *paned;
 	Ewl_Widget *ivbox, *ihbox, *sp, *image, *button;
 
-	//ewl_theme_theme_set(PACKAGE_DATA_DIR "/themes/ephoto.edj");
-
-        win = ewl_window_new();
+	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
         ewl_window_name_set(EWL_WINDOW(win), "Ephoto!");
         ewl_object_size_request(EWL_OBJECT(win), 600, 400);

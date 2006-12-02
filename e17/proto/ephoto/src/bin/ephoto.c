@@ -8,6 +8,7 @@ int main(int argc, char **argv)
                 return 1;
         }
 
+	//ewl_theme_theme_set(PACKAGE_DATA_DIR "/themes/ephoto.edj");
 	init_gui();
 
 	return 0;
