@@ -1,11 +1,12 @@
 #include "ephoto.h"
 
 static void destroy(Ewl_Widget *w, void *event, void *data);
-static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
 static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
 static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb);
-static Ewl_Widget *add_tree(Ewl_Widget *c);
 static void create_main_gui(void);
+static int destroy_boot(void *data);
+static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
+static Ewl_Widget *add_tree(Ewl_Widget *c);
 static Ewl_Widget *progress;
 static Ecore_Timer *timer;
 
@@ -28,14 +29,16 @@ int destroy_boot(void *data)
 	}
 }
 
-void create_boot(void)
+void init_gui(void)
 {
 	Ewl_Widget *win, *vbox, *image, *text;
 
         win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
         ewl_window_name_set(EWL_WINDOW(win), "Ephoto!");
-        ewl_object_size_request(EWL_OBJECT(win), 600, 400);
+        ewl_window_borderless_set(EWL_WINDOW(win));
+	ewl_widget_state_set(win, "splash", EWL_STATE_PERSISTENT);
+	ewl_object_size_request(EWL_OBJECT(win), 600, 400);
         ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
         ewl_widget_show(win);
 

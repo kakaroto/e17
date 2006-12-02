@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 /* Main gui callbacks */
-void create_boot(void);
+void init_gui(void);
 
 /* NLS */
 #ifdef ENABLE_NLS
