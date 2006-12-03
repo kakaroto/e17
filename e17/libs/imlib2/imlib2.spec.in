@@ -147,6 +147,8 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING COPYING-PLAIN README
+%dir %{_libdir}/%{name}
+%dir %{_libdir}/%{name}/loaders
 %{_libdir}/lib*.so.*
 %{_libdir}/*.la
 
@@ -163,6 +165,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_bindir}/imlib2_*
 
 %files filters
+%dir %{_libdir}/%{name}/filters
 %attr(755,root,root) %{_libdir}/imlib2/filters/*.so
 
 %files loader_lbm
