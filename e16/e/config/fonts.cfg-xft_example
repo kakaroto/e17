@@ -6,11 +6,14 @@ __FONTS __BGN
 font-default		"Sans-8:Bold"
 
 font-border		"Sans-8:Bold"
+font-border-italic	"Sans-8:Italic"
+font-border-small	"Sans-6"
 
 font-coords		"Sans-8:Bold"
 
 font-dialog		"Sans-8"
-font-dialog-hilite	"Sans-9"	/* ??? */
+font-dialog-hilite	"Sans-8:Bold"
+font-dialog-italic	"Sans-8:Italic"
 
 font-epplet		"Sans-6"
 font-epplet-small	"Sans-6"
