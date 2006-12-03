@@ -34,7 +34,7 @@ struct _progressbar
    EObj               *p_win;
    int                 w, h;
    int                 value;
-   ImageClass         *ic, *inc, *ipc;
+   ImageClass         *ic;
    TextClass          *tc, *tnc;
 };
 
@@ -45,12 +45,30 @@ Progressbar        *
 ProgressbarCreate(const char *name, int w, int h)
 {
    Progressbar        *p;
-   int                 x, y;
+   int                 x, y, tw, th;
+   EImageBorder       *pad;
 
    p = Ecalloc(1, sizeof(Progressbar));
    pnum++;
    plist = Erealloc(plist, pnum * sizeof(Progressbar *));
    plist[pnum - 1] = p;
+
+   p->ic = ImageclassFind("PROGRESS_BAR", 1);
+   if (p->ic)
+      ImageclassIncRefcount(p->ic);
+
+   p->tc = TextclassFind("PROGRESS_TEXT", 1);
+   if (p->tc)
+      TextclassIncRefcount(p->tc);
+
+   p->tnc = TextclassFind("PROGRESS_TEXT_NUMBER", 1);
+   if (p->tnc)
+      TextclassIncRefcount(p->tnc);
+
+   pad = ImageclassGetPadding(p->ic);
+   TextSize(p->tc, 0, 0, 0, name, &tw, &th, 0);
+   if (h < th + pad->top + pad->bottom)
+      h = th + pad->top + pad->bottom;
 
    p->w = w;
    p->h = h;
@@ -71,26 +89,6 @@ ProgressbarCreate(const char *name, int w, int h)
    p->win->fade = 0;
    p->n_win->fade = 0;
    p->p_win->fade = 0;
-
-   p->ic = ImageclassFind("PROGRESS_BAR", 1);
-   if (p->ic)
-      ImageclassIncRefcount(p->ic);
-
-   p->inc = ImageclassFind("PROGRESS_BAR", 1);
-   if (p->inc)
-      ImageclassIncRefcount(p->inc);
-
-   p->ipc = ImageclassFind("PROGRESS_BAR", 1);
-   if (p->ipc)
-      ImageclassIncRefcount(p->ipc);
-
-   p->tc = TextclassFind("PROGRESS_TEXT", 1);
-   if (p->tc)
-      TextclassIncRefcount(p->tc);
-
-   p->tnc = TextclassFind("PROGRESS_TEXT_NUMBER", 1);
-   if (p->tnc)
-      TextclassIncRefcount(p->tnc);
 
    return p;
 }
@@ -127,10 +125,6 @@ ProgressbarDestroy(Progressbar * p)
 
    if (p->ic)
       ImageclassDecRefcount(p->ic);
-   if (p->inc)
-      ImageclassDecRefcount(p->inc);
-   if (p->ipc)
-      ImageclassDecRefcount(p->ipc);
 
    if (p->tc)
       TextclassDecRefcount(p->tc);
@@ -171,11 +165,10 @@ ProgressbarSet(Progressbar * p, int progress)
    Esnprintf(s, sizeof(s), "%i%%", p->value);
 
    EobjResize(p->p_win, w, p->h);
-   ImageclassApply(p->inc, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL,
-		   ST_SOLID);
+   ImageclassApply(p->ic, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL, ST_SOLID);
    EobjShapeUpdate(p->p_win, 0);
 
-   pad = ImageclassGetPadding(p->inc);
+   pad = ImageclassGetPadding(p->ic);
    EClearWindow(p->n_win->win);
    TextDraw(p->tnc, p->n_win->win, None, 0, 0, STATE_CLICKED, s,
 	    pad->left, pad->top, p->h * 5 - (pad->left + pad->right),
@@ -194,16 +187,15 @@ ProgressbarShow(Progressbar * p)
 
    ImageclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
 		   STATE_NORMAL, ST_SOLID);
-   ImageclassApply(p->inc, p->n_win->win, (p->h * 5), p->h, 0, 0, STATE_CLICKED,
-		   ST_SOLID);
-   ImageclassApply(p->ipc, p->p_win->win, 1, p->h, 1, 0, STATE_NORMAL,
-		   ST_SOLID);
+   ImageclassApply(p->ic, p->n_win->win, (p->h * 5), p->h, 0, 0,
+		   STATE_CLICKED, ST_SOLID);
+   ImageclassApply(p->ic, p->p_win->win, 1, p->h, 1, 0, STATE_NORMAL, ST_SOLID);
 
    EobjMap(p->win, 0);
    EobjMap(p->n_win, 0);
    EobjMap(p->p_win, 0);
 
-   pad = ImageclassGetPadding(p->inc);
+   pad = ImageclassGetPadding(p->ic);
    TextDraw(p->tc, p->win->win, None, 0, 0, STATE_NORMAL, EobjGetName(p->win),
 	    pad->left, pad->top, p->w - (p->h * 5) - (pad->left + pad->right),
 	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
