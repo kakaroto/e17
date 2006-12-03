@@ -36,19 +36,22 @@ typedef struct Ewl_Stock Ewl_Stock;
  */
 struct Ewl_Stock
 {
-	Ewl_Box         box; 		/**< Inherit from the box for adding widgets */
-	Ewl_Stock_Type	stock_type;	/**< The stock type of the stock */
-	Ewl_Stock_Funcs *stock_funcs;/**< The stock functions */
+	Ewl_Box box; 			/**< Inherit from the box for adding widgets */
+	Ewl_Stock_Type stock_type;	/**< The stock type of the stock */
+	Ewl_Stock_Funcs *stock_funcs;	/**< The stock functions */
 };
 
 struct Ewl_Stock_Funcs
 {
 	void (*label_set)(Ewl_Stock *s, const char *txt);
 	void (*image_set)(Ewl_Stock *s, const char *file, const char *key);
+	void (*tooltip_set)(Ewl_Stock *s, const char *tip);
 };
 
 
 int		 ewl_stock_init(Ewl_Stock *s);
+
+void 		 ewl_stock_functions_set(Ewl_Stock *s, Ewl_Stock_Funcs *funcs);
 
 void		 ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock);
 Ewl_Stock_Type	 ewl_stock_type_get(Ewl_Stock *s);

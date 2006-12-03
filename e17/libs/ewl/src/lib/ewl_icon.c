@@ -4,21 +4,17 @@
 #include "ewl_private.h"
 
 static Ewl_Stock_Funcs stock_funcs = {
-	(void*) ewl_icon_label_set,
-	(void*) ewl_icon_image_set
+	ewl_icon_label_set,
+	ewl_icon_image_set
 };
 
 /* XXX may want to make this configurable, possibly per icon? */
 #define EWL_ICON_COMPRESS_SIZE 10
 
-static void ewl_icon_cb_label_mouse_down(Ewl_Widget *w, void *ev, 
-							void *data);
-static void ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev,
-							void *data);
-static void ewl_icon_cb_entry_value_changed(Ewl_Widget *w, void *ev,
-							void *data);
-static void ewl_icon_cb_thumb_value_changed(Ewl_Widget *w, void *ev,
-							void *data);
+static void ewl_icon_cb_label_mouse_down(Ewl_Widget *w, void *ev, void *data);
+static void ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev, void *data);
+static void ewl_icon_cb_entry_value_changed(Ewl_Widget *w, void *ev, void *data);
+static void ewl_icon_cb_thumb_value_changed(Ewl_Widget *w, void *ev, void *data);
 
 static void ewl_icon_update_label(Ewl_Icon *icon);
 
@@ -59,8 +55,8 @@ ewl_icon_init(Ewl_Icon *icon)
 
 	if (!ewl_stock_init(EWL_STOCK((icon))))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	
-	EWL_STOCK(icon)->stock_funcs = &stock_funcs;
+
+	ewl_stock_functions_set(EWL_STOCK(icon), &stock_funcs);
 	ewl_stock_type_set(EWL_STOCK(icon), EWL_STOCK_NONE);
 
 	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_VERTICAL);

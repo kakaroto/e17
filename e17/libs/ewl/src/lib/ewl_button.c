@@ -4,8 +4,8 @@
 #include "ewl_private.h"
 
 static Ewl_Stock_Funcs stock_funcs = {
-	(void*) ewl_button_label_set,
-	(void*) ewl_button_image_set
+	ewl_button_label_set,
+	ewl_button_image_set
 };
 
 /**
@@ -53,7 +53,7 @@ ewl_button_init(Ewl_Button *b)
 	}
 
 	ewl_widget_inherit(w, EWL_BUTTON_TYPE);
-	EWL_STOCK(b)->stock_funcs = &stock_funcs;
+	ewl_stock_functions_set(EWL_STOCK(b), &stock_funcs);
 	ewl_stock_type_set(EWL_STOCK(b), EWL_STOCK_NONE);
 
 	ewl_box_orientation_set(EWL_BOX(b), EWL_ORIENTATION_VERTICAL);
@@ -139,38 +139,6 @@ ewl_button_label_get(Ewl_Button *b)
 								DLEVEL_STABLE);
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
-}
-
-/**
- * @param b: The button to set the stock type on
- * @param stock: The Ewl_Stock_Type to set on the button
- * @return Returns no value.
- * @brief Set the type of the stock button to use
- */
-void
-ewl_button_stock_type_set(Ewl_Button *b, Ewl_Stock_Type stock)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
-
-	ewl_stock_type_set(EWL_STOCK(b), stock);
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param b: The button to get the stock type from
- * @return Returns the Ewl_Stock_Type of the button
- * @brief Get the stock button type in use
- */
-Ewl_Stock_Type 
-ewl_button_stock_type_get(Ewl_Button *b)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, EWL_STOCK_NONE);
-	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, EWL_STOCK_NONE);
-
-	DRETURN_INT(ewl_stock_type_get(EWL_STOCK(b)), DLEVEL_STABLE);
 }
 
 /**

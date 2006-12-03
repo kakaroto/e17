@@ -11,23 +11,24 @@ struct
 {
 	char *label;
 	char *image_key;
+	char *tooltip;
 } ewl_stock_items[] = {
-		{"Apply", 	EWL_ICON_DIALOG_APPLY},
-		{/*Arrow*/"Down", 	EWL_ICON_GO_DOWN},
-		{/*Arrow*/"Left", 	EWL_ICON_GO_PREVIOUS},
-		{/*Arrow*/"Right", 	EWL_ICON_GO_NEXT},
-		{/*Arrow*/"Up",		EWL_ICON_GO_UP},
-		{"Cancel", 		EWL_ICON_DIALOG_CANCEL},
-		{"FF", 			EWL_ICON_MEDIA_SEEK_FORWARD},
-		{"Home", 	EWL_ICON_GO_HOME},
-		{"Ok", 		EWL_ICON_DIALOG_OK},
-		{"Open", 	EWL_ICON_DOCUMENT_OPEN},
-		{"Pause", 	EWL_ICON_MEDIA_PLAYBACK_PAUSE},
-		{"Play", 	EWL_ICON_MEDIA_PLAYBACK_START},
-		{"Quit", 	EWL_ICON_SYSTEM_LOG_OUT},
-		{"Rewind", 	EWL_ICON_MEDIA_SEEK_BACKWARD},
-		{"Save", 	EWL_ICON_DOCUMENT_SAVE},
-		{"Stop", 	EWL_ICON_MEDIA_PLAYBACK_STOP}
+		{"Apply", EWL_ICON_DIALOG_APPLY, "Apply"},
+		{/*Arrow*/"Down", EWL_ICON_GO_DOWN, "Down"},
+		{/*Arrow*/"Left", EWL_ICON_GO_PREVIOUS, "Previous"},
+		{/*Arrow*/"Right", EWL_ICON_GO_NEXT, "Next"},
+		{/*Arrow*/"Up",	EWL_ICON_GO_UP, "Up"},
+		{"Cancel", EWL_ICON_DIALOG_CANCEL, "Cancel"},
+		{"FF", EWL_ICON_MEDIA_SEEK_FORWARD, "Fast Forward"},
+		{"Home", EWL_ICON_GO_HOME, "Home"},
+		{"Ok", EWL_ICON_DIALOG_OK, "OK"},
+		{"Open", EWL_ICON_DOCUMENT_OPEN, "Open"},
+		{"Pause", EWL_ICON_MEDIA_PLAYBACK_PAUSE, "Pause"},
+		{"Play", EWL_ICON_MEDIA_PLAYBACK_START, "Play"},
+		{"Quit", EWL_ICON_SYSTEM_LOG_OUT, "Quit"},
+		{"Rewind", EWL_ICON_MEDIA_SEEK_BACKWARD, "Rewind"},
+		{"Save", EWL_ICON_DOCUMENT_SAVE, "Save"},
+		{"Stop", EWL_ICON_MEDIA_PLAYBACK_STOP, "Stop"}
 	};
 
 /**
@@ -41,20 +42,35 @@ struct
 int
 ewl_stock_init(Ewl_Stock *s)
 {
-	Ewl_Widget *w;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
-	w = EWL_WIDGET(s);
-
-	if (!ewl_box_init(EWL_BOX(s))) {
+	if (!ewl_box_init(EWL_BOX(s)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
-	ewl_widget_inherit(w, EWL_STOCK_TYPE);
 
+	ewl_widget_inherit(EWL_WIDGET(s), EWL_STOCK_TYPE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param s: The stock to work with
+ * @param funcs: The stock functions to set.
+ * @return Returns no value
+ * @brief Sets the given stock functions onto the stock widget
+ */
+void
+ewl_stock_functions_set(Ewl_Stock *s, Ewl_Stock_Funcs *funcs)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+	DCHECK_PARAM_PTR("funcs", funcs);
+	DCHECK_TYPE("s", s, EWL_STOCK_TYPE);
+
+	s->stock_funcs = funcs;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -70,23 +86,26 @@ ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock)
 	DCHECK_PARAM_PTR("s", s);
 	DCHECK_TYPE("s", s, EWL_STOCK_TYPE);
 
-	if (stock == s->stock_type) {
+	if (stock == s->stock_type)
 		DRETURN(DLEVEL_STABLE);
-	}
+
 	s->stock_type = stock;
 
 	/* we're done if it's none */
-	if (s->stock_type == EWL_STOCK_NONE) {
+	if (s->stock_type == EWL_STOCK_NONE)
 		DRETURN(DLEVEL_STABLE);
-	}
+
+	/* Can't do anything without the stock funcs */
+	if (!s->stock_funcs)
+		DRETURN(DLEVEL_STABLE);
 
 	/* set the label */
-	if (s->stock_funcs && s->stock_funcs->label_set)
+	if (s->stock_funcs->label_set)
 		s->stock_funcs->label_set(s, 
-					 ewl_stock_items[s->stock_type].label);
+			 ewl_stock_items[s->stock_type].label);
 
 	/* set the image */
-	if (s->stock_funcs && s->stock_funcs->image_set) {
+	if (s->stock_funcs->image_set) {
 		const char *data;
 		
 		/* check for an image key */
@@ -97,6 +116,11 @@ ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock)
 		s->stock_funcs->image_set(s, data, 
 				ewl_stock_items[s->stock_type].image_key);
 	}
+
+	/* set the tooltip */
+	if (s->stock_funcs->tooltip_set)
+		s->stock_funcs->tooltip_set(s,
+			ewl_stock_items[s->stock_type].tooltip);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -1180,7 +1180,7 @@ ewl_ev_x_paste(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (ev->selection != ECORE_X_SELECTION_XDND)
 		printf("Paste event received\n");
 
-	else if (ev->selection == ECORE_X_SELECTION_XDND)
+	else
 	{
 		Ewl_Window *window;
 		Ecore_X_Selection_Data *data = ev->data;
@@ -1343,12 +1343,8 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 		ewl_embed_window_position_get(embed, &wx, &wy);
 
-		if (ev->source == (Ecore_X_Window)embed->evas_window) {
-			printf("Source is dest! - Retrieving local data\n");
+		if (ev->source == (Ecore_X_Window)embed->evas_window)
 			internal = 1;
-		} else {
-			printf("Source is not dest\n");
-		}
 
 		x = ev->position.x - wx;
 		y = ev->position.y - wy;
