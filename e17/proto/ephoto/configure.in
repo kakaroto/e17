@@ -6,6 +6,7 @@ rm -f config.cache
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(ephoto, 2.15.0)
 AM_CONFIG_HEADER(src/config.h)
+AM_CONFIG_HEADER(src/bin/config.h)
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -138,6 +139,7 @@ ephoto.spec
 data/Makefile
 data/images/Makefile
 src/Makefile
+src/bin/Makefile
 debian/changelog
 po/Makefile
 ])
