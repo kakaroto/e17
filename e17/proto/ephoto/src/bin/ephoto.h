@@ -2,12 +2,22 @@
 #define _EPHOTO_H_
 
 #include "config.h"
+#include <Ecore_Data.h>
+#include <Ecore_File.h>
 #include <Ewl.h>
+#include <fnmatch.h>
+#include <libgen.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 /* Main gui callbacks */
 void init_gui(void);
+
+/* Ephoto Utilities */
+Ecore_List *get_files(char *directory);
 
 /* NLS */
 #ifdef ENABLE_NLS

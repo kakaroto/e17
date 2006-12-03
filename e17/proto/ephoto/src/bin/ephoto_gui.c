@@ -33,6 +33,8 @@ void init_gui(void)
 {
 	Ewl_Widget *win, *vbox, *image, *text;
 
+	get_files("/home/titan");
+
         win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
         ewl_window_name_set(EWL_WINDOW(win), "Ephoto!");
@@ -48,7 +50,7 @@ void init_gui(void)
         ewl_widget_show(vbox);
 
 	text = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(text), "Version 2.15");
+	ewl_text_text_set(EWL_TEXT(text), VERSION);
 	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_LEFT);
 	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(vbox), text);
