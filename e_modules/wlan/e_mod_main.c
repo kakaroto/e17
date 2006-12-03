@@ -480,8 +480,6 @@ _wlan_cb_check (void *data)
   _wlan_update_level (inst, level_send);
   
    snprintf(omsg,sizeof(omsg),"Qual: %d%%", wlan_link);
-   
-   edje_object_signal_emit(inst->wlan_obj, "label_active", "");
    edje_object_part_text_set(inst->wlan_obj, "qual_label", omsg);
 
    snprintf(omsg,sizeof(omsg),"Lvl: %d%%", wlan_level);
