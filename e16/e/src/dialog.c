@@ -155,6 +155,7 @@ struct _ditem
    char                realized;
    char                update;
 
+   char                state;
    char                hilited;
    char                clicked;
 };
@@ -1737,6 +1738,23 @@ DialogDrawItem(Dialog * d, DItem * di)
 	   di->item.area.init_func(di, 0, NULL);
 	break;
 
+     case DITEM_SEPARATOR:
+	if (!d->redraw)
+	   break;
+	if (di->item.separator.horizontal)
+	   ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
+			   STATE_NORMAL, ST_WIDGET);
+	else
+	   ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
+			   STATE_CLICKED, ST_WIDGET);
+	break;
+
+     case DITEM_TEXT:
+	state = STATE_NORMAL;
+	x = di->x;
+	w = di->w;
+	goto draw_text;
+
      case DITEM_CHECKBUTTON:
 	state = STATE_NORMAL;
 	if ((di->hilited) && (di->clicked))
@@ -1749,31 +1767,14 @@ DialogDrawItem(Dialog * d, DItem * di)
 			di->item.check_button.check_orig_w,
 			di->item.check_button.check_orig_h,
 			DialogItemCheckButtonGetState(di), 0, state, ST_WIDGET);
-	if (!d->redraw)
+	if (!d->redraw &&
+	    (TextclassGetTextState(di->tclass, di->state, 0, 0) ==
+	     TextclassGetTextState(di->tclass, state, 0, 0)))
 	   break;
 	pad = ImageclassGetPadding(di->iclass);
 	x = di->x + di->item.check_button.check_orig_w + pad->left;
 	w = di->w - di->item.check_button.check_orig_w - pad->left;
 	goto draw_text;
-
-     case DITEM_TEXT:
-	if (!d->redraw)
-	   EXCopyArea(d->pmm_bg.pmap, d->pmap, di->x, di->y, di->w, di->h,
-		      di->x, di->y);
-	x = di->x;
-	w = di->w;
-	goto draw_text;
-
-     case DITEM_SEPARATOR:
-	if (!d->redraw)
-	   break;
-	if (di->item.separator.horizontal)
-	   ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-			   STATE_NORMAL, ST_WIDGET);
-	else
-	   ImageclassApply(di->iclass, di->win, di->w, di->h, 0, 0,
-			   STATE_CLICKED, ST_WIDGET);
-	break;
 
      case DITEM_RADIOBUTTON:
 	state = STATE_NORMAL;
@@ -1787,7 +1788,9 @@ DialogDrawItem(Dialog * d, DItem * di)
 			di->item.radio_button.radio_orig_w,
 			di->item.radio_button.radio_orig_h,
 			di->item.radio_button.onoff, 0, state, ST_WIDGET);
-	if (!d->redraw)
+	if (!d->redraw &&
+	    (TextclassGetTextState(di->tclass, di->state, 0, 0) ==
+	     TextclassGetTextState(di->tclass, state, 0, 0)))
 	   break;
 	pad = ImageclassGetPadding(di->iclass);
 	x = di->x + di->item.radio_button.radio_orig_w + pad->left;
@@ -1798,7 +1801,13 @@ DialogDrawItem(Dialog * d, DItem * di)
 	break;
 
       draw_text:
-	TextDraw(di->tclass, d->win, d->pmap, 0, 0, STATE_NORMAL, di->text,
+	di->state = state;
+	if (!di->text)
+	   break;
+	if (!d->redraw)
+	   EXCopyArea(d->pmm_bg.pmap, d->pmap, di->x, di->y, di->w, di->h,
+		      di->x, di->y);
+	TextDraw(di->tclass, d->win, d->pmap, 0, 0, state, di->text,
 		 x, di->y, w, 99999, 17, TextclassGetJustification(di->tclass));
 	break;
      }
