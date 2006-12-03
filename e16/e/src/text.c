@@ -477,6 +477,8 @@ _xft_TextSize(TextState * ts, const char *text, int len,
    XftTextExtentsUtf8(disp, fdc->font, (const XftChar8 *)text, len, &gi);
    *width = gi.xOff;
    *height = fdc->font->height;
+   if (*height < fdc->font->ascent + fdc->font->descent)
+      *height = fdc->font->ascent + fdc->font->descent;
    *ascent = fdc->font->ascent;
 #if 0
    Eprintf("asc/dsc/h=%d/%d/%d x,y=%2d,%d wxh=%dx%d ox,y=%3d,%d: (%d)%s\n",
