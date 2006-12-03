@@ -33,9 +33,7 @@ void init_gui(void)
 {
 	Ewl_Widget *win, *vbox, *image, *text;
 
-	get_files("/home/titan");
-
-        win = ewl_window_new();
+	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
         ewl_window_name_set(EWL_WINDOW(win), "Ephoto!");
         ewl_window_borderless_set(EWL_WINDOW(win));
