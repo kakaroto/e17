@@ -8,6 +8,13 @@ int main(int argc, char **argv)
                 return 1;
         }
 
+	/* NLS */
+#ifdef ENABLE_NSL
+	setlocale(LC_MESSAGES, "");
+	bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
+	bind_textdomain_codeset(PACKAGE, "UTF-8");
+	textdomain(PACKAGE);
+#endif
 	//ewl_theme_theme_set(PACKAGE_DATA_DIR "/themes/ephoto.edj");
 	init_gui();
 
