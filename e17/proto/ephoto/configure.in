@@ -22,7 +22,7 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="sv de it"
+ALL_LINGUAS="sv de it fr"
 AC_SUBST(ALL_LINGUAS)
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
