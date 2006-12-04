@@ -704,6 +704,7 @@ ewl_engine_pointer_ungrab(Ewl_Window *win)
 
 /**
  * @param win: the window to work with
+ * @param txt: The text to set as the selection
  * @return Returns no value
  * @brief Sets the window selection text
  */
@@ -731,6 +732,7 @@ ewl_engine_window_selection_text_set(Ewl_Window *win, const char *txt)
 
 /**
  * @param win: the window to work with
+ * @param root: The root window to get the height for
  * @param width: Where to store the width
  * @param height: Where to store the height
  * @return Returns no value
@@ -788,6 +790,8 @@ ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed)
 
 /**
  * @param embed: the embed to work with
+ * @param types: The dnd types to set
+ * @param num: The number of types
  * @return Returns no value
  * @brief Sets the dnd types provided by this embed.
  */
@@ -866,8 +870,8 @@ ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed)
 
 /**
  * @param embed: the embed to work with
- * @parm w: a pointer where the width of the desktop will be stored
- * @parm h: a pointer where the height pf the desktop will be stored
+ * @param w: a pointer where the width of the desktop will be stored
+ * @param h: a pointer where the height pf the desktop will be stored
  * @return Returns no value
  * @brief Sets the dnd awareness
  */
@@ -891,6 +895,7 @@ ewl_engine_desktop_size_get(Ewl_Embed *embed, int *w, int *h)
 
 /**
  * @param win: the window to work with
+ * @param debug: The debug setting
  * @return Returns no value
  * @brief Sets up the canvas
  */
@@ -913,7 +918,11 @@ ewl_engine_canvas_setup(Ewl_Window *win, int debug)
 }
 
 /**
- * @param win: the window to work with
+ * @param emb: The embed to work with
+ * @param x: The x coord to set
+ * @param y: The y coord to set
+ * @param width: The width to set
+ * @param height: The height to set
  * @return Returns no value
  * @brief Sets up the canvas
  */
@@ -936,7 +945,7 @@ ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height
 }
 
 /**
- * @param win: the embed to work with
+ * @param embed: the embed to work with
  * @return Returns no value
  * @brief Renders the canvas
  */
@@ -959,7 +968,7 @@ ewl_engine_canvas_render(Ewl_Embed *embed)
 }
 
 /**
- * @param win: the window to work with
+ * @param embed: the embed to work with
  * @return Returns no value
  * @brief Freezes the canvas
  */
@@ -982,7 +991,7 @@ ewl_engine_canvas_freeze(Ewl_Embed *embed)
 }
 
 /**
- * @param win: the window to work with
+ * @param embed: the embed to work with
  * @return Returns no value
  * @brief Thaws the canvas
  */
@@ -1394,6 +1403,7 @@ ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type)
 /**
  * @param embed: The embed to lookup the engine chain for hook matching
  * @param type: The Ewl_Engine_Hook type to find the best matching function
+ * @param hook: The hook to retrieve
  * @return Returns a pointer to the appropriate engine callback on success.
  * @brief Retrieves the correct engine callback for the specified type.
  */
