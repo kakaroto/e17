@@ -10,8 +10,9 @@
  * @{
  */
 
-/*
- * predefinition of the function structure
+/**
+ * @internal
+ * The stock function pointers.
  */
 typedef struct Ewl_Stock_Funcs Ewl_Stock_Funcs;
 
@@ -22,6 +23,7 @@ typedef struct Ewl_Stock_Funcs Ewl_Stock_Funcs;
 #define EWL_STOCK_TYPE "stock"
 
 /**
+ * The stock structure.
  */
 typedef struct Ewl_Stock Ewl_Stock;
 
@@ -43,9 +45,9 @@ struct Ewl_Stock
 
 struct Ewl_Stock_Funcs
 {
-	void (*label_set)(Ewl_Stock *s, const char *txt);
-	void (*image_set)(Ewl_Stock *s, const char *file, const char *key);
-	void (*tooltip_set)(Ewl_Stock *s, const char *tip);
+	void (*label_set)(Ewl_Stock *s, const char *txt);	/**< The label set function */
+	void (*image_set)(Ewl_Stock *s, const char *file, const char *key); /**< The image set function */
+	void (*tooltip_set)(Ewl_Stock *s, const char *tip);	/**< The tooltip set function */
 };
 
 
