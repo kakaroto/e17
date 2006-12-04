@@ -59,30 +59,35 @@ ewl_combo_init(Ewl_Combo *combo)
 	ewl_callback_append(combo->button, EWL_CALLBACK_CLICKED,
 				ewl_combo_cb_decrement_clicked, combo);
 	ewl_widget_show(combo->button);
-
-	combo->popup = NEW(Ewl_Menu_Base, 1);
-	ewl_menu_base_init(EWL_MENU_BASE(combo->popup));
-	ewl_widget_internal_set(EWL_WIDGET(combo->popup), TRUE);
-
-	combo->popup->popup = ewl_popup_new();
-	ewl_popup_follow_set(EWL_POPUP(combo->popup->popup),
-						EWL_WIDGET(combo));
-	ewl_popup_type_set(EWL_POPUP(combo->popup->popup),
-						EWL_POPUP_TYPE_MENU_VERTICAL);
-	ewl_popup_fit_to_follow_set(EWL_POPUP(combo->popup->popup), TRUE);
-	ewl_window_keyboard_grab_set(EWL_WINDOW(combo->popup->popup), TRUE);
-	ewl_window_pointer_grab_set(EWL_WINDOW(combo->popup->popup), TRUE);
-	ewl_widget_appearance_set(combo->popup->popup, EWL_COMBO_TYPE
-					"/"EWL_POPUP_TYPE);
-	ewl_object_fill_policy_set(EWL_OBJECT(combo->popup->popup), 
+	
+	/*
+	 * setup the popup
+	 */
+	combo->popup = ewl_popup_new();
+	ewl_popup_follow_set(EWL_POPUP(combo->popup), EWL_WIDGET(combo));
+	ewl_popup_type_set(EWL_POPUP(combo->popup), 
+				EWL_POPUP_TYPE_MENU_VERTICAL);
+	ewl_popup_fit_to_follow_set(EWL_POPUP(combo->popup), TRUE);
+	ewl_window_keyboard_grab_set(EWL_WINDOW(combo->popup), TRUE);
+	ewl_window_pointer_grab_set(EWL_WINDOW(combo->popup), TRUE);
+	ewl_widget_appearance_set(combo->popup, EWL_COMBO_TYPE
+						"/"EWL_POPUP_TYPE);
+	ewl_object_fill_policy_set(EWL_OBJECT(combo->popup),
 					EWL_FLAG_FILL_HFILL);
-	ewl_object_alignment_set(EWL_OBJECT(combo->popup->popup),
+	ewl_object_alignment_set(EWL_OBJECT(combo->popup),
 				EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
-	ewl_callback_append(combo->popup->popup, EWL_CALLBACK_MOUSE_DOWN,
+	ewl_callback_append(combo->popup, EWL_CALLBACK_MOUSE_DOWN,
 					ewl_combo_cb_popup_mouse_down, combo);
+	
+	/*
+	 * setup the popbox
+	 */
+	combo->popbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(combo->popup), combo->popbox);
+	ewl_container_redirect_set(EWL_CONTAINER(combo->popup), 
+					EWL_CONTAINER(combo->popbox));
+	ewl_widget_show(combo->popbox);
 
-	ewl_callback_append(EWL_WIDGET(combo), EWL_CALLBACK_CONFIGURE,
-					ewl_combo_cb_configure, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo), 
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 
@@ -135,37 +140,6 @@ ewl_combo_editable_get(Ewl_Combo *combo)
 
 /**
  * @internal
- * @param w: The widget to work with
- * @param ev: UNUSED
- * @param data: UNUSED
- * @return Returns no value
- * @brief The configure callback
- */
-void
-ewl_combo_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
-					void *data __UNUSED__)
-{
-	Ewl_Combo *combo;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	combo = EWL_COMBO(w);
-
-	if (EWL_MENU_ITEM(combo->popup)->inmenu)
-		ewl_popup_type_set(EWL_POPUP(combo->popup->popup),
-					EWL_POPUP_TYPE_MENU_HORIZONTAL);
-	else
-		ewl_popup_type_set(EWL_POPUP(combo->popup->popup),
-				EWL_POPUP_TYPE_MENU_VERTICAL);
-	
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
  * @param w: UNUSED
  * @param ev: The event data
  * @param data: The combo box
@@ -199,9 +173,9 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	/* change the button appearance and expand the menu */
 	ewl_widget_appearance_set(combo->button, "increment");
 
-	ewl_menu_base_cb_expand(EWL_WIDGET(combo->popup), ev, NULL);
-	ewl_window_raise(EWL_WINDOW(combo->popup->popup));
-	ewl_widget_focus_send(EWL_WIDGET(combo->popup->popbox));
+	ewl_widget_show(combo->popup);
+	ewl_window_raise(EWL_WINDOW(combo->popup));
+	ewl_widget_focus_send(EWL_WIDGET(combo->popbox));
 
 	if (!ewl_mvc_dirty_get(EWL_MVC(combo)))
 		DRETURN(DLEVEL_STABLE);
@@ -209,13 +183,20 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	ewl_container_reset(EWL_CONTAINER(combo->popup));
 	for (i = 0; i < model->count(mvc_data); i++)
 	{
+		Ewl_Widget *cell;
 		Ewl_Widget *item;
+
+		cell = ewl_cell_new();
+		ewl_object_fill_policy_set(EWL_OBJECT(cell), 
+						EWL_FLAG_FILL_HFILL);
+		ewl_container_child_append(EWL_CONTAINER(combo->popup), cell);
+		ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
+					ewl_combo_cb_item_clicked, combo);
+		ewl_widget_show(cell);
 
 		item = view->construct();
 		view->assign(item, model->fetch(mvc_data, i, 0));
-		ewl_container_child_append(EWL_CONTAINER(combo->popup), item);
-		ewl_callback_append(item, EWL_CALLBACK_CLICKED,
-					ewl_combo_cb_item_clicked, combo);
+		ewl_container_child_append(EWL_CONTAINER(cell), item);
 		ewl_widget_show(item);
 	}
 
@@ -243,7 +224,7 @@ ewl_combo_cb_popup_mouse_down(Ewl_Widget *w,
 		Ewl_Combo *combo;
 		
 		combo = EWL_COMBO(data);
-		ewl_widget_hide(combo->popup->popup);
+		ewl_widget_hide(combo->popup);
 		ewl_widget_appearance_set(combo->button, "decrement");
 	}
 
@@ -273,7 +254,7 @@ ewl_combo_cb_item_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	i = ewl_container_child_index_get(EWL_CONTAINER(combo->popup), w);
 	ewl_mvc_selected_set(EWL_MVC(combo), i, -1);
 
-	ewl_widget_hide(combo->popup->popup);
+	ewl_widget_hide(combo->popup);
 	ewl_widget_appearance_set(combo->button, "decrement");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -285,6 +266,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 	Ewl_View *view;
 	Ewl_Model *model;
 	Ewl_Combo *combo;
+	Ewl_Widget *item = NULL;
 	void *mvc_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -299,29 +281,36 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 	if (!mvc_data)
 		DRETURN(DLEVEL_STABLE);
 
-	/* remove the previously selected value */
-	if (combo->header)
-		ewl_widget_destroy(combo->header);
+	/*
+	 * if we haven't already build a cell for the header, build it
+	 * now
+	 */
+	if (!combo->header) {
+		combo->header = ewl_cell_new();
+		ewl_container_child_prepend(EWL_CONTAINER(combo), 
+							combo->header);
+		ewl_object_fill_policy_set(EWL_OBJECT(combo->header),
+							EWL_FLAG_FILL_FILL);
+		ewl_widget_show(combo->header);
+	}
+	else
+		ewl_container_reset(EWL_CONTAINER(combo->header));
 
 	if (ewl_mvc_selected_count_get(mvc))
 	{
 		Ewl_Selection_Idx *idx;
 
 		idx = ewl_mvc_selected_get(mvc);
-		combo->header = view->construct();
-		view->assign(combo->header, 
-				model->fetch(mvc_data, idx->row, 0));
+		item = view->construct();
+		view->assign(item, model->fetch(mvc_data, idx->row, 0));
 	}
 	else if (view->header_fetch)
-		combo->header = view->header_fetch(mvc_data, -1);
+		item = view->header_fetch(mvc_data, -1);
 
-	if (combo->header)
+	if (item)
 	{
-		ewl_container_child_prepend(EWL_CONTAINER(combo), 
-							combo->header);
-		ewl_object_fill_policy_set(EWL_OBJECT(combo->header),
-							EWL_FLAG_FILL_FILL);
-		ewl_widget_show(combo->header);
+		ewl_container_child_prepend(EWL_CONTAINER(combo->header), item);
+		ewl_widget_show(item);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

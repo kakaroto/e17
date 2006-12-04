@@ -42,7 +42,8 @@ struct Ewl_Combo
 {
 	Ewl_MVC mvc; /**< Inherit from Ewl_MVC */
 
-	Ewl_Menu_Base *popup; 	/**< Use a menu to display with. */
+	Ewl_Widget *popup; 	/**< Use a popup to display with. */
+	Ewl_Widget *popbox;	/**< the box for the popup */
 	Ewl_Widget *button; 	/**< expand/contract button */
 	Ewl_Widget *header; 	/**< The combo header widget */
 	unsigned char editable:1; /**< Is the combo editable */
@@ -58,7 +59,6 @@ unsigned int	 ewl_combo_editable_get(Ewl_Combo *combo);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_combo_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_decrement_clicked(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_popup_mouse_down(Ewl_Widget *w, void *ev, void *data);
 void ewl_combo_cb_item_clicked(Ewl_Widget *w, void *ev, void *data);
