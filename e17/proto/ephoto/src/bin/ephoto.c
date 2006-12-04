@@ -9,7 +9,7 @@ int main(int argc, char **argv)
         }
 
 	/* NLS */
-#ifdef ENABLE_NSL
+#ifdef ENABLE_NLS
 	setlocale(LC_MESSAGES, "");
 	bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset(PACKAGE, "UTF-8");
