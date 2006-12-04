@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Highlight Ewl_Highlight: A highlight widget
  * Defines a widget to highlight other widgets
  *
+ * @remarks Inherits from Ewl_Floater.
+ * @image html Ewl_Highlight_inheritance.png
+ *
  * @{
  */
 

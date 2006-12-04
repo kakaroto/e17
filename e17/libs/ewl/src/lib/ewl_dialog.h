@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Dialog Ewl_Dialog: A dialog window
  * @brief Defines the Ewl_Dialog class which extends the Ewl_Window class.
  *
+ * @remarks Inherits from Ewl_Window.
+ * @image html Ewl_Dialog_inheritance.png
+ *
  * @{
  */
 

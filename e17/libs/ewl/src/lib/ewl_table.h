@@ -6,6 +6,9 @@
  * Defines the Ewl_Box class used for laying out Ewl_Widget's in a
  * horizontal or vertical line.
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Table_inheritance.png
+ *
  * @{
  */
 

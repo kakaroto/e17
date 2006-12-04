@@ -6,6 +6,9 @@
  * Provides a field for entering numerical values, along with buttons to
  * increment and decrement the value.
  *
+ * @remarks Inherits from Ewl_Range.
+ * @image html Ewl_Spinner_inheritance.png
+ *
  * @{
  */
 

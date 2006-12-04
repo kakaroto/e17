@@ -6,6 +6,9 @@
  * @brief Defines a widget for laying out other widgets in a tree or list like
  * manner.
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Tree_inheritance.png
+ *
  * @{
  */
 

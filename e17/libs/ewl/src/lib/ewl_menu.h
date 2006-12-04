@@ -6,6 +6,9 @@
  * Defines a menu used globally. The contents on the menu are drawn outside of
  * the Evas.
  *
+ * @remarks Inherits from Ewl_Menu_Base.
+ * @image html Ewl_Menu_inheritance.png
+ *
  * @{
  */
 

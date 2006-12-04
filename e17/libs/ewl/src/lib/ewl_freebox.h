@@ -6,6 +6,9 @@
  * @brief Defines a class to allow the user to specify the layout type for
  * the widget.
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Freebox_inheritance.png
+ *
  * @{
  */
 

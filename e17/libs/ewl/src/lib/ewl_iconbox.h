@@ -14,6 +14,9 @@
  * Defines the Ewl_Iconbox class, used to display a collection of icons 
  * with annotations and support arranging/manipulating contained icons
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Iconbox_inheritance.png
+ *
  * @{
  */
 

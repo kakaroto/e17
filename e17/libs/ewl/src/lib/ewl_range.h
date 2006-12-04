@@ -6,6 +6,9 @@
  * Defines an Ewl_Widget with a draggable button enclosed, used to select a
  * value from a range.
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Range_inheritance.png
+ *
  * @{
  */
 

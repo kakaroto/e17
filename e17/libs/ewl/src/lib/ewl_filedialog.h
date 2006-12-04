@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Filedialog Ewl_Filedialog: A Dialog For Picking Files
  * A simple dialog to show a file selector widget
  *
+ * @remarks Inherits from Ewl_Dialog.
+ * @image html Ewl_Filedialog_inheritance.png
+ *
  * @{
  */
 

@@ -1,5 +1,10 @@
 #!/bin/sh
-## DoxyGen Generic Generation Script
 
 doxygen
+
+if [ "$1" = "-graph" ];
+then
+	perl tools/inherit.pl doc/xml
+fi
+
 cp doc/images/hilite.png doc/html

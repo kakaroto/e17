@@ -6,6 +6,9 @@
  * @brief Defines a widget for layering above other widgets in EWL's drawing
  * area, with the ability to follow the movement of another widget.
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Floater_inheritance.png
+ *
  * @{
  */
 

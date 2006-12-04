@@ -6,6 +6,9 @@
  * Defines a widget with single purpose of providing a button with a checked
  * state, without any extra decorating.
  *
+ * @remarks Inherits from Ewl_Widget.
+ * @image html Ewl_Check_inheritance.png
+ *
  * @{
  */
 

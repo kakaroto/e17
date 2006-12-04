@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Password Ewl_Password: A Single Line Text Password Widget
  * @brief Defines the Ewl_Password class to allow for single line obscured text.
  *
+ * @remarks Inherits from Ewl_Entry.
+ * @image html Ewl_Password_inheritance.png
+ *
  * @{
  */
 

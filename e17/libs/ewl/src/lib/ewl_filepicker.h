@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Filepicker Ewl_Filepicker: Allows selecting files from a list
  * A widget to allow selecting ifles
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Filepicker_inheritance.png
+ *
  * @{
  */
 

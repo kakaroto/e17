@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Filelist_Column Ewl_Filelist_Column: An expanding column view
  * A view of the files using a new column for each directory.
  *
+ * @remarks Inherits from Ewl_Filelist.
+ * @image html Ewl_Filelist_Column_inheritance.png
+ *
  * @{
  */
 

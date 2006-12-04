@@ -6,6 +6,9 @@
  * @brief Defines an Ewl_Checkbutton that inherits from Ewl_Widget and
  * provides an Ewl_Check that changes value on each click.
  *
+ * @remarks Inherits from Ewl_Button.
+ * @image html Ewl_Checkbutton_inheritance.png
+ *
  * @{
  */
 

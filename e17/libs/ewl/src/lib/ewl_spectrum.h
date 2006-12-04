@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Spectrum Ewl_Spectrum: The colour spectrum widget
  * Defines a colour spectrum widget
  *
+ * @remarks Inherits from Ewl_Overlay.
+ * @image html Ewl_Spectrum_inheritance.png
+ *
  * @{
  */
 

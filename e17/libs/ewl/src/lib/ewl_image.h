@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Image Ewl_Image: An Image Display Widget
  * Provides a widget for displaying evas loadable images, and edjes.
  *
+ * @remarks Inherits from Ewl_Widget.
+ * @image html Ewl_Image_inheritance.png
+ *
  * @{
  */
 

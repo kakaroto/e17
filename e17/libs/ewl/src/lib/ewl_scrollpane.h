@@ -6,6 +6,9 @@
  * Provides a scrollable area for viewing large sets of widgets in a smaller
  * viewable region.
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Scrollpane_inheritance.png
+ *
  * @{
  */
 

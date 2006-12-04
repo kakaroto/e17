@@ -5,6 +5,10 @@
  * @addtogroup Ewl_Popup Ewl_Popup: A override window for the convenience use
  * Defines the Ewl_Popup class used for override window that need to be
  * placed with some kind of smartness
+ *
+ * @remarks Inherits from Ewl_Window.
+ * @image html Ewl_Popup_inheritance.png
+ *
  * @{
  */
 

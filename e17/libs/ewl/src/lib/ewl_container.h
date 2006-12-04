@@ -6,6 +6,9 @@
  * @brief Define the Ewl_Container class which inherits from Ewl_Widget and adds
  * the ability to nest Ewl_Widget's inside.
  *
+ * @remarks Inherits from Ewl_Widget.
+ * @image html Ewl_Container_inheritance.png
+ *
  * @{
  */
 

@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Paned Ewl_Paned: A paned widget
  * Provides a widget to have a resizable paned container
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Paned_inheritance.png
+ *
  * @{
  */
 

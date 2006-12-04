@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Notebook Ewl_Notebook: A notebook widget
  * Defines a class for notebook layout
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Notebook_inheritance.png
+ *
  * @{
  */
 

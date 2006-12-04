@@ -6,6 +6,9 @@
  * @brief Defines the basic menu classes that are extended to an actual menu
  * implementation by inheriting classes such as Ewl_Menu and Ewl_Imenu.
  *
+ * @remarks Inherits from Ewl_Menu_Item.
+ * @image html Ewl_Menu_Base_inheritance.png
+ *
  * @{
  */
 

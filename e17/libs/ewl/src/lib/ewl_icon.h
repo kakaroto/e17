@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Icon Ewl_Icon: An icon widget
  * @brief Describes a widget to layout and manipulate icons
  *
+ * @remarks Inherits from Ewl_Stock.
+ * @image html Ewl_Icon_inheritance.png
+ *
  * @{
  */
 

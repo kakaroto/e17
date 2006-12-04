@@ -7,6 +7,9 @@
  * buttons and icons in a common place. This class inherits from the Ewl_Box 
  * to allow for placing any other widget inside the stock.
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Stock_inheritance.png
+ *
  * @{
  */
 

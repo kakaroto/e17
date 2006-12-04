@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Menu_Item Ewl_Menu_Item: The basic menu item
  * The basic menu item
  *
+ * @remarks Inherits from Ewl_Button.
+ * @image html Ewl_Menu_Item_inheritance.png
+ *
  * @{
  */
 

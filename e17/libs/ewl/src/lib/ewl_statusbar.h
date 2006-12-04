@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Statusbar Ewl_Statusbar: A status bar widget
  * Defines a class for displaying status bars
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Statusbar_inheritance.png
+ *
  * @{
  */
 

@@ -6,6 +6,9 @@
  * Defines the Ewl_Overlay class to provide EWL with the ability to work with an
  * evas.
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Overlay_inheritance.png
+ *
  * @{
  */
 

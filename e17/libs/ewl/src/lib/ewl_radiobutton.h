@@ -6,6 +6,9 @@
  * Provides for a simple radiobutton with label, and to group radio buttons
  * for selecting a single option.
  *
+ * @remarks Inherits from Ewl_Checkbutton.
+ * @image html Ewl_Radiobutton_inheritance.png
+ *
  * @{
  */
 

@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Filelist Ewl_Filelist: The base widget for the filelists
  * A base class to be extended to provide different views on the file list
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Filelist_inheritance.png
+ *
  * @{
  */
 

@@ -6,6 +6,9 @@
  * Defines the Ewl_Window class which extends the Ewl_Embed class by
  * creating it's own window and evas.
  *
+ * @remarks Inherits from Ewl_Embed.
+ * @image html Ewl_Window_inheritance.png
+ *
  * @{
  */
 

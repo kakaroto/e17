@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Row Ewl_Row: The Row widget
  * Defines a widget to display a row
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Row_inheritance.png
+ *
  * @{
  */
 

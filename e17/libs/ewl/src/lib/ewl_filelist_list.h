@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Filelist_List Ewl_Filelist_List: A listview of the files
  * Provides a list view of the files giving name, size, etc information
  *
+ * @remarks Inherits from Ewl_Filelist.
+ * @image html Ewl_Filelist_List_inheritance.png
+ *
  * @{
  */
 

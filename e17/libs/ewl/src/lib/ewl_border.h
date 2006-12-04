@@ -6,6 +6,9 @@
  * @brief Defines the Ewl_Border class used for adding a border decoration
  * around a group of widgets.
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Border_inheritance.png
+ *
  * @{
  */
 

@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Entry Ewl_Entry: A text entry widget
  * This widget provides all text entry needs, from single to multiline
  *
+ * @remarks Inherits from Ewl_Text.
+ * @image html Ewl_Entry_inheritance.png
+ *
  * @{
  */
 

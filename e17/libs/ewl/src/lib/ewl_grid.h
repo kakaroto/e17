@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Grid Ewl_Grid The ewl grid widget
  * @brief The Ewl Grid widget
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Grid_inheritance.png
+ *
  * @{
  */
 

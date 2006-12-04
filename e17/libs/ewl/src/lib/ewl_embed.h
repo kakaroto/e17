@@ -6,6 +6,9 @@
  * Defines the Ewl_Embed class to provide EWL with the ability to work with an
  * evas.
  *
+ * @remarks Inherits from Ewl_Overlay.
+ * @image html Ewl_Embed_inheritance.png
+ *
  * @{
  */
 

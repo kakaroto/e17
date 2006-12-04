@@ -5,6 +5,9 @@
  * @addtogroup Ewl_List Ewl_List: A list widget
  * @brief Defines a class to layout data in a list
  *
+ * @remarks Inherits from Ewl_MVC.
+ * @image html Ewl_List_inheritance.png
+ *
  * @{
  */
 

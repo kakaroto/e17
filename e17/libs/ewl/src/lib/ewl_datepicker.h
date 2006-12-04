@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Datepicker Ewl_Datepicker: The EWL Datepicker widget
  * @brief Defines the Ewl_Datepicker class,  
  *
+ * @remarks Inherits from Ewl_Text.
+ * @image html Ewl_Datepicker_inheritance.png
+ *
  * @{
  */
 

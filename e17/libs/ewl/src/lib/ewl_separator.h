@@ -6,6 +6,9 @@
  * Defines the Ewl_Separator class used for drawing lines between widgets when
  * visual separation is needed.
  *
+ * @remarks Inherits from Ewl_Widget.
+ * @image html Ewl_Separator_inheritance.png
+ *
  * @{
  */
 

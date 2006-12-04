@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Progressbar Ewl_Progressbar: A progressbar from a value
  * A progress bar widget
  *
+ * @remarks Inherits from Ewl_Range.
+ * @image html Ewl_Progressbar_inheritance.png
+ *
  * @{
  */
 

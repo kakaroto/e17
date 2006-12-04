@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Cell Ewl_Cell: The Cell Container, Layout for a Single Widget
  * Defines a container to layout a single child with all of it's available space.
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Cell_inheritance.png
+ *
  * @{
  */
 

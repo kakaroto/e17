@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Tree2_View Ewl_Tree2_View: A tree view
  * @brief The tree view class
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Tree2_View_inheritance.png
+ *
  * @{
  */
 

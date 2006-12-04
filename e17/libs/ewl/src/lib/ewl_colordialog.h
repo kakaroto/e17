@@ -4,6 +4,9 @@
 /**
  * @addtogroup Ewl_Colordialog Ewl_Colordialog: A Simple Colour Dialog widget
  *
+ * @remarks Inherits from Ewl_Dialog.
+ * @image html Ewl_Colordialog_inheritance.png
+ *
  * @{
  */
 

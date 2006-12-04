@@ -10,6 +10,9 @@
  * callbacks for input events, window information changes, and drawing to the
  * display.
  *
+ * @remarks Inherits from Ewl_Object.
+ * @image html Ewl_Widget_inheritance.png
+ *
  * @{
  */
 

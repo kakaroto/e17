@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Scrollbar Ewl_Scrollbar: A Simple Scrollbar Widget
  * Defines an Ewl_Scrollbar for using when scrolling values are needed.
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Scrollbar_inheritance.png
+ *
  * @{
  */
 

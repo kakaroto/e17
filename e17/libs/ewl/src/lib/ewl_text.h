@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Text Ewl_Text: A text layout widget
  * @brief Defines a class for text layout and formatting
  *
+ * @remarks Inherits from Ewl_Container.
+ * @image html Ewl_Text_inheritance.png
+ *
  * @{
  */
 

@@ -6,6 +6,9 @@
  * @brief Defines the Ewl_Shadow class used for adding a shadow decoration
  * around a group of widgets.
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Shadow_inheritance.png
+ *
  * @{
  */
 

@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Label Ewl_Label: A fully-themable text label
  * Defines a class for a fullty-themable text label
  * 
+ * @remarks Inherits from Ewl_Widget.
+ * @image html Ewl_Label_inheritance.png
+ *
  * @{
  */
 

@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Filelist_Icon Ewl_Filelist_Icon: A icon file view
  * A view of the files using simple name/icon graphics
  *
+ * @remarks Inherits from Ewl_Filelist.
+ * @image html Ewl_Filelist_Icon_inheritance.png
+ *
  * @{
  */
 

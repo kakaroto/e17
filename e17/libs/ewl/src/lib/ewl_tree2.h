@@ -51,6 +51,9 @@
  *   off-screen. How do we implement column layout? Proposal: Row height
  *   cache, easy for fixed height rows, more complex for variable height.
  *
+ * @remarks Inherits from Ewl_MVC.
+ * @image html Ewl_Tree2_inheritance.png
+ *
  * @{
  */
 

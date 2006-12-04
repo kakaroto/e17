@@ -6,6 +6,9 @@
  * Defines a combo box used internally. The contents on the box are not drawn
  * outside of the Evas.
  *
+ * @remarks Inherits from Ewl_MVC.
+ * @image html Ewl_Combo_inheritance.png
+ *
  * @{
  */
 

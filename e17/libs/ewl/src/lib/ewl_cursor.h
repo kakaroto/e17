@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Cursor Ewl_Cursor: Container to create custom mouse cursors
  * @brief Defines the Ewl_Cursor class used for generating ARGB cursor data.
  *
+ * @remarks Inherits from Ewl_Window.
+ * @image html Ewl_Cursor_inheritance.png
+ *
  * @{
  */
 

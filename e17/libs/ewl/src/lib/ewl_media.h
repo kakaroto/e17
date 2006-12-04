@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Media Ewl_Media: A Multi media widget
  * @brief Defines a class for displaing video
  *
+ * @remarks Inherits from Ewl_Widget.
+ * @image html Ewl_Media_inheritance.png
+ *
  * @{
  */
 

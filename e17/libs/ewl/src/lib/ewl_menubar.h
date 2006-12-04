@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Menubar Ewl_Menubar: A menu bar widget
  * Defines a class for displaying menu bars
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Menubar_inheritance.png
+ *
  * @{
  */
 

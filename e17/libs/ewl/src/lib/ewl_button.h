@@ -6,6 +6,9 @@
  * @brief The button class is a basic button with a label. This class inherits
  * from the Ewl_Box to allow for placing any other widget inside the button.
  *
+ * @remarks Inherits from Ewl_Stock.
+ * @image html Ewl_Button_inheritance.png
+ *
  * @{
  */
 

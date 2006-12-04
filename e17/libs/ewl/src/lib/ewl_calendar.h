@@ -5,6 +5,9 @@
  * @addtogroup Ewl_Calendar Ewl_Calendar: The EWL Calendar Widget
  * @brief Defines the Ewl_Calendar class  
  *
+ * @remarks Inherits from Ewl_Box.
+ * @image html Ewl_Calendar_inheritance.png
+ *
  * @{
  */
 
