@@ -58,7 +58,7 @@ ewl_entry_init(Ewl_Entry *e)
 	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_FOCUS_IN);
 	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_FOCUS_OUT);
 	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_DND_POSITION);
-	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_DND_DATA);
+	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_DND_DATA_RECEIVED);
 
 	/* setup the cursor */
 	e->cursor = ewl_entry_cursor_new(e);
@@ -92,7 +92,7 @@ ewl_entry_init(Ewl_Entry *e)
 				ewl_entry_cb_enable, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DND_POSITION,
 				ewl_entry_cb_dnd_position, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DND_DATA,
+	ewl_callback_append(w, EWL_CALLBACK_DND_DATA_RECEIVED,
 				ewl_entry_cb_dnd_data, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -565,7 +565,7 @@ ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 void
 ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Event_Dnd_Data *event;
+	Ewl_Event_Dnd_Data_Received *event;
 	Ewl_Text *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);

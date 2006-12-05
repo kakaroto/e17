@@ -13,6 +13,10 @@ Ecore_Event_Handler *ewl_dnd_status_handler = NULL;
 Ecore_Event_Handler *ewl_dnd_leave_handler = NULL;
 Ecore_Event_Handler *ewl_dnd_drop_handler = NULL;
 Ecore_Event_Handler *ewl_dnd_finished_handler = NULL;
+Ecore_Event_Handler *ewl_dnd_selection_clear_handler = NULL;
+Ecore_Event_Handler *ewl_dnd_selection_request_handler = NULL;
+Ecore_Event_Handler *ewl_dnd_selection_notify_handler = NULL;
+Ecore_Event_Handler *ewl_dnd_client_message_handler = NULL;
 
 static int create_test(Ewl_Container *box);
 
@@ -26,6 +30,10 @@ static int ewl_dnd_snoop_cb_status(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_leave(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_drop(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_finished(void *data, int type, void *ev);
+static int ewl_dnd_snoop_cb_selection_clear(void *data, int type, void *ev);
+static int ewl_dnd_snoop_cb_selection_notify(void *data, int type, void *ev);
+static int ewl_dnd_snoop_cb_selection_request(void *data, int type, void *ev);
+static int ewl_dnd_snoop_cb_client_message(void *data, int type, void *ev);
 
 static void ewl_dnd_snoop_cb_clear(Ewl_Widget *w, void *ev, void *data);
 
@@ -67,13 +75,25 @@ create_test(Ewl_Container *box)
 	ewl_dnd_finished_handler = ecore_event_handler_add(
 					ECORE_X_EVENT_XDND_FINISHED, 
 					ewl_dnd_snoop_cb_finished, NULL);
+	ewl_dnd_selection_clear_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_SELECTION_CLEAR,
+					ewl_dnd_snoop_cb_selection_clear, NULL);
+	ewl_dnd_selection_request_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_SELECTION_REQUEST,
+					ewl_dnd_snoop_cb_selection_request, NULL);
+	ewl_dnd_selection_notify_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_SELECTION_NOTIFY,
+					ewl_dnd_snoop_cb_selection_notify, NULL);
+	ewl_dnd_client_message_handler = ecore_event_handler_add(
+					ECORE_X_EVENT_CLIENT_MESSAGE,
+					ewl_dnd_snoop_cb_client_message, NULL);
 
 	o = ewl_entry_new();
 	ewl_dnd_accepted_types_set(o, text_types);
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_callback_append(o, EWL_CALLBACK_DND_POSITION, ewl_dnd_snoop_cb_dnd_position, NULL);
 	ewl_callback_append(o, EWL_CALLBACK_DND_DROP, ewl_dnd_snoop_cb_dnd_drop, NULL);
-	ewl_callback_append(o, EWL_CALLBACK_DND_DATA, ewl_dnd_snoop_cb_dnd_data, NULL);
+	ewl_callback_append(o, EWL_CALLBACK_DND_DATA_RECEIVED, ewl_dnd_snoop_cb_dnd_data, NULL);
 	ewl_widget_name_set(o, "entry");
 	ewl_entry_multiline_set(EWL_ENTRY(o), TRUE);
 	ewl_text_wrap_set(EWL_TEXT(o), TRUE);
@@ -151,7 +171,7 @@ static void
 ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event, 
 						void *data __UNUSED__)
 {
-	Ewl_Event_Dnd_Data *ev = event;
+	Ewl_Event_Dnd_Data_Received *ev = event;
 	printf("Data event on widget %p: %p length %d\n", w, ev->data, ev->len);
 }
 
@@ -295,6 +315,108 @@ ewl_dnd_snoop_cb_finished(void *data __UNUSED__, int type __UNUSED__, void *ev)
 	ewl_dnd_snoop_output(buf);
 
 	return 1;
+}
+
+static int
+ewl_dnd_snoop_cb_selection_clear(void *data, int type, void *ev)
+{
+	char buf[1024];
+	Ecore_X_Event_Selection_Clear *event = ev;
+
+	snprintf(buf, sizeof(buf), "\nSelection Clear\n");
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tWindow: %d\n\tSelection%d\n", 
+						event->win, event->selection);
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
+	ewl_dnd_snoop_output(buf);
+
+	return 1;
+
+}
+
+static int
+ewl_dnd_snoop_cb_selection_request(void *data, int type, void *ev)
+{
+	char buf[1024];
+	Ecore_X_Event_Selection_Request *event = ev;
+
+	snprintf(buf, sizeof(buf), "\nSelection Request\n");
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tWindow: %d\n", event->win);
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tSelection: %s\n", 
+					XGetAtomName(ecore_x_display_get(), 
+					event->selection));
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tTarget: %s\n", 
+					XGetAtomName(ecore_x_display_get(), 
+					event->target));
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tProperty: %s\n", 
+					XGetAtomName(ecore_x_display_get(), 
+					event->property));
+	ewl_dnd_snoop_output(buf);
+
+	return 1;
+
+}
+
+static int
+ewl_dnd_snoop_cb_selection_notify(void *data, int type, void *ev)
+{
+	char buf[1024];
+	Ecore_X_Event_Selection_Notify *event = ev;
+
+	snprintf(buf, sizeof(buf), "\nSelection Notify\n");
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tWindow: %d\n\tSelection%d\n", 
+						event->win, event->selection);
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tTarget: %s\n", event->target);
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tData: %p\n", event->data);
+	ewl_dnd_snoop_output(buf);
+
+	return 1;
+
+}
+
+static int
+ewl_dnd_snoop_cb_client_message(void *data, int type, void *ev)
+{
+	char buf[1024];
+	Ecore_X_Event_Client_Message *event = ev;
+
+	snprintf(buf, sizeof(buf), "\nClient Message\n");
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tWindow: %d\n\tType: %s\n", 
+						event->win,
+						XGetAtomName(ecore_x_display_get(),
+							event->message_type));
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
+	ewl_dnd_snoop_output(buf);
+
+	return 1;
+
 }
 
 static void

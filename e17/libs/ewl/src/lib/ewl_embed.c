@@ -1011,9 +1011,9 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
  * @brief Sends the event for selection data received into an embed.
  */
 void
-ewl_embed_dnd_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned int len, unsigned int format)
+ewl_embed_dnd_data_received_feed(Ewl_Embed *embed, char *type, void *data, unsigned int len, unsigned int format)
 {
-	Ewl_Event_Dnd_Data ev;
+	Ewl_Event_Dnd_Data_Received ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
@@ -1033,7 +1033,40 @@ ewl_embed_dnd_data_feed(Ewl_Embed *embed, char *type, void *data, unsigned int l
 			ev.len = len;
 			ev.format= format;
 			ewl_callback_call_with_event_data(embed->last.drop_widget,
-							  EWL_CALLBACK_DND_DATA,
+							  EWL_CALLBACK_DND_DATA_RECEIVED,
+							  &ev);
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed where the selection data request event is to occur
+ * @param type: The type to feed
+ * @return Returns no value.
+ * @brief Sends the request event for selection data received into an embed.
+ */
+void
+ewl_embed_dnd_data_request_feed(Ewl_Embed *embed, char *type)
+{
+	Ewl_Event_Dnd_Data_Requested ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	/*
+	 * If a widget is expecting DND data, send the data to the widget
+	 */
+	if (embed->last.drag_widget) {
+		if (ewl_dnd_provided_types_contains(embed->last.drag_widget, type)) {
+			/* 
+			 * setup the event struct 
+			 */
+			ev.type = type;
+			ewl_callback_call_with_event_data(embed->last.drag_widget,
+							  EWL_CALLBACK_DND_DATA_REQUEST,
 							  &ev);
 		}
 	}

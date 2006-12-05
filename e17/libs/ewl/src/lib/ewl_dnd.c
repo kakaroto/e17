@@ -9,7 +9,8 @@ int EWL_CALLBACK_DND_POSITION; /**< A DND position event **/
 int EWL_CALLBACK_DND_ENTER; /**< On enter of a widget **/
 int EWL_CALLBACK_DND_LEAVE; /**< On exit of a widget **/
 int EWL_CALLBACK_DND_DROP; /**< Drop event **/
-int EWL_CALLBACK_DND_DATA; /**< Data event **/
+int EWL_CALLBACK_DND_DATA_RECEIVED; /**< Data received event **/
+int EWL_CALLBACK_DND_DATA_REQUEST; /**< Data request event **/
 
 static int ewl_dragging_current;
 static int ewl_dnd_move_count;
@@ -50,7 +51,7 @@ ewl_dnd_init(void)
 	EWL_CALLBACK_DND_ENTER = ewl_callback_type_add();
 	EWL_CALLBACK_DND_LEAVE = ewl_callback_type_add();
 	EWL_CALLBACK_DND_DROP = ewl_callback_type_add();
-	EWL_CALLBACK_DND_DATA = ewl_callback_type_add();
+	EWL_CALLBACK_DND_DATA_RECEIVED = ewl_callback_type_add();
 
 	ewl_dnd_widget = NULL;
 	ewl_dnd_status = 0;

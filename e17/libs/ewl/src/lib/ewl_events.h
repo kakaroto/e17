@@ -196,8 +196,8 @@ struct Ewl_Dnd_Types
  */
 struct Ewl_Event_Dnd_Position
 {
-        int x; /**< X coordinate the mouse moved to */
-        int y; /**< Y coordinate the mouse moved to */
+	int x; /**< X coordinate the mouse moved to */
+	int y; /**< Y coordinate the mouse moved to */
 };
 
 /**
@@ -210,8 +210,8 @@ typedef struct Ewl_Event_Dnd_Position Ewl_Event_Dnd_Position;
  */
 struct Ewl_Event_Dnd_Drop
 {
-        int x; /**< X coordinate the mouse moved to */
-        int y; /**< Y coordinate the mouse moved to */
+	int x; /**< X coordinate the mouse moved to */
+	int y; /**< Y coordinate the mouse moved to */
 	void* data; /**< Data from drop source 	    */
 };
 
@@ -223,18 +223,31 @@ typedef struct Ewl_Event_Dnd_Drop Ewl_Event_Dnd_Drop;
 /**
  * Provides information about dnd drop data
  */
-struct Ewl_Event_Dnd_Data
+struct Ewl_Event_Dnd_Data_Received
 {
 	char *type; /**< Type of data from drop source */
 	void *data; /**< Data from drop source */
-        unsigned int len; /**< Length of received data */
-        unsigned int format; /**< Bit format of received data */
+	unsigned int len; /**< Length of received data */
+	unsigned int format; /**< Bit format of received data */
 };
 
 /**
- * The Ewl_Event_Dnd_Data type
+ * The Ewl_Event_Dnd_Data_Received type
  */
-typedef struct Ewl_Event_Dnd_Data Ewl_Event_Dnd_Data;
+typedef struct Ewl_Event_Dnd_Data_Received Ewl_Event_Dnd_Data_Received;
+
+/**
+ * Provides information about dnd data requests
+ */
+struct Ewl_Event_Dnd_Data_Requested
+{
+	char *type; /**< Type of data requested */
+};
+
+/**
+ * The Ewl_Event_Dnd_Data_Requested type
+ */
+typedef struct Ewl_Event_Dnd_Data_Requested Ewl_Event_Dnd_Data_Requested;
 
 /**
  * The Ewl_Dialog_Evenet type

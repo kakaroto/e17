@@ -108,7 +108,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	ewl_widget_inherit(EWL_WIDGET(cp), EWL_COLORPICKER_TYPE);
 	ewl_dnd_accepted_types_set(EWL_WIDGET(cp), types);
 
-	ewl_callback_append(EWL_WIDGET(cp), EWL_CALLBACK_DND_DATA,
+	ewl_callback_append(EWL_WIDGET(cp), EWL_CALLBACK_DND_DATA_RECEIVED,
 				ewl_colorpicker_cb_dnd_data, NULL);
 
 	r = g = b = 0;
@@ -746,7 +746,7 @@ ewl_colorpicker_cb_dnd_data(Ewl_Widget *w, void *ev,
 	unsigned int i;
 	unsigned int curcolors[4];
 	Ewl_Colorpicker *cp = EWL_COLORPICKER(w);
-	Ewl_Event_Dnd_Data *event = ev;
+	Ewl_Event_Dnd_Data_Received *event = ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

@@ -38,6 +38,21 @@ struct Ewl_Attach
 };
 
 /**
+ * Ewl_Attach_Dnd provides a way to attach DND data to widgets
+ */
+typedef struct Ewl_Attach_Dnd Ewl_Attach_Dnd;
+
+/**
+ * DND data associated with the widget.
+ */
+struct Ewl_Attach_Dnd
+{
+	Ewl_Widget *cursor;	/**< Cursor displayed for DND */
+	void *data;		/**< The attachment data */
+	int size;		/**< Any private data in the attachment */
+};
+
+/**
  * @def ewl_attach_tooltip_text_set(w, data)
  * Convenience method to set a tooltip text attachment
  */

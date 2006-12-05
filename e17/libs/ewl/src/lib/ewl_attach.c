@@ -147,6 +147,41 @@ ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data)
 }
 
 /**
+ * @param w: The widget to attach the dnd data too
+ * @param c: The cursor to display during drag.
+ * @param data: The data to transfer on drop.
+ * @return Returns no value
+ * @brief Attaches the DND data @p data to the widget @p w with the displayed
+ * cursor @p c.
+ */
+void
+ewl_attach_dnd_drag_set(Ewl_Widget *w, Ewl_Widget *c, void *data, int size)
+{
+	Ewl_Attach_Dnd *dnd_data;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	dnd_data = ewl_attach_get(w, EWL_ATTACH_TYPE_DND_DATA);
+	if (!c && !data) {
+		if (dnd_data)
+			FREE(dnd_data);
+	}
+	else {
+		if (!dnd_data)
+			dnd_data = NEW(Ewl_Attach_Dnd, 1);
+		dnd_data->cursor = c;
+		dnd_data->data = data;
+		dnd_data->size = size;
+	}
+
+	ewl_attach_other_set(w, EWL_ATTACH_TYPE_DND_DATA, dnd_data);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param w: The widget to get the attachment from
  * @param t: The type of attachment to get
  * @return Returns the data for the given attachment type
