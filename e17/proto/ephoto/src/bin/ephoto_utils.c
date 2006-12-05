@@ -10,9 +10,10 @@ Ecore_List *get_directories(char *directory)
 	{
 		ls = ecore_list_new();
 		files = ecore_list_new();
-
-		ecore_list_append(files, strdup(".."));
-
+		if (strcmp(directory, "/"))
+		{
+			ecore_list_append(files, strdup(".."));
+		}
 		ls = ecore_file_ls(directory);
 		while (!ecore_list_is_empty(ls))
 		{
