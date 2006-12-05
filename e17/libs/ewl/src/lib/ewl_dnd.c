@@ -52,6 +52,7 @@ ewl_dnd_init(void)
 	EWL_CALLBACK_DND_LEAVE = ewl_callback_type_add();
 	EWL_CALLBACK_DND_DROP = ewl_callback_type_add();
 	EWL_CALLBACK_DND_DATA_RECEIVED = ewl_callback_type_add();
+	EWL_CALLBACK_DND_DATA_REQUEST = ewl_callback_type_add();
 
 	ewl_dnd_widget = NULL;
 	ewl_dnd_status = 0;
