@@ -116,7 +116,6 @@ create_test(Ewl_Container *box)
 
 	printf("Insert 'The first bunch of text\\n'\n");
 	ewl_text_text_insert(EWL_TEXT(o), "The first bunch of text\n", 0); /* 24 */
-	return 1;
 
 	printf("Cursor position\n");
 	ewl_text_cursor_position_set(EWL_TEXT(o), 10);
