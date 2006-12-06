@@ -206,11 +206,11 @@ ewl_popup_mouse_position_set(Ewl_Popup *p, int x, int y)
  */
 void
 ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                void *user_data __UNUSED__)
+				void *user_data __UNUSED__)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("w", w);
-        DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_popup_size_check(EWL_POPUP(w));
 	ewl_popup_position_check(EWL_POPUP(w));
@@ -220,7 +220,7 @@ ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (ewl_window_keyboard_grab_get(EWL_WINDOW(w)))
 		ewl_window_keyboard_grab_set(EWL_WINDOW(w), TRUE);
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -233,20 +233,20 @@ ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
-                                void *user_data __UNUSED__)
+				void *user_data __UNUSED__)
 {
-        Ewl_Popup *p;
+	Ewl_Popup *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("w", w);
-        DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	p = EWL_POPUP(w);
 	if (p->follow)
 		ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
 					ewl_popup_cb_follow_destroy, p);
 
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -261,17 +261,17 @@ void
 ewl_popup_cb_follow_configure(Ewl_Widget *w __UNUSED__, 
 				void *ev_data __UNUSED__, void *user_data)
 {
-        Ewl_Popup *p;
+	Ewl_Popup *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("user_data", user_data);
-        DCHECK_TYPE("user_data", user_data, EWL_POPUP_TYPE);
+	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("user_data", user_data, EWL_POPUP_TYPE);
 
 	p = EWL_POPUP(user_data);
 	ewl_popup_size_check(p);
 	ewl_popup_position_check(p);
 
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -284,13 +284,13 @@ ewl_popup_cb_follow_configure(Ewl_Widget *w __UNUSED__,
  */
 void
 ewl_popup_cb_follow_destroy(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-                                void *user_data)
+				void *user_data)
 {
-        Ewl_Popup *p;
+	Ewl_Popup *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("user_data", user_data);
-        DCHECK_TYPE("user_data", user_data, EWL_POPUP_TYPE);
+	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("user_data", user_data, EWL_POPUP_TYPE);
 
 	p = EWL_POPUP(user_data);
 	p->follow = NULL;
@@ -298,7 +298,7 @@ ewl_popup_cb_follow_destroy(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	if (p->type != EWL_POPUP_TYPE_NONE)
 		ewl_widget_hide(EWL_WIDGET(p));
 
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**

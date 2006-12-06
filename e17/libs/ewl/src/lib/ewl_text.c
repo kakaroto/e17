@@ -23,19 +23,19 @@ static Ewl_Text_Context *ewl_text_default_context = NULL;
 static Ecore_Hash *context_hash = NULL;
 
 static const char ewl_text_trailing_bytes[256] = {
-        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-        1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-        2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3, 4,4,4,4,4,4,4,4,5,5,5,5,6,6,6,6
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+	3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3, 4,4,4,4,4,4,4,4,5,5,5,5,6,6,6,6
 };
 
 /* returns length of the next utf-8 sequence */
 #define EWL_TEXT_CHAR_BYTE_LEN(s) \
-        (ewl_text_trailing_bytes[(unsigned int)(unsigned char)((s)[0])])
+	(ewl_text_trailing_bytes[(unsigned int)(unsigned char)((s)[0])])
 
 static Ewl_Text_Fmt *ewl_text_fmt_get(Ewl_Text *t, unsigned int char_idx);
 static void ewl_text_current_fmt_set(Ewl_Text *t, unsigned int context_mask, 
@@ -2818,15 +2818,15 @@ ewl_text_char_is_legal_utf8(const char *c)
 	{
 		case 2:
 			/* 2 byte */
-	        	if ((t[1] & 0xc0) != 0x80)
-	          		DRETURN_INT(FALSE, DLEVEL_STABLE);
+			if ((t[1] & 0xc0) != 0x80)
+				DRETURN_INT(FALSE, DLEVEL_STABLE);
 			break;
 
 		case 3:
 			/* 3 byte */
 			if (((t[1] & 0xc0) != 0x80)
 					|| ((t[2] & 0xc0) != 0x80))
-	          		DRETURN_INT(FALSE, DLEVEL_STABLE);
+				DRETURN_INT(FALSE, DLEVEL_STABLE);
 			break;
 
 		case 4:

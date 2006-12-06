@@ -56,12 +56,12 @@ ewl_range_value_set(Ewl_Range *r, double v)
 	if (r->value == v)
 		DRETURN(DLEVEL_STABLE);
 
-        if (v < r->min_val)
-                r->value = r->min_val;
-        else if (v > r->max_val)
-                r->value = r->max_val;
-        else
-                r->value = v;
+	if (v < r->min_val)
+		r->value = r->min_val;
+	else if (v > r->max_val)
+		r->value = r->max_val;
+	else
+		r->value = v;
 
 	ewl_callback_call(EWL_WIDGET(r), EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(EWL_WIDGET(r));
@@ -96,17 +96,17 @@ ewl_range_value_get(Ewl_Range *r)
 void
 ewl_range_minimum_value_set(Ewl_Range *r, double minv)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("r", r);
-        DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("r", r);
+	DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
 
-        r->min_val = minv;
+	r->min_val = minv;
 
 	/* update to the min value if needed */
 	if (r->value < r->min_val)
 		ewl_range_value_set(r, r->min_val);
 	
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -135,17 +135,17 @@ ewl_range_minimum_value_get(Ewl_Range *r)
 void
 ewl_range_maximum_value_set(Ewl_Range *r, double maxv)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR("r", r);
-        DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("r", r);
+	DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
 
-        r->max_val = maxv;
+	r->max_val = maxv;
 
 	/* update to max value if needed */
 	if (r->value > r->max_val)
 		ewl_range_value_set(r, r->max_val);
 	
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**

@@ -722,7 +722,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
 		multi_select = TRUE;
 
 	modifiers = ewl_ev_modifiers_get();
-        if (multi_select && (modifiers & EWL_KEY_MODIFIER_SHIFT))
+	if (multi_select && (modifiers & EWL_KEY_MODIFIER_SHIFT))
 	{
 		/* is this the first click? */
 		if (ewl_mvc_selected_count_get(mvc) > 0)
@@ -791,14 +791,14 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
 		else
 			ewl_mvc_selected_set(mvc, row, column);
 	}
-        else if (multi_select && (modifiers & EWL_KEY_MODIFIER_CTRL))
-        {
-                if (ewl_mvc_selected_is(mvc, row, column))
-                        ewl_mvc_selected_rm(mvc, row, column);
-                else
-                        ewl_mvc_selected_add(mvc, row, column);
-        }
-        else
+	else if (multi_select && (modifiers & EWL_KEY_MODIFIER_CTRL))
+	{
+		if (ewl_mvc_selected_is(mvc, row, column))
+			ewl_mvc_selected_rm(mvc, row, column);
+		else
+			ewl_mvc_selected_add(mvc, row, column);
+	}
+	else
 		ewl_mvc_selected_set(mvc, row, column);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

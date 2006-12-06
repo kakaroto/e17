@@ -43,13 +43,13 @@ typedef struct Ewl_Seeker Ewl_Seeker;
  */
 struct Ewl_Seeker
 {
-	Ewl_Range       range; /**< Inherit from Ewl_Range */
+	Ewl_Range range; /**< Inherit from Ewl_Range */
 	Ewl_Orientation orientation; /**< Indicates layout direction */
-	Ewl_Widget     *button; /**< Draggable widget for selecting value */
-	int             dragstart; /**< The coordinate where the drag starts */
-	int             autohide; /**< Indicator to hide when not scrollable */
-	Ecore_Timer    *timer; /**< Timer for scroll repeating */
-	double          start_time; /**< Time the timer was started */
+	Ewl_Widget *button; /**< Draggable widget for selecting value */
+	int dragstart; /**< The coordinate where the drag starts */
+	int autohide; /**< Indicator to hide when not scrollable */
+	Ecore_Timer *timer; /**< Timer for scroll repeating */
+	double start_time; /**< Time the timer was started */
 };
 
 Ewl_Widget     *ewl_seeker_new(void);

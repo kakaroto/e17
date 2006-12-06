@@ -41,14 +41,14 @@ typedef struct Ewl_Scrollpane Ewl_Scrollpane;
  */
 struct Ewl_Scrollpane
 {
-	Ewl_Container         container;  /**< Inherit from Ewl_Container */
+	Ewl_Container container;  /**< Inherit from Ewl_Container */
 
-	Ewl_Widget           *overlay;    /**< Clips the enclosed widget */
-	Ewl_Widget           *box;        /**< Lays out enclosed widget */
-	Ewl_Widget           *hscrollbar; /**< Horizontal scrollbar */
-	Ewl_Widget           *vscrollbar; /**< Vertical scrollbar */
-	Ewl_Scrollpane_Flags  hflag;      /**< Flags for horizontal scrollbar */
-	Ewl_Scrollpane_Flags  vflag;      /**< Flags for vertical scrollbar */
+	Ewl_Widget *overlay;    /**< Clips the enclosed widget */
+	Ewl_Widget *box;        /**< Lays out enclosed widget */
+	Ewl_Widget *hscrollbar; /**< Horizontal scrollbar */
+	Ewl_Widget *vscrollbar; /**< Vertical scrollbar */
+	Ewl_Scrollpane_Flags hflag;      /**< Flags for horizontal scrollbar */
+	Ewl_Scrollpane_Flags vflag;      /**< Flags for vertical scrollbar */
 };
 
 Ewl_Widget     *ewl_scrollpane_new(void);

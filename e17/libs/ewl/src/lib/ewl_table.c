@@ -110,7 +110,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	 * Append callbacks
 	 */
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
-			    ewl_table_cb_configure, NULL); 
+					ewl_table_cb_configure, NULL); 
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -127,9 +127,9 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
  */
 void
 ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
-	      int start_col, int end_col, int start_row, int end_row)
+		int start_col, int end_col, int start_row, int end_row)
 {
-        Ewl_Cell *cell;
+	Ewl_Cell *cell;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
@@ -143,14 +143,14 @@ ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
 	ewl_container_child_append(EWL_CONTAINER(table->grid), 
 							EWL_WIDGET(cell));
 	if (table->col_headers)
-	        ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
-			     start_col, end_col, start_row + 1, end_row + 1);
+		ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
+				start_col, end_col, start_row + 1, end_row + 1);
 	else
-	        ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
-			     start_col, end_col, start_row, end_row);
+		ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
+				start_col, end_col, start_row, end_row);
 
 	ewl_callback_prepend(EWL_WIDGET(cell), EWL_CALLBACK_MOUSE_UP,
-			     ewl_table_cb_child_select, table);
+				ewl_table_cb_child_select, table);
 
 	ewl_widget_show(EWL_WIDGET(cell));
 
@@ -223,7 +223,7 @@ ewl_table_col_row_get(Ewl_Table *t, Ewl_Cell *cell,
  */
 Ecore_List *
 ewl_table_find(Ewl_Table *t, int start_col, int end_col,
-			       int start_row, int end_row)
+				int start_row, int end_row)
 {
 	/*---------------------------------
 	 * DEVELOPER NOTE:
@@ -249,10 +249,10 @@ ewl_table_find(Ewl_Table *t, int start_col, int end_col,
 	ecore_dlist_goto_first(children);
 	while ((child = ecore_dlist_next(children)) != NULL) {
 		gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
-							    (void *) t->grid);
+						(void *) t->grid);
 
 		if (start_col >= gc->start_col && end_col <= gc->end_col &&
-		    start_row >= gc->start_row && end_row <= gc->end_row) {
+			start_row >= gc->start_row && end_row <= gc->end_row) {
 			ecore_list_append(list, child);
 		}
 	}
@@ -409,12 +409,12 @@ ewl_table_selected_get(Ewl_Table *t)
 	ecore_dlist_goto_first(children);
 	while ((child = ecore_dlist_next(children)) != NULL) {
 		gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
-						    (void *) t->grid);
+						(void *) t->grid);
 
 		if (t->selected.start_c == gc->start_col &&
-		    t->selected.start_r == gc->start_row &&
-		    t->selected.end_c == gc->end_col &&
-		    t->selected.end_r == gc->end_row) {
+				t->selected.start_r == gc->start_row &&
+				t->selected.end_c == gc->end_col &&
+				t->selected.end_r == gc->end_row) {
 			
 			tw = (Ewl_Text *) ecore_dlist_goto_first(
 					EWL_CONTAINER(child)->children);
@@ -487,11 +487,11 @@ ewl_table_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	o = EWL_OBJECT(w);
 
 	ewl_object_geometry_request(EWL_OBJECT(table->grid),
-				    CURRENT_X(o), CURRENT_Y(o),
-				    CURRENT_W(o) - INSET_LEFT(o) +
-				    INSET_RIGHT(o),
-				    CURRENT_H(o) - INSET_TOP(o) +
-				    INSET_BOTTOM(o));
+					CURRENT_X(o), CURRENT_Y(o),
+					CURRENT_W(o) - INSET_LEFT(o) +
+					INSET_RIGHT(o),
+					CURRENT_H(o) - INSET_TOP(o) +
+					INSET_BOTTOM(o));
 
 	ecore_dlist_goto_first(EWL_CONTAINER(table->grid)->children);
 	while ((child =

@@ -40,14 +40,14 @@ typedef struct Ewl_Table Ewl_Table;
  */
 struct Ewl_Table
 {
-	Ewl_Container   container;		/**< Inherit from Ewl_Container */
-	Ewl_Grid       *grid;			/**< Table uses a grid based layout */
+	Ewl_Container container;		/**< Inherit from Ewl_Container */
+	Ewl_Grid *grid;			/**< Table uses a grid based layout */
 
-	char          **col_headers;		/**< The column headers */
-	int             row_select;		/**< boolean: select entire rows */
+	char **col_headers;		/**< The column headers */
+	int row_select;		/**< boolean: select entire rows */
 
-        unsigned int    homogeneous_h;   	/**< Horizontal homogeneous flag */
-        unsigned int    homogeneous_v;   	/**< Vertical homogeneous flag */ 
+        unsigned int homogeneous_h;   	/**< Horizontal homogeneous flag */
+        unsigned int homogeneous_v;   	/**< Vertical homogeneous flag */ 
 
 	struct {
 		int start_r;			/**< Selection start row */

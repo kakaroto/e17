@@ -168,13 +168,13 @@ ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
 	s->orientation = o;
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_widget_appearance_set(EWL_WIDGET(s), "hseeker");
-                ewl_widget_appearance_set(s->button, "hbutton");
+		ewl_widget_appearance_set(s->button, "hbutton");
 		ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL |
 				EWL_FLAG_FILL_HSHRINK);
 	}
 	else {
 		ewl_widget_appearance_set(EWL_WIDGET(s), "vseeker");
-                ewl_widget_appearance_set(s->button, "vbutton");
+		ewl_widget_appearance_set(s->button, "vbutton");
 		ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_VFILL |
 				EWL_FLAG_FILL_VSHRINK);
 	}

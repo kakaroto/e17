@@ -160,15 +160,16 @@ ewl_box_init(Ewl_Box * b)
 	/*
 	 * Setup the container size change handlers.
 	 */
-	ewl_container_resize_notify_set(EWL_CONTAINER(b), ewl_box_cb_child_resize);
+	ewl_container_resize_notify_set(EWL_CONTAINER(b), 
+					ewl_box_cb_child_resize);
 	ewl_container_show_notify_set(EWL_CONTAINER(b), ewl_box_cb_child_show);
 	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_cb_child_hide);
 
 	/*
 	 * Attach the default layout callback.
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_box_cb_configure,
-			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
+				ewl_box_cb_configure, NULL);
 
 	/*
 	 * Check if the info structs have been created yet, if not create
@@ -202,7 +203,7 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 {
 	Ewl_Container *c;
 	Ewl_Widget *child;
-        char *appearance;
+	char *appearance;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
@@ -221,7 +222,7 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 	 * the appearance if it is still set to box. Otherwise we might end
 	 * up wipeing out the appearance of an inheriting widget (like
 	 * menubar */
-        appearance = ewl_widget_appearance_get(EWL_WIDGET(b));
+	appearance = ewl_widget_appearance_get(EWL_WIDGET(b));
 	if ((b->orientation == EWL_ORIENTATION_HORIZONTAL)
 			&& (!strcmp(appearance,	"vbox")))
 		ewl_widget_appearance_set(EWL_WIDGET(b), "hbox");
@@ -230,7 +231,7 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 			&& (!strcmp(appearance, "hbox")))
 		ewl_widget_appearance_set(EWL_WIDGET(b), "vbox");
 
-        IF_FREE(appearance);
+	IF_FREE(appearance);
 
 	/* we need to reset the preferred size of the box after chaning the
 	 * orientation. We'll cheat by calling ewl_box_child_show_cb foreach
@@ -540,7 +541,7 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 	 */
 	ecore_dlist_goto_first(EWL_CONTAINER(b)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(b)->children))) {
-		int             change;
+		int change;
 
 		/*
 		 * Place the child on a list depending on it's matching
@@ -976,7 +977,7 @@ ewl_box_setup(void)
 		 * These are the valid fill policies for this widget.
 		 */
 		ewl_box_vertical->f_policy =
-		    EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_VFILL;
+			EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_VFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.
@@ -1017,7 +1018,7 @@ ewl_box_setup(void)
 		 * These are the valid fill policies for this widget.
 		 */
 		ewl_box_horizontal->f_policy =
-		    EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL;
+			EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.

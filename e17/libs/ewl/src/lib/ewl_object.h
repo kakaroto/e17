@@ -65,16 +65,16 @@ struct Ewl_Object
 {
 	struct
 	{
-		int             x, /**< Horizontal position */
-				y; /**< Vertical position */
-		int             w, /**< Width */
-				h; /**< Height */
+		int x, /**< Horizontal position */
+		    y; /**< Vertical position */
+		int w, /**< Width */
+		    h; /**< Height */
 	} current; /**< The current size and position of an object. */
 
 	struct
 	{
-		int             w, /**< Width */
-				h; /**< Height */
+		int w, /**< Width */
+		    h; /**< Height */
 	}
 	preferred, /**< The optimal size of the object in ideal circumstances */
 	maximum, /**< The guaranteed maximum size this object will receive. */
@@ -82,10 +82,10 @@ struct Ewl_Object
 
 	struct
 	{
-		int             l, /**< Left value */
-				r, /**< Right value */
-				t, /**< Top value */
-				b; /**< Bottom value */
+		int l, /**< Left value */
+		    r, /**< Right value */
+		    t, /**< Top value */
+		    b; /**< Bottom value */
 	} pad, /**< The space padded around the outside of the object. */
 	insets; /**< The space inside where children should not be laid out. */
 

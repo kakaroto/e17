@@ -127,29 +127,29 @@ typedef struct Ewl_Widget Ewl_Widget;
  */
 struct Ewl_Widget
 {
-	Ewl_Object       object; /**< Inherit the base Object class */
-	Ewl_Widget      *parent; /**< The parent widget, actually a container */
+	Ewl_Object object; /**< Inherit the base Object class */
+	Ewl_Widget *parent; /**< The parent widget, actually a container */
 
 	Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX + 1]; 
 						/**< Callback chain array */
 	Ewl_Attach_List *attach;       /**< List of attachments on the widget */
 
-	Evas_Object     *smart_object; /**< Smart Object for the layer stuff */
-	Evas_Object     *fx_clip_box;  /**< Clipping rectangle of widget */
+	Evas_Object *smart_object; /**< Smart Object for the layer stuff */
+	Evas_Object *fx_clip_box;  /**< Clipping rectangle of widget */
 
-	Evas_Object     *theme_object; /**< Appearance shown on canvas */
-	const char      *bit_path;     /**< Path to the file for loading */
-	const char      *bit_group;    /**< Group in theme to use */
-	const char      *bit_state;    /**< State of the appearance */
-	const char      *appearance;   /**< Key to lookup appearance in theme */
-	const char      *inheritance;  /**< Inheritance of path widget */
-	int              layer;        /**< the layer relative to the parent */
-	int              toplayered;   /**< Indicates if the widget should 
+	Evas_Object *theme_object; /**< Appearance shown on canvas */
+	const char *bit_path;     /**< Path to the file for loading */
+	const char *bit_group;    /**< Group in theme to use */
+	const char *bit_state;    /**< State of the appearance */
+	const char *appearance;   /**< Key to lookup appearance in theme */
+	const char *inheritance;  /**< Inheritance of path widget */
+	int layer;        /**< the layer relative to the parent */
+	int toplayered;   /**< Indicates if the widget should 
 						be on the top of the layer stack */ 
 
-	Ecore_Hash      *theme;        /**< Overriding theme settings */
-	Ewl_Pair_List    theme_text;   /**< Overriding text in theme */
-	Ecore_Hash      *data;         /**< Arbitrary data attached to widget */
+	Ecore_Hash *theme;        /**< Overriding theme settings */
+	Ewl_Pair_List theme_text;   /**< Overriding text in theme */
+	Ecore_Hash *data;         /**< Arbitrary data attached to widget */
 };
 
 int             ewl_widget_init(Ewl_Widget * w);

@@ -282,7 +282,7 @@ ewl_scrollpane_vscrollbar_value_set(Ewl_Scrollpane *s, double val)
 /**
  * @param s: the scrollpane to retrieve its vertical scrollbar stepping 
  * @return Returns the value of the stepping of the vertical scrollbar 
- *         in @a s on success.
+ *		in @a s on success.
  * @brief Retrives the value of the stepping of the vertical scrollbar in @a s.
  */
 double
@@ -299,7 +299,7 @@ ewl_scrollpane_hscrollbar_step_get(Ewl_Scrollpane *s)
 /**
  * @param s: the scrollpane to retrieve its vertical scrollbar stepping 
  * @return Returns the value of the stepping of the vertical scrollbar 
- *         in @a s on success.
+ *		in @a s on success.
  * @brief Retrives the value of the stepping of the vertical scrollbar in @a s.
  */
 double
