@@ -20,8 +20,7 @@ enum Ewl_Engine_Window_Hooks
 
 	EWL_ENGINE_WINDOW_BORDERLESS_SET,	/**< Set the borderless 
 							 state of the window */
-	EWL_ENGINE_WINDOW_DIALOG_SET,	/**< Set the dialog 
-						       setting of the window */
+	EWL_ENGINE_WINDOW_DIALOG_SET,	/**< Set the dialog setting of the window */
 	EWL_ENGINE_WINDOW_FULLSCREEN_SET,	/**< Set the fullscreen 
 							setting of the window */
 	EWL_ENGINE_WINDOW_TRANSIENT_FOR,	/**< Set the window transient */
@@ -179,21 +178,21 @@ void		 ewl_engine_window_selection_text_set(Ewl_Window *win,
 void		 ewl_engine_window_geometry_get(Ewl_Window *win, int root,
 						int *width, int *height);
 void		 ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed);
-void             ewl_engine_embed_dnd_drag_types_set(Ewl_Embed *embed,
-						     char **types,
-						     unsigned int num);
-void             ewl_engine_embed_dnd_drag_start(Ewl_Embed *embed);
-void             ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed);
+void 		 ewl_engine_embed_dnd_drag_types_set(Ewl_Embed *embed,
+							char **types,
+							unsigned int num);
+void 		 ewl_engine_embed_dnd_drag_start(Ewl_Embed *embed);
+void 		 ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed);
 void		 ewl_engine_desktop_size_get(Ewl_Embed *embed, int *w, int *h);
 
 void		 ewl_engine_canvas_setup(Ewl_Window *win, int debug);
 void		 ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y,
-					      int width, int height);
+						int width, int height);
 void		 ewl_engine_canvas_render(Ewl_Embed *embed);
 void		 ewl_engine_canvas_freeze(Ewl_Embed *embed);
 void		 ewl_engine_canvas_thaw(Ewl_Embed *embed);
 int 		 ewl_engine_pointer_data_new(Ewl_Embed *embed,
-					     unsigned int *data, int w, int h);
+						unsigned int *data, int w, int h);
 void		 ewl_engine_pointer_free(Ewl_Embed *embed, int pointer);
 void		 ewl_engine_pointer_set(Ewl_Embed *embed, int pointer);
 int 		 ewl_engine_pointer_get(Ewl_Embed *embed);
@@ -209,7 +208,7 @@ typedef void (*Ewl_Engine_Cb_Window_Move)(Ewl_Window *win);	/**< Move the window
 							the given location */
 typedef void (*Ewl_Engine_Cb_Window_Resize)(Ewl_Window *win);	/**< Resize the window */
 typedef void (*Ewl_Engine_Cb_Window_Min_Max_Size_Set)(Ewl_Window *win); /**< Set the min 
-							       and max sizes */
+									and max sizes */
 typedef void (*Ewl_Engine_Cb_Window_Show)(Ewl_Window *win);	/**< Show the window */
 typedef void (*Ewl_Engine_Cb_Window_Hide)(Ewl_Window *win);	/**< Hide the window */
 typedef void (*Ewl_Engine_Cb_Window_Title_Set)(Ewl_Window *win); /**< Set the window title */
@@ -218,7 +217,7 @@ typedef void (*Ewl_Engine_Cb_Window_Name_Class_Set)(Ewl_Window *win);	/**< Set t
 typedef void (*Ewl_Engine_Cb_Window_Borderless_Set)(Ewl_Window *win);	/**< Set the borderless 
 							 state of the window */
 typedef void (*Ewl_Engine_Cb_Window_Dialog_Set)(Ewl_Window *win);	/**< Set the dialog 
-						       setting of the window */
+									setting of the window */
 typedef void (*Ewl_Engine_Cb_Window_Fullscreen_Set)(Ewl_Window *win);	/**< Set the fullscreen 
 							setting of the window */
 typedef void (*Ewl_Engine_Cb_Window_Transient_For)(Ewl_Window *win);	/**< Set the window 
@@ -245,8 +244,7 @@ typedef void (*Ewl_Engine_Cb_Window_Dnd_Drag_Drop)(Ewl_Embed *embed);	 /**< End 
 typedef void (*Ewl_Engine_Cb_Window_Desktop_Size_Get)(Ewl_Embed *embed, 
 							int *w, int *h); /**< Get the desktop
 								size */
-typedef void (*Ewl_Engine_Cb_Canvas_Setup)(Ewl_Window *win, int debug); /**< Setup the 
-						         render canvas */
+typedef void (*Ewl_Engine_Cb_Canvas_Setup)(Ewl_Window *win, int debug); /**< Setup the render canvas */
 typedef void  (*Ewl_Engine_Cb_Canvas_Output_Set)(Ewl_Embed *emb, int x, int y,
 						 int width, int height); 
 typedef void  (*Ewl_Engine_Cb_Canvas_Render)(Ewl_Embed *embed);

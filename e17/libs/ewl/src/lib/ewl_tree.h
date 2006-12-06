@@ -46,12 +46,12 @@ typedef struct Ewl_Tree Ewl_Tree;
  */
 struct Ewl_Tree
 {
-	Ewl_Container  container;  /**< Inherit from Ewl_Container */
+	Ewl_Container container;  /**< Inherit from Ewl_Container */
 
-	Ewl_Widget    *header;     /**< Array of widgets in the header */
-	Ewl_Widget    *scrollarea; /**< Scrollable area of rows */
-	Ecore_List    *selected;   /**< The currently selected rows */
-	Ewl_Selection_Mode  mode;       /**< Mode for selecting rows */
+	Ewl_Widget *header;     /**< Array of widgets in the header */
+	Ewl_Widget *scrollarea; /**< Scrollable area of rows */
+	Ecore_List *selected;   /**< The currently selected rows */
+	Ewl_Selection_Mode mode;       /**< Mode for selecting rows */
 	unsigned short ncols;      /**< Number of columns in tree */
 	unsigned short headers_visible; /**< Are the headers visible */
 	unsigned short expands_visible; /**< Are the rows expandable */
@@ -84,8 +84,8 @@ struct Ewl_Tree_Node
 Ewl_Widget 	*ewl_tree_node_new(void);
 int 		 ewl_tree_node_init(Ewl_Tree_Node *tree_node);
 
-void             ewl_tree_node_expandable_set(Ewl_Tree_Node *node, int expand);
-int              ewl_tree_node_expandable_get(Ewl_Tree_Node *node);
+void 		 ewl_tree_node_expandable_set(Ewl_Tree_Node *node, int expand);
+int 		 ewl_tree_node_expandable_get(Ewl_Tree_Node *node);
 
 void 		 ewl_tree_node_collapse(Ewl_Tree_Node *tree);
 void 		 ewl_tree_node_expand(Ewl_Tree_Node *tree);

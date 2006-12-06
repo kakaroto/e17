@@ -1269,8 +1269,7 @@ ewl_grid_resize(Ewl_Grid *g)
 		for (i = 0; i < g->cols; i++)
 			if (g->col_size[i].resize_type == EWL_GRID_RESIZE_NORMAL)
 				g->col_size[i].current_size = 
-					(int)(g->col_size[i].preferred_size
-					      			* rel);
+					(int)(g->col_size[i].preferred_size * rel);
 	}
 
 	/*
@@ -1322,8 +1321,7 @@ ewl_grid_resize(Ewl_Grid *g)
 		for (i = 0; i < g->rows; i++)
 			if (g->row_size[i].resize_type == EWL_GRID_RESIZE_NORMAL)
 				g->row_size[i].current_size = 
-					(int)(g->row_size[i].preferred_size
-					      			* rel);
+					(int)(g->row_size[i].preferred_size * rel);
 	}
 
 	/*
@@ -1597,7 +1595,7 @@ ewl_grid_cb_child_show(Ewl_Container *p, Ewl_Widget *child)
 void
 ewl_grid_cb_child_resize(Ewl_Container *p, Ewl_Widget *child, 
 				int size __UNUSED__,
-			        Ewl_Orientation o __UNUSED__)
+				Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);

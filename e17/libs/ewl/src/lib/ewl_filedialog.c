@@ -441,13 +441,13 @@ ewl_filedialog_cb_delete_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 static void
 ewl_filedialog_respond(Ewl_Filedialog *fd, unsigned int response)
 {
-        Ewl_Dialog_Event ev;
+	Ewl_Dialog_Event ev;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
-        ev.response = response;
-        ewl_callback_call_with_event_data(EWL_WIDGET(fd),
-                                          EWL_CALLBACK_VALUE_CHANGED, &ev);
+	ev.response = response;
+	ewl_callback_call_with_event_data(EWL_WIDGET(fd),
+					EWL_CALLBACK_VALUE_CHANGED, &ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -73,7 +73,7 @@ void		 ewl_filepicker_selected_file_set(Ewl_Filepicker *fp,
 							const char *file);
 char		*ewl_filepicker_selected_file_get(Ewl_Filepicker *fp);
 
-void             ewl_filepicker_selected_files_set(Ewl_Filepicker *fp,
+void 		 ewl_filepicker_selected_files_set(Ewl_Filepicker *fp,
 							Ecore_List *files);
 Ecore_List	*ewl_filepicker_selected_files_get(Ewl_Filepicker *fp);
 

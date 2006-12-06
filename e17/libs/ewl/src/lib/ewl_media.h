@@ -39,15 +39,15 @@ typedef struct Ewl_Media Ewl_Media;
  */
 struct Ewl_Media
 {
-	Ewl_Widget		 widget;       /**< Inherit from Ewl_Widget */
-	Evas_Object		*video;        /**< Emotion does the actual work */
-	Ewl_Media_Module_Type	 module;       /**< Path to the module file */
-	char			*media;        /**< Path to the media file */
-	int			 block_seek;   /**< Temporarily prevent seeking */
+	Ewl_Widget widget; 	/**< Inherit from Ewl_Widget */
+	Evas_Object *video;  	/**< Emotion does the actual work */
+	Ewl_Media_Module_Type module; /**< Path to the module file */
+	char *media; 		/**< Path to the media file */
+	int block_seek; 	/**< Temporarily prevent seeking */
 
-	double			 volume;	/**< The volume setting */
-	double			 position;	/**< The position setting */
-	unsigned char		 mute:1;	/**< The mute value */
+	double volume;		/**< The volume setting */
+	double position;	/**< The position setting */
+	unsigned char mute:1;	/**< The mute value */
 };
 
 Ewl_Widget		*ewl_media_new(void);

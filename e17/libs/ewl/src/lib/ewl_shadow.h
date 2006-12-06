@@ -40,7 +40,7 @@ typedef struct Ewl_Shadow Ewl_Shadow;
  */
 struct Ewl_Shadow
 {
-        Ewl_Box box;       /**< Inherit from Ewl_Box */
+	Ewl_Box box;       /**< Inherit from Ewl_Box */
 };
 
 Ewl_Widget	*ewl_shadow_new(void);

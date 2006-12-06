@@ -99,8 +99,8 @@ struct Ewl_Text
 
 	struct
 	{
-		int x;               /**< X offset for layout */
-		int y;               /**< Y offset for layout */
+		int x; 			/**< X offset for layout */
+		int y; 			/**< Y offset for layout */
 	} offset;				  /**< Layout offset values */
 
 	unsigned char delete_count;	  /**< Number of deletes */
@@ -115,8 +115,8 @@ int 		 ewl_text_init(Ewl_Text *t);
 
 unsigned int	 ewl_text_length_get(Ewl_Text *t);
 
-void             ewl_text_offsets_set(Ewl_Text *t, int x, int y);
-void             ewl_text_offsets_get(Ewl_Text *t, int *x, int *y);
+void 		 ewl_text_offsets_set(Ewl_Text *t, int x, int y);
+void 		 ewl_text_offsets_get(Ewl_Text *t, int *x, int *y);
 
 void		 ewl_text_index_geometry_map(Ewl_Text *t, 
 					unsigned int char_idx,

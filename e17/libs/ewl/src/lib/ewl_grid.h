@@ -32,15 +32,15 @@ typedef struct Ewl_Grid_Info Ewl_Grid_Info;
  */
 struct Ewl_Grid_Info
 {
-	int			 current_size;		/**< the current size */
-	int                      current_pos;           /**< the current position */
-	int			 preferred_size;	/**< The greatest preferred size of a widget inside */
+	int current_size;		/**< the current size */
+	int current_pos; 		/**< the current position */
+	int preferred_size;		/**< The greatest preferred size of a widget inside */
 	union {
-		int		 size;			/**< The size set by the user */
-		float		 rel_size;		/**< The relative size */
-	} user;						/**< The user set values for the grid */
+		int size;		/**< The size set by the user */
+		float rel_size;		/**< The relative size */
+	} user;				/**< The user set values for the grid */
 	
-	Ewl_Grid_Resize_Type	 resize_type;		/**< Are there values set by the user */
+	Ewl_Grid_Resize_Type resize_type; /**< Are there values set by the user */
 };
 
 /**
@@ -59,12 +59,12 @@ typedef struct Ewl_Grid Ewl_Grid;
  */
 struct Ewl_Grid 
 {
-	Ewl_Container   container;		/**< Inherit from Ewl_Container */
+	Ewl_Container container;		/**< Inherit from Ewl_Container */
 
-	Ewl_Grid_Info  *col_size;		/**< Horizontal/vertical size of the columns */
-	Ewl_Grid_Info  *row_size;		/**< Horizontal/vertical size of the rows */
+	Ewl_Grid_Info *col_size;		/**< Horizontal/vertical size of the columns */
+	Ewl_Grid_Info *row_size;		/**< Horizontal/vertical size of the rows */
 	unsigned char data_dirty:1;		/**< flag if the size of the columns and rows must
-						     be recalculated */
+						 	be recalculated */
 	unsigned char homogeneous_h:1;  	/**< Horizontal homogeneous flag */
 	unsigned char homogeneous_v:1;   	/**< Vertical homogeneous flag */
 	
@@ -94,45 +94,45 @@ struct Ewl_Grid_Child
 	int end_row;	/**< The end row */
 };
 
-Ewl_Widget     *ewl_grid_new(void);
-int             ewl_grid_init(Ewl_Grid *g);
+Ewl_Widget 	*ewl_grid_new(void);
+int 		 ewl_grid_init(Ewl_Grid *g);
 
-void            ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *child,
+void 		 ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *child,
 				int start_col, int end_col, int start_row,
 				int end_row);
-void            ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *child,
+void 		 ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *child,
 				int *start_col, int *end_col, int *start_row,
 				int *end_row);
 
-void            ewl_grid_dimensions_set(Ewl_Grid *g, int col, int row);
-void            ewl_grid_dimensions_get(Ewl_Grid *g, int *col, int *row);
+void 		 ewl_grid_dimensions_set(Ewl_Grid *g, int col, int row);
+void 		 ewl_grid_dimensions_get(Ewl_Grid *g, int *col, int *row);
 
-int             ewl_grid_column_current_w_get(Ewl_Grid *g, int col);
-void            ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width);
-int             ewl_grid_column_fixed_w_get(Ewl_Grid *g, int col);
-void            ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw);
-float           ewl_grid_column_relative_w_get(Ewl_Grid *g, int col);
-void            ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col);
-void            ewl_grid_column_w_remove(Ewl_Grid *g, int col);
+int 		 ewl_grid_column_current_w_get(Ewl_Grid *g, int col);
+void 		 ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width);
+int 		 ewl_grid_column_fixed_w_get(Ewl_Grid *g, int col);
+void 		 ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw);
+float 		 ewl_grid_column_relative_w_get(Ewl_Grid *g, int col);
+void 		 ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col);
+void 		 ewl_grid_column_w_remove(Ewl_Grid *g, int col);
 
-int             ewl_grid_row_current_h_get(Ewl_Grid *g, int row);
-void            ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height);
-int             ewl_grid_row_fixed_h_get(Ewl_Grid *g, int row);
-void            ewl_grid_row_relative_h_set(Ewl_Grid *g, int col, float relh);
-float           ewl_grid_row_relative_h_get(Ewl_Grid *g, int col);
-void            ewl_grid_row_preferred_h_use(Ewl_Grid *g, int col);
-void            ewl_grid_row_h_remove(Ewl_Grid *g, int row);
+int 		 ewl_grid_row_current_h_get(Ewl_Grid *g, int row);
+void 		 ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height);
+int 		 ewl_grid_row_fixed_h_get(Ewl_Grid *g, int row);
+void 		 ewl_grid_row_relative_h_set(Ewl_Grid *g, int col, float relh);
+float 		 ewl_grid_row_relative_h_get(Ewl_Grid *g, int col);
+void 		 ewl_grid_row_preferred_h_use(Ewl_Grid *g, int col);
+void 		 ewl_grid_row_h_remove(Ewl_Grid *g, int row);
 
-void		ewl_grid_orientation_set(Ewl_Grid *g, Ewl_Orientation orientation);
-Ewl_Orientation	ewl_grid_orientation_get(Ewl_Grid *g);
+void		 ewl_grid_orientation_set(Ewl_Grid *g, Ewl_Orientation orientation);
+Ewl_Orientation	 ewl_grid_orientation_get(Ewl_Grid *g);
 
-void		ewl_grid_homogeneous_set(Ewl_Grid *g, unsigned int h);
+void		 ewl_grid_homogeneous_set(Ewl_Grid *g, unsigned int h);
 
-void		ewl_grid_hhomogeneous_set(Ewl_Grid *g, unsigned int h);
-unsigned int    ewl_grid_hhomogeneous_get(Ewl_Grid *g);
+void		 ewl_grid_hhomogeneous_set(Ewl_Grid *g, unsigned int h);
+unsigned int 	 ewl_grid_hhomogeneous_get(Ewl_Grid *g);
 
-void		ewl_grid_vhomogeneous_set(Ewl_Grid *g, unsigned int h);
-unsigned int 	ewl_grid_vhomogeneous_get(Ewl_Grid *g);
+void		 ewl_grid_vhomogeneous_set(Ewl_Grid *g, unsigned int h);
+unsigned int 	 ewl_grid_vhomogeneous_get(Ewl_Grid *g);
 
 /*
  * Internally used callbacks, override at your own risk.

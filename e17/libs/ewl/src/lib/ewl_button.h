@@ -42,25 +42,29 @@ typedef struct Ewl_Button Ewl_Button;
  */
 struct Ewl_Button
 {
-	Ewl_Stock       stock; 		/**< Inherit from the box for adding widgets */
-	Ewl_Widget     *body;		/**< The body of the button */
-	Ewl_Widget     *label_object;	/**< Labels are common, make it easy */
-	Ewl_Widget     *image_object;	/**< Add an image to the button if needed */
+	Ewl_Stock stock; 		/**< Inherit from the box for adding widgets */
+	Ewl_Widget *body;		/**< The body of the button */
+	Ewl_Widget *label_object;	/**< Labels are common, make it easy */
+	Ewl_Widget *image_object;	/**< Add an image to the button if needed */
 };
 
 Ewl_Widget	*ewl_button_new(void);
 int		 ewl_button_init(Ewl_Button *b);
+
 void		 ewl_button_label_set(Ewl_Button *b, const char *l);
 const char	*ewl_button_label_get(Ewl_Button *b);
 
 void		 ewl_button_image_set(Ewl_Button *b, const char *file, const char *key);
 const char	*ewl_button_image_get(Ewl_Button *b);
-void             ewl_button_image_size_set(Ewl_Button *b, int width, int height);
-void             ewl_button_image_size_get(Ewl_Button *b, int *width, int *height);
-unsigned int     ewl_button_alignment_get(Ewl_Button *b);
-void             ewl_button_alignment_set(Ewl_Button *b, unsigned int align);
-unsigned int     ewl_button_fill_policy_get(Ewl_Button *b);
-void             ewl_button_fill_policy_set(Ewl_Button *b, unsigned int fill);
+
+void 		 ewl_button_image_size_set(Ewl_Button *b, int width, int height);
+void  		 ewl_button_image_size_get(Ewl_Button *b, int *width, int *height);
+
+unsigned int 	 ewl_button_alignment_get(Ewl_Button *b);
+void 		 ewl_button_alignment_set(Ewl_Button *b, unsigned int align);
+
+unsigned int 	 ewl_button_fill_policy_get(Ewl_Button *b);
+void  		 ewl_button_fill_policy_set(Ewl_Button *b, unsigned int fill);
 
 /*
  * Internal

@@ -86,17 +86,17 @@ int       	 ewl_model_init(Ewl_Model *model);
 
 Ewl_Model	*ewl_model_ecore_list_get(void);
 
-void             ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get);
+void 		 ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get);
 Ewl_Model_Fetch  ewl_model_fetch_get(Ewl_Model *m);
 
-void               ewl_model_subfetch_set(Ewl_Model *m, 
+void 		 ewl_model_subfetch_set(Ewl_Model *m, 
 						Ewl_Model_Subfetch get);
 Ewl_Model_Subfetch ewl_model_subfetch_get(Ewl_Model *m);
 
-void             ewl_model_sort_set(Ewl_Model *m, Ewl_Model_Sort sort);
+void 		 ewl_model_sort_set(Ewl_Model *m, Ewl_Model_Sort sort);
 Ewl_Model_Sort   ewl_model_sort_get(Ewl_Model *m);
 
-void             ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count);
+void 		 ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count);
 Ewl_Model_Count  ewl_model_count_get(Ewl_Model *m);
 
 /*

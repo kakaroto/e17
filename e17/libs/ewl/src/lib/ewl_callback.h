@@ -22,7 +22,7 @@ typedef struct Ewl_Callback Ewl_Callback;
 /**
  * A shortcut for declaring functions that take a callback funciton pointer.
  */
-typedef void    (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
+typedef void (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
 					  void *user_data);
 
 /**
@@ -33,10 +33,10 @@ typedef void    (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
 
 struct Ewl_Callback
 {
-	Ewl_Callback_Function func; /**< Function executed */
-	void           *user_data; /**< user specified data to pass to func */
-	int             references; /**< Reference counting */
-	int             id; /**< id number of this callback */
+	Ewl_Callback_Function func; 	/**< Function executed */
+	void *user_data; 		/**< user specified data to pass to func */
+	int references; 		/**< Reference counting */
+	int id; 			/**< id number of this callback */
 };
 
 
@@ -133,31 +133,31 @@ struct Ewl_Callback_Custom
 		w->callbacks[EWL_CALLBACK_INDEX(t)].mask &= ~EWL_CALLBACK_TYPE_DIRECT
 
 
-int             ewl_callbacks_init(void);
-void            ewl_callbacks_shutdown(void);
+int 		ewl_callbacks_init(void);
+void 		ewl_callbacks_shutdown(void);
 unsigned int	ewl_callback_type_add(void);
 
-int             ewl_callback_append(Ewl_Widget * widget, unsigned int type,
-				    Ewl_Callback_Function func,
-				    void *user_data);
-int             ewl_callback_prepend(Ewl_Widget * widget,
-				     unsigned int type,
-				     Ewl_Callback_Function func,
-				     void *user_data);
-int             ewl_callback_insert_after(Ewl_Widget * w, unsigned int t,
+int 		ewl_callback_append(Ewl_Widget * widget, unsigned int type,
+					Ewl_Callback_Function func,
+					void *user_data);
+int 		ewl_callback_prepend(Ewl_Widget * widget,
+					unsigned int type,
+					Ewl_Callback_Function func,
+					void *user_data);
+int 		ewl_callback_insert_after(Ewl_Widget * w, unsigned int t,
 					  Ewl_Callback_Function f,
 					  void *user_data,
 					  Ewl_Callback_Function after,
 					  void *after_data);
-void            ewl_callback_clear(Ewl_Widget * widget);
-void            ewl_callback_call(Ewl_Widget * widget, unsigned int type);
-void            ewl_callback_call_with_event_data(Ewl_Widget * widget,
+void 		ewl_callback_clear(Ewl_Widget * widget);
+void 		ewl_callback_call(Ewl_Widget * widget, unsigned int type);
+void 		ewl_callback_call_with_event_data(Ewl_Widget * widget,
 						  unsigned int type,
 						  void *event_data);
-void            ewl_callback_del_type(Ewl_Widget * w, unsigned int t);
-void            ewl_callback_del(Ewl_Widget * w, unsigned int t,
+void 		ewl_callback_del_type(Ewl_Widget * w, unsigned int t);
+void 		ewl_callback_del(Ewl_Widget * w, unsigned int t,
 				 Ewl_Callback_Function f);
-void            ewl_callback_del_with_data(Ewl_Widget * w, unsigned int t,
+void 		ewl_callback_del_with_data(Ewl_Widget * w, unsigned int t,
 				 Ewl_Callback_Function f, void *data);
 
 /**

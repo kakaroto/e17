@@ -59,9 +59,9 @@ typedef struct Ewl_View Ewl_View;
  */
 struct Ewl_View
 {
-	Ewl_View_Constructor construct;     /**< Create a widget for display */
-	Ewl_View_Assign assign;             /**< Assign data to a widget */
-	Ewl_View_Header_Fetch header_fetch; /**< Get the header for the given column */
+	Ewl_View_Constructor construct; 	/**< Create a widget for display */
+	Ewl_View_Assign assign;			/**< Assign data to a widget */
+	Ewl_View_Header_Fetch header_fetch; 	/**< Get the header for the given column */
 };
 
 Ewl_View 		*ewl_view_new(void);

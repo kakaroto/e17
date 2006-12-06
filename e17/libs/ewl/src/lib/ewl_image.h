@@ -53,27 +53,27 @@ typedef struct Ewl_Image Ewl_Image;
  */
 struct Ewl_Image
 {
-	Ewl_Widget      widget;		/**< Inherit from Ewl_Widget */
-	Ewl_Image_Type  type;		/**< The type of the image */
-	Evas_Object    *image;		/**< The evas object for the image */
-	char           *path;		/**< The path to the image */
-	char           *key;		/**< The key for the image */
-	char		proportional;	/**< Is the image displayed proportional */
-	int 		ow, 		/**< Original image width */
-			oh;		/**< Original image height */
-	double		sw, 		/**< Scale width */
-			sh;		/**< Scale height */
-	int		cs;		/**< Constrain size */
-	Evas_Coord	aw, 		/**< Scale width */
-			ah;		/**< Scale height */
+	Ewl_Widget widget;	/**< Inherit from Ewl_Widget */
+	Ewl_Image_Type type;	/**< The type of the image */
+	Evas_Object *image;	/**< The evas object for the image */
+	char *path;		/**< The path to the image */
+	char *key;		/**< The key for the image */
+	char proportional;	/**< Is the image displayed proportional */
+	int ow, 		/**< Original image width */
+	    oh;			/**< Original image height */
+	double sw, 		/**< Scale width */
+	       sh;		/**< Scale height */
+	int cs;			/**< Constrain size */
+	Evas_Coord aw, 		/**< Scale width */
+		   ah;		/**< Scale height */
 
 	struct {
-		int set;		/**< Tiling set? */
-		int x, 			/**< Tile x start */
-		    y, 			/**< Tile y start */
-		    w, 			/**< Tile width */
-		    h;			/**< Tile height */
-	} tile;				/**< Image tiling information */
+		int set;	/**< Tiling set? */
+		int x, 		/**< Tile x start */
+		    y, 		/**< Tile y start */
+		    w, 		/**< Tile width */
+		    h;		/**< Tile height */
+	} tile;			/**< Image tiling information */
 };
 
 /**
@@ -87,9 +87,9 @@ struct Ewl_Image
  */
 struct Ewl_Image_Thumbnail
 {
-	Ewl_Image        image;	/**< Inherit from Ewl_Image */
-	void            *thumb; /**< Outstanding request to thumbnail image */
-	Ewl_Widget      *orig;  /**< Reference to image used to create thumb */
+	Ewl_Image image;	/**< Inherit from Ewl_Image */
+	void *thumb; /**< Outstanding request to thumbnail image */
+	Ewl_Widget *orig;  /**< Reference to image used to create thumb */
 };
 
 /**
@@ -128,12 +128,12 @@ unsigned int	 ewl_image_constrain_get(Ewl_Image *i);
 void		 ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient);
 void		 ewl_image_rotate(Ewl_Image *i, Ewl_Rotate rotate);
 
-Ewl_Widget      *ewl_image_thumbnail_get(Ewl_Image *i);
+Ewl_Widget 	*ewl_image_thumbnail_get(Ewl_Image *i);
 
-Ewl_Widget      *ewl_image_thumbnail_new(void);
-int              ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image);
-void             ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb,
-					     const char *path);
+Ewl_Widget 	*ewl_image_thumbnail_new(void);
+int 		 ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image);
+void 		 ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb,
+						const char *path);
 
 /*
  * Internally used callbacks, override at your own risk.

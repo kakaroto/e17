@@ -52,20 +52,20 @@ typedef void *Ewl_Embed_Evas_Window;
  */
 struct Ewl_Embed
 {
-	Ewl_Overlay     overlay;     /**< Inherits from the Ewl_Overlay class */
+	Ewl_Overlay overlay; 	/**< Inherits from the Ewl_Overlay class */
 
-	const char	*engine_name; /**< Name of current engine used */
-	void		*engine; /**< The display engine */
+	const char *engine_name; /**< Name of current engine used */
+	void *engine; 		/**< The display engine */
 
-	Evas           *evas;        /**< Evas where drawing takes place. */
-	void           *evas_window; /**< The window holding the evas. */
-	int             cursor;      /**< Id for current cursor in use */
+	Evas *evas; 		/**< Evas where drawing takes place. */
+	void *evas_window;	/**< The window holding the evas. */
+	int cursor;		/**< Id for current cursor in use */
 
-	Evas_Object    *smart;       /**< Manipulate Ewl_Embed from evas */
-	Evas_Object    *ev_clip;     /**< Clip box to receive evas events */
-	Ecore_DList    *tab_order;   /**< Order of widgets to send focus */
+	Evas_Object *smart; 	/**< Manipulate Ewl_Embed from evas */
+	Evas_Object *ev_clip; 	/**< Clip box to receive evas events */
+	Ecore_DList *tab_order; /**< Order of widgets to send focus */
 
-	Ecore_Hash     *obj_cache;  /**< Hash of object queues for reuse */
+	Ecore_Hash  *obj_cache; /**< Hash of object queues for reuse */
 
 	struct
 	{
@@ -74,87 +74,87 @@ struct Ewl_Embed
 		Ewl_Widget *mouse_in; /**< Last widget to receive a mouse_in */
 		Ewl_Widget *drop_widget; /**< The current DND drop target */
 		Ewl_Widget *drag_widget; /**< The current DND drag source */
-	} last;			     /**< Collection of widgets to last receive events */
+	} last;	/**< Collection of widgets to last receive events */
 
-        int             x; /**< Screen relative horizontal position of window */
-        int             y; /**< Screen relative vertical position of window */
+	int x; /**< Screen relative horizontal position of window */
+	int y; /**< Screen relative vertical position of window */
 
-	int             dnd_count;   /**< DND aware widget count */
-	int             focus;       /**< Indicates if it receives focus */
+	int dnd_count;	/**< DND aware widget count */
+	int focus; 	/**< Indicates if it receives focus */
 
-	Ewl_Dnd_Types 	 dnd_types;	/**< The dnd type */
-	Ewl_Widget 	*dnd_last_position;	/**< The last dnd position */
+	Ewl_Dnd_Types dnd_types;	/**< The dnd type */
+	Ewl_Widget *dnd_last_position;	/**< The last dnd position */
 };
 
-Ewl_Widget     *ewl_embed_new(void);
-int             ewl_embed_init(Ewl_Embed *emb);
-int             ewl_embed_engine_name_set(Ewl_Embed *embed, const char *engine);
-const char     *ewl_embed_engine_name_get(Ewl_Embed *embed);
-void            ewl_embed_shutdown(void);
-Evas_Object    *ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas,
+Ewl_Widget 	*ewl_embed_new(void);
+int 		 ewl_embed_init(Ewl_Embed *emb);
+int 		 ewl_embed_engine_name_set(Ewl_Embed *embed, const char *engine);
+const char 	*ewl_embed_engine_name_get(Ewl_Embed *embed);
+void 		 ewl_embed_shutdown(void);
+Evas_Object 	*ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas,
 				   Ewl_Embed_Evas_Window *evas_window);
 
-void            ewl_embed_focus_set(Ewl_Embed *embed, int f);
-int             ewl_embed_focus_get(Ewl_Embed *embed);
+void 		 ewl_embed_focus_set(Ewl_Embed *embed, int f);
+int 		 ewl_embed_focus_get(Ewl_Embed *embed);
 
-void		ewl_embed_active_set(Ewl_Embed *embed, unsigned int act);
-Ewl_Embed      *ewl_embed_active_embed_get(void);
+void		 ewl_embed_active_set(Ewl_Embed *embed, unsigned int act);
+Ewl_Embed 	*ewl_embed_active_embed_get(void);
 
-void            ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
+void 		 ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
 					unsigned int modifiers);
-void            ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
-				      unsigned int modifiers);
-void            ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks,
+void 		 ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
+					unsigned int modifiers);
+void 		 ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks,
 					  int x, int y, unsigned int modifiers);
-void            ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x,
+void 		 ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x,
 					int y, unsigned int modifiers);
-void            ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
+void 		 ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
 					  unsigned int modifiers);
 
-const char     *ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y,int*,int*,int*,int*);
-const char     *ewl_embed_dnd_drop_feed(Ewl_Embed* embed, int x, int y, int internal);
-void		ewl_embed_dnd_data_received_feed(Ewl_Embed* embed, char *type, void *data, unsigned int len, unsigned int format);
-void		ewl_embed_dnd_data_request_feed(Ewl_Embed* embed, char *type);
+const char 	*ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y,int*,int*,int*,int*);
+const char 	*ewl_embed_dnd_drop_feed(Ewl_Embed* embed, int x, int y, int internal);
+void		 ewl_embed_dnd_data_received_feed(Ewl_Embed* embed, char *type, void *data, unsigned int len, unsigned int format);
+void		 ewl_embed_dnd_data_request_feed(Ewl_Embed* embed, char *type);
 
-void            ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
+void 		 ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
 					 unsigned int modifiers);
-void            ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
+void 		 ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
 					   int z, int dir, unsigned int mods);
 
-void            ewl_embed_font_path_add(char *path);
-Ewl_Embed      *ewl_embed_evas_window_find(Ewl_Embed_Evas_Window *win);
-Ewl_Embed      *ewl_embed_widget_find(Ewl_Widget *w);
-void            ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj);
-Evas_Object    *ewl_embed_object_request(Ewl_Embed *e, char *type);
+void 		 ewl_embed_font_path_add(char *path);
+Ewl_Embed  	*ewl_embed_evas_window_find(Ewl_Embed_Evas_Window *win);
+Ewl_Embed 	*ewl_embed_widget_find(Ewl_Widget *w);
+void  		 ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj);
+Evas_Object 	*ewl_embed_object_request(Ewl_Embed *e, char *type);
 
-void            ewl_embed_tab_order_append(Ewl_Embed *e, Ewl_Widget *w);
-void		ewl_embed_tab_order_prepend(Ewl_Embed *e, Ewl_Widget *w);
-void		ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, 
+void 		 ewl_embed_tab_order_append(Ewl_Embed *e, Ewl_Widget *w);
+void		 ewl_embed_tab_order_prepend(Ewl_Embed *e, Ewl_Widget *w);
+void		 ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, 
 					   unsigned int idx);
-void		ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w,
+void		 ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w,
 						 Ewl_Widget *before);
-void		ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w,
+void		 ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w,
 						 Ewl_Widget *after);
-void            ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w);
-void            ewl_embed_tab_order_next(Ewl_Embed *e);
-void		ewl_embed_tab_order_previous(Ewl_Embed *e);
+void 		 ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w);
+void 		 ewl_embed_tab_order_next(Ewl_Embed *e);
+void		 ewl_embed_tab_order_previous(Ewl_Embed *e);
 
-void		ewl_embed_focused_widget_set(Ewl_Embed *e, Ewl_Widget *w);
-Ewl_Widget     *ewl_embed_focused_widget_get(Ewl_Embed *e);
-void		ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w);
+void		 ewl_embed_focused_widget_set(Ewl_Embed *e, Ewl_Widget *w);
+Ewl_Widget 	*ewl_embed_focused_widget_get(Ewl_Embed *e);
+void		 ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w);
 
-void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
+void 		 ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
 					  int *x, int *y);
 
-void		ewl_embed_mouse_cursor_set(Ewl_Widget *w);
-void            ewl_embed_position_get(Ewl_Embed *e, int *x, int *y);
-void            ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y);
-void            ewl_embed_desktop_size_get(Ewl_Embed *e, int *w, int *y);
-void            ewl_embed_freeze(Ewl_Embed *e);
-void            ewl_embed_thaw(Ewl_Embed *e);
+void		 ewl_embed_mouse_cursor_set(Ewl_Widget *w);
+void 		 ewl_embed_position_get(Ewl_Embed *e, int *x, int *y);
+void 		 ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y);
+void 		 ewl_embed_desktop_size_get(Ewl_Embed *e, int *w, int *y);
+void 		 ewl_embed_freeze(Ewl_Embed *e);
+void 		 ewl_embed_thaw(Ewl_Embed *e);
 
-void            ewl_embed_dnd_aware_set(Ewl_Embed *embed);
-void            ewl_embed_dnd_aware_remove(Ewl_Embed *embed);
+void 		 ewl_embed_dnd_aware_set(Ewl_Embed *embed);
+void 		 ewl_embed_dnd_aware_remove(Ewl_Embed *embed);
 
 /*
  * Internally used callbacks, override at your own risk.

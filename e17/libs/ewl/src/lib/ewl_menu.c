@@ -140,7 +140,7 @@ ewl_menu_cb_expand_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 		Ewl_Menu *sub, *hide_menu = NULL;
 		Ewl_Container *bar;
 		int vis = 0;
-        
+
 		bar = EWL_CONTAINER(menu->menubar_parent);
 		ewl_container_child_iterate_begin(bar);
 		while ((sub = EWL_MENU(ewl_container_child_next(bar)))) {

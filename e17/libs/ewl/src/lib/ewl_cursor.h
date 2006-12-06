@@ -38,13 +38,13 @@ typedef struct Ewl_Cursor Ewl_Cursor;
  */
 struct Ewl_Cursor
 {
-	Ewl_Window window;       /**< Inherit from Ewl_Window */
-	int refcount;     /**< Number of references to cursor */
-	int handle;       /**< Engine id for generated cursor */
+	Ewl_Window window;	/**< Inherit from Ewl_Window */
+	int refcount;		/**< Number of references to cursor */
+	int handle;		/**< Engine id for generated cursor */
 };
 
-Ewl_Widget     *ewl_cursor_new(void);
-int             ewl_cursor_init(Ewl_Cursor *c);
+Ewl_Widget 	*ewl_cursor_new(void);
+int 		 ewl_cursor_init(Ewl_Cursor *c);
 
 /**
  * @}

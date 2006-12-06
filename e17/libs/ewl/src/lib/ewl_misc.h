@@ -9,18 +9,18 @@
  * @{
  */
 
-int             ewl_init(int *argc, char **argv);
-void            ewl_print_help(void);
-int             ewl_shutdown(void);
-void            ewl_main(void);
-void            ewl_main_quit(void);
-void            ewl_configure_request(Ewl_Widget *w);
-void            ewl_realize_request(Ewl_Widget *w);
-void            ewl_realize_cancel_request(Ewl_Widget *w);
-void            ewl_destroy_request(Ewl_Widget *w);
-void            ewl_evas_destroy(Evas *evas);
-void            ewl_evas_object_destroy(Evas_Object *obj);
-char 	       *ewl_debug_indent_get(int mod_dir);
+int 	 ewl_init(int *argc, char **argv);
+void 	 ewl_print_help(void);
+int 	 ewl_shutdown(void);
+void 	 ewl_main(void);
+void 	 ewl_main_quit(void);
+void 	 ewl_configure_request(Ewl_Widget *w);
+void 	 ewl_realize_request(Ewl_Widget *w);
+void 	 ewl_realize_cancel_request(Ewl_Widget *w);
+void 	 ewl_destroy_request(Ewl_Widget *w);
+void 	 ewl_evas_destroy(Evas *evas);
+void  	 ewl_evas_object_destroy(Evas_Object *obj);
+char  	*ewl_debug_indent_get(int mod_dir);
 
 #undef DEBUG_MALLOCDEBUG
 #ifdef DEBUG_MALLOCDEBUG

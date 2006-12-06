@@ -26,39 +26,39 @@ ewl_io_manager_init(void)
 		/* XXX this is a dumb way to do this.... */
 		ewl_io_manager_ext_icon_map = ecore_hash_new(ecore_str_hash,
 						ewl_io_manager_strcasecompare);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".png", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".png", 
 						EWL_ICON_IMAGE_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".jpg", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".jpg", 
 						EWL_ICON_IMAGE_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".gif", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".gif", 
 						EWL_ICON_IMAGE_X_GENERIC);
 
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".wmv", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".wmv", 
 						EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpg", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpg", 
 						EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpeg", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpeg", 
 						EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".avi", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".avi", 
 						EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mov", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mov", 
 						EWL_ICON_VIDEO_X_GENERIC);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".asf", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".asf", 
 						EWL_ICON_VIDEO_X_GENERIC);
 
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".mp3", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mp3", 
 						EWL_ICON_AUDIO_X_GENERIC);
 
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".html", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".html", 
 						EWL_ICON_TEXT_HTML);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".htm", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".htm", 
 						EWL_ICON_TEXT_HTML);
 
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".pl", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".pl", 
 						EWL_ICON_TEXT_X_SCRIPT);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".sh", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".sh", 
 						EWL_ICON_TEXT_X_SCRIPT);
-                ecore_hash_set(ewl_io_manager_ext_icon_map, ".ksh", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".ksh", 
 						EWL_ICON_TEXT_X_SCRIPT);
 
 		ewl_io_manager_plugins = ecore_hash_new(ecore_str_hash, 

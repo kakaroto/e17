@@ -41,14 +41,14 @@ typedef struct Ewl_Radiobutton Ewl_Radiobutton;
  */
 struct Ewl_Radiobutton
 {
-	Ewl_Checkbutton   button; /**< Inherit from Ewl_Checkbutton */
-	Ecore_List       *chain; /**< List of members of the group */
+	Ewl_Checkbutton button; /**< Inherit from Ewl_Checkbutton */
+	Ecore_List *chain; /**< List of members of the group */
 };
 
-Ewl_Widget     *ewl_radiobutton_new(void);
-int             ewl_radiobutton_init(Ewl_Radiobutton *cb);
+Ewl_Widget 	*ewl_radiobutton_new(void);
+int 		 ewl_radiobutton_init(Ewl_Radiobutton *cb);
 
-void            ewl_radiobutton_chain_set(Ewl_Radiobutton *w, Ewl_Radiobutton *c);
+void 		 ewl_radiobutton_chain_set(Ewl_Radiobutton *w, Ewl_Radiobutton *c);
 
 /**
  * @def ewl_radiobutton_checked_set(r, c)

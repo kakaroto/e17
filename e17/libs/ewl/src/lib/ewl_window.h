@@ -87,7 +87,7 @@ void 		 ewl_window_selection_text_set(Ewl_Window *win, const char *txt);
 void ewl_window_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_window_cb_postrealize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_window_cb_realize_transient(Ewl_Widget *w, void *ev_data,
-					        void *user_data);
+						void *user_data);
 void ewl_window_cb_unrealize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_window_cb_show(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_window_cb_expose(Ewl_Widget *w, void *ev, void *user_data);

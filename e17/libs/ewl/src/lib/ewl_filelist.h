@@ -107,7 +107,7 @@ char		*ewl_filelist_modtime_get(time_t modtime);
 Ewl_Widget	*ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, 
 							const char *path);
 void		 ewl_filelist_selected_files_set(Ewl_Filelist *fl,
-                                                        Ecore_List *files);
+							Ecore_List *files);
 Ecore_List	*ewl_filelist_selected_files_get(Ewl_Filelist *fl);
 void 		 ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl);
 

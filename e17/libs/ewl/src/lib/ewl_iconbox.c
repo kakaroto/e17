@@ -250,14 +250,14 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ib->ewl_iconbox_pane_inner = ewl_overlay_new();
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_scrollpane), ib->ewl_iconbox_pane_inner);
 	ewl_callback_prepend(EWL_WIDGET(ib->ewl_iconbox_pane_inner),
-			     EWL_CALLBACK_CONFIGURE,
-			     ewl_iconbox_cb_overlay_configure, ib);
+				EWL_CALLBACK_CONFIGURE,
+				ewl_iconbox_cb_overlay_configure, ib);
 
 	/*** Context menu **/
 	/*Make the menu floater */
 	ib->ewl_iconbox_menu_floater = ewl_floater_new();
 	ewl_floater_follow_set(EWL_FLOATER(ib->ewl_iconbox_menu_floater),
-			       ib->ewl_iconbox_pane_inner);
+				ib->ewl_iconbox_pane_inner);
 	ewl_widget_layer_priority_set(ib->ewl_iconbox_menu_floater, -1);
 
 	/*-------------------------------------------*/
@@ -293,7 +293,7 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 
 	ib->icon_menu_floater = ewl_floater_new();
 	ewl_floater_follow_set(EWL_FLOATER(ib->icon_menu_floater),
-			       ib->ewl_iconbox_pane_inner);
+				ib->ewl_iconbox_pane_inner);
 	ewl_widget_layer_priority_set(ib->icon_menu_floater, -1);
 	
 	ib->icon_menu = ewl_menu_new();
@@ -306,7 +306,7 @@ ewl_iconbox_init(Ewl_Iconbox *ib)
 	ewl_container_child_append(EWL_CONTAINER(ib->icon_menu), ib->icon_menu_item);
 	ewl_widget_show(ib->icon_menu_item);
 
-			       
+
 		
 	ewl_container_child_append(EWL_CONTAINER(ib->ewl_iconbox_pane_inner), ib->icon_menu_floater);
 
@@ -528,8 +528,8 @@ ewl_iconbox_scrollpane_goto_root(Ewl_Iconbox *ib)
 	DCHECK_PARAM_PTR("ib", ib);
 	DCHECK_TYPE("ib", ib, EWL_ICONBOX_TYPE);
 
-        ewl_scrollpane_hscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
-        ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
+	ewl_scrollpane_hscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
+	ewl_scrollpane_vscrollbar_value_set(EWL_SCROLLPANE(ib->ewl_iconbox_scrollpane),0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1026,14 +1026,14 @@ ewl_iconbox_icon_add(Ewl_Iconbox *iconbox, const char *name, const char *icon_fi
 	ewl_container_child_append(EWL_CONTAINER(iconbox->ewl_iconbox_pane_inner), 
 					EWL_WIDGET(EWL_ICONBOX_ICON(ib)));
 	ewl_object_position_request(EWL_OBJECT(ib),
-				    	iconbox->lx + iconbox->ox, 
+					iconbox->lx + iconbox->ox, 
 					iconbox->ly + iconbox->oy);
 	
 	/*----------------------*/
 	/* Get the icon next position */
 
 	ewl_object_current_size_get(EWL_OBJECT(iconbox->ewl_iconbox_scrollpane),
-				    					&sw,&sh);
+					&sw,&sh);
 
 	if (  (iconbox->lx + ((iconbox->iw + EWL_ICONBOX_ICON_PADDING)*2)) >= (sw - iconbox->iw)) {
 		

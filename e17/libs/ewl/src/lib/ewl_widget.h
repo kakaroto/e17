@@ -143,97 +143,97 @@ struct Ewl_Widget
 	const char *bit_state;    /**< State of the appearance */
 	const char *appearance;   /**< Key to lookup appearance in theme */
 	const char *inheritance;  /**< Inheritance of path widget */
-	int layer;        /**< the layer relative to the parent */
-	int toplayered;   /**< Indicates if the widget should 
+	int layer;		/**< the layer relative to the parent */
+	int toplayered;		/**< Indicates if the widget should 
 						be on the top of the layer stack */ 
 
-	Ecore_Hash *theme;        /**< Overriding theme settings */
-	Ewl_Pair_List theme_text;   /**< Overriding text in theme */
-	Ecore_Hash *data;         /**< Arbitrary data attached to widget */
+	Ecore_Hash *theme; 		/**< Overriding theme settings */
+	Ewl_Pair_List theme_text;	/**< Overriding text in theme */
+	Ecore_Hash *data;		/**< Arbitrary data attached to widget */
 };
 
-int             ewl_widget_init(Ewl_Widget * w);
-void		ewl_widget_free(Ewl_Widget *w);
+int 		 ewl_widget_init(Ewl_Widget *w);
+void		 ewl_widget_free(Ewl_Widget *w);
 
-void            ewl_widget_name_set(Ewl_Widget * w, const char *name);
-const char *    ewl_widget_name_get(Ewl_Widget * w);
-Ewl_Widget *    ewl_widget_name_find(const char *name);
+void 		 ewl_widget_name_set(Ewl_Widget *w, const char *name);
+const char 	*ewl_widget_name_get(Ewl_Widget *w);
+Ewl_Widget 	*ewl_widget_name_find(const char *name);
 
-void            ewl_widget_reparent(Ewl_Widget * widget);
-void            ewl_widget_realize(Ewl_Widget * widget);
-void            ewl_widget_unrealize(Ewl_Widget * w);
-void            ewl_widget_reveal(Ewl_Widget *w);
-void            ewl_widget_obscure(Ewl_Widget *w);
-void            ewl_widget_show(Ewl_Widget * widget);
-void            ewl_widget_hide(Ewl_Widget * widget);
-void            ewl_widget_destroy(Ewl_Widget * widget);
-void            ewl_widget_configure(Ewl_Widget * widget);
+void 		 ewl_widget_reparent(Ewl_Widget *widget);
+void 		 ewl_widget_realize(Ewl_Widget *widget);
+void 		 ewl_widget_unrealize(Ewl_Widget *w);
+void 		 ewl_widget_reveal(Ewl_Widget *w);
+void 		 ewl_widget_obscure(Ewl_Widget *w);
+void 		 ewl_widget_show(Ewl_Widget *widget);
+void 		 ewl_widget_hide(Ewl_Widget *widget);
+void 	 	 ewl_widget_destroy(Ewl_Widget *widget);
+void 		 ewl_widget_configure(Ewl_Widget *widget);
 
-void            ewl_widget_theme_update(Ewl_Widget * w);
+void 		 ewl_widget_theme_update(Ewl_Widget *w);
 
-void            ewl_widget_data_set(Ewl_Widget * w, void *k, void *v);
-void           *ewl_widget_data_del(Ewl_Widget * w, void *k);
-void           *ewl_widget_data_get(Ewl_Widget * w, void *k);
+void 		 ewl_widget_data_set(Ewl_Widget *w, void *k, void *v);
+void 		*ewl_widget_data_del(Ewl_Widget *w, void *k);
+void 		*ewl_widget_data_get(Ewl_Widget *w, void *k);
 
-void            ewl_widget_state_set(Ewl_Widget * w, const char *state,
-		                     Ewl_State_Type flag);
+void 		 ewl_widget_state_set(Ewl_Widget *w, const char *state,
+						Ewl_State_Type flag);
 
-void            ewl_widget_appearance_set(Ewl_Widget * w, char *appearance);
-char           *ewl_widget_appearance_get(Ewl_Widget * w);
-char	       *ewl_widget_appearance_path_get(Ewl_Widget * w);
-void            ewl_widget_appearance_part_text_set(Ewl_Widget * w, char *part,
+void 		 ewl_widget_appearance_set(Ewl_Widget *w, char *appearance);
+char 		*ewl_widget_appearance_get(Ewl_Widget *w);
+char 		*ewl_widget_appearance_path_get(Ewl_Widget *w);
+void 		 ewl_widget_appearance_part_text_set(Ewl_Widget *w, char *part,
 						   char *text);     
-char           *ewl_widget_appearance_part_text_get(Ewl_Widget * w, char *part);
-void            ewl_widget_appearance_text_set(Ewl_Widget * w, char *text);
-char           *ewl_widget_appearance_text_get(Ewl_Widget * w);
+char 		*ewl_widget_appearance_part_text_get(Ewl_Widget *w, char *part);
+void 		 ewl_widget_appearance_text_set(Ewl_Widget *w, char *text);
+char 		*ewl_widget_appearance_text_get(Ewl_Widget *w);
 
-void            ewl_widget_inherit(Ewl_Widget *widget, char *type);
+void 		 ewl_widget_inherit(Ewl_Widget *widget, char *type);
 
-unsigned int    ewl_widget_type_is(Ewl_Widget *widget, const char *type);
-unsigned int    ewl_widget_onscreen_is(Ewl_Widget *widget);
+unsigned int 	 ewl_widget_type_is(Ewl_Widget *widget, const char *type);
+unsigned int 	 ewl_widget_onscreen_is(Ewl_Widget *widget);
 
-void            ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p);
+void 		 ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p);
 
-void            ewl_widget_enable(Ewl_Widget * w);
-void            ewl_widget_disable(Ewl_Widget * w);
+void 		 ewl_widget_enable(Ewl_Widget *w);
+void 		 ewl_widget_disable(Ewl_Widget *w);
 
-void            ewl_widget_print(Ewl_Widget *w);
-void            ewl_widget_print_verbose(Ewl_Widget *w);
-void		ewl_widget_tree_print(Ewl_Widget *w);
+void 		 ewl_widget_print(Ewl_Widget *w);
+void 		 ewl_widget_print_verbose(Ewl_Widget *w);
+void		 ewl_widget_tree_print(Ewl_Widget *w);
 
-void            ewl_widget_layer_top_set(Ewl_Widget *w, int top);
-int             ewl_widget_layer_top_get(Ewl_Widget *w);
-void            ewl_widget_layer_priority_set(Ewl_Widget *w, int layer);
-int             ewl_widget_layer_priority_get(Ewl_Widget *w);
+void 		 ewl_widget_layer_top_set(Ewl_Widget *w, int top);
+int 		 ewl_widget_layer_top_get(Ewl_Widget *w);
+void 		 ewl_widget_layer_priority_set(Ewl_Widget *w, int layer);
+int 		 ewl_widget_layer_priority_get(Ewl_Widget *w);
 
-void            ewl_widget_internal_set(Ewl_Widget *w, unsigned int val);
-unsigned int    ewl_widget_internal_is(Ewl_Widget *w);
+void 		 ewl_widget_internal_set(Ewl_Widget *w, unsigned int val);
+unsigned int     ewl_widget_internal_is(Ewl_Widget *w);
 
-void            ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val);
-unsigned int    ewl_widget_clipped_is(Ewl_Widget *w);
+void 		 ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val);
+unsigned int     ewl_widget_clipped_is(Ewl_Widget *w);
 
-void            ewl_widget_focus_send(Ewl_Widget *w);
-Ewl_Widget     *ewl_widget_focused_get(void);
+void 		 ewl_widget_focus_send(Ewl_Widget *w);
+Ewl_Widget  	*ewl_widget_focused_get(void);
 
-void            ewl_widget_tab_order_append(Ewl_Widget *w);
-void            ewl_widget_tab_order_prepend(Ewl_Widget *w);
-void            ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx);
-void		ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before);
-void		ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after);
-void 		ewl_widget_tab_order_remove(Ewl_Widget *w);
+void 		 ewl_widget_tab_order_append(Ewl_Widget *w);
+void 		 ewl_widget_tab_order_prepend(Ewl_Widget *w);
+void 		 ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx);
+void		 ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before);
+void		 ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after);
+void 		 ewl_widget_tab_order_remove(Ewl_Widget *w);
 
-void		ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val);
-unsigned int	ewl_widget_focusable_get(Ewl_Widget *w);
+void		 ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val);
+unsigned int	 ewl_widget_focusable_get(Ewl_Widget *w);
 
-void		ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val);
-unsigned int	ewl_widget_ignore_focus_change_get(Ewl_Widget *w);
+void		 ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val);
+unsigned int	 ewl_widget_ignore_focus_change_get(Ewl_Widget *w);
 
-void            ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a);
-void            ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a);
+void 		 ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a);
+void 		 ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a);
 
-int             ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);
+int 		 ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);
 
-void		ewl_widget_draggable_set(Ewl_Widget* w, unsigned int val, Ewl_Widget_Drag cb);
+void		ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb);
 Ewl_Widget     *ewl_widget_drag_candidate_get(void);
 void 		ewl_widget_dnd_reset(void);
 

@@ -87,11 +87,11 @@ struct Ewl_Tree2
 {
 	Ewl_MVC mvc; 		/**< Inherit from ewl_mvc. */
 
-	Ewl_Widget *header;	 /**< The tree header */
-	Ewl_Widget *rows;	 /**< The rows of the tree */
+	Ewl_Widget *header; 	/**< The tree header */
+	Ewl_Widget *rows; 	/**< The rows of the tree */
 
-	Ecore_List *columns;     /**< The tree columns. */
-	int *rowcache;           /**< Cache of row sizes */
+	Ecore_List *columns;	/**< The tree columns. */
+	int *rowcache; 		/**< Cache of row sizes */
 
 	Ewl_Tree_Selection_Type type;	 /**< The selection type of the tree */
 

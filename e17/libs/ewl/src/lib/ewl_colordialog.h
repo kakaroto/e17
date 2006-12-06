@@ -32,31 +32,31 @@ typedef struct Ewl_Colordialog Ewl_Colordialog;
  */
 struct Ewl_Colordialog
 { 
-	Ewl_Dialog  dialog;	/**< Inherits from Ewl_Dialog */
+	Ewl_Dialog dialog;	/**< Inherits from Ewl_Dialog */
 	Ewl_Widget *picker;	/**< Store the color picker widget */
 };
 
 Ewl_Widget 	*ewl_colordialog_new(void);
 int 		 ewl_colordialog_init(Ewl_Colordialog *cd);
 
-void             ewl_colordialog_has_alpha_set(Ewl_Colordialog *cp, unsigned int alpha);
-unsigned int     ewl_colordialog_has_alpha_get(Ewl_Colordialog *cp);
-                                        
-void             ewl_colordialog_alpha_set(Ewl_Colordialog *cp, unsigned int alpha);
-unsigned int     ewl_colordialog_alpha_get(Ewl_Colordialog *cp);
+void 		 ewl_colordialog_has_alpha_set(Ewl_Colordialog *cp, unsigned int alpha);
+unsigned int 	 ewl_colordialog_has_alpha_get(Ewl_Colordialog *cp);
 
-void             ewl_colordialog_current_rgb_set(Ewl_Colordialog *cp, unsigned int r,
-                                                        unsigned int g, unsigned int b);
-void             ewl_colordialog_current_rgb_get(Ewl_Colordialog *cp, unsigned int *r,
-                                                        unsigned int *g, unsigned int *b);
+void 		 ewl_colordialog_alpha_set(Ewl_Colordialog *cp, unsigned int alpha);
+unsigned int 	 ewl_colordialog_alpha_get(Ewl_Colordialog *cp);
 
-void             ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cp, unsigned int r,
-                                                        unsigned int g, unsigned int b);
-void             ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cp, unsigned int *r,
-                                                        unsigned int *g, unsigned int *b);
+void 		 ewl_colordialog_current_rgb_set(Ewl_Colordialog *cp, unsigned int r,
+							unsigned int g, unsigned int b);
+void 		 ewl_colordialog_current_rgb_get(Ewl_Colordialog *cp, unsigned int *r,
+							unsigned int *g, unsigned int *b);
 
-void             ewl_colordialog_color_mode_set(Ewl_Colordialog *cp, Ewl_Color_Mode type);
-Ewl_Color_Mode   ewl_colordialog_color_mode_get(Ewl_Colordialog *cp);
+void 		 ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cp, unsigned int r,
+							unsigned int g, unsigned int b);
+void 		 ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cp, unsigned int *r,
+							unsigned int *g, unsigned int *b);
+
+void 		 ewl_colordialog_color_mode_set(Ewl_Colordialog *cp, Ewl_Color_Mode type);
+Ewl_Color_Mode 	 ewl_colordialog_color_mode_get(Ewl_Colordialog *cp);
 
 /*
  * Internally used callbacks, override at your own risk
