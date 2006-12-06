@@ -327,7 +327,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	ewl_widget_show(box);
 
 	o2 = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(o2), "EWL Theme");
+	ewl_border_label_set(EWL_BORDER(o2), "EWL Theme");
 	ewl_container_child_append(EWL_CONTAINER(box), o2);
 	ewl_widget_show(o2);
 
@@ -375,7 +375,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	ewl_mvc_dirty_set(EWL_MVC(o), TRUE);
 
 	o2 = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(o2), "Icon Theme");
+	ewl_border_label_set(EWL_BORDER(o2), "Icon Theme");
 	ewl_container_child_append(EWL_CONTAINER(box), o2);
 	ewl_widget_show(o2);
 

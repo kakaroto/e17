@@ -54,7 +54,7 @@ create_test(Ewl_Container *box)
 
 	/* create a list using an ecore_list of strings of labels */
 	o = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(o), "Label List (single select)");
+	ewl_border_label_set(EWL_BORDER(o), "Label List (single select)");
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 
@@ -79,7 +79,7 @@ create_test(Ewl_Container *box)
 
 	/* create a list using an ecore_list of strings of labels */
 	o = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(o), "Label List (multi select)");
+	ewl_border_label_set(EWL_BORDER(o), "Label List (multi select)");
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 
@@ -97,7 +97,7 @@ create_test(Ewl_Container *box)
 	/* Create a list from a custom array with a custom assign on the
 	 * view */
 	o = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(o), "Custom List");
+	ewl_border_label_set(EWL_BORDER(o), "Custom List");
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 
@@ -125,7 +125,7 @@ create_test(Ewl_Container *box)
 	/* create a list by appending label widgets. This dosne't use the
 	 * MVC controls just allows you to use the container functions */
 	o = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(o), "Container Functions");
+	ewl_border_label_set(EWL_BORDER(o), "Container Functions");
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 

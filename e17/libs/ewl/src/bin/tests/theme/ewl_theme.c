@@ -24,17 +24,17 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-        Ewl_Widget *box2, *vbox, *list, *misc;
-        DIR *rep;
-        struct dirent *file;
+	Ewl_Widget *box2, *vbox, *list, *misc;
+	DIR *rep;
+	struct dirent *file;
 
 	box2 = ewl_hbox_new();
 	ewl_container_child_append(box, box2);
 	ewl_widget_show(box2);
 
 	/* the theme list tree */
-        list = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(list), "Theme name");
+	list = ewl_border_new();
+	ewl_border_label_set(EWL_BORDER(list), "Theme name");
 	ewl_container_child_append(EWL_CONTAINER(box2), list);
 	ewl_widget_show(list);
 	
@@ -42,9 +42,9 @@ create_test(Ewl_Container *box)
 	while ((file = readdir(rep))) 
 	{
 		char *name;
-        	int len;
+		int len;
 
-	        name = file->d_name;
+		name = file->d_name;
 		len = strlen(name);
 
 		if ((len >= 4) && (!strcmp(name + len - 4, ".edj"))) {
@@ -62,7 +62,7 @@ create_test(Ewl_Container *box)
 	}
 	
 	vbox = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(vbox), "Theme Visualization");
+	ewl_border_label_set(EWL_BORDER(vbox), "Theme Visualization");
 	ewl_container_child_append(EWL_CONTAINER(box2), vbox);
 	ewl_widget_show(vbox);
 	
@@ -86,7 +86,7 @@ cb_select_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 static Ewl_Widget *
 widgets_build(void)
 {
-        Ewl_Widget *misc, *item, *vbox, *notebook;
+	Ewl_Widget *misc, *item, *vbox, *notebook;
 	char *str, *str_col[2];
 	int i;
 	struct {

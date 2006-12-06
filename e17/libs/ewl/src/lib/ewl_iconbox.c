@@ -858,7 +858,7 @@ ewl_iconbox_icon_select(Ewl_Iconbox_Icon *ib, int loc, int deselect) /* Loc 0= i
 		x = ewl_object_current_x_get(EWL_OBJECT(ib));
 		y = ewl_object_current_y_get(EWL_OBJECT(ib));
 		
-		/*printf ("Edit label event on: '%s'\n", ewl_border_text_get(EWL_BORDER(ib)));*/
+		/*printf ("Edit label event on: '%s'\n", ewl_border_label_get(EWL_BORDER(ib)));*/
 		ewl_object_current_size_get(EWL_OBJECT(ib->w_label), &w, &h);
 		ewl_object_current_size_get(EWL_OBJECT(ib->image), &iw, &ih);
 		ewl_object_minimum_size_set(EWL_OBJECT(ib->icon_box_parent->entry), w,h);
@@ -1582,7 +1582,7 @@ ewl_iconbox_cb_icon_mouse_up(Ewl_Widget *w __UNUSED__, void *ev_data , void *use
 
 	ib->drag = 0;
 	ib->icon_box_parent->drag_icon = NULL;
-	/*printf ("Button up on icon: %s\n", ewl_border_text_get(EWL_BORDER(ib)) );*/
+	/*printf ("Button up on icon: %s\n", ewl_border_label_get(EWL_BORDER(ib)) );*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

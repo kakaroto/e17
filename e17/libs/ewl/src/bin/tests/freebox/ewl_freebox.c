@@ -62,7 +62,7 @@ create_test(Ewl_Container *box)
 		Ewl_Widget *border, *hbox, *fb, *pane, *o;
 
 		border  = ewl_border_new();
-		ewl_border_text_set(EWL_BORDER(border),
+		ewl_border_label_set(EWL_BORDER(border),
 				(char *)fbtests[i].name);
 		ewl_object_fill_policy_set(EWL_OBJECT(border), EWL_FLAG_FILL_FILL);
 		ewl_container_child_append(EWL_CONTAINER(box), border);

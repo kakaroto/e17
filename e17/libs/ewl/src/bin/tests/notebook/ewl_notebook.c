@@ -214,7 +214,7 @@ create_main_page(void)
 
 	/* box to hold alignment list */
 	border = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(border), "Tabbar Alignment");
+	ewl_border_label_set(EWL_BORDER(border), "Tabbar Alignment");
 	ewl_container_child_append(EWL_CONTAINER(box2), border);
 	ewl_widget_show(border);
 
@@ -239,7 +239,7 @@ create_main_page(void)
 
 	/* box to hold position list */
 	border = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(border), "Tabbar Position");
+	ewl_border_label_set(EWL_BORDER(border), "Tabbar Position");
 	ewl_container_child_append(EWL_CONTAINER(box2), border);
 	ewl_widget_show(border);
 
