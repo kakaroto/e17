@@ -29,11 +29,11 @@ test_info(Ewl_Test *test)
 int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget     *image;
-	Ewl_Widget     *thumb;
-	Ewl_Widget     *image_box;
-	char           *image_file = NULL;
-	char           *icon_file = NULL;
+	Ewl_Widget *image;
+	Ewl_Widget *thumb;
+	Ewl_Widget *image_box;
+	char *image_file = NULL;
+	char *icon_file = NULL;
 
 	image_box = EWL_WIDGET(box);
 
@@ -68,7 +68,7 @@ create_test(Ewl_Container *box)
 	if (icon_file)
 		ewl_image_file_path_set(EWL_IMAGE(thumb), icon_file);
 	ewl_container_child_append(EWL_CONTAINER(image_box), thumb);
-        ewl_widget_show(thumb);
+	ewl_widget_show(thumb);
 
 	return 1;
 }

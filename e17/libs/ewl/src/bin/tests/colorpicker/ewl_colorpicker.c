@@ -30,8 +30,8 @@
  * You can also change the display mode of the spectrum programmatically
  *
  * @code
- * void         ewl_colorpicker_color_mode_set(Ewl_Colorpicker *cp, Ewl_Color_Mode type);
- * Ewl_Color_Mode       ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp);
+ * void ewl_colorpicker_color_mode_set(Ewl_Colorpicker *cp, Ewl_Color_Mode type);
+ * Ewl_Color_Mode ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp);
  * @endcode
  *
  */

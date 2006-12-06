@@ -1193,7 +1193,7 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
 		Ewl_Embed *embed;
 		Ecore_X_Selection_Data *data = ev->data;
 
-                embed = ewl_embed_evas_window_find((void *)ev->win);
+		embed = ewl_embed_evas_window_find((void *)ev->win);
 		if (embed) 
 		{
 			if (data->content == ECORE_X_SELECTION_CONTENT_FILES)

@@ -155,7 +155,7 @@ main(int argc, char **argv)
 
 	c = ewl_hbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_NONE |
-			                           EWL_FLAG_FILL_HFILL);
+						EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(vbox), c);
 	ewl_widget_show(c);
 
@@ -193,7 +193,7 @@ main(int argc, char **argv)
 
 	c = ewl_hbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_NONE |
-			                           EWL_FLAG_FILL_HFILL);
+						EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(emb), c);
 	ewl_widget_show(c);
 

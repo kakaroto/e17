@@ -200,7 +200,7 @@ cb_rerun_progressbars (Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		}
 
 		progress_timer[i] = ecore_timer_add(0.1, cb_increment_progress,
-				        			progressbar[i]);
+								progressbar[i]);
 	}
 }
 

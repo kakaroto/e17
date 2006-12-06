@@ -208,7 +208,7 @@ create_test(Ewl_Container *box)
 	Ewl_Widget     *scrollpane;
 	Ewl_Widget     *button_hbox;
 	Ewl_Widget     *button_prev, *button_remove, *button_next;
-	char           *image_file = NULL;
+	char	   *image_file = NULL;
 
 	image_box = EWL_WIDGET(box);
 	images = ecore_dlist_new();
@@ -306,7 +306,7 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(note_box), note);
 	ewl_widget_show(note);
 
-        ewl_widget_show(image);
+	ewl_widget_show(image);
 
 	return 1;
 }

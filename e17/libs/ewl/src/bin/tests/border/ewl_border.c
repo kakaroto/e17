@@ -27,7 +27,7 @@ create_test(Ewl_Container *box)
 	Ewl_Widget *border;
 	Ewl_Widget *border_box;
 	Ewl_Widget *separator;
-        Ewl_Widget *alabel, *avbox, *pvbox, *plabel, *cvbox, *clabel;
+	Ewl_Widget *alabel, *avbox, *pvbox, *plabel, *cvbox, *clabel;
 	Ewl_Widget *button_check;
 
 	border = ewl_border_new();
@@ -142,22 +142,22 @@ create_test(Ewl_Container *box)
 			    border_change_position, border);
 	ewl_widget_show(button_pbottom);
 
-        cvbox = ewl_vbox_new();
-        ewl_object_alignment_set(EWL_OBJECT(cvbox), EWL_FLAG_ALIGN_CENTER);
-        ewl_container_child_append(EWL_CONTAINER(box), cvbox);
-        ewl_widget_show(cvbox);
+	cvbox = ewl_vbox_new();
+	ewl_object_alignment_set(EWL_OBJECT(cvbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_container_child_append(EWL_CONTAINER(box), cvbox);
+	ewl_widget_show(cvbox);
 
-        clabel = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(clabel), "Enable/Disable");
-        ewl_container_child_append(EWL_CONTAINER(cvbox), clabel);
-        ewl_widget_show(clabel);
+	clabel = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(clabel), "Enable/Disable");
+	ewl_container_child_append(EWL_CONTAINER(cvbox), clabel);
+	ewl_widget_show(clabel);
 
-        button_check = ewl_checkbutton_new();
-        ewl_button_label_set(EWL_BUTTON(button_check), "Disable");
-        ewl_container_child_append(EWL_CONTAINER(cvbox), button_check);
-        ewl_callback_append(button_check, EWL_CALLBACK_CLICKED,
-                            checkbutton_cb, border);
-        ewl_widget_show(button_check);
+	button_check = ewl_checkbutton_new();
+	ewl_button_label_set(EWL_BUTTON(button_check), "Disable");
+	ewl_container_child_append(EWL_CONTAINER(cvbox), button_check);
+	ewl_callback_append(button_check, EWL_CALLBACK_CLICKED,
+			    checkbutton_cb, border);
+	ewl_widget_show(button_check);
 
 	return 1;
 }
@@ -211,10 +211,10 @@ static void
 checkbutton_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
-        {
+	{
 		ewl_widget_disable(EWL_WIDGET(data));
 		ewl_button_label_set(EWL_BUTTON(w), "Enable");
-        }
+	}
 	else if (!ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
 	{
 		ewl_widget_enable(EWL_WIDGET(data));

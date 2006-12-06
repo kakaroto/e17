@@ -99,8 +99,8 @@ static void
 evidence_text(void *data, Evas_Object *obj __UNUSED__,
 		const char *emission __UNUSED__, const char *source __UNUSED__)
 {
-        Ewl_Widget *label = data;
-        char *text = "\nEvidence is a file-manager\n"
+	Ewl_Widget *label = data;
+	char *text = "\nEvidence is a file-manager\n"
 		     "with plugins for everything --\n"
 		     "from ultra-fast JPEG thumbnailers\n"
 		     "to MP3/ID3 and Ogg tag editing.\n"
@@ -110,24 +110,24 @@ evidence_text(void *data, Evas_Object *obj __UNUSED__,
 		     "extensive theming opportunities\n"
 		     "complete this slightly different browser.";
 
-        ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
-        ewl_text_font_set(EWL_TEXT(label), "ewl/default");
+	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_font_set(EWL_TEXT(label), "ewl/default");
 	ewl_text_font_size_set(EWL_TEXT(label), 12);
 	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
-        ewl_text_text_set(EWL_TEXT(label), "Evidence");
+	ewl_text_text_set(EWL_TEXT(label), "Evidence");
 
 	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
-        ewl_text_font_set(EWL_TEXT(label), "ewl/default");
+	ewl_text_font_set(EWL_TEXT(label), "ewl/default");
 	ewl_text_font_size_set(EWL_TEXT(label), 7);
-        ewl_text_text_append(EWL_TEXT(label), text);
+	ewl_text_text_append(EWL_TEXT(label), text);
 }
 
 static void
 edje_text(void *data, Evas_Object *obj __UNUSED__,
 		const char *emission, const char *source)
 {
-        char *text;
-        Ewl_Widget *label = data;
+	char *text;
+	Ewl_Widget *label = data;
 
 	printf("In %s, %s\n", emission, source);
 
@@ -136,16 +136,16 @@ edje_text(void *data, Evas_Object *obj __UNUSED__,
 
 	text = (char *)emission + strlen("Present");
 
-        ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
-        ewl_text_font_set(EWL_TEXT(label), "ewl/default");
+	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_font_set(EWL_TEXT(label), "ewl/default");
 	ewl_text_font_size_set(EWL_TEXT(label), 12);
 	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
-        ewl_text_text_set(EWL_TEXT(label), (char *)source);
+	ewl_text_text_set(EWL_TEXT(label), (char *)source);
 
 	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
-        ewl_text_font_set(EWL_TEXT(label), "ewl/default");
+	ewl_text_font_set(EWL_TEXT(label), "ewl/default");
 	ewl_text_font_size_set(EWL_TEXT(label), 7);
-        ewl_text_text_append(EWL_TEXT(label), text);
+	ewl_text_text_append(EWL_TEXT(label), text);
 }
 
 static void

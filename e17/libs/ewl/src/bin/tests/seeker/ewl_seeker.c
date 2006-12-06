@@ -20,19 +20,19 @@ create_test(Ewl_Container *box)
 {
 	Ewl_Widget *hseeker, *vseeker;
 
-        hseeker = ewl_hseeker_new();
-        ewl_object_position_request(EWL_OBJECT(hseeker), 30, 0);
-        ewl_callback_append(hseeker, EWL_CALLBACK_VALUE_CHANGED, 
+	hseeker = ewl_hseeker_new();
+	ewl_object_position_request(EWL_OBJECT(hseeker), 30, 0);
+	ewl_callback_append(hseeker, EWL_CALLBACK_VALUE_CHANGED, 
 						cb_print_value, NULL);
-        ewl_container_child_append(box, hseeker);
-        ewl_widget_show(hseeker);
+	ewl_container_child_append(box, hseeker);
+	ewl_widget_show(hseeker);
 
-        vseeker = ewl_vseeker_new();
-        ewl_object_position_request(EWL_OBJECT(vseeker), 0, 30);
-        ewl_callback_append(vseeker, EWL_CALLBACK_VALUE_CHANGED, 
+	vseeker = ewl_vseeker_new();
+	ewl_object_position_request(EWL_OBJECT(vseeker), 0, 30);
+	ewl_callback_append(vseeker, EWL_CALLBACK_VALUE_CHANGED, 
 						cb_print_value, NULL);
-        ewl_container_child_append(box, vseeker);
-        ewl_widget_show(vseeker);
+	ewl_container_child_append(box, vseeker);
+	ewl_widget_show(vseeker);
 
 	return 1;
 }

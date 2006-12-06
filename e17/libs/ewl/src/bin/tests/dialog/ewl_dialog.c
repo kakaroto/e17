@@ -52,7 +52,7 @@ run_dialog(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_widget_show(dialog);
 	ewl_dialog_active_area_set(EWL_DIALOG(dialog), EWL_POSITION_TOP);
 
-        hbox = ewl_hbox_new();
+	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(dialog), hbox);
 	ewl_widget_show(hbox);
 
