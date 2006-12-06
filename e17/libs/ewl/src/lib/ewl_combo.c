@@ -37,6 +37,7 @@ ewl_combo_new(void)
 int
 ewl_combo_init(Ewl_Combo *combo)
 {
+	Ewl_Widget *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("combo", combo, FALSE);
@@ -82,11 +83,10 @@ ewl_combo_init(Ewl_Combo *combo)
 	/*
 	 * setup the popbox
 	 */
-	combo->popbox = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(combo->popup), combo->popbox);
-	ewl_container_redirect_set(EWL_CONTAINER(combo->popup), 
-					EWL_CONTAINER(combo->popbox));
-	ewl_widget_show(combo->popbox);
+	o = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(combo->popup), o);
+	ewl_container_redirect_set(EWL_CONTAINER(combo->popup), EWL_CONTAINER(o));
+	ewl_widget_show(o);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(combo), 
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
@@ -175,7 +175,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	ewl_widget_show(combo->popup);
 	ewl_window_raise(EWL_WINDOW(combo->popup));
-	ewl_widget_focus_send(EWL_WIDGET(combo->popbox));
+	ewl_widget_focus_send(EWL_WIDGET(combo->popup));
 
 	if (!ewl_mvc_dirty_get(EWL_MVC(combo)))
 		DRETURN(DLEVEL_STABLE);

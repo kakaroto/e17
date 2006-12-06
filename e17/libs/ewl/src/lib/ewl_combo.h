@@ -43,7 +43,6 @@ struct Ewl_Combo
 	Ewl_MVC mvc; /**< Inherit from Ewl_MVC */
 
 	Ewl_Widget *popup; 	/**< Use a popup to display with. */
-	Ewl_Widget *popbox;	/**< the box for the popup */
 	Ewl_Widget *button; 	/**< expand/contract button */
 	Ewl_Widget *header; 	/**< The combo header widget */
 	unsigned char editable:1; /**< Is the combo editable */
