@@ -3,23 +3,10 @@
  *
  * @section bugs BUGS
  *
-- Ewl_Text:: if your in a multiline text and on a line that is longer
-  then then one above or below and you hit the up arrow it will
-  position your cursor one character _before_ the end of the line.
-
-- Ewl_Text:: if your in a multiline text and on the last line
-  of multiple lines. Pressing arrow down can wrap to the beginning
-  of the first line.
-
-- Ewl_Password:: The entry needs to correctly deal with selections and
-  mouse clicks.
 
 - How to deal with the scrollpane with the focus? Currently widgets
   marked INTERNAL are ignored on the inital add. Should the scrollpane 
   find itself in the tab list on SHOW and substitue the seekers instead?
-
-- Menus will activate on tab, but it jumps to the submenu instead of
-  each menu item
 
 - We auto add things to the tab order as they are realized. We need to make
   sure the things we are adding aren't already in the tab order as we will
@@ -38,56 +25,78 @@
   specific tab order it will be whiped out by the realize code. (In
   Ewl_Embed I believe).
 
-- the tree dosen't currently play well with the scrollbar. This can be seen
-  in the tree test, if you shrink the window and scroll it will only scroll
-  the first paned widget. (Need to make this and the paned work together).
 
-- text scrolling with Ewl_Entry needs a bit of work. If you scroll over to
-  the right and the text moves and arrow back it shifts as you move off of
-  the right edge instead of over the left edge.
+  Ewl_Menu
+    - Menus will activate on tab, but it jumps to the submenu instead of
+      each menu item
 
-- text cursor disappears on the end of entrybox case.
 
-- The column view of the filepicker needs to blank out the preview when you
-  have multiple files selected.
+  Ewl_Tree
+    - dosen't currently play well with the scrollbar. This can be seen
+      in the tree test, if you shrink the window and scroll it will only scroll
+      the first paned widget. (Need to make this and the paned work together).
 
-- Ewl_Spectrum:: may need to optimize this to only redraw if we have a resize, 
-                 or a type/mode change
 
-- Ewl_Spectrum:: Add a theme item for the cross hairs ...
+  Ewl_Filepicker
+    - The column view needs to blank out the preview when you
+      have multiple files selected.
 
-- Ewl_Text:: need to setup the styles/align/wrap data from the theme in 
+
+  Ewl_Spectrum
+    - may need to optimize this to only redraw if we have a resize, 
+      or a type/mode change
+
+    - Add a theme item for the cross hairs ...
+
+
+  Ewl_Text
+     - need to setup the styles/align/wrap data from the theme in 
    	         ewl_text_context_default_create
 
-- Ewl_Text:: new theme keys for the align/wrap stuff
+     - new theme keys for the align/wrap stuff
 
-- Ewl_Text:: need to fill in the condense function
 
-- Ewl_Dnd:: uses hardcoded ecore_evas_software_x11 type calls in there. This
-  needs to be moved over to use the new engine stuff and get the ecore_evas
-  and any ecore_x calls out of there.
+  Ewl_Entry
+    - text scrolling with Ewl_Entry needs a bit of work. If you scroll over to
+      the right and the text moves and arrow back it shifts as you move off of
+      the right edge instead of over the left edge.
+
+    - text cursor disappears on the end of entrybox case.
+
+    - if your in a multiline text and on a line that is longer
+      then then one above or below and you hit the up arrow it will
+      position your cursor one character _before_ the end of the line.
+
+    - if your in a multiline text and on the last line
+      of multiple lines. Pressing arrow down can wrap to the beginning
+      of the first line.
+
+  
+  Ewl_Password
+    - The entry needs to correctly deal with selections and mouse clicks.
+
 
   Ewl_Icon
- - Clicking on the label 'Draw (Editable)' then clicking again will cause a
-   warning to print. I _think_ the move event is getting fired for the text
-   widget after I've deleted it in the Ewl_Icon code. Need to confirm/fix
-   this.
+     - Clicking on the label 'Draw (Editable)' then clicking again will cause a
+       warning to print. I _think_ the move event is getting fired for the text
+       widget after I've deleted it in the Ewl_Icon code. Need to confirm/fix
+       this.
  
- - Menus aren't hooked up. This should popup on right click and hide on a
-   click outside the menu. Needs to do all that grabby stuff menus do (which
-   should be in the menu's already.
+     - Menus aren't hooked up. This should popup on right click and hide on a
+       click outside the menu. Needs to do all that grabby stuff menus do (which
+       should be in the menu's already.
  
- - Should change label editing to double click on the icon instead of
-   clicking on the label itself.
+     - Should change label editing to double click on the icon instead of
+       clicking on the label itself.
  
 
- Ewl_Freebox 
- - On the comparator test if you add a set of icons, rename an icon and then
-   add another set of icons the second set of icons won't appear until the
-   window is moved. (Must be missing a configure event)
+  Ewl_Freebox 
+     - On the comparator test if you add a set of icons, rename an icon and then
+       add another set of icons the second set of icons won't appear until the
+       window is moved. (Must be missing a configure event)
 
- - The autolayout will align at the top, should probably be changed to align
-   at the bottom based on the largest widget being put in.
+     - The autolayout will align at the top, should probably be changed to align
+       at the bottom based on the largest widget being put in.
 
  *
  * @section todo TODO
@@ -137,3 +146,4 @@
 - Ewl_Seeker:: Add value labels and hash marks.
 
  */
+
