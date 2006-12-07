@@ -139,9 +139,10 @@ build_e17setroot="no"
 build_entangle="no"
 build_exige="no"
 
-if test "x$have_ewl" = "xyes" -a "x$have_engrave" = "xyes"; then
-  build_eap_edit="yes"
-fi
+# Disable eap editor, no longer needed
+#if test "x$have_ewl" = "xyes" -a "x$have_engrave" = "xyes"; then
+#  build_eap_edit="yes"
+#fi
 
 if test "x$have_imlib2" = "xyes" -a "x$have_ecore" = "xyes" -a "x$have_engrave" = "xyes" -a "x$have_enlightenment" = "xyes"; then
   build_e17setroot="yes"
