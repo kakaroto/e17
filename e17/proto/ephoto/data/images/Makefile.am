@@ -15,7 +15,6 @@ FILES = add.png \
 	go-down.png \
 	go-next.png \
 	image.png \
-	logo.png \
 	preferences-system.png \
 	redo.png \
 	remove.png \
