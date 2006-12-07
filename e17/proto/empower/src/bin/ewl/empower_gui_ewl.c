@@ -107,7 +107,7 @@ void display_window(int argc, char** argv)
 	ewl_widget_show(hbox);
 	
 	ok_button = ewl_button_new();
-	ewl_button_stock_type_set(EWL_BUTTON(ok_button), EWL_STOCK_OK);
+	ewl_stock_type_set(EWL_BUTTON(ok_button), EWL_STOCK_OK);
 	ewl_object_minimum_size_set(EWL_OBJECT(ok_button), 60, 20);
 	//ewl_object_maximum_size_set(EWL_OBJECT(ok_button), 60, 20);
 	ewl_object_fill_policy_set(EWL_OBJECT(ok_button), EWL_FLAG_FILL_SHRINK);
@@ -117,7 +117,7 @@ void display_window(int argc, char** argv)
 	ewl_widget_show(ok_button);
 	
 	cancel_button = ewl_button_new();
-	ewl_button_stock_type_set(EWL_BUTTON(cancel_button), EWL_STOCK_CANCEL);
+	ewl_stock_type_set(EWL_BUTTON(cancel_button), EWL_STOCK_CANCEL);
 	ewl_object_minimum_size_set(EWL_OBJECT(cancel_button), 60, 20);
 	//ewl_object_maximum_size_set(EWL_OBJECT(cancel_button), 60, 20);
 	ewl_object_fill_policy_set(EWL_OBJECT(cancel_button), 
