@@ -553,6 +553,22 @@ enum Ewl_Icon_Type
 typedef enum Ewl_Icon_Type Ewl_Icon_Type;
 
 /**
+ * @enum Ewl_Icon_Part
+ * The different Parts of an Icon
+ */
+enum Ewl_Icon_Part
+{
+	EWL_ICON_PART_NONE,
+	EWL_ICON_PART_IMAGE,
+	EWL_ICON_PART_LABEL
+};
+
+/**
+ * The Ewl_Icon_Part
+ */
+typedef enum Ewl_Icon_Part Ewl_Icon_Part;
+
+/**
  * @enum Ewl_Freebox_Layout_Type
  * The possibly layout settings for the freebox
  */
