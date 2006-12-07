@@ -1246,7 +1246,7 @@ ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
 	{
 		Ewl_Embed *embed;
 		embed = ewl_embed_evas_window_find((void *)ev->win);
-		ewl_embed_dnd_data_request_feed(embed,
+		ewl_embed_dnd_data_request_feed(embed, ev,
 				XGetAtomName(ecore_x_display_get(),
 					ev->target));
 	}

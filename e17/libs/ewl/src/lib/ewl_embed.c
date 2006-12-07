@@ -1048,9 +1048,9 @@ ewl_embed_dnd_data_received_feed(Ewl_Embed *embed, char *type, void *data, unsig
  * @brief Sends the request event for selection data received into an embed.
  */
 void
-ewl_embed_dnd_data_request_feed(Ewl_Embed *embed, char *type)
+ewl_embed_dnd_data_request_feed(Ewl_Embed *embed, void *handle, char *type)
 {
-	Ewl_Event_Dnd_Data_Requested ev;
+	Ewl_Event_Dnd_Data_Request ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
@@ -1064,6 +1064,7 @@ ewl_embed_dnd_data_request_feed(Ewl_Embed *embed, char *type)
 			/* 
 			 * setup the event struct 
 			 */
+			ev.handle = handle;
 			ev.type = type;
 			ewl_callback_call_with_event_data(embed->last.drag_widget,
 							  EWL_CALLBACK_DND_DATA_REQUEST,

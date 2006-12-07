@@ -23,6 +23,7 @@ static int create_test(Ewl_Container *box);
 static void ewl_dnd_snoop_cb_dnd_position(Ewl_Widget *w, void *event, void *data);
 static void ewl_dnd_snoop_cb_dnd_drop(Ewl_Widget *w, void *event, void *data);
 static void ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event, void *data);
+static void ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event, void *data);
 
 static int ewl_dnd_snoop_cb_enter(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_position(void *data, int type, void *ev);
@@ -94,6 +95,7 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(o, EWL_CALLBACK_DND_POSITION, ewl_dnd_snoop_cb_dnd_position, NULL);
 	ewl_callback_append(o, EWL_CALLBACK_DND_DROP, ewl_dnd_snoop_cb_dnd_drop, NULL);
 	ewl_callback_append(o, EWL_CALLBACK_DND_DATA_RECEIVED, ewl_dnd_snoop_cb_dnd_data, NULL);
+	ewl_callback_append(o, EWL_CALLBACK_DND_DATA_REQUEST, ewl_dnd_snoop_cb_dnd_data_request, NULL);
 	ewl_widget_name_set(o, "entry");
 	ewl_entry_multiline_set(EWL_ENTRY(o), TRUE);
 	ewl_text_wrap_set(EWL_TEXT(o), TRUE);
@@ -173,6 +175,14 @@ ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event,
 {
 	Ewl_Event_Dnd_Data_Received *ev = event;
 	printf("Data event on widget %p: %p length %d\n", w, ev->data, ev->len);
+}
+
+static void
+ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event, 
+						void *data __UNUSED__)
+{
+	Ewl_Event_Dnd_Data_Request *ev = event;
+	printf("Data request on widget %p: type %s\n", w, ev->type);
 }
 
 static int

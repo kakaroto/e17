@@ -239,15 +239,16 @@ typedef struct Ewl_Event_Dnd_Data_Received Ewl_Event_Dnd_Data_Received;
 /**
  * Provides information about dnd data requests
  */
-struct Ewl_Event_Dnd_Data_Requested
+struct Ewl_Event_Dnd_Data_Request
 {
-	char *type; /**< Type of data requested */
+	void *handle; /**< Engine specific handle for responding to request */
+	char *type;   /**< Type of data requested */
 };
 
 /**
  * The Ewl_Event_Dnd_Data_Requested type
  */
-typedef struct Ewl_Event_Dnd_Data_Requested Ewl_Event_Dnd_Data_Requested;
+typedef struct Ewl_Event_Dnd_Data_Request Ewl_Event_Dnd_Data_Request;
 
 /**
  * The Ewl_Dialog_Evenet type
