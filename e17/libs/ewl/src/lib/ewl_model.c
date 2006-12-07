@@ -123,6 +123,37 @@ ewl_model_subfetch_get(Ewl_Model *m)
 }
 
 /**
+ * @param m: The model to set the callback on
+ * @param exp: The expandable callback
+ * @return Returns no value
+ * @brief Sets the expandable callback on the given model
+ */
+void
+ewl_model_expandable_set(Ewl_Model *m, Ewl_Model_Expandable exp)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->expandable = exp;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The model to get the expandable callback from
+ * @return Returns the expandable callback set on the model
+ * @brief Retrieves the expandable callback set on the model
+ */
+Ewl_Model_Expandable
+ewl_model_expandable_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+
+	DRETURN_PTR(m->expandable, DLEVEL_STABLE);
+}
+
+/**
  * @param m: The Ewl_Model to set the sort callback on
  * @param sort: The sort callback to set
  * @return Returns no value.

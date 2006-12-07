@@ -35,6 +35,19 @@ typedef void *(*Ewl_Model_Fetch)(void *data, unsigned int row,
 typedef void *(*Ewl_Model_Subfetch)(void *data, unsigned int parent,
 				unsigned int row, unsigned int column);
 
+
+/**
+ * @def EWL_MODEL_DATA_EXPANDABLE(f)
+ * Model callback to handle fetching the expandable flag for a given row of
+ * the tree
+ */
+#define EWL_MODEL_DATA_EXPANDABLE(f) ((Ewl_Model_Expandable)f)
+
+/**
+ * A typedef to shorten the definition of the model_expandable callback
+ */
+typedef int (*Ewl_Model_Expandable)(void *data, unsigned int row);
+
 /**
  * @def EWL_MODEL_DATA_SORT(f)
  * Model callback to inform the program to sort it's data in the given
@@ -76,6 +89,7 @@ typedef struct Ewl_Model Ewl_Model;
 struct Ewl_Model
 {
 	Ewl_Model_Fetch fetch;    /**< Retrieve data for a cell */
+	Ewl_Model_Expandable expandable; /**< Is the row expandable */
 	Ewl_Model_Subfetch subfetch; /**< Check for subdata */
 	Ewl_Model_Sort sort;      /**< Trigger sort on column */
 	Ewl_Model_Count count;    /**< Count of data items */
@@ -88,6 +102,9 @@ Ewl_Model	*ewl_model_ecore_list_get(void);
 
 void 		 ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get);
 Ewl_Model_Fetch  ewl_model_fetch_get(Ewl_Model *m);
+
+void 		 ewl_model_expandable_set(Ewl_Model *m, Ewl_Model_Expandable exp);
+Ewl_Model_Expandable ewl_model_expandable_get(Ewl_Model *m);
 
 void 		 ewl_model_subfetch_set(Ewl_Model *m, 
 						Ewl_Model_Subfetch get);

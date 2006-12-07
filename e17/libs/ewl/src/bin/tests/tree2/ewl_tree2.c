@@ -11,6 +11,9 @@ struct Tree2_Test_Row_Data
 {
 	char *image;
 	char *text;
+
+	int expandable;
+	Tree2_Test_Row_Data **rows;
 };
 
 typedef struct Tree2_Test_Data Tree2_Test_Data;
@@ -31,6 +34,10 @@ static void *tree2_test_data_fetch(void *data, unsigned int row,
 static void tree2_test_data_sort(void *data, unsigned int column, 
 						Ewl_Sort_Direction sort);
 static int tree2_test_data_count_get(void *data);
+static int tree2_test_data_expandable_get(void *data, unsigned int row);
+static void *tree2_test_data_subfetch(void *data, unsigned int parent_row,
+							unsigned int subrow, 
+							unsigned int column);
 
 static void ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev, void *data);
@@ -72,6 +79,8 @@ create_test(Ewl_Container *box)
 	ewl_model_fetch_set(model, tree2_test_data_fetch);
 	ewl_model_sort_set(model, tree2_test_data_sort);
 	ewl_model_count_set(model, tree2_test_data_count_get);
+	ewl_model_expandable_set(model, tree2_test_data_expandable_get);
+	ewl_model_subfetch_set(model, tree2_test_data_subfetch);
 
 	tree = ewl_tree2_new();
 	ewl_container_child_append(EWL_CONTAINER(box), tree);
@@ -161,22 +170,27 @@ tree2_test_data_setup(void)
 	dt[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
 	dt[0]->text = strdup("The E logo");
+	dt[0]->expandable = 0;
 
 	dt[1] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[1]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/elicit.png");
 	dt[1]->text = strdup("The Elicit image");
+	dt[1]->expandable = 0;
 
 	dt[2] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/entrance.png");
 	dt[2]->text = strdup("The Entrance image");
+	dt[2]->expandable = 0;
 
 	dt[3] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/End.png");
 	dt[3]->text = strdup("Zebra");
+	dt[3]->expandable = 0;
 	
 	dt[4] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[4]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/banner-top.png");
 	dt[4]->text = strdup("Ant");
+	dt[4]->expandable = 0;
 
 	data->rows = dt;
 	data->count = TREE2_DATA_ELEMENTS;
@@ -315,6 +329,39 @@ tree2_test_data_count_get(void *data)
 
 	return d->count;
 }
+
+static int
+tree2_test_data_expandable_get(void *data, unsigned int row)
+{
+	Tree2_Test_Data *d;
+
+	d = data;
+
+	return d->rows[row]->expandable;
+}
+
+static void *
+tree2_test_data_subfetch(void *data, unsigned int parent_row,
+						unsigned int subrow, 
+						unsigned int column)
+{
+	Tree2_Test_Data *d;
+	void *val = NULL;
+
+	d = data;
+
+	if (column == 0)
+		val = d->rows[parent_row % TREE2_DATA_ELEMENTS]->rows[subrow]->text;
+
+	else if (column == 1)
+		val = d->rows[parent_row % TREE2_DATA_ELEMENTS]->rows[subrow]->image;
+
+	else if (column == 2)
+		val = d->rows[parent_row % TREE2_DATA_ELEMENTS]->rows[subrow];
+
+	return val;
+}
+
 
 static void
 ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev __UNUSED__, void *data)
