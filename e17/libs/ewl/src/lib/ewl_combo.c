@@ -147,7 +147,8 @@ ewl_combo_editable_get(Ewl_Combo *combo)
  * @brief Callback for when the button to expand the combo is pressed
  */
 void
-ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev, void *data)
+ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
 {
 	Ewl_Combo *combo;
 	Ewl_Model *model;

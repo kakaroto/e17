@@ -4,8 +4,9 @@
 #include "ewl_private.h"
 
 static Ewl_Stock_Funcs stock_funcs = {
-	ewl_icon_label_set,
-	ewl_icon_image_set
+	EWL_STOCK_LABEL_SET(ewl_icon_label_set),
+	EWL_STOCK_IMAGE_SET(ewl_icon_image_set),
+	NULL
 };
 
 /* XXX may want to make this configurable, possibly per icon? */

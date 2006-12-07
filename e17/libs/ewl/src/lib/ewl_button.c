@@ -4,8 +4,9 @@
 #include "ewl_private.h"
 
 static Ewl_Stock_Funcs stock_funcs = {
-	ewl_button_label_set,
-	ewl_button_image_set
+	EWL_STOCK_LABEL_SET(ewl_button_label_set),
+	EWL_STOCK_IMAGE_SET(ewl_button_image_set),
+	NULL
 };
 
 /**

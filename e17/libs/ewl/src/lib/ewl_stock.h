@@ -37,6 +37,39 @@ typedef struct Ewl_Stock Ewl_Stock;
 #define EWL_STOCK(stock) ((Ewl_Stock *) stock)
 
 /**
+ * @def EWL_STOCK_LABEL_SET(f)
+ * Typecasts a pointer to a label set pointer
+ */
+#define EWL_STOCK_LABEL_SET(f) ((Ewl_Stock_Label_Set)f)
+
+/**
+ * The label set function definition
+ */
+typedef void (*Ewl_Stock_Label_Set)(Ewl_Stock *s, const char *txt);
+
+/**
+ * @def EWL_STOCK_IMAGE_SET(f)
+ * Typecasts a pointer to an image set pointer
+ */
+#define EWL_STOCK_IMAGE_SET(f) ((Ewl_Stock_Image_Set)f)
+
+/**
+ * The image set function definition
+ */
+typedef void (*Ewl_Stock_Image_Set)(Ewl_Stock *s, const char *file, const char *key);
+
+/** 
+ * @def EWL_STOCK_TOOLTIP_SET(f)
+ * Typecast to the tooltip set pointer
+ */
+#define EWL_STOCK_TOOLTIP_SET(f) ((Ewl_Stock_Tooltip_set)f)
+
+/**
+ * The tooltip set function definition
+ */
+typedef void (*Ewl_Stock_Tooltip_Set)(Ewl_Stock *s, const char *tip);
+
+/**
  * @brief An abstract Ewl_Widget to provide the base for Ewl_Icon and Ewl_Button
  */
 struct Ewl_Stock
@@ -48,9 +81,9 @@ struct Ewl_Stock
 
 struct Ewl_Stock_Funcs
 {
-	void (*label_set)(Ewl_Stock *s, const char *txt);	/**< The label set function */
-	void (*image_set)(Ewl_Stock *s, const char *file, const char *key); /**< The image set function */
-	void (*tooltip_set)(Ewl_Stock *s, const char *tip);	/**< The tooltip set function */
+	Ewl_Stock_Label_Set label_set;		/**< The label set function */
+	Ewl_Stock_Image_Set image_set; 		/**< The image set function */
+	Ewl_Stock_Tooltip_Set tooltip_set;	/**< The tooltip set function */
 };
 
 

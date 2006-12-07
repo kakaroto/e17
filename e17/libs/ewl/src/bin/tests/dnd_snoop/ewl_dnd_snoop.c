@@ -328,7 +328,8 @@ ewl_dnd_snoop_cb_finished(void *data __UNUSED__, int type __UNUSED__, void *ev)
 }
 
 static int
-ewl_dnd_snoop_cb_selection_clear(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_selection_clear(void *data __UNUSED__, int type __UNUSED__, 
+								void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Selection_Clear *event = ev;
@@ -348,7 +349,8 @@ ewl_dnd_snoop_cb_selection_clear(void *data, int type, void *ev)
 }
 
 static int
-ewl_dnd_snoop_cb_selection_request(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_selection_request(void *data __UNUSED__, int type __UNUSED__, 
+								void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Selection_Request *event = ev;
@@ -382,7 +384,8 @@ ewl_dnd_snoop_cb_selection_request(void *data, int type, void *ev)
 }
 
 static int
-ewl_dnd_snoop_cb_selection_notify(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_selection_notify(void *data __UNUSED__, int type __UNUSED__, 
+								void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Selection_Notify *event = ev;
@@ -408,7 +411,8 @@ ewl_dnd_snoop_cb_selection_notify(void *data, int type, void *ev)
 }
 
 static int
-ewl_dnd_snoop_cb_client_message(void *data, int type, void *ev)
+ewl_dnd_snoop_cb_client_message(void *data __UNUSED__, int type __UNUSED__, 
+								void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Client_Message *event = ev;
