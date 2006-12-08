@@ -802,6 +802,13 @@ _e_property_handle(Enhance *en, EXML_Node *node)
                             "step_increment", step_incr, 
                             "page_increment", page_incr, NULL);
      }
+
+   else if(!strcmp(name, "digits"))
+     {
+	PROPERTY_INT;
+
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "digits", value, NULL);
+     }
 }
 
 void

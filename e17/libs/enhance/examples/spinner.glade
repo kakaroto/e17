@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
+<!--Generated with glade3 3.0.2 on Fri Dec  8 14:04:18 2006 by lok@wowbagger-->
+<glade-interface>
+  <widget class="GtkWindow" id="window1">
+    <child>
+      <widget class="GtkSpinButton" id="spinbutton1">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="adjustment">25 25 1000 2 10 10</property>
+        <property name="climb_rate">2.5</property>
+        <property name="digits">3</property>
+      </widget>
+    </child>
+  </widget>
+</glade-interface>

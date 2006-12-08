@@ -557,12 +557,12 @@ _e_widget_hslider_handle(Enhance *en, EXML_Node *node)
    char       *id;
    Ecore_List *props;
    EXML_Node  *prop;
-   int         value;
-   int         min       = 0;
-   int         max       = 0;
-   int         step_inc  = 1;
-   int         page_inc  = 1;
-   int         page_size = 1;
+   double      value;
+   double      min       = 0;
+   double      max       = 0;
+   double      step_inc  = 1;
+   double      page_inc  = 1;
+   double      page_size = 1;
    
    id = ecore_hash_get(node->attributes, "id");
    if(!id) return NULL;
@@ -586,7 +586,7 @@ _e_widget_hslider_handle(Enhance *en, EXML_Node *node)
 		       char *adj;
 		       
 		       adj = strdup(prop->value);
-		       sscanf(adj, "%d %d %d %d %d %d", &value, &min, &max,
+		       sscanf(adj, "%lf %lf %lf %lf %lf %lf", &value, &min, &max,
 			      &step_inc, &page_inc, &page_size);
 		       E_FREE(adj);
 		    }
@@ -611,12 +611,12 @@ _e_widget_vslider_handle(Enhance *en, EXML_Node *node)
    char       *id;
    Ecore_List *props;
    EXML_Node  *prop;
-   int         value;
-   int         min       = 0;
-   int         max       = 0;
-   int         step_inc  = 0;
-   int         page_inc  = 0;
-   int         page_size = 0;
+   double      value;
+   double      min       = 0;
+   double      max       = 0;
+   double      step_inc  = 0;
+   double      page_inc  = 0;
+   double      page_size = 0;
    
    id = ecore_hash_get(node->attributes, "id");
    if(!id) return NULL;
@@ -640,7 +640,7 @@ _e_widget_vslider_handle(Enhance *en, EXML_Node *node)
 		       char *adj;
 
 		       adj = strdup(prop->value);
-		       sscanf(adj, "%d %d %d %d %d %d", &value, &min, &max,
+		       sscanf(adj, "%lf %lf %lf %lf %lf %lf", &value, &min, &max,
 			      &step_inc, &page_inc, &page_size);
 		       E_FREE(adj);		       
 		    }
@@ -651,10 +651,10 @@ _e_widget_vslider_handle(Enhance *en, EXML_Node *node)
    
    ecore_list_goto_first(props);
       
-   slider = _e_widget_new(en, node, etk_vslider_new((double)min, (double)max, 
-						    (double)value,
-						    (double) step_inc, 
-						    (double)page_inc), id);   
+   slider = _e_widget_new(en, node, etk_vslider_new(min, max, 
+						    value,
+						    step_inc, 
+						    page_inc), id);   
    return slider;
 }
 
@@ -740,6 +740,61 @@ _e_widget_tool_toggle_button_handle(Enhance *en, EXML_Node *node)
    tool_toggle_button = _e_widget_new(en, node, etk_tool_toggle_button_new(), id);
 
    return tool_toggle_button;
+}
+
+static E_Widget *
+_e_widget_spinner_handle(Enhance *en, EXML_Node *node)
+{
+   E_Widget   *spinner;
+   char       *id;
+   Ecore_List *props;
+   EXML_Node  *prop;
+   double      value;
+   double      min       = 0;
+   double      max       = 0;
+   double      step_inc  = 1;
+   double      page_inc  = 1;
+   double      page_size = 1;
+   
+   id = ecore_hash_get(node->attributes, "id");
+   if(!id) return NULL;
+   
+   props = node->children;
+   ecore_list_goto_first(props);
+   prop = ecore_list_current(props);
+   while(prop != NULL)
+     {
+	if(!strcmp(prop->tag, "property"))
+	  {
+	     char *name;
+	     
+	     name = ecore_hash_get(prop->attributes, "name");
+	     if(!name) { prop = ecore_list_next(props); continue; }
+	     
+	     if(!strcmp(name, "adjustment"))
+	       {
+		  if(prop->value)
+		    {
+		       char *adj;
+		       
+		       adj = strdup(prop->value);
+		       sscanf(adj, "%lf %lf %lf %lf %lf %lf", &value, &min, &max,
+			      &step_inc, &page_inc, &page_size);
+		       E_FREE(adj);
+		    }
+	       }
+	  }
+	prop = ecore_list_next(props);
+     }
+
+   ecore_list_goto_first(props);
+   
+   spinner = _e_widget_new(en, node, etk_spinner_new(min, max, 
+						     value,
+						     step_inc,
+						     page_inc), id);   
+
+   return spinner;
 }
 
 E_Widget *
@@ -832,6 +887,8 @@ _e_widget_handle(Enhance *en, EXML_Node *node)
      return _e_widget_tool_button_handle(en, node);
    else if(!strcmp(class, "GtkToggleToolButton"))
      return _e_widget_tool_toggle_button_handle(en, node);
+   else if(!strcmp(class, "GtkSpinButton"))
+     return _e_widget_spinner_handle(en, node);
    return NULL;
 }
 
