@@ -158,7 +158,6 @@ _flame_init (E_Module * m)
       f->conf->g = 40;
       f->conf->b = 0;
       f->conf->palette_type = GOLD_PALETTE;
-//      f->conf->palette_type = FIRE_PALETTE;
     }
   E_CONFIG_LIMIT (f->conf->height, 4, 4096);
   E_CONFIG_LIMIT (f->conf->hspread, 1, 100);
@@ -170,7 +169,6 @@ _flame_init (E_Module * m)
   E_CONFIG_LIMIT (f->conf->g, 0, 300);
   E_CONFIG_LIMIT (f->conf->b, 0, 300);
   E_CONFIG_LIMIT (f->conf->palette_type, GOLD_PALETTE, CUSTOM_PALETTE);
-//  E_CONFIG_LIMIT (f->conf->palette_type, FIRE_PALETTE, CUSTOM_PALETTE);
 
   managers = e_manager_list ();
   for (l = managers; l; l = l->next)
