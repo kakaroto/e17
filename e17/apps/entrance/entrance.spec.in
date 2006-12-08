@@ -45,8 +45,9 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/entrance_config.cfg
 %{_sysconfdir}/init.d/entrance
 %{_sysconfdir}/pam.d/entrance
-%{_bindir}/entrance
-%{_bindir}/entrance_edit
+%{_bindir}/entrance*
+%{_includedir}/*.h
+%{_libdir}/libentrance*
 %{_libdir}/entrance/entrance_login
 %{_libdir}/entrance/entrance_wrapper
 %{_sbindir}/entranced
