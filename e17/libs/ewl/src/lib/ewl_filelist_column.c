@@ -445,7 +445,7 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file,
 
 	list = EWL_FILELIST_COLUMN(fl);
 
-	icon = ewl_icon_new();
+	icon = ewl_icon_simple_new();
 	ewl_box_orientation_set(EWL_BOX(icon),
 			EWL_ORIENTATION_HORIZONTAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_VSHRINK);
