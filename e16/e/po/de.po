@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-26 16:02+0100\n"
+"POT-Creation-Date: 2006-12-03 19:52+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -827,7 +827,7 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/dialog.c:885 src/dialog.c:2169 src/dialog.c:2200 src/events.c:79
+#: src/dialog.c:886 src/dialog.c:2178 src/dialog.c:2209 src/events.c:79
 #: src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "OK"
@@ -837,7 +837,7 @@ msgstr "OK"
 # src/settings.c:1461 src/settings.c:1523 src/settings.c:1611
 # src/settings.c:2013 src/settings.c:3406 src/settings.c:3751
 # src/settings.c:4049 src/settings.c:4187 src/snaps.c:548
-#: src/dialog.c:890
+#: src/dialog.c:891
 msgid "Apply"
 msgstr "‹bernehmen"
 
@@ -847,12 +847,12 @@ msgstr "‹bernehmen"
 # src/settings.c:1524 src/settings.c:1612 src/settings.c:2014
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
-#: src/dialog.c:897 src/pager.c:995 config/strings.c:30 config/strings.c:166
+#: src/dialog.c:898 src/pager.c:995 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "Schlieﬂen"
 
 # src/dialog.c:304
-#: src/dialog.c:2200
+#: src/dialog.c:2209
 msgid "Attention !!!"
 msgstr "Achtung!"
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-11-26 16:02+0100\n"
+"POT-Creation-Date: 2006-12-03 19:52+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -666,20 +666,20 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:885 src/dialog.c:2169 src/dialog.c:2200 src/events.c:79
+#: src/dialog.c:886 src/dialog.c:2178 src/dialog.c:2209 src/events.c:79
 #: src/handlers.c:194 src/sound.c:308
 msgid "OK"
 msgstr "OK"
 
-#: src/dialog.c:890
+#: src/dialog.c:891
 msgid "Apply"
 msgstr "Pas toe"
 
-#: src/dialog.c:897 src/pager.c:995 config/strings.c:30 config/strings.c:166
+#: src/dialog.c:898 src/pager.c:995 config/strings.c:30 config/strings.c:166
 msgid "Close"
 msgstr "Sluit"
 
-#: src/dialog.c:2200
+#: src/dialog.c:2209
 msgid "Attention !!!"
 msgstr "Attentie !!!!"
 
