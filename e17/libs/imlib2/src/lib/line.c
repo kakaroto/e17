@@ -404,7 +404,7 @@ __imlib_Line_DrawToData(int x0, int y0, int x1, int y1, DATA32 color,
    y1 -= cly;
 
    /* shallow: x-parametric */
-   if ((dy < dx) || (dy < -dx))
+   if (abs(dy) < abs(dx))
      {
 	SETUP_LINE_SHALLOW
 
@@ -513,7 +513,7 @@ __imlib_Line_DrawToData_AA(int x0, int y0, int x1, int y1, DATA32 color,
    y1 -= cly;
 
    /* shallow: x-parametric */
-   if ((dy < dx) || (dy < -dx))
+   if (abs(dy) < abs(dx))
      {
 	SETUP_LINE_SHALLOW
 
