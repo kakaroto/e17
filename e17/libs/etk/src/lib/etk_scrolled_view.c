@@ -182,13 +182,13 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    scrolled_view->hpolicy = ETK_POLICY_AUTO;
    scrolled_view->vpolicy = ETK_POLICY_AUTO;
 
-   scrolled_view->hscrollbar = etk_hscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
+   scrolled_view->hscrollbar = etk_hscrollbar_new(0.0, 0.0, 0.0, 12.0, 50.0, 0.0);
    etk_widget_theme_parent_set(scrolled_view->hscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_parent_set(scrolled_view->hscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_internal_set(scrolled_view->hscrollbar, ETK_TRUE);
    etk_widget_show(scrolled_view->hscrollbar);
    
-   scrolled_view->vscrollbar = etk_vscrollbar_new(0.0, 0.0, 0.0, 6.0, 40.0, 0.0);
+   scrolled_view->vscrollbar = etk_vscrollbar_new(0.0, 0.0, 0.0, 12.0, 50.0, 0.0);
    etk_widget_theme_parent_set(scrolled_view->vscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_parent_set(scrolled_view->vscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_internal_set(scrolled_view->vscrollbar, ETK_TRUE);

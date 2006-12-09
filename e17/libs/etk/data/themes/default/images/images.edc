@@ -18,13 +18,6 @@ images {
    image: "entry.png" COMP;
    image: "text_view_bg.png" COMP;
    image: "text_view_over.png" COMP;
-   image: "dialog_logo.png" COMP;
-   image: "hhandle.png" COMP;
-   image: "hhandle_down.png" COMP;
-   image: "hhandle_thumb.png" COMP;
-   image: "vhandle.png" COMP;
-   image: "vhandle_down.png" COMP;
-   image: "vhandle_thumb.png" COMP;
    image: "hslider_bar.png" COMP;
    image: "vslider_bar.png" COMP;
    image: "hscrollbar_trough.png" COMP;
@@ -45,6 +38,9 @@ images {
    image: "scrollbar_vdrag2.png" COMP;
    image: "scrollbar_hdrag_thumb.png" COMP;
    image: "scrollbar_vdrag_thumb.png" COMP;
+   image: "slider_button1.png" COMP;
+   image: "slider_button2.png" COMP;
+   image: "slider_button_glow.png" COMP;
    image: "spinner_bg.png" COMP;
    image: "spinner_button_up1.png" COMP;
    image: "spinner_button_up2.png" COMP;   

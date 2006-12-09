@@ -2247,14 +2247,6 @@ static void _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event,
       etk_tree_row_expand(tree->last_selected);
    else if (strcmp(event->keyname, "Left") == 0 && tree->last_selected && tree->last_selected->selected)
       etk_tree_row_collapse(tree->last_selected);
-   else if (strcmp(event->keyname, "Home") == 0)
-      etk_range_value_set(vscrollbar_range, vscrollbar_range->lower);
-   else if (strcmp(event->keyname, "End") == 0)
-      etk_range_value_set(vscrollbar_range, vscrollbar_range->upper);
-   else if (strcmp(event->keyname, "Next") == 0)
-      etk_range_value_set(vscrollbar_range, vscrollbar_range->value + vscrollbar_range->page_increment);
-   else if (strcmp(event->keyname, "Prior") == 0)
-      etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->page_increment);
    else if (strcmp(event->keyname, "space") == 0)
    {
       if (tree->last_selected)

@@ -260,7 +260,7 @@ void etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_t
             toplevel->pointer_set(toplevel, *current_pointer_ptr);
       }
       else
-         toplevel->pointer_set(toplevel, ETK_POINTER_DEFAULT);
+         toplevel->pointer_set(toplevel, ETK_POINTER_NONE);
    }
 }
 

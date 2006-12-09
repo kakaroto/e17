@@ -22,6 +22,7 @@
 /** @brief The different types of mouse pointer */
 typedef enum Etk_Pointer_Type
 {
+   ETK_POINTER_NONE,
    ETK_POINTER_DEFAULT,
    ETK_POINTER_MOVE,
    ETK_POINTER_H_DOUBLE_ARROW,

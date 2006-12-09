@@ -398,10 +398,12 @@ static Etk_Bool _window_skip_pager_hint_get(Etk_Window *window)
 static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type)
 {
    int x_pointer_type = ECORE_X_CURSOR_LEFT_PTR;
+   Ecore_Evas *ecore_evas;
    Ecore_X_Cursor cursor;
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;
+   ecore_evas = ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas;
 
    switch (pointer_type)
    {
@@ -453,8 +455,10 @@ static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_typ
          break;
    }
    
-   if ((cursor = ecore_x_cursor_shape_get(x_pointer_type)))
-      ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas), cursor);
+   if (pointer_type == ETK_POINTER_NONE)
+      ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(ecore_evas), 0);
+   else if ((cursor = ecore_x_cursor_shape_get(x_pointer_type)))
+      ecore_x_window_cursor_set(ecore_evas_software_x11_window_get(ecore_evas), cursor);
    else
       ETK_WARNING("Unable to find the X cursor \"%d\"", pointer_type);
 }

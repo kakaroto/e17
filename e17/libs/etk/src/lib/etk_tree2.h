@@ -5,6 +5,7 @@
 #include "etk_widget.h"
 #include <stdarg.h>
 #include <Evas.h>
+#include <Ecore_Job.h>
 #include "etk_types.h"
 
 /**
@@ -88,13 +89,12 @@ struct Etk_Tree2_Row
    int num_visible_children;
    
    void **cells_data;
-   //~ void *row_objects;
-   
    void *data;
    void (*data_free_cb)(void *data);
    
-   Etk_Bool unfolded;
-   Etk_Bool selected;
+   unsigned int delete_me : 1;
+   unsigned int unfolded : 1;
+   unsigned int selected : 1;
 };
 
 /**
@@ -121,14 +121,17 @@ struct Etk_Tree2
    Evas_Object *headers_clip;
    Evas_Object *grid_clip;
    
-   Etk_Tree2_Row root;
    int total_rows;
+   Etk_Tree2_Row root;
+   Etk_Tree2_Row *last_selected_row;
+   Evas_List *purge_pool;
    Evas_List *row_objects;
-   int row_height;
    
+   int rows_height;
    int scroll_x;
    int scroll_y;
    
+   Ecore_Job *purge_job;
    Etk_Color separator_color;
    Etk_Bool tree_contains_headers;
    Etk_Tree2_Mode mode;
@@ -182,13 +185,17 @@ Etk_Tree2_Row *etk_tree2_row_append(Etk_Tree2 *tree, Etk_Tree2_Row *parent, ...)
 Etk_Tree2_Row *etk_tree2_row_insert(Etk_Tree2 *tree, Etk_Tree2_Row *parent, Etk_Tree2_Row *after, ...);
 Etk_Tree2_Row *etk_tree2_row_insert_valist(Etk_Tree2 *tree, Etk_Tree2_Row *parent, Etk_Tree2_Row *after, va_list args);
 /* TODO: Etk_Tree2_Row *etk_tree2_row_insert_sorted(Etk_Tree2 *tree, Etk_Tree2_Row *parent, ...); */
-void           etk_tree2_row_del(Etk_Tree2_Row *row);
+void           etk_tree2_row_delete(Etk_Tree2_Row *row);
 void           etk_tree2_clear(Etk_Tree2 *tree);
 
 void etk_tree2_row_fields_set(Etk_Tree2_Row *row, ...);
 void etk_tree2_row_fields_set_valist(Etk_Tree2_Row *row, va_list args);
 void etk_tree2_row_fields_get(Etk_Tree2_Row *row, ...);
 void etk_tree2_row_fields_get_valist(Etk_Tree2_Row *row, va_list args);
+
+void  etk_tree2_row_data_set(Etk_Tree2_Row *row, void *data);
+void  etk_tree2_row_data_set_full(Etk_Tree2_Row *row, void *data, void (*free_cb)(void *data));
+void *etk_tree2_row_data_get(Etk_Tree2_Row *row);
 
 void     etk_tree2_select_all(Etk_Tree2 *tree);
 void     etk_tree2_unselect_all(Etk_Tree2 *tree);
@@ -199,6 +206,14 @@ Etk_Bool etk_tree2_row_is_selected(Etk_Tree2_Row *row);
 void     etk_tree2_row_fold(Etk_Tree2_Row *row);
 void     etk_tree2_row_unfold(Etk_Tree2_Row *row);
 Etk_Bool etk_tree2_row_is_folded(Etk_Tree2_Row *row);
+
+Etk_Tree2_Row *etk_tree2_first_row_get(Etk_Tree2 *tree);
+Etk_Tree2_Row *etk_tree2_last_row_get(Etk_Tree2 *tree);
+Etk_Tree2_Row *etk_tree2_row_prev_get(Etk_Tree2_Row *row);
+Etk_Tree2_Row *etk_tree2_row_next_get(Etk_Tree2_Row *row);
+Etk_Tree2_Row *etk_tree2_row_parent_get(Etk_Tree2_Row *row);
+Etk_Tree2_Row *etk_tree2_row_first_child_get(Etk_Tree2_Row *row);
+Etk_Tree2_Row *etk_tree2_row_last_child_get(Etk_Tree2_Row *row);
 
 /** @} */
 

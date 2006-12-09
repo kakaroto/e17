@@ -62,7 +62,7 @@ enum Etk_Tree2_Property_Id
    ETK_TREE2_MODE_PROPERTY,
    ETK_TREE2_MULTIPLE_SELECT_PROPERTY,
    ETK_TREE2_HEADERS_VISIBLE_PROPERTY,
-   ETK_TREE2_ROW_HEIGHT_PROPERTY
+   ETK_TREE2_ROWS_HEIGHT_PROPERTY
 };
 
 enum Etk_Tree2_Col_Signal_Id
@@ -106,6 +106,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
 static void _etk_tree2_realize_cb(Etk_Object *object, void *data);
 static void _etk_tree2_focus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree2_unfocus_cb(Etk_Object *object, void *event, void *data);
+static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_tree2_scroll_content_realize_cb(Etk_Object *object, void *data);
 static void _etk_tree2_scroll_content_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_tree2_grid_realize_cb(Etk_Object *object, void *data);
@@ -121,11 +122,18 @@ static void _etk_tree2_row_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, 
 static void _etk_tree2_row_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_tree2_row_expander_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
+static void _etk_tree2_purge_job(void *data);
+static void _etk_tree2_purge(Etk_Tree2 *tree);
+static void _etk_tree2_row_move_to_purge_pool(Etk_Tree2_Row *row);
+
+/* TODO: static void _etk_tree2_sort(Etk_Tree2 *tree); */
+
 static void _etk_tree2_col_realize(Etk_Tree2 *tree, int col_nth);
 static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2_Col *col, int x);
 
-static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list args, Etk_Bool emit_signal);
+static Etk_Tree2_Row *_etk_tree2_row_next_get_full(Etk_Tree2_Row *row, Etk_Bool only_visible);
 static Etk_Tree2_Row *_etk_tree2_row_next_to_render_get(Etk_Tree2_Row *row, int *depth);
+static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list args, Etk_Bool emit_signal);
 static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree);
 static void _etk_tree2_row_object_destroy(Etk_Tree2 *tree, Etk_Tree2_Row_Object *row_object);
 
@@ -134,6 +142,8 @@ static void _etk_tree2_row_select(Etk_Tree2 *tree, Etk_Tree2_Row *row, Etk_Modif
 
 static Etk_Signal *_etk_tree2_signals[ETK_TREE2_NUM_SIGNALS];
 static Etk_Signal *_etk_tree2_col_signals[ETK_TREE2_COL_NUM_SIGNALS];
+
+/* TODO: better doc of row_next_get()... (with a note about deleted rows...) */
 
 
 /**************************
@@ -183,7 +193,7 @@ Etk_Type *etk_tree2_type_get()
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(tree2_type, "headers_visible", ETK_TREE2_HEADERS_VISIBLE_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(tree2_type, "row_height", ETK_TREE2_ROW_HEIGHT_PROPERTY,
+      etk_type_property_add(tree2_type, "rows_height", ETK_TREE2_ROWS_HEIGHT_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(DEFAULT_ROW_HEIGHT));
       
       tree2_type->property_set = _etk_tree2_property_set;
@@ -283,9 +293,8 @@ void etk_tree2_multiple_select_set(Etk_Tree2 *tree, Etk_Bool multiple_select)
    if (!tree || tree->multiple_select == multiple_select)
       return;
 
-   /* TODO: */
-   /*if (!multiple_select)
-      etk_tree2_unselect_all(tree);*/
+   if (!multiple_select)
+      etk_tree2_unselect_all(tree);
    tree->multiple_select = multiple_select;
    etk_object_notify(ETK_OBJECT(tree), "multiple_select");
 }
@@ -320,7 +329,7 @@ void etk_tree2_headers_visible_set(Etk_Tree2 *tree, Etk_Bool headers_visible)
 /**
  * @brief Gets whether or not the column-headers are visible
  * @param tree a tree
- * @return Returns ETK_TRUE if the column headers are visible, ETK_FALSE otherwise
+ * @return Returns ETK_TRUE if the column-headers are visible, ETK_FALSE otherwise
  */
 Etk_Bool etk_tree2_headers_visible_get(Etk_Tree2 *tree)
 {
@@ -332,18 +341,18 @@ Etk_Bool etk_tree2_headers_visible_get(Etk_Tree2 *tree)
 /**
  * @brief Sets the height of the rows of the tree
  * @param tree a tree
- * @param row_height the row height to set. The minimum value is 12
+ * @param rows_height the rows height to set. The minimum value is 12
  */
-void etk_tree2_rows_height_set(Etk_Tree2 *tree, int row_height)
+void etk_tree2_rows_height_set(Etk_Tree2 *tree, int rows_height)
 {
    if (!tree)
       return;
    
-   row_height = ETK_MAX(row_height, MIN_ROW_HEIGHT);
-   if (tree->row_height != row_height)
+   rows_height = ETK_MAX(rows_height, MIN_ROW_HEIGHT);
+   if (tree->rows_height != rows_height)
    {
-      tree->row_height = row_height;
-      etk_object_notify(ETK_OBJECT(tree), "row_height");
+      tree->rows_height = rows_height;
+      etk_object_notify(ETK_OBJECT(tree), "rows_height");
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(tree));
    }
@@ -358,7 +367,7 @@ int etk_tree2_rows_height_get(Etk_Tree2 *tree)
 {
    if (!tree)
       return DEFAULT_ROW_HEIGHT;
-   return tree->row_height;
+   return tree->rows_height;
 }
 
 /**
@@ -854,10 +863,11 @@ Etk_Tree2_Row *etk_tree2_row_insert_valist(Etk_Tree2 *tree, Etk_Tree2_Row *paren
       parent = after->parent;
    if (!parent)
       parent = &tree->root;
-
+   
    new_row = malloc(sizeof(Etk_Tree2_Row));
    new_row->data = NULL;
    new_row->data_free_cb = NULL;
+   new_row->delete_me = ETK_FALSE;
    new_row->selected = ETK_FALSE;
    new_row->unfolded = ETK_FALSE;
    
@@ -910,21 +920,46 @@ Etk_Tree2_Row *etk_tree2_row_insert_valist(Etk_Tree2 *tree, Etk_Tree2_Row *paren
    if (!tree->frozen)
    {
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->scroll_content), NULL);
-      etk_widget_redraw_queue(ETK_WIDGET(tree->grid));
+      etk_widget_redraw_queue(ETK_WIDGET(tree));
    }
    return new_row;
 }
 
-/* TODOC */
-void etk_tree2_row_del(Etk_Tree2_Row *row)
+/**
+ * @brief Deletes an existing row and all its children. Note that the row will just be marked as deleted.
+ * It will be effectively deleted only during the next iteration of Ecore's main loop. Thus, you can still manipulate
+ * safely a row marked as deleted.
+ * @param row the row to delete
+ */
+void etk_tree2_row_delete(Etk_Tree2_Row *row)
 {
-   /* TODO: */
+   if (!row || row->delete_me)
+      return;
+   
+   _etk_tree2_row_move_to_purge_pool(row);
+   
+   if (!row->tree->frozen)
+   {
+      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->scroll_content), NULL);
+      etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+   }
 }
 
-/* TODOC */
+/**
+ * @brief Deletes all the rows of the tree. Note that the rows will just be marked as deleted. They will be effectively
+ * deleted during the next iteration of Ecore's main loop. Thus, you can still manipulate safely the rows immediately
+ * after a clear.
+ */
 void etk_tree2_clear(Etk_Tree2 *tree)
 {
-   /* TODO: */
+   if (!tree)
+      return;
+   
+   while (tree->root.first_child)
+   _etk_tree2_row_move_to_purge_pool(tree->root.first_child);
+   
+   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->scroll_content), NULL);
+   etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
 /**
@@ -1008,6 +1043,48 @@ void etk_tree2_row_fields_get_valist(Etk_Tree2_Row *row, va_list args)
 }
 
 /**
+ * @brief Sets the user data associated to the row. The data could be retrieved later with etk_tree2_row_data_get()
+ * @param row a row of the tree
+ * @param data the data to associate to the row
+ * @note This is equivalent to etk_tree2_row_data_set_full(row, data, NULL);
+ */
+void  etk_tree2_row_data_set(Etk_Tree2_Row *row, void *data)
+{
+   etk_tree2_row_data_set_full(row, data, NULL);
+}
+
+/**
+ * @brief Sets the user data associated to the row. The data could be retrieved later with etk_tree2_row_data_get().
+ * You can also set a function to call to free automatically the data when the row is deleted
+ * @param row a row of the tree
+ * @param data the data to associate to the row
+ * @param free_cb a function to call to free the data automatically when the row is deleted
+ */
+void  etk_tree2_row_data_set_full(Etk_Tree2_Row *row, void *data, void (*free_cb)(void *data))
+{
+   if (!row)
+      return;
+   
+   if (row->data && row->data_free_cb)
+      row->data_free_cb(row->data);
+   
+   row->data = data;
+   row->data_free_cb = free_cb;
+}
+
+/**
+ * @brief Gets the user data associated to the row (previously set with etk_tree2_row_data_set()).
+ * @param row a row of the tree
+ * @return Returns the user data associated to the row
+ */
+void *etk_tree2_row_data_get(Etk_Tree2_Row *row)
+{
+   if (!row)
+      return NULL;
+   return row->data;
+}
+
+/**
  * @brief Selects all the rows of the tree
  * @param tree a tree
  * @note When you call etk_tree2_select_all(), for performance reasons, the signal "row_selected" is not emitted for
@@ -1020,27 +1097,11 @@ void etk_tree2_select_all(Etk_Tree2 *tree)
    if (!tree)
       return;
    
-   for (row = tree->root.first_child; row; )
-   {
+   for (row = tree->root.first_child; row; row = _etk_tree2_row_next_get_full(row, ETK_FALSE))
       row->selected = ETK_TRUE;
-      
-      if (row->first_child)
-         row = row->first_child;
-      else
-      {
-         for (row = row; row; row = row->parent)
-         {
-            if (row->next)
-            {
-               row = row->next;
-               break;
-            }
-         }
-      }
-   }
    
-   etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ALL_SELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL);
-   etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+   etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ALL_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL);
+   etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
 /**
@@ -1056,27 +1117,11 @@ void etk_tree2_unselect_all(Etk_Tree2 *tree)
    if (!tree)
       return;
    
-   for (row = tree->root.first_child; row; )
-   {
+   for (row = tree->root.first_child; row; row = _etk_tree2_row_next_get_full(row, ETK_FALSE))
       row->selected = ETK_FALSE;
-      
-      if (row->first_child)
-         row = row->first_child;
-      else
-      {
-         for (row = row; row; row = row->parent)
-         {
-            if (row->next)
-            {
-               row = row->next;
-               break;
-            }
-         }
-      }
-   }
    
-   etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ALL_SELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL);
-   etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+   etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ALL_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL);
+   etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
 /**
@@ -1087,11 +1132,7 @@ void etk_tree2_row_select(Etk_Tree2_Row *row)
 {
    if (!row || row->selected)
       return;
-   
-   row->selected = ETK_TRUE;
-   etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_SELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
-   if (!row->tree->frozen)
-      etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+   _etk_tree2_row_select(row->tree, row, ETK_MODIFIER_NONE);
 }
 
 /**
@@ -1182,6 +1223,100 @@ Etk_Bool etk_tree2_row_is_folded(Etk_Tree2_Row *row)
    return !row->unfolded;
 }
 
+/**
+ * @brief Gets the first row of the tree
+ * @param tree a tree
+ * @return Returns the first row of the tree, or NULL if the tree is empty
+ */
+Etk_Tree2_Row *etk_tree2_first_row_get(Etk_Tree2 *tree)
+{
+   if (!tree)
+      return NULL;
+   return tree->root.first_child;
+}
+
+/**
+ * @brief Gets the last row of the tree
+ * @param tree a tree
+ * @return Returns the last row of the tree, or NULL if the tree is empty
+ */
+Etk_Tree2_Row *etk_tree2_last_row_get(Etk_Tree2 *tree)
+{
+   if (!tree)
+      return NULL;
+   return tree->root.last_child;
+}
+
+/**
+ * @brief Gets the previous row before the specified row
+ * @param row a row
+ * @return Returns the previous row before the specified row, or NULL if the row is the first row of its parent
+ * @note This function does not return the previous visible row, but only the previous row that is on the same
+ * level as the specified row. So if some rows of the tree have children, you'll have to use etk_tree2_row_parent_get(),
+ * etk_tree2_row_first_child_get(), ... if you want to walk through all the rows of the tree. See the examples at
+ * the top of this page.
+ */
+Etk_Tree2_Row *etk_tree2_row_prev_get(Etk_Tree2_Row *row)
+{
+   if (!row)
+      return NULL;
+   return row->prev;
+}
+
+/**
+ * @brief Gets the next row after the specified row
+ * @param row a row
+ * @return Returns the next row after the specified row, or NULL if the row is the last row of its parent
+ * @note This function does not return the next visible row, but only the next row that is on the same
+ * level as the specified row. So if some rows of the tree have children, you'll have to use etk_tree2_row_parent_get(),
+ * etk_tree2_row_first_child_get(), ... if you want to walk through all the rows of the tree. See the examples at
+ * the top of this page.
+ */
+Etk_Tree2_Row *etk_tree2_row_next_get(Etk_Tree2_Row *row)
+{
+   if (!row)
+      return NULL;
+   return row->next;
+}
+
+/**
+ * @brief Gets the parent row of the specified row
+ * @param row a row
+ * @return Returns the parent row of the specified row, or NULL if the row is at the tree's root
+ */
+Etk_Tree2_Row *etk_tree2_row_parent_get(Etk_Tree2_Row *row)
+{
+   if (!row)
+      return NULL;
+   if (!row->parent || row->parent == &row->tree->root)
+      return NULL;
+   return row->parent;
+}
+
+/**
+ * @brief Gets the first child of the specified row
+ * @param row a row
+ * @return Returns the first child of the row
+ */
+Etk_Tree2_Row *etk_tree2_row_first_child_get(Etk_Tree2_Row *row)
+{
+   if (!row)
+      return NULL;
+   return row->first_child;
+}
+
+/**
+ * @brief Gets the last child of the specified row
+ * @param row a row
+ * @return Returns the last child of the row
+ */
+Etk_Tree2_Row *etk_tree2_row_last_child_get(Etk_Tree2_Row *row)
+{
+   if (!row)
+      return NULL;
+   return row->last_child;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -1235,6 +1370,7 @@ static void _etk_tree2_constructor(Etk_Tree2 *tree)
    tree->grid_clip = NULL;
    
    tree->root.tree = tree;
+   tree->root.delete_me = ETK_FALSE;
    tree->root.selected = ETK_FALSE;
    tree->root.unfolded = ETK_TRUE;
    tree->root.data = NULL;
@@ -1250,19 +1386,21 @@ static void _etk_tree2_constructor(Etk_Tree2 *tree)
    tree->root.num_visible_children = 0;
    
    tree->total_rows = 0;
+   tree->last_selected_row = NULL;
+   tree->purge_pool = NULL;
    tree->row_objects = NULL;
-   tree->row_height = DEFAULT_ROW_HEIGHT;
    
+   tree->rows_height = DEFAULT_ROW_HEIGHT;
    tree->scroll_x = 0;
    tree->scroll_y = 0;
    
+   tree->purge_job = NULL;
    tree->mode = ETK_TREE2_MODE_LIST;
    tree->multiple_select = ETK_FALSE;
    tree->tree_contains_headers = ETK_TRUE;
    tree->col_resize_pointer_set = ETK_FALSE;
    tree->frozen = ETK_FALSE;
    tree->built = ETK_FALSE;
-   
    
    ETK_WIDGET(tree)->size_request = _etk_tree2_size_request;
    ETK_WIDGET(tree)->size_allocate = _etk_tree2_size_allocate;
@@ -1271,15 +1409,24 @@ static void _etk_tree2_constructor(Etk_Tree2 *tree)
    etk_signal_connect("unrealize", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_unrealize_cb), NULL);
    etk_signal_connect("focus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_unfocus_cb), NULL);
+   etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_key_down_cb), NULL);
 }
+
+/* TODO: last selected when deleted... */
 
 /* Destroys the tree */
 static void _etk_tree2_destructor(Etk_Tree2 *tree)
 {
    if (!tree)
       return;
-   
+
+   /* TODO: more efficient cleaning?? */
    etk_tree2_clear(tree);
+   _etk_tree2_purge(tree);
+   
+   if (tree->purge_job)
+      ecore_job_del(tree->purge_job);
+
    free(tree->columns);
 }
 
@@ -1374,7 +1521,7 @@ static void _etk_tree2_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       {
          for (i = 0; i < tree->num_cols; i++)
          {
-            etk_widget_size_request(tree->columns[i]->header, &header_size);
+            etk_widget_size_request_full(tree->columns[i]->header, &header_size, ETK_FALSE);
             if (header_size.h > max_header_height)
                max_header_height = header_size.h;
          }
@@ -1642,7 +1789,7 @@ static void _etk_tree2_scroll_content_scroll_size_get(Etk_Widget *widget, Etk_Si
    scroll_size->w = 0;
    for (i = 0; i < tree->num_cols; i++)
       scroll_size->w += tree->columns[i]->width;
-   scroll_size->h = tree->root.num_visible_children * tree->row_height;
+   scroll_size->h = tree->root.num_visible_children * tree->rows_height;
 }
 
 /**************************
@@ -1789,7 +1936,14 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
    if (!tree->built)
       return;
    
-   /* Save the rows currently rendered so we can emit the "row_shown/hidden" signals */
+   /* Remove the rows marked as "deleted" */
+   if (tree->purge_job)
+   {
+      _etk_tree2_purge(tree);
+      tree->purge_job = NULL;
+   }
+   
+   /* Save the rows currently rendered so we could emit the "row_shown/hidden" signals later */
    prev_visible_rows = NULL;
    new_visible_rows = NULL;
    for (l = tree->row_objects; l; l = l->next)
@@ -1806,7 +1960,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
       int num_visible_rows;
       int current_num_rows;
       
-      num_visible_rows = (geometry.h / tree->row_height) + 2;
+      num_visible_rows = (geometry.h / tree->rows_height) + 2;
       current_num_rows = evas_list_count(tree->row_objects);
       
       if (current_num_rows < num_visible_rows)
@@ -1848,15 +2002,11 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
       int depth;
       
       depth = 0;
-      row_id = tree->scroll_y / tree->row_height;
-      row_y = -(tree->scroll_y % tree->row_height);
+      row_id = tree->scroll_y / tree->rows_height;
+      row_y = -(tree->scroll_y % tree->rows_height);
       for (row = tree->root.first_child, i = 0; i < row_id && row; i++)
          row = _etk_tree2_row_next_to_render_get(row, &depth);
       show_expanders = (tree->total_rows > tree->root.num_children && first_visible_col);
-      /*if (tree->total_rows > tree->root.num_children && first_visible_col)
-         first_col_xoffset = 18 + CELL_HMARGINS;
-      else
-         first_col_xoffset = 0;*/
       
       for (l = tree->row_objects; l; l = l->next)
       {
@@ -1866,7 +2016,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
          {
             /* If there is still a row to render, we render the content of the row */
             evas_object_move(row_object->background, geometry.x, geometry.y + row_y);
-            evas_object_resize(row_object->background, geometry.w, tree->row_height);
+            evas_object_resize(row_object->background, geometry.w, tree->rows_height);
             evas_object_show(row_object->background);
             
             edje_object_signal_emit(row_object->background,
@@ -1899,7 +2049,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                   cell_geometry.x = geometry.x + col->xoffset + CELL_HMARGINS;
                   cell_geometry.y = geometry.y + row_y + CELL_VMARGINS;
                   cell_geometry.w = col->width - (2 * CELL_HMARGINS);
-                  cell_geometry.h = tree->row_height - (2 * CELL_VMARGINS);
+                  cell_geometry.h = tree->rows_height - (2 * CELL_VMARGINS);
                   
                   /* Render the expander of the row */
                   if (col == first_visible_col && show_expanders)
@@ -1942,7 +2092,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
          }
          
          row = _etk_tree2_row_next_to_render_get(row, &depth);
-         row_y += tree->row_height;
+         row_y += tree->rows_height;
          row_id++;
       }
    }
@@ -2059,6 +2209,28 @@ static void _etk_tree2_unfocus_cb(Etk_Object *object, void *event, void *data)
    
    etk_widget_theme_signal_emit(tree->scrolled_view, "etk,state,unfocused", ETK_FALSE);
    etk_widget_theme_signal_emit(tree->grid, "etk,state,unfocused", ETK_FALSE);
+}
+
+/* Called when a key is pressed while the tree is focused */
+static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+{
+   Etk_Tree2 *tree;
+   
+   if (!(tree = ETK_TREE2(object)))
+      return;
+   
+   if (event->modifiers == ETK_MODIFIER_NONE)
+   {
+   }
+   else if (event->modifiers & ETK_MODIFIER_CTRL)
+   {
+      /* CTRL + A: Select all the rows */
+      if (strcmp(event->keyname, "a") == 0)
+      {
+         etk_tree2_select_all(tree);
+         etk_signal_stop();
+      }
+   }
 }
 
 /**************************
@@ -2255,20 +2427,30 @@ static void _etk_tree2_row_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, 
 {
    Etk_Tree2_Row_Object *row_object;
    Etk_Event_Mouse_Down event;
-   //Evas_Coord x, y, w, h;
    
    if (!(row_object = data) || !row_object->row)
       return;
    
    etk_event_mouse_down_wrap(ETK_WIDGET(row_object->row->tree), event_info, &event);
    
-   /* Selects the corresponding row(s) */
-   _etk_tree2_row_select(row_object->row->tree, row_object->row, event.modifiers);
+   /* We do not select a row on the "key-down" event if the row is already selected
+    * to allow the user to drag and drop several rows. The selection will be done on "key-up" */
+   if (!row_object->row->selected || event.modifiers != ETK_MODIFIER_NONE)
+      _etk_tree2_row_select(row_object->row->tree, row_object->row, event.modifiers);
 }
 
 /* Called when the background of a row is released by the mouse */
 static void _etk_tree2_row_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+   Etk_Tree2_Row_Object *row_object;
+   Etk_Event_Mouse_Up event;
+   
+   if (!(row_object = data) || !row_object->row)
+      return;
+   
+   etk_event_mouse_up_wrap(ETK_WIDGET(row_object->row->tree), event_info, &event);
+   if (row_object->row->selected && event.modifiers == ETK_MODIFIER_NONE)
+      _etk_tree2_row_select(row_object->row->tree, row_object->row, ETK_MODIFIER_NONE);
 }
 
 /* Called when the expander of a row is released by the mouse */
@@ -2296,6 +2478,133 @@ static void _etk_tree2_row_expander_mouse_up_cb(void *data, Evas *e, Evas_Object
  * Private functions
  *
  **************************/
+
+/* A job called when rows need to be deleted */
+static void _etk_tree2_purge_job(void *data)
+{
+   Etk_Tree2 *tree;
+   
+   if (!(tree = ETK_TREE2(data)))
+      return;
+   
+   _etk_tree2_purge(tree);
+   tree->purge_job = NULL;
+}
+
+/* Deletes effectively all the rows marked as deleted */
+static void _etk_tree2_purge(Etk_Tree2 *tree)
+{
+   Evas_List *l;
+   Etk_Tree2_Row *row, *r, *next;
+   int i;
+   
+   if (!tree)
+      return;
+   
+   /* First we dissociate the row objects from the rows that will be deleted */
+   for (l = tree->row_objects; l; l = l->next)
+   {
+      Etk_Tree2_Row_Object *row_object;
+      
+      row_object = l->data;
+      if (row_object->row && row_object->row->delete_me)
+      {
+         etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_HIDDEN_SIGNAL], ETK_OBJECT(tree), NULL, row_object->row);
+         row_object->row = NULL;
+      }
+   }
+   
+   /* Then we delete all the rows of the purge pool */
+   while (tree->purge_pool)
+   {
+      row = tree->purge_pool->data;
+      row->next = NULL;
+      for (r = row; r; r = next)
+      {
+         /* Get the next row to free after this one */
+         if (r->first_child)
+         {
+            r->last_child->next = r->next;
+            r->next = r->first_child;
+         }
+         next = r->next;
+         
+         /* Free the row */
+         if (r->cells_data)
+         {
+            for (i = 0; i < tree->num_cols; i++)
+            {
+               if (tree->columns[i]->model->cell_data_free)
+                  tree->columns[i]->model->cell_data_free(tree->columns[i]->model, r->cells_data[i]);
+               free(r->cells_data[i]);
+            }
+            free(r->cells_data);
+         }
+         
+         if (r->data && r->data_free_cb)
+            r->data_free_cb(r->data);
+         
+         free(r);
+      }
+      tree->purge_pool = evas_list_remove_list(tree->purge_pool, tree->purge_pool);
+   }
+}
+
+/* Moves a row of the tree to the list of rows to delete during the next iteration */
+static void _etk_tree2_row_move_to_purge_pool(Etk_Tree2_Row *row)
+{
+   Etk_Tree2 *tree;
+   Etk_Tree2_Row *r;
+   
+   if (!row || row->delete_me)
+      return;
+   
+   tree = row->tree;
+   
+   /* Mark the row and all its children as deleted */
+   row->delete_me = ETK_TRUE;
+   tree->total_rows--;
+   for (r = row->first_child; r; )
+   {
+      r->delete_me = ETK_TRUE;
+      tree->total_rows--;
+      
+      if (r->first_child)
+         r = r->first_child;
+      else
+      {
+         while (r && !r->next)
+         {
+            if (r->parent == row)
+               r = NULL;
+            else
+               r = r->parent;
+         }
+         r = r ? r->next : NULL;
+      }
+   }
+   
+   /* Move the row to the purge_pool */
+   if (row->prev)
+      row->prev->next = row->next;
+   if (row->next)
+      row->next->prev = row->prev;
+   if (row->parent)
+   {
+      if (row->parent->first_child == row)
+         row->parent->first_child = row->next;
+      if (row->parent->last_child == row)
+         row->parent->last_child = row->prev;
+      row->parent->num_children--;
+   }
+   for (r = row->parent; r && r->unfolded; r = r->parent)
+      r->num_visible_children -= row->num_visible_children + 1;
+   
+   tree->purge_pool = evas_list_append(tree->purge_pool, row);
+   
+   if (!tree->purge_job)
+      tree->purge_job = ecore_job_add(_etk_tree2_purge_job, tree);
+}
 
 /* Creates the Evas objects of the corresponding column */
 static void _etk_tree2_col_realize(Etk_Tree2 *tree, int col_nth)
@@ -2347,29 +2656,21 @@ static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2_Col *col, int x)
    return NULL;
 }
 
-/* Sets the fields of a row */
-static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list args, Etk_Bool emit_signal)
+/* Gets the next row after the specified row */
+/* TODO: make it public?? */
+static Etk_Tree2_Row *_etk_tree2_row_next_get_full(Etk_Tree2_Row *row, Etk_Bool only_visible)
 {
-   Etk_Tree2_Col *col;
-   va_list args2;
-   
    if (!row)
-      return;
+      return NULL;
    
-   va_copy(args2, args);
-   while ((col = va_arg(args2, Etk_Tree2_Col *)))
+   if (row->first_child && (row->unfolded || !only_visible))
+      return row->first_child;
+   else
    {
-      if (col->model->cell_data_set)
-      {
-         col->model->cell_data_set(col->model, row->cells_data[col->id], &args2);
-         if (emit_signal)
-            etk_signal_emit(_etk_tree2_col_signals[ETK_TREE2_COL_CELL_VALUE_CHANGED], ETK_OBJECT(col), NULL, row);
-      }
+      while (row && !row->next)
+         row = row->parent;
+      return row ? row->next : NULL;
    }
-   va_end(args2);
-   
-   if (!row->tree->frozen)
-      etk_widget_redraw_queue(ETK_WIDGET(row->tree));
 }
 
 /* Gets the next row to render */
@@ -2394,6 +2695,31 @@ static Etk_Tree2_Row *_etk_tree2_row_next_to_render_get(Etk_Tree2_Row *row, int 
       }
       return row ? row->next : NULL;
    }
+}
+
+/* Sets the fields of a row */
+static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list args, Etk_Bool emit_signal)
+{
+   Etk_Tree2_Col *col;
+   va_list args2;
+   
+   if (!row)
+      return;
+   
+   va_copy(args2, args);
+   while ((col = va_arg(args2, Etk_Tree2_Col *)))
+   {
+      if (col->model->cell_data_set)
+      {
+         col->model->cell_data_set(col->model, row->cells_data[col->id], &args2);
+         if (emit_signal)
+            etk_signal_emit(_etk_tree2_col_signals[ETK_TREE2_COL_CELL_VALUE_CHANGED], ETK_OBJECT(col), NULL, row);
+      }
+   }
+   va_end(args2);
+   
+   if (!row->tree->frozen)
+      etk_widget_redraw_queue(ETK_WIDGET(row->tree));
 }
 
 /* Creates a new row object and its subobjects */
@@ -2484,10 +2810,77 @@ static void _etk_tree2_row_select(Etk_Tree2 *tree, Etk_Tree2_Row *row, Etk_Modif
    if (!tree || !row)
       return;
    
-   if (!(modifiers & ETK_MODIFIER_CTRL) || !row->selected)
-      etk_tree2_row_select(row);
+   if (!tree->multiple_select)
+   {
+      if (row->selected)
+      {
+         /* Unselect the row */
+         if (modifiers & ETK_MODIFIER_CTRL)
+            etk_tree2_row_unselect(row);
+      }
+      else
+      {
+         /* Unselect the selected row and select only the given row */
+         if (tree->last_selected_row && tree->last_selected_row->selected)
+            etk_tree2_row_unselect(tree->last_selected_row);
+         else
+            etk_tree2_unselect_all(tree);
+         
+         row->selected = ETK_TRUE;
+         row->tree->last_selected_row = row;
+         etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_SELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
+      }
+   }
    else
-      etk_tree2_row_unselect(row);
+   {
+      if ((modifiers & ETK_MODIFIER_SHIFT) && tree->last_selected_row)
+      {
+         Etk_Tree2_Row *r;
+         int cnt = 0;
+         
+         etk_tree2_unselect_all(tree);
+         
+         /* Walk through all the rows of the tree and select the rows
+          * between the last selected row and the given row */
+         for (r = tree->root.first_child; r; r = _etk_tree2_row_next_get_full(r, ETK_FALSE))
+         {
+            if (r == tree->last_selected_row)
+               cnt++;
+            if (r == row)
+               cnt++;
+            
+            if (cnt >= 1)
+               r->selected = ETK_TRUE;
+            if (cnt >= 2)
+               break;
+         }
+         
+         etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_SELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
+      }
+      /* Invert the selected state of the given row */
+      else if (modifiers & ETK_MODIFIER_CTRL)
+      {
+         if (row->selected)
+            etk_tree2_row_unselect(row);
+         else
+         {
+            row->selected = ETK_TRUE;
+            row->tree->last_selected_row = row;
+            etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_SELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
+         }
+      }
+      else
+      {
+         /* Unselect all the rows and select only the given row */
+         etk_tree2_unselect_all(tree);
+         row->selected = ETK_TRUE;
+         row->tree->last_selected_row = row;
+         etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_SELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
+      }
+   }
+   
+   if (!row->tree->frozen)
+      etk_widget_redraw_queue(ETK_WIDGET(row->tree));
 }
 
 /** @} */

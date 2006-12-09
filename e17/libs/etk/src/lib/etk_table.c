@@ -39,7 +39,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 /**
  * @internal
  * @brief Gets the type of an Etk_Table
- * @return Returns the type on an Etk_Table
+ * @return Returns the type of an Etk_Table
  */
 Etk_Type *etk_table_type_get()
 {
@@ -47,11 +47,15 @@ Etk_Type *etk_table_type_get()
 
    if (!table_type)
    {
-      table_type = etk_type_new("Etk_Table", ETK_CONTAINER_TYPE, sizeof(Etk_Table), ETK_CONSTRUCTOR(_etk_table_constructor), ETK_DESTRUCTOR(_etk_table_destructor));
+      table_type = etk_type_new("Etk_Table", ETK_CONTAINER_TYPE, sizeof(Etk_Table),
+         ETK_CONSTRUCTOR(_etk_table_constructor), ETK_DESTRUCTOR(_etk_table_destructor));
    
-      etk_type_property_add(table_type, "num_cols", ETK_TABLE_NUM_COLS_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
-      etk_type_property_add(table_type, "num_rows", ETK_TABLE_NUM_ROWS_PROPERTY, ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
-      etk_type_property_add(table_type, "homogeneous", ETK_TABLE_HOMOGENEOUS_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(table_type, "num_cols", ETK_TABLE_NUM_COLS_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
+      etk_type_property_add(table_type, "num_rows", ETK_TABLE_NUM_ROWS_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
+      etk_type_property_add(table_type, "homogeneous", ETK_TABLE_HOMOGENEOUS_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
       
       table_type->property_set = _etk_table_property_set;
       table_type->property_get = _etk_table_property_get;
@@ -65,18 +69,12 @@ Etk_Type *etk_table_type_get()
  * @param num_cols the number of columns of the new table
  * @param num_rows the number of rows of the new table
  * @param homogeneous if homogeneous != 0, all the cells will have the same size
+ * @return Returns the new table
  */
 Etk_Widget *etk_table_new(int num_cols, int num_rows, Etk_Bool homogeneous)
 {
-   Etk_Widget *new_widget;
-   Etk_Table *new_table;
-
-   new_widget = etk_widget_new(ETK_TABLE_TYPE, NULL);
-   new_table = ETK_TABLE(new_widget);
-   etk_table_resize(new_table, num_cols, num_rows);
-   etk_table_homogeneous_set(new_table, homogeneous);
-
-   return new_widget;
+   return etk_widget_new(ETK_TABLE_TYPE, "homogeneous", homogeneous,
+      "num_cols", num_cols, "num_rows", num_rows, NULL);
 }
 
 /**
@@ -696,12 +694,6 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    }
 }
 
-/**************************
- *
- * Callbacks and handlers
- *
- **************************/
-
 /* Adds a child to the table */
 static void _etk_table_child_add(Etk_Container *container, Etk_Widget *widget)
 {
@@ -726,10 +718,15 @@ static void _etk_table_child_remove(Etk_Container *container, Etk_Widget *widget
 static Evas_List *_etk_table_children_get(Etk_Container *container)
 {
    Etk_Table *table;
+   Evas_List *children, *l;
    
    if (!(table = ETK_TABLE(container)))
       return NULL;
-   return table->children;
+   
+   children = NULL;
+   for (l = table->children; l; l = l->next)
+      children = evas_list_append(children, l->data);
+   return children;
 }
 
 /** @} */
