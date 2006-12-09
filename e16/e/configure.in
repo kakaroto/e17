@@ -57,7 +57,6 @@ AM_PROG_LIBTOOL
 AC_PATH_X
 AC_PATH_XTRA
 
-AC_CHECK_HEADERS(X11/SM/SMlib.h)
 AC_CHECK_HEADERS(alloca.h stdarg.h wctype.h)
 
 AC_TYPE_SIGNAL
@@ -138,6 +137,8 @@ AC_CHECK_LIB(Imlib2, imlib_context_set_mask_alpha_threshold,
   AC_DEFINE(HAVE_IMLIB_CONTEXT_SET_MASK_ALPHA_THRESHOLD, 1,
             [Imlib2 has imlib_context_set_mask_alpha_threshold]),,
   $IMLIB2_LIBS)
+
+AC_CHECK_HEADERS(X11/SM/SMlib.h, enable_sm=yes, enable_sm=no)
 
 AC_ARG_ENABLE(xft,
   [  --enable-xft            compile with Xft support @<:@default=yes@:>@],,
@@ -315,6 +316,7 @@ echo "Support for"
 echo "  Localisation ................. $USE_NLS"
 echo "  Sound ........................ $enable_sound"
 echo "  Old GNOME hints .............. $enable_hints_gnome"
+echo "  Session management ........... $enable_sm"
 echo "  Zoom ......................... $enable_zoom"
 echo "  Xft .......................... $enable_xft"
 echo "  Xinerama ..................... $enable_xinerama"
