@@ -31,6 +31,7 @@ Etk_Event_Selection_Request *			T_PTROBJ
 Etk_Filechooser_Widget *			T_PTROBJ_ETK
 Etk_Table_Fill_Policy				T_IV
 Etk_Frame *					T_PTROBJ_ETK
+Etk_Fixed *					T_PTROBJ_ETK
 Etk_Geometry					T_GEOMETRY
 Etk_Geometry *					T_GEOMETRY_PTR
 Etk_Iconbox *					T_PTROBJ_ETK

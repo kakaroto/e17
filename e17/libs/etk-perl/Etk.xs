@@ -1642,6 +1642,50 @@ new(class, label)
 	OUTPUT:
 	RETVAL
 
+MODULE = Etk::Fixed	PACKAGE	= Etk::Fixed	PREFIX = etk_fixed_
+
+Etk_Fixed *
+new(class)
+	SV * class
+	CODE:
+	RETVAL = ETK_FIXED(etk_fixed_new());
+	OUTPUT:
+	RETVAL
+
+void
+etk_fixed_put(fixed, widget, x, y)
+	Etk_Fixed * fixed
+	Etk_Widget * widget
+	int x
+	int y
+	ALIAS:
+	Put=1
+
+void
+etk_fixed_move(fixed, widget, x, y)
+	Etk_Fixed * fixed
+	Etk_Widget * widget
+	int x
+	int y
+	ALIAS:
+	Move=1
+
+void
+etk_fixed_child_position_get(fixed, widget)
+	Etk_Fixed * fixed
+	Etk_Widget * widget
+	ALIAS:
+	ChildPositionGet=1
+	PPCODE:
+	
+	int x, y;
+	etk_fixed_child_position_get(fixed, widget, &x, &y);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSViv(x)));
+	PUSHs(sv_2mortal(newSViv(y)));
+
+
+
 MODULE = Etk::HBox	PACKAGE = Etk::HBox	PREFIX = etk_hbox_
 	
 Etk_HBox *

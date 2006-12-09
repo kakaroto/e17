@@ -88,6 +88,7 @@ void __etk_perl_init() {
 	__("Etk_Entry",		"Etk::Entry");
 	__("Etk_Filechooser_Widget",		"Etk::Filechooser");
 	__("Etk_Frame",		"Etk::Frame");
+	__("Etk_Fixed",		"Etk::Fixed");
 	__("Etk_Iconbox",		"Etk::Iconbox");
 	__("Etk_Iconbox_Model",		"Etk::Iconbox::Model");
 	__("Etk_Iconbox_Icon",		"Etk::Iconbox::Icon");
@@ -188,6 +189,7 @@ void __etk_perl_init() {
 				__("HPaned", "Paned");
 				__("VPaned", "Paned");
 			__("Table", "Container");
+			__("Fixed", "Container");
 		__("Entry", "Widget");
 		__("Filechooser", "Widget");
 		__("Iconbox", "Widget");
