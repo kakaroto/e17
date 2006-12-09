@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-12-09 16:44+0100\n"
+"POT-Creation-Date: 2006-12-09 19:48+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -75,8 +75,8 @@ msgstr "%u referenca ostaje\n"
 
 #: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1106
 #: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
-#: src/cursors.c:178 src/iclass.c:519 src/menus.c:1718 src/menus.c:1828
-#: src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
+#: src/container.c:1770 src/cursors.c:178 src/iclass.c:519 src/menus.c:1718
+#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
 #: src/windowmatch.c:161
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -550,6 +550,126 @@ msgstr ""
 "Dali ŵelite da Enlightenment vrati originalnu sistemsku konfiguraciju\n"
 "i pokuŷa ponovo?\n"
 
+#: src/container.c:1224
+#, fuzzy
+msgid "Settings..."
+msgstr "Osobine usmjeravanja"
+
+#: src/container.c:1228 src/dialog.c:898 src/pager.c:995 config/strings.c:30
+#: config/strings.c:166
+msgid "Close"
+msgstr "Zatvori"
+
+#: src/container.c:1233 config/strings.c:83
+msgid "Create New Iconbox"
+msgstr "Napravi novi Iconbox"
+
+#: src/container.c:1530 src/container.c:1604
+#, fuzzy, c-format
+msgid "Icon size: %2d"
+msgstr "Veliīina ikone"
+
+#: src/container.c:1568
+msgid "Transparent background"
+msgstr "Providna pozadina"
+
+#: src/container.c:1572
+#, fuzzy
+msgid "Hide inner border"
+msgstr "Pokaŵi/Sakrij ovu grupu"
+
+#: src/container.c:1576
+msgid "Draw base image behind Icons"
+msgstr "Nacrtaj osnovnu sliku ispod ikona"
+
+#: src/container.c:1580
+msgid "Hide scrollbar when not needed"
+msgstr "Sakrij traku za listanje kada nije potrebna"
+
+#: src/container.c:1584
+msgid "Automatically resize to fit Icons"
+msgstr "Automatski promjeni veliīini radi podeŷavanja ikona"
+
+#: src/container.c:1591
+msgid "Alignment of anchoring when automatically resizing:"
+msgstr "Poravnanje uīvrŷ�ivanja prilikom automatske promjene veliīine:"
+
+#: src/container.c:1622
+msgid "Orientation:"
+msgstr "Orjentacija:"
+
+#: src/container.c:1627
+msgid "Scrollbar side:"
+msgstr "Veliīine trake za listanje:"
+
+#: src/container.c:1632
+msgid "Scrollbar arrows:"
+msgstr "Strelice trake za listanje:"
+
+#: src/container.c:1635
+msgid "Horizontal"
+msgstr "Horizontalno"
+
+#: src/container.c:1640
+msgid "Left / Top"
+msgstr "Lijevo / Vrh"
+
+#: src/container.c:1645
+msgid "Start"
+msgstr "Poīetak"
+
+#: src/container.c:1650
+msgid "Vertical"
+msgstr "Vertikalno"
+
+#: src/container.c:1656
+msgid "Right / Bottom"
+msgstr "Desno / Dno"
+
+#: src/container.c:1662
+msgid "Both ends"
+msgstr "Oba kraja"
+
+#: src/container.c:1670
+msgid "End"
+msgstr "Kraj"
+
+#: src/container.c:1678 src/focus.c:834
+msgid "None"
+msgstr "Niŷta"
+
+#: src/container.c:1688
+msgid "Show icon names"
+msgstr "Poka�i imena ikona"
+
+#: src/container.c:1692
+msgid "Animate when iconifying to this Iconbox"
+msgstr "Pokreni prilikom ikonificiranja ovog Iconbox-a"
+
+#: src/container.c:1702
+msgid "Icon image display policy (if one operation fails, try the next):"
+msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
+
+#: src/container.c:1707
+msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
+msgstr "Slikaj prozore, koristi ikonu apliacije, koristi Enlightenment ikonu"
+
+#: src/container.c:1714
+msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
+msgstr "Koristi ikonu aplikacije, koristi Enlightenment ikonu, Slikaj prozor"
+
+#: src/container.c:1719
+msgid "Use Enlightenment Icon, Snapshot Window"
+msgstr "Koristi Enlightenment ikonu, Slikaj prozor"
+
+#: src/container.c:1732
+msgid ""
+"Enlightenment Iconbox\n"
+"Settings Dialog\n"
+msgstr ""
+"Enlightenment Iconbox\n"
+"dijalog osobina\n"
+
 #: src/cursors.c:127
 msgid "ECursor Error!"
 msgstr "ECursor greŷka!"
@@ -735,13 +855,17 @@ msgstr "Uredu"
 msgid "Apply"
 msgstr "Izvrŷi"
 
-#: src/dialog.c:898 src/pager.c:995 config/strings.c:30 config/strings.c:166
-msgid "Close"
-msgstr "Zatvori"
-
 #: src/dialog.c:2209
 msgid "Attention !!!"
 msgstr "Paŵnja !!!"
+
+#: src/ecompmgr.c:2399
+msgid ""
+"Cannot enable Composite Manager.\n"
+"Use xdpyinfo to check that\n"
+"Composite, Damage, Fixes, and Render\n"
+"extensions are loaded."
+msgstr ""
 
 #: src/events.c:79
 msgid "X server setup error"
@@ -850,10 +974,6 @@ msgstr ""
 #: src/focus.c:828
 msgid "First App Icon, then E Icon"
 msgstr ""
-
-#: src/focus.c:834
-msgid "None"
-msgstr "Niŷta"
 
 #: src/focus.c:842
 #, fuzzy
@@ -1295,6 +1415,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
+#: src/hints.c:538
+msgid "ERROR!"
+msgstr ""
+
+#: src/hints.c:538
+#, c-format
+msgid "Could not acquire selection: %s"
+msgstr ""
+
 #: src/iclass.c:331
 #, fuzzy
 msgid "Imageclass Error!"
@@ -1471,37 +1600,6 @@ msgstr ""
 "Molim popravite ovu situaciju i budite sigurni da je instaliran\n"
 "ispravno.\n"
 
-#: src/menus.c:2033
-msgid "Animated display of menus"
-msgstr "Animirani prikazi menija"
-
-#: src/menus.c:2038
-msgid "Always pop up menus on screen"
-msgstr "Uvijek pop up meniji na ekranu"
-
-#: src/menus.c:2043
-msgid "Warp pointer after moving menus"
-msgstr "Uvi pokaziva� nakon premjeŷtanja izbornika"
-
-#: src/menus.c:2049
-#, fuzzy
-msgid "Menus"
-msgstr "Izbornici:"
-
-#: src/menus.c:2050
-#, fuzzy
-msgid "Menu Settings"
-msgstr "Razne osobine"
-
-#: src/menus.c:2053
-#, fuzzy
-msgid ""
-"Enlightenment Menu\n"
-"Settings Dialog\n"
-msgstr ""
-"Enlightenment usmjeravanje\n"
-"Dijalog osobina\n"
-
 #: src/menus-misc.c:587 config/strings.c:119
 #, fuzzy
 msgid "Themes"
@@ -1534,6 +1632,37 @@ msgstr "Ikonificiraj ovu grupu"
 #, c-format
 msgid "Group %i"
 msgstr "Grupa %i"
+
+#: src/menus.c:2033
+msgid "Animated display of menus"
+msgstr "Animirani prikazi menija"
+
+#: src/menus.c:2038
+msgid "Always pop up menus on screen"
+msgstr "Uvijek pop up meniji na ekranu"
+
+#: src/menus.c:2043
+msgid "Warp pointer after moving menus"
+msgstr "Uvi pokaziva� nakon premjeŷtanja izbornika"
+
+#: src/menus.c:2049
+#, fuzzy
+msgid "Menus"
+msgstr "Izbornici:"
+
+#: src/menus.c:2050
+#, fuzzy
+msgid "Menu Settings"
+msgstr "Razne osobine"
+
+#: src/menus.c:2053
+#, fuzzy
+msgid ""
+"Enlightenment Menu\n"
+"Settings Dialog\n"
+msgstr ""
+"Enlightenment usmjeravanje\n"
+"Dijalog osobina\n"
 
 #: src/mod-trans.c:102 src/mod-trans.c:252
 #, c-format
@@ -2328,6 +2457,33 @@ msgstr ""
 "Enlightenment Audio\n"
 "dijalog osobina\n"
 
+#: src/systray.c:331 src/systray.c:435 src/systray.c:443
+#, fuzzy
+msgid "Systray Error!"
+msgstr "ECursor greŷka!"
+
+#: src/systray.c:331
+msgid "Systray went elsewhere?!?"
+msgstr ""
+
+#: src/systray.c:435
+msgid "Only one systray is allowed"
+msgstr ""
+
+#: src/systray.c:443
+msgid "Could not activate systray"
+msgstr ""
+
+#: src/systray.c:454
+#, fuzzy
+msgid "Systray Options"
+msgstr "Opcije Desktopa"
+
+#: src/systray.c:455
+#, fuzzy
+msgid "Systray Settings"
+msgstr "Osobine automatskog pove�avanja"
+
 #: src/tclass.c:98
 #, fuzzy
 msgid "Textclass Error!"
@@ -2723,10 +2879,6 @@ msgstr "Idi na ovaj Desktop"
 msgid "Goto Previous Desktop"
 msgstr "Idi na ovaj Desktop"
 
-#: config/strings.c:83
-msgid "Create New Iconbox"
-msgstr "Napravi novi Iconbox"
-
 #: config/strings.c:84
 msgid "Create Systray"
 msgstr ""
@@ -3108,96 +3260,8 @@ msgstr "Iza�i iz Enlightenment-a"
 #~ msgstr "Zatvori Iconbox"
 
 #, fuzzy
-#~ msgid "Systray Options"
-#~ msgstr "Opcije Desktopa"
-
-#, fuzzy
 #~ msgid "Systray Settings..."
 #~ msgstr "Osobine automatskog pove�avanja ..."
-
-#, fuzzy
-#~ msgid "Icon size: %2d"
-#~ msgstr "Veliīina ikone"
-
-#, fuzzy
-#~ msgid "Systray Settings"
-#~ msgstr "Osobine automatskog pove�avanja"
-
-#~ msgid "Transparent background"
-#~ msgstr "Providna pozadina"
-
-#~ msgid "Show icon names"
-#~ msgstr "Poka�i imena ikona"
-
-#~ msgid "Draw base image behind Icons"
-#~ msgstr "Nacrtaj osnovnu sliku ispod ikona"
-
-#~ msgid "Hide scrollbar when not needed"
-#~ msgstr "Sakrij traku za listanje kada nije potrebna"
-
-#~ msgid "Automatically resize to fit Icons"
-#~ msgstr "Automatski promjeni veliīini radi podeŷavanja ikona"
-
-#~ msgid "Animate when iconifying to this Iconbox"
-#~ msgstr "Pokreni prilikom ikonificiranja ovog Iconbox-a"
-
-#~ msgid "Alignment of anchoring when automatically resizing:"
-#~ msgstr "Poravnanje uīvrŷ�ivanja prilikom automatske promjene veliīine:"
-
-#~ msgid "Icon image display policy (if one operation fails, try the next):"
-#~ msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
-
-#~ msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-#~ msgstr ""
-#~ "Slikaj prozore, koristi ikonu apliacije, koristi Enlightenment ikonu"
-
-#~ msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-#~ msgstr ""
-#~ "Koristi ikonu aplikacije, koristi Enlightenment ikonu, Slikaj prozor"
-
-#~ msgid "Use Enlightenment Icon, Snapshot Window"
-#~ msgstr "Koristi Enlightenment ikonu, Slikaj prozor"
-
-#~ msgid "Orientation:"
-#~ msgstr "Orjentacija:"
-
-#~ msgid "Scrollbar side:"
-#~ msgstr "Veliīine trake za listanje:"
-
-#~ msgid "Scrollbar arrows:"
-#~ msgstr "Strelice trake za listanje:"
-
-#~ msgid "Horizontal"
-#~ msgstr "Horizontalno"
-
-#~ msgid "Left / Top"
-#~ msgstr "Lijevo / Vrh"
-
-#~ msgid "Start"
-#~ msgstr "Poīetak"
-
-#~ msgid "Vertical"
-#~ msgstr "Vertikalno"
-
-#~ msgid "Right / Bottom"
-#~ msgstr "Desno / Dno"
-
-#~ msgid "Both ends"
-#~ msgstr "Oba kraja"
-
-#~ msgid "End"
-#~ msgstr "Kraj"
-
-#~ msgid ""
-#~ "Enlightenment Iconbox\n"
-#~ "Settings Dialog\n"
-#~ msgstr ""
-#~ "Enlightenment Iconbox\n"
-#~ "dijalog osobina\n"
-
-#, fuzzy
-#~ msgid "Systray Error!"
-#~ msgstr "ECursor greŷka!"
 
 #~ msgid "Ignore"
 #~ msgstr "Ignoriŷi"
