@@ -359,7 +359,7 @@ SoundConfigLoad(FILE * fs)
 	sc = SclassCreate(s1, s2);
      }
    if (err)
-      ConfigAlertLoad(_("Sound"));
+      ConfigAlertLoad("Sound");
 
    return err;
 }

@@ -1938,7 +1938,7 @@ MenuConfigLoad(FILE * fs)
 
  done:
    if (err)
-      ConfigAlertLoad(_("Menu"));
+      ConfigAlertLoad("Menu");
    _EFREE(txt);
 
    return err;

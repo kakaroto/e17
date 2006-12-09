@@ -535,7 +535,8 @@ SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
    XSetSelectionOwner(disp, sel->atom, WinGetXwin(sel->win), sel->time);
    if (XGetSelectionOwner(disp, sel->atom) != WinGetXwin(sel->win))
      {
-	DialogOK(_("ERROR!"), _("Could not acquire selection: %s"), buf);
+	DialogOK(_("Selection Error!"), _("Could not acquire selection: %s"),
+		 buf);
 	EDestroyWindow(sel->win);
 	Efree(sel);
 	return NULL;

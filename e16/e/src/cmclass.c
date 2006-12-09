@@ -81,7 +81,7 @@ FreeCMClass(ColorModifierClass * cm)
 
    if (cm->ref_count > 0)
      {
-	DialogOK(_("ColorModClass Error!"), _("%u references remain\n"),
+	DialogOK("ColorModClass Error!", _("%u references remain\n"),
 		 cm->ref_count);
 	return;
      }

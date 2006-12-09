@@ -124,8 +124,7 @@ ECursorDestroy(ECursor * ec)
 
    if (ec->ref_count > 0)
      {
-	DialogOK(_("ECursor Error!"), _("%u references remain\n"),
-		 ec->ref_count);
+	DialogOK("ECursor Error!", _("%u references remain\n"), ec->ref_count);
 	return;
      }
 
@@ -235,7 +234,7 @@ ECursorConfigLoad(FILE * fs)
 
  done:
    if (err)
-      ConfigAlertLoad(_("Cursor"));
+      ConfigAlertLoad("Cursor");
 
    _EFREE(name);
    _EFREE(file);

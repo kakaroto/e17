@@ -205,7 +205,7 @@ ActionclassDestroy(ActionClass * ac)
 
    if (ac->ref_count > 0)
      {
-	DialogOK(_("ActionClass Error!"), _("%u references remain\n"),
+	DialogOK("ActionClass Error!", _("%u references remain\n"),
 		 ac->ref_count);
 	return;
      }

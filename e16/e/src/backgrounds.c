@@ -238,7 +238,7 @@ BackgroundDestroy(Background * bg)
 
    if (bg->ref_count > 0)
      {
-	DialogOK(_("Background Error!"), _("%u references remain\n"),
+	DialogOK("Background Error!", _("%u references remain\n"),
 		 bg->ref_count);
 	return -1;
      }

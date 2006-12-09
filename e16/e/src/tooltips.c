@@ -136,8 +136,7 @@ TooltipDestroy(ToolTip * tt)
 
    if (tt->ref_count > 0)
      {
-	DialogOK(_("ToolTip Error!"), _("%u references remain\n"),
-		 tt->ref_count);
+	DialogOK("ToolTip Error!", _("%u references remain\n"), tt->ref_count);
      }
 }
 #endif

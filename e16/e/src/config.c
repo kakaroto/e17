@@ -291,52 +291,52 @@ ConfigFileRead(FILE * fs)
 		    case CONFIG_IMAGECLASS:
 		       err = ImageclassConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Image class"));
+			  ConfigAlertLoad("Image class");
 		       break;
 		    case CONFIG_TOOLTIP:
 		       err = TooltipConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Tooltip"));
+			  ConfigAlertLoad("Tooltip");
 		       break;
 		    case CONFIG_FONTS:
 		       err = FontConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Font"));
+			  ConfigAlertLoad("Font");
 		       break;
 		    case CONFIG_TEXT:
 		       err = TextclassConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Text class"));
+			  ConfigAlertLoad("Text class");
 		       break;
 		    case MENU_STYLE:
 		       err = MenuStyleConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Menu style"));
+			  ConfigAlertLoad("Menu style");
 		       break;
 		    case CONFIG_MENU:
 		       err = MenuConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Menu"));
+			  ConfigAlertLoad("Menu");
 		       break;
 		    case CONFIG_BORDER:
 		       err = BorderConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Border"));
+			  ConfigAlertLoad("Border");
 		       break;
 		    case CONFIG_BUTTON:
 		       err = ButtonsConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Button"));
+			  ConfigAlertLoad("Button");
 		       break;
 		    case CONFIG_DESKTOP:
 		       err = BackgroundsConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Background"));
+			  ConfigAlertLoad("Background");
 		       break;
 		    case CONFIG_WINDOWMATCH:
 		       err = WindowMatchConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Window match"));
+			  ConfigAlertLoad("Window match");
 		       break;
 		    case CONFIG_COLORMOD:
 #if ENABLE_COLOR_MODIFIERS
@@ -346,12 +346,12 @@ ConfigFileRead(FILE * fs)
 		    case CONFIG_ACTIONCLASS:
 		       err = AclassConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Action class"));
+			  ConfigAlertLoad("Action class");
 		       break;
 		    case CONFIG_SLIDEOUT:
 		       err = SlideoutsConfigLoad(fs);
 		       if (err)
-			  ConfigAlertLoad(_("Slideout"));
+			  ConfigAlertLoad("Slideout");
 		       break;
 		    default:
 		       break;
