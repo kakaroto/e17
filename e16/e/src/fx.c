@@ -32,9 +32,6 @@
 
 /* FIXME - Needs cleaning up */
 
-/* Someone may do this right one day, but for now - kill'em */
-#define ENABLE_FX_INFO 0
-
 #ifndef M_PI_2
 #define M_PI_2 (3.141592654 / 2)
 #endif
@@ -63,26 +60,6 @@ static Win          fx_ripple_win = NoWin;
 static int          fx_ripple_count = 0;
 
 static void
-FX_ripple_info(void)
-{
-#if ENABLE_FX_INFO
-   static char         before = 0;
-
-   if (!before)
-      DialogOK(_("Starting up Ripples FX..."),
-	       _("\n" "You have just started the Ripples Effect.\n" "\n"
-		 "If you look closely on your desktop background, and if it\n"
-		 "doesn't have a solid colour (i.e. has a background texture or\n"
-		 "image), you will see a pool of water at the bottom of your\n"
-		 "screen that reflects everything above it and \"ripples\".\n"
-		 "\n"
-		 "To disable this effect just select this option again to toggle\n"
-		 "it off.\n"));
-   before = 1;
-#endif
-}
-
-static void
 FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
 {
    static double       incv = 0, inch = 0;
@@ -104,8 +81,6 @@ FX_ripple_timeout(int val __UNUSED__, void *data __UNUSED__)
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = EXCreateGC(WinGetXwin(fx_ripple_win), GCSubwindowMode, &gcv);
 	gc1 = EXCreateGC(WinGetXwin(fx_ripple_win), 0L, &gcv);
-
-	FX_ripple_info();
      }
 
    if (fx_ripple_count == 0)
@@ -208,27 +183,6 @@ DropContext;
 static DropContext  fx_raindrops[4];
 
 static void
-FX_raindrops_info(void)
-{
-#if ENABLE_FX_INFO
-   static char         before = 0;
-
-   if (!before)
-      DialogOK(_("Starting up Raindrops FX..."),
-	       _("\n" "You have just started the Raindrops Effect.\n"
-		 "\n"
-		 "If you look closely on your desktop background, and if it\n"
-		 "doesn't have a solid colour (i.e. has a background texture or\n"
-		 "image), you will see \"raindrops\" hit the background and\n"
-		 "make little splashes. This Effect can be VERY CPU intensive.\n"
-		 "\n"
-		 "To disable this effect just select this option again to toggle\n"
-		 "it off.\n"));
-   before = 1;
-#endif
-}
-
-static void
 FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 {
    static GC           gc1 = 0, gc = 0;
@@ -241,8 +195,6 @@ FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
    if (fx_raindrops_win == None)
      {
 	XGCValues           gcv;
-
-	FX_raindrops_info();
 
 	if (first)
 	  {
@@ -502,26 +454,6 @@ static Win          fx_wave_win = NoWin;
 static int          fx_wave_count = 0;
 
 static void
-FX_Wave_info(void)
-{
-#if ENABLE_FX_INFO
-   static char         before = 0;
-
-   if (!before)
-      DialogOK(_("Starting up Waves FX..."),
-	       _("\n" "You have just started the Waves Effect.\n" "\n"
-		 "If you look closely on your desktop background, and if it\n"
-		 "doesn't have a solid colour (i.e. has a background texture or\n"
-		 "image), you will see a pool of water at the bottom of your\n"
-		 "screen that reflects everything above it and \"waves\".\n"
-		 "\n"
-		 "To disable this effect just select this option again to toggle\n"
-		 "it off.\n"));
-   before = 1;
-#endif
-}
-
-static void
 FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
 {
    /* Variables */
@@ -547,8 +479,6 @@ FX_Wave_timeout(int val __UNUSED__, void *data __UNUSED__)
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = EXCreateGC(WinGetXwin(fx_wave_win), GCSubwindowMode, &gcv);
 	gc1 = EXCreateGC(WinGetXwin(fx_wave_win), 0L, &gcv);
-
-	FX_Wave_info();
      }
 
    /* On the zero, grab the desktop again. */
@@ -680,22 +610,6 @@ static int          fx_imagespinner_count = 3;
 static char        *fx_imagespinner_params = NULL;
 
 static void
-FX_imagespinner_info(void)
-{
-#if ENABLE_FX_INFO
-   static char         before = 0;
-
-   if (!before)
-      DialogOK(_("Starting up imagespinners FX..."),
-	       _("\n" "You have just started the imagespinners Effect.\n"
-		 "\n"
-		 "To disable this effect just select this option again to toggle\n"
-		 "it off.\n"));
-   before = 1;
-#endif
-}
-
-static void
 FX_imagespinner_timeout(int val __UNUSED__, void *data __UNUSED__)
 {
    char               *string = NULL;
@@ -703,7 +617,6 @@ FX_imagespinner_timeout(int val __UNUSED__, void *data __UNUSED__)
    if (fx_imagespinner_win == None)
      {
 	fx_imagespinner_win = DeskGetBackgroundWin(DesksGetCurrent());
-	FX_imagespinner_info();
      }
 
 #if 0				/* Don't use getword */
