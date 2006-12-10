@@ -209,11 +209,13 @@ Etk_Bool etk_tree2_row_is_folded(Etk_Tree2_Row *row);
 
 Etk_Tree2_Row *etk_tree2_first_row_get(Etk_Tree2 *tree);
 Etk_Tree2_Row *etk_tree2_last_row_get(Etk_Tree2 *tree);
-Etk_Tree2_Row *etk_tree2_row_prev_get(Etk_Tree2_Row *row);
-Etk_Tree2_Row *etk_tree2_row_next_get(Etk_Tree2_Row *row);
 Etk_Tree2_Row *etk_tree2_row_parent_get(Etk_Tree2_Row *row);
 Etk_Tree2_Row *etk_tree2_row_first_child_get(Etk_Tree2_Row *row);
 Etk_Tree2_Row *etk_tree2_row_last_child_get(Etk_Tree2_Row *row);
+Etk_Tree2_Row *etk_tree2_row_prev_get(Etk_Tree2_Row *row);
+Etk_Tree2_Row *etk_tree2_row_next_get(Etk_Tree2_Row *row);
+Etk_Tree2_Row *etk_tree2_row_walk_prev(Etk_Tree2_Row *row, Etk_Bool include_folded);
+Etk_Tree2_Row *etk_tree2_row_walk_next(Etk_Tree2_Row *row, Etk_Bool include_folded);
 
 /** @} */
 

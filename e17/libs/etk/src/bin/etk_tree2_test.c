@@ -65,30 +65,14 @@ static void _etk_test_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *
    
    if (strcmp(event->keyname, "Delete") == 0)
    {
-      /* We walk through all the rows of the tree, and we delete those which are selected */
-      for (r = etk_tree2_first_row_get(tree); r; )
+      /* We walk through all the rows of the tree, and we delete those which are selected.
+       * Note that we can safely manipulate "r" with etk_tree2_row_walk_next(), even if it
+       * has been deleted with etk_tree2_row_delete(), because etk_tree2_row_delete() just
+       * marks the row as deleted, but the row is not effectively deleted immediately */
+      for (r = etk_tree2_first_row_get(tree); r; r = etk_tree2_row_walk_next(r, ETK_TRUE))
       {
          if (etk_tree2_row_is_selected(r))
             etk_tree2_row_delete(r);
-         
-         /* Gets the next row, even if the row is folded. Note that we can safely manipulate
-          * "r" here, even if we have called etk_tree2_row_delete() on it because etk_tree2_row_delete()
-          * just mark the row as deleted, but the row is not effectively deleted immediately */
-         if (etk_tree2_row_first_child_get(r))
-            r = etk_tree2_row_first_child_get(r);
-         else
-         {
-            while (r)
-            {
-               if (etk_tree2_row_next_get(r))
-               {
-                  r = etk_tree2_row_next_get(r);
-                  break;
-               }
-               else
-                  r = etk_tree2_row_parent_get(r);
-            }
-         }
       }
       
       etk_signal_stop();

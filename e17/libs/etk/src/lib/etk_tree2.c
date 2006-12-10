@@ -131,7 +131,6 @@ static void _etk_tree2_row_move_to_purge_pool(Etk_Tree2_Row *row);
 static void _etk_tree2_col_realize(Etk_Tree2 *tree, int col_nth);
 static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2_Col *col, int x);
 
-static Etk_Tree2_Row *_etk_tree2_row_next_get_full(Etk_Tree2_Row *row, Etk_Bool only_visible);
 static Etk_Tree2_Row *_etk_tree2_row_next_to_render_get(Etk_Tree2_Row *row, int *depth);
 static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list args, Etk_Bool emit_signal);
 static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree);
@@ -1097,7 +1096,7 @@ void etk_tree2_select_all(Etk_Tree2 *tree)
    if (!tree)
       return;
    
-   for (row = tree->root.first_child; row; row = _etk_tree2_row_next_get_full(row, ETK_FALSE))
+   for (row = tree->root.first_child; row; row = etk_tree2_row_walk_next(row, ETK_TRUE))
       row->selected = ETK_TRUE;
    
    etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ALL_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL);
@@ -1117,7 +1116,7 @@ void etk_tree2_unselect_all(Etk_Tree2 *tree)
    if (!tree)
       return;
    
-   for (row = tree->root.first_child; row; row = _etk_tree2_row_next_get_full(row, ETK_FALSE))
+   for (row = tree->root.first_child; row; row = etk_tree2_row_walk_next(row, ETK_TRUE))
       row->selected = ETK_FALSE;
    
    etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ALL_SELECTED_SIGNAL], ETK_OBJECT(tree), NULL);
@@ -1248,38 +1247,6 @@ Etk_Tree2_Row *etk_tree2_last_row_get(Etk_Tree2 *tree)
 }
 
 /**
- * @brief Gets the previous row before the specified row
- * @param row a row
- * @return Returns the previous row before the specified row, or NULL if the row is the first row of its parent
- * @note This function does not return the previous visible row, but only the previous row that is on the same
- * level as the specified row. So if some rows of the tree have children, you'll have to use etk_tree2_row_parent_get(),
- * etk_tree2_row_first_child_get(), ... if you want to walk through all the rows of the tree. See the examples at
- * the top of this page.
- */
-Etk_Tree2_Row *etk_tree2_row_prev_get(Etk_Tree2_Row *row)
-{
-   if (!row)
-      return NULL;
-   return row->prev;
-}
-
-/**
- * @brief Gets the next row after the specified row
- * @param row a row
- * @return Returns the next row after the specified row, or NULL if the row is the last row of its parent
- * @note This function does not return the next visible row, but only the next row that is on the same
- * level as the specified row. So if some rows of the tree have children, you'll have to use etk_tree2_row_parent_get(),
- * etk_tree2_row_first_child_get(), ... if you want to walk through all the rows of the tree. See the examples at
- * the top of this page.
- */
-Etk_Tree2_Row *etk_tree2_row_next_get(Etk_Tree2_Row *row)
-{
-   if (!row)
-      return NULL;
-   return row->next;
-}
-
-/**
  * @brief Gets the parent row of the specified row
  * @param row a row
  * @return Returns the parent row of the specified row, or NULL if the row is at the tree's root
@@ -1315,6 +1282,91 @@ Etk_Tree2_Row *etk_tree2_row_last_child_get(Etk_Tree2_Row *row)
    if (!row)
       return NULL;
    return row->last_child;
+}
+
+/**
+ * @brief Gets the previous row before the specified row
+ * @param row a row
+ * @return Returns the previous row before the specified row, or NULL if the row is the first row of its parent
+ * @note This function does not return the previous visible row, but only the previous row that is on the same
+ * level as the specified row. So if some rows of the tree have children, you'll have to use etk_tree2_row_walk_prev()
+ * if you want to walk through all the rows of the tree.
+ * @see etk_tree2_row_walk_prev()
+ */
+Etk_Tree2_Row *etk_tree2_row_prev_get(Etk_Tree2_Row *row)
+{
+   if (!row)
+      return NULL;
+   return row->prev;
+}
+
+/**
+ * @brief Gets the next row after the specified row
+ * @param row a row
+ * @return Returns the next row after the specified row, or NULL if the row is the last row of its parent
+ * @note This function does not return the next visible row, but only the next row that is on the same
+ * level as the specified row. So if some rows of the tree have children, you'll have to use etk_tree2_row_walk_next()
+ * if you want to walk through all the rows of the tree.
+ * @see etk_tree2_row_walk_next()
+ */
+Etk_Tree2_Row *etk_tree2_row_next_get(Etk_Tree2_Row *row)
+{
+   if (!row)
+      return NULL;
+   return row->next;
+}
+
+/**
+ * @brief Walks to the previous "visible" row. Unlike etk_tree2_row_prev_get(), etk_tree2_row_walk_prev() can return a
+ * row that is not on the same level as the specified row. It is useful if you want to walk easily through all the rows
+ * of the tree.
+ * @param row a row
+ * @param include_folded if @a include_folded is ETK_TRUE, the function will return a row, even if this row is a child
+ * of a folded row
+ * @return Returns the previous "visible" row
+ * @note if the tree is in the list mode, this is equivalent to etk_tree2_row_prev_get(row)
+ */
+Etk_Tree2_Row *etk_tree2_row_walk_prev(Etk_Tree2_Row *row, Etk_Bool include_folded)
+{
+   if (!row)
+      return NULL;
+   
+   if (row->prev)
+   {
+      row = row->prev;
+      while ((row->unfolded || include_folded) && row->last_child)
+         row = row->last_child;
+      return row;
+   }
+   else if (row->parent && row->parent != &row->tree->root)
+      return row->parent;
+   
+   return NULL;
+}
+
+/**
+ * @brief Walks to the next "visible" row. Unlike etk_tree2_row_next_get(), etk_tree2_row_walk_next() can return a row
+ * that is not on the same level as the specified row. It is useful if you want to walk easily through all the rows of
+ * the tree.
+ * @param row a row
+ * @param include_folded if @a include_folded is ETK_TRUE, the function will return a row, even if this row is a child
+ * of a folded row
+ * @return Returns the next "visible" row
+ * @note if the tree is in the list mode, this is equivalent to etk_tree2_row_next_get(row)
+ */
+Etk_Tree2_Row *etk_tree2_row_walk_next(Etk_Tree2_Row *row, Etk_Bool include_folded)
+{
+   if (!row)
+      return NULL;
+   
+   if ((row->unfolded || include_folded) && row->first_child)
+      return row->first_child;
+   else
+   {
+      while (row && !row->next)
+         row = row->parent;
+      return row ? row->next : NULL;
+   }
 }
 
 /**************************
@@ -2656,23 +2708,6 @@ static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2_Col *col, int x)
    return NULL;
 }
 
-/* Gets the next row after the specified row */
-/* TODO: make it public?? */
-static Etk_Tree2_Row *_etk_tree2_row_next_get_full(Etk_Tree2_Row *row, Etk_Bool only_visible)
-{
-   if (!row)
-      return NULL;
-   
-   if (row->first_child && (row->unfolded || !only_visible))
-      return row->first_child;
-   else
-   {
-      while (row && !row->next)
-         row = row->parent;
-      return row ? row->next : NULL;
-   }
-}
-
 /* Gets the next row to render */
 static Etk_Tree2_Row *_etk_tree2_row_next_to_render_get(Etk_Tree2_Row *row, int *depth)
 {
@@ -2842,7 +2877,7 @@ static void _etk_tree2_row_select(Etk_Tree2 *tree, Etk_Tree2_Row *row, Etk_Modif
          
          /* Walk through all the rows of the tree and select the rows
           * between the last selected row and the given row */
-         for (r = tree->root.first_child; r; r = _etk_tree2_row_next_get_full(r, ETK_FALSE))
+         for (r = tree->root.first_child; r; r = etk_tree2_row_walk_next(r, ETK_TRUE))
          {
             if (r == tree->last_selected_row)
                cnt++;
