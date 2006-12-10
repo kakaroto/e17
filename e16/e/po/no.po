@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-12-09 19:48+0100\n"
+"POT-Creation-Date: 2006-12-10 16:00+0100\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -41,11 +41,6 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:208
-#, fuzzy
-msgid "ActionClass Error!"
-msgstr "Tekstklasse feil!"
-
 #: src/aclass.c:208 src/backgrounds.c:241 src/borders.c:651 src/buttons.c:194
 #: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:331 src/tclass.c:98
 #: src/tooltips.c:139
@@ -55,8 +50,8 @@ msgstr "%u referanser er igjen\n"
 
 #: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1106
 #: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
-#: src/container.c:1770 src/cursors.c:178 src/iclass.c:519 src/menus.c:1718
-#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
+#: src/container.c:1770 src/cursors.c:177 src/iclass.c:519 src/menus.c:1718
+#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:175
 #: src/windowmatch.c:161
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -64,8 +59,8 @@ msgstr "CONFIG: overser ekstra informasjon i \"%s\"\n"
 
 #: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1112
 #: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
-#: src/cursors.c:184 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
-#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:182
+#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
+#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:181
 #: src/windowmatch.c:166
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
@@ -193,17 +188,13 @@ msgstr "Enlightment dialog"
 msgid "Ignore this"
 msgstr "Overse dette"
 
-#: src/alert.c:574 config/strings.c:124 config/strings.c:186
+#: src/alert.c:574 config/strings.c:124 config/strings.c:188
 msgid "Restart Enlightenment"
 msgstr "Start Enlightenment på nytt"
 
 #: src/alert.c:574 src/setup.c:251
 msgid "Quit Enlightenment"
 msgstr "Avslutt Enlightenment"
-
-#: src/backgrounds.c:241
-msgid "Background Error!"
-msgstr "Bakgrunnsfeil!"
 
 #: src/backgrounds.c:1578
 #, c-format
@@ -319,7 +310,7 @@ msgstr "Sorter etter bilde"
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2281 src/config.c:334 src/mod-trans.c:192
+#: src/backgrounds.c:2281 src/mod-trans.c:192
 #, fuzzy
 msgid "Background"
 msgstr ""
@@ -337,18 +328,6 @@ msgid ""
 msgstr ""
 "Dialog for innstilling av\n"
 "bakgrunn i Enlightenment\n"
-
-#: src/borders.c:651
-msgid "Border Error!"
-msgstr "Feil med ramme!"
-
-#: src/buttons.c:194
-msgid "Button Error!"
-msgstr "Feil med knapp!"
-
-#: src/cmclass.c:84
-msgid "ColorModClass Error!"
-msgstr "Feil ved fargemodifiseringsklasse!"
 
 #: src/cmclass.c:330
 #, c-format
@@ -439,58 +418,6 @@ msgstr ""
 "stund og dette temaet bruker ting som ikke var tilgjengelig i\n"
 "en tidligere versjon av Enlightenment.\n"
 
-#: src/config.c:294
-#, fuzzy
-msgid "Image class"
-msgstr "Feil ved bildeklasse!"
-
-#: src/config.c:299
-#, fuzzy
-msgid "Tooltip"
-msgstr "Forsinkelse ved verktøytips:\n"
-
-#: src/config.c:304
-msgid "Font"
-msgstr ""
-
-#: src/config.c:309
-#, fuzzy
-msgid "Text class"
-msgstr "Tekstklasse feil!"
-
-#: src/config.c:314
-#, fuzzy
-msgid "Menu style"
-msgstr "Rammestil"
-
-#: src/config.c:319 src/menus.c:1941
-msgid "Menu"
-msgstr ""
-
-#: src/config.c:324
-#, fuzzy
-msgid "Border"
-msgstr "Rammestil"
-
-#: src/config.c:329
-#, fuzzy
-msgid "Button"
-msgstr "Bunn"
-
-#: src/config.c:339
-#, fuzzy
-msgid "Window match"
-msgstr "Valg for vinduer"
-
-#: src/config.c:349
-#, fuzzy
-msgid "Action class"
-msgstr "Feil ved kommandoklasse!"
-
-#: src/config.c:354
-msgid "Slideout"
-msgstr ""
-
 #: src/config.c:568
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment starter opp..."
@@ -537,7 +464,7 @@ msgid "Settings..."
 msgstr "Innstillinger for fokus"
 
 #: src/container.c:1228 src/dialog.c:898 src/pager.c:995 config/strings.c:30
-#: config/strings.c:166
+#: config/strings.c:168
 msgid "Close"
 msgstr "Avbryt"
 
@@ -650,15 +577,6 @@ msgid ""
 msgstr ""
 "Dialog for innstilling av egenskapene\n"
 "til ikonboksen i Enlightenment\n"
-
-#: src/cursors.c:127
-msgid "ECursor Error!"
-msgstr "Epeker feil!"
-
-#: src/cursors.c:238
-#, fuzzy
-msgid "Cursor"
-msgstr "Epeker feil!"
 
 #: src/desktops.c:120
 msgid ""
@@ -973,134 +891,32 @@ msgstr ""
 "Dialog for innstilling \n"
 "av fokus i Enlightenment\n"
 
-#: src/fx.c:72
-msgid "Starting up Ripples FX..."
-msgstr "Starter opp Krusnings FX..."
-
-#: src/fx.c:73
-msgid ""
-"\n"
-"You have just started the Ripples Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"ripples\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Du har nettopp startet Krusninger FX.\n"
-"\n"
-"Dersom du ser nøye på din Skrivebordbakgrunn og dersom den ikke\n"
-"er ensfarget vil du se ett basseng med vann ved bunnen av din\n"
-"skjerm som reflekter alt som er over den og det vil\n"
-"oppstå krusninger i vannet.\n"
-"\n"
-"For å slå av denne effekten - gjør det samme som du gjorde\n"
-"for å slå det på.\n"
-
-#: src/fx.c:217
-msgid "Starting up Raindrops FX..."
-msgstr "Starter opp Regndråpe FX..."
-
-#: src/fx.c:218
-msgid ""
-"\n"
-"You have just started the Raindrops Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see \"raindrops\" hit the background and\n"
-"make little splashes. This Effect can be VERY CPU intensive.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Du har nettopp startet Regndråpe FX.\n"
-"\n"
-"Dersom du ser nøye på din skrivebordsbakgrunn, og dersom den ikke\n"
-"er ensfarget, vil du se regndråper som faller ned på\n"
-"bakgrunnen og sprer seg utover. Denne effektene kan ta en del CPU \n"
-"kraft.\n"
-"\n"
-"For å skru av denne effekten - gjør du det samme som når du\n"
-"skru det på.\n"
-
-#: src/fx.c:511
-msgid "Starting up Waves FX..."
-msgstr "Starter opp Bølge FX"
-
-#: src/fx.c:512
-msgid ""
-"\n"
-"You have just started the Waves Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"waves\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Du har nettopp startet Bølge FX.\n"
-"\n"
-"Dersom du ser nøye på din Skrivebordbakgrunn og dersom den ikke\n"
-"er ensfarget vil du se ett basseng med vann ved bunnen av din\n"
-"skjerm som reflekter alt som er over den og det vil\n"
-"oppstå bølger i vannet.\n"
-"\n"
-"For å slå av denne effekten - gjør det samme som du gjorde\n"
-"for å slå det på.\n"
-
-#: src/fx.c:689
-msgid "Starting up imagespinners FX..."
-msgstr "Starter opp bilderotasjons FX..."
-
-#: src/fx.c:690
-msgid ""
-"\n"
-"You have just started the imagespinners Effect.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Du har nettopp startet opp bilderotasjons FX\n"
-"\n"
-"For å slå av denne effekten - gjør det samme som du gjorde\n"
-"for å slå det på.\n"
-
-#: src/fx.c:987
+#: src/fx.c:900
 msgid "Effects"
 msgstr ""
 
-#: src/fx.c:990
+#: src/fx.c:903
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Klarer ikke vise Regndråper"
 
-#: src/fx.c:994
+#: src/fx.c:907
 msgid "Ripples"
 msgstr ""
 
-#: src/fx.c:998
+#: src/fx.c:911
 msgid "Waves"
 msgstr ""
 
-#: src/fx.c:1004
+#: src/fx.c:917
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:1005
+#: src/fx.c:918
 msgid "Special FX Settings"
 msgstr "Spesiell effekter"
 
-#: src/fx.c:1008
+#: src/fx.c:921
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1108,25 +924,11 @@ msgstr ""
 "Dialog for innstilling av\n"
 "spesielle effekter i Enlightenment\n"
 
-#: src/groups.c:246
-msgid "Cannot comply"
-msgstr "Kan ikke etterkomme anmodningen"
-
-#: src/groups.c:247
-msgid ""
-"Iconboxes and Pagers are disallowed from being\n"
-"members of a group. You cannot add these windows\n"
-"to a group.\n"
-msgstr ""
-"Skrivebordsoversikter og Ikonbokser kan ikke være med i\n"
-"vindusgrupper. Du kan med andre ord ikke legge disse inn i en\n"
-"vindusgruppe.\n"
-
-#: src/groups.c:684
+#: src/groups.c:671
 msgid "Window Group Selection"
 msgstr "Velg vindusgruppe"
 
-#: src/groups.c:687
+#: src/groups.c:674
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -1134,11 +936,11 @@ msgstr ""
 "Vindusgrupper for Enlightenment\n"
 "Dialog for utvelgelse\n"
 
-#: src/groups.c:710 src/groups.c:719 src/groups.c:727 src/groups.c:914
+#: src/groups.c:697 src/groups.c:706 src/groups.c:714 src/groups.c:901
 msgid "Window Group Error"
 msgstr "Feil ved vindusgruppe"
 
-#: src/groups.c:712
+#: src/groups.c:699
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1152,7 +954,7 @@ msgstr ""
 "  via ett vindu som tilhører (minst) en gruppe.\n"
 "\n"
 
-#: src/groups.c:720
+#: src/groups.c:707
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -1166,7 +968,7 @@ msgstr ""
 "   Du må starte en gruppe til først.\n"
 "\n"
 
-#: src/groups.c:729
+#: src/groups.c:716
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -1176,54 +978,54 @@ msgstr ""
 "  For øyeblikket eksister ingen grupper. Du må starte en gruppe først.\n"
 "\n"
 
-#: src/groups.c:820
+#: src/groups.c:807
 msgid "   Pick the group to configure:   "
 msgstr "  Velg gruppa som skal konfigures: "
 
-#: src/groups.c:851
+#: src/groups.c:838
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
 "  Følgende handlinger vi vil bli   utført på alle medlemmene i grupppa: "
 
-#: src/groups.c:856 src/groups.c:958
+#: src/groups.c:843 src/groups.c:945
 msgid "Changing Border Style"
 msgstr "Endring av rammestil"
 
-#: src/groups.c:861 src/groups.c:963
+#: src/groups.c:848 src/groups.c:950
 msgid "Iconifying"
 msgstr "Ikonifisering"
 
-#: src/groups.c:866 src/groups.c:968
+#: src/groups.c:853 src/groups.c:955
 msgid "Killing"
 msgstr "Avslutning"
 
-#: src/groups.c:871 src/groups.c:973
+#: src/groups.c:858 src/groups.c:960
 msgid "Moving"
 msgstr "Flytting"
 
-#: src/groups.c:876 src/groups.c:978
+#: src/groups.c:863 src/groups.c:965
 msgid "Raising/Lowering"
 msgstr "Senking/Heving"
 
-#: src/groups.c:881 src/groups.c:983
+#: src/groups.c:868 src/groups.c:970
 msgid "Sticking"
 msgstr "Stødighet"
 
-#: src/groups.c:886 src/groups.c:988
+#: src/groups.c:873 src/groups.c:975
 msgid "Shading"
 msgstr "Skyggelegging"
 
-#: src/groups.c:891 src/groups.c:993
+#: src/groups.c:878 src/groups.c:980
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Speiling Skyggelegging/Ikonifiser/Stødig"
 
-#: src/groups.c:898
+#: src/groups.c:885
 msgid "Window Group Settings"
 msgstr "Vindusgrupper"
 
-#: src/groups.c:901
+#: src/groups.c:888
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -1231,7 +1033,7 @@ msgstr ""
 "Dialog for innstilling av\n"
 "vindusgrupper i Enlightenment\n"
 
-#: src/groups.c:916
+#: src/groups.c:903
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1241,28 +1043,28 @@ msgstr ""
 "  Dette vinduet tilhører ingen grupper for øyeblikket.  \n"
 "\n"
 
-#: src/groups.c:951
+#: src/groups.c:938
 msgid " Per-group settings: "
 msgstr "Innstillinger for enkelt grupper"
 
-#: src/groups.c:1002
+#: src/groups.c:989
 msgid " Global settings: "
 msgstr " Globale innstillinger: "
 
-#: src/groups.c:1006
+#: src/groups.c:993
 msgid "Swap Window Locations"
 msgstr "La vinduer bytte plass"
 
-#: src/groups.c:1012 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:775
 #, fuzzy
 msgid "Groups"
 msgstr "Gruppe %i"
 
-#: src/groups.c:1013
+#: src/groups.c:1000
 msgid "Default Group Control Settings"
 msgstr "Innstilling av standardverdier for vindusgrupper"
 
-#: src/groups.c:1016
+#: src/groups.c:1003
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1271,11 +1073,11 @@ msgstr ""
 "verdier for vindusgrupper i Enlightenment\n"
 "\n"
 
-#: src/groups.c:1055
+#: src/groups.c:1042
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " Velg den gruppa som vinduet skal tilhøre: \n"
 
-#: src/groups.c:1093
+#: src/groups.c:1080
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -1294,11 +1096,11 @@ msgstr ""
 "  Velg en annen gruppe som dette vinduet skal tilhøre:  \n"
 "\n"
 
-#: src/groups.c:1111
+#: src/groups.c:1098
 msgid "   Select the group to remove the window from.  "
 msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
 
-#: src/groups.c:1121
+#: src/groups.c:1108
 msgid "  Select the group to break  "
 msgstr " Velg gruppa som skal brytes opp "
 
@@ -1398,18 +1200,14 @@ msgid ""
 msgstr ""
 
 #: src/hints.c:538
-msgid "ERROR!"
-msgstr ""
+#, fuzzy
+msgid "Selection Error!"
+msgstr "Tekstklasse feil!"
 
 #: src/hints.c:538
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""
-
-#: src/iclass.c:331
-#, fuzzy
-msgid "Imageclass Error!"
-msgstr "Feil ved bildeklasse!"
 
 #: src/iclass.c:688
 #, c-format
@@ -1713,11 +1511,11 @@ msgstr ""
 msgid "Window Options"
 msgstr "Valg for vinduer"
 
-#: src/pager.c:991 config/strings.c:53 config/strings.c:168
+#: src/pager.c:991 config/strings.c:53 config/strings.c:170
 msgid "Iconify"
 msgstr "Ikonifiser"
 
-#: src/pager.c:999 config/strings.c:167
+#: src/pager.c:999 config/strings.c:169
 msgid "Annihilate"
 msgstr "Fjern"
 
@@ -2114,7 +1912,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "Bruk underlagret for å redusere vindusutbredelse"
 
-#: src/settings.c:512 config/strings.c:179
+#: src/settings.c:512 config/strings.c:181
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Forskjellige innstillinger"
@@ -2303,7 +2101,7 @@ msgstr "Nivå"
 msgid "Window List Skip"
 msgstr "Overse i vinduslista"
 
-#: src/snaps.c:879 config/strings.c:178
+#: src/snaps.c:879 config/strings.c:180
 msgid "Opacity"
 msgstr ""
 
@@ -2410,10 +2208,6 @@ msgstr ""
 "kommunikasjonen med lydserveren (Esound). Lyd vil ikke\n"
 "støttet.\n"
 
-#: src/sound.c:362 src/sound.c:440
-msgid "Sound"
-msgstr ""
-
 #: src/sound.c:427
 msgid "Enable sounds"
 msgstr "Skru på støtte for lyd"
@@ -2425,6 +2219,10 @@ msgid ""
 msgstr ""
 "Lyd er ikke tilgjengelig da EsounD ikke var \n"
 "tilgjengelig når programmet ble kompilert.  "
+
+#: src/sound.c:440
+msgid "Sound"
+msgstr ""
 
 #: src/sound.c:441
 msgid "Audio Settings"
@@ -2464,11 +2262,6 @@ msgstr "Valg for skrivebordet"
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Automatisk heving"
-
-#: src/tclass.c:98
-#, fuzzy
-msgid "Textclass Error!"
-msgstr "Tekstklasse feil!"
 
 #: src/theme.c:67
 #, fuzzy, c-format
@@ -2512,11 +2305,7 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/tooltips.c:139
-msgid "ToolTip Error!"
-msgstr "Feil ved verktøytips!"
-
-#: src/tooltips.c:229
+#: src/tooltips.c:228
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2529,28 +2318,28 @@ msgstr ""
 "%s\n"
 "Vil overse dette og fortsette...\n"
 
-#: src/tooltips.c:872
+#: src/tooltips.c:871
 msgid "Display Tooltips"
 msgstr "Bruk verktøytips"
 
-#: src/tooltips.c:877
+#: src/tooltips.c:876
 msgid "Display Root Window Tips"
 msgstr "Bruk skrivebordstips"
 
-#: src/tooltips.c:882
+#: src/tooltips.c:881
 msgid "Tooltip Delay:\n"
 msgstr "Forsinkelse ved verktøytips:\n"
 
-#: src/tooltips.c:893
+#: src/tooltips.c:892
 #, fuzzy
 msgid "Tooltips"
 msgstr "Forsinkelse ved verktøytips:\n"
 
-#: src/tooltips.c:894
+#: src/tooltips.c:893
 msgid "Tooltip Settings"
 msgstr "Verktøytips"
 
-#: src/tooltips.c:897
+#: src/tooltips.c:896
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
@@ -2602,7 +2391,7 @@ msgstr "Flytting"
 msgid "Move this window."
 msgstr ""
 
-#: config/strings.c:12
+#: config/strings.c:12 config/strings.c:14
 msgid "Shade/Unshade this window."
 msgstr ""
 
@@ -2610,10 +2399,6 @@ msgstr ""
 #, fuzzy
 msgid "Show the Window Options menu."
 msgstr "Valg for vinduer"
-
-#: config/strings.c:14
-msgid "Toggle the shaded (rolled-up) state of this window."
-msgstr ""
 
 #: config/strings.c:15
 #, fuzzy
@@ -2760,7 +2545,7 @@ msgstr "Bunn"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:169
+#: config/strings.c:58 config/strings.c:171
 msgid "Raise"
 msgstr ""
 
@@ -2771,7 +2556,7 @@ msgstr ""
 "Trykk her for heve dette skrivebordet\n"
 "til toppen.\n"
 
-#: config/strings.c:60 config/strings.c:170
+#: config/strings.c:60 config/strings.c:172
 msgid "Lower"
 msgstr ""
 
@@ -2779,7 +2564,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:62 config/strings.c:172
+#: config/strings.c:62 config/strings.c:174
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Stødig / ustødig"
@@ -3010,7 +2795,7 @@ msgstr "Forskjellige innstillinger"
 msgid "Enlightenment"
 msgstr "Avslutt Enlightenment"
 
-#: config/strings.c:116 config/strings.c:182
+#: config/strings.c:116 config/strings.c:184
 #, fuzzy
 msgid "User Menus"
 msgstr "Rammestil"
@@ -3028,7 +2813,7 @@ msgstr "Om Enlightenment %s"
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:125 config/strings.c:187
+#: config/strings.c:125 config/strings.c:189
 #, fuzzy
 msgid "Log Out"
 msgstr "  Ja, avslutt  "
@@ -3128,125 +2913,303 @@ msgid "100%"
 msgstr ""
 
 #: config/strings.c:150
-msgid "Opaque when focused"
+msgid "Focused opacity 100%"
 msgstr ""
 
 #: config/strings.c:151
+#, fuzzy
+msgid "Focused opacity follows unfocused"
+msgstr "Fokus følger musklikk"
+
+#: config/strings.c:152
+#, fuzzy
+msgid "Toggle Fading"
+msgstr "Bruk kantflipping"
+
+#: config/strings.c:153
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:152
+#: config/strings.c:154
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:153
+#: config/strings.c:155
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:154
-msgid "Toggle Fixed Size"
-msgstr ""
-
-#: config/strings.c:155
-#, fuzzy
-msgid "Toggle Never Focus"
-msgstr "Aldri fokus"
-
 #: config/strings.c:156
-msgid "Toggle Click to Focus"
+msgid "Toggle Fixed Size"
 msgstr ""
 
 #: config/strings.c:157
 #, fuzzy
-msgid "Toggle Never Use Area"
+msgid "Toggle Never Focus"
 msgstr "Aldri fokus"
 
 #: config/strings.c:158
+msgid "Toggle Click to Focus"
+msgstr ""
+
+#: config/strings.c:159
+#, fuzzy
+msgid "Toggle Never Use Area"
+msgstr "Aldri fokus"
+
+#: config/strings.c:160
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Bunn"
 
-#: config/strings.c:159
+#: config/strings.c:161
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "Husk dette vindus gruppe(r)"
 
-#: config/strings.c:160
-msgid "Start a new group"
-msgstr ""
-
-#: config/strings.c:161
-#, fuzzy
-msgid "Select group to add this window to"
-msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
-
 #: config/strings.c:162
-msgid "Add this window to the current group"
+msgid "Start a new group"
 msgstr ""
 
 #: config/strings.c:163
 #, fuzzy
+msgid "Select group to add this window to"
+msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
+
+#: config/strings.c:164
+msgid "Add this window to the current group"
+msgstr ""
+
+#: config/strings.c:165
+#, fuzzy
 msgid "Remove this window from a group"
 msgstr "Husk dette vindus gruppe(r)"
 
-#: config/strings.c:164
+#: config/strings.c:166
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr " Velg den gruppa som vinduet skal tilhøre: \n"
 
-#: config/strings.c:165
+#: config/strings.c:167
 #, fuzzy
 msgid "Show/Hide this window's group(s)"
 msgstr "Vis/Skjul denne gruppa"
 
-#: config/strings.c:171
+#: config/strings.c:173
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Skyggetilstand"
 
-#: config/strings.c:173
+#: config/strings.c:175
 #, fuzzy
 msgid "Remember..."
 msgstr "Innstillinger for hukommelse"
 
-#: config/strings.c:174
+#: config/strings.c:176
 #, fuzzy
 msgid "Window Size"
 msgstr "Overse i vinduslista"
 
-#: config/strings.c:175
+#: config/strings.c:177
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Innstillinger for fokus"
 
-#: config/strings.c:176
+#: config/strings.c:178
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Rammestil"
 
-#: config/strings.c:177
+#: config/strings.c:179
 #, fuzzy
 msgid "Window Groups"
 msgstr "Feil ved vindusgruppe"
 
-#: config/strings.c:180
+#: config/strings.c:182
 #, fuzzy
 msgid "Remember State"
 msgstr "Innstillinger for hukommelse"
 
-#: config/strings.c:183
+#: config/strings.c:185
 #, fuzzy
 msgid "User Application List"
 msgstr "Lagrede egenskaper for dette programmet"
 
-#: config/strings.c:184
+#: config/strings.c:186
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:185
+#: config/strings.c:187
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Avslutt Enlightenment"
+
+#~ msgid "Background Error!"
+#~ msgstr "Bakgrunnsfeil!"
+
+#~ msgid "Border Error!"
+#~ msgstr "Feil med ramme!"
+
+#~ msgid "Button Error!"
+#~ msgstr "Feil med knapp!"
+
+#~ msgid "ColorModClass Error!"
+#~ msgstr "Feil ved fargemodifiseringsklasse!"
+
+#, fuzzy
+#~ msgid "Image class"
+#~ msgstr "Feil ved bildeklasse!"
+
+#, fuzzy
+#~ msgid "Tooltip"
+#~ msgstr "Forsinkelse ved verktøytips:\n"
+
+#, fuzzy
+#~ msgid "Text class"
+#~ msgstr "Tekstklasse feil!"
+
+#, fuzzy
+#~ msgid "Menu style"
+#~ msgstr "Rammestil"
+
+#, fuzzy
+#~ msgid "Border"
+#~ msgstr "Rammestil"
+
+#, fuzzy
+#~ msgid "Button"
+#~ msgstr "Bunn"
+
+#, fuzzy
+#~ msgid "Window match"
+#~ msgstr "Valg for vinduer"
+
+#, fuzzy
+#~ msgid "Action class"
+#~ msgstr "Feil ved kommandoklasse!"
+
+#~ msgid "ECursor Error!"
+#~ msgstr "Epeker feil!"
+
+#, fuzzy
+#~ msgid "Cursor"
+#~ msgstr "Epeker feil!"
+
+#~ msgid "Starting up Ripples FX..."
+#~ msgstr "Starter opp Krusnings FX..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Ripples Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"ripples\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Du har nettopp startet Krusninger FX.\n"
+#~ "\n"
+#~ "Dersom du ser nøye på din Skrivebordbakgrunn og dersom den ikke\n"
+#~ "er ensfarget vil du se ett basseng med vann ved bunnen av din\n"
+#~ "skjerm som reflekter alt som er over den og det vil\n"
+#~ "oppstå krusninger i vannet.\n"
+#~ "\n"
+#~ "For å slå av denne effekten - gjør det samme som du gjorde\n"
+#~ "for å slå det på.\n"
+
+#~ msgid "Starting up Raindrops FX..."
+#~ msgstr "Starter opp Regndråpe FX..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Raindrops Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see \"raindrops\" hit the background and\n"
+#~ "make little splashes. This Effect can be VERY CPU intensive.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Du har nettopp startet Regndråpe FX.\n"
+#~ "\n"
+#~ "Dersom du ser nøye på din skrivebordsbakgrunn, og dersom den ikke\n"
+#~ "er ensfarget, vil du se regndråper som faller ned på\n"
+#~ "bakgrunnen og sprer seg utover. Denne effektene kan ta en del CPU \n"
+#~ "kraft.\n"
+#~ "\n"
+#~ "For å skru av denne effekten - gjør du det samme som når du\n"
+#~ "skru det på.\n"
+
+#~ msgid "Starting up Waves FX..."
+#~ msgstr "Starter opp Bølge FX"
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Waves Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"waves\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Du har nettopp startet Bølge FX.\n"
+#~ "\n"
+#~ "Dersom du ser nøye på din Skrivebordbakgrunn og dersom den ikke\n"
+#~ "er ensfarget vil du se ett basseng med vann ved bunnen av din\n"
+#~ "skjerm som reflekter alt som er over den og det vil\n"
+#~ "oppstå bølger i vannet.\n"
+#~ "\n"
+#~ "For å slå av denne effekten - gjør det samme som du gjorde\n"
+#~ "for å slå det på.\n"
+
+#~ msgid "Starting up imagespinners FX..."
+#~ msgstr "Starter opp bilderotasjons FX..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the imagespinners Effect.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Du har nettopp startet opp bilderotasjons FX\n"
+#~ "\n"
+#~ "For å slå av denne effekten - gjør det samme som du gjorde\n"
+#~ "for å slå det på.\n"
+
+#~ msgid "Cannot comply"
+#~ msgstr "Kan ikke etterkomme anmodningen"
+
+#~ msgid ""
+#~ "Iconboxes and Pagers are disallowed from being\n"
+#~ "members of a group. You cannot add these windows\n"
+#~ "to a group.\n"
+#~ msgstr ""
+#~ "Skrivebordsoversikter og Ikonbokser kan ikke være med i\n"
+#~ "vindusgrupper. Du kan med andre ord ikke legge disse inn i en\n"
+#~ "vindusgruppe.\n"
+
+#, fuzzy
+#~ msgid "Imageclass Error!"
+#~ msgstr "Feil ved bildeklasse!"
+
+#, fuzzy
+#~ msgid "Textclass Error!"
+#~ msgstr "Tekstklasse feil!"
+
+#~ msgid "ToolTip Error!"
+#~ msgstr "Feil ved verktøytips!"
 
 #~ msgid "This Iconbox Settings..."
 #~ msgstr "Valg for denne ikonboksen"

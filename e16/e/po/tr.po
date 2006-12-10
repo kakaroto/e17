@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-12-09 19:48+0100\n"
+"POT-Creation-Date: 2006-12-10 16:00+0100\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -41,11 +41,6 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:208
-#, fuzzy
-msgid "ActionClass Error!"
-msgstr "TextClass hatasý!"
-
 #: src/aclass.c:208 src/backgrounds.c:241 src/borders.c:651 src/buttons.c:194
 #: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:331 src/tclass.c:98
 #: src/tooltips.c:139
@@ -55,8 +50,8 @@ msgstr "%u bað geriye kaldý\n"
 
 #: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1106
 #: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
-#: src/container.c:1770 src/cursors.c:178 src/iclass.c:519 src/menus.c:1718
-#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
+#: src/container.c:1770 src/cursors.c:177 src/iclass.c:519 src/menus.c:1718
+#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:175
 #: src/windowmatch.c:161
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -64,8 +59,8 @@ msgstr "CONFIG : \"%s\"'nin ekstra bilgilerini gözardý ediyorum .\n"
 
 #: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1112
 #: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
-#: src/cursors.c:184 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
-#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:182
+#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
+#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:181
 #: src/windowmatch.c:166
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
@@ -194,17 +189,13 @@ msgstr "Enlightenment ileti kutusu"
 msgid "Ignore this"
 msgstr "Bunu geç"
 
-#: src/alert.c:574 config/strings.c:124 config/strings.c:186
+#: src/alert.c:574 config/strings.c:124 config/strings.c:188
 msgid "Restart Enlightenment"
 msgstr "Enlightenment'i yeniden baþlat"
 
 #: src/alert.c:574 src/setup.c:251
 msgid "Quit Enlightenment"
 msgstr "Enlightenment'ten çýk"
-
-#: src/backgrounds.c:241
-msgid "Background Error!"
-msgstr "Background hatasý!"
 
 #: src/backgrounds.c:1578
 #, c-format
@@ -320,7 +311,7 @@ msgstr "Resme göre sýrala"
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2281 src/config.c:334 src/mod-trans.c:192
+#: src/backgrounds.c:2281 src/mod-trans.c:192
 #, fuzzy
 msgid "Background"
 msgstr ""
@@ -338,18 +329,6 @@ msgid ""
 msgstr ""
 "Enlightenment masaüstü\n"
 "ardalan ayarlarý diyaloðu\n"
-
-#: src/borders.c:651
-msgid "Border Error!"
-msgstr "Kenar hatasý!"
-
-#: src/buttons.c:194
-msgid "Button Error!"
-msgstr "Basma hatasý!"
-
-#: src/cmclass.c:84
-msgid "ColorModClass Error!"
-msgstr "ColorModClass hatasý!"
 
 #: src/cmclass.c:330
 #, c-format
@@ -443,58 +422,6 @@ msgstr ""
 "yenilemedin ve bu görünüm yeni nesillerin bazý özelliklerinden\n"
 "faydalanýyor .\n"
 
-#: src/config.c:294
-#, fuzzy
-msgid "Image class"
-msgstr "ImageClass hatasý!"
-
-#: src/config.c:299
-#, fuzzy
-msgid "Tooltip"
-msgstr "Balon yardýmý gösterme zaman arasý :\n"
-
-#: src/config.c:304
-msgid "Font"
-msgstr ""
-
-#: src/config.c:309
-#, fuzzy
-msgid "Text class"
-msgstr "TextClass hatasý!"
-
-#: src/config.c:314
-#, fuzzy
-msgid "Menu style"
-msgstr "Kenar tipi"
-
-#: src/config.c:319 src/menus.c:1941
-msgid "Menu"
-msgstr ""
-
-#: src/config.c:324
-#, fuzzy
-msgid "Border"
-msgstr "Kenar tipi"
-
-#: src/config.c:329
-#, fuzzy
-msgid "Button"
-msgstr "Alt"
-
-#: src/config.c:339
-#, fuzzy
-msgid "Window match"
-msgstr "Pencere ayarlarý"
-
-#: src/config.c:349
-#, fuzzy
-msgid "Action class"
-msgstr "ActionClass hatasý!"
-
-#: src/config.c:354
-msgid "Slideout"
-msgstr ""
-
 #: src/config.c:568
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment baþlýyor ...."
@@ -541,7 +468,7 @@ msgid "Settings..."
 msgstr "Foküsleme ayarlarý"
 
 #: src/container.c:1228 src/dialog.c:898 src/pager.c:995 config/strings.c:30
-#: config/strings.c:166
+#: config/strings.c:168
 msgid "Close"
 msgstr "Kapat"
 
@@ -657,15 +584,6 @@ msgid ""
 msgstr ""
 "Enlightenment simge kutusu\n"
 "ayarlarý diyaloðu\n"
-
-#: src/cursors.c:127
-msgid "ECursor Error!"
-msgstr "ECursor hatasý!"
-
-#: src/cursors.c:238
-#, fuzzy
-msgid "Cursor"
-msgstr "ECursor hatasý!"
 
 #: src/desktops.c:120
 msgid ""
@@ -982,134 +900,32 @@ msgstr ""
 "Enlightenment foküsleme\n"
 "ayarlarý diyaloðu\n"
 
-#: src/fx.c:72
-msgid "Starting up Ripples FX..."
-msgstr "Ripples FX baþlýyor ...."
-
-#: src/fx.c:73
-msgid ""
-"\n"
-"You have just started the Ripples Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"ripples\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Þu an titreþim efektini baþlattýn .\n"
-"\n"
-"Dikkatli bir þekilde masaüstü sonuna bakarsan ve \n"
-"ardalanýn bir resim yada bir desen ise , o zaman\n"
-"bir orada su titreþimine benzer hareketleri\n"
-"görebilirsin .\n"
-"\n"
-"Bu efekti kapatmak için sadece baþlamak için seçtiðin\n"
-"yerde , ayný efekti yeniden seç .\n"
-
-#: src/fx.c:217
-msgid "Starting up Raindrops FX..."
-msgstr "Yaðmur damlalarý efekti baþlýyor ..."
-
-#: src/fx.c:218
-msgid ""
-"\n"
-"You have just started the Raindrops Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see \"raindrops\" hit the background and\n"
-"make little splashes. This Effect can be VERY CPU intensive.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Þu an Yaðmur damlalarýný baþlattýn .\n"
-"\n"
-"Dikkatli bir þekilde masaüstü sonuna bakarsan ve \n"
-"ardalanýn bir resim yada bir desen ise , o zaman\n"
-"deðiþik yerlerde su / yaðmur damlalarýnýn iz\n"
-"býraktýðýný göreceksin . (Hýzlý iþlemciyi bile terletir)\n"
-"\n"
-"Bu efekti kapatmak için sadece baþlamak için seçtiðin\n"
-"yerde , ayný efekti yeniden seç .\n"
-
-#: src/fx.c:511
-msgid "Starting up Waves FX..."
-msgstr "Dalgalar efekti baþlýyor ..."
-
-#: src/fx.c:512
-msgid ""
-"\n"
-"You have just started the Waves Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"waves\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Þu an dalgalar efektini baþlattýn .\n"
-"\n"
-"Dikkatli bir þekilde masaüstü sonuna bakarsan ve \n"
-"ardalanýn bir resim yada bir desen ise , o zaman\n"
-"deðiþik yerlerde su dalgalarýnýn iz\n"
-"býraktýðýný ve sallanýmýný göreceksin . \n"
-"\n"
-"Bu efekti kapatmak için sadece baþlamak için seçtiðin\n"
-"yerde , ayný efekti yeniden seç .\n"
-
-#: src/fx.c:689
-msgid "Starting up imagespinners FX..."
-msgstr "Imagespinners FX baþlýyor ..."
-
-#: src/fx.c:690
-msgid ""
-"\n"
-"You have just started the imagespinners Effect.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Þu an resim delisi efektini baþlattýn .\n"
-"\n"
-"Bu efekti kapatmak için sadece baþlamak için seçtiðin\n"
-"yerde , ayný efekti yeniden seç .\n"
-
-#: src/fx.c:987
+#: src/fx.c:900
 msgid "Effects"
 msgstr ""
 
-#: src/fx.c:990
+#: src/fx.c:903
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Yaðmur damlalarýný gösteremiyorum"
 
-#: src/fx.c:994
+#: src/fx.c:907
 msgid "Ripples"
 msgstr ""
 
-#: src/fx.c:998
+#: src/fx.c:911
 msgid "Waves"
 msgstr ""
 
-#: src/fx.c:1004
+#: src/fx.c:917
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:1005
+#: src/fx.c:918
 msgid "Special FX Settings"
 msgstr "Özel efekler ayarlarý"
 
-#: src/fx.c:1008
+#: src/fx.c:921
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1117,25 +933,11 @@ msgstr ""
 "Enlightenment özel efekler\n"
 "ayarlarý diyaloðu\n"
 
-#: src/groups.c:246
-msgid "Cannot comply"
-msgstr "Tamamlayamadým"
-
-#: src/groups.c:247
-msgid ""
-"Iconboxes and Pagers are disallowed from being\n"
-"members of a group. You cannot add these windows\n"
-"to a group.\n"
-msgstr ""
-"Simge kutularý ve gözeyler bit kitlenin üyesi\n"
-"olmaktan mahrum . Bu pencereleri hiç bir kitleye\n"
-"ekleyemeyeceksin .\n"
-
-#: src/groups.c:684
+#: src/groups.c:671
 msgid "Window Group Selection"
 msgstr "Pencere kitlesi seçimi"
 
-#: src/groups.c:687
+#: src/groups.c:674
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -1143,11 +945,11 @@ msgstr ""
 "Enlightenment pencere kitlesi\n"
 "seçim diyaloðu\n"
 
-#: src/groups.c:710 src/groups.c:719 src/groups.c:727 src/groups.c:914
+#: src/groups.c:697 src/groups.c:706 src/groups.c:714 src/groups.c:901
 msgid "Window Group Error"
 msgstr "Pencere kitle hatasý"
 
-#: src/groups.c:712
+#: src/groups.c:699
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1161,7 +963,7 @@ msgstr ""
 "  en azýndan bir pencere bir kitlenin üyesi olmasý lazým .\n"
 "\n"
 
-#: src/groups.c:720
+#: src/groups.c:707
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -1175,7 +977,7 @@ msgstr ""
 "  Ilken baþka bir kitleyi kurman lazým .    \n"
 "\n"
 
-#: src/groups.c:729
+#: src/groups.c:716
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -1185,11 +987,11 @@ msgstr ""
 "  Þu an , hiç bir pencere kitlesi yok . Ilken bir kitle kur . \n"
 "\n"
 
-#: src/groups.c:820
+#: src/groups.c:807
 msgid "   Pick the group to configure:   "
 msgstr "   Ayarlanacak kitleyi seç :    "
 
-#: src/groups.c:851
+#: src/groups.c:838
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -1197,43 +999,43 @@ msgstr ""
 "  Bu eylemler bu kitlenin    \n"
 "  yekin üyelerine etkin edilecektir"
 
-#: src/groups.c:856 src/groups.c:958
+#: src/groups.c:843 src/groups.c:945
 msgid "Changing Border Style"
 msgstr "Kenar deðiþiklikleri"
 
-#: src/groups.c:861 src/groups.c:963
+#: src/groups.c:848 src/groups.c:950
 msgid "Iconifying"
 msgstr "Ikonalaþlým"
 
-#: src/groups.c:866 src/groups.c:968
+#: src/groups.c:853 src/groups.c:955
 msgid "Killing"
 msgstr "Öldürülme"
 
-#: src/groups.c:871 src/groups.c:973
+#: src/groups.c:858 src/groups.c:960
 msgid "Moving"
 msgstr "Taþýnma"
 
-#: src/groups.c:876 src/groups.c:978
+#: src/groups.c:863 src/groups.c:965
 msgid "Raising/Lowering"
 msgstr "Yükseltme/Alçaltma"
 
-#: src/groups.c:881 src/groups.c:983
+#: src/groups.c:868 src/groups.c:970
 msgid "Sticking"
 msgstr "Yapýþtýrma"
 
-#: src/groups.c:886 src/groups.c:988
+#: src/groups.c:873 src/groups.c:975
 msgid "Shading"
 msgstr "Toplanma"
 
-#: src/groups.c:891 src/groups.c:993
+#: src/groups.c:878 src/groups.c:980
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Toplama/Ikonalaþma/Yapýþ#_týrma aynalanmasý"
 
-#: src/groups.c:898
+#: src/groups.c:885
 msgid "Window Group Settings"
 msgstr "Pencere kitlesi ayarlarý"
 
-#: src/groups.c:901
+#: src/groups.c:888
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -1241,7 +1043,7 @@ msgstr ""
 "Enlightenment pencere kitlesi\n"
 "ayarlarý diyaloðu\n"
 
-#: src/groups.c:916
+#: src/groups.c:903
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1251,28 +1053,28 @@ msgstr ""
 "  Bu pencere hiç bir kitlenin üyesi deðil .    \n"
 "\n"
 
-#: src/groups.c:951
+#: src/groups.c:938
 msgid " Per-group settings: "
 msgstr " Kitleye ögzü ayarlar : "
 
-#: src/groups.c:1002
+#: src/groups.c:989
 msgid " Global settings: "
 msgstr " Genel ayarlar : "
 
-#: src/groups.c:1006
+#: src/groups.c:993
 msgid "Swap Window Locations"
 msgstr "Pencere yerlerini deðiþtir"
 
-#: src/groups.c:1012 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:775
 #, fuzzy
 msgid "Groups"
 msgstr "Kitle %i"
 
-#: src/groups.c:1013
+#: src/groups.c:1000
 msgid "Default Group Control Settings"
 msgstr "Önayarlý kitle kontrol ayarlarý"
 
-#: src/groups.c:1016
+#: src/groups.c:1003
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1280,11 +1082,11 @@ msgstr ""
 "Enlightenment önayarlý kitle kontrol\n"
 "ayarlarý diyaloðu\n"
 
-#: src/groups.c:1055
+#: src/groups.c:1042
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " Pencerenin eklencek olduðu kitleyi seç : \n"
 
-#: src/groups.c:1093
+#: src/groups.c:1080
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -1304,11 +1106,11 @@ msgstr ""
 " Pencerenin eklenecek olduðu baþka bir kitle seç : \n"
 "\n"
 
-#: src/groups.c:1111
+#: src/groups.c:1098
 msgid "   Select the group to remove the window from.  "
 msgstr " Pencerenin silnecek olduðu kitleyi seç ."
 
-#: src/groups.c:1121
+#: src/groups.c:1108
 msgid "  Select the group to break  "
 msgstr " Kýrýlacak kitleyi seç "
 
@@ -1408,18 +1210,14 @@ msgid ""
 msgstr ""
 
 #: src/hints.c:538
-msgid "ERROR!"
-msgstr ""
+#, fuzzy
+msgid "Selection Error!"
+msgstr "TextClass hatasý!"
 
 #: src/hints.c:538
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""
-
-#: src/iclass.c:331
-#, fuzzy
-msgid "Imageclass Error!"
-msgstr "ImageClass hatasý!"
 
 #: src/iclass.c:688
 #, c-format
@@ -1726,11 +1524,11 @@ msgstr ""
 msgid "Window Options"
 msgstr "Pencere ayarlarý"
 
-#: src/pager.c:991 config/strings.c:53 config/strings.c:168
+#: src/pager.c:991 config/strings.c:53 config/strings.c:170
 msgid "Iconify"
 msgstr "Simgeleþtir"
 
-#: src/pager.c:999 config/strings.c:167
+#: src/pager.c:999 config/strings.c:169
 msgid "Annihilate"
 msgstr "Öldür"
 
@@ -2131,7 +1929,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "Pencere gösterimlerini \"saveunder\"'leri kullanýp azalt"
 
-#: src/settings.c:512 config/strings.c:179
+#: src/settings.c:512 config/strings.c:181
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Karýþýk ayarlar"
@@ -2321,7 +2119,7 @@ msgstr "Býrakým seviyesi"
 msgid "Window List Skip"
 msgstr "Pencere çizgiyesinde kaydetme"
 
-#: src/snaps.c:879 config/strings.c:178
+#: src/snaps.c:879 config/strings.c:180
 msgid "Opacity"
 msgstr ""
 
@@ -2428,10 +2226,6 @@ msgstr ""
 "E ses sunucusuyla iletiþim kurarken (\"Esound\") hata oldu .\n"
 "Ses kapatýlcaktýr .\n"
 
-#: src/sound.c:362 src/sound.c:440
-msgid "Sound"
-msgstr ""
-
 #: src/sound.c:427
 msgid "Enable sounds"
 msgstr "Sesi aç"
@@ -2443,6 +2237,10 @@ msgid ""
 msgstr ""
 "Kurulum vaktinde EsounD bulunamadýðý\n"
 "için ses desteði yoktur ."
+
+#: src/sound.c:440
+msgid "Sound"
+msgstr ""
 
 #: src/sound.c:441
 msgid "Audio Settings"
@@ -2482,11 +2280,6 @@ msgstr "Masaüstü ayarlarý"
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Otomatik öne getirim"
-
-#: src/tclass.c:98
-#, fuzzy
-msgid "Textclass Error!"
-msgstr "TextClass hatasý!"
 
 #: src/theme.c:67
 #, fuzzy, c-format
@@ -2530,11 +2323,7 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/tooltips.c:139
-msgid "ToolTip Error!"
-msgstr "ToolTip hatasý!"
-
-#: src/tooltips.c:229
+#: src/tooltips.c:228
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2547,28 +2336,28 @@ msgstr ""
 "Bu metine \"ToolTip\"lerde rastlandý\n"
 "Gözardý edip, devam ediyorum ...\n"
 
-#: src/tooltips.c:872
+#: src/tooltips.c:871
 msgid "Display Tooltips"
 msgstr "Balon yardýmlarý göster"
 
-#: src/tooltips.c:877
+#: src/tooltips.c:876
 msgid "Display Root Window Tips"
 msgstr "Ana pencere yardýmlarýný göster"
 
-#: src/tooltips.c:882
+#: src/tooltips.c:881
 msgid "Tooltip Delay:\n"
 msgstr "Balon yardýmý gösterme zaman arasý :\n"
 
-#: src/tooltips.c:893
+#: src/tooltips.c:892
 #, fuzzy
 msgid "Tooltips"
 msgstr "Balon yardýmý gösterme zaman arasý :\n"
 
-#: src/tooltips.c:894
+#: src/tooltips.c:893
 msgid "Tooltip Settings"
 msgstr "Balon yardýmý ayarlarý"
 
-#: src/tooltips.c:897
+#: src/tooltips.c:896
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
@@ -2620,7 +2409,7 @@ msgstr "Taþýnma"
 msgid "Move this window."
 msgstr ""
 
-#: config/strings.c:12
+#: config/strings.c:12 config/strings.c:14
 msgid "Shade/Unshade this window."
 msgstr ""
 
@@ -2628,10 +2417,6 @@ msgstr ""
 #, fuzzy
 msgid "Show the Window Options menu."
 msgstr "Pencere ayarlarý"
-
-#: config/strings.c:14
-msgid "Toggle the shaded (rolled-up) state of this window."
-msgstr ""
 
 #: config/strings.c:15
 #, fuzzy
@@ -2778,7 +2563,7 @@ msgstr "Alt"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:169
+#: config/strings.c:58 config/strings.c:171
 msgid "Raise"
 msgstr ""
 
@@ -2789,7 +2574,7 @@ msgstr ""
 "Bu masaüstünü baþa getirmek için \n"
 "buraya týkla .\n"
 
-#: config/strings.c:60 config/strings.c:170
+#: config/strings.c:60 config/strings.c:172
 msgid "Lower"
 msgstr ""
 
@@ -2797,7 +2582,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:62 config/strings.c:172
+#: config/strings.c:62 config/strings.c:174
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Yapýþtýr/Serbest'et"
@@ -3028,7 +2813,7 @@ msgstr "Karýþýk ayarlar"
 msgid "Enlightenment"
 msgstr "Enlightenment'ten çýk"
 
-#: config/strings.c:116 config/strings.c:182
+#: config/strings.c:116 config/strings.c:184
 #, fuzzy
 msgid "User Menus"
 msgstr "Kenar tipi"
@@ -3046,7 +2831,7 @@ msgstr "Enlightenment %s hakkýnda bilgi "
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:125 config/strings.c:187
+#: config/strings.c:125 config/strings.c:189
 #, fuzzy
 msgid "Log Out"
 msgstr " Evet, çýk"
@@ -3146,125 +2931,303 @@ msgid "100%"
 msgstr ""
 
 #: config/strings.c:150
-msgid "Opaque when focused"
+msgid "Focused opacity 100%"
 msgstr ""
 
 #: config/strings.c:151
+#, fuzzy
+msgid "Focused opacity follows unfocused"
+msgstr "Foküs fare týklamalarýný takip ediyor"
+
+#: config/strings.c:152
+#, fuzzy
+msgid "Toggle Fading"
+msgstr "Kenar zýplamasýný aç"
+
+#: config/strings.c:153
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:152
+#: config/strings.c:154
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:153
+#: config/strings.c:155
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:154
-msgid "Toggle Fixed Size"
-msgstr ""
-
-#: config/strings.c:155
-#, fuzzy
-msgid "Toggle Never Focus"
-msgstr "Katiyyen foküsleme"
-
 #: config/strings.c:156
-msgid "Toggle Click to Focus"
+msgid "Toggle Fixed Size"
 msgstr ""
 
 #: config/strings.c:157
 #, fuzzy
-msgid "Toggle Never Use Area"
+msgid "Toggle Never Focus"
 msgstr "Katiyyen foküsleme"
 
 #: config/strings.c:158
+msgid "Toggle Click to Focus"
+msgstr ""
+
+#: config/strings.c:159
+#, fuzzy
+msgid "Toggle Never Use Area"
+msgstr "Katiyyen foküsleme"
+
+#: config/strings.c:160
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Alt"
 
-#: config/strings.c:159
+#: config/strings.c:161
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "Pencere(ler)in kitlesini hýfzet"
 
-#: config/strings.c:160
-msgid "Start a new group"
-msgstr ""
-
-#: config/strings.c:161
-#, fuzzy
-msgid "Select group to add this window to"
-msgstr " Pencerenin silnecek olduðu kitleyi seç ."
-
 #: config/strings.c:162
-msgid "Add this window to the current group"
+msgid "Start a new group"
 msgstr ""
 
 #: config/strings.c:163
 #, fuzzy
+msgid "Select group to add this window to"
+msgstr " Pencerenin silnecek olduðu kitleyi seç ."
+
+#: config/strings.c:164
+msgid "Add this window to the current group"
+msgstr ""
+
+#: config/strings.c:165
+#, fuzzy
 msgid "Remove this window from a group"
 msgstr "Pencere(ler)in kitlesini hýfzet"
 
-#: config/strings.c:164
+#: config/strings.c:166
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr " Pencerenin eklencek olduðu kitleyi seç : \n"
 
-#: config/strings.c:165
+#: config/strings.c:167
 #, fuzzy
 msgid "Show/Hide this window's group(s)"
 msgstr "Bu kitleyi göster/gizle"
 
-#: config/strings.c:171
+#: config/strings.c:173
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Toplanmýþ"
 
-#: config/strings.c:173
+#: config/strings.c:175
 #, fuzzy
 msgid "Remember..."
 msgstr "Hatýrlanan ayarlar ..."
 
-#: config/strings.c:174
+#: config/strings.c:176
 #, fuzzy
 msgid "Window Size"
 msgstr "Pencere çizgiyesinde kaydetme"
 
-#: config/strings.c:175
+#: config/strings.c:177
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Foküsleme ayarlarý"
 
-#: config/strings.c:176
+#: config/strings.c:178
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Kenar tipi"
 
-#: config/strings.c:177
+#: config/strings.c:179
 #, fuzzy
 msgid "Window Groups"
 msgstr "Pencere kitle hatasý"
 
-#: config/strings.c:180
+#: config/strings.c:182
 #, fuzzy
 msgid "Remember State"
 msgstr "Hatýrlanan ayarlar ..."
 
-#: config/strings.c:183
+#: config/strings.c:185
 #, fuzzy
 msgid "User Application List"
 msgstr "Hatýrlanan uygulama özellikleri"
 
-#: config/strings.c:184
+#: config/strings.c:186
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:185
+#: config/strings.c:187
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment'ten çýk"
+
+#~ msgid "Background Error!"
+#~ msgstr "Background hatasý!"
+
+#~ msgid "Border Error!"
+#~ msgstr "Kenar hatasý!"
+
+#~ msgid "Button Error!"
+#~ msgstr "Basma hatasý!"
+
+#~ msgid "ColorModClass Error!"
+#~ msgstr "ColorModClass hatasý!"
+
+#, fuzzy
+#~ msgid "Image class"
+#~ msgstr "ImageClass hatasý!"
+
+#, fuzzy
+#~ msgid "Tooltip"
+#~ msgstr "Balon yardýmý gösterme zaman arasý :\n"
+
+#, fuzzy
+#~ msgid "Text class"
+#~ msgstr "TextClass hatasý!"
+
+#, fuzzy
+#~ msgid "Menu style"
+#~ msgstr "Kenar tipi"
+
+#, fuzzy
+#~ msgid "Border"
+#~ msgstr "Kenar tipi"
+
+#, fuzzy
+#~ msgid "Button"
+#~ msgstr "Alt"
+
+#, fuzzy
+#~ msgid "Window match"
+#~ msgstr "Pencere ayarlarý"
+
+#, fuzzy
+#~ msgid "Action class"
+#~ msgstr "ActionClass hatasý!"
+
+#~ msgid "ECursor Error!"
+#~ msgstr "ECursor hatasý!"
+
+#, fuzzy
+#~ msgid "Cursor"
+#~ msgstr "ECursor hatasý!"
+
+#~ msgid "Starting up Ripples FX..."
+#~ msgstr "Ripples FX baþlýyor ...."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Ripples Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"ripples\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Þu an titreþim efektini baþlattýn .\n"
+#~ "\n"
+#~ "Dikkatli bir þekilde masaüstü sonuna bakarsan ve \n"
+#~ "ardalanýn bir resim yada bir desen ise , o zaman\n"
+#~ "bir orada su titreþimine benzer hareketleri\n"
+#~ "görebilirsin .\n"
+#~ "\n"
+#~ "Bu efekti kapatmak için sadece baþlamak için seçtiðin\n"
+#~ "yerde , ayný efekti yeniden seç .\n"
+
+#~ msgid "Starting up Raindrops FX..."
+#~ msgstr "Yaðmur damlalarý efekti baþlýyor ..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Raindrops Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see \"raindrops\" hit the background and\n"
+#~ "make little splashes. This Effect can be VERY CPU intensive.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Þu an Yaðmur damlalarýný baþlattýn .\n"
+#~ "\n"
+#~ "Dikkatli bir þekilde masaüstü sonuna bakarsan ve \n"
+#~ "ardalanýn bir resim yada bir desen ise , o zaman\n"
+#~ "deðiþik yerlerde su / yaðmur damlalarýnýn iz\n"
+#~ "býraktýðýný göreceksin . (Hýzlý iþlemciyi bile terletir)\n"
+#~ "\n"
+#~ "Bu efekti kapatmak için sadece baþlamak için seçtiðin\n"
+#~ "yerde , ayný efekti yeniden seç .\n"
+
+#~ msgid "Starting up Waves FX..."
+#~ msgstr "Dalgalar efekti baþlýyor ..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Waves Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"waves\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Þu an dalgalar efektini baþlattýn .\n"
+#~ "\n"
+#~ "Dikkatli bir þekilde masaüstü sonuna bakarsan ve \n"
+#~ "ardalanýn bir resim yada bir desen ise , o zaman\n"
+#~ "deðiþik yerlerde su dalgalarýnýn iz\n"
+#~ "býraktýðýný ve sallanýmýný göreceksin . \n"
+#~ "\n"
+#~ "Bu efekti kapatmak için sadece baþlamak için seçtiðin\n"
+#~ "yerde , ayný efekti yeniden seç .\n"
+
+#~ msgid "Starting up imagespinners FX..."
+#~ msgstr "Imagespinners FX baþlýyor ..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the imagespinners Effect.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Þu an resim delisi efektini baþlattýn .\n"
+#~ "\n"
+#~ "Bu efekti kapatmak için sadece baþlamak için seçtiðin\n"
+#~ "yerde , ayný efekti yeniden seç .\n"
+
+#~ msgid "Cannot comply"
+#~ msgstr "Tamamlayamadým"
+
+#~ msgid ""
+#~ "Iconboxes and Pagers are disallowed from being\n"
+#~ "members of a group. You cannot add these windows\n"
+#~ "to a group.\n"
+#~ msgstr ""
+#~ "Simge kutularý ve gözeyler bit kitlenin üyesi\n"
+#~ "olmaktan mahrum . Bu pencereleri hiç bir kitleye\n"
+#~ "ekleyemeyeceksin .\n"
+
+#, fuzzy
+#~ msgid "Imageclass Error!"
+#~ msgstr "ImageClass hatasý!"
+
+#, fuzzy
+#~ msgid "Textclass Error!"
+#~ msgstr "TextClass hatasý!"
+
+#~ msgid "ToolTip Error!"
+#~ msgstr "ToolTip hatasý!"
 
 #~ msgid "This Iconbox Settings..."
 #~ msgstr "Bu simge kutusunun ayarlarý ..."

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-12-09 19:48+0100\n"
+"POT-Creation-Date: 2006-12-10 16:00+0100\n"
 "PO-Revision-Date: 2006-11-06 02:41+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -46,11 +46,6 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#
-#: src/aclass.c:208
-msgid "ActionClass Error!"
-msgstr "actionclass エラー"
-
 #: src/aclass.c:208 src/backgrounds.c:241 src/borders.c:651 src/buttons.c:194
 #: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:331 src/tclass.c:98
 #: src/tooltips.c:139
@@ -60,8 +55,8 @@ msgstr "%u 参照残っています。\n"
 
 #: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1106
 #: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
-#: src/container.c:1770 src/cursors.c:178 src/iclass.c:519 src/menus.c:1718
-#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
+#: src/container.c:1770 src/cursors.c:177 src/iclass.c:519 src/menus.c:1718
+#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:175
 #: src/windowmatch.c:161
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -69,8 +64,8 @@ msgstr "CONFIG: \"%s\" にある余分なデータは無視します。\n"
 
 #: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1112
 #: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
-#: src/cursors.c:184 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
-#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:182
+#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
+#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:181
 #: src/windowmatch.c:166
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
@@ -200,17 +195,13 @@ msgstr "Enlightenment メッセージダイアログ"
 msgid "Ignore this"
 msgstr "無視する"
 
-#: src/alert.c:574 config/strings.c:124 config/strings.c:186
+#: src/alert.c:574 config/strings.c:124 config/strings.c:188
 msgid "Restart Enlightenment"
 msgstr "Enlightenment 再起動"
 
 #: src/alert.c:574 src/setup.c:251
 msgid "Quit Enlightenment"
 msgstr "Enlightenment 終了"
-
-#: src/backgrounds.c:241
-msgid "Background Error!"
-msgstr "background エラー"
 
 #: src/backgrounds.c:1578
 #, c-format
@@ -329,7 +320,7 @@ msgstr ""
 "り)"
 
 #
-#: src/backgrounds.c:2281 src/config.c:334 src/mod-trans.c:192
+#: src/backgrounds.c:2281 src/mod-trans.c:192
 msgid "Background"
 msgstr "背景"
 
@@ -344,18 +335,6 @@ msgid ""
 msgstr ""
 "Enlightenment デスクトップ\n"
 "背景設定ダイアログ\n"
-
-#: src/borders.c:651
-msgid "Border Error!"
-msgstr "border エラー"
-
-#: src/buttons.c:194
-msgid "Button Error!"
-msgstr "button エラー"
-
-#: src/cmclass.c:84
-msgid "ColorModClass Error!"
-msgstr "colormodclass エラー"
 
 #: src/cmclass.c:330
 #, c-format
@@ -446,58 +425,6 @@ msgstr ""
 "このテーマで利用している機能が新しい Enlightenment の機能なのに、\n"
 "Enlightenment がしばらく更新されていないためかもしれません。\n"
 
-#
-#: src/config.c:294
-msgid "Image class"
-msgstr "imageclass エラー"
-
-#
-#: src/config.c:299
-msgid "Tooltip"
-msgstr "ツールチップ"
-
-#: src/config.c:304
-msgid "Font"
-msgstr "フォント"
-
-#
-#: src/config.c:309
-msgid "Text class"
-msgstr "textclass エラー"
-
-#
-#: src/config.c:314
-msgid "Menu style"
-msgstr "メニュースタイル"
-
-#: src/config.c:319 src/menus.c:1941
-msgid "Menu"
-msgstr "メニュー"
-
-#
-#: src/config.c:324
-msgid "Border"
-msgstr "ボーダー"
-
-#
-#: src/config.c:329
-msgid "Button"
-msgstr "ボタン"
-
-#
-#: src/config.c:339
-msgid "Window match"
-msgstr "ウィンドウマッチ"
-
-#
-#: src/config.c:349
-msgid "Action class"
-msgstr "actionclass"
-
-#: src/config.c:354
-msgid "Slideout"
-msgstr "slideout"
-
 #: src/config.c:568
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
@@ -543,7 +470,7 @@ msgid "Settings..."
 msgstr "設定"
 
 #: src/container.c:1228 src/dialog.c:898 src/pager.c:995 config/strings.c:30
-#: config/strings.c:166
+#: config/strings.c:168
 msgid "Close"
 msgstr "閉じる"
 
@@ -659,15 +586,6 @@ msgid ""
 msgstr ""
 "Enlightenment アイコンボックス\n"
 "設定ダイアログ\n"
-
-#: src/cursors.c:127
-msgid "ECursor Error!"
-msgstr "ECursor エラー"
-
-#
-#: src/cursors.c:238
-msgid "Cursor"
-msgstr "cursor エラー"
 
 #: src/desktops.c:120
 msgid ""
@@ -983,131 +901,32 @@ msgstr ""
 "Enlightenment フォーカス\n"
 "設定ダイアログ\n"
 
-#: src/fx.c:72
-msgid "Starting up Ripples FX..."
-msgstr "さざなみ効果の開始..."
-
-#: src/fx.c:73
-msgid ""
-"\n"
-"You have just started the Ripples Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"ripples\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"さざなみ効果が始まりました。\n"
-"\n"
-"デスクトップの背景をよく見て、単色になっていない(つまり模様や画像が\n"
-"表示されている)場合、画面の下の方に水が貯っていて、上にあるものが\n"
-"すべてそこに反射して \"さざなみが立っている\" ように見えると思います。\n"
-"\n"
-"この効果を無効にするには、再度このオプションを選択してください。\n"
-"そうすればこの効果が止まります。\n"
-
-#: src/fx.c:217
-msgid "Starting up Raindrops FX..."
-msgstr "雨滴効果の開始..."
-
-#: src/fx.c:218
-msgid ""
-"\n"
-"You have just started the Raindrops Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see \"raindrops\" hit the background and\n"
-"make little splashes. This Effect can be VERY CPU intensive.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"雨滴効果が始まりました。\n"
-"\n"
-"デスクトップの背景をよく見て、単色になっていない(つまり模様や画像が\n"
-"表示されている)場合、背景に \"雨\" が降って少し水がはねているように\n"
-"見えると思います。この効果は CPU を大量に消費します。\n"
-"\n"
-"この効果を無効にするには、再度このオプションを選択してください。\n"
-"そうすればこの効果が止まります。\n"
-
-#: src/fx.c:511
-msgid "Starting up Waves FX..."
-msgstr "ウェーブ効果の開始..."
-
-#: src/fx.c:512
-msgid ""
-"\n"
-"You have just started the Waves Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"waves\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"ウェーブ効果が始まりました。\n"
-"\n"
-"デスクトップの背景をよく見て、単色になっていない(つまり模様や画像が\n"
-"表示されている)場合、画面の下の方に水が貯っていて、上にあるものが\n"
-"すべてそこに反射して \"波立っている\" ように見えると思います。\n"
-"\n"
-"この効果を無効にするには、再度このオプションを選択してください。\n"
-"そうすればこの効果が止まります。\n"
-
-#: src/fx.c:689
-msgid "Starting up imagespinners FX..."
-msgstr "Imagespinners 効果の開始..."
-
-#: src/fx.c:690
-msgid ""
-"\n"
-"You have just started the imagespinners Effect.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Imagespinners 効果が始まりました。\n"
-"\n"
-"この効果を無効にするには、再度このオプションを選択してください。\n"
-"そうすればこの効果が止まります。\n"
-
-#: src/fx.c:987
+#: src/fx.c:900
 msgid "Effects"
 msgstr "効果"
 
 #
-#: src/fx.c:990
+#: src/fx.c:903
 msgid "Enable Effect: Raindrops"
 msgstr "有効にする効果: 雨滴"
 
-#: src/fx.c:994
+#: src/fx.c:907
 msgid "Ripples"
 msgstr "さざなみ"
 
-#: src/fx.c:998
+#: src/fx.c:911
 msgid "Waves"
 msgstr "ウェーブ"
 
-#: src/fx.c:1004
+#: src/fx.c:917
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:1005
+#: src/fx.c:918
 msgid "Special FX Settings"
 msgstr "特殊効果の設定"
 
-#: src/fx.c:1008
+#: src/fx.c:921
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1115,24 +934,11 @@ msgstr ""
 "Enlightenment 特殊効果\n"
 "設定ダイアログ\n"
 
-#: src/groups.c:246
-msgid "Cannot comply"
-msgstr "グループに含めることはできません"
-
-#: src/groups.c:247
-msgid ""
-"Iconboxes and Pagers are disallowed from being\n"
-"members of a group. You cannot add these windows\n"
-"to a group.\n"
-msgstr ""
-"アイコンボックスとページャをグループに入れることは禁止されています。\n"
-"これらをグループに追加してはいけません。\n"
-
-#: src/groups.c:684
+#: src/groups.c:671
 msgid "Window Group Selection"
 msgstr "ウィンドウグループを選ぶ"
 
-#: src/groups.c:687
+#: src/groups.c:674
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -1140,11 +946,11 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "選択ダイアログ\n"
 
-#: src/groups.c:710 src/groups.c:719 src/groups.c:727 src/groups.c:914
+#: src/groups.c:697 src/groups.c:706 src/groups.c:714 src/groups.c:901
 msgid "Window Group Error"
 msgstr "ウィンドウグループエラー"
 
-#: src/groups.c:712
+#: src/groups.c:699
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1158,7 +964,7 @@ msgstr ""
 "  ているウィンドウを使って、グループからウィンドウを削除することだけです。\n"
 "\n"
 
-#: src/groups.c:720
+#: src/groups.c:707
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -1172,7 +978,7 @@ msgstr ""
 "  まず他のグループを作成してください。\n"
 "\n"
 
-#: src/groups.c:729
+#: src/groups.c:716
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -1181,11 +987,11 @@ msgstr ""
 "\n"
 "  現在、グループはありません。まずグループを作成してください。\n"
 
-#: src/groups.c:820
+#: src/groups.c:807
 msgid "   Pick the group to configure:   "
 msgstr "  設定するグループを選択してください:   "
 
-#: src/groups.c:851
+#: src/groups.c:838
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -1193,43 +999,43 @@ msgstr ""
 "  グループ内の全ウィンドウに \n"
 "  反映される操作:  "
 
-#: src/groups.c:856 src/groups.c:958
+#: src/groups.c:843 src/groups.c:945
 msgid "Changing Border Style"
 msgstr "ボーダースタイルの変更"
 
-#: src/groups.c:861 src/groups.c:963
+#: src/groups.c:848 src/groups.c:950
 msgid "Iconifying"
 msgstr "アイコン化"
 
-#: src/groups.c:866 src/groups.c:968
+#: src/groups.c:853 src/groups.c:955
 msgid "Killing"
 msgstr "強制終了"
 
-#: src/groups.c:871 src/groups.c:973
+#: src/groups.c:858 src/groups.c:960
 msgid "Moving"
 msgstr "移動"
 
-#: src/groups.c:876 src/groups.c:978
+#: src/groups.c:863 src/groups.c:965
 msgid "Raising/Lowering"
 msgstr "上に出す/下に移す"
 
-#: src/groups.c:881 src/groups.c:983
+#: src/groups.c:868 src/groups.c:970
 msgid "Sticking"
 msgstr "常時表示"
 
-#: src/groups.c:886 src/groups.c:988
+#: src/groups.c:873 src/groups.c:975
 msgid "Shading"
 msgstr "シェード"
 
-#: src/groups.c:891 src/groups.c:993
+#: src/groups.c:878 src/groups.c:980
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "一緒にシェード/アイコン化/常時表示化する"
 
-#: src/groups.c:898
+#: src/groups.c:885
 msgid "Window Group Settings"
 msgstr "ウィンドウグループの設定"
 
-#: src/groups.c:901
+#: src/groups.c:888
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -1237,7 +1043,7 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "設定ダイアログ\n"
 
-#: src/groups.c:916
+#: src/groups.c:903
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1247,28 +1053,28 @@ msgstr ""
 "  このウィンドウは現在どのグループにも属していません。\n"
 "\n"
 
-#: src/groups.c:951
+#: src/groups.c:938
 msgid " Per-group settings: "
 msgstr " グループごとの設定: "
 
-#: src/groups.c:1002
+#: src/groups.c:989
 msgid " Global settings: "
 msgstr " 全般の設定:  "
 
-#: src/groups.c:1006
+#: src/groups.c:993
 msgid "Swap Window Locations"
 msgstr "ウィンドウ位置を交換する"
 
 #
-#: src/groups.c:1012 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:775
 msgid "Groups"
 msgstr "グループ"
 
-#: src/groups.c:1013
+#: src/groups.c:1000
 msgid "Default Group Control Settings"
 msgstr "グループ管理のデフォルト設定"
 
-#: src/groups.c:1016
+#: src/groups.c:1003
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1276,11 +1082,11 @@ msgstr ""
 "Enlightenment グループ管理の\n"
 "デフォルト設定ダイアログ\n"
 
-#: src/groups.c:1055
+#: src/groups.c:1042
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " このウィンドウが参加するグループを選択してください:  \n"
 
-#: src/groups.c:1093
+#: src/groups.c:1080
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -1300,11 +1106,11 @@ msgstr ""
 "  このウィンドウが参加する別のグループを選択してください :\n"
 "\n"
 
-#: src/groups.c:1111
+#: src/groups.c:1098
 msgid "   Select the group to remove the window from.  "
 msgstr "  削除するウィンドウが属しているグループを選択してください。"
 
-#: src/groups.c:1121
+#: src/groups.c:1108
 msgid "  Select the group to break  "
 msgstr " 破棄するグループを選択してください。 "
 
@@ -1406,19 +1212,16 @@ msgstr ""
 "まず稼働中のウィンドウマネージャを終了してください。\n"
 "そうすれば Enlightenment が正常に起動できます。\n"
 
+#
 #: src/hints.c:538
-msgid "ERROR!"
-msgstr ""
+#, fuzzy
+msgid "Selection Error!"
+msgstr "actionclass エラー"
 
 #: src/hints.c:538
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""
-
-#
-#: src/iclass.c:331
-msgid "Imageclass Error!"
-msgstr "imageclass エラー"
 
 #: src/iclass.c:688
 #, c-format
@@ -1721,11 +1524,11 @@ msgstr ""
 msgid "Window Options"
 msgstr "ウィンドウオプション"
 
-#: src/pager.c:991 config/strings.c:53 config/strings.c:168
+#: src/pager.c:991 config/strings.c:53 config/strings.c:170
 msgid "Iconify"
 msgstr "アイコン化"
 
-#: src/pager.c:999 config/strings.c:167
+#: src/pager.c:999 config/strings.c:169
 msgid "Annihilate"
 msgstr "強制終了"
 
@@ -2123,7 +1926,7 @@ msgstr "ログイン後、上下にスライドする初期画面を出す"
 msgid "Use saveunders to reduce window exposures"
 msgstr "セーブアンダー機能を使いウィンドウ再描画時の処理を減らす"
 
-#: src/settings.c:512 config/strings.c:179
+#: src/settings.c:512 config/strings.c:181
 msgid "Miscellaneous"
 msgstr "その他"
 
@@ -2307,7 +2110,7 @@ msgstr "ウィンドウの上下関係"
 msgid "Window List Skip"
 msgstr "ウィンドウリストのスキップ"
 
-#: src/snaps.c:879 config/strings.c:178
+#: src/snaps.c:879 config/strings.c:180
 msgid "Opacity"
 msgstr "不透明度"
 
@@ -2410,10 +2213,6 @@ msgstr ""
 "サーバー(Esound)との通信中にエラーが起きました。オーディオを無効\n"
 "にします。\n"
 
-#: src/sound.c:362 src/sound.c:440
-msgid "Sound"
-msgstr "サウンド"
-
 #: src/sound.c:427
 msgid "Enable sounds"
 msgstr "音響機能を有効にする"
@@ -2425,6 +2224,10 @@ msgid ""
 msgstr ""
 "コンパイル時に EsounD が存在しなかったので\n"
 "オーディオは利用できません"
+
+#: src/sound.c:440
+msgid "Sound"
+msgstr "サウンド"
 
 #: src/sound.c:441
 msgid "Audio Settings"
@@ -2464,11 +2267,6 @@ msgstr "システムトレイオプション"
 #: src/systray.c:455
 msgid "Systray Settings"
 msgstr "システムトレイの設定"
-
-#
-#: src/tclass.c:98
-msgid "Textclass Error!"
-msgstr "textclass エラー"
 
 #: src/theme.c:67
 #, c-format
@@ -2516,11 +2314,7 @@ msgstr ""
 " %s/themes/\n"
 "にもテーマが見つかりません。このまま進めてもほとんど無意味です。\n"
 
-#: src/tooltips.c:139
-msgid "ToolTip Error!"
-msgstr "tooltip エラー"
-
-#: src/tooltips.c:229
+#: src/tooltips.c:228
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2533,28 +2327,28 @@ msgstr ""
 "%s\n"
 "無視して処理を継続します...\n"
 
-#: src/tooltips.c:872
+#: src/tooltips.c:871
 msgid "Display Tooltips"
 msgstr "ツールチップを表示する"
 
-#: src/tooltips.c:877
+#: src/tooltips.c:876
 msgid "Display Root Window Tips"
 msgstr "ルートウィンドウのツールチップを表示する"
 
-#: src/tooltips.c:882
+#: src/tooltips.c:881
 msgid "Tooltip Delay:\n"
 msgstr "ツールチップが表示されるまでの時間\n"
 
 #
-#: src/tooltips.c:893
+#: src/tooltips.c:892
 msgid "Tooltips"
 msgstr "ツールチップ"
 
-#: src/tooltips.c:894
+#: src/tooltips.c:893
 msgid "Tooltip Settings"
 msgstr "ツールチップの設定"
 
-#: src/tooltips.c:897
+#: src/tooltips.c:896
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
@@ -2608,7 +2402,7 @@ msgstr "移動する"
 msgid "Move this window."
 msgstr "このウィンドウを動かす"
 
-#: config/strings.c:12
+#: config/strings.c:12 config/strings.c:14
 msgid "Shade/Unshade this window."
 msgstr "このウィンドウをシェードまたはアンシェードする"
 
@@ -2616,10 +2410,6 @@ msgstr "このウィンドウをシェードまたはアンシェードする"
 #: config/strings.c:13
 msgid "Show the Window Options menu."
 msgstr "ウィンドウオプションメニューを表示する"
-
-#: config/strings.c:14
-msgid "Toggle the shaded (rolled-up) state of this window."
-msgstr "このウィンドウのシェード状態を切替える"
 
 #
 #: config/strings.c:15
@@ -2766,7 +2556,7 @@ msgstr "さらにボタンを"
 msgid "Show more buttons."
 msgstr "さらにボタンを表示する"
 
-#: config/strings.c:58 config/strings.c:169
+#: config/strings.c:58 config/strings.c:171
 msgid "Raise"
 msgstr "上へ出す"
 
@@ -2775,7 +2565,7 @@ msgstr "上へ出す"
 msgid "Raise this window to the top."
 msgstr "このウィンドウを上へ出す"
 
-#: config/strings.c:60 config/strings.c:170
+#: config/strings.c:60 config/strings.c:172
 msgid "Lower"
 msgstr "下に移す"
 
@@ -2784,7 +2574,7 @@ msgid "Lower this window."
 msgstr "このウィンドウを下に移す"
 
 #
-#: config/strings.c:62 config/strings.c:172
+#: config/strings.c:62 config/strings.c:174
 msgid "Stick/Unstick"
 msgstr "常時表示／解除"
 
@@ -3009,7 +2799,7 @@ msgstr "その他の設定 ..."
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:116 config/strings.c:182
+#: config/strings.c:116 config/strings.c:184
 msgid "User Menus"
 msgstr "ユーザーメニュー"
 
@@ -3027,7 +2817,7 @@ msgid "About this theme"
 msgstr "このテーマについて"
 
 #
-#: config/strings.c:125 config/strings.c:187
+#: config/strings.c:125 config/strings.c:189
 msgid "Log Out"
 msgstr "ログアウト"
 
@@ -3124,121 +2914,307 @@ msgid "100%"
 msgstr ""
 
 #: config/strings.c:150
-msgid "Opaque when focused"
+msgid "Focused opacity 100%"
 msgstr ""
 
 #: config/strings.c:151
+#, fuzzy
+msgid "Focused opacity follows unfocused"
+msgstr "クリックしたウィンドウがフォーカスを得る"
+
+#: config/strings.c:152
+#, fuzzy
+msgid "Toggle Fading"
+msgstr "フェーディングを有効にする"
+
+#: config/strings.c:153
 msgid "Toggle Shadows"
 msgstr "シャドー切替え"
 
-#: config/strings.c:152
+#: config/strings.c:154
 msgid "Toggle Skip Window Lists"
 msgstr "ウィンドウリストのスキップ／解除"
 
-#: config/strings.c:153
+#: config/strings.c:155
 msgid "Toggle Fixed Position"
 msgstr "位置固定／解除"
 
-#: config/strings.c:154
+#: config/strings.c:156
 msgid "Toggle Fixed Size"
 msgstr "サイズ固定／解除"
 
 #
-#: config/strings.c:155
+#: config/strings.c:157
 msgid "Toggle Never Focus"
 msgstr "フォーカスを受けない／受ける"
 
-#: config/strings.c:156
+#: config/strings.c:158
 msgid "Toggle Click to Focus"
 msgstr "クリックでフォーカス／解除"
 
-#: config/strings.c:157
+#: config/strings.c:159
 msgid "Toggle Never Use Area"
 msgstr "エリアを使わない／使う"
 
 #
-#: config/strings.c:158
+#: config/strings.c:160
 msgid "Toggle Button Grabs"
 msgstr "ボタンのグラブ／解除"
 
 #
-#: config/strings.c:159
+#: config/strings.c:161
 msgid "Configure this window's group(s)"
 msgstr "このウィンドウのグループを設定する"
 
-#: config/strings.c:160
+#: config/strings.c:162
 msgid "Start a new group"
 msgstr "新しいグループを開始する"
 
 #
-#: config/strings.c:161
+#: config/strings.c:163
 msgid "Select group to add this window to"
 msgstr " このウィンドウを追加するグループを選択する"
 
-#: config/strings.c:162
+#: config/strings.c:164
 msgid "Add this window to the current group"
 msgstr "このウィンドウを現在のグループに追加する"
 
 #
-#: config/strings.c:163
+#: config/strings.c:165
 msgid "Remove this window from a group"
 msgstr "このウィンドウをグループから削除する"
 
 #
-#: config/strings.c:164
+#: config/strings.c:166
 msgid "Destroy a group this window belongs to"
 msgstr " このウィンドウが属するグループを破棄する"
 
 #
-#: config/strings.c:165
+#: config/strings.c:167
 msgid "Show/Hide this window's group(s)"
 msgstr "このウィンドウのグループを表示する／隠す"
 
 #
-#: config/strings.c:171
+#: config/strings.c:173
 msgid "Shade/Unshade"
 msgstr "シェード／アンシェード"
 
 #
-#: config/strings.c:173
+#: config/strings.c:175
 msgid "Remember..."
 msgstr "記憶する..."
 
 #
-#: config/strings.c:174
+#: config/strings.c:176
 msgid "Window Size"
 msgstr "ウィンドウサイズ"
 
 #
-#: config/strings.c:175
+#: config/strings.c:177
 msgid "Set Stacking"
 msgstr "積み重ね順"
 
-#: config/strings.c:176
+#: config/strings.c:178
 msgid "Set Border Style"
 msgstr "ボーダースタイルの設定"
 
-#: config/strings.c:177
+#: config/strings.c:179
 msgid "Window Groups"
 msgstr "ウィンドウグループ"
 
 #
-#: config/strings.c:180
+#: config/strings.c:182
 msgid "Remember State"
 msgstr "記憶の状態"
 
-#: config/strings.c:183
+#: config/strings.c:185
 msgid "User Application List"
 msgstr "ユーザーアプリケーション"
 
-#: config/strings.c:184
+#: config/strings.c:186
 msgid "Other"
 msgstr "その他"
 
 #
-#: config/strings.c:185
+#: config/strings.c:187
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment Epplets"
+
+#~ msgid "Background Error!"
+#~ msgstr "background エラー"
+
+#~ msgid "Border Error!"
+#~ msgstr "border エラー"
+
+#~ msgid "Button Error!"
+#~ msgstr "button エラー"
+
+#~ msgid "ColorModClass Error!"
+#~ msgstr "colormodclass エラー"
+
+#
+#~ msgid "Image class"
+#~ msgstr "imageclass エラー"
+
+#
+#~ msgid "Tooltip"
+#~ msgstr "ツールチップ"
+
+#~ msgid "Font"
+#~ msgstr "フォント"
+
+#
+#~ msgid "Text class"
+#~ msgstr "textclass エラー"
+
+#
+#~ msgid "Menu style"
+#~ msgstr "メニュースタイル"
+
+#~ msgid "Menu"
+#~ msgstr "メニュー"
+
+#
+#~ msgid "Border"
+#~ msgstr "ボーダー"
+
+#
+#~ msgid "Button"
+#~ msgstr "ボタン"
+
+#
+#~ msgid "Window match"
+#~ msgstr "ウィンドウマッチ"
+
+#
+#~ msgid "Action class"
+#~ msgstr "actionclass"
+
+#~ msgid "Slideout"
+#~ msgstr "slideout"
+
+#~ msgid "ECursor Error!"
+#~ msgstr "ECursor エラー"
+
+#
+#~ msgid "Cursor"
+#~ msgstr "cursor エラー"
+
+#~ msgid "Starting up Ripples FX..."
+#~ msgstr "さざなみ効果の開始..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Ripples Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"ripples\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "さざなみ効果が始まりました。\n"
+#~ "\n"
+#~ "デスクトップの背景をよく見て、単色になっていない(つまり模様や画像が\n"
+#~ "表示されている)場合、画面の下の方に水が貯っていて、上にあるものが\n"
+#~ "すべてそこに反射して \"さざなみが立っている\" ように見えると思います。\n"
+#~ "\n"
+#~ "この効果を無効にするには、再度このオプションを選択してください。\n"
+#~ "そうすればこの効果が止まります。\n"
+
+#~ msgid "Starting up Raindrops FX..."
+#~ msgstr "雨滴効果の開始..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Raindrops Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see \"raindrops\" hit the background and\n"
+#~ "make little splashes. This Effect can be VERY CPU intensive.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "雨滴効果が始まりました。\n"
+#~ "\n"
+#~ "デスクトップの背景をよく見て、単色になっていない(つまり模様や画像が\n"
+#~ "表示されている)場合、背景に \"雨\" が降って少し水がはねているように\n"
+#~ "見えると思います。この効果は CPU を大量に消費します。\n"
+#~ "\n"
+#~ "この効果を無効にするには、再度このオプションを選択してください。\n"
+#~ "そうすればこの効果が止まります。\n"
+
+#~ msgid "Starting up Waves FX..."
+#~ msgstr "ウェーブ効果の開始..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Waves Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"waves\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "ウェーブ効果が始まりました。\n"
+#~ "\n"
+#~ "デスクトップの背景をよく見て、単色になっていない(つまり模様や画像が\n"
+#~ "表示されている)場合、画面の下の方に水が貯っていて、上にあるものが\n"
+#~ "すべてそこに反射して \"波立っている\" ように見えると思います。\n"
+#~ "\n"
+#~ "この効果を無効にするには、再度このオプションを選択してください。\n"
+#~ "そうすればこの効果が止まります。\n"
+
+#~ msgid "Starting up imagespinners FX..."
+#~ msgstr "Imagespinners 効果の開始..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the imagespinners Effect.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Imagespinners 効果が始まりました。\n"
+#~ "\n"
+#~ "この効果を無効にするには、再度このオプションを選択してください。\n"
+#~ "そうすればこの効果が止まります。\n"
+
+#~ msgid "Cannot comply"
+#~ msgstr "グループに含めることはできません"
+
+#~ msgid ""
+#~ "Iconboxes and Pagers are disallowed from being\n"
+#~ "members of a group. You cannot add these windows\n"
+#~ "to a group.\n"
+#~ msgstr ""
+#~ "アイコンボックスとページャをグループに入れることは禁止されています。\n"
+#~ "これらをグループに追加してはいけません。\n"
+
+#
+#~ msgid "Imageclass Error!"
+#~ msgstr "imageclass エラー"
+
+#
+#~ msgid "Textclass Error!"
+#~ msgstr "textclass エラー"
+
+#~ msgid "ToolTip Error!"
+#~ msgstr "tooltip エラー"
+
+#~ msgid "Toggle the shaded (rolled-up) state of this window."
+#~ msgstr "このウィンドウのシェード状態を切替える"
 
 #~ msgid "This Iconbox Settings..."
 #~ msgstr "このアイコンボックスの設定..."

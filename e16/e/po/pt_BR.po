@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-12-09 19:48+0100\n"
+"POT-Creation-Date: 2006-12-10 16:00+0100\n"
 "PO-Revision-Date: 2000-02-24 16:22+0100\n"
 "Last-Translator: Roberto S. Teixeira <robteix@zaz.com.br>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -41,10 +41,6 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:208
-msgid "ActionClass Error!"
-msgstr ""
-
 #: src/aclass.c:208 src/backgrounds.c:241 src/borders.c:651 src/buttons.c:194
 #: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:331 src/tclass.c:98
 #: src/tooltips.c:139
@@ -54,8 +50,8 @@ msgstr ""
 
 #: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1106
 #: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
-#: src/container.c:1770 src/cursors.c:178 src/iclass.c:519 src/menus.c:1718
-#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
+#: src/container.c:1770 src/cursors.c:177 src/iclass.c:519 src/menus.c:1718
+#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:175
 #: src/windowmatch.c:161
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -63,8 +59,8 @@ msgstr "CONFIG: ignorando dados extras em \"%s\"\n"
 
 #: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1112
 #: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
-#: src/cursors.c:184 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
-#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:182
+#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
+#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:181
 #: src/windowmatch.c:166
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
@@ -192,17 +188,13 @@ msgstr "Mensagem de Diálogo do Enlightenment"
 msgid "Ignore this"
 msgstr "Ignorar Isso"
 
-#: src/alert.c:574 config/strings.c:124 config/strings.c:186
+#: src/alert.c:574 config/strings.c:124 config/strings.c:188
 msgid "Restart Enlightenment"
 msgstr "Reiniciar o Enlightenment"
 
 #: src/alert.c:574 src/setup.c:251
 msgid "Quit Enlightenment"
 msgstr "Sair do Enlightenment"
-
-#: src/backgrounds.c:241
-msgid "Background Error!"
-msgstr ""
 
 #: src/backgrounds.c:1578
 #, c-format
@@ -318,7 +310,7 @@ msgstr "Ordenar por Imagem"
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2281 src/config.c:334 src/mod-trans.c:192
+#: src/backgrounds.c:2281 src/mod-trans.c:192
 #, fuzzy
 msgid "Background"
 msgstr ""
@@ -333,18 +325,6 @@ msgstr "Configurações do Fundo da Área de Trabalho"
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
-msgstr ""
-
-#: src/borders.c:651
-msgid "Border Error!"
-msgstr ""
-
-#: src/buttons.c:194
-msgid "Button Error!"
-msgstr ""
-
-#: src/cmclass.c:84
-msgid "ColorModClass Error!"
 msgstr ""
 
 #: src/cmclass.c:330
@@ -440,55 +420,6 @@ msgstr ""
 "Enlightenment por algum tempo e esse tema usa novas\n"
 "funções das novas versões do Enlightenment.\n"
 
-#: src/config.c:294
-msgid "Image class"
-msgstr ""
-
-#: src/config.c:299
-#, fuzzy
-msgid "Tooltip"
-msgstr "Espera das Dicas:\n"
-
-#: src/config.c:304
-msgid "Font"
-msgstr ""
-
-#: src/config.c:309
-msgid "Text class"
-msgstr ""
-
-#: src/config.c:314
-#, fuzzy
-msgid "Menu style"
-msgstr "Estilo da Borda"
-
-#: src/config.c:319 src/menus.c:1941
-msgid "Menu"
-msgstr ""
-
-#: src/config.c:324
-#, fuzzy
-msgid "Border"
-msgstr "Estilo da Borda"
-
-#: src/config.c:329
-#, fuzzy
-msgid "Button"
-msgstr "Fundo"
-
-#: src/config.c:339
-#, fuzzy
-msgid "Window match"
-msgstr "Opções de Janela"
-
-#: src/config.c:349
-msgid "Action class"
-msgstr ""
-
-#: src/config.c:354
-msgid "Slideout"
-msgstr ""
-
 #: src/config.c:568
 msgid "Enlightenment Starting..."
 msgstr "Inicializando o Enlightenment..."
@@ -535,7 +466,7 @@ msgid "Settings..."
 msgstr "Configurações de Foco"
 
 #: src/container.c:1228 src/dialog.c:898 src/pager.c:995 config/strings.c:30
-#: config/strings.c:166
+#: config/strings.c:168
 msgid "Close"
 msgstr "Fechar"
 
@@ -652,14 +583,6 @@ msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
 msgstr "Mensagem de Diálogo do Enlightenment"
-
-#: src/cursors.c:127
-msgid "ECursor Error!"
-msgstr ""
-
-#: src/cursors.c:238
-msgid "Cursor"
-msgstr ""
 
 #: src/desktops.c:120
 msgid ""
@@ -971,173 +894,54 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/fx.c:72
-msgid "Starting up Ripples FX..."
-msgstr "Inicializando o Efeito Ondulações..."
-
-#: src/fx.c:73
-msgid ""
-"\n"
-"You have just started the Ripples Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"ripples\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Você acaba de inicializar o Efeito Ondulações.\n"
-"\n"
-"Se você olhar cuidadosamente para o fundo da sua área de\n"
-"trabalho e se ele não tiver uma cor sólida (i.e. tem um textura\n"
-"ou imagem), você verá uma piscina d'água no fundo da sua tela\n"
-"refletindo tudo sobre ela e \"ondulações\".\n"
-"\n"
-"Para desligar esse efeito, simplesmente selecione essa opção\n"
-"novamente.\n"
-
-#: src/fx.c:217
-msgid "Starting up Raindrops FX..."
-msgstr "Inicializando o Efeito Gotas de Chuva..."
-
-#: src/fx.c:218
-msgid ""
-"\n"
-"You have just started the Raindrops Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see \"raindrops\" hit the background and\n"
-"make little splashes. This Effect can be VERY CPU intensive.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Você acaba de inicializar o Efeito Gotas de Chuva.\n"
-"\n"
-"Se você olhar cuidadosamente para o fundo da sua área de\n"
-"trabalho, e ele não tiver uma cor sólida (i.e., ela tem uma\n"
-"textura ou imagem), você verá \"gotas de chuva\" atingindo o\n"
-"fundo e fazendo pequenos esguichos. Esse efeito é pode ser\n"
-"MUITO INTENSO PARA A CPU.\n"
-"Para desativar esse efeito, simplesmente selecione essa\n"
-"opção novamente para desativá-lo.\n"
-
-#: src/fx.c:511
-msgid "Starting up Waves FX..."
-msgstr "Inicializando Efeito Ondas..."
-
-#: src/fx.c:512
-msgid ""
-"\n"
-"You have just started the Waves Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"waves\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Você acaba de inicializar o Efeito Ondas.\n"
-"\n"
-"Se você olhar cuidadosamente para o fundo da sua área de trabalho\n"
-"desktop, e ele não tiver uma cor sólida (i.e. ela tem uma textura\n"
-"de fundo ou imagem), você verá uma piscina d'água no fundo da sua\n"
-"tela refletindo tudo acima dela e \"ondas\".\n"
-"\n"
-"Para desativar esse efeito, simplesmente selecione essa\n"
-"opção novamente para desativá-lo.\n"
-
-#: src/fx.c:689
-msgid "Starting up imagespinners FX..."
-msgstr "Inicializando o Efeito Giraimagem..."
-
-# Ok, isso é um problema... como diabos eu digo
-# imagespinners??? Por enquanto eu vou chutar
-# Giraimagens :)
-#: src/fx.c:690
-msgid ""
-"\n"
-"You have just started the imagespinners Effect.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Você acaba de inicializar o Efeito Giraimagens.\n"
-"\n"
-"Para desativar esse efeito, simplesmente selecione essa\n"
-"opção novamente para desativá-lo.\n"
-
-#: src/fx.c:987
+#: src/fx.c:900
 msgid "Effects"
 msgstr ""
 
-#: src/fx.c:990
+#: src/fx.c:903
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Não é possível exibir gotas de chuva"
 
-#: src/fx.c:994
+#: src/fx.c:907
 msgid "Ripples"
 msgstr ""
 
-#: src/fx.c:998
+#: src/fx.c:911
 msgid "Waves"
 msgstr ""
 
-#: src/fx.c:1004
+#: src/fx.c:917
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:1005
+#: src/fx.c:918
 msgid "Special FX Settings"
 msgstr "Configurações de Efeitos Especiais"
 
 # melhor assim, né, Rainer? :)
-#: src/fx.c:1008
+#: src/fx.c:921
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:246
-msgid "Cannot comply"
-msgstr "Incapaz de obedecer"
-
-#: src/groups.c:247
-msgid ""
-"Iconboxes and Pagers are disallowed from being\n"
-"members of a group. You cannot add these windows\n"
-"to a group.\n"
-msgstr ""
-"Porta-ícones e Pagers não podem ser membros de\n"
-"um grupo. Você não pode adicionar essas janelas a\n"
-"um grupo.\n"
-
-#: src/groups.c:684
+#: src/groups.c:671
 msgid "Window Group Selection"
 msgstr "Seleção de Grupo de Janela"
 
 # melhor assim, né, Rainer? :)
-#: src/groups.c:687
+#: src/groups.c:674
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
 
-#: src/groups.c:710 src/groups.c:719 src/groups.c:727 src/groups.c:914
+#: src/groups.c:697 src/groups.c:706 src/groups.c:714 src/groups.c:901
 msgid "Window Group Error"
 msgstr "Erro de Grupo de Janela"
 
-#: src/groups.c:712
+#: src/groups.c:699
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1151,7 +955,7 @@ msgstr ""
 "  através de uma janela que pertença a, pelo menos, um grupo.\n"
 "\n"
 
-#: src/groups.c:720
+#: src/groups.c:707
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -1166,7 +970,7 @@ msgstr ""
 "  Você deve criar outros grupos antes.  \n"
 "\n"
 
-#: src/groups.c:729
+#: src/groups.c:716
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -1176,11 +980,11 @@ msgstr ""
 "  Atualmente, nenhum grupo existe. Você deve criar um novo grupo antes.\n"
 "\n"
 
-#: src/groups.c:820
+#: src/groups.c:807
 msgid "   Pick the group to configure:   "
 msgstr "   Selecione o grupo a configurar:  "
 
-#: src/groups.c:851
+#: src/groups.c:838
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -1188,50 +992,50 @@ msgstr ""
 "  As seguintes ações são aplicadas  \n"
 "  a todos os membros do grupo:  "
 
-#: src/groups.c:856 src/groups.c:958
+#: src/groups.c:843 src/groups.c:945
 msgid "Changing Border Style"
 msgstr "Mudar o Estilo da Borda"
 
-#: src/groups.c:861 src/groups.c:963
+#: src/groups.c:848 src/groups.c:950
 msgid "Iconifying"
 msgstr "Iconificar"
 
-#: src/groups.c:866 src/groups.c:968
+#: src/groups.c:853 src/groups.c:955
 msgid "Killing"
 msgstr "Matar"
 
-#: src/groups.c:871 src/groups.c:973
+#: src/groups.c:858 src/groups.c:960
 msgid "Moving"
 msgstr "Mover"
 
-#: src/groups.c:876 src/groups.c:978
+#: src/groups.c:863 src/groups.c:965
 msgid "Raising/Lowering"
 msgstr "Levantar/Baixar"
 
-#: src/groups.c:881 src/groups.c:983
+#: src/groups.c:868 src/groups.c:970
 msgid "Sticking"
 msgstr "Grudar"
 
-#: src/groups.c:886 src/groups.c:988
+#: src/groups.c:873 src/groups.c:975
 msgid "Shading"
 msgstr "Deslizar"
 
-#: src/groups.c:891 src/groups.c:993
+#: src/groups.c:878 src/groups.c:980
 msgid "Mirror Shade/Iconify/Stick"
 msgstr ""
 
-#: src/groups.c:898
+#: src/groups.c:885
 msgid "Window Group Settings"
 msgstr "Configurações de Grupos de Janelas"
 
 # melhor assim, né, Rainer? :)
-#: src/groups.c:901
+#: src/groups.c:888
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:916
+#: src/groups.c:903
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1241,42 +1045,42 @@ msgstr ""
 "  Essa janela atualmente não pertence a nenhum grupo.  \n"
 "\n"
 
-#: src/groups.c:951
+#: src/groups.c:938
 #, fuzzy
 msgid " Per-group settings: "
 msgstr "Configurações do Pager"
 
-#: src/groups.c:1002
+#: src/groups.c:989
 msgid " Global settings: "
 msgstr ""
 
-#: src/groups.c:1006
+#: src/groups.c:993
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Opções de Janela"
 
-#: src/groups.c:1012 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:775
 #, fuzzy
 msgid "Groups"
 msgstr "Grupo %i"
 
 # sinceramente eu não entendi isso aqui...
-#: src/groups.c:1013
+#: src/groups.c:1000
 msgid "Default Group Control Settings"
 msgstr "Configurações Padrões de Grupos"
 
 # sinceramente eu não entendi isso aqui...
-#: src/groups.c:1016
+#: src/groups.c:1003
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:1055
+#: src/groups.c:1042
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Selecione o grupo ao qual essa janela pertencerá:  \n"
 
-#: src/groups.c:1093
+#: src/groups.c:1080
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -1297,11 +1101,11 @@ msgstr ""
 "  pertencerá.\n"
 "\n"
 
-#: src/groups.c:1111
+#: src/groups.c:1098
 msgid "   Select the group to remove the window from.  "
 msgstr "   Selecione o grupo do qual esta janela será removida.  "
 
-#: src/groups.c:1121
+#: src/groups.c:1108
 msgid "  Select the group to break  "
 msgstr "  Selecione o grupo a dividir "
 
@@ -1401,16 +1205,13 @@ msgid ""
 msgstr ""
 
 #: src/hints.c:538
-msgid "ERROR!"
-msgstr ""
+#, fuzzy
+msgid "Selection Error!"
+msgstr "Opções da Área de Trabalho"
 
 #: src/hints.c:538
 #, c-format
 msgid "Could not acquire selection: %s"
-msgstr ""
-
-#: src/iclass.c:331
-msgid "Imageclass Error!"
 msgstr ""
 
 #: src/iclass.c:688
@@ -1713,11 +1514,11 @@ msgstr "Mensagem de Diálogo do Enlightenment"
 msgid "Window Options"
 msgstr "Opções de Janela"
 
-#: src/pager.c:991 config/strings.c:53 config/strings.c:168
+#: src/pager.c:991 config/strings.c:53 config/strings.c:170
 msgid "Iconify"
 msgstr "Iconificar"
 
-#: src/pager.c:999 config/strings.c:167
+#: src/pager.c:999 config/strings.c:169
 msgid "Annihilate"
 msgstr "Aniquilar"
 
@@ -2110,7 +1911,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "Usar saveunders para reduzir exposição de janelas"
 
-#: src/settings.c:512 config/strings.c:179
+#: src/settings.c:512 config/strings.c:181
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Configurações deste Porta-Ícone..."
@@ -2298,7 +2099,7 @@ msgstr ""
 msgid "Window List Skip"
 msgstr ""
 
-#: src/snaps.c:879 config/strings.c:178
+#: src/snaps.c:879 config/strings.c:180
 msgid "Opacity"
 msgstr ""
 
@@ -2399,10 +2200,6 @@ msgstr ""
 "Som foi ativado no Enlightenment mas ocorreu um erro ao tentar\n"
 "comunicar com o servidor de som (EsounD). O som será destivado.\n"
 
-#: src/sound.c:362 src/sound.c:440
-msgid "Sound"
-msgstr ""
-
 #: src/sound.c:427
 msgid "Enable sounds"
 msgstr "Ativar sons"
@@ -2414,6 +2211,10 @@ msgid ""
 msgstr ""
 "Som não disponível já que EsounD não\n"
 "estava presente durante a compilação."
+
+#: src/sound.c:440
+msgid "Sound"
+msgstr ""
 
 #: src/sound.c:441
 msgid "Audio Settings"
@@ -2452,10 +2253,6 @@ msgstr "Opções da Área de Trabalho"
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Configurações do Autolevantar"
-
-#: src/tclass.c:98
-msgid "Textclass Error!"
-msgstr ""
 
 #: src/theme.c:67
 #, fuzzy, c-format
@@ -2499,11 +2296,7 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/tooltips.c:139
-msgid "ToolTip Error!"
-msgstr ""
-
-#: src/tooltips.c:229
+#: src/tooltips.c:228
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2516,29 +2309,29 @@ msgstr ""
 "%s\n"
 "Vou ignorar e continuar...\n"
 
-#: src/tooltips.c:872
+#: src/tooltips.c:871
 msgid "Display Tooltips"
 msgstr "Exibir Dicas"
 
-#: src/tooltips.c:877
+#: src/tooltips.c:876
 msgid "Display Root Window Tips"
 msgstr "Exibir Dicas da Janela Raíz"
 
-#: src/tooltips.c:882
+#: src/tooltips.c:881
 msgid "Tooltip Delay:\n"
 msgstr "Espera das Dicas:\n"
 
-#: src/tooltips.c:893
+#: src/tooltips.c:892
 #, fuzzy
 msgid "Tooltips"
 msgstr "Espera das Dicas:\n"
 
-#: src/tooltips.c:894
+#: src/tooltips.c:893
 msgid "Tooltip Settings"
 msgstr "Configurações Dicas"
 
 # melhor assim, né, Rainer? :)
-#: src/tooltips.c:897
+#: src/tooltips.c:896
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
@@ -2588,7 +2381,7 @@ msgstr "Mover"
 msgid "Move this window."
 msgstr ""
 
-#: config/strings.c:12
+#: config/strings.c:12 config/strings.c:14
 msgid "Shade/Unshade this window."
 msgstr ""
 
@@ -2596,10 +2389,6 @@ msgstr ""
 #, fuzzy
 msgid "Show the Window Options menu."
 msgstr "Opções de Janela"
-
-#: config/strings.c:14
-msgid "Toggle the shaded (rolled-up) state of this window."
-msgstr ""
 
 #: config/strings.c:15
 #, fuzzy
@@ -2746,7 +2535,7 @@ msgstr "Fundo"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:169
+#: config/strings.c:58 config/strings.c:171
 msgid "Raise"
 msgstr ""
 
@@ -2757,7 +2546,7 @@ msgstr ""
 "Clique aqui para levantar essa área\n"
 "de trabalho para o topo.\n"
 
-#: config/strings.c:60 config/strings.c:170
+#: config/strings.c:60 config/strings.c:172
 msgid "Lower"
 msgstr ""
 
@@ -2765,7 +2554,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:62 config/strings.c:172
+#: config/strings.c:62 config/strings.c:174
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Grudar / Desgrudar"
@@ -2994,7 +2783,7 @@ msgstr "Configurações deste Porta-Ícone..."
 msgid "Enlightenment"
 msgstr "Sair do Enlightenment"
 
-#: config/strings.c:116 config/strings.c:182
+#: config/strings.c:116 config/strings.c:184
 #, fuzzy
 msgid "User Menus"
 msgstr "Estilo da Borda"
@@ -3012,7 +2801,7 @@ msgstr "Sobre o Enlightenment %s"
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:125 config/strings.c:187
+#: config/strings.c:125 config/strings.c:189
 #, fuzzy
 msgid "Log Out"
 msgstr "  Sim, sair  "
@@ -3112,123 +2901,263 @@ msgid "100%"
 msgstr ""
 
 #: config/strings.c:150
-msgid "Opaque when focused"
+msgid "Focused opacity 100%"
 msgstr ""
 
+# putz...
 #: config/strings.c:151
+#, fuzzy
+msgid "Focused opacity follows unfocused"
+msgstr "Foco segue cliques do mouse"
+
+#: config/strings.c:152
+#, fuzzy
+msgid "Toggle Fading"
+msgstr "Ativa pulo de borda"
+
+#: config/strings.c:153
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:152
+#: config/strings.c:154
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:153
+#: config/strings.c:155
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:154
+#: config/strings.c:156
 msgid "Toggle Fixed Size"
 msgstr ""
 
-#: config/strings.c:155
+#: config/strings.c:157
 msgid "Toggle Never Focus"
 msgstr ""
 
-#: config/strings.c:156
+#: config/strings.c:158
 msgid "Toggle Click to Focus"
 msgstr ""
 
-#: config/strings.c:157
+#: config/strings.c:159
 msgid "Toggle Never Use Area"
 msgstr ""
 
-#: config/strings.c:158
+#: config/strings.c:160
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Fundo"
 
-#: config/strings.c:159
+#: config/strings.c:161
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "Lembrar o grupo dessa(s) janela(s)"
 
-#: config/strings.c:160
-msgid "Start a new group"
-msgstr ""
-
-#: config/strings.c:161
-#, fuzzy
-msgid "Select group to add this window to"
-msgstr "   Selecione o grupo do qual esta janela será removida.  "
-
 #: config/strings.c:162
-msgid "Add this window to the current group"
+msgid "Start a new group"
 msgstr ""
 
 #: config/strings.c:163
 #, fuzzy
+msgid "Select group to add this window to"
+msgstr "   Selecione o grupo do qual esta janela será removida.  "
+
+#: config/strings.c:164
+msgid "Add this window to the current group"
+msgstr ""
+
+#: config/strings.c:165
+#, fuzzy
 msgid "Remove this window from a group"
 msgstr "Lembrar o grupo dessa(s) janela(s)"
 
-#: config/strings.c:164
+#: config/strings.c:166
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr "  Selecione o grupo ao qual essa janela pertencerá:  \n"
 
-#: config/strings.c:165
+#: config/strings.c:167
 #, fuzzy
 msgid "Show/Hide this window's group(s)"
 msgstr "Exibir/Esconder esse grupo"
 
-#: config/strings.c:171
+#: config/strings.c:173
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Estado Baixada"
 
-#: config/strings.c:173
+#: config/strings.c:175
 #, fuzzy
 msgid "Remember..."
 msgstr "Configurações do Pager..."
 
-#: config/strings.c:174
+#: config/strings.c:176
 #, fuzzy
 msgid "Window Size"
 msgstr "Opções de Janela"
 
-#: config/strings.c:175
+#: config/strings.c:177
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Configurações de Foco"
 
-#: config/strings.c:176
+#: config/strings.c:178
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Estilo da Borda"
 
-#: config/strings.c:177
+#: config/strings.c:179
 #, fuzzy
 msgid "Window Groups"
 msgstr "Erro de Grupo de Janela"
 
-#: config/strings.c:180
+#: config/strings.c:182
 #, fuzzy
 msgid "Remember State"
 msgstr "Configurações do Pager..."
 
-#: config/strings.c:183
+#: config/strings.c:185
 #, fuzzy
 msgid "User Application List"
 msgstr "Reiniciar aplicação no login"
 
-#: config/strings.c:184
+#: config/strings.c:186
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:185
+#: config/strings.c:187
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Sair do Enlightenment"
+
+#, fuzzy
+#~ msgid "Tooltip"
+#~ msgstr "Espera das Dicas:\n"
+
+#, fuzzy
+#~ msgid "Menu style"
+#~ msgstr "Estilo da Borda"
+
+#, fuzzy
+#~ msgid "Border"
+#~ msgstr "Estilo da Borda"
+
+#, fuzzy
+#~ msgid "Button"
+#~ msgstr "Fundo"
+
+#, fuzzy
+#~ msgid "Window match"
+#~ msgstr "Opções de Janela"
+
+#~ msgid "Starting up Ripples FX..."
+#~ msgstr "Inicializando o Efeito Ondulações..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Ripples Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"ripples\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Você acaba de inicializar o Efeito Ondulações.\n"
+#~ "\n"
+#~ "Se você olhar cuidadosamente para o fundo da sua área de\n"
+#~ "trabalho e se ele não tiver uma cor sólida (i.e. tem um textura\n"
+#~ "ou imagem), você verá uma piscina d'água no fundo da sua tela\n"
+#~ "refletindo tudo sobre ela e \"ondulações\".\n"
+#~ "\n"
+#~ "Para desligar esse efeito, simplesmente selecione essa opção\n"
+#~ "novamente.\n"
+
+#~ msgid "Starting up Raindrops FX..."
+#~ msgstr "Inicializando o Efeito Gotas de Chuva..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Raindrops Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see \"raindrops\" hit the background and\n"
+#~ "make little splashes. This Effect can be VERY CPU intensive.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Você acaba de inicializar o Efeito Gotas de Chuva.\n"
+#~ "\n"
+#~ "Se você olhar cuidadosamente para o fundo da sua área de\n"
+#~ "trabalho, e ele não tiver uma cor sólida (i.e., ela tem uma\n"
+#~ "textura ou imagem), você verá \"gotas de chuva\" atingindo o\n"
+#~ "fundo e fazendo pequenos esguichos. Esse efeito é pode ser\n"
+#~ "MUITO INTENSO PARA A CPU.\n"
+#~ "Para desativar esse efeito, simplesmente selecione essa\n"
+#~ "opção novamente para desativá-lo.\n"
+
+#~ msgid "Starting up Waves FX..."
+#~ msgstr "Inicializando Efeito Ondas..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Waves Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"waves\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Você acaba de inicializar o Efeito Ondas.\n"
+#~ "\n"
+#~ "Se você olhar cuidadosamente para o fundo da sua área de trabalho\n"
+#~ "desktop, e ele não tiver uma cor sólida (i.e. ela tem uma textura\n"
+#~ "de fundo ou imagem), você verá uma piscina d'água no fundo da sua\n"
+#~ "tela refletindo tudo acima dela e \"ondas\".\n"
+#~ "\n"
+#~ "Para desativar esse efeito, simplesmente selecione essa\n"
+#~ "opção novamente para desativá-lo.\n"
+
+#~ msgid "Starting up imagespinners FX..."
+#~ msgstr "Inicializando o Efeito Giraimagem..."
+
+# Ok, isso é um problema... como diabos eu digo
+# imagespinners??? Por enquanto eu vou chutar
+# Giraimagens :)
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the imagespinners Effect.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Você acaba de inicializar o Efeito Giraimagens.\n"
+#~ "\n"
+#~ "Para desativar esse efeito, simplesmente selecione essa\n"
+#~ "opção novamente para desativá-lo.\n"
+
+#~ msgid "Cannot comply"
+#~ msgstr "Incapaz de obedecer"
+
+#~ msgid ""
+#~ "Iconboxes and Pagers are disallowed from being\n"
+#~ "members of a group. You cannot add these windows\n"
+#~ "to a group.\n"
+#~ msgstr ""
+#~ "Porta-ícones e Pagers não podem ser membros de\n"
+#~ "um grupo. Você não pode adicionar essas janelas a\n"
+#~ "um grupo.\n"
 
 #~ msgid "This Iconbox Settings..."
 #~ msgstr "Configurações deste Porta-Ícone..."

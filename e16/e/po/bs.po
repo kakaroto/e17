@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-12-09 19:48+0100\n"
+"POT-Creation-Date: 2006-12-10 16:00+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -61,11 +61,6 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:208
-#, fuzzy
-msgid "ActionClass Error!"
-msgstr "TextClass greŷka!"
-
 #: src/aclass.c:208 src/backgrounds.c:241 src/borders.c:651 src/buttons.c:194
 #: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:331 src/tclass.c:98
 #: src/tooltips.c:139
@@ -75,8 +70,8 @@ msgstr "%u referenca ostaje\n"
 
 #: src/aclass.c:293 src/backgrounds.c:1107 src/borders.c:1106
 #: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:248
-#: src/container.c:1770 src/cursors.c:178 src/iclass.c:519 src/menus.c:1718
-#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:176
+#: src/container.c:1770 src/cursors.c:177 src/iclass.c:519 src/menus.c:1718
+#: src/menus.c:1828 src/slideout.c:427 src/tclass.c:255 src/tooltips.c:175
 #: src/windowmatch.c:161
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -84,8 +79,8 @@ msgstr "CONFIG: ignoriŷem dodatni sadrŵaj u \"%s\"\n"
 
 #: src/aclass.c:301 src/backgrounds.c:1115 src/borders.c:1112
 #: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:256
-#: src/cursors.c:184 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
-#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:182
+#: src/cursors.c:183 src/iclass.c:524 src/menus.c:1723 src/menus.c:1834
+#: src/slideout.c:433 src/tclass.c:261 src/tooltips.c:181
 #: src/windowmatch.c:166
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
@@ -211,17 +206,13 @@ msgstr "Enlightenment dijalog poruka"
 msgid "Ignore this"
 msgstr "Ignoriŷi ovo"
 
-#: src/alert.c:574 config/strings.c:124 config/strings.c:186
+#: src/alert.c:574 config/strings.c:124 config/strings.c:188
 msgid "Restart Enlightenment"
 msgstr "Ponovo pokreni Enlightenment"
 
 #: src/alert.c:574 src/setup.c:251
 msgid "Quit Enlightenment"
 msgstr "Iza�i iz Enlightenment-a"
-
-#: src/backgrounds.c:241
-msgid "Background Error!"
-msgstr "Greŷka pozadine!"
 
 #: src/backgrounds.c:1578
 #, c-format
@@ -337,7 +328,7 @@ msgstr "Sortiraj po Slici"
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2281 src/config.c:334 src/mod-trans.c:192
+#: src/backgrounds.c:2281 src/mod-trans.c:192
 msgid "Background"
 msgstr "Pozadina"
 
@@ -352,18 +343,6 @@ msgid ""
 msgstr ""
 "Enlightenment Desktop\n"
 "dijalog osobina pozadine\n"
-
-#: src/borders.c:651
-msgid "Border Error!"
-msgstr "Rub greŷka!"
-
-#: src/buttons.c:194
-msgid "Button Error!"
-msgstr "Greŷka dugmeta!"
-
-#: src/cmclass.c:84
-msgid "ColorModClass Error!"
-msgstr "ColorModClass greŷka!"
 
 #: src/cmclass.c:330
 #, c-format
@@ -457,59 +436,6 @@ msgstr ""
 "dok ova tema koristi prednosti novih\n"
 "dodataka Enlightenment-a u novim verzijma.\n"
 
-#: src/config.c:294
-#, fuzzy
-msgid "Image class"
-msgstr "ImageClass greŷka!"
-
-#: src/config.c:299
-#, fuzzy
-msgid "Tooltip"
-msgstr "Savjeti:"
-
-#: src/config.c:304
-msgid "Font"
-msgstr ""
-
-#: src/config.c:309
-#, fuzzy
-msgid "Text class"
-msgstr "TextClass greŷka!"
-
-#: src/config.c:314
-#, fuzzy
-msgid "Menu style"
-msgstr "Stil ruba"
-
-#: src/config.c:319 src/menus.c:1941
-#, fuzzy
-msgid "Menu"
-msgstr "Izbornici:"
-
-#: src/config.c:324
-#, fuzzy
-msgid "Border"
-msgstr "Rubovi:"
-
-#: src/config.c:329
-#, fuzzy
-msgid "Button"
-msgstr "Dno"
-
-#: src/config.c:339
-#, fuzzy
-msgid "Window match"
-msgstr "Opcije prozora"
-
-#: src/config.c:349
-#, fuzzy
-msgid "Action class"
-msgstr "ActionClass Greŷka!"
-
-#: src/config.c:354
-msgid "Slideout"
-msgstr ""
-
 #: src/config.c:568
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment se pokre�e..."
@@ -556,7 +482,7 @@ msgid "Settings..."
 msgstr "Osobine usmjeravanja"
 
 #: src/container.c:1228 src/dialog.c:898 src/pager.c:995 config/strings.c:30
-#: config/strings.c:166
+#: config/strings.c:168
 msgid "Close"
 msgstr "Zatvori"
 
@@ -669,15 +595,6 @@ msgid ""
 msgstr ""
 "Enlightenment Iconbox\n"
 "dijalog osobina\n"
-
-#: src/cursors.c:127
-msgid "ECursor Error!"
-msgstr "ECursor greŷka!"
-
-#: src/cursors.c:238
-#, fuzzy
-msgid "Cursor"
-msgstr "ECursor greŷka!"
 
 #: src/desktops.c:120
 msgid ""
@@ -992,132 +909,31 @@ msgstr ""
 "Enlightenment usmjeravanje\n"
 "Dijalog osobina\n"
 
-#: src/fx.c:72
-msgid "Starting up Ripples FX..."
-msgstr "Pokre�em Ripples FX..."
-
-#: src/fx.c:73
-msgid ""
-"\n"
-"You have just started the Ripples Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"ripples\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Upravo ste pokrenuli ekekat talasa.\n"
-"\n"
-"Ako paŵljivo pogledate na pozadinu vaŷeg desktopa, primjetit\n"
-"�e te da nema istu boju ( slika ili boja pozadine), vidjet �e te bazen\n"
-"sa vodom na vaŷem ekranu koji reflektuje sve iznad sebe \"ripples\".\n"
-"\n"
-"Da bi iskljuīili ovaj efekt samo ponovo oznaīite ovu opciju i on �e\n"
-"biti iskljuīen.\n"
-
-#: src/fx.c:217
-msgid "Starting up Raindrops FX..."
-msgstr "Pokre�em Raindrops FX..."
-
-#: src/fx.c:218
-msgid ""
-"\n"
-"You have just started the Raindrops Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see \"raindrops\" hit the background and\n"
-"make little splashes. This Effect can be VERY CPU intensive.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"You have just started the Raindrops Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (i.e. has a background texture or\n"
-"image), you will see \"raindrops\" hit the background and\n"
-"make little splashes. This Effect can be VERY CPU intensive.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-
-#: src/fx.c:511
-msgid "Starting up Waves FX..."
-msgstr "Pokre�em Waves FX......"
-
-#: src/fx.c:512
-msgid ""
-"\n"
-"You have just started the Waves Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"waves\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"You have just started the Waves Effect.\n"
-"\n"
-"If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (i.e. has a background texture or\n"
-"image), you will see a pool of water at the bottom of your\n"
-"screen that reflects everything above it and \"waves\".\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-
-#: src/fx.c:689
-msgid "Starting up imagespinners FX..."
-msgstr "Pokre�em magespinners FX..."
-
-#: src/fx.c:690
-msgid ""
-"\n"
-"You have just started the imagespinners Effect.\n"
-"\n"
-"To disable this effect just select this option again to toggle\n"
-"it off.\n"
-msgstr ""
-"\n"
-"Upravo ste pokrenuli imagespinners Effect.\n"
-"\n"
-"Da biste iskljuīili ovaj efekt izaberite ovu opciju opet da ga\n"
-"iskljuīite.\n"
-
-#: src/fx.c:987
+#: src/fx.c:900
 msgid "Effects"
 msgstr "Efekti"
 
-#: src/fx.c:990
+#: src/fx.c:903
 msgid "Enable Effect: Raindrops"
 msgstr "Ukljuīi efekt: Raindrops"
 
-#: src/fx.c:994
+#: src/fx.c:907
 msgid "Ripples"
 msgstr "Talasi"
 
-#: src/fx.c:998
+#: src/fx.c:911
 msgid "Waves"
 msgstr "Valovi"
 
-#: src/fx.c:1004
+#: src/fx.c:917
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:1005
+#: src/fx.c:918
 msgid "Special FX Settings"
 msgstr "Specijalne FX osobine"
 
-#: src/fx.c:1008
+#: src/fx.c:921
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1125,25 +941,11 @@ msgstr ""
 "Enlightenment Specijalni efekti\n"
 "dijalog osobina\n"
 
-#: src/groups.c:246
-msgid "Cannot comply"
-msgstr "Can't comply"
-
-#: src/groups.c:247
-msgid ""
-"Iconboxes and Pagers are disallowed from being\n"
-"members of a group. You cannot add these windows\n"
-"to a group.\n"
-msgstr ""
-"Iconboxes and Pagers are disallowed from being\n"
-"members of a group. You can't add these windows\n"
-"to a group.\n"
-
-#: src/groups.c:684
+#: src/groups.c:671
 msgid "Window Group Selection"
 msgstr "Izbor grupisanja prozora"
 
-#: src/groups.c:687
+#: src/groups.c:674
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -1151,11 +953,11 @@ msgstr ""
 "Enlightenment Drupisanje Prozora\n"
 "dijalog izbora\n"
 
-#: src/groups.c:710 src/groups.c:719 src/groups.c:727 src/groups.c:914
+#: src/groups.c:697 src/groups.c:706 src/groups.c:714 src/groups.c:901
 msgid "Window Group Error"
 msgstr "Grupisanje prozora greŷka"
 
-#: src/groups.c:712
+#: src/groups.c:699
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1169,7 +971,7 @@ msgstr ""
 "  kroz prozor koji pripada najmanje jednoj grupi.\n"
 "\n"
 
-#: src/groups.c:720
+#: src/groups.c:707
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -1183,7 +985,7 @@ msgstr ""
 "  Morate pokrenuti ostale grupe prvo.  \n"
 "\n"
 
-#: src/groups.c:729
+#: src/groups.c:716
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -1193,11 +995,11 @@ msgstr ""
 "  Trenutno ne postoji nijedna grupa. Morate pokrenuti grupu prvo.\n"
 "\n"
 
-#: src/groups.c:820
+#: src/groups.c:807
 msgid "   Pick the group to configure:   "
 msgstr "   Izaberi grupu za konfigurisanje:   "
 
-#: src/groups.c:851
+#: src/groups.c:838
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -1205,43 +1007,43 @@ msgstr ""
 "  Sljede�e akcije su  \n"
 "  primjenjene za sve īlanove grupe:  "
 
-#: src/groups.c:856 src/groups.c:958
+#: src/groups.c:843 src/groups.c:945
 msgid "Changing Border Style"
 msgstr "Mijenjanje stila ruba"
 
-#: src/groups.c:861 src/groups.c:963
+#: src/groups.c:848 src/groups.c:950
 msgid "Iconifying"
 msgstr "Ikonificiranje"
 
-#: src/groups.c:866 src/groups.c:968
+#: src/groups.c:853 src/groups.c:955
 msgid "Killing"
 msgstr "Ubijanje"
 
-#: src/groups.c:871 src/groups.c:973
+#: src/groups.c:858 src/groups.c:960
 msgid "Moving"
 msgstr "Premjeŷtanje"
 
-#: src/groups.c:876 src/groups.c:978
+#: src/groups.c:863 src/groups.c:965
 msgid "Raising/Lowering"
 msgstr "Pove�avanje/Smanjivanje"
 
-#: src/groups.c:881 src/groups.c:983
+#: src/groups.c:868 src/groups.c:970
 msgid "Sticking"
 msgstr "Lijepljenje"
 
-#: src/groups.c:886 src/groups.c:988
+#: src/groups.c:873 src/groups.c:975
 msgid "Shading"
 msgstr "Sijenīenje"
 
-#: src/groups.c:891 src/groups.c:993
+#: src/groups.c:878 src/groups.c:980
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Pomo�no sijen�enje/Ikonificiranje/Prijanjanje"
 
-#: src/groups.c:898
+#: src/groups.c:885
 msgid "Window Group Settings"
 msgstr "Osobine grupiranja prozora"
 
-#: src/groups.c:901
+#: src/groups.c:888
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -1249,7 +1051,7 @@ msgstr ""
 "Enlightenment grupiranje prozora\n"
 "dijalog osobina\n"
 
-#: src/groups.c:916
+#: src/groups.c:903
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1259,28 +1061,28 @@ msgstr ""
 "  Ovaj prozor trenutno ne pripada nijednoj grupi.  \n"
 "\n"
 
-#: src/groups.c:951
+#: src/groups.c:938
 msgid " Per-group settings: "
 msgstr " Osobine po grupi: "
 
-#: src/groups.c:1002
+#: src/groups.c:989
 msgid " Global settings: "
 msgstr " Globalne osobine: "
 
-#: src/groups.c:1006
+#: src/groups.c:993
 msgid "Swap Window Locations"
 msgstr "Swap prozor lokacije"
 
-#: src/groups.c:1012 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:775
 #, fuzzy
 msgid "Groups"
 msgstr "Grupa %i"
 
-#: src/groups.c:1013
+#: src/groups.c:1000
 msgid "Default Group Control Settings"
 msgstr "Uobiīajne kontrolne osobine grupe"
 
-#: src/groups.c:1016
+#: src/groups.c:1003
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1288,11 +1090,11 @@ msgstr ""
 "Enlightenment Uobiīajne\n"
 "kontrole grupa dijalog osobina\n"
 
-#: src/groups.c:1055
+#: src/groups.c:1042
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Izaberite grupu kojoj �e prozor pripadati:  \n"
 
-#: src/groups.c:1093
+#: src/groups.c:1080
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -1312,11 +1114,11 @@ msgstr ""
 "  Izaberite drugu grupu kojoj �e prozor pripadati ovdje:  \n"
 "\n"
 
-#: src/groups.c:1111
+#: src/groups.c:1098
 msgid "   Select the group to remove the window from.  "
 msgstr "   Oznaīite grupu iz koje ŵelite pomjeriti prozor.  "
 
-#: src/groups.c:1121
+#: src/groups.c:1108
 msgid "  Select the group to break  "
 msgstr "  Oznaīite grupu za slamanje  "
 
@@ -1416,18 +1218,14 @@ msgid ""
 msgstr ""
 
 #: src/hints.c:538
-msgid "ERROR!"
-msgstr ""
+#, fuzzy
+msgid "Selection Error!"
+msgstr "TextClass greŷka!"
 
 #: src/hints.c:538
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""
-
-#: src/iclass.c:331
-#, fuzzy
-msgid "Imageclass Error!"
-msgstr "ImageClass greŷka!"
 
 #: src/iclass.c:688
 #, c-format
@@ -1729,11 +1527,11 @@ msgstr ""
 msgid "Window Options"
 msgstr "Opcije prozora"
 
-#: src/pager.c:991 config/strings.c:53 config/strings.c:168
+#: src/pager.c:991 config/strings.c:53 config/strings.c:170
 msgid "Iconify"
 msgstr "Ikonificiraj"
 
-#: src/pager.c:999 config/strings.c:167
+#: src/pager.c:999 config/strings.c:169
 msgid "Annihilate"
 msgstr "Uniŷtiti"
 
@@ -2132,7 +1930,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "Koristi saveunders da bi regulisali izlaganje prozora"
 
-#: src/settings.c:512 config/strings.c:179
+#: src/settings.c:512 config/strings.c:181
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Razne osobine"
@@ -2322,7 +2120,7 @@ msgstr "Nivo slaganja"
 msgid "Window List Skip"
 msgstr "Izbjegni listu prozora"
 
-#: src/snaps.c:879 config/strings.c:178
+#: src/snaps.c:879 config/strings.c:180
 msgid "Opacity"
 msgstr ""
 
@@ -2429,10 +2227,6 @@ msgstr ""
 "u komuniciranju sa serverom za zvuk (Esound). Zvuk �e sada biti\n"
 "iskljuīen.\n"
 
-#: src/sound.c:362 src/sound.c:440
-msgid "Sound"
-msgstr ""
-
 #: src/sound.c:427
 msgid "Enable sounds"
 msgstr "Omogu�i zvukove"
@@ -2444,6 +2238,10 @@ msgid ""
 msgstr ""
 "Zvuk nije dostupan dok EsounD nije\n"
 "prisutan za vrijeme kompilacije."
+
+#: src/sound.c:440
+msgid "Sound"
+msgstr ""
 
 #: src/sound.c:441
 msgid "Audio Settings"
@@ -2483,11 +2281,6 @@ msgstr "Opcije Desktopa"
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Osobine automatskog pove�avanja"
-
-#: src/tclass.c:98
-#, fuzzy
-msgid "Textclass Error!"
-msgstr "TextClass greŷka!"
 
 #: src/theme.c:67
 #, c-format
@@ -2535,11 +2328,7 @@ msgstr ""
 " %s/themes/\n"
 "Nastavljanje ovuda je najīeŷ�i pogodak.\n"
 
-#: src/tooltips.c:139
-msgid "ToolTip Error!"
-msgstr "ToolTip greŷka!"
-
-#: src/tooltips.c:229
+#: src/tooltips.c:228
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2552,28 +2341,28 @@ msgstr ""
 "%s\n"
 "Ignoriŷem i nastavljam...\n"
 
-#: src/tooltips.c:872
+#: src/tooltips.c:871
 msgid "Display Tooltips"
 msgstr "Prikaŵi savjete"
 
-#: src/tooltips.c:877
+#: src/tooltips.c:876
 msgid "Display Root Window Tips"
 msgstr "Prikaŵi Root Prozor savjete"
 
-#: src/tooltips.c:882
+#: src/tooltips.c:881
 msgid "Tooltip Delay:\n"
 msgstr "Odgoda savjeta:\n"
 
-#: src/tooltips.c:893
+#: src/tooltips.c:892
 #, fuzzy
 msgid "Tooltips"
 msgstr "Savjeti:"
 
-#: src/tooltips.c:894
+#: src/tooltips.c:893
 msgid "Tooltip Settings"
 msgstr "Osobine savjeta"
 
-#: src/tooltips.c:897
+#: src/tooltips.c:896
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
@@ -2625,7 +2414,7 @@ msgstr "Premjeŷtanje"
 msgid "Move this window."
 msgstr ""
 
-#: config/strings.c:12
+#: config/strings.c:12 config/strings.c:14
 msgid "Shade/Unshade this window."
 msgstr ""
 
@@ -2633,10 +2422,6 @@ msgstr ""
 #, fuzzy
 msgid "Show the Window Options menu."
 msgstr "Opcije prozora"
-
-#: config/strings.c:14
-msgid "Toggle the shaded (rolled-up) state of this window."
-msgstr ""
 
 #: config/strings.c:15
 #, fuzzy
@@ -2783,7 +2568,7 @@ msgstr "Dno"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:58 config/strings.c:169
+#: config/strings.c:58 config/strings.c:171
 msgid "Raise"
 msgstr ""
 
@@ -2794,7 +2579,7 @@ msgstr ""
 "Kliknite ovdje da podignete ovaj desktop\n"
 "na vrh.\n"
 
-#: config/strings.c:60 config/strings.c:170
+#: config/strings.c:60 config/strings.c:172
 msgid "Lower"
 msgstr ""
 
@@ -2802,7 +2587,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:62 config/strings.c:172
+#: config/strings.c:62 config/strings.c:174
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Zalijepi / Odlijepi"
@@ -3015,7 +2800,7 @@ msgstr "Razne osobine ..."
 msgid "Enlightenment"
 msgstr "Iza�i iz Enlightenment-a"
 
-#: config/strings.c:116 config/strings.c:182
+#: config/strings.c:116 config/strings.c:184
 #, fuzzy
 msgid "User Menus"
 msgstr "Izbornici:"
@@ -3033,7 +2818,7 @@ msgstr "O Enlightenment-u %s"
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:125 config/strings.c:187
+#: config/strings.c:125 config/strings.c:189
 #, fuzzy
 msgid "Log Out"
 msgstr "  Da, Odjavi se  "
@@ -3133,125 +2918,306 @@ msgid "100%"
 msgstr ""
 
 #: config/strings.c:150
-msgid "Opaque when focused"
+msgid "Focused opacity 100%"
 msgstr ""
 
 #: config/strings.c:151
+#, fuzzy
+msgid "Focused opacity follows unfocused"
+msgstr "Usmjeravanje prati klikanje miŷa"
+
+#: config/strings.c:152
+#, fuzzy
+msgid "Toggle Fading"
+msgstr "Ukljuīi precrtavanje ivice"
+
+#: config/strings.c:153
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:152
+#: config/strings.c:154
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:153
+#: config/strings.c:155
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:154
-msgid "Toggle Fixed Size"
-msgstr ""
-
-#: config/strings.c:155
-#, fuzzy
-msgid "Toggle Never Focus"
-msgstr "Nikad ne usmjeravaj"
-
 #: config/strings.c:156
-msgid "Toggle Click to Focus"
+msgid "Toggle Fixed Size"
 msgstr ""
 
 #: config/strings.c:157
 #, fuzzy
-msgid "Toggle Never Use Area"
+msgid "Toggle Never Focus"
 msgstr "Nikad ne usmjeravaj"
 
 #: config/strings.c:158
+msgid "Toggle Click to Focus"
+msgstr ""
+
+#: config/strings.c:159
+#, fuzzy
+msgid "Toggle Never Use Area"
+msgstr "Nikad ne usmjeravaj"
+
+#: config/strings.c:160
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Dno"
 
-#: config/strings.c:159
+#: config/strings.c:161
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "Zapamti ove grupe prozora"
 
-#: config/strings.c:160
-msgid "Start a new group"
-msgstr ""
-
-#: config/strings.c:161
-#, fuzzy
-msgid "Select group to add this window to"
-msgstr "   Oznaīite grupu iz koje ŵelite pomjeriti prozor.  "
-
 #: config/strings.c:162
-msgid "Add this window to the current group"
+msgid "Start a new group"
 msgstr ""
 
 #: config/strings.c:163
 #, fuzzy
+msgid "Select group to add this window to"
+msgstr "   Oznaīite grupu iz koje ŵelite pomjeriti prozor.  "
+
+#: config/strings.c:164
+msgid "Add this window to the current group"
+msgstr ""
+
+#: config/strings.c:165
+#, fuzzy
 msgid "Remove this window from a group"
 msgstr "Zapamti ove grupe prozora"
 
-#: config/strings.c:164
+#: config/strings.c:166
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr "  Izaberite grupu kojoj �e prozor pripadati:  \n"
 
-#: config/strings.c:165
+#: config/strings.c:167
 #, fuzzy
 msgid "Show/Hide this window's group(s)"
 msgstr "Pokaŵi/Sakrij ovu grupu"
 
-#: config/strings.c:171
+#: config/strings.c:173
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Stanje osjen�enosti"
 
-#: config/strings.c:173
+#: config/strings.c:175
 #, fuzzy
 msgid "Remember..."
 msgstr "Osobine pam�enja ..."
 
-#: config/strings.c:174
+#: config/strings.c:176
 #, fuzzy
 msgid "Window Size"
 msgstr "Izbjegni listu prozora"
 
-#: config/strings.c:175
+#: config/strings.c:177
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Osobine usmjeravanja"
 
-#: config/strings.c:176
+#: config/strings.c:178
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Stil ruba"
 
-#: config/strings.c:177
+#: config/strings.c:179
 #, fuzzy
 msgid "Window Groups"
 msgstr "Grupisanje prozora greŷka"
 
-#: config/strings.c:180
+#: config/strings.c:182
 #, fuzzy
 msgid "Remember State"
 msgstr "Osobine pam�enja ..."
 
-#: config/strings.c:183
+#: config/strings.c:185
 #, fuzzy
 msgid "User Application List"
 msgstr "Zapam�eni atributi aplikacija"
 
-#: config/strings.c:184
+#: config/strings.c:186
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:185
+#: config/strings.c:187
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Iza�i iz Enlightenment-a"
+
+#~ msgid "Background Error!"
+#~ msgstr "Greŷka pozadine!"
+
+#~ msgid "Border Error!"
+#~ msgstr "Rub greŷka!"
+
+#~ msgid "Button Error!"
+#~ msgstr "Greŷka dugmeta!"
+
+#~ msgid "ColorModClass Error!"
+#~ msgstr "ColorModClass greŷka!"
+
+#, fuzzy
+#~ msgid "Image class"
+#~ msgstr "ImageClass greŷka!"
+
+#, fuzzy
+#~ msgid "Tooltip"
+#~ msgstr "Savjeti:"
+
+#, fuzzy
+#~ msgid "Text class"
+#~ msgstr "TextClass greŷka!"
+
+#, fuzzy
+#~ msgid "Menu style"
+#~ msgstr "Stil ruba"
+
+#, fuzzy
+#~ msgid "Menu"
+#~ msgstr "Izbornici:"
+
+#, fuzzy
+#~ msgid "Border"
+#~ msgstr "Rubovi:"
+
+#, fuzzy
+#~ msgid "Button"
+#~ msgstr "Dno"
+
+#, fuzzy
+#~ msgid "Window match"
+#~ msgstr "Opcije prozora"
+
+#, fuzzy
+#~ msgid "Action class"
+#~ msgstr "ActionClass Greŷka!"
+
+#~ msgid "ECursor Error!"
+#~ msgstr "ECursor greŷka!"
+
+#, fuzzy
+#~ msgid "Cursor"
+#~ msgstr "ECursor greŷka!"
+
+#~ msgid "Starting up Ripples FX..."
+#~ msgstr "Pokre�em Ripples FX..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Ripples Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"ripples\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Upravo ste pokrenuli ekekat talasa.\n"
+#~ "\n"
+#~ "Ako paŵljivo pogledate na pozadinu vaŷeg desktopa, primjetit\n"
+#~ "�e te da nema istu boju ( slika ili boja pozadine), vidjet �e te bazen\n"
+#~ "sa vodom na vaŷem ekranu koji reflektuje sve iznad sebe \"ripples\".\n"
+#~ "\n"
+#~ "Da bi iskljuīili ovaj efekt samo ponovo oznaīite ovu opciju i on �e\n"
+#~ "biti iskljuīen.\n"
+
+#~ msgid "Starting up Raindrops FX..."
+#~ msgstr "Pokre�em Raindrops FX..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Raindrops Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see \"raindrops\" hit the background and\n"
+#~ "make little splashes. This Effect can be VERY CPU intensive.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "You have just started the Raindrops Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid color (i.e. has a background texture or\n"
+#~ "image), you will see \"raindrops\" hit the background and\n"
+#~ "make little splashes. This Effect can be VERY CPU intensive.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+
+#~ msgid "Starting up Waves FX..."
+#~ msgstr "Pokre�em Waves FX......"
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the Waves Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid colour (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"waves\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "You have just started the Waves Effect.\n"
+#~ "\n"
+#~ "If you look closely on your desktop background, and if it\n"
+#~ "doesn't have a solid color (i.e. has a background texture or\n"
+#~ "image), you will see a pool of water at the bottom of your\n"
+#~ "screen that reflects everything above it and \"waves\".\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+
+#~ msgid "Starting up imagespinners FX..."
+#~ msgstr "Pokre�em magespinners FX..."
+
+#~ msgid ""
+#~ "\n"
+#~ "You have just started the imagespinners Effect.\n"
+#~ "\n"
+#~ "To disable this effect just select this option again to toggle\n"
+#~ "it off.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Upravo ste pokrenuli imagespinners Effect.\n"
+#~ "\n"
+#~ "Da biste iskljuīili ovaj efekt izaberite ovu opciju opet da ga\n"
+#~ "iskljuīite.\n"
+
+#~ msgid "Cannot comply"
+#~ msgstr "Can't comply"
+
+#~ msgid ""
+#~ "Iconboxes and Pagers are disallowed from being\n"
+#~ "members of a group. You cannot add these windows\n"
+#~ "to a group.\n"
+#~ msgstr ""
+#~ "Iconboxes and Pagers are disallowed from being\n"
+#~ "members of a group. You can't add these windows\n"
+#~ "to a group.\n"
+
+#, fuzzy
+#~ msgid "Imageclass Error!"
+#~ msgstr "ImageClass greŷka!"
+
+#, fuzzy
+#~ msgid "Textclass Error!"
+#~ msgstr "TextClass greŷka!"
+
+#~ msgid "ToolTip Error!"
+#~ msgstr "ToolTip greŷka!"
 
 #~ msgid "This Iconbox Settings..."
 #~ msgstr "Ove Iconbox osobine..."
