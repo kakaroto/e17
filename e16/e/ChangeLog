@@ -4129,3 +4129,22 @@ Clean up move/resize event handling.
 Allow disabling theme localisation.
 Add Xft font configuration example.
 
+
+-------------------------------------------------------------------------------
+
+Sun Dec 10 18:13:19 CET 2006
+(Kim)
+
+--- 0.16.8.5 0.04 ---             
+UCS-4 seems to be more portable than WCHAR_T.
+Xft font height tweak.
+Progressbars - Simplify, increase height to fit text, if needed.
+Add some font aliases. (config/fonts.cfg-xft_example) 
+Fix setting hilited/clicked font in certain dialog widgets.
+Add missing e-mail address. (po/Makevars)
+Add session management support status to summary.
+Fix list of files containing translatable stuff.
+Disable translation of some error message stuff that might as well be left untranslated.
+Fix focused opacity stuff, add fading toggle. (config/menus.cfg)
+Reuse other text with same meaning. (config/actionclasses.cfg)
+
