@@ -690,6 +690,10 @@ static void _etk_combobox_constructor(Etk_Combobox *combobox)
    ETK_WIDGET(combobox->window)->size_request = _etk_combobox_window_size_request;
    ETK_WIDGET(combobox->window)->size_allocate = _etk_combobox_window_size_allocate;
    
+   combobox->popup_offset_x = 0;
+   combobox->popup_offset_y = 0;
+   combobox->popup_extra_w = 0;
+   
    combobox->selected_item = NULL;
    combobox->active_item = NULL;
    combobox->active_item_widget = NULL;
@@ -1064,6 +1068,7 @@ static void _etk_combobox_realize_cb(Etk_Object *object, void *data)
    if (!(combobox = ETK_COMBOBOX(object)))
       return;
    
+   /* Read the data defined in the theme */
    if (!combobox->item_height_set)
    {
       if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->item_height) != 1
@@ -1073,6 +1078,12 @@ static void _etk_combobox_realize_cb(Etk_Object *object, void *data)
       }
       etk_object_notify(ETK_OBJECT(combobox), "item_height");
    }
+   if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "popup_offset_x", "%d", &combobox->popup_offset_x) != 1)
+      combobox->popup_offset_x = 0;
+   if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "popup_offset_y", "%d", &combobox->popup_offset_y) != 1)
+      combobox->popup_offset_y = 0;
+   if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "popup_extra_width", "%d", &combobox->popup_extra_w) != 1)
+      combobox->popup_extra_w = 0;
 }
 
 /* Called when a key is pressed on the combobox */
@@ -1106,8 +1117,10 @@ static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
       etk_widget_geometry_get(combobox->button, &bx, &by, &bw, &bh);
       etk_toplevel_evas_position_get(toplevel, &ex, &ey);
       etk_toplevel_screen_position_get(toplevel, &sx, &sy);
-      etk_popup_window_popup_at_xy(combobox->window, sx + (bx - ex), sy + (by - ey) + bh);
-      etk_window_resize(ETK_WINDOW(combobox->window), bw, 0);
+      etk_popup_window_popup_at_xy(combobox->window,
+         sx + (bx - ex) + combobox->popup_offset_x,
+         sy + (by - ey) + bh + combobox->popup_offset_y);
+      etk_window_resize(ETK_WINDOW(combobox->window), bw + combobox->popup_extra_w, 0);
    }
 }
 

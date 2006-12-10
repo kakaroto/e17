@@ -86,6 +86,9 @@ struct Etk_Combobox
    
    Etk_Widget *button;
    Etk_Popup_Window *window;
+   int popup_offset_x;
+   int popup_offset_y;
+   int popup_extra_w;
    
    Etk_Combobox_Item *selected_item;
    Etk_Combobox_Item *active_item;

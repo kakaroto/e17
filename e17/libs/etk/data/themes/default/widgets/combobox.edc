@@ -2,6 +2,10 @@ group {
    name: "etk/combobox";
    data {
       item: "item_height" "24";
+      /* The following items have no effect since they have their default value */
+      item: "popup_offset_x" "0";
+      item: "popup_offset_y" "0";
+      item: "popup_extra_width" "0";
    }
 }
 group {
