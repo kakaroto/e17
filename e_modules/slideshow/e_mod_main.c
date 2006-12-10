@@ -271,6 +271,7 @@ _slide_config_item_get(const char *id)
    ci->id = evas_stringshare_add(id);
    ci->poll_time = 60.0;
    ci->disable_timer = 0;
+   ci->all_desks = 0;
    ci->dir = evas_stringshare_add(buf);
 
    slide_config->items = evas_list_append(slide_config->items, ci);
@@ -298,7 +299,8 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, poll_time, DOUBLE);
    E_CONFIG_VAL(D, T, disable_timer, INT);
    E_CONFIG_VAL(D, T, random_order, INT);
-
+   E_CONFIG_VAL(D, T, all_desks, INT);
+   
    conf_edd = E_CONFIG_DD_NEW("Slideshow_Config", Config);
 #undef T
 #undef D
@@ -321,6 +323,7 @@ e_modapi_init(E_Module *m)
 	ci->poll_time = 60.0;
 	ci->disable_timer = 0;
 	ci->random_order = 0;
+	ci->all_desks = 0;
 	slide_config->items = evas_list_append(slide_config->items, ci);
      }
    slide_config->module = m;
@@ -400,8 +403,7 @@ _slide_new(Evas *evas)
 
    ss->slide_obj = edje_object_add(evas);
    if (!e_theme_edje_object_set
-       (ss->slide_obj, "base/theme/modules/slideshow",
-	"modules/slideshow/main"))
+       (ss->slide_obj, "base/theme/modules/slideshow", "modules/slideshow/main"))
      edje_object_file_set(ss->slide_obj, buf, "modules/slideshow/main");
    evas_object_show(ss->slide_obj);
 
@@ -531,13 +533,36 @@ _slide_set_bg(void *data, const char *bg)
 {
    Instance *inst;
    Config_Item *ci;
+   E_Container *con;
+   E_Desk *d;
+   E_Zone *z;
    char buf[4096];
 
    inst = data;
    ci = _slide_config_item_get(inst->gcc->id);
-   snprintf (buf, sizeof (buf), "enlightenment_remote -default-bg-set %s/%s",
-	     ci->dir, bg);
-   system(buf);
+   snprintf (buf, sizeof (buf), "%s/%s", ci->dir, bg);
+
+   if (ci->all_desks == 0) 
+     {
+	con = e_container_current_get(e_manager_current_get());
+	z = e_zone_current_get(con);
+	d = e_desk_current_get(z);
+	e_bg_del(con->num, z->num, d->x, d->y);
+	e_bg_add(con->num, z->num, d->x, d->y, buf);
+     }
+   else if (ci->all_desks == 1) 
+     {
+	while (e_config->desktop_backgrounds) 
+	  {
+	     E_Config_Desktop_Background *cfbg;
+	     
+	     cfbg = e_config->desktop_backgrounds->data;
+	     e_bg_del(cfbg->container, cfbg->zone, cfbg->desk_x, cfbg->desk_y);
+	  }
+	e_bg_default_set(buf);
+     }
+   
+   e_bg_update();
 }
 
 static void
@@ -555,9 +580,9 @@ _slide_set_preview(void *data)
 
    bg = ecore_list_goto_index(inst->bg_list, inst->index);
    snprintf(buf, sizeof (buf), "%s/%s", ci->dir, bg);
-   if (!e_util_edje_collection_exists (buf, "desktop/background")) return;
+   if (!e_util_edje_collection_exists (buf, "e/desktop/background")) return;
    if (ss->bg_obj) evas_object_del(ss->bg_obj);
    ss->bg_obj = edje_object_add(e_livethumb_evas_get (ss->img_obj));
-   edje_object_file_set(ss->bg_obj, buf, "desktop/background");
+   edje_object_file_set(ss->bg_obj, buf, "e/desktop/background");
    e_livethumb_thumb_set(ss->img_obj, ss->bg_obj);
 }

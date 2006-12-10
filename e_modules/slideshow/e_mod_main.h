@@ -21,6 +21,7 @@ struct _Config_Item
 
    int disable_timer;
    int random_order;
+   int all_desks;
    double poll_time;
    const char *dir;
 };
