@@ -30,6 +30,11 @@ int destroy_boot(void *data)
 	}
 }
 
+static void center_splash(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_window_move(EWL_WINDOW(w), 50, 50);
+}
+
 void init_gui(void)
 {
 	Ewl_Widget *win, *vbox, *image, *text;
@@ -40,7 +45,8 @@ void init_gui(void)
         ewl_window_borderless_set(EWL_WINDOW(win));
 	ewl_widget_state_set(win, "splash", EWL_STATE_PERSISTENT);
 	ewl_object_size_request(EWL_OBJECT(win), 325, 240);
-        ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
+	ewl_callback_append(win, EWL_CALLBACK_SHOW, center_splash, NULL);
+	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
         ewl_widget_show(win);
 
         vbox = ewl_vbox_new();
@@ -295,7 +301,7 @@ static void create_main_gui(void)
 	ewl_widget_show(ivbox);
 
 	border = ewl_border_new();
-	ewl_border_text_set(EWL_BORDER(border), "Catalog");
+	ewl_border_label_set(EWL_BORDER(border), "Catalog");
 	ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(border), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(ivbox), border);

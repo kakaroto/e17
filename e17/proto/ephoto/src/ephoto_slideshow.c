@@ -345,7 +345,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(main_hbox);
       
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), _("Window Size"));
+ ewl_border_label_set(EWL_BORDER(border), _("Window Size"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(main_hbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
@@ -409,7 +409,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(sc->hentry);
 
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), _("Order"));
+ ewl_border_label_set(EWL_BORDER(border), _("Order"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(main_hbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
@@ -436,7 +436,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(hbox);
  
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), _("Image Size"));
+ ewl_border_label_set(EWL_BORDER(border), _("Image Size"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
@@ -457,7 +457,7 @@ void create_slideshow_config(Ewl_Widget *w, void *event, void *data)
  ewl_widget_show(sc->aspect_image);  
 
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), _("Transitions"));
+ ewl_border_label_set(EWL_BORDER(border), _("Transitions"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(hbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);

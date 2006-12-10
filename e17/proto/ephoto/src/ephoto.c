@@ -213,7 +213,7 @@ main(int argc, char **argv)
  ewl_widget_show(hseparator);
 
  border = ewl_border_new();
- ewl_border_text_set(EWL_BORDER(border), _("Albums"));
+ ewl_border_label_set(EWL_BORDER(border), _("Albums"));
  ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
  ewl_container_child_append(EWL_CONTAINER(vbox), border);
  ewl_object_alignment_set(EWL_OBJECT(border), EWL_FLAG_ALIGN_CENTER);
