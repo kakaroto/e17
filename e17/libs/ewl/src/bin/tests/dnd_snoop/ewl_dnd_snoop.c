@@ -95,7 +95,6 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(o, EWL_CALLBACK_DND_POSITION, ewl_dnd_snoop_cb_dnd_position, NULL);
 	ewl_callback_append(o, EWL_CALLBACK_DND_DROP, ewl_dnd_snoop_cb_dnd_drop, NULL);
 	ewl_callback_append(o, EWL_CALLBACK_DND_DATA_RECEIVED, ewl_dnd_snoop_cb_dnd_data, NULL);
-	ewl_callback_append(o, EWL_CALLBACK_DND_DATA_REQUEST, ewl_dnd_snoop_cb_dnd_data_request, NULL);
 	ewl_widget_name_set(o, "entry");
 	ewl_entry_multiline_set(EWL_ENTRY(o), TRUE);
 	ewl_text_wrap_set(EWL_TEXT(o), TRUE);
@@ -138,6 +137,7 @@ create_test(Ewl_Container *box)
 
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Drag This");
+	ewl_callback_append(o, EWL_CALLBACK_DND_DATA_REQUEST, ewl_dnd_snoop_cb_dnd_data_request, NULL);
 	ewl_dnd_provided_types_set(o, text_types);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
 	ewl_container_child_append(box, o);
@@ -181,8 +181,16 @@ static void
 ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event, 
 						void *data __UNUSED__)
 {
+	Ewl_Embed *emb;
 	Ewl_Event_Dnd_Data_Request *ev = event;
+
 	printf("Data request on widget %p: type %s\n", w, ev->type);
+	printf("\tSending response: %s\n", w->inheritance);
+	emb = ewl_embed_widget_find(w);
+	if (emb)
+		ewl_engine_embed_dnd_drag_data_send(emb, ev->handle,
+				(void *)w->inheritance,
+				strlen(w->inheritance) + 1);
 }
 
 static int
@@ -358,7 +366,10 @@ ewl_dnd_snoop_cb_selection_request(void *data __UNUSED__, int type __UNUSED__,
 	snprintf(buf, sizeof(buf), "\nSelection Request\n");
 	ewl_dnd_snoop_output(buf);
 
-	snprintf(buf, sizeof(buf), "\tWindow: %d\n", event->win);
+	snprintf(buf, sizeof(buf), "\tOwner: %d\n", event->owner);
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, sizeof(buf), "\tRequestor: %d\n", event->requestor);
 	ewl_dnd_snoop_output(buf);
 
 	snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);

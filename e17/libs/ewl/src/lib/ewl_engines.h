@@ -43,6 +43,7 @@ enum Ewl_Engine_Window_Hooks
 	EWL_ENGINE_WINDOW_DND_DRAG_TYPES_SET, /**< Set window drag types */
 	EWL_ENGINE_WINDOW_DND_DRAG_START, /**< Begin DND drag process */
 	EWL_ENGINE_WINDOW_DND_DRAG_DROP, /**< Complete DND drag process */
+	EWL_ENGINE_WINDOW_DND_DRAG_DATA_SEND, /**< Send data after request */
 
 	EWL_ENGINE_WINDOW_MAX
 };
@@ -183,6 +184,10 @@ void 		 ewl_engine_embed_dnd_drag_types_set(Ewl_Embed *embed,
 							unsigned int num);
 void 		 ewl_engine_embed_dnd_drag_start(Ewl_Embed *embed);
 void 		 ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed);
+int              ewl_engine_embed_dnd_drag_data_send(Ewl_Embed *embed,
+							void *handle,
+							void *data,
+							int size);
 void		 ewl_engine_desktop_size_get(Ewl_Embed *embed, int *w, int *h);
 
 void		 ewl_engine_canvas_setup(Ewl_Window *win, int debug);
@@ -241,6 +246,7 @@ typedef void (*Ewl_Engine_Cb_Window_Dnd_Aware_Set)(Ewl_Embed *embed);	 /**< Set 
 typedef void (*Ewl_Engine_Cb_Window_Dnd_Drag_Types_Set)(Ewl_Embed *embed, char **types, unsigned int num);	 /**< Set the drag types */
 typedef void (*Ewl_Engine_Cb_Window_Dnd_Drag_Start)(Ewl_Embed *embed);	 /**< Start the drag process */
 typedef void (*Ewl_Engine_Cb_Window_Dnd_Drag_Drop)(Ewl_Embed *embed);	 /**< End the drag process with a drop event */
+typedef int (*Ewl_Engine_Cb_Window_Dnd_Drag_Data_Send)(Ewl_Embed *embed, void *handle, void *data, int size);	 /**< Send the drag data */
 typedef void (*Ewl_Engine_Cb_Window_Desktop_Size_Get)(Ewl_Embed *embed, 
 							int *w, int *h); /**< Get the desktop
 								size */

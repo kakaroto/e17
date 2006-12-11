@@ -729,8 +729,6 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	if (check && ewl_object_state_has(check, EWL_FLAG_STATE_DND))
 		ewl_callback_call_with_event_data(EWL_WIDGET(check),
 						  EWL_CALLBACK_MOUSE_MOVE, &ev);
-	else
-		embed->last.drag_widget = NULL;
 
 	check = EWL_OBJECT(embed->last.clicked);
 	if (check && ewl_object_state_has(check, EWL_FLAG_STATE_PRESSED))
@@ -809,7 +807,7 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 				ev.data = NULL;
 			}
 
-			embed->last.drag_widget = widget;
+			embed->last.drop_widget = widget;
 			parent = widget;
 			while (parent) {
 				ewl_callback_call_with_event_data(parent,
@@ -1055,7 +1053,6 @@ ewl_embed_dnd_data_request_feed(Ewl_Embed *embed, void *handle, char *type)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
-
 	/*
 	 * If a widget is expecting DND data, send the data to the widget
 	 */

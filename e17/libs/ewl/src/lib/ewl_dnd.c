@@ -351,8 +351,6 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	ewl_attach_mouse_argb_cursor_set(emb, ewl_dnd_default_cursor);
 	ewl_embed_mouse_cursor_set(EWL_WIDGET(emb));
 
-	printf("Began drag process on %p\n", w);
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -381,7 +379,6 @@ ewl_dnd_drag_drop(Ewl_Widget *w)
 	 */
 	// ewl_embed_mouse_cursor_set(EWL_WIDGET(emb));
 
-	printf("Finished drag process on %p\n", w);
 	ewl_engine_embed_dnd_drag_drop(emb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

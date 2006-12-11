@@ -870,6 +870,34 @@ ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed)
 
 /**
  * @param embed: the embed to work with
+ * @return Returns no value
+ * @brief Sends dnd data to the drop recipient
+ */
+int
+ewl_engine_embed_dnd_drag_data_send(Ewl_Embed *embed, void *handle, void *data,
+				    int size)
+{
+	Ewl_Engine_Cb_Window_Dnd_Drag_Data_Send embed_dnd_drag_data_send;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, FALSE);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, FALSE);
+
+	if (!(embed->evas_window))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	embed_dnd_drag_data_send = ewl_engine_hook_get(EWL_EMBED(embed),
+					EWL_ENGINE_HOOK_TYPE_WINDOW,
+					EWL_ENGINE_WINDOW_DND_DRAG_DATA_SEND);
+	if (embed_dnd_drag_data_send)
+		DRETURN_INT(embed_dnd_drag_data_send(embed, handle, data, size),
+				DLEVEL_STABLE);
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed to work with
  * @param w: a pointer where the width of the desktop will be stored
  * @param h: a pointer where the height pf the desktop will be stored
  * @return Returns no value

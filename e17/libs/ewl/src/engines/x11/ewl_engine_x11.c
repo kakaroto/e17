@@ -78,6 +78,7 @@ static void ee_desktop_size_get(Ewl_Embed *embed, int *w, int *h);
 static void ee_dnd_drag_types_set(Ewl_Embed *embed, const char **types, unsigned int num);
 static void ee_dnd_drag_begin(Ewl_Embed *embed);
 static void ee_dnd_drag_drop(Ewl_Embed *embed);
+static int ee_dnd_drag_data_send(Ewl_Embed *embed, void *handle, void *data, int len);
 
 static int ee_pointer_data_new(Ewl_Embed *embed, int *data, int w, int h);
 static void ee_pointer_free(Ewl_Embed *embed, int pointer);
@@ -113,6 +114,7 @@ static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
 		ee_dnd_drag_types_set,
 		ee_dnd_drag_begin,
 		ee_dnd_drag_drop,
+		ee_dnd_drag_data_send,
 	};
 
 static void *pointer_funcs[EWL_ENGINE_POINTER_MAX] =
@@ -763,8 +765,7 @@ ee_dnd_drag_begin(Ewl_Embed *embed)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	ecore_x_dnd_begin((Ecore_X_Window)embed->evas_window, (void *)"dnd data",
-			strlen("dnd data") + 1);
+	ecore_x_dnd_begin((Ecore_X_Window)embed->evas_window, NULL, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -779,6 +780,24 @@ ee_dnd_drag_drop(Ewl_Embed *embed)
 	ecore_x_dnd_drop();
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ee_dnd_drag_data_send(Ewl_Embed *embed, void *handle, void *data, int len)
+{
+	Ecore_X_Event_Selection_Request *request = handle;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("embed", embed, FALSE);
+	DCHECK_PARAM_PTR_RET("handle", handle, FALSE);
+	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, FALSE);
+
+	ecore_x_window_prop_property_set(request->requestor, request->property,
+					 request->target, 8, data, len);
+
+	DRETURN_INT(ecore_x_selection_notify_send(request->requestor,
+				request->selection, request->target,
+				request->property), DLEVEL_STABLE);
 }
 
 static int
@@ -1242,13 +1261,17 @@ ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
 	ev = e;
 
 	/* Handle everything *except* XDND selection */
-	if (ev->selection != ECORE_X_SELECTION_XDND)
-		printf("Data request event received\n");
+	if (ev->selection != ECORE_X_ATOM_SELECTION_XDND)
+		printf("Data request event received: %s not %s\n",
+				XGetAtomName(ecore_x_display_get(),
+					ev->selection),
+				XGetAtomName(ecore_x_display_get(),
+					ECORE_X_ATOM_SELECTION_XDND));
 
-	else if (ev->selection == ECORE_X_SELECTION_XDND)
+	else if (ev->selection == ECORE_X_ATOM_SELECTION_XDND)
 	{
 		Ewl_Embed *embed;
-		embed = ewl_embed_evas_window_find((void *)ev->win);
+		embed = ewl_embed_evas_window_find((void *)ev->owner);
 		ewl_embed_dnd_data_request_feed(embed, ev,
 				XGetAtomName(ecore_x_display_get(),
 					ev->target));

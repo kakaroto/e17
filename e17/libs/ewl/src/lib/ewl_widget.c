@@ -2386,8 +2386,6 @@ ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	/* printf("Obscuring %s\n", w->appearance); */
-
 	emb = ewl_embed_widget_find(w);
 	if (!emb)
 		DRETURN(DLEVEL_STABLE);
@@ -2929,6 +2927,7 @@ void
 ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
+	Ewl_Embed *embed;
 	Ewl_Object *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -2942,9 +2941,11 @@ ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 			ewl_object_flags_has(o, EWL_FLAG_PROPERTY_DND_SOURCE,
 				EWL_FLAGS_PROPERTY_MASK)) {
 		if (!ewl_object_state_has(o, EWL_FLAG_STATE_DND)) {
+			embed = ewl_embed_widget_find(w);
 			ewl_object_state_add(o, EWL_FLAG_STATE_DND);
+			embed->last.drag_widget = w;
 			/* FIXME: Start DND here. */
-			ewl_dnd_drag_start(EWL_WIDGET(o));
+			ewl_dnd_drag_start(w);
 		}
 	}
 
