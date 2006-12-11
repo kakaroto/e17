@@ -376,6 +376,9 @@ ee_window_new(Ewl_Window *win)
 	ecore_x_icccm_protocol_set(xwin, ECORE_X_WM_PROTOCOL_DELETE_REQUEST, 1);
 	win->window = (void *)xwin;
 
+	if (win->flags & EWL_WINDOW_BORDERLESS)
+		ee_window_borderless_set(win);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
