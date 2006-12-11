@@ -30,11 +30,6 @@ int destroy_boot(void *data)
 	}
 }
 
-static void center_splash(Ewl_Widget *w, void *event, void *data)
-{
-	ewl_window_move(EWL_WINDOW(w), 50, 50);
-}
-
 void init_gui(void)
 {
 	Ewl_Widget *win, *vbox, *image, *text;
@@ -42,12 +37,11 @@ void init_gui(void)
 	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
         ewl_window_name_set(EWL_WINDOW(win), "Ephoto!");
-        ewl_window_borderless_set(EWL_WINDOW(win));
-	ewl_widget_state_set(win, "splash", EWL_STATE_PERSISTENT);
+        ewl_window_override_set(EWL_WINDOW(win), 1);
 	ewl_object_size_request(EWL_OBJECT(win), 325, 240);
-	ewl_callback_append(win, EWL_CALLBACK_SHOW, center_splash, NULL);
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
-        ewl_widget_show(win);
+        ewl_widget_state_set(win, "splash", EWL_STATE_PERSISTENT);
+	ewl_widget_show(win);
 
         vbox = ewl_vbox_new();
         ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
