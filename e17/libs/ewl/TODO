@@ -67,12 +67,22 @@
  
 
   Ewl_Menu
-    - Menus will activate on tab, but it jumps to the submenu instead of
-      each menu item
+     - Menus will activate on tab, but it jumps to the submenu instead of
+       each menu item
+
+     - Menu doesn't regain focus if you mouse off a submenu and back onto
+       the parent.
+
+
+  Ewl_Notebook
+     - Putting a second notebook inside a first can cause memory corruption.
+       This can be seen by running Ewl_Test and then clicking advanced ->
+       Theme. The tab doesn't change and using other tests causes EWL
+       warnings to be printed out.
 
 
   Ewl_Password
-    - The entry needs to correctly deal with selections and mouse clicks.
+     - The entry needs to correctly deal with selections and mouse clicks.
 
   
   Ewl_Scrollpane
@@ -82,7 +92,12 @@
 
 
   Ewl_Spectrum
-    - Add a theme item for the cross hairs ...
+     - Add a theme item for the cross hairs ...
+
+
+  Ewl_Test
+     - The theme test seems to be busted. The theme doesn't change when you
+       click on the buttons on the left.
 
 
   Ewl_Text
@@ -90,6 +105,12 @@
    	         ewl_text_context_default_create
 
      - new theme keys for the align/wrap stuff
+
+
+  Ewl_Theme
+     - Changing themes seems to cause some sizing issues. (This seems to be
+       related to unrealize/realize causing some sizing changes when they
+       shouldn't.)
 
 
  *
@@ -102,6 +123,20 @@
   Ewl_Colorpicker
      - Need a slider for choosing alpha too, and an int a parameter for
        get / set to match 
+
+
+  Ewl_Engines
+     - For engines that only support a single window (framebuffer for
+       example) we need to set it up to override the window creation call to
+       make the window inside an Evas buffer engine.
+
+
+  Ewl_Filedialog
+     - Need to add the ability to select directories instead of just files
+
+
+  Ewl_Notebook
+     - Need a new theme
 
 
   Ewl_Radiobutton
