@@ -4,10 +4,6 @@
  * @section bugs BUGS
  *
 
-- How to deal with the scrollpane with the focus? Currently widgets
-  marked INTERNAL are ignored on the inital add. Should the scrollpane 
-  find itself in the tab list on SHOW and substitue the seekers instead?
-
 - We auto add things to the tab order as they are realized. We need to make
   sure the things we are adding aren't already in the tab order as we will
   then remove them. Should possibly add a flag to deactive this behaviour if
@@ -26,36 +22,6 @@
   Ewl_Embed I believe).
 
 
-  Ewl_Menu
-    - Menus will activate on tab, but it jumps to the submenu instead of
-      each menu item
-
-
-  Ewl_Tree
-    - dosen't currently play well with the scrollbar. This can be seen
-      in the tree test, if you shrink the window and scroll it will only scroll
-      the first paned widget. (Need to make this and the paned work together).
-
-
-  Ewl_Filepicker
-    - The column view needs to blank out the preview when you
-      have multiple files selected.
-
-
-  Ewl_Spectrum
-    - may need to optimize this to only redraw if we have a resize, 
-      or a type/mode change
-
-    - Add a theme item for the cross hairs ...
-
-
-  Ewl_Text
-     - need to setup the styles/align/wrap data from the theme in 
-   	         ewl_text_context_default_create
-
-     - new theme keys for the align/wrap stuff
-
-
   Ewl_Entry
     - text scrolling with Ewl_Entry needs a bit of work. If you scroll over to
       the right and the text moves and arrow back it shifts as you move off of
@@ -63,17 +29,27 @@
 
     - text cursor disappears on the end of entrybox case.
 
-    - if your in a multiline text and on a line that is longer
+    - if you're in a multiline text and on a line that is longer
       then then one above or below and you hit the up arrow it will
       position your cursor one character _before_ the end of the line.
 
-    - if your in a multiline text and on the last line
-      of multiple lines. Pressing arrow down can wrap to the beginning
+    - if you're in a multiline text and on the last line
+      of multiple lines pressing arrow down can wrap to the beginning
       of the first line.
 
   
-  Ewl_Password
-    - The entry needs to correctly deal with selections and mouse clicks.
+  Ewl_Filepicker
+    - The column view needs to blank out the preview when you
+      have multiple files selected.
+
+
+  Ewl_Freebox 
+     - On the comparator test if you add a set of icons, rename an icon and then
+       add another set of icons the second set of icons won't appear until the
+       window is moved. (Must be missing a configure event)
+
+     - The autolayout will align at the top, should probably be changed to align
+       at the bottom based on the largest widget being put in.
 
 
   Ewl_Icon
@@ -90,60 +66,68 @@
        clicking on the label itself.
  
 
-  Ewl_Freebox 
-     - On the comparator test if you add a set of icons, rename an icon and then
-       add another set of icons the second set of icons won't appear until the
-       window is moved. (Must be missing a configure event)
+  Ewl_Menu
+    - Menus will activate on tab, but it jumps to the submenu instead of
+      each menu item
 
-     - The autolayout will align at the top, should probably be changed to align
-       at the bottom based on the largest widget being put in.
+
+  Ewl_Password
+    - The entry needs to correctly deal with selections and mouse clicks.
+
+  
+  Ewl_Scrollpane
+     - How to deal with the scrollpane with the focus? Currently widgets
+       marked INTERNAL are ignored on the inital add. Should the scrollpane 
+       find itself in the tab list on SHOW and substitue the seekers instead?
+
+
+  Ewl_Spectrum
+    - Add a theme item for the cross hairs ...
+
+
+  Ewl_Text
+     - need to setup the styles/align/wrap data from the theme in 
+   	         ewl_text_context_default_create
+
+     - new theme keys for the align/wrap stuff
+
 
  *
  * @section todo TODO
  *
 
-- Ability to attach custom cursors to each widget. We can currently attach
-  predefined cursors. Need to add a ewl_attach_widget_cursor_custom_set that
-  uses the buffer engine to create the cursor. We then attach it with an
-  EWL_ATTACH_TYPE_MOUSE_CURSOR_CUSTOM so on free we can free the cursor that
-  is attached.
-
-- ColorChooser needs a slider for choosing alpha too, and an int a parameter for
-  get / set to match 
-
 - Enabled/Disabled status for ALL applicable widgets.
 
-- Need to return a context when items are pushed onto the status bar so that
-  a context can be removed without popping off the stack
 
-- Need to do some work on the tree.
-  - add ability to wrap text in tree nodes
-  - add ability to clear all rows under a parent row
-  - add ability to set row to expand when item clicked (ie
-    ewl_tree_row_expand_on_click_set())
-  - horizontal scrolling is wacked
-  - add ability to turn highlight off for certain rows/nodes
-  - scrollbar dosen't always appear when expected using the tree
-  - if you have the tree so it has the scroll bar appear, if you're at the
-    bottom of the scrollarea and you expand a row, the text shoudln't shift
-    up. The scrollpane should be adjusted so the line you expanded stays
-    where it is and everything shifts down.
+  Ewl_Colorpicker
+     - Need a slider for choosing alpha too, and an int a parameter for
+       get / set to match 
 
-- Tree selection mode set and themeing (MULTI/SINGLE/EXTENDED/NONE).
-  - Invert on mouse click (behavior depends upon select mode).
-  - determination of whether a row is selected or not (ewl_[tree_]row_selected).
 
-- Add a function that returns the selected radio button of a chain
-  associated to a given radio button.
+  Ewl_Radiobutton
+     - Add a function that returns the selected radio button of a chain
+       associated to a given radio button.
 
-- [Ewl_Test] More unit tests. There are a few examples in there but we need
-  to add unit tests for as many functions as we can.
 
-- [Ewl_Test] More Tutorials in the src/bin/test/*.c files
+  Ewl_Seeker
+     - Add value labels and hash marks.
 
-- Ewl_Spectrum:: implement a triangle selection mode
+  
+  Ewl_Spectrum
+     - Implement a triangle selection mode
 
-- Ewl_Seeker:: Add value labels and hash marks.
+
+  Ewl_Statusbar
+     - Need to return a context when items are pushed onto the status bar so that
+       a context can be removed without popping off the stack
+
+
+  Ewl_Test
+     - More Tutorials in the src/bin/test/*.c files
+
+     - More unit tests. There are a few examples in there but we need
+       to add unit tests for as many functions as we can.
+
 
  */
 
