@@ -121,8 +121,9 @@
 
 
   Ewl_Colorpicker
-     - Need a slider for choosing alpha too, and an int a parameter for
-       get / set to match 
+     - Need a slider for choosing alpha too. Need to add _get/_set
+       functions to set the alpha parameter that are separate from the
+       colour _set/_get functions which will just be RBG/HSV functions.
 
 
   Ewl_Engines
