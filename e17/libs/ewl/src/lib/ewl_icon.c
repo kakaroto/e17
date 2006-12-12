@@ -569,7 +569,7 @@ ewl_icon_label_complex_get(Ewl_Icon *icon)
 
 /**
  * @param icon: The icon to set if the image gets thumbnailed
- * @param c: The value to set as the thumbnail flag
+ * @param t: The value to set as the thumbnail flag
  * @return Returns no value.
  * @brief Set if the icon thumbnailed the image or use it directly
  */

@@ -1041,6 +1041,7 @@ ewl_embed_dnd_data_received_feed(Ewl_Embed *embed, char *type, void *data, unsig
 
 /**
  * @param embed: the embed where the selection data request event is to occur
+ * @param handle: The DND handle to work with
  * @param type: The type to feed
  * @return Returns no value.
  * @brief Sends the request event for selection data received into an embed.

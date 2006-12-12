@@ -870,6 +870,9 @@ ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed)
 
 /**
  * @param embed: the embed to work with
+ * @param handle: The DND handle to work with
+ * @param data: The data to send
+ * @param size: The size of the data being sent
  * @return Returns no value
  * @brief Sends dnd data to the drop recipient
  */

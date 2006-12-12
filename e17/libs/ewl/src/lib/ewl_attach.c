@@ -150,6 +150,7 @@ ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data)
  * @param w: The widget to attach the dnd data too
  * @param c: The cursor to display during drag.
  * @param data: The data to transfer on drop.
+ * @param size: The amount of data send
  * @return Returns no value
  * @brief Attaches the DND data @p data to the widget @p w with the displayed
  * cursor @p c.
