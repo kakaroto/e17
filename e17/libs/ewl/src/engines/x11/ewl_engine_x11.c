@@ -797,7 +797,7 @@ ee_dnd_drag_data_send(Ewl_Embed *embed, void *handle, void *data, int len)
 
 	DRETURN_INT(ecore_x_selection_notify_send(request->requestor,
 				request->selection, request->target,
-				request->property), DLEVEL_STABLE);
+				request->property, request->time), DLEVEL_STABLE);
 }
 
 static int
