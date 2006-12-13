@@ -2,6 +2,8 @@
 #define EWL_ENGINE_EVAS_XRENDER_X11_H
 
 #include <Ewl.h>
+#include <Ecore_X.h>
+#include <Evas_Engine_XRender_X11.h>
 
 #define EWL_ENGINE_EVAS_XRENDER_X11(engine) \
 		((Ewl_Engine_Evas_Xrender_X11 *)engine)

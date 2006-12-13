@@ -816,15 +816,6 @@ ewl_window_cb_expose(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_engine_keyboard_grab(win);
 	grabval = ewl_engine_pointer_grab(win);
 
-	if (grabval == GrabNotViewable)
-		printf("GrabNotViewable\n");
-	else if (grabval == AlreadyGrabbed)
-		printf("AlreadyGrabbed\n");
-	else if (grabval == GrabFrozen)
-		printf("GrabFrozen\n");
-	else if (grabval == GrabInvalidTime)
-		printf("GrabInvalidTime\n");
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
