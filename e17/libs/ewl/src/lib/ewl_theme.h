@@ -32,7 +32,7 @@ void 		 ewl_theme_shutdown(void);
 int 		 ewl_theme_widget_init(Ewl_Widget *w);
 void 		 ewl_theme_widget_shutdown(Ewl_Widget *w);
 
-char 		*ewl_theme_path_get(void);
+const char 	*ewl_theme_path_get(void);
 int		 ewl_theme_theme_set(const char *theme);
 
 Ecore_List 	*ewl_theme_font_path_get(void);

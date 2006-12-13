@@ -106,15 +106,16 @@ ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock)
 
 	/* set the image */
 	if (s->stock_funcs->image_set) {
-		const char *data;
+		const char *data, *key;
 		
 		/* check for an image key */
 		data = ewl_icon_theme_icon_path_get(
 				ewl_stock_items[s->stock_type].image_key,
 				EWL_ICON_SIZE_MEDIUM);
-
-		s->stock_funcs->image_set(s, data, 
+		key = ewl_icon_theme_icon_key_get(data, 
 				ewl_stock_items[s->stock_type].image_key);
+
+		s->stock_funcs->image_set(s, data, key);
 	}
 
 	/* set the tooltip */

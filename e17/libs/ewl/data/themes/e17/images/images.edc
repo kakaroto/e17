@@ -92,5 +92,5 @@
 	image: "entry_disabled.png" COMP;
 	image: "row_select.png" COMP;	
 	image: "blank.png" COMP;	
-
+	image: "e17_icon_fileman_folder.png" COMP;
 	

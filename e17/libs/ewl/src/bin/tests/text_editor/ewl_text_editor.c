@@ -105,10 +105,14 @@ create_test(Ewl_Container *box)
 
 		for (i = 0; format[i].icon != NULL; i++)
 		{
+			const char *path, *key;
+
+			path = ewl_icon_theme_icon_path_get(format[i].icon,
+							EWL_ICON_SIZE_SMALL);
+			key = ewl_icon_theme_icon_key_get(path, format[i].icon);
+
 			o = ewl_button_new();
-			ewl_button_image_set(EWL_BUTTON(o), 
-				ewl_icon_theme_icon_path_get(format[i].icon, EWL_ICON_SIZE_SMALL),
-				format[i].icon);
+			ewl_button_image_set(EWL_BUTTON(o), path, key);
 			ewl_container_child_append(EWL_CONTAINER(hbox), o);
 			ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 			ewl_callback_append(o, EWL_CALLBACK_CLICKED, format[i].cb, NULL);

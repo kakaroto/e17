@@ -3190,7 +3190,7 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 	else
 	{
 		fmt[pos].val = ewl_theme_path_get();
-		fmt[pos++].free = TRUE;
+		fmt[pos++].free = FALSE;
 
 		snprintf(t, 128, "fonts/%s", ctx->font);
 	}

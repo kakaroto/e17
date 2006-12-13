@@ -15,6 +15,8 @@ void	 	 ewl_icon_theme_theme_change(void);
 
 const char	*ewl_icon_theme_icon_path_get(const char *icon, 
 						const char *size);
+const char 	*ewl_icon_theme_icon_key_get(const char *path,
+						const char *icon);
 
 #define EWL_ICON_SIZE_SMALL "16x16"	/**< 16x16 icons */
 #define EWL_ICON_SIZE_MEDIUM "22x22"	/**< 22x22 icons */

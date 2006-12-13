@@ -149,14 +149,14 @@ ewl_theme_widget_shutdown(Ewl_Widget *w)
 
 /**
  * @brief Return the path of the current theme
- * @return Returns a copy of the current theme path on success, NULL on failure
+ * @return Returns the current theme path on success, NULL on failure
  */
-char *
+const char *
 ewl_theme_path_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	DRETURN_PTR((ewl_theme_path ? strdup(ewl_theme_path) : NULL), DLEVEL_STABLE);
+	DRETURN_PTR(ewl_theme_path, DLEVEL_STABLE);
 }
 
 /**

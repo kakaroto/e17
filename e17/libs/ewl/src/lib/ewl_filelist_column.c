@@ -433,7 +433,7 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file,
 {
 	Ewl_Filelist_Column *list;
 	Ewl_Widget *icon;
-	const char *stock, *img;
+	const char *stock, *img, *key;
 	char path[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -461,7 +461,8 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file,
 
 	stock = ewl_filelist_stock_icon_get(fl, path);
 	img = ewl_icon_theme_icon_path_get(stock, NULL);
-	if (img) ewl_icon_image_set(EWL_ICON(icon), img, stock); 
+	key = ewl_icon_theme_icon_key_get(img, stock);
+	if (img) ewl_icon_image_set(EWL_ICON(icon), img, key); 
 
 	ewl_container_child_append(EWL_CONTAINER(data), icon);
 	ewl_widget_show(icon);
