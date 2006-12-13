@@ -229,14 +229,12 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 		ewl_icon_parts_update(icon);
 	else if (!icon->alt)
 	{
-		const char *path, *key;
+		const char *path;
 
 		path = ewl_icon_theme_icon_path_get(
 					EWL_ICON_IMAGE_LOADING, NULL),
-		key = ewl_icon_theme_icon_key_get(path, 
+		ewl_image_file_set(EWL_IMAGE(icon->image), path,
 					EWL_ICON_IMAGE_LOADING);
-		
-		ewl_image_file_set(EWL_IMAGE(icon->image), path, key);
 		ewl_widget_show(icon->image);
 	}
 	else

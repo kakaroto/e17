@@ -25,7 +25,6 @@ e17_DEPS = \
 	groups/shadow-groups.edc \
 	groups/spacer-groups.edc \
 	groups/spinner-groups.edc \
-	groups/stock-groups.edc \
 	groups/tree-groups.edc \
 	groups/treebg-groups.edc \
 	groups/treehead-groups.edc \

@@ -302,7 +302,7 @@ ewl_icon_theme_idle(void *data)
 	for ( ; icons[ewl_icon_theme_pos] != NULL; 
 			ewl_icon_theme_pos++, count ++)
 	{
-		const char *path, *key;
+		const char *path;
 
 		if (count >= EWL_ICON_THEME_PER_LOOP)
 		{
@@ -312,10 +312,9 @@ ewl_icon_theme_idle(void *data)
 
 		path = ewl_icon_theme_icon_path_get(icons[ewl_icon_theme_pos],
 							EWL_ICON_SIZE_MEDIUM);
-		key = ewl_icon_theme_icon_key_get(path,
-						icons[ewl_icon_theme_pos]);
 		o = ewl_icon_simple_new();
-		if (path) ewl_icon_image_set(EWL_ICON(o), path, key);
+		if (path) ewl_icon_image_set(EWL_ICON(o), path, 
+					icons[ewl_icon_theme_pos]);
 		ewl_icon_label_set(EWL_ICON(o), icons[ewl_icon_theme_pos]);
 		ewl_container_child_append(EWL_CONTAINER(fbox), o);
 		ewl_widget_show(o);

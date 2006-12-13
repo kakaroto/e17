@@ -60,7 +60,6 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	Ewl_Widget *w, *vbox, *top_hbox, *prev_button, *next_button;
 	struct tm *ptr;
 	time_t tm;
-	const char *path, *key;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("ib", ib, FALSE);
@@ -84,16 +83,16 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	ewl_container_child_append(EWL_CONTAINER(vbox), top_hbox);
 	ewl_widget_show(top_hbox);
 
-	path = ewl_icon_theme_icon_path_get(EWL_ICON_GO_PREVIOUS, 
-						EWL_ICON_SIZE_SMALL), 
-	key = ewl_icon_theme_icon_key_get(path, EWL_ICON_GO_PREVIOUS);
-
 	prev_button = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), prev_button);
 	ewl_object_fill_policy_set(EWL_OBJECT(prev_button), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(prev_button), EWL_FLAG_ALIGN_LEFT);
-	ewl_button_image_set(EWL_BUTTON(prev_button), path, key);
-	ewl_callback_append(prev_button, EWL_CALLBACK_MOUSE_DOWN, ewl_calendar_prev_month_cb, ib);
+	ewl_button_image_set(EWL_BUTTON(prev_button), 
+			ewl_icon_theme_icon_path_get(EWL_ICON_GO_PREVIOUS, 
+							EWL_ICON_SIZE_SMALL), 
+			EWL_ICON_GO_PREVIOUS);
+	ewl_callback_append(prev_button, EWL_CALLBACK_MOUSE_DOWN, 
+					ewl_calendar_prev_month_cb, ib);
 	ewl_widget_show(prev_button);
 
 	ib->month_label = ewl_label_new();
@@ -105,15 +104,14 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	ewl_label_text_set(EWL_LABEL(ib->month_label), "Disp");
 	ewl_widget_show(ib->month_label);
 
-	path = ewl_icon_theme_icon_path_get(EWL_ICON_GO_NEXT, 
-						EWL_ICON_SIZE_SMALL), 
-	key = ewl_icon_theme_icon_key_get(path, EWL_ICON_GO_NEXT);
-
 	next_button = ewl_button_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(next_button), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(next_button), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), next_button);	
-	ewl_button_image_set(EWL_BUTTON(next_button), path, key);
+	ewl_button_image_set(EWL_BUTTON(next_button),
+				ewl_icon_theme_icon_path_get(EWL_ICON_GO_NEXT, 
+							EWL_ICON_SIZE_SMALL), 
+				EWL_ICON_GO_NEXT);
 	ewl_callback_append(next_button, EWL_CALLBACK_MOUSE_DOWN, 
 					ewl_calendar_next_month_cb, ib);
 	ewl_widget_show(next_button);

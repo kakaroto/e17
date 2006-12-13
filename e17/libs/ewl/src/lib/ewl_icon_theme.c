@@ -96,7 +96,7 @@ ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 
 	/* make sure we have an icon theme */
 	if (!icon_theme)
-		DRETURN_PTR(ewl_theme_path_get(), DLEVEL_STABLE);
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	/* if our theme is an edje just return the .edj file */
 	if (ewl_icon_theme_is_edje)
@@ -119,39 +119,9 @@ ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 	}
 	
 	if (ret == EWL_THEME_KEY_NOMATCH)
-		ret = ewl_theme_path_get();
+		ret = NULL;
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
-}
-
-/**
- * @param path: The path to the icon
- * @param icon: The name of the icon
- * @return Returns the icon key.
- * @brief Returns the icon key or NULL if icon not available
- */
-const char *
-ewl_icon_theme_icon_key_get(const char *path, const char *icon)
-{
-	int len;
-
-	if (!path || !icon) 
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-	len = strlen(path);
-	if (!strcmp((path + len - 4), ".edj"))
-	{
-		char key[128];
-		const char *ref;
-
-		/* XXX this is a memory leak. We string share the string but
-		 * the user won't be freeing it as it's const char *.... we
-		 * end up leaking it */
-		snprintf(key, sizeof(key), "/stock/icon/%s", icon);
-		DRETURN_PTR(ecore_string_instance(key), DLEVEL_STABLE);
-	}
-
-	DRETURN_PTR(icon, DLEVEL_STABLE);
 }
 
 static void

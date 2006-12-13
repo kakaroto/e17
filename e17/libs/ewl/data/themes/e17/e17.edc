@@ -26,7 +26,6 @@ collections {
 #include "groups/shadow-groups.edc"
 #include "groups/spacer-groups.edc"
 #include "groups/spinner-groups.edc"
-#include "groups/stock-groups.edc"
 #include "groups/tree-groups.edc"
 #include "groups/separator-groups.edc"
 #include "groups/statusbar-groups.edc"
