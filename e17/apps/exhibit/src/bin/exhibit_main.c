@@ -121,8 +121,10 @@ _ex_main_image_set(Exhibit *e, char *image)
    etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
    etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);
    
-   hs = etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view));
-   vs = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view));
+   hs = etk_scrolled_view_hscrollbar_get(
+					 ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view));
+   vs = etk_scrolled_view_vscrollbar_get(
+					 ETK_SCROLLED_VIEW(e->cur_tab->scrolled_view));
       
    etk_range_value_set(hs, (double)w/2);
    etk_range_value_set(vs, (double)h/2);
@@ -467,7 +469,7 @@ _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data)
 
 static Etk_Bool
 _ex_main_window_deleted_cb(void *data)
-{
+{  
    etk_main_quit();
    return 1;
 }
@@ -475,8 +477,8 @@ _ex_main_window_deleted_cb(void *data)
 static void
 _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 {
-   Etk_Event_Key_Down *ev = event;
-
+   Etk_Event_Key_Down *ev = event;   
+   
    if (ev->modifiers == ETK_MODIFIER_CTRL)
      {
 	if (!strcmp(ev->key, "t"))
@@ -493,8 +495,8 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	     _ex_tab_delete();
 	  }
 	else if(!strcmp(ev->key, "q"))
-	  {
-	     etk_main_quit();
+	  {	
+	     etk_main_quit();		
 	  }
 	else if(!strcmp(ev->key, "d"))
 	  {
@@ -519,6 +521,21 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	  {
 	     _ex_main_window_slideshow_toggle();
 	  }		   
+	else if(!strcmp(ev->key, "f"))
+	  {
+	     _ex_main_window_fullscreen_toggle(e);
+	  }		   
+     }
+
+   /* only active when in full screen mode */
+   if(etk_window_fullscreen_get(ETK_WINDOW(e->win)))
+     {
+	if(!strcmp(ev->key, "Escape") || !strcmp(ev->key, "f"))
+	  _ex_main_window_fullscreen_toggle(e);	
+	if(!strcmp(ev->key, "space")) 
+	  _ex_slideshow_next(e);	
+	if(!strcmp(ev->key, "b")) 	  
+	  _ex_slideshow_prev(e);	  
      }
 }
 
@@ -536,6 +553,42 @@ _ex_main_window_slideshow_toggle()
      _ex_slideshow_stop();     
    else     
      _ex_slideshow_start();
+}
+
+void
+_ex_main_window_fullscreen_toggle(Exhibit *e) 
+{
+   if (etk_window_fullscreen_get(ETK_WINDOW(e->win)))
+     {
+	etk_signal_connect("resize", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb), e);
+	etk_container_remove(ETK_CONTAINER(e->win), e->vboxf);
+	etk_container_add(ETK_CONTAINER(e->win), e->vbox);
+	etk_widget_show_all(e->win);
+	etk_container_add(ETK_CONTAINER(e->hpaned_shadow), e->notebook);
+	if (evas_list_count(e->tabs) > 1)
+	  etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_TRUE);
+	else
+	  etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);
+	etk_window_fullscreen_set(ETK_WINDOW(e->win), ETK_FALSE);	
+     }
+   else
+     {
+	etk_signal_disconnect("resize", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb));
+	etk_window_fullscreen_set(ETK_WINDOW(e->win), ETK_TRUE);
+	etk_widget_hide(e->statusbar[0]);
+	etk_widget_hide(e->statusbar[1]);
+	etk_widget_hide(e->statusbar[2]);
+	etk_widget_hide(e->statusbar[3]);
+	etk_widget_hide(e->sort_bar);
+	etk_container_remove(ETK_CONTAINER(e->win), e->vbox);
+	e->vboxf = etk_vbox_new(ETK_FALSE, 0);
+	etk_container_add(ETK_CONTAINER(e->win), e->vboxf);
+	etk_box_append(ETK_BOX(e->vboxf), e->notebook, 
+		       ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+	etk_widget_show(e->vboxf);
+	etk_widget_show(e->notebook);
+	etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);
+     }
 }
 
 static void 
@@ -633,7 +686,7 @@ _ex_main_dialog_show(char *text, Etk_Message_Dialog_Type type)
 
 
 void
-_ex_main_window_show(char *dir)
+_ex_main_window_show(char *dir, int fullscreen)
 {
    Ex_Tab *tab;
    Etk_Widget *entry_hbox, *toolbar;
@@ -677,7 +730,7 @@ _ex_main_window_show(char *dir)
    
    tab = NULL;
    
-   e->win = etk_window_new();
+   e->win = etk_window_new();   
    etk_widget_dnd_dest_set(e->win, ETK_TRUE);
    dnd_types_num = 1;
    dnd_types = calloc(dnd_types_num, sizeof(char*));
@@ -925,7 +978,6 @@ _ex_main_window_show(char *dir)
    etk_box_append(ETK_BOX(e->hbox), e->sort_bar, ETK_BOX_START, ETK_BOX_NONE, 0);
      {
 	Etk_Widget *menu;
-	Etk_Widget *menu_item;
 
 	menu = etk_menu_new();
 	etk_signal_connect("mouse_down", ETK_OBJECT(e->sort_bar), ETK_CALLBACK(_ex_sort_label_mouse_down_cb), menu);
@@ -962,13 +1014,17 @@ _ex_main_window_show(char *dir)
    _ex_tab_select(tab);
    
    etk_widget_show_all(e->win);
+   
+   if(fullscreen)
+     _ex_main_window_fullscreen_toggle(e);
 }
 
 int
 main(int argc, char *argv[])
 {
    int i;
-
+   int fullscreen = 0;
+   
    for (i = 1; i < argc; i++)
      {
 	if (((!strcmp(argv[i], "-h")) ||
@@ -978,6 +1034,7 @@ main(int argc, char *argv[])
 	     printf("  %s <image>\n", PACKAGE);
 	     printf("  %s <path>\n", PACKAGE);
 	     printf("  %s <url>\n\n", PACKAGE);
+	     printf("  -f, --fullscreen\t\t start Exhibit in fullscreen mode\n");
 	     printf("  -h, --help\t\t display this help and exit\n");
 	     printf("  -v, --version\t\t output version information and exit\n\n");
 	     exit(1);
@@ -988,7 +1045,9 @@ main(int argc, char *argv[])
 	     printf("%s version %s\n", PACKAGE, VERSION);
 	     exit(1);
 	  }
-
+	else if (((!strcmp(argv[i], "-f")) ||
+		 (!strcmp(argv[i], "--fullscreen"))))
+	  fullscreen = 1;
      }
    
    if (!etk_init(&argc, &argv))
@@ -1006,9 +1065,9 @@ main(int argc, char *argv[])
    
    epsilon_init();
    if(argc > 1)
-     _ex_main_window_show(argv[1]);     
+     _ex_main_window_show(argv[1], fullscreen);
    else
-     _ex_main_window_show(NULL);   
+     _ex_main_window_show(NULL, fullscreen);   
      
    etk_main();
    if(e)

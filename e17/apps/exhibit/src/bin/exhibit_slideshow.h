@@ -7,5 +7,6 @@
 void  _ex_slideshow_stop();
 void  _ex_slideshow_start();
 int   _ex_slideshow_next(void *data);    
+int   _ex_slideshow_prev(void *data);    
 
 #endif

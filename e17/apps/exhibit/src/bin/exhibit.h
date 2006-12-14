@@ -186,6 +186,7 @@ struct _Ex_Tab
 struct _Exhibit
 {
    Etk_Widget    *vbox;
+   Etk_Widget    *vboxf;
    Etk_Widget    *hbox;
    Etk_Widget    *menu_bar;
    Etk_Widget    *statusbar[4];

@@ -498,7 +498,7 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 	 ETK_CALLBACK(etk_window_hide_on_delete), win);
    etk_signal_connect_swapped("response", ETK_OBJECT(win),
 	 ETK_CALLBACK(etk_window_hide_on_delete), win);
-   etk_widget_size_request_set(win, 290, 405);
+   etk_widget_size_request_set(win, 290, 530);
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
    frame = etk_frame_new("What is Exhibit?");
@@ -528,7 +528,8 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 	 "<b>Code:</b>\n"
 	 "Hisham '<b>CodeWarrior</b>' Mardam Bey\n"
 	 "Martin '<b>balony</b>' Sarajervi\n"
-	 "Simon '<b>MoOm</b>' Treny",
+	 "Simon '<b>MoOm</b>' Treny\n"
+	 "Friedrich '<b>phriedrich</b>' Preuﬂ",
 	 ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), abouttext);
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -544,11 +545,18 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 	 "<b>control-d:</b> add to favorites\n"
 	 "<b>control-x:</b> toggle view\n"
 	 "<b>control-q:</b> exit program\n"
-	 "<b>control-s:</b> toggle slideshow\n",
+	 "<b>control-f:</b> toggle fullscreen\n"
+	 "<b>control-s:</b> toggle slideshow\n"
+         "\n"			  
+	 "<b>Fullscreen mode controls:</b>\n"
+	 "<b>control-f:</b> enter fullscreen mode\n"
+	 "<b>escape:</b> exit fullscreen mode\n"
+	 "<b>space:</b> next image\n"
+	 "<b>b:</b> previous image\n",
 	 ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), helptext);
-   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox, ETK_FALSE, ETK_FALSE,
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox, ETK_TRUE, ETK_TRUE,
 	 0, ETK_FALSE);
    etk_dialog_button_add(ETK_DIALOG(win), "Close", ETK_RESPONSE_CLOSE);
    etk_container_border_width_set(ETK_CONTAINER(win), 7);

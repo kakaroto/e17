@@ -55,3 +55,30 @@ _ex_slideshow_next(void *data)
 
    return 1; 
 }
+
+int
+_ex_slideshow_prev(void *data)
+{
+   Etk_Tree_Row *row, *first_row;
+   int i = 0;
+   int n = 0;
+   char string[80];
+
+   row = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+   first_row = etk_tree_first_row_get(ETK_TREE(e->cur_tab->itree));
+
+   if(!row || row == first_row)
+     row = etk_tree_last_row_get(ETK_TREE(e->cur_tab->itree), ETK_FALSE, ETK_FALSE);
+   else
+     row = etk_tree_prev_row_get(row, ETK_FALSE, ETK_FALSE);
+   
+   etk_tree_row_select(row);
+   etk_tree_row_scroll_to(row, ETK_FALSE);
+
+   i = etk_tree_num_rows_get(ETK_TREE(e->cur_tab->itree));
+   n = 1 + etk_tree_row_num_get(ETK_TREE(e->cur_tab->itree), row);
+   sprintf(string, "Slideshow picture %d of %d", n, i);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[3]), string, 0);
+
+   return 1; 
+}
