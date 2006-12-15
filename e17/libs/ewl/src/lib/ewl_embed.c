@@ -584,6 +584,28 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 		}
 	}
 
+	/*
+	 * Refetch the widget at these coords to determine if last.clicked and
+	 * focus needs updating.
+	 */
+	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
+	if (!widget)
+		widget = EWL_WIDGET(embed);
+
+	/*
+	 * Repeat the lookup process to ensure that the callbacks didn't cause a
+	 * change in the returned widget by destroying or hiding the previous
+	 * result.
+	 */
+	temp = widget;
+	while (temp && temp->parent && ewl_widget_internal_is(temp))
+		temp = temp->parent;
+
+	if (temp != embed->last.clicked) {
+		embed->last.clicked = temp;
+		ewl_embed_focused_widget_set(embed, temp);
+	}
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

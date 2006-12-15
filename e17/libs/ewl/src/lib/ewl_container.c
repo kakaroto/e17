@@ -701,18 +701,18 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
 	 * Search through the children to find an intersecting child.
 	 */
 	while ((child = ecore_dlist_next(EWL_CONTAINER(widget)->children))) {
-		if (x >= (CURRENT_X(child) - INSET_LEFT(child))
+		if (VISIBLE(child) && !DISABLED(child)
+		    && x >= (CURRENT_X(child) - INSET_LEFT(child))
 		    && y >= (CURRENT_Y(child) - INSET_TOP(child))
 		    && (CURRENT_X(child) + CURRENT_W(child) +
 			    INSET_RIGHT(child)) >= x
 		    && (CURRENT_Y(child) + CURRENT_H(child) +
 			    INSET_BOTTOM(child)) >= y) {
-			if (child->toplayered && VISIBLE(child)) {
+			if (child->toplayered) {
 				found = child;
 				break;
 			}
-			if ((!found || LAYER(found) <= LAYER(child))
-					&& VISIBLE(child))
+			if ((!found || LAYER(found) <= LAYER(child)))
 				found = child;
 		}
 	}
