@@ -19,7 +19,7 @@ evas_gl_x11_la_SOURCES = \
 	ewl_engine_evas_gl_x11.c
 
 evas_gl_x11_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-evas_gl_x11_la_LDFLAGS = -module -avoid-version \
+evas_gl_x11_la_LDFLAGS = -module -version-info @INTERFACE_CURRENT@:@INTERFACE_REVISION@:@INTERFACE_AGE@ \
 		-L$(top_builddir)/src/lib \
 		-L$(top_builddir)/src/lib/.libs
 evas_gl_x11_la_DEPENDENCIES =

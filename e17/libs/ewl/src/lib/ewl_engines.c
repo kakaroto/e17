@@ -125,13 +125,21 @@ ewl_engine_new(const char *name)
 	if (engine)
 		DRETURN_PTR(engine, DLEVEL_STABLE);
 
-	snprintf(filename, sizeof(filename), "%s/ewl/%s/%s.so",
+	snprintf(filename, sizeof(filename), "%s/ewl/%s/%s.so.%s",
 							PACKAGE_LIB_DIR, 
-							EWL_ENGINE_DIR, name);
+							EWL_ENGINE_DIR, name,
+							INTERFACE_CURRENT);
 	if (!ecore_file_exists(filename))
 	{
-		DWARNING("Given engine name dosen't exist.");
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+		snprintf(filename, sizeof(filename), "%s/ewl/%s/%s.%s.so",
+							PACKAGE_LIB_DIR,
+							EWL_ENGINE_DIR, name,
+							INTERFACE_CURRENT);
+		if (!ecore_file_exists(filename))
+		{
+			DWARNING("Given engine name dosen't exist.");
+			DRETURN_PTR(NULL, DLEVEL_STABLE);
+		}
 	}
 
 	handle = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL);

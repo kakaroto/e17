@@ -19,7 +19,7 @@ evas_fb_la_SOURCES = \
 	ewl_engine_evas_fb.c
 
 evas_fb_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-evas_fb_la_LDFLAGS = -module -avoid-version \
+evas_fb_la_LDFLAGS = -module -version-info @INTERFACE_CURRENT@:@INTERFACE_REVISION@:@INTERFACE_AGE@ \
 		-L$(top_builddir)/src/lib \
 		-L$(top_builddir)/src/lib/.libs
 evas_fb_la_DEPENDENCIES =

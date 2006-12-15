@@ -19,7 +19,7 @@ x11_la_SOURCES = \
 	ewl_engine_x11.c
 
 x11_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-x11_la_LDFLAGS = -module -avoid-version \
+x11_la_LDFLAGS = -module -version-info @INTERFACE_CURRENT@:@INTERFACE_REVISION@:@INTERFACE_AGE@ \
 		-L$(top_builddir)/src/lib \
 		-L$(top_builddir)/src/lib/.libs
 x11_la_DEPENDENCIES =

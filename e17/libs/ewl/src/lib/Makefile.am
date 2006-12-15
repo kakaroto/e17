@@ -184,4 +184,4 @@ installed_headersdir = $(prefix)/include/ewl
 installed_headers_DATA = $(EWLHEADERS)
 
 libewl_la_LIBADD = @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EMOTION_LIBS@ @EPSILON_LIBS@ -lm
-libewl_la_LDFLAGS = -version-info 1:0:0
+libewl_la_LDFLAGS = -version-info @INTERFACE_CURRENT@:@INTERFACE_REVISION@:@INTERFACE_AGE@
