@@ -44,6 +44,7 @@ SUBDIRS				= \
 	scrollbar \
 	scrollpane \
 	seeker \
+	shadow \
 	spinner \
 	statusbar \
 	table \

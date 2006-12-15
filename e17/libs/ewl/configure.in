@@ -312,6 +312,7 @@ src/bin/tests/puzzle/Makefile
 src/bin/tests/scrollbar/Makefile
 src/bin/tests/scrollpane/Makefile
 src/bin/tests/seeker/Makefile
+src/bin/tests/shadow/Makefile
 src/bin/tests/spinner/Makefile
 src/bin/tests/statusbar/Makefile
 src/bin/tests/table/Makefile
