@@ -1,3 +1,20 @@
+Fri Dec 15 00:40:00 2006 Nathan Ingersoll <ningerso@gmail.com>
+	* Version 0.5.1:
+	  - Addition of popup abstraction
+	  - Stock icon abstraction
+	  - Bug fixes for mouse interaction
+	  - DND drag support
+	  - Text widget performance improvements
+	  - Abstraction of shared MVC selection code
+	  - Support for alternate text on icons
+	  - Theme structure reorganization
+	  - Expanded documentation
+	  - New memory buffer rendering engine
+	  - ARGB Cursor support
+	  - Improved test module build structure
+	  - Updated RPM and debian packaging
+	  - Need to do these fake releases more often
+
 Fri Sep 29 01:28:00 2006 Nathan Ingersoll <ningerso@gmail.com>
 	* Version 0.5.0 includes a large number of bug fixes as well as:
 	  - extensive documentation
