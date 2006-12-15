@@ -536,6 +536,7 @@ _slide_set_bg(void *data, const char *bg)
    E_Container *con;
    E_Desk *d;
    E_Zone *z;
+   int i;
    char buf[4096];
 
    inst = data;
@@ -561,7 +562,17 @@ _slide_set_bg(void *data, const char *bg)
 	  }
 	e_bg_default_set(buf);
      }
-   
+   else if (ci->all_desks == 2)
+     {
+	con = e_container_current_get(e_manager_current_get());    
+        z = e_zone_current_get(con);
+        for (i = 0; i < (z->desk_x_count * z->desk_y_count); i++)
+          {
+            e_bg_del(con->num, z->num, z->desks[i]->x, z->desks[i]->y);
+            e_bg_add(con->num, z->num, z->desks[i]->x, z->desks[i]->y, buf);            
+	  }	
+     }   
+
    e_bg_update();
 }
 

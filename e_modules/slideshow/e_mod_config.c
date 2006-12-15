@@ -111,6 +111,11 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_radio_add(evas, _("Set wallpaper on current desktop"), 0, rg);
    e_widget_framelist_object_append (of, ob);
+   if(ecore_x_xinerama_screen_count_get() > 1)
+     {
+       ob = e_widget_radio_add(evas, _("Set wallpaper on current monitor (Xinerama support)"), 2, rg);
+       e_widget_framelist_object_append (of, ob);
+     }
    e_widget_list_object_append (o, of, 1, 1, 0.5);
 
    return o;
@@ -135,8 +140,7 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
      ci->dir = evas_stringshare_add (cfdata->dir);
    else
      {
-	snprintf (buf, sizeof (buf), "%s/.e/e/backgrounds",
-		  e_user_homedir_get ());
+	snprintf (buf, sizeof (buf), "%s/.e/e/backgrounds", e_user_homedir_get ());
 	ci->dir = evas_stringshare_add (buf);
      }
 
