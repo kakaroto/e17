@@ -3,7 +3,7 @@
 static void destroy(Ewl_Widget *w, void *event, void *data);
 static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
 static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb);
-static void populate_files(Ewl_Widget *c, void *event, void *data);
+static void populate_files(char *cdir);
 static void create_main_gui(void);
 static int destroy_boot(void *data);
 static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
@@ -169,13 +169,12 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 	return tree;
 }
 
-static void populate_files(Ewl_Widget *w, void *event, void *data)
+static void populate_files(char *cdir)
 {
-	char *cdir, *dir, *imagef;
+	char *dir, *imagef;
 	Ecore_List *directories, *images;
 	Ewl_Widget *hbox, *image, *text, *children[2], *row;
 
-	cdir = data;
 	directories = get_directories(cdir);
 	images = get_images(cdir);
 
@@ -207,24 +206,6 @@ static void populate_files(Ewl_Widget *w, void *event, void *data)
 		children[1] = NULL;
 		
 		row = ewl_tree_row_add(EWL_TREE(ftree), NULL, children);
-		if (!strcmp(cdir, ".."))
-		{
-			if (strchr(cdir, '/'))
-			{
-				ewl_callback_append(row, EWL_CALLBACK_CLICKED, 
-						    populate_files, strchr(cdir, '/'));
-			}
-			else
-			{
-				ewl_callback_append(row, EWL_CALLBACK_CLICKED,
-						    populate_files, "/");
-			}
-		}
-		else
-		{
-                        ewl_callback_append(row, EWL_CALLBACK_CLICKED,
-                                            populate_files, dir);
-		}
 	}
 	ewl_widget_configure(ftree);
 
@@ -232,15 +213,17 @@ static void populate_files(Ewl_Widget *w, void *event, void *data)
 	while (!ecore_list_is_empty(images))
 	{
 		imagef = ecore_list_remove_first(images);
-
 		image = ewl_image_thumbnail_new();
 		ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(image), imagef);
 		ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
+		ewl_image_constrain_set(EWL_IMAGE(image), 100);
 		ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(fbox), image);
 		ewl_widget_show(image);
 	}
 	ewl_widget_configure(ftree);
+	ecore_list_destroy(directories);
+	ecore_list_destroy(images);
 }
 
 static void create_main_gui(void)
@@ -251,7 +234,7 @@ static void create_main_gui(void)
 	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
         ewl_window_name_set(EWL_WINDOW(win), "Ephoto!");
-        ewl_object_size_request(EWL_OBJECT(win), 800, 600);
+        ewl_object_size_request(EWL_OBJECT(win), 600, 400);
         ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
 	ewl_widget_show(win);
 
@@ -284,7 +267,6 @@ static void create_main_gui(void)
 	ewl_widget_show(nb);
 
 	ftree = add_tree(nb);
-	ewl_callback_append(ftree, EWL_CALLBACK_SHOW, populate_files, getenv("HOME"));
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), ftree, "Files");
 	atree = add_tree(nb);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), atree, "Albums");
@@ -329,6 +311,8 @@ static void create_main_gui(void)
 	add_button(ihbox, "Right", NULL, NULL);
 	add_button(ihbox, "Edit", NULL, NULL);
 	add_button(ihbox, "Slideshow", NULL, NULL);
+
+	populate_files(getenv("HOME"));
 
 	return;
 }

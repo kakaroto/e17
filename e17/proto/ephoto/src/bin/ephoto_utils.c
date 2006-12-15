@@ -41,6 +41,7 @@ Ecore_List *get_directories(char *directory)
 	{
 		files = NULL;
 	}
+	ecore_list_goto_first(files);
 	return files;
 }
 
@@ -71,35 +72,18 @@ Ecore_List *get_images(char *directory)
                                         snprintf(path, PATH_MAX, "%s%s",
                                                  directory, file);
                                 }
-                        }
-
-			if (fnmatch("*.[Jj][Pp][Ee][Gg]", path, 0) == 0)
-			{
-				ecore_list_append(files, strdup(path));
-			}
-			else if (fnmatch("*.[Jj][Pp][Gg]", path, 0) == 0)
-			{
-				ecore_list_append(files, strdup(path));
-			}
-			else if (fnmatch("*.[Pp][Nn][Gg]", path, 0) == 0)
-			{
-				ecore_list_append(files, strdup(path));
-			}
-			else if (fnmatch("*.[Gg][Ii][Ff]", path, 0) == 0)
-			{
-				ecore_list_append(files, strdup(path));
-			}
-			else if (fnmatch("*.[Tt][Ii][Ff]Ff]", path, 0) == 0)
-			{
-				ecore_list_append(files, strdup(path));
-			}
-			else if (fnmatch("*.[Tt][Ii][Ff]", path, 0) == 0)
-			{
-				ecore_list_append(files, strdup(path));
-			}
-			else if (fnmatch("*.[Ss][Vv][Gg]", path, 0) == 0)
-			{
-				ecore_list_append(files, strdup(path));
+				if (fnmatch("*.[Jj][Pp][Ee][Gg]", path, 0) == 0)
+				{
+					ecore_list_append(files, strdup(path));
+				}
+				else if (fnmatch("*.[Jj][Pp][Gg]", path, 0) == 0)
+				{
+					ecore_list_append(files, strdup(path));
+				}
+				else if (fnmatch("*.[Pp][Nn][Gg]", path, 0) == 0)
+				{
+					ecore_list_append(files, strdup(path));
+				}
 			}
 		}
 	}
@@ -107,5 +91,6 @@ Ecore_List *get_images(char *directory)
 	{
 		files = NULL;
 	}
+	ecore_list_goto_first(files);
 	return files;
 }
