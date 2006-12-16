@@ -4148,3 +4148,10 @@ Disable translation of some error message stuff that might as well be left untra
 Fix focused opacity stuff, add fading toggle. (config/menus.cfg)
 Reuse other text with same meaning. (config/actionclasses.cfg)
 
+
+-------------------------------------------------------------------------------
+
+Sat Dec 16 15:43:41 CET 2006
+(Kim)
+
+--- 0.16.8.5 ---
