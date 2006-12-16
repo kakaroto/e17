@@ -11,5 +11,6 @@ missing
 mkinstalldirs
 stamp-h*
 e16keyedit
+e16keyedit.spec
 e16keyedit*.gz
 e16keyedit*.rpm
