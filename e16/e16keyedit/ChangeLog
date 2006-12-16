@@ -1,3 +1,23 @@
+2006-12-16 14:49  kwo
+
+* viewer.c (1.29):
+
+Fix incorrect action text selection when using with e16 < 0.16.8.  Fix
+positioning on add/delete entry.
+
+2006-12-16 14:31  kwo
+
+* .cvsignore (1.5), configure.in (1.9), e16keyedit.spec (1.6),
+e16keyedit.spec.in (1.1):
+
+Generate spec file (causing spec.in to be included in release tarball).
+
+2006-04-04 21:57  kwo
+
+* ChangeLog (1.4):
+
+Update changelog.
+
 2006-04-04 21:55  kwo
 
 * configure.in (1.8), e16keyedit.spec (1.5):
