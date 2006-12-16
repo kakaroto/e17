@@ -79,8 +79,6 @@ static const char  *mod_str[] = {
 };
 #define N_MODIFIERS (sizeof(mod_str)/sizeof(char*))
 
-static const ActionOpt *actions;
-
 /* *INDENT-OFF* */
 static const ActionOpt actions_default[] = {
     {"Run command", 1, 1, NULL, "exec "},
@@ -178,6 +176,11 @@ static const ActionOpt actions_default[] = {
     {NULL, 0, 0, NULL, NULL}
 };
 /* *INDENT-ON* */
+
+static const ActionOpt *actions = NULL;
+static unsigned int action_count = sizeof(actions_default) / sizeof(ActionOpt);
+static unsigned int *action_index_to_row = NULL;
+static unsigned int *action_row_to_index = NULL;
 
 static int
 match_action_by_binding(int opcode, const char *params)
@@ -305,10 +308,14 @@ static void
 change_action(GtkWidget * my_clist __UNUSED__, gint row, gint column __UNUSED__,
 	      GdkEventButton * event __UNUSED__, gpointer data __UNUSED__)
 {
+   int                 k;
+
    if (dont_update)
       return;
 
-   if (actions[row].param_tpe != 0)
+   k = action_row_to_index[row];
+
+   if (actions[k].param_tpe != 0)
      {
 	gtk_entry_set_editable(GTK_ENTRY(act_params), TRUE);
 	gtk_widget_set_sensitive(act_params, TRUE);
@@ -322,17 +329,17 @@ change_action(GtkWidget * my_clist __UNUSED__, gint row, gint column __UNUSED__,
 
    if (e16_ver != VER_E16_OLD)
      {
-	if (actions[row].command)
-	   gtk_entry_set_text(GTK_ENTRY(act_params), actions[row].command);
+	if (actions[k].command)
+	   gtk_entry_set_text(GTK_ENTRY(act_params), actions[k].command);
 	else
 	   gtk_entry_set_text(GTK_ENTRY(act_params), "* Not available *");
      }
    else
      {
-	if (actions[row].params)
-	   gtk_entry_set_text(GTK_ENTRY(act_params), actions[row].params);
+	if (actions[k].params)
+	   gtk_entry_set_text(GTK_ENTRY(act_params), actions[k].params);
      }
-   gtk_clist_set_text(GTK_CLIST(clist), last_row, 2, actions[row].text);
+   gtk_clist_set_text(GTK_CLIST(clist), last_row, 2, actions[k].text);
    gtk_clist_set_text(GTK_CLIST(clist), last_row, 3,
 		      gtk_entry_get_text(GTK_ENTRY(act_params)));
 }
@@ -470,6 +477,7 @@ selection_made(GtkWidget * my_clist __UNUSED__, gint row,
 
    if (i >= 0)
      {
+	i = action_index_to_row[i];
 	gtk_clist_select_row(GTK_CLIST(act_clist), i, 0);
 	gtk_clist_moveto(GTK_CLIST(act_clist), i, 0, 0.5, 0.5);
      }
@@ -551,9 +559,12 @@ static void
 on_delete_row(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
 {
    gtk_clist_remove(GTK_CLIST(clist), last_row);
-   gtk_clist_select_row(GTK_CLIST(clist), 0, 0);
-   gtk_clist_moveto(GTK_CLIST(clist), 0, 0, 0.5, 0.5);
+
    real_rows--;
+   if (last_row >= real_rows)
+      last_row--;
+   gtk_clist_select_row(GTK_CLIST(clist), last_row, 0);
+   gtk_clist_moveto(GTK_CLIST(clist), last_row, 0, 0.5, 0.5);
 }
 
 static void
@@ -581,7 +592,9 @@ on_create_row(GtkWidget * widget __UNUSED__, gpointer data __UNUSED__)
    if (stuff[3])
       free(stuff[3]);
 
-   real_rows++;
+   last_row = real_rows++;
+   gtk_clist_select_row(GTK_CLIST(clist), last_row, 0);
+   gtk_clist_moveto(GTK_CLIST(clist), last_row, 0, 0.5, 0.5);
 }
 
 static void
@@ -863,14 +876,19 @@ create_list_window(void)
 
    {
       const char         *stuff[1];
-      int                 k;
+      int                 k, row;
 
-      for (k = 0; (actions[k].text); k++)
+      action_index_to_row = calloc(action_count, sizeof(int));
+      action_row_to_index = calloc(action_count, sizeof(int));
+
+      for (k = row = 0; (actions[k].text); k++)
 	{
 	   if (e16_ver == VER_E16_OLD && actions[k].id < 0)
 	      continue;
 	   stuff[0] = actions[k].text;
 	   gtk_clist_append(GTK_CLIST(act_clist), (char **)stuff);
+	   action_index_to_row[k] = row;
+	   action_row_to_index[row++] = k;
 	}
    }
 
@@ -1029,6 +1047,7 @@ load_actions(void)
    memset(pao + nao, 0, sizeof(ActionOpt));
 
    actions = pao;
+   action_count = nao;
 }
 
 int
