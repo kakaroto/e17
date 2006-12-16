@@ -25,6 +25,7 @@ e17_hhandle_thumb.png \
 e17_hscrollbar_trough.png \
 e17_ibar_bg_v.png \
 e17_ibar_over_v.png \
+e17_icon_fileman_folder.png \
 e17_ilist_bg0.png \
 e17_ilist_bg1.png \
 e17_logo.png \
@@ -76,20 +77,6 @@ focus.png \
 paned_hthumb.png \
 paned_vthumb.png \
 row_select.png \
-stock-apply.png \
 stock-arrow_down.png \
-stock-arrow_left.png \
-stock-arrow_right.png \
 stock-arrow_up.png \
-stock-cancel.png \
-stock-ff.png \
-stock-fr.png \
-stock-home.png \
-stock-ok.png \
-stock-open.png \
-stock-pause.png \
-stock-play.png \
-stock-quit.png \
-stock-save.png \
-stock-stop.png \
 vanimate.png

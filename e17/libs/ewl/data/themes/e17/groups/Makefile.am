@@ -23,7 +23,6 @@ shadow-groups.edc \
 spacer-groups.edc \
 spinner-groups.edc \
 statusbar-groups.edc \
-stock-groups.edc \
 tree-groups.edc \
 treebg-groups.edc \
 treehead-groups.edc \
