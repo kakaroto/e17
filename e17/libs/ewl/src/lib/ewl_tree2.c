@@ -496,6 +496,11 @@ ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, i
 	char *theme_str;
 	Ewl_Widget *h, *c;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_PARAM_PTR("col", col);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
+
 	h = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 	ewl_widget_appearance_set(h, "header");
@@ -529,6 +534,8 @@ ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, i
 		ewl_object_alignment_set(EWL_OBJECT(c), EWL_FLAG_ALIGN_RIGHT);
 		ewl_widget_show(c);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
