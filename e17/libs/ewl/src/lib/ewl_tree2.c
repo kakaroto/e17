@@ -491,6 +491,84 @@ ewl_tree2_cb_view_change(Ewl_MVC *mvc)
 }
 
 static void
+ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, int column)
+{
+	char *theme_str;
+	Ewl_Widget *h, *c;
+
+	h = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(tree->header), h);
+	ewl_widget_appearance_set(h, "header");
+	ewl_widget_show(h);
+
+	if (col->model->sort)
+		ewl_callback_append(h, EWL_CALLBACK_CLICKED, 
+					ewl_tree2_cb_column_sort, col);
+
+	c = col->view->header_fetch(mvc_data, column);
+	ewl_object_fill_policy_set(EWL_OBJECT(c), 
+			EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(h), c);
+
+	/* display the sort arrow if needed */
+	if (col->model->sort)
+	{
+		c = ewl_button_new();
+		ewl_container_child_append(EWL_CONTAINER(h), c);
+
+		if (col->sort == EWL_SORT_DIRECTION_ASCENDING)
+			theme_str = "ascending";
+		else if (col->sort == EWL_SORT_DIRECTION_DESCENDING)
+			theme_str = "descending";
+		else
+			theme_str = "blank";
+
+		ewl_widget_appearance_set(c, theme_str);
+		ewl_widget_internal_set(c, TRUE);
+		ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_SHRINK);
+		ewl_object_alignment_set(EWL_OBJECT(c), EWL_FLAG_ALIGN_RIGHT);
+		ewl_widget_show(c);
+	}
+}
+
+static void
+ewl_tree2_column_build(Ewl_Row *row, Ewl_Tree2_Column *col, void *mvc_data, int r, int c)
+{
+	Ewl_Widget *cell;
+	Ewl_Widget *child;
+	void *val;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("row", row);
+	DCHECK_PARAM_PTR("col", col);
+	DCHECK_TYPE("row", row, EWL_ROW_TYPE);
+
+	cell = ewl_cell_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(row), cell);
+	ewl_attach_widget_association_set(cell, row);
+	ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
+				ewl_tree2_cb_cell_clicked, NULL);
+	ewl_widget_show(cell);
+
+	val = col->model->fetch(mvc_data, r, c);
+	if (!val)
+	{
+		child = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(child), " ");
+	}
+	else
+	{
+		child = col->view->construct();
+		col->view->assign(child, val);
+	}
+	ewl_container_child_append(EWL_CONTAINER(cell), child);
+	ewl_widget_show(child);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
 ewl_tree2_build_tree(Ewl_Tree2 *tree)
 {
 	Ewl_Tree2_Column *col;
@@ -509,43 +587,7 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 	while ((col = ecore_list_next(tree->columns)))
 	{
 		int r;
-		char *theme_str;
-		Ewl_Widget *h, *c;
-
-		h = ewl_hbox_new();
-		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
-		ewl_widget_appearance_set(h, "header");
-		ewl_widget_show(h);
-
-		if (col->model->sort)
-			ewl_callback_append(h, EWL_CALLBACK_CLICKED, 
-						ewl_tree2_cb_column_sort, col);
-
-		c = col->view->header_fetch(mvc_data, column);
-		ewl_object_fill_policy_set(EWL_OBJECT(c), 
-				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
-		ewl_container_child_append(EWL_CONTAINER(h), c);
-
-		/* display the sort arrow if needed */
-		if (col->model->sort)
-		{
-			c = ewl_button_new();
-			ewl_container_child_append(EWL_CONTAINER(h), c);
-
-			if (col->sort == EWL_SORT_DIRECTION_ASCENDING)
-				theme_str = "ascending";
-			else if (col->sort == EWL_SORT_DIRECTION_DESCENDING)
-				theme_str = "descending";
-			else
-				theme_str = "blank";
-
-			ewl_widget_appearance_set(c, theme_str);
-			ewl_widget_internal_set(c, TRUE);
-			ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_SHRINK);
-			ewl_object_alignment_set(EWL_OBJECT(c), EWL_FLAG_ALIGN_RIGHT);
-			ewl_widget_show(c);
-		}
-
+		ewl_tree2_header_build(tree, col, mvc_data, column);
 		r = col->model->count(mvc_data);
 		if (r > rows) rows = r;
 
@@ -556,10 +598,12 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 	for (i = 0; i < rows; i++)
 	{
 		Ewl_Widget *row;
+		Ewl_Widget *p;
+
+		p = tree->rows;
 
 		row = ewl_row_new();
 		ewl_row_header_set(EWL_ROW(row), EWL_ROW(tree->header));
-		ewl_container_child_append(EWL_CONTAINER(tree->rows), row);
 		ewl_attach_widget_association_set(row, tree);
 		ewl_callback_append(row, EWL_CALLBACK_CLICKED,  
 					ewl_tree2_cb_row_clicked, NULL);
@@ -570,39 +614,19 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 		else
 			ewl_widget_state_set(row, "even", EWL_STATE_PERSISTENT);
 
+		col = ecore_list_goto_first(tree->columns);
+		if (col && col->model->expandable &&
+				col->model->expandable(mvc_data, i))
+			printf("Expandable row %d found\n", i);
+
 		column = 0;
-		ecore_list_goto_first(tree->columns);
 		while((col = ecore_list_next(tree->columns)))
 		{
-			Ewl_Widget *cell;
-			Ewl_Widget *child;
-			void *val;
-
-			cell = ewl_cell_new();
-			ewl_object_fill_policy_set(EWL_OBJECT(cell),
-						   EWL_FLAG_FILL_ALL);
-			ewl_container_child_append(EWL_CONTAINER(row), cell);
-			ewl_attach_widget_association_set(cell, row);
-			ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
-						ewl_tree2_cb_cell_clicked, NULL);
-			ewl_widget_show(cell);
-
-			val = col->model->fetch(mvc_data, i, column);
-			if (!val)
-			{
-				child = ewl_label_new();
-				ewl_label_text_set(EWL_LABEL(child), " ");
-			}
-			else
-			{
-				child = col->view->construct();
-				col->view->assign(child, val);
-			}
-			ewl_container_child_append(EWL_CONTAINER(cell), child);
-			ewl_widget_show(child);
-
+			ewl_tree2_column_build(EWL_ROW(row), col, mvc_data, i, column);
 			column ++;
 		}
+
+		ewl_container_child_append(EWL_CONTAINER(p), row);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
