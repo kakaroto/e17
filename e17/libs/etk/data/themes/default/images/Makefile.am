@@ -15,7 +15,6 @@ EXTRA_DIST = \
             colorpicker_square.png \
             colorpicker_vertical.png \
             combo_arrow.png \
-            dialog_logo.png \
             drag_glow.png \
             entry.png \
             focus_glow.png \
@@ -30,9 +29,6 @@ EXTRA_DIST = \
             glow_arrow_left.png \
             glow_arrow_right.png \
             glow_arrow_up.png \
-            hhandle_down.png \
-            hhandle.png \
-            hhandle_thumb.png \
             hpaned_handle.png \
             hscrollbar_trough2.png \
             hscrollbar_trough.png \
@@ -67,9 +63,9 @@ EXTRA_DIST = \
             scrollbar_vdrag1.png \
             scrollbar_vdrag2.png \
             scrollbar_vdrag_thumb.png \
-            slidet_button1.png \
-            slidet_button2.png \
-            slidet_button_glow.png \
+            slider_button1.png \
+            slider_button2.png \
+            slider_button_glow.png \
             spinner_bg.png \
             spinner_button_down1.png \
             spinner_button_down2.png \
@@ -90,9 +86,6 @@ EXTRA_DIST = \
             tree_header_inactive.png \
             tree.png \
             tree_shadow.png \
-            vhandle_down.png \
-            vhandle.png \
-            vhandle_thumb.png \
             vpaned_handle.png \
             vscrollbar_trough2.png \
             vscrollbar_trough.png \
