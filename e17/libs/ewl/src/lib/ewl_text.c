@@ -4047,6 +4047,8 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt, unsigned int char_idx
 	{
 		if (ewl_text_char_is_legal_utf8(tmp)) 
 			tmp = ewl_text_text_next_char(tmp, NULL);
+		else
+			tmp++;
 
 		clen++;
 	}
