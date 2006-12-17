@@ -571,7 +571,8 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 		 * Make sure these widgets haven't been scheduled for
 		 * deletion before we send their callbacks. 
 		 */
-		if (deselect && !DESTROYED(deselect)) {
+		if (deselect && !DESTROYED(deselect) &&
+				!ewl_widget_parent_of(deselect, widget)) {
 			ewl_object_state_remove(EWL_OBJECT(deselect),
 						EWL_FLAG_STATE_FOCUSED);
 			ewl_callback_call(deselect, EWL_CALLBACK_FOCUS_OUT);
@@ -582,28 +583,6 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 					EWL_FLAG_STATE_FOCUSED);
 			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
 		}
-	}
-
-	/*
-	 * Refetch the widget at these coords to determine if last.clicked and
-	 * focus needs updating.
-	 */
-	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
-	if (!widget)
-		widget = EWL_WIDGET(embed);
-
-	/*
-	 * Repeat the lookup process to ensure that the callbacks didn't cause a
-	 * change in the returned widget by destroying or hiding the previous
-	 * result.
-	 */
-	temp = widget;
-	while (temp && temp->parent && ewl_widget_internal_is(temp))
-		temp = temp->parent;
-
-	if (temp != embed->last.clicked) {
-		embed->last.clicked = temp;
-		ewl_embed_focused_widget_set(embed, temp);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1558,6 +1537,26 @@ ewl_embed_focused_widget_get(Ewl_Embed *embed)
 }
 
 /**
+ * Find a valid parent of the cleaned up widget.
+ */
+static Ewl_Widget *
+ewl_embed_info_parent_find(Ewl_Widget *w)
+{
+	Ewl_Widget *temp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	for (temp = w->parent; temp; temp = temp->parent) {
+		if (VISIBLE(temp) && !DISABLED(temp) && !DESTROYED(temp))
+			break;
+	}
+
+	DRETURN_PTR(temp, DLEVEL_STABLE);
+}
+
+/**
  * @param e: The embed to cleanup
  * @param w: The wiget to check while cleaning up
  * @return Returns no value.
@@ -1577,27 +1576,28 @@ ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
 	if ((w == e->last.focused) 
 			|| (RECURSIVE(w) 
 				&& ewl_widget_parent_of(w, e->last.focused)))
-		e->last.focused = NULL;
+
+		e->last.focused = ewl_embed_info_parent_find(w);
 
 	if ((w == e->last.clicked) 
 			|| (RECURSIVE(w) 
 				&& ewl_widget_parent_of(w, e->last.clicked)))
-		e->last.clicked = NULL;
+		e->last.clicked = ewl_embed_info_parent_find(w);
 
 	if ((w == e->last.mouse_in) 
 			|| (RECURSIVE(w) 
 				&& ewl_widget_parent_of(w, e->last.mouse_in)))
-		e->last.mouse_in = NULL;
+		e->last.mouse_in = ewl_embed_info_parent_find(w);
 
 	if ((w == e->last.drop_widget) 
 			|| (RECURSIVE(w) 
 				&& ewl_widget_parent_of(w, e->last.drop_widget)))
-		e->last.drop_widget = NULL;
+		e->last.drop_widget = ewl_embed_info_parent_find(w);
 
 	if ((w == e->last.drag_widget) 
 			|| (RECURSIVE(w) 
 				&& ewl_widget_parent_of(w, e->last.drag_widget)))
-		e->last.drag_widget = NULL;
+		e->last.drag_widget = ewl_embed_info_parent_find(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
