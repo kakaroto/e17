@@ -1,5 +1,6 @@
 #include <Ewl_Engine_X11.h>
 #include <Ewl.h>
+#include <X11/Xlib.h>
 #include "ewl_private.h"
 #include "ewl_macros.h"
 #include "ewl_debug.h"
@@ -1262,19 +1263,25 @@ ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	/* Handle everything *except* XDND selection */
 	if (ev->selection != ECORE_X_ATOM_SELECTION_XDND)
-		printf("Data request event received: %s not %s\n",
-				XGetAtomName(ecore_x_display_get(),
-					ev->selection),
-				XGetAtomName(ecore_x_display_get(),
-					ECORE_X_ATOM_SELECTION_XDND));
+	{
+		char *rec, *dnd;
+
+		rec = XGetAtomName(ecore_x_display_get(), ev->selection);
+		dnd = XGetAtomName(ecore_x_display_get(), ECORE_X_ATOM_SELECTION_XDND);
+		printf("Data request event received: %s not %s\n", rec, dnd);
+		XFree(rec);
+		XFree(dnd);
+	}
 
 	else if (ev->selection == ECORE_X_ATOM_SELECTION_XDND)
 	{
 		Ewl_Embed *embed;
+		char *atom;
+
 		embed = ewl_embed_evas_window_find((void *)ev->owner);
-		ewl_embed_dnd_data_request_feed(embed, ev,
-				XGetAtomName(ecore_x_display_get(),
-					ev->target));
+		atom = XGetAtomName(ecore_x_display_get(), ev->target);
+		ewl_embed_dnd_data_request_feed(embed, ev, atom);
+		XFree(atom);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
