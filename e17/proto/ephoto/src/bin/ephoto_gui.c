@@ -306,11 +306,12 @@ static void create_main_gui(void)
 	ewl_object_fill_policy_set(EWL_OBJECT(ihbox), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(ihbox);
 
-	add_button(ihbox, "Refresh", NULL, NULL);
+	add_button(ihbox, "In", NULL, NULL);
+	add_button(ihbox, "Out", NULL, NULL);
+	add_button(ihbox, "Fit", NULL, NULL);
+	add_button(ihbox, "1:1", NULL, NULL);
 	add_button(ihbox, "Left", NULL, NULL);
 	add_button(ihbox, "Right", NULL, NULL);
-	add_button(ihbox, "Edit", NULL, NULL);
-	add_button(ihbox, "Slideshow", NULL, NULL);
 
 	populate_files(getenv("HOME"));
 
