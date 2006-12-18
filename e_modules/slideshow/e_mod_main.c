@@ -568,10 +568,10 @@ _slide_set_bg(void *data, const char *bg)
    else if (ci->all_desks == 2)
      {
 	z = e_gadcon_zone_get(g);
-        for (i = 0; i < z->desk_x_count*z->desk_y_count; i++)
+        for (i = 0; i < z->desk_x_count * z->desk_y_count; i++)
           {
             e_bg_del(z->container->num, z->num, z->desks[i]->x, z->desks[i]->y);
-            e_bg_add(z->container->num, z->num, z->desks[i]->x, z->desks[i]->y, buf);           
+            e_bg_add(z->container->num, z->num, z->desks[i]->x, z->desks[i]->y, buf);
 	  }	
      }   
 
