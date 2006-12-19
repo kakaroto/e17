@@ -857,7 +857,7 @@ ee_pointer_set(Ewl_Embed *embed, int pointer)
 }
 
 static int
-ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void * e)
+ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void *e)
 {
 	/*
 	 * Widgets don't need to know about this usually, but we still need to
@@ -1221,7 +1221,7 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
 		{
 			if (data->content == ECORE_X_SELECTION_CONTENT_FILES)
 			{
-				Ecore_X_Selection_Data_Files* files = ev->data;
+				Ecore_X_Selection_Data_Files *files = ev->data;
 				ewl_embed_dnd_data_received_feed(embed,
 							ev->target,
 							files->files, 
@@ -1230,7 +1230,7 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
 			} 
 			else if (data->content == ECORE_X_SELECTION_CONTENT_TEXT)
 			{
-				Ecore_X_Selection_Data_Text* text = ev->data;
+				Ecore_X_Selection_Data_Text *text = ev->data;
 				ewl_embed_dnd_data_received_feed(embed,
 							ev->target, text->text, 
 							data->length,
