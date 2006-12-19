@@ -219,6 +219,7 @@ ewl_dnd_snoop_cb_position(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Xdnd_Position *event = ev;
+	char *name;
 
 	snprintf(buf, sizeof(buf), "\nXdnd Position\n");
 	ewl_dnd_snoop_output(buf);
@@ -231,9 +232,9 @@ ewl_dnd_snoop_cb_position(void *data __UNUSED__, int type __UNUSED__, void *ev)
 							event->position.y);
 	ewl_dnd_snoop_output(buf);
 
-	snprintf(buf, sizeof(buf), "\tAction: %s\n", 
-					XGetAtomName(ecore_x_display_get(), 
-					event->action));
+	name = XGetAtomName(ecore_x_display_get(), event->action);
+	snprintf(buf, sizeof(buf), "\tAction: %s\n", name);
+	XFree(name);
 	ewl_dnd_snoop_output(buf);
 
 	return 1;
@@ -244,6 +245,7 @@ ewl_dnd_snoop_cb_status(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Xdnd_Status *event = ev;
+	char *name;
 
 	snprintf(buf, sizeof(buf), "\nXdnd Status\n");
 	ewl_dnd_snoop_output(buf);
@@ -262,9 +264,9 @@ ewl_dnd_snoop_cb_status(void *data __UNUSED__, int type __UNUSED__, void *ev)
 						event->rectangle.height);
 	ewl_dnd_snoop_output(buf);
 
-	snprintf(buf, sizeof(buf), "\tAction: %s\n", 
-					XGetAtomName(ecore_x_display_get(), 
-					event->action));
+	name = XGetAtomName(ecore_x_display_get(), event->action);
+	snprintf(buf, sizeof(buf), "\tAction: %s\n", name);
+	XFree(name);
 	ewl_dnd_snoop_output(buf);
 
 	return 1;
@@ -291,6 +293,7 @@ ewl_dnd_snoop_cb_drop(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Xdnd_Drop *event = ev;
+	char *name;
 
 	snprintf(buf, sizeof(buf), "\nXdnd Drop\n");
 	ewl_dnd_snoop_output(buf);
@@ -299,9 +302,9 @@ ewl_dnd_snoop_cb_drop(void *data __UNUSED__, int type __UNUSED__, void *ev)
 						event->win, event->source);
 	ewl_dnd_snoop_output(buf);
 
-	snprintf(buf, sizeof(buf), "\tAction: %s\n", 
-					XGetAtomName(ecore_x_display_get(), 
-					event->action));
+	name = XGetAtomName(ecore_x_display_get(), event->action);
+	snprintf(buf, sizeof(buf), "\tAction: %s\n", name);
+	XFree(name);
 	ewl_dnd_snoop_output(buf);
 
 	snprintf(buf, sizeof(buf), "\tPosition: %d,%d\n", 
@@ -316,6 +319,7 @@ ewl_dnd_snoop_cb_finished(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
 	char buf[1024];
 	Ecore_X_Event_Xdnd_Finished *event = ev;
+	char *name;
 
 	snprintf(buf, sizeof(buf), "\nXdnd Finished\n");
 	ewl_dnd_snoop_output(buf);
@@ -327,9 +331,9 @@ ewl_dnd_snoop_cb_finished(void *data __UNUSED__, int type __UNUSED__, void *ev)
 	snprintf(buf, sizeof(buf), "\tCompleted: %d\n", event->completed);
 	ewl_dnd_snoop_output(buf);
 
-	snprintf(buf, sizeof(buf), "\tAction: %s\n", 
-					XGetAtomName(ecore_x_display_get(), 
-					event->action));
+	name = XGetAtomName(ecore_x_display_get(), event->action);
+	snprintf(buf, sizeof(buf), "\tAction: %s\n", name);
+	XFree(name);
 	ewl_dnd_snoop_output(buf);
 
 	return 1;
@@ -362,6 +366,7 @@ ewl_dnd_snoop_cb_selection_request(void *data __UNUSED__, int type __UNUSED__,
 {
 	char buf[1024];
 	Ecore_X_Event_Selection_Request *event = ev;
+	char *name;
 
 	snprintf(buf, sizeof(buf), "\nSelection Request\n");
 	ewl_dnd_snoop_output(buf);
@@ -375,19 +380,19 @@ ewl_dnd_snoop_cb_selection_request(void *data __UNUSED__, int type __UNUSED__,
 	snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
 	ewl_dnd_snoop_output(buf);
 
-	snprintf(buf, sizeof(buf), "\tSelection: %s\n", 
-					XGetAtomName(ecore_x_display_get(), 
-					event->selection));
+	name = XGetAtomName(ecore_x_display_get(), event->selection);
+	snprintf(buf, sizeof(buf), "\tSelection: %s\n", name);
+	XFree(name);
 	ewl_dnd_snoop_output(buf);
 
-	snprintf(buf, sizeof(buf), "\tTarget: %s\n", 
-					XGetAtomName(ecore_x_display_get(), 
-					event->target));
+	name = XGetAtomName(ecore_x_display_get(), event->target);
+	snprintf(buf, sizeof(buf), "\tTarget: %s\n", name);
+	XFree(name);
 	ewl_dnd_snoop_output(buf);
 
-	snprintf(buf, sizeof(buf), "\tProperty: %s\n", 
-					XGetAtomName(ecore_x_display_get(), 
-					event->property));
+	name = XGetAtomName(ecore_x_display_get(), event->property);
+	snprintf(buf, sizeof(buf), "\tProperty: %s\n", name);
+	XFree(name);
 	ewl_dnd_snoop_output(buf);
 
 	return 1;
@@ -427,14 +432,16 @@ ewl_dnd_snoop_cb_client_message(void *data __UNUSED__, int type __UNUSED__,
 {
 	char buf[1024];
 	Ecore_X_Event_Client_Message *event = ev;
+	char *name;
 
 	snprintf(buf, sizeof(buf), "\nClient Message\n");
 	ewl_dnd_snoop_output(buf);
 
+	name = XGetAtomName(ecore_x_display_get(), event->message_type);
 	snprintf(buf, sizeof(buf), "\tWindow: %d\n\tType: %s\n", 
 						event->win,
-						XGetAtomName(ecore_x_display_get(),
-							event->message_type));
+						name);
+	XFree(name);
 	ewl_dnd_snoop_output(buf);
 
 	snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
