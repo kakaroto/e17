@@ -606,6 +606,8 @@ static int _etk_spinner_step_decrement_timer_cb(void *data)
    
    if (!(spinner = ETK_SPINNER(data)))
       return 1;
+
+   _etk_spinner_update_value_from_text(spinner);
    
    range = ETK_RANGE(spinner);
    etk_range_value_set(range, range->value - range->step_increment);
@@ -624,6 +626,8 @@ static int _etk_spinner_step_increment_timer_cb(void *data)
    
    if (!(spinner = ETK_SPINNER(data)))
       return 1;
+
+   _etk_spinner_update_value_from_text(spinner);
    
    range = ETK_RANGE(spinner);
    etk_range_value_set(range, range->value + range->step_increment);
