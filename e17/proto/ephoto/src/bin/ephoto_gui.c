@@ -1,6 +1,8 @@
 #include "ephoto.h"
 
 static void destroy(Ewl_Widget *w, void *event, void *data);
+static void view_image(Ewl_Widget *w, void *event, void *data);
+static void view_catalog(Ewl_Widget *w, void *event, void *data);
 static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
 static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb);
 static void populate_files(char *cdir);
@@ -8,7 +10,7 @@ static void create_main_gui(void);
 static int destroy_boot(void *data);
 static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
 static Ewl_Widget *add_tree(Ewl_Widget *c);
-static Ewl_Widget *ftree, *atree, *fbox, *progress;
+static Ewl_Widget *ftree, *atree, *fbox, *vnb, *cvbox, *ivbox, *vimage, *progress;
 static Ecore_Timer *timer;
 
 /*Boot Splash*/
@@ -169,6 +171,20 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 	return tree;
 }
 
+static void view_image(Ewl_Widget *w, void *event, void *data)
+{
+	char *file;
+
+	file = data;
+	ewl_image_file_set(EWL_IMAGE(vimage), file, NULL);
+	ewl_notebook_visible_page_set(EWL_NOTEBOOK(vnb), ivbox);
+}
+
+static void view_catalog(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_notebook_visible_page_set(EWL_NOTEBOOK(vnb), cvbox);
+}
+
 static void populate_files(char *cdir)
 {
 	char *dir, *imagef;
@@ -219,6 +235,7 @@ static void populate_files(char *cdir)
 		ewl_image_constrain_set(EWL_IMAGE(image), 100);
 		ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
 		ewl_container_child_append(EWL_CONTAINER(fbox), image);
+                ewl_callback_append(image, EWL_CALLBACK_CLICKED, view_image, imagef);
 		ewl_widget_show(image);
 	}
 	ewl_widget_configure(ftree);
@@ -229,7 +246,7 @@ static void populate_files(char *cdir)
 static void create_main_gui(void)
 {
 	Ewl_Widget *win, *vbox, *menu_bar, *menu, *nb, *paned;
-	Ewl_Widget *border, *ivbox, *ihbox, *sp, *image, *button;
+	Ewl_Widget *border, *ihbox, *sp, *image, *button;
 
 	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
@@ -271,16 +288,23 @@ static void create_main_gui(void)
 	atree = add_tree(nb);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), atree, "Albums");
 
-	ivbox = ewl_vbox_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(ivbox), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(paned), ivbox);
-	ewl_widget_show(ivbox);
+	vnb = ewl_notebook_new();
+	ewl_notebook_tabbar_visible_set(EWL_NOTEBOOK(vnb), 0);
+	ewl_object_fill_policy_set(EWL_OBJECT(vnb), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(paned), vnb);
+	ewl_widget_show(vnb);
+
+	cvbox = ewl_vbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(cvbox), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(vnb), cvbox);
+	ewl_widget_show(cvbox);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(vnb), cvbox, "Catalog");
 
 	border = ewl_border_new();
 	ewl_border_label_set(EWL_BORDER(border), "Catalog");
 	ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(border), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(ivbox), border);
+	ewl_container_child_append(EWL_CONTAINER(cvbox), border);
 	ewl_widget_show(border);
 
 	sp = ewl_scrollpane_new();
@@ -293,12 +317,30 @@ static void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(sp), fbox);
 	ewl_widget_show(fbox);
 
-	image = ewl_image_new();
-	ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(sp), image);
-	ewl_widget_show(image);
+	ivbox = ewl_vbox_new();
+        ewl_object_fill_policy_set(EWL_OBJECT(ivbox), EWL_FLAG_FILL_ALL);
+        ewl_container_child_append(EWL_CONTAINER(vnb), ivbox);
+        ewl_widget_show(ivbox);
+        ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(vnb), ivbox, "Viewer");
+
+        border = ewl_border_new();
+        ewl_border_label_set(EWL_BORDER(border), "Image Viewer");
+        ewl_border_label_alignment_set(EWL_BORDER(border), EWL_FLAG_ALIGN_CENTER);
+        ewl_object_fill_policy_set(EWL_OBJECT(border), EWL_FLAG_FILL_ALL);
+        ewl_container_child_append(EWL_CONTAINER(ivbox), border);
+        ewl_widget_show(border);
+
+        sp = ewl_scrollpane_new();
+        ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_ALL);
+        ewl_container_child_append(EWL_CONTAINER(border), sp);
+        ewl_widget_show(sp);
+
+	vimage = ewl_image_new();
+	ewl_image_proportional_set(EWL_IMAGE(vimage), TRUE);
+	ewl_object_alignment_set(EWL_OBJECT(vimage), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(vimage), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(EWL_CONTAINER(sp), vimage);
+	ewl_widget_show(vimage);
 
 	ihbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(ivbox), ihbox);
@@ -306,12 +348,7 @@ static void create_main_gui(void)
 	ewl_object_fill_policy_set(EWL_OBJECT(ihbox), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(ihbox);
 
-	add_button(ihbox, "In", NULL, NULL);
-	add_button(ihbox, "Out", NULL, NULL);
-	add_button(ihbox, "Fit", NULL, NULL);
-	add_button(ihbox, "1:1", NULL, NULL);
-	add_button(ihbox, "Left", NULL, NULL);
-	add_button(ihbox, "Right", NULL, NULL);
+	add_button(ihbox, "Return to Catalog", NULL, view_catalog);
 
 	populate_files(getenv("HOME"));
 
