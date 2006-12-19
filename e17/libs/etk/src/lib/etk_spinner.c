@@ -662,7 +662,7 @@ static void _etk_spinner_update_value_from_text(Etk_Spinner *spinner)
       return;
    
    text = etk_editable_text_get(spinner->editable_object);
-   if (sscanf(text, spinner->value_format, &value) != 1)
+   if (sscanf(text, "%f", &value) != 1)
       value = 0.0;
    etk_range_value_set(ETK_RANGE(spinner), value);
 }
