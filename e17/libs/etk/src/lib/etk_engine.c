@@ -171,7 +171,7 @@ Etk_Engine *etk_engine_load(const char *engine_name)
    handle = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL);
    if (!handle)
    {
-      char *error;
+      const char *error;
       
       error = dlerror();
       ETK_WARNING("Etk can not dlopen the requested engine: %s", error ? error : "Unknown error");

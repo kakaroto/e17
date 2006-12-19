@@ -244,7 +244,7 @@ const char *etk_filechooser_widget_selected_file_get(Etk_Filechooser_Widget *fil
    if (!filechooser_widget && !(filechooser_widget->files_tree))
       return NULL;
 
-   if (row = etk_tree_selected_row_get(ETK_TREE(filechooser_widget->files_tree)))
+   if ((row = etk_tree_selected_row_get(ETK_TREE(filechooser_widget->files_tree))))
 	etk_tree_row_fields_get(row, filechooser_widget->files_name_col, NULL, NULL, &filename, NULL);
 
    return filename;

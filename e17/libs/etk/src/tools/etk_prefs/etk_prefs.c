@@ -9,7 +9,6 @@ void etk_prefs_show();
 void etk_prefs_standard_item_add(Etk_Widget *tree, char *icon, char *label, void (*func) (void));
 
 static void _etk_prefs_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
-static void _etk_prefs_destroy(void *data);    
 static Etk_Widget *_etk_prefs_theme_tab_create();
 static void _etk_prefs_theme_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static Etk_Widget *_etk_prefs_theme_preview_get(const char *theme);
@@ -113,12 +112,6 @@ static void _etk_prefs_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Ev
    
    if (num)
      etk_notebook_current_page_set(ETK_NOTEBOOK(data), *num);
-}
-
-static void _etk_prefs_destroy(void *data)
-{
-   etk_object_destroy(ETK_OBJECT(data));
-   etk_main_quit();
 }
 
 static Etk_Widget *_etk_prefs_theme_tab_create()
