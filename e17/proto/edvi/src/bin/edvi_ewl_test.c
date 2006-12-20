@@ -47,6 +47,7 @@ main (int argc, char *argv[])
   document = EWL_DVI (dvi)->dvi_document;
   if (!document) {
     printf ("The file %s can't be opened\n", argv[1]);
+    ecore_list_destroy (str_data);
     ewl_main_quit ();
     edvi_shutdown ();
     return -1;
@@ -75,7 +76,6 @@ main (int argc, char *argv[])
     txt = strdup (row_text);
     ecore_list_append(str_data, txt);
   }
-  
 
   model = ewl_model_ecore_list_get();
   view = ewl_label_view_get();
@@ -117,9 +117,9 @@ static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
 {
-  Ewl_Dvi *dvi;
-  Ewl_List *list;
-  Ecore_List *el;
+  Ewl_Dvi           *dvi;
+  Ewl_List          *list;
+  Ecore_List        *el;
   Ewl_Selection_Idx *idx;
 
   list = EWL_LIST(widget);
