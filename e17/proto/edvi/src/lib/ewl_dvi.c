@@ -550,13 +550,14 @@ ewl_dvi_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	dvi = EWL_DVI(w);
 
 	if (dvi->dvi_document)
-	  edvi_document_delete (dvi->dvi_document);
+		edvi_document_delete (dvi->dvi_document);
 	if (dvi->dvi_page)
-	  edvi_page_delete (dvi->dvi_page);
+		edvi_page_delete (dvi->dvi_page);
 	if (dvi->dvi_property)
-	  edvi_property_delete (dvi->dvi_property);
+		edvi_property_delete (dvi->dvi_property);
 	if (dvi->dvi_device)
-	  edvi_device_delete (dvi->dvi_device);
+		edvi_device_delete (dvi->dvi_device);
+	IF_FREE(dvi->filename);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

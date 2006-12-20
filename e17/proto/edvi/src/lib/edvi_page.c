@@ -114,7 +114,7 @@ edvi_page_render (Edvi_Page *page, Edvi_Device *device, Evas_Object *o)
   edvi_device_offset_set (device,
                           edvi_offset_x_get () * edvi_dpi_get () / page->shrink,
                           edvi_offset_y_get () * edvi_dpi_get () / page->shrink);
-    edvi_device_draw_page_finished (0);
+  edvi_device_draw_page_finished (0);
   res = DVI_DRAW_PAGE (page->doc->dvi_document, device->dvi_device, page->page, page->shrink);
   if (res != DVI_DRAW_INTERRUPTED)
     edvi_device_draw_page_finished (1);

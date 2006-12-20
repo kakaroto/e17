@@ -31,7 +31,7 @@ main (int argc, char *argv[])
   printf ("[DVI] version : %s\n", edvi_version ());
   if (!edvi_init (300, "cx", 4,
                   1.0, 1.0,
-                  0, 0, 0, 0, 255, 255, 255)) {
+                  0, 255, 255, 255, 0, 0, 0)) {
     return -1;
   }
 
