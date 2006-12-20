@@ -84,6 +84,7 @@ ewl_engine_names_get(void)
 	names = ecore_list_new();
 	if (!names)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	ecore_list_set_free_cb(names, ECORE_FREE_CB(free));
 
 	ecore_list_goto_first(files);
 	while ((file = ecore_list_next(files)))
