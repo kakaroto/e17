@@ -40,6 +40,7 @@ ewl_engines_init(void)
 	if (!ewl_engines)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ecore_hash_set_free_key(ewl_engines, ECORE_FREE_CB(free));
 	ecore_hash_set_free_value(ewl_engines, ewl_engines_cb_engine_free);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -161,16 +162,16 @@ ewl_engine_new(const char *name)
 	dep_list = dependancies();
 	if (dep_list)
 	{
-		char *name;
+		char *dep_name;
 
 		deps = ecore_dlist_new();
 
 		ecore_list_goto_first(dep_list);
-		while ((name = ecore_list_next(dep_list)))
+		while ((dep_name = ecore_list_next(dep_list)))
 		{
 			Ewl_Engine *parent;
 
-			parent = ewl_engine_new(name);
+			parent = ewl_engine_new(dep_name);
 			if (!parent) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 			ecore_dlist_append(deps, parent);
