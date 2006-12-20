@@ -79,6 +79,7 @@ main (int argc, char *argv[])
   document = EWL_PDF (pdf)->pdf_document;
   if (!document) {
     printf ("The file %s can't be opened\n", argv[1]);
+    ecore_list_destroy (str_data);
     ewl_main_quit ();
     return -1;
   }
