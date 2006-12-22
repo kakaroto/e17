@@ -2,6 +2,7 @@
 
 int main(int argc, char **argv)
 {
+	/*Check to make sure EWL is accessible*/
         if (!ewl_init(&argc, argv))
         {
                 printf("Ewl is not usable, please check your installation!\n");
@@ -16,6 +17,7 @@ int main(int argc, char **argv)
 	textdomain(PACKAGE);
 #endif
 	//ewl_theme_theme_set(PACKAGE_DATA_DIR "/themes/ephoto.edj");
+	/*Start the GUI*/
 	init_gui();
 
 	return 0;

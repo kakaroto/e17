@@ -1,19 +1,26 @@
 #include "ephoto.h"
 
-static void destroy(Ewl_Widget *w, void *event, void *data);
-static void view_image(Ewl_Widget *w, void *event, void *data);
-static void view_catalog(Ewl_Widget *w, void *event, void *data);
-static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
-static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb);
-static void populate_files(char *cdir);
-static void create_main_gui(void);
+/*Destroy Boot/Create Main Window*/
 static int destroy_boot(void *data);
+static void create_main_gui(void);
+
+/*Ewl Callbacks*/
+static void destroy(Ewl_Widget *w, void *event, void *data);
+static void view_catalog(Ewl_Widget *w, void *event, void *data);
+static void view_image(Ewl_Widget *w, void *event, void *data);
+
+/*Ephoto Widget Creation Callbacks*/
+static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
+static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_tree(Ewl_Widget *c);
+static void populate_files(char *cdir);
+
+/*Ephoto Global Variables*/
 static Ewl_Widget *ftree, *atree, *fbox, *vnb, *cvbox, *ivbox, *vimage, *progress;
 static Ecore_Timer *timer;
 
-/*Boot Splash*/
+/*Destroy Boot Splash*/
 int destroy_boot(void *data)
 {
 	Ewl_Widget *win;
@@ -32,6 +39,7 @@ int destroy_boot(void *data)
 	}
 }
 
+/*Create the Boot Splash and Start its Timer*/
 void init_gui(void)
 {
 	Ewl_Widget *win, *vbox, *image, *text;
@@ -84,54 +92,14 @@ void init_gui(void)
 	ewl_main();
 }
 
-/*Main Window Calls*/
+/*Destroy the Main Window*/
 static void destroy(Ewl_Widget *w, void *event, void *data)
 {
         ewl_widget_destroy(w);
         ewl_main_quit();
 }
 
-static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt)
-{
-	Ewl_Widget *menu;
-
-	menu = ewl_menu_new();
-	if (txt)
-	{
-		ewl_button_label_set(EWL_BUTTON(menu), S_(txt));
-	}
-	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
-	ewl_container_child_append(EWL_CONTAINER(c), menu);
-	ewl_widget_show(menu);
-
-	return menu;
-}
-
-static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb)
-{
-	Ewl_Widget *menu_item;
-	
-	menu_item = ewl_menu_item_new();
-	if (img)
-	{
-		ewl_button_image_set(EWL_BUTTON(menu_item), img, NULL);
-	}
-	if (txt)
-	{
-		ewl_button_label_set(EWL_BUTTON(menu_item), S_(txt));
-	}
-	ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(c), menu_item);
-	if (cb)
-	{
-		ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, cb, NULL);
-	}
-	ewl_widget_show(menu_item);
-
-	return;
-}
-
+/*Create and Add a Button the Container c*/
 static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb)
 {
 	Ewl_Widget *button;
@@ -157,6 +125,50 @@ static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb)
 	return;
 }
 
+/*Create and Add a Menu to the Container c.*/
+static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt)
+{
+	Ewl_Widget *menu;
+
+	menu = ewl_menu_new();
+	if (txt)
+	{
+		ewl_button_label_set(EWL_BUTTON(menu), S_(txt));
+	}
+	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+	ewl_container_child_append(EWL_CONTAINER(c), menu);
+	ewl_widget_show(menu);
+
+	return menu;
+}
+
+/*Create and Add a Menu Item to the Menu c*/
+static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb)
+{
+	Ewl_Widget *menu_item;
+	
+	menu_item = ewl_menu_item_new();
+	if (img)
+	{
+		ewl_button_image_set(EWL_BUTTON(menu_item), img, NULL);
+	}
+	if (txt)
+	{
+		ewl_button_label_set(EWL_BUTTON(menu_item), S_(txt));
+	}
+	ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(c), menu_item);
+	if (cb)
+	{
+		ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, cb, NULL);
+	}
+	ewl_widget_show(menu_item);
+
+	return;
+}
+
+/*Create and Add a Tree to the Container c*/
 static Ewl_Widget *add_tree(Ewl_Widget *c)
 {
 	Ewl_Widget *tree;
@@ -171,6 +183,13 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 	return tree;
 }
 
+/*Switch to the Image List*/
+static void view_catalog(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_notebook_visible_page_set(EWL_NOTEBOOK(vnb), cvbox);
+}
+
+/*Switch to the Image Viewer*/
 static void view_image(Ewl_Widget *w, void *event, void *data)
 {
 	char *file;
@@ -180,11 +199,7 @@ static void view_image(Ewl_Widget *w, void *event, void *data)
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(vnb), ivbox);
 }
 
-static void view_catalog(Ewl_Widget *w, void *event, void *data)
-{
-	ewl_notebook_visible_page_set(EWL_NOTEBOOK(vnb), cvbox);
-}
-
+/*Update the Directory Listing and Image List*/
 static void populate_files(char *cdir)
 {
 	char *dir, *imagef;
@@ -243,6 +258,7 @@ static void populate_files(char *cdir)
 	ecore_list_destroy(images);
 }
 
+/*Create the Main Ephoto Window*/
 static void create_main_gui(void)
 {
 	Ewl_Widget *win, *vbox, *menu_bar, *menu, *nb, *paned;
@@ -354,4 +370,3 @@ static void create_main_gui(void)
 
 	return;
 }
-

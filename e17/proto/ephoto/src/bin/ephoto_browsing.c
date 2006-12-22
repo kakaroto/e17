@@ -1,5 +1,6 @@
 #include "ephoto.h"
 
+/*Populate a List of Sub Directories Inside of Directory.*/
 Ecore_List *get_directories(char *directory)
 {
 	Ecore_List *ls, *files;
@@ -45,6 +46,7 @@ Ecore_List *get_directories(char *directory)
 	return files;
 }
 
+/*Populate a List of Images Inside of Directory*/
 Ecore_List *get_images(char *directory)
 {
         Ecore_List *ls, *files;

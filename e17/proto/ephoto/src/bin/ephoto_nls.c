@@ -1,6 +1,7 @@
 #include "ephoto.h"
 #include <string.h>
 
+/*NLS Translator*/
 char *sgettext(const char *msgid)
 {
 	char *msgval = gettext(msgid);

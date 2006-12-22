@@ -16,7 +16,7 @@
 /* Main gui callbacks */
 void init_gui(void);
 
-/* Ephoto Utilities */
+/* Ephoto Browsing */
 Ecore_List *get_directories(char *directory);
 Ecore_List *get_images(char *directory);
 
