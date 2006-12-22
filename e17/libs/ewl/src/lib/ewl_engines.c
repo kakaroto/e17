@@ -1483,6 +1483,9 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook_Type type, int hook)
 static void
 ewl_engine_free(Ewl_Engine *engine)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("engine", engine);
+
 	if (engine->functions->shutdown)
 		engine->functions->shutdown(engine);
 
@@ -1493,7 +1496,8 @@ ewl_engine_free(Ewl_Engine *engine)
 	dlclose(engine->handle);
 	engine->handle = NULL;
 
-	IF_FREE(engine->name);
 	FREE(engine);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

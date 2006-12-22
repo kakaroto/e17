@@ -7,6 +7,8 @@
 static Evas_Smart *widget_smart = NULL;
 
 static int ee_init(Ewl_Engine *engine);
+static void ee_shutdown(Ewl_Engine *engine);
+
 static void ee_canvas_output_set(Ewl_Embed *embed, int x, int y, int width,
 		int height);
 static void ee_canvas_render(Ewl_Embed *embed);
@@ -90,6 +92,7 @@ ee_init(Ewl_Engine *engine)
 
 	info = NEW(Ewl_Engine_Info, 1);
 	info->init = ee_init;
+	info->shutdown = ee_shutdown;
 	info->hooks.canvas = canvas_funcs;
 	info->hooks.theme = theme_funcs;
 
@@ -97,6 +100,18 @@ ee_init(Ewl_Engine *engine)
 	engine->functions = info;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+static void
+ee_shutdown(Ewl_Engine *engine)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("engine", engine);
+
+	IF_FREE(engine->functions);
+	IF_FREE(engine->name);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void

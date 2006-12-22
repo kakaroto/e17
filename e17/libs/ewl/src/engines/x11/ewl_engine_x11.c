@@ -351,7 +351,9 @@ ee_shutdown(Ewl_Engine *engine)
 	ee_focus_out_handler = NULL;
 
 	ecore_x_shutdown();
-	engine->functions = NULL;
+
+	IF_FREE(engine->functions);
+	IF_FREE(engine->name);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

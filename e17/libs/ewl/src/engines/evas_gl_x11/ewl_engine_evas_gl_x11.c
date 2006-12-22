@@ -5,6 +5,8 @@
 #include "ewl_macros.h"
 
 static int ee_init(Ewl_Engine *engine);
+static void ee_shutdown(Ewl_Engine *engine);
+
 static void ee_canvas_setup(Ewl_Window *win, int debug);
 
 static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
@@ -57,12 +59,25 @@ ee_init(Ewl_Engine *engine)
 
 	info = NEW(Ewl_Engine_Info, 1);
 	info->init = ee_init;
+	info->shutdown = ee_shutdown;
 	info->hooks.canvas = canvas_funcs;
 
 	engine->name = strdup("evas_gl_x11");
 	engine->functions = info;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+static void
+ee_shutdown(Ewl_Engine *engine)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("engine", engine);
+
+	IF_FREE(engine->functions);
+	IF_FREE(engine->name);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void

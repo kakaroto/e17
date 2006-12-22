@@ -77,7 +77,8 @@ ee_shutdown(Ewl_Engine *engine)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("engine", engine);
 
-	engine->functions = NULL;
+	IF_FREE(engine->functions);
+	IF_FREE(engine->name);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

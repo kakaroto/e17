@@ -135,7 +135,9 @@ ee_shutdown(Ewl_Engine *engine)
 	ee_mouse_move_handler = NULL;
 
 	ecore_fb_shutdown();
-	engine->functions = NULL;
+
+	IF_FREE(engine->functions);
+	IF_FREE(engine->name);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
