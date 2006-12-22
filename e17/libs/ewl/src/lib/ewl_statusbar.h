@@ -64,6 +64,11 @@ void		 ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w);
 void		 ewl_statusbar_push(Ewl_Statusbar *sb, char *txt);
 void		 ewl_statusbar_pop(Ewl_Statusbar *sb);
 
+/*
+ * Internal functions
+ */
+void ewl_statusbar_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+
 /**
  * @}
  */

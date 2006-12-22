@@ -76,6 +76,9 @@ ewl_statusbar_init(Ewl_Statusbar *sb)
 
 	sb->stack = ecore_list_new();
 
+	ewl_callback_append(EWL_WIDGET(sb), EWL_CALLBACK_DESTROY, 
+					ewl_statusbar_cb_destroy, NULL);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -310,6 +313,22 @@ ewl_statusbar_pop(Ewl_Statusbar *sb)
 		ewl_widget_show(current);
 
 	sb->current = current;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_statusbar_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	Ewl_Statusbar *sb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	sb = w;
+
+	IF_FREE_LIST(sb->stack);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
