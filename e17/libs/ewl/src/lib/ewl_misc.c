@@ -38,6 +38,8 @@ static Ecore_List *child_add_list= NULL;
 static Ecore_List *free_evas_list = NULL;
 static Ecore_List *free_evas_object_list = NULL;
 
+static Ecore_List *shutdown_hooks = NULL;
+
 static int ewl_idle_render(void *data);
 static void ewl_init_parse_options(int *argc, char **argv);
 static void ewl_init_remove_option(int *argc, char **argv, int i);
@@ -170,11 +172,12 @@ ewl_init(int *argc, char **argv)
 	child_add_list = ecore_list_new();
 	ewl_embed_list = ecore_list_new();
 	ewl_window_list = ecore_list_new();
+	shutdown_hooks = ecore_list_new();
 	if ((!reveal_list) || (!obscure_list) || (!configure_list)
 			|| (!realize_list) || (!destroy_list)
 			|| (!free_evas_list) || (!free_evas_object_list)
 			|| (!child_add_list) || (!ewl_embed_list)
-			|| (!ewl_window_list)) {
+			|| (!ewl_window_list) || (!shutdown_hooks)) {
 		fprintf(stderr, "Unable to initialize internal configuration."
 				" Out of memory?\n");
 		goto ERROR;
@@ -264,12 +267,17 @@ ERROR:
 int
 ewl_shutdown(void)
 {
+	Ewl_Shutdown_Hook hook;
 	void (*shutdown)(void);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (--ewl_init_count)
 		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
+
+	while ((hook = ecore_list_remove_first(shutdown_hooks)))
+		hook();
+	IF_FREE_LIST(shutdown_hooks);
 
 	/*
 	 * Destroy all existing widgets.
@@ -1093,4 +1101,16 @@ ewl_debug_indent_get(int mod_dir)
 
 	return indent;
 }
+
+void
+ewl_shutdown_add(Ewl_Shutdown_Hook hook)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("hook", hook);
+
+	ecore_list_prepend(shutdown_hooks, hook);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 

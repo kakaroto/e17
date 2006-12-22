@@ -34,6 +34,8 @@ typedef struct
 static Box_Orientation *ewl_box_vertical = NULL;
 static Box_Orientation *ewl_box_horizontal = NULL;
 
+static void ewl_box_cb_shutdown(void);
+
 /*
  * And a pointer to the currently used orientation
  */
@@ -962,6 +964,8 @@ ewl_box_setup(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	ewl_shutdown_add(ewl_box_cb_shutdown);
+
 	if (!ewl_box_vertical) {
 		ewl_box_vertical = NEW(Box_Orientation, 1);
 		if (!ewl_box_vertical)
@@ -1046,4 +1050,16 @@ ewl_box_setup(void)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+static void
+ewl_box_cb_shutdown(void)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	IF_FREE(ewl_box_horizontal);
+	IF_FREE(ewl_box_vertical);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 

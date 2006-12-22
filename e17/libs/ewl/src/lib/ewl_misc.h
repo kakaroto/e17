@@ -22,6 +22,12 @@ void 	 ewl_evas_destroy(Evas *evas);
 void  	 ewl_evas_object_destroy(Evas_Object *obj);
 char  	*ewl_debug_indent_get(int mod_dir);
 
+/*
+ * Internal stuff
+ */
+typedef void (*Ewl_Shutdown_Hook)(void);
+void 	 ewl_shutdown_add(Ewl_Shutdown_Hook hook);
+
 #undef DEBUG_MALLOCDEBUG
 #ifdef DEBUG_MALLOCDEBUG
 char *strdup(const char *str);

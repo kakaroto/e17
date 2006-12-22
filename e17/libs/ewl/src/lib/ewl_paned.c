@@ -20,6 +20,8 @@ static Ewl_Paned_Layout *horizontal_layout = NULL;
 static Ewl_Paned_Layout *vertical_layout = NULL;
 static Ewl_Paned_Layout *layout = NULL;
 
+static void ewl_paned_cb_shutdown(void);
+
 static void ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev,
 							void *data);
 static void ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev,
@@ -907,6 +909,8 @@ ewl_paned_layout_setup(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	ewl_shutdown_add(ewl_paned_cb_shutdown);
+
 	horizontal_layout = NEW(Ewl_Paned_Layout, 1);
 	if (!horizontal_layout) 
 		DRETURN(DLEVEL_STABLE);
@@ -1011,3 +1015,13 @@ ewl_paned_widgets_place(Ecore_List *from, Ecore_List *to,
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
+static void
+ewl_paned_cb_shutdown(void)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	IF_FREE(horizontal_layout);
+	IF_FREE(vertical_layout);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
