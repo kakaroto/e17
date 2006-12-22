@@ -30,6 +30,8 @@ static void *ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
 static int ewl_filepicker_cb_type_count(void *data);
 static Ewl_Widget *ewl_filepicker_cb_type_header(void *data, int col);
 
+static void ewl_filepicker_filter_free_cb(Ewl_Filepicker_Filter *filter);
+
 /**
  * @return Returns a new Ewl_Filepicker widget or NULL on failure
  * @brief Creates a new Ewl_Filepicker widget
@@ -129,6 +131,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_widget_show(fp->file_entry);
 
 	fp->filters = ecore_list_new();
+	ecore_list_set_free_cb(fp->filters, ewl_filepicker_filter_free_cb);
 	ewl_filepicker_filter_add(fp, "All files", NULL);
 
 	model = ewl_model_new();
@@ -807,6 +810,17 @@ ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 	ecore_list_destroy(fp->filters);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filepicker_filter_free_cb(Ewl_Filepicker_Filter *filter)
+{
+    if (!filter) return;
+
+    IF_FREE(filter->name);
+    IF_FREE(filter->filter);
+
+    FREE(filter);
 }
 
 

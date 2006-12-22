@@ -141,7 +141,7 @@ ewl_callback_rm(Ewl_Widget *w, unsigned int t, unsigned int pos)
 			(w->callbacks[t].len - pos - 1) * sizeof(void *));
 	}
 
-	w->callbacks[t].len -= 1;
+	w->callbacks[t].len  -= 1;
 	w->callbacks[t].list[EWL_CALLBACK_LEN(w, t)] = NULL;
 	w->callbacks[t].list = realloc(w->callbacks[t].list, 
 					w->callbacks[t].len * sizeof(void *));
