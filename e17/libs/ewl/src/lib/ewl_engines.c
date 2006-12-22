@@ -18,7 +18,6 @@ typedef enum Ewl_Engine_Hook_Type Ewl_Engine_Hook_Type;
 
 static Ecore_Hash *ewl_engines = NULL;
 static void ewl_engine_free(Ewl_Engine *engine);
-static void ewl_engines_cb_engine_free(void *data);
 static void **ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type);
 static void *ewl_engine_hook_get(Ewl_Embed *embed, 
 				Ewl_Engine_Hook_Type type, int hook);
@@ -41,7 +40,7 @@ ewl_engines_init(void)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ecore_hash_set_free_key(ewl_engines, ECORE_FREE_CB(free));
-	ecore_hash_set_free_value(ewl_engines, ewl_engines_cb_engine_free);
+	ecore_hash_set_free_value(ewl_engines, ECORE_FREE_CB(ewl_engine_free));
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -113,9 +112,9 @@ ewl_engine_new(const char *name)
 {
 	Ewl_Engine *engine = NULL;
 	Ewl_Engine *(*create_engine)(void);
-	Ecore_List *(*dependancies)(void);
+	Ecore_DList *(*dependancies)(void);
 	Ecore_DList *deps = NULL;
-	Ecore_List *dep_list;
+	Ecore_DList *dep_list;
 	void *handle;
 	char filename[PATH_MAX];
 
@@ -165,19 +164,26 @@ ewl_engine_new(const char *name)
 	{
 		char *dep_name;
 
+		/* this doesn't have a free callback attached to it because
+		 * the engines are cached and the _shutdown() function will
+		 * cleanup the cache */
 		deps = ecore_dlist_new();
-
-		ecore_list_goto_first(dep_list);
-		while ((dep_name = ecore_list_next(dep_list)))
+		while ((dep_name = ecore_list_remove_first(dep_list)))
 		{
 			Ewl_Engine *parent;
 
 			parent = ewl_engine_new(dep_name);
-			if (!parent) DRETURN_PTR(NULL, DLEVEL_STABLE);
+			if (!parent) 
+			{
+				FREE(dep_name);
+				ecore_dlist_destroy(dep_list);
+				DRETURN_PTR(NULL, DLEVEL_STABLE);
+			}
 
 			ecore_dlist_append(deps, parent);
+			FREE(dep_name);
 		}
-		ecore_list_destroy(dep_list);
+		ecore_dlist_destroy(dep_list);
 	}
 
 	create_engine = dlsym(handle, "ewl_engine_create");
@@ -1546,19 +1552,4 @@ ewl_engine_free(Ewl_Engine *engine)
 	IF_FREE(engine->name);
 	FREE(engine);
 }
-
-static void
-ewl_engines_cb_engine_free(void *data)
-{
-	Ewl_Engine *engine;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-
-	engine = data;
-	ewl_engine_free(engine);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 
