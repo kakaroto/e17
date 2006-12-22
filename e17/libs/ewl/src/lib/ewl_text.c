@@ -45,6 +45,7 @@ static void ewl_text_fmt_apply(Ewl_Text *t, unsigned int context_mask,
 						unsigned int char_idx,
 						unsigned int char_len);
 static void ewl_text_fmt_walk(Ewl_Text *t);
+static void ewl_text_cb_fmt_free(Ewl_Text_Fmt *fmt);
 
 static void ewl_text_text_insert_private(Ewl_Text *t, const char *txt, 
 				unsigned int char_idx, unsigned int *char_len, 
@@ -143,6 +144,8 @@ ewl_text_init(Ewl_Text *t)
 	t->formatting.nodes = ecore_dlist_new();
 	if (!t->formatting.nodes) 
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ecore_dlist_set_free_cb(t->formatting.nodes, 
+					ECORE_FREE_CB(ewl_text_cb_fmt_free));
 
 	t->formatting.current.tx = ewl_text_context_default_create(t);
 	ewl_text_context_acquire(t->formatting.current.tx);
@@ -5812,5 +5815,18 @@ ewl_text_context_cb_free(void *data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+static void
+ewl_text_cb_fmt_free(Ewl_Text_Fmt *fmt)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("fmt", fmt);
+
+	ewl_text_context_release(fmt->tx);
+	FREE(fmt);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 
