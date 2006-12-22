@@ -21,10 +21,6 @@ static void ewl_engine_free(Ewl_Engine *engine);
 static void **ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type);
 static void *ewl_engine_hook_get(Ewl_Embed *embed, 
 				Ewl_Engine_Hook_Type type, int hook);
-#if 0
-static Ecore_List *ewl_engine_hook_chain_get(Ewl_Embed *embed, 
-				Ewl_Engine_Hook_Type type, int hook);
-#endif
 
 /**
  * @return Returns no value
@@ -1483,58 +1479,6 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook_Type type, int hook)
 
 	DRETURN_PTR(match, DLEVEL_STABLE);
 }
-
-#if 0
-/**
- * @param embed: The embed to lookup the engine chain for hook matching
- * @param type: The Ewl_Engine_Hook type to find the best matching function
- * @return Returns a list of engine hooks matching on success.
- * @brief Retrieves a list of dependent engine callbacks for the specified type.
- */
-static Ecore_List *
-ewl_engine_hook_chain_get(Ewl_Embed *embed, Ewl_Engine_Hook_Type type, int hook)
-{
-	Ewl_Engine *caller;
-	Ecore_List *matches = NULL;
-	void **hooks = NULL;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
-	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
-
-	matches = ecore_list_new();
-
-	caller = EWL_ENGINE(embed->engine);
-	hooks = ewl_engine_hooks_get(caller, type);
-	if (hooks && hooks[hook])
-		ecore_list_prepend(matches, hooks[hook]);
-
-	if (caller->dependancies)
-	{
-		Ecore_List *deps;
-
-		deps = caller->dependancies;
-		ecore_list_goto_first(deps);
-		while ((caller = ecore_dlist_next(deps)))
-		{
-			hooks = ewl_engine_hooks_get(caller, type);
-			if (hooks && hooks[hook])
-				ecore_list_append(matches, hooks[hook]);
-		}
-	}
-
-	/*
-	 * Free and return NULL if no matching hooks are found
-	 */
-	if (ecore_list_nodes(matches) <= 0) 
-	{
-		ecore_list_destroy(matches);
-		matches = NULL;
-	}
-
-	DRETURN_PTR(matches, DLEVEL_STABLE);
-}
-#endif
 
 static void
 ewl_engine_free(Ewl_Engine *engine)
