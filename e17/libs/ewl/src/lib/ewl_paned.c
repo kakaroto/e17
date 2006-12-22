@@ -125,6 +125,9 @@ ewl_paned_init(Ewl_Paned *p)
 
 	p->new_panes = ecore_list_new();
 
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
+				ewl_paned_cb_destroy, NULL);
+
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_paned_cb_configure, NULL);
 
@@ -1025,3 +1028,18 @@ ewl_paned_cb_shutdown(void)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+void
+ewl_paned_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	Ewl_Paned *p;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+
+	p = w;
+	IF_FREE_LIST(p->new_panes);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+

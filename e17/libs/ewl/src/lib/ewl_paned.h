@@ -66,6 +66,7 @@ void ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 
 void ewl_paned_cb_configure(Ewl_Widget *w, void *ev, void *data);
+void ewl_paned_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 
 /*
  * Ewl_Paned_Grabber stuff
