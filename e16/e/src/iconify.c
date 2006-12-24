@@ -40,29 +40,154 @@ static Container   *SelectIconboxForEwin(EWin * ewin);
 /* Silly hack to avoid name clash warning when using -Wshadow */
 #define y1 y1_
 
-#define IB_ANIM_TIME 0.25
+#define IB_ANIM_TIME    Conf_containers.anim_time
+#define IB_ANIM_STEP    Conf_containers.anim_step
 
 static void
-IB_Animate(char iconify, EWin * from, EWin * to)
+IB_Animate_Sleep(double t0, double a)
 {
-   double              t1, t2, t, i, spd, ii;
-   int                 x, y, x1, y1, x2, y2, x3, y3, x4, y4, w, h, fx, fy, fw,
-      fh, dx, dy, dw, dh;
+   double              t, dt;
+
+   t = GetTime();
+   dt = t - t0 - a * 1e-3 * IB_ANIM_TIME;
+   dt = 1e-3 * IB_ANIM_STEP - dt;
+   if (dt > 0)
+      usleep((unsigned long)(1e6 * dt));
+}
+
+static void
+IB_Animate_A(char iconify, EWin * ewin, EWin * ibox)
+{
+   EWin               *fr, *to;
+   double              a, aa, spd, t0;
+   int                 x, y, x1, y1, x2, y2, x3, y3, x4, y4, w, h;
+   int                 fx, fy, fw, fh, tx, ty, tw, th;
    Window              root = VRoot.xwin;
    GC                  gc;
    XGCValues           gcv;
-   Desk               *dskf, *dskt;
 
-   if (Mode.wm.startup)
-      return;
+   /* Window: Extents, Iconbox: Center */
+   if (iconify)
+     {
+	fr = ewin;
+	to = ibox;
+	fw = EoGetW(fr) + 4;
+	fh = EoGetH(fr) + 4;
+	fx = EoGetX(fr) - 2;
+	fy = EoGetY(fr) - 2;
+	tw = 4;
+	th = 4;
+	tx = EoGetX(to) + EoGetW(to) / 2 - 2;
+	ty = EoGetY(to) + EoGetH(to) / 2 - 2;
+     }
+   else
+     {
+	fr = ibox;
+	to = ewin;
+	fw = 4;
+	fh = 4;
+	fx = EoGetX(fr) + EoGetW(fr) / 2 - 2;
+	fy = EoGetY(fr) + EoGetH(fr) / 2 - 2;
+	tw = EoGetW(to) + 4;
+	th = EoGetH(to) + 4;
+	tx = EoGetX(to) + 2;
+	ty = EoGetY(to) + 2;
+     }
+   fx += EoGetX(EoGetDesk(fr));
+   fy += EoGetY(EoGetDesk(fr));
+   tx += EoGetX(EoGetDesk(to));
+   ty += EoGetY(EoGetDesk(to));
 
-   dskf = EoGetDesk(from);
-   dskt = EoGetDesk(to);
+   gcv.subwindow_mode = IncludeInferiors;
+   gcv.function = GXxor;
+   gcv.line_width = 2;
+   gcv.foreground = WhitePixel(disp, VRoot.scr);
+   if (gcv.foreground == 0)
+      gcv.foreground = BlackPixel(disp, VRoot.scr);
+   gc = EXCreateGC(root,
+		   GCFunction | GCForeground | GCSubwindowMode | GCLineWidth,
+		   &gcv);
 
-   EobjsRepaint();
-   EGrabServer();
+   spd = (1. * IB_ANIM_STEP) / IB_ANIM_TIME;
 
-   spd = 0.00001;
+   t0 = GetTime();
+   for (a = 0.0; a < 1.0; a += spd)
+     {
+	aa = 1.0 - a;
+
+	x = (fx * aa) + (tx * a);
+	y = (fy * aa) + (ty * a);
+	w = (fw * aa) + (tw * a);
+	h = (fh * aa) + (th * a);
+
+	x = (2 * x + w) / 2;	/* x middle */
+	y = (2 * y + h) / 2;	/* y middle */
+	w /= 2;			/* width/2 */
+	h /= 2;			/* height/2 */
+
+	x1 = x + w * (1 - .5 * sin(3.14159 + a * 6.2831853072));
+	y1 = y + h * cos(a * 6.2831853072);
+	x2 = x + w * (1 - .5 * sin(a * 6.2831853072));
+	y2 = y - h * cos(a * 6.2831853072);
+	x3 = x - w * (1 - .5 * sin(3.14159 + a * 6.2831853072));
+	y3 = y - h * cos(a * 6.2831853072);
+	x4 = x - w * (1 - .5 * sin(a * 6.2831853072));
+	y4 = y + h * cos(a * 6.2831853072);
+
+	XDrawLine(disp, root, gc, x1, y1, x2, y2);
+	XDrawLine(disp, root, gc, x2, y2, x3, y3);
+	XDrawLine(disp, root, gc, x3, y3, x4, y4);
+	XDrawLine(disp, root, gc, x4, y4, x1, y1);
+
+	ESync();
+	IB_Animate_Sleep(t0, a);
+
+	XDrawLine(disp, root, gc, x1, y1, x2, y2);
+	XDrawLine(disp, root, gc, x2, y2, x3, y3);
+	XDrawLine(disp, root, gc, x3, y3, x4, y4);
+	XDrawLine(disp, root, gc, x4, y4, x1, y1);
+     }
+
+   EXFreeGC(gc);
+}
+
+static void
+IB_Animate_B(char iconify, EWin * ewin, EWin * ibox)
+{
+   EWin               *fr, *to;
+   double              a, spd, t0;
+   int                 x, y, w, h;
+   int                 fx, fy, fw, fh, tx, ty, tw, th;
+   Window              root = VRoot.xwin;
+   GC                  gc;
+   XGCValues           gcv;
+
+   if (iconify)
+     {
+	fr = ewin;
+	to = ibox;
+     }
+   else
+     {
+	fr = ibox;
+	to = ewin;
+     }
+
+   fx = EoGetX(fr) - 2;
+   fy = EoGetY(fr) - 2;
+   fw = EoGetW(fr) + 3;
+   fh = EoGetH(fr) + 3;
+
+   tx = EoGetX(to) - 2;
+   ty = EoGetY(to) - 2;
+   tw = EoGetW(to) + 3;
+   th = EoGetH(to) + 3;
+
+   fx += EoGetX(EoGetDesk(fr));
+   fy += EoGetY(EoGetDesk(fr));
+   tx += EoGetX(EoGetDesk(to));
+   ty += EoGetY(EoGetDesk(to));
+
    gcv.subwindow_mode = IncludeInferiors;
    gcv.function = GXxor;
    gcv.fill_style = FillOpaqueStippled;
@@ -72,148 +197,67 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    gc = EXCreateGC(root,
 		   GCFunction | GCForeground | GCSubwindowMode | GCFillStyle,
 		   &gcv);
-   t1 = GetTime();
-   if (iconify)
+
+   XDrawLine(disp, root, gc, fx, fy, tx, ty);
+   XDrawLine(disp, root, gc, fx + fw, fy, tx + tw, ty);
+   XDrawLine(disp, root, gc, fx, fy + fh, tx, ty + th);
+   XDrawLine(disp, root, gc, fx + fw, fy + fh, tx + tw, ty + th);
+   XDrawRectangle(disp, root, gc, tx, ty, tw, th);
+   XDrawRectangle(disp, root, gc, fx, fy, fw, fh);
+
+   spd = (1. * IB_ANIM_STEP) / IB_ANIM_TIME;
+
+   t0 = GetTime();
+   for (a = 0.0; a < 1.0; a += spd)
      {
-	fw = EoGetW(from) + 4;
-	fh = EoGetH(from) + 4;
-	fx = EoGetX(from) + EoGetX(dskf) - 2;
-	fy = EoGetY(from) + EoGetY(dskf) - 2;
-	dw = 4;
-	dh = 4;
-	dx = EoGetX(to) + EoGetX(dskt) + (EoGetW(to) / 2) - 2;
-	dy = EoGetY(to) + EoGetY(dskt) + (EoGetH(to) / 2) - 2;
-	for (i = 0.0; i < 1.0; i += spd)
-	  {
-	     ii = 1.0 - i;
+	x = fx + a * (tx - fx);
+	w = fw + a * (tw - fw);
+	y = fy + a * (ty - fy);
+	h = fh + a * (th - fh);
+	XDrawRectangle(disp, root, gc, x, y, w, h);
 
-	     x = (fx * ii) + (dx * i);
-	     y = (fy * ii) + (dy * i);
-	     w = (fw * ii) + (dw * i);
-	     h = (fh * ii) + (dh * i);
+	ESync();
+	IB_Animate_Sleep(t0, a);
 
-	     x = (2 * x + w) / 2;	/* x middle */
-	     y = (2 * y + h) / 2;	/* y middle */
-	     w /= 2;		/* width/2 */
-	     h /= 2;		/* height/2 */
-
-	     x1 = x + w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
-	     y1 = y + h * cos(i * 6.2831853072);
-	     x2 = x + w * (1 - .5 * sin(i * 6.2831853072));
-	     y2 = y - h * cos(i * 6.2831853072);
-	     x3 = x - w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
-	     y3 = y - h * cos(i * 6.2831853072);
-	     x4 = x - w * (1 - .5 * sin(i * 6.2831853072));
-	     y4 = y + h * cos(i * 6.2831853072);
-
-	     XDrawLine(disp, root, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, root, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, root, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, root, gc, x4, y4, x1, y1);
-
-	     XDrawLine(disp, root, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, root, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, root, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, root, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
-
-	     XDrawLine(disp, root, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, root, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, root, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, root, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
-
-	     ESync();
-	     t2 = GetTime();
-	     t = t2 - t1;
-	     t1 = t2;
-	     spd = t / IB_ANIM_TIME;
-
-	     XDrawLine(disp, root, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, root, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, root, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, root, gc, x4, y4, x1, y1);
-
-	     XDrawLine(disp, root, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, root, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, root, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, root, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
-
-	     XDrawLine(disp, root, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, root, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, root, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, root, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
-	  }
+	XDrawRectangle(disp, root, gc, x, y, w, h);
      }
-   else
-     {
-	fw = EoGetW(from) + 4;
-	fh = EoGetH(from) + 4;
-	fx = EoGetX(from) + EoGetX(dskf) - 2;
-	fy = EoGetY(from) + EoGetY(dskf) - 2;
-	dw = 4;
-	dh = 4;
-	dx = EoGetX(to) + EoGetX(dskt) + (EoGetW(to) / 2) - 2;
-	dy = EoGetY(to) + EoGetY(dskt) + (EoGetH(to) / 2) - 2;
-	for (i = 1.0; i >= 0.0; i -= spd)
-	  {
-	     ii = 1.0 - i;
 
-	     x = (fx * ii) + (dx * i);
-	     y = (fy * ii) + (dy * i);
-	     w = (fw * ii) + (dw * i);
-	     h = (fh * ii) + (dh * i);
+   XDrawLine(disp, root, gc, fx, fy, tx, ty);
+   XDrawLine(disp, root, gc, fx + fw, fy, tx + tw, ty);
+   XDrawLine(disp, root, gc, fx, fy + fh, tx, ty + th);
+   XDrawLine(disp, root, gc, fx + fw, fy + fh, tx + tw, ty + th);
+   XDrawRectangle(disp, root, gc, tx, ty, tw, th);
+   XDrawRectangle(disp, root, gc, fx, fy, fw, fh);
 
-	     x = (2 * x + w) / 2;	/* x middle */
-	     y = (2 * y + h) / 2;	/* y middle */
-	     w /= 2;		/* width/2 */
-	     h /= 2;		/* height/2 */
-
-	     x1 = x + w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
-	     y1 = y + h * cos(i * 6.2831853072);
-	     x2 = x + w * (1 - .5 * sin(i * 6.2831853072));
-	     y2 = y - h * cos(i * 6.2831853072);
-	     x3 = x - w * (1 - .5 * sin(3.14159 + i * 6.2831853072));
-	     y3 = y - h * cos(i * 6.2831853072);
-	     x4 = x - w * (1 - .5 * sin(i * 6.2831853072));
-	     y4 = y + h * cos(i * 6.2831853072);
-
-	     XDrawLine(disp, root, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, root, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, root, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, root, gc, x4, y4, x1, y1);
-
-	     XDrawLine(disp, root, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, root, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, root, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, root, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
-
-	     XDrawLine(disp, root, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, root, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, root, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, root, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
-
-	     ESync();
-	     t2 = GetTime();
-	     t = t2 - t1;
-	     t1 = t2;
-	     spd = t / IB_ANIM_TIME;
-
-	     XDrawLine(disp, root, gc, x1, y1, x2, y2);
-	     XDrawLine(disp, root, gc, x2, y2, x3, y3);
-	     XDrawLine(disp, root, gc, x3, y3, x4, y4);
-	     XDrawLine(disp, root, gc, x4, y4, x1, y1);
-
-	     XDrawLine(disp, root, gc, x1 + 1, y1 + 1, x2 - 1, y2 - 1);
-	     XDrawLine(disp, root, gc, x2 + 1, y2 + 1, x3 - 1, y3 - 1);
-	     XDrawLine(disp, root, gc, x3 + 1, y3 + 1, x4 - 1, y4 - 1);
-	     XDrawLine(disp, root, gc, x4 + 1, y4 + 1, x1 - 1, y1 - 1);
-
-	     XDrawLine(disp, root, gc, x1 + 2, y1 + 2, x2 - 2, y2 - 2);
-	     XDrawLine(disp, root, gc, x2 + 2, y2 + 2, x3 - 2, y3 - 2);
-	     XDrawLine(disp, root, gc, x3 + 2, y3 + 2, x4 - 2, y4 - 2);
-	     XDrawLine(disp, root, gc, x4 + 2, y4 + 2, x1 - 2, y1 - 2);
-	  }
-     }
    EXFreeGC(gc);
+}
+
+static void
+IB_Animate(Container * ct, int iconify, EWin * ewin)
+{
+   if (Mode.wm.startup || ct->anim_mode <= 0)
+      return;
+
+   if (Conf_containers.anim_time < 10 || Conf_containers.anim_time > 10000)
+      Conf_containers.anim_time = 250;
+   if (Conf_containers.anim_step < 1 || Conf_containers.anim_step > 1000)
+      Conf_containers.anim_step = 10;
+
+   EobjsRepaint();
+   EGrabServer();
+
+   switch (ct->anim_mode)
+     {
+     default:
+	break;
+     case 1:
+	IB_Animate_A(iconify, ewin, ct->ewin);
+	break;
+     case 2:
+	IB_Animate_B(iconify, ewin, ct->ewin);
+	break;
+     }
+
    EUngrabServer();
 }
 
@@ -264,8 +308,8 @@ IconboxesEwinIconify(EWin * ewin)
 
    IconboxObjEwinAdd(ct, ewin);
 
-   if (ct->animate && !ewin->state.showingdesk)
-      IB_Animate(1, ewin, ct->ewin);
+   if (ct->anim_mode && !ewin->state.showingdesk)
+      IB_Animate(ct, 1, ewin);
 }
 
 static void
@@ -279,8 +323,8 @@ IconboxesEwinDeIconify(EWin * ewin)
    if (!ct)
       return;
 
-   if (ct->animate && !ewin->state.showingdesk)
-      IB_Animate(0, ewin, ct->ewin);
+   if (ct->anim_mode && !ewin->state.showingdesk)
+      IB_Animate(ct, 0, ewin);
 
    IconboxObjEwinDel(ct, ewin);
    ContainerRedraw(ct);
@@ -428,7 +472,7 @@ IconboxInit(Container * ct)
    ct->menu_title = _("Iconbox Options");
    ct->dlg_title = _("Iconbox Settings");
    ct->iconsize = 48;
-   ct->animate = 1;
+   ct->anim_mode = 1;
 }
 
 static void

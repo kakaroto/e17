@@ -48,6 +48,8 @@ static void         ContainerEventArrow1Win(Win win, XEvent * ev, void *prm);
 static void         ContainerEventArrow2Win(Win win, XEvent * ev, void *prm);
 static void         ContainerEventIconWin(Win win, XEvent * ev, void *prm);
 
+ContainerCfg        Conf_containers;
+
 Ecore_List         *container_list = NULL;
 
 static int
@@ -1485,7 +1487,7 @@ static char         tmp_ib_draw_icon_base;
 static char         tmp_ib_scrollbar_hide;
 static char         tmp_ib_cover_hide;
 static int          tmp_ib_autoresize_anchor;
-static char         tmp_ib_animate;
+static char         tmp_ib_anim_mode;
 
 static void
 CB_ConfigureContainer(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -1512,7 +1514,7 @@ CB_ConfigureContainer(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	ct->scrollbar_hide = tmp_ib_scrollbar_hide;
 	ct->cover_hide = tmp_ib_cover_hide;
 	ct->auto_resize_anchor = tmp_ib_autoresize_anchor;
-	ct->animate = tmp_ib_animate;
+	ct->anim_mode = tmp_ib_anim_mode;
 
 	ContainerReconfigure(ct);
 	ContainerRedraw(ct);
@@ -1555,7 +1557,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    tmp_ib_scrollbar_hide = ct->scrollbar_hide;
    tmp_ib_cover_hide = ct->cover_hide;
    tmp_ib_autoresize_anchor = ct->auto_resize_anchor;
-   tmp_ib_animate = ct->animate;
+   tmp_ib_anim_mode = ct->anim_mode;
    if (tmp_ib_name)
       Efree(tmp_ib_name);
    tmp_ib_name = Estrdup(ct->name);
@@ -1690,7 +1692,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
 
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetText(di, _("Animate when iconifying to this Iconbox"));
-	DialogItemCheckButtonSetPtr(di, &tmp_ib_animate);
+	DialogItemCheckButtonSetPtr(di, &tmp_ib_anim_mode);
 
 	di = DialogAddItem(table, DITEM_SEPARATOR);
 
@@ -1833,13 +1835,13 @@ ContainersConfigLoad(void)
 	     if (ct)
 		ct->cover_hide = (char)atoi(s2);
 	     break;
-	  case CONFIG_RESIZE_ANCHOR:	/* __COVER_HIDE 0-1024 */
+	  case CONFIG_RESIZE_ANCHOR:	/* __RESIZE_ANCHOR 0-1024 */
 	     if (ct)
 		ct->auto_resize_anchor = atoi(s2);
 	     break;
-	  case CONFIG_IB_ANIMATE:	/* __COVER_HIDE 0-1024 */
+	  case CONFIG_IB_ANIMATE:	/* __ICONBOX_ANIMATE [ 0 | 1 | 2 ] */
 	     if (ct)
-		ct->animate = (char)atoi(s2);
+		ct->anim_mode = atoi(s2);
 	     break;
 	  default:
 	     Eprintf("Warning: Iconbox configuration, ignoring: %s\n", s);
@@ -1882,7 +1884,7 @@ ContainersConfigSave(void)
       fprintf(fs, "2009 %i\n", ct->scrollbar_hide);
       fprintf(fs, "2010 %i\n", ct->cover_hide);
       fprintf(fs, "2011 %i\n", ct->auto_resize_anchor);
-      fprintf(fs, "2012 %i\n", ct->animate);
+      fprintf(fs, "2012 %i\n", ct->anim_mode);
       fprintf(fs, "1000\n");
    }
 
@@ -2007,15 +2009,14 @@ static const IpcItem ContainersIpcArray[] = {
 };
 #define N_IPC_FUNCS (sizeof(ContainersIpcArray)/sizeof(IpcItem))
 
-#if 0
 /*
  * Configuration items
  */
 static const CfgItem ContainersCfgItems[] = {
-   CFG_ITEM_BOOL(Conf.iconboxes, enable, 1),
+   CFG_ITEM_INT(Conf_containers, anim_time, 250),
+   CFG_ITEM_INT(Conf_containers, anim_step, 10),
 };
 #define N_CFG_ITEMS (sizeof(ContainersCfgItems)/sizeof(CfgItem))
-#endif
 
 /*
  * Module descriptor
@@ -2024,5 +2025,5 @@ const EModule       ModIconboxes = {
    "iconboxes", "ibox",
    ContainersSighan,
    {N_IPC_FUNCS, ContainersIpcArray},
-   {0, NULL}
+   {N_CFG_ITEMS, ContainersCfgItems}
 };

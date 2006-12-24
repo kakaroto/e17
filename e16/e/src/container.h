@@ -30,6 +30,12 @@ typedef struct _container Container;
 
 typedef struct
 {
+   unsigned int        anim_time;	/* Animation run time  (ms) */
+   unsigned int        anim_step;	/* Animation time step (ms) */
+} ContainerCfg;
+
+typedef struct
+{
    void               *obj;
    int                 xo, yo, wo, ho;	/* Outer */
    int                 xi, yi, wi, hi;	/* Inner */
@@ -58,19 +64,19 @@ struct _container
    char               *name;
    char                type;
    char                orientation;
-   char                animate;
    char                scrollbar_side;
    char                arrow_side;
-   char                shownames;
    char                nobg;
    int                 iconsize;
-   int                 icon_mode;
-
    char                auto_resize;
    char                draw_icon_base;
    char                scrollbar_hide;
    char                cover_hide;
    int                 auto_resize_anchor;
+   /* Iconbox specific */
+   char                shownames;
+   int                 anim_mode;
+   int                 icon_mode;
 
    /* internally set stuff */
    EWin               *ewin;
@@ -111,6 +117,8 @@ struct _container
    /* State flags */
    char                do_update;
 };
+
+extern ContainerCfg Conf_containers;
 
 void                ContainerRedraw(Container * ct);
 
