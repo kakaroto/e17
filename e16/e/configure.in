@@ -2,8 +2,8 @@ AC_INIT(configure.in)
 
 ENLIGHTENMENT_MAJOR=0
 ENLIGHTENMENT_MINOR=16
-ENLIGHTENMENT_MICRO=8.5
-#ENLIGHTENMENT_REVISION=0.04
+ENLIGHTENMENT_MICRO=8.6
+ENLIGHTENMENT_REVISION=0.00
 ENLIGHTENMENT_VERSION=$ENLIGHTENMENT_MAJOR.$ENLIGHTENMENT_MINOR.$ENLIGHTENMENT_MICRO
 if test "x$ENLIGHTENMENT_REVISION" != "x"; then
   ENLIGHTENMENT_REVNAME="$ENLIGHTENMENT_VERSION-$ENLIGHTENMENT_REVISION"
@@ -329,7 +329,7 @@ echo "Experimental options - DO NOT USE unless you know what you are doing"
 echo "  Compile with ecore/ecore_x ... $enable_ecore"
 echo "  ScreenSaver .................. $enable_xscrnsaver"
 echo
-echo "Installation Path .............. $prefix"
+echo "Installation path .............. $prefix"
 echo
 echo "Compilation .................... make"
 echo "Installation ................... make install"
