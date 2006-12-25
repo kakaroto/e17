@@ -19,6 +19,7 @@ enum Etk_Image_Property_Id
    ETK_IMAGE_FILE_PROPERTY,
    ETK_IMAGE_EDJE_FILE_PROPERTY,
    ETK_IMAGE_EDJE_GROUP_PROPERTY,
+   ETK_IMAGE_EVAS_OBJECT_PROPERTY,     
    ETK_IMAGE_KEEP_ASPECT_PROPERTY,
    ETK_IMAGE_USE_EDJE_PROPERTY,
    ETK_IMAGE_STOCK_ID_PROPERTY,
@@ -61,6 +62,8 @@ Etk_Type *etk_image_type_get()
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(image_type, "edje_group", ETK_IMAGE_EDJE_GROUP_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(image_type, "evas_object", ETK_IMAGE_EVAS_OBJECT_PROPERTY,
+         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
       etk_type_property_add(image_type, "keep_aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(image_type, "use_edje", ETK_IMAGE_USE_EDJE_PROPERTY,
@@ -105,6 +108,16 @@ Etk_Widget *etk_image_new_from_file(const char *filename)
 Etk_Widget *etk_image_new_from_edje(const char *edje_filename, const char *edje_group)
 {
    return etk_widget_new(ETK_IMAGE_TYPE, "edje_file", edje_filename, "edje_group", edje_group, NULL);
+}
+
+/**
+ * @brief Creates a new image from the given evas object
+ * @param evas_object the evas object to use for the image
+ * @return Returns the new image widget
+ */
+Etk_Widget *etk_image_new_from_evas_object(Evas_Object *evas_object)
+{
+   return etk_widget_new(ETK_IMAGE_TYPE, "evas_object", evas_object, NULL);
 }
 
 /**
@@ -248,6 +261,78 @@ void etk_image_edje_get(Etk_Image *image, char **edje_filename, char **edje_grou
 }
 
 /**
+ * @brief Loads the image from an evas object
+ * @param image an image
+ * @param evas_object the evas object to use
+ */
+void etk_image_set_from_evas_object(Etk_Image *image, Evas_Object *evas_object)
+{
+   Etk_Widget *widget;
+
+   if (!(widget = ETK_WIDGET(image)) || !evas_object)
+      return;
+
+   if (image->image_object != evas_object)   
+   {
+      if (image->image_object && (image->filename || image->use_edje))
+	 evas_object_del(image->image_object);
+      image->image_object = evas_object;      
+      etk_object_notify(ETK_OBJECT(image), "evas_object");
+   }
+
+   if (image->edje_group)
+   {
+      free(image->edje_group);
+      image->edje_group = NULL;
+      etk_object_notify(ETK_OBJECT(image), "edje_group");
+   }
+   if (image->edje_filename)
+   {
+      free(image->edje_filename);
+      image->edje_filename = NULL;
+      etk_object_notify(ETK_OBJECT(image), "edje_file");
+   }
+   if (image->use_edje)
+   {
+      image->use_edje = ETK_FALSE;
+      image->object_type_changed = ETK_TRUE;
+      etk_object_notify(ETK_OBJECT(image), "use_edje");
+   }      
+   if (image->filename)
+   {
+      free(image->filename);
+      image->filename = NULL;
+      etk_object_notify(ETK_OBJECT(image), "image_file");
+   }
+   
+   if (!image->use_object)
+   {
+      image->use_object = ETK_TRUE;
+      image->object_type_changed = ETK_TRUE;
+      etk_object_notify(ETK_OBJECT(image), "use_object");
+   }
+   if (image->stock_id != ETK_STOCK_NO_STOCK)
+   {
+      image->stock_id = ETK_STOCK_NO_STOCK;
+      etk_object_notify(ETK_OBJECT(image), "stock_id");
+   }
+
+   _etk_image_load(image);
+}
+
+/**
+ * @brief Gets the evas object of the image
+ * @param image an image
+ * @return Returns the evas object of the image
+ */
+Evas_Object *etk_image_evas_object_get(Etk_Image *image)
+{
+   if (!image)
+      return NULL;
+   return image->image_object;
+}
+
+/**
  * @brief Loads the image corresponding to the stock id
  * @param image an image
  * @param stock_id the stock id corresponding to the image
@@ -303,10 +388,12 @@ void etk_image_size_get(Etk_Image *image, int *width, int *height)
    }
    else
    {
-      if (!image->use_edje)
-         evas_object_image_size_get(image->image_object, width, height);
+      if (image->use_object)
+	evas_object_geometry_get(image->image_object, NULL, NULL, width, height);
+      else if (image->use_edje)
+	edje_object_size_min_get(image->image_object, width, height);	    
       else
-         edje_object_size_min_get(image->image_object, width, height);
+	evas_object_image_size_get(image->image_object, width, height);
    }
 }
 
@@ -386,6 +473,7 @@ static void _etk_image_constructor(Etk_Image *image)
    image->stock_size = ETK_STOCK_SMALL;
    image->keep_aspect = ETK_TRUE;
    image->use_edje = ETK_FALSE;
+   image->use_object = ETK_FALSE;   
    image->object_type_changed = ETK_FALSE;
 
    widget->size_request = _etk_image_size_request;
@@ -425,6 +513,9 @@ static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Pro
       case ETK_IMAGE_EDJE_GROUP_PROPERTY:
          etk_image_set_from_edje(image, image->edje_filename, etk_property_value_string_get(value));
          break;
+      case ETK_IMAGE_EVAS_OBJECT_PROPERTY:
+         etk_image_set_from_evas_object(image, etk_property_value_pointer_get(value));
+         break;      
       case ETK_IMAGE_KEEP_ASPECT_PROPERTY:
          etk_image_keep_aspect_set(image, etk_property_value_bool_get(value));
          break;
@@ -458,6 +549,9 @@ static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Pro
       case ETK_IMAGE_EDJE_GROUP_PROPERTY:
          etk_property_value_string_set(value, image->edje_group);
          break;
+      case ETK_IMAGE_EVAS_OBJECT_PROPERTY:
+         etk_property_value_pointer_set(value, image->image_object);
+         break;      
       case ETK_IMAGE_KEEP_ASPECT_PROPERTY:
          etk_property_value_bool_set(value, image->keep_aspect);
          break;
@@ -485,7 +579,9 @@ static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size)
 
    if (image->image_object)
    {
-      if (image->use_edje)
+      if (image->use_object)
+  	 evas_object_geometry_get(image->image_object, NULL, NULL, &size->w, &size->h);
+      else if (image->use_edje)
       {
          Evas_Coord min_x, min_y, calc_x, calc_y;
 
@@ -521,7 +617,9 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       int image_w, image_h;
       int new_size;
 
-      if (image->use_edje)
+      if (image->use_object)
+	 evas_object_geometry_get(image->image_object, NULL, NULL, &image_w, &image_h);
+      else if (image->use_edje)
          edje_object_size_min_get(image->image_object, &image_w, &image_h);
       else
          evas_object_image_size_get(image->image_object, &image_w, &image_h);
@@ -546,7 +644,7 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       }
    }
    
-   if (!image->use_edje)
+   if (!image->use_edje && !image->use_object)
       evas_object_image_fill_set(image->image_object, 0, 0, geometry.w, geometry.h);
    
    evas_object_move(image->image_object, geometry.x, geometry.y);
@@ -595,9 +693,12 @@ static void _etk_image_load(Etk_Image *image)
 
    if (image->image_object && image->object_type_changed)
    {
-      etk_widget_member_object_del(widget, image->image_object);
-      evas_object_del(image->image_object);
-      image->image_object = NULL;
+      if (!image->use_object)
+      {
+	 etk_widget_member_object_del(widget, image->image_object);
+	 evas_object_del(image->image_object);
+	 image->image_object = NULL;
+      }
       image->object_type_changed = ETK_FALSE;
    }
    if (image->filename)
@@ -655,7 +756,12 @@ static void _etk_image_load(Etk_Image *image)
             else
                evas_object_show(image->image_object);
          }
-      }
+      }      
+   }
+   else if (image->image_object && image->use_object)
+   {
+      etk_widget_member_object_add(widget, image->image_object);
+      evas_object_show(image->image_object);      
    }
 
    etk_widget_size_recalc_queue(widget);
