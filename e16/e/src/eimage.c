@@ -403,6 +403,7 @@ EImageRenderPixmaps(EImage * im, Win win, Pixmap * pmap, Pixmap * mask,
 		    int w, int h)
 {
    Visual             *vis;
+   Pixmap              m;
 
    imlib_context_set_image(im);
    imlib_context_set_drawable((win) ? WinGetXwin(win) : _default_draw);
@@ -410,7 +411,12 @@ EImageRenderPixmaps(EImage * im, Win win, Pixmap * pmap, Pixmap * mask,
    if (vis)
       imlib_context_set_visual(vis);
 
-   *pmap = *mask = None;
+   *pmap = None;
+   if (!mask)			/* Imlib2 <= 1.3.0 needs a mask pointer */
+      mask = &m;		/* ... to avoid bogus error messages    */
+   if (mask)
+      *mask = None;
+
    if (w <= 0 || h <= 0)
       imlib_render_pixmaps_for_whole_image(pmap, mask);
    else
@@ -432,7 +438,6 @@ ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst, Pixmap * pdst,
 	  int dx, int dy, int dw, int dh, int scale)
 {
    Imlib_Image        *im;
-   Pixmap              pmap, mask;
 
    scale = (scale) ? 2 : 1;
 
@@ -441,8 +446,7 @@ ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst, Pixmap * pdst,
    imlib_context_set_anti_alias(1);
    if (pdst)
      {
-	EImageRenderPixmaps(im, wdst, &pmap, &mask, dw, dh);
-	*pdst = pmap;
+	EImageRenderPixmaps(im, wdst, pdst, None, dw, dh);
      }
    else
      {
