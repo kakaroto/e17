@@ -60,6 +60,7 @@ struct _background
 #endif
    char                external;
    char                keepim;
+   char                referenced;
    unsigned int        ref_count;
    unsigned int        seq_no;
 };
@@ -297,10 +298,6 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
    if (!bg)
       return NULL;
 
-   if (!bg_list)
-      bg_list = ecore_list_new();
-   ecore_list_prepend(bg_list, bg);
-
    bg->name = Estrdup(name);
 
    ESetColor(&(bg->bg_solid), 160, 160, 160);
@@ -327,7 +324,48 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
 
    bg->seq_no = ++bg_seq_no;
 
+   if (!bg_list)
+      bg_list = ecore_list_new();
+   ecore_list_prepend(bg_list, bg);
+
    return bg;
+}
+
+static int
+BackgroundCmp(Background * bg, Background * bgx)
+{
+   if (bg->bg.file && bgx->bg.file)
+     {
+	if ((strcmp(bg->bg.file, bgx->bg.file)) ||
+	    (bg->bg.keep_aspect != bgx->bg.keep_aspect) ||
+	    (bg->bg.xjust != bgx->bg.xjust || bg->bg.xjust != bgx->bg.xjust) ||
+	    (bg->bg.xperc != bgx->bg.xperc || bg->bg.xperc != bgx->bg.xperc))
+	   return 1;
+     }
+   else if (bg->bg.file || bgx->bg.file)
+      return 1;
+
+   if (bg->top.file && bgx->top.file)
+     {
+	if ((strcmp(bg->top.file, bgx->top.file)) ||
+	    (bg->top.keep_aspect != bgx->top.keep_aspect) ||
+	    (bg->top.xjust != bgx->top.xjust ||
+	     bg->top.xjust != bgx->top.xjust) ||
+	    (bg->top.xperc != bgx->top.xperc ||
+	     bg->top.xperc != bgx->top.xperc))
+	   return 1;
+     }
+   else if (bg->top.file || bgx->top.file)
+      return 1;
+
+   if ((bg->bg_solid.red != bgx->bg_solid.red) ||
+       (bg->bg_solid.green != bgx->bg_solid.green) ||
+       (bg->bg_solid.blue != bgx->bg_solid.blue))
+      return 1;
+   if (bg->bg_tile != bgx->bg_tile)
+      return 1;
+
+   return 0;
 }
 
 static int
@@ -1193,6 +1231,7 @@ BackgroundsConfigLoad(FILE * fs)
 						j2, j3, j4, j5);
 		    }
 		  bg_assigned[desk] = bg;
+		  bg->referenced = 1;
 	       }
 	     break;
 
@@ -1371,6 +1410,34 @@ BackgroundsConfigSave(void)
  */
 
 static void
+BackgroundsCheckDups(void)
+{
+   int                 ix;
+   Background         *bg, *bgx;
+
+   for (ix = 0;; ix++)
+     {
+	ecore_list_goto_index(bg_list, ix);
+	bg = ecore_list_next(bg_list);
+	if (!bg)
+	   break;
+	for (; (bgx = ecore_list_next(bg_list)) != NULL;)
+	  {
+	     if (bgx->ref_count > 0 || bgx->referenced)
+		continue;
+
+	     if (BackgroundCmp(bg, bgx))
+		continue;
+#if 1				/* Remove? */
+	     Eprintf("Remove duplicate background %s (==%s)\n", bgx->name,
+		     bg->name);
+#endif
+	     BackgroundDestroy(bgx);
+	  }
+     }
+}
+
+static void
 BackgroundsAccounting(void)
 {
    Background         *bg;
@@ -1418,6 +1485,7 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
 
      case ESIGNAL_CONFIGURE:
 	BackgroundsConfigLoadUser();
+	BackgroundsCheckDups();
 	break;
 
      case ESIGNAL_START:
