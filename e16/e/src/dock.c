@@ -112,7 +112,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 	     }
 	}
 
-   if (x < 0 || y < 0 || x + w >= VRoot.w || y + h >= VRoot.h)
+   if (x < 0 || y < 0 || x + w > VRoot.w || y + h > VRoot.h)
      {
 	x = VRoot.w - w / 2;
 	y = VRoot.h - h / 2;
