@@ -8,7 +8,7 @@
 
 /**
  * @defgroup Etk_Spinner Etk_Spinner
- * @brief TODOC
+ * @brief A spinner is a widget that allows the user to set the value of a setting
  * @{
  */
 
@@ -20,7 +20,7 @@
 #define ETK_IS_SPINNER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_SPINNER_TYPE))
 
 /**
- * @brief @widget TODOC
+ * @brief @widget A widget that allows the user to set the value of a setting
  * @structinfo
  */
 struct Etk_Spinner
@@ -34,6 +34,9 @@ struct Etk_Spinner
    
    int digits;
    char value_format[16];
+   Etk_Bool snap_to_ticks;
+   Etk_Bool wrap;
+   
    int successive_steps;
    Ecore_Timer *step_timer;
 };
@@ -42,8 +45,12 @@ struct Etk_Spinner
 Etk_Type   *etk_spinner_type_get();
 Etk_Widget *etk_spinner_new(double lower, double upper, double value, double step_increment, double page_increment);
 
-void etk_spinner_digits_set(Etk_Spinner *spinner, int digits);
-int  etk_spinner_digits_get(Etk_Spinner *spinner);
+void     etk_spinner_digits_set(Etk_Spinner *spinner, int digits);
+int      etk_spinner_digits_get(Etk_Spinner *spinner);
+void     etk_spinner_snap_to_ticks_set(Etk_Spinner *spinner, Etk_Bool snap_to_ticks);
+Etk_Bool etk_spinner_snap_to_ticks_get(Etk_Spinner *spinner);
+void     etk_spinner_wrap_set(Etk_Spinner *spinner, Etk_Bool wrap);
+Etk_Bool etk_spinner_wrap_get(Etk_Spinner *spinner);
 
 /** @} */
 

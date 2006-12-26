@@ -86,6 +86,28 @@ group {
             }
          }
       }
+      /*part {
+         name: "entry";
+         description {
+            state: "default" 0.0;
+            color: 255 248 235 255;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 5 6;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -24 -7;
+            }
+            image {
+               normal: "entry.png";
+               border: 8 8 8 8;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }*/
       part {
          name: "etk.swallow.content";
          type: SWALLOW;
@@ -94,11 +116,11 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.0;
-               offset: 8 8;
+               offset: 11 9;
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -25 -9;
+               offset: -28 -10;
             }
          }
       }

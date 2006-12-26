@@ -460,7 +460,8 @@ void etk_widget_theme_group_set(Etk_Widget *widget, const char *theme_group)
    if (!widget)
       return;
 
-   if (theme_group != widget->theme_group)
+   if (theme_group != widget->theme_group
+      && !(widget->theme_group && theme_group && strcmp(widget->theme_group, theme_group) == 0))
    {
       free(widget->theme_group);
       widget->theme_group = theme_group ? strdup(theme_group) : NULL;

@@ -118,7 +118,6 @@ struct Etk_Tree2
    int col_resize_orig_width;
    int col_resize_orig_mouse_x;
    Etk_Bool headers_visible;
-   Evas_Object *headers_clip;
    Evas_Object *grid_clip;
    
    int total_rows;

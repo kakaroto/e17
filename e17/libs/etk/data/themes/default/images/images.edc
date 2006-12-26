@@ -48,8 +48,15 @@ images {
    image: "spinner_button_down2.png" COMP;   
    image: "tree.png" COMP;
    image: "tree_shadow.png" COMP;
-   image: "tree_header_inactive.png" COMP;
-   image: "tree_header_active.png" COMP;
+   image: "tree_header_over.png" COMP;
+   image: "tree_header_first.png" COMP;
+   image: "tree_header_first2.png" COMP;
+   image: "tree_header_last.png" COMP;
+   image: "tree_header_last2.png" COMP;
+   image: "tree_header_middle.png" COMP;
+   image: "tree_header_middle2.png" COMP;
+   image: "tree_header_unique.png" COMP;
+   image: "tree_header_unique2.png" COMP;
    image: "tree_expander_fold.png" COMP;
    image: "tree_expander_unfold.png" COMP;
    image: "hseparator.png" COMP;

@@ -22,7 +22,9 @@
 
 enum Etk_Spinner_Propery_Id
 {
-   ETK_SPINNER_DIGITS_PROPERTY
+   ETK_SPINNER_DIGITS_PROPERTY,
+   ETK_SPINNER_SNAP_TO_TICKS_PROPERTY,
+   ETK_SPINNER_WRAP_PROPERTY
 };
 
 static void _etk_spinner_constructor(Etk_Spinner *spinner);
@@ -35,6 +37,7 @@ static void _etk_spinner_focus_cb(Etk_Object *object, void *data);
 static void _etk_spinner_unfocus_cb(Etk_Object *object, void *data);
 
 static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static void _etk_spinner_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data);
 static void _etk_spinner_editable_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_spinner_editable_mouse_out_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_spinner_editable_mouse_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
@@ -43,6 +46,7 @@ static void _etk_spinner_editable_mouse_move_cb(void *data, Evas *evas, Evas_Obj
 
 static void _etk_spinner_selection_received_cb(Etk_Object *object, void *event, void *data);
 static void _etk_spinner_value_changed_handler(Etk_Range *range, double value);
+static void _etk_spinner_step_increment_changed_cb(Etk_Object *object, const char *property_name, void *data);
 
 static void _etk_spinner_step_start_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_spinner_step_stop_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -51,7 +55,10 @@ static int _etk_spinner_step_increment_timer_cb(void *data);
 
 static void _etk_spinner_update_text_from_value(Etk_Spinner *spinner);
 static void _etk_spinner_update_value_from_text(Etk_Spinner *spinner);
+static void _etk_spinner_spin(Etk_Spinner *spinner, double increment);
+static double _etk_spinner_value_snap(Etk_Spinner *spinner, double value);
 static void _etk_spinner_selection_copy(Etk_Spinner *spinner, Etk_Selection_Type selection, Etk_Bool cut);
+
 
 /**************************
  *
@@ -75,6 +82,10 @@ Etk_Type *etk_spinner_type_get()
       
       etk_type_property_add(spinner_type, "digits", ETK_SPINNER_DIGITS_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
+      etk_type_property_add(spinner_type, "snap_to_ticks", ETK_SPINNER_SNAP_TO_TICKS_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(spinner_type, "wrap", ETK_SPINNER_WRAP_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
       
       spinner_type->property_set = _etk_spinner_property_set;
       spinner_type->property_get = _etk_spinner_property_get;
@@ -85,6 +96,11 @@ Etk_Type *etk_spinner_type_get()
 
 /**
  * @brief Creates a new spinner
+ * @param lower the minimal value of the spinner
+ * @param upper the maximal value of the spinner
+ * @param value the value to set to the spinner
+ * @param step_increment specifies by how much the value should be changed when an arrow is clicked
+ * @param page_increment specifies by how much the value should be changed when the "page down/up" keys are pressed
  * @return Returns the new spinner widget
  */
 Etk_Widget *etk_spinner_new(double lower, double upper, double value, double step_increment, double page_increment)
@@ -124,6 +140,70 @@ int etk_spinner_digits_get(Etk_Spinner *spinner)
    return spinner->digits;
 }
 
+/**
+ * @brief Sets whether or not the value of the spinner should be automatically
+ * corrected to the nearest step-increment
+ * @param spinner a spinner
+ * @param snap_to_ticks ETK_TRUE if you want the value to be corrected, ETK_FALSE otherwise
+ */
+void etk_spinner_snap_to_ticks_set(Etk_Spinner *spinner, Etk_Bool snap_to_ticks)
+{
+   if (!spinner || spinner->snap_to_ticks == snap_to_ticks)
+      return;
+   
+   spinner->snap_to_ticks = snap_to_ticks;
+   
+   if (snap_to_ticks)
+   {
+      double new_value;
+      
+      new_value = _etk_spinner_value_snap(spinner, etk_range_value_get(ETK_RANGE(spinner)));
+      etk_range_value_set(ETK_RANGE(spinner), new_value);
+   }
+   etk_object_notify(ETK_OBJECT(spinner), "snap_to_ticks");
+}
+
+/**
+ * @brief Gets whether or not the value of the spinner are automatically
+ * corrected to the nearest step-increment
+ * @param spinner a spinner
+ * @return Returns ETK_TRUE if the value is automatically corrected, ETK_FALSE otherwise
+ */
+Etk_Bool etk_spinner_snap_to_ticks_get(Etk_Spinner *spinner)
+{
+   if (!spinner)
+      return ETK_FALSE;
+   return spinner->snap_to_ticks;
+}
+
+/**
+ * @brief Sets whether or not the spinner's value should wrap around to the opposite limit when the value exceed one
+ * of the spinner's bounds
+ * @param spinner a spinner
+ * @param wrap ETK_TRUE to make the value wrap around, ETK_FALSE otherwise
+ */
+void etk_spinner_wrap_set(Etk_Spinner *spinner, Etk_Bool wrap)
+{
+   if (!spinner || spinner->wrap == wrap)
+      return;
+   
+   spinner->wrap = wrap;
+   etk_object_notify(ETK_OBJECT(spinner), "wrap");
+}
+
+/**
+ * @brief Gets whether or not the spinner's value is wrapped around to the opposite limit when the value exceed one
+ * of the spinner's bounds
+ * @param spinner a spinner
+ * @return Returns ETK_TRUE if the spinner's value is wrapped around, ETK_FALSE otherwise
+ */
+Etk_Bool etk_spinner_wrap_get(Etk_Spinner *spinner)
+{
+   if (!spinner)
+      return ETK_FALSE;
+   return spinner->wrap;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -138,6 +218,9 @@ static void _etk_spinner_constructor(Etk_Spinner *spinner)
    
    spinner->digits = 0;
    strcpy(spinner->value_format, "%.0f");
+   spinner->snap_to_ticks = ETK_FALSE;
+   spinner->wrap = ETK_FALSE;
+   
    spinner->step_timer = NULL;
    spinner->successive_steps = 0;
 
@@ -148,10 +231,13 @@ static void _etk_spinner_constructor(Etk_Spinner *spinner)
    etk_signal_connect("realize", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unrealize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_down_cb), NULL);
+   etk_signal_connect("key_up", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_up_cb), NULL);
    etk_signal_connect("focus", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unfocus_cb), NULL);
    etk_signal_connect("selection_received", ETK_OBJECT(spinner),
       ETK_CALLBACK(_etk_spinner_selection_received_cb), NULL);
+   etk_object_notification_callback_add(ETK_OBJECT(spinner), "step_increment",
+      _etk_spinner_step_increment_changed_cb, NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -166,6 +252,12 @@ static void _etk_spinner_property_set(Etk_Object *object, int property_id, Etk_P
    {
       case ETK_SPINNER_DIGITS_PROPERTY:
 	 etk_spinner_digits_set(spinner, etk_property_value_int_get(value));
+	 break;
+      case ETK_SPINNER_SNAP_TO_TICKS_PROPERTY:
+	 etk_spinner_snap_to_ticks_set(spinner, etk_property_value_bool_get(value));
+	 break;
+      case ETK_SPINNER_WRAP_PROPERTY:
+	 etk_spinner_wrap_set(spinner, etk_property_value_bool_get(value));
 	 break;
       default:
 	 break;
@@ -184,6 +276,12 @@ static void _etk_spinner_property_get(Etk_Object *object, int property_id, Etk_P
    {
       case ETK_SPINNER_DIGITS_PROPERTY:
          etk_property_value_int_set(value, spinner->digits);
+         break;
+      case ETK_SPINNER_SNAP_TO_TICKS_PROPERTY:
+         etk_property_value_bool_set(value, spinner->snap_to_ticks);
+         break;
+      case ETK_SPINNER_WRAP_PROPERTY:
+         etk_property_value_bool_set(value, spinner->wrap);
          break;
       default:
          break;
@@ -291,6 +389,7 @@ static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *eve
    Evas_Object *editable;
    int cursor_pos, selection_pos;
    int start_pos, end_pos;
+   int climb_factor;
    Etk_Bool selecting;
    Etk_Bool changed = ETK_FALSE;
    Etk_Bool selection_changed = ETK_FALSE;
@@ -306,6 +405,9 @@ static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *eve
    start_pos = ETK_MIN(cursor_pos, selection_pos);
    end_pos = ETK_MAX(cursor_pos, selection_pos);
    selecting = (start_pos != end_pos);
+   
+   /* TODO: increment faster if the key has been pressed for a long time... */
+   climb_factor = 1;
    
    /* Move the cursor/selection to the left */
    if (strcmp(event->keyname, "Left") == 0)
@@ -386,18 +488,28 @@ static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *eve
    /* Increment the value */
    else if (strcmp(event->keyname, "Up") == 0)
    {
-      /* TODO: increment faster if the key has been pressed for a long time... */
-      etk_range_value_set(range, range->value + range->step_increment);
+      _etk_spinner_spin(spinner, climb_factor * range->step_increment);
    }
    /* Decrement the value */
    else if (strcmp(event->keyname, "Down") == 0)
    {
-      /* TODO: decrement faster if the key has been pressed for a long time... */
-      etk_range_value_set(range, range->value - range->step_increment);
+      _etk_spinner_spin(spinner, -(climb_factor * range->step_increment));
+   }
+   /* Increment the value by the page-increment */
+   else if (strcmp(event->keyname, "Prior") == 0)
+   {
+      _etk_spinner_spin(spinner, climb_factor * range->page_increment);
+   }
+   /* Decrement the value by the page-increment */
+   else if (strcmp(event->keyname, "Next") == 0)
+   {
+      _etk_spinner_spin(spinner, -(climb_factor * range->page_increment));
    }
    /* Validate the value entered in the spinner */
    else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
+   {
       _etk_spinner_update_value_from_text(spinner);
+   }
    /* Ctrl + A,C,X,V */
    else if (event->modifiers & ETK_MODIFIER_CTRL)
    {
@@ -427,6 +539,21 @@ static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *eve
       _etk_spinner_selection_copy(spinner, ETK_SELECTION_PRIMARY, ETK_FALSE);
    if (stop_signal)
       etk_signal_stop();
+}
+
+/* Called when a key is released while the spinner is focused */
+static void _etk_spinner_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data)
+{
+   Etk_Spinner *spinner;
+   
+   if (!(spinner = ETK_SPINNER(object)))
+      return;
+   
+   if (strcmp(event->keyname, "Prior") == 0 || strcmp(event->keyname, "Next") == 0
+      || strcmp(event->keyname, "Up") == 0 || strcmp(event->keyname, "Down") == 0)
+   {
+      spinner->successive_steps = 0;
+   }
 }
 
 /* Called when the mouse enters the spinner's editable-object */
@@ -559,10 +686,38 @@ static void _etk_spinner_value_changed_handler(Etk_Range *range, double value)
    
    if (!(spinner = ETK_SPINNER(range)))
       return;
+   
+   if (spinner->snap_to_ticks)
+   {
+      double new_value;
+      
+      new_value = _etk_spinner_value_snap(spinner, value);
+      if (value != range->lower && value != range->upper && value != value)
+         etk_range_value_set(ETK_RANGE(spinner), new_value);
+   }
+   
    _etk_spinner_update_text_from_value(spinner);
 }
 
-/* TODOC */
+/* Called when the step-increment of the spinner is changed:
+ * We correct the value if the "snap-to-ticks" setting is on */
+static void _etk_spinner_step_increment_changed_cb(Etk_Object *object, const char *property_name, void *data)
+{
+   Etk_Spinner *spinner;
+   double value;
+   
+   if (!(spinner = ETK_SPINNER(object)))
+      return;
+   
+   if (spinner->snap_to_ticks)
+   {
+      value = etk_range_value_get(ETK_RANGE(spinner));
+      value = _etk_spinner_value_snap(spinner, value);
+      etk_range_value_set(ETK_RANGE(spinner), value);
+   }
+}
+
+/* Called when one of the arrows is pressed: it starts to increment or decrement the value */
 static void _etk_spinner_step_start_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Etk_Spinner *spinner;
@@ -583,7 +738,7 @@ static void _etk_spinner_step_start_cb(void *data, Evas_Object *obj, const char 
       spinner->step_timer = ecore_timer_add(0.0, _etk_spinner_step_increment_timer_cb, spinner);
 }
 
-/* TODOC */
+/* Called when one of the arrows is released: it stops incrementing or decrementing the value */
 static void _etk_spinner_step_stop_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Etk_Spinner *spinner;
@@ -598,42 +753,34 @@ static void _etk_spinner_step_stop_cb(void *data, Evas_Object *obj, const char *
    }
 }
 
-/* TODOC */
+/* A timer used to decrement the value */
 static int _etk_spinner_step_decrement_timer_cb(void *data)
 {
    Etk_Spinner *spinner;
-   Etk_Range *range;
    
    if (!(spinner = ETK_SPINNER(data)))
       return 1;
 
    _etk_spinner_update_value_from_text(spinner);
    
-   range = ETK_RANGE(spinner);
-   etk_range_value_set(range, range->value - range->step_increment);
-   
    ecore_timer_interval_set(spinner->step_timer, (spinner->successive_steps == 0) ? FIRST_DELAY : REPEAT_DELAY);
-   spinner->successive_steps++;
+   _etk_spinner_spin(spinner, -ETK_RANGE(spinner)->step_increment);
    
    return 1;
 }
 
-/* TODOC */
+/* A timer used to increment the value */
 static int _etk_spinner_step_increment_timer_cb(void *data)
 {
    Etk_Spinner *spinner;
-   Etk_Range *range;
    
    if (!(spinner = ETK_SPINNER(data)))
       return 1;
 
    _etk_spinner_update_value_from_text(spinner);
    
-   range = ETK_RANGE(spinner);
-   etk_range_value_set(range, range->value + range->step_increment);
-   
    ecore_timer_interval_set(spinner->step_timer, (spinner->successive_steps == 0) ? FIRST_DELAY : REPEAT_DELAY);
-   spinner->successive_steps++;
+   _etk_spinner_spin(spinner, ETK_RANGE(spinner)->step_increment);
    
    return 1;
 }
@@ -668,7 +815,55 @@ static void _etk_spinner_update_value_from_text(Etk_Spinner *spinner)
    text = etk_editable_text_get(spinner->editable_object);
    if (sscanf(text, "%f", &value) != 1)
       value = 0.0;
-   etk_range_value_set(ETK_RANGE(spinner), value);
+   
+   if (spinner->snap_to_ticks)
+      value = _etk_spinner_value_snap(spinner, value);
+   
+   if (etk_range_value_get(ETK_RANGE(spinner)) != value)
+      etk_range_value_set(ETK_RANGE(spinner), value);
+   else
+      _etk_spinner_update_text_from_value(spinner);
+}
+
+/* Increases the spinner's value by "increment" */
+static void _etk_spinner_spin(Etk_Spinner *spinner, double increment)
+{
+   Etk_Range *range;
+   double value;
+   
+   if (!(range = ETK_RANGE(spinner)))
+      return;
+   
+   if (spinner->wrap)
+   {
+      if (range->value == range->lower && increment < 0)
+         value = range->upper;
+      else if (range->value == range->upper && increment > 0)
+         value = range->lower;
+      else
+         value = range->value + increment;
+   }
+   else
+      value = range->value + increment;
+   
+   if (spinner->snap_to_ticks)
+      value = _etk_spinner_value_snap(spinner, value);
+   
+   etk_range_value_set(range, value);
+   spinner->successive_steps++;
+}
+
+/* Gets the value corrected to the nearest step-increment */
+static double _etk_spinner_value_snap(Etk_Spinner *spinner, double value)
+{
+   Etk_Range *range;
+   int factor;
+   
+   if (!(range = ETK_RANGE(spinner)))
+      return 0.0;
+   
+   factor = ETK_ROUND(value / range->step_increment);
+   return range->step_increment * factor;
 }
 
 /* Copies the selected text of the spinner to the given selection */
@@ -714,5 +909,40 @@ static void _etk_spinner_selection_copy(Etk_Spinner *spinner, Etk_Selection_Type
 /**
  * @addtogroup Etk_Spinner
  *
- * TODOC
+ * @image html widgets/spinner.png
+ * The user can either type the value in the entry, or use the arrows to increment or decrement the value. @n
+ * The spinner's value can be automatically corrected to the nearest step-increment if you set the @a "snap_to_ticks"
+ * property to ETK_TRUE with etk_spinner_snap_to_ticks_set(). It may be useful if you only want integer values for
+ * example. @n
+ * The spinner's value can also automatically wrap around to the opposite limit when it exceeds one of the spinner's
+ * bounds. This setting can be set with etk_spinner_wrap_set(). @n
+ *
+ * Since Etk_Spinner inherits from Etk_Range, you can be notified when the value is changed with the signal
+ * @a "value_changed". You can also call etk_range_value_set() and etk_range_value_get() to set or get the value of the
+ * spinner.
+ *
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Range
+ *       - Etk_Spinner
+ *
+ * \par Properties:
+ * @prop_name "digits": The number of digits the spinner should display
+ * @prop_type Integer
+ * @prop_rw
+ * @prop_val 0
+ * \par
+ * @prop_name "snap_to_ticks": Whether or not the value of the spinner should be corrected
+ * to the nearest step-increment
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_FALSE
+ * \par
+ * @prop_name "wrap": Whether or not the spinner's value wraps around to the opposite limit when
+ * it exceeds one of the spinner's bounds
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_FALSE
  */

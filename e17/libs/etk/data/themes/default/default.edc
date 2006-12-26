@@ -4,6 +4,7 @@
 #include "macros/paned.edc"
 #include "macros/scrollbar.edc"
 #include "macros/toolbar.edc"
+#include "macros/tree_header.edc"
 
 fonts {
    font: "Vera.ttf" "Vera";

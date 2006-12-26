@@ -3,6 +3,7 @@
 #define _ETK_UTILS_H_
 
 #include <stdio.h>
+#include <math.h>
 #include <libintl.h>
 
 /**

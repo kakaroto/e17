@@ -18,7 +18,8 @@
  * @{
  */
 
-#define TREE_GET(widget)        ETK_TREE2(etk_object_data_get(ETK_OBJECT(widget), "_Etk_Tree2::Tree"))
+#define TREE_GET(widget) \
+   ETK_TREE2(etk_object_data_get(ETK_OBJECT(widget), "_Etk_Tree2::Tree"))
 
 #define COL_MIN_WIDTH 24
 #define COL_RESIZE_THRESHOLD 3
@@ -90,7 +91,6 @@ static void _etk_tree2_property_get(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_tree2_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_tree2_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_tree2_realize_cb(Etk_Object *object, void *data);
-static void _etk_tree2_unrealize_cb(Etk_Object *object, void *data);
 
 static void _etk_tree2_col_constructor(Etk_Tree2_Col *tree_col);
 static void _etk_tree2_col_destructor(Etk_Tree2_Col *tree_col);
@@ -107,8 +107,6 @@ static void _etk_tree2_realize_cb(Etk_Object *object, void *data);
 static void _etk_tree2_focus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree2_unfocus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_tree2_scroll_content_realize_cb(Etk_Object *object, void *data);
-static void _etk_tree2_scroll_content_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_tree2_grid_realize_cb(Etk_Object *object, void *data);
 static void _etk_tree2_grid_unrealize_cb(Etk_Object *object, void *data);
 
@@ -468,8 +466,6 @@ Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, Etk_Tree2_M
       etk_widget_parent_set(new_header, ETK_WIDGET(tree));
    else
       etk_widget_parent_set(new_header, tree->scroll_content);
-   if (tree->headers_clip)
-      etk_widget_clip_set(new_header, tree->headers_clip);
    new_col->header = new_header;
    
    etk_signal_connect("mouse_down", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_down_cb), new_col);
@@ -806,7 +802,7 @@ Etk_Tree2_Row *etk_tree2_row_append(Etk_Tree2 *tree, Etk_Tree2_Row *parent, ...)
 }
 
 /**
- * @param Inserts a new row after an existing row
+ * @brief Inserts a new row after an existing row
  * @param tree a tree
  * @param parent the parent row of the row to insert. If @a after is not NULL, @a parent is optionnal (the parent of the
  * new row will be the parent of @a after)
@@ -833,7 +829,7 @@ Etk_Tree2_Row *etk_tree2_row_insert(Etk_Tree2 *tree, Etk_Tree2_Row *parent, Etk_
 }
 
 /**
- * @param Inserts a new row after an existing row
+ * @brief Inserts a new row after an existing row
  * @param tree a tree
  * @param parent the parent row of the row to insert. If @a after is not NULL, @a parent is optionnal (the parent of the
  * new row will be the parent of @a after)
@@ -1399,10 +1395,6 @@ static void _etk_tree2_constructor(Etk_Tree2 *tree)
    tree->scroll_content->size_allocate = _etk_tree2_scroll_content_size_allocate;
    tree->scroll_content->scroll = _etk_tree2_scroll_content_scroll;
    tree->scroll_content->scroll_size_get = _etk_tree2_scroll_content_scroll_size_get;
-   etk_signal_connect("realize", ETK_OBJECT(tree->scroll_content),
-      ETK_CALLBACK(_etk_tree2_scroll_content_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(tree->scroll_content),
-      ETK_CALLBACK(_etk_tree2_scroll_content_unrealize_cb), NULL);
    
    tree->grid = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "grid", "theme_parent", tree,
        "repeat_mouse_events", ETK_TRUE, "internal", ETK_TRUE, "visible", ETK_TRUE, NULL);
@@ -1418,7 +1410,6 @@ static void _etk_tree2_constructor(Etk_Tree2 *tree)
    tree->columns = NULL;
    tree->col_to_resize = NULL;
    tree->headers_visible = ETK_TRUE;
-   tree->headers_clip = NULL;
    tree->grid_clip = NULL;
    
    tree->root.tree = tree;
@@ -1458,7 +1449,6 @@ static void _etk_tree2_constructor(Etk_Tree2 *tree)
    ETK_WIDGET(tree)->size_allocate = _etk_tree2_size_allocate;
    
    etk_signal_connect("realize", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_unrealize_cb), NULL);
    etk_signal_connect("focus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_unfocus_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_key_down_cb), NULL);
@@ -1721,12 +1711,19 @@ static void _etk_tree2_headers_size_allocate(Etk_Tree2 *tree, Etk_Geometry geome
       Etk_Geometry header_bar_geometry;
       int header_bar_xoffset;
       
+      etk_widget_inner_geometry_get(tree->grid, &header_bar_geometry.x, NULL, &header_bar_geometry.w, NULL);
+      header_bar_geometry.y = geometry.y;
+      header_bar_geometry.h = geometry.h;
+      header_bar_xoffset = header_bar_geometry.x - geometry.x;
+      
       first_visible_col = NULL;
       last_visible_col = NULL;
       for (i = 0; i < tree->num_cols; i++)
       {
          col = tree->columns[i];
-         if (col->visible)
+         if (col->visible
+            && header_bar_geometry.x + col->xoffset <= geometry.x + geometry.w
+            && header_bar_geometry.x + col->xoffset + col->visible_width >= geometry.x)
          {
             if (!first_visible_col || first_visible_col->position > col->position)
                first_visible_col = col;
@@ -1735,39 +1732,47 @@ static void _etk_tree2_headers_size_allocate(Etk_Tree2 *tree, Etk_Geometry geome
          }
       }
       
-      etk_widget_inner_geometry_get(tree->grid, &header_bar_geometry.x, NULL, &header_bar_geometry.w, NULL);
-      header_bar_geometry.y = geometry.y;
-      header_bar_geometry.h = geometry.h;
-      header_bar_xoffset = header_bar_geometry.x - geometry.x;
-      
       header_geometry.y = header_bar_geometry.y;
       header_geometry.h = header_bar_geometry.h;
       
       for (i = 0; i < tree->num_cols; i++)
       {
-         header_geometry.x = header_bar_geometry.x + tree->columns[i]->xoffset;
-         header_geometry.w = tree->columns[i]->visible_width;
-         if (tree->columns[i] == first_visible_col)
+         if (tree->columns[i]->visible
+            && first_visible_col->position <= tree->columns[i]->position
+            && last_visible_col->position >= tree->columns[i]->position)
          {
-            header_geometry.x -= header_bar_xoffset;
-            header_geometry.w += header_bar_xoffset;
+            header_geometry.x = header_bar_geometry.x + tree->columns[i]->xoffset;
+            header_geometry.w = tree->columns[i]->visible_width;
+            if (tree->columns[i] == first_visible_col)
+            {
+               header_geometry.w += (header_geometry.x - geometry.x);
+               header_geometry.x = geometry.x;
+            }
+            if (tree->columns[i] == last_visible_col)
+               header_geometry.w = geometry.x + geometry.w - header_geometry.x;
+            
+            /* TODO: what if the group doesn't exist... */
+            if (tree->columns[i] == first_visible_col && tree->columns[i] == last_visible_col)
+               etk_widget_theme_group_set(tree->columns[i]->header, "header_unique");
+            else if (tree->columns[i] == first_visible_col)
+               etk_widget_theme_group_set(tree->columns[i]->header, "header_first");
+            else if (tree->columns[i] == last_visible_col)
+               etk_widget_theme_group_set(tree->columns[i]->header, "header_last");
+            else
+               etk_widget_theme_group_set(tree->columns[i]->header, "header");
+            
+            etk_widget_show(tree->columns[i]->header);
+            etk_widget_raise(tree->columns[i]->header);
+            etk_widget_size_allocate(tree->columns[i]->header, header_geometry);
          }
-         if (tree->columns[i] == last_visible_col)
-            header_geometry.w += (geometry.x + geometry.w) - (header_bar_geometry.x + header_bar_geometry.w);
-         
-         etk_widget_show(tree->columns[i]->header);
-         etk_widget_size_allocate(tree->columns[i]->header, header_geometry);
+         else
+            etk_widget_hide(tree->columns[i]->header);
       }
-      
-      evas_object_show(tree->headers_clip);
-      evas_object_move(tree->headers_clip, geometry.x, geometry.y);
-      evas_object_resize(tree->headers_clip, geometry.w, geometry.h);
    }
    else
    {
       for (i = 0; i < tree->num_cols; i++)
          etk_widget_hide(tree->columns[i]->header);
-      evas_object_hide(tree->headers_clip);
    }
 }
 
@@ -2212,31 +2217,6 @@ static void _etk_tree2_realize_cb(Etk_Object *object, void *data)
       }
       tree->tree_contains_headers = (tree_contains_headers != 0);
    }
-   
-   /* Clip the column headers */
-   if (tree->tree_contains_headers)
-   {
-      if (tree->headers_clip)
-         evas_object_del(tree->headers_clip);
-      tree->headers_clip = evas_object_rectangle_add(evas);
-      evas_object_show(tree->headers_clip);
-      etk_widget_member_object_add(ETK_WIDGET(tree), tree->headers_clip);
-      
-      for (i = 0; i < tree->num_cols; i++)
-         etk_widget_clip_set(tree->columns[i]->header, tree->headers_clip);
-   }
-}
-
-/* Called when the tree is unrealized */
-static void _etk_tree2_unrealize_cb(Etk_Object *object, void *data)
-{
-   Etk_Tree2 *tree;
-   
-   if (!(tree = ETK_TREE2(object)))
-      return;
-   
-   if (tree->tree_contains_headers)
-      tree->headers_clip = NULL;
 }
 
 /* Called when the tree is focused */
@@ -2283,46 +2263,6 @@ static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event
          etk_signal_stop();
       }
    }
-}
-
-/**************************
- * Tree Scroll Content
- **************************/
-
-/* Called when the scroll-content widget is realized */
-static void _etk_tree2_scroll_content_realize_cb(Etk_Object *object, void *data)
-{
-   Etk_Tree2 *tree;
-   Evas *evas;
-   int i;
-   
-   if (!(tree = TREE_GET(object)) || !(evas = etk_widget_toplevel_evas_get(tree->scroll_content)))
-      return;
-   
-   /* Clip the column headers */
-   if (!tree->tree_contains_headers)
-   {
-      if (tree->headers_clip)
-         evas_object_del(tree->headers_clip);
-      tree->headers_clip = evas_object_rectangle_add(evas);
-      evas_object_show(tree->headers_clip);
-      etk_widget_member_object_add(tree->scroll_content, tree->headers_clip);
-      
-      for (i = 0; i < tree->num_cols; i++)
-         etk_widget_clip_set(tree->columns[i]->header, tree->headers_clip);
-   }
-}
-
-/* Called when the scroll-content widget is unrealized */
-static void _etk_tree2_scroll_content_unrealize_cb(Etk_Object *object, void *data)
-{
-   Etk_Tree2 *tree;
-   
-   if (!(tree = TREE_GET(object)))
-      return;
-   
-   if (!tree->tree_contains_headers)
-      tree->headers_clip = NULL;
 }
 
 /**************************
@@ -2388,6 +2328,7 @@ static void _etk_tree2_header_mouse_down_cb(Etk_Object *object, void *event_info
    {
       col->tree->col_resize_orig_width = col->tree->col_to_resize->width;
       col->tree->col_resize_orig_mouse_x = event->canvas.x;
+      etk_signal_stop();
    }
 }
 

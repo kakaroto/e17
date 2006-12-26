@@ -1,3 +1,25 @@
+/**
+ * group "etk/tree"
+ * ----------------
+ * This group corresponds to the background object of the tree, which is below
+ * the headers-bar and the scrolled-view. Most of the time, it is only used to
+ * defined the values of the different settings
+ *
+ * Different settings:
+ * -------------------
+ * - "tree_contains_headers": a boolean setting whether the headers-bar should
+ *    be contained by the tree itself (the headers-bar is then above the
+ *    scrolled-view) or contained by the scrolled-view (the headers-bar is then
+ *    inside the scrolled-view). The default value is "1": the headers-bar is
+ *    contained directly by the tree. Set it to "0" otherwise
+ * - "separator_color": the rgba color of the vertical lines separating the
+ *    columns of the tree. Default value is "255 255 255 0"
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave",
+ *    "etk,state,focused", "etk,state,unfocused", "etk,state,shown"
+ */
 group {
    name: "etk/tree";
    data {
@@ -5,15 +27,53 @@ group {
       item: "separator_color" "204 204 204 140";
    }
 }
-group {
-   name: "etk/tree/grid";
-   data {
-      item: "separator_color" "204 204 204 140";
-      item: "row_height" "24";
-      item: "cell_margins" "4 4 2 2";
-      item: "expander_size" "18";
-   }
-}
+
+
+/**
+ * group "etk/tree/header"
+ *       "etk/tree/header_unique"
+ *       "etk/tree/header_first"
+ *       "etk/tree/header_last"
+ * -----------------------
+ * These groups correspond to the header-objects of the tree's columns.
+ * - Only "etk/tree/header" has to be necessarily implemented. It is the generic
+ *    group for the column headers.
+ * - "etk/tree/header_first" is used for the header of the first visible column,
+ *    when several columns can be seen. If this group doesn't exist,
+ *    "etk/tree/header" is used
+ * - "etk/tree/header_last" is used for the header of the last visible column,
+ *    when several columns can be seen. If this group doesn't exist,
+ *    "etk/tree/header" is used
+ * - "etk/tree/header_last" is used for the header of the column when only one
+ *    column is visible seen. If this group doesn't exist, "etk/tree/header"
+ *    is used
+ *
+ * Signals:
+ * --------
+ * - "etk,state,pressed": emitted when the header is pressed
+ * - "etk,state,released": emitted when the header is released
+ * - "etk,state,clicked": emitted when the header is clicked
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ */
+TREE_HEADER("etk/tree/header", "tree_header_middle.png", "tree_header_middle2.png");
+TREE_HEADER("etk/tree/header_unique", "tree_header_unique.png", "tree_header_unique2.png");
+TREE_HEADER("etk/tree/header_first", "tree_header_first.png", "tree_header_first2.png");
+TREE_HEADER("etk/tree/header_last", "tree_header_last.png", "tree_header_last2.png");
+
+
+/**
+ * group "etk/tree/scrolled_view"
+ * -----------------------
+ * This group corresponds to the scrolled-view of the tree. The scrolled-view
+ * contains the tree-grid (see group "etk/tree/grid") which contains the rows
+ * of the tree. It may also contain the headers if the setting
+ * "tree_contains_headers" of the "etk,tree" group is set to "0"
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave",
+ *    "etk,state,focused", "etk,state,unfocused", "etk,state,shown"
+ */
 group {
    name: "etk/tree/scrolled_view";
    parts {
@@ -45,7 +105,7 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.0;
-               offset: 3 3;
+               offset: 1 2;
             }
             rel2 {
                relative: 1.0 1.0;
@@ -58,10 +118,10 @@ group {
          mouse_events: 0;
          description {
             state: "default" 0.0;
-            color: 255 255 255 180;
+            color: 255 255 255 120;
             rel1 {
                relative: 0.0 0.0;
-               offset: 0 0;
+               offset: 1 0;
             }
             rel2 {
                relative: 1.0 1.0;
@@ -77,11 +137,10 @@ group {
             }
          }
       }
-      /* TODO: this doesn't look good... */
-      //FOCUS_GLOW(0.0, 0.0, -1, 0, "background", 1.0, 1.0, 0, -1, "background")
+      FOCUS_GLOW(0.0, 0.0, -1, 0, "background", 1.0, 1.0, 0, -1, "background")
    }
    programs {
-      /*program {
+      program {
          name: "tree_focus";
          signal: "etk,state,focused";
          source: "etk";
@@ -92,10 +151,35 @@ group {
          signal: "etk,state,unfocused";
          source: "etk";
          UNFOCUS_GLOW_ACTION
-      }*/
+      }
    }
 }
 
+
+/**
+ * group "etk/tree/scrolled_view/hscrollbar"
+ * -----------------------
+ * This group corresponds to the horizontal scrollbar of the tree's
+ * scrolled-view
+ *
+ * Special parts:
+ * --------------
+ * - "etk.dragable.bar": the dragable part used to scroll the content of the
+ *    scrolled-view
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ *
+ * Signals to emit:
+ * ----------------
+ * - "scroll_left_start": should be emitted when the content should be
+ *    scrolled to the left (i.e. when the left arrow is pressed)
+ * - "scroll_right_start": should be emitted when the content should be
+ *    scrolled to the right (i.e. when the right arrow is pressed)
+ * - "scroll_stop": should be emitted when the content should stop being
+ *    scrolled (i.e. when the pressed arrow is released)
+ */
 group {
    name: "etk/tree/scrolled_view/hscrollbar";
    min: 68 18;
@@ -187,6 +271,30 @@ group {
    }
 }
 
+/**
+ * group "etk/tree/scrolled_view/vscrollbar"
+ * -----------------------
+ * This group corresponds to the vertical scrollbar of the tree's
+ * scrolled-view
+ *
+ * Special parts:
+ * --------------
+ * - "etk.dragable.bar": the dragable part used to scroll the content of the
+ *    scrolled-view
+ *
+ * Signals:
+ * --------
+ * - common widget's signals: "etk,state,enter", "etk,state,leave", "etk,state,shown"
+ *
+ * Signals to emit:
+ * ----------------
+ * - "scroll_up_start": should be emitted when the content should be
+ *    scrolled up (i.e. when the up arrow is pressed)
+ * - "scroll_down_start": should be emitted when the content should be
+ *    scrolled down (i.e. when the down arrow is pressed)
+ * - "scroll_stop": should be emitted when the content should stop being
+ *    scrolled (i.e. when the pressed arrow is released)
+ */
 group {
    name: "etk/tree/scrolled_view/vscrollbar";
    min: 18 68;
@@ -278,6 +386,25 @@ group {
    }
 }
 
+/**
+ * group "etk/tree/row"
+ * -----------------------
+ * This group is used by all the visible rows of the tree
+ *
+ * Signals:
+ * --------
+ * - "etk,state,odd": emitted when the group corresponds to a row whose number
+ *    is odd
+ * - "etk,state,even": emitted when the group corresponds to a row whose number
+ *    is even
+ * - "etk,state,selected": emitted when the row is selected
+ * - "etk,state,unselected":  emitted when the row is unselected
+ *
+ * Note that this group doesn't have the common signals of a widget
+ * ("etk,state,enter", "etk,state,leave", ...) since a row is not a widget.
+ * You can though use the signals "mouse,in", "mouse,out", "mouse,down,1" (...)
+ * emitted automatically by Edje
+ */
 group {
    name: "etk/tree/row";
    parts {
@@ -315,7 +442,6 @@ group {
             inherit: "default" 0.0;
             visible: 1;
          }
-         
       }
       part {
          name: "select_rect";
@@ -374,6 +500,22 @@ group {
       }
    }
 }
+
+/**
+ * group "etk/tree/expander"
+ * -----------------------
+ * This group corresponds to the expander object used to fold/unfold rows.
+ *
+ * Signals:
+ * --------
+ * - "etk,action,fold": emitted when the corresponding row is folded
+ * - "etk,action,unfold": emitted when the corresponding row is unfolded
+ *
+ * Note that this group doesn't have the common signals of a widget
+ * ("etk,state,enter", "etk,state,leave", ...) since a tree's expander is not a widget.
+ * You can though use the signals "mouse,in", "mouse,out", "mouse,down,1" (...)
+ * emitted automatically by Edje
+ */
 group {
    name: "etk/tree/expander";
    parts {
@@ -425,62 +567,22 @@ group {
       }
    }
 }
-group {
-   name: "etk/tree/header";
-   data {
-      item: "inset" "5 5 5 4";
-   }
-   parts {
-      part {
-         name: "tree_header";
-         description {
-            state: "default" 0.0;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 0 0;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: 0 0;
-            }
-            image {
-               normal: "tree_header_inactive.png";
-               border: 2 2 2 2;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-         description {
-            state: "over" 0.0;
-            inherit: "default" 0.0;
-            image {
-               normal: "tree_header_active.png";
-               border: 2 2 2 8;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }
-   }
-   programs {
-      program {
-         name: "header_enter";
-         signal: "etk,state,enter";
-         source: "etk";
-         action: STATE_SET "over" 0.0;
-         target: "tree_header";
-      }
-      program {
-         name: "header_leaver";
-         signal: "etk,state,leave";
-         source: "etk";
-         action: STATE_SET "default" 0.0;
-         target: "tree_header";
-      }
-   }
-}
+
+/**
+ * group "etk/tree/checkbox"
+ * -----------------------
+ * This group corresponds to checkbox used by the "checkbox" model of the tree
+ *
+ * Signals:
+ * --------
+ * - "etk,state,on": emitted when the checkbox is checked
+ * - "etk,action,off": emitted when the checkbox is unchecked
+ *
+ * Note that this group doesn't have the common signals of a widget
+ * ("etk,state,enter", "etk,state,leave", ...) since a tree's checkbox is not a widget.
+ * You can though use the signals "mouse,in", "mouse,out", "mouse,down,1" (...)
+ * emitted automatically by Edje
+ */
 group {
    name: "etk/tree/checkbox";
    min: 20 20;
@@ -571,3 +673,14 @@ group {
    }
 }
 
+/* TODO: we should be able to theme the progress-bar model... */
+/* TODO: remove this group... no more need for it with the tree2 */
+group {
+   name: "etk/tree/grid";
+   data {
+      item: "separator_color" "204 204 204 140";
+      item: "row_height" "24";
+      item: "cell_margins" "4 4 2 2";
+      item: "expander_size" "18";
+   }
+}

@@ -82,8 +82,9 @@ EXTRA_DIST = \
             tree_desc_arrow.png \
             tree_expander_fold.png \
             tree_expander_unfold.png \
-            tree_header_active.png \
-            tree_header_inactive.png \
+            tree_header_over.png \
+            tree_header_unique.png \
+            tree_header_unique2.png \
             tree.png \
             tree_shadow.png \
             vpaned_handle.png \
