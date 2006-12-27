@@ -78,16 +78,16 @@ static struct
 
 typedef struct
 {
-   char               *name;
+   EWin               *ewin;
    Win                 win;
    Pixmap              pmap;
+   int                 w, h;
+   char               *name;
    Pixmap              bgpmap;
    Desk               *dsk;
-   int                 w, h;
    int                 dw, dh;
    int                 screen_w, screen_h;
    int                 update_phase;
-   EWin               *ewin;
    Win                 sel_win;
 
    /* State flags */
@@ -691,13 +691,17 @@ PagerEwinClose(EWin * ewin)
    ewin->data = NULL;
 }
 
+static const EWinOps PagerEwinOps = {
+   NULL,
+   PagerEwinMoveResize,
+   PagerEwinClose,
+};
+
 static void
 PagerEwinInit(EWin * ewin, void *ptr)
 {
    ewin->data = ptr;
-
-   ewin->MoveResize = PagerEwinMoveResize;
-   ewin->Close = PagerEwinClose;
+   ewin->ops = &PagerEwinOps;
 
    ewin->props.skip_ext_task = 1;
    ewin->props.skip_ext_pager = 1;
@@ -732,10 +736,10 @@ PagerShow(Pager * p)
 
    ewin =
       AddInternalToFamily(p->win, "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
+   p->ewin = ewin;
    if (!ewin)
       return;
 
-   p->ewin = ewin;
    p->screen_w = VRoot.w;
    p->screen_h = VRoot.h;
 

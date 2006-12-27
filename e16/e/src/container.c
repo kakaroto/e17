@@ -272,14 +272,17 @@ ContainerEwinClose(EWin * ewin)
    ewin->data = NULL;
 }
 
+static const EWinOps ContainerEwinOps = {
+   ContainerEwinLayout,
+   ContainerEwinMoveResize,
+   ContainerEwinClose,
+};
+
 static void
 ContainerEwinInit(EWin * ewin, void *ptr)
 {
    ewin->data = (Container *) ptr;
-
-   ewin->Layout = ContainerEwinLayout;
-   ewin->MoveResize = ContainerEwinMoveResize;
-   ewin->Close = ContainerEwinClose;
+   ewin->ops = &ContainerEwinOps;
 
    ewin->props.skip_ext_task = 1;
    ewin->props.skip_ext_pager = 1;
@@ -305,10 +308,9 @@ ContainerShow(Container * ct)
 
    ewin = AddInternalToFamily(ct->win, "ICONBOX", EWIN_TYPE_ICONBOX, ct,
 			      ContainerEwinInit);
+   ct->ewin = ewin;
    if (!ewin)
       return;
-
-   ct->ewin = ewin;
 
    ContainerReconfigure(ct);
 

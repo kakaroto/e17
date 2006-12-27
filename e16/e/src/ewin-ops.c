@@ -415,9 +415,9 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
      }
    else
      {
-	if (ewin->Layout)
+	if (ewin->ops && ewin->ops->Layout)
 	  {
-	     ewin->Layout(ewin, &x, &y, &w, &h);
+	     ewin->ops->Layout(ewin, &x, &y, &w, &h);
 	  }
 	else
 	  {
@@ -537,8 +537,8 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
    if (Mode.op_source == OPSRC_USER)
       EwinSetPlacementGravity(ewin, x, y);
 
-   if (ewin->MoveResize)
-      ewin->MoveResize(ewin, resize);
+   if (ewin->ops && ewin->ops->MoveResize)
+      ewin->ops->MoveResize(ewin, resize);
 
    if (Mode.mode == MODE_NONE)
      {

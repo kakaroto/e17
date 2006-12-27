@@ -1470,8 +1470,8 @@ EwinHide(EWin * ewin)
    if (!EwinIsInternal(ewin) || ewin->state.iconified)
       return;
 
-   if (ewin->Close)
-      ewin->Close(ewin);
+   if (ewin->ops && ewin->ops->Close)
+      ewin->ops->Close(ewin);
 
    EwinDestroy(ewin);
 }

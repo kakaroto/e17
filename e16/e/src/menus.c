@@ -91,17 +91,17 @@ struct _menuitem
 
 struct _menu
 {
-   char               *name;
-   char               *alias;
-   char               *title;
-   MenuStyle          *style;
-   MenuLoader         *loader;
    EWin               *ewin;
-   int                 w, h;
-   int                 num;
-   MenuItem          **items;
    Win                 win;
    PmapMask            pmm;
+   int                 w, h;
+   char               *name;
+   char               *title;
+   char               *alias;
+   MenuStyle          *style;
+   MenuLoader         *loader;
+   int                 num;
+   MenuItem          **items;
    int                 icon_size;
    char                internal;	/* Don't destroy when reloading */
    char                dynamic;	/* May be emptied on close */
@@ -224,15 +224,19 @@ MenuEwinClose(EWin * ewin)
    ewin->data = NULL;
 }
 
+static const EWinOps MenuEwinOps = {
+   NULL,
+   MenuEwinMoveResize,
+   MenuEwinClose,
+};
+
 static void
 MenuEwinInit(EWin * ewin, void *ptr)
 {
-   Menu               *m = ptr;
+   Menu               *m = (Menu *) ptr;
 
    ewin->data = ptr;
-
-   ewin->MoveResize = MenuEwinMoveResize;
-   ewin->Close = MenuEwinClose;
+   ewin->ops = &MenuEwinOps;
 
    ewin->props.skip_ext_task = 1;
    ewin->props.skip_ext_pager = 1;

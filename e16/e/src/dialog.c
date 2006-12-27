@@ -171,14 +171,14 @@ typedef struct
 struct _dialog
 {
    EWin               *ewin;
-   char               *name;
-   char               *title;
    Win                 win;
    Pixmap              pmap;
+   int                 w, h;
+   char               *name;
+   char               *title;
    PmapMask            pmm_bg;
    TextClass          *tclass;
    ImageClass         *iclass;
-   int                 w, h;
    DItem              *item;
    DialogCallbackFunc *exit_func;
    int                 exit_val;
@@ -526,18 +526,19 @@ DialogEwinClose(EWin * ewin)
    ewin->data = NULL;
 }
 
+static const EWinOps DialogEwinOps = {
+   NULL,
+   DialogEwinMoveResize,
+   DialogEwinClose,
+};
+
 static void
 DialogEwinInit(EWin * ewin, void *ptr)
 {
-   Dialog             *d = ptr;
-
    ewin->data = ptr;
-   d->ewin = ewin;
+   ewin->ops = &DialogEwinOps;
 
    ewin->props.focus_when_mapped = 1;
-
-   ewin->MoveResize = DialogEwinMoveResize;
-   ewin->Close = DialogEwinClose;
 
    EoSetLayer(ewin, 10);
 }
@@ -585,6 +586,7 @@ DialogShowArranged(Dialog * d, int center)
 
    ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG, d,
 			      DialogEwinInit);
+   d->ewin = ewin;
    if (!ewin)
       return;
 

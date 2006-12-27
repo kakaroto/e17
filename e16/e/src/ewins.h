@@ -56,6 +56,14 @@ typedef union
 #define EwinInhGetWM(ewin, item)       (ewin->inh_wm.b.item)
 #define EwinInhSetWM(ewin, item, on)   ewin->inh_wm.b.item = (on)
 
+typedef struct
+{
+   void                (*Layout) (EWin * ewin, int *px, int *py, int *pw,
+				  int *ph);
+   void                (*MoveResize) (EWin * ewin, int resize);
+   void                (*Close) (EWin * ewin);
+} EWinOps;
+
 struct _ewin
 {
    EObj                o;
@@ -253,10 +261,7 @@ struct _ewin
    int                 ll;	/* Last layer */
 
    void               *data;	/* Data hook for internal windows */
-   void                (*Layout) (EWin * ewin, int *px, int *py, int *pw,
-				  int *ph);
-   void                (*MoveResize) (EWin * ewin, int resize);
-   void                (*Close) (EWin * ewin);
+   const EWinOps      *ops;
 };
 
 #define EWIN_STATE_NEW          0	/* New */
