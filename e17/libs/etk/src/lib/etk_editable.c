@@ -808,7 +808,7 @@ static int _etk_editable_text_delete(Evas_Object *editable, int start, int end)
    if (end_id <= start_id)
       return 0;
    
-   etk_string_delete(sd->text, start, end - start);
+   etk_string_delete(sd->text, start_id, end_id - start_id);
    sd->unicode_length -= (end - start);
    _etk_editable_text_update(editable);
    
