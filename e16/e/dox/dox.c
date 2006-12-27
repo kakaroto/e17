@@ -30,7 +30,7 @@
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
 
-#ifdef HAS_XINERAMA
+#ifdef HAVE_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
 
@@ -337,7 +337,7 @@ main(int argc, char **argv)
    t = 16;
    wx = (VRoot.w - w) / 2;
    wy = (VRoot.h - (h + t)) / 2;
-#ifdef HAS_XINERAMA
+#ifdef HAVE_XINERAMA
    {
       if (XineramaIsActive(disp))
 	{

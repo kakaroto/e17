@@ -1380,7 +1380,7 @@ MenusHandleMotion(void)
 
 		  if (Mode_menus.current_depth)
 		    {
-#ifdef HAS_XINERAMA
+#ifdef HAVE_XINERAMA
 		       ewin = Mode_menus.list[0]->ewin;
 		       if (ewin->head == head_num)
 			 {
@@ -1407,7 +1407,7 @@ MenusHandleMotion(void)
 			    if (((xdist != 0) || (ydist != 0))
 				&& (Conf.menus.warp))
 			       EXWarpPointer(None, xdist, ydist);
-#ifdef HAS_XINERAMA
+#ifdef HAVE_XINERAMA
 			 }
 #endif
 		    }

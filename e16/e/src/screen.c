@@ -25,7 +25,7 @@
 #include "ewins.h"
 #include "screen.h"
 #include "xwin.h"
-#ifdef HAS_XINERAMA
+#ifdef HAVE_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
 
@@ -60,7 +60,7 @@ ScreenAdd(int type, int head, int x, int y, unsigned int w, unsigned int h)
 void
 ScreenInit(void)
 {
-#ifdef HAS_XINERAMA
+#ifdef HAVE_XINERAMA
    XineramaScreenInfo *screens = NULL;
    int                 num_screens = 0;
    int                 i;
@@ -83,7 +83,7 @@ ScreenShowInfo(const char *prm __UNUSED__)
 {
    int                 i;
 
-#ifdef HAS_XINERAMA
+#ifdef HAVE_XINERAMA
    if (XineramaIsActive(disp))
      {
 	XineramaScreenInfo *scrns;

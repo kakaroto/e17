@@ -37,21 +37,21 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
 
-#ifdef HAS_XSYNC
+#ifdef HAVE_XSYNC
 #define USE_XSYNC 1		/* Experimental */
 #endif
 
-#ifdef HAS_XSCREENSAVER
+#ifdef HAVE_XSCREENSAVER
 #define USE_XSCREENSAVER 1	/* Experimental */
 #endif
 
-#ifdef HAS_XRANDR
+#ifdef HAVE_XRANDR
 #ifdef HAVE_X11_EXTENSIONS_XRANDR_H
 #define USE_XRANDR 1
 #endif
 #endif
 
-#ifdef HAS_COMPOSITE
+#ifdef HAVE_COMPOSITE
 #define USE_COMPOSITE 1
 #endif
 
@@ -343,7 +343,7 @@ typedef struct
       int                 slidespeedcleanup;
       char                ignore_struts;
       char                raise_fullscreen;
-#ifdef HAS_XINERAMA
+#ifdef HAVE_XINERAMA
       char                extra_head;	/* Not used */
 #endif
    } place;
@@ -438,7 +438,7 @@ typedef struct
    {
       char               *name;
       int                 screens;
-#ifdef HAS_XINERAMA
+#ifdef HAVE_XINERAMA
       char                xinerama_active;
 #endif
 #if USE_XSYNC

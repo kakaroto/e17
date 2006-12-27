@@ -7,12 +7,13 @@ bin_PROGRAMS = e16
 if ENABLE_GNOME
 SRCS_GNOME = gnome.c
 endif
+if HAVE_COMPOSITE
+SRCS_ECOMPMGR = ecompmgr.c ecompmgr.h
+endif
 if USE_ESNPRINTF
 SRCS_SNPRINTF = snprintf.c
 endif
-if HAS_COMPOSITE
-SRCS_ECOMPMGR = ecompmgr.c ecompmgr.h
-endif
+
 e16_SOURCES = \
 	E.h			\
 	about.c			\
@@ -108,7 +109,7 @@ e16_SOURCES = \
 LDADD = \
 	$(LTLIBINTL)		\
 	$(LTLIBICONV)		\
-	@ecore_libs@		\
+	$(ECORE_LIBS)		\
 	$(ESD_LIBS) 		\
 	$(IMLIB2_LIBS) 		\
 	$(XFT_LIBS) 		\
@@ -119,7 +120,7 @@ LDADD = \
 	$(E_X_LIBS) 		\
 	-lX11 -lm
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/intl @ecore_cflags@ $(ESD_CFLAGS) $(IMLIB2_CFLAGS) $(XFT_CFLAGS) $(X_CFLAGS)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/intl $(ECORE_CFLAGS) $(ESD_CFLAGS) $(IMLIB2_CFLAGS) $(XFT_CFLAGS) $(X_CFLAGS)
 
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes
