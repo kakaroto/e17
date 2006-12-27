@@ -262,7 +262,7 @@ static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    etk_widget_size_request(widget, &requested_size);
    evas_object_move(label->text_object, geometry.x + (geometry.w - requested_size.w) * label->xalign,
       geometry.y + (geometry.h - requested_size.h) * label->yalign);
-   evas_object_resize(label->text_object, requested_size.w, requested_size.h);
+   evas_object_resize(label->text_object, requested_size.w + 1, requested_size.h);
 
    evas_object_move(label->clip, geometry.x, geometry.y);
    evas_object_resize(label->clip, geometry.w, geometry.h);
