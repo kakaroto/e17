@@ -407,7 +407,7 @@ evfs_tar_load_tar(evfs_client * client, evfs_filereference * ref)
      }
    else
      {
-        printf("Found %d tar blocks total\n");
+        printf("Found %d tar blocks total\n", find);
      }
 
    printf("Recording tar file as '%s'\n",
