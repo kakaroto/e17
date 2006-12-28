@@ -30,7 +30,6 @@ main(int argc, char **argv)
 
    evfs_file_uri_path *path_from;
    evfs_file_uri_path *path_to;
-   char pathi[1024];
 
    if (argc < 3)
      {
