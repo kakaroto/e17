@@ -123,6 +123,7 @@ evfs_client_disconnect(evfs_client * client)
 {
    printf("Received disconnect for client at evfs_fs_gzip.c for client %lu\n",
           client->id);
+   return 1;
 }
 
 /*Jump a specified amount*/
@@ -349,7 +350,9 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
    else if (gfile->stream.avail_out == size)
      {
         return 0;
-      /*EOF*/}
+      /*EOF*/
+     }
+   return 0;
 }
 
 int
@@ -366,4 +369,5 @@ evfs_file_close(evfs_filereference * file)
    ecore_hash_remove(gzip_hash, file);
    free(gfile);
 
+   return 1;
 }

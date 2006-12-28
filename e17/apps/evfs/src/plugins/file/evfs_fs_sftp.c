@@ -708,7 +708,7 @@ sftp_exe_data(void *data, int type, void *event)
   
    if (conn->packet_cache_size < conn->packet_length) {
    	/*printf("Incomplete packet! %d:%d\n", conn->packet_cache_size, conn->packet_length);*/
-	return;
+	return 0;
   	
    } else if (conn->packet_cache_size > conn->packet_length) {
    	/*printf("Too much data!!!!!!!!!!!!!!!!!!!!\n");*/
@@ -776,7 +776,7 @@ sftp_exe_data(void *data, int type, void *event)
 		goto MORE_PACKETS;
 	} else {
 		//printf("Waiting for more data for this packet..\n");
-		return;
+		return 0;
 	}
    }
 
@@ -787,7 +787,7 @@ sftp_exe_data(void *data, int type, void *event)
    conn->packet_cache_size = 0;
    conn->packet_length = 0;
    /*printf("        ********************* Freed last packet *** \n");*/
-   
+	return 0;
 }
 
 
@@ -810,6 +810,7 @@ evfs_client_disconnect(evfs_client * client)
 {
    printf("Received disconnect for client at evfs_fs_sftp.c for client %lu\n",
           client->id);
+	return 1;
 }
 
 /*------------------------------------------------------------------------*/
@@ -968,7 +969,7 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
 	}
 
 	printf("Done\n");
-
+	return 1;
 }
 
 int

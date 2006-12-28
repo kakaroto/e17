@@ -114,6 +114,7 @@ evfs_client_disconnect(evfs_client * client)
 {
    printf("Received disconnect for client at evfs_fs_bzip2.c for client %lu\n",
           client->id);
+   return 1;
 }
 
 int
@@ -217,7 +218,9 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
    else if (bfile->stream.avail_out == size)
      {
         return 0;
-      /*EOF*/}
+      /*EOF*/
+     }
+   return 0;
 }
 
 int
@@ -234,4 +237,5 @@ evfs_file_close(evfs_filereference * file)
    ecore_hash_remove(bzip_hash, file);
    free(bfile);
 
+   return 1;
 }
