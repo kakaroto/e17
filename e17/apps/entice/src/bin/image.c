@@ -17,7 +17,9 @@
 #define DEBUG 0
 
 static void entice_image_resize(Evas_Object * o, Evas_Coord w, Evas_Coord h);
+#if 0
 static int _entice_image_scroll_timer(void *data);
+#endif
 
 static void
 _im_down_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
@@ -627,6 +629,7 @@ entice_image_del(Evas_Object * o)
       free(im);
    }
 }
+#if 0
 static void
 entice_image_layer_set(Evas_Object * o, int layer)
 {
@@ -677,6 +680,7 @@ entice_image_stack_below(Evas_Object * o, Evas_Object * below)
       evas_object_stack_below(im->obj, below);
    }
 }
+#endif
 static void
 entice_image_move(Evas_Object * o, Evas_Coord x, Evas_Coord y)
 {
@@ -809,10 +813,8 @@ entice_image_get(void)
    if (!s)
    {
       s = evas_smart_new("EnticeImage", entice_image_add, entice_image_del,
-                         entice_image_layer_set, entice_image_raise,
-                         entice_image_lower, entice_image_stack_above,
-                         entice_image_stack_below, entice_image_move,
-                         entice_image_resize, entice_image_show,
+                         NULL, NULL, NULL, NULL, NULL,
+			 entice_image_move, entice_image_resize, entice_image_show,
                          entice_image_hide, entice_image_color_set,
                          entice_image_clip_set, entice_image_clip_unset,
                          NULL);
