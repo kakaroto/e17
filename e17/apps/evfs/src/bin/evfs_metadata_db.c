@@ -254,7 +254,6 @@ int evfs_metadata_db_id_for_file(sqlite3* db, evfs_filereference* ref, int creat
 	char query[PATH_MAX];
 	int ret;
 	int file = 0;
-	char* errMsg = 0;
 	sqlite3_stmt *pStmt;
 
 	

@@ -282,7 +282,6 @@ void evfs_metadata_initialise(int forker)
 {
 	struct stat config_dir_stat;
 	Evas_List* group;
-	char tmp[1024];
 	char* data;
 	int size;
 	int ret;
@@ -403,7 +402,6 @@ Evas_List* evfs_metadata_groups_get() {
 	Evas_List* ret_list = NULL;
 	sqlite3_stmt *pStmt;
 	evfs_metadata_group_header* g;
-	char* str;
 
 	ret = sqlite3_prepare(db, "select name,visualHint from MetaGroup where parent = 0", 
 			-1, &pStmt, 0);
@@ -678,7 +676,6 @@ int evfs_metadata_scan_runner(void* data)
 {
 	evfs_filereference* ref;
 	evfs_filereference* iref;
-	char tmp[PATH_MAX];
 
 	if ((ref = ecore_list_remove_first(
 		evfs_metadata_directory_scan_queue))) {

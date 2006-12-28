@@ -149,7 +149,6 @@ evfs_client_multi_file_command(evfs_connection * conn, Ecore_List* files, evfs_f
    long count = 0;
    long cfile = 0;
    evfs_filereference* ref;
-   char* str;
 
    count = ecore_list_nodes(files);
 
