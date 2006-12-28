@@ -122,7 +122,7 @@ evfs_client_disconnect(evfs_client * client)
    char *key;
    Ecore_List *watched_keys = ecore_list_new();
 
-   printf("Received disconnect for client at evfs_fs_posix.c for client %d\n",
+   printf("Received disconnect for client at evfs_fs_posix.c for client %lu\n",
           client->id);
    printf("Scanning monitors for client and removing...\n");
 
@@ -156,7 +156,7 @@ evfs_client_disconnect(evfs_client * client)
         evfs_posix_monitor_remove(client, key);
      }
    ecore_list_destroy(watched_keys);
-
+   return 1;
 }
 
 void
@@ -365,7 +365,6 @@ int
 evfs_file_remove(char *src)
 {
    struct stat stat_src;
-   int i;
 
    if (!lstat(src, &stat_src))
      {

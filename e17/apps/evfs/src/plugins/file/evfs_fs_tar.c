@@ -336,7 +336,7 @@ evfs_plugin_uri_get()
 int
 evfs_client_disconnect(evfs_client * client)
 {
-   printf("Received disconnect for client at evfs_fs_tar.c for client %d\n",
+   printf("Received disconnect for client at evfs_fs_tar.c for client %lu\n",
           client->id);
 }
 
