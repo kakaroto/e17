@@ -55,6 +55,7 @@ int evfs_metadata_extract_init();
 int evfs_metadata_extract_fork(evfs_filereference* ref);
 
 char* evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key);
+void evfs_metadata_extract_queue(evfs_filereference* ref);
 
 
 #endif
