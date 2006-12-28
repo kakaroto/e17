@@ -306,10 +306,8 @@ int
 evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
                long size)
 {
-   evfs_filereference *f_par = file->parent;
    gzip_file *gfile = ecore_hash_get(gzip_hash, file);
    int z_result;
-   int r_size;
    int error = 0;
 
    //printf("Client requested %d bytes from gzip\n", size);

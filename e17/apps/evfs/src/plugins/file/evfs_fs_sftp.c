@@ -118,8 +118,6 @@ char* read_string(char** c, int* len) {
 
 void read_sftp_attr(char** c, struct stat* info) {
 	int flags;
-	int id;
-	char type;
 	
 	/*Read the flags*/
 	flags = read_int32(c);
@@ -259,8 +257,6 @@ buffer_send (Buffer *buf, Ecore_Exe* fd)
 
 	*((int *) buf->read_ptr) = w_len;
 
-	char* c = buf->read_ptr;
-	int i = 0;
 	/*for (i=0;i<9;i++) {
 		printf("Char %d: %d\n", i, (int)(*(c+i)));
 	}*/
@@ -312,7 +308,6 @@ buffer_check_alloc (Buffer *buf, int size)
 
 void buffer_write(Buffer* buf, const void* data, int size)
 {
-	int s = 0;
 	buffer_check_alloc (buf, size);
 	memcpy (buf->write_ptr, data, size);
 	buf->write_ptr += size;
@@ -583,7 +578,6 @@ void sftp_read_names(SftpConnection* conn, char** c) {
 
 	/*printf("********* Grabbing %d files\n", count);*/
 
-	char* offset = *c;
 	for (i=0;i<count;i++) {
 		/*printf("Offset current: %d:%d\n", (int)(*c - offset), i);*/
 	
@@ -683,7 +677,6 @@ sftp_exe_data(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Data *ev = event;
    char* c;
-   int i;
    int length;
    char sftp_type;
    
@@ -823,8 +816,6 @@ evfs_client_disconnect(evfs_client * client)
 evfs_plugin_functions *
 evfs_plugin_init()
 {
-   int err;
-
    printf("Initialising the sftp plugin..\n");
    evfs_plugin_functions *functions = malloc(sizeof(evfs_plugin_functions));
 
@@ -887,7 +878,6 @@ evfs_file_stat(evfs_command* command, struct stat *dst_stat, int i)
 {
 	SftpConnection* conn;
 	char* host, *path;
-	int rid;
 	SftpGenericHandle* handle;
 
 	sftp_split_host_path(command->file_command.files[i]->path, &host, &path);
@@ -930,7 +920,6 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
 {
 	SftpConnection* conn;
 	char* host, *path;
-	int rid;
 	SftpGenericHandle* handle;
 	SftpOpenHandle* ohandle;
 
@@ -1036,7 +1025,6 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 int evfs_file_close(evfs_filereference * file) {
 	SftpConnection* conn;
 	char* host, *path;
-	int rid;
 	SftpGenericHandle* handle;
 	SftpOpenHandle* ohandle;
 

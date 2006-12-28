@@ -157,8 +157,6 @@ tar_checksum(union TARPET_block *block)
    size_t i;
    int unsigned_sum = 0;        /* the POSIX one :-) */
    int signed_sum = 0;          /* the Sun one :-( */
-   int recorded_sum;
-   uintmax_t parsed_sum;
    char *p;
 
    p = (char *)block->raw.data;
@@ -206,9 +204,7 @@ tar_name_split(union TARPET_block *block, struct tar_file *tar)
 {
    char *tok;
    char *path = strdup(block->p.name);
-   char *dir;
    Ecore_Hash *search_hash;
-   char *fname;
    char buf[512];
    struct tar_element *ele;
    int count = 0;
@@ -345,16 +341,10 @@ evfs_tar_load_tar(evfs_client * client, evfs_filereference * ref)
 {
    evfs_filereference *p_ref;
    union TARPET_block block;
-   char parent_file[1024];
 
    struct tar_file *tar = tar_file_new();
 
-   struct tar_element *ele, *ele_new;
-   Ecore_List *keys;
-   char *dir, *key;
-   int count;
    int find = 0;
-   evfs_filereference *top_ref;
 
    printf("At tar dir_list handler\n");
 

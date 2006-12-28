@@ -91,7 +91,6 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 		   char* group_name;
 		   char* item;
 		   Ecore_List* flist;
-		   int i;
 		   group_name = strstr(path + 1, "/") + 1;
 		   evfs_file_uri_path* path;
 

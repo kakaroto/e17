@@ -327,7 +327,6 @@ int
 evfs_file_create(evfs_filereference * file)
 {	
 	evfs_filereference* file_trash;
-	int fd;
 	char* pos;
 	char* rewrite_parent;
 	char* parent_dir;

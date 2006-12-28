@@ -180,10 +180,8 @@ int
 evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
                long size)
 {
-   evfs_filereference *f_par = file->parent;
    bzip2_file *bfile = ecore_hash_get(bzip_hash, file);
    int bz_result;
-   int r_size;
 
    //printf("Client requested %d bytes from bzip2\n", size);
 
