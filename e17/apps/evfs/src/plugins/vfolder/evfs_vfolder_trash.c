@@ -76,7 +76,6 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 	info_files = ecore_file_ls(evfs_trash_home);
 
 	while ( (file = ecore_list_remove_first(info_files))) {
-		Ecore_Hash* trash;
 		evfs_filereference* ref;
 		char* pos;
 		
