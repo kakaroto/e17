@@ -18,12 +18,12 @@ callback(evfs_event * data, void *obj)
      {
         printf("Received stat event for file '%s'!\n",
                data->resp_command.file_command.files[0]->path);
-        printf("File size: %ld\n", data->stat.stat_obj.st_size);
+        printf("File size: %llu\n", data->stat.stat_obj.st_size);
         //printf("File inode: %ld\n", data->stat.stat_obj.st_ino);
-        printf("File uid: %ld\n", data->stat.stat_obj.st_uid);
-        printf("File gid: %ld\n", data->stat.stat_obj.st_gid);
-        printf("Last access: %ld\n", data->stat.stat_obj.ist_atime);
-        printf("Last modify : %ld\n", data->stat.stat_obj.ist_mtime);
+        printf("File uid: %d\n", data->stat.stat_obj.st_uid);
+        printf("File gid: %d\n", data->stat.stat_obj.st_gid);
+        printf("Last access: %d\n", data->stat.stat_obj.ist_atime);
+        printf("Last modify : %d\n", data->stat.stat_obj.ist_mtime);
      }
    else if (data->type == EVFS_EV_DIR_LIST)
      {
@@ -39,14 +39,11 @@ callback(evfs_event * data, void *obj)
           }
 
      } else if (data->type == EVFS_EV_METADATA)  {
-	     Ecore_List* keys;
-	     char* key;
-	     
 	     printf("Received metadata:\n");
 
-	     printf("Artist: '%s'\n", ecore_hash_get(data->meta->meta_hash, "artist"));
-	     printf("Title: '%s'\n", ecore_hash_get(data->meta->meta_hash, "title"));
-	     printf("Length: '%s'\n", ecore_hash_get(data->meta->meta_hash, "length"));
+	     printf("Artist: '%s'\n", (char *)ecore_hash_get(data->meta->meta_hash, "artist"));
+	     printf("Title: '%s'\n", (char *)ecore_hash_get(data->meta->meta_hash, "title"));
+	     printf("Length: '%s'\n", (char *)ecore_hash_get(data->meta->meta_hash, "length"));
 	     
 			     
 	     
@@ -73,7 +70,6 @@ int
 main(int argc, char **argv)
 {
 
-   evfs_file_uri_path *path;
    char pathi[1024];
    char *patharg = NULL;
    char *cmd = NULL;
