@@ -18,6 +18,7 @@ int evfs_filereference_sanitise(evfs_filereference* ref)
 	if (!ref->plugin) {
 		ref->plugin = evfs_get_plugin_for_uri(evfs_server_get(), ref->plugin_uri);
 	}
+	return 1;
 }
 
 evfs_command* evfs_file_command_single_build(evfs_filereference* ref)
