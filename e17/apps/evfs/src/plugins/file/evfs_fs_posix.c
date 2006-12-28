@@ -72,6 +72,7 @@ void evfs_dir_list(evfs_client * client, evfs_filereference* ref,
          * static int file_remove(char *path, struct stat *st); */
 
         /*Misc functions ----------------------------------------- */
+int evfs_misc_rename(char *file1, char *file2);
 int evfs_misc_remove(char *filename);
 void evfs_posix_monitor_remove(evfs_client * client, char *path);
 

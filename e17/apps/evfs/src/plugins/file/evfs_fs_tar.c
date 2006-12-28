@@ -286,7 +286,7 @@ tar_name_split(union TARPET_block *block, struct tar_file *tar)
           }
 
      }
-   while (tok = strtok(NULL, "/"));
+   while ((tok = strtok(NULL, "/")));
 
    free(path);
    /*printf("Return...\n\n\n"); */
