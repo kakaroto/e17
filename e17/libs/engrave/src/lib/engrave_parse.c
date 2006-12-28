@@ -86,6 +86,28 @@ engrave_parse_group_name(char *name)
 }
 
 void
+engrave_parse_spectrum_name(char *name)
+{
+  Engrave_Spectrum *es;
+  es = engrave_spectrum_new(name);
+  engrave_file_spectrum_add(engrave_file, es);
+  engrave_spectrum_parent_set(es, engrave_file);
+}
+
+void
+engrave_parse_spectrum_color(int r, int g, int b, int a, int d)
+{
+  Engrave_Spectrum *es;
+  Engrave_Spectrum_Color *esc;
+
+  esc = engrave_spectrum_color_new(r, g, b, a, d);
+  es = engrave_file_spectrum_last_get(engrave_file);
+  
+  engrave_spectrum_color_add(es, esc);
+  
+}
+
+void
 engrave_parse_group_min(int w, int h)
 {
   Engrave_Group *group;
@@ -383,6 +405,7 @@ engrave_parse_state_min(double w, double h)
   state = engrave_part_state_last_get(part);
   engrave_part_state_min_size_set(state, w, h);
 }
+
 
 void
 engrave_parse_state_fixed(double w, double h)

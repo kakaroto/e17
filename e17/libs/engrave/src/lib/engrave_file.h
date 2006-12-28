@@ -27,6 +27,7 @@ struct _Engrave_File
 
   Evas_List *images; /**< The list of images in the file */
   Evas_List *fonts;  /**< The list of fonts in the file  */
+  Evas_List *spectra;  /**< The list of spectra in the file  */
   Evas_List *styles;  /**< The list of styles in the file  */
   Evas_List *data;   /**< The list of data items in the file */
   Evas_List *groups; /**< The list of groups in the file */
@@ -42,12 +43,14 @@ EAPI const char *engrave_file_image_dir_get(Engrave_File *ef);
 EAPI const char *engrave_file_font_dir_get(Engrave_File *ef);
 
 EAPI void engrave_file_font_add(Engrave_File *e, Engrave_Font *ef);
+EAPI void engrave_file_spectrum_add(Engrave_File *e, Engrave_Spectrum *es);
 EAPI void engrave_file_style_add(Engrave_File *e, Engrave_Style *es);
 EAPI void engrave_file_image_add(Engrave_File *ef, Engrave_Image *ei);
 EAPI void engrave_file_data_add(Engrave_File *ef, Engrave_Data *ed);
 EAPI void engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg);
 
 EAPI Engrave_Style *engrave_file_style_last_get(Engrave_File *ef);
+EAPI Engrave_Spectrum *engrave_file_spectrum_last_get(Engrave_File *ef);
 
 EAPI Engrave_Group *engrave_file_group_last_get(Engrave_File *ef);
 EAPI Engrave_Group *engrave_file_group_by_name_find(Engrave_File *ef,
@@ -62,6 +65,7 @@ EAPI int engrave_file_images_count(Engrave_File *ef);
 EAPI int engrave_file_data_count(Engrave_File *ef);
 EAPI int engrave_file_groups_count(Engrave_File *ef);
 EAPI int engrave_file_fonts_count(Engrave_File *ef);
+EAPI int engrave_file_spectra_count(Engrave_File *ef);
 EAPI int engrave_file_styles_count(Engrave_File *ef);
 
 EAPI void engrave_file_image_foreach(Engrave_File *ef,
@@ -75,6 +79,9 @@ EAPI void engrave_file_group_foreach(Engrave_File *ef,
                                      void *data);
 EAPI void engrave_file_font_foreach(Engrave_File *ef,
                                     void (*func)(Engrave_Font *, void *),
+                                    void *data);
+EAPI void engrave_file_spectrum_foreach(Engrave_File *ef,
+                                    void (*func)(Engrave_Spectrum *, void *),
                                     void *data);
 EAPI void engrave_file_style_foreach(Engrave_File *ef,
                                      void (*func)(Engrave_Style *, void *),

@@ -128,6 +128,22 @@ engrave_file_font_add(Engrave_File *e, Engrave_Font *ef)
 }
 
 /**
+ * engrave_file_spectrum_add - add the spectrum to the engrave file.
+ * @param e: The Engrave_File to add the font too.
+ * @param es: The Engrave_Spectrum to add to the file.
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_file_spectrum_add(Engrave_File *e, Engrave_Spectrum *es)
+{
+  if (!e || !es) return;
+  e->spectra = evas_list_append(e->spectra, es);
+  engrave_spectrum_parent_set(es, e);
+}
+
+
+/**
  * engrave_file_style_add - add the style to the engrave file.
  * @param e: The Engrave_File to add the style too.
  * @param ef: The Engrave_Style to add to the file.
@@ -186,6 +202,20 @@ engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg)
   ef->groups = evas_list_append(ef->groups, eg);
   engrave_group_parent_set(eg, ef);
 }
+
+/**
+ * engrave_file_spectrum_last_get - returns the last spectrum in the file
+ * @param ef: The Engrave_File from which to retrieve the group
+ *
+ * @return Returns the last Engrave_Spectrum in the engrave file @a ef or NULL
+ */
+EAPI Engrave_Spectrum *
+engrave_file_spectrum_last_get(Engrave_File *ef)
+{
+  if (!ef) return NULL;
+  return evas_list_data(evas_list_last(ef->spectra));
+}
+
 
 /**
  * engrave_file_style_last_get - returns the last style in the file
@@ -323,6 +353,19 @@ engrave_file_fonts_count(Engrave_File *ef)
 }
 
 /**
+ * engrave_file_spectra_count - count the spectra in the file
+ * @param ef: The Engrave_File to check for spectra
+ * 
+ * @return Returns the number of spectra in the file, 0 otherwise
+ */
+EAPI int
+engrave_file_spectra_count(Engrave_File *ef)
+{
+  if (!ef) return 0;
+  return evas_list_count(ef->spectra);
+}
+
+/**
  * engrave_file_image_foreach - call the given function for each image object
  * @param ef: The Engrave_File for which the images should be iterated over
  * @param func: The function to call for each image
@@ -410,7 +453,6 @@ engrave_file_style_foreach(Engrave_File *ef,
   }
 }
 
-
 /**
  * engrave_file_font_foreach - call the given function for each font object
  * @param ef: The Engrave_File for which the fonts should be iterated over
@@ -430,6 +472,29 @@ engrave_file_font_foreach(Engrave_File *ef,
   for (l = ef->fonts; l; l = l->next) {
     Engrave_Font *font = l->data;
     if (font) func(font, data);
+  }
+}
+
+/**
+ * engrave_file_spectrum_foreach - call the given function for each spectrum object
+ * @param ef: The Engrave_File for which the spectra should be iterated over
+ * @param func: The function to call for each spectrum
+ * @param data: Any user data to pass to the given function.
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_file_spectrum_foreach(Engrave_File *ef, 
+                            void (*func)(Engrave_Spectrum *, void *data), 
+                            void *data)
+{
+  Evas_List *l;
+
+  if (!engrave_file_spectra_count(ef)) return;
+
+  for (l = ef->spectra; l; l = l->next) {
+    Engrave_Spectrum *es = l->data;
+    if (es) func(es, data);
   }
 }
 

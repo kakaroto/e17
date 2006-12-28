@@ -12,6 +12,7 @@ static void _engrave_output_program(Engrave_Program *program, void *data);
 static void _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data);
 static void _engrave_output_image(Engrave_Image *image, void *data);
 static void _engrave_output_font(Engrave_Font *font, void *data);
+static void _engrave_output_spectrum(Engrave_Spectrum *es, void *data);
 static void _engrave_output_style(Engrave_Style *style, void *data);
 static void _engrave_output_data(Engrave_Data *data, void *udata);
 static void _engrave_output_group(Engrave_Group *group, void *data);
@@ -187,6 +188,11 @@ engrave_edc_output(Engrave_File *engrave_file, const char *path)
   /* fonts */
   engrave_out_start(out, "fonts");
   engrave_file_font_foreach(engrave_file, _engrave_output_font, out);
+  engrave_out_end(out);
+  
+  /* spectra */
+  engrave_out_start(out, "spectra");
+  engrave_file_spectrum_foreach(engrave_file, _engrave_output_spectrum, out);
   engrave_out_end(out);
 
   /* images */
@@ -648,6 +654,32 @@ _engrave_output_font(Engrave_Font *font, void *data)
   engrave_out_data(out, "font", "\"%s\" \"%s\"",
           engrave_font_path_get(font), engrave_font_name_get(font));
 }
+
+static void
+_engrave_output_spectrum(Engrave_Spectrum *es, void *data)
+{
+  FILE *out;
+  int colors;
+  int i;
+
+  out = data;
+  engrave_out_start(out, "spectrum");
+  engrave_out_data(out, "name", "\"%s\"", engrave_spectrum_name_get(es));
+  
+  colors = engrave_spectrum_color_count(es);
+  for (i=0; i<colors; i++) {
+	  Engrave_Spectrum_Color *esc;
+	  esc = engrave_spectrum_color_nth(es, i);
+	  if (esc)
+		  engrave_out_data(out, "color", "%d %d %d %d %d",
+				  esc->r, esc->g, esc->b, esc->a, esc->d);
+  }
+
+  engrave_out_end(out);
+
+  
+}
+
 
 static void
 _engrave_output_style(Engrave_Style *style, void *data)

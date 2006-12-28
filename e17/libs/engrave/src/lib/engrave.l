@@ -116,6 +116,8 @@ fill				{ KEYWORD_RETURN(FILL); }
 fit					{ KEYWORD_RETURN(FIT); }
 font				{ KEYWORD_RETURN(FONT); }
 fonts				{ KEYWORD_RETURN(FONTS); }
+spectra				{ KEYWORD_RETURN(SPECTRA); }
+spectrum			{ KEYWORD_RETURN(SPECTRUM); }
 styles				{ KEYWORD_RETURN(STYLES); }
 style				{ KEYWORD_RETURN(STYLE); }
 base				{ KEYWORD_RETURN(SBASE); }

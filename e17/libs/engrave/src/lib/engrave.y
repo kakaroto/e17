@@ -46,6 +46,7 @@
 %token SINUSOIDAL ACCELERATE DECELERATE IMAGE RECT SWALLOW
 %token NONE PLAIN OUTLINE SOFT_OUTLINE SHADOW SOFT_SHADOW 
 %token OUTLINE_SHADOW OUTLINE_SOFT_SHADOW VERTICAL HORIZONTAL BOTH
+%token SPECTRA SPECTRUM
 %left MINUS PLUS
 %left TIMES DIVIDE
 %left NEG     /* negation--unary minus */
@@ -70,6 +71,7 @@ start: { section = BASE; } edjes
 edjes: /* blank */
 	| images edjes 
 	| fonts edjes
+	| spectra edjes
 	| collections edjes
 	| data edjes
 	| error {
@@ -81,6 +83,30 @@ edjes: /* blank */
 
 collections:  COLLECTIONS OPEN_BRACE {section = GROUPS; } collection_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
 	;
+
+spectra: SPECTRA OPEN_BRACE { section = SPECTRA; } spectra_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
+	;
+
+spectra_statement: /* empty */
+	| spectra_statement spectrum
+	;
+
+spectrum: SPECTRUM OPEN_BRACE { section = SPECTRUM; } spectrum_statement CLOSE_BRACE semicolon_maybe { section = SPECTRA; }
+	;
+
+spectrum_statement: /* blank */
+	| spectrum_name spectrum_statement 
+	| spectrum_color spectrum_statement
+	;
+
+spectrum_name: NAME COLON STRING SEMICOLON {
+		engrave_parse_spectrum_name($3);
+	}
+	;
+
+spectrum_color: COLOR COLON exp exp exp exp exp SEMICOLON {
+                engrave_parse_spectrum_color((int)$3, (int)$4, (int)$5, (int)$6, (int)$7);
+	}
 
 fonts:  FONTS OPEN_BRACE { section = FONTS; } font_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
 	;

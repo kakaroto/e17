@@ -23,6 +23,7 @@ ENGRAVEHEADERS = \
 	engrave_enums.h \
 	engrave_file.h \
 	engrave_font.h \
+	engrave_spectrum.h \
 	engrave_style.h \
 	engrave_group.h \
 	engrave_image.h \
@@ -42,6 +43,7 @@ ENGRAVEFILES = \
 	engrave_data.c \
 	engrave_file.c \
 	engrave_font.c \
+	engrave_spectrum.c \
 	engrave_style.c \
 	engrave_group.c \
 	engrave_image.c \

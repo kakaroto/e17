@@ -21,6 +21,9 @@ void engrave_parse_style_name(char * name);
 void engrave_parse_style_base(char * base);
 void engrave_parse_style_tag(char * key, char * val);
 
+void engrave_parse_spectrum_name(char * name);
+void engrave_parse_spectrum_color(int r, int g, int b, int a, int d);
+
 void engrave_parse_base(char *base);
 
 void engrave_parse_part();
