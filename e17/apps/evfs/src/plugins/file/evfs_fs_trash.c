@@ -147,7 +147,7 @@ void evfs_fs_trash_infofile_create(evfs_filereference* ref, char* newname, char*
 	printf("Create info file: '%s'\n", fullpath);
 
 	/*Should we use the evfs wrappers here? Faster not to..*/
-	if (file = fopen(fullpath, "w+") ){
+	if ((file = fopen(fullpath, "w+"))){
 		fprintf(file, "[Trash Info]\n");
 		fprintf(file, "Path=%s\n", path);
 		fprintf(file, "DeletionDate=20040831T22:32:08\n");
