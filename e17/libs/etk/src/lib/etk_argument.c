@@ -56,7 +56,7 @@ Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, cha
          {
             for (j = i + 1; j < *argc; j++)
                (*argv)[j - 1] = (*argv)[j];
-            *argc--;
+            (*argc)--;
          }
          return ETK_TRUE;
       }
@@ -154,7 +154,7 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
          {
             for (j = i + num_args; j < *argc; j++)
                (*argv)[j - num_args] = (*argv)[j];
-            *argc--;
+            (*argc)--;
          }
          return ETK_TRUE;
       }
