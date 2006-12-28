@@ -45,6 +45,7 @@
 typedef struct _ecore_list Ecore_List;
 typedef struct _ecore_list_node Ecore_List_Node;
 
+typedef int         (*Ecore_Compare_Cb) (const void *data, const void *match);
 typedef void        (*Ecore_For_Each) (void *value, void *user_data);
 typedef void        (*Ecore_Free_Cb) (void *data);
 
@@ -79,6 +80,9 @@ EAPI void          *ecore_list_goto(Ecore_List * list, void *_data);
 
 /* Traversing the list and returning data */
 EAPI void          *ecore_list_next(Ecore_List * list);
+EAPI void          *ecore_list_find(Ecore_List * list,
+				    Ecore_Compare_Cb function,
+				    const void *match);
 
 /* Check to see if there is any data in the list */
 EAPI int            ecore_list_is_empty(Ecore_List * list);
@@ -106,11 +110,7 @@ EAPI int            ecore_list_set_free_cb(Ecore_List * list,
 #define ECORE_LIST_FOR_EACH(list, p) \
    for (ecore_list_goto_first(list); (p = ecore_list_next(list)) != NULL;)
 
-typedef int         (*Ecore_Match) (const void *data, const void *match);
-
 EAPI void          *ecore_list_remove_node(Ecore_List * list, void *_data);
-EAPI void          *ecore_list_find(Ecore_List * list,
-				    Ecore_Match function, const void *match);
 EAPI void         **ecore_list_items_get(Ecore_List * list, int *pnum);
 
 #endif /* _E16_ECORE_LIST_H_ */

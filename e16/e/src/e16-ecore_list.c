@@ -105,6 +105,9 @@ static void        *_ecore_list_goto_index(Ecore_List * list, int indx);
 static int          _ecore_list_for_each(Ecore_List * list,
 					 Ecore_For_Each function,
 					 void *user_data);
+static void        *_ecore_list_find(Ecore_List * list,
+				     Ecore_Compare_Cb function,
+				     const void *user_data);
 
 /**
  * @defgroup Ecore_Data_List_Creation_Group List Creation/Destruction Functions
@@ -276,9 +279,7 @@ static int
 _ecore_list_append_0(Ecore_List * list, Ecore_List_Node * end)
 {
    if (list->last)
-     {
-	list->last->next = end;
-     }
+      list->last->next = end;
 
    list->last = end;
 
@@ -585,9 +586,7 @@ _ecore_list_remove_last(Ecore_List * list)
      {
 	prev->next = NULL;
 	if (list->current == old)
-	  {
-	     list->current = NULL;
-	  }
+	   list->current = NULL;
      }
 
    if (old)
@@ -897,11 +896,44 @@ _ecore_list_for_each(Ecore_List * list, Ecore_For_Each function,
    return TRUE;
 }
 
+/**
+ * Find data in @p list using the compare function @p func
+ * @param list      The list.
+ * @param function  The function to test each node of @p list with
+ * @param user_data Data to match against (used by @p function)
+ * @return the first matching data node, or NULL if none match
+ */
+EAPI void          *
+ecore_list_find(Ecore_List * list, Ecore_Compare_Cb function,
+		const void *user_data)
+{
+   CHECK_PARAM_POINTER_RETURN("list", list, NULL);
+
+   return _ecore_list_find(list, function, user_data);
+}
+
+/* The real meat of finding a node via a compare cb */
+static void        *
+_ecore_list_find(Ecore_List * list, Ecore_Compare_Cb function,
+		 const void *user_data)
+{
+   void               *value;
+
+   if (!list || !function)
+      return NULL;
+
+   _ecore_list_goto_first(list);
+   while ((value = _ecore_list_next(list)) != NULL)
+      if (!function(value, user_data))
+	 return value;
+
+   return NULL;
+}
+
 /* Initialize a node to starting values */
 EAPI int
 ecore_list_node_init(Ecore_List_Node * node)
 {
-
    CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
 
    node->next = NULL;
@@ -963,21 +995,6 @@ ecore_list_node_destroy(Ecore_List_Node * node, Ecore_Free_Cb free_func)
 /*
  * E16 additions
  */
-
-EAPI void          *
-ecore_list_find(Ecore_List * list, Ecore_Match function, const void *match)
-{
-   void               *data;
-
-   if (!list || !function)
-      return NULL;
-
-   for (_ecore_list_goto_first(list); (data = _ecore_list_next(list)) != NULL;)
-      if (!function(data, match))
-	 return data;
-
-   return NULL;
-}
 
 EAPI void          *
 ecore_list_remove_node(Ecore_List * list, void *_data)
