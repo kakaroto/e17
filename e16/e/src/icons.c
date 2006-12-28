@@ -178,7 +178,7 @@ IB_GetEIcon(EWin * ewin)
    if (!file)
       return NULL;
 
-   im = EImageLoad(file);
+   im = ThemeImageLoad(file);
 
    return im;
 }

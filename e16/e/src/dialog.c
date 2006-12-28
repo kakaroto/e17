@@ -418,16 +418,16 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 	switch (db->image)
 	  {
 	  case DLG_BUTTON_OK:
-	     im = EImageLoad("pix/ok.png");
+	     im = ThemeImageLoad("pix/ok.png");
 	     break;
 	  case DLG_BUTTON_CANCEL:
-	     im = EImageLoad("pix/cancel.png");
+	     im = ThemeImageLoad("pix/cancel.png");
 	     break;
 	  case DLG_BUTTON_APPLY:
-	     im = EImageLoad("pix/apply.png");
+	     im = ThemeImageLoad("pix/apply.png");
 	     break;
 	  case DLG_BUTTON_CLOSE:
-	     im = EImageLoad("pix/close.png");
+	     im = ThemeImageLoad("pix/close.png");
 	     break;
 	  default:
 	     break;
@@ -1221,7 +1221,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->h = ih;
 	break;
      case DITEM_IMAGE:
-	im = EImageLoad(di->item.image.image);
+	im = ThemeImageLoad(di->item.image.image);
 	if (im)
 	  {
 	     Pixmap              pmap = 0, mask = 0;

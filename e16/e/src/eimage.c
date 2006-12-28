@@ -55,27 +55,7 @@ EImageInit(Display * dpy)
 EImage             *
 EImageLoad(const char *file)
 {
-   EImage             *im;
-   char               *f;
-
-   if (!file)
-      return NULL;
-
-   if (file[0] == '/')
-     {
-	im = imlib_load_image(file);
-	return im;
-     }
-
-   f = ThemeFileFind(file, 0);
-   if (f)
-     {
-	im = imlib_load_image(f);
-	Efree(f);
-	return im;
-     }
-
-   return NULL;
+   return imlib_load_image(file);
 }
 
 void
@@ -201,6 +181,13 @@ EImageGetSize(EImage * im, int *pw, int *ph)
    imlib_context_set_image(im);
    *pw = imlib_image_get_width();
    *ph = imlib_image_get_height();
+}
+
+void               *
+EImageGetData(EImage * im)
+{
+   imlib_context_set_image(im);
+   return imlib_image_get_data_for_reading_only();
 }
 
 void

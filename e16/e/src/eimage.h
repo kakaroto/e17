@@ -54,6 +54,7 @@ void                EImageSetBorder(EImage * im, EImageBorder * border);
 
 int                 EImageHasAlpha(EImage * im);
 void                EImageGetSize(EImage * im, int *pw, int *ph);
+void               *EImageGetData(EImage * im);
 
 void                EImageFill(EImage * im, int x, int y, int w, int h, int r,
 			       int g, int b, int a);
@@ -99,5 +100,7 @@ void                ScaleRect(Win wsrc, Drawable src,
 			      int dx, int dy, int dw, int dh, int scale);
 
 void                EDrawableDumpImage(Drawable draw, const char *txt);
+
+EImage             *ThemeImageLoad(const char *file);
 
 #endif /* _EIMAGE_H_ */

@@ -115,7 +115,7 @@ ExtInitWinMain(void)
 	   if (EDebug(EDBUG_TYPE_SESSION))
 	      Eprintf("ExtInitWinCreate - child %s\n", s);
 
-	   im = EImageLoad(s);
+	   im = ThemeImageLoad(s);
 	   if (im)
 	     {
 		EImageRenderPixmaps(im, NULL, &pmap, &mask, 0, 0);

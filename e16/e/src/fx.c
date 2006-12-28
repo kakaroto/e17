@@ -634,7 +634,7 @@ FX_imagespinner_timeout(int val __UNUSED__, void *data __UNUSED__)
      {
 	EImage             *im;
 
-	im = EImageLoad(string);
+	im = ThemeImageLoad(string);
 	if (im)
 	  {
 	     int                 x, y, w, h;

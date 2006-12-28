@@ -168,6 +168,32 @@ TransparencySet(int transparency)
 
 #endif /* ENABLE_THEME_TRANSPARENCY */
 
+EImage             *
+ThemeImageLoad(const char *file)
+{
+   EImage             *im;
+   char               *f;
+
+   if (!file)
+      return NULL;
+
+   if (file[0] == '/')
+     {
+	im = EImageLoad(file);
+	return im;
+     }
+
+   f = ThemeFileFind(file, 0);
+   if (f)
+     {
+	im = EImageLoad(f);
+	Efree(f);
+	return im;
+     }
+
+   return NULL;
+}
+
 static ImageState  *
 ImagestateCreate(void)
 {
