@@ -362,7 +362,7 @@ evfs_load_plugin_meta(char *filename)
 evfs_plugin *
 evfs_load_plugin_vfolder(char *filename)
 {
-   evfs_plugin_meta *plugin = NEW(evfs_plugin_vfolder);
+   evfs_plugin_vfolder *plugin = NEW(evfs_plugin_vfolder);
    evfs_plugin_functions_vfolder *(*evfs_plugin_init) ();
    char* (*evfs_plugin_vfolder_root_get)();
 
