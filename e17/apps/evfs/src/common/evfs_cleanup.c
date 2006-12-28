@@ -176,6 +176,7 @@ evfs_cleanup_metadata_event(evfs_event* event)
 	free(event->meta);	
 }
 
+void
 evfs_cleanup_metadata_groups_event(evfs_event* event) 
 {
 	Evas_List* l;
@@ -229,6 +230,8 @@ evfs_cleanup_event(evfs_event * event)
 
      case EVFS_EV_METADATA_GROUPS:
 	evfs_cleanup_metadata_groups_event(event);
+	break;
+     default:
 	break;
      }
 
