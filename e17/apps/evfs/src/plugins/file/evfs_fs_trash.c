@@ -126,7 +126,7 @@ char* evfs_fs_trash_filename_get(evfs_filereference* ref)
 	
 
 	res = time(NULL);
-	snprintf(newname, fulllen, "%s.%d", ref->path, res);
+	snprintf(newname, fulllen, "%s.%ld", ref->path, res);
 	for (i=0;i<strlen(newname);i++)
 		if (newname[i] == '/') newname[i] = '_';
 
@@ -208,7 +208,7 @@ evfs_plugin_uri_get()
 int
 evfs_client_disconnect(evfs_client * client)
 {
-   printf("Received disconnect for client at evfs_fs_posix.c for client %d\n",
+   printf("Received disconnect for client at evfs_fs_posix.c for client %lu\n",
           client->id);
    return 0;
 }

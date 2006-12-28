@@ -129,7 +129,7 @@ int
 evfs_client_disconnect(evfs_client * client)
 {
 
-   printf("Received disconnect for client at evfs_fs_vfolder.c for client %d\n",
+   printf("Received disconnect for client at evfs_fs_vfolder.c for client %lu\n",
           client->id);
 
 }
