@@ -280,7 +280,7 @@ evfs_tokenize_uri(char *uri)
 
    while (j <= strlen(dup_uri))
      {
-	new_alpha = (isalnum(l_uri[i]) | l_uri[i] == '.');
+	new_alpha = (isalnum(l_uri[i]) || l_uri[i] == '.');
 
         len = 0;
 	tagged = 0;
