@@ -299,6 +299,8 @@ ewl_test_setup_tests(void)
 	tests = ecore_list_new();
 	if (!tests) return 0;
 
+	ecore_list_set_free_cb(tests, ECORE_FREE_CB(free));
+
 	list2 = ecore_list_new();
 	if (!list2) return 0;
 
