@@ -107,6 +107,7 @@ spectrum_name: NAME COLON STRING SEMICOLON {
 spectrum_color: COLOR COLON exp exp exp exp exp SEMICOLON {
                 engrave_parse_spectrum_color((int)$3, (int)$4, (int)$5, (int)$6, (int)$7);
 	}
+	;
 
 fonts:  FONTS OPEN_BRACE { section = FONTS; } font_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
 	;
