@@ -758,7 +758,7 @@ filelist_get (entropy_file_request * request)
     dir = opendir (dire);
     while ((de = readdir (dir))) {
       if (strcmp (de->d_name, ".") && strcmp (de->d_name, "..")
-	  && (de->d_name[0] != '.') || showhidden) {
+	  && ((de->d_name[0] != '.') || showhidden)) {
 	snprintf (full_name, 1024, "%s/%s", dire, de->d_name);
 	stat (full_name, &st);
 	if (S_ISDIR (st.st_mode)) {
