@@ -26,6 +26,8 @@ static void ewl_widget_cb_drag_up(Ewl_Widget *w, void *ev_data,
 static void ewl_widget_cb_drag_down(Ewl_Widget *w, void *ev_data, 
 					void *user_data);
 
+static void ewl_widget_name_table_shutdown(void);
+
 /**
  * @return Returns a newly allocated widget on success, NULL on failure.
  * @brief Allocate a new widget.
@@ -138,8 +140,13 @@ ewl_widget_name_set(Ewl_Widget *w, const char *name)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!ewl_widget_name_table)
+	{
 		ewl_widget_name_table = ecore_hash_new(ecore_str_hash, 
 							ecore_str_compare);
+		ecore_hash_set_free_key(ewl_widget_name_table, 
+						ECORE_FREE_CB(free));
+		ewl_shutdown_add(ewl_widget_name_table_shutdown);
+	}
 
 	t = strdup(name);
 	ewl_attach_name_set(w, t);
@@ -3248,4 +3255,16 @@ ewl_widget_dnd_reset(void)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+static void
+ewl_widget_name_table_shutdown(void)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (ewl_widget_name_table)
+		ecore_hash_destroy(ewl_widget_name_table);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 

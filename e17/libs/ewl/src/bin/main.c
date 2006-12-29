@@ -126,6 +126,8 @@ main(int argc, char **argv)
 	if (!unit_test)
 		ewl_main();
 
+	if (tests) ecore_list_destroy(tests);
+
 	return ret;
 }
 

@@ -144,11 +144,13 @@ ewl_init(int *argc, char **argv)
 		fprintf(stderr, "Could not initialize Ecore Desktop.\n");
 		goto ERROR;
 	}
+	ecore_list_prepend(shutdown_queue, ecore_desktop_shutdown);
 
 	if (!ecore_string_init()) {
 		fprintf(stderr, "Could not initialize Ecore Strings.\n");
 		goto ERROR;
 	}
+	ecore_list_prepend(shutdown_queue, ecore_string_shutdown);
 
 	if (!edje_init()) {
 		fprintf(stderr, "Could not initialize Edje.\n");

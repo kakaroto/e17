@@ -1059,6 +1059,8 @@ ewl_box_cb_shutdown(void)
 	IF_FREE(ewl_box_horizontal);
 	IF_FREE(ewl_box_vertical);
 
+	if (ewl_box_spread) ecore_list_destroy(ewl_box_spread);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

@@ -3192,7 +3192,7 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 	}
 	else
 	{
-		fmt[pos].val = ewl_theme_path_get();
+		fmt[pos].val = (char *)ewl_theme_path_get();
 		fmt[pos++].free = FALSE;
 
 		snprintf(t, 128, "fonts/%s", ctx->font);
@@ -5055,7 +5055,12 @@ ewl_text_context_shutdown(void)
 	}
 
 	if (ewl_text_default_context)
-		ewl_text_context_release(ewl_text_default_context);
+	{
+		IF_FREE(ewl_text_default_context->font);
+		if (ewl_text_default_context->format) 
+			ecore_string_release(ewl_text_default_context->format);
+		FREE(ewl_text_default_context);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -5259,7 +5264,6 @@ ewl_text_context_default_create(Ewl_Text *t)
 	/* setup the default context and acquire a ref on it so 
 	 * it won't go away */
 	ewl_text_default_context = tx;
-	ewl_text_context_acquire(tx);
 
 	DRETURN_PTR(tx, DLEVEL_STABLE);
 }
