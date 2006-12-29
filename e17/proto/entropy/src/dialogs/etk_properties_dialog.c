@@ -89,7 +89,7 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	label = etk_label_new("Size");
 	etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-	snprintf(buf,50,"%ld kb", file->properties.st_size / 1024);
+	snprintf(buf,50,"%lld kb", file->properties.st_size / 1024);
 	label = etk_label_new(buf);
 	etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	

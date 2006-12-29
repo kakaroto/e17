@@ -199,7 +199,7 @@ void entropy_plugin_filesystem_file_remove(entropy_generic_file* file, entropy_g
 	(*fileplugin->file_functions.file_remove)(file, instance);
 }
 
-void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char* dir) 
+void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, const char* dir) 
 {
 	Entropy_Plugin_File* fileplugin;
         entropy_plugin *plugin =

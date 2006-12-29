@@ -20,7 +20,7 @@ void etk_entropy_user_interaction_dialog_cb(Etk_Object* w, void* user_data)
 void entropy_etk_user_interaction_dialog_new(entropy_file_operation* interact) 
 {
 
-		const char buf[PATH_MAX];
+		char buf[PATH_MAX];
 		Etk_Widget* window = etk_window_new();
 		Etk_Widget* vbox= etk_vbox_new(ETK_TRUE,5);
 		Etk_Widget* hbox = etk_hbox_new(ETK_TRUE,5);

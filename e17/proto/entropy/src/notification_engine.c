@@ -87,7 +87,6 @@ int entropy_notify_loop(void* data) {
 	entropy_notify_event* next;
 
 	
-	int rc;
 	void* (*call_func)(void* arg);
 
 	ecore_list_goto_first (notify->op_queue);

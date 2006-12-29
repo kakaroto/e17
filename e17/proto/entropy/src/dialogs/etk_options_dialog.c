@@ -1,7 +1,6 @@
 #include <Etk.h>
 #include "entropy.h"
 
-static int _entropy_etk_options_visible = 0;
 static Etk_Widget* _entropy_etk_options_dialog = NULL;
 static Ecore_Hash* _entropy_global_options_hash;
 static Etk_Widget* _entropy_etk_options_local_box;
@@ -286,8 +285,6 @@ void entropy_etk_options_dialog_create()
 void entropy_etk_options_dialog_show()
 {
 	if (!_entropy_etk_options_dialog) {
-		Entropy_Etk_Options_Object* obj;
-
 		_entropy_global_options_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 		
 		entropy_etk_options_object_create("general.listviewer");

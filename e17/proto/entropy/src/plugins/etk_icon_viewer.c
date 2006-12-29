@@ -429,6 +429,7 @@ void icon_viewer_remove_row(entropy_gui_component_instance * instance,
 	}
 }
 
+#if 0
 static void _entropy_etk_icon_viewer_drag_begin_cb(Etk_Object *object, void *data)
 {
    Etk_Iconbox *iconbox;
@@ -525,6 +526,7 @@ static void _entropy_etk_icon_viewer_drag_begin_cb(Etk_Object *object, void *dat
    etk_container_add(ETK_CONTAINER(drag), image);*/
 
 }
+#endif
 
 
 
@@ -535,8 +537,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 {	
   entropy_gui_component_instance *instance;	
   entropy_etk_iconbox_viewer *viewer;
-  char  **dnd_types;
-  int dnd_types_num=0;
   char* size;
 
     

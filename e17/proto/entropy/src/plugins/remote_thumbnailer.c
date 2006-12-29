@@ -46,8 +46,6 @@ entropy_thumbnailer_plugin_mime_types_get ()
 entropy_thumbnail *
 entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
 {
-  entropy_thumbnail *thumb = NULL;
-
   /*This thumbnailer is only for remote files */
   if (!strcmp (request->file->uri_base, "file"))
     return NULL;
@@ -74,7 +72,7 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
 entropy_plugin*
 entropy_plugin_init(entropy_core* core)
 {
-	Entropy_Plugin_Thumbnailer_Child* plugin;
+	entropy_plugin* plugin;
 
 	plugin = entropy_malloc(sizeof(Entropy_Plugin_Thumbnailer_Child));
 

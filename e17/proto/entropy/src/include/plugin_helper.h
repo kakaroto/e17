@@ -16,7 +16,7 @@ int entropy_plugin_filesystem_file_copy_multi(Ecore_List* files, char* dest, ent
 int entropy_plugin_filesystem_file_move_multi(Ecore_List* files, char* dest, entropy_gui_component_instance* requester);
 int entropy_plugin_filesystem_file_trash_restore(Ecore_List* files, entropy_gui_component_instance* requester);
 int entropy_plugin_filesystem_file_move(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester);
-void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, char* dir);
+void entropy_plugin_filesystem_directory_create(entropy_generic_file* file, const char* dir);
 Ecore_List* entropy_plugin_filesystem_filelist_get(entropy_file_request* request);
 void entropy_plugin_filesystem_filestat_get(entropy_file_request* request);
 void entropy_plugin_operation_respond(long operation, int response);

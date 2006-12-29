@@ -37,7 +37,7 @@ void entropy_filesystem_file_move (entropy_generic_file * file, char *path_to, e
 
 void entropy_filesystem_file_rename (entropy_generic_file * file_from, entropy_generic_file * file_to);
 void entropy_filesystem_operation_respond(long id, int response);
-void entropy_filesystem_directory_create (entropy_generic_file * parent, char* child_name);
+void entropy_filesystem_directory_create (entropy_generic_file * parent, const char* child_name);
 void entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_component_instance* instance);
 void entropy_filesystem_metadata_groups_get(entropy_gui_component_instance* instance);
 void entropy_filesystem_file_group_add(entropy_generic_file* file, char* group);
@@ -1018,7 +1018,7 @@ entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_compone
  * Directory create function
  */
 void
-entropy_filesystem_directory_create (entropy_generic_file * parent, char* child_name)
+entropy_filesystem_directory_create (entropy_generic_file * parent, const char* child_name)
 {
   evfs_file_uri_path *uri_path_from;
   entropy_generic_file* new_dir;

@@ -23,7 +23,6 @@
 
 #define ENTROPY_CORE 1
 
-static int requests = 0;
 static long file_cache_size = 0;
 static entropy_plugin* distrib_plugin = NULL; /* FIXME - handle distrib plugins better*/
 entropy_core* core_core;

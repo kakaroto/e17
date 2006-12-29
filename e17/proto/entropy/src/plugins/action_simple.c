@@ -196,8 +196,6 @@ entropy_plugin_init(entropy_core* core)
 entropy_gui_component_instance *
 entropy_plugin_gui_instance_new (entropy_core * core)
 {
-  int config;
-
   //printf ("initialising action provider..\n");
 
   entropy_gui_component_instance *instance =

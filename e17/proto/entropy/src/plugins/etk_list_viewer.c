@@ -480,7 +480,6 @@ Ecore_List* entropy_etk_list_viewer_selected_get(entropy_etk_file_list_viewer* v
 {
 	Evas_List* rows;
 	Ecore_List* ret_files;
-	Etk_Tree_Row* row;
 	gui_file* file;
 
 	ret_files = ecore_list_new();
@@ -801,8 +800,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   entropy_etk_file_list_viewer *viewer;
   char  **dnd_types;
   int dnd_types_num=0;
-  Etk_Widget* new_menu;
-  Etk_Widget* menu_item;
 
     
   instance = entropy_gui_component_instance_new ();

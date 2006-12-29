@@ -5,7 +5,7 @@ entropy_plugin* entropy_thumbnailer_retrieve(char* mime_type) {
 }
 
 Ecore_List* entropy_thumbnailer_child_retrieve(char* mime_type) {
-	return (entropy_plugin*)ecore_hash_get(entropy_core_get_core()->entropy_thumbnailers_child, mime_type);
+	return (Ecore_List*)ecore_hash_get(entropy_core_get_core()->entropy_thumbnailers_child, mime_type);
 }
 
 entropy_thumbnail_request* entropy_thumbnail_request_new() {

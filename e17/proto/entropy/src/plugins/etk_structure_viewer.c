@@ -343,8 +343,6 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 {	
   entropy_gui_component_instance *instance;	
   entropy_etk_file_structure_viewer *viewer;
-   char      **dnd_types;
-   int         dnd_types_num; 
 
     
   instance = entropy_gui_component_instance_new ();
@@ -402,9 +400,10 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 		  ETK_CALLBACK(_etk_structure_viewer_row_clicked), NULL);
 
 	  /*Accept drops*/
+	   const char  **dnd_types = { "text/uri-list" };
+	   int           dnd_types_num; 
+
 	   dnd_types_num = 1;
-	   dnd_types = entropy_malloc(dnd_types_num * sizeof(char*));
-	   dnd_types[0] = strdup("text/uri-list");  
 	   etk_widget_dnd_types_set(  ETK_WIDGET(((Etk_Tree_Row*)parent_visual)->tree), 
 	   			dnd_types, dnd_types_num);
 	   etk_widget_dnd_dest_set( ETK_WIDGET(((Etk_Tree_Row*)parent_visual)->tree)  , ETK_TRUE);

@@ -12,10 +12,10 @@ typedef struct {
 void etk_directory_add_dialog_create_cb(Etk_Object* w, void* user_data) 
 {
 	etk_directory_add_dialog* dialog = user_data;
-	char* child;
+	const char* child;
 
 	child = etk_entry_text_get(ETK_ENTRY(dialog->entry));
-	if (child && strlen(child)) {
+	if (child && child[0] != 0) {
 		entropy_plugin_filesystem_directory_create(dialog->parent, child);
 	}
 

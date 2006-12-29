@@ -72,7 +72,7 @@ struct Entropy_Plugin_File {
 
 		void (*file_rename) (entropy_generic_file * file_from, entropy_generic_file * file_to);
 		void (*operation_respond)(long id, int response);
-		void (*directory_create) (entropy_generic_file * parent, char* child_name);
+		void (*directory_create) (entropy_generic_file * parent, const char* child_name);
 		void (*file_remove) (entropy_generic_file * file, entropy_gui_component_instance* instance);
 		void (*group_file_add) (entropy_generic_file * file,char*);
 		void (*group_file_remove) (entropy_generic_file * file,char*);

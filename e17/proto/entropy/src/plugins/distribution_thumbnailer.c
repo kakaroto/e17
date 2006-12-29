@@ -38,7 +38,7 @@ entropy_thumbnailer_plugin_mime_types_get ()
 entropy_plugin*
 entropy_plugin_init(entropy_core* core)
 {
-	Entropy_Plugin_Thumbnailer_Distribution* plugin;
+	entropy_plugin* plugin;
 
 	plugin = entropy_malloc(sizeof(Entropy_Plugin_Thumbnailer_Distribution));
 
@@ -65,7 +65,7 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
   entropy_thumbnail *thumb = NULL;
   Ecore_List *thumbnailers =
     entropy_thumbnailer_child_retrieve (request->file->mime_type);
-  entropy_thumbnail *(*get) (entropy_generic_file *);
+  entropy_thumbnail *(*get) (entropy_thumbnail_request *);
 
   /*printf("Called distribution thumbnailer...\n"); */
 

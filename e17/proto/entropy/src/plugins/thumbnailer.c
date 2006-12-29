@@ -118,7 +118,6 @@ entropy_plugin_gui_instance_new (entropy_core * core)
 entropy_thumbnail *
 entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
 {
-  entropy_thumbnail *thumb = NULL;
   char buffer[PATH_MAX];
   entropy_file_request* o_request;
 

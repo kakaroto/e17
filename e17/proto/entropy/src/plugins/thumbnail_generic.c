@@ -14,8 +14,6 @@
 #include <Ecore_X.h>
 
 
-static char *thumbnail_path = NULL;	//Make this central to the core, so it can be configurable
-
 entropy_thumbnail *
 entropy_thumbnail_new ()
 {
