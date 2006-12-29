@@ -330,7 +330,6 @@ ewl_test_setup_tests(void)
 	if (ecore_list_nodes(list2) == 0) return 0;
 
 	/* open each test file and get the Test struct from it */
-	ecore_list_goto_first(list2);
 	while ((file = ecore_list_remove_first(list2)))
 	{
 		void *handle;
