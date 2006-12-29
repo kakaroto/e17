@@ -185,7 +185,6 @@ ewl_image_file_key_get(Ewl_Image *i)
 void
 ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
 {
-	int old_type;
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -194,23 +193,16 @@ ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
 
 	w = EWL_WIDGET(i);
 
-	if (i->path != im) {
-		IF_FREE(i->path);
-	}
-
-	if (i->key != key) {
-		IF_FREE(i->key);
-	}
+	IF_FREE(i->path);
+	IF_FREE(i->key);
 
 	/*
 	 * Determine the type of image to be loaded.
 	 */
-	old_type = i->type;
 	if (im) {
 		i->type = ewl_image_type_get(im);
 		i->path = strdup(im);
-		if (key)
-			i->key = strdup(key);
+		if (key) i->key = strdup(key);
 	}
 	else
 		i->type = EWL_IMAGE_TYPE_NORMAL;
