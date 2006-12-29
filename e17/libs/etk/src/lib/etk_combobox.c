@@ -294,7 +294,7 @@ void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *ite
                if (item)
                   etk_image_copy(ETK_IMAGE(combobox->active_item_children[j]), ETK_IMAGE(item->widgets[i]));
                else
-                  etk_image_set_from_file(ETK_IMAGE(combobox->active_item_children[j]), NULL);
+                  etk_image_set_from_file(ETK_IMAGE(combobox->active_item_children[j]), NULL, NULL);
                break;
             default:
                break;

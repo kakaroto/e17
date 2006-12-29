@@ -99,7 +99,7 @@ static Etk_Widget *_etk_test_embed_widget_new(Evas *evas)
    int i;
    
    
-   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
+   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png", NULL);
    
    buttons[0] = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
    buttons[1] = etk_check_button_new();

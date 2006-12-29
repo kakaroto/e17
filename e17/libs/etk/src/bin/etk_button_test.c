@@ -30,7 +30,7 @@ void etk_test_button_window_create(void *data)
    etk_tooltips_tip_set(button_normal, "This is a normal button");
    etk_box_append(ETK_BOX(vbox), button_normal, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/e_icon.png");
+   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/e_icon.png", NULL);
    button_normal = etk_button_new_with_label("Button with an image");
    etk_tooltips_tip_set(button_normal, "This is a normal button with an image");
    etk_button_image_set(ETK_BUTTON(button_normal), ETK_IMAGE(image));

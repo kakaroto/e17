@@ -73,7 +73,7 @@ void etk_test_shadow_window_create(void *data)
          0, 0, ETK_TABLE_NONE);
       
       sprintf(image_path, PACKAGE_DATA_DIR "/images/picture%d.png", i + 1);
-      image = etk_image_new_from_file(image_path);
+      image = etk_image_new_from_file(image_path, NULL);
       etk_container_add(ETK_CONTAINER(_etk_test_picture_shadows[i]), image);
    }
 

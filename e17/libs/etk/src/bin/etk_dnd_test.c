@@ -63,7 +63,7 @@ void etk_test_dnd_window_create(void *data)
    sep = etk_hseparator_new();
    etk_box_append(ETK_BOX(vbox2), sep, ETK_BOX_START, ETK_BOX_NONE, 0);
    
-   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/e_icon.png");
+   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/e_icon.png", NULL);
    button = etk_button_new_with_label("Drop an image here");
    etk_widget_dnd_dest_set(button, ETK_TRUE);
    dnd_types_num = 1;
@@ -158,7 +158,7 @@ static void _etk_test_dnd_drag_drop_cb2(Etk_Object *object, void *event, void *d
       
       printf("Widget got the file: %s\n", files->files[i]);
       if ((image = strstr(files->files[i], "file://")) != NULL)
-         etk_image_set_from_file(ETK_IMAGE(data), image + strlen("file://"));
+         etk_image_set_from_file(ETK_IMAGE(data), image + strlen("file://"), NULL);
    }
 }
 

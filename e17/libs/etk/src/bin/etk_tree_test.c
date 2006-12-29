@@ -178,7 +178,7 @@ static void _etk_test_tree_drag_begin_cb(Etk_Object *object, void *data)
    etk_drag_types_set(drag, types, num_types);
    etk_drag_data_set(drag, drag_data, strlen(drag_data) + 1);
    button = etk_button_new_with_label(col1_string);
-   etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(etk_image_new_from_file(col3_path)));
+   etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(etk_image_new_from_file(col3_path, NULL)));
    etk_container_add(ETK_CONTAINER(drag), button);
 }
 

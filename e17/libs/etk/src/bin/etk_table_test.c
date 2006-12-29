@@ -25,7 +25,7 @@ void etk_test_table_window_create(void *data)
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    
-   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
+   image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png", NULL);
    
    buttons[0] = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
    buttons[1] = etk_check_button_new();

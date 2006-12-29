@@ -19,9 +19,9 @@ void etk_test_image_window_create(void *data)
    etk_window_title_set(ETK_WINDOW(win), "Etk Image Test");
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 	
-   images[0] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
+   images[0] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png", NULL);
    etk_image_keep_aspect_set(ETK_IMAGE(images[0]), ETK_TRUE);
-   images[1] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png");
+   images[1] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png", NULL);
    etk_image_keep_aspect_set(ETK_IMAGE(images[1]), ETK_FALSE);
 
    labels[0] = etk_label_new("Keep aspect");

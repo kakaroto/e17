@@ -92,14 +92,15 @@ Etk_Widget *etk_image_new(void)
 /**
  * @brief Creates a new image and loads the image from an image file
  * @param filename the path of the file to load
+ * @param key the key to load (only used if the file is an Eet file, otherwise you can set it to NULL)
  * @return Returns the new image widget
  */
-Etk_Widget *etk_image_new_from_file(const char *filename)
+Etk_Widget *etk_image_new_from_file(const char *filename, const char *key)
 {
    Etk_Widget *image;
    
    image = etk_image_new();
-   etk_image_set_from_file(ETK_IMAGE(image), filename);
+   etk_image_set_from_file(ETK_IMAGE(image), filename, key);
    return image;
 }
 
@@ -169,8 +170,9 @@ Etk_Widget *etk_image_new_from_data(int width, int height, void *data, Etk_Bool 
  * @brief Loads the image from a file
  * @param image an image
  * @param filename the path to the file to load
+ * @param key the key to load (only used if the file is an Eet file, otherwise you can set it to NULL)
  */
-void etk_image_set_from_file(Etk_Image *image, const char *filename)
+void etk_image_set_from_file(Etk_Image *image, const char *filename, const char *key)
 {
    if (!image)
       return;
@@ -182,6 +184,12 @@ void etk_image_set_from_file(Etk_Image *image, const char *filename)
       image->info.file.filename = filename ? strdup(filename) : NULL;
       etk_object_notify(ETK_OBJECT(image), "file");
    }
+   if (image->info.file.key != key)
+   {
+      free(image->info.file.key);
+      image->info.file.key = key ? strdup(key) : NULL;
+      etk_object_notify(ETK_OBJECT(image), "key");
+   }
 
    _etk_image_load(image);
 }
@@ -189,13 +197,25 @@ void etk_image_set_from_file(Etk_Image *image, const char *filename)
 /**
  * @brief Gets the path to the file used by the image
  * @param image an image
- * @return Returns the path to the file used by the image (NULL on failure)
+ * @param filename the location where to store the path to the loaded file
+ * @param key the location where to store the key of the loaded image (NULL if the file is not loaded from an Eet file)
  */
-const char *etk_image_file_get(Etk_Image *image)
+void etk_image_file_get(Etk_Image *image, char **filename, char **key)
 {
    if (!image || image->source != ETK_IMAGE_FILE)
-      return NULL;
-   return image->info.file.filename;
+   {
+      if (filename)
+         *filename = NULL;
+      if (key)
+         *key = NULL;
+   }
+   else
+   {
+      if (filename)
+         *filename = image->info.file.filename;
+      if (key)
+         *key = image->info.file.key;
+   }
 }
 
 /**
@@ -458,8 +478,7 @@ void etk_image_copy(Etk_Image *dest_image, Etk_Image *src_image)
    switch (src_image->source)
    {
       case ETK_IMAGE_FILE:
-         /* TODO: copy the key too.. */
-         etk_image_set_from_file(dest_image, src_image->info.file.filename);
+         etk_image_set_from_file(dest_image, src_image->info.file.filename, src_image->info.file.key);
          break;
       case ETK_IMAGE_EDJE:
          etk_image_set_from_edje(dest_image, src_image->info.edje.filename, src_image->info.edje.group);
@@ -637,17 +656,11 @@ static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Pro
          if (image->source == ETK_IMAGE_EDJE)
             etk_image_set_from_edje(image, etk_property_value_string_get(value), image->info.edje.group);
          else
-         {
-            /* TODO: set the key! */
-            etk_image_set_from_file(image, etk_property_value_string_get(value));
-         }
+            etk_image_set_from_file(image, etk_property_value_string_get(value), image->info.file.key);
          break;
       case ETK_IMAGE_KEY_PROPERTY:
          if (image->source == ETK_IMAGE_FILE)
-         {
-            /* TODO: set the key! */
-            //etk_image_set_from_file(image, image->info.file.filename, etk_property_value_string_get(value));
-         }
+            etk_image_set_from_file(image, image->info.file.filename, etk_property_value_string_get(value));
          else if (image->source == ETK_IMAGE_EDJE)
             etk_image_set_from_edje(image, image->info.edje.filename, etk_property_value_string_get(value));
          break;
@@ -902,7 +915,7 @@ static void _etk_image_load(Etk_Image *image)
          if (!image_file || !image->info.file.filename || strcmp(image_file, image->info.file.filename) != 0)
          {
             evas_object_image_file_set(image->object, image->info.file.filename, image->info.file.key);
-            if ((error_code = evas_object_image_load_error_get(image->object)))
+            if (image->info.file.filename && (error_code = evas_object_image_load_error_get(image->object)))
                ETK_WARNING("Unable to load image from file \"%s\", error %d", image->info.file.filename, error_code);
          }
          break;
@@ -925,7 +938,7 @@ static void _etk_image_load(Etk_Image *image)
          }
          
          edje_object_file_set(image->object, file, key);
-         if ((error_code = edje_object_load_error_get(image->object)))
+         if (file && (error_code = edje_object_load_error_get(image->object)))
             ETK_WARNING("Unable to load image from edje-file  \"%s\"/\"%s\", error %d", file, key, error_code);
          break;
       }

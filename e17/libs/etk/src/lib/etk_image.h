@@ -77,14 +77,14 @@ struct Etk_Image
 Etk_Type *etk_image_type_get(void);
 
 Etk_Widget *etk_image_new(void);
-Etk_Widget *etk_image_new_from_file(const char *filename);
+Etk_Widget *etk_image_new_from_file(const char *filename, const char *key);
 Etk_Widget *etk_image_new_from_edje(const char *filename, const char *group);
 Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id, Etk_Stock_Size stock_size);
 Etk_Widget *etk_image_new_from_evas_object(Evas_Object *evas_object);
 Etk_Widget *etk_image_new_from_data(int width, int height, void *data, Etk_Bool copy);
 
-void         etk_image_set_from_file(Etk_Image *image, const char *filename);
-const char  *etk_image_file_get(Etk_Image *image);
+void         etk_image_set_from_file(Etk_Image *image, const char *filename, const char *key);
+void         etk_image_file_get(Etk_Image *image, char **filename, char **key);
 void         etk_image_set_from_edje(Etk_Image *image, const char *filename, const char *group);
 void         etk_image_edje_get(Etk_Image *image, char **filename, char **group);
 void         etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock_Size stock_size);
