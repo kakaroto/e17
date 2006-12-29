@@ -400,8 +400,8 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 		  ETK_CALLBACK(_etk_structure_viewer_row_clicked), NULL);
 
 	  /*Accept drops*/
-	   const char  **dnd_types = { "text/uri-list" };
-	   int           dnd_types_num; 
+	   const char  *dnd_types[] = { "text/uri-list" };
+	   int          dnd_types_num; 
 
 	   dnd_types_num = 1;
 	   etk_widget_dnd_types_set(  ETK_WIDGET(((Etk_Tree_Row*)parent_visual)->tree), 
