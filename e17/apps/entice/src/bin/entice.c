@@ -138,7 +138,6 @@ entice_init(Ecore_Evas * ee)
       evas_object_name_set(o, "EnticeEdje");
       evas_object_move(o, 0, 0);
       evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
-      evas_object_layer_set(o, 0);
 
       edje_object_size_min_get(o, &ew, &eh);
       if ((ew > 0) && (eh > 0))
@@ -179,7 +178,6 @@ entice_init(Ecore_Evas * ee)
          }
          else
             esmart_container_layout_plugin_set(e->container, "default");
-         evas_object_layer_set(e->container, 0);
          evas_object_color_set(e->container, 255, 255, 255, 255);
 
          edje_object_part_geometry_get(e->edje, "entice.thumbnail.area", NULL,
@@ -212,7 +210,6 @@ entice_init(Ecore_Evas * ee)
          else if (!strcmp(str, "trans"))
          {
             o = esmart_trans_x11_new(ecore_evas_get(ee));
-            evas_object_layer_set(o, 0);
             evas_object_move(o, 0, 0);
             evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
             evas_object_name_set(o, "trans");
@@ -228,7 +225,6 @@ entice_init(Ecore_Evas * ee)
             evas_object_color_set(o, 255, 255, 255, 255);
             evas_object_resize(o, w, h);
             evas_object_move(o, 0, 0);
-            evas_object_layer_set(o, 0);
             evas_object_show(o);
          }
       }
@@ -400,7 +396,6 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          edje_object_part_geometry_get(entice->edje, "entice.image", NULL,
                                        NULL, &w, &h);
          evas_object_resize(new_current, w, h);
-         evas_object_layer_set(new_current, evas_object_layer_get(o));
          evas_object_show(new_current);
 
          new_scroller =
@@ -411,7 +406,6 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
                                        NULL, &w, &h);
          evas_object_move(new_scroller, -9999, -9999);
          evas_object_resize(new_scroller, w, h);
-         evas_object_layer_set(new_scroller, evas_object_layer_get(o));
          evas_object_show(new_scroller);
 
          if (entice->current)
@@ -516,8 +510,6 @@ entice_file_add(const char *file)
       {
          if ((o = esmart_thumb_new(ecore_evas_get(entice->ee), buf)))
          {
-            evas_object_layer_set(o,
-                                  evas_object_layer_get(entice->container));
             evas_object_move(o, -9999, -9999);
             entice->thumb.list = evas_list_append(entice->thumb.list, o);
             evas_object_show(o);
@@ -526,16 +518,10 @@ entice_file_add(const char *file)
             if (edje_object_file_set
                 (edje, entice_config_theme_get(), "entice.thumb"))
             {
-               evas_object_layer_set(edje,
-                                     evas_object_layer_get(entice->
-                                                           container));
                if (edje_object_part_exists(edje, "entice.thumb"))
                {
                   evas_object_resize(o, (Evas_Coord) 48, (Evas_Coord) 48);
                   hookup_entice_thumb_signals(edje, o);
-                  evas_object_layer_set(o,
-                                        evas_object_layer_get(entice->
-                                                              container));
                   edje_object_part_swallow(edje, "entice.thumb", o);
 
                   esmart_container_element_append(entice->container, edje);

@@ -605,7 +605,6 @@ entice_image_add(Evas_Object * o)
 
    im->clip = evas_object_rectangle_add(evas_object_evas_get(o));
    evas_object_color_set(im->clip, 255, 255, 255, 255);
-   evas_object_layer_set(im->clip, 0);
 
    im->zoom = 1.0;
    im->fit = 1;
@@ -623,7 +622,10 @@ entice_image_del(Evas_Object * o)
       if (im->format)
          free(im->format);
       if (im->obj)
+      {
+         evas_object_smart_member_del(im->obj);
          evas_object_del(im->obj);
+      }
       if (im->clip)
          evas_object_del(im->clip);
       free(im);
@@ -836,6 +838,7 @@ entice_image_new(Evas_Object * image)
 
       im = evas_object_smart_data_get(o);
       im->obj = image;
+      evas_object_smart_member_add(im->obj, o);
 
       evas_object_image_size_get(im->obj, &w, &h);
       evas_object_clip_set(im->obj, im->clip);

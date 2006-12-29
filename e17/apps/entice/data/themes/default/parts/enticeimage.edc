@@ -123,7 +123,7 @@
 	    part
 	    {
 		name, "entice.image";
-		type, RECT;
+		type, SWALLOW;
 		mouse_events, 1;
 		clip_to, "EnticeImageClip";
 		description
