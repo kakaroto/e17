@@ -1759,8 +1759,7 @@ void etk_widget_dnd_types_set(Etk_Widget *widget, const char **types, int num)
       return;
    
    /* free old data */
-   if(num <= 0 || types == NULL || 
-     (widget->dnd_types_num > 0 && widget->dnd_types != NULL))
+   if(widget->dnd_types_num > 0 && widget->dnd_types != NULL)
    {
       
       for(i = 0; i < widget->dnd_types_num; i++)
