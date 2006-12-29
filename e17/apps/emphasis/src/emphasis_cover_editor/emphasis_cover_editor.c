@@ -134,7 +134,7 @@ on_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 
   if(path)
     {
-      etk_image_set_from_file(ETK_IMAGE(cover), path);
+      etk_image_set_from_file(ETK_IMAGE(cover), path, NULL);
     }
   else
     {
@@ -200,7 +200,7 @@ on_filechooser_dialog_response(Etk_Dialog *filechooser_dialog,
       row = etk_tree_selected_row_get(ETK_TREE(tree));
       free(etk_tree_row_data_get(row));
       etk_tree_row_data_set(row, cover_path);
-      etk_image_set_from_file(ETK_IMAGE(cover), cover_path);
+      etk_image_set_from_file(ETK_IMAGE(cover), cover_path, NULL);
     }
   etk_widget_hide_all(ETK_WIDGET(filechooser_dialog));
 }

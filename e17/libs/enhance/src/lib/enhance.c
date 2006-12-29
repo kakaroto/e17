@@ -719,7 +719,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
         PROPERTY_STR;
         /* TODO : edj? */
 
-        etk_image_set_from_file(ETK_IMAGE(wid->wid), value);
+        etk_image_set_from_file(ETK_IMAGE(wid->wid), value, NULL);
      }
 
    else if(!strcmp(name, "active"))

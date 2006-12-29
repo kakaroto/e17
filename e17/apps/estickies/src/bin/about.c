@@ -29,7 +29,7 @@ _e_about_show()
    vbox = etk_vbox_new(ETK_FALSE, 0);
    
    /* Logo */
-   logo = etk_image_new_from_file(PACKAGE_DATA_DIR"/images/estickies.png");
+   logo = etk_image_new_from_file(PACKAGE_DATA_DIR"/images/estickies.png", NULL);
    etk_box_append(ETK_BOX(vbox), logo, ETK_BOX_START, ETK_BOX_EXPAND, 0);
       
    /* Description */

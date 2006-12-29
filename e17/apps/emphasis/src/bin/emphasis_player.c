@@ -265,8 +265,8 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
 void
 emphasis_player_cover_set(Emphasis_Player_Gui *player, const char *path)
 {
-  etk_image_set_from_file(ETK_IMAGE(player->full.cover) , path);
-  etk_image_set_from_file(ETK_IMAGE(player->small.cover), path);
+  etk_image_set_from_file(ETK_IMAGE(player->full.cover) , path, NULL);
+  etk_image_set_from_file(ETK_IMAGE(player->small.cover), path, NULL);
 }
 
 /* TODO : documentation */
@@ -503,12 +503,12 @@ emphasis_player_vol_image_set(Emphasis_Player_Gui *player,
   switch(right)
     {
      case 0:
-       etk_image_set_from_file(ETK_IMAGE(player->small.sound_low), path);
-       etk_image_set_from_file(ETK_IMAGE(player->full.sound_low) , path);
+       etk_image_set_from_file(ETK_IMAGE(player->small.sound_low), path, NULL);
+       etk_image_set_from_file(ETK_IMAGE(player->full.sound_low) , path, NULL);
        break;
      default:
-       etk_image_set_from_file(ETK_IMAGE(player->small.sound_high), path);
-       etk_image_set_from_file(ETK_IMAGE(player->full.sound_high) , path);
+       etk_image_set_from_file(ETK_IMAGE(player->small.sound_high), path, NULL);
+       etk_image_set_from_file(ETK_IMAGE(player->full.sound_high) , path, NULL);
        break;
     }
 }
