@@ -37,7 +37,7 @@ struct _Engrave_Spectrum_Color
   int d;
 };
 
-EAPI Engrave_Spectrum *engrave_spectrum_new(const char *name);
+EAPI Engrave_Spectrum *engrave_spectrum_new();
 EAPI void engrave_spectrum_free(Engrave_Spectrum *es);
 
 EAPI Engrave_Spectrum_Color *engrave_spectrum_color_new(int r, int g, int b, int a, int d);
@@ -49,6 +49,7 @@ EAPI void engrave_spectrum_color_add(Engrave_Spectrum *spec, Engrave_Spectrum_Co
 EAPI void engrave_spectrum_color_del(Engrave_Spectrum *spec, Engrave_Spectrum_Color * col);
 
 EAPI const char * engrave_spectrum_name_get(Engrave_Spectrum *es);
+EAPI void engrave_spectrum_name_set(Engrave_Spectrum *es, const char *name);
 EAPI int engrave_spectrum_color_count(Engrave_Spectrum *es);
 EAPI Engrave_Spectrum_Color * engrave_spectrum_color_nth(Engrave_Spectrum *es, int n);
 

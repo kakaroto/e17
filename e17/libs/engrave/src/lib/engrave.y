@@ -91,7 +91,10 @@ spectra_statement: /* empty */
 	| spectra_statement spectrum
 	;
 
-spectrum: SPECTRUM OPEN_BRACE { section = SPECTRUM; } spectrum_statement CLOSE_BRACE semicolon_maybe { section = SPECTRA; }
+spectrum: SPECTRUM OPEN_BRACE { 
+		section = SPECTRUM; 
+		engrave_parse_spectrum();
+	} spectrum_statement CLOSE_BRACE semicolon_maybe { section = SPECTRA; }
 	;
 
 spectrum_statement: /* blank */

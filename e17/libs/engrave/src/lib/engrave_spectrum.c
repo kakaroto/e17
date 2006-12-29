@@ -9,13 +9,13 @@
  * @return Returns a pointer to a newly allocated object on success, or NULL
  */
 EAPI Engrave_Spectrum *
-engrave_spectrum_new(const char *name)
+engrave_spectrum_new()
 {
   Engrave_Spectrum *es;
   es = NEW(Engrave_Spectrum, 1);
   if (!es) return NULL;
 
-  es->name = (name ? strdup(name) : NULL);
+  es->name = NULL;
   es->parent = NULL;
   es->colors = NULL;
   return es;
@@ -123,6 +123,20 @@ engrave_spectrum_parent_set(Engrave_Spectrum *es, void *parent)
 {
   if (!es || !parent) return;
   es->parent = parent;
+}
+
+/**
+ * engrave_spectrum_name_set - sets the name of the Engrave_Spectrum object
+ * @param es: The spectrum object 
+ * @param name: The name to set
+ *
+ * @return Returns no value
+ */
+EAPI void
+engrave_spectrum_name_set(Engrave_Spectrum *es, const char * name)
+{
+  if (!es) return;
+  if (name) es->name = strdup(name);
 }
 
 /**

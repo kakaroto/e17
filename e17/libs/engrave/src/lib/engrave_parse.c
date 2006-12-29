@@ -86,12 +86,20 @@ engrave_parse_group_name(char *name)
 }
 
 void
+engrave_parse_spectrum()
+{
+  Engrave_Spectrum *es;
+  es = engrave_spectrum_new();
+  engrave_file_spectrum_add(engrave_file, es);
+  engrave_spectrum_parent_set(es, engrave_file);
+}
+
+void
 engrave_parse_spectrum_name(char *name)
 {
   Engrave_Spectrum *es;
-  es = engrave_spectrum_new(name);
-  engrave_file_spectrum_add(engrave_file, es);
-  engrave_spectrum_parent_set(es, engrave_file);
+  es = engrave_file_spectrum_last_get(engrave_file);
+  engrave_spectrum_name_set(es, name);
 }
 
 void
