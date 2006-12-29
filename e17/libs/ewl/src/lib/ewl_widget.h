@@ -193,6 +193,7 @@ unsigned int 	 ewl_widget_type_is(Ewl_Widget *widget, const char *type);
 unsigned int 	 ewl_widget_onscreen_is(Ewl_Widget *widget);
 
 void 		 ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p);
+Ewl_Widget 	*ewl_widget_parent_get(Ewl_Widget *w);
 
 void 		 ewl_widget_enable(Ewl_Widget *w);
 void 		 ewl_widget_disable(Ewl_Widget *w);

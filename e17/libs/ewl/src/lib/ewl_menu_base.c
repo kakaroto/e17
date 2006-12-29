@@ -243,6 +243,12 @@ ewl_menu_base_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_MENU_BASE_TYPE);
 
 	menu = EWL_MENU_BASE(w);
+
+	/* we need to destroy the popbox if it hasn't been parented yet */
+	if (menu->popbox && !DESTROYED(menu->popbox) 
+			&& !ewl_widget_parent_get(menu->popbox))
+		ewl_widget_destroy(menu->popbox);
+
 	if (menu->popup)
 		ewl_widget_destroy(menu->popup);
 

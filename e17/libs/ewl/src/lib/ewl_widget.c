@@ -799,6 +799,21 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param w: The widget to get the parent from 
+ * @return Returns the parent of the given widget, or NULL if none set
+ * @brief Retrieves the parent of the given widget
+ */
+Ewl_Widget *
+ewl_widget_parent_get(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	DRETURN_PTR(w->parent, DLEVEL_STABLE);
+}
+
 /**     
  * @param w: the widget whose text to change
  * @param part: the theme part name whose text to change
