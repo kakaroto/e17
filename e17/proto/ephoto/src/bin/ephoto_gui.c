@@ -37,6 +37,7 @@ int destroy_boot(void *data)
 		ecore_timer_del(timer);
 		create_main_gui();
 	}
+	return 1;
 }
 
 /*Create the Boot Splash and Start its Timer*/
@@ -262,7 +263,7 @@ static void populate_files(char *cdir)
 static void create_main_gui(void)
 {
 	Ewl_Widget *win, *vbox, *menu_bar, *menu, *nb, *paned;
-	Ewl_Widget *border, *ihbox, *sp, *image, *button;
+	Ewl_Widget *border, *ihbox, *sp;
 
 	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");

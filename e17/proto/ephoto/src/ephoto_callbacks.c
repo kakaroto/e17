@@ -77,11 +77,9 @@ void populate_browser(Ewl_Widget *w, void *event, void *data)
 
 void populate_images(Ewl_Widget *w, void *event, void *data)
 {
- FILE *file_ptr;
  const char *dir;
  char *image_path;
  char full_path[PATH_MAX];
- char text[PATH_MAX];
  Ecore_List *ls;
  Ecore_List *images;
  Ewl_Widget *image;
@@ -100,7 +98,7 @@ void populate_images(Ewl_Widget *w, void *event, void *data)
   ls = ecore_file_ls(dir);
   while(!ecore_list_is_empty(ls))
   { 
-   snprintf(full_path, PATH_MAX, "%s/%s", dir, ecore_list_remove_first(ls));
+   snprintf(full_path, PATH_MAX, "%s/%s", dir, (char *)ecore_list_remove_first(ls));
    if (fnmatch("*.[Jj][Pp][Ee][Gg]", full_path, 0) == 0)
    {
     ecore_list_append(images, strdup(full_path));

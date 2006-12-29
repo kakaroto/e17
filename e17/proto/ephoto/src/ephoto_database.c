@@ -38,7 +38,6 @@ sqlite3 *ephoto_db_init(void)
 void ephoto_db_add_album(sqlite3 *db, char *name, char *description)
 {
  char command[PATH_MAX];
- Ewl_Widget *hbox, *image, *text, *children[2], *row;
 
  snprintf(command, PATH_MAX, "INSERT or IGNORE INTO albums(name, description) "
 		             "VALUES('%s', '%s');", name, description);

@@ -83,6 +83,7 @@ int change_picture(void *data)
    ewl_widget_destroy(sc->image->parent->parent);
   }
  }
+ return 1;
 }
 
 void show_first_image(Ewl_Widget *w, void *event, void *data)
@@ -105,7 +106,6 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
  Ewl_Widget *cell;
  Ewl_Widget *image;
  Slide_Config *sc;
- int ew, eh;
  
  sc = parse_slideshow_config();
  
