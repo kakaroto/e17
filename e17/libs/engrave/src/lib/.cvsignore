@@ -18,6 +18,7 @@ libengrave_la-engrave_part.lo
 libengrave_la-engrave_part_state.lo
 libengrave_la-engrave_program.lo
 libengrave_la-engrave_style.lo
+libengrave_la-engrave_spectrum.lo
 libengrave_la-libengrave_la-engrave.lo
 .deps
 .libs
