@@ -13,6 +13,10 @@ struct _Emphasis_Config_Gui
   Etk_Widget *password;
   Etk_Widget *port;
 
+  Etk_Widget *xfade;
+  Etk_Widget *stop;
+  Etk_Widget *aspect;
+
   void *data;
 };
 

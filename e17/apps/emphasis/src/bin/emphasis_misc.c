@@ -116,15 +116,7 @@ emphasis_playlist_append_selected(Etk_Tree *tree, Emphasis_Type type)
         {
           artist = etk_tree_row_data_get(evas_list_data(rowlist));
           tmplist = mpc_mlib_track_get(artist, NULL);
-
-          if (!playlist)
-            {
-              playlist = tmplist;
-            }
-          else
-            {
-              playlist = evas_list_concatenate(playlist, tmplist);
-            }
+          playlist = evas_list_concatenate(playlist, tmplist);
           rowlist = evas_list_next(rowlist);
         }
     }
@@ -142,22 +134,15 @@ emphasis_playlist_append_selected(Etk_Tree *tree, Emphasis_Type type)
               while (row)
                 {
                   album = etk_tree_row_data_get(row);
-                  playlist =
-                    evas_list_concatenate(playlist,
-                                          mpc_mlib_track_get(album[1],
-                                                             album[0]));       
+                  tmplist = mpc_mlib_track_get(album[1], album[0]);
+                  playlist = evas_list_concatenate(playlist, tmplist);
                   row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
                 }
               break;
             }
-          tmplist = mpc_mlib_track_get(album[1], album[0]);
-
-          if (!playlist)
-            {
-              playlist = tmplist;
-            }
           else
             {
+              tmplist = mpc_mlib_track_get(album[1], album[0]);
               playlist = evas_list_concatenate(playlist, tmplist);
             }
           rowlist = evas_list_next(rowlist);
@@ -169,6 +154,7 @@ emphasis_playlist_append_selected(Etk_Tree *tree, Emphasis_Type type)
     }
   evas_list_free(list);
   mpc_playlist_add(playlist);
+  emphasis_list_free(playlist);
 }
 
 void
@@ -285,10 +271,11 @@ etk_button_make_vertical(Etk_Widget *button)
 /* Used for debug tiem to time */
 void etk_container_inspect(Etk_Container *container, int lvl, int *to_trace)
 { 
-#define PRINTF_TYPE_NAME(widget) printf("%s\n", \
+#undef PRINTF_TYPE_NAME
+#define PRINTF_TYPE_NAME(widget) printf("%s (%p)\n", \
                                           etk_type_name_get( \
                                             etk_object_object_type_get( \
-                                              ETK_OBJECT(widget))));
+                                              ETK_OBJECT(widget))), widget );
   Evas_List *children;
   Etk_Widget *widget;
   int i = 0;
@@ -313,6 +300,7 @@ void etk_container_inspect(Etk_Container *container, int lvl, int *to_trace)
       PRINTF_TYPE_NAME(widget);
 
       if ((int) sizeof(to_trace) < lvl+3)
+        /* ^ FIXME youhou, sizeof doesn't give ptr len */
         to_trace = realloc(to_trace, sizeof(int) * (lvl+3));
       if (evas_list_next(children) && ETK_IS_CONTAINER(widget))
         to_trace[lvl+1] = 1;
@@ -327,3 +315,53 @@ void etk_container_inspect(Etk_Container *container, int lvl, int *to_trace)
     }
 }
 
+/* HACK: etk_textblock/label and '&' */
+char *etk_strescape(const char *str)
+{
+  char *escaped, *temp;
+  char c;
+  int  i, j, size;
+
+  if(!str) { return strdup("Unknow"); }
+
+  size = strlen(str)+1;
+  escaped = malloc(sizeof(char)*size);
+
+  for( i=0, j=0, c=str[0] ; c!='\0' ; i++, j++, c=str[i])
+    {
+      if(c=='&' || c=='<' || c=='>')
+        {
+          size += 19;
+          temp  = realloc(escaped, size);
+          if(!temp)
+            {
+              free(escaped);
+              return strdup("Internal Error");
+            }
+          escaped = temp;
+
+          strncpy(escaped+j, "<font> &", 8); j+=8;
+          switch(c)
+            {
+            case '&':
+              strncpy(escaped+j, "amp", 3); j+=3;
+              break;
+            case '<':
+              strncpy(escaped+j, "lt" , 2); j+=2;
+              break;
+            case '>':
+              strncpy(escaped+j, "gt" , 2); j+=2;
+            default:
+              break;
+            }
+          strncpy(escaped+j, ";</font>", 8); j+=7;
+        }
+      else
+        {
+          escaped[j] = c;
+        }
+    }
+
+  escaped[j] = '\0';
+  return escaped;
+}

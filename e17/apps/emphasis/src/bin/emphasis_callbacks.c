@@ -1,5 +1,6 @@
 #include "emphasis.h"
 #include "emphasis_callbacks.h"
+#include <ctype.h>
 
 /* TODO : update doc */
 /**
@@ -8,9 +9,6 @@
 Etk_Bool
 cb_quit(Etk_Object *object, void *data)
 {
-  /* TODO :
-   * config option : stop music on exit?
-   */
   UNUSED(object);
 
   Emphasis_Player_Gui *player;
@@ -18,12 +16,16 @@ cb_quit(Etk_Object *object, void *data)
 
   player = data;
 
+  /* Save the current config settings */
   config = config_load();
-
-  /* TODO: maybe check emphasis' mode */
   etk_widget_geometry_get(ETK_WIDGET(player->full.window),
                           &(config->geometry.x), &(config->geometry.y),
                           &(config->geometry.w), &(config->geometry.h));
+        
+  etk_widget_geometry_get(ETK_WIDGET(player->media.window),
+                          NULL, NULL,
+                          &(config->geometry.media_w),
+                          &(config->geometry.media_h));
 
   config->colwidth.title  = 
     etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 0));
@@ -33,8 +35,17 @@ cb_quit(Etk_Object *object, void *data)
     etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 2));
   config->colwidth.album  =
     etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 3));
+  config->media_paned = etk_paned_position_get(ETK_PANED(player->media.paned));
 
   config->mode = player->state;
+  config->pls_show =
+    etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(player->small.media));
+  config->crossfade = mpc_get_crossfade();
+
+  if(config->stop_on_exit)
+    {
+      cb_button_stop_clicked(NULL, NULL);
+    }
 
   config_save(config);
   config_free(config);
@@ -386,28 +397,47 @@ cb_drag_album(Etk_Object *object, void *data)
   while (rowlist)
     {
       album = etk_tree_row_data_get(evas_list_data(rowlist));
-      tmplist = mpc_mlib_track_get(album[1], album[0]);
-
-      if (album[0])
+      if (album != NULL)
         {
-          menu_item = etk_menu_item_new_with_label(album[0]);
+          tmplist = mpc_mlib_track_get(album[1], album[0]);
+
+          if (album[0])
+            {
+              menu_item = etk_menu_item_new_with_label(album[0]);
+            }
+          else
+            {
+              menu_item = etk_menu_item_new_with_label("All");
+            }
+
+          etk_menu_shell_append(ETK_MENU_SHELL(drag_menu),
+                                ETK_MENU_ITEM(menu_item));
+          if (!playlist)
+            {
+              playlist = tmplist;
+            }
+          else
+            {
+              playlist = evas_list_concatenate(playlist, tmplist);
+            }
+          rowlist = evas_list_next(rowlist);
         }
       else
         {
-          menu_item = etk_menu_item_new_with_label("All");
-        }
+          Etk_Tree_Row *row;
 
-      etk_menu_shell_append(ETK_MENU_SHELL(drag_menu),
-                            ETK_MENU_ITEM(menu_item));
-      if (!playlist)
-        {
-          playlist = tmplist;
+          row = etk_tree_first_row_get(tree);
+          row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+          rowlist = evas_list_free(rowlist);
+          rowlist = NULL;
+          emphasis_list_free(playlist);
+          playlist = NULL;
+          while (row)
+            {
+              rowlist = evas_list_append(rowlist, row);
+              row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+            }
         }
-      else
-        {
-          playlist = evas_list_concatenate(playlist, tmplist);
-        }
-      rowlist = evas_list_next(rowlist);
     }
 
   types = calloc(1, sizeof(char));
@@ -661,11 +691,12 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   cur_title = etk_tree_col_title_get(col);      
   type = (Emphasis_Type) etk_object_data_get(ETK_OBJECT(tree), "Emphasis_Type");
 
+  /* FIXME & > < */
   if (!strcmp(base_title, cur_title))
     {
-      if (!strcmp("BackSpace", event->keyname) ||
-          !strcmp("Escape", event->keyname)    ||
-          !strcmp("Return", event->keyname))
+      /* FIXME, works with kenjins-like? */
+      /* Don't print extendted keys (shift, ctrl, etc.) */
+      if(!islower(event->keyname[0]))
         return;
 
       asprintf(&title, "%s starting with : %s", base_title, event->string);
@@ -674,8 +705,10 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
     {
       if (!strcmp("BackSpace", event->keyname))
         {
-          title = strdup(cur_title);
-          title[strlen(title) - 1] = '\0';
+          int utf8_p;
+          utf8_p = evas_string_char_prev_get(cur_title, strlen(cur_title),NULL);
+          title = strndup(cur_title, utf8_p);
+          
           emphasis_tree_mlib_init(player, type);
           if (strlen(title) == strlen(base_title) + 17)
             {
@@ -699,7 +732,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
     }
 
   etk_tree_col_title_set(etk_tree_nth_col_get(tree, 0), title);
-  length = strlen(base_title) + 17;     
+  length = strlen(base_title) + 17;
   filter = strdup(&title[length]);
   length = strlen(filter);
 /**/ 
@@ -821,9 +854,26 @@ cb_database_update(Etk_Object *object, void *data)
 }
 
 void
+cb_small_resize(Etk_Object *object, void *data)
+{
+  Emphasis_Player_Gui *player;
+  int w = 0;
+
+  UNUSED(object);
+  player = data;
+
+  etk_window_geometry_get(ETK_WINDOW(player->small.window),
+                          NULL, NULL,
+                          &w  , NULL);
+  player->small.cover_size_h = w;
+  etk_widget_size_request_set(player->small.cover,
+                              player->small.cover_size_w,
+                              player->small.cover_size_h);
+}
+
+void
 cb_switch_full(Etk_Object *object, void *data)
 {
-  /* TODO : this function ;) */
   UNUSED(object);
 //  int x, y, w, h;
 
@@ -855,7 +905,6 @@ cb_switch_full(Etk_Object *object, void *data)
 void
 cb_switch_small(Etk_Object *object, void *data)
 {
-  /* TODO : this function ;) */
   UNUSED(object);
 //  int x, y, w, h;
 
@@ -949,7 +998,7 @@ cb_config_show(Etk_Object *object, void *data)
   configgui = gui->config_gui;
 
   emphasis_configgui_autoset(configgui);
-  etk_widget_show(configgui->window);
+  etk_widget_show_all(configgui->window);
 }
 
 Etk_Bool
@@ -960,8 +1009,9 @@ cb_config_hide(Etk_Object *object, void *data)
 
   configgui = data;
 
-  etk_widget_hide(configgui->window);
-  return ETK_FALSE;
+  etk_widget_hide_all(configgui->window);
+  etk_signal_stop();
+  return ETK_TRUE;
 }
 
 void
@@ -972,7 +1022,7 @@ cb_config_ok(Etk_Object *object, void *data)
   configgui = data;
 
   emphasis_configgui_save(configgui);
-  emphasis_try_connect(configgui->data);
+  //emphasis_try_connect(configgui->data);
 
   cb_config_hide(object, data);
 }
@@ -1096,4 +1146,150 @@ cb_media_pls_save_key_down(Etk_Object *object, Etk_Event_Key_Down *event,
       etk_widget_unfocus(ETK_WIDGET(object));
       cb_media_pls_save_clicked(NULL, data);
     }
+}
+
+void
+cb_media_search_btn_add_clicked(Etk_Object *object, void *data)
+{
+  Emphasis_Player_Gui *player;
+  UNUSED(object);
+  Evas_List *row;
+  Evas_List *list;
+  Etk_Tree_Col *col;
+  const char *file;
+  player = data;
+
+  row = etk_tree_selected_rows_get(ETK_TREE(player->media.search_tree));
+  if (!row)
+    row = etk_tree_unselected_rows_get(ETK_TREE(player->media.search_tree));
+  list = row;
+
+  col = etk_tree_nth_col_get(ETK_TREE(player->media.search_tree), 3);
+  while (row)
+    {
+      etk_tree_row_fields_get(evas_list_data(row), col, &file, NULL);
+      mpc_playlist_add_song(file, 0);
+      row = evas_list_next(row);
+    }
+  evas_list_free(list);
+  mpc_playlist_commit();
+}
+
+void
+cb_media_search_btn_replace_clicked(Etk_Object *object, void *data)
+{
+  UNUSED(object);
+  Emphasis_Player_Gui *player;
+
+  player = data;
+  cb_playlist_clear(NULL,NULL,NULL);
+  cb_media_search_btn_add_clicked(object, data);
+}
+
+void
+cb_media_search_btn_add_search_clicked(Etk_Object *object, void *data)
+{
+  UNUSED(object);
+  Emphasis_Player_Gui *player;
+
+  player = data;
+  emphasis_search_row_add(player);
+}
+
+void
+cb_media_search_btn_remove_search_clicked(Etk_Object *object, void *data)
+{
+  Etk_Widget *search_root;
+  Etk_Widget *search_query_row;
+  Etk_Widget *button;
+
+  search_root = data;
+  button = ETK_WIDGET(object);
+  search_query_row  = etk_widget_parent_get(button);
+
+  etk_widget_unfocus(button);
+
+  etk_container_remove(ETK_CONTAINER(search_root), search_query_row);
+
+  /* TODO : check for an etk function to replace this */
+  Evas_List *children;
+  Evas_List *child;
+  children = etk_container_children_get(ETK_CONTAINER(search_query_row));
+  child = children;
+  while (child)
+    {
+      etk_object_destroy(ETK_OBJECT(evas_list_data(child)));
+      child = evas_list_next(child);
+    }
+  evas_list_free(children);
+  etk_object_destroy(ETK_OBJECT(search_query_row));
+}
+
+void
+cb_media_search_entry_text_changed(Etk_Object *object,
+                                   Etk_Event_Key_Down *event,
+                                   void *data)
+{
+  if (data && event && event->keyname && !strcmp(event->keyname, "Return"))
+    {
+      cb_media_search_btn_search_clicked(object, data);
+    }
+}
+
+void
+cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
+{
+  /* FIXME read this */
+  UNUSED(object);
+  Emphasis_Player_Gui *player;
+  Evas_List *children;
+  Evas_List *child;
+  Evas_List *sub_children;
+  Evas_List *sub_child;
+  Evas_List *query = NULL;
+  Etk_Widget *widget;
+  int index;
+
+  player   = data;
+  children =
+   etk_container_children_get(ETK_CONTAINER(player->media.search_root));
+
+  child = children;
+  while (child)
+    {
+      widget = evas_list_data(child);
+
+      if (ETK_IS_BOX(widget))
+        {
+          sub_children =
+           etk_container_children_get(ETK_CONTAINER(evas_list_data(child)));
+          sub_child = sub_children;
+
+          index =
+           etk_combobox_active_item_nth_get
+           (ETK_COMBOBOX(evas_list_data(sub_child)));
+          query = evas_list_append(query, (void *)index);
+
+          sub_child = evas_list_next(sub_child);
+          query =
+           evas_list_append
+           (query, etk_entry_text_get(ETK_ENTRY(evas_list_data(sub_child))));
+
+          evas_list_free(sub_children);
+        }
+
+      if (ETK_IS_TREE(widget)) { break; }
+
+      child = evas_list_next(child);
+    } 
+  evas_list_free(children);
+
+  /* XXX */
+  Evas_List *results;
+  results = mpc_find(query, 0);
+
+  emphasis_search_tree_fill(player, results);
+  /* ^ freed results */
+
+  evas_list_free(query);
 }

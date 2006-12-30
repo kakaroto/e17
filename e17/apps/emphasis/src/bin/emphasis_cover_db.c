@@ -41,6 +41,7 @@ emphasis_cover_thread_process(void *data)
           else
             {
               emphasis_player_cover_set(gui->player, cover_path);
+              free(cover_path);
             }
           emphasis_player_cover_size_update(gui->player);
 

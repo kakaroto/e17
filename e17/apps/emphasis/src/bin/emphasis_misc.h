@@ -23,5 +23,6 @@ void go_in_vbox(Etk_Widget *child, void *data);
 void etk_button_make_vertical(Etk_Widget *button);
 
 void etk_container_inspect(Etk_Container *container, int lvl, int *to_trace);
+char *etk_strescape(const char *str);
 /** @} */
 #endif /* EMPHASIS_MISC_H_ */

@@ -77,8 +77,8 @@
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
-	      <property name="expand">True</property>
-	      <property name="fill">False</property>
+	      <property name="expand">False</property>
+	      <property name="fill">True</property>
 	    </packing>
 	  </child>
 	</widget>
@@ -198,7 +198,7 @@
 </widget>
 
 <widget class="GtkDialog" id="filechooser_dialog">
-  <property name="title" translatable="yes">dialog2</property>
+  <property name="title" translatable="yes">select cover</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>

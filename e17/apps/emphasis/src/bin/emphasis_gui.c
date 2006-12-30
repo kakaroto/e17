@@ -140,17 +140,35 @@ emphasis_unknow_if_null(char **table[])
     }
 }
 
+void
+emphasis_cover_clear_queue(Cover_Info *q)
+{
+#undef EMP_CLEAR_QUEUE
+#define EMP_CLEAR_QUEUE(data) if(data) { free(data), data=NULL; }
+
+  if(q)
+    {
+      EMP_CLEAR_QUEUE(q->artist);
+      EMP_CLEAR_QUEUE(q->album);
+      free(q);
+    }
+}
+
 /* TODO : documenation */
 void
 emphasis_cover_change(Emphasis_Gui *gui, char *artist, char *album)
 {
   Cover_Info *ci;
+  Cover_Info *old;
 
   ci = malloc(sizeof(Cover_Info));
 
-  ci->artist = artist;
-  ci->album = album;
+  ci->artist = strdupnull(artist);
+  ci->album  = strdupnull(album);
 
+  old = gui->cover_queue;
   gui->cover_queue = ci;
+
+  emphasis_cover_clear_queue(old);
 }
 

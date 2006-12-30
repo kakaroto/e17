@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = Empc
+PROJECT_NAME           = Emphasis
 PROJECT_NUMBER         = 0.1
 OUTPUT_DIRECTORY       = ./doc
 CREATE_SUBDIRS         = NO

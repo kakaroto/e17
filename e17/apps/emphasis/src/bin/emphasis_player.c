@@ -64,11 +64,17 @@ emphasis_init_player(Emphasis_Player_Gui *player)
 
   player->media.notebook = enhance_var_get(en, "media_notebook");
 
+  player->media.paned    = enhance_var_get(en, "media_paned");
   player->media.pls      = enhance_var_get(en, "media_pls");
 
   player->media.artist   = enhance_var_get(en, "media_artist");
   player->media.album    = enhance_var_get(en, "media_album");
   player->media.track    = enhance_var_get(en, "media_track");
+
+  player->media.search_root  = enhance_var_get(en, "search_page_root");
+  player->media.search_combo = enhance_var_get(en, "search_page_combo");
+  player->media.search_tree  = enhance_var_get(en, "search_page_tree");
+
 
   player->media.pls_list    = enhance_var_get(en, "media_pls_list");
   player->media.pls_content = enhance_var_get(en, "media_pls_content");
@@ -128,6 +134,25 @@ emphasis_init_player(Emphasis_Player_Gui *player)
                    "Album",
                    etk_tree_model_text_new(ETK_TREE(player->media.pls)),
                    120);
+  /* search page */
+  etk_tree_multiple_select_set(ETK_TREE(player->media.search_tree), ETK_TRUE);
+  etk_tree_col_new(ETK_TREE(player->media.search_tree),
+                   "Artist",
+                   etk_tree_model_text_new(ETK_TREE(player->media.search_tree)),
+                   120);
+  etk_tree_col_new(ETK_TREE(player->media.search_tree),
+                   "Album",
+                   etk_tree_model_text_new(ETK_TREE(player->media.search_tree)),
+                   100);
+  etk_tree_col_new(ETK_TREE(player->media.search_tree),
+                   "Title",
+                   etk_tree_model_text_new(ETK_TREE(player->media.search_tree)),
+                   200);
+  etk_tree_col_new(ETK_TREE(player->media.search_tree),
+                   "Filename",
+                   etk_tree_model_text_new(ETK_TREE(player->media.search_tree)),
+                   200);
+  etk_tree_build(ETK_TREE(player->media.search_tree));
   /* playlists page */
   etk_tree_col_new(ETK_TREE(player->media.pls_list),
                    "Playlists",
@@ -227,6 +252,9 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
   enhance_callback_data_set(en, "cb_toggle_full"  , player);
   enhance_callback_data_set(en, "cb_toggle_media" , player);
 
+  /* resize */
+  enhance_callback_data_set(en, "cb_small_resize" , player);
+
   /* mouse_down */
   enhance_callback_data_set(en, "cb_seek_time", NULL);
 
@@ -251,6 +279,13 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
   enhance_callback_data_set(en, "cb_media_button_playlists_clicked", player);
   enhance_callback_data_set(en, "cb_media_button_stats_clicked"    , player);
 
+  enhance_callback_data_set(en, "cb_media_search_btn_add_clicked"    , player);
+  enhance_callback_data_set(en, "cb_media_search_btn_replace_clicked", player);
+  enhance_callback_data_set(en, "cb_media_search_btn_search_clicked" , player);
+  enhance_callback_data_set(en, "cb_media_search_btn_add_search_clicked",
+                            player);
+  enhance_callback_data_set(en, "cb_media_search_entry_text_changed", player);
+
   enhance_callback_data_set(en, "cb_media_pls_list_row_clicked"    , player);
   enhance_callback_data_set(en, "cb_media_pls_save_clicked"        , player);
   enhance_callback_data_set(en, "cb_media_pls_load_clicked"        , player);
@@ -259,6 +294,7 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
   enhance_callback_data_set(en, "cb_media_pls_list_row_clicked"    , player);
   enhance_callback_data_set(en, "cb_tree_mlib_clicked"             , player);
   enhance_callback_data_set(en, "cb_media_pls_save_key_down"       , player);
+
 }
 
 /* TODO : documentation */
@@ -299,17 +335,25 @@ emphasis_player_cover_size_update(Emphasis_Player_Gui *player)
  */
 void
 emphasis_player_info_set(Emphasis_Player_Gui *player,
-                         mpd_Song * song, char *msg)
+                         Emphasis_Song * song, char *msg)
 {
   char *info_label;
   char *info_textblock;
+
+  char *title, *artist, *album;
+  title = artist = album = NULL;
 
   if (song)
     {
       char **table[] = {&(song->artist), &(song->title), &(song->album), NULL};
       emphasis_unknow_if_null(table);
 
+      artist = etk_strescape(song->artist);
+      title  = etk_strescape(song->title) ;
+      album  = etk_strescape(song->album) ;
+
       /* TEMP */
+      /* don'd remove textblocks' spaces, it's a hack (utf8) */
       if (!msg)
         {
           asprintf(&info_label,
@@ -321,15 +365,15 @@ emphasis_player_info_set(Emphasis_Player_Gui *player,
                    "<font_size=11><i>in</i></font_size>  "
                    "<font_size=13>%s</font_size>"
                    "</left_margin>",
-                   song->title, song->artist, song->album);
+                   title, artist, album);
            asprintf(&info_textblock,
-                    "<b><font size=16>%s</font size></b>"
+                    "<b><font size=16>%s </font size></b>"
                     "\n\n"
-                    "<font size=11><i>by</i></font size>  "
-                    "<font size=13>%s</font size>\n"
-                    "<font size=11><i>in</i></font size>  "
-                    "<font size=13>%s</font size>",
-                    song->title, song->artist, song->album);
+                    "<font size=11><i>by</i></font size> "
+                    "<font size=13>%s </font size>\n"
+                    "<font size=11><i>in</i></font size> "
+                    "<font size=13>%s </font size> ",
+                    title, artist, album);
         }
       else
         {
@@ -343,16 +387,15 @@ emphasis_player_info_set(Emphasis_Player_Gui *player,
                    "<font_size=13>%s</font_size>"
                    "<font_size=11>   (%s)</font_size>"
                    "</left_margin>",
-                   song->title, song->artist, song->album, msg);
+                   title, artist, album, msg);
           asprintf(&info_textblock,
-                   "<b><font size=16>%s</font size></b>"
-                   "\n\n"
-                   "<font size=11><i>by</i></font size>  "
-                   "<font size=13>%s</font size>\n"
-                   "<font size=11><i>in</i></font size>  "
-                   "<font size=13>%s</font size>"
-                   "<font size=11>(%s)</font size>",
-                   song->title, song->artist, song->album, msg);
+                   "<b><font size=16>%s </font size></b>\n"
+                   "<font size=11>(%s)</font size>\n"
+                   "<font size=11><i>by</i></font size> "
+                   "<font size=13>%s </font size>\n"
+                   "<font size=11><i>in</i></font size> "
+                   "<font size=13>%s </font size>",
+                   title, msg, artist, album);
         }
       
       etk_label_set(ETK_LABEL(player->full.info), info_label);
@@ -361,6 +404,9 @@ emphasis_player_info_set(Emphasis_Player_Gui *player,
                              ETK_TRUE);
       free(info_label);
       free(info_textblock);
+      free(artist);
+      free(title);
+      free(album);
     }
   else
     {

@@ -2,7 +2,6 @@
 #include "emphasis_config_gui.h"
 
 /* TODO : all docs */
-
 static void
 _emphasis_enhance_callbacks(Emphasis_Config_Gui *configgui);
 
@@ -15,7 +14,7 @@ emphasis_init_configgui(Emphasis_Config_Gui *configgui)
   if(en==NULL)
     {
       fprintf(stderr, "enhance new failed\n");
-      exit(1);
+      return;
     }
   configgui->en = en;
 
@@ -24,8 +23,12 @@ emphasis_init_configgui(Emphasis_Config_Gui *configgui)
 
   configgui->window   = enhance_var_get(en, "window");
   configgui->hostname = enhance_var_get(en, "hostname");
-  //configgui->port     = enhance_var_get(en, "port");
+  configgui->port     = enhance_var_get(en, "port");
   configgui->password = enhance_var_get(en, "password");
+
+  configgui->xfade    = enhance_var_get(en, "crossfade");
+  configgui->stop     = enhance_var_get(en, "stop");
+  configgui->aspect   = enhance_var_get(en, "aspect");
 
   etk_window_wmclass_set(ETK_WINDOW(configgui->window), "emphasis", "Emphasis");
 }
@@ -49,6 +52,10 @@ emphasis_configgui_autoset(Emphasis_Config_Gui *configgui)
 
   config = config_load();
 
+  if(config->port)
+    {
+      etk_range_value_set(ETK_RANGE(configgui->port), config->port);
+    }
   if(config->hostname)
     {
       etk_entry_text_set(ETK_ENTRY(configgui->hostname),
@@ -60,6 +67,21 @@ emphasis_configgui_autoset(Emphasis_Config_Gui *configgui)
                          config->password);
     }
 
+  if(!mpc_assert_status(MPD_PLAYER_STOP) || mpc_get_crossfade())
+    {
+      etk_range_value_set(ETK_RANGE(configgui->xfade),
+                          mpc_get_crossfade());
+    }
+  else
+    {
+      etk_range_value_set(ETK_RANGE(configgui->xfade),
+                          config->crossfade);
+    }
+  etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(configgui->stop),
+                               config->stop_on_exit);
+  etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(configgui->aspect),
+                               config->keep_aspect);
+
   config_free(config);
 }
 
@@ -70,11 +92,35 @@ emphasis_configgui_save(Emphasis_Config_Gui *configgui)
 
   config = config_load();
 
+  if(config->hostname) { free(config->hostname); }
+  if(config->password) { free(config->password); }
+      
   config->hostname =
-   (char*)etk_entry_text_get(ETK_ENTRY(configgui->hostname));
+   strdup(etk_entry_text_get(ETK_ENTRY(configgui->hostname)));
   config->password =
-   (char*)etk_entry_text_get(ETK_ENTRY(configgui->password));
+   strdup(etk_entry_text_get(ETK_ENTRY(configgui->password)));
+  config->port      =
+   etk_range_value_get(ETK_RANGE(configgui->port));
+
+  config->crossfade    =
+   etk_range_value_get(ETK_RANGE(configgui->xfade));
+  config->stop_on_exit =
+   etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(configgui->stop));
+  config->keep_aspect  =
+   etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(configgui->aspect));
+
+  if(configgui->data)
+    {
+      etk_image_keep_aspect_set
+        (ETK_IMAGE(((Emphasis_Gui*)configgui->data)->player->small.cover),
+         config->keep_aspect);
+      etk_image_keep_aspect_set
+        (ETK_IMAGE(((Emphasis_Gui*)configgui->data)->player->full.cover),
+         config->keep_aspect);
+    }
+  mpc_set_crossfade(config->crossfade);
 
   config_save(config);
   config_free(config);
 }
+

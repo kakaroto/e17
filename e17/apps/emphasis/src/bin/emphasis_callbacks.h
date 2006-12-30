@@ -52,6 +52,7 @@ void cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
 void cb_playlist_delete(Etk_Object *object, void *data);
 void cb_database_update(Etk_Object *object, void *data);
 
+void cb_small_resize(Etk_Object *object, void *data);
 
 void cb_switch_small(Etk_Object *object, void *data);
 void cb_switch_full(Etk_Object *object, void *data);
@@ -71,5 +72,16 @@ void cb_media_pls_load_clicked(Etk_Object *object, void *data);
 void cb_media_pls_del_clicked(Etk_Object *object, void *data);
 void cb_media_pls_save_key_down(Etk_Object *object, 
                                 Etk_Event_Key_Down *event, void *data);
+
+
+void cb_media_search_btn_add_clicked(Etk_Object *object, void *data);
+void cb_media_search_btn_replace_clicked(Etk_Object *object, void *data);
+void cb_media_search_btn_del_search_clicked(Etk_Object *object, void *data);
+
+void cb_media_search_btn_remove_search_clicked(Etk_Object *object, void *data);
+void cb_media_search_entry_text_changed(Etk_Object *object,
+                                        Etk_Event_Key_Down *event,
+                                        void *data);
+void cb_media_search_btn_search_clicked(Etk_Object *object, void *data);
 /** @} */
 #endif /* EMPHASIS_CALLBACKS_H_ */

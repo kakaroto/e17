@@ -15,12 +15,20 @@ set_defaults(void)
   ecore_config_int_default(EMP_GEOMETRY_W_KEY, 700);
   ecore_config_int_default(EMP_GEOMETRY_H_KEY, 600);
 
-  ecore_config_int_default(EMP_MODE_KEY, EMPHASIS_FULL);
+  ecore_config_int_default(EMP_GEOMETRY_MEDIA_W_KEY, 600);
+  ecore_config_int_default(EMP_GEOMETRY_MEDIA_H_KEY, 500);
 
-  ecore_config_int_default(EMP_COLWIDTH_TITLE_KEY, 220);
-  ecore_config_int_default(EMP_COLWIDTH_TIME_KEY, 50);
+  ecore_config_int_default(EMP_COLWIDTH_TITLE_KEY,  220);
+  ecore_config_int_default(EMP_COLWIDTH_TIME_KEY,   50);
   ecore_config_int_default(EMP_COLWIDTH_ARTIST_KEY, 100);
-  ecore_config_int_default(EMP_COLWIDTH_ALBUM_KEY, 100);
+  ecore_config_int_default(EMP_COLWIDTH_ALBUM_KEY,  100);
+
+  ecore_config_int_default(EMP_MEDIA_PANED_KEY, 50);
+
+  ecore_config_int_default(EMP_MODE_KEY,           EMPHASIS_FULL);
+  ecore_config_int_default(EMP_PLS_SHOW_KEY,       ETK_FALSE);
+  ecore_config_int_default(EMP_STOP_ON_EXIT_KEY,   ETK_FALSE);
+  ecore_config_int_default(EMP_COVER_KEEP_ASPECT,  ETK_TRUE);
 }
 
 Emphasis_Config *
@@ -42,12 +50,22 @@ config_load(void)
   config->geometry.w = ecore_config_int_get(EMP_GEOMETRY_W_KEY);
   config->geometry.h = ecore_config_int_get(EMP_GEOMETRY_H_KEY);
 
+  config->geometry.media_w = ecore_config_int_get(EMP_GEOMETRY_MEDIA_W_KEY);
+  config->geometry.media_h = ecore_config_int_get(EMP_GEOMETRY_MEDIA_H_KEY);
+
   config->mode = ecore_config_int_get(EMP_MODE_KEY);
 
-  config->colwidth.title = ecore_config_int_get(EMP_COLWIDTH_TITLE_KEY);
-  config->colwidth.time = ecore_config_int_get(EMP_COLWIDTH_TIME_KEY);
+  config->colwidth.title  = ecore_config_int_get(EMP_COLWIDTH_TITLE_KEY);
+  config->colwidth.time   = ecore_config_int_get(EMP_COLWIDTH_TIME_KEY);
   config->colwidth.artist = ecore_config_int_get(EMP_COLWIDTH_ARTIST_KEY);
-  config->colwidth.album = ecore_config_int_get(EMP_COLWIDTH_ALBUM_KEY);
+  config->colwidth.album  = ecore_config_int_get(EMP_COLWIDTH_ALBUM_KEY);
+
+  config->media_paned = ecore_config_int_get(EMP_MEDIA_PANED_KEY);
+
+  config->mode         = ecore_config_int_get(EMP_MODE_KEY);
+  config->pls_show     = ecore_config_int_get(EMP_PLS_SHOW_KEY);
+  config->stop_on_exit = ecore_config_int_get(EMP_STOP_ON_EXIT_KEY);
+  config->keep_aspect  = ecore_config_int_get(EMP_COVER_KEEP_ASPECT);
 
   return config;
 }
@@ -71,6 +89,13 @@ config_save(Emphasis_Config *config)
   ecore_config_int_set(EMP_COLWIDTH_TIME_KEY, config->colwidth.time);
   ecore_config_int_set(EMP_COLWIDTH_ARTIST_KEY, config->colwidth.artist);
   ecore_config_int_set(EMP_COLWIDTH_ALBUM_KEY, config->colwidth.album);
+
+  ecore_config_int_set(EMP_MEDIA_PANED_KEY, config->media_paned);
+
+  ecore_config_int_set(EMP_MODE_KEY,           config->mode);
+  ecore_config_int_set(EMP_PLS_SHOW_KEY,       config->pls_show);
+  ecore_config_int_set(EMP_STOP_ON_EXIT_KEY,   config->stop_on_exit);
+  ecore_config_int_set(EMP_COVER_KEEP_ASPECT,  config->keep_aspect);
 
   ecore_config_save();
 }

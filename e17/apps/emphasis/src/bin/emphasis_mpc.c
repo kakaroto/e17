@@ -1,6 +1,6 @@
 #include "emphasis.h"
 #include "emphasis_mpc.h"
-
+#include <libmpd/libmpd-internal.h>
 /**
  * @brief Init a connection to the mpd daemon
  * @param hostname the mpd daemon hostname
@@ -9,7 +9,7 @@
  * @return The timer of the updates
  */
 Ecore_Timer *
-mpc_init(const char *hostname, int port, const char *password)
+mpc_init(const char *hostname, int port, const char *password, void *data)
 {
   Ecore_Timer *timer;
 
@@ -17,14 +17,9 @@ mpc_init(const char *hostname, int port, const char *password)
   if (!mpd_connect(mo))
     {
       mpd_send_password(mo);
+      mpc_signal_connect_status_changed(data);
+      /* TODO: Destroy this time if not needed anymore */
       timer = ecore_timer_add(0.2, mpc_update, NULL);
-      if (!mpd_server_check_version(mo, 0, 12, 0))
-        {
-          fprintf(stderr, "Wrong server version. Emphasis require MPD 0.12.0\n");
-          mpc_disconnect();
-          ecore_timer_del(timer);
-          timer = NULL;
-        }
     }
   else
     {
@@ -32,6 +27,69 @@ mpc_init(const char *hostname, int port, const char *password)
     }
 
   return timer;
+}
+
+/* @data player A Emphasis_Player_Gui
+ * @brief Check if MPD have returned an error, and display the message in the
+ * info zone.
+ */
+void
+mpc_check_error(Emphasis_Player_Gui *player)
+{
+  MpdError error;
+
+  error = mpd_check_error(mo);
+  switch (error)
+    {
+    case MPD_OK:
+      if (!mpd_server_check_version(mo, 0, 12, 0))
+        {
+          emphasis_player_info_set(player, NULL, 
+                                   "Wrong server version." 
+                                   "Emphasis require MPD 0.12.0");
+          mpc_disconnect();
+        }
+      break;
+    case MPD_ARGS_ERROR:
+      emphasis_player_info_set(player, NULL, "Error in the function's arguments");
+      break;
+    case MPD_NOT_CONNECTED: 
+      emphasis_player_info_set(player, NULL, "Action failed because there is no connection to an mpd daemon");
+      break;
+    case MPD_STATUS_FAILED:
+      emphasis_player_info_set(player, NULL, "Failed to grab status");
+      break;
+    case MPD_LOCK_FAILED:
+      emphasis_player_info_set(player, NULL, "Connection is still locked");
+      break;
+    case MPD_STATS_FAILED:
+      emphasis_player_info_set(player, NULL, "Failed to grab status");
+      break;
+    case MPD_SERVER_ERROR: 	
+      emphasis_player_info_set(player, NULL, "Mpd server returned an error");
+      break;
+    case MPD_SERVER_NOT_SUPPORTED:
+      emphasis_player_info_set(player, NULL, "Mpd doesn't support this feature");
+      break;
+    case MPD_DATABASE_PLAYLIST_EXIST:
+      emphasis_player_info_set(player, NULL, "The playlist allready extists");
+      break;
+    case MPD_PLAYLIST_EMPTY:
+      emphasis_player_info_set(player, NULL, "Playlist is empty");
+      break;
+    case MPD_PLAYLIST_QUEUE_EMPTY:
+      emphasis_player_info_set(player, NULL, "Playlist queue is empty");
+      break;
+    case MPD_PLAYER_NOT_PLAYING:
+      emphasis_player_info_set(player, NULL, "Player isn't Playing");
+      break;
+    case MPD_TAG_NOT_FOUND:
+      emphasis_player_info_set(player, NULL, "Tag Item not found");
+      break;
+    case MPD_FATAL_ERROR:
+      emphasis_player_info_set(player, NULL, "Not connected to MPD");
+      break;
+    }
 }
 
 /**
@@ -73,7 +131,7 @@ void
 status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
 {
   Emphasis_Player_Gui *player;
-  mpd_Song *song = NULL;
+  Emphasis_Song *song = NULL;
   MpdState state;
   int elapsed_time, total_time, vol_value;
   MpdData *playlist;
@@ -90,10 +148,39 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
       elapsed_time = mpd_status_get_elapsed_song_time(mo);
       total_time = mpd_status_get_total_song_time(mo);
       emphasis_player_progress_set(player, (float) elapsed_time, total_time);
+      /* dirty hack */ 
+      if(!mpd_status_db_is_updating(mo))
+        {
+          song = mpc_playlist_get_current_song();
+          emphasis_player_info_set(player, song, NULL);
+          emphasis_song_free(song);
+        }
     }
   if (what & MPD_CST_UPDATING)
     {
-      emphasis_player_info_set(player, NULL, "update");
+      if(mpc_assert_status(MPD_STATUS_STATE_STOP))
+        {
+          emphasis_player_info_set(player, NULL, "Updating");
+        }
+      else
+        {
+          song = mpc_playlist_get_current_song();
+          emphasis_player_info_set(player, song, "updating");
+          emphasis_song_free(song);
+        }
+    }
+  if (what & MPD_CST_DATABASE)
+    {
+      char *tree_title;
+      Etk_Tree *tree = ETK_TREE(player->media.artist);
+
+      tree_title = etk_object_data_get(ETK_OBJECT(tree), "title");
+      emphasis_tree_mlib_init(player, EMPHASIS_ARTIST);
+      etk_tree_col_title_set(etk_tree_nth_col_get(tree,0), tree_title);
+
+      song = mpc_playlist_get_current_song();
+      emphasis_player_info_set(player, song, NULL);
+      emphasis_song_free(song);
     }
   if (what & MPD_CST_RANDOM)
     {
@@ -128,15 +215,17 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
           emphasis_pls_mark_current(ETK_TREE(player->media.pls), -1);
           break;
         case MPD_STATUS_STATE_PAUSE:
-          song = mpd_playlist_get_current_song(mo);
+          song = mpc_playlist_get_current_song();
           emphasis_player_toggle_play(player);
           emphasis_player_info_set(player, song, "paused");
+          emphasis_song_free(song);
           break;
         case MPD_STATUS_STATE_PLAY:
-          song = mpd_playlist_get_current_song(mo);
+          song = mpc_playlist_get_current_song();
           emphasis_player_toggle_play(player);
           emphasis_player_info_set(player, song, NULL);
           emphasis_pls_mark_current(ETK_TREE(player->media.pls), song->id);
+          emphasis_song_free(song);
           break;
         case MPD_STATUS_STATE_UNKNOWN:
           emphasis_player_info_set(player, NULL, "wtf is that ?");
@@ -145,20 +234,27 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
     }
   if (what & MPD_CST_PLAYLIST)
     {
+      Evas_List *emphasis_playlist;
+
       playlist = mpd_playlist_get_changes(mo, -1);
-      emphasis_tree_pls_set(ETK_TREE(player->media.pls),
-                            convert_mpd_data(playlist));
+      emphasis_playlist = convert_mpd_data(playlist);
+      emphasis_tree_pls_set(ETK_TREE(player->media.pls), emphasis_playlist);
+      
+//      emphasis_list_free(emphasis_playlist);
       mpd_data_free(playlist);
     }
   if (what & MPD_CST_SONGID)
     {
-      song = mpd_playlist_get_current_song(mo);
+      song = mpc_playlist_get_current_song();
       if (song)
         {
           emphasis_player_info_set(player, song, NULL);
           emphasis_pls_mark_current(ETK_TREE(player->media.pls), song->id);
-          emphasis_cover_change((Emphasis_Gui *) data, strdup(song->artist),
-                                strdup(song->album));
+          emphasis_cover_change((Emphasis_Gui *) data,
+                                song->artist,
+                                song->album);
+
+          emphasis_song_free(song);
         }
     }
 }
@@ -263,6 +359,18 @@ mpc_mlib_track_get(char *artist, char *album)
   return list;
 }
 
+Emphasis_Song *
+mpc_playlist_get_current_song(void)
+{
+  Emphasis_Song *em_song;
+  mpd_Song *mpd_song;
+
+  mpd_song = mpd_playlist_get_current_song(mo);
+  em_song = convert_mpd_song(mpd_song);
+
+  return em_song;
+}
+
 /**
  * @brief Add to the current playlist a list of songs
  * @param list A list of songs
@@ -273,7 +381,9 @@ mpc_playlist_add(Evas_List *list)
 {
   long long id;
   Emphasis_Data *data;
+  Evas_List *first;
 
+  first = list;
   id = mpd_playlist_get_playlist_id(mo);
 
   while (list)
@@ -284,7 +394,19 @@ mpc_playlist_add(Evas_List *list)
     }
 
   mpd_playlist_queue_commit(mo);
-  emphasis_list_free(list);
+  list = first;
+}
+
+/**
+ * @brief Add to the current playlist a song
+ * @param file The song file
+ * @param commit Set if mpd will add song now
+ */
+void
+mpc_playlist_add_song(const char *file, int commit)
+{
+  mpd_playlist_queue_add(mo, (char*)file);
+  if(commit) { mpd_playlist_queue_commit(mo); }
 }
 
 /**
@@ -313,6 +435,15 @@ void
 mpc_playlist_clear(void)
 {
   mpd_playlist_clear(mo);
+}
+
+/**
+ * @brief Commit new mpd playlist
+ */
+void
+mpc_playlist_commit(void)
+{
+  mpd_playlist_queue_commit(mo);
 }
 
 /**
@@ -416,6 +547,7 @@ mpc_play_if_stopped(void)
       song =
         mpd_playlist_get_changes(mo, mpd_playlist_get_old_playlist_id(mo));
       mpc_play_id(song->song->id);
+      mpd_data_free(song);
     }
 }
 
@@ -467,6 +599,19 @@ void
 mpc_change_vol(int value)
 {
   mpd_status_set_volume(mo, value);
+}
+
+int
+mpc_get_crossfade(void)
+{
+  return mpd_status_get_crossfade(mo);
+}
+
+void
+mpc_set_crossfade(int sec)
+{
+  sec = (sec>=0) ? sec : 0;
+  mpd_status_set_crossfade(mo, sec);
 }
 
 void
@@ -587,3 +732,66 @@ MpdData *mpd_database_list_playlist(MpdObj *mi)
 }
 #endif
 
+Evas_List *
+mpc_find(Evas_List *query, int exact)
+{
+  Evas_List      *table, *value;
+  Emphasis_Data  *data;
+  mpd_InfoEntity *ent     = NULL;
+  Evas_List      *results = NULL;
+
+ 	if (!mpd_check_connected(mo)               ||
+ 	    !mpd_server_check_version(mo, 0,12,0)  ||
+ 	     mpd_lock_conn(mo))
+    { return NULL; }
+
+  mpd_startSearch(mo->connection, exact);
+  table = query;
+  value = evas_list_next(table);
+
+  while (value && table)
+    {
+      mpd_addConstraintSearch(mo->connection, 
+                              (int)evas_list_data(table),
+                              (char *)evas_list_data(value));
+      
+      value = evas_list_nth_list(value, 2);
+      table = evas_list_nth_list(table, 2);
+    }
+  mpd_commitSearch(mo->connection);
+
+  while ( (ent = mpd_getNextInfoEntity(mo->connection)) )
+	{
+    data = NULL;
+		if(ent->type == MPD_INFO_ENTITY_TYPE_DIRECTORY)
+		{
+      data            = emphasis_data_new();
+			data->type      = EMPHASIS_DATA_TYPE_DIRECTORY;
+			data->directory = ent->info.directory->path;
+			ent->info.directory->path = NULL;
+		}
+		else if (ent->type == MPD_INFO_ENTITY_TYPE_SONG)
+		{
+      data       = emphasis_data_new();
+			data->type = EMPHASIS_DATA_TYPE_SONG;
+			data->song = convert_mpd_song(ent->info.song);
+		}
+		else if (ent->type == MPD_INFO_ENTITY_TYPE_PLAYLISTFILE)
+		{
+      data           = emphasis_data_new();
+			data->type     = EMPHASIS_DATA_TYPE_PLAYLIST;
+			data->playlist = ent->info.playlistFile->path;
+			ent->info.playlistFile->path = NULL;
+		}
+
+		mpd_freeInfoEntity(ent);
+    if (data != NULL)
+      { results = evas_list_append(results, data); }
+	}
+	mpd_finishCommand(mo->connection);
+
+	/* unlock */
+	mpd_unlock_conn(mo);
+
+	return results;
+}

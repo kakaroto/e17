@@ -14,16 +14,17 @@
 #include <etk/Etk.h>
 #include <Enhance.h>
 
-#include "emphasis_mpc.h"
+#include "emphasis_data_list.h"
 #include "emphasis_player.h"
+#include "emphasis_mpc.h"
 #include "emphasis_config.h"
 #include "emphasis_config_gui.h"
 #include "emphasis_gui.h"
 #include "emphasis_media.h"
-#include "emphasis_data_list.h"
 #include "emphasis_convert.h"
 #include "emphasis_misc.h"
 #include "emphasis_callbacks.h"
+#include "emphasis_search.h"
 #include "emphasis_cover.h"
 #include "emphasis_cover_db.h"
 

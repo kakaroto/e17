@@ -51,14 +51,52 @@ print_evas_list_stats(Evas_List *list)
 }
 
 void
+emphasis_song_free(Emphasis_Song *song)
+{
+#undef  EMP_EL_FREE
+#define EMP_EL_FREE(data) if(data) free(data)
+  if(song)
+    {
+      EMP_EL_FREE(song->file    );
+      EMP_EL_FREE(song->artist  );
+      EMP_EL_FREE(song->title   );
+      EMP_EL_FREE(song->album   );
+      EMP_EL_FREE(song->track   );
+      EMP_EL_FREE(song->name    );
+      EMP_EL_FREE(song->date    );
+      EMP_EL_FREE(song->genre   );
+      EMP_EL_FREE(song->composer);
+
+      free(song);
+    }
+}
+
+void
+emphasis_data_free(Emphasis_Data *data)
+{
+  if(data)
+    {
+      if(data->song) { emphasis_song_free(data->song); }
+      EMP_EL_FREE(data->tag);
+      EMP_EL_FREE(data->playlist);
+      EMP_EL_FREE(data->directory);
+      free(data);
+    }
+}
+
+/* TODO check this */
+void
 emphasis_list_free(Evas_List *list)
 {
   Emphasis_Data *data;
 
+  if (!list) return;
   list = evas_list_last(list);
   while (evas_list_prev(list))
     {
       data = evas_list_data(list);
+      list = evas_list_prev(list);
+      if (!data) continue;
       if (data->song)
         {
           if (data->song->file)     { free(data->song->file);     } 
@@ -76,7 +114,6 @@ emphasis_list_free(Evas_List *list)
       if (data->playlist)  { free(data->playlist);  }
       if (data->directory) { free(data->directory); }
       free(data);
-      list = evas_list_prev(list);
     }
   data = evas_list_data(list);
   free(data);

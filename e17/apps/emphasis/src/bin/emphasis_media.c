@@ -145,7 +145,9 @@ emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist)
   int id;
   char *title, *song_time;
   Emphasis_Data *data;
+  Evas_List *list;
 
+  list = playlist;
   col_title  = etk_tree_nth_col_get(tree, 0);
   col_time   = etk_tree_nth_col_get(tree, 1);
   col_artist = etk_tree_nth_col_get(tree, 2);
@@ -198,7 +200,7 @@ emphasis_tree_pls_set(Etk_Tree *tree, Evas_List *playlist)
       playlist = evas_list_next(playlist);
     }
 
-  emphasis_list_free(playlist);
+  emphasis_list_free(list);
   etk_tree_thaw(tree);
 }
 
@@ -223,20 +225,20 @@ emphasis_pls_mark_current(Etk_Tree *tree, int id)
     {
       row_id = (int) etk_tree_row_data_get(row);
       etk_tree_row_fields_get(row, col_current, &image, &title, NULL);
+      title = strdup(title);
       if (image)
         {
-          title = strdup(title);
           etk_tree_row_fields_set(row, col_current, NULL, title, NULL);
         }
       if (row_id == id)
         {
-          title = strdup(title);
           etk_tree_row_fields_set(row, col_current,
                                   PACKAGE_DATA_DIR "/images/note.png", title,
                                   NULL);
           etk_tree_row_scroll_to(row, ETK_FALSE);
 
         }
+      free(title);
       /* TODO Don't read the whole tree stop after one mark/unmark */
       row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
     }

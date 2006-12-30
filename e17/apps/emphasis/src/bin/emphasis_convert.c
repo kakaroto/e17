@@ -11,18 +11,19 @@ convert_mpd_song(mpd_Song * src)
 
   dest = malloc(sizeof(Emphasis_Song));
 
-  dest->file = strdupnull(src->file);
-  dest->artist = strdupnull(src->artist);
-  dest->title = strdupnull(src->title);
-  dest->album = strdupnull(src->album);
-  dest->track = strdupnull(src->track);
-  dest->name = strdupnull(src->name);
-  dest->date = strdupnull(src->date);
-  dest->genre = strdupnull(src->genre);
+  dest->file     = strdupnull(src->file);
+  dest->artist   = strdupnull(src->artist);
+  dest->title    = strdupnull(src->title);
+  dest->album    = strdupnull(src->album);
+  dest->track    = strdupnull(src->track);
+  dest->name     = strdupnull(src->name);
+  dest->date     = strdupnull(src->date);
+  dest->genre    = strdupnull(src->genre);
   dest->composer = strdupnull(src->composer);
-  dest->time = src->time;
-  dest->pos = src->pos;
-  dest->id = src->id;
+
+  dest->time     = src->time;
+  dest->pos      = src->pos;
+  dest->id       = src->id;
 
   return dest;
 }
@@ -34,10 +35,12 @@ convert_mpd_data(MpdData * src)
   int loop = 1;
   Evas_List *dest = NULL;
   Emphasis_Data *data;
+  MpdData *first;
 
   if (!src)
     return NULL;
 
+  first = src;
   while (loop)
     {
 
@@ -49,7 +52,7 @@ convert_mpd_data(MpdData * src)
           break;
         case MPD_DATA_TYPE_TAG:
           data->type = EMPHASIS_DATA_TYPE_TAG;
-          data->tag = strdupnull(src->tag);
+          data->tag  = strdupnull(src->tag);
           break;
         case MPD_DATA_TYPE_DIRECTORY:
           data->type = EMPHASIS_DATA_TYPE_DIRECTORY;
@@ -78,7 +81,7 @@ convert_mpd_data(MpdData * src)
           src = mpd_data_get_next(src);
         }
     }
-  src = mpd_data_get_first(src);
+  src = first;
 
   return dest;
 }

@@ -49,6 +49,7 @@ void emphasis_clear(Emphasis_Gui *gui);
 void emphasis_init_menu(Emphasis_Gui *gui);
 void emphasis_menu_append(Etk_Widget *menu, ...);
 void emphasis_unknow_if_null(char **table[]);
+void emphasis_cover_clear_queue(Cover_Info *queue);
 void emphasis_cover_change(Emphasis_Gui *gui, char *artist, char *album);
 
 /** @} */

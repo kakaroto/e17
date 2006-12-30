@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
 <!-- Generated with glade3
-	Version: 3.0.0
-	Date: Fri Aug 25 01:23:27 2006
-	User: lok
-	Host: dapper
+	Version: 3.0.1
+	Date: Tue Dec 12 00:12:02 2006
+	User: aji
+	Host: neiki
 -->
 <glade-interface>
   <widget class="GtkWindow" id="small_window">
@@ -14,6 +14,7 @@
     <property name="default_width">180</property>
     <property name="default_height">355</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <signal name="resize" handler="cb_small_resize"/>
     <signal name="delete_event" handler="cb_quit"/>
     <child>
       <widget class="GtkVBox" id="small_root">
@@ -160,7 +161,7 @@
               <widget class="GtkHScale" id="small_sound_slider">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="adjustment">1.000000 1.000000 100.000000 1.000000 1.000000 0.000000</property>
+                <property name="adjustment">1 1 100 1 1 0</property>
                 <property name="draw_value">False</property>
                 <signal name="value_changed" handler="cb_vol_slider_value_changed"/>
               </widget>
@@ -243,26 +244,6 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkCheckButton" id="small_media">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="draw_indicator">True</property>
-                <property name="tooltip">show/hide playlist</property>
-                <signal name="clicked" handler="cb_toggle_media"/>
-                <child>
-                  <widget class="GtkImage" id="image24">
-                    <property name="visible">True</property>
-                    <property name="stock">gtk-add</property>
-                    <property name="icon_size">1</property>
-                  </widget>
-                </child>
-              </widget>
-              <packing>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
               <widget class="GtkCheckButton" id="small_full">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -273,6 +254,26 @@
                   <widget class="GtkImage" id="image23">
                     <property name="visible">True</property>
                     <property name="stock">gtk-go-up</property>
+                    <property name="icon_size">1</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkCheckButton" id="small_media">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="draw_indicator">True</property>
+                <property name="tooltip">show/hide playlist</property>
+                <signal name="clicked" handler="cb_toggle_media"/>
+                <child>
+                  <widget class="GtkImage" id="image24">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-add</property>
                     <property name="icon_size">1</property>
                   </widget>
                 </child>
@@ -358,7 +359,6 @@
                   <widget class="GtkHBox" id="hbox7">
                     <property name="visible">True</property>
                     <property name="homogeneous">True</property>
-                    <property name="spacing">6</property>
                     <child>
                       <widget class="GtkTreeView" id="media_artist">
                         <property name="visible">True</property>
@@ -392,6 +392,9 @@
                       </packing>
                     </child>
                   </widget>
+                  <packing>
+                    <property name="resize">False</property>
+                  </packing>
                 </child>
                 <child>
                   <widget class="GtkTreeView" id="media_pls">
@@ -420,9 +423,162 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label_search_temp">
+              <widget class="GtkVBox" id="search_page_root">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Search not yet implemented</property>
+                <child>
+                  <widget class="GtkHBox" id="search_hbox0">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkComboBox" id="search_page_combo">
+                        <property name="width_request">140</property>
+                        <property name="visible">True</property>
+                        <property name="items" translatable="yes">Artist
+Album
+Title
+Track
+Name
+Genre
+Date
+Composer
+Performer
+Comment
+Disc
+Filename</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">10</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkEntry" id="search_entry">
+                        <property name="visible">True</property>
+                        <signal name="key_down" handler="cb_media_search_entry_text_changed"/>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="search_btn_add_search">
+                        <property name="visible">True</property>
+                        <property name="relief">GTK_RELIEF_NONE</property>
+                        <property name="focus_on_click">False</property>
+                        <property name="image_position">GTK_POS_TOP</property>
+                        <signal name="clicked" handler="cb_media_search_btn_add_search_clicked"/>
+                        <child>
+                          <widget class="GtkImage" id="search_image_add">
+                            <property name="visible">True</property>
+                            <property name="stock">gtk-add</property>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="search_btn_search">
+                        <property name="visible">True</property>
+                        <signal name="clicked" handler="cb_media_search_btn_search_clicked"/>
+                        <child>
+                          <widget class="GtkHBox" id="hbox5">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkImage" id="image1">
+                                <property name="visible">True</property>
+                                <property name="icon_size">1</property>
+                                <property name="icon_name">ETK_STOCK_SYSTEM_SEARCH</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label2">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Search</property>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkTreeView" id="search_page_tree">
+                    <property name="visible">True</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkHButtonBox" id="hbuttonbox1">
+                    <property name="visible">True</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <widget class="GtkButton" id="search_btn_add">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">gtk-add</property>
+                        <property name="use_stock">True</property>
+                        <signal name="clicked" handler="cb_media_search_btn_add_clicked"/>
+                      </widget>
+                      <packing>
+                        <property name="fill">False</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="search_btn_replace">
+                        <property name="visible">True</property>
+                        <signal name="clicked" handler="cb_media_search_btn_replace_clicked"/>
+                        <child>
+                          <widget class="GtkHBox" id="hbox9">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkImage" id="image6">
+                                <property name="visible">True</property>
+                                <property name="stock">gtk-refresh</property>
+                                <property name="icon_size">2</property>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label3">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Replace</property>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">3</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -442,7 +598,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox8">
+              <widget class="GtkVBox" id="pls_page_root">
                 <property name="visible">True</property>
                 <child>
                   <widget class="GtkHPaned" id="hpaned1">
@@ -694,7 +850,7 @@
                       <widget class="GtkHScale" id="full_sound_slider">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="adjustment">1.000000 1.000000 100.000000 1.000000 1.000000 0.000000</property>
+                        <property name="adjustment">1 1 100 1 1 0</property>
                         <property name="draw_value">False</property>
                         <signal name="value_changed" handler="cb_vol_slider_value_changed"/>
                       </widget>

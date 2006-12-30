@@ -35,6 +35,19 @@ void on_btn_open_clicked(Etk_Object *object, void *data);
 void dialog_close(Etk_Object *object, void *data);
 
 /*********/
+int
+tree_sort(Etk_Tree *tree,
+          Etk_Tree_Row *r1, Etk_Tree_Row *r2,
+          Etk_Tree_Col *col,
+          void *data)
+{
+  char *k1 = NULL;
+  char *k2 = NULL;
+  etk_tree_row_fields_get(r1, col, &k1, NULL);
+  etk_tree_row_fields_get(r2, col, &k2, NULL);
+  return strcoll(k1, k2);
+}
+
 void
 on_window_destroy(Etk_Object *object, void *data)
 {
@@ -269,6 +282,7 @@ fill_tree_with_db(Etk_Tree *tree)
                          etk_tree_model_text_new(tree),
                          0);
   etk_tree_build(tree);
+  etk_tree_freeze(tree);
 
   entries = eet_list(ef, "*", &num);
 
@@ -288,4 +302,7 @@ fill_tree_with_db(Etk_Tree *tree)
 
   eet_close(ef);
   free(cover_db_path);
+
+  etk_tree_sort(tree, tree_sort, ETK_TRUE, etk_tree_nth_col_get(tree, 0), NULL);
+  etk_tree_thaw(tree);
 }

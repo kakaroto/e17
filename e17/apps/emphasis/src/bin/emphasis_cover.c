@@ -421,6 +421,29 @@ _emphasis_cover_get_prop_value_from_xml_tree(xmlNode * root_node,
 const char *
 emphasis_cover_haricotmagique(void)
 {
-  /* TODO : this function ;) */
-  return (PACKAGE_DATA_DIR EMPHASIS_LOGO);
+  char *path;
+  int id;
+
+  srand(time(NULL));
+  id = rand() % 4;
+
+  switch(id)
+    {
+    case 0:
+      path = PACKAGE_DATA_DIR "/images/haricot_musique-amor.png";
+      break;
+    case 1:
+      path = PACKAGE_DATA_DIR "/images/haricot_musique-grrrr.png";
+      break;
+    case 2:
+      path = PACKAGE_DATA_DIR "/images/haricot_musique-lalaa.png";
+      break;
+    case 3:
+      path = PACKAGE_DATA_DIR "/images/haricot_musique-mario.png";
+      break;
+    default:
+      path = PACKAGE_DATA_DIR "/images/haricot_musique-mooo.png";
+    }
+
+  return path;
 }

@@ -95,11 +95,18 @@ struct _Emphasis_Player_Gui
       Etk_Widget *toolbar;
 
       /* Pane 1 content */
+      Etk_Widget *paned;
+
       Etk_Widget *pls;
 
       Etk_Widget *artist;
       Etk_Widget *album;
       Etk_Widget *track;
+
+      /* Pane 2 content */
+      Etk_Widget *search_root;
+      Etk_Widget *search_combo;
+      Etk_Widget *search_tree;
 
       /* Pane 3 content */
       Etk_Widget *pls_list;
@@ -122,7 +129,7 @@ void emphasis_player_cover_size_set(Emphasis_Player_Gui *player, int w, int h);
 void emphasis_player_cover_size_update(Emphasis_Player_Gui *player);
 
 void emphasis_player_info_set(Emphasis_Player_Gui *player,
-                              mpd_Song * song, char *msg);
+                              Emphasis_Song * song, char *msg);
 void emphasis_player_progress_set(Emphasis_Player_Gui *player,
                                   float elapsed_time, int total_time);
 void emphasis_player_toggle_play(Emphasis_Player_Gui *player);
