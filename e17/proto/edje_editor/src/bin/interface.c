@@ -43,7 +43,7 @@ int AddImageToCombo(char* fname){
 
    //printf("IMAGE:	%s - %s\n",fname,ext);
    g_string_printf(str,"%s/%s",EDCFileDir->str,fname);
-   ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_ImageComboBox), etk_image_new_from_file (str->str), fname);
+   ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_ImageComboBox), etk_image_new_from_file (str->str, NULL), fname);
    etk_combobox_item_data_set (ComboItem, strdup(fname));
    return TRUE;
 }
