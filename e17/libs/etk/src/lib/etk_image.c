@@ -65,7 +65,7 @@ Etk_Type *etk_image_type_get(void)
       etk_type_property_add(image_type, "stock_id", ETK_IMAGE_STOCK_ID_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_NO_STOCK));
       etk_type_property_add(image_type, "stock_size", ETK_IMAGE_STOCK_SIZE_PROPERTY,
-         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_SMALL));
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_MEDIUM));
       etk_type_property_add(image_type, "evas_object", ETK_IMAGE_EVAS_OBJECT_PROPERTY,
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
       etk_type_property_add(image_type, "keep_aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY,
@@ -310,7 +310,7 @@ void etk_image_stock_get(Etk_Image *image, Etk_Stock_Id *stock_id, Etk_Stock_Siz
       if (stock_id)
          *stock_id = ETK_STOCK_NO_STOCK;
       if (stock_size)
-         *stock_size = ETK_STOCK_SMALL;
+         *stock_size = ETK_STOCK_MEDIUM;
    }
    else
    {
@@ -545,7 +545,7 @@ void etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect)
       return;
 
    image->keep_aspect = keep_aspect;
-   etk_widget_size_recalc_queue(ETK_WIDGET(image));
+   etk_widget_redraw_queue(ETK_WIDGET(image));
    etk_object_notify(ETK_OBJECT(image), "keep_aspect");
 }
 
@@ -573,7 +573,7 @@ void etk_image_aspect_ratio_set(Etk_Image *image, double aspect_ratio)
       return;
    
    image->aspect_ratio = aspect_ratio;
-   etk_widget_size_recalc_queue(ETK_WIDGET(image));
+   etk_widget_redraw_queue(ETK_WIDGET(image));
    etk_object_notify(ETK_OBJECT(image), "aspect_ratio");
 }
 
@@ -667,10 +667,14 @@ static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Pro
       case ETK_IMAGE_STOCK_ID_PROPERTY:
          if (image->source == ETK_IMAGE_STOCK)
             etk_image_set_from_stock(image, etk_property_value_int_get(value), image->info.stock.size);
+         else
+            etk_image_set_from_stock(image, etk_property_value_int_get(value), ETK_STOCK_MEDIUM);
          break;
       case ETK_IMAGE_STOCK_SIZE_PROPERTY:
          if (image->source == ETK_IMAGE_STOCK)
             etk_image_set_from_stock(image, image->info.stock.id, etk_property_value_int_get(value));
+         else
+            etk_image_set_from_stock(image, ETK_STOCK_NO_STOCK, etk_property_value_int_get(value));
          break;
       case ETK_IMAGE_EVAS_OBJECT_PROPERTY:
          etk_image_set_from_evas_object(image, etk_property_value_pointer_get(value));
@@ -716,10 +720,16 @@ static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Pro
             etk_property_value_string_set(value, NULL);
          break;
       case ETK_IMAGE_STOCK_ID_PROPERTY:
-         etk_property_value_int_set(value, image->info.stock.id);
+         if (image->source == ETK_IMAGE_STOCK)
+            etk_property_value_int_set(value, image->info.stock.id);
+         else
+            etk_property_value_int_set(value, ETK_STOCK_NO_STOCK);
          break;
       case ETK_IMAGE_STOCK_SIZE_PROPERTY:
-         etk_property_value_int_set(value, image->info.stock.size);
+         if (image->source == ETK_IMAGE_STOCK)
+            etk_property_value_int_set(value, image->info.stock.size);
+         else
+            etk_property_value_int_set(value, ETK_STOCK_MEDIUM);
          break;
       case ETK_IMAGE_EVAS_OBJECT_PROPERTY:
          etk_property_value_pointer_set(value, image->object);
@@ -853,7 +863,7 @@ static void _etk_image_source_set(Etk_Image *image, Etk_Image_Source source)
          break;
       case ETK_IMAGE_STOCK:
          image->info.stock.id = ETK_STOCK_NO_STOCK;
-         image->info.stock.size = ETK_STOCK_SMALL;
+         image->info.stock.size = ETK_STOCK_MEDIUM;
          break;
       case ETK_IMAGE_DATA:
          image->info.data.size.w = 0;
@@ -1013,5 +1023,5 @@ static void _etk_image_load(Etk_Image *image)
  * Set to a random value if the image is not loaded from a stock icon
  * @prop_type Integer
  * @prop_rw
- * @prop_val ETK_STOCK_SMALL
+ * @prop_val ETK_STOCK_MEDIUM
  */
