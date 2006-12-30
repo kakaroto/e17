@@ -2,6 +2,8 @@
 
 for d in * ; do
 	test -d "$d" || continue
+	test "$d" = "calendar" && continue 
+	test "$d" = "engage" && continue 
 	sed "s,%MODNAME%,$d,g" e_modules-TEMPLATE.spec.in > "$d/e_modules-$d.spec.in"
 	test -x "${d}/autogen.sh" || continue
 	echo "AUTOGEN:  $d"
