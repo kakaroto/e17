@@ -56,6 +56,7 @@ our %EXPORT_TAGS = (
    button	=> [qw/ButtonIcon ButtonText ButtonBothVert ButtonBothHoriz/],
    shadow	=> [qw/ShadowNone ShadowInside ShadowOutside ShadowNoEdge ShadowLeft ShadowAll
     ShadowRight ShadowTop ShadowBottom ShadowLeftRight ShadowTopBottom/],
+   image	=> [qw/ImageFile ImageEdje ImageStock ImageEvasObject ImageData/],
    );
 
 my @all = ();
@@ -260,6 +261,14 @@ use constant {
    ShadowAll => ShadowLeftRight | ShadowTopBottom
 };
 
+# image source
+use constant {
+   ImageFile=>0,
+   ImageEdje=>1,
+   ImageStock=>2,
+   ImageEvasObject=>3,
+   ImageData=>4
+};
 
 
 

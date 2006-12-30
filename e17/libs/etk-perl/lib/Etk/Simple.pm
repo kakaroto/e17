@@ -53,6 +53,16 @@ my $inew = \&new;
 	return $inew->(__PACKAGE__);
 };
 
+my $iset = \&SetFromFile;
+*SetFromFile = sub {
+	my $class = shift;
+	my $arg1 = shift;
+	my $arg2 = shift || "";
+	
+	return $iset->($class, $arg1, $arg2);
+};
+
+
 package Etk::Menu::Item;
 
 my $minew = \&new;

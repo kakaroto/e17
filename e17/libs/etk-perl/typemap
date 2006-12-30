@@ -38,6 +38,7 @@ Etk_Iconbox *					T_PTROBJ_ETK
 Etk_Iconbox_Icon *				T_PTROBJ_ETK
 Etk_Iconbox_Model *				T_PTROBJ_ETK
 Etk_Image *					T_PTROBJ_ETK
+Etk_Image_Source				T_IV
 Etk_Label *					T_PTROBJ_ETK
 Etk_Marshaller					T_PTROBJ
 Etk_Menu *					T_PTROBJ_ETK

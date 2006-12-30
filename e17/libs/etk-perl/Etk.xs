@@ -2054,11 +2054,17 @@ etk_image_edje_get(image, edje_filename, edje_group)
 	PUSHs(sv_2mortal(newSVpv(edje_filename, strlen(edje_filename))));
 	PUSHs(sv_2mortal(newSVpv(edje_group, strlen(edje_group))));
 
-const char *
+void
 etk_image_file_get(image)
 	Etk_Image *	image
       ALIAS:
 	FileGet=1
+	PPCODE:
+	char * filename;
+	char * key;
+	etk_image_file_get(image, &filename, &key);
+	XPUSHs(sv_2mortal(newSVpv(filename, strlen(filename))));
+	if (key) XPUSHs(sv_2mortal(newSVpv(key, strlen(key))));
 
 Etk_Bool
 etk_image_keep_aspect_get(image)
@@ -2072,6 +2078,19 @@ etk_image_keep_aspect_set(image, keep_aspect)
 	Etk_Bool	keep_aspect
       ALIAS:
 	KeepAspectSet=1
+
+void
+etk_image_aspect_ratio_set(image, aspect_ratio)
+	Etk_Image *     image
+	double		aspect_ratio
+	ALIAS:
+	AspectRatioSet=1
+
+double
+etk_image_aspect_ratio_get(image)
+	Etk_Image *     image
+	ALIAS:
+	AspectRatioGet=1
 
 Etk_Image *
 new(class)
@@ -2093,12 +2112,13 @@ etk_image_new_from_edje(edje_filename, edje_group)
 	RETVAL
 
 Etk_Image *
-etk_image_new_from_file(filename)
-	char *	filename
+etk_image_new_from_file(filename, key)
+	const char *	filename
+	const char * key
       ALIAS:
 	NewFromFile=1
 	CODE:
-	RETVAL = ETK_IMAGE(etk_image_new_from_file(filename));
+	RETVAL = ETK_IMAGE(etk_image_new_from_file(filename, key));
 	OUTPUT:
 	RETVAL
 
@@ -2122,9 +2142,10 @@ etk_image_set_from_edje(image, edje_filename, edje_group)
 	SetFromEdje=1
 
 void
-etk_image_set_from_file(image, filename)
+etk_image_set_from_file(image, filename, key)
 	Etk_Image *	image
-	char *	filename
+	const char *	filename
+	const char *	key
       ALIAS:
 	SetFromFile=1
 
@@ -2162,6 +2183,29 @@ etk_image_stock_get(image)
 	EXTEND(SP, 2);
 	PUSHs(sv_2mortal(newSViv(stock_id)));
 	PUSHs(sv_2mortal(newSViv(stock_size)));
+
+Etk_Image_Source
+etk_image_source_get(image)
+	Etk_Image *     image
+      ALIAS:
+      	SourceGet=1
+
+void
+etk_image_update(image)
+	Etk_Image *     image
+	ALIAS:
+	Update=1
+
+void
+etk_image_update_rect(image, x, y, w, h)
+	Etk_Image *     image
+	int x
+	int y
+	int w
+	int h
+	ALIAS:
+	UpdateRect=1
+
 
 
 MODULE = Etk::Label	PACKAGE = Etk::Label	PREFIX = etk_label_

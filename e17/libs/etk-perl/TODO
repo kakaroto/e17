@@ -12,6 +12,7 @@ TODO:
 	- Check for memory usage (I'm not sure if we're leaking or not,
 	  need to do some tests for that)
 	- Fix Combobox append functions (waiting for some functionality in etk)
+	- Image new from data
 
 BUGS:
 
