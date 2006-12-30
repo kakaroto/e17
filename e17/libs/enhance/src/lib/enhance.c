@@ -602,7 +602,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	
 	_en_stock_items_hash_init();      
 	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
-  etk_image_set_from_stock(ETK_IMAGE(wid->wid), id, ETK_STOCK_MEDIUM);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", id, NULL);
      }
    
    else if(!strcmp(name, "stock_id"))
