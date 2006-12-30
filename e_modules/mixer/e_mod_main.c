@@ -132,7 +132,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	  edje_object_signal_emit(mixer->base, "muted", "");
      }
    
-   gcc = e_gadcon_client_new(gc, name, id, style, mixer->base);
+   gcc = e_gadcon_client_new(gc, style, mixer->base);
    gcc->data = inst;
    inst->gcc = gcc;
 

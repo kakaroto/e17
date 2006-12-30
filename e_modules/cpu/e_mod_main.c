@@ -87,7 +87,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
      edje_object_file_set(cpu->o_icon, buf, "modules/cpu/main");
    evas_object_show(cpu->o_icon);
    
-   gcc = e_gadcon_client_new(gc, name, id, style, cpu->o_icon);
+   gcc = e_gadcon_client_new(gc, style, cpu->o_icon);
    gcc->data = inst;
    inst->gcc = gcc;
    inst->cpu = cpu;

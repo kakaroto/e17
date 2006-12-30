@@ -76,7 +76,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   inst->net = net;
 
   o = net->net_obj;
-  gcc = e_gadcon_client_new (gc, name, id, style, o);
+  gcc = e_gadcon_client_new (gc, style, o);
   gcc->data = inst;
   inst->gcc = gcc;
   inst->net_obj = o;

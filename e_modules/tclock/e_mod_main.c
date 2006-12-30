@@ -68,7 +68,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
     edje_object_file_set (o, buf, "modules/tclock/main");
   evas_object_show (o);
 
-  gcc = e_gadcon_client_new (gc, name, id, style, o);
+  gcc = e_gadcon_client_new (gc, style, o);
   gcc->data = inst;
   inst->gcc = gcc;
   inst->tclock = o;
