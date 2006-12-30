@@ -47,7 +47,6 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_signal_connect("row_clicked", ETK_OBJECT(tab->dtree), ETK_CALLBACK(_ex_tab_dtree_item_clicked_cb), e);
    tab->dcol = etk_tree_col_new(ETK_TREE(tab->dtree), "Directories", etk_tree_model_icon_text_new(ETK_TREE(tab->dtree), ETK_TREE_FROM_EDJE), 10);
    etk_tree_headers_visible_set(ETK_TREE(tab->dtree), 0);
-   etk_scrolled_view_policy_set(etk_tree_scrolled_view_get(ETK_TREE(tab->dtree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
    etk_tree_build(ETK_TREE(tab->dtree));
 
    tab->itree = etk_tree_new();
@@ -62,7 +61,6 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->icol = etk_tree_col_new(ETK_TREE(tab->itree), "Files", imodel, 10);
    etk_tree_headers_visible_set(ETK_TREE(tab->itree), 0);
    etk_tree_row_height_set(ETK_TREE(tab->itree), 60);
-   etk_scrolled_view_policy_set(etk_tree_scrolled_view_get(ETK_TREE(tab->itree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
    etk_tree_build(ETK_TREE(tab->itree));
 
    if (dir)
