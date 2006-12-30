@@ -1065,7 +1065,7 @@ main(int argc, char *argv[])
    
    epsilon_init();
    if(argc > 1)
-     _ex_main_window_show(argv[1], fullscreen);
+     _ex_main_window_show(argv[(fullscreen &&(argc > 2)) ? 2 : 1], fullscreen);
    else
      _ex_main_window_show(NULL, fullscreen);   
      
