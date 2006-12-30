@@ -7,6 +7,8 @@
 
 /**
  * @defgroup Etk_Toggle_Button Etk_Toggle_Button
+ * @brief An Etk_Toggle_Button is a button that can be activated and deactivated by clicking on it.
+ * It is the base class of check and radio buttons.
  * @{
  */
 
@@ -18,11 +20,10 @@
 #define ETK_IS_TOGGLE_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TOGGLE_BUTTON_TYPE))
 
 /**
- * @struct Etk_Toggle_Button
- * @brief A toggle button is a button that can be activated/deactivated. @n
- * It's the base class of check and radio buttons
+ * @brief @widget A button that can be activated/deactivated
+ * @structinfo
  */
-struct _Etk_Toggle_Button
+struct Etk_Toggle_Button
 {
    /* private: */
    /* Inherit from Etk_Button */
@@ -33,12 +34,12 @@ struct _Etk_Toggle_Button
    Etk_Bool active;
 };
 
-Etk_Type *etk_toggle_button_type_get();
+Etk_Type   *etk_toggle_button_type_get();
 Etk_Widget *etk_toggle_button_new();
 Etk_Widget *etk_toggle_button_new_with_label(const char *label);
 
-void etk_toggle_button_toggle(Etk_Toggle_Button *toggle_button);
-void etk_toggle_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool active);
+void     etk_toggle_button_toggle(Etk_Toggle_Button *toggle_button);
+void     etk_toggle_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool active);
 Etk_Bool etk_toggle_button_active_get(Etk_Toggle_Button *toggle_button);
 
 /** @} */

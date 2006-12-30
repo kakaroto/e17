@@ -106,7 +106,7 @@ typedef struct Etk_Textblock Etk_Textblock;
 typedef struct Etk_Textblock_Format Etk_Textblock_Format;
 typedef struct Etk_Textblock_Iter Etk_Textblock_Iter;
 typedef struct Etk_Textblock_Node Etk_Textblock_Node;
-typedef struct _Etk_Toggle_Button Etk_Toggle_Button;
+typedef struct Etk_Toggle_Button Etk_Toggle_Button;
 typedef struct Etk_Toplevel Etk_Toplevel;
 typedef struct Etk_Toolbar Etk_Toolbar;
 typedef struct _Etk_Tool_Button Etk_Tool_Button;

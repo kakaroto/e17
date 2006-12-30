@@ -83,6 +83,12 @@ EXTRA_DIST = \
             tree_expander_fold.png \
             tree_expander_unfold.png \
             tree_header_over.png \
+            tree_header_first.png \
+            tree_header_first2.png \
+            tree_header_last.png \
+            tree_header_last2.png \
+            tree_header_middle.png \
+            tree_header_middle2.png \
             tree_header_unique.png \
             tree_header_unique2.png \
             tree.png \
