@@ -1,0 +1,29 @@
+
+# ChangeLog for edje_editor #
+
+0.1-beta4
+-------------
+  * Reenable relative position spinner callbacks.
+  * Move the remaining png inside the edje_editor.edj file (this cause some drawing problem in all combobox)
+  * Add the Image Alpha Slider. You can now change the alpha value of images.
+  * Change image chooser to a single combo to reduce used space.
+  * Add border functionality to images.
+  * Make the text effect work (note: GLOW? GLOW2? FAR?)
+  * Add alert dialog in many place 
+  * Some various bugs fixed
+  * Implemented the spinner that drive DescriptionStateIndex Value
+  * Update reltocomboboxs when add or remove parts
+  * Min e Max size of a group (etk interface and fakewin limit)
+  * Implemented Text alpha slider
+  * various interface adjusting (add some table.. etc)
+  
+  
+0.1-beta3
+-------------
+  * Remove the dependency from sys/dir.h for portability reason
+     Make use of opendir() instead of scandir()
+  * Remove function declared inside other function that cause 
+     segv on some system (thanks to hisam)
+  * Remove unused Ecore dependencies
+  * Add some commet to the code. Primary on main.h
+  * Some code clean

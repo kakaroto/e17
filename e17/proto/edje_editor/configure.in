@@ -1,0 +1,170 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(configure.in)
+
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
+AM_INIT_AUTOMAKE(edje_editor, 0.1.4)
+
+AC_PREREQ(2.52)
+
+AM_CONFIG_HEADER(config.h)
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+LIBS=""
+
+if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${prefix}" = "xNONE"; then
+    bindir="${ac_default_prefix}/bin";
+  else
+    bindir="${prefix}/bin";
+  fi
+else
+  if test "x${prefix}" = "xNONE"; then
+    bindir="${ac_default_prefix}/bin";
+  else
+    bindir="${prefix}/bin";
+  fi
+fi
+
+if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${prefix}" = "xNONE"; then
+    libdir="${ac_default_prefix}/lib";
+  else
+    libdir="${prefix}/lib";
+  fi
+else
+  if test "x${prefix}" = "xNONE"; then
+    libdir="${ac_default_prefix}/lib";
+  else
+    libdir="${prefix}/lib";
+  fi
+fi
+      
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
+fi
+
+dnl Set PACKAGE_BIN_DIR in config.h.
+if test "x${bindir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation Directory for User Executables])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation Directory for User Executables])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation Directory for User Executables])
+fi
+
+dnl Set PACKAGE_LIB_DIR in config.h.
+if test "x${libdir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Installation Directory for Libraries])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Installation Directory for Libraries])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Installation Directory for Libraries])
+fi
+
+dnl Set PACKAGE_SOURCE_DIR in config.h.
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
+
+AC_PATH_GENERIC(etk, 0.1.0.002,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The etk-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the etk-devel (or etk-dev)"
+    echo "   packages."
+    echo "2. You may have etk installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the etk-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-etk-config."
+    AC_MSG_ERROR([Fatal Error: no etk-config detected.])
+  ]
+)
+
+PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.12.4,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "glib-2.0 was not found."
+    echo "You may not have installed the glib-2.0-devel (or glib-2.0-dev)"
+    echo "packages."
+    AC_MSG_ERROR([Fatal Error: no glib-2.0 detected.])
+  ]
+)
+
+AC_PATH_GENERIC(edje, 0.5.0,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The edje-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the edje-devel (or edje-dev)"
+    echo "   packages."
+    echo "2. You may have edje installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the edje-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-edje-config."
+    AC_MSG_ERROR([Fatal Error: no edje-config detected.])
+  ]
+)
+
+AC_PATH_GENERIC(evas, 0.9.9,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The evas-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the evas-devel (or evas-dev)"
+    echo "   packages."
+    echo "2. You may have evas installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the evas-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-evas-config."
+    AC_MSG_ERROR([Fatal Error: no evas-config detected.])
+  ]
+)
+
+dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
+etk_prefix="\"`etk-config --prefix`/share/etk\""
+AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
+
+requirements="etk glib2 edje evas"
+
+AC_SUBST(requirements)
+AC_SUBST(packagesrcdir)
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/bin/Makefile
+data/Makefile
+data/images/Makefile
+data/fonts/Makefile
+],[
+])
