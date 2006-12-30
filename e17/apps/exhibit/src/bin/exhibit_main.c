@@ -103,7 +103,7 @@ _ex_main_image_set(Exhibit *e, char *image)
      }
    else
      {
-	etk_image_set_from_file(ETK_IMAGE(e->cur_tab->image), image);
+	etk_image_set_from_file(ETK_IMAGE(e->cur_tab->image), image, NULL);
 
 	if (e->cur_tab->fit_window)
 	  _ex_tab_current_fit_to_window(e);
@@ -479,7 +479,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Down *ev = event;   
    
-   if (ev->modifiers == ETK_MODIFIER_CTRL)
+   if (ev->modifiers & ETK_MODIFIER_CTRL)
      {
 	if (!strcmp(ev->key, "t"))
 	  {

@@ -197,9 +197,16 @@ _ex_image_undo(Etk_Image *im)
 {
    unsigned int *data;
    int           w, h;
-
-   if(im->use_edje)
-     return;
+   char *edje;
+   char *group;
+   
+   etk_image_edje_get(im, &edje, &group);
+   if(edje != NULL)
+     {
+	free(edje);
+	free(group);
+	return;
+     }
 	
    etk_image_size_get(im, &w, &h);
    
@@ -208,8 +215,8 @@ _ex_image_undo(Etk_Image *im)
    if (data) 
      {
 	D(("Undo: getting data %p, image %p\n", data, im));
-	evas_object_image_data_set(im->image_object, data);
-	evas_object_image_data_update_add(im->image_object, 0, 0, w, h);
+	evas_object_image_data_set(etk_image_evas_object_get(im), data);
+	evas_object_image_data_update_add(etk_image_evas_object_get(im), 0, 0, w, h);
 	etk_object_data_set(ETK_OBJECT(im), "undo", NULL);
      }
 }
@@ -221,12 +228,19 @@ _ex_image_flip_horizontal(Etk_Image *im)
    int           w, h;
    int           x, y;
    unsigned int *p1, *p2, tmp;
+   char *edje;
+   char *group;
    
-   if(im->use_edje)
-     return;
+   etk_image_edje_get(im, &edje, &group);
+   if(edje != NULL)
+     {
+	free(edje);
+	free(group);
+	return;
+     }   
    
    etk_image_size_get(im, &w, &h);
-   data = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   data = evas_object_image_data_get(etk_image_evas_object_get(im), ETK_TRUE);
    _ex_image_data_copy(im, data, w, h); /* for undo */
    
    for (y = 0; y < h; y++)
@@ -243,8 +257,8 @@ _ex_image_flip_horizontal(Etk_Image *im)
 	  }
      }
    
-   evas_object_image_data_set(im->image_object, data);
-   evas_object_image_data_update_add(im->image_object, 0, 0, w, h);
+   evas_object_image_data_set(etk_image_evas_object_get(im), data);
+   evas_object_image_data_update_add(etk_image_evas_object_get(im), 0, 0, w, h);
 }
 
 void
@@ -254,12 +268,19 @@ _ex_image_flip_vertical(Etk_Image *im)
    int           w, h;
    int           x, y;
    unsigned int *p1, *p2, tmp;
+   char *edje;
+   char *group;
    
-   if(im->use_edje)
-     return;
+   etk_image_edje_get(im, &edje, &group);
+   if(edje != NULL)
+     {
+	free(edje);
+	free(group);
+	return;
+     }
    
    etk_image_size_get(im, &w, &h);
-   data = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   data = evas_object_image_data_get(etk_image_evas_object_get(im), ETK_TRUE);
    _ex_image_data_copy(im, data, w, h); /* for undo */
    
    for (y = 0; y < (h >> 1); y++)
@@ -276,8 +297,8 @@ _ex_image_flip_vertical(Etk_Image *im)
 	  }
      }
       
-   evas_object_image_data_set(im->image_object, data);
-   evas_object_image_data_update_add(im->image_object, 0, 0, w, h);   
+   evas_object_image_data_set(etk_image_evas_object_get(im), data);
+   evas_object_image_data_update_add(etk_image_evas_object_get(im), 0, 0, w, h);
 }
 
 /* Directions (source is right/down):
@@ -291,12 +312,19 @@ _ex_image_flip_diagonal(Etk_Image *im, int direction)
 {
    unsigned int   *data, *data2, *to, *from;
    int             x, y, w, hw, iw, ih;
-     
-   if(im->use_edje)
-     return;
+   char *edje;
+   char *group;
+   
+   etk_image_edje_get(im, &edje, &group);
+   if(edje != NULL)
+     {
+	free(edje);
+	free(group);
+	return;
+     }
    
    etk_image_size_get(im, &iw, &ih);
-   data2 = evas_object_image_data_get(im->image_object, ETK_FALSE);
+   data2 = evas_object_image_data_get(etk_image_evas_object_get(im), ETK_FALSE);
 	 
    data = malloc(iw * ih * sizeof(unsigned int));
    from = data2;
@@ -338,9 +366,9 @@ _ex_image_flip_diagonal(Etk_Image *im, int direction)
 	to += hw;
      }
    
-   evas_object_image_size_set(im->image_object, iw, ih);   
-   evas_object_image_data_set(im->image_object, data);
-   evas_object_image_data_update_add(im->image_object, 0, 0, iw, ih);
+   evas_object_image_size_set(etk_image_evas_object_get(im), iw, ih);   
+   evas_object_image_data_set(etk_image_evas_object_get(im), data);
+   evas_object_image_data_update_add(etk_image_evas_object_get(im), 0, 0, iw, ih);
    etk_widget_size_request_set(ETK_WIDGET(im), iw, ih);
 
 
@@ -358,12 +386,19 @@ _ex_image_blur(Etk_Image *im)
    int          *as, *rs, *gs, *bs;   
    int           rad = 2; 
    unsigned int *p1, *p2;
+   char *edje;
+   char *group;
    
-   if(im->use_edje)
-     return;
+   etk_image_edje_get(im, &edje, &group);
+   if(edje != NULL)
+     {
+	free(edje);
+	free(group);
+	return;
+     }
 
    etk_image_size_get(im, &w, &h);
-   data2 = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   data2 = evas_object_image_data_get(etk_image_evas_object_get(im), ETK_TRUE);
    _ex_image_data_copy(im, data2, w, h); /* for undo */
 
    rad = e->options->blur_thresh;
@@ -449,8 +484,8 @@ _ex_image_blur(Etk_Image *im)
    E_FREE(gs);
    E_FREE(bs);
    
-   evas_object_image_data_set(im->image_object, data);
-   evas_object_image_data_update_add(im->image_object, 0, 0, w, h);   
+   evas_object_image_data_set(etk_image_evas_object_get(im), data);
+   evas_object_image_data_update_add(etk_image_evas_object_get(im), 0, 0, w, h);   
 }
 
 void
@@ -462,12 +497,19 @@ _ex_image_sharpen(Etk_Image *im)
    int           a, r, g, b;
    int           rad = 2;
    unsigned int *p1, *p2;
+   char *edje;
+   char *group;
    
-   if(im->use_edje)
-     return;
+   etk_image_edje_get(im, &edje, &group);
+   if(edje != NULL)
+     {
+	free(edje);
+	free(group);
+	return;
+     }
 
    etk_image_size_get(im, &w, &h);
-   data2 = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   data2 = evas_object_image_data_get(etk_image_evas_object_get(im), ETK_TRUE);
    _ex_image_data_copy(im, data2, w, h); /* for undo */
       
    data = malloc(w * h * sizeof(unsigned int));
@@ -528,25 +570,27 @@ _ex_image_sharpen(Etk_Image *im)
 	  }
      }
    
-   evas_object_image_data_set(im->image_object, data);
-   evas_object_image_data_update_add(im->image_object, 0, 0, w, h);      
+   evas_object_image_data_set(etk_image_evas_object_get(im), data);
+   evas_object_image_data_update_add(etk_image_evas_object_get(im), 0, 0, w, h);      
 }
 
 void
 _ex_image_save(Etk_Image *im)
 {
    pid_t pid;
+   char *filename;
    
-   if(!im->filename[0])
+   etk_image_file_get(im, &filename, NULL);
+   if(!filename)
      return;
    
-   if(!ecore_file_exists(im->filename))
+   if(!ecore_file_exists(filename))
      return;
    
    pid = fork();
    if(!pid)
      {
-	evas_object_image_save(im->image_object, im->filename, NULL, NULL);
+	evas_object_image_save(etk_image_evas_object_get(im), filename, NULL, NULL);
 	exit(0);
      }
 }
@@ -580,7 +624,7 @@ _ex_image_save_as_cb(void *data)
    D(("Saving: %s\n", file));
 
    /* Dont fork for the tree polulating to work */
-   evas_object_image_save(im->image_object, file, NULL, NULL);
+   evas_object_image_save(etk_image_evas_object_get(im), file, NULL, NULL);
 
    etk_widget_hide(fd->win);
 }
@@ -834,9 +878,16 @@ void
 _ex_image_zoom(Etk_Image *im, int zoom)
 {
    int           w, h;
+   char *edje;
+   char *group;
    
-   if(im->use_edje)
-     return;
+   etk_image_edje_get(im, &edje, &group);
+   if(edje != NULL)
+     {
+	free(edje);
+	free(group);
+	return;
+     }   
 
    etk_image_size_get(im, &w, &h);
    if(zoom > 0)
@@ -865,9 +916,16 @@ _ex_image_brightness(Etk_Image *im, int brightness)
    DATA8   green_mapping[256];   
    DATA8   blue_mapping[256];
    DATA8   alpha_mapping[256];
-         
-   if(im->use_edje)
-     return;
+   char *edje;
+   char *group;
+   
+   etk_image_edje_get(im, &edje, &group);
+   if(edje != NULL)
+     {
+	free(edje);
+	free(group);
+	return;
+     }
    
    for (i = 0; i < 256; i++)
      {
@@ -878,7 +936,7 @@ _ex_image_brightness(Etk_Image *im, int brightness)
      }
       
    etk_image_size_get(im, &w, &h);
-   data = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   data = evas_object_image_data_get(etk_image_evas_object_get(im), ETK_TRUE);
    _ex_image_data_copy(im, data, w, h); /* for undo */
    
    for (i = 0; i < 256; i++)
@@ -925,8 +983,8 @@ _ex_image_brightness(Etk_Image *im, int brightness)
 	  }
      }   
    
-   evas_object_image_data_set(im->image_object, data);
-   evas_object_image_data_update_add(im->image_object, 0, 0, w, h);      
+   evas_object_image_data_set(etk_image_evas_object_get(im), data);
+   evas_object_image_data_update_add(etk_image_evas_object_get(im), 0, 0, w, h);      
 }
 
 void
@@ -937,9 +995,16 @@ _ex_image_brightness2(Etk_Image *im, int brightness)
    int           i, j;
    DATA8 a, r, g, b;
    int light_transform[256];
-         
-   if(im->use_edje)
-     return;
+   char *edje;
+   char *group;
+   
+   etk_image_edje_get(im, &edje, &group);
+   if(edje != NULL)
+     {
+	free(edje);
+	free(group);
+	return;
+     }
    
    D(("brightness = %d\n", brightness));
    for(i=0; i<256; i++){
@@ -951,7 +1016,7 @@ _ex_image_brightness2(Etk_Image *im, int brightness)
    }   
    
    etk_image_size_get(im, &w, &h);
-   data = evas_object_image_data_get(im->image_object, ETK_TRUE);
+   data = evas_object_image_data_get(etk_image_evas_object_get(im), ETK_TRUE);
    data2 = malloc(w * h * sizeof(DATA32));
    memcpy(data2, data, w * h * sizeof(DATA32));
    
@@ -970,8 +1035,8 @@ _ex_image_brightness2(Etk_Image *im, int brightness)
       }
    }
    
-   evas_object_image_data_set(im->image_object, data2);
-   evas_object_image_data_update_add(im->image_object, 0, 0, w, h);      
+   evas_object_image_data_set(etk_image_evas_object_get(im), data2);
+   evas_object_image_data_update_add(etk_image_evas_object_get(im), 0, 0, w, h);      
 }
 
 void
@@ -986,6 +1051,7 @@ _ex_image_wallpaper_set(Etk_Image *im)
    pid_t pid;
    int w, h;
    const char *file;
+   char *filename;
    const char *dir;
    char *edj_file;
    const char *filenoext;
@@ -999,20 +1065,22 @@ _ex_image_wallpaper_set(Etk_Image *im)
    Engrave_Part_State *ps;
 #endif   
 
+   etk_image_file_get(im, &filename, NULL);
    pid = fork();
    if(!pid)
      {	
 #if HAVE_E   
 	if (!ecore_file_app_installed("enlightenment_remote"))
 	  goto PSEUDO;	  
-	/* make sure we got a file name */
-	if (!im->filename) exit(0);
-	if(strlen(im->filename) <= 4) exit(0);
+	/* make sure we got a file name */	 
+          
+	if (!filename) exit(0);
+	if(strlen(filename) <= 4) exit(0);
 	
-	file = ecore_file_get_file(im->filename);
-	dir = ecore_file_get_dir(im->filename);
+	file = ecore_file_get_file(filename);
+	dir = ecore_file_get_dir(filename);
 	
-	filenoext = _ex_file_strip_extention(im->filename);
+	filenoext = _ex_file_strip_extention(filename);
 	filenoext = ecore_file_get_file(filenoext);
 
 	D(("Setting bg: dir: %s \tfile: %s\n", dir, file));
@@ -1025,7 +1093,7 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	 *
 	 */
 	
-	if (strcmp(im->filename + strlen(im->filename) - 4, ".edj") == 0) {
+	if (strcmp(filename + strlen(filename) - 4, ".edj") == 0) {
 	   int w, h, num;
 	   char static_bg[PATH_MAX];
 	   char esetroot_s[PATH_MAX*2];
@@ -1040,8 +1108,8 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	   roots = ecore_x_window_root_list(&num);
 	   ecore_x_window_size_get(roots[0], &w, &h);
 	   snprintf(filename_s, PATH_MAX, "/tmp/%s.png", filenoext);
-	   snprintf(static_bg, PATH_MAX, "edje_thumb %s e/desktop/background %s -g %dx%d -og %dx%d", im->filename, filename_s, w, h, w, h);
-	   snprintf(e_bg_set, PATH_MAX, "enlightenment_remote -default-bg-set %s", im->filename);
+	   snprintf(static_bg, PATH_MAX, "edje_thumb %s e/desktop/background %s -g %dx%d -og %dx%d", filename, filename_s, w, h, w, h);
+	   snprintf(e_bg_set, PATH_MAX, "enlightenment_remote -default-bg-set %s", filename);
 	   snprintf(esetroot_s, PATH_MAX, "Esetroot %s %s ", esetroot_opt, 
 		 filename_s);	 
 	   D(("Filename_s: %s\n", filename_s));
@@ -1069,7 +1137,7 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	     
 	     ee = ecore_evas_buffer_new(0, 0);
 	     o = evas_object_image_add(ecore_evas_get(ee));
-	     evas_object_image_file_set(o, im->filename, NULL);
+	     evas_object_image_file_set(o, filename, NULL);
 	     evas_object_image_size_get(o, &w, &h);
 	     evas_object_del(o);
 	     ecore_evas_free(ee);
@@ -1145,9 +1213,9 @@ _ex_image_wallpaper_set(Etk_Image *im)
 PSEUDO:
 	
 	/* If we're using pseudo-trans for eterm, then this will help */
-	esetroot = malloc(strlen("Esetroot ") + strlen(esetroot_opt) + strlen(im->filename) + 2);
-	snprintf(esetroot, strlen("Esetroot ") + strlen(esetroot_opt) + strlen(im->filename) + 2,
-		 "Esetroot %s %s", esetroot_opt, im->filename);
+	esetroot = malloc(strlen("Esetroot ") + strlen(esetroot_opt) + strlen(filename) + 2);
+	snprintf(esetroot, strlen("Esetroot ") + strlen(esetroot_opt) + strlen(filename) + 2,
+		 "Esetroot %s %s", esetroot_opt, filename);
 	system(esetroot);
 	E_FREE(esetroot);
 	exit(0);

@@ -57,8 +57,8 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_tree_multiple_select_set(ETK_TREE(tab->itree), ETK_TRUE);
    etk_signal_connect("row_selected", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_item_clicked_cb), e);
    etk_signal_connect("key_down", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_key_down_cb), e);
-   imodel = _ex_tree_model_wobbly_new(ETK_TREE(tab->itree), ETK_TREE_FROM_FILE);   
-   _ex_tree_model_wobbly_icon_width_set(imodel, 80);
+   imodel = etk_tree_model_icon_text_new(ETK_TREE(tab->itree), ETK_TREE_FROM_FILE);
+   etk_tree_model_icon_text_icon_width_set(imodel, 80);
    tab->icol = etk_tree_col_new(ETK_TREE(tab->itree), "Files", imodel, 10);
    etk_tree_headers_visible_set(ETK_TREE(tab->itree), 0);
    etk_tree_row_height_set(ETK_TREE(tab->itree), 60);
@@ -313,7 +313,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 	     strncat(drag_data, tmp, PATH_MAX * evas_list_count(rows));
 	     if (i <= EX_DND_MAX_NUM * EX_DND_MAX_NUM)
 	       {
-		  image = etk_image_new_from_file(icol1_string);
+		  image = etk_image_new_from_file(icol1_string, NULL);
 		  etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
 		  etk_widget_size_request_set(image, 48, 48);
 		  etk_table_attach(ETK_TABLE(table), image, l, r, t, b, 3, 3,
@@ -338,7 +338,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 	etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
 	drag_data = calloc(PATH_MAX, sizeof(char));
 	snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->cur_path, icol2_string);
-	image = etk_image_new_from_file(icol1_string);
+	image = etk_image_new_from_file(icol1_string, NULL);
 	etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
 	etk_widget_size_request_set(image, 96, 96);
 	etk_container_add(ETK_CONTAINER(drag), image);	
