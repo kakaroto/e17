@@ -81,11 +81,11 @@ int main(int argc, char** argv)
 	int attempts = 0;
 	int i;
 	
-	ecore_init(NULL, NULL);
+	ecore_init();
 	ecore_ipc_init();
 
 	if (argc == 1 || strcmp(argv[1], "--enqueue")) {
-		etk_init();
+		etk_init(NULL,NULL);
 		window = etk_window_new();
 		etk_widget_size_request_set(window, 450, 300);
 	

@@ -285,9 +285,9 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    		   label = etk_label_new(label_buffer);
 		   
 		  if (file->file->thumbnail && file->file->thumbnail->thumbnail_filename) {
-			image = etk_image_new_from_file(file->file->thumbnail->thumbnail_filename);
+			image = etk_image_new_from_file(file->file->thumbnail->thumbnail_filename,NULL);
 		  } else {
-			image = etk_image_new_from_file(PACKAGE_DATA_DIR "/icons/default.png");
+			image = etk_image_new_from_file(PACKAGE_DATA_DIR "/icons/default.png", NULL);
 		  }
 		 etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
 		 etk_widget_size_request_set(image, 48, 48);
@@ -400,7 +400,7 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 }
 
 
-static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Down *event, void *data)
+static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
 {
    entropy_gui_component_instance* instance;
    entropy_etk_file_list_viewer* viewer;
@@ -411,8 +411,15 @@ static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
    file = ecore_hash_get(etk_list_viewer_row_hash, row);
    instance = file->instance;
    viewer = instance->data;
+
+   printf("Event->button (ext): %d", event->button);
+   if (event->flags & ETK_MOUSE_DOUBLE_CLICK) printf("Double!");
+   if (event->flags & ETK_MOUSE_TRIPLE_CLICK) printf("Triple!");
+
+   printf("\n");
 	
-   if (event->flags & EVAS_BUTTON_DOUBLE_CLICK && event->button == 1) {
+   if ( (event->flags & ETK_MOUSE_DOUBLE_CLICK) && event->button == 1) {
+	   printf("Event->button: %d\n", event->button);
 	   printf("Row clicked, file is: %s\n", file->file->filename); 
 
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));

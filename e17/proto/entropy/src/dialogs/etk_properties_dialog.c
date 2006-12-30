@@ -66,10 +66,10 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
 	etk_box_append(ETK_BOX(ivbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
 	if (file->thumbnail) {
-		icon = etk_image_new_from_file(file->thumbnail->thumbnail_filename);
+		icon = etk_image_new_from_file(file->thumbnail->thumbnail_filename, NULL);
 		etk_box_append(ETK_BOX(hbox), icon, ETK_BOX_START, ETK_BOX_NONE, 0);
 	} else {
-		icon = etk_image_new_from_file(PACKAGE_DATA_DIR "/icons/default.png");
+		icon = etk_image_new_from_file(PACKAGE_DATA_DIR "/icons/default.png", NULL);
 		etk_box_append(ETK_BOX(hbox), icon, ETK_BOX_START, ETK_BOX_NONE, 0);		
 	}
 

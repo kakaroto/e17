@@ -127,9 +127,13 @@ static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *
    entropy_gui_event *gui_event;
    event_file_core* e_event;
 
-   if ( (!(event->button == 1 || event->button == 3)) || event->flags & EVAS_BUTTON_TRIPLE_CLICK 
-	|| event->flags & EVAS_BUTTON_DOUBLE_CLICK )
+   printf("Structure event: %d\n", event->button);
+
+   if ( (!(event->button == 1 || event->button == 3)) || event->flags & ETK_MOUSE_DOUBLE_CLICK
+	|| event->flags & ETK_MOUSE_TRIPLE_CLICK )
 	   return;
+
+   printf("Post\n");
    
    instance = ecore_hash_get(instance_map_hash, row);
    etk_tree_row_select(row);
