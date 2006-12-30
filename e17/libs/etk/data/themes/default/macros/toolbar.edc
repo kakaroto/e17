@@ -5,7 +5,7 @@
          type: RECT; \
          description { \
             state: "default" 0.0; \
-            color: 255 255 0 120; \
+            color: 255 255 255 0; \
             rel1 { \
                relative: 0.0 0.0; \
                offset: ox1 oy1; \
