@@ -82,7 +82,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   mail->inst = inst;
   inst->mail = mail;
 
-  gcc = e_gadcon_client_new (gc, style, mail->mail_obj);
+  gcc = e_gadcon_client_new (gc, name, id, style, mail->mail_obj);
   gcc->data = inst;
   inst->gcc = gcc;
   inst->mail_obj = mail->mail_obj;

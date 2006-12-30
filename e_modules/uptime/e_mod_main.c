@@ -102,7 +102,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   inst->ut = ut;
 
   o = ut->ut_obj;
-  gcc = e_gadcon_client_new (gc, style, o);
+  gcc = e_gadcon_client_new (gc, name, id, style, o);
   gcc->data = inst;
   inst->gcc = gcc;
   inst->ut_obj = o;

@@ -92,7 +92,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    edje_object_signal_callback_add(o, EDJE_SIG_RECV_ALARM_RING_STOP,
 				   _cb_edje_alarm_ring_stop, NULL);
 
-   gcc = e_gadcon_client_new(gc, style, o);
+   gcc = e_gadcon_client_new(gc, name, id, style, o);
    gcc->data = inst;
    
    inst->gcc = gcc;
