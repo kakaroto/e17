@@ -468,6 +468,85 @@ engrave_parse_state_aspect_preference(Engrave_Aspect_Preference prefer)
 }
 
 void
+engrave_parse_state_gradient_spectrum(char * spec)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_gradient_spectrum_set(state, spec);
+}
+
+void
+engrave_parse_state_gradient_rel1_relative(double x, double y)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_gradient_rel1_relative_set(state, x, y);
+}
+
+void
+engrave_parse_state_gradient_rel2_relative(double x, double y)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_gradient_rel2_relative_set(state, x, y);
+}
+
+void
+engrave_parse_state_gradient_rel1_offset(int x, int y)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_gradient_rel1_offset_set(state, x, y);
+}
+
+void
+engrave_parse_state_gradient_rel2_offset(int x, int y)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_gradient_rel2_offset_set(state, x, y);
+}
+
+void
+engrave_parse_state_gradient_type(char * type)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_gradient_type_set(state, type);
+}
+
+
+void
 engrave_parse_state_rel1_relative(double x, double y)
 {
   Engrave_Group *group;
@@ -922,6 +1001,19 @@ engrave_parse_state_text_min(int x, int y)
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
   engrave_part_state_text_min_set(state, x, y);
+}
+
+void
+engrave_parse_state_text_max(int x, int y)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_text_max_set(state, x, y);
 }
 
 void

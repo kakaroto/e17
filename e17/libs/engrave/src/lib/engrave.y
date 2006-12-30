@@ -36,17 +36,17 @@
 %token CONFINE DATA DESCRIPTION DRAGABLE EFFECT FILL FIT
 %token FONT FONTS GROUP GROUPS IMAGE TEXTBLOCK IMAGES IN ITEM MAX MIN FIXED MOUSE_EVENTS
 %token NAME NORMAL OFFSET ORIGIN PART PARTS PROGRAM PROGRAMS
-%token REL1 REL2 RELATIVE REPEAT_EVENTS SCRIPT SIGNAL SIZE
+%token REL1 REL2 RELATIVE REPEAT_EVENTS SCRIPT SIGNAL SIZE GRADREL1 GRADREL2
 %token SMOOTH SOURCE STATE STEP TARGET TEXT TEXT_CLASS TEXT_SOURCE TO
 %token TO_X TO_Y TRANSITION TWEEN TYPE VISIBLE X Y
 %token OPEN_BRACE CLOSE_BRACE RAW COMP LOSSY
 %token STYLES STYLE SBASE TAG ELIPSIS
 %token COLON QUOTE SEMICOLON STATE_SET ACTION_STOP SIGNAL_EMIT
 %token DRAG_VAL_SET DRAG_VAL_STEP DRAG_VAL_PAGE LINEAR
-%token SINUSOIDAL ACCELERATE DECELERATE IMAGE RECT SWALLOW
+%token SINUSOIDAL ACCELERATE DECELERATE IMAGE RECT SWALLOW GRADIENT
 %token NONE PLAIN OUTLINE SOFT_OUTLINE SHADOW SOFT_SHADOW 
 %token OUTLINE_SHADOW OUTLINE_SOFT_SHADOW VERTICAL HORIZONTAL BOTH
-%token SPECTRA SPECTRUM
+%token SPECTRA SPECTRUM GRAD
 %left MINUS PLUS
 %left TIMES DIVIDE
 %left NEG     /* negation--unary minus */
@@ -226,6 +226,7 @@ program: PROGRAM OPEN_BRACE { engrave_parse_program(); section = PROGRAM; } prog
 program_body: /* blank */ 
 	| program_cmd
 	| program_body program_cmd
+	| program_body SEMICOLON
 	;
 
 program_cmd: name
@@ -410,6 +411,9 @@ max: MAX COLON exp exp SEMICOLON {
                   case STATE:
                     engrave_parse_state_max((int)$3, (int)$4);
                     break;
+                  case TEXT:
+                    engrave_parse_state_text_max((int)$3, (int)$4);
+                    break;
                   default: 
                     break;
                 }
@@ -458,6 +462,7 @@ part_type: IMAGE { $$ = ENGRAVE_PART_TYPE_IMAGE; }
 	| TEXT { $$ = ENGRAVE_PART_TYPE_TEXT; }
 	| TEXTBLOCK { $$ = ENGRAVE_PART_TYPE_TEXTBLOCK; }
 	| SWALLOW { $$ = ENGRAVE_PART_TYPE_SWALLOW; }
+	| GRADIENT { $$ = ENGRAVE_PART_TYPE_GRADIENT; }
 	| STRING { /* edje accepts quoted part types. */
 		if (!strcmp($1, "RECT"))
 			$$ = ENGRAVE_PART_TYPE_RECT;
@@ -469,6 +474,8 @@ part_type: IMAGE { $$ = ENGRAVE_PART_TYPE_IMAGE; }
 			$$ = ENGRAVE_PART_TYPE_TEXTBLOCK;
 		else if (!strcmp($1, "SWALLOW"))
 			$$ = ENGRAVE_PART_TYPE_SWALLOW;
+		else if (!strcmp($1, "GRADIENT"))
+			$$ = ENGRAVE_PART_TYPE_GRADIENT;
 	}
 	;
 
@@ -640,6 +647,34 @@ desc_body_entry: rel1
 	| color2
 	| color3
 	| text
+	| gradient
+	;
+
+gradient: GRAD OPEN_BRACE {section = GRAD;} grad_statement CLOSE_BRACE semicolon_maybe { section = STATE;}
+
+grad_statement: /* empty */
+	| grad_spectrum grad_statement
+	| grad_type grad_statement
+	| grad_rel1 grad_statement
+	| grad_rel2 grad_statement
+	;
+
+grad_spectrum: SPECTRUM COLON STRING SEMICOLON {
+		engrave_parse_state_gradient_spectrum($3);
+	}
+	;
+
+grad_type: TYPE COLON STRING SEMICOLON {
+		engrave_parse_state_gradient_type($3);
+	}
+	;
+
+grad_rel1: REL1 OPEN_BRACE {section = GRADREL1;} rel_statement CLOSE_BRACE semicolon_maybe {section = GRAD;}
+	| REL1 DOT {section = GRADREL1;} rel_body {section = GRAD;}
+	;
+
+grad_rel2: REL2 OPEN_BRACE {section = GRADREL2;} rel_statement CLOSE_BRACE semicolon_maybe {section = GRAD;}
+	| REL2 DOT {section = GRADREL2;} rel_body {section = GRAD;}
 	;
 
 rel1: REL1 OPEN_BRACE {section = REL1;} rel_statement CLOSE_BRACE semicolon_maybe {section = STATE;}
@@ -677,6 +712,12 @@ relative: RELATIVE COLON exp exp SEMICOLON {
                   case SIZE:
                     engrave_parse_state_fill_size_relative($3, $4);
                     break;
+		  case GRADREL1:
+		    engrave_parse_state_gradient_rel1_relative($3, $4);
+		    break;
+		  case GRADREL2:
+		    engrave_parse_state_gradient_rel2_relative($3, $4);
+		    break;
                   default: 
                     break;
                 }
@@ -697,6 +738,12 @@ offset: OFFSET COLON exp exp SEMICOLON {
                     break;
                   case SIZE:
                     engrave_parse_state_fill_size_offset((int)$3, (int)$4);
+                    break;
+                  case GRADREL1:
+                    engrave_parse_state_gradient_rel1_offset((int)$3, (int)$4);
+                    break;
+                  case GRADREL2:
+                    engrave_parse_state_gradient_rel2_offset((int)$3, (int)$4);
                     break;
                   default: 
                     break;
@@ -863,6 +910,7 @@ text_body: text_entry
 	| fit
 	| elipsis
 	| min
+	| max
 	| align
 	| source
 	;

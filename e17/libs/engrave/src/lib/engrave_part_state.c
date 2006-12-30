@@ -41,6 +41,16 @@ engrave_part_state_new(void)
   state->fill.pos_abs.y = 0;
   state->fill.rel.y = 1.0;
   state->fill.abs.y = 0;
+  state->gradient.spectrum = NULL;
+  state->gradient.type = NULL;
+  state->gradient.rel1.relative.x = 0.0;
+  state->gradient.rel1.relative.y = 0.0;
+  state->gradient.rel1.offset.x = 0;
+  state->gradient.rel1.offset.y = 0;
+  state->gradient.rel2.relative.x = 0.0;
+  state->gradient.rel2.relative.y = 0.0;
+  state->gradient.rel2.offset.x = 0;
+  state->gradient.rel2.offset.y = 0;
   state->color_class = NULL;
   state->color.r = 255;
   state->color.g = 255;
@@ -80,6 +90,9 @@ engrave_part_state_free(Engrave_Part_State *eps)
   /* don't free the image here cuz its freed in the _file code */
   eps->image.normal = NULL;
   eps->image.tween = evas_list_free(eps->image.tween);
+
+  IF_FREE(eps->gradient.spectrum);
+  IF_FREE(eps->gradient.type);
 
   IF_FREE(eps->color_class);
   IF_FREE(eps->text.text);
@@ -792,6 +805,24 @@ engrave_part_state_text_min_set(Engrave_Part_State *eps, int x, int y)
 }
 
 /**
+ * engrave_part_state_text_max_set - Set the text max value.
+ * @param eps: The Engrave_Part_State to set the value too.
+ * @param x: The x value to set.
+ * @param y: The y value to set.
+ *
+ * @return Returns no value 
+ */
+EAPI void
+engrave_part_state_text_max_set(Engrave_Part_State *eps, int x, int y)
+{
+  if (!eps) return;
+  eps->text.max.x = x;
+  eps->text.max.y = y;
+}
+
+
+
+/**
  * engrave_part_state_text_align_set - Set the text alignment of the state.
  * @param eps: The Engrave_Part_State to set the value too.
  * @param x: The x alignment setting.
@@ -1497,5 +1528,120 @@ engrave_part_state_parent_get(Engrave_Part_State *eps)
     return (eps ? eps->parent : NULL);
 }
 
+/**
+ * engrave_part_state_gradient_spectrum_set - set the spectrum of the gradient on this state
+ * @param eps: The Engrave_Part_State to set the spectrum for
+ * @param spec: The name of the spectrum
+ * 
+ * @return Returns no value.
+ */
+EAPI void 
+engrave_part_state_gradient_spectrum_set(Engrave_Part_State *eps, const char *spec)
+{
+    if (!eps || !spec) return;
+    eps->gradient.spectrum = strdup(spec);
+}
+
+/**
+ * engrave_part_state_gradient_spectrum_get - get the spectrum of the gradient on this state
+ * @param eps: The Engrave_Part_State to get the spectrum for 
+ * 
+ * @return Returns the name of the spectrum used
+ */
+EAPI const char *
+engrave_part_state_gradient_spectrum_get(Engrave_Part_State *eps)
+{
+    return (eps ? eps->gradient.spectrum : NULL);
+}
+
+/**
+ * engrave_part_state_gradient_type - set the type of the gradient on this state
+ * @param eps: The Engrave_Part_State to set the type for
+ * @param type: The type of the spectrum
+ * 
+ * @return Returns no value.
+ */
+EAPI void 
+engrave_part_state_gradient_type_set(Engrave_Part_State *eps, const char *type)
+{
+    if (!eps || !type) return;
+    eps->gradient.type = strdup(type);
+}
+
+/**
+ * engrave_part_state_gradient_type_get - get the type of the gradient on this state
+ * @param eps: The Engrave_Part_State to get the type for 
+ * 
+ * @return Returns the type of the gradient
+ */
+EAPI const char *
+engrave_part_state_gradient_type_get(Engrave_Part_State *eps)
+{
+    return (eps ? eps->gradient.type : NULL);
+}
+
+EAPI void
+engrave_part_state_gradient_rel1_relative_set(Engrave_Part_State *eps, double x, double y)
+{
+    if (!eps) return;
+    eps->gradient.rel1.relative.x = x;
+    eps->gradient.rel1.relative.y = y;
+}
+
+EAPI void
+engrave_part_state_gradient_rel1_relative_get(Engrave_Part_State *eps, double *x, double *y)
+{
+    if (!eps) return;
+    if (x) *x = eps->gradient.rel1.relative.x;
+    if (y) *y = eps->gradient.rel1.relative.y;
+}
+
+EAPI void
+engrave_part_state_gradient_rel2_relative_set(Engrave_Part_State *eps, double x, double y)
+{
+    if (!eps) return;
+    eps->gradient.rel2.relative.x = x;
+    eps->gradient.rel2.relative.y = y;
+}
+
+EAPI void
+engrave_part_state_gradient_rel2_relative_get(Engrave_Part_State *eps, double *x, double *y)
+{
+    if (!eps) return;
+    if (x) *x = eps->gradient.rel2.relative.x;
+    if (y) *y = eps->gradient.rel2.relative.y;
+}
+
+EAPI void
+engrave_part_state_gradient_rel1_offset_set(Engrave_Part_State *eps, int x, int y)
+{
+    if (!eps) return;
+    eps->gradient.rel1.offset.x = x;
+    eps->gradient.rel1.offset.y = y;
+}
+
+EAPI void
+engrave_part_state_gradient_rel1_offset_get(Engrave_Part_State *eps, int *x, int *y)
+{
+    if (!eps) return;
+    if (x) *x = eps->gradient.rel1.offset.x;
+    if (y) *y = eps->gradient.rel1.offset.y;
+}
+
+EAPI void
+engrave_part_state_gradient_rel2_offset_set(Engrave_Part_State *eps, int x, int y)
+{
+    if (!eps) return;
+    eps->gradient.rel2.offset.x = x;
+    eps->gradient.rel2.offset.y = y;
+}
+
+EAPI void
+engrave_part_state_gradient_rel2_offset_get(Engrave_Part_State *eps, int *x, int *y)
+{
+    if (!eps) return;
+    if (x) *x = eps->gradient.rel2.offset.x;
+    if (y) *y = eps->gradient.rel2.offset.y;
+}
 
 

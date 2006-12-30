@@ -82,6 +82,26 @@ struct _Engrave_Part_State
   } rel1, rel2;
 
   /**
+   * gradient information for the state
+   */
+  struct
+  {
+    char * spectrum; /**< Name of the spectrum */
+    char * type;/**< Type of the gradient */
+    struct {
+      struct {
+        double x;
+	double y;
+      } relative;
+
+      struct {
+        int x;
+	int y;
+      } offset;
+    } rel1, rel2;
+  } gradient;
+
+  /**
    * image information for the state 
    */
   struct
@@ -157,12 +177,12 @@ struct _Engrave_Part_State
     double elipsis;	/**< Elipsis */
 
     /**
-     * Fit and min size information
+     * Fit, max and min size information
      */
     struct {
       int x;    /**< The x value */
       int y;    /**< The y value */
-    } fit, min;
+    } fit, min, max;
 
     /**
      * Alignment settings for the text
@@ -264,6 +284,7 @@ EAPI void engrave_part_state_text_font_set(Engrave_Part_State *eps,
 EAPI void engrave_part_state_text_size_set(Engrave_Part_State *eps, int size);
 EAPI void engrave_part_state_text_fit_set(Engrave_Part_State *eps, int x, int y);
 EAPI void engrave_part_state_text_min_set(Engrave_Part_State *eps, int x, int y);
+EAPI void engrave_part_state_text_max_set(Engrave_Part_State *eps, int x, int y);
 EAPI void engrave_part_state_text_align_set(Engrave_Part_State *eps, 
                                             double x, double y);
 EAPI void engrave_part_state_copy(Engrave_Part_State *from, 
@@ -336,6 +357,20 @@ EAPI void engrave_part_state_tween_foreach(Engrave_Part_State *eps,
 EAPI Evas_Object *engrave_part_state_evas_object_get(Engrave_Part_State *eps);
 EAPI void engrave_part_state_evas_object_set(Engrave_Part_State *eps, 
                                              Evas_Object *o);
+
+EAPI void engrave_part_state_gradient_spectrum_set(Engrave_Part_State *eps, const char *spec);
+EAPI const char * engrave_part_state_gradient_spectrum_get(Engrave_Part_State *eps);
+EAPI void engrave_part_state_gradient_type_set(Engrave_Part_State *eps, const char *type);
+EAPI const char * engrave_part_state_gradient_type_get(Engrave_Part_State *eps);
+EAPI void engrave_part_state_gradient_rel1_relative_set(Engrave_Part_State *eps, double x, double y);
+EAPI void engrave_part_state_gradient_rel1_relative_get(Engrave_Part_State *eps, double *x, double *y);
+EAPI void engrave_part_state_gradient_rel2_relative_set(Engrave_Part_State *eps, double x, double y);
+EAPI void engrave_part_state_gradient_rel2_relative_get(Engrave_Part_State *eps, double *x, double *y);
+EAPI void engrave_part_state_gradient_rel1_offset_set(Engrave_Part_State *eps, int x, int y);
+EAPI void engrave_part_state_gradient_rel1_offset_get(Engrave_Part_State *eps, int *x, int *y);
+EAPI void engrave_part_state_gradient_rel2_offset_set(Engrave_Part_State *eps, int x, int y);
+EAPI void engrave_part_state_gradient_rel2_offset_get(Engrave_Part_State *eps, int *x, int *y);
+
 /**
  * @}
  */

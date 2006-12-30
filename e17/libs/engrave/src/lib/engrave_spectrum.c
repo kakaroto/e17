@@ -4,7 +4,6 @@
 
 /**
  * engrave_spectrum_new - create a new Engrave_Spectrum object
- * @param name: The name of the spectrum
  *
  * @return Returns a pointer to a newly allocated object on success, or NULL
  */

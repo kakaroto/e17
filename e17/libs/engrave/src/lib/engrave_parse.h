@@ -83,6 +83,7 @@ void engrave_parse_state_text_font(char *font);
 void engrave_parse_state_text_size(int size);
 void engrave_parse_state_text_fit(int x, int y);
 void engrave_parse_state_text_min(int x, int y);
+void engrave_parse_state_text_max(int x, int y);
 void engrave_parse_state_text_align(double x, double y);
 void engrave_parse_program();
 void engrave_parse_program_script(char *script);
@@ -98,5 +99,10 @@ void engrave_parse_program_action(Engrave_Action action, char *state,
 void engrave_parse_program_transition(Engrave_Transition transition, 
                                       double duration);
 
+void engrave_parse_state_gradient_spectrum(char * spec);
+void engrave_parse_state_gradient_rel1_relative(double x, double y);
+void engrave_parse_state_gradient_rel2_relative(double x, double y);
+void engrave_parse_state_gradient_rel1_offset(int x, int y);
+void engrave_parse_state_gradient_rel2_offset(int x, int y);
 #endif
 
