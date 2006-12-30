@@ -494,7 +494,8 @@ static void _popup_window_popup(Etk_Popup_Window *popup_window)
       int mx, my;
       
       /* Release all the buttons of the mouse */
-      ecore_x_pointer_last_xy_get(&mx, &my);
+      /* TODO: I commented this out because it causes some problems... */
+      /*ecore_x_pointer_last_xy_get(&mx, &my);
       if ((win = ecore_x_window_at_xy_get(mx, my)) != 0)
       {
          int i;
@@ -502,7 +503,7 @@ static void _popup_window_popup(Etk_Popup_Window *popup_window)
          ecore_x_pointer_xy_get(win, &mx, &my);
          for (i = 1; i <= 32; i++)
             ecore_x_mouse_up_send(win, mx, my, i);
-      }
+      }*/
       
       /* Create the input window */
       root = engine_data->x_window;

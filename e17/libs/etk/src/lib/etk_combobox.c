@@ -678,7 +678,7 @@ static void _etk_combobox_constructor(Etk_Combobox *combobox)
       return;
    
    combobox->button = etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "button", "theme_parent", combobox,
-      "visible", ETK_TRUE, "repeat_mouse_events", ETK_TRUE, "internal", ETK_TRUE, NULL);
+      "visible", ETK_TRUE, "repeat_mouse_events", ETK_TRUE, "focusable", ETK_FALSE, "internal", ETK_TRUE, NULL);
    etk_widget_parent_set(combobox->button, ETK_WIDGET(combobox));
    etk_signal_connect("toggled", ETK_OBJECT(combobox->button), ETK_CALLBACK(_etk_combobox_button_toggled_cb), combobox);
    

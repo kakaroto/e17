@@ -9,13 +9,13 @@
  * @{
  */
 
-enum _Etk_Toggle_Button_Signal_Id
+enum Etk_Toggle_Button_Signal_Id
 {
    ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL,
    ETK_TOGGLE_BUTTON_NUM_SIGNALS
 };
 
-enum _Etk_Toggle_Button_Property_Id
+enum Etk_Toggle_Button_Property_Id
 {
    ETK_TOGGLE_BUTTON_ACTIVE_PROPERTY
 };

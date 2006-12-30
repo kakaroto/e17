@@ -190,8 +190,9 @@ void etk_button_label_set(Etk_Button *button, const char *label)
    else
       etk_widget_show(button->label);
 
+   /* Rebuild the button only if necessary (i.e. if the label is currently not packed into the button) */
    rebuild = ETK_TRUE;
-   for (parent = etk_widget_parent_get(ETK_WIDGET(button)); parent; parent = etk_widget_parent_get(parent))
+   for (parent = etk_widget_parent_get(button->label); parent; parent = etk_widget_parent_get(parent))
    {
       if (parent == widget)
       {
