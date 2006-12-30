@@ -34,6 +34,7 @@ engrave_group_free(Engrave_Group *eg)
   if (!eg) return;
 
   IF_FREE(eg->name);
+  IF_FREE(eg->alias);
   for (l = eg->parts; l; l = l->next) {
     Engrave_Part *ep = l->data;
     engrave_part_free(ep);
@@ -98,6 +99,21 @@ engrave_group_name_set(Engrave_Group *eg, const char *name)
   if (!eg) return;
   IF_FREE(eg->name);
   eg->name = (name ? strdup(name) : NULL);
+}
+
+/**
+ * engrave_group_alias_set - set the alias of the group.
+ * @param eg: The Engrave_Group to attach the alias too.
+ * @param alias: The alias to attach to the group.
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_group_alias_set(Engrave_Group *eg, const char *alias)
+{
+  if (!eg) return;
+  IF_FREE(eg->alias);
+  eg->alias = (alias ? strdup(alias) : NULL);
 }
 
 /**
@@ -259,6 +275,18 @@ EAPI const char *
 engrave_group_name_get(Engrave_Group *eg)
 {
   return (eg ? eg->name : NULL);
+}
+
+/**
+ * engrave_group_alias_get - get the alias attached to the group
+ * @param eg: The Engrave_Group to get the alias from
+ *
+ * @return Returns the alias of the group or NULL on failure.
+ */
+EAPI const char *
+engrave_group_alias_get(Engrave_Group *eg)
+{
+  return (eg ? eg->alias : NULL);
 }
 
 /**

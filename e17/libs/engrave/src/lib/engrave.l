@@ -137,6 +137,7 @@ min					{ KEYWORD_RETURN(MIN); }
 fixed					{ KEYWORD_RETURN(FIXED); }
 mouse_events		{ KEYWORD_RETURN(MOUSE_EVENTS); }
 name				{ KEYWORD_RETURN(NAME); }
+alias				{ KEYWORD_RETURN(ALIAS); }
 NONE				{ KEYWORD_RETURN(NONE); }
 normal				{ KEYWORD_RETURN(NORMAL); }
 offset				{ KEYWORD_RETURN(OFFSET); }

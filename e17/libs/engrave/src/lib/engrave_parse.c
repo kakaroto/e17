@@ -86,6 +86,14 @@ engrave_parse_group_name(char *name)
 }
 
 void
+engrave_parse_group_alias(char *alias)
+{
+  Engrave_Group *group;
+  group = engrave_file_group_last_get(engrave_file);
+  engrave_group_alias_set(group, alias);
+}
+
+void
 engrave_parse_spectrum()
 {
   Engrave_Spectrum *es;

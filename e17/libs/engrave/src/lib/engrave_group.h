@@ -23,6 +23,7 @@ typedef struct _Engrave_Group Engrave_Group;
 struct _Engrave_Group
 {
   char *name;           /**< The group name */
+  char *alias;           /**< The group alias */
   /**
    * The max/min size values for the group 
    */
@@ -53,6 +54,7 @@ EAPI void engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep);
 
 EAPI void engrave_group_script_set(Engrave_Group *eg, const char *script);
 EAPI void engrave_group_name_set(Engrave_Group *eg, const char *name);
+EAPI void engrave_group_alias_set(Engrave_Group *eg, const char *alias);
 EAPI void engrave_group_min_size_set(Engrave_Group *eg, int w, int h);
 EAPI void engrave_group_max_size_set(Engrave_Group *eg, int w, int h);
 
@@ -60,6 +62,7 @@ EAPI Engrave_Part * engrave_group_part_last_get(Engrave_Group *eg);
 EAPI Engrave_Program * engrave_group_program_last_get(Engrave_Group *eg);
 
 EAPI const char *engrave_group_name_get(Engrave_Group *eg);
+EAPI const char *engrave_group_alias_get(Engrave_Group *eg);
 EAPI const char *engrave_group_script_get(Engrave_Group *eg);
 EAPI void engrave_group_min_size_get(Engrave_Group *eg, int *w, int *h);
 EAPI void engrave_group_max_size_get(Engrave_Group *eg, int *w, int *h);

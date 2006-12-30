@@ -13,6 +13,7 @@ void engrave_parse_group();
 void engrave_parse_group_data(char *key, char *value, int int_value);
 void engrave_parse_group_script(char *script);
 void engrave_parse_group_name(char *name);
+void engrave_parse_group_alias(char *alias);
 void engrave_parse_group_min(int w, int h);
 void engrave_parse_group_max(int w, int h);
 
