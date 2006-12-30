@@ -198,7 +198,7 @@ AM_CONDITIONAL(BUILD_ENGINE_EE_S_X11, false)
 fi
 
 #####################################################################
-Ecore_FB
+## Ecore_FB
 have_ecore_fb="no"
 save_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS $ECORE_CFLAGS"
