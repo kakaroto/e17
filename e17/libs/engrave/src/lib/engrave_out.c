@@ -33,7 +33,8 @@ static char *_part_type_string[ENGRAVE_PART_TYPE_NUM] = {
         "TEXT",
         "TEXTBLOCK",
         "RECT",
-        "SWALLOW"
+        "SWALLOW",
+	"GRADIENT"
         };
 
 static char *_text_effect_string[ENGRAVE_TEXT_EFFECT_NUM] = {
