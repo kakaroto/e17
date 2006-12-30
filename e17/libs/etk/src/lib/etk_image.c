@@ -985,21 +985,38 @@ static void _etk_image_load(Etk_Image *image)
  *     - Etk_Image
  *
  * \par Properties:
- * @prop_name "image_file": The image file (.png, .jpg, ...) which the image is loaded from.
- * Set to NULL if the image is loaded from an edje file (.edj)
+ * @prop_name "source": The source of the image (file, edje, stock, Evas object or pixel data)
+ * @prop_type Integer (Etk_Image_Source)
+ * @prop_ro
+ * @prop_val ETK_IMAGE_FILE
+ * \par
+ * @prop_name "file": The path of the loaded file (path to the image-file or to the edje-file, or NULL if the image is
+ * not loaded from a file)
  * @prop_type String (char *)
  * @prop_rw
  * @prop_val NULL
  * \par
- * @prop_name "edje_file": The edje file (.edj) which the image is loaded from.
- * Set to NULL if the image is loaded from an image file (.png, .jpg, ...)
+ * @prop_name "key": The name of the loaded key: it corresponds to the loaded edje-group if the image is loaded from an
+ * Edje-file, or to the key corresponding to the image if it is loaded from an Eet-file. Otherwise it is set to NULL
  * @prop_type String (char *)
  * @prop_rw
  * @prop_val NULL
  * \par
- * @prop_name "edje_group": The edje group of the image.
- * Set to NULL if the image is loaded from an image file (.png, .jpg, ...)
- * @prop_type String (char *)
+ * @prop_name "stock_id": The stock ID used by the image.
+ * It is set to ETK_STOCK_NO_STOCK if the image is not a stock-icon
+ * @prop_type Integer
+ * @prop_rw
+ * @prop_val ETK_STOCK_NO_STOCK
+ * \par
+ * @prop_name "stock_size": The size of the stock-icon used by the image.
+ * It is set to ETK_STOCK_MEDIUM if the image is not a stock-icon
+ * @prop_type Integer
+ * @prop_rw
+ * @prop_val ETK_STOCK_MEDIUM
+ * \par
+ * @prop_name "evas_object": A pointer to the Evas object corresponding to the image. You must be careful if you
+ * manipulate it directly (do not call an Edje function on an Evas image object)
+ * @prop_type Pointer (Evas_Object *)
  * @prop_rw
  * @prop_val NULL
  * \par
@@ -1008,20 +1025,8 @@ static void _etk_image_load(Etk_Image *image)
  * @prop_rw
  * @prop_val ETK_TRUE
  * \par
- * @prop_name "use_edje": Whether of not the image is loaded from an edje file (.edj)
- * @prop_type Boolean
- * @prop_ro
- * @prop_val ETK_FALSE
- * \par
- * @prop_name "stock_id": The stock ID used by the image.
- * Set to ETK_STOCK_NO_STOCK if the image is not loaded from a stock icon
- * @prop_type Integer
+ * @prop_name "aspect_ratio": The aspect-ratio of the image. If it is set to 0.0, Etk calculates it automatically
+ * @prop_type Double
  * @prop_rw
- * @prop_val ETK_STOCK_NO_STOCK
- * \par
- * @prop_name "stock_size": The size of the stock icon used by the image.
- * Set to a random value if the image is not loaded from a stock icon
- * @prop_type Integer
- * @prop_rw
- * @prop_val ETK_STOCK_MEDIUM
+ * @prop_val 0.0
  */
