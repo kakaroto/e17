@@ -1,0 +1,52 @@
+TODO FOR 0.1 (not a complete list...only the first in my mind)
+=======================================
+
+* TEXT & RECT: alpha make strange thing....WHY????
+
+* More handlers on the canvas to move the 2 points simultan and modify the offset. 
+
+* Tooltips EVERYWERE  :)
+
+* Command line at least to open file on startup
+
+* Have to preprocess the edc on reading (for #include statement)
+
+* Up and Down buttons must move the selected part/description up and down
+   (have to wait a way to move the row of the tree)
+
+* fakewin: when a limit is reached (min e max) the small handler for resize go haead
+
+* Group rename
+
+* RelSpinner don't have to stop at 1.0 an 0 but ?? (maybe 100 -100)
+
+* make the interface fit well ats 1024x768
+
+* min e max for part
+
+* A new object add must be take a progressive (and unique) number (newrect1, newrect2...etc)
+
+* Text object: GLOW? GLOW2? FAR? ... does edje suport this?
+
+* implement make install and the the load of edje_editor.edj from other place than the source
+
+* Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
+
+
+TODO FOR 0.5
+=======================================
+
+* Program and signal manager
+
+* image_tween
+
+* remove the glib dependencies. The more it use from that lib is GString 
+   and GList. Porting Glist to evas_list and GString to Etk_String.
+   
+
+TODO FOR 1.0
+=======================================
+
+* Program must open, manage and save all edc file (e17 default theme use as test)
+
+* Program must handle all the edje functionality 
