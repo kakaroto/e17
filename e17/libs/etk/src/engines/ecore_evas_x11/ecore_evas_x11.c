@@ -494,7 +494,7 @@ static void _popup_window_popup(Etk_Popup_Window *popup_window)
       int mx, my;
       
       /* Release all the buttons of the mouse */
-      /* TODO: I commented this out because it causes some problems... */
+      /* TODO: There should be a better way to do that... */
       /*ecore_x_pointer_last_xy_get(&mx, &my);
       if ((win = ecore_x_window_at_xy_get(mx, my)) != 0)
       {
