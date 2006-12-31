@@ -1759,7 +1759,8 @@ void etk_widget_dnd_types_set(Etk_Widget *widget, const char **types, int num)
       return;
    
    /* free old data */
-   if(widget->dnd_types_num > 0 && widget->dnd_types != NULL)
+   if(num <= 0 || types == NULL || 
+     (widget->dnd_types_num > 0 && widget->dnd_types != NULL))
    {
       
       for(i = 0; i < widget->dnd_types_num; i++)
@@ -3231,16 +3232,18 @@ static void _etk_widget_smart_object_resize_cb(Evas_Object *obj, Evas_Coord w, E
    if (!obj || !(widget = ETK_WIDGET(evas_object_smart_data_get(obj))))
       return;
 
-   if (w != widget->geometry.w || h != widget->geometry.h || widget->need_redraw)
+   if (1 || w != widget->geometry.w || h != widget->geometry.h || widget->need_redraw)
    {
       widget->geometry.w = w;
       widget->geometry.h = h;
       if (!widget->content_object)
       {
+         widget->inner_geometry.x = widget->geometry.x + widget->inset.left;
+         widget->inner_geometry.y = widget->geometry.y +  widget->inset.top;
          widget->inner_geometry.w = widget->geometry.w - widget->inset.left - widget->inset.right;
          widget->inner_geometry.h = widget->geometry.h - widget->inset.top - widget->inset.bottom;
       }
-
+      
       if (widget->theme_object)
       {
          evas_object_move(widget->theme_object, widget->geometry.x, widget->geometry.y);
