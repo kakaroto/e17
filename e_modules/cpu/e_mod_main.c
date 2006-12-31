@@ -180,7 +180,7 @@ _set_cpu_load(void *data)
 {
    Instance *inst;
    Cpu      *cpu;
-   int       load, i = 0;
+   int       i = 0;
    char      str[100], str_tmp[100];
 
    if (cpu_count == -1) return 0;
@@ -327,8 +327,6 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	E_Menu *mn;
 	E_Menu_Item *mi;
 	int cx, cy, cw, ch;
-	Evas_List *l;
-	char buf[256];
 	Config_Item *ci;
 	
 	ci = _config_item_get(inst->gcc->id);

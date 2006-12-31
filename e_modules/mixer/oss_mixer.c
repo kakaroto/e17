@@ -14,7 +14,7 @@ static Evas_List *
 _oss_scan_devices(char *type)
 {
    FILE *file;
-   char buffer[256], *temp, *tmp2;
+   char buffer[256], *tmp2;
    int found = 0;
    int index = 0;
    static Evas_List *cards = NULL;
@@ -63,8 +63,6 @@ oss_get_cards()
 {   
    static Evas_List    *cards = NULL;
    Evas_List *hw_cards = NULL;
-   int           i, hd;
-   char          dname[256];   
    Mixer_Card *card;
 
    if(cards)
@@ -107,7 +105,6 @@ oss_get_cards()
 void *oss_get_card(int id)
 {
    Evas_List *hw_cards = NULL;
-   int i;
    Mixer_Card *card = NULL;
 
    if((hw_cards = _oss_scan_devices("Installed Devices")))
@@ -198,7 +195,7 @@ int oss_get_volume(int card_id, int channel_id)
 	else 
 	  {
 	     close(fd);
-	     return;
+	     return 0;
 	  }
 	ioctl(fd, cmd, &v);
 	/* We have the volume for both left / right, returning only one */
@@ -234,7 +231,7 @@ int oss_set_volume(int card_id, int channel_id, double vol)
 	cmd = SOUND_MIXER_WRITE_VOLUME;
       else {
 	 close(fd);
-	 return;
+	 return 0;
       }
       v = (r << 8) | l;
       ioctl(fd, cmd, &v);

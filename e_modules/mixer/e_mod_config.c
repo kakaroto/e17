@@ -88,7 +88,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    Evas_Object   *o, *ob, *of, *ot;
    Evas_List     *cards, *chans;
    Config_Item   *ci;
-   E_Radio_Group *cg, *mg, *dg;
+   E_Radio_Group *cg, *mg;
    Mixer_Card    *card;
 
    ci = cfd->data;

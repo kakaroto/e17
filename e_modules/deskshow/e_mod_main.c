@@ -149,6 +149,7 @@ _deskshow_cb_event_desk_show(void *data, int type, void *event)
      edje_object_signal_emit(inst->o_button, "active", "");
    else
      edje_object_signal_emit(inst->o_button, "passive", "");
+   return 1;
 }
 
 /* module setup */

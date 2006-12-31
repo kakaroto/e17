@@ -188,6 +188,7 @@ _wlan_config_get_devices(Ecore_List *devs)
   char dev[64];
   char buf[256];
   unsigned long dummy;
+  float dummy_float;
 
   stat = fopen ("/proc/net/wireless", "r");
   if (!stat)
@@ -203,7 +204,7 @@ _wlan_config_get_devices(Ecore_List *devs)
 	    buf[i] = ' ';
 	}	
       if (sscanf (buf, "%s %lu %f %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu "
-		  "%lu %lu %lu %lu\n", dev, &dummy, &dummy, &dummy,
+		  "%lu %lu %lu %lu\n", dev, &dummy, &dummy_float, &dummy,
 		  &dummy, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy,
 		  &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 4)
 	continue;

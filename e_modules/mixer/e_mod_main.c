@@ -998,8 +998,7 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    Mixer            *mixer;
    Config_Item      *ci;
    double            val;
-   int               m;
-   
+ 
    if (!(win = data)) return;
    
    mixer = win->mixer;
@@ -1127,7 +1126,6 @@ static int
 _mixer_window_gauge_visible_cb(void *data)
 {
    Mixer_Win_Gauge *win;
-   Ecore_Timer *timer;
 
    win = data;
    _mixer_window_gauge_pop_down(win);
