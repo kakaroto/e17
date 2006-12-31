@@ -541,7 +541,7 @@ _alarm_check_date(Alarm *al, int strict)
           }
         else
           {
-             printf("check_date : after (%d < %d) ! state %d\n", al->sched.date_epoch, ecore_time_get(), al->state);
+             printf("check_date : after (%f < %f) ! state %d\n", al->sched.date_epoch, ecore_time_get(), al->state);
              /*
                if (al->state == ALARM_STATE_RINGING)
                alarm_alarm_ring_stop(al, 0);
@@ -682,7 +682,7 @@ _epoch_find_date(char *date, int hour, int minute)
 
    t = mktime(&ts);
 
-   printf("epoch_find_date : %d (now : %d)", t, time(NULL));
+   printf("epoch_find_date : %lu (now : %lu)", t, time(NULL));
 
    return (double)t;
 }

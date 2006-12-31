@@ -259,7 +259,7 @@ _composite_run_fades_cb(void *data)
    Fade *f;
    Win *w;
    int f_continue = 1;
-   double current_time, delta_time, fade_interval;
+   double current_time, delta_time;
 
    f = data;
    if (!f) return 0;
@@ -1380,8 +1380,6 @@ composite_win_add(Ecore_X_Window id, Ecore_X_Window prev)
 {
    Win *new = E_NEW(Win, 1);
    Win *p;
-   Bool fade;
-   char *name, *class;
 
    if (!new)
       return;
@@ -2044,19 +2042,17 @@ composite_init(Bling *b)
 
    if (!XRenderQueryExtension(dpy, &render_event, &render_error))
    {
-      e_error_message_show(_("Load Error"),
-                          _("Unable to load Bling module:<br>"
-                            "Your X server does not have the Render extension.<br>"));
+      e_error_message_show(_("Unable to load Bling module:<br>"
+                             "Your X server does not have the Render extension.<br>"));
       return 0;
    }
    if (!XQueryExtension
        (dpy, COMPOSITE_NAME, &composite_opcode, &composite_event,
         &composite_error))
    {
-      e_error_message_show(_("Load Error"),
-                          _("Unable to load Bling module:<br>"
-                            "Your X server does not have the Composite extension.<br>"
-                            "You may need to enable this manually in your X configuration.<br>"));
+      e_error_message_show(_("Unable to load Bling module:<br>"
+                             "Your X server does not have the Composite extension.<br>"
+                             "You may need to enable this manually in your X configuration.<br>"));
       return 0;
    }
    XCompositeQueryVersion(dpy, &composite_major, &composite_minor);
