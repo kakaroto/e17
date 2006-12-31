@@ -3232,7 +3232,7 @@ static void _etk_widget_smart_object_resize_cb(Evas_Object *obj, Evas_Coord w, E
    if (!obj || !(widget = ETK_WIDGET(evas_object_smart_data_get(obj))))
       return;
 
-   if (1 || w != widget->geometry.w || h != widget->geometry.h || widget->need_redraw)
+   if (w != widget->geometry.w || h != widget->geometry.h || widget->need_redraw)
    {
       widget->geometry.w = w;
       widget->geometry.h = h;
