@@ -15,7 +15,8 @@ config.status
 config.sub
 configure
 depcomp
-e_modules-emu.spec
+e_modules-winselector.spec
+e_modules-winselector.spec.in
 install-sh
 libtool
 missing

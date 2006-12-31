@@ -23,3 +23,5 @@ deskshow.edj
 *.spec
 *.tar.gz
 module.desktop
+e_modules-deskshow.spec
+e_modules-deskshow.spec.in

@@ -15,6 +15,7 @@ config.sub
 configure
 depcomp
 e_modules-taskbar.spec
+e_modules-taskbar.spec.in
 install-sh
 libtool
 missing

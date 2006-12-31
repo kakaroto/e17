@@ -24,3 +24,5 @@ mail.edj
 *.tar.gz
 *.o
 module.desktop
+e_modules-mail.spec
+e_modules-mail.spec.in
