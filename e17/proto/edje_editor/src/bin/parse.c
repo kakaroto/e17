@@ -139,8 +139,8 @@ int GetGroupsTag(gchar* edc){
    gchar* start=NULL;
    gchar* end=NULL;
    GString* tmp;
-
-   //printf("Get Parts:\n%s",edc);
+  // int i=0;
+   //printf("Get Parts:%s\n",edc);
 
    //Search collections section and check brackets integrity
    if (!(start = strstr(edc,"collections{"))){
@@ -155,6 +155,7 @@ int GetGroupsTag(gchar* edc){
       start = start+5; //Skip group word
       end = SearchMatchingBra(start);
       tmp = g_string_new_len(start+1,(end-start)-2);
+      //printf("NEW_GROUP %d\n",i++);
       group = EDC_Group_new("new",0,0,0,0);
       g_string_printf(group->complete_tag,"%s",tmp->str);
 

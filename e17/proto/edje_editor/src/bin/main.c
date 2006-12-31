@@ -333,10 +333,46 @@ int OpenEDC(const gchar* EDCfile){
    gchar*	EDCClear;
    GList*	p;
    gint		i=0,j=0;
-   if (!g_file_get_contents (EDCfile,&EDC,&lenght, NULL)){
+   char buf[4096];
+   char tmpn[4096];
+   int fd,ret;
+	
+   /*
+	 * Run the input through the C pre-processor.
+	 *
+	 * On some BSD based systems (MacOS, OpenBSD), the default cpp
+	 * in the path is a wrapper script that chokes on the -o option.
+	 * If the preprocessor is invoked via gcc -E, it will treat
+	 * file_in as a linker file. The safest route seems to be to
+	 * run cpp with the output as the second non-option argument.
+	 * 
+	 * Redirecting the output is required for MacOS 10.3, and works fine
+	 * on other systems.
+	 */
+   //create tmp file
+   strcpy(tmpn, "/tmp/edje_editor-tmp-XXXXXX");
+   fd = mkstemp(tmpn);
+   if (!fd) return 0;
+   close(fd);
+   printf("tmp file: %s\n",tmpn);
+   
+   //Run the input through the C pre-processor.
+	snprintf(buf, sizeof(buf), "cat %s | cpp -I/home/dave/test/default > %s",EDCfile, tmpn);
+	ret = system(buf);
+	if (ret < 0){
+	     snprintf(buf, sizeof(buf), "gcc -E -o %s %s", tmpn, EDCfile);
+	     ret = system(buf);
+	  }
+	if (ret != EXIT_SUCCESS) return 0;
+   printf("Preprocess Complete\n");
+
+	
+   //Read preprocessed file
+   if (!g_file_get_contents (tmpn,&EDC,&lenght, NULL)){
       printf("Error reading edc file: %s\n",EDCfile);
       return FALSE;
    }
+   unlink(tmpn);
 	/* Remove all comments and blanks*/
    EDCClear = malloc((int)lenght);
    while (i<=(int)lenght){
@@ -370,6 +406,7 @@ int OpenEDC(const gchar* EDCfile){
    //printf("%s\n+++\n",EDCClear);
    //ParseImages(EDCClear);
    GetGroupsTag(EDCClear);
+
    p=EDC_Group_list;
    while (p){
       ParsePartsFromGroup(p->data);
