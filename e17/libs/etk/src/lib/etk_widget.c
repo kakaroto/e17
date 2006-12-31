@@ -2465,8 +2465,8 @@ static void _etk_widget_realize(Etk_Widget *widget)
       
       /* We create the content-object if the part ETK_WIDGET_CONTENT_PART exists:
        * the content-object is a smart object that will be swallowed in this part, and
-       * whose member-objects are the member-objects and the children's smart-objects of the widget.
-       * This way, we have a powerful and generic way to swallow children in any types of widgets */
+       * whose member-objects are the member-objects and children's smart-objects of the widget.
+       * This way, we have a powerful and generic way to swallow children in any type of widgets */
       if (edje_object_part_exists(widget->theme_object, ETK_WIDGET_CONTENT_PART))
       {
          widget->content_object = _etk_widget_content_object_add(evas, widget);
@@ -3497,10 +3497,7 @@ static void _etk_widget_content_object_resize_cb(Evas_Object *obj, Evas_Coord w,
    
    evas_object_geometry_get(obj, &prev_w, &prev_h, NULL, NULL);
    if ((prev_w != w || prev_h != h || widget->need_redraw) && widget->size_allocate)
-   {
       widget->size_allocate(widget, widget->inner_geometry);
-      widget->need_redraw = ETK_FALSE;
-   }
 }
 
 /* Called when the content-object of the widget is clipped */
