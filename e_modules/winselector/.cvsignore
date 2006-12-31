@@ -16,7 +16,6 @@ config.sub
 configure
 depcomp
 e_modules-winselector.spec
-e_modules-winselector.spec.in
 install-sh
 libtool
 missing

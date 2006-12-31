@@ -25,4 +25,3 @@ mail.edj
 *.o
 module.desktop
 e_modules-mail.spec
-e_modules-mail.spec.in

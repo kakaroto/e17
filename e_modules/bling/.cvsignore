@@ -8,7 +8,6 @@ config.*
 configure
 depcomp
 e_modules-bling.spec
-e_modules-bling.spec.in
 install-sh
 libtool
 ltmain.sh
