@@ -569,7 +569,7 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    gui->statusbar3 = enhance_var_get(en, "statusbar3");
    
    gui->image_about = enhance_var_get(en, "image_about");
-   etk_image_set_from_file(ETK_IMAGE(gui->image_about), ICON_FILE),
+   etk_image_set_from_file(ETK_IMAGE(gui->image_about), ICON_FILE, NULL),
 
    etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar1), "Rip: Idle", 0);
    etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar2), "Encode: Idle", 0);
