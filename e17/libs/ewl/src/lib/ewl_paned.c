@@ -1035,9 +1035,9 @@ ewl_paned_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	Ewl_Paned *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
+	DCHECK_PARAM_PTR("w", w);
 
-	p = w;
+	p = EWL_PANED(w);
 	IF_FREE_LIST(p->new_panes);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

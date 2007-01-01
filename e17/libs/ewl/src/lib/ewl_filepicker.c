@@ -131,7 +131,8 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_widget_show(fp->file_entry);
 
 	fp->filters = ecore_list_new();
-	ecore_list_set_free_cb(fp->filters, ewl_filepicker_filter_free_cb);
+	ecore_list_set_free_cb(fp->filters, 
+				ECORE_FREE_CB(ewl_filepicker_filter_free_cb));
 	ewl_filepicker_filter_add(fp, "All files", NULL);
 
 	model = ewl_model_new();
