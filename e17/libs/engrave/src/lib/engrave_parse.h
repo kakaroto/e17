@@ -101,6 +101,7 @@ void engrave_parse_program_transition(Engrave_Transition transition,
                                       double duration);
 
 void engrave_parse_state_gradient_spectrum(char * spec);
+void engrave_parse_state_gradient_type(char * type);
 void engrave_parse_state_gradient_rel1_relative(double x, double y);
 void engrave_parse_state_gradient_rel2_relative(double x, double y);
 void engrave_parse_state_gradient_rel1_offset(int x, int y);

@@ -657,6 +657,7 @@ desc_body_entry: rel1
 	;
 
 gradient: GRAD OPEN_BRACE {section = GRAD;} grad_statement CLOSE_BRACE semicolon_maybe { section = STATE;}
+	;
 
 grad_statement: /* empty */
 	| grad_spectrum grad_statement
