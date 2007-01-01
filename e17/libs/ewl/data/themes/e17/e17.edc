@@ -36,6 +36,7 @@ collections {
 #include "groups/scrollpane-groups.edc"
 #include "groups/treebg-groups.edc"
 #include "groups/treehead-groups.edc"
+#include "groups/toolicon-groups.edc"
 #include "groups/rowtext-groups.edc"
 #include "groups/seeker-groups.edc"
 }
@@ -134,6 +135,10 @@ data {
 	item, "/menu/vbox/menu_container/body/label/group" "submenuitem";
 	item, "/menu_item/body/label/group" "menuitem";
 
+	item, "/htoolbar/group" "window";
+	item, "/htoolbar/hbox/icon/group" "toolicon";
+	item, "/vtoolbar/group" "window";
+	item, "/vtoolbar/vbox/icon/group" "toolicon";
 	item, "/scrollpane/group" "scrollpane/background";
 
 	item, "/statusbar/group" "statusbar";

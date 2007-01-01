@@ -28,6 +28,7 @@ e17_DEPS = \
 	groups/tree-groups.edc \
 	groups/treebg-groups.edc \
 	groups/treehead-groups.edc \
+	groups/toolicon-groups.edc \
 	groups/window-groups.edc
 
 EXTRA_DIST = $(EDCS) 

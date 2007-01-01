@@ -1,0 +1,50 @@
+#ifndef EWL_TOOLBAR_H
+#define EWL_TOOLBAR_H
+
+/**
+ * @addtogroup Ewl_Toolbar Ewl_Toolbar: A toolbar widget
+ * Defines a widget to 
+ *
+ * @{
+ */
+
+/**
+ * @def EWL_TOOLBAR_TYPE
+ * The type name for the Ewl_Toolbar widget
+ */
+#define EWL_TOOLBAR_TYPE "toolbar"
+
+/**
+ */
+typedef struct Ewl_Toolbar Ewl_Toolbar;
+
+/**
+ * @def EWL_TOOLBAR(toolbar)
+ * Typecast a pointer to an Ewl_Toolbar pointer.
+ */
+#define EWL_TOOLBAR(toolbar) ((Ewl_Toolbar *) toolbar)
+
+/**
+ * @brief Inherits from Ewl_Toolbar  
+ */
+struct Ewl_Toolbar
+{
+	Ewl_Menubar     menubar; /**< Inherit from Ewl_Menubar */
+	Ewl_Icon_Part   hidden;  /**< which part of icons should be hidden */
+};
+
+Ewl_Widget     *ewl_toolbar_new(void);
+Ewl_Widget     *ewl_htoolbar_new(void);
+Ewl_Widget     *ewl_vtoolbar_new(void);
+int             ewl_toolbar_init(Ewl_Toolbar *t);
+void            ewl_toolbar_orientation_set(Ewl_Toolbar *t, Ewl_Orientation o);
+Ewl_Orientation ewl_toolbar_orientation_get(Ewl_Toolbar *t);
+void            ewl_toolbar_icon_part_hide(Ewl_Toolbar *t, Ewl_Icon_Part part);
+
+void            ewl_toolbar_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
+/**
+ * @}
+ */
+
+#endif
+
