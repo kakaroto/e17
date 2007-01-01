@@ -19,7 +19,7 @@ ew_image_new(int w, int h)
 void
 ew_image_file_load(Entrance_Widget ew, const char *filename)
 {
-	etk_image_set_from_file(ETK_IMAGE(ew->owner), filename);
+	etk_image_set_from_file(ETK_IMAGE(ew->owner), filename, NULL);
 }
 
 void 
