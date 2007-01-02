@@ -12,7 +12,7 @@ group
 	data
 	{
 		item: "inset" 8;
-		item: "inset/bottom" 0;
+		item: "inset/bottom" 5;
 		item: "inset/top" 0;
 	}
 
