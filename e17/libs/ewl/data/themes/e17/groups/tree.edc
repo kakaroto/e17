@@ -70,14 +70,17 @@ group
 group
 {
     name: "ewl/tree/scrollpane/background";
+}
 
-    data
-    {
+group
+{
+	name: "ewl/tree/vbox";
+	data
+	{
+		item: "inset" 10;
 		item: "inset/top" 0;
 		item: "inset/bottom" 8;
-		item: "inset/right" 8;
-		item: "inset/left" 10;
-    }
+	}
 }
 
 group

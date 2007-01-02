@@ -125,6 +125,7 @@ data
 
 	/* tree groups */
 	item: "/tree2/group" "ewl/tree";
+	item: "/tree2/vbox/group" "ewl/tree/vbox";
 	item: "/tree2/vbox/scrollpane/group" "ewl/tree/scrollpane/background";
 
 	item: "/tree_header/group" "ewl/tree/header";
