@@ -12,8 +12,8 @@ group
 
 	data
 	{
-		item: "inset" "2";
-		item: "inset/left" "6";
+		item: "inset" 2;
+		item: "inset/left" 6;
 	}
 
 	parts 
@@ -134,8 +134,8 @@ group
 
 	data
 	{
-		item: "pad" "0";
-		item: "pad/top" "4";
+		item: "pad" 0;
+		item: "pad/top" 4;
 	}
 
 	parts
@@ -206,8 +206,8 @@ group
 	name: "ewl/entry/selection";
 	data
 	{
-		item: "pad/top" "4";
-		item: "pad/bottom" "4";
+		item: "pad/top" 4;
+		item: "pad/bottom" 4;
 	}
 	
 	parts
