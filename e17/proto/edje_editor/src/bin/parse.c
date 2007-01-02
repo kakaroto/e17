@@ -36,11 +36,12 @@ GString* GetString(gchar *s){
       return NULL;
    }
    start++;
+   
    if (!(end = strchr(start,'"'))){
       printf(_("Parsing error: Can't find string terminating character ' \"'\n"));
       return FALSE;
    }
-
+  //printf("** %s\n",s);
    return g_string_new_len(start,end-start);
 }
 
@@ -57,13 +58,14 @@ int GetEnum(gchar *s){
    if (g_strstr_len(start,end-start,"TEXT")) return PART_TYPE_TEXT;
    if (g_strstr_len(start,end-start,"NONE")) return NONE;
    if (g_strstr_len(start,end-start,"PLAIN")) return FX_PLAIN;
-   if (g_strstr_len(start,end-start,"OUTLINE")) return FX_OUTLINE;
+
    if (g_strstr_len(start,end-start,"SOFT_OUTLINE")) return FX_SOFT_OUTLINE;
    if (g_strstr_len(start,end-start,"OUTLINE_SOFT_SHADOW")) return FX_OUTLINE_SOFT_SHADOW;
    if (g_strstr_len(start,end-start,"SOFT_SHADOW")) return FX_SOFT_SHADOW;
    if (g_strstr_len(start,end-start,"OUTLINE_SHADOW")) return FX_OUTLINE_SHADOW;
    if (g_strstr_len(start,end-start,"SHADOW")) return FX_SHADOW;
-
+   if (g_strstr_len(start,end-start,"OUTLINE")) return FX_OUTLINE;
+      
    return 0;
    // OLD METHOD
    //start = strstr
@@ -134,44 +136,19 @@ int ParseImages(gchar* edc){
 	} */
    return TRUE;
 }
-int GetGroupsTag(gchar* edc){
-   EDC_Group *group;
-   gchar* start=NULL;
-   gchar* end=NULL;
-   GString* tmp;
-  // int i=0;
-   //printf("Get Parts:%s\n",edc);
 
-   //Search collections section and check brackets integrity
-   if (!(start = strstr(edc,"collections{"))){
-      printf(_("Parsing error: Can't find 'collections' section\n"));
-      return FALSE;
-   }
-   start = start+11;	//Skip collections word
-   end = SearchMatchingBra(start);
-
-   //search all groups
-   while((start = strstr(start,"group{"))){
-      start = start+5; //Skip group word
-      end = SearchMatchingBra(start);
-      tmp = g_string_new_len(start+1,(end-start)-2);
-      //printf("NEW_GROUP %d\n",i++);
-      group = EDC_Group_new("new",0,0,0,0);
-      g_string_printf(group->complete_tag,"%s",tmp->str);
-
-      start = end; 	//redo with next group
-   }
-   return TRUE;
-}
 
 EDC_Part* ParsePart(GString *part_tag, EDC_Group *group){
-   gchar* start=NULL;
-   gchar* end=NULL;
+   char* start=NULL;
+   char* end=NULL;
    GString *pinfo;
    GString *descr;
-   EDC_Part* part=EDC_Part_new(group,"",NONE);
+   GString *pname;
+   int ptype;
+   EDC_Part* part;
+   
 
-   //printf("GET PART: %s\n",part_tag->str);
+   //printf("PARSE PART: %s\n",part_tag->str);
 
 	/* Read part information (name,ecc..) */
    start = part_tag->str;
@@ -183,14 +160,15 @@ EDC_Part* ParsePart(GString *part_tag, EDC_Group *group){
       printf(_("Parsing error: Can't find part name\n"));
       return FALSE;
    }
-   part->name = GetString(start);
-
-   //Set Group
-   //part->group = group;
-
+   pname = GetString(start);
+   
    //Search type in information
-   start = SearchToken(pinfo->str,"type,",0);
-   part->type = GetEnum(start);
+   if ((start = SearchToken(pinfo->str,"type,",0)))
+      ptype = GetEnum(start);
+   else
+      ptype = PART_TYPE_IMAGE;
+ 
+   part=EDC_Part_new(group,pname->str,ptype);
 
    //Search effect in information
    if ((start = SearchToken(pinfo->str,"effect,",0)))
@@ -228,7 +206,7 @@ EDC_Part* ParsePart(GString *part_tag, EDC_Group *group){
    else
      part->text_class = g_string_new("");
 
-	/* printf("INFO: %s\n",pinfo->str);
+   /* printf("INFO: %s\n",pinfo->str);
 	printf("NAME: %s\n",part->name->str);
 	printf("TYPE: %d\n",part->type);
 	printf("MOUSE_EVENTS: %d\n",part->mouse_events);
@@ -236,7 +214,7 @@ EDC_Part* ParsePart(GString *part_tag, EDC_Group *group){
 	printf("EFFECT: %d\n",part->effect);
 	printf("CLIP_TO: %s\n",part->clip_to->str);
 	printf("COLOR_CLASS: %s\n",part->color_class->str);
-	printf("TEXT_CLASS: %s\n",part->text_class->str);  */
+	printf("TEXT_CLASS: %s\n",part->text_class->str);   */
 
 	/* Get all description */
    start = part_tag->str;
@@ -251,33 +229,36 @@ EDC_Part* ParsePart(GString *part_tag, EDC_Group *group){
    //Set first description selected
    part->current_description = part->descriptions->data;
 
-   AddPartToTree(part);
-
+   g_string_free(pinfo,TRUE);
+   g_string_free(pname,TRUE);
+   
    return part;
 }
 EDC_Description* ParseDescription(GString *description_tag, EDC_Part* part){
-   gchar* start=NULL;
-   gchar* rel=NULL;
-   gchar* image=NULL;
-   gchar* text=NULL;
+   char* start=NULL;
+   char* rel=NULL;
+   char* image=NULL;
+   char* text=NULL;
    int len;
    gchar* end=NULL;
-
+   GString *name;
    EDC_Description* Desc;
+   float index;
 
    //printf("\nDESCR: %s\n",description_tag->str);
 
    //Search state tag
    if (!(start = SearchToken(description_tag->str,"state,",0))){
-      printf(_("Parsing error: Can't find group name\n"));
+      printf(_("Parsing error: Can't find description state\n"));
       return FALSE;
    }
-   Desc = EDC_Description_new(part,"",0);
-   Desc->state = GetString(start);
+   name = GetString(start);
    start = strchr(start,'"')+1;	//Skip string
    start = strchr(start,'"')+1;
-   sscanf(start,"%f",&Desc->state_index);	//Get state index
-
+   sscanf(start,"%f",&index);	//Get state index
+   
+   Desc = EDC_Description_new(part,name->str,index);
+   
    //Search visible tag
    if ((start = SearchToken(description_tag->str,"visible,",0)))
      sscanf(start,"%d",&Desc->visible);
@@ -307,11 +288,11 @@ EDC_Description* ParseDescription(GString *description_tag, EDC_Part* part){
      sscanf(start,"%d %d %d %d",&Desc->color_r, &Desc->color_g, &Desc->color_b, &Desc->color_a);
 
    //Search color2 tag
-   if ((start = SearchToken(description_tag->str,"color2,",0)))
+   if ((start = SearchToken(description_tag->str,"color3,",0)))
      sscanf(start,"%d %d %d %d",&Desc->color2_r, &Desc->color2_g, &Desc->color2_b, &Desc->color2_a);
 
    //Search color3 tag
-   if ((start = SearchToken(description_tag->str,"color3,",0)))
+   if ((start = SearchToken(description_tag->str,"color2,",0)))
      sscanf(start,"%d %d %d %d",&Desc->color3_r, &Desc->color3_g, &Desc->color3_b, &Desc->color3_a);
 
    //Search inherit tag
@@ -349,19 +330,19 @@ EDC_Description* ParseDescription(GString *description_tag, EDC_Part* part){
       len = end - rel;
       //Search rel2 relative tag
       if ((start = SearchToken(rel,"relative,",len)))
-	sscanf(start,"%f %f",&Desc->rel2_relative_x,&Desc->rel2_relative_y);
+         sscanf(start,"%f %f",&Desc->rel2_relative_x,&Desc->rel2_relative_y);
       //Search rel2 offset tag
       if ((start = SearchToken(rel,"offset,",len)))
-	sscanf(start,"%d %d",&Desc->rel2_offset_x,&Desc->rel2_offset_y);
+         sscanf(start,"%d %d",&Desc->rel2_offset_x,&Desc->rel2_offset_y);
       //Search rel2_to tag
       if ((start = SearchToken(rel,"to,",len)))
-	Desc->rel2_to = GetString(start);
+         Desc->rel2_to = GetString(start);
       //Search rel2_to_x tag
       if ((start = SearchToken(rel,"to_x,",len)))
-	Desc->rel2_to_x = GetString(start);
+         Desc->rel2_to_x = GetString(start);
       //Search rel2_to_y tag
       if ((start = SearchToken(rel,"to_y,",len)))
-	Desc->rel2_to_y = GetString(start);
+         Desc->rel2_to_y = GetString(start);
    }
    //Search image tag
    if ((image = SearchToken(description_tag->str,"image{",0))){
@@ -369,16 +350,16 @@ EDC_Description* ParseDescription(GString *description_tag, EDC_Part* part){
       len = end - image;
       //Search image_normal tag
       if ((start = SearchToken(image,"normal,",len)))
-	Desc->image_normal = GetString(start);
+         Desc->image_normal = GetString(start);
       //Search image_tween tags
       start = image;
       while ((start = SearchToken(start,"tween,",len))){
-	 Desc->image_tween = g_list_append(Desc->image_tween,GetString(start));
+         Desc->image_tween = g_list_append(Desc->image_tween,GetString(start));
       }
 
       //Search image border tag
       if ((start = SearchToken(image,"border,",len))){
-	 sscanf(start,"%d %d %d %d",&Desc->image_border_left,&Desc->image_border_right,&Desc->image_border_top,&Desc->image_border_bottom);
+         sscanf(start,"%d %d %d %d",&Desc->image_border_left,&Desc->image_border_right,&Desc->image_border_top,&Desc->image_border_bottom);
       }
 
    }
@@ -433,52 +414,134 @@ EDC_Description* ParseDescription(GString *description_tag, EDC_Part* part){
 	printf("Text min: %d - %d\n",Desc->text_min_h,Desc->text_min_v);
 	printf("Text align: %.2f - %.2f\n",Desc->text_align_h,Desc->text_align_v);  */
 
+   g_string_free(name,TRUE);
    return Desc;
 }
-int ParsePartsFromGroup(EDC_Group* group){
-   gchar* start=NULL;
-   gchar* end=NULL;
+
+int ParseGroup(GString* tag){
    GString* ginfo;
+   GString* gname;
    GString* part;
+   int min_x=0,min_y=0,max_x=0,max_y=0;
+   char* start=NULL;
+   char* end=NULL;
+   EDC_Group* group;
+   
+   //printf("Parse Group \n%s\n\n",tag->str);
 
-   //printf("GET PARTS: %s\n\n",group->complete_tag->str);
-
-	/* Read group information (name,min,max) */
-   start = group->complete_tag->str;
+  	/* Read group information (name,min,max) */
+   start = tag->str;
    end = strstr(start,"parts{");
    ginfo = g_string_new_len(start,end-start);
-   //printf("GROUP INFO: %s\n",ginfo->str);
+   //printf("[PINFO]%s\n\n",ginfo->str);
 
    //Search name in information
    if (!(start = SearchToken(ginfo->str,"name,",0))){
       printf(_("Parsing error: Can't find group name\n"));
       return FALSE;
    }
-   group->name = GetString(start);
-
+   gname = GetString(start); 
+   
    //Search min in information
    if ((start = SearchToken(ginfo->str,"min,",0)))
-     sscanf(start,"%d %d",&group->min_x,&group->min_y);
+     sscanf(start,"%d %d",&min_x,&min_y);
    //Search max in information
    if ((start = SearchToken(ginfo->str,"max,",0)))
-     sscanf(start,"%d %d",&group->max_x,&group->max_y);
+     sscanf(start,"%d %d",&max_x,&max_y);
 
-   //printf("NAME: %s\nMIN: %d - %d\nMAX: %d - %d\n",group->name->str,group->min_x,group->min_y,group->max_x,group->max_y);
-
-	/* Read all parts*/
-   start = SearchToken(group->complete_tag->str,"parts{",0);
+   //printf("NAME: %s\nMIN: %d - %d\nMAX: %d - %d\n",gname->str,min_x,min_y,max_x,max_y);
+   group = EDC_Group_new(gname->str,min_x,min_y,max_x,max_y);
+  // printf("[TAG]: %s\n",tag->str);
+   
+   /* Read all parts*/
+   start = SearchToken(tag->str,"parts{",0);
 
    part = g_string_new("");
    while ((start = SearchToken(start,"part{",0))){
       end = SearchMatchingBra(start-1);
       part = g_string_truncate(part,0);
       part = g_string_append_len(part,start,end-start);
-      //group->parts = g_list_append(group->parts,ParsePart(part,group));
       ParsePart(part,group);
-
       start = end;
    }
+   
    g_string_free(part,TRUE);
+   g_string_free(gname,TRUE);
+   g_string_free(ginfo,TRUE);
+   
+   return TRUE;
+}
+int ParseEDC(char * EDC){
+   char*	EDCClear;
+   long  size;
+   int		i=0,j=0;
+   char* start=NULL;
+   char* end=NULL;
+   GString* group_tag;
+   
+   size = strlen(EDC);
+   
+   printf("Parsing EDC. lenght: %d\n",(int)size);
+   
+   // Remove all comments and blanks
+   EDCClear = malloc(size);
+   
+   while (i <= size){
+
+      //Skip new line, tabs and spaces
+      if (EDC[i] == '\n' || EDC[i] == '\t') {i++;continue;}
+
+      //Skip single line comment [ // ]
+      if (EDC[i] == '/' && EDC[i+1] == '/') {while (EDC[i]!='\n') i++;continue;}
+
+      //Skip multi line comment [ /* .. * /  ]
+      if (EDC[i] == '/' && EDC[i+1] == '*') {while (EDC[i]!='*' || EDC[i+1]!='/') i++;i++;i++;continue;}
+
+      //Skip multiple spaces
+      if (EDC[i] == ' ' && EDC[i+1] == ' ') {while (EDC[i+1]==' ') i++;continue;}
+
+      //Remove space before ' { ' (to simplify parsing
+      if (EDC[i] == ' ' && EDC[i+1] == '{') {i++;continue;}
+  
+      
+      //Replace all ':' with ','
+      if (EDC[i] == ':') EDC[i] = ',';
+      
+      //Change floating point sign ' . ' to ' , '
+      //	if ((g_ascii_isdigit(EDC[i])) && (EDC[i+1] == '.') && (g_ascii_isdigit(EDC[i+2])))
+      //		EDC[i+1] = ',';
+      
+
+      EDCClear[j] = EDC[i];
+
+      //printf("%c",EDC[i]);
+      i++;
+      j++;
+   }
+
+   //printf("%s\n+++\n",EDCClear);
+   
+   //Search collections section and check brackets integrity
+   if (!(start = strstr(EDCClear,"collections{"))){
+      printf(_("Parsing error: Can't find 'collections' section\n"));
+      return FALSE;
+   }
+   start = start+11;	//Skip collections word
+   end = SearchMatchingBra(start);
+   
+   //search all groups
+   while((start = strstr(start,"group{"))){
+      start = start+5; //Skip group word
+      end = SearchMatchingBra(start);
+      group_tag = g_string_new_len(start+1,(end-start)-2);
+      ParseGroup(group_tag);
+      //g_string_printf(group->complete_tag,"%s",tmp->str);
+      
+      g_string_free(group_tag,TRUE);
+      start = end; 	//redo with next group
+   }
+   
+   //ParseImages(EDCClear);
 
    return TRUE;
 }

@@ -49,32 +49,9 @@ int AddImageToCombo(char* fname){
 }
 
 /* functions to update interface*/
-void UpdateGroupComboBox(void){
-   EDC_Group*	group;
-   GList *p;
-   Etk_Combobox_Item *ComboItem;
-   if (EDC_Group_list){
-      //printf("Update Group Combo with %d groups\n",g_list_length(EDC_Group_list));
-      if (ETK_IS_COMBOBOX(UI_GroupComboBox))
-	etk_combobox_clear(ETK_COMBOBOX(UI_GroupComboBox));
-
-      p = EDC_Group_list;
-      while(p){
-	 group = p->data;
-	 ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_GroupComboBox), group->name->str);
-	 etk_combobox_item_data_set (ComboItem, group);
-	 p = g_list_next(p);
-      }
-
-      etk_signal_emit_by_name ("active_item_changed", ETK_OBJECT(UI_GroupComboBox),NULL,NULL);
-   }
-
-}
-
 void UpdateFontComboBox(void){
    struct dirent   *dit;
    DIR *dir;
-   Etk_Combobox_Item *ComboItem;
 
    //Stop signal propagation
    etk_signal_disconnect("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed));
@@ -92,9 +69,6 @@ void UpdateFontComboBox(void){
 	    AddFontToCombo(dit->d_name);
 	 }
 	 closedir(dir);
-	 //Add the 'Insert new font' item at the end of the font list
-	 ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_FontComboBox), etk_image_new_from_stock (ETK_STOCK_DOCUMENT_OPEN,ETK_STOCK_MEDIUM), "Insert new");
-	 etk_combobox_item_data_set (ComboItem, NULL);
       }
    }
 
@@ -105,7 +79,6 @@ void UpdateFontComboBox(void){
 void UpdateImageComboBox(void){
    struct dirent   *dit;
    DIR *dir;
-   Etk_Combobox_Item *ComboItem;
 
    //Stop signal propagation
    etk_signal_disconnect("active_item_changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed));
@@ -119,18 +92,40 @@ void UpdateImageComboBox(void){
       dir = opendir(EDCFileDir->str);
 
       if (dir){
-	 while ((dit = readdir(dir)) != NULL){
-	    AddImageToCombo(dit->d_name);
-	 }
-	 closedir(dir);
-	 //Add the 'Insert new image' item at the end of the combo
-	 ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_ImageComboBox), etk_image_new_from_stock (ETK_STOCK_DOCUMENT_OPEN,ETK_STOCK_MEDIUM), "Insert new");
-	 etk_combobox_item_data_set (ComboItem, NULL);
-      }
+         while ((dit = readdir(dir)) != NULL){
+            AddImageToCombo(dit->d_name);
+         }
+         closedir(dir);
+     }
    }
 
    //Renable  signal propagation
    etk_signal_connect("active_item_changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed), NULL);
+
+}
+void UpdateGroupFrame(void){
+   //Stop signal propagation
+   etk_signal_disconnect("text_changed",ETK_OBJECT(UI_GroupNameEntry),on_GroupNameEntry_text_changed);
+   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_GroupMinXSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_GroupMinYSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_GroupMaxXSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_GroupMaxYSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+
+   //Update name
+   etk_entry_text_set(ETK_ENTRY(UI_GroupNameEntry),selected_group->name->str);
+
+   //Update min e max spinners
+   etk_range_value_set (ETK_RANGE(UI_GroupMinXSpinner), selected_group->min_x);
+   etk_range_value_set (ETK_RANGE(UI_GroupMinYSpinner), selected_group->min_y);
+   etk_range_value_set (ETK_RANGE(UI_GroupMaxXSpinner), selected_group->max_x);
+   etk_range_value_set (ETK_RANGE(UI_GroupMaxYSpinner), selected_group->max_y);
+   
+   //ReEnable Signal Propagation
+   etk_signal_connect("text_changed",ETK_OBJECT(UI_GroupNameEntry),on_GroupNameEntry_text_changed,NULL);
+   etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMinXSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MINX_SPINNER);
+   etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMinYSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MINY_SPINNER);
+   etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMaxXSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MAXX_SPINNER);
+   etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMaxYSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MAXY_SPINNER);
 
 }
 void UpdatePartFrame(void){
@@ -434,7 +429,6 @@ void RecreateRelComboBoxes(void){
       etk_combobox_item_data_set (ComboItem, (void *)REL_COMBO_INTERFACE);
       while(p_list){
 	 part = p_list->data;
-	 printf("%s\n",part->name->str);
 	 if (part->type == PART_TYPE_RECT) str = g_string_new("RECT.PNG");
 	 if (part->type == PART_TYPE_TEXT) str = g_string_new("TEXT.PNG");
 	 if (part->type == PART_TYPE_IMAGE) str = g_string_new("IMAGE.PNG");
@@ -453,81 +447,64 @@ void RecreateRelComboBoxes(void){
       }
    }
 }
-void AddPartToTree(EDC_Part* part){
-   Etk_Tree_Col *col1,*col2;
-   Etk_Tree_Row *row=NULL;
-   EDC_Description *desc;
-   EDC_Group *parent_group = part->group;
-   GList	*Descs;
-   GString *str = g_string_new("");
-   col1 = etk_tree_nth_col_get(ETK_TREE(parent_group->tree_widget), 0);
-   col2 = etk_tree_nth_col_get(ETK_TREE(parent_group->tree_widget), 1);
-
-   switch (part->type){
-    case PART_TYPE_IMAGE: row = etk_tree_append(ETK_TREE(parent_group->tree_widget), col1, EdjeFile->str,"IMAGE.PNG", part->name->str,  NULL);break;
-    case PART_TYPE_TEXT: row = etk_tree_append(ETK_TREE(parent_group->tree_widget), col1, EdjeFile->str,"TEXT.PNG", part->name->str,  NULL);break;
-    case PART_TYPE_RECT: row = etk_tree_append(ETK_TREE(parent_group->tree_widget), col1, EdjeFile->str,"RECT.PNG", part->name->str,  NULL);break;
-    default: row = etk_tree_append(ETK_TREE(parent_group->tree_widget), col1, EdjeFile->str,"NONE.PNG", part->name->str,  NULL);break;
-   }
-
-   if (row){
-      part->tree_row = row;
-      etk_tree_row_data_set (row, part);
-      Descs = part->descriptions;
-      while (Descs){
-	 desc = Descs->data;
-	 AddDescToTree(desc);
-	 Descs = g_list_next(Descs);
-      }
-   }
-
-   g_string_free(str,TRUE);
+void AddGroupToTree(EDC_Group* group){
+   Etk_Tree2_Col *col1,*col2,*col3;
+   Etk_Tree2_Row *row=NULL;
+   
+   col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
+   col2 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 1);
+   col3 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2);
+   
+   row = etk_tree2_row_append(ETK_TREE2(UI_PartsTree), NULL, col1, EdjeFile->str,"NONE.PNG", group->name->str,col3,ROW_GROUP,  NULL);
+   
+   group->tree_row = row;
+   etk_tree2_row_data_set (row, group);
+   
 }
+void AddPartToTree(EDC_Part* part){
+   Etk_Tree2_Col *col1,*col2,*col3;
+   Etk_Tree2_Row *row=NULL;
+   GString *str = g_string_new("");
+
+   printf("Add Part to tree: %s\n",part->name->str);
+   col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
+   col2 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 1);
+   col3 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2);
+
+   
+   
+   switch (part->type){
+      case PART_TYPE_IMAGE: row = etk_tree2_row_append(ETK_TREE2(UI_PartsTree),part->group->tree_row, col1, EdjeFile->str,"IMAGE.PNG", part->name->str,col3,ROW_PART,  NULL);break;
+      case PART_TYPE_TEXT: row = etk_tree2_row_append(ETK_TREE2(UI_PartsTree),part->group->tree_row, col1, EdjeFile->str,"TEXT.PNG", part->name->str,col3,ROW_PART,  NULL);break;
+      case PART_TYPE_RECT: row = etk_tree2_row_append(ETK_TREE2(UI_PartsTree),part->group->tree_row, col1, EdjeFile->str,"RECT.PNG", part->name->str,col3,ROW_PART,  NULL);break;
+      default: row = etk_tree2_row_append(ETK_TREE2(UI_PartsTree),part->group->tree_row, col1, EdjeFile->str,"NONE.PNG", part->name->str,col3,ROW_PART,  NULL);break;
+   } 
+
+   
+   part->tree_row = row;
+   etk_tree2_row_data_set (row, part);
+   
+   g_string_free(str,TRUE);
+} 
 void AddDescToTree(EDC_Description* desc){
-   Etk_Tree_Col *col1,*col2;
-   Etk_Tree_Row *row;
+   Etk_Tree2_Col *col1,*col2,*col3;
+   Etk_Tree2_Row *row;
    EDC_Part* part = desc->part;
-   EDC_Group* group = part->group;
    GString	*str=g_string_new("");
 
-   col1 = etk_tree_nth_col_get(ETK_TREE(group->tree_widget), 0);
-   col2 = etk_tree_nth_col_get(ETK_TREE(group->tree_widget), 1);
+   col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
+   col2 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 1);
+   col3 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2);
 
    g_string_printf(str,"%s %.1f",desc->state->str,desc->state_index);
-   row = etk_tree_append_to_row(part->tree_row, col1,EdjeFile->str,"DESC.PNG",str->str, col2,TRUE,NULL);
+   row = etk_tree2_row_append(ETK_TREE2(UI_PartsTree),part->tree_row, col1,EdjeFile->str,"DESC.PNG",str->str, col2,TRUE,col3,ROW_DESC, NULL);
 
-   etk_tree_row_data_set (row, desc);
+   etk_tree2_row_data_set (row, desc);
    desc->tree_row = row;
 
-   g_string_free(str,TRUE);
+   g_string_free(str,TRUE); 
 }
-Etk_Widget* CreateNewTree(EDC_Group* group){
-   Etk_Tree_Col *col;
-   printf("Create a tree for group: %s\n", group->name->str);
 
-   //PartTree
-   group->tree_widget = etk_tree_new();
-   etk_widget_size_request_set(group->tree_widget, 255, 300);
-
-   etk_scrolled_view_policy_set (etk_tree_scrolled_view_get (ETK_TREE(group->tree_widget)),ETK_POLICY_HIDE,ETK_POLICY_AUTO);
-   etk_tree_mode_set(ETK_TREE(group->tree_widget), ETK_TREE_MODE_TREE);
-   etk_tree_multiple_select_set(ETK_TREE(group->tree_widget), ETK_FALSE);
-   //etk_tree_headers_visible_set (ETK_TREE(PartList), FALSE);
-   col = etk_tree_col_new(ETK_TREE(group->tree_widget), "Parts in group", etk_tree_model_icon_text_new(ETK_TREE(group->tree_widget), ETK_TREE_FROM_EDJE),100);
-   etk_tree_col_resizable_set (col, FALSE);
-   etk_tree_col_expand_set (col,TRUE);
-   col = etk_tree_col_new(ETK_TREE(group->tree_widget), "visible", etk_tree_model_checkbox_new(ETK_TREE(group->tree_widget)), 10);
-   etk_tree_col_resizable_set (col, FALSE);
-   etk_tree_col_expand_set (col,FALSE);
-   etk_tree_build(ETK_TREE(group->tree_widget));
-   etk_box_append(ETK_BOX(UI_tree_vbox), group->tree_widget, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
-   etk_signal_connect("row_selected", ETK_OBJECT(group->tree_widget), ETK_CALLBACK(on_PartTree_row_selected), NULL);
-
-   etk_widget_show(group->tree_widget);
-
-   return group->tree_widget;
-}
 void ShowFilechooser(int FileChooserType){
 
    FileChooserOperation = FileChooserType;
@@ -783,26 +760,31 @@ Etk_Widget* create_toolbar(void){
 }
 
 Etk_Widget* create_group_frame(void){
-   Etk_Widget *frame;
    Etk_Widget *label;
    Etk_Widget *hbox;
-
+   Etk_Widget *vbox;
+   
    //frame
-   frame = etk_frame_new("Groups");
+   UI_GroupFrame = etk_frame_new("Group property");
 
    //vbox
-   UI_tree_vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_container_add(ETK_CONTAINER(frame), UI_tree_vbox);
-
-   //GroupCombobox
-   UI_GroupComboBox = etk_combobox_new();
-   etk_combobox_column_add(ETK_COMBOBOX(UI_GroupComboBox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
-   etk_combobox_build(ETK_COMBOBOX(UI_GroupComboBox));
-   etk_box_append(ETK_BOX(UI_tree_vbox), UI_GroupComboBox, ETK_BOX_START, ETK_BOX_NONE, 0);
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(UI_GroupFrame), vbox);
 
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_box_append(ETK_BOX(UI_tree_vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //GroupNameEntry
+   label = etk_label_new("Name");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   UI_GroupNameEntry = etk_entry_new();
+   etk_box_append(ETK_BOX(hbox), UI_GroupNameEntry, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+
+   //hbox
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("min");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -839,13 +821,46 @@ Etk_Widget* create_group_frame(void){
    etk_widget_size_request_set(UI_GroupMaxYSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox),UI_GroupMaxYSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
+   etk_signal_connect("text_changed", ETK_OBJECT(UI_GroupNameEntry), ETK_CALLBACK(on_GroupNameEntry_text_changed), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMinXSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MINX_SPINNER);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMinYSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MINY_SPINNER);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMaxXSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MAXX_SPINNER);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMaxYSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MAXY_SPINNER);
 
+   return UI_GroupFrame;
+}
+Etk_Widget* create_tree_frame(void){
+   Etk_Widget *frame;
+   Etk_Tree2_Col *col;
+   
+   //frame
+   frame = etk_frame_new("TREE");
+  
+
+   //UI_PartsTree
+   UI_PartsTree = etk_tree2_new();
+   etk_tree2_mode_set (ETK_TREE2(UI_PartsTree), ETK_TREE2_MODE_TREE);
+   etk_widget_size_request_set(UI_PartsTree, 255, 300);
+   col = etk_tree2_col_new(ETK_TREE2(UI_PartsTree), "Parts in group", etk_tree2_model_icon_text_new(ETK_TREE2(UI_PartsTree), ETK_TREE2_FROM_EDJE),100);
+   etk_tree2_col_resizable_set (col, FALSE);
+   etk_tree2_col_expand_set (col,TRUE);
+   col = etk_tree2_col_new(ETK_TREE2(UI_PartsTree), "vis", etk_tree2_model_checkbox_new(ETK_TREE2(UI_PartsTree)), 10);
+   etk_tree2_col_resizable_set (col, FALSE);
+   etk_tree2_col_expand_set (col,FALSE);
+   col = etk_tree2_col_new(ETK_TREE2(UI_PartsTree), "ty", etk_tree2_model_int_new(ETK_TREE2(UI_PartsTree)),10);
+   etk_tree2_col_visible_set (col, FALSE);
+   etk_tree2_col_resizable_set (col, FALSE);
+   etk_tree2_col_expand_set (col,FALSE);
+   etk_tree2_build(ETK_TREE2(UI_PartsTree));
+
+   etk_container_add(ETK_CONTAINER(frame), UI_PartsTree);
+
+  
+   etk_signal_connect("row_selected", ETK_OBJECT(UI_PartsTree), ETK_CALLBACK(on_PartsTree_row_selected), NULL);
+ 
    return frame;
 }
+
 Etk_Widget* create_description_frame(void){
    Etk_Widget *vbox;
    Etk_Widget *hbox;
@@ -931,12 +946,17 @@ Etk_Widget* create_image_frame(void){
    etk_combobox_column_add(ETK_COMBOBOX(UI_ImageComboBox), ETK_COMBOBOX_IMAGE, 24, ETK_FALSE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
    etk_combobox_column_add(ETK_COMBOBOX(UI_ImageComboBox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
    etk_combobox_build(ETK_COMBOBOX(UI_ImageComboBox));
-   etk_combobox_item_append(ETK_COMBOBOX(UI_ImageComboBox), etk_image_new_from_stock (ETK_STOCK_DOCUMENT_OPEN,ETK_STOCK_MEDIUM), "Insert a new image");
-   etk_table_attach_default (ETK_TABLE(table),UI_ImageComboBox, 1, 4, 0, 0);
+   etk_table_attach_default (ETK_TABLE(table),UI_ImageComboBox, 1, 3, 0, 0);
 
+   //AddImageButton
+   UI_ImageAddButton = etk_button_new_from_stock (ETK_STOCK_DOCUMENT_OPEN);
+   etk_object_properties_set (ETK_OBJECT(UI_ImageAddButton), "label","",NULL);
+   etk_table_attach_default (ETK_TABLE(table),UI_ImageAddButton, 4, 4, 0, 0);
+   
    label = etk_label_new("Alpha");
-   //etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
    etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 1, 1);
+   
+   
 
    //ImageAlphaSlider
    UI_ImageAlphaSlider = etk_hslider_new (0, 255, 15, 1,20);
@@ -981,7 +1001,9 @@ Etk_Widget* create_image_frame(void){
    UI_BorderBottomSpinner = etk_spinner_new (0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderBottomSpinner,45, 20);
    etk_table_attach_default (ETK_TABLE(table),UI_BorderBottomSpinner, 4, 4, 3, 3);
-
+     
+   etk_signal_connect("clicked", ETK_OBJECT(UI_ImageAddButton), ETK_CALLBACK(on_ToolBarButton_click), (void*)TOOLBAR_IMAGE_FILE_ADD);
+   etk_signal_connect("active_item_changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_ImageAlphaSlider), ETK_CALLBACK(on_ImageAlphaSlider_value_changed), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_BorderLeftSpinner), ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_LEFT);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_BorderRightSpinner), ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_RIGHT);
@@ -1006,7 +1028,7 @@ Etk_Widget* create_text_frame(void){
    etk_container_add(ETK_CONTAINER(UI_TextFrame), vbox);
 
    //table
-   table = etk_table_new (4, 4, FALSE);
+   table = etk_table_new (5, 4, FALSE);
    etk_box_append(ETK_BOX(vbox), table, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    label = etk_label_new("Text");
@@ -1016,7 +1038,7 @@ Etk_Widget* create_text_frame(void){
    //Text Entry
    UI_TextEntry = etk_entry_new ();
    //etk_widget_size_request_set(UI_TextEntry,30, 30);
-   etk_table_attach_default (ETK_TABLE(table),UI_TextEntry, 1, 3, 0,0);
+   etk_table_attach_default (ETK_TABLE(table),UI_TextEntry, 1, 4, 0,0);
 
    label = etk_label_new("Font");
    etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
@@ -1027,17 +1049,22 @@ Etk_Widget* create_text_frame(void){
    etk_combobox_column_add(ETK_COMBOBOX(UI_FontComboBox), ETK_COMBOBOX_IMAGE, 24, ETK_FALSE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
    etk_combobox_column_add(ETK_COMBOBOX(UI_FontComboBox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
    etk_combobox_build(ETK_COMBOBOX(UI_FontComboBox));
-   etk_combobox_item_append(ETK_COMBOBOX(UI_FontComboBox), etk_image_new_from_stock (ETK_STOCK_DOCUMENT_OPEN,ETK_STOCK_MEDIUM), "Insert a new font");
    etk_table_attach_default (ETK_TABLE(table),UI_FontComboBox, 1, 1, 1,1);
+
+   //FontAddButton
+   UI_FontAddButton = etk_button_new_from_stock (ETK_STOCK_DOCUMENT_OPEN);
+   etk_object_properties_set (ETK_OBJECT(UI_FontAddButton), "label","",NULL);
+   etk_table_attach_default (ETK_TABLE(table),UI_FontAddButton, 2, 2, 1, 1);
+  
 
    label = etk_label_new("Size");
    etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default (ETK_TABLE(table),label, 2, 2, 1,1);
+   etk_table_attach_default (ETK_TABLE(table),label, 3, 3, 1,1);
 
    //FontSizeSpinner
    UI_FontSizeSpinner =  etk_spinner_new (0, 200, 0, 1, 10);
    etk_widget_size_request_set(UI_FontSizeSpinner, 45, 20);
-   etk_table_attach_default (ETK_TABLE(table),UI_FontSizeSpinner, 3, 3, 1,1);
+   etk_table_attach_default (ETK_TABLE(table),UI_FontSizeSpinner, 4, 4, 1,1);
 
    label = etk_label_new("Effect");
    etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 2,2);
@@ -1061,14 +1088,14 @@ Etk_Widget* create_text_frame(void){
    etk_combobox_item_data_set (ComboItem, (void*)FX_OUTLINE_SHADOW);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox), etk_image_new_from_edje (EdjeFile->str,"NONE.PNG"), "Outline Soft Shadow");
    etk_combobox_item_data_set (ComboItem, (void*)FX_OUTLINE_SOFT_SHADOW);
-   etk_table_attach_default (ETK_TABLE(table),UI_EffectComboBox, 1, 3, 2,2);
+   etk_table_attach_default (ETK_TABLE(table),UI_EffectComboBox, 1, 4, 2,2);
 
    label = etk_label_new("Alpha");
    etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 3,3);
 
    //TextAlphaSlider
    UI_TextAlphaSlider = etk_hslider_new (0, 255, 15, 1,20);
-   etk_table_attach_default (ETK_TABLE(table),UI_TextAlphaSlider, 1, 3, 3,3);
+   etk_table_attach_default (ETK_TABLE(table),UI_TextAlphaSlider, 1, 4, 3,3);
 
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 10);
@@ -1079,6 +1106,7 @@ Etk_Widget* create_text_frame(void){
    etk_box_append(ETK_BOX(hbox), create_a_color_button("Shadow",COLOR_OBJECT_SHADOW), ETK_BOX_START, ETK_BOX_EXPAND, 0);
    etk_box_append(ETK_BOX(hbox), create_a_color_button("Outline",COLOR_OBJECT_OUTLINE), ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
+   etk_signal_connect("clicked", ETK_OBJECT(UI_FontAddButton), ETK_CALLBACK(on_ToolBarButton_click), (void*)TOOLBAR_FONT_FILE_ADD);
    etk_signal_connect("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed), NULL);
    etk_signal_connect("active_item_changed", ETK_OBJECT(UI_EffectComboBox), ETK_CALLBACK(on_EffectComboBox_changed), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_FontSizeSpinner), ETK_CALLBACK(on_FontSizeSpinner_value_changed), NULL);
@@ -1350,8 +1378,14 @@ void create_main_window (void){
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(hbox), vbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
+   //Tree Frame
+   etk_box_append(ETK_BOX(vbox), create_tree_frame(), ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
    //Group Frame
-   etk_box_append(ETK_BOX(vbox), create_group_frame(), ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(vbox), create_group_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //Part Frame
+   etk_box_append(ETK_BOX(vbox), create_part_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //Description Frame
    etk_box_append(ETK_BOX(vbox), create_description_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -1368,9 +1402,8 @@ void create_main_window (void){
    //Position Frame
    etk_box_append(ETK_BOX(vbox), create_position_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   //Part Frame
-   etk_box_append(ETK_BOX(vbox), create_part_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
+   
+   
    //canvas frame
    frame = etk_frame_new(NULL);
    etk_container_border_width_set (ETK_CONTAINER(frame), 0);
@@ -1400,15 +1433,16 @@ void create_main_window (void){
    etk_signal_connect("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
    etk_signal_connect("delete_event", ETK_OBJECT(UI_ColorWin), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    etk_signal_connect("destroyed", ETK_OBJECT(UI_MainWin), ETK_CALLBACK(etk_main_quit_cb), NULL);
-   etk_signal_connect("active_item_changed", ETK_OBJECT(UI_GroupComboBox), ETK_CALLBACK(on_GroupComboBox_changed), NULL);
+ //  etk_signal_connect("active_item_changed", ETK_OBJECT(UI_GroupComboBox), ETK_CALLBACK(on_GroupComboBox_changed), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(ETK_canvas), "geometry", on_canvas_geometry_changed, NULL);
 
    etk_widget_show_all(ETK_WIDGET(UI_MainWin));
 
-	/* etk_widget_hide(UI_DescriptionFrame);
+	etk_widget_hide(UI_DescriptionFrame);
 	etk_widget_hide(UI_PositionFrame);
 	etk_widget_hide(UI_PartFrame);
 	etk_widget_hide(UI_RectFrame);
 	etk_widget_hide(UI_ImageFrame);
-	etk_widget_hide(UI_TextFrame); */
+	etk_widget_hide(UI_TextFrame); 
+	etk_widget_hide(UI_GroupFrame); 
 }

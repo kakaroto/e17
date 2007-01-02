@@ -60,7 +60,7 @@ EDC_Description*	EDC_Description_new(EDC_Part *parent_part, char* state, float s
    description->tree_row = NULL;
 
    description->part = parent_part;
-
+   AddDescToTree(description);
    return description;
 }
 
@@ -68,7 +68,7 @@ void 			EDC_Description_clear(EDC_Description *desc,int skip_parent_modify){
    printf("		Clear Description: %s\n",desc->state->str);
 
    //Remove the row from the main tree
-   etk_tree_row_del (desc->tree_row);
+   etk_tree2_row_delete(desc->tree_row);
 
    //Remove from the parent descriptions list
    if (!skip_parent_modify)
@@ -105,7 +105,6 @@ EDC_Group*		EDC_Group_new(char* name,int min_x, int min_y, int max_x, int max_y)
 
    group = g_new(EDC_Group,1);
 
-   group->complete_tag = g_string_new("");
    group->name=g_string_new(name);
    group->min_x = min_x;
    group->min_y = min_y;
@@ -115,12 +114,8 @@ EDC_Group*		EDC_Group_new(char* name,int min_x, int min_y, int max_x, int max_y)
 
    EDC_Group_list = g_list_append(EDC_Group_list,group);
 
-   printf("**NEW GROUP  %s\n\n",group->name->str);
-
-   group->tree_widget = CreateNewTree(group);
-
-   UpdateGroupComboBox();
-
+   //printf("**NEW GROUP  %s\n\n",group->name->str);
+   AddGroupToTree(group);
    return group;
 }
 
@@ -138,17 +133,15 @@ void 			EDC_Group_clear(EDC_Group *group,int skip_parent_modify){
       p = g_list_next(p);
    }
    g_list_free(group->parts);
-
+   
    //If this is the selected group then  NULL it
    if (selected_group == group) selected_group = NULL;
 
-   //Remove his etkTree widget
-   etk_widget_hide(group->tree_widget);
-   etk_object_destroy(ETK_OBJECT(group->tree_widget));
+   //Remove the row from the main tree
+   etk_tree2_row_delete (group->tree_row);
 
    if (!skip_parent_modify){
       EDC_Group_list = g_list_remove(EDC_Group_list,group);
-      UpdateGroupComboBox();
    }
 
    //Clear GStrings
@@ -175,7 +168,7 @@ EDC_Part*		EDC_Part_new(EDC_Group *parent_group,char* name, int type){
    part->realx = part->realy = part->realw = part->realh = 10;
    part->mouse_events = part->repeat_events = 0;
    parent_group->parts = g_list_append(parent_group->parts,part);
-
+   AddPartToTree(part);
    return part;
 }
 void 			EDC_Part_clear(EDC_Part *part, int skip_parent_modify){
@@ -197,7 +190,7 @@ void 			EDC_Part_clear(EDC_Part *part, int skip_parent_modify){
    //g_string_free(part->clip_to,TRUE);
 
    //Remove the row from the main tree
-   etk_tree_row_del (part->tree_row);
+   etk_tree2_row_delete (part->tree_row);
 
    //Remove the evas object
    etk_canvas_object_remove(ETK_CANVAS(ETK_canvas),part->ev_obj);
@@ -239,14 +232,10 @@ void 			EDC_Part_clear(EDC_Part *part, int skip_parent_modify){
 
 /* Various function */
 void CreateBlankEDC(void){
-   EDC_Group *group;
    printf("Create Blank EDC\n");
 
    EDC_Group_list = NULL;
-
-   group = EDC_Group_new("First Group",250,250,1000,1000);
-
-   selected_group = group;
+   selected_group = NULL;
    selected_part = NULL;
    selected_desc = NULL;
 
@@ -330,9 +319,6 @@ void PrintDebugInformation(int show_groups_list){
 int OpenEDC(const gchar* EDCfile){
    gchar*	EDC;
    gsize	lenght;
-   gchar*	EDCClear;
-   GList*	p;
-   gint		i=0,j=0;
    char buf[4096];
    char tmpn[4096];
    int fd,ret;
@@ -354,17 +340,17 @@ int OpenEDC(const gchar* EDCfile){
    fd = mkstemp(tmpn);
    if (!fd) return 0;
    close(fd);
-   printf("tmp file: %s\n",tmpn);
    
-   //Run the input through the C pre-processor.
-	snprintf(buf, sizeof(buf), "cat %s | cpp -I/home/dave/test/default > %s",EDCfile, tmpn);
+   
+   //Run the input through the C pre-processor.  //TODO check on other systems
+	snprintf(buf, sizeof(buf), "cat %s | cpp -I%s > %s",EDCfile,g_path_get_dirname(EDCfile), tmpn);
 	ret = system(buf);
 	if (ret < 0){
 	     snprintf(buf, sizeof(buf), "gcc -E -o %s %s", tmpn, EDCfile);
 	     ret = system(buf);
 	  }
 	if (ret != EXIT_SUCCESS) return 0;
-   printf("Preprocess Complete\n");
+   printf("Preprocessor command: %s\n",buf);
 
 	
    //Read preprocessed file
@@ -373,51 +359,13 @@ int OpenEDC(const gchar* EDCfile){
       return FALSE;
    }
    unlink(tmpn);
-	/* Remove all comments and blanks*/
-   EDCClear = malloc((int)lenght);
-   while (i<=(int)lenght){
-
-      //Skip new line, tabs and spaces
-      if (EDC[i] == '\n' || EDC[i] == '\t') {i++;continue;}
-
-      //Skip single line comment [ // ]
-      if (EDC[i] == '/' && EDC[i+1] == '/') {while (EDC[i]!='\n') i++;continue;}
-
-      //Skip multi line comment [ /* .. */  ]
-      if (EDC[i] == '/' && EDC[i+1] == '*') {while (EDC[i]!='*' || EDC[i+1]!='/') i++;i++;i++;continue;}
-
-      //Skip multiple spaces
-      if (EDC[i] == ' ' && EDC[i+1] == ' ') {while (EDC[i+1]==' ') i++;continue;}
-
-      //Remove space before ' { ' (to simplify parsing
-      if (EDC[i] == ' ' && EDC[i+1] == '{') {i++;continue;}
-      //g_string_append_c(parsed,EDC[i]);
-      EDCClear[j] = EDC[i];
-
-      //Change floating point sign ' . ' to ' , '
-      //	if ((g_ascii_isdigit(EDC[i])) && (EDC[i+1] == '.') && (g_ascii_isdigit(EDC[i+2])))
-      //		EDC[i+1] = ',';
-
-      //printf("%c",EDC[i]);
-      i++;
-      j++;
-   }
-
-   //printf("%s\n+++\n",EDCClear);
-   //ParseImages(EDCClear);
-   GetGroupsTag(EDCClear);
-
-   p=EDC_Group_list;
-   while (p){
-      ParsePartsFromGroup(p->data);
-      p = g_list_next(p);
-   }
+   
+   if (!ParseEDC(EDC)) return FALSE;
 
    EDCFile = g_string_new(EDCfile);
    EDCFileDir = g_string_new(g_path_get_dirname(EDCFile->str));
 
    UpdateWindowTitle();
-   UpdateGroupComboBox();
    UpdateFontComboBox();
    UpdateImageComboBox();
 
@@ -450,8 +398,8 @@ void SaveEDC(char *save_as){
    GList* add_str_to_list(char* str , GList* list){
       ip = list;
       while (ip){
-	 if (0 == strcmp(ip->data,str)) return list;
-	 ip = g_list_next(ip);
+         if (0 == strcmp(ip->data,str)) return list;
+         ip = g_list_next(ip);
       }
       list = g_list_append(list,str);
       return list;
@@ -555,7 +503,7 @@ void SaveEDC(char *save_as){
 	       if (desc->text_align_h > 0 || desc->text_align_v > 0) g_string_append_printf(EDC,IN6"align, %.3f %.3f;\n",desc->text_align_h,desc->text_align_v);
 
 	       EDC = g_string_append(EDC,IN5"}\n");
-	    }
+	    } 
 
 	    EDC = g_string_append(EDC,IN4"}\n"); //close description
 	    dp = g_list_next(dp);

@@ -3,6 +3,8 @@ TODO FOR 0.1 (not a complete list...only the first in my mind)
 
 * TEXT & RECT: alpha make strange thing....WHY????
 
+* TEXT: Shadow Color don't change until a draw_all() 
+
 * More handlers on the canvas to move the 2 points simultan and modify the offset. 
 
 * Tooltips EVERYWERE  :)
@@ -16,8 +18,6 @@ TODO FOR 0.1 (not a complete list...only the first in my mind)
 
 * fakewin: when a limit is reached (min e max) the small handler for resize go haead
 
-* Group rename
-
 * RelSpinner don't have to stop at 1.0 an 0 but ?? (maybe 100 -100)
 
 * make the interface fit well ats 1024x768
@@ -27,8 +27,6 @@ TODO FOR 0.1 (not a complete list...only the first in my mind)
 * A new object add must be take a progressive (and unique) number (newrect1, newrect2...etc)
 
 * Text object: GLOW? GLOW2? FAR? ... does edje suport this?
-
-* implement make install and the the load of edje_editor.edj from other place than the source
 
 * Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
 

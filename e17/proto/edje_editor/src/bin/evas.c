@@ -17,10 +17,10 @@ void on_Drag(void *data, Evas_Object *o, const char *emission, const char *sourc
 	if ((int)data == DRAG_MINIARROW){
 		edje_object_part_geometry_get (EV_fakewin,"miniarrow", &x, &y, NULL, NULL);
 		
-		if (x < selected_group->min_x) x = selected_group->min_x;
-		if (y < selected_group->min_y) y = selected_group->min_y;
-		if (x > selected_group->max_x) x = selected_group->max_x;
-		if (y > selected_group->max_y) y = selected_group->max_y;
+		if (selected_group->min_x && x < selected_group->min_x) x = selected_group->min_x;
+		if (selected_group->min_y && y < selected_group->min_y) y = selected_group->min_y;
+		if (selected_group->max_x && x > selected_group->max_x) x = selected_group->max_x;
+		if (selected_group->max_y && y > selected_group->max_y) y = selected_group->max_y;
 		
 		ev_resize_fake((int)x,(int)y);
 	}
@@ -152,9 +152,9 @@ void prepare_canvas(void){
 
 	// Create Fake win
 	EV_fakewin = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
-        edje_object_file_set(EV_fakewin, EdjeFile->str, "FakeWin");
+   edje_object_file_set(EV_fakewin, EdjeFile->str, "FakeWin");
 	etk_canvas_object_add (ETK_CANVAS(ETK_canvas), EV_fakewin);
-	evas_object_show(EV_fakewin);
+	//evas_object_show(EV_fakewin);
 	
 	edje_object_signal_callback_add(EV_fakewin,"DRAG","miniarrow",on_Drag,(void*)DRAG_MINIARROW);
 	etk_canvas_object_move (ETK_CANVAS(ETK_canvas),EV_fakewin,20, 27);
@@ -220,7 +220,7 @@ void ev_adjust_position(EDC_Description* desc, Evas_Object* ev_obj){
 void ev_draw_part(EDC_Part* part){
 	EDC_Description* descr=NULL;
 	GString *str=g_string_new("");
-	//printf("***DRAW PART: %s\n",part->name->str);
+	printf("***DRAW PART: %s\n",part->name->str);
 	
 	if (part->current_description)
 		descr = part->current_description;
@@ -228,7 +228,6 @@ void ev_draw_part(EDC_Part* part){
 		descr = part->descriptions->data;
 	
 	if (descr){
-		
 		switch (part->type){
 			case PART_TYPE_RECT:
 				
@@ -244,45 +243,35 @@ void ev_draw_part(EDC_Part* part){
 			break;
 			case PART_TYPE_IMAGE:
 				if (!part->ev_obj){	//Create IMAGE
-					part->ev_obj = evas_object_image_add  (etk_widget_toplevel_evas_get(ETK_canvas));   	
-					g_string_printf(str,"%s/%s",EDCFileDir->str,descr->image_normal->str);
-					evas_object_image_file_set(part->ev_obj, str->str, "");
+					part->ev_obj = evas_object_image_add  (etk_widget_toplevel_evas_get(ETK_canvas));
 					etk_canvas_object_add (ETK_CANVAS(ETK_canvas), part->ev_obj);
-					evas_object_image_border_set(part->ev_obj,descr->image_border_left,descr->image_border_right,descr->image_border_top,descr->image_border_bottom);
-					evas_object_color_set(part->ev_obj, 255, 255, 255, descr->color_a);
-				}else{			//Modify IMAGE
-					g_string_printf(str,"%s/%s",EDCFileDir->str,descr->image_normal->str);
-					evas_object_image_file_set(part->ev_obj, str->str, "");
-					evas_object_color_set(part->ev_obj, descr->color_a, descr->color_a, descr->color_a, descr->color_a);
-					evas_object_image_border_set(part->ev_obj,descr->image_border_left,descr->image_border_right,descr->image_border_top,descr->image_border_bottom);
 				}
+				g_string_printf(str,"%s/%s",EDCFileDir->str,descr->image_normal->str);
+				evas_object_image_file_set(part->ev_obj, str->str, "");
+				evas_object_color_set(part->ev_obj, descr->color_a, descr->color_a, descr->color_a, descr->color_a);
+				evas_object_image_border_set(part->ev_obj,descr->image_border_left,descr->image_border_right,descr->image_border_top,descr->image_border_bottom);
+				
 			break;
 			case PART_TYPE_TEXT:
-				
 				if (!part->ev_obj){	//Create TEXT
-					part->ev_obj = evas_object_text_add  (etk_widget_toplevel_evas_get(ETK_canvas));   	
-					evas_object_text_text_set(part->ev_obj,descr->text_text->str);
-					g_string_printf(str,"%s/%s",EDCFileDir->str,descr->text_font->str);
-					evas_object_text_font_set (part->ev_obj, str->str,descr->text_size);
+					part->ev_obj = evas_object_text_add  (etk_widget_toplevel_evas_get(ETK_canvas));
 					etk_canvas_object_add (ETK_CANVAS(ETK_canvas), part->ev_obj);
-					evas_object_color_set(part->ev_obj, descr->color_r, descr->color_g, descr->color_b, descr->color_a);
-				}else{			//Modify TEXT
-					evas_object_text_text_set(part->ev_obj,descr->text_text->str);
-					g_string_printf(str,"%s/%s",EDCFileDir->str,descr->text_font->str);
-					evas_object_text_font_set (part->ev_obj, str->str,descr->text_size);
-					evas_object_color_set(part->ev_obj, descr->color_r, descr->color_g, descr->color_b, descr->color_a);
-					evas_object_text_shadow_color_set(part->ev_obj, descr->color2_r, descr->color2_g, descr->color2_b, descr->color2_a);
-					evas_object_text_outline_color_set(part->ev_obj, descr->color3_r, descr->color3_g, descr->color3_b, descr->color3_a);
-					switch (part->effect){
-						case FX_OUTLINE: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_OUTLINE); break;
-						case FX_SOFT_OUTLINE: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_SOFT_OUTLINE); break;
-						case FX_SHADOW: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_SHADOW); break;
-						case FX_SOFT_SHADOW: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_SOFT_SHADOW); break;
-						case FX_OUTLINE_SHADOW: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_OUTLINE_SHADOW); break;
-						case FX_OUTLINE_SOFT_SHADOW: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_OUTLINE_SOFT_SHADOW); break;
-						default: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_PLAIN);break;
-					}
 				}
+            evas_object_text_text_set(part->ev_obj,descr->text_text->str);
+            g_string_printf(str,"%s/%s",EDCFileDir->str,descr->text_font->str);
+            evas_object_text_font_set (part->ev_obj, str->str,descr->text_size);
+            evas_object_color_set(part->ev_obj, descr->color_r, descr->color_g, descr->color_b, descr->color_a);
+            evas_object_text_shadow_color_set(part->ev_obj, descr->color2_r, descr->color2_g, descr->color2_b, descr->color2_a);
+            evas_object_text_outline_color_set(part->ev_obj, descr->color3_r, descr->color3_g, descr->color3_b, descr->color3_a);
+            switch (part->effect){
+               case FX_OUTLINE: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_OUTLINE); break;
+               case FX_SOFT_OUTLINE: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_SOFT_OUTLINE); break;
+               case FX_SHADOW: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_SHADOW); break;
+               case FX_SOFT_SHADOW: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_SOFT_SHADOW); break;
+               case FX_OUTLINE_SHADOW: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_OUTLINE_SHADOW); break;
+               case FX_OUTLINE_SOFT_SHADOW: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_OUTLINE_SOFT_SHADOW); break;
+               default: evas_object_text_style_set(part->ev_obj, EVAS_TEXT_STYLE_PLAIN);break;
+            }
 			break;
 		}
 		
@@ -391,16 +380,19 @@ void ev_draw_focus(void){
 	}
 }
 void ev_resize_fake(int w, int h){
-	printf("RESIZE: %d %d\n",w,h);
+	//printf("RESIZE: %d %d\n",w,h);
+   if (!w) w=200;
+   if (!h) h=200;
 	evas_object_resize(EV_fakewin,w,h);
 	edje_object_part_drag_value_set (EV_fakewin, "miniarrow", (double)w, (double)h);
 }
 void ev_draw_all(void){
 	GList	*p;
 	EDC_Part	*part;
+   printf("DRAW ALL\n");
 	if (selected_group){
 		
-		//printf("***************DRAW GROUP: %s***********\n",selected_group->name->str);
+		printf("***************DRAW GROUP: %s***********\n",selected_group->name->str);
 	
 		p = selected_group->parts;
 		while (p){
@@ -412,8 +404,12 @@ void ev_draw_all(void){
 		
 		ev_draw_focus();
 		
+      edje_object_part_text_set (EV_fakewin, "title", selected_group->name->str);
+      evas_object_show(EV_fakewin);
 		//printf("***************END DRAW GROUP: %s***********\n",selected_group->name->str);
-	}
+	}else{
+      evas_object_hide(EV_fakewin);
+   }
 }
 void ev_hide_group(EDC_Group* group){
 	EDC_Part	*part;

@@ -60,6 +60,8 @@ enum various{
 	TOOLBAR_PLAY,
 	TOOLBAR_MOVE_UP,
 	TOOLBAR_MOVE_DOWN,
+   TOOLBAR_IMAGE_FILE_ADD,
+   TOOLBAR_FONT_FILE_ADD,
 	REL1X_SPINNER,
 	REL1Y_SPINNER,
 	REL2X_SPINNER,
@@ -76,7 +78,10 @@ enum various{
 	FILECHOOSER_NEW,
 	FILECHOOSER_IMAGE,
 	FILECHOOSER_FONT,
-	FILECHOOSER_SAVE_AS
+	FILECHOOSER_SAVE_AS,
+   ROW_GROUP,
+   ROW_PART,
+   ROW_DESC
 };	
  
 
@@ -92,12 +97,11 @@ struct	EDC_Image_{
 	gint     		comp_type;		
 };
 struct	EDC_Group_{
-	GString		*complete_tag;
 	GString		*name;
 	gint     		min_x,min_y;		
 	gint     		max_x,max_y;	
 	GList		*parts;
-	Etk_Widget	*tree_widget;
+   Etk_Tree2_Row *tree_row;
 };
 struct	EDC_Part_{
 	GString		*name;
@@ -113,7 +117,7 @@ struct	EDC_Part_{
 	EDC_Group	*group;		//Parent
 	Evas_Object	*ev_obj;
 	gint			realx,realy,realw,realh;
-	Etk_Tree_Row *tree_row;
+	Etk_Tree2_Row *tree_row;
 };
 struct 	EDC_Description_{
 	GString	*state;
@@ -145,7 +149,7 @@ struct 	EDC_Description_{
 	int		text_min_h,text_min_v;
 	float	text_align_h,text_align_v;
 	EDC_Part *part;
-	Etk_Tree_Row *tree_row;
+	Etk_Tree2_Row *tree_row;
 };
 
 

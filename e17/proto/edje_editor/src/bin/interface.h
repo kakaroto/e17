@@ -2,9 +2,11 @@
 
 
 Etk_Widget *UI_MainWin;
+Etk_Widget *UI_PartsTree;
 Etk_Widget *UI_GroupComboBox;
 Etk_Widget *UI_ColorPickerWin;
 Etk_Widget *UI_StateEntry;
+Etk_Widget *UI_GroupNameEntry;
 Etk_Widget *UI_StateIndexSpinner;
 Evas_Object *RectColorObject;
 Evas_Object *TextColorObject;
@@ -23,6 +25,7 @@ Etk_Widget *UI_ImageComboBox;
 Etk_Widget *UI_FontSizeSpinner;
 Etk_Widget *UI_EffectComboBox;
 Etk_Widget *UI_PartFrame;
+Etk_Widget *UI_GroupFrame;
 Etk_Widget *UI_PartNameEntry;
 Etk_Widget *UI_PartTypeComboBox;
 Etk_Widget *UI_ColorAlphaSlider;
@@ -58,9 +61,10 @@ Etk_Widget *UI_GroupMinXSpinner;
 Etk_Widget *UI_GroupMinYSpinner;
 Etk_Widget *UI_GroupMaxXSpinner;
 Etk_Widget *UI_GroupMaxYSpinner;
+Etk_Widget *UI_ImageAddButton;
+Etk_Widget *UI_FontAddButton;
 
 void 		create_main_window		(void);
-void		UpdateGroupComboBox		(void);
 void		UpdatePartFrame			(void);
 void		UpdateRectFrame			(void);
 void		UpdateDescriptionFrame	(void);
@@ -73,9 +77,9 @@ void 		UpdateWindowTitle			(void);
 void 		RecreateRelComboBoxes	(void);
 void 		UpdateFontComboBox		(void);
 int 			AddImageToCombo			(char* fname);
-Etk_Widget* 	CreateNewTree			(EDC_Group* group);
 void 		AddPartToTree				(EDC_Part* part);
 void 		AddDescToTree			(EDC_Description* desc);
+void AddGroupToTree(EDC_Group* group);
 void 		ShowFilechooser			(int FileChooserType);
 void 		ShowAlert				(char* text);
 

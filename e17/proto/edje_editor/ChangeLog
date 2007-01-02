@@ -1,6 +1,14 @@
 
 # ChangeLog for edje_editor #
 
+   * tree to tree2
+   * remake parser
+   * remake tree functionality
+   * fix font issue
+   * ton of bug fixed
+   * finish the preprocessor
+   * support : in edc
+   
 0.1-beta4
 -------------
   * Reenable relative position spinner callbacks.
