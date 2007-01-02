@@ -456,7 +456,7 @@ group
 			signal: "tree-deselect";
 			source: "*";
 			action: STATE_SET "default" 0.0;
-			transition: ACCELERATE 0.5;
+			transition: ACCELERATE 0.01;
 			target: "selected";
 		}
 		program
