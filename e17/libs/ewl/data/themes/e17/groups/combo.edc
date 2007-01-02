@@ -57,12 +57,15 @@ group
 		item: "pad" 0;
 		item: "pad/left" 4;
 		item: "inset" 0;
+		item: "inset/top" 4;
+		item: "inset/bottom" 2;
 	}
 }
 
 group
 {
 	name: "ewl/combo/increment";
+	min: 24 24;
 	max: 24 24;
 
 	data
@@ -224,6 +227,7 @@ group
 group
 {
 	name: "ewl/combo/decrement";
+	min: 24 24;
 	max: 24 24;
 
 	data
