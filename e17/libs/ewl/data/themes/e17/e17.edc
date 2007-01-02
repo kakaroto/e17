@@ -127,10 +127,7 @@ data
 	item: "/tree_header/group" "ewl/tree/header";
 	item: "/tree_header/button/group" "ewl/tree/header/button";
 	item: "/tree_header/grabber/vertical/group" "ewl/separator/vertical";
-
-	item: "/tree_header/header/ascending/body/group" "ewl/tree/header/ascending";
-	item: "/tree_header/header/descending/body/group" "ewl/tree/header/descending";
-	item: "/tree_header/header/blank/body/group" "ewl/tree/header/normal";
+	item: "/tree_header/header/button/group" "ewl/tree/header/button";
 
 	item: "/row/group" "ewl/row";
 	item: "/node/check/group" "ewl/tree/expansion";

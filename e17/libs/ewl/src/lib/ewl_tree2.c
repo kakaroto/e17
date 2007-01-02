@@ -493,7 +493,6 @@ ewl_tree2_cb_view_change(Ewl_MVC *mvc)
 static void
 ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, int column)
 {
-	char *theme_str;
 	Ewl_Widget *h, *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -518,17 +517,19 @@ ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, i
 	/* display the sort arrow if needed */
 	if (col->model->sort)
 	{
+		char *state_str;
+
 		c = ewl_button_new();
 		ewl_container_child_append(EWL_CONTAINER(h), c);
 
 		if (col->sort == EWL_SORT_DIRECTION_ASCENDING)
-			theme_str = "ascending";
+			state_str = "ascending";
 		else if (col->sort == EWL_SORT_DIRECTION_DESCENDING)
-			theme_str = "descending";
+			state_str = "descending";
 		else
-			theme_str = "blank";
+			state_str = "default";
 
-		ewl_widget_appearance_set(c, theme_str);
+		ewl_widget_state_set(c, state_str, EWL_STATE_PERSISTENT);
 		ewl_widget_internal_set(c, TRUE);
 		ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_SHRINK);
 		ewl_object_alignment_set(EWL_OBJECT(c), EWL_FLAG_ALIGN_RIGHT);

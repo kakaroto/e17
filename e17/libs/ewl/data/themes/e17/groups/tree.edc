@@ -162,11 +162,6 @@ group
 group
 {
 	name: "ewl/tree/header/button";
-}
-
-group
-{
-	name: "ewl/tree/header/ascending";
 	min: 16 16;
 
 	parts
@@ -179,7 +174,7 @@ group
 			{
 				state: "default" 0.0;
 				min: 16 16;
-
+				visible: 0;
 				image
 				{
 					normal: "e17_button_detail_down.png";
@@ -189,38 +184,57 @@ group
 					smooth: 0;
 				}
 			}
-		}
-	}
-}
-
-group
-{
-	name: "ewl/tree/header/descending";
-	min: 16 16;
-
-	parts
-	{
-		part
-		{
-			name: "arrow";
-			mouse_events: 0;
 			description
 			{
-				state: "default" 0.0;
-				min: 16 16;
-
+				state: "ascending" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+			description
+			{
+				state: "descending" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
 				image
 				{
 					normal: "e17_button_detail_up.png";
 				}
-				fill
-				{
-					smooth: 0;
-				}
 			}
 		}
 	}
+	programs
+	{
+		program
+		{
+			name: "ascending";
+			signal: "ascending";
+			source: "EWL";
+			action: STATE_SET "ascending" 0.0;
+			target: "arrow";
+			transition: LINEAR 0.0;
+		}
+		program
+		{
+			name: "descending";
+			signal: "descending";
+			source: "EWL";
+			action: STATE_SET "descending" 0.0;
+			target: "arrow";
+			transition: LINEAR 0.0;
+		}
+		program
+		{
+			name: "default";
+			signal: "default";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "arrow";
+			transition: LINEAR 0.0;
+		}
+
+	}
 }
+
 
 group
 {
