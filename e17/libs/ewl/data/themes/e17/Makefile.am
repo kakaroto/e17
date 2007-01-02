@@ -1,6 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = groups \
-	  macros \
 	  fonts \
 	  images
 
@@ -8,28 +7,35 @@ EDCS =  e17.edc
 EDJS = $(EDCS:%.edc=%.edj)
 
 e17_DEPS = \
-	groups/border-groups.edc \
-	groups/button-groups.edc \
-	groups/debug-groups.edc \
-	groups/entry-groups.edc \
-	groups/label-groups.edc \
-	groups/menu-groups.edc \
-	groups/menu-item.edc \
-	groups/paned-groups.edc \
-	groups/progressbar-groups.edc \
-	groups/rowtext-groups.edc \
-	groups/scrollbar-groups.edc \
-	groups/scrollpane-groups.edc \
-	groups/selection-groups.edc \
-	groups/separator-groups.edc \
-	groups/shadow-groups.edc \
-	groups/spacer-groups.edc \
-	groups/spinner-groups.edc \
-	groups/tree-groups.edc \
-	groups/treebg-groups.edc \
-	groups/treehead-groups.edc \
-	groups/toolicon-groups.edc \
-	groups/window-groups.edc
+        groups/inc/button-images-helper.edc \
+        groups/inc/focus-images.edc \
+        groups/inc/glint-images.edc \
+        groups/inc/menu-images.edc \
+        groups/inc/button-parts-helper.edc \
+        groups/inc/focus-parts.edc \
+        groups/inc/glint-parts.edc \
+        groups/inc/menu-parts.edc \
+        groups/inc/button-programs-helper.edc \
+        groups/inc/focus-programs.edc \
+        groups/inc/glint-programs.edc \
+        groups/inc/menu-programs.edc \
+        groups/border.edc \
+        groups/button.edc \
+        groups/combo.edc \
+        groups/highlight.edc \
+        groups/label.edc \
+        groups/menu.edc \
+        groups/notebook.edc \
+        groups/progress.edc \
+        groups/scroll.edc \
+        groups/separator.edc \
+        groups/shadow.edc \
+        groups/spacer.edc \
+        groups/spinner.edc \
+        groups/text.edc \
+        groups/toolbar.edc \
+        groups/tree.edc \
+        groups/window.edc
 
 EXTRA_DIST = $(EDCS) 
 
