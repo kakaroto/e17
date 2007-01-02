@@ -138,9 +138,9 @@ struct Ewl_Widget
 	Evas_Object *fx_clip_box;  /**< Clipping rectangle of widget */
 
 	Evas_Object *theme_object; /**< Appearance shown on canvas */
-	const char *bit_path;     /**< Path to the file for loading */
-	const char *bit_group;    /**< Group in theme to use */
-	const char *bit_state;    /**< State of the appearance */
+	const char *theme_path;     /**< Path to the file for loading */
+	const char *theme_group;    /**< Group in theme to use */
+	const char *theme_state;    /**< State of the appearance */
 	const char *appearance;   /**< Key to lookup appearance in theme */
 	const char *inheritance;  /**< Inheritance of path widget */
 	int layer;		/**< the layer relative to the parent */
@@ -178,16 +178,16 @@ void 		*ewl_widget_data_get(Ewl_Widget *w, void *k);
 void 		 ewl_widget_state_set(Ewl_Widget *w, const char *state,
 						Ewl_State_Type flag);
 
-void 		 ewl_widget_appearance_set(Ewl_Widget *w, char *appearance);
+void 		 ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance);
 char 		*ewl_widget_appearance_get(Ewl_Widget *w);
 char 		*ewl_widget_appearance_path_get(Ewl_Widget *w);
-void 		 ewl_widget_appearance_part_text_set(Ewl_Widget *w, char *part,
-						   char *text);     
-char 		*ewl_widget_appearance_part_text_get(Ewl_Widget *w, char *part);
-void 		 ewl_widget_appearance_text_set(Ewl_Widget *w, char *text);
+void 		 ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part,
+						   const char *text);     
+char 		*ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part);
+void 		 ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text);
 char 		*ewl_widget_appearance_text_get(Ewl_Widget *w);
 
-void 		 ewl_widget_inherit(Ewl_Widget *widget, char *type);
+void 		 ewl_widget_inherit(Ewl_Widget *widget, const char *type);
 
 unsigned int 	 ewl_widget_type_is(Ewl_Widget *widget, const char *type);
 unsigned int 	 ewl_widget_onscreen_is(Ewl_Widget *widget);

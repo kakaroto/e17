@@ -13,7 +13,7 @@ static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
 static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
 						int *t, int *b);
 static void ewl_widget_appearance_part_text_apply(Ewl_Widget *w,
-						  const char *part, char *text);
+						  const char *part, const char *text);
 static void ewl_widget_layer_stack_add(Ewl_Widget *w);
 static void ewl_widget_layer_update(Ewl_Widget *w);
 static Evas_Object *ewl_widget_layer_neighbor_find_above(Ewl_Widget *w);
@@ -219,11 +219,13 @@ ewl_widget_realize(Ewl_Widget *w)
 	 */
 	if (w->parent && !REALIZED(w->parent))
 		ewl_widget_realize(w->parent);
+
 	else if (w->parent || ewl_object_toplevel_get(EWL_OBJECT(w))) {
 		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_RPROCESS);
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
 		ewl_object_queued_remove(EWL_OBJECT(w),
 					 EWL_FLAG_QUEUED_RPROCESS);
+
 		ewl_object_visible_add(EWL_OBJECT(w),
 					EWL_FLAG_VISIBLE_REALIZED);
 		ewl_widget_obscure(w);
@@ -289,9 +291,8 @@ ewl_widget_reveal(Ewl_Widget *w)
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
 
 	emb = ewl_embed_widget_find(w);
-	if (emb && emb->evas) {
+	if (emb && emb->evas)
 		ewl_callback_call(w, EWL_CALLBACK_REVEAL);
-	}
 
 	ewl_widget_configure(w);
 
@@ -603,7 +604,7 @@ ewl_widget_data_get(Ewl_Widget *w, void *k)
  * update callback to initiate the change.
  */
 void
-ewl_widget_appearance_set(Ewl_Widget *w, char *appearance)
+ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -728,7 +729,7 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 	 * reference cached for later re-use.
 	 */
 	if (flag == EWL_STATE_PERSISTENT)
-		w->bit_state = ecore_string_instance((char *)state);
+		w->theme_state = ecore_string_instance((char *)state);
 
 	if (w->theme_object) {
 		if (ewl_config_cache.print_signals)
@@ -831,7 +832,7 @@ ewl_widget_parent_get(Ewl_Widget *w)
  * Changes the text of a given Edje-define TEXT part.
  */
 static void
-ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, char *text)
+ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const char *text)
 {
 	Evas_Coord nw, nh;
 
@@ -866,7 +867,7 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, char *tex
  * is reloaded for this widget.
  */
 void
-ewl_widget_appearance_part_text_set(Ewl_Widget *w, char *part, char *text)
+ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char *text)
 {
 	int i;
 	Ewl_Pair *match = NULL;
@@ -952,7 +953,7 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, char *part, char *text)
  * each of those text parts to be retrieved independently.
  */
 char *
-ewl_widget_appearance_part_text_get(Ewl_Widget *w, char *part)
+ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part)
 {
 	int i;
 	Ewl_Pair *match = NULL;
@@ -998,7 +999,7 @@ ewl_widget_appearance_part_text_get(Ewl_Widget *w, char *part)
  * is reloaded for this widget.
  */
 void
-ewl_widget_appearance_text_set(Ewl_Widget *w, char *text)
+ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text)
 {
 	char *part;
 
@@ -1564,7 +1565,7 @@ ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
  * @brief Appends the given inheritance to this widgets inheritance string.
  */
 void
-ewl_widget_inherit(Ewl_Widget *widget, char *inherit)
+ewl_widget_inherit(Ewl_Widget *widget, const char *inherit)
 {
 	int len;
 	char *tmp = NULL;
@@ -2113,9 +2114,9 @@ ewl_widget_free(Ewl_Widget *w)
 		w->inheritance = NULL;
 	}
 
-	if (w->bit_state) {
-		ecore_string_release(w->bit_state);
-		w->bit_state = NULL;
+	if (w->theme_state) {
+		ecore_string_release(w->theme_state);
+		w->theme_state = NULL;
 	}
 
 	if (w->theme_text.list) {
@@ -2271,25 +2272,23 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * No object allocated yet for this widget
 	 */
-	if (!w->theme_object && w->bit_path && w->bit_group) {
+	if (!w->theme_object && w->theme_path && w->theme_group) {
 		/*
 		 * Attempt to load a cached object first, fallback to adding a
 		 * new one.
 		 */
 		w->theme_object = ewl_embed_object_request(emb, "edje");
-		if (!w->theme_object) {
+		if (!w->theme_object)
 			w->theme_object = edje_object_add(emb->evas);
-			evas_object_repeat_events_set(w->theme_object, 1);
-		}
 
 		/*
 		 * Attempt to load the theme object
 		 */
 		evas_object_repeat_events_set(w->theme_object, 1);
-		if (!edje_object_file_set(w->theme_object, w->bit_path,
-								w->bit_group))
+		if (!edje_object_file_set(w->theme_object, w->theme_path,
+								w->theme_group))
 			DWARNING("Error setting edje object %s, %s.",
-							w->bit_path, w->bit_group);
+							w->theme_path, w->theme_group);
 
 		/*
 		 * If the file failed to load, destroy the unnecessary evas
@@ -2303,8 +2302,8 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 		/*
 		 * Set the state of the theme object
 		 */
-		if (w->bit_state) {
-			ewl_widget_state_set(w, (char *)w->bit_state, 
+		if (w->theme_state) {
+			ewl_widget_state_set(w, (char *)w->theme_state, 
 						EWL_STATE_PERSISTENT);
 		}
 
@@ -2426,8 +2425,6 @@ ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * caching.
 	 */
 	if (w->theme_object) {
-		/* edje_object_file_set(w->theme_object, "", ""); */
-		evas_object_clip_unset(w->theme_object);
 		ewl_embed_object_cache(emb, w->theme_object);
 		w->theme_object = NULL;
 	}
@@ -2438,14 +2435,11 @@ ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * will be a white rectangle displayed.
 	 */
 	if (w->fx_clip_box) {
-		evas_object_hide(w->fx_clip_box);
-		evas_object_clip_unset(w->fx_clip_box);
 		ewl_embed_object_cache(emb, w->fx_clip_box);
 		w->fx_clip_box = NULL;
 	}
 
 	if (w->smart_object) {
-		evas_object_hide(w->smart_object);
 		evas_object_data_del(w->smart_object, "EWL");
 		ewl_embed_object_cache(emb, w->smart_object);
 		w->smart_object = NULL;
@@ -2496,8 +2490,8 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	i = ewl_theme_image_get(w, "file");
 	group = ewl_theme_data_str_get(w, "group");
 
-	if (i) w->bit_path = ecore_string_instance(i);
-	if (group) w->bit_group = ecore_string_instance(group);
+	if (i) w->theme_path = ecore_string_instance(i);
+	if (group) w->theme_group = ecore_string_instance(group);
 
 	IF_FREE(i);
 	IF_FREE(group);
@@ -2611,7 +2605,10 @@ ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_object_padding_get(EWL_OBJECT(w), &p_l, &p_r, &p_t, &p_b);
 
 		/*
-		 * Use previously set insets and padding if available.
+		 * If the inset/padding values have been changed in code we
+		 * want to leave the code set values. Otherwise, if the
+		 * widget is using the theme set values, we reset to the
+		 * default of 0 for padding/insets
 		 */
 		if (l == i_l)
 			i_l = 0;
