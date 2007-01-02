@@ -124,6 +124,9 @@ data
 	item: "/vtoolbar/vbox/icon/group" "ewl/toolbar/icon";
 
 	/* tree groups */
+	item: "/tree2/group" "ewl/tree";
+	item: "/tree2/vbox/scrollpane/group" "ewl/tree/scrollpane/background";
+
 	item: "/tree_header/group" "ewl/tree/header";
 	item: "/tree_header/button/group" "ewl/tree/header/button";
 	item: "/tree_header/grabber/vertical/group" "ewl/separator/vertical";
