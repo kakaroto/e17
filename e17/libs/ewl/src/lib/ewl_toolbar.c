@@ -33,16 +33,9 @@ ewl_toolbar_new(void)
 Ewl_Widget *
 ewl_htoolbar_new(void)
 {
-	Ewl_Widget *t;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	t = ewl_toolbar_new();
-	if (t)
-		ewl_toolbar_orientation_set(EWL_TOOLBAR(t),
-				EWL_ORIENTATION_HORIZONTAL);
-
-	DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
+	DRETURN_PTR(ewl_toolbar_new(), DLEVEL_STABLE);
 }
 
 /**
@@ -61,7 +54,7 @@ ewl_vtoolbar_new(void)
 		ewl_toolbar_orientation_set(EWL_TOOLBAR(t),
 				EWL_ORIENTATION_VERTICAL);
 
-	DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
+	DRETURN_PTR(t, DLEVEL_STABLE);
 }
 
 /**
@@ -86,6 +79,7 @@ ewl_toolbar_init(Ewl_Toolbar *t)
 
 	ewl_widget_inherit(w, EWL_TOOLBAR_TYPE);
 	ewl_widget_appearance_set(w, "htoolbar");
+
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HFILL |
 						  EWL_FLAG_FILL_SHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(t), EWL_FLAG_ALIGN_LEFT | 
@@ -191,6 +185,5 @@ ewl_toolbar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 		ewl_icon_part_hide(EWL_ICON(w), t->hidden);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-
 }
 
