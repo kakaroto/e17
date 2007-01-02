@@ -1,9 +1,10 @@
 images
 {
-	image: "e17_button_detail_right.png" COMP;
 	image: "e17_button_detail_up.png" COMP;
 	image: "e17_button_detail_down.png" COMP;
 	image: "e17_button_sm_disabled.png" COMP;
+	image: "e17_icon_right_arrow.png" COMP;
+	image: "e17_icon_down_arrow.png" COMP;
 }
 
 group
@@ -13,9 +14,10 @@ group
 	{
 		part
 		{
-			name: "expansion";
+			name: "base";
+			type: RECT;
 			mouse_events: 1;
-
+			
 			description
 			{
 				state: "default" 0.0;
@@ -23,17 +25,42 @@ group
 
 				rel1
 				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				color: 255 255 255 255;
+			}
+		}
+		part
+		{
+			name: "expansion";
+			mouse_events: 1;
+
+			description
+			{
+				state: "default" 0.0;
+				min: 5 5;
+
+				rel1
+				{
+					to: "base";
 					relative: 0.5 0.5;
 					offset: 0 0;
 				}
 				rel2
 				{
+					to: "base";
 					relative: 0.5 0.5;
 					offset: -1 -1;
 				}
 				image
 				{
-					normal: "e17_button_detail_right.png";
+					normal: "e17_icon_right_arrow.png";
 				}
 			}
 			description
@@ -42,7 +69,7 @@ group
 				inherit: "default" 0.0;
 				image
 				{
-					normal: "e17_button_detail_down.png";
+					normal: "e17_icon_down_arrow.png";
 				}
 			}
 		}

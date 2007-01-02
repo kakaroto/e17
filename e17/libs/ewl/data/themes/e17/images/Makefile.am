@@ -13,6 +13,8 @@ e17_frame_label_under.png \
 e17_frame_outline.png \
 e17_ibar_bg_v.png \
 e17_ibar_over_v.png \
+e17_icon_down_arrow.png \
+e17_icon_right_arrow.png \
 e17_ilist_bg0.png \
 e17_ilist_bg1.png \
 e17_menu_arrow.png \
