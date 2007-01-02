@@ -88,7 +88,7 @@ void init_gui(void)
 	ewl_object_maximum_size_set(EWL_OBJECT(progress), 200, 20);
 	ewl_widget_show(progress);
 
-	timer = ecore_timer_add(.3, destroy_boot, win);
+	timer = ecore_timer_add(.2, destroy_boot, win);
 
 	ewl_main();
 }
