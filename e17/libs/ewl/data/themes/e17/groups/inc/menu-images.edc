@@ -1,0 +1,7 @@
+image: "focus.png" COMP;
+image: "e17_titlebar.png" COMP;
+image: "e17_titlebar_outline.png" COMP;
+image: "e17_titlebar_shadow1.png" COMP;
+image: "e17_titlebar_shadow2.png" COMP;
+
+#include "glint-images.edc"

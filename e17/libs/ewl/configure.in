@@ -341,7 +341,7 @@ data/themes/e17/Makefile
 data/themes/e17/fonts/Makefile
 data/themes/e17/images/Makefile
 data/themes/e17/groups/Makefile
-data/themes/e17/macros/Makefile
+data/themes/e17/groups/inc/Makefile
 data/themes/ewl_embed_test/Makefile
 data/themes/ewl_embed_test/images/Makefile
 tools/Makefile

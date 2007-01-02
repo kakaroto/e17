@@ -1,0 +1,170 @@
+fonts 
+{
+	font, "fonts/DejaVuSerif.ttf" "ewl/default";
+	font, "fonts/DejaVuSerif-Bold.ttf" "ewl/default/bold";
+	font, "fonts/DejaVuSerif-Oblique.ttf" "ewl/default/italic";
+	font, "fonts/DejaVuSerif-BoldOblique.ttf" "ewl/default/bold-italic";
+}
+
+collections 
+{
+#include "groups/border.edc"
+#include "groups/button.edc"
+#include "groups/combo.edc"
+#include "groups/highlight.edc"
+#include "groups/label.edc"
+#include "groups/menu.edc"
+#include "groups/notebook.edc"
+#include "groups/progress.edc"
+#include "groups/scroll.edc"
+#include "groups/separator.edc"
+#include "groups/shadow.edc"
+#include "groups/spacer.edc"
+#include "groups/spinner.edc"
+#include "groups/text.edc"
+#include "groups/toolbar.edc"
+#include "groups/tree.edc"
+#include "groups/window.edc"
+}
+
+data 
+{
+	/* button related groups */
+	item: "/button/group" "ewl/button";
+	item: "/radiobutton/group" "ewl/button/other";
+	item: "/checkbutton/group" "ewl/button/other";
+
+	item: "/radio/group" "ewl/button/radio/item";
+	item: "/check/group" "ewl/button/check/item";
+
+	/* border groups */
+	item: "/border/group" "ewl/border";
+	item: "/border/label/group" "ewl/border/label";
+
+	/* combo groups */
+	item: "/combo/group" "ewl/combo";
+	item: "/combo/cell/group" "ewl/combo/contents";
+	item: "/combo/popup/group" "ewl/menu";
+	item: "/combo/popup/vbox/cell/group" "ewl/combo/popup/contents";
+	item: "/combo/decrement/group" "ewl/combo/decrement";
+	item: "/combo/increment/group" "ewl/combo/increment";
+
+	/* entry/text related groups */
+	item: "/entry/group" "ewl/entry";
+	item: "/entry/cursor/group" "ewl/entry/cursor";
+	item: "/entry/selection_area/group" "ewl/entry/selection";
+
+	/* highlight group */
+	item: "/highlight/group" "ewl/highlight";
+
+	/* label groups */
+	item: "/label/group" "ewl/label";
+	item: "/label/textpart" "ewl/label/text";
+
+	/* menu/statusbar related groups */
+	item: "/menu/group" "ewl/menu";
+	item: "/menu_item/body/label/group" "ewl/menu/item";
+	item: "/menu/vbox/menu_container/body/label/group" "ewl/menu/subitem";
+	item: "/menubar/group" "ewl/menu";
+
+	item: "/statusbar/group" "ewl/menu";
+
+	/* notebook groups */
+	item: "/notebook/pages/group" "ewl/notebook/pages";
+
+	item: "/notebook/top/tabbar/group" "ewl/notebook/top";
+	item: "/notebook/bottom/tabbar/group" "ewl/notebook/top";
+	item: "/notebook/left/tabbar/group" "ewl/notebook/left";
+	item: "/notebook/right/tabbar/group" "ewl/notebook/left";
+
+	item: "/notebook/top/tabbar/tab/group" "ewl/notebook/top/tab";
+	item: "/notebook/bottom/tabbar/tab/group" "ewl/notebook/bottom/tab";
+	item: "/notebook/left/tabbar/tab/group" "ewl/notebook/left/tab";
+	item: "/notebook/right/tabbar/tab/group" "ewl/notebook/right/tab";
+
+	/* paned groups */
+	item: "/grabber/vertical/group" "ewl/separator/vertical";
+	item: "/grabber/horizontal/group" "ewl/separator/horizontal";
+
+	/* progressbar groups */
+	item: "/progressbar/group" "ewl/progressbar";
+	item: "/progressbar_bar/group" "ewl/progressbar/bar";
+
+	/* scroll groups */
+	item: "/scrollpane/group" "ewl/scrollpane/background";
+
+	item: "/vscrollbar/decrement/group" "ewl/scrollbar/vertical/decrement";
+	item: "/vscrollbar/increment/group" "ewl/scrollbar/vertical/increment";
+	item: "/hscrollbar/decrement/group" "ewl/scrollbar/horizontal/decrement";
+	item: "/hscrollbar/increment/group" "ewl/scrollbar/horizontal/increment";
+
+	/* seeker groups */
+	item: "/vseeker/group" "ewl/seeker/vertical";
+	item: "/hseeker/group" "ewl/seeker/horizontal";
+	item: "/vseeker/vbutton/group" "ewl/seeker/vertical/button";
+	item: "/hseeker/hbutton/group" "ewl/seeker/horizontal/button";
+
+	/* separator groups */
+	item: "/hseparator/group" "ewl/separator/horizontal";
+	item: "/vseparator/group" "ewl/separator/vertical";
+
+	/* shadow groups */
+	item: "/shadow/group" "ewl/shadow";
+
+	/* spacer groups */
+	item: "/spacer/group" "ewl/spacer";
+
+	/* spinner groups */
+	item: "/spinner/controls/decrement/group" "ewl/spinner/decrement";
+	item: "/spinner/controls/increment/group" "ewl/spinner/increment";
+
+	/* toolbar groups */
+	item: "/htoolbar/group" "ewl/menu";
+	item: "/vtoolbar/group" "ewl/menu";
+	item: "/htoolbar/hbox/icon/group" "ewl/toolbar/icon";
+	item: "/vtoolbar/vbox/icon/group" "ewl/toolbar/icon";
+
+	/* tree groups */
+	item: "/tree_header/group" "ewl/tree/header";
+	item: "/tree_header/button/group" "ewl/tree/header/button";
+	item: "/tree_header/grabber/vertical/group" "ewl/separator/vertical";
+
+	item: "/tree_header/header/ascending/body/group" "ewl/tree/header/ascending";
+	item: "/tree_header/header/descending/body/group" "ewl/tree/header/descending";
+	item: "/tree_header/header/blank/body/group" "ewl/tree/header/normal";
+
+	item: "/row/group" "ewl/row";
+	item: "/node/check/group" "ewl/tree/expansion";
+
+	/* window related groups */
+	item: "/tooltip/group" "ewl/window";
+	item: "/popup/group" "ewl/window";
+	item: "/window/group" "ewl/window";
+
+	/* default values */
+	item: "/entry/color/a" 255;
+	item: "/entry/font" "ewl/default";
+	item: "/entry/font_size" 12;
+
+	item: "/freebox/auto/padding" 5;
+
+	item: "/popup/voffset" 10;
+	item: "/popup/hoffset" 10;
+
+	item: "/spinner/acceleration" 5;
+	item: "/spinner/velocity" 5;
+
+	item: "/text/color/a" 255;
+	item: "/text/font" "ewl/default";
+	item: "/text/font_size" 12;
+	item: "/text/style" "none";
+
+	item: "/tooltip/delay" "1.0";
+
+	/* theme information */
+	item: "/theme/author" "dj2 (www.everburning.com)";
+	item: "/theme/font_path" "fonts";
+	item: "/theme/license" "CC License: http://creativecommons.org/licenses/by-sa/2.5";
+	item: "/theme/name" "e17";
+}
+

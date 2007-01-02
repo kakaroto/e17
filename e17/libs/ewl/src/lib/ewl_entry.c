@@ -157,7 +157,7 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_FOCUSED))
 			ewl_widget_show(e->cursor);
 
-		ewl_widget_state_set(EWL_WIDGET(e), "editable", 
+		ewl_widget_state_set(EWL_WIDGET(e), "enabled", 
 					EWL_STATE_PERSISTENT);
 	}
 	else
@@ -168,7 +168,7 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_FOCUSED))
 			ewl_widget_hide(e->cursor);
 
-		ewl_widget_state_set(EWL_WIDGET(e), "noteditable",
+		ewl_widget_state_set(EWL_WIDGET(e), "disabled",
 					EWL_STATE_PERSISTENT);
 	}
 

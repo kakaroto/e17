@@ -1,0 +1,20 @@
+program
+{
+	name: "focus,in";
+	signal: "focus,in";
+	source: "EWL";
+	action: STATE_SET "focused" 0.0;
+	transition: DECELERATE 0.2;
+	target: focus;
+}
+	
+program
+{
+	name: "focus,out";
+	signal: "focus,out";
+	source: "EWL";
+	action: STATE_SET "default" 0.0;
+	transition: ACCELERATE 0.5;
+	target: "focus";
+}
+

@@ -1,0 +1,86 @@
+images
+{
+	image: "e17_menu_separator.png" COMP;
+	image: "e17_menu_separator_vert.png" COMP;
+}
+
+group
+{
+	name: "ewl/separator/horizontal";
+	min: 6 6;
+	max: 10000 6;
+
+	parts
+	{
+		part
+		{
+			name: "separator";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				min: 20 2;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 2 2;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -3 -3;
+				}
+				image
+				{
+					normal: "e17_menu_separator.png";
+					border: 3 3 0 0;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/separator/vertical";
+	min: 6 6;
+	max: 6 10000;
+
+	parts
+	{
+		part
+		{
+			name: "separator";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				min: 2 20;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 2 2;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -3 -3;
+				}
+				image
+				{
+					normal: "e17_menu_separator_vert.png";
+					border: 0 0 3 3;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+

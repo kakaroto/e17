@@ -1,0 +1,369 @@
+images
+{
+	image: "e17_button_sm_disabled.png" COMP;
+	image: "e17_frame_outline.png" COMP;
+	image: "ewl_notebook_tab_top_selected.png" COMP;
+	image: "ewl_notebook_tab_bottom_selected.png" COMP;
+	image: "ewl_notebook_tab_left_selected.png" COMP;
+	image: "ewl_notebook_tab_right_selected.png" COMP;
+}
+
+group
+{
+	name: "ewl/notebook/pages";
+
+	data
+	{
+		item: "inset" 4;
+		item: "pad" 0;
+	}
+
+	parts
+	{
+		part
+		{
+			name: "outline";
+			mouse_events: 0;
+
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_frame_outline.png";
+					border: 7 7 7 7;
+					middle: 0;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/notebook/top";
+	
+	data
+	{
+		item: "inset" 0;
+		item: "pad" 0;
+		item: "pad/left" 4;
+		item: "pad/right" 4;
+	}
+}
+
+group
+{
+	name: "ewl/notebook/top/tab";
+
+	data
+	{
+		item: "pad" 0;
+		item: "inset" 4;
+		item: "inset/top" 2;
+		item: "inset/bottom" 0;
+	}
+
+	parts
+	{
+		part
+		{
+			name: "outline";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: -2 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: 2 4;
+				}
+				image
+				{
+					normal: "e17_button_sm_disabled.png";
+					border: 8 8 8 8;
+				}
+			}
+			description
+			{
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				image
+				{
+					normal: "ewl_notebook_tab_top_selected.png";
+					border: 8 8 8 8;
+				}
+			}
+		}
+		programs
+		{
+			program
+			{
+				name: "selected";
+				signal: "selected";
+				source: "EWL";
+				action: STATE_SET "selected" 0.0;
+				target: "outline";
+			}
+			program
+			{
+				name: "de-select";
+				signal: "default";
+				source: "EWL";
+				action: STATE_SET "default" 0.0;
+				target: "outline";
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/notebook/bottom/tab";
+
+	data
+	{
+		item: "pad" 0;
+		item: "inset" 4;
+		item: "inset/top" 0;
+		item: "inset/bottom" 4;
+	}
+
+	parts
+	{
+		part
+		{
+			name: "outline";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: -2 -5;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: 2 -1;
+				}
+				image
+				{
+					normal: "e17_button_sm_disabled.png";
+					border: 8 8 8 8;
+				}
+			}
+			description
+			{
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				image
+				{
+					normal: "ewl_notebook_tab_bottom_selected.png";
+					border: 8 8 8 8;
+				}
+			}
+		}
+		programs
+		{
+			program
+			{
+				name: "selected";
+				signal: "selected";
+				source: "EWL";
+				action: STATE_SET "selected" 0.0;
+				target: "outline";
+			}
+			program
+			{
+				name: "de-select";
+				signal: "default";
+				source: "EWL";
+				action: STATE_SET "default" 0.0;
+				target: "outline";
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/notebook/left";
+	
+	data
+	{
+		item: "inset" 0;
+		item: "pad" 0;
+		item: "pad/top" 4;
+		item: "pad/bottom" 4;
+	}
+}
+
+group
+{
+	name: "ewl/notebook/left/tab";
+
+	data
+	{
+		item: "pad" 0;
+		item: "inset" 4;
+		item: "inset/left" 2;
+		item: "inset/right" 0;
+	}
+
+	parts
+	{
+		part
+		{
+			name: "outline";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: 8 -1;
+				}
+				image
+				{
+					normal: "e17_button_sm_disabled.png";
+					border: 8 8 8 8;
+				}
+			}
+			description
+			{
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				image
+				{
+					normal: "ewl_notebook_tab_left_selected.png";
+					border: 8 8 8 8;
+				}
+			}
+		}
+		programs
+		{
+			program
+			{
+				name: "selected";
+				signal: "selected";
+				source: "EWL";
+				action: STATE_SET "selected" 0.0;
+				target: "outline";
+			}
+			program
+			{
+				name: "de-select";
+				signal: "default";
+				source: "EWL";
+				action: STATE_SET "default" 0.0;
+				target: "outline";
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/notebook/right/tab";
+
+	data
+	{
+		item: "pad" 0;
+		item: "inset" 4;
+		item: "inset/left" 0;
+		item: "inset/right" 2;
+	}
+
+	parts
+	{
+		part
+		{
+			name: "outline";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: -18 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_button_sm_disabled.png";
+					border: 8 8 8 8;
+				}
+			}
+			description
+			{
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+				image
+				{
+					normal: "ewl_notebook_tab_right_selected.png";
+					border: 8 8 8 8;
+				}
+			}
+		}
+		programs
+		{
+			program
+			{
+				name: "selected";
+				signal: "selected";
+				source: "EWL";
+				action: STATE_SET "selected" 0.0;
+				target: "outline";
+			}
+			program
+			{
+				name: "de-select";
+				signal: "default";
+				source: "EWL";
+				action: STATE_SET "default" 0.0;
+				target: "outline";
+			}
+		}
+	}
+}
+

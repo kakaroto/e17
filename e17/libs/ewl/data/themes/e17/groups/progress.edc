@@ -1,0 +1,63 @@
+images
+{
+	image: "entry.png" COMP;
+	image: "e17_button_sm.png" COMP;
+}
+
+group
+{
+	name: "ewl/progressbar";
+
+	parts
+	{
+		part
+		{
+			name: "outline";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "entry.png";
+					border: 8 8 8 8;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/progressbar/bar";
+	min: 1 10;
+	parts
+	{
+		part
+		{
+			name: "bar";
+			mouse_events: 0;
+
+			description
+			{
+				state: "default" 0.0;
+				image
+				{
+					normal: "e17_button_sm.png";
+					border: 8 8 8 8;
+				}
+			}
+		}
+	}
+}
+

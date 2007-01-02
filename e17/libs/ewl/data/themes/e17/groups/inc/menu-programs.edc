@@ -1,0 +1,103 @@
+program
+{
+	name: "go_active_pre";
+	signal: "mouse,in";
+	source: "*";
+	action: STATE_SET "default" 0.0;
+	target: "title_outline";
+	target: "title_bar";
+	target: "title_shadow1";
+	target: "title_shadow2";
+	after: "go_active_title";
+}
+
+program
+{
+	name: "go_active_title";
+	action: STATE_SET "active" 0.0;
+	target: "title_outline";
+	target: "title_bar"; 
+	transition: LINEAR 0.05;
+	after: "go_active2_title";
+}
+
+program 
+{
+	name: "go_active2_title";
+	action: STATE_SET "active" 0.0;
+	target: "title_shadow1";
+	transition: LINEAR 0.05;
+	after: "go_active3_title";
+}
+
+program 
+{
+	name: "go_active3_title";
+	action: STATE_SET "active" 0.0;
+	target: "title_shadow2";
+	transition: LINEAR 0.05;
+	after: "go_active";
+}
+
+#include "glint-programs.edc"
+
+program 
+{
+	name: "go_passive_pre";
+	signal: "mouse,out";
+	source: "*";
+	action: STATE_SET "active" 0.0;
+	target: "title_outline";
+	target: "title_bar";
+	target: "title_shadow1";
+	target: "title_shadow2";
+	after: "go_passive";
+}
+
+program 
+{
+	name: "go_passive";
+	action: STATE_SET "default" 0.0;
+	target: "title_shadow2";
+	transition: LINEAR 0.1;
+	after: "go_passive2";
+}
+
+program 
+{
+	name: "go_passive2";
+	action: STATE_SET "default" 0.0;
+	target: "title_shadow1";
+	transition: LINEAR 0.1;
+	after: "go_passive3";
+}
+
+program 
+{
+	name: "go_passive3";
+	action: STATE_SET "default" 0.0;
+	target: "title_outline";
+	target: "title_bar";
+	transition: LINEAR 0.1;
+}
+
+program
+{
+	name: "focus,in";
+	action: STATE_SET "focused" 0.0;
+	source: "EWL";
+	signal: "focus,in";
+	target: "focus";
+	transition: LINEAR 0.1;
+}
+
+program
+{
+	name: "focus,out";
+	action: STATE_SET "default" 0.0;
+	source: "EWL";
+	signal: "focus,out";
+	target: "focus";
+	transition: LINEAR 0.1;
+}
+

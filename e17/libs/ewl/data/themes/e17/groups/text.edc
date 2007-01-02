@@ -1,0 +1,227 @@
+images
+{
+	image: "entry.png" COMP;
+	image: "focus.png" COMP;
+	image: "entry_disabled.png" COMP;
+}
+
+group
+{
+	name: "ewl/entry";
+	min: 18 18;
+
+	data
+	{
+		item: "inset" "2";
+		item: "inset/left" "6";
+	}
+
+	parts 
+	{
+		part 
+		{
+			name: "entry";
+			description
+			{
+				state: "default" 0.0;
+				image
+				{
+					normal: "entry.png";
+					border: 8 8 8 8;
+				}
+			}
+		}
+		part
+		{
+			name: "entry_focus";
+			description
+			{
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 255;
+
+				image
+				{
+					normal: "focus.png";
+					border: 7 7 7 7;
+					middle: 0;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+			description
+			{
+				state: "focus" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+		part
+		{
+			name: "entry_disabled";
+			description
+			{
+				state: "default" 0.0;
+				visible: 0;
+				color: 255 255 255 255;
+
+				image
+				{
+					normal: "entry_disabled.png";
+					border: 7 7 7 7;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+			description
+			{
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "disable";
+			signal: "disabled";
+			source: "*";
+			action: STATE_SET "disabled" 0.0;
+			transition: DECELERATE 0.2;
+			target: "entry_disabled";
+		}
+		program
+		{
+			name: "enable";
+			signal: "enabled";
+			source: "*";
+			action: STATE_SET "default" 0.0;
+			transition: ACCELERATE 0.5;
+			target: "entry_disabled";
+		}
+		program
+		{
+			name: "focus,in";
+			signal: "focus,in";
+			source: "*";
+			action: STATE_SET "focus" 0.0;
+			transition: DECELERATE 0.2;
+			target: "entry_focus";
+		}
+		program
+		{
+			name: "focus,out";
+			signal: "focus,out";
+			source: "*";
+			action: STATE_SET "default" 0.0;
+			transition: ACCELERATE 0.5;
+			target: "entry_focus";
+		}
+	}
+}
+
+group
+{
+	name: "ewl/entry/cursor";
+	min: 1 12;
+	max: 1 10000;
+
+	data
+	{
+		item: "pad" "0";
+		item: "pad/top" "4";
+	}
+
+	parts
+	{
+		part
+		{
+			name, "cursor";
+			type: RECT;
+			description
+			{
+				state: "default" 0.0;
+				color: 0 0 0 255;
+				visible: 0;
+			}
+			description
+			{
+				state: "visible" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "blink-on";
+			signal: "show";
+			source: "";
+			action: STATE_SET "visible" 0.0;
+			target: "cursor";
+			after: "blink-hold-on";
+		}
+		program
+		{
+			name: "blink-off";
+			action: STATE_SET "default" 0.0;
+			target: "cursor";
+			after: "blink-hold-off";
+		}
+		program
+		{
+			name: "blink-hold-on";
+			in: 1.0 0.0;
+			after: "blink-off";
+		}
+		program
+		{
+			name: "blink-hold-off";
+			in: 0.5 0.0;
+			after: "blink-on";
+		}
+		program
+		{
+			name: "no-blink";
+			signal: "noblink";
+			source, "EWL";
+			action: ACTION_STOP;
+			target: "blink-hold-on";
+			target: "blink-hold-off";
+			after: "blink-on";
+		}
+	}
+}
+
+group
+{
+	name: "ewl/entry/selection";
+	data
+	{
+		item: "pad/top" "4";
+		item: "pad/bottom" "4";
+	}
+	
+	parts
+	{
+		part
+		{
+			name: "selection";
+			type: RECT;
+			description
+			{
+				state: "default" 0.0;
+				color: 245 205 109 102;
+			}
+		}
+	}
+}
+

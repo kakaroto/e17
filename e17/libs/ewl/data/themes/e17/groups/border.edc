@@ -1,0 +1,188 @@
+images
+{
+	image: "e17_frame_label_over.png" COMP;
+	image: "e17_frame_label_under.png" COMP;
+	image: "e17_frame_outline.png" COMP;
+}
+
+group
+{
+	name: "ewl/border";
+
+	data
+	{
+		item: "inset" 8;
+		item: "inset/bottom" 0;
+		item: "inset/top" 0;
+	}
+
+	parts
+	{
+		part
+		{
+			name: "outline";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 3 5;
+				}
+				rel2 
+				{
+					relative: 1.0 1.0;
+					offset: -3 -3;
+				}
+				image
+				{
+					normal: "e17_frame_outline.png";
+					border: 7 7 7 7;
+					middle: 0;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/border/label";
+
+	data
+	{
+		item: "pad" 10;
+		item: "pad/top" 0;
+		item: "pad/bottom" 0;
+
+		item: "inset/left" 5;
+		item: "inset/right" 5;
+	}
+
+	parts
+	{
+		part
+		{
+			name: "label_under";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					to: "label_over";
+					relative: 0.0 0.0;
+					offset: 1 1;
+				}
+				rel2
+				{
+					to: "label_over";
+					relative: 1.0 1.0;
+					offset: -2 -2;
+				}
+				image
+				{
+					normal: "e17_frame_label_under.png";
+					border: 3 3 3 3;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+		part
+		{
+			name: "ewl/label/text";
+			type: TEXT;
+			effect: SOFT_SHADOW;
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				align: 0.5 0.5;
+				rel1 
+				{
+					relative: 0.0 0.0;
+					offset: 0 0 ;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				color: 0 0 0 255;
+				color3: 255 255 255 32;
+				text
+				{
+					text: "text";
+					font: "ewl/default";
+					size: 10;
+					min: 1 1;
+					align: 0.5 0.5;
+				}
+			}
+			description
+			{
+				state: "disabled" 0.0;
+				inherit: "default" 0.0;
+				color: 0 0 0 120;
+			}
+		}
+		part
+		{
+			name: "label_over";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0.5 0.5;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1.5 -1.5;
+				}
+				image
+				{
+					normal: "e17_frame_label_over.png";
+					border: 7 7 7 7;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "disble";
+			signal: "disabled";
+			source: "*";
+			action: STATE_SET "disabled" 0.0;
+			transition: LINEAR 0.0;
+			target: "ewl/label/text";
+		}
+		program
+		{
+			name: "enable";
+			signal: "enabled";
+			source: "*";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.0;
+			target: "ewl/label/text";
+		}
+	}
+}
+

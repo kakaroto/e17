@@ -1,0 +1,55 @@
+program 
+{
+	name: "go_active";
+	action: STATE_SET "active" 0.0;
+	target: "glint_1";
+	target: "glint_2";
+	transition: LINEAR 0.05;
+	after: "go_active2";
+	after: "go_active2b";
+}
+
+program 
+{
+	name: "go_active2";
+	action: STATE_SET "active2" 0.0;
+	target: "glint_2";
+	transition: LINEAR 0.2;
+	after: "go_active3";
+	after: "go_active3b";
+}
+
+program 
+{
+	name: "go_active2b";
+	action: STATE_SET "active" 0.0;
+	target: "glint_3";
+	transition: LINEAR 0.2;
+}
+
+program 
+{
+	name: "go_active3";
+	action: STATE_SET "active3" 0.0;
+	target: "glint_2";
+	transition: LINEAR 0.05;
+}
+
+program 
+{
+	name: "go_active3b";
+	action: STATE_SET "default" 0.0;
+	target: "glint_3";
+	transition: LINEAR 0.1;
+	after: "go_active4";
+}
+
+program 
+{
+	name: "go_active4";
+	action: STATE_SET "default" 0.0;
+	target: "glint_1";
+	target: "glint_2";
+	target: "glint_3";
+}
+

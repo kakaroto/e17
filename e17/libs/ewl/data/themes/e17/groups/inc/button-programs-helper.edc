@@ -1,0 +1,36 @@
+program
+{
+	name: "turn,on";
+	signal: "checked";
+	source: "EWL";
+	action: STATE_SET "active" 0.0;
+	target: "item1";
+}
+
+program
+{
+	name: "turn,off";
+	signal: "default";
+	source: "EWL";
+	action: STATE_SET "default" 0.0;
+	target: "item1";
+}
+
+program
+{
+	name: "diable";
+	signal: "disabled";
+	source: "EWL";
+	action: STATE_SET "disabled" 0.0;
+	target: "outline";
+}
+
+program
+{
+	name: "enable";
+	signal: "enabled";
+	source: "EWL";
+	action: STATE_SET "default" 0.0;
+	target: "outline";
+}
+

@@ -1,0 +1,556 @@
+images
+{
+	image: "e17_ibar_bg_v.png" COMP;
+	image: "e17_ibar_over_v.png" COMP;
+	image: "e17_menu_separator.png" COMP;
+	image: "e17_menu_separator_vert.png" COMP;
+	image: "e17_scrollbar_vdrag_thumb.png" COMP;
+	image: "e17_scrollbar_hdrag_thumb.png" COMP;
+	image: "e17_sb_barv1.png" COMP;
+	image: "e17_sb_barv2.png" COMP;
+	image: "e17_sb_barh1.png" COMP;
+	image: "e17_sb_barh2.png" COMP;
+	image: "e17_sb_btd1.png" COMP;
+	image: "e17_sb_btd2.png" COMP;
+	image: "e17_sb_btu1.png" COMP;
+	image: "e17_sb_btu2.png" COMP;
+	image: "e17_sb_btl1.png" COMP;
+	image: "e17_sb_btl2.png" COMP;
+	image: "e17_sb_btr1.png" COMP;
+	image: "e17_sb_btr2.png" COMP;
+}
+
+group
+{
+	name: "ewl/scrollpane/background";
+
+	data
+	{
+		item: "inset" "8";
+	}
+
+	parts
+	{
+		part
+		{
+			name: "bg";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				image
+				{
+					normal: "e17_ibar_bg_v.png";
+					border: 7 7 7 7;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+		part
+		{
+			name: "overlay";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					to: "bg";
+				}
+				rel2
+				{
+					to: "bg";
+				}
+				image
+				{
+					normal: "e17_ibar_over_v.png";
+					border: 13 13 13 13;
+					middle: 0;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/seeker/vertical";
+
+	parts
+	{
+		part
+		{
+			name: "line";
+			description
+			{
+				max: 2 99999;
+				state: "default" 0.0;
+				image
+				{
+					normal: "e17_menu_separator_vert.png";
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/seeker/horizontal";
+
+	parts
+	{
+		part
+		{
+			name: "line";
+			description
+			{
+				max: 99999 2;
+				state: "default" 0.0;
+				image
+				{
+					normal: "e17_menu_separator.png";
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/seeker/vertical/button";
+	min: 18 18;
+
+	parts
+	{
+		part
+		{
+			name: "drag";
+			description
+			{
+				state: "default" 0.0;
+				min: 16 16;
+				max: 16 99999;
+				image
+				{
+					normal: "e17_sb_barv1.png";
+					border: 5 5 5 5;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+			description
+			{
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_sb_barv2.png";
+				}
+			}
+		}
+		part
+		{
+			name: "drag_thumb";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				max: 8 8;
+				min: 8 8;
+				
+				rel1
+				{
+					relative: 0.5 0.5;
+					offset: -4 -9;
+					to: "drag";
+				}
+				rel2
+				{
+					relative: 0.5 0.5;
+					offset: 1 6;
+					to: "drag";
+				}
+				image
+				{
+					normal: "e17_scrollbar_vdrag_thumb.png";
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "drag_down";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "down" 0.0;
+			target: "drag";
+		}
+		program
+		{
+			name: "drag_up";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "drag";
+		}
+	}
+}
+
+group
+{
+	name: "ewl/seeker/horizontal/button";
+	min: 18 18;
+
+	parts
+	{
+		part
+		{
+			name: "drag";
+			description
+			{
+				state: "default" 0.0;
+				min: 16 16;
+				max: 99999 16;
+				image
+				{
+					normal: "e17_sb_barh1.png";
+					border: 5 5 5 5;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+			description
+			{
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_sb_barh2.png";
+				}
+			}
+		}
+		part
+		{
+			name: "drag_thumb";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				max: 8 8;
+				min: 8 8;
+				
+				rel1
+				{
+					relative: 0.5 0.5;
+					offset: -9 -4;
+					to: "drag";
+				}
+				rel2
+				{
+					relative: 0.5 0.5;
+					offset: 6 1;
+					to: "drag";
+				}
+				image
+				{
+					normal: "e17_scrollbar_hdrag_thumb.png";
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "drag_down";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "down" 0.0;
+			target: "drag";
+		}
+		program
+		{
+			name: "drag_up";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "drag";
+		}
+	}
+}
+	
+group
+{
+	name: "ewl/scrollbar/vertical/decrement";
+	min: 16 16;
+	parts
+	{
+		part
+		{
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				align: 0.5 1.0;
+				aspect: 1.0 1.0;
+				aspect_preference: HORIZONTAL;
+	
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 -1;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_sb_btd1.png";
+				}
+			}
+			description
+			{
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_sb_btd2.png";
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "mouse,down";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "button";
+		}
+		program
+		{
+			name: "mouse,up";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "button";
+		}
+	}
+}
+	
+group
+{
+	name: "ewl/scrollbar/vertical/increment";
+	min: 16 16;
+	parts
+	{
+		part
+		{
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				align: 0.5 1.0;
+				aspect: 1.0 1.0;
+				aspect_preference: HORIZONTAL;
+	
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 -1;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_sb_btu1.png";
+				}
+			}
+			description
+			{
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_sb_btu2.png";
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "mouse,down";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "button";
+		}
+		program
+		{
+			name: "mouse,up";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "button";
+		}
+	}
+}
+
+group
+{
+	name: "ewl/scrollbar/horizontal/decrement";
+	min: 16 16;
+	parts
+	{
+		part
+		{
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				align: 0.5 1.0;
+				aspect: 1.0 1.0;
+				aspect_preference: HORIZONTAL;
+	
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 -1;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_sb_btl1.png";
+				}
+			}
+			description
+			{
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_sb_btl2.png";
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "mouse,down";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "button";
+		}
+		program
+		{
+			name: "mouse,up";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "button";
+		}
+	}
+}
+
+group
+{
+	name: "ewl/scrollbar/horizontal/increment";
+	min: 16 16;
+	parts
+	{
+		part
+		{
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				align: 0.5 1.0;
+				aspect: 1.0 1.0;
+				aspect_preference: HORIZONTAL;
+	
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 -1;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_sb_btr1.png";
+				}
+			}
+			description
+			{
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_sb_btr2.png";
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "mouse,down";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "button";
+		}
+		program
+		{
+			name: "mouse,up";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "button";
+		}
+	}
+}
+
+

@@ -1,0 +1,138 @@
+images
+{
+	image: "e17_sb_btd1.png" COMP;
+	image: "e17_sb_btd2.png" COMP;
+	image: "e17_sb_btu1.png" COMP;
+	image: "e17_sb_btu2.png" COMP;
+}
+
+group
+{
+	name: "ewl/spinner/decrement";
+	min: 10 10;
+	parts
+	{
+		part
+		{
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				align: 0.5 1.0;
+				aspect: 1.0 1.0;
+				aspect_preference: HORIZONTAL;
+	
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 -1;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_sb_btd1.png";
+				}
+			}
+			description
+			{
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_sb_btd2.png";
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "mouse,down";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "button";
+		}
+		program
+		{
+			name: "mouse,up";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "button";
+		}
+	}
+}
+	
+group
+{
+	name: "ewl/spinner/increment";
+	min: 10 10;
+	parts
+	{
+		part
+		{
+			name: "button";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				align: 0.5 1.0;
+				aspect: 1.0 1.0;
+				aspect_preference: HORIZONTAL;
+	
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 -1;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_sb_btu1.png";
+				}
+			}
+			description
+			{
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_sb_btu2.png";
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "mouse,down";
+			signal: "mouse,down,*";
+			source: "EWL";
+			action: STATE_SET "clicked" 0.0;
+			target: "button";
+		}
+		program
+		{
+			name: "mouse,up";
+			signal: "mouse,up,*";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "button";
+		}
+	}
+}
+

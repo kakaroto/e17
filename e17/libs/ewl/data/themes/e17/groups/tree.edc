@@ -1,0 +1,365 @@
+images
+{
+	image: "e17_button_detail_right.png" COMP;
+	image: "e17_button_detail_up.png" COMP;
+	image: "e17_button_detail_down.png" COMP;
+	image: "e17_button_sm_disabled.png" COMP;
+}
+
+group
+{
+	name: "ewl/tree/expansion";
+	parts
+	{
+		part
+		{
+			name: "expansion";
+			mouse_events: 1;
+
+			description
+			{
+				state: "default" 0.0;
+				min: 12 12;
+
+				rel1
+				{
+					relative: 0.5 0.5;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 0.5 0.5;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_button_detail_right.png";
+				}
+			}
+			description
+			{
+				state: "open" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_button_detail_down.png";
+				}
+			}
+		}
+		part
+		{
+			name: "hide";
+			type: RECT;
+			mouse_events: 0;
+
+			description
+			{
+				state: "default" 0.0;
+				visible: 0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+					to: "expansion";
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+					to: "expansion";
+				}
+				color: 255 255 255 0;
+			}
+			description
+			{
+				state: "show" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "visible";
+			signal: "default";
+			source: "*";
+			action: STATE_SET "show" 0.0;
+			transition: LINEAR 0.0;
+			target: "hide";
+
+		}
+		program
+		{
+			name: "hidden";
+			signal: "node,default";
+			source: "*";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.0;
+			target: "hide";
+		}
+		program
+		{
+			name: "collapsed";
+			signal: "default";
+			source: "*";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.0;
+			target: "expansion";
+		}
+		program
+		{
+			name: "expand";
+			signal: "checked";
+			source: "*";
+			action: STATE_SET "open" 0.0;
+			transition: LINEAR 0.0;
+			target: "expansion";
+		}
+	}
+}
+
+group
+{
+	name: "ewl/tree/header";
+	data
+	{
+		item: "pad" 0;
+		item: "inset" 0;
+	}
+
+	parts
+	{
+		part
+		{
+			name: "button_image";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "e17_button_sm_disabled.png";
+					border: 8 8 8 8;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/tree/header/button";
+}
+
+group
+{
+	name: "ewl/tree/header/ascending";
+	min: 16 16;
+
+	parts
+	{
+		part
+		{
+			name: "arrow";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				min: 16 16;
+
+				image
+				{
+					normal: "e17_button_detail_down.png";
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/tree/header/descending";
+	min: 16 16;
+
+	parts
+	{
+		part
+		{
+			name: "arrow";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				min: 16 16;
+
+				image
+				{
+					normal: "e17_button_detail_up.png";
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "ewl/tree/header/normal";
+}
+
+group
+{
+	name: "ewl/row";
+
+	parts
+	{
+		part
+		{
+			name: "bg";
+			type: RECT;
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				min: 5 19;
+				color: 255 255 255 255;
+			}
+			description
+			{
+				state: "odd" 0.0;
+				inherit: "default" 0.0;
+				color: 221 221 221 100;
+			}
+		}
+		part
+		{
+			name: "highlight";
+			mouse_events: 0;
+			type: RECT;
+			description
+			{
+				state: "default" 0.0;
+				visible: 0;
+				rel1 
+				{
+					offset: -4 -4;
+				}
+				rel2
+				{
+					offset: 3 3;
+				}
+				color: 245 205 109 102;
+			}
+			description
+			{
+				state: "highlighted" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+		part
+		{
+			name: "selected";
+			mouse_events: 0;
+			type: RECT;
+			description
+			{
+				state: "default" 0.0;
+				visible: 0;
+				rel1 
+				{
+					offset: -4 -4;
+				}
+				rel2
+				{
+					offset: 3 3;
+				}
+				color: 245 205 109 102;
+			}
+			description
+			{
+				state: "selected" 0.0;
+				inherit: "default" 0.0;
+				visible: 1;
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "odd";
+			signal: "odd";
+			source: "*";
+			action: STATE_SET "odd" 0.0;
+			transition: LINEAR 0.0;
+			target: "bg";
+		}
+		program
+		{
+			name: "even";
+			signal: "even";
+			source: "*";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.0;
+			target: "bg";
+		}
+		program
+		{
+			name: "select";
+			signal: "tree-selected";
+			source: "*";
+			action: STATE_SET "selected" 0.0;
+			transition: DECELERATE 0.25;
+			target: "selected";
+		}
+		program
+		{
+			name: "un-select";
+			signal: "tree-deselect";
+			source: "*";
+			action: STATE_SET "default" 0.0;
+			transition: ACCELERATE 0.5;
+			target: "selected";
+		}
+		program
+		{
+			name: "highlight";
+			signal: "mouse,in";
+			source: "*";
+			action: STATE_SET "highlighted" 0.0;
+			transition: LINEAR 0.0;
+			target: "highlight";
+		}
+		program
+		{
+			name: "un-highlight";
+			signal: "mouse,out";
+			source: "*";
+			action: STATE_SET "default" 0.0;
+			transition: LINEAR 0.0;
+			target: "highlight";
+		}
+	}
+}
+
