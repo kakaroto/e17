@@ -53,7 +53,6 @@ ewl_combo_init(Ewl_Combo *combo)
 
 	combo->button = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(combo), combo->button);
-	ewl_widget_appearance_set(combo->button, "decrement");
 	ewl_widget_internal_set(combo->button, TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(combo->button), 
 					EWL_FLAG_ALIGN_RIGHT);
@@ -171,12 +170,12 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	/* XXX put checks to make sure all the needed module and view
 	 * function callbacks are setup */
 
-	/* change the button appearance and expand the menu */
-	ewl_widget_appearance_set(combo->button, "increment");
-
 	ewl_widget_show(combo->popup);
 	ewl_window_raise(EWL_WINDOW(combo->popup));
 	ewl_widget_focus_send(EWL_WIDGET(combo->popup));
+
+	ewl_widget_state_set(combo->button, "expanded",
+					EWL_STATE_PERSISTENT);
 
 	if (!ewl_mvc_dirty_get(EWL_MVC(combo)))
 		DRETURN(DLEVEL_STABLE);
@@ -226,7 +225,8 @@ ewl_combo_cb_popup_mouse_down(Ewl_Widget *w,
 		
 		combo = EWL_COMBO(data);
 		ewl_widget_hide(combo->popup);
-		ewl_widget_appearance_set(combo->button, "decrement");
+		ewl_widget_state_set(combo->button, "collapsed", 
+					EWL_STATE_PERSISTENT);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -256,7 +256,8 @@ ewl_combo_cb_item_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_mvc_selected_set(EWL_MVC(combo), i, -1);
 
 	ewl_widget_hide(combo->popup);
-	ewl_widget_appearance_set(combo->button, "decrement");
+	ewl_widget_state_set(combo->button, "collapsed",
+					EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

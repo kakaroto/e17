@@ -46,8 +46,7 @@ data
 	item: "/combo/cell/group" "ewl/combo/contents";
 	item: "/combo/popup/group" "ewl/menu";
 	item: "/combo/popup/vbox/cell/group" "ewl/combo/popup/contents";
-	item: "/combo/decrement/group" "ewl/combo/decrement";
-	item: "/combo/increment/group" "ewl/combo/increment";
+	item: "/combo/button/group" "ewl/combo/button";
 
 	/* entry/text related groups */
 	item: "/entry/group" "ewl/entry";

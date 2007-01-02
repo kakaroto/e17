@@ -64,13 +64,14 @@ group
 
 group
 {
-	name: "ewl/combo/increment";
+	name: "ewl/combo/button";
 	min: 24 24;
 	max: 24 24;
 
 	data
 	{
 		item: "pad" 0;
+		item: "pad/right" 4;
 		item: "inset" 0;
 		item: "inset/top" 3;
 		item: "inset/bottom" 3;
@@ -172,167 +173,6 @@ group
 				}
 				image
 				{
-					normal: "e17_button_detail_up.png";
-				}
-				fill
-				{
-					smooth: 0;
-				}
-			}
-		}
-	}
-
-	programs
-	{
-		program
-		{
-			name: "button,click";
-			signal: "mouse,down,1";
-			source: "button_image";
-			action: STATE_SET "clicked" 0.0;
-			target: "button_image";
-		}
-
-		program
-		{
-			name: "button,unclick";
-			signal: "mouse,up,1";
-			source: "button_image";
-			action: STATE_SET "default" 0.0;
-			target: "button_image";
-		}
-
-		program
-		{
-			name: "disable";
-			signal: "disabled";
-			source: "EWL";
-			action: STATE_SET "disabled" 0.0;
-			target: "button_image";
-			target: "button_image2";
-		}
-
-		program
-		{
-			name: "enable";
-			signal: "enabled";
-			source: "EWL";
-			action: STATE_SET "default" 0.0;
-			target: "button_image";
-			target: "button_image";
-		}
-	}
-}
-
-group
-{
-	name: "ewl/combo/decrement";
-	min: 24 24;
-	max: 24 24;
-
-	data
-	{
-		item: "pad" 0;
-		item: "pad/right" 4;
-		item: "inset/top" 3;
-		item: "inset/bottom" 3;
-	}
-
-	parts
-	{
-		part
-		{
-			name: "button_image";
-			type: IMAGE;
-			mouse_events: 1;
-			
-			description
-			{
-				state: "default" 0.0;
-				min: 56 16;
-
-				rel1
-				{
-					relative: 0.0 0.0;
-					offset: 0 0;
-				}
-				rel2
-				{ relative: 1.0 1.0;
-					offset: -1 -2;
-				}
-				image
-				{
-					normal: "ewl_combo_button_sm.png";
-					border: 8 8 8 8;
-				}
-			}
-			description
-			{
-				state: "clicked" 0.0;
-				inherit: "default" 0.0;
-				image
-				{
-					normal: "e17_button_sm2.png";
-				}
-			}
-			description 
-			{
-				state: "disabled" 0.0;
-				inherit: "default" 0.0;
-				visible: 0;
-			}
-		}
-		part
-		{
-			name: "button_image2";
-			type: IMAGE;
-			mouse_events: 1;
-			description
-			{
-				state: "default" 0.0;
-				visible: 0;
-				rel1
-				{
-					to: "button_image";
-				}
-				rel2
-				{
-					to: "button_image";
-				}
-				image
-				{
-					normal: "e17_button_sm_disabled.png";
-					border: 8 8 8 8;
-				}
-			}
-			description
-			{
-				state: "disabled" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
-			}
-		}
-		part
-		{
-			name: "arrow";
-			type: IMAGE;
-			description
-			{
-				state: "default" 0.0;
-				align: 0.5 0.5;
-				max: 16 16;
-				rel1
-				{
-					relative: 0.0 0.0;
-					offset: 0 0;
-				}
-				rel2
-				{
-					relative: 1.0 1.0;
-					offset: -1 -1;
-				}
-				image
-				{
 					normal: "e17_button_detail_down.png";
 				}
 				fill
@@ -340,6 +180,15 @@ group
 					smooth: 0;
 				}
 			}
+			description
+			{
+				state: "expanded" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_button_detail_up.png";
+				}
+			}
 		}
 	}
 
@@ -381,6 +230,24 @@ group
 			action: STATE_SET "default" 0.0;
 			target: "button_image";
 			target: "button_image";
+		}
+
+		program
+		{
+			name: "expand";
+			signal: "expanded";
+			source: "EWL";
+			action: STATE_SET "expanded" 0.0;
+			target: "arrow";
+		}
+
+		program
+		{
+			name: "collapse";
+			signal: "collapsed";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "arrow";
 		}
 	}
 }
