@@ -32,6 +32,14 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(o);
 
 	o = ewl_icon_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+	ewl_icon_image_set(EWL_ICON(o),
+				PACKAGE_DATA_DIR "/ewl/images/Draw.png", NULL);
+	ewl_icon_label_set(EWL_ICON(o), "Fill None");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_widget_show(o);
+
+	o = ewl_icon_new();
 	ewl_icon_image_set(EWL_ICON(o),
 				PACKAGE_DATA_DIR "/ewl/images/Draw.png", NULL);
 	ewl_icon_label_set(EWL_ICON(o), "Draw");
