@@ -2430,6 +2430,12 @@ static void _etk_tree2_row_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, 
     * to allow the user to drag and drop several rows. The selection will be done on "key-up" */
    if (!row_object->row->selected || event.modifiers != ETK_MODIFIER_NONE)
       _etk_tree2_row_select(row_object->row->tree, row_object->row, event.modifiers);
+   
+   if (event.flags != ETK_MOUSE_NONE)
+   {
+      etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_object->row->tree),
+         NULL, row_object->row, &event);
+   }
 }
 
 /* Called when the background of a row is released by the mouse */
@@ -2437,13 +2443,26 @@ static void _etk_tree2_row_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, vo
 {
    Etk_Tree2_Row_Object *row_object;
    Etk_Event_Mouse_Up event;
+   int x, y, w, h;
    
    if (!(row_object = data) || !row_object->row)
       return;
    
+   evas_object_geometry_get(obj, &x, &y, &w, &h);
    etk_event_mouse_up_wrap(ETK_WIDGET(row_object->row->tree), event_info, &event);
-   if (row_object->row->selected && event.modifiers == ETK_MODIFIER_NONE)
-      _etk_tree2_row_select(row_object->row->tree, row_object->row, ETK_MODIFIER_NONE);
+   
+   /* We make sure the mouse button has been released over the row */
+   if (ETK_INSIDE(event.canvas.x, event.canvas.y, x, y, w, h))
+   {
+      if (row_object->row->selected && event.modifiers == ETK_MODIFIER_NONE)
+         _etk_tree2_row_select(row_object->row->tree, row_object->row, ETK_MODIFIER_NONE);
+      
+      if (event.flags == ETK_MOUSE_NONE)
+      {
+         etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_object->row->tree),
+            NULL, row_object->row, &event);
+      }
+   }
 }
 
 /* Called when the expander of a row is released by the mouse */
