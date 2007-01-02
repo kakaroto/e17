@@ -1357,7 +1357,6 @@ ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	e = ewl_embed_widget_find(EWL_WIDGET(w));
 	if (e && c->clip_box) {
-		evas_object_hide(c->clip_box);
 		ewl_embed_object_cache(e, c->clip_box);
 		c->clip_box = NULL;
 	}
