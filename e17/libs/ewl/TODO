@@ -136,10 +136,6 @@
      - Need to add the ability to select directories instead of just files
 
 
-  Ewl_Notebook
-     - Need a new theme
-
-
   Ewl_Radiobutton
      - Add a function that returns the selected radio button of a chain
        associated to a given radio button.

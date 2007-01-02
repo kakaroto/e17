@@ -11,7 +11,7 @@ EWL ROADMAP
 - fixup the theme changing code. (Unrealize/realize causing some sizing
   changes that they shouldn't)
 - fixup submenu/menu interaction
-- better notebook theme
+
 
 0.7.0
 -----
