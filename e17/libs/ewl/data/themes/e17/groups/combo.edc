@@ -10,6 +10,7 @@ images
 group
 {
 	name: "ewl/combo";
+	min: 1 28;
 
 	data
 	{
