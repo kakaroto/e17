@@ -395,8 +395,11 @@ ee_window_destroy(Ewl_Window *win)
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	ee_window_hide(win);
-	ecore_x_window_del((Ecore_X_Window)EWL_EMBED(win)->evas_window);
-	ecore_x_window_del((Ecore_X_Window)EWL_WINDOW(win)->window);
+	ecore_x_window_del((Ecore_X_Window)(EWL_EMBED(win)->evas_window));
+	ecore_x_window_del((Ecore_X_Window)(win->window));
+
+	EWL_EMBED(win)->evas_window = NULL;
+	win->window = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
