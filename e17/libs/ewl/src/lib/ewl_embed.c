@@ -1205,6 +1205,8 @@ ewl_embed_object_request(Ewl_Embed *e, char *type)
 	DCHECK_PARAM_PTR_RET("type", type, NULL);
 	DCHECK_TYPE_RET("e", e, EWL_EMBED_TYPE, NULL);
 
+	if (!e->obj_cache) return NULL;
+
 	obj_list = ecore_hash_get(e->obj_cache, type);
 	if (obj_list)
 		obj = ecore_list_remove_first(obj_list);
@@ -1980,29 +1982,32 @@ void ewl_embed_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (ecore_list_goto(ewl_embed_list, w))
 		ecore_list_remove(ewl_embed_list);
 
-	key_list = ecore_hash_keys(emb->obj_cache);
-	if (key_list) {
-		char *key;
-		/*
-		 * Iterate over all object types destroying them as we go. No
-		 * need to free the key string.
-		 */
-		while ((key = ecore_list_remove_first(key_list))) {
-			Ecore_List *obj_list;
-
+	if (emb->obj_cache)
+	{
+		key_list = ecore_hash_keys(emb->obj_cache);
+		if (key_list) {
+			char *key;
 			/*
-			 * Now queue all objects for destruction.
+			 * Iterate over all object types destroying them as we go. No
+			 * need to free the key string.
 			 */
-			obj_list = ecore_hash_remove(emb->obj_cache, key);
-			while ((obj = ecore_list_remove_first(obj_list)))
-				ewl_evas_object_destroy(obj);
-			ecore_list_destroy(obj_list);
-		}
+			while ((key = ecore_list_remove_first(key_list))) {
+				Ecore_List *obj_list;
 
-		ecore_list_destroy(key_list);
+				/*
+				 * Now queue all objects for destruction.
+				 */
+				obj_list = ecore_hash_remove(emb->obj_cache, key);
+				while ((obj = ecore_list_remove_first(obj_list)))
+					ewl_evas_object_destroy(obj);
+				ecore_list_destroy(obj_list);
+			}
+
+			ecore_list_destroy(key_list);
+		}
 	}
 
-	ecore_hash_destroy(emb->obj_cache);
+	if (emb->obj_cache) ecore_hash_destroy(emb->obj_cache);
 	emb->obj_cache = NULL;
 
 	ecore_dlist_destroy(emb->tab_order);
