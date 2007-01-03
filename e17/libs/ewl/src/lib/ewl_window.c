@@ -741,14 +741,15 @@ ewl_window_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	embed = EWL_EMBED(w);
 	win = EWL_WINDOW(w);
 
+	ewl_embed_cache_cleanup(embed);
+	ewl_evas_destroy(embed->evas);
+	embed->evas = NULL;
+
 	if (REALIZED(w))
 	{
 		ewl_engine_window_hide(win);
 		ewl_engine_window_destroy(win);
 	}
-
-	ewl_evas_destroy(embed->evas);
-	embed->evas = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -162,6 +162,8 @@ void 		 ewl_embed_thaw(Ewl_Embed *e);
 void 		 ewl_embed_dnd_aware_set(Ewl_Embed *embed);
 void 		 ewl_embed_dnd_aware_remove(Ewl_Embed *embed);
 
+void 		 ewl_embed_cache_cleanup(Ewl_Embed *emb);
+
 /*
  * Internally used callbacks, override at your own risk.
  */

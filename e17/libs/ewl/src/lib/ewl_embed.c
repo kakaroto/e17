@@ -1971,8 +1971,6 @@ void ewl_embed_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
-	Evas_Object *obj;
-	Ecore_List *key_list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -1982,33 +1980,7 @@ void ewl_embed_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (ecore_list_goto(ewl_embed_list, w))
 		ecore_list_remove(ewl_embed_list);
 
-	if (emb->obj_cache)
-	{
-		key_list = ecore_hash_keys(emb->obj_cache);
-		if (key_list) {
-			char *key;
-			/*
-			 * Iterate over all object types destroying them as we go. No
-			 * need to free the key string.
-			 */
-			while ((key = ecore_list_remove_first(key_list))) {
-				Ecore_List *obj_list;
-
-				/*
-				 * Now queue all objects for destruction.
-				 */
-				obj_list = ecore_hash_remove(emb->obj_cache, key);
-				while ((obj = ecore_list_remove_first(obj_list)))
-					ewl_evas_object_destroy(obj);
-				ecore_list_destroy(obj_list);
-			}
-
-			ecore_list_destroy(key_list);
-		}
-	}
-
-	if (emb->obj_cache) ecore_hash_destroy(emb->obj_cache);
-	emb->obj_cache = NULL;
+	ewl_embed_cache_cleanup(emb);
 
 	ecore_dlist_destroy(emb->tab_order);
 	emb->tab_order = NULL;
@@ -2054,6 +2026,51 @@ ewl_embed_dnd_aware_remove(Ewl_Embed *embed)
 	if (REALIZED(embed) && (embed->dnd_count == 0))
 		ewl_engine_embed_dnd_aware_set(embed); */
 	embed->dnd_count--;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param emb: The embed to work with
+ * @return Returns no value
+ * @brief This will destroy the object cache associated with the embed object
+ */
+void
+ewl_embed_cache_cleanup(Ewl_Embed *emb)
+{
+	Evas_Object *obj;
+	Ecore_List *key_list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("emb", emb);
+	DCHECK_TYPE("emb", emb, EWL_EMBED_TYPE);
+
+	if (!emb->obj_cache) DRETURN(DLEVEL_STABLE);
+
+	key_list = ecore_hash_keys(emb->obj_cache);
+	if (key_list) {
+		char *key;
+		/*
+		 * Iterate over all object types destroying them as we go. No
+		 * need to free the key string.
+		 */
+		while ((key = ecore_list_remove_first(key_list))) {
+			Ecore_List *obj_list;
+
+			/*
+			 * Now queue all objects for destruction.
+			 */
+			obj_list = ecore_hash_remove(emb->obj_cache, key);
+			while ((obj = ecore_list_remove_first(obj_list)))
+				ewl_evas_object_destroy(obj);
+			ecore_list_destroy(obj_list);
+		}
+
+		ecore_list_destroy(key_list);
+	}
+
+	ecore_hash_destroy(emb->obj_cache);
+	emb->obj_cache = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
