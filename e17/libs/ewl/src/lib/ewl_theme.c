@@ -3,6 +3,7 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+extern Ecore_List *ewl_embed_list;
 static char *ewl_theme_path = NULL;
 
 static Ecore_List *ewl_theme_font_paths = NULL;
@@ -74,6 +75,8 @@ ewl_theme_shutdown(void)
 int
 ewl_theme_theme_set(const char *theme_name)
 {
+	Ewl_Widget *w;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("theme_name", theme_name, FALSE);
 
@@ -96,6 +99,20 @@ ewl_theme_theme_set(const char *theme_name)
 	if (!ewl_theme_path) DRETURN_INT(FALSE, DLEVEL_STABLE); 
 
 	ewl_theme_font_path_init();
+
+	/* Hide all embeds. If the embed was previously shown we re-show it
+	 * again. This should cause everything to reset it's theme values to the
+	 * new values */
+	ecore_list_goto_first(ewl_embed_list);
+	while ((w = ecore_list_next(ewl_embed_list)))
+	{
+		int vis;
+
+		vis = REALIZED(w);
+
+		ewl_widget_unrealize(w);
+		if (vis) ewl_widget_realize(w);
+	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
