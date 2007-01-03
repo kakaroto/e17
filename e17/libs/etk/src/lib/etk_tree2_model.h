@@ -8,6 +8,7 @@
 
 /**
  * @defgroup Etk_Tree2_Model Etk_Tree2_Model
+ * Etk_Tree2_Models are used by a tree to define the content of its columns
  * @{
  */
 
@@ -30,8 +31,6 @@ struct Etk_Tree2_Model
    Etk_Tree2 *tree;
    Etk_Tree2_Col *col;
    int cell_data_size;
-   float xalign;
-   float yalign;
    
    void (*model_free)(Etk_Tree2_Model *model);
    void (*cell_data_init)(Etk_Tree2_Model *model, void *cell_data);
@@ -40,23 +39,16 @@ struct Etk_Tree2_Model
    void (*cell_data_get)(Etk_Tree2_Model *model, void *cell_data, va_list *args);
    void (*objects_create)(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
    void (*render)(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
-   void (*ideal_size_calc)(Etk_Tree2_Model *model, void *cell_data, int *w, int *h);
+   int  (*width_get)(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
 };
 
 Etk_Tree2_Model *etk_tree2_model_text_new(Etk_Tree2 *tree);
 Etk_Tree2_Model *etk_tree2_model_int_new(Etk_Tree2 *tree);
 Etk_Tree2_Model *etk_tree2_model_double_new(Etk_Tree2 *tree);
 Etk_Tree2_Model *etk_tree2_model_image_new(Etk_Tree2 *tree, Etk_Tree2_Model_Image_Type image_type);
-Etk_Tree2_Model *etk_tree2_model_icon_text_new(Etk_Tree2 *tree, Etk_Tree2_Model_Image_Type icon_type);
 Etk_Tree2_Model *etk_tree2_model_checkbox_new(Etk_Tree2 *tree);
 Etk_Tree2_Model *etk_tree2_model_progress_bar_new(Etk_Tree2 *tree);
 void etk_tree2_model_free(Etk_Tree2_Model *model);
-
-void etk_tree2_model_alignment_set(Etk_Tree2_Model *model, float xalign, float yalign);
-void etk_tree2_model_alignment_get(Etk_Tree2_Model *model, float *xalign, float *yalign);
-
-void etk_tree2_model_icon_text_icon_width_set(Etk_Tree2_Model *model, int icon_width);
-int etk_tree2_model_icon_text_icon_width_get(Etk_Tree2_Model *model);
 
 /** @} */
 

@@ -6,11 +6,6 @@
 #include "etk_types.h"
 #include "etk_stock.h"
 
-/* TODO/FIXME list:
- * - More properties (stock, ...)?
- * - Should the button repeat the "clicked" signal when space is kept pressed (see canvas' test app)
- */
-
 /**
  * @defgroup Etk_Button Etk_Button
  * @brief The Etk_Button widget is a widget that emits a signal when it is pressed, released or clicked
@@ -63,7 +58,7 @@ struct Etk_Button
    Etk_Stock_Size stock_size;
 };
 
-Etk_Type  *etk_button_type_get();
+Etk_Type   *etk_button_type_get();
 Etk_Widget *etk_button_new();
 Etk_Widget *etk_button_new_with_label(const char *label);
 Etk_Widget *etk_button_new_from_stock(Etk_Stock_Id stock_id);

@@ -46,10 +46,16 @@ void etk_test_tree2_window_create(void *data)
    etk_container_add(ETK_CONTAINER(alignment), tree);
 
    /* We first create the columns of the tree, and then we "build" the tree with etk_tree2_build() */
-   col1 = etk_tree2_col_new(ETK_TREE2(tree), "Column 1", etk_tree2_model_icon_text_new(ETK_TREE2(tree), ETK_TREE_FROM_EDJE), 130);
-   col2 = etk_tree2_col_new(ETK_TREE2(tree), "Column 2", etk_tree2_model_double_new(ETK_TREE2(tree)), 60);
-   col3 = etk_tree2_col_new(ETK_TREE2(tree), "Column 3", etk_tree2_model_image_new(ETK_TREE2(tree), ETK_TREE_FROM_FILE), 60);
-   col4 = etk_tree2_col_new(ETK_TREE2(tree), "Column 4", etk_tree2_model_checkbox_new(ETK_TREE2(tree)), 90);
+   col1 = etk_tree2_col_new(ETK_TREE2(tree), "Column 1", 130);
+      etk_tree2_col_model_add(col1, etk_tree2_model_image_new(ETK_TREE2(tree), ETK_TREE_FROM_EDJE));
+      etk_tree2_col_model_add(col1, etk_tree2_model_text_new(ETK_TREE2(tree)));
+   col2 = etk_tree2_col_new(ETK_TREE2(tree), "Column 2", 60);
+      etk_tree2_col_model_add(col2, etk_tree2_model_double_new(ETK_TREE2(tree)));
+   col3 = etk_tree2_col_new(ETK_TREE2(tree), "Column 3", 60);
+      etk_tree2_col_model_add(col3, etk_tree2_model_image_new(ETK_TREE2(tree), ETK_TREE_FROM_FILE));
+   col4 = etk_tree2_col_new(ETK_TREE2(tree), "Column 4", 90);
+      etk_tree2_col_model_add(col4, etk_tree2_model_checkbox_new(ETK_TREE2(tree)));
+   
    etk_tree2_build(ETK_TREE2(tree));
    
    /* Then we add the rows to the tree. etk_tree2_freeze/thaw() is used to improve the speed when you insert a lot

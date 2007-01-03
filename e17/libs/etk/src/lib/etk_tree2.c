@@ -25,14 +25,14 @@
 #define COL_RESIZE_THRESHOLD 3
 #define MIN_ROW_HEIGHT 12
 #define DEFAULT_ROW_HEIGHT 24
-#define MAX_OBJECTS_PER_CELL 5
+#define MAX_OBJECTS_PER_MODEL 5
 #define CELL_HMARGINS 4
 #define CELL_VMARGINS 2
 
 
 typedef struct Etk_Tree2_Cell_Objects
 {
-   Evas_Object *objects[MAX_OBJECTS_PER_CELL];
+   Evas_Object *objects[MAX_MODELS_PER_COL][MAX_OBJECTS_PER_MODEL];
 } Etk_Tree2_Cell_Objects;
 
 typedef struct Etk_Tree2_Row_Object
@@ -428,26 +428,20 @@ Etk_Scrolled_View *etk_tree2_scrolled_view_get(Etk_Tree2 *tree)
  * @brief Inserts a new column into a tree
  * @param tree a tree
  * @param title the tile of the column
- * @param model the model to use for the column
  * @param width the requested width of the column. It won't be necessary the visible width
  * of the column since it can be expanded to fit the available space
  * @return Returns the new column
  */
-Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, Etk_Tree2_Model *model, int width)
+Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, int width)
 {
    Etk_Tree2_Col *new_col;
    Etk_Widget *new_header;
 
-   if (!tree || !model)
+   if (!tree)
       return NULL;
    if (tree->built)
    {
       ETK_WARNING("The tree is built, you can not add a new column");
-      return NULL;
-   }
-   if (model->col)
-   {
-      ETK_WARNING("The tree-model to use for that column is already used by another column");
       return NULL;
    }
 
@@ -458,8 +452,6 @@ Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, Etk_Tree2_M
 
    new_col->id = tree->num_cols;
    new_col->tree = tree;
-   new_col->model = model;
-   new_col->model->col = new_col;
    new_col->position = tree->num_cols;
 
    /* Creates the header widget */
@@ -470,9 +462,6 @@ Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, Etk_Tree2_M
    else
       etk_widget_parent_set(new_header, tree->scroll_content);
    new_col->header = new_header;
-   
-   /*etk_signal_connect("mouse_down", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_down_cb), new_col);
-   etk_signal_connect("mouse_up", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_up_cb), new_col);*/
 
    tree->num_cols++;
    _etk_tree2_col_realize(tree, tree->num_cols - 1);
@@ -504,6 +493,39 @@ Etk_Tree2_Col *etk_tree2_nth_col_get(Etk_Tree2 *tree, int nth)
    if (!tree || nth < 0 || nth >= tree->num_cols)
       return NULL;
    return tree->columns[nth];
+}
+
+/**
+ * @brief Adds a model to a column of the tree. You can add several models to the same column in order to combine them.
+ * For example, if you want the column's content to be an icon followed by a text, add the "image" model and then the
+ * "text" model
+ * @param col a column
+ * @param model the model to add to the column @a col
+ * @warning the number of models per column is limited to 5
+ */
+void etk_tree2_col_model_add(Etk_Tree2_Col *col, Etk_Tree2_Model *model)
+{
+   if (!col || !model || !col->tree)
+      return;
+   if (col->tree->built)
+   {
+      ETK_WARNING("You cannot add a model to a column once the tree is built");
+      return;
+   }
+   if (col->num_models >= MAX_MODELS_PER_COL)
+   {
+      ETK_WARNING("The number of models per column is limited to %d. Unable to add the model", MAX_MODELS_PER_COL);
+      return;
+   }
+   if (model->col)
+   {
+      ETK_WARNING("The tree-model to add to that column is already used by another column");
+      return;
+   }
+   
+   col->models[col->num_models] = model;
+   model->col = col;
+   col->num_models++;
 }
 
 /**
@@ -568,7 +590,7 @@ int etk_tree2_col_width_get(Etk_Tree2_Col *col)
 /**
  * @brief Sets the minimum width of the column. The column can not be smaller than this width
  * @param col a column of a tree
- * @param min_width the minimum width to set. -1 to make etk calculate the min_width
+ * @param min_width the minimum width to set. -1 to use the default value
  */
 void etk_tree2_col_min_width_set(Etk_Tree2_Col *col, int min_width)
 {
@@ -735,11 +757,11 @@ int etk_tree2_col_position_get(Etk_Tree2_Col *col)
 
 /**
  * @brief Sets the sorting function of a column. This function will be called when
- * the header of the column is clicked
+ * the header of the column is clicked or when you call etk_tree2_col_sort()
  * @param col a column of a tree
  * @param compare_cb the function to call to compare two rows. It should return a negative
  * value if the cell of "row1" has a lower value than the cell of "row2", 0 if they have the
- * same value, and a position value if the cell of "row2" has a greater value than the cell of "row1"
+ * same value, and a positive value if the cell of "row2" has a greater value than the cell of "row1"
  * @param data a pointer that will be passed to @a compare_cb when it is called
  */
 void etk_tree2_col_sort_set(Etk_Tree2_Col *col, int (*compare_cb)(Etk_Tree2 *tree, Etk_Tree2_Row *row1, Etk_Tree2_Row *row2, Etk_Tree2_Col *col, void *data), void *data)
@@ -843,8 +865,9 @@ Etk_Tree2_Row *etk_tree2_row_insert(Etk_Tree2 *tree, Etk_Tree2_Row *parent, Etk_
 Etk_Tree2_Row *etk_tree2_row_insert_valist(Etk_Tree2 *tree, Etk_Tree2_Row *parent, Etk_Tree2_Row *after, va_list args)
 {
    Etk_Tree2_Row *new_row;
+   Etk_Tree2_Col *col;
    va_list args2;
-   int i;
+   int i, j;
 
    if (!tree)
       return NULL;
@@ -900,12 +923,18 @@ Etk_Tree2_Row *etk_tree2_row_insert_valist(Etk_Tree2 *tree, Etk_Tree2_Row *paren
    tree->total_rows++;
 
    /* Initializes the data of the row's cells */
-   new_row->cells_data = malloc(sizeof(void *) * tree->num_cols);
+   new_row->cells_data = malloc(sizeof(void **) * tree->num_cols);
    for (i = 0; i < tree->num_cols; i++)
    {
-      new_row->cells_data[i] = calloc(1, tree->columns[i]->model->cell_data_size);
-      if (tree->columns[i]->model->cell_data_init)
-         tree->columns[i]->model->cell_data_init(tree->columns[i]->model, new_row->cells_data[i]);
+      col = tree->columns[i];
+      
+      new_row->cells_data[i] = malloc(sizeof(void *) * col->num_models);
+      for (j = 0; j < col->num_models; j++)
+      {
+         new_row->cells_data[i][j] = calloc(1, col->models[j]->cell_data_size);
+         if (col->models[j]->cell_data_init)
+            col->models[j]->cell_data_init(col->models[j], new_row->cells_data[i][j]);
+      }
    }
    va_copy(args2, args);
    _etk_tree2_row_fields_set_valist_full(new_row, args2, ETK_FALSE);
@@ -951,7 +980,7 @@ void etk_tree2_clear(Etk_Tree2 *tree)
       return;
    
    while (tree->root.first_child)
-   _etk_tree2_row_move_to_purge_pool(tree->root.first_child);
+      _etk_tree2_row_move_to_purge_pool(tree->root.first_child);
    
    etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->scroll_content), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(tree));
@@ -960,8 +989,9 @@ void etk_tree2_clear(Etk_Tree2 *tree)
 /**
  * @brief Sets the values of the cells of the row
  * @param row a row of the tree
- * @param ... an "Etk_Tree_Col *" followed by the value of the cell, then any number of "Etk_Tree_Col *"/Value pairs,
- * and terminated by NULL. Note that, according to the model used by the column, a cell value can use several parameters
+ * @param ... an "Etk_Tree_Col *" followed by the value of the cell,
+ * then any number of "Etk_Tree_Col *"/Value pairs, and terminated by NULL.
+ * Note that, according to the models used by the column, a cell value can use several parameters
  */
 void etk_tree2_row_fields_set(Etk_Tree2_Row *row, ...)
 {
@@ -980,7 +1010,7 @@ void etk_tree2_row_fields_set(Etk_Tree2_Row *row, ...)
  * @param row a row of the tree
  * @param args an "Etk_Tree_Col *" followed by the value of the cell,
  * then any number of "Etk_Tree_Col *"/Value pairs, and terminated by NULL.
- * Note that some models may require several parameters for the cell value
+ * Note that, according to the models used by the column, a cell value can use several parameters
  */
 void etk_tree2_row_fields_set_valist(Etk_Tree2_Row *row, va_list args)
 {
@@ -1024,6 +1054,7 @@ void etk_tree2_row_fields_get_valist(Etk_Tree2_Row *row, va_list args)
 {
    Etk_Tree2_Col *col;
    va_list args2;
+   int i;
    
    if (!row)
       return;
@@ -1031,8 +1062,11 @@ void etk_tree2_row_fields_get_valist(Etk_Tree2_Row *row, va_list args)
    va_copy(args2, args);
    while ((col = va_arg(args, Etk_Tree2_Col *)))
    {
-      if (col->model->cell_data_get)
-         col->model->cell_data_get(col->model, row->cells_data[col->id], &args);
+      for (i = 0; i < col->num_models; i++)
+      {
+         if (col->models[i]->cell_data_get)
+            col->models[i]->cell_data_get(col->models[i], row->cells_data[col->id][i], &args);
+      }
    }
    va_end(args2);
 }
@@ -1586,6 +1620,8 @@ static void _etk_tree2_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    }
 }
 
+/* TODO: add "align" prop */
+
 /**************************
  * Tree Col
  **************************/
@@ -1597,7 +1633,7 @@ static void _etk_tree2_col_constructor(Etk_Tree2_Col *tree_col)
       return;
 
    tree_col->tree = NULL;
-   tree_col->model = NULL;
+   tree_col->num_models = 0;
    tree_col->id = 0;
    tree_col->position = 0;
    tree_col->xoffset = 0;
@@ -1607,6 +1643,7 @@ static void _etk_tree2_col_constructor(Etk_Tree2_Col *tree_col)
    tree_col->visible = ETK_TRUE;
    tree_col->resizable = ETK_TRUE;
    tree_col->expand = ETK_FALSE;
+   tree_col->align = 0.0;
    tree_col->header = NULL;
    tree_col->clip = NULL;
    tree_col->separator = NULL;
@@ -1617,9 +1654,13 @@ static void _etk_tree2_col_constructor(Etk_Tree2_Col *tree_col)
 /* Destroys the tree column */
 static void _etk_tree2_col_destructor(Etk_Tree2_Col *tree_col)
 {
+   int i;
+   
    if (!tree_col)
       return;
-   etk_tree2_model_free(tree_col->model);
+   
+   for (i = 0; i < tree_col->num_models; i++)
+      etk_tree2_model_free(tree_col->models[i]);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -1879,7 +1920,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
    Evas_List *prev_visible_rows;
    Evas_List *new_visible_rows;
    Evas_List *l;
-   int i, j;
+   int i, j, k;
    
    if (!(tree = TREE_GET(widget)))
       return;
@@ -2065,9 +2106,10 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
    {
       Etk_Tree2_Row *row;
       Etk_Tree2_Row_Object *row_object;
-      Etk_Geometry cell_geometry;
+      Etk_Geometry cell_geometry, model_geometry;
       Etk_Bool show_expanders;
       Evas_List *l2;
+      int total_width, w;
       int row_id;
       int row_y;
       int depth;
@@ -2137,13 +2179,52 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                   }
                   
                   /* Render the sub-objects of the cell */
-                  if (col->model->render)
-                     col->model->render(col->model, row, cell_geometry, row->cells_data[i], row_object->cells[i].objects);
+                  total_width = 0;
+                  model_geometry = cell_geometry;
+                  for (j = 0; j < col->num_models; j++)
+                  {
+                     if (col->models[j]->render)
+                     {
+                        col->models[j]->render(col->models[j], row, model_geometry,
+                           row->cells_data[i][j], row_object->cells[i].objects[j]);
+                        
+                        if (col->models[j]->width_get)
+                        {
+                           w = col->models[j]->width_get(col->models[j],
+                              row->cells_data[i][j], row_object->cells[i].objects[j]);
+                        }
+                        else
+                           w = 0;
+                        
+                        model_geometry.x += w;
+                        model_geometry.w -= w;
+                        total_width += w;
+                     }
+                  }
+                  
+                  /* Align the cell objects */
+                  if (col->align != 0.0)
+                  {
+                     for (j = 0; j < col->num_models; j++)
+                     {
+                        for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+                        {
+                           if (row_object->cells[i].objects[j][k])
+                              /* TODO */;
+                        }
+                     }
+                  }
                }
                else
                {
-                  for (j = 0; j < MAX_OBJECTS_PER_CELL; j++)
-                     evas_object_hide(row_object->cells[i].objects[j]);
+                  for (j = 0; j < col->num_models; j++)
+                  {
+                     for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+                     {
+                        if (row_object->cells[i].objects[j][k])
+                           evas_object_hide(row_object->cells[i].objects[j][k]);
+                     }
+                  }
                }
             }
             
@@ -2154,8 +2235,14 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
             /* If there is no more row to render, we hide the row objects */
             for (i = 0; i < tree->num_cols; i++)
             {
-               for (j = 0; j < MAX_OBJECTS_PER_CELL; j++)
-                  evas_object_hide(row_object->cells[i].objects[j]);
+               for (j = 0; j < tree->columns[i]->num_models; j++)
+               {
+                  for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+                  {
+                     if (row_object->cells[i].objects[j][k])
+                        evas_object_hide(row_object->cells[i].objects[j][k]);
+                  }
+               }
             }
             evas_object_hide(row_object->expander);
             evas_object_hide(row_object->background);
@@ -2548,7 +2635,8 @@ static void _etk_tree2_purge(Etk_Tree2 *tree)
 {
    Evas_List *l;
    Etk_Tree2_Row *row, *r, *next;
-   int i;
+   Etk_Tree2_Col *col;
+   int i, j;
    
    if (!tree)
       return;
@@ -2586,8 +2674,13 @@ static void _etk_tree2_purge(Etk_Tree2 *tree)
          {
             for (i = 0; i < tree->num_cols; i++)
             {
-               if (tree->columns[i]->model->cell_data_free)
-                  tree->columns[i]->model->cell_data_free(tree->columns[i]->model, r->cells_data[i]);
+               col = tree->columns[i];
+               for (j = 0; j < col->num_models; j++)
+               {
+                  if (col->models[j]->cell_data_free)
+                     col->models[j]->cell_data_free(col->models[j], r->cells_data[i][j]);
+                  free(r->cells_data[i][j]);
+               }
                free(r->cells_data[i]);
             }
             free(r->cells_data);
@@ -2790,6 +2883,7 @@ static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list ar
 {
    Etk_Tree2_Col *col;
    va_list args2;
+   int i;
    
    if (!row)
       return;
@@ -2797,12 +2891,13 @@ static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list ar
    va_copy(args2, args);
    while ((col = va_arg(args2, Etk_Tree2_Col *)))
    {
-      if (col->model->cell_data_set)
+      for (i = 0; i < col->num_models; i++)
       {
-         col->model->cell_data_set(col->model, row->cells_data[col->id], &args2);
-         if (emit_signal)
-            etk_signal_emit(_etk_tree2_col_signals[ETK_TREE2_COL_CELL_VALUE_CHANGED], ETK_OBJECT(col), NULL, row);
+         if (col->models[i]->cell_data_set)
+            col->models[i]->cell_data_set(col->models[i], row->cells_data[col->id][i], &args2);
       }
+      if (emit_signal)
+         etk_signal_emit(_etk_tree2_col_signals[ETK_TREE2_COL_CELL_VALUE_CHANGED], ETK_OBJECT(col), NULL, row);
    }
    va_end(args2);
    
@@ -2816,7 +2911,7 @@ static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree)
    Etk_Tree2_Row_Object *row_object;
    Etk_Tree2_Col *col;
    Evas *evas;
-   int i, j;
+   int i, j, k;
    
    if (!tree || !tree->built || !(evas = etk_widget_toplevel_evas_get(tree->grid)))
       return NULL;
@@ -2854,15 +2949,18 @@ static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree)
    for (i = 0; i < tree->num_cols; i++)
    {
       col = tree->columns[i];
-      if (col->model->objects_create)
+      for (j = 0; j < col->num_models; j++)
       {
-         col->model->objects_create(col->model, row_object->cells[i].objects, evas);
-         for (j = 0; j < MAX_OBJECTS_PER_CELL; j++)
+         if (col->models[j]->objects_create)
          {
-            if (row_object->cells[i].objects[j])
+            col->models[j]->objects_create(col->models[j], row_object->cells[i].objects[j], evas);
+            for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
             {
-               evas_object_clip_set(row_object->cells[i].objects[j], col->clip);
-               etk_widget_member_object_add(tree->grid, row_object->cells[i].objects[j]);
+               if (row_object->cells[i].objects[j][k])
+               {
+                  evas_object_clip_set(row_object->cells[i].objects[j][k], col->clip);
+                  etk_widget_member_object_add(tree->grid, row_object->cells[i].objects[j][k]);
+               }
             }
          }
       }
@@ -2875,15 +2973,18 @@ static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree)
 /* Destroys the row object and its subobjects */
 static void _etk_tree2_row_object_destroy(Etk_Tree2 *tree, Etk_Tree2_Row_Object *row_object)
 {
-   int i, j;
+   int i, j, k;
    
    if (!tree || !row_object)
       return;
    
    for (i = 0; i < tree->num_cols; i++)
    {
-      for (j = 0; j < MAX_OBJECTS_PER_CELL; j++)
-         evas_object_del(row_object->cells[i].objects[j]);
+      for (j = 0; j < tree->columns[i]->num_models; j++)
+      {
+         for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+            evas_object_del(row_object->cells[i].objects[j][k]);
+      }
    }
    free(row_object->cells);
    

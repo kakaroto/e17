@@ -15,6 +15,8 @@
  * @{
  */
 
+#define MAX_MODELS_PER_COL 5
+
 /** Gets the type of a tree */
 #define ETK_TREE2_TYPE       (etk_tree2_type_get())
 /** Casts the object to an Etk_Tree2 */
@@ -49,12 +51,15 @@ struct Etk_Tree2_Col
 
    int id;
    Etk_Tree2 *tree;
-   Etk_Tree2_Model *model;
+   
+   int num_models;
+   Etk_Tree2_Model *models[MAX_MODELS_PER_COL];
 
    int position;
    Etk_Bool resizable;
    Etk_Bool visible;
    Etk_Bool expand;
+   float align;
    
    int xoffset;
    int min_width;
@@ -72,6 +77,8 @@ struct Etk_Tree2_Col
    } sort;
 };
 
+/* TODO: remove this... should be etk_tree2_col_alignment_set() */
+
 /**
  * @brief A row of a tree
  * @structinfo
@@ -88,7 +95,7 @@ struct Etk_Tree2_Row
    int num_children;
    int num_visible_children;
    
-   void **cells_data;
+   void ***cells_data;
    void *data;
    void (*data_free_cb)(void *data);
    
@@ -162,10 +169,11 @@ void etk_tree2_thaw(Etk_Tree2 *tree);
 
 Etk_Scrolled_View *etk_tree2_scrolled_view_get(Etk_Tree2 *tree);
 
-Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, Etk_Tree2_Model *model, int width);
+Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, int width);
 int            etk_tree2_num_cols_get(Etk_Tree2 *tree);
 Etk_Tree2_Col *etk_tree2_nth_col_get(Etk_Tree2 *tree, int nth);
 
+void        etk_tree2_col_model_add(Etk_Tree2_Col *col, Etk_Tree2_Model *model);
 void        etk_tree2_col_title_set(Etk_Tree2_Col *col, const char *title);
 const char *etk_tree2_col_title_get(Etk_Tree2_Col *col);
 void        etk_tree2_col_width_set(Etk_Tree2_Col *col, int width);
