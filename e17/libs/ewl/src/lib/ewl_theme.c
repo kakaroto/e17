@@ -110,6 +110,7 @@ ewl_theme_theme_set(const char *theme_name)
 
 		vis = REALIZED(w);
 
+		ewl_widget_hide(w);
 		ewl_widget_unrealize(w);
 		if (vis) ewl_widget_realize(w);
 	}

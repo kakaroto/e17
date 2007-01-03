@@ -777,6 +777,7 @@ ewl_window_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_engine_window_borderless_set(win);
+
 	/*
 	 * Now give the windows the appropriate size
 	 */
