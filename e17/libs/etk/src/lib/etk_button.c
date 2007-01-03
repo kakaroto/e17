@@ -259,7 +259,7 @@ Etk_Image *etk_button_image_get(Etk_Button *button)
 void etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id)
 {
    Etk_Widget *image;
-   char *label;
+   const char *label;
 
    if (!button)
       return;

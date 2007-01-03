@@ -182,7 +182,7 @@ const char *etk_menu_item_label_get(Etk_Menu_Item *menu_item)
  */
 void etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id stock_id)
 {
-   char *label;
+   const char *label;
 
    if (!menu_item)
       return;

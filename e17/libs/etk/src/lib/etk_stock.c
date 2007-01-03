@@ -247,7 +247,7 @@ static const Etk_Stock_Item _etk_stock_items[] =
  * @param size the size of the stock icon
  * @return Returns the edje key corresponding to the stock id
  */
-char *etk_stock_key_get(Etk_Stock_Id stock_id, Etk_Stock_Size size)
+const char *etk_stock_key_get(Etk_Stock_Id stock_id, Etk_Stock_Size size)
 {
    if (stock_id < 0 || stock_id >= ETK_NUM_STOCK_IDS)
       return NULL;
@@ -265,7 +265,7 @@ char *etk_stock_key_get(Etk_Stock_Id stock_id, Etk_Stock_Size size)
  * @param stock_id a stock id
  * @return Returns the label corresponding to the stock id
  */
-char *etk_stock_label_get(Etk_Stock_Id stock_id)
+const char *etk_stock_label_get(Etk_Stock_Id stock_id)
 {
    if (stock_id < 0 || stock_id >= ETK_NUM_STOCK_IDS)
       return NULL;

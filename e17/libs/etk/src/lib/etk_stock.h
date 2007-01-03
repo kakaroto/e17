@@ -244,8 +244,8 @@ typedef enum _Etk_Stock_Id
    ETK_NUM_STOCK_IDS
 } Etk_Stock_Id;
 
-char *etk_stock_key_get(Etk_Stock_Id stock_id, Etk_Stock_Size size);
-char *etk_stock_label_get(Etk_Stock_Id stock_id);
+const char *etk_stock_key_get(Etk_Stock_Id stock_id, Etk_Stock_Size size);
+const char *etk_stock_label_get(Etk_Stock_Id stock_id);
 
 /** @} */
 

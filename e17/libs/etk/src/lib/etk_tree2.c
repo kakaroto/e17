@@ -28,6 +28,7 @@
 #define MAX_OBJECTS_PER_MODEL 5
 #define CELL_HMARGINS 4
 #define CELL_VMARGINS 2
+#define MODEL_INTERSPACE 8
 
 
 typedef struct Etk_Tree2_Cell_Objects
@@ -524,6 +525,7 @@ void etk_tree2_col_model_add(Etk_Tree2_Col *col, Etk_Tree2_Model *model)
    }
    
    col->models[col->num_models] = model;
+   model->tree = col->tree;
    model->col = col;
    col->num_models++;
 }
@@ -1920,9 +1922,10 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
    Evas_List *prev_visible_rows;
    Evas_List *new_visible_rows;
    Evas_List *l;
+   Evas *evas;
    int i, j, k;
    
-   if (!(tree = TREE_GET(widget)))
+   if (!(tree = TREE_GET(widget)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(tree))))
       return;
    
    /* First, we calculate the size of the visible cols */
@@ -2186,7 +2189,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                      if (col->models[j]->render)
                      {
                         col->models[j]->render(col->models[j], row, model_geometry,
-                           row->cells_data[i][j], row_object->cells[i].objects[j]);
+                           row->cells_data[i][j], row_object->cells[i].objects[j], evas);
                         
                         if (col->models[j]->width_get)
                         {
@@ -2196,6 +2199,9 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                         else
                            w = 0;
                         
+                        if ((j + 1) != col->num_models)
+                           w += MODEL_INTERSPACE;
+                        
                         model_geometry.x += w;
                         model_geometry.w -= w;
                         total_width += w;
@@ -2203,7 +2209,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                   }
                   
                   /* Align the cell objects */
-                  if (col->align != 0.0)
+                  if (0 && col->align != 0.0)
                   {
                      for (j = 0; j < col->num_models; j++)
                      {

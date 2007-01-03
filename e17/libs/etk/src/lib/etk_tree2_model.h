@@ -13,18 +13,8 @@
  */
 
 /**
- * @enum Etk_Tree2_Model_Image_Type
- * @brief The types of the images that you could have in an "image" or "icon_text" model
- */ 
-typedef enum Etk_Tree2_Model_Image_Type
-{
-   ETK_TREE2_FROM_FILE,
-   ETK_TREE2_FROM_EDJE
-} Etk_Tree2_Model_Image_Type;
-
-/**
- * @struct Etk_Tree2_Model
- * @brief A tree model describes how the cells of a column of a tree should be displayed and manipulated
+ * @brief A tree model defines the content of a tree's column, and how it should be displayed
+ * @structinfo
  */
 struct Etk_Tree2_Model
 {
@@ -38,16 +28,19 @@ struct Etk_Tree2_Model
    void (*cell_data_set)(Etk_Tree2_Model *model, void *cell_data, va_list *args);
    void (*cell_data_get)(Etk_Tree2_Model *model, void *cell_data, va_list *args);
    void (*objects_create)(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
-   void (*render)(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects);
+   void (*render)(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
    int  (*width_get)(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
 };
 
-Etk_Tree2_Model *etk_tree2_model_text_new(Etk_Tree2 *tree);
-Etk_Tree2_Model *etk_tree2_model_int_new(Etk_Tree2 *tree);
-Etk_Tree2_Model *etk_tree2_model_double_new(Etk_Tree2 *tree);
-Etk_Tree2_Model *etk_tree2_model_image_new(Etk_Tree2 *tree, Etk_Tree2_Model_Image_Type image_type);
-Etk_Tree2_Model *etk_tree2_model_checkbox_new(Etk_Tree2 *tree);
-Etk_Tree2_Model *etk_tree2_model_progress_bar_new(Etk_Tree2 *tree);
+Etk_Tree2_Model *etk_tree2_model_text_new(void);
+Etk_Tree2_Model *etk_tree2_model_int_new(void);
+Etk_Tree2_Model *etk_tree2_model_double_new(void);
+Etk_Tree2_Model *etk_tree2_model_image_new(void);
+Etk_Tree2_Model *etk_tree2_model_checkbox_new(void);
+Etk_Tree2_Model *etk_tree2_model_progress_bar_new(void);
+
+/* TODO: image_width_set() */
+
 void etk_tree2_model_free(Etk_Tree2_Model *model);
 
 /** @} */
