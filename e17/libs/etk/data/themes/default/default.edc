@@ -21,6 +21,7 @@ data {
    item: "alias: etk/menu_bar/menu_item/radiobox"        "etk/menu/menu_item/radiobox";
    item: "alias: etk/tool_button"                        "etk/htoolbar/tool_button";
    item: "alias: etk/tool_toggle_button"                 "etk/htoolbar/tool_toggle_button";
+   item: "alias: etk/dialog/hseparator"                  "etk/hseparator";
 }
 
 collections {
