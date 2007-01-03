@@ -29,7 +29,7 @@ static int _etk_layout_global_init = 0;
 
 typedef struct _layout_etk_row_structure_plugin _layout_etk_row_structure_plugin;
 struct _layout_etk_row_structure_plugin {
-	Etk_Tree_Row* row;
+	Etk_Tree2_Row* row;
 	entropy_plugin* structure_plugin;
 }; 
 
@@ -45,7 +45,7 @@ struct entropy_layout_gui
   Etk_Widget *paned;
   Etk_Widget *statusbar_box;
   Etk_Widget *statusbars[3];
-  Etk_Tree_Row* delete_row; /*The row pending deletion, if any*/
+  Etk_Tree2_Row* delete_row; /*The row pending deletion, if any*/
 
   Etk_Widget* popup;
   Etk_Widget* localshell;
@@ -230,7 +230,7 @@ static void _etk_layout_location_delete_confirm_cb(Etk_Object * object, void *da
 {
 	entropy_gui_component_instance* instance = data;
 	entropy_layout_gui* gui = instance->data;	
-	Etk_Tree_Row* row = gui->delete_row;
+	Etk_Tree2_Row* row = gui->delete_row;
 	Entropy_Config_Structure* structure;
 	Ecore_List* row_refs = NULL;
         _layout_etk_row_structure_plugin* ref;
@@ -240,7 +240,7 @@ static void _etk_layout_location_delete_confirm_cb(Etk_Object * object, void *da
 		row_refs = ecore_hash_get(_etk_layout_structure_plugin_reference, structure);
 		if (row_refs) {	
 			while ( (ref = ecore_list_remove_first(row_refs))) {
-				etk_tree_row_del(ref->row);
+				etk_tree2_row_delete(ref->row);
 				IF_FREE(ref);
 			}
 			ecore_list_destroy(row_refs);
@@ -251,7 +251,7 @@ static void _etk_layout_location_delete_confirm_cb(Etk_Object * object, void *da
 }
 
 static void _etk_layout_row_clicked(Etk_Object *object, 
-		Etk_Tree_Row *row, Etk_Event_Mouse_Down *event, void *data)
+		Etk_Tree2_Row *row, Etk_Event_Mouse_Down *event, void *data)
 {
 	entropy_gui_component_instance* instance = data;
 	entropy_layout_gui* gui = instance->data;	
@@ -262,7 +262,7 @@ static void _etk_layout_row_clicked(Etk_Object *object,
 	if (event->button == 3 && structure) {
 		gui->delete_row = row;
 		
-		etk_tree_row_select(row);
+		etk_tree2_row_select(row);
 		etk_menu_popup(ETK_MENU(gui->popup));
 	}
 	
@@ -277,14 +277,14 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entr
 
   entropy_plugin *structure;
   entropy_generic_file* file;
-  Etk_Tree_Row* row;
-  Etk_Tree_Col* col;
+  Etk_Tree2_Row* row;
+  Etk_Tree2_Col* col;
   entropy_layout_gui* gui = instance->data;
   char* icon_string = NULL;
   Ecore_List* layouts;
   _layout_etk_row_structure_plugin* struct_ref = NULL;
 
-  col = etk_tree_nth_col_get(ETK_TREE(gui->tree), 0);
+  col = etk_tree2_nth_col_get(ETK_TREE2(gui->tree), 0);
 
   /*Parse the file from the URI*/
    file = entropy_core_parse_uri (structure_obj->uri);
@@ -303,10 +303,10 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entr
 	  icon_string = PACKAGE_DATA_DIR "/icons/vfolder-system.png"; 
 			   
 	
-  etk_tree_freeze(ETK_TREE(gui->tree));
-  row = etk_tree_append(ETK_TREE(gui->tree), col, 
+  etk_tree2_freeze(ETK_TREE2(gui->tree));
+  row = etk_tree2_row_append(ETK_TREE2(gui->tree), NULL, col, 
 			  icon_string, structure_obj->name, NULL);
-  etk_tree_thaw(ETK_TREE(gui->tree));
+  etk_tree2_thaw(ETK_TREE2(gui->tree));
   
   
   structure = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT,ENTROPY_PLUGIN_GUI_COMPONENT_STRUCTURE_VIEW);
@@ -696,7 +696,7 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_plugin *trackback;
   entropy_gui_component_instance* meta_instance;
 	  
-  Etk_Tree_Col* col;
+  Etk_Tree2_Col* col;
   Etk_Widget* vbox;
   Etk_Widget* menubar;
   Etk_Widget* menu_item;
@@ -784,17 +784,17 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_container_add(ETK_CONTAINER(window), vbox);
 
   /*Tree init*/
-  gui->tree = etk_tree_new();
+  gui->tree = etk_tree2_new();
   gui->tree_shell = etk_vbox_new(ETK_FALSE,0);
   etk_box_append(ETK_BOX(gui->tree_shell), gui->tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0); 
 
   etk_paned_child1_set(ETK_PANED(gui->paned), gui->tree_shell, ETK_FALSE);
-  etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
-  col = etk_tree_col_new(ETK_TREE(gui->tree), _("Folders"), 
-		  etk_tree_model_icon_text_new(ETK_TREE(gui->tree), ETK_TREE_FROM_FILE), 60);
+  etk_tree2_mode_set(ETK_TREE2(gui->tree), ETK_TREE2_MODE_TREE);
+  col = etk_tree2_col_new(ETK_TREE2(gui->tree), _("Folders"), 
+		  etk_tree2_model_icon_text_new(ETK_TREE2(gui->tree), ETK_TREE2_FROM_FILE), 60);
   
-  etk_tree_col_expand_set(col, ETK_TRUE);
-  etk_tree_build(ETK_TREE(gui->tree));
+  etk_tree2_col_expand_set(col, ETK_TRUE);
+  etk_tree2_build(ETK_TREE2(gui->tree));
   etk_widget_size_request_set(ETK_WIDGET(gui->tree), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X, 50);
 
   /*Register to receive events related to the treeview config*/
