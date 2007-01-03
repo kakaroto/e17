@@ -420,7 +420,7 @@ engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
  * @param key: They part name to search for
  *
  * @return Returns the Engrave_Part with the matching name or NULL if no such
- * data exists.
+ * name exists.
  */ 
 EAPI Engrave_Part *
 engrave_group_part_by_name_find(Engrave_Group *eg, const char *part)
