@@ -9,7 +9,7 @@
 fonts {
    font: "Vera.ttf" "Vera";
    font: "VeraBd.ttf" "Vera-Bold";
-   font: "VeraIt.ttf" "Vera-Italic";   
+   font: "VeraIt.ttf" "Vera-Italic";
 }
 
 #include "images/images.edc"
@@ -48,7 +48,8 @@ collections {
    #include "widgets/iconbox.edc"
    #include "widgets/colorpicker.edc"
    #include "widgets/toolbar.edc"
-   
+   #include "widgets/shadow.edc"
+
    #include "wm/background.edc"
    #include "wm/borders.edc"
 }

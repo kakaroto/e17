@@ -39,6 +39,7 @@ widgets/text_view.edc \
 widgets/toggle_button.edc \
 widgets/tooltips.edc \
 widgets/tree.edc \
+widgets/shadow.edc \
 widgets/windows.edc \
 wm/background.edc \
 wm/borders.edc
