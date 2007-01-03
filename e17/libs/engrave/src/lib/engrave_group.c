@@ -414,13 +414,21 @@ engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
     return NULL;
 }
 
+/**
+ * engrave_group_part_by_name_find - find the Engrave_Part by name
+ * @param eg: The Engrave_Group to search
+ * @param key: They part name to search for
+ *
+ * @return Returns the Engrave_Part with the matching name or NULL if no such
+ * data exists.
+ */ 
 EAPI Engrave_Part *
 engrave_group_part_by_name_find(Engrave_Group *eg, const char *part)
 {
     Evas_List *l;
 
     if (!eg || !part) return NULL;
-    for (l = eg->data; l; l = l->next) {
+    for (l = eg->parts; l; l = l->next) {
         Engrave_Part *ep = l->data;
         const char *name = engrave_part_name_get(ep);
 
