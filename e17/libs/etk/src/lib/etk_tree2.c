@@ -107,14 +107,15 @@ static void _etk_tree2_realize_cb(Etk_Object *object, void *data);
 static void _etk_tree2_focus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree2_unfocus_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static void _etk_tree2_scroll_content_realize_cb(Etk_Object *object, void *data);
 static void _etk_tree2_grid_realize_cb(Etk_Object *object, void *data);
 static void _etk_tree2_grid_unrealize_cb(Etk_Object *object, void *data);
 
-static void _etk_tree2_header_mouse_down_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_tree2_header_mouse_up_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_tree2_header_mouse_move_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_tree2_header_mouse_in_cb(Etk_Object *object, void *event_info, void *data);
-static void _etk_tree2_header_mouse_out_cb(Etk_Object *object, void *event_info, void *data);
+static void _etk_tree2_headers_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_tree2_headers_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_tree2_headers_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_tree2_headers_mouse_in_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _etk_tree2_headers_mouse_out_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 static void _etk_tree2_row_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_tree2_row_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -127,7 +128,8 @@ static void _etk_tree2_row_move_to_purge_pool(Etk_Tree2_Row *row);
 /* TODO: static void _etk_tree2_sort(Etk_Tree2 *tree); */
 
 static void _etk_tree2_col_realize(Etk_Tree2 *tree, int col_nth);
-static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2_Col *col, int x);
+static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2 *tree, int x);
+static void _etk_tree2_headers_rect_create(Etk_Tree2 *tree, Etk_Widget *parent);
 
 static Etk_Tree2_Row *_etk_tree2_row_next_to_render_get(Etk_Tree2_Row *row, int *depth);
 static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list args, Etk_Bool emit_signal);
@@ -141,6 +143,7 @@ static Etk_Signal *_etk_tree2_signals[ETK_TREE2_NUM_SIGNALS];
 static Etk_Signal *_etk_tree2_col_signals[ETK_TREE2_COL_NUM_SIGNALS];
 
 /* TODO: better doc of row_next_get()... (with a note about deleted rows...) */
+/* TODO: a fucntion to get the first/last visible rows.. we do it all the time.. */
 
 
 /**************************
@@ -468,11 +471,8 @@ Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, Etk_Tree2_M
       etk_widget_parent_set(new_header, tree->scroll_content);
    new_col->header = new_header;
    
-   etk_signal_connect("mouse_down", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_down_cb), new_col);
-   etk_signal_connect("mouse_up", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_up_cb), new_col);
-   etk_signal_connect("mouse_move", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_move_cb), new_col);
-   etk_signal_connect("mouse_in", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_in_cb), new_col);
-   etk_signal_connect("mouse_out", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_out_cb), new_col);
+   /*etk_signal_connect("mouse_down", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_down_cb), new_col);
+   etk_signal_connect("mouse_up", ETK_OBJECT(new_header), ETK_CALLBACK(_etk_tree2_header_mouse_up_cb), new_col);*/
 
    tree->num_cols++;
    _etk_tree2_col_realize(tree, tree->num_cols - 1);
@@ -1395,6 +1395,8 @@ static void _etk_tree2_constructor(Etk_Tree2 *tree)
    tree->scroll_content->size_allocate = _etk_tree2_scroll_content_size_allocate;
    tree->scroll_content->scroll = _etk_tree2_scroll_content_scroll;
    tree->scroll_content->scroll_size_get = _etk_tree2_scroll_content_scroll_size_get;
+   etk_signal_connect("realize", ETK_OBJECT(tree->scroll_content),
+      ETK_CALLBACK(_etk_tree2_scroll_content_realize_cb), NULL);
    
    tree->grid = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "grid", "theme_parent", tree,
        "repeat_mouse_events", ETK_TRUE, "internal", ETK_TRUE, "visible", ETK_TRUE, NULL);
@@ -1408,6 +1410,8 @@ static void _etk_tree2_constructor(Etk_Tree2 *tree)
    
    tree->num_cols = 0;
    tree->columns = NULL;
+   tree->headers_rect = NULL;
+   tree->over_col = NULL;
    tree->col_to_resize = NULL;
    tree->headers_visible = ETK_TRUE;
    tree->grid_clip = NULL;
@@ -1768,11 +1772,21 @@ static void _etk_tree2_headers_size_allocate(Etk_Tree2 *tree, Etk_Geometry geome
          else
             etk_widget_hide(tree->columns[i]->header);
       }
+      
+      if (tree->headers_rect)
+      {
+         evas_object_show(tree->headers_rect);
+         evas_object_raise(tree->headers_rect);
+         evas_object_move(tree->headers_rect, geometry.x, geometry.y);
+         evas_object_resize(tree->headers_rect, geometry.w, geometry.h);
+      }
    }
    else
    {
       for (i = 0; i < tree->num_cols; i++)
          etk_widget_hide(tree->columns[i]->header);
+      if (tree->headers_rect)
+         evas_object_hide(tree->headers_rect);
    }
 }
 
@@ -2217,6 +2231,10 @@ static void _etk_tree2_realize_cb(Etk_Object *object, void *data)
       }
       tree->tree_contains_headers = (tree_contains_headers != 0);
    }
+   
+   /* Create an invisible rectangle used to catch the events on the tree headers */
+   if (tree->tree_contains_headers)
+      _etk_tree2_headers_rect_create(tree, ETK_WIDGET(tree));
 }
 
 /* Called when the tree is focused */
@@ -2263,6 +2281,24 @@ static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event
          etk_signal_stop();
       }
    }
+}
+
+/**************************
+ * Tree Scroll-Content
+ **************************/
+
+/* Called when the scroll-content is realized */
+static void _etk_tree2_scroll_content_realize_cb(Etk_Object *object, void *data)
+{
+   Etk_Widget *scroll_content;
+   Etk_Tree2 *tree;
+   
+   if (!(scroll_content = ETK_WIDGET(object)) || !(tree = ETK_TREE2(data)))
+      return;
+   
+   /* Create an invisible rectangle used to catch the events on the tree headers */
+   if (!tree->tree_contains_headers)
+      _etk_tree2_headers_rect_create(tree, scroll_content);
 }
 
 /**************************
@@ -2314,104 +2350,108 @@ static void _etk_tree2_grid_unrealize_cb(Etk_Object *object, void *data)
  * Tree Headers
  **************************/
 
-/* Called when the mouse presses the column header */
-static void _etk_tree2_header_mouse_down_cb(Etk_Object *object, void *event_info, void *data)
+/* Called when the mouse presses the rectangle that is over the column headers */
+static void _etk_tree2_headers_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Etk_Event_Mouse_Down *event = event_info;
-   Etk_Tree2_Col *col;
+   Etk_Tree2 *tree;
+   Evas_Event_Mouse_Down *event = event_info;
    
-   if (!(col = ETK_TREE2_COL(data)) || event->button != 1)
+   if (!(tree = ETK_TREE2(data)) || event->button != 1)
       return;
    
    /* Checks if we should resize a column */
-   if ((col->tree->col_to_resize = etk_tree2_col_to_resize_get(col, event->widget.x)))
+   if ((tree->col_to_resize = etk_tree2_col_to_resize_get(tree, event->canvas.x)))
    {
-      col->tree->col_resize_orig_width = col->tree->col_to_resize->width;
-      col->tree->col_resize_orig_mouse_x = event->canvas.x;
-      etk_signal_stop();
+      tree->col_resize_orig_width = tree->col_to_resize->width;
+      tree->col_resize_orig_mouse_x = event->canvas.x;
    }
+   /* TODO: the mouse events should not always be propagated... */
 }
 
-/* Called when the mouse releases the column header */
-static void _etk_tree2_header_mouse_up_cb(Etk_Object *object, void *event_info, void *data)
+/* Called when the mouse releases the rectangle that is over the column headers */
+static void _etk_tree2_headers_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Etk_Event_Mouse_Up *event = event_info;
-   Etk_Tree2_Col *col;
+   Etk_Tree2 *tree;
+   Evas_Event_Mouse_Down *event = event_info;
    
-   if (!(col = ETK_TREE2_COL(data)) || event->button != 1)
+   if (!(tree = ETK_TREE2(data)) || event->button != 1)
       return;
    
-   if (col->tree->col_to_resize)
-      col->tree->col_to_resize = NULL;
-   /* TODO: else: sort the column if we are still above the header */
+   if (tree->col_to_resize)
+      tree->col_to_resize = NULL;
 }
 
-/* Called when the mouse moves over the column header */
-static void _etk_tree2_header_mouse_move_cb(Etk_Object *object, void *event_info, void *data)
+/* Called when the mouse moves over the column headers */
+static void _etk_tree2_headers_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Etk_Event_Mouse_Move *event = event_info;
-   Etk_Tree2_Col *col, *col_to_resize;
+   Etk_Tree2 *tree;
    Etk_Toplevel *toplevel;
+   Evas_Event_Mouse_Move *event = event_info;
    
-   if (!(col = ETK_TREE2_COL(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(object))))
+   if (!(tree = ETK_TREE2(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(tree))))
       return;
    
-   if (col->tree->col_to_resize)
+   if (tree->col_to_resize)
    {
+      int delta;
+      
       /* Resize the column to resize */
-      etk_tree2_col_width_set(col->tree->col_to_resize,
-         col->tree->col_resize_orig_width + event->cur.canvas.x - col->tree->col_resize_orig_mouse_x);
+      delta = event->cur.canvas.x - tree->col_resize_orig_mouse_x;
+      etk_tree2_col_width_set(tree->col_to_resize, tree->col_resize_orig_width + delta);
    }
    else
    {
+      Etk_Tree2_Col *col_to_resize;
+      
       /* Set/Unset the resize mouse pointer if the pointer is/was between two column headers */
-      col_to_resize = etk_tree2_col_to_resize_get(col, event->cur.widget.x);
-      if (col_to_resize && !col->tree->col_resize_pointer_set)
+      col_to_resize = etk_tree2_col_to_resize_get(tree, event->cur.canvas.x);
+      if (col_to_resize && !tree->col_resize_pointer_set)
       {
          etk_toplevel_pointer_push(toplevel, ETK_POINTER_H_DOUBLE_ARROW);
-         col->tree->col_resize_pointer_set = ETK_TRUE;
+         tree->col_resize_pointer_set = ETK_TRUE;
       }
-      else if (!col_to_resize && col->tree->col_resize_pointer_set)
+      else if (!col_to_resize && tree->col_resize_pointer_set)
       {
          etk_toplevel_pointer_pop(toplevel, ETK_POINTER_H_DOUBLE_ARROW);
-         col->tree->col_resize_pointer_set = ETK_FALSE;
+         tree->col_resize_pointer_set = ETK_FALSE;
       }
    }
 }
 
-/* Called when the mouse enters the column header */
-static void _etk_tree2_header_mouse_in_cb(Etk_Object *object, void *event_info, void *data)
+/* Called when the mouse enters the rectangle that is over the column headers */
+static void _etk_tree2_headers_mouse_in_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Etk_Event_Mouse_In *event = event_info;
-   Etk_Tree2_Col *col, *col_to_resize;
+   Etk_Tree2 *tree;
    Etk_Toplevel *toplevel;
+   Etk_Tree2_Col *col_to_resize;
+   Evas_Event_Mouse_In *event = event_info;
    
-   if (!(col = ETK_TREE2_COL(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(object))))
+   if (!(tree = ETK_TREE2(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(tree))))
       return;
    
    /* Set the resize mouse pointer if the pointer is between two column headers */
-   col_to_resize = etk_tree2_col_to_resize_get(col, event->widget.x);
-   if (col_to_resize && !col->tree->col_resize_pointer_set)
+   col_to_resize = etk_tree2_col_to_resize_get(tree, event->canvas.x);
+   if (col_to_resize && !tree->col_resize_pointer_set)
    {
       etk_toplevel_pointer_push(toplevel, ETK_POINTER_H_DOUBLE_ARROW);
-      col->tree->col_resize_pointer_set = ETK_TRUE;
+      tree->col_resize_pointer_set = ETK_TRUE;
    }
 }
 
-/* Called when the mouse leaves the column header */
-static void _etk_tree2_header_mouse_out_cb(Etk_Object *object, void *event_info, void *data)
+/* Called when the mouse leaves the rectangle that is over the column headers */
+static void _etk_tree2_headers_mouse_out_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Etk_Tree2_Col *col;
+   Etk_Tree2 *tree;
    Etk_Toplevel *toplevel;
    
-   if (!(col = ETK_TREE2_COL(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(object))))
+   if (!(tree = ETK_TREE2(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(tree))))
       return;
    
    /* Unset the resize mouse pointer if it was set */
-   if (col->tree->col_resize_pointer_set)
+   if (tree->col_resize_pointer_set)
    {
       etk_toplevel_pointer_pop(toplevel, ETK_POINTER_H_DOUBLE_ARROW);
-      col->tree->col_resize_pointer_set = ETK_FALSE;
+      tree->col_resize_pointer_set = ETK_FALSE;
    }
 }
 
@@ -2641,13 +2681,38 @@ static void _etk_tree2_col_realize(Etk_Tree2 *tree, int col_nth)
    etk_widget_member_object_add(tree->grid, col->separator);
 }
 
-/* Returns the column to resize according to the position of the mouse in the column "col" */
-static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2_Col *col, int x)
+/* Returns the column to resize according to the position of the mouse pointer */
+static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2 *tree, int x)
 {
+   Etk_Tree2_Col *col;
+   int header_x = 0, header_w = 0;
+   int i;
+   
+   if (!tree || !tree->headers_visible)
+      return NULL;
+   
+   /* First we find the column over which the mouse pointer is */
+   col = NULL;
+   for (i = 0; i < tree->num_cols; i++)
+   {
+      if (!tree->columns[i]->visible)
+         continue;
+      
+      etk_widget_geometry_get(tree->columns[i]->header, &header_x, NULL, &header_w, NULL);
+      if (header_x <= x && x < (header_x + header_w))
+      {
+         col = tree->columns[i];
+         x -= header_x;
+         break;
+      }
+   }
+   
    if (!col)
       return NULL;
    
-   if ((x + col->header->inset.left <= COL_RESIZE_THRESHOLD))
+   /* Once the column is found, we look if the mouse pointer is over
+    * one of the two edges of the header (x is now relative to the column's header) */
+   if (x <= COL_RESIZE_THRESHOLD)
    {
       Etk_Tree2_Col *prev_visible_col, *col2;
       int i;
@@ -2656,16 +2721,44 @@ static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2_Col *col, int x)
       for (i = 0; i < col->tree->num_cols; i++)
       {
          col2 = col->tree->columns[i];
+         if (!col2->visible)
+            continue;
+         
          if ((col2->position < col->position) && (!prev_visible_col || (prev_visible_col->position < col2->position)))
             prev_visible_col = col2;
       }
       
       return (prev_visible_col && prev_visible_col->resizable) ? prev_visible_col : NULL;
    }
-   else if ((col->header->geometry.w - (x + col->header->inset.left) <= COL_RESIZE_THRESHOLD))
+   else if (header_w - x <= COL_RESIZE_THRESHOLD)
       return (col && col->resizable) ? col : NULL;
 
    return NULL;
+}
+
+/* Creates the invisible rectangle which is ovet the column headers. It is used to catch mouse events */
+static void _etk_tree2_headers_rect_create(Etk_Tree2 *tree, Etk_Widget *parent)
+{
+   Evas *evas;
+   
+   if (!tree || !parent || !(evas = etk_widget_toplevel_evas_get(parent)))
+      return;
+   
+   tree->headers_rect = evas_object_rectangle_add(evas);
+   evas_object_color_set(tree->headers_rect, 0, 0, 0, 0);
+   evas_object_repeat_events_set(tree->headers_rect, 1);
+   etk_widget_member_object_add(parent, tree->headers_rect);
+   
+   evas_object_event_callback_add(tree->headers_rect, EVAS_CALLBACK_MOUSE_DOWN,
+      _etk_tree2_headers_mouse_down_cb, tree);
+   evas_object_event_callback_add(tree->headers_rect, EVAS_CALLBACK_MOUSE_UP,
+      _etk_tree2_headers_mouse_up_cb, tree);
+   evas_object_event_callback_add(tree->headers_rect, EVAS_CALLBACK_MOUSE_MOVE,
+      _etk_tree2_headers_mouse_move_cb, tree);
+   evas_object_event_callback_add(tree->headers_rect, EVAS_CALLBACK_MOUSE_IN,
+      _etk_tree2_headers_mouse_in_cb, tree);
+   evas_object_event_callback_add(tree->headers_rect, EVAS_CALLBACK_MOUSE_OUT,
+      _etk_tree2_headers_mouse_out_cb, tree);
 }
 
 /* Gets the next row to render */

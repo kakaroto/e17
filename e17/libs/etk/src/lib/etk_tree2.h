@@ -110,15 +110,18 @@ struct Etk_Tree2
    Etk_Widget *scrolled_view;
    Etk_Widget *scroll_content;
    Etk_Widget *grid;
+   Evas_Object *grid_clip;
 
    int num_cols;
    Etk_Tree2_Col **columns;
+   Etk_Bool headers_visible;
+   
+   Evas_Object *headers_rect;
+   Etk_Tree2_Col *over_col;
    Etk_Tree2_Col *col_to_resize;
    Etk_Bool col_resize_pointer_set;
    int col_resize_orig_width;
    int col_resize_orig_mouse_x;
-   Etk_Bool headers_visible;
-   Evas_Object *grid_clip;
    
    int total_rows;
    Etk_Tree2_Row root;

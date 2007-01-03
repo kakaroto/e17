@@ -46,7 +46,7 @@ void etk_test_tree2_window_create(void *data)
    etk_container_add(ETK_CONTAINER(alignment), tree);
 
    /* We first create the columns of the tree, and then we "build" the tree with etk_tree2_build() */
-   col1 = etk_tree2_col_new(ETK_TREE2(tree), "Column 1", etk_tree2_model_icon_text_new(ETK_TREE2(tree), ETK_TREE_FROM_EDJE), 90);
+   col1 = etk_tree2_col_new(ETK_TREE2(tree), "Column 1", etk_tree2_model_icon_text_new(ETK_TREE2(tree), ETK_TREE_FROM_EDJE), 130);
    col2 = etk_tree2_col_new(ETK_TREE2(tree), "Column 2", etk_tree2_model_double_new(ETK_TREE2(tree)), 60);
    col3 = etk_tree2_col_new(ETK_TREE2(tree), "Column 3", etk_tree2_model_image_new(ETK_TREE2(tree), ETK_TREE_FROM_FILE), 60);
    col4 = etk_tree2_col_new(ETK_TREE2(tree), "Column 4", etk_tree2_model_checkbox_new(ETK_TREE2(tree)), 90);
@@ -109,6 +109,7 @@ static void _etk_test_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *
 }
 
 /* Called when a row of the tree is clicked: we display the clicked row in the statusbar */
+/* TODO: sometimes it's a Etk_Event_Mouse_Up, sometimes a Etk_Event_Mouse_Down... */
 static void _etk_test_tree2_row_clicked_cb(Etk_Object *object, Etk_Tree2_Row *row, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Tree2 *tree;
