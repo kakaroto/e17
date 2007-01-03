@@ -2490,8 +2490,35 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	i = ewl_theme_image_get(w, "file");
 	group = ewl_theme_data_str_get(w, "group");
 
-	if (i) w->theme_path = ecore_string_instance(i);
-	if (group) w->theme_group = ecore_string_instance(group);
+	if (i) {
+		const char *t;
+
+		t = w->theme_path;
+		w->theme_path = ecore_string_instance(i);
+
+		/* free this after, if it's the same string we dont' want to
+		 * release all references on it */
+		if (t) ecore_string_release(t);
+
+	} else if (w->theme_path) {
+		ecore_string_release(w->theme_path);
+		w->theme_path = NULL;
+	}
+
+	if (group) {
+		const char *t;
+
+		t = w->theme_group;
+		w->theme_group = ecore_string_instance(group);
+		
+		/* free this after, if it's the same string we dont' want to
+		 * release all references on it */
+		if (t) ecore_string_release(t);
+
+	} else if (w->theme_group) {
+		ecore_string_release(w->theme_group);
+		w->theme_group = NULL;
+	}
 
 	IF_FREE(i);
 	IF_FREE(group);
