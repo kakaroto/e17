@@ -13,9 +13,13 @@ static void ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev,
 								void *data);
 
 static int appearance_test_set_get(char *buf, int len);
+static int data_test_set_get(char *buf, int len);
+static int data_test_set_remove(char *buf, int len);
 
 static Ewl_Unit_Test widget_unit_tests[] = {
 		{"widget appearance set/get", appearance_test_set_get},	
+		{"widget data set/get", data_test_set_get},	
+		{"widget data set/remove", data_test_set_remove},	
 		{NULL, NULL}
 	};
 
@@ -146,3 +150,56 @@ appearance_test_set_get(char *buf, int len)
 	return ret;
 }
 
+static int
+data_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+	char *key, *value, *found;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	key = strdup("Data key");
+	value = strdup("Data value");
+
+	ewl_widget_data_set(w, key, value);
+	found = ewl_widget_data_get(w, key);
+
+	if (!found)
+		snprintf(buf, len, "could not find set data");
+	else if (found != value)
+		snprintf(buf, len, "found value does not match set data");
+	else 
+		ret = 1;
+
+	return ret;
+}
+
+static int
+data_test_set_remove(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+	char *key, *value, *found;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	key = strdup("Data key");
+	value = strdup("Data value");
+
+	ewl_widget_data_set(w, key, value);
+	found = ewl_widget_data_del(w, key);
+
+	if (!found)
+		snprintf(buf, len, "could not find set data");
+	else if (found != value)
+		snprintf(buf, len, "removed value does not match set data");
+	else if (ewl_widget_data_get(w, key))
+		snprintf(buf, len, "data value present after remove");
+	else 
+		ret = 1;
+
+	return ret;
+}
