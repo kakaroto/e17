@@ -512,16 +512,6 @@ static void _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geomet
       }
    }
    
-   /* If the image is loaded from an edje file, or if trying to open as a normal image has failed */
-   if (image_data->type == ETK_TREE2_MODEL_EDJE)
-   {
-      cell_objects[0] = edje_object_add(evas);
-      if (edje_object_file_set(cell_objects[0], image_data->filename, image_data->key))
-         edje_object_size_min_get(cell_objects[0], &image_width, &image_height);
-      else
-         image_data->type = ETK_TREE2_MODEL_NOT_FOUND;
-   }
-   
    /* Loading has failed... we return */
    if (image_data->type == ETK_TREE2_MODEL_NOT_FOUND)
    {
