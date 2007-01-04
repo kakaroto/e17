@@ -5,6 +5,7 @@
 #include "ewl_macros.h"
 
 static Ecore_Hash *ewl_widget_name_table = NULL;
+static Ecore_Hash *ewl_widget_data_table = NULL;
 static int ewl_widget_dnd_drag_move_count = 0;
 static Ewl_Widget *ewl_widget_drag_widget= NULL;
 static Evas_Smart *widget_smart = NULL;
@@ -537,15 +538,23 @@ ewl_widget_reparent(Ewl_Widget *w)
 void
 ewl_widget_data_set(Ewl_Widget *w, void *k, void *v)
 {
+	Ecore_Hash *w_data;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("k", k);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (!w->data)
-		w->data = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	if (!ewl_widget_data_table)
+		ewl_widget_data_table = ecore_hash_new(NULL, NULL);
 
-	ecore_hash_set(w->data, k, v);
+	w_data = ecore_hash_get(ewl_widget_data_table, w);
+	if (!w_data) {
+		w_data = ecore_hash_new(NULL, NULL);
+		ecore_hash_set(ewl_widget_data_table, w, w_data);
+	}
+
+	ecore_hash_set(w_data, k, v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -564,15 +573,34 @@ ewl_widget_data_set(Ewl_Widget *w, void *k, void *v)
 void *
 ewl_widget_data_del(Ewl_Widget *w, void *k)
 {
+	void *data;
+	Ecore_Hash *w_data;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
-	if (!w->data)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	if (ewl_widget_data_table)
+		w_data = ecore_hash_get(ewl_widget_data_table, w);
+	else
+		w_data = NULL;
 
-	DRETURN_PTR(ecore_hash_remove(w->data, k), DLEVEL_STABLE);
+	if (w_data)
+		data = ecore_hash_remove(w_data, k);
+	else
+		data = NULL;
+
+	if (ecore_hash_count(w_data) == 0) {
+		ecore_hash_remove(ewl_widget_data_table, w);
+		ecore_hash_destroy(w_data);
+		if (ecore_hash_count(ewl_widget_data_table) == 0) {
+			ecore_hash_destroy(ewl_widget_data_table);
+			ewl_widget_data_table = NULL;
+		}
+	}
+
+	DRETURN_PTR(data, DLEVEL_STABLE);
 }
 
 /**
@@ -586,15 +614,25 @@ ewl_widget_data_del(Ewl_Widget *w, void *k)
 void *
 ewl_widget_data_get(Ewl_Widget *w, void *k)
 {
+	void *data;
+	Ecore_Hash *w_data;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_PARAM_PTR_RET("k", k, NULL);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
-	if (!w->data)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	if (ewl_widget_data_table)
+		w_data = ecore_hash_get(ewl_widget_data_table, w);
+	else
+		w_data = NULL;
 
-	DRETURN_PTR(ecore_hash_get(w->data, k), DLEVEL_STABLE);
+	if (w_data)
+		data = ecore_hash_get(w_data, k);
+	else
+		data = NULL;
+
+	DRETURN_PTR(data, DLEVEL_STABLE);
 }
 
 /**
@@ -2143,9 +2181,14 @@ ewl_widget_free(Ewl_Widget *w)
 		w->theme_text.len = 0;
 	}
 
-	if (w->data) {
-		ecore_hash_destroy(w->data);
-		w->data = NULL;
+	if (ewl_widget_data_table) {
+		Ecore_Hash *w_data;
+
+		w_data = ecore_hash_remove(ewl_widget_data_table, w);
+		if (w_data) {
+			ecore_hash_destroy(w_data);
+			w_data = NULL;
+		}
 	}
 	
 	FREE(w);
