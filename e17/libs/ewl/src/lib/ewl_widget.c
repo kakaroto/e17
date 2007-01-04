@@ -877,7 +877,6 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("part", part);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/*
@@ -886,13 +885,16 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 	if (w->theme_text.list) {
 		if (w->theme_text.direct) {
 			match = EWL_PAIR(w->theme_text.list);
-			if (strcmp(part, match->key))
+			if (part == match->key ||
+					(part && strcmp(part, match->key)))
 				match = NULL;
 		}
 		else {
 			for (i = 0; i < w->theme_text.len; i++) {
 				Ewl_Pair *current = w->theme_text.list[i];
-				if (!strcmp(current->key, part)) {
+				if (part == current->key || 
+						(part && !strcmp(current->key,
+								 part))) {
 					match = current;
 					break;
 				}
@@ -913,7 +915,10 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 		match = NEW(Ewl_Pair, 1);
 		if (!match)
 			DRETURN(DLEVEL_STABLE);
-		match->key = ecore_string_instance(part);
+		if (part)
+			match->key = ecore_string_instance(part);
+		else
+			match->key = NULL;
 		w->theme_text.len++;
 
 		if (!w->theme_text.list) {
@@ -941,7 +946,9 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 	 */
 	match->value = strdup( text ? text : "" );
 
-	ewl_widget_appearance_part_text_apply(w, match->key, match->value);
+	if (match->key)
+		ewl_widget_appearance_part_text_apply(w, match->key,
+				match->value);
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1004,17 +1011,11 @@ ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part)
 void
 ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text)
 {
-	char *part;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	part = ewl_theme_data_str_get(w, "textpart");
-	if (part) {
-		ewl_widget_appearance_part_text_set(w, part, text);
-		FREE(part);
-	}
+	ewl_widget_appearance_part_text_set(w, NULL, text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2124,13 +2125,15 @@ ewl_widget_free(Ewl_Widget *w)
 
 	if (w->theme_text.list) {
 		if (w->theme_text.direct) {
-			ecore_string_release(EWL_PAIR(w->theme_text.list)->key);
+			Ewl_Pair *pair = EWL_PAIR(w->theme_text.list);
+			if (pair->key) ecore_string_release(pair->key);
 			FREE(EWL_PAIR(w->theme_text.list)->value);
 		}
 		else {
 			int i;
 			for (i = 0; i < w->theme_text.len; i++) {
-				ecore_string_release(w->theme_text.list[i]->key);
+				Ewl_Pair *pair = EWL_PAIR(w->theme_text.list[i]);
+				if (pair->key) ecore_string_release(pair->key);
 				FREE(w->theme_text.list[i]->value);
 				FREE(w->theme_text.list[i]);
 			}
@@ -2319,24 +2322,32 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 */
 		if (w->theme_object && w->theme_text.list) {
 			const char *key;
-		       	char *value;
+		       	char *value, *part;
+
+			/*
+			 * Fill in the default part to use when the key is NULL.
+			 */
+			part = ewl_theme_data_str_get(w, "textpart");
 
 			if (w->theme_text.direct) {
 				key = EWL_PAIR(w->theme_text.list)->key;
+				if (!key) key = part;
 				value = EWL_PAIR(w->theme_text.list)->value;
 				ewl_widget_appearance_part_text_apply(w,
 						key, value);
-					
 			}
 			else {
 				int i;
 				for (i = 0; i < w->theme_text.len; i++) {
 					key = w->theme_text.list[i]->key;
+					if (!key) key = part;
 					value = w->theme_text.list[i]->value;
 					ewl_widget_appearance_part_text_apply(w,
 							key, value);
 				}
 			}
+
+			IF_FREE(part);
 		}
 	}
 
