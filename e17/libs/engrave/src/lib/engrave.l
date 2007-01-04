@@ -305,6 +305,16 @@ y					{ KEYWORD_RETURN(Y); }
 
 script              { SCRIPT_START(); }
 
+
+[a-zA-Z][a-zA-Z0-9_]*       {{ 
+		/*
+		Use this as a last case to capture single-word unquoted strings
+		*/
+                        yylval.string = (char *)calloc(yyleng - 1, sizeof(char));
+                        strcat(yylval.string, yytext);
+                        STRING_RETURN(); 
+		}} 
+
 <SC_SCRIPT>{
   [^\{\}\n]*        { SCRIPT_PIECE(); }
   \n                { SCRIPT_NEW_LINE(); }
