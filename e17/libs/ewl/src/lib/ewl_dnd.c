@@ -75,18 +75,7 @@ ewl_dnd_init(void)
 	if (!ewl_dnd_accepted_hash)
 		goto accepted_error;
 
-	/*
-	 * Create a fallback cursor to display during DND operations.
-	 */
-	ewl_dnd_default_cursor = ewl_cursor_new();
-	if (!ewl_dnd_default_cursor)
-		goto cursor_error;
-
-	/*
-	 * Add a theme point as these tend to be a specialized class of cursors.
-	 */
-	ewl_widget_appearance_set(ewl_dnd_default_cursor, "dndcursor");
-	ewl_widget_show(ewl_dnd_default_cursor);
+	ewl_dnd_default_cursor = NULL;
 
 	ewl_dragging_current = 0;
 	ewl_dnd_status = 1;
@@ -96,9 +85,6 @@ ewl_dnd_init(void)
 	/*
 	 * Error handlers.
 	 */
-cursor_error:
-	ecore_hash_destroy(ewl_dnd_accepted_hash);
-	ewl_dnd_accepted_hash = NULL;
 accepted_error:
 	ecore_hash_destroy(ewl_dnd_provided_hash);
 	ewl_dnd_provided_hash= NULL;
@@ -344,6 +330,19 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	 */
 	ewl_engine_embed_dnd_drag_types_set(emb, types, i);
 	ewl_engine_embed_dnd_drag_start(emb);
+
+	/*
+	 * Create a fallback cursor to display during DND operations.
+	 */
+	if (!ewl_dnd_default_cursor) {
+		ewl_dnd_default_cursor = ewl_cursor_new();
+
+		/*
+		 * Add a theme point as these tend to be a specialized class of cursors.
+		 */
+		ewl_widget_appearance_set(ewl_dnd_default_cursor, "dndcursor");
+		ewl_widget_show(ewl_dnd_default_cursor);
+	}
 
 	/*
 	 * FIXME: Display the default cursor for now. Needs to check for a
