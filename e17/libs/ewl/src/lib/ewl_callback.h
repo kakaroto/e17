@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #ifndef EWL_CALLBACK_H
 #define EWL_CALLBACK_H
 

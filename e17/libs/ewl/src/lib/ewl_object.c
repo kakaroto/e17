@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include <Ewl.h>
 #include "ewl_private.h"
 #include "ewl_debug.h"

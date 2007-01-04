@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #ifndef EWL_LABEL_H
 #define EWL_LABEL_H
 

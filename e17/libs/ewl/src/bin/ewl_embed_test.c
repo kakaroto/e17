@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include <Evas.h>
 #include <Ecore_Evas.h>
 #include <Ewl.h>

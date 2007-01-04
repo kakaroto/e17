@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #ifndef EWL_HIGHLIGHT_H
 #define EWL_HIGHLIGHT_H
 

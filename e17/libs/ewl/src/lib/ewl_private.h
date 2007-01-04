@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #ifndef _EWL_PRIVATE_H
 #define _EWL_PRIVATE_H
 

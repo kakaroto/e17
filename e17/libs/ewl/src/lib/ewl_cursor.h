@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #ifndef EWL_CURSOR_H
 #define EWL_CURSOR_H
 

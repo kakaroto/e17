@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #ifndef EWL_ATTACH_H
 #define EWL_ATTACH_H
 

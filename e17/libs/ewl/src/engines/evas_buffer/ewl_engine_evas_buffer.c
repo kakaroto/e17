@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include <Ewl.h>
 #include "Evas_Engine_Buffer.h"
 #include "Ewl_Engine_Evas_Buffer.h"

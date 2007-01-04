@@ -1,3 +1,4 @@
+/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #ifndef EWL_FILELIST_ICON_H
 #define EWL_FILELIST_ICON_H
 
