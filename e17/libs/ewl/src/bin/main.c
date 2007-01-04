@@ -81,6 +81,18 @@ main(int argc, char **argv)
 			ewl_test_print_tests();
 			exit(0);
 		}
+		else if (!strncmp(argv[i], "-h", 2) ||
+				!strncmp(argv[i], "-help", 5) ||
+				!strncmp(argv[i], "--help", 6))
+		{
+			printf("Usage: %s [options] [test name]\n"
+					"\t-all\tRun tests for all widgets\n"
+					"\t-help\tDisplay this help text\n"
+					"\t-list\tPrint available tests\n"
+					"\t-unit\tRun unit tests\n",
+					argv[0]);
+			exit(0);
+		}
 		else if (!strncmp(argv[i], "-all", 4))
 		{
 			Ewl_Test *t;
@@ -255,12 +267,45 @@ run_unit_tests(Ewl_Test *test)
 }
 
 static void
+statusbar_text_set(const char *text)
+{
+       	Ewl_Widget *stat;
+	char info[1024];
+
+	stat = ewl_widget_name_find("statusbar");
+	snprintf(info, sizeof(info), "%s Information/Tests\n", text);
+	ewl_statusbar_push(EWL_STATUSBAR(stat), info);
+}
+
+static void
+run_unit_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+							void *data)
+{
+	Ewl_Test *t;
+	Ewl_Widget *c, *n;
+
+	t = data;
+
+	fill_source_text(t);
+	setup_unit_tests(t);
+
+	statusbar_text_set(t->name);
+
+	c = ewl_widget_name_find("execute_box");
+	ewl_container_reset(EWL_CONTAINER(c));
+
+	c = ewl_widget_name_find("unit_test_box");
+
+	n = ewl_widget_name_find("notebook");
+	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);
+}
+
+static void
 run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 							void *data)
 {
 	Ewl_Test *t;
-	Ewl_Widget *c, *n, *stat;
-	char info[1024];
+	Ewl_Widget *c, *n;
 
 	t = data;
 
@@ -272,9 +317,7 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		return;
 	}
 
-	stat = ewl_widget_name_find("statusbar");
-	snprintf(info, sizeof(info), "%s Information/Tests\n", t->name);
-	ewl_statusbar_push(EWL_STATUSBAR(stat), info);
+	statusbar_text_set(t->name);
 
 	fill_source_text(t);
 	setup_unit_tests(t);
@@ -282,13 +325,11 @@ run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	c = ewl_widget_name_find("execute_box");
 	ewl_container_reset(EWL_CONTAINER(c));
 
-	if (t->type != EWL_TEST_TYPE_UNIT)
-		t->func(EWL_CONTAINER(c));
-	else
-		c = ewl_widget_name_find("unit_test_box");
+	t->func(EWL_CONTAINER(c));
 
 	n = ewl_widget_name_find("notebook");
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);
+
 }
 
 static int
@@ -457,8 +498,20 @@ create_main_test_window(Ewl_Container *box)
 
 		w = ewl_tree_text_row_add(EWL_TREE(tree), 
 					EWL_ROW(parent), entries);
-		ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-						run_test_boxed, t);
+		if (parent == unit)
+			ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+							run_unit_test_boxed, t);
+		else
+			ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+							run_test_boxed, t);
+
+		if ((parent != unit) &&
+				(t->unit_tests && t->unit_tests[0].func)) {
+			w = ewl_tree_text_row_add(EWL_TREE(tree), 
+						EWL_ROW(unit), entries);
+			ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+							run_unit_test_boxed, t);
+		}
 	}
 
 	o = ewl_vbox_new();
