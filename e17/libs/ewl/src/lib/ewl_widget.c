@@ -259,6 +259,8 @@ ewl_widget_unrealize(Ewl_Widget *w)
 	if (!REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
+	ewl_widget_obscure(w);
+
 	/*
 	 * Notify parent of hidden state.
 	 */
