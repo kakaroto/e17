@@ -555,7 +555,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   
   if (!file->retrieved_stat) {
 	  new_row = etk_tree2_row_append(ETK_TREE2(viewer->tree), NULL, 
-		  col1, thumbnail_filename, 
+		  col1, thumbnail_filename, NULL,
 		  col2,   file->filename, 
 		  col4, file->mime_type,
 		  NULL);
@@ -568,7 +568,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 	  date_buffer[strlen(date_buffer)-1] = '\0';
 	  
 	  new_row = etk_tree2_row_append(ETK_TREE2(viewer->tree), NULL, 
-		  col1, thumbnail_filename, 
+		  col1, thumbnail_filename, NULL,
 		  col2,   file->filename,
 		  col3,   buffer,
 		  col4,   file->mime_type,
@@ -671,7 +671,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			col3 = etk_tree2_nth_col_get(ETK_TREE2(viewer->tree), 2);
 			col4 = etk_tree2_nth_col_get(ETK_TREE2(viewer->tree), 3);
 			col5 = etk_tree2_nth_col_get(ETK_TREE2(viewer->tree), 4);
-		
+
 			snprintf(buffer,50, "%lld Kb", file_stat->stat_obj->st_size / 1024);
 			ctime_r(&file_stat->stat_obj->st_mtime, date_buffer);
 			date_buffer[strlen(date_buffer)-1] = '\0';
@@ -736,7 +736,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		  etk_tree2_freeze(ETK_TREE2(viewer->tree));
 
 		  etk_tree2_row_fields_set((Etk_Tree2_Row*)obj->icon, 
-		  col1, obj->thumbnail->thumbnail_filename, 
+		  col1, obj->thumbnail->thumbnail_filename, NULL,
 		  NULL);
 
 		  etk_tree2_thaw(ETK_TREE2(viewer->tree));
@@ -824,22 +824,26 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   viewer->tree = etk_tree2_new(); 
   etk_tree2_mode_set(ETK_TREE2(viewer->tree), ETK_TREE2_MODE_LIST);
  
-  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Icon"), 
-		  etk_tree2_model_image_new(ETK_TREE2(viewer->tree), ETK_TREE2_FROM_FILE), 48);
-  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Filename"), 
-		  etk_tree2_model_text_new(ETK_TREE2(viewer->tree)), 150);
+  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Icon"), 48,0.0);
+  etk_tree2_col_model_add(viewer->tree_col1, etk_tree2_model_image_new());
+   
+  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Filename"), 150,0.0);
+  etk_tree2_col_model_add(viewer->tree_col1, etk_tree2_model_text_new());
+
   etk_tree2_col_sort_set(viewer->tree_col1, _entropy_etk_list_filename_compare_cb, NULL);
 
-  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Size"), 
-		  etk_tree2_model_text_new(ETK_TREE2(viewer->tree)),60);
+  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Size"), 60,0.0);
+  etk_tree2_col_model_add(viewer->tree_col1, etk_tree2_model_text_new());
   etk_tree2_col_sort_set(viewer->tree_col1, _entropy_etk_list_size_compare_cb, NULL);
 
-  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Type"), 
-		  etk_tree2_model_text_new(ETK_TREE2(viewer->tree)),65);
+  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Type"), 65,0.0);
+  etk_tree2_col_model_add(viewer->tree_col1, etk_tree2_model_text_new());
+
   etk_tree2_col_sort_set(viewer->tree_col1, _entropy_etk_list_type_compare_cb, NULL);
 
-  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Date Modified"), 
-		  etk_tree2_model_text_new(ETK_TREE2(viewer->tree)),90);
+  viewer->tree_col1 = etk_tree2_col_new(ETK_TREE2(viewer->tree), _("Date Modified"), 90,0.0);
+  etk_tree2_col_model_add(viewer->tree_col1, etk_tree2_model_text_new());
+
   etk_tree2_col_sort_set(viewer->tree_col1, _entropy_etk_list_date_compare_cb, NULL);
 
 

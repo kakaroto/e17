@@ -304,8 +304,8 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entr
 			   
 	
   etk_tree2_freeze(ETK_TREE2(gui->tree));
-  row = etk_tree2_row_append(ETK_TREE2(gui->tree), NULL, col, 
-			  icon_string, structure_obj->name, NULL);
+  row = etk_tree2_row_append(ETK_TREE2(gui->tree), NULL, col,
+			  icon_string, NULL, structure_obj->name, NULL);
   etk_tree2_thaw(ETK_TREE2(gui->tree));
   
   
@@ -790,8 +790,9 @@ entropy_plugin_layout_create (entropy_core * core)
 
   etk_paned_child1_set(ETK_PANED(gui->paned), gui->tree_shell, ETK_FALSE);
   etk_tree2_mode_set(ETK_TREE2(gui->tree), ETK_TREE2_MODE_TREE);
-  col = etk_tree2_col_new(ETK_TREE2(gui->tree), _("Folders"), 
-		  etk_tree2_model_icon_text_new(ETK_TREE2(gui->tree), ETK_TREE2_FROM_FILE), 60);
+  col = etk_tree2_col_new(ETK_TREE2(gui->tree), _("Folders"), 60,0.0);
+  etk_tree2_col_model_add(col, etk_tree2_model_image_new());
+  etk_tree2_col_model_add(col, etk_tree2_model_text_new());   
   
   etk_tree2_col_expand_set(col, ETK_TRUE);
   etk_tree2_build(ETK_TREE2(gui->tree));

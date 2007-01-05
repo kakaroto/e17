@@ -180,11 +180,11 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
 
   
   if (!prow) {
-	  new_row = etk_tree2_row_append( ((Etk_Tree2_Row*)viewer->parent_visual)->tree, (Etk_Tree2_Row*)viewer->parent_visual, col, 
-			  PACKAGE_DATA_DIR "/icons/folder.png", _(file->filename), NULL);
+	  new_row = etk_tree2_row_append( ((Etk_Tree2_Row*)viewer->parent_visual)->tree, (Etk_Tree2_Row*)viewer->parent_visual, col,
+			  PACKAGE_DATA_DIR "/icons/folder.png", NULL, _(file->filename), NULL);
   } else {
 	  new_row = etk_tree2_row_append( ((Etk_Tree2_Row*)prow)->tree, (Etk_Tree2_Row*)prow, col, 
-			  PACKAGE_DATA_DIR "/icons/folder.png", _(file->filename), NULL);
+			  PACKAGE_DATA_DIR "/icons/folder.png", NULL, _(file->filename), NULL);
   }
 
   ecore_hash_set(instance_map_hash, new_row, instance);
