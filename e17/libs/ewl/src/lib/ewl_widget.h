@@ -150,7 +150,6 @@ struct Ewl_Widget
 
 	Ecore_Hash *theme; 		/**< Overriding theme settings */
 	Ewl_Pair_List theme_text;	/**< Overriding text in theme */
-	Ecore_Hash *data;		/**< Arbitrary data attached to widget */
 };
 
 int 		 ewl_widget_init(Ewl_Widget *w);
