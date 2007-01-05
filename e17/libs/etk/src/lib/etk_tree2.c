@@ -134,6 +134,7 @@ static void _etk_tree2_headers_rect_create(Etk_Tree2 *tree, Etk_Widget *parent);
 static Etk_Tree2_Row *_etk_tree2_row_next_to_render_get(Etk_Tree2_Row *row, int *depth);
 static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree);
 static void _etk_tree2_row_object_destroy(Etk_Tree2 *tree, Etk_Tree2_Row_Object *row_object);
+static void _etk_tree2_expanders_clip(Etk_Tree2 *tree);
 
 static void _etk_tree2_row_select(Etk_Tree2 *tree, Etk_Tree2_Row *row, Etk_Modifiers modifiers);
 
@@ -738,6 +739,7 @@ void etk_tree2_col_visible_set(Etk_Tree2_Col *col, Etk_Bool visible)
    
    if (col->tree)
    {
+      _etk_tree2_expanders_clip(col->tree);
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(col->tree));
    }
@@ -793,6 +795,8 @@ void etk_tree2_col_position_set(Etk_Tree2_Col *col, int position)
    }
    col->position = position;
    etk_object_notify(ETK_OBJECT(col), "place");
+   
+   _etk_tree2_expanders_clip(col->tree);
    etk_widget_redraw_queue(ETK_WIDGET(col->tree));
 }
 
@@ -3040,7 +3044,7 @@ static Etk_Tree2_Row *_etk_tree2_row_next_to_render_get(Etk_Tree2_Row *row, int 
 static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree)
 {
    Etk_Tree2_Row_Object *row_object;
-   Etk_Tree2_Col *col;
+   Etk_Tree2_Col *col, *first_visible_col;
    Evas *evas;
    int i, j, k;
    
@@ -3066,8 +3070,21 @@ static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree)
    {
       row_object->expander = edje_object_add(evas);
       etk_theme_edje_object_set_from_parent(row_object->expander, "expander", ETK_WIDGET(tree));
-      /* TODO: the expander should be clipped to the clip of the first visible col */
-      evas_object_clip_set(row_object->expander, tree->grid_clip);
+      
+      /* Clip it to the first visible row */
+      first_visible_col = NULL;
+      for (i = 0; i < tree->num_cols; i++)
+      {
+         col = tree->columns[i];
+         if (col->visible)
+         {
+            if (!first_visible_col || first_visible_col->position > col->position)
+               first_visible_col = col;
+         }
+      }
+      if (first_visible_col)
+         evas_object_clip_set(row_object->expander, first_visible_col->clip);
+      
       etk_widget_member_object_add(tree->grid, row_object->expander);
       evas_object_event_callback_add(row_object->expander, EVAS_CALLBACK_MOUSE_UP,
          _etk_tree2_row_expander_mouse_up_cb, row_object);
@@ -3123,6 +3140,40 @@ static void _etk_tree2_row_object_destroy(Etk_Tree2 *tree, Etk_Tree2_Row_Object 
    evas_object_del(row_object->expander);
    evas_object_del(row_object->background);
    free(row_object);
+}
+
+/* Clips all the expanders against the clip object of the first visible column */
+static void _etk_tree2_expanders_clip(Etk_Tree2 *tree)
+{
+   Etk_Tree2_Row_Object *row_object;
+   Etk_Tree2_Col *col, *first_visible_col;
+   Evas_List *l;
+   int i;
+   
+   if (!tree || tree->mode != ETK_TREE2_MODE_TREE || !tree->built)
+      return;
+   
+   /* Clip it to the first visible row */
+   first_visible_col = NULL;
+   for (i = 0; i < tree->num_cols; i++)
+   {
+      col = tree->columns[i];
+      if (col->visible)
+      {
+         if (!first_visible_col || first_visible_col->position > col->position)
+            first_visible_col = col;
+      }
+   }
+   
+   if (!first_visible_col)
+      return;
+   
+   for (l = tree->row_objects; l; l = l->next)
+   {
+      row_object = l->data;
+      if (row_object->expander)
+         evas_object_clip_set(row_object->expander, first_visible_col->clip);
+   }
 }
 
 /* Selects/Unselects the corresponding rows according to the modifiers */
