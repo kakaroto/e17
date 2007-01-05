@@ -132,7 +132,6 @@ static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2 *tree, int x);
 static void _etk_tree2_headers_rect_create(Etk_Tree2 *tree, Etk_Widget *parent);
 
 static Etk_Tree2_Row *_etk_tree2_row_next_to_render_get(Etk_Tree2_Row *row, int *depth);
-static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list args, Etk_Bool emit_signal);
 static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree);
 static void _etk_tree2_row_object_destroy(Etk_Tree2 *tree, Etk_Tree2_Row_Object *row_object);
 
@@ -992,7 +991,7 @@ Etk_Tree2_Row *etk_tree2_row_insert_valist(Etk_Tree2 *tree, Etk_Tree2_Row *paren
       }
    }
    va_copy(args2, args);
-   _etk_tree2_row_fields_set_valist_full(new_row, args2, ETK_FALSE);
+   etk_tree2_row_fields_set_valist(new_row, ETK_FALSE, args2);
    va_end(args2);
    
    
@@ -1044,39 +1043,59 @@ void etk_tree2_clear(Etk_Tree2 *tree)
 /**
  * @brief Sets the values of the cells of the row
  * @param row a row of the tree
+ * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
+ * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have
+ * callback connected on this signal
  * @param ... an "Etk_Tree_Col *" followed by the value of the cell,
  * then any number of "Etk_Tree_Col *"/Value pairs, and terminated by NULL.
  * Note that, according to the models used by the column, a cell value can use several parameters
  */
-void etk_tree2_row_fields_set(Etk_Tree2_Row *row, ...)
+void etk_tree2_row_fields_set(Etk_Tree2_Row *row, Etk_Bool emit_signal, ...)
 {
    va_list args;
    
    if (!row)
       return;
    
-   va_start(args, row);
-   etk_tree2_row_fields_set_valist(row, args);
+   va_start(args, emit_signal);
+   etk_tree2_row_fields_set_valist(row, emit_signal, args);
    va_end(args);
 }
 
 /**
  * @brief Sets the values of the cells of the row
  * @param row a row of the tree
+ * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
+ * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have
+ * callback connected on this signal
  * @param args an "Etk_Tree_Col *" followed by the value of the cell,
  * then any number of "Etk_Tree_Col *"/Value pairs, and terminated by NULL.
  * Note that, according to the models used by the column, a cell value can use several parameters
  */
-void etk_tree2_row_fields_set_valist(Etk_Tree2_Row *row, va_list args)
+void etk_tree2_row_fields_set_valist(Etk_Tree2_Row *row, Etk_Bool emit_signal, va_list args)
 {
+   Etk_Tree2_Col *col;
    va_list args2;
+   int i;
    
    if (!row)
       return;
    
    va_copy(args2, args);
-   _etk_tree2_row_fields_set_valist_full(row, args2, ETK_TRUE);
+   while ((col = va_arg(args2, Etk_Tree2_Col *)))
+   {
+      for (i = 0; i < col->num_models; i++)
+      {
+         if (col->models[i]->cell_data_set)
+            col->models[i]->cell_data_set(col->models[i], row->cells_data[col->id][i], &args2);
+      }
+      if (emit_signal)
+         etk_signal_emit(_etk_tree2_col_signals[ETK_TREE2_COL_CELL_VALUE_CHANGED], ETK_OBJECT(col), NULL, row);
+   }
    va_end(args2);
+   
+   if (!row->tree->frozen)
+      etk_widget_redraw_queue(ETK_WIDGET(row->tree));
 }
 
 /**
@@ -3015,33 +3034,6 @@ static Etk_Tree2_Row *_etk_tree2_row_next_to_render_get(Etk_Tree2_Row *row, int 
       }
       return row ? row->next : NULL;
    }
-}
-
-/* Sets the fields of a row */
-static void _etk_tree2_row_fields_set_valist_full(Etk_Tree2_Row *row, va_list args, Etk_Bool emit_signal)
-{
-   Etk_Tree2_Col *col;
-   va_list args2;
-   int i;
-   
-   if (!row)
-      return;
-   
-   va_copy(args2, args);
-   while ((col = va_arg(args2, Etk_Tree2_Col *)))
-   {
-      for (i = 0; i < col->num_models; i++)
-      {
-         if (col->models[i]->cell_data_set)
-            col->models[i]->cell_data_set(col->models[i], row->cells_data[col->id][i], &args2);
-      }
-      if (emit_signal)
-         etk_signal_emit(_etk_tree2_col_signals[ETK_TREE2_COL_CELL_VALUE_CHANGED], ETK_OBJECT(col), NULL, row);
-   }
-   va_end(args2);
-   
-   if (!row->tree->frozen)
-      etk_widget_redraw_queue(ETK_WIDGET(row->tree));
 }
 
 /* Creates a new row object and its subobjects */

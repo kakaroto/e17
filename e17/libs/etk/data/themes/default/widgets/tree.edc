@@ -512,14 +512,12 @@ group {
  * - "etk,action,fold": emitted when the corresponding row is folded
  * - "etk,action,unfold": emitted when the corresponding row is unfolded
  *
- * The min size of the group is used to determine the size of the expande in the tree
+ * The min size of the group is used to determine the size of the expander in the tree
  *
  * Note that this group doesn't have the common signals of a widget
  * ("etk,state,enter", "etk,state,leave", ...) since a tree's expander is not a widget.
  * You can though use the signals "mouse,in", "mouse,out", "mouse,down,1" (...)
  * emitted automatically by Edje
- *
- * TODOC: min size...
  */
 group {
    name: "etk/tree/expander";

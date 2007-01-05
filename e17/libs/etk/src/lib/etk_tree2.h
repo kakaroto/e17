@@ -202,8 +202,8 @@ Etk_Tree2_Row *etk_tree2_row_insert_valist(Etk_Tree2 *tree, Etk_Tree2_Row *paren
 void           etk_tree2_row_delete(Etk_Tree2_Row *row);
 void           etk_tree2_clear(Etk_Tree2 *tree);
 
-void etk_tree2_row_fields_set(Etk_Tree2_Row *row, ...);
-void etk_tree2_row_fields_set_valist(Etk_Tree2_Row *row, va_list args);
+void etk_tree2_row_fields_set(Etk_Tree2_Row *row, Etk_Bool emit_signal, ...);
+void etk_tree2_row_fields_set_valist(Etk_Tree2_Row *row, Etk_Bool emit_signal, va_list args);
 void etk_tree2_row_fields_get(Etk_Tree2_Row *row, ...);
 void etk_tree2_row_fields_get_valist(Etk_Tree2_Row *row, va_list args);
 
