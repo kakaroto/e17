@@ -82,7 +82,7 @@ create_test(Ewl_Container *box)
 	button[2] = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), button[2]);
 	ewl_object_alignment_set(EWL_OBJECT(button[2]), EWL_FLAG_ALIGN_LEFT);
-	ewl_button_label_set(EWL_BUTTON(button[0]), "Disabled");
+	ewl_button_label_set(EWL_BUTTON(button[2]), "Disabled");
 	ewl_widget_disable(button[2]);
 	ewl_widget_show(button[2]);
 
