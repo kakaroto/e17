@@ -142,9 +142,6 @@ static void _etk_tree2_row_select(Etk_Tree2 *tree, Etk_Tree2_Row *row, Etk_Modif
 static Etk_Signal *_etk_tree2_signals[ETK_TREE2_NUM_SIGNALS];
 static Etk_Signal *_etk_tree2_col_signals[ETK_TREE2_COL_NUM_SIGNALS];
 
-/* TODO: better doc of row_next_get()... (with a note about deleted rows...) */
-/* TODO: a fucntion to get the first/last visible rows.. we do it all the time.. */
-
 
 /**************************
  *
@@ -542,6 +539,19 @@ void etk_tree2_col_model_add(Etk_Tree2_Col *col, Etk_Tree2_Model *model)
    model->tree = col->tree;
    model->col = col;
    col->num_models++;
+}
+
+/**
+ * @brief Gets the column's header widget. This can be used if you want to detect clicks on it for example.
+ * The header widget is an Etk_Button
+ * @param col a column
+ * @return Returns the column's header widget
+ */
+Etk_Widget *etk_tree2_col_header_get(Etk_Tree2_Col *col)
+{
+   if (!col)
+      return NULL;
+   return col->header;
 }
 
 /**
@@ -1359,6 +1369,7 @@ Etk_Tree2_Row *etk_tree2_row_last_child_get(Etk_Tree2_Row *row)
    return row->last_child;
 }
 
+/* TODO: better doc of row_next_get()... (with a note about deleted rows...) */
 /**
  * @brief Gets the previous row before the specified row
  * @param row a row
@@ -2031,11 +2042,13 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                {
                   col = tree->columns[i];
                   if (col->visible && col->expand)
-                     col->visible_width += (float)freespace / (float)num_expand_cols;
+                  {
+                     columns_width += freespace / num_expand_cols;
+                     col->visible_width += freespace / num_expand_cols;
+                  }
                }
             }
-            else
-               last_visible_col->visible_width += freespace;
+            last_visible_col->visible_width += (geometry.w - columns_width);
          }
          
          /* Calculate the horizontal position of the visible columns */
@@ -2076,7 +2089,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
          col_x1 = ETK_MAX(0, col->xoffset);
          col_x2 = ETK_MIN(geometry.w, col->xoffset + col->visible_width);
          
-         if (col_x1 < col_x2)
+         if (col_x1 <= col_x2)
          {
             evas_object_move(col->clip, geometry.x + col_x1, geometry.y);
             evas_object_resize(col->clip, col_x2 - col_x1 + 1, geometry.h);
@@ -2129,6 +2142,31 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
          prev_visible_rows = evas_list_append(prev_visible_rows, row_object->row);
    }
    
+   /* Cache the row objects */
+   for (i = 0; i < tree->num_cols; i++)
+   {
+      Etk_Tree2_Row_Object *row_object;
+      
+      col = tree->columns[i];
+      for (j = 0; j < col->num_models; j++)
+      {
+         if (col->models[j]->objects_cache)
+         {
+            for (l = tree->row_objects; l; l = l->next)
+            {
+               row_object = l->data;
+               if (row_object->row)
+               {
+                  col->models[j]->objects_cache(col->models[j], row_object->row->cells_data[i][j],
+                     row_object->cells[i].objects[j]);
+               }
+               else
+                  col->models[j]->objects_cache(col->models[j], NULL, row_object->cells[i].objects[j]);
+            }
+         }
+      }
+   }
+   
    /* Create or destroy row objects if the height of the grid has changed */
    {
       int num_visible_rows;
@@ -2172,6 +2210,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
       Etk_Bool show_expanders;
       Etk_Bool objects_created;
       Evas_List *l2;
+      int expander_w, expander_h;
       int x, y;
       int total_width, w;
       int row_id;
@@ -2231,15 +2270,15 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                   /* Render the expander of the row */
                   if (col == first_visible_col && show_expanders)
                   {
-                     /* TODO: 18 shouldn't be hardcoded... */
+                     edje_object_size_min_get(row_object->expander, &expander_w, &expander_h);
                      if (row->num_children > 0)
                      {
                         evas_object_move(row_object->expander,
-                           cell_geometry.x + (depth * 18), cell_geometry.y);
-                        evas_object_resize(row_object->expander, 18, 18);
+                           cell_geometry.x + (depth * expander_w), cell_geometry.y);
+                        evas_object_resize(row_object->expander, expander_w, expander_h);
                      }
-                     cell_geometry.x += ((depth + 1) * 18) + CELL_HMARGINS;
-                     cell_geometry.w -= ((depth + 1) * 18) + CELL_HMARGINS;
+                     cell_geometry.x += ((depth + 1) * expander_w) + CELL_HMARGINS;
+                     cell_geometry.w -= ((depth + 1) * expander_w) + CELL_HMARGINS;
                   }
                   
                   /* Render the sub-objects of the cell */
@@ -2257,7 +2296,8 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                         {
                            for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
                            {
-                              if (row_object->cells[i].objects[j][k])
+                              if (row_object->cells[i].objects[j][k]
+                                 && !evas_object_smart_parent_get(row_object->cells[i].objects[j][k]))
                               {
                                  evas_object_clip_set(row_object->cells[i].objects[j][k], col->clip);
                                  etk_widget_member_object_add(tree->grid, row_object->cells[i].objects[j][k]);
@@ -2312,6 +2352,7 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                }
             }
             
+            evas_object_lower(row_object->background);
             row_object->row = row;
          }
          else
@@ -2725,7 +2766,8 @@ static void _etk_tree2_purge(Etk_Tree2 *tree)
    if (!tree)
       return;
    
-   /* First we dissociate the row objects from the rows that will be deleted */
+   /* First we dissociate the row objects from the rows that will be deleted,
+    * and we cache their row objects */
    for (l = tree->row_objects; l; l = l->next)
    {
       Etk_Tree2_Row_Object *row_object;
@@ -2733,6 +2775,19 @@ static void _etk_tree2_purge(Etk_Tree2 *tree)
       row_object = l->data;
       if (row_object->row && row_object->row->delete_me)
       {
+         for (i = 0; i < tree->num_cols; i++)
+         {
+            col = tree->columns[i];
+            for (j = 0; j < col->num_models; j++)
+            {
+               if (col->models[j]->objects_cache)
+               {
+                  col->models[j]->objects_cache(col->models[j], row_object->row->cells_data[i][j],
+                     row_object->cells[i].objects[j]);
+               }
+            }
+         }
+         
          etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_HIDDEN_SIGNAL], ETK_OBJECT(tree), NULL, row_object->row);
          row_object->row = NULL;
       }
@@ -3040,7 +3095,8 @@ static Etk_Tree2_Row_Object *_etk_tree2_row_object_create(Etk_Tree2 *tree)
             col->models[j]->objects_create(col->models[j], row_object->cells[i].objects[j], evas);
             for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
             {
-               if (row_object->cells[i].objects[j][k])
+               if (row_object->cells[i].objects[j][k]
+                  && !evas_object_smart_parent_get(row_object->cells[i].objects[j][k]))
                {
                   evas_object_clip_set(row_object->cells[i].objects[j][k], col->clip);
                   etk_widget_member_object_add(tree->grid, row_object->cells[i].objects[j][k]);

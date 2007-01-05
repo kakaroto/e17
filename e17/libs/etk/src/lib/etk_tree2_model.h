@@ -28,8 +28,9 @@ struct Etk_Tree2_Model
    void (*cell_data_set)(Etk_Tree2_Model *model, void *cell_data, va_list *args);
    void (*cell_data_get)(Etk_Tree2_Model *model, void *cell_data, va_list *args);
    void (*objects_create)(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
+   void (*objects_cache)(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
    Etk_Bool (*render)(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
-   int  (*width_get)(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
+   int (*width_get)(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
 };
 
 Etk_Tree2_Model *etk_tree2_model_text_new(void);
@@ -39,9 +40,10 @@ Etk_Tree2_Model *etk_tree2_model_image_new(void);
 Etk_Tree2_Model *etk_tree2_model_checkbox_new(void);
 Etk_Tree2_Model *etk_tree2_model_progress_bar_new(void);
 
+void etk_tree2_model_free(Etk_Tree2_Model *model);
+
 /* TODO: image_width_set() */
 
-void etk_tree2_model_free(Etk_Tree2_Model *model);
 
 /** @} */
 

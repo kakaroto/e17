@@ -512,13 +512,18 @@ group {
  * - "etk,action,fold": emitted when the corresponding row is folded
  * - "etk,action,unfold": emitted when the corresponding row is unfolded
  *
+ * The min size of the group is used to determine the size of the expande in the tree
+ *
  * Note that this group doesn't have the common signals of a widget
  * ("etk,state,enter", "etk,state,leave", ...) since a tree's expander is not a widget.
  * You can though use the signals "mouse,in", "mouse,out", "mouse,down,1" (...)
  * emitted automatically by Edje
+ *
+ * TODOC: min size...
  */
 group {
    name: "etk/tree/expander";
+   min: 18 18;
    parts {
       part {
          name: "expander_arrow";
@@ -578,6 +583,8 @@ group {
  * --------
  * - "etk,state,on": emitted when the checkbox is checked
  * - "etk,action,off": emitted when the checkbox is unchecked
+ *
+ * The min size of the group is used to determine the size of the checkbox in the tree
  *
  * Note that this group doesn't have the common signals of a widget
  * ("etk,state,enter", "etk,state,leave", ...) since a tree's checkbox is not a widget.
@@ -676,6 +683,7 @@ group {
 
 /* TODO: we should be able to theme the progress-bar model... */
 /* TODO: remove this group... no more need for it with the tree2 */
+/* TODO: document "etk/tree/grid" */
 group {
    name: "etk/tree/grid";
    data {

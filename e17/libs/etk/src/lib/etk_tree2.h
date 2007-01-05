@@ -173,6 +173,7 @@ Etk_Tree2_Col *etk_tree2_nth_col_get(Etk_Tree2 *tree, int nth);
 
 Etk_Tree2  *etk_tree2_col_tree_get(Etk_Tree2_Col *col);
 void        etk_tree2_col_model_add(Etk_Tree2_Col *col, Etk_Tree2_Model *model);
+Etk_Widget *etk_tree2_col_header_get(Etk_Tree2_Col *col);
 void        etk_tree2_col_title_set(Etk_Tree2_Col *col, const char *title);
 const char *etk_tree2_col_title_get(Etk_Tree2_Col *col);
 void        etk_tree2_col_width_set(Etk_Tree2_Col *col, int width);
