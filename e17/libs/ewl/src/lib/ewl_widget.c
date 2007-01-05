@@ -922,13 +922,16 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	if (part && !*part)
+		part = NULL;
+
 	/*
 	 * Check for an existing instance of the part key.
 	 */
 	if (w->theme_text.list) {
 		if (w->theme_text.direct) {
 			match = EWL_PAIR(w->theme_text.list);
-			if (part == match->key ||
+			if (part != match->key ||
 					(part && strcmp(part, match->key)))
 				match = NULL;
 		}
@@ -1011,7 +1014,6 @@ ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_PARAM_PTR_RET("part", part, NULL);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	/*
@@ -1085,6 +1087,9 @@ ewl_widget_appearance_text_get(Ewl_Widget *w)
 		match = ewl_widget_appearance_part_text_get(w, part);
 		FREE(part);
 	}
+
+	if (!match)
+		match = ewl_widget_appearance_part_text_get(w, NULL);
 
 	DRETURN_PTR(match, DLEVEL_STABLE);
 }
