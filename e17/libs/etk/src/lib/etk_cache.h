@@ -19,7 +19,6 @@ struct Etk_Cache
 {
    /* private: */
    Evas_List *cached_objects;
-   Evas_Hash *objects_hash;
    int size;
 };
  
