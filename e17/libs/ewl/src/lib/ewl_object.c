@@ -36,8 +36,7 @@ ewl_object_init(Ewl_Object *o)
 	/*
 	 * Set the default fill policy and alignment for the object.
 	 */
-	o->flags = EWL_FLAG_FILL_NORMAL | EWL_FLAG_ALIGN_LEFT |
-		   EWL_FLAG_ALIGN_TOP;
+	o->flags = EWL_FLAG_FILL_NORMAL;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
