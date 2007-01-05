@@ -3,30 +3,37 @@
 #define _ETK_CACHE_H_
 
 #include <Evas.h>
+#include "etk_types.h"
 
 /**
  * @defgroup Etk_Cache Cache system of Etk
  * @brief The cache system is used by widgets that frequently need to load images, such as Etk_Tree or Etk_Iconbox
  * @{
  */
+
+/**
+ * @brief A system used to cache image objects for widgets that frequently need to load images
+ * @structinfo
+ */
+struct Etk_Cache
+{
+   /* private: */
+   Evas_List *cached_objects;
+   Evas_Hash *objects_hash;
+   int size;
+};
  
-void etk_cache_shutdown();
-void etk_cache_empty(Evas *evas);
+Etk_Cache *etk_cache_new(int size);
+void       etk_cache_destroy(Etk_Cache *cache);
+void       etk_cache_clear(Etk_Cache *cache);
 
-void etk_cache_image_object_size_set(Evas *evas, int size);
-int etk_cache_image_object_size_get(Evas *evas);
-void etk_cache_edje_object_size_set(Evas *evas, int size);
-int etk_cache_edje_object_size_get(Evas *evas);
+void etk_cache_size_set(Etk_Cache *cache, int size);
+int  etk_cache_size_get(Etk_Cache *cache);
+int  etk_cache_num_objects_get(Etk_Cache *cache);
 
-void etk_cache_image_object_add(Evas_Object *image_object);
-void etk_cache_image_object_remove(Evas_Object *image_object);
-Evas_Object *etk_cache_image_object_find(Evas *evas, const char *filename);
-
-void etk_cache_edje_object_add(Evas_Object *edje_object);
-void etk_cache_edje_object_add_with_state(Evas_Object *edje_object, int state);
-void etk_cache_edje_object_remove(Evas_Object *edje_object);
-Evas_Object *etk_cache_edje_object_find(Evas *evas, const char *filename, const char *group);
-Evas_Object *etk_cache_edje_object_find_with_state(Evas *evas, const char *filename, const char *group, int state);
+void         etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, const char *key);
+void         etk_cache_remove(Etk_Cache *cache, Evas_Object *object);
+Evas_Object *etk_cache_find(Etk_Cache *cache, const char *filename, const char *key);
 
 /** @} */
 

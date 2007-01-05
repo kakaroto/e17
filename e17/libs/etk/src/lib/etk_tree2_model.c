@@ -6,6 +6,7 @@
 #include <Edje.h>
 #include "etk_tree2.h"
 #include "etk_theme.h"
+#include "etk_signal.h"
 #include "etk_utils.h"
 
 /* Data associated to the "image" model */
@@ -35,31 +36,31 @@ static void _text_cell_data_free(Etk_Tree2_Model *model, void *cell_data);
 static void _text_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _text_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _text_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
-static void _text_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
+static Etk_Bool _text_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
 static int _text_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
 
 /* Integer model */
 static void _int_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _int_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static void _int_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
+static Etk_Bool _int_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
 
 /* Double model */
 static void _double_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _double_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static void _double_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
+static Etk_Bool _double_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
 
 /* Image model */
 static void _image_cell_data_free(Etk_Tree2_Model *model, void *cell_data);
 static void _image_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _image_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static void _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
+static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
 static int _image_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
 
 /* Checkbox model */
 static void _checkbox_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _checkbox_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _checkbox_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
-static void _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
+static Etk_Bool _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
 static int _checkbox_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
 static void _checkbox_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
@@ -68,7 +69,7 @@ static void _progress_bar_cell_data_free(Etk_Tree2_Model *model, void *cell_data
 static void _progress_bar_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _progress_bar_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _progress_bar_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
-static void _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
+static Etk_Bool _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
 static int _progress_bar_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
 
 
@@ -289,18 +290,20 @@ static void _text_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_obje
 }
 
 /* Text: render() */
-static void _text_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _text_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
 {
    char **text_data;
    int th;
    
    if (!(text_data = cell_data) || !cell_objects || !cell_objects[0])
-      return;
+      return ETK_FALSE;
    
    evas_object_text_text_set(cell_objects[0], *text_data);
    evas_object_geometry_get(cell_objects[0], NULL, NULL, NULL, &th);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - th) / 2));
    evas_object_show(cell_objects[0]);
+   
+   return ETK_FALSE;
 }
 
 /* Text: width_get() */
@@ -344,20 +347,22 @@ static void _int_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list 
 }
 
 /* Int: render() */
-static void _int_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _int_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
 {
    int *int_data;
    char string[256];
    int th;
    
    if (!(int_data = cell_data) || !cell_objects || !cell_objects[0])
-      return;
+      return ETK_FALSE;
    
    snprintf(string, 255, "%d", *int_data);
    evas_object_text_text_set(cell_objects[0], string);
    evas_object_geometry_get(cell_objects[0], NULL, NULL, NULL, &th);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - th) / 2));
    evas_object_show(cell_objects[0]);
+   
+   return ETK_FALSE;
 }
 
 /**************************
@@ -389,20 +394,22 @@ static void _double_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_li
 }
 
 /* Double: render() */
-static void _double_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _double_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
 {
    double *double_data;
    char string[256];
    int th;
    
    if (!(double_data = cell_data) || !model || !cell_objects || !cell_objects[0])
-      return;
+      return ETK_FALSE;
    
    snprintf(string, 255, "%.2f", *double_data);
    evas_object_text_text_set(cell_objects[0], string);
    evas_object_geometry_get(cell_objects[0], NULL, NULL, NULL, &th);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - th) / 2));
    evas_object_show(cell_objects[0]);
+   
+   return ETK_FALSE;
 }
 
 /**************************
@@ -461,72 +468,92 @@ static void _image_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_lis
 }
 
 /* Image: render() */
-static void _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
 {
    Etk_Tree2_Model_Image_Data *image_data;
    int image_width, image_height;
    Etk_Geometry image_geometry;
+   Etk_Bool object_created = ETK_FALSE;
+   char *ext;
    
    if (!(image_data = cell_data) || !model || !cell_objects || !evas)
-      return;
+      return ETK_FALSE;
 
-   if (!image_data->filename)
-      return;
-   
-   /* This code is ugly... */
-   while (image_data->type != ETK_TREE2_MODEL_NOT_FOUND)
+   if (!image_data->filename || image_data->type == ETK_TREE2_MODEL_NOT_FOUND)
    {
       if (cell_objects[0])
+         evas_object_hide(cell_objects[0]);
+      return ETK_FALSE;
+   }
+   
+   /* If we don't know yet what the image's type is, we "guess" it */
+   if (image_data->type == ETK_TREE2_MODEL_UNKNOWN_YET)
+   {
+      if (!image_data->key)
+         image_data->type = ETK_TREE2_MODEL_NORMAL;
+      else if ((ext = strrchr(image_data->filename, '.')) && strcasecmp(ext + 1, "eet") == 0)
+         image_data->type = ETK_TREE2_MODEL_NORMAL;
+      else
+         image_data->type = ETK_TREE2_MODEL_EDJE;
+   }
+   
+   /* We load the image */
+   if (image_data->type == ETK_TREE2_MODEL_NORMAL)
+   {
+      /* We make sure the object is an Evas_Object_Image:
+       * An Edje-object is a smart object, so if "evas_object_smart_data_get(cell_objects[0])"
+       * is not NULL, it means the object is an Edje object */
+      if (cell_objects[0] && evas_object_smart_data_get(cell_objects[0]))
       {
          evas_object_del(cell_objects[0]);
          cell_objects[0] = NULL;
       }
-   
-      if (image_data->type == ETK_TREE2_MODEL_EDJE
-         || (image_data->key && image_data->type == ETK_TREE2_MODEL_UNKNOWN_YET))
-      {
-         cell_objects[0] = edje_object_add(evas);
-         if (edje_object_file_set(cell_objects[0], image_data->filename, image_data->key))
-         {
-            edje_object_size_min_get(cell_objects[0], &image_width, &image_height);
-            image_data->type = ETK_TREE2_MODEL_EDJE;
-            break;
-         }
-         else if (image_data->type == ETK_TREE2_MODEL_EDJE)
-            image_data->type = ETK_TREE2_MODEL_NOT_FOUND;
-         else
-            image_data->type = ETK_TREE2_MODEL_NORMAL;
-      }
-      else
+      if (!cell_objects[0])
       {
          cell_objects[0] = evas_object_image_add(evas);
-         evas_object_image_file_set(cell_objects[0], image_data->filename, image_data->key);
-         if (!evas_object_image_load_error_get(cell_objects[0]))
-         {
-            evas_object_image_size_get(cell_objects[0], &image_width, &image_height);
-            image_data->type = ETK_TREE2_MODEL_NORMAL;
-            break;
-         }
-         else
-            image_data->type = ETK_TREE2_MODEL_NOT_FOUND;
+         evas_object_pass_events_set(cell_objects[0], 1);
+         object_created = ETK_TRUE;
       }
+      
+      /* Load the image file */
+      evas_object_image_file_set(cell_objects[0], image_data->filename, image_data->key);
+      if (!evas_object_image_load_error_get(cell_objects[0]))
+         evas_object_image_size_get(cell_objects[0], &image_width, &image_height);
+      else
+         image_data->type = ETK_TREE2_MODEL_NOT_FOUND;
+   }
+   /* If it's not a normal image file, then it's an Edje file... */
+   else
+   {
+      /* We make sure the object is an Edje_Object:
+       * An Edje-object is a smart object, so if "evas_object_smart_data_get(cell_objects[0])"
+       * is not NULL, it means the object is an Edje object */
+      if (cell_objects[0] && !evas_object_smart_data_get(cell_objects[0]))
+      {
+         evas_object_del(cell_objects[0]);
+         cell_objects[0] = NULL;
+      }
+      if (!cell_objects[0])
+      {
+         cell_objects[0] = edje_object_add(evas);
+         evas_object_pass_events_set(cell_objects[0], 1);
+         object_created = ETK_TRUE;
+      }
+      
+      /* Load the edje group from the file */
+      if (edje_object_file_set(cell_objects[0], image_data->filename, image_data->key))
+         edje_object_size_min_get(cell_objects[0], &image_width, &image_height);
+      else
+         image_data->type = ETK_TREE2_MODEL_NOT_FOUND;
    }
    
-   /* Loading has failed... we return */
+   /* If the loading failed, we hide the object and return */
    if (image_data->type == ETK_TREE2_MODEL_NOT_FOUND)
    {
       if (cell_objects[0])
-      {
-         evas_object_del(cell_objects[0]);
-         cell_objects[0] = NULL;
-      }
-      return;
+         evas_object_hide(cell_objects[0]);
+      return object_created;
    }
-   
-   /* TODO: humm... we shouldn't do this. It's dirty */
-   evas_object_clip_set(cell_objects[0], model->col->clip);
-   etk_widget_member_object_add(model->tree->grid, cell_objects[0]);
-   
    
    /* The image is correctly loaded, we can now render it */
    if (image_width == 0 || image_height == 0)
@@ -556,6 +583,8 @@ static void _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geomet
    evas_object_move(cell_objects[0], image_geometry.x, image_geometry.y);
    evas_object_resize(cell_objects[0], image_geometry.w, image_geometry.h);
    evas_object_show(cell_objects[0]);
+   
+   return object_created;
 }
 
 /* Image: width_get() */
@@ -615,13 +644,13 @@ static void _checkbox_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_
 }
 
 /* Checkbox: render() */
-static void _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
 {
    Etk_Bool *checked;
    int w, h;
    
    if (!(checked = cell_data) || !cell_objects || !cell_objects[0])
-      return;
+      return ETK_FALSE;
    
    if (*checked)
       edje_object_signal_emit(cell_objects[0], "etk,state,on", "etk");
@@ -630,10 +659,13 @@ static void _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geo
    edje_object_message_signal_process(cell_objects[0]);
    
    evas_object_data_set(cell_objects[0], "_Etk_Tree2_Model_Checkbox::Row", row);
+   evas_object_data_set(cell_objects[0], "_Etk_Tree2_Model_Checkbox::Checked", checked);
    edje_object_size_min_get(cell_objects[0], &w, &h);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - h) / 2));
    evas_object_resize(cell_objects[0], w, h);
    evas_object_show(cell_objects[0]);
+   
+   return ETK_FALSE;
 }
 
 /* Checkbox: width_get() */
@@ -653,12 +685,13 @@ static void _checkbox_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *ev
 {
    Etk_Tree2_Model *model;
    Etk_Tree2_Row *row;
+   Etk_Bool *checked;
    Evas_Event_Mouse_Up *event;
    int ox, oy, ow, oh;
-   Etk_Bool checked;
    
    if (!(model = data) || !model->col || !(event = event_info)
-      || !(row = evas_object_data_get(obj, "_Etk_Tree2_Model_Checkbox::Row")))
+      || !(row = evas_object_data_get(obj, "_Etk_Tree2_Model_Checkbox::Row"))
+      || !(checked = evas_object_data_get(obj, "_Etk_Tree2_Model_Checkbox::Checked")))
    {
       return;
    }
@@ -666,9 +699,11 @@ static void _checkbox_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *ev
    evas_object_geometry_get(obj, &ox, &oy, &ow, &oh);
    if (ETK_INSIDE(event->canvas.x, event->canvas.y, ox, oy, ow, oh))
    {
-      /* TODO: there is a problem here if several models are combined.... */
-      etk_tree2_row_fields_get(row, model->col, &checked, NULL);
-      etk_tree2_row_fields_set(row, model->col, !checked, NULL);
+      *checked = !(*checked);
+      etk_signal_emit_by_name("cell_value_changed", ETK_OBJECT(model->col), NULL, row);
+      
+      /* Force the redraw the tree */
+      etk_widget_redraw_queue(ETK_WIDGET(model->tree));
    }
 }
 
@@ -733,13 +768,13 @@ static void _progress_bar_objects_create(Etk_Tree2_Model *model, Evas_Object **c
 }
 
 /* Progressbar: render() */
-static void _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
 {
    Etk_Tree2_Model_Progressbar_Data *pbar_data;   
    int w, h;
    
    if (!(pbar_data = cell_data) || !cell_objects || !cell_objects[0])
-      return;
+      return ETK_FALSE;
    
    edje_object_part_drag_value_set(cell_objects[0], "etk.dragable.filler", 0.0, 0.0);
    edje_object_part_drag_size_set(cell_objects[0], "etk.dragable.filler", pbar_data->fraction, 0.0);
@@ -751,6 +786,8 @@ static void _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - h) / 2));
    evas_object_resize(cell_objects[0], w, h);
    evas_object_show(cell_objects[0]);
+   
+   return ETK_FALSE;
 }
 
 /* Progressbar: width_get() */

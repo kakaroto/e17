@@ -28,7 +28,7 @@ struct Etk_Tree2_Model
    void (*cell_data_set)(Etk_Tree2_Model *model, void *cell_data, va_list *args);
    void (*cell_data_get)(Etk_Tree2_Model *model, void *cell_data, va_list *args);
    void (*objects_create)(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
-   void (*render)(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
+   Etk_Bool (*render)(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
    int  (*width_get)(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
 };
 

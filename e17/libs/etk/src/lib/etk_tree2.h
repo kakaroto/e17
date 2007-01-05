@@ -15,7 +15,7 @@
  * @{
  */
 
-#define MAX_MODELS_PER_COL 5
+#define MAX_MODELS_PER_COL 2
 
 /** Gets the type of a tree */
 #define ETK_TREE2_TYPE       (etk_tree2_type_get())
@@ -40,7 +40,7 @@ typedef enum Etk_Tree2_Mode
 } Etk_Tree2_Mode;
 
 /**
- * @brief A column of a tree
+ * @brief @object A column of a tree
  * @structinfo
  */
 struct Etk_Tree2_Col
@@ -76,8 +76,6 @@ struct Etk_Tree2_Col
       void *data;
    } sort;
 };
-
-/* TODO: remove this... should be etk_tree2_col_alignment_set() */
 
 /**
  * @brief A row of a tree
@@ -169,10 +167,11 @@ void etk_tree2_thaw(Etk_Tree2 *tree);
 
 Etk_Scrolled_View *etk_tree2_scrolled_view_get(Etk_Tree2 *tree);
 
-Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, int width);
+Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, int width, float alignment);
 int            etk_tree2_num_cols_get(Etk_Tree2 *tree);
 Etk_Tree2_Col *etk_tree2_nth_col_get(Etk_Tree2 *tree, int nth);
 
+Etk_Tree2  *etk_tree2_col_tree_get(Etk_Tree2_Col *col);
 void        etk_tree2_col_model_add(Etk_Tree2_Col *col, Etk_Tree2_Model *model);
 void        etk_tree2_col_title_set(Etk_Tree2_Col *col, const char *title);
 const char *etk_tree2_col_title_get(Etk_Tree2_Col *col);
@@ -184,11 +183,15 @@ void        etk_tree2_col_resizable_set(Etk_Tree2_Col *col, Etk_Bool resizable);
 Etk_Bool    etk_tree2_col_resizable_get(Etk_Tree2_Col *col);
 void        etk_tree2_col_expand_set(Etk_Tree2_Col *col, Etk_Bool expand);
 Etk_Bool    etk_tree2_col_expand_get(Etk_Tree2_Col *col);
+void        etk_tree2_col_alignment_set(Etk_Tree2_Col *col, float alignment);
+float       etk_tree2_col_alignment_get(Etk_Tree2_Col *col);
 void        etk_tree2_col_visible_set(Etk_Tree2_Col *col, Etk_Bool visible);
 Etk_Bool    etk_tree2_col_visible_get(Etk_Tree2_Col *col);
 void        etk_tree2_col_position_set(Etk_Tree2_Col *col, int position);
 int         etk_tree2_col_position_get(Etk_Tree2_Col *col);
 void        etk_tree2_col_sort_set(Etk_Tree2_Col *col, int (*compare_cb)(Etk_Tree2 *tree, Etk_Tree2_Row *row1, Etk_Tree2_Row *row2, Etk_Tree2_Col *col, void *data), void *data);
+/* TODO: void etk_tree2_col_sort(Etk_Tree2_Col *col); */
+/* TODO: void etk_tree2_col_sort_full(Etk_Tree2_Col *col, int (*compare_cb)(Etk_Tree2 *tree, Etk_Tree2_Row *row1, Etk_Tree2_Row *row2, Etk_Tree2_Col *col, void *data), void *data); */
 
 Etk_Tree2_Row *etk_tree2_row_prepend(Etk_Tree2 *tree, Etk_Tree2_Row *parent, ...);
 Etk_Tree2_Row *etk_tree2_row_append(Etk_Tree2 *tree, Etk_Tree2_Row *parent, ...);
@@ -207,6 +210,7 @@ void  etk_tree2_row_data_set(Etk_Tree2_Row *row, void *data);
 void  etk_tree2_row_data_set_full(Etk_Tree2_Row *row, void *data, void (*free_cb)(void *data));
 void *etk_tree2_row_data_get(Etk_Tree2_Row *row);
 
+/* TODO: Etk_Tree2_Row *etk_tree2_selected_row_get(Etk_Tree2 *tree); */
 void     etk_tree2_select_all(Etk_Tree2 *tree);
 void     etk_tree2_unselect_all(Etk_Tree2 *tree);
 void     etk_tree2_row_select(Etk_Tree2_Row *row);
@@ -226,6 +230,7 @@ Etk_Tree2_Row *etk_tree2_row_prev_get(Etk_Tree2_Row *row);
 Etk_Tree2_Row *etk_tree2_row_next_get(Etk_Tree2_Row *row);
 Etk_Tree2_Row *etk_tree2_row_walk_prev(Etk_Tree2_Row *row, Etk_Bool include_folded);
 Etk_Tree2_Row *etk_tree2_row_walk_next(Etk_Tree2_Row *row, Etk_Bool include_folded);
+Etk_Tree2     *etk_tree2_row_tree_get(Etk_Tree2_Row *row);
 
 /** @} */
 

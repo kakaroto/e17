@@ -5,6 +5,7 @@
 
 static void _etk_test_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_test_tree2_row_clicked_cb(Etk_Object *object, Etk_Tree2_Row *row, Etk_Event_Mouse_Up *event, void *data);
+static void _etk_test_tree2_checkbox_toggled_cb(Etk_Object *object, Etk_Tree2_Row *row, void *data);
 
 /* Creates the window for the tree test */
 void etk_test_tree2_window_create(void *data)
@@ -47,25 +48,26 @@ void etk_test_tree2_window_create(void *data)
    etk_container_add(ETK_CONTAINER(alignment), tree);
 
    /* We first create the columns of the tree, and then we "build" the tree with etk_tree2_build() */
-   col1 = etk_tree2_col_new(ETK_TREE2(tree), "Column 1", 130);
+   col1 = etk_tree2_col_new(ETK_TREE2(tree), "Column 1", 130, 0.0);
    etk_tree2_col_model_add(col1, etk_tree2_model_image_new());
    etk_tree2_col_model_add(col1, etk_tree2_model_text_new());
    
-   col2 = etk_tree2_col_new(ETK_TREE2(tree), "Column 2", 60);
+   col2 = etk_tree2_col_new(ETK_TREE2(tree), "Column 2", 60, 1.0);
    etk_tree2_col_model_add(col2, etk_tree2_model_double_new());
    
-   col3 = etk_tree2_col_new(ETK_TREE2(tree), "Column 3", 60);
+   col3 = etk_tree2_col_new(ETK_TREE2(tree), "Column 3", 60, 0.0);
    etk_tree2_col_model_add(col3, etk_tree2_model_image_new());
    
-   col4 = etk_tree2_col_new(ETK_TREE2(tree), "Column 4", 90);
+   col4 = etk_tree2_col_new(ETK_TREE2(tree), "Column 4", 60, 0.5);
    etk_tree2_col_model_add(col4, etk_tree2_model_checkbox_new());
    
    etk_tree2_build(ETK_TREE2(tree));
    
-   /* Then we add the rows to the tree. etk_tree2_freeze/thaw() is used to improve the speed when you insert a lot
-    * of rows. It's not really useful here since we insert only 150 rows */
+   /* Then we add the rows to the tree. etk_tree2_freeze/thaw() is used to improve
+    * the speed when you insert a lot of rows. It is not really important if you
+    * insert only some thousands of rows (here, we insert 3000 rows) */
    etk_tree2_freeze(ETK_TREE2(tree));
-   for (i = 0; i < 50; i++)
+   for (i = 0; i < 1000; i++)
    {
       sprintf(row_name, "Row %d", (i * 3) + 1);
       stock_key = etk_stock_key_get(ETK_STOCK_PLACES_USER_HOME, ETK_STOCK_SMALL);
@@ -100,8 +102,12 @@ void etk_test_tree2_window_create(void *data)
    statusbar = etk_statusbar_new();
    etk_box_append(ETK_BOX(vbox), statusbar, ETK_BOX_START, ETK_BOX_FILL, 0);
    
-   etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree2_key_down_cb), NULL);
-   etk_signal_connect("row_clicked", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree2_row_clicked_cb), statusbar);
+   etk_signal_connect("key_down", ETK_OBJECT(tree),
+      ETK_CALLBACK(_etk_test_tree2_key_down_cb), NULL);
+   etk_signal_connect("row_clicked", ETK_OBJECT(tree),
+      ETK_CALLBACK(_etk_test_tree2_row_clicked_cb), statusbar);
+   etk_signal_connect("cell_value_changed", ETK_OBJECT(col4),
+      ETK_CALLBACK(_etk_test_tree2_checkbox_toggled_cb), statusbar);
    
    etk_widget_show_all(win);
 }
@@ -154,5 +160,29 @@ static void _etk_test_tree2_row_clicked_cb(Etk_Object *object, Etk_Tree2_Row *ro
       (event->flags & ETK_MOUSE_TRIPLE_CLICK) ? "Triple" :
       ((event->flags & ETK_MOUSE_DOUBLE_CLICK) ? "Double" : "Single"));
    
+   etk_statusbar_message_push(statusbar, message, 0);
+}
+
+/* Called when a checkbox of the tree is toggled: we display its new state in the statusbar */
+static void _etk_test_tree2_checkbox_toggled_cb(Etk_Object *object, Etk_Tree2_Row *row, void *data)
+{
+   Etk_Tree2 *tree;
+   Etk_Tree2_Col *col;
+   Etk_Statusbar *statusbar;
+   Etk_Bool checked;
+   char *row_name;
+   char message[1024];
+   
+   if (!(col = ETK_TREE2_COL(object)) || !(statusbar = ETK_STATUSBAR(data)) || !row)
+      return;
+   
+   tree = etk_tree2_col_tree_get(col);
+   
+   /* We retrieve the name of the row: see _etk_test_tree2_row_clicked_cb() for more info*/
+   etk_tree2_row_fields_get(row, etk_tree2_nth_col_get(tree, 0), NULL, NULL, &row_name, NULL);
+   /* We then retrieve the new state of the checkbox */
+   etk_tree2_row_fields_get(row, col, &checked, NULL);
+   
+   sprintf(message, "Row \"%s\" has been %s", row_name, checked ? "checked" : "unchecked");
    etk_statusbar_message_push(statusbar, message, 0);
 }

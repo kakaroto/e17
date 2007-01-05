@@ -973,11 +973,12 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
       
       if (icon_object->image)
       {
-         etk_widget_member_object_del(iconbox->grid, icon_object->image);
+         /*etk_widget_member_object_del(iconbox->grid, icon_object->image);
          if (icon_object->use_edje)
             etk_cache_edje_object_add(icon_object->image);
          else
-            etk_cache_image_object_add(icon_object->image);
+            etk_cache_image_object_add(icon_object->image);*/
+         evas_object_del(icon_object->image);
          icon_object->image = NULL;
       }
    }
@@ -1331,11 +1332,12 @@ static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid)
    /* Cache the image */
    if (icon_object->image)
    {
-      etk_widget_member_object_del(ETK_WIDGET(grid), icon_object->image);
+      /*etk_widget_member_object_del(ETK_WIDGET(grid), icon_object->image);
       if (icon_object->use_edje)
          etk_cache_edje_object_add(icon_object->image);
       else
-         etk_cache_image_object_add(icon_object->image);
+         etk_cache_image_object_add(icon_object->image);*/
+      evas_object_del(icon_object->image);
    }
    
    etk_object_destroy(ETK_OBJECT(icon_object->label));
@@ -1371,7 +1373,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
    {
       if (!icon->edje_group)
       {
-         if (!(icon_object->image = etk_cache_image_object_find(evas, icon->filename)))
+         //if (!(icon_object->image = etk_cache_image_object_find(evas, icon->filename)))
          {
             icon_object->image = evas_object_image_add(evas);
             evas_object_image_file_set(icon_object->image, icon->filename, NULL);
@@ -1381,7 +1383,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
       }
       else
       {
-         if (!(icon_object->image = etk_cache_edje_object_find(evas, icon->filename, icon->edje_group)))
+         //if (!(icon_object->image = etk_cache_edje_object_find(evas, icon->filename, icon->edje_group)))
          {
             icon_object->image = edje_object_add(evas);
             edje_object_file_set(icon_object->image, icon->filename, icon->edje_group);

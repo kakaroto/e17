@@ -25,7 +25,7 @@
 #define COL_RESIZE_THRESHOLD 3
 #define MIN_ROW_HEIGHT 12
 #define DEFAULT_ROW_HEIGHT 24
-#define MAX_OBJECTS_PER_MODEL 5
+#define MAX_OBJECTS_PER_MODEL 1
 #define CELL_HMARGINS 4
 #define CELL_VMARGINS 2
 #define MODEL_INTERSPACE 8
@@ -81,7 +81,8 @@ enum Etk_Tree2_Col_Property_Id
    ETK_TREE2_COL_POSITION_PROPERTY,
    ETK_TREE2_COL_EXPAND_PROPERTY,
    ETK_TREE2_COL_WIDTH_PROPERTY,
-   ETK_TREE2_COL_MIN_WIDTH_PROPERTY
+   ETK_TREE2_COL_MIN_WIDTH_PROPERTY,
+   ETK_TREE2_COL_ALIGN_PROPERTY
 };
 
 
@@ -125,8 +126,6 @@ static void _etk_tree2_row_expander_mouse_up_cb(void *data, Evas *e, Evas_Object
 static void _etk_tree2_purge_job(void *data);
 static void _etk_tree2_purge(Etk_Tree2 *tree);
 static void _etk_tree2_row_move_to_purge_pool(Etk_Tree2_Row *row);
-
-/* TODO: static void _etk_tree2_sort(Etk_Tree2 *tree); */
 
 static void _etk_tree2_col_realize(Etk_Tree2 *tree, int col_nth);
 static Etk_Tree2_Col *etk_tree2_col_to_resize_get(Etk_Tree2 *tree, int x);
@@ -235,6 +234,8 @@ Etk_Type *etk_tree2_col_type_get()
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(COL_MIN_WIDTH));
       etk_type_property_add(tree_col_type, "min_width", ETK_TREE2_COL_MIN_WIDTH_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(COL_MIN_WIDTH));
+      etk_type_property_add(tree_col_type, "align", ETK_TREE2_COL_ALIGN_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.0));
       
       tree_col_type->property_set = _etk_tree2_col_property_set;
       tree_col_type->property_get = _etk_tree2_col_property_get;
@@ -431,9 +432,10 @@ Etk_Scrolled_View *etk_tree2_scrolled_view_get(Etk_Tree2 *tree)
  * @param title the tile of the column
  * @param width the requested width of the column. It won't be necessary the visible width
  * of the column since it can be expanded to fit the available space
+ * @param the horizontal alignment of the objects inside the column, from 0.0 (left alignment) to 1.0 (right alignment)
  * @return Returns the new column
  */
-Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, int width)
+Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, int width, float alignment)
 {
    Etk_Tree2_Col *new_col;
    Etk_Widget *new_header;
@@ -448,7 +450,7 @@ Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, int width)
 
    tree->columns = realloc(tree->columns, sizeof(Etk_Tree2_Col *) * (tree->num_cols + 1));
    new_col = ETK_TREE2_COL(etk_object_new(ETK_TREE2_COL_TYPE, "title", title,
-      "width", width, "visible", ETK_TRUE, "resizable", ETK_TRUE, NULL));
+      "width", width, "visible", ETK_TRUE, "resizable", ETK_TRUE, "align", alignment, NULL));
    tree->columns[tree->num_cols] = new_col;
 
    new_col->id = tree->num_cols;
@@ -494,6 +496,18 @@ Etk_Tree2_Col *etk_tree2_nth_col_get(Etk_Tree2 *tree, int nth)
    if (!tree || nth < 0 || nth >= tree->num_cols)
       return NULL;
    return tree->columns[nth];
+}
+
+/**
+ * @brief Gets the tree which contains the given column
+ * @param col a column
+ * @return Returns the tree which contains the given column, or NULL on failure
+ */
+Etk_Tree2 *etk_tree2_col_tree_get(Etk_Tree2_Col *col)
+{
+   if (!col)
+      return NULL;
+   return col->tree;
 }
 
 /**
@@ -669,6 +683,35 @@ Etk_Bool etk_tree2_col_expand_get(Etk_Tree2_Col *col)
    if (!col)
       return ETK_FALSE;
    return col->expand;
+}
+
+/**
+ * @brief Sets the horizontal alignment of the objects inside the column
+ * @param col a column of a tree
+ * @param alignment the horizontal alignment to use, from 0.0 (left alignment) to 1.0 (right alignment)
+ */
+void etk_tree2_col_alignment_set(Etk_Tree2_Col *col, float alignment)
+{
+   if (!col || col->align == alignment)
+      return;
+   
+   col->align = ETK_CLAMP(alignment, 0.0, 1.0);
+   etk_object_notify(ETK_OBJECT(col), "align");
+   
+   if (col->tree)
+      etk_widget_redraw_queue(ETK_WIDGET(col->tree));
+}
+
+/**
+ * @brief Gets the horizontal alignment of the objects inside the column
+ * @param col a column of a tree
+ * @return Returns the horizontal alignment of the column, from 0.0 (left alignment) to 1.0 (right alignment)
+ */
+float etk_tree2_col_alignment_get(Etk_Tree2_Col *col)
+{
+   if (!col)
+      return 0.0;
+   return col->align;
 }
 
 /**
@@ -1401,6 +1444,18 @@ Etk_Tree2_Row *etk_tree2_row_walk_next(Etk_Tree2_Row *row, Etk_Bool include_fold
    }
 }
 
+/**
+ * @brief Gets the tree which contains the given row
+ * @param row a row
+ * @return Returns the tree which contains the given row, or NULL on failure
+ */
+Etk_Tree2 *etk_tree2_row_tree_get(Etk_Tree2_Row *row)
+{
+   if (!row)
+      return NULL;
+   return row->tree;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -1622,8 +1677,6 @@ static void _etk_tree2_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    }
 }
 
-/* TODO: add "align" prop */
-
 /**************************
  * Tree Col
  **************************/
@@ -1696,6 +1749,9 @@ static void _etk_tree2_col_property_set(Etk_Object *object, int property_id, Etk
       case ETK_TREE2_COL_MIN_WIDTH_PROPERTY:
          etk_tree2_col_min_width_set(tree_col, etk_property_value_int_get(value));
          break;
+      case ETK_TREE2_COL_ALIGN_PROPERTY:
+         etk_tree2_col_alignment_set(tree_col, etk_property_value_float_get(value));
+         break;
       default:
          break;
    }
@@ -1731,6 +1787,9 @@ static void _etk_tree2_col_property_get(Etk_Object *object, int property_id, Etk
          break;
       case ETK_TREE2_COL_MIN_WIDTH_PROPERTY:
          etk_property_value_int_set(value, tree_col->min_width);
+         break;
+      case ETK_TREE2_COL_ALIGN_PROPERTY:
+         etk_property_value_float_set(value, tree_col->align);
          break;
       default:
          break;
@@ -2111,7 +2170,9 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
       Etk_Tree2_Row_Object *row_object;
       Etk_Geometry cell_geometry, model_geometry;
       Etk_Bool show_expanders;
+      Etk_Bool objects_created;
       Evas_List *l2;
+      int x, y;
       int total_width, w;
       int row_id;
       int row_y;
@@ -2188,8 +2249,21 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                   {
                      if (col->models[j]->render)
                      {
-                        col->models[j]->render(col->models[j], row, model_geometry,
+                        objects_created = col->models[j]->render(col->models[j], row, model_geometry,
                            row->cells_data[i][j], row_object->cells[i].objects[j], evas);
+                        
+                        /* Objects have been created by the render() method, we add them to the tree */
+                        if (objects_created)
+                        {
+                           for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+                           {
+                              if (row_object->cells[i].objects[j][k])
+                              {
+                                 evas_object_clip_set(row_object->cells[i].objects[j][k], col->clip);
+                                 etk_widget_member_object_add(tree->grid, row_object->cells[i].objects[j][k]);
+                              }
+                           }
+                        }
                         
                         if (col->models[j]->width_get)
                         {
@@ -2209,14 +2283,18 @@ static void _etk_tree2_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geome
                   }
                   
                   /* Align the cell objects */
-                  if (0 && col->align != 0.0)
+                  if (col->align != 0.0)
                   {
                      for (j = 0; j < col->num_models; j++)
                      {
                         for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
                         {
                            if (row_object->cells[i].objects[j][k])
-                              /* TODO */;
+                           {
+                              evas_object_geometry_get(row_object->cells[i].objects[j][k], &x, &y, NULL, NULL);
+                              evas_object_move(row_object->cells[i].objects[j][k],
+                                 x + (col->align * (cell_geometry.w - total_width)), y);
+                           }
                         }
                      }
                   }
