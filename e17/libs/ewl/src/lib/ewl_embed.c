@@ -1513,7 +1513,7 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (embed->last.focused)
+	if (embed->last.focused && embed->last.focused != w)
 		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_OUT);
 
 	embed->last.focused = w;

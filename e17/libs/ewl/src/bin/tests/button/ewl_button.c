@@ -3,6 +3,23 @@
 #include "ewl_test_private.h"
 #include <stdio.h>
 
+/**
+ * @addtogroup Ewl_Button
+ * @section text_tut Tutorial
+ *
+ * The Ewl_Button includes an icon and label by default but is actually a full
+ * container that can hold any type of non-toplevel widget. Because of this
+ * flexibility many other widget types inherit from the button.
+ *
+ * @code
+ * Ewl_Widget *button;
+ * button = ewl_button_new();
+ * ewl_button_label_set(EWL_BUTTON(button), "Button label");
+ * ewl_widget_show(button);
+ * @endcode
+ *
+ */
+
 static int create_test(Ewl_Container *win);
 
 void 

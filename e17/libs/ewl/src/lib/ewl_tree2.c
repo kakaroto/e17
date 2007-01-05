@@ -4,6 +4,17 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+typedef struct Ewl_Tree2_Branch_Cache Ewl_Tree2_Branch_Cache;
+struct Ewl_Tree2_Branch_Cache
+{
+	int relative_row;
+	int row_count;
+	int absolute_row;
+	void *data;
+	Ewl_Tree2_Branch_Cache *parent;
+	Ecore_DList *branches;
+};
+
 static void ewl_tree2_cb_view_change(Ewl_MVC *mvc);
 static void ewl_tree2_build_tree(Ewl_Tree2 *tree);
 static void ewl_tree2_cb_column_free(void *data);
@@ -581,8 +592,9 @@ static void
 ewl_tree2_build_tree(Ewl_Tree2 *tree)
 {
 	Ewl_Tree2_Column *col;
-	int column = 0, rows = 0, i;
+	int column = 0, rows = 0, i, subi;
 	void *mvc_data;
+	Ewl_Tree2_Branch_Cache *curbranch, *head;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -603,8 +615,12 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 		column ++;
 	}
 
+	head = curbranch = NEW(Ewl_Tree2_Branch_Cache, 1);
+	head->row_count = rows;
+
 	ewl_container_reset(EWL_CONTAINER(tree->rows));
-	for (i = 0; i < rows; i++)
+	i = subi = 0;
+	while (curbranch)
 	{
 		Ewl_Widget *row;
 		Ewl_Widget *p;
@@ -625,8 +641,12 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 
 		col = ecore_list_goto_first(tree->columns);
 		if (col && col->model->expandable &&
-				col->model->expandable(mvc_data, i))
+				col->model->expandable(mvc_data, i)) {
+			curbranch = NEW(Ewl_Tree2_Branch_Cache, 1);
+			curbranch->parent = head;
+
 			printf("Expandable row %d found\n", i);
+		}
 
 		column = 0;
 		while((col = ecore_list_next(tree->columns)))
@@ -636,6 +656,17 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 		}
 
 		ewl_container_child_append(EWL_CONTAINER(p), row);
+		i++;
+
+		/*
+		 * Finished the rows at this level? Jump back up a level.
+		 */
+		if (subi > curbranch->row_count) {
+			curbranch = curbranch->parent;
+			if (curbranch)
+				subi = curbranch->relative_row;
+		}
+		subi++;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
