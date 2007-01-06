@@ -1192,6 +1192,20 @@ void *etk_tree2_row_data_get(Etk_Tree2_Row *row)
 }
 
 /**
+ * @brief Gets the row that was selected at last
+ * @param tree a tree
+ * @return Returns the row that was selected at last, or NULL if no row is selected
+ * @note If you want to get all the selected rows (if multiple-selection is enabled), you have to walk through
+ * all the rows, and see if they are selected with etk_tree2_row_is_selected()
+ */
+Etk_Tree2_Row *etk_tree2_selected_row_get(Etk_Tree2 *tree)
+{
+   if (!tree || !tree->last_selected_row || !tree->last_selected_row->selected)
+      return NULL;
+   return tree->last_selected_row;
+}
+
+/**
  * @brief Selects all the rows of the tree
  * @param tree a tree
  * @note When you call etk_tree2_select_all(), for performance reasons, the signal "row_selected" is not emitted for
@@ -1237,7 +1251,7 @@ void etk_tree2_unselect_all(Etk_Tree2 *tree)
  */
 void etk_tree2_row_select(Etk_Tree2_Row *row)
 {
-   if (!row || row->selected)
+   if (!row || row->selected || row->delete_me)
       return;
    _etk_tree2_row_select(row->tree, row, ETK_MODIFIER_NONE);
 }
@@ -1248,11 +1262,12 @@ void etk_tree2_row_select(Etk_Tree2_Row *row)
  */
 void etk_tree2_row_unselect(Etk_Tree2_Row *row)
 {
-   if (!row || !row->selected)
+   if (!row || !row->selected || row->delete_me)
       return;
    
    row->selected = ETK_FALSE;
    etk_signal_emit(_etk_tree2_signals[ETK_TREE2_ROW_UNSELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
+   
    if (!row->tree->frozen)
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
 }
@@ -1582,8 +1597,6 @@ static void _etk_tree2_constructor(Etk_Tree2 *tree)
    etk_signal_connect("unfocus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_unfocus_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree2_key_down_cb), NULL);
 }
-
-/* TODO: last selected when deleted... */
 
 /* Destroys the tree */
 static void _etk_tree2_destructor(Etk_Tree2 *tree)
@@ -2907,6 +2920,8 @@ static void _etk_tree2_row_move_to_purge_pool(Etk_Tree2_Row *row)
    for (r = row->parent; r && r->unfolded; r = r->parent)
       r->num_visible_children -= row->num_visible_children + 1;
    
+   if (tree->last_selected_row == row)
+      tree->last_selected_row = NULL;
    tree->purge_pool = evas_list_append(tree->purge_pool, row);
    
    if (!tree->purge_job)
@@ -3179,7 +3194,7 @@ static void _etk_tree2_expanders_clip(Etk_Tree2 *tree)
 /* Selects/Unselects the corresponding rows according to the modifiers */
 static void _etk_tree2_row_select(Etk_Tree2 *tree, Etk_Tree2_Row *row, Etk_Modifiers modifiers)
 {
-   if (!tree || !row)
+   if (!tree || !row || row->delete_me)
       return;
    
    if (!tree->multiple_select)

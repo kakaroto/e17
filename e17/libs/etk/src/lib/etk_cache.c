@@ -245,3 +245,16 @@ Evas_Object *etk_cache_find(Etk_Cache *cache, const char *filename, const char *
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Cache
+ *
+ * You will almost never have to use Etk_Cache directly, except if you are implementing a new widget that needs to
+ * load a lot of images efficiently, or if you are creating a new tree-model that displays images.
+ */

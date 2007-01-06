@@ -211,12 +211,12 @@ void  etk_tree2_row_data_set(Etk_Tree2_Row *row, void *data);
 void  etk_tree2_row_data_set_full(Etk_Tree2_Row *row, void *data, void (*free_cb)(void *data));
 void *etk_tree2_row_data_get(Etk_Tree2_Row *row);
 
-/* TODO: Etk_Tree2_Row *etk_tree2_selected_row_get(Etk_Tree2 *tree); */
-void     etk_tree2_select_all(Etk_Tree2 *tree);
-void     etk_tree2_unselect_all(Etk_Tree2 *tree);
-void     etk_tree2_row_select(Etk_Tree2_Row *row);
-void     etk_tree2_row_unselect(Etk_Tree2_Row *row);
-Etk_Bool etk_tree2_row_is_selected(Etk_Tree2_Row *row);
+Etk_Tree2_Row *etk_tree2_selected_row_get(Etk_Tree2 *tree);
+void           etk_tree2_select_all(Etk_Tree2 *tree);
+void           etk_tree2_unselect_all(Etk_Tree2 *tree);
+void           etk_tree2_row_select(Etk_Tree2_Row *row);
+void           etk_tree2_row_unselect(Etk_Tree2_Row *row);
+Etk_Bool       etk_tree2_row_is_selected(Etk_Tree2_Row *row);
 
 void     etk_tree2_row_fold(Etk_Tree2_Row *row);
 void     etk_tree2_row_unfold(Etk_Tree2_Row *row);
