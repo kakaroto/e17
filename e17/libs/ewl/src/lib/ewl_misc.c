@@ -1086,7 +1086,7 @@ strdup(const char *str)
  * debug level
  * @brief Creates a string used to indent debug messages
  */
-char *
+void
 ewl_debug_indent_print(int mod_dir)
 {
 	int indent;
@@ -1101,8 +1101,6 @@ ewl_debug_indent_print(int mod_dir)
 		fputc(' ', stderr);
 
 	if (mod_dir > 0) ewl_debug_indent_lvl ++;
-
-	return NULL;
 }
 
 void
