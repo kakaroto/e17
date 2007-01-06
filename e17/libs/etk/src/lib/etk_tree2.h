@@ -165,8 +165,6 @@ void etk_tree2_build(Etk_Tree2 *tree);
 void etk_tree2_freeze(Etk_Tree2 *tree);
 void etk_tree2_thaw(Etk_Tree2 *tree);
 
-Etk_Scrolled_View *etk_tree2_scrolled_view_get(Etk_Tree2 *tree);
-
 Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, int width, float alignment);
 int            etk_tree2_num_cols_get(Etk_Tree2 *tree);
 Etk_Tree2_Col *etk_tree2_nth_col_get(Etk_Tree2 *tree, int nth);
@@ -232,6 +230,9 @@ Etk_Tree2_Row *etk_tree2_row_next_get(Etk_Tree2_Row *row);
 Etk_Tree2_Row *etk_tree2_row_walk_prev(Etk_Tree2_Row *row, Etk_Bool include_folded);
 Etk_Tree2_Row *etk_tree2_row_walk_next(Etk_Tree2_Row *row, Etk_Bool include_folded);
 Etk_Tree2     *etk_tree2_row_tree_get(Etk_Tree2_Row *row);
+
+Etk_Scrolled_View *etk_tree2_scrolled_view_get(Etk_Tree2 *tree);
+void               etk_tree2_row_scroll_to(Etk_Tree2_Row *row, Etk_Bool center);
 
 /** @} */
 

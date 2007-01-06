@@ -411,19 +411,6 @@ void etk_tree2_thaw(Etk_Tree2 *tree)
 }
 
 /**
- * @brief Gets the scrolled view of the tree.
- * It can be used to change the scrollbars' policy, or to get the scroll-value
- * @param tree a tree
- * @return Returns the scrolled view of the tree
- */
-Etk_Scrolled_View *etk_tree2_scrolled_view_get(Etk_Tree2 *tree)
-{
-   if (!tree)
-      return NULL;
-   return ETK_SCROLLED_VIEW(tree->scrolled_view);
-}
-
-/**
  * @brief Inserts a new column into a tree
  * @param tree a tree
  * @param title the tile of the column
@@ -1505,6 +1492,62 @@ Etk_Tree2 *etk_tree2_row_tree_get(Etk_Tree2_Row *row)
    return row->tree;
 }
 
+/**
+ * @brief Gets the scrolled view of the tree.
+ * It can be used to change the scrollbars' policy, or to get the scroll-value
+ * @param tree a tree
+ * @return Returns the scrolled view of the tree
+ */
+Etk_Scrolled_View *etk_tree2_scrolled_view_get(Etk_Tree2 *tree)
+{
+   if (!tree)
+      return NULL;
+   return ETK_SCROLLED_VIEW(tree->scrolled_view);
+}
+
+/**
+ * @brief Scrolls to the given row of the tree, in order to make it visible
+ * @param row the row to scroll to
+ * @param center whether or not the row should be centered in the view
+ */
+void etk_tree2_row_scroll_to(Etk_Tree2_Row *row, Etk_Bool center)
+{
+   Etk_Tree2 *tree;
+   Etk_Tree2_Row *r;
+   int i;
+   
+   if (!row || !(tree = row->tree))
+      return;
+   
+   for (r = etk_tree2_first_row_get(tree), i = 0; r; r = etk_tree2_row_walk_next(r, ETK_FALSE), i++)
+   {
+      if (r == row)
+      {
+         int row_offset, new_offset;
+         int tree_height;
+         
+         row_offset = i * tree->rows_height;
+         etk_widget_inner_geometry_get(tree->grid, NULL, NULL, NULL, &tree_height);
+         
+         /* If the row is already entirely visible and the row should not be centered, we do nothing */
+         if (center || (row_offset < tree->scroll_y)
+            || ((row_offset + tree->rows_height) > (tree->scroll_y + tree_height)))
+         {
+            if (center)
+               new_offset = row_offset + (tree->rows_height - tree_height) / 2;
+            else if (row_offset < tree->scroll_y)
+               new_offset = row_offset;
+            else
+               new_offset = row_offset - tree_height + tree->rows_height;
+            
+            etk_range_value_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view)), new_offset);
+         }
+         
+         return;
+      }
+   }
+}
+
 /**************************
  *
  * Etk specific functions
@@ -2513,21 +2556,58 @@ static void _etk_tree2_unfocus_cb(Etk_Object *object, void *event, void *data)
 static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Tree2 *tree;
+   Etk_Tree2_Row *selected_row, *row_to_select;
    
    if (!(tree = ETK_TREE2(object)))
       return;
    
-   if (event->modifiers == ETK_MODIFIER_NONE)
+   /* CTRL + A: Select all the rows */
+   if (strcmp(event->keyname, "a") == 0 && (event->modifiers & ETK_MODIFIER_CTRL))
    {
+      etk_tree2_select_all(tree);
+      etk_signal_stop();
    }
-   else if (event->modifiers & ETK_MODIFIER_CTRL)
+   /* Up arrow: Select the previous row */
+   else if (strcmp(event->keyname, "Up") == 0)
    {
-      /* CTRL + A: Select all the rows */
-      if (strcmp(event->keyname, "a") == 0)
+      if (!(selected_row = etk_tree2_selected_row_get(tree))
+         || !(row_to_select = etk_tree2_row_walk_prev(selected_row, ETK_FALSE)))
       {
-         etk_tree2_select_all(tree);
-         etk_signal_stop();
+         row_to_select = etk_tree2_last_row_get(tree);
+         while (!etk_tree2_row_is_folded(row_to_select) && etk_tree2_row_last_child_get(row_to_select))
+            row_to_select = etk_tree2_row_last_child_get(row_to_select);
       }
+      
+      _etk_tree2_row_select(tree, row_to_select, event->modifiers);
+      etk_tree2_row_scroll_to(row_to_select, ETK_FALSE);
+      etk_signal_stop();
+   }
+   /* Down arrow: Select the next row */
+   else if (strcmp(event->keyname, "Down") == 0)
+   {
+      if (!(selected_row = etk_tree2_selected_row_get(tree))
+         || !(row_to_select = etk_tree2_row_walk_next(selected_row, ETK_FALSE)))
+      {
+         row_to_select = etk_tree2_first_row_get(tree);
+      }
+      
+      _etk_tree2_row_select(tree, row_to_select, event->modifiers);
+      etk_tree2_row_scroll_to(row_to_select, ETK_FALSE);
+      etk_signal_stop();
+   }
+   /* Left arrow: Fold the selected row */
+   else if (strcmp(event->keyname, "Left") == 0)
+   {
+      if ((selected_row = etk_tree2_selected_row_get(tree)))
+         etk_tree2_row_fold(selected_row);
+      etk_signal_stop();
+   }
+   /* Right arrow: Unfold the selected row */
+   else if (strcmp(event->keyname, "Right") == 0)
+   {
+      if ((selected_row = etk_tree2_selected_row_get(tree)))
+         etk_tree2_row_unfold(selected_row);
+      etk_signal_stop();
    }
 }
 
