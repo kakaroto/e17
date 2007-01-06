@@ -3848,7 +3848,7 @@ static void
 ewl_text_current_fmt_set(Ewl_Text *t, unsigned int context_mask, 
 				Ewl_Text_Context *change)
 {
-	Ewl_Text_Context *old, *new;
+	Ewl_Text_Context *old = NULL, *new;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -3865,12 +3865,20 @@ ewl_text_current_fmt_set(Ewl_Text *t, unsigned int context_mask,
 		Ewl_Text_Fmt *fmt;
 
 		fmt = ecore_dlist_current(t->formatting.nodes);
-		old = fmt->tx;
+		if (fmt) old = fmt->tx;
 	}
 
-	new = ewl_text_context_find(old, context_mask, change);
-	if (t->formatting.current.tx)
-		ewl_text_context_release(t->formatting.current.tx);
+	/* If there is no old context then we use the default context. This
+	 * can happen if you're changing the text settings (font, colour,
+	 * etc) before any text was inserted into the widget */
+	if (old)
+	{
+		new = ewl_text_context_find(old, context_mask, change);
+		if (t->formatting.current.tx)
+			ewl_text_context_release(t->formatting.current.tx);
+	}
+	else
+		new = ewl_text_context_default_create(t);
 
 	t->formatting.current.tx = new;
 
