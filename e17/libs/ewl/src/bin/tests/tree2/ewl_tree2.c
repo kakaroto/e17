@@ -1263,11 +1263,15 @@ static int
 tree2_test_data_expandable_get(void *data, unsigned int row)
 {
 	Tree2_Test_Data *d;
+	int ret = FALSE;
 
 	d = data;
 
+	if (d && d->rows[row % TREE2_DATA_ELEMENTS])
+		ret = d->rows[row % TREE2_DATA_ELEMENTS]->expandable;
+
 	printf("Data %p row %d\n", d, row);
-	return (d ? (d->rows[row] ? d->rows[row]->expandable : FALSE) : FALSE);
+	return ret;
 }
 
 static void *

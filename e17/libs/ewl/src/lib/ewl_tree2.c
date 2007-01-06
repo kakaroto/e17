@@ -641,10 +641,13 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 
 		col = ecore_list_goto_first(tree->columns);
 		if (col && col->model->expandable &&
-				col->model->expandable(mvc_data, i)) {
-			curbranch = NEW(Ewl_Tree2_Branch_Cache, 1);
-			curbranch->parent = head;
+				col->model->expandable(mvc_data, i) && 0 /* check if row is expanded */) {
+			Ewl_Tree2_Branch_Cache *tmp;
 
+			tmp = NEW(Ewl_Tree2_Branch_Cache, 1);
+			tmp->parent = curbranch;
+
+			curbranch = tmp;
 			printf("Expandable row %d found\n", i);
 		}
 
@@ -658,15 +661,16 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 		ewl_container_child_append(EWL_CONTAINER(p), row);
 		i++;
 
+		subi++;
+
 		/*
 		 * Finished the rows at this level? Jump back up a level.
 		 */
-		if (subi > curbranch->row_count) {
+		if (subi >= curbranch->row_count) {
 			curbranch = curbranch->parent;
 			if (curbranch)
 				subi = curbranch->relative_row;
 		}
-		subi++;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
