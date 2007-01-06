@@ -1180,8 +1180,19 @@ ewl_text_font_get(Ewl_Text *t, unsigned int char_idx)
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
 	fmt = ewl_text_fmt_get(t, char_idx);
-	if (fmt && fmt->tx && fmt->tx->font)
-		font = strdup(fmt->tx->font);
+	if (fmt && fmt->tx)
+	{
+		if (fmt->tx->font)
+			font = strdup(fmt->tx->font);
+	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (tx->font) font = strdup(tx->font);
+		ewl_text_context_release(tx);
+	}
 
 	DRETURN_PTR(font, DLEVEL_STABLE);
 }
@@ -1273,8 +1284,19 @@ ewl_text_font_source_get(Ewl_Text *t, unsigned int char_idx)
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
 
 	fmt = ewl_text_fmt_get(t, char_idx);
-	if (fmt && fmt->tx && fmt->tx->font_source)
-		source = strdup(fmt->tx->font_source);
+	if (fmt && fmt->tx)
+	{
+		if (fmt->tx->font_source)
+			source = strdup(fmt->tx->font_source);
+	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (tx->font_source) source = strdup(tx->font_source);
+		ewl_text_context_release(tx);
+	}
 
 	DRETURN_PTR(source, DLEVEL_STABLE);
 }
@@ -1345,14 +1367,26 @@ unsigned int
 ewl_text_font_size_get(Ewl_Text *t, unsigned int char_idx)
 {
 	Ewl_Text_Fmt *fmt;
+	int size = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	fmt = ewl_text_fmt_get(t, char_idx);
+	if (fmt && fmt->tx)
+		size = fmt->tx->size;
 
-	DRETURN_INT(((fmt && fmt->tx) ? fmt->tx->size : 0), DLEVEL_STABLE);
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		size = tx->size;
+		ewl_text_context_release(tx);
+	}
+
+	DRETURN_INT(size, DLEVEL_STABLE);
 }
 
 /**
@@ -1456,6 +1490,17 @@ ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 		if (b) *b = fmt->tx->color.b;
 		if (a) *a = fmt->tx->color.a;
 	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (r) *r = tx->color.r;
+		if (g) *g = tx->color.g;
+		if (b) *b = tx->color.b;
+		if (a) *a = tx->color.a;
+		ewl_text_context_release(tx);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1526,14 +1571,26 @@ unsigned int
 ewl_text_align_get(Ewl_Text *t, unsigned int char_idx)
 {
 	Ewl_Text_Fmt *fmt;
+	int align = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	fmt = ewl_text_fmt_get(t, char_idx);
+	if (fmt && fmt->tx)
+		align = fmt->tx->align;
 
-	DRETURN_INT(((fmt && fmt->tx) ? fmt->tx->align : 0), DLEVEL_STABLE);
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		align = tx->align;
+		ewl_text_context_release(tx);
+	}
+
+	DRETURN_INT(align, DLEVEL_STABLE);
 }
 
 /**
@@ -1712,14 +1769,26 @@ unsigned int
 ewl_text_styles_get(Ewl_Text *t, unsigned int char_idx)
 {
 	Ewl_Text_Fmt *fmt;
+	int styles = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	fmt = ewl_text_fmt_get(t, char_idx);
+	if (fmt && fmt->tx)
+		styles = fmt->tx->styles;
 
-	DRETURN_INT(((fmt && fmt->tx) ? fmt->tx->styles : 0), DLEVEL_STABLE);
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		styles = tx->styles;
+		ewl_text_context_release(tx);
+	}
+
+	DRETURN_INT(styles, DLEVEL_STABLE);
 }
 
 /**
@@ -1796,14 +1865,26 @@ Ewl_Text_Wrap
 ewl_text_wrap_get(Ewl_Text *t, unsigned int char_idx)
 {
 	Ewl_Text_Fmt *fmt;
+	int wrap = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
 	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
 
 	fmt = ewl_text_fmt_get(t, char_idx);
+	if (fmt && fmt->tx)
+		wrap = fmt->tx->wrap;
 
-	DRETURN_INT(((fmt && fmt->tx) ? fmt->tx->wrap : 0), DLEVEL_STABLE);
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		wrap = tx->wrap;
+		ewl_text_context_release(tx);
+	}
+
+	DRETURN_INT(wrap, DLEVEL_STABLE);
 }
 
 /**
@@ -1906,6 +1987,17 @@ ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 		if (g) *g = fmt->tx->style_colors.bg.g;
 		if (b) *b = fmt->tx->style_colors.bg.b;
 		if (a) *a = fmt->tx->style_colors.bg.a;
+	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (r) *r = tx->style_colors.bg.r;
+		if (g) *g = tx->style_colors.bg.g;
+		if (b) *b = tx->style_colors.bg.b;
+		if (a) *a = tx->style_colors.bg.a;
+		ewl_text_context_release(tx);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2012,6 +2104,17 @@ ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 		if (b) *b = fmt->tx->style_colors.glow.b;
 		if (a) *a = fmt->tx->style_colors.glow.a;
 	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (r) *r = tx->style_colors.glow.r;
+		if (g) *g = tx->style_colors.glow.g;
+		if (b) *b = tx->style_colors.glow.b;
+		if (a) *a = tx->style_colors.glow.a;
+		ewl_text_context_release(tx);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2116,6 +2219,17 @@ ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 		if (g) *g = fmt->tx->style_colors.outline.g;
 		if (b) *b = fmt->tx->style_colors.outline.b;
 		if (a) *a = fmt->tx->style_colors.outline.a;
+	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (r) *r = tx->style_colors.outline.r;
+		if (g) *g = tx->style_colors.outline.g;
+		if (b) *b = tx->style_colors.outline.b;
+		if (a) *a = tx->style_colors.outline.a;
+		ewl_text_context_release(tx);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2222,6 +2336,17 @@ ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 		if (b) *b = fmt->tx->style_colors.shadow.b;
 		if (a) *a = fmt->tx->style_colors.shadow.a;
 	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (r) *r = tx->style_colors.shadow.r;
+		if (g) *g = tx->style_colors.shadow.g;
+		if (b) *b = tx->style_colors.shadow.b;
+		if (a) *a = tx->style_colors.shadow.a;
+		ewl_text_context_release(tx);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2326,6 +2451,17 @@ ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 		if (g) *g = fmt->tx->style_colors.strikethrough.g;
 		if (b) *b = fmt->tx->style_colors.strikethrough.b;
 		if (a) *a = fmt->tx->style_colors.strikethrough.a;
+	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (r) *r = tx->style_colors.strikethrough.r;
+		if (g) *g = tx->style_colors.strikethrough.g;
+		if (b) *b = tx->style_colors.strikethrough.b;
+		if (a) *a = tx->style_colors.strikethrough.a;
+		ewl_text_context_release(tx);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2432,6 +2568,17 @@ ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
 		if (b) *b = fmt->tx->style_colors.outline.b;
 		if (a) *a = fmt->tx->style_colors.outline.a;
 	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (r) *r = tx->style_colors.outline.r;
+		if (g) *g = tx->style_colors.outline.g;
+		if (b) *b = tx->style_colors.outline.b;
+		if (a) *a = tx->style_colors.outline.a;
+		ewl_text_context_release(tx);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2536,6 +2683,17 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 		if (g) *g = fmt->tx->style_colors.double_underline.g;
 		if (b) *b = fmt->tx->style_colors.double_underline.b;
 		if (a) *a = fmt->tx->style_colors.double_underline.a;
+	}
+	else
+	{
+		Ewl_Text_Context *tx;
+
+		tx = ewl_text_context_default_create(t);
+		if (r) *r = tx->style_colors.double_underline.r;
+		if (g) *g = tx->style_colors.double_underline.g;
+		if (b) *b = tx->style_colors.double_underline.b;
+		if (a) *a = tx->style_colors.double_underline.a;
+		ewl_text_context_release(tx);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
