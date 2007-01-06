@@ -8,6 +8,111 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @addtogroup Ewl_Dnd
+ * @section dnd_tut Tutorial
+ *
+ * In order to make DND handling easier for the end programmer, we've added a
+ * simplification API to EWL. It currently supports receiving drops and some
+ * limited dragging of widgets. Getting started is fairly simple, even for some
+ * rather complicated widgets. As an example, I'll run through the DND support
+ * added to the entry widget.
+ * 
+ * The first step to setup DND support on a widget is to decide which MIME types
+ * are allowed and understood by the widget. The entry displays text, so
+ * accepting the type "text/plain" is a safe choice. A NULL terminated list of
+ * type strings is passed to the ewl_dnd_accepted_types_set, which enables DND
+ * responses for the widget and helps to negotiate whether a drop will be
+ * accepted at a given position.
+ * 
+ * @code
+ * const char *text_types[] = { "text/plain", NULL };
+ * 
+ * ewl_dnd_accepted_types_set(EWL_WIDGET(e), text_types);
+ * @endcode
+ * 
+ * One key feature for DND support in the entry widget was to allow dragging
+ * text to arbitrary positions within the visible text area. This is
+ * accomplished by registering a callback for the EWL_CALLBACK_DND_POSITION
+ * event on the entry widget.
+ * 
+ * @code
+ * ewl_callback_append(w, EWL_CALLBACK_DND_POSITION, ewl_entry_cb_dnd_position, NULL);
+ * @endcode
+ * 
+ * When the mouse moves during a DND event over the specified entry w the
+ * ewl_entry_cb_dnd_position function will be called. This function prototype
+ * looks like all other EWL callback prototypes:
+ * 
+ * @code
+ * void ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data);
+ * @endcode
+ * 
+ * In this case, the void *ev parameter points to a Ewl_Event_Dnd_Position
+ * struct, which contains more detailed information about the event. We can use
+ * the coordinates from the event to position the cursor within our entry to
+ * receive the dropped data. Since the entry widget inherits from the text
+ * widget, the text calls are used directly on the widget to alter the entry
+ * contents. The code to accomplish this is rather small when the extra
+ * debugging information is removed:
+ * 
+ * @code
+ * void
+ * ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data)
+ * {
+ *         Ewl_Event_Dnd_Position *event;
+ *         Ewl_Text *txt;
+ * 
+ *         event = ev;
+ *         txt = EWL_TEXT(w);
+ * 
+ *         if (EWL_ENTRY(w)->editable && !DISABLED(w)) {
+ *                 ewl_widget_focus_send(w);
+ *                 ewl_text_cursor_position_set(txt, ewl_text_coord_index_map(txt, event->x, event->y));
+ *        }
+ * }
+ * @endcode
+ * 
+ * Once the cursor has been positioned, the only event we care about is
+ * receiving the data from the drop. This is accomplished by using the
+ * EWL_CALLBACK_DND_DATA callback which should also be placed on the entry
+ * widget.
+ * 
+ * @code
+ * ewl_callback_append(w, EWL_CALLBACK_DND_DATA, ewl_entry_cb_dnd_data, NULL);
+ * @endcode
+ * 
+ * The function prototype for ewl_entry_cb_dnd_data is identical to
+ * ewl_entry_cb_dnd_position, but the void *ev parameter is of type
+ * Ewl_Event_Dnd_Data. Since we only registered to receive plain text data
+ * dropped on the entry, we can insert the event data directly into the entry at
+ * the current cursor position.
+ * 
+ * @code
+ * void
+ * ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data)
+ * {
+ *         Ewl_Event_Dnd_Data *event;
+ *         Ewl_Text *txt;
+ * 
+ *         event = ev;
+ *         txt = EWL_TEXT(w);
+ * 
+ *         if (EWL_ENTRY(w)->editable && !DISABLED(w)) {
+ *                 ewl_text_text_insert(txt, event->data,
+ *                                         ewl_text_cursor_position_get(txt));
+ *         }
+ * }
+ * @endcode
+ * 
+ * Considering the complicated nature of the Xdnd protocol, we are able to
+ * accomplish a considerable amount of work in very few lines of code. While
+ * some flexibility is sacrificed to achieve this, almost all of the protocol
+ * events are available for widgets to override as they please.
+ * 
+ * Check back for followup information to handle drag events on widgets.
+ */
+
 Ecore_Event_Handler *ewl_dnd_enter_handler = NULL;
 Ecore_Event_Handler *ewl_dnd_position_handler = NULL;
 Ecore_Event_Handler *ewl_dnd_status_handler = NULL;
