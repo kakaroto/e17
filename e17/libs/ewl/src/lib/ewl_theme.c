@@ -46,18 +46,9 @@ ewl_theme_init(void)
 void
 ewl_theme_shutdown(void)
 {
-	char *data;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewl_theme_font_paths) {
-		while ((data = ecore_list_remove_first(ewl_theme_font_paths)))
-			FREE(data);
-		
-		ecore_list_destroy(ewl_theme_font_paths);
-		ewl_theme_font_paths = NULL;
-	}
-
+	IF_FREE_LIST(ewl_theme_font_paths);
 	if (ewl_theme_def_data) {
 		ecore_hash_destroy(ewl_theme_def_data);
 		ewl_theme_def_data = NULL;
