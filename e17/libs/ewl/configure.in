@@ -351,3 +351,23 @@ debian/changelog
 chmod +x ewl-config
 ]
 )
+
+echo
+echo "$PACKAGE $VERSION"
+echo
+echo "Engines:"
+echo
+echo "  Software X11.............................: $have_software_x11"
+echo "  OpenGL X11...............................: $have_opengl_x11" 
+echo "  XRender X11..............................: $have_xrender_x11"
+echo "  Framebuffer..............................: $have_fbcon"
+echo "  Buffer...................................: $have_buffer"
+echo
+echo "Optional Components:"
+echo
+echo "  Emotion Support..........................: $have_emotion"
+echo "  Epsilon Support..........................: $have_epsilon"
+echo
+echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE."
+echo
+
