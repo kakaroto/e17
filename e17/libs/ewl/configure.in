@@ -97,8 +97,8 @@ CFLAGS=$ECORE_CFLAGS" "$CFLAGS
 AC_ARG_ENABLE(software-x11,
 	[AC_HELP_STRING([--enable-software-x11],[enable software X11 support])],
 	[enable_software_x11=$enableval], [enable_software_x11="auto"])
+have_software_x11=no
 if test "x$enable_software_x11" != "xno" ; then
-	have_software_x11=no
 	AC_CHECK_HEADER(Evas_Engine_Software_X11.h,
 		[AC_CHECK_HEADER(Ecore_X.h,
 			[have_software_x11=yes],
@@ -115,8 +115,8 @@ AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_X11, test "x$have_software_x11" = xyes)
 AC_ARG_ENABLE(xrender-x11,
 	[AC_HELP_STRING([--enable-xrender-x11],[enable xrender X11 support])],
 	[enable_xrender_x11=$enableval], [enable_xrender_x11="auto"])
+have_xrender_x11=no
 if test "x$enable_xrender_x11" != "xno" ; then
-	have_xrender_x11=no
 	AC_CHECK_HEADER(Evas_Engine_XRender_X11.h,
 		[AC_CHECK_HEADER(Ecore_X.h,
 			[have_xrender_x11=yes],
@@ -134,8 +134,8 @@ AM_CONDITIONAL(EWL_ENABLE_EVAS_XRENDER_X11, test "x$have_xrender_x11" = xyes)
 AC_ARG_ENABLE(opengl-x11,
 	[AC_HELP_STRING([--enable-opengl-x11],[enable opengl X11 support])],
 	[enable_opengl_x11=$enableval], [enable_opengl_x11="auto"])
+have_opengl_x11=no
 if test "x$enable_opengl_x11" != "xno" ; then
-	have_opengl_x11=no
 	AC_CHECK_HEADERS(Evas_Engine_GL_X11.h,
 		[AC_CHECK_HEADER(Ecore_X.h,
 			[have_opengl_x11=yes],
@@ -152,8 +152,8 @@ AM_CONDITIONAL(EWL_ENABLE_EVAS_GL_X11, test "x$have_opengl_x11" = xyes)
 AC_ARG_ENABLE(fbcon,
 	[AC_HELP_STRING([--enable-fbcon],[enable fbcon support])],
 	[enable_fbcon=$enableval], [enable_fbcon="auto"])
+have_fbcon=no
 if test "x$enable_fbcon" != "xno" ; then
-	have_fbcon=no
 	AC_CHECK_HEADERS(Evas_Engine_FB.h,
 		[AC_CHECK_HEADER(Ecore_Fb.h,
 			[have_fbcon=yes],
@@ -180,8 +180,8 @@ fi
 AC_ARG_ENABLE(buffer,
 	[AC_HELP_STRING([--enable-buffer],[enable opengl X11 support])],
 	[enable_buffer=$enableval], [enable_buffer="auto"])
+have_buffer=no
 if test "x$enable_buffer" != "xno" ; then
-	have_buffer=no
 	AC_CHECK_HEADERS(Evas_Engine_Buffer.h,
 		[have_buffer=yes],
 		[], [#include <Evas.h>])
