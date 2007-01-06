@@ -540,6 +540,7 @@ ewl_theme_font_path_init(void)
 	ewl_theme_font_paths = ecore_list_new();
 	if (!ewl_theme_font_paths)
 		DRETURN(DLEVEL_STABLE);
+	ecore_list_set_free_cb(ewl_theme_font_paths, free);
 
 	font_path = ewl_theme_data_str_get(NULL, "/theme/font_path");
 	if (!font_path)
