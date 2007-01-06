@@ -21,7 +21,7 @@ void 	 ewl_realize_cancel_request(Ewl_Widget *w);
 void 	 ewl_destroy_request(Ewl_Widget *w);
 void 	 ewl_evas_destroy(Evas *evas);
 void  	 ewl_evas_object_destroy(Evas_Object *obj);
-char  	*ewl_debug_indent_get(int mod_dir);
+char  	*ewl_debug_indent_print(int mod_dir);
 
 /*
  * Internal stuff

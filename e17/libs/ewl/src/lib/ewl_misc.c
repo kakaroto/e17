@@ -1087,22 +1087,22 @@ strdup(const char *str)
  * @brief Creates a string used to indent debug messages
  */
 char *
-ewl_debug_indent_get(int mod_dir)
+ewl_debug_indent_print(int mod_dir)
 {
+	int indent;
 	static int ewl_debug_indent_lvl = 0;
-	char *indent = NULL;
 
 	if (mod_dir < 0) ewl_debug_indent_lvl --;
 
 	if (ewl_debug_indent_lvl < 0)
 		ewl_debug_indent_lvl = 0;
 
-	indent = NEW(char *, (ewl_debug_indent_lvl << 1) + 2); 
-	memset(indent, ' ', (ewl_debug_indent_lvl << 1) + 1);
+	for (indent = 0; indent < (ewl_debug_indent_lvl << 1) + 2; indent++)
+		fputc(' ', stderr);
 
 	if (mod_dir > 0) ewl_debug_indent_lvl ++;
 
-	return indent;
+	return NULL;
 }
 
 void

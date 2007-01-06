@@ -48,10 +48,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
 	if (DEBUGGING(lvl)) \
 	  { \
-		char *indent = ewl_debug_indent_get(1); \
-		fprintf(stderr, "%s--> %s:%i\tEntering %s();\n", \
-			indent, __FILE__, __LINE__, __func__); \
-		FREE(indent); \
+		ewl_debug_indent_print(1); \
+		fprintf(stderr, "--> %s:%i\tEntering %s();\n", \
+			__FILE__, __LINE__, __func__); \
 	  } \
 }
 
@@ -59,11 +58,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
 	if (DEBUGGING(lvl)) \
 	  { \
-		char *indent; \
-		indent = ewl_debug_indent_get(-1); \
-		fprintf(stderr, "%s<--  %s:%i\tLeaving  %s();\n", \
-			indent, __FILE__, __LINE__, __func__); \
-		FREE(indent); \
+		ewl_debug_indent_print(-1); \
+		fprintf(stderr, "<--  %s:%i\tLeaving  %s();\n", \
+			__FILE__, __LINE__, __func__); \
 	  } \
 }
 
@@ -72,11 +69,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	DLEAVE_FUNCTION(lvl); \
 	if (DEBUGGING(lvl)) \
 	  { \
-		char *indent; \
-		indent = ewl_debug_indent_get(0); \
-		fprintf(stderr, "%s<--  %s:%i\tReturn in %s();\n", \
-			indent, __FILE__, __LINE__, __func__); \
-		FREE(indent); \
+		ewl_debug_indent_print(0); \
+		fprintf(stderr, "<--  %s:%i\tReturn in %s();\n", \
+			__FILE__, __LINE__, __func__); \
 	  } \
 	return; \
 }
@@ -86,11 +81,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	DLEAVE_FUNCTION(lvl); \
 	if (DEBUGGING(lvl)) \
 	  { \
-		char *indent; \
-		indent = ewl_debug_indent_get(0); \
-		fprintf(stderr, "%s<--  %s:%i\tReturning %p in %s();\n", \
-			indent, __FILE__, __LINE__, (void *) (ptr), __func__); \
-		FREE(indent); \
+		ewl_debug_indent_print(0); \
+		fprintf(stderr, "<--  %s:%i\tReturning %p in %s();\n", \
+			__FILE__, __LINE__, (void *) (ptr), __func__); \
 	  } \
 	return (void *)(ptr); \
 }
@@ -100,11 +93,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	DLEAVE_FUNCTION(lvl); \
 	if (DEBUGGING(lvl)) \
 	  { \
-		char *indent; \
-		indent = ewl_debug_indent_get(0); \
-		fprintf(stderr, "%s<--  %s:%i\tReturning %f in %s();\n", \
-			indent, __FILE__, __LINE__, (float) (num), __func__); \
-		FREE(indent); \
+		ewl_debug_indent_print(0); \
+		fprintf(stderr, "<--  %s:%i\tReturning %f in %s();\n", \
+			__FILE__, __LINE__, (float) (num), __func__); \
 	  } \
 	return num; \
 }
@@ -114,11 +105,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	DLEAVE_FUNCTION(lvl); \
 	if (DEBUGGING(lvl)) \
 	  { \
-		char *indent; \
-		indent = ewl_debug_indent_get(0); \
-		fprintf(stderr, "%s<--  %s:%i\tReturning %i in %s();\n", \
-			indent, __FILE__, __LINE__, (int) (num), __func__); \
-		FREE(indent); \
+		ewl_debug_indent_print(0); \
+		fprintf(stderr, "<--  %s:%i\tReturning %i in %s();\n", \
+			__FILE__, __LINE__, (int) (num), __func__); \
 	  } \
 	return num; \
 }
