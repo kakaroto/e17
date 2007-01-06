@@ -677,7 +677,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			date_buffer[strlen(date_buffer)-1] = '\0';
 	
 			etk_tree2_freeze(ETK_TREE2(viewer->tree));
-			etk_tree2_row_fields_set((Etk_Tree2_Row*)obj->icon, 
+			etk_tree2_row_fields_set((Etk_Tree2_Row*)obj->icon, ETK_FALSE,
 					col3, buffer,
 					col5, date_buffer,
 					NULL);
@@ -735,7 +735,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		  col1 = etk_tree2_nth_col_get(ETK_TREE2(viewer->tree), 0);
 		  etk_tree2_freeze(ETK_TREE2(viewer->tree));
 
-		  etk_tree2_row_fields_set((Etk_Tree2_Row*)obj->icon, 
+		  etk_tree2_row_fields_set((Etk_Tree2_Row*)obj->icon, ETK_FALSE, 
 		  col1, obj->thumbnail->thumbnail_filename, NULL,
 		  NULL);
 
