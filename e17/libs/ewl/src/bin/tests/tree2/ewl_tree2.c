@@ -463,7 +463,7 @@
  *
  * This little chunks sets up our base UI. We create the Ewl_Window first using
  * ewl_window_new(). We set the title, class and name for the window and then
- * give it a default size of 640×480. Once this is done we set a callback for
+ * give it a default size of 640x480. Once this is done we set a callback for
  * when the window is destroyed. This is done with ewl_callback_append() call.
  * We want to get notified when the window receives the
  * EWL_CALLBACK_DELETE_WINDOW callback by having the cb_delete_window() function

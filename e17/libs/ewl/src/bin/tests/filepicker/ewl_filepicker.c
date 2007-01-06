@@ -55,6 +55,7 @@
  * @endcode
  *
  * @section filepicker_add_view Adding Views
+ *
  * A view of the file list in the filepicker is a subclass of the
  * Ewl_Filelist widget. These subclasses will provide the code for the
  * actual list display. They will receive callbacks as settings are changed

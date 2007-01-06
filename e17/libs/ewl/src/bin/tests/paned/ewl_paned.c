@@ -6,6 +6,7 @@
 /**
  * @addtogroup Ewl_Paned
  * @section pane_infi Information
+ *
  * The Ewl_Paned widget is designed to hold multiple panes if needed. If you
  * want to have three panes or four panges just add the panes and it will
  * add the grabbers as needed. The paned widget is an Ewl_Container so to
@@ -13,6 +14,7 @@
  * insert as needed.
  * 
  * @section init_layout Initial Layout
+ *
  * If you need to set the initial sizes of the items in the grabber then you
  * will need to set their preferred size. If, after the paned is already
  * displayed, you need to change the size it will use the current size of
