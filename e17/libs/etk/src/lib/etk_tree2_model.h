@@ -42,8 +42,8 @@ Etk_Tree2_Model *etk_tree2_model_progress_bar_new(void);
 
 void etk_tree2_model_free(Etk_Tree2_Model *model);
 
-/* TODO: image_width_set() */
-
+void etk_tree2_model_image_width_set(Etk_Tree2_Model *model, int width, float alignment);
+void etk_tree2_model_image_width_get(Etk_Tree2_Model *model, int *width, float *alignment);
 
 /** @} */
 

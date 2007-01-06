@@ -15,6 +15,8 @@ typedef struct Etk_Tree2_Model_Image
 {
    Etk_Tree2_Model model;
    
+   int width;
+   float halign;
    Etk_Cache *cache;
 } Etk_Tree2_Model_Image;
 
@@ -166,8 +168,10 @@ Etk_Tree2_Model *etk_tree2_model_double_new(void)
 Etk_Tree2_Model *etk_tree2_model_image_new(void)
 {
    Etk_Tree2_Model *model;
+   Etk_Tree2_Model_Image *image_model;
    
    model = calloc(1, sizeof(Etk_Tree2_Model_Image));
+   image_model = (Etk_Tree2_Model_Image *)model;
    
    model->cell_data_size = sizeof(Etk_Tree2_Model_Image_Data);
    model->model_free = _image_model_free;
@@ -177,7 +181,10 @@ Etk_Tree2_Model *etk_tree2_model_image_new(void)
    model->objects_cache = _image_objects_cache;
    model->render = _image_render;
    model->width_get = _image_width_get;
-   ((Etk_Tree2_Model_Image *)model)->cache = etk_cache_new(100);
+   
+   image_model->width = 0;
+   image_model->halign = 0.0;
+   image_model->cache = etk_cache_new(100);
    
    return model;
 }
@@ -240,6 +247,46 @@ void etk_tree2_model_free(Etk_Tree2_Model *model)
    if (model->model_free)
       model->model_free(model);
    free(model);
+}
+
+/**
+ * @brief Sets the max width allocated to the image in the image model. If the image's width is smaller than
+ * the max width, the image will be aligned according to @a alignment
+ * @param model an image model
+ * @param width the max width of the image of the model. 0 or a negative value to make Etk compute the width of
+ * each image
+ * @param alignment the horizontal alignment of the image, used if its width is smaller than the max width,
+ * from 0.0 (left alignment) to 1.0 (right alignment)
+ */
+void etk_tree2_model_image_width_set(Etk_Tree2_Model *model, int width, float alignment)
+{
+   Etk_Tree2_Model_Image *image_model;
+   
+   if (!(image_model = (Etk_Tree2_Model_Image *)model))
+      return;
+   
+   image_model->width = width;
+   image_model->halign = ETK_CLAMP(alignment, 0.0, 1.0);
+   etk_widget_redraw_queue(ETK_WIDGET(model->tree));
+}
+
+/**
+ * @brief Gets the max width allocated to the image in the image model, and its alignment
+ * @param model an image model
+ * @param width the location where to store the max width of the image of the model
+ * @param alignment the location where to store the horizontal alignment of the image
+ */
+void etk_tree2_model_image_width_get(Etk_Tree2_Model *model, int *width, float *alignment)
+{
+   Etk_Tree2_Model_Image *image_model;
+   
+   if (!(image_model = (Etk_Tree2_Model_Image *)model))
+      return;
+   
+   if (width)
+      *width = image_model->width;
+   if (alignment)
+      *alignment = image_model->halign;
 }
 
 /**************************
@@ -524,6 +571,7 @@ static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Ge
    int image_width, image_height;
    Etk_Geometry image_geometry;
    Etk_Bool object_created = ETK_FALSE;
+   float aspect;
    char *ext;
    
    if (!(image_model = (Etk_Tree2_Model_Image *)model) || !(image_data = cell_data) || !cell_objects || !evas)
@@ -589,10 +637,13 @@ static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Ge
    
    if (image_width == 0 || image_height == 0)
    {
-      image_geometry.w = geometry.h;
-      image_geometry.h = geometry.h;
+      image_width = geometry.h;
+      image_height = geometry.h;
    }
-   else
+   aspect = ((float)image_width / image_height);
+   
+   /* No limitation of width */
+   if (image_model->width <= 0)
    {
       if (image_height <= geometry.h)
       {
@@ -601,16 +652,43 @@ static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Ge
       }
       else
       {
-         image_geometry.w = geometry.h * ((float)image_width / image_height);
+         image_geometry.w = geometry.h * aspect;
          image_geometry.h = geometry.h;
       }
+      
+      image_geometry.x = geometry.x;
+      image_geometry.y = geometry.y + ((geometry.h - image_geometry.h) / 2);
+   }
+   /* The max width is limited */
+   else
+   {
+      if ((image_width > image_model->width || image_height > geometry.h))
+      {
+         /* The image doesn't fit in, we need to resize it */
+         
+         if (geometry.h * aspect > image_model->width)
+         {
+            image_geometry.w = image_model->width;
+            image_geometry.h = image_model->width / aspect;
+         }
+         else
+         {
+            image_geometry.w = geometry.h * aspect;
+            image_geometry.h = geometry.h;
+         }
+      }
+      else
+      {
+         image_geometry.w = image_width;
+         image_geometry.h = image_height;
+      }
+      
+      image_geometry.x = geometry.x + ((image_model->width - image_geometry.w) * image_model->halign);
+      image_geometry.y = geometry.y + ((geometry.h - image_geometry.h) / 2);
    }
    
-   image_geometry.x = geometry.x;
-   image_geometry.y = geometry.y + ((geometry.h - image_geometry.h) / 2);
    if (image_data->type == ETK_TREE2_MODEL_NORMAL)
       evas_object_image_fill_set(cell_objects[0], 0, 0, image_geometry.w, image_geometry.h);
-   
    evas_object_move(cell_objects[0], image_geometry.x, image_geometry.y);
    evas_object_resize(cell_objects[0], image_geometry.w, image_geometry.h);
    evas_object_show(cell_objects[0]);
@@ -621,13 +699,19 @@ static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Ge
 /* Image: width_get() */
 static int _image_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects)
 {
-   int w = 0;
+   Etk_Tree2_Model_Image *image_model;
+   int w;
    
-   if (!cell_objects || !cell_objects[0])
+   if (!(image_model = (Etk_Tree2_Model_Image *)model) || !cell_objects || !cell_objects[0])
       return 0;
    
-   evas_object_geometry_get(cell_objects[0], NULL, NULL, &w, NULL);
-   return w;
+   if (image_model->width > 0)
+      return image_model->width;
+   else
+   {
+      evas_object_geometry_get(cell_objects[0], NULL, NULL, &w, NULL);
+      return w;
+   }
 }
 
 /**************************
