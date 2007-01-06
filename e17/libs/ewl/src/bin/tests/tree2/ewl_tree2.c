@@ -11,7 +11,7 @@
  *
  * Finding the Tree in the Forest
  * (originally at http://everburning.com/news/finding-the-tree-in-the-forest)
- * Weve been doing a bunch of work on Ewl_Tree2 lately. Its been shaping up
+ * We've been doing a bunch of work on Ewl_Tree2 lately. Its been shaping up
  * nicely at the moment. To that end, I thought Id do a quick write up on how it
  * works and what you can do with it.
  *
@@ -39,8 +39,7 @@
  * the code as I go.
  *
  * @code
- * oni:~/dev/tree2_test$ gcc -o tree2_test tree2_test.c `ewl-config --cflags
- * --libs`
+ * oni:~/dev/tree2_test$ gcc -o tree2_test tree2_test.c `ewl-config --cflags --libs`
  * @endcode
  *
  * With that out of the way, on with the show. Im going to start by listing all
@@ -687,9 +686,7 @@
  * test_custom_new(void)
  * {
  *      Ewl_Widget *button;
- *
  *      button = ewl_button_new();
- *
  *      return button;
  * }
  * @endcode
