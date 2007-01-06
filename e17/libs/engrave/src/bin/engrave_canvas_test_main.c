@@ -56,6 +56,11 @@ main(int argc, char ** argv)
         return 1;
     }
 
+    if (!ecore_evas_init()) {
+        printf("Unable to setup ecore_evas\n");
+        return 1;
+    }
+
     ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 640, 480);
     ecore_evas_title_set(ee, "Engrave Canvas Test App");
     ecore_evas_callback_resize_set(ee, resize_cb);
