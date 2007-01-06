@@ -49,6 +49,9 @@ static Evas_Object *engrave_canvas_part_state_text_setup(Evas *evas,
 static Evas_Object *engrave_canvas_part_state_rect_setup(Evas *evas,
                                     Engrave_Part_State *eps);
 
+static void engrave_canvas_part_hide(Engrave_Part *ep, void *data);
+static void engrave_canvas_part_state_hide(Engrave_Part_State *eps, void *data);
+
 /**
  * engrave_canvas_new - create a new cavnas
  * @param e: The Evas to create the canvas in
@@ -113,11 +116,25 @@ engrave_canvas_current_group_set(Evas_Object *o, Engrave_Group *eg)
     Engrave_Canvas *ec;
 
     if ((ec = evas_object_smart_data_get(o))) {
+	if (ec->current_group)
+	   engrave_group_parts_foreach(ec->current_group,engrave_canvas_part_hide,NULL);
         ec->current_group = eg;
         engrave_canvas_redraw(o, ec);
     }
 }
 
+static void
+engrave_canvas_part_hide(Engrave_Part *ep, void *data)
+{
+    engrave_part_state_foreach(ep, engrave_canvas_part_state_hide, NULL);
+}
+
+static void
+engrave_canvas_part_state_hide(Engrave_Part_State *eps, void *data)
+{
+    evas_object_hide(eps->object);
+}
+    
 static void
 engrave_canvas_redraw(Evas_Object *o, Engrave_Canvas *ec)
 {
