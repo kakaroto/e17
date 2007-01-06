@@ -4096,8 +4096,6 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt, unsigned int char_idx
 		{
 			*ptr = '?';
 			tmp++;
-
-			DWARNING("Found a non-UTF8 character.");
 		}
 	}
 
