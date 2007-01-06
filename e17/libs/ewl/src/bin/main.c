@@ -559,14 +559,8 @@ create_main_test_window(Ewl_Container *box)
 	o2 = ewl_scrollpane_new();
 	ewl_container_child_append(EWL_CONTAINER(note), o2);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), o2, "Source");
+	ewl_widget_name_set(o2, "source_pane");
 	ewl_widget_show(o2);
-
-	o = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(o2), o);
-	ewl_widget_name_set(o, "source_text");
-	ewl_text_selectable_set(EWL_TEXT(o), TRUE);
-	ewl_text_wrap_set(EWL_TEXT(o), EWL_TEXT_WRAP_WORD);
-	ewl_widget_show(o);
 
 	o2 = ewl_scrollpane_new();
 	ewl_container_child_append(EWL_CONTAINER(note), o2);
@@ -684,15 +678,24 @@ static void
 text_parse(char *str)
 {
 	Ewl_Widget *txt, *tutorial;
+	Ewl_Widget *txtpane;
 	char *start, *end, tmp;
 
-	txt = ewl_widget_name_find("source_text");
+	txtpane = ewl_widget_name_find("source_pane");
 	tutorial = ewl_widget_name_find("tutorial_text");
+
+	ewl_container_reset(EWL_CONTAINER(txtpane));
 
 	start = strstr(str, "/**");
 	if (!start)
 	{
-		ewl_text_text_set(EWL_TEXT(txt), str);
+		txt = ewl_io_manager_string_read(str, "text/c");
+		ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
+		ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
+		ewl_widget_show(txt);
+		if (txt)
+			ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
+
 		ewl_text_clear(EWL_TEXT(tutorial));
 		return;
 	}
@@ -704,9 +707,27 @@ text_parse(char *str)
 
 	tmp = *start;
 	*start = '\0';
-	
-	ewl_text_text_set(EWL_TEXT(txt), str);
-	ewl_text_text_append(EWL_TEXT(txt), end + 1);
+
+	{
+		size_t len1 = strlen(str);
+		size_t len2 = strlen(end + 1);
+		char *source = malloc(sizeof(char) * (len1 + len2 + 1));
+
+		if (!source)
+			return;
+		
+		strncpy(source, str, len1);
+		strncpy(source + len1, end + 1, len2 + 1);
+
+		txt = ewl_io_manager_string_read(source, "text/c");
+		ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
+		ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
+		ewl_widget_show(txt);
+		if (txt)
+			ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
+
+		free(source);
+	}
 
 	*start = tmp;
 	tmp = *end;

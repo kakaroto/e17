@@ -4,6 +4,7 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+static void setup_hash();
 static int string_is_keyword(Ecore_Hash *keys, const char * string);
 static void text_set(Ewl_Text *t, char *text);
 
@@ -61,6 +62,22 @@ static char *keywords1[] = {
 	NULL
 };
 
+static void
+setup_hash()
+{
+
+	int i;
+	
+	key1 = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	key2 = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+
+	for (i = 0; keywords1[i] != NULL; i++)
+		ecore_hash_set(key1, keywords1[i], keywords1[i]);
+
+	for (i = 0; keywords2[i] != NULL; i++)
+		ecore_hash_set(key2, keywords2[i], keywords2[i]);
+}
+
 Ewl_Widget *
 ewl_io_manager_plugin_uri_read(const char *uri)
 {
@@ -71,18 +88,8 @@ ewl_io_manager_plugin_uri_read(const char *uri)
 	DCHECK_PARAM_PTR_RET("uri", uri, NULL);
 
 	if (!key1)
-	{
-		int i;
-		key1 = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-		key2 = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+		setup_hash();
 
-		for (i = 0; keywords1[i] != NULL; i++)
-			ecore_hash_set(key1, keywords1[i], keywords1[i]);
-
-		for (i = 0; keywords2[i] != NULL; i++)
-			ecore_hash_set(key2, keywords2[i], keywords2[i]);
-
-	}
 
 	file = fopen(uri, "r");
 	if (file) 
@@ -112,8 +119,11 @@ ewl_io_manager_plugin_string_read(const char *string)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	if (!key1)
+		setup_hash();
+
 	ret = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(ret), string);
+	text_set(EWL_TEXT(ret), string);
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
