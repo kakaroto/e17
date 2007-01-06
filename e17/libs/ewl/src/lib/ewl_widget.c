@@ -876,6 +876,7 @@ static void
 ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const char *text)
 {
 	Evas_Coord nw, nh;
+	char *cleanup = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -889,12 +890,14 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const cha
 	 * Fill in the default part to use when the key is NULL.
 	 */
 	if (!part || !*part)
-		part = ewl_theme_data_str_get(w, "textpart");
+		part = cleanup = ewl_theme_data_str_get(w, "textpart");
 
 	edje_object_part_text_set(w->theme_object, part, text);
 	edje_object_size_min_calc(w->theme_object, &nw, &nh);
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), (int)nw, (int)nh);
+
+	IF_FREE(cleanup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
