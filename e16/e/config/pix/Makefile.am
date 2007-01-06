@@ -11,7 +11,7 @@ epix_DATA = wait1.png wait2.png wait3.png wait4.png \
 	    mouse_3.png mouse_4.png mouse_5.png mouse_any.png \
 	    key_blank.png snapshots.png \
 	    apple.png calc.png clock.png easter.png mon.png note.png \
-	    pawn.png pumpkin.png spider.png tv2.png world.png \
+	    pumpkin.png spider.png tv2.png world.png \
 	    elogo48.png
 
 EXTRA_DIST = $(epix_DATA)
