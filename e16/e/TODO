@@ -2,13 +2,8 @@
 - Docs
   - Update
 
-- Fixed?
-  - Trouble with external pagers and hidden desks.
-  - Systray windows sometimes escape initial placement/sizing.
-
 - Maybe some day...
   - Fix blurred shadow on shaped windows.
   - Defer border rendering?
   - Theme Transparency (pseudotrans) is way slower than it needs to be.
-  - Enable not redirecting certain clients?
   - Partial strut handling in arrange/maximize code.

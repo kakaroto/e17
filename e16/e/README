@@ -1,39 +1,35 @@
--------------------------------------------------------------------------------
- E N L I G H T E N M E N T   V E R S I O N   0 . 1 6 . 8
--------------------------------------------------------------------------------
 
-Thank you for downloading the 0.16.8 release of the Enlightenment Window
-Manager.  This README file should not be considered a substitute for the real
-documentation, which can be found (once you have started Enlightenment) by
-middle-clicking on the desktop and selecting "Help" from the menu.
+Enlightenment DR16 version 0.16.8
+=================================
 
-Information on how to install Enlightenment on your system is contained in the
-INSTALL file.  Please consult the INSTALL file for information on how to get
-Enlightenment compiled and running on your system.
+Installation
+------------
 
-There is a minor FAQ that is replicated from the documentation found in the
-file FAQ.  The version in the Documentation Browser is more helpful, but this
-is included for completeness.
+./configure
+make
+sudo make install
 
-Information on the copyright, and your rights as a user of enlightenment can be
-found in the file COPYING, which is also contained in this directory.
-Enlightenment is free software, and you should know that you are entitled to
-many rights as a user.
+For additional help on package configuration, see
+./configure --help
 
-Curious about who wrote the application?  Check out the AUTHORS file for more
-information.  For patches, we try to remember who submitted what patch so you
-know who to thank for particular features.  If you like a feature, send them
-some email - they'll probably appreciate it.
 
-The primary Enlightenment site is located at:
+Additional information
+----------------------
+
+See README-0.16.8.
+
+The e16-docs package is somewhat dated but still contains much relevant
+information about using e16.
+
+
+Resources
+---------
+
+Primary Enlightenment web site:
 http://www.enlightenment.org 
 
-IF you would like to join Enlightenment-related mailing lists, you can find out
-more information on these lists at:
-http://www.enlightenment.org/pages/mail.html
+Mailing lists:
+http://sourceforge.net/mail/?group_id=2
 
-Thanks for taking the time to read the README file.  We hope you enjoy this
-software as much as we have enjoyed writing it for you.
-
--Raster   (raster@rasterman.com)          -Mandrake (mandrake@mandrake.net) 
-
+IRC:
+#e on freenode

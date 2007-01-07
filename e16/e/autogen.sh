@@ -15,6 +15,7 @@ rm -f aclocal.m4
 
 echo "Running autopoint -f"
 autopoint -f || gautopoint -f || exit 1
+rm -f ABOUT-NLS
 echo "Running aclocal -I m4 $ACLOCAL_FLAGS"
 aclocal -I m4 $ACLOCAL_FLAGS || exit 1
 echo "Running autoconf"
