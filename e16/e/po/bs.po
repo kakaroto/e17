@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-12-28 18:47+0100\n"
+"POT-Creation-Date: 2007-01-07 12:11+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -1298,7 +1298,7 @@ msgstr "koristi \"help <command>\" za individualni opis\n"
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"
 
-#: src/main.c:574
+#: src/main.c:582
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1309,7 +1309,7 @@ msgstr ""
 "Ovo je fatalno stanje.\n"
 "Molimo Vas da obriŷete ovu datoteku\n"
 
-#: src/main.c:581
+#: src/main.c:589
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1322,7 +1322,7 @@ msgstr ""
 "Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
 "direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
 
-#: src/main.c:589
+#: src/main.c:597
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -1335,7 +1335,7 @@ msgstr ""
 "Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
 "direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
 
-#: src/main.c:596
+#: src/main.c:604
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -1348,7 +1348,7 @@ msgstr ""
 "Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
 "direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
 
-#: src/main.c:709
+#: src/main.c:717
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1377,7 +1377,7 @@ msgstr ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 
-#: src/main.c:723
+#: src/main.c:731
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"

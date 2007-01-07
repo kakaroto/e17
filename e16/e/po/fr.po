@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-12-28 18:47+0100\n"
+"POT-Creation-Date: 2007-01-07 12:11+0100\n"
 "PO-Revision-Date: 2005-04-20 23:11+0300\n"
 "Last-Translator: Ludwig Noujarret <ludwig@noujarret.com>\n"
 "Language-Team:  <fr@li.org>\n"
@@ -1290,7 +1290,7 @@ msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 msgid "         <command>     : <description>\n"
 msgstr "      <commande>   : <description>\n"
 
-#: src/main.c:574
+#: src/main.c:582
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -1301,7 +1301,7 @@ msgstr ""
 "C'est une condition indispensable.\n"
 "Veuillez effacer ce fichier.\n"
 
-#: src/main.c:581
+#: src/main.c:589
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -1314,7 +1314,7 @@ msgstr ""
 "Veuillez vérifier le propriétaire et les permissions\n"
 "de ce répertoire et veillez à rectifier l'erreur.\n"
 
-#: src/main.c:589
+#: src/main.c:597
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -1327,7 +1327,7 @@ msgstr ""
 "Veuillez vérifier le propriétaire et les permissions\n"
 "de ce répertoire et veillez à rectifier l'erreur.\n"
 
-#: src/main.c:596
+#: src/main.c:604
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -1340,7 +1340,7 @@ msgstr ""
 "Veuillez vérifier le propriétaire et les permissions\n"
 "de ce répertoire et veillez à rectifier l'erreur.\n"
 
-#: src/main.c:709
+#: src/main.c:717
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1369,7 +1369,7 @@ msgstr ""
 "un effacement manuel de ce programme, ou une erreur lors de\n"
 "l'installation d'Enlightenment.\n"
 
-#: src/main.c:723
+#: src/main.c:731
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
