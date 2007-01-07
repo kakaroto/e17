@@ -16,7 +16,7 @@
  * widget? Just want something you can build on but dont know where to start?
  * 
  * Well, hopefully this should give you the base for starting your widget.
- * Assuming youre creating a widget called My_Widget, the EWL convention is to
+ * Assuming you're creating a widget called My_Widget, the EWL convention is to
  * have a my_widget.c and my_widget.h files. There are only a couple things you
  * need to implement to get a working widget.
  * 
@@ -43,14 +43,14 @@
  *     #endif
  * @endcode
  * 
- * That wasnt so bad. What have we got? Well, the MY_WIDGET(w) define gives us a
- * simple macro to cast other widgets to our widget. The second define,
+ * That wasn't so bad. What have we got? Well, the MY_WIDGET(w) define gives us
+ * a simple macro to cast other widgets to our widget. The second define,
  * MY_WIDGET_TYPE, is a simple macro containing the type name of the widget.
  * Well use that a bit later (and in any type checking we add to our widget.)
  * 
  * We then create the widget structure. In this case were inheriting from
  * Ewl_Widget so its the first item in our struct (and not a pointer, thats
- * important). This is how EWLs inhertiance works. The widget youre inheriting
+ * important). This is how EWLs inhertiance works. The widget you're inheriting
  * from is the first item in the struct and not a pointer. You will now be able
  * to call any of the methods of the inherited class on the new class.
  * 
@@ -98,8 +98,8 @@
  * widget we are inheriting from and we then set our inheritance and appearance
  * strings (notice the use of our type define from earlier).
  * 
- * With that youve got a simple widget. It doesnt do much, but it exists. Build
- * on as you will.
+ * With that you've got a simple widget. It doesn't do much, but it exists.
+ * Build on as you will.
  * 
  */
 
