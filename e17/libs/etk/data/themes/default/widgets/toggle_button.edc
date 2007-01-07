@@ -1,6 +1,6 @@
 group {
    name: "etk/toggle_button";
-   min: 0 32;
+   min: 0 30;
    data {
       item: "inset" "8 8 8 8";
    }
@@ -13,9 +13,6 @@ group {
             image {
                normal: "button_up.png";
                border: 8 8 8 8;
-            }
-            fill {
-               smooth: 0;
             }
          }
          description {
@@ -48,9 +45,6 @@ group {
                normal: "button_down.png";
                border: 8 8 8 8;
             }
-            fill {
-               smooth: 0;
-            }
          }
          description {
             state: "down" 0.0;
@@ -66,11 +60,11 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.0;
-               offset: 8 8;
+               offset: 8 7;
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -9 -9;
+               offset: -9 -8;
             }
          }
          description {

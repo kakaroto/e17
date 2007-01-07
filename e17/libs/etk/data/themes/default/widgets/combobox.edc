@@ -10,7 +10,7 @@ group {
 }
 group {
    name: "etk/combobox/button";
-   min: 0 32;
+   min: 0 30;
    parts {
       part {
          name: "combo_button";
@@ -20,9 +20,6 @@ group {
             image {
                normal: "button_up.png";
                border: 8 8 8 8;
-            }
-            fill {
-               smooth: 0;
             }
          }
          description {
@@ -86,28 +83,6 @@ group {
             }
          }
       }
-      /*part {
-         name: "entry";
-         description {
-            state: "default" 0.0;
-            color: 255 248 235 255;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 5 6;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -24 -7;
-            }
-            image {
-               normal: "entry.png";
-               border: 8 8 8 8;
-            }
-            fill {
-               smooth: 0;
-            }
-         }
-      }*/
       part {
          name: "etk.swallow.content";
          type: SWALLOW;
@@ -116,11 +91,11 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.0;
-               offset: 11 9;
+               offset: 11 7;
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -28 -10;
+               offset: -28 -8;
             }
          }
       }
