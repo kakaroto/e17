@@ -30,14 +30,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-void
-Etmp(char *s)
-{
-   static unsigned int n_calls = 0;
-
-   Esnprintf(s, 1024, "%s/TMP_%d_%d", EDirUser(), getpid(), n_calls++);
-}
-
 char              **
 E_ls(const char *dir, int *num)
 {

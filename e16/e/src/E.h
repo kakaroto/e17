@@ -630,6 +630,7 @@ const char         *EDirUserCache(void);
 void                EDirMake(const char *base, const char *name);
 const char         *EGetSavePrefix(void);
 const char         *EGetSavePrefixCommon(void);
+void                Etmp(char *s);
 
 /* misc.c */
 void                Quicksort(void **a, int l, int r,

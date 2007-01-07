@@ -566,6 +566,14 @@ EDirUserCache(void)
    return EDirUser();
 }
 
+void
+Etmp(char *s)
+{
+   static unsigned int n_calls = 0;
+
+   Esnprintf(s, 1024, "%s/TMP_%d_%d", EDirUser(), getpid(), n_calls++);
+}
+
 static void
 EDirCheck(const char *dir)
 {

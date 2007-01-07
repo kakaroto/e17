@@ -25,8 +25,6 @@
 
 #include <time.h>
 
-void                Etmp(char *s);
-
 void                E_md(const char *s);
 void                E_mv(const char *s, const char *ss);
 void                E_rm(const char *s);
