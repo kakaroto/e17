@@ -751,7 +751,10 @@ static int _etk_editable_text_insert(Evas_Object *editable, int pos, const char 
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return 0;
    if (!text || *text == '\0')
+   {
+      _etk_editable_text_update(editable);
       return 0;
+   }
    
    pos = ETK_CLAMP(pos, 0, sd->unicode_length);
    
