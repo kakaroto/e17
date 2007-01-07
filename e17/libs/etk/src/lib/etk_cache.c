@@ -68,6 +68,9 @@ void etk_cache_clear(Etk_Cache *cache)
    while (cache->cached_objects)
    {
       item = cache->cached_objects->data;
+      
+      if (cache->free_cb)
+         cache->free_cb(item->object, cache->free_cb_data);
       evas_object_del(item->object);
       free(item->filename);
       free(item->key);
@@ -75,6 +78,23 @@ void etk_cache_clear(Etk_Cache *cache)
       
       cache->cached_objects = evas_list_remove_list(cache->cached_objects, cache->cached_objects);
    }
+}
+
+/**
+ * @brief Sets the callback to call when a cached object is deleted (because it is too old, or because the cache is
+ * cleared)
+ * @param cache a cache system
+ * @param free_cb the function to call when a cached object is deleted. @a object is the object that will be deleted,
+ * and @a data is the user data you gave (see the next param)
+ * @param data a data pointer that will be passed to the callback when it is called
+ */
+void etk_cache_free_callback_set(Etk_Cache *cache, void (*free_cb)(Evas_Object *object, void *data), void *data)
+{
+   if (!cache)
+      return;
+   
+   cache->free_cb = free_cb;
+   cache->free_cb_data = data;
 }
 
 /**
@@ -98,6 +118,9 @@ void etk_cache_size_set(Etk_Cache *cache, int size)
    while (cache->cached_objects && num_objects > cache->size)
    {
       item = cache->cached_objects->data;
+      
+      if (cache->free_cb)
+         cache->free_cb(item->object, cache->free_cb_data);
       evas_object_del(item->object);
       free(item->filename);
       free(item->key);
@@ -149,8 +172,12 @@ void etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, 
    
    if (!cache || !object || cache->size <= 0 || !filename)
    {
-      if (object)
+      if (cache && object)
+      {
+         if (cache->free_cb)
+            cache->free_cb(object, cache->free_cb_data);
          evas_object_del(object);
+      }
       return;
    }
    
@@ -161,6 +188,8 @@ void etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, 
    {
       item = cache->cached_objects->data;
       
+      if (cache->free_cb)
+         cache->free_cb(item->object, cache->free_cb_data);
       evas_object_del(item->object);
       free(item->filename);
       free(item->key);

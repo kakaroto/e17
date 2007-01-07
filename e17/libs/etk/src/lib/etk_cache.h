@@ -20,12 +20,16 @@ struct Etk_Cache
    /* private: */
    Evas_List *cached_objects;
    int size;
+   
+   void (*free_cb)(Evas_Object *object, void *data);
+   void *free_cb_data;
 };
  
 Etk_Cache *etk_cache_new(int size);
 void       etk_cache_destroy(Etk_Cache *cache);
 void       etk_cache_clear(Etk_Cache *cache);
 
+void etk_cache_free_callback_set(Etk_Cache *cache, void (*free_cb)(Evas_Object *object, void *data), void *data);
 void etk_cache_size_set(Etk_Cache *cache, int size);
 int  etk_cache_size_get(Etk_Cache *cache);
 int  etk_cache_num_objects_get(Etk_Cache *cache);
