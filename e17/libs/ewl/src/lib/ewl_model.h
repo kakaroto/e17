@@ -24,20 +24,6 @@ typedef void *(*Ewl_Model_Fetch)(void *data, unsigned int row,
 						unsigned int column);
 
 /**
- * @def EWL_MODEL_DATA_SUBFETCH(f)
- * Model callback to handle fetching the data for a given parent at a 
- * given row/column
- */
-#define EWL_MODEL_DATA_SUBFETCH(f) ((Ewl_Model_Subfetch)f)
-
-/**
- * A typedef to shorten the definition of the model_subfetch callbacks. 
- */
-typedef void *(*Ewl_Model_Subfetch)(void *data, unsigned int parent,
-				unsigned int row, unsigned int column);
-
-
-/**
  * @def EWL_MODEL_DATA_EXPANDABLE(f)
  * Model callback to handle fetching the expandable flag for a given row of
  * the tree
@@ -48,6 +34,17 @@ typedef void *(*Ewl_Model_Subfetch)(void *data, unsigned int parent,
  * A typedef to shorten the definition of the model_expandable callback
  */
 typedef int (*Ewl_Model_Expandable)(void *data, unsigned int row);
+
+/**
+ * @def EWL_MODEL_EXPANSION_DATA_FETCH(f)
+ * Model callback to get the expansion data for a specific row
+ */
+#define EWL_MODEL_EXPANSION_DATA_FETCH(f) ((Ewl_Model_Expansion_Data_Fetch)f)
+
+/**
+ * A typedef to shorten the definition of the model_expansion_data callback
+ */
+typedef void *(*Ewl_Model_Expansion_Data_Fetch)(void *data, unsigned int row);
 
 /**
  * @def EWL_MODEL_DATA_SORT(f)
@@ -91,7 +88,7 @@ struct Ewl_Model
 {
 	Ewl_Model_Fetch fetch;    /**< Retrieve data for a cell */
 	Ewl_Model_Expandable expandable; /**< Is the row expandable */
-	Ewl_Model_Subfetch subfetch; /**< Check for subdata */
+	Ewl_Model_Expansion_Data_Fetch expansion_data; /**< Get expansion data */
 	Ewl_Model_Sort sort;      /**< Trigger sort on column */
 	Ewl_Model_Count count;    /**< Count of data items */
 };
@@ -107,9 +104,9 @@ Ewl_Model_Fetch  ewl_model_fetch_get(Ewl_Model *m);
 void 		 ewl_model_expandable_set(Ewl_Model *m, Ewl_Model_Expandable exp);
 Ewl_Model_Expandable ewl_model_expandable_get(Ewl_Model *m);
 
-void 		 ewl_model_subfetch_set(Ewl_Model *m, 
-						Ewl_Model_Subfetch get);
-Ewl_Model_Subfetch ewl_model_subfetch_get(Ewl_Model *m);
+void 		 ewl_model_expansion_data_fetch_set(Ewl_Model *m, 
+					Ewl_Model_Expansion_Data_Fetch get);
+Ewl_Model_Expansion_Data_Fetch ewl_model_expansion_data_fetch_get(Ewl_Model *m);
 
 void 		 ewl_model_sort_set(Ewl_Model *m, Ewl_Model_Sort sort);
 Ewl_Model_Sort   ewl_model_sort_get(Ewl_Model *m);

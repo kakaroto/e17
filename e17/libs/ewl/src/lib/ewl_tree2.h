@@ -96,6 +96,8 @@ struct Ewl_Tree2
 
 	Ewl_Tree_Selection_Type type;	 /**< The selection type of the tree */
 
+	Ecore_Hash *expansions;	/**< Hash of expanded rows */
+
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
 };
@@ -151,6 +153,14 @@ unsigned int	 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 
 Ewl_Widget	*ewl_tree2_view_widget_get(Ewl_Tree2 *tree);
 
+void		 ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, 
+						unsigned int row);
+void		 ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data, 
+						unsigned int row);
+
+unsigned int	 ewl_tree2_row_expanded_is(Ewl_Tree2 *tree, void *data,
+						unsigned int row);
+
 /*
  * Internal stuff.
  */
@@ -176,6 +186,49 @@ Ewl_MVC 		*ewl_tree2_column_mvc_get(Ewl_Tree2_Column *c);
 void			 ewl_tree2_column_sort_direction_set(Ewl_Tree2_Column *c, 
 								Ewl_Sort_Direction sort);
 Ewl_Sort_Direction	 ewl_tree2_column_sort_direction_get(Ewl_Tree2_Column *c);
+
+/*
+ * Ewl_Tree2_Node stuff
+ */
+#define EWL_TREE2_NODE_TYPE "node"
+#define EWL_TREE2_NODE(n) ((Ewl_Tree2_Node *)n)
+typedef struct Ewl_Tree2_Node Ewl_Tree2_Node;
+struct Ewl_Tree2_Node
+{
+	Ewl_Container container;
+
+	Ewl_Widget *tree;		/**< The parent tree */
+	Ewl_Widget *row;		/**< The row this node is for */
+	Ewl_Widget *handle;		/**< the expansion handle */
+
+	void *data;			/**< The data that this nodes row comes from */
+	unsigned int row_num;		/**< The row number of this row */
+	Ewl_Tree_Node_Flags expanded;
+};
+
+Ewl_Widget	*ewl_tree2_node_new(void);
+int		 ewl_tree2_node_init(Ewl_Tree2_Node *node);
+
+void		 ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, void *data);
+unsigned int	 ewl_tree2_node_expandable_get(Ewl_Tree2_Node *node);
+
+void		 ewl_tree2_node_expand(Ewl_Tree2_Node *node);
+void		 ewl_tree2_node_collapse(Ewl_Tree2_Node *node);
+
+unsigned int	 ewl_tree2_node_expanded_is(Ewl_Tree2_Node *node);
+
+void ewl_tree2_cb_node_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree2_cb_node_realize(Ewl_Widget *w, void *ev, void *data);
+void ewl_tree2_cb_node_toggle(Ewl_Widget *w, void *ev_data, void *user_data);
+
+void ewl_tree2_cb_node_child_show(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree2_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree2_cb_node_resize(Ewl_Container *c, Ewl_Widget *w, int size,
+                                                     Ewl_Orientation o);
+void ewl_tree2_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w);
+void ewl_tree2_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
+
+
 
 /**
  * @}

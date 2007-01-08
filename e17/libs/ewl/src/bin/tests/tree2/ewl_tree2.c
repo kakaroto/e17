@@ -922,18 +922,18 @@
 
 #define TREE2_DATA_ELEMENTS 5
 
+typedef struct Tree2_Test_Data Tree2_Test_Data;
 typedef struct Tree2_Test_Row_Data Tree2_Test_Row_Data;
 struct Tree2_Test_Row_Data
 {
 	char *image;
 	char *text;
-	Tree2_Test_Row_Data *subdata;
+	Tree2_Test_Data *subdata;
 
 	int expandable;
 	Tree2_Test_Row_Data **rows;
 };
 
-typedef struct Tree2_Test_Data Tree2_Test_Data;
 struct Tree2_Test_Data
 {
 	unsigned int count;
@@ -952,11 +952,10 @@ static void tree2_test_data_sort(void *data, unsigned int column,
 						Ewl_Sort_Direction sort);
 static int tree2_test_data_count_get(void *data);
 static int tree2_test_data_expandable_get(void *data, unsigned int row);
-static void *tree2_test_data_subfetch(void *data, unsigned int parent_row,
-							unsigned int subrow, 
-							unsigned int column);
+static void *tree2_test_data_expansion_fetch(void *data, unsigned int row);
 
 static void ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree2_cb_hide_headers(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data);
 static void tree2_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
@@ -976,7 +975,7 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget *tree, *o, *o2;
+	Ewl_Widget *tree, *o, *o2, *o3;
 	Ewl_Model *model;
 	Ewl_View *view;
 	void *data;
@@ -997,7 +996,7 @@ create_test(Ewl_Container *box)
 	ewl_model_sort_set(model, tree2_test_data_sort);
 	ewl_model_count_set(model, tree2_test_data_count_get);
 	ewl_model_expandable_set(model, tree2_test_data_expandable_get);
-	ewl_model_subfetch_set(model, tree2_test_data_subfetch);
+	ewl_model_expansion_data_fetch_set(model, tree2_test_data_expansion_fetch);
 
 	tree = ewl_tree2_new();
 	ewl_container_child_append(EWL_CONTAINER(box), tree);
@@ -1005,6 +1004,7 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(tree, EWL_CALLBACK_VALUE_CHANGED,
 					tree2_cb_value_changed, NULL);
 	ewl_mvc_data_set(EWL_MVC(tree), data);
+	ewl_tree2_row_expand(EWL_TREE2(tree), data, 2);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_MULTI);
 	ewl_widget_name_set(tree, "tree");
 	ewl_widget_show(tree);
@@ -1033,13 +1033,25 @@ create_test(Ewl_Container *box)
 	ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
 	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
 
+	o3 = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(o2), o3);
+	ewl_widget_show(o3);
+
 	/* create the checkbuttons for the top box */
 	o = ewl_checkbutton_new();
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 	ewl_button_label_set(EWL_BUTTON(o), "Scroll headers");
-	ewl_container_child_append(EWL_CONTAINER(o2), o);
+	ewl_container_child_append(EWL_CONTAINER(o3), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 				ewl_tree2_cb_scroll_headers, tree);
+	ewl_widget_show(o);
+
+	o = ewl_checkbutton_new();
+	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
+	ewl_button_label_set(EWL_BUTTON(o), "Hide headers");
+	ewl_container_child_append(EWL_CONTAINER(o3), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+				ewl_tree2_cb_hide_headers, tree);
 	ewl_widget_show(o);
 
 	o = ewl_checkbutton_new();
@@ -1099,14 +1111,27 @@ tree2_test_data_setup(void)
 	dt[1]->text = strdup("The Elicit image");
 	dt[1]->expandable = 1;
 
-	dt[1]->subdata = calloc(1, sizeof(Tree2_Test_Row_Data));
-	dt[1]->subdata->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
-	dt[1]->subdata->text = strdup("The E logo");
+	dt[1]->subdata = calloc(1, sizeof(Tree2_Test_Data));
+	dt[1]->subdata->count = 1;
+	dt[1]->subdata->rows = calloc(1, sizeof(Tree2_Test_Row_Data *));
+	dt[1]->subdata->rows[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
+	dt[1]->subdata->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+	dt[1]->subdata->rows[0]->text = strdup("The First Subrow");
 
 	dt[2] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/entrance.png");
 	dt[2]->text = strdup("The Entrance image");
-	dt[2]->expandable = 0;
+	dt[2]->expandable = 1;
+
+	dt[2]->subdata = calloc(1, sizeof(Tree2_Test_Data));
+	dt[2]->subdata->count = 2;
+	dt[2]->subdata->rows = calloc(2, sizeof(Tree2_Test_Row_Data *));
+	dt[2]->subdata->rows[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
+	dt[2]->subdata->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+	dt[2]->subdata->rows[0]->text = strdup("Squee.");
+	dt[2]->subdata->rows[1] = calloc(1, sizeof(Tree2_Test_Row_Data));
+	dt[2]->subdata->rows[1]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+	dt[2]->subdata->rows[1]->text = strdup("Splat");
 
 	dt[3] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/End.png");
@@ -1174,18 +1199,18 @@ tree2_test_data_fetch(void *data, unsigned int row, unsigned int column)
 	 * normal app */
 	if (row >= d->count)
 	{
-		printf("Asking for too many rows\n");
+		printf("Asking for too many rows %d (count == %d)\n", row, d->count);
 		return NULL;
 	}
 
 	if (column == 0)
-		val = d->rows[row % TREE2_DATA_ELEMENTS]->text;
+		val = d->rows[row % d->count]->text;
 
 	else if (column == 1)
-		val = d->rows[row % TREE2_DATA_ELEMENTS]->image;
+		val = d->rows[row % d->count]->image;
 
 	else if (column == 2)
-		val = d->rows[row % TREE2_DATA_ELEMENTS];
+		val = d->rows[row % d->count];
 
 	else
 	{
@@ -1209,7 +1234,7 @@ tree2_test_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort)
 
 	d = data;
 
-	for (i = (TREE2_DATA_ELEMENTS - 1); i >= 0; i--)
+	for (i = (d->count - 1); i >= 0; i--)
 	{
 		int j;
 
@@ -1264,33 +1289,20 @@ tree2_test_data_expandable_get(void *data, unsigned int row)
 
 	d = data;
 
-	if (d && d->rows[row % TREE2_DATA_ELEMENTS])
-		ret = d->rows[row % TREE2_DATA_ELEMENTS]->expandable;
+	if (d && d->rows[row % d->count])
+		ret = d->rows[row % d->count]->expandable;
 
-	printf("Data %p row %d\n", d, row);
 	return ret;
 }
 
 static void *
-tree2_test_data_subfetch(void *data, unsigned int parent_row,
-						unsigned int subrow, 
-						unsigned int column)
+tree2_test_data_expansion_fetch(void *data, unsigned int parent)
 {
 	Tree2_Test_Data *d;
-	void *val = NULL;
 
 	d = data;
 
-	if (column == 0)
-		val = d->rows[parent_row % TREE2_DATA_ELEMENTS]->rows[subrow]->text;
-
-	else if (column == 1)
-		val = d->rows[parent_row % TREE2_DATA_ELEMENTS]->rows[subrow]->image;
-
-	else if (column == 2)
-		val = d->rows[parent_row % TREE2_DATA_ELEMENTS]->rows[subrow];
-
-	return val;
+	return d->rows[parent]->subdata;
 }
 
 
@@ -1306,6 +1318,20 @@ ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	if (ewl_widget_type_is(view, EWL_TREE2_VIEW_SCROLLED_TYPE))
 		ewl_tree2_view_scrolled_scroll_headers_set(EWL_TREE2_VIEW(view),
 			ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
+}
+
+static void
+ewl_tree2_cb_hide_headers(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	Ewl_Tree2 *tree;
+	int vis = TRUE;
+
+	tree = data;
+
+	if (ewl_tree2_headers_visible_get(tree))
+		vis = FALSE;
+
+	ewl_tree2_headers_visible_set(tree, vis);
 }
 
 static void

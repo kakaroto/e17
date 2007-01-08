@@ -93,37 +93,6 @@ ewl_model_fetch_get(Ewl_Model *m)
 }
 
 /**
- * @param m: The Ewl_Model to set the subfetch callback into
- * @param get: The Ewl_Model_Subfetch callback for subrows
- * @return Returns no value.
- * @brief Sets the subfetch callback into the model
- */
-void
-ewl_model_subfetch_set(Ewl_Model *m, Ewl_Model_Subfetch get)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
-
-	m->subfetch = get;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param m: The Ewl_Model to get the subfetch callback from
- * @return Returns the Ewl_Model_Subfetch for the subfetch callback
- * @brief Gets the subfetch callback from the model
- */
-Ewl_Model_Subfetch
-ewl_model_subfetch_get(Ewl_Model *m)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
-
-	DRETURN_INT(m->subfetch, DLEVEL_STABLE);
-}
-
-/**
  * @param m: The model to set the callback on
  * @param exp: The expandable callback
  * @return Returns no value
@@ -152,6 +121,38 @@ ewl_model_expandable_get(Ewl_Model *m)
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
 	DRETURN_PTR(m->expandable, DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The Ewl_Model to set the expansion_data callback into
+ * @param get: The Ewl_Model_Expansion_Data_Fetch callback for subrows
+ * @return Returns no value.
+ * @brief Sets the subfetch callback into the model
+ */
+void
+ewl_model_expansion_data_fetch_set(Ewl_Model *m, 
+				Ewl_Model_Expansion_Data_Fetch get)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->expansion_data = get;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The Ewl_Model to get the expansion_data callback from
+ * @return Returns the Ewl_Model_Expansion_Data_Fetch for the model
+ * @brief Gets the expansion_data callback from the model
+ */
+Ewl_Model_Expansion_Data_Fetch
+ewl_model_expansion_data_fetch_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+
+	DRETURN_INT(m->expansion_data, DLEVEL_STABLE);
 }
 
 /**
