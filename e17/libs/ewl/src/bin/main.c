@@ -720,13 +720,15 @@ text_parse(char *str)
 		strncpy(source + len1, end + 1, len2 + 1);
 
 		txt = ewl_io_manager_string_read(source, "text/c");
-		ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
-		ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
-		ewl_widget_show(txt);
-		if (txt)
-			ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
 
-		free(source);
+		if (txt) {
+			ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
+			ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
+			ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
+			ewl_widget_show(txt);
+
+			free(source);
+		}
 	}
 
 	*start = tmp;
