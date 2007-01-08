@@ -512,6 +512,12 @@ ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, i
 	DCHECK_PARAM_PTR("col", col);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
+	if (!col->view->header_fetch)
+	{
+		DWARNING("Missing header_fetch callback.");
+		DRETURN(DLEVEL_STABLE);
+	}
+
 	h = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 	ewl_widget_appearance_set(h, "header");
