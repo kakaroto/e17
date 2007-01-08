@@ -378,7 +378,7 @@ _win_menu_item_drag(void *data, E_Menu *m, E_Menu_Item *mi)
 			    &x, &y, &w, &h);
    drag = e_drag_new(
       m->zone->container, x, y,
-      drag_types, 1, bd, -1, NULL);
+      drag_types, 1, bd, -1, NULL, NULL);
 
    o = e_icon_add(drag->evas);
    e_icon_object_set(o, e_border_icon_add(bd, drag->evas));
