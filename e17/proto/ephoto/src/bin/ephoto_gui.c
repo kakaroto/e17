@@ -234,7 +234,15 @@ static void directory_view_assign(Ewl_Widget *w, void *data)
 	ewl_icon_image_set(EWL_ICON(w), PACKAGE_DATA_DIR "/images/folder.png", NULL);
 	ewl_icon_label_set(EWL_ICON(w), basename(file));
 	ewl_icon_constrain_set(EWL_ICON(w), 25);
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, populate_files, file);
+	if (strcmp(file, ".."))
+	{
+		ewl_widget_name_set(w, file);
+	}
+	else
+	{
+		ewl_widget_name_set(w, dirname(current_directory));
+	}
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED, populate_files, NULL);
 }	
 
 /* The directories that will be displayed*/ 
@@ -281,21 +289,19 @@ static void view_image(Ewl_Widget *w, void *event, void *data)
 /*Update the Directory List and Image List*/
 static void populate_files(Ewl_Widget *w, void *event, void *data)
 {
-	char *cdir, *dir, *imagef;
+	char *cdir, *imagef;
 	Ewl_Widget *image, *thumb;
 
-	cdir = data;
-
-	/*if (strcmp(dir, ".."))
+	if (w)
 	{
-		cdir = dir;
+		cdir = (char *)ewl_widget_name_get(w);
 	}
 	else
 	{
-		cdir = dirname(current_directory);
+		cdir = data;
 	}
 
-	current_directory = cdir;*/ /*This causes a segfault right now*/
+	current_directory = cdir;
 
 	if (!ecore_list_is_empty(directories))
 	{
