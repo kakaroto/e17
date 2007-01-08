@@ -6,6 +6,7 @@ static void create_main_gui(void);
 
 /*Ewl Callbacks*/
 static void destroy(Ewl_Widget *w, void *event, void *data);
+static void populate_files(Ewl_Widget *w, void *event, void *data);
 static void view_catalog(Ewl_Widget *w, void *event, void *data);
 static void view_image(Ewl_Widget *w, void *event, void *data);
 
@@ -14,16 +15,12 @@ static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
 static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_tree(Ewl_Widget *c);
-static void populate_images(void);
 
 /*Ephoto MVC Callbacks */
 static Ewl_Widget *directory_view_new(void);
 static void directory_view_assign(Ewl_Widget *w, void *data);
 static void *directory_data_fetch(void *data, unsigned int row, unsigned int column);
 static int directory_data_count(void *data);
-
-/*Ephoto Ecore Callbacks */
-static void populate_files(char *cdir);
 
 /*Ephoto Widget Global Variables*/
 static Ewl_Widget *ftree, *atree, *fbox, *vnb;
@@ -32,6 +29,9 @@ static Ewl_Widget *cvbox, *ivbox, *vimage, *progress;
 /*Ephoto Ecore Global Variables*/
 static Ecore_Timer *timer;
 static Ecore_List *directories, *images;
+
+/*Ephoto Current Directory*/
+static char *current_directory;
 
 /*Destroy Boot Splash*/
 int destroy_boot(void *data)
@@ -195,7 +195,6 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 
 	tree = ewl_tree2_new();
 	ewl_tree2_headers_visible_set(EWL_TREE2(tree), FALSE);
-	ewl_mvc_data_set(EWL_MVC(tree), directories);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(c), tree);
@@ -235,6 +234,7 @@ static void directory_view_assign(Ewl_Widget *w, void *data)
 	ewl_icon_image_set(EWL_ICON(w), PACKAGE_DATA_DIR "/images/folder.png", NULL);
 	ewl_icon_label_set(EWL_ICON(w), basename(file));
 	ewl_icon_constrain_set(EWL_ICON(w), 25);
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED, populate_files, file);
 }	
 
 /* The directories that will be displayed*/ 
@@ -279,8 +279,24 @@ static void view_image(Ewl_Widget *w, void *event, void *data)
 }
 
 /*Update the Directory List and Image List*/
-static void populate_files(char *cdir)
+static void populate_files(Ewl_Widget *w, void *event, void *data)
 {
+	char *cdir, *dir, *imagef;
+	Ewl_Widget *image, *thumb;
+
+	cdir = data;
+
+	/*if (strcmp(dir, ".."))
+	{
+		cdir = dir;
+	}
+	else
+	{
+		cdir = dirname(current_directory);
+	}
+
+	current_directory = cdir;*/ /*This causes a segfault right now*/
+
 	if (!ecore_list_is_empty(directories))
 	{
 		ecore_list_destroy(directories);
@@ -294,13 +310,8 @@ static void populate_files(char *cdir)
 
 	directories = get_directories(cdir);
 	images = get_images(cdir);
-}
 
-/* Add the thumbnails to the freebox */
-static void populate_images(void)
-{
-	char *imagef;
-	Ewl_Widget *image, *thumb;
+	ewl_mvc_data_set(EWL_MVC(ftree), directories);
 
 	ewl_container_reset(EWL_CONTAINER(fbox));
 	while (!ecore_list_is_empty(images))
@@ -326,10 +337,6 @@ static void create_main_gui(void)
 {
 	Ewl_Widget *win, *vbox, *menu_bar, *menu, *paned;
 	Ewl_Widget *ihbox, *sp;
-
-	directories = ecore_list_new();
-	images = ecore_list_new();
-	populate_files(getenv("HOME"));
 
 	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
@@ -410,7 +417,9 @@ static void create_main_gui(void)
 
 	add_button(ihbox, "Return to Catalog", NULL, view_catalog);
 
-	populate_images();
+	directories = ecore_list_new();
+	images = ecore_list_new();
+	populate_files(NULL, NULL, getenv("HOME"));
 
 	return;
 }
