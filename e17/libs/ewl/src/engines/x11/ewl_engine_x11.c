@@ -52,7 +52,7 @@ static Ecore_Event_Handler *ee_focus_in_handler = NULL;
 static Ecore_Event_Handler *ee_focus_out_handler = NULL;
 
 static void ee_shutdown(Ewl_Engine *engine);
-static int ee_init(Ewl_Engine *engine);
+static int ee_init(Ewl_Engine *engine, int *argc, char ** argv);
 static void ee_window_new(Ewl_Window *win);
 static void ee_window_destroy(Ewl_Window *win);
 static void ee_window_move(Ewl_Window *win);
@@ -146,7 +146,7 @@ ewl_engine_create(int *argc, char ** argv)
 	if (!engine)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ee_init(EWL_ENGINE(engine)))
+	if (!ee_init(EWL_ENGINE(engine), argc, argv))
 	{
 		FREE(engine);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -156,9 +156,11 @@ ewl_engine_create(int *argc, char ** argv)
 }
 
 static int
-ee_init(Ewl_Engine *engine)
+ee_init(Ewl_Engine *engine, int *argc, char ** argv)
 {
 	Ewl_Engine_Info *info;
+	char *display = NULL;
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("engine", engine, FALSE);
@@ -167,7 +169,19 @@ ee_init(Ewl_Engine *engine)
 	if (ee_expose_handler)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	if (!ecore_x_init(NULL))
+	if (argc && argv)
+	{
+		for (i = 1; i < *argc; i++)
+		{ 
+			if (!strcmp(argv[i], "-display"))
+			{
+				if (++i < *argc)
+					display = argv[i];
+			}
+		}
+	}
+
+	if (!ecore_x_init(display))
 	{
 		fprintf(stderr, "Unable to initialize Ecore X.\n"
 				"Is your DISPLAY variable set correctly?\n\n");
