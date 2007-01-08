@@ -14,6 +14,15 @@ static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
 static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_tree(Ewl_Widget *c);
+static void populate_images(void);
+
+/*Ephoto MVC Callbacks */
+static Ewl_Widget *directory_view_new(void);
+static void directory_view_assign(Ewl_Widget *w, void *data);
+static void *directory_data_fetch(void *data, unsigned int row, unsigned int column);
+static int directory_data_count(void *data);
+
+/*Ephoto Ecore Callbacks */
 static void populate_files(char *cdir);
 
 /*Ephoto Widget Global Variables*/
@@ -173,17 +182,51 @@ static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb)
 	return;
 }
 
+/*Create and Add a Tree to the Container c*/
+static Ewl_Widget *add_tree(Ewl_Widget *c)
+{
+	Ewl_Widget *tree;
+	Ewl_Model *model;
+	Ewl_View *view;
+
+	model = ewl_model_new();
+	ewl_model_fetch_set(model, directory_data_fetch);
+	ewl_model_count_set(model, directory_data_count);
+
+	tree = ewl_tree2_new();
+	ewl_tree2_headers_visible_set(EWL_TREE2(tree), FALSE);
+	ewl_mvc_data_set(EWL_MVC(tree), directories);
+	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
+	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(c), tree);
+	ewl_widget_show(tree);
+
+	view = ewl_view_new();
+	ewl_view_constructor_set(view, directory_view_new);
+	ewl_view_assign_set(view, directory_view_assign);
+	
+	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
+
+	return tree;
+}
+
+
+/* The view of the users directories */
 static Ewl_Widget *directory_view_new(void)
 {
 	Ewl_Widget *icon;
 
 	icon = ewl_icon_new();
+	ewl_icon_thumbnailing_set(EWL_ICON(icon), FALSE);
 	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_HORIZONTAL);
+	ewl_object_alignment_set(EWL_OBJECT(icon), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_ALL);
 	ewl_widget_show(icon);
 
 	return icon;
 }
 
+/*The row that is added to the tree*/
 static void directory_view_assign(Ewl_Widget *w, void *data)
 {
 	char *file;
@@ -191,20 +234,10 @@ static void directory_view_assign(Ewl_Widget *w, void *data)
 	file = data;
 	ewl_icon_image_set(EWL_ICON(w), PACKAGE_DATA_DIR "/images/folder.png", NULL);
 	ewl_icon_label_set(EWL_ICON(w), basename(file));
-	ewl_icon_constrain_set(EWL_ICON(w), 20);
+	ewl_icon_constrain_set(EWL_ICON(w), 25);
 }	
 
-static Ewl_Widget *directory_header_fetch(void *data, int column)
-{
-	Ewl_Widget *label;
-
-	label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(label), "Directories");
-	ewl_widget_show(label);
-
-	return label;
-}
-
+/* The directories that will be displayed*/ 
 static void *directory_data_fetch(void *data, unsigned int row, unsigned int column)
 {
 	char *file;
@@ -219,11 +252,7 @@ static void *directory_data_fetch(void *data, unsigned int row, unsigned int col
 	return val;
 }
 
-static void directory_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort)
-{
-	return;
-}
-
+/* The number of directories the view is displaying */
 static int directory_data_count(void *data)
 {
 	int val;
@@ -231,37 +260,6 @@ static int directory_data_count(void *data)
 	val = ecore_list_nodes(directories);
 
 	return val;
-}
-
-/*Create and Add a Tree to the Container c*/
-static Ewl_Widget *add_tree(Ewl_Widget *c)
-{
-	Ewl_Widget *tree;
-	Ewl_Model *model;
-	Ewl_View *view;
-
-	model = ewl_model_new();
-	ewl_model_fetch_set(model, directory_data_fetch);
-	ewl_model_sort_set(model, directory_data_sort);
-	ewl_model_count_set(model, directory_data_count);
-	ewl_model_expandable_set(model, NULL);
-	ewl_model_subfetch_set(model, NULL);
-
-	tree = ewl_tree2_new();
-	ewl_mvc_data_set(EWL_MVC(tree), directories);
-	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
-	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(c), tree);
-	ewl_widget_show(tree);
-
-	view = ewl_view_new();
-	ewl_view_constructor_set(view, directory_view_new);
-	ewl_view_assign_set(view, directory_view_assign);
-	ewl_view_header_fetch_set(view, directory_header_fetch);
-	
-	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
-
-	return tree;
 }
 
 /*Switch to the Image List*/
@@ -280,7 +278,7 @@ static void view_image(Ewl_Widget *w, void *event, void *data)
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(vnb), ivbox);
 }
 
-/*Update the Directory Listing and Image List*/
+/*Update the Directory List and Image List*/
 static void populate_files(char *cdir)
 {
 	if (!ecore_list_is_empty(directories))
@@ -298,6 +296,7 @@ static void populate_files(char *cdir)
 	images = get_images(cdir);
 }
 
+/* Add the thumbnails to the freebox */
 static void populate_images(void)
 {
 	char *imagef;
