@@ -136,7 +136,7 @@ ewl_engine_dependancies(void)
 }
 
 Ewl_Engine *
-ewl_engine_create(void)
+ewl_engine_create(int *argc, char ** argv)
 {
 	Ewl_Engine_X11 *engine;
 
@@ -266,7 +266,6 @@ ee_init(Ewl_Engine *engine)
 	}
 
 	info = NEW(Ewl_Engine_Info, 1);
-	info->init = ee_init;
 	info->shutdown = ee_shutdown;
 	info->hooks.window = window_funcs;
 	info->hooks.pointer = pointer_funcs;

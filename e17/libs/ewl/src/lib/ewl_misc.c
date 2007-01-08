@@ -207,7 +207,7 @@ ewl_init(int *argc, char **argv)
 	/* we create the engine we will be working with here so that it is
 	 * initialized before we start to use it. */
 	if (!ewl_engine_new(ewl_config_string_get(ewl_config, 
-					EWL_CONFIG_ENGINE_NAME))) {
+					EWL_CONFIG_ENGINE_NAME), argc, argv)) {
 		fprintf(stderr, "Could not initialize Ewl Engine.\n");
 		goto ERROR;
 	}

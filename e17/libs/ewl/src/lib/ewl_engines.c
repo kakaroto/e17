@@ -105,14 +105,16 @@ ewl_engine_names_get(void)
 
 /**
  * @param name: The name of the engine to create
+ * @param argc: Arguments count
+ * @param argv: Arguments
  * @return Returns the Ewl_Engine or NULL on failure
  * @brief Retrieves, or creates the given Ewl_Engine, or NULL on failure
  */
 Ewl_Engine *
-ewl_engine_new(const char *name)
+ewl_engine_new(const char *name, int *argc, char ** argv)
 {
 	Ewl_Engine *engine = NULL;
-	Ewl_Engine *(*create_engine)(void);
+	Ewl_Engine *(*create_engine)(int *argc, char ** argv);
 	Ecore_DList *(*dependancies)(void);
 	Ecore_DList *deps = NULL;
 	Ecore_DList *dep_list;
@@ -173,7 +175,7 @@ ewl_engine_new(const char *name)
 		{
 			Ewl_Engine *parent;
 
-			parent = ewl_engine_new(dep_name);
+			parent = ewl_engine_new(dep_name, argc, argv);
 			if (!parent) 
 			{
 				FREE(dep_name);
@@ -194,7 +196,7 @@ ewl_engine_new(const char *name)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	engine = EWL_ENGINE(create_engine());
+	engine = EWL_ENGINE(create_engine(argc, argv));
 	if (!engine)
 	{
 		fprintf(stderr, "Unable to create engine.\n");
@@ -203,8 +205,6 @@ ewl_engine_new(const char *name)
 
 	engine->handle = handle;
 	engine->dependancies = deps;
-	if (engine->functions->init)
-		engine->functions->init(engine);
 
 	ecore_hash_set(ewl_engines, strdup(name), engine);
 

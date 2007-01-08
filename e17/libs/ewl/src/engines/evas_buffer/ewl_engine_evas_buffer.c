@@ -34,7 +34,7 @@ ewl_engine_dependancies(void)
 }
 
 Ewl_Engine *
-ewl_engine_create(void)
+ewl_engine_create(int *argv, char ** argc)
 {
 	Ewl_Engine_Evas_Buffer *engine;
 
@@ -62,7 +62,6 @@ ee_init(Ewl_Engine *engine)
 	DCHECK_PARAM_PTR_RET("engine", engine, TRUE);
 
 	info = NEW(Ewl_Engine_Info, 1);
-	info->init = ee_init;
 	info->shutdown = ee_shutdown;
 	info->hooks.canvas = canvas_funcs;
 

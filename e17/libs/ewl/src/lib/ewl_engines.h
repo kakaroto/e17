@@ -115,7 +115,6 @@ typedef struct Ewl_Engine Ewl_Engine;
 typedef struct Ewl_Engine_Info Ewl_Engine_Info;
 struct Ewl_Engine_Info
 {
-	int (*init)(Ewl_Engine *engine);	/**< Initialize the engine */
 	void (*shutdown)(Ewl_Engine *engine);	/**< Shutdown the engine */
 
 	struct
@@ -142,7 +141,8 @@ void 		 ewl_engines_shutdown(void);
 
 Ecore_List	*ewl_engine_names_get(void);
 
-Ewl_Engine	*ewl_engine_new(const char *name);
+Ewl_Engine	*ewl_engine_new(const char *name,
+				int *argc, char ** argv);
 
 void		 ewl_engine_event_handlers_init(void);
 void		 ewl_engine_event_handlers_shutdown(void);

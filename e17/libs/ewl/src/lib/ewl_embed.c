@@ -142,7 +142,7 @@ ewl_embed_engine_name_set(Ewl_Embed *embed, const char *engine)
 		ecore_string_release(embed->engine_name);
 	embed->engine_name = ecore_string_instance(engine);
 
-	embed->engine = ewl_engine_new(engine);
+	embed->engine = ewl_engine_new(engine, NULL, NULL);
 	if (!embed->engine)
 	{
 		DERROR("Error creating engine ...\n");
