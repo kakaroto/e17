@@ -690,12 +690,12 @@ text_parse(char *str)
 	if (!start)
 	{
 		txt = ewl_io_manager_string_read(str, "text/c");
-		ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
-		ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
-		ewl_widget_show(txt);
-		if (txt)
+		if (txt) {
+			ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
+			ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
+			ewl_widget_show(txt);
 			ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
-
+		}
 		ewl_text_clear(EWL_TEXT(tutorial));
 		return;
 	}
@@ -726,9 +726,9 @@ text_parse(char *str)
 			ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
 			ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
 			ewl_widget_show(txt);
-
-			free(source);
 		}
+
+		free(source);
 	}
 
 	*start = tmp;
