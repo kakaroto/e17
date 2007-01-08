@@ -1,5 +1,4 @@
 #include <string.h>
-#include <glib.h>
 #include <Edje.h>
 #include <Etk.h>
 #include "callbacks.h"
@@ -23,50 +22,117 @@ void on_canvas_geometry_changed(Etk_Object *canvas, const char *property_name, v
    evas_object_resize(EV_canvas_bg,cw,ch);
    evas_object_resize(EV_canvas_shadow,cw,ch);
    evas_object_image_fill_set( EV_canvas_shadow,	0,0,cw,ch);
+   ev_redraw();
 }
 
-/* Called when the the user change group spinners (min & max)*/
-void on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data){
-   printf("Group Spinner value changed signal EMIT\n");
-   if (selected_group){
-      switch ((int)data){
-       case MINX_SPINNER: selected_group->min_x = etk_range_value_get(range);break;
-       case MINY_SPINNER: selected_group->min_y = etk_range_value_get(range);break;
-       case MAXX_SPINNER: selected_group->max_x = etk_range_value_get(range);break;
-       case MAXY_SPINNER: selected_group->max_y = etk_range_value_get(range);break;
-      }
-   }
-}
 
-void on_GroupNameEntry_text_changed(Etk_Object *object, void *data){
-   Etk_Tree2_Col *col1=NULL;
-   
-   printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
-   g_string_printf(selected_group->name,"%s",etk_entry_text_get(ETK_ENTRY(object)));
-   
-   //Update PartsTree
-   if (selected_group){
-      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
-      etk_tree2_row_fields_set(selected_group->tree_row,col1,EdjeFile->str,"NONE.PNG",selected_group->name->str,NULL);
-   }
-   //update FakeWin title
-   edje_object_part_text_set (EV_fakewin, "title", selected_group->name->str);
+
+
+/* All the buttons Callback */
+void
+on_AllButton_click(Etk_Button *button, void *data)
+{
+   //GList *current,*prev;
+   switch ((int)data)
+   {
+      case TOOLBAR_NEW:
+         printf("Clicked signal on Toolbar Button 'New' EMITTED\n");
+         //ShowFilechooser(FILECHOOSER_NEW);
+         ShowAlert("Not yet implemented");
+         break;
+      case TOOLBAR_OPEN:
+         printf("Clicked signal on Toolbar Button 'Open' EMITTED\n");
+         ShowAlert("Not yet implemented");
+         //ShowFilechooser(FILECHOOSER_OPEN);
+         break;
+      case TOOLBAR_SAVE:
+         printf("Clicked signal on Toolbar Button 'Save' EMITTED\n");
+         //SaveEDC(NULL);
+         ShowAlert("Not yet implemented");
+         break;
+      case TOOLBAR_SAVE_AS:
+         printf("Clicked signal on Toolbar Button 'Save as' EMITTED\n");
+         //ShowFilechooser(FILECHOOSER_SAVE_AS);
+         ShowAlert("Not yet implemented");
+         break;
+      case TOOLBAR_ADD:
+         printf("Clicked signal on Toolbar Button 'Add' EMITTED\n");
+         etk_menu_popup(ETK_MENU(UI_AddMenu));
+         //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
+         break;
+      case TOOLBAR_REMOVE:
+         printf("Clicked signal on Toolbar Button 'Remove' EMITTED\n");
+         ShowAlert("Not yet implemented");
+         //etk_menu_popup(ETK_MENU(UI_RemoveMenu));
+         //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
+         break;
+      case TOOLBAR_MOVE_UP:
+         printf("Clicked signal on Toolbar Button 'MoveUp' EMITTED\n");
+         /* if (selected_desc){
+            printf("MoveUP DESC: %s\n",selected_desc->state->str);
+         }
+         else if (selected_part){
+            if ((current = g_list_find(selected_part->group->parts,selected_part))){
+               if ((prev = g_list_previous(current))){
+                  printf("MoveUP PART: %s\n",selected_part->name->str);
+                  //current->data = prev->data;
+                  //prev->data = selected_part;
+                  //Update the tree
+               }
+            }
+         }
+         else{
+            ShowAlert("No part to move selected");
+         } */
+         ShowAlert("Not yet implemented");
+         break;
+      case TOOLBAR_MOVE_DOWN:
+         printf("Clicked signal on Toolbar Button 'MoveDown' EMITTED\n");
+         ShowAlert("Not yet implemented");
+         break;
+      case TOOLBAR_PLAY:
+         printf("Clicked signal on Toolbar Button 'Play' EMITTED\n");
+         ShowAlert("Not yet implemented");
+         //SaveEDC(NULL);
+         //PlayEDC();
+         break;
+      case TOOLBAR_DEBUG:
+         DebugInfo(FALSE);
+         break;
+      case TOOLBAR_IMAGE_FILE_ADD:
+         ShowAlert("Not yet implemented =)");
+         //printf("INSERT IMAGE\n");
+         //if (EDCFile->len > 0) ShowFilechooser(FILECHOOSER_IMAGE);
+         //e   lse ShowAlert("You have to save the file once for insert image.");
+            break;
+      case TOOLBAR_FONT_FILE_ADD:
+         ShowAlert("Not yet implemented =)");
+         //printf("INSERT FONT\n");
+         //i   f (EDCFile->len > 0) ShowFilechooser(FILECHOOSER_FONT);
+         //else ShowAlert("You have to save the file once for insert font.");
+         break;
+   }  
 }
-/* Called when the the user Click a row on one of the trees */
-void on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data){
+/* Tree callbacks */
+void
+on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
+{
    int row_type=0;
-   EDC_Group* old_group = selected_group;
-  
+   Engrave_Group* old_group = Cur.eg;
+
    printf("Row Selected Signal on one of the Tree EMITTED \n");
 
    //get the type of the row (group,part or desc) from the hidden col
-   etk_tree2_row_fields_get(row,etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2),&row_type,NULL);
-   
-   switch (row_type){
+   etk_tree2_row_fields_get(row,
+      etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2),&row_type,
+      NULL);
+      
+   switch (row_type)
+   {
       case ROW_GROUP:
-         selected_group = etk_tree2_row_data_get (row);
-         selected_part = NULL;
-         selected_desc = NULL;
+         Cur.eg = etk_tree2_row_data_get (row);
+         Cur.ep = NULL;
+         Cur.eps = NULL;
          etk_widget_hide(UI_DescriptionFrame);
          etk_widget_hide(UI_PositionFrame);
          etk_widget_hide(UI_RectFrame);
@@ -75,11 +141,11 @@ void on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *dat
          etk_widget_hide(UI_PartFrame);
          etk_widget_show(UI_GroupFrame);
          UpdateGroupFrame();
-      break;
+         break;
       case ROW_PART:
-         selected_part = etk_tree2_row_data_get (row);
-         selected_group = selected_part->group;
-         selected_desc = NULL;
+         Cur.ep = etk_tree2_row_data_get (row);
+         Cur.eg = Cur.ep->parent;
+         Cur.eps = NULL;
          etk_widget_hide(UI_DescriptionFrame);
          etk_widget_hide(UI_PositionFrame);
          etk_widget_hide(UI_RectFrame);
@@ -88,136 +154,369 @@ void on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *dat
          etk_widget_hide(UI_GroupFrame);
          etk_widget_show(UI_PartFrame);
          UpdatePartFrame();
-      break;
+         break;
       case ROW_DESC:
-         selected_desc = etk_tree2_row_data_get (row);
-         selected_part = selected_desc->part;
-         selected_group = selected_part->group;
-         selected_part->current_description = selected_desc;
+         Cur.eps = etk_tree2_row_data_get (row);
+         Cur.ep = Cur.eps->parent;
+         Cur.eg = Cur.ep->parent;
+         Cur.ep->current_state = Cur.eps;
 
          UpdateDescriptionFrame();
          UpdatePositionFrame();
          UpdateComboPositionFrame();
 
-         if (selected_part->type == PART_TYPE_TEXT) UpdateTextFrame();
-         if (selected_part->type == PART_TYPE_IMAGE) UpdateImageFrame();
-         if (selected_part->type == PART_TYPE_RECT) UpdateRectFrame();
+         if (Cur.ep->type == ENGRAVE_PART_TYPE_TEXT)
+         {
+            UpdateTextFrame();
+            etk_widget_show(UI_TextFrame);
+         }else
+         {
+            etk_widget_hide(UI_TextFrame);
+         }
+
+         if (Cur.ep->type == ENGRAVE_PART_TYPE_IMAGE)
+         {
+            UpdateImageFrame();
+            etk_widget_show(UI_ImageFrame);
+         }else
+         {
+            etk_widget_hide(UI_ImageFrame);
+         }
+
+         if (Cur.ep->type == ENGRAVE_PART_TYPE_RECT)
+         {
+            UpdateRectFrame();
+            etk_widget_show(UI_RectFrame);
+         }else
+         {
+            etk_widget_hide(UI_RectFrame);
+         }
 
          etk_widget_hide(UI_PartFrame);
          etk_widget_hide(UI_GroupFrame);
          etk_widget_show(UI_DescriptionFrame);
          etk_widget_show(UI_PositionFrame);
 
-         if (selected_desc->part->type == PART_TYPE_RECT) etk_widget_show(UI_RectFrame);
-         else etk_widget_hide(UI_RectFrame);
 
-         if (selected_desc->part->type == PART_TYPE_IMAGE) etk_widget_show(UI_ImageFrame);
-         else etk_widget_hide(UI_ImageFrame);
-
-         if (selected_desc->part->type == PART_TYPE_TEXT) etk_widget_show(UI_TextFrame);
-         else etk_widget_hide(UI_TextFrame);
-
-      break;
+         break;
    }
-   
+
    //The group as changed
-   if (selected_group != old_group){
+   if (Cur.eg != old_group){
       UpdateGroupFrame();
+      PopulateRelComboBoxes();
       //Update Fakewin
+      ev_resize_fake(400,400);
+      edje_object_part_text_set (EV_fakewin, "title", Cur.eg->name);
+      //if (old_group)ev_hide_group(old_group);
+
+      engrave_canvas_current_group_set (ecanvas, Cur.eg);
+
+   }
+
+   ev_redraw();
+}
+/* Group frame callbacks */
+void
+on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
+{
+   Etk_Tree2_Col *col1=NULL;
+
+   printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
+   if (Cur.eg && ecore_hash_get(hash,Cur.eg))
+   {
+      engrave_group_name_set(Cur.eg,etk_entry_text_get(ETK_ENTRY(object)));
       
-      ev_resize_fake(selected_group->min_x,selected_group->min_y);
-      if (old_group)ev_hide_group(old_group);
+      //Update PartsTree
+      if ((col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0)))
+         etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.eg),TRUE,
+            col1,EdjeFile,"NONE.PNG",engrave_group_name_get(Cur.eg),
+            NULL);
+
+      printf("SUKKKKKKKKKKKKKKKKKAAAAAAAAA\n");
+      //update FakeWin title
+      edje_object_part_text_set (EV_fakewin,
+         "title", engrave_group_name_get(Cur.eg));
    }
-
-   ev_draw_all();
 }
-/* Position Frame Callbacks */
-void on_RelToComboBox_changed(Etk_Combobox *combobox, void *data){
-   EDC_Part* part = NULL;
-   //printf("Rel2X\n");
+void
+on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("Group Spinners value changed signal EMIT\n");
+   if (Cur.eg)
+   {
+      switch ((int)data)
+      {
+         case MINW_SPINNER:
+            printf("MINW\n");
+            engrave_group_min_size_set(Cur.eg,
+                  etk_range_value_get(ETK_RANGE(UI_GroupMinWSpinner)),
+                  etk_range_value_get(ETK_RANGE(UI_GroupMinHSpinner)));
+            break;
+         case MINH_SPINNER:
+            engrave_group_min_size_set(Cur.eg,
+                  etk_range_value_get(ETK_RANGE(UI_GroupMinWSpinner)),
+                  etk_range_value_get(ETK_RANGE(UI_GroupMinHSpinner)));
+            break;
+         case MAXW_SPINNER:
+            engrave_group_max_size_set(Cur.eg,
+                  etk_range_value_get(ETK_RANGE(UI_GroupMaxWSpinner)),
+                  etk_range_value_get(ETK_RANGE(UI_GroupMaxHSpinner)));
+            break;
+         case MAXH_SPINNER:
+            engrave_group_max_size_set(Cur.eg,
+                  etk_range_value_get(ETK_RANGE(UI_GroupMaxWSpinner)),
+                  etk_range_value_get(ETK_RANGE(UI_GroupMaxHSpinner)));
+            break;
+      }
+   }
+}
+/* Parts & Descriptions Callbacks*/
+void
+on_PartNameEntry_text_changed(Etk_Object *object, void *data)
+{
+   Etk_Tree2_Col *col1=NULL;
 
-   part = etk_combobox_item_data_get (etk_combobox_active_item_get (combobox));
-   if (part){
-      switch ((int)data){
-       case REL1X_SPINNER:
-	 if ((int)part == REL_COMBO_INTERFACE) g_string_truncate(selected_desc->rel1_to_x,0);
-	 else g_string_printf(selected_desc->rel1_to_x,"%s",part->name->str);
-	 break;
-       case REL1Y_SPINNER:
-	 if ((int)part == REL_COMBO_INTERFACE) g_string_truncate(selected_desc->rel1_to_y,0);
-	 else g_string_printf(selected_desc->rel1_to_y,"%s",part->name->str);
-	 break;
-       case REL2X_SPINNER:
-	 if ((int)part == REL_COMBO_INTERFACE) g_string_truncate(selected_desc->rel2_to_x,0);
-	 else g_string_printf(selected_desc->rel2_to_x,"%s",part->name->str);
-	 break;
-       case REL2Y_SPINNER:
-	 if ((int)part == REL_COMBO_INTERFACE) g_string_truncate(selected_desc->rel2_to_y,0);
-	 else g_string_printf(selected_desc->rel2_to_y,"%s",part->name->str);
-	 break;
+   //printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
+
+   if (Cur.ep)
+   {
+      engrave_part_name_set(Cur.ep,etk_entry_text_get(ETK_ENTRY(object)));
+      //RenamePart(Cur.ep,etk_entry_text_get(ETK_ENTRY(object)));
+      PopulateRelComboBoxes();
+      //Update PartTree
+      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
+      switch (Cur.ep->type)
+      {
+         case ENGRAVE_PART_TYPE_IMAGE: 
+            etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
+               col1,EdjeFile,"IMAGE.PNG",etk_entry_text_get(ETK_ENTRY(object)),
+               NULL); 
+            break;
+         case ENGRAVE_PART_TYPE_RECT:
+            etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
+               col1,EdjeFile,"RECT.PNG",etk_entry_text_get(ETK_ENTRY(object)),
+               NULL); 
+            break;
+         case ENGRAVE_PART_TYPE_TEXT:
+            etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
+               col1,EdjeFile,"TEXT.PNG",etk_entry_text_get(ETK_ENTRY(object)),
+               NULL); 
+               break;
+         default:
+            etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
+               col1,EdjeFile,"NONE.PNG",etk_entry_text_get(ETK_ENTRY(object)),
+               NULL); 
+               break;
+      }
+   }
+}
+void 
+on_StateEntry_text_changed(Etk_Object *object, void *data)
+{
+   Etk_Tree2_Col *col1=NULL;
+   char buf[4096];
+   char *nn;   //new name
+   printf("Text Changed Signal on StateEntry EMITTED\n");
+
+   if (Cur.eps)
+   {
+      printf("FOLLOW %s %f\n",Cur.eps->name,Cur.eps->value);
+      if ((strcmp("default", Cur.eps->name)) || Cur.eps->value)
+      {
+         if ((nn = etk_entry_text_get(ETK_ENTRY(object))))
+            engrave_part_state_name_set(Cur.eps,nn,Cur.eps->value);
+      }else
+      {
+         ShowAlert("You can't rename default 0.0");
       }
 
-   }
-
-   ev_draw_all();
+      //Update PartTree
+      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
+      snprintf(buf,4095,"%s %.2f",Cur.eps->name,Cur.eps->value);
+      etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
+         col1,EdjeFile,"DESC.PNG",buf,NULL);
+   }   
 }
 
-void on_RelSpinner_value_changed(Etk_Range *range, double value, void *data){
-   printf("Value Changed Signal on RelSpinner EMITTED\n");
-   //printf("Value %f",etk_range_value_get(range));
-   if (selected_desc){
-      switch ((int)data){
-       case REL1X_SPINNER: selected_desc->rel1_relative_x = etk_range_value_get(range);break;
-       case REL1Y_SPINNER: selected_desc->rel1_relative_y = etk_range_value_get(range);break;
-       case REL2X_SPINNER: selected_desc->rel2_relative_x = etk_range_value_get(range);break;
-       case REL2Y_SPINNER: selected_desc->rel2_relative_y = etk_range_value_get(range);break;
+void 
+on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   char buf[4096];
+   Etk_Tree2_Col *col1=NULL;
+  
+   printf("Value Changed Signal on StateIndexSpinner EMITTED\n");
+   if (Cur.eps)
+   {
+      snprintf(buf,4096,"%s",engrave_part_state_name_get(Cur.eps,NULL));
+      //RenameDescription(selected_desc,NULL,etk_range_value_get(range));
+      if ((strcmp("default", buf)) || Cur.eps->value)
+      {
+         engrave_part_state_name_set(Cur.eps,buf,etk_range_value_get(range));
+      }else
+      {
+         ShowAlert("You can't rename default 0.0");
       }
-
-      ev_draw_all();
-      ev_draw_focus();
+      //Update PartTree
+      //Update PartTree
+      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
+      snprintf(buf,4095,"%s %.2f",Cur.eps->name,Cur.eps->value);
+      etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
+         col1,EdjeFile,"DESC.PNG",buf,NULL);
    }
-}
-void on_RelOffsetSpinner_value_changed(Etk_Range *range, double value, void *data){
-   printf("Value Changed Signal on RelSpinner EMITTED\n");
-   ShowAlert("Not yet implemented");
-
+  
 }
 /* Image Frame Callbacks */
-void on_ImageComboBox_changed(Etk_Combobox *combobox, void *data){
-   printf("Image Combo Changed\n");
-   char* image;
+void
+on_ImageComboBox_changed(Etk_Combobox *combobox, void *data)
+{
+   Engrave_Image *image;
+   printf("Changed signal on Image Combo EMITED\n");
+
    if ((image = etk_combobox_item_data_get(etk_combobox_active_item_get (combobox)))){
       //Set an existing image
-      if (selected_desc){
-         g_string_printf(selected_desc->image_normal,"%s",image);
-         ev_draw_part(selected_part);
+      if (Cur.eps){
+         engrave_part_state_image_normal_set(Cur.eps, image);
+         ev_redraw();
       }
-   }
-}
-void on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data){
-   printf("Value %f\n",etk_range_value_get(range));
-   if (selected_desc){
-      switch ((int)data){
-       case BORDER_TOP: selected_desc->image_border_top = etk_range_value_get(range);break;
-       case BORDER_BOTTOM: selected_desc->image_border_bottom = etk_range_value_get(range);break;
-       case BORDER_LEFT: selected_desc->image_border_left = etk_range_value_get(range);break;
-       case BORDER_RIGHT: selected_desc->image_border_right = etk_range_value_get(range);break;
-      }
-      ev_draw_part(selected_part);
    }
 }
 
-void on_ImageAlphaSlider_value_changed(Etk_Object *object, double value, void *data){
-   printf("ImageSlieder value_changed signale EMIT: %.2f\n",value);
-   if (selected_desc){
-      selected_desc->color_a = (int)value;
-      ev_draw_part(selected_desc->part);
+void
+on_ImageAlphaSlider_value_changed(Etk_Object *object, double va, void *data)
+{
+   printf("ImageSlieder value_changed signale EMIT: %.2f\n",va);
+   if (Cur.eps){
+      engrave_part_state_color_set(Cur.eps, (int)va, (int)va, (int)va, (int)va);
+      //ev_draw_part(Cur.eps->parent);
+      ev_redraw();
    }
 }
+
+void
+on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("Value Changed signal on BorderSpinner EMITTED (value: %f)\n",etk_range_value_get(range));
+   if (Cur.eps){
+      engrave_part_state_image_border_set(Cur.eps,
+         (int)etk_range_value_get(ETK_RANGE(UI_BorderLeftSpinner)),
+         (int)etk_range_value_get(ETK_RANGE(UI_BorderRightSpinner)),
+         (int)etk_range_value_get(ETK_RANGE(UI_BorderTopSpinner)),
+         (int)etk_range_value_get(ETK_RANGE(UI_BorderBottomSpinner)));
+             
+      printf("TODO: s: %s  [%d] %d\n",Cur.eps->name,Cur.eps->image.border.l,(int)etk_range_value_get(ETK_RANGE(UI_BorderLeftSpinner)));
+
+      ev_redraw();
+   }
+}
+
+
+/* Position Frame Callbacks */
+void
+on_RelToComboBox_changed(Etk_Combobox *combobox, void *data)
+{
+   printf("RelTocomboBox changed signal EMITTED \n");
+   Engrave_Part* part = NULL;
+
+   part = etk_combobox_item_data_get (etk_combobox_active_item_get (combobox));
+   if (part)
+   {
+      if (part == Cur.ep ) 
+      {
+         ShowAlert("A state can't rel to itself.");
+         return;
+      }
+      switch ((int)data)
+      {
+         case REL1X_SPINNER:
+            if ((int)part == REL_COMBO_INTERFACE)
+               engrave_part_state_rel1_to_x_set(Cur.eps, NULL);
+            else
+               engrave_part_state_rel1_to_x_set(Cur.eps,part->name);
+            break;
+         case REL1Y_SPINNER:
+            if ((int)part == REL_COMBO_INTERFACE)
+               engrave_part_state_rel1_to_y_set(Cur.eps, NULL);
+            else
+               engrave_part_state_rel1_to_y_set(Cur.eps,part->name);
+            break;
+         case REL2X_SPINNER:
+            if ((int)part == REL_COMBO_INTERFACE)
+               engrave_part_state_rel2_to_x_set(Cur.eps, NULL);
+            else
+               engrave_part_state_rel2_to_x_set(Cur.eps,part->name);
+            break;
+         case REL2Y_SPINNER:
+            if ((int)part == REL_COMBO_INTERFACE)
+               engrave_part_state_rel2_to_y_set(Cur.eps, NULL);
+            else
+               engrave_part_state_rel2_to_y_set(Cur.eps,part->name);
+            break;
+      }
+
+   }
+
+   ev_redraw();
+}
+
+void
+on_RelSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("Value Changed Signal on RelSpinner EMITTED (value: %f)\n",etk_range_value_get(range));
+
+   if (Cur.eps)
+   {
+      switch ((int)data)
+      {
+         case REL1X_SPINNER:
+            Cur.eps->rel1.relative.x = etk_range_value_get(range);
+            break;
+         case REL1Y_SPINNER:
+            Cur.eps->rel1.relative.y = etk_range_value_get(range);
+            break;
+         case REL2X_SPINNER:
+            Cur.eps->rel2.relative.x = etk_range_value_get(range);
+            break;
+         case REL2Y_SPINNER:
+            Cur.eps->rel2.relative.y = etk_range_value_get(range);
+            break;
+      }
+      ev_redraw();
+      //ev_draw_focus();
+   }
+}
+void
+on_RelOffsetSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("Value Changed Signal on Offset Spinner EMITTED\n");
+
+   if (Cur.eps)
+   {
+      switch ((int)data)
+      {
+         case REL1X_SPINNER:
+            Cur.eps->rel1.offset.x = etk_range_value_get(range);
+            break;
+         case REL1Y_SPINNER:
+            Cur.eps->rel1.offset.y = etk_range_value_get(range);
+            break;
+         case REL2X_SPINNER:
+            Cur.eps->rel2.offset.x = etk_range_value_get(range);
+            break;
+         case REL2Y_SPINNER:
+            Cur.eps->rel2.offset.y = etk_range_value_get(range);
+            break;
+      }
+      ev_redraw();
+      //ev_draw_focus();
+   }
+
+}
+
 /* Text Frame Callbacks */
 void on_FontComboBox_changed(Etk_Combobox *combobox, void *data){
-   printf("Font Combo Changed\n");
-   char* font;
+   printf("Changed Signal on FontComboBox EMITTED \n");
+/*    char* font;
    if ((font = etk_combobox_item_data_get(etk_combobox_active_item_get (combobox)))){
       //Set an existing font
       if (selected_desc){
@@ -230,39 +529,58 @@ void on_FontComboBox_changed(Etk_Combobox *combobox, void *data){
       //Insert a new font in EDC
       printf("INSERT FONT\n");
       ShowFilechooser(FILECHOOSER_FONT);
-   }
+   } */
 }
-void on_EffectComboBox_changed(Etk_Combobox *combobox, void *data){
+void 
+on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
+{
    int effect;
-   printf("Effect Combo Changed\n");
-   if (selected_part){
-      if ((effect = (int)etk_combobox_item_data_get(etk_combobox_active_item_get (combobox)))){
-         selected_part->effect = effect;
+   
+   printf("Changed Signal on EffectComboBox EMITTED\n");
+   if (Cur.ep)
+   {
+      if ((effect = (int)etk_combobox_item_data_get(etk_combobox_active_item_get (combobox))))
+      {
+         engrave_part_effect_set(Cur.ep,effect);
+         ev_redraw();
       }
-      ev_draw_all();
    }
 }
-void on_FontSizeSpinner_value_changed(Etk_Range *range, double value, void *data){
-   printf("Set font size to: %d\n",(int)etk_range_value_get(range));
-   selected_desc->text_size = (int)etk_range_value_get(range);
-   ev_draw_part(selected_part);
+void 
+on_FontSizeSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("Value Changed Signal on FontSizeSpinner EMITTED (value: %d)\n",(int)etk_range_value_get(range));
+   
+   engrave_part_state_text_size_set(Cur.eps,(int)etk_range_value_get(range));
+   
+   ev_redraw();
 }
 
-void on_TextEntry_text_changed(Etk_Object *object, void *data){
-   printf("TEXT CHANGED\n");
+void 
+on_TextEntry_text_changed(Etk_Object *object, void *data)
+{
+   printf("Text Changed Signal on TextEntry EMITTED (value %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
 
-   //Set the new value in selected_desc->text_text
-   g_string_printf(selected_desc->text_text,"%s",etk_entry_text_get(ETK_ENTRY(object)));
+   engrave_part_state_text_text_set(Cur.eps,etk_entry_text_get(ETK_ENTRY(object)));
+   
 
-   ev_draw_part(selected_part);
+   ev_redraw();
 }
 
-void on_TextAlphaSlider_value_changed(Etk_Object *object, double value, void *data){
-   printf("value changed event on text alpha slider EMIT\n");
-   if (selected_desc){
-      selected_desc->color_a = (int)value;
-      ev_draw_part(selected_desc->part);
-   }
+void 
+on_TextAlphaSlider_value_changed(Etk_Object *object, double value, void *data)
+{
+   printf("value changed event on text alpha slider EMIT (value: %d)\n",(int)value);
+   if (Cur.eps)
+   {
+      engrave_part_state_color_set(Cur.eps,
+         Cur.eps->color.r,
+         Cur.eps->color.g,
+         Cur.eps->color.b,
+         (int)value);
+      
+      ev_redraw();
+   } 
 }
 /* Colors Callbacks */
 void on_ColorCanvas_realize(Etk_Widget *canvas, void *data){
@@ -292,25 +610,32 @@ void on_ColorCanvas_realize(Etk_Widget *canvas, void *data){
       break;
    }
 }
-void on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info){
-   printf("click\n");
-   if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
-   current_color_object = (int)data;
+void 
+on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   printf("Clik Signal on ColorCanvas Emitted\n");
+   ShowAlert("TODO");
+   //if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
+   //current_color_object = (int)data;
 }
-void on_ColorAlphaSlider_value_changed(Etk_Object *object, double value, void *data){
+void
+on_ColorAlphaSlider_value_changed(Etk_Object *object, double value, void *data)
+{
    char string[256];
-
-   selected_desc->color_a = (int)value;
+   printf("ValueChangedSignal on ColorAlphaSlider EMITTED (value: %d)\n",(int) value);
+   Cur.eps->color.a = (int)value;
 
    snprintf(string, 255, "%03.0f", value);
    etk_label_set(ETK_LABEL(data), string);
 
-   evas_object_color_set(RectColorObject,selected_desc->color_r,selected_desc->color_g,selected_desc->color_b,255);
-   ev_draw_part(selected_desc->part);
+   //evas_object_color_set(RectColorObject,selected_desc->color_r,selected_desc->color_g,selected_desc->color_b,255);
+   //ev_draw_part(Cur.eps->parent);
+   ev_redraw();
 
 }
 void on_ColorDialog_change(Etk_Object *object, void *data){
-   Etk_Color color;
+   printf("ColorChangeSignal on ColorDialog EMITTED\n");
+   /* Etk_Color color;
 
    color = etk_colorpicker_current_color_get (ETK_COLORPICKER(object));
    switch (current_color_object){
@@ -340,232 +665,123 @@ void on_ColorDialog_change(Etk_Object *object, void *data){
       break;
    }
 
-   ev_draw_part(selected_desc->part);
+   ev_draw_part(selected_desc->part); */
 }
 
-/* Parts & Descriptions Callbacks*/
-void on_PartNameEntry_text_changed(Etk_Object *object, void *data){
-   Etk_Tree2_Col *col1=NULL;
 
-   printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
 
-   if (selected_part){
-      RenamePart(selected_part,(char*)etk_entry_text_get(ETK_ENTRY(object)));
-
-      //Update PartTree
-      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
-      switch (selected_part->type){
-         case PART_TYPE_IMAGE: etk_tree2_row_fields_set(selected_part->tree_row,col1,EdjeFile->str,"IMAGE.PNG",etk_entry_text_get(ETK_ENTRY(object)),NULL); break;
-         case PART_TYPE_RECT: etk_tree2_row_fields_set(selected_part->tree_row,col1,EdjeFile->str,"RECT.PNG",etk_entry_text_get(ETK_ENTRY(object)),NULL); break;
-         case PART_TYPE_TEXT: etk_tree2_row_fields_set(selected_part->tree_row,col1,EdjeFile->str,"TEXT.PNG",etk_entry_text_get(ETK_ENTRY(object)),NULL); break;
-         default: etk_tree2_row_fields_set(selected_part->tree_row,col1,EdjeFile->str,"NONE.PNG",etk_entry_text_get(ETK_ENTRY(object)),NULL); break;
-      }
-   }
-}
-void on_StateEntry_text_changed(Etk_Object *object, void *data){
-   Etk_Tree2_Col *col1=NULL;
-   GString *str = g_string_new("");
-   printf("Text Changed Signal on StateEntry EMITTED\n");
-
-   RenameDescription(selected_desc,(char*)etk_entry_text_get(ETK_ENTRY(object)),selected_desc->state_index);
-
-   //Update PartTree
-   if (selected_desc){
-      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
-      g_string_printf(str,"%s %.2f",selected_desc->state->str, selected_desc->state_index);
-      etk_tree2_row_fields_set(selected_desc->tree_row,col1,EdjeFile->str,"DESC.PNG",str->str,NULL);
-   }
-
-   g_string_free(str,TRUE);
-}
-
-void on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data){
-   Etk_Tree2_Col *col1=NULL;
-   GString *str = g_string_new("");
-   printf("Value Changed Signal on StateIndexSpinner EMITTED\n");
-   if (selected_desc){
-      RenameDescription(selected_desc,NULL,etk_range_value_get(range));
-
-      //Update PartTree
-      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
-      g_string_printf(str,"%s %.1f",selected_desc->state->str, selected_desc->state_index);
-      etk_tree2_row_fields_set(selected_desc->tree_row,col1,EdjeFile->str,"DESC.PNG",str->str,NULL);
-   }
-   g_string_free(str,TRUE);
-}
-/* Toolbar Callbacks */
-void on_ToolBarButton_click(Etk_Button *button, void *data){
-   GList *current,*prev;
-   switch ((int)data){
-    case TOOLBAR_NEW:
-      printf("Clicked signal on Toolbar Button 'New' EMITTED\n");
-      ShowFilechooser(FILECHOOSER_NEW);
-      break;
-    case TOOLBAR_OPEN:
-      printf("Clicked signal on Toolbar Button 'Open' EMITTED\n");
-      ShowFilechooser(FILECHOOSER_OPEN);
-      break;
-    case TOOLBAR_SAVE:
-      printf("Clicked signal on Toolbar Button 'Save' EMITTED\n");
-      SaveEDC(NULL);
-      break;
-    case TOOLBAR_SAVE_AS:
-      printf("Clicked signal on Toolbar Button 'Save as' EMITTED\n");
-      ShowFilechooser(FILECHOOSER_SAVE_AS);
-      break;
-    case TOOLBAR_ADD:
-      printf("Clicked signal on Toolbar Button 'Add' EMITTED\n");
-      etk_menu_popup(ETK_MENU(UI_AddMenu));
-      //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
-      break;
-    case TOOLBAR_REMOVE:
-      printf("Clicked signal on Toolbar Button 'Remove' EMITTED\n");
-      etk_menu_popup(ETK_MENU(UI_RemoveMenu));
-      //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
-      break;
-    case TOOLBAR_MOVE_UP:
-      printf("Clicked signal on Toolbar Button 'MoveUp' EMITTED\n");
-      if (selected_desc){
-         printf("MoveUP DESC: %s\n",selected_desc->state->str);
-      }
-      else if (selected_part){
-         if ((current = g_list_find(selected_part->group->parts,selected_part))){
-            if ((prev = g_list_previous(current))){
-               printf("MoveUP PART: %s\n",selected_part->name->str);
-               //current->data = prev->data;
-               //prev->data = selected_part;
-               //Update the tree
-            }
-         }
-      }
-      else{
-         ShowAlert("No part to move selected");
-      }
-      ShowAlert("Not yet implemented");
-      break;
-    case TOOLBAR_MOVE_DOWN:
-      printf("Clicked signal on Toolbar Button 'MoveDown' EMITTED\n");
-      ShowAlert("Not yet implemented");
-      break;
-    case TOOLBAR_PLAY:
-      printf("Clicked signal on Toolbar Button 'Play' EMITTED\n");
-      SaveEDC(NULL);
-      PlayEDC();
-      break;
-    case TOOLBAR_DEBUG:
-      PrintDebugInformation(TRUE);
-      //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
-      break;
-    case TOOLBAR_IMAGE_FILE_ADD:
-      printf("INSERT IMAGE\n");
-      if (EDCFile->len > 0) ShowFilechooser(FILECHOOSER_IMAGE);
-      else ShowAlert("You have to save the file once for insert image.");
-      break;
-    case TOOLBAR_FONT_FILE_ADD:
-      printf("INSERT FONT\n");
-      if (EDCFile->len > 0) ShowFilechooser(FILECHOOSER_FONT);
-      else ShowAlert("You have to save the file once for insert font.");
-      break;
-   }
-}
 void on_AddMenu_item_activated(Etk_Object *object, void *data){
-   EDC_Group *group = NULL;
-   EDC_Part	*part;
-   EDC_Description *new_desc;
+   Engrave_Group *group = NULL;
+   Engrave_Part *part;
+   Engrave_Part_State *new_state;
 
    printf("Item Activated Signal on AddMenu EMITTED\n");
-   switch ((int)data){
+   if (!Cur.eg && ((int)data != NEW_GROUP))
+   {
+      group = engrave_group_new();
+      engrave_group_name_set (group, "New group");
+      engrave_file_group_add (Cur.ef, group);
+
+      AddGroupToTree(group);
+      Cur.eg = group;
+   }
+   switch ((int)data)
+   {
       case NEW_RECT:
-         if (selected_group){
-            part = EDC_Part_new(selected_group,"New Rectangle",PART_TYPE_RECT);
-            new_desc = EDC_Description_new(part,"default",0);
-            part->descriptions = g_list_append(part->descriptions,new_desc);
-            
+         part = engrave_part_new(ENGRAVE_PART_TYPE_RECT);
+         engrave_part_name_set (part, "new rectangle");
+         engrave_group_part_add(Cur.eg, part);
+         AddPartToTree(part);
 
-            selected_part = part;
-            selected_desc = part->descriptions->data;
+         new_state = engrave_part_state_new();
+         engrave_part_state_name_set(new_state, "default", 0.0);
+         engrave_part_state_add(part,new_state);
+         AddStateToTree(new_state);
 
-            etk_tree2_row_select(selected_desc->tree_row);
-            etk_tree2_row_unfold(selected_group->tree_row);
-            etk_tree2_row_unfold(selected_part->tree_row);
+         Cur.ep = part;
+         Cur.eps = new_state;
+ 
+         etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
+         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
+         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep)); 
 
-            RecreateRelComboBoxes();
-         }else{
-            ShowAlert("You must select a group");
-         }
-
-      break;
+         PopulateRelComboBoxes();
+         break;
       case NEW_IMAGE:
-         //printf("IMAGE\n");
-         if (selected_group){
-            part = EDC_Part_new(selected_group,"New Image",PART_TYPE_IMAGE);
-            new_desc = EDC_Description_new(part,"default",0);
+         part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
+         engrave_part_name_set (part, "new image");
+         engrave_group_part_add(Cur.eg, part);
+         AddPartToTree(part);
 
-            part->descriptions = g_list_append(part->descriptions,new_desc);
-        
-            selected_part = part;
-            selected_desc = part->descriptions->data;
-            etk_tree2_row_select(selected_desc->tree_row);
-            etk_tree2_row_unfold (selected_part->tree_row);
-            etk_tree2_row_unfold (selected_group->tree_row);
+         new_state = engrave_part_state_new();
+         engrave_part_state_name_set(new_state, "default", 0.0);
+         engrave_part_state_add(part,new_state);
+         AddStateToTree(new_state);
 
-            RecreateRelComboBoxes();
-         }else{
-            ShowAlert("You must select a group");
-         }
-      break;
+         Cur.ep = part;
+         Cur.eps = new_state;
+
+         etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
+         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
+         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep));
+
+         PopulateRelComboBoxes();
+         break;
       case NEW_TEXT:
-         //printf("TEXT\n");
-         if (selected_group){
-            part = EDC_Part_new(selected_group,"New Text", PART_TYPE_TEXT);
-            new_desc = EDC_Description_new(part,"default",0);
+         part = engrave_part_new(ENGRAVE_PART_TYPE_TEXT);
+         engrave_part_name_set (part, "new text");
+         engrave_group_part_add(Cur.eg, part);
+         AddPartToTree(part);
 
-            part->type = PART_TYPE_TEXT;
-            g_string_printf(part->name,"New Text");
-            part->descriptions = g_list_append(part->descriptions,new_desc);
+         new_state = engrave_part_state_new();
+         engrave_part_state_name_set(new_state, "default", 0.0);
+         engrave_part_state_add(part,new_state);
+         AddStateToTree(new_state);
+
+         Cur.ep = part;
+         Cur.eps = new_state;
          
-            selected_part = part;
-            selected_desc = part->descriptions->data;
-            etk_tree2_row_select(selected_desc->tree_row);
-            etk_tree2_row_unfold(selected_part->tree_row);
-            etk_tree2_row_unfold(selected_group->tree_row);
+         etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
+         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
+         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep));
 
-            RecreateRelComboBoxes();
-         }else{
-            ShowAlert("You must select a group");
-         }
-      break;
+         PopulateRelComboBoxes();
+         break;
       case NEW_DESC:
-         if (selected_part){
-            printf("New Description in %s\n",selected_part->name->str);
-            new_desc = EDC_Description_new(selected_part,"New state",0);
+         if (Cur.ep){
+            new_state = engrave_part_state_new();
+            engrave_part_state_name_set(new_state, "state", 0.0);
+            engrave_part_state_add(Cur.ep,new_state);
+            AddStateToTree(new_state);
 
-            selected_part->descriptions = g_list_append(selected_part->descriptions,new_desc);
+            Cur.eps = new_state;
+            etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
+            etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep));
+            etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
 
-            selected_desc = new_desc;
-            etk_tree2_row_select(selected_desc->tree_row);
-            etk_tree2_row_unfold (selected_part->tree_row);
-            etk_tree2_row_unfold (selected_group->tree_row);
-            
          }else{
             ShowAlert("You must first select a part.");
          }
-      break;
+         break;
       case NEW_GROUP:
-         group = EDC_Group_new("Nuovo Gruppo",100,100,400,400);
-         if (selected_group) ev_hide_group(selected_group);
-         selected_group = group;
-         selected_part = NULL;
-         selected_desc = NULL;
-         etk_tree2_row_select(group->tree_row);
-        
-      break;
+         group = engrave_group_new();
+      	engrave_group_name_set (group, "New group");
+      	engrave_file_group_add (Cur.ef, group);
+
+
+         AddGroupToTree(group);
+
+         Cur.eg = group;
+         Cur.ep = NULL;
+         Cur.eps = NULL;
+         etk_tree2_row_select(ecore_hash_get(hash,group));
+         break;
    }
 }
 void on_RemoveMenu_item_activated(Etk_Object *object, void *data){
-   Etk_Tree2_Row* row;
+   //Etk_Tree2_Row* row;
    printf("Item Activated Signal on RemoveMenu EMITTED\n");
-   switch ((int)data){
+ /*   switch ((int)data){
       case REMOVE_DESCRIPTION:
          if (selected_desc){
             if (strcmp(selected_desc->state->str,"default") || selected_desc->state_index != 0){
@@ -607,16 +823,16 @@ void on_RemoveMenu_item_activated(Etk_Object *object, void *data){
             }
          }
       break;
-   }
+   } */
 }
 
 /* Dialogs Callbacks */
 void on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data){
-   GString *edc_file = g_string_new("");
+  // GString *edc_file = g_string_new("");
 
    printf("Response Signal on Filechooser EMITTED\n");
 
-   if (response_id == ETK_RESPONSE_OK){
+ /*   if (response_id == ETK_RESPONSE_OK){
 
       switch(FileChooserOperation){
          case FILECHOOSER_OPEN:
@@ -677,10 +893,10 @@ void on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data){
    else{
       etk_widget_hide(ETK_WIDGET(dialog));
    }
-   g_string_free(edc_file,TRUE);
+   g_string_free(edc_file,TRUE); */
 }
 void on_FileChooser_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data){
-   GString *str=g_string_new("");
+  /*  GString *str=g_string_new("");
    if (etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)))
      g_string_append_printf(str,"%s/",etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
    if (etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)))
@@ -688,10 +904,10 @@ void on_FileChooser_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *da
 
    //printf("CHANGE: %s\n",str->str);
    etk_entry_text_set(ETK_ENTRY(UI_FilechooserFileNameEntry),str->str);
-   g_string_free(str,TRUE);
+   g_string_free(str,TRUE); */
 }
 void on_PlayDialog_response(Etk_Dialog *dialog, int response_id, void *data){
-   GString *command = g_string_new("");
+/*    GString *command = g_string_new("");
    if (response_id == ETK_RESPONSE_OK){
       printf("TEST IN VIEWER\n");
       g_string_printf(command,"edje_viewer %s",EDCFile->str);
@@ -704,7 +920,7 @@ void on_PlayDialog_response(Etk_Dialog *dialog, int response_id, void *data){
    else{
       etk_widget_hide(ETK_WIDGET(dialog));
    }
-   g_string_free(command,TRUE);
+   g_string_free(command,TRUE); */
 }
 void on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data){
    etk_widget_hide(ETK_WIDGET(dialog));

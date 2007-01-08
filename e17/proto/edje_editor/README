@@ -14,23 +14,31 @@ Dependencies
 
  - Evas
  - Etk
- - GLib2  (this dependencie is in program to remove)
+ - Engrave
+ - Ecore
 
 
-Building and Installing libdvdcss
+Building and Installing
 =======================================
 
+./autogen
 make
+sudo make install
 
 
 Running 
 =======================================
+Usage: 
+   edje_editor [EDC | EDJ] [IMAGE_DIR] [FONT_DIR]
 
-Run the program from where you have compiled it.
+Example:
+   edje_editor                #Open an empty file
+   edje_editor default.edj    #Open the given EDJ
+   edje_editor default.edc    #Open the given EDC
 
-IMPORTANT NOTE: you have to save a new edc at least once before you
-can do much of the operation(otherwise the program will die).
-In other world: the file you are working on must have a name.
+Note on open an EDC:
+   To open an EDC file you must pass the IMAGE_DIR and FONT_DIR
+   parameters. If not given the EDC directory is assumed.
 
 
 Troubleshooting

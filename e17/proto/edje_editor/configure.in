@@ -85,6 +85,24 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
+AC_PATH_GENERIC(ecore, 0.9.9.037,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The ecore-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the ecore-devel (or ecore-dev)"
+    echo "   packages."
+    echo "2. You may have ecore installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the ecore-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-engrave-config."
+    AC_MSG_ERROR([Fatal Error: no engrave-config detected.])
+  ]
+)
+
 AC_PATH_GENERIC(etk, 0.1.0.002,
   [ ],
   [
@@ -103,17 +121,6 @@ AC_PATH_GENERIC(etk, 0.1.0.002,
   ]
 )
 
-PKG_CHECK_MODULES(GLIB2, glib-2.0 >= 2.12.4,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "glib-2.0 was not found."
-    echo "You may not have installed the glib-2.0-devel (or glib-2.0-dev)"
-    echo "packages."
-    AC_MSG_ERROR([Fatal Error: no glib-2.0 detected.])
-  ]
-)
-
 AC_PATH_GENERIC(edje, 0.5.0,
   [ ],
   [
@@ -129,6 +136,24 @@ AC_PATH_GENERIC(edje, 0.5.0,
     echo "shell's manual page on setting the \$PATH environment variable), OR"
     echo "alternatively, specify the script to use with --with-edje-config."
     AC_MSG_ERROR([Fatal Error: no edje-config detected.])
+  ]
+)
+
+AC_PATH_GENERIC(engrave, 0.1.0,
+  [ ],
+  [
+    echo "ERROR:"
+    echo "The engrave-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the engrave-devel (or engrave-dev)"
+    echo "   packages."
+    echo "2. You may have edje installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the engrave-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-engrave-config."
+    AC_MSG_ERROR([Fatal Error: no engrave-config detected.])
   ]
 )
 
@@ -154,7 +179,7 @@ dnl Set ETK_PACKAGE_DATA_DIR in config.h.
 etk_prefix="\"`etk-config --prefix`/share/etk\""
 AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
 
-requirements="etk glib2 edje evas"
+requirements="ecore etk edje evas engrave"
 
 AC_SUBST(requirements)
 AC_SUBST(packagesrcdir)

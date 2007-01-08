@@ -1,4 +1,4 @@
-#include "main.h" 
+#include "main.h"
 
 
 Etk_Widget *UI_MainWin;
@@ -57,10 +57,10 @@ Etk_Widget *UI_PlayTextView;
 Etk_Widget *UI_FilechooserFileNameEntry;
 Etk_Widget *UI_tree_vbox;
 Etk_Widget *UI_AlertDialog;
-Etk_Widget *UI_GroupMinXSpinner;
-Etk_Widget *UI_GroupMinYSpinner;
-Etk_Widget *UI_GroupMaxXSpinner;
-Etk_Widget *UI_GroupMaxYSpinner;
+Etk_Widget *UI_GroupMinWSpinner;
+Etk_Widget *UI_GroupMinHSpinner;
+Etk_Widget *UI_GroupMaxWSpinner;
+Etk_Widget *UI_GroupMaxHSpinner;
 Etk_Widget *UI_ImageAddButton;
 Etk_Widget *UI_FontAddButton;
 
@@ -69,19 +69,23 @@ void		UpdatePartFrame			(void);
 void		UpdateRectFrame			(void);
 void		UpdateDescriptionFrame	(void);
 void		UpdatePositionFrame		(void);
-void		UpdateComboPositionFrame	(void);
-void		UpdateImageFrame		(void);
-void		UpdateImageComboBox		(void);
+void		UpdateComboPositionFrame(void);
+void		UpdateImageFrame		   (void);
 void		UpdateTextFrame			(void);
 void 		UpdateWindowTitle			(void);
-void 		RecreateRelComboBoxes	(void);
-void 		UpdateFontComboBox		(void);
-int 			AddImageToCombo			(char* fname);
-void 		AddPartToTree				(EDC_Part* part);
-void 		AddDescToTree			(EDC_Description* desc);
-void AddGroupToTree(EDC_Group* group);
+
+
+
+
 void 		ShowFilechooser			(int FileChooserType);
-void 		ShowAlert				(char* text);
+void 		ShowAlert				   (char* text);
 
 
-
+void     PopulateTree            (void);
+void     AddGroupToTree          (Engrave_Group* group);
+void 		AddPartToTree				(Engrave_Part* part);
+void 		AddStateToTree			   (Engrave_Part_State* state);
+void 		PopulateRelComboBoxes	(void);
+void		PopulateImagesComboBox	(void);
+void 		PopulateFontsComboBox	(void);
+void     UpdateGroupFrame        (void);

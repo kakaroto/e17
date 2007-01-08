@@ -5,9 +5,10 @@ INCLUDES = \
 -Wall -g \
 -I/usr/local/include \
 -I$(top_srcdir)/lib \
+@ECORE_CFLAGS@ \
 @ETK_CFLAGS@ \
-@GLIB2_CFLAGS@ \
 @EVAS_CFLAGS@ \
+@ENGRAVE_CFLAGS@ \
 @EDJE_CFLAGS@
 
 bin_PROGRAMS = edje_editor
@@ -15,7 +16,7 @@ bin_PROGRAMS = edje_editor
 edje_editor_INCLUDES = \
 callbacks.h \
 evas.h \
-nterface.h \
+interface.h \
 main.h \
 parse.h
 
@@ -27,4 +28,4 @@ main.c \
 parse.c \
 $(edje_editor_INCLUDES)
 
-edje_editor_LDADD = @ETK_LIBS@ @GLIB2_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@
+edje_editor_LDADD = @ECORE_LIBS@ @ETK_LIBS@ @EVAS_LIBS@ @ENGRAVE_LIBS@ @EDJE_LIBS@
