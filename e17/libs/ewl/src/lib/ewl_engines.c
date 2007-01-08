@@ -85,13 +85,17 @@ ewl_engine_names_get(void)
 	ecore_list_goto_first(files);
 	while ((file = ecore_list_next(files)))
 	{
-		int len;
+		char *ext;
 
-		len = strlen(file);
-		if (!strncmp(file + (len - 3), ".so", 3))
+		ext = strchr(file, '.');
+		if (ext)
 		{
-			file[len - 3] = '\0';
-			ecore_list_append(names, strdup(file));
+			char *lastext;
+			lastext = strrchr(file, '.');
+			if (!strncmp(lastext, ".so", 3) && ext == lastext) {
+				*ext = '\0';
+				ecore_list_append(names, strdup(file));
+			}
 		}
 	}
 	ecore_list_destroy(files);
