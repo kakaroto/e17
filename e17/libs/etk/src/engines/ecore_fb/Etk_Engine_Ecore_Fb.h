@@ -14,6 +14,7 @@ typedef struct Etk_Engine_Ecore_Fb_Window_Data
    Etk_Bool visible;
    
    Evas_Object *border;
+   Etk_Window *focused;
 } Etk_Engine_Ecore_Fb_Window_Data;
 
 #endif

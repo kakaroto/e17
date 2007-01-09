@@ -20,6 +20,7 @@ static void _engine_shutdown();
 
 /* Etk_Window functions */
 static void _window_constructor(Etk_Window *window);
+static void _window_destructor(Etk_Window *window);
 static void _window_show(Etk_Window *window);
 static void _window_hide(Etk_Window *window);
 static Evas *_window_evas_get(Etk_Window *window);
@@ -32,6 +33,8 @@ static void _window_size_get(Etk_Window *window, int *w, int *h);
 static void _window_screen_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
 static void _window_raise(Etk_Window *window);
 static void _window_lower(Etk_Window *window);
+static void _window_focused_set(Etk_Window *window, Etk_Bool focused);
+static Etk_Bool _window_focused_get(Etk_Window *window);
 
 static void _window_realized_cb(Etk_Object *object, void *data);
 static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -42,6 +45,10 @@ static void _event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event
 static void _mouse_position_get(int *x, int *y);
 static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
 static int _mouse_move_handler_cb(void *data, int ev_type, void *ev);
+
+/* Internal functions */
+
+Etk_Window *_window_focus_find_other(Etk_Window *current);
 
 /* Private vars */
 static Ecore_Evas *_ecore_evas = NULL;
@@ -69,7 +76,7 @@ static Etk_Engine engine_info = {
    _engine_shutdown,
    
    _window_constructor,
-   NULL, /* window_destructor */
+   _window_destructor,
    _window_show,
    _window_hide,
    _window_evas_get,
@@ -96,8 +103,8 @@ static Etk_Engine engine_info = {
    NULL, /* window_stacking_get */
    NULL, /* window_sticky_set */
    NULL, /* window_sticky_get */
-   NULL, /* window_focused_set */
-   NULL, /* window_focused_get */
+   _window_focused_set,
+   _window_focused_get,
    NULL, /* window_decorated_set */
    NULL, /* window_decorated_get */
    NULL, /* window_shaped_set */
@@ -227,6 +234,22 @@ static void _window_constructor(Etk_Window *window)
    etk_signal_connect("realize", ETK_OBJECT(window), ETK_CALLBACK(_window_realized_cb), NULL);
 }
 
+/* Cleans up the window */
+static void _window_destructor(Etk_Window *window)
+{
+   Etk_Engine_Window_Data *engine_data;
+   Etk_Window *other;
+   
+   engine_data = window->engine_data;
+   
+   // move focus to another window if this was the focused one
+   if (window == engine_data->focused) 
+   {
+      other = _window_focus_find_other(window);
+      if (other != NULL) _window_focused_set(other, ETK_TRUE);
+   }
+}
+
 /* Shows the window */
 static void _window_show(Etk_Window *window)
 {
@@ -242,11 +265,19 @@ static void _window_show(Etk_Window *window)
 static void _window_hide(Etk_Window *window)
 {
    Etk_Engine_Window_Data *engine_data;
-   
+   Etk_Window *other;
+
    engine_data = window->engine_data;
    engine_data->visible = ETK_FALSE;
    if (engine_data->border)
       evas_object_hide(engine_data->border);
+
+   // move focus to another window if this was the focused one
+   if (window == engine_data->focused) 
+   {
+      other = _window_focus_find_other(window);
+      if (other != NULL) _window_focused_set(other, ETK_TRUE);
+   }
 }
 
 /* Gets the evas where the window is drawn */
@@ -355,10 +386,56 @@ static void _window_raise(Etk_Window *window)
 static void _window_lower(Etk_Window *window)
 {
    Etk_Engine_Window_Data *engine_data;
-   
+   Etk_Window *other;
+
    engine_data = window->engine_data;
    if (engine_data->border)
       evas_object_lower(engine_data->border);
+
+   // move focus to another window if this was the focused one
+   if (window == engine_data->focused) 
+   {
+      other = _window_focus_find_other(window);
+      if (other != NULL) _window_focused_set(other, ETK_TRUE);
+   }
+}
+
+/* Sets the window as the current focused window in the system, or unfocus it.  
+   When unfocusing, the next window available in the windows list will be focused. 
+   If no other window is available, focus will remain on current window.
+*/
+void _window_focused_set(Etk_Window *window, Etk_Bool focused)
+{
+   Etk_Engine_Window_Data *engine_data;
+   Etk_Window *other;
+
+   engine_data = window->engine_data;
+   if (focused) 
+   {
+      engine_data->focused = window;
+      evas_object_focus_set(ETK_WIDGET(window)->smart_object, 1);
+   }
+   else 
+   {
+      if (engine_data->focused != window) return; // you can't unfocus a window that's not the focused one.
+
+      other = _window_focus_find_other(window);
+      if (other != NULL) 
+      {
+         engine_data->focused = other;
+         evas_object_focus_set(ETK_WIDGET(other)->smart_object, 1);
+      }
+   }
+}
+
+/* Is this window the current focused window in the system ? */
+Etk_Bool _window_focused_get(Etk_Window *window)
+{
+   Etk_Engine_Window_Data *engine_data;
+
+   engine_data = window->engine_data;
+   if (engine_data->focused == window) return ETK_TRUE;
+   else return ETK_FALSE;
 }
 
 /**************************
@@ -387,6 +464,31 @@ static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h)
    if (y)   *y = 0;
    if (w)   *w = _fb_width;
    if (h)   *h = _fb_height;
+}
+
+/**************************
+ *
+ * Internal functions
+ *
+ **************************/
+
+/* Find a window to focus that is different from the current one. 
+   Maybe replace this with a focus stack or something similar, later. 
+*/
+Etk_Window *_window_focus_find_other(Etk_Window *current)
+{
+   Evas_List *toplevels;
+   Etk_Window *other;
+
+   // for now just return the first other window we find.
+   for (toplevels = etk_toplevel_widgets_get(); toplevels; toplevels = toplevels->next)
+   {
+      if (!ETK_IS_WINDOW(toplevels->data)) continue;
+
+      other = ETK_WINDOW(toplevels->data);
+      if (other != current) return other;
+   }
+   return NULL;
 }
 
 /**************************
