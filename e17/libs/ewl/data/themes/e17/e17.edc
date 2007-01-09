@@ -51,7 +51,7 @@ data
 	/* entry/text related groups */
 	item: "/entry/group" "ewl/entry";
 	item: "/entry/cursor/group" "ewl/entry/cursor";
-	item: "/entry/selection_area/group" "ewl/entry/selection";
+	item: "/selection_area/group" "ewl/entry/selection";
 
 	/* highlight group */
 	item: "/highlight/group" "ewl/highlight";
