@@ -428,7 +428,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	/* the paned has gotten smaller, we need to reclaim space from the
 	 * currently sized widgets */
 	if (available_size < 0)
-		available_size -= ewl_paned_widgets_resize(sized, available_size);
+		available_size += ewl_paned_widgets_resize(sized, available_size);
 
 	/* available space is less then our needed space, we need to resize
 	 * the other widgets until we have at least min_pane_size available */
@@ -742,7 +742,7 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
 						void *data __UNUSED__)
 {
 	Ewl_Event_Mouse_Move *e;
-	Ewl_Paned_Grabber *g, *stop_grabber = NULL;
+	Ewl_Paned_Grabber *stop_grabber = NULL;
 	Ewl_Widget *shrink = NULL, *grow = NULL, *child;
 	Ewl_Container *c;
 	Ewl_Paned *p;
@@ -758,7 +758,6 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	e = ev;
-	g = EWL_PANED_GRABBER(w);
 	p = EWL_PANED(w->parent);
 	c = EWL_CONTAINER(p);
 
