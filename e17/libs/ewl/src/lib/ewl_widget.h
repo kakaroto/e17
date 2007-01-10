@@ -181,6 +181,9 @@ void 		 ewl_widget_state_set(Ewl_Widget *w, const char *state,
 void 		 ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance);
 char 		*ewl_widget_appearance_get(Ewl_Widget *w);
 char 		*ewl_widget_appearance_path_get(Ewl_Widget *w);
+int		 ewl_widget_appearance_path_size_get(Ewl_Widget *w);
+int		 ewl_widget_appearance_path_copy(Ewl_Widget *w, char *buf,
+						int size);
 void 		 ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part,
 						   const char *text);     
 char 		*ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part);

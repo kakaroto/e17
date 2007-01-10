@@ -41,7 +41,7 @@ void  		 ewl_theme_font_path_add(char *path);
 
 char 		*ewl_theme_image_get(Ewl_Widget *w, char *k);
 
-char 		*ewl_theme_data_str_get(Ewl_Widget *w, char *k);
+const char 	*ewl_theme_data_str_get(Ewl_Widget *w, char *k);
 void 		 ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v);
 
 int 		 ewl_theme_data_int_get(Ewl_Widget *w, char *k);

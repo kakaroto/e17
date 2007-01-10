@@ -693,37 +693,57 @@ ewl_widget_appearance_get(Ewl_Widget *w)
 }
 
 /**
+ * @internal
  * @param w: the widget to retrieve the full appearance key
  * @param size: pointer to an int indicating the string length
  * @return Returns a pointer to the full appearance path string on success, NULL on
  * failure.
  * @brief Retrieve the appearance path key of the widget
  */
-static char *
-ewl_widget_appearance_path_size_get(Ewl_Widget *w, int *size)
+int
+ewl_widget_appearance_path_size_get(Ewl_Widget *w)
 {
-	char *ret = NULL;
+	int size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	/*
 	 * Allocate enough for the appearance plus a leading "/"
 	 */
-	*size += (w->appearance ? strlen(w->appearance) : 0) + 1;
+	size = 0;
+	while (w) {
+		size += (w->appearance ? strlen(w->appearance) : 0) + 1;
+		w = w->parent;
+	}
+	size++;
+
+	DRETURN_INT(size, DLEVEL_STABLE);
+}
+
+/**
+ */
+int
+ewl_widget_appearance_path_copy(Ewl_Widget *w, char *buf, int size)
+{
+	int len, used;
+
+	used = 0;
+	len = (w->appearance ? strlen(w->appearance) : 0);
+
 	if (w->parent) {
-		ret = ewl_widget_appearance_path_size_get(w->parent, size);
-	}
-	else {
-		ret = NEW(char, *size + 1);
+		used += ewl_widget_appearance_path_copy(w->parent, buf,
+				size - len);
 	}
 
-	strcat(ret, "/");
-	if (w->appearance)
-		strcat(ret, w->appearance);
+	*(buf + used) = '/';
+	used++;
+	used += ecore_strlcpy(buf + used,
+			(w->appearance ? w->appearance : ""),
+				size - used);
 
-	DRETURN_PTR(ret, DLEVEL_STABLE);
+	DRETURN_INT(used, DLEVEL_STABLE);
 }
 
 /**
@@ -742,7 +762,9 @@ ewl_widget_appearance_path_get(Ewl_Widget *w)
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
-	ret = ewl_widget_appearance_path_size_get(w, &len);
+	len = ewl_widget_appearance_path_size_get(w);
+	ret = NEW(char *, len);
+	ewl_widget_appearance_path_copy(w, ret, len);
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
@@ -876,7 +898,6 @@ static void
 ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const char *text)
 {
 	Evas_Coord nw, nh;
-	char *cleanup = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -890,14 +911,12 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const cha
 	 * Fill in the default part to use when the key is NULL.
 	 */
 	if (!part || !*part)
-		part = cleanup = ewl_theme_data_str_get(w, "textpart");
+		part = ewl_theme_data_str_get(w, "textpart");
 
 	edje_object_part_text_set(w->theme_object, part, text);
 	edje_object_size_min_calc(w->theme_object, &nw, &nh);
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), (int)nw, (int)nh);
-
-	IF_FREE(cleanup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1078,7 +1097,7 @@ ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text)
 char *
 ewl_widget_appearance_text_get(Ewl_Widget *w)
 {
-	char *part;
+	const char *part;
 	char *match = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1086,10 +1105,7 @@ ewl_widget_appearance_text_get(Ewl_Widget *w)
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	part = ewl_theme_data_str_get(w, "textpart");
-	if (part) {
-		match = ewl_widget_appearance_part_text_get(w, part);
-		FREE(part);
-	}
+	if (part) match = ewl_widget_appearance_part_text_get(w, part);
 
 	if (!match)
 		match = ewl_widget_appearance_part_text_get(w, NULL);
@@ -1624,7 +1640,7 @@ ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
 void
 ewl_widget_inherit(Ewl_Widget *widget, const char *inherit)
 {
-	int len;
+	size_t len;
 	char *tmp = NULL;
 	const char *tmp2 = NULL;
 
@@ -1636,22 +1652,42 @@ ewl_widget_inherit(Ewl_Widget *widget, const char *inherit)
 	 * set the inheritence */
 
 	len = strlen(inherit) +  3;
-	tmp2 = widget->inheritance;
-	if (tmp2)
-		len += strlen(tmp2);
-	else
-		tmp2 = "";
 
-	tmp = malloc(sizeof(char) * len);
-	sprintf(tmp, "%s:%s:", tmp2, inherit);
+	tmp2 = widget->inheritance;
+	if (tmp2) len += strlen(tmp2);
+
+	tmp = alloca(sizeof(char) * len);
+	if (tmp) {
+		size_t used = 0;
+
+		/* Copy the existing inherited types */
+		if (tmp2) used = ecore_strlcpy(tmp, tmp2, len);
+
+		/* Insert the leading colon */
+		if (used < len - 1) {
+			*(tmp + used) = ':';
+			used++;
+		}
+
+		/* Copy newly inherited type */
+		if (used < len)
+			used += ecore_strlcpy(tmp + used, inherit, len - used);
+
+		/* Insert trailing colon */
+		if (used < len - 1) {
+			*(tmp + used) = ':';
+			used++;
+		}
+
+		/* Terminate the string */
+		*(tmp + used) = '\0';
+	}
 
 	/*
 	 * Intentionally lose a reference to the ecore string to keep a
 	 * reference cached for later re-use.
 	 */
 	widget->inheritance = ecore_string_instance(tmp);
-
-	FREE(tmp);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2535,7 +2571,7 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int i_l = 0, i_r = 0, i_t = 0, i_b = 0;
 	int p_l = 0, p_r = 0, p_t = 0, p_b = 0;
 	char *i = NULL;
-	char *group = NULL;
+	const char *group = NULL;
 	Evas_Coord width, height;
 	Ewl_Embed *emb = NULL;
 
@@ -2584,7 +2620,6 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	}
 
 	IF_FREE(i);
-	IF_FREE(group);
 
 	/*
 	 * Reveal is done in this part of the callback to avoid duplicate code

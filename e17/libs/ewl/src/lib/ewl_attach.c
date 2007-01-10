@@ -593,7 +593,7 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Attach *attach;
 	Ewl_Event_Mouse_Move *e;
-	char *delay_str;
+	const char *delay_str;
 	double delay = 1.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -621,7 +621,6 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	if (delay_str)
 	{
 		delay = atof(delay_str);
-		FREE(delay_str)
 	}
 
 	ewl_attach_tooltip->timer = ecore_timer_add(delay, 

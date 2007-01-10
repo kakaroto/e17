@@ -213,7 +213,7 @@ ewl_theme_font_path_add(char *path)
 char *
 ewl_theme_image_get(Ewl_Widget *w, char *k)
 {
-	char *data;
+	const char *data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -228,7 +228,7 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
 			DRETURN_PTR(NULL, DLEVEL_STABLE);
 		}
 		else
-			data = strdup(ewl_theme_path);
+			data = ewl_theme_path;
 	}
 
 	/*
@@ -238,10 +238,10 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
 		char path[PATH_MAX];
 
 		snprintf(path, PATH_MAX, "%s/%s", ewl_theme_path, data);
-
-		FREE(data);
 		data = strdup(path);
 	}
+	else
+		data = strdup(data);
 
 	DRETURN_PTR(data, DLEVEL_STABLE);
 }
@@ -252,7 +252,7 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
  * @return Returns the string associated with @a k on success, NULL on failure.
  * @brief Retrieve an string value from a widgets theme
  */
-char *
+const char *
 ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 {
 	char *ret = NULL;
@@ -266,14 +266,29 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 	 * Use the widget's appearance string to build a relative theme key.
 	 */
 	if (w) {
+		int len;
 		char *tmp;
 
-		tmp = ewl_widget_appearance_path_get(w);
+		len = ewl_widget_appearance_path_size_get(w);
+		tmp = alloca(len);
 		if (tmp) {
-			snprintf(key, PATH_MAX, "%s/%s", tmp, k);
-			FREE(tmp);
-		} else
-			snprintf(key, PATH_MAX, "%s", k);
+			int used;
+
+			used = ewl_widget_appearance_path_copy(w, tmp, len);
+			if (used == (len - 1)) {
+				used = ecore_strlcpy(key, tmp, PATH_MAX);
+				if (used < PATH_MAX) {
+					*(key + used) = '/';
+					used++;
+				}
+
+				ecore_strlcpy(key + used, k, PATH_MAX - used);
+			}
+		}
+		else {
+			len += strlen(k) + 1;
+			ecore_strlcpy(key, k, len);
+		}
 
 	} else
 		snprintf(key, PATH_MAX, "%s", k);
@@ -296,11 +311,8 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 		if (w && w->theme)
 			ret = ecore_hash_get(w->theme, temp);
 
-		if (ret) {
-			if (ret != EWL_THEME_KEY_NOMATCH)
-				ret = strdup(ret);
+		if (ret)
 			break;
-		}
 
 		temp++;
 		temp = strchr(temp, '/');
@@ -317,23 +329,18 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 		temp = key;
 		while (temp && !ret) {
 			ret = ecore_hash_get(ewl_theme_def_data, temp);
-			if (ret) {
-				if (ret != EWL_THEME_KEY_NOMATCH)
-					ret = strdup(ret);
+			if (ret)
 				break;
-			}
 
 			/*
 			 * Resort to looking in the edje.
 			 */
-			if (!ret) {
-				ret = edje_file_data_get(ewl_theme_path, temp);
-				if (ret) {
-					ecore_hash_set(ewl_theme_def_data,
-							strdup(temp),
-							strdup(ret));
-					break;
-				}
+			ret = edje_file_data_get(ewl_theme_path, temp);
+			if (ret) {
+				ecore_hash_set(ewl_theme_def_data,
+						strdup(temp),
+						strdup(ret));
+				break;
 			}
 			temp++;
 			temp = strchr(temp, '/');
@@ -343,7 +350,7 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 	/*
 	 * Mark unmatched keys in the cache.
 	 */
-	if (!ret) {
+	if (!ret && ret != EWL_THEME_KEY_NOMATCH) {
 		ecore_hash_set(ewl_theme_def_data, strdup(key),
 				EWL_THEME_KEY_NOMATCH);
 	}
@@ -366,17 +373,14 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 int
 ewl_theme_data_int_get(Ewl_Widget *w, char *k)
 {
-	char *temp;
+	const char *temp;
 	int ret = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("k", k, FALSE);
 
 	temp = ewl_theme_data_str_get(w, k);
-	if (temp) {
-		ret = atoi(temp);
-		FREE(temp);
-	}
+	if (temp) ret = atoi(temp);
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -520,7 +524,7 @@ ewl_theme_path_find(const char *name)
 static void
 ewl_theme_font_path_init(void)
 {
-	char *font_path;
+	const char *font_path;
 	char key[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -538,7 +542,7 @@ ewl_theme_font_path_init(void)
 		DRETURN(DLEVEL_STABLE);
 
 	if (*font_path == '/')
-		ecore_list_append(ewl_theme_font_paths, font_path);
+		ecore_list_append(ewl_theme_font_paths, strdup(font_path));
 	else {
 		int len;
 		char *tmp;
@@ -553,7 +557,6 @@ ewl_theme_font_path_init(void)
 			snprintf(key, PATH_MAX, "%s", ewl_theme_path);
 			
 		ecore_list_append(ewl_theme_font_paths, strdup(key));
-		FREE(font_path);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

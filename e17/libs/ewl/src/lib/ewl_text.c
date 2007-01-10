@@ -1224,8 +1224,10 @@ ewl_text_font_source_set(Ewl_Text *t, const char *source, const char *font)
 	if (source) change->font_source = strdup(source);
 
 	/* null font will go back to the theme default */
-	if (!font) change->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
-	else change->font = strdup(font);
+	if (!font) font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+
+	/* Duplicate a local copy of the font */
+	if (font) change->font = strdup(font);
 
 	ewl_text_current_fmt_set(t, EWL_TEXT_CONTEXT_MASK_FONT, change);
 	ewl_text_context_release(change);
@@ -1261,8 +1263,10 @@ ewl_text_font_source_apply(Ewl_Text *t, const char *source, const char *font,
 	if (source) tx->font_source = strdup(source);
 
 	/* null font will go back to the theme default */
-	if (!font) tx->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
-	else tx->font = strdup(font);
+	if (!font) font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+
+	/* Duplicate a local copy of the font */
+	if (font) tx->font = strdup(font);
 
 	ewl_text_fmt_apply(t, EWL_TEXT_CONTEXT_MASK_FONT, tx,
 					t->cursor_position, char_len);
@@ -5289,6 +5293,7 @@ ewl_text_context_dup(Ewl_Text_Context *old)
 Ewl_Text_Context *
 ewl_text_context_default_create(Ewl_Text *t)
 {
+	const char *font;
 	Ewl_Text_Context *tx = NULL, *tmp;
 	int i;
 
@@ -5305,7 +5310,8 @@ ewl_text_context_default_create(Ewl_Text *t)
 	tmp = ewl_text_context_new();
 
 	/* handle default values */
-	tmp->font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+	font = ewl_theme_data_str_get(EWL_WIDGET(t), "font");
+	if (font) tmp->font = strdup(font);
 	tmp->font_source = NULL;
 	tmp->size = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
 
