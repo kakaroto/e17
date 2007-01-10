@@ -5,7 +5,7 @@ program
 	source: "EWL";
 	action: STATE_SET "focused" 0.0;
 	transition: DECELERATE 0.2;
-	target: focus;
+	target: "focus";
 }
 	
 program
