@@ -271,7 +271,7 @@ run_unit_tests(Ewl_Test *test)
 static void
 statusbar_text_set(const char *text)
 {
-       	Ewl_Widget *stat;
+   	Ewl_Widget *stat;
 	char info[1024];
 
 	stat = ewl_widget_name_find("statusbar");
@@ -744,211 +744,211 @@ text_parse(char *str)
 static void
 tutorial_parse(Ewl_Text *tutorial, char *str)
 {
-    char *start, *end;
-    int handled_newline = 0;
-    int in_codeblock = 0; 
-    int not_double = 0;
-    
-    start = str;
-    
-    /* skip the comment block start and any blank space after */
-    while ((*start == '/') || (*start == '*') || (isspace(*start))) start++;
-    end = start;
-    
-    while (start && (*start != '\0'))
-    {
-        int did_newline = 0;
-        
-        /* we strip out newlines so the text will wrap nicely */
-        if (*end == '\n')
-        {
-            /* we just handled a \n and got a second one so this is a new
-             * paragraph so actually insert the two \n's */
-            if (handled_newline)
-            {
-                if (in_codeblock || not_double)
-                    ewl_text_text_append(tutorial, "\n");
-                else
-                    ewl_text_text_append(tutorial, "\n\n");
-            }
+	char *start, *end;
+	int handled_newline = 0;
+	int in_codeblock = 0; 
+	int not_double = 0;
+	
+	start = str;
+	
+	/* skip the comment block start and any blank space after */
+	while ((*start == '/') || (*start == '*') || (isspace(*start))) start++;
+	end = start;
+	
+	while (start && (*start != '\0'))
+	{
+		int did_newline = 0;
+		
+		/* we strip out newlines so the text will wrap nicely */
+		if (*end == '\n')
+		{
+			/* we just handled a \n and got a second one so this is a new
+			 * paragraph so actually insert the two \n's */
+			if (handled_newline)
+			{
+				if (in_codeblock || not_double)
+					ewl_text_text_append(tutorial, "\n");
+				else
+					ewl_text_text_append(tutorial, "\n\n");
+			}
 
-            /* append the text before and skip the newline */
-            else
-            {
-                char tmp;
+			/* append the text before and skip the newline */
+			else
+			{
+				char tmp;
 
-                tmp = *(end + 1);
-                *(end + 1) = '\0';
+				tmp = *(end + 1);
+				*(end + 1) = '\0';
 
-                if (!in_codeblock)
-                    *end = ' ';
+				if (!in_codeblock)
+					*end = ' ';
 
-                ewl_text_text_append(tutorial, start);
+				ewl_text_text_append(tutorial, start);
 
-                *(end + 1) = tmp;
-            }
-            start = ++end;
-            did_newline = 1;
-            not_double = 0;
-        }
+				*(end + 1) = tmp;
+			}
+			start = ++end;
+			did_newline = 1;
+			not_double = 0;
+		}
 
-        /* The * is only special after a newline character */
-        else if ((*end == '*' || *end == ' ') && handled_newline)
-        {
-            if (*end == ' ') end++;
-            while (*end == '*') end++;
+		/* The * is only special after a newline character */
+		else if ((*end == '*' || *end == ' ') && handled_newline)
+		{
+			if (*end == ' ') end++;
+			while (*end == '*') end++;
 
-            /* we only want ot skip "* " if in a code block */
-            if (in_codeblock)
-            {
-                if (*end == ' ') end ++;
-            }
-            /* otherwise skip the * and all spaces */
-            else
-            {
-                while ((*end == '*') || (*end == ' ') || (*end == '\t'))
-                    end++;
-            }
+			/* we only want ot skip "* " if in a code block */
+			if (in_codeblock)
+			{
+				if (*end == ' ') end ++;
+			}
+			/* otherwise skip the * and all spaces */
+			else
+			{
+				while ((*end == '*') || (*end == ' ') || (*end == '\t'))
+					end++;
+			}
 
-            if (*end == '\n')
-            /* don't let the *'s at the begining of lines effect the \n
-             * handling */
-            did_newline = handled_newline;
+			if (*end == '\n')
+			/* don't let the *'s at the begining of lines effect the \n
+			 * handling */
+			did_newline = handled_newline;
 
-            start = end;
-        }
-        else if (*end == '@')
-        {
-            /* stick on everything before the @ symbol. If we don't have a
-             * keyword here we'll just end up sticking the next chunk onto
-             * this node so shouldn't be a big deal */
-            *end = '\0';
+			start = end;
+		}
+		else if (*end == '@')
+		{
+			/* stick on everything before the @ symbol. If we don't have a
+			 * keyword here we'll just end up sticking the next chunk onto
+			 * this node so shouldn't be a big deal */
+			*end = '\0';
 
-            ewl_text_text_append(tutorial, start);
-            *end = '@';
-            start = end;
+			ewl_text_text_append(tutorial, start);
+			*end = '@';
+			start = end;
 
-            if ((!strncasecmp(end, "@addtogroup ", 12))
-                    || (!strncasecmp(end, "@section ", 9)))
-            {
-                char tmp, key;
-                int size = 14, prev_size = 0;
+			if ((!strncasecmp(end, "@addtogroup ", 12))
+					|| (!strncasecmp(end, "@section ", 9)))
+			{
+				char tmp, key;
+				int size = 14, prev_size = 0;
 
-                key = *(end + 1);
-                end += 9;
+				key = *(end + 1);
+				end += 9;
 
-                /* we increment end so that we can skip over the keyword and
-                 * the space after it */
-                if (key == 'a')
-                {
-                    size = 22;
-                    end += 3;
-                }
+				/* we increment end so that we can skip over the keyword and
+				 * the space after it */
+				if (key == 'a')
+				{
+					size = 22;
+					end += 3;
+				}
 
-                while (*end == ' ') end ++;
-                start = end;
+				while (*end == ' ') end ++;
+				start = end;
 
-                /* skip to the end of the line */
-                end = strchr(end, '\n');
+				/* skip to the end of the line */
+				end = strchr(end, '\n');
 
-                /* if this is the section header we need to skip the section name */
-                if (key == 's')
-                {
-                    while (!isspace(*start)) start ++;
-                    while (*start == ' ') start ++;
-                }
+				/* if this is the section header we need to skip the section name */
+				if (key == 's')
+				{
+					while (!isspace(*start)) start ++;
+					while (*start == ' ') start ++;
+				}
 
-                not_double = 1;
+				not_double = 1;
 
-                tmp = *(end + 1);
-                *(end + 1) = '\0';
+				tmp = *(end + 1);
+				*(end + 1) = '\0';
 
-                prev_size = ewl_text_font_size_get(tutorial,
-                                ewl_text_cursor_position_get(tutorial));
-                ewl_text_font_size_set(tutorial, size);
-                ewl_text_text_append(tutorial, start);
-                ewl_text_font_size_set(tutorial, prev_size);
+				prev_size = ewl_text_font_size_get(tutorial,
+								ewl_text_cursor_position_get(tutorial));
+				ewl_text_font_size_set(tutorial, size);
+				ewl_text_text_append(tutorial, start);
+				ewl_text_font_size_set(tutorial, prev_size);
 
-                *(end + 1) = tmp;
-                start = ++end;
+				*(end + 1) = tmp;
+				start = ++end;
 
-                did_newline = 1;
-            }
-            else if (!strncasecmp(end, "@code", 5))
-            {
-                in_codeblock = 1;
-                end += 5;
-                while (*end == ' ') end ++;
+				did_newline = 1;
+			}
+			else if (!strncasecmp(end, "@code", 5))
+			{
+				in_codeblock = 1;
+				end += 5;
+				while (*end == ' ') end ++;
 
-                /* if there is nothing after the @code we want to skip the
-                 * \n or we'll end up with too much space before the block */
-                if (*end == '\n')
-                {
-                    end ++;
-                    did_newline = 1;
-                }
+				/* if there is nothing after the @code we want to skip the
+				 * \n or we'll end up with too much space before the block */
+				if (*end == '\n')
+				{
+					end ++;
+					did_newline = 1;
+				}
 
-                ewl_text_color_set(tutorial, 32, 71, 109, 255);
-                start = end;
-            }
-            else if (!strncasecmp(end, "@endcode", 8))
-            {
-                *end = '\0';
+				ewl_text_color_set(tutorial, 32, 71, 109, 255);
+				start = end;
+			}
+			else if (!strncasecmp(end, "@endcode", 8))
+			{
+				*end = '\0';
 
-                ewl_text_text_append(tutorial, start);
-                ewl_text_color_set(tutorial, 0, 0, 0, 255);
-                in_codeblock = 0;
+				ewl_text_text_append(tutorial, start);
+				ewl_text_color_set(tutorial, 0, 0, 0, 255);
+				in_codeblock = 0;
 
-                end += 8;
-                while (*end == ' ') end ++;
+				end += 8;
+				while (*end == ' ') end ++;
 
-                /* if there is nothing after the @code we want to skip the
-                 * \n or we'll end up with too much space before the block */
-                if (*end == '\n')
-                {
-                    end ++;
-                    did_newline = 1;
-                }
-                not_double = 1;
-                start = end;
-            }
+				/* if there is nothing after the @code we want to skip the
+				 * \n or we'll end up with too much space before the block */
+				if (*end == '\n')
+				{
+					end ++;
+					did_newline = 1;
+				}
+				not_double = 1;
+				start = end;
+			}
 #if 0
-            else if (!strncasecmp(end, "@note", 5))
-            {
+			else if (!strncasecmp(end, "@note", 5))
+			{
 
-            }
-            /* make next word bold */
-            else if (!strncasecmp(end, "@b ", 3))
-            {
-            }
-            /* supost to be typewriter font, make next word italic */
-            else if (!strncasecmp(end, "@c ", 3))
-            {
-            }
+			}
+			/* make next word bold */
+			else if (!strncasecmp(end, "@b ", 3))
+			{
+			}
+			/* supost to be typewriter font, make next word italic */
+			else if (!strncasecmp(end, "@c ", 3))
+			{
+			}
 #endif
-            /* if we don't know what it is just write it into the text */
-            else
-                end ++;
-        }
-        else if (*end == '<')
-        {
-            if (0)
-            {
-            }
-            /* skip it if we don't know what it is */
-            else
-                end ++;
-        }
-        else
-            end ++;
+			/* if we don't know what it is just write it into the text */
+			else
+				end ++;
+		}
+		else if (*end == '<')
+		{
+			if (0)
+			{
+			}
+			/* skip it if we don't know what it is */
+			else
+				end ++;
+		}
+		else
+			end ++;
 
-        handled_newline = did_newline;
-        if (!end || (*end == '\0'))
-        {
-            ewl_text_text_append(tutorial, start);
-            start = end;
-        }
-    }
+		handled_newline = did_newline;
+		if (!end || (*end == '\0'))
+		{
+			ewl_text_text_append(tutorial, start);
+			start = end;
+		}
+	}
 }
 
 static void
