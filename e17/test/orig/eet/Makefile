@@ -1,5 +1,5 @@
-FLAGS = `eet-config --cflags`
-LIBS  = `eet-config --libs`
+CFLAGS = -g -Wall `eet-config --cflags` `evas-config --cflags`
+LIBS  = `eet-config --libs` `evas-config --libs`
 
 BINS  = eet eet_bench
 all: $(BINS)
@@ -19,7 +19,7 @@ eet_bench: $(eet_bench_OBJS)
 ############################################################################
 #### boilerplate
 .c.o:
-	$(CC) $(FALGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(FLAGS) $(CFLAGS) -c $< -o $@
 clean::
 	rm -rf $(BINS) *.o *~
 	
