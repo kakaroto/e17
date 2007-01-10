@@ -83,6 +83,82 @@ EAPI void
 engrave_part_name_set(Engrave_Part *ep, const char *name)
 {
   if (!ep) return;
+
+  Engrave_Group * group;
+  Evas_List * list;
+
+  group = (Engrave_Group *) engrave_part_parent_get(ep);
+
+  if (ep->name)
+  {
+    // for all the programs in the group
+    for (list = group->programs; list; list = list->next)
+    {
+      Engrave_Program * ep2;
+      Evas_List * list2;
+      ep2 = (Engrave_Program *) list->data;
+    
+      // if source matches, update
+      if (ep2->source && !strcmp(ep2->source, ep->name))
+      {
+        IF_FREE(ep2->source);
+        ep2->source = (name ? strdup(name) : NULL);
+      }
+
+      // if any of the targets match, update too
+      for (list2 = ep2->targets; list2; list2 = list2->next)
+      {
+        char * n;
+        n = (char *) list2->data;
+        if (n && !strcmp(n, ep->name))
+        {
+          ep2->targets = evas_list_remove(ep2->targets, n);
+  	  IF_FREE(n);
+  	  ep2->targets = evas_list_append(ep2->targets, strdup(name));
+        }
+      }
+    } 
+
+    // for all other parts in the group
+    for (list = group->parts; list; list = list->next)
+    {
+      Engrave_Part * ep2;
+      Evas_List * list2;
+
+      ep2 = (Engrave_Part *) list->data;
+      // for each state
+      for (list2 = ep2->states; list2; list2 = list2->next)
+      {
+        Engrave_Part_State * eps2;
+        eps2 = (Engrave_Part_State *) list2->data;
+
+        if (eps2->rel1.to_x != NULL && !strcmp(eps2->rel1.to_x, ep->name))
+        {
+          IF_FREE(eps2->rel1.to_x);
+  	  eps2->rel1.to_x = (name ? strdup(name) : NULL);
+        }
+
+        if (eps2->rel1.to_y != NULL && !strcmp(eps2->rel1.to_y, ep->name))
+        {
+          IF_FREE(eps2->rel1.to_y);
+	  eps2->rel1.to_y = (name ? strdup(name) : NULL);
+        }
+
+        if (eps2->rel2.to_x != NULL && !strcmp(eps2->rel2.to_x, ep->name))
+        {
+          IF_FREE(eps2->rel2.to_x);
+	  eps2->rel2.to_x = (name ? strdup(name) : NULL);
+        }
+
+        if (eps2->rel2.to_y != NULL && !strcmp(eps2->rel2.to_y, ep->name))
+        {
+          IF_FREE(eps2->rel2.to_y);
+	  eps2->rel2.to_y = (name ? strdup(name) : NULL);
+        }
+      }
+    }
+  }
+
   IF_FREE(ep->name);
   ep->name = (name ? strdup(name) : NULL);
 }

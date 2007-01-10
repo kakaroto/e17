@@ -1,9 +1,5 @@
 Everything
 
-- edje can handle unquoted strings as long as there is no space in them
-  eg: text { text, foo; } is valid. Not sure how to patch that into the
-  lexer
-
 - put an editable canvas into engrave as an Evas_Object such that any
   program can use it to make an editor???
 
