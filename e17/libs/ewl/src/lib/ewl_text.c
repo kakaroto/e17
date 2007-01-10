@@ -54,10 +54,6 @@ static void ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
 
 static void ewl_text_context_cb_free(void *data);
 static void ewl_text_context_print(Ewl_Text_Context *tx, const char *indent);
-#if 0
-static char *ewl_text_context_name_get(Ewl_Text_Context *tx, 
-			unsigned int context_mask, Ewl_Text_Context *tx_change);
-#endif
 static void ewl_text_context_merge(Ewl_Text_Context *tx, unsigned int context_mask,
 			Ewl_Text_Context *tx_change);
 static Ewl_Text_Context *ewl_text_context_find(Ewl_Text_Context *tx,
@@ -516,7 +512,9 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 	if (!text) DRETURN(DLEVEL_STABLE);
 
 	ewl_text_text_insert_private(t, text, t->length.chars, &char_len, &byte_len);
-	if (t->formatting.current.tx)
+
+	fmt = ecore_dlist_goto_last(t->formatting.nodes);
+	if (t->formatting.current.tx && (!fmt || ((fmt->char_len > 0))))
 	{
 		fmt = NEW(Ewl_Text_Fmt, 1);
 		fmt->tx = t->formatting.current.tx;
@@ -533,7 +531,16 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 	}
 	else
 	{
-		fmt = ecore_dlist_goto_last(t->formatting.nodes);
+		/* if we've got a  new context to use and our current
+		 * formatting node has no text in it replace it's context
+		 * with the new one */
+		if ((fmt->char_len == 0) && t->formatting.current.tx)
+		{
+			ewl_text_context_release(fmt->tx);
+			fmt->tx = t->formatting.current.tx;
+			ewl_text_context_acquire(fmt->tx);
+		}
+
 		fmt->char_len += char_len;
 		fmt->byte_len += byte_len;
 	}
@@ -4023,20 +4030,19 @@ ewl_text_current_fmt_set(Ewl_Text *t, unsigned int context_mask,
 		Ewl_Text_Fmt *fmt;
 
 		fmt = ecore_dlist_current(t->formatting.nodes);
-		if (fmt) old = fmt->tx;
+		if (fmt) 
+		{
+			old = fmt->tx;
+
+			/* grab on to this so releasing later doesn't screw
+			 * things up */
+			ewl_text_context_acquire(old);
+		}
+		else old = ewl_text_context_default_create(t);
 	}
 
-	/* If there is no old context then we use the default context. This
-	 * can happen if you're changing the text settings (font, colour,
-	 * etc) before any text was inserted into the widget */
-	if (old)
-	{
-		new = ewl_text_context_find(old, context_mask, change);
-		if (t->formatting.current.tx)
-			ewl_text_context_release(t->formatting.current.tx);
-	}
-	else
-		new = ewl_text_context_default_create(t);
+	new = ewl_text_context_find(old, context_mask, change);
+	if (old) ewl_text_context_release(old);
 
 	t->formatting.current.tx = new;
 
@@ -5590,107 +5596,6 @@ CTX1_LARGER:
 CTX2_LARGER:
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
-
-#if 0
-static char *
-ewl_text_context_name_get(Ewl_Text_Context *tx, unsigned int context_mask,
-						Ewl_Text_Context *tx_change)
-{
-	char name[2048];
-	char *t = NULL, *t2 = NULL, *s = NULL, *s2 = NULL;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tx", tx, NULL);
-
-	if (context_mask > 0)
-	{
-		DCHECK_PARAM_PTR_RET("tx_change", tx_change, NULL);
-
-		if (!tx_change->font) t2 = "";
-		else t2 = tx_change->font;
-
-		if (!tx_change->font_source) s2 = "";
-		else s2 = tx_change->font_source;
-	}
-
-	if (!tx->font) t = "";
-	else t = tx->font;
-
-	if (!tx->font_source) s = "";
-	else s = tx->font_source;
-
-	snprintf(name, sizeof(name), "f%s%ss%ds%da%dw%dr%dg%db%da%dcbg%d%d%d%dcg%d%d%d%d"
-				"co%d%d%d%dcs%d%d%d%dcst%d%d%d%dcu%d%d%d%dcdu%d%d%d%d", 
-		((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? s2 : s),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? t2 : t),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_SIZE) ? tx_change->size : tx->size),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_STYLES) ? tx_change->styles : tx->styles),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_ALIGN) ? tx_change->align : tx->align),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_WRAP) ? tx_change->wrap : tx->wrap),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.r : tx->color.r),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.g : tx->color.g),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.b : tx->color.b),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_COLOR) ? tx_change->color.a : tx->color.a),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
-		 			tx_change->style_colors.bg.r : tx->style_colors.bg.r),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
-		 			tx_change->style_colors.bg.g : tx->style_colors.bg.g),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
-		 			tx_change->style_colors.bg.b : tx->style_colors.bg.b),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR) ? 
-		 			tx_change->style_colors.bg.a : tx->style_colors.bg.a),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
-		 			tx_change->style_colors.glow.r : tx->style_colors.glow.r),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
-		 			tx_change->style_colors.glow.g : tx->style_colors.glow.g),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
-		 			tx_change->style_colors.glow.b : tx->style_colors.glow.b),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR) ? 
-		 			tx_change->style_colors.glow.a : tx->style_colors.glow.a),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
-		 			tx_change->style_colors.outline.r : tx->style_colors.outline.r),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
-		 			tx_change->style_colors.outline.g : tx->style_colors.outline.g),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
-		 			tx_change->style_colors.outline.b : tx->style_colors.outline.b),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR) ? 
-		 			tx_change->style_colors.outline.a : tx->style_colors.outline.a),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
-		 			tx_change->style_colors.shadow.r : tx->style_colors.shadow.r),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
-		 			tx_change->style_colors.shadow.g : tx->style_colors.shadow.g),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
-		 			tx_change->style_colors.shadow.b : tx->style_colors.shadow.b),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR) ? 
-		 			tx_change->style_colors.shadow.a : tx->style_colors.shadow.a),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
-		 			tx_change->style_colors.strikethrough.r : tx->style_colors.strikethrough.r),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
-		 			tx_change->style_colors.strikethrough.g : tx->style_colors.strikethrough.g),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
-		 			tx_change->style_colors.strikethrough.b : tx->style_colors.strikethrough.b),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR) ? 
-		 			tx_change->style_colors.strikethrough.a : tx->style_colors.strikethrough.a),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
-		 			tx_change->style_colors.underline.r : tx->style_colors.underline.r),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
-		 			tx_change->style_colors.underline.g : tx->style_colors.underline.g),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
-		 			tx_change->style_colors.underline.b : tx->style_colors.underline.b),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR) ? 
-		 			tx_change->style_colors.underline.a : tx->style_colors.underline.a),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
-		 			tx_change->style_colors.double_underline.r : tx->style_colors.double_underline.r),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
-		 			tx_change->style_colors.double_underline.g : tx->style_colors.double_underline.g),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
-		 			tx_change->style_colors.double_underline.b : tx->style_colors.double_underline.b),
-		((context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR) ? 
-		 			tx_change->style_colors.double_underline.a : tx->style_colors.double_underline.a));
-
-	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
-}
-#endif
 
 static void
 ewl_text_context_merge(Ewl_Text_Context *tx, unsigned int context_mask,

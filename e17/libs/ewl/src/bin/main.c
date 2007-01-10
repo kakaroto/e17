@@ -832,7 +832,7 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 					|| (!strncasecmp(end, "@section ", 9)))
 			{
 				char tmp, key;
-				int size = 14, prev_size = 0;
+				int size = 14;
 
 				key = *(end + 1);
 				end += 9;
@@ -863,11 +863,9 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 				tmp = *(end + 1);
 				*(end + 1) = '\0';
 
-				prev_size = ewl_text_font_size_get(tutorial,
-								ewl_text_cursor_position_get(tutorial));
 				ewl_text_font_size_set(tutorial, size);
 				ewl_text_text_append(tutorial, start);
-				ewl_text_font_size_set(tutorial, prev_size);
+				ewl_text_font_size_set(tutorial, 12);
 
 				*(end + 1) = tmp;
 				start = ++end;
