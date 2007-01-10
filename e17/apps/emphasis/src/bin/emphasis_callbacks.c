@@ -1,6 +1,7 @@
 #include "emphasis.h"
 #include "emphasis_callbacks.h"
 #include <ctype.h>
+#define xrand(min, max) (rand() % (max - min)) + min + 1
 
 /* TODO : update doc */
 /**
@@ -672,6 +673,20 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
 
       return;
     }
+  if (!strcmp(event->key, "r")
+      && event->modifiers == ETK_MODIFIER_CTRL)
+    {
+      int i, r;
+      r = xrand(0, etk_tree_num_rows_get(tree));
+      row = etk_tree_first_row_get(tree);
+      for (i=0; i<r; i++)
+        {
+          row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+        }
+      etk_tree_row_select(row);
+      etk_tree_row_scroll_to(row, ETK_TRUE);
+      return;
+    }
 
   if (!strcmp(event->key, "Tab")
       || event->modifiers == ETK_MODIFIER_CTRL)
@@ -724,6 +739,12 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
         }
       else if (!strcmp("Return", event->keyname))
         {
+          Emphasis_Type et;
+
+          et = (Emphasis_Type)etk_object_data_get(object, "Emphasis_Type");
+          emphasis_playlist_append_selected(tree, et);
+          mpc_play_if_stopped();
+          emphasis_tree_mlib_init(player, type);
           etk_tree_col_title_set(col, base_title);
           return;
         }
