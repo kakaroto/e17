@@ -1,5 +1,5 @@
-CFLAGS = -g -Wall `eet-config --cflags` `evas-config --cflags`
-LIBS  = `eet-config --libs` `evas-config --libs`
+FLAGS = `eet-config --cflags`
+LIBS  = `eet-config --libs`
 
 BINS  = eet eet_bench
 all: $(BINS)
