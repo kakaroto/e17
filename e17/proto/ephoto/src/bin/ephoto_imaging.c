@@ -12,9 +12,6 @@ void update_image(Ewl_Widget *image, int w, int h, unsigned int *data)
 		evas_object_image_size_set(EWL_IMAGE(image)->image, w, h);
 		evas_object_image_data_set(EWL_IMAGE(image)->image, data);
 		evas_object_image_data_update_add(EWL_IMAGE(image)->image, 0, 0, w, h);
-		ewl_image_size_set(EWL_IMAGE(image), w, h);
-		ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
-		ewl_widget_configure(image);
 	}
 }
 

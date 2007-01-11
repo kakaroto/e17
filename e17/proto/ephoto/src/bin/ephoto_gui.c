@@ -16,11 +16,15 @@ static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
 static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_tree(Ewl_Widget *c);
 
-/*Ephoto MVC Callbacks */
+/*Ephoto MVC Callbacks*/
 static Ewl_Widget *directory_view_new(void);
 static void directory_view_assign(Ewl_Widget *w, void *data);
 static void *directory_data_fetch(void *data, unsigned int row, unsigned int column);
 static int directory_data_count(void *data);
+
+/*Ephoto Image Manipulation*/
+static void rotate_image_left(Ewl_Widget *w, void *event, void *data);
+static void rotate_image_right(Ewl_Widget *w, void *event, void *data);
 
 /*Ephoto Widget Global Variables*/
 static Ewl_Widget *ftree, *atree, *fbox, *vnb;
@@ -338,6 +342,31 @@ static void populate_files(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_configure(fbox);
 }
 
+/*Rotate the image 90 degrees to the left*/
+static void rotate_image_left(Ewl_Widget *w, void *event, void *data)
+{
+	unsigned int *image_data;
+	int nw, nh;
+
+	evas_object_image_size_get(EWL_IMAGE(vimage)->image, &nh, &nw);
+	image_data = rotate_left(vimage);
+	update_image(vimage, nw, nh, image_data);
+	ewl_widget_configure(vimage);
+	ewl_widget_configure(vimage->parent);
+}
+
+static void rotate_image_right(Ewl_Widget *w, void *event, void *data)
+{
+	unsigned int *image_data;
+	int nw, nh;
+
+	evas_object_image_size_get(EWL_IMAGE(vimage)->image, &nh, &nw);
+	image_data = rotate_right(vimage);
+	update_image(vimage, nw, nh, image_data);
+	ewl_widget_configure(vimage);
+	ewl_widget_configure(vimage->parent);
+}
+
 /*Create the Main Ephoto Window*/
 static void create_main_gui(void)
 {
@@ -401,7 +430,6 @@ static void create_main_gui(void)
         ewl_object_fill_policy_set(EWL_OBJECT(ivbox), EWL_FLAG_FILL_ALL);
         ewl_container_child_append(EWL_CONTAINER(vnb), ivbox);
         ewl_widget_show(ivbox);
-        ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(vnb), ivbox, "Viewer");
 
         sp = ewl_scrollpane_new();
         ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_ALL);
@@ -420,7 +448,9 @@ static void create_main_gui(void)
 	ewl_object_alignment_set(EWL_OBJECT(ihbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(ihbox), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(ihbox);
-
+	
+	add_button(ihbox, "Rotate Left", NULL, rotate_image_left);
+	add_button(ihbox, "Rotate Right", NULL, rotate_image_right);
 	add_button(ihbox, "Return to Catalog", NULL, view_catalog);
 
 	directories = ecore_list_new();
