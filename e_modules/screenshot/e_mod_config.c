@@ -141,26 +141,27 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   o = e_widget_list_add (evas, 0, 0);
   of = e_widget_frametable_add (evas, D_ ("General Settings"), 1);
 
+  ob = e_widget_label_add (evas, D_ ("Delay Time:"));
+  e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
+  ob =
+    e_widget_slider_add (evas, 1, 0, D_ ("%1.0f seconds"), 0.0, 60.0, 1.0, 0,
+			 &(cfdata->delay_time), NULL, 100);
+  e_widget_frametable_object_append (of, ob, 1, 0, 2, 1, 1, 0, 1, 0);
+   
   if ((ecore_file_app_installed ("import")) &&
       (ecore_file_app_installed ("scrot")))
     {
       rg = e_widget_radio_group_new (&(cfdata->method));
       ob = e_widget_radio_add (evas, D_ ("Use Import"), 0, rg);
-      e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
       ob = e_widget_radio_add (evas, D_ ("Use Scrot"), 1, rg);
-      e_widget_frametable_object_append (of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
     }
   else if (ecore_file_app_installed ("import"))
     cfdata->method = 0;
   else if (ecore_file_app_installed ("scrot"))
     cfdata->method = 1;
-
-  ob = e_widget_label_add (evas, D_ ("Delay Time:"));
-  e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
-  ob =
-    e_widget_slider_add (evas, 1, 0, D_ ("%1.0f seconds"), 0.0, 60.0, 1.0, 0,
-			 &(cfdata->delay_time), NULL, 100);
-  e_widget_frametable_object_append (of, ob, 1, 1, 2, 1, 1, 0, 1, 0);
+   
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
   of = e_widget_frametable_add (evas, D_ ("File Settings"), 1);
@@ -172,12 +173,12 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   ob = e_widget_label_add (evas, D_ ("Save Directory:"));
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->location);
-  e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
+  e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
   ob = e_widget_label_add (evas, D_ ("Filename:"));
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->filename);
   cfdata->file_entry = ob;
-  e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
+  e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 0, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
   return o;
@@ -240,27 +241,27 @@ _advanced_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 
   o = e_widget_list_add (evas, 0, 0);
   of = e_widget_frametable_add (evas, D_ ("General Settings"), 1);
+  ob = e_widget_label_add (evas, D_ ("Delay Time:"));
+  e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
+  ob =
+    e_widget_slider_add (evas, 1, 0, D_ ("%1.0f seconds"), 0.0, 60.0, 1.0, 0,
+			 &(cfdata->delay_time), NULL, 100);
+  e_widget_frametable_object_append (of, ob, 1, 0, 2, 1, 1, 0, 1, 0);
 
   if ((ecore_file_app_installed ("import")) &&
       (ecore_file_app_installed ("scrot")))
     {
       rg = e_widget_radio_group_new (&(cfdata->method));
       ob = e_widget_radio_add (evas, D_ ("Use Import"), 0, rg);
-      e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
       ob = e_widget_radio_add (evas, D_ ("Use Scrot"), 1, rg);
-      e_widget_frametable_object_append (of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
+      e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
     }
   else if (ecore_file_app_installed ("import"))
     cfdata->method = 0;
   else if (ecore_file_app_installed ("scrot"))
     cfdata->method = 1;
 
-  ob = e_widget_label_add (evas, D_ ("Delay Time:"));
-  e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
-  ob =
-    e_widget_slider_add (evas, 1, 0, D_ ("%1.0f seconds"), 0.0, 60.0, 1.0, 0,
-			 &(cfdata->delay_time), NULL, 100);
-  e_widget_frametable_object_append (of, ob, 1, 1, 2, 1, 1, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
   of = e_widget_frametable_add (evas, D_ ("Image Viewer Settings"), 1);
@@ -269,7 +270,7 @@ _advanced_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 			&(cfdata->use_app));
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
   ob = e_widget_entry_add (evas, &(cfdata->app));
-  e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+  e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
   of = e_widget_frametable_add (evas, D_ ("File Settings"), 1);
@@ -281,12 +282,12 @@ _advanced_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   ob = e_widget_label_add (evas, D_ ("Save Directory:"));
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->location);
-  e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
+  e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
   ob = e_widget_label_add (evas, D_ ("Filename:"));
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->filename);
   cfdata->file_entry = ob;
-  e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
+  e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 0, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
   ot = e_widget_table_add (evas, 0);
