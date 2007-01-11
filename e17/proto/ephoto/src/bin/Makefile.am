@@ -5,6 +5,7 @@ bin_PROGRAMS = ephoto_test
 ephoto_test_SOURCES = ephoto.c \
 		      ephoto_browsing.c \
 		      ephoto_gui.c \
+		      ephoto_imaging.c \
 		      ephoto_nls.c 
 		     
 ephoto_test_CFLAGS = @ewl_cflags@
