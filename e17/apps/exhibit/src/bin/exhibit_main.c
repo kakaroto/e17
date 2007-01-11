@@ -233,17 +233,16 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    etk_tree_thaw(ETK_TREE(e->cur_tab->itree));
    etk_tree_thaw(ETK_TREE(e->cur_tab->dtree));
 
-   if (update == EX_TREE_UPDATE_FILES)
-     {
-	if (e->options->default_sort == EX_SORT_BY_DATE)
-	  _ex_sort_date_cb(NULL, NULL);
-	else if (e->options->default_sort == EX_SORT_BY_SIZE)
-	  _ex_sort_size_cb(NULL, NULL);
-	else if (e->options->default_sort == EX_SORT_BY_NAME)
-	  _ex_sort_name_cb(NULL, NULL);
-	else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
-	  _ex_sort_resol_cb(NULL, NULL);
-     }
+   /* XXX Doing the sorting here is ofc very inefficient, but it 
+      makes the sort work like it should at least /Martin */
+   if (e->options->default_sort == EX_SORT_BY_DATE)
+     _ex_sort_date_cb(NULL, NULL);
+   else if (e->options->default_sort == EX_SORT_BY_SIZE)
+     _ex_sort_size_cb(NULL, NULL);
+   else if (e->options->default_sort == EX_SORT_BY_NAME)
+     _ex_sort_name_cb(NULL, NULL);
+   else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
+     _ex_sort_resol_cb(NULL, NULL);
 
    if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
 	etk_tree_sort(ETK_TREE(e->cur_tab->dtree), _ex_main_dtree_compare_cb, 
@@ -972,7 +971,7 @@ _ex_main_window_show(char *dir, int fullscreen)
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);
    e->sort_bar = etk_statusbar_new();
-   etk_statusbar_message_push(ETK_STATUSBAR(e->sort_bar), "Sort by date", 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->sort_bar), "Sorting", 0);
    etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->sort_bar), ETK_FALSE);
    etk_box_append(ETK_BOX(e->vbox), e->hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
    etk_box_append(ETK_BOX(e->hbox), e->sort_bar, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -981,10 +980,10 @@ _ex_main_window_show(char *dir, int fullscreen)
 
 	menu = etk_menu_new();
 	etk_signal_connect("mouse_down", ETK_OBJECT(e->sort_bar), ETK_CALLBACK(_ex_sort_label_mouse_down_cb), menu);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by name"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by date"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by resolution"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by name"), ETK_STOCK_TEXT_X_GENERIC, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_sort_name_cb), NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by date"), ETK_STOCK_OFFICE_CALENDAR, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_sort_date_cb), NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by size"), ETK_STOCK_DRIVE_HARDDISK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_sort_size_cb), NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by resolution"), ETK_STOCK_UTILITIES_SYSTEM_MONITOR, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_sort_resol_cb), NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);	
 	_ex_menu_item_new(EX_MENU_ITEM_CHECK, _("Ascending"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
      }
@@ -1034,7 +1033,7 @@ main(int argc, char *argv[])
 	     printf("  %s <image>\n", PACKAGE);
 	     printf("  %s <path>\n", PACKAGE);
 	     printf("  %s <url>\n\n", PACKAGE);
-	     printf("  -f, --fullscreen\t\t start Exhibit in fullscreen mode\n");
+	     printf("  -f, --fullscreen\t start Exhibit in fullscreen mode\n");
 	     printf("  -h, --help\t\t display this help and exit\n");
 	     printf("  -v, --version\t\t output version information and exit\n\n");
 	     exit(1);
