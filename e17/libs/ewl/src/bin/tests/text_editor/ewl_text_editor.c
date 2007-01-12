@@ -172,6 +172,7 @@ create_test(Ewl_Container *box)
 	ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(scroll), 
 					EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
 	ewl_container_child_append(EWL_CONTAINER(box), scroll);
+	ewl_widget_name_set(scroll, "scrollpane");
 	ewl_widget_show(scroll);
 
 	o = ewl_entry_new();
@@ -483,9 +484,12 @@ static void
 ete_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
-	Ewl_Widget *entry;
+	Ewl_Widget *entry, *scroll;
 
 	entry = ewl_widget_name_find("entry");
 	ewl_text_clear(EWL_TEXT(entry));
+
+	scroll = ewl_widget_name_find("scrollpane");
+	ewl_widget_configure(scroll);
 }
 
