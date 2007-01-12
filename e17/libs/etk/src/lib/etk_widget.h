@@ -66,7 +66,7 @@ struct Etk_Widget
    struct
    {
       int left, right, top, bottom;
-   } inset;
+   } inset, padding;
    Etk_Geometry geometry;
    Etk_Geometry inner_geometry;
    Etk_Size theme_min_size;
@@ -116,11 +116,13 @@ struct Etk_Widget
 };
 
 
-Etk_Type   *etk_widget_type_get();
+Etk_Type   *etk_widget_type_get(void);
 Etk_Widget *etk_widget_new(Etk_Type *widget_type, const char *first_property, ...);
 
 void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
 void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h);
+void etk_widget_padding_set(Etk_Widget *widget, int left, int right, int top, int bottom);
+void etk_widget_padding_get(Etk_Widget *widget, int *left, int *right, int *top, int *bottom);
 
 Etk_Toplevel *etk_widget_toplevel_parent_get(Etk_Widget *widget);
 Evas         *etk_widget_toplevel_evas_get(Etk_Widget *widget);
@@ -196,7 +198,7 @@ Evas_Object *etk_widget_clip_get(Etk_Widget *widget);
 
 void         etk_widget_dnd_dest_set(Etk_Widget *widget, Etk_Bool on);
 Etk_Bool     etk_widget_dnd_dest_get(Etk_Widget *widget);
-Evas_List   *etk_widget_dnd_dest_widgets_get();
+Evas_List   *etk_widget_dnd_dest_widgets_get(void);
 void         etk_widget_dnd_source_set(Etk_Widget *widget, Etk_Bool on);
 Etk_Bool     etk_widget_dnd_source_get(Etk_Widget *widget);
 void         etk_widget_dnd_drag_widget_set(Etk_Widget *widget, Etk_Widget *drag_widget);

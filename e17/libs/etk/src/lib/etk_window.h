@@ -38,9 +38,6 @@ struct _Etk_Window
 
    void *engine_data;
    
-   int width;
-   int height;
-   
    Etk_Bool (*delete_event)(Etk_Window *window);
    Etk_Bool wait_size_request;
    Etk_Bool center;
@@ -95,7 +92,6 @@ Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window);
 void     etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
 Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window);
 
-/* Misc */
 Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data);
 
 /** @} */

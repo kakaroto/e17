@@ -13,6 +13,8 @@
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
 
+/* TODO: bugs with several objects per model.. combining them.. */
+
 /**
  * @addtogroup Etk_Tree2
  * @{
@@ -25,7 +27,6 @@
 #define COL_RESIZE_THRESHOLD 3
 #define MIN_ROW_HEIGHT 12
 #define DEFAULT_ROW_HEIGHT 24
-#define MAX_OBJECTS_PER_MODEL 1
 #define CELL_HMARGINS 4
 #define CELL_VMARGINS 2
 #define MODEL_INTERSPACE 8
@@ -2552,6 +2553,9 @@ static void _etk_tree2_unfocus_cb(Etk_Object *object, void *event, void *data)
    etk_widget_theme_signal_emit(tree->grid, "etk,state,unfocused", ETK_FALSE);
 }
 
+/* TODO: row_clicked event: sometimes it's a Etk_Event_Mouse_Up, sometimes a Etk_Event_Mouse_Down... */
+/* TODO: get_row_at_xy... */
+
 /* Called when a key is pressed while the tree is focused */
 static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
@@ -2570,13 +2574,14 @@ static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event
    /* Up arrow: Select the previous row */
    else if (strcmp(event->keyname, "Up") == 0)
    {
-      if (!(selected_row = etk_tree2_selected_row_get(tree))
-         || !(row_to_select = etk_tree2_row_walk_prev(selected_row, ETK_FALSE)))
+      if (!(selected_row = etk_tree2_selected_row_get(tree)))
       {
          row_to_select = etk_tree2_last_row_get(tree);
          while (!etk_tree2_row_is_folded(row_to_select) && etk_tree2_row_last_child_get(row_to_select))
             row_to_select = etk_tree2_row_last_child_get(row_to_select);
       }
+      else
+         row_to_select = etk_tree2_row_walk_prev(selected_row, ETK_FALSE);
       
       _etk_tree2_row_select(tree, row_to_select, event->modifiers);
       etk_tree2_row_scroll_to(row_to_select, ETK_FALSE);
@@ -2585,11 +2590,10 @@ static void _etk_tree2_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event
    /* Down arrow: Select the next row */
    else if (strcmp(event->keyname, "Down") == 0)
    {
-      if (!(selected_row = etk_tree2_selected_row_get(tree))
-         || !(row_to_select = etk_tree2_row_walk_next(selected_row, ETK_FALSE)))
-      {
+      if (!(selected_row = etk_tree2_selected_row_get(tree)))
          row_to_select = etk_tree2_first_row_get(tree);
-      }
+      else
+         row_to_select = etk_tree2_row_walk_next(selected_row, ETK_FALSE);
       
       _etk_tree2_row_select(tree, row_to_select, event->modifiers);
       etk_tree2_row_scroll_to(row_to_select, ETK_FALSE);

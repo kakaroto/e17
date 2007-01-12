@@ -12,9 +12,11 @@ typedef struct Etk_Engine_Ecore_Fb_Window_Data
    Etk_Size size;
    Etk_Size min_size;
    Etk_Bool visible;
+   Etk_Bool maximized;
    
+   char *title;
+   Etk_Bool borderless;
    Evas_Object *border;
-   Etk_Window *focused;
 } Etk_Engine_Ecore_Fb_Window_Data;
 
 #endif

@@ -1,0 +1,99 @@
+group {
+   name: "etk/wm_pointer_default";
+   min: 14 20;
+   parts {
+      part {
+	 name: "pointer";
+         mouse_events: 0;
+	 description {
+	    state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               offset: 13 19;
+            }
+	    image {
+	       normal: "pointer_default.png";
+            }
+	 }
+      }
+   }
+}
+
+group {
+   name: "etk/wm_pointer_text_edit";
+   min: 9 16;
+   parts {
+      part {
+	 name: "pointer";
+         mouse_events: 0;
+	 description {
+	    state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -4 -8;
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               offset: 4 7;
+            }
+	    image {
+	       normal: "pointer_text_edit.png";
+            }
+	 }
+      }
+   }
+}
+
+group {
+   name: "etk/wm_pointer_h_double_arrow";
+   min: 18 9;
+   parts {
+      part {
+	 name: "pointer";
+         mouse_events: 0;
+	 description {
+	    state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -9 -4;
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               offset: 8 4;
+            }
+	    image {
+	       normal: "pointer_h_double_arrow.png";
+            }
+	 }
+      }
+   }
+}
+
+group {
+   name: "etk/wm_pointer_v_double_arrow";
+   min: 9 18;
+   parts {
+      part {
+	 name: "pointer";
+         mouse_events: 0;
+	 description {
+	    state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -4 -9;
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               offset: 4 8;
+            }
+	    image {
+	       normal: "pointer_v_double_arrow.png";
+            }
+	 }
+      }
+   }
+}

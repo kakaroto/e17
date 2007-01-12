@@ -16,7 +16,6 @@ void etk_test_tree2_window_create(void *data)
    Etk_Tree2_Col *col1, *col2, *col3, *col4;
    Etk_Tree2_Row *row;
    Etk_Widget *statusbar;
-   Etk_Widget *alignment;
    char row_name[128];
    const char *stock_key;
    int i;
@@ -36,16 +35,12 @@ void etk_test_tree2_window_create(void *data)
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
    
-   /* TODO: we shouldn't be obliged to create an alignement to do that... */
-   alignment = etk_alignment_new(0.5, 0.5, 1.0, 1.0);
-   etk_container_border_width_set(ETK_CONTAINER(alignment), 5);
-   etk_box_append(ETK_BOX(vbox), alignment, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   
    /* Create the tree widget */
    tree = etk_tree2_new();
    etk_tree2_mode_set(ETK_TREE2(tree), ETK_TREE2_MODE_TREE);
    etk_tree2_multiple_select_set(ETK_TREE2(tree), ETK_TRUE);
-   etk_container_add(ETK_CONTAINER(alignment), tree);
+   etk_widget_padding_set(tree, 5, 5, 5, 5);
+   etk_box_append(ETK_BOX(vbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    /* We first create the columns of the tree, and then we "build" the tree with etk_tree2_build() */
    col1 = etk_tree2_col_new(ETK_TREE2(tree), "Column 1", 130, 0.0);

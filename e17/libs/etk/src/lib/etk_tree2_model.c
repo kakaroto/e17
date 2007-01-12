@@ -46,44 +46,44 @@ typedef struct Etk_Tree2_Model_Progressbar_Data
 static void _text_cell_data_free(Etk_Tree2_Model *model, void *cell_data);
 static void _text_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _text_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static void _text_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
-static Etk_Bool _text_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
-static int _text_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
+static void _text_objects_create(Etk_Tree2_Model *model, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
+static Etk_Bool _text_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
+static int _text_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
 
 /* Integer model */
 static void _int_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _int_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static Etk_Bool _int_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
+static Etk_Bool _int_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
 
 /* Double model */
 static void _double_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _double_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static Etk_Bool _double_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
+static Etk_Bool _double_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
 
 /* Image model */
 static void _image_model_free(Etk_Tree2_Model *model);
 static void _image_cell_data_free(Etk_Tree2_Model *model, void *cell_data);
 static void _image_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _image_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static void _image_objects_cache(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
-static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
-static int _image_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
+static void _image_objects_cache(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
+static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
+static int _image_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
 
 /* Checkbox model */
 static void _checkbox_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _checkbox_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static void _checkbox_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
-static Etk_Bool _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
-static int _checkbox_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
+static void _checkbox_objects_create(Etk_Tree2_Model *model, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
+static Etk_Bool _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
+static int _checkbox_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
 static void _checkbox_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /* Progressbar model */
 static void _progress_bar_cell_data_free(Etk_Tree2_Model *model, void *cell_data);
 static void _progress_bar_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
 static void _progress_bar_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static void _progress_bar_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas);
-static Etk_Bool _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas);
-static int _progress_bar_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects);
+static void _progress_bar_objects_create(Etk_Tree2_Model *model, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
+static Etk_Bool _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
+static int _progress_bar_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
 
 
 /**************************
@@ -341,9 +341,9 @@ static void _text_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list
 }
 
 /* Text: objects_create() */
-static void _text_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas)
+static void _text_objects_create(Etk_Tree2_Model *model, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
-   if (!cell_objects || !evas)
+   if (!evas)
       return;
    
    cell_objects[0] = evas_object_text_add(evas);
@@ -354,12 +354,12 @@ static void _text_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_obje
 }
 
 /* Text: render() */
-static Etk_Bool _text_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _text_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
    char **text_data;
    int th;
    
-   if (!(text_data = cell_data) || !cell_objects || !cell_objects[0])
+   if (!(text_data = cell_data) || !cell_objects[0])
       return ETK_FALSE;
    
    evas_object_text_text_set(cell_objects[0], *text_data);
@@ -371,11 +371,11 @@ static Etk_Bool _text_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geo
 }
 
 /* Text: width_get() */
-static int _text_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects)
+static int _text_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
 {
    int w;
    
-   if (!cell_objects || !cell_objects[0])
+   if (!cell_objects[0])
       return 0;
    
    evas_object_geometry_get(cell_objects[0], NULL, NULL, &w, NULL);
@@ -411,13 +411,13 @@ static void _int_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list 
 }
 
 /* Int: render() */
-static Etk_Bool _int_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _int_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
    int *int_data;
    char string[256];
    int th;
    
-   if (!(int_data = cell_data) || !cell_objects || !cell_objects[0])
+   if (!(int_data = cell_data) || !cell_objects[0])
       return ETK_FALSE;
    
    snprintf(string, 255, "%d", *int_data);
@@ -458,13 +458,13 @@ static void _double_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_li
 }
 
 /* Double: render() */
-static Etk_Bool _double_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _double_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
    double *double_data;
    char string[256];
    int th;
    
-   if (!(double_data = cell_data) || !model || !cell_objects || !cell_objects[0])
+   if (!(double_data = cell_data) || !model || !cell_objects[0])
       return ETK_FALSE;
    
    snprintf(string, 255, "%.2f", *double_data);
@@ -546,12 +546,12 @@ static void _image_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_lis
 }
 
 /* Image: objects_cache() */
-static void _image_objects_cache(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects)
+static void _image_objects_cache(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
 {
    Etk_Tree2_Model_Image *image_model;
    Etk_Tree2_Model_Image_Data *image_data;
    
-   if (!(image_model = (Etk_Tree2_Model_Image *)model) || !cell_objects || !cell_objects[0])
+   if (!(image_model = (Etk_Tree2_Model_Image *)model) || !cell_objects[0])
       return;
    
    image_data = cell_data;
@@ -564,7 +564,7 @@ static void _image_objects_cache(Etk_Tree2_Model *model, void *cell_data, Evas_O
 }
 
 /* Image: render() */
-static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
    Etk_Tree2_Model_Image *image_model;
    Etk_Tree2_Model_Image_Data *image_data;
@@ -574,7 +574,7 @@ static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Ge
    float aspect;
    char *ext;
    
-   if (!(image_model = (Etk_Tree2_Model_Image *)model) || !(image_data = cell_data) || !cell_objects || !evas)
+   if (!(image_model = (Etk_Tree2_Model_Image *)model) || !(image_data = cell_data) || !evas)
       return ETK_FALSE;
 
    if (!image_data->filename || image_data->type == ETK_TREE2_MODEL_NOT_FOUND)
@@ -697,12 +697,12 @@ static Etk_Bool _image_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Ge
 }
 
 /* Image: width_get() */
-static int _image_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects)
+static int _image_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
 {
    Etk_Tree2_Model_Image *image_model;
    int w;
    
-   if (!(image_model = (Etk_Tree2_Model_Image *)model) || !cell_objects || !cell_objects[0])
+   if (!(image_model = (Etk_Tree2_Model_Image *)model) || !cell_objects[0])
       return 0;
    
    if (image_model->width > 0)
@@ -743,9 +743,9 @@ static void _checkbox_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_
 }
 
 /* Checkbox: objects_create() */
-static void _checkbox_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas)
+static void _checkbox_objects_create(Etk_Tree2_Model *model, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
-   if (!model || !cell_objects || !evas)
+   if (!model || !evas)
       return;
    
    cell_objects[0] = edje_object_add(evas);
@@ -754,12 +754,12 @@ static void _checkbox_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_
 }
 
 /* Checkbox: render() */
-static Etk_Bool _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
    Etk_Bool *checked;
    int w, h;
    
-   if (!(checked = cell_data) || !cell_objects || !cell_objects[0])
+   if (!(checked = cell_data) || !cell_objects[0])
       return ETK_FALSE;
    
    if (*checked)
@@ -779,11 +779,11 @@ static Etk_Bool _checkbox_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk
 }
 
 /* Checkbox: width_get() */
-static int _checkbox_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects)
+static int _checkbox_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
 {
    int w;
    
-   if (!cell_objects || !cell_objects[0])
+   if (!cell_objects[0])
       return 0;
    
    evas_object_geometry_get(cell_objects[0], NULL, NULL, &w, NULL);
@@ -869,9 +869,9 @@ static void _progress_bar_cell_data_get(Etk_Tree2_Model *model, void *cell_data,
 }
 
 /* Progressbar: objects_create() */
-static void _progress_bar_objects_create(Etk_Tree2_Model *model, Evas_Object **cell_objects, Evas *evas)
+static void _progress_bar_objects_create(Etk_Tree2_Model *model, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
-   if (!model || !cell_objects || !evas)
+   if (!model || !evas)
       return;
    
    cell_objects[0] = edje_object_add(evas);
@@ -879,12 +879,12 @@ static void _progress_bar_objects_create(Etk_Tree2_Model *model, Evas_Object **c
 }
 
 /* Progressbar: render() */
-static Etk_Bool _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object **cell_objects, Evas *evas)
+static Etk_Bool _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
    Etk_Tree2_Model_Progressbar_Data *pbar_data;   
    int w, h;
    
-   if (!(pbar_data = cell_data) || !cell_objects || !cell_objects[0])
+   if (!(pbar_data = cell_data) || !cell_objects[0])
       return ETK_FALSE;
    
    edje_object_part_drag_value_set(cell_objects[0], "etk.dragable.filler", 0.0, 0.0);
@@ -902,11 +902,11 @@ static Etk_Bool _progress_bar_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row,
 }
 
 /* Progressbar: width_get() */
-static int _progress_bar_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object **cell_objects)
+static int _progress_bar_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
 {
    int w;
    
-   if (!cell_objects || !cell_objects[0])
+   if (!cell_objects[0])
       return 0;
    
    evas_object_geometry_get(cell_objects[0], NULL, NULL, &w, NULL);

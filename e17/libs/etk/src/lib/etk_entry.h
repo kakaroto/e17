@@ -32,6 +32,7 @@ struct Etk_Entry
    Evas_Object *editable_object;
    Etk_Bool password_mode;
    Etk_Bool selection_dragging;
+   Etk_Bool pointer_set;
    char *text;
 };
 

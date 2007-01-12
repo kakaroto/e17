@@ -30,7 +30,7 @@ static void _window_screen_position_get(Etk_Window *window, int *x, int *y);
 static void _window_size_get(Etk_Window *window, int *w, int *h);
 static void _window_iconified_set(Etk_Window *window, Etk_Bool iconified);
 static Etk_Bool _window_iconified_get(Etk_Window *window);
-static void _window_maximized_set(Etk_Window *windo, Etk_Bool maximized);
+static void _window_maximized_set(Etk_Window *window, Etk_Bool maximized);
 static Etk_Bool _window_maximized_get(Etk_Window *window);
 static void _window_fullscreen_set(Etk_Window *window, Etk_Bool focused);
 static Etk_Bool _window_fullscreen_get(Etk_Window *window);
@@ -170,6 +170,8 @@ static void _window_constructor(Etk_Window *window)
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;
+   engine_data->width = 0;
+   engine_data->height = 0;
 
    ETK_TOPLEVEL(window)->evas = ecore_evas_get(engine_data->ecore_evas);
    ecore_evas_data_set(engine_data->ecore_evas, "_Etk_Engine::Window", window);
@@ -261,11 +263,11 @@ static void _window_resize(Etk_Window *window, int w, int h)
    Etk_Engine_Window_Data *engine_data;
    int min_w, min_h;
    
-   engine_data = window->engine_data;            
+   engine_data = window->engine_data;
    ecore_evas_size_min_get(engine_data->ecore_evas, &min_w, &min_h);
-   window->width = ETK_MAX(w, min_w);
-   window->height = ETK_MAX(h, min_h);
-   ecore_evas_resize(engine_data->ecore_evas, window->width, window->height);
+   engine_data->width = ETK_MAX(w, min_w);
+   engine_data->height = ETK_MAX(h, min_h);
+   ecore_evas_resize(engine_data->ecore_evas, engine_data->width, engine_data->height);
 }
 
 /* Sets the minimum size of the window */
@@ -273,7 +275,13 @@ static void _window_size_min_set(Etk_Window *window, int w, int h)
 {
    Etk_Engine_Window_Data *engine_data;
    
-   engine_data = window->engine_data;      
+   engine_data = window->engine_data;
+   if (engine_data->width < w || engine_data->height < h)
+   {
+      engine_data->width = ETK_MAX(w, engine_data->width);
+      engine_data->height = ETK_MAX(h, engine_data->height);
+      ecore_evas_resize(engine_data->ecore_evas, engine_data->width, engine_data->height);
+   }
    ecore_evas_size_min_set(engine_data->ecore_evas, w, h);
 }
 
@@ -289,15 +297,18 @@ static void _window_screen_position_get(Etk_Window *window, int *x, int *y)
 {
    Etk_Engine_Window_Data *engine_data;
    
-   engine_data = window->engine_data;   
+   engine_data = window->engine_data;
    ecore_evas_geometry_get(engine_data->ecore_evas, x, y, NULL, NULL);
 }
 
 /* Gets the size of the window */
 static void _window_size_get(Etk_Window *window, int *w, int *h)
 {
-   if (w)   *w = window->width;
-   if (h)   *h = window->height;
+   Etk_Engine_Window_Data *engine_data;
+   
+   engine_data = window->engine_data;
+   if (w)   *w = engine_data->width;
+   if (h)   *h = engine_data->height;
 }
 
 /* Sets whether or not the window is iconified */
@@ -415,7 +426,7 @@ static void _window_decorated_set(Etk_Window *window, Etk_Bool decorated)
 {
    Etk_Engine_Window_Data *engine_data;
    
-   engine_data = window->engine_data;   
+   engine_data = window->engine_data;
    ecore_evas_borderless_set(engine_data->ecore_evas, !decorated);
    etk_object_notify(ETK_OBJECT(window), "decorated");
 }
@@ -469,11 +480,13 @@ static void _window_move_cb(Ecore_Evas *ecore_evas)
 static void _window_resize_cb(Ecore_Evas *ecore_evas)
 {
    Etk_Window *window;
+   Etk_Engine_Window_Data *engine_data;
    
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "_Etk_Engine::Window"))))
      return;
    
-   ecore_evas_geometry_get(ecore_evas, NULL, NULL, &window->width, &window->height);
+   engine_data = window->engine_data;
+   ecore_evas_geometry_get(ecore_evas, NULL, NULL, &engine_data->width, &engine_data->height);
    /* TODO: why use a func pointer here? */
    window->resize_cb(window);
 }

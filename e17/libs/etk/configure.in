@@ -267,10 +267,13 @@ data/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/widgets/Makefile
-data/themes/default/wm/Makefile
 data/themes/default/fonts/Makefile
 data/themes/default/images/Makefile
 data/themes/default/macros/Makefile
+data/wm/Makefile
+data/wm/default/Makefile
+data/wm/default/fonts/Makefile
+data/wm/default/images/Makefile
 data/fonts/Makefile
 data/images/Makefile
 data/icons/Makefile
@@ -306,7 +309,6 @@ data/icons/default/icons/48x48/mimetypes/Makefile
 data/icons/default/icons/48x48/places/Makefile
 data/icons/default/icons/48x48/status/Makefile
 data/icons/default/Makefile
-data/pointers/Makefile
 po/Makefile
 intl/Makefile
 etk-config

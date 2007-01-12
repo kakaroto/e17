@@ -9,6 +9,8 @@
 typedef struct Etk_Engine_Ecore_Evas_Window_Data
 {
    Ecore_Evas *ecore_evas;
+   int width;
+   int height;
 } Etk_Engine_Ecore_Evas_Window_Data;
 
 #endif

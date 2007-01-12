@@ -73,6 +73,7 @@ enum Etk_Widget_Property_Id
    ETK_WIDGET_THEME_FILE_PROPERTY,
    ETK_WIDGET_THEME_GROUP_PROPERTY,
    ETK_WIDGET_THEME_PARENT_PROPERTY,
+   ETK_WIDGET_PADDING_PROPERTY,
    ETK_WIDGET_GEOMETRY_PROPERTY,
    ETK_WIDGET_WIDTH_REQUEST_PROPERTY,
    ETK_WIDGET_HEIGHT_REQUEST_PROPERTY,
@@ -183,7 +184,7 @@ static Etk_Bool _etk_dnd_drag_start = ETK_TRUE;
  * @brief Gets the type of an Etk_Widget
  * @return Returns the type of an Etk_Widget
  */
-Etk_Type *etk_widget_type_get()
+Etk_Type *etk_widget_type_get(void)
 {
    static Etk_Type *widget_type = NULL;
 
@@ -253,6 +254,8 @@ Etk_Type *etk_widget_type_get()
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "theme_parent", ETK_WIDGET_THEME_PARENT_PROPERTY,
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+      etk_type_property_add(widget_type, "padding", ETK_WIDGET_PADDING_PROPERTY,
+         ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
       etk_type_property_add(widget_type, "geometry", ETK_WIDGET_GEOMETRY_PROPERTY,
          ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
       etk_type_property_add(widget_type, "width_request", ETK_WIDGET_WIDTH_REQUEST_PROPERTY, 
@@ -324,7 +327,8 @@ void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h)
 
 /**
  * @brief Gets the inner geometry of the widget, relative to the top-left corner of the Evas where it is drawn. @n
- * The inner geometry takes the inset values (horizontal and vertical paddings) into account
+ * The inner geometry corresponds to the rectangle in which the widget's children are rendered. This rectangle may be
+ * smaller than the geometry of the widget because inset values can be set by the theme
  * @param widget a widget
  * @param x the location where to store the inner x position of the widget
  * @param y the location where to store the inner y position of the widget
@@ -337,6 +341,49 @@ void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, i
    if (y)   *y = widget ? widget->inner_geometry.y : 0;
    if (w)   *w = widget ? widget->inner_geometry.w : 0;
    if (h)   *h = widget ? widget->inner_geometry.h : 0;
+}
+
+/**
+ * @brief Sets the padding on the different sides of the widget.
+ * The padding adds blank space to the sides of the widget
+ * @param widget a widget
+ * @param left the padding at the left of the widget
+ * @param right the padding at the right of the widget
+ * @param top the padding at the top of the widget
+ * @param bottom the padding at the bottom of the widget
+ */
+void etk_widget_padding_set(Etk_Widget *widget, int left, int right, int top, int bottom)
+{
+   if (!widget)
+      return;
+   
+   widget->padding.left = ETK_MAX(0, left);
+   widget->padding.right = ETK_MAX(0, right);
+   widget->padding.top = ETK_MAX(0, top);
+   widget->padding.bottom = ETK_MAX(0, bottom);
+   
+   etk_object_notify(ETK_OBJECT(widget), "padding");
+   etk_widget_size_recalc_queue(widget);
+}
+
+/**
+ * @brief Gets the padding on the different sides of the widget
+ * @param widget a widget
+ * @param left the location where to store the padding at the left of the widget
+ * @param right the location where to store the padding at the right of the widget
+ * @param top the location where to store the padding at the top of the widget
+ * @param bottom the location where to store the padding at the bottom of the widget
+ */
+void etk_widget_padding_get(Etk_Widget *widget, int *left, int *right, int *top, int *bottom)
+{
+   if (left)
+      *left = widget ? widget->padding.left : 0;
+   if (right)
+      *right = widget ? widget->padding.right : 0;
+   if (top)
+      *top = widget ? widget->padding.top : 0;
+   if (bottom)
+      *bottom = widget ? widget->padding.bottom : 0;
 }
 
 /**
@@ -945,6 +992,7 @@ void etk_widget_redraw_queue(Etk_Widget *widget)
  * @param widget a widget
  * @param w the width to request (-1 will make Etk calculate it automatically)
  * @param h the height to request (-1 will make Etk calculate it automatically)
+ * @note The padding values will be added to the final size-request
  */
 void etk_widget_size_request_set(Etk_Widget *widget, int w, int h)
 {
@@ -990,8 +1038,8 @@ void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition
    
    if (!widget->realized)
    {
-      size_requisition->w = 0;
-      size_requisition->h = 0;
+      size_requisition->w = widget->padding.left + widget->padding.right;
+      size_requisition->h = widget->padding.top + widget->padding.bottom;
       return;
    }
 
@@ -1042,8 +1090,11 @@ void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition
 
    if (widget->visible || !hidden_has_no_size)
       widget->last_calced_size = *size_requisition;
+   
+   size_requisition->w += widget->padding.left + widget->padding.right;
+   size_requisition->h += widget->padding.top + widget->padding.bottom;
+   
    widget->need_size_recalc = ETK_FALSE;
-
    etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SIZE_REQUEST_SIGNAL], ETK_OBJECT(widget), NULL, size_requisition);
 }
 
@@ -1056,12 +1107,15 @@ void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition
  */
 void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
+   int x, y, w, h;
+   
    if (!widget || widget->swallowed || !widget->smart_object)
       return;
-
-   if (geometry.x != widget->geometry.x || geometry.y != widget->geometry.y || widget->need_redraw)
+   
+   evas_object_geometry_get(widget->smart_object, &x, &y, &w, &h);
+   if (geometry.x != x || geometry.y != y || widget->need_redraw)
       evas_object_move(widget->smart_object, geometry.x, geometry.y);
-   if (geometry.w != widget->geometry.w || geometry.h != widget->geometry.h || widget->need_redraw)
+   if (geometry.w != w || geometry.h != h || widget->need_redraw)
       evas_object_resize(widget->smart_object, geometry.w, geometry.h);
 }
 
@@ -1800,7 +1854,7 @@ const char **etk_widget_dnd_types_get(Etk_Widget *widget, int *num)
  * @brief Gets the list of the widgets that are dnd destinations
  * @return Returns the list of the dnd destination widgets
  */
-Evas_List *etk_widget_dnd_dest_widgets_get()
+Evas_List *etk_widget_dnd_dest_widgets_get(void)
 {
    return _etk_widget_dnd_dest_widgets;
 }
@@ -1924,6 +1978,10 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->inset.right = 0;
    widget->inset.top = 0;
    widget->inset.bottom = 0;
+   widget->padding.left = 0;
+   widget->padding.right = 0;
+   widget->padding.top = 0;
+   widget->padding.bottom = 0;
 
    widget->geometry.x = -1;
    widget->geometry.y = -1;
@@ -3178,6 +3236,9 @@ static void _etk_widget_smart_object_move_cb(Evas_Object *obj, Evas_Coord x, Eva
 
    if (!obj || !(widget = ETK_WIDGET(evas_object_smart_data_get(obj))))
       return;
+   
+   x += widget->padding.left;
+   y += widget->padding.top;
 
    if (x != widget->geometry.x || y != widget->geometry.y)
    {
@@ -3231,6 +3292,9 @@ static void _etk_widget_smart_object_resize_cb(Evas_Object *obj, Evas_Coord w, E
    
    if (!obj || !(widget = ETK_WIDGET(evas_object_smart_data_get(obj))))
       return;
+   
+   w -= widget->padding.left + widget->padding.right;
+   h -= widget->padding.top + widget->padding.bottom;
 
    if (w != widget->geometry.w || h != widget->geometry.h || widget->need_redraw)
    {
@@ -3711,6 +3775,11 @@ static void _etk_widget_content_object_clip_unset_cb(Evas_Object *obj)
  * \par
  * @prop_name "geometry": The geometry of the widget (use etk_widget_geometry_get() to get it)
  * @prop_type Other (Etk_Geometry)
+ * @prop_na
+ * \par
+ * @prop_name "padding": The padding on the different sides of the widget
+ * (see etk_widget_padding_set() and etk_widget_padding_get())
+ * @prop_type Other (quadruplets of integers)
  * @prop_na
  * \par
  * @prop_name "width_request": The width requested for the widget (-1 means it's calculated automatically)

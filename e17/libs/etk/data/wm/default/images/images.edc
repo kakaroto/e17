@@ -1,0 +1,21 @@
+images {
+   image: "bg_brushed.png" COMP;
+   image: "bg_overlay.png" COMP;
+   image: "win_border.png" COMP;
+   image: "win_shadow.png" COMP;
+   image: "win_title_highlight.png" COMP;
+   image: "win_title_shadow1.png" COMP;
+   image: "win_title_shadow2.png" COMP;
+   image: "win_button.png" COMP;
+   image: "win_button_shadow1.png" COMP;
+   image: "win_button_shadow2.png" COMP;
+   image: "win_button_close.png" COMP;
+   image: "win_button_maximize.png" COMP;
+   image: "win_glint1.png" COMP;
+   image: "win_glint2.png" COMP;
+   image: "win_glint3.png" COMP;
+   image: "pointer_default.png" COMP;
+   image: "pointer_text_edit.png" COMP;
+   image: "pointer_h_double_arrow.png" COMP;
+   image: "pointer_v_double_arrow.png" COMP;
+}

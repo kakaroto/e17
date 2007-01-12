@@ -37,6 +37,8 @@ Etk_Cache *etk_cache_new(int size)
    cache = malloc(sizeof(Etk_Cache));
    cache->cached_objects = NULL;
    cache->size = ETK_MAX(0, size);
+   cache->free_cb = NULL;
+   cache->free_cb_data = NULL;
    
    return cache;
 }
@@ -254,7 +256,7 @@ Evas_Object *etk_cache_find(Etk_Cache *cache, const char *filename, const char *
    if (!cache || !filename)
       return NULL;
    
-   for (l = evas_list_last(cache->cached_objects); l; l = l->prev)
+   for (l = cache->cached_objects; l; l = l->next)
    {
       item = l->data;
       if (strcmp(item->filename, filename) == 0

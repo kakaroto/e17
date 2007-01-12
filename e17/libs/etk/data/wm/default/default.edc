@@ -1,0 +1,11 @@
+fonts {
+   font: "Vera.ttf" "Vera"; 
+}
+
+#include "images/images.edc"
+
+collections {
+   #include "background.edc"
+   #include "borders.edc"
+   #include "pointers.edc"
+}

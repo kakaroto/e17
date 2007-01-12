@@ -526,8 +526,6 @@ static void _etk_window_constructor(Etk_Window *window)
    if (!window)
       return;
  
-   window->width = 0;
-   window->height = 0; 
    window->wait_size_request = ETK_TRUE;
    window->center = ETK_FALSE;
    window->center_on_window = NULL;
@@ -695,12 +693,6 @@ static void _etk_window_size_request_cb(Etk_Object *object, Etk_Size *requested_
    if (requested_size->w >= 0 && requested_size->h >= 0)
    {
       etk_engine_window_size_min_set(window, requested_size->w, requested_size->h);
-      if (window->width < requested_size->w || window->height < requested_size->h)
-      {
-         window->width = ETK_MAX(window->width, requested_size->w);
-         window->height = ETK_MAX(window->height, requested_size->h);
-         etk_engine_window_resize(window, window->width, window->height);
-      }
       
       if (window->wait_size_request)
       {

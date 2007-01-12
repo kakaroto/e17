@@ -256,7 +256,16 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
       etk_toplevel_size_get(ETK_TOPLEVEL(widget), &geometry.w, &geometry.h);
    }
    else
+   {
+      int left, right, top, bottom;
+      
       etk_widget_geometry_get(widget, &geometry.x, &geometry.y, &geometry.w, &geometry.h);
+      etk_widget_padding_get(widget, &left, &right, &top, &bottom);
+      geometry.x -= left;
+      geometry.y -= top;
+      geometry.w += left + right;
+      geometry.h += top + bottom;
+   }
    etk_widget_size_allocate(widget, geometry);
    
    for (l = widget->children; l; l = l->next)

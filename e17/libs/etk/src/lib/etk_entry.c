@@ -181,6 +181,7 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    entry->editable_object = NULL;
    entry->password_mode = ETK_FALSE;
    entry->selection_dragging = ETK_FALSE;
+   entry->pointer_set = ETK_FALSE;
    entry->text = NULL;   
    
    etk_signal_connect("realize", ETK_OBJECT(entry), ETK_CALLBACK(_etk_entry_realize_cb), NULL);
@@ -256,6 +257,7 @@ static void _etk_entry_realize_cb(Etk_Object *object, void *data)
       return;
 
    entry->editable_object = etk_editable_add(evas);
+   evas_object_pass_events_set(entry->editable_object, 1);
    etk_editable_theme_set(entry->editable_object, etk_widget_theme_file_get(ETK_WIDGET(entry)),
       etk_widget_theme_group_get(ETK_WIDGET(entry)));
    etk_editable_text_set(entry->editable_object, entry->text);
@@ -420,24 +422,36 @@ static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event
       etk_signal_stop();
 }
 
+static int _i = 0;
+
 /* Called when the mouse enters the entry */
 static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data)
 {
-   Etk_Widget *entry_widget;
+   Etk_Entry *entry;
 
-   if (!(entry_widget = ETK_WIDGET(object)))
+   if (!(entry = ETK_ENTRY(object)))
       return;
-   etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(entry_widget), ETK_POINTER_TEXT_EDIT);
+   
+   if (!entry->pointer_set)
+   {
+      entry->pointer_set = ETK_TRUE;
+      etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(ETK_WIDGET(entry)), ETK_POINTER_TEXT_EDIT);
+   }
 }
 
 /* Called when the mouse leaves the entry */
 static void _etk_entry_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data)
 {
-   Etk_Widget *entry_widget;
+   Etk_Entry *entry;
 
-   if (!(entry_widget = ETK_WIDGET(object)))
+   if (!(entry = ETK_ENTRY(object)))
       return;
-   etk_toplevel_pointer_pop(entry_widget->toplevel_parent, ETK_POINTER_TEXT_EDIT);
+   
+   if (entry->pointer_set)
+   {
+      entry->pointer_set = ETK_FALSE;
+      etk_toplevel_pointer_pop(etk_widget_toplevel_parent_get(ETK_WIDGET(entry)), ETK_POINTER_TEXT_EDIT);
+   }
 }
 
 /* Called when the entry is pressed by the mouse */

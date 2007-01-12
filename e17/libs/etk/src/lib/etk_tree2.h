@@ -15,7 +15,8 @@
  * @{
  */
 
-#define MAX_MODELS_PER_COL 2
+#define MAX_MODELS_PER_COL 5
+#define MAX_OBJECTS_PER_MODEL 5
 
 /** Gets the type of a tree */
 #define ETK_TREE2_TYPE       (etk_tree2_type_get())
