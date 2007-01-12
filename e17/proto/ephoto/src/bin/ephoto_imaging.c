@@ -1,18 +1,61 @@
 #include "ephoto.h"
 
-void update_image(Ewl_Widget *image, int w, int h, unsigned int *data)
+unsigned int *flip_horizontal(Ewl_Widget *image)
 {
-	if (w && h && !data)
+	unsigned int *im_data, *im_data_new;
+	int index, ind, i, j, ni, nj, ew, eh;
+
+	im_data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE);
+	evas_object_image_size_get(EWL_IMAGE(image)->image, &ew, &eh);
+
+	index = 0;
+
+	im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+
+	for (i = 0; i < eh; i ++)
 	{
-		ewl_image_size_set(EWL_IMAGE(image), w, h);
-		ewl_widget_configure(image);
+		for (j = 0; j < ew; j++)
+		{
+			ni = i;
+			nj = ew - j - 1;
+
+			ind = ni * ew + nj;
+
+			im_data_new[index] = im_data[ind];
+
+			index++;
+		}
 	}
-	if (w && h && data)
+	return im_data_new;
+}
+
+unsigned int *flip_vertical(Ewl_Widget *image)
+{
+	unsigned int *im_data, *im_data_new;
+	int index, ind, i, j, ni, nj, ew, eh;
+
+	im_data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE);
+	evas_object_image_size_get(EWL_IMAGE(image)->image, &ew, &eh);
+
+	index = 0;
+
+	im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+
+	for (i = 0; i < eh; i++)
 	{
-		evas_object_image_size_set(EWL_IMAGE(image)->image, w, h);
-		evas_object_image_data_set(EWL_IMAGE(image)->image, data);
-		evas_object_image_data_update_add(EWL_IMAGE(image)->image, 0, 0, w, h);
+		for (j = 0; j < ew; j++)
+		{
+			ni = eh - i - 1;
+			nj = j;
+
+			ind = ni * ew + nj;
+
+			im_data_new[index] = im_data[ind];
+
+			index++;
+		}
 	}
+	return im_data_new;
 }
 
 unsigned int *rotate_left(Ewl_Widget *image)
@@ -44,7 +87,6 @@ unsigned int *rotate_left(Ewl_Widget *image)
 			index++;
 		}
 	}
-
 	return im_data_new;
 }
 
@@ -77,7 +119,20 @@ unsigned int *rotate_right(Ewl_Widget *image)
 			index++;
 		}
 	}
-
 	return im_data_new;
 }
 
+void update_image(Ewl_Widget *image, int w, int h, unsigned int *data)
+{
+	if (w && h && !data)
+	{
+		ewl_image_size_set(EWL_IMAGE(image), w, h);
+		ewl_widget_configure(image);
+	}
+	if (w && h && data)
+	{
+		evas_object_image_size_set(EWL_IMAGE(image)->image, w, h);
+		evas_object_image_data_set(EWL_IMAGE(image)->image, data);
+		evas_object_image_data_update_add(EWL_IMAGE(image)->image, 0, 0, w, h);
+	}
+}

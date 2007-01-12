@@ -19,10 +19,13 @@ static Ewl_Widget *add_tree(Ewl_Widget *c);
 /*Ephoto MVC Callbacks*/
 static Ewl_Widget *directory_view_new(void);
 static void directory_view_assign(Ewl_Widget *w, void *data);
+static Ewl_Widget *directory_header_fetch(void *data, int column);
 static void *directory_data_fetch(void *data, unsigned int row, unsigned int column);
 static int directory_data_count(void *data);
 
 /*Ephoto Image Manipulation*/
+static void flip_image_horizontal(Ewl_Widget *w, void *event, void *data);
+static void flip_image_vertical(Ewl_Widget *w, void *event, void *data);
 static void rotate_image_left(Ewl_Widget *w, void *event, void *data);
 static void rotate_image_right(Ewl_Widget *w, void *event, void *data);
 
@@ -198,7 +201,6 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 	ewl_model_count_set(model, directory_data_count);
 
 	tree = ewl_tree2_new();
-	ewl_tree2_headers_visible_set(EWL_TREE2(tree), FALSE);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(c), tree);
@@ -207,7 +209,8 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, directory_view_new);
 	ewl_view_assign_set(view, directory_view_assign);
-	
+	ewl_view_header_fetch_set(view, directory_header_fetch);
+
 	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
 
 	return tree;
@@ -248,6 +251,18 @@ static void directory_view_assign(Ewl_Widget *w, void *data)
 	}
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, populate_files, NULL);
 }	
+
+/* The header for the tree */
+static Ewl_Widget *directory_header_fetch(void *data, int column)
+{
+	Ewl_Widget *label;
+
+	label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(label), "Browser");
+	ewl_widget_show(label);
+
+	return label;
+}
 
 /* The directories that will be displayed*/ 
 static void *directory_data_fetch(void *data, unsigned int row, unsigned int column)
@@ -294,7 +309,7 @@ static void view_image(Ewl_Widget *w, void *event, void *data)
 static void populate_files(Ewl_Widget *w, void *event, void *data)
 {
 	char *cdir, *imagef;
-	Ewl_Widget *image, *thumb;
+	Ewl_Widget *thumb;
 
 	if (w)
 	{
@@ -327,12 +342,9 @@ static void populate_files(Ewl_Widget *w, void *event, void *data)
 	while (!ecore_list_is_empty(images))
 	{
 		imagef = ecore_list_remove_first(images);
-		
-		image = ewl_image_new();
-		ewl_image_file_set(EWL_IMAGE(image), imagef, NULL);
 
-		thumb = ewl_image_thumbnail_get(EWL_IMAGE(image));
-		ewl_image_file_set(EWL_IMAGE(thumb), PACKAGE_DATA_DIR "/images/album.png", NULL);
+		thumb = ewl_image_thumbnail_new();
+		ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(thumb), imagef);
 		ewl_image_proportional_set(EWL_IMAGE(thumb), TRUE);
 		ewl_image_constrain_set(EWL_IMAGE(thumb), 100);
 		ewl_container_child_append(EWL_CONTAINER(fbox), thumb);
@@ -340,6 +352,33 @@ static void populate_files(Ewl_Widget *w, void *event, void *data)
 		ewl_widget_show(thumb);
 	}
 	ewl_widget_configure(fbox);
+	ewl_widget_configure(fbox->parent);
+}
+
+/*Flip the image 180 degrees horizontally*/
+static void flip_image_horizontal(Ewl_Widget *w, void *event, void *data)
+{
+	unsigned int *image_data;
+	int nw, nh;
+
+	evas_object_image_size_get(EWL_IMAGE(vimage)->image, &nw, &nh);
+	image_data = flip_horizontal(vimage);
+	update_image(vimage, nw, nh, image_data);
+	ewl_widget_configure(vimage);
+	ewl_widget_configure(vimage->parent);
+}
+
+/*Flip the image 180 degrees vertically*/
+static void flip_image_vertical(Ewl_Widget *w, void *event, void *data)
+{
+	unsigned int *image_data;
+	int nw, nh;
+
+	evas_object_image_size_get(EWL_IMAGE(vimage)->image, &nw, &nh);
+	image_data = flip_vertical(vimage);
+	update_image(vimage, nw, nh, image_data);
+	ewl_widget_configure(vimage);
+	ewl_widget_configure(vimage->parent);
 }
 
 /*Rotate the image 90 degrees to the left*/
@@ -355,6 +394,7 @@ static void rotate_image_left(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_configure(vimage->parent);
 }
 
+/*Rotate the image 90 degrees to the right*/
 static void rotate_image_right(Ewl_Widget *w, void *event, void *data)
 {
 	unsigned int *image_data;
@@ -449,6 +489,8 @@ static void create_main_gui(void)
 	ewl_object_fill_policy_set(EWL_OBJECT(ihbox), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(ihbox);
 	
+	add_button(ihbox, "Flip Horizontal", NULL, flip_image_horizontal);
+	add_button(ihbox, "Flip Vertical", NULL, flip_image_vertical);
 	add_button(ihbox, "Rotate Left", NULL, rotate_image_left);
 	add_button(ihbox, "Rotate Right", NULL, rotate_image_right);
 	add_button(ihbox, "Return to Catalog", NULL, view_catalog);

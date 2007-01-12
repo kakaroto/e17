@@ -21,6 +21,8 @@ Ecore_List *get_directories(char *directory);
 Ecore_List *get_images(char *directory);
 
 /* Ephoto Imaging */
+unsigned int *flip_horizontal(Ewl_Widget *image);
+unsigned int *flip_vertical(Ewl_Widget *image);
 unsigned int *rotate_left(Ewl_Widget *image);
 unsigned int *rotate_right(Ewl_Widget *image);
 void update_image(Ewl_Widget *image, int w, int h, unsigned int *data);
