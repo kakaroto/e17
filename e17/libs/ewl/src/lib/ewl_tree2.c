@@ -745,7 +745,10 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 	while ((col = ecore_list_next(tree->columns)))
 	{
 		int r;
-		ewl_tree2_header_build(tree, col, mvc_data, column);
+
+		if (tree->headers_visible)
+			ewl_tree2_header_build(tree, col, mvc_data, column);
+
 		r = col->model->count(mvc_data);
 		if (r > rows) rows = r;
 
