@@ -288,6 +288,8 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(scroll), fbox);
 	ewl_widget_show(fbox);
 
+	ewl_icon_theme_pos = 0;
+
 	ecore_idle_enterer_add(ewl_icon_theme_idle, fbox);
 
 	return 1;
