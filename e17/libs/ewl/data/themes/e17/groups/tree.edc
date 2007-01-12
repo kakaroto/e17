@@ -78,7 +78,7 @@ group
 	data
 	{
 		item: "inset" 10;
-		item: "inset/top" 0;
+		item: "inset/top" 7;
 		item: "inset/bottom" 8;
 	}
 }
