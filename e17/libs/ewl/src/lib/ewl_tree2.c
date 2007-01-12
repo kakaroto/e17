@@ -643,6 +643,8 @@ ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, i
 	DCHECK_PARAM_PTR("col", col);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
+	if (!tree->headers_visible) DRETURN(DLEVEL_STABLE);
+
 	if (!col->view->header_fetch)
 	{
 		DWARNING("Missing header_fetch callback.");
@@ -746,8 +748,7 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 	{
 		int r;
 
-		if (tree->headers_visible)
-			ewl_tree2_header_build(tree, col, mvc_data, column);
+		ewl_tree2_header_build(tree, col, mvc_data, column);
 
 		r = col->model->count(mvc_data);
 		if (r > rows) rows = r;
