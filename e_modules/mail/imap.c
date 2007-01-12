@@ -59,8 +59,9 @@ _mail_imap_check_mail (void *data)
 		}
 	    }
 	}
-      is->current = evas_list_nth (is->clients, 0);
-      ic = is->current;
+      is->current = is->clients;
+      if (!is->current) break;
+      ic = is->current->data;
     }
 }
 
@@ -259,7 +260,8 @@ _mail_imap_server_data (void *data, int type, void *event)
 	}
     }
 
-  ic = is->current;
+  if (!is->current) return 0;
+  ic = is->current->data;
   is->state++;
 
   switch (is->state)
@@ -287,29 +289,18 @@ _mail_imap_server_data (void *data, int type, void *event)
 	  if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	    _mail_start_exe (ic->config);
 
-	  is->clients = is->clients->next;
-	  if (is->clients)
+	  is->current = is->current->next;
+	  if (is->current)
 	    {
-	      is->current = is->clients->data;
-	      if (is->current)
-		{
-		  ic = is->current;
+	      if (is->current->data)
 		  is->state = IMAP_STATE_SERVER_READY;
-		}
 	      else
-		{
 		  _mail_imap_server_logout (is);
-		  ic = NULL;
-		}
 	    }
 	  else
-	    {
 	      _mail_imap_server_logout (is);
-	      ic = NULL;
-	    }
 	}
-      if (!ic)
-	break;
+      break;
     default:
       break;
     }
