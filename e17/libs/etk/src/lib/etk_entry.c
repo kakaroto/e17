@@ -422,8 +422,6 @@ static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event
       etk_signal_stop();
 }
 
-static int _i = 0;
-
 /* Called when the mouse enters the entry */
 static void _etk_entry_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data)
 {

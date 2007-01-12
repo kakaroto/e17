@@ -13,8 +13,6 @@
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
 
-/* TODO: bugs with several objects per model.. combining them.. */
-
 /**
  * @addtogroup Etk_Tree2
  * @{
