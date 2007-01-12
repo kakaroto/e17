@@ -97,8 +97,4 @@ EXTRA_DIST = \
             vscrollbar_trough2.png \
             vscrollbar_trough.png \
             vseparator.png \
-            vslider_bar.png \
-            wm_bg_brushed.png \
-            wm_bg_overlay.png \
-            wm_border.png \
-            wm_shadow.png
+            vslider_bar.png

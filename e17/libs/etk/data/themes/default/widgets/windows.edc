@@ -9,7 +9,7 @@ group {
          type: RECT;
          description {
             state: "default" 0.0;
-            color: 231 231 231 255;
+            color: 226 226 226 255;
             rel1 {
                relative: 0 0;
                offset: 1 1;
@@ -57,7 +57,7 @@ group {
          type: RECT;
          description {
             state: "default" 0.0;
-            color: 231 231 231 255;
+            color: 226 226 226 255;
             rel1 {
                relative: 0 0;
                offset: 1 1;

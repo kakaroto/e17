@@ -3,14 +3,12 @@ EXTRA_DIST = default.edc
 SUBDIRS = fonts \
 	  images \
 	  macros \
-	  widgets \
-          wm
+	  widgets
 	  
 EDJE_CC = edje_cc
 EDJE_FLAGS = \
 -v \
 -id $(top_srcdir)/data/themes/default/images \
--id $(top_srcdir)/data/themes/default/wm \
 -fd $(top_srcdir)/data/themes/default/fonts
 
 filesdir = $(pkgdatadir)/themes
@@ -39,10 +37,7 @@ widgets/text_view.edc \
 widgets/toggle_button.edc \
 widgets/tooltips.edc \
 widgets/tree.edc \
-widgets/shadow.edc \
-widgets/windows.edc \
-wm/background.edc \
-wm/borders.edc
+widgets/windows.edc
 
 default.edj: Makefile $(THEME_DEP)
 	$(EDJE_CC) $(EDJE_FLAGS) \
