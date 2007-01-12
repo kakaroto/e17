@@ -7,7 +7,11 @@
 static int ewl_icon_theme_is_edje = 0;
 
 static Ecore_Hash *ewl_icon_theme_cache = NULL;
+static Ecore_Hash *ewl_icon_fallback_theme_cache = NULL;
 static void ewl_icon_theme_cb_free(void *data);
+static char *ewl_icon_theme_icon_path_get_helper(const char *icon, 
+					const char *size, const char *theme, 
+					const char *key, Ecore_Hash *cache);
 
 /**
  * @return Returns TRUE on success or FALSE on failure
@@ -23,6 +27,13 @@ ewl_icon_theme_init(void)
 		ewl_icon_theme_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 		ecore_hash_set_free_key(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
 		ecore_hash_set_free_value(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
+
+		ewl_icon_fallback_theme_cache = ecore_hash_new(
+						ecore_str_hash, ecore_str_compare);
+		ecore_hash_set_free_key(ewl_icon_fallback_theme_cache, 
+						ewl_icon_theme_cb_free);
+		ecore_hash_set_free_value(ewl_icon_fallback_theme_cache, 
+						ewl_icon_theme_cb_free);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -110,19 +121,36 @@ ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 		icon_size = size;
 
 	snprintf(key, sizeof(key), "%s@%s", icon, icon_size);
-	ret = ecore_hash_get(ewl_icon_theme_cache, key);
-	if (!ret)
-	{
-		ret = ecore_desktop_icon_find(icon, icon_size, icon_theme);
-		if (!ret) ret = EWL_THEME_KEY_NOMATCH;
+	ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, icon_theme, 
+						key, ewl_icon_theme_cache);
 
-		ecore_hash_set(ewl_icon_theme_cache, strdup(key), ret);
-	}
-	
+	if (ret == EWL_THEME_KEY_NOMATCH)
+		ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, "EWL",
+					key, ewl_icon_fallback_theme_cache);
+
 	if (ret == EWL_THEME_KEY_NOMATCH)
 		ret = NULL;
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+static char *
+ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size, 
+					const char *theme, const char *key,
+					Ecore_Hash *cache)
+{
+	char *ret;
+
+	ret = ecore_hash_get(cache, key);
+	if (!ret)
+	{
+		ret = ecore_desktop_icon_find(icon, size, theme);
+		if (!ret) ret = EWL_THEME_KEY_NOMATCH;
+
+		ecore_hash_set(cache, strdup(key), ret);
+	}
+
+	return ret;
 }
 
 static void
