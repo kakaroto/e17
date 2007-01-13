@@ -66,6 +66,11 @@ Etk_Widget *UI_FontAddButton;
 Etk_Widget *UI_AspectMinSpinner;
 Etk_Widget *UI_AspectMaxSpinner;
 Etk_Widget *UI_AspectComboBox;
+Etk_Widget *UI_StateMinWSpinner;
+Etk_Widget *UI_StateMinHSpinner;
+Etk_Widget *UI_StateMaxWSpinner;
+Etk_Widget *UI_StateMaxHSpinner;
+
 
 void     create_main_window      (void);
 void     UpdatePartFrame         (void);

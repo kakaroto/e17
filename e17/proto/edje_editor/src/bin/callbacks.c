@@ -380,7 +380,26 @@ on_AspectSpinner_value_changed(Etk_Range *range, double value, void *data)
 void
 on_AspectComboBox_changed(Etk_Combobox *combobox, void *data)
 {
+   Engrave_Aspect_Preference prefer;
    printf("Active Item Changed Signal on AspectComboBox EMITTED\n");
+
+   prefer = (Engrave_Aspect_Preference)etk_combobox_item_data_get(etk_combobox_active_item_get (combobox));
+   engrave_part_state_aspect_preference_set(Cur.eps,prefer);
+
+}
+
+void
+on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("Active Item Changed Signal on MinMaxSpinners EMITTED\n");
+
+   engrave_part_state_min_size_set(Cur.eps,
+      etk_range_value_get(UI_StateMinWSpinner),
+      etk_range_value_get(UI_StateMinHSpinner));
+
+   engrave_part_state_max_size_set(Cur.eps,
+      etk_range_value_get(UI_StateMaxWSpinner),
+      etk_range_value_get(UI_StateMaxHSpinner));
 }
 
 /* Image Frame Callbacks */

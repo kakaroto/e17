@@ -242,11 +242,11 @@ void
 UpdateGroupFrame(void)
 {
    //Stop signal propagation
-   etk_signal_disconnect("text_changed",ETK_OBJECT(UI_GroupNameEntry),on_GroupNameEntry_text_changed);
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_GroupMinWSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_GroupMinHSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_GroupMaxWSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_GroupMaxHSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_block("text_changed",ETK_OBJECT(UI_GroupNameEntry),on_GroupNameEntry_text_changed);
+   etk_signal_block("value_changed", ETK_OBJECT(UI_GroupMinWSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_GroupMinHSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_GroupMaxWSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_GroupMaxHSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
 
    //Update name
    etk_entry_text_set(ETK_ENTRY(UI_GroupNameEntry),Cur.eg->name);
@@ -258,11 +258,11 @@ UpdateGroupFrame(void)
    etk_range_value_set (ETK_RANGE(UI_GroupMaxHSpinner), Cur.eg->max.h);
 
    //ReEnable Signal Propagation
-   etk_signal_connect("text_changed",ETK_OBJECT(UI_GroupNameEntry),on_GroupNameEntry_text_changed,NULL);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMinWSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MINW_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMinHSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MINH_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMaxWSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MAXW_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_GroupMaxHSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed), (void *)MAXH_SPINNER);
+   etk_signal_unblock("text_changed",ETK_OBJECT(UI_GroupNameEntry),on_GroupNameEntry_text_changed);
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_GroupMinWSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_GroupMinHSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_GroupMaxWSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_GroupMaxHSpinner), ETK_CALLBACK(on_GroupSpinner_value_changed));
 
 }
 
@@ -273,13 +273,13 @@ UpdatePartFrame(void)
       //printf("Update Part Frame: %s\n",Cur.ep->name);
 
       //Stop signal propagation
-      etk_signal_disconnect("text_changed",ETK_OBJECT(UI_PartNameEntry),on_PartNameEntry_text_changed);
+      etk_signal_block("text_changed",ETK_OBJECT(UI_PartNameEntry),on_PartNameEntry_text_changed);
 
       //Update Part
       etk_entry_text_set(ETK_ENTRY(UI_PartNameEntry),Cur.ep->name);
 
       //ReEnable Signal Propagation
-      etk_signal_connect("text_changed",ETK_OBJECT(UI_PartNameEntry),on_PartNameEntry_text_changed,NULL);
+      etk_signal_unblock("text_changed",ETK_OBJECT(UI_PartNameEntry),on_PartNameEntry_text_changed);
 
    }
 }
@@ -293,15 +293,20 @@ UpdateDescriptionFrame(void)
       double index;
       double aspect_min;
       double aspect_max;
+      int minw,minh,maxw,maxh;
 
       //printf("Update Description Frame: %s\n",Cur.eps->name);
 
       //Stop signal propagation
-      etk_signal_disconnect("text_changed",ETK_OBJECT(UI_StateEntry),on_StateEntry_text_changed);
-      etk_signal_disconnect("value_changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed));
-      etk_signal_disconnect("value_changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed));
-      etk_signal_disconnect("value_changed", ETK_OBJECT(UI_AspectMaxSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed));
-      etk_signal_disconnect("active_item_changed", ETK_OBJECT(UI_AspectComboBox), ETK_CALLBACK(on_AspectComboBox_changed));
+      etk_signal_block("text_changed",ETK_OBJECT(UI_StateEntry),on_StateEntry_text_changed);
+      etk_signal_block("value_changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed));
+      etk_signal_block("value_changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed));
+      etk_signal_block("value_changed", ETK_OBJECT(UI_AspectMaxSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed));
+      etk_signal_block("active_item_changed", ETK_OBJECT(UI_AspectComboBox), ETK_CALLBACK(on_AspectComboBox_changed));
+      etk_signal_block("value_changed",ETK_OBJECT(UI_StateMinWSpinner),ETK_CALLBACK(on_StateMinMaxSpinner_value_changed));
+      etk_signal_block("value_changed",ETK_OBJECT(UI_StateMinHSpinner),ETK_CALLBACK(on_StateMinMaxSpinner_value_changed));
+      etk_signal_block("value_changed",ETK_OBJECT(UI_StateMaxWSpinner),ETK_CALLBACK(on_StateMinMaxSpinner_value_changed));
+      etk_signal_block("value_changed",ETK_OBJECT(UI_StateMaxHSpinner),ETK_CALLBACK(on_StateMinMaxSpinner_value_changed));
 
       //Set description name & index
       name = engrave_part_state_name_get(Cur.eps,&index);
@@ -318,12 +323,24 @@ UpdateDescriptionFrame(void)
          etk_combobox_nth_item_get (UI_AspectComboBox, 
             engrave_part_state_aspect_preference_get(Cur.eps)));
 
+      //Set min e max size
+      engrave_part_state_min_size_get(Cur.eps, &minw, &minh);
+      engrave_part_state_max_size_get(Cur.eps, &maxw, &maxh);
+      etk_range_value_set(ETK_RANGE(UI_StateMinWSpinner), minw);
+      etk_range_value_set(ETK_RANGE(UI_StateMinHSpinner), minh);
+      etk_range_value_set(ETK_RANGE(UI_StateMaxWSpinner), maxw);
+      etk_range_value_set(ETK_RANGE(UI_StateMaxHSpinner), maxh);
+
       //ReEnable Signal Propagation
-      etk_signal_connect("text_changed",ETK_OBJECT(UI_StateEntry),on_StateEntry_text_changed,NULL);
-      etk_signal_connect("value_changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
-      etk_signal_connect("value_changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
-      etk_signal_connect("value_changed", ETK_OBJECT(UI_AspectMaxSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
-      etk_signal_connect("active_item_changed", ETK_OBJECT(UI_AspectComboBox), ETK_CALLBACK(on_AspectComboBox_changed), NULL);
+      etk_signal_unblock("text_changed",ETK_OBJECT(UI_StateEntry),on_StateEntry_text_changed);
+      etk_signal_unblock("value_changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed));
+      etk_signal_unblock("value_changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed));
+      etk_signal_unblock("value_changed", ETK_OBJECT(UI_AspectMaxSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed));
+      etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_AspectComboBox), ETK_CALLBACK(on_AspectComboBox_changed));
+      etk_signal_unblock("value_changed",ETK_OBJECT(UI_StateMinWSpinner),ETK_CALLBACK(on_StateMinMaxSpinner_value_changed));
+      etk_signal_unblock("value_changed",ETK_OBJECT(UI_StateMinHSpinner),ETK_CALLBACK(on_StateMinMaxSpinner_value_changed));
+      etk_signal_unblock("value_changed",ETK_OBJECT(UI_StateMaxWSpinner),ETK_CALLBACK(on_StateMinMaxSpinner_value_changed));
+      etk_signal_unblock("value_changed",ETK_OBJECT(UI_StateMaxHSpinner),ETK_CALLBACK(on_StateMinMaxSpinner_value_changed));
    }
 }
 
@@ -358,11 +375,11 @@ UpdateImageFrame(void)
    int i;
    Etk_Combobox_Item *item = NULL;
    //Stop signal propagation
-   etk_signal_disconnect("value_changed",ETK_OBJECT(UI_BorderLeftSpinner),on_BorderSpinner_value_changed);
-   etk_signal_disconnect("value_changed",ETK_OBJECT(UI_BorderRightSpinner),on_BorderSpinner_value_changed);
-   etk_signal_disconnect("value_changed",ETK_OBJECT(UI_BorderTopSpinner),on_BorderSpinner_value_changed);
-   etk_signal_disconnect("value_changed",ETK_OBJECT(UI_BorderBottomSpinner),on_BorderSpinner_value_changed);
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_ImageAlphaSlider), on_ImageAlphaSlider_value_changed);
+   etk_signal_block("value_changed",ETK_OBJECT(UI_BorderLeftSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
+   etk_signal_block("value_changed",ETK_OBJECT(UI_BorderRightSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
+   etk_signal_block("value_changed",ETK_OBJECT(UI_BorderTopSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
+   etk_signal_block("value_changed",ETK_OBJECT(UI_BorderBottomSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_ImageAlphaSlider), ETK_CALLBACK(on_ImageAlphaSlider_value_changed));
 
    //Set the images combobox
    if (Cur.eps->image.normal)
@@ -391,11 +408,11 @@ UpdateImageFrame(void)
    etk_range_value_set (ETK_RANGE(UI_ImageAlphaSlider), Cur.eps->color.a);
 
    //ReEnable Signal Propagation
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_BorderLeftSpinner), on_BorderSpinner_value_changed, (void *)BORDER_LEFT);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_BorderRightSpinner), on_BorderSpinner_value_changed, (void *)BORDER_RIGHT);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_BorderTopSpinner), on_BorderSpinner_value_changed, (void *)BORDER_TOP);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_BorderBottomSpinner), on_BorderSpinner_value_changed, (void *)BORDER_BOTTOM);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_ImageAlphaSlider), on_ImageAlphaSlider_value_changed, NULL);
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_BorderLeftSpinner), on_BorderSpinner_value_changed);
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_BorderRightSpinner), on_BorderSpinner_value_changed);
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_BorderTopSpinner), on_BorderSpinner_value_changed);
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_BorderBottomSpinner), on_BorderSpinner_value_changed);
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_ImageAlphaSlider), on_ImageAlphaSlider_value_changed);
 
 }
 
@@ -412,9 +429,9 @@ UpdateTextFrame(void)
       printf("Update Text Frame: %s\n",Cur.eps->name);
 
       //Stop signal propagation
-      etk_signal_disconnect("text_changed",ETK_OBJECT(UI_TextEntry),on_TextEntry_text_changed);
-      etk_signal_disconnect("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed));
-      etk_signal_disconnect("value_changed", ETK_OBJECT(UI_TextAlphaSlider), ETK_CALLBACK(on_TextAlphaSlider_value_changed));
+      etk_signal_block("text_changed",ETK_OBJECT(UI_TextEntry),on_TextEntry_text_changed);
+      etk_signal_block("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed));
+      etk_signal_block("value_changed", ETK_OBJECT(UI_TextAlphaSlider), ETK_CALLBACK(on_TextAlphaSlider_value_changed));
 
       //Set Text Text in Cur.eps
       etk_entry_text_set(ETK_ENTRY(UI_TextEntry), 
@@ -467,9 +484,9 @@ UpdateTextFrame(void)
       evas_object_color_set(OutlineColorObject,selected_desc->color3_r,selected_desc->color3_g,selected_desc->color3_b,selected_desc->color3_a);
 */
       //Renable  signal propagation
-      etk_signal_connect("text_changed", ETK_OBJECT(UI_TextEntry), ETK_CALLBACK(on_TextEntry_text_changed), NULL);
-      etk_signal_connect("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed), NULL);
-      etk_signal_connect("value_changed", ETK_OBJECT(UI_TextAlphaSlider), ETK_CALLBACK(on_TextAlphaSlider_value_changed), NULL);
+      etk_signal_unblock("text_changed", ETK_OBJECT(UI_TextEntry), ETK_CALLBACK(on_TextEntry_text_changed));
+      etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed));
+      etk_signal_unblock("value_changed", ETK_OBJECT(UI_TextAlphaSlider), ETK_CALLBACK(on_TextAlphaSlider_value_changed));
 
    }
 }
@@ -482,14 +499,14 @@ UpdatePositionFrame(void)
    printf("Update Position: %s (offset: %d)\n",Cur.eps->name,Cur.eps->rel1.offset.x);
 
    //Stop signal propagation
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_Rel1XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_Rel1YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_Rel2XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_Rel2YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_Rel1XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_Rel1YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_Rel2XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
-   etk_signal_disconnect("value_changed", ETK_OBJECT(UI_Rel2YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_Rel1XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_Rel1YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_Rel2XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_Rel2YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_Rel1XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_Rel1YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_Rel2XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
+   etk_signal_block("value_changed", ETK_OBJECT(UI_Rel2YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
 
    //Set relative position spinners
    etk_range_value_set (ETK_RANGE(UI_Rel1XSpinner), Cur.eps->rel1.relative.x);
@@ -502,14 +519,14 @@ UpdatePositionFrame(void)
    etk_range_value_set (ETK_RANGE(UI_Rel2YOffsetSpinner), Cur.eps->rel2.offset.y);
 
    //Reenable signal propagation
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_Rel1XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed), (void *)REL1X_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_Rel1YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed), (void *)REL1Y_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_Rel2XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed), (void *)REL2X_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_Rel2YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed), (void *)REL2Y_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_Rel1XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed), (void *)REL1X_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_Rel1YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed), (void *)REL1Y_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_Rel2XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed), (void *)REL2X_SPINNER);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_Rel2YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed), (void *)REL2Y_SPINNER);
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel1XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel1YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel2XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel2YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel1XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel1YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel2XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
+   etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel2YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
 
 }
 
@@ -523,10 +540,10 @@ UpdateComboPositionFrame(void)
    Engrave_Part *part = NULL;
 
    //Stop signal propagation
-   etk_signal_disconnect("active_item_changed", ETK_OBJECT(UI_Rel1ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
-   etk_signal_disconnect("active_item_changed", ETK_OBJECT(UI_Rel1ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
-   etk_signal_disconnect("active_item_changed", ETK_OBJECT(UI_Rel2ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
-   etk_signal_disconnect("active_item_changed", ETK_OBJECT(UI_Rel2ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
+   etk_signal_block("active_item_changed", ETK_OBJECT(UI_Rel1ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
+   etk_signal_block("active_item_changed", ETK_OBJECT(UI_Rel1ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
+   etk_signal_block("active_item_changed", ETK_OBJECT(UI_Rel2ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
+   etk_signal_block("active_item_changed", ETK_OBJECT(UI_Rel2ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
 
 
 
@@ -616,10 +633,10 @@ UpdateComboPositionFrame(void)
    }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToYComboBox), etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToYComboBox),0));}
 
    //Reenable signal propagation
-   etk_signal_connect("active_item_changed", ETK_OBJECT(UI_Rel1ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1X_SPINNER);
-   etk_signal_connect("active_item_changed", ETK_OBJECT(UI_Rel1ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1Y_SPINNER);
-   etk_signal_connect("active_item_changed", ETK_OBJECT(UI_Rel2ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2X_SPINNER);
-   etk_signal_connect("active_item_changed", ETK_OBJECT(UI_Rel2ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2Y_SPINNER);
+   etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_Rel1ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
+   etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_Rel1ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
+   etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_Rel2ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
+   etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_Rel2ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
 
 }
 
@@ -1087,11 +1104,57 @@ create_description_frame(void)
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_AspectComboBox), "Both");
    etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_ASPECT_PREFERENCE_BOTH);
 
+   //hbox
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("min");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //UI_StateMinWSpinner
+   UI_StateMinWSpinner =  etk_spinner_new (0, 2000, 0, 1, 10);
+   etk_widget_size_request_set(UI_StateMinWSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox),UI_StateMinWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("x");
+   etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //UI_StateMinHSpinner
+   UI_StateMinHSpinner =  etk_spinner_new (0, 2000, 0, 1, 10);
+   etk_widget_size_request_set(UI_StateMinHSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox),UI_StateMinHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("max");
+   etk_object_properties_set (ETK_OBJECT(label), "xalign",1.0,NULL);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   //UI_StateMaxWSpinner
+   UI_StateMaxWSpinner =  etk_spinner_new (0, 2000, 0, 1, 10);
+   etk_widget_size_request_set(UI_StateMaxWSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox),UI_StateMaxWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("x");
+   etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //UI_StateMaxHspinner
+   UI_StateMaxHSpinner =  etk_spinner_new (0, 2000, 0, 1, 10);
+   etk_widget_size_request_set(UI_StateMaxHSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox),UI_StateMaxHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+
+
+
    etk_signal_connect("text_changed", ETK_OBJECT(UI_StateEntry), ETK_CALLBACK(on_StateEntry_text_changed), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_AspectMaxSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_connect("active_item_changed", ETK_OBJECT(UI_AspectComboBox), ETK_CALLBACK(on_AspectComboBox_changed), NULL);
+   etk_signal_connect("value_changed", ETK_OBJECT(UI_StateMinWSpinner), ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+   etk_signal_connect("value_changed", ETK_OBJECT(UI_StateMinHSpinner), ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+   etk_signal_connect("value_changed", ETK_OBJECT(UI_StateMaxWSpinner), ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+   etk_signal_connect("value_changed", ETK_OBJECT(UI_StateMaxHSpinner), ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
    return UI_DescriptionFrame;
 }
 
