@@ -3644,7 +3644,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 		evas_object_smart_member_add(t->textblock, w->smart_object);
 		if (w->fx_clip_box)
-			evas_object_stack_below(t->textblock, w->fx_clip_box);
+			evas_object_raise(t->textblock);
 
 		ewl_text_display(t);
 		evas_object_show(t->textblock);
