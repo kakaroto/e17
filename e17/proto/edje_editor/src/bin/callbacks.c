@@ -25,9 +25,6 @@ void on_canvas_geometry_changed(Etk_Object *canvas, const char *property_name, v
    ev_redraw();
 }
 
-
-
-
 /* All the buttons Callback */
 void
 on_AllButton_click(Etk_Button *button, void *data)
@@ -42,8 +39,8 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
       case TOOLBAR_OPEN:
          printf("Clicked signal on Toolbar Button 'Open' EMITTED\n");
-         ShowAlert("Not yet implemented");
-         //ShowFilechooser(FILECHOOSER_OPEN);
+         //ShowAlert("Not yet implemented");
+         ShowFilechooser(FILECHOOSER_OPEN);
          break;
       case TOOLBAR_SAVE:
          printf("Clicked signal on Toolbar Button 'Save' EMITTED\n");
@@ -62,8 +59,8 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
       case TOOLBAR_REMOVE:
          printf("Clicked signal on Toolbar Button 'Remove' EMITTED\n");
-         ShowAlert("Not yet implemented");
-         //etk_menu_popup(ETK_MENU(UI_RemoveMenu));
+         //ShowAlert("Not yet implemented");
+         etk_menu_popup(ETK_MENU(UI_RemoveMenu));
          //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
          break;
       case TOOLBAR_MOVE_UP:
@@ -97,7 +94,7 @@ on_AllButton_click(Etk_Button *button, void *data)
          //PlayEDC();
          break;
       case TOOLBAR_DEBUG:
-         DebugInfo(FALSE);
+         DebugInfo(TRUE);
          break;
       case TOOLBAR_IMAGE_FILE_ADD:
          ShowAlert("Not yet implemented =)");
@@ -111,8 +108,9 @@ on_AllButton_click(Etk_Button *button, void *data)
          //i   f (EDCFile->len > 0) ShowFilechooser(FILECHOOSER_FONT);
          //else ShowAlert("You have to save the file once for insert font.");
          break;
-   }  
+   }
 }
+
 /* Tree callbacks */
 void
 on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
@@ -126,10 +124,11 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
    etk_tree2_row_fields_get(row,
       etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2),&row_type,
       NULL);
-      
+
    switch (row_type)
    {
       case ROW_GROUP:
+
          Cur.eg = etk_tree2_row_data_get (row);
          Cur.ep = NULL;
          Cur.eps = NULL;
@@ -140,7 +139,6 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
          etk_widget_hide(UI_TextFrame);
          etk_widget_hide(UI_PartFrame);
          etk_widget_show(UI_GroupFrame);
-         UpdateGroupFrame();
          break;
       case ROW_PART:
          Cur.ep = etk_tree2_row_data_get (row);
@@ -203,19 +201,21 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
 
    //The group as changed
    if (Cur.eg != old_group){
+
       UpdateGroupFrame();
       PopulateRelComboBoxes();
       //Update Fakewin
+
       ev_resize_fake(400,400);
       edje_object_part_text_set (EV_fakewin, "title", Cur.eg->name);
-      //if (old_group)ev_hide_group(old_group);
-
+      printf("GROUP SET %s\n",Cur.eg->name);
       engrave_canvas_current_group_set (ecanvas, Cur.eg);
 
    }
 
    ev_redraw();
 }
+
 /* Group frame callbacks */
 void
 on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
@@ -226,19 +226,19 @@ on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
    if (Cur.eg && ecore_hash_get(hash,Cur.eg))
    {
       engrave_group_name_set(Cur.eg,etk_entry_text_get(ETK_ENTRY(object)));
-      
+
       //Update PartsTree
       if ((col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0)))
          etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.eg),TRUE,
             col1,EdjeFile,"NONE.PNG",engrave_group_name_get(Cur.eg),
             NULL);
 
-      printf("SUKKKKKKKKKKKKKKKKKAAAAAAAAA\n");
       //update FakeWin title
       edje_object_part_text_set (EV_fakewin,
          "title", engrave_group_name_get(Cur.eg));
    }
 }
+
 void
 on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
@@ -271,6 +271,7 @@ on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
       }
    }
 }
+
 /* Parts & Descriptions Callbacks*/
 void
 on_PartNameEntry_text_changed(Etk_Object *object, void *data)
@@ -311,6 +312,7 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
       }
    }
 }
+
 void 
 on_StateEntry_text_changed(Etk_Object *object, void *data)
 {
@@ -336,7 +338,7 @@ on_StateEntry_text_changed(Etk_Object *object, void *data)
       snprintf(buf,4095,"%s %.2f",Cur.eps->name,Cur.eps->value);
       etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
          col1,EdjeFile,"DESC.PNG",buf,NULL);
-   }   
+   }
 }
 
 void 
@@ -344,7 +346,7 @@ on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    char buf[4096];
    Etk_Tree2_Col *col1=NULL;
-  
+
    printf("Value Changed Signal on StateIndexSpinner EMITTED\n");
    if (Cur.eps)
    {
@@ -364,7 +366,6 @@ on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
       etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
          col1,EdjeFile,"DESC.PNG",buf,NULL);
    }
-  
 }
 /* Image Frame Callbacks */
 void
@@ -403,13 +404,12 @@ on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data)
          (int)etk_range_value_get(ETK_RANGE(UI_BorderRightSpinner)),
          (int)etk_range_value_get(ETK_RANGE(UI_BorderTopSpinner)),
          (int)etk_range_value_get(ETK_RANGE(UI_BorderBottomSpinner)));
-             
+
       printf("TODO: s: %s  [%d] %d\n",Cur.eps->name,Cur.eps->image.border.l,(int)etk_range_value_get(ETK_RANGE(UI_BorderLeftSpinner)));
 
       ev_redraw();
    }
 }
-
 
 /* Position Frame Callbacks */
 void
@@ -485,6 +485,7 @@ on_RelSpinner_value_changed(Etk_Range *range, double value, void *data)
       //ev_draw_focus();
    }
 }
+
 void
 on_RelOffsetSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
@@ -520,8 +521,8 @@ void on_FontComboBox_changed(Etk_Combobox *combobox, void *data){
    if ((font = etk_combobox_item_data_get(etk_combobox_active_item_get (combobox)))){
       //Set an existing font
       if (selected_desc){
-	 g_string_printf(selected_desc->text_font,"%s",font);
-	 ev_draw_part(selected_part);
+   g_string_printf(selected_desc->text_font,"%s",font);
+   ev_draw_part(selected_part);
 
       }
    }
@@ -531,11 +532,12 @@ void on_FontComboBox_changed(Etk_Combobox *combobox, void *data){
       ShowFilechooser(FILECHOOSER_FONT);
    } */
 }
+
 void 
 on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    int effect;
-   
+
    printf("Changed Signal on EffectComboBox EMITTED\n");
    if (Cur.ep)
    {
@@ -546,13 +548,14 @@ on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
       }
    }
 }
+
 void 
 on_FontSizeSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on FontSizeSpinner EMITTED (value: %d)\n",(int)etk_range_value_get(range));
-   
+
    engrave_part_state_text_size_set(Cur.eps,(int)etk_range_value_get(range));
-   
+
    ev_redraw();
 }
 
@@ -562,7 +565,7 @@ on_TextEntry_text_changed(Etk_Object *object, void *data)
    printf("Text Changed Signal on TextEntry EMITTED (value %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
 
    engrave_part_state_text_text_set(Cur.eps,etk_entry_text_get(ETK_ENTRY(object)));
-   
+
 
    ev_redraw();
 }
@@ -578,10 +581,11 @@ on_TextAlphaSlider_value_changed(Etk_Object *object, double value, void *data)
          Cur.eps->color.g,
          Cur.eps->color.b,
          (int)value);
-      
+
       ev_redraw();
    } 
 }
+
 /* Colors Callbacks */
 void on_ColorCanvas_realize(Etk_Widget *canvas, void *data){
    //Must use the realize callback on the EtkCanvas object.
@@ -610,6 +614,7 @@ void on_ColorCanvas_realize(Etk_Widget *canvas, void *data){
       break;
    }
 }
+
 void 
 on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -618,6 +623,7 @@ on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
    //if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
    //current_color_object = (int)data;
 }
+
 void
 on_ColorAlphaSlider_value_changed(Etk_Object *object, double value, void *data)
 {
@@ -633,6 +639,7 @@ on_ColorAlphaSlider_value_changed(Etk_Object *object, double value, void *data)
    ev_redraw();
 
 }
+
 void on_ColorDialog_change(Etk_Object *object, void *data){
    printf("ColorChangeSignal on ColorDialog EMITTED\n");
    /* Etk_Color color;
@@ -668,15 +675,16 @@ void on_ColorDialog_change(Etk_Object *object, void *data){
    ev_draw_part(selected_desc->part); */
 }
 
-
-
-void on_AddMenu_item_activated(Etk_Object *object, void *data){
+void 
+on_AddMenu_item_activated(Etk_Object *object, void *data)
+{
    Engrave_Group *group = NULL;
    Engrave_Part *part;
    Engrave_Part_State *new_state;
 
    printf("Item Activated Signal on AddMenu EMITTED\n");
-   if (!Cur.eg && ((int)data != NEW_GROUP))
+
+   if (!Cur.eg && ((int)data != NEW_DESC) && ((int)data != NEW_GROUP))
    {
       group = engrave_group_new();
       engrave_group_name_set (group, "New group");
@@ -700,7 +708,7 @@ void on_AddMenu_item_activated(Etk_Object *object, void *data){
 
          Cur.ep = part;
          Cur.eps = new_state;
- 
+
          etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
          etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
          etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep)); 
@@ -740,7 +748,7 @@ void on_AddMenu_item_activated(Etk_Object *object, void *data){
 
          Cur.ep = part;
          Cur.eps = new_state;
-         
+
          etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
          etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
          etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep));
@@ -765,9 +773,8 @@ void on_AddMenu_item_activated(Etk_Object *object, void *data){
          break;
       case NEW_GROUP:
          group = engrave_group_new();
-      	engrave_group_name_set (group, "New group");
-      	engrave_file_group_add (Cur.ef, group);
-
+         engrave_group_name_set (group, "New group");
+         engrave_file_group_add (Cur.ef, group);
 
          AddGroupToTree(group);
 
@@ -778,69 +785,101 @@ void on_AddMenu_item_activated(Etk_Object *object, void *data){
          break;
    }
 }
-void on_RemoveMenu_item_activated(Etk_Object *object, void *data){
-   //Etk_Tree2_Row* row;
+
+void
+on_RemoveMenu_item_activated(Etk_Object *object, void *data)
+{
+   Etk_Tree2_Row* row;
    printf("Item Activated Signal on RemoveMenu EMITTED\n");
- /*   switch ((int)data){
+   switch ((int)data){
       case REMOVE_DESCRIPTION:
-         if (selected_desc){
-            if (strcmp(selected_desc->state->str,"default") || selected_desc->state_index != 0){
-               printf("REMOVE DESCRIPTION: %s\n",selected_desc->state->str);
-               row = etk_tree2_row_prev_get(selected_desc->tree_row);
-               EDC_Description_clear(selected_desc,FALSE);
-               selected_desc = NULL;
+         if (Cur.eps){
+            if (strcmp(engrave_part_state_name_get(Cur.eps,NULL),"default") || Cur.eps->value != 0){
+               printf("REMOVE DESCRIPTION: %s\n",Cur.eps->name);
+               row = etk_tree2_row_prev_get(ecore_hash_get(hash,Cur.eps));
+
+               etk_tree2_row_delete(ecore_hash_get(hash,Cur.eps));         
+               ecore_hash_remove (hash, Cur.eps);
+               PROTO_engrave_part_state_remove(Cur.ep, Cur.eps);
+               engrave_part_state_free(Cur.eps);
+
+               Cur.eps = NULL;
                etk_tree2_row_select (row);
+               ev_redraw();
+
             }else{
                ShowAlert("You can't remove default 0.0");
             }
          }else{
-            ShowAlert("No description selected");
+            ShowAlert("No part state selected");
          }
       break;
       case REMOVE_PART:
-         if (selected_part){
-            printf("REMOVE PART: %s\n",selected_part->name->str);
+         if (Cur.ep){
+            printf("REMOVE PART: %s\n",Cur.ep->name);
             row = NULL;
-            row = etk_tree2_row_next_get(selected_part->tree_row);
-            EDC_Part_clear(selected_part, FALSE);
-            selected_part = NULL;
-            selected_desc = NULL;
+            row = etk_tree2_row_next_get(ecore_hash_get(hash,Cur.ep));
+
+            etk_tree2_row_delete(ecore_hash_get(hash,Cur.ep));
+            ecore_hash_remove (hash, Cur.ep);
+            PROTO_engrave_group_part_remove(Cur.eg,Cur.ep);
+            engrave_part_free(Cur.ep);
+
+            Cur.ep = NULL;
+            Cur.eps = NULL;
+
             if (row) etk_tree2_row_select(row);
             else etk_tree2_row_select(etk_tree2_row_last_child_get (etk_tree2_last_row_get (ETK_TREE2(UI_PartsTree))));
-            //ev_draw_focus();
+
+            ev_redraw();
          }else{
             ShowAlert("No part selected");
          }
       break;
       case REMOVE_GROUP:
-         if (selected_group) {
-            if (g_list_length(EDC_Group_list) > 1){
-               EDC_Group_clear(selected_group,FALSE);
-               selected_group = EDC_Group_list->data;
-               etk_tree2_row_select(etk_tree2_first_row_get (ETK_TREE2(UI_PartsTree)));
-            }else{
-               ShowAlert("You can't remove the last group");
-            }
+         if (Cur.eg)
+         {
+               row = NULL;
+               row = etk_tree2_row_prev_get(ecore_hash_get(hash,Cur.eg));
+
+               etk_tree2_row_delete(ecore_hash_get(hash,Cur.eg));
+               ecore_hash_remove (hash, Cur.eg);
+               PROTO_engrave_file_group_remove(Cur.ef,Cur.eg);
+               engrave_group_free(Cur.eg);
+
+               Cur.eg = NULL;
+               Cur.ep = NULL;
+               Cur.eps = NULL;
+
+               ev_redraw();
+               etk_tree2_row_select(row);
+         }else{
+            ShowAlert("No group selected");
          }
       break;
-   } */
+   }
 }
 
 /* Dialogs Callbacks */
-void on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data){
-  // GString *edc_file = g_string_new("");
+void
+on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
+{
+   Etk_String *cmd = etk_string_new("");
 
    printf("Response Signal on Filechooser EMITTED\n");
 
- /*   if (response_id == ETK_RESPONSE_OK){
+   if (response_id == ETK_RESPONSE_OK){
 
       switch(FileChooserOperation){
          case FILECHOOSER_OPEN:
-            g_string_printf(edc_file,"%s/%s",etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)), etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
-            ClearAll();
-            OpenEDC(edc_file->str);
+            etk_string_append_printf(cmd,"edje_editor %s/%s &",
+               etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+               etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+            system(cmd->string);
+
+
          break;
-         case FILECHOOSER_NEW:
+       /*   case FILECHOOSER_NEW:
             //printf("new: %s\n",etk_entry_text_get(UI_FilechooserFileNameEntry));
             ClearAll();
             CreateBlankEDC();
@@ -886,26 +925,33 @@ void on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data){
          break;
          case FILECHOOSER_SAVE_AS:
             SaveEDC((char*)etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
-         break;
+         break; */
       }
       etk_widget_hide(ETK_WIDGET(dialog));
    }
    else{
       etk_widget_hide(ETK_WIDGET(dialog));
    }
-   g_string_free(edc_file,TRUE); */
+   etk_object_destroy(ETK_OBJECT(cmd));
 }
-void on_FileChooser_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data){
-  /*  GString *str=g_string_new("");
-   if (etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)))
-     g_string_append_printf(str,"%s/",etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
-   if (etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)))
-     str = g_string_append(str,etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
 
-   //printf("CHANGE: %s\n",str->str);
-   etk_entry_text_set(ETK_ENTRY(UI_FilechooserFileNameEntry),str->str);
-   g_string_free(str,TRUE); */
+void 
+on_FileChooser_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   Etk_String *str=etk_string_new("");
+
+
+   if (etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)))
+     etk_string_append_printf(str,"%s/",etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+
+   if (etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)))
+     str = etk_string_append_printf(str,etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+
+
+   etk_entry_text_set(ETK_ENTRY(UI_FilechooserFileNameEntry),str->string);
+   etk_object_destroy(ETK_OBJECT(str));
 }
+
 void on_PlayDialog_response(Etk_Dialog *dialog, int response_id, void *data){
 /*    GString *command = g_string_new("");
    if (response_id == ETK_RESPONSE_OK){
@@ -922,6 +968,7 @@ void on_PlayDialog_response(Etk_Dialog *dialog, int response_id, void *data){
    }
    g_string_free(command,TRUE); */
 }
+
 void on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data){
    etk_widget_hide(ETK_WIDGET(dialog));
 }

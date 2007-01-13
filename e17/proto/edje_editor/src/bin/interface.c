@@ -88,7 +88,7 @@ AddStateToTree(Engrave_Part_State* state)
 
    etk_tree2_row_data_set (row, state);
    ecore_hash_set(hash, state, row);
-   
+
 
    etk_object_destroy(ETK_OBJECT(str));
 
@@ -126,7 +126,7 @@ PopulateFontsComboBox(void)
    Evas_List *l;
    Engrave_Font *ef;
    Etk_Combobox_Item *ComboItem;
-   
+
    //Stop signal propagation
    etk_signal_disconnect("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed));
 
@@ -145,7 +145,7 @@ PopulateFontsComboBox(void)
 
    //Renable  signal propagation
    etk_signal_connect("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed), NULL);
- 
+
 }
 void
 PopulateImagesComboBox(void)
@@ -386,29 +386,29 @@ UpdateTextFrame(void)
       etk_entry_text_set(ETK_ENTRY(UI_TextEntry), 
          engrave_part_state_text_text_get(Cur.eps));
 
-         
+
       /*//Set the font combobox
       if (selected_desc->text_font->len > 0){
-	 i=0;
-	 while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_FontComboBox),i))){
-	    //Loop for all the item in the Combobox
-	    if ((font = etk_combobox_item_data_get(item))){
-	       //Get the data for the item (should be an char* with the name of the font file)
-	       if (strcmp(font ,selected_desc->text_font->str) == 0)
-		 etk_combobox_active_item_set (ETK_COMBOBOX(UI_FontComboBox),item);	//If we found the item set active
-	    }
-	    i++;
-	 }
+      i=0;
+      while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_FontComboBox),i))){
+       //Loop for all the item in the Combobox
+       if ((font = etk_combobox_item_data_get(item))){
+          //Get the data for the item (should be an char* with the name of the font file)
+          if (strcmp(font ,selected_desc->text_font->str) == 0)
+       etk_combobox_active_item_set (ETK_COMBOBOX(UI_FontComboBox),item);	//If we found the item set active
+       }
+       i++;
+    }
       }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_FontComboBox), etk_combobox_nth_item_get(ETK_COMBOBOX(UI_FontComboBox),0));}
 */
       //Set the font size spinner
       etk_range_value_set (ETK_RANGE(UI_FontSizeSpinner), 
          (float)engrave_part_state_text_size_get(Cur.eps));
-      
+
       //Set Text alpha
       engrave_part_state_color_get(Cur.eps,NULL,NULL,NULL,&alpha);
       etk_range_value_set (ETK_RANGE(UI_TextAlphaSlider),(float)alpha); 
-         
+
 
       //Set Effect ComboBox
       switch (Cur.ep->effect)
@@ -425,7 +425,7 @@ UpdateTextFrame(void)
       etk_combobox_active_item_set (ETK_COMBOBOX(UI_EffectComboBox),
          etk_combobox_nth_item_get (ETK_COMBOBOX(UI_EffectComboBox), eff_num));
 
-/*      
+/*
 
       //Set Text color Rects
       evas_object_color_set(TextColorObject,selected_desc->color_r,selected_desc->color_g,selected_desc->color_b,selected_desc->color_a);
@@ -437,7 +437,7 @@ UpdateTextFrame(void)
       etk_signal_connect("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed), NULL);
       etk_signal_connect("value_changed", ETK_OBJECT(UI_TextAlphaSlider), ETK_CALLBACK(on_TextAlphaSlider_value_changed), NULL);
 
-   } 
+   }
 }
 void
 UpdatePositionFrame(void)
@@ -495,12 +495,12 @@ UpdateComboPositionFrame(void)
 
 
 
-	// Set RelTo combos
+   // Set RelTo combos
    //If rel1_to is know set rel1_to_x and rel1_to_y
-	//if  (desc->rel1_to->len > 0){
-	//	desc->rel1_to_x = desc->rel1_to;
-	//	desc->rel1_to_y = desc->rel1_to;
-	//}
+   //if  (desc->rel1_to->len > 0){
+   //desc->rel1_to_x = desc->rel1_to;
+   //desc->rel1_to_y = desc->rel1_to;
+   //}
    printf("SETTING COMBOS %s\n", Cur.eps->rel1.to_x);
    //If rel1_to_x is know set the combobox
    if (Cur.eps->rel1.to_x)
@@ -538,11 +538,11 @@ UpdateComboPositionFrame(void)
       }
    }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToYComboBox), etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToYComboBox),0));}
 
- 	//If rel2_to is know set rel2_to_x and rel2_to_y
-	//if  (desc->rel2_to->len > 0){
-	//	desc->rel2_to_x = desc->rel2_to;
-	//	desc->rel2_to_y = desc->rel2_to;
-	//}
+   //If rel2_to is know set rel2_to_x and rel2_to_y
+   //if  (desc->rel2_to->len > 0){
+   // desc->rel2_to_x = desc->rel2_to;
+   // desc->rel2_to_y = desc->rel2_to;
+   //}
 
    //If rel2_to_x is know set the combobox
    if (Cur.eps->rel2.to_x)
@@ -682,11 +682,11 @@ Etk_Widget* create_filechooser_dialog(void){
    UI_FilechooserFileNameEntry = etk_entry_new();
 
    etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog),UI_FilechooserFileNameEntry,TRUE,TRUE,0,FALSE);
-	/* 	Etk_Bool  	expand,
-		Etk_Bool  	fill,
-		int  	padding,
-		Etk_Bool  	pack_at_end
-	 */
+   /*    Etk_Bool  expand,
+      Etk_Bool  fill,
+      int      padding,
+      Etk_Bool pack_at_end
+    */
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),ETK_STOCK_DOCUMENT_OPEN ,ETK_RESPONSE_OK );
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),ETK_STOCK_DIALOG_CANCEL ,ETK_RESPONSE_CANCEL );
 
@@ -1197,7 +1197,7 @@ Etk_Widget* create_text_frame(void){
       etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Outline Soft Shadow");
    etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW);
    etk_table_attach_default (ETK_TABLE(table),UI_EffectComboBox, 1, 4, 2,2);
- 
+
    label = etk_label_new("Alpha");
    etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 3,3);
 
@@ -1232,33 +1232,33 @@ Etk_Widget* create_position_frame(void){
    //PositionFrame
    UI_PositionFrame = etk_frame_new("Position");
 
-/* 		//Position Notebook
-		notebook = etk_notebook_new ();
-		etk_container_add(ETK_CONTAINER(UI_PositionFrame), notebook);
+/*    //Position Notebook
+   notebook = etk_notebook_new ();
+   etk_container_add(ETK_CONTAINER(UI_PositionFrame), notebook);
  */
-/* 			//Simple TAB
-			vbox = etk_vbox_new(ETK_FALSE, 0);
-			etk_notebook_page_append (ETK_NOTEBOOK(notebook), "Simple", vbox);
+/*          //Simple TAB
+         vbox = etk_vbox_new(ETK_FALSE, 0);
+         etk_notebook_page_append (ETK_NOTEBOOK(notebook), "Simple", vbox);
 
-				//hbox
-				hbox = etk_hbox_new(ETK_FALSE, 0);
-				etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+            //hbox
+            hbox = etk_hbox_new(ETK_FALSE, 0);
+            etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-					label = etk_label_new("Container");
-					etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-					etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+               label = etk_label_new("Container");
+               etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
+               etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-					//SimpleParentCombobox
-					SimpleParentComboBox = etk_combobox_new();
-					etk_combobox_column_add(ETK_COMBOBOX(SimpleParentComboBox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
-					etk_combobox_build(ETK_COMBOBOX(SimpleParentComboBox));
-					etk_box_append(ETK_BOX(hbox), SimpleParentComboBox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+               //SimpleParentCombobox
+               SimpleParentComboBox = etk_combobox_new();
+               etk_combobox_column_add(ETK_COMBOBOX(SimpleParentComboBox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+               etk_combobox_build(ETK_COMBOBOX(SimpleParentComboBox));
+               etk_box_append(ETK_BOX(hbox), SimpleParentComboBox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
  */
    //ADVANCED TAB
    //vbox
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(UI_PositionFrame), vbox);
-   //			etk_notebook_page_append (ETK_NOTEBOOK(notebook), "Advanced", vbox);
+   // etk_notebook_page_append (ETK_NOTEBOOK(notebook), "Advanced", vbox);
 
    label = etk_label_new("<color=#FF0000><b>First_Point</b></>");
    etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
@@ -1546,11 +1546,11 @@ void create_main_window (void){
 
    etk_widget_show_all(ETK_WIDGET(UI_MainWin));
 
-	etk_widget_hide(UI_DescriptionFrame);
-	etk_widget_hide(UI_PositionFrame);
-	etk_widget_hide(UI_PartFrame);
-	etk_widget_hide(UI_RectFrame);
-	etk_widget_hide(UI_ImageFrame);
-	etk_widget_hide(UI_TextFrame);
-	etk_widget_hide(UI_GroupFrame);
+   etk_widget_hide(UI_DescriptionFrame);
+   etk_widget_hide(UI_PositionFrame);
+   etk_widget_hide(UI_PartFrame);
+   etk_widget_hide(UI_RectFrame);
+   etk_widget_hide(UI_ImageFrame);
+   etk_widget_hide(UI_TextFrame);
+   etk_widget_hide(UI_GroupFrame);
 }

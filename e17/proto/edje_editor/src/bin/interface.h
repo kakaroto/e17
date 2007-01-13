@@ -64,28 +64,28 @@ Etk_Widget *UI_GroupMaxHSpinner;
 Etk_Widget *UI_ImageAddButton;
 Etk_Widget *UI_FontAddButton;
 
-void 		create_main_window		(void);
-void		UpdatePartFrame			(void);
-void		UpdateRectFrame			(void);
-void		UpdateDescriptionFrame	(void);
-void		UpdatePositionFrame		(void);
-void		UpdateComboPositionFrame(void);
-void		UpdateImageFrame		   (void);
-void		UpdateTextFrame			(void);
-void 		UpdateWindowTitle			(void);
+void     create_main_window      (void);
+void     UpdatePartFrame         (void);
+void     UpdateRectFrame         (void);
+void     UpdateDescriptionFrame  (void);
+void     UpdatePositionFrame     (void);
+void     UpdateComboPositionFrame(void);
+void     UpdateImageFrame        (void);
+void     UpdateTextFrame         (void);
+void     UpdateWindowTitle       (void);
 
 
 
 
-void 		ShowFilechooser			(int FileChooserType);
-void 		ShowAlert				   (char* text);
+void     ShowFilechooser         (int FileChooserType);
+void     ShowAlert               (char* text);
 
 
 void     PopulateTree            (void);
 void     AddGroupToTree          (Engrave_Group* group);
-void 		AddPartToTree				(Engrave_Part* part);
-void 		AddStateToTree			   (Engrave_Part_State* state);
-void 		PopulateRelComboBoxes	(void);
-void		PopulateImagesComboBox	(void);
-void 		PopulateFontsComboBox	(void);
+void     AddPartToTree           (Engrave_Part* part);
+void     AddStateToTree          (Engrave_Part_State* state);
+void     PopulateRelComboBoxes	(void);
+void     PopulateImagesComboBox	(void);
+void     PopulateFontsComboBox	(void);
 void     UpdateGroupFrame        (void);

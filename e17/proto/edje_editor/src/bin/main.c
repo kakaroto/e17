@@ -6,72 +6,121 @@
 #include <Etk.h>
 #include <Engrave.h>
 
-#include "parse.h"
 #include "evas.h"
 #include "interface.h"
 #include "main.h"
 
-
-/* EAPI */void 
-RenamePart(Engrave_Part* ep, const char* name) //engrave_part_name_set
+/**
+ * engrave_part_state_remove - remove the state from the part.
+ * @param ep: The Engrave_Part to remove the state to.
+ * @param eps: The Engrave_Part_State to remove.
+ *
+ * @return Returns no value.
+ */
+/*EAPI*/ void
+PROTO_engrave_part_state_remove(Engrave_Part *ep, Engrave_Part_State *eps)
 {
-/*    Engrave_Group *eg = engrave_part_parent_get(ep);
-   Evas_List *l,*ll;
-   
-   printf("Rename Part: %s -> %s\n",ep->name, name);
+   if (!eps || !ep) return;
 
-   if (eg)
-   {
-      //Update all the named links to the part (rel1_x_to, ecc)
-      for (l = eg->parts; l; l = l->next)
-      {
-         Engrave_Part *all_ep = l->data;
-         for (ll = all_ep->states; ll; ll = ll->next)
-         {
-            Engrave_Part_State *eps = ll->data;
-      
-            if (engrave_part_state_rel1_to_x_get(eps))
-               if (0 == strcmp(eps->rel1.to_x,ep->name))  
-                  engrave_part_state_rel1_to_x_set(eps,name);
-            if (engrave_part_state_rel1_to_y_get(eps))
-               if (0 == strcmp(eps->rel1.to_y,ep->name))  
-                  engrave_part_state_rel1_to_y_set(eps,name);
-            if (engrave_part_state_rel2_to_x_get(eps))
-               if (0 == strcmp(eps->rel2.to_x,ep->name))  
-                  engrave_part_state_rel2_to_x_set(eps,name);
-            if (engrave_part_state_rel2_to_y_get(eps))
-               if (0 == strcmp(eps->rel2.to_y,ep->name))  
-                  engrave_part_state_rel2_to_y_set(eps,name);
-         }
-      }
-   }
-   //Change the name of the part
-   engrave_part_name_set(ep,name);
-   //IF_FREE(ep->name);
-   //ep->name = (name ? strdup(name) : NULL); */
+   //If eps its the current one then set current to NULL
+   if (eps == engrave_part_current_state_get(ep))
+      ep->current_state = NULL;
+
+   engrave_part_state_parent_set(eps, NULL);
+
+   ep->states = evas_list_remove(ep->states, eps);
 }
 
-void FileCopy(char* source, char*dest){
-/*    int c;
-   GString	*str=g_string_new("");
-   FILE *IPFile,*OPFile;
+/**
+ * engrave_group_part_remove - remove the given part from the group
+ * @param eg: The Engrave_Group to remove the part too.
+ * @param ep: The Engrave_Part to remove.
+ *
+ * @return Returns no value.
+ */
+/*EAPI*/ void
+PROTO_engrave_group_part_remove(Engrave_Group *eg, Engrave_Part *ep)
+{
+  Engrave_Group * group;
+  Evas_List * list;
 
-   //printf("COPY FROM: %s TO: %s/%s\n",source,dest,g_path_get_basename (source));
-   g_string_printf(str,"%s/%s",dest,g_path_get_basename (source));
+  if (!eg || !ep) return;
 
-   // Open the file - no error checking done TODO error checking
-   IPFile = fopen(source,"r");
-   OPFile = fopen(str->str,"w");
+  group = (Engrave_Group *) engrave_part_parent_get(ep);
 
-   // Read one character at a time, checking for the End of File.
-   while ((c = fgetc(IPFile)) != EOF){
-      fputc(c, OPFile);
-   }
+  if (ep->name)
+  {
+    // for all the programs in the group
+    for (list = group->programs; list; list = list->next)
+    {
+      Engrave_Program * ep2;
+      Evas_List * list2;
+      ep2 = (Engrave_Program *) list->data;
 
-   //close files
-   fclose(IPFile);
-   fclose(OPFile);
-   g_string_free(str,TRUE); */
+      // if source matches, update
+      if (ep2->source && !strcmp(ep2->source, ep->name))
+        IF_FREE(ep2->source);
+
+      // if any of the targets match, update too
+      for (list2 = ep2->targets; list2; list2 = list2->next)
+      {
+        char * n;
+        n = (char *) list2->data;
+        if (n && !strcmp(n, ep->name))
+        {
+          ep2->targets = evas_list_remove(ep2->targets, n);
+          IF_FREE(n);
+        }
+      }
+    }
+
+    // for all other parts in the group
+    for (list = group->parts; list; list = list->next)
+    {
+      Engrave_Part * ep2;
+      Evas_List * list2;
+
+      ep2 = (Engrave_Part *) list->data;
+      // for each state
+      for (list2 = ep2->states; list2; list2 = list2->next)
+      {
+        Engrave_Part_State * eps2;
+        eps2 = (Engrave_Part_State *) list2->data;
+
+        if (eps2->rel1.to_x != NULL && !strcmp(eps2->rel1.to_x, ep->name))
+          IF_FREE(eps2->rel1.to_x);
+
+        if (eps2->rel1.to_y != NULL && !strcmp(eps2->rel1.to_y, ep->name))
+          IF_FREE(eps2->rel1.to_y);
+
+        if (eps2->rel2.to_x != NULL && !strcmp(eps2->rel2.to_x, ep->name))
+          IF_FREE(eps2->rel2.to_x);
+
+        if (eps2->rel2.to_y != NULL && !strcmp(eps2->rel2.to_y, ep->name))
+          IF_FREE(eps2->rel2.to_y);
+      }
+    }
+  }
+
+  eg->parts = evas_list_remove(eg->parts,ep);
+  engrave_part_parent_set(ep, NULL);
+}
+/**
+ * engrave_file_group_remove - remove the group from the given file
+ * @param ef: The Engrave_File to remove the group too.
+ * @param eg: The Engrave_Group to remove.
+ * 
+ * @return Returns no value.
+ */
+/*EAPI*/ void
+PROTO_engrave_file_group_remove(Engrave_File *ef, Engrave_Group *eg)
+{
+   if (!ef || !eg) return;
+
+  // if (ecanvas.current_group == eg) TODO: quando le altre due sono state "commesse"
+  //    ecanvas.current_group = NULL;
+   ef->groups = evas_list_remove(ef->groups, eg);
+   engrave_group_parent_set(eg, NULL);
 }
 void
 DebugInfo(int full)
@@ -83,6 +132,9 @@ DebugInfo(int full)
 
    printf("\n\n ********************* D E B U G ***************************\n");
    printf(" ** edje_editor.edj: %s\n",EdjeFile);
+  /* printf("Current engrave file: %s\n",Cur.ef->);
+   printf("Current EDCFileDir: %s\n",EDCFileDir->str);
+   */
    printf(" ** Tot groups in EDC: %d\n",engrave_file_groups_count (Cur.ef));
    printf(" ** Tot images in EDC: %d\n",engrave_file_images_count (Cur.ef));
    printf(" ** Tot fonts in EDC: %d\n",engrave_file_fonts_count (Cur.ef));
@@ -101,9 +153,7 @@ DebugInfo(int full)
       printf(" ** Cur state: %s %.2f\n",Cur.eps->name, Cur.eps->value);
    else
       printf(" ** Cur state: (NULL)\n");
-  /* printf("Current EDCFile: %s\n",EDCFile->str);
-   printf("Current EDCFileDir: %s\n",EDCFileDir->str);
-   */
+
    if (full)
    {
       printf(" ********************* F U L L **********************\n");
@@ -133,17 +183,15 @@ main(int argc, char **argv)
 {
    //Init Globals
    ETK_canvas = NULL;
-  // FileName = NULL;
    Cur.eg = NULL;
    Cur.ep = NULL;
    Cur.eps = NULL;
    Cur.ef = NULL;
-   char buf[4096];
 
-   
+
    //Setting Globals
    EdjeFile = PACKAGE_DATA_DIR"/edje_editor.edj";
-  
+
    //--help
    if (argc > 1)
    {
@@ -164,31 +212,26 @@ main(int argc, char **argv)
          return 0;
       }
    }
-   
+
    //Init ETK
    if (!etk_init(&argc, &argv))
    {
       printf("Could not init etk!\n");
       return 1;
    }
-   
+
    if (!ecore_init())
-   { 
+   {
      printf("ERROR: Cannot init Ecore!\n");
      return -1;
    }
-   
-   
+
+
    if (!(hash = ecore_hash_new(ecore_direct_hash,ecore_direct_compare)))
    {
       printf("Could not create hash!\n");
       return 1;
-   } 
-   
-   
-   
-   
-   //FileName = etk_string_new("/home/dave/test/decc/default/default.edc");
+   }
 
    //Create the etk window with all his widget
    create_main_window();
@@ -216,12 +259,12 @@ main(int argc, char **argv)
          if (argc == 4)
             Cur.ef = engrave_load_edc(file, argv[2], argv[3]);
       }
-   } 
+   }
 
    if (!Cur.ef)
       Cur.ef = engrave_file_new();
 
-   
+
    engrave_canvas_file_set (ecanvas, Cur.ef);
 
 
@@ -241,4 +284,3 @@ main(int argc, char **argv)
 
    return 0;
 }
-
