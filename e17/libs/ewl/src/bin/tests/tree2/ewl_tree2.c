@@ -931,7 +931,6 @@ struct Tree2_Test_Row_Data
 	Tree2_Test_Data *subdata;
 
 	int expandable;
-	Tree2_Test_Row_Data **rows;
 };
 
 struct Tree2_Test_Data
