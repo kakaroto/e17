@@ -38,6 +38,7 @@ Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Callback ca
    new_callback->callback = callback;
    new_callback->data = data;
    new_callback->swapped = swapped;
+   new_callback->blocked = ETK_FALSE;
 
    return new_callback;
 }
@@ -59,12 +60,13 @@ void etk_signal_callback_del(Etk_Signal_Callback *signal_callback)
  * @param object the object to call the callback on
  * @param return_value the location for the return value (if none, it can be NULL)
  * @param ... the arguments to pass to the callback
+ * @note if the callback is blocked, it won't be called
  */
 void etk_signal_callback_call(Etk_Signal_Callback *callback, Etk_Object *object, void *return_value,  ...)
 {
    va_list args;
 
-   if (!callback || !object)
+   if (!callback || !object || callback->blocked)
       return;
 
    va_start(args, return_value);
@@ -79,12 +81,13 @@ void etk_signal_callback_call(Etk_Signal_Callback *callback, Etk_Object *object,
  * @param object the object to call the callback on
  * @param return_value the location for the return value (if none, it can be NULL)
  * @param args the arguments to pass to the callback
+ * @note if the callback is blocked, it won't be called
  */
 void etk_signal_callback_call_valist(Etk_Signal_Callback *callback, Etk_Object *object, void *return_value, va_list args)
 {
    Etk_Marshaller marshaller;
 
-   if (!callback || !callback->callback || !callback->signal
+   if (!callback || !callback->callback || !callback->signal || callback->blocked
       || !object || !(marshaller = etk_signal_marshaller_get(callback->signal)))
    {
       return;
@@ -103,6 +106,43 @@ void etk_signal_callback_call_valist(Etk_Signal_Callback *callback, Etk_Object *
       marshaller(callback->callback, object, callback->data, return_value, args2);
       va_end(args2);
    }
+}
+
+/**
+ * @internal
+ * @brief Prevents the callback from being called: etk_signal_callback_call() will have no effect on the callback
+ * @param callback the callback to block
+ */
+void etk_signal_callback_block(Etk_Signal_Callback *callback)
+{
+   if (!callback)
+      return;
+   callback->blocked = ETK_TRUE;
+}
+
+/**
+ * @internal
+ * @brief Unblocks the callback. It can no be called again by calling etk_signal_callback_call()
+ * @param callback the callback to unblock
+ */
+void etk_signal_callback_unblock(Etk_Signal_Callback *callback)
+{
+   if (!callback)
+      return;
+   callback->blocked = ETK_FALSE;
+}
+
+/**
+ * @internal
+ * @brief Gets whether or not the callback is blocked
+ * @param callback a callback
+ * @return Returns ETK_TRUE if the callback is blocked, ETK_FALSE otherwise
+ */
+Etk_Bool etk_signal_callback_is_blocked(Etk_Signal_Callback *callback)
+{
+   if (!callback)
+      return ETK_FALSE;
+   return callback->blocked;
 }
 
 /** @} */

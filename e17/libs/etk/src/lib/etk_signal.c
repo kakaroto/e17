@@ -276,6 +276,92 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Call
 }
 
 /**
+ * @brief Blocks a callback from being called when the corresponding signal is emitted. Unlike etk_signal_disconnect(),
+ * the callback is note removed, and can be easily unblock with etk_signal_unblock()
+ * @param signal_name the name of the signal connected to the callback to block
+ * @param object the object connected to the callback to block
+ * @param callback the callback function to block
+ */
+void etk_signal_block(const char *signal_name, Etk_Object *object, Etk_Callback callback)
+{
+   Etk_Signal *signal;
+   Evas_List *callbacks;
+   Etk_Signal_Callback *signal_callback;
+
+   if (!object || !signal_name || !callback)
+      return;
+   
+   if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
+   {
+      ETK_WARNING("Invalid signal block: the object type \"%s\" doesn't have a signal called \"%s\"",
+         object->type->name, signal_name);
+      return;
+   }
+   
+   callbacks = NULL;
+   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
+   while (callbacks)
+   {
+      signal_callback = callbacks->data;
+      if (signal_callback->callback == callback)
+         etk_signal_callback_block(signal_callback);
+      callbacks = evas_list_remove_list(callbacks, callbacks);
+   }
+   
+   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
+   while (callbacks)
+   {
+      signal_callback = callbacks->data;
+      if (signal_callback->callback == callback)
+         etk_signal_callback_block(signal_callback);
+      callbacks = evas_list_remove_list(callbacks, callbacks);
+   }
+}
+
+/**
+ * @brief Unblocks a blocked callback. The callback will no longer be prevented from being called when the
+ * corresponding signal is emitted
+ * @param signal_name the name of the signal connected to the callback to unblock
+ * @param object the object connected to the callback to unblock
+ * @param callback the callback function to unblock
+ */
+void etk_signal_unblock(const char *signal_name, Etk_Object *object, Etk_Callback callback)
+{
+   Etk_Signal *signal;
+   Evas_List *callbacks;
+   Etk_Signal_Callback *signal_callback;
+
+   if (!object || !signal_name || !callback)
+      return;
+   
+   if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
+   {
+      ETK_WARNING("Invalid signal unblock: the object type \"%s\" doesn't have a signal called \"%s\"",
+         object->type->name, signal_name);
+      return;
+   }
+   
+   callbacks = NULL;
+   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
+   while (callbacks)
+   {
+      signal_callback = callbacks->data;
+      if (signal_callback->callback == callback)
+         etk_signal_callback_unblock(signal_callback);
+      callbacks = evas_list_remove_list(callbacks, callbacks);
+   }
+   
+   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
+   while (callbacks)
+   {
+      signal_callback = callbacks->data;
+      if (signal_callback->callback == callback)
+         etk_signal_callback_unblock(signal_callback);
+      callbacks = evas_list_remove_list(callbacks, callbacks);
+   }
+}
+
+/**
  * @brief Emits the signal: it will call the callbacks connected to the signal @a signal
  * @param signal the signal to emit
  * @param object the object which will emit the signal
