@@ -35,7 +35,7 @@ static Evas_List *_etk_signal_emitted_signals = NULL;
  * @internal
  * @brief Shutdowns the signal system: it destroys all the created signals
  */
-void etk_signal_shutdown()
+void etk_signal_shutdown(void)
 {
    while (_etk_signal_emitted_signals)
    {
@@ -142,9 +142,8 @@ const char *etk_signal_name_get(Etk_Signal *signal)
  * @param data the data to pass to the callback
  * @param swapped if @a swapped == ETK_TRUE, the callback will be called with @a data as the only argument.
  * It can be useful to set it to ETK_TRUE if you just want to call one function on an object when the signal is emitted
- * @param after if @a after == ETK_TRUE, the callback will be called after the default handler is called.
- * Otherwise, it will be called before the default handler. It can be useful to set it to ETK_TRUE if you want the
- * callback to be called after all the other callbacks connect to the signal.
+ * @param after if @a after == ETK_TRUE, the callback will be called after all the callbacks already connected to this
+ * signal. Otherwise, it will be called before all of them (default behavior)
  */
 void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Callback callback, void *data, Etk_Bool swapped, Etk_Bool after)
 {
@@ -158,8 +157,9 @@ void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Callbac
 }
 
 /**
- * @brief Connects a callback to a signal of the object @a object. When the signal of the object will be emitted, this
- * callback will be automatically called <b>before</b> the default handler
+ * @brief Connects a callback to a signal of the object @a object. The callback is added at the start of the list of
+ * callbacks to call. It means that when the signal is emitted, this callback will the first to be called. This way, you
+ * can prevent the other callbacks from being called using etk_signal_stop() when this callback gets called
  * @param signal the signal to connect to the callback
  * @param object the object to connect to the callback
  * @param callback the callback to call when the signal is emitted
@@ -183,8 +183,9 @@ void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Callbac
 }
 
 /**
- * @brief Connects a callback to a signal of the object @a object. When the signal of the object will be emitted, this
- * callback will be automatically called <b>after</b> the default handler
+ * @brief Connects a callback to a signal of the object @a object. The callback is added at the end of the list of
+ * callbacks to call which means that when the signal is emitted, this callback will the last to be called. If you don't
+ * need a specific call-order, use etk_signal_connect() rather
  * @param signal the signal to connect to the callback
  * @param object the object to connect to the callback
  * @param callback the callback to call when the signal is emitted
@@ -208,9 +209,9 @@ void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_C
 }
 
 /**
- * @brief Connects a callback to a signal of the object @a object. When the signal of the object will be emitted, this
- * callback will be automatically called <b>vefore</b> the default handler, with @a data as the only argument. @n
- * It can be useful if you just want to call one function on an object when the signal is emitted
+ * @brief Connects a callback to a signal of the object @a object. The callback is added at the start of the list of
+ * callbacks to call. It means that when the signal is emitted, this callback will the first to be called. This way, you
+ * can prevent the other callbacks from being called using etk_signal_stop() when this callback gets called
  * @param signal_name the name of the signal to connect to the object to
  * @param object the object that will connect the signal
  * @param callback the callback to call when the signal is emitted

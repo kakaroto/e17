@@ -7,6 +7,12 @@
 #include "etk_type.h"
 #include "etk_types.h"
 
+/* TODO/FIXME list:
+ * - etk_object_type_get() and etk_object_object_type_get() are confusing: maybe we should rename them
+ * - instead of having one list for all the signal-callbacks, we could maybe use one list per type of signal. It
+ * would make things more optimized
+ */
+
 /**
  * @defgroup Etk_Object Etk_Object
  * @brief The Etk_Object class is the base class for all the objects and widgets of Etk

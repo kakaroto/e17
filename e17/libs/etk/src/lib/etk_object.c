@@ -82,7 +82,6 @@ void etk_object_purge(void)
  * @internal
  * @brief Gets the type of an Etk_Object
  * @return Returns the type of an Etk_Object
- * TODO: improve the doc, its confusing here (with etk_object_object_type_get()) (or rename those functions...)
  */
 Etk_Type *etk_object_type_get(void)
 {

@@ -31,13 +31,13 @@ struct Etk_Signal
    void *accum_data;
 };
 
-void etk_signal_shutdown();
+void etk_signal_shutdown(void);
 
 Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator, void *accum_data);
-void etk_signal_delete(Etk_Signal *signal);
+void        etk_signal_delete(Etk_Signal *signal);
 
-Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type);
-const char *etk_signal_name_get(Etk_Signal *signal);
+Etk_Signal    *etk_signal_lookup(const char *signal_name, Etk_Type *type);
+const char    *etk_signal_name_get(Etk_Signal *signal);
 Etk_Marshaller etk_signal_marshaller_get(Etk_Signal *signal);
 
 void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data);
