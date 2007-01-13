@@ -4,32 +4,23 @@
 #ifdef __EMX__
 /* Due to strange behaviour of as.exe we use this macros */
 /* For all OS/2 coders - please use PGCC to compile this code */
-#define PR_(foo) ___##foo
-#define PT_(foo,func) ___##foo,##func
-#define FN_(foo) \
-.globl PR_(foo);			       \
-        .type PT_(foo,@function)
-#define SIZE(sym)                              \
-	.___end_##sym:;                        \
-	.size ___##sym,.___end_##sym-___##sym; \
-	.align 8;
-#else /* not __EMX__ */
-#define PR_(foo) __##foo
-#define PT_(foo,func) __##foo,##func
-#ifdef USE_HIDDEN_FUNCTION_ATTRIBUTE
-#define FN_(foo) \
-.globl PR_(foo);			    \
-        .hidden PR_(foo);		    \
-        .type PT_(foo,@function)
-#else /* not USE_HIDDEN... */
-#define FN_(foo) \
-.globl PR_(foo);			    \
-        .type PT_(foo,@function)
-#endif /* USE_HIDDEN... */
-#define SIZE(sym)                           \
-	.__end_##sym:;                      \
-	.size __##sym,.__end_##sym-__##sym; \
-	.align 8;
+# define PR_(sym) ___##sym
+#else
+# define PR_(sym) __##sym
 #endif
+
+#ifdef USE_HIDDEN_FUNCTION_ATTRIBUTE
+# define HIDDEN_(sym) .hidden PR_(sym)
+#else
+# define HIDDEN_(sym)
+#endif
+
+#define FN_(sym) \
+	.global PR_(sym); \
+	HIDDEN_(sym); \
+	.type PR_(sym),@function;
+#define SIZE(sym) \
+	.size PR_(sym),.-PR_(sym); \
+	.align 8;
 
 #endif /* __ASM_H */
