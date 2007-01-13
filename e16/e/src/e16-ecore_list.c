@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2006 Carsten Haitzler and various contributors (see AUTHORS)
+ * Copyright (C) 2000-2007 Carsten Haitzler and various contributors (see AUTHORS)
  *
  * Copyright (C) Nathan Ingersoll (author)
  * Copyright (C) Ibukun Olumuyiwa (ewd -> ecore)
