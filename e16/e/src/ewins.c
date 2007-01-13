@@ -904,7 +904,7 @@ AddToFamily(EWin * ewin, Window xwin)
 	GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
 	Mode.place.doing_manual = 1;
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
-	ActionMoveStart(ewin, 1, 0, 0);
+	ActionMoveStart(ewin, 0, 0);
 	goto done;
      }
    else if (doslide)

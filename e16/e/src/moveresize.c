@@ -66,7 +66,7 @@ EwinShapeSet(EWin * ewin)
 }
 
 int
-ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
+ActionMoveStart(EWin * ewin, char constrained, int nogroup)
 {
    EWin              **gwins;
    int                 i, num;
@@ -79,8 +79,7 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
 
    SoundPlay("SOUND_MOVE_START");
 
-   if (grab)
-      GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
+   GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
 
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
@@ -265,7 +264,7 @@ ActionMoveResume(void)
 }
 
 int
-ActionResizeStart(EWin * ewin, int grab, int hv)
+ActionResizeStart(EWin * ewin, int hv)
 {
    int                 x, y, w, h, ww, hh;
    unsigned int        csr;
@@ -385,8 +384,7 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
    Mode_mr.win_w = ewin->client.w;
    Mode_mr.win_h = ewin->client.h;
 
-   if (grab)
-      GrabPointerSet(EoGetWin(ewin), csr, 1);
+   GrabPointerSet(EoGetWin(ewin), csr, 1);
 
    EwinShapeSet(ewin);
    ewin->state.show_coords = 1;

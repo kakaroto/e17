@@ -1060,10 +1060,10 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	  case _NET_WM_MOVERESIZE_SIZE_BOTTOM:
 	  case _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT:
 	  case _NET_WM_MOVERESIZE_SIZE_LEFT:
-	     ActionResizeStart(ewin, 1, MODE_RESIZE);
+	     ActionResizeStart(ewin, MODE_RESIZE);
 	     break;
 	  case _NET_WM_MOVERESIZE_MOVE:
-	     ActionMoveStart(ewin, 1, 0, 0);
+	     ActionMoveStart(ewin, 0, 0);
 	     break;
 
 	  case _NET_WM_MOVERESIZE_SIZE_KEYBOARD:

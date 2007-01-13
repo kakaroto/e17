@@ -669,7 +669,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	  }
 	if (!strcmp(param1, "ptr"))
 	  {
-	     ActionMoveStart(ewin, 1, 0, Mode.nogroup);
+	     ActionMoveStart(ewin, 0, Mode.nogroup);
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
@@ -697,15 +697,15 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 
 	if (!strcmp(param1, "ptr"))
 	  {
-	     ActionResizeStart(ewin, 1, MODE_RESIZE);
+	     ActionResizeStart(ewin, MODE_RESIZE);
 	  }
 	else if (!strcmp(param1, "ptr-h"))
 	  {
-	     ActionResizeStart(ewin, 1, MODE_RESIZE_H);
+	     ActionResizeStart(ewin, MODE_RESIZE_H);
 	  }
 	else if (!strcmp(param1, "ptr-v"))
 	  {
-	     ActionResizeStart(ewin, 1, MODE_RESIZE_V);
+	     ActionResizeStart(ewin, MODE_RESIZE_V);
 	  }
 	else if (!strcmp(param1, "?"))
 	  {
