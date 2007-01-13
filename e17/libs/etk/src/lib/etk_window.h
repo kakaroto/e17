@@ -42,17 +42,12 @@ struct _Etk_Window
    Etk_Bool wait_size_request;
    Etk_Bool center;
    Etk_Window *center_on_window;
-
-   void (*move_cb)(Etk_Window *window);
-   void (*resize_cb)(Etk_Window *window);   
-   void (*focus_in_cb)(Etk_Window *window);
-   void (*focus_out_cb)(Etk_Window *window);
-   void (*sticky_changed_cb)(Etk_Window *window);  
-   void (*delete_request_cb)(Etk_Window *window);   
 };
 
-Etk_Type   *etk_window_type_get();
-Etk_Widget *etk_window_new();
+Etk_Type *etk_window_type_get(void);
+
+Etk_Widget *etk_window_new(void);
+void        etk_window_delete_request(Etk_Window *window);
 
 void        etk_window_title_set(Etk_Window *window, const char *title);
 const char *etk_window_title_get(Etk_Window *window);

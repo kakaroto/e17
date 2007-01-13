@@ -805,6 +805,11 @@ static void _window_maximize_mouse_up_cb(void *data, Evas_Object *obj, const cha
 /* Called when the mouse releases the close button */
 static void _window_close_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
+   Etk_Window *window;
+   
+   if (!(window = ETK_WINDOW(data)))
+      return;
+   etk_window_delete_request(window);
 }
 
 /* Called when the mouse is moved */

@@ -51,13 +51,6 @@ static void _etk_window_screen_position_get(Etk_Toplevel *toplevel, int *x, int 
 static void _etk_window_size_get(Etk_Toplevel *toplevel, int *w, int *h);
 static void _etk_window_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
 
-static void _etk_window_move_cb(Etk_Window *window);
-static void _etk_window_resize_cb(Etk_Window *window);
-static void _etk_window_focus_in_cb(Etk_Window *window);
-static void _etk_window_focus_out_cb(Etk_Window *window);
-static void _etk_window_sticky_changed_cb(Etk_Window *window);
-static void _etk_window_delete_request_cb(Etk_Window *window);
-
 static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
 
 /**************************
@@ -69,9 +62,9 @@ static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
 /**
  * @internal
  * @brief Gets the type of an Etk_Window
- * @return Returns the type on an Etk_Window
+ * @return Returns the type of an Etk_Window
  */
-Etk_Type *etk_window_type_get()
+Etk_Type *etk_window_type_get(void)
 {
    static Etk_Type *window_type = NULL;
 
@@ -107,9 +100,24 @@ Etk_Type *etk_window_type_get()
  * @brief Creates a new window
  * @return Returns the new window widget
  */
-Etk_Widget *etk_window_new()
+Etk_Widget *etk_window_new(void)
 {
    return etk_widget_new(ETK_WINDOW_TYPE, "theme_group", "window", NULL);
+}
+
+/**
+ * @brief Emits a delete-request on the window: it will call all the callbacks connected to the "delete_event" signal
+ * and if all these callbacks return ETK_FALSE, the window will be destroyed. It has the same effect as if the user
+ * had clicked on the "close" button of the window
+ * @param window a window
+ */
+void etk_window_delete_request(Etk_Window *window)
+{
+   Etk_Bool result;
+   
+   etk_signal_emit(_etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(window), &result);
+   if (!result)
+      etk_object_destroy(ETK_OBJECT(window));
 }
 
 /**
@@ -529,14 +537,7 @@ static void _etk_window_constructor(Etk_Window *window)
    window->wait_size_request = ETK_TRUE;
    window->center = ETK_FALSE;
    window->center_on_window = NULL;
-   
    window->delete_event = _etk_window_delete_event_handler;
-   window->move_cb = _etk_window_move_cb;
-   window->resize_cb = _etk_window_resize_cb;
-   window->focus_in_cb = _etk_window_focus_in_cb;
-   window->focus_out_cb = _etk_window_focus_out_cb;
-   window->sticky_changed_cb = _etk_window_sticky_changed_cb;
-   window->delete_request_cb = _etk_window_delete_request_cb;
    
    etk_engine_window_constructor(window);
    
@@ -737,49 +738,6 @@ static void _etk_window_size_get(Etk_Toplevel *toplevel, int *w, int *h)
 static void _etk_window_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type)
 {
    etk_engine_window_pointer_set(ETK_WINDOW(toplevel), pointer_type);
-}
-
-/* Called when the window is moved by the engine */
-static void _etk_window_move_cb(Etk_Window *window)
-{
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_MOVE_SIGNAL], ETK_OBJECT(window), NULL);
-}
-
-/* Called when the window is resized by the engine */
-static void _etk_window_resize_cb(Etk_Window *window)
-{
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL], ETK_OBJECT(window), NULL);
-   etk_widget_redraw_queue(ETK_WIDGET(window));   
-}
-
-/* Called when the window is focused by the engine */
-static void _etk_window_focus_in_cb(Etk_Window *window)
-{
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL], ETK_OBJECT(window), NULL);
-   etk_object_notify(ETK_OBJECT(window), "focused");   
-}
-
-/* Called when the window is unfocused by the engine */
-static void _etk_window_focus_out_cb(Etk_Window *window)
-{
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL], ETK_OBJECT(window), NULL);
-   etk_object_notify(ETK_OBJECT(window), "focused");   
-}
-
-/* Called when the window's sticky setting has changed */
-static void _etk_window_sticky_changed_cb(Etk_Window *window)
-{
-   etk_object_notify(ETK_OBJECT(window), "sticky");
-}
-
-/* Called when the engine asks to delete the window */
-static void _etk_window_delete_request_cb(Etk_Window *window)
-{
-   Etk_Bool result;
-   
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(window), &result);
-   if (!result)
-      etk_object_destroy(ETK_OBJECT(window));
 }
 
 /** @} */

@@ -472,8 +472,7 @@ static void _window_move_cb(Ecore_Evas *ecore_evas)
    
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "_Etk_Engine::Window"))))
      return;
-   /* TODO: why use a func pointer here? */
-   window->move_cb(window);
+   etk_signal_emit_by_name("move", ETK_OBJECT(window), NULL);
 }
 
 /* Called when the window is resized */
@@ -487,8 +486,9 @@ static void _window_resize_cb(Ecore_Evas *ecore_evas)
    
    engine_data = window->engine_data;
    ecore_evas_geometry_get(ecore_evas, NULL, NULL, &engine_data->width, &engine_data->height);
-   /* TODO: why use a func pointer here? */
-   window->resize_cb(window);
+   
+   etk_signal_emit_by_name("resize", ETK_OBJECT(window), NULL);
+   etk_widget_redraw_queue(ETK_WIDGET(window)); 
 }
 
 /* Called when the window is focused in */
@@ -498,8 +498,9 @@ static void _window_focus_in_cb(Ecore_Evas *ecore_evas)
    
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "_Etk_Engine::Window"))))
      return;
-   /* TODO: why use a func pointer here? We may just notify the "focused" property */
-   window->focus_in_cb(window);
+   
+   etk_signal_emit_by_name("focus_in", ETK_OBJECT(window), NULL);
+   etk_object_notify(ETK_OBJECT(window), "focused");
 }
 
 /* Called when the window is focused out */
@@ -509,8 +510,9 @@ static void _window_focus_out_cb(Ecore_Evas *ecore_evas)
    
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "_Etk_Engine::Window"))))
      return;
-   /* TODO: why use a func pointer here? We may just notify the "focused" property */
-   window->focus_out_cb(window);
+   
+   etk_signal_emit_by_name("focus_out", ETK_OBJECT(window), NULL);
+   etk_object_notify(ETK_OBJECT(window), "focused");
 }
 
 /* Called when the window's sticky setting has changed */
@@ -520,8 +522,7 @@ static void _window_sticky_changed_cb(Ecore_Evas *ecore_evas)
    
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "_Etk_Engine::Window"))))
      return;
-   /* TODO: why use a func pointer here? We may just notify the "sticky" property */
-   window->sticky_changed_cb(window);
+   etk_object_notify(ETK_OBJECT(window), "sticky");
 }
 
 /* Called when the user wants to close the window */
@@ -531,6 +532,5 @@ static void _window_delete_request_cb(Ecore_Evas *ecore_evas)
    
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "_Etk_Engine::Window"))))
      return;
-   /* TODO: why use a func pointer here? */
-   window->delete_request_cb(window);   
+   etk_window_delete_request(window); 
 }
