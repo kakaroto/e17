@@ -581,8 +581,11 @@ _e_property_handle(Enhance *en, EXML_Node *node)
      {
 	IF_PARENT_CLASS("GtkWindow")
           {
+             int h;
+             
 	     PROPERTY_INT;
-	     etk_window_resize(ETK_WINDOW(wid->wid),  value, ETK_WINDOW(wid->wid)->height);
+             etk_window_geometry_get(ETK_WINDOW(wid->wid), NULL, NULL, NULL, &h);
+	     etk_window_resize(ETK_WINDOW(wid->wid), value, h);
           }
      }
    
@@ -590,8 +593,11 @@ _e_property_handle(Enhance *en, EXML_Node *node)
      {
 	IF_PARENT_CLASS("GtkWindow")
           {
+             int w;
+             
 	     PROPERTY_INT;
-	     etk_window_resize(ETK_WINDOW(wid->wid), ETK_WINDOW(wid->wid)->width, value);
+             etk_window_geometry_get(ETK_WINDOW(wid->wid), NULL, NULL, &w, NULL);
+	     etk_window_resize(ETK_WINDOW(wid->wid), w, value);
           }
      }     
    
