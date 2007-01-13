@@ -27,6 +27,7 @@ Etk_Destructor 					T_PTROBJ
 Etk_Dialog *					T_PTROBJ_ETK
 Etk_Drag *					T_PTROBJ_ETK
 Etk_Entry *					T_PTROBJ_ETK
+Etk_Entry_Image_Position			T_IV
 Etk_Event_Selection_Request *			T_PTROBJ
 Etk_Filechooser_Widget *			T_PTROBJ_ETK
 Etk_Table_Fill_Policy				T_IV

@@ -57,6 +57,7 @@ our %EXPORT_TAGS = (
    shadow	=> [qw/ShadowNone ShadowInside ShadowOutside ShadowNoEdge ShadowLeft ShadowAll
     ShadowRight ShadowTop ShadowBottom ShadowLeftRight ShadowTopBottom/],
    image	=> [qw/ImageFile ImageEdje ImageStock ImageEvasObject ImageData/],
+   entry	=> [qw/ImagePrimary ImageSecondary/],
    );
 
 my @all = ();
@@ -270,5 +271,9 @@ use constant {
    ImageData=>4
 };
 
-
+# entry
+use constant {
+   ImagePrimary=>1,
+   ImageSecondary=>2
+};
 

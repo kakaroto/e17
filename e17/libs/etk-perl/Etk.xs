@@ -1548,6 +1548,41 @@ etk_entry_text_set(entry, text)
       ALIAS:
 	TextSet=1
 
+void
+etk_entry_clear(entry)
+	Etk_Entry *	entry
+	ALIAS:
+	Clear=1
+
+void
+etk_entry_image_set(entry, position, image)
+	Etk_Entry *	entry
+	Etk_Entry_Image_Position position
+	Etk_Image *	image
+	ALIAS:
+	ImageSet=1
+
+Etk_Image *
+etk_entry_image_get(entry, position)
+	Etk_Entry *	entry
+	Etk_Entry_Image_Position position
+	ALIAS:
+	ImageGet=1
+
+void
+etk_entry_image_highlight_set(entry, position, highlight)
+	Etk_Entry *	entry
+	Etk_Entry_Image_Position position
+	Etk_Bool	highlight
+	ALIAS:
+	ImageHighlightSet=1
+
+void
+etk_entry_add_clear_button(entry)
+	Etk_Entry *     entry
+	ALIAS:
+	AddClearButton=1
+	
 
 MODULE = Etk::Filechooser	PACKAGE = Etk::Filechooser	PREFIX = etk_filechooser_widget_
 	

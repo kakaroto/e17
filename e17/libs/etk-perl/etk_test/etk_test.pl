@@ -292,14 +292,16 @@ sub entry_window_show
     my $entry_normal = Etk::Entry->new();
     $entry_normal->TextSet("Here is some text");
     $table->Attach($entry_normal, 0, 0, 0, 0, 0, 0, TableHExpand | TableHFill);
+    $entry_normal->SizeRequestSet(140, -1);
 
-    my $button = Etk::Button->new("Print Text");
-    $table->Attach($button, 1, 1, 0, 0, 0, 0, TableNone);
+    my $image = Etk::Image->new(DocumentPrint, SizeSmall);
+    $entry_normal->ImageSet(ImagePrimary, $image);
+    $entry_normal->AddClearButton();
 
     my $label_normal = Etk::Label->new("");
     $table->Attach($label_normal, 0, 1, 1, 1, 0, 0, TableHExpand | TableHFill);
 
-    $button->SignalConnect("clicked", sub {
+    $image->SignalConnect("mouse_click", sub {
 	    $label_normal->Set( $entry_normal->TextGet() )
     });
 
@@ -315,7 +317,7 @@ sub entry_window_show
     $password_entry->PasswordModeSet(1);
     $vbox->Append($password_entry, BoxStart, BoxFill, 0);
 
-    $button = Etk::CheckButton->new("Password Visible");
+    my $button = Etk::CheckButton->new("Password Visible");
     $vbox->Append($button, BoxStart, BoxFill, 0);
     $button->SignalConnect("toggled", sub {
 	    $password_entry->PasswordModeSet( ! $password_entry->PasswordModeGet() )
