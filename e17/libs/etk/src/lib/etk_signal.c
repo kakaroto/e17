@@ -256,7 +256,7 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Call
    }
    
    callbacks = NULL;
-   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
+   etk_object_signal_callbacks_get(object, signal, &callbacks);
    while (callbacks)
    {
       signal_callback = callbacks->data;
@@ -264,15 +264,6 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Call
          etk_object_signal_callback_remove(object, signal_callback);
       callbacks = evas_list_remove_list(callbacks, callbacks);
    }
-   
-   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
-   while (callbacks)
-   {
-      signal_callback = callbacks->data;
-      if (signal_callback->callback == callback)
-         etk_object_signal_callback_remove(object, signal_callback);
-      callbacks = evas_list_remove_list(callbacks, callbacks);
-   }   
 }
 
 /**
@@ -299,16 +290,7 @@ void etk_signal_block(const char *signal_name, Etk_Object *object, Etk_Callback 
    }
    
    callbacks = NULL;
-   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
-   while (callbacks)
-   {
-      signal_callback = callbacks->data;
-      if (signal_callback->callback == callback)
-         etk_signal_callback_block(signal_callback);
-      callbacks = evas_list_remove_list(callbacks, callbacks);
-   }
-   
-   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
+   etk_object_signal_callbacks_get(object, signal, &callbacks);
    while (callbacks)
    {
       signal_callback = callbacks->data;
@@ -342,16 +324,7 @@ void etk_signal_unblock(const char *signal_name, Etk_Object *object, Etk_Callbac
    }
    
    callbacks = NULL;
-   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
-   while (callbacks)
-   {
-      signal_callback = callbacks->data;
-      if (signal_callback->callback == callback)
-         etk_signal_callback_unblock(signal_callback);
-      callbacks = evas_list_remove_list(callbacks, callbacks);
-   }
-   
-   etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
+   etk_object_signal_callbacks_get(object, signal, &callbacks);
    while (callbacks)
    {
       signal_callback = callbacks->data;
@@ -452,31 +425,8 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *re
    
    va_copy(args2, args);
 
-   /* We call the callbacks to call before the default handler */
-   if (object_ptr)
-   {
-      callbacks = NULL;
-      etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_FALSE);
-      while (!emitted_signal->stop_emission && callbacks && object_ptr)
-      {
-         callback = callbacks->data;
-         if (!return_value_set || !signal->accumulator)
-         {
-            etk_signal_callback_call_valist(callback, object, return_value, args2);
-            return_value_set = ETK_TRUE;
-         }
-         else
-         {
-            etk_signal_callback_call_valist(callback, object, result, args2);
-            signal->accumulator(return_value, result, signal->accum_data);
-         }
-         callbacks = evas_list_remove_list(callbacks, callbacks);
-      }
-      callbacks = evas_list_free(callbacks);
-   }
-
    /* Calls the default handler */
-   if (object_ptr && !emitted_signal->stop_emission && signal->handler_offset >= 0 && signal->marshaller)
+   if (signal->handler_offset >= 0 && signal->marshaller)
    {
       Etk_Callback *default_handler;
 
@@ -495,12 +445,12 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *re
          }
       }
    }
-   
-   /* We call the callbacks to call after the default handler */
+
+   /* Then we call the corresponding callbacks */
    if (object_ptr)
    {
       callbacks = NULL;
-      etk_object_signal_callbacks_get(object, signal, &callbacks, ETK_TRUE);
+      etk_object_signal_callbacks_get(object, signal, &callbacks);
       while (!emitted_signal->stop_emission && callbacks && object_ptr)
       {
          callback = callbacks->data;

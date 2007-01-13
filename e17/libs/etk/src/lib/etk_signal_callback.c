@@ -17,14 +17,14 @@
 
 /**
  * @internal
- * @brief Creates a new signal callback for the signal @a signal, using the callback function @a callback, and
+ * @brief Creates a new signal-callback for the signal @a signal, using the callback function @a callback, and
  * associated to user data @a data
  * @param signal the signal to which this callback should be added
  * @param callback the callback function to call when the signal is emitted
  * @param data the user data to pass to the callback function
  * @param swapped if @a swapped is ETK_TRUE, the callback function will be called with the data as the only argument
- * @return Returns the new signal callback on success or NULL on failure
- * @warning The new signal callback has to be freed with etk_signal_callback_del()
+ * @return Returns the new signal-callback on success or NULL on failure
+ * @warning The new signal-callback has to be freed with etk_signal_callback_del()
  */
 Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Callback callback, void *data, Etk_Bool swapped)
 {
@@ -45,8 +45,8 @@ Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Callback ca
 
 /**
  * @internal
- * @brief Deletes the signal callback
- * @param signal_callback the signal callback to delete
+ * @brief Deletes the signal-callback
+ * @param signal_callback the signal-callback to delete
  */
 void etk_signal_callback_del(Etk_Signal_Callback *signal_callback)
 {
@@ -55,8 +55,8 @@ void etk_signal_callback_del(Etk_Signal_Callback *signal_callback)
 
 /**
  * @internal
- * @brief Calls the signal callback @a callback on the object @a object
- * @param callback the signal callback to call
+ * @brief Calls the signal-callback @a callback on the object @a object
+ * @param callback the signal-callback to call
  * @param object the object to call the callback on
  * @param return_value the location for the return value (if none, it can be NULL)
  * @param ... the arguments to pass to the callback
@@ -77,7 +77,7 @@ void etk_signal_callback_call(Etk_Signal_Callback *callback, Etk_Object *object,
 /**
  * @internal
  * @brief Calls the callback @a callback on the object @a object
- * @param callback the signal callback to call
+ * @param callback the signal-callback to call
  * @param object the object to call the callback on
  * @param return_value the location for the return value (if none, it can be NULL)
  * @param args the arguments to pass to the callback

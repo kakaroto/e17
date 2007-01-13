@@ -54,7 +54,7 @@ static Etk_Signal *_etk_object_signals[ETK_OBJECT_NUM_SIGNALS];
  * @internal
  * @brief Shutdowns the object system: it frees all the created objects
  */
-void etk_object_shutdown()
+void etk_object_shutdown(void)
 {
    while (_etk_object_objects)
       _etk_object_free(_etk_object_objects);
@@ -66,7 +66,7 @@ void etk_object_shutdown()
  * @brief Frees the objects that have been marked as "destroyed".
  * It's called at the start of each iteration of the main loop
  */
-void etk_object_purge()
+void etk_object_purge(void)
 {
    Etk_Object *object, *next;
    
@@ -82,8 +82,9 @@ void etk_object_purge()
  * @internal
  * @brief Gets the type of an Etk_Object
  * @return Returns the type of an Etk_Object
+ * TODO: improve the doc, its confusing here (with etk_object_object_type_get()) (or rename those functions...)
  */
-Etk_Type *etk_object_type_get()
+Etk_Type *etk_object_type_get(void)
 {
    static Etk_Type *object_type = NULL;
 
@@ -158,7 +159,7 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
 }
 
 /**
- * @brief Destroys the object: it first sets the weak pointers to NULL, emits the "destroyed" signal, and then
+ * @brief Destroys the object: it first sets the weak-pointers to NULL, emits the "destroyed" signal, and then
  * queues the object in the list of objects to free. Thus, the destructors will only be called at the beginning of the
  * next main loop iteration (from the destructor of the more derived class to the destructor of the ultimate base class).
  * @param object the object to destroy
@@ -173,12 +174,12 @@ void etk_object_destroy(Etk_Object *object)
 
    etk_object_name_set(object, NULL);
    
-   /* Sets the weak pointers to NULL */
-   while (object->weak_pointers_list)
+   /* Sets the weak-pointers to NULL */
+   while (object->weak_pointers)
    {
-      weak_pointer = object->weak_pointers_list->data;
+      weak_pointer = object->weak_pointers->data;
       *weak_pointer =  NULL;
-      object->weak_pointers_list = evas_list_remove_list(object->weak_pointers_list, object->weak_pointers_list);
+      object->weak_pointers = evas_list_remove_list(object->weak_pointers, object->weak_pointers);
    }
    
    object->destroy_me = ETK_TRUE;
@@ -186,7 +187,7 @@ void etk_object_destroy(Etk_Object *object)
 }
 
 /**
- * @brief Sets the name of the object. The object can then be retrieved from this name with etk_object_name_find()
+ * @brief Sets the name of the object. The object can then be retrieved from his name with etk_object_name_find()
  * @param object an object
  * @param name the name to set
  * @see etk_object_name_find()
@@ -279,11 +280,11 @@ Etk_Type *etk_object_object_type_get(Etk_Object *object)
 
 /**
  * @internal
- * @brief Adds @a signal_callback to the list of the signal callbacks of the object
+ * @brief Adds @a signal_callback to the list of the signal-callbacks of the object
  * @param object an object
- * @param signal_callback the signal callback to add
- * @param after if @a after is ETK_TRUE, the callback will be called after the default handler.
- * Otherwise, it will be called before.
+ * @param signal_callback the signal-callback to add
+ * @param after if @a after is ETK_TRUE, the callback will be called after all the other callbacks already connected
+ * to this signal, otherwise it will be called before (default behaviour)
  * @note You do not have to call this function, use etk_signal_connect() instead
  */
 void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *signal_callback, Etk_Bool after)
@@ -292,16 +293,16 @@ void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *sig
       return;
 
    if (after)
-      object->after_signal_callbacks_list = evas_list_append(object->after_signal_callbacks_list, signal_callback);
+      object->signal_callbacks = evas_list_append(object->signal_callbacks, signal_callback);
    else
-      object->before_signal_callbacks_list = evas_list_prepend(object->before_signal_callbacks_list, signal_callback);
+      object->signal_callbacks = evas_list_prepend(object->signal_callbacks, signal_callback);
 }
 
 /**
  * @internal
- * @brief Removes @a signal_callback from the list of the signal callbacks of the object
+ * @brief Removes @a signal_callback from the list of the signal-callbacks of the object
  * @param object an object
- * @param signal_callback the signal callback to remove
+ * @param signal_callback the signal-callback to remove
  * @note You do not have have to call this function, use etk_signal_disconnect() instead
  */
 void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *signal_callback)
@@ -311,29 +312,22 @@ void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *
    if (!object || !signal_callback)
       return;
    
-   if ((l = evas_list_find_list(object->before_signal_callbacks_list, signal_callback)))
+   if ((l = evas_list_find_list(object->signal_callbacks, signal_callback)))
    {
       etk_signal_callback_del(l->data);
-      object->before_signal_callbacks_list = evas_list_remove_list(object->before_signal_callbacks_list, l);
-   }
-   if ((l = evas_list_find_list(object->after_signal_callbacks_list, signal_callback)))
-   {
-      etk_signal_callback_del(l->data);
-      object->after_signal_callbacks_list = evas_list_remove_list(object->after_signal_callbacks_list, l);
+      object->signal_callbacks = evas_list_remove_list(object->signal_callbacks, l);
    }
 }
 
 /**
  * @internal
- * @brief Gets the signal callbacks connected to the signal @a signal of the object @a object
+ * @brief Gets the signal-callbacks connected to the signal @a signal of the object @a object
  * @param object the object connected to the signal
- * @param signal the signal of which we want the callbacks
- * @param callbacks the location of a list where the signal callbacks will be appended
- * @param after if @a after == ETK_TRUE, it appends only the callbacks that have to be called after the
- * default handler. Otherwise, it appends the callbacks called before the default handler
+ * @param signal the signal which we want the callbacks of
+ * @param callbacks the location of a list where the signal-callbacks will be appended
  * @note You usually do not need to call this function manually, it is used by etk_signal_emit()
  */
-void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks, Etk_Bool after)
+void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks)
 {
    Evas_List *l;
    Etk_Signal_Callback *callback;
@@ -341,8 +335,7 @@ void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Eva
    if (!object || !signal || !callbacks)
       return;
 
-   l = after ? object->after_signal_callbacks_list : object->before_signal_callbacks_list;
-   for ( ; l; l = l->next)
+   for (l = object->signal_callbacks; l; l = l->next)
    {
       callback = l->data;
       if (callback->signal == signal)
@@ -351,10 +344,10 @@ void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Eva
 }
 
 /**
- * @brief Adds a weak pointer to the object. A weak pointer is a pointer that will be automatically set
+ * @brief Adds a weak-pointer to the object. A weak-pointer is a pointer that will be automatically set
  * to NULL when the object is destroyed
  * @param object an object
- * @param pointer_location the location of the weak pointer
+ * @param pointer_location the location of the weak-pointer
  * @warning if the @a pointer_location is not accessible when the object is destroyed, it may segfaults. So you have
  * to use etk_object_weak_pointer_remove() when @a pointer_location becomes inaccessible
  * @see etk_object_weak_pointer_remove()
@@ -363,23 +356,23 @@ void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location)
 {
    if (!object || !pointer_location || object->destroy_me)
       return;
-   if (evas_list_find(object->weak_pointers_list, pointer_location))
+   if (evas_list_find(object->weak_pointers, pointer_location))
       return;
    
-   object->weak_pointers_list = evas_list_append(object->weak_pointers_list, pointer_location);
+   object->weak_pointers = evas_list_append(object->weak_pointers, pointer_location);
 }
 
 /**
- * @brief Removes a weak pointer from the object
+ * @brief Removes a weak-pointer from the object
  * @param object an object
- * @param pointer_location the location of the weak pointer to remove
+ * @param pointer_location the location of the weak-pointer to remove
  * @see etk_object_weak_pointer_add()
  */
 void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location)
 {
    if (!object || !pointer_location)
       return;
-   object->weak_pointers_list = evas_list_remove(object->weak_pointers_list, pointer_location);
+   object->weak_pointers = evas_list_remove(object->weak_pointers, pointer_location);
 }
 
 /**
@@ -596,7 +589,7 @@ Etk_Object *etk_object_notify(Etk_Object *object, const char *property_name)
 
    if (!object || !property_name)
       return object;
-   if (!(callbacks = evas_hash_find(object->notification_callbacks_hash, property_name)))
+   if (!(callbacks = evas_hash_find(object->notification_callbacks, property_name)))
       return object;
    
    /* We use a copy of the callback list here to avoid potential bugs
@@ -637,11 +630,11 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
    if (!object || !property_name || !callback)
       return;
 
-   if (!(list = evas_hash_find(object->notification_callbacks_hash, property_name)))
+   if (!(list = evas_hash_find(object->notification_callbacks, property_name)))
    {
       list = malloc(sizeof(Evas_List *));
       *list = NULL;
-      object->notification_callbacks_hash = evas_hash_add(object->notification_callbacks_hash, property_name, list);
+      object->notification_callbacks = evas_hash_add(object->notification_callbacks, property_name, list);
    }
 
    new_callback = malloc(sizeof(Etk_Notification_Callback));
@@ -664,7 +657,7 @@ void etk_object_notification_callback_remove(Etk_Object *object, const char *pro
 
    if (!object || !property_name || !callback)
       return;
-   if (!(list = evas_hash_find(object->notification_callbacks_hash, property_name)))
+   if (!(list = evas_hash_find(object->notification_callbacks, property_name)))
       return;
 
    for (l = *list; l; )
@@ -693,10 +686,9 @@ static void _etk_object_constructor(Etk_Object *object)
 
    object->name = NULL;
    object->data_hash = NULL;
-   object->before_signal_callbacks_list = NULL;
-   object->after_signal_callbacks_list = NULL;
-   object->notification_callbacks_hash = NULL;
-   object->weak_pointers_list = NULL;
+   object->signal_callbacks = NULL;
+   object->notification_callbacks = NULL;
+   object->weak_pointers = NULL;
    object->destroy_me = ETK_FALSE;
    
    /* Append the new object to the list */
@@ -718,21 +710,15 @@ static void _etk_object_destructor(Etk_Object *object)
    evas_hash_foreach(object->data_hash, _etk_object_data_free_cb, NULL);
    evas_hash_free(object->data_hash);
    
-   while (object->before_signal_callbacks_list)
+   while (object->signal_callbacks)
    {
-      etk_signal_callback_del(object->before_signal_callbacks_list->data);
-      object->before_signal_callbacks_list = evas_list_remove_list(object->before_signal_callbacks_list,
-         object->before_signal_callbacks_list);
-   }
-   while (object->after_signal_callbacks_list)
-   {
-      etk_signal_callback_del(object->after_signal_callbacks_list->data);
-      object->after_signal_callbacks_list = evas_list_remove_list(object->after_signal_callbacks_list,
-         object->after_signal_callbacks_list);
+      etk_signal_callback_del(object->signal_callbacks->data);
+      object->signal_callbacks = evas_list_remove_list(object->signal_callbacks,
+         object->signal_callbacks);
    }
    
-   evas_hash_foreach(object->notification_callbacks_hash, _etk_object_notification_callbacks_free_cb, NULL);
-   evas_hash_free(object->notification_callbacks_hash);
+   evas_hash_foreach(object->notification_callbacks, _etk_object_notification_callbacks_free_cb, NULL);
+   evas_hash_free(object->notification_callbacks);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -852,7 +838,7 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * etk_object_new() automatically calls the corresponding constructors of the object, from the constructor of
  * the base class to the constructor of the more derived class. @n
  *
- * You can then destroy the object with etk_object_destroy(): it sets the weak pointers of the object to NULL
+ * You can then destroy the object with etk_object_destroy(): it sets the weak-pointers of the object to NULL
  * (see etk_object_weak_pointer_add()), emits the "destroyed" signal and queues the object for freeing. Thus, the
  * destructors will only be called at the beginning of the next main loop iteration (from the destructor of the more
  * derived class to the destructor of the ultimate base class). You should then not assume that etk_object_destroy()

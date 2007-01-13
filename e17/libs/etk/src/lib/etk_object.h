@@ -53,20 +53,19 @@ struct Etk_Object
    char *name;
    Evas_Hash *data_hash;
    
-   Evas_List *before_signal_callbacks_list;
-   Evas_List *after_signal_callbacks_list;
-   Evas_Hash *notification_callbacks_hash;
-   Evas_List *weak_pointers_list;
+   Evas_List *signal_callbacks;
+   Evas_Hash *notification_callbacks;
+   Evas_List *weak_pointers;
    Etk_Bool destroy_me;
    
    Etk_Object *prev;
    Etk_Object *next;
 };
 
-void etk_object_shutdown();
-void etk_object_purge();
+void etk_object_shutdown(void);
+void etk_object_purge(void);
 
-Etk_Type   *etk_object_type_get();
+Etk_Type   *etk_object_type_get(void);
 Etk_Object *etk_object_new(Etk_Type *object_type, const char *first_property, ...);
 Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_property, va_list args);
 void        etk_object_destroy(Etk_Object *object);
@@ -80,7 +79,7 @@ Etk_Type   *etk_object_object_type_get(Etk_Object *object);
 
 void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *signal_callback, Etk_Bool after);
 void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *signal_callback);
-void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks, Etk_Bool after);
+void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks);
 
 void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location);
 void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location);
