@@ -271,6 +271,9 @@ SoundPlay(const char *name)
    if (!Conf_sound.enable)
       return;
 
+   if (!name || !*name)
+      return;
+
    sclass = SclassFind(name);
    SclassApply(sclass);
 }
