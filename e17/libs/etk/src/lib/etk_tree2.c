@@ -420,7 +420,7 @@ void etk_tree2_thaw(Etk_Tree2 *tree)
  * @param title the tile of the column
  * @param width the requested width of the column. It won't be necessary the visible width
  * of the column since it can be expanded to fit the available space
- * @param the horizontal alignment of the objects inside the column, from 0.0 (left alignment) to 1.0 (right alignment)
+ * @param alignment the horizontal alignment of the objects inside the column, from 0.0 (left alignment) to 1.0 (right alignment)
  * @return Returns the new column
  */
 Etk_Tree2_Col *etk_tree2_col_new(Etk_Tree2 *tree, const char *title, int width, float alignment)
