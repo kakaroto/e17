@@ -349,7 +349,12 @@ void etk_tree2_rows_height_set(Etk_Tree2 *tree, int rows_height)
    rows_height = ETK_MAX(rows_height, MIN_ROW_HEIGHT);
    if (tree->rows_height != rows_height)
    {
+      Etk_Range *vscrollbar;
+      
       tree->rows_height = rows_height;
+      vscrollbar = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view));
+      etk_range_increments_set(vscrollbar, rows_height, 5 * rows_height);
+      
       etk_object_notify(ETK_OBJECT(tree), "rows_height");
       etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(tree));
@@ -1560,10 +1565,14 @@ void etk_tree2_row_scroll_to(Etk_Tree2_Row *row, Etk_Bool center)
 /* Initializes the tree */
 static void _etk_tree2_constructor(Etk_Tree2 *tree)
 {
+   Etk_Range *vscrollbar;
+   
    if (!tree)
       return;
    
    tree->scrolled_view = etk_scrolled_view_new();
+   vscrollbar = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view));
+   etk_range_increments_set(vscrollbar, DEFAULT_ROW_HEIGHT, 5 * DEFAULT_ROW_HEIGHT);
    etk_widget_theme_parent_set(tree->scrolled_view, ETK_WIDGET(tree));
    etk_widget_parent_set(tree->scrolled_view, ETK_WIDGET(tree));
    etk_widget_internal_set(tree->scrolled_view, ETK_TRUE);
