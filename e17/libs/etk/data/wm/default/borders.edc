@@ -31,6 +31,22 @@ group {
 	 }
       }
       part {
+         name: "etk.event.resize";
+         type: RECT;
+	 description {
+	    state: "default" 0.0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 1.0 1.0;
+               offset: -16 -16;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -1 -1;
+            }
+         }
+      }
+      part {
          name: "title_shadow2";
          mouse_events: 0;
          description {

@@ -53,6 +53,10 @@ static void _window_realized_cb(Etk_Object *object, void *data);
 static void _window_unrealized_cb(Etk_Object *object, void *data);
 static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _window_titlebar_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _window_resize_mouse_in_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _window_resize_mouse_out_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _window_resize_mouse_down_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _window_resize_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _window_maximize_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _window_close_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 
@@ -82,9 +86,14 @@ static char *_pointer_group = NULL;
 static void (*_event_callback)(Etk_Event_Type event, Etk_Event_Global event_info) = NULL;
 static int _mouse_x = 0;
 static int _mouse_y = 0;
-static Etk_Window *_window_dragged = NULL;
+
+static Etk_Window *_window_to_drag = NULL;
 static int _window_drag_offset_x = 0;
 static int _window_drag_offset_y = 0;
+
+static Etk_Window *_window_to_resize = NULL;
+static int _window_resize_offset_x = 0;
+static int _window_resize_offset_y = 0;
 
 static Etk_Window *_focused_window = NULL;
 
@@ -740,6 +749,16 @@ static void _window_realized_cb(Etk_Object *object, void *data)
       _window_titlebar_mouse_down_cb, window);
    edje_object_signal_callback_add(engine_data->border, "mouse,up,1*", "etk.event.titlebar",
       _window_titlebar_mouse_up_cb, window);
+   
+   edje_object_signal_callback_add(engine_data->border, "mouse,in", "etk.event.resize",
+      _window_resize_mouse_in_cb, window);
+   edje_object_signal_callback_add(engine_data->border, "mouse,out", "etk.event.resize",
+      _window_resize_mouse_out_cb, window);
+   edje_object_signal_callback_add(engine_data->border, "mouse,down,1*", "etk.event.resize",
+      _window_resize_mouse_down_cb, window);
+   edje_object_signal_callback_add(engine_data->border, "mouse,up,1*", "etk.event.resize",
+      _window_resize_mouse_up_cb, window);
+   
    edje_object_signal_callback_add(engine_data->border, "mouse,clicked,1*", "etk.event.maximize",
       _window_maximize_mouse_up_cb, window);
    edje_object_signal_callback_add(engine_data->border, "mouse,clicked,1*", "etk.event.close",
@@ -778,7 +797,7 @@ static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const c
    
    if (!engine_data->maximized)
    {
-      _window_dragged = window;
+      _window_to_drag = window;
       _window_drag_offset_x = _mouse_x - engine_data->border_position.x;
       _window_drag_offset_y = _mouse_y - engine_data->border_position.y;
    }
@@ -789,7 +808,51 @@ static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const c
 /* Called when the titlebar of the window is released */
 static void _window_titlebar_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   _window_dragged = NULL;
+   _window_to_drag = NULL;
+}
+
+/* Called when the mouse pointer enters the resize-rect of the window's border */
+static void _window_resize_mouse_in_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Etk_Window *window;
+   
+   if (!(window = ETK_WINDOW(data)))
+      return;
+   etk_toplevel_pointer_push(ETK_TOPLEVEL(window), ETK_POINTER_RESIZE_BR);
+}
+
+/* Called when the mouse pointer leaves the resize-rect of the window's border */
+static void _window_resize_mouse_out_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Etk_Window *window;
+   
+   if (!(window = ETK_WINDOW(data)))
+      return;
+   etk_toplevel_pointer_pop(ETK_TOPLEVEL(window), ETK_POINTER_RESIZE_BR);
+}
+
+/* Called when the mouse presses the resize-rect of the window's border */
+static void _window_resize_mouse_down_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Etk_Window *window;
+   Etk_Engine_Window_Data *engine_data;
+   
+   if (!(window = ETK_WINDOW(data)))
+      return;
+   engine_data = window->engine_data;
+   
+   if (!engine_data->maximized)
+   {
+      _window_to_resize = window;
+      _window_resize_offset_x = _mouse_x - engine_data->size.w;
+      _window_resize_offset_y = _mouse_y - engine_data->size.h;
+   }
+}
+
+/* Called when the mouse releases the resize-rect of the window's border */
+static void _window_resize_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   _window_to_resize = NULL;
 }
 
 /* Called when the mouse releases the maximize button */
@@ -823,8 +886,11 @@ static int _mouse_move_handler_cb(void *data, int ev_type, void *ev)
       evas_object_move(_pointer_object, _mouse_x, _mouse_y);
    
    /* Move the window to drag */
-   if (_window_dragged)
-      etk_window_move(_window_dragged, _mouse_x - _window_drag_offset_x, _mouse_y - _window_drag_offset_y);
+   if (_window_to_drag)
+      etk_window_move(_window_to_drag, _mouse_x - _window_drag_offset_x, _mouse_y - _window_drag_offset_y);
+   /* Or resize the window to resize */
+   else if (_window_to_resize)
+      etk_window_resize(_window_to_resize, _mouse_x - _window_resize_offset_x, _mouse_y - _window_resize_offset_y);
    
    return 1;
 }
@@ -840,8 +906,11 @@ static int _mouse_move_X_handler_cb(void *data, int ev_type, void *ev)
       evas_object_move(_pointer_object, _mouse_x, _mouse_y);
    
    /* Move the window to drag */
-   if (_window_dragged)
-      etk_window_move(_window_dragged, _mouse_x - _window_drag_offset_x, _mouse_y - _window_drag_offset_y);
+   if (_window_to_drag)
+      etk_window_move(_window_to_drag, _mouse_x - _window_drag_offset_x, _mouse_y - _window_drag_offset_y);
+   /* Or resize the window to resize */
+   else if (_window_to_resize)
+      etk_window_resize(_window_to_resize, _mouse_x - _window_resize_offset_x, _mouse_y - _window_resize_offset_y);
    
    return 1;
 }

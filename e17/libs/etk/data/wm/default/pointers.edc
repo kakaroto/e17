@@ -97,3 +97,28 @@ group {
       }
    }
 }
+
+group {
+   name: "etk/wm_pointer_resize_br";
+   min: 18 18;
+   parts {
+      part {
+	 name: "pointer";
+         mouse_events: 0;
+	 description {
+	    state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -17 -17;
+            }
+            rel2 {
+               relative: 0.0 0.0;
+               offset: 0 0;
+            }
+	    image {
+	       normal: "pointer_resize_br.png";
+            }
+	 }
+      }
+   }
+}

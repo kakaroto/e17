@@ -45,8 +45,7 @@ void etk_test_entry_window_create(void *data)
    image = etk_image_new_from_stock(ETK_STOCK_DOCUMENT_PRINT, ETK_STOCK_SMALL);
    etk_entry_image_set(ETK_ENTRY(_entry_normal), ETK_ENTRY_IMAGE_PRIMARY, ETK_IMAGE(image));
    etk_signal_connect("mouse_click", ETK_OBJECT(image), ETK_CALLBACK(_etk_test_entry_normal_print_cb), NULL);
-   etk_entry_add_clear_button(ETK_ENTRY(_entry_normal));
-
+   etk_entry_clear_button_add(ETK_ENTRY(_entry_normal));
 
    _label_normal = etk_label_new(NULL);
    etk_table_attach(ETK_TABLE(table), _label_normal, 0, 1, 1, 0, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);

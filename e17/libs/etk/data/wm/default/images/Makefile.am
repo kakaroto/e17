@@ -18,4 +18,5 @@ EXTRA_DIST = \
             pointer_default.png \
             pointer_text_edit.png \
             pointer_h_double_arrow.png \
-            pointer_v_double_arrow.png
+            pointer_v_double_arrow.png \
+            pointer_resize_br.png

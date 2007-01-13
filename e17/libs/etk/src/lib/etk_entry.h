@@ -19,10 +19,7 @@
 /** Checks if the object is an Etk_Entry */
 #define ETK_IS_ENTRY(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_ENTRY_TYPE))
 
-/**
- * @enum Etk_Entry_Image_Position
- * @brief The position of the image in the entry
- */
+/** @brief The position of the image in the entry */
 typedef enum Etk_Entry_Image_Position
 {
    ETK_ENTRY_IMAGE_PRIMARY = 1,        /**< The image is primary, usually to the left of the editable object */
@@ -64,7 +61,7 @@ void        etk_entry_clear(Etk_Entry *entry);
 void        etk_entry_image_set(Etk_Entry *entry, Etk_Entry_Image_Position position, Etk_Image *image);
 Etk_Image  *etk_entry_image_get(Etk_Entry *entry, Etk_Entry_Image_Position position);
 void 	    etk_entry_image_highlight_set(Etk_Entry *entry, Etk_Entry_Image_Position position, Etk_Bool highlight);
-void 	    etk_entry_add_clear_button(Etk_Entry *entry);
+void 	    etk_entry_clear_button_add(Etk_Entry *entry);
 void        etk_entry_password_mode_set(Etk_Entry *entry, Etk_Bool password_mode);
 Etk_Bool    etk_entry_password_mode_get(Etk_Entry *entry);
 

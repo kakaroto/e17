@@ -269,7 +269,7 @@ void etk_entry_image_highlight_set(Etk_Entry *entry, Etk_Entry_Image_Position po
  * @param position image position
  * @return Returns the image of the entry
  */
-void etk_entry_add_clear_button(Etk_Entry *entry)
+void etk_entry_clear_button_add(Etk_Entry *entry)
 {
    Etk_Widget *image;
 
@@ -292,9 +292,9 @@ Etk_Image *etk_entry_image_get(Etk_Entry *entry, Etk_Entry_Image_Position positi
       return NULL;
 
    if (position == ETK_ENTRY_IMAGE_PRIMARY)
-       return entry->primary_image;
+      return entry->primary_image;
    else if (position == ETK_ENTRY_IMAGE_SECONDARY)
-       return entry->secondary_image;
+      return entry->secondary_image;
 
    return NULL;
 }

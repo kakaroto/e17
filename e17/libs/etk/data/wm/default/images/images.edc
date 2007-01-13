@@ -18,4 +18,5 @@ images {
    image: "pointer_text_edit.png" COMP;
    image: "pointer_h_double_arrow.png" COMP;
    image: "pointer_v_double_arrow.png" COMP;
+   image: "pointer_resize_br.png" COMP;
 }
