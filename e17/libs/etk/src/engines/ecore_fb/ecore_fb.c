@@ -11,7 +11,7 @@
 
 /* TODO: Debug */
 #include <Ecore_X.h>
-#define USE_X11 0
+#define USE_X11 1
 
 #define WM_THEME_FILE   (PACKAGE_DATA_DIR "/wm/default.edj")
 
@@ -53,6 +53,8 @@ static void _window_realized_cb(Etk_Object *object, void *data);
 static void _window_unrealized_cb(Etk_Object *object, void *data);
 static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _window_titlebar_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _window_maximize_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _window_close_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 
 /* Event and mouse functions */
 static void _event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info));
@@ -384,7 +386,7 @@ static void _window_move(Etk_Window *window, int x, int y)
    engine_data = window->engine_data;
    engine_data->border_position.x = x;
    engine_data->border_position.y = y;
-   if (engine_data->border)
+   if (engine_data->border && !engine_data->maximized)
       evas_object_move(engine_data->border, x, y);
 }
 
@@ -396,7 +398,7 @@ static void _window_resize(Etk_Window *window, int w, int h)
    engine_data = window->engine_data;
    engine_data->size.w = ETK_MAX(engine_data->min_size.w, w);
    engine_data->size.h = ETK_MAX(engine_data->min_size.h, h);
-   if (engine_data->border && ETK_WIDGET(window)->smart_object)
+   if (engine_data->border && ETK_WIDGET(window)->smart_object && !engine_data->maximized)
    {
       int border_w, border_h;
       
@@ -449,8 +451,13 @@ static void _window_size_get(Etk_Window *window, int *w, int *h)
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;
-   if (w)   *w = engine_data->size.w;
-   if (h)   *h = engine_data->size.h;
+   if (engine_data->maximized && ETK_WIDGET(window)->smart_object)
+      evas_object_geometry_get(ETK_WIDGET(window)->smart_object, NULL, NULL, w, h);
+   else
+   {
+      if (w)   *w = engine_data->size.w;
+      if (h)   *h = engine_data->size.h;
+   }
 }
 
 /* Gets the geometry of the screen containing the window */
@@ -471,6 +478,22 @@ static void _window_maximized_set(Etk_Window *window, Etk_Bool maximized)
    if (engine_data->maximized != maximized)
    {
       engine_data->maximized = maximized;
+      if (engine_data->border)
+      {
+         if (maximized)
+         {
+            evas_object_move(engine_data->border, 0, 0);
+            evas_object_resize(engine_data->border, _fb_width, _fb_height);
+         }
+         else
+         {
+            evas_object_move(engine_data->border, engine_data->border_position.x, engine_data->border_position.y);
+            etk_window_resize(window, engine_data->size.w, engine_data->size.h);
+         }
+         /* TODO: notify geometry.. */
+      }
+      else
+      
       etk_object_notify(ETK_OBJECT(window), "maximized");
    }
 }
@@ -699,8 +722,17 @@ static void _window_realized_cb(Etk_Object *object, void *data)
    edje_object_part_swallow(engine_data->border, "etk.swallow.content", ETK_WIDGET(window)->smart_object);
    edje_object_size_min_calc(engine_data->border, &border_w, &border_h);
    
-   evas_object_move(engine_data->border, engine_data->border_position.x, engine_data->border_position.y);
-   evas_object_resize(engine_data->border, border_w, border_h);
+   if (engine_data->maximized)
+   {
+      evas_object_move(engine_data->border, 0, 0);
+      evas_object_resize(engine_data->border, _fb_width, _fb_height);
+   }
+   else
+   {
+      evas_object_move(engine_data->border, engine_data->border_position.x, engine_data->border_position.y);
+      evas_object_resize(engine_data->border, border_w, border_h);
+   }
+   
    if (engine_data->visible)
       evas_object_show(engine_data->border);
    
@@ -708,6 +740,10 @@ static void _window_realized_cb(Etk_Object *object, void *data)
       _window_titlebar_mouse_down_cb, window);
    edje_object_signal_callback_add(engine_data->border, "mouse,up,1*", "etk.event.titlebar",
       _window_titlebar_mouse_up_cb, window);
+   edje_object_signal_callback_add(engine_data->border, "mouse,clicked,1*", "etk.event.maximize",
+      _window_maximize_mouse_up_cb, window);
+   edje_object_signal_callback_add(engine_data->border, "mouse,clicked,1*", "etk.event.close",
+      _window_close_mouse_up_cb, window);
    
    if (_pointer_object)
       evas_object_raise(_pointer_object);
@@ -740,9 +776,12 @@ static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const c
       return;
    engine_data = window->engine_data;
    
-   _window_dragged = window;
-   _window_drag_offset_x = _mouse_x - engine_data->border_position.x;
-   _window_drag_offset_y = _mouse_y - engine_data->border_position.y;
+   if (!engine_data->maximized)
+   {
+      _window_dragged = window;
+      _window_drag_offset_x = _mouse_x - engine_data->border_position.x;
+      _window_drag_offset_y = _mouse_y - engine_data->border_position.y;
+   }
    
    etk_window_raise(window);
 }
@@ -751,6 +790,21 @@ static void _window_titlebar_mouse_down_cb(void *data, Evas_Object *obj, const c
 static void _window_titlebar_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    _window_dragged = NULL;
+}
+
+/* Called when the mouse releases the maximize button */
+static void _window_maximize_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Etk_Window *window;
+   
+   if (!(window = ETK_WINDOW(data)))
+      return;
+   etk_window_maximized_set(window, !etk_window_maximized_get(window));
+}
+
+/* Called when the mouse releases the close button */
+static void _window_close_mouse_up_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
 }
 
 /* Called when the mouse is moved */
