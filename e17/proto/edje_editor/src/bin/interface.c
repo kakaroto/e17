@@ -352,6 +352,9 @@ UpdateRectFrame(void)
    if (Cur.eps){
       printf("Update Rect Frame: %s (%d %d %d %d)\n",Cur.eps->name,Cur.eps->color.r,Cur.eps->color.g,Cur.eps->color.b,Cur.eps->color.a);
 
+      etk_signal_block("value_changed", ETK_OBJECT(UI_ColorAlphaSlider), ETK_CALLBACK(on_ColorAlphaSlider_value_changed));
+      etk_signal_block("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
+
       //Set ColorPicker
       color.r = Cur.eps->color.r;
       color.g = Cur.eps->color.g;
@@ -365,6 +368,9 @@ UpdateRectFrame(void)
 
       //Set Color rect
       evas_object_color_set(RectColorObject,Cur.eps->color.r,Cur.eps->color.g,Cur.eps->color.b,255);
+
+      etk_signal_unblock("value_changed", ETK_OBJECT(UI_ColorAlphaSlider), ETK_CALLBACK(on_ColorAlphaSlider_value_changed));
+      etk_signal_unblock("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
    }
 }
 
@@ -379,7 +385,8 @@ UpdateImageFrame(void)
    etk_signal_block("value_changed",ETK_OBJECT(UI_BorderRightSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
    etk_signal_block("value_changed",ETK_OBJECT(UI_BorderTopSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
    etk_signal_block("value_changed",ETK_OBJECT(UI_BorderBottomSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
-   etk_signal_block("value_changed", ETK_OBJECT(UI_ImageAlphaSlider), ETK_CALLBACK(on_ImageAlphaSlider_value_changed));
+   etk_signal_block("value_changed",ETK_OBJECT(UI_ImageAlphaSlider),ETK_CALLBACK(on_ImageAlphaSlider_value_changed));
+   etk_signal_block("active_item_changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed));
 
    //Set the images combobox
    if (Cur.eps->image.normal)
@@ -413,6 +420,7 @@ UpdateImageFrame(void)
    etk_signal_unblock("value_changed", ETK_OBJECT(UI_BorderTopSpinner), on_BorderSpinner_value_changed);
    etk_signal_unblock("value_changed", ETK_OBJECT(UI_BorderBottomSpinner), on_BorderSpinner_value_changed);
    etk_signal_unblock("value_changed", ETK_OBJECT(UI_ImageAlphaSlider), on_ImageAlphaSlider_value_changed);
+   etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed));
 
 }
 
@@ -992,12 +1000,7 @@ create_group_frame(void)
 Etk_Widget*
 create_tree_frame(void)
 {
-   Etk_Widget *frame;
    Etk_Tree2_Col *col;
-
-   //frame
-   frame = etk_frame_new("");
-
 
    //UI_PartsTree
    UI_PartsTree = etk_tree2_new();
@@ -1019,12 +1022,9 @@ create_tree_frame(void)
    etk_tree2_col_expand_set (col,FALSE);
    etk_tree2_build(ETK_TREE2(UI_PartsTree));
 
-   etk_container_add(ETK_CONTAINER(frame), UI_PartsTree);
-
-
    etk_signal_connect("row_selected", ETK_OBJECT(UI_PartsTree), ETK_CALLBACK(on_PartsTree_row_selected), NULL);
 
-   return frame;
+   return UI_PartsTree;
 }
 
 Etk_Widget*
@@ -1692,17 +1692,10 @@ create_main_window(void)
    //Position Frame
    etk_box_append(ETK_BOX(vbox), create_position_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
 
-
-
-   //canvas frame
-   frame = etk_frame_new(NULL);
-   etk_container_border_width_set (ETK_CONTAINER(frame), 0);
-   etk_widget_size_request_set(frame, 300, 300);
-   etk_box_append(ETK_BOX(hbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
    //canvas
    ETK_canvas = etk_canvas_new ();
-   etk_container_add(ETK_CONTAINER(frame), ETK_WIDGET(ETK_canvas));
+   etk_widget_size_request_set(ETK_canvas, 300, 300);
+   etk_box_append(ETK_BOX(hbox), ETK_canvas, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //canvas bg
    EV_canvas_bg = evas_object_image_add(etk_widget_toplevel_evas_get(ETK_canvas));
@@ -1710,6 +1703,7 @@ create_main_window(void)
    evas_object_image_fill_set( EV_canvas_bg,	0,0,128,128);
    etk_canvas_object_add (ETK_CANVAS(ETK_canvas), EV_canvas_bg);
    evas_object_show(EV_canvas_bg);
+
    //canvas shadow
    EV_canvas_shadow = evas_object_image_add(etk_widget_toplevel_evas_get(ETK_canvas));
    evas_object_image_file_set(EV_canvas_shadow, EdjeFile, "images/1");
