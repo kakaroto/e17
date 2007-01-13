@@ -54,6 +54,8 @@ _config_screenshot_module (Config_Item * ci)
   E_Container *con;
   char buf[4096];
 
+   if (e_config_dialog_find("Screenshot", "_screenshot_config_dialog")) return;
+   
   v = E_NEW (E_Config_Dialog_View, 1);
 
   /* methods */
@@ -66,12 +68,12 @@ _config_screenshot_module (Config_Item * ci)
 
   snprintf (buf, sizeof (buf), "%s/module.edj",
 	    e_module_dir_get (ss_config->module));
-  /* create config diaolg */
-  con = e_container_current_get (e_manager_current_get ());
-  cfd =
-    e_config_dialog_new (con, D_ ("Screenshot Configuration"), "ScreenShot", "_e_modules_screenshot_config_dialog", buf, 0, v, ci);
-  ss_config->config_dialog = cfd;
 
+   con = e_container_current_get (e_manager_current_get ());
+   cfd =
+     e_config_dialog_new (con, D_ ("Screenshot Configuration"), "Screenshot", 
+			  "_screenshot_config_dialog", buf, 0, v, ci);
+   ss_config->config_dialog = cfd;
 }
 
 static void
@@ -373,8 +375,7 @@ _prompt_cb_change (void *data, Evas_Object * obj)
   E_Config_Dialog_Data *cfdata;
 
   cfdata = data;
-  if (!cfdata)
-    return;
+  if (!cfdata) return;
 
   if (!cfdata->prompt)
     {
