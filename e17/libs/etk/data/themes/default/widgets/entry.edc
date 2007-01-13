@@ -1,6 +1,10 @@
 group {
    name: "etk/entry";
    min: 120 20;
+   data {
+      item: "highlight_image_color" "242 222 181 255";	
+      item: "inner_part_margin" 2;	/* Margin between images and the editable */
+   }
    parts {
       part {
          name: "entry";
@@ -8,11 +12,11 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.5;
-               offset: 0 -10;
+               offset: 0 -11;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -1 9;
+               offset: -1 10;
             }
             image {
                normal: "entry.png";
@@ -24,7 +28,7 @@ group {
          }
       }
       part {
-         name: "etk.swallow.text";
+         name: "etk.swallow.content";
          type: SWALLOW;
          description {
             state: "default" 0.0;
@@ -35,7 +39,7 @@ group {
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -5 -3;
+               offset: -5 -4;
                to: "entry";
             }
          }
