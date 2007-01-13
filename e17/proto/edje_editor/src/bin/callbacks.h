@@ -31,5 +31,7 @@ void on_ImageComboBox_changed          (Etk_Combobox *combobox, void *data);
 void on_EffectComboBox_changed         (Etk_Combobox *combobox, void *data);
 void on_AlertDialog_response           (Etk_Dialog *dialog, int response_id, void *data);
 void on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data);
-void on_TextAlphaSlider_value_changed	(Etk_Object *object, double value, void *data);
+void on_TextAlphaSlider_value_changed  (Etk_Object *object, double value, void *data);
 void on_GroupNameEntry_text_changed    (Etk_Object *object, void *data);
+void on_AspectSpinner_value_changed    (Etk_Range *range, double value, void *data);
+void on_AspectComboBox_changed         (Etk_Combobox *combobox, void *data);

@@ -313,7 +313,7 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
    }
 }
 
-void 
+void
 on_StateEntry_text_changed(Etk_Object *object, void *data)
 {
    Etk_Tree2_Col *col1=NULL;
@@ -341,7 +341,7 @@ on_StateEntry_text_changed(Etk_Object *object, void *data)
    }
 }
 
-void 
+void
 on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    char buf[4096];
@@ -367,6 +367,22 @@ on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
          col1,EdjeFile,"DESC.PNG",buf,NULL);
    }
 }
+
+void
+on_AspectSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("Value Changed Signal on AspectMinSpinner EMITTED\n");
+   engrave_part_state_aspect_set(Cur.eps,
+      etk_range_value_get(UI_AspectMinSpinner),
+      etk_range_value_get(UI_AspectMaxSpinner));
+}
+
+void
+on_AspectComboBox_changed(Etk_Combobox *combobox, void *data)
+{
+   printf("Active Item Changed Signal on AspectComboBox EMITTED\n");
+}
+
 /* Image Frame Callbacks */
 void
 on_ImageComboBox_changed(Etk_Combobox *combobox, void *data)
