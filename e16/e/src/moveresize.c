@@ -229,6 +229,8 @@ ActionMoveResume(void)
    if (!ewin)
       return 0;
 
+   GrabPointerSet(EoGetWin(ewin), ECSR_ACT_MOVE, 1);
+
    fl = (Mode_mr.mode == 5) ? 4 : 0;
    if (Mode.mode == MODE_MOVE_PENDING)
      {
