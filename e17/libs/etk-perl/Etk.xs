@@ -5716,19 +5716,6 @@ etk_window_iconified_get(window)
 	IconifiedGet=1
 
 Etk_Bool
-etk_window_dnd_aware_get(window)
-	Etk_Window *	window
-      ALIAS:
-	DndAwareGet=1
-
-void
-etk_window_dnd_aware_set(window, on)
-	Etk_Window *	window
-	Etk_Bool	on
-      ALIAS:
-	DndAwareSet=1
-
-Etk_Bool
 etk_window_focused_get(window)
 	Etk_Window *	window
       ALIAS:
@@ -5893,6 +5880,26 @@ etk_window_wmclass_set(window, window_name, window_class)
 	char *	window_class
       ALIAS:
 	WmclassSet=1
+
+void
+etk_window_delete_request(window)
+	Etk_Window *	window
+	ALIAS:
+	DeleteRequest=1
+
+void
+etk_window_stacking_set(window, stacking)
+	Etk_Window *    window
+	Etk_Window_Stacking stacking
+	ALIAS:
+	StackingSet=1
+
+Etk_Window_Stacking
+etk_window_stacking_get(window)
+	Etk_Window *    window
+	ALIAS:
+	StackingGet=1
+
 
 MODULE = Etk::Spinner	PACKAGE = Etk::Spinner	PREFIX = etk_spinner_
 

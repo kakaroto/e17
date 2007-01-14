@@ -59,6 +59,7 @@ our %EXPORT_TAGS = (
    image	=> [qw/ImageFile ImageEdje ImageStock ImageEvasObject ImageData/],
    entry	=> [qw/ImagePrimary ImageSecondary/],
    popupwindow	=> [qw/BelowRight BelowLeft AboveRight AboveLeft/],
+   window	=> [qw/Normal Above Below/],
    );
 
 my @all = ();
@@ -285,3 +286,12 @@ use constant {
    AboveRight=>2,
    AboveLeft=>3
 };
+
+# window stacking
+use constant {
+   Normal=>0,
+   Above=>1,
+   Below=>2
+};
+
+

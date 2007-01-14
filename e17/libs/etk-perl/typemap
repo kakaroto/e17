@@ -115,6 +115,7 @@ Etk_Type *					T_PTROBJ
 Etk_Type **					T_PTROBJ
 Etk_Widget *					T_PTR_WIDGET
 Etk_Window *					T_PTROBJ_ETK
+Etk_Window_Stacking				T_IV
 Evas *						T_PTROBJ
 Evas_List *					T_PTROBJ_EVAS_LIST
 Evas_List **					T_PTROBJ
