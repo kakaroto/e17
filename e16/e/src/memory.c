@@ -62,7 +62,7 @@ Estrdup(const char *s)
 }
 
 char               *
-Estrndup(const char *s, int n)
+Estrndup(const char *s, size_t n)
 {
 #if USE_LIBC_STRNDUP
    if (s)

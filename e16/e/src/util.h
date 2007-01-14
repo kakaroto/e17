@@ -54,7 +54,7 @@
 char               *Estrtrim(char *s);
 
 char               *Estrdup(const char *s);
-char               *Estrndup(const char *s, int n);
+char               *Estrndup(const char *s, size_t n);
 char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
 
 char              **StrlistDup(char **lst, int num);
