@@ -63,7 +63,7 @@ main (int argc, char *argv[])
     etk_tree2_multiple_select_set (ETK_TREE2 (tree), ETK_FALSE);
 
     /* column */
-    col = etk_tree2_col_new (ETK_TREE2 (tree), "Column", 130, 0.0);
+    col = etk_tree2_col_new (ETK_TREE2 (tree), "Index", 130, 0.0);
     etk_tree2_col_model_add (col, etk_tree2_model_text_new());
 
     etk_tree2_build (ETK_TREE2 (tree));
@@ -114,7 +114,9 @@ main (int argc, char *argv[])
     etk_table_attach_default (ETK_TABLE (table), list, 0, 0, 0, 1);
   etk_widget_show (list);
 
-  etk_table_attach_default (ETK_TABLE (table), pdf, 1, 1, 0, 1);
+  etk_table_attach (ETK_TABLE (table), pdf,
+                    1, 1, 0, 1,
+                    0, 0, ETK_TABLE_NONE);
   etk_widget_show (pdf);
   
   etk_widget_show (window);
