@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-07 12:11+0100\n"
+"POT-Creation-Date: 2007-01-13 14:47+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -758,7 +758,7 @@ msgid ""
 msgstr "Е: Виртуални полетаДиалог за настройки\n"
 
 #: src/dialog.c:888 src/dialog.c:2180 src/dialog.c:2211 src/events.c:79
-#: src/handlers.c:194 src/sound.c:308
+#: src/handlers.c:194 src/sound.c:311
 msgid "OK"
 msgstr "Да"
 
@@ -2195,11 +2195,11 @@ msgstr ""
 "Enlightenment ще продължи да работи, но може\n"
 "да погледнете вашата конфигурация.\n"
 
-#: src/sound.c:308
+#: src/sound.c:311
 msgid "Error initialising sound"
 msgstr "Грешка при пускането на звука"
 
-#: src/sound.c:309
+#: src/sound.c:312
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2209,11 +2209,11 @@ msgstr ""
 "свързването със звуковия сървър (Esound). Поддръжката на звукът\n"
 "ще бъде спряна.\n"
 
-#: src/sound.c:427
+#: src/sound.c:430
 msgid "Enable sounds"
 msgstr "Включи звукове"
 
-#: src/sound.c:433
+#: src/sound.c:436
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2221,15 +2221,15 @@ msgstr ""
 "Звуковите ефекти са недостъпни, защото EsounD не е\n"
 "бил намерен по време на компилация."
 
-#: src/sound.c:440
+#: src/sound.c:443
 msgid "Sound"
 msgstr "Звук"
 
-#: src/sound.c:441
+#: src/sound.c:444
 msgid "Audio Settings"
 msgstr "Настройки на звука"
 
-#: src/sound.c:444
+#: src/sound.c:447
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

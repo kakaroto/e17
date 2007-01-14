@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-13 18:27+0100\n"
+"POT-Creation-Date: 2007-01-13 14:47+0100\n"
 "PO-Revision-Date: 2007-01-07 14:48+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -1200,16 +1200,42 @@ msgstr "Brug \"help <kommando>\" for individuel beskrivelse\n"
 msgid "         <command>     : <description>\n"
 msgstr "         <kommando> : <beskrivelse>\n"
 
-#: src/main.c:583
+#: src/main.c:582
 #, c-format
 msgid ""
-"%s must be a directory in which you have\n"
-"read, write, and execute permission.\n"
+"The directory %s is apparently not a directory\n"
+"This is a fatal condition.\n"
+"Please remove this file\n"
 msgstr ""
-"%s skal være et katalog hvor du har\n"
-"læse, skrive og eksekveringsret.\n"
 
-#: src/main.c:693
+#: src/main.c:589
+#, c-format
+msgid ""
+"Do not have execute access to %s\n"
+"This is a fatal condition.\n"
+"Please check the ownership and permissions of this\n"
+"directory and take steps to rectify this.\n"
+msgstr ""
+
+#: src/main.c:597
+#, c-format
+msgid ""
+"Do not have read access to %s\n"
+"This is a fatal condition.\n"
+"Please check the ownership and permissions of this\n"
+"directory and take steps to rectify this.\n"
+msgstr ""
+
+#: src/main.c:604
+#, c-format
+msgid ""
+"Do not have write access to %s\n"
+"This is a fatal condition.\n"
+"Please check the ownership and permissions of this\n"
+"directory and take steps to rectify this.\n"
+msgstr ""
+
+#: src/main.c:717
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1226,7 +1252,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/main.c:707
+#: src/main.c:731
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -2727,3 +2753,10 @@ msgstr "Andet"
 #: config/strings.c:187
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment Epplets"
+
+#~ msgid ""
+#~ "%s must be a directory in which you have\n"
+#~ "read, write, and execute permission.\n"
+#~ msgstr ""
+#~ "%s skal være et katalog hvor du har\n"
+#~ "læse, skrive og eksekveringsret.\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-07 12:11+0100\n"
+"POT-Creation-Date: 2007-01-13 14:47+0100\n"
 "PO-Revision-Date: 2005-04-20 23:11+0300\n"
 "Last-Translator: Ludwig Noujarret <ludwig@noujarret.com>\n"
 "Language-Team:  <fr@li.org>\n"
@@ -762,7 +762,7 @@ msgstr ""
 "Bureaux virtuels\n"
 
 #: src/dialog.c:888 src/dialog.c:2180 src/dialog.c:2211 src/events.c:79
-#: src/handlers.c:194 src/sound.c:308
+#: src/handlers.c:194 src/sound.c:311
 msgid "OK"
 msgstr "OK"
 
@@ -2197,11 +2197,11 @@ msgstr ""
 "Enlightenment va continuer à fonctionner mais\n"
 "vous devriez vérifier votre configuration.\n"
 
-#: src/sound.c:308
+#: src/sound.c:311
 msgid "Error initialising sound"
 msgstr "Erreur lors de l'initialisation du son"
 
-#: src/sound.c:309
+#: src/sound.c:312
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2210,11 +2210,11 @@ msgstr ""
 "Les sons sont activés, mais il y a eu une erreur de communication\n"
 "avec le serveur audio (Esound). Le son sera maintenant désactivé.\n"
 
-#: src/sound.c:427
+#: src/sound.c:430
 msgid "Enable sounds"
 msgstr "Activer les sons"
 
-#: src/sound.c:433
+#: src/sound.c:436
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2222,15 +2222,15 @@ msgstr ""
 "Les sons ne sont pas disponibles car Esound n'était\n"
 "pas présent lors de la compilation."
 
-#: src/sound.c:440
+#: src/sound.c:443
 msgid "Sound"
 msgstr "Son"
 
-#: src/sound.c:441
+#: src/sound.c:444
 msgid "Audio Settings"
 msgstr "Paramètres Audio"
 
-#: src/sound.c:444
+#: src/sound.c:447
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

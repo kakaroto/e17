@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-07 12:11+0100\n"
+"POT-Creation-Date: 2007-01-13 14:47+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -709,7 +709,7 @@ msgid ""
 msgstr ""
 
 #: src/dialog.c:888 src/dialog.c:2180 src/dialog.c:2211 src/events.c:79
-#: src/handlers.c:194 src/sound.c:308
+#: src/handlers.c:194 src/sound.c:311
 msgid "OK"
 msgstr "OK"
 
@@ -2015,22 +2015,22 @@ msgid ""
 "may wish to check your configuration settings.\n"
 msgstr ""
 
-#: src/sound.c:308
+#: src/sound.c:311
 msgid "Error initialising sound"
 msgstr ""
 
-#: src/sound.c:309
+#: src/sound.c:312
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
 
-#: src/sound.c:427
+#: src/sound.c:430
 msgid "Enable sounds"
 msgstr "Zet geluiden aan"
 
-#: src/sound.c:433
+#: src/sound.c:436
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2038,15 +2038,15 @@ msgstr ""
 "Audio is niet beschikbaar omdat EsounD niet\n"
 "beschikbaar was tijdens het compileren"
 
-#: src/sound.c:440
+#: src/sound.c:443
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:441
+#: src/sound.c:444
 msgid "Audio Settings"
 msgstr "Audio Instellingen"
 
-#: src/sound.c:444
+#: src/sound.c:447
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
