@@ -356,7 +356,6 @@ e_modapi_shutdown(E_Module *m)
 	E_FREE(ci);
      }
    E_FREE(slide_config);
-   slide_config = NULL;
    E_CONFIG_DD_FREE(conf_item_edd);
    E_CONFIG_DD_FREE(conf_edd);
    return 1;
