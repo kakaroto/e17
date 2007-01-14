@@ -58,6 +58,7 @@ our %EXPORT_TAGS = (
     ShadowRight ShadowTop ShadowBottom ShadowLeftRight ShadowTopBottom/],
    image	=> [qw/ImageFile ImageEdje ImageStock ImageEvasObject ImageData/],
    entry	=> [qw/ImagePrimary ImageSecondary/],
+   popupwindow	=> [qw/BelowRight BelowLeft AboveRight AboveLeft/],
    );
 
 my @all = ();
@@ -277,3 +278,10 @@ use constant {
    ImageSecondary=>2
 };
 
+# popup window
+use constant {
+   BelowRight=>0,
+   BelowLeft=>1,
+   AboveRight=>2,
+   AboveLeft=>3
+};

@@ -2317,11 +2317,6 @@ etk_main_iterate()
 	Iterate=1
 
 void
-etk_main_iteration_queue()
-      ALIAS:
-	IterationQueue=1
-
-void
 etk_main_quit()
       ALIAS:
 	Quit=1
@@ -3095,6 +3090,36 @@ etk_popup_window_popup_at_xy(popup_window, x, y)
       ALIAS:
 	PopupAtXy=1
 
+void
+etk_popup_window_parent_set(popup_window, parent)
+	Etk_Popup_Window *      popup_window
+	Etk_Popup_Window *      parent
+	ALIAS:
+	ParentSet=1
+
+Etk_Popup_Window *
+etk_popup_window_parent_get(popup_window)
+	Etk_Popup_Window *      popup_window
+	ALIAS:
+	ParentGet=1
+
+void
+etk_popup_window_popup_in_direction(popup_window, direction)
+	Etk_Popup_Window *      popup_window
+	Etk_Popup_Direction	direction
+	ALIAS:
+	PopupInDirection=1
+
+void
+etk_popup_window_popup_at_xy_in_direction(popup_window, x, y, direction)
+	Etk_Popup_Window *      popup_window
+	int	x
+	int	y
+	Etk_Popup_Direction     direction
+	ALIAS:
+	PopupAtXYInDirection=1
+
+	
 MODULE = Etk::ProgressBar	PACKAGE = Etk::ProgressBar	PREFIX = etk_progress_bar_
 	
 double
