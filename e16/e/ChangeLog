@@ -4155,3 +4155,24 @@ Sat Dec 16 15:43:41 CET 2006
 (Kim)
 
 --- 0.16.8.5 ---
+
+-------------------------------------------------------------------------------
+
+Sun Jan 14 11:38:31 CET 2007
+(Kim)
+
+--- 0.16.8.6 0.01 ---
+Refactor iconbox animation code.
+Japanese translation update (Yasufumi Haga).
+Fix bug in dockapp placement (wrapping at right/lower edge). Fix by davey?
+Clean out unused duplicate backgrounds at startup.
+Minor reorganisation of some ewin internals.
+Fix build with ecore (ecore_list_find implemented in ecore).
+Move theme path related stuff out of eimage.c, add function to get image data.
+Add title to Window Options menu.
+Remove offensive pawn.png.
+Remove unneeded grab parameter (we always grab).
+Fix move through desk switch.
+Fix crash on opening certain dialogs when sound is enabled (Valdis Kletnieks).
+Danish translation update.
+
