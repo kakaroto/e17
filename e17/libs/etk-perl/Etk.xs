@@ -5859,6 +5859,33 @@ etk_spinner_digits_get(spinner)
 	ALIAS:
 	DigitsGet=1
 
+void
+etk_spinner_snap_to_ticks_set(spinner, snap)
+	Etk_Spinner * spinner
+	Etk_Bool	snap
+	ALIAS:
+	SnapToTicksSet=1
+
+Etk_Bool
+etk_spinner_snap_to_ticks_get(spinner)
+	Etk_Spinner * spinner
+	ALIAS:
+	SnapToTicksGet=1
+	
+void
+etk_spinner_wrap_set(spinner, wrap)
+	Etk_Spinner * spinner
+	Etk_Bool	wrap
+	ALIAS:
+	WrapSet=1
+
+Etk_Bool
+etk_spinner_wrap_get(spinner)
+	Etk_Spinner * spinner
+	ALIAS:
+	WrapGet=1
+
+
 MODULE = Etk::Editable	PACKAGE = Etk::Editable	PREFIX = etk_editable_
 
 Evas_Object *
