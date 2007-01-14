@@ -32,25 +32,20 @@ static void engrave_canvas_object_clip_unset(Evas_Object *o);
 
 static void engrave_canvas_redraw(Evas_Object *o, Engrave_Canvas *ec);
 static void engrave_canvas_part_redraw(Engrave_Part *ep, void *data);
-static void engrave_canvas_part_state_redraw(Engrave_Part_State *eps,
-                                            Engrave_Part *ep, void *data);
-static void engrave_canvas_part_state_recalc(Engrave_Canvas *ec, 
-                                    Engrave_Part_State *eps, 
+
+static void engrave_canvas_part_recalc(Engrave_Canvas *ec, 
+                                    Engrave_Part *ep, 
                                     Engrave_Part_State *rel1_to_x, 
                                     Engrave_Part_State *rel1_to_y, 
                                     Engrave_Part_State *rel2_to_x,
                                     Engrave_Part_State *rel2_to_y,
                                     Engrave_Part_State *confine);
 
-static Evas_Object *engrave_canvas_part_state_image_setup(Evas *evas, Engrave_File *ef,
-                                    Engrave_Part_State *eps);
-static Evas_Object *engrave_canvas_part_state_text_setup(Evas *evas,
-                                    Engrave_Part_State *eps);
-static Evas_Object *engrave_canvas_part_state_rect_setup(Evas *evas,
-                                    Engrave_Part_State *eps);
+static void engrave_canvas_part_state_text_setup(Engrave_Part_State *eps);
+static void engrave_canvas_part_state_rect_setup(Engrave_Part_State *eps);
+static void engrave_canvas_part_state_image_setup(Engrave_Part_State *eps);
 
 static void engrave_canvas_part_hide(Engrave_Part *ep, void *data);
-static void engrave_canvas_part_state_hide(Engrave_Part_State *eps, void *data);
 
 /**
  * engrave_canvas_new - create a new cavnas
@@ -126,15 +121,9 @@ engrave_canvas_current_group_set(Evas_Object *o, Engrave_Group *eg)
 static void
 engrave_canvas_part_hide(Engrave_Part *ep, void *data)
 {
-    engrave_part_state_foreach(ep, engrave_canvas_part_state_hide, NULL);
+   evas_object_hide(ep->object);
 }
-
-static void
-engrave_canvas_part_state_hide(Engrave_Part_State *eps, void *data)
-{
-    evas_object_hide(eps->object);
-}
-    
+  
 static void
 engrave_canvas_redraw(Evas_Object *o, Engrave_Canvas *ec)
 {
@@ -144,168 +133,113 @@ engrave_canvas_redraw(Evas_Object *o, Engrave_Canvas *ec)
 static void
 engrave_canvas_part_redraw(Engrave_Part *ep, void *data)
 {
-    Engrave_Part_State *eps;
+   Engrave_Part_State *eps = NULL;
+   Evas_Object *o, *ep_object;
+   Engrave_Group *eg;
+   Engrave_Canvas *ec;
+   Engrave_Part *rel1_to_x = NULL, *rel1_to_y = NULL;
+   Engrave_Part *rel2_to_x = NULL, *rel2_to_y = NULL, *confine = NULL;
 
-    /* 
-     * only want to draw one state for a part. The default one for now.
-     * XXX need to fix this tho to draw the selected visible state ...
-    */
-    eps = engrave_part_state_by_name_value_find(ep, "default", 0.0);
-    engrave_canvas_part_state_redraw(eps, ep, data);
-}
+   
+   if (!ep) return;
+   
+   o = data;
+   ec = evas_object_smart_data_get(o);
+   if (!ec) return;
+      
+   eps = engrave_part_current_state_get(ep);
+   
+   if (!eps) 
+      eps = engrave_part_state_by_name_value_find(ep,"default", 0.0);
+   
+   if (!(ep_object = engrave_part_evas_object_get(ep))) {
+        Evas *evas = evas_object_evas_get(o);
 
-static void
-engrave_canvas_part_state_redraw(Engrave_Part_State *eps, 
-                                    Engrave_Part *ep, void *data)
-{
-    Engrave_Group *eg;
-    Evas_Object *o, *eps_object;
-    Engrave_Canvas *ec;
-    Engrave_Part *rel1_to_x = NULL, *rel1_to_y = NULL;
-    Engrave_Part *rel2_to_x = NULL, *rel2_to_y = NULL, *confine = NULL;
-
-    if (!eps) return;
-
-    o = data;
-    ec = evas_object_smart_data_get(o);
-    if (!ec) return;
-
-    if (!(eps_object = engrave_part_state_evas_object_get(eps))) {
-        Evas *evas;
-
-        evas = evas_object_evas_get(o);
-        switch(engrave_part_type_get(ep)) {
-            case ENGRAVE_PART_TYPE_IMAGE:
-                eps_object = engrave_canvas_part_state_image_setup(evas,
-                                                    ec->engrave_file, eps);
-                break;
-
-            case ENGRAVE_PART_TYPE_TEXT:
-                eps_object = engrave_canvas_part_state_text_setup(evas, eps);
-                break;
-
-            case ENGRAVE_PART_TYPE_RECT:
-                eps_object = engrave_canvas_part_state_rect_setup(evas, eps);
-                break;
-
-            case ENGRAVE_PART_TYPE_SWALLOW:
-                /* XXX ?? */
-                break;
-
-            default:
-                break;
-        }
-        engrave_part_state_evas_object_set(eps, eps_object);
-        evas_object_clip_set(eps_object, ec->clip);
+        if (engrave_part_type_get(ep) == ENGRAVE_PART_TYPE_IMAGE)
+           ep_object = evas_object_image_add(evas);
+        if (engrave_part_type_get(ep) == ENGRAVE_PART_TYPE_TEXT)
+           ep_object = evas_object_text_add(evas);
+        if (engrave_part_type_get(ep) == ENGRAVE_PART_TYPE_RECT)
+           ep_object = evas_object_rectangle_add(evas);
+        /*if (engrave_part_type_get(ep) == ENGRAVE_PART_TYPE_SWALLOW)
+           ep_object = XXX ?? */
+        
+        engrave_part_evas_object_set(ep, ep_object);
+        evas_object_clip_set(ep_object, ec->clip);
     }
-
+ 
     eg = engrave_part_parent_get(ep);
     if (engrave_part_state_rel1_to_x_get(eps)) {
         rel1_to_x = engrave_group_part_by_name_find(eg, 
                         engrave_part_state_rel1_to_x_get(eps));
-        engrave_canvas_part_state_redraw(engrave_part_current_state_get(rel1_to_x),
-                                                             rel1_to_x, data);
+        engrave_canvas_part_redraw(rel1_to_x, data);
     }
 
     if (engrave_part_state_rel1_to_y_get(eps)) {
         rel1_to_y = engrave_group_part_by_name_find(eg, 
                         engrave_part_state_rel1_to_y_get(eps));
-        engrave_canvas_part_state_redraw(engrave_part_current_state_get(rel1_to_y),
-                                                             rel1_to_y, data);
+        engrave_canvas_part_redraw(rel1_to_y, data);
     }
 
     if (engrave_part_state_rel2_to_x_get(eps)) {
         rel2_to_x = engrave_group_part_by_name_find(eg, 
                         engrave_part_state_rel2_to_x_get(eps));
-        engrave_canvas_part_state_redraw(engrave_part_current_state_get(rel2_to_x),
-                                                             rel2_to_x, data);
+        engrave_canvas_part_redraw(rel2_to_x, data);
     }
 
     if (engrave_part_state_rel2_to_y_get(eps)) {
         rel2_to_y = engrave_group_part_by_name_find(eg, 
                         engrave_part_state_rel2_to_y_get(eps));
-        engrave_canvas_part_state_redraw(engrave_part_current_state_get(rel2_to_y),
-                                                             rel2_to_y, data);
+        engrave_canvas_part_redraw(rel2_to_y, data);
     }
 
     if (engrave_part_dragable_confine_get(ep)) {
         confine = engrave_group_part_by_name_find(eg, 
                         engrave_part_dragable_confine_get(ep));
-        engrave_canvas_part_state_redraw(engrave_part_current_state_get(confine),
-                                                             confine, data);
+        engrave_canvas_part_redraw(confine, data);
     }
 
-    engrave_canvas_part_state_recalc(ec, eps, 
+    engrave_canvas_part_recalc(ec, ep, 
                                     engrave_part_current_state_get(rel1_to_x),
                                     engrave_part_current_state_get(rel1_to_y), 
                                     engrave_part_current_state_get(rel2_to_x),
                                     engrave_part_current_state_get(rel2_to_y),
                                     engrave_part_current_state_get(confine));
+    
+   switch (engrave_part_type_get(ep))
+   {
+      case ENGRAVE_PART_TYPE_RECT:
+        engrave_canvas_part_state_rect_setup(eps);
+        evas_object_move(ep_object, ec->x + ep->pos.x, ec->y + ep->pos.y);
+        evas_object_resize(ep_object, ep->pos.w, ep->pos.h);
+        break;
+      
+      case ENGRAVE_PART_TYPE_TEXT:
+        engrave_canvas_part_state_text_setup(eps);
+        evas_object_move(ep_object, ec->x + ep->pos.x,
+                                    ec->y + ep->pos.y);
+        break;
+      
+      case ENGRAVE_PART_TYPE_IMAGE:
+        engrave_canvas_part_state_image_setup(eps);
+        evas_object_move(ep_object, ec->x + ep->pos.x, ec->y + ep->pos.y);
+        evas_object_resize(ep_object, ep->pos.w, ep->pos.h);
+        break;
+      
+      case ENGRAVE_PART_TYPE_SWALLOW:
+        evas_object_move(ep_object, ec->x + ep->pos.x, ec->y + ep->pos.y);
+        evas_object_resize(ep_object, ep->pos.w, ep->pos.h);
+        break;
+   }
 
-    if (engrave_part_type_get(ep) == ENGRAVE_PART_TYPE_RECT) {
-        int r, g, b, a;
-
-        evas_object_move(eps_object, ec->x + eps->pos.x, 
-                ec->y + eps->pos.y);
-        evas_object_resize(eps_object, eps->pos.w, eps->pos.h);
-
-        engrave_part_state_color_get(eps, &r, &g, &b, &a);
-        evas_object_color_set(eps_object, r, g, b, a);
-
-    } else if (engrave_part_type_get(ep) == ENGRAVE_PART_TYPE_TEXT) {
-        int r, g, b, a;
-        int offset_x = 0, offset_y = 0;
-
-        /* XXX this needs a lot of work ... */
-        evas_object_move(eps_object, ec->x + eps->pos.x + offset_x,
-                                    ec->y + eps->pos.y + offset_y);
-        engrave_part_state_color_get(eps, &r, &g, &b, &a);
-        evas_object_color_set(eps_object, r, g, b, a);
-
-    } else if (engrave_part_type_get(ep) == ENGRAVE_PART_TYPE_IMAGE) {
-        double pos_rel_x, pos_rel_y, rel_x, rel_y;
-        int pos_abs_x, pos_abs_y, abs_x, abs_y;
-        double fill_x, fill_y, fill_w, fill_h;
-        int l, r, t, b;
-
-        engrave_part_state_fill_origin_relative_get(eps, 
-                &pos_rel_x, &pos_rel_y);
-        engrave_part_state_fill_size_relative_get(eps, &rel_x, &rel_y);
-        engrave_part_state_fill_origin_offset_get(eps, 
-                &pos_abs_x, &pos_abs_y);
-        engrave_part_state_fill_size_offset_get(eps, &abs_x, &abs_y);
-
-        fill_x = pos_abs_x + (eps->pos.w * pos_rel_x);
-        fill_y = pos_abs_y + (eps->pos.w * pos_rel_y);
-        fill_w = abs_x + (eps->pos.w * rel_x);
-        fill_h = abs_y + (eps->pos.h * rel_y);
-
-        evas_object_move(eps_object, ec->x + eps->pos.x, 
-                ec->y + eps->pos.y);
-        evas_object_resize(eps_object, eps->pos.w, eps->pos.h);
-        evas_object_image_fill_set(eps_object, fill_x, fill_y, fill_w, fill_h);
-        evas_object_image_smooth_scale_set(eps_object,
-                engrave_part_state_fill_smooth_get(eps));
-
-        engrave_part_state_image_border_get(eps, &l, &r, &t, &b);
-        evas_object_image_border_set(eps_object, l, r, t, b);
-
-        engrave_part_state_color_get(eps, &l, &r, &t, &b);
-        evas_object_color_set(eps_object, l, r, t, b);
-
-    } else if (engrave_part_type_get(ep) == ENGRAVE_PART_TYPE_SWALLOW) {
-        evas_object_move(eps_object, ec->x + eps->pos.x, ec->y + eps->pos.y);
-        evas_object_resize(eps_object, eps->pos.w, eps->pos.h);
-    }
-
-    if (engrave_part_state_visible_get(eps))
-        evas_object_show(eps_object);
-    else
-        evas_object_hide(eps_object);
+   if (engrave_part_state_visible_get(eps))
+      evas_object_show(ep_object);
+   else
+      evas_object_hide(ep_object);
 }
 
 static void
-engrave_canvas_part_state_recalc(Engrave_Canvas *ec, Engrave_Part_State *eps, 
+engrave_canvas_part_recalc(Engrave_Canvas *ec, Engrave_Part *ep, 
                                     Engrave_Part_State *rel1_to_x, 
                                     Engrave_Part_State *rel1_to_y, 
                                     Engrave_Part_State *rel2_to_x,
@@ -314,116 +248,116 @@ engrave_canvas_part_state_recalc(Engrave_Canvas *ec, Engrave_Part_State *eps,
 {
     int minw = 0, minh = 0, maxw = 0, maxh = 0;
     double align_x, align_y;
-    Engrave_Part *ep = engrave_part_state_parent_get(eps);
+    Engrave_Part_State *eps = engrave_part_current_state_get(ep);
 
     if (rel1_to_x)
-        eps->pos.x = eps->rel1.offset.x + rel1_to_x->pos.x 
-                    + (eps->rel1.relative.x * rel1_to_x->pos.w);
+        ep->pos.x = eps->rel1.offset.x + ((Engrave_Part*)(rel1_to_x->parent))->pos.x 
+                    + (eps->rel1.relative.x * ((Engrave_Part*)(rel1_to_x->parent))->pos.w);
     else
-        eps->pos.x = eps->rel1.offset.x + (eps->rel1.relative.x * ec->w);
+        ep->pos.x = eps->rel1.offset.x + (eps->rel1.relative.x * ec->w);
 
     if (rel2_to_x)
-        eps->pos.w = eps->rel2.offset.x + rel2_to_x->pos.x 
-                    + (eps->rel2.relative.x * rel2_to_x->pos.y) 
-                    - eps->pos.x + 1;
+        ep->pos.w = eps->rel2.offset.x + ((Engrave_Part*)(rel2_to_x->parent))->pos.x 
+                    + (eps->rel2.relative.x * ((Engrave_Part*)(rel2_to_x->parent))->pos.y) 
+                    - ep->pos.x + 1;
     else
-        eps->pos.w = eps->rel2.offset.x + (eps->rel2.relative.x * ec->w) 
-                    - eps->pos.x + 1;
+        ep->pos.w = eps->rel2.offset.x + (eps->rel2.relative.x * ec->w) 
+                    - ep->pos.x + 1;
 
     if (rel1_to_y)
-        eps->pos.y = eps->rel1.offset.y + rel1_to_y->pos.y 
-                    + (eps->rel1.relative.y * rel1_to_y->pos.h);
+        ep->pos.y = eps->rel1.offset.y + ((Engrave_Part*)(rel1_to_y->parent))->pos.y 
+                    + (eps->rel1.relative.y * ((Engrave_Part*)(rel1_to_y->parent))->pos.h);
     else
-        eps->pos.y = eps->rel1.offset.y + (eps->rel1.relative.y * ec->h);
+        ep->pos.y = eps->rel1.offset.y + (eps->rel1.relative.y * ec->h);
 
     if (rel2_to_y)
-        eps->pos.h = eps->rel2.offset.y + rel2_to_y->pos.y 
-                    + (eps->rel2.relative.y * rel2_to_y->pos.h)
-                    - eps->pos.y + 1;
+        ep->pos.h = eps->rel2.offset.y + ((Engrave_Part*)(rel2_to_y->parent))->pos.y 
+                    + (eps->rel2.relative.y * ((Engrave_Part*)(rel2_to_y->parent))->pos.h)
+                    - ep->pos.y + 1;
     else
-        eps->pos.h = eps->rel2.offset.y + (eps->rel2.relative.y * ec->h)
-                    - eps->pos.y + 1;
+        ep->pos.h = eps->rel2.offset.y + (eps->rel2.relative.y * ec->h)
+                    - ep->pos.y + 1;
 
     /* aspect */
     engrave_part_state_align_get(eps, &align_x, &align_y);
-    if (eps->pos.h > 0) {
+    if (ep->pos.h > 0) {
         double aspect;
         double aspect_max, aspect_min;
         double new_w, new_h, want_x, want_y, want_w, want_h;
         Engrave_Aspect_Preference prefer;
 
-        want_x = eps->pos.x;
-        want_w = new_w = eps->pos.w;
+        want_x = ep->pos.x;
+        want_w = new_w = ep->pos.w;
 
-        want_y = eps->pos.y;
-        want_h = new_h = eps->pos.h;
+        want_y = ep->pos.y;
+        want_h = new_h = ep->pos.h;
 
-        aspect = (double)eps->pos.w / (double)eps->pos.h;
+        aspect = (double)ep->pos.w / (double)ep->pos.h;
         engrave_part_state_aspect_get(eps, &aspect_min, &aspect_max);
         prefer = engrave_part_state_aspect_preference_get(eps);
 
         if (prefer == ENGRAVE_ASPECT_PREFERENCE_NONE) {
             if ((aspect_max > 0.0) && (aspect > aspect_max)) {
-                new_h = (eps->pos.w / aspect_max);
-                new_w = (eps->pos.h * aspect_max);
+                new_h = (ep->pos.w / aspect_max);
+                new_w = (ep->pos.h * aspect_max);
             }
 
             if ((aspect_min > 0.0) && (aspect < aspect_min)) {
-                new_h = (eps->pos.w / aspect_min);
-                new_w = (eps->pos.h * aspect_min);
+                new_h = (ep->pos.w / aspect_min);
+                new_w = (ep->pos.h * aspect_min);
             }
 
         } else if (prefer == ENGRAVE_ASPECT_PREFERENCE_VERTICAL) {
             if ((aspect_max > 0.0) && (aspect > aspect_max))
-                new_w = (eps->pos.h * aspect_max);
+                new_w = (ep->pos.h * aspect_max);
 
             if ((aspect_min > 0.0) && (aspect < aspect_min))
-                new_w = (eps->pos.h * aspect_min);
+                new_w = (ep->pos.h * aspect_min);
 
         } else if (prefer == ENGRAVE_ASPECT_PREFERENCE_HORIZONTAL) {
             if ((aspect_max > 0.0) && (aspect > aspect_max))
-                new_h = (eps->pos.w / aspect_max);
+                new_h = (ep->pos.w / aspect_max);
         
             if ((aspect_min > 0.0) && (aspect < aspect_min))
-                new_h = (eps->pos.w / aspect_min);
+                new_h = (ep->pos.w / aspect_min);
 
         } else if (prefer == ENGRAVE_ASPECT_PREFERENCE_BOTH) {
             if ((aspect_max > 0.0) && (aspect > aspect_max)) {
-                new_w = (eps->pos.h * aspect_max);
-                new_h = (eps->pos.w / aspect_max);
+                new_w = (ep->pos.h * aspect_max);
+                new_h = (ep->pos.w / aspect_max);
             }
 
             if ((aspect_min > 0.0) && (aspect < aspect_min)) {
-                new_w = (eps->pos.h * aspect_min);
-                new_h = (eps->pos.w / aspect_min);
+                new_w = (ep->pos.h * aspect_min);
+                new_h = (ep->pos.w / aspect_min);
             }
         }
         
         if (prefer == ENGRAVE_ASPECT_PREFERENCE_BOTH) {
-            if (new_w > eps->pos.w)
-                eps->pos.w = new_w;
+            if (new_w > ep->pos.w)
+                ep->pos.w = new_w;
             else
-                eps->pos.h = new_h;
+                ep->pos.h = new_h;
 
         } else {
-            if ((eps->pos.h - new_h) > (eps->pos.w - new_w)) {
-                if (eps->pos.h != new_h)
-                    eps->pos.h = new_h;
+            if ((ep->pos.h - new_h) > (ep->pos.w - new_w)) {
+                if (ep->pos.h != new_h)
+                    ep->pos.h = new_h;
 
                 if (prefer == ENGRAVE_ASPECT_PREFERENCE_VERTICAL)
-                    eps->pos.w = new_w;
+                    ep->pos.w = new_w;
 
             } else {
-                if (eps->pos.w != new_w)
-                    eps->pos.w = new_w;
+                if (ep->pos.w != new_w)
+                    ep->pos.w = new_w;
 
                 if (prefer == ENGRAVE_ASPECT_PREFERENCE_HORIZONTAL)
-                    eps->pos.h = new_h;
+                    ep->pos.h = new_h;
             }
         }
 
-        eps->pos.x = want_x + ((want_w - eps->pos.w) * align_x);
-        eps->pos.y = want_y + ((want_h - eps->pos.h) * align_y);
+        ep->pos.x = want_x + ((want_w - ep->pos.w) * align_x);
+        ep->pos.y = want_y + ((want_h - ep->pos.h) * align_y);
     }
 
     /* size step */
@@ -435,11 +369,11 @@ engrave_canvas_part_state_recalc(Engrave_Canvas *ec, Engrave_Part_State *eps,
             int steps;
             int new_w;
 
-            steps = eps->pos.w / step_x;
+            steps = ep->pos.w / step_x;
             new_w = step_x * steps;
-            if (eps->pos.w > new_w) {
-                eps->pos.x = eps->pos.x + ((eps->pos.w - new_w) * align_x);
-                eps->pos.w = new_w;
+            if (ep->pos.w > new_w) {
+                ep->pos.x = ep->pos.x + ((ep->pos.w - new_w) * align_x);
+                ep->pos.w = new_w;
             }
         }
 
@@ -447,11 +381,11 @@ engrave_canvas_part_state_recalc(Engrave_Canvas *ec, Engrave_Part_State *eps,
             int steps;
             int new_h;
 
-            steps = eps->pos.h / step_y;
+            steps = ep->pos.h / step_y;
             new_h = step_y * steps;
-            if (eps->pos.h > new_h) {
-                eps->pos.y = eps->pos.y + ((eps->pos.h - new_h) * align_y);
-                eps->pos.h = new_h;
+            if (ep->pos.h > new_h) {
+                ep->pos.y = ep->pos.y + ((ep->pos.h - new_h) * align_y);
+                ep->pos.h = new_h;
             }
         }
     }
@@ -467,31 +401,31 @@ engrave_canvas_part_state_recalc(Engrave_Canvas *ec, Engrave_Part_State *eps,
 
     /* adjust for min size */
     if (minw >= 0) {
-        if (eps->pos.w < minw) {
-            eps->pos.x += ((eps->pos.w - minw) * align_x);
-            eps->pos.w = minw;
+        if (ep->pos.w < minw) {
+            ep->pos.x += ((ep->pos.w - minw) * align_x);
+            ep->pos.w = minw;
         }
     }
 
     if (minh >= 0) {
-        if (eps->pos.h < minh) {
-            eps->pos.y += ((eps->pos.h - minh) * align_y);
-            eps->pos.h = minh;
+        if (ep->pos.h < minh) {
+            ep->pos.y += ((ep->pos.h - minh) * align_y);
+            ep->pos.h = minh;
         }
     }
 
     /* adjust for max size */
     if (maxw >= 0) {
-        if (eps->pos.w > maxw) {
-            eps->pos.x += ((eps->pos.w - maxw) * align_x);
-            eps->pos.w = maxw;
+        if (ep->pos.w > maxw) {
+            ep->pos.x += ((ep->pos.w - maxw) * align_x);
+            ep->pos.w = maxw;
         }
     }
 
     if (maxh >= 0) {
-        if (eps->pos.h > maxh) {
-            eps->pos.y += ((eps->pos.h - maxh) * align_y);
-            eps->pos.h = maxh;
+        if (ep->pos.h > maxh) {
+            ep->pos.y += ((ep->pos.h - maxh) * align_y);
+            ep->pos.h = maxh;
         }
     }
 
@@ -500,34 +434,16 @@ engrave_canvas_part_state_recalc(Engrave_Canvas *ec, Engrave_Part_State *eps,
     }
 }
 
-static Evas_Object *
-engrave_canvas_part_state_image_setup(Evas *evas, Engrave_File *ef,
-                                    Engrave_Part_State *eps)
+static void
+engrave_canvas_part_state_text_setup(Engrave_Part_State *eps)
 {
-    Evas_Object *o;
-    char path[PATH_MAX];
-    Engrave_Image *ei;
-
-    ei = engrave_part_state_image_normal_get(eps);
-    snprintf(path, PATH_MAX, "%s/%s",
-                engrave_file_image_dir_get(ef),
-                engrave_image_name_get(ei));
-
-    o = evas_object_image_add(evas);
-    evas_object_image_file_set(o, path, NULL);
-    return o;
-}
-
-static Evas_Object *
-engrave_canvas_part_state_text_setup(Evas *evas, Engrave_Part_State *eps)
-{
-    Evas_Object *o;
+    int r, g, b, a;
     const char *font_key;
     const char *font_name;
     Engrave_Part *ep = (eps ? eps->parent : NULL);
     Engrave_Group *eg = (ep ? ep->parent : NULL);
     Engrave_File *ef = (eg ? eg->parent : NULL);
-
+   // XXX this needs a lot of work ... 
     if (ef) {
         Engrave_Font * efont;
 
@@ -538,21 +454,69 @@ engrave_canvas_part_state_text_setup(Evas *evas, Engrave_Part_State *eps)
     } else 
         font_name = "Vera.ttf";
 
-    o = evas_object_text_add(evas);
-    evas_object_text_text_set(o, engrave_part_state_text_text_get(eps));
-    evas_object_text_font_set(o, font_name, 
+    evas_object_text_text_set(ep->object, engrave_part_state_text_text_get(eps));
+    evas_object_text_font_set(ep->object, font_name, 
                             engrave_part_state_text_size_get(eps));
-    return o;
+    engrave_part_state_color_get(eps, &r, &g, &b, &a);
+    evas_object_color_set(ep->object, r, g, b, a);
 }
 
-static Evas_Object *
-engrave_canvas_part_state_rect_setup(Evas *evas, Engrave_Part_State *eps)
+static void
+engrave_canvas_part_state_rect_setup(Engrave_Part_State *eps)
 {
-    Evas_Object *o;
-    o = evas_object_rectangle_add(evas);
-    return o;
+   int r, g, b, a;
+   Engrave_Part *ep = (eps ? eps->parent : NULL);
+   
+   if (!ep) return;
+    
+   engrave_part_state_color_get(eps, &r, &g, &b, &a);
+   evas_object_color_set(ep->object, r, g, b, a);
 }
 
+static void
+engrave_canvas_part_state_image_setup(Engrave_Part_State *eps)
+{
+   double pos_rel_x, pos_rel_y, rel_x, rel_y;
+   int pos_abs_x, pos_abs_y, abs_x, abs_y;
+   double fill_x, fill_y, fill_w, fill_h;
+   int l, r, b, t;
+   char path[PATH_MAX];
+   Engrave_Image *ei;
+   Engrave_Part *ep = (eps ? eps->parent : NULL);
+   Engrave_Group *eg = (ep ? ep->parent : NULL);
+
+   
+   
+   if (!ep || !eg) return;
+   
+   if ((ei = engrave_part_state_image_normal_get(eps)))
+   {
+      snprintf(path, PATH_MAX, "%s/%s",
+         engrave_file_image_dir_get(engrave_group_parent_get(eg)),
+         engrave_image_name_get(ei));
+      evas_object_image_file_set(ep->object, path, NULL);
+   }
+       
+       
+   engrave_part_state_fill_origin_relative_get(eps, &pos_rel_x, &pos_rel_y);
+   engrave_part_state_fill_size_relative_get(eps, &rel_x, &rel_y);
+   engrave_part_state_fill_origin_offset_get(eps, &pos_abs_x, &pos_abs_y);
+   engrave_part_state_fill_size_offset_get(eps, &abs_x, &abs_y);
+   fill_x = pos_abs_x + (ep->pos.w * pos_rel_x);
+   fill_y = pos_abs_y + (ep->pos.w * pos_rel_y);
+   fill_w = abs_x + (ep->pos.w * rel_x);
+   fill_h = abs_y + (ep->pos.h * rel_y);
+   evas_object_image_fill_set(ep->object, fill_x, fill_y, fill_w, fill_h);
+   evas_object_image_smooth_scale_set(ep->object,
+      engrave_part_state_fill_smooth_get(eps));
+
+   engrave_part_state_image_border_get(eps, &l, &r, &t, &b);
+   evas_object_image_border_set(ep->object, l, r, t, b);
+
+   engrave_part_state_color_get(eps, &l, &r, &t, &b);
+   evas_object_color_set(ep->object, l, r, t, b);
+   
+}
 static Evas_Object *
 engrave_canvas_object_new(Evas *evas)
 {

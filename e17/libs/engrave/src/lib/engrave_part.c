@@ -551,3 +551,29 @@ engrave_part_current_state_get(Engrave_Part *ep)
 
 
 
+
+/**
+ * engrave_part_evas_object_get - get the evas object for this part
+ * @param ep: The Engrave_Part to get the evas object from
+ *
+ * @return Returns the evas object that displays this part
+ */
+EAPI Evas_Object *
+engrave_part_evas_object_get(Engrave_Part *ep)
+{
+    return (ep ? ep->object : NULL);
+}
+
+/**
+ * engrave_part_evas_object_set - set the evas object for this part
+ * @param ep: The Engrave_Part to set the evas object into
+ * @param o: The Evas_Object to set into the part
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_part_evas_object_set(Engrave_Part *ep, Evas_Object *o)
+{
+    if (!ep) return;
+    ep->object = o;
+}

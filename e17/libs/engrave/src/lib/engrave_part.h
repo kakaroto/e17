@@ -1,6 +1,8 @@
 #ifndef ENGRAVE_PART_H
 #define ENGRAVE_PART_H
 
+
+
 /**
  * @file engrave_part.h Engrave_Part object functions.
  * @brief Contains all functions to maniuplate the Engrave_Part object.
@@ -52,6 +54,16 @@ struct _Engrave_Part
   Evas_List *states;    /**< The list of states assocated with the part */
   Engrave_Part_State *current_state; /**< The current state */
 
+  struct
+  {
+    Evas_Coord x;   /**< The x position to place the object */
+    Evas_Coord y;   /**< The y position to place the object */
+    Evas_Coord w;   /**< The width of the object */
+    Evas_Coord h;   /**< The height of the object */
+  } pos;
+
+  Evas_Object *object;  /**< The evas object used to display this state */
+  
   void *parent;    /**< Pointer to parent */
 };
 
@@ -96,6 +108,9 @@ EAPI int engrave_part_states_count(Engrave_Part *ep);
 EAPI void engrave_part_state_foreach(Engrave_Part *ep, 
                                      void (*func)(Engrave_Part_State *, Engrave_Part *, void *),
                                      void *data);
+                                     
+EAPI Evas_Object *engrave_part_evas_object_get(Engrave_Part *ep);
+EAPI void engrave_part_evas_object_set(Engrave_Part *ep, Evas_Object *o);
 
 /**
  * @}

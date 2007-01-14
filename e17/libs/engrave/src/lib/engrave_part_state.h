@@ -193,16 +193,6 @@ struct _Engrave_Part_State
     } align;
   } text;
 
-  struct
-  {
-    Evas_Coord x;   /**< The x position to place the object */
-    Evas_Coord y;   /**< The y position to place the object */
-    Evas_Coord w;   /**< The width of the object */
-    Evas_Coord h;   /**< The hight of the object */
-  } pos;
-
-  Evas_Object *object;  /**< The evas object used to display this state */
-
   void *parent; /**< Pointer to parent */
 };
 
@@ -353,10 +343,6 @@ EAPI void engrave_part_state_fill_size_offset_get(Engrave_Part_State *eps,
 EAPI int engrave_part_state_tweens_count(Engrave_Part_State *eps);
 EAPI void engrave_part_state_tween_foreach(Engrave_Part_State *eps,
                 void (*func)(Engrave_Image *, void *), void *data);
-
-EAPI Evas_Object *engrave_part_state_evas_object_get(Engrave_Part_State *eps);
-EAPI void engrave_part_state_evas_object_set(Engrave_Part_State *eps, 
-                                             Evas_Object *o);
 
 EAPI void engrave_part_state_gradient_spectrum_set(Engrave_Part_State *eps, const char *spec);
 EAPI const char * engrave_part_state_gradient_spectrum_get(Engrave_Part_State *eps);

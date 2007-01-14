@@ -1476,31 +1476,7 @@ engrave_part_state_tween_foreach(Engrave_Part_State *eps,
   }
 }
 
-/**
- * engrave_part_state_evas_object_get - get the object for this state
- * @param eps: The Engrave_Part_State to get the object from
- *
- * @return Returns the evas object that displays this state
- */
-EAPI Evas_Object *
-engrave_part_state_evas_object_get(Engrave_Part_State *eps)
-{
-    return (eps ? eps->object : NULL);
-}
 
-/**
- * engrave_part_state_evas_object_set - set the evas object for this state
- * @param eps: The Engrave_Part_State to set the object into
- * @param o: The Evas_Object to set into the state
- *
- * @return Returns no value.
- */
-EAPI void
-engrave_part_state_evas_object_set(Engrave_Part_State *eps, Evas_Object *o)
-{
-    if (!eps) return;
-    eps->object = o;
-}
 
 /**
  * engrave_part_state_parent_set - set the parent part on this state
