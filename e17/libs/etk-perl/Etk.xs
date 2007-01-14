@@ -3792,12 +3792,6 @@ etk_textblock_text_get(tb, markup)
 	OUTPUT:
 	RETVAL
 
-void
-etk_textblock_unrealize(textblock)
-	Etk_Textblock *	textblock
-      ALIAS:
-	Unrealize=1
-
 const char *
 etk_textblock_range_text_get(tb, iter1, iter2, markup)
 	Etk_Textblock *tb
@@ -3865,6 +3859,31 @@ etk_textblock_delete_range(tb, iter1, iter2)
       ALIAS:
 	DeleteRange=1
 
+void
+etk_textblock_unicode_length_get(unicode_string)
+	const char *unicode_string
+	ALIAS:
+	UnicodeLengthGet=1
+
+Etk_Bool etk_textblock_is_white_char(c)
+	int c
+	ALIAS:
+	IsWhiteChar=1
+
+void
+etk_textblock_char_size_get(evas, font_face, font_size)
+	Evas * evas
+	const char * font_face
+	int font_size
+	ALIAS:
+	CharSizeGet=1
+	PPCODE:
+	int w, h;
+	etk_textblock_char_size_get(eva, font_face, font_size, &w, &h);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSViv(w)));
+	PUSHs(sv_2mortal(newSViv(h)));
+
 
 
 MODULE = Etk::Theme	PACKAGE = Etk::Theme	PREFIX = etk_theme_
@@ -3890,7 +3909,15 @@ etk_theme_widget_set(theme_name)
       ALIAS:
 	WidgetSet=1
 
+void
+etk_theme_widget_available_themes_get()
+	ALIAS:
+	WidgetAvailableThemesGet=1
+	PPCODE:
+	Evas_List * list;
 
+	list = etk_theme_widget_available_themes_get();
+	XPUSHs(sv_2mortal(newSVCharEvasList(list)));
 
 const char *
 etk_theme_icon_get()
@@ -3903,6 +3930,16 @@ etk_theme_icon_set(theme)
 	ALIAS:
 	IconSet=1
 
+void
+etk_theme_icon_available_themes_get()
+	ALIAS:
+	IconAvailableThemesGet=1
+	PPCODE:
+	Evas_List * list;
+
+	list = etk_theme_icon_available_themes_get();
+	XPUSHs(sv_2mortal(newSVCharEvasList(list)));
+	
 Etk_Bool
 etk_theme_group_exists(file, group, parent)
 	const char * file
