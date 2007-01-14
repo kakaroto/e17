@@ -1578,10 +1578,10 @@ etk_entry_image_highlight_set(entry, position, highlight)
 	ImageHighlightSet=1
 
 void
-etk_entry_add_clear_button(entry)
+etk_entry_clear_button_add(entry)
 	Etk_Entry *     entry
 	ALIAS:
-	AddClearButton=1
+	ClearButtonAdd=1
 	
 
 MODULE = Etk::Filechooser	PACKAGE = Etk::Filechooser	PREFIX = etk_filechooser_widget_

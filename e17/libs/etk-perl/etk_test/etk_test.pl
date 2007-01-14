@@ -296,7 +296,7 @@ sub entry_window_show
 
     my $image = Etk::Image->new(DocumentPrint, SizeSmall);
     $entry_normal->ImageSet(ImagePrimary, $image);
-    $entry_normal->AddClearButton();
+    $entry_normal->ClearButtonAdd();
 
     my $label_normal = Etk::Label->new("");
     $table->Attach($label_normal, 0, 1, 1, 1, 0, 0, TableHExpand | TableHFill);
