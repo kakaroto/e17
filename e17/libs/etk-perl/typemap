@@ -93,6 +93,7 @@ Etk_Stock_Size					T_IV
 Etk_Stock_Size *				T_PTROBJ
 Etk_String *					T_PTROBJ
 Etk_Spinner *					T_PTROBJ_ETK
+Etk_Widget_Swallow_Error			T_IV
 Etk_Table *					T_PTROBJ_ETK
 Etk_Text_View *					T_PTROBJ_ETK
 Etk_Textblock *					T_PTROBJ_ETK

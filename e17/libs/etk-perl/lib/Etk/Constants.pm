@@ -60,6 +60,7 @@ our %EXPORT_TAGS = (
    entry	=> [qw/ImagePrimary ImageSecondary/],
    popupwindow	=> [qw/BelowRight BelowLeft AboveRight AboveLeft/],
    window	=> [qw/Normal Above Below/],
+   swallow	=> [qw/None IncompatibleParent NotRealized NoPart/],
    );
 
 my @all = ();
@@ -294,4 +295,9 @@ use constant {
    Below=>2
 };
 
-
+# swallow errors
+use constant {
+   IncompatibleParent=>1,
+   NotRealized=>2,
+   NoPart=>3
+};

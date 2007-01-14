@@ -4993,13 +4993,6 @@ etk_widget_clip_unset(widget)
       ALIAS:
 	ClipUnset=1
 
-void
-etk_widget_clipboard_received(widget, event)
-	Etk_Widget *	widget
-	Etk_Event_Selection_Request *	event
-      ALIAS:
-	ClipboardReceived=1
-
 Etk_Bool
 etk_widget_dnd_dest_get(widget)
 	Etk_Widget *	widget
@@ -5250,29 +5243,10 @@ etk_widget_is_swallowed(widget)
 	IsSwallowed=1
 
 Etk_Bool
-etk_widget_is_swallowing_object(widget, object)
-	Etk_Widget *	widget
-	Evas_Object *	object
-      ALIAS:
-	IsSwallowingObject=1
-
-Etk_Bool
-etk_widget_is_swallowing_widget(widget, swallowed_widget)
-	Etk_Widget *	widget
-	Etk_Widget *	swallowed_widget
-      ALIAS:
-	IsSwallowingWidget=1
-
-Etk_Bool
 etk_widget_is_visible(widget)
 	Etk_Widget *	widget
       ALIAS:
 	IsVisible=1
-
-void
-etk_widget_key_event_propagation_stop()
-      ALIAS:
-	KeyEventPropagationStop=1
 
 void
 etk_widget_leave(widget)
@@ -5329,13 +5303,6 @@ etk_widget_member_object_stack_below(widget, object, below)
 	Evas_Object *	below
       ALIAS:
 	MemberObjectStackBelow=1
-
-Etk_Widget *
-etk_widget_new(widget_type, first_property, ...)
-	Etk_Type *	widget_type
-	char *	first_property
-      ALIAS:
-	New=1
 
 Etk_Widget *
 etk_widget_parent_get(widget)
@@ -5395,13 +5362,6 @@ etk_widget_repeat_mouse_events_set(widget, repeat_mouse_events)
 	Etk_Bool	repeat_mouse_events
       ALIAS:
 	RepeatMouseEventsSet=1
-
-void
-etk_widget_selection_received(widget, event)
-	Etk_Widget *	widget
-	Etk_Event_Selection_Request *	event
-      ALIAS:
-	SelectionReceived=1
 
 void
 etk_widget_show(widget)
@@ -5485,58 +5445,6 @@ etk_widget_theme_group_set(widget, theme_group)
       ALIAS:
 	ThemeGroupSet=1
 
-int
-etk_widget_theme_object_data_get(widget, data_name, format, ...)
-	Etk_Widget *	widget
-	char *	data_name
-	char * format	
-      ALIAS:
-	ThemeObjectDataGet=1
-
-void
-etk_widget_theme_object_min_size_calc(widget)
-	Etk_Widget *	widget
-      ALIAS:
-	ThemeObjectMinSizeCalc=1
-	PPCODE:
-	int 	w;
-	int 	h;
-
-	etk_widget_theme_object_min_size_calc(widget, &w, &h);
-	EXTEND(SP, 2);
-	PUSHs(sv_2mortal(newSViv(w)));
-	PUSHs(sv_2mortal(newSViv(h)));
-
-void
-etk_widget_theme_object_part_text_set(widget, part_name, text)
-	Etk_Widget *	widget
-	char *	part_name
-	char *	text
-      ALIAS:
-	ThemeObjectPartTextSet=1
-
-void
-etk_widget_theme_object_signal_emit(widget, signal_name)
-	Etk_Widget *	widget
-	char *	signal_name
-      ALIAS:
-	ThemeObjectSignalEmit=1
-
-Etk_Bool
-etk_widget_theme_object_swallow(swallowing_widget, part, object)
-	Etk_Widget *	swallowing_widget
-	char *	part
-	Evas_Object *	object
-      ALIAS:
-	ThemeObjectSwallow=1
-
-void
-etk_widget_theme_object_unswallow(swallowing_widget, object)
-	Etk_Widget *	swallowing_widget
-	Evas_Object *	object
-      ALIAS:
-	ThemeObjectUnswallow=1
-
 Etk_Widget *
 etk_widget_theme_parent_get(widget)
 	Etk_Widget *	widget
@@ -5593,6 +5501,74 @@ etk_widget_internal_set(widget, internal)
 	Etk_Bool	internal
       ALIAS:
 	InternalSet=1
+
+void
+etk_widget_padding_set(widget, left, right, top, bottom)
+	Etk_Widget *    widget
+	int	left
+	int	right
+	int	top
+	int	bottom
+	ALIAS:
+	PaddingSet=1
+
+void
+etk_widget_padding_get(widget)
+	Etk_Widget *    widget
+	ALIAS:
+	PaddingGet=1
+	PPCODE:
+	int left, right, top, bottom;
+	etk_widget_padding_get(widget, &left, &right, &top, &bottom);
+	EXTEND(SP, 4);
+	PUSHs(sv_2mortal(newSViv(left)));
+	PUSHs(sv_2mortal(newSViv(right)));
+	PUSHs(sv_2mortal(newSViv(top)));
+	PUSHs(sv_2mortal(newSViv(bottom)));
+
+void
+etk_widget_theme_set(widget, theme_file, theme_group)
+	Etk_Widget *    widget
+	const char * 	theme_file
+	const char * 	theme_group
+	ALIAS:
+	ThemeSet=1
+	
+void
+etk_widget_theme_signal_emit(widget, signal_name, size_recalc)
+	Etk_Widget *    widget
+	const char * 	signal_name
+	Etk_Bool	size_recalc
+	ALIAS:
+	ThemeSignalEmit=1
+
+void
+etk_widget_theme_part_text_set(widget, part_name, text)
+	Etk_Widget *    widget
+	const char *    part_name
+	char *		text
+	ALIAS:
+	ThemePartTextSet=1
+	
+Etk_Bool
+etk_widget_swallow_object(swallower, part, object)
+	Etk_Widget *    swallower
+	const char * 	part
+	Evas_Object *	object
+	ALIAS:
+	SwallowObject=1
+
+void
+etk_widget_unswallow_object(swallower, object)
+	Etk_Widget *    swallower
+	Evas_Object *	object
+	ALIAS:
+	UnswallowObject=1
+
+Etk_Widget_Swallow_Error
+etk_widget_swallow_error_get()
+	ALIAS:
+	SwallowErrorGet=1
 
 	 
 MODULE = Etk::Shadow	PACKAGE = Etk::Shadow	PREFIX = etk_shadow_

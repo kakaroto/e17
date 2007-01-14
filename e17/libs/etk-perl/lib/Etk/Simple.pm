@@ -45,7 +45,8 @@ my $inew = \&new;
 			if (defined $arg2) {
 				return NewFromEdje($arg1, $arg2);
 			} else {
-				return NewFromFile($arg1);
+				# XXX oops... from file requires a key now
+				return NewFromFile($arg1, ""); 
 			}
 		}
 	}
