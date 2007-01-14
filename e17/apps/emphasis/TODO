@@ -1,12 +1,4 @@
-== Details ==
--Updater/completer cette doc !
--Revoir le "namespace" des fonctions
--Trier les callbacks (soit des emphasis_`part`_callback.c soit dans les fichiers emphasis_`part`.c)
--Emphasis_Song dans data_list et convert_mpd_song dans convert ?
--Faire une routine de quit qui prend en param Emphasis_Gui *gui
-
 == Bugfix ==
--Un-Leak the writing of the config << up-to-date?
 -Change prototypes of row_clicked callbacks
 -Fixe cover "refresh" (sometime)
 
@@ -19,6 +11,7 @@
 *Add support of ID3 covers and path choose for cover
 *Grab media-keys 
 *Add lyrics
+*Update the doc !
 
-== Later ==
+== Dream ==
 *Support XMMS 2 (later later later)
