@@ -1,6 +1,7 @@
 Etk_Accumulator					T_PTROBJ
 Etk_Selection_Type				T_IV
 Etk_Selection_Content_Type			T_IV
+Etk_Selection_Content				T_IV
 Etk_Alignment *					T_PTROBJ_ETK
 Etk_Argument *					T_PTROBJ_ETK
 Etk_Bin *					T_PTROBJ_ETK
@@ -113,10 +114,10 @@ Etk_Type *					T_PTROBJ
 Etk_Type **					T_PTROBJ
 Etk_Widget *					T_PTR_WIDGET
 Etk_Window *					T_PTROBJ_ETK
-Evas *						T_PTROBJ_ETK
+Evas *						T_PTROBJ
 Evas_List *					T_PTROBJ_EVAS_LIST
 Evas_List **					T_PTROBJ
-Evas_Object *					T_PTROBJ_ETK
+Evas_Object *					T_PTROBJ
 Etk_Shadow *					T_PTROBJ_ETK
 Etk_Shadow_Type					T_IV
 Etk_Shadow_Edges				T_IV
