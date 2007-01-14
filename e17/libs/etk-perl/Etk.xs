@@ -2407,6 +2407,11 @@ etk_menu_item_submenu_set(menu_item, submenu)
       ALIAS:
 	SubmenuSet=1
 
+Etk_Menu *
+etk_menu_item_submenu_get(menu_item)
+	Etk_Menu_Item * menu_item
+	ALIAS:
+	SubmenuGet=1
 
 
 MODULE = Etk::Menu::Item::Check	PACKAGE = Etk::Menu::Item::Check	PREFIX = etk_menu_item_check_
@@ -2487,7 +2492,7 @@ Etk_Menu_Item_Radio *
 new(class)
 	SV * class
 	CODE:
-	RETVAL = ETK_MENU_ITEM_RADIO(etk_menu_item_new());
+	RETVAL = ETK_MENU_ITEM_RADIO(etk_menu_item_radio_new(NULL));
 	OUTPUT:
 	RETVAL
 	
@@ -2563,6 +2568,28 @@ etk_menu_popup_at_xy(menu, x, y)
 	int	y
       ALIAS:
 	PopupAtXy=1
+
+void
+etk_menu_popup_in_direction(menu, direction)
+	Etk_Menu *menu
+	Etk_Popup_Direction direction
+	ALIAS:
+	PopupInDirection=1
+	
+void
+etk_menu_popup_at_xy_in_direction(menu, x, y, direction)
+	Etk_Menu *menu
+	int	x
+	int	y
+	Etk_Popup_Direction direction
+	ALIAS:
+	PopupAtXYInDirection=1
+
+Etk_Menu_Item *
+etk_menu_parent_item_get(menu)
+	Etk_Menu *menu
+	ALIAS:
+	ParentItemGet=1
 
 
 MODULE = Etk::Menu::Shell	PACKAGE = Etk::Menu::Shell	PREFIX = etk_menu_shell_
