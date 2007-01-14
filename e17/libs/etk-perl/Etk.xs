@@ -916,6 +916,12 @@ etk_combobox_item_height_set(combobox, item_height)
 	ItemHeightSet=1
 
 int
+etk_combobox_active_item_nth_get(combobox)
+	Etk_Combobox *  combobox
+	ALIAS:
+	ActiveItemNthGet=1
+	
+int
 etk_combobox_item_height_get(combobox)
 	Etk_Combobox *	combobox
       ALIAS:
@@ -1273,14 +1279,6 @@ etk_combobox_item_data_set(item, data)
 	DataSet=1
       CODE:
         etk_combobox_item_data_set(ETK_COMBOBOX_ITEM(item), newSVsv(data));
-
-void
-etk_combobox_item_data_set_full(item, data, free_cb)
-	Etk_Combobox_Item *	item
-	void *	data
-	void ( * ) ( void * data ) free_cb
-      ALIAS:
-	DataSetFull=1
 
 void
 etk_combobox_item_remove(combobox, item)
