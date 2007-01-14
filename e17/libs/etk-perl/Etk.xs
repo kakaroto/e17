@@ -3000,6 +3000,21 @@ etk_object_name_set(object, name)
       ALIAS:
 	NameSet=1
 
+void
+etk_object_destroy(object)
+	Etk_Object *    object
+	ALIAS:
+	Destroy=1
+
+void
+etk_object_shutdown()
+	ALIAS:
+	Shutdown=1
+
+void
+etk_object_purge()
+	ALIAS:
+	Purge=1
 
 MODULE = Etk::Paned	PACKAGE = Etk::Paned	PREFIX = etk_paned_
 	
