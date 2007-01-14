@@ -3879,7 +3879,7 @@ etk_textblock_char_size_get(evas, font_face, font_size)
 	CharSizeGet=1
 	PPCODE:
 	int w, h;
-	etk_textblock_char_size_get(eva, font_face, font_size, &w, &h);
+	etk_textblock_char_size_get(evas, font_face, font_size, &w, &h);
 	EXTEND(SP, 2);
 	PUSHs(sv_2mortal(newSViv(w)));
 	PUSHs(sv_2mortal(newSViv(h)));
@@ -4036,9 +4036,9 @@ etk_tooltips_tip_set(widget, text)
 	TipSet=1
 
 Etk_Bool
-etk_tooltips_enabled_get()
+etk_tooltips_tip_visible()
       ALIAS:
-	EnabledGet=1
+	TipVisible=1
 
 
 MODULE = Etk::Toplevel	PACKAGE = Etk::Toplevel	PREFIX = etk_toplevel_
@@ -4075,23 +4075,6 @@ etk_toplevel_focused_widget_set(toplevel_widget, widget)
 	FocusedWidgetSet=1
 
 void
-etk_toplevel_geometry_get(toplevel_widget, x, y, w, h)
-	Etk_Toplevel *	toplevel_widget
-      ALIAS:
-	GeometryGet=1
-	PPCODE:
-	int 	x;
-	int 	y;
-	int 	w;
-	int 	h;
-	etk_toplevel_geometry_get(toplevel_widget, &x, &y, &w, &h);
-	EXTEND(SP, 4);
-	PUSHs(sv_2mortal(newSViv(x)));
-	PUSHs(sv_2mortal(newSViv(y)));
-	PUSHs(sv_2mortal(newSViv(w)));
-	PUSHs(sv_2mortal(newSViv(h)));
-
-void
 etk_toplevel_pointer_pop(toplevel_widget, pointer_type)
 	Etk_Toplevel *	toplevel_widget
 	Etk_Pointer_Type	pointer_type
@@ -4104,6 +4087,47 @@ etk_toplevel_pointer_push(toplevel_widget, pointer_type)
 	Etk_Pointer_Type	pointer_type
       ALIAS:
 	PointerPush=1
+
+void
+etk_toplevel_evas_position_get(toplevel)
+	Etk_Toplevel *  toplevel
+	ALIAS:
+	EvasPositionGet=1
+	PPCODE:
+	int x, y;
+	etk_toplevel_evas_position_get(toplevel, &x, &y);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSViv(x)));
+	PUSHs(sv_2mortal(newSViv(y)));
+
+void
+etk_toplevel_screen_position_get(toplevel)
+	Etk_Toplevel *  toplevel
+	ALIAS:
+	ScreenPositionGet=1
+	PPCODE:
+	int x, y;
+	etk_toplevel_screen_position_get(toplevel, &x, &y);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSViv(x)));
+	PUSHs(sv_2mortal(newSViv(y)));
+
+void
+etk_toplevel_size_get(toplevel)
+	Etk_Toplevel *  toplevel
+	ALIAS:
+	SizeGet=1
+	PPCODE:
+	int w, h;
+	etk_toplevel_size_get(toplevel, &w, &h);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSViv(w)));
+	PUSHs(sv_2mortal(newSViv(h)));
+
+Evas_List *
+etk_toplevel_widgets_get()
+	ALIAS:
+	WidgetsGet=1
 
 
 MODULE = Etk::Tree	PACKAGE = Etk::Tree	PREFIX = etk_tree_
