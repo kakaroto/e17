@@ -95,6 +95,36 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
       case TOOLBAR_DEBUG:
          DebugInfo(TRUE);
+
+         Engrave_Part *part;
+         Engrave_Part_State *new_state;
+         Engrave_Group *group;
+         group = engrave_group_new();
+         engrave_group_name_set (group, "New group");
+         engrave_file_group_add (Cur.ef, group);
+
+         AddGroupToTree(group);
+         Cur.eg = group;
+
+
+         part = engrave_part_new(ENGRAVE_PART_TYPE_RECT);
+         engrave_part_name_set (part, "new rectangle");
+         engrave_group_part_add(Cur.eg, part);
+         AddPartToTree(part);
+
+         new_state = engrave_part_state_new();
+         engrave_part_state_name_set(new_state, "default", 0.0);
+         engrave_part_state_add(part,new_state);
+         AddStateToTree(new_state);
+
+         Cur.ep = part;
+         Cur.eps = new_state;
+
+         etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
+         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
+         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep)); 
+
+         PopulateRelComboBoxes();
          break;
       case TOOLBAR_IMAGE_FILE_ADD:
          ShowAlert("Not yet implemented =)");

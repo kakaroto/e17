@@ -1004,6 +1004,7 @@ create_tree_frame(void)
 
    //UI_PartsTree
    UI_PartsTree = etk_tree2_new();
+   etk_widget_padding_set(UI_PartsTree,2,2,2,2);
    etk_tree2_mode_set (ETK_TREE2(UI_PartsTree), ETK_TREE2_MODE_TREE);
    etk_widget_size_request_set(UI_PartsTree, 260, 300);
    col = etk_tree2_col_new(ETK_TREE2(UI_PartsTree), "File contents",100,0);
@@ -1012,6 +1013,7 @@ create_tree_frame(void)
    etk_tree2_col_resizable_set (col, FALSE);
    etk_tree2_col_expand_set (col,TRUE);
    col = etk_tree2_col_new(ETK_TREE2(UI_PartsTree), "vis", 10,0);
+   etk_tree2_col_visible_set (col, FALSE);
    etk_tree2_col_model_add(col,etk_tree2_model_checkbox_new());
    etk_tree2_col_resizable_set (col, FALSE);
    etk_tree2_col_expand_set (col,FALSE);
@@ -1694,6 +1696,7 @@ create_main_window(void)
 
    //canvas
    ETK_canvas = etk_canvas_new ();
+   etk_widget_padding_set(ETK_canvas,4,4,4,4);
    etk_widget_size_request_set(ETK_canvas, 300, 300);
    etk_box_append(ETK_BOX(hbox), ETK_canvas, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 

@@ -340,12 +340,12 @@ ev_draw_focus(void)
    if (Cur.ep && Cur.ep->current_state)
    {
       etk_canvas_object_move(ETK_CANVAS(ETK_canvas),focus_handler,
-            Cur.ep->current_state->pos.x + MAIN_LEFT - Cur.ep->current_state->rel1.offset.x - 1,
-            Cur.ep->current_state->pos.y + MAIN_TOP - Cur.ep->current_state->rel1.offset.y - 1);
+            Cur.ep->pos.x + MAIN_LEFT - Cur.ep->current_state->rel1.offset.x - 1,
+            Cur.ep->pos.y + MAIN_TOP - Cur.ep->current_state->rel1.offset.y - 1);
 
       evas_object_resize(focus_handler,
-            Cur.ep->current_state->pos.w + Cur.ep->current_state->rel1.offset.x - Cur.ep->current_state->rel2.offset.x + 1,
-            Cur.ep->current_state->pos.h + Cur.ep->current_state->rel1.offset.y - Cur.ep->current_state->rel2.offset.y + 1);
+            Cur.ep->pos.w + Cur.ep->current_state->rel1.offset.x - Cur.ep->current_state->rel2.offset.x + 1,
+            Cur.ep->pos.h + Cur.ep->current_state->rel1.offset.y - Cur.ep->current_state->rel2.offset.y + 1);
       evas_object_raise (focus_handler);
       evas_object_show(focus_handler);
    }else
@@ -365,15 +365,15 @@ ev_draw_focus(void)
       //printf("pos.x: %d \n",Cur.eps->pos.w);
       //Draw rel1 & rel2 point
       evas_object_move (rel1_handler,
-            fx + Cur.eps->pos.x - Cur.eps->rel1.offset.x - 2,
-            fy + Cur.eps->pos.y - Cur.eps->rel1.offset.y - 2);
+            fx + Cur.ep->pos.x - Cur.eps->rel1.offset.x - 2,
+            fy + Cur.ep->pos.y - Cur.eps->rel1.offset.y - 2);
       evas_object_show(rel1_handler);
 
       evas_object_raise(rel1_handler);
 
       evas_object_move (rel2_handler,
-            fx + Cur.eps->pos.x + Cur.eps->pos.w - Cur.eps->rel2.offset.x - 2,
-            fy + Cur.eps->pos.y + Cur.eps->pos.h - Cur.eps->rel2.offset.y - 2);
+            fx + Cur.ep->pos.x + Cur.ep->pos.w - Cur.eps->rel2.offset.x - 2,
+            fy + Cur.ep->pos.y + Cur.ep->pos.h - Cur.eps->rel2.offset.y - 2);
       evas_object_show(rel2_handler);
       evas_object_raise(rel2_handler);
 
@@ -384,10 +384,10 @@ ev_draw_focus(void)
                         engrave_part_state_rel1_to_x_get(Cur.eps));
          if (relto_part->current_state)
          {
-            ParentX = fx + relto_part->current_state->pos.x;
-            ParentY = fy + relto_part->current_state->pos.y;
-            ParentW = relto_part->current_state->pos.w;
-            ParentH = relto_part->current_state->pos.h;
+            ParentX = fx + relto_part->pos.x;
+            ParentY = fy + relto_part->pos.y;
+            ParentW = relto_part->pos.w;
+            ParentH = relto_part->pos.h;
          }
       }else{//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
@@ -401,10 +401,10 @@ ev_draw_focus(void)
                         engrave_part_state_rel1_to_y_get(Cur.eps));
          if (relto_part->current_state)
          {
-            ParentX = fx + relto_part->current_state->pos.x;
-            ParentY = fy + relto_part->current_state->pos.y;
-            ParentW = relto_part->current_state->pos.w;
-            ParentH = relto_part->current_state->pos.h;
+            ParentX = fx + relto_part->pos.x;
+            ParentY = fy + relto_part->pos.y;
+            ParentW = relto_part->pos.w;
+            ParentH = relto_part->pos.h;
          }
       }else{//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
@@ -418,10 +418,10 @@ ev_draw_focus(void)
                         engrave_part_state_rel2_to_x_get(Cur.eps));
          if (relto_part->current_state)
          {
-            ParentX = fx + relto_part->current_state->pos.x;
-            ParentY = fy + relto_part->current_state->pos.y;
-            ParentW = relto_part->current_state->pos.w;
-            ParentH = relto_part->current_state->pos.h;
+            ParentX = fx + relto_part->pos.x;
+            ParentY = fy + relto_part->pos.y;
+            ParentW = relto_part->pos.w;
+            ParentH = relto_part->pos.h;
          }
       }else{//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
@@ -435,10 +435,10 @@ ev_draw_focus(void)
                         engrave_part_state_rel2_to_y_get(Cur.eps));
          if (relto_part->current_state)
          {
-            ParentX = fx + relto_part->current_state->pos.x;
-            ParentY = fy + relto_part->current_state->pos.y;
-            ParentW = relto_part->current_state->pos.w;
-            ParentH = relto_part->current_state->pos.h;
+            ParentX = fx + relto_part->pos.x;
+            ParentY = fy + relto_part->pos.y;
+            ParentW = relto_part->pos.w;
+            ParentH = relto_part->pos.h;
          }
       }else{//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
