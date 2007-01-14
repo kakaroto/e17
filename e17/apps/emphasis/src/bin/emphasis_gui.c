@@ -52,13 +52,15 @@ emphasis_init_menu(Emphasis_Gui *gui)
 	
   emphasis_menu_append(gui->menu,
                        "clear",
-                       ETK_STOCK_EDIT_CLEAR, cb_playlist_clear, NULL,
+                       ETK_STOCK_EDIT_CLEAR        , cb_playlist_clear , NULL,
+                       "shuffle",
+                       ETK_STOCK_APPLICATIONS_GAMES, cb_playlist_shuffle, NULL,
                        "delete",
-                       ETK_STOCK_EDIT_DELETE, cb_playlist_delete, player,
+                       ETK_STOCK_EDIT_DELETE       , cb_playlist_delete, player,
                        "update",
-                       ETK_STOCK_VIEW_REFRESH, cb_database_update, player,
+                       ETK_STOCK_VIEW_REFRESH      , cb_database_update, player,
                        "config",
-                       ETK_STOCK_PREFERENCES_SYSTEM, cb_config_show, gui,
+                       ETK_STOCK_PREFERENCES_SYSTEM, cb_config_show    , gui,
                        NULL);
 	
   /* Do we need all this connect ? */

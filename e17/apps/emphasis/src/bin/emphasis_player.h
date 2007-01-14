@@ -143,7 +143,7 @@ void emphasis_player_toggle_full(Emphasis_Player_Gui *player, int value);
 void emphasis_player_vol_slider_set(Emphasis_Player_Gui *player, int value);
 
 void emphasis_player_vol_image_set(Emphasis_Player_Gui *player,
-                                   int right,
+                                   int high,
                                    const char *path);
 void emphasis_player_mode_set(Emphasis_Player_Gui *player,
                               Emphasis_Mode state);

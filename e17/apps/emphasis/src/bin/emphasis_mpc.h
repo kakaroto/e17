@@ -33,6 +33,7 @@ void mpc_playlist_add_song(const char *file, int commit);
 void mpc_playlist_delete(Evas_List *list);
 void mpc_playlist_clear(void);
 void mpc_playlist_commit(void);
+void mpc_playlist_shuffle(void);
 
 void mpc_play_id(int id);
 void mpc_play(void);

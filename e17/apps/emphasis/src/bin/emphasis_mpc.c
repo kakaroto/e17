@@ -18,7 +18,6 @@ mpc_init(const char *hostname, int port, const char *password, void *data)
     {
       mpd_send_password(mo);
       mpc_signal_connect_status_changed(data);
-      /* TODO: Destroy this time if not needed anymore */
       timer = ecore_timer_add(0.2, mpc_update, NULL);
     }
   else
@@ -130,6 +129,7 @@ mpc_update(void *data)
 void
 status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
 {
+  static int refresh_info = 1;
   Emphasis_Player_Gui *player;
   Emphasis_Song *song = NULL;
   MpdState state;
@@ -149,11 +149,12 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
       total_time = mpd_status_get_total_song_time(mo);
       emphasis_player_progress_set(player, (float) elapsed_time, total_time);
       /* dirty hack */ 
-      if(!mpd_status_db_is_updating(mo))
+      if(!mpd_status_db_is_updating(mo) && refresh_info)
         {
           song = mpc_playlist_get_current_song();
           emphasis_player_info_set(player, song, NULL);
           emphasis_song_free(song);
+          refresh_info = 0;
         }
     }
   if (what & MPD_CST_UPDATING)
@@ -226,6 +227,7 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
           emphasis_player_info_set(player, song, NULL);
           emphasis_pls_mark_current(ETK_TREE(player->media.pls), song->id);
           emphasis_song_free(song);
+          refresh_info = 1;
           break;
         case MPD_STATUS_STATE_UNKNOWN:
           emphasis_player_info_set(player, NULL, "wtf is that ?");
@@ -447,6 +449,15 @@ mpc_playlist_commit(void)
 }
 
 /**
+ * @brief Shuffle current mpd playlist
+ */
+void
+mpc_playlist_shuffle(void)
+{
+  mpd_playlist_shuffle(mo);
+}
+
+/**
  * @brief Play the song with id @e id
  * @param id An id of one of the songs in the playlist
  */
@@ -664,6 +675,7 @@ mpc_get_playlist_content(char *playlist_name)
 void
 mpc_save_playlist(char *playlist_name)
 {
+#if defined(LIBMPD_0_12_4)
   int mpd_error;
 
   mpd_error = mpd_database_save_playlist(mo, playlist_name);
@@ -674,6 +686,9 @@ mpc_save_playlist(char *playlist_name)
           fprintf(stderr, "A playlist with the same name already exist.\n");
         }
     }
+#else
+  UNUSED(playlist_name);
+#endif
 }
 
 void

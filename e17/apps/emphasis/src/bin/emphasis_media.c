@@ -254,10 +254,15 @@ emphasis_pls_list_init(Emphasis_Player_Gui *player)
   Etk_Tree *pls_list;
 
   pls_list = ETK_TREE(player->media.pls_list);
-  etk_tree_clear(pls_list); 
+  etk_tree_clear(pls_list);
+#if defined(LIBMPD_0_12_4)
   emphasis_tree_mlib_append(pls_list, 
                             (mpc_list_playlists()),
                             MPD_DATA_TYPE_PLAYLIST,
                             NULL);
+#else
+  etk_tree_append(pls_list, etk_tree_nth_col_get(pls_list, 0),
+                  "You need libmpd 0.12.4 in order to use mpd playlists", NULL);
+#endif
 }
 

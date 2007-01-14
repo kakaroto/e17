@@ -27,22 +27,14 @@ emphasis_cover_thread_process(void *data)
           ci = gui->cover_queue;
 
           artist = ci->artist;
-          album = ci->album;
+          album  = ci->album;
           strescape(artist);
           strescape(album);
           gui->cover_queue = NULL;
           
           cover_path = emphasis_cover_db_search(artist, album);
-          if (cover_path == NULL)
-            {
-              emphasis_player_cover_set(gui->player,
-                                        emphasis_cover_haricotmagique());
-            }
-          else
-            {
-              emphasis_player_cover_set(gui->player, cover_path);
-              free(cover_path);
-            }
+          emphasis_player_cover_set(gui->player, cover_path);
+          if (cover_path != NULL) { free(cover_path); }
           emphasis_player_cover_size_update(gui->player);
 
           free(artist);
@@ -51,7 +43,7 @@ emphasis_cover_thread_process(void *data)
         }
       else
         {
-          usleep(500);
+          usleep(200);
         }
     }
 }

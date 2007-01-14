@@ -50,6 +50,7 @@ void cb_playlist_clear(Etk_Object *object, Etk_Event_Mouse_Down *event,
 void cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
                          void *data);
 void cb_playlist_delete(Etk_Object *object, void *data);
+void cb_playlist_shuffle(Etk_Object *object, void *data);
 void cb_database_update(Etk_Object *object, void *data);
 
 void cb_small_resize(Etk_Object *object, void *data);

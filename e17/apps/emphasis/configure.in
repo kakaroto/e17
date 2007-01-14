@@ -124,7 +124,8 @@ PKG_CHECK_MODULES(
 	 AC_MSG_ERROR([libmpd not found.])
 	]
 )
-if test `pkg-config --modversion libmpd` = "0.12.4"; then
+
+if `pkg-config --atleast-version=0.12.4 libmpd`; then
  libmpd_v_cflags="-DLIBMPD_0_12_4"
 else
  libmpd_v_cflags="-DLIBMPD_0_12_0"

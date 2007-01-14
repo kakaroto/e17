@@ -89,18 +89,33 @@ void
 emphasis_configgui_save(Emphasis_Config_Gui *configgui)
 {
   Emphasis_Config *config;
+  char *key = NULL, *value = NULL;
+  int reconnect = 0;
 
   config = config_load();
 
-  if(config->hostname) { free(config->hostname); }
-  if(config->password) { free(config->password); }
-      
-  config->hostname =
-   strdup(etk_entry_text_get(ETK_ENTRY(configgui->hostname)));
-  config->password =
-   strdup(etk_entry_text_get(ETK_ENTRY(configgui->password)));
-  config->port      =
-   etk_range_value_get(ETK_RANGE(configgui->port));
+  if((key = config->hostname))
+    {
+      value = strdup(etk_entry_text_get(ETK_ENTRY(configgui->hostname)));
+      if(strcmp(key,value)) { reconnect = 1; }
+      free(config->hostname);
+    }
+  config->hostname = value;
+
+  if((key = config->password))
+    {
+      value = strdup(etk_entry_text_get(ETK_ENTRY(configgui->password)));
+      if(!reconnect && strcmp(key,value)) { reconnect = 1; }
+      free(config->password);
+    }
+  config->password = value;
+  
+  if(!reconnect && config->port != etk_range_value_get(ETK_RANGE(configgui->port)))
+    {
+      reconnect = 1;
+    }
+  config->port = etk_range_value_get(ETK_RANGE(configgui->port));
+
 
   config->crossfade    =
    etk_range_value_get(ETK_RANGE(configgui->xfade));
@@ -122,5 +137,13 @@ emphasis_configgui_save(Emphasis_Config_Gui *configgui)
 
   config_save(config);
   config_free(config);
+
+  if(reconnect)
+    {
+      Emphasis_Gui *gui = configgui->data;
+      emphasis_player_cover_set(gui->player, NULL);
+      emphasis_player_progress_set(gui->player, 0.0, 0.001);
+      mpc_disconnect();
+    }
 }
 

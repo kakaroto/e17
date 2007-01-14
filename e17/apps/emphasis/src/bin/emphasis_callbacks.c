@@ -784,7 +784,7 @@ void
 cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Down *event,
                        void *data)
 {
-  UNUSED(object)
+  UNUSED(object);
   Emphasis_Gui *gui;
 
   gui = data;
@@ -802,11 +802,22 @@ void
 cb_playlist_clear(Etk_Object *object, Etk_Event_Mouse_Down *event,
                   void *data)
 {
-  UNUSED(object)
-  UNUSED(event)
-  UNUSED(data)
+  UNUSED(object);
+  UNUSED(event);
+  UNUSED(data);
 
   mpc_playlist_clear();
+}
+
+/**
+ * * @brief Shuffle the playlist
+ */
+void
+cb_playlist_shuffle(Etk_Object *object, void *data)
+{
+  UNUSED_CLICKED_PARAM;
+  
+  mpc_playlist_shuffle();
 }
 
 /**
@@ -816,7 +827,7 @@ void
 cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event, 
                     void *data)
 {
-  UNUSED(object)
+  UNUSED(object);
   Emphasis_Player_Gui *player;
   Evas_List *rowlist;
   Evas_List *list;
@@ -832,6 +843,20 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
           mpc_playlist_delete(list);
         }
     }
+  else if(!strcmp(event->key, "c"))
+    {
+      cb_playlist_clear(NULL,NULL,NULL);
+    }
+  else if(!strcmp(event->key, "s"))
+    {
+      cb_playlist_shuffle(NULL,NULL);
+    }
+  /*
+  else if(!strcmp(event->key, "u"))
+    {
+      cb_database_update(NULL, data);
+    }
+  */
 }
 
 /**
@@ -840,7 +865,7 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
 void
 cb_playlist_delete(Etk_Object *object, void *data)
 {
-  UNUSED(object)
+  UNUSED(object);
   Emphasis_Player_Gui *player;
   Evas_List *rowlist;
   Evas_List *list;
@@ -859,7 +884,7 @@ cb_playlist_delete(Etk_Object *object, void *data)
 void
 cb_database_update(Etk_Object *object, void *data)
 {
-  UNUSED(object)
+  UNUSED(object);
   Emphasis_Player_Gui *player;
   player = data;
 
@@ -896,7 +921,6 @@ void
 cb_switch_full(Etk_Object *object, void *data)
 {
   UNUSED(object);
-//  int x, y, w, h;
 
   Emphasis_Player_Gui *player;
   player = data;
@@ -907,7 +931,6 @@ cb_switch_full(Etk_Object *object, void *data)
     }
   player->state = EMPHASIS_FULL;
 
-//  etk_window_geometry_get(ETK_WINDOW(player->small.window), &x, &y, &w, &h);
   etk_widget_hide(player->small.window);
   etk_widget_hide(player->media.window);
   
@@ -920,14 +943,12 @@ cb_switch_full(Etk_Object *object, void *data)
   emphasis_player_toggle_full(player, ETK_TRUE);
 
   etk_widget_show(player->full.window);
-//  etk_window_move(ETK_WINDOW(player->full.window), x, y);
 }
 
 void
 cb_switch_small(Etk_Object *object, void *data)
 {
   UNUSED(object);
-//  int x, y, w, h;
 
   Emphasis_Player_Gui *player;
   player = data;
@@ -938,7 +959,6 @@ cb_switch_small(Etk_Object *object, void *data)
     }
   player->state = EMPHASIS_SMALL;
 
-//  etk_window_geometry_get(ETK_WINDOW(player->full.window), &x, &y, &w, &h);
   etk_widget_hide(player->full.window);
 
   etk_container_add(ETK_CONTAINER(player->media.window), player->media.root);
@@ -949,7 +969,6 @@ cb_switch_small(Etk_Object *object, void *data)
       etk_widget_show(player->media.window);
     }
   etk_widget_show(player->small.window);
-//  etk_window_move(ETK_WINDOW(player->small.window), x, y);
 }
 
 void

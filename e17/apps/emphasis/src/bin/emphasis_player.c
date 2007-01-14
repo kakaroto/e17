@@ -76,9 +76,8 @@ emphasis_init_player(Emphasis_Player_Gui *player)
   player->media.search_tree  = enhance_var_get(en, "search_page_tree");
 
 
-  player->media.pls_list    = enhance_var_get(en, "media_pls_list");
-  player->media.pls_content = enhance_var_get(en, "media_pls_content");
-
+  player->media.pls_list       = enhance_var_get(en, "media_pls_list");
+  player->media.pls_content    = enhance_var_get(en, "media_pls_content");
   player->media.pls_entry_save = enhance_var_get(en, "media_pls_entry_save");
 
   /* Mediabox buttons init */
@@ -88,16 +87,6 @@ emphasis_init_player(Emphasis_Player_Gui *player)
   player->media.button_playlists = enhance_var_get(en, "media_button_pls");
   player->media.button_stats     = enhance_var_get(en, "media_button_stats");
 
-  /* TODO : finish the special theme  
-  etk_widget_theme_file_set(ETK_WIDGET(player->media.button_lib),
-                            PACKAGE_DATA_DIR "/widgets/media_tab_button.edj");
-  etk_widget_theme_file_set(ETK_WIDGET(player->media.button_search),
-                            PACKAGE_DATA_DIR "/widgets/media_tab_button.edj");
-  etk_widget_theme_file_set(ETK_WIDGET(player->media.button_playlists),
-                            PACKAGE_DATA_DIR "/widgets/media_tab_button.edj");
-  etk_widget_theme_file_set(ETK_WIDGET(player->media.button_stats),
-                            PACKAGE_DATA_DIR "/widgets/media_tab_button.edj");
-  */
   /* enhance completion : col def */
   etk_tree_multiple_select_set(ETK_TREE(player->media.artist), ETK_TRUE);
   etk_tree_multiple_select_set(ETK_TREE(player->media.album) , ETK_TRUE);
@@ -203,8 +192,7 @@ emphasis_init_player(Emphasis_Player_Gui *player)
                       (void*)EMPHASIS_TRACK);
 
   /* enhance complection : images */
-  /* TODO : use cover_haricotmagique() */
-  emphasis_player_cover_set(player, PACKAGE_DATA_DIR EMPHASIS_LOGO);
+  emphasis_player_cover_set(player, NULL);
 
   emphasis_player_vol_image_set(player, 0, PACKAGE_DATA_DIR EMPHASIS_SOUNDL);
   emphasis_player_vol_image_set(player, 1, PACKAGE_DATA_DIR EMPHASIS_SOUNDR);
@@ -290,8 +278,8 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
   enhance_callback_data_set(en, "cb_media_pls_save_clicked"        , player);
   enhance_callback_data_set(en, "cb_media_pls_load_clicked"        , player);
   enhance_callback_data_set(en, "cb_media_pls_del_clicked"         , player);
-
   enhance_callback_data_set(en, "cb_media_pls_list_row_clicked"    , player);
+  
   enhance_callback_data_set(en, "cb_tree_mlib_clicked"             , player);
   enhance_callback_data_set(en, "cb_media_pls_save_key_down"       , player);
 
@@ -301,6 +289,8 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
 void
 emphasis_player_cover_set(Emphasis_Player_Gui *player, const char *path)
 {
+  if(!path) { path = emphasis_cover_haricotmagique(); }
+
   etk_image_set_from_file(ETK_IMAGE(player->full.cover) , path, NULL);
   etk_image_set_from_file(ETK_IMAGE(player->small.cover), path, NULL);
 }
@@ -426,7 +416,7 @@ emphasis_player_info_set(Emphasis_Player_Gui *player,
     }
   
   etk_textblock_object_cursor_visible_set
-   (ETK_TEXT_VIEW(player->small.info)->textblock->evas_objects->data,
+   (evas_list_data(ETK_TEXT_VIEW(player->small.info)->textblock->evas_objects),
     ETK_FALSE);
 }
 
@@ -543,10 +533,10 @@ emphasis_player_vol_slider_set(Emphasis_Player_Gui *player, int value)
 /* TODO : doc */
 void
 emphasis_player_vol_image_set(Emphasis_Player_Gui *player,
-                              int right,
+                              int high,
                               const char *path)
 {
-  switch(right)
+  switch(high)
     {
      case 0:
        etk_image_set_from_file(ETK_IMAGE(player->small.sound_low), path, NULL);

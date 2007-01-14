@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!-- Generated with glade3
+<!--Generated with glade3 3.0.2 on Sat Jan 13 20:23:52 2007 by aji@neiki
 	Version: 3.0.1
 	Date: Tue Dec 12 00:12:02 2006
 	User: aji
@@ -25,6 +25,7 @@
             <property name="width_request">180</property>
             <property name="height_request">180</property>
             <property name="visible">True</property>
+            <property name="stock">gtk-missing-image</property>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -37,7 +38,7 @@
             <child>
               <widget class="GtkProgressBar" id="small_progress">
                 <property name="visible">True</property>
-                <property name="pulse_step">0.1</property>
+                <property name="pulse_step">0.10000000149011612</property>
                 <signal name="mouse_down" handler="cb_seek_time"/>
               </widget>
             </child>
@@ -151,6 +152,7 @@
             <child>
               <widget class="GtkImage" id="small_sound_low">
                 <property name="visible">True</property>
+                <property name="stock">gtk-missing-image</property>
                 <signal name="mouse_down" handler="cb_vol_image_clicked"/>
               </widget>
               <packing>
@@ -172,6 +174,7 @@
             <child>
               <widget class="GtkImage" id="small_sound_high">
                 <property name="visible">True</property>
+                <property name="stock">gtk-missing-image</property>
                 <signal name="mouse_down" handler="cb_vol_image_clicked"/>
               </widget>
               <packing>
@@ -490,6 +493,7 @@ Filename</property>
                             <child>
                               <widget class="GtkImage" id="image1">
                                 <property name="visible">True</property>
+                                <property name="stock">gtk-missing-image</property>
                                 <property name="icon_size">1</property>
                                 <property name="icon_name">ETK_STOCK_SYSTEM_SEARCH</property>
                               </widget>
@@ -610,6 +614,9 @@ Filename</property>
                         <property name="can_focus">True</property>
                         <signal name="row_clicked" handler="cb_media_pls_list_row_clicked"/>
                       </widget>
+                      <packing>
+                        <property name="resize">False</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkTreeView" id="media_pls_content">
@@ -643,6 +650,7 @@ Filename</property>
                         <child>
                           <widget class="GtkEntry" id="media_pls_entry_save">
                             <property name="can_focus">True</property>
+                            <property name="text" translatable="yes">lalala</property>
                             <signal name="key_down" handler="cb_media_pls_save_key_down"/>
                           </widget>
                           <packing>
@@ -839,6 +847,7 @@ Filename</property>
                     <child>
                       <widget class="GtkImage" id="full_sound_low">
                         <property name="visible">True</property>
+                        <property name="stock">gtk-missing-image</property>
                         <signal name="mouse_down" handler="cb_vol_image_clicked"/>
                       </widget>
                       <packing>
@@ -861,6 +870,7 @@ Filename</property>
                     <child>
                       <widget class="GtkImage" id="full_sound_high">
                         <property name="visible">True</property>
+                        <property name="stock">gtk-missing-image</property>
                         <signal name="mouse_down" handler="cb_vol_image_clicked"/>
                       </widget>
                       <packing>
@@ -943,7 +953,7 @@ Filename</property>
                         <child>
                           <widget class="GtkLabel" id="full_info">
                             <property name="visible">True</property>
-                            <property name="xalign">0.000000</property>
+                            <property name="xalign">0</property>
                             <property name="label" translatable="yes">current song info</property>
                           </widget>
                           <packing>
@@ -985,7 +995,7 @@ Filename</property>
                         <child>
                           <widget class="GtkProgressBar" id="full_progress">
                             <property name="visible">True</property>
-                            <property name="pulse_step">0.1</property>
+                            <property name="pulse_step">0.10000000149011612</property>
                             <signal name="mouse_down" handler="cb_seek_time"/>
                           </widget>
                         </child>
@@ -1003,6 +1013,7 @@ Filename</property>
                     <property name="width_request">100</property>
                     <property name="height_request">100</property>
                     <property name="visible">True</property>
+                    <property name="stock">gtk-missing-image</property>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
