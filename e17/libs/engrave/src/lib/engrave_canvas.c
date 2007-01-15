@@ -437,28 +437,60 @@ engrave_canvas_part_recalc(Engrave_Canvas *ec, Engrave_Part *ep,
 static void
 engrave_canvas_part_state_text_setup(Engrave_Part_State *eps)
 {
-    int r, g, b, a;
-    const char *font_key;
-    const char *font_name;
-    Engrave_Part *ep = (eps ? eps->parent : NULL);
-    Engrave_Group *eg = (ep ? ep->parent : NULL);
-    Engrave_File *ef = (eg ? eg->parent : NULL);
-   // XXX this needs a lot of work ... 
-    if (ef) {
-        Engrave_Font * efont;
+   int r, g, b, a;
+   const char *font_key;
+   const char *font_name;
+   Engrave_Part *ep = (eps ? eps->parent : NULL);
+   Engrave_Group *eg = (ep ? ep->parent : NULL);
+   Engrave_File *ef = (eg ? eg->parent : NULL);
 
-        font_key = engrave_part_state_text_font_get(eps);
-        efont = engrave_file_font_by_name_find(ef, font_key);
-        font_name = engrave_font_path_get(efont);
+   if (ef) {
+      Engrave_Font * efont;
 
-    } else 
-        font_name = "Vera.ttf";
+      font_key = engrave_part_state_text_font_get(eps);
+      efont = engrave_file_font_by_name_find(ef, font_key);
+      font_name = engrave_font_path_get(efont);
 
-    evas_object_text_text_set(ep->object, engrave_part_state_text_text_get(eps));
-    evas_object_text_font_set(ep->object, font_name, 
-                            engrave_part_state_text_size_get(eps));
-    engrave_part_state_color_get(eps, &r, &g, &b, &a);
-    evas_object_color_set(ep->object, r, g, b, a);
+   }else 
+      font_name = "Vera.ttf";
+
+   evas_object_text_text_set(ep->object, 
+                             engrave_part_state_text_text_get(eps));
+   evas_object_text_font_set(ep->object, font_name, 
+                             engrave_part_state_text_size_get(eps));
+   engrave_part_state_color_get(eps, &r, &g, &b, &a);
+   evas_object_color_set(ep->object, r, g, b, a);
+   
+   engrave_part_state_color2_get(eps, &r, &g, &b, &a);
+   evas_object_text_shadow_color_set(ep->object, r, g, b, a);
+   
+   engrave_part_state_color3_get(eps, &r, &g, &b, &a);
+   evas_object_text_outline_color_set(ep->object, r, g, b, a);
+    
+   switch (engrave_part_effect_get(ep))
+   {
+   case ENGRAVE_TEXT_EFFECT_OUTLINE: 
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_OUTLINE); 
+      break;
+   case ENGRAVE_TEXT_EFFECT_SOFT_OUTLINE: 
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_SOFT_OUTLINE);
+      break;
+   case ENGRAVE_TEXT_EFFECT_SHADOW:
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_SHADOW);
+      break;
+   case ENGRAVE_TEXT_EFFECT_SOFT_SHADOW: 
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_SOFT_SHADOW);
+      break;
+   case ENGRAVE_TEXT_EFFECT_OUTLINE_SHADOW:
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_OUTLINE_SHADOW);
+      break;
+   case ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW:
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_OUTLINE_SOFT_SHADOW);
+      break;
+   default: 
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_PLAIN);
+      break;
+   }
 }
 
 static void
@@ -485,8 +517,6 @@ engrave_canvas_part_state_image_setup(Engrave_Part_State *eps)
    Engrave_Part *ep = (eps ? eps->parent : NULL);
    Engrave_Group *eg = (ep ? ep->parent : NULL);
 
-   
-   
    if (!ep || !eg) return;
    
    if ((ei = engrave_part_state_image_normal_get(eps)))
@@ -496,16 +526,17 @@ engrave_canvas_part_state_image_setup(Engrave_Part_State *eps)
          engrave_image_name_get(ei));
       evas_object_image_file_set(ep->object, path, NULL);
    }
-       
-       
+
    engrave_part_state_fill_origin_relative_get(eps, &pos_rel_x, &pos_rel_y);
    engrave_part_state_fill_size_relative_get(eps, &rel_x, &rel_y);
    engrave_part_state_fill_origin_offset_get(eps, &pos_abs_x, &pos_abs_y);
    engrave_part_state_fill_size_offset_get(eps, &abs_x, &abs_y);
+
    fill_x = pos_abs_x + (ep->pos.w * pos_rel_x);
    fill_y = pos_abs_y + (ep->pos.w * pos_rel_y);
    fill_w = abs_x + (ep->pos.w * rel_x);
    fill_h = abs_y + (ep->pos.h * rel_y);
+
    evas_object_image_fill_set(ep->object, fill_x, fill_y, fill_w, fill_h);
    evas_object_image_smooth_scale_set(ep->object,
       engrave_part_state_fill_smooth_get(eps));

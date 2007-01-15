@@ -483,10 +483,10 @@ engrave_part_state_color_class_set(Engrave_Part_State *eps, const char *class)
 /**
  * engrave_part_state_color_set - Set the colour of the state.
  * @param eps: The Engrave_Part_State to set the value too.
- * @param r: The red value.
- * @param g: The green value.
- * @param b: the blue value.
- * @param a: The alpha value.
+ * @param r: The red value (set -1 to keep the current value).
+ * @param g: The green value (set -1 to keep the current value).
+ * @param b: the blue value (set -1 to keep the current value).
+ * @param a: The alpha value (set -1 to keep the current value).
  *
  * @return Returns no value 
  */
@@ -495,19 +495,19 @@ engrave_part_state_color_set(Engrave_Part_State *eps,
                                 int r, int g, int b, int a)
 {
   if (!eps) return;
-  eps->color.r = r;
-  eps->color.g = g;
-  eps->color.b = b;
-  eps->color.a = a;
+  if (r >= 0) eps->color.r = r;
+  if (g >= 0) eps->color.g = g;
+  if (b >= 0) eps->color.b = b;
+  if (a >= 0) eps->color.a = a;
 }
 
 /**
  * engrave_part_state_color2_set - Set the colour2 of the state
  * @param eps: The Engrave_Part_State to set the value too.
- * @param r: The red value.
- * @param g: The green value.
- * @param b: the blue value.
- * @param a: The alpha value.
+ * @param r: The red value (set -1 to keep the current value).
+ * @param g: The green value (set -1 to keep the current value).
+ * @param b: the blue value (set -1 to keep the current value).
+ * @param a: The alpha value (set -1 to keep the current value).
  *
  * @return Returns no value 
  */
@@ -516,19 +516,19 @@ engrave_part_state_color2_set(Engrave_Part_State *eps,
                                 int r, int g, int b, int a)
 {
   if (!eps) return;
-  eps->color2.r = r;
-  eps->color2.g = g;
-  eps->color2.b = b;
-  eps->color2.a = a;
+  if (r >= 0) eps->color2.r = r;
+  if (g >= 0) eps->color2.g = g;
+  if (b >= 0) eps->color2.b = b;
+  if (a >= 0) eps->color2.a = a;
 }
 
 /**
  * engrave_part_state_color3_set - Set the colour 3 of the state.
  * @param eps: The Engrave_Part_State to set the value too.
- * @param r: The red value.
- * @param g: The green value.
- * @param b: the blue value.
- * @param a: The alpha value.
+ * @param r: The red value (set -1 to keep the current value).
+ * @param g: The green value (set -1 to keep the current value).
+ * @param b: the blue value (set -1 to keep the current value).
+ * @param a: The alpha value (set -1 to keep the current value).
  *
  * @return Returns no value 
  */
@@ -537,10 +537,10 @@ engrave_part_state_color3_set(Engrave_Part_State *eps,
                                 int r, int g, int b, int a)
 {
   if (!eps) return;
-  eps->color3.r = r;
-  eps->color3.g = g;
-  eps->color3.b = b;
-  eps->color3.a = a;
+  if (r >= 0) eps->color3.r = r;
+  if (g >= 0) eps->color3.g = g;
+  if (b >= 0) eps->color3.b = b;
+  if (a >= 0) eps->color3.a = a;
 }
 
 /**
