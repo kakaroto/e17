@@ -57,11 +57,9 @@ _mail_imap_check_mail (void *data)
 					      ic->config->port, NULL);
 		  ic->server->cmd = 0;
 		}
+	       is->current = ic;
 	    }
 	}
-      is->current = is->clients;
-      if (!is->current) break;
-      ic = is->current->data;
     }
 }
 
@@ -108,8 +106,7 @@ _mail_imap_shutdown ()
       if (is->data_handler)
 	ecore_event_handler_del (is->data_handler);
       iservers = evas_list_remove_list (iservers, iservers);
-      free (is);
-      is = NULL;
+       E_FREE(is);
     }
 }
 
@@ -261,7 +258,7 @@ _mail_imap_server_data (void *data, int type, void *event)
     }
 
   if (!is->current) return 0;
-  ic = is->current->data;
+  ic = is->current;
   is->state++;
 
   switch (is->state)
@@ -289,10 +286,10 @@ _mail_imap_server_data (void *data, int type, void *event)
 	  if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	    _mail_start_exe (ic->config);
 
-	  is->current = is->current->next;
+	  is->current = is->clients->next->data;
 	  if (is->current)
 	    {
-	      if (is->current->data)
+	      if (is->current)
 		  is->state = IMAP_STATE_SERVER_READY;
 	      else
 		  _mail_imap_server_logout (is);
