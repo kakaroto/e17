@@ -7,44 +7,116 @@
 #include "ewl_pdf.h"
 
 
+typedef struct Tree_Row_Data Tree_Row_Data;
+typedef struct Tree_Data     Tree_Data;
+
+struct Tree_Row_Data
+{
+  char      *text;
+  Tree_Data *subdata;
+  int        expandable;
+  int        page;
+};
+
+struct Tree_Data
+{
+  unsigned int    count;
+  Tree_Row_Data **rows;
+};
+
+
 static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data);
 static void _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data);
 
-void
-_tree_fill (Ewl_Widget *pdf, Ewl_Tree *tree, Ewl_Row *row, Ecore_List *items)
+void *
+_tree2_fill (Ewl_Widget *pdf, Ecore_List *items)
 {
-  Ewl_Widget      *prow;
+  Tree_Data       *data;
   Epdf_Index_Item *item;
+  int              i = 0;
 
   if (!items)
-    return;
+    return NULL;
+
+  data = (Tree_Data *)calloc (1, sizeof (Tree_Data));
+  if (!data)
+    return NULL;
+
+  data->count = ecore_list_nodes (items);
+  data->rows = (Tree_Row_Data **)calloc (data->count, sizeof (Tree_Row_Data *));
+  if (!data->rows) {
+    free (data);
+    return NULL;
+  }
   
   ecore_list_goto_first (items);
   while ((item = ecore_list_next (items))) {
-    int         page;
-    int        *num;
-    char       *buf;
     Ecore_List *c;
+    int         page;
 
-    buf = strdup (epdf_index_item_title_get (item));
-    prow = ewl_tree_text_row_add (tree, row,
-                                  &buf);
     page = epdf_index_item_page_get (ewl_pdf_pdf_document_get (EWL_PDF (pdf)), item);
-    if (page >= 0) {
-      num = (int *)malloc (sizeof (int));
-      *num = page;
-      ewl_widget_data_set (prow, "row-number", num);
-      ewl_callback_append (EWL_WIDGET (prow),
-                           EWL_CALLBACK_CLICKED,
-                           EWL_CALLBACK_FUNCTION (_change_page_cb),
-                           pdf);
-    }
-    free (buf);
+
+    data->rows[i] = (Tree_Row_Data *)calloc (1, sizeof (Tree_Row_Data));
+    data->rows[i]->text = strdup (epdf_index_item_title_get (item));
+    data->rows[i]->expandable = 0;
+    data->rows[i]->page = (page < 0) ? 0 : page;
+
     c = epdf_index_item_children_get (item);
     if (c) {
-      _tree_fill (pdf, tree, EWL_ROW (prow), c);
+      data->rows[i]->expandable = 1;
+      data->rows[i]->subdata = _tree2_fill (pdf, c);
     }
+
+    i++;
   }
+
+  return data;
+}
+
+static void *tree2_data_fetch(void *data, unsigned int row, unsigned int column)
+{
+  Tree_Data *d;
+
+  d = (Tree_Data *)data;
+
+  return d->rows[row]->text;
+}
+
+static int
+tree2_data_count_get (void *data)
+{
+  Tree_Data *d;
+
+  d = (Tree_Data *)data;
+
+  return d->count;
+}
+
+static int
+tree2_data_expandable_get(void *data, unsigned int row)
+{
+  Tree_Data *d;
+
+  d = data;
+
+  return d->rows[row]->expandable;
+}
+
+static void *
+tree2_data_expansion_fetch(void *data, unsigned int parent)
+{
+  Tree_Data *d;
+
+  d = data;
+
+  return d->rows[parent]->subdata;
+}
+
+static void
+_label_text_set (Ewl_Widget *widget, void *data)
+{
+  ewl_label_text_set (EWL_LABEL (widget), (const char *)data);
+  ewl_object_alignment_set (EWL_OBJECT (widget), EWL_FLAG_ALIGN_LEFT);
 }
 
 int
@@ -52,7 +124,8 @@ main (int argc, char *argv[])
 {
   Ecore_List     *str_data = NULL;
   Ewl_Widget     *window;
-  Ewl_Widget     *table;
+  Ewl_Widget     *hbox;
+  Ewl_Widget     *vbox;
   Ewl_Widget     *list;
   Ewl_Model      *model;
   Ewl_View       *view;
@@ -91,25 +164,56 @@ main (int argc, char *argv[])
   ewl_callback_append (window, EWL_CALLBACK_DELETE_WINDOW,
                        _quit_cb, str_data);
 
-  table = ewl_table_new (2, 2, NULL);
-  ewl_table_homogeneous_set (EWL_TABLE (table), FALSE);
-  ewl_container_child_append (EWL_CONTAINER (window), table);
-  ewl_widget_show (table);
+  hbox = ewl_hbox_new ();
+  ewl_box_homogeneous_set (EWL_BOX (hbox), FALSE);
+  ewl_container_child_append (EWL_CONTAINER (window), hbox);
+  ewl_widget_show (hbox);
+
+  vbox = ewl_vbox_new ();
+  ewl_box_homogeneous_set (EWL_BOX (vbox), TRUE);
+  ewl_container_child_append (EWL_CONTAINER (hbox), vbox);
+  ewl_widget_show (vbox);
 
   if (index) {
-    tree = ewl_tree_new (1);
-    ewl_tree_headers_visible_set (EWL_TREE (tree), FALSE);
-    ewl_table_add (EWL_TABLE (table), tree, 1, 1, 1, 1);
-    _tree_fill (pdf, EWL_TREE (tree), NULL, index);
+    Ewl_Model *model;
+    Ewl_View  *view;
+    void      *data;
+
+    /* tree */
+    tree = ewl_tree2_new ();
+    ewl_widget_name_set (tree, "tree");
+/*     ewl_object_fill_policy_set (EWL_OBJECT (tree), EWL_FLAG_FILL_VFILL); */
+    ewl_tree2_headers_visible_set (EWL_TREE2 (tree), FALSE);
+    ewl_callback_append (tree, EWL_CALLBACK_VALUE_CHANGED,
+                         _change_page_cb, pdf);
+
+    /* data */
+    data = _tree2_fill (pdf, index);
     epdf_index_delete (index);
+
+    /* model */
+    model = ewl_model_new ();
+    ewl_model_fetch_set (model, tree2_data_fetch);
+    ewl_model_count_set (model, tree2_data_count_get);
+    ewl_model_expandable_set (model, tree2_data_expandable_get);
+    ewl_model_expansion_data_fetch_set(model, tree2_data_expansion_fetch);
+
+    /* MVC */
+    ewl_mvc_data_set (EWL_MVC (tree), data);
+
+    /* view */
+    view = ewl_view_new();
+    ewl_view_constructor_set (view, ewl_label_new);
+    ewl_view_assign_set (view, EWL_VIEW_ASSIGN (_label_text_set));
+    ewl_tree2_column_append (EWL_TREE2(tree), model, view);
+
+    /* we attach and show */
+    ewl_container_child_append (EWL_CONTAINER (vbox), tree);
     ewl_widget_show (tree);
   }
 
   sp = ewl_scrollpane_new ();
-  if  (index)
-    ewl_table_add (EWL_TABLE (table), sp, 1, 1, 2, 2);
-  else
-    ewl_table_add (EWL_TABLE (table), sp, 1, 1, 1, 2);
+  ewl_container_child_append (EWL_CONTAINER (vbox), sp);
   ewl_widget_show (sp);
 
   page_count = epdf_document_page_count_get (document);
@@ -123,7 +227,9 @@ main (int argc, char *argv[])
   }
 
   model = ewl_model_ecore_list_get();
-  view = ewl_label_view_get();
+  view = ewl_view_new();
+  ewl_view_constructor_set (view, ewl_label_new);
+  ewl_view_assign_set (view, EWL_VIEW_ASSIGN (_label_text_set));
 
   list = ewl_list_new ();
   ewl_mvc_model_set(EWL_MVC(list), model);
@@ -136,7 +242,7 @@ main (int argc, char *argv[])
   ewl_container_child_append (EWL_CONTAINER (sp), list);
   ewl_widget_show (list);
 
-  ewl_table_add (EWL_TABLE (table), pdf, 2, 2, 1, 2);
+  ewl_container_child_append (EWL_CONTAINER (hbox), pdf);
   ewl_widget_show (pdf);
 
   ewl_widget_show (window);
@@ -154,7 +260,6 @@ static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data)
     list = (Ecore_List *)user_data;
     ecore_list_destroy (list);
   }
-  ewl_widget_destroy(w);
   ewl_main_quit();
 }
 
@@ -162,17 +267,29 @@ static void
 _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
 {
   Ewl_Pdf           *pdf;
-  Ewl_List          *list;
   Ecore_List        *el;
   Ewl_Selection_Idx *idx;
 
-  list = EWL_LIST(widget);
-  el = ewl_mvc_data_get(EWL_MVC(list));
-  idx = ewl_mvc_selected_get(EWL_MVC(list));
+  if (ewl_widget_type_is (widget, "list")) {
+    el = ewl_mvc_data_get (EWL_MVC (widget));
+    idx = ewl_mvc_selected_get (EWL_MVC (widget));
 
-  pdf = EWL_PDF (user_data);
-  if (idx->row != ewl_pdf_page_get (pdf)) {
-    ewl_pdf_page_set (pdf, idx->row);
-    ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+    pdf = EWL_PDF (user_data);
+    if (idx->row != ewl_pdf_page_get (pdf)) {
+      ewl_pdf_page_set (pdf, idx->row);
+      ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+    }
+  }
+  else {
+    Ewl_Selection *sel;
+    Tree_Data     *data;
+
+    el = ewl_mvc_selected_list_get (EWL_MVC (widget));
+    sel = ecore_list_goto_first (el);
+    idx = EWL_SELECTION_IDX(sel);
+    if (!idx) printf ("pas de idx\n");
+    data = (Tree_Data *)ewl_mvc_data_get (EWL_MVC (widget));
+    if (idx)
+      printf ("row %d\n", idx->row);
   }
 }
