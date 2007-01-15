@@ -1,0 +1,49 @@
+%define revision 1
+%define rev_name %{nil}
+
+Summary:	Enlightenment themes: BlueSteel, BrushedMetal-Tigert, Ganymede, ShinyMetal
+Name:		@PACKAGE@
+Version:	@VERSION@
+Release:	%{revision}%{?_vendorsuffix:.%{_vendorsuffix}}
+License:	BSD
+Group:		User Interface/Desktops
+Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}%{rev_name}.tar.gz
+Prefix:		%{_prefix}
+BuildArch:	noarch
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
+URL:		http://www.enlightenment.org/
+
+Requires: e16 >= 0.16.8
+Obsoletes: etheme-BlueSteel enlightenment-theme-BlueSteel
+Obsoletes: e16-theme-BlueSteel e16-theme-BrushedMetal-Tigert e16-theme-Ganymede e16-theme-ShinyMetal
+
+%description
+The BlueSteel, BrushedMetal-Tigert, Ganymede, and ShinyMetal themes for Enlightenment DR16.
+This is part of the Enlightenment distribution.
+
+%prep
+%setup -n %{name}-%{version}%{rev_name}
+
+%build
+CFLAGS="${RPM_OPT_FLAGS}"
+if [ ! -f configure ]; then
+  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd
+else
+  %{configure} --prefix=%{_prefix} --bindir=%{_bindir} --datadir=%{_datadir} --mandir=%{_mandir} --enable-fsstd
+fi
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+make DESTDIR=$RPM_BUILD_ROOT install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING
+%{_datadir}/e16/*
+
+%changelog
