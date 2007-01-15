@@ -2069,30 +2069,49 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
      case ButtonPress:
 	FocusHandleClick(ewin, EwinGetContainerWin(ewin));
 	break;
+
      case MapRequest:
+	if (ev->xmaprequest.window != EwinGetClientXwin(ewin))
+	   break;
 	EwinEventMapRequest(ewin, ev->xmaprequest.window);
 	break;
      case ConfigureRequest:
+	if (ev->xconfigurerequest.window != EwinGetClientXwin(ewin))
+	   break;
 	EwinEventConfigureRequest(ewin, ev);
 	break;
      case ResizeRequest:
+	if (ev->xresizerequest.window != EwinGetClientXwin(ewin))
+	   break;
 	EwinEventResizeRequest(ewin, ev);
 	break;
      case CirculateRequest:
+	if (ev->xcirculaterequest.window != EwinGetClientXwin(ewin))
+	   break;
 	EwinEventCirculateRequest(ewin, ev);
 	break;
 
      case DestroyNotify:
+	if (ev->xdestroywindow.window != EwinGetClientXwin(ewin))
+	   break;
 	EwinEventDestroy(ewin);
 	break;
 
      case EX_EVENT_UNMAP_GONE:
+	if (ev->xunmap.window != EwinGetClientXwin(ewin))
+	   break;
 	EoSetGone(ewin);
+	goto do_unmap;
      case UnmapNotify:
+	if (ev->xunmap.window != EwinGetClientXwin(ewin))
+	   break;
+      do_unmap:
 	EwinEventUnmap(ewin, ev);
 	break;
 
      case MapNotify:
+	if (ev->xmap.window != EwinGetClientXwin(ewin))
+	   break;
 	EwinEventMap(ewin, ev);
 	break;
 
