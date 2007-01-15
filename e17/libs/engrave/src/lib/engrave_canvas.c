@@ -207,30 +207,33 @@ engrave_canvas_part_redraw(Engrave_Part *ep, void *data)
                                     engrave_part_current_state_get(confine));
     
    switch (engrave_part_type_get(ep))
-   {
+     {
       case ENGRAVE_PART_TYPE_RECT:
         engrave_canvas_part_state_rect_setup(eps);
         evas_object_move(ep_object, ec->x + ep->pos.x, ec->y + ep->pos.y);
         evas_object_resize(ep_object, ep->pos.w, ep->pos.h);
         break;
-      
+	
       case ENGRAVE_PART_TYPE_TEXT:
         engrave_canvas_part_state_text_setup(eps);
         evas_object_move(ep_object, ec->x + ep->pos.x,
-                                    ec->y + ep->pos.y);
+			 ec->y + ep->pos.y);
         break;
-      
+	
       case ENGRAVE_PART_TYPE_IMAGE:
         engrave_canvas_part_state_image_setup(eps);
         evas_object_move(ep_object, ec->x + ep->pos.x, ec->y + ep->pos.y);
         evas_object_resize(ep_object, ep->pos.w, ep->pos.h);
         break;
-      
+	
       case ENGRAVE_PART_TYPE_SWALLOW:
-        evas_object_move(ep_object, ec->x + ep->pos.x, ec->y + ep->pos.y);
-        evas_object_resize(ep_object, ep->pos.w, ep->pos.h);
-        break;
-   }
+	evas_object_move(ep_object, ec->x + ep->pos.x, ec->y + ep->pos.y);
+	evas_object_resize(ep_object, ep->pos.w, ep->pos.h);
+	break;
+
+      default:
+	break;
+     }
 
    if (engrave_part_state_visible_get(eps))
       evas_object_show(ep_object);

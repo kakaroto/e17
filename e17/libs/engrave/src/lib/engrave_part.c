@@ -577,3 +577,4 @@ engrave_part_evas_object_set(Engrave_Part *ep, Evas_Object *o)
     if (!ep) return;
     ep->object = o;
 }
+
