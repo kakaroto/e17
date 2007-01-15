@@ -64,6 +64,8 @@ static void         EwinHandleEventsToplevel(Win win, XEvent * ev, void *prm);
 static void         EwinHandleEventsContainer(Win win, XEvent * ev, void *prm);
 static void         EwinHandleEventsClient(Win win, XEvent * ev, void *prm);
 
+static void         EwinUnmap2(EWin * ewin);
+
 Window
 EwinGetClientXwin(const EWin * ewin)
 {
@@ -353,6 +355,9 @@ EwinDestroy(EWin * ewin)
 
    if (!ewin)
       return;
+
+   if (ewin->state.state == EWIN_STATE_MAPPED)
+      EwinUnmap2(ewin);
 
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinDestroy %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
@@ -2092,8 +2097,14 @@ EwinHandleEventsContainer(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      case EX_EVENT_REPARENT_GONE:
+	if (ev->xreparent.window != EwinGetClientXwin(ewin))
+	   break;
 	EoSetGone(ewin);
+	goto do_reparent;
      case ReparentNotify:
+	if (ev->xreparent.window != EwinGetClientXwin(ewin))
+	   break;
+      do_reparent:
 	EwinEventReparent(ewin);
 	break;
 
