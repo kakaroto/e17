@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-13 14:47+0100\n"
+"POT-Creation-Date: 2007-01-14 16:34+0100\n"
 "PO-Revision-Date: 2006-11-06 02:41+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -84,7 +84,7 @@ msgstr ""
 "%s\n"
 "無視して処理を継続します...\n"
 
-#: src/actions.c:92
+#: src/actions.c:89
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -97,7 +97,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "このファイルが存在しません。\n"
 
-#: src/actions.c:100
+#: src/actions.c:97
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -115,7 +115,7 @@ msgstr ""
 "シェルのマニュアルページを読んで、シェルの実行パスの変更方法\n"
 "や追加方法を理解した方がいいと思います。\n"
 
-#: src/actions.c:120
+#: src/actions.c:117
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -132,7 +132,7 @@ msgstr ""
 "それにこのファイルを実行する権限もあります。この件は調べた方がいいと\n"
 "思います。\n"
 
-#: src/actions.c:131
+#: src/actions.c:128
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -148,7 +148,7 @@ msgstr ""
 "る\n"
 "実行権限がないので実行できません。\n"
 
-#: src/actions.c:146
+#: src/actions.c:143
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -161,7 +161,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "ファイルではなくディレクトリが指定されています。\n"
 
-#: src/actions.c:154
+#: src/actions.c:151
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -174,7 +174,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "このファイルは通常のファイルではありません。\n"
 
-#: src/actions.c:179
+#: src/actions.c:176
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -689,7 +689,7 @@ msgid "Right"
 msgstr "右"
 
 #
-#: src/desktops.c:2467 src/menus-misc.c:715
+#: src/desktops.c:2467 src/menus-misc.c:709
 msgid "Desks"
 msgstr "マルチデスクトップ"
 
@@ -1066,7 +1066,7 @@ msgid "Swap Window Locations"
 msgstr "ウィンドウ位置を交換する"
 
 #
-#: src/groups.c:999 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:769
 msgid "Groups"
 msgstr "グループ"
 
@@ -1293,57 +1293,14 @@ msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示されます。\n"
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
-#: src/main.c:582
+#: src/main.c:583
 #, c-format
 msgid ""
-"The directory %s is apparently not a directory\n"
-"This is a fatal condition.\n"
-"Please remove this file\n"
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
 msgstr ""
-"%s はどうみてもディレクトリではありません。\n"
-"致命的な状況です。\n"
-"このファイルを削除してください。\n"
 
-#: src/main.c:589
-#, c-format
-msgid ""
-"Do not have execute access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"%s に実行権限がありません。\n"
-"致命的な状況です。\n"
-"このディレクトリの所有者とパーミッションを確認し、\n"
-"修正してください。\n"
-
-#: src/main.c:597
-#, c-format
-msgid ""
-"Do not have read access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"%s に読取権限がありません。\n"
-"致命的な状況です。\n"
-"ディレクトリの所有者とパーミッションを確認し、\n"
-"修正してください。\n"
-
-#: src/main.c:604
-#, c-format
-msgid ""
-"Do not have write access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"%s に書込権限がありません。\n"
-"致命的な状況です。\n"
-"ディレクトリの所有者とパーミッションを確認し、\n"
-"修正してください。\n"
-
-#: src/main.c:717
+#: src/main.c:693
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1372,7 +1329,7 @@ msgstr ""
 "削除したか、あるいは Enlightenment のインストールに誤りがあったことが\n"
 "考えられます。\n"
 
-#: src/main.c:731
+#: src/main.c:707
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1394,62 +1351,62 @@ msgstr ""
 "この状況を修正し、正しくインストールされていることを確認して下さい。\n"
 
 #
-#: src/menus-misc.c:587 config/strings.c:119
+#: src/menus-misc.c:581 config/strings.c:119
 msgid "Themes"
 msgstr "テーマ"
 
 #
-#: src/menus-misc.c:675
+#: src/menus-misc.c:669
 msgid "Window List"
 msgstr "ウィンドウリスト"
 
 #
-#: src/menus-misc.c:697
+#: src/menus-misc.c:691
 msgid "Go to this Desktop"
 msgstr "このデスクトップに移動"
 
-#: src/menus-misc.c:701 src/menus-misc.c:797
+#: src/menus-misc.c:695 src/menus-misc.c:791
 #, c-format
 msgid "Desktop %i"
 msgstr "デスクトップ %i"
 
-#: src/menus-misc.c:744
+#: src/menus-misc.c:738
 msgid "Show/Hide this group"
 msgstr "このグループを表示する／隠す"
 
-#: src/menus-misc.c:749
+#: src/menus-misc.c:743
 msgid "Iconify this group"
 msgstr "このグループをアイコン化する"
 
-#: src/menus-misc.c:760
+#: src/menus-misc.c:754
 #, c-format
 msgid "Group %i"
 msgstr "グループ %i"
 
-#: src/menus.c:2037
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "メニューをアニメーション表示する"
 
-#: src/menus.c:2042
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "メニューが画面からはみ出る場合は必ず収まるようにメニューを動かす"
 
-#: src/menus.c:2047
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "マウスポインタはメニューの移動に追随する"
 
 #
-#: src/menus.c:2053
+#: src/menus.c:2048
 msgid "Menus"
 msgstr "メニュー"
 
 #
-#: src/menus.c:2054
+#: src/menus.c:2049
 msgid "Menu Settings"
 msgstr "メニューの設定"
 
 #
-#: src/menus.c:2057
+#: src/menus.c:2052
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
@@ -3040,6 +2997,48 @@ msgstr "その他"
 #: config/strings.c:187
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment Epplets"
+
+#~ msgid ""
+#~ "The directory %s is apparently not a directory\n"
+#~ "This is a fatal condition.\n"
+#~ "Please remove this file\n"
+#~ msgstr ""
+#~ "%s はどうみてもディレクトリではありません。\n"
+#~ "致命的な状況です。\n"
+#~ "このファイルを削除してください。\n"
+
+#~ msgid ""
+#~ "Do not have execute access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "%s に実行権限がありません。\n"
+#~ "致命的な状況です。\n"
+#~ "このディレクトリの所有者とパーミッションを確認し、\n"
+#~ "修正してください。\n"
+
+#~ msgid ""
+#~ "Do not have read access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "%s に読取権限がありません。\n"
+#~ "致命的な状況です。\n"
+#~ "ディレクトリの所有者とパーミッションを確認し、\n"
+#~ "修正してください。\n"
+
+#~ msgid ""
+#~ "Do not have write access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "%s に書込権限がありません。\n"
+#~ "致命的な状況です。\n"
+#~ "ディレクトリの所有者とパーミッションを確認し、\n"
+#~ "修正してください。\n"
 
 #~ msgid "Background Error!"
 #~ msgstr "background エラー"

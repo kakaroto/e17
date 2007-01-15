@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-13 14:47+0100\n"
+"POT-Creation-Date: 2007-01-14 16:34+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -75,7 +75,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/actions.c:92
+#: src/actions.c:89
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -84,7 +84,7 @@ msgid ""
 "This is because the file does not exist.\n"
 msgstr ""
 
-#: src/actions.c:100
+#: src/actions.c:97
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -96,7 +96,7 @@ msgid ""
 "execution path.\n"
 msgstr ""
 
-#: src/actions.c:120
+#: src/actions.c:117
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -107,7 +107,7 @@ msgid ""
 "into this.\n"
 msgstr ""
 
-#: src/actions.c:131
+#: src/actions.c:128
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -117,7 +117,7 @@ msgid ""
 "to execute it because you do not have execute access to this file.\n"
 msgstr ""
 
-#: src/actions.c:146
+#: src/actions.c:143
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -126,7 +126,7 @@ msgid ""
 "This is because the file is in fact a directory.\n"
 msgstr ""
 
-#: src/actions.c:154
+#: src/actions.c:151
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -135,7 +135,7 @@ msgid ""
 "This is because the file is not a regular file.\n"
 msgstr ""
 
-#: src/actions.c:179
+#: src/actions.c:176
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -581,7 +581,7 @@ msgstr ""
 msgid "Right"
 msgstr ""
 
-#: src/desktops.c:2467 src/menus-misc.c:715
+#: src/desktops.c:2467 src/menus-misc.c:709
 msgid "Desks"
 msgstr ""
 
@@ -909,7 +909,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr ""
 
-#: src/groups.c:999 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:769
 msgid "Groups"
 msgstr ""
 
@@ -1073,42 +1073,14 @@ msgstr ""
 msgid "         <command>     : <description>\n"
 msgstr ""
 
-#: src/main.c:582
+#: src/main.c:583
 #, c-format
 msgid ""
-"The directory %s is apparently not a directory\n"
-"This is a fatal condition.\n"
-"Please remove this file\n"
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:589
-#, c-format
-msgid ""
-"Do not have execute access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-
-#: src/main.c:597
-#, c-format
-msgid ""
-"Do not have read access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-
-#: src/main.c:604
-#, c-format
-msgid ""
-"Do not have write access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-
-#: src/main.c:717
+#: src/main.c:693
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1137,7 +1109,7 @@ msgstr ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 
-#: src/main.c:731
+#: src/main.c:707
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1162,57 +1134,57 @@ msgstr ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 
-#: src/menus-misc.c:587 config/strings.c:119
+#: src/menus-misc.c:581 config/strings.c:119
 msgid "Themes"
 msgstr ""
 
-#: src/menus-misc.c:675
+#: src/menus-misc.c:669
 msgid "Window List"
 msgstr ""
 
-#: src/menus-misc.c:697
+#: src/menus-misc.c:691
 msgid "Go to this Desktop"
 msgstr ""
 
-#: src/menus-misc.c:701 src/menus-misc.c:797
+#: src/menus-misc.c:695 src/menus-misc.c:791
 #, c-format
 msgid "Desktop %i"
 msgstr ""
 
-#: src/menus-misc.c:744
+#: src/menus-misc.c:738
 msgid "Show/Hide this group"
 msgstr ""
 
-#: src/menus-misc.c:749
+#: src/menus-misc.c:743
 msgid "Iconify this group"
 msgstr ""
 
-#: src/menus-misc.c:760
+#: src/menus-misc.c:754
 #, c-format
 msgid "Group %i"
 msgstr ""
 
-#: src/menus.c:2037
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr ""
 
-#: src/menus.c:2042
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr ""
 
-#: src/menus.c:2047
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2053
+#: src/menus.c:2048
 msgid "Menus"
 msgstr ""
 
-#: src/menus.c:2054
+#: src/menus.c:2049
 msgid "Menu Settings"
 msgstr ""
 
-#: src/menus.c:2057
+#: src/menus.c:2052
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"

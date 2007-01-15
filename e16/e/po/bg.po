@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-13 14:47+0100\n"
+"POT-Creation-Date: 2007-01-14 16:34+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -94,7 +94,7 @@ msgstr ""
 "%s\n"
 "Ще се игнорира и продължи...\n"
 
-#: src/actions.c:92
+#: src/actions.c:89
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -107,7 +107,7 @@ msgstr ""
 "Програмата не може да бъде пусната,\n"
 "защото файлът не съществува.\n"
 
-#: src/actions.c:100
+#: src/actions.c:97
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -126,7 +126,7 @@ msgstr ""
 "пъководството на обвивката за да разберете как\n"
 "да промените пътеката за стартиращите файлове.\n"
 
-#: src/actions.c:120
+#: src/actions.c:117
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -142,7 +142,7 @@ msgstr ""
 "и вие имате права да го стартирате. \n"
 "Трабва да разберете сами защо става така.\n"
 
-#: src/actions.c:131
+#: src/actions.c:128
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -157,7 +157,7 @@ msgstr ""
 "Файл действително существува, файл е, но вие\n"
 "не можете да го стартирате, защото нямате тези права.\n"
 
-#: src/actions.c:146
+#: src/actions.c:143
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -170,7 +170,7 @@ msgstr ""
 "Програмата не може да бъде пусната,\n"
 "защото файлът всъщност е директория.\n"
 
-#: src/actions.c:154
+#: src/actions.c:151
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -183,7 +183,7 @@ msgstr ""
 "Програмата не може да бъде пусната,\n"
 "защото файлът не е обичаен.\n"
 
-#: src/actions.c:179
+#: src/actions.c:176
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -693,7 +693,7 @@ msgstr "Левият"
 msgid "Right"
 msgstr "Десният"
 
-#: src/desktops.c:2467 src/menus-misc.c:715
+#: src/desktops.c:2467 src/menus-misc.c:709
 #, fuzzy
 msgid "Desks"
 msgstr "Поле"
@@ -1070,7 +1070,7 @@ msgstr "Глобални настройки"
 msgid "Swap Window Locations"
 msgstr "Размени мястото на прозорците"
 
-#: src/groups.c:999 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:769
 #, fuzzy
 msgid "Groups"
 msgstr "Група %i"
@@ -1294,57 +1294,14 @@ msgstr "\"help <команда>\": описание за дадена команда\n"
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
-#: src/main.c:582
+#: src/main.c:583
 #, c-format
 msgid ""
-"The directory %s is apparently not a directory\n"
-"This is a fatal condition.\n"
-"Please remove this file\n"
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
 msgstr ""
-"Директория %s очевидно не е директория.\n"
-"Това е фатална грешка.\n"
-"Моля махнете този файл.\n"
 
-#: src/main.c:589
-#, c-format
-msgid ""
-"Do not have execute access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Нямате право за пускане в %s\n"
-"Това е фатална грешка.\n"
-"Моля, проверете притешателството и правата на тази\n"
-"доректория и я оправете.\n"
-
-#: src/main.c:597
-#, c-format
-msgid ""
-"Do not have read access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Нямате права да четете в %s\n"
-"Това е фатална грешка.\n"
-"Моля, проверете притешателството и правата на тази\n"
-"доректория и я оправете.\n"
-
-#: src/main.c:604
-#, c-format
-msgid ""
-"Do not have write access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Нямате права да пишете в %s\n"
-"Това е фатална грешка.\n"
-"Моля, проверете притешателството и правата на тази\n"
-"доректория и я оправете.\n"
-
-#: src/main.c:717
+#: src/main.c:693
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1373,7 +1330,7 @@ msgstr ""
 "създадени пакети, някой ръчно е изтрил програмата или е имало\n"
 "грешка при инсталирането на Enlightenment.\n"
 
-#: src/main.c:731
+#: src/main.c:707
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1394,61 +1351,61 @@ msgstr ""
 "Моля, коригирайте тази ситуация и се осигурете че е инсталирана\n"
 "правилно.\n"
 
-#: src/menus-misc.c:587 config/strings.c:119
+#: src/menus-misc.c:581 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "Некоректна тема"
 
-#: src/menus-misc.c:675
+#: src/menus-misc.c:669
 #, fuzzy
 msgid "Window List"
 msgstr "Лист за пропускане на прозорци"
 
-#: src/menus-misc.c:697
+#: src/menus-misc.c:691
 msgid "Go to this Desktop"
 msgstr "Отиди на това поле"
 
-#: src/menus-misc.c:701 src/menus-misc.c:797
+#: src/menus-misc.c:695 src/menus-misc.c:791
 #, c-format
 msgid "Desktop %i"
 msgstr "Поле %i"
 
-#: src/menus-misc.c:744
+#: src/menus-misc.c:738
 msgid "Show/Hide this group"
 msgstr "Покажи/скрий тази група"
 
-#: src/menus-misc.c:749
+#: src/menus-misc.c:743
 msgid "Iconify this group"
 msgstr "Игнорирай тази група"
 
-#: src/menus-misc.c:760
+#: src/menus-misc.c:754
 #, c-format
 msgid "Group %i"
 msgstr "Група %i"
 
-#: src/menus.c:2037
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Анимирай менютата"
 
-#: src/menus.c:2042
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "Винаги показвай менютата върху екрана"
 
-#: src/menus.c:2047
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "Застъпвай показалеца след движение на менютата"
 
-#: src/menus.c:2053
+#: src/menus.c:2048
 #, fuzzy
 msgid "Menus"
 msgstr "Менюта:"
 
-#: src/menus.c:2054
+#: src/menus.c:2049
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Други настройки"
 
-#: src/menus.c:2057
+#: src/menus.c:2052
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -3023,6 +2980,48 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Излезте от Enlightenment"
+
+#~ msgid ""
+#~ "The directory %s is apparently not a directory\n"
+#~ "This is a fatal condition.\n"
+#~ "Please remove this file\n"
+#~ msgstr ""
+#~ "Директория %s очевидно не е директория.\n"
+#~ "Това е фатална грешка.\n"
+#~ "Моля махнете този файл.\n"
+
+#~ msgid ""
+#~ "Do not have execute access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Нямате право за пускане в %s\n"
+#~ "Това е фатална грешка.\n"
+#~ "Моля, проверете притешателството и правата на тази\n"
+#~ "доректория и я оправете.\n"
+
+#~ msgid ""
+#~ "Do not have read access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Нямате права да четете в %s\n"
+#~ "Това е фатална грешка.\n"
+#~ "Моля, проверете притешателството и правата на тази\n"
+#~ "доректория и я оправете.\n"
+
+#~ msgid ""
+#~ "Do not have write access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Нямате права да пишете в %s\n"
+#~ "Това е фатална грешка.\n"
+#~ "Моля, проверете притешателството и правата на тази\n"
+#~ "доректория и я оправете.\n"
 
 #~ msgid "Background Error!"
 #~ msgstr "Background Грешка!"

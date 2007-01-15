@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-13 14:47+0100\n"
+"POT-Creation-Date: 2007-01-14 16:34+0100\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -79,7 +79,7 @@ msgstr ""
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
-#: src/actions.c:92
+#: src/actions.c:89
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -92,7 +92,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte existerar\n"
 
-#: src/actions.c:100
+#: src/actions.c:97
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -111,7 +111,7 @@ msgstr ""
 "för skalet, och kollar upp hur man lägger till eller ändrar\n"
 "sin sökväg.\n"
 
-#: src/actions.c:120
+#: src/actions.c:117
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -128,7 +128,7 @@ msgstr ""
 "det är en fil, och du har rättigheter att\n"
 "köra den. Jag föreslår att du undersöker saken.\n"
 
-#: src/actions.c:131
+#: src/actions.c:128
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -143,7 +143,7 @@ msgstr ""
 "Filen existerar och det är en fil, men du har inte\n"
 "rättigheter som räcker för att köra den.\n"
 
-#: src/actions.c:146
+#: src/actions.c:143
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -156,7 +156,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Detta beror på att filen i verkligheten är en katalog.\n"
 
-#: src/actions.c:154
+#: src/actions.c:151
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -169,7 +169,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte är en vanlig fil.\n"
 
-#: src/actions.c:179
+#: src/actions.c:176
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -680,7 +680,7 @@ msgstr "Vänster"
 msgid "Right"
 msgstr "Höger"
 
-#: src/desktops.c:2467 src/menus-misc.c:715
+#: src/desktops.c:2467 src/menus-misc.c:709
 #, fuzzy
 msgid "Desks"
 msgstr "Skrivbord"
@@ -1058,7 +1058,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr "Fönsterval"
 
-#: src/groups.c:999 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:769
 #, fuzzy
 msgid "Groups"
 msgstr "Grupp %i"
@@ -1284,57 +1284,14 @@ msgstr "använd \"help <kommando>\" för en individuell beskrivning\n"
 msgid "         <command>     : <description>\n"
 msgstr "<kommando> : <beskrivning>\n"
 
-#: src/main.c:582
+#: src/main.c:583
 #, c-format
 msgid ""
-"The directory %s is apparently not a directory\n"
-"This is a fatal condition.\n"
-"Please remove this file\n"
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
 msgstr ""
-"Katalogen %s är uppenbarligen inte en katalog\n"
-"Detta är en allvarlig omständighet.\n"
-"Vänligen ta bort denna fil.\n"
 
-#: src/main.c:589
-#, c-format
-msgid ""
-"Do not have execute access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Har inte exikveringsrättigheter för %s\n"
-"Detta är en allvarlig omständighet.\n"
-"Vänligen kontrollera rättigheterna till\n"
-"denna katalog och vidtag korrigeringsåtgärder.\n"
-
-#: src/main.c:597
-#, c-format
-msgid ""
-"Do not have read access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Har inte läsrättigheter för %s\n"
-"Detta är en allvarlig omständighet.\n"
-"Vänligen kontrollera rättigheterna till\n"
-"denna katalog och vidtag korrigeringsåtgärder.\n"
-
-#: src/main.c:604
-#, c-format
-msgid ""
-"Do not have write access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Har inte skrivrättigheter för %s\n"
-"Detta är en allvarlig omständighet.\n"
-"Vänligen kontrollera rättigheterna till\n"
-"denna katalog och vidtag korrigeringsåtgärder.\n"
-
-#: src/main.c:717
+#: src/main.c:693
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1363,7 +1320,7 @@ msgstr ""
 "byggt paket, eller någon som manuellt har raderat\n"
 "programmet, eller fel vid Enlightenments installation .\n"
 
-#: src/main.c:731
+#: src/main.c:707
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1384,62 +1341,62 @@ msgstr ""
 "Var vänlig att korrigera detta, och kontrollera \n"
 "att dox är korrekt installerad.\n"
 
-#: src/menus-misc.c:587 config/strings.c:119
+#: src/menus-misc.c:581 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "Felaktigt tema"
 
-#: src/menus-misc.c:675
+#: src/menus-misc.c:669
 #, fuzzy
 msgid "Window List"
 msgstr "Fönsterlistignorering"
 
-#: src/menus-misc.c:697
+#: src/menus-misc.c:691
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Gå till detta skrivbord"
 
-#: src/menus-misc.c:701 src/menus-misc.c:797
+#: src/menus-misc.c:695 src/menus-misc.c:791
 #, c-format
 msgid "Desktop %i"
 msgstr "Skrivbord %i"
 
-#: src/menus-misc.c:744
+#: src/menus-misc.c:738
 msgid "Show/Hide this group"
 msgstr "Visa/gömma denna grupp"
 
-#: src/menus-misc.c:749
+#: src/menus-misc.c:743
 msgid "Iconify this group"
 msgstr "Ikonifiera denna grupp"
 
-#: src/menus-misc.c:760
+#: src/menus-misc.c:754
 #, c-format
 msgid "Group %i"
 msgstr "Grupp %i"
 
-#: src/menus.c:2037
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Animerad visning av menyer"
 
-#: src/menus.c:2042
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "Låt alltid menyer poppa upp på skärm"
 
-#: src/menus.c:2047
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "Flytta muspekaren efter att menyer flyttats"
 
-#: src/menus.c:2053
+#: src/menus.c:2048
 #, fuzzy
 msgid "Menus"
 msgstr "Ramstil"
 
-#: src/menus.c:2054
+#: src/menus.c:2049
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Diverse inställningar"
 
-#: src/menus.c:2057
+#: src/menus.c:2052
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -3055,6 +3012,48 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Avsluta Enlightenment"
+
+#~ msgid ""
+#~ "The directory %s is apparently not a directory\n"
+#~ "This is a fatal condition.\n"
+#~ "Please remove this file\n"
+#~ msgstr ""
+#~ "Katalogen %s är uppenbarligen inte en katalog\n"
+#~ "Detta är en allvarlig omständighet.\n"
+#~ "Vänligen ta bort denna fil.\n"
+
+#~ msgid ""
+#~ "Do not have execute access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Har inte exikveringsrättigheter för %s\n"
+#~ "Detta är en allvarlig omständighet.\n"
+#~ "Vänligen kontrollera rättigheterna till\n"
+#~ "denna katalog och vidtag korrigeringsåtgärder.\n"
+
+#~ msgid ""
+#~ "Do not have read access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Har inte läsrättigheter för %s\n"
+#~ "Detta är en allvarlig omständighet.\n"
+#~ "Vänligen kontrollera rättigheterna till\n"
+#~ "denna katalog och vidtag korrigeringsåtgärder.\n"
+
+#~ msgid ""
+#~ "Do not have write access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Har inte skrivrättigheter för %s\n"
+#~ "Detta är en allvarlig omständighet.\n"
+#~ "Vänligen kontrollera rättigheterna till\n"
+#~ "denna katalog och vidtag korrigeringsåtgärder.\n"
 
 #~ msgid "Background Error!"
 #~ msgstr "Bakgrund fel!"

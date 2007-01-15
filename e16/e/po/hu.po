@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-13 14:47+0100\n"
+"POT-Creation-Date: 2007-01-14 16:34+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -95,7 +95,7 @@ msgstr ""
 "%s\n"
 "Figyelmen kivül hagyom...\n"
 
-#: src/actions.c:92
+#: src/actions.c:89
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -108,7 +108,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A megadott file nem létezik.\n"
 
-#: src/actions.c:100
+#: src/actions.c:97
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -124,7 +124,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A program valószínûleg nincs a %s shell elérési útvonalában.\n"
 
-#: src/actions.c:120
+#: src/actions.c:117
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -141,7 +141,7 @@ msgstr ""
 "és van futtatási joga rá. Javasolt, hogy nézzen\n"
 "utána a problémának.\n"
 
-#: src/actions.c:131
+#: src/actions.c:128
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -155,7 +155,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A file létezik, de nem futtatható, mert nincs rá futtatási joga.\n"
 
-#: src/actions.c:146
+#: src/actions.c:143
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -168,7 +168,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A megadott file valójában egy könyvtár.\n"
 
-#: src/actions.c:154
+#: src/actions.c:151
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -181,7 +181,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A megadott file nem hagyományos file.\n"
 
-#: src/actions.c:179
+#: src/actions.c:176
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -688,7 +688,7 @@ msgstr "Bal"
 msgid "Right"
 msgstr "Jobb"
 
-#: src/desktops.c:2467 src/menus-misc.c:715
+#: src/desktops.c:2467 src/menus-misc.c:709
 #, fuzzy
 msgid "Desks"
 msgstr "Asztal"
@@ -1068,7 +1068,7 @@ msgstr " Globális beállítások: "
 msgid "Swap Window Locations"
 msgstr "Ablak helyének cseréje"
 
-#: src/groups.c:999 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:769
 #, fuzzy
 msgid "Groups"
 msgstr "%i. csoport"
@@ -1260,54 +1260,14 @@ msgstr ""
 msgid "         <command>     : <description>\n"
 msgstr "         <parancs> : <leírás>\n"
 
-#: src/main.c:582
+#: src/main.c:583
 #, c-format
 msgid ""
-"The directory %s is apparently not a directory\n"
-"This is a fatal condition.\n"
-"Please remove this file\n"
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
 msgstr ""
-"A(z) %s könyvtár igazából nem is könyvtár.\n"
-"Ez súlyos hiba.\n"
-"Törölje a filet.\n"
 
-#: src/main.c:589
-#, c-format
-msgid ""
-"Do not have execute access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Nincs indítási joga a(z) %s könyvtárra.\n"
-"Ez súlyos hiba.\n"
-"Ellenõrizze a hozzáférési jogosultságokat.\n"
-
-#: src/main.c:597
-#, c-format
-msgid ""
-"Do not have read access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Nincs olvasási joga a(z) %s könyvtárra.\n"
-"Ez súlyos hiba.\n"
-"Ellenõrizze a hozzáférési jogosultságokat.\n"
-
-#: src/main.c:604
-#, c-format
-msgid ""
-"Do not have write access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Nincs írási joga a(z) %s könyvtárra.\n"
-"Ez súlyos hiba.\n"
-"Ellenõrizze a hozzáférési jogosultságokat.\n"
-
-#: src/main.c:717
+#: src/main.c:693
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1324,7 +1284,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/main.c:731
+#: src/main.c:707
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1337,62 +1297,62 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/menus-misc.c:587 config/strings.c:119
+#: src/menus-misc.c:581 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "Rossz theme"
 
-#: src/menus-misc.c:675
+#: src/menus-misc.c:669
 #, fuzzy
 msgid "Window List"
 msgstr "Ablaklista-kihagyás"
 
-#: src/menus-misc.c:697
+#: src/menus-misc.c:691
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Ugrás erre az asztalra"
 
-#: src/menus-misc.c:701 src/menus-misc.c:797
+#: src/menus-misc.c:695 src/menus-misc.c:791
 #, c-format
 msgid "Desktop %i"
 msgstr "%i. asztal"
 
-#: src/menus-misc.c:744
+#: src/menus-misc.c:738
 msgid "Show/Hide this group"
 msgstr "Csoport mutatása/elrejtése"
 
-#: src/menus-misc.c:749
+#: src/menus-misc.c:743
 msgid "Iconify this group"
 msgstr "Csoport kicsinyítése"
 
-#: src/menus-misc.c:760
+#: src/menus-misc.c:754
 #, c-format
 msgid "Group %i"
 msgstr "%i. csoport"
 
-#: src/menus.c:2037
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Menük animálása"
 
-#: src/menus.c:2042
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "A menük mindig a képben jelennek meg"
 
-#: src/menus.c:2047
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "Menük mozgásával együtt az egérmutató is mozog"
 
-#: src/menus.c:2053
+#: src/menus.c:2048
 #, fuzzy
 msgid "Menus"
 msgstr "Menük:"
 
-#: src/menus.c:2054
+#: src/menus.c:2049
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Vegyes beállítások"
 
-#: src/menus.c:2057
+#: src/menus.c:2052
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -2960,6 +2920,45 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Kilépés"
+
+#~ msgid ""
+#~ "The directory %s is apparently not a directory\n"
+#~ "This is a fatal condition.\n"
+#~ "Please remove this file\n"
+#~ msgstr ""
+#~ "A(z) %s könyvtár igazából nem is könyvtár.\n"
+#~ "Ez súlyos hiba.\n"
+#~ "Törölje a filet.\n"
+
+#~ msgid ""
+#~ "Do not have execute access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Nincs indítási joga a(z) %s könyvtárra.\n"
+#~ "Ez súlyos hiba.\n"
+#~ "Ellenõrizze a hozzáférési jogosultságokat.\n"
+
+#~ msgid ""
+#~ "Do not have read access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Nincs olvasási joga a(z) %s könyvtárra.\n"
+#~ "Ez súlyos hiba.\n"
+#~ "Ellenõrizze a hozzáférési jogosultságokat.\n"
+
+#~ msgid ""
+#~ "Do not have write access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Nincs írási joga a(z) %s könyvtárra.\n"
+#~ "Ez súlyos hiba.\n"
+#~ "Ellenõrizze a hozzáférési jogosultságokat.\n"
 
 #~ msgid "Background Error!"
 #~ msgstr "Háttér hiba!"

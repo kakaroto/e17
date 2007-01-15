@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-13 14:47+0100\n"
+"POT-Creation-Date: 2007-01-14 16:34+0100\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -80,7 +80,7 @@ msgstr ""
 "%s\n"
 "Serão ignoradas, continuando...\n"
 
-#: src/actions.c:92
+#: src/actions.c:89
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -93,7 +93,7 @@ msgstr ""
 "Este programa não pode ser executado\n"
 "porque o ficheiro não existe.\n"
 
-#: src/actions.c:100
+#: src/actions.c:97
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -112,7 +112,7 @@ msgstr ""
 "do manual para esta shell e veja como mudar ou adicionar\n"
 "ao seu path de execução.\n"
 
-#: src/actions.c:120
+#: src/actions.c:117
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -129,7 +129,7 @@ msgstr ""
 "é um ficheiro, e está autorizado a executa-lo. Sugiro que veja este\n"
 "problema com mais profundidade.\n"
 
-#: src/actions.c:131
+#: src/actions.c:128
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -144,7 +144,7 @@ msgstr ""
 "Isto deve-se a que o ficheiro existe, é um ficheiro, mas não o\n"
 "pode executar porque não tem permissão de execução para este ficheiro.\n"
 
-#: src/actions.c:146
+#: src/actions.c:143
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -157,7 +157,7 @@ msgstr ""
 "Este programa não pode ser executado.\n"
 "Acontece que o ficheiro é na realidade uma directoria.\n"
 
-#: src/actions.c:154
+#: src/actions.c:151
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -170,7 +170,7 @@ msgstr ""
 "Este programa não pode ser executado.\n"
 "Isto aconteceu porque o ficheiro não é um ficheiro regular.\n"
 
-#: src/actions.c:179
+#: src/actions.c:176
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -682,7 +682,7 @@ msgstr "Esquerda"
 msgid "Right"
 msgstr "Direita"
 
-#: src/desktops.c:2467 src/menus-misc.c:715
+#: src/desktops.c:2467 src/menus-misc.c:709
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
@@ -1050,7 +1050,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr "Opções da Janela"
 
-#: src/groups.c:999 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:769
 #, fuzzy
 msgid "Groups"
 msgstr "Grupo %i"
@@ -1270,57 +1270,14 @@ msgstr "use \"help <comando>\" para uma descrição individual\n"
 msgid "         <command>     : <description>\n"
 msgstr "<comando> : <descrição>\n"
 
-#: src/main.c:582
+#: src/main.c:583
 #, c-format
 msgid ""
-"The directory %s is apparently not a directory\n"
-"This is a fatal condition.\n"
-"Please remove this file\n"
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
 msgstr ""
-"A directoria %s aparentemente não é uma directoria\n"
-"Esta é uma condição fatal.\n"
-"Por favor remova este ficheiro\n"
 
-#: src/main.c:589
-#, c-format
-msgid ""
-"Do not have execute access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Não consigo executar de %s\n"
-"Esta é uma condição fatal.\n"
-"Por favor verifique as permissões desta\n"
-"directoria e faça as correcções necessárias.\n"
-
-#: src/main.c:597
-#, c-format
-msgid ""
-"Do not have read access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Não consigo ler de %s\n"
-"Esta é uma condição fatal.\n"
-"Por favor verifique as permissões desta\n"
-"directoria e faça as correcções necessárias.\n"
-
-#: src/main.c:604
-#, c-format
-msgid ""
-"Do not have write access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Não consigo escrever para %s\n"
-"Esta é uma condição fatal.\n"
-"Por favor verifique as permissões desta\n"
-"directoria e faça as correcções necessárias.\n"
-
-#: src/main.c:717
+#: src/main.c:693
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1349,7 +1306,7 @@ msgstr ""
 "estarem mal formados, alguém realmente apagou o programa ou\n"
 "houve um erro ao instalar o Enlightenment.\n"
 
-#: src/main.c:731
+#: src/main.c:707
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1370,62 +1327,62 @@ msgstr ""
 "Por favor, rectifique esta situação e assegure-se que o dox\n"
 "está instalado.\n"
 
-#: src/menus-misc.c:587 config/strings.c:119
+#: src/menus-misc.c:581 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "Tema Errado"
 
-#: src/menus-misc.c:675
+#: src/menus-misc.c:669
 #, fuzzy
 msgid "Window List"
 msgstr "Não aparecer na Lista de Janelas"
 
-#: src/menus-misc.c:697
+#: src/menus-misc.c:691
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Ir para este Desktop"
 
-#: src/menus-misc.c:701 src/menus-misc.c:797
+#: src/menus-misc.c:695 src/menus-misc.c:791
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
-#: src/menus-misc.c:744
+#: src/menus-misc.c:738
 msgid "Show/Hide this group"
 msgstr "Mostar/esconder este grupo"
 
-#: src/menus-misc.c:749
+#: src/menus-misc.c:743
 msgid "Iconify this group"
 msgstr "Minimizar este grupo"
 
-#: src/menus-misc.c:760
+#: src/menus-misc.c:754
 #, c-format
 msgid "Group %i"
 msgstr "Grupo %i"
 
-#: src/menus.c:2037
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Mostrar menus animados"
 
-#: src/menus.c:2042
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "Mostrar sempre menus no ecrã"
 
-#: src/menus.c:2047
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "Posicionar ponteiro após mover menus"
 
-#: src/menus.c:2053
+#: src/menus.c:2048
 #, fuzzy
 msgid "Menus"
 msgstr "Tipo de janelas"
 
-#: src/menus.c:2054
+#: src/menus.c:2049
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Opções do Som"
 
-#: src/menus.c:2057
+#: src/menus.c:2052
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -3005,6 +2962,48 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Sair do Enlightenment"
+
+#~ msgid ""
+#~ "The directory %s is apparently not a directory\n"
+#~ "This is a fatal condition.\n"
+#~ "Please remove this file\n"
+#~ msgstr ""
+#~ "A directoria %s aparentemente não é uma directoria\n"
+#~ "Esta é uma condição fatal.\n"
+#~ "Por favor remova este ficheiro\n"
+
+#~ msgid ""
+#~ "Do not have execute access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Não consigo executar de %s\n"
+#~ "Esta é uma condição fatal.\n"
+#~ "Por favor verifique as permissões desta\n"
+#~ "directoria e faça as correcções necessárias.\n"
+
+#~ msgid ""
+#~ "Do not have read access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Não consigo ler de %s\n"
+#~ "Esta é uma condição fatal.\n"
+#~ "Por favor verifique as permissões desta\n"
+#~ "directoria e faça as correcções necessárias.\n"
+
+#~ msgid ""
+#~ "Do not have write access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Não consigo escrever para %s\n"
+#~ "Esta é uma condição fatal.\n"
+#~ "Por favor verifique as permissões desta\n"
+#~ "directoria e faça as correcções necessárias.\n"
 
 #, fuzzy
 #~ msgid "Tooltip"

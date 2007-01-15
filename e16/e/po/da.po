@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-13 14:47+0100\n"
+"POT-Creation-Date: 2007-01-14 16:34+0100\n"
 "PO-Revision-Date: 2007-01-07 14:48+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -84,7 +84,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/actions.c:92
+#: src/actions.c:89
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -97,7 +97,7 @@ msgstr ""
 "Dette program kunne ikke køres.\n"
 "Det er fordi filen ikke eksisterer.\n"
 
-#: src/actions.c:100
+#: src/actions.c:97
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -116,7 +116,7 @@ msgstr ""
 "din skal, og finder ud af hvordan du ændrer eller udvider den\n"
 "søgesti som skallen leder efter programmer i.\n"
 
-#: src/actions.c:120
+#: src/actions.c:117
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -133,7 +133,7 @@ msgstr ""
 "er en fil, og du har tilladelse til at køre den. Jeg foreslår\n"
 "at du ser nærmere på dette.\n"
 
-#: src/actions.c:131
+#: src/actions.c:128
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -148,7 +148,7 @@ msgstr ""
 "Det er fordi filen eksisterer, er en fil, men du kan ikke køre\n"
 "den fordi du ikke har kørerettigheder til denne fil.\n"
 
-#: src/actions.c:146
+#: src/actions.c:143
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -161,7 +161,7 @@ msgstr ""
 "Dette program kunne ikke køres.\n"
 "Det er fordi filen er en mappe.\n"
 
-#: src/actions.c:154
+#: src/actions.c:151
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -174,7 +174,7 @@ msgstr ""
 "Dette program kunne ikke køres.\n"
 "Dette er fordi filen ikke er en normal fil.\n"
 
-#: src/actions.c:179
+#: src/actions.c:176
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -655,7 +655,7 @@ msgstr "Venstre"
 msgid "Right"
 msgstr "Højre"
 
-#: src/desktops.c:2467 src/menus-misc.c:715
+#: src/desktops.c:2467 src/menus-misc.c:709
 msgid "Desks"
 msgstr "Skriveborde"
 
@@ -1021,7 +1021,7 @@ msgstr "Globale indstillinger:"
 msgid "Swap Window Locations"
 msgstr "Ombyt vinduesplacering"
 
-#: src/groups.c:999 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:769
 msgid "Groups"
 msgstr "Grupper"
 
@@ -1200,42 +1200,16 @@ msgstr "Brug \"help <kommando>\" for individuel beskrivelse\n"
 msgid "         <command>     : <description>\n"
 msgstr "         <kommando> : <beskrivelse>\n"
 
-#: src/main.c:582
+#: src/main.c:583
 #, c-format
 msgid ""
-"The directory %s is apparently not a directory\n"
-"This is a fatal condition.\n"
-"Please remove this file\n"
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
 msgstr ""
+"%s skal være et katalog hvor du har\n"
+"læse, skrive og eksekveringsret.\n"
 
-#: src/main.c:589
-#, c-format
-msgid ""
-"Do not have execute access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-
-#: src/main.c:597
-#, c-format
-msgid ""
-"Do not have read access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-
-#: src/main.c:604
-#, c-format
-msgid ""
-"Do not have write access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-
-#: src/main.c:717
+#: src/main.c:693
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1252,7 +1226,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/main.c:731
+#: src/main.c:707
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1265,57 +1239,57 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/menus-misc.c:587 config/strings.c:119
+#: src/menus-misc.c:581 config/strings.c:119
 msgid "Themes"
 msgstr "Tema"
 
-#: src/menus-misc.c:675
+#: src/menus-misc.c:669
 msgid "Window List"
 msgstr "Vinduesliste"
 
-#: src/menus-misc.c:697
+#: src/menus-misc.c:691
 msgid "Go to this Desktop"
 msgstr "Gå til dette skrivebord"
 
-#: src/menus-misc.c:701 src/menus-misc.c:797
+#: src/menus-misc.c:695 src/menus-misc.c:791
 #, c-format
 msgid "Desktop %i"
 msgstr "Skrivebord %i"
 
-#: src/menus-misc.c:744
+#: src/menus-misc.c:738
 msgid "Show/Hide this group"
 msgstr "Vis/skjul denne gruppe"
 
-#: src/menus-misc.c:749
+#: src/menus-misc.c:743
 msgid "Iconify this group"
 msgstr "Ikonificér denne gruppe"
 
-#: src/menus-misc.c:760
+#: src/menus-misc.c:754
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"
 
-#: src/menus.c:2037
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Animeret visning af menuer"
 
-#: src/menus.c:2042
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "Hold menuer inden for skærmen"
 
-#: src/menus.c:2047
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "Flyt markør efter flytning af menuer"
 
-#: src/menus.c:2053
+#: src/menus.c:2048
 msgid "Menus"
 msgstr "Menuer"
 
-#: src/menus.c:2054
+#: src/menus.c:2049
 msgid "Menu Settings"
 msgstr "Menuindstillinger"
 
-#: src/menus.c:2057
+#: src/menus.c:2052
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
@@ -2753,10 +2727,3 @@ msgstr "Andet"
 #: config/strings.c:187
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment Epplets"
-
-#~ msgid ""
-#~ "%s must be a directory in which you have\n"
-#~ "read, write, and execute permission.\n"
-#~ msgstr ""
-#~ "%s skal være et katalog hvor du har\n"
-#~ "læse, skrive og eksekveringsret.\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-13 14:47+0100\n"
+"POT-Creation-Date: 2007-01-14 16:34+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -99,7 +99,7 @@ msgstr ""
 "%s\n"
 "Ignoriŷem i nastavljam...\n"
 
-#: src/actions.c:92
+#: src/actions.c:89
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -112,7 +112,7 @@ msgstr ""
 "Ovaj program ne moŵe biti izvrŷen.\n"
 "To je zato jer datoteka ne postoji.\n"
 
-#: src/actions.c:100
+#: src/actions.c:97
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -130,7 +130,7 @@ msgstr ""
 "putanji za svoj shell koji je %s. Predlaŵem da proīitate stranice priruīnika\n"
 "za taj shell i da proīitate kako promjeniti ili dodati vaŷu izvrŷavaju�u putanju.\n"
 
-#: src/actions.c:120
+#: src/actions.c:117
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -146,7 +146,7 @@ msgstr ""
 "Nisam siguran zaŷto ovo ne moŵete uraditi. Datoteka postoji,\n"
 "i Vi je moŵete izvrŷavati. Predlaŵem da bolje pogledate ovo.\n"
 
-#: src/actions.c:131
+#: src/actions.c:128
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -161,7 +161,7 @@ msgstr ""
 "To je zato ŷto datoteka postoji, ali Vi niste u moguīnosti da je\n"
 "izvrŷavate zato ŷto nemate psristup za izvrŷavanje te datoteke.\n"
 
-#: src/actions.c:146
+#: src/actions.c:143
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -174,7 +174,7 @@ msgstr ""
 "Ovaj program ne moŵe biti izvrŷen.\n"
 "To je zato ŷto je u stvari datiteka direktorij.\n"
 
-#: src/actions.c:154
+#: src/actions.c:151
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -187,7 +187,7 @@ msgstr ""
 "Ovaj program ne moŵe biti izvrŷen.\n"
 "To je zato ŷto datoteka nije ispravna.\n"
 
-#: src/actions.c:179
+#: src/actions.c:176
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -697,7 +697,7 @@ msgstr "Lijevo"
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2467 src/menus-misc.c:715
+#: src/desktops.c:2467 src/menus-misc.c:709
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
@@ -1073,7 +1073,7 @@ msgstr " Globalne osobine: "
 msgid "Swap Window Locations"
 msgstr "Swap prozor lokacije"
 
-#: src/groups.c:999 src/menus-misc.c:775
+#: src/groups.c:999 src/menus-misc.c:769
 #, fuzzy
 msgid "Groups"
 msgstr "Grupa %i"
@@ -1298,57 +1298,14 @@ msgstr "koristi \"help <command>\" za individualni opis\n"
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"
 
-#: src/main.c:582
+#: src/main.c:583
 #, c-format
 msgid ""
-"The directory %s is apparently not a directory\n"
-"This is a fatal condition.\n"
-"Please remove this file\n"
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
 msgstr ""
-"Direktorij %s zapravo nije direktorij\n"
-"Ovo je fatalno stanje.\n"
-"Molimo Vas da obriŷete ovu datoteku\n"
 
-#: src/main.c:589
-#, c-format
-msgid ""
-"Do not have execute access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Nema izvrŷni pristup za %s\n"
-"Ovo je fatalno stanje.\n"
-"Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
-"direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
-
-#: src/main.c:597
-#, c-format
-msgid ""
-"Do not have read access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Nema pristupa za īitanje %s\n"
-"Ovo je fatalno stanje.\n"
-"Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
-"direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
-
-#: src/main.c:604
-#, c-format
-msgid ""
-"Do not have write access to %s\n"
-"This is a fatal condition.\n"
-"Please check the ownership and permissions of this\n"
-"directory and take steps to rectify this.\n"
-msgstr ""
-"Nema pristupa za pisanje %s\n"
-"Ovo je fatalno stanje.\n"
-"Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
-"direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
-
-#: src/main.c:717
+#: src/main.c:693
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1377,7 +1334,7 @@ msgstr ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 
-#: src/main.c:731
+#: src/main.c:707
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1398,62 +1355,62 @@ msgstr ""
 "Molim popravite ovu situaciju i budite sigurni da je instaliran\n"
 "ispravno.\n"
 
-#: src/menus-misc.c:587 config/strings.c:119
+#: src/menus-misc.c:581 config/strings.c:119
 #, fuzzy
 msgid "Themes"
 msgstr "Loŷa tema"
 
-#: src/menus-misc.c:675
+#: src/menus-misc.c:669
 #, fuzzy
 msgid "Window List"
 msgstr "Izbjegni listu prozora"
 
-#: src/menus-misc.c:697
+#: src/menus-misc.c:691
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Idi na ovaj Desktop"
 
-#: src/menus-misc.c:701 src/menus-misc.c:797
+#: src/menus-misc.c:695 src/menus-misc.c:791
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
-#: src/menus-misc.c:744
+#: src/menus-misc.c:738
 msgid "Show/Hide this group"
 msgstr "Pokaŵi/Sakrij ovu grupu"
 
-#: src/menus-misc.c:749
+#: src/menus-misc.c:743
 msgid "Iconify this group"
 msgstr "Ikonificiraj ovu grupu"
 
-#: src/menus-misc.c:760
+#: src/menus-misc.c:754
 #, c-format
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus.c:2037
+#: src/menus.c:2032
 msgid "Animated display of menus"
 msgstr "Animirani prikazi menija"
 
-#: src/menus.c:2042
+#: src/menus.c:2037
 msgid "Always pop up menus on screen"
 msgstr "Uvijek pop up meniji na ekranu"
 
-#: src/menus.c:2047
+#: src/menus.c:2042
 msgid "Warp pointer after moving menus"
 msgstr "Uvi pokaziva� nakon premjeŷtanja izbornika"
 
-#: src/menus.c:2053
+#: src/menus.c:2048
 #, fuzzy
 msgid "Menus"
 msgstr "Izbornici:"
 
-#: src/menus.c:2054
+#: src/menus.c:2049
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Razne osobine"
 
-#: src/menus.c:2057
+#: src/menus.c:2052
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -3047,6 +3004,48 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Iza�i iz Enlightenment-a"
+
+#~ msgid ""
+#~ "The directory %s is apparently not a directory\n"
+#~ "This is a fatal condition.\n"
+#~ "Please remove this file\n"
+#~ msgstr ""
+#~ "Direktorij %s zapravo nije direktorij\n"
+#~ "Ovo je fatalno stanje.\n"
+#~ "Molimo Vas da obriŷete ovu datoteku\n"
+
+#~ msgid ""
+#~ "Do not have execute access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Nema izvrŷni pristup za %s\n"
+#~ "Ovo je fatalno stanje.\n"
+#~ "Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
+#~ "direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
+
+#~ msgid ""
+#~ "Do not have read access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Nema pristupa za īitanje %s\n"
+#~ "Ovo je fatalno stanje.\n"
+#~ "Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
+#~ "direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
+
+#~ msgid ""
+#~ "Do not have write access to %s\n"
+#~ "This is a fatal condition.\n"
+#~ "Please check the ownership and permissions of this\n"
+#~ "directory and take steps to rectify this.\n"
+#~ msgstr ""
+#~ "Nema pristupa za pisanje %s\n"
+#~ "Ovo je fatalno stanje.\n"
+#~ "Molim Vas provjerite vlasniŷtvo i dozvole ovog\n"
+#~ "direktorija i poduzmite korake za rjeŷavanje ovoga.\n"
 
 #~ msgid "Background Error!"
 #~ msgstr "Greŷka pozadine!"
