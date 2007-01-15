@@ -430,6 +430,8 @@ on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data)
    engrave_part_state_max_size_set(Cur.eps,
       etk_range_value_get(UI_StateMaxWSpinner),
       etk_range_value_get(UI_StateMaxHSpinner));
+
+   ev_redraw();
 }
 
 /* Image Frame Callbacks */
@@ -454,7 +456,6 @@ on_ImageAlphaSlider_value_changed(Etk_Object *object, double va, void *data)
    printf("ImageSlieder value_changed signale EMIT: %.2f\n",va);
    if (Cur.eps){
       engrave_part_state_color_set(Cur.eps, (int)va, (int)va, (int)va, (int)va);
-      //ev_draw_part(Cur.eps->parent);
       ev_redraw();
    }
 }
@@ -601,12 +602,12 @@ void on_FontComboBox_changed(Etk_Combobox *combobox, void *data){
 void 
 on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
 {
-   int effect;
+   Engrave_Text_Effect effect;
 
    printf("Changed Signal on EffectComboBox EMITTED\n");
    if (Cur.ep)
    {
-      if ((effect = (int)etk_combobox_item_data_get(etk_combobox_active_item_get (combobox))))
+      if ((effect = (Engrave_Text_Effect)etk_combobox_item_data_get(etk_combobox_active_item_get (combobox))))
       {
          engrave_part_effect_set(Cur.ep,effect);
          ev_redraw();
@@ -641,18 +642,15 @@ on_TextAlphaSlider_value_changed(Etk_Object *object, double value, void *data)
    printf("value changed event on text alpha slider EMIT (value: %d)\n",(int)value);
    if (Cur.eps)
    {
-      engrave_part_state_color_set(Cur.eps,
-         Cur.eps->color.r,
-         Cur.eps->color.g,
-         Cur.eps->color.b,
-         (int)value);
-
+      engrave_part_state_color_set(Cur.eps, -1, -1, -1, (int)value);
       ev_redraw();
-   } 
+   }
 }
 
 /* Colors Callbacks */
-void on_ColorCanvas_realize(Etk_Widget *canvas, void *data){
+void
+on_ColorCanvas_realize(Etk_Widget *canvas, void *data)
+{
    //Must use the realize callback on the EtkCanvas object.
    //Because I can't add any object to the canvas before it is realized
    Evas_Object* rect;
@@ -665,28 +663,54 @@ void on_ColorCanvas_realize(Etk_Widget *canvas, void *data){
    evas_object_show(rect);
    evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN, on_ColorCanvas_click, data);
    switch ((int)data){
-    case COLOR_OBJECT_RECT:
-      RectColorObject = rect;
-      break;
-    case COLOR_OBJECT_TEXT:
-      TextColorObject = rect;
-      break;
-    case COLOR_OBJECT_SHADOW:
-      ShadowColorObject = rect;
-      break;
-    case COLOR_OBJECT_OUTLINE:
-      OutlineColorObject = rect;
-      break;
+      case COLOR_OBJECT_RECT:
+         RectColorObject = rect;
+         break;
+      case COLOR_OBJECT_TEXT:
+         TextColorObject = rect;
+         break;
+      case COLOR_OBJECT_SHADOW:
+         ShadowColorObject = rect;
+         break;
+      case COLOR_OBJECT_OUTLINE:
+         OutlineColorObject = rect;
+         break;
    }
 }
 
 void 
 on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
+   Etk_Color c;
    printf("Clik Signal on ColorCanvas Emitted\n");
-   ShowAlert("TODO");
-   //if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
-   //current_color_object = (int)data;
+   if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
+   current_color_object = (int)data;
+
+   etk_signal_block("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
+   switch (current_color_object)
+   {
+      case COLOR_OBJECT_RECT:
+         etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Rectangle color");
+         engrave_part_state_color_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
+         etk_colorpicker_current_color_set(UI_ColorPicker, c);
+         break;
+      case COLOR_OBJECT_TEXT:
+         etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Text color");
+         engrave_part_state_color_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
+         etk_colorpicker_current_color_set(UI_ColorPicker, c);
+         break;
+      case COLOR_OBJECT_SHADOW:
+         etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Shadow color");
+         engrave_part_state_color2_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
+         etk_colorpicker_current_color_set(UI_ColorPicker, c);
+         break;
+      case COLOR_OBJECT_OUTLINE:
+         etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Outline color");
+         engrave_part_state_color3_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
+         etk_colorpicker_current_color_set(UI_ColorPicker, c);
+         break;
+   }
+   etk_signal_unblock("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
 }
 
 void
@@ -705,39 +729,33 @@ on_ColorAlphaSlider_value_changed(Etk_Object *object, double value, void *data)
 
 }
 
-void on_ColorDialog_change(Etk_Object *object, void *data){
+void
+on_ColorDialog_change(Etk_Object *object, void *data)
+{
    printf("ColorChangeSignal on ColorDialog EMITTED\n");
-   /* Etk_Color color;
+   Etk_Color color;
 
    color = etk_colorpicker_current_color_get (ETK_COLORPICKER(object));
    switch (current_color_object){
     case COLOR_OBJECT_RECT:
-      evas_object_color_set(RectColorObject,color.r,color.g,color.b,color.a);
-      selected_desc->color_r = color.r;
-      selected_desc->color_g = color.g;
-      selected_desc->color_b = color.b;
+      evas_object_color_set(RectColorObject,color.r,color.g,color.b,255);
+      engrave_part_state_color_set(Cur.eps,color.r,color.g,color.b,-1);
       break;
     case COLOR_OBJECT_TEXT:
-      evas_object_color_set(TextColorObject,color.r,color.g,color.b,color.a);
-      selected_desc->color_r = color.r;
-      selected_desc->color_g = color.g;
-      selected_desc->color_b = color.b;
+      evas_object_color_set(TextColorObject,color.r,color.g,color.b,255);
+      engrave_part_state_color_set(Cur.eps,color.r,color.g,color.b,-1);
       break;
     case COLOR_OBJECT_SHADOW:
-      evas_object_color_set(ShadowColorObject,color.r,color.g,color.b,color.a);
-      selected_desc->color2_r = color.r;
-      selected_desc->color2_g = color.g;
-      selected_desc->color2_b = color.b;
+      evas_object_color_set(ShadowColorObject,color.r,color.g,color.b,255);
+      engrave_part_state_color2_set(Cur.eps,color.r,color.g,color.b,255);
       break;
     case COLOR_OBJECT_OUTLINE:
-      evas_object_color_set(OutlineColorObject,color.r,color.g,color.b,color.a);
-      selected_desc->color3_r = color.r;
-      selected_desc->color3_g = color.g;
-      selected_desc->color3_b = color.b;
+      evas_object_color_set(OutlineColorObject,color.r,color.g,color.b,255);
+      engrave_part_state_color3_set(Cur.eps,color.r,color.g,color.b,255);
       break;
    }
 
-   ev_draw_part(selected_desc->part); */
+   ev_redraw();
 }
 
 void 

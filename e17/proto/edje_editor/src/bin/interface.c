@@ -430,6 +430,7 @@ UpdateTextFrame(void)
    int eff_num = 0;
    int i;
    int alpha;
+   int r, g, b;
    Etk_Combobox_Item *item = NULL;
    char* font;
 
@@ -484,13 +485,14 @@ UpdateTextFrame(void)
       etk_combobox_active_item_set (ETK_COMBOBOX(UI_EffectComboBox),
          etk_combobox_nth_item_get (ETK_COMBOBOX(UI_EffectComboBox), eff_num));
 
-/*
-
       //Set Text color Rects
-      evas_object_color_set(TextColorObject,selected_desc->color_r,selected_desc->color_g,selected_desc->color_b,selected_desc->color_a);
-      evas_object_color_set(ShadowColorObject,selected_desc->color2_r,selected_desc->color2_g,selected_desc->color2_b,selected_desc->color2_a);
-      evas_object_color_set(OutlineColorObject,selected_desc->color3_r,selected_desc->color3_g,selected_desc->color3_b,selected_desc->color3_a);
-*/
+      engrave_part_state_color_get(Cur.eps,&r,&g,&b,NULL);
+      evas_object_color_set(TextColorObject, r, g, b, 255);
+      engrave_part_state_color2_get(Cur.eps,&r,&g,&b,NULL);
+      evas_object_color_set(ShadowColorObject, r, g, b, 255);
+      engrave_part_state_color3_get(Cur.eps,&r,&g,&b,NULL);
+      evas_object_color_set(OutlineColorObject, r, g, b, 255);
+
       //Renable  signal propagation
       etk_signal_unblock("text_changed", ETK_OBJECT(UI_TextEntry), ETK_CALLBACK(on_TextEntry_text_changed));
       etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed));
@@ -1648,7 +1650,6 @@ create_main_window(void)
 
    //Create ColorPicker Window
    UI_ColorWin = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Choose color");
 
    //ColorPicker
    UI_ColorPicker = etk_colorpicker_new();
