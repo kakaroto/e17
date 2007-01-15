@@ -5,7 +5,7 @@ images {
    image, "bg.png" LOSSY 95;
    image, "shadow.png" LOSSY 95;
    /* end of static images*/
-   
+
    image, "image.png" LOSSY 95;
    image, "rect.png" LOSSY 95;
    image, "text.png" LOSSY 95;
@@ -28,97 +28,99 @@ images {
 
 }
 collections {
-   /************************************************************/
-   /*  FocusH 			                               */
-   /************************************************************/
    group{
       name, "IMAGE.PNG";
+      min, 15 16;
+      max, 15 16;
       parts{
-	 part{
-	    name, "StaticImage";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description{
-	       rel1 {relative, 0.0 0.0; offset, 0 0;}
-	       rel2 {relative, 0.0 0.0; offset, 15 16;}
-	       image {
-		  normal, "image.png";
-	       }
-	    }
-
-	 }
+         part{
+            name, "StaticImage";
+            type, IMAGE;
+            mouse_events, 0;
+            description{
+               rel1 {relative, 0.0 0.0; offset, 0 0;}
+               rel2 {relative, 0.0 0.0; offset, 15 16;}
+               image {
+                  normal, "image.png";
+               }
+            }
+         }
       }
    }
    group{
       name, "RECT.PNG";
+      min, 19 14;
+      max, 19 14;
       parts{
-	 part{
-	    name, "StaticImage";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description{
-	       rel1 {relative, 0.0 0.0; offset, 0 0;}
-	       rel2 {relative, 0.0 0.0; offset, 19 14;}
-	       image {
-		  normal, "rect.png";
-	       }
-	    }
-
-	 }
+         part{
+            name, "StaticImage";
+            type, IMAGE;
+            mouse_events, 0;
+            description{
+               rel1 {relative, 0.0 0.0; offset, 0 0;}
+               rel2 {relative, 0.0 0.0; offset, 19 14;}
+               image {
+                  normal, "rect.png";
+               }
+            }
+         }
       }
    }
    group{
       name, "TEXT.PNG";
+      min, 20 15;
+      max, 20 15;
       parts{
-	 part{
-	    name, "StaticImage";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description{
-	       rel1 {relative, 0.0 0.0; offset, 0 0;}
-	       rel2 {relative, 0.0 0.0; offset, 20 15;}
-	       image {
-		  normal, "text.png";
-	       }
-	    }
-
-	 }
+         part{
+            name, "StaticImage";
+            type, IMAGE;
+            mouse_events, 0;
+            description{
+               rel1 {relative, 0.0 0.0; offset, 0 0;}
+               rel2 {relative, 0.0 0.0; offset, 20 15;}
+               image {
+                  normal, "text.png";
+               }
+            }
+         }
       }
    }
    group{
       name, "NONE.PNG";
+      min, 19 14;
+      max, 19 14;
       parts{
-	 part{
-	    name, "StaticImage";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description{
-	       rel1 {relative, 0.0 0.0; offset, 0 0;}
-	       rel2 {relative, 0.0 0.0; offset, 19 14;}
-	       image {
-		  normal, "none.png";
-	       }
-	    }
-
-	 }
+         part{
+            name, "StaticImage";
+            type, IMAGE;
+            mouse_events, 0;
+            description{
+               rel1 {relative, 0.0 0.0; offset, 0 0;}
+               rel2 {relative, 0.0 0.0; offset, 19 14;}
+               image {
+                  normal, "none.png";
+               }
+            }
+         }
       }
    }
    group{
       name, "DESC.PNG";
+      min, 15 15;
+      max, 15 15;
       parts{
-	 part{
-	    name, "StaticImage";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description{
-	       rel1 {relative, 0.0 0.0; offset, 0 0;}
-	       rel2 {relative, 0.0 0.0; offset, 15 15;}
-	       image {
-		  normal, "desc.png";
-	       }
-	    }
-
-	 }
+         part{
+            name, "StaticImage";
+            type, IMAGE;
+            mouse_events, 0;
+            description{
+               rel1 {relative, 0.0 0.0; offset, 0 0;}
+               rel2 {relative, 0.0 0.0; offset, 15 15;}
+               image {
+                  normal, "desc.png";
+               }
+            }
+         }
       }
    }
    group{
