@@ -13,8 +13,6 @@ if test "x$exec_prefix" = "xNONE"; then
   exec_prefix=$prefix
 fi
 
-#ALL_LINGUAS="de dk en_US es fr hu ko nl no ru sv pt pl pt_BR tr ja"
-
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
@@ -26,11 +24,6 @@ if test "x$enable_fsstd" != "xyes"; then
 fi
 ENLIGHTENMENT_ROOT=`eval echo ${datadir}/e16`
 AC_SUBST(ENLIGHTENMENT_ROOT)
-
-THEME_FILES="$THEME.etheme `ls -1 $THEME.etheme*`"
-THEME_FILES=`echo $THEME_FILES`
-AC_SUBST(THEME)
-AC_SUBST(THEME_FILES)
 
 AC_OUTPUT([
   Makefile
