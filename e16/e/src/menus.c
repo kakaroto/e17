@@ -1898,17 +1898,12 @@ MenuConfigLoad(FILE * fs)
 		  if (!strcmp(s2, "exec"))
 		    {
 		       char                buf[1024];
-		       char               *path;
 
 		       params = atword(s, 3);
 		       if (params)
 			 {
 			    sscanf(atword(s, 3), "%1000s", buf);
-			    path = pathtoexec(buf);
-			    if (path)
-			       Efree(path);
-			    else
-			       ok = 0;
+			    ok = path_canexec(buf);
 			 }
 		    }
 		  if (ok)

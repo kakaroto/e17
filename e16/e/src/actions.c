@@ -67,11 +67,8 @@ execApplication(const char *params, int flags)
 
    sh = usershell(getuid());
 
-   path = pathtoexec(exe);
-   if (path)
+   if (path_canexec(exe))
      {
-	Efree(path);
-
 	real_exec = Emalloc(strlen(params) + 6);
 	if (!real_exec)
 	   return -1;
@@ -83,7 +80,7 @@ execApplication(const char *params, int flags)
 
    if (!Mode.wm.startup)
      {
-	path = pathtofile(exe);
+	path = path_test(exe, EFILE_ANY);
 	if (!path)
 	  {
 	     /* absolute path */

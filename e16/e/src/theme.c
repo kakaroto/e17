@@ -142,7 +142,7 @@ append_merge_dir(char *dir, char ***list, int *count)
 	       }
 	     else if (isfile(ss))
 	       {
-		  if (!FileExtension(ss) || strcmp(FileExtension(ss), "etheme"))
+		  if (!fileext(ss) || strcmp(fileext(ss), "etheme"))
 		     continue;
 	       }
 

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2007 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -123,113 +124,41 @@ E_rm(const char *s)
    unlink(s);
 }
 
-#if 0				/* Unused */
-void
-E_cp(const char *s, const char *ss)
+int
+file_test(const char *s, unsigned int test)
 {
-   int                 i;
-   FILE               *f, *ff;
-   unsigned char       buf[1];
+   struct stat         st;
+   int                 mode;
 
-   if ((!s) || (!ss) || (!*s) || (!*ss))
-      return;
-   if (!exists(s))
-      return;
-   i = filesize(s);
-   f = fopen(s, "r");
-   if (!f)
-      return;
-   ff = fopen(ss, "w");
-   if (!ff)
+   if (!s || !*s)
+      return 0;
+
+#define EFILE_ALL (EFILE_ANY | EFILE_REG | EFILE_DIR)
+   if (test & EFILE_ALL)
      {
-	fclose(f);
-	return;
+	if (stat(s, &st) < 0)
+	   return 0;
+	if ((test & EFILE_REG) && !S_ISREG(st.st_mode))
+	   return 0;
+	if ((test & EFILE_DIR) && !S_ISDIR(st.st_mode))
+	   return 0;
      }
-   while (fread(buf, 1, 1, f))
-      fwrite(buf, 1, 1, ff);
-   fclose(f);
-   fclose(ff);
-}
-#endif
 
-#if 0				/* Unused */
-char               *
-cwd(void)
-{
-   char               *s;
-   char                ss[FILEPATH_LEN_MAX];
+#define EPERM_ALL (EPERM_R | EPERM_W | EPERM_X)
+   if (test & EPERM_ALL)
+     {
+	mode = 0;
+	if (test & EPERM_R)
+	   mode |= R_OK;
+	if (test & EPERM_W)
+	   mode |= W_OK;
+	if (test & EPERM_X)
+	   mode |= X_OK;
+	if (access(s, mode))
+	   return 0;
+     }
 
-   getcwd(ss, FILEPATH_LEN_MAX);
-   s = Estrdup(ss);
-   return s;
-}
-#endif
-
-int
-exists(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
    return 1;
-}
-
-int
-isdir(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   if (S_ISDIR(st.st_mode))
-      return 1;
-   return 0;
-}
-
-int
-isfile(const char *s)
-{
-   struct stat         st;
-
-   if ((!s) || (!*s))
-      return 0;
-   if (stat(s, &st) < 0)
-      return 0;
-   if (S_ISREG(st.st_mode))
-      return 1;
-   return 0;
-}
-
-int
-canread(const char *s)
-{
-   if ((!s) || (!*s))
-      return 0;
-
-   return 1 + access(s, R_OK);
-}
-
-int
-canwrite(const char *s)
-{
-   if ((!s) || (!*s))
-      return 0;
-
-   return 1 + access(s, W_OK);
-}
-
-int
-canexec(const char *s)
-{
-   if ((!s) || (!*s))
-      return 0;
-
-   return 1 + access(s, X_OK);
 }
 
 time_t
@@ -312,7 +241,7 @@ isabspath(const char *path)
 }
 
 const char         *
-FileExtension(const char *file)
+fileext(const char *file)
 {
    const char         *p;
 
@@ -348,115 +277,57 @@ fullfileof(const char *path)
 }
 
 char               *
-pathtoexec(const char *file)
+path_test(const char *file, unsigned int test)
 {
-   char               *p, *cp, *ep;
-   char               *s;
-   int                 len, exelen;
+   char               *cp, *ep;
+   char               *s, *p;
+   unsigned int        len, exelen;
+
+   if (!file)
+      return NULL;
 
    if (isabspath(file))
      {
-	if (canexec(file))
+	if (file_test(file, test))
 	   return Estrdup(file);
 	return NULL;
      }
-   p = getenv("PATH");
-   if (!p)
+   cp = getenv("PATH");
+   if (!cp)
       return Estrdup(file);
-   if (!file)
-      return NULL;
 
-   cp = p;
    exelen = strlen(file);
-   while ((ep = strchr(cp, ':')) != NULL)
+   s = NULL;
+   ep = cp;
+   for (; ep; cp = ep + 1)
      {
-	len = ep - cp;
-	s = Emalloc(len + 1);
-	if (s)
-	  {
-	     strncpy(s, cp, len);
-	     s[len] = 0;
-	     s = Erealloc(s, len + 2 + exelen);
-	     if (!s)
-		return NULL;
-	     strcat(s, "/");
-	     strcat(s, file);
-	     if (canexec(s))
-		return s;
-	     Efree(s);
-	  }
-	cp = ep + 1;
-     }
-   len = strlen(cp);
-   s = Emalloc(len + 1);
-   if (s)
-     {
-	strncpy(s, cp, len);
-	s[len] = 0;
-	s = Erealloc(s, len + 2 + exelen);
-	if (!s)
-	   return NULL;
-	strcat(s, "/");
-	strcat(s, file);
-	if (canexec(s))
+	ep = strchr(cp, ':');
+	len = (ep) ? (unsigned int)(ep - cp) : strlen(cp);
+	if (len == 0)
+	   continue;
+	p = Erealloc(s, len + exelen + 2);
+	if (!p)
+	   break;
+	s = p;
+	memcpy(s, cp, len);
+	s[len] = '/';
+	memcpy(s + len + 1, file, exelen + 1);
+	if (file_test(s, test))
 	   return s;
-	Efree(s);
      }
+   if (s)
+      Efree(s);
    return NULL;
 }
 
-char               *
-pathtofile(const char *file)
+int
+path_canexec(const char *file)
 {
-   char               *p, *cp, *ep;
    char               *s;
-   int                 len, exelen;
 
-   if (isabspath(file))
-     {
-	if (exists(file))
-	   return Estrdup(file);
-     }
-   p = getenv("PATH");
-   if (!p)
-      return Estrdup(file);
-   if (!file)
-      return NULL;
-   cp = p;
-   exelen = strlen(file);
-   while ((ep = strchr(cp, ':')) != NULL)
-     {
-	len = ep - cp;
-	s = Emalloc(len + 1);
-	if (s)
-	  {
-	     strncpy(s, cp, len);
-	     s[len] = 0;
-	     s = Erealloc(s, len + 2 + exelen);
-	     if (!s)
-		return NULL;
-	     strcat(s, "/");
-	     strcat(s, file);
-	     if (exists(s))
-		return s;
-	     Efree(s);
-	  }
-	cp = ep + 1;
-     }
-   len = strlen(cp);
-   s = Emalloc(len + 1);
-   if (s)
-     {
-	strncpy(s, cp, len);
-	s[len] = 0;
-	s = Erealloc(s, len + 2 + exelen);
-	if (!s)
-	   return NULL;
-	strcat(s, "/");
-	strcat(s, file);
-	if (exists(s))
-	   return s;
-	Efree(s);
-     }
-   return NULL;
+   s = path_test(file, EFILE_REG | EPERM_X);
+   if (!s)
+      return 0;
+   Efree(s);
+   return 1;
 }

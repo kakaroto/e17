@@ -175,7 +175,7 @@ MenuLoadFromDirectory(Menu * m)
 	if ((*(list[i]) == '.') || (stat(ss, &st) < 0))
 	   continue;
 
-	ext = FileExtension(ss);
+	ext = fileext(ss);
 	if (S_ISDIR(st.st_mode))
 	  {
 	     Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], MenuGetName(m));
@@ -323,7 +323,7 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 	else
 	  {
 	     char               *txt = NULL, *icon = NULL, *act = NULL;
-	     char               *params = NULL, *tmp = NULL, wd[4096];
+	     char               *params = NULL, wd[4096];
 
 	     MenuItem           *mi;
 	     ImageClass         *icc = NULL;
@@ -333,7 +333,6 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 	     icon = field(s, 1);
 	     act = field(s, 2);
 	     params = field(s, 3);
-	     tmp = NULL;
 	     if (icon && exists(icon))
 	       {
 		  Esnprintf(wd, sizeof(wd), "__FM.%s", icon);
@@ -344,10 +343,8 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 	     if ((act) && (!strcmp(act, "exec")) && (params))
 	       {
 		  word(params, 1, wd);
-		  tmp = pathtoexec(wd);
-		  if (tmp)
+		  if (path_canexec(wd))
 		    {
-		       Efree(tmp);
 		       Esnprintf(s, sizeof(s), "exec %s", params);
 		       mi = MenuItemCreate(txt, icc, s, NULL);
 		       MenuAddItem(m, mi);
@@ -490,7 +487,6 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
 		  if (f)
 		    {
 		       char               *iname, *exec, *texec, *en_name;
-		       char               *tmp;
 
 		       iname = exec = texec = en_name = NULL;
 
@@ -522,14 +518,12 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
 		       fclose(f);
 		       if ((iname) && (exec))
 			 {
-			    tmp = NULL;
-			    if (texec)
-			       tmp = pathtoexec(texec);
-			    if ((tmp) || (!texec))
-			      {
-				 if (tmp)
-				    Efree(tmp);
+			    int                 ok = 1;
 
+			    if (texec)
+			       ok = path_canexec(texec);
+			    if (ok)
+			      {
 				 Esnprintf(s, sizeof(s), "exec %s", exec);
 				 mi = MenuItemCreate(iname, NULL, s, NULL);
 				 MenuAddItem(m, mi);

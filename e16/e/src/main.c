@@ -453,7 +453,7 @@ RunDocBrowser(void)
    Esnprintf(buf, sizeof(buf), "%s/edox", EDirBin());
    if (!canexec(buf))
       return;
-   Esnprintf(buf, sizeof(buf), "%s/E-docs", EDirRoot());
+   Esnprintf(buf, sizeof(buf), "%s/E-docs/MAIN", EDirRoot());
    if (!canread(buf))
       return;
 
@@ -577,36 +577,12 @@ Etmp(char *s)
 static void
 EDirCheck(const char *dir)
 {
-   if (!isdir(dir))
-     {
-	Alert(_("The directory %s is apparently not a directory\n"
-		"This is a fatal condition.\n" "Please remove this file\n"),
-	      dir);
-	EExit(1);
-     }
-   if (!canexec(dir))
-     {
-	Alert(_("Do not have execute access to %s\n"
-		"This is a fatal condition.\n"
-		"Please check the ownership and permissions of this\n"
-		"directory and take steps to rectify this.\n"), dir);
-	EExit(1);
-     }
-   if (!canread(dir))
-     {
-	Alert(_("Do not have read access to %s\n" "This is a fatal condition.\n"
-		"Please check the ownership and permissions of this\n"
-		"directory and take steps to rectify this.\n"), dir);
-	EExit(1);
-     }
-   if (!canwrite(dir))
-     {
-	Alert(_("Do not have write access to %s\n"
-		"This is a fatal condition.\n"
-		"Please check the ownership and permissions of this\n"
-		"directory and take steps to rectify this.\n"), dir);
-	EExit(1);
-     }
+   if (file_test(dir, EFILE_DIR | EPERM_RWX))
+      return;
+
+   Alert(_("%s must be a directory in which you have\n"
+	   "read, write, and execute permission.\n"));
+   EExit(1);
 }
 
 void
