@@ -824,6 +824,12 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch,
 			Ewl_Tree2_Branch_Cache *tmp;
 			int hidden = TRUE;
 
+			if (!col->model->expansion_data)
+			{
+				DWARNING("In ewl_tree2_build_tree_rows, model expandable but without expansion_data_fetch cb.");
+				DRETURN(DLEVEL_STABLE);
+			}
+
 			tmp = NEW(Ewl_Tree2_Branch_Cache, 1);
 			tmp->data = col->model->expansion_data(curbranch->data, i);
 			tmp->row_count = 0;
