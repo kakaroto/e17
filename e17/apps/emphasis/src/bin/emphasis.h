@@ -28,7 +28,7 @@
 #include "emphasis_cover.h"
 #include "emphasis_cover_db.h"
 
-#define ETK_TREE_COL_GET(tree, num) etk_tree_nth_col_get(ETK_TREE(tree), num) 
+#define ETK_TREE2_COL_GET(tree, num) etk_tree2_nth_col_get(ETK_TREE2(tree), num) 
 #define UNUSED(var) (void)(var);
 #define UNUSED_CLICKED_PARAM (void)(object); (void)(data);
 

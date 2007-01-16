@@ -62,13 +62,13 @@ emphasis_pref_init(void *data)
                     config->geometry.media_w,
                     config->geometry.media_h);
   /* Set the last width of the playlist's columns */
-  etk_tree_col_width_set(ETK_TREE_COL_GET(player->media.pls, 0),
+  etk_tree2_col_width_set(ETK_TREE2_COL_GET(player->media.pls, 0),
                          config->colwidth.title);
-  etk_tree_col_width_set(ETK_TREE_COL_GET(player->media.pls, 1),
+  etk_tree2_col_width_set(ETK_TREE2_COL_GET(player->media.pls, 1),
                          config->colwidth.time);
-  etk_tree_col_width_set(ETK_TREE_COL_GET(player->media.pls, 2),
+  etk_tree2_col_width_set(ETK_TREE2_COL_GET(player->media.pls, 2),
                          config->colwidth.artist);
-  etk_tree_col_width_set(ETK_TREE_COL_GET(player->media.pls, 3),
+  etk_tree2_col_width_set(ETK_TREE2_COL_GET(player->media.pls, 3),
                          config->colwidth.album);
 
   /* Set the medialib paned size */
@@ -124,8 +124,8 @@ emphasis_try_connect(void *data)
       gui->timer = timer;
 
       emphasis_tree_mlib_init(gui->player, EMPHASIS_ARTIST);
-      etk_tree_row_select(etk_tree_first_row_get
-                          (ETK_TREE(gui->player->media.artist)));
+      etk_tree2_row_select(etk_tree2_first_row_get
+                          (ETK_TREE2(gui->player->media.artist)));
 
       return 0;
     }

@@ -26,8 +26,8 @@ Etk_Widget *entry_add_album;
 Evas_List *cover_changed = NULL;
 
 void on_window_destroy(Etk_Object *object, void *data);
-void fill_tree_with_db(Etk_Tree *tree);
-void on_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
+void fill_tree_with_db(Etk_Tree2 *tree);
+void on_tree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data);
 void change_cover_path(char *cover_path);
 void filechooser_close(Etk_Object *object, void *data);
 void filechooser_dialog_open(Etk_Dialog *filechooser_dialog, int response_id, void *data);
@@ -36,15 +36,15 @@ void dialog_close(Etk_Object *object, void *data);
 
 /*********/
 int
-tree_sort(Etk_Tree *tree,
-          Etk_Tree_Row *r1, Etk_Tree_Row *r2,
-          Etk_Tree_Col *col,
+tree_sort(Etk_Tree2 *tree,
+          Etk_Tree2_Row *r1, Etk_Tree2_Row *r2,
+          Etk_Tree2_Col *col,
           void *data)
 {
   char *k1 = NULL;
   char *k2 = NULL;
-  etk_tree_row_fields_get(r1, col, &k1, NULL);
-  etk_tree_row_fields_get(r2, col, &k2, NULL);
+  etk_tree2_row_fields_get(r1, col, &k1, NULL);
+  etk_tree2_row_fields_get(r2, col, &k2, NULL);
   return strcoll(k1, k2);
 }
 
@@ -70,7 +70,7 @@ on_add_dialog_response(Etk_Dialog *dialog, int response_id, void *data)
   const char *artist;
   const char *album;
   char *key;
-  Etk_Tree_Row *row;
+  Etk_Tree2_Row *row;
 
   if (response_id == ETK_RESPONSE_OK)
     {
@@ -81,9 +81,9 @@ on_add_dialog_response(Etk_Dialog *dialog, int response_id, void *data)
           && album && strcmp(album, ""))
         {
           asprintf(&key, "/%s/%s", artist, album);
-          row = etk_tree_append(ETK_TREE(tree), 
-                                etk_tree_nth_col_get(ETK_TREE(tree), 0),
-                                key, NULL);
+          row = etk_tree2_row_append(ETK_TREE2(tree), NULL,
+                                     etk_tree2_nth_col_get(ETK_TREE2(tree), 0),
+                                     key, NULL);
         }
     }
   etk_entry_text_set(ETK_ENTRY(entry_add_artist), "");
@@ -140,10 +140,10 @@ on_btn_save_clicked(Etk_Object *object, void *data)
 }
 
 void
-on_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
+on_tree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
 {
   char *path;
-  path = etk_tree_row_data_get(row);
+  path = etk_tree2_row_data_get(row);
 
   if(path)
     {
@@ -160,18 +160,18 @@ on_tree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 void
 change_cover_path(char *cover_path)
 {
-  Etk_Tree_Row *row;
+  Etk_Tree2_Row *row;
   Cover_Entry *ce;
   char *key;
 
-  row = etk_tree_selected_row_get(ETK_TREE(tree));
+  row = etk_tree2_selected_row_get(ETK_TREE2(tree));
   if (!row)
     {
       return;
     }
 
   ce = malloc(sizeof(Cover_Entry));
-  etk_tree_row_fields_get(row, etk_tree_nth_col_get(ETK_TREE(tree), 0), 
+  etk_tree2_row_fields_get(row, etk_tree2_nth_col_get(ETK_TREE2(tree), 0), 
                           &key, NULL);
   ce->key = strdup(key);
   ce->path = strdup(cover_path);
@@ -194,7 +194,7 @@ on_filechooser_dialog_response(Etk_Dialog *filechooser_dialog,
   const char *cover_file_name;
   const char *cover_file_folder;
   char *cover_path;
-  Etk_Tree_Row *row;
+  Etk_Tree2_Row *row;
 
   if (response_id == ETK_RESPONSE_OK)
     {
@@ -210,9 +210,9 @@ on_filechooser_dialog_response(Etk_Dialog *filechooser_dialog,
 
       change_cover_path(cover_path);
 
-      row = etk_tree_selected_row_get(ETK_TREE(tree));
-      free(etk_tree_row_data_get(row));
-      etk_tree_row_data_set(row, cover_path);
+      row = etk_tree2_selected_row_get(ETK_TREE2(tree));
+      free(etk_tree2_row_data_get(row));
+      etk_tree2_row_data_set(row, cover_path);
       etk_image_set_from_file(ETK_IMAGE(cover), cover_path, NULL);
     }
   etk_widget_hide_all(ETK_WIDGET(filechooser_dialog));
@@ -221,7 +221,7 @@ on_filechooser_dialog_response(Etk_Dialog *filechooser_dialog,
 void
 on_btn_open_clicked(Etk_Object *object, void *data)
 {
-  if (!etk_tree_selected_row_get(ETK_TREE(tree)))
+  if (!etk_tree2_selected_row_get(ETK_TREE2(tree)))
     {
       return;
     }
@@ -251,7 +251,7 @@ int main(int argc, char **argv)
   entry_add_artist = enhance_var_get(en, "entry_add_artist");
   entry_add_album = enhance_var_get(en, "entry_add_album");
 
-  fill_tree_with_db(ETK_TREE(tree));
+  fill_tree_with_db(ETK_TREE2(tree));
    
   etk_main();
    
@@ -259,13 +259,13 @@ int main(int argc, char **argv)
 }
 
 void
-fill_tree_with_db(Etk_Tree *tree)
+fill_tree_with_db(Etk_Tree2 *tree)
 {
   int num, i;
   char **entries;
   char *cover_path;
-  Etk_Tree_Col *col;
-  Etk_Tree_Row *row;
+  Etk_Tree2_Col *col;
+  Etk_Tree2_Row *row;
   Eet_File *ef;
   char *cover_db_path;
 
@@ -278,31 +278,30 @@ fill_tree_with_db(Etk_Tree *tree)
       exit(-1);
     }
 
-  col = etk_tree_col_new(tree, "/artist/album",
-                         etk_tree_model_text_new(tree),
-                         0);
-  etk_tree_build(tree);
-  etk_tree_freeze(tree);
+  col = etk_tree2_col_new(tree, "/artist/album", 0, 0.0);
+  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
+  etk_tree2_build(tree);
+  etk_tree2_freeze(tree);
 
   entries = eet_list(ef, "*", &num);
 
   for (i=0; i<num; i++)
     {
       cover_path = eet_read(ef, entries[i], NULL);
-      row = etk_tree_append(tree, col, entries[i], NULL);
+      row = etk_tree2_row_append(tree, NULL, col, entries[i], NULL);
       if (strcmp("not found", cover_path))
         {
-          etk_tree_row_data_set(row, cover_path);
+          etk_tree2_row_data_set(row, cover_path);
         }
       else
         {
-          etk_tree_row_data_set(row, NULL);
+          etk_tree2_row_data_set(row, NULL);
         }
     }
 
   eet_close(ef);
   free(cover_db_path);
 
-  etk_tree_sort(tree, tree_sort, ETK_TRUE, etk_tree_nth_col_get(tree, 0), NULL);
-  etk_tree_thaw(tree);
+  etk_tree2_col_sort_set(etk_tree2_nth_col_get(tree, 0), tree_sort, NULL);
+  etk_tree2_thaw(tree);
 }

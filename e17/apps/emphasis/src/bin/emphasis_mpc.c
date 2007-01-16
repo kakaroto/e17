@@ -173,11 +173,11 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
   if (what & MPD_CST_DATABASE)
     {
       char *tree_title;
-      Etk_Tree *tree = ETK_TREE(player->media.artist);
+      Etk_Tree2 *tree = ETK_TREE2(player->media.artist);
 
       tree_title = etk_object_data_get(ETK_OBJECT(tree), "title");
       emphasis_tree_mlib_init(player, EMPHASIS_ARTIST);
-      etk_tree_col_title_set(etk_tree_nth_col_get(tree,0), tree_title);
+      etk_tree2_col_title_set(etk_tree2_nth_col_get(tree,0), tree_title);
 
       song = mpc_playlist_get_current_song();
       emphasis_player_info_set(player, song, NULL);
@@ -213,7 +213,7 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
         case MPD_STATUS_STATE_STOP:
           emphasis_player_info_set(player, NULL, "Music Stoped");
           emphasis_player_toggle_play(player);
-          emphasis_pls_mark_current(ETK_TREE(player->media.pls), -1);
+          emphasis_pls_mark_current(ETK_TREE2(player->media.pls), -1);
           break;
         case MPD_STATUS_STATE_PAUSE:
           song = mpc_playlist_get_current_song();
@@ -225,7 +225,7 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
           song = mpc_playlist_get_current_song();
           emphasis_player_toggle_play(player);
           emphasis_player_info_set(player, song, NULL);
-          emphasis_pls_mark_current(ETK_TREE(player->media.pls), song->id);
+          emphasis_pls_mark_current(ETK_TREE2(player->media.pls), song->id);
           emphasis_song_free(song);
           refresh_info = 1;
           break;
@@ -240,7 +240,7 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
 
       playlist = mpd_playlist_get_changes(mo, -1);
       emphasis_playlist = convert_mpd_data(playlist);
-      emphasis_tree_pls_set(ETK_TREE(player->media.pls), emphasis_playlist);
+      emphasis_tree_pls_set(ETK_TREE2(player->media.pls), emphasis_playlist);
       
 //      emphasis_list_free(emphasis_playlist);
       mpd_data_free(playlist);
@@ -251,7 +251,7 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
       if (song)
         {
           emphasis_player_info_set(player, song, NULL);
-          emphasis_pls_mark_current(ETK_TREE(player->media.pls), song->id);
+          emphasis_pls_mark_current(ETK_TREE2(player->media.pls), song->id);
           emphasis_cover_change((Emphasis_Gui *) data,
                                 song->artist,
                                 song->album);

@@ -29,13 +29,13 @@ cb_quit(Etk_Object *object, void *data)
                           &(config->geometry.media_h));
 
   config->colwidth.title  = 
-    etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 0));
+    etk_tree2_col_width_get(ETK_TREE2_COL_GET(player->media.pls, 0));
   config->colwidth.time   =
-    etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 1));
+    etk_tree2_col_width_get(ETK_TREE2_COL_GET(player->media.pls, 1));
   config->colwidth.artist =
-    etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 2));
+    etk_tree2_col_width_get(ETK_TREE2_COL_GET(player->media.pls, 2));
   config->colwidth.album  =
-    etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 3));
+    etk_tree2_col_width_get(ETK_TREE2_COL_GET(player->media.pls, 3));
   config->media_paned = etk_paned_position_get(ETK_PANED(player->media.paned));
 
   config->mode = player->state;
@@ -226,7 +226,7 @@ cb_vol_slider_value_changed(Etk_Object *object, double value, void *data)
  *        And set the album tree with.
  */
 void
-cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
+cb_tree_artist_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
 {
   UNUSED(object)
   UNUSED(row)
@@ -236,31 +236,31 @@ cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 
   player = data;
 
-  artist_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.artist));
-  artist     = etk_tree_row_data_get(evas_list_data(artist_sel));
+  artist_sel = etk_tree2_selected_rows_get(ETK_TREE2(player->media.artist));
+  artist     = etk_tree2_row_data_get(evas_list_data(artist_sel));
 
   if (artist == NULL)
     {
-      emphasis_tree_mlib_set(ETK_TREE(player->media.album),
+      emphasis_tree_mlib_set(ETK_TREE2(player->media.album),
                              mpc_mlib_album_get(NULL),
                              MPD_DATA_TYPE_TAG, NULL);
-      etk_tree_row_select
-       (etk_tree_first_row_get(ETK_TREE(player->media.album)));
+      etk_tree2_row_select
+       (etk_tree2_first_row_get(ETK_TREE2(player->media.album)));
 
       return;
     }
-  emphasis_tree_mlib_set(ETK_TREE(player->media.album), NULL,
+  emphasis_tree_mlib_set(ETK_TREE2(player->media.album), NULL,
                          MPD_DATA_TYPE_TAG, NULL);
   while (artist_sel)
     {
-      artist = etk_tree_row_data_get(evas_list_data(artist_sel));
-      emphasis_tree_mlib_append(ETK_TREE(player->media.album),
+      artist = etk_tree2_row_data_get(evas_list_data(artist_sel));
+      emphasis_tree_mlib_append(ETK_TREE2(player->media.album),
                                 mpc_mlib_album_get(artist),
                                 MPD_DATA_TYPE_TAG, artist);
       artist_sel = evas_list_next(artist_sel);
     }
 
-  etk_tree_row_select(etk_tree_first_row_get(ETK_TREE(player->media.album)));
+  etk_tree2_row_select(etk_tree2_first_row_get(ETK_TREE2(player->media.album)));
 }
 
 /**
@@ -268,7 +268,7 @@ cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
  *        Then set the tree track with that stuff.
  */
 void
-cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
+cb_tree_album_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
 {
   UNUSED(object)
   UNUSED(row)
@@ -280,17 +280,17 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
   player = data;
 
 
-  album_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.album));
-  album_tag = etk_tree_row_data_get(evas_list_data(album_sel));
+  album_sel = etk_tree2_selected_rows_get(ETK_TREE2(player->media.album));
+  album_tag = etk_tree2_row_data_get(evas_list_data(album_sel));
 
   if (album_tag == NULL)
     {
-      etk_tree_clear(ETK_TREE(player->media.track));
-      artist_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.artist));
+      etk_tree2_clear(ETK_TREE2(player->media.track));
+      artist_sel = etk_tree2_selected_rows_get(ETK_TREE2(player->media.artist));
       while (artist_sel)
         {
-          artist_tag = etk_tree_row_data_get(evas_list_data(artist_sel));
-          emphasis_tree_mlib_append(ETK_TREE(player->media.track),
+          artist_tag = etk_tree2_row_data_get(evas_list_data(artist_sel));
+          emphasis_tree_mlib_append(ETK_TREE2(player->media.track),
                                     mpc_mlib_track_get(artist_tag, NULL),
                                     MPD_DATA_TYPE_SONG, NULL);
           artist_sel = evas_list_next(artist_sel);
@@ -298,17 +298,19 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
       return;
     }
 
-  etk_tree_clear(ETK_TREE(player->media.track));
+  etk_tree2_clear(ETK_TREE2(player->media.track));
   while (album_sel)
     {
-      album_tag = etk_tree_row_data_get(evas_list_data(album_sel));
-      emphasis_tree_mlib_append(ETK_TREE(player->media.track),
+      album_tag = etk_tree2_row_data_get(evas_list_data(album_sel));
+      emphasis_tree_mlib_append(ETK_TREE2(player->media.track),
                                 mpc_mlib_track_get(album_tag[1], album_tag[0]),
                                 MPD_DATA_TYPE_SONG, NULL);
       album_sel = evas_list_next(album_sel);
     }
 }
 
+/* FIXME wait for tree2 to support dnd */
+#if 0
 /**
  * @brief Set a drag widget from a list of artist selected
  * @param data A common drag widget
@@ -318,22 +320,22 @@ cb_drag_artist(Etk_Object *object, void *data)
 {
   Etk_Widget *drag_menu, *menu_item;
   Etk_Drag *drag;
-  Etk_Tree *tree;
+  Etk_Tree2 *tree;
   Evas_List *rowlist, *next;
   char *artist;
   const char **types;
   unsigned int num_types;
   Evas_List *playlist = NULL, *tmplist;
 
-  tree = ETK_TREE(object);
+  tree = ETK_TREE2(object);
   drag = ETK_DRAG((ETK_WIDGET(tree))->drag);
-  rowlist = etk_tree_selected_rows_get(tree);
+  rowlist = etk_tree2_selected_rows_get(tree);
 
   drag_menu = etk_menu_new();
 
   while(rowlist)
     {
-      artist = etk_tree_row_data_get(evas_list_data(rowlist));
+      artist = etk_tree2_row_data_get(evas_list_data(rowlist));
       tmplist = mpc_mlib_track_get(artist, NULL);
       
       if(artist)
@@ -382,22 +384,22 @@ cb_drag_album(Etk_Object *object, void *data)
 {
   Etk_Widget *drag_menu, *menu_item;
   Etk_Drag *drag;
-  Etk_Tree *tree;
+  Etk_Tree2 *tree;
   Evas_List *rowlist;
   char **album;
   const char **types;
   unsigned int num_types;
   Evas_List *playlist = NULL, *tmplist;
 
-  tree = ETK_TREE(object);
+  tree = ETK_TREE2(object);
   drag = ETK_DRAG((ETK_WIDGET(object))->drag);
-  rowlist = etk_tree_selected_rows_get(tree);
+  rowlist = etk_tree2_selected_rows_get(tree);
 
   drag_menu = etk_menu_new();
 
   while (rowlist)
     {
-      album = etk_tree_row_data_get(evas_list_data(rowlist));
+      album = etk_tree2_row_data_get(evas_list_data(rowlist));
       if (album != NULL)
         {
           tmplist = mpc_mlib_track_get(album[1], album[0]);
@@ -425,10 +427,10 @@ cb_drag_album(Etk_Object *object, void *data)
         }
       else
         {
-          Etk_Tree_Row *row;
+          Etk_Tree2_Row *row;
 
-          row = etk_tree_first_row_get(tree);
-          row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+          row = etk_tree2_first_row_get(tree);
+          row = etk_tree2_row_next_get(row);
           rowlist = evas_list_free(rowlist);
           rowlist = NULL;
           emphasis_list_free(playlist);
@@ -436,7 +438,7 @@ cb_drag_album(Etk_Object *object, void *data)
           while (row)
             {
               rowlist = evas_list_append(rowlist, row);
-              row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+              row = etk_tree2_row_next_get(row);
             }
         }
     }
@@ -463,24 +465,24 @@ cb_drag_track(Etk_Object *object, void *data)
 {
   Etk_Widget *drag_menu, *menu_item;
   Etk_Drag *drag;
-  Etk_Tree *tree;
+  Etk_Tree2 *tree;
   Evas_List *rowlist;
   char *title;
   const char **types;
   unsigned int num_types;
   Evas_List *playlist;
 
-  tree = ETK_TREE(object);
+  tree = ETK_TREE2(object);
   drag = ETK_DRAG((ETK_WIDGET(object))->drag);
 
   drag_menu = etk_menu_new();
 
-  rowlist = etk_tree_selected_rows_get(tree);
+  rowlist = etk_tree2_selected_rows_get(tree);
   playlist = convert_rowlist_in_playlist_with_file(rowlist);
   while (rowlist)
     {
-      etk_tree_row_fields_get(evas_list_data(rowlist),
-                              etk_tree_nth_col_get(tree, 0), &title, NULL);
+      etk_tree2_row_fields_get(evas_list_data(rowlist),
+                              etk_tree2_nth_col_get(tree, 0), &title, NULL);
 
       menu_item = etk_menu_item_new_with_label(title);
       etk_menu_shell_append(ETK_MENU_SHELL(drag_menu),
@@ -496,13 +498,14 @@ cb_drag_track(Etk_Object *object, void *data)
   etk_drag_types_set(drag, types, num_types);
   etk_drag_data_set(drag, playlist, 1);
 
-  etk_tree_row_fields_get(evas_list_data(rowlist),
-                          etk_tree_nth_col_get(tree, 0), &title, NULL);
+  etk_tree2_row_fields_get(evas_list_data(rowlist),
+                          etk_tree2_nth_col_get(tree, 0), &title, NULL);
 
   etk_container_add(ETK_CONTAINER(drag), drag_menu);
 
   ((Emphasis_Player_Gui*)data)->media.drag = ETK_WIDGET(drag);
 }
+#endif
 
 /**
  * @brief Get the playlist draged. Add it to the current playlist.
@@ -513,11 +516,11 @@ void
 cb_drop_song(Etk_Object *object, void *event, void *data)
 {
   UNUSED(event)
-  Etk_Tree *tree;
+  Etk_Tree2 *tree;
   Etk_Drag *drag;
   Evas_List *list;
 
-  tree = ETK_TREE(object);
+  tree = ETK_TREE2(object);
 
   drag = ETK_DRAG(((Emphasis_Player_Gui*)data)->media.drag);
   if (drag == NULL ||
@@ -551,7 +554,7 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
  * @brief Double-click on a row add the artist's song to the playlist
  */
 void
-cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
+cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree2_Row *row,
                      Etk_Event_Mouse_Down *event, void *data)
 {
   Emphasis_Player_Gui *player;
@@ -562,15 +565,15 @@ cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
   et = (Emphasis_Type) etk_object_data_get(object, "Emphasis_Type");
   if ((event->button == 1) && (event->flags == ETK_MOUSE_DOUBLE_CLICK))
     {
-      emphasis_playlist_append_selected(ETK_TREE(object), et);
+      emphasis_playlist_append_selected(ETK_TREE2(object), et);
       mpc_play_if_stopped();
     }
   if (event->button == 2)
     {
-      etk_tree_row_fields_get(row, etk_tree_nth_col_get(ETK_TREE(object), 0),
+      etk_tree2_row_fields_get(row, etk_tree2_nth_col_get(ETK_TREE2(object), 0),
                               &str, NULL);
 
-      emphasis_playlist_search_and_delete(ETK_TREE(player->media.pls), str, et);
+      emphasis_playlist_search_and_delete(ETK_TREE2(player->media.pls), str, et);
     }
 }
 
@@ -578,20 +581,17 @@ cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
  * @brief Play the song double-clicked
  */
 void
-cb_tree_pls_clicked(Etk_Object *object, Etk_Tree_Row *row,
+cb_tree_pls_clicked(Etk_Object *object, Etk_Tree2_Row *row,
                     Etk_Event_Mouse_Down *event, void *data)
 {
   UNUSED(data)
+  UNUSED(object)
   int id;
 
   if ((event->button == 1) && (event->flags == ETK_MOUSE_DOUBLE_CLICK))
     {
-      id = (int) etk_tree_row_data_get(row);
+      id = (int) etk_tree2_row_data_get(row);
       mpc_play_id(id);
-    }
-  if (event->button == 1)
-    {
-      ETK_TREE(object)->last_selected = row;
     }
 }
 
@@ -640,28 +640,28 @@ void
 cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
                      void *data)
 {
-  Etk_Tree *tree;
-  Etk_Tree_Row *row, *row_next;
-  Etk_Tree_Col *col;
+  Etk_Tree2 *tree;
+  Etk_Tree2_Row *row, *row_next;
+  Etk_Tree2_Col *col;
   Emphasis_Player_Gui *player;
   char *str;
 
   if (!event->string)
     return;
 
-  tree = ETK_TREE(object);
+  tree = ETK_TREE2(object);
   player = data;
 
   if (!strcmp(event->key, "a")
       && event->modifiers == ETK_MODIFIER_CTRL)
     {
-      etk_tree_select_all(tree);
+      etk_tree2_select_all(tree);
 
       if (object == ETK_OBJECT(player->media.track))
         return;
 
-      row = etk_tree_first_row_get(tree);
-      etk_tree_row_unselect(row);
+      row = etk_tree2_first_row_get(tree);
+      etk_tree2_row_unselect(row);
       if (object == ETK_OBJECT(player->media.artist))
         {
           cb_tree_artist_selected(object, row, data);
@@ -677,14 +677,15 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
       && event->modifiers == ETK_MODIFIER_CTRL)
     {
       int i, r;
-      r = xrand(0, etk_tree_num_rows_get(tree));
-      row = etk_tree_first_row_get(tree);
+      /* We need an accessor here */
+      r = xrand(0, ETK_TREE2(tree)->total_rows);
+      row = etk_tree2_first_row_get(tree);
       for (i=0; i<r; i++)
         {
-          row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+          row = etk_tree2_row_next_get(row);
         }
-      etk_tree_row_select(row);
-      etk_tree_row_scroll_to(row, ETK_TRUE);
+      etk_tree2_row_select(row);
+      etk_tree2_row_scroll_to(row, ETK_TRUE);
       return;
     }
 
@@ -692,7 +693,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
       || event->modifiers == ETK_MODIFIER_CTRL)
     return;
 
-  col = etk_tree_nth_col_get(tree, 0);
+  col = etk_tree2_nth_col_get(tree, 0);
 
 /**/ 
   const char *cur_title, *base_title;
@@ -703,7 +704,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   /*get the base title of the tree */
   base_title = etk_object_data_get(ETK_OBJECT(tree), "title");    
   /*get the current title of tree */
-  cur_title = etk_tree_col_title_get(col);      
+  cur_title = etk_tree2_col_title_get(col);      
   type = (Emphasis_Type) etk_object_data_get(ETK_OBJECT(tree), "Emphasis_Type");
 
   /* FIXME & > < */
@@ -727,14 +728,14 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
           emphasis_tree_mlib_init(player, type);
           if (strlen(title) == strlen(base_title) + 17)
             {
-              etk_tree_col_title_set(col, base_title);
+              etk_tree2_col_title_set(col, base_title);
               return;
             }
         }
       else if (!strcmp("Escape", event->keyname))
         {
           emphasis_tree_mlib_init(player, type);
-          etk_tree_col_title_set(col, base_title);
+          etk_tree2_col_title_set(col, base_title);
           return;
         }
       else if (!strcmp("Return", event->keyname))
@@ -745,34 +746,34 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
           emphasis_playlist_append_selected(tree, et);
           mpc_play_if_stopped();
           emphasis_tree_mlib_init(player, type);
-          etk_tree_col_title_set(col, base_title);
+          etk_tree2_col_title_set(col, base_title);
           return;
         }
       else
         asprintf(&title, "%s%s", cur_title, event->string);
     }
 
-  etk_tree_col_title_set(etk_tree_nth_col_get(tree, 0), title);
+  etk_tree2_col_title_set(etk_tree2_nth_col_get(tree, 0), title);
   length = strlen(base_title) + 17;
   filter = strdup(&title[length]);
   length = strlen(filter);
 /**/ 
 
-  row = etk_tree_first_row_get(tree);
+  row = etk_tree2_first_row_get(tree);
   while (row)
     {
-      row_next = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
-      etk_tree_row_fields_get(row, col, &str, NULL);
+      row_next = etk_tree2_row_next_get(row);
+      etk_tree2_row_fields_get(row, col, &str, NULL);
       if (!strncasecmp("The ", str, 4))
         {
           str = str + 4;
         }
       if (!strcmp("All", str) || (strncasecmp(filter, str, length) != 0))
-        etk_tree_row_del(row);
+        etk_tree2_row_delete(row);
       row = row_next;
     }
 
-  etk_tree_row_select(etk_tree_first_row_get(tree));
+  etk_tree2_row_select(etk_tree2_first_row_get(tree));
   free(title);
   free(filter);
 }
@@ -836,7 +837,7 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
 
   if (!strcmp(event->key, "d") || !strcmp(event->key, "Delete"))
     {
-      rowlist = etk_tree_selected_rows_get(ETK_TREE(player->media.pls));
+      rowlist = etk_tree2_selected_rows_get(ETK_TREE2(player->media.pls));
       if (rowlist)
         {
           list = convert_rowlist_in_playlist_with_id(rowlist);
@@ -872,7 +873,7 @@ cb_playlist_delete(Etk_Object *object, void *data)
 
   player = data;
 
-  rowlist = etk_tree_selected_rows_get(ETK_TREE(player->media.pls));
+  rowlist = etk_tree2_selected_rows_get(ETK_TREE2(player->media.pls));
   list = convert_rowlist_in_playlist_with_id(rowlist);
 
   mpc_playlist_delete(list);
@@ -892,9 +893,9 @@ cb_database_update(Etk_Object *object, void *data)
   emphasis_tree_mlib_init(player, EMPHASIS_ARTIST);
 
   /* Clear old search */
-  etk_tree_col_title_set(ETK_TREE_COL_GET(player->media.artist, 0), "Artist");
-  etk_tree_col_title_set(ETK_TREE_COL_GET(player->media.album , 0), "Album");
-  etk_tree_col_title_set(ETK_TREE_COL_GET(player->media.track , 0), "Track");
+  etk_tree2_col_title_set(ETK_TREE2_COL_GET(player->media.artist, 0), "Artist");
+  etk_tree2_col_title_set(ETK_TREE2_COL_GET(player->media.album , 0), "Album");
+  etk_tree2_col_title_set(ETK_TREE2_COL_GET(player->media.track , 0), "Track");
 
   /* TODO redraw */
 }
@@ -1068,12 +1069,12 @@ cb_config_ok(Etk_Object *object, void *data)
 }
 
 void
-cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
+cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree2_Row *row, 
                               Etk_Event_Mouse_Down *event, void *data)
 {
   Emphasis_Player_Gui *player;
-  Etk_Tree *tree;
-  Etk_Tree_Col *col;
+  Etk_Tree2 *tree;
+  Etk_Tree2_Col *col;
   char *playlist_name;
 
   player = data;
@@ -1081,12 +1082,12 @@ cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row,
     {
       if (event->flags == ETK_MOUSE_NONE)
         {
-          tree = ETK_TREE(object);
-          col = etk_tree_nth_col_get(tree, 0);
+          tree = ETK_TREE2(object);
+          col = etk_tree2_nth_col_get(tree, 0);
 
-          etk_tree_clear(ETK_TREE(player->media.pls_content));
-          etk_tree_row_fields_get(row, col, &playlist_name, NULL);
-          emphasis_tree_mlib_append(ETK_TREE(player->media.pls_content), 
+          etk_tree2_clear(ETK_TREE2(player->media.pls_content));
+          etk_tree2_row_fields_get(row, col, &playlist_name, NULL);
+          emphasis_tree_mlib_append(ETK_TREE2(player->media.pls_content), 
                                     (mpc_get_playlist_content(playlist_name)),
                                     MPD_DATA_TYPE_SONG,
                                     NULL);
@@ -1134,21 +1135,21 @@ cb_media_pls_load_clicked(Etk_Object *object, void *data)
   UNUSED(object);
 #if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
-  Etk_Tree_Col *col;
-  Etk_Tree_Row *row;
+  Etk_Tree2_Col *col;
+  Etk_Tree2_Row *row;
   char *playlist_name;
 
   player = data;
-  col = etk_tree_nth_col_get(ETK_TREE(player->media.pls_list), 0);
-  row = etk_tree_selected_row_get(ETK_TREE(player->media.pls_list));
-  etk_tree_row_fields_get(row, col, &playlist_name, NULL);
+  col = etk_tree2_nth_col_get(ETK_TREE2(player->media.pls_list), 0);
+  row = etk_tree2_selected_row_get(ETK_TREE2(player->media.pls_list));
+  etk_tree2_row_fields_get(row, col, &playlist_name, NULL);
 
   mpc_playlist_clear();
-  etk_tree_multiple_select_set(ETK_TREE(player->media.pls_content), ETK_TRUE);
-  etk_tree_select_all(ETK_TREE(player->media.pls_content));
-  emphasis_playlist_append_selected(ETK_TREE(player->media.pls_content),
+  etk_tree2_multiple_select_set(ETK_TREE2(player->media.pls_content), ETK_TRUE);
+  etk_tree2_select_all(ETK_TREE2(player->media.pls_content));
+  emphasis_playlist_append_selected(ETK_TREE2(player->media.pls_content),
                                     EMPHASIS_TRACK);
-  etk_tree_unselect_all(ETK_TREE(player->media.pls_content));
+  etk_tree2_unselect_all(ETK_TREE2(player->media.pls_content));
   mpc_play_if_stopped();
 #else
   UNUSED(data);
@@ -1161,14 +1162,14 @@ cb_media_pls_del_clicked(Etk_Object *object, void *data)
   UNUSED(object);
 #if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
-  Etk_Tree_Col *col;
-  Etk_Tree_Row *row;
+  Etk_Tree2_Col *col;
+  Etk_Tree2_Row *row;
   char *playlist_name;
 
   player = data;
-  col = etk_tree_nth_col_get(ETK_TREE(player->media.pls_list), 0);
-  row = etk_tree_selected_row_get(ETK_TREE(player->media.pls_list));
-  etk_tree_row_fields_get(row, col, &playlist_name, NULL);
+  col = etk_tree2_nth_col_get(ETK_TREE2(player->media.pls_list), 0);
+  row = etk_tree2_selected_row_get(ETK_TREE2(player->media.pls_list));
+  etk_tree2_row_fields_get(row, col, &playlist_name, NULL);
 
   mpc_delete_playlist(playlist_name);
   emphasis_pls_list_init(player);
@@ -1195,19 +1196,19 @@ cb_media_search_btn_add_clicked(Etk_Object *object, void *data)
   UNUSED(object);
   Evas_List *row;
   Evas_List *list;
-  Etk_Tree_Col *col;
+  Etk_Tree2_Col *col;
   const char *file;
   player = data;
 
-  row = etk_tree_selected_rows_get(ETK_TREE(player->media.search_tree));
+  row = etk_tree2_selected_rows_get(ETK_TREE2(player->media.search_tree));
   if (!row)
-    row = etk_tree_unselected_rows_get(ETK_TREE(player->media.search_tree));
+    row = etk_tree2_unselected_rows_get(ETK_TREE2(player->media.search_tree));
   list = row;
 
-  col = etk_tree_nth_col_get(ETK_TREE(player->media.search_tree), 3);
+  col = etk_tree2_nth_col_get(ETK_TREE2(player->media.search_tree), 3);
   while (row)
     {
-      etk_tree_row_fields_get(evas_list_data(row), col, &file, NULL);
+      etk_tree2_row_fields_get(evas_list_data(row), col, &file, NULL);
       mpc_playlist_add_song(file, 0);
       row = evas_list_next(row);
     }
@@ -1284,15 +1285,14 @@ cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
   Emphasis_Player_Gui *player;
   Evas_List *children;
   Evas_List *child;
-  Evas_List *sub_children;
   Evas_List *sub_child;
+  Evas_List *list;
   Evas_List *query = NULL;
   Etk_Widget *widget;
   int index;
 
   player   = data;
-  children =
-   etk_container_children_get(ETK_CONTAINER(player->media.search_root));
+  children = etk_container_children_get(ETK_CONTAINER(player->media.search_root));
 
   child = children;
   while (child)
@@ -1301,24 +1301,22 @@ cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
 
       if (ETK_IS_BOX(widget))
         {
-          sub_children =
-           etk_container_children_get(ETK_CONTAINER(evas_list_data(child)));
-          sub_child = sub_children;
+          /* Get the search row content */
+          sub_child = etk_container_children_get(ETK_CONTAINER(evas_list_data(child)));
+          list = sub_child;
 
-          index =
-           etk_combobox_active_item_nth_get
-           (ETK_COMBOBOX(evas_list_data(sub_child)));
+          /* Get the id of the tag to search */
+          index = etk_combobox_active_item_nth_get(ETK_COMBOBOX(evas_list_data(sub_child)));
           query = evas_list_append(query, (void *)index);
 
+          /* Get the search pattern */
           sub_child = evas_list_next(sub_child);
-          query =
-           evas_list_append
-           (query, etk_entry_text_get(ETK_ENTRY(evas_list_data(sub_child))));
+          query = evas_list_append(query, etk_entry_text_get(ETK_ENTRY(evas_list_data(sub_child))));
 
-          evas_list_free(sub_children);
+          evas_list_free(list);
         }
 
-      if (ETK_IS_TREE(widget)) { break; }
+      if (ETK_IS_TREE2(widget)) { break; }
 
       child = evas_list_next(child);
     } 

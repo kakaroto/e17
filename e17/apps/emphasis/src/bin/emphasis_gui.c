@@ -34,10 +34,10 @@ emphasis_clear(Emphasis_Gui *gui)
   
   player = gui->player;
 
-  etk_tree_clear(ETK_TREE(player->media.artist));
-  etk_tree_clear(ETK_TREE(player->media.album));
-  etk_tree_clear(ETK_TREE(player->media.track));
-  etk_tree_clear(ETK_TREE(player->media.pls));
+  etk_tree2_clear(ETK_TREE2(player->media.artist));
+  etk_tree2_clear(ETK_TREE2(player->media.album));
+  etk_tree2_clear(ETK_TREE2(player->media.track));
+  etk_tree2_clear(ETK_TREE2(player->media.pls));
 }
 
 /* TODO : documentation */
