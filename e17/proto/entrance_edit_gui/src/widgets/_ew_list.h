@@ -11,7 +11,7 @@ typedef struct _Entrance_List_Data {
 typedef struct _Entrance_List {
 	Etk_Widget *owner;
 	Etk_Widget *box;
-	Etk_Tree_Col *col;
+	Etk_Tree2_Col *col;
 } *Entrance_List;
 
 
