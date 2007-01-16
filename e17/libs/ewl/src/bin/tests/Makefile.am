@@ -51,6 +51,7 @@ SUBDIRS				= \
 	text \
 	text_editor \
 	theme \
+	toolbar \
 	tooltip \
 	tree \
 	tree2 \
