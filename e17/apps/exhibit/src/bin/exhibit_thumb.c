@@ -25,14 +25,21 @@ _ex_thumb_exe_exit(void *data, int type, void *event)
 
    if (ext)
      {
-	Etk_Tree_Row *row;
+	Etk_Tree2_Row *row;
 	
 	thumb->image = (char*)epsilon_thumb_file_get(thumb->ep);
-	row = etk_tree_append(ETK_TREE(thumb->e->cur_tab->itree), thumb->e->cur_tab->icol, thumb->image, thumb->name, NULL);
+	row = etk_tree2_row_append(ETK_TREE2(thumb->e->cur_tab->itree),
+				   NULL,
+				   thumb->e->cur_tab->icol, 
+				   thumb->image, NULL,
+				   thumb->name, NULL);
 	if(thumb->selected)
 	  {
-	     etk_tree_row_select(row);
-	     etk_tree_row_scroll_to(row, ETK_TRUE);	     
+	     etk_tree2_row_select(row);
+#if 0	     
+	     /* TODO: implement when done in Tree2 */
+	     etk_tree2_row_scroll_to(row, ETK_TRUE);
+#endif	     
 	  }
 	E_FREE(thumb->image);
 	E_FREE(thumb->name);

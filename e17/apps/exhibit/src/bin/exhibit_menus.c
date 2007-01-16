@@ -121,11 +121,11 @@ void
 _ex_menu_save_image_cb(Etk_Object *obj, void *data)
 {
    Exhibit      *e;
-   Etk_Tree_Row *r;
+   Etk_Tree2_Row *r;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+   r = etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree));
 
    if(!r) return;
    _ex_image_save(ETK_IMAGE(e->cur_tab->image));
@@ -434,14 +434,14 @@ _ex_menu_comments_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_add_to_fav_cb(Etk_Object *obj, void *data)
 {
-   Etk_Tree_Row *r;
+   Etk_Tree2_Row *r;
    char         *icol_string;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+   r = etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree));
       if(!r) return;
    
-   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+   etk_tree2_row_fields_get(r, etk_tree2_nth_col_get(ETK_TREE2(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree2_nth_col_get(ETK_TREE2(e->cur_tab->itree), 1),NULL);
    _ex_favorites_add(e, icol_string);
    //free(icol_string);
 }
@@ -449,14 +449,14 @@ _ex_menu_add_to_fav_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_remove_from_fav_cb(Etk_Object *obj, void *data)
 {
-   Etk_Tree_Row *r;
+   Etk_Tree2_Row *r;
    char         *icol_string;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+   r = etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree));
       if(!r) return;
    
-   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+   etk_tree2_row_fields_get(r, etk_tree2_nth_col_get(ETK_TREE2(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree2_nth_col_get(ETK_TREE2(e->cur_tab->itree), 1),NULL);
    _ex_favorites_del(e, icol_string);
    //free(icol_string);
 }
@@ -469,8 +469,8 @@ _ex_menu_go_to_fav_cb(Etk_Object *obj, void *data)
    _ex_slideshow_stop();
    E_FREE(e->cur_tab->dir);
    e->cur_tab->dir = strdup(e->options->fav_path);
-   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   etk_tree2_clear(ETK_TREE2(e->cur_tab->itree));
+   etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 

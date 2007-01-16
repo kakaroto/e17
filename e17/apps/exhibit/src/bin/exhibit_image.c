@@ -43,23 +43,27 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
      }
    else
      {	
-	Etk_Tree_Row *row;
+	Etk_Tree2_Row *row;
 	
 	if (ev->z > 0)
 	  {
-	     row = etk_tree_next_row_get(
-		       etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)),
-		       ETK_FALSE, ETK_FALSE);
-	     etk_tree_row_select(row);
-	     etk_tree_row_scroll_to(row, ETK_FALSE);
+	     row = etk_tree2_row_next_get(
+		   etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree)));
+	     etk_tree2_row_select(row);
+#if 0
+	     /* TODO: implement when this is in Tree2 */
+	     etk_tree2_row_scroll_to(row, ETK_FALSE);
+#endif	     
 	  }
 	else
 	  {
-	     row = etk_tree_prev_row_get(
-		       etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)),
-		       ETK_FALSE, ETK_FALSE);
-	     etk_tree_row_select(row);	     
-	     etk_tree_row_scroll_to(row, ETK_FALSE);	     
+	     row = etk_tree2_row_prev_get(
+		       etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree)));
+	     etk_tree2_row_select(row);
+#if 0
+	     /* TODO: implement when this is in Tree2 */
+	     etk_tree2_row_scroll_to(row, ETK_FALSE);	
+#endif	     
 	  }
      }
    
@@ -1225,14 +1229,18 @@ PSEUDO:
 Etk_Bool
 _ex_image_is_favorite(Exhibit *e)
 {
-   Etk_Tree_Row *r;
+   Etk_Tree2_Row *r;
    char         *icol_string;
    char          path[PATH_MAX];
       
-   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+   r = etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree));
    if(!r) return ETK_FALSE;
    
-   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+   etk_tree2_row_fields_get(r, 
+			    etk_tree2_nth_col_get(ETK_TREE2(e->cur_tab->itree),
+						  0), 
+			    NULL, NULL, &icol_string, 
+			    NULL);
    snprintf(path, sizeof(path), "%s/%s", e->options->fav_path, icol_string);
    if(ecore_file_exists(path))     
      return ETK_TRUE;

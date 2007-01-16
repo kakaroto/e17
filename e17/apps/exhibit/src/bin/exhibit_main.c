@@ -10,12 +10,58 @@ Exhibit *e;
 Evas_List  *event_handlers;
 
 static void _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path);
-static int _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
+static int _ex_main_dtree_compare_cb(Etk_Tree2 *tree, Etk_Tree2_Row *row1, Etk_Tree2_Row *row2, Etk_Tree2_Col *col, void *data);
 static void _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
 static void _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
 static Etk_Bool _ex_main_window_deleted_cb(void *data);
 static void _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _ex_main_window_resize_cb(Etk_Object *object, void *data);
+
+
+/*******
+ * We are defining these here until Tree2 has them
+ *******/
+Etk_Tree2_Row *etk_tree2_selected_row_get(Etk_Tree2 *tree)
+{
+   if (!tree || !tree->last_selected_row || !tree->last_selected_row->selected)
+     return NULL;
+   return tree->last_selected_row;
+}
+
+Evas_List *etk_tree2_selected_rows_get(Etk_Tree2 *tree)
+{
+   Evas_List *row_list = NULL;
+   Etk_Tree2_Row *iter;
+   
+   for (iter = etk_tree2_first_row_get(tree); 
+	iter; 
+	iter = etk_tree2_row_walk_next(iter, ETK_TRUE))
+     if (iter->selected == ETK_TRUE) 
+       row_list = evas_list_append(row_list, iter);
+   
+   return row_list;
+}
+
+int etk_tree2_num_rows_get(Etk_Tree2 *tree)
+{
+   return tree->total_rows;
+}
+
+int etk_tree2_row_num_get(Etk_Tree2 *tree, Etk_Tree2_Row *row)
+{
+   int num = 0;
+   Etk_Tree2_Row *iter;
+   
+   for (iter = etk_tree2_first_row_get(tree);
+	iter;
+	iter = etk_tree2_row_walk_next(iter, ETK_TRUE))
+     {
+	if (iter == row)
+	  return num;
+	num++;	
+     }
+   return num;
+}
 
 void
 _ex_main_statusbar_zoom_update(Exhibit *e)
@@ -141,15 +187,15 @@ _ex_main_image_set(Exhibit *e, char *image)
 }
 
 static int
-_ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+_ex_main_dtree_compare_cb(Etk_Tree2 *tree, Etk_Tree2_Row *row1, Etk_Tree2_Row *row2, Etk_Tree2_Col *col, void *data)
 {
    char *dir1, *dir2;
    
    if (!row1 || !row2 || !col)
       return 0;
    
-   etk_tree_row_fields_get(row1, col, NULL, NULL, &dir1, NULL);
-   etk_tree_row_fields_get(row2, col, NULL, NULL, &dir2, NULL);
+   etk_tree2_row_fields_get(row1, col, NULL, NULL, &dir1, NULL);
+   etk_tree2_row_fields_get(row2, col, NULL, NULL, &dir2, NULL);
    return strcasecmp(dir1, dir2);
 }
 
@@ -165,8 +211,8 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
      {
 	snprintf(back, PATH_MAX, "..");
-	etk_tree_append(ETK_TREE(e->cur_tab->dtree), e->cur_tab->dcol, 
-	      etk_theme_icon_get(), "actions/go-up_16", back, NULL);
+	etk_tree2_row_append(ETK_TREE2(e->cur_tab->dtree), NULL, e->cur_tab->dcol,
+	              etk_theme_icon_get(), "actions/go-up_16", back, NULL);
      }
 
    if (e->cur_tab->monitor)
@@ -179,8 +225,8 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    if ((dir = opendir(".")) == NULL)
      return;
 
-   etk_tree_freeze(ETK_TREE(e->cur_tab->itree));
-   etk_tree_freeze(ETK_TREE(e->cur_tab->dtree));
+   etk_tree2_freeze(ETK_TREE2(e->cur_tab->itree));
+   etk_tree2_freeze(ETK_TREE2(e->cur_tab->dtree));
    
    getcwd(e->cur_tab->cur_path, PATH_MAX);
    if (strlen(e->cur_tab->cur_path) < PATH_MAX - 2)
@@ -208,7 +254,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	     if(stat(image, &st) == -1) continue;
 	     if(S_ISDIR(st.st_mode))
 	       {
-		  etk_tree_append(ETK_TREE(e->cur_tab->dtree), e->cur_tab->dcol,
+		  etk_tree2_row_append(ETK_TREE2(e->cur_tab->dtree), NULL, e->cur_tab->dcol,
 			etk_theme_icon_get(),
 			"places/folder_16",
 			dir_entry->d_name, NULL);
@@ -230,23 +276,27 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	_ex_main_itree_add(imagereal, selected_file);	
      }
 
-   etk_tree_thaw(ETK_TREE(e->cur_tab->itree));
-   etk_tree_thaw(ETK_TREE(e->cur_tab->dtree));
+   etk_tree2_thaw(ETK_TREE2(e->cur_tab->itree));
+   etk_tree2_thaw(ETK_TREE2(e->cur_tab->dtree));
 
-   /* XXX Doing the sorting here is ofc very inefficient, but it 
-      makes the sort work like it should at least /Martin */
-   if (e->options->default_sort == EX_SORT_BY_DATE)
-     _ex_sort_date_cb(NULL, NULL);
-   else if (e->options->default_sort == EX_SORT_BY_SIZE)
-     _ex_sort_size_cb(NULL, NULL);
-   else if (e->options->default_sort == EX_SORT_BY_NAME)
-     _ex_sort_name_cb(NULL, NULL);
-   else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
-     _ex_sort_resol_cb(NULL, NULL);
+   if (update == EX_TREE_UPDATE_FILES)
+     {
+	if (e->options->default_sort == EX_SORT_BY_DATE)
+	  _ex_sort_date_cb(NULL, NULL);
+	else if (e->options->default_sort == EX_SORT_BY_SIZE)
+	  _ex_sort_size_cb(NULL, NULL);
+	else if (e->options->default_sort == EX_SORT_BY_NAME)
+	  _ex_sort_name_cb(NULL, NULL);
+	else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
+	  _ex_sort_resol_cb(NULL, NULL);
+     }
 
+#if 0  
+   /* TODO: implement this when tree2 has sorting */
    if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
-	etk_tree_sort(ETK_TREE(e->cur_tab->dtree), _ex_main_dtree_compare_cb, 
-	      ETK_TRUE, e->cur_tab->dcol, NULL);
+     etk_tree2_sort(ETK_TREE2(e->cur_tab->dtree), _ex_main_dtree_compare_cb, 
+		    ETK_TRUE, e->cur_tab->dcol, NULL);
+#endif   
 
    if (!e->cur_tab->monitor)
      {
@@ -267,7 +317,7 @@ void
 _ex_main_itree_add(const char *file, const char *selected_file)
 {
    Epsilon *ep;
-   Etk_Tree_Row *row;
+   Etk_Tree2_Row *row;
 
    if (!file)
      {
@@ -286,15 +336,20 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	char *thumb;
 
 	thumb = (char*) epsilon_thumb_file_get(ep);
-	row = etk_tree_append(ETK_TREE(e->cur_tab->itree), e->cur_tab->icol, 
-	      thumb, basename((char *) file), NULL);
+	row = etk_tree2_row_append(ETK_TREE2(e->cur_tab->itree), NULL, 
+				   e->cur_tab->icol,
+				   thumb, NULL, 
+				   basename((char *) file), NULL);
 
 	if (selected_file)
 	  {
 	     if(!strcmp(selected_file, file))
 	       {
-		  etk_tree_row_select(row);
-		  etk_tree_row_scroll_to(row, ETK_TRUE);
+		  etk_tree2_row_select(row);
+#if 0
+		  /* TODO: Implement this when Tree2 has support */
+		  etk_tree2_row_scroll_to(row, ETK_TRUE);
+#endif
 	       }
 	  }
 	
@@ -341,16 +396,16 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 	switch (event)
 	  {
 	   case ECORE_FILE_EVENT_CREATED_DIRECTORY:
-	      etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	      etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
 	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
 	      break;
 	   case ECORE_FILE_EVENT_DELETED_DIRECTORY:
-	      etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	      etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
 	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
 	      break;
 	   case ECORE_FILE_EVENT_DELETED_SELF:
-	      etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-	      etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	      etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
+	      etk_tree2_clear(ETK_TREE2(e->cur_tab->itree));
 	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 	      break;
 	   case ECORE_FILE_EVENT_MODIFIED:
@@ -358,7 +413,7 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 	      break;
 	   case ECORE_FILE_EVENT_DELETED_FILE:
 	      /* TODO: remove the correct item from tree, don't refresh all */
-	      etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	      etk_tree2_clear(ETK_TREE2(e->cur_tab->itree));
 	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
 	      break;
 	   case ECORE_FILE_EVENT_CREATED_FILE:
@@ -451,8 +506,8 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
      {
 	_ex_slideshow_stop(e);
         e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
-        etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-        etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+        etk_tree2_clear(ETK_TREE2(e->cur_tab->itree));
+        etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
         _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
      }
 }
@@ -461,8 +516,8 @@ static void
 _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data)
 {
    e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
-   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   etk_tree2_clear(ETK_TREE2(e->cur_tab->itree));
+   etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 
@@ -499,14 +554,14 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	  }
 	else if(!strcmp(ev->key, "d"))
 	  {
-	     Etk_Tree_Row *r;
+	     Etk_Tree2_Row *r;
 	     char         *icol_string;
 	     
-	     r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+	     r = etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree));
 	     if(!r) return;
 	     
-	     etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), 
-		   NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1), NULL);
+	     etk_tree2_row_fields_get(r, etk_tree2_nth_col_get(ETK_TREE2(e->cur_tab->itree), 0), 
+		   NULL, &icol_string, etk_tree2_nth_col_get(ETK_TREE2(e->cur_tab->itree), 1), NULL);
 	     _ex_favorites_add(e, icol_string);
 	  }
 	else if(!strcmp(ev->key, "x"))
@@ -659,8 +714,8 @@ _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 	
 	E_FREE(e->cur_tab->dir);
 	e->cur_tab->dir = strdup(dir);
-	etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-	etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	etk_tree2_clear(ETK_TREE2(e->cur_tab->itree));
+	etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
 	_ex_main_populate_files(ecore_file_get_file(file), EX_TREE_UPDATE_ALL);
 	if (ecore_file_exists(file) && !ecore_file_is_dir(file))
 	  _ex_main_image_set(e, file);
@@ -971,7 +1026,7 @@ _ex_main_window_show(char *dir, int fullscreen)
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);
    e->sort_bar = etk_statusbar_new();
-   etk_statusbar_message_push(ETK_STATUSBAR(e->sort_bar), "Sorting", 0);
+   etk_statusbar_message_push(ETK_STATUSBAR(e->sort_bar), "Sort by date", 0);
    etk_statusbar_has_resize_grip_set(ETK_STATUSBAR(e->sort_bar), ETK_FALSE);
    etk_box_append(ETK_BOX(e->vbox), e->hbox, ETK_BOX_END, ETK_BOX_NONE, 0);
    etk_box_append(ETK_BOX(e->hbox), e->sort_bar, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -980,10 +1035,10 @@ _ex_main_window_show(char *dir, int fullscreen)
 
 	menu = etk_menu_new();
 	etk_signal_connect("mouse_down", ETK_OBJECT(e->sort_bar), ETK_CALLBACK(_ex_sort_label_mouse_down_cb), menu);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by name"), ETK_STOCK_TEXT_X_GENERIC, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_sort_name_cb), NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by date"), ETK_STOCK_OFFICE_CALENDAR, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_sort_date_cb), NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by size"), ETK_STOCK_DRIVE_HARDDISK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_sort_size_cb), NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by resolution"), ETK_STOCK_UTILITIES_SYSTEM_MONITOR, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_sort_resol_cb), NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by name"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by date"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by resolution"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);	
 	_ex_menu_item_new(EX_MENU_ITEM_CHECK, _("Ascending"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
      }
@@ -1033,7 +1088,7 @@ main(int argc, char *argv[])
 	     printf("  %s <image>\n", PACKAGE);
 	     printf("  %s <path>\n", PACKAGE);
 	     printf("  %s <url>\n\n", PACKAGE);
-	     printf("  -f, --fullscreen\t start Exhibit in fullscreen mode\n");
+	     printf("  -f, --fullscreen\t\t start Exhibit in fullscreen mode\n");
 	     printf("  -h, --help\t\t display this help and exit\n");
 	     printf("  -v, --version\t\t output version information and exit\n\n");
 	     exit(1);
@@ -1064,7 +1119,7 @@ main(int argc, char *argv[])
    
    epsilon_init();
    if(argc > 1)
-     _ex_main_window_show(argv[(fullscreen &&(argc > 2)) ? 2 : 1], fullscreen);
+     _ex_main_window_show(argv[1], fullscreen);
    else
      _ex_main_window_show(NULL, fullscreen);   
      

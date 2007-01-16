@@ -1,8 +1,8 @@
-#ifndef _EX_MODEL_WOBBLY_H
-#define _EX_MODEL_WOBBLY_H
+#ifndef _ETK_TREE2_MODEL_WOBBLY_H_
+#define _ETK_TREE2_MODEL_WOBBLY_H_
 
-Etk_Tree_Model *_ex_tree_model_wobbly_new(Etk_Tree *tree, Etk_Tree_Model_Image_Type icon_type);
-void _ex_tree_model_wobbly_icon_width_set(Etk_Tree_Model *model, int icon_width);
-int _ex_tree_model_wobbly_icon_width_get(Etk_Tree_Model *model);
+#include <Etk.h>
+
+Etk_Tree2_Model *etk_tree2_model_wobbly_new(void);
 
 #endif
