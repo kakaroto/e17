@@ -44,9 +44,9 @@ convert_rowlist_in_playlist_with_file(Evas_List *rowlist)
     {
       row = evas_list_data(rowlist);
 
-      data = malloc(sizeof(Emphasis_Data));
+      data = calloc(1, sizeof(Emphasis_Data));
       data->type = MPD_DATA_TYPE_SONG;
-      data->song = malloc(sizeof(Emphasis_Song));
+      data->song = calloc(1, sizeof(Emphasis_Song));
       data->song->file = strdup(etk_tree2_row_data_get(row));
 
       list = evas_list_append(list, data);

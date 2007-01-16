@@ -1142,7 +1142,7 @@ cb_media_pls_load_clicked(Etk_Object *object, void *data)
   player = data;
   col = etk_tree2_nth_col_get(ETK_TREE2(player->media.pls_list), 0);
   row = etk_tree2_selected_row_get(ETK_TREE2(player->media.pls_list));
-  etk_tree2_row_fields_get(row, col, &playlist_name, NULL);
+  etk_tree2_row_fields_get(row, ETK_FALSE, col, &playlist_name, NULL);
 
   mpc_playlist_clear();
   etk_tree2_multiple_select_set(ETK_TREE2(player->media.pls_content), ETK_TRUE);
