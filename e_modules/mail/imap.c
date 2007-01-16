@@ -286,10 +286,10 @@ _mail_imap_server_data (void *data, int type, void *event)
 	  if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	    _mail_start_exe (ic->config);
 
-	  is->current = is->clients->next->data;
+	  is->current = is->clients->next;
 	  if (is->current)
 	    {
-	      if (is->current)
+	      if (is->current->data)
 		  is->state = IMAP_STATE_SERVER_READY;
 	      else
 		  _mail_imap_server_logout (is);
