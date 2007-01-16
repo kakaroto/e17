@@ -20,7 +20,7 @@ static void _e_theme_make_default_cb(Etk_Object *object, void *data);
 static void _e_theme_ok_cb(Etk_Object *object, void *data);
 static void _e_theme_apply_cb(Etk_Object *object, void *data);
 static void _e_theme_cancel_cb(Etk_Object *object, void *data);
-static void _e_theme_chooser_item_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _e_theme_chooser_item_selected_cb(Etk_Object *object, Etk_Tree2_Row *row, void *data);
 static void _e_theme_apply_now(E_Sticky *s);
     
 void
@@ -39,9 +39,9 @@ _e_theme_chooser_show(E_Sticky *s)
    Etk_Widget *frame;
    Etk_Widget *button;
    Etk_Widget *vbox;
-   Etk_Tree_Col *col1;
-   Etk_Tree_Row *row;
-   Etk_Tree_Model *model;
+   Etk_Tree2_Col *col1;
+   Etk_Tree2_Row *row;
+   Etk_Tree2_Model *model;
    
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Estickies - Theme Chooser");
@@ -59,17 +59,19 @@ _e_theme_chooser_show(E_Sticky *s)
    etk_widget_size_request_set(preview, 320, 240);
       
    /* tree to hold the thumbs */
-   thumbs = etk_tree_new();
+   thumbs = etk_tree2_new();
    etk_widget_size_request_set(thumbs, 180, 240);
-   etk_tree_mode_set(ETK_TREE(thumbs), ETK_TREE_MODE_LIST);
-   etk_tree_multiple_select_set(ETK_TREE(thumbs), ETK_FALSE);
-   model = etk_tree_model_icon_text_new(ETK_TREE(thumbs), ETK_TREE_FROM_EDJE);
-   etk_tree_model_icon_text_icon_width_set(model, 80);
-   col1 = etk_tree_col_new(ETK_TREE(thumbs), "Themes", model, 150);
-   etk_tree_row_height_set(ETK_TREE(thumbs), 60);   
-   etk_tree_headers_visible_set(ETK_TREE(thumbs), ETK_FALSE);
+   etk_tree2_mode_set(ETK_TREE2(thumbs), ETK_TREE2_MODE_LIST);
+   etk_tree2_multiple_select_set(ETK_TREE2(thumbs), ETK_FALSE);
+   col1 = etk_tree2_col_new(ETK_TREE2(thumbs), "Themes", 150, 0.0);
+   model = etk_tree2_model_image_new();
+   etk_tree2_model_image_width_set(model, 80, 0.5);
+   etk_tree2_col_model_add(col1, model);
+   etk_tree2_col_model_add(col1, etk_tree2_model_text_new());
+   etk_tree2_rows_height_set(ETK_TREE2(thumbs), 60);   
+   etk_tree2_headers_visible_set(ETK_TREE2(thumbs), ETK_FALSE);
    etk_signal_connect("row_selected", ETK_OBJECT(thumbs), ETK_CALLBACK(_e_theme_chooser_item_selected_cb), s);
-   etk_tree_build(ETK_TREE(thumbs));   
+   etk_tree2_build(ETK_TREE2(thumbs));   
    
    /* scan for themes and add them to the list */
    themes = ecore_file_ls(PACKAGE_DATA_DIR"/themes");
@@ -83,9 +85,9 @@ _e_theme_chooser_show(E_Sticky *s)
 	
 	theme_no_ext = ecore_file_strip_ext(theme);
 	snprintf(theme_file, sizeof(theme_file), PACKAGE_DATA_DIR"/themes/%s", theme);
-	row = etk_tree_append(ETK_TREE(thumbs), col1, theme_file, "preview", theme_no_ext, NULL);
+	row = etk_tree2_row_append(ETK_TREE2(thumbs), NULL, col1, theme_file, "preview", theme_no_ext, NULL);
 	if(i == 0)
-	  etk_tree_row_select(row);
+	  etk_tree2_row_select(row);
 	++i;
 	free(theme_no_ext);
      }
@@ -144,16 +146,16 @@ _e_theme_chooser_show(E_Sticky *s)
 }
 
 static void 
-_e_theme_chooser_item_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+_e_theme_chooser_item_selected_cb(Etk_Object *object, Etk_Tree2_Row *row, void *data)
 {
    E_Sticky *s;
-   Etk_Tree *tree;
+   Etk_Tree2 *tree;
    char *icol_string;
    
    s = data;
-   tree = ETK_TREE(object);
+   tree = ETK_TREE2(object);
    
-   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol_string, NULL, NULL, NULL);
+   etk_tree2_row_fields_get(row, etk_tree2_nth_col_get(tree, 0), &icol_string, NULL, NULL, NULL);
    etk_image_set_from_edje(ETK_IMAGE(preview), icol_string, "preview");   
 }
 
@@ -203,17 +205,17 @@ _e_theme_cancel_cb(Etk_Object *object, void *data)
 static void
 _e_theme_apply_now(E_Sticky *s)
 {
-   Etk_Tree_Row *row;
+   Etk_Tree2_Row *row;
    char *icol_string;
       
    if(!_e_sticky_exists(s))
      return;
    
-   row = etk_tree_selected_row_get(ETK_TREE(thumbs));
+   row = etk_tree2_selected_row_get(ETK_TREE2(thumbs));
    if(!row)
      return;
    
-   etk_tree_row_fields_get(row, etk_tree_nth_col_get(ETK_TREE(thumbs), 0), 
+   etk_tree2_row_fields_get(row, etk_tree2_nth_col_get(ETK_TREE2(thumbs), 0), 
 			   &icol_string, NULL, NULL, NULL);   
    
    if(_e_theme_apply == STICKY_ONLY)
