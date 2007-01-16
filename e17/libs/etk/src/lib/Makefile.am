@@ -81,8 +81,6 @@ etk_tooltips.h \
 etk_toplevel.h \
 etk_tree.h \
 etk_tree_model.h \
-etk_tree2.h \
-etk_tree2_model.h \
 etk_type.h \
 etk_types.h \
 etk_utils.h \
@@ -155,8 +153,6 @@ etk_tooltips.c \
 etk_toplevel.c \
 etk_tree.c \
 etk_tree_model.c \
-etk_tree2.c \
-etk_tree2_model.c \
 etk_type.c \
 etk_utils.c \
 etk_viewport.c \

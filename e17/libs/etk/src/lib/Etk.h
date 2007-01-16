@@ -76,8 +76,6 @@ extern "C" {
 #include "etk_toplevel.h"
 #include "etk_tree.h"
 #include "etk_tree_model.h"
-#include "etk_tree2.h"
-#include "etk_tree2_model.h"
 #include "etk_viewport.h"
 #include "etk_widget.h"
 #include "etk_window.h"

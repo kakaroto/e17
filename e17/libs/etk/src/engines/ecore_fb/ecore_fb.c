@@ -11,7 +11,7 @@
 
 /* TODO: Debug */
 #include <Ecore_X.h>
-#define USE_X11 1
+#define USE_X11 0
 
 #define WM_THEME_FILE   (PACKAGE_DATA_DIR "/wm/default.edj")
 

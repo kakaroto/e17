@@ -1,9 +1,9 @@
 group {
    name: "etk/entry";
-   min: 120 20;
+   min: 120 22;
    data {
       item: "highlight_image_color" "242 222 181 255";	
-      item: "inner_part_margin" 2;	/* Margin between images and the editable */
+      item: "inner_part_margin" 5;	/* Margin between images and the editable */
    }
    parts {
       part {

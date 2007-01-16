@@ -175,7 +175,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
       /* TODO: compiler warning? */
       strftime(mod_time_string, 128, "%x", mod_time2);
       
-      etk_tree_append(ETK_TREE(filechooser_widget->files_tree),
+      etk_tree_row_append(ETK_TREE(filechooser_widget->files_tree), NULL,
          filechooser_widget->files_name_col, etk_theme_icon_get(), "places/folder_16", filename,
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
@@ -213,7 +213,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
       /* TODO: compiler warning? */
       strftime(mod_time_string, 128, "%x", mod_time2);
       
-      etk_tree_append(ETK_TREE(filechooser_widget->files_tree),
+      etk_tree_row_append(ETK_TREE(filechooser_widget->files_tree), NULL,
          filechooser_widget->files_name_col, etk_theme_icon_get(), icon ? icon : "mimetypes/text-x-generic_16", filename,
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
@@ -256,19 +256,17 @@ const char *etk_filechooser_widget_selected_file_get(Etk_Filechooser_Widget *fil
  */
 Evas_List *etk_filechooser_widget_selected_files_get(Etk_Filechooser_Widget *filechooser_widget)
 {
-    char *filename;
-    Evas_List *files = NULL;
-    Evas_List *selected_rows;
-    Evas_List *l;
+   char *filename;
+   Etk_Tree_Row *row;
+   Evas_List *files = NULL;
 
-    selected_rows = etk_tree_selected_rows_get(ETK_TREE(filechooser_widget->files_tree));
-    for(l = selected_rows; l; l = l->next)
-     {
-       etk_tree_row_fields_get(l->data, filechooser_widget->files_name_col, NULL, NULL, &filename, NULL);
-       files = evas_list_append(files, filename);
-     }
+   for (row = etk_tree_first_row_get(ETK_TREE(filechooser_widget->files_tree)); row; row = etk_tree_row_next_get(row))
+   {
+      etk_tree_row_fields_get(row, filechooser_widget->files_name_col, NULL, NULL, &filename, NULL);
+      files = evas_list_append(files, filename);
+   }
 
-    return files;
+   return files;
 }
 
 /**
@@ -355,7 +353,9 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    fcw->places_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->places_tree, 180, 180);
    etk_paned_child1_set(ETK_PANED(vpaned), fcw->places_tree, ETK_TRUE);
-   fcw->places_col = etk_tree_col_new(ETK_TREE(fcw->places_tree), _("Places"), etk_tree_model_icon_text_new(ETK_TREE(fcw->places_tree), ETK_TREE_FROM_EDJE), 120);
+   fcw->places_col = etk_tree_col_new(ETK_TREE(fcw->places_tree), _("Places"), 120, 0.0);
+   etk_tree_col_model_add(fcw->places_col, etk_tree_model_image_new());
+   etk_tree_col_model_add(fcw->places_col, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(fcw->places_tree));
    etk_widget_show(fcw->places_tree);
    etk_widget_internal_set(fcw->places_tree, ETK_TRUE);
@@ -364,7 +364,9 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    fcw->fav_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->fav_tree, 180, 180);
    etk_paned_child2_set(ETK_PANED(vpaned), fcw->fav_tree, ETK_TRUE);
-   fcw->fav_col = etk_tree_col_new(ETK_TREE(fcw->fav_tree), _("Favorites"), etk_tree_model_icon_text_new(ETK_TREE(fcw->fav_tree), ETK_TREE_FROM_EDJE), 120);
+   fcw->fav_col = etk_tree_col_new(ETK_TREE(fcw->fav_tree), _("Favorites"), 120, 0.0);
+   etk_tree_col_model_add(fcw->fav_col, etk_tree_model_image_new());
+   etk_tree_col_model_add(fcw->fav_col, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(fcw->fav_tree));
    etk_widget_show(fcw->fav_tree);
    etk_widget_internal_set(fcw->fav_tree, ETK_TRUE);
@@ -373,9 +375,12 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    fcw->files_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->files_tree, 400, 120);
    etk_paned_child2_set(ETK_PANED(fcw->hpaned), fcw->files_tree, ETK_TRUE);
-   fcw->files_name_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), _("Filename"), etk_tree_model_icon_text_new(ETK_TREE(fcw->files_tree), ETK_TREE_FROM_EDJE), 100);
+   fcw->files_name_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), _("Filename"), 100, 0.0);
+   etk_tree_col_model_add(fcw->files_name_col, etk_tree_model_image_new());
+   etk_tree_col_model_add(fcw->files_name_col, etk_tree_model_text_new());
    etk_tree_col_expand_set(fcw->files_name_col, ETK_TRUE);
-   fcw->files_date_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), _("Date"), etk_tree_model_text_new(ETK_TREE(fcw->files_tree)), 60);
+   fcw->files_date_col = etk_tree_col_new(ETK_TREE(fcw->files_tree), _("Date"), 60, 0.0);
+   etk_tree_col_model_add(fcw->files_date_col, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(fcw->files_tree));
    etk_widget_show(fcw->files_tree);
    etk_widget_internal_set(fcw->files_tree, ETK_TRUE);
@@ -535,16 +540,19 @@ static void _etk_filechooser_widget_places_tree_fill(Etk_Filechooser_Widget *fcw
    
    etk_tree_freeze(ETK_TREE(fcw->places_tree));
    
-   row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_get(), "actions/go-up_16", "..", NULL);
+   row = etk_tree_row_append(ETK_TREE(fcw->places_tree), NULL,
+      fcw->places_col, etk_theme_icon_get(), "actions/go-up_16", "..", NULL);
    etk_tree_row_data_set_full(row, strdup(".."), free);
    
    if ((home = getenv("HOME")))
    {
-      row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_get(), "places/user-home_16", _("Home"), NULL);
+      row = etk_tree_row_append(ETK_TREE(fcw->places_tree), NULL,
+         fcw->places_col, etk_theme_icon_get(), "places/user-home_16", _("Home"), NULL);
       etk_tree_row_data_set_full(row, strdup(home), free);
    }
    
-   row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_get(), "devices/computer_16", _("Root"), NULL);
+   row = etk_tree_row_append(ETK_TREE(fcw->places_tree), NULL,
+      fcw->places_col, etk_theme_icon_get(), "devices/computer_16", _("Root"), NULL);
    etk_tree_row_data_set_full(row, strdup("/"), free);
    
    /* Adds the mount points */
@@ -574,7 +582,8 @@ static void _etk_filechooser_widget_places_tree_fill(Etk_Filechooser_Widget *fcw
             if (!fs_supported)
                continue;
             
-            row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_get(), "devices/drive-harddisk_16", ecore_file_get_file(mount_point->mnt_dir), NULL);
+            row = etk_tree_row_append(ETK_TREE(fcw->places_tree), NULL,
+               fcw->places_col, etk_theme_icon_get(), "devices/drive-harddisk_16", ecore_file_get_file(mount_point->mnt_dir), NULL);
             etk_tree_row_data_set_full(row, strdup(mount_point->mnt_dir), free);
          }
          endmntent(mtab);
@@ -607,7 +616,8 @@ static void _etk_filechooser_widget_places_tree_fill(Etk_Filechooser_Widget *fcw
          if (!fs_supported)
             continue;
          
-         row = etk_tree_append(ETK_TREE(fcw->places_tree), fcw->places_col, etk_theme_icon_get(), "devices/drive-harddisk_16", ecore_file_get_file(mount_points[i].f_mntonname), NULL);
+         row = etk_tree_row_append(ETK_TREE(fcw->places_tree), NULL,
+            fcw->places_col, etk_theme_icon_get(), "devices/drive-harddisk_16", ecore_file_get_file(mount_points[i].f_mntonname), NULL);
          etk_tree_row_data_set_full(row, strdup(mount_points[i].f_mntonname), free);
       }
    }
@@ -641,7 +651,8 @@ static void _etk_filechooser_widget_favs_tree_fill(Etk_Filechooser_Widget *fcw)
       
       if (sscanf(line, "file://%s", fav) == 1)
       {
-         row = etk_tree_append(ETK_TREE(fcw->fav_tree), fcw->fav_col, etk_theme_icon_get(), "places/folder_16", ecore_file_get_file(fav), NULL);
+         row = etk_tree_row_append(ETK_TREE(fcw->fav_tree), NULL,
+            fcw->fav_col, etk_theme_icon_get(), "places/folder_16", ecore_file_get_file(fav), NULL);
          etk_tree_row_data_set_full(row, strdup(fav), free);
       }
    }

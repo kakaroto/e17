@@ -68,11 +68,6 @@ static Etk_Test_Example _etk_test_examples[] =
       ETK_TEST_ADVANCED_WIDGET
    },
    {
-      "Tree2",
-      etk_test_tree2_window_create,
-      ETK_TEST_ADVANCED_WIDGET
-   },
-   {
       "Paned",
       etk_test_paned_window_create,
       ETK_TEST_CONTAINER

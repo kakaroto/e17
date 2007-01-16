@@ -53,16 +53,18 @@ void etk_prefs_show()
    etk_widget_size_request_set(tree, 180, 240);
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_FALSE);
-   etk_tree_row_height_set(ETK_TREE(tree), 52);   
-   col = etk_tree_col_new(ETK_TREE(tree), _("Category"), etk_tree_model_icon_text_new(ETK_TREE(tree), ETK_TREE_FROM_EDJE), 90);
+   etk_tree_rows_height_set(ETK_TREE(tree), 52);
+   
+   col = etk_tree_col_new(ETK_TREE(tree), _("Category"), 90, 0.0);
+   etk_tree_col_model_add(col, etk_tree_model_image_new());
+   etk_tree_col_model_add(col, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(tree));
-   etk_tree_freeze(ETK_TREE(tree));
+   
    etk_prefs_standard_item_add(tree, "apps/preferences-desktop-theme_48", _("Theme"), NULL);
    etk_prefs_standard_item_add(tree, "apps/preferences-desktop-font_48", _("Fonts"), NULL);
    etk_prefs_standard_item_add(tree, "apps/preferences-desktop-locale_48", _("Language"), NULL);
    etk_prefs_standard_item_add(tree, "apps/system-users_48", _("User Preferences"), NULL);
-   etk_prefs_standard_item_add(tree, "categories/preferences-system_48", _("General"), NULL);   
-   etk_tree_thaw(ETK_TREE(tree));
+   etk_prefs_standard_item_add(tree, "categories/preferences-system_48", _("General"), NULL);
    
    /* paned to hold the tree on one side and the pref's contents on the other */
    paned = etk_hpaned_new();
@@ -95,23 +97,22 @@ void etk_prefs_standard_item_add(Etk_Widget *tree,
    Etk_Tree_Row *row;
    
    file = etk_theme_icon_get();   
-   row = etk_tree_append(ETK_TREE(tree), etk_tree_nth_col_get(ETK_TREE(tree),
-							      0),
-                         file, icon, label, NULL);
+   row = etk_tree_row_append(ETK_TREE(tree), NULL,
+      etk_tree_nth_col_get(ETK_TREE(tree), 0), file, icon, label,
+      NULL);
    i++;
+   
    j = malloc(sizeof(int));
    *j = i;
-   etk_tree_row_data_set(row, j);
+   etk_tree_row_data_set_full(row, j, free);
 }
 
 static void _etk_prefs_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
 {  
-   int *num = NULL;
+   int *num;
    
-   num = etk_tree_row_data_get(row);
-   
-   if (num)
-     etk_notebook_current_page_set(ETK_NOTEBOOK(data), *num);
+   if ((num = etk_tree_row_data_get(row)))
+      etk_notebook_current_page_set(ETK_NOTEBOOK(data), *num);
 }
 
 static Etk_Widget *_etk_prefs_theme_tab_create()
@@ -146,10 +147,12 @@ static Etk_Widget *_etk_prefs_theme_tab_create()
    etk_widget_size_request_set(theme_list, 180, 240);
    etk_tree_mode_set(ETK_TREE(theme_list), ETK_TREE_MODE_LIST);
    etk_tree_multiple_select_set(ETK_TREE(theme_list), ETK_FALSE);
-   col1 = etk_tree_col_new(ETK_TREE(theme_list), "Themes", etk_tree_model_text_new(ETK_TREE(theme_list)), 150);
-   etk_tree_row_height_set(ETK_TREE(theme_list), 60);   
+   etk_tree_rows_height_set(ETK_TREE(theme_list), 60);   
    etk_tree_headers_visible_set(ETK_TREE(theme_list), ETK_FALSE);
    etk_signal_connect("row_selected", ETK_OBJECT(theme_list), ETK_CALLBACK(_etk_prefs_theme_row_selected_cb), preview);
+   
+   col1 = etk_tree_col_new(ETK_TREE(theme_list), "Themes", 150, 0.0);
+   etk_tree_col_model_add(col1, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(theme_list));   
    
    /* scan for themes and add them to the list */
@@ -159,7 +162,7 @@ static Etk_Widget *_etk_prefs_theme_tab_create()
         const char *widget_theme = etk_config_widget_theme_get();
 	
 	theme = l->data;
-        row = etk_tree_append(ETK_TREE(theme_list), col1, theme,  NULL);
+        row = etk_tree_row_append(ETK_TREE(theme_list), NULL, col1, theme,  NULL);
 	if (widget_theme)
         if (!strcmp(theme, widget_theme))
 	    etk_tree_row_select(row);
