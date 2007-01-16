@@ -19,7 +19,7 @@ static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data);
 static void _gui_fm_cancel_clicked_cb(Etk_Object *obj, void *data);
 static Etk_Bool _gui_main_window_deleted_cb(void *data);
 static void _gui_open_edje_file_cb(Gui *gui);
-static void _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree_Row *row,
+static void _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree2_Row *row,
       void *data);
 static void _gui_send_clicked_cb(Etk_Object *obj, void *data);
 
@@ -33,7 +33,7 @@ void main_window_show(char *file)
    Etk_Widget *paned;
    Etk_Widget *vpaned;
    Etk_Widget *scrollview;
-   Etk_Tree_Col *col, *col2;
+   Etk_Tree2_Col *col, *col2;
    Etk_Widget *hbox;
    Etk_Widget *signal_label, *signal_entry;
    Etk_Widget *source_label, *source_entry;
@@ -107,15 +107,15 @@ void main_window_show(char *file)
    etk_box_append(ETK_BOX(vbox), vpaned, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_paned_child1_set(ETK_PANED(vpaned), paned, ETK_TRUE);
 
-   gui->tree = etk_tree_new();
-   etk_tree_headers_visible_set(ETK_TREE(gui->tree), ETK_TRUE);
-   col = etk_tree_col_new(ETK_TREE(gui->tree), _("Part"),
-	 etk_tree_model_text_new(ETK_TREE(gui->tree)), 100);
-   etk_tree_col_expand_set(col, ETK_TRUE);
-   etk_tree_col_sort_func_set(col, gui_part_col_sort_cb, NULL);
-   col2 = etk_tree_col_new(ETK_TREE(gui->tree), _("Visibility"),
-	 etk_tree_model_checkbox_new(ETK_TREE(gui->tree)), 30);
-   etk_tree_build(ETK_TREE(gui->tree));
+   gui->tree = etk_tree2_new();
+   etk_tree2_headers_visible_set(ETK_TREE2(gui->tree), ETK_TRUE);
+   col = etk_tree2_col_new(ETK_TREE2(gui->tree), _("Part"), 80, 0.0);
+   etk_tree2_col_model_add(col, etk_tree2_model_text_new());
+   etk_tree2_col_expand_set(col, ETK_TRUE);
+   etk_tree2_col_sort_set(col, gui_part_col_sort_cb, NULL);
+   col2 = etk_tree2_col_new(ETK_TREE2(gui->tree), _("Visibility"), 60, 0.0);
+   etk_tree2_col_model_add(col2, etk_tree2_model_checkbox_new());
+   etk_tree2_build(ETK_TREE2(gui->tree));
    etk_widget_size_request_set(gui->tree, 300, 0);
    etk_paned_child1_set(ETK_PANED(paned), gui->tree, ETK_FALSE);
 
@@ -128,12 +128,12 @@ void main_window_show(char *file)
    etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(scrollview),
 	 gui->canvas);
 
-   gui->output = etk_tree_new();
-   etk_tree_headers_visible_set(ETK_TREE(gui->output), ETK_TRUE);
-   col = etk_tree_col_new(ETK_TREE(gui->output), _("Output"),
-	 etk_tree_model_text_new(ETK_TREE(gui->output)), 200);
-   etk_tree_col_expand_set(col, ETK_TRUE);
-   etk_tree_build(ETK_TREE(gui->output));
+   gui->output = etk_tree2_new();
+   etk_tree2_headers_visible_set(ETK_TREE2(gui->output), ETK_TRUE);
+   col = etk_tree2_col_new(ETK_TREE2(gui->output), _("Output"), 200, 0.0);
+   etk_tree2_col_model_add(col, etk_tree2_model_text_new());
+   etk_tree2_col_expand_set(col, ETK_TRUE);
+   etk_tree2_build(ETK_TREE2(gui->output));
    etk_widget_size_request_set(gui->output, 0, 100);
    etk_paned_child2_set(ETK_PANED(vpaned), gui->output, ETK_FALSE);
 
@@ -167,14 +167,14 @@ void main_window_show(char *file)
    etk_widget_show_all(gui->win);
 
    check = edje_viewer_config_open_last_get();
-   if (file) list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+   if (file) list_entries(file, ETK_TREE2(gui->tree), ETK_TREE2(gui->output),
 	 ETK_CANVAS(gui->canvas));
    else if (check)
      {
 	file = edje_viewer_config_last_get();
 	if (file)
 	  {
-	     list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+	     list_entries(file, ETK_TREE2(gui->tree), ETK_TREE2(gui->output),
 		   ETK_CANVAS(gui->canvas));
 	     etk_window_title_set(ETK_WINDOW(gui->win), file);
 	  }
@@ -290,7 +290,7 @@ static void _gui_menu_item_clicked_cb(Etk_Object *obj, void *data)
    else if (!strcmp(label, "Open"))
      _gui_open_edje_file_cb(gui);
    else if (strstr(label, ".edj"))
-     list_entries(label, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+     list_entries(label, ETK_TREE2(gui->tree), ETK_TREE2(gui->output),
 	   ETK_CANVAS(gui->canvas));
 }
 
@@ -380,7 +380,7 @@ static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
    gui->path = strdup(dir);
    gui->path = strcat(gui->path, "/");
    gui->path = strcat(gui->path, file);
-   list_entries(gui->path, ETK_TREE(gui->tree), ETK_TREE(gui->output),
+   list_entries(gui->path, ETK_TREE2(gui->tree), ETK_TREE2(gui->output),
 	 ETK_CANVAS(gui->canvas));
    etk_window_hide_on_delete(ETK_OBJECT(gui->fm_dialog), NULL);
    etk_window_title_set(ETK_WINDOW(gui->win), gui->path);
@@ -395,19 +395,19 @@ static void _gui_fm_cancel_clicked_cb(Etk_Object *obj, void *data)
    etk_window_hide_on_delete(ETK_OBJECT(gui->fm_dialog), NULL);
 }
 
-static void _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree_Row *row,
+static void _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree2_Row *row,
       void *data)
 {
    Demo_Edje *de;
    Etk_Bool checked;
-   Etk_Tree_Col *col;
+   Etk_Tree2_Col *col;
    Gui *gui;
 
-   if (!(de = etk_tree_row_data_get(row))) return;
-   if (!(col = ETK_TREE_COL(obj)) || !row) return;
+   if (!(de = etk_tree2_row_data_get(row))) return;
+   if (!(col = ETK_TREE2_COL(obj)) || !row) return;
    if (!(gui = data)) return;
 
-   etk_tree_row_fields_get(row, col, &checked, NULL);
+   etk_tree2_row_fields_get(row, col, &checked, NULL);
    if (checked)
      edje_part_show(gui->canvas, de);
    else
@@ -437,7 +437,7 @@ static void _gui_send_clicked_cb(Etk_Object *obj, void *data)
 }
 
 int gui_part_col_sort_cb
-(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col,
+(Etk_Tree2 *tree, Etk_Tree2_Row *row1, Etk_Tree2_Row *row2, Etk_Tree2_Col *col,
  void *data)
 {
    char *row1_value, *row2_value;
@@ -445,8 +445,8 @@ int gui_part_col_sort_cb
    if (!tree || !row1 || !row2 || !col)
       return 0;
 
-   etk_tree_row_fields_get(row1, col, &row1_value, NULL);
-   etk_tree_row_fields_get(row2, col, &row2_value, NULL);
+   etk_tree2_row_fields_get(row1, col, &row1_value, NULL);
+   etk_tree2_row_fields_get(row2, col, &row2_value, NULL);
 
    if (strcmp(row1_value, row2_value) < 0)
       return -1;
