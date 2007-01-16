@@ -9,7 +9,7 @@ static void cb_click(Ewl_Widget *w, void *ev, void *data);
 void
 test_info(Ewl_Test *test)
 {
-	test->name = "toolbar";
+	test->name = "Toolbar";
 	test->tip = "Defines a widget for displaying a toolbar";
 	test->filename = __FILE__;
 	test->func = create_test;
@@ -77,7 +77,7 @@ create_test(Ewl_Container *box)
 void
 cb_click(Ewl_Widget *w, void *e __UNUSED__, void *data)
 {
-	ewl_toolbar_icon_part_hide(EWL_TOOLBAR(data), EWL_ICON_PART_LABEL);
+	ewl_toolbar_icon_part_hide(EWL_TOOLBAR(data), EWL_ICON_PART_NONE);
 }
 
 
