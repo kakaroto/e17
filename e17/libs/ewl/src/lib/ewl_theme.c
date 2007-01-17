@@ -246,6 +246,50 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
 	DRETURN_PTR(data, DLEVEL_STABLE);
 }
 
+static void
+ewl_theme_lookup_cache(Ecore_Hash *cache, const char *k, const char *v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cache", cache);
+	DCHECK_PARAM_PTR("k", k);
+
+	if (v != EWL_THEME_KEY_NOMATCH) {
+		if (v) {
+			ecore_hash_set(cache, strdup(k), strdup(v));
+		}
+		/*
+		 * Mark unmatched keys in the cache.
+		 */
+		else {
+			ecore_hash_set(cache, strdup(k), EWL_THEME_KEY_NOMATCH);
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static char *
+ewl_theme_lookup_key(Ecore_Hash *cache, const char *path, const char *k)
+{
+	char *ret;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("cache", cache, NULL);
+	DCHECK_PARAM_PTR_RET("k", k, NULL);
+
+	ret = ecore_hash_get(cache, k);
+	if (!ret) {
+
+		/*
+		 * Resort to looking in the edje.
+		 */
+		if (path)
+			ret = edje_file_data_get(path, k);
+	}
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
 /**
  * @param w: the widget to search
  * @param k: the key to search for
@@ -309,7 +353,7 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 			w = w->parent;
 
 		if (w && w->theme)
-			ret = ecore_hash_get(w->theme, temp);
+			ret = ewl_theme_lookup_key(w->theme, w->theme_path, temp);
 
 		if (ret)
 			break;
@@ -328,31 +372,19 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 	if (!ret) {
 		temp = key;
 		while (temp && !ret) {
-			ret = ecore_hash_get(ewl_theme_def_data, temp);
+			ret = ewl_theme_lookup_key(ewl_theme_def_data,
+					ewl_theme_path, temp);
 			if (ret)
 				break;
 
-			/*
-			 * Resort to looking in the edje.
-			 */
-			ret = edje_file_data_get(ewl_theme_path, temp);
-			if (ret) {
-				ecore_hash_set(ewl_theme_def_data,
-						strdup(temp),
-						strdup(ret));
-				break;
-			}
 			temp++;
 			temp = strchr(temp, '/');
 		}
-	}
 
-	/*
-	 * Mark unmatched keys in the cache.
-	 */
-	if (!ret && ret != EWL_THEME_KEY_NOMATCH) {
-		ecore_hash_set(ewl_theme_def_data, strdup(key),
-				EWL_THEME_KEY_NOMATCH);
+		/*
+		 * Mark unmatched keys in the cache.
+		 */
+		ewl_theme_lookup_cache(ewl_theme_def_data, key, ret);
 	}
 
 	/*

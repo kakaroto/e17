@@ -2583,11 +2583,9 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	/*
 	 * Retrieve the path to the theme file that will be loaded
-	 * return if no file to be loaded. Also get the group name in the
-	 * theme file.
+	 * return if no file to be loaded.
 	 */
 	i = ewl_theme_image_get(w, "file");
-	group = ewl_theme_data_str_get(w, "group");
 
 	if (i) {
 		const char *t;
@@ -2604,6 +2602,10 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 		w->theme_path = NULL;
 	}
 
+	/*
+	 * Defer group loading until the theme is loaded.
+	 */
+	group = ewl_theme_data_str_get(w, "group");
 	if (group) {
 		const char *t;
 
