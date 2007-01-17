@@ -202,7 +202,7 @@ _e_widget_tree_handle(Enhance *en, EXML_Node *node)
    id = ecore_hash_get(node->attributes, "id");
    if(!id) return NULL;
    
-   tree = _e_widget_new(en, node, etk_tree2_new(), id);
+   tree = _e_widget_new(en, node, etk_tree_new(), id);
 
    return tree;
 }
