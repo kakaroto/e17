@@ -26,6 +26,7 @@
 #include "eimage.h"
 #include "emodule.h"
 #include "parse.h"
+#include "settings.h"
 #include "timers.h"
 #include "xwin.h"
 #include <math.h>
@@ -985,6 +986,7 @@ static const CfgItem FxCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModEffects;
 const EModule       ModEffects = {
    "effects", "efx",
    FxSighan,

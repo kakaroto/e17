@@ -51,7 +51,7 @@ TextstateCreate(void)
 {
    TextState          *ts;
 
-   ts = Ecalloc(1, sizeof(TextState));
+   ts = ECALLOC(TextState, 1);
    if (!ts)
       return NULL;
 
@@ -76,7 +76,7 @@ TextclassCreate(const char *name)
 {
    TextClass          *tc;
 
-   tc = Ecalloc(1, sizeof(TextClass));
+   tc = ECALLOC(TextClass, 1);
    if (!tc)
       return NULL;
 
@@ -208,7 +208,7 @@ TextclassPopulate(TextClass * tclass)
 static int
 _TextclassMatchName(const void *data, const void *match)
 {
-   return strcmp(((const TextClass *)data)->name, match);
+   return strcmp(((const TextClass *)data)->name, (const char *)match);
 }
 
 TextClass          *
@@ -218,12 +218,16 @@ TextclassFind(const char *name, int fallback)
 
    if (name)
      {
-	tc = ecore_list_find(tclass_list, _TextclassMatchName, name);
+	tc =
+	   (TextClass *) ecore_list_find(tclass_list, _TextclassMatchName,
+					 name);
 	if (tc || !fallback)
 	   return tc;
      }
 
-   tc = ecore_list_find(tclass_list, _TextclassMatchName, "__FALLBACK_TCLASS");
+   tc =
+      (TextClass *) ecore_list_find(tclass_list, _TextclassMatchName,
+				    "__FALLBACK_TCLASS");
 
    return tc;
 }
@@ -623,6 +627,7 @@ static const IpcItem TextclassIpcArray[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModTextclass;
 const EModule       ModTextclass = {
    "textclass", "tc",
    TextclassSighan,

@@ -35,6 +35,7 @@
 #include "hiwin.h"
 #include "iclass.h"
 #include "menus.h"
+#include "settings.h"
 #include "timers.h"
 #include "tooltips.h"
 #include "xwin.h"
@@ -136,7 +137,7 @@ PagerCreate(void)
    if (!Conf_pagers.enable)
       return NULL;
 
-   p = Ecalloc(1, sizeof(Pager));
+   p = ECALLOC(Pager, 1);
    if (!p)
       return NULL;
 
@@ -642,7 +643,7 @@ PagerUpdateBg(Pager * p)
 static void
 PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
-   Pager              *p = ewin->data;
+   Pager              *p = (Pager *) ewin->data;
    int                 w, h;
    int                 ax, ay, cx, cy;
    ImageClass         *ic;
@@ -686,7 +687,7 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 static void
 PagerEwinClose(EWin * ewin)
 {
-   PagerDestroy(ewin->data);
+   PagerDestroy((Pager *) ewin->data);
    ewin->client.win = NULL;
    ewin->data = NULL;
 }
@@ -782,7 +783,7 @@ PagersForeach(Desk * dsk, void (*func) (Pager * p, void *prm), void *prm)
       return;
 
    /* We may get here recursively */
-   p_cur = ecore_list_current(pager_list);
+   p_cur = (Pager *) ecore_list_current(pager_list);
 
    ECORE_LIST_FOR_EACH(pager_list, p)
    {
@@ -802,7 +803,7 @@ typedef struct
 static void
 _PagerUpdate(Pager * p, void *prm)
 {
-   pager_update_data  *pud = prm;
+   pager_update_data  *pud = (pager_update_data *) prm;
 
    PagerUpdate(p, pud->x1, pud->y1, pud->x2, pud->y2);
 }
@@ -1314,8 +1315,8 @@ PagerEwinGroupSet(void)
    if (!gwins)
       return;
 
-   gwin_px = Emalloc(num * sizeof(int));
-   gwin_py = Emalloc(num * sizeof(int));
+   gwin_px = EMALLOC(int, num);
+   gwin_py = EMALLOC(int, num);
 
    for (i = 0; i < num; i++)
      {
@@ -1495,7 +1496,7 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 	ewin2 = GetEwinPointerInClient();
 	if ((ewin2) && (ewin2->type == EWIN_TYPE_PAGER))
 	  {
-	     PagerEwinMove(p, ewin2->data, ewin);
+	     PagerEwinMove(p, (Pager *) ewin2->data, ewin);
 	  }
 	else if ((ewin2) && (ewin2->type == EWIN_TYPE_ICONBOX))
 	  {
@@ -1587,7 +1588,7 @@ PagerEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 static void
 PagerHiwinEvent(Win win, XEvent * ev, void *prm)
 {
-   Pager              *p = prm;
+   Pager              *p = (Pager *) prm;
    int                 px, py;
    EWin               *ewin;
 
@@ -2018,10 +2019,10 @@ PagersSighan(int sig, void *prm)
      case ESIGNAL_DESK_ADDED:
 	if (Mode.wm.startup)
 	   break;
-	NewPagerForDesktop(prm);
+	NewPagerForDesktop((Desk *) prm);
 	break;
      case ESIGNAL_DESK_REMOVED:
-	PagersForDesktopDisable(prm);
+	PagersForDesktopDisable((Desk *) prm);
 	break;
      case ESIGNAL_DESK_SWITCH_START:
 	PagerHiwinHide();
@@ -2034,14 +2035,14 @@ PagersSighan(int sig, void *prm)
 	break;
 
      case ESIGNAL_BACKGROUND_CHANGE:
-	PagersUpdateBackground(prm);
+	PagersUpdateBackground((Desk *) prm);
 	break;
 
      case ESIGNAL_EWIN_UNMAP:
-	PagersUpdateEwin(prm, 1);
+	PagersUpdateEwin((EWin *) prm, 1);
 	break;
      case ESIGNAL_EWIN_CHANGE:
-	PagersUpdateEwin(prm, 0);
+	PagersUpdateEwin((EWin *) prm, 0);
 	break;
      }
 }
@@ -2158,6 +2159,7 @@ static const CfgItem PagersCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModPagers;
 const EModule       ModPagers = {
    "pagers", "pg",
    PagersSighan,

@@ -34,7 +34,7 @@ static Ecore_List  *font_list = NULL;
 static void
 _FontAliasDestroy(void *data)
 {
-   FontAlias          *fa = data;
+   FontAlias          *fa = (FontAlias *) data;
 
    if (!fa)
       return;
@@ -48,7 +48,7 @@ FontAliasCreate(const char *name, const char *font)
 {
    FontAlias          *fa;
 
-   fa = Emalloc(sizeof(FontAlias));
+   fa = EMALLOC(FontAlias, 1);
    if (!fa)
       return NULL;
 
@@ -68,7 +68,7 @@ FontAliasCreate(const char *name, const char *font)
 static int
 _FontMatchName(const void *data, const void *match)
 {
-   return strcmp(((const FontAlias *)data)->name, match);
+   return strcmp(((const FontAlias *)data)->name, (const char *)match);
 }
 
 const char         *
@@ -76,7 +76,7 @@ FontLookup(const char *name)
 {
    FontAlias          *fa;
 
-   fa = ecore_list_find(font_list, _FontMatchName, name);
+   fa = (FontAlias *) ecore_list_find(font_list, _FontMatchName, name);
 
    return (fa) ? fa->font : NULL;
 }

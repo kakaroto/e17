@@ -94,7 +94,7 @@ ActionCreate(char event, char anymod, int mod, int anybut, int but,
 {
    Action             *aa;
 
-   aa = Emalloc(sizeof(Action));
+   aa = EMALLOC(Action, 1);
    aa->action = NULL;
    aa->event = event;
    aa->anymodifier = anymod;
@@ -136,7 +136,7 @@ ActionAddTo(Action * aa, const char *params)
 {
    ActionType         *pptr, *ptr, *at;
 
-   at = Emalloc(sizeof(ActionType));
+   at = EMALLOC(ActionType, 1);
    if (!at)
       return;
    at->next = NULL;
@@ -163,10 +163,7 @@ void
 ActionclassAddAction(ActionClass * ac, Action * aa)
 {
    ac->num++;
-   if (!ac->list)
-      ac->list = Emalloc(sizeof(Action *));
-   else
-      ac->list = Erealloc(ac->list, ac->num * sizeof(Action *));
+   ac->list = EREALLOC(Action *, ac->list, ac->num);
    ac->list[ac->num - 1] = aa;
 }
 
@@ -175,7 +172,7 @@ ActionclassCreate(const char *name, int global)
 {
    ActionClass        *ac;
 
-   ac = Ecalloc(1, sizeof(ActionClass));
+   ac = ECALLOC(ActionClass, 1);
    ac->name = Estrdup(name);
 
    if (global)
@@ -227,19 +224,21 @@ ActionclassDestroy(ActionClass * ac)
 static int
 _ActionclassMatchName(const void *data, const void *match)
 {
-   return strcmp(((const ActionClass *)data)->name, match);
+   return strcmp(((const ActionClass *)data)->name, (const char *)match);
 }
 
 static ActionClass *
 ActionclassFindGlobal(const char *name)
 {
-   return ecore_list_find(aclass_list_global, _ActionclassMatchName, name);
+   return (ActionClass *) ecore_list_find(aclass_list_global,
+					  _ActionclassMatchName, name);
 }
 
 ActionClass        *
 ActionclassFind(const char *name)
 {
-   return ecore_list_find(aclass_list, _ActionclassMatchName, name);
+   return (ActionClass *) ecore_list_find(aclass_list, _ActionclassMatchName,
+					  name);
 }
 
 static ActionClass *
@@ -247,10 +246,12 @@ ActionclassFindAny(const char *name)
 {
    ActionClass        *ac;
 
-   ac = ecore_list_find(aclass_list_global, _ActionclassMatchName, name);
+   ac = (ActionClass *) ecore_list_find(aclass_list_global,
+					_ActionclassMatchName, name);
    if (ac)
       return ac;
-   return ecore_list_find(aclass_list, _ActionclassMatchName, name);
+   return (ActionClass *) ecore_list_find(aclass_list, _ActionclassMatchName,
+					  name);
 }
 
 int
@@ -332,10 +333,12 @@ AclassConfigLoad(FILE * fs)
 
 	  case CONFIG_CLASSNAME:
 	  case ACLASS_NAME:
-	     ac = ecore_list_remove_node(aclass_list, ActionclassFind(s2));
+	     ac = (ActionClass *) ecore_list_remove_node(aclass_list,
+							 ActionclassFind(s2));
 	     if (!ac)
-		ac = ecore_list_remove_node(aclass_list_global,
-					    ActionclassFindGlobal(s2));
+		ac = (ActionClass *) ecore_list_remove_node(aclass_list_global,
+							    ActionclassFindGlobal
+							    (s2));
 	     if (ac)
 	       {
 		  if (!strcmp(s2, "KEYBINDINGS"))
@@ -747,11 +750,13 @@ AclassConfigLoad2(FILE * fs)
 	       }
 	     else
 	       {
-		  ac =
-		     ecore_list_remove_node(aclass_list, ActionclassFind(prm2));
+		  ac = (ActionClass *) ecore_list_remove_node(aclass_list,
+							      ActionclassFind
+							      (prm2));
 		  if (!ac)
-		     ac = ecore_list_remove_node(aclass_list_global,
-						 ActionclassFindGlobal(prm2));
+		     ac = (ActionClass *)
+			ecore_list_remove_node(aclass_list_global,
+					       ActionclassFindGlobal(prm2));
 		  if (ac)
 		     ActionclassDestroy(ac);
 		  ac = NULL;
@@ -1337,8 +1342,9 @@ IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
 
    Mode.keybinds_changed = 1;
 
-   ac = ecore_list_remove_node(aclass_list_global,
-			       ActionclassFindGlobal("KEYBINDINGS"));
+   ac = (ActionClass *) ecore_list_remove_node(aclass_list_global,
+					       ActionclassFindGlobal
+					       ("KEYBINDINGS"));
    if (ac)
       ActionclassDestroy(ac);
 
@@ -1449,6 +1455,7 @@ static const IpcItem AclassIpcArray[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModAclass;
 const EModule       ModAclass = {
    "aclass", "ac",
    AclassSighan,

@@ -173,7 +173,8 @@ main(int argc, char **argv)
 	for (; i < argc; i++)
 	  {
 	     l = strlen(argv[i]);
-	     command = Erealloc(command, len + l + 2);
+	     command = EREALLOC(char, command, len + l + 2);
+
 	     if (len)
 		command[len++] = ' ';
 	     strcpy(command + len, argv[i]);
@@ -264,7 +265,7 @@ Estrdup(const char *s)
    if (!s)
       return NULL;
    sz = strlen(s);
-   ss = Emalloc(sz + 1);
+   ss = EMALLOC(char, sz + 1);
    strncpy(ss, s, sz + 1);
 
    return ss;

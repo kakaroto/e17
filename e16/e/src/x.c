@@ -109,7 +109,7 @@ EXidCreate(void)
 {
    EXID               *xid;
 
-   xid = Ecalloc(1, sizeof(EXID));
+   xid = ECALLOC(EXID, 1);
    xid->bgcol = 0xffffffff;
 
    return xid;
@@ -244,8 +244,7 @@ EventCallbackRegister(Win win, int type __UNUSED__, EventCallbackFunc * func,
 #endif
 
    xid->cbl.num++;
-   xid->cbl.lst =
-      Erealloc(xid->cbl.lst, xid->cbl.num * sizeof(EventCallbackItem));
+   xid->cbl.lst = EREALLOC(EventCallbackItem, xid->cbl.lst, xid->cbl.num);
    eci = xid->cbl.lst + xid->cbl.num - 1;
    eci->func = func;
    eci->prm = prm;
@@ -277,7 +276,7 @@ EventCallbackUnregister(Win win, int type __UNUSED__,
 		for (; i < ecl->num; i++, eci++)
 		   *eci = *(eci + 1);
 		xid->cbl.lst =
-		   Erealloc(xid->cbl.lst, ecl->num * sizeof(EventCallbackItem));
+		   EREALLOC(EventCallbackItem, xid->cbl.lst, ecl->num);
 	     }
 	   else
 	     {
@@ -1271,7 +1270,7 @@ EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
 	*ord = xid->ord;
 	if (xid->num_rect > 0)
 	  {
-	     r = Emalloc(sizeof(XRectangle) * xid->num_rect);
+	     r = EMALLOC(XRectangle, xid->num_rect);
 	     if (!r)
 		return NULL;
 	     memcpy(r, xid->rects, sizeof(XRectangle) * xid->num_rect);
@@ -1288,7 +1287,7 @@ EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
 	r = XShapeGetRectangles(disp, win->xwin, dest, rn, ord);
 	if (r)
 	  {
-	     rr = Emalloc(sizeof(XRectangle) * *rn);
+	     rr = EMALLOC(XRectangle, *rn);
 	     if (!rr)
 		return NULL;
 	     memcpy(rr, r, sizeof(XRectangle) * *rn);
@@ -1396,7 +1395,7 @@ EShapePropagate(Win win)
 	if (rn > 0)
 	  {
 	     rl = xch->rects;
-	     rects = Erealloc(rects, (num_rects + rn) * sizeof(XRectangle));
+	     rects = EREALLOC(XRectangle, rects, num_rects + rn);
 	     /* go through all clip rects in thsi window's shape */
 	     for (k = 0; k < rn; k++)
 	       {
@@ -1417,7 +1416,7 @@ EShapePropagate(Win win)
 	else if (rn == 0)
 	  {
 	     /* Unshaped */
-	     rects = Erealloc(rects, (num_rects + 1) * sizeof(XRectangle));
+	     rects = EREALLOC(XRectangle, rects, num_rects + 1);
 
 	     rects[num_rects].x = x;
 	     rects[num_rects].y = y;
@@ -1724,7 +1723,11 @@ EVisualFindARGB(void)
 
    xvit.screen = VRoot.scr;
    xvit.depth = 32;
+#if __cplusplus
+   xvit.c_class = TrueColor;
+#else
    xvit.class = TrueColor;
+#endif
 
    xvi = XGetVisualInfo(disp,
 			VisualScreenMask | VisualDepthMask | VisualClassMask,

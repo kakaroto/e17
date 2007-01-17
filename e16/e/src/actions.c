@@ -69,7 +69,8 @@ execApplication(const char *params, int flags)
 
    if (path_canexec(exe))
      {
-	real_exec = Emalloc(strlen(params) + 6);
+	real_exec = EMALLOC(char, strlen(params) + 6);
+
 	if (!real_exec)
 	   return -1;
 	sprintf(real_exec, "exec %s", params);

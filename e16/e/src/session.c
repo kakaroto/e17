@@ -27,6 +27,7 @@
 #include "emodule.h"
 #include "ewins.h"
 #include "session.h"
+#include "settings.h"
 #include "snaps.h"
 #include "user.h"
 #include "xwin.h"
@@ -221,7 +222,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
    restartVal[n++].value = (char *)s;
 
    for (i = 0; i < n; i++)
-      restartVal[i].length = strlen(restartVal[i].value);
+      restartVal[i].length = strlen((const char *)restartVal[i].value);
 
    restartProp.num_vals = n;
 

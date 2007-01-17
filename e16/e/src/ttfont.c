@@ -131,7 +131,7 @@ _ift_Load(TextState * ts, int fallback __UNUSED__)
    if (!font)
       return -1;
 
-   fdc = Emalloc(sizeof(FontCtxIft));
+   fdc = EMALLOC(FontCtxIft, 1);
    if (!fdc)
       return -1;
    fdc->font = font;

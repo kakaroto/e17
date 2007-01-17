@@ -32,6 +32,7 @@
 #include "file.h"
 #include "iclass.h"
 #include "parse.h"
+#include "settings.h"
 #include "tclass.h"
 #include "timers.h"
 #include "xwin.h"
@@ -294,7 +295,7 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
 {
    Background         *bg;
 
-   bg = Ecalloc(1, sizeof(Background));
+   bg = ECALLOC(Background, 1);
    if (!bg)
       return NULL;
 
@@ -371,19 +372,19 @@ BackgroundCmp(Background * bg, Background * bgx)
 static int
 _BackgroundMatchName(const void *data, const void *match)
 {
-   return strcmp(((const Background *)data)->name, match);
+   return strcmp(((const Background *)data)->name, (const char *)match);
 }
 
 Background         *
 BackgroundFind(const char *name)
 {
-   return ecore_list_find(bg_list, _BackgroundMatchName, name);
+   return (Background *) ecore_list_find(bg_list, _BackgroundMatchName, name);
 }
 
 static Background  *
 BackgroundCheck(Background * bg)
 {
-   return ecore_list_goto(bg_list, bg);
+   return (Background *) ecore_list_goto(bg_list, bg);
 }
 
 void
@@ -1063,7 +1064,7 @@ BackgroundGetRandom(void)
    for (;;)
      {
 	rnd = rand();
-	bg = ecore_list_goto_index(bg_list, rnd % num);
+	bg = (Background *) ecore_list_goto_index(bg_list, rnd % num);
 	if (num <= 1 || !BackgroundIsNone(bg))
 	   break;
      }
@@ -1337,7 +1338,7 @@ BackgroundsConfigSave(void)
 
    for (i = num - 1; i >= 0; i--)
      {
-	bg = ecore_list_goto_index(bg_list, i);
+	bg = (Background *) ecore_list_goto_index(bg_list, i);
 	if (!bg)
 	   continue;
 
@@ -1418,10 +1419,10 @@ BackgroundsCheckDups(void)
    for (ix = 0;; ix++)
      {
 	ecore_list_goto_index(bg_list, ix);
-	bg = ecore_list_next(bg_list);
+	bg = (Background *) ecore_list_next(bg_list);
 	if (!bg)
 	   break;
-	for (; (bgx = ecore_list_next(bg_list)) != NULL;)
+	for (; (bgx = (Background *) ecore_list_next(bg_list)) != NULL;)
 	  {
 	     if (bgx->ref_count > 0 || bgx->referenced)
 		continue;
@@ -1733,12 +1734,14 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    if (num <= 1)
       return;
 
-   bg = ecore_list_goto(bg_list, tmp_bg);
+   bg = (Background *) ecore_list_goto(bg_list, tmp_bg);
    if (!bg)
       return;
 
    i = ecore_list_index(bg_list);
-   bg = ecore_list_goto_index(bg_list, (i < num - 1) ? i + 1 : i - 1);
+   bg =
+      (Background *) ecore_list_goto_index(bg_list,
+					   (i < num - 1) ? i + 1 : i - 1);
 
    DeskBackgroundSet(DesksGetCurrent(), bg);
 
@@ -1886,7 +1889,7 @@ CB_BGAreaEvent(DItem * di __UNUSED__, int val __UNUSED__, void *data)
 	num = ecore_list_nodes(bg_list);
 	x = (num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num) +
 	   ev->xbutton.x;
-	bg = ecore_list_goto_index(bg_list, x / (64 + 8));
+	bg = (Background *) ecore_list_goto_index(bg_list, x / (64 + 8));
 	if (!bg || bg == DeskBackgroundGet(DesksGetCurrent()))
 	   break;
 	BgDialogSetNewCurrent(bg);
@@ -1919,7 +1922,7 @@ BGSettingsGoTo(Background * bg)
    if (!bg_sel_slider)
       return;
 
-   bg = ecore_list_goto(bg_list, bg);
+   bg = (Background *) ecore_list_goto(bg_list, bg);
    if (!bg)
       return;
 
@@ -1940,11 +1943,13 @@ CB_BGNext(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 {
    Background         *bg;
 
-   bg = ecore_list_goto(bg_list, tmp_bg);
+   bg = (Background *) ecore_list_goto(bg_list, tmp_bg);
    if (!bg)
       return;
 
-   bg = ecore_list_goto_index(bg_list, ecore_list_index(bg_list) + val);
+   bg =
+      (Background *) ecore_list_goto_index(bg_list,
+					   ecore_list_index(bg_list) + val);
    if (!bg)
       return;
 
@@ -2079,7 +2084,7 @@ CB_InitView(DItem * di __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 static void
 _DlgFillBackground(Dialog * d, DItem * table, void *data)
 {
-   Background         *bg = data;
+   Background         *bg = (Background *) data;
    DItem              *di, *table2, *area, *slider, *slider2, *label;
    DItem              *w1, *w2, *w3, *w4, *w5, *w6;
    int                 num;
@@ -2738,6 +2743,7 @@ static const CfgItem BackgroundsCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModBackgrounds;
 const EModule       ModBackgrounds = {
    "backgrounds", "bg",
    BackgroundsSighan,

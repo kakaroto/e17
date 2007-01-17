@@ -101,7 +101,7 @@ WindowMatchCreate(const char *name)
 {
    WindowMatch        *b;
 
-   b = Ecalloc(1, sizeof(WindowMatch));
+   b = ECALLOC(WindowMatch, 1);
    if (!b)
       return NULL;
 
@@ -614,8 +614,8 @@ typedef struct
 static int
 WindowMatchTypeMatch(const void *data, const void *match)
 {
-   const WindowMatch  *wm = data;
-   const wmatch_type_data *wmtd = match;
+   const WindowMatch  *wm = (WindowMatch *) data;
+   const wmatch_type_data *wmtd = (wmatch_type_data *) match;
 
    return !(wm->op == wmtd->type && WindowMatchEwinTest(wm, wmtd->ewin));
 }
@@ -628,7 +628,7 @@ WindowMatchType(const EWin * ewin, int type)
    wmtd.type = type;
    wmtd.ewin = ewin;
 
-   return ecore_list_find(wm_list, WindowMatchTypeMatch, &wmtd);
+   return (WindowMatch *) ecore_list_find(wm_list, WindowMatchTypeMatch, &wmtd);
 }
 
 Border             *
@@ -996,6 +996,7 @@ static const IpcItem WindowMatchIpcArray[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModWindowMatch;
 const EModule       ModWindowMatch = {
    "winmatch", NULL,
    WindowMatchSighan,

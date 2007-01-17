@@ -217,7 +217,11 @@ extern Display     *disp;
 extern Root         VRoot;
 extern char        *docdir;
 
-#define Emalloc malloc
-#define Efree   free
+#define Efree       free
+#define Emalloc     malloc
+#define Erealloc    realloc
+
+#define EMALLOC(type, num) (type*)Emalloc((num)*sizeof(type))
+#define EREALLOC(type, ptr, num) (type*)Erealloc(ptr, (num)*sizeof(type))
 
 #define Esnprintf snprintf

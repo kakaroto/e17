@@ -589,7 +589,7 @@ static int
 BorderNameCompare(void *b1, void *b2)
 {
    if (b1 && b2)
-      return strcmp(BorderGetName(b1), BorderGetName(b2));
+      return strcmp(BorderGetName((Border *) b1), BorderGetName((Border *) b2));
 
    return 0;
 }

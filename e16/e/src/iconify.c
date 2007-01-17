@@ -115,24 +115,24 @@ IB_Animate_A(char iconify, EWin * ewin, EWin * ibox)
      {
 	aa = 1.0 - a;
 
-	x = (fx * aa) + (tx * a);
-	y = (fy * aa) + (ty * a);
-	w = (fw * aa) + (tw * a);
-	h = (fh * aa) + (th * a);
+	x = (int)((fx * aa) + (tx * a));
+	y = (int)((fy * aa) + (ty * a));
+	w = (int)((fw * aa) + (tw * a));
+	h = (int)((fh * aa) + (th * a));
 
 	x = (2 * x + w) / 2;	/* x middle */
 	y = (2 * y + h) / 2;	/* y middle */
 	w /= 2;			/* width/2 */
 	h /= 2;			/* height/2 */
 
-	x1 = x + w * (1 - .5 * sin(3.14159 + a * 6.2831853072));
-	y1 = y + h * cos(a * 6.2831853072);
-	x2 = x + w * (1 - .5 * sin(a * 6.2831853072));
-	y2 = y - h * cos(a * 6.2831853072);
-	x3 = x - w * (1 - .5 * sin(3.14159 + a * 6.2831853072));
-	y3 = y - h * cos(a * 6.2831853072);
-	x4 = x - w * (1 - .5 * sin(a * 6.2831853072));
-	y4 = y + h * cos(a * 6.2831853072);
+	x1 = (int)(x + w * (1 - .5 * sin(3.14159 + a * 6.2831853072)));
+	y1 = (int)(y + h * cos(a * 6.2831853072));
+	x2 = (int)(x + w * (1 - .5 * sin(a * 6.2831853072)));
+	y2 = (int)(y - h * cos(a * 6.2831853072));
+	x3 = (int)(x - w * (1 - .5 * sin(3.14159 + a * 6.2831853072)));
+	y3 = (int)(y - h * cos(a * 6.2831853072));
+	x4 = (int)(x - w * (1 - .5 * sin(a * 6.2831853072)));
+	y4 = (int)(y + h * cos(a * 6.2831853072));
 
 	XDrawLine(disp, root, gc, x1, y1, x2, y2);
 	XDrawLine(disp, root, gc, x2, y2, x3, y3);
@@ -210,10 +210,10 @@ IB_Animate_B(char iconify, EWin * ewin, EWin * ibox)
    t0 = GetTime();
    for (a = 0.0; a < 1.0; a += spd)
      {
-	x = fx + a * (tx - fx);
-	w = fw + a * (tw - fw);
-	y = fy + a * (ty - fy);
-	h = fh + a * (th - fh);
+	x = (int)(fx + a * (tx - fx));
+	w = (int)(fw + a * (tw - fw));
+	y = (int)(fy + a * (ty - fy));
+	h = (int)(fh + a * (th - fh));
 	XDrawRectangle(disp, root, gc, x, y, w, h);
 
 	ESync();
@@ -347,7 +347,7 @@ RemoveMiniIcon(EWin * ewin)
 static int
 IconboxFindEwin(Container * ct, void *data)
 {
-   EWin               *ewin = data;
+   EWin               *ewin = (EWin *) data;
 
    return IconboxObjEwinFind(ct, ewin) >= 0;
 
@@ -481,8 +481,8 @@ IconboxExit(Container * ct, int wm_exit)
    while (ct->num_objs)
      {
 	if (!wm_exit)
-	   EwinDeIconify(ct->objs[0].obj);
-	IconboxObjEwinDel(ct, ct->objs[0].obj);
+	   EwinDeIconify((EWin *) ct->objs[0].obj);
+	IconboxObjEwinDel(ct, (EWin *) ct->objs[0].obj);
      }
 }
 
@@ -535,7 +535,8 @@ IconboxEvent(Container * ct, XEvent * ev)
 	   break;
 	ct->icon_clicked = 0;
 
-	ewin = ContainerObjectFindByXY(ct, ev->xbutton.x, ev->xbutton.y);
+	ewin =
+	   (EWin *) ContainerObjectFindByXY(ct, ev->xbutton.x, ev->xbutton.y);
 	if (!ewin)
 	   break;
 
@@ -560,7 +561,7 @@ IconboxEvent(Container * ct, XEvent * ev)
 	if (!ct->shownames)
 	   break;
 
-	ewin = ContainerObjectFindByXY(ct, x, y);
+	ewin = (EWin *) ContainerObjectFindByXY(ct, x, y);
 	if (ewin == name_ewin)
 	   break;
 	name_ewin = ewin;
@@ -611,6 +612,7 @@ IconboxObjPlace(Container * ct __UNUSED__, ContainerObject * cto, EImage * im)
 	       cto->xi, cto->yi, cto->wi, cto->hi, 1, 1);
 }
 
+extern const ContainerOps IconboxOps;
 const ContainerOps  IconboxOps = {
    IconboxInit,
    IconboxExit,

@@ -204,7 +204,7 @@ ecore_x_window_prop_card32_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
      }
    else if (prop_ret && type_ret == XA_CARDINAL && format_ret == 32)
      {
-	val = malloc(num_ret * sizeof(unsigned int));
+	val = (unsigned int *)malloc(num_ret * sizeof(unsigned int));
 	for (i = 0; i < num_ret; i++)
 	   val[i] = ((unsigned long *)prop_ret)[i];
 	num = num_ret;
@@ -268,7 +268,7 @@ ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
 	  {
 	     if (items > 0)
 	       {
-		  pstr = malloc(items * sizeof(char *));
+		  pstr = (char **)malloc(items * sizeof(char *));
 		  for (i = 0; i < items; i++)
 		     pstr[i] = (list[i] && (*list[i] || i < items - 1)) ?
 			strdup(list[i]) : NULL;
@@ -280,7 +280,7 @@ ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
      }
 
    /* Bad format or XmbTextPropertyToTextList failed - Now what? */
-   pstr = malloc(sizeof(char *));
+   pstr = (char **)malloc(sizeof(char *));
    pstr[0] = (xtp.value) ? strdup((char *)xtp.value) : NULL;
    items = 1;
 
@@ -367,7 +367,7 @@ _ecore_x_window_prop_string_utf8_get(Ecore_X_Window win, Ecore_X_Atom atom)
 		      &format_ret, &num_ret, &bytes_after, &prop_ret);
    if (prop_ret && num_ret > 0 && format_ret == 8)
      {
-	str = malloc(num_ret + 1);
+	str = (char *)malloc(num_ret + 1);
 	if (str)
 	  {
 	     memcpy(str, prop_ret, num_ret);
@@ -487,7 +487,7 @@ ecore_x_window_prop_xid_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
      }
    else if (prop_ret && type_ret == type && format_ret == 32)
      {
-	alst = malloc(num_ret * sizeof(Ecore_X_ID));
+	alst = (Ecore_X_Atom *) malloc(num_ret * sizeof(Ecore_X_ID));
 	for (i = 0; i < num_ret; i++)
 	   alst[i] = ((unsigned long *)prop_ret)[i];
 	*val = alst;
@@ -541,7 +541,7 @@ ecore_x_window_prop_xid_list_change(Ecore_X_Window win, Ecore_X_Atom atom,
 	   goto done;
 	/* Add it */
 	num++;
-	lst = realloc(lst, num * sizeof(Ecore_X_ID));
+	lst = (Ecore_X_ID *) realloc(lst, num * sizeof(Ecore_X_ID));
 	lst[i] = item;
      }
 
@@ -1088,7 +1088,7 @@ ecore_x_netwm_desk_names_set(Ecore_X_Window root, const char **names,
 	  }
 
 	l = strlen(s) + 1;
-	buf = realloc(buf, len + l);
+	buf = (char *)realloc(buf, len + l);
 	memcpy(buf + len, s, l);
 	len += l;
      }

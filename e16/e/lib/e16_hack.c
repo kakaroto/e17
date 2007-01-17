@@ -56,33 +56,43 @@ MyRoot(Display * dpy)
    return root;
 }
 
+typedef             Window(CWF) (Display * _display, Window _parent, int _x,
+				 int _y, unsigned int _width,
+				 unsigned int _height,
+				 unsigned int _border_width, int _depth,
+				 unsigned int _class, Visual * _visual,
+				 unsigned long _valuemask,
+				 XSetWindowAttributes * _attributes);
+
 /* XCreateWindow intercept hack */
 Window
 XCreateWindow(Display * display, Window parent, int x, int y,
 	      unsigned int width, unsigned int height,
 	      unsigned int border_width,
-	      int depth, unsigned int class, Visual * visual,
+	      int depth, unsigned int clss, Visual * visual,
 	      unsigned long valuemask, XSetWindowAttributes * attributes)
 {
-   static              Window(*func)
-      (Display * _display, Window _parent, int _x, int _y,
-       unsigned int _width, unsigned int _height,
-       unsigned int _border_width,
-       int _depth, unsigned int _class, Visual * _visual,
-       unsigned long _valuemask, XSetWindowAttributes * _attributes) = NULL;
+   static CWF         *func = NULL;
 
    /* find the real Xlib and the real X function */
    if (!lib_xlib)
       lib_xlib = dlopen("libX11.so", RTLD_GLOBAL | RTLD_LAZY);
    if (!func)
-      func = dlsym(lib_xlib, "XCreateWindow");
+      func = (CWF *) dlsym(lib_xlib, "XCreateWindow");
 
    if (parent == DefaultRootWindow(display))
       parent = MyRoot(display);
 
    return (*func) (display, parent, x, y, width, height, border_width, depth,
-		   class, visual, valuemask, attributes);
+		   clss, visual, valuemask, attributes);
 }
+
+typedef             Window(CSWF) (Display * _display, Window _parent, int _x,
+				  int _y, unsigned int _width,
+				  unsigned int _height,
+				  unsigned int _border_width,
+				  unsigned long _border,
+				  unsigned long _background);
 
 /* XCreateSimpleWindow intercept hack */
 Window
@@ -91,17 +101,13 @@ XCreateSimpleWindow(Display * display, Window parent, int x, int y,
 		    unsigned int border_width,
 		    unsigned long border, unsigned long background)
 {
-   static              Window(*func)
-      (Display * _display, Window _parent, int _x, int _y,
-       unsigned int _width, unsigned int _height,
-       unsigned int _border_width,
-       unsigned long _border, unsigned long _background) = NULL;
+   static CSWF        *func = NULL;
 
    /* find the real Xlib and the real X function */
    if (!lib_xlib)
       lib_xlib = dlopen("libX11.so", RTLD_GLOBAL | RTLD_LAZY);
    if (!func)
-      func = dlsym(lib_xlib, "XCreateSimpleWindow");
+      func = (CSWF *) dlsym(lib_xlib, "XCreateSimpleWindow");
 
    if (parent == DefaultRootWindow(display))
       parent = MyRoot(display);
@@ -110,19 +116,20 @@ XCreateSimpleWindow(Display * display, Window parent, int x, int y,
 		   border_width, border, background);
 }
 
+typedef int         (RWF) (Display * _display, Window _window, Window _parent,
+			   int x, int y);
+
 /* XReparentWindow intercept hack */
 int
 XReparentWindow(Display * display, Window window, Window parent, int x, int y)
 {
-   static int          (*func)
-      (Display * _display, Window _window, Window _parent, int _x, int _y) =
-      NULL;
+   static RWF         *func = NULL;
 
    /* find the real Xlib and the real X function */
    if (!lib_xlib)
       lib_xlib = dlopen("libX11.so", RTLD_GLOBAL | RTLD_LAZY);
    if (!func)
-      func = dlsym(lib_xlib, "XReparentWindow");
+      func = (RWF *) dlsym(lib_xlib, "XReparentWindow");
 
    if (parent == DefaultRootWindow(display))
       parent = MyRoot(display);

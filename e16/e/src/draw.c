@@ -68,11 +68,11 @@ ECreatePixImg(Window win, int w, int h)
    XGCValues           gcv;
    PixImg             *pi;
 
-   pi = Emalloc(sizeof(PixImg));
+   pi = EMALLOC(PixImg, 1);
    if (!pi)
       return NULL;
 
-   pi->shminfo = Emalloc(sizeof(XShmSegmentInfo));
+   pi->shminfo = EMALLOC(XShmSegmentInfo, 1);
    if (pi->shminfo)
      {
 	pi->xim = XShmCreateImage(disp, VRoot.vis, VRoot.depth, ZPixmap, NULL,
@@ -85,7 +85,7 @@ ECreatePixImg(Window win, int w, int h)
 	     if (pi->shminfo->shmid >= 0)
 	       {
 		  pi->shminfo->shmaddr = pi->xim->data =
-		     shmat(pi->shminfo->shmid, 0, 0);
+		     (char *)shmat(pi->shminfo->shmid, 0, 0);
 		  if (pi->shminfo->shmaddr)
 		    {
 		       pi->shminfo->readOnly = False;

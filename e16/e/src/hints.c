@@ -423,7 +423,7 @@ EHintsSetDeskInfo(void)
    if (n_desks <= 0)
       return;
 
-   c = Emalloc(2 * n_desks * sizeof(unsigned int));
+   c = EMALLOC(unsigned int, 2 * n_desks);
    if (!c)
       return;
 
@@ -456,7 +456,8 @@ EHintsGetDeskInfo(void)
    int                 num, i, n_desks;
 
    n_desks = DesksGetNumber();
-   c = Emalloc(2 * n_desks * sizeof(unsigned int));
+   c = EMALLOC(unsigned int, 2 * n_desks);
+
    if (!c)
       return;
 
@@ -519,7 +520,7 @@ SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
    ESelection         *sel;
    char                buf[128];
 
-   sel = Ecalloc(1, sizeof(ESelection));
+   sel = ECALLOC(ESelection, 1);
    if (!sel)
       return sel;
 

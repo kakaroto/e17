@@ -30,6 +30,7 @@
 #include "focus.h"
 #include "grabs.h"
 #include "hints.h"
+#include "settings.h"
 #include "timers.h"
 #include "xwin.h"
 
@@ -245,7 +246,7 @@ FocusEwinSetGrabs(EWin * ewin)
 static void
 FocusEwinSetActive(EWin * ewin, int active)
 {
-   if (ewin->state.active == active)
+   if (ewin->state.active == (unsigned)active)
       return;
 
    ewin->state.active = active;
@@ -1017,6 +1018,7 @@ static const CfgItem FocusCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModFocus;
 const EModule       ModFocus = {
    "focus", NULL,
    FocusSighan,

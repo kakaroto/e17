@@ -176,7 +176,7 @@ SystrayObjAdd(Container * ct, Window xwin)
 	break;
      }
 
-   swin = Emalloc(sizeof(SWin));
+   swin = EMALLOC(SWin, 1);
    if (!swin)
       goto bail_out;
 
@@ -222,7 +222,7 @@ SystrayObjDel(Container * ct, Win win, int gone)
    if (EDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("SystrayObjDel %#lx\n", WinGetXwin(win));
 
-   swin = ct->objs[i].obj;
+   swin = (SWin *) ct->objs[i].obj;
 
    ContainerObjectDel(ct, swin);
 
@@ -243,7 +243,7 @@ SystrayObjMapUnmap(Container * ct, Window win)
    if (i < 0)
       return;
 
-   swin = ct->objs[i].obj;
+   swin = (SWin *) ct->objs[i].obj;
 
    if (SystrayGetXembedInfo(win, xembed_info) >= 0)
      {
@@ -334,7 +334,7 @@ SystraySelectionEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      case ClientMessage:
-	SystrayEventClientMessage(prm, &(ev->xclient));
+	SystrayEventClientMessage((Container *) prm, &(ev->xclient));
 	break;
      }
 }
@@ -377,7 +377,7 @@ SystrayEvent(Win _win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 static void
 SystrayItemEvent(Win win, XEvent * ev, void *prm)
 {
-   Container          *ct = prm;
+   Container          *ct = (Container *) prm;
 
    if (EDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("SystrayItemEvent %2d %#lx\n", ev->type, ev->xany.window);
@@ -491,6 +491,7 @@ SystrayObjPlace(Container * ct __UNUSED__, ContainerObject * cto,
      }
 }
 
+extern const ContainerOps SystrayOps;
 const ContainerOps  SystrayOps = {
    SystrayInit,
    SystrayExit,

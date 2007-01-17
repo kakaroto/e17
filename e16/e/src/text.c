@@ -270,7 +270,7 @@ TextstateTextFit1(TextState * ts, char **ptext, int *pw, int textwidth_limit)
    len = strlen(text);
    if (len <= 1)
       return;
-   new_line = Emalloc(len + 10);
+   new_line = EMALLOC(char, len + 10);
    if (!new_line)
       return;
 
@@ -308,7 +308,8 @@ TextstateTextFit2(TextState * ts, char **ptext, int *pw, int textwidth_limit)
    int                 len;
 
    len = strlen(text);
-   new_line = Emalloc(len + 20);
+   new_line = EMALLOC(char, len + 20);
+
    if (!new_line)
       return;
 
@@ -355,14 +356,15 @@ TextstateTextFitMB(TextState * ts, char **ptext, int *pw, int textwidth_limit)
    if (wc_len <= 1)
       goto done;
 
-   wc_line = (wchar_t *) Emalloc((wc_len + 1) * sizeof(wchar_t));
+   wc_line = EMALLOC(wchar_t, wc_len + 1);
    if (!wc_line)
       goto done;
 
    if (EwcStrToWcs(text, len, wc_line, wc_len) <= 0)
       goto done;
 
-   new_line = Emalloc(len + 10);
+   new_line = EMALLOC(char, len + 10);
+
    if (!new_line)
       goto done;
 
@@ -446,7 +448,7 @@ _xft_Load(TextState * ts, int fallback __UNUSED__)
    }
 #endif
 
-   fdc = Emalloc(sizeof(FontCtxXft));
+   fdc = EMALLOC(FontCtxXft, 1);
    if (!fdc)
       return -1;
    fdc->font = font;
@@ -597,7 +599,7 @@ _xfs_Load(TextState * ts, int fallback)
 	   Eprintf("- XFontsOfFontSet %d: %s\n", i, fn[i]);
      }
 
-   fdc = Emalloc(sizeof(FontCtxXfs));
+   fdc = EMALLOC(FontCtxXfs, 1);
    if (!fdc)
       return -1;
    fdc->font = font;
@@ -709,7 +711,7 @@ _xfont_Load(TextState * ts, int fallback __UNUSED__)
    return -1;			/* Failed */
 
  done:
-   fdc = Emalloc(sizeof(FontCtxXfont));
+   fdc = EMALLOC(FontCtxXfont, 1);
    if (!fdc)
       return -1;
    fdc->font = font;

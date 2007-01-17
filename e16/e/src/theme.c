@@ -147,7 +147,7 @@ append_merge_dir(char *dir, char ***list, int *count)
 	       }
 
 	     (*count)++;
-	     (*list) = Erealloc(*list, (*count) * sizeof(char *));
+	     *list = EREALLOC(char *, *list, *count);
 
 	     (*list)[(*count) - 1] = Estrdup(ss);
 	  }
@@ -509,6 +509,7 @@ static const CfgItem ThemeCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModTheme;
 const EModule       ModTheme = {
    "theme", "th",
    ThemesSighan,

@@ -263,7 +263,7 @@ EobjWindowCreate(int type, int x, int y, int w, int h, int su, const char *name)
 {
    EObj               *eo;
 
-   eo = Ecalloc(1, sizeof(EObj));
+   eo = ECALLOC(EObj, 1);
 
    eo->floating = 1;
    EobjSetLayer(eo, 20);
@@ -304,11 +304,15 @@ EobjRegister(Window xwin, int type)
    if (!win)
       return NULL;
 
-   eo = Ecalloc(1, sizeof(EObj));
+   eo = ECALLOC(EObj, 1);
    if (!eo)
       return eo;
 
+#if __cplusplus
+   if (attr.c_class == InputOnly)
+#else
    if (attr.class == InputOnly)
+#endif
       eo->inputonly = 1;
 
    eo->external = 1;
@@ -586,7 +590,7 @@ EobjsSlideBy(EObj ** peo, int num, int dx, int dy, int speed)
    if (num <= 0)
       return;
 
-   xy = Emalloc(sizeof(struct _xy) * num);
+   xy = EMALLOC(struct _xy, num);
    if (!xy)
       return;
 

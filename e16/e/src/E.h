@@ -24,7 +24,9 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 #include "config.h"
 
 #include "alert.h"
@@ -61,9 +63,6 @@
 
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
-
-/* dmalloc debugging */
-/*#include <dmalloc.h> */
 
 /* sgi's stdio.h has:
  * 

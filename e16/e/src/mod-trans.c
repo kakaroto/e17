@@ -25,6 +25,7 @@
 #include "dialog.h"
 #include "emodule.h"
 #include "iclass.h"
+#include "settings.h"
 #include "timers.h"
 
 #ifdef ENABLE_THEME_TRANSPARENCY
@@ -321,6 +322,7 @@ static const CfgItem TransCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModTransparency;
 const EModule       ModTransparency = {
    "transparency", "tr",
    TransparencySighan,

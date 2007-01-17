@@ -58,7 +58,7 @@ void
 AddPage(Object * obj)
 {
    num_pages++;
-   page = realloc(page, sizeof(Page) * (num_pages));
+   page = EREALLOC(Page, page, num_pages);
    page[num_pages - 1].name = NULL;
    page[num_pages - 1].count = 0;
    page[num_pages - 1].obj = NULL;
@@ -91,8 +91,7 @@ AddObject(Object * obj)
 {
    page[num_pages - 1].count++;
    page[num_pages - 1].obj =
-      realloc(page[num_pages - 1].obj,
-	      sizeof(Object) * (page[num_pages - 1].count));
+      EREALLOC(Object, page[num_pages - 1].obj, page[num_pages - 1].count);
    page[num_pages - 1].obj[page[num_pages - 1].count - 1].type = obj->type;
    page[num_pages - 1].obj[page[num_pages - 1].count - 1].object = obj->object;
 }
@@ -110,7 +109,8 @@ BuildObj(Object * obj, char *var, char *param)
      case IMG:
 	if (!obj->object)
 	  {
-	     img = obj->object = malloc(sizeof(Img_));
+	     img = EMALLOC(Img_, 1);
+	     obj->object = img;
 	     img->src = NULL;
 	     img->src2 = NULL;
 	     img->src3 = NULL;
@@ -138,7 +138,8 @@ BuildObj(Object * obj, char *var, char *param)
      case FONT:
 	if (!obj->object)
 	  {
-	     fn = obj->object = malloc(sizeof(Font_));
+	     fn = EMALLOC(Font_, 1);
+	     obj->object = fn;
 	     fn->face = NULL;
 	     fn->r = 0;
 	     fn->g = 0;
@@ -167,7 +168,8 @@ BuildObj(Object * obj, char *var, char *param)
      case P:
 	if (!obj->object)
 	  {
-	     p = obj->object = malloc(sizeof(P_));
+	     p = EMALLOC(P_, 1);
+	     obj->object = p;
 	     p->align = 0;
 	  }
 	if (!strcmp(var, "align"))
@@ -182,7 +184,8 @@ BuildObj(Object * obj, char *var, char *param)
      case PAGE:
 	if (!obj->object)
 	  {
-	     pg = obj->object = malloc(sizeof(Page));
+	     pg = EMALLOC(Page, 1);
+	     obj->object = pg;
 	     pg->columns = 1;
 	     pg->padding = 1;
 	     pg->name = NULL;
@@ -354,9 +357,11 @@ GetObjects(FILE * f)
    while ((count = fread(buf, 1, 4096, f)) > 0)
      {
 	if (!fdat)
-	   fdat = malloc(count);
+	   fdat = EMALLOC(char, count);
+
 	else
-	   fdat = realloc(fdat, (fdat_size + count));
+	   fdat = EREALLOC(char, fdat, fdat_size + count);
+
 	memcpy(fdat + fdat_size, buf, count);
 	fdat_size += count;
      }
@@ -513,7 +518,7 @@ RenderPage(Window win, int page_num, int w, int h)
    int                 x, y;
    int                 justification = 0;
    int                 firstp = 1;
-   Imlib_Image        *im;
+   Imlib_Image         im;
    int                 wastext = 0;
 
    ts.fontname = NULL;
@@ -557,7 +562,7 @@ RenderPage(Window win, int page_num, int w, int h)
 	switch (pg->obj[i].type)
 	  {
 	  case IMG:
-	     img = pg->obj[i].object;
+	     img = (Img_ *) pg->obj[i].object;
 	     if (img->src)
 	       {
 		  char                tmp[4096];
@@ -578,7 +583,7 @@ RenderPage(Window win, int page_num, int w, int h)
 		    {
 		       Link               *l;
 
-		       l = malloc(sizeof(Link));
+		       l = EMALLOC(Link, 1);
 		       l->name = strdup(img->link);
 		       l->x = img->x;
 		       l->y = img->y;
@@ -595,7 +600,7 @@ RenderPage(Window win, int page_num, int w, int h)
 	     wastext = 0;
 	     break;
 	  case FONT:
-	     fn = pg->obj[i].object;
+	     fn = (Font_ *) pg->obj[i].object;
 	     ts.fontname = NULL;
 	     ESetColor(&ts.fg_col, 0, 0, 0);
 	     ESetColor(&ts.bg_col, 0, 0, 0);
@@ -616,7 +621,7 @@ RenderPage(Window win, int page_num, int w, int h)
 	     TextStateLoadFont(&ts);
 	     break;
 	  case P:
-	     p = pg->obj[i].object;
+	     p = (P_ *) pg->obj[i].object;
 	     if (p)
 		justification = (int)((p->align / 100) * 1024);
 	     else
@@ -627,7 +632,7 @@ RenderPage(Window win, int page_num, int w, int h)
 		firstp = 0;
 	     break;
 	  case TEXT:
-	     txt = pg->obj[i].object;
+	     txt = (char *)pg->obj[i].object;
 	     wc = 1;
 	     ss[0] = 0;
 	     s[0] = 0;
@@ -741,7 +746,7 @@ RenderPage(Window win, int page_num, int w, int h)
 		    {
 		       if (pg->obj[j].type == IMG)
 			 {
-			    img = pg->obj[j].object;
+			    img = (Img_ *) pg->obj[j].object;
 			    if ((img->w > 0) && (img->h > 0))
 			      {
 				 int                 ix, iy, iix, iiy;
@@ -846,7 +851,8 @@ RenderPage(Window win, int page_num, int w, int h)
 					{
 					   if (pg->obj[j].type == IMG)
 					     {
-						img = pg->obj[j].object;
+						img =
+						   (Img_ *) pg->obj[j].object;
 						if ((img->w > 0)
 						    && (img->h > 0))
 						  {
@@ -950,7 +956,7 @@ RenderPage(Window win, int page_num, int w, int h)
 				 {
 				    Link               *l;
 
-				    l = malloc(sizeof(Link));
+				    l = EMALLOC(Link, 1);
 				    l->name = strdup(link_link);
 				    l->x = x + off + lx + extra;
 				    l->y = y;

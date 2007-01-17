@@ -25,6 +25,7 @@
 #include "dialog.h"
 #include "e16-ecore_list.h"
 #include "emodule.h"
+#include "settings.h"
 
 #ifdef HAVE_LIBESD
 #include <esd.h>
@@ -96,7 +97,7 @@ LoadWav(const char *file)
 	return NULL;
      }
 
-   s = Emalloc(sizeof(Sample));
+   s = EMALLOC(Sample, 1);
    if (!s)
      {
 	Efree(find);
@@ -132,7 +133,8 @@ LoadWav(const char *file)
    s->rate = (int)in_rate;
 
    s->samples = frame_count * bytes_per_frame;
-   s->data = Emalloc(frame_count * bytes_per_frame);
+   s->data = EMALLOC(unsigned char, frame_count * bytes_per_frame);
+
    frames_read = afReadFrames(in_file, AF_DEFAULT_TRACK, s->data, frame_count);
    afCloseFile(in_file);
    Efree(find);
@@ -192,7 +194,7 @@ SampleDestroy(Sample * s)
 static void
 _SclassSampleDestroy(void *data, void *user_data __UNUSED__)
 {
-   SoundClass         *sclass = data;
+   SoundClass         *sclass = (SoundClass *) data;
 
    if (!sclass || !sclass->sample)
       return;
@@ -206,7 +208,7 @@ SclassCreate(const char *name, const char *file)
 {
    SoundClass         *sclass;
 
-   sclass = Emalloc(sizeof(SoundClass));
+   sclass = EMALLOC(SoundClass, 1);
    if (!sclass)
       return NULL;
 
@@ -254,13 +256,13 @@ SclassApply(SoundClass * sclass)
 static int
 _SclassMatchName(const void *data, const void *match)
 {
-   return strcmp(((const SoundClass *)data)->name, match);
+   return strcmp(((const SoundClass *)data)->name, (const char *)match);
 }
 
 static SoundClass  *
 SclassFind(const char *name)
 {
-   return ecore_list_find(sound_list, _SclassMatchName, name);
+   return (SoundClass *) ecore_list_find(sound_list, _SclassMatchName, name);
 }
 
 void
@@ -525,6 +527,7 @@ static const CfgItem SoundCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModSound;
 const EModule       ModSound = {
    "sound", "audio",
    SoundSighan,

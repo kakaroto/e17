@@ -175,7 +175,7 @@ ListWinGroupMembersForEwin(const EWin * ewin, int action, char nogroup,
 	  }
 
       do_add:
-	gwins = Erealloc(gwins, (gwcnt + 1) * sizeof(EWin *));
+	gwins = EREALLOC(EWin *, gwins, gwcnt + 1);
 	gwins[gwcnt] = ew;
 	gwcnt++;
      }
@@ -183,7 +183,7 @@ ListWinGroupMembersForEwin(const EWin * ewin, int action, char nogroup,
  done:
    if (gwins == NULL)
      {
-	gwins = Emalloc(sizeof(EWin *));
+	gwins = EMALLOC(EWin *, 1);
 	gwins[0] = (EWin *) ewin;
 	gwcnt = 1;
      }
@@ -216,7 +216,7 @@ EwinListTransients(const EWin * ewin, int *num, int group)
 
 	if (EwinGetTransientFor(ew) == EwinGetClientXwin(ewin))
 	  {
-	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
+	     lst = EREALLOC(EWin *, lst, j + 1);
 	     lst[j++] = ew;
 	  }
      }
@@ -239,7 +239,7 @@ EwinListTransients(const EWin * ewin, int *num, int group)
 	if (EwinGetTransientFor(ew) == VRoot.xwin &&
 	    EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin))
 	  {
-	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
+	     lst = EREALLOC(EWin *, lst, j + 1);
 	     lst[j++] = ew;
 	  }
      }
@@ -276,7 +276,7 @@ EwinListTransientFor(const EWin * ewin, int *num)
 	     EwinGetTransientFor(ewin) == VRoot.xwin &&
 	     EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin)))
 	  {
-	     lst = Erealloc(lst, (j + 1) * sizeof(EWin *));
+	     lst = EREALLOC(EWin *, lst, j + 1);
 	     lst[j++] = ew;
 	  }
      }

@@ -71,7 +71,8 @@ GetLine(char *s, int size, FILE * f)
 
    if (buffer == NULL)
      {
-	buffer = Emalloc(LINE_BUFFER_SIZE);
+	buffer = EMALLOC(char, LINE_BUFFER_SIZE);
+
 	if (buffer == NULL)
 	   return NULL;
 	buffer[LINE_BUFFER_SIZE - 1] = '\0';

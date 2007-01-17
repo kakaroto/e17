@@ -38,12 +38,11 @@
 #define USE_LIBC_STRDUP  1	/* Use libc strdup if present */
 #endif
 
-typedef struct _client
+typedef struct
 {
    Window              win;
    char               *msg;
-}
-Client;
+} Client;
 
 Window              CommsSetup(void);
 Window              CommsFindCommsWindow(void);
@@ -55,9 +54,12 @@ void                ClientDestroy(Client * c);
 void                Alert(const char *fmt, ...);
 
 #define Ecalloc     calloc
-#define Emalloc     malloc
 #define Efree       free
+#define Emalloc     malloc
 #define Erealloc    realloc
+
+#define EMALLOC(type, num) (type*)Emalloc((num)*sizeof(type))
+#define EREALLOC(type, ptr, num) (type*)Erealloc(ptr, (num)*sizeof(type))
 
 #if USE_LIBC_STRDUP
 #define Estrdup(s) ((s) ? strdup(s) : NULL)

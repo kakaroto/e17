@@ -75,7 +75,7 @@ WarpFocusWinCreate(void)
 {
    WarpFocusWin       *fw;
 
-   fw = Ecalloc(1, sizeof(WarpFocusWin));
+   fw = ECALLOC(WarpFocusWin, 1);
    if (!fw)
       return fw;
 
@@ -307,8 +307,7 @@ WarpFocus(int delta)
 		   ((!ewin->state.iconified) || (Conf.warplist.showiconified)))
 	       {
 		  warplist_num++;
-		  warplist = Erealloc(warplist,
-				      warplist_num * sizeof(WarplistItem));
+		  warplist = EREALLOC(WarplistItem, warplist, warplist_num);
 		  wl = warplist + warplist_num - 1;
 		  wl->ewin = ewin;
 	       }
@@ -483,6 +482,7 @@ static const CfgItem WarplistCfgItems[] = {
 };
 #define N_CFG_ITEMS (sizeof(WarplistCfgItems)/sizeof(CfgItem))
 
+extern const EModule ModWarplist;
 const EModule       ModWarplist = {
    "warplist", "warp",
    WarplistSighan,

@@ -99,7 +99,7 @@ EwinCreate(int type)
 {
    EWin               *ewin;
 
-   ewin = Ecalloc(1, sizeof(EWin));
+   ewin = ECALLOC(EWin, 1);
 
    ewin->type = type;
    ewin->state.state = (Mode.wm.startup) ? EWIN_STATE_STARTUP : EWIN_STATE_NEW;
@@ -1819,7 +1819,7 @@ EwinUpdateOpacity(EWin * ewin)
 static void
 EwinSlideIn(int val __UNUSED__, void *data)
 {
-   EWin               *ewin = data;
+   EWin               *ewin = (EWin *) data;
 
    /* May be gone */
    if (!EwinFindByPtr(ewin))
@@ -2300,7 +2300,7 @@ EwinsSighan(int sig, void *prm)
 	EwinsTouch(DesksGetCurrent());
 	break;
      case ESIGNAL_BACKGROUND_CHANGE:
-	EwinsTouch(prm);
+	EwinsTouch((Desk *) prm);
 	break;
      }
 }
@@ -2317,6 +2317,7 @@ static const IpcItem EwinsIpcArray[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModEwins;
 const EModule       ModEwins = {
    "ewins", NULL,
    EwinsSighan,

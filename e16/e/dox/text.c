@@ -41,8 +41,8 @@ TextGetLines(const char *text, int *count)
 	while ((text[j]) && (text[j] != '\n'))
 	   j++;
 	k++;
-	list = realloc(list, sizeof(char *) * k);
-	list[k - 1] = malloc(sizeof(char) * (j - i + 1));
+	list = EREALLOC(char *, list, k);
+	list[k - 1] = EMALLOC(char, j - i + 1);
 
 	strncpy(list[k - 1], &(text[i]), (j - i));
 	list[k - 1][j - i] = 0;

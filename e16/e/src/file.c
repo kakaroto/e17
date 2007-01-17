@@ -57,7 +57,7 @@ E_ls(const char *dir, int *num)
 	*num = dirlen;
 	return NULL;
      }
-   names = (char **)Emalloc(dirlen * sizeof(char *));
+   names = EMALLOC(char *, dirlen);
 
    if (!names)
       return NULL;
@@ -305,7 +305,8 @@ path_test(const char *file, unsigned int test)
 	len = (ep) ? (unsigned int)(ep - cp) : strlen(cp);
 	if (len == 0)
 	   continue;
-	p = Erealloc(s, len + exelen + 2);
+	p = EREALLOC(char, s, len + exelen + 2);
+
 	if (!p)
 	   break;
 	s = p;

@@ -233,7 +233,7 @@ static const HiwinRender HiwinRenderPixmap = {
 static void
 HiwinEvent(Win win, XEvent * ev, void *prm)
 {
-   Hiwin              *phi = prm;
+   Hiwin              *phi = (Hiwin *) prm;
 
    if (phi->evcb)
       phi->evcb(win, ev, phi->data);
@@ -243,7 +243,7 @@ HiwinEvent(Win win, XEvent * ev, void *prm)
 static void
 HiwinEwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 {
-   Hiwin              *phi = prm;
+   Hiwin              *phi = (Hiwin *) prm;
 
 #if DEBUG_HIWIN
    Eprintf("HiwinEwinEvent type=%d %s\n", ev->type, EwinGetTitle(phi->ewin));
@@ -263,7 +263,7 @@ HiwinCreate(void)
 {
    Hiwin              *phi;
 
-   phi = Ecalloc(1, sizeof(Hiwin));
+   phi = ECALLOC(Hiwin, 1);
    if (!phi)
       return NULL;
 

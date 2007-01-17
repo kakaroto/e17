@@ -168,8 +168,7 @@ SetupX(const char *dstr)
 		  /* We are the master */
 		  Mode.wm.child_count++;
 		  Mode.wm.children =
-		     Erealloc(Mode.wm.children,
-			      sizeof(pid_t) * Mode.wm.child_count);
+		     EREALLOC(pid_t, Mode.wm.children, Mode.wm.child_count);
 		  Mode.wm.children[Mode.wm.child_count - 1] = pid;
 	       }
 	     else

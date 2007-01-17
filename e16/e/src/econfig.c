@@ -54,7 +54,7 @@ e16_db_open(const char *name)
    if (!fs)
       return NULL;
 
-   ecf = Ecalloc(1, sizeof(ECfgFile));
+   ecf = ECALLOC(ECfgFile, 1);
    if (!ecf)
       goto done;
 
@@ -78,7 +78,7 @@ e16_db_open_read(const char *name)
    if (!fs)
       return NULL;
 
-   ecf = Ecalloc(1, sizeof(ECfgFile));
+   ecf = ECALLOC(ECfgFile, 1);
    if (!ecf)
       goto done;
 
@@ -101,7 +101,7 @@ e16_db_open_read(const char *name)
 	   continue;		/* Ignore bad format */
 
 	i = ecf->nitms++;
-	ecf->pitms = Erealloc(ecf->pitms, ecf->nitms * sizeof(ECfgFileItem));
+	ecf->pitms = EREALLOC(ECfgFileItem, ecf->pitms, ecf->nitms);
 	ecf->pitms[i].key = Estrdup(key);
 	ecf->pitms[i].value = Estrdup(s + len);
      }

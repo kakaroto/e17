@@ -46,7 +46,7 @@ ScreenAdd(int type, int head, int x, int y, unsigned int w, unsigned int h)
    EScreen            *es;
 
    n_screens++;
-   p_screens = Erealloc(p_screens, n_screens * sizeof(EScreen));
+   p_screens = EREALLOC(EScreen, p_screens, n_screens);
 
    es = p_screens + n_screens - 1;
    es->type = type;

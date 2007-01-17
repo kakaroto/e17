@@ -68,7 +68,7 @@ SlideoutCreate(const char *name, char dir)
 {
    Slideout           *s;
 
-   s = Ecalloc(1, sizeof(Slideout));
+   s = ECALLOC(Slideout, 1);
    if (!s)
       return NULL;
 
@@ -343,7 +343,7 @@ SlideoutAddButton(Slideout * s, Button * b)
       return;
 
    s->num_objs++;
-   s->objs = Erealloc(s->objs, sizeof(EObj *) * s->num_objs);
+   s->objs = EREALLOC(EObj *, s->objs, s->num_objs);
    s->objs[s->num_objs - 1] = eob;
    ButtonSwallowInto(b, EoObj(s));
    ButtonSetCallback(b, SlideoutButtonCallback, EoObj(s));
@@ -362,7 +362,7 @@ SlideoutRemoveButton(Slideout * s, Button * b)
 static void
 SlideoutHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 {
-   Slideout           *s = prm;
+   Slideout           *s = (Slideout *) prm;
 
    switch (ev->type)
      {
@@ -491,13 +491,13 @@ SlideoutsSighan(int sig, void *prm)
 static int
 _SlideoutMatchName(const void *data, const void *match)
 {
-   return strcmp(((const Slideout *)data)->name, match);
+   return strcmp(((const Slideout *)data)->name, (const char *)match);
 }
 
 static Slideout    *
 SlideoutFind(const char *name)
 {
-   return ecore_list_find(slideout_list, _SlideoutMatchName, name);
+   return (Slideout *) ecore_list_find(slideout_list, _SlideoutMatchName, name);
 }
 
 static void
@@ -525,6 +525,7 @@ static const IpcItem SlideoutsIpcArray[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModSlideouts;
 const EModule       ModSlideouts = {
    "slideouts", "slideout",
    SlideoutsSighan,

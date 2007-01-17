@@ -128,7 +128,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    if (sticky && ontop == 1)
       desk = 0;
 
-   b = Ecalloc(1, sizeof(Button));
+   b = ECALLOC(Button, 1);
 
    if (!button_list)
       button_list = ecore_list_new();
@@ -217,13 +217,13 @@ ButtonDestroy(Button * b)
 static int
 _ButtonMatchName(const void *data, const void *match)
 {
-   return strcmp(EoGetName((const Button *)data), match);
+   return strcmp(EoGetName((const Button *)data), (const char *)match);
 }
 
 Button             *
 ButtonFind(const char *name)
 {
-   return ecore_list_find(button_list, _ButtonMatchName, name);
+   return (Button *) ecore_list_find(button_list, _ButtonMatchName, name);
 }
 
 static void
@@ -626,7 +626,7 @@ ButtonEventMouseOut(Button * b, XEvent * ev)
 static ActionClass *
 ButtonGetAclass(void *data)
 {
-   Button             *b = data;
+   Button             *b = (Button *) data;
 
    /* Validate button */
    if (!ecore_list_goto(button_list, b))
@@ -1025,8 +1025,8 @@ typedef struct
 static void
 _ButtonHideShow(void *data, void *prm)
 {
-   Button             *b = data;
-   button_match_data  *bmd = prm;
+   Button             *b = (Button *) data;
+   button_match_data  *bmd = (button_match_data *) prm;
    int                 match;
 
    if (bmd->id >= 0 && bmd->id != b->id)
@@ -1166,6 +1166,7 @@ static const CfgItem ButtonsCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModButtons;
 const EModule       ModButtons = {
    "buttons", "btn",
    ButtonsSighan,

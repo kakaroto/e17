@@ -48,9 +48,9 @@ ProgressbarCreate(const char *name, int w, int h)
    int                 x, y, tw, th;
    EImageBorder       *pad;
 
-   p = Ecalloc(1, sizeof(Progressbar));
+   p = ECALLOC(Progressbar, 1);
    pnum++;
-   plist = Erealloc(plist, pnum * sizeof(Progressbar *));
+   plist = EREALLOC(Progressbar *, plist, pnum);
    plist[pnum - 1] = p;
 
    p->ic = ImageclassFind("PROGRESS_BAR", 1);
@@ -142,7 +142,7 @@ ProgressbarDestroy(Progressbar * p)
      }
    else
      {
-	plist = Erealloc(plist, pnum * sizeof(Progressbar *));
+	plist = EREALLOC(Progressbar *, plist, pnum);
      }
 }
 

@@ -347,13 +347,14 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
 
    /* for every floating rect in order, "fit" it into the sorted list */
    i = ((fixed_count + floating_count) * 2) + 2;
-   xarray = Emalloc(i * sizeof(int));
-   yarray = Emalloc(i * sizeof(int));
-   filled = Emalloc(i * i * sizeof(char));
-   spaces = Emalloc(i * i * sizeof(RectBox));
+   xarray = EMALLOC(int, i);
+   yarray = EMALLOC(int, i);
+   filled = EMALLOC(unsigned char, i * i);
+
+   spaces = EMALLOC(RectBox, i * i);
    leftover = NULL;
    if (floating_count)
-      leftover = Emalloc(floating_count * sizeof(int));
+      leftover = EMALLOC(int, floating_count);
 
    if (!xarray || !yarray || !filled || !spaces)
       goto done;
@@ -559,7 +560,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    lst1 = EwinListOrderGet(&num);
    if (lst1)
      {
-	lst = malloc(num * sizeof(EWin *));
+	lst = EMALLOC(EWin *, num);
 	if (!lst)
 	   return;
 	memcpy(lst, lst1, num * sizeof(EWin *));
@@ -787,7 +788,7 @@ ArrangeGetRectList(RectBox ** pfixed, int *nfixed, RectBox ** pfloating,
    if (!lst)
       goto done;
 
-   fixed = Emalloc(sizeof(RectBox) * num);
+   fixed = EMALLOC(RectBox, num);
    if (!fixed)
       goto done;
    rb = fixed;
@@ -823,8 +824,7 @@ ArrangeGetRectList(RectBox ** pfixed, int *nfixed, RectBox ** pfloating,
 		  if (!EoIsSticky(ew) && !EoIsFloating(ew) &&
 		      ew->area_x == ax && ew->area_y == ay)
 		    {
-		       floating =
-			  Erealloc(floating, (nflt + 1) * sizeof(RectBox));
+		       floating = EREALLOC(RectBox, floating, nflt + 1);
 		       rb = floating + nflt++;
 		       rb->data = ew;
 		       rb->x = EoGetX(ew);
@@ -934,7 +934,7 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
    newrect.h = EoGetH(ewin);
    newrect.p = EoGetLayer(ewin);
 
-   ret = Emalloc(sizeof(RectBox) * (num + 1));
+   ret = EMALLOC(RectBox, num + 1);
    ArrangeRects(fixed, num, &newrect, 1, ret, 0, 0, VRoot.w, VRoot.h,
 		ARRANGE_BY_SIZE, 1);
 
@@ -993,7 +993,7 @@ ArrangeEwins(const char *params)
 
    ArrangeGetRectList(&fixed, &nfix, &floating, &nflt, NULL);
 
-   ret = Emalloc(sizeof(RectBox) * (nflt + nfix));
+   ret = EMALLOC(RectBox, nflt + nfix);
    ArrangeRects(fixed, nfix, floating, nflt, ret, 0, 0, VRoot.w, VRoot.h,
 		method, 1);
 

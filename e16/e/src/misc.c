@@ -179,7 +179,7 @@ ETimedLoopNext(void)
 
    EobjsRepaint();
 
-   return y;
+   return (int)y;
 }
 
 /*

@@ -153,7 +153,7 @@ AlertButtonText(int btn, const char *text)
    if (!text)
       return NULL;
 
-   s = Emalloc(strlen(text) + 6);
+   s = EMALLOC(char, strlen(text) + 6);
    if (!s)
       return NULL;
 

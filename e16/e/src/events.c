@@ -547,7 +547,7 @@ EventsFetch(XEvent ** evq_p, int *evq_n)
 	if (count > qsz)
 	  {
 	     qsz = count;
-	     evq = Erealloc(evq, sizeof(XEvent) * qsz);
+	     evq = EREALLOC(XEvent, evq, qsz);
 	  }
 	ev = evq + i;
 	for (; i < count; i++, ev++)

@@ -268,11 +268,22 @@ if test "x$enable_roothacklib" = "xyes"; then
 fi
 AM_CONDITIONAL(BUILD_ROOTHACKLIB, test "x$enable_roothacklib" = "xyes")
 
+AC_ARG_ENABLE(gcc-cpp,
+  [  --enable-gcc-cpp   compile everything as if it were C++ @<:@default=no@:>@],,
+  enable_gcc_cpp=no) 
+if test "x$enable_gcc_cpp" = "xyes"; then
+  CC="g++"
+  CPPFLAGS="-x c++"
+fi
+
 AC_ARG_ENABLE(gcc-warnings,
   [  --enable-gcc-warnings   enable GCC compiler warnings @<:@default=no@:>@],,
   enable_gcc_warnings=no) 
 if test "x$enable_gcc_warnings" = "xyes"; then
-  CFLAGS="$CFLAGS -W -Wall -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes -Waggregate-return -Wcast-align -Wpointer-arith -Wshadow -Wwrite-strings #-Wunreachable-code"
+  CFLAGS="$CFLAGS -W -Wall -Waggregate-return -Wcast-align -Wpointer-arith -Wshadow -Wwrite-strings"
+  if test "x$enable_gcc_cpp" != "xyes"; then
+    CFLAGS="$CFLAGS -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes"
+  fi
 fi
 
 AC_SUBST(E_X_LIBS)

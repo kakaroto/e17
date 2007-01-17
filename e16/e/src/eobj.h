@@ -26,6 +26,10 @@
 #include "etypes.h"
 #include "xwin.h"
 
+#if USE_COMPOSITE
+typedef struct _eoci ECmWinInfo;
+#endif
+
 typedef struct _eobj EObj;
 
 struct _eobj
@@ -49,7 +53,7 @@ struct _eobj
    unsigned            argb:1;
 #if USE_COMPOSITE
    unsigned int        opacity;
-   void               *cmhook;
+   ECmWinInfo         *cmhook;
    unsigned int        serial;
 #endif
    struct

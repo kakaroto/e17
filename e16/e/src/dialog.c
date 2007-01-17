@@ -221,11 +221,7 @@ DialogBindKey(Dialog * d, const char *key, DialogCallbackFunc * func, int val,
 	      void *data)
 {
    d->num_bindings++;
-   if (!d->keybindings)
-      d->keybindings = Emalloc(sizeof(DKeyBind) * d->num_bindings);
-   else
-      d->keybindings =
-	 Erealloc(d->keybindings, sizeof(DKeyBind) * d->num_bindings);
+   d->keybindings = EREALLOC(DKeyBind, d->keybindings, d->num_bindings);
    d->keybindings[d->num_bindings - 1].val = val;
    d->keybindings[d->num_bindings - 1].func = func;
    d->keybindings[d->num_bindings - 1].data = data;
@@ -245,7 +241,7 @@ DialogCreate(const char *name)
 {
    Dialog             *d;
 
-   d = Ecalloc(1, sizeof(Dialog));
+   d = ECALLOC(Dialog, 1);
    if (!d)
       return NULL;
 
@@ -298,13 +294,13 @@ DialogDestroy(Dialog * d)
 static int
 _DialogMatchName(const void *data, const void *match)
 {
-   return strcmp(((const Dialog *)data)->name, match);
+   return strcmp(((const Dialog *)data)->name, (const char *)match);
 }
 
 Dialog             *
 DialogFind(const char *name)
 {
-   return ecore_list_find(dialog_list, _DialogMatchName, name);
+   return (Dialog *) ecore_list_find(dialog_list, _DialogMatchName, name);
 }
 
 void
@@ -351,10 +347,10 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
    int                 w, h;
    EImageBorder       *pad;
 
-   db = Emalloc(sizeof(DButton));
+   db = EMALLOC(DButton, 1);
 
    d->num_buttons++;
-   d->button = Erealloc(d->button, d->num_buttons * (sizeof(DButton *)));
+   d->button = EREALLOC(DButton *, d->button, d->num_buttons);
    d->button[d->num_buttons - 1] = db;
 
    db->parent = d;
@@ -509,7 +505,7 @@ DialogRedraw(Dialog * d)
 static void
 DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
-   Dialog             *d = ewin->data;
+   Dialog             *d = (Dialog *) ewin->data;
 
    if (!d || Mode.mode != MODE_NONE || !EoIsShown(ewin))
       return;
@@ -521,7 +517,7 @@ DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 static void
 DialogEwinClose(EWin * ewin)
 {
-   DialogDestroy(ewin->data);
+   DialogDestroy((Dialog *) ewin->data);
    ewin->client.win = NULL;
    ewin->data = NULL;
 }
@@ -703,7 +699,7 @@ DialogItemCreate(int type)
 {
    DItem              *di;
 
-   di = Ecalloc(1, sizeof(DItem));
+   di = ECALLOC(DItem, 1);
 
    di->type = type;
    di->align_h = 512;
@@ -839,8 +835,7 @@ DialogAddItem(DItem * dii, int type)
      {
 	dii->item.table.num_items++;
 	dii->item.table.items =
-	   Erealloc(dii->item.table.items,
-		    sizeof(DItem *) * dii->item.table.num_items);
+	   EREALLOC(DItem *, dii->item.table.items, dii->item.table.num_items);
 	dii->item.table.items[dii->item.table.num_items - 1] = di;
 	di->dlg = dii->dlg;
      }
@@ -1287,8 +1282,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		int                 i, r, c, x, y;
 		int                *col_size, *row_size;
 
-		col_size = Emalloc(sizeof(int) * cols);
-		row_size = Emalloc(sizeof(int) * rows);
+		col_size = EMALLOC(int, cols);
+		row_size = EMALLOC(int, rows);
 
 		row_size[0] = 0;
 		for (i = 0; i < cols; i++)
@@ -1321,7 +1316,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			  c = 0;
 			  r++;
 			  rows++;
-			  row_size = Erealloc(row_size, sizeof(int) * rows);
+			  row_size = EREALLOC(int, row_size, rows);
 
 			  row_size[rows - 1] = 0;
 		       }

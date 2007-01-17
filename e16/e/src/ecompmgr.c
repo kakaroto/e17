@@ -85,7 +85,7 @@
 #define INV_GEOM    (INV_POS | INV_SIZE)
 #define INV_ALL     (INV_POS | INV_SIZE | INV_CLIP | INV_OPACITY | INV_SHADOW | INV_PIXMAP)
 
-typedef struct
+struct _eoci
 {
    EObj               *next;	/* Paint order */
    EObj               *prev;	/* Paint order */
@@ -113,7 +113,7 @@ typedef struct
    unsigned int        opacity;
 
    unsigned long       damage_sequence;	/* sequence when damage was created */
-} ECmWinInfo;
+};
 
 /*
  * Configuration
@@ -412,10 +412,10 @@ EPictureCreateSolid(Bool argb, double a, double r, double g, double b)
    pa.repeat = True;
    pict = XRenderCreatePicture(dpy, pmap, pictfmt, CPRepeat, &pa);
 
-   c.alpha = a * 0xffff;
-   c.red = r * 0xffff;
-   c.green = g * 0xffff;
-   c.blue = b * 0xffff;
+   c.alpha = (unsigned short)(a * 0xffff);
+   c.red = (unsigned short)(r * 0xffff);
+   c.green = (unsigned short)(g * 0xffff);
+   c.blue = (unsigned short)(b * 0xffff);
    XRenderFillRectangle(dpy, PictOpSrc, pict, &c, 0, 0, 1, 1);
 
    XFreePixmap(dpy, pmap);
@@ -706,7 +706,8 @@ make_gaussian_map(double r)
    double              t;
    double              g;
 
-   c = malloc(sizeof(conv) + size * size * sizeof(double));
+   c = (conv *) EMALLOC(char, sizeof(conv) + size * size * sizeof(double));
+
    c->size = size;
    c->data = (double *)(c + 1);
    t = 0.0;
@@ -811,7 +812,8 @@ make_shadow(double opacity, int width, int height)
    unsigned char       d;
    int                 x_diff;
 
-   data = calloc(swidth * sheight, sizeof(unsigned char));
+   data = ECALLOC(unsigned char, swidth * sheight);
+
    if (!data)
       return NULL;
 
@@ -821,7 +823,7 @@ make_shadow(double opacity, int width, int height)
 			 swidth, sheight, 8, swidth * sizeof(unsigned char));
    if (!ximage)
      {
-	free(data);
+	Efree(data);
 	return NULL;
      }
 
@@ -1220,7 +1222,7 @@ ECompMgrWinFadeCancel(EObj * eo)
 static void
 doECompMgrWinFade(int val, void *data)
 {
-   EObj               *eo = data;
+   EObj               *eo = (EObj *) data;
    ECmWinInfo         *cw;
    unsigned int        op = (unsigned int)val;
 
@@ -1441,7 +1443,7 @@ ECompMgrWinNew(EObj * eo)
 	return;
      }
 
-   cw = Ecalloc(1, sizeof(ECmWinInfo));
+   cw = ECALLOC(ECmWinInfo, 1);
    if (!cw)
       return;
 
@@ -2171,17 +2173,8 @@ ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
 
    if (n_expose == size_expose)
      {
-	if (expose_rects)
-	  {
-	     expose_rects = realloc(expose_rects,
-				    (size_expose + more) * sizeof(XRectangle));
-	     size_expose += more;
-	  }
-	else
-	  {
-	     expose_rects = malloc(more * sizeof(XRectangle));
-	     size_expose = more;
-	  }
+	expose_rects = EREALLOC(XRectangle, expose_rects, size_expose + more);
+	size_expose += more;
      }
    expose_rects[n_expose].x = ev->xexpose.x;
    expose_rects[n_expose].y = ev->xexpose.y;
@@ -2214,7 +2207,7 @@ ECompMgrShadowsInit(int mode, int cleanup)
    Mode_compmgr.opac_sharp = .01 * Conf_compmgr.shadows.sharp.opacity;
 
    if (gaussianMap)
-      free(gaussianMap);
+      Efree(gaussianMap);
    gaussianMap = NULL;
 
    if (mode != ECM_SHADOWS_OFF)
@@ -2345,7 +2338,7 @@ ECompMgrStop(void)
    lst1 = EobjListStackGet(&num);
    if (num > 0)
      {
-	lst = Emalloc(num * sizeof(EObj *));
+	lst = EMALLOC(EObj *, num);
 	if (lst)
 	  {
 	     memcpy(lst, lst1, num * sizeof(EObj *));
@@ -2439,7 +2432,7 @@ ECompMgrConfigSet(const cfg_composite * cfg)
 static void
 ECompMgrHandleWindowEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 {
-   EObj               *eo = prm;
+   EObj               *eo = (EObj *) prm;
 
    D2printf("ECompMgrHandleWindowEvent: type=%d\n", ev->type);
 
@@ -2713,6 +2706,7 @@ static const CfgItem CompMgrCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModCompMgr;
 const EModule       ModCompMgr = {
    "compmgr", "cm",
    ECompMgrSighan,

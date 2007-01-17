@@ -197,7 +197,7 @@ EWMH_SetDesktopRoots(void)
    Ecore_X_Window     *wl;
 
    n_desks = DesksGetNumber();
-   wl = Emalloc(n_desks * sizeof(Ecore_X_Window));
+   wl = EMALLOC(Ecore_X_Window, n_desks);
    if (!wl)
       return;
 
@@ -233,7 +233,8 @@ EWMH_SetWorkArea(void)
 
    n_desks = DesksGetNumber();
    n_coord = 4 * n_desks;
-   p_coord = Emalloc(n_coord * sizeof(unsigned int));
+   p_coord = EMALLOC(unsigned int, n_coord);
+
    if (!p_coord)
       return;
 
@@ -264,7 +265,8 @@ EWMH_SetDesktopViewport(void)
 
    n_desks = DesksGetNumber();
    n_coord = 2 * n_desks;
-   p_coord = Emalloc(n_coord * sizeof(unsigned int));
+   p_coord = EMALLOC(unsigned int, n_coord);
+
    if (!p_coord)
       return;
 
@@ -301,7 +303,7 @@ EWMH_SetClientList(void)
    lst = EwinListOrderGet(&num);
    if (num > 0)
      {
-	wl = Emalloc(num * sizeof(Ecore_X_Window));
+	wl = EMALLOC(Ecore_X_Window, num);
 	for (i = 0; i < num; i++)
 	   wl[i] = EwinGetClientXwin(lst[i]);
 	ecore_x_netwm_client_list_set(VRoot.xwin, wl, num);
@@ -324,7 +326,7 @@ EWMH_SetClientStacking(void)
    lst = EwinListStackGet(&num);
    if (num > 0)
      {
-	wl = Emalloc(num * sizeof(Ecore_X_Window));
+	wl = EMALLOC(Ecore_X_Window, num);
 	for (i = 0; i < num; i++)
 	   wl[i] = EwinGetClientXwin(lst[num - i - 1]);
 	ecore_x_netwm_client_list_stacking_set(VRoot.xwin, wl, num);
@@ -932,7 +934,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	 * It is assumed(!) that only the MAXIMIZE H/V ones can be set
 	 * in one message.
 	 */
-	int                 action;
+	unsigned int        action;
 	Atom                atom, atom2;
 
 	action = ev->data.l[0];
@@ -971,7 +973,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 		 atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ)
 	  {
 	     void                (*func) (EWin *, const char *);
-	     int                 maxh, maxv;
+	     unsigned int        maxh, maxv;
 
 	     maxh = ewin->state.maximized_horz;
 	     maxv = ewin->state.maximized_vert;

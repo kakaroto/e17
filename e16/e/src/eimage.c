@@ -250,7 +250,7 @@ void
 EImageTile(EImage * im, EImage * tile, int blend, int tw, int th,
 	   int dx, int dy, int dw, int dh, int ox, int oy)
 {
-   Imlib_Image        *tim;
+   Imlib_Image         tim;
    int                 x, y, tx, ty, ww, hh;
    int                 sw, sh;
 
@@ -424,7 +424,7 @@ ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst, Pixmap * pdst,
 	  int sx, int sy, int sw, int sh,
 	  int dx, int dy, int dw, int dh, int scale)
 {
-   Imlib_Image        *im;
+   Imlib_Image         im;
 
    scale = (scale) ? 2 : 1;
 
@@ -447,7 +447,7 @@ EDrawableDumpImage(Drawable draw, const char *txt)
 {
    static int          seqn = 0;
    char                buf[1024];
-   Imlib_Image        *im;
+   Imlib_Image         im;
    int                 w, h;
 
    w = h = 0;

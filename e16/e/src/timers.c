@@ -55,7 +55,7 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
    Qentry             *qe, *ptr, *pptr;
 
    RemoveTimerEvent(name);
-   qe = Emalloc(sizeof(Qentry));
+   qe = EMALLOC(Qentry, 1);
    if (!qe)
       return;
 
@@ -182,7 +182,7 @@ IdlerAdd(int order, IdlerFunc * func, void *data)
 {
    Idler              *id;
 
-   id = Emalloc(sizeof(Idler));
+   id = EMALLOC(Idler, 1);
    if (!id)
       return NULL;
 

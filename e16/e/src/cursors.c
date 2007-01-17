@@ -100,7 +100,7 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 	curs = (native_id == 999) ? None : XCreateFontCursor(disp, native_id);
      }
 
-   ec = Emalloc(sizeof(ECursor));
+   ec = EMALLOC(ECursor, 1);
    ec->name = Estrdup(name);
    ec->file = Estrdup(image);
    ec->cursor = curs;
@@ -140,13 +140,13 @@ ECursorDestroy(ECursor * ec)
 static int
 _ECursorMatchName(const void *data, const void *match)
 {
-   return strcmp(((const ECursor *)data)->name, match);
+   return strcmp(((const ECursor *)data)->name, (const char *)match);
 }
 
 ECursor            *
 ECursorFind(const char *name)
 {
-   return ecore_list_find(cursor_list, _ECursorMatchName, name);
+   return (ECursor *) ecore_list_find(cursor_list, _ECursorMatchName, name);
 }
 
 static int
@@ -395,6 +395,7 @@ static const IpcItem CursorIpcArray[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModCursors;
 const EModule       ModCursors = {
    "cursor", "csr",
    CursorSighan,

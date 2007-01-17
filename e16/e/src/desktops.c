@@ -36,6 +36,7 @@
 #include "grabs.h"
 #include "hints.h"
 #include "iclass.h"
+#include "settings.h"
 #include "timers.h"
 #include "tooltips.h"
 #include "xwin.h"
@@ -398,7 +399,7 @@ DeskCreate(int desk, int configure)
    if (desk < 0 || desk >= ENLIGHTENMENT_CONF_NUM_DESKTOPS)
       return NULL;
 
-   dsk = Ecalloc(1, sizeof(Desk));
+   dsk = ECALLOC(Desk, 1);
 
    desks.desk[desk] = dsk;
    dsk->num = desk;
@@ -1430,7 +1431,7 @@ DeskRestackSimple(Desk * dsk)
 
 #define _APPEND_TO_WIN_LIST(win) \
   { \
-     wl = Erealloc(wl, ++tot * sizeof(Window)); \
+     wl = EREALLOC(Window, wl, ++tot); \
      wl[tot - 1] = win; \
   }
 void
@@ -1700,7 +1701,7 @@ DeskCurrentGotoArea(int ax, int ay)
 		continue;
 
 	     wnum++;
-	     wl = Erealloc(wl, sizeof(EObj *) * wnum);
+	     wl = EREALLOC(EObj *, wl, wnum);
 	     wl[wnum - 1] = &ewin->o;
 	  }
 
@@ -2938,6 +2939,7 @@ static const CfgItem DesksCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModDesktops;
 const EModule       ModDesktops = {
    "desktops", "desk",
    DesksSighan,

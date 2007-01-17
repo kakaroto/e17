@@ -157,7 +157,7 @@ doStartupWindowsOpen(int val, void *data __UNUSED__)
 
 #if TEST_STARTUP_USING_TIMER
    ESync();
-   k = TIME_STEP * Conf.desks.slidespeed / 2;
+   k = (int)(TIME_STEP * Conf.desks.slidespeed / 2);
    if (k <= 0)
       k = 1;
    val += k;

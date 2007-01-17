@@ -630,7 +630,8 @@ GNOME_SetDeskNames(void)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE_NAMES, False);
 
    n_desks = DesksGetNumber();
-   names = Emalloc(n_desks * sizeof(char *));
+   names = EMALLOC(char *, n_desks);
+
    if (!names)
       return;
 
@@ -664,7 +665,8 @@ GNOME_SetClientList(void)
    j = 0;
    if (lst)
      {
-	wl = Emalloc(num * sizeof(unsigned int));
+	wl = EMALLOC(unsigned int, num);
+
 	for (i = 0; i < num; i++)
 	  {
 	     if (!lst[i]->props.skip_ext_task && !EwinIsTransientChild(lst[i]))

@@ -55,7 +55,7 @@ Estrdup(const char *s)
    if (!s)
       return NULL;
    sz = strlen(s);
-   ss = Emalloc(sz + 1);
+   ss = EMALLOC(char, sz + 1);
    strncpy(ss, s, sz + 1);
    return ss;
 #endif
@@ -73,7 +73,7 @@ Estrndup(const char *s, size_t n)
 
    if (!s)
       return NULL;
-   ss = Emalloc(n + 1);
+   ss = EMALLOC(char, n + 1);
    strncpy(ss, s, n);
    ss[n] = '\0';
    return ss;
@@ -93,7 +93,7 @@ Estrdupcat2(char *ss, const char *s1, const char *s2)
    l1 = (s1) ? strlen(s1) : 0;
    l2 = (s2) ? strlen(s2) : 0;
 
-   s = Erealloc(ss, len + l1 + l2 + 1);
+   s = EREALLOC(char, ss, len + l1 + l2 + 1);
    if (!s)
       return NULL;
    if (s1 && l1)
@@ -115,7 +115,7 @@ StrlistDup(char **lst, int num)
    if (!lst || num <= 0)
       return NULL;
 
-   ss = (char **)Emalloc((num + 1) * sizeof(char *));
+   ss = EMALLOC(char *, num + 1);
    for (i = 0; i < num; i++)
       ss[i] = Estrdup(lst[i]);
    ss[i] = NULL;
@@ -148,12 +148,13 @@ StrlistJoin(char **lst, int num)
    s = NULL;
 
    size = strlen(lst[0]) + 1;
-   s = Emalloc(size);
+   s = EMALLOC(char, size);
    strcpy(s, lst[0]);
    for (i = 1; i < num; i++)
      {
 	size += strlen(lst[i]) + 1;
-	s = Erealloc(s, size);
+	s = EREALLOC(char, s, size);
+
 	strcat(s, " ");
 	strcat(s, lst[i]);
      }
@@ -226,7 +227,8 @@ StrlistDecodeEscaped(const char *str, int *pnum)
 	if (*s == '\0')
 	   break;
 
-	lst = Erealloc(lst, (num + 1) * sizeof(char *));
+	lst = EREALLOC(char *, lst, num + 1);
+
 	lst[num] = NULL;
 	len = 0;
 
@@ -236,7 +238,8 @@ StrlistDecodeEscaped(const char *str, int *pnum)
 	     if (!p)
 		p = s + strlen(s);
 
-	     lst[num] = Erealloc(lst[num], len + p - s + 1);
+	     lst[num] = EREALLOC(char, lst[num], len + p - s + 1);
+
 	     memcpy(lst[num] + len, s, p - s);
 	     len += p - s;
 	     lst[num][len] = '\0';
@@ -262,7 +265,8 @@ StrlistDecodeEscaped(const char *str, int *pnum)
      }
 
    /* Append NULL item */
-   lst = Erealloc(lst, (num + 1) * sizeof(char *));
+   lst = EREALLOC(char *, lst, num + 1);
+
    lst[num] = NULL;
 
    *pnum = num;
@@ -293,7 +297,8 @@ StrlistFromString(const char *str, int delim, int *num)
 	if (len <= 0)
 	   continue;
 
-	lst = Erealloc(lst, (n + 2) * sizeof(char *));
+	lst = EREALLOC(char *, lst, n + 2);
+
 	lst[n++] = Estrndup(s, len);
      }
 

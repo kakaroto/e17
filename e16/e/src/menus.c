@@ -37,6 +37,7 @@
 #include "menus.h"
 #include "parse.h"
 #include "screen.h"
+#include "settings.h"
 #include "tclass.h"
 #include "timers.h"
 #include "tooltips.h"
@@ -75,7 +76,7 @@ struct _menuitem
    Menu               *menu;
    ImageClass         *icon_iclass;
    char               *text;
-   void               *params;
+   char               *params;
    Menu               *child;
    char                state;
    PmapMask            pmm[3];
@@ -197,7 +198,7 @@ MenuHide(Menu * m)
 static void
 MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
-   Menu               *m = ewin->data;
+   Menu               *m = (Menu *) ewin->data;
 
    if (!m)
       return;
@@ -387,7 +388,7 @@ MenuStyleCreate(const char *name)
 {
    MenuStyle          *ms;
 
-   ms = Ecalloc(1, sizeof(MenuStyle));
+   ms = ECALLOC(MenuStyle, 1);
    if (!ms)
       return NULL;
 
@@ -407,7 +408,7 @@ MenuItemCreate(const char *text, ImageClass * iclass,
 {
    MenuItem           *mi;
 
-   mi = Ecalloc(1, sizeof(MenuItem));
+   mi = ECALLOC(MenuItem, 1);
 
    mi->icon_iclass = iclass;
    if (iclass)
@@ -424,13 +425,14 @@ MenuItemCreate(const char *text, ImageClass * iclass,
 static int
 _MenuStyleMatchName(const void *data, const void *match)
 {
-   return strcmp(((const MenuStyle *)data)->name, match);
+   return strcmp(((const MenuStyle *)data)->name, (const char *)match);
 }
 
 MenuStyle          *
 MenuStyleFind(const char *name)
 {
-   return ecore_list_find(menu_style_list, _MenuStyleMatchName, name);
+   return (MenuStyle *) ecore_list_find(menu_style_list, _MenuStyleMatchName,
+					name);
 }
 
 void
@@ -504,7 +506,7 @@ MenuGetName(const Menu * m)
 const char         *
 MenuGetData(const Menu * m)
 {
-   return m->data;
+   return (const char *)m->data;
 }
 
 time_t
@@ -532,7 +534,7 @@ MenuCreate(const char *name, const char *title, Menu * parent, MenuStyle * ms)
 {
    Menu               *m;
 
-   m = Ecalloc(1, sizeof(Menu));
+   m = ECALLOC(Menu, 1);
    if (!m)
       return m;
 
@@ -551,7 +553,7 @@ MenuDestroy(Menu * m)
    if (!m)
       return;
 
-   m = ecore_list_remove_node(menu_list, m);
+   m = (Menu *) ecore_list_remove_node(menu_list, m);
    if (!m)
       return;
 
@@ -635,7 +637,7 @@ void
 MenuAddItem(Menu * m, MenuItem * item)
 {
    m->num++;
-   m->items = Erealloc(m->items, sizeof(MenuItem *) * m->num);
+   m->items = EREALLOC(MenuItem *, m->items, m->num);
    m->items[m->num - 1] = item;
 }
 
@@ -1031,10 +1033,10 @@ MenusDestroyLoaded(void)
 static int
 _MenuMatchName(const void *data, const void *match)
 {
-   const Menu         *m = data;
+   const Menu         *m = (const Menu *)data;
 
-   if ((m->name && !strcmp(match, m->name)) ||
-       (m->alias && !strcmp(match, m->alias)))
+   if ((m->name && !strcmp((const char *)match, m->name)) ||
+       (m->alias && !strcmp((const char *)match, m->alias)))
       return 0;
 
    return 1;
@@ -1045,7 +1047,7 @@ MenuFind(const char *name)
 {
    Menu               *m;
 
-   m = ecore_list_find(menu_list, _MenuMatchName, name);
+   m = (Menu *) ecore_list_find(menu_list, _MenuMatchName, name);
    if (m)
       return (m);
 
@@ -2127,6 +2129,7 @@ static const CfgItem MenusCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModMenus;
 const EModule       ModMenus = {
    "menus", "menu",
    MenusSighan,

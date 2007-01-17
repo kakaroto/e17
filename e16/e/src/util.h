@@ -48,6 +48,10 @@
 #define Efree       free
 #define Erealloc    realloc
 
+#define ECALLOC(type, num) (type*)Ecalloc(num, sizeof(type))
+#define EMALLOC(type, num) (type*)Emalloc((num)*sizeof(type))
+#define EREALLOC(type, ptr, num) (type*)Erealloc(ptr, (num)*sizeof(type))
+
 #define _EFREE(p)    do { if (p) { Efree(p); p = NULL; } } while (0)
 #define _EFDUP(p, s) do { if (p) Efree(p); p = Estrdup(s); } while (0)
 

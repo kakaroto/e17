@@ -534,7 +534,7 @@ CB_ConfigureComposite(Dialog * d, int val, void *data __UNUSED__)
       return;
 
    /* Configure and read back */
-   cfg = DialogGetData(d);
+   cfg = (cfg_composite *) DialogGetData(d);
    ECompMgrConfigSet(cfg);
    ECompMgrConfigGet(cfg);
 }
@@ -657,7 +657,7 @@ static void
 CB_DlgSelect(Dialog * d, int val, void *data)
 {
    const DialogDef    *dd = dialogs[val];
-   DItem              *table = data;
+   DItem              *table = (DItem *) data;
 
    if (!table)
       return;

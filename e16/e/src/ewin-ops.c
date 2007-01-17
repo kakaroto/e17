@@ -180,8 +180,9 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
    if (num_wins <= 0)
       return;
 
-   x = Emalloc(sizeof(int) * num_wins);
-   y = Emalloc(sizeof(int) * num_wins);
+   x = EMALLOC(int, num_wins);
+   y = EMALLOC(int, num_wins);
+
    if (!x || !y)
       goto done;
 
@@ -1359,7 +1360,7 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
    int                 i, num;
    const Border       *b;
 
-   if (ewin->state.fullscreen == on)
+   if (ewin->state.fullscreen == (unsigned)on)
       return;
 
    if (on)

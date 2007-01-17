@@ -514,7 +514,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
    EventCallbackRegister(EoGetWin(ewin), 0, BorderFrameHandleEvents, ewin);
 
    if (b->num_winparts > 0)
-      ewin->bits = Emalloc(sizeof(EWinBit) * b->num_winparts);
+      ewin->bits = EMALLOC(EWinBit, b->num_winparts);
 
    for (i = 0; i < b->num_winparts; i++)
      {
@@ -562,7 +562,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
       Window             *wl;
       int                 j = 0;
 
-      wl = Emalloc((b->num_winparts + 1) * sizeof(Window));
+      wl = EMALLOC(Window, b->num_winparts + 1);
       for (i = b->num_winparts - 1; i >= 0; i--)
 	{
 	   if (b->part[i].ontop)
@@ -623,7 +623,7 @@ BorderCreate(const char *name)
 {
    Border             *b;
 
-   b = Ecalloc(1, sizeof(Border));
+   b = ECALLOC(Border, 1);
    if (!b)
       return NULL;
 
@@ -680,13 +680,13 @@ BorderDestroy(Border * b)
 static int
 _BorderMatchName(const void *data, const void *match)
 {
-   return strcmp(((const Border *)data)->name, match);
+   return strcmp(((const Border *)data)->name, (const char *)match);
 }
 
 Border             *
 BorderFind(const char *name)
 {
-   return ecore_list_find(border_list, _BorderMatchName, name);
+   return (Border *) ecore_list_find(border_list, _BorderMatchName, name);
 }
 
 static void
@@ -702,7 +702,7 @@ BorderWinpartAdd(Border * b, ImageClass * iclass, ActionClass * aclass,
    b->num_winparts++;
    n = b->num_winparts;
 
-   b->part = Erealloc(b->part, n * sizeof(WinPart));
+   b->part = EREALLOC(WinPart, b->part, n);
 
    if (!iclass)
       iclass = ImageclassFind(NULL, 0);

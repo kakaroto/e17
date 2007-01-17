@@ -55,13 +55,14 @@ Ecore_List         *container_list = NULL;
 static int
 _ContainerMatchName(const void *data, const void *match)
 {
-   return strcmp(((const Container *)data)->name, match);
+   return strcmp(((const Container *)data)->name, (const char *)match);
 }
 
 static Container   *
 ContainerFind(const char *name)
 {
-   return ecore_list_find(container_list, _ContainerMatchName, name);
+   return (Container *) ecore_list_find(container_list, _ContainerMatchName,
+					name);
 }
 
 static Container   *
@@ -72,7 +73,7 @@ ContainerCreate(const char *name)
    if (ContainerFind(name))
       return NULL;
 
-   ct = Ecalloc(1, sizeof(Container));
+   ct = ECALLOC(Container, 1);
    if (!ct)
       return NULL;
 
@@ -241,7 +242,7 @@ ContainerReconfigure(Container * ct)
 static void
 ContainerEwinLayout(EWin * ewin, int *px, int *py, int *pw, int *ph)
 {
-   Container          *ct = ewin->data;
+   Container          *ct = (Container *) ewin->data;
 
    ContainerLayout(ct, px, py, pw, ph);
 
@@ -252,7 +253,7 @@ ContainerEwinLayout(EWin * ewin, int *px, int *py, int *pw, int *ph)
 static void
 ContainerEwinMoveResize(EWin * ewin, int resize)
 {
-   Container          *ct = ewin->data;
+   Container          *ct = (Container *) ewin->data;
 
    if (!resize && !ct->do_update && !TransparencyUpdateNeeded())
       return;
@@ -267,7 +268,7 @@ ContainerEwinMoveResize(EWin * ewin, int resize)
 static void
 ContainerEwinClose(EWin * ewin)
 {
-   ContainerDestroy(ewin->data, 0);
+   ContainerDestroy((Container *) ewin->data, 0);
    ewin->client.win = NULL;
    ewin->data = NULL;
 }
@@ -354,7 +355,7 @@ ContainerObjectAdd(Container * ct, void *obj)
       return -1;
 
    ct->num_objs++;
-   ct->objs = Erealloc(ct->objs, sizeof(ContainerObject) * ct->num_objs);
+   ct->objs = EREALLOC(ContainerObject, ct->objs, ct->num_objs);
    ct->objs[ct->num_objs - 1].obj = obj;
 
    return ct->num_objs - 1;	/* Success */
@@ -374,7 +375,7 @@ ContainerObjectDel(Container * ct, void *obj)
       ct->objs[j] = ct->objs[j + 1];
    ct->num_objs--;
    if (ct->num_objs > 0)
-      ct->objs = Erealloc(ct->objs, sizeof(ContainerObject) * ct->num_objs);
+      ct->objs = EREALLOC(ContainerObject, ct->objs, ct->num_objs);
    else
      {
 	Efree(ct->objs);
@@ -1527,10 +1528,9 @@ CB_ConfigureContainer(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 static void
 CB_IconSizeSlider(Dialog * d, int val __UNUSED__, void *data)
 {
-   DItem              *di;
+   DItem              *di = (DItem *) data;
    char                s[256];
 
-   di = data;
    Esnprintf(s, sizeof(s), _("Icon size: %2d"), tmp_ib_iconsize);
    DialogItemSetText(di, s);
    DialogDrawItems(d, di, 0, 0, 99999, 99999);
@@ -1539,7 +1539,7 @@ CB_IconSizeSlider(Dialog * d, int val __UNUSED__, void *data)
 static void
 _DlgFillContainer(Dialog * d, DItem * table, void *data)
 {
-   Container          *ct = data;
+   Container          *ct = (Container *) data;
    DItem              *di, *table2;
    DItem              *radio1, *radio2, *radio3, *radio4, *label;
    char                s[256];
@@ -2023,6 +2023,7 @@ static const CfgItem ContainersCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModIconboxes;
 const EModule       ModIconboxes = {
    "iconboxes", "ibox",
    ContainersSighan,

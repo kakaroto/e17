@@ -29,6 +29,7 @@
 #include "emodule.h"
 #include "eobj.h"
 #include "iclass.h"
+#include "settings.h"
 #include "tclass.h"
 #include "timers.h"
 #include "tooltips.h"
@@ -99,7 +100,7 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
    if (ic0 == NULL || tclass == NULL)
       return NULL;
 
-   tt = Ecalloc(1, sizeof(ToolTip));
+   tt = ECALLOC(ToolTip, 1);
    if (!tt)
       return NULL;
 
@@ -312,7 +313,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    if (ac)
      {
 	num = ActionclassGetActionCount(ac);
-	heights = Emalloc(num * sizeof(int));
+	heights = EMALLOC(int, num);
 
 	for (i = 0; i < num; i++)
 	  {
@@ -714,13 +715,13 @@ TooltipHide(ToolTip * tt)
 static int
 _TooltipMatchName(const void *data, const void *match)
 {
-   return strcmp(((const ToolTip *)data)->name, match);
+   return strcmp(((const ToolTip *)data)->name, (const char *)match);
 }
 
 ToolTip            *
 TooltipFind(const char *name)
 {
-   return ecore_list_find(tt_list, _TooltipMatchName, name);
+   return (ToolTip *) ecore_list_find(tt_list, _TooltipMatchName, name);
 }
 
 /*
@@ -926,6 +927,7 @@ static const CfgItem TooltipsCfgItems[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModTooltips;
 const EModule       ModTooltips = {
    "tooltips", "tt",
    TooltipsSighan,

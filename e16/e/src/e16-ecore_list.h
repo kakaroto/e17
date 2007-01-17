@@ -107,8 +107,13 @@ EAPI int            ecore_list_set_free_cb(Ecore_List * list,
 #endif /* USE_ECORE */
 
 /* e16 additions */
+#if __cplusplus
+#define ECORE_LIST_FOR_EACH(list, p) \
+   for (ecore_list_goto_first(list); (p = (typeof(p))ecore_list_next(list)) != NULL;)
+#else
 #define ECORE_LIST_FOR_EACH(list, p) \
    for (ecore_list_goto_first(list); (p = ecore_list_next(list)) != NULL;)
+#endif
 
 EAPI void          *ecore_list_remove_node(Ecore_List * list, void *_data);
 EAPI void         **ecore_list_items_get(Ecore_List * list, int *pnum);

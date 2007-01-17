@@ -87,7 +87,8 @@ IpcPrintf(const char *fmt, ...)
    len = Evsnprintf(tmp, sizeof(tmp), fmt, args);
    va_end(args);
 
-   bufptr = Erealloc(bufptr, bufsiz + len + 1);
+   bufptr = EREALLOC(char, bufptr, bufsiz + len + 1);
+
    strcpy(bufptr + bufsiz, tmp);
    bufsiz += len;
 }
@@ -185,7 +186,7 @@ IpcFindEwins(const char *match, int *pnum, int *pflags)
 		continue;
 	  }
 	nfound++;
-	lst = Erealloc(lst, nfound * sizeof(EWin *));
+	lst = EREALLOC(EWin *, lst, nfound);
 	lst[nfound - 1] = ewin;
 	if (match_one)
 	   break;
@@ -196,7 +197,7 @@ IpcFindEwins(const char *match, int *pnum, int *pflags)
    if (!ewin)
       return NULL;
    nfound = 1;
-   lst = Emalloc(sizeof(EWin *));
+   lst = EMALLOC(EWin *, 1);
    if (!lst)
       return NULL;
    lst[0] = ewin;
@@ -225,25 +226,25 @@ IpcFindEwin(const char *match)
 static int
 SetEwinBoolean(const char *txt, char *item, const char *value, int set)
 {
-   int                 old, new;
+   int                 vold, vnew;
 
-   new = old = *item != 0;	/* Remember old value */
+   vnew = vold = *item != 0;	/* Remember old value */
 
    if (value == NULL || value[0] == '\0')
-      new = !old;
+      vnew = !vold;
    else if (!strcmp(value, "on"))
-      new = 1;
+      vnew = 1;
    else if (!strcmp(value, "off"))
-      new = 0;
+      vnew = 0;
    else if (!strcmp(value, "?"))
-      IpcPrintf("%s: %s", txt, (old) ? "on" : "off");
+      IpcPrintf("%s: %s", txt, (vold) ? "on" : "off");
    else
       IpcPrintf("Error: %s", value);
 
-   if (new != old)
+   if (vnew != vold)
      {
 	if (set)
-	   *item = new;
+	   *item = vnew;
 	return 1;
      }
 
@@ -1557,7 +1558,8 @@ IPC_GetList(int *pnum)
      }
 
    num = sizeof(IPCArray) / sizeof(IpcItem);
-   lst = (const IpcItem **)Emalloc(num * sizeof(IpcItem *));
+   lst = EMALLOC(const IpcItem *, num);
+
    for (i = 0; i < num; i++)
       lst[i] = &IPCArray[i];
 
@@ -1636,11 +1638,11 @@ doEFuncDeferred(int val __UNUSED__, void *data)
    void              **prm = (void **)data;
    EWin               *ewin;
 
-   ewin = prm[0];
+   ewin = (EWin *) prm[0];
    if (ewin && !EwinFindByPtr(ewin))
       return;
 
-   EFunc(ewin, prm[1]);
+   EFunc(ewin, (const char *)prm[1]);
 
    Efree(prm[1]);
    Efree(data);
@@ -1653,7 +1655,8 @@ EFuncDefer(EWin * ewin, const char *cmd)
    char                s[32];
    void              **prm;
 
-   prm = Emalloc(2 * sizeof(void *));
+   prm = EMALLOC(void *, 2);
+
    if (!prm)
       return;
    prm[0] = ewin;

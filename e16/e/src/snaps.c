@@ -30,6 +30,7 @@
 #include "file.h"
 #include "groups.h"
 #include "parse.h"
+#include "settings.h"
 #include "snaps.h"
 #include "timers.h"
 #include "xwin.h"
@@ -77,7 +78,7 @@ SnapshotCreate(const char *name)
 {
    Snapshot           *sn;
 
-   sn = Ecalloc(1, sizeof(Snapshot));
+   sn = ECALLOC(Snapshot, 1);
    if (!sn)
       return NULL;
 
@@ -94,7 +95,7 @@ static void
 SnapshotDestroy(Snapshot * sn)
 {
    /* Just making sure */
-   sn = ecore_list_remove_node(ss_list, sn);
+   sn = (Snapshot *) ecore_list_remove_node(ss_list, sn);
    if (!sn)
       return;
 
@@ -194,8 +195,8 @@ SnapshotEwinMatch(const Snapshot * sn, const EWin * ewin)
 static int
 SnapshotEwinFindMatchCmd(const void *data, const void *match)
 {
-   const Snapshot     *sn = data;
-   const EWin         *ewin = match;
+   const Snapshot     *sn = (Snapshot *) data;
+   const EWin         *ewin = (EWin *) match;
 
    return sn->used ||
       !(sn->startup_id && SEQ(sn->cmd, ewin->icccm.wm_command) &&
@@ -205,8 +206,8 @@ SnapshotEwinFindMatchCmd(const void *data, const void *match)
 static int
 SnapshotEwinFindMatch(const void *data, const void *match)
 {
-   const Snapshot     *sn = data;
-   const EWin         *ewin = match;
+   const Snapshot     *sn = (Snapshot *) data;
+   const EWin         *ewin = (EWin *) match;
 
    return sn->used || !SnapshotEwinMatch(sn, ewin);
 }
@@ -224,10 +225,10 @@ SnapshotEwinFind(EWin * ewin)
       return NULL;
 
    /* If exec'ed by snap try matching command exactly */
-   sn = ecore_list_find(ss_list, SnapshotEwinFindMatchCmd, ewin);
+   sn = (Snapshot *) ecore_list_find(ss_list, SnapshotEwinFindMatchCmd, ewin);
 
    if (!sn)
-      sn = ecore_list_find(ss_list, SnapshotEwinFindMatch, ewin);
+      sn = (Snapshot *) ecore_list_find(ss_list, SnapshotEwinFindMatch, ewin);
 
    if (sn && !(sn->match_flags & SNAP_MATCH_MULTIPLE))
      {
@@ -429,7 +430,7 @@ SnapEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 		       if (sn->groups)
 			  Efree(sn->groups);
 
-		       sn->groups = Emalloc(sizeof(int) * num_groups);
+		       sn->groups = EMALLOC(int, num_groups);
 
 		       sn->num_groups = num_groups;
 
@@ -568,7 +569,7 @@ typedef struct
    {
       char                title;
       char                name;
-      char                class;
+      char                clss;
       char                role;
    } match;
 
@@ -596,7 +597,7 @@ static void
 CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
 {
    EWin               *ewin;
-   SnapDlgData        *sd = DialogGetData(d);
+   SnapDlgData        *sd = (SnapDlgData *) DialogGetData(d);
    unsigned int        match_flags, use_flags;
 
    if (val >= 2 || !sd)
@@ -613,7 +614,7 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
       match_flags |= SNAP_MATCH_TITLE;
    if (sd->match.name)
       match_flags |= SNAP_MATCH_NAME;
-   if (sd->match.class)
+   if (sd->match.clss)
       match_flags |= SNAP_MATCH_CLASS;
    if (sd->match.role)
       match_flags |= SNAP_MATCH_ROLE;
@@ -675,9 +676,9 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
    Snapshot           *sn;
    SnapDlgData        *sd;
    char                s[1024];
-   const EWin         *ewin = data;
+   const EWin         *ewin = (EWin *) data;
 
-   sd = Ecalloc(1, sizeof(SnapDlgData));
+   sd = ECALLOC(SnapDlgData, 1);
    DialogSetData(d, sd);
    sd->client = EwinGetClientXwin(ewin);
 
@@ -686,7 +687,7 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
      {
 	sd->match.title = (sn->match_flags & SNAP_MATCH_TITLE) != 0;
 	sd->match.name = (sn->match_flags & SNAP_MATCH_NAME) != 0;
-	sd->match.class = (sn->match_flags & SNAP_MATCH_CLASS) != 0;
+	sd->match.clss = (sn->match_flags & SNAP_MATCH_CLASS) != 0;
 	sd->match.role = (sn->match_flags & SNAP_MATCH_ROLE) != 0;
 
 	if (sn->track_changes)
@@ -725,7 +726,7 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
 	if (EwinGetIcccmCName(ewin))
 	  {
 	     sd->match.name = 1;
-	     sd->match.class = 1;
+	     sd->match.clss = 1;
 	     sd->match.role = ewin->icccm.wm_role != NULL;
 	  }
 	else
@@ -765,7 +766,7 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
 	di = DialogAddItem(table, DITEM_CHECKBUTTON);
 	DialogItemSetAlign(di, 0, 512);
 	DialogItemSetText(di, _("Class:"));
-	DialogItemCheckButtonSetPtr(di, &sd->match.class);
+	DialogItemCheckButtonSetPtr(di, &sd->match.clss);
 
 	di = DialogAddItem(table, DITEM_TEXT);
 	DialogItemSetColSpan(di, 3);
@@ -1000,7 +1001,7 @@ CB_RememberWindowSettings(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
    rd = (RememberWinList *) data;
 
    /* Make sure its still there */
-   sn = ecore_list_goto(ss_list, rd->snap);
+   sn = (Snapshot *) ecore_list_goto(ss_list, rd->snap);
 
    if (!sn || !sn->used)
       return;
@@ -1019,7 +1020,7 @@ _DlgFillRemember(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
    num = ecore_list_nodes(ss_list);
-   rd_ewin_list = Emalloc(sizeof(RememberWinList) * (num + 1));
+   rd_ewin_list = EMALLOC(RememberWinList, num + 1);
 
    if (num > 0)
      {
@@ -1375,8 +1376,7 @@ LoadSnapInfo(void)
 	     else if (!strcmp(buf, "GROUP"))
 	       {
 		  sn->num_groups++;
-		  sn->groups =
-		     Erealloc(sn->groups, sizeof(int) * sn->num_groups);
+		  sn->groups = EREALLOC(int, sn->groups, sn->num_groups);
 
 		  sn->groups[sn->num_groups - 1] = atoi(s);
 	       }
@@ -1616,7 +1616,7 @@ static const char   NoText[] = "-NONE-";
 static void
 _SnapShow(void *data, void *prm)
 {
-   Snapshot           *sn = data;
+   Snapshot           *sn = (Snapshot *) data;
    int                 full = prm != NULL;
    char                buf[FILEPATH_LEN_MAX];
    const char         *name;

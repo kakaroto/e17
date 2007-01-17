@@ -433,6 +433,7 @@ static const CfgItem LocaleCfgItems[] = {
 };
 #define N_CFG_ITEMS (sizeof(LocaleCfgItems)/sizeof(CfgItem))
 
+extern const EModule ModLocale;
 const EModule       ModLocale = {
    "locale", NULL,
    NULL,

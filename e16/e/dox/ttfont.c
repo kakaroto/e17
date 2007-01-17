@@ -24,7 +24,7 @@
 
 struct _efont
 {
-   Imlib_Font         *face;
+   Imlib_Font          face;
 };
 
 static void
@@ -80,14 +80,14 @@ Efont_load(const char *file, int size)
 {
    char                s[4096];
    Efont              *f;
-   Imlib_Font         *ff;
+   Imlib_Font          ff;
 
    Esnprintf(s, sizeof(s), "%s/%d", file, size);
    ff = imlib_load_font(s);
    if (ff == NULL)
       return NULL;
 
-   f = Emalloc(sizeof(Efont));
+   f = EMALLOC(Efont, 1);
    f->face = ff;
 
    return f;

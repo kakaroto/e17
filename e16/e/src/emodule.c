@@ -27,7 +27,7 @@
 void
 EModuleRegister(EModule * em)
 {
-   p_modules = Erealloc(p_modules, (n_modules + 1) * sizeof(EModule *));
+   p_modules = EREALLOC(EModule *, p_modules, n_modules + 1);
    p_modules[n_modules++] = em;
 }
 #endif
@@ -182,7 +182,7 @@ ModulesGetCfgItems(const CfgItem *** ppi, int *pni)
 	if (p_modules[i]->cfg.lst)
 	  {
 	     n = p_modules[i]->cfg.num;
-	     pi = Erealloc(pi, (k + n) * sizeof(CfgItem *));
+	     pi = EREALLOC(CfgItem *, pi, k + n);
 	     for (j = 0; j < n; j++)
 		pi[k++] = &(p_modules[i]->cfg.lst[j]);
 	  }
@@ -205,7 +205,8 @@ ModulesGetIpcItems(const IpcItem *** ppi, int *pni)
 	if (p_modules[i]->ipc.lst)
 	  {
 	     n = p_modules[i]->ipc.num;
-	     pi = Erealloc(pi, (k + n) * sizeof(IpcItem *));
+	     pi = EREALLOC(const IpcItem *, pi, k + n);
+
 	     for (j = 0; j < n; j++)
 		pi[k++] = &(p_modules[i]->ipc.lst[j]);
 	  }

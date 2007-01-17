@@ -29,6 +29,7 @@
 #include "ewins.h"
 #include "groups.h"
 #include "parse.h"
+#include "settings.h"
 #include "snaps.h"
 #include "timers.h"
 #include <math.h>
@@ -64,7 +65,7 @@ GroupCreate(void)
    Group              *g;
    double              t;
 
-   g = Emalloc(sizeof(Group));
+   g = EMALLOC(Group, 1);
    if (!g)
       return NULL;
 
@@ -114,7 +115,8 @@ GroupMatchId(const void *data, const void *match)
 Group              *
 GroupFind(int gid)
 {
-   return ecore_list_find(group_list, GroupMatchId, (void *)(long)gid);
+   return (Group *) ecore_list_find(group_list, GroupMatchId,
+				    (void *)(long)gid);
 }
 
 void
@@ -188,7 +190,7 @@ ListWinGroups(const EWin * ewin, char group_select, int *num)
    switch (group_select)
      {
      case GROUP_SELECT_EWIN_ONLY:
-	groups = (Group **) Emalloc(sizeof(Group *) * ewin->num_groups);
+	groups = EMALLOC(Group *, ewin->num_groups);
 	if (!groups)
 	   break;
 	memcpy(groups, ewin->groups, sizeof(Group *) * ewin->num_groups);
@@ -210,7 +212,7 @@ ListWinGroups(const EWin * ewin, char group_select, int *num)
 		    }
 	       }
 	  }
-	groups = (Group **) Emalloc(sizeof(Group *) * (*num - killed));
+	groups = EMALLOC(Group *, *num - killed);
 	if (groups)
 	  {
 	     j = 0;
@@ -241,11 +243,10 @@ AddEwinToGroup(EWin * ewin, Group * g)
 	   if (ewin->groups[i] == g)
 	      return;
 	ewin->num_groups++;
-	ewin->groups =
-	   Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
+	ewin->groups = EREALLOC(Group *, ewin->groups, ewin->num_groups);
 	ewin->groups[ewin->num_groups - 1] = g;
 	g->num_members++;
-	g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
+	g->members = EREALLOC(EWin *, g->members, g->num_members);
 	g->members[g->num_members - 1] = ewin;
 	SnapshotEwinUpdate(ewin, SNAP_USE_GROUPS);
      }
@@ -307,8 +308,7 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 		g->members[j] = g->members[j + 1];
 	     g->num_members--;
 	     if (g->num_members > 0)
-		g->members =
-		   Erealloc(g->members, sizeof(EWin *) * g->num_members);
+		g->members = EREALLOC(EWin *, g->members, g->num_members);
 	     else
 	       {
 		  GroupDestroy(g);
@@ -326,7 +326,7 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 	       }
 	     else
 		ewin->groups =
-		   Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
+		   EREALLOC(Group *, ewin->groups, ewin->num_groups);
 
 	     SaveGroups();
 	     return;
@@ -350,13 +350,15 @@ GetWinGroupMemberNames(Group ** groups, int num)
    int                 i, j;
    char              **group_member_strings;
 
-   group_member_strings = Ecalloc(num, sizeof(char *));
+   group_member_strings = ECALLOC(char *, num);
+
    if (!group_member_strings)
       return NULL;
 
    for (i = 0; i < num; i++)
      {
-	group_member_strings[i] = Emalloc(sizeof(char) * 1024);
+	group_member_strings[i] = EMALLOC(char, 1024);
+
 	if (!group_member_strings[i])
 	   break;
 
@@ -632,7 +634,7 @@ _DlgFillGroupChoose(Dialog * d, DItem * table, void *data)
    DItem              *di, *radio;
    int                 i, num_groups;
    char              **group_member_strings;
-   const char         *message = data;
+   const char         *message = (const char *)data;
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
@@ -734,7 +736,7 @@ typedef struct
 static void
 CB_ConfigureGroup(Dialog * d, int val, void *data __UNUSED__)
 {
-   EwinGroupDlgData   *dd = DialogGetData(d);
+   EwinGroupDlgData   *dd = (EwinGroupDlgData *) DialogGetData(d);
    EWin               *ewin;
    int                 i;
 
@@ -765,7 +767,7 @@ CB_ConfigureGroup(Dialog * d, int val, void *data __UNUSED__)
 static void
 GroupSelectCallback(Dialog * d, int val, void *data __UNUSED__)
 {
-   EwinGroupDlgData   *dd = DialogGetData(d);
+   EwinGroupDlgData   *dd = (EwinGroupDlgData *) DialogGetData(d);
 
    CopyGroupConfig(&(dd->cfg), &(dd->cfgs[dd->current]));
    CopyGroupConfig(&(dd->cfgs[val]), &(dd->cfg));
@@ -778,18 +780,18 @@ GroupSelectCallback(Dialog * d, int val, void *data __UNUSED__)
 static void
 _DlgFillGroups(Dialog * d, DItem * table, void *data)
 {
-   EWin               *ewin = data;
+   EWin               *ewin = (EWin *) data;
    DItem              *radio, *di;
    int                 i;
    char              **group_member_strings;
    EwinGroupDlgData   *dd;
 
-   dd = Ecalloc(1, sizeof(EwinGroupDlgData));
+   dd = ECALLOC(EwinGroupDlgData, 1);
    if (!dd)
       return;
 
    dd->ewin = ewin;
-   dd->cfgs = Emalloc(ewin->num_groups * sizeof(GroupConfig));
+   dd->cfgs = EMALLOC(GroupConfig, ewin->num_groups);
    dd->ngrp = ewin->num_groups;
    dd->current = 0;
    for (i = 0; i < ewin->num_groups; i++)
@@ -1465,6 +1467,7 @@ static const CfgItem GroupsCfgItems[] = {
 };
 #define N_CFG_ITEMS (sizeof(GroupsCfgItems)/sizeof(CfgItem))
 
+extern const EModule ModGroups;
 const EModule       ModGroups = {
    "groups", "grp",
    GroupsSighan,

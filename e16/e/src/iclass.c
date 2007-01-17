@@ -199,7 +199,7 @@ ImagestateCreate(void)
 {
    ImageState         *is;
 
-   is = Emalloc(sizeof(ImageState));
+   is = EMALLOC(ImageState, 1);
    if (!is)
       return NULL;
 
@@ -317,7 +317,7 @@ ImageclassCreate(const char *name)
 {
    ImageClass         *ic;
 
-   ic = Ecalloc(1, sizeof(ImageClass));
+   ic = ECALLOC(ImageClass, 1);
    if (!ic)
       return NULL;
 
@@ -402,7 +402,7 @@ ImageclassGetPadding(ImageClass * ic)
 static int
 _ImageclassMatchName(const void *data, const void *match)
 {
-   return strcmp(((const ImageClass *)data)->name, match);
+   return strcmp(((const ImageClass *)data)->name, (const char *)match);
 }
 
 ImageClass         *
@@ -412,12 +412,16 @@ ImageclassFind(const char *name, int fallback)
 
    if (name)
      {
-	ic = ecore_list_find(iclass_list, _ImageclassMatchName, name);
+	ic =
+	   (ImageClass *) ecore_list_find(iclass_list, _ImageclassMatchName,
+					  name);
 	if (ic || !fallback)
 	   return ic;
      }
 
-   ic = ecore_list_find(iclass_list, _ImageclassMatchName, "__FALLBACK_ICLASS");
+   ic =
+      (ImageClass *) ecore_list_find(iclass_list, _ImageclassMatchName,
+				     "__FALLBACK_ICLASS");
 
    return ic;
 }
@@ -557,7 +561,7 @@ ImageclassConfigLoad(FILE * fs)
 	     goto done;
 	  case ICLASS_LRTB:
 	     {
-		ICToRead->border = Emalloc(sizeof(EImageBorder));
+		ICToRead->border = EMALLOC(EImageBorder, 1);
 
 		l = r = t = b = 0;
 		sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
@@ -1649,6 +1653,7 @@ static const IpcItem ImageclassIpcArray[] = {
 /*
  * Module descriptor
  */
+extern const EModule ModImageclass;
 const EModule       ModImageclass = {
    "imageclass", "ic",
    ImageclassSighan,

@@ -959,7 +959,7 @@ ecore_list_node_new(void)
 {
    Ecore_List_Node    *new_node;
 
-   new_node = malloc(sizeof(Ecore_List_Node));
+   new_node = (Ecore_List_Node *) malloc(sizeof(Ecore_List_Node));
 
    if (!ecore_list_node_init(new_node))
      {
@@ -1019,7 +1019,7 @@ ecore_list_items_get(Ecore_List * list, int *pnum)
    if (num <= 0)
       return NULL;
 
-   lst = malloc(num * sizeof(void *));
+   lst = (void **)malloc(num * sizeof(void *));
    if (!lst)
       return NULL;
 

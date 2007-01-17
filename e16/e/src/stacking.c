@@ -91,7 +91,7 @@ EobjListAdd(EobjList * ewl, EObj * eo, int ontop)
    if (ewl->nwins >= ewl->nalloc)
      {
 	ewl->nalloc += 16;
-	ewl->list = (EObj **) Erealloc(ewl->list, ewl->nalloc * sizeof(EObj *));
+	ewl->list = EREALLOC(EObj *, ewl->list, ewl->nalloc);
      }
 
    if (ewl->layered)
@@ -357,7 +357,7 @@ EwinListStackGet(int *num)
    if (nalloc < newins)
      {
 	nalloc = (newins + 16) & ~0xf;	/* 16 at the time */
-	lst = Erealloc(lst, nalloc * sizeof(EWin *));
+	lst = EREALLOC(EWin *, lst, nalloc);
      }
 
    for (i = j = 0; i < ewl->nwins; i++)
@@ -394,7 +394,7 @@ EwinListGetForDesk(int *num, Desk * dsk)
    if (nalloc < newins)
      {
 	nalloc = (newins + 16) & ~0xf;	/* 16 at the time */
-	lst = Erealloc(lst, nalloc * sizeof(EWin *));
+	lst = EREALLOC(EWin *, lst, nalloc);
      }
 
    for (i = j = 0; i < ewl->nwins; i++)
@@ -425,7 +425,7 @@ EobjListStackGetForDesk(int *num, Desk * dsk)
    if (nalloc < ewl->nwins)
      {
 	nalloc = (ewl->nwins + 16) & ~0xf;	/* 16 at the time */
-	lst = Erealloc(lst, nalloc * sizeof(EWin *));
+	lst = EREALLOC(EObj *, lst, nalloc);
      }
 
    for (i = j = 0; i < ewl->nwins; i++)

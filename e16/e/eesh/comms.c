@@ -150,7 +150,8 @@ CommsGet(Client * c, XEvent * ev)
    if (c->msg)
      {
 	/* append text to end of msg */
-	c->msg = Erealloc(c->msg, strlen(c->msg) + strlen(s) + 1);
+	c->msg = EREALLOC(char, c->msg, strlen(c->msg) + strlen(s) + 1);
+
 	if (!c->msg)
 	   return NULL;
 	strcat(c->msg, s);
@@ -158,7 +159,8 @@ CommsGet(Client * c, XEvent * ev)
    else
      {
 	/* new msg */
-	c->msg = Emalloc(strlen(s) + 1);
+	c->msg = EMALLOC(char, strlen(s) + 1);
+
 	if (!c->msg)
 	   return NULL;
 	strcpy(c->msg, s);
@@ -177,7 +179,7 @@ ClientCreate(Window win)
 {
    Client             *c;
 
-   c = Emalloc(sizeof(Client));
+   c = EMALLOC(Client, 1);
    if (!c)
       return NULL;
 

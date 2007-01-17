@@ -52,7 +52,7 @@ ClientCreate(Window xwin)
    Client             *c;
    char                st[32];
 
-   c = Ecalloc(1, sizeof(Client));
+   c = ECALLOC(Client, 1);
    if (!c)
       return NULL;
 
@@ -177,7 +177,7 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
    for (i = 0; i < 12; i++)
       s[i] = ev->data.b[i + 8];
    sscanf(s2, "%lx", &win);
-   cl = ecore_list_find(client_list, ClientMatchWindow, (void *)win);
+   cl = (Client *) ecore_list_find(client_list, ClientMatchWindow, (void *)win);
    if (!cl)
      {
 	cl = ClientCreate(win);
@@ -188,7 +188,8 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
    if (cl->msg)
      {
 	/* append text to end of msg */
-	cl->msg = Erealloc(cl->msg, strlen(cl->msg) + strlen(s) + 1);
+	cl->msg = EREALLOC(char, cl->msg, strlen(cl->msg) + strlen(s) + 1);
+
 	if (!cl->msg)
 	   return NULL;
 	strcat(cl->msg, s);
@@ -196,7 +197,8 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
    else
      {
 	/* new msg */
-	cl->msg = Emalloc(strlen(s) + 1);
+	cl->msg = EMALLOC(char, strlen(s) + 1);
+
 	if (!cl->msg)
 	   return NULL;
 	strcpy(cl->msg, s);

@@ -50,11 +50,11 @@ Root                VRoot;
 
 Window              win_main, win_title, win_exit, win_next, win_prev, win_text,
    win_cover;
-Imlib_Image        *im_text;
-Imlib_Image        *im_title;
-Imlib_Image        *im_prev1, *im_prev2;
-Imlib_Image        *im_next1, *im_next2;
-Imlib_Image        *im_exit1, *im_exit2;
+Imlib_Image         im_text;
+Imlib_Image         im_title;
+Imlib_Image         im_prev1, im_prev2;
+Imlib_Image         im_next1, im_next2;
+Imlib_Image         im_exit1, im_exit2;
 char               *docdir = NULL;
 
 static Atom         ATOM_WM_DELETE_WINDOW = None;
@@ -163,10 +163,10 @@ CreateWindow(Window parent, int x, int y, int ww, int hh)
    return win;
 }
 
-static Imlib_Image *
+static              Imlib_Image
 LoadImage(const char *file)
 {
-   Imlib_Image        *im;
+   Imlib_Image         im;
    char                tmp[4096];
 
    sprintf(tmp, "%s/E-docs/%s", ENLIGHTENMENT_ROOT, file);
@@ -177,7 +177,7 @@ LoadImage(const char *file)
 }
 
 static void
-ApplyImage1(Window win, Imlib_Image * im)
+ApplyImage1(Window win, Imlib_Image im)
 {
    Pixmap              pmap = 0, mask = 0;
 
@@ -189,7 +189,7 @@ ApplyImage1(Window win, Imlib_Image * im)
 }
 
 static void
-ApplyImage2(Window win, Imlib_Image * im)
+ApplyImage2(Window win, Imlib_Image im)
 {
    imlib_context_set_image(im);
    imlib_context_set_drawable(win);
@@ -296,7 +296,8 @@ main(int argc, char **argv)
      }
    if (docdir == NULL)
       docdir = strdup(".");
-   s = malloc(strlen(docdir) + strlen(docfile) + 2 + 20);
+   s = EMALLOC(char, strlen(docdir) + strlen(docfile) + 2 + 20);
+
    sprintf(s, "%s/%s", docdir, docfile);
    findLocalizedFile(s);
 
@@ -414,7 +415,8 @@ main(int argc, char **argv)
    XMapWindow(disp, win_main);
 
    XSync(disp, False);
-   page_hist = malloc(sizeof(int));
+
+   page_hist = EMALLOC(int, 1);
 
    page_hist[0] = 0;
 
@@ -529,7 +531,8 @@ main(int argc, char **argv)
 				      if (dirlen > 1)
 					{
 					   free(docdir);
-					   docdir = malloc(dirlen + 1);
+					   docdir = EMALLOC(char, dirlen + 1);
+
 					   memcpy(docdir, exe, dirlen);
 					   docdir[dirlen] = 0;
 					}
@@ -537,7 +540,7 @@ main(int argc, char **argv)
 				      pclose(p);
 				      if (page_hist)
 					 free(page_hist);
-				      page_hist = malloc(sizeof(int));
+				      page_hist = EMALLOC(int, 1);
 
 				      page_hist[0] = 0;
 				      page_hist_len = 1;
@@ -560,9 +563,8 @@ main(int argc, char **argv)
 					{
 					   page_hist_len++;
 					   page_hist =
-					      realloc(page_hist,
-						      sizeof(int) *
-						      page_hist_len);
+					      EREALLOC(int, page_hist,
+						       page_hist_len);
 					}
 				      page_hist[page_hist_pos] = pagenum;
 				      l = RenderPage(draw, pagenum, w, h);
@@ -602,8 +604,7 @@ main(int argc, char **argv)
 		       if (page_hist_pos >= page_hist_len)
 			 {
 			    page_hist_len++;
-			    page_hist = realloc(page_hist,
-						sizeof(int) * page_hist_len);
+			    page_hist = EREALLOC(int, page_hist, page_hist_len);
 
 			    page_hist[page_hist_pos] = pagenum;
 			 }
