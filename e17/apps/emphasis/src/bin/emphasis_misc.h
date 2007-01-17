@@ -11,8 +11,8 @@
 Evas_List *convert_rowlist_in_playlist_with_file(Evas_List *rowlist);
 Evas_List *convert_rowlist_in_playlist_with_id(Evas_List *rowlist);
 /* void mpd_data_full_free(MpdData * list); */
-void emphasis_playlist_append_selected(Etk_Tree2 *tree, Emphasis_Type type);
-void emphasis_playlist_search_and_delete(Etk_Tree2 *tree, char *str,
+void emphasis_playlist_append_selected(Etk_Tree *tree, Emphasis_Type type);
+void emphasis_playlist_search_and_delete(Etk_Tree *tree, char *str,
                                          Emphasis_Type type);
 
 char *strdupnull(char *str);
@@ -25,8 +25,8 @@ void etk_button_make_vertical(Etk_Widget *button);
 void etk_container_inspect(Etk_Container *container, int lvl, int *to_trace);
 char *etk_strescape(const char *str);
 
-Evas_List *etk_tree2_selected_rows_get(Etk_Tree2 *tree);
-Evas_List *etk_tree2_unselected_rows_get(Etk_Tree2 *tree);
+Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree);
+Evas_List *etk_tree_unselected_rows_get(Etk_Tree *tree);
 
 /** @} */
 #endif /* EMPHASIS_MISC_H_ */

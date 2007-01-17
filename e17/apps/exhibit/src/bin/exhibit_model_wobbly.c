@@ -5,47 +5,47 @@
 #include "config.h"
 
 /* Structure of the "wobbly" model */
-typedef struct Etk_Tree2_Model_Wobbly
+typedef struct Etk_Tree_Model_Wobbly
 {
-   Etk_Tree2_Model model;
+   Etk_Tree_Model model;
    Etk_Cache *cache;
-} Etk_Tree2_Model_Wobbly;
+} Etk_Tree_Model_Wobbly;
 
 /* Data associated to the "wobbly" model */
-typedef struct Etk_Tree2_Model_Wobbly_Data
+typedef struct Etk_Tree_Model_Wobbly_Data
 {
    char *filename;
    char *key;
    enum
    {
-      ETK_TREE2_MODEL_UNKNOWN_YET,
-      ETK_TREE2_MODEL_NORMAL,
-      ETK_TREE2_MODEL_EDJE,
-      ETK_TREE2_MODEL_NOT_FOUND
+      ETK_TREE_MODEL_UNKNOWN_YET,
+      ETK_TREE_MODEL_NORMAL,
+      ETK_TREE_MODEL_EDJE,
+      ETK_TREE_MODEL_NOT_FOUND
    } type;
-} Etk_Tree2_Model_Wobbly_Data;
+} Etk_Tree_Model_Wobbly_Data;
 
-static void _wobbly_model_free(Etk_Tree2_Model *model);
-static void _wobbly_cell_data_free(Etk_Tree2_Model *model, void *cell_data);
-static void _wobbly_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static void _wobbly_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args);
-static void _wobbly_objects_cache(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
-static Etk_Bool _wobbly_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
-static int _wobbly_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
+static void _wobbly_model_free(Etk_Tree_Model *model);
+static void _wobbly_cell_data_free(Etk_Tree_Model *model, void *cell_data);
+static void _wobbly_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
+static void _wobbly_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args);
+static void _wobbly_objects_cache(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
+static Etk_Bool _wobbly_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
+static int _wobbly_width_get(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
 static void _wobbly_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _wobbly_cache_free_cb(Evas_Object *object, void *data);
 
 
 /* TODOC */
-Etk_Tree2_Model *etk_tree2_model_wobbly_new(void)
+Etk_Tree_Model *etk_tree_model_wobbly_new(void)
 {
-   Etk_Tree2_Model *model;
-   Etk_Tree2_Model_Wobbly *wobbly_model;
+   Etk_Tree_Model *model;
+   Etk_Tree_Model_Wobbly *wobbly_model;
    
-   model = calloc(1, sizeof(Etk_Tree2_Model_Wobbly));
-   wobbly_model = (Etk_Tree2_Model_Wobbly *)model;
+   model = calloc(1, sizeof(Etk_Tree_Model_Wobbly));
+   wobbly_model = (Etk_Tree_Model_Wobbly *)model;
    
-   model->cell_data_size = sizeof(Etk_Tree2_Model_Wobbly_Data);
+   model->cell_data_size = sizeof(Etk_Tree_Model_Wobbly_Data);
    model->model_free = _wobbly_model_free;
    model->cell_data_free = _wobbly_cell_data_free;
    model->cell_data_set = _wobbly_cell_data_set;
@@ -61,19 +61,19 @@ Etk_Tree2_Model *etk_tree2_model_wobbly_new(void)
 }
 
 /* Wobbly: model_free() */
-static void _wobbly_model_free(Etk_Tree2_Model *model)
+static void _wobbly_model_free(Etk_Tree_Model *model)
 {
-   Etk_Tree2_Model_Wobbly *wobbly_model;
+   Etk_Tree_Model_Wobbly *wobbly_model;
    
-   if (!(wobbly_model = (Etk_Tree2_Model_Wobbly *)model))
+   if (!(wobbly_model = (Etk_Tree_Model_Wobbly *)model))
       return;
    etk_cache_destroy(wobbly_model->cache);
 }
 
 /* Wobbly: cell_data_free() */
-static void _wobbly_cell_data_free(Etk_Tree2_Model *model, void *cell_data)
+static void _wobbly_cell_data_free(Etk_Tree_Model *model, void *cell_data)
 {
-   Etk_Tree2_Model_Wobbly_Data *wobbly_data;
+   Etk_Tree_Model_Wobbly_Data *wobbly_data;
    
    if (!(wobbly_data = cell_data))
       return;
@@ -83,9 +83,9 @@ static void _wobbly_cell_data_free(Etk_Tree2_Model *model, void *cell_data)
 }
 
 /* Wobbly: cell_data_set() */
-static void _wobbly_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_list *args)
+static void _wobbly_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args)
 {
-   Etk_Tree2_Model_Wobbly_Data *wobbly_data;
+   Etk_Tree_Model_Wobbly_Data *wobbly_data;
    char *string;
    
    if (!(wobbly_data = cell_data) || !args || !model)
@@ -105,13 +105,13 @@ static void _wobbly_cell_data_set(Etk_Tree2_Model *model, void *cell_data, va_li
       wobbly_data->key = string ? strdup(string) : NULL;
    }
    
-   wobbly_data->type = ETK_TREE2_MODEL_UNKNOWN_YET;
+   wobbly_data->type = ETK_TREE_MODEL_UNKNOWN_YET;
 }
 
 /* Wobbly: cell_data_get() */
-static void _wobbly_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_list *args)
+static void _wobbly_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args)
 {
-   Etk_Tree2_Model_Wobbly_Data *wobbly_data;
+   Etk_Tree_Model_Wobbly_Data *wobbly_data;
    char **string;
    
    if (!(wobbly_data = cell_data) || !args || !model)
@@ -126,16 +126,16 @@ static void _wobbly_cell_data_get(Etk_Tree2_Model *model, void *cell_data, va_li
 }
 
 /* Wobbly: objects_cache() */
-static void _wobbly_objects_cache(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
+static void _wobbly_objects_cache(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
 {
-   Etk_Tree2_Model_Wobbly *wobbly_model;
-   Etk_Tree2_Model_Wobbly_Data *wobbly_data;
+   Etk_Tree_Model_Wobbly *wobbly_model;
+   Etk_Tree_Model_Wobbly_Data *wobbly_data;
    
-   if (!(wobbly_model = (Etk_Tree2_Model_Wobbly *)model) || !cell_objects[0])
+   if (!(wobbly_model = (Etk_Tree_Model_Wobbly *)model) || !cell_objects[0])
       return;
    
    wobbly_data = cell_data;
-   if (wobbly_data && (wobbly_data->type == ETK_TREE2_MODEL_NORMAL || wobbly_data->type == ETK_TREE2_MODEL_EDJE))
+   if (wobbly_data && (wobbly_data->type == ETK_TREE_MODEL_NORMAL || wobbly_data->type == ETK_TREE_MODEL_EDJE))
       etk_cache_add(wobbly_model->cache, cell_objects[0], wobbly_data->filename, wobbly_data->key);
    else
    {
@@ -148,28 +148,28 @@ static void _wobbly_objects_cache(Etk_Tree2_Model *model, void *cell_data, Evas_
 }
 
 /* Wobbly: render() */
-static Etk_Bool _wobbly_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
+static Etk_Bool _wobbly_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
-   Etk_Tree2_Model_Wobbly *wobbly_model;
-   Etk_Tree2_Model_Wobbly_Data *wobbly_data;
+   Etk_Tree_Model_Wobbly *wobbly_model;
+   Etk_Tree_Model_Wobbly_Data *wobbly_data;
    Etk_Bool object_created = ETK_FALSE;
    char *ext;
    
-   if (!(wobbly_model = (Etk_Tree2_Model_Wobbly *)model) || !(wobbly_data = cell_data) || !evas)
+   if (!(wobbly_model = (Etk_Tree_Model_Wobbly *)model) || !(wobbly_data = cell_data) || !evas)
       return ETK_FALSE;
 
-   if (!wobbly_data->filename || wobbly_data->type == ETK_TREE2_MODEL_NOT_FOUND)
+   if (!wobbly_data->filename || wobbly_data->type == ETK_TREE_MODEL_NOT_FOUND)
       return ETK_FALSE;
    
    /* If we don't know yet what the image's type is, we "guess" it */
-   if (wobbly_data->type == ETK_TREE2_MODEL_UNKNOWN_YET)
+   if (wobbly_data->type == ETK_TREE_MODEL_UNKNOWN_YET)
    {
       if (!wobbly_data->key)
-         wobbly_data->type = ETK_TREE2_MODEL_NORMAL;
+         wobbly_data->type = ETK_TREE_MODEL_NORMAL;
       else if ((ext = strrchr(wobbly_data->filename, '.')) && strcasecmp(ext + 1, "eet") == 0)
-         wobbly_data->type = ETK_TREE2_MODEL_NORMAL;
+         wobbly_data->type = ETK_TREE_MODEL_NORMAL;
       else
-         wobbly_data->type = ETK_TREE2_MODEL_EDJE;
+         wobbly_data->type = ETK_TREE_MODEL_EDJE;
    }
    
    /* If the object is not already in the cache, we load it */
@@ -180,7 +180,7 @@ static Etk_Bool _wobbly_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_G
       edje_object_signal_emit(cell_objects[0], "e,action,thumb,gen", "e");
       evas_object_pass_events_set(cell_objects[0], 1);	
       
-      if (wobbly_data->type == ETK_TREE2_MODEL_NORMAL)
+      if (wobbly_data->type == ETK_TREE_MODEL_NORMAL)
       {
          cell_objects[1] = evas_object_image_add(evas);
          evas_object_show(cell_objects[1]);
@@ -190,7 +190,7 @@ static Etk_Bool _wobbly_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_G
          if (!evas_object_image_load_error_get(cell_objects[1]))
             object_created = ETK_TRUE;
          else
-            wobbly_data->type = ETK_TREE2_MODEL_NOT_FOUND;
+            wobbly_data->type = ETK_TREE_MODEL_NOT_FOUND;
       }
       /* If it's not a normal image file, then it's an Edje file... */
       else
@@ -199,7 +199,7 @@ static Etk_Bool _wobbly_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_G
          if (edje_object_file_set(cell_objects[1], wobbly_data->filename, wobbly_data->key))
             object_created = ETK_TRUE;
          else
-            wobbly_data->type = ETK_TREE2_MODEL_NOT_FOUND;
+            wobbly_data->type = ETK_TREE_MODEL_NOT_FOUND;
       }
       
       edje_object_part_swallow(cell_objects[0], "swallow_icon", cell_objects[1]);
@@ -208,7 +208,7 @@ static Etk_Bool _wobbly_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_G
       cell_objects[1] = edje_object_part_swallow_get(cell_objects[0], "swallow_icon");
    
    /* If loading the image has failed, we destroy the objects and return */
-   if (wobbly_data->type == ETK_TREE2_MODEL_NOT_FOUND)
+   if (wobbly_data->type == ETK_TREE_MODEL_NOT_FOUND)
    {
       evas_object_del(cell_objects[0]);
       evas_object_del(cell_objects[1]);
@@ -227,12 +227,12 @@ static Etk_Bool _wobbly_render(Etk_Tree2_Model *model, Etk_Tree2_Row *row, Etk_G
 }
 
 /* Wobbly: width_get() */
-static int _wobbly_width_get(Etk_Tree2_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
+static int _wobbly_width_get(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
 {
-   Etk_Tree2_Model_Wobbly *wobbly_model;
+   Etk_Tree_Model_Wobbly *wobbly_model;
    int w;
    
-   if (!(wobbly_model = (Etk_Tree2_Model_Wobbly *)model) || !cell_objects[0])
+   if (!(wobbly_model = (Etk_Tree_Model_Wobbly *)model) || !cell_objects[0])
       return 0;
    
    evas_object_geometry_get(cell_objects[0], NULL, NULL, &w, NULL);

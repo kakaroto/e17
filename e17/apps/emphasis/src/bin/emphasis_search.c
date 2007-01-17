@@ -59,24 +59,24 @@ emphasis_search_row_add(Emphasis_Player_Gui *player)
 void
 emphasis_search_tree_fill(Emphasis_Player_Gui *player, Evas_List *results)
 {
-  Etk_Tree2 *tree;
-  Etk_Tree2_Col *col1;
-  Etk_Tree2_Col *col2;
-  Etk_Tree2_Col *col3;
-  Etk_Tree2_Col *col4;
+  Etk_Tree *tree;
+  Etk_Tree_Col *col1;
+  Etk_Tree_Col *col2;
+  Etk_Tree_Col *col3;
+  Etk_Tree_Col *col4;
   Evas_List *list;
   Emphasis_Data *data;
   Emphasis_Song *song;
 
   list = results;
-  tree = ETK_TREE2(player->media.search_tree);
-  col1 = etk_tree2_nth_col_get(tree, 0);
-  col2 = etk_tree2_nth_col_get(tree, 1);
-  col3 = etk_tree2_nth_col_get(tree, 2);
-  col4 = etk_tree2_nth_col_get(tree, 3);
+  tree = ETK_TREE(player->media.search_tree);
+  col1 = etk_tree_nth_col_get(tree, 0);
+  col2 = etk_tree_nth_col_get(tree, 1);
+  col3 = etk_tree_nth_col_get(tree, 2);
+  col4 = etk_tree_nth_col_get(tree, 3);
 
-  etk_tree2_clear(tree);
-  etk_tree2_freeze(tree);
+  etk_tree_clear(tree);
+  etk_tree_freeze(tree);
 
   while (results)
     {
@@ -84,7 +84,7 @@ emphasis_search_tree_fill(Emphasis_Player_Gui *player, Evas_List *results)
       if (data->type == EMPHASIS_DATA_TYPE_SONG)
         {
           song = data->song;
-          etk_tree2_row_append(tree, NULL,
+          etk_tree_row_append(tree, NULL,
                                col1, song->artist, 
                                col2, song->album, 
                                col3, song->title, 
@@ -93,6 +93,6 @@ emphasis_search_tree_fill(Emphasis_Player_Gui *player, Evas_List *results)
         }
       results = evas_list_next(results);
     }
-  etk_tree2_thaw(tree);
+  etk_tree_thaw(tree);
   emphasis_list_free(list);
 }

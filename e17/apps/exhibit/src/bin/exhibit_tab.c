@@ -7,15 +7,15 @@
 #define EX_DND_COL_NUM 5
 
 static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data);
-static void _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree2_Row *row, void *event, void *data);
-static void _ex_tab_itree_item_clicked_cb(Etk_Object *object, Etk_Tree2_Row *row, void *data);
+static void _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event, void *data);
+static void _ex_tab_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _ex_tab_itree_key_down_cb(Etk_Object *object, void *event, void *data);
 
 Ex_Tab *
 _ex_tab_new(Exhibit *e, char *dir)
 {
    Ex_Tab *tab;
-   Etk_Tree2_Model *imodel;
+   Etk_Tree_Model *imodel;
    char *file;
    
    file = NULL;
@@ -42,32 +42,32 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->comment.visible = ETK_FALSE;
    tab->image_loaded = ETK_FALSE;
    
-   tab->dtree = etk_tree2_new();
+   tab->dtree = etk_tree_new();
    etk_widget_size_request_set(tab->dtree, 180, 120);
    etk_signal_connect("row_clicked", ETK_OBJECT(tab->dtree), ETK_CALLBACK(_ex_tab_dtree_item_clicked_cb), e);
-   tab->dcol = etk_tree2_col_new(ETK_TREE2(tab->dtree), "Directories", 10, 0.0);
-   etk_tree2_col_model_add(tab->dcol, etk_tree2_model_image_new());
-   etk_tree2_col_model_add(tab->dcol, etk_tree2_model_text_new());
-   etk_tree2_headers_visible_set(ETK_TREE2(tab->dtree), 0);
-   etk_scrolled_view_policy_set(etk_tree2_scrolled_view_get(ETK_TREE2(tab->dtree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
-   etk_tree2_build(ETK_TREE2(tab->dtree));
+   tab->dcol = etk_tree_col_new(ETK_TREE(tab->dtree), "Directories", 10, 0.0);
+   etk_tree_col_model_add(tab->dcol, etk_tree_model_image_new());
+   etk_tree_col_model_add(tab->dcol, etk_tree_model_text_new());
+   etk_tree_headers_visible_set(ETK_TREE(tab->dtree), 0);
+   etk_scrolled_view_policy_set(etk_tree_scrolled_view_get(ETK_TREE(tab->dtree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
+   etk_tree_build(ETK_TREE(tab->dtree));
 
-   tab->itree = etk_tree2_new();
+   tab->itree = etk_tree_new();
    etk_widget_dnd_source_set(ETK_WIDGET(tab->itree), ETK_TRUE);
 //   etk_signal_connect("drag_begin", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_tree_drag_begin_cb), tab);
    etk_widget_size_request_set(tab->itree, 180, 220);
-   etk_tree2_multiple_select_set(ETK_TREE2(tab->itree), ETK_TRUE);
+   etk_tree_multiple_select_set(ETK_TREE(tab->itree), ETK_TRUE);
    etk_signal_connect("row_selected", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_item_clicked_cb), e);
    etk_signal_connect("key_down", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_key_down_cb), e);
-   imodel = etk_tree2_model_wobbly_new();
-   //etk_tree2_model_image_width_set(imodel, 80, 0.0);
-   tab->icol = etk_tree2_col_new(ETK_TREE2(tab->itree), "Files", 10, 0.0);
-   etk_tree2_col_model_add(tab->icol, imodel);
-   etk_tree2_col_model_add(tab->icol, etk_tree2_model_text_new());
-   etk_tree2_headers_visible_set(ETK_TREE2(tab->itree), 0);
-   etk_tree2_rows_height_set(ETK_TREE2(tab->itree), 60);
-   etk_scrolled_view_policy_set(etk_tree2_scrolled_view_get(ETK_TREE2(tab->itree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
-   etk_tree2_build(ETK_TREE2(tab->itree));
+   imodel = etk_tree_model_wobbly_new();
+   //etk_tree_model_image_width_set(imodel, 80, 0.0);
+   tab->icol = etk_tree_col_new(ETK_TREE(tab->itree), "Files", 10, 0.0);
+   etk_tree_col_model_add(tab->icol, imodel);
+   etk_tree_col_model_add(tab->icol, etk_tree_model_text_new());
+   etk_tree_headers_visible_set(ETK_TREE(tab->itree), 0);
+   etk_tree_rows_height_set(ETK_TREE(tab->itree), 60);
+   etk_scrolled_view_policy_set(etk_tree_scrolled_view_get(ETK_TREE(tab->itree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
+   etk_tree_build(ETK_TREE(tab->itree));
 
    if (dir)
      tab->dir = strdup(dir);
@@ -273,8 +273,8 @@ _ex_tab_current_fit_to_window(Exhibit *e)
 static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 {
    Ex_Tab       *tab;
-   Etk_Tree2     *tree;
-   Etk_Tree2_Row *row;
+   Etk_Tree     *tree;
+   Etk_Tree_Row *row;
    Etk_Widget   *drag;
    Etk_Widget   *image;
    Evas_List    *rows;
@@ -285,10 +285,10 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
    unsigned int num_types;
 
    tab = data;
-   tree = ETK_TREE2(object);
+   tree = ETK_TREE(object);
    drag = (ETK_WIDGET(tree))->drag;
    
-   rows = etk_tree2_selected_rows_get(tree);
+   rows = etk_tree_selected_rows_get(tree);
    
    types = calloc(1, sizeof(char*));
    num_types = 1;
@@ -312,7 +312,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 	     char tmp[PATH_MAX];
 	     
 	     row = ll->data;
-	     etk_tree2_row_fields_get(row, etk_tree2_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree2_nth_col_get(tree, 1),NULL);
+	     etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
 	     snprintf(tmp, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->cur_path, icol2_string);
 	     strncat(drag_data, tmp, PATH_MAX * evas_list_count(rows));
 	     if (i <= EX_DND_MAX_NUM * EX_DND_MAX_NUM)
@@ -338,8 +338,8 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
      }
    else
      {   
-	row = etk_tree2_selected_row_get(tree);      
-	etk_tree2_row_fields_get(row, etk_tree2_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree2_nth_col_get(tree, 1),NULL);
+	row = etk_tree_selected_row_get(tree);      
+	etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
 	drag_data = calloc(PATH_MAX, sizeof(char));
 	snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->cur_path, icol2_string);
 	image = etk_image_new_from_file(icol1_string, NULL);
@@ -353,40 +353,40 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 }
 
 static void
-_ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree2_Row *row, void *event, void *data)
+_ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event, void *data)
 {
-   Etk_Tree2 *tree;
+   Etk_Tree *tree;
    char *dcol_string;
    Exhibit *e;
 
    e = data;
    _ex_slideshow_stop(e);
    
-   tree = ETK_TREE2(object);
-   etk_tree2_row_fields_get(row, etk_tree2_nth_col_get(tree, 0), NULL, NULL, &dcol_string, NULL);
+   tree = ETK_TREE(object);
+   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, NULL, &dcol_string, NULL);
 
    E_FREE(e->cur_tab->dir);
    e->cur_tab->dir = strdup(dcol_string);
-   etk_tree2_clear(ETK_TREE2(e->cur_tab->itree));
-   etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
+   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
    etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook)), _ex_file_get(e->cur_tab->cur_path));
 }
 
 static void
-_ex_tab_itree_item_clicked_cb(Etk_Object *object, Etk_Tree2_Row *row, void *data)
+_ex_tab_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    Exhibit *e;   
-   Etk_Tree2 *tree;
+   Etk_Tree *tree;
    char *icol_string;
 
    e = data;
    e->zoom = 0;
    _ex_main_statusbar_zoom_update(e);
    
-   tree = ETK_TREE2(object);
+   tree = ETK_TREE(object);
 
-   etk_tree2_row_fields_get(row, etk_tree2_nth_col_get(tree, 0), NULL, NULL, 
+   etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, NULL, 
 	 &icol_string, NULL);
 
    _ex_main_image_set(e, icol_string);
@@ -404,8 +404,8 @@ _ex_tab_itree_key_down_cb(Etk_Object *object, void *event, void *data)
    if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
      {
         e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
-        etk_tree2_clear(ETK_TREE2(e->cur_tab->itree));
-        etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
+        etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+        etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
         _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
      }
 }

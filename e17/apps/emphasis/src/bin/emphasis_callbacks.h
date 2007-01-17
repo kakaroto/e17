@@ -24,17 +24,17 @@ void cb_vol_image_clicked(Etk_Object *object, Etk_Event_Mouse_Down *event,
 void cb_vol_slider_value_changed(Etk_Object *object, double value,
                                  void *data);
 
-void cb_tree_artist_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data);
-void cb_tree_album_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data);
+void cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
+void cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data);
 
 void cb_drag_artist(Etk_Object *object, void *data);
 void cb_drag_album(Etk_Object *object, void *data);
 void cb_drag_track(Etk_Object *object, void *data);
 void cb_drop_song(Etk_Object *object, void *event, void *data);
 
-void cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree2_Row *row,
+void cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
                           Etk_Event_Mouse_Down *event, void *data);
-void cb_tree_pls_clicked(Etk_Object *object, Etk_Tree2_Row *row,
+void cb_tree_pls_clicked(Etk_Object *object, Etk_Tree_Row *row,
                          Etk_Event_Mouse_Down *event, void *data);
 
 void cb_emphasis_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event, 
@@ -66,7 +66,7 @@ void cb_config_show(Etk_Object *object, void *data);
 void cb_config_ok(Etk_Object *object, void *data);
 Etk_Bool cb_config_hide(Etk_Object *object, void *data);
 
-void cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree2_Row *row, 
+void cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
                                    Etk_Event_Mouse_Down *event, void *data);
 void cb_media_pls_save_clicked(Etk_Object *object, void *data);
 void cb_media_pls_load_clicked(Etk_Object *object, void *data);

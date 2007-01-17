@@ -43,26 +43,26 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
      }
    else
      {	
-	Etk_Tree2_Row *row;
+	Etk_Tree_Row *row;
 	
 	if (ev->z > 0)
 	  {
-	     row = etk_tree2_row_next_get(
-		   etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree)));
-	     etk_tree2_row_select(row);
+	     row = etk_tree_row_next_get(
+		   etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)));
+	     etk_tree_row_select(row);
 #if 0
 	     /* TODO: implement when this is in Tree2 */
-	     etk_tree2_row_scroll_to(row, ETK_FALSE);
+	     etk_tree_row_scroll_to(row, ETK_FALSE);
 #endif	     
 	  }
 	else
 	  {
-	     row = etk_tree2_row_prev_get(
-		       etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree)));
-	     etk_tree2_row_select(row);
+	     row = etk_tree_row_prev_get(
+		       etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)));
+	     etk_tree_row_select(row);
 #if 0
 	     /* TODO: implement when this is in Tree2 */
-	     etk_tree2_row_scroll_to(row, ETK_FALSE);	
+	     etk_tree_row_scroll_to(row, ETK_FALSE);	
 #endif	     
 	  }
      }
@@ -1229,15 +1229,15 @@ PSEUDO:
 Etk_Bool
 _ex_image_is_favorite(Exhibit *e)
 {
-   Etk_Tree2_Row *r;
+   Etk_Tree_Row *r;
    char         *icol_string;
    char          path[PATH_MAX];
       
-   r = etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree));
+   r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
    if(!r) return ETK_FALSE;
    
-   etk_tree2_row_fields_get(r, 
-			    etk_tree2_nth_col_get(ETK_TREE2(e->cur_tab->itree),
+   etk_tree_row_fields_get(r, 
+			    etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree),
 						  0), 
 			    NULL, NULL, &icol_string, 
 			    NULL);

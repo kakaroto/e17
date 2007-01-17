@@ -32,27 +32,27 @@ _ex_slideshow_start()
 int
 _ex_slideshow_next(void *data)
 {
-   Etk_Tree2_Row *row, *last_row;
+   Etk_Tree_Row *row, *last_row;
    int i = 0;
    int n = 0;
    char string[80];
 
-   row = etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree));
-   last_row = etk_tree2_last_row_get(ETK_TREE2(e->cur_tab->itree));
+   row = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+   last_row = etk_tree_last_row_get(ETK_TREE(e->cur_tab->itree));
 
    if(!row || row == last_row)
-     row = etk_tree2_first_row_get(ETK_TREE2(e->cur_tab->itree));
+     row = etk_tree_first_row_get(ETK_TREE(e->cur_tab->itree));
    else
-     row = etk_tree2_row_next_get(row);
+     row = etk_tree_row_next_get(row);
    
-   etk_tree2_row_select(row);
+   etk_tree_row_select(row);
 #if 0
    /* TODO: implement when Tree2 has this */
-   etk_tree2_row_scroll_to(row, ETK_FALSE);
+   etk_tree_row_scroll_to(row, ETK_FALSE);
 #endif   
 
-   i = etk_tree2_num_rows_get(ETK_TREE2(e->cur_tab->itree));
-   n = 1 + etk_tree2_row_num_get(ETK_TREE2(e->cur_tab->itree), row);
+   i = etk_tree_num_rows_get(ETK_TREE(e->cur_tab->itree));
+   n = 1 + etk_tree_row_num_get(ETK_TREE(e->cur_tab->itree), row);
    sprintf(string, "Slideshow picture %d of %d", n, i);
    etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[3]), string, 0);
 
@@ -62,27 +62,27 @@ _ex_slideshow_next(void *data)
 int
 _ex_slideshow_prev(void *data)
 {
-   Etk_Tree2_Row *row, *first_row;
+   Etk_Tree_Row *row, *first_row;
    int i = 0;
    int n = 0;
    char string[80];
 
-   row = etk_tree2_selected_row_get(ETK_TREE2(e->cur_tab->itree));
-   first_row = etk_tree2_first_row_get(ETK_TREE2(e->cur_tab->itree));
+   row = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
+   first_row = etk_tree_first_row_get(ETK_TREE(e->cur_tab->itree));
 
    if(!row || row == first_row)
-     row = etk_tree2_last_row_get(ETK_TREE2(e->cur_tab->itree));
+     row = etk_tree_last_row_get(ETK_TREE(e->cur_tab->itree));
    else
-     row = etk_tree2_row_prev_get(row);
+     row = etk_tree_row_prev_get(row);
    
-   etk_tree2_row_select(row);
+   etk_tree_row_select(row);
 #if 0
    /* TODO: implemenet when this is done in Tree2 */
-   etk_tree2_row_scroll_to(row, ETK_FALSE);
+   etk_tree_row_scroll_to(row, ETK_FALSE);
 #endif   
 
-   i = etk_tree2_num_rows_get(ETK_TREE2(e->cur_tab->itree));
-   n = 1 + etk_tree2_row_num_get(ETK_TREE2(e->cur_tab->itree), row);
+   i = etk_tree_num_rows_get(ETK_TREE(e->cur_tab->itree));
+   n = 1 + etk_tree_row_num_get(ETK_TREE(e->cur_tab->itree), row);
    sprintf(string, "Slideshow picture %d of %d", n, i);
    etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[3]), string, 0);
 

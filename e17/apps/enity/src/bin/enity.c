@@ -40,15 +40,15 @@ static Evas_List *_en_arg_data_get(En_Argument *args, char *key)
    return NULL;
 }
 
-static void _en_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree2_Row *row, void *data)
+static void _en_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    Etk_Bool checked;
-   Etk_Tree2_Col *col;
+   Etk_Tree_Col *col;
    
-   if (!(col = ETK_TREE2_COL(object)) || !row)
+   if (!(col = ETK_TREE_COL(object)) || !row)
      return;
    
-   etk_tree2_row_fields_get(row, col, &checked, NULL);
+   etk_tree_row_fields_get(row, col, &checked, NULL);
    if (checked)
      _en_checked_rows = evas_list_append(_en_checked_rows, row);
    else
@@ -81,9 +81,9 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 	     printf("%s\n", etk_entry_text_get(ETK_ENTRY(data)));
 	     break;
 	  }
-	else if(ETK_IS_TREE2(data))
+	else if(ETK_IS_TREE(data))
 	  {
-	     Etk_Tree2_Row *row;
+	     Etk_Tree_Row *row;
 	     Evas_List *cols;
 	     Evas_List *rows;	     
 	     char *str = NULL;
@@ -92,11 +92,11 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 	     if(_en_checked_rows)	       
 	       row = _en_checked_rows->data;
 	     else
-	       row = etk_tree2_selected_row_get(ETK_TREE2(data));
+	       row = etk_tree_selected_row_get(ETK_TREE(data));
 		  
 	     if(!row) break;
 
-	     cols = etk_tree2_row_data_get(row);
+	     cols = etk_tree_row_data_get(row);
 	     
 	     if(!cols) break;
 	     
@@ -104,7 +104,7 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 	       {
 		case ENITY_COL_MODEL_TEXT:
 		  if(!row) break;		       
-		  etk_tree2_row_fields_get(row, ((Enity_Tree_Col*)(cols->data))->col, &str, NULL);
+		  etk_tree_row_fields_get(row, ((Enity_Tree_Col*)(cols->data))->col, &str, NULL);
 		  break;
 		  
 		case ENITY_COL_MODEL_CHECK:
@@ -120,7 +120,7 @@ static void _en_ok_print_stdout_cb(Etk_Object *obj, int response_id, void *data)
 		       
 		       if(strlen(str) > 0)
 			 strncat(str, "|", PATH_MAX);			    
-		       etk_tree2_row_fields_get(rows->data, ETK_FALSE, ((Enity_Tree_Col*)(cols->data))->col, &check_value, ((Enity_Tree_Col*)(cols->next->data))->col, &val, NULL);
+		       etk_tree_row_fields_get(rows->data, ETK_FALSE, ((Enity_Tree_Col*)(cols->data))->col, &check_value, ((Enity_Tree_Col*)(cols->next->data))->col, &val, NULL);
 		       strncat(str, val, PATH_MAX);
 		    }
 		  break;
@@ -302,9 +302,9 @@ static void _en_list_cb(En_Argument *args, int index)
    else
      label = etk_label_new(_(" "));
    
-   tree = etk_tree2_new();
+   tree = etk_tree_new();
    etk_widget_size_request_set(tree, 320, 240);
-   etk_tree2_mode_set(ETK_TREE2(tree), ETK_TREE2_MODE_LIST);
+   etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
    
    if((data = _en_arg_data_get(args, "column")) != NULL)
      {
@@ -319,28 +319,28 @@ static void _en_list_cb(En_Argument *args, int index)
 	     	     
 	     if(en_argument_is_set(args, "checklist", ' ') && evas_list_count(cols) == 0)
 	       {
-		  col->col = etk_tree2_col_new(ETK_TREE2(tree), l->data, 60, 0.0);
-      etk_tree2_col_model_add(col->col, etk_tree2_model_checkbox_new());
+		  col->col = etk_tree_col_new(ETK_TREE(tree), l->data, 60, 0.0);
+      etk_tree_col_model_add(col->col, etk_tree_model_checkbox_new());
 		  col->model = ENITY_COL_MODEL_CHECK;
 		  etk_signal_connect("cell_value_changed", ETK_OBJECT(col->col), ETK_CALLBACK(_en_tree_checkbox_toggled_cb), NULL);
 		  
 	       }
 	     else
 	       {
-		  col->col = etk_tree2_col_new(ETK_TREE2(tree), l->data, 60, 0.0);
-      etk_tree2_col_model_add(col->col, etk_tree2_model_text_new());
+		  col->col = etk_tree_col_new(ETK_TREE(tree), l->data, 60, 0.0);
+      etk_tree_col_model_add(col->col, etk_tree_model_text_new());
 		  col->model = ENITY_COL_MODEL_TEXT;		  
 	       }
 	     cols = evas_list_append(cols, col);
 	  }
-	etk_tree2_build(ETK_TREE2(tree));
+	etk_tree_build(ETK_TREE(tree));
 	
 	for(l = en_argument_extra_find("column"); l; l = l->next)
 	  {
 	     int i;
 	     int j = 0;
 	     void **valist;
-	     Etk_Tree2_Row *row;
+	     Etk_Tree_Row *row;
 	     
 	     valist = calloc(evas_list_count(cols) * 2 + 1, sizeof(void*));
 	     
@@ -378,8 +378,8 @@ static void _en_list_cb(En_Argument *args, int index)
 	     
 	     valist[j] = NULL;
 	     	     
-	     row = etk_tree2_row_append(ETK_TREE2(tree), NULL, (va_list)valist);
-	     etk_tree2_row_data_set(row, cols);
+	     row = etk_tree_row_append(ETK_TREE(tree), NULL, (va_list)valist);
+	     etk_tree_row_data_set(row, cols);
 	  }
      }
             

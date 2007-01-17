@@ -32,7 +32,7 @@ Evas_List *
 convert_rowlist_in_playlist_with_file(Evas_List *rowlist)
 {
   Evas_List *list = NULL, *first_rowlist;
-  Etk_Tree2_Row *row;
+  Etk_Tree_Row *row;
   Emphasis_Data *data = NULL;
 
   if (!rowlist)
@@ -47,7 +47,7 @@ convert_rowlist_in_playlist_with_file(Evas_List *rowlist)
       data = calloc(1, sizeof(Emphasis_Data));
       data->type = MPD_DATA_TYPE_SONG;
       data->song = calloc(1, sizeof(Emphasis_Song));
-      data->song->file = strdup(etk_tree2_row_data_get(row));
+      data->song->file = strdup(etk_tree_row_data_get(row));
 
       list = evas_list_append(list, data);
       rowlist = evas_list_next(rowlist);
@@ -67,7 +67,7 @@ Evas_List *
 convert_rowlist_in_playlist_with_id(Evas_List *rowlist)
 {
   Evas_List *list = NULL, *first_rowlist;
-  Etk_Tree2_Row *row;
+  Etk_Tree_Row *row;
   int id;
   Emphasis_Data *data = NULL;
 
@@ -79,7 +79,7 @@ convert_rowlist_in_playlist_with_id(Evas_List *rowlist)
   while (rowlist)
     {
       row = evas_list_data(rowlist);
-      id = (int) etk_tree2_row_data_get(row);
+      id = (int) etk_tree_row_data_get(row);
 
       data = malloc(sizeof(Emphasis_Data));
       data->type = MPD_DATA_TYPE_SONG;
@@ -100,21 +100,21 @@ convert_rowlist_in_playlist_with_id(Evas_List *rowlist)
  * @param gui A Emphasis_Gui
  */
 void
-emphasis_playlist_append_selected(Etk_Tree2 *tree, Emphasis_Type type)
+emphasis_playlist_append_selected(Etk_Tree *tree, Emphasis_Type type)
 {
-  Etk_Tree2_Row *row;
+  Etk_Tree_Row *row;
   Evas_List *rowlist, *list;
   Evas_List *playlist = NULL, *tmplist;
   char *artist, **album;
 
-  rowlist = etk_tree2_selected_rows_get(tree);
+  rowlist = etk_tree_selected_rows_get(tree);
   list = rowlist;
 
   if (type == EMPHASIS_ARTIST)
     {
       while (rowlist)
         {
-          artist = etk_tree2_row_data_get(evas_list_data(rowlist));
+          artist = etk_tree_row_data_get(evas_list_data(rowlist));
           tmplist = mpc_mlib_track_get(artist, NULL);
           playlist = evas_list_concatenate(playlist, tmplist);
           rowlist = evas_list_next(rowlist);
@@ -124,19 +124,19 @@ emphasis_playlist_append_selected(Etk_Tree2 *tree, Emphasis_Type type)
     {
       while (rowlist)
         {
-          album = etk_tree2_row_data_get(evas_list_data(rowlist));
+          album = etk_tree_row_data_get(evas_list_data(rowlist));
           if (album == NULL)
             {
               /* the first row is the All */
-              row = etk_tree2_first_row_get(tree);
-              row = etk_tree2_row_next_get(row);
+              row = etk_tree_first_row_get(tree);
+              row = etk_tree_row_next_get(row);
 
               while (row)
                 {
-                  album = etk_tree2_row_data_get(row);
+                  album = etk_tree_row_data_get(row);
                   tmplist = mpc_mlib_track_get(album[1], album[0]);
                   playlist = evas_list_concatenate(playlist, tmplist);
-                  row = etk_tree2_row_next_get(row);
+                  row = etk_tree_row_next_get(row);
                 }
               break;
             }
@@ -158,11 +158,11 @@ emphasis_playlist_append_selected(Etk_Tree2 *tree, Emphasis_Type type)
 }
 
 void
-emphasis_playlist_search_and_delete(Etk_Tree2 *tree, char *str,
+emphasis_playlist_search_and_delete(Etk_Tree *tree, char *str,
                                     Emphasis_Type type)
 {
-  Etk_Tree2_Col *col;
-  Etk_Tree2_Row *row;
+  Etk_Tree_Col *col;
+  Etk_Tree_Row *row;
   int num = -1;
   char *row_str;
   Evas_List *rowlist = NULL;
@@ -181,24 +181,24 @@ emphasis_playlist_search_and_delete(Etk_Tree2 *tree, char *str,
       break;
     }
 
-  col = etk_tree2_nth_col_get(tree, num);
-  row = etk_tree2_first_row_get(tree);
+  col = etk_tree_nth_col_get(tree, num);
+  row = etk_tree_first_row_get(tree);
   while (row)
     {
       if (type == EMPHASIS_TRACK)
         {
-          etk_tree2_row_fields_get(row, col, NULL, &row_str, NULL);
+          etk_tree_row_fields_get(row, col, NULL, &row_str, NULL);
         }
       else
         {
-          etk_tree2_row_fields_get(row, col, &row_str, NULL);
+          etk_tree_row_fields_get(row, col, &row_str, NULL);
         }
 
       if (row_str && !(strcmp(row_str, str)))
         {
           rowlist = evas_list_append(rowlist, row);
         }
-      row = etk_tree2_row_next_get(row);
+      row = etk_tree_row_next_get(row);
     }
   list = convert_rowlist_in_playlist_with_id(rowlist);
   mpc_playlist_delete(list);
@@ -367,23 +367,23 @@ char *etk_strescape(const char *str)
 }
 
 Evas_List *
-etk_tree2_selected_rows_get(Etk_Tree2 *tree)
+etk_tree_selected_rows_get(Etk_Tree *tree)
 {
   Evas_List *selected_rows = NULL;
-  Etk_Tree2_Row *row;
+  Etk_Tree_Row *row;
 
   if (!tree)
     return NULL;
 
-  if (!etk_tree2_multiple_select_get(tree))
+  if (!etk_tree_multiple_select_get(tree))
     {
-      selected_rows = evas_list_append(selected_rows, etk_tree2_selected_row_get(tree));
+      selected_rows = evas_list_append(selected_rows, etk_tree_selected_row_get(tree));
     }
   else
     {
-      for (row = etk_tree2_first_row_get(tree); row; row = row->next)
+      for (row = etk_tree_first_row_get(tree); row; row = row->next)
         {
-          if (etk_tree2_row_is_selected(row))
+          if (etk_tree_row_is_selected(row))
             {
               selected_rows = evas_list_append(selected_rows, row);
             }
@@ -393,17 +393,17 @@ etk_tree2_selected_rows_get(Etk_Tree2 *tree)
 }
 
 Evas_List *
-etk_tree2_unselected_rows_get(Etk_Tree2 *tree)
+etk_tree_unselected_rows_get(Etk_Tree *tree)
 {
   Evas_List *unselected_rows = NULL;
-  Etk_Tree2_Row *row;
+  Etk_Tree_Row *row;
 
   if (!tree)
     return NULL;
 
-  for (row = etk_tree2_first_row_get(tree); row; row = row->next)
+  for (row = etk_tree_first_row_get(tree); row; row = row->next)
     {
-      if (!etk_tree2_row_is_selected(row))
+      if (!etk_tree_row_is_selected(row))
         {
           unselected_rows = evas_list_append(unselected_rows, row);
         }

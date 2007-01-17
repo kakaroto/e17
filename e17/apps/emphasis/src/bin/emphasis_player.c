@@ -88,52 +88,52 @@ emphasis_init_player(Emphasis_Player_Gui *player)
   player->media.button_stats     = enhance_var_get(en, "media_button_stats");
 
   /* enhance completion : col def */
-  etk_tree2_multiple_select_set(ETK_TREE2(player->media.artist), ETK_TRUE);
-  etk_tree2_multiple_select_set(ETK_TREE2(player->media.album) , ETK_TRUE);
-  etk_tree2_multiple_select_set(ETK_TREE2(player->media.track) , ETK_TRUE);
-  etk_tree2_multiple_select_set(ETK_TREE2(player->media.pls)   , ETK_TRUE);
+  etk_tree_multiple_select_set(ETK_TREE(player->media.artist), ETK_TRUE);
+  etk_tree_multiple_select_set(ETK_TREE(player->media.album) , ETK_TRUE);
+  etk_tree_multiple_select_set(ETK_TREE(player->media.track) , ETK_TRUE);
+  etk_tree_multiple_select_set(ETK_TREE(player->media.pls)   , ETK_TRUE);
 
-  Etk_Tree2_Col *col;
-  col = etk_tree2_col_new(ETK_TREE2(player->media.artist), "Artist", 60, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  etk_tree2_build(ETK_TREE2(player->media.artist));
+  Etk_Tree_Col *col;
+  col = etk_tree_col_new(ETK_TREE(player->media.artist), "Artist", 60, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  etk_tree_build(ETK_TREE(player->media.artist));
   
-  col = etk_tree2_col_new(ETK_TREE2(player->media.album), "Album", 60, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  etk_tree2_build(ETK_TREE2(player->media.album));
+  col = etk_tree_col_new(ETK_TREE(player->media.album), "Album", 60, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  etk_tree_build(ETK_TREE(player->media.album));
 
-  col = etk_tree2_col_new(ETK_TREE2(player->media.track), "Track", 60, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  etk_tree2_build(ETK_TREE2(player->media.track));
+  col = etk_tree_col_new(ETK_TREE(player->media.track), "Track", 60, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  etk_tree_build(ETK_TREE(player->media.track));
   /* pls */
-  col = etk_tree2_col_new(ETK_TREE2(player->media.pls), "Title", 140, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_image_new());
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  col = etk_tree2_col_new(ETK_TREE2(player->media.pls), "Time", 30, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  col = etk_tree2_col_new(ETK_TREE2(player->media.pls), "Artist", 120, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  col = etk_tree2_col_new(ETK_TREE2(player->media.pls), "Album", 120, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  etk_tree2_build(ETK_TREE2(player->media.pls));
+  col = etk_tree_col_new(ETK_TREE(player->media.pls), "Title", 140, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_image_new());
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  col = etk_tree_col_new(ETK_TREE(player->media.pls), "Time", 30, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  col = etk_tree_col_new(ETK_TREE(player->media.pls), "Artist", 120, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  col = etk_tree_col_new(ETK_TREE(player->media.pls), "Album", 120, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  etk_tree_build(ETK_TREE(player->media.pls));
   /* search page */
-  etk_tree2_multiple_select_set(ETK_TREE2(player->media.search_tree), ETK_TRUE);
-  col = etk_tree2_col_new(ETK_TREE2(player->media.search_tree), "Artist", 120, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  col = etk_tree2_col_new(ETK_TREE2(player->media.search_tree), "Album", 100, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  col = etk_tree2_col_new(ETK_TREE2(player->media.search_tree), "Title", 200, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  col = etk_tree2_col_new(ETK_TREE2(player->media.search_tree), "Filename", 200, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  etk_tree2_build(ETK_TREE2(player->media.search_tree));
+  etk_tree_multiple_select_set(ETK_TREE(player->media.search_tree), ETK_TRUE);
+  col = etk_tree_col_new(ETK_TREE(player->media.search_tree), "Artist", 120, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  col = etk_tree_col_new(ETK_TREE(player->media.search_tree), "Album", 100, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  col = etk_tree_col_new(ETK_TREE(player->media.search_tree), "Title", 200, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  col = etk_tree_col_new(ETK_TREE(player->media.search_tree), "Filename", 200, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  etk_tree_build(ETK_TREE(player->media.search_tree));
   /* playlists page */
-  col = etk_tree2_col_new(ETK_TREE2(player->media.pls_list), "Playlists", 120, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  etk_tree2_build(ETK_TREE2(player->media.pls_list));
-  col = etk_tree2_col_new(ETK_TREE2(player->media.pls_content), "Preview", 120, 0.0);
-  etk_tree2_col_model_add(col, etk_tree2_model_text_new());
-  etk_tree2_build(ETK_TREE2(player->media.pls_content));
+  col = etk_tree_col_new(ETK_TREE(player->media.pls_list), "Playlists", 120, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  etk_tree_build(ETK_TREE(player->media.pls_list));
+  col = etk_tree_col_new(ETK_TREE(player->media.pls_content), "Preview", 120, 0.0);
+  etk_tree_col_model_add(col, etk_tree_model_text_new());
+  etk_tree_build(ETK_TREE(player->media.pls_content));
   /**/
  
   etk_object_data_set(ETK_OBJECT(player->media.artist), "title", "Artist");

@@ -165,8 +165,8 @@ struct _Ex_Tab
    Etk_Widget    *alignment;   
    Etk_Widget    *dialog; 
    
-   Etk_Tree2_Col  *dcol;
-   Etk_Tree2_Col  *icol;
+   Etk_Tree_Col  *dcol;
+   Etk_Tree_Col  *icol;
    
    struct {
       Etk_Bool    visible;

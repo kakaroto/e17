@@ -477,8 +477,8 @@ _ex_options_set()
 
    /* SORTING */
    e->options->default_sort = e->options->default_sort_tmp;
-   etk_tree2_clear(ETK_TREE2(e->cur_tab->dtree));
-   etk_tree2_clear(ETK_TREE2(e->cur_tab->itree));
+   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 
    /* MONITOR FOCUS */
