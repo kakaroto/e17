@@ -26,13 +26,12 @@ main (int argc, char *argv[])
   int            page_count;
   int            i;
 
-  etk_init (NULL,NULL);
-
   if (argc == 1) {
     printf ("Usage: %s pdf_file\n", argv[0]);
-    etk_main_quit ();
     return -1;
   }
+
+  etk_init (&argc, &argv);
 
   /* We open the pdf file */
   pdf = etk_pdf_new ();
@@ -40,11 +39,9 @@ main (int argc, char *argv[])
   document = ETK_PDF (pdf)->pdf_document;
   if (!document) {
     printf ("The file %s can't be opened\n", argv[1]);
-    etk_main_quit ();
+    etk_shutdown ();
     return -1;
   }
-
-  index = etk_pdf_pdf_index_get (ETK_PDF (pdf));
 
   window = etk_window_new ();
   etk_window_title_set (ETK_WINDOW (window), "Etk Pdf Test Application");
@@ -55,6 +52,7 @@ main (int argc, char *argv[])
   etk_container_add (ETK_CONTAINER (window), table);
   etk_widget_show (table);
 
+  index = etk_pdf_pdf_index_get (ETK_PDF (pdf));
   if (index) {
     Etk_Tree_Col *col;
 
@@ -82,7 +80,7 @@ main (int argc, char *argv[])
   }
 
   list = etk_tree_new ();
-  etk_tree_headers_visible_set (ETK_TREE (list), FALSE);
+  etk_tree_headers_visible_set (ETK_TREE (list), ETK_FALSE);
   etk_tree_mode_set (ETK_TREE (list), ETK_TREE_MODE_LIST);
   etk_tree_multiple_select_set (ETK_TREE (list), ETK_FALSE);
 
