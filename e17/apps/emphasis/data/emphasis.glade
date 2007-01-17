@@ -359,6 +359,7 @@
                   <widget class="GtkHBox" id="hbox7">
                     <property name="visible">True</property>
                     <property name="homogeneous">True</property>
+                    <property name="spacing">6</property>
                     <child>
                       <widget class="GtkTreeView" id="media_artist">
                         <property name="visible">True</property>
