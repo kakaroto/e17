@@ -38,12 +38,12 @@ Evas_List *visible_elements_get(void);
 void bg_setup(Etk_Canvas *canvas);
 void canvas_resize_cb(Etk_Object *canvas, const char *property_name, 
 	void *data);
-void list_entries(const char *file, Etk_Tree2 *tree, Etk_Tree2 *output, 
+void list_entries(const char *file, Etk_Tree *tree, Etk_Tree *output, 
 	Etk_Canvas *canvas);
-Demo_Edje *edje_part_create(Etk_Tree2 *output, Etk_Canvas *canvas,
+Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
 	const char *file, char *name);
-void edje_part_show(Etk_Widget *canvas, Demo_Edje *de);
-void edje_part_hide(Demo_Edje *de);
+void edje_part_show(Etk_Canvas *canvas, Demo_Edje *de);
+void edje_part_hide(Etk_Canvas *canvas, Demo_Edje *de);
 void edje_part_resize(Demo_Edje *de);
 
 
