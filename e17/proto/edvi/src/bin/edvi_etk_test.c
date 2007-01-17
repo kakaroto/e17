@@ -8,7 +8,7 @@
 
 
 static void _quit_cb(void *data);
-static void _change_page_cb (Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 
 int
 main (int argc, char *argv[])
@@ -37,12 +37,14 @@ main (int argc, char *argv[])
 
   etk_init (&argc, &argv);
 
+  /* We open the dvi file */
   dvi = etk_dvi_new ();
   etk_dvi_file_set (ETK_DVI (dvi), argv[1]);
   document = ETK_DVI (dvi)->dvi_document;
   if (!document) {
     printf ("The file %s can't be opened\n", argv[1]);
-    etk_main_quit ();
+    etk_shutdown ();
+    edvi_shutdown ();
     return -1;
   }
 
@@ -56,30 +58,34 @@ main (int argc, char *argv[])
   etk_widget_show (hbox);
 
   list = etk_tree_new ();
-  etk_tree_headers_visible_set (ETK_TREE (list), FALSE);
-  etk_widget_size_request_set (list, 60, -1);
-  etk_box_append (ETK_BOX (hbox), list, ETK_BOX_START, ETK_BOX_NONE, 0);
-  etk_widget_show (list);
+  etk_tree_headers_visible_set (ETK_TREE (list), ETK_FALSE);
+  etk_tree_mode_set (ETK_TREE (list), ETK_TREE_MODE_LIST);
+  etk_tree_multiple_select_set (ETK_TREE (list), ETK_FALSE);
 
-  etk_signal_connect ("row_selected", ETK_OBJECT (list),
-                      ETK_CALLBACK(_change_page_cb), dvi);
-  etk_tree_mode_set (ETK_TREE(list), ETK_TREE_MODE_LIST);
-  col = etk_tree_col_new (ETK_TREE(list), "",
-                          etk_tree_model_int_new (ETK_TREE (list)),
-                          60);
+  /* column */
+  col = etk_tree_col_new (ETK_TREE (list), "", 60, 0.0);
+  etk_tree_col_model_add (col, etk_tree_model_int_new());
+
   etk_tree_build (ETK_TREE (list));
 
+  /* rows */
   page_count = edvi_document_page_count_get (ETK_DVI (dvi)->dvi_document);
-  etk_tree_freeze (ETK_TREE (list));
   for (i = 0; i < page_count; i++) {
     int  *num;
 
-    row = etk_tree_append (ETK_TREE (list), col, i + 1, NULL);
+    row = etk_tree_row_append (ETK_TREE (list), NULL, col, i + 1, NULL);
     num = (int *)malloc (sizeof (int));
     *num = i;
-    etk_tree_row_data_set (row, num);
+    etk_tree_row_data_set_full (row, num, free);
   }
-  etk_tree_thaw (ETK_TREE (list));
+
+  /* change page */
+  etk_signal_connect ("row_clicked", ETK_OBJECT (list),
+                      ETK_CALLBACK(_change_page_cb), dvi);
+
+  /* we attach and show */
+  etk_box_append (ETK_BOX (hbox), list, ETK_BOX_START, ETK_BOX_NONE, 0);
+  etk_widget_show (list);
 
   etk_box_append (ETK_BOX (hbox), dvi, ETK_BOX_START, ETK_BOX_NONE, 0);
   etk_widget_show (dvi);
@@ -88,6 +94,9 @@ main (int argc, char *argv[])
 
   etk_main ();
 
+  etk_shutdown ();
+  edvi_shutdown ();
+
   return 0;
 }
 
@@ -95,11 +104,10 @@ static void
 _quit_cb(void *data)
 {
   etk_main_quit ();
-  edvi_shutdown ();
 }
 
 static void
-_change_page_cb (Etk_Object *object, Etk_Tree_Row *row, void *data)
+_change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
 {
   Etk_Tree *tree;
   Etk_Dvi  *dvi;
