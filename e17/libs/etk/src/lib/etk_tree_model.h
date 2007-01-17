@@ -46,6 +46,8 @@ void etk_tree_model_free(Etk_Tree_Model *model);
 void etk_tree_model_image_width_set(Etk_Tree_Model *model, int width, float alignment);
 void etk_tree_model_image_width_get(Etk_Tree_Model *model, int *width, float *alignment);
 
+/* TODO: checkbox-model: use a third value to actually hide the checkbox */
+
 /** @} */
 
 #endif

@@ -200,6 +200,7 @@ Etk_Tree_Row *etk_tree_row_insert_valist(Etk_Tree *tree, Etk_Tree_Row *parent, E
 /* TODO: Etk_Tree_Row *etk_tree_row_insert_sorted(Etk_Tree *tree, Etk_Tree_Row *parent, ...); */
 void           etk_tree_row_delete(Etk_Tree_Row *row);
 void           etk_tree_clear(Etk_Tree *tree);
+/* TODO: way to insert a separator... */
 
 void etk_tree_row_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...);
 void etk_tree_row_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_list args);

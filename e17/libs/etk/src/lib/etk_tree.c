@@ -2401,7 +2401,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
                         else
                            w = 0;
                         
-                        if ((j + 1) != col->num_models)
+                        if ((j + 1) != col->num_models && w > 0)
                            w += MODEL_INTERSPACE;
                         
                         model_geometry.x += w;
