@@ -4,12 +4,19 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 
+static const char *default_theme = NULL;
+static char *selected_theme = NULL;
+
 static int create_test(Ewl_Container *box);
 static Ewl_Widget *widgets_build(void);
+
 static void cb_select_theme(Ewl_Widget *w, void *ev, void *data);
+static void cb_apply_theme(Ewl_Widget *w, void *ev, void *data);
+static void cb_default_theme(Ewl_Widget *w, void *ev, void *data);
 
 void 
 test_info(Ewl_Test *test)
@@ -25,18 +32,25 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
+	Ewl_Widget *abutton, *dbutton;
 	Ewl_Widget *box2, *vbox, *list, *misc;
 	DIR *rep;
 	struct dirent *file;
+
+	default_theme = ewl_theme_path_get();
 
 	box2 = ewl_hbox_new();
 	ewl_container_child_append(box, box2);
 	ewl_widget_show(box2);
 
+	vbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(box2), vbox);
+	ewl_widget_show(vbox);
+
 	/* the theme list tree */
 	list = ewl_border_new();
 	ewl_border_label_set(EWL_BORDER(list), "Theme name");
-	ewl_container_child_append(EWL_CONTAINER(box2), list);
+	ewl_container_child_append(EWL_CONTAINER(vbox), list);
 	ewl_widget_show(list);
 	
 	rep = opendir(PACKAGE_DATA_DIR "/ewl/themes");
@@ -61,12 +75,31 @@ create_test(Ewl_Container *box)
 			ewl_widget_show(w);
 		}
 	}
-	
+
+	list = ewl_hbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(list), EWL_FLAG_FILL_NONE);
+	ewl_container_child_append(EWL_CONTAINER(vbox), list);
+	ewl_widget_show(list);
+
+	abutton = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(abutton), "Apply");
+	ewl_container_child_append(EWL_CONTAINER(list), abutton);
+	ewl_widget_show(abutton);
+
+	dbutton = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(dbutton), "Default");
+	ewl_container_child_append(EWL_CONTAINER(list), dbutton);
+	ewl_widget_disable(dbutton);
+	ewl_widget_show(dbutton);
+
+	ewl_callback_append(abutton, EWL_CALLBACK_CLICKED, cb_apply_theme, dbutton);
+	ewl_callback_append(dbutton, EWL_CALLBACK_CLICKED, cb_default_theme, NULL);
+
 	vbox = ewl_border_new();
 	ewl_border_label_set(EWL_BORDER(vbox), "Theme Visualization");
 	ewl_container_child_append(EWL_CONTAINER(box2), vbox);
 	ewl_widget_show(vbox);
-	
+
 	misc = widgets_build();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
@@ -77,11 +110,38 @@ create_test(Ewl_Container *box)
 static void
 cb_select_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 {
+	Ewl_Widget *notebook;
 	char theme_filename[PATH_MAX];
-	
+
+	notebook = ewl_widget_name_find("notebook");
+
 	snprintf(theme_filename, sizeof(theme_filename), 
 			PACKAGE_DATA_DIR "/ewl/themes/%s", (char *)data);
-	ewl_theme_theme_set(theme_filename);
+	ewl_theme_data_str_set(notebook, "/file", theme_filename);
+
+	if (selected_theme) free(selected_theme);
+	selected_theme = strdup(theme_filename);
+
+	ewl_widget_hide(notebook);
+	ewl_widget_show(notebook);
+}
+
+static void
+cb_apply_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
+{
+	Ewl_Widget *db = data;
+
+	ewl_widget_enable(db);
+	ewl_theme_theme_set(selected_theme);
+}
+
+static void
+cb_default_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
+{
+	Ewl_Widget *db = w;
+
+	ewl_widget_disable(db);
+	ewl_theme_theme_set(default_theme);
 }
 
 static Ewl_Widget *
