@@ -8,23 +8,23 @@
 
 
 static void _quit_cb(void *data);
-static void _tree2_fill (Etk_Pdf *pdf, Etk_Tree2 *tree, Etk_Tree2_Col *col, Etk_Tree2_Row *row, Ecore_List *items);
-static void _change_page_cb (Etk_Object *object, Etk_Tree2_Row *row, Etk_Event_Mouse_Up *event, void *data);
+static void _tree_fill (Etk_Pdf *pdf, Etk_Tree *tree, Etk_Tree_Col *col, Etk_Tree_Row *row, Ecore_List *items);
+static void _change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 
 int
 main (int argc, char *argv[])
 {
-  Etk_Widget     *window;
-  Etk_Widget     *table;
-  Etk_Widget     *tree;
-  Etk_Widget     *list;
-  Etk_Widget     *pdf;
-  Etk_Tree2_Col  *col;
-  Etk_Tree2_Row  *row;
-  Ecore_List     *index;
-  Epdf_Document  *document;
-  int             page_count;
-  int             i;
+  Etk_Widget    *window;
+  Etk_Widget    *table;
+  Etk_Widget    *tree;
+  Etk_Widget    *list;
+  Etk_Widget    *pdf;
+  Etk_Tree_Col  *col;
+  Etk_Tree_Row  *row;
+  Ecore_List    *index;
+  Epdf_Document *document;
+  int            page_count;
+  int            i;
 
   etk_init (NULL,NULL);
 
@@ -56,20 +56,20 @@ main (int argc, char *argv[])
   etk_widget_show (table);
 
   if (index) {
-    Etk_Tree2_Col *col;
+    Etk_Tree_Col *col;
 
-    tree = etk_tree2_new ();
-    etk_tree2_mode_set (ETK_TREE2 (tree), ETK_TREE2_MODE_TREE);
-    etk_tree2_multiple_select_set (ETK_TREE2 (tree), ETK_FALSE);
+    tree = etk_tree_new ();
+    etk_tree_mode_set (ETK_TREE (tree), ETK_TREE_MODE_TREE);
+    etk_tree_multiple_select_set (ETK_TREE (tree), ETK_FALSE);
 
     /* column */
-    col = etk_tree2_col_new (ETK_TREE2 (tree), "Index", 130, 0.0);
-    etk_tree2_col_model_add (col, etk_tree2_model_text_new());
+    col = etk_tree_col_new (ETK_TREE (tree), "Index", 130, 0.0);
+    etk_tree_col_model_add (col, etk_tree_model_text_new());
 
-    etk_tree2_build (ETK_TREE2 (tree));
+    etk_tree_build (ETK_TREE (tree));
 
     /* rows */
-    _tree2_fill (ETK_PDF (pdf), ETK_TREE2 (tree), col, NULL, index);
+    _tree_fill (ETK_PDF (pdf), ETK_TREE (tree), col, NULL, index);
     epdf_index_delete (index);
 
     /* change page */
@@ -81,26 +81,26 @@ main (int argc, char *argv[])
     etk_widget_show (tree);
   }
 
-  list = etk_tree2_new ();
-  etk_tree2_headers_visible_set (ETK_TREE2 (list), FALSE);
-  etk_tree2_mode_set (ETK_TREE2 (list), ETK_TREE2_MODE_LIST);
-  etk_tree2_multiple_select_set (ETK_TREE2 (list), ETK_FALSE);
+  list = etk_tree_new ();
+  etk_tree_headers_visible_set (ETK_TREE (list), FALSE);
+  etk_tree_mode_set (ETK_TREE (list), ETK_TREE_MODE_LIST);
+  etk_tree_multiple_select_set (ETK_TREE (list), ETK_FALSE);
 
   /* column */
-  col = etk_tree2_col_new (ETK_TREE2 (list), "", 60, 0.0);
-  etk_tree2_col_model_add (col, etk_tree2_model_int_new());
+  col = etk_tree_col_new (ETK_TREE (list), "", 60, 0.0);
+  etk_tree_col_model_add (col, etk_tree_model_int_new());
 
-  etk_tree2_build (ETK_TREE2 (list));
+  etk_tree_build (ETK_TREE (list));
 
   /* rows */
   page_count = epdf_document_page_count_get (ETK_PDF (pdf)->pdf_document);
   for (i = 0; i < page_count; i++) {
     int  *num;
 
-    row = etk_tree2_row_append (ETK_TREE2 (list), NULL, col, i + 1, NULL);
+    row = etk_tree_row_append (ETK_TREE (list), NULL, col, i + 1, NULL);
     num = (int *)malloc (sizeof (int));
     *num = i;
-    etk_tree2_row_data_set_full (row, num, free);
+    etk_tree_row_data_set_full (row, num, free);
   }
 
   /* change page */
@@ -135,9 +135,9 @@ _quit_cb(void *data)
 }
 
 static void
-_tree2_fill (Etk_Pdf *pdf, Etk_Tree2 *tree, Etk_Tree2_Col *col, Etk_Tree2_Row *row, Ecore_List *items)
+_tree_fill (Etk_Pdf *pdf, Etk_Tree *tree, Etk_Tree_Col *col, Etk_Tree_Row *row, Ecore_List *items)
 {
-  Etk_Tree2_Row   *prow;
+  Etk_Tree_Row   *prow;
   Epdf_Index_Item *item;
 
   if (!items)
@@ -150,28 +150,28 @@ _tree2_fill (Etk_Pdf *pdf, Etk_Tree2 *tree, Etk_Tree2_Col *col, Etk_Tree2_Row *r
     int        *num;
 
     buf = strdup (epdf_index_item_title_get (item));
-    prow = etk_tree2_row_append (tree, row, col, buf, NULL);
+    prow = etk_tree_row_append (tree, row, col, buf, NULL);
       
     num = (int *)malloc (sizeof (int));
     *num = epdf_index_item_page_get (etk_pdf_pdf_document_get (pdf), item);
-    etk_tree2_row_data_set_full (prow, num, free);
+    etk_tree_row_data_set_full (prow, num, free);
     free (buf);
     c = epdf_index_item_children_get (item);
     if (c) {
-      _tree2_fill (pdf, tree, col, prow, c);
+      _tree_fill (pdf, tree, col, prow, c);
     }
   }
 }
 
 static void
-_change_page_cb (Etk_Object *object, Etk_Tree2_Row *row, Etk_Event_Mouse_Up *event, void *data)
+_change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
 {
-  Etk_Tree2 *tree;
-  Etk_Pdf   *pdf;
-  int        row_number;
+  Etk_Tree *tree;
+  Etk_Pdf  *pdf;
+  int       row_number;
 
-  tree = ETK_TREE2 (object);
+  tree = ETK_TREE (object);
   pdf = ETK_PDF (data);
-  row_number = *(int *)etk_tree2_row_data_get (row);
+  row_number = *(int *)etk_tree_row_data_get (row);
   etk_pdf_page_set (pdf, row_number);
 }
