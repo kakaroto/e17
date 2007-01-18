@@ -270,7 +270,8 @@ _e_config_save(E_Stickies *ss)
 	E_Sticky *s;
 	
 	s = l->data;
-	s->text = etk_string_get(etk_textblock_text_get(ETK_TEXT_VIEW(s->textview)->textblock, ETK_FALSE));
+	E_FREE(s->text);
+	s->text = strdup(etk_string_get(etk_textblock_text_get(ETK_TEXT_VIEW(s->textview)->textblock, ETK_FALSE)));
      }
 
    stickies = E_NEW(1, E_Config_Stickies);
