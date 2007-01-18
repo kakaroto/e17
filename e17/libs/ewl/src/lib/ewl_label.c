@@ -47,6 +47,7 @@ ewl_label_init(Ewl_Label *la)
 
 	ewl_widget_appearance_set(w, EWL_LABEL_TYPE);
 	ewl_widget_inherit(w, EWL_LABEL_TYPE);
+	ewl_object_alignment_set(EWL_OBJECT(la), EWL_FLAG_ALIGN_LEFT);
 	ewl_object_fill_policy_set(EWL_OBJECT(la), EWL_FLAG_FILL_NONE);
 	ewl_widget_focusable_set(w, FALSE);
 
