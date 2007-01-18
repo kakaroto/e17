@@ -20,31 +20,18 @@
  * You are forbidden to forbid anyone else to use, share and improve
  * what you give them.   Help stamp out software-hoarding!  */
 
-#include "header.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 #include "config.h"
-
-extern char        *getenv();
+#include "cpplib.h"
 
 cpp_reader          parse_in;
 cpp_options         options;
 
-/* More 'friendly' abort that prints the line and file.
- * config.h can #define abort fancy_abort if you like that sort of thing.  */
-
-void
-fancy_abort()
-{
-   fatal("Internal gcc abort.");
-}
-
 int
-main(argc, argv)
-     int                 argc;
-     char              **argv;
+main(int argc, char **argv)
 {
    char               *p;
    int                 i;
@@ -67,7 +54,7 @@ main(argc, argv)
 
    argi += cpp_handle_options(&parse_in, argc - argi, argv + argi);
    if (argi < argc)
-      fatal("Invalid option `%s'", argv[argi]);
+      cpp_fatal("Invalid option `%s'", argv[argi]);
    parse_in.show_column = 1;
 
    i = push_parse_file(&parse_in, opts->in_fname);

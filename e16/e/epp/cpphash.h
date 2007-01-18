@@ -18,7 +18,7 @@ struct hashnode
 					 * of the chain and gets deleted. */
    enum node_type      type;	/* type of special token */
    int                 length;	/* length of token, for quick comparison */
-   unsigned char      *name;	/* the actual name */
+   char               *name;	/* the actual name */
    union hashval       value;	/* pointer to expansion, or whatever */
 };
 
@@ -35,5 +35,9 @@ typedef struct hashnode HASHNODE;
 #define HASHSTEP(old, c) ((old << 2) + c)
 #define MAKE_POS(v) (v & 0x7fffffff)	/* make number positive */
 
-extern HASHNODE    *install
-PARAMS((unsigned char *, int, enum node_type, int, char *, int));
+extern int          hashf(const char *name, int len, int hashsize);
+extern HASHNODE    *cpp_lookup(const char *name, int len, int hash);
+extern void         delete_macro(HASHNODE * hp);
+extern HASHNODE    *install(const char *name, int len, enum node_type type,
+			    int ivalue, char *value, int hash);
+extern void         cpp_hash_cleanup(cpp_reader * pfile);

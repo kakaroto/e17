@@ -25,7 +25,8 @@
 /* Parse a C expression from text in a string  */
 
 #include "config.h"
-#include "header.h"
+#include "cpplib.h"
+#include "cpphash.h"
 
 #ifdef __EMX__
 #include <strings.h>
@@ -102,10 +103,6 @@ struct arglist
  * number with SUM's sign, where A, B, and SUM are all C integers.  */
 #define possible_sum_sign(a, b, sum) ((((a) ^ (b)) | ~ ((a) ^ (sum))) < 0)
 
-static void         integer_overflow();
-static long         left_shift();
-static long         right_shift();
-
 #define ERROR 299
 #define OROR 300
 #define ANDAND 301
@@ -141,14 +138,11 @@ struct operation
 
 /* maybe needs to actually deal with floating point numbers */
 
-struct operation
-parse_number(pfile, start, olen)
-     cpp_reader         *pfile;
-     char               *start;
-     int                 olen;
+static struct operation
+parse_number(cpp_reader * pfile, const char *start, int olen)
 {
    struct operation    op;
-   char               *p = start;
+   const char         *p = start;
    int                 c;
    unsigned long       n = 0, nd, ULONG_MAX_over_base;
    int                 base = 10;
@@ -251,7 +245,7 @@ parse_number(pfile, start, olen)
 
 struct token
 {
-   char               *operator;
+   const char         *oper;
    int                 token;
 };
 
@@ -271,9 +265,8 @@ static struct token tokentab2[] = {
 
 /* Read one token. */
 
-struct operation
-cpp_lex(pfile)
-     cpp_reader         *pfile;
+static struct operation
+cpp_lex(cpp_reader * pfile)
 {
    int                 c;
    struct token       *toktab;
@@ -281,6 +274,9 @@ cpp_lex(pfile)
    struct operation    op;
    unsigned char      *tok_start, *tok_end;
    int                 old_written;
+
+   op.value = 0;
+   op.unsignedp = 0;
 
  retry:
 
@@ -332,7 +328,7 @@ cpp_lex(pfile)
 	   unsigned            width = MAX_CHAR_TYPE_SIZE;
 	   int                 wide_flag = 0;
 	   int                 max_chars;
-	   char               *ptr = (char*)tok_start;
+	   char               *ptr = (char *)tok_start;
 
 #ifdef MULTIBYTE_CHARS
 	   char                token_buffer[MAX_LONG_TYPE_SIZE /
@@ -360,7 +356,7 @@ cpp_lex(pfile)
 
 	   while (1)
 	     {
-		if (ptr >= (char*)CPP_PWRITTEN(pfile) || (c = *ptr++) == '\'')
+		if (ptr >= (char *)CPP_PWRITTEN(pfile) || (c = *ptr++) == '\'')
 		   break;
 
 		if (c == '\\')
@@ -403,7 +399,7 @@ cpp_lex(pfile)
 	     {
 		int                 num_bits = num_chars * width;
 
-		if (cpp_lookup(pfile, "__CHAR_UNSIGNED__",
+		if (cpp_lookup("__CHAR_UNSIGNED__",
 			       sizeof("__CHAR_UNSIGNED__") - 1, -1)
 		    || ((result >> (num_bits - 1)) & 1) == 0)
 		   op.value
@@ -452,9 +448,9 @@ cpp_lex(pfile)
 	/* See if it is a special token of length 2.  */
 	if (tok_start + 2 == tok_end)
 	  {
-	     for (toktab = tokentab2; toktab->operator != NULL; toktab++)
-		if (tok_start[0] == toktab->operator[0]
-		    && tok_start[1] == toktab->operator[1])
+	     for (toktab = tokentab2; toktab->oper != NULL; toktab++)
+		if (tok_start[0] == toktab->oper[0]
+		    && tok_start[1] == toktab->oper[1])
 		   break;
 	     if (toktab->token == ERROR)
 	       {
@@ -492,9 +488,7 @@ cpp_lex(pfile)
  * after the zeros.  A value of 0 does not mean end of string.  */
 
 int
-cpp_parse_escape(pfile, string_ptr)
-     cpp_reader         *pfile;
-     char              **string_ptr;
+cpp_parse_escape(cpp_reader * pfile, char **string_ptr)
 {
    int                 c = *(*string_ptr)++;
 
@@ -594,19 +588,14 @@ cpp_parse_escape(pfile, string_ptr)
 }
 
 static void
-integer_overflow(pfile)
-     cpp_reader         *pfile;
+integer_overflow(cpp_reader * pfile)
 {
    if (CPP_PEDANTIC(pfile))
       cpp_pedwarn(pfile, "integer overflow in preprocessor expression");
 }
 
 static long
-left_shift(pfile, a, unsignedp, b)
-     cpp_reader         *pfile;
-     long                a;
-     int                 unsignedp;
-     unsigned long       b;
+left_shift(cpp_reader * pfile, long a, int unsignedp, unsigned long b)
 {
    if (b >= HOST_BITS_PER_LONG)
      {
@@ -627,11 +616,7 @@ left_shift(pfile, a, unsignedp, b)
 }
 
 static long
-right_shift(pfile, a, unsignedp, b)
-     cpp_reader         *pfile;
-     long                a;
-     int                 unsignedp;
-     unsigned long       b;
+right_shift(cpp_reader * pfile, long a, int unsignedp, unsigned long b)
 {
    pfile = NULL;
    if (b >= HOST_BITS_PER_LONG)
@@ -672,9 +657,8 @@ right_shift(pfile, a, unsignedp, b)
 /* Parse and evaluate a C expression, reading from PFILE.
  * Returns the value of the expression.  */
 
-HOST_WIDE_INT cpp_parse_expr(pfile)
-     cpp_reader         *
-	pfile;
+HOST_WIDE_INT
+cpp_parse_expr(cpp_reader * pfile)
 {
    /* The implementation is an operator precedence parser,
     * i.e. a bottom-up parser, using a stack for not-yet-reduced tokens.

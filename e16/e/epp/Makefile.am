@@ -20,9 +20,8 @@
 bin_PROGRAMS = epp
 
 epp_SOURCES = \
-        cpplib.h \
+	cpplib.h \
 	cpphash.h \
-	header.h \
 	cppalloc.c \
 	cpperror.c \
 	cppexp.c \

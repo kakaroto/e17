@@ -22,19 +22,18 @@
  * You are forbidden to forbid anyone else to use, share and improve
  * what you give them.   Help stamp out software-hoarding!  */
 
-#include "config.h"
 #include <stdlib.h>
-#include "header.h"
+#include "config.h"
+#include "cpplib.h"
 
 static void
-memory_full()
+memory_full(void)
 {
-   fatal("Memory exhausted.");
+   cpp_fatal("Memory exhausted.");
 }
 
 void               *
-xmalloc(size)
-     unsigned            size;
+xmalloc(unsigned size)
 {
    char               *ptr = (char *)malloc(size);
 
@@ -46,9 +45,7 @@ xmalloc(size)
 }
 
 void               *
-xrealloc(old, size)
-     void               *old;
-     unsigned            size;
+xrealloc(void *old, unsigned size)
 {
    char               *ptr = (char *)realloc(old, size);
 
@@ -58,8 +55,7 @@ xrealloc(old, size)
 }
 
 void               *
-xcalloc(number, size)
-     unsigned            number, size;
+xcalloc(unsigned number, unsigned size)
 {
    char               *ptr = (char *)calloc(number, size);
 

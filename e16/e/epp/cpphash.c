@@ -22,36 +22,22 @@
  * You are forbidden to forbid anyone else to use, share and improve
  * what you give them.   Help stamp out software-hoarding!  */
 
-#include "header.h"
+#include "cpplib.h"
 #include "cpphash.h"
 
 static HASHNODE    *hashtab[HASHSIZE];
-HASHNODE           *cpp_lookup(struct parse_file *pfile,
-			       const unsigned char *name, int len, int hash);
-void                delete_macro(HASHNODE * hp);
-HASHNODE           *install(unsigned char *name, int len, enum node_type type,
-			    int ivalue, char *value, int hash);
-
-/* Define a generic NULL if one hasn't already been defined.  */
-
-#ifndef NULL
-#define NULL 0
-#endif
-
-#ifndef __STDC__
-#define const
-#define volatile
-#endif
 
 #include <string.h>
 #include <stdlib.h>
+
+#define IS_IDCHAR(ch) is_idchar[(unsigned char)(ch)]
 
 /*
  * return hash function on name.  must be compatible with the one
  * computed a step at a time, elsewhere
  */
 int
-hashf(const unsigned char *name, int len, int hashsize)
+hashf(const char *name, int len, int hashsize)
 {
    int                 r = 0;
 
@@ -72,16 +58,14 @@ hashf(const unsigned char *name, int len, int hashsize)
  * Otherwise, compute the hash code.
  */
 HASHNODE           *
-cpp_lookup(struct parse_file * pfile, const unsigned char *name, int len,
-	   int hash)
+cpp_lookup(const char *name, int len, int hash)
 {
-   const unsigned char *bp;
+   const char         *bp;
    HASHNODE           *bucket;
 
-   pfile = NULL;
    if (len < 0)
      {
-	for (bp = name; is_idchar[*bp]; bp++);
+	for (bp = name; IS_IDCHAR(*bp); bp++);
 	len = bp - name;
      }
    if (hash < 0)
@@ -90,7 +74,8 @@ cpp_lookup(struct parse_file * pfile, const unsigned char *name, int len,
    bucket = hashtab[hash];
    while (bucket)
      {
-	if (bucket->length == len && strncmp(bucket->name, name, len) == 0)
+	if (bucket->length == len
+	    && strncmp((const char *)bucket->name, name, len) == 0)
 	   return bucket;
 	bucket = bucket->next;
      }
@@ -112,8 +97,7 @@ cpp_lookup(struct parse_file * pfile, const unsigned char *name, int len,
  * If #undef freed the DEFINITION, that would crash.  */
 
 void
-delete_macro(hp)
-     HASHNODE           *hp;
+delete_macro(HASHNODE * hp)
 {
 
    if (hp->prev != NULL)
@@ -157,22 +141,17 @@ delete_macro(hp)
  * Otherwise, compute the hash code.
  */
 HASHNODE           *
-install(name, len, type, ivalue, value, hash)
-     unsigned char      *name;
-     int                 len;
-     enum node_type      type;
-     int                 ivalue;
-     char               *value;
-     int                 hash;
+install(const char *name, int len, enum node_type type, int ivalue, char *value,
+	int hash)
 {
    HASHNODE           *hp;
    int                 i, bucket;
-   unsigned char      *p, *q;
+   const char         *p;
 
    if (len < 0)
      {
 	p = name;
-	while (is_idchar[*p])
+	while (IS_IDCHAR(*p))
 	   p++;
 	len = p - name;
      }
@@ -194,18 +173,14 @@ install(name, len, type, ivalue, value, hash)
       hp->value.ival = ivalue;
    else
       hp->value.cpval = value;
-   hp->name = ((unsigned char *)hp) + sizeof(HASHNODE);
-   p = hp->name;
-   q = name;
-   for (i = 0; i < len; i++)
-      *p++ = *q++;
+   hp->name = ((char *)hp) + sizeof(HASHNODE);
+   memcpy(hp->name, name, len);
    hp->name[len] = 0;
    return hp;
 }
 
 void
-cpp_hash_cleanup(pfile)
-     cpp_reader         *pfile;
+cpp_hash_cleanup(cpp_reader * pfile)
 {
    int                 i;
 

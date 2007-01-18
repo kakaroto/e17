@@ -24,16 +24,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "header.h"
+#include "config.h"
+#include "cpplib.h"
 
 /* Print the file names and line numbers of the #include
  * commands which led to the current file.  */
 
-void                fatal(char *str, char *arg);
-
 void
-cpp_print_containing_files(pfile)
-     cpp_reader         *pfile;
+cpp_print_containing_files(cpp_reader * pfile)
 {
    cpp_buffer         *ip;
    int                 first = 1;
@@ -74,10 +72,8 @@ cpp_print_containing_files(pfile)
 }
 
 void
-cpp_file_line_for_message(pfile, filename, line, column)
-     cpp_reader         *pfile;
-     char               *filename;
-     int                 line, column;
+cpp_file_line_for_message(cpp_reader * pfile, const char *filename,
+			  int line, int column)
 {
    pfile = NULL;
    if (column > 0)
@@ -92,34 +88,51 @@ cpp_file_line_for_message(pfile, filename, line, column)
 
 /* IS_ERROR is 1 for error, 0 for warning */
 void
-cpp_message(pfile, is_error, msg, arg1, arg2, arg3)
-     int                 is_error;
-     cpp_reader         *pfile;
-     char               *msg;
-     char               *arg1, *arg2, *arg3;
+cpp_message_v(cpp_reader * pfile, int is_error, const char *msg, va_list args)
 {
    if (is_error)
       pfile->errors++;
    else
       fprintf(stderr, "warning: ");
-   fprintf(stderr, msg, arg1, arg2, arg3);
+   vfprintf(stderr, msg, args);
    fprintf(stderr, "\n");
 }
 
 void
-fatal(str, arg)
-     char               *str, *arg;
+cpp_message(cpp_reader * pfile, int is_error, const char *msg, ...)
+{
+   va_list             args;
+
+   va_start(args, msg);
+
+   cpp_message_v(pfile, is_error, msg, args);
+
+   va_end(args);
+}
+
+static void
+cpp_fatal_v(const char *msg, va_list args)
 {
    fprintf(stderr, "%s: ", progname);
-   fprintf(stderr, str, arg);
+   vfprintf(stderr, msg, args);
    fprintf(stderr, "\n");
    exit(FATAL_EXIT_CODE);
 }
 
 void
-cpp_pfatal_with_name(pfile, name)
-     cpp_reader         *pfile;
-     char               *name;
+cpp_fatal(const char *msg, ...)
+{
+   va_list             args;
+
+   va_start(args, msg);
+
+   cpp_fatal_v(msg, args);
+
+   va_end(args);
+}
+
+void
+cpp_pfatal_with_name(cpp_reader * pfile, const char *name)
 {
    cpp_perror_with_name(pfile, name);
 #ifdef VMS
