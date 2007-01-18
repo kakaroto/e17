@@ -138,7 +138,8 @@ create_test(Ewl_Container *box)
 		ewl_mvc_model_set(EWL_MVC(o), model);
 		ewl_mvc_view_set(EWL_MVC(o), view);
 		ewl_mvc_data_set(EWL_MVC(o), styles);
-		ewl_mvc_selected_set(EWL_MVC(o), 0, 0);
+		ewl_mvc_selected_set(EWL_MVC(o), ewl_mvc_data_get(EWL_MVC(o)),
+				0, 0);
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
 		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
 						ete_cb_styles_changed, NULL);

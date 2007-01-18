@@ -38,6 +38,7 @@ EWLHEADERS = \
 	ewl_events.h \
 	ewl_floater.h \
 	ewl_filelist.h \
+	ewl_filelist_tree.h\
 	ewl_filelist_list.h\
 	ewl_filelist_icon.h \
 	ewl_filelist_column.h \
@@ -121,6 +122,7 @@ EWLSOURCES= \
 	ewl_events.c \
 	ewl_floater.c \
 	ewl_filelist.c \
+	ewl_filelist_tree.c \
 	ewl_filelist_list.c \
 	ewl_filelist_icon.c \
 	ewl_filelist_column.c \

@@ -4,7 +4,7 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
-static Ewl_Widget *ewl_list_widget_at(Ewl_MVC *mvc, int row, int column);
+static Ewl_Widget *ewl_list_widget_at(Ewl_MVC *mvc, void *data, int row, int column);
 
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure
@@ -170,7 +170,8 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 				ewl_highlight_follow_get(EWL_HIGHLIGHT(w)));
 	}
 
-	ewl_mvc_handle_click(EWL_MVC(data), row, -1);
+	ewl_mvc_handle_click(EWL_MVC(data), ewl_mvc_data_get(EWL_MVC(data)),
+			row, -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -194,7 +195,7 @@ ewl_list_cb_selected_change(Ewl_MVC *mvc)
 }
 
 static Ewl_Widget *
-ewl_list_widget_at(Ewl_MVC *mvc, int row, int column __UNUSED__)
+ewl_list_widget_at(Ewl_MVC *mvc, void *data, int row, int column __UNUSED__)
 {
 	Ewl_Widget *w;
 

@@ -293,6 +293,7 @@ ewl_mvc_selected_clear(Ewl_MVC *mvc)
 
 /**
  * @param mvc: The MVC to work with
+ * @param data: The parent data containing the index selection
  * @param list: The list of items to set selected.
  * @return Returns no value
  * @brief Sets the list of items to select. This will remove any items it
@@ -351,6 +352,7 @@ ewl_mvc_selected_list_get(Ewl_MVC *mvc)
 
 /**
  * @param mvc: The MVC to set the list into
+ * @param data: The parent data containing the index selection
  * @param srow: The start row
  * @param scolumn:  The start column
  * @param erow: The end row
@@ -359,7 +361,7 @@ ewl_mvc_selected_list_get(Ewl_MVC *mvc)
  * @brief Sets the given range, inclusive, as selected in the mvc
  */
 void
-ewl_mvc_selected_range_add(Ewl_MVC *mvc, int srow, int scolumn,
+ewl_mvc_selected_range_add(Ewl_MVC *mvc, void *data, int srow, int scolumn,
 					 int erow, int ecolumn)
 {
 	Ewl_Selection *sel;
@@ -388,10 +390,10 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, int srow, int scolumn,
 	}
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_SINGLE)
-		sel = ewl_mvc_selection_index_new(srow, scolumn);
+		sel = ewl_mvc_selection_index_new(data, srow, scolumn);
 
 	else
-		sel = ewl_mvc_selection_range_new(srow, scolumn, erow, ecolumn);
+		sel = ewl_mvc_selection_range_new(data, srow, scolumn, erow, ecolumn);
 
 	ecore_list_append(mvc->selected, sel);
 	ewl_mvc_selected_change_notify(mvc);
@@ -401,13 +403,14 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, int srow, int scolumn,
 
 /**
  * @param mvc: The MVC to work with
+ * @param data: The parent data containing the index selection
  * @param row: The row to set
  * @param column: The column to set
  * @return Returns no value
  * @brief Sets the given index as selected
  */
 void
-ewl_mvc_selected_set(Ewl_MVC *mvc, int row, int column)
+ewl_mvc_selected_set(Ewl_MVC *mvc, void *data, int row, int column)
 {
 	Ewl_Selection *sel;
 
@@ -421,20 +424,21 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, int row, int column)
 	while ((sel = ecore_list_remove_first(mvc->selected)))
 		ewl_mvc_cb_sel_free(sel);
 
-	ewl_mvc_selected_add(mvc, row, column);
+	ewl_mvc_selected_add(mvc, data, row, column);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * @param mvc: The MVC to work with
+ * @param data: The parent data containing the index selection
  * @param row: The row to add
  * @param column: The column to add
  * @return Returns no value
  * @brief Adds the given index to the selected list
  */
 void
-ewl_mvc_selected_add(Ewl_MVC *mvc, int row, int column)
+ewl_mvc_selected_add(Ewl_MVC *mvc, void *data, int row, int column)
 {
 	Ewl_Selection *si;
 
@@ -445,7 +449,7 @@ ewl_mvc_selected_add(Ewl_MVC *mvc, int row, int column)
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
 
-	si = ewl_mvc_selection_index_new(row, column);
+	si = ewl_mvc_selection_index_new(data, row, column);
 	ecore_list_append(mvc->selected, si);
 	ewl_mvc_selected_change_notify(mvc);
 
@@ -498,13 +502,14 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
 
 /**
  * @param mvc: The MVC to work with
+ * @param data: The parent data containing the index selection
  * @param row: The row to remove
  * @param column: The column to remove
  * @return Returns no value
  * @brief Removes the given index from the list of selected indices
  */
 void
-ewl_mvc_selected_rm(Ewl_MVC *mvc, int row, int column)
+ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data, int row, int column)
 {
 	Ewl_Selection *sel;
 
@@ -610,7 +615,7 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
  * @brief Checks if the given index is selected or not.
  */
 unsigned int
-ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column)
+ewl_mvc_selected_is(Ewl_MVC *mvc, void *data, int row, int column)
 {
 	Ewl_Selection *sel;
 	int ret = FALSE;
@@ -656,13 +661,14 @@ ewl_mvc_selected_is(Ewl_MVC *mvc, int row, int column)
 }
 
 /**
+ * @param data: The parent data containing the index selection
  * @param row: The row to create the index selection for
  * @param column: The column to create the index for
  * @return Returns a new Ewl_Selection_Idx based on the @a row and @a column
  * @brief Creates a new index selection based on given values
  */
 Ewl_Selection *
-ewl_mvc_selection_index_new(int row, int column)
+ewl_mvc_selection_index_new(void *data, int row, int column)
 {
 	Ewl_Selection_Idx *sel;
 
@@ -670,6 +676,7 @@ ewl_mvc_selection_index_new(int row, int column)
 
 	sel = NEW(Ewl_Selection_Idx, 1);
 	sel->sel.type = EWL_SELECTION_TYPE_INDEX;
+	sel->sel.data = data;
 	sel->row = row;
 	sel->column = column;
 
@@ -685,7 +692,7 @@ ewl_mvc_selection_index_new(int row, int column)
  * @brief Creates a new range selection based on given values
  */
 Ewl_Selection *
-ewl_mvc_selection_range_new(int srow, int scolumn, int erow, int ecolumn)
+ewl_mvc_selection_range_new(void *data, int srow, int scolumn, int erow, int ecolumn)
 {
 	Ewl_Selection_Range *sel;
 
@@ -693,6 +700,8 @@ ewl_mvc_selection_range_new(int srow, int scolumn, int erow, int ecolumn)
 
 	sel = NEW(Ewl_Selection_Range, 1);
 	sel->sel.type = EWL_SELECTION_TYPE_RANGE;
+	/* FIXME: Need to scan the data and split on branches */
+	sel->sel.data = data;
 	sel->start.row = srow;
 	sel->start.column = scolumn;
 	sel->end.row = erow;
@@ -710,7 +719,7 @@ ewl_mvc_selection_range_new(int srow, int scolumn, int erow, int ecolumn)
  * @brief Handles the click of the given cell
  */
 void
-ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
+ewl_mvc_handle_click(Ewl_MVC *mvc, void *data, int row, int column)
 {
 	unsigned int modifiers;
 	int multi_select = FALSE;
@@ -729,6 +738,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
 		if (ewl_mvc_selected_count_get(mvc) > 0)
 		{
 			Ewl_Selection *sel;
+			void *sdata;
 			int srow, scolumn;
 
 			/* A shift will add the current position into a 
@@ -741,6 +751,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
 				Ewl_Selection_Idx *idx;
 
 				idx = EWL_SELECTION_IDX(sel);
+				sdata = sel->data;
 				srow = idx->row;
 				scolumn = idx->column;
 
@@ -753,6 +764,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
 				int i, k;
 
 				idx = EWL_SELECTION_RANGE(sel);
+				sdata = sel->data;
 				srow = idx->start.row;
 				scolumn = idx->start.column;
 
@@ -777,8 +789,8 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
 				{
 					for (k = scolumn; k <= column; k++)
 					{
-						if (ewl_mvc_selected_is(mvc, i, k))
-							ewl_mvc_selected_rm(mvc, i, k);
+						if (ewl_mvc_selected_is(mvc, data, i, k))
+							ewl_mvc_selected_rm(mvc, data, i, k);
 					}
 				}
 
@@ -786,21 +798,21 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
 
 			ecore_list_remove(mvc->selected);
 
-			ewl_mvc_selected_range_add(mvc, srow, scolumn,
+			ewl_mvc_selected_range_add(mvc, data, srow, scolumn,
 							row, column);
 		}
 		else
-			ewl_mvc_selected_set(mvc, row, column);
+			ewl_mvc_selected_set(mvc, data, row, column);
 	}
 	else if (multi_select && (modifiers & EWL_KEY_MODIFIER_CTRL))
 	{
-		if (ewl_mvc_selected_is(mvc, row, column))
-			ewl_mvc_selected_rm(mvc, row, column);
+		if (ewl_mvc_selected_is(mvc, data, row, column))
+			ewl_mvc_selected_rm(mvc, data, row, column);
 		else
-			ewl_mvc_selected_add(mvc, row, column);
+			ewl_mvc_selected_add(mvc, data, row, column);
 	}
 	else
-		ewl_mvc_selected_set(mvc, row, column);
+		ewl_mvc_selected_set(mvc, data, row, column);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -816,7 +828,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, int row, int column)
  */
 void
 ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
-	Ewl_Widget *(*widget)(Ewl_MVC *mvc, int row, int column))
+	Ewl_Widget *(*widget)(Ewl_MVC *mvc, void *data, int row, int column))
 {
 	Ewl_Selection *sel;
 
@@ -841,7 +853,7 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 			Ewl_Selection_Idx *idx;
 
 			idx = EWL_SELECTION_IDX(sel);
-			w = widget(mvc, idx->row, idx->column);
+			w = widget(mvc, sel->data, idx->row, idx->column);
 			if (w) ewl_mvc_highlight_do(mvc, c, sel, w);
 		}
 		else
@@ -855,7 +867,7 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 				for (k = idx->start.column; 
 						k <= idx->end.column; k++)
 				{
-					w = widget(mvc, i, k);
+					w = widget(mvc, sel->data, i, k);
 					if (w) ewl_mvc_highlight_do(mvc, c,
 								sel, w);
 				}
@@ -994,11 +1006,13 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 		/* one item left in the grouping */
 		if ((((si->start.row - erow) + 1) * 
 				((si->start.column - si->end.column) + 1)) == 1)
-			n = ewl_mvc_selection_index_new(si->start.row,
+			n = ewl_mvc_selection_index_new(sel->data,
+							si->start.row,
 							si->start.column);
 
 		else
-			n = ewl_mvc_selection_range_new(si->start.row,
+			n = ewl_mvc_selection_range_new(sel->data,
+							si->start.row,
 							si->start.column,
 							erow, si->end.column);
 		
@@ -1014,10 +1028,10 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 		ecolumn = (column - 1);
 		if ((((si->end.row - row) + 1) * 
 				((si->start.column - ecolumn) + 1)) == 1)
-			n = ewl_mvc_selection_index_new(row, si->start.column);
+			n = ewl_mvc_selection_index_new(sel->data, row, si->start.column);
 
 		else
-			n = ewl_mvc_selection_range_new(row, si->start.column,
+			n = ewl_mvc_selection_range_new(sel->data, row, si->start.column,
 							si->end.row, ecolumn);
 
 		ecore_list_append(mvc->selected, n);
@@ -1032,10 +1046,10 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 		scolumn = column + 1;
 		if ((((si->end.row - row) + 1) * 
 				((scolumn - si->end.column) + 1)) == 1)
-			n = ewl_mvc_selection_index_new(row, si->end.column);
+			n = ewl_mvc_selection_index_new(sel->data, row, si->end.column);
 
 		else
-			n = ewl_mvc_selection_range_new(row, scolumn,
+			n = ewl_mvc_selection_range_new(sel->data, row, scolumn,
 							si->end.row,
 							si->end.column);
 
@@ -1051,10 +1065,10 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 		srow = row + 1;
 		if ((((srow - si->end.row) + 1) * 
 				((column - column) + 1)) == 1)
-			n = ewl_mvc_selection_index_new(si->end.row, column);
+			n = ewl_mvc_selection_index_new(sel->data, si->end.row, column);
 
 		else
-			n = ewl_mvc_selection_range_new(srow, column,
+			n = ewl_mvc_selection_range_new(sel->data, srow, column,
 							si->end.row, column);
 
 		ecore_list_append(mvc->selected, n);

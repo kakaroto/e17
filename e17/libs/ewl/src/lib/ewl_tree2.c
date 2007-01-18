@@ -24,7 +24,7 @@ static void ewl_tree2_cb_header_changed(Ewl_Widget *w, void *ev,
 static void ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_selected_change(Ewl_MVC *mvc);
-static Ewl_Widget *ewl_tree2_widget_at(Ewl_MVC *mvc, int row, int column);
+static Ewl_Widget *ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, int row, int column);
 
 static void ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree);
 
@@ -913,7 +913,8 @@ ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	row = ewl_container_child_index_get(EWL_CONTAINER(tree->rows), 
 							EWL_WIDGET(data));
-	ewl_mvc_handle_click(EWL_MVC(tree), row, -1);
+	ewl_mvc_handle_click(EWL_MVC(tree), ewl_mvc_data_get(EWL_MVC(tree)),
+				row, -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -938,7 +939,8 @@ ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 						EWL_WIDGET(data));
 	column = ewl_container_child_index_get(EWL_CONTAINER(row), w);
 
-	ewl_mvc_handle_click(EWL_MVC(tree), r, column);
+	ewl_mvc_handle_click(EWL_MVC(tree), ewl_mvc_data_get(EWL_MVC(tree)),
+			r, column);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -957,7 +959,7 @@ ewl_tree2_cb_selected_change(Ewl_MVC *mvc)
 }
 
 static Ewl_Widget *
-ewl_tree2_widget_at(Ewl_MVC *mvc, int row, int column)
+ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, int row, int column)
 {
 	Ewl_Widget *r, *w;
 	Ewl_Tree2 *tree;
