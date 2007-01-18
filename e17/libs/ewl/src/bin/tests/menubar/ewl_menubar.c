@@ -115,6 +115,7 @@ create_test(Ewl_Container *box)
 		}
 	}
 	ewl_container_child_append(EWL_CONTAINER(box), v_menubar);
+	ewl_object_alignment_set(EWL_OBJECT(v_menubar), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(v_menubar);
 
 	return 1;
