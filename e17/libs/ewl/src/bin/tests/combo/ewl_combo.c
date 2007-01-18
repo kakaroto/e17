@@ -311,6 +311,7 @@ combo_test_editable_new(void)
 	Ewl_Widget *w;
 
 	w = ewl_hbox_new();
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT);
 
 	return w;
 }
