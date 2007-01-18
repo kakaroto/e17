@@ -3,16 +3,27 @@ EWL ROADMAP
 
 0.6.0 
 -----
-- tree2 complete
-- Need to move window creation calls so their picked up by the engine if it can't
-    handle multiple windows and return evas buffer engines to draw into. 
-  - this will handle menus, combos, tooltips. anything that requires a new
-    window.
+- tree2 moved to tree
+- paned code re-worked
+- ewl_filelist_tree working
+
+
+0.6.1
+-----
+- bug fixes (see TODO and xcomputerman.net/bugs)
+- any DWARNINGS that are printed out
+- check for memleaks/corruption
 - fixup submenu/menu interaction
 
 
 0.7.0
 -----
+- Need to move window creation calls so their picked up by the engine 
+  if it can't handle multiple windows and return evas buffer engines 
+  to draw into. 
+  - this will handle menus, combos, tooltips. anything that requires a new
+    window.
 - finish ewl_freebox and ewl_icon and remove iconbox
 - filedialog able to return directories along with files
+
 
