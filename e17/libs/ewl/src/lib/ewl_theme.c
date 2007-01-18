@@ -75,7 +75,7 @@ ewl_theme_theme_set(const char *theme_name)
 	/* Allocate and clear the default theme */
 	if (ewl_theme_def_data) ecore_hash_destroy(ewl_theme_def_data);
 
-	ewl_theme_def_data = ecore_hash_new(NULL, NULL);
+	ewl_theme_def_data = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	if (!ewl_theme_def_data)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
@@ -437,7 +437,7 @@ ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
 	DCHECK_PARAM_PTR("k", k);
 
 	if (!w->theme || w->theme == ewl_theme_def_data) {
-		w->theme = ecore_hash_new(NULL, NULL);
+		w->theme = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
 		ecore_hash_set_free_key(w->theme, ewl_theme_data_free);
 		ecore_hash_set_free_value(w->theme, ewl_theme_data_free);
