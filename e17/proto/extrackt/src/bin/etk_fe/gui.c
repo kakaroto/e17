@@ -92,14 +92,15 @@ static E_Gui_Etk *gui;
 /* subsystem functions */
 /************************/
 
-static int       _etk_fe_gui_pipefd_handler_cb(void *data, Ecore_Fd_Handler *fd_handler);
-static int       _etk_fe_gui_poll_timer_handler_cb(void *data);
-static int       _etk_fe_gui_slow_timer_handler_cb(void *data);
-static int       _etk_fe_gui_fast_timer_handler_cb(void *data);
-static void      _etk_fe_gui_show(E_Gui_Etk *gui);
-static void      _etk_fe_config_load(E_Gui_Etk *gui);
-static void      _etk_fe_config_save(E_Gui_Etk *gui);
-static void	 _etk_fe_gui_encoder_progress_bar_update(void);
+static int        _etk_fe_gui_pipefd_handler_cb(void *data, Ecore_Fd_Handler *fd_handler);
+static int        _etk_fe_gui_poll_timer_handler_cb(void *data);
+static int        _etk_fe_gui_slow_timer_handler_cb(void *data);
+static int        _etk_fe_gui_fast_timer_handler_cb(void *data);
+static void       _etk_fe_gui_show(E_Gui_Etk *gui);
+static void       _etk_fe_config_load(E_Gui_Etk *gui);
+static void       _etk_fe_config_save(E_Gui_Etk *gui);
+static void	  _etk_fe_gui_encoder_progress_bar_update(void);
+static Evas_List *_etk_fe_tree_selected_rows_get(Etk_Tree *tree);
 Etk_Bool  _etk_fe_gui_window_deleted_cb(void *data);
 
 /* will enter here when a read is available on the pipefd */
@@ -359,7 +360,7 @@ _etk_fe_gui_rip_cb(Etk_Object *obj, void *data)
    ex = gui->ex;
    
    selected = NULL;
-   selected = etk_tree_selected_rows_get(ETK_TREE(gui->tracks_tree));
+   selected = _etk_fe_tree_selected_rows_get(ETK_TREE(gui->tracks_tree));
       
    row = etk_tree_first_row_get(tree);
    while(row)
@@ -379,7 +380,7 @@ _etk_fe_gui_rip_cb(Etk_Object *obj, void *data)
 	     ex_command_rip_append(ex, strtol(ncol_string,NULL,10));
 	  }
 	
-	row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+	row = etk_tree_row_next_get(row);
      }
    /* if none is selected rip them all */
    if(!ex->rip.tracks)
@@ -397,7 +398,7 @@ _etk_fe_gui_rip_cb(Etk_Object *obj, void *data)
 				&selected,
 				NULL);
 	     ex_command_rip_append(ex, strtol(ncol_string,NULL,10));
-	     row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+	     row = etk_tree_row_next_get(row);
 	  }
      }
    /* actually rip them */
@@ -444,7 +445,7 @@ _etk_fe_gui_rip_enc_cb(Etk_Object *obj, void *data)
    /* the only difference is to set this flag to on */
    ex->encode.on = 1;
    selected = NULL;
-   selected = etk_tree_selected_rows_get(ETK_TREE(gui->tracks_tree));
+   selected = _etk_fe_tree_selected_rows_get(ETK_TREE(gui->tracks_tree));
       
    row = etk_tree_first_row_get(tree);
    
@@ -465,7 +466,7 @@ _etk_fe_gui_rip_enc_cb(Etk_Object *obj, void *data)
 	     ex_command_rip_append(ex, strtol(ncol_string,NULL,10));
 	  }
 	
-	row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+	row = etk_tree_row_next_get(row);
      }
    /* if none is selected rip them all */
    if(!ex->rip.tracks)
@@ -483,7 +484,7 @@ _etk_fe_gui_rip_enc_cb(Etk_Object *obj, void *data)
 				&selected,
 				NULL);
 	     ex_command_rip_append(ex, strtol(ncol_string,NULL,10));
-	     row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);
+	     row = etk_tree_row_next_get(row);
 	  }
      }
    /* actually rip them */
@@ -585,20 +586,20 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    etk_tree_multiple_select_set(ETK_TREE(gui->tracks_tree), ETK_FALSE);
    gui->tracks_num_col = etk_tree_col_new(ETK_TREE(gui->tracks_tree),
 			 _("No."),
-			 etk_tree_model_text_new(ETK_TREE(gui->tracks_tree)),
-			 20);
+			 20, 0.0);
+   etk_tree_col_model_add(gui->tracks_num_col, etk_tree_model_text_new());
    gui->tracks_name_col = etk_tree_col_new(ETK_TREE(gui->tracks_tree), 
 			  _("Tracks"),
-			  etk_tree_model_text_new(ETK_TREE(gui->tracks_tree)),
-			  200);
+			  200, 0.0);
+   etk_tree_col_model_add(gui->tracks_name_col, etk_tree_model_text_new());
    gui->tracks_time_col = etk_tree_col_new(ETK_TREE(gui->tracks_tree), 
 		          _("Length"),
-			  etk_tree_model_text_new(ETK_TREE(gui->tracks_tree)),
-			  40);
+			  40, 0.0);
+   etk_tree_col_model_add(gui->tracks_time_col, etk_tree_model_text_new());
    gui->tracks_rip_col = etk_tree_col_new(ETK_TREE(gui->tracks_tree), 
 			 _("Rip"),
-			 etk_tree_model_checkbox_new(ETK_TREE(gui->tracks_tree)),
-			 20);   
+			 20, 0.0);   
+   etk_tree_col_model_add(gui->tracks_rip_col, etk_tree_model_checkbox_new());
    etk_tree_headers_visible_set(ETK_TREE(gui->tracks_tree), 1);
    etk_tree_build(ETK_TREE(gui->tracks_tree));   
       
@@ -948,7 +949,7 @@ etk_fe_disc_update(void *data)
 				     &selected,
 				     NULL);	
 	     
-	     etk_tree_row_fields_set(row,
+	     etk_tree_row_fields_set(row, ETK_FALSE,
 				     TRACKS_NUM_COL, track_num,
 				     TRACKS_NAME_COL, track_name,
 				     TRACKS_TIME_COL, track_time,
@@ -957,12 +958,12 @@ etk_fe_disc_update(void *data)
 	  }
 	else
 	  {
-	     etk_tree_append(ETK_TREE(gui->tracks_tree),
-			     TRACKS_NUM_COL, track_num,
-			     TRACKS_NAME_COL, track_name,
-			     TRACKS_TIME_COL, track_time,
-			     TRACKS_RIP_COL, selected,
-			     NULL);
+	     etk_tree_row_append(ETK_TREE(gui->tracks_tree), NULL,
+				  TRACKS_NUM_COL, track_num,
+				  TRACKS_NAME_COL, track_name,
+				  TRACKS_TIME_COL, track_time,
+				  TRACKS_RIP_COL, selected,
+				  NULL);
 	  }
 	
 	E_FREE(track_name);
@@ -972,11 +973,12 @@ etk_fe_disc_update(void *data)
 	E_FREE(secs);
 	
 	if(row)
-	  row = etk_tree_next_row_get(row, ETK_FALSE, ETK_FALSE);	
+	  row = etk_tree_row_next_get(row);	
      }
    
    etk_tree_thaw(ETK_TREE(gui->tracks_tree));
 }
+
 void
 etk_fe_rip_percent_update(double percent)
 {
@@ -993,6 +995,32 @@ etk_fe_rip_percent_update(double percent)
    snprintf(text, sizeof(text), "%.2f%% done", percent_total * 100.0);
    etk_progress_bar_fraction_set(ETK_PROGRESS_BAR(gui->rip_tot_pbar), percent_total);
    etk_progress_bar_text_set(ETK_PROGRESS_BAR(gui->rip_tot_pbar), text);      
+}
+
+Evas_List *
+_etk_fe_tree_selected_rows_get(Etk_Tree *tree)
+{
+  Evas_List *selected_rows = NULL;
+  Etk_Tree_Row *row;
+
+  if (!tree)
+    return NULL;
+
+  if (!etk_tree_multiple_select_get(tree))
+    {
+      selected_rows = evas_list_append(selected_rows, etk_tree_selected_row_get(tree));
+    }
+  else
+    {
+      for (row = etk_tree_first_row_get(tree); row; row = row->next)
+        {
+          if (etk_tree_row_is_selected(row))
+            {
+              selected_rows = evas_list_append(selected_rows, row);
+            }
+        }
+    }
+  return selected_rows;
 }
 
 /* the exported frontend struct */
