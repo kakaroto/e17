@@ -75,7 +75,7 @@ ewl_theme_theme_set(const char *theme_name)
 	/* Allocate and clear the default theme */
 	if (ewl_theme_def_data) ecore_hash_destroy(ewl_theme_def_data);
 
-	ewl_theme_def_data = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	ewl_theme_def_data = ecore_hash_new(NULL, NULL);
 	if (!ewl_theme_def_data)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
@@ -255,13 +255,15 @@ ewl_theme_lookup_cache(Ecore_Hash *cache, const char *k, const char *v)
 
 	if (v != EWL_THEME_KEY_NOMATCH) {
 		if (v) {
-			ecore_hash_set(cache, strdup(k), strdup(v));
+			ecore_hash_set(cache, (void *)ecore_string_instance(k), 
+						(void *)ecore_string_instance(v));
 		}
 		/*
 		 * Mark unmatched keys in the cache.
 		 */
 		else {
-			ecore_hash_set(cache, strdup(k), EWL_THEME_KEY_NOMATCH);
+			ecore_hash_set(cache, (void *)ecore_string_instance(k), 
+							EWL_THEME_KEY_NOMATCH);
 		}
 	}
 
@@ -435,16 +437,18 @@ ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
 	DCHECK_PARAM_PTR("k", k);
 
 	if (!w->theme || w->theme == ewl_theme_def_data) {
-		w->theme = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+		w->theme = ecore_hash_new(NULL, NULL);
 
 		ecore_hash_set_free_key(w->theme, ewl_theme_data_free);
 		ecore_hash_set_free_value(w->theme, ewl_theme_data_free);
 	}
 
 	if (v && v != EWL_THEME_KEY_NOMATCH)
-		ecore_hash_set(w->theme, strdup(k), strdup(v));
+		ecore_hash_set(w->theme, (void *)ecore_string_instance(k), 
+						(void *)ecore_string_instance(v));
 	else
-		ecore_hash_set(w->theme, strdup(k), EWL_THEME_KEY_NOMATCH);
+		ecore_hash_set(w->theme, (void *)ecore_string_instance(k), 
+						EWL_THEME_KEY_NOMATCH);
 
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
@@ -605,7 +609,7 @@ ewl_theme_data_free(void *data)
 	if (!data || data == (void *)EWL_THEME_KEY_NOMATCH)
 		DRETURN(DLEVEL_STABLE);
 
-	FREE(data);
+	ecore_string_release(data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
