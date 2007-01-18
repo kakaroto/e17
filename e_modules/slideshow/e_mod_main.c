@@ -92,7 +92,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	_slide_get_bg_count(inst);
 	if(ci->random_order)
 	  {
-	     srand(time(NULL));
+             srand(time(NULL) + atoi(inst->gcc->id) * 100);
 	     inst->index = (rand() % (inst->bg_count+1));
 	  }
 	else
@@ -445,7 +445,7 @@ _slide_cb_check(void *data)
 	     _slide_set_bg(inst, bg);
 	     if(ci->random_order)
 	       {
-		  srand(time(NULL));
+                  srand(time(NULL) + atoi(inst->gcc->id) * 100);
 		  inst->index = (rand() % (inst->bg_count+1));
 	       }
 	     else
