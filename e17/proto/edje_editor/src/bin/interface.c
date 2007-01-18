@@ -14,33 +14,32 @@ void ShowAlert(char* text){
 void
 AddGroupToTree(Engrave_Group* group)
 {
-   Etk_Tree2_Col *col1,*col2,*col3;
-   Etk_Tree2_Row *row=NULL;
+   Etk_Tree_Col *col1,*col2,*col3;
+   Etk_Tree_Row *row=NULL;
 
-   col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
-   col2 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 1);
-   col3 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2);
-   //printf("ADD\n");
-   row = etk_tree2_row_append(ETK_TREE2(UI_PartsTree), NULL,
+   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
+   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
+   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
+
+   row = etk_tree_row_append(ETK_TREE(UI_PartsTree), NULL,
             col1, EdjeFile,"NONE.PNG", group->name,
             col3,ROW_GROUP,  NULL);
 
    ecore_hash_set (hash, group, row);
-   etk_tree2_row_data_set(row,group);
-
+   etk_tree_row_data_set(row,group);
 }
 
 void
 AddPartToTree(Engrave_Part* part)
 {
-   Etk_Tree2_Col *col1,*col2,*col3;
-   Etk_Tree2_Row *row=NULL;
+   Etk_Tree_Col *col1,*col2,*col3;
+   Etk_Tree_Row *row=NULL;
    char buf[20];
 
    //printf("Add Part to tree: %s\n",par->name);
-   col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
-   col2 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 1);
-   col3 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2);
+   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
+   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
+   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
 
    switch (part->type){
       case ENGRAVE_PART_TYPE_IMAGE:
@@ -57,38 +56,38 @@ AddPartToTree(Engrave_Part* part)
       break;
    }
 
-   row = etk_tree2_row_append(ETK_TREE2(UI_PartsTree),
+   row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
                ecore_hash_get(hash,part->parent),
                col1, EdjeFile,buf, part->name,
                col3,ROW_PART,
                NULL);
 
    ecore_hash_set(hash, part, row);
-   etk_tree2_row_data_set(row, part);
+   etk_tree_row_data_set(row, part);
 }
 
 void
 AddStateToTree(Engrave_Part_State* state)
 {
-   Etk_Tree2_Col *col1,*col2,*col3;
-   Etk_Tree2_Row *row;
+   Etk_Tree_Col *col1,*col2,*col3;
+   Etk_Tree_Row *row;
    Etk_String *str = etk_string_new("");
    char buf[4096];
    const char *stock_key;
-   col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
-   col2 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 1);
-   col3 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2);
+   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
+   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
+   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
 
    snprintf(buf,4096,"%s %.2f",state->name,state->value);
    stock_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_SMALL);
-   row = etk_tree2_row_append(ETK_TREE2(UI_PartsTree),
+   row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
             //part->user_data,
             ecore_hash_get(hash,state->parent),
             col1,EdjeFile,"DESC.PNG",buf,
             col2,TRUE,
             col3,ROW_DESC, NULL);
 
-   etk_tree2_row_data_set (row, state);
+   etk_tree_row_data_set (row, state);
    ecore_hash_set(hash, state, row);
 
 
@@ -1002,29 +1001,29 @@ create_group_frame(void)
 Etk_Widget*
 create_tree_frame(void)
 {
-   Etk_Tree2_Col *col;
+   Etk_Tree_Col *col;
 
    //UI_PartsTree
-   UI_PartsTree = etk_tree2_new();
+   UI_PartsTree = etk_tree_new();
    etk_widget_padding_set(UI_PartsTree,2,2,2,2);
-   etk_tree2_mode_set (ETK_TREE2(UI_PartsTree), ETK_TREE2_MODE_TREE);
+   etk_tree_mode_set (ETK_TREE(UI_PartsTree), ETK_TREE_MODE_TREE);
    etk_widget_size_request_set(UI_PartsTree, 260, 300);
-   col = etk_tree2_col_new(ETK_TREE2(UI_PartsTree), "File contents",100,0);
-   etk_tree2_col_model_add(col,etk_tree2_model_image_new());
-   etk_tree2_col_model_add(col,etk_tree2_model_text_new());
-   etk_tree2_col_resizable_set (col, FALSE);
-   etk_tree2_col_expand_set (col,TRUE);
-   col = etk_tree2_col_new(ETK_TREE2(UI_PartsTree), "vis", 10,0);
-   etk_tree2_col_visible_set (col, FALSE);
-   etk_tree2_col_model_add(col,etk_tree2_model_checkbox_new());
-   etk_tree2_col_resizable_set (col, FALSE);
-   etk_tree2_col_expand_set (col,FALSE);
-   col = etk_tree2_col_new(ETK_TREE2(UI_PartsTree), "type",10, 0);
-   etk_tree2_col_model_add(col,etk_tree2_model_int_new());
-   etk_tree2_col_visible_set (col, FALSE);
-   etk_tree2_col_resizable_set (col, FALSE);
-   etk_tree2_col_expand_set (col,FALSE);
-   etk_tree2_build(ETK_TREE2(UI_PartsTree));
+   col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "File contents",100,0);
+   etk_tree_col_model_add(col,etk_tree_model_image_new());
+   etk_tree_col_model_add(col,etk_tree_model_text_new());
+   etk_tree_col_resizable_set (col, FALSE);
+   etk_tree_col_expand_set (col,TRUE);
+   col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "vis", 10,0);
+   etk_tree_col_visible_set (col, FALSE);
+   etk_tree_col_model_add(col,etk_tree_model_checkbox_new());
+   etk_tree_col_resizable_set (col, FALSE);
+   etk_tree_col_expand_set (col,FALSE);
+   col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "type",10, 0);
+   etk_tree_col_model_add(col,etk_tree_model_int_new());
+   etk_tree_col_visible_set (col, FALSE);
+   etk_tree_col_resizable_set (col, FALSE);
+   etk_tree_col_expand_set (col,FALSE);
+   etk_tree_build(ETK_TREE(UI_PartsTree));
 
    etk_signal_connect("row_selected", ETK_OBJECT(UI_PartsTree), ETK_CALLBACK(on_PartsTree_row_selected), NULL);
 
@@ -1075,7 +1074,7 @@ create_description_frame(void)
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_AspectMinSpinner
-   UI_AspectMinSpinner = etk_spinner_new (0.0, 1.0, 0.0, 0.1, 1.0);
+   UI_AspectMinSpinner = etk_spinner_new (0.0, 100.0, 0.0, 0.1, 1.0);
    etk_spinner_digits_set (ETK_SPINNER(UI_AspectMinSpinner), 1);
    etk_widget_size_request_set(UI_AspectMinSpinner,45, 20);
    etk_box_append(ETK_BOX(hbox),UI_AspectMinSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -1085,7 +1084,7 @@ create_description_frame(void)
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_AspectMaxSpinner
-   UI_AspectMaxSpinner = etk_spinner_new (0.0, 1.0, 0.0, 0.1, 1.0);
+   UI_AspectMaxSpinner = etk_spinner_new (0.0, 100.0, 0.0, 0.1, 1.0);
    etk_spinner_digits_set (ETK_SPINNER(UI_AspectMaxSpinner), 1);
    etk_widget_size_request_set(UI_AspectMaxSpinner,45, 20);
    etk_box_append(ETK_BOX(hbox),UI_AspectMaxSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);

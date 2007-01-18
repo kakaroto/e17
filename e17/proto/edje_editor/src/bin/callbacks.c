@@ -95,36 +95,6 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
       case TOOLBAR_DEBUG:
          DebugInfo(TRUE);
-
-         Engrave_Part *part;
-         Engrave_Part_State *new_state;
-         Engrave_Group *group;
-         group = engrave_group_new();
-         engrave_group_name_set (group, "New group");
-         engrave_file_group_add (Cur.ef, group);
-
-         AddGroupToTree(group);
-         Cur.eg = group;
-
-
-         part = engrave_part_new(ENGRAVE_PART_TYPE_RECT);
-         engrave_part_name_set (part, "new rectangle");
-         engrave_group_part_add(Cur.eg, part);
-         AddPartToTree(part);
-
-         new_state = engrave_part_state_new();
-         engrave_part_state_name_set(new_state, "default", 0.0);
-         engrave_part_state_add(part,new_state);
-         AddStateToTree(new_state);
-
-         Cur.ep = part;
-         Cur.eps = new_state;
-
-         etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
-         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
-         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep)); 
-
-         PopulateRelComboBoxes();
          break;
       case TOOLBAR_IMAGE_FILE_ADD:
          ShowAlert("Not yet implemented =)");
@@ -143,7 +113,7 @@ on_AllButton_click(Etk_Button *button, void *data)
 
 /* Tree callbacks */
 void
-on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
+on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    int row_type=0;
    Engrave_Group* old_group = Cur.eg;
@@ -151,15 +121,15 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
    printf("Row Selected Signal on one of the Tree EMITTED \n");
 
    //get the type of the row (group,part or desc) from the hidden col
-   etk_tree2_row_fields_get(row,
-      etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 2),&row_type,
+   etk_tree_row_fields_get(row,
+      etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2),&row_type,
       NULL);
 
    switch (row_type)
    {
       case ROW_GROUP:
-
-         Cur.eg = etk_tree2_row_data_get (row);
+         printf("ROW_GROUP %d\n",Cur.eg);
+         Cur.eg = etk_tree_row_data_get (row);
          Cur.ep = NULL;
          Cur.eps = NULL;
          etk_widget_hide(UI_DescriptionFrame);
@@ -171,7 +141,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
          etk_widget_show(UI_GroupFrame);
          break;
       case ROW_PART:
-         Cur.ep = etk_tree2_row_data_get (row);
+         Cur.ep = etk_tree_row_data_get (row);
          Cur.eg = Cur.ep->parent;
          Cur.eps = NULL;
          etk_widget_hide(UI_DescriptionFrame);
@@ -184,7 +154,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
          UpdatePartFrame();
          break;
       case ROW_DESC:
-         Cur.eps = etk_tree2_row_data_get (row);
+         Cur.eps = etk_tree_row_data_get (row);
          Cur.ep = Cur.eps->parent;
          Cur.eg = Cur.ep->parent;
          Cur.ep->current_state = Cur.eps;
@@ -250,7 +220,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree2_Row *row, void *data)
 void
 on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
 {
-   Etk_Tree2_Col *col1=NULL;
+   Etk_Tree_Col *col1=NULL;
 
    printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
    if (Cur.eg && ecore_hash_get(hash,Cur.eg))
@@ -258,8 +228,8 @@ on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
       engrave_group_name_set(Cur.eg,etk_entry_text_get(ETK_ENTRY(object)));
 
       //Update PartsTree
-      if ((col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0)))
-         etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.eg),TRUE,
+      if ((col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0)))
+         etk_tree_row_fields_set(ecore_hash_get(hash,Cur.eg),TRUE,
             col1,EdjeFile,"NONE.PNG",engrave_group_name_get(Cur.eg),
             NULL);
 
@@ -306,7 +276,7 @@ on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
 void
 on_PartNameEntry_text_changed(Etk_Object *object, void *data)
 {
-   Etk_Tree2_Col *col1=NULL;
+   Etk_Tree_Col *col1=NULL;
 
    //printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
 
@@ -316,26 +286,26 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
       //RenamePart(Cur.ep,etk_entry_text_get(ETK_ENTRY(object)));
       PopulateRelComboBoxes();
       //Update PartTree
-      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
+      col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
       switch (Cur.ep->type)
       {
          case ENGRAVE_PART_TYPE_IMAGE: 
-            etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
+            etk_tree_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
                col1,EdjeFile,"IMAGE.PNG",etk_entry_text_get(ETK_ENTRY(object)),
                NULL); 
             break;
          case ENGRAVE_PART_TYPE_RECT:
-            etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
+            etk_tree_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
                col1,EdjeFile,"RECT.PNG",etk_entry_text_get(ETK_ENTRY(object)),
                NULL); 
             break;
          case ENGRAVE_PART_TYPE_TEXT:
-            etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
+            etk_tree_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
                col1,EdjeFile,"TEXT.PNG",etk_entry_text_get(ETK_ENTRY(object)),
                NULL); 
                break;
          default:
-            etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
+            etk_tree_row_fields_set(ecore_hash_get(hash,Cur.ep),TRUE,
                col1,EdjeFile,"NONE.PNG",etk_entry_text_get(ETK_ENTRY(object)),
                NULL); 
                break;
@@ -346,7 +316,7 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
 void
 on_StateEntry_text_changed(Etk_Object *object, void *data)
 {
-   Etk_Tree2_Col *col1=NULL;
+   Etk_Tree_Col *col1=NULL;
    char buf[4096];
    char *nn;   //new name
    printf("Text Changed Signal on StateEntry EMITTED\n");
@@ -364,9 +334,9 @@ on_StateEntry_text_changed(Etk_Object *object, void *data)
       }
 
       //Update PartTree
-      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
+      col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
       snprintf(buf,4095,"%s %.2f",Cur.eps->name,Cur.eps->value);
-      etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
+      etk_tree_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
          col1,EdjeFile,"DESC.PNG",buf,NULL);
    }
 }
@@ -375,7 +345,7 @@ void
 on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    char buf[4096];
-   Etk_Tree2_Col *col1=NULL;
+   Etk_Tree_Col *col1=NULL;
 
    printf("Value Changed Signal on StateIndexSpinner EMITTED\n");
    if (Cur.eps)
@@ -391,9 +361,9 @@ on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
       }
       //Update PartTree
       //Update PartTree
-      col1 = etk_tree2_nth_col_get(ETK_TREE2(UI_PartsTree), 0);
+      col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
       snprintf(buf,4095,"%s %.2f",Cur.eps->name,Cur.eps->value);
-      etk_tree2_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
+      etk_tree_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
          col1,EdjeFile,"DESC.PNG",buf,NULL);
    }
 }
@@ -767,7 +737,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
 
    printf("Item Activated Signal on AddMenu EMITTED\n");
 
-   if (!Cur.eg && ((int)data != NEW_DESC) && ((int)data != NEW_GROUP))
+ /*  if (!Cur.eg && ((int)data != NEW_DESC) && ((int)data != NEW_GROUP))
    {
       group = engrave_group_new();
       engrave_group_name_set (group, "New group");
@@ -775,68 +745,87 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
 
       AddGroupToTree(group);
       Cur.eg = group;
-   }
+   }*/
    switch ((int)data)
    {
       case NEW_RECT:
-         part = engrave_part_new(ENGRAVE_PART_TYPE_RECT);
-         engrave_part_name_set (part, "new rectangle");
-         engrave_group_part_add(Cur.eg, part);
-         AddPartToTree(part);
+         if (Cur.eg){
+            part = engrave_part_new(ENGRAVE_PART_TYPE_RECT);
+            engrave_part_name_set (part, "new rectangle");
+            engrave_group_part_add(Cur.eg, part);
+            AddPartToTree(part);
 
-         new_state = engrave_part_state_new();
-         engrave_part_state_name_set(new_state, "default", 0.0);
-         engrave_part_state_add(part,new_state);
-         AddStateToTree(new_state);
+            new_state = engrave_part_state_new();
+            engrave_part_state_name_set(new_state, "default", 0.0);
+            engrave_part_state_rel1_relative_set(new_state, 0.1, 0.1);
+            engrave_part_state_rel2_relative_set(new_state, 0.9, 0.9);
+            engrave_part_state_add(part,new_state);
+            AddStateToTree(new_state);
 
-         Cur.ep = part;
-         Cur.eps = new_state;
+            Cur.ep = part;
+            //Cur.eps = new_state;
 
-         etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
-         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
-         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep)); 
+            etk_tree_row_select(ecore_hash_get(hash,new_state));
+            etk_tree_row_unfold(ecore_hash_get(hash,Cur.eg));
+            etk_tree_row_unfold(ecore_hash_get(hash,Cur.ep)); 
 
-         PopulateRelComboBoxes();
+            PopulateRelComboBoxes();
+         }else{
+            ShowAlert("You must first select a group.");
+         }
          break;
       case NEW_IMAGE:
-         part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
-         engrave_part_name_set (part, "new image");
-         engrave_group_part_add(Cur.eg, part);
-         AddPartToTree(part);
+         if (Cur.eg){
+            part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
+            engrave_part_name_set (part, "new image");
+            engrave_group_part_add(Cur.eg, part);
+            AddPartToTree(part);
 
-         new_state = engrave_part_state_new();
-         engrave_part_state_name_set(new_state, "default", 0.0);
-         engrave_part_state_add(part,new_state);
-         AddStateToTree(new_state);
+            new_state = engrave_part_state_new();
+            engrave_part_state_name_set(new_state, "default", 0.0);
+            engrave_part_state_rel1_relative_set(new_state, 0.1, 0.1);
+            engrave_part_state_rel2_relative_set(new_state, 0.9, 0.9);
+            engrave_part_state_add(part,new_state);
+            AddStateToTree(new_state);
 
-         Cur.ep = part;
-         Cur.eps = new_state;
+            Cur.ep = part;
+            //Cur.eps = new_state;
 
-         etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
-         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
-         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep));
+            etk_tree_row_select(ecore_hash_get(hash,new_state));
+            etk_tree_row_unfold(ecore_hash_get(hash,Cur.eg));
+            etk_tree_row_unfold(ecore_hash_get(hash,Cur.ep));
 
-         PopulateRelComboBoxes();
+            PopulateRelComboBoxes();
+         }else{
+            ShowAlert("You must first select a group.");
+         }
          break;
       case NEW_TEXT:
-         part = engrave_part_new(ENGRAVE_PART_TYPE_TEXT);
-         engrave_part_name_set (part, "new text");
-         engrave_group_part_add(Cur.eg, part);
-         AddPartToTree(part);
+         if (Cur.eg){
+            part = engrave_part_new(ENGRAVE_PART_TYPE_TEXT);
+            engrave_part_name_set (part, "new text");
+            engrave_group_part_add(Cur.eg, part);
+            AddPartToTree(part);
 
-         new_state = engrave_part_state_new();
-         engrave_part_state_name_set(new_state, "default", 0.0);
-         engrave_part_state_add(part,new_state);
-         AddStateToTree(new_state);
+            new_state = engrave_part_state_new();
+            engrave_part_state_name_set(new_state, "default", 0.0);
+            engrave_part_state_rel1_relative_set(new_state, 0.1, 0.1);
+            engrave_part_state_rel2_relative_set(new_state, 0.9, 0.9);
+            engrave_part_state_add(part,new_state);
+            AddStateToTree(new_state);
 
-         Cur.ep = part;
-         Cur.eps = new_state;
+            Cur.ep = part;
+            //Cur.eps = new_state;
 
-         etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
-         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
-         etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep));
+            etk_tree_row_select(ecore_hash_get(hash,new_state));
+            etk_tree_row_unfold(ecore_hash_get(hash,Cur.eg));
+            etk_tree_row_unfold(ecore_hash_get(hash,Cur.ep));
 
-         PopulateRelComboBoxes();
+            PopulateRelComboBoxes();
+         }else{
+            ShowAlert("You must first select a group.");
+         }
+
          break;
       case NEW_DESC:
          if (Cur.ep){
@@ -845,10 +834,11 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             engrave_part_state_add(Cur.ep,new_state);
             AddStateToTree(new_state);
 
-            Cur.eps = new_state;
-            etk_tree2_row_select(ecore_hash_get(hash,Cur.eps));
-            etk_tree2_row_unfold(ecore_hash_get(hash,Cur.ep));
-            etk_tree2_row_unfold(ecore_hash_get(hash,Cur.eg));
+            //Cur.eps = new_state;
+
+            etk_tree_row_select(ecore_hash_get(hash,new_state));
+            etk_tree_row_unfold(ecore_hash_get(hash,Cur.ep));
+            etk_tree_row_unfold(ecore_hash_get(hash,Cur.eg));
 
          }else{
             ShowAlert("You must first select a part.");
@@ -861,33 +851,31 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
 
          AddGroupToTree(group);
 
-         Cur.eg = group;
-         Cur.ep = NULL;
-         Cur.eps = NULL;
-         etk_tree2_row_select(ecore_hash_get(hash,group));
+         etk_tree_row_select(ecore_hash_get(hash,group));
          break;
    }
+   ev_redraw();
 }
 
 void
 on_RemoveMenu_item_activated(Etk_Object *object, void *data)
 {
-   Etk_Tree2_Row* row;
+   Etk_Tree_Row* row;
    printf("Item Activated Signal on RemoveMenu EMITTED\n");
    switch ((int)data){
       case REMOVE_DESCRIPTION:
          if (Cur.eps){
             if (strcmp(engrave_part_state_name_get(Cur.eps,NULL),"default") || Cur.eps->value != 0){
                printf("REMOVE DESCRIPTION: %s\n",Cur.eps->name);
-               row = etk_tree2_row_prev_get(ecore_hash_get(hash,Cur.eps));
-
-               etk_tree2_row_delete(ecore_hash_get(hash,Cur.eps));         
+               row = etk_tree_row_next_get(ecore_hash_get(hash,Cur.eps));
+               if (!row) row = etk_tree_row_prev_get(ecore_hash_get(hash,Cur.eps));
+               etk_tree_row_delete(ecore_hash_get(hash,Cur.eps));         
                ecore_hash_remove (hash, Cur.eps);
                PROTO_engrave_part_state_remove(Cur.ep, Cur.eps);
                engrave_part_state_free(Cur.eps);
 
                Cur.eps = NULL;
-               etk_tree2_row_select (row);
+               if (row) etk_tree_row_select (row);
                ev_redraw();
 
             }else{
@@ -901,9 +889,9 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
          if (Cur.ep){
             printf("REMOVE PART: %s\n",Cur.ep->name);
             row = NULL;
-            row = etk_tree2_row_next_get(ecore_hash_get(hash,Cur.ep));
-
-            etk_tree2_row_delete(ecore_hash_get(hash,Cur.ep));
+            row = etk_tree_row_next_get(ecore_hash_get(hash,Cur.ep));
+            if (!row) row = etk_tree_row_prev_get(ecore_hash_get(hash,Cur.ep));
+            etk_tree_row_delete(ecore_hash_get(hash,Cur.ep));
             ecore_hash_remove (hash, Cur.ep);
             PROTO_engrave_group_part_remove(Cur.eg,Cur.ep);
             engrave_part_free(Cur.ep);
@@ -911,8 +899,8 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
             Cur.ep = NULL;
             Cur.eps = NULL;
 
-            if (row) etk_tree2_row_select(row);
-            else etk_tree2_row_select(etk_tree2_row_last_child_get (etk_tree2_last_row_get (ETK_TREE2(UI_PartsTree))));
+            if (row) etk_tree_row_select(row);
+            else etk_tree_row_select(etk_tree_row_last_child_get (etk_tree_last_row_get (ETK_TREE(UI_PartsTree))));
 
             ev_redraw();
          }else{
@@ -923,9 +911,10 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
          if (Cur.eg)
          {
                row = NULL;
-               row = etk_tree2_row_prev_get(ecore_hash_get(hash,Cur.eg));
+               row = etk_tree_row_next_get(ecore_hash_get(hash,Cur.eg));
+               if (!row) row = etk_tree_row_prev_get(ecore_hash_get(hash,Cur.eg));
 
-               etk_tree2_row_delete(ecore_hash_get(hash,Cur.eg));
+               etk_tree_row_delete(ecore_hash_get(hash,Cur.eg));
                ecore_hash_remove (hash, Cur.eg);
                PROTO_engrave_file_group_remove(Cur.ef,Cur.eg);
                engrave_group_free(Cur.eg);
@@ -935,7 +924,7 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
                Cur.eps = NULL;
 
                ev_redraw();
-               etk_tree2_row_select(row);
+               if (row) etk_tree_row_select(row);
          }else{
             ShowAlert("No group selected");
          }

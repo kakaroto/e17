@@ -102,6 +102,8 @@ PROTO_engrave_group_part_remove(Engrave_Group *eg, Engrave_Part *ep)
     }
   }
 
+  if (ep->object) evas_object_del(ep->object);
+
   eg->parts = evas_list_remove(eg->parts,ep);
   engrave_part_parent_set(ep, NULL);
 }
