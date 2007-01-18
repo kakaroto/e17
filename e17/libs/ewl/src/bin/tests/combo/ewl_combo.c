@@ -111,6 +111,7 @@ create_test(Ewl_Container *box)
 
 	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(box), hbox);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(hbox);
 
 	data = combo_test_data_setup();
@@ -175,10 +176,16 @@ create_test(Ewl_Container *box)
 	ewl_combo_editable_set(EWL_COMBO(combo), TRUE);
 	ewl_widget_show(combo);
 
+	hbox = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(box), hbox);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_VFILL);
+	ewl_widget_show(hbox);
+
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Add items");
-	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, combo_cb_add, NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(o);
 
 	return 1;
