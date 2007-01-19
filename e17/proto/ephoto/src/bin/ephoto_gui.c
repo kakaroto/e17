@@ -422,5 +422,6 @@ void create_main_gui(void)
 	images = ecore_list_new();
 	populate_files(NULL, NULL, getenv("HOME"));
 
+	ewl_main();
 	return;
 }
