@@ -30,7 +30,7 @@ typedef enum Etk_Modifiers
    ETK_MODIFIER_NONE = 0,               /**< No active modifiers */
    ETK_MODIFIER_CTRL = 1 << 0,          /**< "Control" is pressed */
    ETK_MODIFIER_ALT = 1 << 1,           /**< "Alt" is pressed */
-   ETK_MODIFIER_SHIFT = 1 << 2,         /**< "Shitt" is pressed */
+   ETK_MODIFIER_SHIFT = 1 << 2,         /**< "Shift" is pressed */
    ETK_MODIFIER_WIN = 1 << 3,           /**< "Win" (between "Ctrl" and "Alt") is pressed */
 } Etk_Modifiers;
 
