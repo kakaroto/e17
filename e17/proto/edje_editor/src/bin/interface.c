@@ -96,12 +96,34 @@ AddStateToTree(Engrave_Part_State* state)
 }
 
 void
+AddProgramToTree(Engrave_Program* prog)
+{
+   Etk_Tree_Col *col1,*col2,*col3;
+   Etk_Tree_Row *row=NULL;
+
+   //printf("Add Program to tree: %s\n",prog->name);
+   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
+   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
+   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
+
+   row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
+               ecore_hash_get(hash,prog->parent),
+               col1, EdjeFile,"PROG.PNG", prog->name,
+               col3,ROW_PROG,
+               NULL);
+
+   ecore_hash_set(hash, prog, row);
+   etk_tree_row_data_set(row, prog);
+}
+
+void
 PopulateTree(void)
 {
    Engrave_Group *group;
    Engrave_Part *part;
    Engrave_Part_State *state;
-   Evas_List *gp,*pp,*sp;
+   Engrave_Program *prog;
+   Evas_List *gp,*pp,*sp,*progp;
 
    for (gp = Cur.ef->groups; gp ;gp = gp->next)
    {
@@ -117,8 +139,12 @@ PopulateTree(void)
             state = sp->data;
             AddStateToTree(state);
            // printf(" **       State: %s \n",sta->name);
-
          }
+      }
+      for (progp = group->programs; progp; progp = progp->next)
+      {
+            prog = progp->data;
+            AddProgramToTree(prog);
       }
    }
 }
@@ -351,7 +377,6 @@ UpdateRectFrame(void)
    if (Cur.eps){
       printf("Update Rect Frame: %s (%d %d %d %d)\n",Cur.eps->name,Cur.eps->color.r,Cur.eps->color.g,Cur.eps->color.b,Cur.eps->color.a);
 
-      etk_signal_block("value_changed", ETK_OBJECT(UI_ColorAlphaSlider), ETK_CALLBACK(on_ColorAlphaSlider_value_changed));
       etk_signal_block("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
 
       //Set ColorPicker
@@ -359,16 +384,12 @@ UpdateRectFrame(void)
       color.g = Cur.eps->color.g;
       color.b = Cur.eps->color.b;
       color.a = Cur.eps->color.a;
-
       etk_colorpicker_current_color_set (ETK_COLORPICKER(UI_ColorPicker), color);
 
-      //Set alpha slider
-      etk_range_value_set(ETK_RANGE(UI_ColorAlphaSlider),Cur.eps->color.a);
-
       //Set Color rect
-      evas_object_color_set(RectColorObject,Cur.eps->color.r,Cur.eps->color.g,Cur.eps->color.b,255);
+      evas_color_argb_premul(color.a,&color.r,&color.g,&color.b);
+      evas_object_color_set(RectColorObject,color.r,color.g,color.b,color.a);
 
-      etk_signal_unblock("value_changed", ETK_OBJECT(UI_ColorAlphaSlider), ETK_CALLBACK(on_ColorAlphaSlider_value_changed));
       etk_signal_unblock("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
    }
 }
@@ -439,7 +460,6 @@ UpdateTextFrame(void)
       //Stop signal propagation
       etk_signal_block("text_changed",ETK_OBJECT(UI_TextEntry),on_TextEntry_text_changed);
       etk_signal_block("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed));
-      etk_signal_block("value_changed", ETK_OBJECT(UI_TextAlphaSlider), ETK_CALLBACK(on_TextAlphaSlider_value_changed));
 
       //Set Text Text in Cur.eps
       etk_entry_text_set(ETK_ENTRY(UI_TextEntry), 
@@ -463,11 +483,6 @@ UpdateTextFrame(void)
       //Set the font size spinner
       etk_range_value_set (ETK_RANGE(UI_FontSizeSpinner), 
          (float)engrave_part_state_text_size_get(Cur.eps));
-
-      //Set Text alpha
-      engrave_part_state_color_get(Cur.eps,NULL,NULL,NULL,&alpha);
-      etk_range_value_set (ETK_RANGE(UI_TextAlphaSlider),(float)alpha); 
-
 
       //Set Effect ComboBox
       switch (Cur.ep->effect)
@@ -495,8 +510,6 @@ UpdateTextFrame(void)
       //Renable  signal propagation
       etk_signal_unblock("text_changed", ETK_OBJECT(UI_TextEntry), ETK_CALLBACK(on_TextEntry_text_changed));
       etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed));
-      etk_signal_unblock("value_changed", ETK_OBJECT(UI_TextAlphaSlider), ETK_CALLBACK(on_TextAlphaSlider_value_changed));
-
    }
 }
 
@@ -648,6 +661,24 @@ UpdateComboPositionFrame(void)
    etk_signal_unblock("active_item_changed", ETK_OBJECT(UI_Rel2ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
 
 }
+void
+UpdateProgFrame(void)
+{
+   printf("Update Program\n");
+   if (!Cur.epr)
+      return;
+
+   //Update Program
+   etk_entry_text_set(ETK_ENTRY(UI_ProgramEntry),Cur.epr->name);
+
+   //Update Signal
+   etk_entry_text_set(ETK_ENTRY(UI_SignalEntry),Cur.epr->signal);
+
+   //Update Source
+   etk_entry_text_set(ETK_ENTRY(UI_SourceEntry),Cur.epr->source);
+
+
+}
 
 void UpdateWindowTitle(void){
 /*    GString *str;
@@ -759,7 +790,7 @@ create_filechooser_dialog(void)
 }
 
 Etk_Widget*
-create_a_color_button(char* label_text, int color_button_enum)
+create_a_color_button(char* label_text, int color_button_enum,int w,int h)
 {
    Etk_Widget *vbox;
    Etk_Widget *ColorCanvas;
@@ -772,16 +803,17 @@ create_a_color_button(char* label_text, int color_button_enum)
    //shadow
    shadow = etk_shadow_new();
    etk_shadow_border_set(ETK_SHADOW(shadow), 0);
+   //etk_widget_size_request_set(shadow, 45, 45);
    etk_shadow_shadow_set(ETK_SHADOW(shadow),ETK_SHADOW_OUTSIDE, ETK_SHADOW_ALL, 10, 2, 2, 200);
    //etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_Edges edges, int radius, int offset_x, int offset_y, int opacity);
-   etk_box_append(ETK_BOX(vbox), shadow, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox), shadow, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //ColorCanvas
    ColorCanvas = etk_canvas_new ();
-   etk_box_append(ETK_BOX(vbox), ColorCanvas, ETK_BOX_START, ETK_BOX_NONE, 0);
+  //etk_box_append(ETK_BOX(vbox), ColorCanvas, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_container_add(ETK_CONTAINER(shadow), ColorCanvas);
    etk_signal_connect("realize", ETK_OBJECT(ColorCanvas), ETK_CALLBACK(on_ColorCanvas_realize), (void*)color_button_enum);
-   etk_widget_size_request_set(ColorCanvas, 30, 30);
+   etk_widget_size_request_set(ColorCanvas, w, h);
 
    //Label
    if (label_text){
@@ -1164,37 +1196,12 @@ create_description_frame(void)
 Etk_Widget*
 create_rectangle_frame(void)
 {
-   Etk_Widget *vbox;
-   Etk_Widget *hbox;
-   Etk_Widget *label;
-
    //RectFrame
    UI_RectFrame = etk_frame_new("Rectangle");
 
-   //vbox
-   vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_container_add(ETK_CONTAINER(UI_RectFrame), vbox);
-
-   label = etk_label_new("<b>Color</b>");
-   etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
-   //hbox
-   hbox = etk_hbox_new(ETK_FALSE, 10);
-   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
-   //color button
-   etk_box_append(ETK_BOX(hbox), create_a_color_button(NULL,COLOR_OBJECT_RECT), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   //ColorAlphaSlider
-   label = etk_label_new("Alpha");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-   UI_ColorAlphaSlider = etk_hslider_new (0, 255, 15, 1,20);
-   etk_box_append(ETK_BOX(hbox),UI_ColorAlphaSlider, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   UI_AlphaLabel = etk_label_new("000");
-   etk_box_append(ETK_BOX(hbox), UI_AlphaLabel, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_ColorAlphaSlider), ETK_CALLBACK(on_ColorAlphaSlider_value_changed), UI_AlphaLabel);
+   //color button 
+   etk_container_add(ETK_CONTAINER(UI_RectFrame),
+      create_a_color_button("Color",COLOR_OBJECT_RECT,100,30));
 
    return UI_RectFrame;
 }
@@ -1379,25 +1386,20 @@ create_text_frame(void)
    label = etk_label_new("Alpha");
    etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 3,3);
 
-   //TextAlphaSlider
-   UI_TextAlphaSlider = etk_hslider_new (0, 255, 15, 1,20);
-   etk_table_attach_default (ETK_TABLE(table),UI_TextAlphaSlider, 1, 4, 3,3);
-
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 10);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Color buttons
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Text",COLOR_OBJECT_TEXT), ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Shadow",COLOR_OBJECT_SHADOW), ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Outline",COLOR_OBJECT_OUTLINE), ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_box_append(ETK_BOX(hbox), create_a_color_button("Text",COLOR_OBJECT_TEXT,30,30), ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_box_append(ETK_BOX(hbox), create_a_color_button("Shadow",COLOR_OBJECT_SHADOW,30,30), ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_box_append(ETK_BOX(hbox), create_a_color_button("Outline",COLOR_OBJECT_OUTLINE,30,30), ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
    etk_signal_connect("clicked", ETK_OBJECT(UI_FontAddButton), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_FONT_FILE_ADD);
    etk_signal_connect("active_item_changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed), NULL);
    etk_signal_connect("active_item_changed", ETK_OBJECT(UI_EffectComboBox), ETK_CALLBACK(on_EffectComboBox_changed), NULL);
    etk_signal_connect("value_changed", ETK_OBJECT(UI_FontSizeSpinner), ETK_CALLBACK(on_FontSizeSpinner_value_changed), NULL);
    etk_signal_connect("text_changed", ETK_OBJECT(UI_TextEntry), ETK_CALLBACK(on_TextEntry_text_changed), NULL);
-   etk_signal_connect("value_changed", ETK_OBJECT(UI_TextAlphaSlider), ETK_CALLBACK(on_TextAlphaSlider_value_changed), NULL);
 
    return UI_TextFrame;
 }
@@ -1452,7 +1454,7 @@ create_position_frame(void)
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Rel1XSpinner
-   UI_Rel1XSpinner = etk_spinner_new (0.0, 1.0, 0.0, 0.01, 0.1);
+   UI_Rel1XSpinner = etk_spinner_new (-100.0, 100.0, 0.0, 0.01, 0.1);
    etk_spinner_digits_set (ETK_SPINNER(UI_Rel1XSpinner), 2);
    etk_widget_size_request_set(UI_Rel1XSpinner,45, 20);
    etk_box_append(ETK_BOX(hbox),UI_Rel1XSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -1484,7 +1486,7 @@ create_position_frame(void)
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Rel1YSpinner
-   UI_Rel1YSpinner = etk_spinner_new (0.0, 1.0, 0.0, 0.01, 0.1);
+   UI_Rel1YSpinner = etk_spinner_new (-100.0, 100.0, 0.0, 0.01, 0.1);
    etk_spinner_digits_set (ETK_SPINNER(UI_Rel1YSpinner), 2);
    etk_widget_size_request_set(UI_Rel1YSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox), UI_Rel1YSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -1520,7 +1522,7 @@ create_position_frame(void)
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Rel2XSpinner
-   UI_Rel2XSpinner = etk_spinner_new (0.0, 1.0, 0.0, 0.01, 0.1);
+   UI_Rel2XSpinner = etk_spinner_new (-100.0, 100.0, 0.0, 0.01, 0.1);
    etk_spinner_digits_set (ETK_SPINNER(UI_Rel2XSpinner), 2);
    etk_widget_size_request_set(UI_Rel2XSpinner,45, 20);
    etk_box_append(ETK_BOX(hbox), UI_Rel2XSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -1552,7 +1554,7 @@ create_position_frame(void)
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Rel2YSpinner
-   UI_Rel2YSpinner = etk_spinner_new (0.0, 1.0, 0.0, 0.01, 0.1);
+   UI_Rel2YSpinner = etk_spinner_new (-100.0, 100.0, 0.0, 0.01, 0.1);
    etk_spinner_digits_set (ETK_SPINNER(UI_Rel2YSpinner), 2);
    etk_widget_size_request_set(UI_Rel2YSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox), UI_Rel2YSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -1631,6 +1633,83 @@ create_part_frame(void)
    return UI_PartFrame;
 }
 
+Etk_Widget*
+create_program_frame(void)
+{
+   Etk_Widget *table;
+   Etk_Widget *label;
+   //RectFrame
+   UI_ProgramFrame = etk_frame_new("Program");
+
+   //table
+   table = etk_table_new (4, 7, FALSE);
+   etk_container_add(ETK_CONTAINER(UI_ProgramFrame), table);
+
+   //UI_ProgramEntry
+   label = etk_label_new("<b>Name</b>");
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 0, 0,0,0,ETK_TABLE_NONE);
+   UI_ProgramEntry = etk_entry_new();
+   etk_table_attach_default (ETK_TABLE(table),UI_ProgramEntry, 1, 3, 0, 0);
+
+   //UI_SignalComboBox
+   label = etk_label_new("<b>Signal</b>");
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 1, 1,0,0,ETK_TABLE_NONE);
+   UI_SignalEntry = etk_entry_new();
+   etk_table_attach_default (ETK_TABLE(table),UI_SignalEntry, 1, 3, 1, 1);
+
+   //UI_SourceEntry
+   label = etk_label_new("<b>Source</b>");
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2,0,0,ETK_TABLE_NONE);
+   UI_SourceEntry = etk_entry_new();
+   etk_table_attach_default(ETK_TABLE(table), UI_SourceEntry, 1, 3, 2, 2);
+   
+   label = etk_label_new("<b>Target</b>");
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 3, 3,0,0,ETK_TABLE_NONE);
+   UI_TargetEntry = etk_entry_new();
+   etk_table_attach_default(ETK_TABLE(table), UI_TargetEntry, 1, 3, 3, 3);
+
+   //UI_ActionComboBox
+   label = etk_label_new("<b>Action</b>");
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 4, 4,0,0,ETK_TABLE_NONE);
+   UI_ActionComboBox = etk_combobox_new();
+   etk_combobox_column_add(ETK_COMBOBOX(UI_ActionComboBox), ETK_COMBOBOX_IMAGE, 24, ETK_FALSE, ETK_TRUE, ETK_TRUE, 0.0, 0.5);
+   etk_combobox_column_add(ETK_COMBOBOX(UI_ActionComboBox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_build(ETK_COMBOBOX(UI_ActionComboBox));
+   etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox), etk_image_new_from_edje (EdjeFile,"DESC.PNG"), "State Set");
+   etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox), etk_image_new_from_edje (EdjeFile,"DESC.PNG"), "Action Stop");
+   etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox), etk_image_new_from_edje (EdjeFile,"DESC.PNG"), "Signal Emit");
+   etk_table_attach_default (ETK_TABLE(table),UI_ActionComboBox, 1, 3, 4, 4);
+
+   //UI_TransiComboBox
+   label = etk_label_new("<b>Transition</b>");
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 5, 5,0,0,ETK_TABLE_NONE);
+   UI_TransiComboBox = etk_combobox_new();
+   etk_combobox_column_add(ETK_COMBOBOX(UI_TransiComboBox), ETK_COMBOBOX_IMAGE, 24, ETK_FALSE, ETK_TRUE, ETK_TRUE, 0.0, 0.5);
+   etk_combobox_column_add(ETK_COMBOBOX(UI_TransiComboBox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_build(ETK_COMBOBOX(UI_TransiComboBox));
+   etk_combobox_item_append(ETK_COMBOBOX(UI_TransiComboBox), etk_image_new_from_edje (EdjeFile,"DESC.PNG"), "Linear");
+   etk_combobox_item_append(ETK_COMBOBOX(UI_TransiComboBox), etk_image_new_from_edje (EdjeFile,"DESC.PNG"), "Sinusoidal");
+   etk_combobox_item_append(ETK_COMBOBOX(UI_TransiComboBox), etk_image_new_from_edje (EdjeFile,"DESC.PNG"), "Accelerate");
+   etk_combobox_item_append(ETK_COMBOBOX(UI_TransiComboBox), etk_image_new_from_edje (EdjeFile,"DESC.PNG"), "Decelerate");
+   etk_table_attach_default (ETK_TABLE(table),UI_TransiComboBox, 1, 1, 5, 5);
+
+   label = etk_label_new("<b>seconds</b>");
+   etk_table_attach(ETK_TABLE(table), label, 2, 2, 5, 5,0,0,ETK_TABLE_NONE);
+   //SecondsSpinner
+   UI_SecondsSpinner = etk_spinner_new (0.0, 1.0, 0.0, 0.1, 1.0);
+   etk_spinner_digits_set (ETK_SPINNER(UI_SecondsSpinner), 1);
+   etk_widget_size_request_set(UI_SecondsSpinner,45, 20);
+   etk_table_attach_default (ETK_TABLE(table),UI_SecondsSpinner, 3, 3, 5, 5);
+
+   //UI_AfterEntry
+   label = etk_label_new("<b>After</b>");
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 6, 6,0,0,ETK_TABLE_NONE);
+   UI_AfterEntry = etk_entry_new();
+   etk_table_attach_default (ETK_TABLE(table),UI_AfterEntry, 1, 3, 6, 6);
+
+   return UI_ProgramFrame;
+}
+
 void
 create_main_window(void)
 {
@@ -1694,6 +1773,10 @@ create_main_window(void)
    //Position Frame
    etk_box_append(ETK_BOX(vbox), create_position_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
 
+   //Program Frame
+   etk_box_append(ETK_BOX(vbox), create_program_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
+
+
    //canvas
    ETK_canvas = etk_canvas_new ();
    etk_widget_padding_set(ETK_canvas,4,4,4,4);
@@ -1732,4 +1815,5 @@ create_main_window(void)
    etk_widget_hide(UI_ImageFrame);
    etk_widget_hide(UI_TextFrame);
    etk_widget_hide(UI_GroupFrame);
+   etk_widget_hide(UI_ProgramFrame);
 }

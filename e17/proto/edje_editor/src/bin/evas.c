@@ -159,6 +159,7 @@ prepare_canvas(void)
    // Create Fake win
    EV_fakewin = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
    edje_object_file_set(EV_fakewin, EdjeFile, "FakeWin");
+   etk_canvas_object_add(ETK_canvas,EV_fakewin);
 
    edje_object_signal_callback_add(EV_fakewin,"DRAG","miniarrow",on_Drag,(void*)DRAG_MINIARROW);
 
@@ -168,8 +169,7 @@ prepare_canvas(void)
 
    //Create engrave canvas
    ecanvas = engrave_canvas_new (etk_widget_toplevel_evas_get(ETK_canvas));
-   //etk_canvas_object_add (ETK_CANVAS(ETK_canvas), ecanvas);
-   //etk_canvas_object_move (ETK_CANVAS(ETK_canvas),ecanvas,MAIN_LEFT, MAIN_TOP);
+   etk_canvas_object_add (ETK_CANVAS(ETK_canvas), ecanvas);
 }
 void
 ev_adjust_position(Engrave_Part_State* state, Evas_Object* object)

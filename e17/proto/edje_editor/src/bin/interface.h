@@ -19,6 +19,7 @@ Etk_Widget *UI_PositionFrame;
 Etk_Widget *UI_RectFrame;
 Etk_Widget *UI_ImageFrame;
 Etk_Widget *UI_TextFrame;
+Etk_Widget *UI_ProgramFrame;
 Etk_Widget *UI_TextEntry;
 Etk_Widget *UI_FontComboBox;
 Etk_Widget *UI_ImageComboBox;
@@ -28,10 +29,7 @@ Etk_Widget *UI_PartFrame;
 Etk_Widget *UI_GroupFrame;
 Etk_Widget *UI_PartNameEntry;
 Etk_Widget *UI_PartTypeComboBox;
-Etk_Widget *UI_ColorAlphaSlider;
-Etk_Widget *UI_AlphaLabel;
 Etk_Widget *UI_ImageAlphaSlider;
-Etk_Widget *UI_TextAlphaSlider;
 Etk_Widget *UI_Rel1XSpinner;
 Etk_Widget *UI_Rel1XOffsetSpinner;
 Etk_Widget *UI_Rel1YSpinner;
@@ -70,25 +68,16 @@ Etk_Widget *UI_StateMinWSpinner;
 Etk_Widget *UI_StateMinHSpinner;
 Etk_Widget *UI_StateMaxWSpinner;
 Etk_Widget *UI_StateMaxHSpinner;
-
+Etk_Widget *UI_ProgramEntry;
+Etk_Widget *UI_SignalEntry;
+Etk_Widget *UI_ActionComboBox;
+Etk_Widget *UI_TransiComboBox;
+Etk_Widget *UI_SecondsSpinner;
+Etk_Widget *UI_AfterEntry;
+Etk_Widget *UI_SourceEntry;
+Etk_Widget *UI_TargetEntry;
 
 void     create_main_window      (void);
-void     UpdatePartFrame         (void);
-void     UpdateRectFrame         (void);
-void     UpdateDescriptionFrame  (void);
-void     UpdatePositionFrame     (void);
-void     UpdateComboPositionFrame(void);
-void     UpdateImageFrame        (void);
-void     UpdateTextFrame         (void);
-void     UpdateWindowTitle       (void);
-
-
-
-
-void     ShowFilechooser         (int FileChooserType);
-void     ShowAlert               (char* text);
-
-
 void     PopulateTree            (void);
 void     AddGroupToTree          (Engrave_Group* group);
 void     AddPartToTree           (Engrave_Part* part);
@@ -97,3 +86,14 @@ void     PopulateRelComboBoxes	(void);
 void     PopulateImagesComboBox	(void);
 void     PopulateFontsComboBox	(void);
 void     UpdateGroupFrame        (void);
+void     UpdatePositionFrame     (void);
+void     UpdateComboPositionFrame(void);
+void     UpdateImageFrame        (void);
+void     UpdateTextFrame         (void);
+void     UpdatePartFrame         (void);
+void     UpdateRectFrame         (void);
+void     UpdateDescriptionFrame  (void);
+void     UpdateProgFrame         (void);
+void     UpdateWindowTitle       (void);
+void     ShowFilechooser         (int FileChooserType);
+void     ShowAlert               (char* text);

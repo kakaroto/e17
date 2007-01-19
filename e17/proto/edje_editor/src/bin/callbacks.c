@@ -94,7 +94,7 @@ on_AllButton_click(Etk_Button *button, void *data)
          //PlayEDC();
          break;
       case TOOLBAR_DEBUG:
-         DebugInfo(TRUE);
+         DebugInfo(FALSE);
          break;
       case TOOLBAR_IMAGE_FILE_ADD:
          ShowAlert("Not yet implemented =)");
@@ -120,7 +120,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 
    printf("Row Selected Signal on one of the Tree EMITTED \n");
 
-   //get the type of the row (group,part or desc) from the hidden col
+   //get the type of the row (group,part,desc or prog) from the hidden col
    etk_tree_row_fields_get(row,
       etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2),&row_type,
       NULL);
@@ -128,7 +128,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
    switch (row_type)
    {
       case ROW_GROUP:
-         printf("ROW_GROUP %d\n",Cur.eg);
+         Cur.epr = NULL;
          Cur.eg = etk_tree_row_data_get (row);
          Cur.ep = NULL;
          Cur.eps = NULL;
@@ -138,9 +138,11 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          etk_widget_hide(UI_ImageFrame);
          etk_widget_hide(UI_TextFrame);
          etk_widget_hide(UI_PartFrame);
+         etk_widget_hide(UI_ProgramFrame);
          etk_widget_show(UI_GroupFrame);
          break;
       case ROW_PART:
+         Cur.epr = NULL;
          Cur.ep = etk_tree_row_data_get (row);
          Cur.eg = Cur.ep->parent;
          Cur.eps = NULL;
@@ -150,10 +152,12 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          etk_widget_hide(UI_ImageFrame);
          etk_widget_hide(UI_TextFrame);
          etk_widget_hide(UI_GroupFrame);
+         etk_widget_hide(UI_ProgramFrame);
          etk_widget_show(UI_PartFrame);
          UpdatePartFrame();
          break;
-      case ROW_DESC:
+      case ROW_DESC: 
+         Cur.epr = NULL;
          Cur.eps = etk_tree_row_data_get (row);
          Cur.ep = Cur.eps->parent;
          Cur.eg = Cur.ep->parent;
@@ -192,10 +196,24 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 
          etk_widget_hide(UI_PartFrame);
          etk_widget_hide(UI_GroupFrame);
+         //etk_widget_hide(UI_ProgramFrame);
          etk_widget_show(UI_DescriptionFrame);
          etk_widget_show(UI_PositionFrame);
-
-
+         break;
+      case ROW_PROG:
+         Cur.epr = etk_tree_row_data_get (row);
+         Cur.eg = Cur.epr->parent;
+         Cur.ep = NULL;
+         Cur.eps = NULL;
+         etk_widget_hide(UI_DescriptionFrame);
+         etk_widget_hide(UI_PositionFrame);
+         etk_widget_hide(UI_RectFrame);
+         etk_widget_hide(UI_ImageFrame);
+         etk_widget_hide(UI_TextFrame);
+         etk_widget_hide(UI_GroupFrame);
+         etk_widget_hide(UI_PartFrame);
+         etk_widget_show(UI_ProgramFrame);
+         UpdateProgFrame();
          break;
    }
 
@@ -606,17 +624,6 @@ on_TextEntry_text_changed(Etk_Object *object, void *data)
    ev_redraw();
 }
 
-void 
-on_TextAlphaSlider_value_changed(Etk_Object *object, double value, void *data)
-{
-   printf("value changed event on text alpha slider EMIT (value: %d)\n",(int)value);
-   if (Cur.eps)
-   {
-      engrave_part_state_color_set(Cur.eps, -1, -1, -1, (int)value);
-      ev_redraw();
-   }
-}
-
 /* Colors Callbacks */
 void
 on_ColorCanvas_realize(Etk_Widget *canvas, void *data)
@@ -628,7 +635,7 @@ on_ColorCanvas_realize(Etk_Widget *canvas, void *data)
    rect = evas_object_rectangle_add  (etk_widget_toplevel_evas_get(canvas));
    etk_canvas_object_add (ETK_CANVAS(canvas), rect);
    evas_object_color_set(rect, 100,100,100,255);
-   evas_object_resize(rect,30,30);
+   evas_object_resize(rect,300,300);
    etk_canvas_object_move(ETK_CANVAS(canvas),rect,0,0);
    evas_object_show(rect);
    evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN, on_ColorCanvas_click, data);
@@ -684,44 +691,44 @@ on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 void
-on_ColorAlphaSlider_value_changed(Etk_Object *object, double value, void *data)
-{
-   char string[256];
-   printf("ValueChangedSignal on ColorAlphaSlider EMITTED (value: %d)\n",(int) value);
-   Cur.eps->color.a = (int)value;
-
-   snprintf(string, 255, "%03.0f", value);
-   etk_label_set(ETK_LABEL(data), string);
-
-   //evas_object_color_set(RectColorObject,selected_desc->color_r,selected_desc->color_g,selected_desc->color_b,255);
-   //ev_draw_part(Cur.eps->parent);
-   ev_redraw();
-
-}
-
-void
 on_ColorDialog_change(Etk_Object *object, void *data)
 {
-   printf("ColorChangeSignal on ColorDialog EMITTED\n");
+  // printf("ColorChangeSignal on ColorDialog EMITTED\n");
    Etk_Color color;
+   Etk_Color premuled;
 
    color = etk_colorpicker_current_color_get (ETK_COLORPICKER(object));
+ //  printf("Color: %d %d %d %d\n",color.r,color.g,color.b,color.a);
+
+   if (color.r > 255) color.r = 255;
+   if (color.g > 255) color.g = 255;
+   if (color.b > 255) color.b = 255;
+   if (color.a > 255) color.a = 255;
+
+   if (color.r < 0) color.r = 0;
+   if (color.g < 0) color.g = 0;
+   if (color.b < 0) color.b = 0;
+   if (color.a < 0) color.a = 0;
+
+   premuled = color;
+   evas_color_argb_premul(premuled.a,&premuled.r,&premuled.g,&premuled.b);
+
    switch (current_color_object){
     case COLOR_OBJECT_RECT:
-      evas_object_color_set(RectColorObject,color.r,color.g,color.b,255);
-      engrave_part_state_color_set(Cur.eps,color.r,color.g,color.b,-1);
+      evas_object_color_set(RectColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
+      engrave_part_state_color_set(Cur.eps,color.r,color.g,color.b,color.a);
       break;
     case COLOR_OBJECT_TEXT:
-      evas_object_color_set(TextColorObject,color.r,color.g,color.b,255);
-      engrave_part_state_color_set(Cur.eps,color.r,color.g,color.b,-1);
+      evas_object_color_set(TextColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
+      engrave_part_state_color_set(Cur.eps,color.r,color.g,color.b,color.a);
       break;
     case COLOR_OBJECT_SHADOW:
-      evas_object_color_set(ShadowColorObject,color.r,color.g,color.b,255);
-      engrave_part_state_color2_set(Cur.eps,color.r,color.g,color.b,255);
+      evas_object_color_set(ShadowColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
+      engrave_part_state_color2_set(Cur.eps,color.r,color.g,color.b,color.a);
       break;
     case COLOR_OBJECT_OUTLINE:
-      evas_object_color_set(OutlineColorObject,color.r,color.g,color.b,255);
-      engrave_part_state_color3_set(Cur.eps,color.r,color.g,color.b,255);
+      evas_object_color_set(OutlineColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
+      engrave_part_state_color3_set(Cur.eps,color.r,color.g,color.b,color.a);
       break;
    }
 

@@ -74,6 +74,7 @@ enum various
    ROW_GROUP,
    ROW_PART,
    ROW_DESC,
+   ROW_PROG,
    DRAG_MINIARROW,
    DRAG_REL1,
    DRAG_REL2,
@@ -85,6 +86,7 @@ struct Current_State
    Engrave_File  *ef;
    Engrave_Group *eg;
    Engrave_Part  *ep;
+   Engrave_Program *epr;
    Engrave_Part_State *eps;
 }Cur;
 
