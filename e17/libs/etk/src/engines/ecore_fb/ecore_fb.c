@@ -9,9 +9,12 @@
 #include "Etk_Engine_Ecore_Fb.h"
 #include "config.h"
 
-/* TODO: Debug */
-#include <Ecore_X.h>
+/* TODO: debug */
 #define USE_X11 0
+
+#if USE_X11
+   #include <Ecore_X.h>
+#endif
 
 #define WM_THEME_FILE   (PACKAGE_DATA_DIR "/wm/default.edj")
 
@@ -895,6 +898,7 @@ static int _mouse_move_handler_cb(void *data, int ev_type, void *ev)
    return 1;
 }
 
+#if USE_X11
 /* Called when the mouse is moved (X11 debug version) */
 static int _mouse_move_X_handler_cb(void *data, int ev_type, void *ev)
 {
@@ -914,6 +918,7 @@ static int _mouse_move_X_handler_cb(void *data, int ev_type, void *ev)
    
    return 1;
 }
+#endif
 
 /**************************
  *
