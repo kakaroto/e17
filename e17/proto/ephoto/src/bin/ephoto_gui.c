@@ -8,6 +8,7 @@ static void view_image(Ewl_Widget *w, void *event, void *data);
 
 /*Ephoto Widget Creation Callbacks*/
 static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb);
+static void add_icon(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
 static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_tree(Ewl_Widget *c);
@@ -43,7 +44,7 @@ static void destroy(Ewl_Widget *w, void *event, void *data)
         ewl_main_quit();
 }
 
-/*Create and Add a Button the Container c*/
+/*Create and Add a Button to the Container c*/
 static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb)
 {
 	Ewl_Widget *button;
@@ -65,6 +66,30 @@ static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb)
 		ewl_callback_append(button, EWL_CALLBACK_CLICKED, cb, NULL);
 	}
 	ewl_widget_show(button);
+
+	return;
+}
+
+/*Create and Add an Image to the Container c*/
+static void add_icon(Ewl_Widget *c, char *txt, char *img, void *cb)
+{
+	Ewl_Widget *icon;
+
+	icon = ewl_icon_simple_new();
+	ewl_icon_image_set(EWL_ICON(icon), img, NULL);
+	if (txt)
+	{
+		ewl_icon_label_set(EWL_ICON(icon), txt);
+	}
+	ewl_icon_constrain_set(EWL_ICON(icon), 20);
+	ewl_object_alignment_set(EWL_OBJECT(icon), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(EWL_CONTAINER(c), icon);
+	if (cb)
+	{
+		ewl_callback_append(icon, EWL_CALLBACK_CLICKED, cb, NULL);
+	}
+	ewl_widget_show(icon);
 
 	return;
 }
@@ -333,7 +358,7 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data)
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
-	Ewl_Widget *win, *vbox, *menu_bar, *menu, *paned;
+	Ewl_Widget *win, *vbox, *toolbar, *image, *paned;
 	Ewl_Widget *ihbox, *sp;
 
 	win = ewl_window_new();
@@ -348,17 +373,14 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(win), vbox);
 	ewl_widget_show(vbox);
 
-	menu_bar = ewl_hmenubar_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(menu_bar), EWL_FLAG_FILL_HFILL);
-	ewl_container_child_append(EWL_CONTAINER(vbox), menu_bar);
-	ewl_widget_show(menu_bar);
+	toolbar = ewl_toolbar_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(toolbar), EWL_FLAG_FILL_HFILL|EWL_FLAG_FILL_VSHRINK);
+	ewl_container_child_append(EWL_CONTAINER(vbox), toolbar);
+	ewl_widget_show(toolbar);
 
-	menu = add_menu(menu_bar, "Menu|File");
-	add_menu_item(menu, "Menu|File|Exit", PACKAGE_DATA_DIR 
-		"/images/exit.png", destroy);
-
-	menu = add_menu(menu_bar, "Menu|Help");
-	add_menu_item(menu, "Menu|Help|About", NULL, NULL);
+	add_icon(toolbar, NULL, PACKAGE_DATA_DIR "/images/emblem-photos.png", NULL);
+	add_icon(toolbar, NULL, PACKAGE_DATA_DIR "/images/x-office-presentation.png", NULL);
+	add_icon(toolbar, NULL, PACKAGE_DATA_DIR "/images/exit.png", destroy);
 
 	paned = ewl_hpaned_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(paned), EWL_FLAG_FILL_ALL);
