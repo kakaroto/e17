@@ -461,13 +461,17 @@ engrave_canvas_part_state_text_setup(Engrave_Part_State *eps)
                              engrave_part_state_text_text_get(eps));
    evas_object_text_font_set(ep->object, font_name, 
                              engrave_part_state_text_size_get(eps));
+   
    engrave_part_state_color_get(eps, &r, &g, &b, &a);
+   evas_color_argb_premul(a,&r,&g,&b);
    evas_object_color_set(ep->object, r, g, b, a);
    
    engrave_part_state_color2_get(eps, &r, &g, &b, &a);
+   evas_color_argb_premul(a,&r,&g,&b);
    evas_object_text_shadow_color_set(ep->object, r, g, b, a);
    
    engrave_part_state_color3_get(eps, &r, &g, &b, &a);
+   evas_color_argb_premul(a,&r,&g,&b);
    evas_object_text_outline_color_set(ep->object, r, g, b, a);
     
    switch (engrave_part_effect_get(ep))
@@ -505,6 +509,7 @@ engrave_canvas_part_state_rect_setup(Engrave_Part_State *eps)
    if (!ep) return;
     
    engrave_part_state_color_get(eps, &r, &g, &b, &a);
+   evas_color_argb_premul(a,&r,&g,&b);
    evas_object_color_set(ep->object, r, g, b, a);
 }
 
