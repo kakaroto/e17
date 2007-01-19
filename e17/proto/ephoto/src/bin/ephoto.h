@@ -14,7 +14,7 @@
 #include <unistd.h>
 
 /* Main gui callbacks */
-void init_gui(void);
+void create_main_gui(void);
 
 /* Ephoto Browsing */
 Ecore_List *get_directories(char *directory);

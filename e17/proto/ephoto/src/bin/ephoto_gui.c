@@ -1,9 +1,5 @@
 #include "ephoto.h"
 
-/*Destroy Boot/Create Main Window*/
-static int destroy_boot(void *data);
-static void create_main_gui(void);
-
 /*Ewl Callbacks*/
 static void destroy(Ewl_Widget *w, void *event, void *data);
 static void populate_files(Ewl_Widget *w, void *event, void *data);
@@ -39,79 +35,6 @@ static Ecore_List *directories, *images;
 
 /*Ephoto Current Directory*/
 static char *current_directory;
-
-/*Destroy Boot Splash*/
-int destroy_boot(void *data)
-{
-	Ewl_Widget *win;
-	double val, new_val;
-
-	val = ewl_range_value_get(EWL_RANGE(progress));
-	new_val = val + 20;
-	ewl_range_value_set(EWL_RANGE(progress), new_val);	
-
-	if (new_val == 100)
-	{
-		win = data;
-		ewl_widget_destroy(win);
-		ecore_timer_del(timer);
-		create_main_gui();
-	}
-	return 1;
-}
-
-/*Create the Boot Splash and Start its Timer*/
-void init_gui(void)
-{
-	Ewl_Widget *win, *vbox, *image, *text;
-
-	win = ewl_window_new();
-        ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
-        ewl_window_name_set(EWL_WINDOW(win), "Ephoto!");
-        ewl_window_override_set(EWL_WINDOW(win), 1);
-	ewl_object_size_request(EWL_OBJECT(win), 325, 240);
-	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
-        ewl_widget_state_set(win, "splash", EWL_STATE_PERSISTENT);
-	ewl_widget_show(win);
-
-        vbox = ewl_vbox_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(win), vbox);
-        ewl_widget_show(vbox);
-
-	text = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(text), VERSION);
-	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_LEFT);
-	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(vbox), text);
-	ewl_widget_show(text);
-
-	image = ewl_image_new();
-	ewl_image_file_set(EWL_IMAGE(image), 
-			   PACKAGE_DATA_DIR "/images/logo.png", NULL);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_child_append(EWL_CONTAINER(vbox), image);
-	ewl_widget_show(image);
-
-	text = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(text), "          Ephoto    \n"
-					  "By Stephen Houston");
-	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(vbox), text);
-	ewl_widget_show(text);
-
-	progress = ewl_progressbar_new();
-	ewl_range_value_set(EWL_RANGE(progress), 0);
-	ewl_object_alignment_set(EWL_OBJECT(progress), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_child_append(EWL_CONTAINER(vbox), progress);
-	ewl_object_maximum_size_set(EWL_OBJECT(progress), 200, 20);
-	ewl_widget_show(progress);
-
-	timer = ecore_timer_add(.2, destroy_boot, win);
-
-	ewl_main();
-}
 
 /*Destroy the Main Window*/
 static void destroy(Ewl_Widget *w, void *event, void *data)
@@ -338,7 +261,7 @@ static void populate_files(Ewl_Widget *w, void *event, void *data)
 
 	ewl_mvc_data_set(EWL_MVC(ftree), directories);
 
-	ewl_container_reset(EWL_CONTAINER(fbox));
+	//ewl_container_reset(EWL_CONTAINER(fbox));
 	while (!ecore_list_is_empty(images))
 	{
 		imagef = ecore_list_remove_first(images);
@@ -351,8 +274,8 @@ static void populate_files(Ewl_Widget *w, void *event, void *data)
                 ewl_callback_append(thumb, EWL_CALLBACK_CLICKED, view_image, imagef);
 		ewl_widget_show(thumb);
 	}
-	ewl_widget_configure(fbox);
-	ewl_widget_configure(fbox->parent);
+	//ewl_widget_configure(fbox);
+	//ewl_widget_configure(fbox->parent);
 }
 
 /*Flip the image 180 degrees horizontally*/
@@ -408,7 +331,7 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data)
 }
 
 /*Create the Main Ephoto Window*/
-static void create_main_gui(void)
+void create_main_gui(void)
 {
 	Ewl_Widget *win, *vbox, *menu_bar, *menu, *paned;
 	Ewl_Widget *ihbox, *sp;

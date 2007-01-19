@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 #endif
 	//ewl_theme_theme_set(PACKAGE_DATA_DIR "/themes/ephoto.edj");
 	/*Start the GUI*/
-	init_gui();
+	create_main_gui();
 
 	return 0;
 }
