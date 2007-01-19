@@ -10,6 +10,7 @@ images {
    image, "rect.png" LOSSY 95;
    image, "text.png" LOSSY 95;
    image, "desc.png" LOSSY 95;
+   image, "e17.png" LOSSY 95;
    image, "none.png" LOSSY 95;
    image, "focus.png" LOSSY 95;
    image, "arrow_u.png" LOSSY 95;
@@ -23,7 +24,7 @@ images {
    image, "parent2Y.png" LOSSY 95;
    image, "rel1.png" LOSSY 95;
    image, "rel2.png" LOSSY 95;
-   //image, "e17.png" LOSSY 95;
+   image, "e17.png" LOSSY 95;
    image, "miniarrow.png" LOSSY 95;
 
 }
@@ -38,6 +39,7 @@ collections {
             type, IMAGE;
             mouse_events, 0;
             description{
+               state, "default" 0.0;
                rel1 {relative, 0.0 0.0; offset, 0 0;}
                rel2 {relative, 0.0 0.0; offset, 15 16;}
                image {
@@ -57,6 +59,7 @@ collections {
             type, IMAGE;
             mouse_events, 0;
             description{
+               state, "default" 0.0;
                rel1 {relative, 0.0 0.0; offset, 0 0;}
                rel2 {relative, 0.0 0.0; offset, 19 14;}
                image {
@@ -76,6 +79,7 @@ collections {
             type, IMAGE;
             mouse_events, 0;
             description{
+               state, "default" 0.0;
                rel1 {relative, 0.0 0.0; offset, 0 0;}
                rel2 {relative, 0.0 0.0; offset, 20 15;}
                image {
@@ -95,6 +99,7 @@ collections {
             type, IMAGE;
             mouse_events, 0;
             description{
+               state, "default" 0.0;
                rel1 {relative, 0.0 0.0; offset, 0 0;}
                rel2 {relative, 0.0 0.0; offset, 19 14;}
                image {
@@ -114,10 +119,31 @@ collections {
             type, IMAGE;
             mouse_events, 0;
             description{
+               state, "default" 0.0;
                rel1 {relative, 0.0 0.0; offset, 0 0;}
                rel2 {relative, 0.0 0.0; offset, 15 15;}
                image {
                   normal, "desc.png";
+               }
+            }
+         }
+      }
+   }
+   group{
+      name, "PROG.PNG";
+      min, 15 15;
+      max, 15 15;
+      parts{
+         part{
+            name, "StaticImage";
+            type, IMAGE;
+            mouse_events, 0;
+            description{
+               state, "default" 0.0;
+               rel1 {relative, 0.0 0.0; offset, 0 0;}
+               rel2 {relative, 0.0 0.0; offset, 15 15;}
+               image {
+                  normal, "e17.png";
                }
             }
          }
