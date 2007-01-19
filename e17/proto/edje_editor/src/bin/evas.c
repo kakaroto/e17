@@ -159,7 +159,7 @@ prepare_canvas(void)
    // Create Fake win
    EV_fakewin = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
    edje_object_file_set(EV_fakewin, EdjeFile, "FakeWin");
-   etk_canvas_object_add(ETK_canvas,EV_fakewin);
+   etk_canvas_object_add(ETK_CANVAS(ETK_canvas),EV_fakewin);
 
    edje_object_signal_callback_add(EV_fakewin,"DRAG","miniarrow",on_Drag,(void*)DRAG_MINIARROW);
 
@@ -293,7 +293,7 @@ ev_draw_part(Engrave_Part* part)
                state->image.border.r,state->image.border.t,state->image.border.b);
 
             break;
-      /*case PART_TYPE_TEXT:
+      / *case PART_TYPE_TEXT:
             if (!part->ev_obj){	//Create TEXT
                part->ev_obj = evas_object_text_add  (etk_widget_toplevel_evas_get(ETK_canvas));
                etk_canvas_object_add (ETK_CANVAS(ETK_canvas), part->ev_obj);

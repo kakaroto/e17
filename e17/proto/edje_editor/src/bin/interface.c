@@ -314,7 +314,7 @@ UpdateDescriptionFrame(void)
 {
    if (Cur.eps)
    {
-      char *name;
+      const char *name;
       double index;
       double aspect_min;
       double aspect_max;
@@ -344,8 +344,8 @@ UpdateDescriptionFrame(void)
       etk_range_value_set(ETK_RANGE(UI_AspectMaxSpinner), aspect_max);
 
       //Set aspect pref Combo
-      etk_combobox_active_item_set(UI_AspectComboBox,
-         etk_combobox_nth_item_get (UI_AspectComboBox, 
+      etk_combobox_active_item_set(ETK_COMBOBOX(UI_AspectComboBox),
+         etk_combobox_nth_item_get (ETK_COMBOBOX(UI_AspectComboBox), 
             engrave_part_state_aspect_preference_get(Cur.eps)));
 
       //Set min e max size
@@ -448,11 +448,11 @@ void
 UpdateTextFrame(void)
 {
    int eff_num = 0;
-   int i;
-   int alpha;
+   //int i;
+   //int alpha;
    int r, g, b;
-   Etk_Combobox_Item *item = NULL;
-   char* font;
+   //Etk_Combobox_Item *item = NULL;
+   //char* font;
 
    if (Cur.eps){
       printf("Update Text Frame: %s\n",Cur.eps->name);
@@ -495,6 +495,7 @@ UpdateTextFrame(void)
          case ENGRAVE_TEXT_EFFECT_SOFT_SHADOW: eff_num = 4; break;
          case ENGRAVE_TEXT_EFFECT_OUTLINE_SHADOW: eff_num = 5; break;
          case ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW: eff_num = 6; break;
+         default: break; // remove warning
       }
       etk_combobox_active_item_set (ETK_COMBOBOX(UI_EffectComboBox),
          etk_combobox_nth_item_get (ETK_COMBOBOX(UI_EffectComboBox), eff_num));
@@ -1714,7 +1715,7 @@ void
 create_main_window(void)
 {
    Etk_Widget *vbox,*hbox;
-   Etk_Widget *frame;
+   //Etk_Widget *frame;
 
    UI_FileChooserDialog = create_filechooser_dialog();
 

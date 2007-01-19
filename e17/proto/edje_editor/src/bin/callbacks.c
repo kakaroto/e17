@@ -6,6 +6,10 @@
 #include "main.h"
 #include "evas.h"
 
+extern void PROTO_engrave_part_state_remove(Engrave_Part *ep, Engrave_Part_State *eps);
+extern void PROTO_engrave_group_part_remove(Engrave_Group *eg, Engrave_Part *ep);
+extern void PROTO_engrave_file_group_remove(Engrave_File *ef, Engrave_Group *eg);
+
 int current_color_object;
 
 /* Called when the window is destroyed */
@@ -336,7 +340,7 @@ on_StateEntry_text_changed(Etk_Object *object, void *data)
 {
    Etk_Tree_Col *col1=NULL;
    char buf[4096];
-   char *nn;   //new name
+   const char *nn;   //new name
    printf("Text Changed Signal on StateEntry EMITTED\n");
 
    if (Cur.eps)
@@ -391,8 +395,8 @@ on_AspectSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on AspectMinSpinner EMITTED\n");
    engrave_part_state_aspect_set(Cur.eps,
-      etk_range_value_get(UI_AspectMinSpinner),
-      etk_range_value_get(UI_AspectMaxSpinner));
+      etk_range_value_get(ETK_RANGE(UI_AspectMinSpinner)),
+      etk_range_value_get(ETK_RANGE(UI_AspectMaxSpinner)));
 }
 
 void
@@ -412,12 +416,12 @@ on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data)
    printf("Active Item Changed Signal on MinMaxSpinners EMITTED\n");
 
    engrave_part_state_min_size_set(Cur.eps,
-      etk_range_value_get(UI_StateMinWSpinner),
-      etk_range_value_get(UI_StateMinHSpinner));
+      etk_range_value_get(ETK_RANGE(UI_StateMinWSpinner)),
+      etk_range_value_get(ETK_RANGE(UI_StateMinHSpinner)));
 
    engrave_part_state_max_size_set(Cur.eps,
-      etk_range_value_get(UI_StateMaxWSpinner),
-      etk_range_value_get(UI_StateMaxHSpinner));
+      etk_range_value_get(ETK_RANGE(UI_StateMaxWSpinner)),
+      etk_range_value_get(ETK_RANGE(UI_StateMaxHSpinner)));
 
    ev_redraw();
 }
@@ -669,22 +673,22 @@ on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
       case COLOR_OBJECT_RECT:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Rectangle color");
          engrave_part_state_color_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
-         etk_colorpicker_current_color_set(UI_ColorPicker, c);
+         etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
       case COLOR_OBJECT_TEXT:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Text color");
          engrave_part_state_color_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
-         etk_colorpicker_current_color_set(UI_ColorPicker, c);
+         etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
       case COLOR_OBJECT_SHADOW:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Shadow color");
          engrave_part_state_color2_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
-         etk_colorpicker_current_color_set(UI_ColorPicker, c);
+         etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
       case COLOR_OBJECT_OUTLINE:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Outline color");
          engrave_part_state_color3_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
-         etk_colorpicker_current_color_set(UI_ColorPicker, c);
+         etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
    }
    etk_signal_unblock("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
