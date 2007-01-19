@@ -47,6 +47,10 @@ struct Ewl_Paned
 	Ewl_Orientation orientation;	/**< The orientation of the paned */
 
 	Ecore_List *new_panes;		/**< List of unplaced panes */
+
+	int last_pos;			/**< the last position */
+	int last_size;			/**< the last size */
+	Ewl_Widget *last_grab;		/**< a pointer to the last resized pane */
 	unsigned short updating_grabbers:1; /**< are we updating the grabbers */
 };
 
