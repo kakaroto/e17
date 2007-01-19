@@ -29,6 +29,11 @@ dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x$LIBINTL" = "x"; then
   LIBINTL="$INTLLIBS"
 fi
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/share/locale", [Locale-specific data directory])
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/share/locale", [Locale-specific data directory])
+fi
 
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
@@ -136,10 +141,10 @@ Makefile
 ephoto.spec
 data/Makefile
 data/images/Makefile
-src/Makefile
-src/bin/Makefile
 debian/changelog
 po/Makefile
+src/Makefile
+src/bin/Makefile
 ])
 
 echo
