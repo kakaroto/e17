@@ -422,6 +422,11 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 			layout->stable_request(EWL_OBJECT(child), other_size);
 		}
 	}
+	/* we need to now the number of panes = the number of children
+	 * divided by two, because we don't count the grabber and 
+	 * minus one because we cannot change the size of the 
+	 * last pane directly*/	
+	pane_num = ecore_list_nodes(c->children)/2 - 1;
 	/* We now resize the pane areas so that they fit into the new size
 	 * therefor we have to first calculate, how many space is available
 	 * for giving or taking it from the panes */
@@ -432,17 +437,15 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		int old_pos, give;
 
 		cur_pos = old_pos = main_dir;
-		/* we need to now the number of panes = the number of children
-		 * divided by two, because we don't count the grabber and 
-		 * minus one because we cannot change the size of the 
-		 * last pane directly*/	
-		pane_num = ecore_list_nodes(c->children)/2 - 1;
 		/* if we have no panes we don't need to calc their place */
 		if (pane_num < 1)
 			break;	
 
 		/* give can also be negative, so see it as a can take or give */
 		give = available / pane_num;
+		/* reset the pane_num now 
+		 * FIXME: we should actually only count the visible ones*/
+		pane_num = ecore_list_nodes(c->children)/2 - 1;
 		/* to prevent rounding errors */
 		if (give == 0) {
 			give = (available > 0) ? 1 : -1;
