@@ -179,15 +179,13 @@ void main_window_show(char *file)
    etk_widget_show_all(gui->win);
 
    check = edje_viewer_config_open_last_get();
-   if (file) list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
-	 ETK_CANVAS(gui->canvas));
+   if (file) list_entries(file, ETK_TREE(gui->tree), ETK_CANVAS(gui->canvas));
    else if (check)
      {
 	file = edje_viewer_config_last_get();
 	if (file)
 	  {
-	     list_entries(file, ETK_TREE(gui->tree), ETK_TREE(gui->output),
-		   ETK_CANVAS(gui->canvas));
+	     list_entries(file, ETK_TREE(gui->tree), ETK_CANVAS(gui->canvas));
 	     etk_window_title_set(ETK_WINDOW(gui->win), file);
 	  }
      }
@@ -352,8 +350,7 @@ static void _gui_menu_item_clicked_cb(Etk_Object *obj, void *data)
    else if (!strcmp(label, "Open"))
      _gui_open_edje_file_cb(gui);
    else if (strstr(label, ".edj"))
-     list_entries(label, ETK_TREE(gui->tree), ETK_TREE(gui->output),
-	   ETK_CANVAS(gui->canvas));
+     list_entries(label, ETK_TREE(gui->tree), ETK_CANVAS(gui->canvas));
 }
 
 static void _gui_open_last_clicked_cb(Etk_Object *obj, void *data)
@@ -531,8 +528,7 @@ static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
    gui->path = strdup(dir);
    gui->path = strcat(gui->path, "/");
    gui->path = strcat(gui->path, file);
-   list_entries(gui->path, ETK_TREE(gui->tree), ETK_TREE(gui->output),
-	 ETK_CANVAS(gui->canvas));
+   list_entries(gui->path, ETK_TREE(gui->tree), ETK_CANVAS(gui->canvas));
    etk_window_hide_on_delete(ETK_OBJECT(gui->fm_dialog), NULL);
    etk_window_title_set(ETK_WINDOW(gui->win), gui->path);
 }
@@ -549,20 +545,24 @@ static void _gui_fm_cancel_clicked_cb(Etk_Object *obj, void *data)
 static void _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree_Row *row,
       void *data)
 {
-   Demo_Edje *de;
+   Collection *co;
    Etk_Bool checked;
    Etk_Tree_Col *col;
    Gui *gui;
 
-   if (!(de = etk_tree_row_data_get(row))) return;
+   if (!(co = etk_tree_row_data_get(row))) return;
    if (!(col = ETK_TREE_COL(obj)) || !row) return;
    if (!(gui = data)) return;
 
+   if (!co->de)
+     co->de = edje_part_create(ETK_TREE(gui->output), 
+	   ETK_CANVAS(gui->canvas), co->file, co->part);
+
    etk_tree_row_fields_get(row, col, &checked, NULL);
    if (checked)
-     edje_part_show(ETK_CANVAS(gui->canvas), de);
+     edje_part_show(ETK_CANVAS(gui->canvas), co->de);
    else
-     edje_part_hide(ETK_CANVAS(gui->canvas), de);
+     edje_part_hide(co->de);
 }
 
 static void _gui_send_clicked_cb(Etk_Object *obj, void *data)

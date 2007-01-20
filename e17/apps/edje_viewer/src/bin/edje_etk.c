@@ -117,7 +117,7 @@ void canvas_resize_cb(Etk_Object *canvas, const char *property_name, void *data)
      }
 }
 
-void list_entries(const char *file, Etk_Tree *tree, Etk_Tree *output,
+void list_entries(const char *file, Etk_Tree *tree,
       Etk_Canvas *canvas)
 {
    Evas_List *entries;
@@ -139,17 +139,16 @@ void list_entries(const char *file, Etk_Tree *tree, Etk_Tree *output,
 	  {
 	     char *name;
 	     Collection *co;
-	     Demo_Edje *de;
 
 	     name = l->data;
 	     co = calloc(1, sizeof(Collection));
 	     collections = evas_list_append(collections, co);
 	     co->file = strdup(file);
 	     co->part = strdup(name);
+	     co->de = NULL;
 
 	     row = etk_tree_row_append(tree, NULL, col1, name, NULL);
-	     de = edje_part_create(output, canvas, file, name);
-	     etk_tree_row_data_set(row, de);
+	     etk_tree_row_data_set(row, co);
 	  }
 	edje_file_collection_list_free(entries);
 	edje_viewer_config_recent_set(file);
@@ -252,6 +251,15 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
    edje_object_part_drag_page_set(o, "dragable", 0.2, 0.2);
    de->edje = o;
 
+/*   etk_canvas_object_add(canvas, de->image);*/
+/*   etk_canvas_object_add(canvas, de->top);*/
+/*   etk_canvas_object_add(canvas, de->bottom);*/
+/*   etk_canvas_object_add(canvas, de->left);*/
+/*   etk_canvas_object_add(canvas, de->right);*/
+/*   etk_canvas_object_add(canvas, de->title_clip);*/
+/*   etk_canvas_object_add(canvas, de->title);*/
+/*   etk_canvas_object_add(canvas, de->edje);*/
+
    return de;
 }
 
@@ -284,20 +292,11 @@ void edje_part_show(Etk_Canvas *canvas, Demo_Edje *de)
    evas_object_show(de->title);
    evas_object_show(de->edje);
 
-/*   etk_canvas_object_add(canvas, de->image);*/
-/*   etk_canvas_object_add(canvas, de->top);*/
-/*   etk_canvas_object_add(canvas, de->bottom);*/
-/*   etk_canvas_object_add(canvas, de->left);*/
-/*   etk_canvas_object_add(canvas, de->right);*/
-/*   etk_canvas_object_add(canvas, de->title_clip);*/
-/*   etk_canvas_object_add(canvas, de->title);*/
-/*   etk_canvas_object_add(canvas, de->edje);*/
-
    edje_part_resize(de);
    visible_elements = evas_list_append(visible_elements, de);
 }
 
-void edje_part_hide(Etk_Canvas *canvas, Demo_Edje *de)
+void edje_part_hide(Demo_Edje *de)
 {
    evas_object_hide(de->edje);
    evas_object_hide(de->left);
@@ -307,15 +306,6 @@ void edje_part_hide(Etk_Canvas *canvas, Demo_Edje *de)
    evas_object_hide(de->image);
    evas_object_hide(de->title_clip);
    evas_object_hide(de->title);
-
-/*   etk_canvas_object_remove(canvas, de->image);*/
-/*   etk_canvas_object_remove(canvas, de->top);*/
-/*   etk_canvas_object_remove(canvas, de->bottom);*/
-/*   etk_canvas_object_remove(canvas, de->left);*/
-/*   etk_canvas_object_remove(canvas, de->right);*/
-/*   etk_canvas_object_remove(canvas, de->title_clip);*/
-/*   etk_canvas_object_remove(canvas, de->title);*/
-/*   etk_canvas_object_remove(canvas, de->edje);*/
 
    visible_elements = evas_list_remove(visible_elements, de);
 }
