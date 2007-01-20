@@ -15,7 +15,8 @@ static char *txt = "I'm not a lumberjack, or a fur trader,\n"
 		"I don't live in an igloo,\n"
 		"Or eat blubber,\n"
 		"Or own a dogsled,\n"
-		"And I don't know Jimmy, Sally, or Suzie from Canada, although I'm certain they're really really nice,\n"
+		"And I don't know Jimmy, Sally, or Suzie from Canada,"
+		"although I'm certain they're really really nice,\n"
 		"I have a Prime Minister, not a President,\n"
 		"I speak English and French, not American,\n"
 		"And I pronounce it about, not aboot,\n"
@@ -69,9 +70,9 @@ create_test(Ewl_Container *box)
 {
 	Ewl_Widget *hbox, *scroll, *o;
 
-	hbox = ewl_hbox_new();
+	hbox = ewl_htoolbar_new();
 	ewl_container_child_append(EWL_CONTAINER(box), hbox);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
+	ewl_toolbar_icon_part_hide(EWL_TOOLBAR(hbox), EWL_ICON_PART_LABEL);
 	ewl_widget_show(hbox);
 
 	{
@@ -86,13 +87,18 @@ create_test(Ewl_Container *box)
 			char *tooltip;
 			void (*cb)(Ewl_Widget *w, void *ev, void *data);
 		} format[] = {
-			{EWL_ICON_FORMAT_JUSTIFY_LEFT, "Left align", ete_cb_justify_left},
-			{EWL_ICON_FORMAT_JUSTIFY_CENTER, "Center", ete_cb_justify_center},
-			{EWL_ICON_FORMAT_JUSTIFY_RIGHT, "Right align", ete_cb_justify_right},
+			{EWL_ICON_FORMAT_JUSTIFY_LEFT, "Left align", 
+							ete_cb_justify_left},
+			{EWL_ICON_FORMAT_JUSTIFY_CENTER, "Center", 
+							ete_cb_justify_center},
+			{EWL_ICON_FORMAT_JUSTIFY_RIGHT, "Right align", 
+							ete_cb_justify_right},
 			{EWL_ICON_FORMAT_TEXT_BOLD, "Bold", ete_cb_bold},
 			{EWL_ICON_FORMAT_TEXT_ITALIC, "Italic", ete_cb_italic},
-			{EWL_ICON_FORMAT_TEXT_UNDERLINE, "Underline", ete_cb_underline},
-			{EWL_ICON_FORMAT_TEXT_STRIKETHROUGH, "Strikethrough", ete_cb_strikethrough},
+			{EWL_ICON_FORMAT_TEXT_UNDERLINE, "Underline", 
+							ete_cb_underline},
+			{EWL_ICON_FORMAT_TEXT_STRIKETHROUGH, "Strikethrough", 
+							ete_cb_strikethrough},
 			{NULL, NULL, NULL}
 		};
 		
@@ -111,12 +117,15 @@ create_test(Ewl_Container *box)
 			path = ewl_icon_theme_icon_path_get(format[i].icon,
 							EWL_ICON_SIZE_SMALL);
 
-			o = ewl_button_new();
-			ewl_button_image_set(EWL_BUTTON(o), path, 
+			o = ewl_icon_simple_new();
+			ewl_icon_image_set(EWL_ICON(o), path, 
 							format[i].icon);
+			ewl_icon_label_set(EWL_ICON(o), format[i].tooltip);
 			ewl_container_child_append(EWL_CONTAINER(hbox), o);
-			ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-			ewl_callback_append(o, EWL_CALLBACK_CLICKED, format[i].cb, NULL);
+			ewl_object_fill_policy_set(EWL_OBJECT(o), 
+							EWL_FLAG_FILL_VFILL);
+			ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+							format[i].cb, NULL);
 			ewl_attach_tooltip_text_set(o, format[i].tooltip);
 			ewl_widget_show(o);
 		}
@@ -143,10 +152,6 @@ create_test(Ewl_Container *box)
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
 		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
 						ete_cb_styles_changed, NULL);
-		ewl_object_fill_policy_set(EWL_OBJECT(o), 
-				EWL_FLAG_FILL_VFILL | 
-				EWL_FLAG_FILL_HSHRINK | 
-				EWL_FLAG_FILL_HFILL);
 		ewl_widget_show(o);
 
 		o = ewl_label_new();
