@@ -131,6 +131,8 @@ ewl_paned_init(Ewl_Paned *p)
 				ewl_paned_cb_configure, NULL);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT |
+						EWL_FLAG_ALIGN_TOP);
 	ewl_widget_focusable_set(w, FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
