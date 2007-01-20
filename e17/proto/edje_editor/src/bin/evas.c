@@ -155,11 +155,15 @@ prepare_canvas(void)
    rel2Y_parent_handler = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
    edje_object_file_set(rel2Y_parent_handler, EdjeFile, "Rel2Y_ParentH");
 
+ //Create engrave canvas
+   ecanvas = engrave_canvas_new (etk_widget_toplevel_evas_get(ETK_canvas));
+  // etk_canvas_object_add (ETK_CANVAS(ETK_canvas), ecanvas);
+
 
    // Create Fake win
    EV_fakewin = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
    edje_object_file_set(EV_fakewin, EdjeFile, "FakeWin");
-   etk_canvas_object_add(ETK_CANVAS(ETK_canvas),EV_fakewin);
+  // etk_canvas_object_add(ETK_CANVAS(ETK_canvas),EV_fakewin);
 
    edje_object_signal_callback_add(EV_fakewin,"DRAG","miniarrow",on_Drag,(void*)DRAG_MINIARROW);
 
@@ -167,9 +171,7 @@ prepare_canvas(void)
    ev_resize_fake(200,200);
 
 
-   //Create engrave canvas
-   ecanvas = engrave_canvas_new (etk_widget_toplevel_evas_get(ETK_canvas));
-   etk_canvas_object_add (ETK_CANVAS(ETK_canvas), ecanvas);
+  
 }
 void
 ev_adjust_position(Engrave_Part_State* state, Evas_Object* object)
@@ -469,10 +471,23 @@ ev_draw_focus(void)
 void
 ev_resize_fake(int w, int h)
 {
-   //printf("RESIZE: %d %d\n",w,h);
-   if (!w) w = 200;
-   if (!h) h = 200;
-   evas_object_resize(EV_fakewin,w,h);
+   int max_w=0, max_h=0;
+   int min_w=0, min_h=0;
+
+   engrave_group_max_size_get(Cur.eg, &max_w, &max_h);
+   engrave_group_min_size_get(Cur.eg, &min_w, &min_h);
+
+   if (max_w > 0 && w > max_w) w = max_w;
+   if (max_h > 0 && h > max_h) h = max_h;
+
+   if (min_w > 0 && w < min_w) w = min_w;
+   if (min_h > 0 && h < min_h) h = min_h;
+
+   if (w < 0) w = 100;
+   if (h < 0) h = 100;
+
+   //printf("RESIZE: %d %d./ed  \n",w,h);
+   evas_object_resize(EV_fakewin, w, h);
    edje_object_part_drag_value_set (EV_fakewin, "miniarrow", (double)w, (double)h);
 }
 void

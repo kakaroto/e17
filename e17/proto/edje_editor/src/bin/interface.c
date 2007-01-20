@@ -5,7 +5,9 @@
 #include "callbacks.h"
 #include "interface.h"
 
-void ShowAlert(char* text){
+void
+ShowAlert(char* text)
+{
    etk_message_dialog_text_set (ETK_MESSAGE_DIALOG(UI_AlertDialog), text);
    etk_widget_show_all(UI_AlertDialog);
 }
@@ -81,7 +83,6 @@ AddStateToTree(Engrave_Part_State* state)
    snprintf(buf,4096,"%s %.2f",state->name,state->value);
    stock_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_SMALL);
    row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
-            //part->user_data,
             ecore_hash_get(hash,state->parent),
             col1,EdjeFile,"DESC.PNG",buf,
             col2,TRUE,
@@ -517,9 +518,7 @@ UpdateTextFrame(void)
 void
 UpdatePositionFrame(void)
 {
-   //Engrave_Part_State *state = selected_desc;
-
-   printf("Update Position: %s (offset: %d)\n",Cur.eps->name,Cur.eps->rel1.offset.x);
+   //printf("Update Position: %s (offset: %d)\n",Cur.eps->name,Cur.eps->rel1.offset.x);
 
    //Stop signal propagation
    etk_signal_block("value_changed", ETK_OBJECT(UI_Rel1XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed));
@@ -550,14 +549,11 @@ UpdatePositionFrame(void)
    etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel1YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
    etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel2XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
    etk_signal_unblock("value_changed", ETK_OBJECT(UI_Rel2YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed));
-
 }
 
 void
 UpdateComboPositionFrame(void)
 {
-   //Engrave_Part_State *state = selected_desc;
-   //GString *str=g_string_new("");
    int i=0;
    Etk_Combobox_Item *item = NULL;
    Engrave_Part *part = NULL;
@@ -568,14 +564,6 @@ UpdateComboPositionFrame(void)
    etk_signal_block("active_item_changed", ETK_OBJECT(UI_Rel2ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
    etk_signal_block("active_item_changed", ETK_OBJECT(UI_Rel2ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed));
 
-
-
-   // Set RelTo combos
-   //If rel1_to is know set rel1_to_x and rel1_to_y
-   //if  (desc->rel1_to->len > 0){
-   //desc->rel1_to_x = desc->rel1_to;
-   //desc->rel1_to_y = desc->rel1_to;
-   //}
    printf("SETTING COMBOS %s\n", Cur.eps->rel1.to_x);
    //If rel1_to_x is know set the combobox
    if (Cur.eps->rel1.to_x)
@@ -612,12 +600,6 @@ UpdateComboPositionFrame(void)
          i++;
       }
    }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToYComboBox), etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToYComboBox),0));}
-
-   //If rel2_to is know set rel2_to_x and rel2_to_y
-   //if  (desc->rel2_to->len > 0){
-   // desc->rel2_to_x = desc->rel2_to;
-   // desc->rel2_to_y = desc->rel2_to;
-   //}
 
    //If rel2_to_x is know set the combobox
    if (Cur.eps->rel2.to_x)
@@ -1804,7 +1786,6 @@ create_main_window(void)
    etk_signal_connect("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
    etk_signal_connect("delete_event", ETK_OBJECT(UI_ColorWin), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    etk_signal_connect("destroyed", ETK_OBJECT(UI_MainWin), ETK_CALLBACK(etk_main_quit_cb), NULL);
- //  etk_signal_connect("active_item_changed", ETK_OBJECT(UI_GroupComboBox), ETK_CALLBACK(on_GroupComboBox_changed), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(ETK_canvas), "geometry", on_canvas_geometry_changed, NULL);
 
    etk_widget_show_all(ETK_WIDGET(UI_MainWin));

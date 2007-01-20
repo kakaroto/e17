@@ -99,6 +99,13 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
       case TOOLBAR_DEBUG:
          DebugInfo(FALSE);
+         //ZOOM TEST :(
+         //int x,y,w,h;
+         //evas_output_size_get (etk_widget_toplevel_evas_get (ETK_canvas), &w, &h);
+         //evas_output_size_set (etk_widget_toplevel_evas_get (ETK_canvas), w+10, h+10);
+         //evas_output_viewport_get (etk_widget_toplevel_evas_get (ETK_canvas), &x, &y, &w, &h);
+         //evas_output_viewport_set (etk_widget_toplevel_evas_get (ETK_canvas), x+20, y+20, w+10, h+10);
+         //printf("ZOOM: %d %d - %d %d\n",x,y,w,h);
          break;
       case TOOLBAR_IMAGE_FILE_ADD:
          ShowAlert("Not yet implemented =)");
@@ -223,18 +230,18 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 
    //The group as changed
    if (Cur.eg != old_group){
+      int w, h;
 
       UpdateGroupFrame();
       PopulateRelComboBoxes();
+
       //Update Fakewin
-
-      ev_resize_fake(400,400);
+      engrave_group_max_size_get(Cur.eg,&w,&h);
+      ev_resize_fake(w,h);
       edje_object_part_text_set (EV_fakewin, "title", Cur.eg->name);
-      printf("GROUP SET %s\n",Cur.eg->name);
+
       engrave_canvas_current_group_set (ecanvas, Cur.eg);
-
    }
-
    ev_redraw();
 }
 
@@ -1052,7 +1059,9 @@ void on_PlayDialog_response(Etk_Dialog *dialog, int response_id, void *data){
    g_string_free(command,TRUE); */
 }
 
-void on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data){
+void 
+on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data)
+{
    etk_widget_hide(ETK_WIDGET(dialog));
 }
 
