@@ -4176,3 +4176,16 @@ Fix move through desk switch.
 Fix crash on opening certain dialogs when sound is enabled (Valdis Kletnieks).
 Danish translation update.
 
+
+-------------------------------------------------------------------------------
+
+Sat Jan 20 14:53:41 CET 2007
+(Kim)
+
+--- 0.16.8.6 0.02 ---
+Fix segv in some obscure client exit scenarios involving reparent/destroy.
+Add more sanity checks in client container event handler.
+Refactor various file property test functions.
+Cleanups, enable compiling everything as if it were C++.
+Fix epp warnings.   
+
