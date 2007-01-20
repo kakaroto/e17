@@ -19,6 +19,8 @@ struct _Demo_Edje
     char         down_top : 1;
     char         down_bottom : 1;
     char 	*name;
+
+    Etk_Bool     first_run;
 };
 
 struct _Collection

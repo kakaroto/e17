@@ -164,7 +164,6 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
 {
    Evas_Object *o;
    Demo_Edje *de;
-   char buf[1024];
    Evas_Coord xx, yy, ww, hh;
    Evas_Coord cx, cy, cw, ch;
    Evas *evas;
@@ -181,6 +180,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
    hh = ch/3 - 50;
 
    o = evas_object_image_add(evas);
+   etk_canvas_object_add(canvas, o);
    evas_object_image_file_set(o, DAT"data/images/border.png", NULL);
    evas_object_image_smooth_scale_set(o, 0);
    evas_object_color_set(o, 255, 255, 255, 255);
@@ -190,6 +190,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
    de->image = o;
 
    o = evas_object_rectangle_add(evas);
+   etk_canvas_object_add(canvas, o);
    evas_object_color_set(o, 255, 255, 255, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, top_down_cb, de);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP,   top_up_cb, de);
@@ -198,6 +199,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
    de->top = o;
 
    o = evas_object_rectangle_add(evas);
+   etk_canvas_object_add(canvas, o);
    evas_object_color_set(o, 255, 255, 255, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, 
 	 bottom_down_cb, de);
@@ -208,6 +210,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
    de->bottom = o;
 
    o = evas_object_rectangle_add(evas);
+   etk_canvas_object_add(canvas, o);
    evas_object_color_set(o, 255, 255, 255, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
 	 bottom_down_cb, de);
@@ -218,6 +221,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
    de->left = 0;
 
    o = evas_object_rectangle_add(evas);
+   etk_canvas_object_add(canvas, o);
    evas_object_color_set(o, 255, 255, 255, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
 	 bottom_down_cb, de);
@@ -229,20 +233,22 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
    de->right = o;
 
    o = evas_object_rectangle_add(evas);
-   evas_object_color_set(o, 255, 255, 255, 255);
+   etk_canvas_object_add(canvas, o);
+   evas_object_color_set(o, 255, 255, 255, 0);
    evas_object_pass_events_set(o, 1);
    de->title_clip = o;
 
    o = evas_object_text_add(evas);
+   etk_canvas_object_add(canvas, o);
    evas_object_color_set(o, 0, 0, 0, 255);
-   snprintf(buf, sizeof(buf), "%s - %s", file, name);
-   evas_object_text_text_set(o, buf);
+   evas_object_text_text_set(o, name);
    evas_object_text_font_set(o, "Vera", 10);
    evas_object_pass_events_set(o, 1);
    evas_object_clip_set(o, de->title_clip);
    de->title = o;
 
    o = edje_object_add(evas);
+   etk_canvas_object_add(canvas, o);
    edje_object_message_handler_set(o, message_cb, output);
    edje_object_signal_callback_add(o, "*", "*", signal_cb, output);
    edje_object_file_set(o, file, name);
@@ -251,25 +257,17 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
    edje_object_part_drag_page_set(o, "dragable", 0.2, 0.2);
    de->edje = o;
 
-/*   etk_canvas_object_add(canvas, de->image);*/
-/*   etk_canvas_object_add(canvas, de->top);*/
-/*   etk_canvas_object_add(canvas, de->bottom);*/
-/*   etk_canvas_object_add(canvas, de->left);*/
-/*   etk_canvas_object_add(canvas, de->right);*/
-/*   etk_canvas_object_add(canvas, de->title_clip);*/
-/*   etk_canvas_object_add(canvas, de->title);*/
-/*   etk_canvas_object_add(canvas, de->edje);*/
+   de->first_run = ETK_TRUE;
 
    return de;
 }
 
 void edje_part_show(Etk_Canvas *canvas, Demo_Edje *de)
 {
-   Evas_Coord x, y, w, h, xx, yy, ww, hh, dx, dy, dw, dh;
+   Evas_Coord x, y, w, h, xx, yy, ww, hh;
 
    etk_widget_geometry_get(ETK_WIDGET(canvas), &x, &y, &w, &h);
-   evas_object_geometry_get(de->image, &dx, &dy, &dw, &dh);
-   if (!dx || !dy || !dw || !dh)
+   if (de->first_run)
      {
 	xx = 10 + x;
 	yy = 10 + y;
@@ -281,6 +279,7 @@ void edje_part_show(Etk_Canvas *canvas, Demo_Edje *de)
 	de->ch = h;
 
 	edje_move_resize(de, xx, yy, ww, hh);
+	de->first_run = ETK_FALSE;
      }
 
    evas_object_show(de->image);
