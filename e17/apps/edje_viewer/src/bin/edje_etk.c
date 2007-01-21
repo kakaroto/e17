@@ -234,7 +234,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
 
    o = evas_object_rectangle_add(evas);
    etk_canvas_object_add(canvas, o);
-   evas_object_color_set(o, 255, 255, 255, 0);
+   evas_object_color_set(o, 255, 255, 255, 255);
    evas_object_pass_events_set(o, 1);
    de->title_clip = o;
 
