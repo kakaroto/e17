@@ -17,13 +17,11 @@
 
 #define mINT 1 
 #define mDOUBLE 2
-#define mICONTEXTF 3 
-#define mIMAGEF 4
-#define mCHECKBOX 5
-#define mPROGRESSBAR 6
-#define mTEXT 7
-#define mICONTEXTE 8 
-#define mIMAGEE 9
+#define mIMAGE 3
+#define mCHECKBOX 4
+#define mPROGRESSBAR 5
+#define mTEXT 6
+
 
 static void
 notification_callback(Etk_Object * object, const char * property_name, void * data)
@@ -100,7 +98,7 @@ callback_VOID__POINTER(Etk_Object *object, void *value, void *data)
    SV *event_rv;
    cbd = data;   
 
-   event_rv = GetSignalEvent(object, value, cbd);
+   event_rv = GetSignalEvent_POINTER(object, value, cbd);
    
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
@@ -116,11 +114,17 @@ callback_VOID__POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void 
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
+   cbd = data;   
+
+   SV * obj1_rv, *event_rv;
+   GetSignalEvent_POINTER_POINTER(object, val1, val2, cbd, &obj1_rv, &event_rv);
 
    cbd = data;
 
    PUSHMARK(SP) ;
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_object)));
+   XPUSHs(sv_2mortal(obj1_rv));
+   XPUSHs(sv_2mortal(event_rv));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
@@ -4173,22 +4177,36 @@ etk_toplevel_widgets_get()
 MODULE = Etk::Tree	PACKAGE = Etk::Tree	PREFIX = etk_tree_
 	
 Etk_Tree_Row *
-etk_tree_append(tree)
+etk_tree_row_append(tree, parent=NULL)
 	Etk_Tree *	tree
+	Etk_Tree_Row *	parent
       ALIAS:
-	Append=1
+	RowAppend=1
       CODE:
-        RETVAL = etk_tree_append(tree, NULL);
+        RETVAL = etk_tree_row_append(tree, parent, NULL);
       OUTPUT:
         RETVAL
 
 Etk_Tree_Row *
-etk_tree_append_to_row(row)
-	Etk_Tree_Row *	row
+etk_tree_row_prepend(tree, parent=NULL)
+	Etk_Tree *	tree
+	Etk_Tree_Row *	parent
       ALIAS:
-	AppendToRow=1
+	RowPrepend=1
+      CODE:
+        RETVAL = etk_tree_row_prepend(tree, parent, NULL);
+      OUTPUT:
+        RETVAL
+
+Etk_Tree_Row *
+etk_tree_row_insert(tree, parent=NULL, after)
+	Etk_Tree *	tree
+	Etk_Tree_Row *	parent
+	Etk_Tree_Row *	after
+	ALIAS:
+	RowInsert=1
 	CODE:
-	RETVAL = etk_tree_append_to_row(row, NULL);
+	RETVAL = etk_tree_row_insert(tree, parent, after, NULL);
 	OUTPUT:
 	RETVAL
 
@@ -4236,10 +4254,8 @@ etk_tree_headers_visible_set(tree, headers_visible)
 	HeadersVisibleSet=1
 
 Etk_Tree_Row *
-etk_tree_last_row_get(tree, walking_through_hierarchy, include_collapsed_children)
+etk_tree_last_row_get(tree)
 	Etk_Tree *	tree
-	Etk_Bool	walking_through_hierarchy
-	Etk_Bool	include_collapsed_children
       ALIAS:
 	LastRowGet=1
 
@@ -4277,14 +4293,6 @@ new(class)
 	OUTPUT:
 	RETVAL
 
-Etk_Tree_Row *
-etk_tree_next_row_get(row, walking_through_hierarchy, include_collapsed_children)
-	Etk_Tree_Row *	row
-	Etk_Bool	walking_through_hierarchy
-	Etk_Bool	include_collapsed_children
-      ALIAS:
-	NextRowGet=1
-
 Etk_Tree_Col *
 etk_tree_nth_col_get(tree, nth)
 	Etk_Tree *	tree
@@ -4295,15 +4303,6 @@ etk_tree_num_cols_get(tree)
 	Etk_Tree *	tree
       ALIAS:
 	NumColsGet=1
-
-Etk_Tree_Row *
-etk_tree_prev_row_get(row, walking_through_hierarchy, include_collapsed_children)
-	Etk_Tree_Row *	row
-	Etk_Bool	walking_through_hierarchy
-	Etk_Bool	include_collapsed_children
-      ALIAS:
-	PrevRowGet=1
-
 	
 void
 etk_tree_select_all(tree)
@@ -4317,51 +4316,46 @@ etk_tree_selected_row_get(tree)
       ALIAS:
 	SelectedRowGet=1
 
-Evas_List * 
-etk_tree_selected_rows_get(tree)
-	Etk_Tree *	tree
-      ALIAS:
-	SelectedRowsGet=1
-
-void
-etk_tree_sort(tree, compare_cb, ascendant, col, data)
-	Etk_Tree *	tree
-        SV *compare_cb
-	Etk_Bool	ascendant
-	Etk_Tree_Col *	col
-	SV *	data
-      ALIAS:
-	Sort=1
-      CODE:
-        Callback_Tree_Compare_Data *cbd;
-        
-        cbd = calloc(1, sizeof(Callback_Tree_Compare_Data));
-        cbd->object = ETK_OBJECT(col);
-        cbd->perl_data = newSVsv(data);
-        cbd->perl_callback = newSVsv(compare_cb);
-        etk_tree_sort(tree, tree_compare_cb, ascendant, col, cbd);
-
-void 
-etk_tree_sort_alpha(tree, ascendant, col, data)
-	Etk_Tree *    tree
-	Etk_Bool        ascendant
-	Etk_Tree_Col *  col
-	SV *    data
-      ALIAS:
-	SortAlpha=1
-	CODE:
-	etk_tree_sort(tree, tree_compare_alpha_cb, ascendant, col, data);
-
-void 
-etk_tree_sort_numeric(tree, ascendant, col, data)
-	Etk_Tree *    tree
-	Etk_Bool        ascendant
-	Etk_Tree_Col *  col
-	SV *    data
-      ALIAS:
-	SortNumeric=1
-	CODE:
-	etk_tree_sort(tree, tree_compare_numeric_cb, ascendant, col, data);
+#
+# void
+# etk_tree_sort(tree, compare_cb, ascendant, col, data)
+#	Etk_Tree *	tree
+#        SV *compare_cb
+#	Etk_Bool	ascendant
+#	Etk_Tree_Col *	col
+#	SV *	data
+#      ALIAS:
+#	Sort=1
+#      CODE:
+#        Callback_Tree_Compare_Data *cbd;
+#        
+#        cbd = calloc(1, sizeof(Callback_Tree_Compare_Data));
+#        cbd->object = ETK_OBJECT(col);
+#        cbd->perl_data = newSVsv(data);
+#        cbd->perl_callback = newSVsv(compare_cb);
+#        etk_tree_sort(tree, tree_compare_cb, ascendant, col, cbd);
+#
+# void 
+# etk_tree_sort_alpha(tree, ascendant, col, data)
+#	Etk_Tree *    tree
+#	Etk_Bool        ascendant
+#	Etk_Tree_Col *  col
+#	SV *    data
+#      ALIAS:
+#	SortAlpha=1
+#	CODE:
+#	etk_tree_sort(tree, tree_compare_alpha_cb, ascendant, col, data);
+#
+# void 
+# etk_tree_sort_numeric(tree, ascendant, col, data)
+#	Etk_Tree *    tree
+#	Etk_Bool        ascendant
+#	Etk_Tree_Col *  col
+#	SV *    data
+#      ALIAS:
+#	SortNumeric=1
+#	CODE:
+#	etk_tree_sort(tree, tree_compare_numeric_cb, ascendant, col, data);
 
 void
 etk_tree_thaw(tree)
@@ -4376,29 +4370,32 @@ etk_tree_unselect_all(tree)
 	UnselectAll=1
 
 SV *
-etk_tree_col_new(tree, title, model, width)
+etk_tree_col_new(tree, title, width, alignment)
 	Etk_Tree *	tree
 	char *	title
-	SV *	model
 	int	width
+	float	alignment
+	ALIAS:
+	ColNew=1
 	CODE:
-	Etk_Tree_Model * modeldata;
 	Etk_Tree_Col * col;
-	SV ** model_type;
-
-	modeldata = (Etk_Tree_Model *) SvObj(model, "Etk::Tree::Model");
-
-	col = etk_tree_col_new(tree, title, modeldata, width);
-	RETVAL = newSVObj(col, getClass("Etk_Tree_Col"));
-
-	model_type = hv_fetch( (HV*)SvRV(model), "_model", 6, 0);
-	if (model_type) {
-		int type = SvIV(*model_type);
-		hv_store( (HV*)SvRV(RETVAL), "_model", 6, newSViv(type), 0);
-	}
+	col = etk_tree_col_new(tree, title, width, alignment);
+	RETVAL = newSVObject(col);
 	OUTPUT:
 	RETVAL
-	
+
+void
+etk_tree_rows_height_set(tree, rows_height)
+	Etk_Tree *tree
+	int rows_height
+	ALIAS:
+	RowsHeightSet=1
+
+int
+etk_tree_rows_height_get(tree)
+	Etk_Tree *tree
+	ALIAS:
+	RowsHeightGet=1
 
 
 MODULE = Etk::Tree::Col	PACKAGE = Etk::Tree::Col	PREFIX = etk_tree_col_
@@ -4430,17 +4427,17 @@ etk_tree_col_min_width_set(col, min_width)
 	MinWidthSet=1
 
 int
-etk_tree_col_place_get(col)
+etk_tree_col_position_get(col)
 	Etk_Tree_Col *	col
       ALIAS:
-	PlaceGet=1
+	PositionGet=1
 
 void
-etk_tree_col_reorder(col, new_place)
+etk_tree_col_position_set(col, position)
 	Etk_Tree_Col *	col
-	int	new_place
+	int	position
       ALIAS:
-	Reorder=1
+	PositionSet=1
 
 Etk_Bool
 etk_tree_col_resizable_get(col)
@@ -4456,12 +4453,12 @@ etk_tree_col_resizable_set(col, resizable)
 	ResizableSet=1
 
 void
-etk_tree_col_sort_func_set(col, compare_cb, data)
+etk_tree_col_sort_set(col, compare_cb, data)
         Etk_Tree_Col *  col
         SV * compare_cb
         SV * data
       ALIAS:
-	SortFuncSet=1
+	SortSet=1
       CODE:
 	Callback_Tree_Compare_Data *cbd;
 	
@@ -4469,33 +4466,25 @@ etk_tree_col_sort_func_set(col, compare_cb, data)
 	cbd->object = ETK_OBJECT(col);
         cbd->perl_data = newSVsv(data);
         cbd->perl_callback = newSVsv(compare_cb);	
-        etk_tree_col_sort_func_set(col, tree_compare_cb, cbd);
+        etk_tree_col_sort_set(col, tree_compare_cb, cbd);
 
 void
-etk_tree_col_sort_func_alpha_set(col, data)
+etk_tree_col_sort_alpha_set(col, data)
 	Etk_Tree_Col *  col
 	SV * data
       ALIAS:
-	SortFuncAlphaSet=1
+	SortAlphaSet=1
 	CODE:
-	etk_tree_col_sort_func_set(col, tree_compare_alpha_cb, data);
+	etk_tree_col_sort_set(col, tree_compare_alpha_cb, data);
 	
 void
-etk_tree_col_sort_func_numeric_set(col, data)
+etk_tree_col_sort_numeric_set(col, data)
 	Etk_Tree_Col *  col
 	SV * data
       ALIAS:
-	SortFuncNumericSet=1
+	SortNumericSet=1
 	CODE:
-	etk_tree_col_sort_func_set(col, tree_compare_numeric_cb, data);
-
-void
-etk_tree_col_sort_func_set2(col, compare_cb, data)
-	Etk_Tree_Col *	col
-	int ( * ) ( Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2, Etk_Tree_Col * col, void * data ) compare_cb
-	void *	data
-      ALIAS:
-	SortFuncSet2=1
+	etk_tree_col_sort_set(col, tree_compare_numeric_cb, data);
 
 const char *
 etk_tree_col_title_get(col)
@@ -4536,30 +4525,39 @@ etk_tree_col_width_set(col, width)
       ALIAS:
 	WidthSet=1
 
+Etk_Tree *
+etk_tree_col_tree_get(col)
+	Etk_Tree_Col	*col
+	ALIAS:
+	TreeGet=1
+
+void
+XS_etk_tree_col_model_add(col, model)
+	Etk_Tree_Col	*col
+	Etk_Tree_Model	*model
+	CODE:
+	etk_tree_col_model_add(col, model);
+
+Etk_Widget *
+etk_tree_col_header_get(col)
+	Etk_Tree_Col    *col
+	ALIAS:
+	HeaderGet=1
+
+void
+etk_tree_col_alignment_set(col, alignment)
+	Etk_Tree_Col    *col
+	float	alignment
+	ALIAS:
+	AlignmentSet=1
+
+float
+etk_tree_col_alignment_get(col)
+	Etk_Tree_Col    *col
+	ALIAS:
+	AlignmentGet=1
 
 MODULE = Etk::Tree::Model	PACKAGE = Etk::Tree::Model	PREFIX = etk_tree_model_
-
-void
-etk_tree_model_alignment_get(model)
-	Etk_Tree_Model *	model
-      ALIAS:
-	AlignmentGet=1
-	PPCODE:
-	
-	float xalign;
-	float yalign;
-	etk_tree_model_alignment_get(model, &xalign, &yalign);
-	EXTEND(SP, 2);
-	PUSHs(sv_2mortal(newSVnv(xalign)));
-	PUSHs(sv_2mortal(newSVnv(yalign)));
-
-void
-etk_tree_model_alignment_set(model, xalign, yalign)
-	Etk_Tree_Model *	model
-	float	xalign
-	float	yalign
-      ALIAS:
-	AlignmentSet=1
 
 void
 etk_tree_model_free(model)
@@ -4571,13 +4569,12 @@ etk_tree_model_free(model)
 MODULE = Etk::Tree::Model::Checkbox	PACKAGE = Etk::Tree::Model::Checkbox	PREFIX = etk_tree_model_checkbox_
 
 void
-new(class, tree)
+new(class)
 	SV * class
-	Etk_Tree *	tree
 	PPCODE:
 	Etk_Tree_Model * model;
 	SV * ret;
-	model = etk_tree_model_checkbox_new(tree);
+	model = etk_tree_model_checkbox_new();
 	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mCHECKBOX), 0);
 	XPUSHs(sv_2mortal(ret));
@@ -4586,83 +4583,60 @@ new(class, tree)
 MODULE = Etk::Tree::Model::Double	PACKAGE = Etk::Tree::Model::Double	PREFIX = etk_tree_model_double_
 
 void
-new(class, tree)
+new(class)
 	SV * class
-	Etk_Tree *	tree
 	PPCODE:
 	Etk_Tree_Model * model;
 	SV * ret;
-	model = etk_tree_model_double_new(tree);
+	model = etk_tree_model_double_new();
 	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mDOUBLE), 0);
-	XPUSHs(sv_2mortal(ret));
-
-
-MODULE = Etk::Tree::Model::IconText	PACKAGE = Etk::Tree::Model::IconText	PREFIX = etk_tree_model_icon_text_
-
-int
-etk_tree_model_icon_text_icon_width_get(model)
-	Etk_Tree_Model *	model
-      ALIAS:
-	IconWidthGet=1
-
-void
-etk_tree_model_icon_text_icon_width_set(model, icon_width)
-	Etk_Tree_Model *	model
-	int	icon_width
-      ALIAS:
-	IconWidthSet=1
-
-void
-new(class, tree, type)
-	SV * class
-	Etk_Tree *	tree
-	Etk_Tree_Model_Image_Type type
-	PPCODE:
-	Etk_Tree_Model * model;
-	SV * ret;
-	SV * mod;
-	if (type == ETK_TREE_FROM_FILE)
-		mod = newSViv(mICONTEXTF);
-	else
-		mod = newSViv(mICONTEXTE);
-
-	model = etk_tree_model_icon_text_new(tree, type);
-	ret = newSVObj(model, getClass("Etk_Tree_Model"));
-	hv_store( (HV*)SvRV(ret), "_model", 6, mod, 0);
 	XPUSHs(sv_2mortal(ret));
 
 
 MODULE = Etk::Tree::Model::Image	PACKAGE = Etk::Tree::Model::Image	PREFIX = etk_tree_model_image_
 
 void
-new(class, tree, type)
+new(class)
 	SV * class
-	Etk_Tree *	tree
-	Etk_Tree_Model_Image_Type type
 	PPCODE:
 	Etk_Tree_Model * model;
 	SV * ret;
-	SV * mod;
-	if (type == ETK_TREE_FROM_FILE)
-		mod = newSViv(mIMAGEF);
-	else
-		mod = newSViv(mIMAGEE);
-	model = etk_tree_model_image_new(tree, type);
+	model = etk_tree_model_image_new();
 	ret = newSVObj(model, getClass("Etk_Tree_Model"));
-	hv_store( (HV*)SvRV(ret), "_model", 6, mod, 0);
+	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mIMAGE), 0);
 	XPUSHs(sv_2mortal(ret));
+
+void
+etk_tree_model_image_width_set(model, width, alignment)
+	Etk_Tree_Model *	model
+	int	width
+	float	alignment
+	ALIAS:
+	WidthSet=1
+
+void
+etk_tree_model_image_width_get(model)
+	Etk_Tree_Model *	model
+	ALIAS:
+	WidthGet=1
+	PPCODE:
+	int width;
+	float alignment;
+	etk_tree_model_image_width_get(model, &width, &alignment);
+	EXTEND(SP, 2);
+	PUSHs(sv_2mortal(newSViv(width)));
+	PUSHs(sv_2mortal(newSViv(alignment)));
 
 MODULE = Etk::Tree::Model::Int	PACKAGE = Etk::Tree::Model::Int	PREFIX = etk_tree_model_int_
 
 void
-new(class, tree)
+new(class)
 	SV * class
-	Etk_Tree *	tree
 	PPCODE:
 	Etk_Tree_Model * model;
 	SV * ret;
-	model = etk_tree_model_int_new(tree);
+	model = etk_tree_model_int_new();
 	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mINT), 0);
 	XPUSHs(sv_2mortal(ret));
@@ -4672,13 +4646,12 @@ new(class, tree)
 MODULE = Etk::Tree::Model::ProgressBar	PACKAGE = Etk::Tree::Model::ProgressBar	PREFIX = etk_tree_model_progress_bar_
 
 void
-new(class, tree)
+new(class)
 	SV * class
-	Etk_Tree *	tree
 	PPCODE:
 	Etk_Tree_Model * model;
 	SV * ret;
-	model = etk_tree_model_progress_bar_new(tree);
+	model = etk_tree_model_progress_bar_new();
 	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mPROGRESSBAR), 0);
 	XPUSHs(sv_2mortal(ret));
@@ -4687,13 +4660,12 @@ new(class, tree)
 MODULE = Etk::Tree::Model::Text	PACKAGE = Etk::Tree::Model::Text	PREFIX = etk_tree_model_text_
 
 void
-new(class, tree)
+new(class)
 	SV * class
-	Etk_Tree *	tree
 	PPCODE:
 	Etk_Tree_Model * model;
 	SV * ret;
-	model = etk_tree_model_text_new(tree);
+	model = etk_tree_model_text_new();
 	ret = newSVObj(model, getClass("Etk_Tree_Model"));
 	hv_store( (HV*)SvRV(ret), "_model", 6, newSViv(mTEXT), 0);
 	XPUSHs(sv_2mortal(ret));
@@ -4701,11 +4673,41 @@ new(class, tree)
 
 MODULE = Etk::Tree::Row	PACKAGE = Etk::Tree::Row	PREFIX = etk_tree_row_
 
-void
-etk_tree_row_collapse(row)
+
+Etk_Tree_Row *
+etk_tree_row_next_get(row)
 	Etk_Tree_Row *	row
       ALIAS:
-	Collapse=1
+	NextGet=1
+
+Etk_Tree_Row *
+etk_tree_row_prev_get(row)
+	Etk_Tree_Row *	row
+      ALIAS:
+	PrevGet=1
+
+void etk_tree_row_delete(row)
+	Etk_Tree_Row *	row
+	ALIAS:
+	Delete=1
+
+void
+etk_tree_row_fold(row)
+	Etk_Tree_Row *	row
+      ALIAS:
+	Fold=1
+
+void
+etk_tree_row_unfold(row)
+	Etk_Tree_Row *	row
+	ALIAS:
+	Unfold=1
+
+Etk_Bool
+etk_tree_row_is_folded(row)
+	Etk_Tree_Row *	row
+	ALIAS:
+	IsFolded=1
 
 SV *
 etk_tree_row_data_get(row)
@@ -4726,62 +4728,52 @@ etk_tree_row_data_set(row, data)
         CODE:
         etk_tree_row_data_set(row, newSVsv(data));
 
-void
-etk_tree_row_del(row)
-	Etk_Tree_Row *	row
-      ALIAS:
-	Del=1
 
 void
-etk_tree_row_expand(row)
-	Etk_Tree_Row *	row
-      ALIAS:
-	Expand=1
-
-
-void
-fields_set(row, col, ...)
+fields_set(row, emit_signal, col, ...)
 	Etk_Tree_Row * row
+	Etk_Bool	emit_signal
 	SV * col
      ALIAS:
 	FieldsSet=1
 	PREINIT:
 	Etk_Tree_Col * column;
+	SV ** models;
 	SV ** model;
 	CODE:
-	
 	column = (Etk_Tree_Col *) SvObj(col, "Etk::Tree::Col");
-
-	model = hv_fetch( (HV*)SvRV(col), "_model", 6, 0);
-	if (model) {
-		int type = SvIV(*model);
-		switch(type) {
-			case mINT:
-			case mCHECKBOX:
-				etk_tree_row_fields_set(row, column, SvIV(ST(2)), NULL);
-				break;
-			case mDOUBLE:
-				etk_tree_row_fields_set(row, column, SvNV(ST(2)), NULL);
-				break;
-			case mICONTEXTF:
-				etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), SvPV_nolen(ST(3)), NULL);
-				break;
-			case mICONTEXTE:
-				etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), SvPV_nolen(ST(3)), SvPV_nolen(ST(4)), NULL);
-				break;
-			case mIMAGEF:
-				etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), NULL);
-				break;
-			case mIMAGEE:
-				etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), SvPV_nolen(ST(3)), NULL);
-				break;
-			case mPROGRESSBAR:
-				etk_tree_row_fields_set(row, column, SvNV(ST(2)), SvPV_nolen(ST(3)), NULL);
-				break;
-			case mTEXT:
-				etk_tree_row_fields_set(row, column, SvPV_nolen(ST(2)), NULL);
-				break;
-		}
+	models = hv_fetch( (HV*)SvRV(col), "_models", 7, 0);
+	if (models) {
+           AV * mods = (AV *) SvRV(*models);
+	   int total = (int)av_len(mods);
+	      model = av_fetch(mods, 0, 0);
+	      if (model) {
+	       int type = SvIV(*model);
+	       switch(type) {
+	          case mINT:
+		     etk_tree_row_fields_set(row, emit_signal, column, SvIV(ST(3)), NULL);
+		     break;
+		  case mDOUBLE:
+		     etk_tree_row_fields_set(row, emit_signal, column, SvNV(ST(3)), NULL);
+		     break;
+		  case mCHECKBOX:
+		     etk_tree_row_fields_set(row, emit_signal, column, SvIV(ST(3)), NULL);
+		     break;
+		  case mIMAGE:
+		     if (items == 4)
+		        etk_tree_row_fields_set(row, emit_signal, column, 
+		     	   SvPV_nolen(ST(3)), NULL, NULL);
+		     else
+		        etk_tree_row_fields_set(row, emit_signal, column, 
+		     	   SvPV_nolen(ST(3)), SvPV_nolen(ST(4)), NULL);
+		     break;
+		  case mPROGRESSBAR:
+		     break;
+		  case mTEXT:
+		     etk_tree_row_fields_set(row, emit_signal, column, SvPV_nolen(ST(3)), NULL);
+		     break;
+               }
+	     }
 	}
 
 
@@ -4799,6 +4791,7 @@ fields_get(row, col)
 	double d;
 	char *c1, *c2, *c3;
 	PPCODE:
+	// TODO: change this
 
 	column = (Etk_Tree_Col *) SvObj(col, "Etk::Tree::Col");
 
@@ -4818,25 +4811,9 @@ fields_get(row, col)
 				etk_tree_row_fields_get(row, column, &d, NULL);
 				XPUSHs(sv_2mortal(newSVnv(d)));
 				break;
-			case mICONTEXTE:
-				etk_tree_row_fields_get(row, column, &c1, &c2, &c3, NULL);
-				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
-				XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
-				XPUSHs(sv_2mortal(newSVpv(c3, strlen(c3))));
-				break;
-			case mICONTEXTF:
-				etk_tree_row_fields_get(row, column, &c1, &c2, NULL);
-				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
-				XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
-				break;
-			case mIMAGEF:
+			case mIMAGE:
 				etk_tree_row_fields_get(row, column, &c1, NULL);
 				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
-				break;
-			case mIMAGEE:
-				etk_tree_row_fields_get(row, column, &c1, &c2, NULL);
-				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
-				XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
 				break;
 			case mPROGRESSBAR:
 				etk_tree_row_fields_get(row, column, &d, &c1, NULL);
@@ -4857,31 +4834,16 @@ etk_tree_row_first_child_get(row)
       ALIAS:
 	FirstChildGet=1
 
-int
-etk_tree_row_height_get(tree)
-	Etk_Tree *	tree
-      ALIAS:
-	HeightGet=1
-
-void
-etk_tree_row_height_set(tree, row_height)
-	Etk_Tree *	tree
-	int	row_height
-      ALIAS:
-	HeightSet=1
-
 Etk_Tree_Row *
-etk_tree_row_last_child_get(row, walking_through_hierarchy, include_collapsed_children)
+etk_tree_row_last_child_get(row)
 	Etk_Tree_Row *	row
-	Etk_Bool	walking_through_hierarchy
-	Etk_Bool	include_collapsed_children
       ALIAS:
 	LastChildGet=1
 
 void
-etk_tree_row_scroll_to(row, center_the_row)
+etk_tree_row_scroll_to(row, center)
 	Etk_Tree_Row *	row
-	Etk_Bool	center_the_row
+	Etk_Bool	center
       ALIAS:
 	ScrollTo=1
 
@@ -4897,6 +4859,37 @@ etk_tree_row_unselect(row)
       ALIAS:
 	Unselect=1
 
+Etk_Bool
+etk_tree_row_is_selected(row)
+	Etk_Tree_Row *  row
+	ALIAS:
+	IsSelected=1
+
+Etk_Tree *
+etk_tree_row_tree_get(row)
+	Etk_Tree_Row *	row
+	ALIAS:
+	TreeGet=1
+
+Etk_Tree_Row *
+etk_tree_row_parent_get(row)
+	Etk_Tree_Row *	row
+	ALIAS:
+	ParentGet=1
+	
+Etk_Tree_Row *
+etk_tree_row_walk_prev(row, include_folded)
+	Etk_Tree_Row *	row
+	Etk_Bool	include_folded
+	ALIAS:
+	WalkPrev=1
+
+Etk_Tree_Row *
+etk_tree_row_walk_next(row, include_folded)
+	Etk_Tree_Row *	row
+	Etk_Bool	include_folded
+	ALIAS:
+	WalkNext=1
 
 MODULE = Etk::VBox	PACKAGE = Etk::VBox	PREFIX = etk_vbox_
 	

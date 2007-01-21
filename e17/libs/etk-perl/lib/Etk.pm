@@ -18,19 +18,14 @@ END {
 }
 
 
-package Etk::Tree;
+package Etk::Tree::Col;
 
-sub ColNew {
-	my ($tree, $title, $model, $width) = @_;
-	my $col = col_new($tree, $title, $model, $width);
-	push @{$tree->{_COLS}}, $col;
-	return $col;
-}
+sub model_add { &ModelAdd; }
 
-sub NthColGet {
-	my $self = shift;
-	my $nth = shift || 0;
-	return $self->{_COLS}->[$nth];
+sub ModelAdd {
+	my ($col, $model) = @_;
+	XS_etk_tree_col_model_add($col, $model);
+	push @{$col->{_models}}, $model->{_model};
 }
 
 

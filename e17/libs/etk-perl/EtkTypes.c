@@ -52,6 +52,9 @@ SV * newSVObj(void *object, char * classname)
 	sv_bless(result, gv_stashpv(classname, FALSE));
 	SvREFCNT_dec(h);
 
+#ifdef DEBUG
+	printf("\t>> Object (%p)\n", result);
+#endif
 	return result;
 
 }

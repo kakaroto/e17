@@ -426,207 +426,88 @@ sub tree_window_show
 {
     my $win = Etk::Window->new();
     $win->TitleSet("Etk-Perl Tree Test");
-    my $table = Etk::Table->new(2, 3, 0);
-    my $label = Etk::Label->new("<h1>Tree:</h1>");
-    
-    $table->Attach($label, 0, 0, 0, 0, 0, 0, 
-	HFill | VFill);
+    $win->Resize(440, 500);
+
+    my $vbox = Etk::VBox->new(0, 0);
+    $win->Add($vbox);
     
     my $tree = Etk::Tree->new();
-    $tree->SizeRequestSet(320, 400);
-    $table->AttachDefault($tree, 0, 0, 1, 1);
     $tree->ModeSet(ModeTree);
     $tree->MultipleSelectSet(1);
-    $tree->Freeze();
+
+    $tree->PaddingSet(5, 5, 5, 5);
     
-    my $col1 = $tree->ColNew("Column 1", Etk::Tree::Model::IconText->new($tree, FromEdje), 90);
-    my $col2 = $tree->ColNew("Column 2", Etk::Tree::Model::Double->new($tree), 60);
-    my $col3 = $tree->ColNew("Column 3", Etk::Tree::Model::Image->new($tree, FromFile), 60);
-    my $col4 = $tree->ColNew("Column 4", Etk::Tree::Model::Checkbox->new($tree), 40);
+    $vbox->Append($tree, BoxStart, BoxExpandFill, 0);
+    
+    my $col1 = $tree->ColNew("Column 1", 130, 0.0);
+#    $col1->ModelAdd(new Etk::Tree::Model::Image);
+    $col1->ModelAdd(new Etk::Tree::Model::Text);
+
+    my $col2 = $tree->ColNew("Column 2", 60, 1.0);
+    $col2->ModelAdd(new Etk::Tree::Model::Double);
+
+    my $col3 = $tree->ColNew("Column 3", 60, 0.0);
+    $col3->ModelAdd(new Etk::Tree::Model::Image);
+
+    my $col4 = $tree->ColNew("Column 4", 60, 0.5);
+    $col4->ModelAdd(new Etk::Tree::Model::Checkbox);
+
+  #  $tree->SignalConnect("row_clicked",  sub {
+#	my $self = shift;
+#	my $row = shift;
+#	my $event = shift;
+	# fields get.
+
+ #   });
 
     $col4->SignalConnect("cell_value_changed", 
 	sub {
 		my $self = shift;
 		my $row = shift;
 
-		if ($row->FieldsGet($self)) {
-			print "Checkbox activated\n";
-		} else {
-			print "Checkbox deactivated\n";
-		}
+#		if ($row->FieldsGet($self)) {
+#			print "Checkbox activated\n";
+#		} else {
+#			print "Checkbox deactivated\n";
+#		}
 	}
     );
 
     $tree->Build();
+    
+    $tree->Freeze();
 
     for(my $i = 0; $i < 1000; $i++)
     {
-	my $row = $tree->Append();
-	$row->FieldsSet($col1, Etk::Theme::IconGet(), "places/user-home_16", "Row1");
-	$row->FieldsSet($col2, 10);
-	$row->FieldsSet($col3, "images/1star.png");
+	my $row = $tree->RowAppend();
 
-	my $row2 = $row->AppendToRow();
-	$row2->FieldsSet($col1, Etk::Theme::IconGet(), "places/folder_16", "Row2");
-	$row2->FieldsSet($col2, 20);
-	$row2->FieldsSet($col3, "images/2stars.png");
+	$row->FieldsSet(0, $col1, # Etk::Theme::IconGet(), 
+#		Etk::Stock::KeyGet(PlacesUserHome, SizeSmall), 
+		"Row " . (($i*3)+1));
+	$row->FieldsSet(0, $col2, 10.0);
+	$row->FieldsSet(0, $col3, "images/1star.png");
+	$row->FieldsSet(0, $col4, 0);
 
-	my $row3 = $row2->AppendToRow();
-	$row3->FieldsSet($col1, Etk::Theme::IconGet(), "mimetypes/text-x-generic_16", "Row3");
-	$row3->FieldsSet($col2, 30);
-	$row3->FieldsSet($col3, "images/3stars.png");
+	my $row2 = $tree->RowAppend($row);
+	$row2->FieldsSet(0, $col1, "Row " . (($i*3)+2));
+	$row2->FieldsSet(0, $col2, 20.0);
+	$row2->FieldsSet(0, $col3, "images/2stars.png");
+	$row2->FieldsSet(0, $col4, 1);
+
+	my $row3 = $tree->RowAppend($row2);
+	$row3->FieldsSet(0, $col1, "Row " . (($i*3)+3));
+	$row3->FieldsSet(0, $col2, 30.0);
+	$row3->FieldsSet(0, $col3, "images/3stars.png");
+	$row3->FieldsSet(0, $col4, 1);
+
     }
+
     $tree->Thaw();
+
+    my $status = Etk::StatusBar->new();
+    $vbox->Append($status, BoxStart, BoxFill, 0);
     
-    $label = Etk::Label->new("<h1>List:</h1>");
-    $table->Attach($label, 1, 1, 0, 0, 0, 0, HFill | VFill);
-    
-    $tree = Etk::Tree->new();
-    $tree->SizeRequestSet(320, 400);
-    $table->AttachDefault($tree, 1, 1, 1, 1);
-    $tree->ModeSet(ModeList);
-    $tree->MultipleSelectSet(1);
-    $tree->Freeze();
-    
-    $col1 = $tree->ColNew("Column 1", Etk::Tree::Model::IconText->new($tree, FromFile), 90);
-    $col2 = $tree->ColNew("Column 2", Etk::Tree::Model::Int->new($tree), 90);
-    $col3 = $tree->ColNew("Column 3", Etk::Tree::Model::Image->new($tree, FromFile), 90);
-
-    my @cols = ($col1, $col2, $col3);
-
-
-    $tree->Build();        
-    tree_add_items($tree, 500, @cols);
-
-    $tree->SignalConnect("row_selected", 
-    	sub {
-		my $self = shift;
-		my $row = shift;
-		my $col = $tree->NthColGet(0);
-		my @fields = $row->FieldsGet($col);
-
-		print "Row selected: ", join " ", @fields, "\n";
-	}
-	);
-
-    $tree->SignalConnect("row_unselected", sub { print "Row unselected\n" } );
-
-    $tree->SignalConnect("row_activated", 
-    	sub {
-		my $self = shift;
-		my $row = shift;
-		
-		print "Row activated: ", 
-			$row->FieldsGet($tree->NthColGet(0)), " ",
-			$row->FieldsGet($tree->NthColGet(1)), " ",
-			$row->FieldsGet($tree->NthColGet(2)), "\n";
-	}
-	);
-    
-    my $frame = Etk::Frame->new("List Actions");
-    $table->Attach($frame, 0, 1, 2, 2, 0, 0, HFill | VFill);
-    my $hbox = Etk::HBox->new(1, 10);
-
-    $frame->Add($hbox); 
-    
-    my $button;
-    $button = Etk::Button->new("Clear");
-    $button->SignalConnect("clicked", sub { $tree->Clear() });
-    $hbox->Append($button, BoxStart, BoxExpandFill);
-
-    $button = Etk::Button->new("Add 5 rows");
-    $button->SignalConnect("clicked", sub { tree_add_items($tree, 5, @cols) });
-    $hbox->Append($button, BoxStart, BoxExpandFill);
-
-    $button = Etk::Button->new("Add 50 rows");
-    $button->SignalConnect("clicked", sub { tree_add_items($tree, 50, @cols) });
-    $hbox->Append($button, BoxStart, BoxExpandFill);
-
-    $button = Etk::Button->new("Add 500 rows");
-    $button->SignalConnect("clicked", sub { tree_add_items($tree, 500, @cols) });
-    $hbox->Append($button, BoxStart, BoxExpandFill);
-
-    $button = Etk::Button->new("Add 5000 rows");
-    $button->SignalConnect("clicked", sub { tree_add_items($tree, 5000, @cols) });
-    $hbox->Append($button, BoxStart, BoxExpandFill);
-
-    
-    my $ascendant = 1;
-
-    $button = Etk::Button->new("Sort");
-    
-    $button->SignalConnect("clicked",
-	sub {
-	    #$tree->Sort(\&tree_col2_compare_cb, $ascendant, $col2, undef);   
-	    $tree->SortNumeric($ascendant, $col2, undef);
-	    $ascendant = !$ascendant;
-	}
-    );
-    $hbox->Append($button, BoxStart, BoxExpandFill);    
-    
-    $win->Add($table);
     $win->ShowAll();
-}
-
-sub tree_col2_compare_cb
-{
-    my $tree = shift;
-    my $row1 = shift;
-    my $row2 = shift;
-    my $col = shift;
-    my $data = shift;
-    
-    my $v1 = $row1->FieldIntGet($col);
-    my $v2 = $row2->FieldIntGet($col);
-    
-    if ($v1 < $v2)
-    {
-	return -1;
-    }
-    elsif ($v1 > $v2)
-    {
-	return 1;
-    }
-    else
-    {
-	return 0;
-    }
-    
-    return 1;
-}
-
-sub tree_add_items
-{
-    my $tree = shift;
-    my $n = shift;
-    my ($col1, $col2, $col3) = @_;
-    
-    $tree->Freeze();
-    for my $i (0 ..  $n)
-    {
-	my $row_name = "Row$i";
-	my $star_path = "";
-	if($i % 3 ==0)
-	{
-	    $star_path = "images/1star.png";
-	} elsif($i % 3 == 1)
-	{
-	    $star_path = "images/2stars.png";
-	} else
-	{
-	    $star_path = "images/3stars.png";
-	}
-	my $rand_value =int( rand(10000));
-
-        
-	my $row = $tree->Append();
-	$row->FieldsSet($col1, "images/1star.png", $row_name);
-	$row->FieldsSet($col2, $rand_value);
-	$row->FieldsSet($col3, $star_path);
-
-    }
-    $tree->Thaw();
-	
 }
 
 sub menu_window_show

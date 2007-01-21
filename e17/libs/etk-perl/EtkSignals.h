@@ -54,7 +54,8 @@ struct _Callback_Timer_Data
 
 
 
-SV * GetSignalEvent(Etk_Object * object, void * value, Callback_Signal_Data * cbd);
+SV * GetSignalEvent_POINTER(Etk_Object * object, void * value, Callback_Signal_Data * cbd);
+void GetSignalEvent_POINTER_POINTER(Etk_Object * object, void * val1, void * val2, Callback_Signal_Data * cbd, SV ** obj, SV ** event);
 	 
 
 #endif

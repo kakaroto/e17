@@ -3,7 +3,7 @@
 
 
 
-SV * GetSignalEvent(Etk_Object * object, void * value, Callback_Signal_Data * cbd) {
+SV * GetSignalEvent_POINTER(Etk_Object * object, void * value, Callback_Signal_Data * cbd) {
 
    HV *event_hv;
    SV *event_rv;
@@ -54,4 +54,15 @@ SV * GetSignalEvent(Etk_Object * object, void * value, Callback_Signal_Data * cb
 
 }
 
+void GetSignalEvent_POINTER_POINTER(Etk_Object * object, void * val1, void * val2, Callback_Signal_Data * cbd, SV **obj, SV **event) {
+
+   if(!strcmp(cbd->signal_name, "row_clicked"))
+     {
+        Etk_Tree_Row * row = val1;
+	Etk_Event_Key_Up *key_event = val2;
+	*obj = newSVObj(row, getClass("Etk_Tree_Row"));
+	*event = newSVEventKeyUp(key_event);
+     }
+
+}
 
