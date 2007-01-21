@@ -6,37 +6,37 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tclock\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-12 18:44+0200\n"
-"PO-Revision-Date: 2006-05-21 10:21+0200\n"
+"POT-Creation-Date: 2007-01-21 10:58+0100\n"
+"PO-Revision-Date: 2007-01-21 11:05+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:40
+#: e_mod_config.c:42
 msgid "Tclock Configuration"
 msgstr "Configurazione di Tclock"
 
-#: e_mod_config.c:86
-msgid "Date"
-msgstr "Data"
+#: e_mod_config.c:85
+msgid "Top"
+msgstr "Riga superiore"
 
-#: e_mod_config.c:88
-msgid "Show Date"
-msgstr "Mostra data"
+#: e_mod_config.c:87
+msgid "Show Top Line"
+msgstr "Mostra riga superiore"
 
-#: e_mod_config.c:98 e_mod_config.c:114
+#: e_mod_config.c:95 e_mod_config.c:109
 msgid "Consult strftime(3) for format syntax"
 msgstr "Consulta strftime(3) per sintassi formato"
 
-#: e_mod_config.c:102
-msgid "Time"
-msgstr "Ora"
+#: e_mod_config.c:99
+msgid "Bottom"
+msgstr "Riga inferiore"
 
-#: e_mod_config.c:104
-msgid "Show Time"
-msgstr "Mostra ora"
+#: e_mod_config.c:101
+msgid "Show Bottom Line"
+msgstr "Mostra riga inferiore"
 
 #: e_mod_main.c:127
 msgid "TClock"

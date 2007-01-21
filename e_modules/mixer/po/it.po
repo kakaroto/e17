@@ -6,46 +6,63 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mixer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-12 19:53+0200\n"
-"PO-Revision-Date: 2006-10-12 19:44+0200\n"
+"POT-Creation-Date: 2007-01-21 10:58+0100\n"
+"PO-Revision-Date: 2007-01-21 11:01+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:49
+#: e_mod_config.c:52
 msgid "Mixer Configuration"
 msgstr "Configurazione di Mixer"
 
-#: e_mod_config.c:98
+#: e_mod_config.c:103
 msgid "Mixer Application"
 msgstr "Applicazione mixer"
 
-#: e_mod_config.c:99
+#: e_mod_config.c:104
 msgid "Launch Mixer App"
 msgstr "Lancia applicazione"
 
-#: e_mod_config.c:114
+#: e_mod_config.c:119
 msgid "Available Cards"
 msgstr "Schede disponibili"
 
-#: e_mod_config.c:134
+#: e_mod_config.c:139
 msgid "Available Mixers"
 msgstr "Controlli disponibili"
 
-#: e_mod_main.c:164 e_mod_main.c:518
+#: e_mod_config.c:154
+msgid "Mixer Popup"
+msgstr "Popup di Mixer"
+
+#: e_mod_config.c:155
+msgid "Show Popup"
+msgstr "Mostra popup"
+
+#: e_mod_config.c:157
+msgid "Popup Speed"
+msgstr "Velocità popup"
+
+#: e_mod_config.c:159
+#, c-format
+msgid "%1.1f seconds"
+msgstr "%1.1f secondi"
+
+#: e_mod_main.c:179 e_mod_main.c:611
 msgid "Mixer"
 msgstr "Mixer"
 
-#: e_mod_main.c:519
+#: e_mod_main.c:612
 msgid "Mixer module lets you change volume."
 msgstr "Il modulo Mixer consente di cambiare il volume"
 
-#: e_mod_main.c:640
+#: e_mod_main.c:733 e_mod_main.c:1174
 msgid "Volume"
 msgstr "Volume"
 
-#: e_mod_main.c:662
+#: e_mod_main.c:755
 msgid "Mute"
 msgstr "Muto"
