@@ -29,6 +29,7 @@ Evas_List *visible_elements = NULL;
 Evas_List *visible_elements_get() {
   return visible_elements;
 }
+
 void bg_setup(Etk_Canvas *canvas)
 {
    Evas_Object *o;
@@ -74,10 +75,8 @@ void bg_setup(Etk_Canvas *canvas)
 void canvas_resize_cb(Etk_Object *canvas, const char *property_name, void *data)
 {
    Evas *evas;
-   Evas_List *l;
    Evas_Coord x, y, w, h;
    Evas_Coord xx, yy, ww, hh;
-   Evas_Coord dx, dy, dw, dh;
 
    evas = etk_widget_toplevel_evas_get(ETK_WIDGET(canvas));
    if (!evas) return;
@@ -93,28 +92,6 @@ void canvas_resize_cb(Etk_Object *canvas, const char *property_name, void *data)
    evas_object_resize(o_shadow, w, h);
    evas_object_move(o_shadow, x, y);
    evas_object_image_fill_set(o_shadow, 0, 0, w, h);
-
-   for (l = visible_elements; l; l = l->next)
-     {
-	Demo_Edje *de;
-	Evas_Coord nx, ny, nw, nh;
-
-	de = l->data;
-
-	evas_object_geometry_get(de->image, &dx, &dy, &dw, &dh);
-
-	nx = de->cx - dx;
-	ny = de->cy - dy;
-	nw = de->cw - dw;
-	nh = de->ch - dh;
-
-	dx = x + nx;
-	dy = y + ny;
-	dw = w + nw;
-	dh = h + nh;
-
-/*        edje_move_resize(de, dx, dy, dw, dh);*/
-     }
 }
 
 void list_entries(const char *file, Etk_Tree *tree,
@@ -191,7 +168,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
 
    o = evas_object_rectangle_add(evas);
    etk_canvas_object_add(canvas, o);
-   evas_object_color_set(o, 255, 255, 255, 0);
+   evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, top_down_cb, de);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP,   top_up_cb, de);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_MOVE, top_move_cb, de);
@@ -200,7 +177,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
 
    o = evas_object_rectangle_add(evas);
    etk_canvas_object_add(canvas, o);
-   evas_object_color_set(o, 255, 255, 255, 0);
+   evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, 
 	 bottom_down_cb, de);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP,  
@@ -211,7 +188,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
 
    o = evas_object_rectangle_add(evas);
    etk_canvas_object_add(canvas, o);
-   evas_object_color_set(o, 255, 255, 255, 0);
+   evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
 	 bottom_down_cb, de);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP,  
@@ -222,7 +199,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Canvas *canvas,
 
    o = evas_object_rectangle_add(evas);
    etk_canvas_object_add(canvas, o);
-   evas_object_color_set(o, 255, 255, 255, 0);
+   evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
 	 bottom_down_cb, de);
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP,  
