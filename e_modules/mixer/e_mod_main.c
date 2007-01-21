@@ -492,13 +492,15 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, mode, INT);
    E_CONFIG_VAL(D, T, app, STR);
    E_CONFIG_VAL(D, T, use_app, INT);
+   E_CONFIG_VAL(D, T, show_popup, INT);
+   E_CONFIG_VAL(D, T, popup_speed, DOUBLE);
 
    conf_edd = E_CONFIG_DD_NEW("Mixer_Config", Config);
 #undef T
 #undef D
 #define T Config
 #define D conf_edd
-      E_CONFIG_VAL(D, T, decrease_vol_key.context, INT);
+   E_CONFIG_VAL(D, T, decrease_vol_key.context, INT);
    E_CONFIG_VAL(D, T, decrease_vol_key.modifiers, INT);
    E_CONFIG_VAL(D, T, decrease_vol_key.key, STR);
    E_CONFIG_VAL(D, T, decrease_vol_key.action, STR);
@@ -534,6 +536,8 @@ e_modapi_init(E_Module *m)
 	ci->mode = SIMPLE_MODE;
 	ci->app = evas_stringshare_add("");
 	ci->use_app = 0;
+	ci->show_popup = 1;
+	ci->popup_speed = 2.0;
 	mixer_config->items = evas_list_append(mixer_config->items, ci);
      }
    mixer_register_module_actions();
@@ -1156,7 +1160,7 @@ _mixer_window_gauge_pop_up(Instance *inst)
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
 
    ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-   if (!ci) return;
+   if (!ci && !ci->show_popup) return;
 
    if (!(win = inst->mixer->gauge_win))
      {
@@ -1194,7 +1198,7 @@ _mixer_window_gauge_pop_up(Instance *inst)
    
    if (win->timer) ecore_timer_del(win->timer);
 
-   win->timer = ecore_timer_add(3.0, _mixer_window_gauge_visible_cb, win);
+   win->timer = ecore_timer_add(ci->popup_speed, _mixer_window_gauge_visible_cb, win);
 }
 
 static void

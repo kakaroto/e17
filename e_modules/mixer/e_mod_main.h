@@ -29,6 +29,9 @@ struct _Config_Item
 	
    const char *app;
    int         use_app;
+      
+   int    show_popup;
+   double popup_speed;
 };
 
 EAPI extern E_Module_Api e_modapi;

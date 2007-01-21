@@ -9,9 +9,12 @@ struct _E_Config_Dialog_Data
    int card_id;
    int channel_id;
    int mode;
-	
+
    char *app;
    int use_app;
+   
+   int show_popup;
+   double popup_speed;
 };
 
 /* Protos */
@@ -58,6 +61,8 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
    cfdata->channel_id = ci->channel_id;
    cfdata->mode = ci->mode;
    cfdata->use_app = ci->use_app;
+   cfdata->show_popup = ci->show_popup;
+   cfdata->popup_speed = ci->popup_speed;
    if (ci->app != NULL)
      cfdata->app = strdup(ci->app);
 }
@@ -146,6 +151,15 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	       }
 	  }	
      }
+   ot = e_widget_frametable_add(evas, D_("Mixer Popup"), 1);
+   ob = e_widget_check_add(evas, D_("Show Popup"), &(cfdata->show_popup));
+   e_widget_frametable_object_append(ot, ob, 0, 0, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_label_add(evas, D_("Popup Speed"));
+   e_widget_frametable_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.1f seconds"), 0.1, 9.9, 0.1, 0, &(cfdata->popup_speed), NULL, 160);
+   e_widget_frametable_object_append(ot, ob, 0, 2, 1, 1, 1, 0, 1, 0);
+
+   e_widget_list_object_append(o, ot, 1, 1, 0.5);
    
    return o;
 }
@@ -161,6 +175,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->channel_id = cfdata->channel_id;
    ci->mode = cfdata->mode;
    ci->use_app = cfdata->use_app;
+   ci->show_popup = cfdata->show_popup;
+   ci->popup_speed = cfdata->popup_speed;
    if (ci->app) evas_stringshare_del(ci->app);
    if (cfdata->app != NULL)
      ci->app = evas_stringshare_add(cfdata->app);
