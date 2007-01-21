@@ -98,6 +98,7 @@ ewl_io_manager_plugin_uri_read(const char *uri)
 		char *str;
 
 		ret = ewl_text_new();
+		ewl_text_font_set(EWL_TEXT(ret), "ewl/monospace");
 
 		stat(uri, &buf);
 		str = malloc(sizeof(char) * (buf.st_size + 1));
@@ -123,6 +124,7 @@ ewl_io_manager_plugin_string_read(const char *string)
 		setup_hash();
 
 	ret = ewl_text_new();
+	ewl_text_font_set(EWL_TEXT(ret), "ewl/monospace");
 	text_set(EWL_TEXT(ret), string);
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);

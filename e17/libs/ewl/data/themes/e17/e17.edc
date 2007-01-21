@@ -4,6 +4,10 @@ fonts
 	font, "fonts/DejaVuSerif-Bold.ttf" "ewl/default/bold";
 	font, "fonts/DejaVuSerif-Oblique.ttf" "ewl/default/italic";
 	font, "fonts/DejaVuSerif-BoldOblique.ttf" "ewl/default/bold-italic";
+	font, "fonts/DejaVuSansMono.ttf" "ewl/monospace";
+	font, "fonts/DejaVuSansMono-Bold.ttf" "ewl/monospace/bold";
+	font, "fonts/DejaVuSansMono-Oblique.ttf" "ewl/monospace/italic";
+	font, "fonts/DejaVuSansMono-BoldOblique.ttf" "ewl/monospace/bold-italic";
 }
 
 collections 

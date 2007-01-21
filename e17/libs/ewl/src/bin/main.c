@@ -887,6 +887,7 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 				}
 
 				ewl_text_color_set(tutorial, 32, 71, 109, 255);
+				ewl_text_font_set(tutorial, "ewl/monospace");
 				start = end;
 			}
 			else if (!strncasecmp(end, "@endcode", 8))
