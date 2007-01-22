@@ -7,6 +7,7 @@
 typedef struct Ewl_Tree2_Branch_Cache Ewl_Tree2_Branch_Cache;
 struct Ewl_Tree2_Branch_Cache
 {
+	Ewl_Model *model;
 	int row_count;
 	void *data;
 };
@@ -109,19 +110,18 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 
 /**
  * @param tree: The Ewl_Tree to append the column too
- * @param model: The model to use for this column
  * @param view: The view to use for this column
  * @return Returns no value.
  * @brief Append a new column to the tree
  */
 void
-ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
+ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_View *view, 
+				unsigned int sortable)
 {
 	Ewl_Tree2_Column *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("model", model);
 	DCHECK_PARAM_PTR("view", view);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
@@ -132,9 +132,9 @@ ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	ewl_tree2_column_model_set(c, model);
 	ewl_tree2_column_view_set(c, view);
 	ewl_tree2_column_mvc_set(c, EWL_MVC(tree));
+	ewl_tree2_column_sortable_set(c, sortable);
 
 	ecore_list_append(tree->columns, c);
 	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
@@ -144,19 +144,18 @@ ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 
 /**
  * @param tree: The Ewl_Tree to prepend the column too
- * @param model: The model to use for this column
  * @param view: The view to use for this column
  * @return Returns no value.
  * @brief Prepend a new column to the tree
  */
 void
-ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
+ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_View *view, 
+				unsigned int sortable)
 {
 	Ewl_Tree2_Column *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("model", model);
 	DCHECK_PARAM_PTR("view", view);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
@@ -167,9 +166,9 @@ ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	ewl_tree2_column_model_set(c, model);
 	ewl_tree2_column_view_set(c, view);
 	ewl_tree2_column_mvc_set(c, EWL_MVC(tree));
+	ewl_tree2_column_sortable_set(c, sortable);
 
 	ecore_list_prepend(tree->columns, c);
 	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
@@ -179,21 +178,19 @@ ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view)
 
 /**
  * @param tree: The Ewl_Tree to insert the column into
- * @param model: The model to use for this column
  * @param view: The view to use for this column
  * @param idx: The index to insert into 
  * @return Returns no value.
  * @brief Insert a new column into the tree
  */
 void
-ewl_tree2_column_insert(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view, 
-							unsigned int idx)
+ewl_tree2_column_insert(Ewl_Tree2 *tree, Ewl_View *view, unsigned int idx,
+						unsigned int sortable)
 {
 	Ewl_Tree2_Column *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("model", model);
 	DCHECK_PARAM_PTR("view", view);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
@@ -204,9 +201,9 @@ ewl_tree2_column_insert(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	ewl_tree2_column_model_set(c, model);
 	ewl_tree2_column_view_set(c, view);
 	ewl_tree2_column_mvc_set(c, EWL_MVC(tree));
+	ewl_tree2_column_sortable_set(c, sortable);
 
 	ecore_list_goto_index(tree->columns, idx);
 	ecore_list_insert(tree->columns, c);
@@ -361,6 +358,8 @@ ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree)
  * @param tree: The tree to work with
  * @return Returns the widget that contains the tree rows
  * @brief Retrieves the widget containing the tree rows
+ *
+ * XXX This is a badly named function. Too close to the MVC view name
  */
 Ewl_Widget *
 ewl_tree2_view_widget_get(Ewl_Tree2 *tree)
@@ -569,6 +568,8 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 								void *data)
 {
 	Ewl_Tree2_Column *c, *col;
+	Ewl_MVC *mvc;
+	Ewl_Model *model;
 	int index = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -576,22 +577,25 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	c = data;
 
+	mvc = ewl_tree2_column_mvc_get(c);
+	model = ewl_mvc_model_get(mvc);
+
 	/* sanity check */
-	if (!c->model || !c->model->sort)
+	if (!model || !model->sort)
 	{
 		DWARNING("In ewl_tree2_cb_column_sort without a sort cb.");
 		DRETURN(DLEVEL_STABLE);
 	}
 
 	/* loop over the columns and reset the sort settings */
-	ecore_list_goto_first(EWL_TREE2(c->parent)->columns);
-	while ((col = ecore_list_next(EWL_TREE2(c->parent)->columns)))
+	ecore_list_goto_first(EWL_TREE2(mvc)->columns);
+	while ((col = ecore_list_next(EWL_TREE2(mvc)->columns)))
 	{
 		/* skip the current column */
 		if (col == c)
 		{
 			/* we're the index before the one we're now on */
-			index = ecore_list_index(EWL_TREE2(c->parent)->columns) - 1;
+			index = ecore_list_index(EWL_TREE2(mvc)->columns) - 1;
 			continue;
 		}
 
@@ -603,8 +607,8 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	c->sort = ((c->sort + 1) % EWL_SORT_DIRECTION_MAX);
 	if (!c->sort) c->sort ++;
 
-	c->model->sort(ewl_mvc_data_get(c->parent), index, c->sort);
-	ewl_mvc_dirty_set(c->parent, TRUE);
+	model->sort(ewl_mvc_data_get(mvc), index, c->sort);
+	ewl_mvc_dirty_set(mvc, TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -637,6 +641,7 @@ static void
 ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, int column)
 {
 	Ewl_Widget *h, *c;
+	Ewl_Model *model;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -651,12 +656,14 @@ ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, i
 		DRETURN(DLEVEL_STABLE);
 	}
 
+	model = ewl_mvc_model_get(EWL_MVC(tree));
+
 	h = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 	ewl_widget_appearance_set(h, "header");
 	ewl_widget_show(h);
 
-	if (col->model->sort)
+	if (col->sortable)
 		ewl_callback_append(h, EWL_CALLBACK_CLICKED, 
 					ewl_tree2_cb_column_sort, col);
 
@@ -666,7 +673,7 @@ ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, i
 	ewl_container_child_append(EWL_CONTAINER(h), c);
 
 	/* display the sort arrow if needed */
-	if (col->model->sort)
+	if (col->sortable)
 	{
 		char *state_str;
 
@@ -691,8 +698,8 @@ ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, i
 }
 
 static void
-ewl_tree2_column_build(Ewl_Row *row, Ewl_Tree2_Column *col, void *mvc_data, 
-						int r, int c, Ewl_Widget *node)
+ewl_tree2_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view, 
+				void *mvc_data, int r, int c, Ewl_Widget *node)
 {
 	Ewl_Widget *cell;
 	Ewl_Widget *child;
@@ -700,7 +707,8 @@ ewl_tree2_column_build(Ewl_Row *row, Ewl_Tree2_Column *col, void *mvc_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("row", row);
-	DCHECK_PARAM_PTR("col", col);
+	DCHECK_PARAM_PTR("model", model);
+	DCHECK_PARAM_PTR("view", view);
 	DCHECK_TYPE("row", row, EWL_ROW_TYPE);
 
 	cell = ewl_cell_new();
@@ -711,7 +719,7 @@ ewl_tree2_column_build(Ewl_Row *row, Ewl_Tree2_Column *col, void *mvc_data,
 				ewl_tree2_cb_cell_clicked, node);
 	ewl_widget_show(cell);
 
-	val = col->model->fetch(mvc_data, r, c);
+	val = model->fetch(mvc_data, r, c);
 	if (!val)
 	{
 		child = ewl_label_new();
@@ -719,8 +727,8 @@ ewl_tree2_column_build(Ewl_Row *row, Ewl_Tree2_Column *col, void *mvc_data,
 	}
 	else
 	{
-		child = col->view->construct();
-		col->view->assign(child, val);
+		child = view->construct();
+		view->assign(child, val);
 	}
 	ewl_container_child_append(EWL_CONTAINER(cell), child);
 	ewl_widget_show(child);
@@ -732,8 +740,9 @@ static void
 ewl_tree2_build_tree(Ewl_Tree2 *tree)
 {
 	Ewl_Tree2_Column *col;
-	int column = 0, rows = 0;
+	int column = 0;
 	void *mvc_data;
+	Ewl_Model *model;
 	Ewl_Tree2_Branch_Cache *head;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -741,25 +750,21 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
 	mvc_data = ewl_mvc_data_get(EWL_MVC(tree));
+	model = ewl_mvc_model_get(EWL_MVC(tree));
 
 	/* setup the headers */
 	ewl_container_reset(EWL_CONTAINER(tree->header));
 	ecore_list_goto_first(tree->columns);
 	while ((col = ecore_list_next(tree->columns)))
 	{
-		int r;
-
 		ewl_tree2_header_build(tree, col, mvc_data, column);
-
-		r = col->model->count(mvc_data);
-		if (r > rows) rows = r;
-
 		column ++;
 	}
 
 	head = NEW(Ewl_Tree2_Branch_Cache, 1);
-	head->row_count = rows;
+	head->row_count = model->count(mvc_data);
 	head->data = mvc_data;
+	head->model = model;
 
 	ewl_container_reset(EWL_CONTAINER(tree->rows));
 	ewl_tree2_build_tree_rows(tree, head, 0, tree->rows, FALSE);
@@ -786,10 +791,11 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch,
 		node = ewl_tree2_node_new();
 		EWL_TREE2_NODE(node)->tree = EWL_WIDGET(tree);
 		EWL_TREE2_NODE(node)->row_num = i;
+		EWL_TREE2_NODE(node)->model = curbranch->model;
+		EWL_TREE2_NODE(node)->data = curbranch->data;
 
 		ewl_container_child_append(EWL_CONTAINER(parent), node);
-		if (!hidden)
-			ewl_widget_show(node);
+		if (!hidden) ewl_widget_show(node);
 
 		row = ewl_row_new();
 		ewl_row_header_set(EWL_ROW(row), EWL_ROW(tree->header));
@@ -811,49 +817,51 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch,
 		ecore_list_goto_first(tree->columns);
 		while((col = ecore_list_next(tree->columns)))
 		{
-			ewl_tree2_column_build(EWL_ROW(row), col, 
+			ewl_tree2_column_build(EWL_ROW(row),
+					curbranch->model, col->view,
 					curbranch->data, i, column, node);
 			column ++;
 		}
 
 		/* check if this is an expansion point */
 		col = ecore_list_goto_first(tree->columns);
-		if (col && col->model->expandable &&
-				col->model->expandable(curbranch->data, i))
+		if (col && curbranch->model->expansion.is &&
+				curbranch->model->expansion.is(curbranch->data, i))
 		{
 			Ewl_Tree2_Branch_Cache *tmp;
 			int hidden = TRUE;
 
-			if (!col->model->expansion_data)
+			if (!curbranch->model->expansion.data)
 			{
-				DWARNING("In ewl_tree2_build_tree_rows, model expandable but without expansion_data_fetch cb.");
+				DWARNING("In ewl_tree2_build_tree_rows, "
+					"model expandable but without "
+					"expansion_data_fetch cb.");
 				DRETURN(DLEVEL_STABLE);
 			}
 
 			tmp = NEW(Ewl_Tree2_Branch_Cache, 1);
-			tmp->data = col->model->expansion_data(curbranch->data, i);
+			tmp->data = curbranch->model->expansion.data(
+						curbranch->data, i);
 			tmp->row_count = 0;
+			if (curbranch->model->expansion.model)
+				tmp->model =
+					curbranch->model->expansion.model(
+							curbranch->data, i);
 
-			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), curbranch->data);
+			if (!tmp->model)
+				tmp->model = curbranch->model;
 
-			if (col->model->expansion_data &&
+			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), 
+								curbranch->data);
+
+			if (curbranch->model->expansion.data &&
 				ewl_tree2_row_expanded_is(tree, curbranch->data, i))
 			{
 				ewl_tree2_node_expand(EWL_TREE2_NODE(node));
 				hidden = FALSE;
 			}
 
-			/* XXX probably need a better way to do this? */
-			ecore_list_goto_first(tree->columns);
-			while ((col = ecore_list_next(tree->columns)))
-			{
-				int r;
-				r = col->model->count(tmp->data);
-				if (r > tmp->row_count) tmp->row_count = r;
-
-				column ++;
-			}
-
+			tmp->row_count = tmp->model->count(tmp->data);
 			ewl_tree2_build_tree_rows(tree, tmp, colour, node, hidden);
 			FREE(tmp);
 		}
@@ -901,7 +909,7 @@ static void
 ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Tree2 *tree;
-	int row;
+	Ewl_Tree2_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -911,10 +919,10 @@ ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	if (tree->type != EWL_TREE_SELECTION_TYPE_ROW)
 		DRETURN(DLEVEL_STABLE);
 
-	row = ewl_container_child_index_get(EWL_CONTAINER(tree->rows), 
-							EWL_WIDGET(data));
-	ewl_mvc_handle_click(EWL_MVC(tree), ewl_mvc_data_get(EWL_MVC(tree)),
-				row, -1);
+	node = data;
+	ewl_mvc_handle_click(EWL_MVC(tree), node->model,
+				node->data,
+				node->row_num, -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -924,7 +932,8 @@ ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Row *row;
 	Ewl_Tree2 *tree;
-	int r, column;
+	Ewl_Tree2_Node *node;
+	int column;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -935,12 +944,12 @@ ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	if (tree->type != EWL_TREE_SELECTION_TYPE_CELL)
 		DRETURN(DLEVEL_STABLE);
 
-	r = ewl_container_child_index_get(EWL_CONTAINER(tree->rows), 
-						EWL_WIDGET(data));
+	node = data;
 	column = ewl_container_child_index_get(EWL_CONTAINER(row), w);
 
-	ewl_mvc_handle_click(EWL_MVC(tree), ewl_mvc_data_get(EWL_MVC(tree)),
-			r, column);
+	ewl_mvc_handle_click(EWL_MVC(tree), node->model,
+			node->data, node->row_num, 
+			column);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1011,7 +1020,6 @@ ewl_tree2_column_destroy(Ewl_Tree2_Column *c)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 
-	c->model = NULL;
 	c->view = NULL;
 	c->parent = NULL;
 	c->sort = EWL_SORT_DIRECTION_NONE;
@@ -1019,38 +1027,6 @@ ewl_tree2_column_destroy(Ewl_Tree2_Column *c)
 	FREE(c);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param c: The column to work with
- * @param m: The model to set
- * @return Returns no value
- * @brief Sets the given model @a m into the column @a c
- */
-void
-ewl_tree2_column_model_set(Ewl_Tree2_Column *c, Ewl_Model *m)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("m", m);
-
-	c->model = m;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param c: The column to work with
- * @return Returns the model for the column
- * @brief Retrieves the model for the given column
- */
-Ewl_Model * 
-ewl_tree2_column_model_get(Ewl_Tree2_Column *c)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, NULL);
-
-	DRETURN_PTR(c->model, DLEVEL_STABLE);
 }
 
 /**
@@ -1117,6 +1093,37 @@ ewl_tree2_column_mvc_get(Ewl_Tree2_Column *c)
 	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, NULL);
 
 	DRETURN_PTR(c->parent, DLEVEL_STABLE);
+}
+
+/**
+ * @param c: The column to work with
+ * @param sortable: The sortable flag to set
+ * @return Returns no value
+ * @brief Sets the sortable flag of column @a c to @a sortable
+ */
+void
+ewl_tree2_column_sortable_set(Ewl_Tree2_Column *c, unsigned int sortable)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	c->sortable = !!sortable;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param c: The column to work with
+ * @return Returns TRUE if the column is sortable, FALSE otherwise
+ * @brief Retrieves the sort flag for the column @a c
+ */
+unsigned int
+ewl_tree2_column_sortable_get(Ewl_Tree2_Column *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, FALSE);
+
+	DRETURN_INT(c->sortable, DLEVEL_STABLE);
 }
 
 /**
@@ -1226,11 +1233,7 @@ ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, void *data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("node", node);
 
-	if (node->data == data)
-		DRETURN(DLEVEL_STABLE);
-
-	node->data = data;
-	if (data)
+	if (data && !node->handle)
 	{
 		node->handle = ewl_check_new();
 		ewl_object_fill_policy_set(EWL_OBJECT(node->handle),
@@ -1242,7 +1245,7 @@ ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, void *data)
 						ewl_tree2_cb_node_toggle, node);
 		ewl_widget_show(node->handle);
 	}
-	else if (node->handle)
+	else if (node->handle && !data)
 	{
 		ewl_widget_destroy(node->handle);
 		node->handle = NULL;
@@ -1347,11 +1350,13 @@ ewl_tree2_node_expanded_is(Ewl_Tree2_Node *node)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("node", node, FALSE);
 
-	DRETURN_INT(((node->expanded == EWL_TREE_NODE_EXPANDED) ? TRUE : FALSE), DLEVEL_STABLE);
+	DRETURN_INT(((node->expanded == EWL_TREE_NODE_EXPANDED) ? TRUE : FALSE), 
+								DLEVEL_STABLE);
 }
 
 void
-ewl_tree2_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data __UNUSED__)
+ewl_tree2_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
+						void *user_data __UNUSED__)
 {
 	Ewl_Tree2_Node *node;
 	Ewl_Container *c;

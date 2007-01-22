@@ -102,42 +102,19 @@ struct Ewl_Tree2
 	unsigned char headers_visible:1; /**< Are the headers visible? */
 };
 
-/**
- * @def EWL_TREE2_COLUMN
- * Typecasts a pointer to an Ewl_Tree2_Column pointer.
- */
-#define EWL_TREE2_COLUMN(c) ((Ewl_Tree2_Column *)c)
-
-/**
- * The Ewl_Tree2_Column type
- */
-typedef struct Ewl_Tree2_Column Ewl_Tree2_Column;
-
-/**
- * Holdes the model and view to use for this column in the tree
- */
-struct Ewl_Tree2_Column
-{
-	Ewl_Model *model;	/**< The model for the column */
-	Ewl_View  *view;	/**< The view for the column */
-	
-	Ewl_MVC *parent;	/**< The mvc this column is for */
-	Ewl_Sort_Direction sort; /**< direction the column is sorted in */
-};
-
 /*
  * Tree view/controller manipulation
  */
 Ewl_Widget 	*ewl_tree2_new(void);
 int 		 ewl_tree2_init(Ewl_Tree2 *tree);
 
-void		 ewl_tree2_column_append(Ewl_Tree2 *t, Ewl_Model *m, 
-							Ewl_View *v);
-void		 ewl_tree2_column_prepend(Ewl_Tree2 *t, Ewl_Model *m, 
-							Ewl_View *v);
-void		 ewl_tree2_column_insert(Ewl_Tree2 *t, Ewl_Model *m, 
-							Ewl_View *v, 
-							unsigned int idx);
+void		 ewl_tree2_column_append(Ewl_Tree2 *t, Ewl_View *v, 
+						unsigned int sortable);
+void		 ewl_tree2_column_prepend(Ewl_Tree2 *t, Ewl_View *v,
+						unsigned int sortable);
+void		 ewl_tree2_column_insert(Ewl_Tree2 *t, Ewl_View *v, 
+							unsigned int idx,
+							unsigned int sortable);
 void		 ewl_tree2_column_remove(Ewl_Tree2 *t, unsigned int idx);
 
 void		 ewl_tree2_headers_visible_set(Ewl_Tree2 *tree,
@@ -171,17 +148,43 @@ void ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev, void *data);
 /*
  * Ewl_Tree2_Column stuff
  */
+
+/**
+ * @def EWL_TREE2_COLUMN
+ * Typecasts a pointer to an Ewl_Tree2_Column pointer.
+ */
+#define EWL_TREE2_COLUMN(c) ((Ewl_Tree2_Column *)c)
+
+/**
+ * The Ewl_Tree2_Column type
+ */
+typedef struct Ewl_Tree2_Column Ewl_Tree2_Column;
+
+/**
+ * Holdes the model and view to use for this column in the tree
+ */
+struct Ewl_Tree2_Column
+{
+	Ewl_View *view;		 /**< The view for the column */
+	
+	Ewl_MVC *parent;	 /**< The mvc this column is for */
+	Ewl_Sort_Direction sort; /**< direction the column is sorted in */
+
+	unsigned char sortable:1; /**< Is this column sortable */
+};
+
 Ewl_Tree2_Column	*ewl_tree2_column_new(void);
 void			 ewl_tree2_column_destroy(Ewl_Tree2_Column *c);
-
-void			 ewl_tree2_column_model_set(Ewl_Tree2_Column *c, Ewl_Model *m);
-Ewl_Model 		*ewl_tree2_column_model_get(Ewl_Tree2_Column *c);
 
 void			 ewl_tree2_column_view_set(Ewl_Tree2_Column *c, Ewl_View *v);
 Ewl_View		*ewl_tree2_column_view_get(Ewl_Tree2_Column *c);
 
 void			 ewl_tree2_column_mvc_set(Ewl_Tree2_Column *c, Ewl_MVC *mvc);
 Ewl_MVC 		*ewl_tree2_column_mvc_get(Ewl_Tree2_Column *c);
+
+void			 ewl_tree2_column_sortable_set(Ewl_Tree2_Column *c, 
+							unsigned int sortable);
+unsigned int 		 ewl_tree2_column_sortable_get(Ewl_Tree2_Column *c);
 
 void			 ewl_tree2_column_sort_direction_set(Ewl_Tree2_Column *c, 
 								Ewl_Sort_Direction sort);
@@ -201,6 +204,7 @@ struct Ewl_Tree2_Node
 	Ewl_Widget *row;		/**< The row this node is for */
 	Ewl_Widget *handle;		/**< the expansion handle */
 
+	Ewl_Model *model;		/**< The model used to make this row */
 	void *data;			/**< The data that this nodes row comes from */
 	unsigned int row_num;		/**< The row number of this row */
 	Ewl_Tree_Node_Flags expanded;
@@ -227,8 +231,6 @@ void ewl_tree2_cb_node_resize(Ewl_Container *c, Ewl_Widget *w, int size,
                                                      Ewl_Orientation o);
 void ewl_tree2_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_tree2_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
-
-
 
 /**
  * @}

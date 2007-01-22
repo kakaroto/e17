@@ -108,12 +108,7 @@ ewl_filelist_tree_init(Ewl_Filelist_Tree *fl)
 	data = NEW(Ewl_Filelist_Tree_Data, 1);
 	data->list = fl;
 
-	fl->tree = ewl_tree2_new();
-	ewl_container_child_append(EWL_CONTAINER(fl), fl->tree);
-	ewl_mvc_data_set(EWL_MVC(fl->tree), data);
-	ewl_widget_show(fl->tree);
-
-	/* Setup the columns model, by default only one column */
+	/* Setup the tree model */
 	model = ewl_model_new();
 	ewl_model_count_set(model, ewl_filelist_tree_data_count);
 	ewl_model_fetch_set(model, ewl_filelist_tree_data_fetch);
@@ -122,8 +117,14 @@ ewl_filelist_tree_init(Ewl_Filelist_Tree *fl)
 	ewl_model_expansion_data_fetch_set(model,
 			ewl_filelist_tree_data_expansion_data_fetch);
 
+	fl->tree = ewl_tree2_new();
+	ewl_container_child_append(EWL_CONTAINER(fl), fl->tree);
+	ewl_mvc_data_set(EWL_MVC(fl->tree), data);
+	ewl_mvc_model_set(EWL_MVC(fl->tree), model);
+	ewl_widget_show(fl->tree);
+
 	view = ewl_label_view_get();
-	ewl_tree2_column_append(EWL_TREE2(fl->tree), model, view);
+	ewl_tree2_column_append(EWL_TREE2(fl->tree), view, TRUE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

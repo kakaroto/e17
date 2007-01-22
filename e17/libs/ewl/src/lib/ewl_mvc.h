@@ -35,6 +35,8 @@ typedef struct Ewl_Selection Ewl_Selection;
 struct Ewl_Selection
 {
 	Ewl_Selection_Type type;	/**< The type of selection */
+	Ewl_Model *model;		/**< The model to work with this
+								selection */
 	void *highlight;		/**< highlight widgets for the MVC */
 	void *data;			/**< Data containing the selection */
 };
@@ -144,20 +146,25 @@ void		 ewl_mvc_selected_clear(Ewl_MVC *mvc);
 void		 ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list);
 Ecore_List	*ewl_mvc_selected_list_get(Ewl_MVC *mvc);
 
-void		 ewl_mvc_selected_range_add(Ewl_MVC *mvc, void *data,
+void		 ewl_mvc_selected_range_add(Ewl_MVC *mvc, Ewl_Model * model, 
+						void *data,
 						int srow, int scolumn,
 						int erow, int ecolumn);
 
-void		 ewl_mvc_selected_set(Ewl_MVC *mvc, void *data, int row, int column);
-void		 ewl_mvc_selected_add(Ewl_MVC *mvc, void *data, int row, int column);
+void		 ewl_mvc_selected_set(Ewl_MVC *mvc, Ewl_Model *model, 
+					void *data, int row, int column);
+void		 ewl_mvc_selected_add(Ewl_MVC *mvc, Ewl_Model *model, 
+					void *data, int row, int column);
 Ewl_Selection_Idx *ewl_mvc_selected_get(Ewl_MVC *mvc);
 void		 ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data, int row, int column);
 
 int		 ewl_mvc_selected_count_get(Ewl_MVC *mvc);
 unsigned int	 ewl_mvc_selected_is(Ewl_MVC *mvc, void *data, int row, int column);
 
-Ewl_Selection	*ewl_mvc_selection_index_new(void *data, int row, int column);
-Ewl_Selection	*ewl_mvc_selection_range_new(void *data, int srow, int scolumn,
+Ewl_Selection	*ewl_mvc_selection_index_new(Ewl_Model *model, void *data, 
+							int row, int column);
+Ewl_Selection	*ewl_mvc_selection_range_new(Ewl_Model *model, void *data, 
+						int srow, int scolumn,
 						int erow, int ecolumn);
 
 void 		 ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
@@ -172,7 +179,8 @@ void		 ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 
 void		 ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 
-void		 ewl_mvc_handle_click(Ewl_MVC *mvc, void *data, int row, int column);
+void		 ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, 
+					void *data, int row, int column);
 
 /**
  * @}

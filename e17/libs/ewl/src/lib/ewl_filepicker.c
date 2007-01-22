@@ -149,7 +149,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_mvc_model_set(EWL_MVC(fp->type_combo), model);
 	ewl_mvc_view_set(EWL_MVC(fp->type_combo), view);
 	ewl_mvc_data_set(EWL_MVC(fp->type_combo), fp);
-	ewl_mvc_selected_set(EWL_MVC(fp->type_combo), fp, 0, 0);
+	ewl_mvc_selected_set(EWL_MVC(fp->type_combo), NULL, fp, 0, 0);
 	ewl_combo_editable_set(EWL_COMBO(fp->type_combo), TRUE);
 	ewl_callback_append(fp->type_combo, EWL_CALLBACK_VALUE_CHANGED,
 					ewl_filepicker_cb_type_change, fp);

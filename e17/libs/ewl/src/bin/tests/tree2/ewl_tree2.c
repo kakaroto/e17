@@ -995,7 +995,8 @@ create_test(Ewl_Container *box)
 	ewl_model_sort_set(model, tree2_test_data_sort);
 	ewl_model_count_set(model, tree2_test_data_count_get);
 	ewl_model_expandable_set(model, tree2_test_data_expandable_get);
-	ewl_model_expansion_data_fetch_set(model, tree2_test_data_expansion_fetch);
+	ewl_model_expansion_data_fetch_set(model, 
+					tree2_test_data_expansion_fetch);
 
 	tree = ewl_tree2_new();
 	ewl_container_child_append(EWL_CONTAINER(box), tree);
@@ -1003,6 +1004,7 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(tree, EWL_CALLBACK_VALUE_CHANGED,
 					tree2_cb_value_changed, NULL);
 	ewl_mvc_data_set(EWL_MVC(tree), data);
+	ewl_mvc_model_set(EWL_MVC(tree), model);
 	ewl_tree2_row_expand(EWL_TREE2(tree), data, 2);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_MULTI);
 	ewl_widget_name_set(tree, "tree");
@@ -1011,26 +1013,21 @@ create_test(Ewl_Container *box)
 	/* create a view for the first column that just has an ewl label */
 	view = ewl_label_view_get();
 	ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
-	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
+	ewl_tree2_column_append(EWL_TREE2(tree), view, TRUE);
 
 	/* create a view for the second column that just has an ewl image */
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, ewl_image_new);
 	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_image_file_path_set));
 	ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
-	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
-
-	/* we don't want this one sortable */
-	model = ewl_model_new();
-	ewl_model_fetch_set(model, tree2_test_data_fetch);
-	ewl_model_count_set(model, tree2_test_data_count_get);
+	ewl_tree2_column_append(EWL_TREE2(tree), view, TRUE);
 
 	/* create a view for the third column that has a custom widget */
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, tree2_test_custom_new);
 	ewl_view_assign_set(view, tree2_test_custom_assign_set);
 	ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
-	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
+	ewl_tree2_column_append(EWL_TREE2(tree), view, FALSE);
 
 	o3 = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(o2), o3);
@@ -1198,7 +1195,8 @@ tree2_test_data_fetch(void *data, unsigned int row, unsigned int column)
 	 * normal app */
 	if (row >= d->count)
 	{
-		printf("Asking for too many rows %d (count == %d)\n", row, d->count);
+		printf("Asking for too many rows %d (count == %d)\n", 
+							row, d->count);
 		return NULL;
 	}
 
@@ -1252,7 +1250,8 @@ tree2_test_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort)
 				b = d->rows[j]->image;
 			}
 
-			if (((sort == EWL_SORT_DIRECTION_ASCENDING) && strcmp(a, b) > 0)
+			if (((sort == EWL_SORT_DIRECTION_ASCENDING) 
+						&& strcmp(a, b) > 0)
 					|| ((sort == EWL_SORT_DIRECTION_DESCENDING) 
 						&& strcmp(a, b) < 0))
 			{
@@ -1378,10 +1377,24 @@ tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	{
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)
 		{
+			char *val;
+			int col;
 			Ewl_Selection_Idx *idx;
-
+		
 			idx = EWL_SELECTION_IDX(sel);
-			printf("    %d %d\n", idx->row, idx->column);
+			col = idx->column;
+			if (col == -1) col = 0;
+
+			if (col != 3)
+				val = sel->model->fetch(sel->data, idx->row, col);
+			else
+			{
+				Tree2_Test_Row_Data *d;
+				d = sel->model->fetch(sel->data, idx->row, col);
+				val = d->text;
+			}
+
+			printf("    [%d,%d] %s\n", idx->row, idx->column, val);
 		}
 		else
 		{
@@ -1393,7 +1406,21 @@ tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 			{
 				for (k = idx->start.column; k <=
 							idx->end.column; k++)
-					printf("    %d %d\n", i, k);
+				{
+					char *val;
+
+					if (k != 3)
+						val = sel->model->fetch(sel->data, 
+									i, k);
+					else
+					{
+						Tree2_Test_Row_Data *d;
+						d = sel->model->fetch(sel->data, 
+									i, k);
+						val = d->text;
+					}
+					printf("    [%d,%d] %s\n", i, k, val);
+				}
 			}
 		}
 	}

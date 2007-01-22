@@ -90,7 +90,7 @@ selected_set(char *buf, int len)
 	t = ewl_tree2_new();
 	m = EWL_MVC(t);
 
-	ewl_mvc_selected_set(m, ewl_mvc_data_get(m), 1, 2);
+	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 1, 2);
 	idx = ecore_list_goto_first(m->selected);
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_INDEX)
@@ -119,10 +119,10 @@ selected_get(char *buf, int len)
 	t = ewl_tree2_new();
 	m = EWL_MVC(t);
 
-	ewl_mvc_selected_set(m, ewl_mvc_data_get(m), 6, 8);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 3, 0);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 9, 1);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 1, 2);
+	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 3, 0);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 9, 1);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 1, 2);
 	idx = ewl_mvc_selected_get(m);
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_INDEX)
@@ -150,7 +150,7 @@ selected_range_single_add(char *buf, int len)
 	t = ewl_tree2_new();
 	m = EWL_MVC(t);
 
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 	idx = ecore_list_goto_first(m->selected);
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_INDEX)
@@ -179,7 +179,7 @@ selected_range_multi_add(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 	idx = ecore_list_goto_first(m->selected);
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_RANGE)
@@ -214,11 +214,11 @@ selected_count_get(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_set(m, ewl_mvc_data_get(m), 6, 8);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 3, 0);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 9, 1);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 1, 2);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 3, 0);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 9, 1);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	count = ewl_mvc_selected_count_get(m);
 	if (count != expected)
@@ -240,7 +240,7 @@ selected_is_index(char *buf, int len)
 	t = ewl_tree2_new();
 	m = EWL_MVC(t);
 
-	ewl_mvc_selected_set(m, ewl_mvc_data_get(m), 6, 8);
+	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
 
 	if (!ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 6, 8))
 	{
@@ -260,7 +260,7 @@ selected_is_not_index(char *buf, int len)
 	t = ewl_tree2_new();
 	m = EWL_MVC(t);
 
-	ewl_mvc_selected_set(m, ewl_mvc_data_get(m), 6, 8);
+	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
 
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 7, 7))
 	{
@@ -281,7 +281,7 @@ selected_is_range(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	if (!ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 4, 5))
 	{
@@ -302,7 +302,7 @@ selected_is_not_range(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 1))
 	{
@@ -323,11 +323,11 @@ selected_clear(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_set(m, ewl_mvc_data_get(m), 6, 8);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 3, 0);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 9, 1);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 1, 2);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 3, 0);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 9, 1);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 	ewl_mvc_selected_clear(m);
 
 	if (ewl_mvc_selected_count_get(m) != 0)
@@ -349,11 +349,11 @@ selected_rm_idx(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_set(m, ewl_mvc_data_get(m), 6, 8);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 3, 0);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 9, 1);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 1, 2);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 3, 0);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 9, 1);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 9, 1);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 9, 1))
@@ -375,11 +375,11 @@ selected_rm_unselected_idx(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_set(m, ewl_mvc_data_get(m), 6, 8);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 3, 0);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 9, 1);
-	ewl_mvc_selected_add(m, ewl_mvc_data_get(m), 1, 2);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 3, 0);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 9, 1);
+	ewl_mvc_selected_add(m, NULL, ewl_mvc_data_get(m), 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 10, 2);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 10, 2))
@@ -402,7 +402,7 @@ selected_rm_2x1_bottom(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 1, 1, 2, 1);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 1, 1, 2, 1);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 2, 1);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 2, 1))
@@ -437,7 +437,7 @@ selected_rm_2x1_top(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 1, 1, 2, 1);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 1, 1, 2, 1);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 1);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 1))
@@ -472,7 +472,7 @@ selected_rm_1x2_left(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 1, 1, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 1, 1, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 1);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 1))
@@ -507,7 +507,7 @@ selected_rm_1x2_right(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 1, 1, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 1, 1, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 2);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 2))
@@ -542,7 +542,7 @@ selected_rm_from_range_top_left_point(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 2);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 2))
@@ -581,7 +581,7 @@ selected_rm_from_range_bottom_right_point(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 6, 8);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 6, 8))
@@ -620,7 +620,7 @@ selected_rm_from_range_middle_point(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 4, 5);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 4, 5))
@@ -670,7 +670,7 @@ selected_rm_from_range_left_edge_point(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 4, 2);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 4, 2))
@@ -715,7 +715,7 @@ selected_rm_from_range_right_edge_point(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 3, 8);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 3, 8))
@@ -760,7 +760,7 @@ selected_rm_from_range_top_edge_point(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 5);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 5))
@@ -805,7 +805,7 @@ selected_rm_from_range_bottom_edge_point(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
-	ewl_mvc_selected_range_add(m, ewl_mvc_data_get(m), 6, 8, 1, 2);
+	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
 
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 6, 3);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 6, 3))

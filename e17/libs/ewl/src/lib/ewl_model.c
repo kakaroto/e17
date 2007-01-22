@@ -93,69 +93,6 @@ ewl_model_fetch_get(Ewl_Model *m)
 }
 
 /**
- * @param m: The model to set the callback on
- * @param exp: The expandable callback
- * @return Returns no value
- * @brief Sets the expandable callback on the given model
- */
-void
-ewl_model_expandable_set(Ewl_Model *m, Ewl_Model_Expandable exp)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
-
-	m->expandable = exp;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param m: The model to get the expandable callback from
- * @return Returns the expandable callback set on the model
- * @brief Retrieves the expandable callback set on the model
- */
-Ewl_Model_Expandable
-ewl_model_expandable_get(Ewl_Model *m)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
-
-	DRETURN_PTR(m->expandable, DLEVEL_STABLE);
-}
-
-/**
- * @param m: The Ewl_Model to set the expansion_data callback into
- * @param get: The Ewl_Model_Expansion_Data_Fetch callback for subrows
- * @return Returns no value.
- * @brief Sets the subfetch callback into the model
- */
-void
-ewl_model_expansion_data_fetch_set(Ewl_Model *m, 
-				Ewl_Model_Expansion_Data_Fetch get)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
-
-	m->expansion_data = get;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param m: The Ewl_Model to get the expansion_data callback from
- * @return Returns the Ewl_Model_Expansion_Data_Fetch for the model
- * @brief Gets the expansion_data callback from the model
- */
-Ewl_Model_Expansion_Data_Fetch
-ewl_model_expansion_data_fetch_get(Ewl_Model *m)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
-
-	DRETURN_INT(m->expansion_data, DLEVEL_STABLE);
-}
-
-/**
  * @param m: The Ewl_Model to set the sort callback on
  * @param sort: The sort callback to set
  * @return Returns no value.
@@ -216,6 +153,101 @@ ewl_model_count_get(Ewl_Model *m)
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
 	DRETURN_INT(m->count, DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The model to set the callback on
+ * @param exp: The expandable callback
+ * @return Returns no value
+ * @brief Sets the expandable callback on the given model
+ */
+void
+ewl_model_expandable_set(Ewl_Model *m, Ewl_Model_Expandable exp)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->expansion.is = exp;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The model to get the expandable callback from
+ * @return Returns the expandable callback set on the model
+ * @brief Retrieves the expandable callback set on the model
+ */
+Ewl_Model_Expandable
+ewl_model_expandable_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+
+	DRETURN_PTR(m->expansion.is, DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The Ewl_Model to set the expansion_data callback into
+ * @param get: The Ewl_Model_Expansion_Data_Fetch callback for subrows
+ * @return Returns no value.
+ * @brief Sets the subfetch callback into the model
+ */
+void
+ewl_model_expansion_data_fetch_set(Ewl_Model *m, 
+				Ewl_Model_Expansion_Data_Fetch get)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->expansion.data = get;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The Ewl_Model to get the expansion_data callback from
+ * @return Returns the Ewl_Model_Expansion_Data_Fetch for the model
+ * @brief Gets the expansion_data callback from the model
+ */
+Ewl_Model_Expansion_Data_Fetch
+ewl_model_expansion_data_fetch_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+
+	DRETURN_INT(m->expansion.data, DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The model to work with
+ * @param f: The model expansion model fetch callback
+ * @return Returns no value
+ * @brief Sets the model expansion model fetch callback to @a f
+ */
+void
+ewl_model_expansion_model_fetch_set(Ewl_Model *m, 
+				Ewl_Model_Expansion_Model_Fetch f)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->expansion.model = f;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The model to work with
+ * @return Returns the model expansion model fetch function
+ * @brief Retrieves the model expansion model fetch function
+ */
+Ewl_Model_Expansion_Model_Fetch
+ewl_model_expansion_model_fetch_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+
+	DRETURN_PTR(m->expansion.model, DLEVEL_STABLE);
 }
 
 /**
