@@ -113,6 +113,8 @@ const char         *version_string = "0.0.0";
 #define INCLUDE_LEN_FUDGE 0
 #endif
 
+#define USE_FILE_NAME_MAPS 0
+
 /* Symbols to predefine.  */
 
 #ifdef CPP_PREDEFINES
@@ -5377,6 +5379,8 @@ struct file_name_map
    char               *map_to;
 };
 
+#if USE_FILE_NAME_MAPS
+
 #define FILE_NAME_MAP_FILE "header.gcc"
 
 /* Read a space delimited string of unlimited length from a stdio
@@ -5569,6 +5573,19 @@ open_include_file(cpp_reader * pfile, char *filename,
 
    return open(filename, O_RDONLY, 0666);
 }
+
+#else
+
+static int
+open_include_file(cpp_reader * pfile, char *filename,
+		  struct file_name_list *searchptr)
+{
+   pfile = NULL;
+   searchptr = NULL;
+   return open(filename, O_RDONLY, 0666);
+}
+
+#endif /* USE_FILE_NAME_MAPS */
 
 /* Process the contents of include file FNAME, already open on descriptor F,
  * with output to OP.
