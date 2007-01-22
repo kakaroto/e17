@@ -21,17 +21,17 @@ collections
 		  description 
 		    {
 		       state: "default" 0.0;
-		       aspect: 1.0 1.0;
 		       aspect_preference: BOTH;
+		       aspect: 1 1;
 		       rel1 
 			 {
 			    relative: 0.0 0.0;
-			    offset: 2 2;
+			    offset: 0 0;
 			 }
 		       rel2 
 			 {
 			    relative: 1.0 1.0;
-			    offset: -3 -3;
+			    offset: 0 0;
 			 }
 		       image 
 			 {
