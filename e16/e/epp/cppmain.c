@@ -27,6 +27,8 @@
 #include "config.h"
 #include "cpplib.h"
 
+#define EPP_DEBUG 0
+
 cpp_reader          parse_in;
 cpp_options         options;
 
@@ -37,6 +39,8 @@ main(int argc, char **argv)
    int                 i;
    int                 argi = 1;	/* Next argument to handle. */
    struct cpp_options *opts = &options;
+   enum cpp_token      kind;
+   int                 got_text;
 
    p = argv[0] + strlen(argv[0]);
 #ifndef __EMX__
@@ -68,20 +72,63 @@ main(int argc, char **argv)
    else if (!freopen(opts->out_fname, "w", stdout))
       cpp_pfatal_with_name(&parse_in, opts->out_fname);
 
-   for (;;)
+   got_text = 0;
+   for (i = 0;; i++)
      {
-	enum cpp_token      kind;
+	kind = cpp_get_token(&parse_in);
+#if EPP_DEBUG
+	fprintf(stderr, "%03d: kind=%d len=%d out=%d text=%d\n", i,
+		kind, CPP_WRITTEN(&parse_in), !opts->no_output, got_text);
+#endif
+	switch (kind)
+	  {
+	  case CPP_EOF:
+	     goto done;
 
+	  case CPP_HSPACE:
+	     continue;
+
+	  case CPP_VSPACE:
+	     if (!got_text)
+		goto next;
+	     break;
+
+	  default:
+	  case CPP_OTHER:
+	  case CPP_NAME:
+	  case CPP_NUMBER:
+	  case CPP_CHAR:
+	  case CPP_STRING:
+	  case CPP_LPAREN:
+	  case CPP_RPAREN:
+	  case CPP_LBRACE:
+	  case CPP_RBRACE:
+	  case CPP_COMMA:
+	  case CPP_SEMICOLON:
+	  case CPP_3DOTS:
+	     got_text = 1;
+	     continue;
+
+	  case CPP_COMMENT:
+	  case CPP_DIRECTIVE:
+	  case CPP_POP:
+	     continue;
+	  }
+#if EPP_DEBUG
+	fprintf(stderr, "'");
+	fwrite(parse_in.token_buffer, 1, CPP_WRITTEN(&parse_in), stderr);
+	fprintf(stderr, "'\n");
+#endif
 	if (!opts->no_output)
 	  {
 	     fwrite(parse_in.token_buffer, 1, CPP_WRITTEN(&parse_in), stdout);
 	  }
+      next:
 	parse_in.limit = parse_in.token_buffer;
-	kind = cpp_get_token(&parse_in);
-	if (kind == CPP_EOF)
-	   break;
+	got_text = 0;
      }
 
+ done:
    cpp_finish(&parse_in);
 
    if (parse_in.errors)
