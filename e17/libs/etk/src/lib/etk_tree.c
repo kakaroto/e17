@@ -2842,6 +2842,11 @@ static void _etk_tree_row_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, voi
          etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL], ETK_OBJECT(row_object->row->tree),
             NULL, row_object->row, &event);
       }
+      if (event.flags == ETK_MOUSE_DOUBLE_CLICK)
+      {
+         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL], ETK_OBJECT(row_object->row->tree),
+            NULL, row_object->row, &event);
+      }
    }
 }
 
