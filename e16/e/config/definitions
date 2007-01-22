@@ -3,6 +3,8 @@
 /* This file determines keyword values and conveience macros for E */
 /* This file is sourced for every file E has to parse              */
 /*******************************************************************/
+#ifndef __E16_DEFINITIONS__
+#define __E16_DEFINITIONS__
 
 /* section begin/end stuff */
 #define __BGN 999
@@ -967,3 +969,5 @@ __END
 
 /*********** Directory definition macros **************************/
 #define E_SCRIPTS_DIR ENLIGHTENMENT_ROOT/scripts/
+
+#endif /* __E16_DEFINITIONS__ */
