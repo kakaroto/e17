@@ -615,16 +615,12 @@ _ss_exe_cb_exit (void *data, int type, void *event)
   Config_Item *ci;
   char buf[4096];
 
-  ev = event;
-  if (!ev->exe)
-    return 1;
-  x = ev->exe;
-  if (!x)
-    return 1;
-
-  inst = ecore_exe_data_get (x);
-  x = NULL;
-  inst->exe = NULL;
+   ev = event;
+   if (!ev->exe) return 1;
+   inst = data;
+   if (ev->exe != inst->exe) return 1;
+   if (inst->exe) inst->exe = NULL;
+   
   if (inst->filename)
     evas_stringshare_del (inst->filename);
   if (ss_config->exe_exit_handler)
@@ -633,8 +629,9 @@ _ss_exe_cb_exit (void *data, int type, void *event)
   ci = _ss_config_item_get (inst->gcc->id);
   if ((ci->use_app) && (ci->app != NULL))
     {
-      snprintf (buf, sizeof (buf), "%s %s", ci->app, inst->filename);
-      x = ecore_exe_run (buf, NULL);
+       snprintf (buf, sizeof (buf), "%s %s", ci->app, inst->filename);
+       x = ecore_exe_run (buf, NULL);
+       if (x) ecore_exe_free(x);
     }
   return 0;
 }
@@ -682,8 +679,6 @@ _ss_take_shot (void *data)
   snprintf (buf, sizeof (buf), "%s %s %s/%s", cmd, opt, ci->location, 
 	    inst->filename);
    
-  ss_config->exe_exit_handler =
-    ecore_event_handler_add (ECORE_EXE_EVENT_DEL, _ss_exe_cb_exit, NULL);
   if (ci->delay_time > 0)
     {
       msg = malloc (sizeof (Edje_Message_Int_Set) + 1 * sizeof (int));
@@ -694,6 +689,8 @@ _ss_take_shot (void *data)
       free (msg);
       msg = NULL;
     }
+  ss_config->exe_exit_handler =
+    ecore_event_handler_add (ECORE_EXE_EVENT_DEL, _ss_exe_cb_exit, inst);
   inst->exe = ecore_exe_run (buf, inst);
 }
 
