@@ -6,8 +6,8 @@ require 'rbconfig'
 
 class RubyEFLSetup
     BINDINGS = {
-        :etk     => { :cvs => '../etk/src/lib',         :sys => 'src/lib' }, 
-        :enhance => { :cvs => '../enhance/src/lib',     :sys => 'src/lib' }, 
+        :etk     => { :cvs => '../../libs/etk/src/lib',         :sys => 'src/lib' }, 
+        :enhance => { :cvs => '../../libs/enhance/src/lib',     :sys => 'src/lib' }, 
         :ewl     => { :cvs => '../../libs/ewl/src/lib', :sys => 'src/lib' }, 
     }
 
