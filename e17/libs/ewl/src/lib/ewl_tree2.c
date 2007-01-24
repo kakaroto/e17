@@ -761,6 +761,9 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 		column ++;
 	}
 
+	if (!model)
+		DRETURN(DLEVEL_STABLE);
+
 	head = NEW(Ewl_Tree2_Branch_Cache, 1);
 	head->row_count = model->count(mvc_data);
 	head->data = mvc_data;
