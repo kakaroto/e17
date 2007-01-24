@@ -106,7 +106,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 			etk_tree_clear(ETK_TREE(view->list));
 			ecore_list_goto_first(list);
 			while ( (object = ecore_list_next(list))) {
-				etk_tree_append(ETK_TREE(view->list),
+				etk_tree_row_append(ETK_TREE(view->list), NULL,
 						col1, object->key,
 						col2, object->value,
 						NULL);
@@ -151,6 +151,7 @@ entropy_gui_component_instance *
 entropy_plugin_gui_instance_new (entropy_core * core,
 		     entropy_gui_component_instance * layout, void* parent_visual, void *data)
 {
+  Etk_Tree_Col *col_tree;
   _etk_meta_plugin* view = entropy_malloc(sizeof(_etk_meta_plugin));
   entropy_gui_component_instance *instance = entropy_gui_component_instance_new ();
   instance->layout_parent = layout;
@@ -168,10 +169,10 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   view->list = etk_tree_new();
   etk_tree_mode_set(ETK_TREE(view->list), ETK_TREE_MODE_LIST);
   
-  etk_tree_col_new(ETK_TREE(view->list), _("Keyword"), 
-		  etk_tree_model_text_new(ETK_TREE(view->list)), 80);
-  etk_tree_col_new(ETK_TREE(view->list), _("Value"), 
-		  etk_tree_model_text_new(ETK_TREE(view->list)), 200);
+  col_tree = etk_tree_col_new(ETK_TREE(view->list), _("Keyword"), 80, 0.0);
+	etk_tree_col_model_add(col_tree, etk_tree_model_text_new());
+  col_tree = etk_tree_col_new(ETK_TREE(view->list), _("Value"), 200, 0.0);
+	etk_tree_col_model_add(col_tree, etk_tree_model_text_new());
   etk_tree_build(ETK_TREE(view->list));
   etk_container_add(ETK_CONTAINER(view->window), view->list);
   

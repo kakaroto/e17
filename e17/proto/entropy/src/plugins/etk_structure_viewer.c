@@ -16,7 +16,7 @@ struct entropy_etk_file_structure_viewer
   entropy_core *ecore;		/*A reference to the core object passed from init */
   //Etk_Row *current_row;
   Etk_Widget *tree;
-  Etk_Tree2_Col* tree_col1;
+  Etk_Tree_Col* tree_col1;
   Etk_Widget* parent_visual; 
 
   Ecore_Hash* row_hash;
@@ -67,8 +67,8 @@ static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *ev
 {
    Etk_Event_Selection_Request *ev;   
    Etk_Selection_Data_Files *files;
-   Etk_Tree2* tree;
-   Etk_Tree2_Row* row;
+   Etk_Tree* tree;
+   Etk_Tree_Row* row;
    int i;
    entropy_etk_file_structure_viewer* viewer;
    entropy_gui_component_instance* instance;
@@ -79,8 +79,8 @@ static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *ev
    
    ev = event;
    files = ev->data;
-   tree = ETK_TREE2(object);
-   //row = etk_tree2_selected_row_get(tree);
+   tree = ETK_TREE(object);
+   //row = etk_tree_selected_row_get(tree);
 
    instance = ecore_hash_get(instance_map_hash, row);
    if (instance) {
@@ -123,7 +123,7 @@ static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *ev
    }
 }
 
-static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree2_Row *row, Etk_Event_Mouse_Down *event, void *data)
+static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Down *event, void *data)
 {
    entropy_gui_component_instance* instance;
    entropy_etk_file_structure_viewer* viewer;
@@ -139,7 +139,7 @@ static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree2_Row 
    printf("Post\n");
    
    instance = ecore_hash_get(instance_map_hash, row);
-   etk_tree2_row_select(row);
+   etk_tree_row_select(row);
    if (instance) {
 	   viewer = instance->data;
 	   e_event = ecore_hash_get(viewer->row_hash, row);
@@ -162,28 +162,28 @@ static void _etk_structure_viewer_row_clicked(Etk_Object *object, Etk_Tree2_Row 
 
 
 
-Etk_Tree2_Row*
+Etk_Tree_Row*
 structure_viewer_add_row (entropy_gui_component_instance * instance,
-			  entropy_generic_file * file, Etk_Tree2_Row * prow)
+			  entropy_generic_file * file, Etk_Tree_Row * prow)
 {
-  Etk_Tree2_Row* new_row;
+  Etk_Tree_Row* new_row;
   entropy_etk_file_structure_viewer* viewer;
   event_file_core *event;
-  Etk_Tree2_Col* col;
-  Etk_Tree2_Row* parent;
+  Etk_Tree_Col* col;
+  Etk_Tree_Row* parent;
 
   viewer = instance->data;
-  parent = (Etk_Tree2_Row*)viewer->parent_visual;
+  parent = (Etk_Tree_Row*)viewer->parent_visual;
   
-  col = etk_tree2_nth_col_get(ETK_TREE2(parent->tree), 0);
-  etk_tree2_freeze(ETK_TREE2(viewer->tree));
+  col = etk_tree_nth_col_get(ETK_TREE(parent->tree), 0);
+  etk_tree_freeze(ETK_TREE(viewer->tree));
 
   
   if (!prow) {
-	  new_row = etk_tree2_row_append( ((Etk_Tree2_Row*)viewer->parent_visual)->tree, (Etk_Tree2_Row*)viewer->parent_visual, col,
+	  new_row = etk_tree_row_append( ((Etk_Tree_Row*)viewer->parent_visual)->tree, (Etk_Tree_Row*)viewer->parent_visual, col,
 			  PACKAGE_DATA_DIR "/icons/folder.png", NULL, _(file->filename), NULL);
   } else {
-	  new_row = etk_tree2_row_append( ((Etk_Tree2_Row*)prow)->tree, (Etk_Tree2_Row*)prow, col, 
+	  new_row = etk_tree_row_append( ((Etk_Tree_Row*)prow)->tree, (Etk_Tree_Row*)prow, col, 
 			  PACKAGE_DATA_DIR "/icons/folder.png", NULL, _(file->filename), NULL);
   }
 
@@ -199,7 +199,7 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   /*Save this file in this list of files we're responsible for */
   ecore_list_append (viewer->files, event->file);
 
-  etk_tree2_thaw(ETK_TREE2(viewer->tree));
+  etk_tree_thaw(ETK_TREE(viewer->tree));
 
   return new_row;
 }
@@ -215,7 +215,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
   switch (eevent->event_type) {
   	  case ENTROPY_NOTIFY_FILELIST_REQUEST_EXTERNAL:
 	  case ENTROPY_NOTIFY_FILELIST_REQUEST:{
-	      Etk_Tree2_Row* row = NULL;
+	      Etk_Tree_Row* row = NULL;
 	      entropy_generic_file *file;
 	      entropy_generic_file *event_file =
 		((entropy_file_request *) eevent->data)->file;
@@ -256,7 +256,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	      }
 	      
 	      if (row)
-		      etk_tree2_row_select(row);
+		      etk_tree_row_select(row);
 	      
 	      if (row) {
 			ecore_list_goto_first (el);
@@ -279,7 +279,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 				      structure_viewer_add_row (comp, file, row);
 				      ecore_hash_set (viewer->loaded_dirs, row, (int*)1);
 				  }
-				  etk_tree2_row_unfold(row);
+				  etk_tree_row_unfold(row);
 			   }
 			 }
 			  
@@ -292,7 +292,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 						 
 		entropy_generic_file* file = el;
 		entropy_generic_file* parent_file = NULL;
-		Etk_Tree2_Row* row = NULL;
+		Etk_Tree_Row* row = NULL;
 
 		parent_file = entropy_core_parent_folder_file_get(file);
 
@@ -313,11 +313,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 
 	 case ENTROPY_NOTIFY_FILE_REMOVE_DIRECTORY: {
 		entropy_generic_file* file = el;
-		Etk_Tree2_Row* row = NULL;
+		Etk_Tree_Row* row = NULL;
 	
 		row = ecore_hash_get (viewer->row_folder_hash, file);
 		if (row) {
-			etk_tree2_row_delete(row);
+			etk_tree_row_delete(row);
 			ecore_hash_remove(viewer->row_folder_hash, file);
 		}
 		
@@ -395,8 +395,8 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 	  etk_callback_setup = 1;
   }
 
-  if (!ecore_hash_get(tree_map_hash, ((Etk_Tree2_Row*)parent_visual)->tree)) {
-	  etk_signal_connect("row_clicked", ETK_OBJECT( ((Etk_Tree2_Row*)parent_visual)->tree  ), 
+  if (!ecore_hash_get(tree_map_hash, ((Etk_Tree_Row*)parent_visual)->tree)) {
+	  etk_signal_connect("row_clicked", ETK_OBJECT( ((Etk_Tree_Row*)parent_visual)->tree  ), 
 		  ETK_CALLBACK(_etk_structure_viewer_row_clicked), NULL);
 
 
@@ -406,16 +406,16 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 	   int          dnd_types_num; 
 
 	   dnd_types_num = 1;
-	   etk_widget_dnd_types_set(  ETK_WIDGET(((Etk_Tree2_Row*)parent_visual)->tree), 
+	   etk_widget_dnd_types_set(  ETK_WIDGET(((Etk_Tree_Row*)parent_visual)->tree), 
 	   			dnd_types, dnd_types_num);
-	   etk_widget_dnd_dest_set( ETK_WIDGET(((Etk_Tree2_Row*)parent_visual)->tree)  , ETK_TRUE);
+	   etk_widget_dnd_dest_set( ETK_WIDGET(((Etk_Tree_Row*)parent_visual)->tree)  , ETK_TRUE);
 	   
 	   
 	   /*FIXME :: Disabled until migration to tree2 is done*/
-	   /*etk_signal_connect("drag_drop", ETK_OBJECT( ((Etk_Tree2_Row*)parent_visual)->tree  ), 
+	   /*etk_signal_connect("drag_drop", ETK_OBJECT( ((Etk_Tree_Row*)parent_visual)->tree  ), 
 	   			ETK_CALLBACK(_etk_structure_viewer_xdnd_drag_drop_cb), NULL);*/
 
-	   ecore_hash_set(tree_map_hash, ((Etk_Tree2_Row*)parent_visual)->tree, (int*)1);
+	   ecore_hash_set(tree_map_hash, ((Etk_Tree_Row*)parent_visual)->tree, (int*)1);
  
   }
 

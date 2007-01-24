@@ -245,7 +245,7 @@ void etk_mime_dialog_populate_nth_binding_apps(int record)
 	for (l = binding->actions; l; ) {
 		action = l->data;
 
-		row = etk_tree_append(ETK_TREE(tree), 
+		row = etk_tree_row_append(ETK_TREE(tree), NULL,
 		  col1, action->app_description, 
 		  col2,  action->executable,
 		  col3, action->args,
@@ -295,7 +295,7 @@ void etk_mime_dialog_tree_populate()
 	for (l = entropy_core_get_core()->config->Loaded_Config->mime_bindings; l; ) {
 		binding = l->data;
 
-		row = etk_tree_append(ETK_TREE(tree), 
+		row = etk_tree_row_append(ETK_TREE(tree), NULL,
 		  col1, binding->desc, 
 		  col2,  binding->mime_type,
 		  NULL);
@@ -498,11 +498,11 @@ void etk_mime_dialog_create()
 	_etk_mime_dialog_main_tree = tree;
 	
 	etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Description"), 
-		  etk_tree_model_text_new(ETK_TREE(tree)), 125);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Description"), 125, 0.0);
+	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
 
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("MIME Type"), 
-		  etk_tree_model_text_new(ETK_TREE(tree)), 150);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("MIME Type"), 150, 0.0);
+	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
         etk_tree_col_expand_set(tree_col, ETK_TRUE);
 
 	etk_tree_build(ETK_TREE(tree));
@@ -537,14 +537,14 @@ void etk_mime_dialog_create()
 	_etk_mime_dialog_sub_tree = tree;
 	
 	etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Description"), 
-		  etk_tree_model_text_new(ETK_TREE(tree)), 125);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Description"), 125, 0.0);
+	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
 
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Executable"), 
-		  etk_tree_model_text_new(ETK_TREE(tree)), 150);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Executable"),  150, 0.0);
+	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
 
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Arguments"), 
-		  etk_tree_model_text_new(ETK_TREE(tree)), 150);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Arguments"), 150, 0.0);
+	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
 
 	etk_tree_build(ETK_TREE(tree));
 	etk_box_append(ETK_BOX(vbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);

@@ -59,7 +59,7 @@ void etk_file_cache_dialog_refresh(Etk_Widget* tree)
 		  if (listen) {
 			  snprintf(buffer, PATH_MAX, "%s/%s", listen->file->path, listen->file->filename);
 		
-			  etk_tree_append(ETK_TREE(tree), 
+			  etk_tree_row_append(ETK_TREE(tree), NULL,
 			  col1, listen->count, 
 			  col2,   buffer,
 			  NULL);
@@ -100,13 +100,14 @@ void etk_file_cache_dialog_create()
 	etk_box_append(ETK_BOX(vbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	
 	etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Listeners"), 
-		  etk_tree_model_int_new(ETK_TREE(tree)), 125);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Listeners"), 125, 0.0);
+	etk_tree_col_model_add(tree_col, etk_tree_model_int_new());
 
-	etk_tree_col_sort_func_set(tree_col, _entropy_etk_file_cache_dialog_listener_compare_cb, NULL);
+  // Not yet implemented in Tree2
+	//etk_tree_col_sort_func_set(tree_col, _entropy_etk_file_cache_dialog_listener_compare_cb, NULL);
 
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Filename"), 
-		  etk_tree_model_text_new(ETK_TREE(tree)), 150);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Filename"), 150, 0.0);
+	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
         etk_tree_col_expand_set(tree_col, ETK_TRUE);
 
 	etk_tree_build(ETK_TREE(tree));
