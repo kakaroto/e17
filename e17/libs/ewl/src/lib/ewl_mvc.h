@@ -79,7 +79,7 @@ typedef struct Ewl_Selection_Range Ewl_Selection_Range;
  */
 struct Ewl_Selection_Range
 {
-	Ewl_Selection sel;	/**< Inherit from Ewl_Selection */;
+	Ewl_Selection sel;	/**< Inherit from Ewl_Selection */
 
 	struct
 	{
