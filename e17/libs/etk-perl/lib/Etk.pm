@@ -48,6 +48,8 @@ Etk - Perl bindings for the Enlightened ToolKit (Etk)
 
   $button->SignalConnect("clicked", \&clicked_cb);
 
+  Etk::Main::Run();
+
   sub clicked_cb
   {
      print "button clicked!\n";
