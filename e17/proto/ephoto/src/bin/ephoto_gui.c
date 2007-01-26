@@ -2,7 +2,7 @@
 
 /*Ewl Callbacks*/
 static void destroy(Ewl_Widget *w, void *event, void *data);
-static void populate_files(Ewl_Widget *w, void *event, void *data);
+static void populate(Ewl_Widget *w, void *event, void *data);
 static void view_catalog(Ewl_Widget *w, void *event, void *data);
 static void view_image(Ewl_Widget *w, void *event, void *data);
 
@@ -14,11 +14,11 @@ static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_tree(Ewl_Widget *c);
 
 /*Ephoto MVC Callbacks*/
-static Ewl_Widget *directory_view_new(void);
-static void directory_view_assign(Ewl_Widget *w, void *data);
-static Ewl_Widget *directory_header_fetch(void *data, int column);
-static void *directory_data_fetch(void *data, unsigned int row, unsigned int column);
-static int directory_data_count(void *data);
+static Ewl_Widget *album_view_new(void);
+static void album_view_assign(Ewl_Widget *w, void *data);
+static Ewl_Widget *album_header_fetch(void *data, int column);
+static void *album_data_fetch(void *data, unsigned int row, unsigned int column);
+static int album_data_count(void *data);
 
 /*Ephoto Image Manipulation*/
 static void flip_image_horizontal(Ewl_Widget *w, void *event, void *data);
@@ -27,12 +27,12 @@ static void rotate_image_left(Ewl_Widget *w, void *event, void *data);
 static void rotate_image_right(Ewl_Widget *w, void *event, void *data);
 
 /*Ephoto Widget Global Variables*/
-static Ewl_Widget *ftree, *atree, *fbox, *vnb;
-static Ewl_Widget *cvbox, *ivbox, *vimage, *progress;
+static Ewl_Widget *atree, *fbox, *vnb;
+static Ewl_Widget *cvbox, *ivbox, *vimage;
 
 /*Ephoto Ecore Global Variables*/
 static Ecore_Timer *timer;
-static Ecore_List *directories, *images;
+static Ecore_List *albums, *images;
 
 /*Ephoto Current Directory*/
 static char *current_directory;
@@ -102,7 +102,7 @@ static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt)
 	menu = ewl_menu_new();
 	if (txt)
 	{
-		ewl_button_label_set(EWL_BUTTON(menu), S_(txt));
+		ewl_button_label_set(EWL_BUTTON(menu), txt);
 	}
 	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_container_child_append(EWL_CONTAINER(c), menu);
@@ -123,7 +123,7 @@ static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb)
 	}
 	if (txt)
 	{
-		ewl_button_label_set(EWL_BUTTON(menu_item), S_(txt));
+		ewl_button_label_set(EWL_BUTTON(menu_item), txt);
 	}
 	ewl_object_alignment_set(EWL_OBJECT(menu_item), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(menu_item), EWL_FLAG_FILL_ALL);
@@ -145,8 +145,8 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 	Ewl_View *view;
 
 	model = ewl_model_new();
-	ewl_model_fetch_set(model, directory_data_fetch);
-	ewl_model_count_set(model, directory_data_count);
+	ewl_model_fetch_set(model, album_data_fetch);
+	ewl_model_count_set(model, album_data_count);
 
 	tree = ewl_tree2_new();
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
@@ -155,9 +155,9 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 	ewl_widget_show(tree);
 
 	view = ewl_view_new();
-	ewl_view_constructor_set(view, directory_view_new);
-	ewl_view_assign_set(view, directory_view_assign);
-	ewl_view_header_fetch_set(view, directory_header_fetch);
+	ewl_view_constructor_set(view, album_view_new);
+	ewl_view_assign_set(view, album_view_assign);
+	ewl_view_header_fetch_set(view, album_header_fetch);
 
 	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
 
@@ -166,7 +166,7 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 
 
 /* The view of the users directories */
-static Ewl_Widget *directory_view_new(void)
+static Ewl_Widget *album_view_new(void)
 {
 	Ewl_Widget *icon;
 
@@ -181,27 +181,20 @@ static Ewl_Widget *directory_view_new(void)
 }
 
 /*The row that is added to the tree*/
-static void directory_view_assign(Ewl_Widget *w, void *data)
+static void album_view_assign(Ewl_Widget *w, void *data)
 {
-	char *file;
+	char *album;
 
-	file = data;
-	ewl_icon_image_set(EWL_ICON(w), PACKAGE_DATA_DIR "/images/folder.png", NULL);
-	ewl_icon_label_set(EWL_ICON(w), basename(file));
+	album = data;
+	ewl_icon_image_set(EWL_ICON(w), PACKAGE_DATA_DIR "/images/image.png", NULL);
+	ewl_icon_label_set(EWL_ICON(w), basename(album));
 	ewl_icon_constrain_set(EWL_ICON(w), 25);
-	if (strcmp(file, ".."))
-	{
-		ewl_widget_name_set(w, file);
-	}
-	else
-	{
-		ewl_widget_name_set(w, dirname(current_directory));
-	}
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, populate_files, NULL);
+	ewl_widget_name_set(w, album);
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED, populate, NULL);
 }	
 
 /* The header for the tree */
-static Ewl_Widget *directory_header_fetch(void *data, int column)
+static Ewl_Widget *album_header_fetch(void *data, int column)
 {
 	Ewl_Widget *label;
 
@@ -213,26 +206,26 @@ static Ewl_Widget *directory_header_fetch(void *data, int column)
 }
 
 /* The directories that will be displayed*/ 
-static void *directory_data_fetch(void *data, unsigned int row, unsigned int column)
+static void *album_data_fetch(void *data, unsigned int row, unsigned int column)
 {
-	char *file;
+	char *album;
 	void *val = NULL;
 
-	file = ecore_list_goto_index(directories, row);
-	if (file)
+	album = ecore_list_goto_index(albums, row);
+	if (album)
 	{
-		val = file;
+		val = album;
 	}
 
 	return val;
 }
 
 /* The number of directories the view is displaying */
-static int directory_data_count(void *data)
+static int album_data_count(void *data)
 {
 	int val;
 
-	val = ecore_list_nodes(directories);
+	val = ecore_list_nodes(albums);
 
 	return val;
 }
@@ -254,26 +247,20 @@ static void view_image(Ewl_Widget *w, void *event, void *data)
 }
 
 /*Update the Directory List and Image List*/
-static void populate_files(Ewl_Widget *w, void *event, void *data)
+static void populate(Ewl_Widget *w, void *event, void *data)
 {
-	char *cdir, *imagef;
+	char *album, *imagef;
 	Ewl_Widget *thumb;
 
 	if (w)
 	{
-		cdir = (char *)ewl_widget_name_get(w);
-	}
-	else
-	{
-		cdir = data;
+		album = (char *)ewl_widget_name_get(w);
 	}
 
-	current_directory = cdir;
-
-	if (!ecore_list_is_empty(directories))
+	if (!ecore_list_is_empty(albums))
 	{
-		ecore_list_destroy(directories);
-		directories = ecore_list_new();
+		ecore_list_destroy(albums);
+		albums = ecore_list_new();
 	}
 	if (!ecore_list_is_empty(images))
 	{
@@ -281,12 +268,9 @@ static void populate_files(Ewl_Widget *w, void *event, void *data)
 		images = ecore_list_new();
 	}
 
-	directories = get_directories(cdir);
-	images = get_images(cdir);
+	ewl_mvc_data_set(EWL_MVC(atree), albums);
 
-	ewl_mvc_data_set(EWL_MVC(ftree), directories);
-
-	//ewl_container_reset(EWL_CONTAINER(fbox));
+	ewl_container_reset(EWL_CONTAINER(fbox));
 	while (!ecore_list_is_empty(images))
 	{
 		imagef = ecore_list_remove_first(images);
@@ -299,8 +283,8 @@ static void populate_files(Ewl_Widget *w, void *event, void *data)
                 ewl_callback_append(thumb, EWL_CALLBACK_CLICKED, view_image, imagef);
 		ewl_widget_show(thumb);
 	}
-	//ewl_widget_configure(fbox);
-	//ewl_widget_configure(fbox->parent);
+	ewl_widget_configure(fbox);
+	ewl_widget_configure(fbox->parent);
 }
 
 /*Flip the image 180 degrees horizontally*/
@@ -358,7 +342,7 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data)
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
-	Ewl_Widget *win, *vbox, *toolbar, *image, *paned;
+	Ewl_Widget *win, *vbox, *menubar, *menu, *image, *paned;
 	Ewl_Widget *ihbox, *sp;
 
 	win = ewl_window_new();
@@ -373,21 +357,21 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(win), vbox);
 	ewl_widget_show(vbox);
 
-	toolbar = ewl_toolbar_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(toolbar), EWL_FLAG_FILL_HFILL|EWL_FLAG_FILL_VSHRINK);
-	ewl_container_child_append(EWL_CONTAINER(vbox), toolbar);
-	ewl_widget_show(toolbar);
+	menubar = ewl_menubar_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(menubar), EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(vbox), menubar);
+	ewl_widget_show(menubar);
 
-	add_icon(toolbar, NULL, PACKAGE_DATA_DIR "/images/emblem-photos.png", NULL);
-	add_icon(toolbar, NULL, PACKAGE_DATA_DIR "/images/x-office-presentation.png", NULL);
-	add_icon(toolbar, NULL, PACKAGE_DATA_DIR "/images/exit.png", destroy);
+	menu = add_menu(menubar, "File");
+	add_menu_item(menu, "Close", PACKAGE_DATA_DIR "/images/exit.png", destroy);
+	menu = add_menu(menubar, "Help");
 
 	paned = ewl_hpaned_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(paned), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(vbox), paned);
 	ewl_widget_show(paned);
 
-	ftree = add_tree(paned);
+	atree = add_tree(paned);
 
 	vnb = ewl_notebook_new();
 	ewl_notebook_tabbar_visible_set(EWL_NOTEBOOK(vnb), 0);
@@ -428,21 +412,9 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(sp), vimage);
 	ewl_widget_show(vimage);
 
-	ihbox = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(ivbox), ihbox);
-	ewl_object_alignment_set(EWL_OBJECT(ihbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(ihbox), EWL_FLAG_FILL_SHRINK);
-	ewl_widget_show(ihbox);
-	
-	add_button(ihbox, "Flip Horizontal", NULL, flip_image_horizontal);
-	add_button(ihbox, "Flip Vertical", NULL, flip_image_vertical);
-	add_button(ihbox, "Rotate Left", NULL, rotate_image_left);
-	add_button(ihbox, "Rotate Right", NULL, rotate_image_right);
-	add_button(ihbox, "Return to Catalog", NULL, view_catalog);
-
-	directories = ecore_list_new();
+	albums = ecore_list_new();
 	images = ecore_list_new();
-	populate_files(NULL, NULL, getenv("HOME"));
+	populate(NULL, NULL, NULL);
 
 	ewl_main();
 	return;
