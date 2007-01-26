@@ -2060,7 +2060,10 @@ static void _etk_tree_scroll_content_scroll_size_get(Etk_Widget *widget, Etk_Siz
    
    scroll_size->w = 0;
    for (i = 0; i < tree->num_cols; i++)
-      scroll_size->w += tree->columns[i]->width;
+   {
+      if (tree->columns[i]->visible)
+         scroll_size->w += tree->columns[i]->width;
+   }
    scroll_size->h = tree->root.num_visible_children * tree->rows_height;
 }
 
