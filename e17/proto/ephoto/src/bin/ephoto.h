@@ -8,6 +8,7 @@
 #include <fnmatch.h>
 #include <libgen.h>
 #include <limits.h>
+#include <sqlite3.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,6 +20,14 @@ void create_main_gui(void);
 /* Ephoto Browsing */
 Ecore_List *get_directories(char *directory);
 Ecore_List *get_images(char *directory);
+
+/* Ephoto Databasing */
+sqlite3 *ephoto_db_init(void);
+void ephoto_db_add_album(sqlite3 *db, char *name, char *description);
+Ecore_List *ephoto_db_list_albums(sqlite3 *db);
+void ephoto_db_add_image(sqlite3 *db, char *album, char *name, char *path);
+Ecore_List *ephoto_db_list_images(sqlite3 *db, char *album);
+void ephoto_db_close(sqlite3 *db);
 
 /* Ephoto Imaging */
 unsigned int *flip_horizontal(Ewl_Widget *image);

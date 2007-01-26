@@ -34,12 +34,13 @@ static Ewl_Widget *cvbox, *ivbox, *vimage;
 static Ecore_Timer *timer;
 static Ecore_List *albums, *images;
 
-/*Ephoto Current Directory*/
-static char *current_directory;
+/*Ephoto Databasing Global Variables*/
+sqlite3 *db;
 
 /*Destroy the Main Window*/
 static void destroy(Ewl_Widget *w, void *event, void *data)
 {
+	ephoto_db_close(db);
         ewl_widget_destroy(w);
         ewl_main_quit();
 }
@@ -187,7 +188,7 @@ static void album_view_assign(Ewl_Widget *w, void *data)
 
 	album = data;
 	ewl_icon_image_set(EWL_ICON(w), PACKAGE_DATA_DIR "/images/image.png", NULL);
-	ewl_icon_label_set(EWL_ICON(w), basename(album));
+	ewl_icon_label_set(EWL_ICON(w), album);
 	ewl_icon_constrain_set(EWL_ICON(w), 25);
 	ewl_widget_name_set(w, album);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, populate, NULL);
@@ -256,19 +257,18 @@ static void populate(Ewl_Widget *w, void *event, void *data)
 	{
 		album = (char *)ewl_widget_name_get(w);
 	}
-
-	if (!ecore_list_is_empty(albums))
+	else
 	{
-		ecore_list_destroy(albums);
-		albums = ecore_list_new();
+		album = data;
 	}
-	if (!ecore_list_is_empty(images))
+
+	if (images)
 	{
 		ecore_list_destroy(images);
-		images = ecore_list_new();
 	}
 
-	ewl_mvc_data_set(EWL_MVC(atree), albums);
+	images = ecore_list_new();
+	images = ephoto_db_list_images(db, album);
 
 	ewl_container_reset(EWL_CONTAINER(fbox));
 	while (!ecore_list_is_empty(images))
@@ -413,8 +413,11 @@ void create_main_gui(void)
 	ewl_widget_show(vimage);
 
 	albums = ecore_list_new();
-	images = ecore_list_new();
-	populate(NULL, NULL, NULL);
+	db = ephoto_db_init();
+	albums = ephoto_db_list_albums(db);
+	ewl_mvc_data_set(EWL_MVC(atree), albums);
+	
+	populate(NULL, NULL, "Complete Library");
 
 	ewl_main();
 	return;
