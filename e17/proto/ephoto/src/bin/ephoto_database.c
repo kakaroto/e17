@@ -13,6 +13,7 @@ static int image_id, album_id;
 /*Ephoto databasing ecore global variables*/
 static Ecore_List *albums, *images, *image_ids;
 
+/*Open the sqlite3 database. Create the database if it does not already exits.*/
 sqlite3 *ephoto_db_init(void)
 {
 	char path[PATH_MAX];
@@ -43,6 +44,7 @@ sqlite3 *ephoto_db_init(void)
 	return db;
 }
 
+/*Get the id of an image in the images table*/
 static int get_image_id(void *notused, int argc, char **argv, char **col)
 {
 	int i;
@@ -55,6 +57,7 @@ static int get_image_id(void *notused, int argc, char **argv, char **col)
 	return 0;
 }
 
+/*Get the id of an album in the albums table*/
 static int get_album_id(void *notused, int argc, char **argv, char **col)
 {
 	int i;
@@ -67,7 +70,7 @@ static int get_album_id(void *notused, int argc, char **argv, char **col)
 	return 0;
 }
 
-
+/*Add a new album to the album table*/
 void ephoto_db_add_album(sqlite3 *db, char *name, char *description)
 {
 	char command[PATH_MAX];
@@ -79,6 +82,7 @@ void ephoto_db_add_album(sqlite3 *db, char *name, char *description)
 	return;
 }
 
+/*Add a new image to a particular album*/
 void ephoto_db_add_image(sqlite3 *db, char *album, char *name, char *path)
 {
 	char command[PATH_MAX];
@@ -92,10 +96,19 @@ void ephoto_db_add_image(sqlite3 *db, char *album, char *name, char *path)
 	sqlite3_exec(db, command, get_album_id, 0, 0);
 	snprintf(command, PATH_MAX, "INSERT or IGNORE into album_images(image_id, album_id) "
 				    "VALUES('%d', '%d');", image_id, album_id);
+	sqlite3_exec(db, command, 0, 0, 0);
+
+	/*This is to make sure the complete library has all images*/
+	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = 'Complete Library';");
+	sqlite3_exec(db, command, get_album_id, 0, 0);
+	snprintf(command, PATH_MAX, "INSERT into album_images(image_id, album_id) "
+				    "VALUES('%d', '%d');", image_id, album_id);
+	sqlite3_exec(db, command, 0, 0, 0);
+
 	return;
 }
 
-
+/*Populate a list the albums in the albums table*/
 static int list_albums(void *notused, int argc, char **argv, char **col)
 {
 	int i;
@@ -110,6 +123,7 @@ static int list_albums(void *notused, int argc, char **argv, char **col)
 	return 0;
 }
 
+/*Return a list of albums in the albums table*/ 
 Ecore_List *ephoto_db_list_albums(sqlite3 *db)
 {
 	if(albums)
@@ -122,6 +136,7 @@ Ecore_List *ephoto_db_list_albums(sqlite3 *db)
 	return albums;
 }
 
+/*Populate a list of images belonging to a certain album*/
 static int list_images(void *notused, int argc, char **argv, char **col)
 {
 	int i;
@@ -136,6 +151,7 @@ static int list_images(void *notused, int argc, char **argv, char **col)
 	return 0;
 }
 
+/*Populate a list of the id's of images belonging to a certain album*/
 static int list_image_ids(void *notused, int argc, char **argv, char **col)
 {
 	char command[PATH_MAX];
@@ -151,6 +167,7 @@ static int list_image_ids(void *notused, int argc, char **argv, char **col)
 	return 0;
 }
 
+/*Return a list of images belonging to a certain album*/
 Ecore_List *ephoto_db_list_images(sqlite3 *db, char *album)
 {
 	char command[PATH_MAX];
@@ -183,6 +200,7 @@ Ecore_List *ephoto_db_list_images(sqlite3 *db, char *album)
 	return images;
 }
 
+/*Close the sqlite3 database*/
 void ephoto_db_close(sqlite3 *db)
 {
 	sqlite3_close(db);

@@ -3,7 +3,6 @@
 /*Ewl Callbacks*/
 static void destroy(Ewl_Widget *w, void *event, void *data);
 static void populate(Ewl_Widget *w, void *event, void *data);
-static void view_catalog(Ewl_Widget *w, void *event, void *data);
 static void view_image(Ewl_Widget *w, void *event, void *data);
 
 /*Ephoto Widget Creation Callbacks*/
@@ -27,8 +26,7 @@ static void rotate_image_left(Ewl_Widget *w, void *event, void *data);
 static void rotate_image_right(Ewl_Widget *w, void *event, void *data);
 
 /*Ephoto Widget Global Variables*/
-static Ewl_Widget *atree, *fbox, *vnb;
-static Ewl_Widget *cvbox, *ivbox, *vimage;
+static Ewl_Widget *atree, *fbox, *vimage;
 
 /*Ephoto Ecore Global Variables*/
 static Ecore_Timer *timer;
@@ -231,12 +229,6 @@ static int album_data_count(void *data)
 	return val;
 }
 
-/*Switch to the Image List*/
-static void view_catalog(Ewl_Widget *w, void *event, void *data)
-{
-	ewl_notebook_visible_page_set(EWL_NOTEBOOK(vnb), cvbox);
-}
-
 /*Switch to the Image Viewer*/
 static void view_image(Ewl_Widget *w, void *event, void *data)
 {
@@ -244,7 +236,7 @@ static void view_image(Ewl_Widget *w, void *event, void *data)
 
 	file = data;
 	ewl_image_file_set(EWL_IMAGE(vimage), file, NULL);
-	ewl_notebook_visible_page_set(EWL_NOTEBOOK(vnb), ivbox);
+	ewl_widget_reparent(vimage);
 }
 
 /*Update the Directory List and Image List*/
@@ -278,7 +270,7 @@ static void populate(Ewl_Widget *w, void *event, void *data)
 		thumb = ewl_image_thumbnail_new();
 		ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(thumb), imagef);
 		ewl_image_proportional_set(EWL_IMAGE(thumb), TRUE);
-		ewl_image_constrain_set(EWL_IMAGE(thumb), 100);
+		ewl_image_size_set(EWL_IMAGE(thumb), 45, 45);
 		ewl_container_child_append(EWL_CONTAINER(fbox), thumb);
                 ewl_callback_append(thumb, EWL_CALLBACK_CLICKED, view_image, imagef);
 		ewl_widget_show(thumb);
@@ -343,7 +335,7 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data)
 void create_main_gui(void)
 {
 	Ewl_Widget *win, *vbox, *menubar, *menu, *image, *paned;
-	Ewl_Widget *ihbox, *sp;
+	Ewl_Widget *ivbox, *ihbox, *sp;
 
 	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
@@ -364,7 +356,12 @@ void create_main_gui(void)
 
 	menu = add_menu(menubar, "File");
 	add_menu_item(menu, "Close", PACKAGE_DATA_DIR "/images/exit.png", destroy);
+	menu = add_menu(menubar, "Albums");
+	add_menu_item(menu, "Add Album", PACKAGE_DATA_DIR "/images/add.png", NULL);
+	add_menu_item(menu, "Remove Album", PACKAGE_DATA_DIR "/images/remove.png", NULL);
 	menu = add_menu(menubar, "Help");
+	add_menu_item(menu, "About", NULL, NULL);
+	add_menu_item(menu, "Ephoto Tutorial", NULL, NULL);
 
 	paned = ewl_hpaned_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(paned), EWL_FLAG_FILL_ALL);
@@ -373,37 +370,15 @@ void create_main_gui(void)
 
 	atree = add_tree(paned);
 
-	vnb = ewl_notebook_new();
-	ewl_notebook_tabbar_visible_set(EWL_NOTEBOOK(vnb), 0);
-	ewl_object_fill_policy_set(EWL_OBJECT(vnb), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(paned), vnb);
-	ewl_widget_show(vnb);
-
-	cvbox = ewl_vbox_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(cvbox), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(vnb), cvbox);
-	ewl_widget_show(cvbox);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(vnb), cvbox, "Catalog");
+	ivbox = ewl_vbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(ivbox), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(paned), ivbox);
+	ewl_widget_show(ivbox);
 
 	sp = ewl_scrollpane_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(cvbox), sp);
+	ewl_container_child_append(EWL_CONTAINER(ivbox), sp);
 	ewl_widget_show(sp);
-
-	fbox = ewl_hfreebox_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(fbox), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(sp), fbox);
-	ewl_widget_show(fbox);
-
-	ivbox = ewl_vbox_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(ivbox), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(vnb), ivbox);
-        ewl_widget_show(ivbox);
-
-        sp = ewl_scrollpane_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(ivbox), sp);
-        ewl_widget_show(sp);
 
 	vimage = ewl_image_new();
 	ewl_image_proportional_set(EWL_IMAGE(vimage), TRUE);
@@ -411,6 +386,17 @@ void create_main_gui(void)
 	ewl_object_fill_policy_set(EWL_OBJECT(vimage), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(sp), vimage);
 	ewl_widget_show(vimage);
+
+	sp = ewl_scrollpane_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(ivbox), sp);
+	ewl_widget_show(sp);
+
+	fbox = ewl_hfreebox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(fbox), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(sp), fbox);
+	ewl_object_maximum_size_set(EWL_OBJECT(fbox), 99999, 35);
+	ewl_widget_show(fbox);
 
 	albums = ecore_list_new();
 	db = ephoto_db_init();
