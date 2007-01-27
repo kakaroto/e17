@@ -24,8 +24,10 @@ Ecore_List *get_images(char *directory);
 /* Ephoto Databasing */
 sqlite3 *ephoto_db_init(void);
 void ephoto_db_add_album(sqlite3 *db, char *name, char *description);
+void ephoto_db_delete_album(sqlite3 *db, char *name);
 Ecore_List *ephoto_db_list_albums(sqlite3 *db);
 void ephoto_db_add_image(sqlite3 *db, char *album, char *name, char *path);
+void ephoto_db_delete_image(sqlite3 *db, char *album, char *path);
 Ecore_List *ephoto_db_list_images(sqlite3 *db, char *album);
 void ephoto_db_close(sqlite3 *db);
 

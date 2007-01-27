@@ -82,6 +82,18 @@ void ephoto_db_add_album(sqlite3 *db, char *name, char *description)
 	return;
 }
 
+/*Deleate an album from the album table*/
+void ephoto_db_delete_album(sqlite3 *db, char *name)
+{
+	char command[PATH_MAX];
+
+	snprintf(command, PATH_MAX, "DELETE FROM albums WHERE name = '%s';", name);
+
+	sqlite3_exec(db, command, 0, 0, 0);
+
+	return;
+}
+
 /*Add a new image to a particular album*/
 void ephoto_db_add_image(sqlite3 *db, char *album, char *name, char *path)
 {
@@ -107,6 +119,20 @@ void ephoto_db_add_image(sqlite3 *db, char *album, char *name, char *path)
 
 	return;
 }
+
+/*Delete an image from a particular album*/
+void ephoto_db_delete_image(sqlite3 *db, char *album, char *path)
+{
+	char command[PATH_MAX];
+
+	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", album);
+	sqlite3_exec(db, command, get_album_id, 0, 0);
+	snprintf(command, PATH_MAX, "SELECT id FROM images WHERE path = '%s';", path);
+	sqlite3_exec(db, command, get_image_id, 0, 0);
+	snprintf(command, PATH_MAX, "DELETE FROM album_images WHERE "
+		       	            "album_id = '%s' AND image_id = '%s';", album_id, image_id);
+	return;
+}	
 
 /*Populate a list the albums in the albums table*/
 static int list_albums(void *notused, int argc, char **argv, char **col)
