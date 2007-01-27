@@ -28,7 +28,7 @@ typedef enum Etk_Button_Style
    ETK_BUTTON_ICON,             /**< Only the icon is visible */
    ETK_BUTTON_TEXT,             /**< Only the label is visible */
    ETK_BUTTON_BOTH_HORIZ,       /**< Both the icon and the label are visible, the icon is at the left of the label */
-   ETK_BUTTON_BOTH_VERT,        /**< Both the icon and the label are visible, the icon is above the label */
+   ETK_BUTTON_BOTH_VERT         /**< Both the icon and the label are visible, the icon is above the label */
 } Etk_Button_Style;
 
 /**

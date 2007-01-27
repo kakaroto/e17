@@ -25,7 +25,7 @@ typedef enum Etk_Popup_Direction
    ETK_POPUP_BELOW_RIGHT,       /**< The window is popped up on the right, below the given position (default) */
    ETK_POPUP_BELOW_LEFT,        /**< The window is popped up on the left, below the given position */
    ETK_POPUP_ABOVE_RIGHT,       /**< The window is popped up on the right, above the given position */
-   ETK_POPUP_ABOVE_LEFT,        /**< The window is popped up on the left, above the given position */
+   ETK_POPUP_ABOVE_LEFT         /**< The window is popped up on the left, above the given position */
 } Etk_Popup_Direction;
 
 /**

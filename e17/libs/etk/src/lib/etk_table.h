@@ -31,7 +31,7 @@ typedef enum Etk_Table_Fill_Policy
                                   /**< will take as much place as possible in the vertical direction */
    ETK_TABLE_FILL = ETK_TABLE_HFILL | ETK_TABLE_VFILL,         /**< Equivalent to ETK_TABLE_HFILL | ETK_TABLE_VFILL */
    ETK_TABLE_EXPAND = ETK_TABLE_HEXPAND | ETK_TABLE_VEXPAND,   /**< Equivalent to ETK_TABLE_HEXPAND | ETK_TABLE_VEXPAND */
-   ETK_TABLE_EXPAND_FILL = ETK_TABLE_EXPAND | ETK_TABLE_FILL,  /**< Equivalent to ETK_TABLE_EXPAND | ETK_TABLE_FILL */
+   ETK_TABLE_EXPAND_FILL = ETK_TABLE_EXPAND | ETK_TABLE_FILL   /**< Equivalent to ETK_TABLE_EXPAND | ETK_TABLE_FILL */
 } Etk_Table_Fill_Policy;
 
 /* A cell of a table */

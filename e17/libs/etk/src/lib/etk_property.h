@@ -25,7 +25,7 @@ typedef enum Etk_Property_Type
    ETK_PROPERTY_LONG,           /**< The value of the property is a long */
    ETK_PROPERTY_POINTER,        /**< The value of the property is a pointer (void *) */
    ETK_PROPERTY_STRING,         /**< The value of the property is a string (char *) */
-   ETK_PROPERTY_OTHER,          /**< Used when none of the above type can be used. The property can't have a default
+   ETK_PROPERTY_OTHER           /**< Used when none of the above type can be used. The property can't have a default
                                  * value, and can't be accessible with etk_object_property_get/set().
                                  * The only interest of this kind of property is that you can still use etk_object_notify()
                                  * when the value of the property has been modified. You then have to use the API of

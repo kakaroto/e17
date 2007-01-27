@@ -29,7 +29,7 @@ typedef enum Etk_Widget_Swallow_Error
    ETK_SWALLOW_ERROR_NONE,                  /**< The object has been succesfully swallowed */
    ETK_SWALLOW_ERROR_INCOMPATIBLE_PARENT,   /**< The parent of the widget to swallow was not the swallower widget */
    ETK_SWALLOW_ERROR_NOT_REALIZED,          /**< The swallower widget was not realized */
-   ETK_SWALLOW_ERROR_NO_PART,               /**< The part where to swallow the object has not been found
+   ETK_SWALLOW_ERROR_NO_PART                /**< The part where to swallow the object has not been found
                                              * in the theme object of the swallower widget */
 } Etk_Widget_Swallow_Error;
 

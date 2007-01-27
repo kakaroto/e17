@@ -28,7 +28,7 @@ typedef enum Etk_Scrolled_View_Policy
    ETK_POLICY_AUTO,     /**< The scrollbar is shown and hidden automatically whether or not the child can fit
                          * entirely in the scrolled view */
    ETK_POLICY_SHOW,     /**< The scrollbar is always visible */
-   ETK_POLICY_HIDE,     /**< The scrollbar is always hidden */
+   ETK_POLICY_HIDE      /**< The scrollbar is always hidden */
 } Etk_Scrolled_View_Policy;
 
 /**

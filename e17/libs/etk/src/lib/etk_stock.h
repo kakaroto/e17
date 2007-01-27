@@ -17,7 +17,7 @@ typedef enum _Etk_Stock_Size
 {
    ETK_STOCK_SMALL,     /* 16x16 */
    ETK_STOCK_MEDIUM,    /* 22x22 */
-   ETK_STOCK_BIG,       /* 48x48 */
+   ETK_STOCK_BIG        /* 48x48 */
 } Etk_Stock_Size;
 
 /**

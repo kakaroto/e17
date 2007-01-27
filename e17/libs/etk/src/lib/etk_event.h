@@ -31,7 +31,7 @@ typedef enum Etk_Modifiers
    ETK_MODIFIER_CTRL = 1 << 0,          /**< "Control" is pressed */
    ETK_MODIFIER_ALT = 1 << 1,           /**< "Alt" is pressed */
    ETK_MODIFIER_SHIFT = 1 << 2,         /**< "Shift" is pressed */
-   ETK_MODIFIER_WIN = 1 << 3,           /**< "Win" (between "Ctrl" and "Alt") is pressed */
+   ETK_MODIFIER_WIN = 1 << 3            /**< "Win" (between "Ctrl" and "Alt") is pressed */
 } Etk_Modifiers;
 
 /** @brief The keyboard locks active when the event has been emitted */
@@ -40,7 +40,7 @@ typedef enum Etk_Locks
    ETK_LOCK_NONE = 0,                   /**< No locks are active */
    ETK_LOCK_NUM = 1 << 0,               /**< "Num" lock is active */
    ETK_LOCK_CAPS = 1 << 1,              /**< "Caps" lock is active */
-   ETK_LOCK_SCROLL = 1 << 2,            /**< "Scroll" lock is active */
+   ETK_LOCK_SCROLL = 1 << 2             /**< "Scroll" lock is active */
 } Etk_Locks;
 
 /** @brief A flag describing whether the click was a single, double or triple click */
@@ -48,14 +48,14 @@ typedef enum Etk_Mouse_Flags
 {
    ETK_MOUSE_NONE = 0,                  /**< A single click */
    ETK_MOUSE_DOUBLE_CLICK = 1 << 0,     /**< A double click */
-   ETK_MOUSE_TRIPLE_CLICK = 1 << 1,     /**< A triple click */
+   ETK_MOUSE_TRIPLE_CLICK = 1 << 1      /**< A triple click */
 } Etk_Mouse_Flags;
 
 /** @brief The scroll direction corresponding to the wheel event */
 typedef enum Etk_Wheel_Direction
 {
    ETK_WHEEL_VERTICAL,                  /**< Vertical scrolling */
-   ETK_WHEEL_HORIZONTAL,                /**< Horizontal scrolling */
+   ETK_WHEEL_HORIZONTAL                 /**< Horizontal scrolling */
 } Etk_Wheel_Direction;
 
 

@@ -40,7 +40,7 @@ typedef enum Etk_Box_Group
 {
    ETK_BOX_START,    /**< The start-group of children: the children in this group are displayed
                       * at the start (left or top) of the box */
-   ETK_BOX_END,      /**< The end-group of children: the children in this group are displayed
+   ETK_BOX_END       /**< The end-group of children: the children in this group are displayed
                       * at the end (right or bottom) of the box */
 } Etk_Box_Group;
 
@@ -50,7 +50,7 @@ typedef enum Etk_Box_Fill_Policy
    ETK_BOX_NONE = 0,            /**< The child does not fill or expand */
    ETK_BOX_EXPAND = 1 << 0,     /**< The cell containing the child will expand to take all the available space */
    ETK_BOX_FILL = 1 << 1,       /**< The child will fill all the available space in its cell */
-   ETK_BOX_EXPAND_FILL = ETK_BOX_EXPAND | ETK_BOX_FILL,   /**< Equivalent to ETK_BOX_EXPAND | ETK_BOX_FILL */
+   ETK_BOX_EXPAND_FILL = ETK_BOX_EXPAND | ETK_BOX_FILL    /**< Equivalent to ETK_BOX_EXPAND | ETK_BOX_FILL */
 } Etk_Box_Fill_Policy;
 
 /**

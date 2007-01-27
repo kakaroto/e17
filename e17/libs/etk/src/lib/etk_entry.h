@@ -23,7 +23,7 @@
 typedef enum Etk_Entry_Image_Position
 {
    ETK_ENTRY_IMAGE_PRIMARY = 1,        /**< The image is primary, usually to the left of the editable object */
-   ETK_ENTRY_IMAGE_SECONDARY = 2,      /**< The image is secondary, usually to the right of the editable object */
+   ETK_ENTRY_IMAGE_SECONDARY = 2       /**< The image is secondary, usually to the right of the editable object */
 } Etk_Entry_Image_Position;
 
 /**

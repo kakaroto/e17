@@ -27,7 +27,7 @@ typedef enum Etk_Selection_Type
 /** @brief The different types of content of a selection */
 typedef enum Etk_Selection_Content_Type
 {
-   ETK_SELECTION_TEXT,          /**< The content of the selection is a text */
+   ETK_SELECTION_TEXT           /**< The content of the selection is a text */
 } Etk_Selection_Content_Type;
 
 /**

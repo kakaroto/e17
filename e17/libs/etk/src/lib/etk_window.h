@@ -23,7 +23,7 @@ typedef enum Etk_Window_Stacking
 {
    ETK_WINDOW_NORMAL,      /**< The window is stacked in the default layer */
    ETK_WINDOW_ABOVE,       /**< The window is stacked above all the other windows */
-   ETK_WINDOW_BELOW,       /**< The window is stacked below all the other windows */
+   ETK_WINDOW_BELOW        /**< The window is stacked below all the other windows */
 } Etk_Window_Stacking;
 
 /**

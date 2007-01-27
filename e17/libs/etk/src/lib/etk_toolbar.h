@@ -29,7 +29,7 @@
 typedef enum Etk_Toolbar_Orientation
 {
    ETK_TOOLBAR_HORIZ,           /**< The toolbar is horizontal */
-   ETK_TOOLBAR_VERT,            /**< The toolbar is vertical */
+   ETK_TOOLBAR_VERT             /**< The toolbar is vertical */
 } Etk_Toolbar_Orientation;
 
 /** @brief The style of the toolbar's buttons (icon, text, both vertically, both horizontally) */
@@ -39,7 +39,7 @@ typedef enum Etk_Toolbar_Style
    ETK_TOOLBAR_ICON,             /**< Only the icon is visible */
    ETK_TOOLBAR_TEXT,             /**< Only the label is visible */
    ETK_TOOLBAR_BOTH_HORIZ,       /**< Both the icon and the label are visible, the icon is at the left of the label */
-   ETK_TOOLBAR_BOTH_VERT,        /**< Both the icon and the label are visible, the icon is above the label */
+   ETK_TOOLBAR_BOTH_VERT         /**< Both the icon and the label are visible, the icon is above the label */
 } Etk_Toolbar_Style;
 
 /**

@@ -24,7 +24,7 @@ typedef enum Etk_Shadow_Type
 {
    ETK_SHADOW_NONE,             /* TODOC */
    ETK_SHADOW_INSIDE,           /* TODOC */
-   ETK_SHADOW_OUTSIDE,          /* TODOC */
+   ETK_SHADOW_OUTSIDE           /* TODOC */
 } Etk_Shadow_Type;
 
 /** @brief The different edges where a shadow can be */
