@@ -15,6 +15,7 @@ collections
 #include "groups/border.edc"
 #include "groups/button.edc"
 #include "groups/combo.edc"
+#include "groups/cursor.edc"
 #include "groups/highlight.edc"
 #include "groups/label.edc"
 #include "groups/menu.edc"
@@ -51,6 +52,9 @@ data
 	item: "/combo/popup/group" "ewl/menu";
 	item: "/combo/popup/vbox/cell/group" "ewl/combo/popup/contents";
 	item: "/combo/button/group" "ewl/combo/button";
+
+	/* dnd groups */
+	item: "/dndcursor/group" "ewl/sphere-cursor";
 
 	/* entry/text related groups */
 	item: "/entry/group" "ewl/entry";
