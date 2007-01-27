@@ -373,7 +373,7 @@ static void _window_raise(Etk_Window *window)
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;   
-   return ecore_evas_raise(engine_data->ecore_evas);
+   ecore_evas_raise(engine_data->ecore_evas);
 }
 
 /* Lowers the window below the other windows */
@@ -382,7 +382,7 @@ static void _window_lower(Etk_Window *window)
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;   
-   return ecore_evas_lower(engine_data->ecore_evas);
+   ecore_evas_lower(engine_data->ecore_evas);
 }
 
 /* Sets whether or not the window is sticky (i.e. the window appears on all the virtual desks */
