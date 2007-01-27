@@ -2,14 +2,19 @@
 
 /*Ewl Callbacks*/
 static void destroy(Ewl_Widget *w, void *event, void *data);
+static void close_dialog(Ewl_Widget *w, void *event, void *data);
 static void populate(Ewl_Widget *w, void *event, void *data);
 static void view_image(Ewl_Widget *w, void *event, void *data);
+static void about_clicked(Ewl_Widget *w, void *event, void *data);
+static void help_clicked(Ewl_Widget *w, void *event, void *data);
 
 /*Ephoto Widget Creation Callbacks*/
-static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb);
-static void add_icon(Ewl_Widget *c, char *txt, char *img, void *cb);
+static Ewl_Widget *add_button(Ewl_Widget *c, char *txt, char *img, void *cb, void *data);
+static Ewl_Widget *add_dialog_about(Ewl_Widget *c, char *title);
+static Ewl_Widget *add_dialog_save(Ewl_Widget *c, char *title, void *cb);
+static Ewl_Widget *add_icon(Ewl_Widget *c, char *txt, char *img, void *cb);
 static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt);
-static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb);
+static Ewl_Widget *add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb, void *data);
 static Ewl_Widget *add_tree(Ewl_Widget *c);
 
 /*Ephoto MVC Callbacks*/
@@ -38,13 +43,23 @@ sqlite3 *db;
 /*Destroy the Main Window*/
 static void destroy(Ewl_Widget *w, void *event, void *data)
 {
+	Ewl_Widget *widget;
+	widget = data;
 	ephoto_db_close(db);
-        ewl_widget_destroy(w);
+        ewl_widget_destroy(widget);
         ewl_main_quit();
 }
 
+/*Destroy the dialog*/
+static void destroy_dialog(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Widget *widget;
+	widget = data;
+	ewl_widget_destroy(widget);
+}
+
 /*Create and Add a Button to the Container c*/
-static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb)
+static Ewl_Widget *add_button(Ewl_Widget *c, char *txt, char *img, void *cb, void *data)
 {
 	Ewl_Widget *button;
 
@@ -62,15 +77,78 @@ static void add_button(Ewl_Widget *c, char *txt, char *img, void *cb)
 	ewl_container_child_append(EWL_CONTAINER(c), button);
 	if (cb)
 	{
-		ewl_callback_append(button, EWL_CALLBACK_CLICKED, cb, NULL);
+		ewl_callback_append(button, EWL_CALLBACK_CLICKED, cb, data);
 	}
 	ewl_widget_show(button);
 
-	return;
+	return button;
+}
+
+/*Create and Show a dialog with only an option to close*/
+static Ewl_Widget *add_dialog_about(Ewl_Widget *c, char *title)
+{
+	Ewl_Widget *window, *vbox, *button;
+
+	window = ewl_window_new();
+        ewl_window_title_set(EWL_WINDOW(window), title);
+	ewl_window_name_set(EWL_WINDOW(window), title);
+	ewl_window_dialog_set(EWL_WINDOW(window), 1);
+	ewl_object_size_request(EWL_OBJECT(window), 400, 200);
+	ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, destroy_dialog, window);
+	ewl_widget_show(window);
+
+	vbox = ewl_vbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(window), vbox);
+	ewl_widget_show(vbox);
+
+	if (c)
+	{
+		ewl_container_child_append(EWL_CONTAINER(vbox), c);
+	}
+
+	add_button(vbox, "Close", PACKAGE_DATA_DIR "/images/dialog-close.png", destroy_dialog, window);
+
+	return window;
+}
+
+/*Create and add a save dialog*/
+static Ewl_Widget *add_dialog_save(Ewl_Widget *c, char *title, void *cb)
+{
+	Ewl_Widget *window, *vbox, *hbox, *button;
+
+        window = ewl_window_new();
+        ewl_window_title_set(EWL_WINDOW(window), title);
+	ewl_window_name_set(EWL_WINDOW(window), title);
+	ewl_window_dialog_set(EWL_WINDOW(window), 1);
+	ewl_object_size_request(EWL_OBJECT(window), 400, 200);
+	ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, destroy_dialog, window);
+	ewl_widget_show(window);
+
+	vbox = ewl_vbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(window), vbox);
+	ewl_widget_show(vbox);
+
+	if (c)
+	{
+		ewl_container_child_append(EWL_CONTAINER(vbox), c);
+	}
+
+	hbox = ewl_hbox_new();
+	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show(hbox);
+
+	add_button(vbox, "Save", PACKAGE_DATA_DIR "/images/dialog-save.png", cb, window);
+	add_button(vbox, "Close", PACKAGE_DATA_DIR "/images/dialog-close.png", destroy_dialog, window);
+
+	return window;
 }
 
 /*Create and Add an Image to the Container c*/
-static void add_icon(Ewl_Widget *c, char *txt, char *img, void *cb)
+static Ewl_Widget *add_icon(Ewl_Widget *c, char *txt, char *img, void *cb)
 {
 	Ewl_Widget *icon;
 
@@ -90,7 +168,7 @@ static void add_icon(Ewl_Widget *c, char *txt, char *img, void *cb)
 	}
 	ewl_widget_show(icon);
 
-	return;
+	return icon;
 }
 
 /*Create and Add a Menu to the Container c.*/
@@ -111,7 +189,7 @@ static Ewl_Widget *add_menu(Ewl_Widget *c, char *txt)
 }
 
 /*Create and Add a Menu Item to the Menu c*/
-static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb)
+static Ewl_Widget *add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb, void *data)
 {
 	Ewl_Widget *menu_item;
 	
@@ -129,7 +207,7 @@ static void add_menu_item(Ewl_Widget *c, char *txt, char *img, void *cb)
 	ewl_container_child_append(EWL_CONTAINER(c), menu_item);
 	if (cb)
 	{
-		ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, cb, NULL);
+		ewl_callback_append(menu_item, EWL_CALLBACK_CLICKED, cb, data);
 	}
 	ewl_widget_show(menu_item);
 
@@ -331,17 +409,55 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_configure(vimage->parent);
 }
 
+/*Create the About Window*/
+static void about_clicked(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Widget *text;
+	char *txt;
+
+	txt = "Ephoto Version 2.15.0\n"
+              "Lead Developer - Stephen Houston\n"
+	      "Contributors - Tokyo.\n";
+
+	text = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(text), txt);
+	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+	ewl_widget_show(text);
+
+	add_dialog_about(text, "About Ephoto");
+
+	return;
+}
+
+/*Create the Tutorial Window*/
+static void help_clicked(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Widget *text;
+	char *txt;
+
+	txt = "This needs filling out\n";
+
+        text = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(text), txt);
+	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+	ewl_widget_show(text);       
+
+	add_dialog_about(text, "Ephoto Tutorial");
+
+	return;
+}	
+
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
-	Ewl_Widget *win, *vbox, *menubar, *menu, *image, *paned;
+	Ewl_Widget *win, *vbox, *menubar, *menu, *menu_item, *image, *paned;
 	Ewl_Widget *ivbox, *ihbox, *sp;
 
 	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto!");
         ewl_window_name_set(EWL_WINDOW(win), "Ephoto!");
         ewl_object_size_request(EWL_OBJECT(win), 600, 400);
-        ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
+        ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, win);
 	ewl_widget_show(win);
 
 	vbox = ewl_vbox_new();
@@ -355,13 +471,15 @@ void create_main_gui(void)
 	ewl_widget_show(menubar);
 
 	menu = add_menu(menubar, "File");
-	add_menu_item(menu, "Close", PACKAGE_DATA_DIR "/images/exit.png", destroy);
+	add_menu_item(menu, "Close", PACKAGE_DATA_DIR "/images/exit.png", destroy, win);
+	
 	menu = add_menu(menubar, "Albums");
-	add_menu_item(menu, "Add Album", PACKAGE_DATA_DIR "/images/add.png", NULL);
-	add_menu_item(menu, "Remove Album", PACKAGE_DATA_DIR "/images/remove.png", NULL);
+	add_menu_item(menu, "Add Album", PACKAGE_DATA_DIR "/images/add.png", NULL, NULL);
+	add_menu_item(menu, "Remove Album", PACKAGE_DATA_DIR "/images/remove.png", NULL, NULL);
+	
 	menu = add_menu(menubar, "Help");
-	add_menu_item(menu, "About", NULL, NULL);
-	add_menu_item(menu, "Ephoto Tutorial", NULL, NULL);
+	menu_item = add_menu_item(menu, "About", NULL, about_clicked, NULL);
+	menu_item = add_menu_item(menu, "Ephoto Tutorial", NULL, help_clicked, NULL);
 
 	paned = ewl_hpaned_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(paned), EWL_FLAG_FILL_ALL);
