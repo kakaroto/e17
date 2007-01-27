@@ -2,14 +2,14 @@ Source: exml
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), autotools-dev, libecore-dev, libxml2-dev
+Build-Depends: debhelper (>= 4.0.0), autotools-dev, libecore-dev, libxml2-dev, libxslt1-dev
 Standards-Version: 3.6.2.2
 
 Package: libexml0
 Architecture: any
 Section: libs
 Provides: libexml
-Depends: libecore, libxml2
+Depends: libecore, libxml2, libxslt1.1
 Description: abstracted, generalized xml parser/writer interface
  EXML is an abstracted, generalized interface to an xml
  parser/writer, using ecore data structures and making
