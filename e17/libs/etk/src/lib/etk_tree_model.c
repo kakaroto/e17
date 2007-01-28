@@ -346,10 +346,8 @@ static void _text_objects_create(Etk_Tree_Model *model, Evas_Object *cell_object
    if (!evas)
       return;
    
-   cell_objects[0] = evas_object_text_add(evas);
-   /* TODO: make the font themable... */
-   evas_object_text_font_set(cell_objects[0], "Vera", 10);
-   evas_object_color_set(cell_objects[0], 0, 0, 0, 255);
+   cell_objects[0] = edje_object_add(evas);
+   etk_theme_edje_object_set_from_parent(cell_objects[0], "text", ETK_WIDGET(model->tree));
    evas_object_pass_events_set(cell_objects[0], 1);
 }
 
@@ -362,8 +360,8 @@ static Etk_Bool _text_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geome
    if (!(text_data = cell_data) || !cell_objects[0])
       return ETK_FALSE;
    
-   evas_object_text_text_set(cell_objects[0], *text_data);
-   evas_object_geometry_get(cell_objects[0], NULL, NULL, NULL, &th);
+   edje_object_part_text_set(cell_objects[0], "etk.text.text", *text_data);
+   edje_object_size_min_get(cell_objects[0], NULL, &th);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - th) / 2));
    evas_object_show(cell_objects[0]);
    
@@ -421,8 +419,8 @@ static Etk_Bool _int_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geomet
       return ETK_FALSE;
    
    snprintf(string, 255, "%d", *int_data);
-   evas_object_text_text_set(cell_objects[0], string);
-   evas_object_geometry_get(cell_objects[0], NULL, NULL, NULL, &th);
+   edje_object_part_text_set(cell_objects[0], "etk.text.text", string);
+   edje_object_size_min_get(cell_objects[0], NULL, &th);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - th) / 2));
    evas_object_show(cell_objects[0]);
    
@@ -468,8 +466,8 @@ static Etk_Bool _double_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geo
       return ETK_FALSE;
    
    snprintf(string, 255, "%.2f", *double_data);
-   evas_object_text_text_set(cell_objects[0], string);
-   evas_object_geometry_get(cell_objects[0], NULL, NULL, NULL, &th);
+   edje_object_part_text_set(cell_objects[0], "etk.text.text", string);
+   edje_object_size_min_get(cell_objects[0], NULL, &th);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - th) / 2));
    evas_object_show(cell_objects[0]);
    

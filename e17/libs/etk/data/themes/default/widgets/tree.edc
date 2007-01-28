@@ -679,6 +679,34 @@ group {
    }
 }
 
+/**
+ * group "etk/tree/text"
+ * -----------------------
+ * This group corresponds to text used by the "text" model of the tree
+ *
+ */
+group {
+   name: "etk/tree/text";
+   parts {
+      part {
+         name: "etk.text.text";
+	 type: TEXT;
+         description {
+            state: "default" 0.0;
+	    color: 0 0 0 255;
+	    align: 0.0 0.5;
+            text {
+               text: "";
+               font: "Vera";
+               size:  10;
+               min: 1 1;
+               align: 0.0 0.5;
+            }
+         }
+      }
+   }
+}
+
 /* TODO: we should be able to theme the progress-bar model... */
 /* TODO: remove this group... no more need for it with the tree2 */
 /* TODO: document "etk/tree/grid" */
