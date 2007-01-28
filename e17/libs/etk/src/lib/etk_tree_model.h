@@ -22,6 +22,7 @@ struct Etk_Tree_Model
    Etk_Tree *tree;
    Etk_Tree_Col *col;
    int cell_data_size;
+   int index;
    
    void (*model_free)(Etk_Tree_Model *model);
    void (*cell_data_init)(Etk_Tree_Model *model, void *cell_data);

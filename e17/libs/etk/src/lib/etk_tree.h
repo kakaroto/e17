@@ -207,6 +207,11 @@ void etk_tree_row_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_
 void etk_tree_row_fields_get(Etk_Tree_Row *row, ...);
 void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args);
 
+void etk_tree_row_model_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...);
+void etk_tree_row_model_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_list args);
+void etk_tree_row_model_fields_get(Etk_Tree_Row *row, ...);
+void etk_tree_row_model_fields_get_valist(Etk_Tree_Row *row, va_list args);
+
 void  etk_tree_row_data_set(Etk_Tree_Row *row, void *data);
 void  etk_tree_row_data_set_full(Etk_Tree_Row *row, void *data, void (*free_cb)(void *data));
 void *etk_tree_row_data_get(Etk_Tree_Row *row);

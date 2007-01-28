@@ -530,6 +530,7 @@ void etk_tree_col_model_add(Etk_Tree_Col *col, Etk_Tree_Model *model)
    col->models[col->num_models] = model;
    model->tree = col->tree;
    model->col = col;
+   model->index = col->num_models;
    col->num_models++;
 }
 
@@ -1040,7 +1041,7 @@ void etk_tree_clear(Etk_Tree *tree)
  * @brief Sets the values of the cells of the row
  * @param row a row of the tree
  * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
- * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have
+ * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have a
  * callback connected on this signal
  * @param ... an "Etk_Tree_Col *" followed by the value of the cell,
  * then any number of "Etk_Tree_Col *"/Value pairs, and terminated by NULL.
@@ -1062,7 +1063,7 @@ void etk_tree_row_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...)
  * @brief Sets the values of the cells of the row
  * @param row a row of the tree
  * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
- * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have
+ * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have a
  * callback connected on this signal
  * @param args an "Etk_Tree_Col *" followed by the value of the cell,
  * then any number of "Etk_Tree_Col *"/Value pairs, and terminated by NULL.
@@ -1137,6 +1138,104 @@ void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args)
          if (col->models[i]->cell_data_get)
             col->models[i]->cell_data_get(col->models[i], row->cells_data[col->id][i], &args);
       }
+   }
+   va_end(args2);
+}
+
+/**
+ * @brief Sets the values of the models of the row
+ * @param row a row of the tree
+ * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
+ * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have a
+ * callback connected on this signal
+ * @param args an "Etk_Tree_Model *" followed by the value of the model, then any number of
+ * "Etk_Tree_Model *"/Value pairs, and terminated by NULL.
+ * Note that, according to the models, a cell value can use several parameters
+ */
+void etk_tree_row_model_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...)
+{
+   va_list args;
+   
+   if (!row)
+      return;
+   
+   va_start(args, emit_signal);
+   etk_tree_row_model_fields_set_valist(row, emit_signal, args);
+   va_end(args);
+}
+
+/**
+ * @brief Sets the values of the models of the row
+ * @param row a row of the tree
+ * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
+ * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have a
+ * callback connected on this signal
+ * @param args an "Etk_Tree_Model *" followed by the value of the model, then any number of
+ * "Etk_Tree_Model *"/Value pairs, and terminated by NULL.
+ * Note that, according to the models, a cell value can use several parameters
+ */
+void etk_tree_row_model_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_list args)
+{
+   Etk_Tree_Model *model;
+   va_list args2;
+   
+   if (!row)
+      return;
+   
+   va_copy(args2, args);
+   while ((model = va_arg(args2, Etk_Tree_Model *)))
+   {
+      if (model->cell_data_set)
+         model->cell_data_set(model, row->cells_data[model->col->id][model->index], &args2);
+      if (emit_signal)
+         etk_signal_emit(_etk_tree_col_signals[ETK_TREE_COL_CELL_VALUE_CHANGED], ETK_OBJECT(model->col), NULL, row);
+   }
+   va_end(args2);
+   
+   if (!row->tree->frozen)
+      etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+}
+
+/**
+ * @brief Gets the values of the models of the row
+ * @param row a row of the tree
+ * @param ... an "Etk_Tree_Model *" followed by the location where to store the value of this model,
+ * then any number of "Etk_Tree_Model *"/Location pairs, and terminated by NULL.
+ * Note that some models may require several locations to store their value
+ */
+void etk_tree_row_model_fields_get(Etk_Tree_Row *row, ...)
+{
+   va_list args;
+   
+   if (!row)
+      return;
+   
+   va_start(args, row);
+   etk_tree_row_model_fields_get_valist(row, args);
+   va_end(args);
+}
+
+/**
+ * @brief Gets the values of the models of the row
+ * @param row a row of the tree
+ * @param args an "Etk_Tree_Model *" followed by the location where to store the value of this model,
+ * then any number of "Etk_Tree_Model *"/Location pairs, and terminated by NULL.
+ * Note that some models may require several locations to store their value
+ */
+void etk_tree_row_model_fields_get_valist(Etk_Tree_Row *row, va_list args)
+{
+   Etk_Tree_Model *model;
+   va_list args2;
+   int i;
+   
+   if (!row)
+      return;
+   
+   va_copy(args2, args);
+   while ((model = va_arg(args, Etk_Tree_Model *)))
+   {
+      if (model->cell_data_get)
+         model->cell_data_get(model, row->cells_data[model->col->id][model->index], &args);
    }
    va_end(args2);
 }

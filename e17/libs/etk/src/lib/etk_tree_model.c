@@ -767,7 +767,6 @@ static Etk_Bool _checkbox_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_G
    edje_object_message_signal_process(cell_objects[0]);
    
    evas_object_data_set(cell_objects[0], "_Etk_Tree_Model_Checkbox::Row", row);
-   evas_object_data_set(cell_objects[0], "_Etk_Tree_Model_Checkbox::Checked", checked);
    edje_object_size_min_get(cell_objects[0], &w, &h);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - h) / 2));
    evas_object_resize(cell_objects[0], w, h);
@@ -793,13 +792,12 @@ static void _checkbox_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *ev
 {
    Etk_Tree_Model *model;
    Etk_Tree_Row *row;
-   Etk_Bool *checked;
    Evas_Event_Mouse_Up *event;
    int ox, oy, ow, oh;
+   Etk_Bool checked;
    
    if (!(model = data) || !model->col || !(event = event_info)
-      || !(row = evas_object_data_get(obj, "_Etk_Tree_Model_Checkbox::Row"))
-      || !(checked = evas_object_data_get(obj, "_Etk_Tree_Model_Checkbox::Checked")))
+      || !(row = evas_object_data_get(obj, "_Etk_Tree_Model_Checkbox::Row")))
    {
       return;
    }
@@ -807,11 +805,8 @@ static void _checkbox_clicked_cb(void *data, Evas *e, Evas_Object *obj, void *ev
    evas_object_geometry_get(obj, &ox, &oy, &ow, &oh);
    if (ETK_INSIDE(event->canvas.x, event->canvas.y, ox, oy, ow, oh))
    {
-      *checked = !(*checked);
-      etk_signal_emit_by_name("cell_value_changed", ETK_OBJECT(model->col), NULL, row);
-      
-      /* Force the redraw the tree */
-      etk_widget_redraw_queue(ETK_WIDGET(model->tree));
+      etk_tree_row_model_fields_get(row, model, &checked, NULL);
+      etk_tree_row_model_fields_set(row, ETK_TRUE, model, !checked, NULL);
    }
 }
 
