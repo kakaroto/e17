@@ -39,10 +39,10 @@ struct Etk_Range
    void (*value_changed)(Etk_Range *range, double value);
 };
 
-Etk_Type *etk_range_type_get();
+Etk_Type *etk_range_type_get(void);
 
-void etk_range_value_set(Etk_Range *range, double value);
-double etk_range_value_get(Etk_Range *range);
+Etk_Bool etk_range_value_set(Etk_Range *range, double value);
+double   etk_range_value_get(Etk_Range *range);
 
 void etk_range_range_set(Etk_Range *range, double lower, double upper);
 void etk_range_range_get(Etk_Range *range, double *lower, double *upper);

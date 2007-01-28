@@ -819,9 +819,7 @@ static void _etk_spinner_update_value_from_text(Etk_Spinner *spinner)
    if (spinner->snap_to_ticks)
       value = _etk_spinner_value_snap(spinner, value);
    
-   if (etk_range_value_get(ETK_RANGE(spinner)) != value)
-      etk_range_value_set(ETK_RANGE(spinner), value);
-   else
+   if (!etk_range_value_set(ETK_RANGE(spinner), value))
       _etk_spinner_update_text_from_value(spinner);
 }
 

@@ -44,7 +44,7 @@ static Etk_Signal *_etk_range_signals[ETK_RANGE_NUM_SIGNALS];
  * @brief Gets the type of an Etk_Range
  * @return Returns the type of an Etk_Range
  */
-Etk_Type *etk_range_type_get()
+Etk_Type *etk_range_type_get(void)
 {
    static Etk_Type *range_type = NULL;
 
@@ -80,13 +80,15 @@ Etk_Type *etk_range_type_get()
  * @brief Sets the value of the range
  * @param range a range
  * @param value the value to set to the range
+ * @return Returns ETK_TRUE if the value has actually been changed, ETK_FALSE otherwise (because
+ * the current value is equal to the new value)
  */
-void etk_range_value_set(Etk_Range *range, double value)
+Etk_Bool etk_range_value_set(Etk_Range *range, double value)
 {
    double new_value;
    
    if (!range)
-      return;
+      return ETK_FALSE;
 
    new_value = ETK_CLAMP(value, range->lower, range->upper - range->page_size);
    if (new_value != range->value)
@@ -94,7 +96,10 @@ void etk_range_value_set(Etk_Range *range, double value)
       range->value = new_value;
       etk_signal_emit(_etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL], ETK_OBJECT(range), NULL, range->value);
       etk_object_notify(ETK_OBJECT(range), "value");
+      return ETK_TRUE;
    }
+   
+   return ETK_FALSE;
 }
 
 /**

@@ -16,6 +16,7 @@ void etk_test_colorpicker_window_create(void *data)
    etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
    
    cp = etk_colorpicker_new();
+   etk_colorpicker_use_alpha_set(ETK_COLORPICKER(cp), ETK_TRUE);
    etk_container_add(ETK_CONTAINER(win), cp);
    
    etk_widget_show_all(win);

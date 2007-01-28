@@ -69,7 +69,6 @@ struct Etk_Colorpicker
    /* Sliders */
    Etk_Widget *sliders[6];
    Evas_Object *sliders_image[6];
-   float sliders_max_value[6];
    int sliders_res;
    Etk_Bool sliders_need_update;
    
@@ -77,6 +76,11 @@ struct Etk_Colorpicker
    Etk_Widget *component_table;
    Etk_Widget *radios[6];
    Etk_Widget *value_labels[6];
+   
+   /* Alpha slider */
+   Etk_Widget *alpha_slider;
+   Etk_Widget *alpha_name_label;
+   Etk_Widget *alpha_value_label;
    
    /* Current color objects */
    Etk_Widget *color_table;
@@ -87,18 +91,20 @@ struct Etk_Colorpicker
    Etk_Bool ignore_value_changed;
    Etk_Bool emit_signal;
    
+   Etk_Bool use_alpha;
    Etk_Colorpicker_Mode mode;
    Etk_Color current_color;
 };
 
-Etk_Type   *etk_colorpicker_type_get();
-Etk_Widget *etk_colorpicker_new();
+Etk_Type   *etk_colorpicker_type_get(void);
+Etk_Widget *etk_colorpicker_new(void);
 
 void                 etk_colorpicker_mode_set(Etk_Colorpicker *cp, Etk_Colorpicker_Mode mode);
 Etk_Colorpicker_Mode etk_colorpicker_mode_get(Etk_Colorpicker *cp);
-
-void      etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color);
-Etk_Color etk_colorpicker_current_color_get(Etk_Colorpicker *cp);
+void                 etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color);
+Etk_Color            etk_colorpicker_current_color_get(Etk_Colorpicker *cp);
+void                 etk_colorpicker_use_alpha_set(Etk_Colorpicker *cp, Etk_Bool use_alpha);
+Etk_Bool             etk_colorpicker_use_alpha_get(Etk_Colorpicker *cp);
 
 /** @} */
 
