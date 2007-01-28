@@ -1,7 +1,7 @@
 #include <Etk.h>
 #include "Entrance_Widgets.h"
 
-static void _ew_list_cb_row_clicked(Etk_Object *, Etk_Tree2_Row *, Etk_Event_Mouse_Down *, void *);
+static void _ew_list_cb_row_clicked(Etk_Object *, Etk_Tree_Row *, Etk_Event_Mouse_Down *, void *);
 
 Entrance_List
 __ew_list_new(void)
@@ -25,13 +25,13 @@ _ew_list_new(const char *title, int w, int h, int r_h)
 	   return NULL;
    }
 
-   ew->owner = etk_tree2_new();
+   ew->owner = etk_tree_new();
    etk_signal_connect("row_clicked", ETK_OBJECT(ew->owner), ETK_CALLBACK(_ew_list_cb_row_clicked), NULL);
    etk_widget_size_request_set(ew->owner, w, h);
-   etk_tree2_mode_set(ETK_TREE2(ew->owner), ETK_TREE2_MODE_LIST);
-   etk_tree2_multiple_select_set(ETK_TREE2(ew->owner), ETK_FALSE);
-   etk_tree2_headers_visible_set(ETK_TREE2(ew->owner), ETK_FALSE);
-   etk_tree2_rows_height_set(ETK_TREE2(ew->owner), r_h);
+   etk_tree_mode_set(ETK_TREE(ew->owner), ETK_TREE_MODE_LIST);
+   etk_tree_multiple_select_set(ETK_TREE(ew->owner), ETK_FALSE);
+   etk_tree_headers_visible_set(ETK_TREE(ew->owner), ETK_FALSE);
+   etk_tree_rows_height_set(ETK_TREE(ew->owner), r_h);
    
   ew->col = NULL;
 
@@ -42,7 +42,7 @@ _ew_list_new(const char *title, int w, int h, int r_h)
 Entrance_List
 _ew_list_buildtree(Entrance_List ew)
 {
-	etk_tree2_build(ETK_TREE2(ew->owner));
+	etk_tree_build(ETK_TREE(ew->owner));
 
 	/*TODO:should trees have their own labels? being we're putting stuff into a group with a label already.*/
 	/*Etk_Widget *hbox;
@@ -79,27 +79,27 @@ ew_listdata_new(void)
 void
 ew_list_first_row_select(Entrance_List el)
 {
-	Etk_Tree2_Row *row = etk_tree2_first_row_get(ETK_TREE2(el->owner));
-	etk_tree2_row_select(row);
+	Etk_Tree_Row *row = etk_tree_first_row_get(ETK_TREE(el->owner));
+	etk_tree_row_select(row);
 }
 
 void* 
 ew_list_selected_data_get(Entrance_List el)
 {
-	Etk_Tree2_Row *row = etk_tree2_selected_row_get(ETK_TREE2(el->owner));
+	Etk_Tree_Row *row = etk_tree_selected_row_get(ETK_TREE(el->owner));
 	if(!row) {
 		return NULL;
 	}
 
-	Entrance_List_Data ewld = etk_tree2_row_data_get(row);
+	Entrance_List_Data ewld = etk_tree_row_data_get(row);
 	return ewld->data;
 }
 
 /*privates*/
 static void 
-_ew_list_cb_row_clicked(Etk_Object *object, Etk_Tree2_Row *row, Etk_Event_Mouse_Down *event, void *data)
+_ew_list_cb_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Down *event, void *data)
 {  
-   Entrance_List_Data ewld =  etk_tree2_row_data_get(row);
+   Entrance_List_Data ewld =  etk_tree_row_data_get(row);
 
    if(ewld->func)
      ewld->func(ewld->funcdata);
