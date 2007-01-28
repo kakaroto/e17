@@ -247,6 +247,10 @@ typedef struct
 {
    struct
    {
+      unsigned int        step;	/* Animation time step, ms */
+   } animation;
+   struct
+   {
       char                enable;
       int                 delay;	/* milliseconds */
    } autoraise;

@@ -108,6 +108,8 @@ MiscSighan(int sig, void *prm __UNUSED__)
 
 static const CfgItem MiscCfgItems[] = {
 
+   CFG_ITEM_INT(Conf, animation.step, 10),
+
    CFG_ITEM_INT(Conf, buttons.move_resistance, 10),
 
    CFG_ITEM_BOOL(Conf, dialogs.headers, 0),

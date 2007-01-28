@@ -166,6 +166,9 @@ RemoveTimerEvent(const char *name)
    return 0;
 }
 
+/*
+ * Idlers
+ */
 static Ecore_List  *idler_list = NULL;
 
 typedef void        (IdlerFunc) (void *data);
@@ -211,4 +214,98 @@ IdlersRun(void)
    Idler              *id;
 
    ECORE_LIST_FOR_EACH(idler_list, id) id->func(id->data);
+}
+
+/*
+ * Animators
+ */
+#define DEBUG_ANIMATORS 0
+static Ecore_List  *animator_list = NULL;
+
+typedef int         (AnimatorFunc) (void *data);
+
+struct _animator
+{
+   char               *name;
+   AnimatorFunc       *func;
+   void               *data;
+};
+
+static void
+AnimatorsRun(int val __UNUSED__, void *data __UNUSED__)
+{
+   Animator           *an;
+   int                 again;
+
+   ECORE_LIST_FOR_EACH(animator_list, an)
+   {
+#if DEBUG_ANIMATORS > 1
+      Eprintf("AnimatorRun %p\n", an);
+#endif
+      again = an->func(an->data);
+      if (!again)
+	 AnimatorDel(an);
+   }
+
+   if (ecore_list_nodes(animator_list))
+      DoIn("Anim", 1e-3 * Conf.animation.step, AnimatorsRun, 0, NULL);
+}
+
+Animator           *
+AnimatorAdd(AnimatorFunc * func, void *data)
+{
+   Animator           *an;
+
+   an = Emalloc(sizeof(Animator));
+   if (!an)
+      return NULL;
+
+#if DEBUG_ANIMATORS
+   Eprintf("AnimatorAdd %p func=%p data=%p\n", an, func, data);
+#endif
+   an->name = NULL;
+   an->func = func;
+   an->data = data;
+
+   if (!animator_list)
+      animator_list = ecore_list_new();
+
+   ecore_list_append(animator_list, an);
+
+   if (ecore_list_nodes(animator_list) == 1)
+     {
+	if (Conf.animation.step <= 0)
+	   Conf.animation.step = 1;
+	/* Animator list was empty - Add to timer qeueue */
+	DoIn("Anim", 1e-3 * Conf.animation.step, AnimatorsRun, 0, NULL);
+     }
+
+   return an;
+}
+
+void
+AnimatorDel(Animator * an)
+{
+#if DEBUG_ANIMATORS
+   Eprintf("AnimatorDel %p func=%p data=%p\n", an, an->func, an->data);
+#endif
+
+   ecore_list_remove_node(animator_list, an);
+   if (an->name)
+      Efree(an->name);
+   if (an->data)
+      Efree(an->data);
+   Efree(an);
+
+   if (ecore_list_nodes(animator_list) == 0)
+     {
+	/* Animator list was empty - Add to timer qeueue */
+	RemoveTimerEvent("Anim");
+     }
+}
+
+void               *
+AnimatorGetData(Animator * an)
+{
+   return an->data;
 }
