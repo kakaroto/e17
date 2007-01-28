@@ -273,6 +273,10 @@ IPC_Screen(const char *params, Client * c __UNUSED__)
      {
 	ScreenShowInfo(p);
      }
+   else if (!p || !strncmp(param, "size", 2))
+     {
+	IpcPrintf("Screen %d  size %dx%d\n", VRoot.scr, VRoot.w, VRoot.h);
+     }
    else if (!strcmp(param, "split"))
      {
 	int                 i, j, nx, ny;
@@ -1499,7 +1503,10 @@ static const IpcItem IPCArray[] = {
    {
     IPC_Border, "border", NULL, "List available borders", NULL},
    {
-    IPC_Screen, "screen", NULL, "Return screen information", NULL},
+    IPC_Screen, "screen", NULL, "Return screen information",
+    "  screen list         List screens\n"
+    "  screen size         Show current screen size\n"
+    "  screen split nx ny  Simulate xinerama by subdividing screen\n"},
    {
     SnapIpcFunc,
     "list_remember", "rl",
