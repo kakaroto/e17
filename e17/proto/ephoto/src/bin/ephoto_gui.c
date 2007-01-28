@@ -413,11 +413,11 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data)
 static void about_clicked(Ewl_Widget *w, void *event, void *data)
 {
 	Ewl_Widget *text;
-	char *txt;
+	char txt[PATH_MAX];
 
-	txt = "Ephoto Version 2.15.0\n"
-              "Lead Developer - Stephen Houston\n"
-	      "Contributors - Tokyo.\n";
+	snprintf(txt, PATH_MAX, "Ephoto Version %s\n"
+              			"Lead Developer - Stephen Houston\n"
+	      			"Contributors - Tokyo.\n", VERSION);
 
 	text = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text), txt);

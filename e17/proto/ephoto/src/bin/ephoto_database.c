@@ -130,7 +130,8 @@ void ephoto_db_delete_image(sqlite3 *db, char *album, char *path)
 	snprintf(command, PATH_MAX, "SELECT id FROM images WHERE path = '%s';", path);
 	sqlite3_exec(db, command, get_image_id, 0, 0);
 	snprintf(command, PATH_MAX, "DELETE FROM album_images WHERE "
-		       	            "album_id = '%s' AND image_id = '%s';", album_id, image_id);
+		       	            "image_id = '%s' AND album_id = '%s';", image_id, album_id);
+	sqlite3_exec(db, command, 0, 0, 0);
 	return;
 }	
 
