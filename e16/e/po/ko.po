@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-15 22:07+0100\n"
+"POT-Creation-Date: 2007-01-27 18:37+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -1244,11 +1244,11 @@ msgstr "아이콘상자 옵션"
 msgid "Iconbox Settings"
 msgstr "아이콘상자 설정"
 
-#: src/ipc.c:322
+#: src/ipc.c:326
 msgid "Message"
 msgstr "메시지"
 
-#: src/ipc.c:1058
+#: src/ipc.c:1062
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1257,12 +1257,12 @@ msgstr ""
 "인라이튼먼트 버전 : %s\n"
 "현재의 코드       : %s\n"
 
-#: src/ipc.c:1684
+#: src/ipc.c:1691
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "인라이튼먼트 IPC 명령 도움말"
 
-#: src/ipc.c:1688
+#: src/ipc.c:1695
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1273,23 +1273,23 @@ msgstr ""
 "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 "\n"
 
-#: src/ipc.c:1690 src/ipc.c:1710 src/ipc.c:1722
+#: src/ipc.c:1697 src/ipc.c:1717 src/ipc.c:1729
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "현재 사용가능한 명령:\n"
 
-#: src/ipc.c:1708
+#: src/ipc.c:1715
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1709
+#: src/ipc.c:1716
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 
-#: src/ipc.c:1711 src/ipc.c:1723
+#: src/ipc.c:1718 src/ipc.c:1730
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <명령> : <설명>\n"

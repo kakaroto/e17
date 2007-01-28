@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-15 22:07+0100\n"
+"POT-Creation-Date: 2007-01-27 18:37+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -1248,11 +1248,11 @@ msgstr "Iconbox opcije"
 msgid "Iconbox Settings"
 msgstr "Iconbox Osobine"
 
-#: src/ipc.c:322
+#: src/ipc.c:326
 msgid "Message"
 msgstr "Poruka"
 
-#: src/ipc.c:1058
+#: src/ipc.c:1062
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1261,12 +1261,12 @@ msgstr ""
 "Enlightenment verzija : %s\n"
 "kod je trenutno na    : %s\n"
 
-#: src/ipc.c:1684
+#: src/ipc.c:1691
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Comande Pomo?"
 
-#: src/ipc.c:1688
+#: src/ipc.c:1695
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1277,23 +1277,23 @@ msgstr ""
 "koristite \"help <command>\" za pojedinaīni opis\n"
 "\n"
 
-#: src/ipc.c:1690 src/ipc.c:1710 src/ipc.c:1722
+#: src/ipc.c:1697 src/ipc.c:1717 src/ipc.c:1729
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "trenutno dostupne komande:\n"
 
-#: src/ipc.c:1708
+#: src/ipc.c:1715
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1709
+#: src/ipc.c:1716
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "koristi \"help <command>\" za individualni opis\n"
 
-#: src/ipc.c:1711 src/ipc.c:1723
+#: src/ipc.c:1718 src/ipc.c:1730
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"

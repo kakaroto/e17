@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-15 22:07+0100\n"
+"POT-Creation-Date: 2007-01-27 18:37+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -1251,11 +1251,11 @@ msgstr "Опции за Iconbox"
 msgid "Iconbox Settings"
 msgstr "Настройки за Iconbox"
 
-#: src/ipc.c:322
+#: src/ipc.c:326
 msgid "Message"
 msgstr "Съобщение"
 
-#: src/ipc.c:1058
+#: src/ipc.c:1062
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1264,11 +1264,11 @@ msgstr ""
 "Версия на Enlightenment : %s\n"
 "Кода е текущ на         : %s\n"
 
-#: src/ipc.c:1684
+#: src/ipc.c:1691
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Помощ за командите на Enlightenment IPC\n"
 
-#: src/ipc.c:1688
+#: src/ipc.c:1695
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1278,19 +1278,19 @@ msgstr ""
 "\"help <команда>\": описание за дадена команда\n"
 "\n"
 
-#: src/ipc.c:1690 src/ipc.c:1710 src/ipc.c:1722
+#: src/ipc.c:1697 src/ipc.c:1717 src/ipc.c:1729
 msgid "Commands currently available:\n"
 msgstr "Достъпни команди:\n"
 
-#: src/ipc.c:1708
+#: src/ipc.c:1715
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "\"help full\": пълно описания за всяка команда\n"
 
-#: src/ipc.c:1709
+#: src/ipc.c:1716
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание за дадена команда\n"
 
-#: src/ipc.c:1711 src/ipc.c:1723
+#: src/ipc.c:1718 src/ipc.c:1730
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
