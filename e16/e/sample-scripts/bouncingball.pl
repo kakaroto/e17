@@ -27,46 +27,26 @@
 # then when it's done bouncing it gets rid of it.
 
 
-$screen_size = `eesh -ewait \"general_info screen_size\"`;
+$s = `eesh screen size`;
+chomp($s);
 
-chomp($screen_size);
-
-($crap,$width,$height) = split(/\s+/,$screen_size);
-
-
-# we'll create the ball here and by process of elimination determine what
-# the winid is.
-@winlist1 = `eesh -ewait window_list`;
-
-`eesh -e \"dialog_ok Follow the Bouncing Ball\"`;
-@winlist2 = `eesh -ewait window_list`;
-
-# run through the two lists and figure out which one is new.
-
-foreach $item1 (@winlist2) {
-	$inside = 0;
-	foreach $item2 (@winlist1) {
-		$inside = 1 if($item1 eq $item2);
-	}
-	$ballwininfo = $item1 if(!$inside);
+($crap,$width,$height) = split(/\s+/,$s);
+if ($s =~ /.*size\s+(\d+)x(\d+)/) {
+  $width = $1; $height = $2;
 }
 
-# call the ball, ace
-# (now we have the windowid of our ball)
+`eesh dialog_ok \"Follow the Bouncing Ball\"`;
+$ball = "Message";
 
-($ball,$message) = split(/ \: /,$ballwininfo);
-$ball =~ s/\s+//g;
-
-$ballloc = `eesh -ewait \"win_op $ball move ?\"`;
-$ballsize = `eesh -ewait \"win_op $ball resize ??\"`;
-
-$ballloc =~ s/^.*\: //g;
-$ballloc =~ s/\n//g;
-$ballsize =~ s/^.*\: //g;
-$ballsize =~ s/\n//g;
-
-($ballx,$bally) = split(/\s+/,$ballloc);
-($ballw,$ballh) = split(/\s+/,$ballsize);
+$s = `eesh win_op $ball move "?"`;
+if ($s =~ /.*:\s+(\d+)\s+(\d+)/) {
+  $ballx = $1; $bally = $2;
+}
+$s = `eesh win_op $ball size "??"`;
+if ($s =~ /.*:\s+(\d+)\s+(\d+)/) {
+  $ballw = $1; $ballh = $2;
+}
+#print "x,y=$ballx,$bally wxh=$ballw x $ballh\n";
 
 # now for the fun part.  make that baby bounce up and down.
 # we're going to open a big pipe for this one and just shove data
@@ -86,6 +66,7 @@ foreach(@fallspeed) {
 			$bally = $height - $ballh;
 		}
 		print IPCPIPE "win_op $ball move $ballx $bally\n";
+		system("usleep 20000");
 	}
 
 	if($fallspeed[i+1]) {
@@ -102,6 +83,7 @@ foreach(@fallspeed) {
 			$bally = $originalbally + int($originalbally * (1/$#fallspeed));
 		}
 		print IPCPIPE "win_op $ball move $ballx $bally\n";
+		system("usleep 20000");
 	}
 	$i++;
 }

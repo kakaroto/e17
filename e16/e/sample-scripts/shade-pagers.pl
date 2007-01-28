@@ -24,9 +24,6 @@
 # This is a hack of mandrake's "testroller.pl" that shades/unshades all your
 # pager windows
 
-@winlist_temp = `eesh -ewait window_list`;
-@intlist_temp = `eesh -ewait \"internal_list internal_ewin\"`;
-
 # here we're going to test to see whether we are shading or unshading
 # the window.
 
@@ -41,29 +38,24 @@ if($ARGV[0] eq "1") {
 
 # make sure that we're not an internal window in our list
 
+@winlist_temp = `eesh window_list`;
 foreach(@winlist_temp) {
     chomp;
-    @stuff = split /\:/;
-    $insert = 0;
-    foreach $member (@intlist_temp) {
-        chomp($member);
-        $stuff[0] =~ s/\s+//g;
-        $member =~ s/\s+//g;
-        if(($member eq $stuff[0]) && ($stuff[1] =~ /^\s*\d+\s*$/)) {
-            $insert = 1;
-        }
-    }
-    if($insert) {
-        push @winlist,$stuff[0] if($stuff[0]);
+    @stuff = split /\s*\:\s*/;
+#   print ">$stuff[0]<>$stuff[1]<\n";
+    if ($stuff[1] =~ /^Pager-.*/) {
+        push @winlist,$stuff[0] if ($stuff[0]);
     }
 }
-
-open IPCPIPE,"| eesh";
 
 # now we're going to walk through each of these windows and
 # shade them
 
+open IPCPIPE,"| eesh";
 foreach $window (@winlist) {
     print IPCPIPE "win_op $window shade $shade\n";
 }
 close IPCPIPE;
+
+# Alternatively, simply do
+#$ eesh wop Pager* shade [on|off]

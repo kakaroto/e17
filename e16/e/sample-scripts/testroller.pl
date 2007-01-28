@@ -30,9 +30,6 @@
 #
 # --Mandrake
 
-@winlist_temp = `eesh -ewait window_list`;
-@intlist_temp = `eesh -ewait \"internal_list internal_ewin\"`;
-
 # here we're going to test to see whether we are shading or unshading
 # the window.
 
@@ -42,85 +39,61 @@ if($ARGV[0] eq "on") {
 	$shade = 0;
 }
 
-
-# make sure that we're not an internal window in our list
-
-foreach(@winlist_temp) {
-	chomp;
-	@stuff = split /\:/;
-	$insert = 1;
-	foreach $member (@intlist_temp) {
-		chomp($member);
-		$stuff[0] =~ s/\s+//g;
-		$member =~ s/\s+//g;
-		if($member eq $stuff[0]) {
-			$insert = 0;
-		}
-	}
-	if($insert) {
-		push @winlist,$stuff[0] if($stuff[0]);
-	}
-}
-
 # here we'll retreive the current desk we're on
 
-$current_desk = `eesh -ewait \"goto_desktop ?\"`;
-@stuff = split(/\:/,$current_desk);
-$current_desk = $stuff[1];
-$current_desk =~ s/\n//g;
-$current_desk =~ s/^\s+//;
+$_ = `eesh desk`;
+@stuff = split(/\s*:\s*/);
+@stuff = split(/\s*\/\s*/, $stuff[1]);
+$current_desk = $stuff[0];
 
 # here we'll retreive the current area we're on
 
-$current_area = `eesh -ewait \"goto_area ?\"`;
-@stuff = split(/\:/,$current_area);
+$_ = `eesh area`;
+@stuff = split(/\s*\n\s*/);
+@stuff = split(/\s*:\s*/, $stuff[0]);
 $current_area = $stuff[1];
 $current_area =~ s/\n//g;
-$current_area =~ s/^\s+//;
 
 
 # get the old shadespeed so that we can set it back later
 # because we want this to happen fairly quickly, we'll set
 # the speed to something really high
 
-$shadespeed = `eesh -ewait \"fx window_shade_speed ?\"`;
-@stuff = split(/\: /,$shadespeed);
+$_ = `eesh show misc.shading.speed`;
+@stuff = split(/\s*\n\s*/);
+@stuff = split(/\s*=\s*/, $stuff[0]);
 $shadespeed = $stuff[1];
-chomp($shadespeed);
 
 open IPCPIPE,"| eesh";
-print IPCPIPE "fx window_shade_speed 10000000\n";
+print IPCPIPE "set misc.shading.speed 10000000\n";
 
 # now we're going to walk through each of these windows and
 # shade them
 
-foreach $window (@winlist) {
-	$cur_window_desk = `eesh -ewait \"win_op $window desk ?\"`;
-	@stuff = split(/\:/,$cur_window_desk);
-	$cur_window_desk = $stuff[1];
-	$cur_window_desk =~ s/\n//g;
-	$cur_window_desk =~ s/^\s+//;
-	if($cur_window_desk eq $current_desk) {
-		$cur_window_area = `eesh -ewait \"win_op $window area ?\"`;
-		@stuff = split(/\:/,$cur_window_area);
-		$cur_window_area = $stuff[1];
-		$cur_window_area =~ s/\n//g;
-		$cur_window_area =~ s/^\s+//;
-		if($cur_window_area eq $current_area) {
-			if($shade) {
-				print IPCPIPE "win_op $window shade on\n";
-			} else {
-				print IPCPIPE "win_op $window shade off\n";
-			}
+@winlist = `eesh window_list a`;
+foreach (@winlist) {
+	if (/\s*(\w+)\s* : .* :: \s*(-*\d+)\s* : (.*) : (.*)$/) {
+		$window = $1;
+		$desk = $2;
+		$area = $3;
+		$name = $4;
 
+		# Skip pagers, iconboxes, systrays, and epplets
+		next if ($name =~ /^Pager-|Iconbox|Systray|E-/);
+#		next unless (($desk == -1) and ($desk eq $current_desk));
+		next unless ($desk eq $current_desk);
+		next unless ($area eq $current_area);
+		if ($shade) {
+			print IPCPIPE "win_op $window shade on\n";
+		} else {
+			print IPCPIPE "win_op $window shade off\n";
 		}
 	}
 }
 
 # now we're going to set the shade speed back to what it was originally
 
-print IPCPIPE "fx window_shade_speed $shadespeed\n";
+print IPCPIPE "set misc.shading.speed $shadespeed\n";
 close IPCPIPE;
-
 
 # that's it!

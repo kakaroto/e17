@@ -25,38 +25,24 @@
 # Instructions: move the top window and see what happends to the lower one.
 #
 
-# The very wierd and bad way of getting the windowids of the two message
-# windows in bash, there must be a better way!
-
-# Open a window then get the windowid of it (hopefully)
+# Open dialog 1
 eesh -e "dialog_ok Move this window"
-window=`eesh -ewait window_list|grep Message`
-a=0
-for i in $window;do
-	a=$(($a + 1))
-	if [ $a = 1 ];then
-		windowid=$i
-	fi
-done
+usleep 100000
+eesh -e "wop Message title Dlg1"
+usleep 100000
 
-# open a new dialog, then get the windowids of all windows named "Message" then
-# get the id that's not equal the first window we created
+# Open dialog 2
 eesh -e "dialog_ok Watch me follow the above window"
-window2=`eesh -ewait window_list|grep Message|grep -v $windowid`
-a=0
-for i in $window2;do
-    a=$(($a + 1))
-	if [ $a = 1 ];then
-      windowid2=$i
-	fi
-done
+usleep 100000
+eesh -e "wop Message title Dlg2"
+usleep 100000
 
 # In one endless loop, get window position of the first window, then move the
 # second one accordingly...
-while true;do
-
+while true
+do
 	# Get position
-	pos=`eesh -ewait "win_op $windowid move ? ?"`
+	pos=`eesh wop Dlg1 move "?"`
 	a=0
 	for i in $pos;do
 		a=$(($a + 1))
@@ -69,5 +55,5 @@ while true;do
 	done
 		
 	# Move the second window to the new position
-	eesh -e "win_op $windowid2 move $xpos $(($ypos + 74))"
+	eesh wop Dlg2 move $xpos $(($ypos + 74))
 done
