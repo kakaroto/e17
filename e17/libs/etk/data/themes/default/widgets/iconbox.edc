@@ -238,11 +238,11 @@ group {
             visible: 0;
             rel1 {
                relative: 0.0 0.0;
-               offset: 0 -3;
+               offset: -6 -3;
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: 0 3;
+               offset: 3 3;
             }
             image {
                normal: "iconbox_label_bg.png";
@@ -257,6 +257,17 @@ group {
             state: "selected" 0.0;
             inherit: "default" 0.0;
             visible: 1;
+         }
+      }
+      part {
+         name: "etk.text.textblock";
+	 type: TEXTBLOCK;
+         description {
+            state: "default" 0.0;
+	    text {
+		style: "label_style";
+		min:   1 1;
+	    }
          }
       }
    }

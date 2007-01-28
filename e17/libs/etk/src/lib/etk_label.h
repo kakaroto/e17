@@ -35,8 +35,6 @@ struct Etk_Label
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
 
-   Evas_Object *text_object;
-   Evas_Object *clip;
    char *text;
 
    float xalign;

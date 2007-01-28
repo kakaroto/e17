@@ -25,7 +25,6 @@ static void _etk_label_property_get(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *requested_size);
 static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_label_realize_cb(Etk_Object *object, void *data);
-static void _etk_label_unrealize_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -78,15 +77,25 @@ Etk_Widget *etk_label_new(const char *text)
  */
 void etk_label_set(Etk_Label *label, const char *text)
 {
-   if (!label || label->text == text)
+   if (!label)
       return;
 
-   free(label->text);
-   label->text = (text && *text != '\0') ? strdup(text) : NULL;
+   if (text != label->text)
+   {
+       free(label->text);
+       label->text = (text && *text != '\0') ? strdup(text) : NULL;
+   }
 
-   if (label->text_object)
-      evas_object_textblock_text_markup_set(label->text_object, label->text ? label->text : " ");
-   
+   if (ETK_WIDGET(label)->theme_object)
+   {
+       if (!label->text)
+	   etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", "");
+       else
+	   etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", label->text);
+   }
+/*   if (label->text_object)*/
+/*      evas_object_textblock_text_markup_set(label->text_object, label->text ? label->text : " ");*/
+
    etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
 
@@ -166,8 +175,6 @@ static void _etk_label_constructor(Etk_Label *label)
    if (!(widget = ETK_WIDGET(label)))
       return;
 
-   label->text_object = NULL;
-   label->clip = NULL;
    label->text = NULL;
 
    label->xalign = 0.0;
@@ -177,7 +184,6 @@ static void _etk_label_constructor(Etk_Label *label)
    widget->size_allocate = _etk_label_size_allocate;
 
    etk_signal_connect("realize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_unrealize_cb), NULL);
 }
 
 /* Destroys the label */
@@ -246,8 +252,9 @@ static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *requested_size
 
    requested_size->w = 0;
    requested_size->h = 0;
-   if (label->text_object)
-      evas_object_textblock_size_native_get(label->text_object, &requested_size->w, &requested_size->h);
+
+   if (ETK_WIDGET(label)->theme_object)
+      edje_object_size_min_calc(ETK_WIDGET(label)->theme_object, &requested_size->w, &requested_size->h);
 }
 
 /* Resizes the label to the allocated size */
@@ -260,12 +267,9 @@ static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       return;
 
    _etk_label_size_request(widget, &requested_size);
-   evas_object_move(label->text_object, geometry.x + (geometry.w - requested_size.w) * label->xalign,
+   evas_object_move(ETK_WIDGET(label)->theme_object, geometry.x + (geometry.w - requested_size.w) * label->xalign,
       geometry.y + (geometry.h - requested_size.h) * label->yalign);
-   evas_object_resize(label->text_object, requested_size.w + 1, requested_size.h);
-
-   evas_object_move(label->clip, geometry.x, geometry.y);
-   evas_object_resize(label->clip, geometry.w, geometry.h);
+   evas_object_resize(ETK_WIDGET(label)->theme_object, requested_size.w, requested_size.h);
 }
 
 /**************************
@@ -278,57 +282,12 @@ static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 static void _etk_label_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Label *label;
-   Evas *evas;
-   Evas_Textblock_Style *style;
 
-   if (!(label = ETK_LABEL(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(label))))
-      return;
-
-   style = evas_textblock_style_new();
-   /* TODO: make the label themable... */
-   evas_textblock_style_set(style,
-      "DEFAULT='font=Vera font_size=10 align=left color=#000000 wrap=word style=shadow shadow_color=#ffffff80'"
-      "left='+ align=left'"
-      "/left='- \n'"
-      "center='+ align=center'"
-      "/center='- \n'"
-      "right='+ align=right'"
-      "/right='- \n'"
-      "h1='+ font_size=20'"
-      "b='+font=Vera-Bold'"
-      "i='+font=Vera-Italic'"
-      "bi='+font=Vera-Bold-Italic'"
-      "glow='+ style=glow color=#fff glow2_color=#fe87 glow_color=#fa14'"
-      "link='+ underline=on underline_color=#0000aa color=#0000aa'"       
-      "red='+ color=#ff0000'"
-      "br='\n'"
-      "tab='\t'");
-
-   label->clip = evas_object_rectangle_add(evas);
-   evas_object_show(label->clip);
-   etk_widget_member_object_add(ETK_WIDGET(label), label->clip);
-   
-   label->text_object = evas_object_textblock_add(evas);
-   evas_object_textblock_style_set(label->text_object, style);
-   evas_textblock_style_free(style);
-   evas_object_show(label->text_object);
-   etk_widget_member_object_add(ETK_WIDGET(label), label->text_object);
-   evas_object_clip_set(label->text_object, label->clip);
-
-   evas_object_textblock_text_markup_set(label->text_object, label->text ? label->text : " ");
-   etk_widget_size_recalc_queue(ETK_WIDGET(label));
-}
-
-/* Called when the label is unrealized */
-static void _etk_label_unrealize_cb(Etk_Object *object, void *data)
-{
-   Etk_Label *label;
-   
    if (!(label = ETK_LABEL(object)))
       return;
-   
-   label->text_object = NULL;
-   label->clip = NULL;
+
+   etk_label_set(label, label->text);
+   etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
 
 /** @} */

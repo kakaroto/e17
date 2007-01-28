@@ -37,6 +37,7 @@ widgets/text_view.edc \
 widgets/toggle_button.edc \
 widgets/tooltips.edc \
 widgets/tree.edc \
+widgets/label.edc \
 widgets/windows.edc
 
 default.edj: Makefile $(THEME_DEP)

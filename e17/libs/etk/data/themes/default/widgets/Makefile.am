@@ -22,4 +22,5 @@ EXTRA_DIST = button.edc \
              iconbox.edc \
              colorpicker.edc \
              toolbar.edc \
+ 	     label.edc \
 	     shadow.edc
