@@ -354,14 +354,20 @@ WarpFocusClick(int ix)
 
    if (!warplist)
       return;
+   if (ix < 0 || ix >= warplist_num)
+      return;
+   if (ix == warpFocusIndex)
+      return;
+
+   warpFocusIndex = ix;
+   WarpFocusShow();
 
    ewin = warplist[ix].ewin;
    if (!EwinFindByPtr(ewin))
       return;
 
    EwinRaise(ewin);
-   if (ewin->state.iconified)
-      EwinDeIconify(ewin);
+
    FocusToEWin(ewin, FOCUS_SET);
 }
 
