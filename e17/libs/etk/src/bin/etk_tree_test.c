@@ -72,7 +72,7 @@ void etk_test_tree_window_create(void *data)
       row = etk_tree_row_append(ETK_TREE(tree), NULL,
          col1, etk_theme_icon_get(), stock_key, row_name,
          col2, 0.57,
-	 col3, 7,
+         col3, 7,
          col4, PACKAGE_DATA_DIR "/images/1star.png", NULL,
          col5, ETK_FALSE,
          NULL);
@@ -82,7 +82,7 @@ void etk_test_tree_window_create(void *data)
       row = etk_tree_row_append(ETK_TREE(tree), row,
          col1, etk_theme_icon_get(), stock_key, row_name,
          col2, 20.0,
-	 col3, 19,
+         col3, 19,
          col4, PACKAGE_DATA_DIR "/images/2stars.png", NULL,
          col5, ETK_TRUE,
          NULL);
@@ -107,7 +107,7 @@ void etk_test_tree_window_create(void *data)
       ETK_CALLBACK(_etk_test_tree_key_down_cb), NULL);
    etk_signal_connect("row_clicked", ETK_OBJECT(tree),
       ETK_CALLBACK(_etk_test_tree_row_clicked_cb), statusbar);
-   etk_signal_connect("cell_value_changed", ETK_OBJECT(col4),
+   etk_signal_connect("cell_value_changed", ETK_OBJECT(col5),
       ETK_CALLBACK(_etk_test_tree_checkbox_toggled_cb), statusbar);
    
    etk_widget_show_all(win);
