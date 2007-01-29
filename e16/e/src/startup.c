@@ -115,63 +115,47 @@ StartupWindowsCreate(void)
    EobjsRepaint();
 }
 
-#define TIME_STEP 0.01
-
-static void
-doStartupWindowsOpen(int val, void *data __UNUSED__)
+static int
+doStartupWindowsOpen(void *data __UNUSED__)
 {
+   static int          kk = 0;
    int                 k, x, y, xOffset, yOffset, ty;
 
-   k = val;
+   k = kk;
 
-#define TEST_STARTUP_USING_TIMER 1
-#if !TEST_STARTUP_USING_TIMER
-   ETimedLoopInit(0, 1024, Conf.desks.slidespeed / 2);
-   for (k = 0; k <= 1024;)
-     {
-#endif
-	if (bg_sideways)
-	  {			/* so we can have two different slide methods */
-	     ty = (VRoot.w / 2);
-	     xOffset = (ty * k) >> 10;
-	     x = ty;
-	     yOffset = 0;
-	     y = 0;
-	  }
-	else
-	  {
-	     ty = (VRoot.h / 2);
-	     xOffset = 0;
-	     x = 0;
-	     yOffset = (ty * k) >> 10;
-	     y = ty;
-	  }
-
-	EobjMove(init_win1, -x - xOffset, -y - yOffset);
-	EobjMove(init_win2, x + xOffset, y + yOffset);
-
-#if !TEST_STARTUP_USING_TIMER
-	k = ETimedLoopNext();
+   if (bg_sideways)
+     {				/* so we can have two different slide methods */
+	ty = (VRoot.w / 2);
+	xOffset = (ty * k) >> 10;
+	x = ty;
+	yOffset = 0;
+	y = 0;
      }
-#endif
+   else
+     {
+	ty = (VRoot.h / 2);
+	xOffset = 0;
+	x = 0;
+	yOffset = (ty * k) >> 10;
+	y = ty;
+     }
 
-#if TEST_STARTUP_USING_TIMER
-   ESync();
-   k = (int)(TIME_STEP * Conf.desks.slidespeed / 2);
+   EobjMove(init_win1, -x - xOffset, -y - yOffset);
+   EobjMove(init_win2, x + xOffset, y + yOffset);
+
+   k = (int)(1e-3 * Conf.animation.step * Conf.desks.slidespeed / 2);
    if (k <= 0)
       k = 1;
-   val += k;
-   if (val < 1024)
-     {
-	DoIn("Startup", TIME_STEP, doStartupWindowsOpen, val, NULL);
-	return;
-     }
-#endif
+   kk += k;
+   if (kk < 1024)
+      return 1;
 
    EobjWindowDestroy(init_win1);
    EobjWindowDestroy(init_win2);
    init_win1 = NULL;
    init_win2 = NULL;
+
+   return 0;
 }
 
 void
@@ -180,5 +164,6 @@ StartupWindowsOpen(void)
    if (init_win1 == NULL || init_win2 == NULL)
       return;
 
-   doStartupWindowsOpen(0, NULL);
+   ESync();
+   AnimatorAdd(doStartupWindowsOpen, NULL);
 }
