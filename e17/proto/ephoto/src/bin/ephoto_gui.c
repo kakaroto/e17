@@ -226,6 +226,7 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 	ewl_model_count_set(model, album_data_count);
 
 	tree = ewl_tree2_new();
+	ewl_mvc_model_set(EWL_MVC(tree), model);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(c), tree);
@@ -235,8 +236,7 @@ static Ewl_Widget *add_tree(Ewl_Widget *c)
 	ewl_view_constructor_set(view, album_view_new);
 	ewl_view_assign_set(view, album_view_assign);
 	ewl_view_header_fetch_set(view, album_header_fetch);
-
-	ewl_tree2_column_append(EWL_TREE2(tree), model, view);
+	ewl_tree2_column_append(EWL_TREE2(tree), view, TRUE);
 
 	return tree;
 }
