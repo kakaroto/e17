@@ -59,6 +59,9 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
    if (!qe)
       return;
 
+   if (in_time < 0.)		/* No negative in-times */
+      in_time = 0.;
+
    if (EDebug(EDBUG_TYPE_EVENTS))
       Eprintf("DoIn %8.3f: %s\n", in_time, name);
 
@@ -90,51 +93,57 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
      }
 }
 
-/*
- * Returns:
- *  -1: No timers pending
- *   0: Expired timer pending
- *   1: Non-expired timers pending
- */
-int
-TimersPending(double *t)
+double
+TimersRun(double tt)
 {
    Qentry             *qe;
-   double              dt;
-
-   qe = q_first;
-   if (!qe)
-      return -1;
-
-   dt = qe->at_time - *t;
-   *t = dt;
-
-   return (dt > 0.) ? 1 : 0;
-}
-
-void
-TimersRun(void)
-{
-   Qentry             *qe;
+   double              t;
 
    qe = q_first;
    if (!q_first)
-      return;
+      return 0.;		/* No timers pending */
+
+   t = tt;
+   if (t <= 0.)
+      t = qe->at_time;
+
+   for (; qe; qe = q_first)
+     {
+	if (qe->at_time > t + 200e-6)	/* Within 200 us is close enough */
+	   break;
+
+	if (EDebug(EDBUG_TYPE_EVENTS))
+	   Eprintf("TimersRun - run %8.3lf: %s\n", qe->at_time - t, qe->name);
+
+	/* remove it */
+	q_first = qe->next;
+
+	/* run this callback */
+	qe->func(qe->runtime_val, qe->runtime_data);
+
+	/* free the timer */
+	if (qe->name)
+	   Efree(qe->name);
+	Efree(qe);
+     }
+
+   if (tt <= 0.)		/* Avoid some redundant debug output */
+      return tt;
+
+   if (EDebug(EDBUG_TYPE_EVENTS) > 1)
+     {
+	Qentry             *qp;
+
+	for (qp = qe; qp; qp = qp->next)
+	   Eprintf("TimersRun - pend %8.3lf: %s\n", qp->at_time - t, qp->name);
+     }
+
+   t = (qe) ? qe->at_time - t : 0.;
 
    if (EDebug(EDBUG_TYPE_EVENTS))
-      Eprintf("EventsMain - Timers (%s)\n", qe->name);
+      Eprintf("TimersRun - next in %8.3lf\n", t);
 
-   /* remove it */
-   q_first = q_first->next;
-
-   /* run this callback */
-   qe->func(qe->runtime_val, qe->runtime_data);
-
-   /* free the timer */
-   if (qe->name)
-      Efree(qe->name);
-   if (qe)
-      Efree(qe);
+   return t;
 }
 
 int
@@ -212,6 +221,9 @@ void
 IdlersRun(void)
 {
    Idler              *id;
+
+   if (EDebug(EDBUG_TYPE_EVENTS))
+      Eprintf("IdlersRun\n");
 
    ECORE_LIST_FOR_EACH(idler_list, id) id->func(id->data);
 }

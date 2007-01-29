@@ -31,8 +31,7 @@ void                DoIn(const char *name, double in_time,
 			 void (*func) (int val, void *data),
 			 int runtime_val, void *runtime_data);
 int                 RemoveTimerEvent(const char *name);
-int                 TimersPending(double *t);
-void                TimersRun(void);
+double              TimersRun(double t);
 
 typedef struct _idler Idler;
 Idler              *IdlerAdd(int order, void (*func) (void *data), void *data);

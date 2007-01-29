@@ -636,10 +636,6 @@ EventsMain(void)
 	pfetch = 0;
 	count = EventsProcess(&evq_ptr, &evq_alloc, &pfetch);
 
-	if (EDebug(EDBUG_TYPE_EVENTS))
-	   Eprintf("EventsMain - Idlers\n");
-	IdlersRun();
-
 	if (pfetch)
 	  {
 	     evq_fetch =
@@ -655,6 +651,21 @@ EventsMain(void)
 	       }
 	  }
 
+      run_idlers:
+	/* Run idlers */
+	IdlersRun();
+
+	/* time2 = current time */
+	time2 = GetTime();
+	dt = time2 - time1;
+	time1 = time2;
+	/* dt = time spent since we last were here */
+
+	/* Run all expired timers, get time to first non-expired (0. means none) */
+	time2 = TimersRun(time2);
+	if (XPending(disp))
+	   continue;
+
 	FD_ZERO(&fdset);
 	xfd = ConnectionNumber(disp);
 	FD_SET(xfd, &fdset);
@@ -663,35 +674,14 @@ EventsMain(void)
 	   FD_SET(smfd, &fdset);
 	fdsize = MAX(xfd, smfd) + 1;
 
-	/* time2 = current time */
-	time2 = GetTime();
-	dt = time2 - time1;
-	time1 = time2;
-	if (dt < 0.0)
-	   dt = 0.0;
-	/* dt = time spent since we last were here */
-
-	count = TimersPending(&time2);
-	if (count >= 0)
+	if (time2 > 0.)
 	  {
-	     if (count > 0)
-	       {
-		  if (XPending(disp))
-		     continue;
-		  tval.tv_sec = (long)time2;
-		  tval.tv_usec =
-		     (long)((time2 - ((double)tval.tv_sec)) * 1000000);
-		  count = select(fdsize, &fdset, NULL, NULL, &tval);
-	       }
-	     if (count == 0)
-	       {
-		  TimersRun();
-	       }
+	     tval.tv_sec = (long)time2;
+	     tval.tv_usec = (long)((time2 - ((double)tval.tv_sec)) * 1000000);
+	     count = select(fdsize, &fdset, NULL, NULL, &tval);
 	  }
 	else
 	  {
-	     if (XPending(disp))
-		continue;
 	     count = select(fdsize, &fdset, NULL, NULL, NULL);
 	  }
 
@@ -701,7 +691,13 @@ EventsMain(void)
 	       count, xfd, FD_ISSET(xfd, &fdset), smfd,
 	       (smfd >= 0) ? FD_ISSET(smfd, &fdset) : 0, dt, time2);
 
-	if (count > 0)
+	if (count == 0)
+	  {
+	     /* We can only get here by timeout in select */
+	     TimersRun(0.);
+	     goto run_idlers;
+	  }
+	else if (count > 0)
 	  {
 	     if ((smfd >= 0) && (FD_ISSET(smfd, &fdset)))
 	       {
