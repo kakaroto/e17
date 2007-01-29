@@ -17,12 +17,18 @@ static Ecore_List *albums, *images, *image_ids;
 sqlite3 *ephoto_db_init(void)
 {
 	char path[PATH_MAX];
+	char path2[PATH_MAX];
 	sqlite3 *db;
 
 	snprintf(path, PATH_MAX, "%s/.ephoto/.ephoto_database", getenv("HOME"));
+	snprintf(path2, PATH_MAX, "%s/.ephoto", getenv("HOME"));
 
 	if (!ecore_file_exists(path))
 	{
+		if (!ecore_file_exists(path2))
+		{
+			ecore_file_mkdir(path2);
+		}
 		sqlite3_open(path, &db);
 		sqlite3_exec(db, "CREATE TABLE 'albums'( "
 				 "id INTEGER PRIMARY KEY AUTOINCREMENT, "
