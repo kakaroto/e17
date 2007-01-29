@@ -1,6 +1,5 @@
 TODO:
-	- Fix Etk_Tree column models
-	- callback system needs to convert event structs to perl equivalents 
+	- complete callback system
 	- perldoc everything
 	- complete Tests
 		* Combobox

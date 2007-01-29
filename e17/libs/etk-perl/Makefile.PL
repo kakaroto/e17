@@ -3,8 +3,10 @@ use ExtUtils::MakeMaker;
 use Devel::PPPort;
 
 # dependency check
+print "Checking for Etk...";
 my $etklib = `etk-config --version`;
 die "I can't run etk-config, make sure that etk is installed, and that etk-config is in your path" unless $etklib;
+print "Ok\n";
 
 Devel::PPPort::WriteFile();
 

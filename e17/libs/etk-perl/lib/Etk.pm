@@ -81,7 +81,7 @@ Hisham Mardam Bey, E<lt>hisham.mardambey@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2006 by Hisham Mardam Bey
+Copyright (C) 2007 by Chady Kassouf
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.7 or,

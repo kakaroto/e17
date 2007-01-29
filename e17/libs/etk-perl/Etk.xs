@@ -222,7 +222,7 @@ __etk_signal_connect_full(char *signal_name, SV *object, SV *callback, SV *data,
 	sig = etk_signal_lookup(signal_name, obj->type);
 	if(!sig) printf("CANT GET SIG!\n");
 	marsh = etk_signal_marshaller_get(sig);
-	
+
 	if(marsh == etk_marshaller_VOID__VOID)
 	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_VOID__VOID), cbd, swapped, after);
 	else if(marsh == etk_marshaller_VOID__INT)
@@ -239,6 +239,8 @@ __etk_signal_connect_full(char *signal_name, SV *object, SV *callback, SV *data,
 	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_BOOL__DOUBLE), cbd, swapped, after);
 	else if(marsh == etk_marshaller_BOOL__POINTER_POINTER)
 	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_BOOL__POINTER_POINTER), cbd, swapped, after);
+	else if(marsh == etk_marshaller_VOID__POINTER_POINTER)
+	  etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_VOID__POINTER_POINTER), cbd, swapped, after);
 	else
 	etk_signal_connect_full(sig, obj, ETK_CALLBACK(callback_VOID__VOID), cbd, swapped, after);
 
@@ -817,6 +819,18 @@ etk_colorpicker_current_color_get(cp)
       ALIAS:
 	CurrentColorGet=1
 	
+void
+etk_colorpicker_use_alpha_set(cp, use_alpha)
+	Etk_Colorpicker *	cp
+	Etk_Bool	use_alpha
+	ALIAS:
+	UseAlphaSet=1
+
+Etk_Bool
+etk_colorpicker_use_alpha_get(cp)
+	Etk_Colorpicker *       cp
+	ALIAS:
+	UseAlphaGet=1
 
 void
 etk_colorpicker_current_color_set(cp, color)
@@ -3342,7 +3356,7 @@ etk_range_value_get(range)
       ALIAS:
 	ValueGet=1
 
-void
+Etk_Bool
 etk_range_value_set(range, value)
 	Etk_Range *	range
 	double	value
@@ -4730,6 +4744,96 @@ etk_tree_row_data_set(row, data)
 
 
 void
+model_fields_set(row, emit_signal, model, ...)
+	Etk_Tree_Row * row
+	Etk_Bool	emit_signal
+	SV * model
+     ALIAS:
+	ModelFieldsSet=1
+	PREINIT:
+	Etk_Tree_Model * etkmodel;
+	SV ** mod;
+	CODE:
+	etkmodel = (Etk_Tree_Model *) SvObj(model, "Etk::Tree::Model");
+	mod = hv_fetch( (HV*)SvRV(model), "_model", 6, 0);
+	if (mod) {
+	int type = SvIV(*mod);
+	switch(type) {
+	   case mINT:
+		etk_tree_row_model_fields_set(row, emit_signal, etkmodel, SvIV(ST(3)), NULL);
+		break;
+	   case mDOUBLE:
+		     etk_tree_row_model_fields_set(row, emit_signal, etkmodel, SvNV(ST(3)), NULL);
+		     break;
+		  case mCHECKBOX:
+		     etk_tree_row_model_fields_set(row, emit_signal, etkmodel, SvIV(ST(3)), NULL);
+		     break;
+		  case mIMAGE:
+		     if (items == 4)
+		        etk_tree_row_model_fields_set(row, emit_signal, etkmodel,
+		     	   SvPV_nolen(ST(3)), NULL, NULL);
+		     else
+		        etk_tree_row_model_fields_set(row, emit_signal, etkmodel,
+		     	   SvPV_nolen(ST(3)), SvPV_nolen(ST(4)), NULL);
+		     break;
+		  case mPROGRESSBAR:
+		     break;
+		  case mTEXT:
+		     etk_tree_row_model_fields_set(row, emit_signal, etkmodel, SvPV_nolen(ST(3)), NULL);
+		     break;
+               }
+	     }
+
+
+void
+model_fields_get(row, model)
+	Etk_Tree_Row * row
+	SV * model
+      ALIAS:
+	ModelFieldsGet=1
+	PREINIT:
+	Etk_Tree_Model * mod;
+	SV ** models;
+	int i;
+	Etk_Bool c;
+	double d;
+	char *c1, *c2, *c3;
+	PPCODE:
+	mod = (Etk_Tree_Model *) SvObj(model, "Etk::Tree::Model");
+	models = hv_fetch( (HV*)SvRV(model), "_model", 6, 0);
+	if (models) {
+	       int type = SvIV(*models);
+	       switch(type) {
+	          case mINT:
+			etk_tree_row_model_fields_get(row, mod, &i, NULL);
+			XPUSHs(sv_2mortal(newSViv(i)));
+		     break;
+		  case mDOUBLE:
+			etk_tree_row_model_fields_get(row, mod, &d, NULL);
+			XPUSHs(sv_2mortal(newSVnv(d)));
+			break;
+		  case mCHECKBOX:
+			etk_tree_row_model_fields_get(row, mod, &c, NULL);
+			XPUSHs(sv_2mortal(newSViv(c)));
+			break;
+		  case mIMAGE:
+			etk_tree_row_model_fields_get(row, mod, &c1, &c2, NULL);
+			XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
+			if (c2) XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
+		     break;
+		  case mPROGRESSBAR:
+			//etk_tree_row_model_fields_get(row, mod, &d, &c1, NULL);
+			//XPUSHs(sv_2mortal(newSVnv(d)));
+			//XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
+		     break;
+		  case mTEXT:
+			etk_tree_row_model_fields_get(row, mod, &c1, NULL);
+			XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
+		     break;
+               }
+	     }
+
+void
 fields_set(row, emit_signal, col, ...)
 	Etk_Tree_Row * row
 	Etk_Bool	emit_signal
@@ -4785,46 +4889,50 @@ fields_get(row, col)
 	FieldsGet=1
 	PREINIT:
 	Etk_Tree_Col * column;
+	SV ** models;
 	SV ** model;
 	int i;
 	Etk_Bool c;
 	double d;
 	char *c1, *c2, *c3;
 	PPCODE:
-	// TODO: change this
-
 	column = (Etk_Tree_Col *) SvObj(col, "Etk::Tree::Col");
-
-	model = hv_fetch( (HV*)SvRV(col), "_model", 6, 0);
-	if (model) {
-		int type = SvIV(*model);
-		switch(type) {
-			case mINT:
-				etk_tree_row_fields_get(row, column, &i, NULL);
-				XPUSHs(sv_2mortal(newSViv(i)));
-				break;
-			case mCHECKBOX:
-				etk_tree_row_fields_get(row, column, &c, NULL);
-				XPUSHs(sv_2mortal(newSViv(c)));
-				break;
-			case mDOUBLE:
-				etk_tree_row_fields_get(row, column, &d, NULL);
-				XPUSHs(sv_2mortal(newSVnv(d)));
-				break;
-			case mIMAGE:
-				etk_tree_row_fields_get(row, column, &c1, NULL);
-				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
-				break;
-			case mPROGRESSBAR:
-				etk_tree_row_fields_get(row, column, &d, &c1, NULL);
-				XPUSHs(sv_2mortal(newSVnv(d)));
-				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
-				break;
-			case mTEXT:
-				etk_tree_row_fields_get(row, column, &c1, NULL);
-				XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
-				break;
-		}
+	models = hv_fetch( (HV*)SvRV(col), "_models", 7, 0);
+	if (models) {
+           AV * mods = (AV *) SvRV(*models);
+	   int total = (int)av_len(mods);
+	      model = av_fetch(mods, 0, 0);
+	      if (model) {
+	       int type = SvIV(*model);
+	       switch(type) {
+	          case mINT:
+			etk_tree_row_fields_get(row, column, &i, NULL);
+			XPUSHs(sv_2mortal(newSViv(i)));
+		     break;
+		  case mDOUBLE:
+			etk_tree_row_fields_get(row, column, &d, NULL);
+			XPUSHs(sv_2mortal(newSVnv(d)));
+			break;
+		  case mCHECKBOX:
+			etk_tree_row_fields_get(row, column, &c, NULL);
+			XPUSHs(sv_2mortal(newSViv(c)));
+			break;
+		  case mIMAGE:
+			etk_tree_row_fields_get(row, column, &c1, &c2, NULL);
+			XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
+			if (c2) XPUSHs(sv_2mortal(newSVpv(c2, strlen(c2))));
+		     break;
+		  case mPROGRESSBAR:
+			//etk_tree_row_fields_get(row, column, &d, &c1, NULL);
+			//XPUSHs(sv_2mortal(newSVnv(d)));
+			//XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
+		     break;
+		  case mTEXT:
+			etk_tree_row_fields_get(row, column, &c1, NULL);
+			XPUSHs(sv_2mortal(newSVpv(c1, strlen(c1))));
+		     break;
+               }
+	     }
 	}
 
 

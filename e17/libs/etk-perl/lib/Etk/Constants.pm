@@ -23,8 +23,9 @@ None by default.
 
 =head1 EXPORTABLE
 
-   combobox fillpolicy messagedialog progressbar scrolledview
-   toplevelwidget tree textblock colorpicker all
+   box combobox fillpolicy messagedialog progressbar scrolledview
+   toplevelwidget tree textblock table colorpicker mouse toolbar
+   button shadow image entry popupwindow window swallow all
  
 =cut
 

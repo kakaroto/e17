@@ -7,7 +7,7 @@ SV * GetSignalEvent_POINTER(Etk_Object * object, void * value, Callback_Signal_D
 
    HV *event_hv;
    SV *event_rv;
-   
+
    if(!strcmp(cbd->signal_name, "mouse_up"))
      {	
         Etk_Event_Mouse_Up *event = value;   
@@ -59,9 +59,9 @@ void GetSignalEvent_POINTER_POINTER(Etk_Object * object, void * val1, void * val
    if(!strcmp(cbd->signal_name, "row_clicked"))
      {
         Etk_Tree_Row * row = val1;
-	Etk_Event_Key_Up *key_event = val2;
+	Etk_Event_Mouse_Up *key_event = (Etk_Event_Mouse_Up *)val2;
 	*obj = newSVObj(row, getClass("Etk_Tree_Row"));
-	*event = newSVEventKeyUp(key_event);
+	*event = newSVEventMouseUp(key_event);
      }
 
 }

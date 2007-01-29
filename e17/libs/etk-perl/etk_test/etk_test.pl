@@ -440,8 +440,10 @@ sub tree_window_show
     $vbox->Append($tree, BoxStart, BoxExpandFill, 0);
     
     my $col1 = $tree->ColNew("Column 1", 130, 0.0);
-#    $col1->ModelAdd(new Etk::Tree::Model::Image);
-    $col1->ModelAdd(new Etk::Tree::Model::Text);
+    my $mod1 = new Etk::Tree::Model::Image;
+    $col1->ModelAdd($mod1);
+    my $mod2 = new Etk::Tree::Model::Text;
+    $col1->ModelAdd($mod2);
 
     my $col2 = $tree->ColNew("Column 2", 60, 1.0);
     $col2->ModelAdd(new Etk::Tree::Model::Double);
@@ -452,26 +454,47 @@ sub tree_window_show
     my $col4 = $tree->ColNew("Column 4", 60, 0.5);
     $col4->ModelAdd(new Etk::Tree::Model::Checkbox);
 
-  #  $tree->SignalConnect("row_clicked",  sub {
-#	my $self = shift;
-#	my $row = shift;
-#	my $event = shift;
-	# fields get.
+    my $status = Etk::StatusBar->new();
+    $vbox->Append($status, BoxStart, BoxFill, 0);
 
- #   });
+    $tree->SignalConnect("row_clicked",  sub {
+	my $self = shift;
+	my $row = shift;
+	my $event = shift;
+	my $mod = $row->ModelFieldsGet($mod2);
+	my $msg = "Row \"$mod\" clicked (";
+	$msg .= $event->{flags} & MouseTripleClick ? "Triple" :
+		$event->{flags} & MouseDoubleClick ? "Double" : "Single";
+	$msg .= ")";
+	$status->MessagePush($msg, 0);
+
+    });
 
     $col4->SignalConnect("cell_value_changed", 
 	sub {
 		my $self = shift;
 		my $row = shift;
 
-#		if ($row->FieldsGet($self)) {
-#			print "Checkbox activated\n";
-#		} else {
-#			print "Checkbox deactivated\n";
-#		}
+		my $mod = $row->ModelFieldsGet($mod2);
+		my $msg = "Row \"$mod\" has been " . ($row->FieldsGet($self) ? "checked" : "unchecked");
+		$status->MessagePush($msg, 0);
 	}
     );
+
+    $tree->SignalConnect("key_down", sub {
+    	my $self = shift;
+	my $event = shift;
+	if ($event->{keyname} eq "Delete") {
+		my $row;
+		for ($row = $tree->FirstRowGet(); $row; $row = $row->WalkNext(1)) {
+			if ($row->IsSelected()) {
+				$row->Delete();
+			}
+		}
+		Etk::Signal::Stop();
+	}
+
+    });
 
     $tree->Build();
     
@@ -481,21 +504,27 @@ sub tree_window_show
     {
 	my $row = $tree->RowAppend();
 
-	$row->FieldsSet(0, $col1, # Etk::Theme::IconGet(), 
-#		Etk::Stock::KeyGet(PlacesUserHome, SizeSmall), 
-		"Row " . (($i*3)+1));
+	$row->ModelFieldsSet(0, $mod1,  Etk::Theme::IconGet(), 
+		Etk::Stock::KeyGet(PlacesUserHome, SizeSmall));
+	$row->ModelFieldsSet(0, $mod2, "Row " . (($i*3)+1));
 	$row->FieldsSet(0, $col2, 10.0);
 	$row->FieldsSet(0, $col3, "images/1star.png");
 	$row->FieldsSet(0, $col4, 0);
 
+
 	my $row2 = $tree->RowAppend($row);
-	$row2->FieldsSet(0, $col1, "Row " . (($i*3)+2));
+	$row2->ModelFieldsSet(0, $mod1,  Etk::Theme::IconGet(), 
+		Etk::Stock::KeyGet(PlacesUserHome, SizeSmall));
+	$row2->ModelFieldsSet(0, $mod2, "Row " . (($i*3)+2));
+	
 	$row2->FieldsSet(0, $col2, 20.0);
 	$row2->FieldsSet(0, $col3, "images/2stars.png");
 	$row2->FieldsSet(0, $col4, 1);
 
 	my $row3 = $tree->RowAppend($row2);
-	$row3->FieldsSet(0, $col1, "Row " . (($i*3)+3));
+	$row3->ModelFieldsSet(0, $mod1,  Etk::Theme::IconGet(), 
+		Etk::Stock::KeyGet(PlacesUserHome, SizeSmall));
+	$row3->ModelFieldsSet(0, $mod2, "Row " . (($i*3)+3));
 	$row3->FieldsSet(0, $col2, 30.0);
 	$row3->FieldsSet(0, $col3, "images/3stars.png");
 	$row3->FieldsSet(0, $col4, 1);
@@ -503,9 +532,6 @@ sub tree_window_show
     }
 
     $tree->Thaw();
-
-    my $status = Etk::StatusBar->new();
-    $vbox->Append($status, BoxStart, BoxFill, 0);
     
     $win->ShowAll();
 }
@@ -1200,7 +1226,9 @@ sub colorpicker_window_show
 {
     my $win = Etk::Window->new();
     $win->TitleSet("Etk-Perl Color Picker Test");
-    $win->Add(Etk::Colorpicker->new());
+    my $cp = Etk::Colorpicker->new();
+    $cp->UseAlphaSet(1);
+    $win->Add($cp);
     
     $win->ShowAll();
 }
