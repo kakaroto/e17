@@ -9,6 +9,7 @@ config.h.in
 config.log
 config.sub
 config.guess
+config.rpath
 config.status
 configure
 depcomp
@@ -19,6 +20,7 @@ install-sh
 libtool
 ltmain.sh
 missing
+mkinstalldirs
 stamp-h1
 etk.pc
 gendoc_warnings.log

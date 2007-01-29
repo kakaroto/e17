@@ -5,6 +5,7 @@ autom4te.cache
 compile
 config.guess
 config.log
+config.rpath
 config.status
 config.sub
 configure
@@ -14,3 +15,5 @@ install-sh
 libtool
 ltmain.sh
 missing
+mkinstalldirs
+

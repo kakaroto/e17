@@ -1,5 +1,5 @@
 .deps
 .libs
-exhibit
+edje_editor
 Makefile
 Makefile.in
