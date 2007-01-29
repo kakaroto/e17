@@ -4,6 +4,7 @@ int main(int argc, char **argv)
 {
 	char *album, *name, *description, *path, input[2];
 	int i;
+	Ecore_List *albums, *images;
 	sqlite3 *db;
 
 	/*Check to make sure EWL is accessible*/
@@ -27,6 +28,9 @@ int main(int argc, char **argv)
 			       "				arg1 = name of album to add image to\n"
 			       "				arg2 = descriptive name for image\n"
 			       "				arg3 = path to the image\n"
+			       " --list-albums		-	List Albums\n"
+			       " --list-images %%s	-	List Images in Album\n"
+			       "				arg1 = name of album to list images from\n"
 			       " --remove-album	%%s	-	Removes Album\n"
 			       "				arg1 = name of album\n"
 			       " --remove-image	%%s %%s	-	Removes Image\n"
@@ -34,10 +38,12 @@ int main(int argc, char **argv)
 			       "				arg2 = path of the image to be removed\n");
 			printf("Short Commands: \n"
 			       " -h			-	This Screen\n"
-			       " -a	%%s %%s		-	Adds Album\n"
-			       " -i	%%s %%s %%s	-	Adds Image\n"
-			       " -ra	%%s		-	Removes Album\n"
-			       " -ri	%%s %%s		-	Removes Image\n");
+			       " -a %%s %%s		-	Adds Album\n"
+			       " -i %%s %%s %%s		-	Adds Image\n"
+			       " -la			-	List Albums\n"
+			       " -li %%s			-	List Images in Album\n"
+			       " -ra %%s			-	Removes Album\n"
+			       " -ri %%s %%s		-	Removes Image\n");
 			return 0;
 		}
 		if(!strcmp(argv[i], "--add-album") || !strcmp(argv[i], "-a"))
@@ -112,6 +118,41 @@ int main(int argc, char **argv)
 			}
 			else printf("Image was not added\n");
 
+			return 0;
+		}
+		if(!strcmp(argv[i], "--list-albums") || !strcmp(argv[i], "-la"))
+		{
+			db = ephoto_db_init();
+			albums = ecore_list_new();
+			albums = ephoto_db_list_albums(db);
+			ephoto_db_close(db);
+			while(!ecore_list_is_empty(albums))
+			{
+				album = ecore_list_remove_first(albums);
+				printf("%s\n", album);
+			}
+			ecore_list_destroy(albums);
+
+			return 0;
+		}
+		if(!strcmp(argv[i], "--list-images") || !strcmp(argv[i], "-li"))
+		{
+			i++;
+			if(argv[i]) album = argv[i];
+			else
+			{
+				printf("Please specify the album to list images from\n");
+				return 1;
+			}
+			
+			db = ephoto_db_init();
+			images = ephoto_db_list_images(db, album);
+			ephoto_db_close(db);
+			while(!ecore_list_is_empty(images))
+			{
+				path = ecore_list_remove_first(images);
+				printf("%s\n", path);
+			}
 			return 0;
 		}
 		if(!strcmp(argv[i], "--remove-album") || !strcmp(argv[i], "-ra"))
