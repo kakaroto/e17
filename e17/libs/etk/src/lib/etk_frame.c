@@ -75,7 +75,10 @@ void etk_frame_label_set(Etk_Frame *frame, const char *label)
    if (label != frame->label)
    {
       free(frame->label);
-      frame->label = strdup(label);
+      if (label)
+	  frame->label = strdup(label);
+      else
+	  frame->label = NULL;
       etk_object_notify(ETK_OBJECT(frame), "label");
    }
 
