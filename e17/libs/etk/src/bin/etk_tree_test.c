@@ -13,7 +13,7 @@ void etk_test_tree_window_create(void *data)
    static Etk_Widget *win = NULL;
    Etk_Widget *vbox;
    Etk_Widget *tree;
-   Etk_Tree_Col *col1, *col2, *col3, *col4;
+   Etk_Tree_Col *col1, *col2, *col3, *col4, *col5;
    Etk_Tree_Row *row;
    Etk_Widget *statusbar;
    char row_name[128];
@@ -50,11 +50,14 @@ void etk_test_tree_window_create(void *data)
    col2 = etk_tree_col_new(ETK_TREE(tree), "Column 2", 60, 1.0);
    etk_tree_col_model_add(col2, etk_tree_model_double_new());
    
-   col3 = etk_tree_col_new(ETK_TREE(tree), "Column 3", 60, 0.0);
-   etk_tree_col_model_add(col3, etk_tree_model_image_new());
+   col3 = etk_tree_col_new(ETK_TREE(tree), "Column 3", 60, 0.75);
+   etk_tree_col_model_add(col3, etk_tree_model_int_new());
    
-   col4 = etk_tree_col_new(ETK_TREE(tree), "Column 4", 60, 0.5);
-   etk_tree_col_model_add(col4, etk_tree_model_checkbox_new());
+   col4 = etk_tree_col_new(ETK_TREE(tree), "Column 4", 60, 0.0);
+   etk_tree_col_model_add(col4, etk_tree_model_image_new());
+   
+   col5 = etk_tree_col_new(ETK_TREE(tree), "Column 5", 60, 0.5);
+   etk_tree_col_model_add(col5, etk_tree_model_checkbox_new());
    
    etk_tree_build(ETK_TREE(tree));
    
@@ -68,9 +71,10 @@ void etk_test_tree_window_create(void *data)
       stock_key = etk_stock_key_get(ETK_STOCK_PLACES_USER_HOME, ETK_STOCK_SMALL);
       row = etk_tree_row_append(ETK_TREE(tree), NULL,
          col1, etk_theme_icon_get(), stock_key, row_name,
-         col2, 10.0,
-         col3, PACKAGE_DATA_DIR "/images/1star.png", NULL,
-         col4, ETK_FALSE,
+         col2, 0.57,
+	 col3, 7,
+         col4, PACKAGE_DATA_DIR "/images/1star.png", NULL,
+         col5, ETK_FALSE,
          NULL);
       
       sprintf(row_name, "Row %d", (i * 3) + 2);
@@ -78,17 +82,19 @@ void etk_test_tree_window_create(void *data)
       row = etk_tree_row_append(ETK_TREE(tree), row,
          col1, etk_theme_icon_get(), stock_key, row_name,
          col2, 20.0,
-         col3, PACKAGE_DATA_DIR "/images/2stars.png", NULL,
-         col4, ETK_TRUE,
+	 col3, 19,
+         col4, PACKAGE_DATA_DIR "/images/2stars.png", NULL,
+         col5, ETK_TRUE,
          NULL);
       
       sprintf(row_name, "Row %d", (i * 3) + 3);
       stock_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_SMALL);
       etk_tree_row_append(ETK_TREE(tree), row,
          col1, etk_theme_icon_get(), stock_key, row_name,
-         col2, 30.0,
-         col3, PACKAGE_DATA_DIR "/images/3stars.png", NULL,
-         col4, ETK_TRUE,
+         col2, 300.0,
+	 col3, 257,
+         col4, PACKAGE_DATA_DIR "/images/3stars.png", NULL,
+         col5, ETK_TRUE,
          NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));

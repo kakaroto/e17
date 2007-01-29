@@ -696,7 +696,6 @@ group {
 	    color: 0 0 0 255;
 	    align: 0.0 0.5;
             text {
-               text: "";
                font: "Vera";
                size:  10;
                min: 1 1;
