@@ -28,6 +28,9 @@ int main(int argc, char **argv)
 			       "				arg1 = name of album to add image to\n"
 			       "				arg2 = descriptive name for image\n"
 			       "				arg3 = path to the image\n"
+			       " --add-image-dir %%s %%s	-	Adds All Images From Directory\n"
+			       "				arg1 = name of album to add images to\n"
+			       "				arg2 = directory to get images from\n"	
 			       " --list-albums		-	List Albums\n"
 			       " --list-images %%s	-	List Images in Album\n"
 			       "				arg1 = name of album to list images from\n"
@@ -40,6 +43,7 @@ int main(int argc, char **argv)
 			       " -h			-	This Screen\n"
 			       " -a %%s %%s		-	Adds Album\n"
 			       " -i %%s %%s %%s		-	Adds Image\n"
+			       " -id %%s %%s		-	Adds all Images From Directory\n"
 			       " -la			-	List Albums\n"
 			       " -li %%s			-	List Images in Album\n"
 			       " -ra %%s			-	Removes Album\n"
@@ -118,6 +122,46 @@ int main(int argc, char **argv)
 			}
 			else printf("Image was not added\n");
 
+			return 0;
+		}
+		if(!strcmp(argv[i], "--add-image-dir") || !strcmp(argv[i], "-id"))
+		{
+                        i++;
+                        if(argv[i]) album = argv[i];
+                        else
+                        {
+                                printf("Please specify the album you wish to add to\n");
+                                return 1;
+                        }
+
+                        i++;
+                        if(argv[i]) path = argv[i];
+                        else
+                        {
+                                printf("Please specify the path to the image directory\n");
+                                return 1;
+                        }
+
+                        printf("Are you sure you want to add images "
+                               "from the directory %s to the album %s? ",
+                               path, album);
+                        scanf("%c", &input);
+                        if(!strncasecmp(input, "y", 1))
+                        {
+				db = ephoto_db_init();
+				images = ecore_list_new();
+				images = get_images(path);
+				while (!ecore_list_is_empty(images))
+				{
+					name = ecore_list_remove_first(images);
+					ephoto_db_add_image(db, album, basename(name), name);
+				}
+				ephoto_db_close(db);
+				ecore_list_destroy(images);
+				printf("Images were added\n");
+			}
+			else printf("Images were not added\n");
+			
 			return 0;
 		}
 		if(!strcmp(argv[i], "--list-albums") || !strcmp(argv[i], "-la"))
