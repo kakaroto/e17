@@ -18,10 +18,10 @@ group
 
 	data
 	{
-		item: "inset/top" "24";
-		item: "inset/bottom" "24";
-		item: "inset/left" "24";
-		item: "inset/right" "24";
+		item: "inset/top" "12";
+		item: "inset/left" "12";
+		item: "inset/bottom" "6";
+		item: "inset/right" "6";
 	}
 
 	parts
