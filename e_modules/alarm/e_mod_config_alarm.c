@@ -68,7 +68,7 @@ alarm_config_alarm(Alarm *al)
 
    snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(alarm_config->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     D_("Alarm Alarm Configuration"), "Alarm", "_e_modules_alarm_alarm_config_dialog", buf, 0, v, al);
+			     D_("Alarm Configuration : Setup an alarm"), "Alarm", "_e_modules_alarm_alarm_config_dialog", buf, 0, v, al);
 }
 
 static void *
@@ -324,6 +324,9 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    alarm_config->alarms = evas_list_append(alarm_config->alarms, al);
    cfdata->new = 0;
    cfdata->al = al;
+
+   al->config_dialog = cfd;
+   alarm_config->config_dialog_alarm_new = NULL;
 
    /* refresh things */
    if (alarm_config->config_dialog)

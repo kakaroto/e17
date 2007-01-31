@@ -32,6 +32,7 @@ static void _cb_alarms_list(void *data);
 static void _cb_alarm_add(void *data, void *data2);
 static void _cb_alarm_del(void *data, void *data2);
 static void _cb_alarm_config(void *data, void *data2);
+static void _cb_alarm_duplicate(void *data, void *data2);
 
 void
 alarm_config_module(void) 
@@ -160,14 +161,16 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_ilist_selector_set(ob, 1);
    cfdata->alarms_ilist = ob;
    alarm_config_refresh_alarms_ilist(cfdata);
-   e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 0, 1, 6, 1, 1, 1, 1, 1);
 
    ob = e_widget_button_add(evas, _("Add"), NULL, _cb_alarm_add, cfdata, NULL);
-   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
    ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_alarm_del, cfdata, NULL);
-   e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 2, 2, 2, 1, 1, 1, 1, 1);
    ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_alarm_config, cfdata, NULL);
-   e_widget_frametable_object_append(of, ob, 2, 2, 1, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 4, 2, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_button_add(evas, _("Duplicate"), NULL, _cb_alarm_duplicate, cfdata, NULL);
+   e_widget_frametable_object_append(of, ob, 5, 2, 1, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, of, 0, 0, 1, 2, 1, 1, 1, 1);
 }
@@ -215,12 +218,12 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 {
    Evas_Object *o, *of, *ob;
 
-   o = e_widget_table_add(evas, 1);
+   o = e_widget_table_add(evas, 0);
 
    _common_create_widgets(cfd, evas, cfdata, o);
 
 
-   of = e_widget_frametable_add(evas, D_("Alarm Options"), 1);
+   of = e_widget_frametable_add(evas, D_("Alarm Options"), 0);
 
    /*
      ob = e_widget_label_add(evas, D_("Time format"));
@@ -238,7 +241,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 0, 1, 0);
 
 
-   of = e_widget_frametable_add(evas, D_("Alarms Defaults"), 1);
+   of = e_widget_frametable_add(evas, D_("Alarms Defaults"), 0);
 
    ob = e_widget_check_add(evas, D_("Open popup"), &(cfdata->alarms_open_popup_default));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
@@ -330,4 +333,28 @@ _cb_alarm_config(void *data, void *data2)
    if (al->config_dialog) return;
 
    alarm_config_alarm(al);
+}
+
+static void
+_cb_alarm_duplicate(void *data, void *data2)
+{
+   E_Config_Dialog_Data *cfdata;
+   Alarm *al, *al_new;
+
+   cfdata = data;
+   al = evas_list_nth(alarm_config->alarms,
+                      e_widget_ilist_selected_get(cfdata->alarms_ilist));
+   if (!al) return;
+
+   al_new = alarm_alarm_duplicate(al);
+   alarm_config->alarms = evas_list_append(alarm_config->alarms, al_new);
+
+   /* refresh things */
+   if (alarm_config->config_dialog)
+     {
+        E_Config_Dialog_Data *mcda;
+        
+        mcda = alarm_config->config_dialog->cfdata;
+        alarm_config_refresh_alarms_ilist(mcda);
+     }
 }

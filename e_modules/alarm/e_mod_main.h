@@ -148,6 +148,7 @@ EAPI int   e_modapi_config   (E_Module *m);
 
 Alarm *alarm_alarm_add(int state, char *name, int type, char *date, int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute, int autoremove, char *description, int open_popup, int run_program, char *program, int *error);
 void   alarm_alarm_del(Alarm *al);
+Alarm *alarm_alarm_duplicate(Alarm *al);
 int    alarm_alarm_ring(Alarm *al, int test);
 void   alarm_alarm_ring_stop(Alarm *al, int check);
 void   alarm_edje_signal_emit(const char *source, const char *message);

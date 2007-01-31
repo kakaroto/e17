@@ -118,6 +118,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
         break;
      }
 
+   e_config_save_queue();
+
    return gcc;
 }
 
@@ -130,6 +132,8 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    evas_object_del(inst->obj);
    alarm_config->instances = evas_list_remove(alarm_config->instances, inst);
    free(inst);
+
+   e_config_save_queue();
 }
 
 static void
@@ -326,6 +330,41 @@ alarm_alarm_del(Alarm *al)
      }
 }
 
+Alarm *
+alarm_alarm_duplicate(Alarm *al)
+{
+   Alarm *al_new;
+
+   al_new = E_NEW(Alarm, 1);
+
+   if (al->name)
+     al_new->name = evas_stringshare_add(al->name);
+   al_new->state = al->state;
+   if (al->description)
+     al_new->description = evas_stringshare_add(al->description);
+   al_new->autoremove = al->autoremove;
+   al_new->open_popup = al->open_popup;
+   al_new->run_program = al->run_program;
+   if (al->program)
+     al_new->program = evas_stringshare_add(al->program);
+   al_new->sched.type = al->sched.type;
+   al_new->sched.date_epoch = al->sched.date_epoch;
+   al_new->sched.hour = al->sched.hour;
+   al_new->sched.minute = al->sched.minute;
+   al_new->sched.day_monday = al->sched.day_monday;
+   al_new->sched.day_tuesday = al->sched.day_tuesday;
+   al_new->sched.day_wenesday = al->sched.day_wenesday;
+   al_new->sched.day_thursday = al->sched.day_thursday;
+   al_new->sched.day_friday = al->sched.day_friday;
+   al_new->sched.day_saturday = al->sched.day_saturday;
+   al_new->sched.day_sunday = al->sched.day_sunday;
+   al_new->snooze.hour = al->snooze.hour;
+   al_new->snooze.minute = al->snooze.minute;
+   al_new->snooze.remember = al->snooze.remember;
+
+   return al_new;
+}
+
 int
 alarm_alarm_ring(Alarm *al, int test)
 {
@@ -380,6 +419,8 @@ alarm_alarm_ring(Alarm *al, int test)
    if (alarm_config->alarms_details)
      alarm_edje_refresh_details();
 
+   e_config_save_queue();
+
    return ret;
 }
 
@@ -416,6 +457,8 @@ alarm_alarm_ring_stop(Alarm *al, int check)
         alarm_edje_signal_emit(EDJE_SIG_SEND_ALARM_STATE_ON);
         alarm_config->alarms_state = ALARM_STATE_ON;
      }
+
+   e_config_save_queue();
 }
 
 void
@@ -634,6 +677,8 @@ _alarm_cb_dialog_snooze_ok(void *data, E_Dialog *dia)
    al->snooze.remember = 1;
    al->snooze.etimer = ecore_timer_add(time, _cb_alarm_snooze_time, al);
    _alarm_dialog_snooze_delete(dia, al);
+
+   e_config_save_queue();
 }
 
 static void
@@ -643,6 +688,8 @@ _alarm_cb_dialog_snooze_cancel(void *data, E_Dialog *dia)
 
    al = data;
    _alarm_dialog_snooze_delete(dia, al);
+
+   e_config_save_queue();
 }
 
 static void
@@ -870,12 +917,17 @@ _cb_edje_alarm_state_on(void *data, Evas_Object *obj, const char *emission, cons
    alarm_config->alarms_ring_etimer = ecore_timer_add(ALARMS_CHECK_TIMER,
                                                       _cb_alarms_ring_etimer,
                                                       NULL);
+   e_config_save_queue();   
 }
 
 static void
 _cb_edje_alarm_state_off(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
+   if (alarm_config->alarms_state == ALARM_STATE_OFF) return;
 
+   alarm_config->alarms_state = ALARM_STATE_OFF;
+   ecore_timer_del(alarm_config->alarms_ring_etimer);
+   e_config_save_queue();
 }
 
 static void
@@ -1090,6 +1142,8 @@ e_modapi_shutdown(E_Module *m)
      free(alarm_config->theme);
    if (alarm_config->config_dialog) 
      e_object_del(E_OBJECT(alarm_config->config_dialog));
+   if (alarm_config->config_dialog_alarm_new) 
+     e_object_del(E_OBJECT(alarm_config->config_dialog_alarm_new));
    if (alarm_config->menu)
      {
 	e_menu_post_deactivate_callback_set(alarm_config->menu , NULL, NULL);
