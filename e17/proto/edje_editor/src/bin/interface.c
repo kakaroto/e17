@@ -1714,6 +1714,7 @@ create_main_window(void)
 
    //ColorPicker
    UI_ColorPicker = etk_colorpicker_new();
+   etk_colorpicker_use_alpha_set (UI_ColorPicker, TRUE);
    etk_container_add(ETK_CONTAINER(UI_ColorWin), UI_ColorPicker);
 
    //UI_MainWin

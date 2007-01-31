@@ -78,6 +78,7 @@ enum various
    DRAG_MINIARROW,
    DRAG_REL1,
    DRAG_REL2,
+   DRAG_MOVEBOX,
    REL_COMBO_INTERFACE
 };
 
@@ -99,6 +100,7 @@ Etk_Widget     *ETK_canvas;	         //Designer canvas
 Evas_Object    *EV_canvas_bg;          //
 Evas_Object    *EV_canvas_shadow;      //
 Evas_Object	   *EV_fakewin;	         //The simple window implementation
+Evas_Object    *EV_movebox;            //  FIXME
 Evas_Object    *focus_handler;         //The yellow box around the selected part
 Evas_Object    *rel1_handler;          //The red point
 Evas_Object    *rel2_handler;          //The blue point
