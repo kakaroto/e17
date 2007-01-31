@@ -154,490 +154,491 @@ collections {
       min, 200 30;
       max, 300 30;
       parts {
-			/* main Rect  */
-	 part {
-	    name, "rect";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 0.0 0.0; offset, 0 0;}
-	       rel2 {relative, 1.0 1.0; offset, 0 0;}
-	       image {
-		  normal, "focus.png";
-		  border, 15 15 15 15;
-	       }
-	    }
-	 }
-
-#if 0	 
-	 /* Up Arrow  */
-	 part{
-	    name, "arrow_u";
-	    type, IMAGE;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 0.5 0.0; offset, -15 -15; to, "rect";}
-	       rel2 {relative, 0.5 0.0; offset, +15 0;to, "rect";}
-	       image {normal, "arrow_u.png"; }
-	    }
-	    description {
-	       state, "over" 0.0;
-	       rel1 {relative, 0.5 0.0; offset, -20 -20; to, "rect";}
-	       rel2 {relative, 0.5 0.0; offset, +20 0;to, "rect";}
-	       image {normal, "arrow_u.png"; }
-	    }
-	    dragable {
-	       x: 0 1 1;
-	       y: 1 1 1;
-	    }
-	 }
-	 /* Down Arrow */
-	 part{
-	    name, "arrow_d";
-	    type, IMAGE;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 0.5 1.0; offset, -15 0; to, "rect";}
-	       rel2 {relative, 0.5 1.0; offset, +15 +15;to, "rect";}
-	       image {normal, "arrow_d.png"; }
-	    }
-	    description {
-	       state, "over" 0.0;
-	       rel1 {relative, 0.5 1.0; offset, -20 0; to, "rect";}
-	       rel2 {relative, 0.5 1.0; offset, +20 +20;to, "rect";}
-	       image {normal, "arrow_d.png"; }
-	    }
-	    dragable {
-	       x: 0 1 1;
-	       y: 1 1 1;
-	    }
-	 }
-	 /* Left Arrow */
-	 part{
-	    name, "arrow_l";
-	    type, IMAGE;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 0.0 0.5; offset, -15 -15; to, "rect";}
-	       rel2 {relative, 0.0 0.5; offset, 0 +15;to, "rect";}
-	       image {normal, "arrow_l.png"; }
-	    }
-	    description {
-	       state, "over" 0.0;
-	       rel1 {relative, 0.0 0.5; offset, -20 -20; to, "rect";}
-	       rel2 {relative, 0.0 0.5; offset, 0 +20;to, "rect";}
-	       image {normal, "arrow_l.png"; }
-	    }
-	    dragable {
-	       x: 1 1 1;
-	       y: 0 1 1;
-	    }
-	 }
-	 /* Right Arrow */
-	 part{
-	    name, "arrow_r";
-	    type, IMAGE;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 1.0 0.5; offset, 0 -15; to, "rect";}
-	       rel2 {relative, 1.0 0.5; offset, +15 +15;to, "rect";}
-	       image {normal, "arrow_r.png"; }
-	    }
-	    description {
-	       state, "over" 0.0;
-	       rel1 {relative, 1.0 0.5; offset, 0 -20; to, "rect";}
-	       rel2 {relative, 1.0 0.5; offset, +20 +20;to, "rect";}
-	       image {normal, "arrow_r.png"; }
-	    }
-	    dragable {
-	       x: 1 1 1;
-	       y: 0 1 1;
-	    }
-	 }
-#endif	    
+      /* main Rect  */
+      part {
+         name, "rect";
+         type, IMAGE;
+         mouse_events, 0;
+         description {
+            state, "default" 0.0;
+            rel1 {relative, 0.0 0.0; offset, 0 0;}
+            rel2 {relative, 1.0 1.0; offset, 0 0;}
+            image {
+         normal, "focus.png";
+         border, 15 15 15 15;
+            }
+         }
       }
-      programs {
 
-#if 0	 
-	 /* Up Arrow Prog */
-	 program{
-	    name, "Up_Over1";
-	    signal, "mouse,in";
-	    source, "arrow_u";
-	    action, STATE_SET "over" 0.0;
-	    transition, SINUSOIDAL 0.2;
-	    target, "arrow_u";
-	    after, "Up_Over2";
-	 }
-	 program{
-	    name, "Up_Over2";
-	    source, "arrow_u";
-	    action, STATE_SET "default" 0.0;
-	    transition, LINEAR 0.2;
-	    target, "arrow_u";
-	    after, "Up_Over1";
-	 }
-	 program{
-	    name, "UpOverStop";
-	    signal, "mouse,out";
-	    source, "arrow_u";
-	    action, STATE_SET "default" 0.0;
-	    transition, LINEAR 0.0;
-	    target, "arrow_u";
-	 }
-	 program{
-	    name, "DragUp";
-	    signal, "drag";
-	    source, "arrow_u";
-	    action, SIGNAL_EMIT "DRAG" "arrow_u";
-	 }
-	 /* Down Arrow Prog */
-	 program{
-	    name, "Down_Over1";
-	    signal, "mouse,in";
-	    source, "arrow_d";
-	    action, STATE_SET "over" 0.0;
-	    transition, SINUSOIDAL 0.2;
-	    target, "arrow_d";
-	    after, "Down_Over2";
-	 }
-	 program{
-	    name, "Down_Over2";
-	    source, "arrow_d";
-	    action, STATE_SET "default" 0.0;
-	    transition, LINEAR 0.2;
-	    target, "arrow_d";
-	    after, "Down_Over1";
-	 }
-	 program{
-	    name, "DownOverStop";
-	    signal, "mouse,out";
-	    source, "arrow_d";
-	    action, STATE_SET "default" 0.0;
-	    transition, LINEAR 0.0;
-	    target, "arrow_d";
-	 }
-	 program{
-	    name, "DragDown";
-	    signal, "drag";
-	    source, "arrow_d";
-	    action, SIGNAL_EMIT "DRAG" "arrow_d";
-	 }
-	 /* Left Arrow Prog */
-	 program{
-	    name, "Left_Over1";
-	    signal, "mouse,in";
-	    source, "arrow_l";
-	    action, STATE_SET "over" 0.0;
-	    transition, SINUSOIDAL 0.2;
-	    target, "arrow_l";
-	    after, "Left_Over2";
-	 }
-	 program{
-	    name, "Left_Over2";
-	    source, "arrow_l";
-	    action, STATE_SET "default" 0.0;
-	    transition, LINEAR 0.2;
-	    target, "arrow_l";
-	    after, "Left_Over1";
-	 }
-	 program{
-	    name, "LeftOverStop";
-	    signal, "mouse,out";
-	    source, "arrow_l";
-	    action, STATE_SET "default" 0.0;
-	    transition, LINEAR 0.0;
-	    target, "arrow_l";
-	 }
-	 program{
-	    name, "DragLeft";
-	    signal, "drag";
-	    source, "arrow_l";
-	    action, SIGNAL_EMIT "DRAG" "arrow_l";
-	 }
-	 /* Right Arrow Prog */
-	 program{
-	    name, "Right_Over1";
-	    signal, "mouse,in";
-	    source, "arrow_r";
-	    action, STATE_SET "over" 0.0;
-	    transition, SINUSOIDAL 0.2;
-	    target, "arrow_r";
-	    after, "Right_Over2";
-	 }
-	 program{
-	    name, "Right_Over2";
-	    source, "arrow_r";
-	    action, STATE_SET "default" 0.0;
-	    transition, LINEAR 0.2;
-	    target, "arrow_r";
-	    after, "Right_Over1";
-	 }
-	 program{
-	    name, "RightOverStop";
-	    signal, "mouse,out";
-	    source, "arrow_r";
-	    action, STATE_SET "default" 0.0;
-	    transition, LINEAR 0.0;
-	    target, "arrow_r";
-	 }
-	 program{
-	    name, "DragRight";
-	    signal, "drag";
-	    source, "arrow_r";
-	    action, SIGNAL_EMIT "DRAG" "arrow_r";
-	 }
-#endif	 
+#if 0
+   /* Up Arrow  */
+   part{
+      name, "arrow_u";
+      type, IMAGE;
+      description {
+         state, "default" 0.0;
+         rel1 {relative, 0.5 0.0; offset, -15 -15; to, "rect";}
+         rel2 {relative, 0.5 0.0; offset, +15 0;to, "rect";}
+         image {normal, "arrow_u.png"; }
+      }
+      description {
+         state, "over" 0.0;
+         rel1 {relative, 0.5 0.0; offset, -20 -20; to, "rect";}
+         rel2 {relative, 0.5 0.0; offset, +20 0;to, "rect";}
+         image {normal, "arrow_u.png"; }
+      }
+      dragable {
+         x: 0 1 1;
+         y: 1 1 1;
+      }
+   }
+   /* Down Arrow */
+   part{
+      name, "arrow_d";
+      type, IMAGE;
+      description {
+         state, "default" 0.0;
+         rel1 {relative, 0.5 1.0; offset, -15 0; to, "rect";}
+         rel2 {relative, 0.5 1.0; offset, +15 +15;to, "rect";}
+         image {normal, "arrow_d.png"; }
+      }
+      description {
+         state, "over" 0.0;
+         rel1 {relative, 0.5 1.0; offset, -20 0; to, "rect";}
+         rel2 {relative, 0.5 1.0; offset, +20 +20;to, "rect";}
+         image {normal, "arrow_d.png"; }
+      }
+      dragable {
+         x: 0 1 1;
+         y: 1 1 1;
+      }
+   }
+   /* Left Arrow */
+   part{
+      name, "arrow_l";
+      type, IMAGE;
+      description {
+         state, "default" 0.0;
+         rel1 {relative, 0.0 0.5; offset, -15 -15; to, "rect";}
+         rel2 {relative, 0.0 0.5; offset, 0 +15;to, "rect";}
+         image {normal, "arrow_l.png"; }
+      }
+      description {
+         state, "over" 0.0;
+         rel1 {relative, 0.0 0.5; offset, -20 -20; to, "rect";}
+         rel2 {relative, 0.0 0.5; offset, 0 +20;to, "rect";}
+         image {normal, "arrow_l.png"; }
+      }
+      dragable {
+         x: 1 1 1;
+         y: 0 1 1;
+      }
+   }
+   /* Right Arrow */
+   part{
+      name, "arrow_r";
+      type, IMAGE;
+      description {
+         state, "default" 0.0;
+         rel1 {relative, 1.0 0.5; offset, 0 -15; to, "rect";}
+         rel2 {relative, 1.0 0.5; offset, +15 +15;to, "rect";}
+         image {normal, "arrow_r.png"; }
+      }
+      description {
+         state, "over" 0.0;
+         rel1 {relative, 1.0 0.5; offset, 0 -20; to, "rect";}
+         rel2 {relative, 1.0 0.5; offset, +20 +20;to, "rect";}
+         image {normal, "arrow_r.png"; }
+      }
+      dragable {
+         x: 1 1 1;
+         y: 0 1 1;
+      }
+   }
+#endif
+   }
+   programs {
+
+#if 0
+      /* Up Arrow Prog */
+      program{
+         name, "Up_Over1";
+         signal, "mouse,in";
+         source, "arrow_u";
+         action, STATE_SET "over" 0.0;
+         transition, SINUSOIDAL 0.2;
+         target, "arrow_u";
+         after, "Up_Over2";
+      }
+      program{
+         name, "Up_Over2";
+         source, "arrow_u";
+         action, STATE_SET "default" 0.0;
+         transition, LINEAR 0.2;
+         target, "arrow_u";
+         after, "Up_Over1";
+      }
+      program{
+         name, "UpOverStop";
+         signal, "mouse,out";
+         source, "arrow_u";
+         action, STATE_SET "default" 0.0;
+         transition, LINEAR 0.0;
+         target, "arrow_u";
+      }
+      program{
+         name, "DragUp";
+         signal, "drag";
+         source, "arrow_u";
+         action, SIGNAL_EMIT "DRAG" "arrow_u";
+      }
+      /* Down Arrow Prog */
+      program{
+         name, "Down_Over1";
+         signal, "mouse,in";
+         source, "arrow_d";
+         action, STATE_SET "over" 0.0;
+         transition, SINUSOIDAL 0.2;
+         target, "arrow_d";
+         after, "Down_Over2";
+      }
+      program{
+         name, "Down_Over2";
+         source, "arrow_d";
+         action, STATE_SET "default" 0.0;
+         transition, LINEAR 0.2;
+         target, "arrow_d";
+         after, "Down_Over1";
+      }
+      program{
+         name, "DownOverStop";
+         signal, "mouse,out";
+         source, "arrow_d";
+         action, STATE_SET "default" 0.0;
+         transition, LINEAR 0.0;
+         target, "arrow_d";
+      }
+      program{
+         name, "DragDown";
+         signal, "drag";
+         source, "arrow_d";
+         action, SIGNAL_EMIT "DRAG" "arrow_d";
+      }
+      /* Left Arrow Prog */
+      program{
+         name, "Left_Over1";
+         signal, "mouse,in";
+         source, "arrow_l";
+         action, STATE_SET "over" 0.0;
+         transition, SINUSOIDAL 0.2;
+         target, "arrow_l";
+         after, "Left_Over2";
+      }
+      program{
+         name, "Left_Over2";
+         source, "arrow_l";
+         action, STATE_SET "default" 0.0;
+         transition, LINEAR 0.2;
+         target, "arrow_l";
+         after, "Left_Over1";
+      }
+      program{
+         name, "LeftOverStop";
+         signal, "mouse,out";
+         source, "arrow_l";
+         action, STATE_SET "default" 0.0;
+         transition, LINEAR 0.0;
+         target, "arrow_l";
+      }
+      program{
+         name, "DragLeft";
+         signal, "drag";
+         source, "arrow_l";
+         action, SIGNAL_EMIT "DRAG" "arrow_l";
+      }
+      /* Right Arrow Prog */
+      program{
+         name, "Right_Over1";
+         signal, "mouse,in";
+         source, "arrow_r";
+         action, STATE_SET "over" 0.0;
+         transition, SINUSOIDAL 0.2;
+         target, "arrow_r";
+         after, "Right_Over2";
+      }
+      program{
+         name, "Right_Over2";
+         source, "arrow_r";
+         action, STATE_SET "default" 0.0;
+         transition, LINEAR 0.2;
+         target, "arrow_r";
+         after, "Right_Over1";
+      }
+      program{
+         name, "RightOverStop";
+         signal, "mouse,out";
+         source, "arrow_r";
+         action, STATE_SET "default" 0.0;
+         transition, LINEAR 0.0;
+         target, "arrow_r";
+      }
+      program{
+         name, "DragRight";
+         signal, "drag";
+         source, "arrow_r";
+         action, SIGNAL_EMIT "DRAG" "arrow_r";
+      }
+#endif
       }
    }
    group{
       name, "Rel1H";
       parts{
-	 part{
-	    name, "rel1";
-	    type, IMAGE;
-	    //dragable {x, 1 1 1; y, 1 1 1;}
-	    description {
-	       state, "default" 0.0;
-	       visible, 1;
-	       rel1 {relative, 0.0 0.0; offset, 0 0;}
-	       rel2 {relative, 0.0 0.0; offset, 5 5;}
-	       image {
-		  normal, "rel1.png";
-	       }
-	    }
-	 }
+         part{
+            name, "rel1";
+            type, IMAGE;
+            //dragable {x, 1 1 1; y, 1 1 1;}
+            description {
+               state, "default" 0.0;
+               visible, 1;
+               rel1 {relative, 0.0 0.0; offset, 0 0;}
+               rel2 {relative, 0.0 0.0; offset, 5 5;}
+               image {
+            normal, "rel1.png";
+               }
+            }
+         }
       }
       programs{
-	 // Rel1 Prog
-	 program{
-	    name, "Rel1_Show";
-	    signal, "REL1_SHOW";
-	    source, "cprog";
-	    action, STATE_SET "visible" 0.0;
-	    target, "rel1";
-	 }
-	 program{
-	    name, "Rel1_Hide";
-	    signal, "REL1_HIDE";
-	    source, "cprog";
-	    action, STATE_SET "default" 0.0;
-	    target, "rel1";
-	 }
-	 program{
-	    name, "StartDrag";
-	    signal, "mouse,down,1";
-	    source, "rel1";
-	    action, SIGNAL_EMIT "START_DRAG" "rel1";
-	 }
-	 program{
-	    name, "EndDrag";
-	    signal, "mouse,up,1";
-	    source, "rel1";
-	    action, SIGNAL_EMIT "END_DRAG" "rel1";
-	 }
-	 program{
-	    name, "Drag";
-	    signal, "mouse,move";
-	    source, "rel1";
-	    action, SIGNAL_EMIT "DRAG" "rel1";
-	 }
+         // Rel1 Prog
+         program{
+            name, "Rel1_Show";
+            signal, "REL1_SHOW";
+            source, "cprog";
+            action, STATE_SET "visible" 0.0;
+            target, "rel1";
+         }
+         program{
+            name, "Rel1_Hide";
+            signal, "REL1_HIDE";
+            source, "cprog";
+            action, STATE_SET "default" 0.0;
+            target, "rel1";
+         }
+         program{
+            name, "StartDrag";
+            signal, "mouse,down,1";
+            source, "rel1";
+            action, SIGNAL_EMIT "START_DRAG" "rel1";
+         }
+         program{
+            name, "EndDrag";
+            signal, "mouse,up,1";
+            source, "rel1";
+            action, SIGNAL_EMIT "END_DRAG" "rel1";
+         }
+         program{
+            name, "Drag";
+            signal, "mouse,move";
+            source, "rel1";
+            action, SIGNAL_EMIT "DRAG" "rel1";
+         }
       }
    }
    group{
       name, "Rel2H";
       parts{
-	 part{
-	    name, "rel2";
-	    type, IMAGE;
-	    description {
-	       state, "default" 0.0;
-	       visible, 1;
-	       rel1 {relative, 0.0 0.0; offset, 0 0;}
-	       rel2 {relative, 0.0 0.0; offset, 5 5;}
-	       image {
-		  normal, "rel2.png";
-	       }
-	    }
-	 }
+         part{
+            name, "rel2";
+            type, IMAGE;
+            description {
+               state, "default" 0.0;
+               visible, 1;
+               rel1 {relative, 0.0 0.0; offset, 0 0;}
+               rel2 {relative, 0.0 0.0; offset, 5 5;}
+               image {
+            normal, "rel2.png";
+               }
+            }
+         }
       }
       programs{
-	 // Rel2 Prog
-	 program{
-	    name, "StartDrag";
-	    signal, "mouse,down,1";
-	    source, "rel2";
-	    action, SIGNAL_EMIT "START_DRAG" "rel2";
-	 }
-	 program{
-	    name, "EndDrag";
-	    signal, "mouse,up,1";
-	    source, "rel2";
-	    action, SIGNAL_EMIT "END_DRAG" "rel2";
-	 }
-	 program{
-	    name, "Drag";
-	    signal, "mouse,move";
-	    source, "rel2";
-	    action, SIGNAL_EMIT "DRAG" "rel2";
-	 }
+         // Rel2 Prog
+         program{
+            name, "StartDrag";
+            signal, "mouse,down,1";
+            source, "rel2";
+            action, SIGNAL_EMIT "START_DRAG" "rel2";
+         }
+         program{
+            name, "EndDrag";
+            signal, "mouse,up,1";
+            source, "rel2";
+            action, SIGNAL_EMIT "END_DRAG" "rel2";
+         }
+         program{
+            name, "Drag";
+            signal, "mouse,move";
+            source, "rel2";
+            action, SIGNAL_EMIT "DRAG" "rel2";
+         }
       }
    }
    /************************************************************/
-   /*  ParentH 			                               */
+   /*  ParentH                                                 */
    /************************************************************/
    group{
       name, "Rel1X_ParentH";
       parts{
-	 part{
-	    name, "rel1X_parent";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 0.0 0.0; offset: 0 0;}
-	       rel2 {relative, 1.0 1.0; offset: 0 0;}
-	       image {
-		  normal, "parent1X.png";
-		  border, 0 0 0 0;
-	       }
-	    }
-	 }
+         part{
+            name, "rel1X_parent";
+            type, IMAGE;
+            mouse_events, 0;
+            description {
+               state, "default" 0.0;
+               rel1 {relative, 0.0 0.0; offset: 0 0;}
+               rel2 {relative, 1.0 1.0; offset: 0 0;}
+               image {
+            normal, "parent1X.png";
+            border, 0 0 0 0;
+               }
+            }
+         }
       }
    }
    group{
       name, "Rel1Y_ParentH";
       parts{
-	 part{
-	    name, "rel1Y_parent";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 0.0 0.0; offset: 0 0;}
-	       rel2 {relative, 1.0 1.0; offset: 0 0;}
-	       image {
-		  normal, "parent1Y.png";
-		  border, 0 0 0 0;
-	       }
-	    }
-	 }
+         part{
+            name, "rel1Y_parent";
+            type, IMAGE;
+            mouse_events, 0;
+            description {
+               state, "default" 0.0;
+               rel1 {relative, 0.0 0.0; offset: 0 0;}
+               rel2 {relative, 1.0 1.0; offset: 0 0;}
+               image {
+            normal, "parent1Y.png";
+            border, 0 0 0 0;
+               }
+            }
+         }
       }
    }
    group{
       name, "Rel2X_ParentH";
       parts{
-	 part{
-	    name, "rel2X_parent";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 0.0 0.0; offset: 0 0;}
-	       rel2 {relative, 1.0 1.0; offset: 0 0;}
-	       image {
-		  normal, "parent2X.png";
-		  border, 0 0 0 0;
-	       }
-	    }
-	 }
+      part{
+         name, "rel2X_parent";
+         type, IMAGE;
+         mouse_events, 0;
+         description {
+            state, "default" 0.0;
+            rel1 {relative, 0.0 0.0; offset: 0 0;}
+            rel2 {relative, 1.0 1.0; offset: 0 0;}
+            image {
+         normal, "parent2X.png";
+         border, 0 0 0 0;
+            }
+         }
+      }
       }
    }
    group{
       name, "Rel2Y_ParentH";
       parts{
-	 part{
-	    name, "rel2Y_parent";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 0.0 0.0; offset: 0 0;}
-	       rel2 {relative, 1.0 1.0; offset: 0 0;}
-	       image {
-		  normal, "parent2Y.png";
-		  border, 0 0 0 0;
-	       }
-	    }
-	 }
+         part{
+            name, "rel2Y_parent";
+            type, IMAGE;
+            mouse_events, 0;
+            description {
+               state, "default" 0.0;
+               rel1 {relative, 0.0 0.0; offset: 0 0;}
+               rel2 {relative, 1.0 1.0; offset: 0 0;}
+               image {
+            normal, "parent2Y.png";
+            border, 0 0 0 0;
+               }
+            }
+         }
       }
    }
 
    /************************************************************/
-   /*  FakeWin			                               */
+   /*  FakeWin                                                 */
    /************************************************************/
    group{
       name, "FakeWin";
       parts {
-	 /* Border  */
-	 part {
-	    name, "border";
-	    type, IMAGE;
-	    mouse_events, 0;
-	    description {
-	       state, "default" 0.0;
-	       rel1 {relative, 0.0 0.0; offset: -10 -20;}
-	       rel2 {relative, 1.0 1.0; offset: 10 10;}
-	       image {
-		  normal, "fakewin.png";
-		  border, 20 20 22 10;
-	       }
-	    }
-	 }
-	 /* Title */
-	 part{
-	    name, "title";
-	    type, TEXT;
-	    mouse_events, 0;
-	    effect, SOFT_SHADOW;
-	    description {
-	       state, "default" 0.0;
-	       color, 0 0 0 200;
-	       color3, 0 0 0 20;
-
-	       rel1 {relative, 0.0 0.0; offset: 20 -13;}
-	       rel2 {relative, 1.0 1.0; offset: 0 0;}
-	       text {
-		  text, "Titolo Finestra";
-		  font, "Vera";
-		  size, 9;
-		  fit, 0 0;
-		  align, 0.0 0.0;
-	       }
-	    }
-	 }
-	 /* Resize MiniArrow Area*/
-	 part{
-	    name, "miniarrow";
-	    type, IMAGE;
-	    mouse_events, 1;
-
-	    description{
-	       visible, 1;
-	       state, "default" 0.0;
-	       rel1 {relative, 0 0; offset: 0 0;}
-	       rel2 {relative, 0 0; offset: 7 7;}
-	       image {
-		  normal, "miniarrow.png";
-	       }
-	    }
-	    dragable {
-	       //confine: "miniarrow";
-	       //events:  ;
-	       x: 1 1 1;
-	       y: 1 1 1;
-	    }
-	 }
+         /* Border  */
+         part {
+            name, "border";
+            type, IMAGE;
+            mouse_events, 0;
+            description {
+               state, "default" 0.0;
+               rel1 {relative, 0.0 0.0; offset: -10 -20;}
+               rel2 {relative, 1.0 1.0; offset: 10 10;}
+               image {
+            normal, "fakewin.png";
+            border, 20 20 22 10;
+               }
+            }
+         }
+         /* Title */
+         part{
+            name, "title";
+            type, TEXT;
+            mouse_events, 0;
+            effect, SOFT_SHADOW;
+            description {
+               state, "default" 0.0;
+               color, 0 0 0 200;
+               color3, 0 0 0 20;
+               rel1 {relative, 0.0 0.0; offset: 20 -13;}
+               rel2 {relative, 1.0 1.0; offset: 0 0;}
+               text {
+                  text, "Titolo Finestra";
+                  font, "Vera";
+                  size, 9;
+                  fit, 0 0;
+                  align, 0.0 0.0;
+               }
+            }
+         }
+         /* Resize MiniArrow Area*/
+         part{
+            name, "miniarrow";
+            type, RECT;
+            mouse_events, 1;
+            description{
+               state, "default" 0.0;
+               color, 0 0 0 0;
+               rel1 {relative, 0 0; offset: 0 0;}
+               rel2 {relative, 0 0; offset: 7 7;}
+            }
+            dragable {
+               //confine: "miniarrow";
+               //events:  ;
+               x: 1 1 1;
+               y: 1 1 1;
+            }
+         }
       }
       programs {
-	 /* Resize MiniArrow Area*/
-	 program{
-	    name, "StartDrag";
-	    signal, "drag";
-	    source, "miniarrow";
-	    action, SIGNAL_EMIT "DRAG" "miniarrow";
-	 }
+         /* Resize MiniArrow Area*/
+         program{
+            name, "StartDrag";
+            signal, "drag";
+            source, "miniarrow";
+            action, SIGNAL_EMIT "DRAG" "miniarrow";
+         }
+         program{
+            name, "EndDrag";
+            signal, "mouse,up,1";
+            source, "miniarrow";
+            action, SIGNAL_EMIT "END_DRAG" "miniarrow";
+         }
       }
    }
 }
