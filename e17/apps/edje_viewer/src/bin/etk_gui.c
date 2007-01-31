@@ -405,7 +405,7 @@ static void _gui_search_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down
 
    if (event->modifiers & ETK_MODIFIER_CTRL)
      {
-	if (!strcmp(event->keyname, "g"))
+	if (!strcmp(event->keyname, "g") || !strcmp(event->keyname, "s"))
 	  _gui_tree_search(gui, TREE_SEARCH_NEXT);
      }
    else if (!strcmp(event->key, "Return") || !strcmp(event->key, "KP_Enter"))
