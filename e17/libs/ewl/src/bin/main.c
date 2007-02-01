@@ -17,6 +17,22 @@
 #define MAIN_WIDTH 640
 #define MAIN_HEIGHT 320
 
+static Ewl_Model *expansion_model = NULL;
+
+typedef struct Ewl_Test_Menu_Item Ewl_Test_Menu_Item;
+struct Ewl_Test_Menu_Item
+{
+	char *name;
+	void (*cb)(Ewl_Widget *w, void *ev, void *data);
+};
+
+typedef struct Ewl_Test_Menu Ewl_Test_Menu;
+struct Ewl_Test_Menu
+{
+	char *name;
+	Ewl_Test_Menu_Item *items;
+};
+
 static char *ewl_test_about_body = 
 		"The EWL Test application services two purposes\n"
 		"The first is to allow us to test the different\n"
@@ -31,7 +47,8 @@ static char *ewl_test_about_body =
 static int ewl_test_setup_tests(void);
 static void ewl_test_print_tests(void);
 
-static void run_test_boxed(Ewl_Widget *w, void *ev, void *data);
+static void run_test_boxed(Ewl_Test *t);
+static void run_unit_test_boxed(Ewl_Test *t);
 static void run_window_test(Ewl_Test *test, int width, int height);
 static int run_unit_tests(Ewl_Test *test);
 static int create_main_test_window(Ewl_Container *win);
@@ -47,6 +64,16 @@ static void cb_run_unit_tests(Ewl_Widget *w, void *ev, void *data);
 
 static void ewl_test_cb_help(Ewl_Widget *w, void *ev, void *data);
 static void ewl_test_cb_about(Ewl_Widget *w, void *ev, void *data);
+	
+static void *ewl_test_cb_category_fetch(void *data, unsigned int row, 
+						unsigned int column);
+static int ewl_test_cb_category_expandable(void *data, unsigned int row);
+static void *ewl_test_cb_category_expansion_fetch(void *data, unsigned int row);
+static Ewl_Model *ewl_test_cb_category_expansion_model_fetch(void *data, 
+							unsigned int row);
+static void *ewl_test_cb_expansion_fetch(void *data, unsigned int row, 
+							unsigned int column);
+static void ewl_test_cb_test_selected(Ewl_Widget *w, void *ev, void *data);
 
 static Ecore_List *tests = NULL;
 static int window_count = 0;
@@ -160,7 +187,8 @@ ewl_test_cb_unit_test_timer(void *data)
 		Ewl_Widget *tree, *progress, *stat;
 
 		stat = ewl_widget_name_find("statusbar");
-		ewl_statusbar_push(EWL_STATUSBAR(stat), (char *)unit_tests[current_unit_test].name);
+		ewl_statusbar_push(EWL_STATUSBAR(stat), 
+				(char *)unit_tests[current_unit_test].name);
 		val = unit_tests[current_unit_test].func(buf, sizeof(buf));
 		ewl_statusbar_pop(EWL_STATUSBAR(stat));
 
@@ -280,13 +308,9 @@ statusbar_text_set(const char *text)
 }
 
 static void
-run_unit_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-							void *data)
+run_unit_test_boxed(Ewl_Test *t)
 {
-	Ewl_Test *t;
 	Ewl_Widget *c, *n;
-
-	t = data;
 
 	fill_source_text(t);
 	setup_unit_tests(t);
@@ -303,13 +327,9 @@ run_unit_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-run_test_boxed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-							void *data)
+run_test_boxed(Ewl_Test *t)
 {
-	Ewl_Test *t;
 	Ewl_Widget *c, *n;
-
-	t = data;
 
 	/* make sure we have a function if we aren't a straight unit test */
 	if ((t->type != EWL_TEST_TYPE_UNIT) && (!t->func))
@@ -408,47 +428,67 @@ create_main_test_window(Ewl_Container *box)
 {
 	Ewl_Test *t;
 	Ewl_Widget *menubar, *note, *tree, *o, *o2;
-	Ewl_Widget *sim, *adv, *misc, *container, *unit;
-	char *entries[1];
+	Ecore_List *categories;
+	Ecore_List *simple, *adv, *container, *misc, *unit;
 	char *headers[] = {"Test", "Status", "Failure Reason"};
+	Ewl_Model *model;
+	Ewl_View *view;
+	int i;
+
+	Ewl_Test_Menu_Item file_menu[] = {
+		{"Exit", ewl_test_cb_exit},
+		{NULL, NULL}
+	};
+
+	Ewl_Test_Menu_Item help_menu[] = {
+		{"About Ewl ...", ewl_test_cb_about},
+		{"Ewl Test Help ...", ewl_test_cb_help},
+		{NULL, NULL}
+	};
+
+	Ewl_Test_Menu menus[] = {
+		{"File", file_menu},
+		{"Help", help_menu},
+		{NULL, NULL}
+	};
 
 	menubar = ewl_hmenubar_new();
 	ewl_container_child_append(EWL_CONTAINER(box), menubar);
 	ewl_widget_show(menubar);
 
-	o = ewl_menu_new();
-	ewl_container_child_append(EWL_CONTAINER(menubar), o);
-	ewl_button_label_set(EWL_BUTTON(o), "File");
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
-	ewl_widget_show(o);
+	for (i = 0; menus[i].name != NULL; i++)
+	{
+		int k;
 
-	o2 = ewl_menu_item_new();
-	ewl_button_label_set(EWL_BUTTON(o2), "Exit");
-	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, ewl_test_cb_exit, NULL);
-	ewl_container_child_append(EWL_CONTAINER(o), o2);
-	ewl_widget_show(o2);
+		/* pack in a spacer before the help text */
+		if (menus[i + 1].name == NULL)
+		{
+			o = ewl_spacer_new();
+			ewl_container_child_append(EWL_CONTAINER(menubar), o);
+			ewl_object_fill_policy_set(EWL_OBJECT(o), 
+							EWL_FLAG_FILL_FILL);
+			ewl_widget_show(o);
+		}
 
-	o = ewl_spacer_new();
-	ewl_container_child_append(EWL_CONTAINER(menubar), o);
-	ewl_widget_show(o);
+		o2 = ewl_menu_new();
+		ewl_button_label_set(EWL_BUTTON(o2), menus[i].name);
+		ewl_container_child_append(EWL_CONTAINER(menubar), o2);
+		ewl_object_fill_policy_set(EWL_OBJECT(o2),
+					EWL_FLAG_FILL_HSHRINK | 
+					EWL_FLAG_FILL_VFILL);
+		ewl_widget_show(o2);
 
-	o = ewl_menu_new();
-	ewl_container_child_append(EWL_CONTAINER(menubar), o);
-	ewl_button_label_set(EWL_BUTTON(o), "Help");
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
-	ewl_widget_show(o);
-
-	o2 = ewl_menu_item_new();
-	ewl_button_label_set(EWL_BUTTON(o2), "About EWL...");
-	ewl_container_child_append(EWL_CONTAINER(o), o2);
-	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, ewl_test_cb_about, NULL);
-	ewl_widget_show(o2);
-
-	o2 = ewl_menu_item_new();
-	ewl_button_label_set(EWL_BUTTON(o2), "EWL Test Help");
-	ewl_container_child_append(EWL_CONTAINER(o), o2);
-	ewl_callback_append(o2, EWL_CALLBACK_CLICKED, ewl_test_cb_help, NULL);
-	ewl_widget_show(o2);
+		for (k = 0; menus[i].items[k].name != NULL; k++)
+		{
+			o = ewl_menu_item_new();
+			ewl_button_label_set(EWL_BUTTON(o), 
+						menus[i].items[k].name);
+			ewl_container_child_append(EWL_CONTAINER(o2), o);
+			ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+						menus[i].items[k].cb, NULL);
+			ewl_widget_show(o);
+		}
+	}
 
 	note = ewl_notebook_new();
 	ewl_container_child_append(box, note);
@@ -457,38 +497,56 @@ create_main_test_window(Ewl_Container *box)
 					EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_show(note);
 
-	tree = ewl_tree_new(1);
+	/* our data will be a list of lists. each of the child lists will
+	 * hold a set of tests to be run */
+	categories = ecore_list_new();
+
+	simple = ecore_list_new();
+	ecore_list_append(categories, simple);
+
+	adv = ecore_list_new();
+	ecore_list_append(categories, adv);
+
+	container = ecore_list_new();
+	ecore_list_append(categories, container);
+
+	misc = ecore_list_new();
+	ecore_list_append(categories, misc);
+
+	unit = ecore_list_new();
+	ecore_list_append(categories, unit);
+
+	model = ewl_model_new();
+	ewl_model_fetch_set(model, ewl_test_cb_category_fetch);
+	ewl_model_count_set(model, ewl_model_cb_ecore_list_count);
+	ewl_model_expandable_set(model, ewl_test_cb_category_expandable);
+	ewl_model_expansion_data_fetch_set(model, 
+				ewl_test_cb_category_expansion_fetch);
+	ewl_model_expansion_model_fetch_set(model, 
+				ewl_test_cb_category_expansion_model_fetch);
+
+	tree = ewl_tree2_new();
 	ewl_container_child_append(EWL_CONTAINER(note), tree);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), tree, "Tests");
-	ewl_tree_headers_visible_set(EWL_TREE(tree), FALSE);
-	ewl_tree_mode_set(EWL_TREE(tree), EWL_SELECTION_MODE_SINGLE);
+	ewl_tree2_headers_visible_set(EWL_TREE2(tree), FALSE);
+	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
+	ewl_mvc_model_set(EWL_MVC(tree), model);
+	ewl_mvc_data_set(EWL_MVC(tree), categories);
+	ewl_callback_append(tree, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_test_cb_test_selected, NULL);
 	ewl_widget_show(tree);
 
-	/* create the test category rows */
-	entries[0] = "Simple";
-	sim = ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
-
-	entries[0] = "Advanced";
-	adv = ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
-
-	entries[0] = "Container";
-	container = ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
-
-	entries[0] = "Misc";
-	misc = ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
-
-	entries[0] = "Unit";
-	unit = ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
+	view = ewl_label_view_get();
+	ewl_tree2_column_append(EWL_TREE2(tree), view, FALSE);
 
 	/* add the tests to the category rows */
 	ecore_list_goto_first(tests);
 	while ((t = ecore_list_next(tests)))
 	{
-		Ewl_Widget *parent = NULL, *w;
-		entries[0] = (char *)t->name;
+		Ecore_List *parent = NULL;
 
 		if (t->type == EWL_TEST_TYPE_SIMPLE)
-			parent = sim;
+			parent = simple;
 		else if (t->type == EWL_TEST_TYPE_ADVANCED)
 			parent = adv;
 		else if (t->type == EWL_TEST_TYPE_CONTAINER)
@@ -498,22 +556,12 @@ create_main_test_window(Ewl_Container *box)
 		else if (t->type == EWL_TEST_TYPE_UNIT)
 			parent = unit;
 
-		w = ewl_tree_text_row_add(EWL_TREE(tree), 
-					EWL_ROW(parent), entries);
-		if (parent == unit)
-			ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-							run_unit_test_boxed, t);
-		else
-			ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-							run_test_boxed, t);
+		ecore_list_append(parent, t);
 
+		/* if we've got unit tests add to the unit category */
 		if ((parent != unit) &&
-				(t->unit_tests && t->unit_tests[0].func)) {
-			w = ewl_tree_text_row_add(EWL_TREE(tree), 
-						EWL_ROW(unit), entries);
-			ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-							run_unit_test_boxed, t);
-		}
+				(t->unit_tests && t->unit_tests[0].func))
+			ecore_list_append(unit, t);
 	}
 
 	o = ewl_vbox_new();
@@ -851,7 +899,8 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 				/* skip to the end of the line */
 				end = strchr(end, '\n');
 
-				/* if this is the section header we need to skip the section name */
+				/* if this is the section header we need to skip 
+				 * the section name */
 				if (key == 's')
 				{
 					while (!isspace(*start)) start ++;
@@ -1013,5 +1062,94 @@ ewl_test_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(vbox), o);
 	ewl_widget_show(o);
 }
+
+static void *
+ewl_test_cb_category_fetch(void *data __UNUSED__, unsigned int row, 
+					unsigned int column __UNUSED__)
+{
+	switch(row)
+	{
+		case 0: return "Simple";
+		case 1: return "Advanced";
+		case 2: return "Container";
+		case 3: return "Misc";
+		case 4: return "Unit";
+	}
+	return "ERROR";
+}
+
+static int
+ewl_test_cb_category_expandable(void *data __UNUSED__, 
+				unsigned int row __UNUSED__)
+{
+	return 1;
+}
+
+static void *
+ewl_test_cb_category_expansion_fetch(void *data, unsigned int row)
+{
+	ecore_list_goto_index(data, row);
+	return ecore_list_current(data);
+}
+
+static Ewl_Model *
+ewl_test_cb_category_expansion_model_fetch(void *data, unsigned int row)
+{
+	if (expansion_model) return expansion_model;
+
+	expansion_model = ewl_model_new();
+	ewl_model_fetch_set(expansion_model, ewl_test_cb_expansion_fetch);
+	ewl_model_count_set(expansion_model, ewl_model_cb_ecore_list_count);
+
+	return expansion_model;
+}
+
+static void *
+ewl_test_cb_expansion_fetch(void *data, unsigned int row, 
+				unsigned int column __UNUSED__)
+{
+	Ewl_Test *test;
+
+	ecore_list_goto_index(data, row);
+	test = ecore_list_current(data);
+
+	return (char *)test->name;
+}
+
+static void
+ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	Ecore_List *tree_data, *unit;
+	Ewl_Selection_Idx *sel;
+	Ewl_Test *test;
+
+	tree_data = ewl_mvc_data_get(EWL_MVC(w));
+	sel = ewl_mvc_selected_get(EWL_MVC(w));
+
+	/* don't care about the top level rows */
+	if (tree_data == sel->sel.data) 
+	{
+		free(sel);
+		return;
+	}
+
+	/* get the test */
+	ecore_list_goto_index(sel->sel.data, sel->row);
+	test = ecore_list_current(sel->sel.data);
+
+	/* we need to determine if this is the unit test case. if it is we
+	 * need to treat it specially */
+	ecore_list_goto_last(tree_data);
+	unit = ecore_list_current(tree_data);
+	if (unit == sel->sel.data)
+		run_unit_test_boxed(test);
+	else
+		run_test_boxed(test);
+
+	free(sel);
+}
+
+
 
 
