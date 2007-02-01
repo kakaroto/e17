@@ -383,7 +383,7 @@ void
 ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, unsigned int row)
 {
 	Ecore_List *exp;
-	int i;
+	int i, created = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -397,6 +397,7 @@ ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, unsigned int row)
 	{
 		ewl_tree2_create_expansions_hash(tree);
 		exp = ecore_list_new();
+		created = 1;
 	}
 	else
 	{
@@ -411,7 +412,9 @@ ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, unsigned int row)
 	}
 
 	ecore_list_insert(exp, (void *)row);
-	ecore_hash_set(tree->expansions, data, exp);
+
+	if (created)
+		ecore_hash_set(tree->expansions, data, exp);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
