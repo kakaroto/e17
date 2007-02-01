@@ -403,6 +403,7 @@ WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 {
    WarpFocusWin       *fw = warpFocusWindow;
    KeySym              key;
+   unsigned int        mask;
 
    if (!EoIsShown(fw))
       return;
@@ -411,14 +412,14 @@ WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
      {
      case KeyPress:
 	if (ev->xkey.keycode == warpFocusKey)
-	   key = XK_Tab;
+	   key = 0x80000000;
 	else
 	   key = XLookupKeysym(&ev->xkey, 0);
 	switch (key)
 	  {
 	  default:
 	     break;
-	  case XK_Tab:
+	  case 0x80000000:
 	  case XK_Down:
 	     WarpFocus(1);
 	     break;
@@ -429,19 +430,24 @@ WarpFocusHandleEvent(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 	break;
 
      case KeyRelease:
+	mask = 0;
+	EQueryPointer(NULL, NULL, NULL, NULL, &mask);
+	if ((mask & Mode.masks.mod_key_mask) == 0)
+	  {
+	     WarpFocusFinish();
+	     break;
+	  }
 	if (ev->xkey.keycode == warpFocusKey)
-	   key = XK_Tab;
+	   key = 0x80000000;
 	else
 	   key = XLookupKeysym(&ev->xkey, 0);
 	switch (key)
 	  {
-	  default:
-	     WarpFocusFinish();
-	     break;
 	  case XK_Escape:
 	     WarpFocusHide();
 	     break;
-	  case XK_Tab:
+	  default:
+	  case 0x80000000:
 	  case XK_Down:
 	  case XK_Up:
 	     break;
