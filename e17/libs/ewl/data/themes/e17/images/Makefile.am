@@ -57,5 +57,12 @@ ewl_notebook_tab_bottom_selected.png \
 ewl_notebook_tab_left_selected.png \
 ewl_notebook_tab_right_selected.png \
 ewl_notebook_tab_top_selected.png \
-focus.png
-
+focus.png \
+pointer.png \
+sphere1.png \
+sphere2.png \
+sphere3.png \
+sphere4.png \
+sphere5.png \
+sphere6.png \
+sphere7.png

@@ -6,6 +6,7 @@ EXTRA_DIST = \
 border.edc \
 button.edc \
 combo.edc \
+cursor.edc \
 highlight.edc \
 label.edc \
 menu.edc \
