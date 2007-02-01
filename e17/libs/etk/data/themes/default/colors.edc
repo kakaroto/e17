@@ -1,0 +1,20 @@
+data {
+   item: "etk/color/foreground" "255 255 255 255";
+   item: "etk/color/background" "0 0 0 255";
+   item: "etk/color/important/fg" "205 205 0 255";
+   item: "etk/color/important/bg" "255 255 255 255";
+   item: "etk/color/warning/fg" "205 0 0 255";
+   item: "etk/color/warning/bg" "255 255 255 255";
+   item: "etk/color/info/fg" "0 0 205 255";
+   item: "etk/color/info/bg" "255 255 255 255";
+   item: "etk/color/default1/fg" "0 205 0 255";
+   item: "etk/color/default1/bg" "255 255 255 255";
+   item: "etk/color/default2/fg" "30 144 255 255";
+   item: "etk/color/default2/bg" "255 255 255 255";
+   item: "etk/color/default3/fg" "205 0 205 255";
+   item: "etk/color/default3/bg" "255 255 255 255";
+   item: "etk/color/default4/fg" "0 205 205 255";
+   item: "etk/color/default4/bg" "255 255 255 255";
+   item: "etk/color/default5/fg" "229 229 229 255";
+   item: "etk/color/default5/bg" "255 255 255 255";
+}

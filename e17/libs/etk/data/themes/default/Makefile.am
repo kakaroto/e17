@@ -1,5 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST = default.edc
+EXTRA_DIST = default.edc colors.edc
 SUBDIRS = fonts \
 	  images \
 	  macros \
@@ -16,6 +16,7 @@ files_DATA = default.edj
 
 THEME_DEP = \
 default.edc \
+colors.edc \
 widgets/button.edc \
 widgets/check_button.edc \
 widgets/colorpicker.edc \

@@ -16,6 +16,7 @@ void etk_test_tree_window_create(void *data)
    Etk_Tree_Col *col1, *col2, *col3, *col4, *col5;
    Etk_Tree_Row *row;
    Etk_Widget *statusbar;
+   Etk_Color c_warn, c_default2;
    char row_name[128];
    const char *stock_key;
    int i;
@@ -65,9 +66,12 @@ void etk_test_tree_window_create(void *data)
     * the speed when you insert a lot of rows. It is not really important if you
     * insert only some thousands of rows (here, we insert 3000 rows) */
    etk_tree_freeze(ETK_TREE(tree));
+   c_warn = etk_theme_color_get(ETK_COLOR_WARNING_FG);
+   c_default2 = etk_theme_color_get(ETK_COLOR_DEFAULT2_FG);
    for (i = 0; i < 1000; i++)
    {
-      sprintf(row_name, "Row %d", (i * 3) + 1);
+      sprintf(row_name, "<font color=#%.2X%.2X%.2X%.2X>Row %d</font>", 
+	    c_warn.r, c_warn.g, c_warn.b, c_warn.a, (i * 3) + 1);
       stock_key = etk_stock_key_get(ETK_STOCK_PLACES_USER_HOME, ETK_STOCK_SMALL);
       row = etk_tree_row_append(ETK_TREE(tree), NULL,
          col1, etk_theme_icon_get(), stock_key, row_name,
@@ -77,7 +81,8 @@ void etk_test_tree_window_create(void *data)
          col5, ETK_FALSE,
          NULL);
       
-      sprintf(row_name, "Row %d", (i * 3) + 2);
+      sprintf(row_name, "<font color=#%.2X%.2X%.2X%.2X>Row %d</font>",
+	    c_default2.r, c_default2.g, c_default2.b, c_default2.a, (i * 3) + 2);
       stock_key = etk_stock_key_get(ETK_STOCK_PLACES_FOLDER, ETK_STOCK_SMALL);
       row = etk_tree_row_append(ETK_TREE(tree), row,
          col1, etk_theme_icon_get(), stock_key, row_name,

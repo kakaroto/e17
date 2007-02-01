@@ -690,16 +690,14 @@ group {
    parts {
       part {
          name: "etk.text.text";
-	 type: TEXT;
+	 type: TEXTBLOCK;
          description {
             state: "default" 0.0;
 	    color: 0 0 0 255;
 	    align: 0.0 0.5;
             text {
-               font: "Vera";
-               size:  10;
-               min: 1 1;
-               align: 0.0 0.5;
+	       style: "label_style";
+	       min:   1 1;
             }
          }
       }

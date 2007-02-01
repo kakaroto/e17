@@ -75,7 +75,8 @@ Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, cha
  * value, this function will return ETK_TRUE. You can set it to NULL to ignore it
  * @param remove if @a remove is ETK_TRUE, the argument and its value will be removed from @a argv
  * if they are found
- * @param value the location where to store the value of the argument. You'll have to free it when you no longer need it
+ * @param value the location where to store the value of the argument. You'll have to free it when you no longer need it.
+ * If NULL, it's expected that the agrument has no value
  * @return Returns ETK_TRUE if the argument has been found and was followed by a value, ETK_FALSE otherwise
  */
 Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, char short_name, Etk_Bool remove, char **value)
@@ -108,7 +109,10 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
             /* -s value */
             if (arg_len == 2)
             {
-               if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
+	       /* valueless */
+	       if (!value)
+		   num_args = 1;
+	       else if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
                {
                   value_ptr = next;
                   num_args = 2;
@@ -127,8 +131,11 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
       {
          if (strncmp(&arg[2], long_name, long_name_len) == 0)
          {
+	    /* valueless */
+	    if (!value && !((arg_len > long_name_len + 3) && (arg[long_name_len + 2] == '=')))
+	       num_args = 1;
             /* --long_name value */
-            if (arg_len == long_name_len + 2)
+	    else if (arg_len == long_name_len + 2)
             {
                if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
                {
@@ -145,18 +152,18 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
          }
       }
       
-      /* A value has been found */
-      if (value_ptr)
+      if (num_args)
       {
-         if (value)
-            *value = strdup(value_ptr);
+	 /* A value has been found */
+	 if (value_ptr)
+	    if (value) *value = strdup(value_ptr);
          if (remove)
          {
-            for (j = i + num_args; j < *argc; j++)
-               (*argv)[j - num_args] = (*argv)[j];
-            (*argc)--;
+            for (j = i; j < *argc - num_args + 1; j++)
+	       (*argv)[j] = (*argv)[j + num_args];
+	    (*argc) -= num_args;
          }
-         return ETK_TRUE;
+	 return ETK_TRUE;
       }
    }
    

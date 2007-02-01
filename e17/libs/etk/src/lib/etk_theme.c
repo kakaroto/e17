@@ -15,6 +15,7 @@ static char *_etk_theme_widget_default = NULL;
 static char *_etk_theme_widget_current = NULL;
 static char *_etk_theme_icon_default = NULL;
 static char *_etk_theme_icon_current = NULL;
+static char *_etk_theme_colors[ETK_COLOR_NUM_COLORS];
 
 /**
  * @internal
@@ -27,6 +28,25 @@ void etk_theme_init()
    
    etk_theme_widget_set(etk_config_widget_theme_get());
    etk_theme_icon_set("default");
+
+   _etk_theme_colors[ETK_COLOR_FOREGROUND] = strdup("etk/color/foreground");
+   _etk_theme_colors[ETK_COLOR_BACKGROUND] = strdup("etk/color/background");
+   _etk_theme_colors[ETK_COLOR_IMPORTANT_FG] = strdup("etk/color/important/fg");
+   _etk_theme_colors[ETK_COLOR_IMPORTANT_BG] = strdup("etk/color/important/bg");
+   _etk_theme_colors[ETK_COLOR_WARNING_FG] = strdup("etk/color/warning/fg");
+   _etk_theme_colors[ETK_COLOR_WARNING_BG] = strdup("etk/color/warning/bg");
+   _etk_theme_colors[ETK_COLOR_INFO_FG] = strdup("etk/color/info/fg");
+   _etk_theme_colors[ETK_COLOR_INFO_BG] = strdup("etk/color/info/bg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT1_FG] = strdup("etk/color/default1/fg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT1_BG] = strdup("etk/color/default1/bg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT2_FG] = strdup("etk/color/default2/fg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT2_BG] = strdup("etk/color/default2/bg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT3_FG] = strdup("etk/color/default3/fg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT3_BG] = strdup("etk/color/default3/bg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT4_FG] = strdup("etk/color/default4/fg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT4_BG] = strdup("etk/color/default4/bg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT5_FG] = strdup("etk/color/default5/fg");
+   _etk_theme_colors[ETK_COLOR_DEFAULT5_BG] = strdup("etk/color/default5/bg");
 }
 
 /**
@@ -35,6 +55,8 @@ void etk_theme_init()
  */
 void etk_theme_shutdown()
 {
+   int i;
+
    free(_etk_theme_widget_default);
    free(_etk_theme_widget_current);
    free(_etk_theme_icon_default);
@@ -44,6 +66,12 @@ void etk_theme_shutdown()
    _etk_theme_widget_current = NULL;
    _etk_theme_icon_default = NULL;
    _etk_theme_icon_current = NULL;
+
+   for (i = 0; i < ETK_COLOR_NUM_COLORS; i++)
+   {
+      if (_etk_theme_colors[i])
+	 free(_etk_theme_colors[i]);
+   }
 }
 
 /**
@@ -320,6 +348,30 @@ Etk_Bool etk_theme_edje_object_set_from_parent(Evas_Object *object, const char *
    if (!object)
       return ETK_FALSE;
    return etk_theme_edje_object_set(object, etk_widget_theme_file_get(parent), group, etk_widget_theme_group_get(parent));
+}
+
+/**
+ * @brief Gets the color type from the theme-file.
+ * @param color_type an Etk_Color_Type
+ * @return Returns an Etk_Color with the color filled from the theme-file, or color with -1 if it wasn't found
+ */
+Etk_Color etk_theme_color_get(Etk_Color_Type color_type)
+{
+   Etk_Color color;
+   const char *file;
+   char *color_string;
+
+   file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
+   color_string = edje_file_data_get(file, _etk_theme_colors[color_type]);
+   if (!color_string || sscanf(color_string, "%d %d %d %d", &color.r, &color.g, &color.b, &color.a) != 4)
+   {
+      Etk_Color color = { .r = -1, .g = -1, .b = -1, .a = -1 };
+      if (color_string) free(color_string);
+      return color;
+   }
+
+   if (color_string) free(color_string);
+   return color;
 }
 
 /**************************
