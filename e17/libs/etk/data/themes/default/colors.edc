@@ -1,20 +1,20 @@
 data {
-   item: "etk/color/foreground" "255 255 255 255";
-   item: "etk/color/background" "0 0 0 255";
-   item: "etk/color/important/fg" "205 205 0 255";
+   item: "etk/color/foreground" "0 0 0 255";		/* Black */
+   item: "etk/color/background" "255 255 255 255";	/* White */
+   item: "etk/color/important/fg" "158 158 0 255";	/* Yellow */
    item: "etk/color/important/bg" "255 255 255 255";
-   item: "etk/color/warning/fg" "205 0 0 255";
+   item: "etk/color/warning/fg" "205 0 0 255";		/* Red */
    item: "etk/color/warning/bg" "255 255 255 255";
-   item: "etk/color/info/fg" "0 0 205 255";
+   item: "etk/color/info/fg" "0 0 205 255";		/* Blue */
    item: "etk/color/info/bg" "255 255 255 255";
-   item: "etk/color/default1/fg" "0 205 0 255";
+   item: "etk/color/default1/fg" "0 140 0 255";		/* Green */
    item: "etk/color/default1/bg" "255 255 255 255";
-   item: "etk/color/default2/fg" "30 144 255 255";
+   item: "etk/color/default2/fg" "111 79 143 255";	/* Purple */
    item: "etk/color/default2/bg" "255 255 255 255";
-   item: "etk/color/default3/fg" "205 0 205 255";
+   item: "etk/color/default3/fg" "205 0 205 255";	/* Pink */
    item: "etk/color/default3/bg" "255 255 255 255";
-   item: "etk/color/default4/fg" "0 205 205 255";
+   item: "etk/color/default4/fg" "145 87 26 255";	/* Brown */
    item: "etk/color/default4/bg" "255 255 255 255";
-   item: "etk/color/default5/fg" "229 229 229 255";
+   item: "etk/color/default5/fg" "136 136 136 255";	/* Gray */
    item: "etk/color/default5/bg" "255 255 255 255";
 }
