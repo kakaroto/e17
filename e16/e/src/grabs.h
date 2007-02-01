@@ -35,5 +35,9 @@ void                GrabButtonSet(unsigned int button, unsigned int modifiers,
 				  unsigned int csr, int confine);
 void                GrabButtonRelease(unsigned int button,
 				      unsigned int modifiers, Win win);
+void                GrabKeySet(unsigned int key, unsigned int modifiers,
+			       Win win);
+void                GrabKeyRelease(unsigned int key, unsigned int modifiers,
+				   Win win);
 
 #endif /* _GRABS_H_ */

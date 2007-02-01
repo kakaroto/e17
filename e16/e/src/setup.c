@@ -264,12 +264,14 @@ SetupX(const char *dstr)
    {
       XModifierKeymap    *mod;
       KeyCode             nl, sl;
+      unsigned int        numlock, scrollock;
       int                 i;
       int                 masks[8] = {
 	 ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
 	 Mod4Mask, Mod5Mask
       };
 
+      numlock = scrollock = 0;
       mod = XGetModifierMapping(disp);
       nl = XKeysymToKeycode(disp, XK_Num_Lock);
       sl = XKeysymToKeycode(disp, XK_Scroll_Lock);
@@ -278,20 +280,32 @@ SetupX(const char *dstr)
 	   for (i = 0; i < (8 * mod->max_keypermod); i++)
 	     {
 		if ((nl) && (mod->modifiermap[i] == nl))
-		   Mode.masks.numlock = masks[i / mod->max_keypermod];
+		   numlock = masks[i / mod->max_keypermod];
 		else if ((sl) && (mod->modifiermap[i] == sl))
-		   Mode.masks.scrollock = masks[i / mod->max_keypermod];
+		   scrollock = masks[i / mod->max_keypermod];
 	     }
 	}
       Mode.masks.mod_combos[0] = 0;
       Mode.masks.mod_combos[1] = LockMask;
-      Mode.masks.mod_combos[2] = Mode.masks.numlock;
-      Mode.masks.mod_combos[3] = Mode.masks.scrollock;
-      Mode.masks.mod_combos[4] = Mode.masks.numlock | Mode.masks.scrollock;
-      Mode.masks.mod_combos[5] = LockMask | Mode.masks.numlock;
-      Mode.masks.mod_combos[6] = LockMask | Mode.masks.scrollock;
-      Mode.masks.mod_combos[7] = LockMask |
-	 Mode.masks.numlock | Mode.masks.scrollock;
+      if (numlock)
+	{
+	   Mode.masks.mod_combos[2] = numlock;
+	   Mode.masks.mod_combos[5] = LockMask | numlock;
+	}
+      if (scrollock)
+	{
+	   Mode.masks.mod_combos[3] = scrollock;
+	   Mode.masks.mod_combos[6] = LockMask | scrollock;
+	}
+      if (numlock && scrollock)
+	{
+	   Mode.masks.mod_combos[4] = numlock | scrollock;
+	   Mode.masks.mod_combos[7] = LockMask | numlock | scrollock;
+	}
+
+      Mode.masks.mod_key_mask =
+	 (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
+	  Mod5Mask) & (~(numlock | scrollock | LockMask));
 
       if (mod)
 	 XFreeModifiermap(mod);

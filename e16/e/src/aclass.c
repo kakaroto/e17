@@ -1010,9 +1010,7 @@ ActionclassEvent(ActionClass * ac, XEvent * ev, EWin * ewin)
 
    key = type = button = modifiers = mouse = 0;
 
-   mask =
-      (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
-       Mod5Mask) & (~(Mode.masks.numlock | Mode.masks.scrollock | LockMask));
+   mask = Mode.masks.mod_key_mask;
 
    switch (ev->type)
      {
@@ -1484,35 +1482,11 @@ GrabButtonGrabs(EWin * ewin)
 		      && (aa->event != EVENT_MOUSE_UP)))
 	   continue;
 
-	mod = 0;
-	button = 0;
-
-	if (aa->anymodifier)
-	   mod = AnyModifier;
-	else
-	   mod = aa->modifiers;
-
-	if (aa->anybutton)
-	   button = AnyButton;
-	else
-	   button = aa->button;
-
+	mod = (aa->anymodifier) ? AnyModifier : aa->modifiers;
+	button = (aa->anybutton) ? AnyButton : aa->button;
 	mask = ButtonPressMask | ButtonReleaseMask;
 
-	if (mod == AnyModifier)
-	  {
-	     GrabButtonSet(button, mod, EoGetWin(ewin), mask, ECSR_PGRAB, 1);
-	  }
-	else
-	  {
-	     int                 i;
-
-	     for (i = 0; i < 8; i++)
-	       {
-		  GrabButtonSet(button, mod | Mode.masks.mod_combos[i],
-				EoGetWin(ewin), mask, ECSR_PGRAB, 1);
-	       }
-	  }
+	GrabButtonSet(button, mod, EoGetWin(ewin), mask, ECSR_PGRAB, 1);
      }
 }
 
@@ -1536,33 +1510,10 @@ UnGrabButtonGrabs(EWin * ewin)
 		      && (aa->event != EVENT_MOUSE_UP)))
 	   continue;
 
-	mod = 0;
-	button = 0;
+	mod = (aa->anymodifier) ? AnyModifier : aa->modifiers;
+	button = (aa->anybutton) ? AnyButton : aa->button;
 
-	if (aa->anymodifier)
-	   mod = AnyModifier;
-	else
-	   mod = aa->modifiers;
-
-	if (aa->anybutton)
-	   button = AnyButton;
-	else
-	   button = aa->button;
-
-	if (mod == AnyModifier)
-	  {
-	     GrabButtonRelease(button, mod, EoGetWin(ewin));
-	  }
-	else
-	  {
-	     int                 i;
-
-	     for (i = 0; i < 8; i++)
-	       {
-		  GrabButtonRelease(button, mod | Mode.masks.mod_combos[i],
-				    EoGetWin(ewin));
-	       }
-	  }
+	GrabButtonRelease(button, mod, EoGetWin(ewin));
      }
 }
 
@@ -1574,22 +1525,9 @@ GrabActionKey(Action * aa)
    if (!aa->key)
       return;
 
-   mod = aa->modifiers;
-   if (aa->anymodifier)
-     {
-	mod = AnyModifier;
-	XGrabKey(disp, aa->key, mod, VRoot.xwin, False, GrabModeAsync,
-		 GrabModeSync);
-     }
-   else
-     {
-	int                 i;
+   mod = (aa->anymodifier) ? AnyModifier : aa->modifiers;
 
-	/* grab the key even if locks are on or not */
-	for (i = 0; i < 8; i++)
-	   XGrabKey(disp, aa->key, mod | Mode.masks.mod_combos[i], VRoot.xwin,
-		    False, GrabModeAsync, GrabModeSync);
-     }
+   GrabKeySet(aa->key, mod, VRoot.win);
 }
 
 static void
@@ -1600,19 +1538,7 @@ UnGrabActionKey(Action * aa)
    if (!aa->key)
       return;
 
-   mod = aa->modifiers;
-   if (aa->anymodifier)
-     {
-	mod = AnyModifier;
-	XUngrabKey(disp, aa->key, mod, VRoot.xwin);
-     }
-   else
-     {
-	int                 i;
+   mod = (aa->anymodifier) ? AnyModifier : aa->modifiers;
 
-	/* ungrab the key even if locks are on or not */
-	for (i = 0; i < 8; i++)
-	   XUngrabKey(disp, aa->key, mod | Mode.masks.mod_combos[i],
-		      VRoot.xwin);
-     }
+   GrabKeyRelease(aa->key, mod, VRoot.win);
 }

@@ -475,8 +475,7 @@ typedef struct
    } locale;
    struct
    {
-      unsigned int        numlock;
-      unsigned int        scrollock;
+      unsigned int        mod_key_mask;
       unsigned int        mod_combos[8];
    } masks;
    struct
