@@ -498,6 +498,7 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
 	ret = NEW(Ewl_Selection_Idx, 1);
 	ret->sel.type = EWL_SELECTION_TYPE_INDEX;
 	ret->sel.model = sel->model;
+	ret->sel.data = sel->data;
 	if (sel->type == EWL_SELECTION_TYPE_INDEX)
 	{
 		Ewl_Selection_Idx *si;
