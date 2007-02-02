@@ -4189,3 +4189,21 @@ Refactor various file property test functions.
 Cleanups, enable compiling everything as if it were C++.
 Fix epp warnings.   
 
+
+-------------------------------------------------------------------------------
+
+Thu Feb  1 23:44:09 CET 2007
+(Kim)
+
+--- 0.16.8.6 0.03 ---
+Disable unused feature (file name mapping) (epp).
+Suppress blank output lines (epp).
+Add command to show current screen size. Update screen command help.
+Make old sample scripts work.
+Add animators.
+Tweak timer event handling (run all expired timers at once).
+Use animator to slide startup windows.
+Highlight selected focus list item when clicked (noted by Warren Crossing).
+Move modifier mask stuff around. Avoid redundant key/button grab/ungrabs.
+Make focus list key handling somewhat less ugly.
+
