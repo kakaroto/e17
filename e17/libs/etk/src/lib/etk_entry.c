@@ -264,10 +264,8 @@ void etk_entry_image_highlight_set(Etk_Entry *entry, Etk_Entry_Image_Position po
 }
 
 /**
- * @brief Gets the image of the entry
+ * @brief Adds a clear button to the entry
  * @param entry an entry
- * @param position image position
- * @return Returns the image of the entry
  */
 void etk_entry_clear_button_add(Etk_Entry *entry)
 {
@@ -283,8 +281,10 @@ void etk_entry_clear_button_add(Etk_Entry *entry)
 }
 
 /**
- * @brief Adds a clear button to the entry
+ * @brief Gets the image of the entry
  * @param entry an entry
+ * @param position image position
+ * @return Returns the image of the entry
  */
 Etk_Image *etk_entry_image_get(Etk_Entry *entry, Etk_Entry_Image_Position position)
 {
