@@ -16,7 +16,7 @@ static int debug = 0;
 static int epsilon_init_count = 0;
 static int epsilon_mid = 0;
 
-static Ecore_List *epsilon_request_queue = NULL;
+static Ecore_DList *epsilon_request_queue = NULL;
 
 static Ecore_Con_Server *epsilon_server = NULL;
 
@@ -46,7 +46,7 @@ epsilon_thumb_init()
 	 * Allocate a list for queueing requests.
 	 */
 	if (!epsilon_init_count) {
-		epsilon_request_queue = ecore_list_new();
+		epsilon_request_queue = ecore_dlist_new();
 		if (!epsilon_request_queue) goto queue_error;
 
 		/*
@@ -92,7 +92,7 @@ handler_data_error:
 handler_del_error:
 	ecore_event_handler_del(epsilon_server_add);
 handler_add_error:
-	ecore_list_destroy(epsilon_request_queue);
+	ecore_dlist_destroy(epsilon_request_queue);
 queue_error:
 	ecore_con_shutdown();
 con_init_error:
@@ -111,7 +111,7 @@ epsilon_shutdown()
 		ecore_event_handler_del(epsilon_server_data);
 		ecore_event_handler_del(epsilon_server_del);
 		ecore_event_handler_del(epsilon_server_add);
-		ecore_list_destroy(epsilon_request_queue);
+		ecore_dlist_destroy(epsilon_request_queue);
 	}
 
 	ecore_con_shutdown();
