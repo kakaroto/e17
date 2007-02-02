@@ -651,7 +651,6 @@ EventsMain(void)
 	       }
 	  }
 
-      run_idlers:
 	/* Run idlers */
 	IdlersRun();
 
@@ -695,7 +694,6 @@ EventsMain(void)
 	  {
 	     /* We can only get here by timeout in select */
 	     TimersRun(0.);
-	     goto run_idlers;
 	  }
 	else if (count > 0)
 	  {
