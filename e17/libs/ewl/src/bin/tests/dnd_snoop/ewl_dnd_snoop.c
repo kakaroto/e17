@@ -1,12 +1,17 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
-#include <Ecore.h>
-#include <Ecore_X.h>
-#include <X11/Xlib.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+
+#ifdef ENABLE_EWL_SOFTWARE_X11
+#include <Ecore.h>
+#include <Ecore_X.h>
+#include <X11/Xlib.h>
+#endif
 
 /**
  * @addtogroup Ewl_Dnd
@@ -131,6 +136,7 @@ static void ewl_dnd_snoop_cb_dnd_drop(Ewl_Widget *w, void *event, void *data);
 static void ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event, void *data);
 static void ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event, void *data);
 
+#ifdef ENABLE_EWL_SOFTWARE_X11
 static int ewl_dnd_snoop_cb_enter(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_position(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_status(void *data, int type, void *ev);
@@ -141,6 +147,7 @@ static int ewl_dnd_snoop_cb_selection_clear(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_selection_notify(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_selection_request(void *data, int type, void *ev);
 static int ewl_dnd_snoop_cb_client_message(void *data, int type, void *ev);
+#endif
 
 static void ewl_dnd_snoop_cb_clear(Ewl_Widget *w, void *ev, void *data);
 
@@ -164,6 +171,7 @@ create_test(Ewl_Container *box)
 	Ewl_Widget *scroll, *o;
 
 	/* Register DND handlers */
+#ifdef ENABLE_EWL_SOFTWARE_X11
 	ewl_dnd_enter_handler = ecore_event_handler_add(
 					ECORE_X_EVENT_XDND_ENTER, 
 					ewl_dnd_snoop_cb_enter, NULL);
@@ -194,6 +202,7 @@ create_test(Ewl_Container *box)
 	ewl_dnd_client_message_handler = ecore_event_handler_add(
 					ECORE_X_EVENT_CLIENT_MESSAGE,
 					ewl_dnd_snoop_cb_client_message, NULL);
+#endif
 
 	o = ewl_entry_new();
 	ewl_dnd_accepted_types_set(o, text_types);
@@ -263,35 +272,45 @@ static void
 ewl_dnd_snoop_cb_dnd_position(Ewl_Widget *w, void *event, 
 						void *data __UNUSED__)
 {
+	char buf[PATH_MAX];
 	Ewl_Event_Mouse_Move *ev = event;
-	printf("Position event on widget %p: %d %d\n", w, ev->x, ev->y);
+	snprintf(buf, PATH_MAX, "Position event on widget %p: %d %d\n", w, ev->x, ev->y);
+	ewl_dnd_snoop_output(buf);
 }
 
 static void
 ewl_dnd_snoop_cb_dnd_drop(Ewl_Widget *w, void *event, 
 						void *data __UNUSED__)
 {
+	char buf[PATH_MAX];
 	Ewl_Event_Dnd_Drop *ev = event;
-	printf("Drop event on widget %p: %d %d %p\n", w, ev->x, ev->y, ev->data);
+	snprintf(buf, PATH_MAX, "Drop event on widget %p: %d %d %p\n", w, ev->x, ev->y, ev->data);
+	ewl_dnd_snoop_output(buf);
 }
 
 static void
 ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event, 
 						void *data __UNUSED__)
 {
+	char buf[PATH_MAX];
 	Ewl_Event_Dnd_Data_Received *ev = event;
-	printf("Data event on widget %p: %p length %d\n", w, ev->data, ev->len);
+	snprintf(buf, PATH_MAX, "Data event on widget %p: %p length %d\n", w, ev->data, ev->len);
+	ewl_dnd_snoop_output(buf);
 }
 
 static void
 ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event, 
 						void *data __UNUSED__)
 {
+	char buf[PATH_MAX];
 	Ewl_Embed *emb;
 	Ewl_Event_Dnd_Data_Request *ev = event;
 
-	printf("Data request on widget %p: type %s\n", w, ev->type);
-	printf("\tSending response: %s\n", w->inheritance);
+	snprintf(buf, PATH_MAX, "Data request on widget %p: type %s\n", w, ev->type);
+	ewl_dnd_snoop_output(buf);
+
+	snprintf(buf, PATH_MAX, "\tSending response: %s\n", w->inheritance);
+	ewl_dnd_snoop_output(buf);
 	emb = ewl_embed_widget_find(w);
 	if (emb)
 		ewl_engine_embed_dnd_drag_data_send(emb, ev->handle,
@@ -299,6 +318,7 @@ ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event,
 				strlen(w->inheritance) + 1);
 }
 
+#ifdef ENABLE_EWL_SOFTWARE_X11
 static int
 ewl_dnd_snoop_cb_enter(void *data __UNUSED__, int type __UNUSED__, void *ev)
 {
@@ -556,6 +576,7 @@ ewl_dnd_snoop_cb_client_message(void *data __UNUSED__, int type __UNUSED__,
 	return 1;
 
 }
+#endif
 
 static void
 ewl_dnd_snoop_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
