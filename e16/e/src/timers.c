@@ -268,7 +268,7 @@ AnimatorAdd(AnimatorFunc * func, void *data)
 {
    Animator           *an;
 
-   an = Emalloc(sizeof(Animator));
+   an = EMALLOC(Animator, 1);
    if (!an)
       return NULL;
 
