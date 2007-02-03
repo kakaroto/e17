@@ -246,6 +246,8 @@ _tclock_cb_check (void *data)
    struct tm *local_time;
    char buf[1024];
 
+   current_time = time (NULL);
+   local_time = localtime (&current_time);
    for (l = tclock_config->instances; l; l = l->next) 
      {
 	inst = l->data;
@@ -264,8 +266,6 @@ _tclock_cb_check (void *data)
 	edje_object_message_signal_process (inst->tclock);
 	
 	memset (buf, 0, sizeof (buf));
-	current_time = time (NULL);
-	local_time = localtime (&current_time);
 	
 	strftime (buf, 1024, ci->time_format, local_time);
 	edje_object_part_text_set (inst->tclock, "tclock_time", buf);
