@@ -320,6 +320,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	struct dirent *file;
 	Ecore_List *list;
 	const char *v;
+	int val;
 	int i = 0, sel = 0;
 
 	box = ewl_hbox_new();
@@ -402,27 +403,16 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	ewl_table_add(EWL_TABLE(box), o, 0, 0, 1, 1);
 	ewl_widget_show(o);
 
-	list = ecore_list_new();
-	ecore_list_append(list, EWL_ICON_SIZE_SMALL);
-	ecore_list_append(list, EWL_ICON_SIZE_MEDIUM);
-	ecore_list_append(list, EWL_ICON_SIZE_LARGE);
+	val = ewl_config_int_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE);
 
-	v = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE);
-	sel = 0;
-
-	if (!strcmp(v, EWL_ICON_SIZE_MEDIUM))
-		sel = 1;
-
-	else if (!strcmp(v, EWL_ICON_SIZE_LARGE))
-		sel = 2;
-
-	o = ewl_combo_new();
+	o = ewl_spinner_new();
+	ewl_range_minimum_value_set(EWL_RANGE(o), 8.0);
+	ewl_range_maximum_value_set(EWL_RANGE(o), 192.0);
+	ewl_range_step_set(EWL_RANGE(o), 1.0);
+	ewl_range_value_set(EWL_RANGE(o), val);
+	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
 	ewl_widget_name_set(o, EC_ICON_SIZE);
-	ewl_mvc_model_set(EWL_MVC(o), ewl_model_ecore_list_get());
-	ewl_mvc_view_set(EWL_MVC(o), ewl_label_view_get());
-	ewl_mvc_data_set(EWL_MVC(o), list);
 	ewl_table_add(EWL_TABLE(box), o, 1, 1, 1, 1);
-	ewl_mvc_selected_set(EWL_MVC(o), NULL, list, sel, 0);
 	ewl_widget_show(o);
 }
 
@@ -624,8 +614,8 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 {
 	Ewl_Widget *o;
 	Ecore_List *list;
-	const char *val, *lval;
-	int sel = 0;
+	int val, sel = 0;
+	const char *v, *lval;
 
 	struct
 	{
@@ -656,30 +646,20 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	o = ewl_widget_name_find(EC_EWL_THEME);
 	list = ewl_mvc_data_get(EWL_MVC(o));
-	val = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_NAME);
+	v = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_NAME);
 
 	ecore_list_goto_first(list);
 	while ((lval = ecore_list_next(list)))
 	{
-		if (!strcmp(val, lval))
+		if (!strcmp(v, lval))
 			break;
 		sel++;
 	}
 	ewl_mvc_selected_set(EWL_MVC(o), NULL, list, sel, 0);
 
 	o = ewl_widget_name_find(EC_ICON_SIZE);
-	list = ewl_mvc_data_get(EWL_MVC(o));
-	val = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE);
-
-	sel = 0;
-	ecore_list_goto_first(list);
-	while ((lval = ecore_list_next(list)))
-	{
-		if (!strcmp(val, lval))
-			break;
-		sel ++;
-	}
-	ewl_mvc_selected_set(EWL_MVC(o), NULL, list, sel, 0);
+	val = ewl_config_int_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE);
+	ewl_range_value_set(EWL_RANGE(val), val);
 
 	for (sel = 0; strings[sel].name != NULL; sel++)
 	{
@@ -706,8 +686,8 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 {
 	Ewl_Widget *o;
 	Ecore_List *list;
-	char *val;
-	int i;
+	int val, i;
+	const char *v;
 	Ewl_Selection_Idx *idx;
 
 	struct
@@ -772,15 +752,10 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	}
 
 	o = ewl_widget_name_find(EC_ICON_SIZE);
-	list = ewl_mvc_data_get(EWL_MVC(o));
-	idx = ewl_mvc_selected_get(EWL_MVC(o));
-
-	ecore_list_goto_index(list, idx->row);
-	val = ecore_list_current(list);
-	if (strcmp(val, ewl_config_string_get(ewl_config,
-					EWL_CONFIG_THEME_ICON_SIZE)))
+	val = ewl_range_value_get(EWL_RANGE(o));
+	if (val != ewl_config_int_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE))
 	{
-		ewl_config_string_set(ewl_config, 
+		ewl_config_int_set(ewl_config, 
 				EWL_CONFIG_THEME_ICON_SIZE, val,
 				EWL_STATE_PERSISTENT);
 	}
@@ -791,13 +766,13 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	if (idx)
 	{
 		ecore_list_goto_index(list, idx->row);
-		val = ecore_list_current(list);
+		v = ecore_list_current(list);
 
-		if (strcmp(val, ewl_config_string_get(ewl_config,
+		if (strcmp(v, ewl_config_string_get(ewl_config,
 						EWL_CONFIG_THEME_NAME)))
 		{
 			ewl_config_string_set(ewl_config,
-					EWL_CONFIG_THEME_NAME, val,
+					EWL_CONFIG_THEME_NAME, v,
 					EWL_STATE_PERSISTENT);
 		}
 	}
