@@ -233,7 +233,7 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 		const char *path;
 
 		path = ewl_icon_theme_icon_path_get(
-					EWL_ICON_IMAGE_LOADING, NULL),
+					EWL_ICON_IMAGE_LOADING, 0),
 		ewl_image_file_set(EWL_IMAGE(icon->image), path,
 					EWL_ICON_IMAGE_LOADING);
 		ewl_widget_show(icon->image);
@@ -635,7 +635,7 @@ ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt)
 
 	/* if the image displayed is the loading image then we switch to the
 	 * alt text */
-	img = ewl_icon_theme_icon_path_get(EWL_ICON_IMAGE_LOADING, NULL);
+	img = ewl_icon_theme_icon_path_get(EWL_ICON_IMAGE_LOADING, 0);
 	file = ewl_icon_image_file_get(icon);
 	if (icon->image && !strcmp(img, file))
 	{

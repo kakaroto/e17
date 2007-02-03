@@ -88,16 +88,17 @@ ewl_icon_theme_theme_change(void)
 
 /**
  * @param icon: The Icon Spec icon name to lookup
- * @param size: The size of the icon to retrieve. A NULL value will cause
+ * @param size: The size of the icon to retrieve. A 0 value will cause
  * the default size to be used.
  * @return Returns the path to the icon we are looking for or NULL if none found
  * @brief Retrives the full path to the specified icon, or NULL if none found
  */
 const char *
-ewl_icon_theme_icon_path_get(const char *icon, const char *size)
+ewl_icon_theme_icon_path_get(const char *icon, int size)
 {
 	char *ret;
-	const char *icon_size, *icon_theme;
+	const char *icon_theme;
+	char icon_size[16];
 	char key[256];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -114,12 +115,11 @@ ewl_icon_theme_icon_path_get(const char *icon, const char *size)
 	if (ewl_icon_theme_is_edje)
 		DRETURN_PTR(icon_theme, DLEVEL_STABLE);
 
-	if (!size)
-		icon_size = ewl_config_string_get(ewl_config, 
+	if (size == 0)
+		size = ewl_config_int_get(ewl_config, 
 					EWL_CONFIG_THEME_ICON_SIZE);
-	else
-		icon_size = size;
 
+	snprintf(icon_size, sizeof(icon_size), "%dx%d", size, size);
 	snprintf(key, sizeof(key), "%s@%s", icon, icon_size);
 	ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, icon_theme, 
 						key, ewl_icon_theme_cache);
