@@ -64,8 +64,8 @@ Ewl_Position 	 ewl_dialog_action_position_get(Ewl_Dialog *dialog);
 void 		 ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos);
 Ewl_Position 	 ewl_dialog_active_area_get(Ewl_Dialog *d);
 
-unsigned int 	 ewl_dialog_has_separator_get (Ewl_Dialog *dialog);
-void 		 ewl_dialog_has_separator_set (Ewl_Dialog *dialog,
+unsigned int 	 ewl_dialog_has_separator_get(Ewl_Dialog *dialog);
+void 		 ewl_dialog_has_separator_set(Ewl_Dialog *dialog,
 						unsigned int has_sep);
 
 /**
