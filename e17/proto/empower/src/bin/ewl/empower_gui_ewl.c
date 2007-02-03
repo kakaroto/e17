@@ -90,9 +90,9 @@ void display_window(int argc, char** argv)
 	
 	entry = ewl_password_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), entry);
-	//ewl_object_padding_set(EWL_OBJECT(entry),8,8,0,0);
 	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, pipe_to_sudo_cb, 
 					    entry);
+	ewl_widget_focus_send(entry);
 	ewl_widget_show(entry);
 
 	ewl_dialog_active_area_set(EWL_DIALOG(win), EWL_POSITION_BOTTOM);
