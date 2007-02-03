@@ -16,6 +16,7 @@ collections
 #include "groups/button.edc"
 #include "groups/combo.edc"
 #include "groups/cursor.edc"
+#include "groups/dialog.edc"
 #include "groups/highlight.edc"
 #include "groups/label.edc"
 #include "groups/menu.edc"
@@ -151,6 +152,9 @@ data
 	item: "/tooltip/group" "ewl/window";
 	item: "/popup/group" "ewl/window";
 	item: "/window/group" "ewl/window";
+	item: "/dialog/group" "ewl/dialog";
+	item: "/dialog/vbox/hseparator/group" "ewl/spacer";
+	item: "/dialog/vbox/actionarea/group" "ewl/dialog/actionarea";
 
 	/* default values */
 	item: "/entry/color/a" 255;

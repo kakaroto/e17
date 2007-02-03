@@ -47,7 +47,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	ewl_widget_appearance_set(w, EWL_WINDOW_TYPE);
+	ewl_widget_appearance_set(w, EWL_DIALOG_TYPE);
 	ewl_widget_inherit(w, EWL_DIALOG_TYPE);
 
 	dialog->position = EWL_POSITION_BOTTOM;
@@ -93,6 +93,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 	if (!dialog->action_area) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
+	ewl_widget_appearance_set(dialog->action_area, "actionarea");
 	ewl_container_child_append(EWL_CONTAINER(dialog->box),
 					   dialog->action_area);
 	ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
