@@ -2057,7 +2057,18 @@ static void _etk_widget_destructor(Etk_Widget *widget)
       _etk_widget_dnd_dest_widgets = evas_list_remove(_etk_widget_dnd_dest_widgets, widget);
    if (widget->accepts_dnd && widget->dnd_source)
      _etk_widget_dnd_source_widgets = evas_list_remove(_etk_widget_dnd_source_widgets, widget);
-   
+   if (widget->dnd_types)
+   {
+      int i;
+
+      for (i = 0; i < widget->dnd_types_num; i++)
+      {
+         if (widget->dnd_types[i])
+            free(widget->dnd_types[i]);
+      }
+      free(widget->dnd_types);
+   }
+
    free(widget->theme_file);
    free(widget->theme_group);
    free(widget->theme_group_full);
