@@ -635,6 +635,60 @@ on_TextEntry_text_changed(Etk_Object *object, void *data)
    ev_redraw();
 }
 
+/* Programs Callbacks */
+void
+on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
+{
+   Engrave_Action action;
+   printf("Changed Signal on ActionComboBox EMITTED\n");
+
+   if (!Cur.epr) return;
+
+   //get the action from the combo data
+   action = (Engrave_Action)etk_combobox_item_data_get(
+               etk_combobox_active_item_get (combobox));
+
+   //set the action in the current program
+   engrave_program_action_set(Cur.epr, action,NULL,NULL,0.0,0.0);
+
+   if (action == ENGRAVE_ACTION_SIGNAL_EMIT)
+   {
+      etk_widget_hide(UI_TargetEntry);
+      etk_widget_hide(UI_TargetLabel);
+      etk_widget_hide(UI_TransiComboBox);
+      etk_widget_hide(UI_TransiLabel);
+      etk_widget_hide(UI_DurationSpinner);
+      etk_widget_hide(UI_DurationLabel);
+      etk_widget_show(UI_Param1Entry);
+      etk_widget_show(UI_Param1Label);
+      etk_widget_show(UI_Param1Spinner);
+   }
+   if (action == ENGRAVE_ACTION_STATE_SET)
+   {
+      etk_widget_show(UI_TargetEntry);
+      etk_widget_show(UI_TargetLabel);
+      etk_widget_show(UI_TransiComboBox);
+      etk_widget_show(UI_TransiLabel);
+      etk_widget_show(UI_DurationSpinner);
+      etk_widget_show(UI_DurationLabel);
+      etk_widget_show(UI_Param1Entry);
+      etk_widget_show(UI_Param1Label);
+      etk_widget_show(UI_Param1Spinner);
+   }
+   if (action == ENGRAVE_ACTION_STOP)
+   {
+      etk_widget_show(UI_TargetEntry);
+      etk_widget_show(UI_TargetLabel);
+      etk_widget_hide(UI_TransiComboBox);
+      etk_widget_hide(UI_TransiLabel);
+      etk_widget_hide(UI_DurationSpinner);
+      etk_widget_hide(UI_DurationLabel);
+      etk_widget_hide(UI_Param1Entry);
+      etk_widget_hide(UI_Param1Label);
+      etk_widget_hide(UI_Param1Spinner);
+   }
+}
+
 /* Colors Callbacks */
 void
 on_ColorCanvas_realize(Etk_Widget *canvas, void *data)

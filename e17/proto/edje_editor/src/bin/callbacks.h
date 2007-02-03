@@ -34,3 +34,4 @@ void on_GroupNameEntry_text_changed    (Etk_Object *object, void *data);
 void on_AspectSpinner_value_changed    (Etk_Range *range, double value, void *data);
 void on_AspectComboBox_changed         (Etk_Combobox *combobox, void *data);
 void on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data);
+void on_ActionComboBox_changed         (Etk_Combobox *combobox, void *data);

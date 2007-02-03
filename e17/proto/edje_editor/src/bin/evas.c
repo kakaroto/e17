@@ -131,7 +131,6 @@ on_EndDrag(void *data, Evas_Object *o, const char *emission, const char *source)
 void
 prepare_canvas(void)
 {
-   int x, y;
    //Create Focus Handler
    focus_handler = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
    edje_object_file_set(focus_handler, EdjeFile, "FocusH");
