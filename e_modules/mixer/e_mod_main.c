@@ -40,7 +40,6 @@ static void         _mixer_menu_cb_post      (void *data, E_Menu *m);
 static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
 static void         _mixer_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void         _mixer_cb_mouse_wheel    (void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
 static void         _mixer_system_init       (void *data);
 static void         _mixer_system_shutdown   (void *data);
 
