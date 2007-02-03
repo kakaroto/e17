@@ -51,7 +51,6 @@ void bg_setup(Etk_Canvas *canvas)
    evas_object_image_fill_set(o, 0, 0, 128, 128);
    evas_object_pass_events_set(o, 1);
    evas_object_show(o);
-   evas_object_focus_set(o, 1);
 
    o_bg = o;
    etk_canvas_object_add(canvas, o);
