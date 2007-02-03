@@ -207,7 +207,7 @@ mixer_vol_increase(Instance *inst)
    win = inst->mixer->gauge_win;
    _mixer_volume_increase(inst->mixer, ci);
    _mixer_window_gauge_send_vol(win, inst->mixer, ci);
-   edje_object_signal_emit(win->pulsar, "vol,increase", "e");
+   if (win) edje_object_signal_emit(win->pulsar, "vol,increase", "e");
 }
 
 void
@@ -225,7 +225,7 @@ mixer_vol_decrease(Instance *inst)
    win = inst->mixer->gauge_win;
    _mixer_volume_decrease(inst->mixer, ci);
    _mixer_window_gauge_send_vol(win, inst->mixer, ci);
-   edje_object_signal_emit(win->pulsar, "vol,decrease", "e");
+   if (win) edje_object_signal_emit(win->pulsar, "vol,decrease", "e");
 }
 
 void
@@ -1155,11 +1155,10 @@ _mixer_window_gauge_pop_up(Instance *inst)
    Mixer_Win_Gauge *win;
    char buf[4096];
 
-   if (!inst || !inst->mixer) return;
+   if (!inst || !inst->mixer || !inst->gcc) return;
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
-
-   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-   if (!ci && !ci->show_popup) return;
+   if (!(ci = _mixer_config_item_get(inst->mixer, inst->gcc->id))) return;
+   if (!(ci->show_popup)) return;
 
    if (!(win = inst->mixer->gauge_win))
      {
@@ -1206,6 +1205,7 @@ _mixer_window_gauge_send_vol(Mixer_Win_Gauge *win, Mixer *mixer, Config_Item *ci
    Edje_Message_Int *msg;
    int vol;
 
+   if (!ci || !(ci->show_popup) || !win) return;
    if (!mixer || !mixer->mix_sys || !mixer->mix_sys->get_volume) return;
    msg = malloc(sizeof(Edje_Message_Int));
    vol = (int)mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
