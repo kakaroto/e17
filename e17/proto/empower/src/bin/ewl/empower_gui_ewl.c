@@ -18,7 +18,7 @@ void display_window(int argc, char** argv)
 	Ewl_Widget *ok_button = NULL;
 	Ewl_Widget *cancel_button = NULL;
 	Ewl_Widget *progtext = NULL;
-	Ewl_Widget *vbox=NULL, *hbox = NULL;
+	Ewl_Widget *vbox = NULL, *hbox = NULL;
 	Ewl_Widget *image = NULL;
 	uid_t user;
 	struct passwd *user_name;
@@ -46,7 +46,7 @@ void display_window(int argc, char** argv)
 	xpos = (root_w/2)-(window_width/2);
 	ypos = (root_h/2)-(HEIGHT/2);
 	
-	win = ewl_window_new();
+	win = ewl_dialog_new();
 	ewl_window_title_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_name_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_class_set(EWL_WINDOW(win), "Empower!");
@@ -59,70 +59,58 @@ void display_window(int argc, char** argv)
 	ewl_callback_append(win, EWL_CALLBACK_KEY_DOWN, key_down_cb, NULL);
 	ewl_widget_show(win);
 	
-	vbox = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(win), vbox);
-	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-	ewl_widget_show(vbox);
+	ewl_dialog_active_area_set(EWL_DIALOG(win), EWL_POSITION_TOP);
 
 	hbox = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
+	ewl_container_child_append(EWL_CONTAINER(win), hbox);
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
+	ewl_object_padding_set(EWL_OBJECT(hbox), 15, 15, 15, 5);
 	ewl_widget_show(hbox);
 
 	image = ewl_image_new();
 	ewl_image_file_set(EWL_IMAGE(image), 
-		ewl_icon_theme_icon_path_get(EWL_ICON_SYSTEM_LOCK_SCREEN, 
-		EWL_ICON_SIZE_LARGE), EWL_ICON_SYSTEM_LOCK_SCREEN);
+		ewl_icon_theme_icon_path_get(EWL_ICON_SYSTEM_LOCK_SCREEN, 46), 
+		EWL_ICON_SYSTEM_LOCK_SCREEN);
 	ewl_container_child_append(EWL_CONTAINER(hbox), image);
+	ewl_object_padding_set(EWL_OBJECT(image), 5, 20, 0, 0);
 	ewl_widget_show(image);
-	
+
+	vbox = ewl_vbox_new();
+	ewl_container_child_append(EWL_CONTAINER(hbox), vbox);
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_HFILL);
+	ewl_widget_show(vbox);
+
 	progtext = ewl_text_new();
-	ewl_container_child_append(EWL_CONTAINER(hbox), progtext);
+	ewl_container_child_append(EWL_CONTAINER(vbox), progtext);
 	ewl_text_font_size_set(EWL_TEXT(progtext), 12);
-	ewl_object_alignment_set(EWL_OBJECT(progtext), EWL_FLAG_ALIGN_LEFT);
-	//ewl_object_minimum_size_set(EWL_OBJECT(progtext), 75, 15);
-	//ewl_object_maximum_size_set(EWL_OBJECT(progtext), 125, 20);
+	ewl_object_alignment_set(EWL_OBJECT(progtext), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(progtext), EWL_FLAG_FILL_NONE);
 	ewl_text_text_set(EWL_TEXT(progtext), username);
 	ewl_widget_show(progtext);
 	
 	entry = ewl_password_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), entry);
-	ewl_object_padding_set(EWL_OBJECT(entry),8,8,0,0);
-	//ewl_object_size_request(EWL_OBJECT(entry), 50, 20);
+	//ewl_object_padding_set(EWL_OBJECT(entry),8,8,0,0);
 	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, pipe_to_sudo_cb, 
 					    entry);
 	ewl_widget_show(entry);
-	
-	Ewl_Widget *separator = ewl_hseparator_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), separator);
-	ewl_widget_color_set(EWL_WIDGET(separator),200,200,200,200);
-	ewl_widget_show(separator);
-	
-	hbox = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
-	ewl_object_padding_set(EWL_OBJECT(hbox),0,0,0,0);
-	ewl_widget_show(hbox);
-	
+
+	ewl_dialog_active_area_set(EWL_DIALOG(win), EWL_POSITION_BOTTOM);
+
 	ok_button = ewl_button_new();
 	ewl_stock_type_set(EWL_STOCK(ok_button), EWL_STOCK_OK);
-	ewl_object_minimum_size_set(EWL_OBJECT(ok_button), 60, 20);
-	//ewl_object_maximum_size_set(EWL_OBJECT(ok_button), 60, 20);
-	ewl_object_fill_policy_set(EWL_OBJECT(ok_button), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(hbox), ok_button);
+	ewl_object_fill_policy_set(EWL_OBJECT(ok_button), EWL_FLAG_FILL_NONE
+					| EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(win), ok_button);
 	ewl_callback_append(ok_button, EWL_CALLBACK_CLICKED, pipe_to_sudo_cb, 
 	                    entry);
 	ewl_widget_show(ok_button);
 	
 	cancel_button = ewl_button_new();
 	ewl_stock_type_set(EWL_STOCK(cancel_button), EWL_STOCK_CANCEL);
-	ewl_object_minimum_size_set(EWL_OBJECT(cancel_button), 60, 20);
-	//ewl_object_maximum_size_set(EWL_OBJECT(cancel_button), 60, 20);
 	ewl_object_fill_policy_set(EWL_OBJECT(cancel_button), 
-	                           EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(hbox), cancel_button);
+	                           EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(win), cancel_button);
 	ewl_callback_append(cancel_button, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
 	ewl_widget_show(cancel_button);
 	
