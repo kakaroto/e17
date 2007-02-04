@@ -41,7 +41,7 @@ static Container   *SelectIconboxForEwin(EWin * ewin);
 #define y1 y1_
 
 #define IB_ANIM_TIME    Conf_containers.anim_time
-#define IB_ANIM_STEP    Conf_containers.anim_step
+#define IB_ANIM_STEP    Conf.animation.step
 
 static void
 IB_Animate_Sleep(double t0, double a)
@@ -240,8 +240,6 @@ IB_Animate(Container * ct, int iconify, EWin * ewin)
 
    if (Conf_containers.anim_time < 10 || Conf_containers.anim_time > 10000)
       Conf_containers.anim_time = 250;
-   if (Conf_containers.anim_step < 1 || Conf_containers.anim_step > 1000)
-      Conf_containers.anim_step = 10;
 
    EobjsRepaint();
    EGrabServer();

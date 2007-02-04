@@ -31,7 +31,6 @@ typedef struct _container Container;
 typedef struct
 {
    unsigned int        anim_time;	/* Animation run time  (ms) */
-   unsigned int        anim_step;	/* Animation time step (ms) */
 } ContainerCfg;
 
 typedef struct

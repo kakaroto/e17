@@ -2016,7 +2016,6 @@ static const IpcItem ContainersIpcArray[] = {
  */
 static const CfgItem ContainersCfgItems[] = {
    CFG_ITEM_INT(Conf_containers, anim_time, 250),
-   CFG_ITEM_INT(Conf_containers, anim_step, 10),
 };
 #define N_CFG_ITEMS (sizeof(ContainersCfgItems)/sizeof(CfgItem))
 
