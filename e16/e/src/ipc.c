@@ -497,11 +497,11 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
 
 	  case 'p':
 	     IpcPrintf
-		("%#10lx : %5d %5d %4dx%4d :: %2d : \"%s\" \"%s\" \"%s\"\n",
+		("%#10lx : %5d %5d %4dx%4d :: %2d : \"%s\" \"%s\" : \"%s\" : \"%s\"\n",
 		 EwinGetClientXwin(e), EoGetX(e), EoGetY(e), EoGetW(e),
 		 EoGetH(e), (EoIsSticky(e)) ? -1 : (int)EoGetDeskNum(e),
 		 SS(EwinGetIcccmCName(e)), SS(EwinGetIcccmClass(e)),
-		 SS(EwinGetIcccmName(e)));
+		 SS(EwinGetIcccmName(e)), SS(e->icccm.wm_role));
 	     break;
 	  }
      }
