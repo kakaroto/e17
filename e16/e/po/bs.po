@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-01-27 18:37+0100\n"
+"POT-Creation-Date: 2007-02-03 23:22+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -776,7 +776,7 @@ msgstr "Izvrŷi"
 msgid "Attention !!!"
 msgstr "Paŵnja !!!"
 
-#: src/ecompmgr.c:2392
+#: src/ecompmgr.c:2389
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
