@@ -1,16 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 
-# get rid of that stupid cache mechanism
-rm -f config.cache
-
-#alarm module version
-version="0.1.0"
-
 AC_INIT(configure.in)
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(alarm, $version)
+AM_INIT_AUTOMAKE(alarm, 0.1.0)
 AM_CONFIG_HEADER(config.h)
 AC_ISC_POSIX
 AC_PROG_CC
@@ -29,7 +23,7 @@ AM_GNU_GETTEXT_VERSION(0.14)
 MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
-AC_DEFINE_UNQUOTED(MODULE_VERSION, "$version", "Module version")
+AC_DEFINE_UNQUOTED(MODULE_VERSION, "$VERSION", "Module version")
 
 if test "x${bindir}" = 'x${exec_prefix}/bin'; then
   if test "x${exec_prefix}" = "xNONE"; then
