@@ -310,10 +310,8 @@ compmgr.resize_fix_enable = 0
 compmgr.use_name_pixmap = 0
 # [bool] Enable fading
 compmgr.fading.enable = 1
-# [int] Fading time step(us)
-compmgr.fading.dt_us = 10000
-# [int] Fading opacity step
-compmgr.fading.step = 0x10000000
+# [int] Fading time(ms)
+compmgr.fading.time = 200
 # [int] Composite redirection of override-redirect windows (0: off, 1: on map, ...: testing)
 # Should normally be 1 but 0 may be a partial workaround of problems with vanishing
 # pop-ups on certain X-server/toolkit versions.
@@ -386,6 +384,9 @@ groups.dflt.stick = 1
 groups.dflt.shade = 1
 groups.swapmove = 1
 
+# [int] Iconbox animation time(ms)
+iconboxes.anim_time = 250
+
 # [string] Language used by e16 (dialogs, tooltips, etc.)
 # Inherit from environment if not set
 locale.internal = 
@@ -410,6 +411,9 @@ menus.key.up = 0xff52
 menus.key.down = 0xff54
 menus.key.escape = 0xff1b
 menus.key.ret = 0xff0d
+
+# [int] Animation time step(ms)
+misc.animation.step = 10
 
 # [int] Button move resistance(pixels)
 misc.buttons.move_resistance = 10
