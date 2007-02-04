@@ -305,8 +305,6 @@ AnimatorDel(Animator * an)
    ecore_list_remove_node(animator_list, an);
    if (an->name)
       Efree(an->name);
-   if (an->data)
-      Efree(an->data);
    Efree(an);
 
    if (ecore_list_nodes(animator_list) == 0)
