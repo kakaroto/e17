@@ -113,6 +113,9 @@ struct _eoci
    unsigned int        opacity;
 
    unsigned long       damage_sequence;	/* sequence when damage was created */
+
+   Animator           *anim_fade;
+   unsigned int        opacity_to;
 };
 
 /*
@@ -205,10 +208,10 @@ static ESelection  *wm_cm_sel = NULL;
 static void         ECompMgrDamageAll(void);
 static void         ECompMgrHandleRootEvent(Win win, XEvent * ev, void *prm);
 static void         ECompMgrHandleWindowEvent(Win win, XEvent * ev, void *prm);
-static void         doECompMgrWinFade(int val, void *data);
+static int          doECompMgrWinFade(void *data);
 static void         ECompMgrWinInvalidate(EObj * eo, int what);
 static void         ECompMgrWinSetPicts(EObj * eo);
-static void         ECompMgrWinFadeOutEnd(EObj * eo);
+static void         ECompMgrWinFadeEnd(EObj * eo, int done);
 static int          ECompMgrDetermineOrder(EObj * const *lst, int num,
 					   EObj ** first, EObj ** last,
 					   Desk * dsk, XserverRegion clip);
@@ -1201,52 +1204,35 @@ ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
    cw->mode = mode;
 }
 
-static void
-ECompMgrWinFadeDoIn(EObj * eo, unsigned int op)
+static int
+doECompMgrWinFade(void *data)
 {
-   char                s[128];
-
-   Esnprintf(s, sizeof(s), "Fade-%#lx", EobjGetXwin(eo));
-   DoIn(s, 1e-6 * Conf_compmgr.fading.dt_us, doECompMgrWinFade, op, eo);
-}
-
-static void
-ECompMgrWinFadeCancel(EObj * eo)
-{
-   char                s[128];
-
-   Esnprintf(s, sizeof(s), "Fade-%#lx", EobjGetXwin(eo));
-   RemoveTimerEvent(s);
-}
-
-static void
-doECompMgrWinFade(int val, void *data)
-{
-   EObj               *eo = (EObj *) data;
+   EObj               *eo;
    ECmWinInfo         *cw;
-   unsigned int        op = (unsigned int)val;
+   unsigned int        op;
+
+   eo = (EObj *) data;
 
    /* May be gone */
    if (EobjListStackCheck(eo) < 0)
-      return;
+      return 0;
 
    cw = eo->cmhook;
+   op = cw->opacity_to;
 
 #if DEBUG_OPACITY
    Eprintf("doECompMgrWinFade %#lx, %d/%d, %#x->%#x\n", EobjGetXwin(eo),
 	   cw->fading, cw->fadeout, cw->opacity, op);
 #endif
    if (!cw->fading)
-      return;
+      goto done;
 
    cw->fading = cw->fadeout;
 
    if (op == cw->opacity)
      {
 	op = eo->opacity;
-	if (cw->fadeout)
-	   ECompMgrWinFadeOutEnd(eo);
-	cw->fading = 0;
+	ECompMgrWinFadeEnd(eo, 0);
      }
    else if (op > cw->opacity)
      {
@@ -1268,11 +1254,17 @@ doECompMgrWinFade(int val, void *data)
 #if DEBUG_OPACITY
    Eprintf("doECompMgrWinFade %#lx, %#x\n", EobjGetXwin(eo), op);
 #endif
-   if (cw->fading)
-      ECompMgrWinFadeDoIn(eo, (unsigned int)val);
-   else if (eo->type == EOBJ_TYPE_EWIN)
-      ModulesSignal(eo->shown ? ESIGNAL_EWIN_CHANGE : ESIGNAL_EWIN_UNMAP, eo);
    ECompMgrWinSetOpacity(eo, op);
+
+   if (cw->fading)
+      return 1;
+
+   if (eo->type == EOBJ_TYPE_EWIN)
+      ModulesSignal(eo->shown ? ESIGNAL_EWIN_CHANGE : ESIGNAL_EWIN_UNMAP, eo);
+
+ done:
+   cw->anim_fade = NULL;
+   return 0;
 }
 
 static void
@@ -1280,8 +1272,11 @@ ECompMgrWinFade(EObj * eo, unsigned int op_from, unsigned int op_to)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
+   if (!cw->anim_fade)
+      cw->anim_fade = AnimatorAdd(doECompMgrWinFade, eo);
+   cw->opacity_to = op_to;
+
    cw->fading = 1;
-   ECompMgrWinFadeDoIn(eo, op_to);
    ECompMgrWinSetOpacity(eo, op_from);
 }
 
@@ -1294,8 +1289,9 @@ ECompMgrWinFadeIn(EObj * eo)
    Eprintf("ECompMgrWinFadeIn  %#lx %#x -> %#x\n", EobjGetXwin(eo), 0x10000000,
 	   eo->opacity);
 #endif
-   if (cw->fadeout)
-      ECompMgrWinFadeOutEnd(eo);
+   if (cw->fading)
+      ECompMgrWinFadeEnd(eo, 0);
+
    ECompMgrWinFade(eo, 0x10000000, eo->opacity);
 }
 
@@ -1316,17 +1312,26 @@ ECompMgrWinFadeOut(EObj * eo)
 }
 
 static void
-ECompMgrWinFadeOutEnd(EObj * eo)
+ECompMgrWinFadeEnd(EObj * eo, int done)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
 #if DEBUG_OPACITY
-   Eprintf("ECompMgrWinFadeOutEnd %#lx\n", EobjGetXwin(eo));
+   Eprintf("ECompMgrWinFadeEnd %#lx\n", EobjGetXwin(eo));
 #endif
-   cw->fadeout = 0;
-   ECompMgrWinInvalidate(eo, INV_PIXMAP | INV_PICTURE);
-   ECompMgrDamageMergeObject(eo, cw->extents, 0);
-   _ECM_SET_CLIP_CHANGED();
+   if (cw->fadeout)
+     {
+	cw->fadeout = 0;
+	ECompMgrWinInvalidate(eo, INV_PIXMAP | INV_PICTURE);
+	ECompMgrDamageMergeObject(eo, cw->extents, 0);
+	_ECM_SET_CLIP_CHANGED();
+     }
+   cw->fading = 0;
+   if (done)
+     {
+	AnimatorDel(cw->anim_fade);
+	cw->anim_fade = NULL;
+     }
 }
 
 void
@@ -1508,11 +1513,7 @@ ECompMgrWinMoveResize(EObj * eo, int change_xy, int change_wh, int change_bw)
       return;
 
    if (cw->fadeout)
-     {
-	ECompMgrWinFadeCancel(eo);
-	ECompMgrWinFadeOutEnd(eo);
-	cw->fading = 0;
-     }
+      ECompMgrWinFadeEnd(eo, 1);
 
    if (!eo->shown)
      {
@@ -1650,11 +1651,7 @@ ECompMgrWinDel(EObj * eo)
    D1printf("ECompMgrWinDel %#lx\n", EobjGetXwin(eo));
 
    if (cw->fading)
-     {
-	ECompMgrWinFadeCancel(eo);
-	if (cw->fadeout)
-	   ECompMgrWinFadeOutEnd(eo);
-     }
+      ECompMgrWinFadeEnd(eo, 1);
 
    EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 
