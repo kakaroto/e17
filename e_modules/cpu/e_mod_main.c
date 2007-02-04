@@ -196,7 +196,7 @@ _set_cpu_load(void *data)
    i = 1;
    while (i < cpu_count)
      {
-	snprintf(str_tmp, sizeof(str_tmp), "\n%d%%", cpu_stats[i]);
+	snprintf(str_tmp, sizeof(str_tmp), " / %d%%", cpu_stats[i]);
 	strncat(str, str_tmp, sizeof(str));
 	i++;
      }
