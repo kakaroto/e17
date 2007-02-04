@@ -156,8 +156,7 @@ static struct
    struct
    {
       char                enable;
-      int                 dt_us;	/* us between updates */
-      unsigned int        step;
+      unsigned int        time;	/* Fading time, ms */
    } fading;
    struct
    {
@@ -1209,7 +1208,7 @@ doECompMgrWinFade(void *data)
 {
    EObj               *eo;
    ECmWinInfo         *cw;
-   unsigned int        op;
+   unsigned int        op, step;
 
    eo = (EObj *) data;
 
@@ -1229,6 +1228,10 @@ doECompMgrWinFade(void *data)
 
    cw->fading = cw->fadeout;
 
+   step = Conf_compmgr.fading.time / Conf.animation.step;
+   if (step == 0)
+      step = 1;
+   step = 0xffffffff / step;
    if (op == cw->opacity)
      {
 	op = eo->opacity;
@@ -1236,17 +1239,17 @@ doECompMgrWinFade(void *data)
      }
    else if (op > cw->opacity)
      {
-	if (op - cw->opacity > Conf_compmgr.fading.step)
+	if (op - cw->opacity > step)
 	  {
-	     op = cw->opacity + Conf_compmgr.fading.step;
+	     op = cw->opacity + step;
 	     cw->fading = 1;
 	  }
      }
    else
      {
-	if (cw->opacity - op > Conf_compmgr.fading.step)
+	if (cw->opacity - op > step)
 	  {
-	     op = cw->opacity - Conf_compmgr.fading.step;
+	     op = cw->opacity - step;
 	     cw->fading = 1;
 	  }
      }
@@ -2376,7 +2379,7 @@ ECompMgrConfigGet(cfg_composite * cfg)
    cfg->enable = Conf_compmgr.enable;
    cfg->shadow = Conf_compmgr.shadows.mode;
    cfg->fading = Conf_compmgr.fading.enable;
-   cfg->fade_speed = 100 - (Conf_compmgr.fading.dt_us / 1000);
+   cfg->fade_speed = 100 - (Conf_compmgr.fading.time / 10);
 }
 
 void
@@ -2416,7 +2419,7 @@ ECompMgrConfigSet(const cfg_composite * cfg)
      }
 
    Conf_compmgr.fading.enable = cfg->fading;
-   Conf_compmgr.fading.dt_us = (100 - cfg->fade_speed) * 1000;
+   Conf_compmgr.fading.time = (100 - cfg->fade_speed) * 10;
 
    autosave();
 }
@@ -2693,8 +2696,7 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
    CFG_ITEM_BOOL(Conf_compmgr, fading.enable, 1),
-   CFG_ITEM_INT(Conf_compmgr, fading.dt_us, 10000),
-   CFG_ITEM_HEX(Conf_compmgr, fading.step, 0x10000000),
+   CFG_ITEM_INT(Conf_compmgr, fading.time, 200),
    CFG_ITEM_INT(Conf_compmgr, override_redirect.mode, 1),
    CFG_ITEM_INT(Conf_compmgr, override_redirect.opacity, 90),
 };

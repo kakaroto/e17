@@ -601,7 +601,7 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Fading Speed:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSliderSetBounds(di, 1, 100);
+   DialogItemSliderSetBounds(di, 0, 100);
    DialogItemSliderSetUnits(di, 5);
    DialogItemSliderSetJump(di, 5);
    DialogItemSliderSetValPtr(di, &Cfg_composite.fade_speed);
