@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 #endif
 
-#define MAIN_EDC_NAME "main_edje_source.edc"
+#define MAIN_EDC_NAME "default.edc"
 
 char *engrave_filename = NULL;
 
