@@ -207,7 +207,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 
          etk_widget_hide(UI_PartFrame);
          etk_widget_hide(UI_GroupFrame);
-         //etk_widget_hide(UI_ProgramFrame);
+         etk_widget_hide(UI_ProgramFrame);
          etk_widget_show(UI_DescriptionFrame);
          etk_widget_show(UI_PositionFrame);
          break;
@@ -640,16 +640,26 @@ void
 on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    Engrave_Action action;
+   char param1[200],param2[200];
+   double value,value2;
    printf("Changed Signal on ActionComboBox EMITTED\n");
 
    if (!Cur.epr) return;
 
-   //get the action from the combo data
+   //Get the current action in the current program
+   engrave_program_action_get(Cur.epr,&action,&param1,&param2,200,200,&value,&value2);
+   
+   //Get the new action from the combo data
    action = (Engrave_Action)etk_combobox_item_data_get(
                etk_combobox_active_item_get (combobox));
 
    //set the action in the current program
-   engrave_program_action_set(Cur.epr, action,NULL,NULL,0.0,0.0);
+   engrave_program_action_set(Cur.epr, action,
+         param1,
+         param2,
+         value,
+         value2
+   );
 
    if (action == ENGRAVE_ACTION_SIGNAL_EMIT)
    {
@@ -661,7 +671,10 @@ on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
       etk_widget_hide(UI_DurationLabel);
       etk_widget_show(UI_Param1Entry);
       etk_widget_show(UI_Param1Label);
-      etk_widget_show(UI_Param1Spinner);
+      etk_label_set(UI_Param1Label, "<b>Signal</b>");
+      etk_widget_hide(UI_Param1Spinner);
+      etk_widget_show(UI_Param2Label);
+      etk_widget_show(UI_Param2Entry);
    }
    if (action == ENGRAVE_ACTION_STATE_SET)
    {
@@ -673,7 +686,10 @@ on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
       etk_widget_show(UI_DurationLabel);
       etk_widget_show(UI_Param1Entry);
       etk_widget_show(UI_Param1Label);
+      etk_label_set(UI_Param1Label, "<b>State</b>");
       etk_widget_show(UI_Param1Spinner);
+      etk_widget_hide(UI_Param2Label);
+      etk_widget_hide(UI_Param2Entry);
    }
    if (action == ENGRAVE_ACTION_STOP)
    {
@@ -686,7 +702,181 @@ on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
       etk_widget_hide(UI_Param1Entry);
       etk_widget_hide(UI_Param1Label);
       etk_widget_hide(UI_Param1Spinner);
+      etk_widget_hide(UI_Param2Label);
+      etk_widget_hide(UI_Param2Entry);
    }
+}
+
+void
+on_ProgramEntry_text_changed(Etk_Object *object, void *data)
+{
+   Etk_Tree_Col *col1=NULL;
+
+   printf("Text Changed Signal on ProgramEntry Emitted\n");
+   engrave_program_name_set(Cur.epr,etk_entry_text_get(ETK_ENTRY(UI_ProgramEntry)));
+   if (Cur.epr && ecore_hash_get(hash,Cur.epr))
+   {
+      if ((col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0)))
+         etk_tree_row_fields_set(ecore_hash_get(hash,Cur.epr),TRUE,
+            col1,EdjeFile,"PROG.PNG",engrave_program_name_get(Cur.epr),
+            NULL);
+   }
+   //TODO Check for dependencies! only in after?
+}
+
+void
+on_SourceEntry_text_changed(Etk_Object *object, void *data)
+{
+   printf("Text Changed Signal on SourceEntry Emitted\n");
+   engrave_program_source_set(Cur.epr,etk_entry_text_get(ETK_ENTRY(UI_SourceEntry)));
+}
+void
+on_SignalEntry_text_changed(Etk_Object *object, void *data)
+{
+   printf("Text Changed Signal on SignalEntry Emitted\n");
+   engrave_program_signal_set(Cur.epr,etk_entry_text_get(ETK_ENTRY(UI_SignalEntry)));
+}
+
+void 
+on_DelaySpinners_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("value Changed Signal on DelayFromSpinner Emitted\n");
+   engrave_program_in_set(Cur.epr,
+      etk_range_value_get(ETK_RANGE(UI_DelayFromSpinner)),
+      etk_range_value_get(ETK_RANGE(UI_DelayRangeSpinner)));
+}
+
+void
+on_TargetEntry_text_changed(Etk_Object *object, void *data)
+{
+   char *text = strdup(etk_entry_text_get(ETK_ENTRY(object)));
+   char *tok;
+   
+   printf("Text Changed Signal on TargetEntry Emitted (text: %s)\n",text);
+   
+   //Empty current targets list
+   Cur.epr->targets=NULL; //ABSOLUTLY NOT THE RIGHT WAY!!!! TODO FIXME
+   
+   //Spit the string in token and add every targets
+   tok = strtok (text,",");
+   while (tok != NULL)
+   {
+      printf ("'%s'\n",tok);
+      engrave_program_target_add(Cur.epr,tok);
+      tok = strtok (NULL, ",");
+   }
+   
+   //TODO Check if all the targets exists in the group, otherwise make the text red
+   
+   free(text);
+}
+
+void
+on_Param1Entry_text_changed(Etk_Object *object, void *data)
+{
+   Engrave_Action action;
+   printf("Text Changed Signal on Param1Entry Emitted\n");
+   
+   //get the action from the combo data
+   action = (Engrave_Action)etk_combobox_item_data_get(
+               etk_combobox_active_item_get (ETK_COMBOBOX(UI_ActionComboBox)));
+   
+   engrave_program_action_set(Cur.epr,action,
+		etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)),
+		etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)),
+		Cur.epr->value,
+		Cur.epr->value2
+	);
+}
+
+void
+on_Param2Entry_text_changed(Etk_Object *object, void *data)
+{
+   Engrave_Action action;
+   printf("Text Changed Signal on Param2Entry Emitted\n");
+   
+   //get the action from the combo data
+   action = (Engrave_Action)etk_combobox_item_data_get(
+               etk_combobox_active_item_get (ETK_COMBOBOX(UI_ActionComboBox)));
+   
+   engrave_program_action_set(Cur.epr,action,
+		etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)),
+      etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)),
+		Cur.epr->value,
+		Cur.epr->value2
+   );
+	
+}
+
+void
+on_Param1Spinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   Engrave_Action action;
+   printf("value Changed Signal on Param1Spinner Emitted\n");
+   
+   //get the action from the combo data
+   action = (Engrave_Action)etk_combobox_item_data_get(
+               etk_combobox_active_item_get (ETK_COMBOBOX(UI_ActionComboBox)));
+   
+   engrave_program_action_set(Cur.epr,action,
+		etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)),
+		etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)),
+		etk_range_value_get(ETK_RANGE(UI_Param1Spinner)),
+		Cur.epr->value2
+	);
+}
+
+void
+on_TransitionComboBox_changed(Etk_Combobox *combobox, void *data)
+{
+   Engrave_Transition tran;
+   printf("Changed Signal on TransitionComboBox Emitted\n");
+   
+   //get the transition from the combo data
+   tran = (Engrave_Transition)etk_combobox_item_data_get(
+               etk_combobox_active_item_get (combobox));
+   
+   engrave_program_transition_set(Cur.epr,tran,
+      etk_range_value_get(ETK_RANGE(UI_DurationSpinner)));
+}
+
+void
+on_DurationSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   Engrave_Transition tran;
+   printf("value Changed Signal on DurationSpinner Emitted\n");
+   
+   //get the transition from the combo data
+   tran = (Engrave_Transition)etk_combobox_item_data_get(
+               etk_combobox_active_item_get (ETK_COMBOBOX(UI_TransiComboBox)));
+   
+   engrave_program_transition_set(Cur.epr,tran,
+      etk_range_value_get(ETK_RANGE(UI_DurationSpinner)));
+}
+
+void
+on_AfterEntry_text_changed(Etk_Object *object, void *data)
+{
+   char *text = strdup(etk_entry_text_get(ETK_ENTRY(object)));
+   char *tok;
+ 
+   printf("Text Changed Signal on AfterEntry Emitted (text: %s)\n",text);   
+   
+   //Empty current afters list
+   Cur.epr->afters=NULL; //ABSOLUTLY NOT THE RIGHT WAY!!!! TODO FIXME
+   
+   //Spit the string in token and add every afters
+   tok = strtok (text,",");
+   while (tok != NULL)
+   {
+      printf ("'%s'\n",tok);
+      engrave_program_after_add(Cur.epr,tok);
+      tok = strtok (NULL, ",");
+   }
+   
+   //TODO Check if all the after exists in the group, otherwise make the text red
+   
+   free(text);
 }
 
 /* Colors Callbacks */

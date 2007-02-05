@@ -1,14 +1,10 @@
 TODO edje_editor (not a complete list...only the first in my mind)
 =======================================
 
-* TEXT & RECT: alpha make strange thing....WHY????
-
 * Tooltips EVERYWERE  :)
 
 * Up and Down buttons must move the selected part/description up and down
    (have to wait a way to move the row of the tree)
-
-* fakewin: the small handler for resize go haead
 
 * RelSpinner don't have to stop at 1.0 an 0 but ?? (maybe 100 -100)
 
@@ -21,6 +17,3 @@ TODO edje_editor (not a complete list...only the first in my mind)
 * Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
 
 * Image: border don't do nothing...why?
-
-* Reinsert all object in the EtkCanvas
-

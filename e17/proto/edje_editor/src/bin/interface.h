@@ -83,6 +83,8 @@ Etk_Widget *UI_Param1Label;
 Etk_Widget *UI_Param1Entry;
 Etk_Widget *UI_Param1Spinner;
 Etk_Widget *UI_Param1Label;
+Etk_Widget *UI_Param2Entry;
+Etk_Widget *UI_Param2Label;
 Etk_Widget *UI_DelayFromSpinner;
 Etk_Widget *UI_DelayRangeSpinner;
 

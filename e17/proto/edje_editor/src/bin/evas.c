@@ -9,7 +9,7 @@
 #define MAIN_TOP 27
 
 void
-on_Drag(void *data, Evas_Object *o, const char *emission, const char *source)
+on_Drag(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    //printf("ON DRAG\n");
    Evas_Coord x,y;
@@ -200,7 +200,7 @@ ev_draw_focus(void)
    if (Cur.ep && Cur.ep->current_state)
    {
       int x, y;
-      etk_canvas_object_geometry_get(ETK_canvas,EV_fakewin,&x,&y,NULL,NULL);
+      etk_canvas_object_geometry_get(ETK_CANVAS(ETK_canvas),EV_fakewin,&x,&y,NULL,NULL);
 
       etk_canvas_object_move(ETK_CANVAS(ETK_canvas),focus_handler,
             Cur.ep->pos.x + x - Cur.ep->current_state->rel1.offset.x - 2,
