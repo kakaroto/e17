@@ -961,10 +961,9 @@ Etk_Tree_Row *etk_tree_row_insert_valist(Etk_Tree *tree, Etk_Tree_Row *parent, E
    {
       new_row->prev = NULL;
       new_row->next = parent->first_child;
-      if (!parent->first_child)
-         parent->first_child = new_row;
-      else
+      if (parent->first_child)
          parent->first_child->prev = new_row;
+      parent->first_child = new_row;
       if (!parent->last_child)
          parent->last_child = new_row;
    }
@@ -1226,7 +1225,6 @@ void etk_tree_row_model_fields_get_valist(Etk_Tree_Row *row, va_list args)
 {
    Etk_Tree_Model *model;
    va_list args2;
-   int i;
    
    if (!row)
       return;
