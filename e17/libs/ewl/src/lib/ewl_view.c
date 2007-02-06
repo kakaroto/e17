@@ -104,6 +104,42 @@ ewl_view_assign_get(Ewl_View *v)
 }
 
 /**
+ * @param v: The Ewl_View to set the data free function into
+ * @param assign: The Ewl_View_Data_Free function to set
+ * @return Returns no value.
+ * @brief Set the data free pointer on this view
+ *
+ * This function is necessary to decrement intermediate reference counts or free
+ * temporary data buffers passed between the allocated data and the assigned
+ * widget.
+ */
+void
+ewl_view_data_free_set(Ewl_View *v, Ewl_View_Data_Free data_free)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("v", v);
+
+	v->data_free = data_free;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param v: The Ewl_View to get the data free function from
+ * @return Returns the Ewl_View_Data_Free set into the Ewl_View or NULL if none
+ * set.
+ * @brief Get the data free pointer set on this view
+ */
+Ewl_View_Data_Free
+ewl_view_data_free_get(Ewl_View *v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("v", v, NULL);
+
+	DRETURN_INT(v->data_free, DLEVEL_STABLE);
+}
+
+/**
  * @param v: The Ewl_View to set the header_fetch callback on
  * @param f: The Ewl_View_Header_Fetch callback
  * @return Returns no value.

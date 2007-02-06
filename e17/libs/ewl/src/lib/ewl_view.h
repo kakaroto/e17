@@ -34,6 +34,17 @@ typedef Ewl_Widget *(*Ewl_View_Constructor)(void);
 typedef void (*Ewl_View_Assign)(Ewl_Widget *w, void *data);
 
 /**
+ * @def EWL_VIEW_DATA_FREE(f)
+ * View callback to free data after passing it to be assigned.
+ */
+#define EWL_VIEW_DATA_FREE(f) ((Ewl_View_Data_Free)f)
+
+/**
+ * A typedef to shorten the definition of the view_data_free callbacks. 
+ */
+typedef void (*Ewl_View_Data_Free)(void *data);
+
+/**
  * @def EWL_VIEW_HEADER_GET(f)
  * View callback to get the header for a given column
  */
@@ -62,6 +73,7 @@ struct Ewl_View
 {
 	Ewl_View_Constructor construct; 	/**< Create a widget for display */
 	Ewl_View_Assign assign;			/**< Assign data to a widget */
+	Ewl_View_Data_Free data_free;		/**< Free data passed to assign */
 	Ewl_View_Header_Fetch header_fetch; 	/**< Get the header for the given column */
 };
 
@@ -73,6 +85,9 @@ Ewl_View_Constructor 	 ewl_view_constructor_get(Ewl_View *view);
 
 void 			 ewl_view_assign_set(Ewl_View *view, Ewl_View_Assign assign);
 Ewl_View_Assign 	 ewl_view_assign_get(Ewl_View *view);
+
+void 			 ewl_view_data_free_set(Ewl_View *view, Ewl_View_Data_Free assign);
+Ewl_View_Data_Free	 ewl_view_data_free_get(Ewl_View *view);
 
 void 			 ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f);
 Ewl_View_Header_Fetch 	 ewl_view_header_fetch_get(Ewl_View *v);
