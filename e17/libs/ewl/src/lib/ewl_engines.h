@@ -2,8 +2,6 @@
 #ifndef EWL_ENGINES_H
 #define EWL_ENGINES_H
 
-// #include <Ewl.h>
-
 enum Ewl_Engine_Window_Hooks
 {
 	EWL_ENGINE_WINDOW_NEW,	/**< Create the window */
