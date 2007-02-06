@@ -895,7 +895,6 @@ ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Window *win;
-	int width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -905,12 +904,6 @@ ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
-
-	/*
-	 * Find out how much space the widget accepted.
-	 */
-	width = ewl_object_current_w_get(EWL_OBJECT(w));
-	height = ewl_object_current_h_get(EWL_OBJECT(w));
 
 	/*
 	 * Now give the windows the appropriate size and adjust the evas as
