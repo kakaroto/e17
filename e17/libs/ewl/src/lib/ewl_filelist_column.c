@@ -465,6 +465,7 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file,
 	if (img) ewl_icon_image_set(EWL_ICON(icon), img, stock); 
 
 	ewl_container_child_append(EWL_CONTAINER(data), icon);
+	ewl_object_alignment_set(EWL_OBJECT(icon), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(icon);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
