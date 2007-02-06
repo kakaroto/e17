@@ -219,6 +219,42 @@ ewl_model_expansion_data_fetch_get(Ewl_Model *m)
 }
 
 /**
+ * @param m: The Ewl_Model to set the data free function into
+ * @param data_free: The Ewl_Model_Data_Free function to set
+ * @return Returns no value.
+ * @brief Set the data free pointer on this view
+ *
+ * This function is necessary to decrement intermediate reference counts or free
+ * temporary data buffers passed between the allocated data and the assigned
+ * widget.
+ */
+void
+ewl_model_data_free_set(Ewl_Model *m, Ewl_Model_Data_Free data_free)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->data_free = data_free;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The Ewl_Model to get the data free function from
+ * @return Returns the Ewl_Model_Data_Free set into the Ewl_Model or NULL if none
+ * set.
+ * @brief Get the data free pointer set on this model
+ */
+Ewl_Model_Data_Free
+ewl_model_data_free_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+
+	DRETURN_INT(m->data_free, DLEVEL_STABLE);
+}
+
+/**
  * @param m: The model to work with
  * @param f: The model expansion model fetch callback
  * @return Returns no value
