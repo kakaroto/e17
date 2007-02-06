@@ -3070,11 +3070,12 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
  * @brief The mouse move callback
  */
 void
-ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 				void *user_data __UNUSED__)
 {
 	Ewl_Embed *embed;
 	Ewl_Object *o;
+	Ewl_Event_Mouse_Move *ev = ev_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -3086,12 +3087,25 @@ ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (ewl_object_state_has(o, EWL_FLAG_STATE_PRESSED) &&
 			ewl_object_flags_has(o, EWL_FLAG_PROPERTY_DND_SOURCE,
 				EWL_FLAGS_PROPERTY_MASK)) {
+		embed = ewl_embed_widget_find(w);
 		if (!ewl_object_state_has(o, EWL_FLAG_STATE_DND)) {
-			embed = ewl_embed_widget_find(w);
 			ewl_object_state_add(o, EWL_FLAG_STATE_DND);
 			embed->last.drag_widget = w;
 			/* FIXME: Start DND here. */
 			ewl_dnd_drag_start(w);
+		}
+
+		if (ev) {
+			if (ev->x > CURRENT_X(embed) &&
+					ev->y > CURRENT_Y(embed) &&
+					ev->x < CURRENT_X(embed) +
+							CURRENT_W(embed) &&
+					ev->y < CURRENT_Y(embed) +
+							CURRENT_H(embed)) {
+				ewl_embed_dnd_position_feed(EWL_EMBED(embed),
+						ev->x, ev->y, NULL, NULL, NULL,
+						NULL);
+			}
 		}
 	}
 
