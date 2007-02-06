@@ -48,8 +48,19 @@ struct Ewl_Menu
 	Ewl_Widget *menubar_parent;	/**< Parent menu bar */
 };
 
+typedef struct Ewl_Menu_Info Ewl_Menu_Info;
+
+struct Ewl_Menu_Info
+{
+	char *name;
+	char *img;
+	void (*cb)(Ewl_Widget *w, void *ev, void *data);
+};
+
 Ewl_Widget	*ewl_menu_new(void);
 int		 ewl_menu_init(Ewl_Menu *menu);
+
+void		 ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info);
 
 /*
  * Internally used callbacks, override at your own risk.

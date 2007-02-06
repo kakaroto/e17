@@ -87,6 +87,40 @@ ewl_menu_init(Ewl_Menu *menu)
 }
 
 /**
+ * @param menu: The menu to setup
+ * @param info: The info to set into the menu
+ * @return Returns no value
+ * @brief Initializes @a menu with @a info
+ */
+void
+ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info)
+{
+	int i;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("menu", menu);
+	DCHECK_PARAM_PTR("info", info);
+	DCHECK_TYPE("menu", menu, EWL_MENU_TYPE);
+
+	for (i = 0; info[i].name != NULL; i++)
+	{
+		Ewl_Widget *item;
+
+		item = ewl_menu_item_new();
+		ewl_button_label_set(EWL_BUTTON(item), info[i].name);
+		ewl_button_image_set(EWL_BUTTON(item), info[i].img, NULL);
+		ewl_container_child_append(EWL_CONTAINER(menu), item);
+
+		if (info[i].cb)
+			ewl_callback_append(item, EWL_CALLBACK_CLICKED,
+							info[i].cb, NULL);
+		ewl_widget_show(item);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @internal
  * @param w: The widget to work with
  * @param ev_data: UNUSED

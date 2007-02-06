@@ -108,6 +108,38 @@ ewl_menubar_init(Ewl_Menubar *mb)
 }
 
 /**
+ * @param mb: The menubar to work with
+ * @param info: The menubar info to work with
+ * @return Returns  no value
+ * @brief Sets up the menubar @a mb with the given @a info
+ */
+void
+ewl_menubar_from_info(Ewl_Menubar *mb, Ewl_Menubar_Info *info)
+{
+	int i = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("mb", mb);
+	DCHECK_PARAM_PTR("info", info);
+	DCHECK_TYPE("mb", mb, EWL_MENUBAR_TYPE);
+
+	for (i = 0; info[i].name != NULL; i++)
+	{
+		Ewl_Widget *menu;
+
+		menu = ewl_menu_new();
+		ewl_button_label_set(EWL_BUTTON(menu), info[i].name);
+		ewl_menu_from_info(EWL_MENU(menu), info[i].menu);
+		ewl_container_child_append(EWL_CONTAINER(mb), menu);
+		ewl_object_fill_policy_set(EWL_OBJECT(menu), 
+				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+		ewl_widget_show(menu);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param mb: The menubar to set the orientation on
  * @param o: The orientation to set onto the menubar
  * @return Returns no value.

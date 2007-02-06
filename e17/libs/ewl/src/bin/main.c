@@ -19,20 +19,6 @@
 
 static Ewl_Model *expansion_model = NULL;
 
-typedef struct Ewl_Test_Menu_Item Ewl_Test_Menu_Item;
-struct Ewl_Test_Menu_Item
-{
-	char *name;
-	void (*cb)(Ewl_Widget *w, void *ev, void *data);
-};
-
-typedef struct Ewl_Test_Menu Ewl_Test_Menu;
-struct Ewl_Test_Menu
-{
-	char *name;
-	Ewl_Test_Menu_Item *items;
-};
-
 static char *ewl_test_about_body = 
 		"The EWL Test application services two purposes\n"
 		"The first is to allow us to test the different\n"
@@ -433,20 +419,19 @@ create_main_test_window(Ewl_Container *box)
 	char *headers[] = {"Test", "Status", "Failure Reason"};
 	Ewl_Model *model;
 	Ewl_View *view;
-	int i;
 
-	Ewl_Test_Menu_Item file_menu[] = {
-		{"Exit", ewl_test_cb_exit},
-		{NULL, NULL}
+	Ewl_Menu_Info file_menu[] = {
+		{"Exit",NULL,  ewl_test_cb_exit},
+		{NULL, NULL, NULL}
 	};
 
-	Ewl_Test_Menu_Item help_menu[] = {
-		{"About Ewl ...", ewl_test_cb_about},
-		{"Ewl Test Help ...", ewl_test_cb_help},
-		{NULL, NULL}
+	Ewl_Menu_Info help_menu[] = {
+		{"About Ewl ...", NULL, ewl_test_cb_about},
+		{"Ewl Test Help ...", NULL, ewl_test_cb_help},
+		{NULL, NULL, NULL}
 	};
 
-	Ewl_Test_Menu menus[] = {
+	Ewl_Menubar_Info menubar_info[] = {
 		{"File", file_menu},
 		{"Help", help_menu},
 		{NULL, NULL}
@@ -454,41 +439,8 @@ create_main_test_window(Ewl_Container *box)
 
 	menubar = ewl_hmenubar_new();
 	ewl_container_child_append(EWL_CONTAINER(box), menubar);
+	ewl_menubar_from_info(menubar, menubar_info);
 	ewl_widget_show(menubar);
-
-	for (i = 0; menus[i].name != NULL; i++)
-	{
-		int k;
-
-		/* pack in a spacer before the help text */
-		if (menus[i + 1].name == NULL)
-		{
-			o = ewl_spacer_new();
-			ewl_container_child_append(EWL_CONTAINER(menubar), o);
-			ewl_object_fill_policy_set(EWL_OBJECT(o), 
-							EWL_FLAG_FILL_FILL);
-			ewl_widget_show(o);
-		}
-
-		o2 = ewl_menu_new();
-		ewl_button_label_set(EWL_BUTTON(o2), menus[i].name);
-		ewl_container_child_append(EWL_CONTAINER(menubar), o2);
-		ewl_object_fill_policy_set(EWL_OBJECT(o2),
-					EWL_FLAG_FILL_HSHRINK | 
-					EWL_FLAG_FILL_VFILL);
-		ewl_widget_show(o2);
-
-		for (k = 0; menus[i].items[k].name != NULL; k++)
-		{
-			o = ewl_menu_item_new();
-			ewl_button_label_set(EWL_BUTTON(o), 
-						menus[i].items[k].name);
-			ewl_container_child_append(EWL_CONTAINER(o2), o);
-			ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
-						menus[i].items[k].cb, NULL);
-			ewl_widget_show(o);
-		}
-	}
 
 	note = ewl_notebook_new();
 	ewl_container_child_append(box, note);
