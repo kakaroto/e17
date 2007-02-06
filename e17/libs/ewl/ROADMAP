@@ -22,7 +22,7 @@ EWL ROADMAP
   to draw into. 
   - this will handle menus, combos, tooltips. anything that requires a new
     window.
-- finish ewl_freebox and ewl_icon and remove iconbox
+- finish ewl_freebox and ewl_icon
 - filedialog able to return directories along with files
 
 

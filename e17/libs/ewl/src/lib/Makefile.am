@@ -50,7 +50,6 @@ EWLHEADERS = \
 	ewl_histogram.h \
 	ewl_icon.h \
 	ewl_icon_theme.h \
-	ewl_iconbox.h \
 	ewl_io_manager.h \
 	ewl_image.h \
 	ewl_list.h \
@@ -134,7 +133,6 @@ EWLSOURCES= \
 	ewl_histogram.c \
 	ewl_icon.c \
 	ewl_icon_theme.c \
-	ewl_iconbox.c \
 	ewl_io_manager.c \
 	ewl_image.c \
 	ewl_list.c \

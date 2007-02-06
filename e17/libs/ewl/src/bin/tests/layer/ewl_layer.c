@@ -1,6 +1,7 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
+#include <stdio.h>
 
 static int create_test(Ewl_Container *win);
 static void spectrum_show(Ewl_Widget *w, void *ev_data, void *user_data);

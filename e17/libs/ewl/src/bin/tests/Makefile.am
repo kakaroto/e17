@@ -24,7 +24,6 @@ SUBDIRS				= \
 	histogram \
 	icon \
 	icon_theme \
-	iconbox \
 	image \
 	image_thumbnail \
 	io_manager \
