@@ -18,6 +18,8 @@ static Ewl_View *ewl_filelist_tree_view = NULL;
 static void ewl_filelist_tree_add(Ewl_Filelist *fl, const char *dir, 
 						char *file, void *data);
 
+static Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data, int column);
+
 /* Model callbacks */
 static void * ewl_filelist_tree_data_fetch(void *data, unsigned int row,
 						unsigned int column);
@@ -25,7 +27,7 @@ static void ewl_filelist_tree_data_sort(void *data, unsigned int column,
 						Ewl_Sort_Direction sort);
 static int ewl_filelist_tree_data_count(void *data);
 static int ewl_filelist_tree_data_expandable_get(void *data, unsigned int row);
-static void * ewl_filelist_tree_data_expansion_data_fetch(void *data,
+static void *ewl_filelist_tree_data_expansion_data_fetch(void *data,
 						unsigned int parent);
 
 /**
@@ -83,8 +85,6 @@ ewl_filelist_tree_init(Ewl_Filelist_Tree *fl)
 	Ewl_Model *model;
 	Ewl_Filelist *tree;
 	Ewl_Filelist_Tree_Data *data;
-	/* char *headers[] = {"filename", "size", "modifed", 
-			"permissions", "owner", "group"}; */
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fl", fl, FALSE);
@@ -107,6 +107,8 @@ ewl_filelist_tree_init(Ewl_Filelist_Tree *fl)
 	/* Wrapper struct to keep a pointer to our filelist */
 	data = NEW(Ewl_Filelist_Tree_Data, 1);
 	data->list = fl;
+	data->files = ecore_list_new();
+	ecore_list_set_free_cb(data->files, ECORE_FREE_CB(free));
 
 	/* Setup the tree model */
 	model = ewl_model_new();
@@ -118,12 +120,17 @@ ewl_filelist_tree_init(Ewl_Filelist_Tree *fl)
 			ewl_filelist_tree_data_expansion_data_fetch);
 
 	fl->tree = ewl_tree2_new();
-	ewl_container_child_append(EWL_CONTAINER(fl), fl->tree);
 	ewl_mvc_data_set(EWL_MVC(fl->tree), data);
 	ewl_mvc_model_set(EWL_MVC(fl->tree), model);
+	ewl_container_child_append(EWL_CONTAINER(fl), fl->tree);
 	ewl_widget_show(fl->tree);
 
-	view = ewl_label_view_get();
+	view = ewl_view_new();
+	ewl_view_constructor_set(view, ewl_label_new);
+	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+	ewl_view_header_fetch_set(view, ewl_filelist_tree_cb_header_fetch);
+
+	ewl_tree2_column_append(EWL_TREE2(fl->tree), view, TRUE);
 	ewl_tree2_column_append(EWL_TREE2(fl->tree), view, TRUE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -187,6 +194,8 @@ ewl_filelist_tree_filename_get(Ewl_Filelist *fl, void *item)
 	selected = ewl_mvc_selected_get(EWL_MVC(fl));
 	data = selected->sel.data;
 
+	/* XXX Don't think this is right */
+
 	DRETURN_PTR(ecore_list_goto_index(data->files, selected->row), DLEVEL_STABLE);
 }
 
@@ -233,9 +242,8 @@ static void
 ewl_filelist_tree_add(Ewl_Filelist *fl, const char *dir, char *file, 
 						void *data __UNUSED__)
 {
-	char path[PATH_MAX];
-	struct stat buf;
-	Ewl_Filelist_Tree *tree;
+	Ewl_Filelist_Tree *flt;
+	Ewl_Filelist_Tree_Data *d;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
@@ -243,13 +251,9 @@ ewl_filelist_tree_add(Ewl_Filelist *fl, const char *dir, char *file,
 	DCHECK_PARAM_PTR("file", file);
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
 
-	tree = EWL_FILELIST_TREE(fl);
-
-	snprintf(path, PATH_MAX, "%s/%s", 
-			ewl_filelist_directory_get(fl), file);
-	if (stat(path, &buf) == 0)
-	{
-	}
+	flt = EWL_FILELIST_TREE(fl);
+	d = ewl_mvc_data_get(EWL_MVC(flt->tree));
+	ecore_list_append(d->files, strdup(file));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -274,12 +278,26 @@ ewl_filelist_tree_data_count(void *data)
 static void *
 ewl_filelist_tree_data_fetch(void *data, unsigned int row, unsigned int col)
 {
-	Ewl_Filelist_Tree_Data *td = data;
+	Ewl_Filelist_Tree_Data *td;
+	char *ret = NULL, *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, 0);
 
-	DRETURN_INT(ecore_list_goto_index(td->files, row), DLEVEL_STABLE);
+	td = data;
+	tmp = ecore_list_goto_index(td->files, row);
+	if (col == 0)
+	{
+		ret = tmp;
+	}
+	else
+	{
+		ret = "";
+	}
+
+printf("RET %p %s\n", data, ret);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -337,6 +355,8 @@ ewl_filelist_tree_data_expandable_get(void *data, unsigned int row)
 	DCHECK_PARAM_PTR_RET("data", data, 0);
 
 	file = ecore_list_goto_index(td->files, row);
+	if (!strcmp(file, "..")) return 0;
+
 	path = ewl_filelist_expand_path(EWL_FILELIST(td->list), file);
 	result = ecore_file_is_dir(path);
 	FREE(path);
@@ -352,7 +372,7 @@ ewl_filelist_tree_data_expansion_data_fetch(void *data, unsigned int parent)
 {
 	char *path;
 	const char *file;
-	Ecore_List *subdir;
+	Ecore_List *subdir = NULL;
 	Ewl_Filelist_Tree_Data *td = data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -361,9 +381,30 @@ ewl_filelist_tree_data_expansion_data_fetch(void *data, unsigned int parent)
 	file = ecore_list_goto_index(td->files, parent);
 	path = ewl_filelist_expand_path(EWL_FILELIST(td->list), file);
 
-	subdir = ecore_file_ls(path);
+//	subdir = ecore_file_ls(path);
 	FREE(path);
 
 	DRETURN_PTR(subdir, DLEVEL_STABLE);
 }
+
+static
+Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data __UNUSED__, int column)
+{
+	Ewl_Widget *l;
+	const char *t;
+
+	l = ewl_label_new();
+	if (column == 0) t = "filename";
+	else if (column == 1) t = "size";
+	else if (column == 2) t = "modifed";
+	else if (column == 3) t = "permissions";
+	else if (column == 4) t ="group";
+	else t = "";
+
+	ewl_label_text_set(EWL_LABEL(l), t);
+	ewl_widget_show(l);
+
+	return l;
+}
+
 
