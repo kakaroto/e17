@@ -40,7 +40,6 @@ struct _Etk_Window
    
    Etk_Bool (*delete_event)(Etk_Window *window);
    Etk_Bool wait_size_request;
-   Etk_Bool center;
    Etk_Window *center_on_window;
 };
 

@@ -212,16 +212,27 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
    if (!window_to_center)
       return;
    
+   if (window_to_center->center_on_window)
+   {
+      etk_object_weak_pointer_remove(ETK_OBJECT(window), (void **)(&window_to_center->center_on_window));
+      window_to_center->center_on_window = NULL;
+   }
+   
+   /* If the window has not been been resized yet, we can't center it already,
+    * so we queue the center-action for later */
    if (window_to_center->wait_size_request)
    {
-      window_to_center->center = ETK_TRUE;
       window_to_center->center_on_window = window;
       if (window)
          etk_object_weak_pointer_add(ETK_OBJECT(window), (void **)(&window_to_center->center_on_window));
    }
+   /* Otherwise we center it right now */
    else
    {
-      etk_engine_mouse_screen_geometry_get(&x, &y, &w, &h);
+      if (window)
+         etk_window_geometry_get(window, &x, &y, &w, &h);
+      else
+         etk_engine_mouse_screen_geometry_get(&x, &y, &w, &h);
       etk_window_geometry_get(window_to_center, NULL, NULL, &cw, &ch);
       etk_window_move(window_to_center, x + (w - cw) / 2, y + (h - ch) / 2);
    }
@@ -535,7 +546,6 @@ static void _etk_window_constructor(Etk_Window *window)
       return;
  
    window->wait_size_request = ETK_TRUE;
-   window->center = ETK_FALSE;
    window->center_on_window = NULL;
    window->delete_event = _etk_window_delete_event_handler;
    
@@ -700,12 +710,8 @@ static void _etk_window_size_request_cb(Etk_Object *object, Etk_Size *requested_
          window->wait_size_request = ETK_FALSE;
          if (etk_widget_is_visible(ETK_WIDGET(window)))
             etk_engine_window_show(window);
-         if (window->center)
-         {
+         if (window->center_on_window)
             etk_window_center_on_window(window, window->center_on_window);
-            window->center = ETK_FALSE;
-            window->center_on_window = NULL;
-         }
       }
    }
 }
