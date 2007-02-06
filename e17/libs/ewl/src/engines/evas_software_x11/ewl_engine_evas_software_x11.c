@@ -1,6 +1,5 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Engine_Evas_Software_X11.h"
-#include <Ewl.h>
 #include "ewl_private.h"
 #include "ewl_debug.h"
 #include "ewl_macros.h"

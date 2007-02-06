@@ -2,7 +2,7 @@
 #ifndef EWL_ENGINE_EVAS_H
 #define EWL_ENGINE_EVAS_H
 
-#include <Ewl.h>
+#include "ewl_base.h"
 
 #define EWL_ENGINE_EVAS(engine) ((Ewl_Engine_Evas *)engine)
 

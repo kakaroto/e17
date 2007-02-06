@@ -2,6 +2,9 @@
 #ifndef EWL_ENGINE_EVAS_BUFFER_H
 #define EWL_ENGINE_EVAS_BUFFER_H
 
+#include "ewl_base.h"
+#include "Evas_Engine_Buffer.h"
+
 #define EWL_ENGINE_EVAS_BUFFER(engine) \
 		((Ewl_Engine_Evas_Buffer *)engine)
 

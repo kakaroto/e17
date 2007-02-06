@@ -2,7 +2,7 @@
 #ifndef EWL_ENGINE_X11_H
 #define EWL_ENGINE_X11_H
 
-#include <Ewl.h>
+#include "ewl_base.h"
 #include <Ecore_X.h>
 #include <Ecore_X_Atoms.h>
 

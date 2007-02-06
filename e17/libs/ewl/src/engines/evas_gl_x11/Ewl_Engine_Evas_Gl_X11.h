@@ -2,7 +2,7 @@
 #ifndef EWL_ENGINE_EVAS_GL_X11_H
 #define EWL_ENGINE_EVAS_GL_X11_H
 
-#include <Ewl.h>
+#include "ewl_base.h"
 #include <Ecore_X.h>
 #include <Evas_Engine_GL_X11.h>
 
