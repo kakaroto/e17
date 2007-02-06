@@ -346,10 +346,7 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	     if(!strcmp(selected_file, file))
 	       {
 		  etk_tree_row_select(row);
-#if 0
-		  /* TODO: Implement this when Tree2 has support */
 		  etk_tree_row_scroll_to(row, ETK_TRUE);
-#endif
 	       }
 	  }
 	

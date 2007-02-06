@@ -50,20 +50,14 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 	     row = etk_tree_row_next_get(
 		   etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)));
 	     etk_tree_row_select(row);
-#if 0
-	     /* TODO: implement when this is in Tree2 */
 	     etk_tree_row_scroll_to(row, ETK_FALSE);
-#endif	     
 	  }
 	else
 	  {
 	     row = etk_tree_row_prev_get(
 		       etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree)));
 	     etk_tree_row_select(row);
-#if 0
-	     /* TODO: implement when this is in Tree2 */
-	     etk_tree_row_scroll_to(row, ETK_FALSE);	
-#endif	     
+	     etk_tree_row_scroll_to(row, ETK_FALSE);
 	  }
      }
    

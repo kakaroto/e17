@@ -36,10 +36,7 @@ _ex_thumb_exe_exit(void *data, int type, void *event)
 	if(thumb->selected)
 	  {
 	     etk_tree_row_select(row);
-#if 0	     
-	     /* TODO: implement when done in Tree2 */
 	     etk_tree_row_scroll_to(row, ETK_TRUE);
-#endif	     
 	  }
 	E_FREE(thumb->image);
 	E_FREE(thumb->name);

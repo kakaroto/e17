@@ -46,10 +46,7 @@ _ex_slideshow_next(void *data)
      row = etk_tree_row_next_get(row);
    
    etk_tree_row_select(row);
-#if 0
-   /* TODO: implement when Tree2 has this */
    etk_tree_row_scroll_to(row, ETK_FALSE);
-#endif   
 
    i = etk_tree_num_rows_get(ETK_TREE(e->cur_tab->itree));
    n = 1 + etk_tree_row_num_get(ETK_TREE(e->cur_tab->itree), row);
@@ -76,10 +73,7 @@ _ex_slideshow_prev(void *data)
      row = etk_tree_row_prev_get(row);
    
    etk_tree_row_select(row);
-#if 0
-   /* TODO: implemenet when this is done in Tree2 */
    etk_tree_row_scroll_to(row, ETK_FALSE);
-#endif   
 
    i = etk_tree_num_rows_get(ETK_TREE(e->cur_tab->itree));
    n = 1 + etk_tree_row_num_get(ETK_TREE(e->cur_tab->itree), row);
