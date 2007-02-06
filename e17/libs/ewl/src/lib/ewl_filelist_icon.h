@@ -2,6 +2,9 @@
 #ifndef EWL_FILELIST_ICON_H
 #define EWL_FILELIST_ICON_H
 
+#include "ewl_filelist.h"
+#include "ewl_view.h"
+
 /**
  * @addtogroup Ewl_Filelist_Icon Ewl_Filelist_Icon: A icon file view
  * A view of the files using simple name/icon graphics

@@ -2,6 +2,8 @@
 #ifndef EWL_LIST_H
 #define EWL_LIST_H
 
+#include "ewl_mvc.h"
+
 /**
  * @addtogroup Ewl_List Ewl_List: A list widget
  * @brief Defines a class to layout data in a list

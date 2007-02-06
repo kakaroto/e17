@@ -2,6 +2,8 @@
 #ifndef EWL_FLOATER_H
 #define EWL_FLOATER_H
 
+#include "ewl_box.h"
+
 /**
  * @addtogroup Ewl_Floater Ewl_Floater: A Floating Container
  * @brief Defines a widget for layering above other widgets in EWL's drawing

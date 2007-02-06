@@ -2,6 +2,8 @@
 #ifndef EWL_COLORPICKER_H
 #define EWL_COLORPICKER_H
 
+#include "ewl_box.h"
+
 /**
  * @addtogroup Ewl_Colorpicker Ewl_Colorpicker: The colour picking widget
  *

@@ -2,6 +2,8 @@
 #ifndef EWL_CHECKBUTTON_H
 #define EWL_CHECKBUTTON_H
 
+#include "ewl_button.h"
+
 /**
  * @addtogroup Ewl_Checkbutton Ewl_Checkbutton: An Ewl_Checkbutton with Label
  * @brief Defines an Ewl_Checkbutton that inherits from Ewl_Widget and

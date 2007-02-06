@@ -2,6 +2,8 @@
 #ifndef EWL_PROGRESSBAR_H
 #define EWL_PROGRESSBAR_H
 
+#include "ewl_range.h"
+
 /**
  * @addtogroup Ewl_Progressbar Ewl_Progressbar: A progressbar from a value
  * A progress bar widget

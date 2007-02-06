@@ -2,6 +2,8 @@
 #ifndef EWL_DATEPICKER_H
 #define EWL_DATEPICKER_H
 
+#include "ewl_text.h"
+
 /**
  * @addtogroup Ewl_Datepicker Ewl_Datepicker: The EWL Datepicker widget
  * @brief Defines the Ewl_Datepicker class,  

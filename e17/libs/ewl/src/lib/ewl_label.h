@@ -2,6 +2,8 @@
 #ifndef EWL_LABEL_H
 #define EWL_LABEL_H
 
+#include "ewl_view.h"
+
 /**
  * @addtogroup Ewl_Label Ewl_Label: A fully-themable text label
  * Defines a class for a fullty-themable text label

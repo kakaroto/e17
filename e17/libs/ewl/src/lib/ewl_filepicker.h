@@ -2,6 +2,9 @@
 #ifndef EWL_FILEPICKER_H
 #define EWL_FILEPICKER_H
 
+#include "ewl_box.h"
+#include "ewl_view.h"
+
 /** 
  * @addtogroup Ewl_Filepicker Ewl_Filepicker: Allows selecting files from a list
  * A widget to allow selecting ifles

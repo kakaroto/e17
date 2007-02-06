@@ -2,6 +2,8 @@
 #ifndef EWL_ENTRY_H
 #define EWL_ENTRY_H
 
+#include "ewl_text.h"
+
 /**
  * @addtogroup Ewl_Entry Ewl_Entry: A text entry widget
  * This widget provides all text entry needs, from single to multiline

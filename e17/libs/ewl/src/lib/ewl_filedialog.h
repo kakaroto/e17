@@ -2,6 +2,9 @@
 #ifndef EWL_FILEDIALOG_H
 #define EWL_FILEDIALOG_H
 
+#include "ewl_dialog.h"
+#include "ewl_view.h"
+
 /**
  * @addtogroup Ewl_Filedialog Ewl_Filedialog: A Dialog For Picking Files
  * A simple dialog to show a file selector widget

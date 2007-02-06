@@ -2,6 +2,8 @@
 #ifndef EWL_RADIOBUTTON_H
 #define EWL_RADIOBUTTON_H
 
+#include "ewl_checkbutton.h"
+
 /**
  * @addtogroup Ewl_Radiobutton Ewl_Radiobutton: A Radio Button Widget and Grouping System
  * Provides for a simple radiobutton with label, and to group radio buttons

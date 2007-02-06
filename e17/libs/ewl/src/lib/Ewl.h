@@ -254,30 +254,18 @@
 extern"C" {
 #endif
 
-#include <Evas.h>
-#include <Ecore.h>
-#include <Ecore_Data.h>
+/* Include the core functionality wrapped in the proper order */
+#include <ewl_base.h>
 
-#include <ewl_enums.h>
-
-#include <ewl_object.h>
-#include <ewl_widget.h>
+/* IO and MVC helper functionality, MVC must be here for widgets to provide
+ * default views */
+#include <ewl_io_manager.h>
 
 #include <ewl_model.h>
 #include <ewl_view.h>
 
-#include <ewl_attach.h>
-
-#include <ewl_container.h>
-
-#include <ewl_callback.h>
-#include <ewl_events.h>
-
-#include <ewl_misc.h>
-
+/* Base widgets and containers */
 #include <ewl_box.h>
-#include <ewl_mvc.h>
-#include <ewl_freebox.h>
 #include <ewl_border.h>
 
 #include <ewl_cell.h>
@@ -286,30 +274,12 @@ extern"C" {
 #include <ewl_grid.h>
 #include <ewl_table.h>
 
-#include <ewl_config.h>
-#include <ewl_theme.h>
-
-#include <ewl_io_manager.h>
-
 #include <ewl_label.h>
 #include <ewl_stock.h>
 #include <ewl_button.h>
 #include <ewl_floater.h>
-#include <ewl_overlay.h>
-#include <ewl_embed.h>
-#include <ewl_window.h>
-#include <ewl_cursor.h>
 #include <ewl_dialog.h>
 #include <ewl_popup.h>
-#include <ewl_filelist.h>
-#include <ewl_filelist_list.h>
-#include <ewl_filelist_icon.h>
-#include <ewl_filelist_column.h>
-#include <ewl_filelist_tree.h>
-#include <ewl_filepicker.h>
-#include <ewl_filedialog.h>
-
-#include <ewl_engines.h>
 
 #include <ewl_text.h>
 #include <ewl_entry.h>
@@ -331,7 +301,6 @@ extern"C" {
 #include <ewl_menu.h>
 #include <ewl_menubar.h>
 #include <ewl_toolbar.h>
-#include <ewl_combo.h>
 #include <ewl_check.h>
 #include <ewl_checkbutton.h>
 #include <ewl_radiobutton.h>
@@ -340,13 +309,17 @@ extern"C" {
 #include <ewl_datepicker.h>
 #include <ewl_icon.h>
 #include <ewl_icon_theme.h>
-#include <ewl_media.h>
 #include <ewl_notebook.h>
 #include <ewl_progressbar.h>
 #include <ewl_paned.h>
 #include <ewl_scrollpane.h>
 #include <ewl_statusbar.h>
-#include <ewl_dnd.h>
+#include <ewl_shadow.h>
+
+/* MVC definitions and containers */
+#include <ewl_mvc.h>
+
+#include <ewl_combo.h>
 
 #include <ewl_tree.h>
 #include <ewl_tree2.h>
@@ -354,8 +327,19 @@ extern"C" {
 #include <ewl_tree2_view_plain.h>
 #include <ewl_tree2_view_scrolled.h>
 #include <ewl_list.h>
-#include <ewl_shadow.h>
-	
+
+#include <ewl_freebox.h>
+
+#include <ewl_filelist.h>
+#include <ewl_filelist_list.h>
+#include <ewl_filelist_icon.h>
+#include <ewl_filelist_column.h>
+#include <ewl_filelist_tree.h>
+#include <ewl_filepicker.h>
+#include <ewl_filedialog.h>
+
+#include <ewl_media.h>
+
 #ifdef __cplusplus
 }
 #endif

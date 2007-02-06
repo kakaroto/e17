@@ -2,6 +2,8 @@
 #ifndef EWL_SPINNER_H
 #define EWL_SPINNER_H
 
+#include "ewl_range.h"
+
 /**
  * @addtogroup Ewl_Spinner Ewl_Spinner: A Numerical Value Entry
  * Provides a field for entering numerical values, along with buttons to

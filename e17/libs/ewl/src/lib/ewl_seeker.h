@@ -2,6 +2,8 @@
 #ifndef EWL_SEEKER_H
 #define EWL_SEEKER_H
 
+#include "ewl_range.h"
+
 /**
  * @addtogroup Ewl_Seeker Ewl_Seeker: A Value Selector from a Range
  * Defines an Ewl_Widget with a draggable button enclosed, used to select a

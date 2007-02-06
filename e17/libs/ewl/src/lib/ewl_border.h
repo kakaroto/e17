@@ -2,6 +2,8 @@
 #ifndef EWL_BORDER_H
 #define EWL_BORDER_H
 
+#include "ewl_box.h"
+
 /**
  * @addtogroup Ewl_Border Ewl_Border: A container with a border and label
  * @brief Defines the Ewl_Border class used for adding a border decoration

@@ -2,6 +2,9 @@
 #ifndef EWL_TABLE_H
 #define EWL_TABLE_H
 
+#include "ewl_cell.h"
+#include "ewl_grid.h"
+
 /**
  * @addtogroup Ewl_Table Ewl_Table: The Table Layout Container.
  * Defines the Ewl_Box class used for laying out Ewl_Widget's in a

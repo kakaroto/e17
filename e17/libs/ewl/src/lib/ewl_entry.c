@@ -1,5 +1,6 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
-#include <Ewl.h>
+#include "ewl_base.h"
+#include "ewl_entry.h"
 #include <Ecore_Txt.h>
 #include <langinfo.h>
 #include "ewl_debug.h"

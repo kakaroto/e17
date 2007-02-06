@@ -2,6 +2,9 @@
 #ifndef EWL_FILELIST_COLUMN_H
 #define EWL_FILELIST_COLUMN_H
 
+#include "ewl_filelist.h"
+#include "ewl_view.h"
+
 /**
  * @addtogroup Ewl_Filelist_Column Ewl_Filelist_Column: An expanding column view
  * A view of the files using a new column for each directory.

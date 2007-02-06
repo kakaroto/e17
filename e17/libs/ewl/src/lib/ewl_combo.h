@@ -2,6 +2,8 @@
 #ifndef EWL_COMBO_H
 #define EWL_COMBO_H
 
+#include "ewl_mvc.h"
+
 /**
  * @addtogroup Ewl_Combo Ewl_Combo: A Simple Combo Box
  * Defines a combo box used internally. The contents on the box are not drawn

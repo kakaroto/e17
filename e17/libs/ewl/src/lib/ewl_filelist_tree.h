@@ -2,6 +2,9 @@
 #ifndef EWL_FILELIST_TREE_H
 #define EWL_FILELIST_TREE_H
 
+#include "ewl_filelist.h"
+#include "ewl_view.h"
+
 /**
  * @addtogroup Ewl_Filelist_Tree Ewl_Filelist_Tree: A treeview of the files
  * Provides a tree view of the files giving name, size, etc information

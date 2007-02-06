@@ -2,6 +2,9 @@
 #ifndef EWL_FILELIST_LIST_H
 #define EWL_FILELIST_LIST_H
 
+#include "ewl_filelist.h"
+#include "ewl_view.h"
+
 /**
  * @addtogroup Ewl_Filelist_List Ewl_Filelist_List: A listview of the files
  * Provides a list view of the files giving name, size, etc information

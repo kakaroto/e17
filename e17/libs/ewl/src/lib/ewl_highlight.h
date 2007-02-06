@@ -2,6 +2,8 @@
 #ifndef EWL_HIGHLIGHT_H
 #define EWL_HIGHLIGHT_H
 
+#include "ewl_floater.h"
+
 /**
  * @addtogroup Ewl_Highlight Ewl_Highlight: A highlight widget
  * Defines a widget to highlight other widgets

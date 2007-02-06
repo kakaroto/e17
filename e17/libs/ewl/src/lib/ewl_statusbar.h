@@ -2,6 +2,8 @@
 #ifndef EWL_STATUSBAR_H
 #define EWL_STATUSBAR_H
 
+#include "ewl_box.h"
+
 /**
  * @addtogroup Ewl_Statusbar Ewl_Statusbar: A status bar widget
  * Defines a class for displaying status bars

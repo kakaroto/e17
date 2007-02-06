@@ -2,6 +2,8 @@
 #ifndef EWL_STOCK_H
 #define EWL_STOCK_H
 
+#include "ewl_box.h"
+
 /**
  * @addtogroup Ewl_Stock Ewl_Stock: The Stock
  * @brief The stock class is an abstact class to provide the stock feature of

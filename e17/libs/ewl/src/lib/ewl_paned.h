@@ -2,6 +2,8 @@
 #ifndef EWL_PANED_H
 #define EWL_PANED_H
 
+#include "ewl_separator.h"
+
 /**
  * @addtogroup Ewl_Paned Ewl_Paned: A paned widget
  * Provides a widget to have a resizable paned container

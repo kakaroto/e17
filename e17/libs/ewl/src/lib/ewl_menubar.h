@@ -2,6 +2,8 @@
 #ifndef EWL_MENUBAR_H
 #define EWL_MENUBAR_H
 
+#include "ewl_box.h"
+
 /**
  * @addtogroup Ewl_Menubar Ewl_Menubar: A menu bar widget
  * Defines a class for displaying menu bars

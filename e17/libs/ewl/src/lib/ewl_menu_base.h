@@ -2,6 +2,8 @@
 #ifndef EWL_MENU_BASE_H
 #define EWL_MENU_BASE_H
 
+#include "ewl_menu_item.h"
+
 /**
  * @addtogroup Ewl_Menu_Base Ewl_Menu_Base: The Basic Menu Functionality
  * @brief Defines the basic menu classes that are extended to an actual menu

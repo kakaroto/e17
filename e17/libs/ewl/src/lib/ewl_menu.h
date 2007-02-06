@@ -2,6 +2,8 @@
 #ifndef EWL_MENU_H
 #define EWL_MENU_H
 
+#include "ewl_menu_base.h"
+
 /**
  * @addtogroup Ewl_Menu Ewl_Menu: A Simple Windowed Menu
  * Defines a menu used globally. The contents on the menu are drawn outside of

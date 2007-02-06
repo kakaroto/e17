@@ -1,5 +1,12 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
-#include <Ewl.h>
+#include "ewl_base.h"
+#include "ewl_filedialog.h"
+#include "ewl_filepicker.h"
+#include "ewl_filelist_column.h"
+#include "ewl_filelist_icon.h"
+#include "ewl_filelist_list.h"
+#include "ewl_filelist_tree.h"
+#include "ewl_menu.h"
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"

@@ -2,6 +2,8 @@
 #ifndef EWL_NOTEBOOK_H
 #define EWL_NOTEBOOK_H
 
+#include "ewl_box.h"
+
 /**
  * @addtogroup Ewl_Notebook Ewl_Notebook: A notebook widget
  * Defines a class for notebook layout

@@ -2,6 +2,8 @@
 #ifndef EWL_COLORDIALOG_H
 #define EWL_COLORDIALOG_H
 
+#include "ewl_dialog.h"
+
 /**
  * @addtogroup Ewl_Colordialog Ewl_Colordialog: A Simple Colour Dialog widget
  *

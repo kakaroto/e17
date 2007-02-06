@@ -2,6 +2,8 @@
 #ifndef EWL_BUTTON_H
 #define EWL_BUTTON_H
 
+#include "ewl_stock.h"
+
 /**
  * @addtogroup Ewl_Button Ewl_Button: The Basic Button
  * @brief The button class is a basic button with a label. This class inherits

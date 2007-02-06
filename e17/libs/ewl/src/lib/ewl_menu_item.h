@@ -2,6 +2,8 @@
 #ifndef EWL_MENU_ITEM_H
 #define EWL_MENU_ITEM_H
 
+#include "ewl_button.h"
+
 /**
  * @addtogroup Ewl_Menu_Item Ewl_Menu_Item: The basic menu item
  * The basic menu item

@@ -2,6 +2,8 @@
 #ifndef EWL_TREE2_VIEW_PLAIN_H
 #define EWL_TREE2_VIEW_PLAIN_H
 
+#include "ewl_tree2_view.h"
+
 /**
  * @addtogroup Ewl_Tree2_View_Plain Ewl_Tree2_View_Plain: The plain tree view
  * @brief Defines a plain view into the tree just listing rows

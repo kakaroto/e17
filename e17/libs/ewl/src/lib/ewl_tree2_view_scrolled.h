@@ -2,6 +2,8 @@
 #ifndef EWL_TREE2_VIEW_SCROLLED_H
 #define EWL_TREE2_VIEW_SCROLLED_H
 
+#include "ewl_tree2_view.h"
+
 /**
  * @addtogroup Ewl_Tree2_View_Scrolled Ewl_Tree2_View_Scrolled The scrolled tree view 
  * @brief A scrolled view for the tree

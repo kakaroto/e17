@@ -2,6 +2,8 @@
 #ifndef EWL_CALENDAR_H
 #define EWL_CALENDAR_H
 
+#include "ewl_box.h"
+
 /**
  * @addtogroup Ewl_Calendar Ewl_Calendar: The EWL Calendar Widget
  * @brief Defines the Ewl_Calendar class  

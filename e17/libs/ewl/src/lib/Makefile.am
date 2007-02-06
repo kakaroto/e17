@@ -12,6 +12,7 @@ lib_LTLIBRARIES = libewl.la
 EWLHEADERS = \
 	Ewl.h \
 	ewl_attach.h \
+	ewl_base.h \
 	ewl_border.h \
 	ewl_box.h \
 	ewl_label.h \

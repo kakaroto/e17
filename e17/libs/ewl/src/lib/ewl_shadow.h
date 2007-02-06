@@ -2,6 +2,8 @@
 #ifndef EWL_SHADOW_H
 #define EWL_SHADOW_H
 
+#include "ewl_box.h"
+
 /**
  * @addtogroup Ewl_Shadow Ewl_Shadow: A container with a shadow/border
  * @brief Defines the Ewl_Shadow class used for adding a shadow decoration

@@ -2,6 +2,8 @@
 #ifndef EWL_TOOLBAR_H
 #define EWL_TOOLBAR_H
 
+#include "ewl_menubar.h"
+
 /**
  * @addtogroup Ewl_Toolbar Ewl_Toolbar: A toolbar widget
  * @brief Defines a widget to contain a toolbar

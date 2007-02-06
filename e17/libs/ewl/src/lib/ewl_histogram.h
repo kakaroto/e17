@@ -2,6 +2,8 @@
 #ifndef EWL_HISTOGRAM_H
 #define EWL_HISTOGRAM_H
 
+#include "ewl_image.h"
+
 /**
  * @addtogroup Ewl_Histogram Ewl_Histogram: A Simple Histogram widget
  *

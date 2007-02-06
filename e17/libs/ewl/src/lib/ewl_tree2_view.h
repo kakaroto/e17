@@ -2,6 +2,9 @@
 #ifndef EWL_TREE2_VIEW_H
 #define EWL_TREE2_VIEW_H
 
+#include "ewl_box.h"
+#include "ewl_tree2.h"
+
 /**
  * @addtogroup Ewl_Tree2_View Ewl_Tree2_View: A tree view
  * @brief The tree view class

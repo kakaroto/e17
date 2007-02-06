@@ -2,6 +2,11 @@
 #ifndef EWL_FILELIST_H
 #define EWL_FILELIST_H
 
+#include "ewl_box.h"
+#include "ewl_image.h"
+#include "ewl_icon.h"
+#include "ewl_text.h"
+
 /**
  * @addtogroup Ewl_Filelist Ewl_Filelist: The base widget for the filelists
  * A base class to be extended to provide different views on the file list

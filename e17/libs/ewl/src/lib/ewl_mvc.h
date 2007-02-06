@@ -2,6 +2,10 @@
 #ifndef EWL_MVC_H
 #define EWL_MVC_H
 
+#include "ewl_box.h"
+#include "ewl_model.h"
+#include "ewl_view.h"
+
 /**
  * @addtogroup Ewl_MVC Ewl_MVC: The base model-view-controller framework
  * Defines a widget to base MVC widgets off of
