@@ -118,6 +118,7 @@ Ewl_Widget *
 ewl_io_manager_plugin_string_read(const char *string)
 {
 	Ewl_Widget *ret = NULL;
+	char *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -126,7 +127,9 @@ ewl_io_manager_plugin_string_read(const char *string)
 
 	ret = ewl_text_new();
 	ewl_text_font_set(EWL_TEXT(ret), "ewl/monospace");
-	text_set(EWL_TEXT(ret), string);
+	txt = strdup(string);
+	text_set(EWL_TEXT(ret), txt);
+	free(txt);
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
