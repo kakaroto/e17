@@ -3033,7 +3033,6 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
 
 	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DND)) {
 		ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAG_STATE_DND);
-		/* FIXME: Stop DND here */
 		ewl_dnd_drag_drop(w);
 	}
 
@@ -3091,7 +3090,6 @@ ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 		if (!ewl_object_state_has(o, EWL_FLAG_STATE_DND)) {
 			ewl_object_state_add(o, EWL_FLAG_STATE_DND);
 			embed->last.drag_widget = w;
-			/* FIXME: Start DND here. */
 			ewl_dnd_drag_start(w);
 		}
 
