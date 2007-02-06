@@ -912,10 +912,10 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 			}
 		}
 
-		*px = CURRENT_X(widget);
-		*py = CURRENT_Y(widget);
-		*pw = CURRENT_W(widget);
-		*ph = CURRENT_H(widget);
+		if (px) *px = CURRENT_X(widget);
+		if (py) *py = CURRENT_Y(widget);
+		if (pw) *pw = CURRENT_W(widget);
+		if (ph) *ph = CURRENT_H(widget);
 	} else {
 		DWARNING("Could not find widget for dnd position event.");
 	}
