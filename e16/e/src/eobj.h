@@ -44,13 +44,13 @@ struct _eobj
    char                sticky;
    char                floating;
    unsigned            external:1;
+   unsigned            argb:1;
    unsigned            inputonly:1;
    unsigned            shown:1;
    unsigned            gone:1;
    unsigned            noredir:1;	/* Do not redirect */
    unsigned            shadow:1;	/* Enable shadows */
-   unsigned            fade:1;
-   unsigned            argb:1;
+   unsigned            fade:1;	/* Enable fading */
 #if USE_COMPOSITE
    unsigned int        opacity;
    ECmWinInfo         *cmhook;
@@ -114,16 +114,16 @@ struct _eobj
 #define EoChangeOpacity(eo, _o) EobjChangeOpacity(EoObj(eo), _o)
 #define EoSetFade(eo, _x)       EoObj(eo)->fade = (_x)
 #define EoSetNoRedirect(eo, _x) EoObj(eo)->noredir = (_x)
+#define EoSetOpacity(eo, _o)    EoObj(eo)->opacity = (_o)
 #define EoSetShadow(eo, _x)     EoObj(eo)->shadow = (_x)
 #if USE_COMPOSITE
-#define EoSetOpacity(eo, _o)    EoObj(eo)->opacity = (_o)
 #define EoGetOpacity(eo)        (EoObj(eo)->opacity)
 #define EoGetFade(eo)           (EoObj(eo)->fade)
+#define EoChangeShadow(eo, _x)  EobjChangeShadow(EoObj(eo), _x)
 #define EoGetShadow(eo)         (EoObj(eo)->shadow)
 #define EoGetNoRedirect(eo)     (EoObj(eo)->noredir)
 #define EoGetSerial(eo)         (EoObj(eo)->serial)
 #else
-#define EoSetOpacity(eo, _o)
 #define EoGetSerial(eo)         0
 #endif
 
@@ -166,6 +166,7 @@ void                EobjShapeUpdate(EObj * eo, int propagate);
 void                EobjsRepaint(void);
 Pixmap              EobjGetPixmap(const EObj * eo);
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
+void                EobjChangeShadow(EObj * eo, int shadow);
 void                EobjSetLayer(EObj * eo, int layer);
 void                EobjSetFloating(EObj * eo, int floating);
 int                 EobjIsShaped(const EObj * eo);

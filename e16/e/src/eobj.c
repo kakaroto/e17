@@ -557,6 +557,14 @@ EobjChangeOpacity(EObj * eo, unsigned int opacity)
 #endif
 }
 
+#if USE_COMPOSITE
+void
+EobjChangeShadow(EObj * eo, int shadow)
+{
+   ECompMgrWinChangeShadow(eo, shadow);
+}
+#endif
+
 void
 EobjSlideTo(EObj * eo, int fx, int fy, int tx, int ty, int speed)
 {

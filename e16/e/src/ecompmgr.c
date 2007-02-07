@@ -1275,6 +1275,9 @@ ECompMgrWinFade(EObj * eo, unsigned int op_from, unsigned int op_to)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
+   if (op_from == op_to && op_from == eo->opacity)
+      return;
+
    if (!cw->anim_fade)
       cw->anim_fade = AnimatorAdd(doECompMgrWinFade, eo);
    cw->opacity_to = op_to;
@@ -1556,6 +1559,33 @@ ECompMgrWinDamageArea(EObj * eo, int x __UNUSED__, int y __UNUSED__,
    ECmWinInfo         *cw = eo->cmhook;
 
    ECompMgrDamageMergeObject(eo, cw->shape, 0);
+}
+
+void
+ECompMgrWinChangeShadow(EObj * eo, int shadow)
+{
+   ECmWinInfo         *cw = eo->cmhook;
+
+   if (!cw || !eo->shown)
+      goto done;
+
+   if (!shadow && eo->shadow)
+     {
+	/* Disable shadow */
+	ECompMgrDamageMergeObject(eo, cw->extents, 1);
+	cw->extents = None;
+	ECompMgrWinInvalidate(eo, INV_SHADOW);
+     }
+   else if (shadow && !eo->shadow)
+     {
+	/* Enable shadow */
+	ECompMgrWinInvalidate(eo, INV_SHADOW);
+	eo->shadow = shadow;
+	cw->extents = win_extents(eo);
+	ECompMgrDamageMergeObject(eo, cw->extents, 0);
+     }
+ done:
+   eo->shadow = shadow;
 }
 
 static void

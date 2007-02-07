@@ -923,7 +923,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
      case EWIN_OP_SHADOW:
 	on = EoGetShadow(ewin);
 	if (SetEwinBoolean(wop->name, &on, param1, 1))
-	   EoSetShadow(ewin, on);
+	   EoChangeShadow(ewin, on);
 	break;
 
      case EWIN_OP_NO_REDIRECT:
