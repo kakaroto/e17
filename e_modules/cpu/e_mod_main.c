@@ -192,11 +192,15 @@ _set_cpu_load(void *data)
    
    _get_cpu_load();
 
-   snprintf(str, sizeof(str), "%d%%", cpu_stats[0]);
+   if (cpu_count == 1)
+     snprintf(str, sizeof(str), "<br>%d%%", cpu_stats[0]);
+   else
+     snprintf(str, sizeof(str), "%d%%", cpu_stats[0]);
+   
    i = 1;
    while (i < cpu_count)
      {
-	snprintf(str_tmp, sizeof(str_tmp), " / %d%%", cpu_stats[i]);
+	snprintf(str_tmp, sizeof(str_tmp), "<br>%d%%", cpu_stats[i]);
 	strncat(str, str_tmp, sizeof(str));
 	i++;
      }
