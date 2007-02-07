@@ -530,7 +530,7 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
  * @brief Removes the given index from the list of selected indices
  */
 void
-ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data, int row, int column)
+ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data __UNUSED__, int row, int column)
 {
 	Ewl_Selection *sel;
 
@@ -636,7 +636,7 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
  * @brief Checks if the given index is selected or not.
  */
 unsigned int
-ewl_mvc_selected_is(Ewl_MVC *mvc, void *data, int row, int column)
+ewl_mvc_selected_is(Ewl_MVC *mvc, void *data __UNUSED__, int row, int column)
 {
 	Ewl_Selection *sel;
 	int ret = FALSE;

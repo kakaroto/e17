@@ -416,7 +416,7 @@ ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, unsigned int row)
 	ecore_list_goto_first(exp);
 	while ((i = (int)ecore_list_next(exp)))
 	{
-		if (i > row) break;
+		if (i > (int)row) break;
 	}
 
 	ecore_list_insert(exp, (void *)row);
@@ -499,7 +499,7 @@ ewl_tree2_row_expanded_is(Ewl_Tree2 *tree, void *data, unsigned int row)
 	ecore_list_goto_first(exp);
 	while ((i = (int)ecore_list_current(exp)))
 	{
-		if (i == row)
+		if (i == (int)row)
 		{
 			expanded = TRUE;
 			break;
@@ -982,7 +982,7 @@ ewl_tree2_cb_selected_change(Ewl_MVC *mvc)
 }
 
 static Ewl_Widget *
-ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, int row, int column)
+ewl_tree2_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, int row, int column)
 {
 	Ewl_Widget *r, *w;
 	Ewl_Tree2 *tree;

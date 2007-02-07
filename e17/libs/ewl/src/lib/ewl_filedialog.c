@@ -568,7 +568,8 @@ ewl_filedialog_cb_list_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-ewl_filedialog_cb_tree_view(Ewl_Widget *w, void *ev, void *data)
+ewl_filedialog_cb_tree_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+								void *data)
 {
 	Ewl_Filedialog *fd;
 

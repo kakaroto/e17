@@ -307,7 +307,8 @@ printf("RET %p %s\n", data, ret);
  * @internal
  */
 static void
-ewl_filelist_tree_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort)
+ewl_filelist_tree_data_sort(void *data, unsigned int column __UNUSED__, 
+						Ewl_Sort_Direction sort)
 {
 	char *file;
 	unsigned int count;

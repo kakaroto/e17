@@ -197,7 +197,8 @@ ewl_list_cb_selected_change(Ewl_MVC *mvc)
 }
 
 static Ewl_Widget *
-ewl_list_widget_at(Ewl_MVC *mvc, void *data, int row, int column __UNUSED__)
+ewl_list_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, int row, 
+					int column __UNUSED__)
 {
 	Ewl_Widget *w;
 
