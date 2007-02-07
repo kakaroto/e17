@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-02-03 23:22+0100\n"
+"POT-Creation-Date: 2007-02-06 20:42+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -767,7 +767,7 @@ msgstr "Alkalmaz"
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 
-#: src/ecompmgr.c:2389
+#: src/ecompmgr.c:2422
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1202,11 +1202,11 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/iconify.c:472
+#: src/iconify.c:470
 msgid "Iconbox Options"
 msgstr "Icondoboz beállításai"
 
-#: src/iconify.c:473
+#: src/iconify.c:471
 msgid "Iconbox Settings"
 msgstr "Icondoboz beállításai"
 

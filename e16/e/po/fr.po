@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-02-03 23:22+0100\n"
+"POT-Creation-Date: 2007-02-06 20:42+0100\n"
 "PO-Revision-Date: 2005-04-20 23:11+0300\n"
 "Last-Translator: Ludwig Noujarret <ludwig@noujarret.com>\n"
 "Language-Team:  <fr@li.org>\n"
@@ -774,7 +774,7 @@ msgstr "Appliquer"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/ecompmgr.c:2389
+#: src/ecompmgr.c:2422
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1239,11 +1239,11 @@ msgstr ""
 "%s\n"
 "Ignoré, on continue...\n"
 
-#: src/iconify.c:472
+#: src/iconify.c:470
 msgid "Iconbox Options"
 msgstr "Options de la Boîte à icônes"
 
-#: src/iconify.c:473
+#: src/iconify.c:471
 msgid "Iconbox Settings"
 msgstr "Paramètres de la Boîte à icônes"
 
