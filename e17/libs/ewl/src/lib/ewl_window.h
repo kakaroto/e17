@@ -45,7 +45,10 @@ struct Ewl_Window
 	Ewl_Embed embed; /**< Inherits from the Ewl_Embed class */
 
 	void *window; /**< Provides a window for drawing */
-	Ewl_Window *transient; /**< Window to be transient for */
+	union {
+		Ewl_Window *ewl; 		
+		Ewl_Embed_Window *foreign;
+	} transient; /**< Window to be transient for */
 
 	char *title; /**< The current title on the provided window */
 	char *name; /**< Current name on the provided window */
@@ -73,6 +76,8 @@ void 		 ewl_window_move(Ewl_Window *win, int x, int y);
 void 		 ewl_window_raise(Ewl_Window *win);
 void 		 ewl_window_lower(Ewl_Window *win);
 void 		 ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin);
+void 		 ewl_window_transient_for_foreign(Ewl_Window *win, 
+						    Ewl_Embed_Window *forwin);
 void		 ewl_window_modal_for(Ewl_Window *win, Ewl_Window *forwin);
 void 		 ewl_window_keyboard_grab_set(Ewl_Window *win, int grab);
 int 		 ewl_window_keyboard_grab_get(Ewl_Window *win);

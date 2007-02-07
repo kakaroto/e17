@@ -33,7 +33,7 @@ typedef struct Ewl_Embed Ewl_Embed;
 /**
 * Typedef and abstract out embedded evas windows
 */
-typedef void *Ewl_Embed_Evas_Window;
+typedef void *Ewl_Embed_Window;
 
 /**
  * @def EWL_EMBED(widget)
@@ -42,10 +42,10 @@ typedef void *Ewl_Embed_Evas_Window;
 #define EWL_EMBED(widget) ((Ewl_Embed *) widget)
 
 /**
-* @def EWL_EMBED_EVAS_WINDOW(window)
-* @brief Typecast a pointer to an Evas_Window
+* @def EWL_EMBED_WINDOW(window)
+* @brief Typecast a pointer to an evas window
 */
-#define EWL_EMBED_EVAS_WINDOW(window) ((Ewl_Embed_Evas_Window *)window)
+#define EWL_EMBED_WINDOW(window) ((Ewl_Embed_Window *)window)
 
 /**
  * @brief The class inheriting from Ewl_Container that acts as a top level
@@ -93,7 +93,7 @@ int 		 ewl_embed_engine_name_set(Ewl_Embed *embed, const char *engine);
 const char 	*ewl_embed_engine_name_get(Ewl_Embed *embed);
 void 		 ewl_embed_shutdown(void);
 Evas_Object 	*ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas,
-				   Ewl_Embed_Evas_Window *evas_window);
+					Ewl_Embed_Window *evas_window);
 
 void 		 ewl_embed_focus_set(Ewl_Embed *embed, int f);
 int 		 ewl_embed_focus_get(Ewl_Embed *embed);
@@ -129,7 +129,7 @@ void 		 ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
 					   int z, int dir, unsigned int mods);
 
 void 		 ewl_embed_font_path_add(char *path);
-Ewl_Embed  	*ewl_embed_evas_window_find(Ewl_Embed_Evas_Window *win);
+Ewl_Embed  	*ewl_embed_evas_window_find(Ewl_Embed_Window *win);
 Ewl_Embed 	*ewl_embed_widget_find(Ewl_Widget *w);
 void  		 ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj);
 Evas_Object 	*ewl_embed_object_request(Ewl_Embed *e, char *type);

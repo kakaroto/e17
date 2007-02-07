@@ -587,9 +587,12 @@ ee_window_transient_for(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if (win->transient)
+	if (win->flags & EWL_WINDOW_TRANSIENT)
 		ecore_x_icccm_transient_for_set((Ecore_X_Window)win->window,
-					(Ecore_X_Window)win->transient->window);
+				(Ecore_X_Window)win->transient.ewl->window);
+	else if (win->flags & EWL_WINDOW_TRANSIENT_FOREIGN)
+		ecore_x_icccm_transient_for_set((Ecore_X_Window)win->window,
+					(Ecore_X_Window)win->transient.foreign);
 	else
 		ecore_x_icccm_transient_for_unset((Ecore_X_Window)win->window);
 

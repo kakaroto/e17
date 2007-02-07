@@ -418,9 +418,22 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	win->transient = forwin;
+	win->transient.ewl = forwin;
+	win->flags &= ~EWL_WINDOW_TRANSIENT_FOREIGN;
 
-	if (forwin && win->window) {
+	/* if there is no forwin remove the transient for state
+	 * and update the window, if it already exists */
+	if (!forwin) {
+		win->flags &= ~EWL_WINDOW_TRANSIENT;
+		if (win->window)
+			ewl_engine_window_transient_for(win);
+
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	win->flags |= EWL_WINDOW_TRANSIENT;
+
+	if (win->window) {
 		if (forwin->window)
 			ewl_engine_window_transient_for(win);
 		else
@@ -429,7 +442,28 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 					    ewl_window_cb_realize_transient,
 					    win);
 	}
-	else if (win->window) 
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: window to set transient
+ * @param forwin: the window to be transient for
+ * @return Returns no value.
+ * @brief Sets a window to be transient for another window.
+ */
+void
+ewl_window_transient_for_foreign(Ewl_Window *win, Ewl_Embed_Window *forwin)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	win->transient.foreign = forwin;
+	win->flags |= EWL_WINDOW_TRANSIENT_FOREIGN;
+	win->flags &= ~EWL_WINDOW_TRANSIENT;
+
+	if (win->window) 
 		ewl_engine_window_transient_for(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -678,9 +712,12 @@ ewl_window_cb_postrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (EWL_WINDOW(w)->transient)
+	if (EWL_WINDOW(w)->flags & EWL_WINDOW_TRANSIENT)
 		ewl_window_transient_for(EWL_WINDOW(w),
-					 EWL_WINDOW(w)->transient);
+					 EWL_WINDOW(w)->transient.ewl);
+	else if (EWL_WINDOW(w)->flags & EWL_WINDOW_TRANSIENT_FOREIGN)
+		ewl_window_transient_for_foreign(EWL_WINDOW(w),
+					 EWL_WINDOW(w)->transient.foreign);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -708,7 +745,7 @@ ewl_window_cb_realize_transient(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Make sure the window is still transient for the realized window.
 	 */
-	if (EWL_WIDGET(win->transient) == w)
+	if (EWL_WIDGET(win->transient.ewl) == w)
 		ewl_window_transient_for(win, EWL_WINDOW(w));
 
 	/*

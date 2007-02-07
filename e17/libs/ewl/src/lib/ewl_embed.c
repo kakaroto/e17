@@ -198,7 +198,7 @@ ewl_embed_shutdown(void)
  * through standard evas functions.
  */
 Evas_Object *
-ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Evas_Window *evas_window)
+ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Window *evas_window)
 {
 	Ewl_Widget *w;
 	Ecore_List *paths;
@@ -1107,7 +1107,7 @@ ewl_embed_font_path_add(char *path)
  * @brief Find an ewl embed by its evas window
  */
 Ewl_Embed *
-ewl_embed_evas_window_find(Ewl_Embed_Evas_Window *window)
+ewl_embed_evas_window_find(Ewl_Embed_Window *window)
 {
 	Ewl_Embed *retemb;
 

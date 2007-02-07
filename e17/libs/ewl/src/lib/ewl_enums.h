@@ -254,7 +254,9 @@ enum Ewl_Window_Flags
 	EWL_WINDOW_OVERRIDE = 0x10,		/**< Window override setting */
 	EWL_WINDOW_FULLSCREEN = 0x20,		/**< Window is fullscreen */
 	EWL_WINDOW_DIALOG = 0x40,		/**< Window has no max and min buttons */
-	EWL_WINDOW_MODAL = 0x80			/**< Window is modal */
+	EWL_WINDOW_MODAL = 0x80,		/**< Window is modal */
+	EWL_WINDOW_TRANSIENT = 0x100,		/**< Window is transient for */
+	EWL_WINDOW_TRANSIENT_FOREIGN = 0x200	/**< Window is transient for */
 };
 
 /**
