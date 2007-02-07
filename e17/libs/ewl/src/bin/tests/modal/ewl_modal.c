@@ -87,5 +87,6 @@ ewl_widget_cb_go_modal(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	Ewl_Embed *emb;
 
 	emb = ewl_embed_widget_find(w);
-	ewl_window_modal_for(EWL_WINDOW(emb), EWL_WINDOW(data));
+	ewl_window_transient_for(EWL_WINDOW(emb), EWL_WINDOW(data));
+	ewl_window_modal_set(EWL_WINDOW(emb), TRUE);
 }

@@ -471,21 +471,33 @@ ewl_window_transient_for_foreign(Ewl_Window *win, Ewl_Embed_Window *forwin)
 
 /**
  * @param win: The window to work with
- * @param forwin: The window to go modal for
+ * @return Returns a boolean indicating if the window is modal.
+ * @brief Gets the boolean flag indicating if @a win is modal
+ */
+int
+ewl_window_modal_get(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, FALSE);
+	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+
+	DRETURN_INT(!!(win->flags & EWL_WINDOW_MODAL), DLEVEL_STABLE);
+}
+
+/**
+ * @param win: The window to work with
+ * @param modal: Boolean to indicate if this window is modal
  * @return Returns no value
- * @brief Sets the window to modal for @a forwin
+ * @brief Sets the window to modal or non-modal based on @a modal
  */
 void
-ewl_window_modal_for(Ewl_Window *win, Ewl_Window *forwin)
+ewl_window_modal_set(Ewl_Window *win, int modal)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	/* make sure the modal window is transient */
-	ewl_window_transient_for(win, forwin);
-
-	if (forwin)
+	if (modal)
 		win->flags |= EWL_WINDOW_MODAL;
 	else
 		win->flags &= ~EWL_WINDOW_MODAL;
