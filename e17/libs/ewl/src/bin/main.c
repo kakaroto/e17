@@ -439,7 +439,7 @@ create_main_test_window(Ewl_Container *box)
 
 	menubar = ewl_hmenubar_new();
 	ewl_container_child_append(EWL_CONTAINER(box), menubar);
-	ewl_menubar_from_info(menubar, menubar_info);
+	ewl_menubar_from_info(EWL_MENUBAR(menubar), menubar_info);
 	ewl_widget_show(menubar);
 
 	note = ewl_notebook_new();

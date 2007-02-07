@@ -3,6 +3,7 @@
 #include "ewl_test_private.h"
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 static int create_test(Ewl_Container *box);
 static void ewl_freebox_cb_icon_change(Ewl_Widget *w, void *ev, void *data);

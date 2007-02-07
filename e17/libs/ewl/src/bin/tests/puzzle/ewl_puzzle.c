@@ -2,6 +2,7 @@
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
 #include <stdio.h>
+#include <time.h>
 #include <limits.h>
 
 static int create_test(Ewl_Container *box);
