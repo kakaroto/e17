@@ -1,12 +1,8 @@
-#define STR(x) "x"
- /* #define CATSTR(x, y) STR(x## y)
-#define CATPNG(x, y) STR(x##y.png)
-*/
 #define TOUR_IMAGE(PNAME) \
-	image, STR(PNAME)".png" LOSSY 98; \
-	image, STR(PNAME)"1.png" LOSSY 98; \
-	image, STR(PNAME)"2.png" LOSSY 98; \
-	image, STR(PNAME)"3.png" LOSSY 98;
+	image, #PNAME".png" LOSSY 98; \
+	image, #PNAME"1.png" LOSSY 98; \
+	image, #PNAME"2.png" LOSSY 98; \
+	image, #PNAME"3.png" LOSSY 98;
 #define TOUR_PART(PNAME, ASPECT) \
 description { \
 	state, PNAME 0.0; \
@@ -19,7 +15,7 @@ description { \
 		offset, -1 -1; \
 	} \
 	image { \
-		normal, STR(PNAME)".png"; \
+		normal, #PNAME".png"; \
 	} \
 } \
 description { \
@@ -33,37 +29,37 @@ description { \
 		offset, -1 -1; \
 	} \
 	image { \
-		tween, STR(PNAME)"1.png"; \
-		tween, STR(PNAME)"2.png"; \
-		normal, STR(PNAME)"3.png"; \
+		tween, #PNAME"1.png"; \
+		tween, #PNAME"2.png"; \
+		normal, #PNAME"3.png"; \
 	} \
 }
 
 #define TOUR_PROG(PNAME, TEXT, PNEXT, TARGET) \
 	program { \
-		name, STR(PNAME)"_start"; \
+		name, #PNAME"_start"; \
 		signal, PNAME; \
 		source, "*"; \
-		action, SIGNAL_EMIT TEXT STR(PNAME); \
-		after, STR(PNAME)"_flip"; \
+		action, SIGNAL_EMIT TEXT #PNAME; \
+		after, #PNAME"_flip"; \
 	} \
 	program { \
-		name, STR(PNAME)"_flip"; \
-		action, STATE_SET STR(PNAME) 0.0; \
+		name, #PNAME"_flip"; \
+		action, STATE_SET #PNAME 0.0; \
 		transition, LINEAR 0.0; \
-		target, STR(TARGET); \
-		after, STR(PNAME)"_continue"; \
+		target, #TARGET; \
+		after, #PNAME"_continue"; \
 	} \
 	program { \
-		name, STR(PNAME)"_continue"; \
-		action, STATE_SET STR(PNAME) 1.0; \
+		name, #PNAME"_continue"; \
+		action, STATE_SET #PNAME 1.0; \
 		transition, LINEAR 10.0; \
-		target, STR(TARGET); \
-		after, STR(PNEXT)"_trigger"; \
+		target, #TARGET; \
+		after, #PNEXT"_trigger"; \
 	} \
 	program { \
-		name, STR(PNEXT)"_trigger"; \
-		action, SIGNAL_EMIT STR(PNEXT) "tour"; \
+		name, #PNEXT"_trigger"; \
+		action, SIGNAL_EMIT #PNEXT "tour"; \
 	}
 
 images {
