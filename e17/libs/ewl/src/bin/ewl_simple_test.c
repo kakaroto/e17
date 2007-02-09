@@ -44,7 +44,7 @@ edje_text(void *data, Evas_Object *obj __UNUSED__,
 	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_LEFT);
 	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_NONE);
 	ewl_text_font_set(EWL_TEXT(label), "ewl/default");
-	ewl_text_font_size_set(EWL_TEXT(label), 7);
+	ewl_text_font_size_set(EWL_TEXT(label), 9);
 	ewl_text_text_append(EWL_TEXT(label), text);
 
 	FREE(buf);
@@ -57,7 +57,6 @@ start_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	Ewl_Widget *label = user_data;
 
 	ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
-	ewl_text_align_set(EWL_TEXT(label), EWL_FLAG_ALIGN_CENTER);
 	ewl_text_font_set(EWL_TEXT(label), "ewl/default");
 	ewl_text_font_size_set(EWL_TEXT(label), 12);
 	ewl_text_styles_set(EWL_TEXT(label), EWL_TEXT_STYLE_SOFT_SHADOW);
@@ -145,6 +144,7 @@ main(int argc, char **argv)
 	 */
 	label = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(label), NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_VFILL);
 
 	/*
 	 * Setup the custom logo which becomes the tour display area.
