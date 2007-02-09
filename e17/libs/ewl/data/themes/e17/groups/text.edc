@@ -95,6 +95,7 @@ group
 			action: STATE_SET "disabled" 0.0;
 			transition: DECELERATE 0.2;
 			target: "entry_disabled";
+			target: "entry_focus";
 		}
 		program
 		{
