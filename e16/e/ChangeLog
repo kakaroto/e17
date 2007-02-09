@@ -4207,3 +4207,16 @@ Highlight selected focus list item when clicked (noted by Warren Crossing).
 Move modifier mask stuff around. Avoid redundant key/button grab/ungrabs.
 Make focus list key handling somewhat less ugly.
 
+
+-------------------------------------------------------------------------------
+
+Thu Feb  8 22:09:11 CET 2007
+(Kim)
+
+--- 0.16.8.6 0.04 ---
+No shadow on kicker tooltip or screen saver windows.
+Do fading using animators.
+Use global animation time step.
+Update config item notes.
+Make shadow on/off change effective immediately.
+
