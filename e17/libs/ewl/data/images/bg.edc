@@ -10,8 +10,6 @@
 #define TOUR_PART(PNAME, ASPECT) \
 description { \
 	state, PNAME 0.0; \
-	aspect, ASPECT ASPECT; \
-	align, 0.5 0.5; \
 	rel1 { \
 		relative, 0.0 0.0; \
 		offset, 0 0; \
@@ -26,8 +24,6 @@ description { \
 } \
 description { \
 	state, PNAME 1.0; \
-	aspect, ASPECT ASPECT; \
-	align, 0.5 0.5; \
 	rel1 { \
 		relative, 0.0 0.0; \
 		offset, 0 0; \
@@ -48,16 +44,20 @@ description { \
 		name, STR(PNAME)"_start"; \
 		signal, PNAME; \
 		source, "*"; \
+		action, SIGNAL_EMIT TEXT STR(PNAME); \
+		after, STR(PNAME)"_flip"; \
+	} \
+	program { \
+		name, STR(PNAME)"_flip"; \
 		action, STATE_SET STR(PNAME) 0.0; \
 		transition, LINEAR 0.0; \
 		target, STR(TARGET); \
 		after, STR(PNAME)"_continue"; \
-		action, SIGNAL_EMIT TEXT STR(PNAME); \
 	} \
 	program { \
 		name, STR(PNAME)"_continue"; \
 		action, STATE_SET STR(PNAME) 1.0; \
-		transition, LINEAR 20.0; \
+		transition, LINEAR 10.0; \
 		target, STR(TARGET); \
 		after, STR(PNEXT)"_trigger"; \
 	} \
@@ -279,18 +279,17 @@ collections {
 				target,     "fade";
 			}
 
-			// program {
-			// 	name,       "_trigger";
-			// 	signal,     "start_tour";
-			// 	signal,     "mouse,down,1";
-			// 	source,     "*";
-			// 	action,     SIGNAL_EMIT "elicit" "tour";
-			// }
+			program {
+				name,       "trigger";
+				signal,     "start_tour";
+				source,     "*";
+				action,     SIGNAL_EMIT "elicit" "tour";
+			}
 
-			TOUR_PROG(elicit,"Elicit",entrance,display);
-			TOUR_PROG(entrance,"Entrance",entice,display);
-			TOUR_PROG(entice,"Entice",evidence,display);
-			TOUR_PROG(evidence,"Evidence",,display);
+			TOUR_PROG(elicit,"Present\nElicit is a tool for examining\nimages on your desktop,\nproviding both a global color\npicker and a zoom tool.\nGraphic artists and designers\ncan quickly examine graphics\nwithout needed to rely on\nlarger tools for simple\nexaminations and color checks.",entrance,display);
+			TOUR_PROG(entrance,"Present\nEntrance [en-'trans], v.\n  1: to carry away with delight,\n     wonder, or rapture\n  2: to put into a trance\nEntrance is the Enlightenment\nDisplay Manager. And like\nEnlightenment, it takes beauty\nand customization to new levels",entice,display);
+			TOUR_PROG(entice,"Present\nEntice is an image viewer that\nallows for a fully themeable\nexperience. Every part of the\ninterface can be modified in\nlook and feel. Entice also\nprovides basic image editing\nfeatures to allow quick editing\nwhile viewing.",evidence,display);
+			TOUR_PROG(evidence,"Present\nEvidence is a file-manager\nwith plugins for everything --\nfrom ultra-fast JPEG thumbnailers\nto MP3/ID3 and Ogg tag editing.\nNo bloat -- what you don't need,\nyou don't load.\nMicro-shell, MP3 thumbnailing and\nextensive theming opportunities\ncomplete this slightly different browser.",,display);
 
 		}
 
