@@ -99,6 +99,8 @@ button_down(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 {
 	Ewl_Widget *logo = user_data;
 	ewl_widget_state_set(logo, "start_tour", EWL_STATE_PERSISTENT);
+
+	ewl_widget_disable(w);
 }
 
 static void
