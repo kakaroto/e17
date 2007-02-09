@@ -445,10 +445,11 @@ ewl_idle_render(void *data __UNUSED__)
 	 */
 	ecore_list_goto_first(ewl_embed_list);
 	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
+		ewl_embed_thaw(emb);
+
 		if (REALIZED(emb)) {
 			double render_time = 0;
 
-			ewl_embed_thaw(emb);
 			if (ewl_config_cache.evas_render) {
 				printf("Entering render\n");
 				render_time = ecore_time_get();
