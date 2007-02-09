@@ -282,10 +282,10 @@ collections {
 				action,     SIGNAL_EMIT "elicit" "tour";
 			}
 
-			TOUR_PROG(elicit,"Present\nElicit is a tool for examining\nimages on your desktop,\nproviding both a global color\npicker and a zoom tool.\nGraphic artists and designers\ncan quickly examine graphics\nwithout needed to rely on\nlarger tools for simple\nexaminations and color checks.",entrance,display);
-			TOUR_PROG(entrance,"Present\nEntrance [en-'trans], v.\n  1: to carry away with delight,\n     wonder, or rapture\n  2: to put into a trance\nEntrance is the Enlightenment\nDisplay Manager. And like\nEnlightenment, it takes beauty\nand customization to new levels",entice,display);
-			TOUR_PROG(entice,"Present\nEntice is an image viewer that\nallows for a fully themeable\nexperience. Every part of the\ninterface can be modified in\nlook and feel. Entice also\nprovides basic image editing\nfeatures to allow quick editing\nwhile viewing.",evidence,display);
-			TOUR_PROG(evidence,"Present\nEvidence is a file-manager\nwith plugins for everything --\nfrom ultra-fast JPEG thumbnailers\nto MP3/ID3 and Ogg tag editing.\nNo bloat -- what you don't need,\nyou don't load.\nMicro-shell, MP3 thumbnailing and\nextensive theming opportunities\ncomplete this slightly different browser.",,display);
+			TOUR_PROG(elicit,"Present\nElicit is a tool for examining images\non your desktop, providing both\na global color picker and a zoom tool.\nGraphic artists and designers can quickly\nexamine graphics without needed to rely on\nlarger tools for simple examinations\nand color checks.",entrance,display);
+			TOUR_PROG(entrance,"Present\nEntrance [en-'trans], v.\n  1: to carry away with delight, wonder, or\n     rapture\n  2: to put into a trance\nEntrance is the Enlightenment Display\nManager. And like Enlightenment, it takes\nbeauty and customization to new levels",entice,display);
+			TOUR_PROG(entice,"Present\nEntice is an image viewer that allows for\na fully themeable experience. Every part of\nthe interface can be modified in look and feel.\nEntice also provides basic image editing\nfeatures to allow quick editing\nwhile viewing.",evidence,display);
+			TOUR_PROG(evidence,"Present\nEvidence is a file-manager with plugins for\neverything -- from ultra-fast JPEG thumbnailers\nto MP3/ID3 and Ogg tag editing. No bloat --\nwhat you don't need, you don't load.\nMicro-shell, MP3 thumbnailing and extensive\ntheming opportunities complete this slightly\ndifferent browser.",,display);
 
 		}
 
