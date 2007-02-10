@@ -45,6 +45,7 @@ void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_C
 void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data);
 void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Callback callback, void *data, Etk_Bool swapped, Etk_Bool after);
 void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Callback callback);
+void etk_signal_disconnect_all(const char *signal_name, Etk_Object *object);
 void etk_signal_block(const char *signal_name, Etk_Object *object, Etk_Callback callback);
 void etk_signal_unblock(const char *signal_name, Etk_Object *object, Etk_Callback callback);
 
