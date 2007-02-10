@@ -2999,6 +2999,18 @@ signal_disconnect(object, signal_name, callback)
 	else
  	  etk_signal_disconnect(signal_name, obj, ETK_CALLBACK(callback_VOID__VOID));
 
+void
+signal_disconnect_all(object, signal_name)
+	SV *		object
+	char *	        signal_name
+      ALIAS:
+	SignalDisconnectAll=1
+	
+	CODE:	
+	Etk_Object * obj;
+	obj = (Etk_Object *) SvObj(object, "Etk::Object");
+	etk_signal_disconnect_all(signal_name, obj);
+
 const char *
 etk_object_name_get(object)
 	Etk_Object *	object
