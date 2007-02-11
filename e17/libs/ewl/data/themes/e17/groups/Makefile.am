@@ -7,6 +7,7 @@ border.edc \
 button.edc \
 combo.edc \
 cursor.edc \
+dialog.edc \
 highlight.edc \
 label.edc \
 menu.edc \

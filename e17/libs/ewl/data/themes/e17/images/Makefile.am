@@ -8,6 +8,7 @@ e17_button_sm2.png \
 e17_button_sm_disabled2.png \
 e17_button_sm_disabled.png \
 e17_button_sm.png \
+e17_dialog_watermark.png \
 e17_frame_label_over.png \
 e17_frame_label_under.png \
 e17_frame_outline.png \
@@ -50,6 +51,7 @@ e17_titlebar_outline.png \
 e17_titlebar.png \
 e17_titlebar_shadow1.png \
 e17_titlebar_shadow2.png \
+e17_winlist_bottom.png \
 entry_disabled.png \
 entry.png \
 ewl_combo_button_sm.png \
