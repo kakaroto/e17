@@ -175,19 +175,19 @@ _cb_mouse_in(void *data, Evas *evas, Evas_Object *obj, void *event)
       case E_GADCON_ORIENT_LEFT:
       case E_GADCON_ORIENT_CORNER_LB:
 	wx += ox + ow;
-	wy = oy;
+	wy = y;
 	break;
       case E_GADCON_ORIENT_CORNER_RT:
-	wx -= (ww - ((x + w) - (ox + ow))  + 5);
+	wx -= ww - (ox - 5);
 	if (top) wy += oh;
 	break;
       case E_GADCON_ORIENT_RIGHT:
-	wx -= (ww - ((x + w) - (ox + ow))  + 5);
+	wx -= ww - (ox - 5);
 	if (top) wy -= (oh - 5);
 	break;
       case E_GADCON_ORIENT_CORNER_RB:
-	wx -= (ww - ((x + w) - (ox + ow))  + 5);
-	wy = oy;
+	wx -= ww - (ox - 5);
+	wy -= oy;
 	break;
       case E_GADCON_ORIENT_TOP:
       case E_GADCON_ORIENT_CORNER_TL:
@@ -199,13 +199,15 @@ _cb_mouse_in(void *data, Evas *evas, Evas_Object *obj, void *event)
 	break;
       case E_GADCON_ORIENT_BOTTOM:
       case E_GADCON_ORIENT_CORNER_BL:
+	wx += ((ow - ww) / 2);
+	if (wx < x) wx = x;
+	wy = (y - wh);
+	break;
       case E_GADCON_ORIENT_CORNER_BR:
 	wx += ((ow - ww) / 2);
 	if (wx < x) wx = x;
 	if ((wx + ww) > (x + w)) wx = ((x + w) - ww);
-	wy = (oy - wh);
-	break;
-      default:
+	wy = (y - wh);
 	break;
      }
    e_popup_move_resize(inst->popup->win, wx, wy, ww, wh);
