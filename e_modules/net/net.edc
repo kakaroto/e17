@@ -107,7 +107,7 @@ collections
 		  source: "e";
 		  action: STATE_SET "default" 0.0;
 		  target: "rx";
-		  transition: DECELERATE 0.75;
+		  transition: DECELERATE 0.25;
 	       }
 	     program 
 	       {
@@ -116,7 +116,7 @@ collections
 		  source: "e";
 		  action: STATE_SET "default" 0.0;
 		  target: "tx";
-		  transition: DECELERATE 0.75;
+		  transition: DECELERATE 0.25;
 	       }
 	  }
      }

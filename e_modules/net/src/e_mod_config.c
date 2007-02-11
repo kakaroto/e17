@@ -1,6 +1,7 @@
 #include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_config.h"
+#include "e_mod_net.h"
 
 EAPI Config_Item *
 _config_item_get(const char *id) 
@@ -53,4 +54,28 @@ _config_devices_get(void)
    fclose(f);
    if (devs) ecore_list_goto_first(devs);
    return devs;
+}
+
+EAPI void 
+_config_updated(const char *id) 
+{
+   Evas_List *l;
+   Config_Item *ci;
+   
+   if (!cfg) return;
+   ci = _config_item_get(id);
+   for (l = cfg->instances; l; l = l->next) 
+     {
+	Instance *inst;
+	
+	inst = l->data;
+	if (!inst) continue;
+	if (!inst->gcc->id) continue;
+	if (strcmp(inst->gcc->id, id)) continue;
+	if (!inst->timer)
+	  inst->timer = ecore_timer_add(ci->poll_time, _cb_poll, inst);
+	else
+	  ecore_timer_interval_set(inst->timer, ci->poll_time);
+	break;
+     }
 }

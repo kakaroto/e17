@@ -72,11 +72,16 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
    int i = 0;
    
    cfdata->poll_time = ci->poll_time;
-   if (ci->device) cfdata->device = strdup(ci->device);
+   if (ci->device) 
+     cfdata->device = strdup(ci->device);
+   else
+     cfdata->device = NULL;
+   
    cfdata->devs = _config_devices_get();
    if (!cfdata->devs) return;
    while ((tmp = ecore_list_next(cfdata->devs)) != NULL)
      {
+	if (!cfdata->device) continue;
 	if (!strcmp(cfdata->device, tmp)) 
 	  {
 	     cfdata->num = i;
@@ -135,5 +140,6 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    ci->poll_time = cfdata->poll_time;
    
    e_config_save_queue();
+   _config_updated(ci->id);
    return 1;
 }

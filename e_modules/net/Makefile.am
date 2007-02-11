@@ -1,5 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
+		       config.sub configure depcomp install-sh ltmain.sh \
+		       missing
 
 SUBDIRS = src
 

@@ -1,7 +1,7 @@
 rm -f config.cache
 
 AC_PREREQ(2.59)
-AC_INIT([net2], [0.0.1], [devilhorns@devilhorns.us])
+AC_INIT([net], [0.0.1], [devilhorns@devilhorns.us])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.9 foreign])
