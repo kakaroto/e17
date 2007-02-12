@@ -174,6 +174,11 @@ main (int argc, char *argv[])
   ewl_container_child_append (EWL_CONTAINER (hbox), vbox);
   ewl_widget_show (vbox);
 
+  /* view for both the list and the tree (if the index exists) */
+  view = ewl_view_new();
+  ewl_view_constructor_set (view, ewl_label_new);
+  ewl_view_assign_set (view, EWL_VIEW_ASSIGN (_label_text_set));
+
   if (index) {
     Ewl_Model *model;
     Ewl_View  *view;
@@ -202,9 +207,6 @@ main (int argc, char *argv[])
     ewl_mvc_data_set (EWL_MVC (tree), data);
 
     /* view */
-    view = ewl_view_new();
-    ewl_view_constructor_set (view, ewl_label_new);
-    ewl_view_assign_set (view, EWL_VIEW_ASSIGN (_label_text_set));
     ewl_tree2_column_append (EWL_TREE2(tree), model, view);
 
     /* we attach and show */
@@ -227,9 +229,6 @@ main (int argc, char *argv[])
   }
 
   model = ewl_model_ecore_list_get();
-  view = ewl_view_new();
-  ewl_view_constructor_set (view, ewl_label_new);
-  ewl_view_assign_set (view, EWL_VIEW_ASSIGN (_label_text_set));
 
   list = ewl_list_new ();
   ewl_mvc_model_set(EWL_MVC(list), model);
