@@ -7,6 +7,7 @@ struct _E_Config_Dialog_Data
 {
    char *device;
    double poll_time;
+   int limit;
    
    Ecore_List *devs;
    int num;
@@ -89,6 +90,7 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 	  }
 	i++;
      }
+   cfdata->limit = ci->limit;
 }
 
 static Evas_Object *
@@ -121,6 +123,17 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
      }
    
    e_widget_list_object_append(o, of, 1, 1, 0.5);
+   
+   of = e_widget_framelist_add(evas, _("Activity Notification Level"), 0);
+   rg = e_widget_radio_group_new(&(cfdata->limit));
+   ob = e_widget_radio_add(evas, "High (MB)", 1048575, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, "Middle (KB)", 1023, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, "Low (B)", 0, rg);
+   e_widget_framelist_object_append(of, ob);
+   
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
    return o;
 }
 
@@ -138,7 +151,8 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	ci->device = evas_stringshare_add(tmp);
      }
    ci->poll_time = cfdata->poll_time;
-   
+   ci->limit = cfdata->limit;
+
    e_config_save_queue();
    _config_updated(ci->id);
    return 1;

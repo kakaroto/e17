@@ -50,11 +50,11 @@ _cb_poll(void *data)
    inst->in = in;
    inst->out = out;
    
-   if (bin <= 0)
+   if (bin <= ci->limit)
      edje_object_signal_emit(inst->o_net, "e,state,receive,idle", "e");
    else
      edje_object_signal_emit(inst->o_net, "e,state,receive,active", "e");
-   if (bout <= 0)
+   if (bout <= ci->limit)
      edje_object_signal_emit(inst->o_net, "e,state,send,idle", "e");
    else
      edje_object_signal_emit(inst->o_net, "e,state,send,active", "e");

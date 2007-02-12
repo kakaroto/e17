@@ -18,6 +18,7 @@ struct _Config_Item
    const char *id;
    const char *device;
    double poll_time;
+   int limit;
 };
 
 EAPI Config_Item *_config_item_get(const char *id);

@@ -19,6 +19,7 @@ _config_item_get(const char *id)
    ci->id = evas_stringshare_add(id);
    ci->device = evas_stringshare_add("eth0");
    ci->poll_time = 1.0;
+   ci->limit = 0;
    cfg->items = evas_list_append(cfg->items, ci);
    return ci;
 }
