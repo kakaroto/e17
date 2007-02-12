@@ -792,8 +792,8 @@ ewl_window_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	win = EWL_WINDOW(w);
 
 	ewl_embed_cache_cleanup(embed);
-	ewl_evas_destroy(embed->evas);
-	embed->evas = NULL;
+	ewl_canvas_destroy(embed->canvas);
+	embed->canvas = NULL;
 
 	if (REALIZED(w))
 	{

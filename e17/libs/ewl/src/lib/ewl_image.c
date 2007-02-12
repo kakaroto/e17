@@ -750,7 +750,7 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 		if (!i->image)
 			i->image = ewl_embed_object_request(emb, "edje");
 		if (!i->image)
-			i->image = edje_object_add(emb->evas);
+			i->image = edje_object_add(emb->canvas);
 		if (!i->image)
 			DRETURN(DLEVEL_STABLE);
 
@@ -761,7 +761,7 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 		if (!i->image)
 			i->image = ewl_embed_object_request(emb, EWL_IMAGE_TYPE);
 		if (!i->image)
-			i->image = evas_object_image_add(emb->evas);
+			i->image = evas_object_image_add(emb->canvas);
 		if (!i->image)
 			DRETURN(DLEVEL_STABLE);
 
@@ -1036,7 +1036,7 @@ ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_down(emb->evas, ev->button, 
+		evas_event_feed_mouse_down(emb->canvas, ev->button, 
 				EVAS_BUTTON_NONE, 
 				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
 				NULL);
@@ -1069,7 +1069,7 @@ ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data,
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE && emb)
-		evas_event_feed_mouse_up(emb->evas, ev->button, 
+		evas_event_feed_mouse_up(emb->canvas, ev->button, 
 				EVAS_BUTTON_NONE, 
 				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
 				NULL);
@@ -1102,7 +1102,7 @@ ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_move(emb->evas, ev->x, ev->y, 
+		evas_event_feed_mouse_move(emb->canvas, ev->x, ev->y, 
 				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
 				NULL);
 

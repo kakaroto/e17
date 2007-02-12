@@ -41,7 +41,7 @@ typedef struct Ewl_Media Ewl_Media;
 struct Ewl_Media
 {
 	Ewl_Widget widget; 	/**< Inherit from Ewl_Widget */
-	Evas_Object *video;  	/**< Emotion does the actual work */
+	void *video;  	/**< Emotion does the actual work */
 	Ewl_Media_Module_Type module; /**< Path to the module file */
 	char *media; 		/**< Path to the media file */
 	int block_seek; 	/**< Temporarily prevent seeking */

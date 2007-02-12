@@ -608,15 +608,15 @@ ewl_config_load(Ewl_Config *cfg)
 		ecore_list_goto_first(ewl_embed_list);
 		while ((e = ecore_list_next(ewl_embed_list)) != NULL) 
 		{
-			if (!e->evas) continue;
+			if (!e->canvas) continue;
 
-			evas_font_cache_flush(e->evas);
-			evas_font_cache_set(e->evas, 
+			evas_font_cache_flush(e->canvas);
+			evas_font_cache_set(e->canvas, 
 					ewl_config_int_get(ewl_config, 
 						EWL_CONFIG_CACHE_EVAS_FONT));
 
-			evas_image_cache_flush(e->evas);
-			evas_image_cache_set(e->evas,
+			evas_image_cache_flush(e->canvas);
+			evas_image_cache_set(e->canvas,
 				 	ewl_config_int_get(ewl_config,
 						EWL_CONFIG_CACHE_EVAS_IMAGE));
 		}

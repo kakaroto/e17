@@ -56,7 +56,7 @@ struct Ewl_Image
 {
 	Ewl_Widget widget;	/**< Inherit from Ewl_Widget */
 	Ewl_Image_Type type;	/**< The type of the image */
-	Evas_Object *image;	/**< The evas object for the image */
+	void *image;	/**< The evas object for the image */
 	char *path;		/**< The path to the image */
 	char *key;		/**< The key for the image */
 	char proportional;	/**< Is the image displayed proportional */
@@ -65,8 +65,8 @@ struct Ewl_Image
 	double sw, 		/**< Scale width */
 	       sh;		/**< Scale height */
 	int cs;			/**< Constrain size */
-	Evas_Coord aw, 		/**< Scale width */
-		   ah;		/**< Scale height */
+	int aw, 		/**< Scale width */
+	   ah;		/**< Scale height */
 
 	struct {
 		int set;	/**< Tiling set? */

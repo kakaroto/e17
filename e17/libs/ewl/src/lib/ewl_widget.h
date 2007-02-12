@@ -135,10 +135,10 @@ struct Ewl_Widget
 						/**< Callback chain array */
 	Ewl_Attach_List *attach;       /**< List of attachments on the widget */
 
-	Evas_Object *smart_object; /**< Smart Object for the layer stuff */
-	Evas_Object *fx_clip_box;  /**< Clipping rectangle of widget */
+	void *smart_object; /**< Smart Object for the layer stuff */
+	void *fx_clip_box;  /**< Clipping rectangle of widget */
 
-	Evas_Object *theme_object; /**< Appearance shown on canvas */
+	void *theme_object; /**< Appearance shown on canvas */
 	const char *theme_path;     /**< Path to the file for loading */
 	const char *theme_group;    /**< Group in theme to use */
 	const char *theme_state;    /**< State of the appearance */

@@ -980,7 +980,7 @@ ewl_destroy_request(Ewl_Widget *w)
  * @brief Queues an evas to be destroyed at a later time.
  */
 void
-ewl_evas_destroy(Evas *evas)
+ewl_canvas_destroy(void *evas)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("evas", evas);
@@ -997,7 +997,7 @@ ewl_evas_destroy(Evas *evas)
  * @brief Queues an evas object to be destroyed at a later time.
  */
 void
-ewl_evas_object_destroy(Evas_Object *obj)
+ewl_canvas_object_destroy(void *obj)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("obj", obj);

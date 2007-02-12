@@ -120,7 +120,7 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 					ewl_object_current_y_get(o),
 					ewl_object_current_w_get(o),
 					ewl_object_current_h_get(o));
-	ewl_embed_evas_set(EWL_EMBED(win), evas, win->window);
+	ewl_embed_canvas_set(EWL_EMBED(win), evas, win->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

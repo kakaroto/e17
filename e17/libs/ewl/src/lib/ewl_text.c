@@ -3616,7 +3616,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	/* create the textblock */
 	t->textblock = ewl_embed_object_request(emb, "textblock");
 	if (!t->textblock)
-		t->textblock = evas_object_textblock_add(emb->evas);
+		t->textblock = evas_object_textblock_add(emb->canvas);
 
 	if (t->textblock) 
 	{
@@ -5182,7 +5182,7 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
 		Ewl_Window *win;
 
 		emb = ewl_embed_widget_find(EWL_WIDGET(s->text_parent));
-		win = ewl_window_window_find(emb->evas_window);
+		win = ewl_window_window_find(emb->canvas_window);
 
 		ewl_window_selection_text_set(win, txt);
 		FREE(txt);

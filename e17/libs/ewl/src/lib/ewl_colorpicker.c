@@ -935,5 +935,3 @@ ewl_colorpicker_radiobutton_mode_get(Ewl_Colorpicker_Radiobutton *rb)
 
 	DRETURN_INT(rb->mode, DLEVEL_STABLE);
 }
-
-

@@ -197,8 +197,8 @@ ewl_embed_shutdown(void)
  * The returned smart object can be used to manipulate the area used by EWL
  * through standard evas functions.
  */
-Evas_Object *
-ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Window *evas_window)
+void *
+ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas, Ewl_Embed_Window *canvas_window)
 {
 	Ewl_Widget *w;
 	Ecore_List *paths;
@@ -207,11 +207,11 @@ ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Window *evas_window)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("emb", emb, NULL);
-	DCHECK_PARAM_PTR_RET("evas", evas, NULL);
+	DCHECK_PARAM_PTR_RET("canvas", canvas, NULL);
 	DCHECK_TYPE_RET("emb", emb, EWL_EMBED_TYPE, NULL);
 
-	emb->evas = evas;
-	emb->evas_window = evas_window;
+	emb->canvas = canvas;
+	emb->canvas_window = canvas_window;
 
 	if (!embedded_smart) {
 		embedded_smart = evas_smart_new(name,
@@ -228,11 +228,11 @@ ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Window *evas_window)
 	}
 
 	if (emb->smart) {
-		ewl_evas_object_destroy(emb->smart);
+		ewl_canvas_object_destroy(emb->smart);
 		emb->smart = NULL;
 	}
 
-	emb->smart = evas_object_smart_add(emb->evas, embedded_smart);
+	emb->smart = evas_object_smart_add(emb->canvas, embedded_smart);
 	evas_object_smart_data_set(emb->smart, emb);
 
 	w = EWL_WIDGET(emb);
@@ -243,7 +243,7 @@ ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas, Ewl_Embed_Window *evas_window)
 	paths = ewl_theme_font_path_get();
 	ecore_list_goto_first(paths);
 	while ((font_path = ecore_list_next(paths))) {
-		evas_font_path_append(evas, font_path);
+		evas_font_path_append(canvas, font_path);
 	}
 
 	DRETURN_PTR(emb->smart, DLEVEL_STABLE);
@@ -1094,7 +1094,7 @@ ewl_embed_font_path_add(char *path)
 	ecore_list_goto_first(ewl_embed_list);
 	while ((e = ecore_list_next(ewl_embed_list)))
 		if (REALIZED(e))
-			evas_font_path_append(e->evas, path);
+			evas_font_path_append(e->canvas, path);
 
 	ecore_list_append(ewl_theme_font_path_get(), strdup(path));
 
@@ -1107,7 +1107,7 @@ ewl_embed_font_path_add(char *path)
  * @brief Find an ewl embed by its evas window
  */
 Ewl_Embed *
-ewl_embed_evas_window_find(Ewl_Embed_Window *window)
+ewl_embed_canvas_window_find(Ewl_Embed_Window *window)
 {
 	Ewl_Embed *retemb;
 
@@ -1117,7 +1117,7 @@ ewl_embed_evas_window_find(Ewl_Embed_Window *window)
 	ecore_list_goto_first(ewl_embed_list);
 
 	while ((retemb = ecore_list_next(ewl_embed_list)) != NULL) {
-		if (retemb->evas_window == window)
+		if (retemb->canvas_window == window)
 			DRETURN_PTR(retemb, DLEVEL_STABLE);
 	}
 
@@ -1152,7 +1152,7 @@ ewl_embed_widget_find(Ewl_Widget *w)
  * @brief Caches the specified object for later reuse.
  */
 void
-ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
+ewl_embed_object_cache(Ewl_Embed *e, void *obj)
 {
 	const char *type;
 	Ecore_List *obj_list;
@@ -1185,7 +1185,7 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
 		ecore_list_prepend(obj_list, obj);
 	}
 	else
-		ewl_evas_object_destroy(obj);
+		ewl_canvas_object_destroy(obj);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1195,7 +1195,7 @@ ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj)
  * @param type: the type of object requested
  * @return Returns an Evas_Object of the specified type on success.
  */
-Evas_Object *
+void *
 ewl_embed_object_request(Ewl_Embed *e, char *type)
 {
 	Evas_Object *obj = NULL;
@@ -1621,12 +1621,12 @@ ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy, int *x, int *y)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
-	if (e->evas) {
+	if (e->canvas) {
 		if (x)
-			*x = (int)(evas_coord_world_x_to_screen(e->evas,
+			*x = (int)(evas_coord_world_x_to_screen(e->canvas,
 							(Evas_Coord)(xx)));
 		if (y)
-			*y = (int)(evas_coord_world_y_to_screen(e->evas,
+			*y = (int)(evas_coord_world_y_to_screen(e->canvas,
 							(Evas_Coord)(yy)));
 	}
 
@@ -1801,7 +1801,7 @@ ewl_embed_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 */
 		emb->ev_clip = ewl_embed_object_request(emb, "rectangle");
 		if (!emb->ev_clip)
-			emb->ev_clip = evas_object_rectangle_add(emb->evas);
+			emb->ev_clip = evas_object_rectangle_add(emb->canvas);
 		evas_object_color_set(emb->ev_clip, 0, 0, 0, 0);
 		evas_object_smart_member_add(emb->ev_clip, emb->smart);
 		evas_object_show(emb->ev_clip);
@@ -1866,13 +1866,13 @@ ewl_embed_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	emb = EWL_EMBED(w);
 	
 	if (emb->ev_clip) {
-		ewl_evas_object_destroy(emb->ev_clip);
+		ewl_canvas_object_destroy(emb->ev_clip);
 		emb->ev_clip = NULL;
 	}
 
 	if (emb->smart) {
 		evas_object_smart_data_set(emb->smart, NULL);
-		ewl_evas_object_destroy(emb->smart);
+		ewl_canvas_object_destroy(emb->smart);
 		emb->smart = NULL;
 	}
 
@@ -2063,7 +2063,7 @@ ewl_embed_cache_cleanup(Ewl_Embed *emb)
 			 */
 			obj_list = ecore_hash_remove(emb->obj_cache, key);
 			while ((obj = ecore_list_remove_first(obj_list)))
-				ewl_evas_object_destroy(obj);
+				ewl_canvas_object_destroy(obj);
 			ecore_list_destroy(obj_list);
 		}
 

@@ -793,7 +793,7 @@ ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	if (!(embed->evas_window))
+	if (!(embed->canvas_window))
 		DRETURN(DLEVEL_STABLE);
 
 	embed_dnd_aware_set = ewl_engine_hook_get(EWL_EMBED(embed),
@@ -821,7 +821,7 @@ ewl_engine_embed_dnd_drag_types_set(Ewl_Embed *embed, char **types, unsigned int
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	if (!(embed->evas_window))
+	if (!(embed->canvas_window))
 		DRETURN(DLEVEL_STABLE);
 
 	embed_dnd_drag_types_set = ewl_engine_hook_get(EWL_EMBED(embed),
@@ -847,7 +847,7 @@ ewl_engine_embed_dnd_drag_start(Ewl_Embed *embed)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	if (!(embed->evas_window))
+	if (!(embed->canvas_window))
 		DRETURN(DLEVEL_STABLE);
 
 	embed_dnd_drag_start = ewl_engine_hook_get(EWL_EMBED(embed),
@@ -873,7 +873,7 @@ ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	if (!(embed->evas_window))
+	if (!(embed->canvas_window))
 		DRETURN(DLEVEL_STABLE);
 
 	embed_dnd_drag_drop = ewl_engine_hook_get(EWL_EMBED(embed),
@@ -903,7 +903,7 @@ ewl_engine_embed_dnd_drag_data_send(Ewl_Embed *embed, void *handle, void *data,
 	DCHECK_PARAM_PTR_RET("embed", embed, FALSE);
 	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, FALSE);
 
-	if (!(embed->evas_window))
+	if (!(embed->canvas_window))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	embed_dnd_drag_data_send = ewl_engine_hook_get(EWL_EMBED(embed),

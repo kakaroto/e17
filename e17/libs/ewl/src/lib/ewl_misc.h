@@ -19,8 +19,8 @@ void 	 ewl_configure_request(Ewl_Widget *w);
 void 	 ewl_realize_request(Ewl_Widget *w);
 void 	 ewl_realize_cancel_request(Ewl_Widget *w);
 void 	 ewl_destroy_request(Ewl_Widget *w);
-void 	 ewl_evas_destroy(Evas *evas);
-void  	 ewl_evas_object_destroy(Evas_Object *obj);
+void 	 ewl_canvas_destroy(void *evas);
+void  	 ewl_canvas_object_destroy(void *obj);
 void  	 ewl_debug_indent_print(int mod_dir);
 
 /*

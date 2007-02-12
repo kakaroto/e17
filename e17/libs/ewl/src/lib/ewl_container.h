@@ -85,7 +85,7 @@ struct Ewl_Container
 
 	Ecore_DList *children; /**< List of children that are contained. */
 
-	Evas_Object *clip_box; /**< Clip box to bound widgets inside. */
+	void *clip_box; /**< Clip box to bound widgets inside. */
 
 	Ewl_Container *redirect; /**< Alternate parent for children */
 

@@ -1407,7 +1407,7 @@ ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * to the wanted area.
 	 */
 	if (!c->clip_box)
-		c->clip_box = evas_object_rectangle_add(e->evas);
+		c->clip_box = evas_object_rectangle_add(e->canvas);
 
 	/*
 	 * Setup the remaining properties for the clip box.
@@ -1526,7 +1526,7 @@ ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Clean up the clip box of the container.
 	 */
 	if (c->clip_box) {
-		ewl_evas_object_destroy(c->clip_box);
+		ewl_canvas_object_destroy(c->clip_box);
 		c->clip_box = NULL;
 	}
 

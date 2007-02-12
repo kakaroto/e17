@@ -3,7 +3,7 @@
 #define EWL_OVERLAY_H
 
 /**
- * @addtogroup Ewl_Overlay Ewl_Overlay: A Container for Displaying on an Evas
+ * @addtogroup Ewl_Overlay Ewl_Overlay: A Container for Displaying on a canvas
  * Defines the Ewl_Overlay class to provide EWL with the ability to work with an
  * evas.
  *

@@ -91,7 +91,7 @@ ewl_cursor_cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 		ewl_engine_pointer_free(EWL_EMBED(parent), cursor->handle);
 
 	handle = ewl_engine_pointer_data_new(EWL_EMBED(parent),
-			EWL_EMBED(cursor)->evas_window, width, height);
+			EWL_EMBED(cursor)->canvas_window, width, height);
 
 	if (EWL_EMBED(parent)->cursor == cursor->handle)
 		ewl_engine_pointer_set(EWL_EMBED(parent), handle);

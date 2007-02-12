@@ -6,7 +6,6 @@
 #ifndef EWL_BASE_H
 #define EWL_BASE_H
 
-#include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_Data.h>
 

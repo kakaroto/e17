@@ -122,7 +122,7 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 					ewl_object_current_y_get(o),
 					ewl_object_current_w_get(o),
 					ewl_object_current_h_get(o));
-	ewl_embed_evas_set(EWL_EMBED(win), evas, win->window);
+	ewl_embed_canvas_set(EWL_EMBED(win), evas, win->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -139,7 +139,7 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 	DCHECK_PARAM_PTR("emb", emb);
 	DCHECK_TYPE("emb", emb, EWL_EMBED_TYPE);
 
-	evas = emb->evas;
+	evas = emb->canvas;
 
 	evas_output_size_set(evas, width, height);
 	evas_output_viewport_set(evas, x, y, width, height);
@@ -160,7 +160,7 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 
 	evas_engine_info_set(evas, info);
 
-	emb->evas_window = bufinfo->info.dest_buffer;
+	emb->canvas_window = bufinfo->info.dest_buffer;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -171,10 +171,10 @@ ee_canvas_render(Ewl_Embed *embed)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
-	if (embed->evas) {
+	if (embed->canvas) {
 		Evas_List *updates;
 
-		updates = evas_render_updates(embed->evas);
+		updates = evas_render_updates(embed->canvas);
 		if (updates) {
 			ewl_callback_call(EWL_WIDGET(embed),
 					EWL_CALLBACK_VALUE_CHANGED);

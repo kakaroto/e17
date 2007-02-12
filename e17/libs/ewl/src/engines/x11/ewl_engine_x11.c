@@ -7,7 +7,7 @@
 
 /*
  * In general all of the X event handlers should find their matching window
- * with ewl_window_window_find, and not ewl_embed_evas_window_find. If the
+ * with ewl_window_window_find, and not ewl_embed_canvas_window_find. If the
  * embed function is used, then we get duplicate events for apps that setup
  * their own handlers and embed EWL. The exception to this is selection events
  * such as copy/paste and DND. These events need to be handled for embedded
@@ -408,10 +408,10 @@ ee_window_destroy(Ewl_Window *win)
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	ee_window_hide(win);
-	ecore_x_window_del((Ecore_X_Window)(EWL_EMBED(win)->evas_window));
+	ecore_x_window_del((Ecore_X_Window)(EWL_EMBED(win)->canvas_window));
 	ecore_x_window_del((Ecore_X_Window)(win->window));
 
-	EWL_EMBED(win)->evas_window = NULL;
+	EWL_EMBED(win)->canvas_window = NULL;
 	win->window = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -445,8 +445,8 @@ ee_window_resize(Ewl_Window *win)
 
 	ecore_x_window_resize((Ecore_X_Window)win->window, width, height);
 
-	if (EWL_EMBED(win)->evas_window != win->window)
-		ecore_x_window_resize((Ecore_X_Window)EWL_EMBED(win)->evas_window,
+	if (EWL_EMBED(win)->canvas_window != win->window)
+		ecore_x_window_resize((Ecore_X_Window)EWL_EMBED(win)->canvas_window,
 						width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -480,7 +480,7 @@ ee_window_show(Ewl_Window *win)
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	ecore_x_window_show((Ecore_X_Window)win->window);
-	ecore_x_window_show((Ecore_X_Window)EWL_EMBED(win)->evas_window);
+	ecore_x_window_show((Ecore_X_Window)EWL_EMBED(win)->canvas_window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -492,7 +492,7 @@ ee_window_hide(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(win)->evas_window);
+	ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(win)->canvas_window);
 	ecore_x_window_hide((Ecore_X_Window)EWL_WINDOW(win)->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -749,7 +749,7 @@ ee_dnd_aware_set(Ewl_Embed *embed)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	ecore_x_dnd_aware_set((Ecore_X_Window)embed->evas_window, TRUE);
+	ecore_x_dnd_aware_set((Ecore_X_Window)embed->canvas_window, TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -773,9 +773,9 @@ ee_dnd_drag_types_set(Ewl_Embed *embed, const char **types, unsigned int num)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	ecore_x_dnd_aware_set((Ecore_X_Window)embed->evas_window,
+	ecore_x_dnd_aware_set((Ecore_X_Window)embed->canvas_window,
 			      (num > 0 ? 1 : 0));
-	ecore_x_dnd_types_set((Ecore_X_Window)embed->evas_window, (char **)types, num);
+	ecore_x_dnd_types_set((Ecore_X_Window)embed->canvas_window, (char **)types, num);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -787,7 +787,7 @@ ee_dnd_drag_begin(Ewl_Embed *embed)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	ecore_x_dnd_begin((Ecore_X_Window)embed->evas_window, NULL, 0);
+	ecore_x_dnd_begin((Ecore_X_Window)embed->canvas_window, NULL, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -829,7 +829,7 @@ ee_pointer_data_new(Ewl_Embed *embed, int *data, int w, int h)
 	DCHECK_PARAM_PTR_RET("embed", embed, 0);
 	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, 0);
 
-	DRETURN_INT(ecore_x_cursor_new((Ecore_X_Window)embed->evas_window,
+	DRETURN_INT(ecore_x_cursor_new((Ecore_X_Window)embed->canvas_window,
 				data, w, h, 0, 0), DLEVEL_STABLE);
 }
 
@@ -872,7 +872,7 @@ ee_pointer_set(Ewl_Embed *embed, int pointer)
 		cur = pointer;
 	else
 		cur = ecore_x_cursor_shape_get(pointer);
-	ecore_x_window_cursor_set((Ecore_X_Window)embed->evas_window, cur);
+	ecore_x_window_cursor_set((Ecore_X_Window)embed->canvas_window, cur);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -895,7 +895,7 @@ ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	evas_damage_rectangle_add(EWL_EMBED(window)->evas, ev->x, ev->y, ev->w, ev->h);
+	evas_damage_rectangle_add(EWL_EMBED(window)->canvas, ev->x, ev->y, ev->w, ev->h);
 	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_EXPOSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -917,7 +917,7 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
+	embed = ewl_embed_canvas_window_find((void *)ev->win);
 	if (!embed)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1237,7 +1237,7 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
 		Ewl_Embed *embed;
 		Ecore_X_Selection_Data *data = ev->data;
 
-		embed = ewl_embed_evas_window_find((void *)ev->win);
+		embed = ewl_embed_canvas_window_find((void *)ev->win);
 		if (embed) 
 		{
 			if (data->content == ECORE_X_SELECTION_CONTENT_FILES)
@@ -1299,7 +1299,7 @@ ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
 		Ewl_Embed *embed;
 		char *atom;
 
-		embed = ewl_embed_evas_window_find((void *)ev->owner);
+		embed = ewl_embed_canvas_window_find((void *)ev->owner);
 		atom = XGetAtomName(ecore_x_display_get(), ev->target);
 		ewl_embed_dnd_data_request_feed(embed, ev, atom);
 		XFree(atom);
@@ -1334,7 +1334,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 		/*
 		 * Look for the child here
 		 */
-		embed = ewl_embed_evas_window_find((void *)ev->win);
+		embed = ewl_embed_canvas_window_find((void *)ev->win);
 		if (embed) {
 			/* First see if we need to send an 'enter' 
 			 * to the widget */
@@ -1374,7 +1374,7 @@ ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
+	embed = ewl_embed_canvas_window_find((void *)ev->win);
 	if (embed) {
 		embed->dnd_types.num_types = ev->num_types;
 		embed->dnd_types.types = malloc(sizeof(char*) * ev->num_types);
@@ -1397,7 +1397,7 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
+	embed = ewl_embed_canvas_window_find((void *)ev->win);
 	if (embed) {
 		if (embed->dnd_types.num_types > 0) {
 			for (i = 0; i < embed->dnd_types.num_types; i++)
@@ -1424,14 +1424,14 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 
 	ev = e;
 
-	embed = ewl_embed_evas_window_find((void *)ev->win);
+	embed = ewl_embed_canvas_window_find((void *)ev->win);
 	if (embed) {
 		int x, y, wx, wy;
 		const char *type;
 
 		ewl_embed_window_position_get(embed, &wx, &wy);
 
-		if (ev->source == (Ecore_X_Window)embed->evas_window)
+		if (ev->source == (Ecore_X_Window)embed->canvas_window)
 			internal = 1;
 
 		x = ev->position.x - wx;

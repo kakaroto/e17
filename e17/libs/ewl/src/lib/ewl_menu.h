@@ -7,7 +7,7 @@
 /**
  * @addtogroup Ewl_Menu Ewl_Menu: A Simple Windowed Menu
  * Defines a menu used globally. The contents on the menu are drawn outside of
- * the Evas.
+ * the canvas.
  *
  * @remarks Inherits from Ewl_Menu_Base.
  * @image html Ewl_Menu_inheritance.png

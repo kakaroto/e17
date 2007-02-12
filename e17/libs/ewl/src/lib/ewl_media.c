@@ -486,7 +486,7 @@ ewl_media_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	m = EWL_MEDIA(w);
 
 	/*
-	 * Find the embed so we know which evas to draw onto.
+	 * Find the embed so we know which canvas to draw onto.
 	 */
 	emb = ewl_embed_widget_find(w);
 
@@ -494,7 +494,7 @@ ewl_media_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Create the emotion
 	 */
-	m->video = emotion_object_add(emb->evas);
+	m->video = emotion_object_add(emb->canvas);
 	if (ewl_media_module_set(m, m->module) && m->media) {
 		emotion_object_file_set(m->video, m->media);
 		ewl_media_size_update(m);

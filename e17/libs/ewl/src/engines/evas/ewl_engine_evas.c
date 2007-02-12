@@ -116,8 +116,8 @@ ee_shutdown(Ewl_Engine *engine)
 void
 ee_canvas_output_set(Ewl_Embed *embed, int x, int y, int width, int height)
 {
-	evas_output_size_set(embed->evas, width, height);
-	evas_output_viewport_set(embed->evas, x, y, width, height);
+	evas_output_size_set(embed->canvas, width, height);
+	evas_output_viewport_set(embed->canvas, x, y, width, height);
 }
 
 static void
@@ -126,8 +126,8 @@ ee_canvas_render(Ewl_Embed *embed)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
-	if (embed->evas)
-		evas_render(embed->evas);
+	if (embed->canvas)
+		evas_render(embed->canvas);
 
 	DRETURN(DLEVEL_STABLE);
 }
@@ -138,8 +138,8 @@ ee_canvas_freeze(Ewl_Embed *embed)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
-	if (embed->evas && evas_event_freeze_get(embed->evas) < 1) {
-		evas_event_freeze(embed->evas);
+	if (embed->canvas && evas_event_freeze_get(embed->canvas) < 1) {
+		evas_event_freeze(embed->canvas);
 	}
 
 	DRETURN(DLEVEL_STABLE);
@@ -151,8 +151,8 @@ ee_canvas_thaw(Ewl_Embed *embed)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
-	if (embed->evas && evas_event_freeze_get(embed->evas) > 0) {
-		evas_event_thaw(embed->evas);
+	if (embed->canvas && evas_event_freeze_get(embed->canvas) > 0) {
+		evas_event_thaw(embed->canvas);
 	}
 
 	DRETURN(DLEVEL_STABLE);
@@ -174,7 +174,7 @@ ee_canvas_smart_new(Ewl_Embed *embed)
 				NULL, NULL, NULL);
 	}
 
-	smart_object = evas_object_smart_add(embed->evas, widget_smart);
+	smart_object = evas_object_smart_add(embed->canvas, widget_smart);
 	DRETURN_PTR(smart_object, DLEVEL_STABLE);
 }
 
@@ -186,7 +186,7 @@ ee_canvas_clip_add(Ewl_Embed *embed)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
 
-	obj = evas_object_rectangle_add(embed->evas);
+	obj = evas_object_rectangle_add(embed->canvas);
 	if (obj)
 		evas_object_pass_events_set(obj, TRUE);
 

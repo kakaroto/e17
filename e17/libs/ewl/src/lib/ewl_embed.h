@@ -3,9 +3,9 @@
 #define EWL_EMBED_H
 
 /**
- * @addtogroup Ewl_Embed Ewl_Embed: A Container for Displaying on an Evas
- * Defines the Ewl_Embed class to provide EWL with the ability to work with an
- * evas.
+ * @addtogroup Ewl_Embed Ewl_Embed: A Container for Displaying on an canvas
+ * Defines the Ewl_Embed class to provide EWL with the ability to work with a
+ * canvas.
  *
  * @remarks Inherits from Ewl_Overlay.
  * @image html Ewl_Embed_inheritance.png
@@ -26,12 +26,12 @@
 
 /**
  * The embed structure is mostly a container for holding widgets and a
- * wrapper evas smart object.
+ * wrapper canvas smart object.
  */
 typedef struct Ewl_Embed Ewl_Embed;
 
 /**
-* Typedef and abstract out embedded evas windows
+* Typedef and abstract out embedded canvas windows
 */
 typedef void *Ewl_Embed_Window;
 
@@ -43,13 +43,13 @@ typedef void *Ewl_Embed_Window;
 
 /**
 * @def EWL_EMBED_WINDOW(window)
-* @brief Typecast a pointer to an evas window
+* @brief Typecast a pointer to an canvas window
 */
 #define EWL_EMBED_WINDOW(window) ((Ewl_Embed_Window *)window)
 
 /**
  * @brief The class inheriting from Ewl_Container that acts as a top level
- * widget for interacting with the evas.
+ * widget for interacting with the canvas.
  */
 struct Ewl_Embed
 {
@@ -58,12 +58,12 @@ struct Ewl_Embed
 	const char *engine_name; /**< Name of current engine used */
 	void *engine; 		/**< The display engine */
 
-	Evas *evas; 		/**< Evas where drawing takes place. */
-	void *evas_window;	/**< The window holding the evas. */
+	void *canvas; 		/**< Canvas where drawing takes place. */
+	void *canvas_window;	/**< The window holding the canvas. */
 	int cursor;		/**< Id for current cursor in use */
 
-	Evas_Object *smart; 	/**< Manipulate Ewl_Embed from evas */
-	Evas_Object *ev_clip; 	/**< Clip box to receive evas events */
+	void *smart; 	/**< Manipulate Ewl_Embed from canvas */
+	void *ev_clip; 	/**< Clip box to receive canvas events */
 	Ecore_DList *tab_order; /**< Order of widgets to send focus */
 
 	Ecore_Hash  *obj_cache; /**< Hash of object queues for reuse */
@@ -92,8 +92,8 @@ int 		 ewl_embed_init(Ewl_Embed *emb);
 int 		 ewl_embed_engine_name_set(Ewl_Embed *embed, const char *engine);
 const char 	*ewl_embed_engine_name_get(Ewl_Embed *embed);
 void 		 ewl_embed_shutdown(void);
-Evas_Object 	*ewl_embed_evas_set(Ewl_Embed *emb, Evas *evas,
-					Ewl_Embed_Window *evas_window);
+void        	*ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas,
+					Ewl_Embed_Window *canvas_window);
 
 void 		 ewl_embed_focus_set(Ewl_Embed *embed, int f);
 int 		 ewl_embed_focus_get(Ewl_Embed *embed);
@@ -129,10 +129,10 @@ void 		 ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
 					   int z, int dir, unsigned int mods);
 
 void 		 ewl_embed_font_path_add(char *path);
-Ewl_Embed  	*ewl_embed_evas_window_find(Ewl_Embed_Window *win);
+Ewl_Embed  	*ewl_embed_canvas_window_find(Ewl_Embed_Window *win);
 Ewl_Embed 	*ewl_embed_widget_find(Ewl_Widget *w);
-void  		 ewl_embed_object_cache(Ewl_Embed *e, Evas_Object *obj);
-Evas_Object 	*ewl_embed_object_request(Ewl_Embed *e, char *type);
+void  		 ewl_embed_object_cache(Ewl_Embed *e, void *obj);
+void        	*ewl_embed_object_request(Ewl_Embed *e, char *type);
 
 void 		 ewl_embed_tab_order_append(Ewl_Embed *e, Ewl_Widget *w);
 void		 ewl_embed_tab_order_prepend(Ewl_Embed *e, Ewl_Widget *w);

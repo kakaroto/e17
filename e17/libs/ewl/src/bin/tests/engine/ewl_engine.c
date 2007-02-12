@@ -1,6 +1,7 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
+#include <Evas.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -100,7 +101,7 @@ cb_configure(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	width = ewl_object_current_w_get(EWL_OBJECT(emb));
 	height = ewl_object_current_h_get(EWL_OBJECT(emb));
 	evas_object_image_size_set(eimg, width, height);
-	evas_object_image_data_set(eimg, emb->evas_window);
+	evas_object_image_data_set(eimg, emb->canvas_window);
 	evas_object_image_data_update_add(eimg, 0, 0, width, height);
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(img), width, height);
 }

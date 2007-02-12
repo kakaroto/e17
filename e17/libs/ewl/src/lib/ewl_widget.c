@@ -295,7 +295,7 @@ ewl_widget_reveal(Ewl_Widget *w)
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
 
 	emb = ewl_embed_widget_find(w);
-	if (emb && emb->evas)
+	if (emb && emb->canvas)
 		ewl_callback_call(w, EWL_CALLBACK_REVEAL);
 
 	ewl_widget_configure(w);
@@ -1860,15 +1860,15 @@ ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val)
 		Ewl_Embed *emb;
 
 		emb = ewl_embed_widget_find(w);
-		if (!emb || !emb->evas)
+		if (!emb || !emb->canvas)
 			DRETURN(DLEVEL_STABLE);
 
-		w->fx_clip_box = evas_object_rectangle_add(emb->evas);
+		w->fx_clip_box = evas_object_rectangle_add(emb->canvas);
 		evas_object_pass_events_set(w->fx_clip_box, TRUE);
 		ewl_widget_configure(w);
 	}
 	else {
-		ewl_evas_object_destroy(w->fx_clip_box);
+		ewl_canvas_object_destroy(w->fx_clip_box);
 		w->fx_clip_box = NULL;
 	}
 
@@ -2336,7 +2336,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 
 	emb = ewl_embed_widget_find(w);
-	if (!emb || !emb->evas)
+	if (!emb || !emb->canvas)
 		DRETURN(DLEVEL_STABLE);
 
 	/*
@@ -2363,7 +2363,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 						NULL, NULL, NULL, NULL,
 						NULL, NULL, NULL);
 			}
-			w->smart_object = evas_object_smart_add(emb->evas,
+			w->smart_object = evas_object_smart_add(emb->canvas,
 							widget_smart);
 		}
 		evas_object_data_set(w->smart_object, "EWL", w);
@@ -2379,7 +2379,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 */
 		w->theme_object = ewl_embed_object_request(emb, "edje");
 		if (!w->theme_object)
-			w->theme_object = edje_object_add(emb->evas);
+			w->theme_object = edje_object_add(emb->canvas);
 
 		/*
 		 * Attempt to load the theme object
@@ -2443,7 +2443,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 						EWL_FLAG_VISIBLE_NOCLIP)) {
 		w->fx_clip_box = ewl_embed_object_request(emb, "rectangle");
 		if (!w->fx_clip_box) {
-			w->fx_clip_box = evas_object_rectangle_add(emb->evas);
+			w->fx_clip_box = evas_object_rectangle_add(emb->canvas);
 		}
 		evas_object_pass_events_set(w->fx_clip_box, TRUE);
 	}
