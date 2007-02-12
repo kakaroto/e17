@@ -39,7 +39,7 @@ typedef struct Ewl_Pdf Ewl_Pdf;
 struct Ewl_Pdf
 {
 	Ewl_Widget            widget;
-	Evas_Object          *image;
+	void                 *image;
 	char                 *filename;
 	int                   ow;
 	int                   oh;
@@ -54,7 +54,7 @@ struct Ewl_Pdf
 	double                vscale;
 
 	struct {
-		Evas_Object *o;
+		void        *o;
 		char        *text;
 		Ecore_List  *list;
 		int          page;

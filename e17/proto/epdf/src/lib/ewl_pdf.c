@@ -324,7 +324,7 @@ ewl_pdf_search_next (Ewl_Pdf *pdf)
                 Ewl_Embed *emb;
 
                 emb = ewl_embed_widget_find(EWL_WIDGET (pdf));
-                pdf->search.o = evas_object_rectangle_add(emb->evas);
+                pdf->search.o = evas_object_rectangle_add(emb->canvas);
                 if (!pdf->search.o)
                         DRETURN_INT(FALSE, DLEVEL_STABLE);
                 evas_object_color_set(pdf->search.o, 0, 128, 0, 128);
@@ -579,7 +579,7 @@ ewl_pdf_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (!pdf->image)
 	  pdf->image = ewl_embed_object_request(emb, "pdf");
 	if (!pdf->image)
-	  pdf->image = evas_object_image_add(emb->evas);
+	  pdf->image = evas_object_image_add(emb->canvas);
 	if (!pdf->image)
 	  DRETURN(DLEVEL_STABLE);
 
