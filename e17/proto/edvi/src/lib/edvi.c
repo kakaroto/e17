@@ -107,7 +107,7 @@ edvi_color_map_get ()
 }
 
 const char *
-edvi_version ()
+edvi_version_get ()
 {
   return DVI_version ();
 }

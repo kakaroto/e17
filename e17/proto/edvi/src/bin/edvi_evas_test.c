@@ -60,7 +60,7 @@ main (int argc, char * argv[])
 
   filename = argv[1];
 
-  printf ("[DVI] version : %s\n", edvi_version ());
+  printf ("[DVI] version : %s\n", edvi_version_get ());
 
   if (!edvi_init (300, param_kpathsea_mode, 4,
                   1.0, 1.0,

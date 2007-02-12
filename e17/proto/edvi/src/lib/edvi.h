@@ -19,7 +19,7 @@ double edvi_offset_y_get ();
 
 unsigned int *edvi_color_map_get ();
 
-const char *edvi_version ();
+const char *edvi_version_get ();
 
 
 #endif /* __EDVI_CORE_H__ */

@@ -427,7 +427,7 @@ ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (!dvi->image)
 	  dvi->image = ewl_embed_object_request(emb, "dvi");
 	if (!dvi->image)
-	  dvi->image = evas_object_image_add(emb->evas);
+	  dvi->image = evas_object_image_add(emb->canvas);
 	if (!dvi->image)
 	  DRETURN(DLEVEL_STABLE);
 

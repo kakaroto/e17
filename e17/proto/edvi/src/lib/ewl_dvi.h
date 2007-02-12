@@ -39,7 +39,7 @@ typedef struct Ewl_Dvi Ewl_Dvi;
 struct Ewl_Dvi
 {
 	Ewl_Widget            widget;
-	Evas_Object          *image;
+	void                 *image;
 	char                 *filename;
 	int                   ow;
 	int                   oh;
