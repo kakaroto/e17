@@ -14,7 +14,6 @@
 Ewl_Widget *win;
 char password[1024];
 char buf[1024];
-int xpos, ypos;
 
 /* empower_cb prototypes */
 void key_down_cb(Ewl_Widget *w, void *event, void *data);

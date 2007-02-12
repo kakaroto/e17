@@ -1,4 +1,5 @@
 #include "Empower.h"
+#include <Ecore_X.h>
 
 void key_down_cb(Ewl_Widget *w, void *event, void *data)
 {
@@ -24,7 +25,6 @@ void destroy_cb(Ewl_Widget *w, void *event, void *data)
 
 void reveal_cb(Ewl_Widget *w, void *event, void *data)
 {
-	ewl_window_move(EWL_WINDOW(win), xpos, ypos);
 	ewl_window_raise(EWL_WINDOW(win));
 }
 
@@ -33,10 +33,10 @@ void pipe_to_sudo_cb(Ewl_Widget *w, void *event, void *data)
 	FILE *sudo_pipe;
 	
 	const char *pass = ewl_password_text_get(EWL_PASSWORD(data));
-		
+
 	ewl_widget_destroy(win);
 	ewl_main_quit();
-	
+
 	if(pass)
 	{
 		snprintf(password, 1024, "%s", pass);

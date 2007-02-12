@@ -2,12 +2,6 @@
 
 void display_window(int argc, char** argv)
 {	
-	if(!ecore_x_init(NULL))
-	{
-		printf("Unable to init ecore\n");
-		return;
-	}
-	
 	if(!ewl_init(&argc, argv))
 	{
 		printf("Unable to init ewl\n");
@@ -23,7 +17,6 @@ void display_window(int argc, char** argv)
 	uid_t user;
 	struct passwd *user_name;
 	char username[256];
-	int window_width;
 	
 	user = getuid();
 	if ((user_name = getpwuid(user)) != NULL)
@@ -31,31 +24,15 @@ void display_window(int argc, char** argv)
 	else
 		snprintf(username, 256, "Your Password");
 	
-	window_width = strlen(username)*10;
-	
-	int num_roots=0;
-	int root_w=0, root_h=0;
-	Ecore_X_Window *root_list = NULL;
-	root_list = ecore_x_window_root_list(&num_roots);
-	
-	/*FIXME: add checks for xinerama*/
-	ecore_x_window_size_get(root_list[0], &root_w, &root_h);
-	
-	free(root_list);
-	
-	xpos = (root_w/2)-(window_width/2);
-	ypos = (root_h/2)-(HEIGHT/2);
-	
 	win = ewl_dialog_new();
 	ewl_window_title_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_name_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_class_set(EWL_WINDOW(win), "Empower!");
-	ewl_object_size_request(EWL_OBJECT(win), window_width, HEIGHT);
-	ewl_window_move(EWL_WINDOW(win), xpos, ypos);
 	ewl_window_dialog_set(EWL_WINDOW(win), 1);
+	ewl_window_transient_for_foreign(EWL_WINDOW(win), NULL);
 	ewl_window_keyboard_grab_set(EWL_WINDOW(win), 1);
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
-	ewl_callback_append(win, EWL_CALLBACK_REVEAL, reveal_cb, NULL);
+	ewl_callback_prepend(win, EWL_CALLBACK_REVEAL, reveal_cb, NULL);
 	ewl_callback_append(win, EWL_CALLBACK_KEY_DOWN, key_down_cb, NULL);
 	ewl_widget_show(win);
 	
@@ -111,7 +88,8 @@ void display_window(int argc, char** argv)
 	ewl_object_fill_policy_set(EWL_OBJECT(cancel_button), 
 	                           EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(win), cancel_button);
-	ewl_callback_append(cancel_button, EWL_CALLBACK_CLICKED, destroy_cb, NULL);
+	ewl_callback_append(cancel_button, EWL_CALLBACK_CLICKED, destroy_cb, 
+				NULL);
 	ewl_widget_show(cancel_button);
 	
 	ewl_main();	
