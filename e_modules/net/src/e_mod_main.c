@@ -18,7 +18,6 @@ e_modapi_init(E_Module *m)
    item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
    E_CONFIG_VAL(item_edd, Config_Item, id, STR);
    E_CONFIG_VAL(item_edd, Config_Item, device, STR);
-   E_CONFIG_VAL(item_edd, Config_Item, poll_time, DOUBLE);
    E_CONFIG_VAL(item_edd, Config_Item, limit, INT);
    
    conf_edd = E_CONFIG_DD_NEW("Config", Config);

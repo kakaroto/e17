@@ -18,7 +18,6 @@ _config_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->device = evas_stringshare_add("eth0");
-   ci->poll_time = 1.0;
    ci->limit = 0;
    cfg->items = evas_list_append(cfg->items, ci);
    return ci;
@@ -74,9 +73,7 @@ _config_updated(const char *id)
 	if (!inst->gcc->id) continue;
 	if (strcmp(inst->gcc->id, id)) continue;
 	if (!inst->timer)
-	  inst->timer = ecore_timer_add(ci->poll_time, _cb_poll, inst);
-	else
-	  ecore_timer_interval_set(inst->timer, ci->poll_time);
+	  inst->timer = ecore_timer_add(0.5, _cb_poll, inst);
 	break;
      }
 }

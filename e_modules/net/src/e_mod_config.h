@@ -17,7 +17,6 @@ struct _Config_Item
 {
    const char *id;
    const char *device;
-   double poll_time;
    int limit;
 };
 

@@ -34,7 +34,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    gcc = e_gadcon_client_new(gc, name, id, style, inst->o_net);
    gcc->data = inst;
    inst->gcc = gcc;
-   inst->timer = ecore_timer_add(ci->poll_time, _cb_poll, inst);
+   inst->timer = ecore_timer_add(0.5, _cb_poll, inst);
    
    evas_object_event_callback_add(inst->o_net, EVAS_CALLBACK_MOUSE_DOWN, 
 				  _cb_mouse_down, inst);

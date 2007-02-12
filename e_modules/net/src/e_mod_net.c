@@ -45,8 +45,8 @@ _cb_poll(void *data)
    
    bin = in - inst->in;
    bout = out - inst->out;
-   bin = bin / ci->poll_time;
-   bout = bout / ci->poll_time;
+   bin = bin / 0.5;
+   bout = bout / 0.5;
    inst->in = in;
    inst->out = out;
    

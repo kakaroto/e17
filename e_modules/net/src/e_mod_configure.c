@@ -6,7 +6,6 @@
 struct _E_Config_Dialog_Data 
 {
    char *device;
-   double poll_time;
    int limit;
    
    Ecore_List *devs;
@@ -72,7 +71,6 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
    char *tmp;
    int i = 0;
    
-   cfdata->poll_time = ci->poll_time;
    if (ci->device) 
      cfdata->device = strdup(ci->device);
    else
@@ -102,11 +100,13 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    int i = 0;
    
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("General Settings"), 0);
-   ob = e_widget_label_add(evas, _("Check Interval"));
+   of = e_widget_framelist_add(evas, _("Activity Notification Level"), 0);
+   rg = e_widget_radio_group_new(&(cfdata->limit));
+   ob = e_widget_radio_add(evas, "High (MB)", 1048575, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"), 1, 60, 1, 0, 
-			    &(cfdata->poll_time), NULL, 150);
+   ob = e_widget_radio_add(evas, "Middle (KB)", 1023, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, "Low (B)", 0, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -121,17 +121,6 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 	e_widget_framelist_object_append(of, ob);
 	i++;
      }
-   
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-   
-   of = e_widget_framelist_add(evas, _("Activity Notification Level"), 0);
-   rg = e_widget_radio_group_new(&(cfdata->limit));
-   ob = e_widget_radio_add(evas, "High (MB)", 1048575, rg);
-   e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, "Middle (KB)", 1023, rg);
-   e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, "Low (B)", 0, rg);
-   e_widget_framelist_object_append(of, ob);
    
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    return o;
@@ -150,7 +139,6 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	evas_stringshare_del(ci->device);
 	ci->device = evas_stringshare_add(tmp);
      }
-   ci->poll_time = cfdata->poll_time;
    ci->limit = cfdata->limit;
 
    e_config_save_queue();
