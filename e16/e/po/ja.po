@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-02-06 20:42+0100\n"
-"PO-Revision-Date: 2006-11-06 02:41+0900\n"
+"PO-Revision-Date: 2007-02-12 16:40+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -465,7 +465,6 @@ msgstr ""
 
 #
 #: src/container.c:1229
-#, fuzzy
 msgid "Settings..."
 msgstr "設定"
 
@@ -774,6 +773,9 @@ msgid ""
 "Composite, Damage, Fixes, and Render\n"
 "extensions are loaded."
 msgstr ""
+"コンポジットマネージャを有効にできません.\n"
+"Composite, Damage, Fixes, Render の各拡張機能が\n"
+"ロードされていることを xdpyinfo を使って確認してください."
 
 #: src/events.c:79
 msgid "X server setup error"
@@ -1214,14 +1216,13 @@ msgstr ""
 
 #
 #: src/hints.c:539
-#, fuzzy
 msgid "Selection Error!"
-msgstr "actionclass エラー"
+msgstr "セレクションエラー"
 
 #: src/hints.c:539
 #, c-format
 msgid "Could not acquire selection: %s"
-msgstr ""
+msgstr "セレクション %s を獲得できませんでした"
 
 #: src/iclass.c:718
 #, c-format
@@ -1299,6 +1300,7 @@ msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
+"%s は読み書きと実行の権限があるディレクトリにしてください.\n"
 
 #: src/main.c:693
 #, c-format
@@ -2205,7 +2207,7 @@ msgstr "システムトレイエラー"
 
 #: src/systray.c:331
 msgid "Systray went elsewhere?!?"
-msgstr ""
+msgstr "systray がどこかに行っちまった？！"
 
 #: src/systray.c:435
 msgid "Only one systray is allowed"
@@ -2881,9 +2883,8 @@ msgid "Focused opacity follows unfocused"
 msgstr "クリックしたウィンドウがフォーカスを得る"
 
 #: config/strings.c:152
-#, fuzzy
 msgid "Toggle Fading"
-msgstr "フェーディングを有効にする"
+msgstr "フェーディングを切り替える"
 
 #: config/strings.c:153
 msgid "Toggle Shadows"
