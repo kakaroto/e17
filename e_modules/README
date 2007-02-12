@@ -42,7 +42,7 @@ mixer - A module to control volume for some mixers.  (Will be replaced by someth
 
 moon - A module to display moon phase information.
 
-net - A module to monitor traffic on a network device.  (Will be replaced by something better.)
+net - A module to monitor traffic on a network device.
 
 photo - A module to display pictures on the desktop.
 
