@@ -124,8 +124,10 @@ _cb_mouse_in(void *data, Evas *evas, Evas_Object *obj, void *event)
    Config_Item *ci;
    E_Container *con;
    Evas_Object *bg, *box, *icon, *label;
-   Evas_Coord x, y, w, h;
+   Evas_Coord cx, cy, cw, ch;
    Evas_Coord ox, oy, ow, oh;
+   Evas_List *l;
+   int layer = -1;
    int top, wx, wy, ww, wh;
    char buf[PATH_MAX];
    
@@ -136,12 +138,10 @@ _cb_mouse_in(void *data, Evas *evas, Evas_Object *obj, void *event)
    ci = _config_item_get(inst->gcc->id);
    
    snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(cfg->mod));
-   evas_object_geometry_get(inst->o_net, &ox, &oy, &ow, &oh);
    
    con = e_container_current_get(e_manager_current_get());
    inst->popup->win = e_popup_new(e_zone_current_get(con), 0, 0, 0, 0);
    bg = edje_object_add(inst->popup->win->evas);
-   inst->popup->o_bg = bg;
    if (!e_theme_edje_object_set(bg, "base/theme/modules", 
 				"modules/net/popup"))
      edje_object_file_set(bg, buf, "modules/net/popup");
@@ -157,57 +157,85 @@ _cb_mouse_in(void *data, Evas *evas, Evas_Object *obj, void *event)
    edje_object_size_min_calc(bg, &ww, &wh);
    evas_object_move(bg, 0, 0);
    evas_object_resize(bg, ww, wh);
+   inst->popup->o_bg = bg;
+
+   /* Begin Butt Ugly hack for shelf "layer"/position changes */
+   cx = cy = cw = ch = -1;
+   for (l = e_shelf_list(); l; l = l->next) 
+     {
+	E_Shelf *es;
+	
+	es = l->data;
+	if (es->gadcon != inst->gcc->gadcon) continue;
+	layer = es->layer;
+	cx = es->x;
+	cy = es->y;
+	cw = es->w;
+	ch = es->h;
+	break;
+     }
    
-   e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &x, &y, &w, &h);
-   wx = x + ox;
-   wy = y + oy;
-   if ((wy - con->y) < (con->h / 2))
-     top = 0;
-   else
-     top = 1;
-   
+   if (cx == -1) return;
+   evas_object_geometry_get(inst->o_net, &ox, &oy, &ow, &oh);
    switch (inst->gcc->gadcon->orient) 
      {
-      case E_GADCON_ORIENT_CORNER_LT:
-	wx += ox + ow;
-	if (top) wy += (oh - 5);
+      case E_GADCON_ORIENT_CORNER_RT:
+      case E_GADCON_ORIENT_CORNER_RB:
+      case E_GADCON_ORIENT_RIGHT:
+	wx = (cx - ww);
+	if (layer == 1) 
+	  wy = oy;
+	else 
+	  wy = (cy + oy);
+	if ((wy + wh) > (cy + ch))
+	  wy = (cy + ch) - wh;
 	break;
       case E_GADCON_ORIENT_LEFT:
+      case E_GADCON_ORIENT_CORNER_LT:
       case E_GADCON_ORIENT_CORNER_LB:
-	wx += ox + ow;
-	wy = y;
-	break;
-      case E_GADCON_ORIENT_CORNER_RT:
-	wx -= ww - (ox - 5);
-	if (top) wy += oh;
-	break;
-      case E_GADCON_ORIENT_RIGHT:
-	wx -= ww - (ox - 5);
-	if (top) wy -= (oh - 5);
-	break;
-      case E_GADCON_ORIENT_CORNER_RB:
-	wx -= ww - (ox - 5);
-	wy -= oy;
+	wx = (cx + cw);
+	if (layer == 1)
+	  wy = oy;
+	else
+	  wy = (cy + oy);
+	if ((wy + wh) > (cy + ch))
+	  wy = (cy + ch) - wh;
 	break;
       case E_GADCON_ORIENT_TOP:
       case E_GADCON_ORIENT_CORNER_TL:
+	if (layer == 1)
+	  wx = ox;
+	else
+	  wx = (cx + ox);
+	wy = (cy + ch);
+	break;
       case E_GADCON_ORIENT_CORNER_TR:
-	wx += ((ow - ww) / 2);
-	if (wx < x) wx = x;
-	if ((wx + ww) > (x + w)) wx = ((x + w) - ww);
-	if (!top) wy += oh;
+	if (layer == 1)
+	  wx = ox;
+	else
+	  wx = (cx + ox);
+	wy = (cy + ch);
+	if ((wx + ww) > (cx + cw))
+	  wx = (cx + cw) - ww;
 	break;
       case E_GADCON_ORIENT_BOTTOM:
       case E_GADCON_ORIENT_CORNER_BL:
-	wx += ((ow - ww) / 2);
-	if (wx < x) wx = x;
-	wy = (y - wh);
+	if (layer == 1)
+	  wx = ox;
+	else
+	  wx = (cx + ox);
+	wy = (cy - wh);
 	break;
       case E_GADCON_ORIENT_CORNER_BR:
-	wx += ((ow - ww) / 2);
-	if (wx < x) wx = x;
-	if ((wx + ww) > (x + w)) wx = ((x + w) - ww);
-	wy = (y - wh);
+	if (layer == 1)
+	  wx = ox;
+	else
+	  wx = (cx + ox);
+	wy = (cy - wh);
+	if ((wx + ww) > (cx + cw))
+	  wx = (cx + cw) - ww;
+	break;
+      default:
 	break;
      }
    e_popup_move_resize(inst->popup->win, wx, wy, ww, wh);
