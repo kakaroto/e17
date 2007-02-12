@@ -181,7 +181,6 @@ main (int argc, char *argv[])
 
   if (index) {
     Ewl_Model *model;
-    Ewl_View  *view;
     void      *data;
 
     /* tree */
@@ -205,9 +204,10 @@ main (int argc, char *argv[])
 
     /* MVC */
     ewl_mvc_data_set (EWL_MVC (tree), data);
+    ewl_mvc_model_set (EWL_MVC (tree), model);
 
     /* view */
-    ewl_tree2_column_append (EWL_TREE2(tree), model, view);
+    ewl_tree2_column_append (EWL_TREE2(tree), view, FALSE);
 
     /* we attach and show */
     ewl_container_child_append (EWL_CONTAINER (vbox), tree);
