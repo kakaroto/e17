@@ -4,6 +4,7 @@
 
 #include "ewl_base.h"
 #include <Ecore_Fb.h>
+#include <Evas.h>
 #include <Evas_Engine_FB.h>
 
 #define EWL_ENGINE_EVAS_FB(engine) \

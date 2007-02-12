@@ -4,6 +4,7 @@
 
 #include "ewl_base.h"
 #include <Ecore_X.h>
+#include <Evas.h>
 #include <Evas_Engine_GL_X11.h>
 
 #define EWL_ENGINE_EVAS_GL_X11(engine) \
