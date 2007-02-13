@@ -39,8 +39,10 @@ struct Ewl_Popup
 
 	Ewl_Popup_Type type;    /**< The Popup type */
 	Ewl_Widget *follow;	/**< The object to follow */
-	int x;			/**< The x position */
-	int y;			/**< The y position */
+	struct {
+		int x;			/**< The x position */
+		int y;			/**< The y position */
+	} mouse, offset;
 	int fit_to_follow;	/**< if the popup fits the size to its follow*/
 };
 
@@ -53,6 +55,7 @@ void 		 ewl_popup_fit_to_follow_set(Ewl_Popup *p, int fit);
 int 		 ewl_popup_fit_to_follow_get(Ewl_Popup *p);
 
 void 		 ewl_popup_mouse_position_set(Ewl_Popup *p, int x, int y);
+void		 ewl_popup_offset_set(Ewl_Popup *p, int x, int y);
 
 /*
  * Internal, override at your own risk

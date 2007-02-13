@@ -682,6 +682,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 
 	if (!(ewl_attach_tooltip->win))
 	{
+		int oh, ov;
 
 		ewl_attach_tooltip->win = ewl_popup_new();
 		ewl_popup_type_set(EWL_POPUP(ewl_attach_tooltip->win),
@@ -694,6 +695,13 @@ ewl_attach_cb_tooltip_timer(void *data)
 					ewl_attach_cb_tooltip_win_destroy, 
 					NULL);
 
+		ov = ewl_theme_data_int_get(EWL_WIDGET(w),
+							"/tooltip/voffset");
+		oh = ewl_theme_data_int_get(EWL_WIDGET(w),
+							"/tooltip/hoffset");
+
+		ewl_popup_offset_set(EWL_POPUP(ewl_attach_tooltip->win), 
+						oh, ov);
 		ewl_widget_appearance_set(ewl_attach_tooltip->win,
 						EWL_ATTACH_TOOLTIP_TYPE);
 		ewl_widget_inherit(ewl_attach_tooltip->win, 

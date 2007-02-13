@@ -192,8 +192,28 @@ ewl_popup_mouse_position_set(Ewl_Popup *p, int x, int y)
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
 
-	p->x = x;
-	p->y = y;
+	p->mouse.x = x;
+	p->mouse.y = y;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param p: The popup to set the offset for
+ * @param x: the x offset
+ * @param y: the y offset
+ * @return Returns no value
+ * @brief This is to set the offset to where the popup will be placed
+ */
+void
+ewl_popup_offset_set(Ewl_Popup *p, int x, int y)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
+
+	p->offset.x = x;
+	p->offset.y = y;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -365,26 +385,18 @@ ewl_popup_position_check(Ewl_Popup *p)
 	ewl_embed_window_position_get(emb, &win_x, &win_y);
 	
 	if (p->type == EWL_POPUP_TYPE_MOUSE) {
-		int offset_h, offset_v;
+		x = win_x + p->mouse.x;
+		y = win_y + p->mouse.y;
 
-		x = win_x + p->x;
-		y = win_y + p->y;
-
-		offset_v = ewl_theme_data_int_get(EWL_WIDGET(p),
-							"/popup/voffset");
-		offset_h = ewl_theme_data_int_get(EWL_WIDGET(p),
-							"/popup/hoffset");
-
-
-		if (x + offset_h + CURRENT_W(p) > desk_w)
-			x -= offset_h + CURRENT_W(p);
+		if (x + p->offset.x + CURRENT_W(p) > desk_w)
+			x -= p->offset.x + CURRENT_W(p);
 		else
-			x += offset_h;
+			x += p->offset.x;
 
-		if (y + offset_v + CURRENT_H(p) > desk_h)
-			y -= offset_v + CURRENT_H(p);
+		if (y + p->offset.y + CURRENT_H(p) > desk_h)
+			y -= p->offset.y + CURRENT_H(p);
 		else
-			y += offset_v;
+			y += p->offset.y;
 	}
 	else if (p->type == EWL_POPUP_TYPE_MENU_VERTICAL) {
 		
