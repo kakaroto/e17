@@ -29,7 +29,6 @@ void display_window(int argc, char** argv)
 	ewl_window_name_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_class_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_dialog_set(EWL_WINDOW(win), 1);
-	ewl_window_transient_for_foreign(EWL_WINDOW(win), NULL);
 	ewl_window_keyboard_grab_set(EWL_WINDOW(win), 1);
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 	ewl_callback_prepend(win, EWL_CALLBACK_REVEAL, reveal_cb, NULL);
