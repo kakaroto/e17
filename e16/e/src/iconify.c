@@ -304,10 +304,10 @@ IconboxesEwinIconify(EWin * ewin)
    if (!ct)
       return;
 
-   IconboxObjEwinAdd(ct, ewin);
-
    if (ct->anim_mode && !ewin->state.showingdesk)
       IB_Animate(ct, 1, ewin);
+
+   IconboxObjEwinAdd(ct, ewin);
 }
 
 static void
