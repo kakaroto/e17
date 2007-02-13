@@ -10,6 +10,7 @@ struct _Instance
    Evas_Object *o_net;
    Ecore_Timer *timer;
    Popup *popup;
+   short popup_locked;
    unsigned long in, out;
 };
 

@@ -88,6 +88,13 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    
    inst = data;
    ev = event;
+   if ((ev->button == 1) && (!cfg->menu))
+     {
+    if (inst->popup_locked) 
+      inst->popup_locked=0;
+    else
+      inst->popup_locked=1;
+     }
    if ((ev->button == 3) && (!cfg->menu)) 
      {
 	E_Menu *mn;
@@ -249,6 +256,7 @@ _cb_mouse_out(void *data, Evas *evas, Evas_Object *obj, void *event)
    
    inst = data;
    if (!inst->popup) return;
+   if (inst->popup_locked) return;
    evas_object_del(inst->popup->o_bg);
    e_object_del(E_OBJECT(inst->popup->win));
    E_FREE(inst->popup);
