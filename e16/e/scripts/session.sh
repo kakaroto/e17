@@ -31,6 +31,8 @@ RunApps() {
 		if [ -x "$f" ]; then
 #			echo $f
 			case "$f" in
+			*~)	# Assume this is crap - skip
+				;;
 			*.sh)	# Scripts are executed in foreground
 				"$f"
 				;;
