@@ -163,8 +163,8 @@ data
 
 	item: "/freebox/auto/padding" 5;
 
-	item: "/popup/voffset" 10;
-	item: "/popup/hoffset" 10;
+	item: "/tooltip/voffset" 10;
+	item: "/tooltip/hoffset" 10;
 
 	item: "/spinner/acceleration" 5;
 	item: "/spinner/velocity" 5;
