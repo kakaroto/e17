@@ -25,6 +25,7 @@ collections
 	       {
 		  name: "rx";
 		  type: IMAGE;
+		  mouse_events: 0;
 		  description 
 		    {
 		       state: "default" 0.0;
@@ -46,20 +47,9 @@ collections
 	       }
 	     part 
 	       {
-		  name: "base";
-		  type: IMAGE;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       aspect: 1.0 1.0;
-		       aspect_preference: BOTH;
-		       image.normal: "idle.png";
-		    }
-	       }
-	     part 
-	       {
 		  name: "tx";
 		  type: IMAGE;
+		  mouse_events: 0;
 		  description 
 		    {
 		       state: "default" 0.0;
@@ -79,9 +69,49 @@ collections
 		       color: 255 255 255 255;
 		    }
 	       }
+	     part 
+	       {
+		  name: "base";
+		  type: IMAGE;
+		  mouse_events: 0;
+		  description 
+		    {
+		       state: "default" 0.0;
+		       aspect: 1.0 1.0;
+		       aspect_preference: BOTH;
+		       image.normal: "idle.png";
+		    }
+	       }
+	     part 
+	       {
+		  name: "overlay";
+		  type: RECT;
+		  repeat_events: 0;
+		  mouse_events: 1;
+		  description 
+		    {
+		       state: "default" 0.0;
+		       color: 0 0 0 0;
+		       visible: 1;
+		    }
+	       }
 	  }
 	programs 
 	  {
+	     program 
+	       {
+		  name: "in";
+		  signal: "mouse,in";
+		  source: "overlay";
+		  action: SIGNAL_EMIT "e,action,mouse,in" "";
+	       }
+	     program 
+	       {
+		  name: "out";
+		  signal: "mouse,out";
+		  source: "overlay";
+		  action: SIGNAL_EMIT "e,action,mouse,out" "";
+	       }
 	     program 
 	       {
 		  name: "recv";

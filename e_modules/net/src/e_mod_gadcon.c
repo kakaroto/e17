@@ -29,19 +29,19 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    if (!e_theme_edje_object_set(inst->o_net, "base/theme/modules/net",
 				"modules/net/main"))
      edje_object_file_set(inst->o_net, buf, "modules/net/main");
+   edje_object_signal_callback_add(inst->o_net, "e,action,mouse,in", "",
+				   _cb_mouse_in, inst);
+   edje_object_signal_callback_add(inst->o_net, "e,action,mouse,out", "",
+				   _cb_mouse_out, inst);
    evas_object_show(inst->o_net);
 
    gcc = e_gadcon_client_new(gc, name, id, style, inst->o_net);
    gcc->data = inst;
    inst->gcc = gcc;
    inst->timer = ecore_timer_add(0.5, _cb_poll, inst);
-   
+
    evas_object_event_callback_add(inst->o_net, EVAS_CALLBACK_MOUSE_DOWN, 
 				  _cb_mouse_down, inst);
-   evas_object_event_callback_add(inst->o_net, EVAS_CALLBACK_MOUSE_IN, 
-				  _cb_mouse_in, inst);
-   evas_object_event_callback_add(inst->o_net, EVAS_CALLBACK_MOUSE_OUT, 
-				  _cb_mouse_out, inst);
    
    cfg->instances = evas_list_append(cfg->instances, inst);
    return gcc;
@@ -59,10 +59,10 @@ _gc_shutdown(E_Gadcon_Client *gcc)
      {
 	evas_object_event_callback_del(inst->o_net, EVAS_CALLBACK_MOUSE_DOWN,
 				       _cb_mouse_down);
-	evas_object_event_callback_del(inst->o_net, EVAS_CALLBACK_MOUSE_IN,
-				       _cb_mouse_in);
-	evas_object_event_callback_del(inst->o_net, EVAS_CALLBACK_MOUSE_OUT,
-				       _cb_mouse_out);
+	edje_object_signal_callback_del(inst->o_net, "e,action,mouse,in", "",
+					_cb_mouse_in);
+	edje_object_signal_callback_del(inst->o_net, "e,action,mouse,out", "",
+					_cb_mouse_out);
 	evas_object_del(inst->o_net);
      }
    E_FREE(inst);

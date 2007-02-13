@@ -90,12 +90,12 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    ev = event;
    if ((ev->button == 1) && (!cfg->menu))
      {
-    if (inst->popup_locked) 
-      inst->popup_locked=0;
-    else
-      inst->popup_locked=1;
+	if (inst->popup_locked) 
+	  inst->popup_locked=0;
+	else
+	  inst->popup_locked=1;
      }
-   if ((ev->button == 3) && (!cfg->menu)) 
+   else if ((ev->button == 3) && (!cfg->menu)) 
      {
 	E_Menu *mn;
 	E_Menu_Item *mi;
@@ -125,7 +125,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 }
 
 EAPI void 
-_cb_mouse_in(void *data, Evas *evas, Evas_Object *obj, void *event) 
+_cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Instance *inst;
    Config_Item *ci;
@@ -137,10 +137,10 @@ _cb_mouse_in(void *data, Evas *evas, Evas_Object *obj, void *event)
    int layer = -1;
    int top, wx, wy, ww, wh;
    char buf[PATH_MAX];
-   
+
    inst = data;
-   if (inst->popup) return;
-   
+   if (inst->popup != NULL) return;
+
    inst->popup = E_NEW(Popup, 1);
    ci = _config_item_get(inst->gcc->id);
    
@@ -250,7 +250,7 @@ _cb_mouse_in(void *data, Evas *evas, Evas_Object *obj, void *event)
 }
 
 EAPI void 
-_cb_mouse_out(void *data, Evas *evas, Evas_Object *obj, void *event) 
+_cb_mouse_out(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Instance *inst;
    
