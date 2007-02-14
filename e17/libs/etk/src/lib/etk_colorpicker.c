@@ -24,7 +24,7 @@ typedef struct Etk_Colorpicker_Picker_SD
    void (*move_resize)(Etk_Colorpicker *cp, int x, int y, int w, int h);
 } Etk_Colorpicker_Picker_SD;
 
-enum Etk_Combobox_Signal_Id
+enum Etk_Colorpicker_Signal_Id
 {
    ETK_CP_COLOR_CHANGED_SIGNAL,
    ETK_CP_NUM_SIGNALS
