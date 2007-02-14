@@ -1,4 +1,4 @@
-FLAGS = `edje-config --cflags` `ecore-config --cflags` `evas-config --cflags` `eet-config --cflags`
+CFLAGS = `edje-config --cflags` `ecore-config --cflags` `evas-config --cflags` `eet-config --cflags`
 LIBS  = `edje-config --libs` `ecore-config --libs` `evas-config --libs` `eet-config --libs`
 
 BINS  = edje edje_ls edje_test edje_thumb
