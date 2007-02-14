@@ -77,9 +77,9 @@ _config_updated(const char *id)
 	if (!inst->timer)
 	  inst->timer = ecore_timer_add(0.5, _cb_poll, inst);
 	if (!ci->show_text)
-	  edje_object_signal_emit(inst->o_net, "e,state,text,hide", "");
+	  edje_object_signal_emit(inst->o_net, "e,state,text,hide", "e");
 	else
-	  edje_object_signal_emit(inst->o_net, "e,state,text,show", "");
+	  edje_object_signal_emit(inst->o_net, "e,state,text,show", "e");
 	  
 	break;
      }

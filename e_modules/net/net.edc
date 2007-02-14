@@ -240,7 +240,7 @@ collections
 	       {
 		  name: "text_hide";
 		  signal: "e,state,text,hide";
-		  source: "";
+		  source: "e";
 		  action: STATE_SET "hidden" 0.0;
 		  target: "e.text.recv";
 		  target: "e.text.send";
@@ -249,7 +249,7 @@ collections
 	       {
 		  name: "text_show";
 		  signal: "e,state,text,show";
-		  source: "";
+		  source: "e";
 		  action: STATE_SET "default" 0.0;
 		  target: "e.text.recv";
 		  target: "e.text.send";
