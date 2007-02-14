@@ -61,6 +61,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (cfdata->devs) ecore_list_destroy(cfdata->devs);
    E_FREE(cfdata->device);
+   E_FREE(cfdata->app);
    E_FREE(cfdata);
    if (!cfg) return;
    cfg->cfd = NULL;
