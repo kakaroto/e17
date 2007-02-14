@@ -35,6 +35,11 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 				   _cb_mouse_out, inst);
    evas_object_show(inst->o_net);
 
+   if (!ci->show_text)
+     edje_object_signal_emit(inst->o_net, "e,state,text,hide", "e");
+   else
+     edje_object_signal_emit(inst->o_net, "e,state,text,show", "e");
+   
    gcc = e_gadcon_client_new(gc, name, id, style, inst->o_net);
    gcc->data = inst;
    inst->gcc = gcc;
