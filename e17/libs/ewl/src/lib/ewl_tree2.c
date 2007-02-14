@@ -4,6 +4,7 @@
 #include "ewl_button.h"
 #include "ewl_cell.h"
 #include "ewl_check.h"
+#include "ewl_expansion.h"
 #include "ewl_label.h"
 #include "ewl_paned.h"
 #include "ewl_row.h"
@@ -879,6 +880,11 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch,
 			ewl_tree2_build_tree_rows(tree, tmp, colour, node, hidden);
 			FREE(tmp);
 		}
+		else
+		{
+			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), 
+								NULL);
+		}
 		i++;
 
 		/*
@@ -1247,22 +1253,29 @@ ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, void *data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("node", node);
 
-	if (data && !node->handle)
+	if (!node->handle)
 	{
-		node->handle = ewl_check_new();
+		node->handle = ewl_expansion_new();
 		ewl_object_fill_policy_set(EWL_OBJECT(node->handle),
 						EWL_FLAG_FILL_NONE);
 		ewl_object_alignment_set(EWL_OBJECT(node->handle),
 						EWL_FLAG_ALIGN_TOP);
 		ewl_container_child_prepend(EWL_CONTAINER(node), node->handle);
+		ewl_widget_show(node->handle);
+	}
+	if (data)
+	{
 		ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
 						ewl_tree2_cb_node_toggle, node);
-		ewl_widget_show(node->handle);
+		ewl_widget_enable(node->handle);
+		ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), TRUE);
 	}
 	else if (node->handle && !data)
 	{
-		ewl_widget_destroy(node->handle);
-		node->handle = NULL;
+		ewl_callback_del(node->handle, EWL_CALLBACK_VALUE_CHANGED,
+						ewl_tree2_cb_node_toggle);
+		ewl_widget_disable(node->handle);
+		ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), FALSE);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

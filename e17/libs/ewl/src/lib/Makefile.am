@@ -37,6 +37,7 @@ EWLHEADERS = \
 	ewl_entry.h \
 	ewl_enums.h \
 	ewl_events.h \
+	ewl_expansion.h \
 	ewl_floater.h \
 	ewl_filelist.h \
 	ewl_filelist_tree.h\
@@ -120,6 +121,7 @@ EWLSOURCES= \
 	ewl_engines.c \
 	ewl_entry.c \
 	ewl_events.c \
+	ewl_expansion.c \
 	ewl_floater.c \
 	ewl_filelist.c \
 	ewl_filelist_tree.c \

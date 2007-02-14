@@ -146,7 +146,8 @@ data
 	item: "/tree_header/header/button/group" "ewl/tree/header/button";
 
 	item: "/row/group" "ewl/row";
-	item: "/node/check/group" "ewl/tree/expansion";
+//	item: "/node/check/group" "ewl/tree/expansion";
+  item: "/expansion/group" "ewl/tree/expansion";
 
 	/* window related groups */
 	item: "/tooltip/group" "ewl/window";
