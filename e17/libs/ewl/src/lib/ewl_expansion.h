@@ -46,14 +46,17 @@ Ewl_Widget 	*ewl_expansion_new(void);
 int 		 ewl_expansion_init(Ewl_Expansion *c);
 
 int 		 ewl_expansion_is_expandable(Ewl_Expansion *c);
+void 		 ewl_expansion_expandable_set(Ewl_Expansion *c, 
+						int expandable);
+
 int 		 ewl_expansion_is_expanded(Ewl_Expansion *c);
 void 		 ewl_expansion_expanded_set(Ewl_Expansion *c, int expanded);
-void 		 ewl_expansion_expandable_set(Ewl_Expansion *c, int expandable);
 
 /*
  * Internally used callbacks.
  */
-void ewl_expansion_cb_update_expandable(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_expansion_cb_update_expandable(Ewl_Widget *w, void *ev_data, 
+							void *user_data);
 void ewl_expansion_cb_reveal(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
