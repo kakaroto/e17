@@ -145,6 +145,22 @@ ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w)
 }
 
 /**
+ * @param p: The popup to get the follow from
+ * @return Returns the follow of the popup
+ * @brief 
+ */
+Ewl_Widget *
+ewl_popup_follow_get(Ewl_Popup *p)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("p", p, EWL_POPUP_TYPE_NONE);
+	DCHECK_TYPE_RET("p", p, EWL_POPUP_TYPE, EWL_POPUP_TYPE_NONE);
+
+	DRETURN_PTR(p->follow, DLEVEL_STABLE);
+}
+
+
+/**
  * @param p: The popup
  * @param fit: TRUE or FALSE
  * @return Returns no value
