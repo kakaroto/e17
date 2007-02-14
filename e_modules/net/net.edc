@@ -86,7 +86,7 @@ collections
 	       {
 		  name: "e.text.recv";
 		  type: TEXT;
-		  effect: SHADOW;
+		  effect: OUTLINE_SOFT_SHADOW;
 		  mouse_events: 0;
 		  description 
 		    {
@@ -106,6 +106,7 @@ collections
 			    to: "base";
 			 }
 		       color: 255 255 255 255;
+		       color2: 0 0 0 50;
 		       color3: 0 0 0 42;
 		       color_class: "menu_item";
 		       text 
@@ -130,7 +131,7 @@ collections
 	       {
 		  name: "e.text.send";
 		  type: TEXT;
-		  effect: SHADOW;
+		  effect: OUTLINE_SOFT_SHADOW;
 		  mouse_events: 0;
 		  description 
 		    {
@@ -150,6 +151,7 @@ collections
 			    to: "base";
 			 }
 		       color: 255 255 255 255;
+		       color2: 0 0 0 50;
 		       color3: 0 0 0 42;
 		       color_class: "menu_item";
 		       text 
