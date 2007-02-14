@@ -59,24 +59,32 @@ _cb_poll(void *data)
    else
      edje_object_signal_emit(inst->o_net, "e,state,send,active", "e");
 
-   if (!inst->popup) return 1;
-
    if (bin > 1048576)
-     snprintf(tmp, sizeof(tmp), "Rx: %ld Mb", (bin / 1048576));
+     snprintf(tmp, sizeof(tmp), "%ld Mb", (bin / 1048576));
    else if ((bin > 1024) && (bin < 1048576))
-     snprintf(tmp, sizeof(tmp), "Rx: %ld Kb", (bin / 1024));
+     snprintf(tmp, sizeof(tmp), "%ld Kb", (bin / 1024));
    else
-     snprintf(tmp, sizeof(tmp), "Rx: %ld B", bin);
-   edje_object_part_text_set(inst->popup->o_bg, "e.text.recv", tmp);
-
+     snprintf(tmp, sizeof(tmp), "%ld B", bin);
+   edje_object_part_text_set(inst->o_net, "e.text.recv", tmp);
+   if (inst->popup) 
+     {
+	snprintf(buf, sizeof(buf), "Rx: %s", tmp);
+	edje_object_part_text_set(inst->popup->o_bg, "e.text.recv", buf);
+     }
+   
    if (bout > 1048576)
-     snprintf(tmp, sizeof(tmp), "Tx: %ld Mb", (bout / 1048576));
+     snprintf(tmp, sizeof(tmp), "%ld Mb", (bout / 1048576));
    else if ((bout > 1024) && (bout < 1048576))
-     snprintf(tmp, sizeof(tmp), "Tx: %ld Kb", (bout / 1024));
+     snprintf(tmp, sizeof(tmp), "%ld Kb", (bout / 1024));
    else
-     snprintf(tmp, sizeof(tmp), "Tx: %ld B", bout);
-   edje_object_part_text_set(inst->popup->o_bg, "e.text.send", tmp);
-
+     snprintf(tmp, sizeof(tmp), "%ld B", bout);
+   edje_object_part_text_set(inst->o_net, "e.text.send", tmp);
+   if (inst->popup) 
+     {
+	snprintf(buf, sizeof(buf), "Tx: %s", tmp);
+	edje_object_part_text_set(inst->popup->o_bg, "e.text.send", buf);
+     }
+   
    return 1;
 }
 
@@ -84,11 +92,22 @@ EAPI void
 _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
    Instance *inst;
+   Config_Item *ci;
+   Ecore_Exe *x;
    Evas_Event_Mouse_Down *ev;
    
    inst = data;
    ev = event;
-   if ((ev->button == 1) && (!cfg->menu))
+   ci = _config_item_get(inst->gcc->id);
+   if ((ev->button == 1) && (ev->flags & EVAS_BUTTON_DOUBLE_CLICK)) 
+     {
+	if (ci->app != NULL) 
+	  {
+	     x = ecore_exe_run(ci->app, NULL);
+	     if (x) ecore_exe_free(x);
+	  }
+     }
+   else if ((ev->button == 1) && (!cfg->menu))
      {
 	if (inst->popup_locked) 
 	  inst->popup_locked=0;

@@ -17,7 +17,8 @@ struct _Config_Item
 {
    const char *id;
    const char *device;
-   int limit;
+   const char *app;
+   int limit, show_text;
 };
 
 EAPI Config_Item *_config_item_get(const char *id);

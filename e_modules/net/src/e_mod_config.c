@@ -18,7 +18,9 @@ _config_item_get(const char *id)
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->device = evas_stringshare_add("eth0");
+   ci->app = evas_stringshare_add("");
    ci->limit = 0;
+   ci->show_text = 1;
    cfg->items = evas_list_append(cfg->items, ci);
    return ci;
 }
@@ -74,6 +76,11 @@ _config_updated(const char *id)
 	if (strcmp(inst->gcc->id, id)) continue;
 	if (!inst->timer)
 	  inst->timer = ecore_timer_add(0.5, _cb_poll, inst);
+	if (!ci->show_text)
+	  edje_object_signal_emit(inst->o_net, "e,state,text,hide", "");
+	else
+	  edje_object_signal_emit(inst->o_net, "e,state,text,show", "");
+	  
 	break;
      }
 }

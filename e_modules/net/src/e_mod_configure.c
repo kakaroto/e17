@@ -6,7 +6,8 @@
 struct _E_Config_Dialog_Data 
 {
    char *device;
-   int limit;
+   char *app;
+   int limit, show_text;
    
    Ecore_List *devs;
    int num;
@@ -71,10 +72,16 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
    char *tmp;
    int i = 0;
    
+   cfdata->device = NULL;
    if (ci->device) 
      cfdata->device = strdup(ci->device);
-   else
-     cfdata->device = NULL;
+   
+   cfdata->app = NULL;
+   if (ci->app)
+     cfdata->app = strdup(ci->app);
+
+   cfdata->show_text = ci->show_text;
+   cfdata->limit = ci->limit;
    
    cfdata->devs = _config_devices_get();
    if (!cfdata->devs) return;
@@ -88,7 +95,6 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 	  }
 	i++;
      }
-   cfdata->limit = ci->limit;
 }
 
 static Evas_Object *
@@ -100,13 +106,23 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    int i = 0;
    
    o = e_widget_list_add(evas, 0, 0);
+   
+   of = e_widget_framelist_add(evas, _("General Settings"), 0);
+   ob = e_widget_check_add(evas, _("Show Text"), &(cfdata->show_text));
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_label_add(evas, _("Launch Application On Double-Click"));
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_entry_add(evas, &(cfdata->app));
+   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   
    of = e_widget_framelist_add(evas, _("Activity Notification Level"), 0);
    rg = e_widget_radio_group_new(&(cfdata->limit));
-   ob = e_widget_radio_add(evas, "High (MB)", 1048575, rg);
+   ob = e_widget_radio_add(evas, _("High (MB)"), 1048575, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, "Middle (KB)", 1023, rg);
+   ob = e_widget_radio_add(evas, _("Middle (KB)"), 1023, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, "Low (B)", 0, rg);
+   ob = e_widget_radio_add(evas, _("Low (B)"), 0, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -140,7 +156,12 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	ci->device = evas_stringshare_add(tmp);
      }
    ci->limit = cfdata->limit;
+   ci->show_text = cfdata->show_text;
 
+   if (ci->app) evas_stringshare_del(ci->app);
+   if (cfdata->app != NULL)
+     ci->app = evas_stringshare_add(cfdata->app);
+   
    e_config_save_queue();
    _config_updated(ci->id);
    return 1;
