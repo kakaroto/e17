@@ -199,17 +199,14 @@ ewl_menubar_orientation_get(Ewl_Menubar *mb)
 void
 ewl_menubar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
-	Ewl_Menubar *mb;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	mb = EWL_MENUBAR(c);
 	if (ewl_widget_type_is(w, "menu")) 
-		EWL_MENU(w)->menubar_parent = EWL_WIDGET(mb);
+		EWL_MENU(w)->menubar_parent = EWL_WIDGET(c);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 
