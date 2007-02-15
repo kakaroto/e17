@@ -40,11 +40,6 @@
 
 #define VERSION "0.0.2"
 
-/* FIXME: should be configurable, but i'm too lazy to add the necessary
- * sanity checks :)
- */
-#define FILE_FMT "enthrall_dump%.5lu"
-
 #define IMG_FROM_RECT(r) \
 	imlib_create_image_from_drawable (0, \
 	                                  (r).x, (r).y, (r).width, (r).height, \
@@ -52,7 +47,8 @@
 #define MIN(a, b) (a) < (b) ? (a) : (b)
 #define MAX(a, b) (a) > (b) ? (a) : (b)
 
-typedef struct {
+typedef struct Enthrall Enthrall;
+struct Enthrall {
 	Ecore_X_Display *disp;
 
 	struct {
@@ -75,40 +71,28 @@ typedef struct {
 	EnthrallTheora theora;
 
 	uint8_t *y, *u, *v;
-} Enthrall;
+	int (*render)(Enthrall *e);
+};
 
 static int
-on_timer (void *udata)
+render_damage(Enthrall *e)
 {
-	Enthrall *e = udata;
 	Imlib_Image tmp;
-	Bool b;
-	int ptr_x = 0, ptr_y = 0, unused1;
-	unsigned int unused2;
-	uint32_t *data;
-	Window dw, childw = None;
-
-	/* FIXME: check whether e->window.id still points to a
-	 *        valid window. not sure whether this really should be
-	 *        done every time we enter this function.
-	 */
+	int result = 0;
 
 	/* was there any change at all?
 	 * if not, just link the last written frame to the current.
 	 */
 	if (!e->damage_valid) {
-		/* FIXME:
-		 * According to this ticket
-		 * https://trac.xiph.org/changeset/11119
-		 * it seems we can just put in an empty packet to repeat
-		 * the last frame.
-		 */
-		enthrall_theora_encode_frame (&e->theora, false);
 		goto out;
 	}
 
 	/* grab the damaged rectangle */
 	tmp = IMG_FROM_RECT (e->damage);
+	if (!tmp) {
+		result = -1;
+		goto out;
+	}
 
 	/* and blend it onto the previous shot */
 	imlib_blend_image_onto_image (tmp, true, 0, 0,
@@ -121,6 +105,73 @@ on_timer (void *udata)
 	imlib_context_set_image (tmp);
 	imlib_free_image ();
 	imlib_context_set_image (e->prev_img);
+	e->damage_valid = false;
+
+out:
+	e->frame_count++;
+	return result;
+}
+
+static int
+render_nodamage(Enthrall *e)
+{
+	Imlib_Image tmp;
+	Ecore_X_Rectangle update;
+	int result = 0;
+
+	update.x = 0;
+	update.y = 0;
+	update.width = e->window.w;
+	update.height = e->window.h;
+
+	/* grab the current rectangle */
+	tmp = IMG_FROM_RECT (update);
+	if (!tmp) {
+		result = -1;
+		goto out;
+	}
+
+	/* and blend it onto the previous shot */
+	imlib_blend_image_onto_image (tmp, true, 0, 0,
+	                              update.width, update.height,
+	                              update.x + e->window.offset_x,
+	                              update.y + e->window.offset_y,
+	                              update.width, update.height);
+
+	/* free the temporary grab */
+	imlib_context_set_image (tmp);
+	imlib_free_image ();
+	imlib_context_set_image (e->prev_img);
+
+out:
+	e->frame_count++;
+	return result;
+}
+
+static int
+on_timer (void *udata)
+{
+	Bool b;
+	int result;
+	uint32_t *data;
+	bool final_frame;
+	int ptr_x = 0, ptr_y = 0, unused1;
+	unsigned int unused2;
+	Window dw, childw = None;
+	Enthrall *e = udata;
+
+	/* FIXME: check whether e->window.id still points to a
+	 *        valid window. not sure whether this really should be
+	 *        done every time we enter this function.
+	 */
+	final_frame = false;
+
+	result = e->render(e);
+	if (result < 0) {
+		final_frame = true;
+		fprintf(stderr, "Failed to render frame... exiting.\n");
+		goto out;
+	}
 
 	/* if we have a cursor, find out where it's at */
 	if (e->cursor.id) {
@@ -139,12 +190,16 @@ on_timer (void *udata)
 	rgb2yuv420 (data, e->window.w16, e->window.h16, e->y, e->u, e->v);
 	imlib_image_put_back_data (data);
 
-	enthrall_theora_encode_frame (&e->theora, false);
-
-	e->damage_valid = false;
-
 out:
-	e->frame_count++;
+	/* FIXME:
+	 * According to this ticket
+	 * https://trac.xiph.org/changeset/11119
+	 * it seems we can just put in an empty packet to repeat
+	 * the last frame.
+	 */
+	enthrall_theora_encode_frame (&e->theora, final_frame);
+	if (result < 0)
+		exit(result);
 
 	return 1; /* keep going */
 }
@@ -298,11 +353,17 @@ main (int argc, char **argv)
 	ecore_init ();
 	ecore_x_init (NULL);
 
-	if (!ecore_x_damage_query ()) {
-		fprintf (stderr, "Error: X damage extension not available.\n");
-
-		return EXIT_FAILURE;
+	/*
+	 * Setup our render callback based on whether we support the damage
+	 * extension on this display.
+	 */
+	if (ecore_x_damage_query ()) {
+		e.render = render_damage;
+		ecore_x_damage_new (e.window.id,
+					ECORE_X_DAMAGE_REPORT_RAW_RECTANGLES);
 	}
+	else
+		e.render = render_nodamage;
 
 	start = ecore_time_get ();
 
@@ -315,11 +376,7 @@ main (int argc, char **argv)
 		e.cursor.h = imlib_image_get_height ();
 	}
 
-	ecore_x_window_geometry_get (e.window.id, NULL, NULL,
-	                             &e.window.w, &e.window.h);
-
-	ecore_x_damage_new (e.window.id,
-		                ECORE_X_DAMAGE_REPORT_RAW_RECTANGLES);
+	ecore_x_window_size_get (e.window.id, &e.window.w, &e.window.h);
 
 	init_imlib (&e);
 
