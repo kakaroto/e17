@@ -1,3 +1,0 @@
-SUBDIRS = images
-
-MAINTAINERCLEANFILES = Makefile.in
