@@ -285,8 +285,8 @@ ImagestateRealize(ImageState * is)
    /* not loaded, load and setup */
    if (!is->real_file)
       is->real_file = ThemeFileFind(is->im_file, 0);
-
-   is->im = EImageLoad(is->real_file);
+   if (is->real_file)
+      is->im = EImageLoad(is->real_file);
    if (!is->im)
      {
 	Eprintf

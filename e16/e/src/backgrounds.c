@@ -572,14 +572,16 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
      {
 	if (!bg->bg.real_file)
 	   bg->bg.real_file = ThemeFileFind(bg->bg.file, 0);
-	bg->bg.im = EImageLoad(bg->bg.real_file);
+	if (bg->bg.real_file)
+	   bg->bg.im = EImageLoad(bg->bg.real_file);
      }
 
    if (bg->top.file && !bg->top.im)
      {
 	if (!bg->top.real_file)
 	   bg->top.real_file = ThemeFileFind(bg->top.file, 0);
-	bg->top.im = EImageLoad(bg->top.real_file);
+	if (bg->top.real_file)
+	   bg->top.im = EImageLoad(bg->top.real_file);
      }
 
 #if ENABLE_COLOR_MODIFIERS
