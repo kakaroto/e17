@@ -1,0 +1,473 @@
+group
+{
+	name: "/ephoto/vrunner";
+	parts
+	{
+		part
+		{
+			name: "runner";
+			description
+			{
+				state: "default" 0.0;
+				image
+				{
+					normal: "sf_vb_runner.png";
+					border: 8 8 6 6;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "/ephoto/vscrollbar";
+	min: 15 36;
+	parts
+	{
+		part
+		{
+			name: "scrollbar";
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "sf_barv1.png";
+					border: 6 6 6 6;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+			description
+			{
+				state: "hilited" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "sf_barv1_h.png";
+					border: 6 6 6 6;
+				}
+			}
+		}
+		part
+		{
+			name: "vscrollbar_thumb";
+			description
+			{
+				min: 7 8;
+				max: 7 8;
+				fixed: 1 1;
+				rel1
+				{
+					relative: 0.5 0.5;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 0.5 0.5;
+					offset: 0 0;
+				}
+				image
+				{
+					normal: "sf_barv_thumb.png";
+					border: 2 2 2 2;
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+                        name: "hilite";
+                        signal: "mouse,in";
+                        source: "*";
+                        action: STATE_SET "hilited" 0.0;
+                        target: "scrollbar";
+                }
+                program
+                {
+                        name: "default";
+                        signal: "mouse,out";
+                        source: "*";
+                        action: STATE_SET "default" 0.0;
+                        target: "scrollbar";
+                }
+        }
+}
+group
+{
+        name: "/ephoto/vscrollbar/decrement";
+        min: 15 15;
+        max: 15 15;
+        parts
+        {
+                part
+                {
+                        name: "arrow";
+                        mouse_events: 1;
+                        description
+                        {
+                                state: "default" 0.0;
+                                align: 0.5 1.0;
+                                aspect: 1.0 1.0;
+                                aspect_preference: HORIZONTAL;
+                                rel1
+                                {
+                                        relative: 0.0 0.0;
+                                        offset: 0 0;
+                                }
+                                rel2
+                                {
+                                        relative: 1.0 1.0;
+                                        offset: -1 -1;
+                                }
+                                image
+                                {
+                                        normal: "sf_btd1.png";
+                                }
+                        }
+                        description
+                        {
+                                state: "clicked" 0.0;
+                                inherit: "default" 0.0;
+                                image
+                                {
+                                        normal: "sf_btd1d.png";
+                                }
+                        }
+                }
+        }
+        programs
+        {
+                program
+                {
+                        name: "mouse,down";
+                        signal: "mouse,down,*";
+                        source: "*";
+                        action: STATE_SET "clicked" 0.0;
+                        target: "arrow";
+                }
+                program
+                {
+                        name: "mouse,up";
+                        signal: "mouse,up,*";
+                        source: "*";
+                        action: STATE_SET "default" 0.0;
+                        target: "arrow";
+                }
+        }
+}
+
+group
+{
+        name: "/ephoto/vscrollbar/increment";
+        min: 15 15;
+        max: 15 15;
+        parts
+        {
+                part
+                {
+                        name: "arrow";
+                        mouse_events: 1;
+                        description
+                        {
+                                state: "default" 0.0;
+                                align: 0.5 1.0;
+                                aspect: 1.0 1.0;
+                                aspect_preference: HORIZONTAL;
+                                rel1
+                                {
+                                        relative: 0.0 0.0;
+                                        offset: 0 0;
+                                }
+                                rel2
+                                {
+                                        relative: 1.0 1.0;
+                                        offset: -1 -1;
+                                }
+                                image
+                                {
+                                        normal: "sf_btu1.png";
+                                }
+                        }
+                        description
+                        {
+                                state: "clicked" 0.0;
+                                inherit: "default" 0.0;
+                                image
+                                {
+                                        normal: "sf_btu1d.png";
+                                }
+                        }
+                }
+        }
+        programs
+        {
+                program
+                {
+                        name: "mouse,down";
+                        signal: "mouse,down,*";
+                        source: "*";
+                        action: STATE_SET "clicked" 0.0;
+                        target: "arrow";
+                }
+                program
+                {
+                        name: "mouse,up";
+                        signal: "mouse,up,*";
+                        source: "EWL";
+                        action: STATE_SET "default" 0.0;
+                        target: "arrow";
+                }
+        }
+}
+
+group
+{
+	name: "/ephoto/hrunner";
+	parts
+	{
+		part
+		{
+			name: "runner";
+			description
+			{
+				state: "default" 0.0;
+				image
+				{
+					normal: "sf_hb_runner.png";
+					border: 6 6 8 8;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "/ephoto/hscrollbar";
+	min: 36 15;
+	parts
+	{
+		part
+		{
+			name: "scrollbar";
+			description
+			{
+				state: "default" 0.0;
+				image
+				{
+					normal: "sf_barh1.png";
+					border: 6 6 6 6;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+			description
+			{
+				state: "hilited" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "sf_barh1_h.png";
+					border: 6 6 6 6;
+				}
+			}
+		}
+		part
+		{
+			name: "hscrollbar_thumb";
+			description
+			{
+				min: 8 7;
+				max: 8 7;
+				fixed: 1 1;
+				rel1
+				{
+					relative: 0.5 0.5;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 0.5 0.5;
+					offset: 0 0;
+				}
+				image
+				{
+					normal: "sf_barh_thumb.png";
+					border: 2 2 2 2;
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+                        name: "hilite";
+                        signal: "mouse,in";
+                        source: "*";
+                        action: STATE_SET "hilited" 0.0;
+                        target: "scrollbar";
+                }
+                program
+                {
+                        name: "default";
+                        signal: "mouse,out";
+                        source: "*";
+                        action: STATE_SET "default" 0.0;
+                        target: "scrollbar";
+                }
+        }
+}
+group
+{
+        name: "/ephoto/hscrollbar/decrement";
+        min: 15 15;
+        max: 15 15;
+        parts
+        {
+                part
+                {
+                        name: "arrow";
+                        mouse_events: 1;
+                        description
+                        {
+                                state: "default" 0.0;
+                                align: 0.5 1.0;
+                                aspect: 1.0 1.0;
+                                aspect_preference: VERTICAL;
+                                rel1
+                                {
+                                        relative: 0.0 0.0;
+                                        offset: 0 0;
+                                }
+                                rel2
+                                {
+                                        relative: 1.0 1.0;
+                                        offset: -1 -1;
+                                }
+                                image
+                                {
+                                        normal: "sf_btl1.png";
+                                }
+                        }
+                        description
+                        {
+                                state: "clicked" 0.0;
+                                inherit: "default" 0.0;
+                                image
+                                {
+                                        normal: "sf_btl1d.png";
+                                }
+                        }
+                }
+        }
+        programs
+        {
+                program
+                {
+                        name: "mouse,down";
+                        signal: "mouse,down,*";
+                        source: "*";
+                        action: STATE_SET "clicked" 0.0;
+                        target: "arrow";
+                }
+                program
+                {
+                        name: "mouse,up";
+                        signal: "mouse,up,*";
+                        source: "*";
+                        action: STATE_SET "default" 0.0;
+                        target: "arrow";
+                }
+        }
+}
+
+group
+{
+        name: "/ephoto/hscrollbar/increment";
+        min: 15 15;
+        max: 15 15;
+        parts
+        {
+                part
+                {
+                        name: "arrow";
+                        mouse_events: 1;
+                        description
+                        {
+                                state: "default" 0.0;
+                                align: 0.5 1.0;
+                                aspect: 1.0 1.0;
+                                aspect_preference: VERTICAL;
+                                rel1
+                                {
+                                        relative: 0.0 0.0;
+                                        offset: 0 0;
+                                }
+                                rel2
+                                {
+                                        relative: 1.0 1.0;
+                                        offset: -1 -1;
+                                }
+                                image
+                                {
+                                        normal: "sf_btr1.png";
+                                }
+                        }
+                        description
+                        {
+                                state: "clicked" 0.0;
+                                inherit: "default" 0.0;
+                                image
+                                {
+                                        normal: "sf_btr1d.png";
+                                }
+                        }
+                }
+        }
+        programs
+        {
+                program
+                {
+                        name: "mouse,down";
+                        signal: "mouse,down,*";
+                        source: "*";
+                        action: STATE_SET "clicked" 0.0;
+                        target: "arrow";
+                }
+                program
+                {
+                        name: "mouse,up";
+                        signal: "mouse,up,*";
+                        source: "EWL";
+                        action: STATE_SET "default" 0.0;
+                        target: "arrow";
+                }
+        }
+}

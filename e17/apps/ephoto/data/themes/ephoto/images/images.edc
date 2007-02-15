@@ -1,0 +1,31 @@
+images
+{
+	image: "button.png" COMP;
+	image: "button_clicked.png" COMP;
+	image: "combo_arrows.png" COMP;
+	image: "entry.png" COMP;
+	image: "entry_focus.png" COMP;
+	image: "hseparator.png" COMP;
+	image: "scrollpane_bg.png" COMP;
+	image: "seeker_bg.png" COMP;
+	image: "seeker.png" COMP;
+	image: "seeker_h.png" COMP;
+	image: "sf_barh1.png" COMP;
+	image: "sf_barh1_h.png" COMP;
+	image: "sf_barh_thumb.png" COMP;
+	image: "sf_btl1.png" COMP;
+	image: "sf_btl1d.png" COMP;
+	image: "sf_btr1.png" COMP;
+	image: "sf_btr1d.png" COMP;
+	image: "sf_hb_runner.png" COMP;
+	image: "sf_barv1.png" COMP;
+	image: "sf_barv1_h.png" COMP;
+	image: "sf_barv_thumb.png" COMP;
+	image: "sf_btd1.png" COMP;
+	image: "sf_btd1d.png" COMP;
+	image: "sf_btu1.png" COMP;
+	image: "sf_btu1d.png" COMP;
+	image: "sf_vb_runner.png" COMP;
+	image: "shadow.png" COMP;
+	image: "vseparator.png" COMP;
+}

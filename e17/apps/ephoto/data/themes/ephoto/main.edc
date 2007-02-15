@@ -1,0 +1,69 @@
+#include "images/images.edc"
+
+fonts
+{
+        font, "fonts/DejaVuSerif.ttf" "ewl/default";
+        font, "fonts/DejaVuSerif-Bold.ttf" "ewl/default/bold";
+        font, "fonts/DejaVuSerif-Oblique.ttf" "ewl/default/italic";
+        font, "fonts/DejaVuSerif-BoldOblique.ttf" "ewl/default/bold-italic";
+        font, "fonts/DejaVuSansMono.ttf" "ewl/monospace";
+        font, "fonts/DejaVuSansMono-Bold.ttf" "ewl/monospace/bold";
+        font, "fonts/DejaVuSansMono-Oblique.ttf" "ewl/monospace/italic";
+        font, "fonts/DejaVuSansMono-BoldOblique.ttf" "ewl/monospace/bold-italic";
+}
+
+
+collections
+{
+#include "bits/button.edc"
+#include "bits/combo.edc"
+#include "bits/entry.edc"
+#include "bits/label.edc"
+#include "bits/scrollbar.edc"
+#include "bits/scrollpane.edc"
+#include "bits/seeker.edc"
+#include "bits/select.edc"
+#include "bits/separator.edc"
+#include "bits/shadow.edc"
+#include "bits/spacer.edc"
+#include "bits/tree.edc"
+#include "bits/window.edc"
+}
+
+data
+{
+	item: "/button/group" "/ephoto/button";
+	item: "/combo/group" "/ephoto/combo";
+	item: "/combo/button/group" "/ephoto/combo/button";
+	item: "/combo/cell/group" "/ephoto/combo/contents";
+	item: "/combo/popup/group" "/ephoto/combo/popup";
+	item: "/combo/popup/vbox/cell/group" "/ephoto/select/highlight";
+	item: "/entry/group" "/ephoto/entry";
+	item: "/entry/cursor/group" "/ephoto/entry/cursor";
+	item: "/freebox/auto/padding" 16;
+	item: "/hscrollbar/decrement/group" "/ephoto/hscrollbar/decrement";
+	item: "/hscrollbar/increment/group" "/ephoto/hscrollbar/increment";
+	item: "/hscrollbar/hseeker/group" "/ephoto/hrunner";
+	item: "/hscrollbar/hseeker/hbutton/group" "/ephoto/hscrollbar";
+	item: "/hseeker/group" "/ephoto/hseeker";
+	item: "/hseeker/hbutton/group" "/ephoto/hseeker/button";
+	item: "/hseparator/group" "/ephoto/hseparator";
+	item: "/icon/group" "/ephoto/select";
+	item: "/image_thumbnail/group" "/ephoto/select";
+	item: "/label/group" "/ephoto/label";
+	item: "/label/textpart" "/ephoto/label/text";
+	item: "/row/group" "/ephoto/row";
+	item: "/scrollpane/group" "/ephoto/scrollpane";
+        item: "/shadow/group" "/ephoto/shadow";
+	item: "/spacer/group" "/ephoto/spacer";
+	item: "/text/color/a" 255;
+        item: "/text/font" "ewl/default";
+        item: "/text/font_size" 10;
+        item: "/text/style" "none";
+	item: "/vscrollbar/decrement/group" "/ephoto/vscrollbar/decrement";
+	item: "/vscrollbar/increment/group" "/ephoto/vscrollbar/increment";
+	item: "/vseeker/group" "/ephoto/vrunner";
+	item: "/vseeker/vbutton/group" "/ephoto/vscrollbar";
+	item: "/vseparator/group" "/ephoto/vseparator";
+	item: "/window/group" "/ephoto/window";
+}

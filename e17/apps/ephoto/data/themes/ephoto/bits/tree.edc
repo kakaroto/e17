@@ -1,0 +1,45 @@
+group
+{
+	name: "/ephoto/row";
+	data
+	{
+		item: "inset" 3;
+	}
+	parts
+	{
+		part
+		{
+			name: "background";
+			type: RECT;
+			description
+			{
+				state: "even" 0.0;
+				color: 238 238 238 255;
+			}
+			description
+			{
+				state: "odd" 0.0;
+				color: 255 255 255 255;
+			}
+		}
+	}
+	programs
+	{
+                program
+                {
+                        name: "even";
+                        signal: "even";
+                        source: "*";
+                        action: STATE_SET "even" 0.0;
+                        target: "background";
+                }
+                program
+                {
+                        name: "odd";
+                        signal: "odd";
+                        source: "*";
+                        action: STATE_SET "odd" 0.0;
+                        target: "background";
+                }
+	}
+}		

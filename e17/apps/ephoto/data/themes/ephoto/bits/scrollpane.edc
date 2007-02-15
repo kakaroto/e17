@@ -1,0 +1,36 @@
+group
+{
+	name: "/ephoto/scrollpane";
+	data
+	{
+		item: "inset" 3;
+	}
+	parts
+	{
+		part
+		{
+			name: "background";
+			mouse_events: 0;
+			type: IMAGE;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "scrollpane_bg.png";
+					border: 8 8 8 8;
+				}
+			}
+		}
+	}
+}

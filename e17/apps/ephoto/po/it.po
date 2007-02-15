@@ -1,0 +1,203 @@
+# Italian translation for Ephoto.
+# This file is put in the public domain.
+# Massimo Maiurana <maiurana@gmail.com>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Ephoto\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-10-30 22:31+0100\n"
+"PO-Revision-Date: 2006-11-01 12:06+0100\n"
+"Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/ephoto_callbacks.c:218
+msgid "Add an Album"
+msgstr "Aggiungi album"
+
+#: src/ephoto_callbacks.c:231
+msgid "Enter the new album name:"
+msgstr "Nome del nuovo album:"
+
+#: src/ephoto_callbacks.c:243
+msgid "Enter the new album description:"
+msgstr "Descrizione del nuovo album:"
+
+#: src/ephoto_callbacks.c:263 src/ephoto_slideshow.c:493
+msgid "save"
+msgstr "salva"
+
+#: src/ephoto_callbacks.c:272 src/ephoto_slideshow.c:503
+msgid "cancel"
+msgstr "annulla"
+
+#: src/ephoto.c:52 src/ephoto_viewer.c:253
+msgid "Menu|File"
+msgstr "File"
+
+#: src/ephoto.c:60 src/ephoto_viewer.c:271
+msgid "Menu|File|Exit"
+msgstr "Esci"
+
+#: src/ephoto.c:68
+msgid "Menu|Albums"
+msgstr "Album"
+
+#: src/ephoto.c:76
+msgid "Menu|Albums|Add Album"
+msgstr "Aggiungi album"
+
+#: src/ephoto.c:86
+msgid "Menu|Albums|Remove Album"
+msgstr "Elimina album"
+
+#: src/ephoto.c:93
+msgid "Menu|Viewer"
+msgstr "Visualizzatore"
+
+#: src/ephoto.c:101
+msgid "Menu|Viewer|Image Viewer"
+msgstr "Visualizzatore immagini"
+
+#: src/ephoto.c:109
+msgid "Menu|Slideshow"
+msgstr "Presentazione"
+
+#: src/ephoto.c:118
+msgid "Menu|Slideshow|Configure Slideshow"
+msgstr "Configura presentazione"
+
+#: src/ephoto.c:129
+msgid "Menu|Slideshow|Start Slideshow"
+msgstr "Avvia presentazione"
+
+#: src/ephoto.c:170
+msgid "  Location:"
+msgstr "  Posizione:"
+
+#: src/ephoto.c:216
+msgid "Albums"
+msgstr "Album"
+
+#: src/ephoto_slideshow.c:115
+msgid "Ephoto Slideshow"
+msgstr "Presentazione Ephoto"
+
+#: src/ephoto_slideshow.c:329
+msgid "Slideshow Configuration"
+msgstr "Configurazione presentazione"
+
+#: src/ephoto_slideshow.c:348
+msgid "Window Size"
+msgstr "Dimensione finestra"
+
+#: src/ephoto_slideshow.c:361
+msgid "Fullscreen"
+msgstr "Schermo intero"
+
+#: src/ephoto_slideshow.c:369
+msgid "Custom"
+msgstr "Personalizzata"
+
+#: src/ephoto_slideshow.c:384
+msgid "Width"
+msgstr "Larghezza"
+
+#: src/ephoto_slideshow.c:398
+msgid "Height"
+msgstr "Altezza"
+
+#: src/ephoto_slideshow.c:412
+msgid "Order"
+msgstr "Ordinamento"
+
+#: src/ephoto_slideshow.c:419
+msgid "Loop Slideshow"
+msgstr "Cicla presentazione"
+
+#: src/ephoto_slideshow.c:426
+msgid "Random Order"
+msgstr "Ordinamento casuale"
+
+#: src/ephoto_slideshow.c:439
+msgid "Image Size"
+msgstr "Dimensione immagine"
+
+#: src/ephoto_slideshow.c:446
+msgid "Zoom Images to Fill Window"
+msgstr "Ingradisci per riempire la finestra"
+
+#: src/ephoto_slideshow.c:453
+msgid "Keep Aspect"
+msgstr "Mantieni aspetto"
+
+#: src/ephoto_slideshow.c:460
+msgid "Transitions"
+msgstr "Transizioni"
+
+#: src/ephoto_slideshow.c:478
+msgid "Show File Name On Change"
+msgstr "Mostra nome file al cambio"
+
+#: src/ephoto_viewer.c:235
+msgid "Ephoto Image Viewer"
+msgstr "Visualizzatore immagini Ephoto"
+
+#: src/ephoto_viewer.c:261
+msgid "Menu|File|Save Image"
+msgstr "Salva immagine"
+
+#: src/ephoto_viewer.c:279
+msgid "Menu|Actions"
+msgstr "Azioni"
+
+#: src/ephoto_viewer.c:287
+msgid "Menu|Actions|Zoom In"
+msgstr "Diminuisci zoom"
+
+#: src/ephoto_viewer.c:297
+msgid "Menu|Actions|Zoom Out"
+msgstr "Aumenta zoom"
+
+#: src/ephoto_viewer.c:307
+msgid "Menu|Actions|Zoom To Fit"
+msgstr "Adatta alla finestra"
+
+#: src/ephoto_viewer.c:317
+msgid "Menu|Actions|Zoom 1:1"
+msgstr "Zoom 1:1"
+
+#: src/ephoto_viewer.c:328
+msgid "Menu|Actions|Flip Horizontally"
+msgstr "Scorri orizzontalmente"
+
+#: src/ephoto_viewer.c:338
+msgid "Menu|Actions|Flip Vertically"
+msgstr "Scorri verticalmente"
+
+#: src/ephoto_viewer.c:348
+msgid "Menu|Actions|Rotate Left"
+msgstr "Ruota a sinistra"
+
+#: src/ephoto_viewer.c:358
+msgid "Menu|Actions|Rotate Right"
+msgstr "Ruota a destra"
+
+#: src/ephoto_viewer.c:400
+msgid "In"
+msgstr "Diminuisci"
+
+#: src/ephoto_viewer.c:410
+msgid "Out"
+msgstr "Aumenta"
+
+#: src/ephoto_viewer.c:440
+msgid "Left"
+msgstr "Sinistra"
+
+#: src/ephoto_viewer.c:450
+msgid "Right"
+msgstr "Destra"

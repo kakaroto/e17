@@ -1,0 +1,196 @@
+group
+{
+        name: "/ephoto/hseeker";
+        parts
+        {
+                part
+                {
+                        name: "line";
+                        description
+                        {
+                                max: 99999 7;
+                                state: "default" 0.0;
+                                image
+                                {
+                                        normal: "seeker_bg.png";
+					border: 3 3 3 3;
+                                }
+                        }
+                }
+
+		part {
+			name: "slider_p1";
+			type: RECT;
+			mouse_events: 1;
+
+			description {
+				state: "default" 0.0;
+				color: 251 232 78 128;
+
+				rel2 { 
+					to: "dragable.slider"; 
+					relative: 0.0 1.0; offset: -1 -1; 
+				}
+			}
+		}
+
+
+		part {
+			name: "slider_p2";
+			type: RECT;
+			mouse_events: 1;
+
+			description {
+				state: "default" 0.0;
+				color: 231 93 7 128;
+
+				rel1 { 
+					to: "dragable.slider"; 
+					relative: 1.0 0.0; offset: 0 0; 
+				}
+			}	
+		}
+
+            /*   part {
+			name: "test";
+		
+			description {
+                                state: "default" 0.0;
+                                min: 26 14;
+                                max: 26 14;
+
+  				color: 108 67 1 128;
+			}
+		}
+	*/
+
+		part {
+			name: "confine_area";
+			type: RECT;
+			mouse_events: 0;
+
+		description {
+			state: "default" 0.0;
+			max: 99999 5;
+
+			rel1 { to: "line"; relative: 0.0 0.0; offset: 1 0; }
+			rel2 { to: "line"; relative: 1.0 1.0; offset: -1 -1; }
+
+			color: 166 166 166 128;
+		}
+	}
+
+part {
+	name: "dragable.slider";
+	type: RECT;
+	mouse_events: 0;
+
+	dragable {
+		x: 1 1 0;
+		y: 0 0 0;
+		confine: "confine_area";
+	}
+
+	description {
+		state: "default" 0.0;
+		min: 26 14;
+		max: 26 14;
+
+	rel1 { to: "line"; relative: 0.5 0.5; offset: 0 0; }
+	rel2 { to: "line"; relative: 0.5 0.5; offset: 0 0; }
+
+	color: 255 0 0 128;
+	}
+}
+
+        }
+
+	programs
+	{
+
+# ifdef PROG
+#  undef PROG
+# endif
+
+#define PROG(NAME,SIGNAL,SRC,ACT,TARGET)\
+program {\
+	name: NAME;\
+	signal: SIGNAL;\
+	source: SRC;\
+	action: ACT;\
+	target: TARGET;\
+}
+
+PROG("slider+", "mouse,in", "slider_p2", DRAG_VAL_PAGE 1.0 0.0, "dragable.slider")
+PROG("slider-", "mouse,in", "slider_p1", DRAG_VAL_PAGE -1.0 0.0, "dragable.slider")
+
+	}
+}
+
+group
+{
+        name: "/ephoto/hseeker/button";
+        min: 26 14;
+
+        parts
+        {
+                part
+                {
+                        name: "drag";
+                        description
+                        {
+                                state: "default" 0.0;
+                                min: 26 14;
+                                max: 26 14;
+				fixed: 1 1;
+                                image
+                                {
+                                        normal: "seeker.png";
+					// image is of fixed size no need to do any border scaling
+                                	//border: 8 8 8 8;
+				}
+                                fill
+                                {
+                                        smooth: 0;
+				}
+			}
+			description
+			{
+				state: "highlight" 0.0;
+				inherit: "default" 0.0;
+                                min: 26 14;
+                                max: 26 14;
+                                image   
+                                {
+                                        normal: "seeker_h.png";
+					// image is of fixed size no need to do any border scaling
+                                	//border: 8 8 8 8;
+				}
+                                fill
+                                {
+                                        smooth: 0;
+                                }
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "highlight";
+			signal: "mouse,in";
+			source: "EWL";
+			action: STATE_SET "highlight" 0.0;
+			target: "drag";
+		}
+		program
+		{
+			name: "un-highlight";
+			signal: "mouse,out";
+			source: "EWL";
+			action: STATE_SET "default" 0.0;
+			target: "drag";
+		}
+	}
+}
+

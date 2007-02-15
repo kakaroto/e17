@@ -1,0 +1,182 @@
+group
+{
+	name: "/ephoto/combo";
+	min: 1 28;
+	data
+	{
+		item: "inset" 0.5;
+	}
+	parts
+	{
+		part
+		{
+			name: "background";
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "button.png";
+					border: 5 5 5 5;
+				}
+			}
+			description
+			{
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "button_clicked.png";
+					border: 5 5 5 5;
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "clicked";
+			signal: "mouse,down,1";
+			source: "EWL";
+			action: STATE_SET "clicked" 1.0;
+			target: "background";
+		}
+		program
+		{
+			name: "unclicked";
+			signal: "mouse,up,1";
+			source: "EWL";
+			action: STATE_SET "default" 1.0;
+			target: "background";
+		}
+	}
+}
+
+group
+{
+	name: "/ephoto/combo/contents";
+	data
+	{
+		item: "pad/left" 2;
+		item: "pad/right" 10;
+		item: "inset/top" 1;
+		item: "inset/bottom" 1;
+	}
+}
+
+group
+{
+	name: "/ephoto/combo/button";
+	min: 18 17;
+	max: 18 17;
+	data
+	{
+		item: "pad" 5;
+	}
+	parts
+	{
+		part
+		{
+			name: "background";
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "combo_arrows.png";
+				}
+			}
+		}
+	}
+}
+
+group
+{
+	name: "/ephoto/combo/popup";
+	parts
+	{
+		part
+		{
+			name: "base3";
+			mouse_events: 0;
+			type: RECT;
+			description {
+				state: "default" 0.0;
+				rel1 
+				{ 
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+	       	 		rel2 
+				{ 
+					relative: 1.0 1.0; 
+					offset: -1 -1; 
+				}
+       		 		color: 184 171 143 255;
+	        	}
+		}
+		part {
+        		name: "border";
+        		mouse_events: 0;
+        		type: RECT;
+			description {
+        	        	state: "default" 0.0;
+			        rel1 
+				{ 
+					to_y: "base"; 
+					relative: 0.0 1.0; 
+					offset: 1 0; 
+				}
+        			rel2 { 
+					relative: 1.0 1.0; 
+					offset: -2 -2; 
+				}
+			        color: 184 171 143 255;
+        		}
+		}
+		part {
+		        name: "base";
+		        mouse_events: 0;
+		        type: RECT;
+		        description {
+		                state: "default" 0.0;
+		                align: 0.5 0.0;
+			        rel1 
+				{ 
+					relative: 0.0 0.0; 
+					offset: 1 1; 
+				}
+			        rel2 
+				{ 
+					relative: 1.0 1.0; 
+					offset: -2 -2; 
+				}
+			        color: 249 247 243 255;
+        		}
+		}
+	}
+}
+
