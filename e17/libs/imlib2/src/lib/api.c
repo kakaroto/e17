@@ -2155,14 +2155,22 @@ imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
      }
    im = __imlib_CreateImage(width, height, NULL);
    im->data = malloc(width * height * sizeof(DATA32));
-   __imlib_GrabDrawableToRGBA(im->data, 0, 0, width, height, ctx->display,
-                              ctx->drawable, mask, ctx->visual, ctx->colormap,
-                              ctx->depth, x, y, width, height, &domask,
-                              need_to_grab_x);
-   if (domask)
-      SET_FLAG(im->flags, F_HAS_ALPHA);
+   if (__imlib_GrabDrawableToRGBA(im->data, 0, 0, width, height, ctx->display,
+                                  ctx->drawable, mask, ctx->visual,
+				  ctx->colormap, ctx->depth, x, y, width,
+				  height, &domask, need_to_grab_x))
+     {
+	if (domask)
+          SET_FLAG(im->flags, F_HAS_ALPHA);
+	else
+          UNSET_FLAG(im->flags, F_HAS_ALPHA);
+     }
    else
-      UNSET_FLAG(im->flags, F_HAS_ALPHA);
+     {
+	__imlib_FreeImage(im);
+	im = NULL;
+     }
+
    return (Imlib_Image) im;
 }
 

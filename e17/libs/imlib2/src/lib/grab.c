@@ -729,6 +729,12 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
      }
    if (!is_shm)
       xim = XGetImage(d, p, x, y, w, h, 0xffffffff, ZPixmap);
+   if (!xim)
+     {
+        if (grab)
+           XUngrabServer(d);
+	return 0;
+     }
 
    if ((m) && (domask))
      {
