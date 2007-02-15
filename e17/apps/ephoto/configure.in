@@ -150,7 +150,6 @@ data/themes/ephoto/Makefile
 data/themes/ephoto/bits/Makefile
 data/themes/ephoto/fonts/Makefile
 data/themes/ephoto/images/Makefile
-debian/changelog
 po/Makefile
 src/Makefile
 src/bin/Makefile
