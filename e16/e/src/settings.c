@@ -485,10 +485,12 @@ _DlgFillMisc(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Enable Dialog Headers"));
    DialogItemCheckButtonSetPtr(di, &tmp_dialog_headers);
 
+#if 0				/* Not functional */
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable Button Images"));
    DialogItemCheckButtonSetPtr(di, &tmp_button_image);
+#endif
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
