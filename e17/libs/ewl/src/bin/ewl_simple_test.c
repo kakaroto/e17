@@ -79,7 +79,8 @@ reveal_logo_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
 }
 
 static void
-obscure_logo_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
+obscure_logo_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+				void *user_data __UNUSED__)
 {
 	edje_object_signal_callback_del(w->theme_object, "Present*", "*",
 			edje_text);

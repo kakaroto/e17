@@ -1045,7 +1045,8 @@ ewl_test_cb_category_expansion_fetch(void *data, unsigned int row)
 }
 
 static Ewl_Model *
-ewl_test_cb_category_expansion_model_fetch(void *data, unsigned int row)
+ewl_test_cb_category_expansion_model_fetch(void *data __UNUSED__, 
+						unsigned int row __UNUSED__)
 {
 	if (expansion_model) return expansion_model;
 
