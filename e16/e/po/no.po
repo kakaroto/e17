@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-02-06 20:42+0100\n"
+"POT-Creation-Date: 2007-02-14 22:30+0100\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -48,7 +48,7 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr "%u referanser er igjen\n"
 
-#: src/aclass.c:294 src/backgrounds.c:1146 src/borders.c:1106
+#: src/aclass.c:294 src/backgrounds.c:1148 src/borders.c:1106
 #: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:249
 #: src/container.c:1774 src/cursors.c:177 src/iclass.c:549 src/menus.c:1724
 #: src/menus.c:1834 src/slideout.c:427 src/tclass.c:259 src/tooltips.c:176
@@ -57,7 +57,7 @@ msgstr "%u referanser er igjen\n"
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: overser ekstra informasjon i \"%s\"\n"
 
-#: src/aclass.c:302 src/backgrounds.c:1154 src/borders.c:1112
+#: src/aclass.c:302 src/backgrounds.c:1156 src/borders.c:1112
 #: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:257
 #: src/cursors.c:183 src/iclass.c:554 src/menus.c:1729 src/menus.c:1840
 #: src/slideout.c:433 src/tclass.c:265 src/tooltips.c:182
@@ -196,7 +196,7 @@ msgstr "Start Enlightenment på nytt"
 msgid "Quit Enlightenment"
 msgstr "Avslutt Enlightenment"
 
-#: src/backgrounds.c:1647
+#: src/backgrounds.c:1649
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -207,11 +207,11 @@ msgstr ""
 "Navn : %s\n"
 "Fil  : %s\n"
 
-#: src/backgrounds.c:1648
+#: src/backgrounds.c:1650
 msgid "-NONE-"
 msgstr "-INGEN-"
 
-#: src/backgrounds.c:1827 src/backgrounds.c:1829
+#: src/backgrounds.c:1829 src/backgrounds.c:1831
 msgid ""
 "No\n"
 "Background"
@@ -219,56 +219,56 @@ msgstr ""
 "Ingen\n"
 "Bakgrunn"
 
-#: src/backgrounds.c:1909 src/backgrounds.c:2264
+#: src/backgrounds.c:1911 src/backgrounds.c:2266
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Ubrukte bakgrunner er fjernet etter %2i:%02i:%02i"
 
-#: src/backgrounds.c:2111
+#: src/backgrounds.c:2113
 msgid "BG Colour\n"
 msgstr "Bakgrunnsfarge\n"
 
-#: src/backgrounds.c:2119
+#: src/backgrounds.c:2121
 msgid "Move to Front\n"
 msgstr "Flytt fremst\n"
 
-#: src/backgrounds.c:2124
+#: src/backgrounds.c:2126
 msgid "Duplicate\n"
 msgstr "Dupliser\n"
 
-#: src/backgrounds.c:2128
+#: src/backgrounds.c:2130
 msgid "Unlist\n"
 msgstr "Fjern fra lista\n"
 
-#: src/backgrounds.c:2132
+#: src/backgrounds.c:2134
 msgid "Delete File\n"
 msgstr "Slett fil\n"
 
-#: src/backgrounds.c:2140
+#: src/backgrounds.c:2142
 msgid "Red:\n"
 msgstr "Rød:\n"
 
-#: src/backgrounds.c:2149
+#: src/backgrounds.c:2151
 msgid "Use background image"
 msgstr "Bruk bakgrunnsbilde"
 
-#: src/backgrounds.c:2155
+#: src/backgrounds.c:2157
 msgid "Green:\n"
 msgstr "Grønn:\n"
 
-#: src/backgrounds.c:2164
+#: src/backgrounds.c:2166
 msgid "Keep aspect on scale"
 msgstr "Bevar bildeskala"
 
-#: src/backgrounds.c:2170
+#: src/backgrounds.c:2172
 msgid "Blue:\n"
 msgstr "Blå:\n"
 
-#: src/backgrounds.c:2179
+#: src/backgrounds.c:2181
 msgid "Tile image across background"
 msgstr "Flislegg bilde over hele bakgrunnen"
 
-#: src/backgrounds.c:2190
+#: src/backgrounds.c:2192
 msgid ""
 "Background\n"
 "Image\n"
@@ -282,46 +282,46 @@ msgstr ""
 "&\n"
 "justering\n"
 
-#: src/backgrounds.c:2254
+#: src/backgrounds.c:2256
 msgid "Use dithering in Hi-Colour"
 msgstr "Bruk dithering ved Hi-Colour"
 
-#: src/backgrounds.c:2258
+#: src/backgrounds.c:2260
 msgid "Background overrides theme"
 msgstr "Bakgrunn overkjører temaet"
 
-#: src/backgrounds.c:2301
+#: src/backgrounds.c:2303
 msgid "Pre-scan BG's"
 msgstr "Se etter bakgrunner på forhånd"
 
-#: src/backgrounds.c:2309
+#: src/backgrounds.c:2311
 msgid "Sort by File"
 msgstr "Sorter etter filnavn"
 
-#: src/backgrounds.c:2314
+#: src/backgrounds.c:2316
 msgid "Sort by Attr."
 msgstr "Sorter etter etternavn til fila"
 
-#: src/backgrounds.c:2319
+#: src/backgrounds.c:2321
 msgid "Sort by Image"
 msgstr "Sorter etter bilde"
 
-#: src/backgrounds.c:2348
+#: src/backgrounds.c:2350
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2354 src/mod-trans.c:193
+#: src/backgrounds.c:2356 src/mod-trans.c:193
 #, fuzzy
 msgid "Background"
 msgstr ""
 "Ingen\n"
 "Bakgrunn"
 
-#: src/backgrounds.c:2355
+#: src/backgrounds.c:2357
 msgid "Desktop Background Settings"
 msgstr "Innstillinger for skrivebordsbakgrunn"
 
-#: src/backgrounds.c:2358
+#: src/backgrounds.c:2360
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -1856,29 +1856,29 @@ msgstr ""
 msgid "Enable Dialog Headers"
 msgstr "Bruk dialogoverskrifter"
 
-#: src/settings.c:490
+#: src/settings.c:491
 #, fuzzy
 msgid "Enable Button Images"
 msgstr "Skru på støtte for lyd"
 
-#: src/settings.c:498
+#: src/settings.c:500
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:506
+#: src/settings.c:508
 msgid "Use saveunders to reduce window exposures"
 msgstr "Bruk underlagret for å redusere vindusutbredelse"
 
-#: src/settings.c:512 config/strings.c:181
+#: src/settings.c:514 config/strings.c:181
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Forskjellige innstillinger"
 
-#: src/settings.c:513
+#: src/settings.c:515
 msgid "Miscellaneous Settings"
 msgstr "Forskjellige innstillinger"
 
-#: src/settings.c:516
+#: src/settings.c:518
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1886,47 +1886,47 @@ msgstr ""
 "Dialog for ulike innstillinger\n"
 "i Enlightenment\n"
 
-#: src/settings.c:548 src/settings.c:613
+#: src/settings.c:550 src/settings.c:615
 #, fuzzy
 msgid "Composite Settings"
 msgstr "Verktøytips"
 
-#: src/settings.c:559
+#: src/settings.c:561
 #, fuzzy
 msgid "Enable Composite"
 msgstr "Skru på støtte for lyd"
 
-#: src/settings.c:567
+#: src/settings.c:569
 #, fuzzy
 msgid "Enable Fading"
 msgstr "Bruk kantflipping"
 
-#: src/settings.c:575
+#: src/settings.c:577
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:581
+#: src/settings.c:583
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:587
+#: src/settings.c:589
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:593
+#: src/settings.c:595
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:601
+#: src/settings.c:603
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:612
+#: src/settings.c:614
 #, fuzzy
 msgid "Composite"
 msgstr "Skru på støtte for lyd"
 
-#: src/settings.c:616
+#: src/settings.c:618
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -1935,7 +1935,7 @@ msgstr ""
 "Dialog for innstilling av\n"
 "Enlightenments verktøytips\n"
 
-#: src/settings.c:703
+#: src/settings.c:705
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment starter opp..."
