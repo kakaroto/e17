@@ -4,6 +4,8 @@
 #include "e_mod_config.h"
 #include "e_mod_configure.h"
 
+typedef unsigned long bytes_t;
+static void _bytes_to_string(bytes_t bytes, char *string, int size);
 static void _cb_post(void *data, E_Menu *m);
 static void _cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
@@ -13,10 +15,10 @@ _cb_poll(void *data)
    Instance *inst;
    Config_Item *ci;
    FILE *f;
-   char buf[256], dev[64], tmp[100];
+   char buf[256], popbuf[256], dev[64], tmp[100];
    int found = 0;
    long bin, bout;
-   unsigned long in, out, dummy = 0;
+   bytes_t in, out, dummy = 0;
    
    inst = data;
    ci = _config_item_get(inst->gcc->id);
@@ -59,30 +61,24 @@ _cb_poll(void *data)
    else
      edje_object_signal_emit(inst->o_net, "e,state,send,active", "e");
 
-   if (bin > 1048576)
-     snprintf(tmp, sizeof(tmp), "%ld Mb", (bin / 1048576));
-   else if ((bin > 1024) && (bin < 1048576))
-     snprintf(tmp, sizeof(tmp), "%ld Kb", (bin / 1024));
-   else
-     snprintf(tmp, sizeof(tmp), "%ld B", bin);
-   edje_object_part_text_set(inst->o_net, "e.text.recv", tmp);
+   _bytes_to_string(bin, tmp, sizeof(tmp));
+   snprintf(buf, sizeof(buf), "%s/s", tmp);
+   edje_object_part_text_set(inst->o_net, "e.text.recv", buf);
    if (inst->popup) 
      {
-	snprintf(buf, sizeof(buf), "Rx: %s", tmp);
-	edje_object_part_text_set(inst->popup->o_bg, "e.text.recv", buf);
+	_bytes_to_string(in, tmp, sizeof(tmp));
+	snprintf(popbuf, sizeof(popbuf), "Rx: %s", tmp);
+	edje_object_part_text_set(inst->popup->o_bg, "e.text.recv", popbuf);
      }
    
-   if (bout > 1048576)
-     snprintf(tmp, sizeof(tmp), "%ld Mb", (bout / 1048576));
-   else if ((bout > 1024) && (bout < 1048576))
-     snprintf(tmp, sizeof(tmp), "%ld Kb", (bout / 1024));
-   else
-     snprintf(tmp, sizeof(tmp), "%ld B", bout);
-   edje_object_part_text_set(inst->o_net, "e.text.send", tmp);
+   _bytes_to_string(bout, tmp, sizeof(tmp));
+   snprintf(buf, sizeof(buf), "%s/s", tmp);
+   edje_object_part_text_set(inst->o_net, "e.text.send", buf);
    if (inst->popup) 
      {
-	snprintf(buf, sizeof(buf), "Tx: %s", tmp);
-	edje_object_part_text_set(inst->popup->o_bg, "e.text.send", buf);
+	_bytes_to_string(out, tmp, sizeof(tmp));
+	snprintf(popbuf, sizeof(popbuf), "Tx: %s", tmp);
+	edje_object_part_text_set(inst->popup->o_bg, "e.text.send", popbuf);
      }
    
    return 1;
@@ -279,6 +275,17 @@ _cb_mouse_out(void *data, Evas_Object *obj, const char *emission, const char *so
    evas_object_del(inst->popup->o_bg);
    e_object_del(E_OBJECT(inst->popup->win));
    E_FREE(inst->popup);
+}
+
+static void
+_bytes_to_string(bytes_t bytes, char *string, int size)
+{
+   if (bytes > 1048576)
+     snprintf(string, size, "%lu Mb", (bytes / 1048576));
+   else if ((bytes > 1024) && (bytes < 1048576))
+     snprintf(string, size, "%lu Kb", (bytes / 1024));
+   else
+     snprintf(string, size, "%lu B", bytes);
 }
 
 static void 
