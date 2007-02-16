@@ -153,6 +153,8 @@ void create_main_gui(void)
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(view_box), edit_vbox, "Edit");
 	
 	eimage = add_image(edit_vbox, NULL, 0, NULL, NULL);
+	ewl_object_alignment_set(EWL_OBJECT(eimage), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(eimage), EWL_FLAG_FILL_SHRINK);
 
 	list_vbox = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(list_vbox), EWL_FLAG_FILL_ALL);

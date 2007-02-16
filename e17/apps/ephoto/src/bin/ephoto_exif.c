@@ -58,15 +58,15 @@ static char *get_image(void)
 {
 	char *img;
 
-        if (ewl_widget_onscreen_is(fbox_vbox))
+        if (VISIBLE(fbox_vbox))
         {
                 img = (char *)ewl_widget_name_get(currentf);
         }
-        else if (ewl_widget_onscreen_is(list_vbox))
+        else if (VISIBLE(list_vbox))
         {
                 img = (char *)ewl_widget_name_get(currenti);
         }
-        else if (ewl_widget_onscreen_is(edit_vbox))
+        else if (VISIBLE(edit_vbox))
         {
                 img = (char *)ewl_image_file_path_get(EWL_IMAGE(eimage));
         }
