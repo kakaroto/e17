@@ -58,7 +58,7 @@ part
 		rel2
 		{
 			relative: 1.0 1.0;
-			offset: -14 -1;
+			offset: -1 -1;
 			to: "title_outline";
 		}
 		image
