@@ -20,6 +20,7 @@ void etk_test_filechooser_window_create(void *data)
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), filechooser, ETK_TRUE, ETK_TRUE, 0, ETK_FALSE);
    etk_dialog_button_add(ETK_DIALOG(dialog), "Open", 1);
    etk_dialog_button_add(ETK_DIALOG(dialog), "Close", 2);
+   etk_dialog_action_area_alignment_set(ETK_DIALOG(dialog), 1.0);
    
    etk_widget_show_all(dialog);
 }

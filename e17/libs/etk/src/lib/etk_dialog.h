@@ -52,10 +52,13 @@ struct Etk_Dialog
 
    Etk_Widget *dialog_vbox;
    Etk_Widget *main_area_vbox;
+   Etk_Widget *action_area_alignment;
    Etk_Widget *action_area_hbox;
    Etk_Widget *separator;
 
    Etk_Bool has_separator;
+
+   float align;
 };
 
 Etk_Type *etk_dialog_type_get();
@@ -67,6 +70,8 @@ void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *butto
 
 Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int response_id);
 Etk_Widget *etk_dialog_button_add_from_stock(Etk_Dialog *dialog, int stock_id, int response_id);
+void etk_dialog_action_area_alignment_set(Etk_Dialog *dialog, float align);
+void etk_dialog_action_area_alignment_get(Etk_Dialog *dialog, float *align);
 
 void     etk_dialog_has_separator_set(Etk_Dialog *dialog, Etk_Bool has_separator);
 Etk_Bool etk_dialog_has_separator_get(Etk_Dialog *dialog);
