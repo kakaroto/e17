@@ -3269,7 +3269,10 @@ static void _etk_widget_smart_object_move_cb(Evas_Object *obj, Evas_Coord x, Eva
       }
 
       if (widget->theme_object)
-         evas_object_move(widget->theme_object, widget->geometry.x, widget->geometry.y);
+      {
+         evas_object_geometry_get(widget->theme_object, &child_x, &child_y, NULL, NULL);
+         evas_object_move(widget->theme_object, child_x + x_offset, child_y + y_offset);
+      }
       if (widget->event_object)
          evas_object_move(widget->event_object, widget->geometry.x, widget->geometry.y);
       /* Move the member-objects and the children to the right place */

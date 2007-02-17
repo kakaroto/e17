@@ -2,6 +2,7 @@
 #include "etk_label.h"
 #include <stdlib.h>
 #include <string.h>
+#include <Edje.h>
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -82,19 +83,14 @@ void etk_label_set(Etk_Label *label, const char *text)
 
    if (text != label->text)
    {
-       free(label->text);
-       label->text = (text && *text != '\0') ? strdup(text) : NULL;
+      free(label->text);
+      label->text = (text && *text != '\0') ? strdup(text) : NULL;
    }
 
-   if (ETK_WIDGET(label)->theme_object)
-   {
-       if (!label->text)
-	   etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", "");
-       else
-	   etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", label->text);
-   }
-/*   if (label->text_object)*/
-/*      evas_object_textblock_text_markup_set(label->text_object, label->text ? label->text : " ");*/
+   if (!label->text)
+      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", "");
+   else
+      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", label->text);
 
    etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
@@ -253,6 +249,7 @@ static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *requested_size
    requested_size->w = 0;
    requested_size->h = 0;
 
+   /* TODO: We no longer need to implement size_request() actually */
    if (ETK_WIDGET(label)->theme_object)
       edje_object_size_min_calc(ETK_WIDGET(label)->theme_object, &requested_size->w, &requested_size->h);
 }
@@ -267,7 +264,8 @@ static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       return;
 
    _etk_label_size_request(widget, &requested_size);
-   evas_object_move(ETK_WIDGET(label)->theme_object, geometry.x + (geometry.w - requested_size.w) * label->xalign,
+   evas_object_move(ETK_WIDGET(label)->theme_object,
+      geometry.x + (geometry.w - requested_size.w) * label->xalign,
       geometry.y + (geometry.h - requested_size.h) * label->yalign);
    evas_object_resize(ETK_WIDGET(label)->theme_object, requested_size.w, requested_size.h);
 }
@@ -285,8 +283,11 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
 
    if (!(label = ETK_LABEL(object)))
       return;
-
-   etk_label_set(label, label->text);
+   
+   if (!label->text)
+      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", "");
+   else
+      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", label->text);
    etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
 
