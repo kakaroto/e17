@@ -63,7 +63,8 @@ Etk_Type *etk_dialog_type_get()
 
       etk_type_property_add(dialog_type, "has_separator", ETK_DIALOG_HAS_SEPARATOR_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(dialog_type, "action_area_align", ETK_DIALOG_ACTION_AREA_ALIGN_PROPERTY, ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
+      etk_type_property_add(dialog_type, "action_area_align", ETK_DIALOG_ACTION_AREA_ALIGN_PROPERTY,
+         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
 
       dialog_type->property_set = _etk_dialog_property_set;
       dialog_type->property_get = _etk_dialog_property_get;
@@ -188,14 +189,13 @@ Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int res
  */
 void etk_dialog_action_area_alignment_set(Etk_Dialog *dialog, float align)
 {
-   float yalign, xscale, yscale;
-
-   etk_alignment_get(ETK_ALIGNMENT(dialog->action_area_alignment), NULL, &yalign, &xscale, &yscale);
-   etk_alignment_set(ETK_ALIGNMENT(dialog->action_area_alignment), align, yalign, xscale, yscale);
+   if (!dialog)
+      return;
 
    if (dialog->align != align)
    {
       dialog->align = align;
+      etk_alignment_set(ETK_ALIGNMENT(dialog->action_area_alignment), align, 0.5, 0.0, 0.0);
       etk_object_notify(ETK_OBJECT(dialog), "action_area_align");
    }
 }
@@ -208,7 +208,7 @@ void etk_dialog_action_area_alignment_set(Etk_Dialog *dialog, float align)
 void etk_dialog_action_area_alignment_get(Etk_Dialog *dialog, float *align)
 {
    if (align)
-      *align = dialog ? dialog->align : 0;
+      *align = dialog ? dialog->align : 0.0;
 }
 
 /**
@@ -301,6 +301,7 @@ static void _etk_dialog_constructor(Etk_Dialog *dialog)
    etk_widget_internal_set(dialog->action_area_hbox, ETK_TRUE);
    etk_widget_show(dialog->action_area_hbox);
 
+   dialog->align = 0.5;
    dialog->has_separator = ETK_TRUE;
 }
 
@@ -404,4 +405,10 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_TRUE
+ * \par:
+ * @prop_name "action_area_align": The horizontal alignment of the widgets in the action area,
+ * from 0.0 (left) to 1.0 (right)
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 0.5
  */
