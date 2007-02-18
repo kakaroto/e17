@@ -52,6 +52,9 @@ unsigned int *rotate_left(Ewl_Widget *image);
 unsigned int *rotate_right(Ewl_Widget *image);
 void update_image(Ewl_Widget *image, int w, int h, unsigned int *data);
 
+/* Ephoto Edit View */
+void add_edit_tools(Ewl_Widget *c);
+
 /* Ephoto List View */
 Ewl_Widget *add_ltree(Ewl_Widget *c);
 
@@ -83,6 +86,8 @@ extern Ewl_Widget *ilabel;
 extern Ewl_Widget *currenta; 
 extern Ewl_Widget *currentf;
 extern Ewl_Widget *currenti;
+extern Ewl_Widget *toolbar;
+extern Ewl_Widget *edit_tools;
 extern Ecore_List *images;
 
 /* NLS */

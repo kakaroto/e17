@@ -15,6 +15,8 @@ FILES = add.png \
 	go-next.png \
 	image.png \
 	list_view.png \
+	media-seek-backward.png \
+	media-seek-forward.png \
 	normal_view.png \
 	preferences-system.png \
 	redo.png \

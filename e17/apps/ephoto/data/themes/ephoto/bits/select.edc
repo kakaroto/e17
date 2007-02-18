@@ -28,7 +28,7 @@ group
 		{
 			name: "select";
 			signal: "selected";
-			source: "*";
+			source: "EWL";
 			action: STATE_SET "selected" 0.0;
 			target: "selection";
 		}
@@ -36,7 +36,7 @@ group
 		{
 			name: "unselect";
 			signal: "unselected";
-			source: "*";
+			source: "EWL";
 			action: STATE_SET "default" 0.0;
 			target: "selection";
 		}
@@ -73,7 +73,7 @@ group
                 {
                         name: "highlighted";
                         signal: "mouse,in";
-                        source: "*";
+                        source: "EWL";
                         action: STATE_SET "highlighted" 0.0;
                         target: "highlight";
                 }
@@ -81,7 +81,7 @@ group
                 {
                         name: "default";
                         signal: "mouse,out";
-                        source: "*";
+                        source: "EWL";
                         action: STATE_SET "default" 0.0;
 			target: "highlight";
 		}

@@ -181,7 +181,7 @@ static int list_images(void *notused, int argc, char **argv, char **col)
 
 	for(i = 0; i < argc; i++)
 	{
-		ecore_list_append(images_list, strdup(argv[i] ? argv[i] : "NULL"));
+		ecore_dlist_append(images_list, strdup(argv[i] ? argv[i] : "NULL"));
 	}
 
 	return 0;
@@ -211,13 +211,13 @@ Ecore_List *ephoto_db_list_images(sqlite3 *db, char *album)
 
 	if(images_list)
 	{
-		ecore_list_destroy(images_list);
+		ecore_dlist_destroy(images_list);
 	}
 	if(image_ids)
 	{
 		ecore_list_destroy(image_ids);
 	}
-	images_list = ecore_list_new();
+	images_list = ecore_dlist_new();
 	image_ids = ecore_list_new();
 	
 	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", album);

@@ -7,6 +7,7 @@ void show_normal_view(Ewl_Widget *w, void *event, void *data)
         ewl_widget_show(atree);
         ewl_widget_show(tbar);
         ewl_widget_show(ilabel);
+	ewl_widget_hide(edit_tools);
         ewl_widget_configure(fbox);
 }
 

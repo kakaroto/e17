@@ -30,8 +30,8 @@ static void *views_data_fetch(void *data, unsigned int row, unsigned int column)
 static int views_data_count(void *data);
 
 /*Ephoto Global Variables*/
-Ewl_Widget *atree, *tbar, *vcombo, *view_box, *fbox_vbox, *edit_vbox, *list_vbox; 
-Ewl_Widget *fbox, *eimage, *ltree, *ilabel, *currenta, *currentf, *currenti;
+Ewl_Widget *atree, *tbar, *vcombo, *view_box, *fbox_vbox, *edit_vbox, *list_vbox, *fbox; 
+Ewl_Widget *eimage, *ltree, *ilabel, *currenta, *currentf, *currenti, *toolbar, *edit_tools;
 Ecore_List *images;
 
 
@@ -68,10 +68,8 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data)
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
-	Ecore_List *images;
-
 	Ewl_Widget *win, *vbox, *spacer, *text, *entry, *hbox;
-	Ewl_Widget *rvbox, *sp, *hsep, *toolbar, *vsep, *image;
+	Ewl_Widget *rvbox, *sp, *hsep, *vsep, *image;
 	Ewl_Widget *shbox, *seeker;
 
 	win = ewl_window_new();
@@ -206,15 +204,23 @@ void create_main_gui(void)
         image = add_image(toolbar, PACKAGE_DATA_DIR "/images/get_exif.png", 0, display_exif_dialog, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
 
-        vsep = ewl_vseparator_new();
-        ewl_container_child_append(EWL_CONTAINER(toolbar), vsep);
-        ewl_widget_show(vsep);
-
         image = add_image(toolbar, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", 0, window_fullscreen, win);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
 
         image = add_image(toolbar, PACKAGE_DATA_DIR "/images/x-office-presentation.png", 0, NULL, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+
+        vsep = ewl_vseparator_new();
+        ewl_container_child_append(EWL_CONTAINER(toolbar), vsep);
+        ewl_widget_show(vsep);
+
+	edit_tools = ewl_hbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(edit_tools), EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(toolbar), edit_tools);
+	ewl_widget_show(edit_tools);
+
+	add_edit_tools(edit_tools);
+	ewl_widget_hide(edit_tools);
 
 	albums = ecore_list_new();
 	db = ephoto_db_init();
@@ -254,31 +260,31 @@ static void populate(Ewl_Widget *w, void *event, void *data)
 
 	if (images)
 	{
-		ecore_list_destroy(images);
+		ecore_dlist_destroy(images);
 	}
 
-	images = ecore_list_new();
+	images = ecore_dlist_new();
 	images = ephoto_db_list_images(db, album);
 
-	ecore_list_goto_first(images);
+	ecore_dlist_goto_first(images);
 	ewl_container_reset(EWL_CONTAINER(fbox));
-        while (ecore_list_current(images))
+        while (ecore_dlist_current(images))
         {
-                imagef = ecore_list_current(images);
+                imagef = ecore_dlist_current(images);
 
                 thumb = add_image(fbox, imagef, 1, set_info, NULL);
 		ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_name_set(thumb, imagef);
 
-		ecore_list_next(images);
+		ecore_dlist_next(images);
         }
 
-	ecore_list_goto_first(images);
+	ecore_dlist_goto_first(images);
 
         ewl_mvc_data_set(EWL_MVC(ltree), images);
 	ewl_mvc_dirty_set(EWL_MVC(ltree), 1);
 	
-	ewl_image_file_set(EWL_IMAGE(eimage), ecore_list_current(images), NULL);
+	ewl_image_file_set(EWL_IMAGE(eimage), ecore_dlist_current(images), NULL);
 
 	return;
 }

@@ -11,7 +11,8 @@ void show_list_view(Ewl_Widget *w, void *event, void *data)
 {
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(view_box), list_vbox);
         ewl_mvc_dirty_set(EWL_MVC(ltree), 1);
-        ewl_widget_hide(ilabel);
+        ewl_widget_hide(edit_tools);
+	ewl_widget_hide(ilabel);
         ewl_widget_show(atree);
         ewl_widget_show(tbar);
 }
