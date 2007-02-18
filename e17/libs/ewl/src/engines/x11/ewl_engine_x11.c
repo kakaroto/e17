@@ -42,6 +42,7 @@ static Ecore_Event_Handler *ee_dnd_enter_handler = NULL;
 static Ecore_Event_Handler *ee_dnd_leave_handler = NULL;
 static Ecore_Event_Handler *ee_dnd_drop_handler = NULL;
 static Ecore_Event_Handler *ee_selection_notify_handler = NULL;
+static Ecore_Event_Handler *ee_selection_request_handler = NULL;
 static Ecore_Event_Handler *ee_mouse_down_handler = NULL;
 static Ecore_Event_Handler *ee_mouse_up_handler = NULL;
 static Ecore_Event_Handler *ee_mouse_move_handler = NULL;
@@ -233,7 +234,7 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
 	/*
 	 * Selection callbacks to allow for pasting.
 	 */
-	ee_selection_notify_handler = ecore_event_handler_add(
+	ee_selection_request_handler = ecore_event_handler_add(
 						ECORE_X_EVENT_SELECTION_REQUEST,
 						ewl_ev_x_data_request, NULL);
 
@@ -267,7 +268,8 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
 			|| !ee_key_down_handler || !ee_key_up_handler 
 			|| !ee_dnd_position_handler || !ee_dnd_enter_handler
 			|| !ee_dnd_leave_handler || !ee_dnd_drop_handler
-			|| !ee_selection_notify_handler || !ee_mouse_down_handler
+			|| !ee_selection_notify_handler || !ee_selection_request_handler
+			|| !ee_mouse_down_handler
 			|| !ee_mouse_up_handler || !ee_mouse_move_handler
 			|| !ee_mouse_wheel_handler || !ee_mouse_out_handler
 			|| !ee_focus_in_handler || !ee_focus_out_handler)
@@ -334,6 +336,10 @@ ee_shutdown(Ewl_Engine *engine)
 	if (ee_selection_notify_handler)
 		ecore_event_handler_del(ee_selection_notify_handler);
 	ee_selection_notify_handler = NULL;
+
+	if (ee_selection_request_handler)
+		ecore_event_handler_del(ee_selection_request_handler);
+	ee_selection_request_handler = NULL;
 
 	if (ee_mouse_down_handler)
 		ecore_event_handler_del(ee_mouse_down_handler);
