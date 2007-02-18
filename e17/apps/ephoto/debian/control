@@ -1,0 +1,13 @@
+Source: ephoto
+Section: graphics
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org> 
+Build-Depends: debhelper (>= 4.0.0), cdbs, autotools-dev, libecore0-dev, libevas0-dev, libewl0-dev, libedje0-dev, libexif-dev, libepsilon0-dev, libsqlite3-dev
+Standards-Version: 3.6.2
+
+Package: ephoto
+Architecture: any
+Depends: ${shlibs:Depends}, libecore0, libevas0, libewl0, libedje0, libepsilon0, libsqlite3-0, libexif12
+Description: A slideshow creator and much more
+ Ephoto is a powerful slideshow creator which can be used as an image viewer
+ or image editor/manipulator as well.
