@@ -56,22 +56,22 @@ Ecore_Hash *get_exif_data(char *file)
 /*Get the current image*/
 static char *get_image(void)
 {
-	char *img;
+	const char *img;
 
         if (VISIBLE(fbox_vbox))
         {
-                img = (char *)ewl_widget_name_get(currentf);
+                img = ewl_widget_name_get(currentf);
         }
         else if (VISIBLE(list_vbox))
         {
-                img = (char *)ewl_widget_name_get(currenti);
+                img = ewl_widget_name_get(currenti);
         }
         else if (VISIBLE(edit_vbox))
         {
-                img = (char *)ewl_image_file_path_get(EWL_IMAGE(eimage));
+                img = ewl_image_file_path_get(EWL_IMAGE(eimage));
         }
 
-	return img;
+	return strdup(img);
 }
 
 /*Close a dialog*/
@@ -123,6 +123,7 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 	ewl_mvc_data_set(EWL_MVC(w), values);
 	ewl_widget_data_set(win, "list", values);
 	ecore_hash_destroy(exif_info);
+	free(img);
 	
 	return;
 }
@@ -177,6 +178,8 @@ void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
         ewl_widget_show(list);
 
 	add_button(vbox, "Close", PACKAGE_DATA_DIR "/images/dialog-close.png", close_dialog, win);
+	
+	free(img);
 
 	return;
 }
