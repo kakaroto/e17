@@ -346,18 +346,18 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    
    /* We create the widgets */
    cp->main_table = etk_table_new(2, 2, ETK_FALSE);
-   etk_widget_parent_set(cp->main_table, cp_widget);
    etk_widget_internal_set(cp->main_table, ETK_TRUE);
+   etk_widget_parent_set(cp->main_table, cp_widget);
    etk_widget_show(cp->main_table);
    
    cp->picker_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "picker", "theme_parent", cp, NULL);
-   etk_table_attach_default(ETK_TABLE(cp->main_table), cp->picker_widget, 0, 0, 0, 0);
    etk_widget_internal_set(cp->picker_widget, ETK_TRUE);
+   etk_table_attach_default(ETK_TABLE(cp->main_table), cp->picker_widget, 0, 0, 0, 0);
    etk_widget_show(cp->picker_widget);
    
    cp->component_table = etk_table_new(3, 7, ETK_FALSE);
-   etk_table_attach_default(ETK_TABLE(cp->main_table), cp->component_table, 1, 1, 0, 0);
    etk_widget_internal_set(cp->component_table, ETK_TRUE);
+   etk_table_attach_default(ETK_TABLE(cp->main_table), cp->component_table, 1, 1, 0, 0);
    etk_widget_show(cp->component_table);
    
    /* Radios, sliders and labels for each component */
@@ -373,20 +373,20 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       etk_widget_show(cp->radios[i]);
       
       cp->sliders[i] = etk_hslider_new(0.0, _etk_colorpicker_max_values[i], 0.0, steps[i], steps[i] * 5);
-      etk_table_attach(ETK_TABLE(cp->component_table), cp->sliders[i], 1, 1, i, i,
-         0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
       etk_widget_theme_parent_set(cp->sliders[i], ETK_WIDGET(cp));
       etk_widget_internal_set(cp->sliders[i], ETK_TRUE);
+      etk_table_attach(ETK_TABLE(cp->component_table), cp->sliders[i], 1, 1, i, i,
+         0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
       etk_widget_show(cp->sliders[i]);
       
       cp->sliders_image[i] = NULL;
       
       cp->value_labels[i] = etk_label_new("0");
-      etk_table_attach(ETK_TABLE(cp->component_table), cp->value_labels[i], 2, 2, i, i,
-         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       etk_widget_internal_set(cp->value_labels[i], ETK_TRUE);
       /* TODO: this sucks.. the width shouldn't be hardcoded.. */
       etk_widget_size_request_set(cp->value_labels[i], 28, -1);
+      etk_table_attach(ETK_TABLE(cp->component_table), cp->value_labels[i], 2, 2, i, i,
+         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       etk_widget_show(cp->value_labels[i]);
       
       etk_signal_connect("toggled", ETK_OBJECT(cp->radios[i]),
@@ -402,21 +402,21 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    /* Alpha slider */
    {
       cp->alpha_name_label = etk_label_new(_("Alpha"));
+      etk_widget_internal_set(cp->alpha_name_label, ETK_TRUE);
       etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_name_label, 0, 0, 6, 6,
          0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
-      etk_widget_internal_set(cp->alpha_name_label, ETK_TRUE);
       
       cp->alpha_slider = etk_hslider_new(0.0, 255.0, 255.0, 10, 5.0);
+      etk_widget_internal_set(cp->alpha_slider, ETK_TRUE);
       etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_slider, 1, 1, 6, 6,
          0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
-      etk_widget_internal_set(cp->alpha_slider, ETK_TRUE);
       
       cp->alpha_value_label = etk_label_new("255");
-      etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_value_label, 2, 2, 6, 6,
-         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       etk_widget_internal_set(cp->alpha_value_label, ETK_TRUE);
       /* TODO: this sucks.. the width shouldn't be hardcoded.. */
       etk_widget_size_request_set(cp->alpha_value_label, 28, -1);
+      etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_value_label, 2, 2, 6, 6,
+         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       
       etk_signal_connect("value_changed", ETK_OBJECT(cp->alpha_slider),
          ETK_CALLBACK(_etk_colorpicker_alpha_slider_value_changed_cb), cp);
@@ -425,23 +425,23 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    /* We create the widgets for the color preview */
    cp->color_table = etk_table_new(2, 1, ETK_FALSE);
    etk_widget_padding_set(cp->color_table, 3, 3, 3, 3);
+   etk_widget_internal_set(cp->color_table, ETK_TRUE);
    etk_table_attach(ETK_TABLE(cp->main_table), cp->color_table, 0, 0, 1, 1,
       0, 0, ETK_TABLE_FILL | ETK_TABLE_HEXPAND);
-   etk_widget_internal_set(cp->color_table, ETK_TRUE);
    etk_widget_show(cp->color_table);
    
    /* Current color preview */
    cp->current_color_label = etk_label_new(_("Current"));
+   etk_widget_internal_set(cp->current_color_label, ETK_TRUE);
    etk_table_attach(ETK_TABLE(cp->color_table), cp->current_color_label, 0, 0, 0, 0,
       0, 0, ETK_TABLE_HFILL);
-   etk_widget_internal_set(cp->current_color_label, ETK_TRUE);
    etk_widget_show(cp->current_color_label);
    
    cp->current_color_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "color_preview", NULL);
-   etk_table_attach(ETK_TABLE(cp->color_table), cp->current_color_widget, 1, 1, 0, 0,
-      0, 0, ETK_TABLE_HFILL | ETK_TABLE_HEXPAND);
    etk_widget_theme_parent_set(cp->current_color_widget, ETK_WIDGET(cp));
    etk_widget_internal_set(cp->current_color_widget, ETK_TRUE);
+   etk_table_attach(ETK_TABLE(cp->color_table), cp->current_color_widget, 1, 1, 0, 0,
+      0, 0, ETK_TABLE_HFILL | ETK_TABLE_HEXPAND);
    etk_widget_show(cp->current_color_widget);
    
    

@@ -1312,8 +1312,8 @@ static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid)
    icon_object->use_edje = ETK_FALSE;
    
    icon_object->label = etk_label_new(NULL);
-   etk_widget_parent_set(icon_object->label, ETK_WIDGET(grid));
    etk_widget_theme_parent_set(icon_object->label, ETK_WIDGET(grid->iconbox));
+   etk_widget_parent_set(icon_object->label, ETK_WIDGET(grid));
    etk_widget_internal_set(icon_object->label, ETK_TRUE);
    etk_widget_repeat_mouse_events_set(icon_object->label, ETK_TRUE);
    etk_label_alignment_set(ETK_LABEL(icon_object->label), 0.0, 0.0);

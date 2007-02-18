@@ -1228,9 +1228,20 @@ Etk_Bool etk_widget_is_focused(Etk_Widget *widget)
  */
 void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name, Etk_Bool size_recalc)
 {
+   Etk_Widget *tc;
+   Evas_List *l;
+   
    if (!widget || !widget->theme_object)
       return;
+   
    edje_object_signal_emit(widget->theme_object, signal_name, "etk");
+   for (l = widget->theme_children; l; l = l->next)
+   {
+      tc = ETK_WIDGET(l->data);
+      if (tc->emit_theme_parent_signals)
+         etk_widget_theme_signal_emit(tc, signal_name, size_recalc);
+   }
+   
    if (size_recalc)
    {
       widget->need_theme_size_recalc = ETK_TRUE;
@@ -2016,6 +2027,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->need_redraw = ETK_FALSE;
    widget->need_theme_size_recalc = ETK_FALSE;
    widget->swallowed = ETK_FALSE;
+   widget->emit_theme_parent_signals = ETK_FALSE;
    widget->accepts_dnd = ETK_FALSE;
    widget->dnd_internal = ETK_FALSE;
    widget->dnd_source = ETK_FALSE;

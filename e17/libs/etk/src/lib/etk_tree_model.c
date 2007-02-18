@@ -359,7 +359,7 @@ static Etk_Bool _text_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geome
    if (!(text_data = cell_data) || !cell_objects[0])
       return ETK_FALSE;
    
-   edje_object_part_text_set(cell_objects[0], "etk.text.text", *text_data);
+   edje_object_part_text_set(cell_objects[0], "etk.text.label", *text_data);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + (geometry.h / 2));
    evas_object_show(cell_objects[0]);
    
@@ -416,7 +416,7 @@ static Etk_Bool _int_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geomet
       return ETK_FALSE;
    
    snprintf(string, 255, "%d", *int_data);
-   edje_object_part_text_set(cell_objects[0], "etk.text.text", string);
+   edje_object_part_text_set(cell_objects[0], "etk.text.label", string);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + (geometry.h / 2));
    evas_object_show(cell_objects[0]);
    
@@ -461,7 +461,7 @@ static Etk_Bool _double_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geo
       return ETK_FALSE;
    
    snprintf(string, 255, "%.2f", *double_data);
-   edje_object_part_text_set(cell_objects[0], "etk.text.text", string);
+   edje_object_part_text_set(cell_objects[0], "etk.text.label", string);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + (geometry.h / 2));
    evas_object_show(cell_objects[0]);
    
@@ -877,7 +877,7 @@ static Etk_Bool _progress_bar_render(Etk_Tree_Model *model, Etk_Tree_Row *row, E
    edje_object_part_drag_value_set(cell_objects[0], "etk.dragable.filler", 0.0, 0.0);
    edje_object_part_drag_size_set(cell_objects[0], "etk.dragable.filler", pbar_data->fraction, 0.0);
    
-   edje_object_part_text_set(cell_objects[0], "etk.text.text", pbar_data->text ? pbar_data->text : "");
+   edje_object_part_text_set(cell_objects[0], "etk.text.label", pbar_data->text ? pbar_data->text : "");
    
    evas_object_data_set(cell_objects[0], "_Etk_Tree_Model_Progressbar::Row", row);
    edje_object_size_min_get(cell_objects[0], &w, &h);

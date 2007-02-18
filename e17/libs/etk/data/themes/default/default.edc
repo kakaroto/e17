@@ -3,6 +3,7 @@
 #include "macros/glint.edc"
 #include "macros/paned.edc"
 #include "macros/scrollbar.edc"
+#include "macros/style.edc"
 #include "macros/toolbar.edc"
 #include "macros/tree_header.edc"
 

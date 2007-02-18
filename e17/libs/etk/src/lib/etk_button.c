@@ -417,10 +417,11 @@ static void _etk_button_constructor(Etk_Button *button)
    button->stock_size = ETK_STOCK_SMALL;
    
    button->label = etk_label_new(NULL);
-   etk_container_add(ETK_CONTAINER(button), button->label);
    etk_widget_internal_set(button->label, ETK_TRUE);
-   etk_label_alignment_set(ETK_LABEL(button->label), 0.5, 0.5);
+   etk_widget_theme_parent_set(button->label, ETK_WIDGET(button));
    etk_widget_pass_mouse_events_set(button->label, ETK_TRUE);
+   etk_label_alignment_set(ETK_LABEL(button->label), 0.5, 0.5);
+   etk_container_add(ETK_CONTAINER(button), button->label);
 
    button->pressed = _etk_button_pressed_handler;
    button->released = _etk_button_released_handler;

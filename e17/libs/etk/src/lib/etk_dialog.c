@@ -281,25 +281,27 @@ static void _etk_dialog_constructor(Etk_Dialog *dialog)
    etk_widget_show(dialog->dialog_vbox);
    
    dialog->main_area_vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->main_area_vbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_widget_internal_set(dialog->main_area_vbox, ETK_TRUE);
+   etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->main_area_vbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_widget_show(dialog->main_area_vbox);
    
    dialog->separator = etk_hseparator_new();
-   etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->separator, ETK_BOX_START, ETK_BOX_FILL, 6);
    etk_widget_theme_parent_set(dialog->separator, ETK_WIDGET(dialog));
    etk_widget_internal_set(dialog->separator, ETK_TRUE);
+   etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->separator, ETK_BOX_START, ETK_BOX_FILL, 6);
    etk_widget_show(dialog->separator);
 
    dialog->action_area_alignment = etk_alignment_new(0.5, 0.5, 0.0, 0.0);
-   etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->action_area_alignment, ETK_BOX_END, ETK_BOX_FILL, 0);
    etk_widget_internal_set(dialog->action_area_alignment, ETK_TRUE);
+   etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->action_area_alignment, ETK_BOX_END, ETK_BOX_FILL, 0);
    etk_widget_show(dialog->action_area_alignment);
 
    dialog->action_area_hbox = etk_hbox_new(ETK_FALSE, 6);
-   etk_container_add(ETK_CONTAINER(dialog->action_area_alignment), dialog->action_area_hbox);
    etk_widget_internal_set(dialog->action_area_hbox, ETK_TRUE);
+   etk_container_add(ETK_CONTAINER(dialog->action_area_alignment), dialog->action_area_hbox);
    etk_widget_show(dialog->action_area_hbox);
+
+   etk_widget_lower(dialog->separator);
 
    dialog->align = 0.5;
    dialog->has_separator = ETK_TRUE;
@@ -319,8 +321,8 @@ static void _etk_dialog_property_set(Etk_Object *object, int property_id, Etk_Pr
          etk_dialog_has_separator_set(dialog, etk_property_value_bool_get(value));
          break;
       case ETK_DIALOG_ACTION_AREA_ALIGN_PROPERTY:
-	 etk_dialog_action_area_alignment_set(dialog, etk_property_value_float_get(value));
-	 break;
+         etk_dialog_action_area_alignment_set(dialog, etk_property_value_float_get(value));
+         break;
       default:
          break;
    }
@@ -340,8 +342,8 @@ static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Pr
          etk_property_value_bool_set(value, etk_dialog_has_separator_get(dialog));
          break;
       case ETK_DIALOG_ACTION_AREA_ALIGN_PROPERTY:
-	 etk_property_value_float_set(value, dialog->align);
-	 break;
+         etk_property_value_float_set(value, dialog->align);
+         break;
       default:
          break;
    }

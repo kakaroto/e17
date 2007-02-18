@@ -1,40 +1,35 @@
 styles
 {
-   style {
-      name: "label_style";
-      base: "font=Vera font_size=10 text_class=label align=left color=#000000 wrap=word style=shadow shadow_color=#ffffff80'";
-
-      tag:  "br" "\n";
-      tag:  "left" "+ align=left";
-      tag:  "/left" "-\n";
-      tag:  "center" "+ align=center";
-      tag:  "/center" "- \n";
-      tag:  "right" "+ align=right";
-      tag:  "/right" "- \n";
-      tag:  "h1" "+ font_size=20";
-      tag:  "b" "+ font=Vera-Bold";
-      tag:  "i" "+ font=Vera-Italic";
-      tag:  "bi" "+ font=Vera-Bold-Italic";
-      tag:  "mono" "+ font=Vera-Mono";
-      tag:  "glow" "+ style=glow color=#fff glow2_color=#fe87 glow_color=#fa14";
-      tag:  "link" "+ underline=on underline_color=#0000aa color=#0000aa";
-      tag:  "red" "+ color=#ff0000";
-      tag:  "tab" "\t";
-   }
+   STYLE("Label", "Vera", "Vera-Bold", "Vera-Italic", "Vera-Bold-Italic", "Vera-Mono", "10",
+      "color=#000000 style=shadow shadow_color=#ffffff80", /* Normal style */
+      "color=#ffffff style=soft_shadow shadow_color=#00000020 font=Vera-Bold font_size=16", /* Title */
+      "color=#ffffff style=soft_shadow shadow_color=#00000020 font=Vera-Bold font_size=12", /* Subtitle */
+      "color=#ffffff style=glow glow2_color=#fe87 glow_color=#fa14", /* Glow */
+      "color=#111111 font=Vera-Italic") /* Description */
 }
 
 group {
    name: "etk/label";
+   alias: "etk/button/label";
+   alias: "etk/toggle_button/label";
+   alias: "etk/check_button/label";
+   alias: "etk/radio_button/label";
+   alias: "etk/tree/header/label";
+   alias: "etk/notebook/tab/label";
+   alias: "etk/combobox/button/label";
+   alias: "etk/htoolbar/tool_button/label";
+   alias: "etk/vtoolbar/tool_button/label";
    parts {
       part {
-         name: "etk.text.textblock";
-	 type: TEXTBLOCK;
+         name: "etk.text.label";
+         type: TEXTBLOCK;
          description {
             state: "default" 0.0;
-	    text {
-		style: "label_style";
-		min:   1 1;
-	    }
+            align: 0.0 0.5;
+            text {
+               style: "Label";
+               min: 1 1;
+            }
          }
       }
    }

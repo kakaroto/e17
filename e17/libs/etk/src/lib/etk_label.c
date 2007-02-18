@@ -88,9 +88,9 @@ void etk_label_set(Etk_Label *label, const char *text)
    }
 
    if (!label->text)
-      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", "");
+      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.label", "");
    else
-      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", label->text);
+      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.label", label->text);
 
    etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
@@ -178,6 +178,8 @@ static void _etk_label_constructor(Etk_Label *label)
 
    widget->size_request = _etk_label_size_request;
    widget->size_allocate = _etk_label_size_allocate;
+   /* This allows the label to receive the same theme-signals as its theme-parent */
+   widget->emit_theme_parent_signals = ETK_TRUE;
 
    etk_signal_connect("realize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realize_cb), NULL);
 }
@@ -285,9 +287,9 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
       return;
    
    if (!label->text)
-      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", "");
+      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.label", "");
    else
-      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.textblock", label->text);
+      etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.label", label->text);
    etk_widget_size_recalc_queue(ETK_WIDGET(label));
 }
 
@@ -309,13 +311,15 @@ static void _etk_label_realize_cb(Etk_Object *object, void *data)
  * - <b>"<left>Text</left>":</b> Align left
  * - <b>"<right>Text</right>":</b> Align right
  * - <b>"<center>Text</center>":</b> Align center
- * - <b>"<h1>Text</h1>":</b> Large text
  * - <b>"<b>Text</b>":</b> Bold
  * - <b>"<b>Text</b>":</b> Italic
  * - <b>"<bi>Text</bi>":</b> Bold-Italic
  * - <b>"<color=#rrggbbaa>Text</>":</b> Set the color of the text
  * - <b>"<font_size=16>Text</>":</b> Set the size of the text
+ * - <b>"<title>Text</title>":</b> Style for titles
+ * - <b>"<subtitle>Text</subtitle>":</b> Style for subtitles
  * - <b>"<glow>Text</glow>":</b> Make the the text glow
+ * - <b>"<description>Text</description>":</b> Style for descriptions
  * - <b>"<br>":</b> End of line
  * - <b>"<tab>":</b> Add a tab @n @n
  *

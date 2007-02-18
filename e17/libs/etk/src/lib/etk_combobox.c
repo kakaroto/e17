@@ -246,6 +246,7 @@ void etk_combobox_build(Etk_Combobox *combobox)
       {
          case ETK_COMBOBOX_LABEL:
             combobox->active_item_children[j] = etk_label_new(NULL);
+            etk_widget_theme_parent_set(combobox->active_item_children[j], combobox->button);
             break;
          case ETK_COMBOBOX_IMAGE:
             combobox->active_item_children[j] = etk_image_new();

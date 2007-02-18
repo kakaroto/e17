@@ -260,14 +260,14 @@ group {
          }
       }
       part {
-         name: "etk.text.textblock";
-	 type: TEXTBLOCK;
+         name: "etk.text.label";
+         type: TEXTBLOCK;
          description {
             state: "default" 0.0;
-	    text {
-		style: "label_style";
-		min:   1 1;
-	    }
+            text {
+               style: "Label";
+               min: 1 1;
+            }
          }
       }
    }
