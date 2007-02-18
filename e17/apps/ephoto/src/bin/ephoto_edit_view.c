@@ -23,13 +23,7 @@ void show_edit_view(Ewl_Widget *w, void *event, void *data)
 /*Add edit tools to container c*/
 void add_edit_tools(Ewl_Widget *c)
 {
-	Ewl_Widget *image;
-
-        image = add_image(c, PACKAGE_DATA_DIR "/images/media-seek-backward.png", 0, previous_image, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);
-
-        image = add_image(c, PACKAGE_DATA_DIR "/images/media-seek-forward.png", 0, next_image, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	Ewl_Widget *image, *sep;
 
 	image = add_image(c, PACKAGE_DATA_DIR "/images/undo.png", 0, rotate_image_left, NULL);
 	ewl_image_constrain_set(EWL_IMAGE(image), 30);
@@ -42,6 +36,18 @@ void add_edit_tools(Ewl_Widget *c)
 
         image = add_image(c, PACKAGE_DATA_DIR "/images/go-down.png", 0, flip_image_vertical, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+
+	sep = ewl_vseparator_new();
+	ewl_container_child_append(EWL_CONTAINER(c), sep);
+	ewl_widget_show(sep);
+
+        image = add_image(c, PACKAGE_DATA_DIR "/images/media-seek-backward.png", 0, previous_image, NULL);
+        ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_RIGHT);
+
+        image = add_image(c, PACKAGE_DATA_DIR "/images/media-seek-forward.png", 0, next_image, NULL);
+        ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_RIGHT);
 
 	return;
 }
