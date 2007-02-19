@@ -26,6 +26,8 @@ PKG_CHECK_MODULES(POPPLER, \
     AC_MSG_ERROR([Fatal Error: no popppler library detected.])
    ]
 )
+POPPLER_VERSION=`pkg-config --modversion poppler`
+AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
 
 AC_PATH_GENERIC(evas, 0.9.9,
   [ ],
