@@ -15,6 +15,9 @@ group {
    alias: "etk/check_button/label";
    alias: "etk/radio_button/label";
    alias: "etk/tree/header/label";
+   alias: "etk/tree/header_unique/label";
+   alias: "etk/tree/header_first/label";
+   alias: "etk/tree/header_last/label";
    alias: "etk/notebook/tab/label";
    alias: "etk/combobox/button/label";
    alias: "etk/htoolbar/tool_button/label";
