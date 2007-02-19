@@ -353,7 +353,6 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    entry->secondary_image_highlight = ETK_FALSE;
    entry->pointer_set = ETK_FALSE;
    entry->text = NULL;
-   entry->inner_part_margin = 2;
 
    widget->size_allocate = _etk_entry_size_allocate;
 
@@ -452,8 +451,8 @@ static void _etk_entry_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 	    i_geometry.y += (geometry.h - i_geometry.h)/2;
 
 	 etk_widget_size_allocate(ETK_WIDGET(image), i_geometry);
-	 x += i_geometry.w + entry->inner_part_margin;
-	 w -= i_geometry.w + entry->inner_part_margin;
+	 x += i_geometry.w + entry->image_interspace;
+	 w -= i_geometry.w + entry->image_interspace;
       }
       if (entry->secondary_image)
       {
@@ -469,7 +468,7 @@ static void _etk_entry_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 	    i_geometry.y += (geometry.h - i_geometry.h)/2;
 
 	 etk_widget_size_allocate(ETK_WIDGET(image), i_geometry);
-	 w -= i_geometry.w + entry->inner_part_margin;
+	 w -= i_geometry.w + entry->image_interspace;
       }
 
       evas_object_move(entry->editable_object, x, geometry.y);
@@ -517,19 +516,23 @@ static void _etk_entry_realize_cb(Etk_Object *object, void *data)
    evas_object_event_callback_add(entry->editable_object, EVAS_CALLBACK_MOUSE_MOVE,
       _etk_entry_editable_mouse_move_cb, entry);
 
-   if (etk_widget_theme_data_get(ETK_WIDGET(entry), "highlight_image_color", "%d %d %d %d",
-      &entry->highlight_image_color.r, &entry->highlight_image_color.g,
-      &entry->highlight_image_color.b, &entry->highlight_image_color.a) != 4)
+   if (etk_widget_theme_data_get(ETK_WIDGET(entry), "icon_highlight_color", "%d %d %d %d",
+      &entry->highlight_color.r, &entry->highlight_color.g,
+      &entry->highlight_color.b, &entry->highlight_color.a) != 4)
    {
-      entry->highlight_image_color.r = 128;
-      entry->highlight_image_color.g = 128;
-      entry->highlight_image_color.b = 128;
-      entry->highlight_image_color.a = 255;
+      entry->highlight_color.r = 128;
+      entry->highlight_color.g = 128;
+      entry->highlight_color.b = 128;
+      entry->highlight_color.a = 255;
+   }
+   else
+   {
+      evas_color_argb_premul(entry->highlight_color.a, &entry->highlight_color.r,
+         &entry->highlight_color.g, &entry->highlight_color.b);
    }
 
-   if (etk_widget_theme_data_get(ETK_WIDGET(entry), "inner_part_margin", "%d",
-      &entry->inner_part_margin) != 1)
-      entry->inner_part_margin = 2;
+   if (etk_widget_theme_data_get(ETK_WIDGET(entry), "icon_interspace", "%d", &entry->image_interspace) != 1)
+      entry->image_interspace = 5;
 
 }
 
@@ -800,8 +803,8 @@ static void _etk_entry_image_mouse_in_cb(Etk_Widget *widget, Etk_Event_Mouse_In 
       return;
 
    evas_object_color_set(etk_image_evas_object_get(image),
-	 entry->highlight_image_color.r, entry->highlight_image_color.g,
-	 entry->highlight_image_color.b, entry->highlight_image_color.a);
+	 entry->highlight_color.r, entry->highlight_color.g,
+	 entry->highlight_color.b, entry->highlight_color.a);
 }
 
 /* Called when the mouse moves out of the image */
@@ -844,8 +847,8 @@ static void _etk_entry_image_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Up 
       return;
 
    evas_object_color_set(etk_image_evas_object_get(image),
-	 entry->highlight_image_color.r, entry->highlight_image_color.g,
-	 entry->highlight_image_color.b, entry->highlight_image_color.a);
+	 entry->highlight_color.r, entry->highlight_color.g,
+	 entry->highlight_color.b, entry->highlight_color.a);
 }
 
 /* Called when the clear button is pressed */

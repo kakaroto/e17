@@ -40,15 +40,16 @@ struct Etk_Entry
    Etk_Image *secondary_image;
 
    Evas_Object *editable_object;
-   Etk_Bool     password_mode;
-   Etk_Bool     selection_dragging;
-   Etk_Bool 	pointer_set;
-   Etk_Bool 	primary_image_highlight;
-   Etk_Bool 	secondary_image_highlight;
-   Etk_Color    highlight_image_color;
+   Etk_Bool password_mode;
+   Etk_Bool selection_dragging;
+   Etk_Bool pointer_set;
+   
+   Etk_Bool primary_image_highlight;
+   Etk_Bool secondary_image_highlight;
+   Etk_Color highlight_color;
+   int image_interspace;
 
    char *text;
-   int   inner_part_margin;
 };
 
 

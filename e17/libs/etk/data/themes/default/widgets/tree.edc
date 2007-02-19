@@ -8,17 +8,17 @@
  * Different settings:
  * -------------------
  * - "tree_contains_headers": a boolean setting whether the headers-bar should
- *    be contained by the tree itself (the headers-bar is then above the
- *    scrolled-view) or contained by the scrolled-view (the headers-bar is then
- *    inside the scrolled-view). The default value is "1": the headers-bar is
- *    contained directly by the tree. Set it to "0" otherwise
+ *      be contained by the tree itself (the headers-bar is then above the
+ *      scrolled-view) or contained by the scrolled-view (the headers-bar is then
+ *      inside the scrolled-view). The default value is "1": the headers-bar is
+ *      contained directly by the tree. Set it to "0" otherwise
  * - "separator_color": the rgba color of the vertical lines separating the
- *    columns of the tree. Default value is "255 255 255 0"
+ *      columns of the tree. Default value is "255 255 255 0"
  *
  * Signals:
  * --------
  * - common widget's signals: "etk,state,enter", "etk,state,leave",
- *    "etk,state,focused", "etk,state,unfocused", "etk,state,shown"
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,shown"
  */
 group {
    name: "etk/tree";
@@ -37,16 +37,16 @@ group {
  * -----------------------
  * These groups correspond to the header-objects of the tree's columns.
  * - Only "etk/tree/header" has to be necessarily implemented. It is the generic
- *    group for the column headers.
+ *      group for the column headers.
  * - "etk/tree/header_first" is used for the header of the first visible column,
- *    when several columns can be seen. If this group doesn't exist,
- *    "etk/tree/header" is used
+ *      when several columns can be seen. If this group doesn't exist,
+ *      "etk/tree/header" is used
  * - "etk/tree/header_last" is used for the header of the last visible column,
- *    when several columns can be seen. If this group doesn't exist,
- *    "etk/tree/header" is used
+ *      when several columns can be seen. If this group doesn't exist,
+ *      "etk/tree/header" is used
  * - "etk/tree/header_last" is used for the header of the column when only one
- *    column is visible seen. If this group doesn't exist, "etk/tree/header"
- *    is used
+ *      column is visible seen. If this group doesn't exist, "etk/tree/header"
+ *      is used
  *
  * Signals:
  * --------
@@ -72,7 +72,7 @@ TREE_HEADER("etk/tree/header_last", "tree_header_last.png", "tree_header_last2.p
  * Signals:
  * --------
  * - common widget's signals: "etk,state,enter", "etk,state,leave",
- *    "etk,state,focused", "etk,state,unfocused", "etk,state,shown"
+ *      "etk,state,focused", "etk,state,unfocused", "etk,state,shown"
  */
 group {
    name: "etk/tree/scrolled_view";
@@ -166,7 +166,7 @@ group {
  * Special parts:
  * --------------
  * - "etk.dragable.bar": the dragable part used to scroll the content of the
- *    scrolled-view
+ *      scrolled-view
  *
  * Signals:
  * --------
@@ -175,11 +175,11 @@ group {
  * Signals to emit:
  * ----------------
  * - "scroll_left_start": should be emitted when the content should be
- *    scrolled to the left (i.e. when the left arrow is pressed)
+ *      scrolled to the left (i.e. when the left arrow is pressed)
  * - "scroll_right_start": should be emitted when the content should be
- *    scrolled to the right (i.e. when the right arrow is pressed)
+ *      scrolled to the right (i.e. when the right arrow is pressed)
  * - "scroll_stop": should be emitted when the content should stop being
- *    scrolled (i.e. when the pressed arrow is released)
+ *      scrolled (i.e. when the pressed arrow is released)
  */
 group {
    name: "etk/tree/scrolled_view/hscrollbar";
@@ -281,7 +281,7 @@ group {
  * Special parts:
  * --------------
  * - "etk.dragable.bar": the dragable part used to scroll the content of the
- *    scrolled-view
+ *      scrolled-view
  *
  * Signals:
  * --------
@@ -290,11 +290,11 @@ group {
  * Signals to emit:
  * ----------------
  * - "scroll_up_start": should be emitted when the content should be
- *    scrolled up (i.e. when the up arrow is pressed)
+ *      scrolled up (i.e. when the up arrow is pressed)
  * - "scroll_down_start": should be emitted when the content should be
- *    scrolled down (i.e. when the down arrow is pressed)
+ *      scrolled down (i.e. when the down arrow is pressed)
  * - "scroll_stop": should be emitted when the content should stop being
- *    scrolled (i.e. when the pressed arrow is released)
+ *      scrolled (i.e. when the pressed arrow is released)
  */
 group {
    name: "etk/tree/scrolled_view/vscrollbar";
@@ -395,9 +395,9 @@ group {
  * Signals:
  * --------
  * - "etk,state,odd": emitted when the group corresponds to a row whose number
- *    is odd
+ *      is odd
  * - "etk,state,even": emitted when the group corresponds to a row whose number
- *    is even
+ *      is even
  * - "etk,state,selected": emitted when the row is selected
  * - "etk,state,unselected":  emitted when the row is unselected
  *
@@ -704,14 +704,4 @@ group {
 }
 
 /* TODO: we should be able to theme the progress-bar model... */
-/* TODO: remove this group... no more need for it with the tree2 */
 /* TODO: document "etk/tree/grid" */
-group {
-   name: "etk/tree/grid";
-   data {
-      item: "separator_color" "204 204 204 140";
-      item: "row_height" "24";
-      item: "cell_margins" "4 4 2 2";
-      item: "expander_size" "18";
-   }
-}

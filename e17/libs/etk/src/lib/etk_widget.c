@@ -1231,10 +1231,12 @@ void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name, E
    Etk_Widget *tc;
    Evas_List *l;
    
-   if (!widget || !widget->theme_object)
+   if (!widget)
       return;
    
-   edje_object_signal_emit(widget->theme_object, signal_name, "etk");
+   if (widget->theme_object)
+      edje_object_signal_emit(widget->theme_object, signal_name, "etk");
+   
    for (l = widget->theme_children; l; l = l->next)
    {
       tc = ETK_WIDGET(l->data);
