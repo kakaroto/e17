@@ -72,6 +72,7 @@ static void _etk_test_text_view_tag_window_create(void *data)
    static Etk_Widget *win = NULL;
    Etk_Widget *vbox;
    Etk_Widget *text_view;
+   Etk_Widget *scrolled_view;
    
    if (win)
    {
@@ -134,8 +135,12 @@ static void _etk_test_text_view_tag_window_create(void *data)
             "<i>right_margin:</i> The right margin of the paragraph, in pixels"
       "</p>",
       ETK_TRUE);
+
+   scrolled_view = etk_scrolled_view_new();
+
+   etk_bin_child_set( ETK_BIN(scrolled_view), text_view );
    
-   etk_box_append(ETK_BOX(vbox), text_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(vbox), scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    etk_widget_show_all(win);
 }

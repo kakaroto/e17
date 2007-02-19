@@ -26,6 +26,8 @@ static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
 static void _etk_text_view_realize_cb(Etk_Object *object, void *data);
 static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static void _etk_text_view_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
+static void _etk_text_view_scroll(Etk_Widget *widget, int x, int y);
 
 static Etk_Signal *_etk_text_view_signals[ETK_TEXT_VIEW_NUM_SIGNALS];
 
@@ -120,6 +122,9 @@ static void _etk_text_view_constructor(Etk_Text_View *text_view)
    text_view->textblock_object = NULL;
    
    ETK_WIDGET(text_view)->size_allocate = _etk_text_view_size_allocate;
+
+   ETK_WIDGET(text_view)->scroll = _etk_text_view_scroll;
+   ETK_WIDGET(text_view)->scroll_size_get = _etk_text_view_scroll_size_get;
 
    etk_signal_connect("realize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_unrealize_cb), NULL);
@@ -262,6 +267,30 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
          etk_textblock_delete_range(tb, cursor, selection);
       etk_textblock_insert(tb, cursor, event->string, -1);
    }
+}
+
+/* Size of all the text_view for scrolling ability. */
+static void _etk_text_view_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size)
+{
+   Etk_Text_View *text_view;
+   
+   if(!(text_view = ETK_TEXT_VIEW(widget)) || !scroll_size )
+      return;
+
+   etk_textblock_object_full_geometry_get( text_view->textblock_object, NULL, NULL, &(scroll_size->w), &(scroll_size->h) );
+}
+
+static void _etk_text_view_scroll(Etk_Widget *widget, int x, int y)
+{
+   Etk_Text_View *text_view;
+
+   if( !( text_view = ETK_TEXT_VIEW(widget) ) )
+      return;
+
+   etk_textblock_object_xoffset_set( text_view->textblock_object, x );
+   etk_textblock_object_yoffset_set( text_view->textblock_object, y );
+
+   etk_widget_redraw_queue( widget );
 }
 
 /** @} */

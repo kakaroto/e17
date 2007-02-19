@@ -1160,6 +1160,85 @@ Etk_Textblock_Wrap etk_textblock_object_wrap_get(Evas_Object *tbo)
    return tbo_sd->wrap;
 }
 
+int etk_textblock_object_yoffset_get( Evas_Object *tbo )
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
+       return 0;
+
+    return tbo_sd->yoffset;
+}
+
+int etk_textblock_object_xoffset_get( Evas_Object *tbo )
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+   
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
+      return 0;
+
+   return tbo_sd->xoffset;
+}
+
+void etk_textblock_object_yoffset_set( Evas_Object *tbo, int yoffset )
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
+      return;
+
+   tbo_sd->yoffset = yoffset;
+
+   /* TODO: Update the object? */
+}
+
+void etk_textblock_object_xoffset_set( Evas_Object *tbo, int xoffset )
+{
+   Etk_Textblock_Object_SD *tbo_sd;
+
+   if (!tbo || !(tbo_sd = evas_object_smart_data_get(tbo)))
+      return;
+
+    tbo_sd->xoffset = xoffset;
+
+   /* TODO: Update the object? */
+}
+
+void etk_textblock_object_full_geometry_get( Evas_Object *tbo, int *x, int *y, int *w, int *h )
+{
+   if(!tbo)
+      return;
+
+   if(x)
+   {
+      evas_object_geometry_get( tbo, x, NULL, NULL, NULL );   
+   }
+
+   if(y)
+   {
+      evas_object_geometry_get( tbo, NULL, y, NULL, NULL );
+   }
+
+   if(w)
+   {
+      evas_object_geometry_get( tbo, NULL, NULL, w, NULL );
+   }
+
+   if(h)
+   {
+       Etk_Textblock_Object_SD *tbo_sd;
+       Etk_Textblock_Object_Line *line;
+
+	   *h = 0;
+
+       if( !( tbo_sd = evas_object_smart_data_get(tbo) ) )
+          return;
+
+       for (line = tbo_sd->lines; line; line = line->next)
+          *h += line->geometry.h;
+    }
+}
+
 /**
  * @brief Gets the cursor's iterator of the textblock object
  * @param tbo a textblock object
@@ -3548,7 +3627,7 @@ static void _etk_textblock_object_update(Evas_Object *tbo)
    
    /* We update the lines */
    /* TODO: optimize: Updates all the lines in several times and use a binary tree! */
-   y = 0;
+   y = - tbo_sd->yoffset;
    evas_object_geometry_get(tbo, &ox, &oy, &ow, &oh);
    for (line = tbo_sd->lines; line; line = line->next)
    {
@@ -3563,7 +3642,7 @@ static void _etk_textblock_object_update(Evas_Object *tbo)
          }
          else
          {
-            evas_object_move(line->object, ox + line->geometry.x, oy + line->geometry.y);
+            evas_object_move(line->object, tbo_sd->xoffset + ox + line->geometry.x, oy + line->geometry.y);
             evas_object_resize(line->object, line->geometry.w, line->geometry.h);
             evas_object_show(line->object);
             

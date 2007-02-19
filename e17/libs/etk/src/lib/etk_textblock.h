@@ -241,6 +241,14 @@ Etk_Textblock_Iter *etk_textblock_object_selection_bound_get(Evas_Object *tbo);
 void                etk_textblock_object_cursor_visible_set(Evas_Object *tbo, Etk_Bool visible);
 Etk_Bool            etk_textblock_object_cursor_visible_get(Evas_Object *tbo);
 
+void etk_textblock_object_yoffset_set( Evas_Object *tbo, int yoffset );
+int etk_textblock_object_yoffset_get( Evas_Object *tbo );
+
+void etk_textblock_object_xoffset_set( Evas_Object *tbo, int xoffset );
+int etk_textblock_object_xoffset_get( Evas_Object *tbo );
+
+void etk_textblock_object_full_geometry_get( Evas_Object *tbo, int *x, int *y, int *w, int *h );
+
 /* Misc funcs */
 int      etk_textblock_unicode_length_get(const char *unicode_string);
 Etk_Bool etk_textblock_is_white_char(int c);
