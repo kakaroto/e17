@@ -19,7 +19,7 @@
 #define ETK_IS_RANGE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_RANGE_TYPE))
 
 /**
- * @brief @widget The structure of a range
+ * @brief An abstract class used by widgets like scrollbars or sliders
  * @structinfo
  */
 struct Etk_Range

@@ -133,6 +133,7 @@ static void _etk_tree_headers_rect_create(Etk_Tree *tree, Etk_Widget *parent);
 static Etk_Tree_Row *_etk_tree_row_next_to_render_get(Etk_Tree_Row *row, int *depth);
 static Etk_Tree_Row_Object *_etk_tree_row_object_create(Etk_Tree *tree);
 static void _etk_tree_row_object_destroy(Etk_Tree *tree, Etk_Tree_Row_Object *row_object);
+static void _etk_tree_row_signal_emit(Etk_Tree_Row *row, Etk_Tree_Row_Object *row_object, const char *signal);
 static void _etk_tree_expanders_clip(Etk_Tree *tree);
 
 static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifiers modifiers);
@@ -2423,12 +2424,6 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
             evas_object_resize(row_object->background, geometry.w, tree->rows_height);
             evas_object_show(row_object->background);
             
-            edje_object_signal_emit(row_object->background,
-               (row_id % 2 == 0) ? "etk,state,odd" : "etk,state,even", "etk");
-            edje_object_signal_emit(row_object->background,
-               row->selected ? "etk,state,selected" : "etk,state,unselected", "etk");
-            edje_object_message_signal_process(row_object->background);
-            
             if ((l2 = evas_list_find_list(prev_visible_rows, row)))
                prev_visible_rows = evas_list_remove_list(prev_visible_rows, l2);
             else
@@ -2539,6 +2534,10 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
                   }
                }
             }
+            
+            _etk_tree_row_signal_emit(row, row_object, (row_id % 2 == 0) ? "etk,state,odd" : "etk,state,even");
+            _etk_tree_row_signal_emit(row, row_object, row->selected ? "etk,state,selected" : "etk,state,unselected");
+            edje_object_message_signal_process(row_object->background);
             
             evas_object_lower(row_object->background);
             row_object->row = row;
@@ -3352,6 +3351,18 @@ static void _etk_tree_row_object_destroy(Etk_Tree *tree, Etk_Tree_Row_Object *ro
    evas_object_del(row_object->expander);
    evas_object_del(row_object->background);
    free(row_object);
+}
+
+/* Emits a theme-signal to all the row objects (background, expander, model-objects) */
+static void _etk_tree_row_signal_emit(Etk_Tree_Row *row, Etk_Tree_Row_Object *row_object, const char *signal)
+{
+   if (!row || !row_object || !signal)
+      return;
+   
+   if (row_object->background)
+      edje_object_signal_emit(row_object->background, signal, "etk");
+   if (row_object->expander)
+      edje_object_signal_emit(row_object->expander, signal, "etk");
 }
 
 /* Clips all the expanders against the clip object of the first visible column */

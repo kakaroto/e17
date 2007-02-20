@@ -1,6 +1,6 @@
 group {
    name: "etk/hslider";
-   min: 32 32;
+   min: 64 32;
    parts {
       part {
          name: "slider_bar";
@@ -8,11 +8,12 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.5;
-               offset: 0 -1;
+               offset: 3 -1;
             }
             rel2 {
-               relative: 1.0 0.5;
+               relative: 0.0 0.5;
                offset: -1 0;
+               to_x: "label_clip";
             }
             image {
                normal: "hslider_bar.png";
@@ -83,7 +84,105 @@ group {
             }
          }
       }
-      FOCUS_GLOW(0.0, 0.0, 0, -13, "slider_bar", 1.0, 1.0, -1, 10, "slider_bar")
+      part {
+         name: "label_clip";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 1.0 0.0;
+               offset: -1 -4;
+               to_y: "etk.text.label";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -2 3;
+               to_y: "etk.text.label";
+            }
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -5 -4;
+               to: "etk.text.label";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 2 3;
+               to: "etk.text.label";
+            }
+         }
+      }
+      part {
+         name: "label_under";
+         clip_to: "label_clip";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "label_clip";
+            }
+            rel2 {
+               to: "label_clip";
+            }
+            image {
+               normal: "frame_label_under.png";
+               border: 3 3 3 3;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "etk.text.label";
+         type: TEXT;
+         clip_to: "label_clip";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            align: 1.0 0.5;
+            rel1 {
+               relative: 1.0 0.5;
+               offset: -3 0;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -3 0;
+            }
+            text {
+               text: "0.0";
+               font: "Vera";
+               size: 10;
+               min: 1 1;
+               max: 1 1;
+            }
+         }
+      }
+      part {
+         name: "label_over";
+         clip_to: "label_clip";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "label_clip";
+            }
+            rel2 {
+               to: "label_clip";
+            }
+            image {
+               normal: "frame_label_over.png";
+               border: 7 7 7 7;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      FOCUS_GLOW(0.0, 0.0, -4, -13, "slider_bar", 1.0, 1.0, -1, 3, "label_clip")
       part {
          name: "slider_glow";
          mouse_events: 0;
@@ -111,6 +210,20 @@ group {
    }
    programs {
       program {
+         name: "hslider_show_label";
+         signal: "etk,action,show,label";
+         source: "etk";
+         action: STATE_SET "visible" 0.0;
+         target: "label_clip";
+      }
+      program {
+         name: "hslider_hide_label";
+         signal: "etk,action,hide,label";
+         source: "etk";
+         action: STATE_SET "default" 0.0;
+         target: "label_clip";
+      }
+      program {
          name: "hslider_drag_down";
          signal: "mouse,down,1*";
          source: "etk.dragable.slider";
@@ -125,28 +238,28 @@ group {
          target: "slider_button";
       }
       program {
-	 name: "hslider_in";
-	 signal: "mouse,in";
-	 source: "etk.dragable.slider";
+         name: "hslider_in";
+         signal: "mouse,in";
+         source: "etk.dragable.slider";
          action: STATE_SET "visible" 0.0;
-	 transition: SINUSOIDAL 1.0;
-	 target: "slider_glow";
-	 after: "hslider_in2";
+         transition: SINUSOIDAL 1.0;
+         target: "slider_glow";
+         after: "hslider_in2";
       }
       program {
-	 name: "hslider_in2";
+         name: "hslider_in2";
          action: STATE_SET "default" 0.0;
-	 transition: SINUSOIDAL 1.0;
-	 target: "slider_glow";
-	 after: "hslider_in";
+         transition: SINUSOIDAL 1.0;
+         target: "slider_glow";
+         after: "hslider_in";
       }
       program {
-	 name: "hslider_out";
-	 signal: "mouse,out";
-	 source: "etk.dragable.slider";
+         name: "hslider_out";
+         signal: "mouse,out";
+         source: "etk.dragable.slider";
          action: STATE_SET "default" 0.0;
-	 transition: SINUSOIDAL 1.0;
-	 target: "slider_glow";
+         transition: SINUSOIDAL 1.0;
+         target: "slider_glow";
       }
       program {
          name: "hslider_focus";
@@ -165,7 +278,7 @@ group {
 
 group {
    name: "etk/vslider";
-   min: 32 32;
+   min: 32 64;
    parts {
       part {
          name: "slider_bar";
@@ -173,11 +286,12 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.5 0.0;
-               offset: -1 0;
+               offset: -1 3;
             }
             rel2 {
-               relative: 0.5 1.0;
-               offset: -1 0;
+               relative: 0.5 0.0;
+               offset: 0 -1;
+               to_y: "label_clip";
             }
             image {
                normal: "vslider_bar.png";
@@ -202,7 +316,7 @@ group {
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: 7 -5;
+               offset: 7 -3;
                to: "slider_bar";
             }
          }
@@ -248,7 +362,125 @@ group {
             }
          }
       }
-      FOCUS_GLOW(0.0, 0.0, -13, 0, "slider_bar", 1.0, 1.0, 10, -1, "slider_bar")
+      part {
+         name: "label_clip";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: -5 -1;
+               to_x: "etk.text.label";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 2 -2;
+               to_x: "etk.text.label";
+            }
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -5 -4;
+               to: "etk.text.label";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 2 3;
+               to: "etk.text.label";
+            }
+         }
+      }
+      part {
+         name: "label_under";
+         clip_to: "label_clip";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "label_clip";
+            }
+            rel2 {
+               to: "label_clip";
+            }
+            image {
+               normal: "frame_label_under.png";
+               border: 3 3 3 3;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "etk.text.label";
+         type: TEXT;
+         clip_to: "label_clip";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            rel1 {
+               relative: 0.0 1.0;
+               offset: 8 -8;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -7 -8;
+            }
+            text {
+               text: "0.0";
+               font: "Vera";
+               size: 10;
+               align: 0.5 0.5;
+               min: 1 1;
+               max: 1 1;
+            }
+         }
+      }
+      part {
+         name: "label_over";
+         clip_to: "label_clip";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "label_clip";
+            }
+            rel2 {
+               to: "label_clip";
+            }
+            image {
+               normal: "frame_label_over.png";
+               border: 7 7 7 7;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "focus_rect";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            min: 30 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -4 -4;
+               to_x: "label_clip";
+               to_y: "slider_bar";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 3 0;
+               to: "label_clip";
+            }
+         }
+      }
+      FOCUS_GLOW(0.0, 0.0, 0, 0, "focus_rect", 1.0, 1.0, -1, -1, "focus_rect")
       part {
          name: "slider_glow";
          mouse_events: 0;
@@ -276,6 +508,20 @@ group {
    }
    programs {
       program {
+         name: "vslider_show_label";
+         signal: "etk,action,show,label";
+         source: "etk";
+         action: STATE_SET "visible" 0.0;
+         target: "label_clip";
+      }
+      program {
+         name: "vslider_hide_label";
+         signal: "etk,action,hide,label";
+         source: "etk";
+         action: STATE_SET "default" 0.0;
+         target: "label_clip";
+      }
+      program {
          name: "vslider_drag_down";
          signal: "mouse,down,1*";
          source: "etk.dragable.slider";
@@ -290,28 +536,28 @@ group {
          target: "slider_button";
       }
       program {
-	 name: "vslider_in";
-	 signal: "mouse,in";
-	 source: "etk.dragable.slider";
+         name: "vslider_in";
+         signal: "mouse,in";
+         source: "etk.dragable.slider";
          action: STATE_SET "visible" 0.0;
-	 transition: SINUSOIDAL 1.0;
-	 target: "slider_glow";
-	 after: "vslider_in2";
+         transition: SINUSOIDAL 1.0;
+         target: "slider_glow";
+         after: "vslider_in2";
       }
       program {
-	 name: "vslider_in2";
+         name: "vslider_in2";
          action: STATE_SET "default" 0.0;
-	 transition: SINUSOIDAL 1.0;
-	 target: "slider_glow";
-	 after: "vslider_in";
+         transition: SINUSOIDAL 1.0;
+         target: "slider_glow";
+         after: "vslider_in";
       }
       program {
-	 name: "vslider_out";
-	 signal: "mouse,out";
-	 source: "etk.dragable.slider";
+         name: "vslider_out";
+         signal: "mouse,out";
+         source: "etk.dragable.slider";
          action: STATE_SET "default" 0.0;
-	 transition: SINUSOIDAL 1.0;
-	 target: "slider_glow";
+         transition: SINUSOIDAL 1.0;
+         target: "slider_glow";
       }
       program {
          name: "vslider_focus";

@@ -209,9 +209,9 @@ void etk_range_page_size_set(Etk_Range *range, double page_size)
    if (page_size != range->page_size)
    {
       range->page_size = page_size;
-      etk_widget_redraw_queue(ETK_WIDGET(range));
       etk_object_notify(ETK_OBJECT(range), "page_size");
    }
+   etk_range_value_set(range, range->value);
 }
 
 /**
@@ -328,9 +328,9 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
  * A range has a <b>value</b> that can't be lower than the <b>lower bound</b> of the range, or greater than the
  * <b>upper bound</b> of the range. @n
  * Three other value have to be set when a new range is created:
- * - the <b>"step increment"</b> value is the value added or substracted to current value of the range, when the arrow
- * keys are used, or when the arrow buttons of a scrollbar are clicked for example. It is also the value used when the
- * user uses the mouse wheel.
+ * - the <b>"step increment"</b> value is the value added or substracted to the current value of the range, when the
+ * arrow keys are used, or when the arrow buttons of a scrollbar are clicked for example. It is also the value used
+ * when the user uses the mouse wheel.
  * - the <b>"page increment"</b> value is the value added or substracted to current value of the range, when the page
  * up/down keys are pressed, or when the trough of a scrollbar is clicked for example.
  * - the <b>"page size"</b> value is the size of viewport, used to calculate the size of the drag button of a scrollbar
@@ -374,7 +374,7 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
  * @prop_rw
  * @prop_val 0.0
  * \par
- * @prop_name "page_size": The size of the page of the range. See the description of Etk_Range for more info
+ * @prop_name "page_size": The page-size of the range. See the description of Etk_Range for more info
  * @prop_type Double
  * @prop_rw
  * @prop_val 0.0

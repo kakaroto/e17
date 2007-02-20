@@ -13,13 +13,23 @@
  * @{
  */
 
+enum Etk_Slider_Property_Id
+{
+   ETK_SLIDER_LABEL_FORMAT_PROPERTY
+};
+
 static void _etk_slider_constructor(Etk_Slider *slider);
+static void _etk_slider_destructor(Etk_Slider *slider);
+static void _etk_slider_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
+static void _etk_slider_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
+
 static void _etk_slider_realize_cb(Etk_Object *object, void *data);
 static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_slider_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_slider_value_changed_handler(Etk_Range *range, double value);
 static void _etk_slider_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
+static void _etk_slider_label_update(Etk_Slider *slider);
 
 /**************************
  *
@@ -32,12 +42,21 @@ static void _etk_slider_range_changed_cb(Etk_Object *object, const char *propert
  * @brief Gets the type of an Etk_Slider
  * @return Returns the type of an Etk_Slider
  */
-Etk_Type *etk_slider_type_get()
+Etk_Type *etk_slider_type_get(void)
 {
    static Etk_Type *slider_type = NULL;
 
    if (!slider_type)
-      slider_type = etk_type_new("Etk_Slider", ETK_RANGE_TYPE, sizeof(Etk_Slider), ETK_CONSTRUCTOR(_etk_slider_constructor), NULL);
+   {
+      slider_type = etk_type_new("Etk_Slider", ETK_RANGE_TYPE, sizeof(Etk_Slider),
+         ETK_CONSTRUCTOR(_etk_slider_constructor), ETK_DESTRUCTOR(_etk_slider_destructor));
+      
+      etk_type_property_add(slider_type, "label_format", ETK_SLIDER_LABEL_FORMAT_PROPERTY,
+         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      
+      slider_type->property_set = _etk_slider_property_set;
+      slider_type->property_get = _etk_slider_property_get;
+   }
 
    return slider_type;
 }
@@ -47,7 +66,7 @@ Etk_Type *etk_slider_type_get()
  * @brief Gets the type of an Etk_HSlider
  * @return Returns the type of an Etk_HSlider
  */
-Etk_Type *etk_hslider_type_get()
+Etk_Type *etk_hslider_type_get(void)
 {
    static Etk_Type *hslider_type = NULL;
 
@@ -62,7 +81,7 @@ Etk_Type *etk_hslider_type_get()
  * @brief Gets the type of an Etk_VSlider
  * @return Returns the type of an Etk_VSlider
  */
-Etk_Type *etk_vslider_type_get()
+Etk_Type *etk_vslider_type_get(void)
 {
    static Etk_Type *vslider_type = NULL;
 
@@ -78,8 +97,9 @@ Etk_Type *etk_vslider_type_get()
  */
 Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
-   return etk_widget_new(ETK_HSLIDER_TYPE, "theme_group", "hslider", "focusable", ETK_TRUE, "lower", lower, "upper", upper,
-      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_HSLIDER_TYPE, "theme_group", "hslider", "focusable", ETK_TRUE,
+      "lower", lower, "upper", upper, "value", value, "step_increment", step_increment,
+      "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**
@@ -88,8 +108,43 @@ Etk_Widget *etk_hslider_new(double lower, double upper, double value, double ste
  */
 Etk_Widget *etk_vslider_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
-   return etk_widget_new(ETK_VSLIDER_TYPE, "theme_group", "vslider", "focusable", ETK_TRUE, "lower", lower, "upper", upper,
-      "value", value, "step_increment", step_increment, "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_VSLIDER_TYPE, "theme_group", "vslider", "focusable", ETK_TRUE,
+      "lower", lower, "upper", upper, "value", value, "step_increment", step_increment,
+      "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
+}
+
+/**
+ * @brief Sets the format of the label to display next to the slider
+ * @param slider a slider
+ * @param label_format the format of the slider's label. It uses the same format as printf(). Since the value is
+ * a double, you have to use "%.2f" if you want to display the value with two digits for example. @n
+ * NULL will hide the label
+ */
+void etk_slider_label_set(Etk_Slider *slider, const char *label_format)
+{
+   if (!slider || slider->format == label_format)
+      return;
+   
+   free(slider->format);
+   slider->format = label_format ? strdup(label_format) : NULL;
+   
+   etk_widget_theme_signal_emit(ETK_WIDGET(slider),
+      label_format ? "etk,action,show,label" : "etk,action,hide,label", ETK_TRUE);
+   _etk_slider_label_update(slider);
+   
+   etk_object_notify(ETK_OBJECT(slider), "label_format");
+}
+
+/**
+ * @brief Gets the format of the label displayed next to the slider
+ * @param slider a slider
+ * @return Returns the format string of the slider's label (NULL means the label is hidden)
+ */
+const char *etk_slider_label_get(Etk_Slider *slider)
+{
+   if (!slider)
+      return NULL;
+   return slider->format;
 }
 
 /**************************
@@ -105,12 +160,58 @@ static void _etk_slider_constructor(Etk_Slider *slider)
       return;
 
    slider->dragging = ETK_FALSE;
+   slider->format = NULL;
+   
    ETK_RANGE(slider)->value_changed = _etk_slider_value_changed_handler;
    etk_signal_connect("realize", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
    etk_signal_connect("mouse_wheel", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_mouse_wheel), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(slider), "lower", _etk_slider_range_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(slider), "upper", _etk_slider_range_changed_cb, NULL);
+}
+
+/* Destroys the slider */
+static void _etk_slider_destructor(Etk_Slider *slider)
+{
+   if (!slider)
+      return;
+   free(slider->format);
+}
+
+/* Sets the property whose id is "property_id" to the value "value" */
+static void _etk_slider_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)
+{
+   Etk_Slider *slider;
+
+   if (!(slider = ETK_SLIDER(object)) || !value)
+      return;
+
+   switch (property_id)
+   {
+      case ETK_SLIDER_LABEL_FORMAT_PROPERTY:
+         etk_slider_label_set(slider, etk_property_value_string_get(value));
+         break;
+      default:
+         break;
+   }
+}
+
+/* Gets the value of the property whose id is "property_id" */
+static void _etk_slider_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value)
+{
+   Etk_Slider *slider;
+
+   if (!(slider = ETK_SLIDER(object)) || !value)
+      return;
+
+   switch (property_id)
+   {
+      case ETK_SLIDER_LABEL_FORMAT_PROPERTY:
+         etk_property_value_string_set(value, slider->format);
+         break;
+      default:
+         break;
+   }
 }
 
 /**************************
@@ -122,13 +223,18 @@ static void _etk_slider_constructor(Etk_Slider *slider)
 /* Called when the slider is realized */
 static void _etk_slider_realize_cb(Etk_Object *object, void *data)
 {
+   Etk_Slider *slider;
    Evas_Object *theme_object;
 
-   if (!object || !(theme_object = ETK_WIDGET(object)->theme_object))
+   if (!(slider = ETK_SLIDER(object)) || !(theme_object = ETK_WIDGET(slider)->theme_object))
       return;
 
-   _etk_slider_value_changed_handler(ETK_RANGE(object), ETK_RANGE(object)->value);
-   edje_object_signal_callback_add(theme_object, "drag*", "etk.dragable.slider", _etk_slider_cursor_dragged_cb, object);
+   etk_widget_theme_signal_emit(ETK_WIDGET(object),
+      slider->format ? "etk,action,show,label" : "etk,action,hide,label", ETK_TRUE);
+   edje_object_signal_callback_add(theme_object, "drag*", "etk.dragable.slider",
+      _etk_slider_cursor_dragged_cb, object);
+   
+   _etk_slider_value_changed_handler(ETK_RANGE(slider), ETK_RANGE(slider)->value);
 }
 
 /* Called when the user presses a key */
@@ -159,7 +265,7 @@ static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *even
       etk_signal_stop();
 }
 
-/* Called when the user wants to change the value the mouse wheel */
+/* Called when the user wants to change the value with the mouse wheel */
 static void _etk_slider_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Range *slider_range;
@@ -204,7 +310,7 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
    if (!(slider = ETK_SLIDER(range)) || !(theme_object = ETK_WIDGET(slider)->theme_object))
       return;
 
-   if (range->upper > range->lower)
+   if (range->upper - range->page_size > range->lower)
       percent = ETK_CLAMP((value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
    else
       percent = 0.0;
@@ -216,6 +322,8 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
       else
          edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", 0.0, percent);
    }
+   
+   _etk_slider_label_update(slider);
 }
 
 /* Called when the range of the slider is changed */
@@ -233,10 +341,29 @@ static void _etk_slider_range_changed_cb(Etk_Object *object, const char *propert
       percent = ETK_CLAMP((range->value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
    else
       percent = 0.0;
+   
    if (ETK_IS_HSLIDER(range))
       edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", percent, 0.0);
    else
       edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", 0.0, percent);
+}
+
+/**************************
+ *
+ * Callbacks and handlers
+ *
+ **************************/
+
+/* Updates the label of the slider's theme-object */
+static void _etk_slider_label_update(Etk_Slider *slider)
+{
+   char label[256];
+   
+   if (!slider || !slider->format)
+      return;
+   
+   snprintf(label, sizeof(label), slider->format, etk_range_value_get(ETK_RANGE(slider)));
+   etk_widget_theme_part_text_set(ETK_WIDGET(slider), "etk.text.label", label);
 }
 
 /** @} */

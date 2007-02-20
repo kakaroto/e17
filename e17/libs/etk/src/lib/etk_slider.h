@@ -7,48 +7,50 @@
 
 /**
  * @defgroup Etk_Slider Etk_Slider
+ * @brief An Etk_Slider is a widget with a cursor that the user can drag to change its value
  * @{
  */
 
-/** @brief Gets the type of a slider */
+/** Gets the type of a slider */
 #define ETK_SLIDER_TYPE       (etk_slider_type_get())
-/** @brief Casts the object to an Etk_Slider */
+/** Casts the object to an Etk_Slider */
 #define ETK_SLIDER(obj)       (ETK_OBJECT_CAST((obj), ETK_SLIDER_TYPE, Etk_Slider))
-/** @brief Checks if the object is an Etk_Slider */
+/** Checks if the object is an Etk_Slider */
 #define ETK_IS_SLIDER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_SLIDER_TYPE))
 
-/** @brief Gets the type of a horizontal slider */
+/** Gets the type of a horizontal slider */
 #define ETK_HSLIDER_TYPE       (etk_hslider_type_get())
-/** @brief Casts the object to an Etk_HSlider */
+/** Casts the object to an Etk_HSlider */
 #define ETK_HSLIDER(obj)       (ETK_OBJECT_CAST((obj), ETK_HSLIDER_TYPE, Etk_HSlider))
-/** @brief Checks if the object is an Etk_HSlider */
+/** Checks if the object is an Etk_HSlider */
 #define ETK_IS_HSLIDER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_HSLIDER_TYPE))
 
-/** @brief Gets the type of a vertical slider */
+/** Gets the type of a vertical slider */
 #define ETK_VSLIDER_TYPE       (etk_vslider_type_get())
-/** @brief Casts the object to an Etk_VSlider */
+/** Casts the object to an Etk_VSlider */
 #define ETK_VSLIDER(obj)       (ETK_OBJECT_CAST((obj), ETK_VSLIDER_TYPE, Etk_VSlider))
-/** @brief Checks if the object is an Etk_VSlider */
+/** Checks if the object is an Etk_VSlider */
 #define ETK_IS_VSLIDER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VSLIDER_TYPE))
 
 /**
- * @struct Etk_Slider
- * @brief An Etk_Slider is a widget with a cursor you can move to change a value
+ * @brief A widget with a cursor that the user can drag to change its value
+ * @structinfo
  */
-struct _Etk_Slider
+struct Etk_Slider
 {
    /* private: */
    /* Inherit from Etk_Range */
    Etk_Range range;
    
+   char *format;
    Etk_Bool dragging;
 };
 
 /**
- * @struct Etk_HSlider
- * @brief A horizontal slider
+ * @brief An horizontal slider
+ * @structinfo
  */
-struct _Etk_HSlider
+struct Etk_HSlider
 {
    /* private: */
    /* Inherit from Etk_Slider */
@@ -56,22 +58,25 @@ struct _Etk_HSlider
 };
 
 /**
- * @struct Etk_VSlider
  * @brief A vertical slider
+ * @structinfo
  */
-struct _Etk_VSlider
+struct Etk_VSlider
 {
    /* private: */
    /* Inherit from Etk_Slider */
    Etk_Slider slider;
 };
 
-Etk_Type *etk_slider_type_get();
-Etk_Type *etk_vslider_type_get();
-Etk_Type *etk_hslider_type_get();
+Etk_Type *etk_slider_type_get(void);
+Etk_Type *etk_vslider_type_get(void);
+Etk_Type *etk_hslider_type_get(void);
 
 Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment);
 Etk_Widget *etk_vslider_new(double lower, double upper, double value, double step_increment, double page_increment);
+
+void        etk_slider_label_set(Etk_Slider *slider, const char *label_format);
+const char *etk_slider_label_get(Etk_Slider *slider);
 
 /** @} */
 
