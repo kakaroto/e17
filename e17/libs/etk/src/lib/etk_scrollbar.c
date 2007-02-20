@@ -92,9 +92,9 @@ Etk_Type *etk_vscrollbar_type_get()
  * @param lower the lower bound of the scrollbar
  * @param upper the upper bound of the scrollbar
  * @param value the initial value of the scrollbar
- * @param step_increment the step increment value. This value is added or substracted to the current value of the
+ * @param step_increment the step-increment value. This value is added or substracted to the current value of the
  * scrollbar when an arrow button of the scrollbar is clicked, or when the mouse wheel is used
- * @param page_increment the page increment value. This value is added or substracted to the current value of the
+ * @param page_increment the page-increment value. This value is added or substracted to the current value of the
  * scrollbar when the page up/down keys are pressed or when the user clicks on the trough of the scrollbar
  * @param page_size the page size value: this value will determine the size of the drag button of the scrollbar
  * @return Returns the new horizontal scrollbar widget
@@ -110,9 +110,9 @@ Etk_Widget *etk_hscrollbar_new(double lower, double upper, double value, double 
  * @param lower the lower bound of the scrollbar
  * @param upper the upper bound of the scrollbar
  * @param value the initial value of the scrollbar
- * @param step_increment the step increment value. This value is added or substracted to the current value of the
+ * @param step_increment the-step increment value. This value is added or substracted to the current value of the
  * scrollbar when an arrow button of the scrollbar is clicked, or when the mouse wheel is used
- * @param page_increment the page increment value. This value is added or substracted to the current value of the
+ * @param page_increment the page-increment value. This value is added or substracted to the current value of the
  * scrollbar when the page up/down keys are pressed or when the user clicks on the trough of the scrollbar
  * @param page_size the page size value: this value will determine the size of the drag button of the scrollbar
  * @return Returns the new vertical scrollbar widget

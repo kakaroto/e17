@@ -46,6 +46,8 @@
  *     - Etk_Range
  *       - Etk_Scrollbar
  *       - Etk_Slider
+ *         - Etk_HSlider
+ *         - Etk_VSlider
  *     - Etk_Separator
  *       - Etk_HSeparator
  *       - Etk_VSeparator

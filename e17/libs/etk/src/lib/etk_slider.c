@@ -93,6 +93,13 @@ Etk_Type *etk_vslider_type_get(void)
 
 /**
  * @brief Creates a new horizontal slider
+ * @param lower the lower bound of the slider
+ * @param upper the upper bound of the slider
+ * @param value the initial value of the slider
+ * @param step_increment the step-increment value. This value is added or substracted to the current value of the
+ * slider when an arrow key is pressed, or when the mouse wheel is used
+ * @param page_increment the page-increment value. This value is added or substracted to the current value of the
+ * slider when the page up/down keys are pressed
  * @return Returns the new horizontal slider widget
  */
 Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment)
@@ -104,6 +111,13 @@ Etk_Widget *etk_hslider_new(double lower, double upper, double value, double ste
 
 /**
  * @brief Creates a new vertical slider
+ * @param lower the lower bound of the slider
+ * @param upper the upper bound of the slider
+ * @param value the initial value of the slider
+ * @param step_increment the step-increment value. This value is added or substracted to the current value of the
+ * slider when an arrow key is pressed, or when the mouse wheel is used
+ * @param page_increment the page-increment value. This value is added or substracted to the current value of the
+ * slider when the page up/down keys are pressed
  * @return Returns the new vertical slider widget
  */
 Etk_Widget *etk_vslider_new(double lower, double upper, double value, double step_increment, double page_increment)
@@ -367,3 +381,39 @@ static void _etk_slider_label_update(Etk_Slider *slider)
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Slider
+ *
+ * @image html widgets/slider.png
+ * Etk_Slider is the base class for Etk_HSlider (for horizontal sliders) and Etk_VSlider (for vertical sliders). @n
+ * Since Etk_Slider inherits from Etk_Range, you can use all the @a etk_range_*() functions to get or set the value of
+ * a slider, or to change its bounds. You can also use the @a "value_changed" signal to be notified when the value
+ * of a slider is changed. @n
+ * Sliders can also have their own label. For example, if you want to use a slider to control a value in centimeters,
+ * you can add the associated label with:
+ * @code
+ * //Display the value of the slider with the format "2.17 cm"
+ * etk_slider_label_set(slider, "%.2f cm");
+ * @endcode @n
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Range
+ *       - Etk_Slider
+ *         - Etk_HSlider
+ *         - Etk_VSlider
+ *
+ * \par Properties:
+ * @prop_name "label_format": The format of the slider's label, or NULL if the label is hidden
+ * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
+ */
