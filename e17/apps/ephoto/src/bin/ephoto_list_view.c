@@ -6,15 +6,29 @@ static Ewl_Widget *list_header_fetch(void *data, int column);
 static void *list_data_fetch(void *data, unsigned int row, unsigned int column);
 static int list_data_count(void *data);
 
+/*Add the list view*/
+Ewl_Widget *add_list_view(Ewl_Widget *c)
+{
+        em->list_vbox = ewl_vbox_new();
+        ewl_object_fill_policy_set(EWL_OBJECT(em->list_vbox), EWL_FLAG_FILL_ALL);
+        ewl_container_child_append(EWL_CONTAINER(c), em->list_vbox);
+        ewl_widget_show(em->list_vbox);
+        ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(c), em->list_vbox, "List");
+
+        em->ltree = add_ltree(em->list_vbox);  
+
+	return em->list_vbox;
+}
+
 /*Show the list view*/
 void show_list_view(Ewl_Widget *w, void *event, void *data)
 {
-        ewl_notebook_visible_page_set(EWL_NOTEBOOK(view_box), list_vbox);
-        ewl_mvc_dirty_set(EWL_MVC(ltree), 1);
-        ewl_widget_hide(edit_tools);
-	ewl_widget_hide(ilabel);
-        ewl_widget_show(atree);
-        ewl_widget_show(tbar);
+        ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->list_vbox);
+        ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
+        ewl_widget_hide(em->edit_tools);
+	ewl_widget_hide(em->ilabel);
+        ewl_widget_show(em->atree);
+        ewl_widget_show(em->tbar);
 }
 
 /*Create and Add a Tree to the Container c*/
@@ -30,6 +44,7 @@ Ewl_Widget *add_ltree(Ewl_Widget *c)
 
 	tree = ewl_tree2_new();
 	ewl_tree2_headers_visible_set(EWL_TREE2(tree), 0);
+	ewl_tree2_fixed_rows_set(EWL_TREE2(tree), 1);
 	ewl_mvc_model_set(EWL_MVC(tree), model);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(c), tree);
@@ -48,17 +63,14 @@ Ewl_Widget *add_ltree(Ewl_Widget *c)
 /* The view of the images */
 static Ewl_Widget *list_view_new(void)
 {
-	Ewl_Widget *icon;
+	Ewl_Widget *hbox;
 
-	icon = ewl_icon_new();
-	ewl_icon_type_set(EWL_ICON(icon), EWL_ICON_TYPE_LONG);
-	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_HORIZONTAL);
-	ewl_object_alignment_set(EWL_OBJECT(icon), EWL_FLAG_ALIGN_LEFT);
-	ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_ALL);
-	ewl_callback_append(icon, EWL_CALLBACK_CLICKED, set_info, NULL);
-	ewl_widget_show(icon);
+	hbox = ewl_hbox_new();
+	ewl_box_spacing_set(EWL_BOX(hbox), 10);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
+	ewl_widget_show(hbox);
 
-	return icon;
+	return hbox;
 }
 
 /*The row that is added to the tree*/
@@ -68,36 +80,28 @@ static void list_view_assign(Ewl_Widget *w, void *data)
 	char info[PATH_MAX];
 	int size;
 	int width, height;
-	Ewl_Widget *text;
+	Ewl_Widget *img, *text;
 
 	image = data;
 	image_pixels_int_get(image, &width, &height);
-	if(width > 75 || height > 75)
-	{
-		ewl_icon_thumbnailing_set(EWL_ICON(w), 1);
-	}
-	else
-	{
-		ewl_icon_thumbnailing_set(EWL_ICON(w), 0);
-	}
-	ewl_icon_image_set(EWL_ICON(w), image, NULL);
-	ewl_icon_constrain_set(EWL_ICON(w), 67);
+	
+	img = add_image(w, image, 1, NULL, NULL);
+	ewl_image_constrain_set(EWL_IMAGE(img), 48);
 	ewl_widget_name_set(w, image);
 	
 	size = ecore_file_size(image);
-	
-	snprintf(info, PATH_MAX, "Name: %s\n"
-				 "Pixels: %s\n"
-				 "Size: %s\n",
+
+	snprintf(info, PATH_MAX, "Name: %s\nPixels: %s\nSize: %s\n",
 						 basename(image), 
 						 image_pixels_string_get(image),
 						 file_size_get(size));
 	
 	text = ewl_text_new();
 	ewl_text_text_set(EWL_TEXT(text), info);
-	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+	ewl_container_child_append(EWL_CONTAINER(w), text);
+	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
+	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(text);
-	ewl_icon_extended_data_set(EWL_ICON(w), text);
 
 	return;
 }	
@@ -120,7 +124,7 @@ static void *list_data_fetch(void *data, unsigned int row, unsigned int column)
 	char *image;
 	void *val = NULL;
 
-	image = ecore_list_goto_index(images, row);
+	image = ecore_list_goto_index(em->images, row);
 	if (image)
 	{
 		val = image;
@@ -134,7 +138,7 @@ static int list_data_count(void *data)
 {
 	int val;
 
-	val = ecore_list_nodes(images);
+	val = ecore_list_nodes(em->images);
 
 	return val;
 }

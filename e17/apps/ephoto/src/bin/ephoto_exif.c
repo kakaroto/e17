@@ -58,17 +58,17 @@ static char *get_image(void)
 {
 	const char *img;
 
-        if (VISIBLE(fbox_vbox))
+        if (VISIBLE(em->fbox_vbox))
         {
-                img = ewl_widget_name_get(currentf);
+                img = ewl_widget_name_get(em->currentf);
         }
-        else if (VISIBLE(list_vbox))
+        else if (VISIBLE(em->list_vbox))
         {
-                img = ewl_widget_name_get(currenti);
+                img = ewl_widget_name_get(em->currenti);
         }
-        else if (VISIBLE(edit_vbox))
+        else if (VISIBLE(em->edit_vbox))
         {
-                img = ewl_image_file_path_get(EWL_IMAGE(eimage));
+                img = ewl_image_file_path_get(EWL_IMAGE(em->eimage));
         }
 
 	return strdup(img);

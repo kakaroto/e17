@@ -50,8 +50,10 @@ data
 	item: "/hseparator/group" "/ephoto/hseparator";
 	item: "/icon/group" "/ephoto/select";
 	item: "/image_thumbnail/group" "/ephoto/select";
+	item: "/image/group" "/ephoto/select";
 	item: "/label/group" "/ephoto/label";
 	item: "/label/textpart" "/ephoto/label/text";
+	item: "/notebook/pages/group" "/ephoto/window";
 	item: "/row/group" "/ephoto/row";
 	item: "/scrollpane/group" "/ephoto/scrollpane";
         item: "/shadow/group" "/ephoto/shadow";

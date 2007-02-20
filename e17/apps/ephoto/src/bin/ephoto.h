@@ -53,13 +53,19 @@ unsigned int *rotate_right(Ewl_Widget *image);
 void update_image(Ewl_Widget *image, int w, int h, unsigned int *data);
 
 /* Ephoto Edit View */
+Ewl_Widget *add_edit_view(Ewl_Widget *c);
 void add_edit_tools(Ewl_Widget *c);
 
 /* Ephoto List View */
+Ewl_Widget *add_list_view(Ewl_Widget *c);
 Ewl_Widget *add_ltree(Ewl_Widget *c);
 
 /* Ephoto Normal View */
+Ewl_Widget *add_normal_view(Ewl_Widget *c);
 void set_info(Ewl_Widget *w, void *event, void *data);
+
+/* Ephoto Thumbnail */
+void generate_thumbnail(Ewl_Widget *image, char *path);
 
 /* Ephoto Utilities*/
 char *image_pixels_string_get(const char *file);
@@ -72,23 +78,34 @@ void show_edit_view(Ewl_Widget *w, void *event, void *data);
 void show_list_view(Ewl_Widget *w, void *event, void *data);
 
 /* Ephoto Global Variables */
-extern Ewl_Widget *atree; 
-extern Ewl_Widget *tbar;
-extern Ewl_Widget *vcombo; 
-extern Ewl_Widget *view_box;
-extern Ewl_Widget *fbox_vbox;
-extern Ewl_Widget *edit_vbox;
-extern Ewl_Widget *list_vbox; 
-extern Ewl_Widget *fbox;
-extern Ewl_Widget *eimage;
-extern Ewl_Widget *ltree; 
-extern Ewl_Widget *ilabel;
-extern Ewl_Widget *currenta; 
-extern Ewl_Widget *currentf;
-extern Ewl_Widget *currenti;
-extern Ewl_Widget *toolbar;
-extern Ewl_Widget *edit_tools;
-extern Ecore_List *images;
+typedef struct _Ephoto_Main Ephoto_Main;
+
+struct _Ephoto_Main
+{
+	char **views;
+	Ecore_List *albums;
+	Ecore_List *images;
+	Ewl_Widget *atree; 
+	Ewl_Widget *currenta;
+	Ewl_Widget *currentf;
+	Ewl_Widget *currenti;
+	Ewl_Widget *edit_tools;
+	Ewl_Widget *edit_vbox;
+	Ewl_Widget *eimage;
+	Ewl_Widget *fbox_vbox;
+	Ewl_Widget *fbox;
+	Ewl_Widget *ilabel;
+	Ewl_Widget *list_vbox;
+	Ewl_Widget *ltree;
+	Ewl_Widget *tbar;
+	Ewl_Widget *toolbar;
+	Ewl_Widget *vcombo;
+	Ewl_Widget *view_box;
+	Ewl_Widget *win;
+	sqlite3 *db;
+};
+
+extern Ephoto_Main *em;
 
 /* NLS */
 #ifdef ENABLE_NLS

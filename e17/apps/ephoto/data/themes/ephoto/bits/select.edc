@@ -12,13 +12,11 @@ group
 			{
 				state: "default" 0.0;
 				color: 0 0 0 0;
-				visible: 0;
 			}
 			description
 			{
 				state: "selected" 0.0;
 				color: 71 135 195 255;
-				visible: 1;
 			}
 		}
 	}
@@ -57,13 +55,11 @@ group
 			{
 				state: "default" 0.0;
                                 color: 0 0 0 0;
-                                visible: 0;
                         }
                         description
                         {
                                 state: "highlighted" 0.0;
                                 color: 71 135 195 255;
-				visible: 1;
                         }
                 }
 	}

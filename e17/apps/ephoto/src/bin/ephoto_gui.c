@@ -30,7 +30,8 @@ Ewl_Widget *add_button(Ewl_Widget *c, char *txt, char *img, void *cb, void *data
 Ewl_Widget *add_image(Ewl_Widget *c, char *img, int thumbnail, void *cb, void *data)
 {
 	Ewl_Widget *image;
-	int w, h;
+	char *thumb;
+	int w, h, pid;
 
 	if(!thumbnail)
 	{
@@ -39,28 +40,29 @@ Ewl_Widget *add_image(Ewl_Widget *c, char *img, int thumbnail, void *cb, void *d
 		{
 			ewl_image_file_path_set(EWL_IMAGE(image), img);
 		}
+
 	}
 	else
 	{
 		image_pixels_int_get(img, &w, &h);
-		
-		image = ewl_image_thumbnail_new();
-		if (w > 75 || h > 75)
+		if(w > 75 || h > 75)
 		{
-			if(image)
+			image = ewl_image_thumbnail_new();
+			ewl_image_file_path_set(EWL_IMAGE(image), PACKAGE_DATA_DIR "/images/image.png");
+			if (img)
 			{
-				ewl_image_file_path_set(EWL_IMAGE(image), PACKAGE_DATA_DIR "/images/image.png");
 				ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(image), img);
 			}
 		}
 		else
 		{
-			if(image)
+			image = ewl_image_new();
+			if (img)
 			{
 				ewl_image_file_path_set(EWL_IMAGE(image), img);
 			}
 		}
-		ewl_image_constrain_set(EWL_IMAGE(image), 60);
+		ewl_image_constrain_set(EWL_IMAGE(image), 48);
 	}
 	ewl_image_proportional_set(EWL_IMAGE(image), TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
