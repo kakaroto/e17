@@ -54,6 +54,7 @@ static void     _cb_edje_change(void *data, Evas_Object *obj, const char *emissi
 static void     _cb_edje_mouseover(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void     _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void     _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void     _cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void     _cb_popi_close(void *data);
 
 
@@ -84,6 +85,8 @@ Photo_Item *photo_item_add(E_Gadcon_Client *gcc, Evas_Object *obj)
 				  _cb_mouse_down, pi);
    evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_OUT,
 				  _cb_mouse_out, pi);
+   evas_object_event_callback_add(obj, EVAS_CALLBACK_MOUSE_WHEEL,
+                                  _cb_mouse_wheel, pi);
 
    edje_object_signal_callback_add(obj,
                                    "mouseover", "item",
@@ -672,6 +675,19 @@ static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_inf
    if (pi->popi)
      photo_popup_info_del(pi->popi);
    pi->popi = NULL;
+}
+
+static void
+_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Event_Mouse_Wheel *ev;
+   Photo_Item *pi;
+
+   ev = event_info;
+   pi = data;
+
+   photo_item_action_change(pi, ev->z);
+   photo_item_timer_set(pi, pi->config->timer_active, 0);
 }
 
 static void
