@@ -122,7 +122,7 @@ void create_main_gui(void)
 	add_edit_view(em->view_box);
 
 	add_list_view(em->view_box);	
-
+	
 	hsep = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), hsep);
 	ewl_widget_show(hsep);
@@ -138,10 +138,18 @@ void create_main_gui(void)
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/normal_view.png", 0, show_normal_view, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
 
-        image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/edit_view.png", 0, show_edit_view, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);
+        vsep = ewl_vseparator_new();
+        ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
+        ewl_widget_show(vsep);
 
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/list_view.png", 0, show_list_view, NULL);
+        ewl_image_constrain_set(EWL_IMAGE(image), 30);        
+
+        vsep = ewl_vseparator_new();
+        ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
+        ewl_widget_show(vsep);
+
+	image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/edit_view.png", 0, show_edit_view, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
 
 	vsep = ewl_vseparator_new();
@@ -151,8 +159,16 @@ void create_main_gui(void)
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/get_exif.png", 0, display_exif_dialog, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
 
+        vsep = ewl_vseparator_new();
+        ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
+        ewl_widget_show(vsep);
+
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", 0, window_fullscreen, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+
+        vsep = ewl_vseparator_new();
+        ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
+        ewl_widget_show(vsep);
 
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/x-office-presentation.png", 0, NULL, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
@@ -245,8 +261,8 @@ static Ewl_Widget *add_vcombo(Ewl_Widget *c)
 
 	em->views = calloc(3, sizeof(char *));
 	em->views[0] = strdup("Normal");
-	em->views[1] = strdup("Edit");
-	em->views[2] = strdup("List");
+	em->views[1] = strdup("List");
+	em->views[2] = strdup("Edit");
 
 	model = ewl_model_new();
 	ewl_model_fetch_set(model, views_data_fetch);

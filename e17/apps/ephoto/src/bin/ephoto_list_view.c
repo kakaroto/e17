@@ -15,7 +15,7 @@ Ewl_Widget *add_list_view(Ewl_Widget *c)
         ewl_widget_show(em->list_vbox);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(c), em->list_vbox, "List");
 
-        em->ltree = add_ltree(em->list_vbox);  
+	em->ltree = add_ltree(em->list_vbox);
 
 	return em->list_vbox;
 }
